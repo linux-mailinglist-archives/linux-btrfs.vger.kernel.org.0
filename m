@@ -1,59 +1,59 @@
-Return-Path: <linux-btrfs+bounces-13693-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13691-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E657AAAABE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 03:44:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85929AAAA87
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 03:39:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B0913B19CA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 01:38:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BE1A188A233
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 01:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B436E392605;
-	Mon,  5 May 2025 23:03:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C3F390CB1;
+	Mon,  5 May 2025 23:02:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gqgy1fir"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l/XJtHUE"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED19636F892;
-	Mon,  5 May 2025 22:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B5AC36F8A9;
+	Mon,  5 May 2025 22:58:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746485882; cv=none; b=Ltd1ob1V9cJPssIc/ciSAo4OvRQiXxv/5Yj8nsbGXKrD/x7SbBgvbYXq1RYDmUz075pLJV8QQk3pncLM8+CTgY08/f3GHy1MHoPEKfsqNhPGESZnf94jdPQYySTEQmuVP85wDypP4bc0GV5gz8aZSZTVtI4mrvkArx3FHmQCP40=
+	t=1746485883; cv=none; b=p6tQvD8YkJLd1qlRkw9aF9YgNXdwQut9tKy4r5LYYebIPyJS1kLGtlwc5ACEJRDssf0nDTegZ3AWRhLqkmKg+1C8v1awyIVDQ3OkVIJ5/BWVb1Gkk/1WmMYO9pqmO8pB9C7nMb2dyoOOdzMqqjbMi43uuHddP/mIE9pYrXT723k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746485882; c=relaxed/simple;
-	bh=CUU4QOAPJanUXLuOG8RTWYDuLgsCmmqlxMBJRz+EHGQ=;
+	s=arc-20240116; t=1746485883; c=relaxed/simple;
+	bh=f5/B2Mfzq5P2YwMNlv/oDxj8SYgk9gI+Ms84kCduhPo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=l9WpDdBczjhNQ47bSIUnVKmv5atkNyDbWW5OWtet6WN6buN7yt0iQYPTlmAtq09Rxl2K8lhQDlbcQZGqS/tIvHcI1fM9Dj2YVBO63YA3HYS2FspeHRVv+oxNVWEwsIMRKdfFSlBnQg5RVAXHU6UhkQ+87XqCya+fMcDSS7XOX6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gqgy1fir; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D163AC4CEE4;
-	Mon,  5 May 2025 22:57:59 +0000 (UTC)
+	 MIME-Version; b=cITcgbvh/9v1ovcBxcrVVnnGaWgMOc0cfpHPFjZlVNYC6Upu0jSrhJcTMLOUYcXHdbwefJnXi769kod4YFG4RAEIzp4/ZNIgWA7pF0jFzeDVWkufR2i/oFBBDr8461pxLDEQdmjRHEnHwQp2JTZOgmoFrithb4qJ0TkoHWn19fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l/XJtHUE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A8F9C4CEEE;
+	Mon,  5 May 2025 22:58:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746485880;
-	bh=CUU4QOAPJanUXLuOG8RTWYDuLgsCmmqlxMBJRz+EHGQ=;
+	s=k20201202; t=1746485882;
+	bh=f5/B2Mfzq5P2YwMNlv/oDxj8SYgk9gI+Ms84kCduhPo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gqgy1fir2PXdsgcKrjauF+hNcGrpc+qp0ritAn0WONBUCnAwz1QRH3nGQ5F0XXhu+
-	 BRWINgeqSbha4fW/Q4bp9TPeGApoKEFEvyeHR8be1UQLLEul5aoe9PARREQxSEL0F6
-	 Cnu/5GofghSQmJqm7sVo/Fu+iwdr8rDNo3fftGCaGEYZsDerf+28OeK/736qkT4X0F
-	 vh/lquIu+alZ1A0j6NBiIJvr10WmZOlR+gJXeu0vATPrEY0w+B3CjR7YtRZLOeO4A/
-	 /m2THwr2RiVi53h4GJ+9BYFYQDKUJKyEdX3IOPHt3WFLNyyHR5msi7xc+ZvCX2yp4N
-	 DsreGit3xiP7w==
+	b=l/XJtHUE44XsxRYtN6rEzRGPYPJWUeIKlQDpG+iCSnhqhMPkZb8cho7MQF2+xxQWl
+	 OcPRhxCBAyCm6SiH9pB8mLhiNjloCrG362IXm3xJZfKFWBglQ+d9q28clnfCLXWOE8
+	 QahmIcLzK6VR6rHBQDmKIHTvKEH4aiBApkpn50Mkz4iXfwhiuKziC5MI9luSDQur7m
+	 h5VpHdPURGLhXrG1/xAJYP2yVtuEJQHdh2Dn29fbqKURHBOJMC0XHV7JQTt3JDJPn0
+	 84P/U5Z58N4tr0l5A+dcEhpQg1YBTcsFMm9FJRScF22HQJRyWxYVketO4P/xyyTJRf
+	 1yiILIT4dNHcw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Boris Burkov <boris@bur.io>,
-	Filipe Manana <fdmanana@suse.com>,
+Cc: Mark Harmstone <maharmstone@fb.com>,
+	Qu Wenruo <wqu@suse.com>,
 	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 044/294] btrfs: make btrfs_discard_workfn() block_group ref explicit
-Date: Mon,  5 May 2025 18:52:24 -0400
-Message-Id: <20250505225634.2688578-44-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 045/294] btrfs: avoid linker error in btrfs_find_create_tree_block()
+Date: Mon,  5 May 2025 18:52:25 -0400
+Message-Id: <20250505225634.2688578-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
 References: <20250505225634.2688578-1-sashal@kernel.org>
@@ -68,104 +68,59 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.89
 Content-Transfer-Encoding: 8bit
 
-From: Boris Burkov <boris@bur.io>
+From: Mark Harmstone <maharmstone@fb.com>
 
-[ Upstream commit 895c6721d310c036dcfebb5ab845822229fa35eb ]
+[ Upstream commit 7ef3cbf17d2734ca66c4ed8573be45f4e461e7ee ]
 
-Currently, the async discard machinery owns a ref to the block_group
-when the block_group is queued on a discard list. However, to handle
-races with discard cancellation and the discard workfn, we have a
-specific logic to detect that the block_group is *currently* running in
-the workfn, to protect the workfn's usage amidst cancellation.
+The inline function btrfs_is_testing() is hardcoded to return 0 if
+CONFIG_BTRFS_FS_RUN_SANITY_TESTS is not set. Currently we're relying on
+the compiler optimizing out the call to alloc_test_extent_buffer() in
+btrfs_find_create_tree_block(), as it's not been defined (it's behind an
+ #ifdef).
 
-As far as I can tell, this doesn't have any overt bugs (though
-finish_discard_pass() and remove_from_discard_list() racing can have a
-surprising outcome for the caller of remove_from_discard_list() in that
-it is again added at the end).
+Add a stub version of alloc_test_extent_buffer() to avoid linker errors
+on non-standard optimization levels. This problem was seen on GCC 14
+with -O0 and is helps to see symbols that would be otherwise optimized
+out.
 
-But it is needlessly complicated to rely on locking and the nullity of
-discard_ctl->block_group. Simplify this significantly by just taking a
-refcount while we are in the workfn and unconditionally drop it in both
-the remove and workfn paths, regardless of if they race.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Boris Burkov <boris@bur.io>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/discard.c | 34 ++++++++++++++++------------------
- 1 file changed, 16 insertions(+), 18 deletions(-)
+ fs/btrfs/extent_io.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
-index 944a7340f6a44..3981c941f5b55 100644
---- a/fs/btrfs/discard.c
-+++ b/fs/btrfs/discard.c
-@@ -167,13 +167,7 @@ static bool remove_from_discard_list(struct btrfs_discard_ctl *discard_ctl,
- 	block_group->discard_eligible_time = 0;
- 	queued = !list_empty(&block_group->discard_list);
- 	list_del_init(&block_group->discard_list);
--	/*
--	 * If the block group is currently running in the discard workfn, we
--	 * don't want to deref it, since it's still being used by the workfn.
--	 * The workfn will notice this case and deref the block group when it is
--	 * finished.
--	 */
--	if (queued && !running)
-+	if (queued)
- 		btrfs_put_block_group(block_group);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index b2ae50dcca0fe..ed08d8e5639f5 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3565,10 +3565,10 @@ struct extent_buffer *find_extent_buffer(struct btrfs_fs_info *fs_info,
+ 	return eb;
+ }
  
- 	spin_unlock(&discard_ctl->lock);
-@@ -260,9 +254,10 @@ static struct btrfs_block_group *peek_discard_list(
- 			block_group->discard_cursor = block_group->start;
- 			block_group->discard_state = BTRFS_DISCARD_EXTENTS;
- 		}
--		discard_ctl->block_group = block_group;
- 	}
- 	if (block_group) {
-+		btrfs_get_block_group(block_group);
-+		discard_ctl->block_group = block_group;
- 		*discard_state = block_group->discard_state;
- 		*discard_index = block_group->discard_index;
- 	}
-@@ -493,9 +488,20 @@ static void btrfs_discard_workfn(struct work_struct *work)
+-#ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
+ 					u64 start)
+ {
++#ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ 	struct extent_buffer *eb, *exists = NULL;
+ 	int ret;
  
- 	block_group = peek_discard_list(discard_ctl, &discard_state,
- 					&discard_index, now);
--	if (!block_group || !btrfs_run_discard_work(discard_ctl))
-+	if (!block_group)
- 		return;
-+	if (!btrfs_run_discard_work(discard_ctl)) {
-+		spin_lock(&discard_ctl->lock);
-+		btrfs_put_block_group(block_group);
-+		discard_ctl->block_group = NULL;
-+		spin_unlock(&discard_ctl->lock);
-+		return;
-+	}
- 	if (now < block_group->discard_eligible_time) {
-+		spin_lock(&discard_ctl->lock);
-+		btrfs_put_block_group(block_group);
-+		discard_ctl->block_group = NULL;
-+		spin_unlock(&discard_ctl->lock);
- 		btrfs_discard_schedule_work(discard_ctl, false);
- 		return;
- 	}
-@@ -547,15 +553,7 @@ static void btrfs_discard_workfn(struct work_struct *work)
- 	spin_lock(&discard_ctl->lock);
- 	discard_ctl->prev_discard = trimmed;
- 	discard_ctl->prev_discard_time = now;
--	/*
--	 * If the block group was removed from the discard list while it was
--	 * running in this workfn, then we didn't deref it, since this function
--	 * still owned that reference. But we set the discard_ctl->block_group
--	 * back to NULL, so we can use that condition to know that now we need
--	 * to deref the block_group.
--	 */
--	if (discard_ctl->block_group == NULL)
--		btrfs_put_block_group(block_group);
-+	btrfs_put_block_group(block_group);
- 	discard_ctl->block_group = NULL;
- 	__btrfs_discard_schedule_work(discard_ctl, now, false);
- 	spin_unlock(&discard_ctl->lock);
+@@ -3604,8 +3604,11 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
+ free_eb:
+ 	btrfs_release_extent_buffer(eb);
+ 	return exists;
+-}
++#else
++	/* Stub to avoid linker error when compiled with optimizations turned off. */
++	return NULL;
+ #endif
++}
+ 
+ static struct extent_buffer *grab_extent_buffer(
+ 		struct btrfs_fs_info *fs_info, struct page *page)
 -- 
 2.39.5
 
