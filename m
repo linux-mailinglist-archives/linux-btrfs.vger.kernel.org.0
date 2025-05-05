@@ -1,213 +1,124 @@
-Return-Path: <linux-btrfs+bounces-13641-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13642-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D319AA8605
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 May 2025 12:33:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D36D3AA8B40
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 May 2025 05:03:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AA57189AE62
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 May 2025 10:33:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D4D53A6EC6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 May 2025 03:03:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4CE21A23B6;
-	Sun,  4 May 2025 10:32:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B2A19D8A7;
+	Mon,  5 May 2025 03:03:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QJtPGjTL"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="Uoh85/wN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA8171747
-	for <linux-btrfs@vger.kernel.org>; Sun,  4 May 2025 10:32:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329BA130A7D;
+	Mon,  5 May 2025 03:03:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746354773; cv=none; b=KVJhM+RJfasTVt3abRsS3hgnfRPs6V5f/R/iMo7IwRBm4P93gBSGq+GciGV4HLhwf991CF0/a/wRzW1TlDpmIg8JF241CZmzq4lROreTtK5yvIxRw9HU6fQepK3pAMvPl7mw38R6nFukZE97idFyDydq7AIFebrq1qtPJeMuePY=
+	t=1746414230; cv=none; b=RXKAUJUHpC7Btdqv8nN6oeDDiRuq5gjsg2/1c9vgvalIHOzR7GyllG22O5HqJHr/ErCtJeTsD7t8EfmcS0XHtPJk5V0byjn8tIIW7w6rV8aMcfKBavfU8EfAG9Ha8qU5EJD1B704q/16koEIa//zzx4xYPDGO+9oXm2pbHEcUeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746354773; c=relaxed/simple;
-	bh=Q27RY7Qtaoh2hOZMOXRJrwN0bVEKHY5GIH6l7Yw0/KQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=uaMIIWpkUDFPB8y8vtBalxdJavSDZUWkHoWuLaP3KMVR8gapMZEGth3V419PMS2giZ5cBmwMGTFeusykVyFcKWndJbfmkJr1Tols0WoMn9sxjkJe5qKosrMBwsfcu683cLaIwCkIH9ujv3WWGCizRJpCXFCYl9F2+i57BABRqio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QJtPGjTL; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-39ee57c0b8cso3121725f8f.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 04 May 2025 03:32:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1746354769; x=1746959569; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y/oQhmHppfaSQbUzVCqQ0YifQY0EBx9zma6YvEdXbrw=;
-        b=QJtPGjTL60y+X1r973+BUxYoTxYqUQu0Yj8aKkssKt+Z4Kgs2ck/ZaOfri3XNYU2+L
-         MdQN3wPYV7McvKS4aY96G/ApCsch9bIASijQgd644JAdcBoKnxXBG1RtQ+CJ/gm6ymM1
-         eUTZHLM0OwYHKtG4AbI04ZvJXtGLUihH4/MfP+LJX++5UcQ7OtxKDNV62+v8LqrJgCN/
-         UdHIRBUSzZMPfhDqbf7fZXhBdoXs6qwUv2ehZcBwZRTxwDcQgov0pr9U/ETKdYbBedGc
-         0pNJ4YlSo/n8CJ4vDad7obVBd9ddB8xyEcHWhnHFb5PbHqLOS3XBpvzzD7wWPUs5GuTW
-         3dTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746354769; x=1746959569;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y/oQhmHppfaSQbUzVCqQ0YifQY0EBx9zma6YvEdXbrw=;
-        b=WSS016aFuDpX0KGdBb7Fg25PIS9JN8bhl8bIV9PZz95v4cEQOcCGajocHzFspAIPpa
-         W6HxPxHPRzpW2yGfxhqU9u9wUNRkB8XzoaLgDKV+85++SltAo83BYo3TzlcKiqwyFCTP
-         ddEGM5nj1yCVHmpI93LVPFumJbP589QLnkbjoocD/otVoUroiBbsYbnEC624tEn68jwC
-         Dis3vQjk+oRAHXTwozDKrhkfxAYeXjlAv7MI6KHzmrl06ciesXo6drAsygdsWZdJCCk7
-         ArRjDatosdvsTZk2NRvgBxi2Oj1KbTBjdoNXgr/8iRQmRL8ZRe+JWaH5aegHDJfLpMiz
-         iAkg==
-X-Forwarded-Encrypted: i=1; AJvYcCXCFFmuR+0fVlP1yH+o0nh8eOOYNXLozU8q3j7aXDpU87+K66MXIfjakcGZyskm77eU+ONHhHEKRaApOA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmQq7M6XL6iwErUpu4I20K4nkqqZdTHvZ7W2ERXLPZLtL/zUMS
-	B9cMmVTQqMOkM6Zdjmjq9/H4vr/zSmx6MhBk7dm5wLj/8ZZdo/fuRS3skbpPzP4=
-X-Gm-Gg: ASbGnctWJHf/2HOd3sQcatP8UfqPe28+TNuOasl7KC9Ky8SkwkV2rlTfaUMCf6ZxU7J
-	iANAEHRNd0xS16+pVsLT/c93RzxbJs8GHMDjattmOPLNjI+8hkz+wEUt7HcsvRH8pa77IolA615
-	M+qmSohq55TP1ED2VezzgV3rC6cRGKGcsS1nXBmhYMFZ771jciQQbA9XEb+C92DnWOHDCRRS7Nb
-	SJgM9fPsAxV9aP1xZKmMi7qFh8m0xvbvnrSsNhn3hFV90HbMvqJyIw/pz5X3ATlbC28kcD9qF3r
-	xj3TOyjbGlg+K6xTMWbmep9vDHcPRbCmNPTQGBm9Ntci9QqLhLqfr3i7VeB/r9ugEJWj
-X-Google-Smtp-Source: AGHT+IGyq0wuMLkwD3hUGs1Df4te6r5grTyeH77LF3KeprzLwmkRg7WtNAUjXexvXUU9YsaEd3lT7A==
-X-Received: by 2002:a05:6000:18a5:b0:399:737f:4e02 with SMTP id ffacd0b85a97d-3a09fdbe68emr2773301f8f.39.1746354768912;
-        Sun, 04 May 2025 03:32:48 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e151e992fsm35736155ad.85.2025.05.04.03.31.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 May 2025 03:32:48 -0700 (PDT)
-Message-ID: <871b8620-f33d-45c4-a1a3-ca33c0f792c3@suse.com>
-Date: Sun, 4 May 2025 20:01:54 +0930
+	s=arc-20240116; t=1746414230; c=relaxed/simple;
+	bh=lrKF2jdld1kATsiwUl0xDPfRpz5qxj+02SVe9yfWyrM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=nH0MuVc+w63A83pRhC74pHRvaVSgf32myKgL/LCmvkyMXUGN8gNuCtowoXtgBO9cmVibu9+eCMq9gz74IY/I8I78TUJdTRYdfB4Ghdvg3QIKpF6cUQwqg5T3fMMAwj1kngrmiAwNgpjR2Z5o6KYBI49yA2VilelKPR12h4+kT4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=Uoh85/wN; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=YqfIve3mOMD666HaSsd18Gvt8Vrj20e45FaBuwKQfSM=; b=Uoh85/wNJJZhg14yWpxaExYci2
+	gxJ20PMGjOTx8gMT1kdJaDKK8hLSXYXE3ldgEWrsBBtw/xGQLX53ggSIMGtQNNLPpQLst+bGfgAa9
+	cPb5mOSxsq+hbYOPof2VXblG4VfBjhn7n/amTbEP7wb9m3Y080c9ovaZdBDLEFAzFZ9XIK1EtuTOq
+	HjHn2228KfmpwsYOyiX7lBWLyvFFCFED1MxuGwoTTrDYD6miDcy9fnSfVUUvuIF7BkTTfAH170iPD
+	dnoHZ+VF7m05PUEgJ19blI0A3lC+p1uzljQRYdN112nVhR7UK4ZLS373XBRAU795pMv18DHA1NW2Q
+	0K2nCSnQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uBm7N-00000001P5E-1ZOm;
+	Mon, 05 May 2025 03:03:45 +0000
+Date: Mon, 5 May 2025 04:03:45 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: linux-fsdevel@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: [RFC][PATCH] btrfs_get_tree_subvol(): switch from fc_mount() to
+ vfs_create_mount()
+Message-ID: <20250505030345.GD2023217@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: check: fix false alert on missing csum for
- hole
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <4dbd03928f8384d926aff5754199c5078fc915cb.1746194979.git.fdmanana@suse.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <4dbd03928f8384d926aff5754199c5078fc915cb.1746194979.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
+it's simpler to do btrfs_reconfigure_for_mount() right after vfs_get_tree() -
+no need to mess with ->s_umount.
 
-
-在 2025/5/3 00:02, fdmanana@kernel.org 写道:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> If we log a hole, fsync a file, partially write to the front of the hole
-> and then fsync again the file, we end up with a file extent item in the
-> log tree that represents a hole and has a disk address of 0 and an offset
-> that is greater than zero (since we trimmed the front part of the range to
-> accomodate for a file extent item of the new write).
-> 
-> When this happens 'btrfs check' incorrectly reports that a csum is missing
-> like this:
-> 
->    $ btrfs check /dev/sdc
->    Opening filesystem to check...
->    Checking filesystem on /dev/sdc
->    UUID: 46a85f62-4b6e-4aab-bfdc-f08d1bae9e08
->    [1/8] checking log
->    ERROR: csum missing in log (root 5 inode 262 offset 5959680 address 0x5a000 length 1347584)
->    ERROR: errors found in log
->    [2/8] checking root items
->    (...)
-> 
-> And in the log tree, the corresponding file extent item:
-> 
->    $ btrfs inspect-internal dump-tree /dev/sdc
->    (...)
->          item 38 key (262 EXTENT_DATA 5959680) itemoff 1796 itemsize 53
->                  generation 11 type 1 (regular)
->                  extent data disk byte 0 nr 0
->                  extent data offset 368640 nr 1347584 ram 1716224
->                  extent compression 0 (none)
->    (...)
-> 
-> This false alert happens because we sum the file extent item's offset to
-> its logical address before we attempt to skip holes at
-> check_range_csummed(), so we end up passing a non-zero logical address to
-> that function (0 + 368640), which will attempt to find a csum for that
-> invalid address and fail.
-> 
-> This type of error can be sporadically triggered by several test cases
-> from fstests such as btrfs/192 for example.
-> 
-> Fix this by skipping csum search if the file extent item's logical disk
-> address is 0 before summing the offset.
-> 
-> Fixes: 88dc309aca10 ("btrfs-progs: check: explicit holes in log tree don't get csummed")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-
-> ---
->   check/main.c | 13 ++++++-------
->   1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/check/main.c b/check/main.c
-> index 6290c6d4..bf250c41 100644
-> --- a/check/main.c
-> +++ b/check/main.c
-> @@ -9694,10 +9694,6 @@ static int check_range_csummed(struct btrfs_root *root, u64 addr, u64 length)
->   	u64 data_len;
->   	int ret;
->   
-> -	/* Explicit holes don't get csummed */
-> -	if (addr == 0)
-> -		return 0;
-> -
->   	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
->   	if (ret < 0)
->   		return ret;
-> @@ -9807,12 +9803,15 @@ static int check_log_root(struct btrfs_root *root, struct cache_tree *root_cache
->   			if (btrfs_file_extent_type(leaf, fi) != BTRFS_FILE_EXTENT_REG)
->   				goto next;
->   
-> +			addr = btrfs_file_extent_disk_bytenr(leaf, fi);
-> +			/* An explicit hole, skip as holes don't have csums. */
-> +			if (addr == 0)
-> +				goto next;
-> +
->   			if (btrfs_file_extent_compression(leaf, fi)) {
-> -				addr = btrfs_file_extent_disk_bytenr(leaf, fi);
->   				length = btrfs_file_extent_disk_num_bytes(leaf, fi);
->   			} else {
-> -				addr = btrfs_file_extent_disk_bytenr(leaf, fi) +
-> -				       btrfs_file_extent_offset(leaf, fi);
-> +				addr += btrfs_file_extent_offset(leaf, fi);
->   				length = btrfs_file_extent_num_bytes(leaf, fi);
->   			}
->   
-
+Objections?
+    
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 7121d8c7a318..a3634e7f2304 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1984,17 +1984,13 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+  * btrfs or not, setting the whole super block RO.  To make per-subvolume mounting
+  * work with different options work we need to keep backward compatibility.
+  */
+-static int btrfs_reconfigure_for_mount(struct fs_context *fc, struct vfsmount *mnt)
++static int btrfs_reconfigure_for_mount(struct fs_context *fc)
+ {
+ 	int ret = 0;
+ 
+-	if (fc->sb_flags & SB_RDONLY)
+-		return ret;
+-
+-	down_write(&mnt->mnt_sb->s_umount);
+-	if (!(fc->sb_flags & SB_RDONLY) && (mnt->mnt_sb->s_flags & SB_RDONLY))
++	if (!(fc->sb_flags & SB_RDONLY) && (fc->root->d_sb->s_flags & SB_RDONLY))
+ 		ret = btrfs_reconfigure(fc);
+-	up_write(&mnt->mnt_sb->s_umount);
++
+ 	return ret;
+ }
+ 
+@@ -2047,17 +2043,18 @@ static int btrfs_get_tree_subvol(struct fs_context *fc)
+ 	security_free_mnt_opts(&fc->security);
+ 	fc->security = NULL;
+ 
+-	mnt = fc_mount(dup_fc);
+-	if (IS_ERR(mnt)) {
+-		put_fs_context(dup_fc);
+-		return PTR_ERR(mnt);
++	ret = vfs_get_tree(dup_fc);
++	if (!ret) {
++		ret = btrfs_reconfigure_for_mount(dup_fc);
++		up_write(&fc->root->d_sb->s_umount);
+ 	}
+-	ret = btrfs_reconfigure_for_mount(dup_fc, mnt);
++	if (!ret)
++		mnt = vfs_create_mount(fc);
++	else
++		mnt = ERR_PTR(ret);
+ 	put_fs_context(dup_fc);
+-	if (ret) {
+-		mntput(mnt);
+-		return ret;
+-	}
++	if (IS_ERR(mnt))
++		return PTR_ERR(mnt);
+ 
+ 	/*
+ 	 * This free's ->subvol_name, because if it isn't set we have to
 
