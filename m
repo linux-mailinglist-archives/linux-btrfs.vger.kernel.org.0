@@ -1,175 +1,180 @@
-Return-Path: <linux-btrfs+bounces-13666-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13667-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C58ADAA9AF0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 May 2025 19:44:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D321BAA9B18
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 May 2025 19:53:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D15F57A2169
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 May 2025 17:43:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D96217E6D8
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 May 2025 17:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E50026B978;
-	Mon,  5 May 2025 17:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F2F26E142;
+	Mon,  5 May 2025 17:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rklxwPWN";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="c4MyWA80";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SPt74Bkl";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UF3j7C7O"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NS4JNS8u"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C945419DF60
-	for <linux-btrfs@vger.kernel.org>; Mon,  5 May 2025 17:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7110925DAE9
+	for <linux-btrfs@vger.kernel.org>; Mon,  5 May 2025 17:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746467059; cv=none; b=PwHVfFGxLsENlrrba4CvCNzOGrp/IDb7yMmWOgcuhzx8xQLNJIfc2Jk2QFxqKpc11xUpJKHuWw4UTZlnIuPNK36iG1uTIUoufTKJEpXk2Vq9YioGdNmc7dSlA6QTQQwmvoXaK3KfZnxUlELyIVPnK+8dljFjuclhM0O2v7xMHm8=
+	t=1746467613; cv=none; b=fPHnHoJtd37nU0WCnUe9Gu6JyxbwSJnMQ7mvsg8/jBVI31lcbXH183zPPJBNdms3ZXUIGyFGfD8xFl3yTFSTFGAn5jNnvsuHPAU9c/7wAXdtoXP57fcqPf3/qjhOnNdbZUFKRgd6LUyPu5TpaBnaek4YO3Z66OAebtOhpd9NMvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746467059; c=relaxed/simple;
-	bh=3ekdWHSlXOTxnq3SZCKPDIoBtW4NgcGn/4AHfSRrw90=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sKat8PRcEO3cO3kP3pPWuky9e+7LaaylTiVDulhpF/X7ywjEM4mUpCgmefWtnOg6FqxmI/TNFKHvjWRqvs8hhhqet9CW7CGrYZqgVO7H5UKUNNnwrwLtcZ6LIwbvaRv/1K3/GEhcvoYagciqohpS0N3Jb6G/KRBi2bUb5MhqWKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rklxwPWN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=c4MyWA80; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SPt74Bkl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UF3j7C7O; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id ADEDC1F453;
-	Mon,  5 May 2025 17:44:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1746467053;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bA0fiPeco12milI2aTK6ZkwinYtkWKWd0DgFnyhcJjk=;
-	b=rklxwPWNNHSdPMwXZI8YQGM77tvyZTrKHKlPkZKRDNQZwCqZkkat9fV5J/6ecmSTh8cdpP
-	MTmV/nSvYhT92NMSxFVKmHSSbKfSe5PJJzN419VVsqK1jKR6pKdN6G0WvnFuxaX+rG4qgE
-	miKMcQUIZZqmNt0UA+AhHUUrKzyagXg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1746467053;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bA0fiPeco12milI2aTK6ZkwinYtkWKWd0DgFnyhcJjk=;
-	b=c4MyWA80FLP9N5zHk+zgBrKo5jvKxYTaRRsUBwB1SV/B+2gs/VTIfpt/0Wlk7pVPb/aYGg
-	D8vYUl2vemO5D3Bw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SPt74Bkl;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=UF3j7C7O
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1746467052;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bA0fiPeco12milI2aTK6ZkwinYtkWKWd0DgFnyhcJjk=;
-	b=SPt74BklrTgJYFPYAIpGfWvz1IiMkItM8OR3isSQcpaZIYRnsnP92rgMnJpXn0b4d4QhAn
-	MZrRyeh8X9IsPDXujYQ/R0rZeZf8WdbJgCiSWDy5lCseQH6PC99hnctGpcFREPnzYaV80B
-	Qtn1JLnGnc14ZpP+sqGrDtwd9Sh437g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1746467052;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bA0fiPeco12milI2aTK6ZkwinYtkWKWd0DgFnyhcJjk=;
-	b=UF3j7C7ON0VedBZUIPU9RofHqtOsu7h9bM4nYFtonuA2TFF8/+DGMRTeyKr+us9ccxKTJz
-	/72bfobcgoGn4SAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9614213883;
-	Mon,  5 May 2025 17:44:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sZxtJOz4GGiABAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 05 May 2025 17:44:12 +0000
-Date: Mon, 5 May 2025 19:44:07 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs: scrub: reduce memory usage for each
- scrub_stripe
-Message-ID: <20250505174407.GA9140@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1746442395.git.wqu@suse.com>
+	s=arc-20240116; t=1746467613; c=relaxed/simple;
+	bh=NPTw3TvsMda/BtskMku/nisKOR9hZguAMuSGpvPjzgU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=C8LyjcH5RVncicghBoHICIg90foHyttsgNLD8CLIHP1naKCgor3GzjbX+C/k3NeF6Go2rQpo7lfla/fFvZ3tKygUv4b/9UeSX9OGqAGwTAbh6SG3qnPXxy4/dXkEyalSa3RUAnYelGi2otC5afGFPObfm2h39c1C0kZOlD1U9l8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NS4JNS8u; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-ac345bd8e13so784195966b.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 May 2025 10:53:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1746467610; x=1747072410; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FUR5Bbe6vkCHrXghv04CQXxSrceX3A+xEZsbO0fMA3Q=;
+        b=NS4JNS8u6MKIbJvAW83ZJaV/Zm3F11KGtUoPiVrJvl4CHPRP6D1lZ5R8X3rjRm5yFD
+         Y1KbYi94CBJj+7IK0pbKxf0K2S7GgoIeWVenigPEKTazUYOHYU57733Zzp3U+7BzYwTo
+         qdaeY++X4gVPs+Qzu9cjUUoHDCQArUq5ZgjigOcYiLgqxp77ANJ403o49yRb0XMz0dFR
+         e/FomZxtbOVZPfTwhG2d6dU1YmJ7k4xCVXSt/BWdO2OTRI5r9XPh2MlPr3inVAoz3cw+
+         mHoUvnw7d+3lfg3c8RvkAKvc789Lk2el/IDGjxtSaXEighc14hQFBwUydGcXfjAGs+2B
+         xZ5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746467610; x=1747072410;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FUR5Bbe6vkCHrXghv04CQXxSrceX3A+xEZsbO0fMA3Q=;
+        b=ROitWpgaJjWopWixaf5NWFdfkVv6hHv1CEbNR1eE8dbvNoKRxeTYTEZMw2yAqdhWrv
+         Bizpq0swfrovCQuZXZxv3ZWpKpM7Xu+rfjYrKkVfszRZIoisuGb+4IwtJ+CkSl889t27
+         1a2n+hizw5WvSNvGayQJo88taH3is1X05SPrWWj1PUvREDqcLrZCZeuL6nWG1Mp8/FUQ
+         oEYx+pvKvrK0h2eeqGXzN2o58RjVtznGHOdUUgEK8TN4lJXYUMSEJwH49oxVlONn++H0
+         NyPi7Ygfaljg99VnZjFHKEXIkocjdghsCrq8dwz6nrWxQ2pFdlSGN25xmV3t68keMvnH
+         befA==
+X-Forwarded-Encrypted: i=1; AJvYcCX4VnhWo4PaDY7MxBhqJNZsTQ5Xjb6F3Piwd04hUgL9HgWGALj/IYKO6IVidE9NCs5EKoIZhM+9rnsxnQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwRNIsjOkstp866czeg+h/qJkKGSJfS0LcZLuqOFYBYwgPz/ppz
+	1IvlKo0jUwiq8q6u+6FftZXIfMWXme+BEO3edabso7iHl34mTljw8B49FPmX2lTTiC3+4ZH2dPP
+	lQgG8J+BbJ4r/ocM3LjNktkHgfkTdios04ueZvA==
+X-Gm-Gg: ASbGncuZ5yVCMe6xlf30bx+3asyiicEFaXau2MuKJvxCPQ2rwXhuHOJSnHpvYXSZMjQ
+	NqL6Qokl23kUvcu4FdbvdGs4aArbSGjcNXoxOSEB80scNSprDgKalmszZch1UDuFCbKu+7Qw+u/
+	q/KL3FncGQq3XSrDod3zhq
+X-Google-Smtp-Source: AGHT+IEHRtDRx5HFynS+EDSrTYt1Fma7/XNpUynGJutMyIAPewpV368hIKjACS5qJHIERSpMB1O8lSN6JnEC6RXBDTk=
+X-Received: by 2002:a17:907:1c1e:b0:acb:5583:6fe4 with SMTP id
+ a640c23a62f3a-ad1905d7cb0mr805227166b.6.1746467609596; Mon, 05 May 2025
+ 10:53:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1746442395.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: ADEDC1F453
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <20250505115056.1803847-1-neelx@suse.com> <20250505115056.1803847-2-neelx@suse.com>
+ <20250505151817.GX9140@twin.jikos.cz>
+In-Reply-To: <20250505151817.GX9140@twin.jikos.cz>
+From: Daniel Vacek <neelx@suse.com>
+Date: Mon, 5 May 2025 19:53:16 +0200
+X-Gm-Features: ATxdqUHcaDndKHa0L6pyjnX53G91GvgxchF5EMwRJc8tKO56uvY3lpzDHOZ3Upw
+Message-ID: <CAPjX3FfbeGmPkXY1NDnecrtcLe5dqX7+vLOLGe3sdggUfS-WSg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] btrfs: remove extent buffer's redundant `len`
+ member field
+To: dsterba@suse.cz
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+	Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, May 05, 2025 at 08:31:02PM +0930, Qu Wenruo wrote:
-> The first patch fixes a scrub error reporting bug that metadata bytenr
-> mismatch is reported as csum error, not a metadata error.
-> 
-> The second patch reduces the memory usage of each scrub_stripe by 24
-> bytes (on systems with 64 bits LONG), this is done by aggregating all
-> the small bitmaps (at most 16 bits, as we can have at most STRIPE_LEN /
-> blocksize blocks per stripe) into a larger bitmap.
-> Just like what we do with subpage helpers.
-> 
-> This will introduce a lot of small helpers:
-> 
-> - Set/clear bitmap range
-> - Set/clear/test single bit
-> - Bitmap weight
-> - Bitmap empty check
-> - Bitmap read
->   The last one allows us to read out a unsigned long and use it for
->   various bitmap operations directly.
->   In fact the above weight/empty are just a wrapper around the read
->   helper.
-> 
-> Those helpers are small enough thus can be inlined, this will slightly
-> increase the overhead but saves 24 bytes per scrub_stripe, and we have
-> 128 scrub_stripes for one device, saving around 3KB for scrub/dev-replace
-> per device.
-> 
-> Qu Wenruo (2):
->   btrfs: scrub: fix a wrong error type when metadata bytenr mismatches
->   btrfs: scrub: aggregate small bitmaps into a larger one
+On Mon, 5 May 2025 at 17:18, David Sterba <dsterba@suse.cz> wrote:
+>
+> On Mon, May 05, 2025 at 01:50:54PM +0200, Daniel Vacek wrote:
+> > Even super block nowadays uses nodesize for eb->len. This is since commits
+> >
+> > 551561c34663 ("btrfs: don't pass nodesize to __alloc_extent_buffer()")
+> > da17066c4047 ("btrfs: pull node/sector/stripe sizes out of root and into fs_info")
+> > ce3e69847e3e ("btrfs: sink parameter len to alloc_extent_buffer")
+> > a83fffb75d09 ("btrfs: sink blocksize parameter to btrfs_find_create_tree_block")
+> >
+> > With these the eb->len is not really useful anymore. Let's use the nodesize
+> > directly where applicable.
+>
+> You haven't updated the changelog despite we had a discussion about the
+> potential drawbacks, so this should be here. But I'm not convinced this
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+Right. That's because I was not sure we came to any conclusion yet. I
+thought this discussion was still ongoing. I understand that so far
+this is still all just a theory and any premature conclusions may be
+misleading.
+
+But yeah, I may write some kind of a warning or a disclaimer
+mentioning the suspicion. Just so that it gets documented and it is
+clear it was considered, even though maybe without a clear conclusion.
+
+> is a good change. The eb size does not change so no better packing in
+> the slab and the caching of length in the same cacheline is lost.
+
+So to be perfectly clear, what sharing do you mean? Is it the
+eb->start and eb->len you talking about? In other words, when getting
+`start` you also get `len` for free?
+
+Since the structure is 8 bytes aligned, they may eventually still end
+up in two cachelines. Luckily the size of the structure is 0 mod 16 so
+just out of the luck this never happens and they are always in the
+same cache line. But this may break with future changes, so it is not
+rock solid the way it is now.
+
+> In the assebly it's clear where the pointer dereference is added, using
+> an example from btrfs_get_token_8():
+>
+>   mov    0x8(%rbp),%r9d
+>
+> vs
+>
+>   mov    0x18(%rbp),%r10
+>   mov    0xd38(%r10),%r9d
+
+I understand that. Again, this is what I originally considered. Not
+all the functions end up like this but there are definitely some. And
+by a rule of a thumb it's roughly half of them, give or take. That
+sounds like a good reason to be concerned.
+
+My reasoning was that the fs_info->nodesize is accessed by many so the
+chances are it will be hot in cache. But you're right that this may
+not always be the case. It depends. The question remains if that makes
+a difference?
+
+Another (IMO valid) point is that I believe the code will dereference
+many other pointers before getting here so this may seem like a drop
+in the sea. It's not like this was a tight loop scattering over
+hundreds random memory addresses.
+For example when this code is reached from a syscall, the syscall
+itself will have significantly higher overhead then one additional
+dereference. And I think the same applies when reached from an
+interrupt.
+Otherwise this would be visible on perf profile (which none of us
+performed yet).
+
+Still, I'd say reading the assembly is a good indication of possible
+issues to be concerned with. But it's not always the best one. An
+observed performance regression would be.
+I'll be happy to conduct any suggested benchmarks. Though as you
+mentioned this may be also picky on the used HW. So even though we
+don't see any regressions with our testing, one day someone may find
+some if we merged this change. In which case we can always revert.
+
+I have to say I'm pretty happy with the positive feedback from the
+other reviewers. So far you're the only one raising this concern.
+
+So how do we conclude this?
+
+If you don't want this cleanup I'd opt at least for rename eb->len
+==>> eb->nodesize.
+
+> And there's a new register dependency. The eb operations are most of the
+> time performed on memory structures and not just in connnection with IO,
+> I think this could be measurable on a fast device with metadata heavy
+> workload. So I'd rather see some numbers this will not decrease
+> performance.
 
