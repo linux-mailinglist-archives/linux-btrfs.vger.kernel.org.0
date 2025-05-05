@@ -1,58 +1,59 @@
-Return-Path: <linux-btrfs+bounces-13689-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13687-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E124AAA93D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 03:10:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E97AAAA902
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 03:06:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B77043BBFA6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 01:05:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ABD94A42DA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 01:05:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78058359626;
-	Mon,  5 May 2025 22:42:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D53A3589C3;
+	Mon,  5 May 2025 22:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UN4ror8P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YoDW5HGJ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0870527D795;
-	Mon,  5 May 2025 22:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6985B2989B9;
+	Mon,  5 May 2025 22:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746484924; cv=none; b=gAd3jzdsC4nb3goOzOZwVEo9AJbxbWs4OqCrZoRoBmIgnJ3Fa8xOwlyc5P0PzFQVPsOHWKUQ5FlDKelND4GObGyY4saOsu19rxTNU5nylmqBTzAZztvB80vcpRrnxvncbuUPQS61DUSv0R383uK+rSRtV097p/r1KqXtm9Uvwok=
+	t=1746484925; cv=none; b=hgxtxONA8qHQ2X8yewfv9RTBKSKi1V3jLmRjVPd+1iFbTlXyiPecMmYm0uVhJ4ArmQHpS+mq/NnRamV9d9H97GWWXLWgmj2CD63BZDkWAiBwhZC4WpAKUF4gFLm0REKV0fN9L9fmm3/1JJb9ZRNrFFWel0ZCmT0S7qcihvIX2bc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746484924; c=relaxed/simple;
-	bh=UUCnRpopfKDAiDjdI3Kod28pbXWm8cIO/K+X6MgCoVI=;
+	s=arc-20240116; t=1746484925; c=relaxed/simple;
+	bh=vwyJJuUHQHIUu8CW2ekQWNLRuX3fK4CBnipe7jy1lc4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iV6l29ciE9m7q0FPBjCpSfDlL+dOkixIrFd0Lqc1btBCOuLbwZxkzGzFUuo0PQ1qI7HD8cSEgHafC/b9FKMBIMaoC613O7jKYOFrYfgwdIeXcM9uKnMdWCdV1Y5PCsXFCdcYRyGllfl2zUgkbl9i9vP5dEXV7T00D3zPw/ESW7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UN4ror8P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07A8EC4CEEF;
-	Mon,  5 May 2025 22:42:02 +0000 (UTC)
+	 MIME-Version; b=C1VRPloR/Yslx2/lB5e70MW3HU4KER4/bv+lkTLaeDUF8/b+jKsxc1xy9B2fJSNf/yGzXn4AIyU8p+rglJA++lmUI71K2li+MttH5suatiuCQMixvnfwCd7SpxomoWsYCBBZqSLydW4J3xx06bZnL17MhoQIS1w/sWQ8yb4aMLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YoDW5HGJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D0C5C4CEEE;
+	Mon,  5 May 2025 22:42:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746484923;
-	bh=UUCnRpopfKDAiDjdI3Kod28pbXWm8cIO/K+X6MgCoVI=;
+	s=k20201202; t=1746484925;
+	bh=vwyJJuUHQHIUu8CW2ekQWNLRuX3fK4CBnipe7jy1lc4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UN4ror8PjpjlQAlg5OYyk/JSIqMwqmkWepNpfhf+AyCKfyAw05+82xq4jEhSKV+ee
-	 VS9o55i+6sFRa3z1tOTmLuku8ha25Gif36uM/jxkfu6z5BRLi4cxl1s30mPxja4OnZ
-	 YTto96tHAxcZADHZuxj6XLS/zY4eGJpamZNC+dVmnKW4HIx9rCUyVKZCX+1QKfF6H2
-	 bptxOyLyS8W0bu9Uq+3n6vnHGVdPC27IZkyfenB4B12/zSKJWuwkijR07b8JD4zjgS
-	 eLsgagb/6jIR9RLmKB7vi+y1bkjyNIW5wZXNjROddX+iYD+YgSnOU7SlVrZ+iEjSlm
-	 mTt/VjXOxE+aQ==
+	b=YoDW5HGJHhWz9EXSbayOxWdFmnCe5ShXFaQBpq2cnvUpD9YMZYsxUCmuF7aFuyawy
+	 ZbfIHjWwGwTRFvJdulceGOKKXszoGzbSZfrVxjI3B9H0jKRH085ycm9ickbgW/4M+H
+	 hov4S2BpTNsT80RGpC1pdpLi1STvlPre23r3FU8lsDLxDBFJGJI8leQUWLJX+JE4XX
+	 doJTxWY7dknsK3vQCfbqS6+7qjY5i8emo2lIqFdzeIRIsn/IEHGsYm/WBMEwHUvxfz
+	 BeoRcLmnLAuPniRUei8c461TdsubrzLzB1uGi6suov0EI77WscwernPusaBWRiqj43
+	 sHFUl8gFqlSsQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
+Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
 	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 079/486] btrfs: send: return -ENAMETOOLONG when attempting a path that is too long
-Date: Mon,  5 May 2025 18:32:35 -0400
-Message-Id: <20250505223922.2682012-79-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 080/486] btrfs: zoned: exit btrfs_can_activate_zone if BTRFS_FS_NEED_ZONE_FINISH is set
+Date: Mon,  5 May 2025 18:32:36 -0400
+Message-Id: <20250505223922.2682012-80-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505223922.2682012-1-sashal@kernel.org>
 References: <20250505223922.2682012-1-sashal@kernel.org>
@@ -67,43 +68,37 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.12.26
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-[ Upstream commit a77749b3e21813566cea050bbb3414ae74562eba ]
+[ Upstream commit 26b38e28162ef4ceb1e0482299820fbbd7dbcd92 ]
 
-When attempting to build a too long path we are currently returning
--ENOMEM, which is very odd and misleading. So update fs_path_ensure_buf()
-to return -ENAMETOOLONG instead. Also, while at it, move the WARN_ON()
-into the if statement's expression, as it makes it clear what is being
-tested and also has the effect of adding 'unlikely' to the statement,
-which allows the compiler to generate better code as this condition is
-never expected to happen.
+If BTRFS_FS_NEED_ZONE_FINISH is already set for the whole filesystem, exit
+early in btrfs_can_activate_zone(). There's no need to check if
+BTRFS_FS_NEED_ZONE_FINISH needs to be set if it is already set.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/send.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/btrfs/zoned.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index b1015f383f75e..c843b4aefb8ac 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -487,10 +487,8 @@ static int fs_path_ensure_buf(struct fs_path *p, int len)
- 	if (p->buf_len >= len)
- 		return 0;
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 2603c9d60fd21..d1167aeb07354 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -2326,6 +2326,9 @@ bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices, u64 flags)
+ 	if (!btrfs_is_zoned(fs_info))
+ 		return true;
  
--	if (len > PATH_MAX) {
--		WARN_ON(1);
--		return -ENOMEM;
--	}
-+	if (WARN_ON(len > PATH_MAX))
-+		return -ENAMETOOLONG;
- 
- 	path_len = p->end - p->start;
- 	old_buf_len = p->buf_len;
++	if (test_bit(BTRFS_FS_NEED_ZONE_FINISH, &fs_info->flags))
++		return false;
++
+ 	/* Check if there is a device with active zones left */
+ 	mutex_lock(&fs_info->chunk_mutex);
+ 	spin_lock(&fs_info->zone_active_bgs_lock);
 -- 
 2.39.5
 
