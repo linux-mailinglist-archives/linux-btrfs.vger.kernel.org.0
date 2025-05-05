@@ -1,59 +1,59 @@
-Return-Path: <linux-btrfs+bounces-13682-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13684-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83827AAA944
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 03:11:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74830AAA92A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 03:09:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50DDA3B74AB
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 01:06:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64F815A69DC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 01:04:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0385D356E6A;
-	Mon,  5 May 2025 22:42:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBD4A298996;
+	Mon,  5 May 2025 22:42:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jojne+jA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GMqtrAWi"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A132BDC2A;
-	Mon,  5 May 2025 22:41:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690962989BB;
+	Mon,  5 May 2025 22:41:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746484916; cv=none; b=WUevROlGEkoLfghng8zmeJj+yeq6FQpXPFNBJsGfTUR6Hp4pCrJ8osL4rp3LSl6MHiEuvCXsvqWFXeoxnLjqTzHnJO8ypvxY10OteYH1w4mosMQjQ3WhF1+EioIlgRbccKOJ6Ztqrv+HIIz3YGJWZI+u/ILuUgLsfTJ7QnAYXFo=
+	t=1746484919; cv=none; b=jUHlaJlhwCXKOTKA8MezN12pRXRifdwkZeD2zzFLQb9XO9kIO2Zoiuh5Pp+6szHkjaDgc2VAh1rRd4UvFPPMmlxUy7ygzK/QiAnRqGXisWu3pLDV6xn96pMWnxoTjGFh4DrZUDnR13qr5NAALHG7kt4eYm/s6JXoDG5+ZQxtXSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746484916; c=relaxed/simple;
-	bh=BhoQYbCT7yxDVoUIfbJ/rL3/Bt9SB0lRcyR75Sj7ypY=;
+	s=arc-20240116; t=1746484919; c=relaxed/simple;
+	bh=VNOKF8xI7e59n51/M8qZEz+BtT33P9azI3xUaNaek7I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IMVurJLWY//8NfqhU8LEIIXVoGAd8xgyXcZQIK8932M6Dnz5LO8DVGu/+IcYdDEFgB8cgdy/4SQlkTHac0aG3Lz/k18SBb7ODHn+YjpcMmXM3adXkQsADHGFrBU+hRJhMQz7ALaMZHF/D9weBVUQvQ2XXnxyayr60rafX0fV8D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jojne+jA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A967C4CEE4;
-	Mon,  5 May 2025 22:41:55 +0000 (UTC)
+	 MIME-Version; b=HK8LklfcTAWGlOsmqj91BRI3D20YWuogPcY+TBrRMMjQqwFotPapZLattcuhGkFC6kMABDiR1ut1WXkcG/pTbUAhMD2NIWt7wnOvp0/eGwox+1+y2JGDw0nIHj6eemive2zve+W5JidQbYUHbHSeFrkXrw2pkBStRPkeFfS5rIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GMqtrAWi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4395C4CEEF;
+	Mon,  5 May 2025 22:41:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746484916;
-	bh=BhoQYbCT7yxDVoUIfbJ/rL3/Bt9SB0lRcyR75Sj7ypY=;
+	s=k20201202; t=1746484918;
+	bh=VNOKF8xI7e59n51/M8qZEz+BtT33P9azI3xUaNaek7I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Jojne+jAJdUCfNAiRUSPYd1Jx4he6reqjamT7tQlWL+JLTt5yjbnHkFtMcNMCVl5j
-	 egBrB0JIdRe1oQIDke8kOrP3BZfvt1QGQPPqV72vIpSkGaWzs5/bKIXFDKlqtlkuDi
-	 h3gh2Ae6shw85NBjTXLd3PkJ4ipXvVXeH0Oqa3NHYFMVH9oEa5OEwbt5bvBUd994nH
-	 UF9AceCmnNLgYiPdzP4nx9yBTGezgJxg21gQ9eXhvgh5jvWmOGqGdufbX8Ez3htcx5
-	 KhVhjU8fOQQtHt7QlXNYguie3IMpsfN23++YTJLXYSFRsTPbtF578fP8c0Or92s/Vl
-	 eWUwjExuSL1qg==
+	b=GMqtrAWiWmVtO+qEVj9UBeHTOnSRlvTX9Zq28RR2blH7tS6G0/MkKLcMhT3SxO0bM
+	 9Ox6FrlZdQTOyz0DLdbx3lJlvj+eQKYm8zcAn+C3wRnl6Ka+IC0akUnc5j+3L5J6Qy
+	 IdM+9O94GMO78jX4rYzincEzFMYvZbF8NJaOy0BEoWoQiK7Gd2zyO19ARSiDFZ7bHI
+	 lZRX7diEYxZOCAFX1fWmhVh0BTGbY/4nzEpZbXXNDM0EGginovV5n6W6SlF/IIc/Ls
+	 84KqAJOUUEpyhie3Amd5H5FiH7BL+xMNlPY5h8iFnxq7Pz9SgTnlxsDMyYKn5MSM4Y
+	 cBClaxOHGG1QQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Qu Wenruo <wqu@suse.com>,
-	Filipe Manana <fdmanana@suse.com>,
+Cc: Filipe Manana <fdmanana@suse.com>,
 	David Sterba <dsterba@suse.com>,
+	Qu Wenruo <wqu@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 074/486] btrfs: run btrfs_error_commit_super() early
-Date: Mon,  5 May 2025 18:32:30 -0400
-Message-Id: <20250505223922.2682012-74-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 075/486] btrfs: fix non-empty delayed iputs list on unmount due to async workers
+Date: Mon,  5 May 2025 18:32:31 -0400
+Message-Id: <20250505223922.2682012-75-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505223922.2682012-1-sashal@kernel.org>
 References: <20250505223922.2682012-1-sashal@kernel.org>
@@ -68,96 +68,82 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.12.26
 Content-Transfer-Encoding: 8bit
 
-From: Qu Wenruo <wqu@suse.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit df94a342efb451deb0e32b495d1d6cd4bb3a1648 ]
+[ Upstream commit cda76788f8b0f7de3171100e3164ec1ce702292e ]
 
-[BUG]
-Even after all the error fixes related the
-"ASSERT(list_empty(&fs_info->delayed_iputs));" in close_ctree(), I can
-still hit it reliably with my experimental 2K block size.
+At close_ctree() after we have ran delayed iputs either explicitly through
+calling btrfs_run_delayed_iputs() or later during the call to
+btrfs_commit_super() or btrfs_error_commit_super(), we assert that the
+delayed iputs list is empty.
 
-[CAUSE]
-In my case, all the error is triggered after the fs is already in error
-status.
+We have (another) race where this assertion might fail because we have
+queued an async write into the fs_info->workers workqueue. Here's how it
+happens:
 
-I find the following call trace to be the cause of race:
+1) We are submitting a data bio for an inode that is not the data
+   relocation inode, so we call btrfs_wq_submit_bio();
 
-           Main thread                       |     endio_write_workers
----------------------------------------------+---------------------------
-close_ctree()                                |
-|- btrfs_error_commit_super()                |
-|  |- btrfs_cleanup_transaction()            |
-|  |  |- btrfs_destroy_all_ordered_extents() |
-|  |     |- btrfs_wait_ordered_roots()       |
-|  |- btrfs_run_delayed_iputs()              |
-|                                            | btrfs_finish_ordered_io()
-|                                            | |- btrfs_put_ordered_extent()
-|                                            |    |- btrfs_add_delayed_iput()
-|- ASSERT(list_empty(delayed_iputs))         |
-   !!! Triggered !!!
+2) btrfs_wq_submit_bio() submits a work for the fs_info->workers queue
+   that will run run_one_async_done();
 
-The root cause is that, btrfs_wait_ordered_roots() only wait for
-ordered extents to finish their IOs, not to wait for them to finish and
-removed.
+3) We enter close_ctree(), flush several work queues except
+   fs_info->workers, explicitly run delayed iputs with a call to
+   btrfs_run_delayed_iputs() and then again shortly after by calling
+   btrfs_commit_super() or btrfs_error_commit_super(), which also run
+   delayed iputs;
 
-[FIX]
-Since btrfs_error_commit_super() will flush and wait for all ordered
-extents, it should be executed early, before we start flushing the
-workqueues.
+4) run_one_async_done() is executed in the work queue, and because there
+   was an IO error (bio->bi_status is not 0) it calls btrfs_bio_end_io(),
+   which drops the final reference on the associated ordered extent by
+   calling btrfs_put_ordered_extent() - and that adds a delayed iput for
+   the inode;
 
-And since btrfs_error_commit_super() now runs early, there is no need to
-run btrfs_run_delayed_iputs() inside it, so just remove the
-btrfs_run_delayed_iputs() call from btrfs_error_commit_super().
+5) At close_ctree() we find that after stopping the cleaner and
+   transaction kthreads the delayed iputs list is not empty, failing the
+   following assertion:
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+      ASSERT(list_empty(&fs_info->delayed_iputs));
+
+Fix this by flushing the fs_info->workers workqueue before running delayed
+iputs at close_ctree().
+
+David reported this when running generic/648, which exercises IO error
+paths by using the DM error table.
+
+Reported-by: David Sterba <dsterba@suse.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/disk-io.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ fs/btrfs/disk-io.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 19e5f8eaae772..e0e740e4d7c75 100644
+index e0e740e4d7c75..147c50ef912ac 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -4254,6 +4254,14 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	/* clear out the rbtree of defraggable inodes */
- 	btrfs_cleanup_defrag_inodes(fs_info);
+@@ -4282,6 +4282,19 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 	 */
+ 	btrfs_flush_workqueue(fs_info->delalloc_workers);
  
 +	/*
-+	 * Handle the error fs first, as it will flush and wait for all ordered
-+	 * extents.  This will generate delayed iputs, thus we want to handle
-+	 * it first.
++	 * We can have ordered extents getting their last reference dropped from
++	 * the fs_info->workers queue because for async writes for data bios we
++	 * queue a work for that queue, at btrfs_wq_submit_bio(), that runs
++	 * run_one_async_done() which calls btrfs_bio_end_io() in case the bio
++	 * has an error, and that later function can do the final
++	 * btrfs_put_ordered_extent() on the ordered extent attached to the bio,
++	 * which adds a delayed iput for the inode. So we must flush the queue
++	 * so that we don't have delayed iputs after committing the current
++	 * transaction below and stopping the cleaner and transaction kthreads.
 +	 */
-+	if (unlikely(BTRFS_FS_ERROR(fs_info)))
-+		btrfs_error_commit_super(fs_info);
++	btrfs_flush_workqueue(fs_info->workers);
 +
  	/*
- 	 * Wait for any fixup workers to complete.
- 	 * If we don't wait for them here and they are still running by the time
-@@ -4343,9 +4351,6 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 			btrfs_err(fs_info, "commit super ret %d", ret);
- 	}
- 
--	if (BTRFS_FS_ERROR(fs_info))
--		btrfs_error_commit_super(fs_info);
--
- 	kthread_stop(fs_info->transaction_kthread);
- 	kthread_stop(fs_info->cleaner_kthread);
- 
-@@ -4468,10 +4473,6 @@ static void btrfs_error_commit_super(struct btrfs_fs_info *fs_info)
- 	/* cleanup FS via transaction */
- 	btrfs_cleanup_transaction(fs_info);
- 
--	mutex_lock(&fs_info->cleaner_mutex);
--	btrfs_run_delayed_iputs(fs_info);
--	mutex_unlock(&fs_info->cleaner_mutex);
--
- 	down_write(&fs_info->cleanup_work_sem);
- 	up_write(&fs_info->cleanup_work_sem);
- }
+ 	 * When finishing a compressed write bio we schedule a work queue item
+ 	 * to finish an ordered extent - btrfs_finish_compressed_write_work()
 -- 
 2.39.5
 
