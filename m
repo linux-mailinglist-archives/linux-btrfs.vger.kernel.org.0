@@ -1,73 +1,125 @@
-Return-Path: <linux-btrfs+bounces-13714-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13715-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90551AABA5C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 09:17:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A982AABFCF
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 11:38:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4C2C189F47C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 07:13:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D738507BDC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 09:38:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC0520E71D;
-	Tue,  6 May 2025 04:47:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABE77270EB8;
+	Tue,  6 May 2025 09:37:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NffFA/7L"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70FA072629;
-	Tue,  6 May 2025 04:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCBF5272E60
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 May 2025 09:37:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746506850; cv=none; b=nJ8fUcC/4MjU7WrEbKFw0y4gUPU6cOS5VORXSFUiRLjOoWh6gG6qhQQofwsYhzW9MNEEf4eKbnpGH6uddUi5JcUlEwpJGNaNT1g4oTJ7uoDH6/kXvjk2Nh/j1n2UUVtYxVzb19va3De2bqGxSu1aXMigSvJPkxb3IsTPYbXS5h4=
+	t=1746524224; cv=none; b=AJeKzPdbzt1UkaxHc/L2djgn5KJfPS2a/+WOcSBZe3MUaAAm1AW0XDGVjIE+EHM1qV5L5DzW7TL6Ta6w4qNViUQOGgeBhZs02nK3bdI6xFtHiw56RTaa7Vgu3lDi0fW5kcunw0b6vgB/6hBXVof2szCgZPo/wR/BXaBo+usjYfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746506850; c=relaxed/simple;
-	bh=6yNFM7ngHYeSSeoUicHGAyGghCXiMKa68OxABeUigu0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uYdS3orM6eaUl3WuoiPDXhWqyHLeboDYP4/WK2V0GLhvpWx7FJGNeqh25NJccQMuhpPge1Z4U5KEIar4lKtihEiR7nxYKyvElA83UJ+P9NwxSYszd6YT1MOsJstAGOaP2tvnjTEAzhSCUG9t/gQWCq1s98XzELw1t0b2ItRa9Aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 020CC67373; Tue,  6 May 2025 06:47:24 +0200 (CEST)
-Date: Tue, 6 May 2025 06:47:23 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: linux-block@vger.kernel.org, "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Jack Wang <jinpu.wang@ionos.com>, Coly Li <colyli@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Carlos Maiolino <cem@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Johannes Thumshirn <jth@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@kernel.org>, slava@dubeyko.com,
-	glaubitz@physik.fu-berlin.de, frank.li@vivo.com,
-	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Subject: Re: add more bio helpers v2
-Message-ID: <20250506044723.GA27656@lst.de>
-References: <20250430212159.2865803-1-hch@lst.de>
+	s=arc-20240116; t=1746524224; c=relaxed/simple;
+	bh=qOiexQ/2jI3FvkKxeohCrO+0mQDIzwCnfLrg1HFKBdI=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Q9xwlPgaaKGWJkurFfMiSdiQm9LeB4nnVOe4D6xoCdUCtNwy2LtNTA902Hx+ZUq8LicdOYmYsa5QaRMxp0ThwGM2y8KfoypOwHHekmKJeoyYkFm8ZNImEWm0C1zn0YfmjvqsSAKpC1Rm8Jn7UNWNei2Kj6EddR/i1sDR441+lM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NffFA/7L; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1746524220;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UAL94wTpvtO/Lxptme/YwkD4oR3pyZDYuyoU5rE6q7w=;
+	b=NffFA/7LUmxcfqAHQwddZzztl7XA9lypJaXKG1fbahGfSl89YfhPPM11FeeyXrnUp2iUwM
+	ajd6y2pBVEcNhCJXOdkiX3u9lxIsuHL2aIMa8tVF/8+43pARz4UaoPtjfubfFpSP14wZkA
+	7ChOosw945dy47YrTQ4F+EkDgOzEG64=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-677-3EIRxZwJPc-7FI1rkdaFGQ-1; Tue,
+ 06 May 2025 05:36:57 -0400
+X-MC-Unique: 3EIRxZwJPc-7FI1rkdaFGQ-1
+X-Mimecast-MFC-AGG-ID: 3EIRxZwJPc-7FI1rkdaFGQ_1746524214
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 11AD218009A4;
+	Tue,  6 May 2025 09:36:54 +0000 (UTC)
+Received: from [10.22.80.45] (unknown [10.22.80.45])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D07601956096;
+	Tue,  6 May 2025 09:36:45 +0000 (UTC)
+Date: Tue, 6 May 2025 11:36:39 +0200 (CEST)
+From: Mikulas Patocka <mpatocka@redhat.com>
+To: Christoph Hellwig <hch@lst.de>
+cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, 
+    "Md. Haris Iqbal" <haris.iqbal@ionos.com>, 
+    Jack Wang <jinpu.wang@ionos.com>, Coly Li <colyli@kernel.org>, 
+    Kent Overstreet <kent.overstreet@linux.dev>, 
+    Mike Snitzer <snitzer@kernel.org>, Chris Mason <clm@fb.com>, 
+    Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+    Andreas Gruenbacher <agruenba@redhat.com>, 
+    Carlos Maiolino <cem@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, 
+    Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, 
+    "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>, 
+    slava@dubeyko.com, glaubitz@physik.fu-berlin.de, frank.li@vivo.com, 
+    linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev, 
+    linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev, 
+    linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+    linux-pm@vger.kernel.org, Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH 13/19] dm-bufio: use bio_add_virt_nofail
+In-Reply-To: <20250430212159.2865803-14-hch@lst.de>
+Message-ID: <c3120875-2f14-19ec-504b-4ea55279a386@redhat.com>
+References: <20250430212159.2865803-1-hch@lst.de> <20250430212159.2865803-14-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250430212159.2865803-1-hch@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=US-ASCII
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-This has maintaner ACKs for everything but the two dm and the one
-btrfs patch one.  Maybe we can queue up the series minus those three
-patches and then deal with them later?
+
+
+On Wed, 30 Apr 2025, Christoph Hellwig wrote:
+
+> Convert the __bio_add_page(..., virt_to_page(), ...) pattern to the
+> bio_add_virt_nofail helper implementing it.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
+Acked-by: Mikulas Patocka <mpatocka@redhat.com>
+
+> ---
+>  drivers/md/dm-bufio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/md/dm-bufio.c b/drivers/md/dm-bufio.c
+> index 9c8ed65cd87e..e82cd5dc83ce 100644
+> --- a/drivers/md/dm-bufio.c
+> +++ b/drivers/md/dm-bufio.c
+> @@ -1362,7 +1362,7 @@ static void use_bio(struct dm_buffer *b, enum req_op op, sector_t sector,
+>  	ptr = (char *)b->data + offset;
+>  	len = n_sectors << SECTOR_SHIFT;
+>  
+> -	__bio_add_page(bio, virt_to_page(ptr), len, offset_in_page(ptr));
+> +	bio_add_virt_nofail(bio, ptr, len);
+>  
+>  	submit_bio(bio);
+>  }
+> -- 
+> 2.47.2
+> 
+> 
 
 
