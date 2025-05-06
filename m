@@ -1,79 +1,83 @@
-Return-Path: <linux-btrfs+bounces-13730-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13731-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A34BEAACB2D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 18:38:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32C72AACB3F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 18:43:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C841B9823B5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 16:37:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA0C41C070DB
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 16:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3899A284B32;
-	Tue,  6 May 2025 16:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7220C28468D;
+	Tue,  6 May 2025 16:43:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L2jEwtMD"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="sxooxhdr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75BCC2820AB;
-	Tue,  6 May 2025 16:37:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E6C27FD52;
+	Tue,  6 May 2025 16:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746549462; cv=none; b=mR155DBYK5OqClh8CHlHAtKCEygSfyVrF1UVz7L+gNxrpuFeWIYS2XPJZOPH9MSQTzpn7+Q+68IV6HA330+1pHE+3nGeULhtfPnxCFjvLwKoTEyhpoaijbERxs9zAgCDJL6IoKgizrFhVT95I1pEuWSMvf7GrQmcjpjaE7oo01s=
+	t=1746549795; cv=none; b=eKj9hNWAUCBEValjvaiH4XiwKV7DTTxQVfxZt/F0SNaij7WxLVjg1WtxTLlVeW3RYqOyQMP1WLgmVP6zkO4kxj5GXPT5Ny+eUwevdeq4E/uu8kpI7l7NAosa4ZrwZFZ8vT1hxBHTmlGd1C2jWP1mfcNeF3VXdhmYJVdIVQwt1Y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746549462; c=relaxed/simple;
-	bh=J9GWLqE0n4MqqFEJBt0JLJMcBp4u1LJMriizGxzwebw=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=WvWN88SHhRBJZbA1KCb7QG1sLmn9ySC/10YrhgsSSIsAEPWtj6zYO6j64KkdJE4+u7JNrlioCGF6zNnCxbwvDMywa5QJurdI0hAAW8G6LZ63yLb6qLP8vwzbISfapzlLoEH86bgrlcBqEjo7FSD23skrAJ5u5fYquqZ1eWVtRog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L2jEwtMD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 585E2C4CEE4;
-	Tue,  6 May 2025 16:37:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746549462;
-	bh=J9GWLqE0n4MqqFEJBt0JLJMcBp4u1LJMriizGxzwebw=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=L2jEwtMD0kMO9WIXzIgYHcQKF1FeZHfDEDT9oOwkk3SiIZwGJnQnL+bPy0i7tvDRC
-	 VPK829YSF6EGgINFKtMlMX8Uq3g0e64g+VuJjqkWyjbddo7Uh7HPJOvlTfaaDBCYIo
-	 HelLaUqa3uk1f0Sa8cCVLx7ABahb/5hE6/tN3f/aGONs+t67UJyQZ94OjVV0YPn6nO
-	 Geeu7pykludSsQYSUOfhIMEsIo9c7AP2pMUUI+LhzMfZhon6EBPR4lC09tEOIx1Qgc
-	 j52GoKwBKFLlfjX/PHWPQ5jIcm5D3M8ps4oKoDzIZh2hHr1M6PliHYoekvu2jcuuL4
-	 ThEkpuuCntzGQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE114380CFD7;
-	Tue,  6 May 2025 16:38:22 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.15-rc6
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1746539430.git.dsterba@suse.com>
-References: <cover.1746539430.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1746539430.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.15-rc5-tag
-X-PR-Tracked-Commit-Id: 38e541051e1d19e8b1479a6af587a7884653e041
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0d8d44db295ccad20052d6301ef49ff01fb8ae2d
-Message-Id: <174654950116.1583977.276059746536554841.pr-tracker-bot@kernel.org>
-Date: Tue, 06 May 2025 16:38:21 +0000
-To: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1746549795; c=relaxed/simple;
+	bh=Jh3rWhQ9pQIpNUSGw0L7Rz90Jnyxe1SsLvOCkSeCwQw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KYXpW6gj4ZVDdJt3VTJxTwo6jmtCf7dg6//lKF51R6jN95YjuHoLheTRQAYJoKLZ0mzvzTLba3D+wxHLis+759EeiFZV9B59b8NckQYd7ka2ZWZ+jmbp3ccRFLRhGV53EG2dJb7A1qg9s+W8Ux3N77kAtCSqr53KbOrcB4kDS9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=sxooxhdr; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=8LuCH0xhKs0sBheYldxQy35hKwUJMVNdfKQhXZVJI64=; b=sxooxhdrKr2sE4I68IIbrIyyUJ
+	BIBA1x50K7DrIkbJhAvaaupsZuTFtQ5631/CyjMrHOlFsXx00WthwF2JugZOuOl2z6fqjLy+mOvxD
+	3jQeWQ9tPWZoqBTIacEGUU2Nc5qa8L5mYPaakTvfCYCUDl2X3/Yi6Y6ChTylJX6ZAaBcAs9RorgLx
+	xiXQpYLbOWH0P7Ilg3Z9mthw5lfI4BtapEtdg1rkq/aFa8mANZey6ljq/AdzqVuW3AXIpg55gWdh3
+	Q2ccyEZVNt9GTNgPV4wRdB2yxTtMur69wAjF9fw4U76HjwbxcaBw5D09fZbCBykUfdln8KwS5XTm6
+	8yH8TrAg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uCLNu-0000000Ba2X-250z;
+	Tue, 06 May 2025 16:43:10 +0000
+Date: Tue, 6 May 2025 17:43:10 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Klara Modin <klarasmodin@gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [RFC][PATCH] btrfs_get_tree_subvol(): switch from fc_mount() to
+ vfs_create_mount()
+Message-ID: <20250506164310.GM2023217@ZenIV>
+References: <20250505030345.GD2023217@ZenIV>
+ <3qdz7ntes5ufac7ldgfsrnvotk4izalmtdf7opqox5mk3kpxus@gabtxt27uwah>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3qdz7ntes5ufac7ldgfsrnvotk4izalmtdf7opqox5mk3kpxus@gabtxt27uwah>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-The pull request you sent on Tue,  6 May 2025 16:06:18 +0200:
+On Tue, May 06, 2025 at 03:36:03PM +0200, Klara Modin wrote:
+> Hi,
+> 
+> On 2025-05-05 04:03:45 +0100, Al Viro wrote:
+> > it's simpler to do btrfs_reconfigure_for_mount() right after vfs_get_tree() -
+> > no need to mess with ->s_umount.
+> > 
+> > Objections?
+> >     
+> 
+> I hit an oops on today's next-20250506 which seems to point here, and
+> reverting makes it go away.
+> 
+> Let me know if there's anything else you need.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.15-rc5-tag
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0d8d44db295ccad20052d6301ef49ff01fb8ae2d
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+.config and toolchain information would be useful...
 
