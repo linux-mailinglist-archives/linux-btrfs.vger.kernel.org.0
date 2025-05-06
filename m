@@ -1,426 +1,79 @@
-Return-Path: <linux-btrfs+bounces-13729-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13730-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A07B4AACB13
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 18:33:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A34BEAACB2D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 18:38:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A60616A99B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 16:33:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C841B9823B5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 May 2025 16:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24BC62836A0;
-	Tue,  6 May 2025 16:33:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3899A284B32;
+	Tue,  6 May 2025 16:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="fpfMwkBC";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Hpunzqdq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L2jEwtMD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b3-smtp.messagingengine.com (fout-b3-smtp.messagingengine.com [202.12.124.146])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D13181917D0
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 May 2025 16:33:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75BCC2820AB;
+	Tue,  6 May 2025 16:37:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746549231; cv=none; b=Tz53Yowpgnsn6oFTTi+Q0ey1218jhNQxspmqiiwCHZs0bzGLfapBLSrcZqiyy14/4dd8wNsBMABN7hYf2JtVBzitX+gDoR7SSFFWDwwXiMbSw1mTfbgPAzrAxZVvSohYVCFApJqLs/rjRR5KAxjk4U1N03iOAiAF+McL/9pvb9c=
+	t=1746549462; cv=none; b=mR155DBYK5OqClh8CHlHAtKCEygSfyVrF1UVz7L+gNxrpuFeWIYS2XPJZOPH9MSQTzpn7+Q+68IV6HA330+1pHE+3nGeULhtfPnxCFjvLwKoTEyhpoaijbERxs9zAgCDJL6IoKgizrFhVT95I1pEuWSMvf7GrQmcjpjaE7oo01s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746549231; c=relaxed/simple;
-	bh=2opOntoMKozJ5Vqw6/R10IfY9ohvQ4HSSiO1sdDtXE8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VdYpGotHHA0AB1rIEM5P+Eb+kbRho8rChfwp8hNbhT0aI1fsKEeJ0m4vui4U4JbcHf6Ei6OIGkwK9otH5K9bkCfunA4pn6KkQBrK3i7lVPZTuECljwgzigg4BNLVqKMJZ0n0ZEVICYgr84qvGuXA2ED9Ku6b+5HY5cT3amclh4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=fpfMwkBC; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Hpunzqdq; arc=none smtp.client-ip=202.12.124.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfout.stl.internal (Postfix) with ESMTP id A79231140206;
-	Tue,  6 May 2025 12:33:46 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Tue, 06 May 2025 12:33:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1746549226; x=1746635626; bh=hAyoWRaMxk
-	+/2nApnt9DoUMQ4gCUol3P4950NFAsEl8=; b=fpfMwkBClXjdFYykne/5q58HPN
-	85aPwJhtdTJehnIQG7Dm+fXP0kSWaKt8Xmg45PQ6EhIswHMIQjjTdbCMNJrtbfTJ
-	1LAqTeGHeuUKitklvbk0Q4Pz69Tl2MEa/6TbIfJonPGUFk8T+UnDSrGGtn0qVMyH
-	d34aMk66OvgQAR2lkqAhOIVxLOfAb8HYCmW6slpIoKcpy7eLkToKmNgB1qSgAH00
-	hBPwQ0+VJF8IqDOtG8IkZMVDRX3tyWI3Mns8RBPoQ0R840iTCPF8q2N94a2QERIv
-	LKotYu4NS332K3Zr/4T5iJDpsy7ILn1k3P6Pj+0ceC8BpUXRONZOUO9ZJ9gQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1746549226; x=1746635626; bh=hAyoWRaMxk+/2nApnt9DoUMQ4gCUol3P495
-	0NFAsEl8=; b=HpunzqdqC/TTYhoKyePIpf135PA5CgeYKE3/Klgo8Uw1i5ASwPC
-	mh8ll9b4D4UK+F+Q+zJemyTyPCebiPdRqrpiy+ulQXELlgkB0aAVG7Kc3b/tSjzX
-	jvQa08JA/O9S7W91u/MtW860aLWcLahUvhnbu16rnjOTtLZ1W9JBRxv+in7wpJMk
-	eVUr5vWYLcTnq2+4ALOXXxc05OVaysDTTpzxcZdLgC565hZALy/Q7lecx3T7jxeY
-	CwVpb3xNn7KHw6/fmhrFlYkOmkNecJkpfnLnpXr7mbLFZ1qe5CLzXzNIg4YWOuOE
-	Tuo0u/v23x/xbW/IMCXVFCEkzy0Y13Aqt/w==
-X-ME-Sender: <xms:6TkaaP3S5xUEP3W0wI8cFIdSgjsvFsOipw5RFbmTgZq0hobFFvpMsA>
-    <xme:6TkaaOE_dsoKt72SyCjZtqZrpBynu1cpp3He4UqMNbvtyqwXiFQmYPDS3lAgYQQ2b
-    SblOBiwyCJVgeIy4xo>
-X-ME-Received: <xmr:6TkaaP6wiWqk5Ruj2zY0DXTLpiBxcPLUYDC69wwsZHZZ5RhzvJkLmP-MNE_9lhBr8yXh4wTBe05u7UzsxNLCMOXXLEg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvkeeggeejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpeffhf
-    fvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhho
-    vhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephedthfevgffhtd
-    evgffhlefhgfeuueegtdevudeiheeiheetleeghedvfeegfeegnecuffhomhgrihhnpehk
-    vghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepfedpmhhouggv
-    pehsmhhtphhouhhtpdhrtghpthhtohepnhgvvghlgiesshhushgvrdgtohhmpdhrtghpth
-    htoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphht
-    thhopehkvghrnhgvlhdqthgvrghmsehfsgdrtghomh
-X-ME-Proxy: <xmx:6TkaaE38r8RIujdSOOH5-N2YAk40ajMHxzH4GdEmU873Hv--Ff5dZA>
-    <xmx:6TkaaCFf23QTHscOTEbn2qSJKeREYLUu5UxRFA7gSDoGqoVv7Tc2jA>
-    <xmx:6TkaaF_DMar25-uvzq4cUteNq13Fp_luVG8gigqViO16AlU0Mmvp_A>
-    <xmx:6TkaaPka6Rwsels1-o-apQZQj2UNoYpHDQPJMV2lwu_4enjuJsfZCQ>
-    <xmx:6jkaaNE8ip2z_dcHl5lNPG-AYNgVnnB6XIqkgItKnbWMo4ERJq5FWWVm>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 6 May 2025 12:33:45 -0400 (EDT)
-Date: Tue, 6 May 2025 09:34:29 -0700
-From: Boris Burkov <boris@bur.io>
-To: Daniel Vacek <neelx@suse.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v4] btrfs: fix broken drop_caches on extent buffer folios
-Message-ID: <20250506163429.GA574131@zen.localdomain>
-References: <b1fd74c27ccbc9f967f68e17a443c50411987e19.1746481493.git.boris@bur.io>
- <CAPjX3FdHRgRU4u+n2=JsEWz-yDghJ6xVjoFQtLPgNupVgE0etA@mail.gmail.com>
+	s=arc-20240116; t=1746549462; c=relaxed/simple;
+	bh=J9GWLqE0n4MqqFEJBt0JLJMcBp4u1LJMriizGxzwebw=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=WvWN88SHhRBJZbA1KCb7QG1sLmn9ySC/10YrhgsSSIsAEPWtj6zYO6j64KkdJE4+u7JNrlioCGF6zNnCxbwvDMywa5QJurdI0hAAW8G6LZ63yLb6qLP8vwzbISfapzlLoEH86bgrlcBqEjo7FSD23skrAJ5u5fYquqZ1eWVtRog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L2jEwtMD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 585E2C4CEE4;
+	Tue,  6 May 2025 16:37:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746549462;
+	bh=J9GWLqE0n4MqqFEJBt0JLJMcBp4u1LJMriizGxzwebw=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=L2jEwtMD0kMO9WIXzIgYHcQKF1FeZHfDEDT9oOwkk3SiIZwGJnQnL+bPy0i7tvDRC
+	 VPK829YSF6EGgINFKtMlMX8Uq3g0e64g+VuJjqkWyjbddo7Uh7HPJOvlTfaaDBCYIo
+	 HelLaUqa3uk1f0Sa8cCVLx7ABahb/5hE6/tN3f/aGONs+t67UJyQZ94OjVV0YPn6nO
+	 Geeu7pykludSsQYSUOfhIMEsIo9c7AP2pMUUI+LhzMfZhon6EBPR4lC09tEOIx1Qgc
+	 j52GoKwBKFLlfjX/PHWPQ5jIcm5D3M8ps4oKoDzIZh2hHr1M6PliHYoekvu2jcuuL4
+	 ThEkpuuCntzGQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE114380CFD7;
+	Tue,  6 May 2025 16:38:22 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 6.15-rc6
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1746539430.git.dsterba@suse.com>
+References: <cover.1746539430.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1746539430.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.15-rc5-tag
+X-PR-Tracked-Commit-Id: 38e541051e1d19e8b1479a6af587a7884653e041
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 0d8d44db295ccad20052d6301ef49ff01fb8ae2d
+Message-Id: <174654950116.1583977.276059746536554841.pr-tracker-bot@kernel.org>
+Date: Tue, 06 May 2025 16:38:21 +0000
+To: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPjX3FdHRgRU4u+n2=JsEWz-yDghJ6xVjoFQtLPgNupVgE0etA@mail.gmail.com>
 
-On Tue, May 06, 2025 at 02:11:37PM +0200, Daniel Vacek wrote:
-> On Mon, 5 May 2025 at 23:48, Boris Burkov <boris@bur.io> wrote:
-> >
-> > The (correct) commit e41c81d0d30e ("mm/truncate: Replace page_mapped()
-> > call in invalidate_inode_page()") replaced the page_mapped(page) check
-> > with a refcount check. However, this refcount check does not work as
-> > expected with drop_caches for btrfs's metadata pages.
-> >
-> > Btrfs has a per-sb metadata inode with cached pages, and when not in
-> > active use by btrfs, they have a refcount of 3. One from the initial
-> > call to alloc_pages(), one (nr_pages == 1) from filemap_add_folio(), and
-> > one from folio_attach_private(). We would expect such pages to get dropped
-> > by drop_caches. However, drop_caches calls into mapping_evict_folio() via
-> > mapping_try_invalidate() which gets a reference on the folio with
-> > find_lock_entries(). As a result, these pages have a refcount of 4, and
-> > fail this check.
-> >
-> > For what it's worth, such pages do get reclaimed under memory pressure,
-> > so I would say that while this behavior is surprising, it is not really
-> > dangerously broken.
-> >
-> > When I asked the mm folks about the expected refcount in this case, I
-> > was told that the correct thing to do is to donate the refcount from the
-> > original allocation to the page cache after inserting it.
-> > https://lore.kernel.org/linux-mm/ZrwhTXKzgDnCK76Z@casper.infradead.org/
-> >
-> > Therefore, attempt to fix this by adding a put_folio() to the critical
-> > spot in alloc_extent_buffer() where we are sure that we have really
-> > allocated and attached new pages. We must also adjust
-> > folio_detach_private() to properly handle being the last reference to the
-> > folio and not do a use-after-free after folio_detach_private().
-> >
-> > extent_buffers allocated by clone_extent_buffer() and
-> > alloc_dummy_extent_buffer() are unmapped, so this transfer of ownership
-> > from allocation to insertion in the mapping does not apply to them.
-> > However, we can still folio_put() them safely once they are finished
-> > being allocated and have called folio_attach_private().
-> >
-> > Finally, removing the generic put_folio() for the allocation from
-> > btrfs_detach_extent_buffer_folios() means we need to be careful to do
-> > the appropriate put_folio() in allocation failure paths in
-> > alloc_extent_buffer(), clone_extent_buffer() and
-> > alloc_dummy_extent_buffer.
-> >
-> > Link: https://lore.kernel.org/linux-mm/ZrwhTXKzgDnCK76Z@casper.infradead.org/
-> > Tested-by: Klara Modin <klarasmodin@gmail.com>
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> > Note: Resending as V4 because of the convoluted history of this patch,
-> > the contributions from multiple reviewers/testers, and the non-trivial
-> > nature of the two merged patches.
-> >
-> > Changelog:
-> > v4:
-> > * merge Daniel Vacek's patch
-> >   "btrfs: put all allocated extent buffer folios in failure case"
-> >   which fixes the outstanding missing folio_put() calls on the partial
-> >   failure path of alloc_extent_buffer.
-> > v3:
-> > * call folio_put() before using extent_buffers allocated with
-> >   clone_extent_buffer() and alloc_dummy_extent_buffer() to get rid of
-> >   the UNMAPPED exception in btrfs_release_extent_buffer_folios().
-> > v2:
-> > * Used Filipe's suggestion to simplify detach_extent_buffer_folio and
-> >   lose the extra folio_get()/folio_put() pair
-> > * Noticed a memory leak causing failures in fstests on smaller vms.
-> >   Fixed a bug where I was missing a folio_put() for ebs that never got
-> >   their folios added to the mapping.
-> >
-> >
-> >  fs/btrfs/extent_io.c | 108 +++++++++++++++++++++++++------------------
-> >  1 file changed, 63 insertions(+), 45 deletions(-)
-> >
-> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > index cbaee10e2ca8..884adc4d4f9d 100644
-> > --- a/fs/btrfs/extent_io.c
-> > +++ b/fs/btrfs/extent_io.c
-> > @@ -2747,6 +2747,7 @@ static bool folio_range_has_eb(struct folio *folio)
-> >  static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct folio *folio)
-> >  {
-> >         struct btrfs_fs_info *fs_info = eb->fs_info;
-> > +       struct address_space *mapping = folio->mapping;
-> >         const bool mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
-> >
-> >         /*
-> > @@ -2754,11 +2755,11 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
-> >          * be done under the i_private_lock.
-> >          */
-> >         if (mapped)
-> > -               spin_lock(&folio->mapping->i_private_lock);
-> > +               spin_lock(&mapping->i_private_lock);
-> >
-> >         if (!folio_test_private(folio)) {
-> >                 if (mapped)
-> > -                       spin_unlock(&folio->mapping->i_private_lock);
-> > +                       spin_unlock(&mapping->i_private_lock);
-> >                 return;
-> >         }
-> >
-> > @@ -2777,7 +2778,7 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
-> >                         folio_detach_private(folio);
-> >                 }
-> >                 if (mapped)
-> > -                       spin_unlock(&folio->mapping->i_private_lock);
-> > +                       spin_unlock(&mapping->i_private_lock);
-> >                 return;
-> >         }
-> >
-> > @@ -2800,7 +2801,7 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
-> >         if (!folio_range_has_eb(folio))
-> >                 btrfs_detach_subpage(fs_info, folio, BTRFS_SUBPAGE_METADATA);
-> >
-> > -       spin_unlock(&folio->mapping->i_private_lock);
-> > +       spin_unlock(&mapping->i_private_lock);
-> >  }
-> >
-> >  /* Release all folios attached to the extent buffer */
-> > @@ -2815,9 +2816,6 @@ static void btrfs_release_extent_buffer_folios(const struct extent_buffer *eb)
-> >                         continue;
-> >
-> >                 detach_extent_buffer_folio(eb, folio);
-> > -
-> > -               /* One for when we allocated the folio. */
-> > -               folio_put(folio);
-> >         }
-> >  }
-> >
-> > @@ -2852,6 +2850,21 @@ static struct extent_buffer *__alloc_extent_buffer(struct btrfs_fs_info *fs_info
-> >         return eb;
-> >  }
-> >
-> > +/*
-> > + * For use in eb allocation error cleanup paths, as btrfs_release_extent_buffer()
-> > + * does not call folio_put(), and we need to set the folios to NULL so that
-> > + * btrfs_release_extent_buffer() will not detach them a second time.
-> > + */
-> > +static void cleanup_extent_buffer_folios(struct extent_buffer *eb)
-> > +{
-> > +       for (int i = 0; i < num_extent_folios(eb); i++) {
-> 
-> This is a nice cleanup and I like it. Though I think you need to
-> 
-> for (int i = 0, num_folios = num_extent_folios(eb); i < num_folios; i++) {
-> 
-> otherwise the second iteration compares i < 0 after eb->folios[0] is
-> set to NULL in the first iteration. This is where my v1 failed.
-> 
+The pull request you sent on Tue,  6 May 2025 16:06:18 +0200:
 
-Oh, wow. Thanks. Missed that as what went wrong in your first try.
-I really wish we had some code that actually hit these cases :)
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.15-rc5-tag
 
-Maybe time to try to write some unit tests.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/0d8d44db295ccad20052d6301ef49ff01fb8ae2d
 
-> > +               ASSERT(eb->folios[i]);
-> > +               detach_extent_buffer_folio(eb, eb->folios[i]);
-> > +               folio_put(eb->folios[i]);
-> > +               eb->folios[i] = NULL;
-> > +       }
-> > +}
-> > +
-> >  struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
-> >  {
-> >         struct extent_buffer *new;
-> > @@ -2869,25 +2882,30 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
-> >         set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
-> >
-> >         ret = alloc_eb_folio_array(new, false);
-> > -       if (ret) {
-> > -               btrfs_release_extent_buffer(new);
-> > -               return NULL;
-> > -       }
-> > +       if (ret)
-> > +               goto release_eb;
-> >
-> >         for (int i = 0; i < num_extent_folios(src); i++) {
-> 
-> Should `src` be rather `new` here?
-> 
+Thank you!
 
-I think they are equal, right, since itt's a clone. This line didn't change
-and I don't see why it would need to. Happy to change it if we think it
-makes more sense.
-
-> >                 struct folio *folio = new->folios[i];
-> >
-> >                 ret = attach_extent_buffer_folio(new, folio, NULL);
-> > -               if (ret < 0) {
-> > -                       btrfs_release_extent_buffer(new);
-> > -                       return NULL;
-> > -               }
-> > +               if (ret < 0)
-> > +                       goto cleanup_folios;
-> >                 WARN_ON(folio_test_dirty(folio));
-> >         }
-> > +       for (int i = 0; i < num_extent_folios(src); i++)
-> 
-> The same.
-> 
-
-This one makes more sense to me, since it's new and is for putting the
-folios in new. HOWEVER, that might theoretically run afoul of the same
-bug with num_extent_folios() changing answer mid loop. So maybe best to
-store num_extent_folios(src) in a variable ahead of all of this?
-
-> > +               folio_put(new->folios[i]);
-> > +
-> >         copy_extent_buffer_full(new, src);
-> >         set_extent_buffer_uptodate(new);
-> >
-> >         return new;
-> > +
-> > +cleanup_folios:
-> > +       cleanup_extent_buffer_folios(new);
-> > +release_eb:
-> > +       btrfs_release_extent_buffer(new);
-> > +       return NULL;
-> >  }
-> >
-> >  struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
-> > @@ -2902,13 +2920,15 @@ struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
-> >
-> >         ret = alloc_eb_folio_array(eb, false);
-> >         if (ret)
-> > -               goto out;
-> > +               goto release_eb;
-> >
-> >         for (int i = 0; i < num_extent_folios(eb); i++) {
-> >                 ret = attach_extent_buffer_folio(eb, eb->folios[i], NULL);
-> >                 if (ret < 0)
-> > -                       goto out_detach;
-> > +                       goto cleanup_folios;
-> >         }
-> > +       for (int i = 0; i < num_extent_folios(eb); i++)
-> > +               folio_put(eb->folios[i]);
-> >
-> >         set_extent_buffer_uptodate(eb);
-> >         btrfs_set_header_nritems(eb, 0);
-> > @@ -2916,15 +2936,10 @@ struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
-> >
-> >         return eb;
-> >
-> > -out_detach:
-> > -       for (int i = 0; i < num_extent_folios(eb); i++) {
-> > -               if (eb->folios[i]) {
-> > -                       detach_extent_buffer_folio(eb, eb->folios[i]);
-> > -                       folio_put(eb->folios[i]);
-> > -               }
-> > -       }
-> > -out:
-> > -       kmem_cache_free(extent_buffer_cache, eb);
-> > +cleanup_folios:
-> > +       cleanup_extent_buffer_folios(eb);
-> > +release_eb:
-> > +       btrfs_release_extent_buffer(eb);
-> >         return NULL;
-> >  }
-> >
-> > @@ -3357,8 +3372,15 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
-> >          * btree_release_folio will correctly detect that a page belongs to a
-> >          * live buffer and won't free them prematurely.
-> >          */
-> > -       for (int i = 0; i < num_extent_folios(eb); i++)
-> > +       for (int i = 0; i < num_extent_folios(eb); i++) {
-> >                 folio_unlock(eb->folios[i]);
-> > +               /*
-> > +                * A folio that has been added to an address_space mapping
-> > +                * should not continue holding the refcount from its original
-> > +                * allocation indefinitely.
-> > +                */
-> > +               folio_put(eb->folios[i]);
-> > +       }
-> >         return eb;
-> >
-> >  out:
-> > @@ -3371,30 +3393,26 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
-> >          * we'll lookup the folio for that index, and grab that EB.  We do not
-> >          * want that to grab this eb, as we're getting ready to free it.  So we
-> >          * have to detach it first and then unlock it.
-> > -        *
-> > -        * We have to drop our reference and NULL it out here because in the
-> > -        * subpage case detaching does a btrfs_folio_dec_eb_refs() for our eb.
-> > -        * Below when we call btrfs_release_extent_buffer() we will call
-> > -        * detach_extent_buffer_folio() on our remaining pages in the !subpage
-> > -        * case.  If we left eb->folios[i] populated in the subpage case we'd
-> > -        * double put our reference and be super sad.
-> >          */
-> > -       for (int i = 0; i < attached; i++) {
-> > -               ASSERT(eb->folios[i]);
-> > -               detach_extent_buffer_folio(eb, eb->folios[i]);
-> > -               folio_unlock(eb->folios[i]);
-> > -               folio_put(eb->folios[i]);
-> > +       for (int i = 0; i < num_extent_pages(eb); i++) {
-> > +               struct folio *folio = eb->folios[i];
-> > +
-> > +               if (i < attached) {
-> > +                       ASSERT(folio);
-> > +                       detach_extent_buffer_folio(eb, folio);
-> > +                       folio_unlock(folio);
-> > +               } else if (!folio)
-> > +                       continue;
-> > +
-> > +               ASSERT(!folio_test_private(folio));
-> > +               folio_put(folio);
-> >                 eb->folios[i] = NULL;
-> >         }
-> > -       /*
-> > -        * Now all pages of that extent buffer is unmapped, set UNMAPPED flag,
-> > -        * so it can be cleaned up without utilizing folio->mapping.
-> > -        */
-> > -       set_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
-> > -
-> >         btrfs_release_extent_buffer(eb);
-> > +
-> >         if (ret < 0)
-> >                 return ERR_PTR(ret);
-> > +
-> >         ASSERT(existing_eb);
-> >         return existing_eb;
-> >  }
-> > --
-> > 2.49.0
-> >
-> >
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
