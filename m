@@ -1,219 +1,283 @@
-Return-Path: <linux-btrfs+bounces-13814-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13815-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4626DAAEEBC
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 May 2025 00:33:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64BC0AAEF16
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 May 2025 01:12:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55A0C1BA7A39
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 22:33:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C67FA4E4EA9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 23:12:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E755820CCFB;
-	Wed,  7 May 2025 22:33:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202A9289834;
+	Wed,  7 May 2025 23:12:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="suULzede";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cRw9Js0o"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="eBmeVr41"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F648BF8
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 22:33:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5FB628C027
+	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 23:12:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746657188; cv=none; b=cN9vQ4e+txKFDJnyJQAe0Zwk8stTAjvW8JbwnOX7gAHJNiYKG5wGLyHMEQWm8FelfBja+UmIBIIkVAWf15inE/KxtUW1i4LFGQBIxdYtlEk5PxXeBo9jXBob2vs8vlZLW2kQn/e7w7RyjW8e9tG+93rHnXGBQGUM4kxfHd8qsxg=
+	t=1746659525; cv=none; b=eubVBK3aF+Y3IJg4thT+M7rWG3uGvLSWdRwZRZa7MUFvWfAdz4S+ICnbgBav+CWMDY1Sf06OdyTqumTOWHK3rCYvKg8tdk6DjKRidL7mTFVWiVibnxq/IOy5NLgsy7pScZcYBnre/Sc61wQA1vbGmX5d2EUyYJ8JxiGF7I7wd7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746657188; c=relaxed/simple;
-	bh=Bz/GZ+nVFkrICerra7ftbd51u+Ehn/YbSD3+HvAM7B4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kcVMNUROzS+RhO3WBaD8GKVbHAD/V8BFOqNfSb4xaefKq+L/YAUDCUBVRPdm04E8GpdcH5GHHzSTGxmarABM1jsGInoHNrIxl9RhRol2zoPoD7wfCAeJ/KsQIIeB42EZlSmRnaIgn6Osgt7ZCxyLM244Wr4E3Er8SZZa2Z3VnD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=suULzede; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cRw9Js0o; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 79D7411400BC;
-	Wed,  7 May 2025 18:33:05 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Wed, 07 May 2025 18:33:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1746657185; x=1746743585; bh=SaUEtiCtYH
-	rXSwQ9rPtNmsrl6sn27SwHoiFutxYvxgQ=; b=suULzedeFaPZsyMA/15GGj10JT
-	TR6aeEJU4k+kKBciAXY5TRwXpwrRc3UZxCxHzwH+xOJoNBpRcm8t9b2C2uPkryGe
-	WOpeX/kpfLyleDs3Dk0ojnNVoTB21fVepXNpCukQkzLfKi8WXCqT/HTlgNPhWIN7
-	qOVLZhQcJOyvUVUJc8VzrsrujZOguGQdw4SDrLPHO3YDHVkkkZcHJCAcSRkFPphf
-	tIQYpqOcF+FQVySNrl3k5/wEp52757HM41ajG0YpdruDMwQQutg16Qqk+wiv+H3z
-	pK442howXPhITL2xHCM9jgStQLcqQSpwbMdU+9mWLuWuQEcD01q66MrFr9sA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1746657185; x=1746743585; bh=SaUEtiCtYHrXSwQ9rPtNmsrl6sn27SwHoiF
-	utxYvxgQ=; b=cRw9Js0oT4tzxvnxJ/pIl58NWvvSns2eeLx39i5DdGF++fsgFuk
-	8a+l9nDfMwNkZGQH0F2gd+jYEMiV/eEY+v6na3/ISo7nqvJoPS41vOQ4xCxvFNZQ
-	UfNoDzVdu/QBG6MddgCNUl4fksZq2pmb+1ClyFOxe+jZQruVwq8cmwy7Q4k3jiyn
-	WSru2H3bJ4y5FI0z+mz61xQ44jZ/mnr9ssm4ffMotkkNA4qHDjGkgMTSBki3XEtF
-	1fE+ZO6jQfv1NfgZajd5zsHd2sG1CjAcyATgqPsf1HhUS48uKWpAFsfoJXKCHYjk
-	z0zX52vLK0n+M5xWC5m3dK7Hs1iH2sUg54g==
-X-ME-Sender: <xms:od8baKxk6lfKri3SyCvC4L7enWue8FAETaUS5UdYJjhqHiAxTboOVQ>
-    <xme:od8baGSBxUOididzAqThYwPch7Tptak5hicZx3WDaMVMxFLqAVyDfL42ceg7hY37h
-    eN7xJMSdyq2AogbF5M>
-X-ME-Received: <xmr:od8baMVH6ETIvqm4laE4MKarrpGt_36eD5NxB84PMEveWc5OfMea5t8AIeiaMg75khc6uyTQ703FroWEumTSEtoi3HI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvkeektdejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpeffhf
-    fvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhho
-    vhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepkedvkeffjeelle
-    fhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopd
-    hnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehfughm
-    rghnrghnrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqsghtrhhfsh
-    esvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:od8baAj54EvNbTizj3T39rQL3Wvr4LsquKFe7m_IMRWpwaYfPddwrg>
-    <xmx:od8baMD8Ki5gEXTibRna7ckUTzjIV-18TqRDWRyctQaalLof-17ZBg>
-    <xmx:od8baBK6SEkh3Y_4EY6K9eScCqhO4Fwo2Q85mrrUe4i6dAfclTUt3g>
-    <xmx:od8baDD3WCLZ9gTQS-twVQGqyupjMpHmJEk8HlECOAFesK5QewTrpg>
-    <xmx:od8baFu4oZawh9Pg5HWF7T1TVynZiyrtWJjy44zmxWLYY6mqeVTlN4eQ>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 7 May 2025 18:33:04 -0400 (EDT)
-Date: Wed, 7 May 2025 15:33:47 -0700
-From: Boris Burkov <boris@bur.io>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/5] btrfs: fix qgroup reservation leak on failure to
- allocate ordered extent
-Message-ID: <20250507223347.GB332956@zen.localdomain>
-References: <cover.1746638347.git.fdmanana@suse.com>
- <b2b4a73fb7ef395f131884cd5c903cbf92517e6f.1746638347.git.fdmanana@suse.com>
+	s=arc-20240116; t=1746659525; c=relaxed/simple;
+	bh=hxQjHfiyh/8Weqa567QTjrIbLU8bz1RVTHJmsvYlry8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qTvq10SWOewZe+t9fUt3rilJYPFeFeSwUFnGxU2Wlept/infV7aeYgd3aY2s4cyXtWywBpQGEBymiuoEA4iS9B95tXjca8yvzgnJkQOEfEPn39NbDHP4H97QPoCmv5S6EVi8Bz7GdXKzwOTCfSE8Ns6hpfryR8RaAKHagQ1X8Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=eBmeVr41; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43cfba466b2so4001865e9.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 May 2025 16:12:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1746659521; x=1747264321; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=PV0KP1nwAL13fv7CA5X9ErJBie3DBFX1I9ldP1RpU4w=;
+        b=eBmeVr41Z5319LcGapSzkz+DsVzMEmE07Q8fr/cyXCymyPwgdnp9HO8ZkAVwrk8c26
+         A8fW1ulBnRbh+co0evZYTKrTTi5ilJdBgCPg23aA2+1ofecSC9iubax9thyr9naNC/nN
+         LQk4zOzEeWQpU24d6yZ9dDi8wDSs0kKnK3yLhQtEXM/w1SYxh4ytAwUxZ19fhBInNwVo
+         6iCM+B0ZGYP+3TQEfO6KognORLjfBPLxdtjN8OKvkrdsLAoGXCe9e1EYdFu1ScOs7ku/
+         yNZsd2BpiyornOVBteS00W/3BP+yAHotX8og9sQ5BSeM+dWPuifB+myZpRQ85quxJ2rI
+         m4Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746659521; x=1747264321;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PV0KP1nwAL13fv7CA5X9ErJBie3DBFX1I9ldP1RpU4w=;
+        b=SMe4YeDG0201hXKd8nNJPHOJoQ0kuwPWN7m3WyNDn6UzcvbCyAWgpVhpC1nzRHP6Fh
+         66X7wqUBTVi/UmEZcd9eg1r17WHbfTubPS6VWHkWZSH/LINZf3k7XC3uM/P2f/yu4jCN
+         X2H7Ewr/CbkXeczQ+OOVdlsCwsoRE1qKRPyvCZJ0zDiSBl/iTyAtXALkB8cjcLHQlAik
+         N8DKjSGdBsrGNlwGOQUAeYY7fjwgk4q3IyWqjv0zst4+lJcbrFSvbfoxm9PgYsSnqisI
+         fs2AYAc0XreY5dKi7C3rb3AYIKjIJzwoMKFipNDzczXjJErtDE4jInB0TsJY9h3/EVil
+         UG5g==
+X-Gm-Message-State: AOJu0YzRwZZU1v4u/jaz+jnT28x13JTBHPjjq24wITYaIe+HiZOzt06n
+	BTbX7u3Pl4VklBXlNZDkElihkBluje/IXsEWqJsZizoZgphz/urNBsGILNwYUT0yqAGwAh5ismo
+	6
+X-Gm-Gg: ASbGncv0DARepyOp+wpOYpS4AcwA/6iUT92G46QCp7Bor4P2OrvIE+7QGgXTVWG9jr8
+	gdTwMFSXlFPwjRkELgY679CXepcOokG3KUquU4ETlmcZQP3sOnWDNqUEjp0YfM6Kwzzi+HGQN+i
+	QgWDvE77d8egIaFFo5EpLT3mmU5M4z1HDBnXX7c1B4RffBQXfnpwu1uyOVt12Ozksu7Zo6sIbEM
+	UxC7pLiwPMhOyPmjM5GdDFcmYvNJ3cWBLm5RxQ2UP95CcKHv0u7PiYu5lpwWLCNhDZxdqMhC1Dv
+	ok7hip4XW+p0Q3di7GqwjQ8tn/fRLW0mg5h4j1CMYjK1P+KwKWoRl5G+wOb7bB0Yq/NVOEnlHc1
+	z1UM=
+X-Google-Smtp-Source: AGHT+IGgk3ZcRh6d0u8jtWVXMh9gel+tn4sGWF+qJDjdIi9aER3JPhJ+rgi4nZOz/d5fvK9SU2Gu2w==
+X-Received: by 2002:a05:6000:402c:b0:3a0:aed9:e39 with SMTP id ffacd0b85a97d-3a0b4a24be6mr4326840f8f.28.1746659520864;
+        Wed, 07 May 2025 16:12:00 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7405902104fsm11843181b3a.115.2025.05.07.16.11.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 May 2025 16:12:00 -0700 (PDT)
+Message-ID: <ccacb32f-e345-49c7-9c6b-8bdc72c69a7f@suse.com>
+Date: Thu, 8 May 2025 08:41:56 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2b4a73fb7ef395f131884cd5c903cbf92517e6f.1746638347.git.fdmanana@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] btrfs: fix qgroup reservation leak on failure to
+ allocate ordered extent
+To: Boris Burkov <boris@bur.io>, fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1746638347.git.fdmanana@suse.com>
+ <b2b4a73fb7ef395f131884cd5c903cbf92517e6f.1746638347.git.fdmanana@suse.com>
+ <20250507223347.GB332956@zen.localdomain>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20250507223347.GB332956@zen.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, May 07, 2025 at 06:23:13PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+
+
+在 2025/5/8 08:03, Boris Burkov 写道:
+> On Wed, May 07, 2025 at 06:23:13PM +0100, fdmanana@kernel.org wrote:
+>> From: Filipe Manana <fdmanana@suse.com>
+>>
+>> If we fail to allocate an ordered extent for a COW write we end up leaking
+>> a qgroup data reservation since we called btrfs_qgroup_release_data() but
+>> we didn't call btrfs_qgroup_free_refroot() (which would happen when
+>> running the respective data delayed ref created by ordered extent
+>> completion or when finishing the ordered extent in case an error happened).
+>>
+>> So make sure we call btrfs_qgroup_free_refroot() if we fail to allocate an
+>> ordered extent for a COW write.
 > 
-> If we fail to allocate an ordered extent for a COW write we end up leaking
-> a qgroup data reservation since we called btrfs_qgroup_release_data() but
-> we didn't call btrfs_qgroup_free_refroot() (which would happen when
-> running the respective data delayed ref created by ordered extent
-> completion or when finishing the ordered extent in case an error happened).
+> I haven't tried it myself yet, but I believe that this patch will double
+> free reservation from the qgroup when this case occurs.
 > 
-> So make sure we call btrfs_qgroup_free_refroot() if we fail to allocate an
-> ordered extent for a COW write.
+> Can you share the context where you saw this bug? Have you run fstests
+> with qgroups or squotas enabled? I think this should show pretty quickly
+> in generic/475 with qgroups on.
+> 
+> Consider, for example, the following execution of the dio case:
+> 
+> btrfs_dio_iomap_begin
+>    btrfs_check_data_free_space // reserves the data into `reserved`, sets dio_data->data_space_reserved
+>    btrfs_get_blocks_direct_write
+>      btrfs_create_dio_extent
+>        btrfs_alloc_ordered_extent
+>          alloc_ordered_extent // fails and frees refroot, reserved is "wrong" now.
+>        // error propagates up
+>      // error propagates up via PTR_ERR
+> 
+> which brings us to the code:
+> if (ret < 0)
+>          goto unlock_err;
+> ...
+> unlock_err:
+> ...
+> if (dio_data->data_space_reserved) {
+>          btrfs_free_reserved_data_space()
+> }
+> 
+> so the execution continues...
+> 
+> btrfs_free_reserved_data_space
+>    btrfs_qgroup_free_data
+>      __btrfs_qgroup_release_data
+>        qgroup_free_reserved_data
+>          btrfs_qgroup_free_refroot
+> 
+> This will result in a underflow of the reservation once everything
+> outstanding gets released.
 
-I haven't tried it myself yet, but I believe that this patch will double
-free reservation from the qgroup when this case occurs.
+That should still be safe.
 
-Can you share the context where you saw this bug? Have you run fstests
-with qgroups or squotas enabled? I think this should show pretty quickly
-in generic/475 with qgroups on.
+Firstly at alloc_ordered_extent() we released the qgroup space already, 
+thus there will be no EXTENT_QGROUP_RESERVED range in extent-io tree 
+anymore.
 
-Consider, for example, the following execution of the dio case:
+Then at the final cleanup, qgroup_free_reserved_data_space() will 
+release/free nothing, because the extent-io tree no longer has the 
+corresponding range with EXTENT_QGROUP_RESERVED.
 
-btrfs_dio_iomap_begin
-  btrfs_check_data_free_space // reserves the data into `reserved`, sets dio_data->data_space_reserved
-  btrfs_get_blocks_direct_write
-    btrfs_create_dio_extent
-      btrfs_alloc_ordered_extent
-        alloc_ordered_extent // fails and frees refroot, reserved is "wrong" now.
-      // error propagates up
-    // error propagates up via PTR_ERR
+This is the core design of qgroup data reserved space, which allows us 
+to call btrfs_release/free_data() twice without double accounting.
 
-which brings us to the code:
-if (ret < 0)
-        goto unlock_err;
-...
-unlock_err:
-...
-if (dio_data->data_space_reserved) {
-        btrfs_free_reserved_data_space()
-}
+> 
+> Furthermore, raw calls to free_refroot in cases where we have a reserved
+> changeset make me worried, because they will run afoul of races with
+> multiple threads touching the various bits. I don't see the bugs here,
+> but the reservation lifetime is really tricky so I wouldn't be surprised
+> if something like that was wrong too.
 
-so the execution continues...
+This free_refroot() is the common practice here. The extent-io tree 
+based accounting can only cover the reserved space before ordered extent 
+is allocated.
 
-btrfs_free_reserved_data_space
-  btrfs_qgroup_free_data
-    __btrfs_qgroup_release_data
-      qgroup_free_reserved_data
-        btrfs_qgroup_free_refroot
+Then the reserved space is "transferred" to ordered extent, and 
+eventually go to the new data extent, and finally freed at 
+btrfs_qgroup_account_extents(), which also goes the free_refroot() way.
 
-This will result in a underflow of the reservation once everything
-outstanding gets released.
+> 
+> As of the last time I looked at this, I think cow_file_range handles
+> this correctly as well. Looking really quickly now, it looks like maybe
+> submit_one_async_extent() might not do a qgroup free, but I'm not sure
+> where the corresponding reservation is coming from.
+> 
+> I think if you have indeed found a different codepath that makes a data
+> reservation but doesn't release the qgroup part when allocating the
+> ordered extent fails, then the fastest path to a fix is to do that at
+> the same level as where it calls btrfs_check_data_free_space or (however
+> it gets the reservation), as is currently done by the main
+> ordered_extent allocation paths. With async_extent, we might need to
+> plumb through the reserved extent changeset through the async chunk to
+> do it perfectly...
 
-Furthermore, raw calls to free_refroot in cases where we have a reserved
-changeset make me worried, because they will run afoul of races with
-multiple threads touching the various bits. I don't see the bugs here,
-but the reservation lifetime is really tricky so I wouldn't be surprised
-if something like that was wrong too.
+I agree with you that, the extent io tree based double freeing 
+prevention should only be the last safe net, not something we should 
+abuse when possible.
 
-As of the last time I looked at this, I think cow_file_range handles
-this correctly as well. Looking really quickly now, it looks like maybe
-submit_one_async_extent() might not do a qgroup free, but I'm not sure
-where the corresponding reservation is coming from.
+But I can't find a better solution, mostly due to the fact that after 
+the btrfs_qgroup_release_data() call, the qgroup reserved space is 
+already released, and we have no way to undo that...
 
-I think if you have indeed found a different codepath that makes a data
-reservation but doesn't release the qgroup part when allocating the
-ordered extent fails, then the fastest path to a fix is to do that at
-the same level as where it calls btrfs_check_data_free_space or (however
-it gets the reservation), as is currently done by the main
-ordered_extent allocation paths. With async_extent, we might need to
-plumb through the reserved extent changeset through the async chunk to
-do it perfectly...
+Maybe we can delayed the qgroup release/free calls until the ordered 
+extent @entry is allocated?
 
 Thanks,
-Boris
+Qu
+
 
 > 
-> Fixes: 7dbeaad0af7d ("btrfs: change timing for qgroup reserved space for ordered extents to fix reserved space leak")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  fs/btrfs/ordered-data.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
+> Thanks,
+> Boris
 > 
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index ae49f87b27e8..e44d3dd17caf 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -153,9 +153,10 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
->  	struct btrfs_ordered_extent *entry;
->  	int ret;
->  	u64 qgroup_rsv = 0;
-> +	const bool is_nocow = (flags &
-> +	       ((1U << BTRFS_ORDERED_NOCOW) | (1U << BTRFS_ORDERED_PREALLOC)));
->  
-> -	if (flags &
-> -	    ((1U << BTRFS_ORDERED_NOCOW) | (1U << BTRFS_ORDERED_PREALLOC))) {
-> +	if (is_nocow) {
->  		/* For nocow write, we can release the qgroup rsv right now */
->  		ret = btrfs_qgroup_free_data(inode, NULL, file_offset, num_bytes, &qgroup_rsv);
->  		if (ret < 0)
-> @@ -170,8 +171,13 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
->  			return ERR_PTR(ret);
->  	}
->  	entry = kmem_cache_zalloc(btrfs_ordered_extent_cache, GFP_NOFS);
-> -	if (!entry)
-> +	if (!entry) {
-> +		if (!is_nocow)
-> +			btrfs_qgroup_free_refroot(inode->root->fs_info,
-> +						  btrfs_root_id(inode->root),
-> +						  qgroup_rsv, BTRFS_QGROUP_RSV_DATA);
->  		return ERR_PTR(-ENOMEM);
-> +	}
->  
->  	entry->file_offset = file_offset;
->  	entry->num_bytes = num_bytes;
-> -- 
-> 2.47.2
+>>
+>> Fixes: 7dbeaad0af7d ("btrfs: change timing for qgroup reserved space for ordered extents to fix reserved space leak")
+>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>> ---
+>>   fs/btrfs/ordered-data.c | 12 +++++++++---
+>>   1 file changed, 9 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+>> index ae49f87b27e8..e44d3dd17caf 100644
+>> --- a/fs/btrfs/ordered-data.c
+>> +++ b/fs/btrfs/ordered-data.c
+>> @@ -153,9 +153,10 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
+>>   	struct btrfs_ordered_extent *entry;
+>>   	int ret;
+>>   	u64 qgroup_rsv = 0;
+>> +	const bool is_nocow = (flags &
+>> +	       ((1U << BTRFS_ORDERED_NOCOW) | (1U << BTRFS_ORDERED_PREALLOC)));
+>>   
+>> -	if (flags &
+>> -	    ((1U << BTRFS_ORDERED_NOCOW) | (1U << BTRFS_ORDERED_PREALLOC))) {
+>> +	if (is_nocow) {
+>>   		/* For nocow write, we can release the qgroup rsv right now */
+>>   		ret = btrfs_qgroup_free_data(inode, NULL, file_offset, num_bytes, &qgroup_rsv);
+>>   		if (ret < 0)
+>> @@ -170,8 +171,13 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
+>>   			return ERR_PTR(ret);
+>>   	}
+>>   	entry = kmem_cache_zalloc(btrfs_ordered_extent_cache, GFP_NOFS);
+>> -	if (!entry)
+>> +	if (!entry) {
+>> +		if (!is_nocow)
+>> +			btrfs_qgroup_free_refroot(inode->root->fs_info,
+>> +						  btrfs_root_id(inode->root),
+>> +						  qgroup_rsv, BTRFS_QGROUP_RSV_DATA);
+>>   		return ERR_PTR(-ENOMEM);
+>> +	}
+>>   
+>>   	entry->file_offset = file_offset;
+>>   	entry->num_bytes = num_bytes;
+>> -- 
+>> 2.47.2
+>>
 > 
+
 
