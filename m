@@ -1,188 +1,210 @@
-Return-Path: <linux-btrfs+bounces-13812-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13811-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2A73AAEE32
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 23:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D7FBAAEE2F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 23:52:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E6A8176F9B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 21:53:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B942F176E76
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 21:52:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68D9B28937E;
-	Wed,  7 May 2025 21:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 277B628C2B3;
+	Wed,  7 May 2025 21:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GObk0dBK"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Rpbzth6m";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Fz6yhZ3W"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5168922688B
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 21:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71524230272
+	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 21:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746654804; cv=none; b=fLvzzPKhdKdjufrXvBFdnD+cPOsxUI8pIN2YHKfzk1wVBw3mrS5O+a7/NFC33dLIYGZ5r3tXJ1mAFhyylu4b9JTceXXnjusfHxmPT5A2uddl8b7CmUGcQSmXtMTZf5cEquBMVqbT7g1TVNkHq+WNgzapOGtMC9UHtr7y8L90ae8=
+	t=1746654769; cv=none; b=oypz0w51zoeZ0698Y5gqbI7HgAk9L/av+Jx1gAB073RmzR/P1xVRlPCiup0+7W8Dg+tJlfNJavW/LHJUPAg0iWt1+45rlF0nzHy4V7OrYM7DnHFUQDs4DrEFLixOpKi7Habm/jq1wkwngofiGjtFCKQb0ICtLavKCpZy+SgVFgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746654804; c=relaxed/simple;
-	bh=BqCxGHoOT63vPdGdDqTGOOPKfSV3Q55gPYHzkNOK1Z4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=GXHQ08TXi90yIw68X9URlCfxoh7aKYvDT/hk8Uqp86BWLV43+U1Prod9Nie3N4eIdwgCWUYoSX8ptxY8JFuZKxM3cmjUKM6rLMtWE91WvZ63G97Qm932FmOfNbwosvPUTu+VCLuQ71ce4ZvboidGHEhd5EYVzQFrjN7luoIj5dw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GObk0dBK; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-acbb85ce788so61031666b.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 May 2025 14:53:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1746654800; x=1747259600; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=accLGqf8UR3A6+xt184ij+hTljfF0KLCzkIsCJvy/Vk=;
-        b=GObk0dBKMkAl/VE589+aJUuOyqv26Ym50SEYI3VeF4QOEcRyo7J30Uj+tTr/1NYd5b
-         WGQdFZNniiwAguN8Iz4C9sJ4uI7P4J+Y+Wizzy3WGYKPzrUsB9MPPYFDl2b8Wwt0giei
-         b+9C3k8hbeuS0pwscgijTlw6A5tqj5xeLQISO5MyYh7nHo4+xUaFyj61cD5S25n1FXAA
-         rWldeCo2uBWOqop6MKEAYzzbIStqPqEyBVt1WUWwiHmLPAIThyXSyzyyiKIklPF3apPH
-         yFezjPWQHBVzbE0uyR4YjQAilb/rgfXa+i4cCu9yXXGFtx80dh2ofpWdtVHfdrJUmQvJ
-         eLMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746654800; x=1747259600;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=accLGqf8UR3A6+xt184ij+hTljfF0KLCzkIsCJvy/Vk=;
-        b=G234qNc786bCjVnAqeCB6ihhpjohindPfMJhUJykrk6qlaU8svS8VCE37vxKOq9quf
-         s233wOyExODWLP39lMpCxrAqD4B8cRi55Byc0mf0f8fSUHha8QuihhU1FcVpQkeuop6g
-         RIqkhzwF6PCzRcTGflfGx09N1FsjYa81Duj9DsyysjgPiB6MIYhAlNa+PwALOWAyG/s/
-         Mqj41gYOQj2BBSQyBPbdG7Q+W7AmVnlfHu0EVIVPlq6q3TeWVO6bHF8WpKnCEFh0skAI
-         JaUyisVJVV99RvvVDmJDNqZGArq6mEn2ALIJrr7coXJkDQs+7rWVoO0JqtmunNlEWyDM
-         mE8A==
-X-Forwarded-Encrypted: i=1; AJvYcCVgR2TcgIJ09ud2A+p4w6+XBj8A/mHyxmjiWKJ2TtKpRZn8uBPa3CA9QjgzSNQzyw1qJaEfmtjkR/anFA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVjjeiaNOzHZVuSnZFLj6iSVnh1iWt06iZUm7IpbdJBSPMKT0F
-	hIodIHGogNJzgCFF5T+pI6RjjXmD0ubIDj30YXZpA5QTr5MB8rV3e+smi93PnV3M59sZykk8pBh
-	s
-X-Gm-Gg: ASbGncv97bl8oRiK4D0IFnyzPSoR633WcbEn37EqnWtbaIn6I9atjkmlW4okCQKHhlz
-	EC1pw690ijcsI+6smCTQh0OY7jSt6N6K418u7jamuhlegVr+COVZGpqp+h19jQ3DfbqS3/yHuX4
-	W1giFibSd0HO3aWAp6o/3HlLgjNOXRtJXsSg4Xlh+yJ4i5fXZx+2cc9vWmtNoDVhpvBT6VTg6cu
-	q3tacCEWrWrHanOflFdppwzIhxPyMBFW+67ZtltqAImXVsA9vbpbyH+pSYg/ZBYicT9XkyjK5UA
-	9A6I0QZnu0Ow/ET4uNUhQP3dHLxvEgMIsFAl7pecRrqa+1dvJ7Y95x+W4oag8nxKkOwS
-X-Google-Smtp-Source: AGHT+IEpPYvp+PA4kXFy3X7BXqm4HDRc7ijL3saIUmps4gEBz04AeMnuiRJpRDga/7JIl2DsOR0WEQ==
-X-Received: by 2002:a17:907:6d1c:b0:abf:749f:f719 with SMTP id a640c23a62f3a-ad1e8bc2a8cmr511658066b.7.1746654800432;
-        Wed, 07 May 2025 14:53:20 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b1febec7909sm2167388a12.1.2025.05.07.14.53.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 May 2025 14:53:19 -0700 (PDT)
-Message-ID: <db844b03-0f1c-4124-a705-bfe07eaeb9b9@suse.com>
-Date: Thu, 8 May 2025 07:23:15 +0930
+	s=arc-20240116; t=1746654769; c=relaxed/simple;
+	bh=OhbyAZCu7qhDmcxFGgdq27Rkv4A+rt0vOaHQ2f5KJJY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eh0+Dr90B8xtmizLHLrOpRyVkNpIBBcwxG0sKpq9ZlMrkA1FowLn+LfPueuoAbO4scM9TuYN6RQPzujKOeEkxYgBixr74dkt8K3Nn1c4WUqKW/8WVkRNFkm+Xb9yY5h0GtKROrB0i1+kPR6SUy+50UJTwFHeoLDLrYI5CmolgnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Rpbzth6m; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Fz6yhZ3W; arc=none smtp.client-ip=103.168.172.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfout.phl.internal (Postfix) with ESMTP id 3F773138019E;
+	Wed,  7 May 2025 17:52:45 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Wed, 07 May 2025 17:52:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1746654765; x=1746741165; bh=OF88DyVSQn
+	rtDQvMOrbixt2tsMGzRdxDTAof7/NCjd4=; b=Rpbzth6mVwKOo7zNH3JSt8qVru
+	yiSPYKPjHI0aDqXsDOk412Ps2eVNNBtPUeRhgkSut5/M+6yOR3stHTKmLfk2vUmS
+	RtuMe7xbc2kzF8ov8mtKFiIjgeygqq5X8ijBFzCuh+/muY4+9UTUhJKR11d+/us0
+	c7YnhGc6oAlqgQSxbm2febjpssZ/oMjfQQAUER7haHJ1i9efpkOx02C/CfUkFSPw
+	JXfSUeDxv0O4Oi0iqyDj3icwlVciBse8T2vFoAHXVbFviTOawJhlTZ4DeaTZXEKW
+	CFVTViuuF6hAg7Q7Jz6pUvxZZYBPF9AQ7dS1Ncf865ZX1saAibVqUZdf4H3A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1746654765; x=1746741165; bh=OF88DyVSQnrtDQvMOrbixt2tsMGzRdxDTAo
+	f7/NCjd4=; b=Fz6yhZ3WQNHEbL7R5TfTmX7NwwoaMoN3xponK4Upd0R4CdOKxvp
+	sddJgHV8569eelYZ4yWL45j/ghGFdGxf0yQhmMsSARVt4PPY4EAFC6VW8rgl/u/4
+	iuTQBjsseae/Ox+lekEGxDXnLtZmrnsLuuxk8Y6Zu6FrrQP5yunRQwzFWum3mCX1
+	WonfyhojNuOqQAMrMgjYOUhKF7QucnHbCJfpamIhxMyWv494T82AH/OGt2e+oMOI
+	HNbXHL+SCmqojWHoZC/MiWyXVAya3LZu91KU8AkPEaJg5mmZDa1zjwi727Qmn/Ub
+	8PqOSeTuPCXa+OpvYrPoVtImT6hiqFz9khQ==
+X-ME-Sender: <xms:LNYbaFhD-nu1KzvKidCzDeOwqhDby2Ww8t2i5sesOr4eMy6srfzrIw>
+    <xme:LNYbaKDYJU9OVdlmLqBKT1XPs8o0__SC7zy1bjNw4h815NETE-yHQO112gmaXLKkN
+    -evp-JOJ43jitKnUzc>
+X-ME-Received: <xmr:LNYbaFFUnR4ZERjMSCe72JaOj0T152FVS26DoqkdwK_7rgK-aW5xQGBdJ6M93doH_D2hxTbfBClyQoPAHZvWIuRUp1E>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvkeejleelucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
+    vdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqe
+    enucggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedu
+    gfeugfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepgedpmhhouggv
+    pehsmhhtphhouhhtpdhrtghpthhtohepughsthgvrhgsrgesshhushgvrdgtiidprhgtph
+    htthhopehnvggvlhigsehsuhhsvgdrtghomhdprhgtphhtthhopegushhtvghrsggrsehs
+    uhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrh
+    hnvghlrdhorhhg
+X-ME-Proxy: <xmx:LNYbaKQYTaBBFthzCDSeOBWlCKFlgNZFbI2eyK-fy501twALWG67Nw>
+    <xmx:LNYbaCyaarDn7zYTskOkl_Nohermwer2VNN8z9YfSnfOeJLmp3x9NA>
+    <xmx:LNYbaA7JXa3Kx27xZGYDdoGQ89lhdZznTAQYvPbJoPL5YpO-3DQkzg>
+    <xmx:LNYbaHzAFgOBFRrIWMsrUVjVJSDSc6nEgv5vSZSBmaDqdBKC7yBXZg>
+    <xmx:LdYbaL9_aHd5F1P5C0GLV0hBKNcAN9_fs2i-eVJSIvVl5lYOkhRuYrrN>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 7 May 2025 17:52:44 -0400 (EDT)
+Date: Wed, 7 May 2025 14:53:27 -0700
+From: Boris Burkov <boris@bur.io>
+To: David Sterba <dsterba@suse.cz>
+Cc: Daniel Vacek <neelx@suse.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: use unsigned types for constants defined as bit
+ shifts
+Message-ID: <20250507215327.GA332956@zen.localdomain>
+References: <20250422155541.296808-1-dsterba@suse.com>
+ <CAPjX3FcGAUqheUg0TQHG_yvuQExjT3N3SUGRYtk1S3b3aDVZZQ@mail.gmail.com>
+ <20250507174328.GK9140@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: parent transid verify failed on raid1
-To: Ivo Smits <ivo@ucis.nl>, linux-btrfs@vger.kernel.org
-References: <507f3dd3-1148-40be-8223-87be96ac6269@ucis.nl>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <507f3dd3-1148-40be-8223-87be96ac6269@ucis.nl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250507174328.GK9140@twin.jikos.cz>
 
-
-
-在 2025/5/8 02:03, Ivo Smits 写道:
-> Hello everyone,
+On Wed, May 07, 2025 at 07:43:28PM +0200, David Sterba wrote:
+> On Wed, May 07, 2025 at 03:50:51PM +0200, Daniel Vacek wrote:
+> > > --- a/fs/btrfs/raid56.c
+> > > +++ b/fs/btrfs/raid56.c
+> > > @@ -203,8 +203,7 @@ int btrfs_alloc_stripe_hash_table(struct btrfs_fs_info *info)
+> > >         struct btrfs_stripe_hash_table *x;
+> > >         struct btrfs_stripe_hash *cur;
+> > >         struct btrfs_stripe_hash *h;
+> > > -       int num_entries = 1 << BTRFS_STRIPE_HASH_TABLE_BITS;
+> > > -       int i;
+> > > +       unsigned int num_entries = 1U << BTRFS_STRIPE_HASH_TABLE_BITS;
+> > 
+> > This one does not really make much sense. It is an isolated local thing.
+> > 
+> > >         if (info->stripe_hash_table)
+> > >                 return 0;
+> > > @@ -225,7 +224,7 @@ int btrfs_alloc_stripe_hash_table(struct btrfs_fs_info *info)
+> > >
+> > >         h = table->table;
+> > >
+> > > -       for (i = 0; i < num_entries; i++) {
+> > > +       for (unsigned int i = 0; i < num_entries; i++) {
+> > 
+> > I'd just do:
+> > 
+> > for (int i = 0; i < 1 << BTRFS_STRIPE_HASH_TABLE_BITS; i++) {
+> > 
+> > The compiler will resolve the shift and the loop will compare to the
+> > immediate constant value.
 > 
-> After some abuse (drive going offline and unexpected shutdowns) one of 
-> my fairly large BTRFS filesystems seems to suffer from some corruption. 
-> The filesystem still mounts and operates mostly fine. A lot of errors 
-> (probably caused by a drive going offline and later returning) have been 
-> recovered from a good RAID1 mirror by scrub a little while ago, but some 
-> problems persist.
+> Yes, it's a compile time constant. It's in num_entries because it's used
+> twice in the function, for that we usually have a local variable so we
+> don't have to open code the value everywhere.
 > 
-> The kernel log is repeating the following two messages about every 30 
-> seconds:
+> > ---
+> > 
+> > Quite honestly the whole patch is questionable. The recommendations
+> > are about right shifts. Left shifts are not prone to any sinedness
+> > issues.
+> > 
+> > What is more important is where the constants are being used. They
+> > should honor the type they are compared with or assigned to. Like for
+> > example 0x80ULL for flags as these are usually declared unsigned long
+> > long, and so on...
 > 
-> BTRFS error (device sdg1): parent transid verify failed on logical 
-> 31419461632000 mirror 1 wanted 1240926 found 1089963
-> BTRFS error (device sdg1): parent transid verify failed on logical 
-> 31419461632000 mirror 2 wanted 1240926 found 1089963
-
-The transid mismatch mostly a death sentence for a btrfs.
-
-This normally means bad metadata COW or bad hardware FLUSH/FUA behavior.
-
+> Agreed, flags and masks should be unsigned.
 > 
-> I suspect this might be some background process in the kernel trying to 
-> clean things up since it starts after mounting and doesn't stop.
-
-Nope, no regular operation should lead to such problem.
-
-Not to mention both mirrors share the same bad transid.
-
-[...]
+> > For example the LINK_LOWER is converted to int when used as
+> > btrfs_backref_link_edge(..., LINK_LOWER) parameter and then another
+> > LINK_LOWER is and-ed to that int argument. I know, the logical
+> > operations are not really influenced by the signedness, but still.
 > 
-> I also ran btrfs check while the filesystem was unmounted. This first 
-> discovered the two transid failures also found by scrub, and then 
-> continued to find a lot more errors, like reference count and bytenr 
-> mismatches. Since the filesystem appears to operate normally and scrub 
-> did not find those errors, could this just be blocks which are no longer 
-> part of the filesystem tree, possibly not even referenced by anything?
-
-When anything go wrong on btrfs, please just go "btrfs check --readonly" 
-on the unmounted fs directly.
-
-That's the only reliable way to evaluate the problem.
-If the fs is too large, or you want a better way to show the errors, 
-"btrfs check --readonly --mode=lowmem" will also help.
-
+> Well, it's more a matter of consistency and coding style. We did have a
+> real bug with signed bit defined on 32bit int that got promoted to u64
+> not as a single bit but 0xffffffff80000000 and this even got propagated
+> to on-disk data. We were lucky it never had any real impact but since
+> then I'm on the side of making bit shifts unconditionally on unsigned
+> types. 77eea05e7851d910b7992c8c237a6b5d462050da
 > 
-> Is this situation something btrfs check can fix? Is it possible to only 
-> let it fix the most problematic transid error and ignore everything 
-> else? Could manually patching the transid value help btrfs clean things up?
 
-Normally no to all the questions above.
+For what it's worth, my support for moving to unsigned types for all
+shifts is based on that same investigation.
 
-Thanks,
-Qu
+I think a sign extension on s32->u64 is way more surprising and hard to
+debug than a "whoops I thought -1 was less than 1 but actually it's
+bigger", which is the first thing you would think of for weird
+arithmetic errors.
 
+> > 
+> > And btw, the LINK_UPPER is not used at all anywhere in the code, if I
+> > see correctly.
 > 
-> Most of the data on the filesystem is backup data, or can be backed up 
-> elsewhere, so losing some files would not be the end of the world, as 
-> long as damaged files can be identified and there is no silent data 
-> corruption.
+> $ git grep LINK_UPPER
+> backref.c:      if (link_which & LINK_UPPER)
+> backref.h:#define               LINK_UPPER      (1U << 1)
 > 
-> Best regards,
+> > ---
+> > 
+> > In theory the situation could be even worse at some places as
+> > incorrectly using an unsigned constant may force a signed variable to
+> > get promoted to unsigned one to match. This may result in an int
+> > variable with the value of -1 ending up as UINT_MAX instead. And now
+> > imagine if(i < (1U << 4)) where int i = -1;
+> > 
+> > I did not check all the places where the constants you are changing
+> > are being used, but it looks scary.
 > 
-> Ivo
+> This is touching the core problem, mixing the signed and unsigned types
+> in the wrong and very unobvious way. But we maybe disagree that it
+> should be int, while I'd rather unify that to unsigned.
 > 
-> 
+> If you find a scary and potentially wrong use please send a RFC patch so
+> we can see how much we can avoid that by changing that to a safer
+> pattern.
+
+I suppose the MOST convincing form of this patch would thoroughly audit
+all the users/arithmetic involved to make sure they aren't doing
+anything silly. I immediately noticed that LINK_UPPER/LINK_LOWER do get
+passed as ints to btrfs_backref_link_edge() in a way that is fine to my
+eye, but it wouldn't hurt to change that unsigned int too, the way you
+did in a few other places?
+
+I am still comfortable with this as-is.
 
