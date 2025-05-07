@@ -1,263 +1,311 @@
-Return-Path: <linux-btrfs+bounces-13787-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13788-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD629AAE070
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 15:17:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 458ECAAE1A1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 15:56:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2207FB20B14
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 13:13:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36E599C2221
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 13:54:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A178289814;
-	Wed,  7 May 2025 13:12:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE08E2882A3;
+	Wed,  7 May 2025 13:51:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ieE/8e0s"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="egwjU/Y3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B0F4289357;
-	Wed,  7 May 2025 13:12:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746623548; cv=fail; b=KMSeN4FP8BljOWOge/8ejRQTT6Rr/JnHXKLnQmmiSQ3AWkcXCTa82iWxorR0aAH62SO4D4yol7y2l16zQu82alM9CBHyigKILkHSb/FL8mVZpGCzPRrFNUkoouAUUInIVmGe5NSVZ1J/2Y2RUh61pIMLOoPXhUGs3hkNc5PJFfY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746623548; c=relaxed/simple;
-	bh=4SeaFVNXi88lA5LrF6jLsuXVakCJv7LCFCTLVjj7a8o=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ZnjoI57QyeGoWMD44R+wPN43Ry1nUo94I8QFtTsTaSMMRZ5/rH0NwBq27Rvi1IQ2MpTsTIbpCtMV7sbixaU3RKO924GaITeOnYZlxrO/0S3p4lueeFaqd+j5vHiFf5vrhJggqYoU9LlOh/+/aSBThzx4fJXUJsqlJWPG8pl7hQY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ieE/8e0s; arc=fail smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1746623547; x=1778159547;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=4SeaFVNXi88lA5LrF6jLsuXVakCJv7LCFCTLVjj7a8o=;
-  b=ieE/8e0sBel3Vz5jj8U8VRdsYs4CoML2naRaK/mQUy86f7jO6nsq9GlO
-   EzioWAIeRUc1ff9iNet7ShVjPgJItljyreQ5B24CuSNzEsgEo+sv6TeO7
-   OvML9Mx4ZO7gUgq6tqWp1ncrM4uuVITRolFiB0SEsgSe4j4jE773eHDHs
-   rUho3V2zKmov+9lzMPDWihOuSFnQPMZCxPYol5XvYVVK/Enku6RkZqdJZ
-   QVmfrTLr/WF3kfRDE1/Rj4lgY5o0KFEKU0VJB6uTnG+BdoiyadaXs91+9
-   niQKNF5A/wv16LOUiTKceOFgmBSYqqKWQtaFtHtZ49oEItLIkyrTnrLAH
-   g==;
-X-CSE-ConnectionGUID: ELQaVjOnTx6kx55lZ1RTAQ==
-X-CSE-MsgGUID: vm+LbMepQ1+4aKofkdh0fQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11426"; a="52168863"
-X-IronPort-AV: E=Sophos;i="6.15,269,1739865600"; 
-   d="scan'208";a="52168863"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2025 06:12:26 -0700
-X-CSE-ConnectionGUID: zm+d1npkQQC1IxtzfVuDvw==
-X-CSE-MsgGUID: BSEAdXEkQyOZtjq+T9YYAQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,269,1739865600"; 
-   d="scan'208";a="140793297"
-Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
-  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2025 06:12:26 -0700
-Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14; Wed, 7 May 2025 06:12:25 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14 via Frontend Transport; Wed, 7 May 2025 06:12:25 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Wed, 7 May 2025 06:12:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ni7LPbyLGT4HhwktJugPXNVi+jqjd2dHvh/9/9Wq1LnWMJCQQbH1Xqk+M+I6t96GYT10q/A66WEWAb75n/YYJXW+uG8pGURUZADpR5X2L7d2MhyLVyqZbkWszpPORvO0YI2pwTaEO+F3Qn9HYO2+hklcbaMrm6tHOj8wbx1nk2mMCDtwGdMSEfhFe4IemxeF1qkyy5gkgr8XmdnNBsz7IMufH8mAncIOuOQOmFOLGzW0/JFNFyzRLVaknlNgROhqiE30Ueb2JYqjsJzaC4z6blO0SrCF4f+rnaBcMum0HxOuG2SLS6TVgdwex0mnuwJGEcx23Cn6e3JJTFQUgKUZog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c6eCXcslYi1X+YSuJC82CNFwKhwn8Z0zdeDmXl41R/g=;
- b=BXddl/3yxg00+QMyIqlMDF1lzEDSOD2Vtdx0hyUGL6qcwre+3UWJYc0pIZHP5H+cLeK+4HNOz+zMnnT/QxfQbF0hCIJJWfi+L2+DIvAzEJc6wsBAiC2WjEmv7In3xgG7b/FiXbI5jvTsnPZHp/fi3oC3GPIhEBqM/PQkT9h/OXZGBt/38bAC9N6lJCPN251OedfE5o3i5nPHxffcofqQlLLsTPJk9q6nBuKnZR5TQmP/JxamItV6++A5+K2NU/hQdiDoK5zyhAn5hLftQBLJqztsSMPTgTNA56Tclx8cP00/DKe3Pv4vKJW0hirE/28XytiOrmPpg99cYmXsFjhPtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com (2603:10b6:930:3a::8)
- by SA2PR11MB4908.namprd11.prod.outlook.com (2603:10b6:806:112::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.21; Wed, 7 May
- 2025 13:12:14 +0000
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::6826:6928:9e6:d778]) by CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::6826:6928:9e6:d778%5]) with mapi id 15.20.8678.028; Wed, 7 May 2025
- 13:12:13 +0000
-Date: Wed, 7 May 2025 14:12:05 +0100
-From: "Cabiddu, Giovanni" <giovanni.cabiddu@intel.com>
-To: David Sterba <dsterba@suse.cz>
-CC: Josef Bacik <josef@toxicpanda.com>, "clm@fb.com" <clm@fb.com>,
-	"dsterba@suse.com" <dsterba@suse.com>, "herbert@gondor.apana.org.au"
-	<herbert@gondor.apana.org.au>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>, "linux-crypto@vger.kernel.org"
-	<linux-crypto@vger.kernel.org>, qat-linux <qat-linux@intel.com>,
-	"embg@meta.com" <embg@meta.com>, "Collet, Yann" <cyan@meta.com>, "Will,
- Brian" <brian.will@intel.com>, "Li, Weigang" <weigang.li@intel.com>
-Subject: Re: [RFC PATCH 6/6] btrfs: zlib: add support for zlib-deflate
- through acomp
-Message-ID: <aBtcJVS1yzUPXtCO@gcabiddu-mobl.ger.corp.intel.com>
-References: <20240426110941.5456-1-giovanni.cabiddu@intel.com>
- <20240426110941.5456-7-giovanni.cabiddu@intel.com>
- <20240429135645.GA3288472@perftesting>
- <20240429154129.GD2585@twin.jikos.cz>
- <aBos48ctZExFqgXt@gcabiddu-mobl.ger.corp.intel.com>
- <20250507124321.GF9140@suse.cz>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20250507124321.GF9140@suse.cz>
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 -
- Collinstown Industrial Park, Leixlip, County Kildare - Ireland
-X-ClientProxiedBy: DUZPR01CA0179.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:4b3::10) To CY5PR11MB6366.namprd11.prod.outlook.com
- (2603:10b6:930:3a::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C0F27A92D
+	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 13:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1746625866; cv=none; b=HYOvQVn6COX7OioRED/e216qbd6LvUhcZXRAzqDkxjWFg+Bac1+Dz5sswwkioDyYUwPVZp1I3UK3FJZlzpQIMxyNgBVf0qNTn1eBeyOLaJNl69OprqhLT5LskdvqATGZ6fMHx9Zq9of5/KNRNTGNQrhBGHYDOfqOB/NaE68GYFE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1746625866; c=relaxed/simple;
+	bh=MJdqHZ6Ph0hO04XXvzacSH+mVoqf8AzmDTAdrkIJhuU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fhdvx44WzA09auph+Xamb1xijCOJ0v6HfsIIYzu/ckdmmf+RuqlTjyZWiX9WV7BSrYbYo8lRE1ya4ooCsp3gvVWhqw37Q+ckbp3MMefnCegkSZ8JQeWzzIk7efz9inRzKaOKtDB690AuI4txtpZcPL6aIEvp1wYekxFAWECww2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=egwjU/Y3; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-ac34257295dso436353466b.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 May 2025 06:51:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1746625862; x=1747230662; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jkDlzTNJcfu8/SgGqeShgytF6E+52sll1JcqF7OHz2Q=;
+        b=egwjU/Y3r//kLvHT+y1eHSaXe+iQBT0sOsXgyuMuegM2L7Iz7chosmXf6uFUseS5Dt
+         86ZSRFmzbAzPlAVfMKJIgmreI1D67mG+kD4XUPHMaNP7HVBkkMTnzzaWNjd0GG/a3h5p
+         g6rpleuB+6DJE72LjNQdnYY7bOnXBQ3SDWsdUdrZe3peHdnnqdPTH2ZVbhOC9sCFUYfz
+         wrH0CUiTGsB7o8G5rq/qX+4UYn0PES6fk68hbKWKUqCld1benpyApZNVUJNvrP2fXDJr
+         zDUHlLZuYM1dTLRZIckaXVbJofNZaDB/SiSA0bDUQD2pAdJfktEHrNoH9p90L6DDmKd+
+         FYgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746625862; x=1747230662;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jkDlzTNJcfu8/SgGqeShgytF6E+52sll1JcqF7OHz2Q=;
+        b=KMk6jWR2FdNn1arL0gq6RoFYuvm1DCQX9MCtzbzRLsujefY3tC+PberrVVy2c7dqDs
+         3rasxcX+XNSduGWr9y+p7CrNU/1eRE+XbGZf1gpALMA9KlU0+Vp9rhSLxoqt4JkEGeZa
+         XUOuDxRZxqykcnpF4F8K6dhtcUX7/N4Lp1Afcqn402HIS+qJRdX69KWW9uWa+zvpQ1ak
+         TP4HO38JizFKLYCjFWAXAGsdMg1UXt1SXG6sMgCoq0Yjn+eLYNBj6PcsviIAfyQrkwCu
+         jLB0BR3K2rjHaFslIS0aNCG/Pa98sx/9fzK2WhKiG6YXhyjYsV+dlHqj40HmsyrBewgi
+         IDWw==
+X-Gm-Message-State: AOJu0YwroSeluBsRjEeBGpdUeZuontJyfptUgNxnXlaj5q2kig0y1CXQ
+	4tkMpuewbS06NPq76VsJBACI21vEyfUwz+uSaEl7CDXwg6DJ/psZn/vSfvh7jFMV+ht1M/vF81P
+	rELP+wBqdlVF2km/4pSLG0n+AmGkMtiiszr0bJkkuDR3DaIr3lB8=
+X-Gm-Gg: ASbGnct2pgR+rbEmSDiznCEB6EBzS91nPD8+8N3XuE8tkrs152PWicEHOVNXNmz8Efy
+	Z8jIMZIGT3NY+2Gv0j4QXTZ5sCACOrvGYEcM8VnEWDM7psgsdRdp3ChnclYMfFcQsbEMMgdp5E/
+	2nK0pPRW1V8gFNwP69irXh
+X-Google-Smtp-Source: AGHT+IFZ8akDUwd68g46gjqKgRAd1iJewjnxW2UeWeMOyTQUKIqWT9TmxcNTLMButALpj4XH3bxGfWsccT6fIfW1hh0=
+X-Received: by 2002:a17:907:6ea6:b0:ace:c518:1327 with SMTP id
+ a640c23a62f3a-ad1e8bc2504mr282527266b.14.1746625861777; Wed, 07 May 2025
+ 06:51:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6366:EE_|SA2PR11MB4908:EE_
-X-MS-Office365-Filtering-Correlation-Id: eb57ecbb-ccd3-45b3-4b8e-08dd8d68c828
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?na25Zl09m9eSnCNhDtPO9C+1tqjlUNlyr8tntIeOYeW+/WFcJLYLmY+E/6/E?=
- =?us-ascii?Q?vUKbtRqynDJhwFFzUjf1a0cpfY8De/Zrh/K6OvejV0zdWzOUzDYZa1AvC2jL?=
- =?us-ascii?Q?RK68FsSX4codvfGfcSn6THmQlOf/UNWVxaVhrHkb9CwjHPy9q2CI7/nvAqDu?=
- =?us-ascii?Q?XiLnH7vXTB3WqkNAc0eHNn4ndM384o97z17/KSxX16zd35+J2essn/t0nVb+?=
- =?us-ascii?Q?rZ44c7Af4aFUHE23ikPFpDbOzfHcYvK0HE41qJcfW2raCbBtL6zkCzf1YgC8?=
- =?us-ascii?Q?GNUVyNY1OSpIJParjJurBWBAJLTRJpM9ELFubenGttusDWsPxDQ8zPCzIAlD?=
- =?us-ascii?Q?c5dcrPFYmRVNroVLr1NwOCaMDjsqPXXXuwCNxOBp5ir0ktY9T7VCSldacvcC?=
- =?us-ascii?Q?mmTjHwq4aIHSLsf5gKooVu5IPSbEjWqdf5uHqqP78WEv7Di9piAwhu2il71e?=
- =?us-ascii?Q?nxCJfTu3Ln2wFWd3M/YrqECJy/5jidgLm9VC2xzgIluw8/RSv7KTJI44LGya?=
- =?us-ascii?Q?YJIsGwSvjE4x9dAIRt+RHC/vTDJ1zA3LqF/lUTx4ra2EIQitlAFDeM/2DjDw?=
- =?us-ascii?Q?Fwfm1WOqX0+fph85IQ7LzurXN06UGGar1hSN53corPTz/7maHtiC4EwYMCRk?=
- =?us-ascii?Q?CSKZczzBkRE6iNmCsrw7sY1mn+tMRHQaHiKWdj7rdTCYR4iBEyzvt7iwxdS/?=
- =?us-ascii?Q?hZ+sSJAbbm4laE9pyf4i5vlrYHXuFpKWhHFmp549sdhlAcORoI4MXcnamyMz?=
- =?us-ascii?Q?rDWxcF9YbwFwndzDaSVU/DHhaIpF56POeBkzjKcVM3BwZwOQfHMx83YX3dcA?=
- =?us-ascii?Q?nrvmIm42TUN8W05eYiBLC3cM/5/KClL7+6fa9aS5c7qXD1pSbc6b2ARKu2dV?=
- =?us-ascii?Q?rzjpAnOWO/KL8iKZwNyqQ2pXFipKWWTy3FEMTSULWygL6Zi77RAUcIwC9Aqh?=
- =?us-ascii?Q?BeBnth7Z1WIDMCOd/YTXgMiw5gPASP+M7h4KBdS+fDun4jYaVtmibaFsbr3+?=
- =?us-ascii?Q?EscFrATFFLueYN59BMyeuTLMKTWR2XEWlzhZO9IpiokNdRp45UvUfin/KDg8?=
- =?us-ascii?Q?dAbSn+/y+pWoUHMe+wzlUHTmjvFX25ft2b6utJGVi9LNTMrWMeoveruaGIQh?=
- =?us-ascii?Q?9C9vdn1zRGwHpOSxdxSpdtgCZWlsAwc4s9Us49NylC9zMAa3/TBm6Oa84xfJ?=
- =?us-ascii?Q?jwLRPvwyvypPzWzk/+QQn0M81e3SEm9/rbDE7VoLv3cxBfatqTiRDOemAqJo?=
- =?us-ascii?Q?Ww94vlz5hfPCAgwNfoWWPhQwoY4HLhlBzpGNLveSHoc4m5Tz0tIaKSez3StK?=
- =?us-ascii?Q?XfZy19xzrYUwkTlxM4bvwN8FJ3WXm5sb/bPlyR8MM9fRHo2YTbDX3i0R91IP?=
- =?us-ascii?Q?jcmuQmxccOY1o+74epjdLHX4kpQ/7WEwirOABvF20NTcenIpPcbWrG0b1NVL?=
- =?us-ascii?Q?PKm604gCKPg=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6366.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4Kgtx0CxDFzV6u0m2DHuo2Y02bKGSQV3kJX4VxUBZcjeJozd2p9BWHbFUABX?=
- =?us-ascii?Q?4RIvy/ZNzvYAhlBD7qCluGJPe7bC7/BIJ9lNFZhWeLm2Gz0vZVRhCNORbAjq?=
- =?us-ascii?Q?KxyILw4kf2ba+CCWF0JAMhxBchr/SByRv/4xRIrjikvntif6D77byofHuX23?=
- =?us-ascii?Q?IphEMFrfOmVcfs69YLCg65htCqWlWQ+msdAjdDjo/1u7IWhS3rhADZ1eAmjy?=
- =?us-ascii?Q?p1PuaioNZjAb139MV4jh1mmL0D/DDXOS+MIanGnHqRICfOKmoNtqFIW/6YfV?=
- =?us-ascii?Q?6eYT6SvedqECCzL3qa0d+atMYC23hixTk0tb5G2j7I9sB/IMhJnqspThVmNN?=
- =?us-ascii?Q?osgLBxByHDk0PMUO8N+OleWeQpo2kHBOmJnbxd7iZDo2JOG25u8Q8aMunQIt?=
- =?us-ascii?Q?tn0EmDabOBJ7yrwcgS/jRUqzAMUOzoT/OwupT/aFEmcKCxMltKl2nLKn0Ozc?=
- =?us-ascii?Q?oZWUXJfrI6VfKg5PubzIQ9rxQLEYnXq8xCdpey4qTTvF80RhI7P/8aKlXUUb?=
- =?us-ascii?Q?1xtBWM22HXJ76VmERATH7/pzmA7H9W8zdyhTYMZwyMRtd7D08AbX8SoP2ywH?=
- =?us-ascii?Q?d9rsZD5ZTU/RsOQ/oAyoha0k1ltyPSPrhPKOrqt4mVSR+5QWzQp7LlMLtWq3?=
- =?us-ascii?Q?02g8aTFe5giSTbfOEsZv8YbE2WcqdMonPTPOwzHprI9f+N5/hU6xKoGR58E3?=
- =?us-ascii?Q?STNI5ic9Va4Z2pMJUBHiMGWOw+kBszLQ94z0BNpUHC3V1Zdi6EeqZz7ory1n?=
- =?us-ascii?Q?kGddzkX6cZfTsTB2hQcxqMEXgaSDIUDxm0X8tcoDKL+h8ptp4nKgUgm1YHPw?=
- =?us-ascii?Q?uocxRdLO8qfs45dv8l5uEbvttcMEmKkPfAWmSJnF+RdGC7eGCdvW8Uw5plpB?=
- =?us-ascii?Q?FyG0GtmBgTgJxbJXaJwPaCbM9BILObyRmKgG/rCHzID6R94eBPHvo6s8xsou?=
- =?us-ascii?Q?GAd3a50k+EumPPYsGPsvnFjpd3/qacEAcl1aSyUpboOo74KHVnLtPBBVQr/4?=
- =?us-ascii?Q?4Y+WHbLM/jTUFIUC7UxV6TZVSmpbYLsa4GyZubyUIu7S3nh7Y4U6K7M4hHsj?=
- =?us-ascii?Q?+Ncc+IpafkmBHBSFOo93Nejv/D5g71ZkekN4cYpP77Z1hxebtUYAonZFvZ+P?=
- =?us-ascii?Q?UJxTGT1F3IQ4JHYzKg1BO5xxzlpwEFBebEoMekxgl0CjbRN0DlPGm/bvCBpU?=
- =?us-ascii?Q?Mc6o4G9WXY/SIM1Y9fp2F1/cEhajqQtQDDhDCyfa/cvYBI+5etr9qs7nvLl6?=
- =?us-ascii?Q?MwSgrY7i9BYO626hpl+ppnxoesqXLQr4T/sbSs82LlTYHvp4y2KRa5hOFLs6?=
- =?us-ascii?Q?Lh/AKahh+w1/7I4/XKvEDryR5ZM4jism06FTjqb8y5tBTefvpc4i4vpMMbiS?=
- =?us-ascii?Q?7n03U+XIMsxcY+yIv9dcrCRFm1dQfHU1epF/oRg0kg6ReeL4QMemNI4W5vZU?=
- =?us-ascii?Q?t9tVATumuAJ2CPgutKBQFVSMKg+hchuWUaV4olxnpMn0d9reuXq5jgN7bQQM?=
- =?us-ascii?Q?l8rIYydeYSTDa4Ssf23Pzifavx3+88hTAtcLj7xy+Y7Wbr7pBCUULbY3hNGV?=
- =?us-ascii?Q?O4PIe5NNfb4YAx6yCidZeoxDKLlacofKDgbZ/7x+41JJYagtNRjMWwMXqzl2?=
- =?us-ascii?Q?DQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb57ecbb-ccd3-45b3-4b8e-08dd8d68c828
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6366.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2025 13:12:13.7103
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rQH286YP8A0MpEUatRKVJZgOM7BpBwS/8spCmGkBgLjyxPGttiehwzSabJrw1ZL8rAicqPJOd0jyMCIq6PobG++mNtSL3lD61MjQVKwHhk0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4908
-X-OriginatorOrg: intel.com
+References: <20250422155541.296808-1-dsterba@suse.com>
+In-Reply-To: <20250422155541.296808-1-dsterba@suse.com>
+From: Daniel Vacek <neelx@suse.com>
+Date: Wed, 7 May 2025 15:50:51 +0200
+X-Gm-Features: ATxdqUGbx7L8yh8Qk668iLEwwuyDijMfpRi2WPdfSFH9HK8--2EIItXBp8hAD1k
+Message-ID: <CAPjX3FcGAUqheUg0TQHG_yvuQExjT3N3SUGRYtk1S3b3aDVZZQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: use unsigned types for constants defined as bit shifts
+To: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, May 07, 2025 at 02:43:21PM +0200, David Sterba wrote:
-> On Tue, May 06, 2025 at 04:38:11PM +0100, Cabiddu, Giovanni wrote:
-> > Hi David,
-> > 
-> > I've resumed work on this, now that I have all necessary dependencies to
-> > offload ZSTD to QAT.
-> > 
-> > On Mon, Apr 29, 2024 at 04:41:29PM +0100, David Sterba wrote:
-> > ...
-> > > I'd skip the style and implementation details for now. The absence of
-> > > compression level support seems like the biggest problem, also in
-> > > combination with uncondtional use of the acomp interface.
-> > Regarding compression levels, Herbert suggested a new interface that
-> > would effectively address this concern [1].
-> 
-> It seems to be sufficient for passing the level from filesystem to
-> crypto layer.
-> 
-> One thing I'm not sure is considered is that zstd has different
-> requirements for workspace size depending on the level. In btrfs this is
-> done in zstd_calc_ws_mem_sizes().
-> 
-> > > We'd have to enhance the compression format specifier to make it
-> > > configurable in the sense: if accelerator is available use it, otherwise
-> > > do CPU and synchronous compression.
-> > For usability, wouldn't it be better to have a transparent solution? If
-> > an accelerator is present, use it, rather than having a configuration
-> > knob.
-> > 
-> > In any case, I would like to understand the best way forward here. I
-> > would like to offload both zlib_deflate and ZSTD. However, I wouldn't
-> > like to replicate the logic that calls the acomp APIs in both
-> > fs/btrfs/zlib.c and fs/btrfs/zstd.c.
-> 
-> This looks doable, acomp_comp_pages() from your patch could work for
-> both, the only difference is the parameter to crypto_alloc_acomp() and
-> eventually the level.
-> 
-> Otherwise, how to go forward with that. I think we'd need to get a few
-> iterations staring from what you have, with added support for the levels
-> and then we'll remove/replace the problematic parts like the numerous
-> allocations.
-> 
-> As the first step, please send an update with the acomp levels added to
-> zlib callbacks, so it works in normal conditons with all the
-> allocations.
-> 
-> We'll need to move repeatedly used structures to the workspaces so that
-> will be the second step. Once we settle on someting reasonable we can
-> extend it and add zstd support.
+On Tue, 22 Apr 2025 at 17:55, David Sterba <dsterba@suse.com> wrote:
+>
+> The unsigned type is a recommended practice (CWE-190, CWE-194) for bit
+> shifts to avoid problems with potential unwanted sign extensions.
+> Although there are no such cases in btrfs codebase, follow the
+> recommendation.
+>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
+>  fs/btrfs/backref.h               |  4 ++--
+>  fs/btrfs/direct-io.c             |  4 ++--
+>  fs/btrfs/extent_io.h             |  2 +-
+>  fs/btrfs/inode.c                 | 12 ++++++------
+>  fs/btrfs/ordered-data.c          |  4 ++--
+>  fs/btrfs/raid56.c                |  5 ++---
+>  fs/btrfs/tests/extent-io-tests.c |  6 +++---
+>  fs/btrfs/zstd.c                  |  2 +-
+>  8 files changed, 19 insertions(+), 20 deletions(-)
+>
+> diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+> index 74e6140312747f..953637115956b9 100644
+> --- a/fs/btrfs/backref.h
+> +++ b/fs/btrfs/backref.h
+> @@ -423,8 +423,8 @@ struct btrfs_backref_node *btrfs_backref_alloc_node(
+>  struct btrfs_backref_edge *btrfs_backref_alloc_edge(
+>                 struct btrfs_backref_cache *cache);
+>
+> -#define                LINK_LOWER      (1 << 0)
+> -#define                LINK_UPPER      (1 << 1)
+> +#define                LINK_LOWER      (1U << 0)
+> +#define                LINK_UPPER      (1U << 1)
+>
+>  void btrfs_backref_link_edge(struct btrfs_backref_edge *edge,
+>                              struct btrfs_backref_node *lower,
+> diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+> index 3a03142dee099b..fde612d9b077e3 100644
+> --- a/fs/btrfs/direct-io.c
+> +++ b/fs/btrfs/direct-io.c
+> @@ -151,8 +151,8 @@ static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
+>         }
+>
+>         ordered = btrfs_alloc_ordered_extent(inode, start, file_extent,
+> -                                            (1 << type) |
+> -                                            (1 << BTRFS_ORDERED_DIRECT));
+> +                                            (1U << type) |
+> +                                            (1U << BTRFS_ORDERED_DIRECT));
+>         if (IS_ERR(ordered)) {
+>                 if (em) {
+>                         btrfs_free_extent_map(em);
+> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> index bcdb067da06d1e..b677006ab14ee6 100644
+> --- a/fs/btrfs/extent_io.h
+> +++ b/fs/btrfs/extent_io.h
+> @@ -67,7 +67,7 @@ enum {
+>   *    single word in a bitmap may straddle two pages in the extent buffer.
+>   */
+>  #define BIT_BYTE(nr) ((nr) / BITS_PER_BYTE)
+> -#define BYTE_MASK ((1 << BITS_PER_BYTE) - 1)
+> +#define BYTE_MASK ((1U << BITS_PER_BYTE) - 1)
+>  #define BITMAP_FIRST_BYTE_MASK(start) \
+>         ((BYTE_MASK << ((start) & (BITS_PER_BYTE - 1))) & BYTE_MASK)
+>  #define BITMAP_LAST_BYTE_MASK(nbits) \
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 652db811e5cabd..73ef9b9b2b2cd3 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -1151,7 +1151,7 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
+>         btrfs_free_extent_map(em);
+>
+>         ordered = btrfs_alloc_ordered_extent(inode, start, &file_extent,
+> -                                            1 << BTRFS_ORDERED_COMPRESSED);
+> +                                            1U << BTRFS_ORDERED_COMPRESSED);
+>         if (IS_ERR(ordered)) {
+>                 btrfs_drop_extent_map_range(inode, start, end, false);
+>                 ret = PTR_ERR(ordered);
+> @@ -1396,7 +1396,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+>                 btrfs_free_extent_map(em);
+>
+>                 ordered = btrfs_alloc_ordered_extent(inode, start, &file_extent,
+> -                                                    1 << BTRFS_ORDERED_REGULAR);
+> +                                                    1U << BTRFS_ORDERED_REGULAR);
+>                 if (IS_ERR(ordered)) {
+>                         btrfs_unlock_extent(&inode->io_tree, start,
+>                                             start + cur_alloc_size - 1, &cached);
+> @@ -1976,8 +1976,8 @@ static int nocow_one_range(struct btrfs_inode *inode, struct folio *locked_folio
+>
+>         ordered = btrfs_alloc_ordered_extent(inode, file_pos, &nocow_args->file_extent,
+>                                              is_prealloc
+> -                                            ? (1 << BTRFS_ORDERED_PREALLOC)
+> -                                            : (1 << BTRFS_ORDERED_NOCOW));
+> +                                            ? (1U << BTRFS_ORDERED_PREALLOC)
+> +                                            : (1U << BTRFS_ORDERED_NOCOW));
+>         if (IS_ERR(ordered)) {
+>                 if (is_prealloc)
+>                         btrfs_drop_extent_map_range(inode, file_pos, end, false);
+> @@ -9688,8 +9688,8 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
+>         btrfs_free_extent_map(em);
+>
+>         ordered = btrfs_alloc_ordered_extent(inode, start, &file_extent,
+> -                                      (1 << BTRFS_ORDERED_ENCODED) |
+> -                                      (1 << BTRFS_ORDERED_COMPRESSED));
+> +                                      (1U << BTRFS_ORDERED_ENCODED) |
+> +                                      (1U << BTRFS_ORDERED_COMPRESSED));
+>         if (IS_ERR(ordered)) {
+>                 btrfs_drop_extent_map_range(inode, start, end, false);
+>                 ret = PTR_ERR(ordered);
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index b5b544712e93a3..6151d32704d2da 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -155,7 +155,7 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
+>         u64 qgroup_rsv = 0;
+>
+>         if (flags &
+> -           ((1 << BTRFS_ORDERED_NOCOW) | (1 << BTRFS_ORDERED_PREALLOC))) {
+> +           ((1U << BTRFS_ORDERED_NOCOW) | (1U << BTRFS_ORDERED_PREALLOC))) {
+>                 /* For nocow write, we can release the qgroup rsv right now */
+>                 ret = btrfs_qgroup_free_data(inode, NULL, file_offset, num_bytes, &qgroup_rsv);
+>                 if (ret < 0)
+> @@ -253,7 +253,7 @@ static void insert_ordered_extent(struct btrfs_ordered_extent *entry)
+>   * @disk_bytenr:     Offset of extent on disk.
+>   * @disk_num_bytes:  Size of extent on disk.
+>   * @offset:          Offset into unencoded data where file data starts.
+> - * @flags:           Flags specifying type of extent (1 << BTRFS_ORDERED_*).
+> + * @flags:           Flags specifying type of extent (1U << BTRFS_ORDERED_*).
+>   * @compress_type:   Compression algorithm used for data.
+>   *
+>   * Most of these parameters correspond to &struct btrfs_file_extent_item. The
+> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+> index 4657517f5480b7..06670e987f92f8 100644
+> --- a/fs/btrfs/raid56.c
+> +++ b/fs/btrfs/raid56.c
+> @@ -203,8 +203,7 @@ int btrfs_alloc_stripe_hash_table(struct btrfs_fs_info *info)
+>         struct btrfs_stripe_hash_table *x;
+>         struct btrfs_stripe_hash *cur;
+>         struct btrfs_stripe_hash *h;
+> -       int num_entries = 1 << BTRFS_STRIPE_HASH_TABLE_BITS;
+> -       int i;
+> +       unsigned int num_entries = 1U << BTRFS_STRIPE_HASH_TABLE_BITS;
 
-Thanks David. I like the incremental approach.
+This one does not really make much sense. It is an isolated local thing.
 
-I'll be sending a new version that is rebased on top of 6.15-rc. This
-update will include the addition of compression levels to zlib-deflate
-and will utilize folios instead of pages.
-We can proceed from there.
+>         if (info->stripe_hash_table)
+>                 return 0;
+> @@ -225,7 +224,7 @@ int btrfs_alloc_stripe_hash_table(struct btrfs_fs_info *info)
+>
+>         h = table->table;
+>
+> -       for (i = 0; i < num_entries; i++) {
+> +       for (unsigned int i = 0; i < num_entries; i++) {
 
-Regards,
+I'd just do:
 
--- 
-Giovanni
+for (int i = 0; i < 1 << BTRFS_STRIPE_HASH_TABLE_BITS; i++) {
+
+The compiler will resolve the shift and the loop will compare to the
+immediate constant value.
+
+---
+
+Quite honestly the whole patch is questionable. The recommendations
+are about right shifts. Left shifts are not prone to any sinedness
+issues.
+
+What is more important is where the constants are being used. They
+should honor the type they are compared with or assigned to. Like for
+example 0x80ULL for flags as these are usually declared unsigned long
+long, and so on...
+
+For example the LINK_LOWER is converted to int when used as
+btrfs_backref_link_edge(..., LINK_LOWER) parameter and then another
+LINK_LOWER is and-ed to that int argument. I know, the logical
+operations are not really influenced by the signedness, but still.
+
+And btw, the LINK_UPPER is not used at all anywhere in the code, if I
+see correctly.
+
+---
+
+In theory the situation could be even worse at some places as
+incorrectly using an unsigned constant may force a signed variable to
+get promoted to unsigned one to match. This may result in an int
+variable with the value of -1 ending up as UINT_MAX instead. And now
+imagine if(i < (1U << 4)) where int i = -1;
+
+I did not check all the places where the constants you are changing
+are being used, but it looks scary.
+
+>                 cur = h + i;
+>                 INIT_LIST_HEAD(&cur->hash_list);
+>                 spin_lock_init(&cur->lock);
+> diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
+> index b603563bd20986..d6aff41c38b165 100644
+> --- a/fs/btrfs/tests/extent-io-tests.c
+> +++ b/fs/btrfs/tests/extent-io-tests.c
+> @@ -14,9 +14,9 @@
+>  #include "../disk-io.h"
+>  #include "../btrfs_inode.h"
+>
+> -#define PROCESS_UNLOCK         (1 << 0)
+> -#define PROCESS_RELEASE                (1 << 1)
+> -#define PROCESS_TEST_LOCKED    (1 << 2)
+> +#define PROCESS_UNLOCK         (1U << 0)
+> +#define PROCESS_RELEASE                (1U << 1)
+> +#define PROCESS_TEST_LOCKED    (1U << 2)
+>
+>  static noinline int process_page_range(struct inode *inode, u64 start, u64 end,
+>                                        unsigned long flags)
+> diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
+> index 75efca4da194c6..4a796a049b5a24 100644
+> --- a/fs/btrfs/zstd.c
+> +++ b/fs/btrfs/zstd.c
+> @@ -24,7 +24,7 @@
+>  #include "super.h"
+>
+>  #define ZSTD_BTRFS_MAX_WINDOWLOG 17
+> -#define ZSTD_BTRFS_MAX_INPUT (1 << ZSTD_BTRFS_MAX_WINDOWLOG)
+> +#define ZSTD_BTRFS_MAX_INPUT (1U << ZSTD_BTRFS_MAX_WINDOWLOG)
+>  #define ZSTD_BTRFS_DEFAULT_LEVEL 3
+>  #define ZSTD_BTRFS_MIN_LEVEL -15
+>  #define ZSTD_BTRFS_MAX_LEVEL 15
+> --
+> 2.49.0
+>
+>
 
