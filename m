@@ -1,227 +1,170 @@
-Return-Path: <linux-btrfs+bounces-13805-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13806-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4ABFAAE811
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 19:43:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B452BAAE82F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 19:49:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F326521B28
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 17:43:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AC624E1D92
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 17:49:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B7D28D834;
-	Wed,  7 May 2025 17:43:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8A228DB59;
+	Wed,  7 May 2025 17:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="b9R3YFc+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kGt08vyN";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="baiS1rQX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IhncIIog"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="mNajizjU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203A71B87D5
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 17:43:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A5061DF748
+	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 17:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746639814; cv=none; b=pF0nrMFWrnNJBRpqxd3c7FKNRkDWisBkHJYyDy161jTzMrrtiO2Af8JrBCI3Jpxe0iobfsJ48UCcKeN3iuFJ7iqzhHUhfbN1PrR124/cDk12T3fcnTHOkhDxVoy+nIoiijY1c4OMgTJjimH0TkJzkZSGyII9LE8JRDei1iP5dy8=
+	t=1746640184; cv=none; b=XnmDzHt8PiNBMofTapEWjWyEwgaKAt5S96R0bpCpynpIGOczaCevN5vfDjXcAH8Q5iDBWW7wPgybOPNa54C/J7KkP+7d1Gi4qi7fYtaYr+vqqLxdCFoenrqL6KVIAsbfe6T+mj2v452ENv8mC/v3FUaUIJxGzlTLirQlNw5qyuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746639814; c=relaxed/simple;
-	bh=6ck0dr4xl6fV5+R+BLalK8Vf7V7yOGQzPRdlpb3yikM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p6H+VsChdN3Zph1EDVJP2FEl1mQ0KcKIGkB9/AJbkbuLa0bIIfnDbAM17zviyStvw1JySKlEV/MjHKeSWctFBG/eJImqeOjRFNcD/BnLiBkecLK1IULEnse1VCM4cH1iudNF65c7Ga7dXjIckSHHOxXDl/RdRCKdy5OyDPibb7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=b9R3YFc+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kGt08vyN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=baiS1rQX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IhncIIog; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C263B1F393;
-	Wed,  7 May 2025 17:43:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1746639810;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=33nymwt6DaWWp+zyeFbwXLf05bV3795J5XuKhbELY/o=;
-	b=b9R3YFc++SzmspLQSeTGD8UcZgwvTHVUDm+e7IV9emC6I9KWi87P8MvUNsFYHO2W9MVziy
-	tjESfX2HtMBb6pQqYQzEjajTItfhOingwBXyCDKNTPZhqrC9WulRRmlB/wWwFPGbMTX7i4
-	thnPxd2GdB4my1fZtVJqOzMxX71nIz8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1746639810;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=33nymwt6DaWWp+zyeFbwXLf05bV3795J5XuKhbELY/o=;
-	b=kGt08vyNByrnk08FVivy2hBeU5XlWevFe1SJEpzQlvQ1rzDRTSDc31zvsMn4ouv0YCKG5m
-	kbxrk/GvboXDFVAA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=baiS1rQX;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IhncIIog
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1746639809;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=33nymwt6DaWWp+zyeFbwXLf05bV3795J5XuKhbELY/o=;
-	b=baiS1rQXpQppoMqoskb2PgNBb2IK5LyrQtiYKzOD/4DTrHxskeLbdsXqlcQ0Fz+a65mjzv
-	UHP4k2sH3OqUyU85/9ZECvNg3i9/fPpC9Nd3qdiWSvBkTNh0ESy8f28HZQ6azPYqbHRAwB
-	rp1bPFhpCvnoX2xgD5eI76sTSYW2oqg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1746639809;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=33nymwt6DaWWp+zyeFbwXLf05bV3795J5XuKhbELY/o=;
-	b=IhncIIogs1PyBoLD7elwY0Pbwi86s/vXWLVXWUGbOIdQElPtpJGCGQhKSVDZ3+aDPs0p2R
-	7UWo95CBXVqQSkBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A65FF13882;
-	Wed,  7 May 2025 17:43:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aYNnKMGbG2gsDgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 07 May 2025 17:43:29 +0000
-Date: Wed, 7 May 2025 19:43:28 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Daniel Vacek <neelx@suse.com>
-Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: use unsigned types for constants defined as bit
- shifts
-Message-ID: <20250507174328.GK9140@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20250422155541.296808-1-dsterba@suse.com>
- <CAPjX3FcGAUqheUg0TQHG_yvuQExjT3N3SUGRYtk1S3b3aDVZZQ@mail.gmail.com>
+	s=arc-20240116; t=1746640184; c=relaxed/simple;
+	bh=JU9FjPvgtCg6P7W6miM/YmPqGBvyWOhO+aAD0PYN804=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=qxtvuuLNTT7HlCXRZpXI8dNfjY+hsBiUmRqoRagxhRYKx7bpnMP+FesYQ9g7R2EZlgzkcZlJfMaDLpEoOEnxZgfXEQMfGAvqs9O8qvzlC7ZsgjKy+Oxl2eim3OokkvuiT2bG/P4qkela/ZLgNov4KV+oFjkz2f7DEyo+0f5bPbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=mNajizjU; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-70427fb838cso1076527b3.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 May 2025 10:49:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1746640180; x=1747244980; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XORqY8bsBfReAiOhhIGHXHA2xD+TszyJNXE+JF8i4CY=;
+        b=mNajizjU8h6QPt7lzdmFFxTfd/Wjru6+G3EURYFNUkB1P2D54uWB1WMHj4tgle81uy
+         YaHgD+Ppvd0poHgT0fvnN18EumIrYGCqQxiUpWFIj5fAS0Y0YOWpVLLxYZf6Y1OzcSHw
+         IkX1UBKia+6gL3jimUlqo++BjVwFfyxG5vU37n4vuGcCiLHdmeVKMaYcyMCz1KbXMyHo
+         Jcz2NX+7s9jeJdeRoPUfsBg5BHBxS/n+x3K7GvjfFTr9ew+6r6PmRJ7FlSADkowuvEV8
+         MRN/WPlrygSvM7EUO4Qnd80ZBySGJ+reWAbMmLlFkVBjZErJhkxrZQdeYqI+w/bCIJPR
+         tepA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746640180; x=1747244980;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XORqY8bsBfReAiOhhIGHXHA2xD+TszyJNXE+JF8i4CY=;
+        b=ofba1Os48qAJj/LmFDgeGHwHUJDbIY6Lgb8IWYQYxfUG0oyj1ST/TfZfcvyYJVkjcv
+         gVrt0D/CBwvFZ23Rp6riP9b8+xSUl8UJvAB2KS8hIAclFfKK3D5tmhcFwcNd0JYMRl06
+         hJeDvLm83z9YgwI/Y0uXKFIDg2HnFuZynyprcJodwPsKRm8btqGwnDgSbVXFy5dL6z6R
+         BvUruHWhIhsa6cYb3c6ErMYnSXqwcp7gTqKvs/nRsezRFYavX+KCLZlgDWRz0Nalvwga
+         QbQAH3opKCNY0R+vgzdp9/BWzDJRHf+chouPyL6RGlkoN0mTjd1QbUXtFCNtuyHB2suy
+         AIvA==
+X-Gm-Message-State: AOJu0Yzbi/3K+J7+WCRyMpOQNoaJaWMboIbUdmlmQYEQVNE8NsKBrJBU
+	dvbqX2YqaycBbglb4uMceFKWHpSlmLgNLdlnKR3VaZR6YxIvyrr2vApg/mZzKPualyfjthD1u83
+	GzUM=
+X-Gm-Gg: ASbGncskK8MPmYKgmzRAoWIaVqy2rX70YIKG/C+vuEnYVB/Tze5SvtT1kkb5mFE9MwS
+	K/e9T8DrJNOid1U3c/xtK9UwdBvzeUa42C9IHLt1zavCMyrrwkyeALXaxfkG1jY7ClS0EqQhuwv
+	SaGK6lej/7ksCZyz8LsHsCw0KIkeAN45PPeTFg/Q5oNn200nsCS+WT+c5l2KGCKfJAyJxNxFO7P
+	dQC0REEIAtO08ej8rIXdnBZpTT96GhDIq79Mafh6GTTMrM56S3lMA1nanGMrjvOSdiee//2Mzwy
+	IbDl+KC7Zso8rls0d2kUWhl9h17mliEQGDn2qXKV+//wD/chZay+4ERgy+WDej6so5ycdcs/azP
+	PQoF8Dy+pOGMC
+X-Google-Smtp-Source: AGHT+IHbeBVE2fQCjpS8sDbIZxvHlF0Fj0n1Re2wJMtWIZl8W4N25XdqAr+rBYANXbtDaGku8Z6YoA==
+X-Received: by 2002:a05:690c:380e:b0:708:1d15:e008 with SMTP id 00721157ae682-70a1da88e33mr62845477b3.13.1746640180025;
+        Wed, 07 May 2025 10:49:40 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-7092bdd66d6sm9103397b3.51.2025.05.07.10.49.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 May 2025 10:49:39 -0700 (PDT)
+From: Josef Bacik <josef@toxicpanda.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH] btrfs: handle subpage releasepage properly with xarray
+Date: Wed,  7 May 2025 13:49:33 -0400
+Message-ID: <d4bd5c3c2f9ce345daa12b059d326d1814cce660.1746640142.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPjX3FcGAUqheUg0TQHG_yvuQExjT3N3SUGRYtk1S3b3aDVZZQ@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: C263B1F393
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCPT_COUNT_THREE(0.00)[3];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Score: -4.21
+Content-Transfer-Encoding: 8bit
 
-On Wed, May 07, 2025 at 03:50:51PM +0200, Daniel Vacek wrote:
-> > --- a/fs/btrfs/raid56.c
-> > +++ b/fs/btrfs/raid56.c
-> > @@ -203,8 +203,7 @@ int btrfs_alloc_stripe_hash_table(struct btrfs_fs_info *info)
-> >         struct btrfs_stripe_hash_table *x;
-> >         struct btrfs_stripe_hash *cur;
-> >         struct btrfs_stripe_hash *h;
-> > -       int num_entries = 1 << BTRFS_STRIPE_HASH_TABLE_BITS;
-> > -       int i;
-> > +       unsigned int num_entries = 1U << BTRFS_STRIPE_HASH_TABLE_BITS;
-> 
-> This one does not really make much sense. It is an isolated local thing.
-> 
-> >         if (info->stripe_hash_table)
-> >                 return 0;
-> > @@ -225,7 +224,7 @@ int btrfs_alloc_stripe_hash_table(struct btrfs_fs_info *info)
-> >
-> >         h = table->table;
-> >
-> > -       for (i = 0; i < num_entries; i++) {
-> > +       for (unsigned int i = 0; i < num_entries; i++) {
-> 
-> I'd just do:
-> 
-> for (int i = 0; i < 1 << BTRFS_STRIPE_HASH_TABLE_BITS; i++) {
-> 
-> The compiler will resolve the shift and the loop will compare to the
-> immediate constant value.
+Qu reported a EB leak with the new xarray stuff.  I messed up and when I
+was converting to the easy xarray helpers I used xa_load() instead of
+xa_find(), so if we failed to find the extent buffer at the given index
+we'd just break. I meant to use the xa_find() logic which would mean
+that it would find the index or later.
 
-Yes, it's a compile time constant. It's in num_entries because it's used
-twice in the function, for that we usually have a local variable so we
-don't have to open code the value everywhere.
+But instead of hand doing the iteration, rework this function further to
+use the xa_for_each() helper to get all the eb's in the range of the
+folio.  With this we now properly drop all the extent buffers for the
+folio instead of stopping if we fail to find an eb at a given index.
 
-> ---
-> 
-> Quite honestly the whole patch is questionable. The recommendations
-> are about right shifts. Left shifts are not prone to any sinedness
-> issues.
-> 
-> What is more important is where the constants are being used. They
-> should honor the type they are compared with or assigned to. Like for
-> example 0x80ULL for flags as these are usually declared unsigned long
-> long, and so on...
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/extent_io.c | 35 ++++++++++-------------------------
+ 1 file changed, 10 insertions(+), 25 deletions(-)
 
-Agreed, flags and masks should be unsigned.
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index f56c99eb17dc..b44396846c04 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4246,31 +4246,14 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
+ static int try_release_subpage_extent_buffer(struct folio *folio)
+ {
+ 	struct btrfs_fs_info *fs_info = folio_to_fs_info(folio);
+-	u64 cur = folio_pos(folio);
+-	const u64 end = cur + PAGE_SIZE;
++	struct extent_buffer *eb;
++	unsigned long start = folio_pos(folio) >> fs_info->sectorsize_bits;
++	unsigned long index = start;
++	unsigned long end = index + (PAGE_SIZE >> fs_info->sectorsize_bits) - 1;
+ 	int ret;
+ 
+-	while (cur < end) {
+-		unsigned long index = cur >> fs_info->sectorsize_bits;
+-		struct extent_buffer *eb = NULL;
+-
+-		/*
+-		 * Unlike try_release_extent_buffer() which uses folio private
+-		 * to grab buffer, for subpage case we rely on xarray, thus we
+-		 * need to ensure xarray tree consistency.
+-		 *
+-		 * We also want an atomic snapshot of the xarray tree, thus go
+-		 * with spinlock rather than RCU.
+-		 */
+-		xa_lock_irq(&fs_info->buffer_tree);
+-		eb = xa_load(&fs_info->buffer_tree, index);
+-		if (!eb) {
+-			/* No more eb in the page range after or at cur */
+-			xa_unlock_irq(&fs_info->buffer_tree);
+-			break;
+-		}
+-		cur = eb->start + eb->len;
+-
++	xa_lock_irq(&fs_info->buffer_tree);
++	xa_for_each_range(&fs_info->buffer_tree, index, eb, start, end) {
+ 		/*
+ 		 * The same as try_release_extent_buffer(), to ensure the eb
+ 		 * won't disappear out from under us.
+@@ -4278,8 +4261,7 @@ static int try_release_subpage_extent_buffer(struct folio *folio)
+ 		spin_lock(&eb->refs_lock);
+ 		if (atomic_read(&eb->refs) != 1 || extent_buffer_under_io(eb)) {
+ 			spin_unlock(&eb->refs_lock);
+-			xa_unlock_irq(&fs_info->buffer_tree);
+-			break;
++			continue;
+ 		}
+ 		xa_unlock_irq(&fs_info->buffer_tree);
+ 
+@@ -4299,7 +4281,10 @@ static int try_release_subpage_extent_buffer(struct folio *folio)
+ 		 * release_extent_buffer() will release the refs_lock.
+ 		 */
+ 		release_extent_buffer(eb);
++		xa_lock_irq(&fs_info->buffer_tree);
+ 	}
++	xa_unlock_irq(&fs_info->buffer_tree);
++
+ 	/*
+ 	 * Finally to check if we have cleared folio private, as if we have
+ 	 * released all ebs in the page, the folio private should be cleared now.
+-- 
+2.43.0
 
-> For example the LINK_LOWER is converted to int when used as
-> btrfs_backref_link_edge(..., LINK_LOWER) parameter and then another
-> LINK_LOWER is and-ed to that int argument. I know, the logical
-> operations are not really influenced by the signedness, but still.
-
-Well, it's more a matter of consistency and coding style. We did have a
-real bug with signed bit defined on 32bit int that got promoted to u64
-not as a single bit but 0xffffffff80000000 and this even got propagated
-to on-disk data. We were lucky it never had any real impact but since
-then I'm on the side of making bit shifts unconditionally on unsigned
-types. 77eea05e7851d910b7992c8c237a6b5d462050da
-
-> 
-> And btw, the LINK_UPPER is not used at all anywhere in the code, if I
-> see correctly.
-
-$ git grep LINK_UPPER
-backref.c:      if (link_which & LINK_UPPER)
-backref.h:#define               LINK_UPPER      (1U << 1)
-
-> ---
-> 
-> In theory the situation could be even worse at some places as
-> incorrectly using an unsigned constant may force a signed variable to
-> get promoted to unsigned one to match. This may result in an int
-> variable with the value of -1 ending up as UINT_MAX instead. And now
-> imagine if(i < (1U << 4)) where int i = -1;
-> 
-> I did not check all the places where the constants you are changing
-> are being used, but it looks scary.
-
-This is touching the core problem, mixing the signed and unsigned types
-in the wrong and very unobvious way. But we maybe disagree that it
-should be int, while I'd rather unify that to unsigned.
-
-If you find a scary and potentially wrong use please send a RFC patch so
-we can see how much we can avoid that by changing that to a safer
-pattern.
 
