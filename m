@@ -1,233 +1,268 @@
-Return-Path: <linux-btrfs+bounces-13759-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13760-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 129FAAAD4C7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 07:05:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13B91AADA68
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 10:45:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0935698072F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 05:04:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B46CD7AFABF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 08:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD8201DE3A7;
-	Wed,  7 May 2025 05:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A96202C26;
+	Wed,  7 May 2025 08:44:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kgXAiz50";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kgXAiz50"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="iQIYEICk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3D023CB
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 05:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3149A13C82E;
+	Wed,  7 May 2025 08:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746594311; cv=none; b=Oe+1hEWWIXYpCoELqlXTnuFy/jutcImkqP/9F4tGbhm1sXQ3BJ0BBiootrkxDKJroFGOr+ZJYJxDZFI3jjs3zKgQoAeZu/Lo8lv9iarvFsdVcKefjEcxBDhrg6IbhGVzIzltLaMmuDpHaeJGZM2+aOSH+OwwEEsFAKV2fW8AbeE=
+	t=1746607486; cv=none; b=fymxELGCfu7uHu6wieO346pmGAwypqFx/S6J/hP8oph4fddrlzYd8gEP/9AtPutiQ2RvEyOa0sbuWDeQzlr4+QsLzJkU2ssH/JFUy/pUeATOO74592Ey1cKwS8R6Kt6fZv/SFSBG6IgaS5aci0BZt4/dwJJ42ud8FvVUpNlbC10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746594311; c=relaxed/simple;
-	bh=dEI7SkZzO+97RvRxm79NU0R0Zh4qRkePL+sldw0Zpyo=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Z8EjPa78bBQeAP2HTGjLwD2tc0jFC2cWUxKhgTxQi4S7w7avXLh4o2on/S9oKV9rkmlNXZjxbksC7T6uyDcVnmy4nRRh1GaXHNH13BCx5tOy1qOS5pbSyhG2H3SqJKq9DLqAJvOKKrz/bWkStq+Jsm0KlFYaoszrL2ETiM3GKwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kgXAiz50; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kgXAiz50; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4C0B421222
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 05:05:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1746594306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=RT1C0/5X5dM8/StGp2gS4dNieYWqj5Y6QrwTNoCr//M=;
-	b=kgXAiz500IHHLiYx/FQcpbtPZyDzDk4pk+JHDqjg3B/LHENU3VCs/SSVNlv1oXR6qU5tMR
-	Tt1/NS4osRGH9xbmpcqJ+jb05YHJuTYA6t7xM5OQtMqJEwMANXIw/e/j3hWBfgRlT7HTxp
-	bzGBkaWRyYlH+OHn+4ov0NY/JeYrA24=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=kgXAiz50
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1746594306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=RT1C0/5X5dM8/StGp2gS4dNieYWqj5Y6QrwTNoCr//M=;
-	b=kgXAiz500IHHLiYx/FQcpbtPZyDzDk4pk+JHDqjg3B/LHENU3VCs/SSVNlv1oXR6qU5tMR
-	Tt1/NS4osRGH9xbmpcqJ+jb05YHJuTYA6t7xM5OQtMqJEwMANXIw/e/j3hWBfgRlT7HTxp
-	bzGBkaWRyYlH+OHn+4ov0NY/JeYrA24=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 88FCA13882
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 05:05:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id nzG8EgHqGmhCLAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 07 May 2025 05:05:05 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: scrub: reduce memory usage of scrub_sector_verification
-Date: Wed,  7 May 2025 14:34:39 +0930
-Message-ID: <b4e4f39ce79e08f41410ec45653d028db63e468b.1746594262.git.wqu@suse.com>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1746607486; c=relaxed/simple;
+	bh=iLPeWQJKnKT3E7jvJ1Lx4bS19Z6med6/ZvzdD94ZngQ=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=fi9JpwcMYSYo1MUS2FF+Dpx5qVH2YVFcXeFomkyEGjPxJ2EpmAI+gCS92iIhV25X3qKhQMxfngc472PXRViDlJfoKtXlwb/Ed0yrbltaqBENxrLePVUILX/Z2yRiROEapGDIkBFJJJk5+lZdYRKyotk09fHRRO0m/18xlNl5IgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=iQIYEICk; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5475Ij2f010427;
+	Wed, 7 May 2025 08:44:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=pp1; bh=FO0fjrYVKp8xGIN/2Gqnbgr69KrW
+	HFR/beTQuzDyhBY=; b=iQIYEICk59Wutt7kEO9PpERcRMlZOculkpuYYN49Wq1/
+	dZDDRMUyuACsZ5Op+2591XF6yLTzAwPFLkEiB7EWrNCf+VxHoRAf+AYBwwDrlGyj
+	HlYSzEnwYi+ymNTizgfUETIAX4bzSaMVA2OCiX770k+emtT63JZuGw/5otFoy+I4
+	IVEdr7CdkbiS6yaQXbny5Um0/bPe+LlQN3d0YbYerNlnVt9UGFslqgrb6iQZicTw
+	fe3YSO/kTkAo8uaM/+6OhKfx8c2AXBojUJTLZrtasQzh+/rQAWRL5es25XLHwlwm
+	UzlIS2MUQUYF7p1dP+DoKDToI4YCGgl29WMIjvaaeg==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46fgbjdm2k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 May 2025 08:44:40 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 5478QTfl026578;
+	Wed, 7 May 2025 08:44:40 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46fgbjdm2f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 May 2025 08:44:40 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5476WFr8013770;
+	Wed, 7 May 2025 08:44:39 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 46e062fehx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 May 2025 08:44:39 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5478iccG23593280
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 7 May 2025 08:44:38 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5DD6F58055;
+	Wed,  7 May 2025 08:44:38 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4DC815804B;
+	Wed,  7 May 2025 08:44:36 +0000 (GMT)
+Received: from [9.204.204.179] (unknown [9.204.204.179])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  7 May 2025 08:44:35 +0000 (GMT)
+Message-ID: <75b94ef2-752b-4018-9b2a-148ecda5e8f4@linux.ibm.com>
+Date: Wed, 7 May 2025 14:14:34 +0530
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-GB
+To: LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-btrfs@vger.kernel.org, riteshh@linux.ibm.com,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, disgoel@linux.vnet.ibm.com
+From: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+Subject: [next-20250506][btrfs] Kernel OOPS while btrfs/001 TC
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4C0B421222
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	URIBL_BLOCKED(0.00)[suse.com:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: NmLre71nuBKqpkRRyNXeHHYzCJKbKSmm
+X-Proofpoint-GUID: Pt44Bp16xx9yccZZJROR44K9cdhvcQyb
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA3MDA3OSBTYWx0ZWRfX81a4ZT0S0PSv Y4t5UQCBOS8r2qqMKE8Qs1NHtmIh9wDvryUx+jH5qh/cLrUZVyzsaIilvUNcgpqB4wthqQmFbpO Qri+cJ8rvHbR24Tbl//90Ta/6OJs7/JStVhKY5D9FDT4/cIe76OVkyyVHWFTpybHXG3/JVVlytp
+ vkjWT/gZItBIWXlTrYtS9+/EOO0dea6aw5hXhf/mDJ9fZjfoY4TOOuq4RpS4tH2l+S6prejTn3k thAsGFW6sElBZeyGzJpn3WcXB50FCTG7Z6F/qSMj+6NnyxXG+jnNYzVrs1ZiuUzmKnIasHP3fQP GFoXiUrzA6G/mq/+HJs3E+ap0MvestszpHmmHlShxKI0sy7hTM/AM5/TkaBAWorwgxpVhmXJ5mc
+ itrdAxMFGIPbDWTf2YIRpyyntLq6SWZegrJHxsyKRDSgFEDlR9xJl9wG3iZu2e39dXXX3xF9
+X-Authority-Analysis: v=2.4 cv=FJcbx/os c=1 sm=1 tr=0 ts=681b1d78 cx=c_pps a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=UIzWbI13G1sJYqkSAR8A:9 a=3ZKOabzyN94A:10
+ a=QEXdDO2ut3YA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-07_03,2025-05-06_01,2025-02-21_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=812 phishscore=0 impostorscore=0 suspectscore=0 mlxscore=0
+ malwarescore=0 lowpriorityscore=0 clxscore=1015 bulkscore=0 adultscore=0
+ spamscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
+ definitions=main-2505070079
 
-That structure records needed info for block verification (either data
-checksum pointer, or expected tree block generation).
+Hello,
 
-But there is also a boolean to tell if this block belongs to a metadata
-or not, as the data checksum pointer and expected tree block generation
-is already a union, we need a dedicated bit to tell if this block is a
-metadata or not.
 
-However such layout means we're wasting 63 bits for x86_64, which is a
-huge memory waste.
+I am observing kernel OOPS, while running btrfs/001 TC, from xfstests suite.
 
-Thanks to the recent bitmap aggregation, we can easily move this
-single-bit-per-block member to a new sub-bitmap.
-And since we already have six 16 bits long bitmaps, adding another
-bitmap won't even increase any memory usage for x86_64, as we need two
-64 bits long anyway.
 
-This will reduce the following memory usages:
+This issue is introduced in next-20250506. This issue is not seen on 
+next-20250505 kernel.
 
-- sizeof(struct scrub_sector_verification)
-  From 16 bytes to 8 bytes on x86_64.
 
-- scrub_stripe::sectors
-  From 16 * 16 to 16 * 8 bytes.
+Steps to repro:
 
-- Per-device scrub_ctx memory usage
-  From 128 * (16 * 16) to 128 * (16 * 8), which saves 16KiB memory.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/scrub.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+1. git clone git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
+2. cd xfstests-dev/
+3. mkdir /mnt/loop-device /mnt/test /mnt/scratch
+4. for i in $(seq 0 5); do fallocate -o 0 -l 5GiB 
+/mnt/loop-device/file-$i.img; done
+5. for i in $(seq 0 5); do losetup /dev/loop$i 
+/mnt/loop-device/file-$i.img; done
+6. mkfs.btrfs -f -s 65536 -n 65536 /dev/loop0; mkfs.btrfs -f /dev/loop1; 
+mkfs.btrfs -f /dev/loop2; mkfs.btrfs -f /dev/loop3; mkfs.btrfs -f 
+/dev/loop4; mkfs.btrfs -f /dev/loop5
+8. vi local.config
+9. make
+10. ./check tools/btrfs/001
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 4ba0154e086a..c362bd32756e 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -66,8 +66,6 @@ struct scrub_ctx;
- 
- /* Represent one sector and its needed info to verify the content. */
- struct scrub_sector_verification {
--	bool is_metadata;
--
- 	union {
- 		/*
- 		 * Csum pointer for data csum verification.  Should point to a
-@@ -115,6 +113,9 @@ enum {
- 	/* Which blocks are covered by extent items. */
- 	scrub_bitmap_nr_has_extent = 0,
- 
-+	/* Which blocks are meteadata. */
-+	scrub_bitmap_nr_is_metadata,
-+
- 	/*
- 	 * Which blocks have errors, including IO, csum, and metadata
- 	 * errors.
-@@ -304,6 +305,7 @@ static inline unsigned int scrub_bitmap_weight_##name(struct scrub_stripe *strip
- 	return bitmap_weight(&bitmap, stripe->nr_sectors);		\
- }
- IMPLEMENT_SCRUB_BITMAP_OPS(has_extent);
-+IMPLEMENT_SCRUB_BITMAP_OPS(is_metadata);
- IMPLEMENT_SCRUB_BITMAP_OPS(error);
- IMPLEMENT_SCRUB_BITMAP_OPS(io_error);
- IMPLEMENT_SCRUB_BITMAP_OPS(csum_error);
-@@ -801,7 +803,7 @@ static void scrub_verify_one_sector(struct scrub_stripe *stripe, int sector_nr)
- 		return;
- 
- 	/* Metadata, verify the full tree block. */
--	if (sector->is_metadata) {
-+	if (scrub_bitmap_test_bit_is_metadata(stripe, sector_nr)) {
- 		/*
- 		 * Check if the tree block crosses the stripe boundary.  If
- 		 * crossed the boundary, we cannot verify it but only give a
-@@ -850,7 +852,7 @@ static void scrub_verify_one_stripe(struct scrub_stripe *stripe, unsigned long b
- 
- 	for_each_set_bit(sector_nr, &bitmap, stripe->nr_sectors) {
- 		scrub_verify_one_sector(stripe, sector_nr);
--		if (stripe->sectors[sector_nr].is_metadata)
-+		if (scrub_bitmap_test_bit_is_metadata(stripe, sector_nr))
- 			sector_nr += sectors_per_tree - 1;
- 	}
- }
-@@ -1019,7 +1021,7 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
- 	for_each_set_bit(sector_nr, &extent_bitmap, stripe->nr_sectors) {
- 		bool repaired = false;
- 
--		if (stripe->sectors[sector_nr].is_metadata) {
-+		if (scrub_bitmap_test_bit_is_metadata(stripe, sector_nr)) {
- 			nr_meta_sectors++;
- 		} else {
- 			nr_data_sectors++;
-@@ -1616,7 +1618,7 @@ static void fill_one_extent_info(struct btrfs_fs_info *fs_info,
- 
- 		scrub_bitmap_set_bit_has_extent(stripe, nr_sector);
- 		if (extent_flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
--			sector->is_metadata = true;
-+			scrub_bitmap_set_bit_is_metadata(stripe, nr_sector);
- 			sector->generation = extent_gen;
- 		}
- 	}
-@@ -1760,7 +1762,6 @@ static void scrub_reset_stripe(struct scrub_stripe *stripe)
- 	stripe->state = 0;
- 
- 	for (int i = 0; i < stripe->nr_sectors; i++) {
--		stripe->sectors[i].is_metadata = false;
- 		stripe->sectors[i].csum = NULL;
- 		stripe->sectors[i].generation = 0;
- 	}
-@@ -1902,7 +1903,7 @@ static bool stripe_has_metadata_error(struct scrub_stripe *stripe)
- 	int i;
- 
- 	for_each_set_bit(i, &error, stripe->nr_sectors) {
--		if (stripe->sectors[i].is_metadata) {
-+		if (scrub_bitmap_test_bit_is_metadata(stripe, i)) {
- 			struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
- 
- 			btrfs_err(fs_info,
--- 
-2.49.0
+
+local.config contents:
+
+
+export RECREATE_TEST_DEV=true
+export TEST_DEV=/dev/loop0
+export TEST_DIR=/mnt/test
+export SCRATCH_DEV_POOL="/dev/loop1 /dev/loop2 /dev/loop3 /dev/loop4 
+/dev/loop5"
+export SCRATCH_MNT=/mnt/scratch
+export MKFS_OPTIONS="-f -s 4096 -n 4096"
+export FSTYP=btrfs
+export MOUNT_OPTIONS=""
+
+
+Crash:
+
+
+[  953.799060] Btrfs loaded, zoned=yes, fsverity=no
+[  968.070858] BTRFS: device fsid 3813dc53-a2f3-4342-b44e-c9349f17f991 
+devid 1 transid 8 /dev/loop0 (7:0) scanned by mount (25422)
+[  968.072561] BTRFS info (device loop0): first mount of filesystem 
+3813dc53-a2f3-4342-b44e-c9349f17f991
+[  968.072584] BTRFS info (device loop0): using crc32c (crc32c-powerpc) 
+checksum algorithm
+[  968.072594] BTRFS info (device loop0): forcing free space tree for 
+sector size 4096 with page size 65536
+[  968.072599] BTRFS info (device loop0): using free-space-tree
+[  968.073867] BTRFS info (device loop0): checking UUID tree
+[  968.074000] Kernel attempted to read user page (68) - exploit 
+attempt? (uid: 0)
+[  968.074009] BUG: Kernel NULL pointer dereference on read at 0x00000068
+[  968.074013] Faulting instruction address: 0xc00800000f7fb5e0
+[  968.074019] Oops: Kernel access of bad area, sig: 11 [#1]
+[  968.074022] LE PAGE_SIZE=64K MMU=Radix  SMP NR_CPUS=8192 NUMA pSeries
+[  968.074028] Modules linked in: btrfs blake2b_generic xor raid6_pq 
+zstd_compress loop dm_mod nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib 
+nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct sunrpc 
+nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 bonding 
+tls rfkill ip_set nf_tables nfnetlink pseries_rng vmx_crypto fuse ext4 
+crc16 mbcache jbd2 sd_mod sg ibmvscsi scsi_transport_srp ibmveth
+[  968.074074] CPU: 0 UID: 0 PID: 25422 Comm: mount Kdump: loaded Not 
+tainted 6.15.0-rc5-next-20250506 #1 VOLUNTARY
+
+[  968.074087] NIP:  c00800000f7fb5e0 LR: c00800000f7fb3b4 CTR: 
+c00000000047862c
+[  968.074091] REGS: c000000154747920 TRAP: 0300   Not tainted 
+(6.15.0-rc5-next-20250506)
+[  968.074096] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  
+CR: 24022882  XER: 00000000
+[  968.074109] CFAR: c00800000f7fb650 DAR: 0000000000000068 DSISR: 
+40000000 IRQMASK: 0
+[  968.074109] GPR00: c00800000f7fb3b4 c000000154747bc0 c0080000099da600 
+0000000000000000
+[  968.074109] GPR04: c000000008570c20 7fffffffffffffff 0000000000000000 
+c0000000068e3a00
+[  968.074109] GPR08: 0000000000000000 0000000000000000 c0000000068e3a00 
+0000000000002000
+[  968.074109] GPR12: c00000000047862c c000000003020000 0000000000000000 
+0000000000000000
+[  968.074109] GPR16: 0000000000000000 0000000000000000 0000000000000000 
+0000000000000000
+[  968.074109] GPR20: 0000000000000000 0000000000000000 0000000000000000 
+0000000000000000
+[  968.074109] GPR24: 0000000000000000 c000000015b00000 c00000007a38ac00 
+0000000000000020
+[  968.074109] GPR28: c000000008560a00 c00000006b1784c0 0000000000000000 
+c000000063147980
+[  968.074163] NIP [c00800000f7fb5e0] btrfs_get_tree_subvol+0x32c/0x544 
+[btrfs]
+[  968.074205] LR [c00800000f7fb3b4] btrfs_get_tree_subvol+0x100/0x544 
+[btrfs]
+[  968.074241] Call Trace:
+[  968.074244] [c000000154747bc0] [c00800000f7fb3b4] 
+btrfs_get_tree_subvol+0x100/0x544 [btrfs] (unreliable)
+[  968.074282] [c000000154747cb0] [c000000000630da4] vfs_get_tree+0x48/0x15c
+[  968.074291] [c000000154747d30] [c00000000067675c] 
+do_new_mount+0x234/0x438
+[  968.074297] [c000000154747da0] [c000000000678298] sys_mount+0x164/0x1b0
+[  968.074303] [c000000154747e10] [c000000000033338] 
+system_call_exception+0x138/0x330
+[  968.074311] [c000000154747e50] [c00000000000d05c] 
+system_call_vectored_common+0x15c/0x2ec
+[  968.074319] ---- interrupt: 3000 at 0x7fff89d4edf4
+[  968.074323] NIP:  00007fff89d4edf4 LR: 00007fff89d4edf4 CTR: 
+0000000000000000
+[  968.074328] REGS: c000000154747e80 TRAP: 3000   Not tainted 
+(6.15.0-rc5-next-20250506)
+[  968.074333] MSR:  800000000280f033 
+<SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 44022804  XER: 00000000
+[  968.074345] IRQMASK: 0
+[  968.074345] GPR00: 0000000000000015 00007fffc25e41b0 00007fff89e37d00 
+000000015e810710
+[  968.074345] GPR04: 000000015e810730 000000015e8106f0 0000000000000000 
+000000015e810690
+[  968.074345] GPR08: 000000015e8106f0 0000000000000000 0000000000000000 
+0000000000000000
+[  968.074345] GPR12: 0000000000000000 00007fff8a03c140 0000000000000000 
+0000000000000000
+[  968.074345] GPR16: 0000000000000000 0000000000000000 0000000000000000 
+0000000125d1f298
+[  968.074345] GPR20: 0000000000000000 0000000000000000 000000015e810530 
+000000015e810730
+[  968.074345] GPR24: 00007fff89f38e68 00007fff89f38e78 00007fff89f3dfe8 
+00007fff89f60240
+[  968.074345] GPR28: 000000015e8106f0 0000000000000000 000000015e810710 
+0000000000100000
+[  968.074396] NIP [00007fff89d4edf4] 0x7fff89d4edf4
+[  968.074399] LR [00007fff89d4edf4] 0x7fff89d4edf4
+[  968.074403] ---- interrupt: 3000
+[  968.074406] Code: 4bffeffd 3920f000 7c234840 7c7e1b78 41810144 
+7c7a1b78 4bfffe30 60000000 813f0088 71290001 41820068 e93d0040 
+<e8690068> 38630070 481416e1 e8410018
+[  968.074425] ---[ end trace 0000000000000000 ]---
+[  968.076694] pstore: backend (nvram) writing error (-1)
+[  968.076698]
+
+
+
+If you happent to fix this, please add below tag.
+
+
+Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+
+
+Regards,
+
+Venkat.
 
 
