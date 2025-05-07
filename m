@@ -1,179 +1,347 @@
-Return-Path: <linux-btrfs+bounces-13791-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13792-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7D87AAE287
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 16:21:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 504E8AAE4EB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 17:36:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74F33B245F4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 14:19:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACD7D4C5D34
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 15:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BD1328BA89;
-	Wed,  7 May 2025 14:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B13628A41A;
+	Wed,  7 May 2025 15:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qYIOaCWp";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xHUXyZA3";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qYIOaCWp";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xHUXyZA3"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Yoiob9l4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F1728980B
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 14:14:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C732C1A3178;
+	Wed,  7 May 2025 15:35:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746627254; cv=none; b=DIE5utM5nwWG+Coe2kgMus1Swf7GXjBm927or2QI3QBqsMTvKafokvHsLAyDseXvUr0rZtNY5dKe2K9yTJrFCXtc8KxbJUNUonvTyPLTKuW3l5kPXNzgTBD0/wqnbdJF4IkYHgVSkQvqcIy1oyPtCJrcq5LXQv61Ei0p0vtOFFY=
+	t=1746632156; cv=none; b=FynofdI/ZkCaVRlIaqGbogZA+JcYzgI5Z1L7VswZ+EYwdWPSrfteEtHx31CJySEVF04K2Wg52q7cdKSonx/JuHetKpLOnBTgbPnPZUv+mTi+u3DVnsCnhsiIt6Gqv51aJ2fjW/hpLEG0NU9DZOcQVRsIZtZxrI3CXv9NUyubkjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746627254; c=relaxed/simple;
-	bh=U7pBCzrIW0KnwzsJGeK5F1oB8PzHqIO1Cc82hD+Rhmw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oD9vRPer0ummn/F696HRixKDVEew1+0kjkp2CGkz3O1Ichjw260IxPLJOOA300Ku5eHHuRlSaXSmmdiYHPA3o7NX7C3iNMf1IOCzKiYZZmVaCKgwIdPrpDByrywgGmWxKgs8IJtp6BZBX+ycFL7vzQhqFkwyMs3YlyuPKe7tyqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qYIOaCWp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xHUXyZA3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qYIOaCWp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xHUXyZA3; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 327D32123B;
-	Wed,  7 May 2025 14:14:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1746627251;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4F+lmQfDzO1utDvoQ1V5GTpLQaeGDhuvUOdxa8KD7cw=;
-	b=qYIOaCWpZhsLWlZo/yD0frKhX34LnLUxbyzDb1Sgc7aNDXDJlftxrAC11MxDHz2zYSXYFj
-	QJZV07n8aU9/zKlKW0ZV1OVHpaYsRPwKIoJ4RFseACkI5t0HP6DWRZ0Lsb4Qt8NNGPS6uM
-	9xfUcRIzsagfglNWCPh4g0AbseKCH/A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1746627251;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4F+lmQfDzO1utDvoQ1V5GTpLQaeGDhuvUOdxa8KD7cw=;
-	b=xHUXyZA3cF4kNzY9ScKBML+wdF77e+nolc3cO0OXB6b9J0gHp8Mn6XOoDFRip/3ipjG5NT
-	9p63X72vH6ywr2Bg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=qYIOaCWp;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=xHUXyZA3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1746627251;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4F+lmQfDzO1utDvoQ1V5GTpLQaeGDhuvUOdxa8KD7cw=;
-	b=qYIOaCWpZhsLWlZo/yD0frKhX34LnLUxbyzDb1Sgc7aNDXDJlftxrAC11MxDHz2zYSXYFj
-	QJZV07n8aU9/zKlKW0ZV1OVHpaYsRPwKIoJ4RFseACkI5t0HP6DWRZ0Lsb4Qt8NNGPS6uM
-	9xfUcRIzsagfglNWCPh4g0AbseKCH/A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1746627251;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4F+lmQfDzO1utDvoQ1V5GTpLQaeGDhuvUOdxa8KD7cw=;
-	b=xHUXyZA3cF4kNzY9ScKBML+wdF77e+nolc3cO0OXB6b9J0gHp8Mn6XOoDFRip/3ipjG5NT
-	9p63X72vH6ywr2Bg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0EACD139D9;
-	Wed,  7 May 2025 14:14:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0P8RA7NqG2jJUgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 07 May 2025 14:14:11 +0000
-Date: Wed, 7 May 2025 16:14:09 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Venkat <venkat88@linux.ibm.com>, quwenruo.btrfs@gmx.com,
-	linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-	linuxppc-dev@lists.ozlabs.org, maddy@linux.ibm.com,
-	ritesh.list@gmail.com, disgoel@linux.ibm.com,
-	David Sterba <dsterba@suse.com>
-Subject: Re: [linux-next-20250320][btrfs] Kernel OOPs while running btrfs/108
-Message-ID: <20250507141409.GG9140@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <0B1A34F5-2EEB-491E-9DD0-FC128B0D9E07@linux.ibm.com>
- <CAL3q7H7PqVRnDuooSr6OhvUQ3G5V2gq6VEDpqTqNX9jHmq97aw@mail.gmail.com>
+	s=arc-20240116; t=1746632156; c=relaxed/simple;
+	bh=Ys9RqHkEV6d7PP5ZwD0JF9LgVCJPOKqk25Si+zcdE0I=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=atH4DdkXr8t0YqnEGAJxeqki5Q3MdJba7NFEdZlac3tAHhWJYCXy0geHph34tW6AfKY7VTzVNyO+5VCFAp6sV0PUsrbTqA+yYRpGnWJReLqiQJ3Zehs0f9suujd3EohWGJ9VHkVqTsuTAejZpL6jk1t3CYaUNPkzP23HZeYm6S8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Yoiob9l4; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 547CHYwE016760;
+	Wed, 7 May 2025 15:35:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=g6ui48
+	CEyp4+SYwXoh+HY/hFCaSs30FReWsdX+wX9BE=; b=Yoiob9l4fwojvxi9KxXiun
+	Gdr37iNbEGGtDgBUTTZLj3MSu49wOVuSDegw7EaQslkAwujfifVyxyDOn/AM57ok
+	5t7eU6nHk4mN4PwaldBof06/eGdiEcSunsF9nqVyMwpglsQ6OpuuF/MIptLFPD2f
+	mgqX3WTKf1OgAZYIFTpukKY/XAUxw2gBOhWs6vrtwgB8IdvEK6G3V02WoFkouZcP
+	ybcB7xCJgOU3q18Bz1SxlBNw7LtiLh2KlfYSFdYKuP1Q8vlvw6qrgnzzWT4W0Pvn
+	0uB+v86kkfCNMPGp8909uxELxhT1kqlIVchVrlxuswLoS+XndCCLvOm3+8QL71eA
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46fvd0m1xn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 May 2025 15:35:47 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 547FW27h015100;
+	Wed, 7 May 2025 15:35:47 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46fvd0m1xm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 May 2025 15:35:47 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 547FDGoC001304;
+	Wed, 7 May 2025 15:35:46 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 46dwfthk6q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 May 2025 15:35:46 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 547FZkMM29688464
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 7 May 2025 15:35:46 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 58D5D5805C;
+	Wed,  7 May 2025 15:35:46 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E6B6458051;
+	Wed,  7 May 2025 15:35:43 +0000 (GMT)
+Received: from [9.61.241.123] (unknown [9.61.241.123])
+	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  7 May 2025 15:35:43 +0000 (GMT)
+Message-ID: <2a17b9b1-c490-4571-8f6a-fa567ed0b57e@linux.ibm.com>
+Date: Wed, 7 May 2025 21:05:42 +0530
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [next-20250506][btrfs] Kernel OOPS while btrfs/001 TC
+Content-Language: en-GB
+From: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+To: LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-btrfs@vger.kernel.org, riteshh@linux.ibm.com,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, disgoel@linux.vnet.ibm.com,
+        viro@zeniv.linux.org.uk, dsterba@suse.com
+References: <75b94ef2-752b-4018-9b2a-148ecda5e8f4@linux.ibm.com>
+In-Reply-To: <75b94ef2-752b-4018-9b2a-148ecda5e8f4@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H7PqVRnDuooSr6OhvUQ3G5V2gq6VEDpqTqNX9jHmq97aw@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 327D32123B
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.71 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	FREEMAIL_CC(0.00)[linux.ibm.com,gmx.com,vger.kernel.org,lists.ozlabs.org,gmail.com,suse.com];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Spam-Score: -1.71
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: GGOCG1nCfCO_1y2u1oTYzwNmFv48Q_r9
+X-Proofpoint-GUID: wDTdeb9W6Ou_-sPa6o07b06Wl7yc7FVn
+X-Authority-Analysis: v=2.4 cv=LYc86ifi c=1 sm=1 tr=0 ts=681b7dd4 cx=c_pps a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=CZZ_5JIpypcmvY0KRe0A:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA3MDE0MiBTYWx0ZWRfX6aas+zrw/GuJ O85OUX+TJPDzkcdwCkymJx5Od2c5rP6hAstGS1LMN5Ys5j7I1YrSDNbE31Ra3uCkzz9FiU74t81 S3K3ZFtfSjMDDRinN7FxXtax+7s1eoqwCEuc+cbf5MTi2oJ2u4cgzII17xsciF0gDxB/qxQmVzV
+ AZrW8k6vcm6GocTwCFYnXpng8ww1nxO1Z7wg38+1vTZA/klj0W/r5VM6ftESPP5w2ZWYEgHsqI1 z7rAUllIhELFWcLn8mJIHfRnqceI1uAr2oFArtMfKzH03zKmhv2GAMiLzLMoTibIAFD/jXZAD2Z nuqn8NMn3wcOGWE+p+sHgTQdr9RG1hhPzsvXB7pYA0/YjUirNtyoy9cQ54R09hw0uV6rVYfXqFy
+ 50pEWWZiSITOGsjOO8N8YRCGUVx7qY3OjrRtwYhllMzzcZC8FdwLf4lExVupl+hk494JWj8X
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-07_04,2025-05-06_01,2025-02-21_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ impostorscore=0 priorityscore=1501 spamscore=0 clxscore=1011 phishscore=0
+ adultscore=0 bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
+ classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2504070000
+ definitions=main-2505070142
 
-On Wed, May 07, 2025 at 02:04:47PM +0100, Filipe Manana wrote:
-> On Wed, May 7, 2025 at 10:02 AM Venkat <venkat88@linux.ibm.com> wrote:
-> >
-> > +Disha,
-> >
-> > Hello Qu,
-> >
-> > I still see this failure on next-20250505.
-> >
-> > May I know, when will this be fixed.
-> 
-> The two patches pointed out before by Qu are still being added to linux-next.
-> Qu reported this on the thread for the patches:
-> 
-> https://lore.kernel.org/linux-btrfs/0146825e-a1b1-4789-b4f5-a0894347babe@gmx.com/
-> 
-> There was no reply from the author and David added them again to
-> for-next/linux-next.
-> 
-> David, can you drop them out from for-next? Why are they being added
-> again when there were no changes since last time?
 
-The patches have been there for like 4 -rc kernels without reported
-problems. I will remove them again.
+On 07/05/25 2:14 pm, Venkat Rao Bagalkote wrote:
+> Hello,
+>
+>
+> I am observing kernel OOPS, while running btrfs/001 TC, from xfstests 
+> suite.
+>
+>
+> This issue is introduced in next-20250506. This issue is not seen on 
+> next-20250505 kernel.
+>
+>
+> Steps to repro:
+>
+>
+> 1. git clone git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
+> 2. cd xfstests-dev/
+> 3. mkdir /mnt/loop-device /mnt/test /mnt/scratch
+> 4. for i in $(seq 0 5); do fallocate -o 0 -l 5GiB 
+> /mnt/loop-device/file-$i.img; done
+> 5. for i in $(seq 0 5); do losetup /dev/loop$i 
+> /mnt/loop-device/file-$i.img; done
+> 6. mkfs.btrfs -f -s 65536 -n 65536 /dev/loop0; mkfs.btrfs -f 
+> /dev/loop1; mkfs.btrfs -f /dev/loop2; mkfs.btrfs -f /dev/loop3; 
+> mkfs.btrfs -f /dev/loop4; mkfs.btrfs -f /dev/loop5
+> 8. vi local.config
+> 9. make
+> 10. ./check tools/btrfs/001
+>
+>
+> local.config contents:
+>
+>
+> export RECREATE_TEST_DEV=true
+> export TEST_DEV=/dev/loop0
+> export TEST_DIR=/mnt/test
+> export SCRATCH_DEV_POOL="/dev/loop1 /dev/loop2 /dev/loop3 /dev/loop4 
+> /dev/loop5"
+> export SCRATCH_MNT=/mnt/scratch
+> export MKFS_OPTIONS="-f -s 4096 -n 4096"
+> export FSTYP=btrfs
+> export MOUNT_OPTIONS=""
+>
+>
+> Crash:
+>
+>
+> [  953.799060] Btrfs loaded, zoned=yes, fsverity=no
+> [  968.070858] BTRFS: device fsid 3813dc53-a2f3-4342-b44e-c9349f17f991 
+> devid 1 transid 8 /dev/loop0 (7:0) scanned by mount (25422)
+> [  968.072561] BTRFS info (device loop0): first mount of filesystem 
+> 3813dc53-a2f3-4342-b44e-c9349f17f991
+> [  968.072584] BTRFS info (device loop0): using crc32c 
+> (crc32c-powerpc) checksum algorithm
+> [  968.072594] BTRFS info (device loop0): forcing free space tree for 
+> sector size 4096 with page size 65536
+> [  968.072599] BTRFS info (device loop0): using free-space-tree
+> [  968.073867] BTRFS info (device loop0): checking UUID tree
+> [  968.074000] Kernel attempted to read user page (68) - exploit 
+> attempt? (uid: 0)
+> [  968.074009] BUG: Kernel NULL pointer dereference on read at 0x00000068
+> [  968.074013] Faulting instruction address: 0xc00800000f7fb5e0
+> [  968.074019] Oops: Kernel access of bad area, sig: 11 [#1]
+> [  968.074022] LE PAGE_SIZE=64K MMU=Radix  SMP NR_CPUS=8192 NUMA pSeries
+> [  968.074028] Modules linked in: btrfs blake2b_generic xor raid6_pq 
+> zstd_compress loop dm_mod nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 
+> nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject 
+> nft_ct sunrpc nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 
+> nf_defrag_ipv4 bonding tls rfkill ip_set nf_tables nfnetlink 
+> pseries_rng vmx_crypto fuse ext4 crc16 mbcache jbd2 sd_mod sg ibmvscsi 
+> scsi_transport_srp ibmveth
+> [  968.074074] CPU: 0 UID: 0 PID: 25422 Comm: mount Kdump: loaded Not 
+> tainted 6.15.0-rc5-next-20250506 #1 VOLUNTARY
+>
+> [  968.074087] NIP:  c00800000f7fb5e0 LR: c00800000f7fb3b4 CTR: 
+> c00000000047862c
+> [  968.074091] REGS: c000000154747920 TRAP: 0300   Not tainted 
+> (6.15.0-rc5-next-20250506)
+> [  968.074096] MSR:  800000000280b033 
+> <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 24022882  XER: 00000000
+> [  968.074109] CFAR: c00800000f7fb650 DAR: 0000000000000068 DSISR: 
+> 40000000 IRQMASK: 0
+> [  968.074109] GPR00: c00800000f7fb3b4 c000000154747bc0 
+> c0080000099da600 0000000000000000
+> [  968.074109] GPR04: c000000008570c20 7fffffffffffffff 
+> 0000000000000000 c0000000068e3a00
+> [  968.074109] GPR08: 0000000000000000 0000000000000000 
+> c0000000068e3a00 0000000000002000
+> [  968.074109] GPR12: c00000000047862c c000000003020000 
+> 0000000000000000 0000000000000000
+> [  968.074109] GPR16: 0000000000000000 0000000000000000 
+> 0000000000000000 0000000000000000
+> [  968.074109] GPR20: 0000000000000000 0000000000000000 
+> 0000000000000000 0000000000000000
+> [  968.074109] GPR24: 0000000000000000 c000000015b00000 
+> c00000007a38ac00 0000000000000020
+> [  968.074109] GPR28: c000000008560a00 c00000006b1784c0 
+> 0000000000000000 c000000063147980
+> [  968.074163] NIP [c00800000f7fb5e0] 
+> btrfs_get_tree_subvol+0x32c/0x544 [btrfs]
+> [  968.074205] LR [c00800000f7fb3b4] btrfs_get_tree_subvol+0x100/0x544 
+> [btrfs]
+> [  968.074241] Call Trace:
+> [  968.074244] [c000000154747bc0] [c00800000f7fb3b4] 
+> btrfs_get_tree_subvol+0x100/0x544 [btrfs] (unreliable)
+> [  968.074282] [c000000154747cb0] [c000000000630da4] 
+> vfs_get_tree+0x48/0x15c
+> [  968.074291] [c000000154747d30] [c00000000067675c] 
+> do_new_mount+0x234/0x438
+> [  968.074297] [c000000154747da0] [c000000000678298] 
+> sys_mount+0x164/0x1b0
+> [  968.074303] [c000000154747e10] [c000000000033338] 
+> system_call_exception+0x138/0x330
+> [  968.074311] [c000000154747e50] [c00000000000d05c] 
+> system_call_vectored_common+0x15c/0x2ec
+> [  968.074319] ---- interrupt: 3000 at 0x7fff89d4edf4
+> [  968.074323] NIP:  00007fff89d4edf4 LR: 00007fff89d4edf4 CTR: 
+> 0000000000000000
+> [  968.074328] REGS: c000000154747e80 TRAP: 3000   Not tainted 
+> (6.15.0-rc5-next-20250506)
+> [  968.074333] MSR:  800000000280f033 
+> <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 44022804  XER: 00000000
+> [  968.074345] IRQMASK: 0
+> [  968.074345] GPR00: 0000000000000015 00007fffc25e41b0 
+> 00007fff89e37d00 000000015e810710
+> [  968.074345] GPR04: 000000015e810730 000000015e8106f0 
+> 0000000000000000 000000015e810690
+> [  968.074345] GPR08: 000000015e8106f0 0000000000000000 
+> 0000000000000000 0000000000000000
+> [  968.074345] GPR12: 0000000000000000 00007fff8a03c140 
+> 0000000000000000 0000000000000000
+> [  968.074345] GPR16: 0000000000000000 0000000000000000 
+> 0000000000000000 0000000125d1f298
+> [  968.074345] GPR20: 0000000000000000 0000000000000000 
+> 000000015e810530 000000015e810730
+> [  968.074345] GPR24: 00007fff89f38e68 00007fff89f38e78 
+> 00007fff89f3dfe8 00007fff89f60240
+> [  968.074345] GPR28: 000000015e8106f0 0000000000000000 
+> 000000015e810710 0000000000100000
+> [  968.074396] NIP [00007fff89d4edf4] 0x7fff89d4edf4
+> [  968.074399] LR [00007fff89d4edf4] 0x7fff89d4edf4
+> [  968.074403] ---- interrupt: 3000
+> [  968.074406] Code: 4bffeffd 3920f000 7c234840 7c7e1b78 41810144 
+> 7c7a1b78 4bfffe30 60000000 813f0088 71290001 41820068 e93d0040 
+> <e8690068> 38630070 481416e1 e8410018
+> [  968.074425] ---[ end trace 0000000000000000 ]---
+> [  968.076694] pstore: backend (nvram) writing error (-1)
+> [  968.076698]
+>
+>
+
+Git bisect is pointing first bad commit: 
+[25efcff06654aa283be379420e8b1f8d344c2f78] btrfs_get_tree_subvol(): 
+switch from fc_mount() to vfs_create_mount().
+
+
+Upon reverting above commit, issue is not seen. Please help in fixing 
+this issue.
+
+
+Bisection log:
+
+
+git bisect start
+# status: waiting for both good and bad commits
+# good: [92a09c47464d040866cf2b4cd052bc60555185fb] Linux 6.15-rc5
+git bisect good 92a09c47464d040866cf2b4cd052bc60555185fb
+# status: waiting for bad commit, 1 good commit known
+# bad: [0a00723f4c2d0b273edd0737f236f103164a08eb] Add linux-next 
+specific files for 20250506
+git bisect bad 0a00723f4c2d0b273edd0737f236f103164a08eb
+# bad: [d0a7045528df303c86ce87662728ea8ee136c7ef] Merge branch 
+'nand/next' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git
+git bisect bad d0a7045528df303c86ce87662728ea8ee136c7ef
+# bad: [3acffb16ef28cc1979b42c235fed9c7bf653e815] Merge branch 'fs-next' 
+of linux-next
+git bisect bad 3acffb16ef28cc1979b42c235fed9c7bf653e815
+# good: [59e921108839edbbcbce23475596fee455ec4129] Merge branch 'next' 
+of git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel.git
+git bisect good 59e921108839edbbcbce23475596fee455ec4129
+# bad: [28485805726d7960c1d5be4a45d59ea26652f6d2] Merge branch 'master' 
+of https://github.com/Paragon-Software-Group/linux-ntfs3.git
+git bisect bad 28485805726d7960c1d5be4a45d59ea26652f6d2
+# bad: [255b0bb00ae27f2adcf054b71f29be50d2e34025] Merge branch 
+'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
+git bisect bad 255b0bb00ae27f2adcf054b71f29be50d2e34025
+# good: [456619c2c7107c700321664f79c4e89d19805063] btrfs: simplify 
+getting and extracting previous transaction at clean_pinned_extents()
+git bisect good 456619c2c7107c700321664f79c4e89d19805063
+# good: [028156969e9f640e7eee0a98b19c731fd9862f14] bcachefs: 
+bch2_io_failures_to_text()
+git bisect good 028156969e9f640e7eee0a98b19c731fd9862f14
+# good: [b3f59e3a42fd075d40a65dbcdf853302db4ba93f] bcachefs: Ensure 
+proper write alignment
+git bisect good b3f59e3a42fd075d40a65dbcdf853302db4ba93f
+# good: [8209541b4998a1bcf99c7530e60ce6c9aefd87f8] btrfs: update 
+lookup_root_entry to to use rb helper
+git bisect good 8209541b4998a1bcf99c7530e60ce6c9aefd87f8
+# good: [94fa56d94dbca52e07b0f0233257f502ca6d547a] btrfs: scrub: fix a 
+wrong error type when metadata bytenr mismatches
+git bisect good 94fa56d94dbca52e07b0f0233257f502ca6d547a
+# bad: [c91d3cff2a3ce3fc0960d8e6bdb69be51f105d67] Merge branch 
+'misc-next' into for-next-next-v6.15-20250505
+git bisect bad c91d3cff2a3ce3fc0960d8e6bdb69be51f105d67
+# bad: [25efcff06654aa283be379420e8b1f8d344c2f78] 
+btrfs_get_tree_subvol(): switch from fc_mount() to vfs_create_mount()
+git bisect bad 25efcff06654aa283be379420e8b1f8d344c2f78
+# good: [4254b8e069c7fa48106be44f8fcf4cafc264bd14] btrfs: scrub: 
+aggregate small bitmaps into a larger one
+git bisect good 4254b8e069c7fa48106be44f8fcf4cafc264bd14
+# first bad commit: [25efcff06654aa283be379420e8b1f8d344c2f78] 
+btrfs_get_tree_subvol(): switch from fc_mount() to vfs_create_mount()
+
+
+Regards,
+
+Venkat.
+
+>
+> If you happent to fix this, please add below tag.
+>
+>
+> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+>
+>
+> Regards,
+>
+> Venkat.
+>
 
