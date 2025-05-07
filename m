@@ -1,166 +1,84 @@
-Return-Path: <linux-btrfs+bounces-13809-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13810-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F27F6AAED99
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 23:08:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA5C7AAEDD1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 23:19:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 569D3502716
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 21:08:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1743A504005
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 21:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B86D28FAAA;
-	Wed,  7 May 2025 21:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E8F928FFF4;
+	Wed,  7 May 2025 21:18:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="A9yuwCM5";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ru0/Ma9u"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="RinESwQd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6453172626
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 21:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782B619343B;
+	Wed,  7 May 2025 21:18:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746652120; cv=none; b=V14y3P5SgHPrjFm13KWQlf7/RX6QGbC7aYJXGP4NXlYS2hCRR5TbB7dcb7Dk1SnzgCcbr+p+tdjrMAm8SoT5VCbwGDxZQkMcqXWeXbBt7W/TVdZnHVnVD3a2CIJ0cwNvLT0V6bzzzvQVKRuzFa3qjMHhCC4z3A7/8xqrJN/9SUY=
+	t=1746652735; cv=none; b=slRGEByMrJVp3gAzRham8Tk2DAn0f4CN7xljHgSKOBoWzO91Yq3AV17z+7XNaSW9/dPxhHVgNFg0qxgzGx6s9beRPD+XCfBozCW0XouhDK/G1MMJzWNjIIo87/ZLqmijxDwXgGk9ZV76FHErXyF+EfyiuHRZ0MPUt18KSCIq6Os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746652120; c=relaxed/simple;
-	bh=iSg0bthOdccp1QVK+njpajFHC6Xgz86mDtKRBQ1ptII=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=pCMhzLlno99wvmxSXlVWT+7Pv2osdm0vrJHX3Tpreh/jOqy7Ye3xMSaG6oygZTK6hOfW6hTCWnGtDTXaohq59UJIXCk+fHOsVwzPXW9vZvGXUE56q1nZSG3cXCNn/SYA2GmwSh+22aig9/0qEx5jR19iBvauV0kYlwtEYcxZOkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=A9yuwCM5; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ru0/Ma9u; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfout.phl.internal (Postfix) with ESMTP id 5E6D313801CA;
-	Wed,  7 May 2025 17:08:36 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Wed, 07 May 2025 17:08:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm1; t=1746652116; x=1746738516; bh=L5ABk4PZfp+JggAxiesN+
-	LLJ5KU9Go45u1fcPG4g0io=; b=A9yuwCM5laHUYkH8y5xu1/HaC3NkQE6Y4pGm8
-	wnGHFEcggAwhoqD/7d4sqJ1Gyty985R8mq7uBRGTTWseAP/mH+lnrYHMCUxjgU+8
-	8Tq2jMltKBEF3YS+QIJuLLQ7uf2sxwM4bOOIHtv+YFHU6Pkixax33m4OPnFrwvv4
-	8vCqUd8pIgkXfhuEmV8PM/pT0axsCqJHNcPCdTY/XjoooDCSqyjq4HLmbT5USfkt
-	8ZRv9cxmQVPvz+X3KmlTdkVCQ8A3fTQQ9Q4TDtkPTrmvYFPM2CwtbtxPn9Lu8VwN
-	EfFCMgdkaxlETIXGzdgCTrd7NlnX1muHW2Er9QUe8WXh/omog==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1746652116; x=1746738516; bh=L5ABk4PZfp+JggAxiesN+LLJ5KU9Go45u1f
-	cPG4g0io=; b=ru0/Ma9u7BgtEC5p4Za5rOaaQGfkLRJt6Ua8iKLkt7HAbyk8Dfm
-	nupEAq+pghrqV0mOuhMarkcp4prh6bgE+W4FiRhl8um7jwftcI77pkmOFfBEPkAF
-	O910bRk0wmlDzS/N4o4aZ+9wkP/I7XH1otPh/8UNVHysZA6ykehpylO1FQPqmAs9
-	3l72m44gaih4bGs4NodTK4cZ0kkRrKxCRMlshf7NESUedBC9G0kx5srCKVEWbejZ
-	MhkYp9zIuTjGvGqGGhNKyn+p+Ck6/qc5uqPYsw4pWgAhZg365QxHoPFcnDJdN6va
-	HKvYevQaGSNTppoSg+rUsWnnMbbeKJZjEDg==
-X-ME-Sender: <xms:1MsbaPBsmd-dRrm5oMnsLvgdjvgXdM1c6lf_ojnancn0-xy07XNGcA>
-    <xme:1MsbaFgeaeGLQ9BmIh9T-9kYRw9Bte5N43GHOIUITCgjwPDmr-PVYirmzn8Q7jJAe
-    LiHw2mZ8blO5EBaVlE>
-X-ME-Received: <xmr:1MsbaKlThau3sv8PfKoYnCDsV8CZUvdY2RywjixBuGlSpI4-mFM5LcmlU8izdZdEa8fFCtEQuSTcJsHiqIi10MzM8t4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvkeejledtucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvf
-    fufffkofgggfestdekredtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceo
-    sghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelff
-    evleeifefgjeejieegkeduudetfeekffeftefhvdejveenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspg
-    hrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugidq
-    sghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgvlh
-    dqthgvrghmsehfsgdrtghomh
-X-ME-Proxy: <xmx:1MsbaBzhncNgli-9SxQo10SVrMRL87ehfbhNhtQY8JvrCk3ib47EJQ>
-    <xmx:1MsbaETFiyxfhKniarPnxgTZVJI6wydRTNnTME-RhrweV10nM-1qPA>
-    <xmx:1MsbaEayVN4nasHzGFni72uSiLIMz1F3jJ8QC1sAiIm7afcu_iiJGQ>
-    <xmx:1MsbaFRdYEE3Aie8GoWhVplPyaa3gC9z9ZFgbFDSzsuSX75NT3Z5gg>
-    <xmx:1MsbaPkaOzfq8bTm1GjsjpcoSxszkF_kTtR_Pnwgfz0RaCc9LcemKcT1>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 7 May 2025 17:08:35 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH] btrfs: fix folio leak in submit_one_async_extent()
-Date: Wed,  7 May 2025 14:09:18 -0700
-Message-ID: <a9458a40fed8e6a27ada539372170d52c45967f0.1746652135.git.boris@bur.io>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1746652735; c=relaxed/simple;
+	bh=Rzoa//+suWP+65hhHc1KbF30oGorhKVv9nvFCeLfsU4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d6XXp3PQZWKutzmXURAJYl4k58Q9R+lqDJyYXi4l9zaFW6zxcbPrkFUGrmDS4ahBxwRbWf5XCWhllj8MqpNIMYCdfinZ1fu+vhFsl4hhQjocBk2tJa0jyRbmggt1VELhw5qDnL0dB8h3GpGfRxpQb3N/OCB8pS1sWVxxX8VY3kE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=RinESwQd; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=QTihWgIiBkpZ0So2wXnOWa/xllZkmD8mBa818vmY+ag=; b=RinESwQd87yy5BJVrPytdkF/yT
+	IHjOC3NetkE10Z9yLZXv4sdSE7fogbOjzKNyH8BCZqA7WfHOO3E/T/T/Vmpy1fYDR0qeP6f1yhXmd
+	uPJYfsTR/0YgzqKr+HFRLHRXMVq5x7Rt/5fsGrzA5amxGKaULOZKgsSSNaFVMlKKCU92IEdfpfr58
+	Q0GpF8M+Scl8JAKbsaIbWTRnpMyA94Z5UeCzkR4wTuzLSu88lNSVm6YPf8tHx5/vnFRFgWoFV07cM
+	lNvLhHEURJgrnNF89r59Np+yyzHnuFATVhTeicAUXlyixzBqGtK3ZsBJWzC9SO9bVd3XyBXQJK8z8
+	gvYIhSmQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uCmAF-00000001d1n-0KRR;
+	Wed, 07 May 2025 21:18:51 +0000
+Date: Wed, 7 May 2025 22:18:51 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+	linux-btrfs@vger.kernel.org, riteshh@linux.ibm.com,
+	Qu Wenruo <quwenruo.btrfs@gmx.com>, disgoel@linux.vnet.ibm.com,
+	dsterba@suse.com
+Subject: Re: [next-20250506][btrfs] Kernel OOPS while btrfs/001 TC
+Message-ID: <20250507211851.GX2023217@ZenIV>
+References: <75b94ef2-752b-4018-9b2a-148ecda5e8f4@linux.ibm.com>
+ <2a17b9b1-c490-4571-8f6a-fa567ed0b57e@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2a17b9b1-c490-4571-8f6a-fa567ed0b57e@linux.ibm.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-If btrfs_reserve_extent() fails while submitting an async_extent for a
-compressed write, then we fail to call free_async_extent_pages() on the
-async_extent and leak its folios. A likely cause for such a failure
-would be btrfs_reserve_extent() failing to find a large enough
-contiguous free extent for the compressed extent.
+On Wed, May 07, 2025 at 09:05:42PM +0530, Venkat Rao Bagalkote wrote:
 
-I was able to reproduce this by:
-1. mount with compress-force=zstd:3
-2. fallocating most of a filesystem to a big file
-3. fragmenting the remaining free space
-4. trying to copy in a file which zstd would generate large compressed
-extents for (vmlinux worked well for this)
+> > I am observing kernel OOPS, while running btrfs/001 TC, from xfstests
+> > suite.
+> > 
+> > 
+> > This issue is introduced in next-20250506. This issue is not seen on
+> > next-20250505 kernel.
 
-Step 4. hits the memory leak and can be repeated ad nauseam to
-eventually exhaust the system memory.
+Braino in fs/btrfs/super.c patch - in a couple of places 'fc' should be
+replaced with 'dup_fc'.
 
-Fix this by detecting the case where we fallback to uncompressed
-submission for a compressed async_extent and ensuring that we call
-free_async_extent_pages().
-
-Fixes: 131a821a243f ("btrfs: fallback if compressed IO fails for ENOSPC")
-Co-authored-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/inode.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2666b0f73452..9d4b99ba8950 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1092,6 +1092,7 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- 	struct extent_state *cached = NULL;
- 	struct extent_map *em;
- 	int ret = 0;
-+	bool free_pages = false;
- 	u64 start = async_extent->start;
- 	u64 end = async_extent->start + async_extent->ram_size - 1;
- 
-@@ -1112,6 +1113,8 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- 	}
- 
- 	if (async_extent->compress_type == BTRFS_COMPRESS_NONE) {
-+		ASSERT(!async_extent->folios);
-+		ASSERT(!async_extent->nr_folios);
- 		submit_uncompressed_range(inode, async_extent, locked_folio);
- 		goto done;
- 	}
-@@ -1128,6 +1131,7 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- 		 * fall back to uncompressed.
- 		 */
- 		submit_uncompressed_range(inode, async_extent, locked_folio);
-+		free_pages = true;
- 		goto done;
- 	}
- 
-@@ -1169,6 +1173,8 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- done:
- 	if (async_chunk->blkcg_css)
- 		kthread_associate_blkcg(NULL);
-+	if (free_pages)
-+		free_async_extent_pages(async_extent);
- 	kfree(async_extent);
- 	return;
- 
--- 
-2.49.0
-
+See https://lore.kernel.org/all/?q=20250506195826.GU2023217@ZenIV
+for replacement patch...
 
