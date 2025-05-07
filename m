@@ -1,167 +1,179 @@
-Return-Path: <linux-btrfs+bounces-13790-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13791-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 619C4AAE27A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 16:19:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7D87AAE287
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 16:21:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50FB9176E95
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 14:14:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74F33B245F4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 14:19:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6809528A720;
-	Wed,  7 May 2025 14:02:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BD1328BA89;
+	Wed,  7 May 2025 14:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="1HKmWDlG"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qYIOaCWp";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xHUXyZA3";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qYIOaCWp";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xHUXyZA3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E29328A71F
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 14:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F1728980B
+	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 14:14:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746626556; cv=none; b=C24Kzi01CnyTzKa6QGBW09p1ghu8Ix6SbLId/4jLSpGO0V3JaEbQ2NPKs6IpNrgmRLTLgPseKg9Fih5o9BfBVyhecAsS8BFsMWkZXdGe73Q4RgpQCL2ip/rRRdo3hZygpjv8/TTP5OyZDJ5LpKniyrGWreNs/W0kt/Dm3i9+HTo=
+	t=1746627254; cv=none; b=DIE5utM5nwWG+Coe2kgMus1Swf7GXjBm927or2QI3QBqsMTvKafokvHsLAyDseXvUr0rZtNY5dKe2K9yTJrFCXtc8KxbJUNUonvTyPLTKuW3l5kPXNzgTBD0/wqnbdJF4IkYHgVSkQvqcIy1oyPtCJrcq5LXQv61Ei0p0vtOFFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746626556; c=relaxed/simple;
-	bh=u1WvrSapMzjyS9qZrw1hKIGsBWOqDhnGPCP10gYW6Cg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=f9fTqDJlH0WNQ8rLUttBjOXjR/FG+1usXwWCkGb3ooZldeKpWVWXahTgRt6PpwNCRwIGlsEmtHOALQOBn5K9faeEsUhmIuxbYM+A4Q9l7hwUG8jNW2wOcH7Cdf9hwRRVyVsg+x78qlVH+bm/Mh/Ot6GJ3iNHlbI527tQBN+wvnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=1HKmWDlG; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-85de3e8d0adso141800639f.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 May 2025 07:02:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1746626553; x=1747231353; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n/e69eX7rTdQU3DebRyniOro00nTR+2O7+QHGV+7EO0=;
-        b=1HKmWDlGP1KCCRSjfqPmBaSpOt1CBsEgQpKoWwDUVaN0gyl6NGwfs5VjGk2xnhJis1
-         u34XJvh4Bmes1tQ2KTwnZ95jhXL7aokCG9u/RMZDUjEbYop1TF22da7g6pjuqEUYczu+
-         d1pz0WTYMFZA11dRGyowDn7f+X2MsYHswZku0n7nlS61uznlPqOUwe+Pm4QanMX3wy9b
-         jThqhrhGorfJ6Hbrlv1L7M5XJ0kgsaSK/1P5s9ulCCu9ph7VWmGYJL4JEFTVH0QDt1wv
-         t6fxZn1SVBvfebsDzwLkCRDj2bIuic/bAiM2pkQE4CwQ8nXWX0G+ijU9bSBS0x5KfXSA
-         6/bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746626553; x=1747231353;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n/e69eX7rTdQU3DebRyniOro00nTR+2O7+QHGV+7EO0=;
-        b=d8k4/BygWi83TutzG/HMKfrYOiHf/x0A3szQU64dy4JcZV5LbBzfBxnUZ/sawCCzry
-         8cR/jQ7dQKn9NOuQQkbol0cKF3X9E6gnZN9dwQSqOxGKAZy+v79VbjUYX6Vv6a+pveOm
-         gu1K80Njt7NNbGCYBHcqnwTnS4cuCtexM+xp4k9teiAE8R+gvDPNmuPZyF1rv+tkveNc
-         8wCM51YzUX10RTe9iDSoFhJ8dLElpjS+/2oKhsLg3lCMU/OEQmZxz1eromCE8oxwDQz0
-         EekeuzY6Mbg5E5t1n8Ds3yn3hNRLdfjCUnJxKBq+8F3eyowCeb+puhbiZ2l+22a+q3Kg
-         vfUw==
-X-Forwarded-Encrypted: i=1; AJvYcCX4Zi3kbAdPsm8IndOKRndGd5JARkAjcMWdW9CljV2WtrPJ6J1dHGpYch7Q3xYq+AX6hG4jV+4Mv1zdaA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYmC/uLs89YZn2h3du1p4dkD6hX/ntyfo4gnFM7SV8y2qzIrNo
-	N+iKgud3ZaxF9+cHuY02ZKYtmBOX4efp17Jl3X6jPdUfliFpWWd2syn0wU98iUE=
-X-Gm-Gg: ASbGncudyPY1czn2OfgL/Q3XiSTNZYFbaqG7bFF9t3WR6EKkJ9M6+0KCR/XZeSuV08S
-	UC+ivgCW2og6stPneMRdTpYK5IvLnvnmP4/vlWX+7JxshO2CnjEQP7AXQJgi/lPVsvY6xvhcR3k
-	bzuqpWgDUSEeFt6gZTAkvxQNll4MFOYbFI2kIhmY4ipCS99no7RYABz3Zb46MVyauGyW82H/kwu
-	zh8RRLUeI1x08mNFaKIWi9pmicKqUejb6VliQK9viNujdyZbRQeyVA7bvIRrTJ+stMvTJ0Q/gKQ
-	bAcRyl0FHXY6xdqz1ZEwxTrTjrj+Vlg=
-X-Google-Smtp-Source: AGHT+IFKzirCN+Eb4LryiVuePRi35iU9q8ScKrI1anbroM0TMHPbhux4iOi4irCSUABdP/WxjlqB7w==
-X-Received: by 2002:a05:6602:6d0e:b0:85b:505a:7e01 with SMTP id ca18e2360f4ac-8674727e70dmr348656939f.5.1746626544084;
-        Wed, 07 May 2025 07:02:24 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4f9fc6bb606sm642485173.18.2025.05.07.07.02.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 May 2025 07:02:23 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-block@vger.kernel.org, "Md. Haris Iqbal" <haris.iqbal@ionos.com>, 
- Jack Wang <jinpu.wang@ionos.com>, Coly Li <colyli@kernel.org>, 
- Kent Overstreet <kent.overstreet@linux.dev>, 
- Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>, 
- Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
- David Sterba <dsterba@suse.com>, Andreas Gruenbacher <agruenba@redhat.com>, 
- Carlos Maiolino <cem@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, 
- Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>, 
- slava@dubeyko.com, glaubitz@physik.fu-berlin.de, frank.li@vivo.com, 
- linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev, 
- linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev, 
- linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org, 
- linux-pm@vger.kernel.org
-In-Reply-To: <20250507120451.4000627-1-hch@lst.de>
-References: <20250507120451.4000627-1-hch@lst.de>
-Subject: Re: add more bio helpers v3
-Message-Id: <174662654265.1844963.5765833717643625363.b4-ty@kernel.dk>
-Date: Wed, 07 May 2025 08:02:22 -0600
+	s=arc-20240116; t=1746627254; c=relaxed/simple;
+	bh=U7pBCzrIW0KnwzsJGeK5F1oB8PzHqIO1Cc82hD+Rhmw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oD9vRPer0ummn/F696HRixKDVEew1+0kjkp2CGkz3O1Ichjw260IxPLJOOA300Ku5eHHuRlSaXSmmdiYHPA3o7NX7C3iNMf1IOCzKiYZZmVaCKgwIdPrpDByrywgGmWxKgs8IJtp6BZBX+ycFL7vzQhqFkwyMs3YlyuPKe7tyqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qYIOaCWp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xHUXyZA3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qYIOaCWp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xHUXyZA3; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 327D32123B;
+	Wed,  7 May 2025 14:14:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1746627251;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4F+lmQfDzO1utDvoQ1V5GTpLQaeGDhuvUOdxa8KD7cw=;
+	b=qYIOaCWpZhsLWlZo/yD0frKhX34LnLUxbyzDb1Sgc7aNDXDJlftxrAC11MxDHz2zYSXYFj
+	QJZV07n8aU9/zKlKW0ZV1OVHpaYsRPwKIoJ4RFseACkI5t0HP6DWRZ0Lsb4Qt8NNGPS6uM
+	9xfUcRIzsagfglNWCPh4g0AbseKCH/A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1746627251;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4F+lmQfDzO1utDvoQ1V5GTpLQaeGDhuvUOdxa8KD7cw=;
+	b=xHUXyZA3cF4kNzY9ScKBML+wdF77e+nolc3cO0OXB6b9J0gHp8Mn6XOoDFRip/3ipjG5NT
+	9p63X72vH6ywr2Bg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=qYIOaCWp;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=xHUXyZA3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1746627251;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4F+lmQfDzO1utDvoQ1V5GTpLQaeGDhuvUOdxa8KD7cw=;
+	b=qYIOaCWpZhsLWlZo/yD0frKhX34LnLUxbyzDb1Sgc7aNDXDJlftxrAC11MxDHz2zYSXYFj
+	QJZV07n8aU9/zKlKW0ZV1OVHpaYsRPwKIoJ4RFseACkI5t0HP6DWRZ0Lsb4Qt8NNGPS6uM
+	9xfUcRIzsagfglNWCPh4g0AbseKCH/A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1746627251;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4F+lmQfDzO1utDvoQ1V5GTpLQaeGDhuvUOdxa8KD7cw=;
+	b=xHUXyZA3cF4kNzY9ScKBML+wdF77e+nolc3cO0OXB6b9J0gHp8Mn6XOoDFRip/3ipjG5NT
+	9p63X72vH6ywr2Bg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0EACD139D9;
+	Wed,  7 May 2025 14:14:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 0P8RA7NqG2jJUgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 07 May 2025 14:14:11 +0000
+Date: Wed, 7 May 2025 16:14:09 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Venkat <venkat88@linux.ibm.com>, quwenruo.btrfs@gmx.com,
+	linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	linuxppc-dev@lists.ozlabs.org, maddy@linux.ibm.com,
+	ritesh.list@gmail.com, disgoel@linux.ibm.com,
+	David Sterba <dsterba@suse.com>
+Subject: Re: [linux-next-20250320][btrfs] Kernel OOPs while running btrfs/108
+Message-ID: <20250507141409.GG9140@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <0B1A34F5-2EEB-491E-9DD0-FC128B0D9E07@linux.ibm.com>
+ <CAL3q7H7PqVRnDuooSr6OhvUQ3G5V2gq6VEDpqTqNX9jHmq97aw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.3-dev-7b9b9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H7PqVRnDuooSr6OhvUQ3G5V2gq6VEDpqTqNX9jHmq97aw@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 327D32123B
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.71 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	FREEMAIL_CC(0.00)[linux.ibm.com,gmx.com,vger.kernel.org,lists.ozlabs.org,gmail.com,suse.com];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Score: -1.71
 
-
-On Wed, 07 May 2025 14:04:24 +0200, Christoph Hellwig wrote:
-> this series adds more block layer helpers to remove boilerplate code when
-> adding memory to a bio or to even do the entire synchronous I/O.
+On Wed, May 07, 2025 at 02:04:47PM +0100, Filipe Manana wrote:
+> On Wed, May 7, 2025 at 10:02 AM Venkat <venkat88@linux.ibm.com> wrote:
+> >
+> > +Disha,
+> >
+> > Hello Qu,
+> >
+> > I still see this failure on next-20250505.
+> >
+> > May I know, when will this be fixed.
 > 
-> The main aim is to avoid having to convert to a struct page in the caller
-> when adding kernel direct mapping or vmalloc memory.
+> The two patches pointed out before by Qu are still being added to linux-next.
+> Qu reported this on the thread for the patches:
 > 
-> Changes since v2:
->  - rebase on top of the latest block for-next branch to resolve
->    conflicts with the bonuce buffering removal
+> https://lore.kernel.org/linux-btrfs/0146825e-a1b1-4789-b4f5-a0894347babe@gmx.com/
 > 
-> [...]
+> There was no reply from the author and David added them again to
+> for-next/linux-next.
+> 
+> David, can you drop them out from for-next? Why are they being added
+> again when there were no changes since last time?
 
-Applied, thanks!
-
-[01/19] block: add a bio_add_virt_nofail helper
-        commit: 850e210d5ad21b94b55b97d4d82b4cdeb0bb05df
-[02/19] block: add a bdev_rw_virt helper
-        commit: 10b1e59cdadabff16fc78eb2ca4c341b1502293c
-[03/19] block: add a bio_add_max_vecs helper
-        commit: 75f88659e47dc570bdebddf77d7a3cd5f0845612
-[04/19] block: add a bio_add_vmalloc helpers
-        commit: 8dd16f5e34693aa0aa6a4ed48427045008097e64
-[05/19] block: remove the q argument from blk_rq_map_kern
-        commit: af78428ed3f3eebad7be9d0463251046e9582cf6
-[06/19] block: pass the operation to bio_{map,copy}_kern
-        commit: fddbc51dc290f834f520ce89c00a0fce38260c16
-[07/19] block: simplify bio_map_kern
-        commit: 6ff54f456671415e101e671a7dfa1fe13a31bdb5
-[08/19] bcache: use bio_add_virt_nofail
-        commit: 23f5d69dfa993cb6d17e619fff5e623e76b9b17f
-[09/19] rnbd-srv: use bio_add_virt_nofail
-        commit: a216081323a1391991c9073fed2459265bfc7f5c
-[10/19] gfs2: use bdev_rw_virt in gfs2_read_super
-        commit: 65f8e62593e64f6991ece4f08ab9e147e62df488
-[11/19] zonefs: use bdev_rw_virt in zonefs_read_super
-        commit: b2f676efe601586360e5f7461f6d36981ac1e6c9
-[12/19] PM: hibernate: split and simplify hib_submit_io
-        commit: 0cb8c299f81591699e908d1a6ad2dba6df642e25
-[13/19] dm-bufio: use bio_add_virt_nofail
-        commit: 9134124ce1bac3d5228ee1b1fc7a879422ff74f6
-[14/19] dm-integrity: use bio_add_virt_nofail
-        commit: bd4e709b32ac932aee3b337969cbb1b57faf84bd
-[15/19] xfs: simplify xfs_buf_submit_bio
-        commit: 9dccf2aa6ed5fa6ee92c8d71868bf3762ae85bda
-[16/19] xfs: simplify xfs_rw_bdev
-        commit: d486bbecc90d86e0292071bd06322543f8f5f658
-[17/19] xfs: simplify building the bio in xlog_write_iclog
-        commit: 5ced480d4886b12e6a2058ac3ebd749b0ff14573
-[18/19] btrfs: use bdev_rw_virt in scrub_one_super
-        commit: 760aa1818b040c8ec6a1ee9cea1ea8cac0735ce3
-[19/19] hfsplus: use bdev_rw_virt in hfsplus_submit_bio
-        commit: 15c9d5f6235d66ebc130da9602b1cd7692bcf85d
-
-Best regards,
--- 
-Jens Axboe
-
-
-
+The patches have been there for like 4 -rc kernels without reported
+problems. I will remove them again.
 
