@@ -1,213 +1,132 @@
-Return-Path: <linux-btrfs+bounces-13763-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13764-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E78C4AADCB7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 12:44:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93CC8AADE0D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 14:05:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A38C17964C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 10:44:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1B327BE6B4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 May 2025 12:04:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E64017A2F0;
-	Wed,  7 May 2025 10:44:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554D725A340;
+	Wed,  7 May 2025 12:04:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pxiIp1BE"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="A9TWos8G"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 809501DBB0C
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 10:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 375931FF7B4;
+	Wed,  7 May 2025 12:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746614676; cv=none; b=gZ3HUYfS2SU9pg3yPoFQHn+tDu/XsdYu/PLNFz/eTZwMet/KFDCMK2TXDMoqjCo4XcS9hb15a9rWywMPDNL9lSywmuvmNxNzAIjQQO3nYr49ez6LxCKxq4hl2blMrb+kP+4A0MOmLKZpnB7BvH2SgfciGLOevfQRFS4OQ7IPdpM=
+	t=1746619497; cv=none; b=RsdeOCfsd4EoiVeRIEwvKvv+q50A4guYt9KvNtBnQzbOpUsONNWbLTKoUbcEVb2ypKeTES6caPo0y5ESGuth1hVyZSUOkPxoxY0d2c1RWe5nxnB1FaXMK2NMKHzS0dv4RTFX2KdX+C1HcgfEi3ZZQ1smH3kzgkBktEIAWMSZc+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746614676; c=relaxed/simple;
-	bh=h5Ycy2ddtgj3dcEjd70oDkufrIDpl1HlfFNwTV0jNqw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QR/7jBUimV5xW/BKhuPInX2Dd9BpclF+cP6oCC9xQspCtvHIsIbAOgXDEdE1A7m2wBX5D4dwITjIWGm5ZqV9l0SWB7wuWVPPEAUWyfZHq0MFbovAb69KtSpoAy+Xer3CztHEAkehqGr5bc1102XdAss5Ab1dz3dOYscOKRJMV6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pxiIp1BE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE4F3C4CEE7
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 May 2025 10:44:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746614675;
-	bh=h5Ycy2ddtgj3dcEjd70oDkufrIDpl1HlfFNwTV0jNqw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=pxiIp1BE5yIlNRTK8DkYwBUF+jR+fTfCWPvhiaHlj2fXBKU+0N4evCXcg+Ug2CKIi
-	 Bu9nRNao2iY1o78K+SE6tRlYV65+YrHXR/AczEnm5ZmGYdY7i9Kro0XEAkAx+htlMU
-	 Vn9flb/IzbDUiFUTVkb3UXcuk6lflUGtHFwbA2Ww3kYCyn8kfRN79I/p7C95vkLrJj
-	 Fo3W0hu9KuxHVJx39PAse3vIxFWTWIyams9k4C+qTZ1nXpqnX4N3ZTWSThszqtgQEv
-	 43PXTVwvx/6T4yIHszSYRVHnoIsi3gmV2DxcRUdJVeNvE8aoaxmEQ+b3J3RXjOwFzW
-	 tjQ5/5kTTFIrg==
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-ace94273f0dso525999066b.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 May 2025 03:44:34 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyFH/TG91Jwh2/PzSTSIteFPs+ndEXfyLGfvewo4paZFfNsHZle
-	TjX5SgdovNTiFVG/NoO/ZQY2NEvGEIo7F7A+l/Xyyo8eixYrgjHipLzQzhaf7oeBbakro17/Ojx
-	mp7r8rTSzYrRztNTa2kRQ8GhiSII=
-X-Google-Smtp-Source: AGHT+IEVJ5TXVTNKlsOfNwRb9/RQ2hDDAxRcAY8co/kkXpfqteLSGkSi0LRzzQa6ZXWaTF271TzddcIcTdxfrovEL4k=
-X-Received: by 2002:a17:907:cf94:b0:acb:5070:dd19 with SMTP id
- a640c23a62f3a-ad1e8d562cemr277696266b.61.1746614673448; Wed, 07 May 2025
- 03:44:33 -0700 (PDT)
+	s=arc-20240116; t=1746619497; c=relaxed/simple;
+	bh=S7C0i6guyQUxOmCmzpSvqnFdBd5hRF8ZNROLA+/7kxY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JRFPh7arbif3yah10F5m9BZHqHASvXad6V40pn1Ls/3hESoAuO4lj5QNf9COL6944mnXn4otRhfgEzQQJEBGnvMiAhGOa0Nfp0g040VSpVB1bwjoqX99DsHmYaf4nuJlcQIpvcJWu48TXUXBubV92upi7et1tIltHO5bZoXkD2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=A9TWos8G; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=taTa50vCOqf4qXYa/4iG8HTZJGZUASEUn4x1pmkgTG0=; b=A9TWos8GWPhEHAZOpDq5FqK2Ni
+	wmHmUL7vq5tnXVsJAPlg2Fd3H9Lyc3vEC3ayp0PZ0pQcxwbZCyOUYrBt9eNGl/RAPXFBg0bRkKXi0
+	iuL8IqEVadvqhfYRBsbbPGCTeb0Ab3N3iyFYBp9Ai/eJNUYqN0kDTYTzEQCEWgIeDf5khCiE+MA6R
+	O52BIR//+QAbHZXgMEJ6gb6UG9lhMnh8/PT5xZXP13vn0u2Q5R4GnOhLAV3yZKjntb2cM18o8EksU
+	Vv7KVXVQt+ANVEI5gW15AkwboYZR+caE7YC8AWsetDxrPZQQUzxg2rlSd+H1f3HZfmvhXoQYfoxMj
+	wacMh52w==;
+Received: from [2001:4bb8:2cc:5a47:1fe7:c9d0:5f76:7c02] (helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uCdW9-0000000FJ3e-424a;
+	Wed, 07 May 2025 12:04:54 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: linux-block@vger.kernel.org,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Coly Li <colyli@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>,
+	Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Carlos Maiolino <cem@kernel.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <jth@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@kernel.org>,
+	slava@dubeyko.com,
+	glaubitz@physik.fu-berlin.de,
+	frank.li@vivo.com,
+	linux-bcache@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	linux-btrfs@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	linux-pm@vger.kernel.org
+Subject: add more bio helpers v3
+Date: Wed,  7 May 2025 14:04:24 +0200
+Message-ID: <20250507120451.4000627-1-hch@lst.de>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <b4e4f39ce79e08f41410ec45653d028db63e468b.1746594262.git.wqu@suse.com>
-In-Reply-To: <b4e4f39ce79e08f41410ec45653d028db63e468b.1746594262.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 7 May 2025 11:43:56 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5vMCT3eJBHupjqppfgXD=qLzACcWVnowbrJeeduvTVXg@mail.gmail.com>
-X-Gm-Features: ATxdqUHwoN-zWSdwKN-JVCQs1bZHBcfA8bRZ6PGmfenOYQNJnsp4uOEMx42Ye00
-Message-ID: <CAL3q7H5vMCT3eJBHupjqppfgXD=qLzACcWVnowbrJeeduvTVXg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: scrub: reduce memory usage of scrub_sector_verification
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Wed, May 7, 2025 at 6:05=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> That structure records needed info for block verification (either data
-> checksum pointer, or expected tree block generation).
->
-> But there is also a boolean to tell if this block belongs to a metadata
-> or not, as the data checksum pointer and expected tree block generation
-> is already a union, we need a dedicated bit to tell if this block is a
-> metadata or not.
->
-> However such layout means we're wasting 63 bits for x86_64, which is a
-> huge memory waste.
->
-> Thanks to the recent bitmap aggregation, we can easily move this
-> single-bit-per-block member to a new sub-bitmap.
-> And since we already have six 16 bits long bitmaps, adding another
-> bitmap won't even increase any memory usage for x86_64, as we need two
-> 64 bits long anyway.
->
-> This will reduce the following memory usages:
->
-> - sizeof(struct scrub_sector_verification)
->   From 16 bytes to 8 bytes on x86_64.
->
-> - scrub_stripe::sectors
->   From 16 * 16 to 16 * 8 bytes.
->
-> - Per-device scrub_ctx memory usage
->   From 128 * (16 * 16) to 128 * (16 * 8), which saves 16KiB memory.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+Hi all,
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+this series adds more block layer helpers to remove boilerplate code when
+adding memory to a bio or to even do the entire synchronous I/O.
 
-Looks good, thanks.
+The main aim is to avoid having to convert to a struct page in the caller
+when adding kernel direct mapping or vmalloc memory.
 
-> ---
->  fs/btrfs/scrub.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
->
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 4ba0154e086a..c362bd32756e 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -66,8 +66,6 @@ struct scrub_ctx;
->
->  /* Represent one sector and its needed info to verify the content. */
->  struct scrub_sector_verification {
-> -       bool is_metadata;
-> -
->         union {
->                 /*
->                  * Csum pointer for data csum verification.  Should point=
- to a
-> @@ -115,6 +113,9 @@ enum {
->         /* Which blocks are covered by extent items. */
->         scrub_bitmap_nr_has_extent =3D 0,
->
-> +       /* Which blocks are meteadata. */
-> +       scrub_bitmap_nr_is_metadata,
-> +
->         /*
->          * Which blocks have errors, including IO, csum, and metadata
->          * errors.
-> @@ -304,6 +305,7 @@ static inline unsigned int scrub_bitmap_weight_##name=
-(struct scrub_stripe *strip
->         return bitmap_weight(&bitmap, stripe->nr_sectors);              \
->  }
->  IMPLEMENT_SCRUB_BITMAP_OPS(has_extent);
-> +IMPLEMENT_SCRUB_BITMAP_OPS(is_metadata);
->  IMPLEMENT_SCRUB_BITMAP_OPS(error);
->  IMPLEMENT_SCRUB_BITMAP_OPS(io_error);
->  IMPLEMENT_SCRUB_BITMAP_OPS(csum_error);
-> @@ -801,7 +803,7 @@ static void scrub_verify_one_sector(struct scrub_stri=
-pe *stripe, int sector_nr)
->                 return;
->
->         /* Metadata, verify the full tree block. */
-> -       if (sector->is_metadata) {
-> +       if (scrub_bitmap_test_bit_is_metadata(stripe, sector_nr)) {
->                 /*
->                  * Check if the tree block crosses the stripe boundary.  =
-If
->                  * crossed the boundary, we cannot verify it but only giv=
-e a
-> @@ -850,7 +852,7 @@ static void scrub_verify_one_stripe(struct scrub_stri=
-pe *stripe, unsigned long b
->
->         for_each_set_bit(sector_nr, &bitmap, stripe->nr_sectors) {
->                 scrub_verify_one_sector(stripe, sector_nr);
-> -               if (stripe->sectors[sector_nr].is_metadata)
-> +               if (scrub_bitmap_test_bit_is_metadata(stripe, sector_nr))
->                         sector_nr +=3D sectors_per_tree - 1;
->         }
->  }
-> @@ -1019,7 +1021,7 @@ static void scrub_stripe_report_errors(struct scrub=
-_ctx *sctx,
->         for_each_set_bit(sector_nr, &extent_bitmap, stripe->nr_sectors) {
->                 bool repaired =3D false;
->
-> -               if (stripe->sectors[sector_nr].is_metadata) {
-> +               if (scrub_bitmap_test_bit_is_metadata(stripe, sector_nr))=
- {
->                         nr_meta_sectors++;
->                 } else {
->                         nr_data_sectors++;
-> @@ -1616,7 +1618,7 @@ static void fill_one_extent_info(struct btrfs_fs_in=
-fo *fs_info,
->
->                 scrub_bitmap_set_bit_has_extent(stripe, nr_sector);
->                 if (extent_flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
-> -                       sector->is_metadata =3D true;
-> +                       scrub_bitmap_set_bit_is_metadata(stripe, nr_secto=
-r);
->                         sector->generation =3D extent_gen;
->                 }
->         }
-> @@ -1760,7 +1762,6 @@ static void scrub_reset_stripe(struct scrub_stripe =
-*stripe)
->         stripe->state =3D 0;
->
->         for (int i =3D 0; i < stripe->nr_sectors; i++) {
-> -               stripe->sectors[i].is_metadata =3D false;
->                 stripe->sectors[i].csum =3D NULL;
->                 stripe->sectors[i].generation =3D 0;
->         }
-> @@ -1902,7 +1903,7 @@ static bool stripe_has_metadata_error(struct scrub_=
-stripe *stripe)
->         int i;
->
->         for_each_set_bit(i, &error, stripe->nr_sectors) {
-> -               if (stripe->sectors[i].is_metadata) {
-> +               if (scrub_bitmap_test_bit_is_metadata(stripe, i)) {
->                         struct btrfs_fs_info *fs_info =3D stripe->bg->fs_=
-info;
->
->                         btrfs_err(fs_info,
-> --
-> 2.49.0
->
->
+Changes since v2:
+ - rebase on top of the latest block for-next branch to resolve
+   conflicts with the bonuce buffering removal
+
+Changes since v1:
+ - typo fixes
+ - improve commit messages and kerneldoc comments
+ - move bio_add_virt_nofail out of line
+ - make the number of bio_vecs calculation helper more generic
+ - add another vmalloc helper for the common case
+
+Diffstat:
+ block/bio.c                   |  101 +++++++++++++++++++++++++++++++++++++++++
+ block/blk-map.c               |   92 +++++++++----------------------------
+ drivers/block/pktcdvd.c       |    2 
+ drivers/block/rnbd/rnbd-srv.c |    7 --
+ drivers/block/ublk_drv.c      |    3 -
+ drivers/block/virtio_blk.c    |    4 -
+ drivers/md/bcache/super.c     |    3 -
+ drivers/md/dm-bufio.c         |    2 
+ drivers/md/dm-integrity.c     |   16 ++----
+ drivers/nvme/host/core.c      |    2 
+ drivers/scsi/scsi_ioctl.c     |    2 
+ drivers/scsi/scsi_lib.c       |    3 -
+ fs/btrfs/scrub.c              |   10 ----
+ fs/gfs2/ops_fstype.c          |   24 +++------
+ fs/hfsplus/wrapper.c          |   46 +++---------------
+ fs/xfs/xfs_bio_io.c           |   30 ++++--------
+ fs/xfs/xfs_buf.c              |   43 +++--------------
+ fs/xfs/xfs_log.c              |   32 ++-----------
+ fs/zonefs/super.c             |   34 ++++---------
+ include/linux/bio.h           |   25 +++++++++-
+ include/linux/blk-mq.h        |    4 -
+ kernel/power/swap.c           |  103 ++++++++++++++++++------------------------
+ 22 files changed, 270 insertions(+), 318 deletions(-)
 
