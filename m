@@ -1,69 +1,54 @@
-Return-Path: <linux-btrfs+bounces-13821-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13822-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F696AAF210
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 May 2025 06:19:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 886DEAAF2E6
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 May 2025 07:30:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4586B1B66B7A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 May 2025 04:19:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 831D71BC610D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 May 2025 05:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D5B8204090;
-	Thu,  8 May 2025 04:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EEEB215168;
+	Thu,  8 May 2025 05:30:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CY0zu2oz"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="iO7Iwtuo"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952C978F37;
-	Thu,  8 May 2025 04:19:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB493215063;
+	Thu,  8 May 2025 05:30:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746677960; cv=none; b=V1O7bypNaSYWXdg6oTKvUltooCdyFC997WSqTS7CA14YNrYLi6fzVBa1tvpJRVrPj3a7okh4k7uS/aM+Pzbd9G+KR2BEAPV85v0s67WsHO/PyEiqP3LFAOw1yeSQdjf/9g7vqveDXzYac8f1ELlc1QKujxF4R97BUEJO6lhUfu0=
+	t=1746682211; cv=none; b=AgR+FpYbN2VdBp2GZyrPUr7bwT+4vZgMqW8OefVrRL4T9iae9WlO0DGqF42uJqlTVI/17REGyLWrsc9VLK9d4EHzfy6yiAcKypB9iTZ/1DE+L3lYgn6gRfXap2b6Ql9QX26KayJ8xdwRiGfy6ufZPa5jED5bZmHA52i3DKEMx2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746677960; c=relaxed/simple;
-	bh=Hu8NY9n961A/FBCHtTw8bjxVHEHWxXZ0tidmYP4RCZE=;
+	s=arc-20240116; t=1746682211; c=relaxed/simple;
+	bh=+j2nGh1iZoKqUNxCPUvIhwqhATsOcBMd/tEw23xw9Xw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dnl6UefbbwjIUNRL22CqdVEJLxfsLh8NJ4Fjs4eJTtaymWI0QOTGdX5e77vKEU8cSPngRlbCccnU4bbcx0KBeHtwgU3yypXCEK2SkVZKcCQvd6L+0Rv64R1Df09/m9U8gTJ92fvRLP3DFwAKvMYf4JfZRk8Rd0+mLjOR7TxnMcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CY0zu2oz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1F67C4CEE8;
-	Thu,  8 May 2025 04:19:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746677960;
-	bh=Hu8NY9n961A/FBCHtTw8bjxVHEHWxXZ0tidmYP4RCZE=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=nLEtKSuAIfUCwR0rWLm2OCDdVTrAGn8mALE23443LM/Mq2vVxFVLsNUAyE85uzcHYgn3GD2Z2nUG7kVK/Vi7aT5CDUmrX6HWsVL9cxP2moT3ZEl0EU4P2l8BCUnfKnYsXeTD32a4IoSzZSUVEiFIQMNJdxgcYHnaPVLnI9zv9mY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=iO7Iwtuo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3D70C4CEEB;
+	Thu,  8 May 2025 05:30:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1746682211;
+	bh=+j2nGh1iZoKqUNxCPUvIhwqhATsOcBMd/tEw23xw9Xw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CY0zu2ozYym4TdyWzRLtc1OkyRiFi8gJyrx1RmEdIo/TwdMXhmv/o1AqF/g18Vb4W
-	 Pn2HKxPp3xDZrQFCbYHQ90Hn+5r1rmhKmMOtPlT/Qsk+PnEwwPZHUcLBHnJ3rxlYil
-	 pRecnrgksWkx0rO135zsad4FhdqlhHCEq5yjvUgSQVuHITxtxRMHN1fmD3zXvwdtDM
-	 4nsb4cU0fUw6PsMWVS1d0VovXhg5bhRKiPsESUR6K+MzyHeliBh5p8hUqK06N0WBDa
-	 +1wA0a5KG+ZJyDypCVZ49KtReV4cq8Dc0Z0K+M7HfjbV+GpbCaLPtirpByOv4jYSTw
-	 kqZTTc/H7tFlQ==
-Date: Wed, 7 May 2025 21:19:14 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: David Sterba <dsterba@suse.cz>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
-	"Cabiddu, Giovanni" <giovanni.cabiddu@intel.com>,
-	Josef Bacik <josef@toxicpanda.com>, "clm@fb.com" <clm@fb.com>,
-	"dsterba@suse.com" <dsterba@suse.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	qat-linux <qat-linux@intel.com>, "embg@meta.com" <embg@meta.com>,
-	"Collet, Yann" <cyan@meta.com>,
-	"Will, Brian" <brian.will@intel.com>,
-	"Li, Weigang" <weigang.li@intel.com>
-Subject: Re: [RFC PATCH 6/6] btrfs: zlib: add support for zlib-deflate
- through acomp
-Message-ID: <20250508041914.GA669573@sol>
-References: <20240426110941.5456-1-giovanni.cabiddu@intel.com>
- <20240426110941.5456-7-giovanni.cabiddu@intel.com>
- <20240429135645.GA3288472@perftesting>
- <20240429154129.GD2585@twin.jikos.cz>
- <aBos48ctZExFqgXt@gcabiddu-mobl.ger.corp.intel.com>
- <aBrEOXWy8ldv93Ym@gondor.apana.org.au>
- <20250507121754.GE9140@suse.cz>
+	b=iO7Iwtuo2ZyDL9s2h5j+xgvwKoNTgES7EaXvL9WegLVc3uXXXC7DaD/p1EPp1wmRY
+	 1e1KmeJs/sNhQFMyh1JB9T48ikyRWsnNPyghi1/b9158PIwQ1vYYxRdB/oIzvBHBzX
+	 s2hUNQIikQ9sDj3C+HGaApj3S1So9+Z3PwJgkCRc=
+Date: Thu, 8 May 2025 07:30:08 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
+	Christoph Hellwig <hch@infradead.org>,
+	Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH] btrfs: always fallback to buffered write if the inode
+ requires checksum
+Message-ID: <2025050830-epilepsy-emu-5a5d@gregkh>
+References: <54c7002136a047b7140c36478200a89e39d6bd04.1746666535.git.wqu@suse.com>
+ <dcffa5400745663641e58a261e8dbccbb194b468.1746666392.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -72,32 +57,86 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250507121754.GE9140@suse.cz>
+In-Reply-To: <dcffa5400745663641e58a261e8dbccbb194b468.1746666392.git.wqu@suse.com>
 
-On Wed, May 07, 2025 at 02:17:54PM +0200, David Sterba wrote:
-> Anyway, assuming there will be a maintained, packaged in distros and
-> user friendly tool to tweak the linux crypto subsystem I agree we don't
-> have to do it in the filesystem or other subsystems.
+On Thu, May 08, 2025 at 10:39:17AM +0930, Qu Wenruo wrote:
+> commit 968f19c5b1b7d5595423b0ac0020cc18dfed8cb5 upstream.
+> 
+> [BUG]
+> It is a long known bug that VM image on btrfs can lead to data csum
+> mismatch, if the qemu is using direct-io for the image (this is commonly
+> known as cache mode 'none').
+> 
+> [CAUSE]
+> Inside the VM, if the fs is EXT4 or XFS, or even NTFS from Windows, the
+> fs is allowed to dirty/modify the folio even if the folio is under
+> writeback (as long as the address space doesn't have AS_STABLE_WRITES
+> flag inherited from the block device).
+> 
+> This is a valid optimization to improve the concurrency, and since these
+> filesystems have no extra checksum on data, the content change is not a
+> problem at all.
+> 
+> But the final write into the image file is handled by btrfs, which needs
+> the content not to be modified during writeback, or the checksum will
+> not match the data (checksum is calculated before submitting the bio).
+> 
+> So EXT4/XFS/NTRFS assume they can modify the folio under writeback, but
+> btrfs requires no modification, this leads to the false csum mismatch.
+> 
+> This is only a controlled example, there are even cases where
+> multi-thread programs can submit a direct IO write, then another thread
+> modifies the direct IO buffer for whatever reason.
+> 
+> For such cases, btrfs has no sane way to detect such cases and leads to
+> false data csum mismatch.
+> 
+> [FIX]
+> I have considered the following ideas to solve the problem:
+> 
+> - Make direct IO to always skip data checksum
+>   This not only requires a new incompatible flag, as it breaks the
+>   current per-inode NODATASUM flag.
+>   But also requires extra handling for no csum found cases.
+> 
+>   And this also reduces our checksum protection.
+> 
+> - Let hardware handle all the checksum
+>   AKA, just nodatasum mount option.
+>   That requires trust for hardware (which is not that trustful in a lot
+>   of cases), and it's not generic at all.
+> 
+> - Always fallback to buffered write if the inode requires checksum
+>   This was suggested by Christoph, and is the solution utilized by this
+>   patch.
+> 
+>   The cost is obvious, the extra buffer copying into page cache, thus it
+>   reduces the performance.
+>   But at least it's still user configurable, if the end user still wants
+>   the zero-copy performance, just set NODATASUM flag for the inode
+>   (which is a common practice for VM images on btrfs).
+> 
+>   Since we cannot trust user space programs to keep the buffer
+>   consistent during direct IO, we have no choice but always falling back
+>   to buffered IO.  At least by this, we avoid the more deadly false data
+>   checksum mismatch error.
+> 
+> CC: stable@vger.kernel.org # 6.6
+> Suggested-by: Christoph Hellwig <hch@infradead.org>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> [ Fix a conflict due to the movement of the function. ]
+> ---
+>  fs/btrfs/direct-io.c | 1094 ++++++++++++++++++++++++++++++++++++++++++
 
-I don't think there ever will be.  NETLINK_CRYPTO is obscure and hardly anyone
-uses it.  The kernel's generic crypto infrastructure is also really cumbersome
-to use, so the trend in the kernel overall has been a move away from the generic
-crypto infrastructure and towards straightforward library APIs (e.g.
-lib/crypto/) that just do the right thing with no configuration needed.
+Did you mean to include all of this file in here?
 
-btrfs already uses the compression library APIs.  Considering how disastrous
-crypto_acomp has been so far when other people tried to use it, most likely the
-right decision will be to keep using the library APIs for the vast majority of
-btrfs users, and have an alternative code path that uses crypto_acomp only when
-hardware offload is actually being used.
+I see 2 versions of this patch sent, the first one looks "correct", but
+this one is very odd.
 
-There may also be a way to rework things so that the compression library APIs
-can use hardware offload, in which case the crypto API would play no role at
-all.  I understand the Zstandard library in userspace can use Intel QAT as an
-external sequence provider, so it's been proven that this can be done.
+thanks,
 
-BTW, I also have to wonder why this patchset is proposing accelerating zlib
-instead of Zstandard.  Zstandard is a much more modern algorithm.
-
-- Eric
+greg k-h
 
