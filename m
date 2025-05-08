@@ -1,290 +1,245 @@
-Return-Path: <linux-btrfs+bounces-13838-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13839-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE318AAFFEB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 May 2025 18:07:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 230A3AAFFF9
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 May 2025 18:11:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3908D179F2A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 May 2025 16:07:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47D653B5057
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 May 2025 16:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCBC927EC99;
-	Thu,  8 May 2025 16:07:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 675C627CCEB;
+	Thu,  8 May 2025 16:11:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="JLCiqZV7";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XPOXXSZS"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="jUNHQcld"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF6D627CCEB
-	for <linux-btrfs@vger.kernel.org>; Thu,  8 May 2025 16:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746720420; cv=none; b=Ybu5X4To3aBJw20E8q7y4uNMrwjjBexaPnEaaGYdp7VpGgPrWf1peg++kZdx5K1o3FzFkdosZHIk5lHuBuEfz9vKGBFBzSQ5CloHDkncLmaELO+eY1jxcEb7L+6RGJYpByf/U4AyA+3+df2GbEpaP3usSdJzRdoquEaeAkU5bN4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746720420; c=relaxed/simple;
-	bh=35AZ9VreaGGer84MTi4QR8eWPUWENMUSK0Cr4sBG8ww=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SavCPJD+lcXH1WLpPYwq5Re1/xcj3tbfcNwLz+bkZh+0gkkJwdKJINJE116O9RxjF+6JWrT8ML0lrsu2gn3oMRKBQb0nilj/9FpxqnWimaxql7On1A7mmXUKTL5g1cx9XgTQS/X1Hy2ac/RVCTfkvfLtJ67vC+YMEbl/1/U55zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=JLCiqZV7; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XPOXXSZS; arc=none smtp.client-ip=103.168.172.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfout.phl.internal (Postfix) with ESMTP id C365A13801B7;
-	Thu,  8 May 2025 12:06:57 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Thu, 08 May 2025 12:06:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1746720417;
-	 x=1746806817; bh=b0mCyVEen3xehmCR2RsNM3Isc7M9Nj0x5PPjrKyK16s=; b=
-	JLCiqZV7dUmvZNhen4ULZFLn7kzqfacEN3o7LA8xx/v6o+5iseodD5NQ+DLPsg5J
-	DvvRWTLg8GHtl4bPE743+16eH5BfsxYLfLzUK7u5F3TUcgLo8LVV8TJe9BdhFfRD
-	jHD8JYyNuA4F3jaoBhmZxx0xBNtyFifEW3Z7y5pLVxA6BwwgfSx96osE8MK4fbqD
-	ihpCWdAehsO+0+p8AeCMnNyibc/W2+FFdlXx5nN6Npfx9pgazXodZo3fVLJI75/v
-	wHy08fvniIOc2Kzo3Beyhxl+pHZJf9rxz/abPcLrsps5K5dwg17yFt/AvokE/x3f
-	44BE1hVeO1ysmt28B3VXbA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1746720417; x=
-	1746806817; bh=b0mCyVEen3xehmCR2RsNM3Isc7M9Nj0x5PPjrKyK16s=; b=X
-	POXXSZSZ0YpNwM2nyqTyVqBIP5ygTcPbMvdExlozb47Yba9vvr8uzxlZsRH4JXRj
-	iigqM76F7DRfJ1T+wE8YWFmySW2hgXLvGllTOQJQPBqYgPLeJ9/y3DHtTrhGWJfQ
-	G1u0v8XfkQbymYeSyJ+b6+KulH3z5kZz376AXoce7PMrhomjoA/TcZscEIkpMy8A
-	kiv2j4xKnKpu/9vu+KNV+hiFTcw2ncm38SrXj0iVjSNhbysH4i1qONa0Vl8Cw+Wj
-	WoHxceAWWKB93jo3yYjiXw8PRQC73AKy5y0OD+p3TMI1tn74ClzrYFSuyGWE2Yvd
-	YEvde6SQimznsZu78b4FA==
-X-ME-Sender: <xms:odYcaDkIok9V2jy8-NT1nHOjn6qxVeIaydFkLE9RwPbzNEcP0lzAWw>
-    <xme:odYcaG3S4sWBQcL0N2b4c-laPbXnHRcrgS_jd5oBQLn_OjbT6q7TU9YW8rem8nd3r
-    bE_k63bFHEozYyoQ2E>
-X-ME-Received: <xmr:odYcaJrefYQsaTJ5qfghHR7twn7tje_8oRaQYlel_8QlGCPGNDJY02QiQTrpTOLMI5TM5CPPkGA3RV_iScMupkWSREg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvledtudejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddt
-    tdejnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioh
-    eqnecuggftrfgrthhtvghrnhepudelhfdthfetuddvtefhfedtiedtteehvddtkedvledt
-    vdevgedtuedutdeitdeinecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrg
-    hilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopeefpdhmohgu
-    vgepshhmthhpohhuthdprhgtphhtthhopehfughmrghnrghnrgeskhgvrhhnvghlrdhorh
-    hgpdhrtghpthhtohepfihquhesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhugidq
-    sghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:odYcaLmPcYZ8dcqs0tqUoNgr2FRGtmBgA-_J9qTRq5SKMQt9_fowTg>
-    <xmx:odYcaB0sSm4pPH_kCqz8gmvS7TFOvyo2Hm2NZ3OCkiY6YuRqXALtYQ>
-    <xmx:odYcaKty2erLfA8FIXqNj9tgrBm8mj5v1SZOk771_2q5yp_6bREEHw>
-    <xmx:odYcaFUG3c0VFmkfMjJgofXoPW1kjRfPlTnh6eK7Poruk3YacG1qPQ>
-    <xmx:odYcaOI2l_wizuLfaXIoRmOECaVYiwQODRfSacI1AYk_mBFJCEtCkq8s>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 8 May 2025 12:06:57 -0400 (EDT)
-Date: Thu, 8 May 2025 09:07:38 -0700
-From: Boris Burkov <boris@bur.io>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/5] btrfs: fix qgroup reservation leak on failure to
- allocate ordered extent
-Message-ID: <20250508160738.GB3935696@zen.localdomain>
-References: <cover.1746638347.git.fdmanana@suse.com>
- <b2b4a73fb7ef395f131884cd5c903cbf92517e6f.1746638347.git.fdmanana@suse.com>
- <20250507223347.GB332956@zen.localdomain>
- <ccacb32f-e345-49c7-9c6b-8bdc72c69a7f@suse.com>
- <CAL3q7H4YWzsCTsSC=oup6_typt_PdNVAdAuK1RVhuH1nEto-eQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053A8155335
+	for <linux-btrfs@vger.kernel.org>; Thu,  8 May 2025 16:11:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1746720698; cv=fail; b=BF7Wz4L11qQKM7cZFdpyMH3UEAWdtGps2bEeQ3UMdkMKSzhQo9dZZ3cCJBtER6rBqujvoGIwwVy4Q8Q5nZvMGdZD0iPyCs0nQcqUASuPjqGj2JBIgSDfc2e4mSOzEgwogD+7yZ63PbHaj99w0P981NaMQkNiMPG3BYy74Knlm4o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1746720698; c=relaxed/simple;
+	bh=nLngVFsGm8biiFJ7vIQRBzK7i9eKHaDb1N9z4CmEmF8=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Nd/zrQrkhg4yVz9W00FxLep8HmJksKGfZ3Avw6g7QFG8/Hk+zFWeRvi4Mh5tw+2kRWZ64CiJSKZ8kGPCCXxVNvEKDDOOyGc+1Xe8+yaEaeqo4WMhywfAanyaGAxzAYn0MatUu/0L2efaEpq2x8Fh2ULM5YJJCo+ns+TnQSVyvpA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=jUNHQcld; arc=fail smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 548EtN2p020725;
+	Thu, 8 May 2025 09:11:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=s2048-2021-q4;
+	 bh=n6Tf2vf325lJOroECkzcrhEHUN1cNt3/iRBv5pxojlo=; b=jUNHQcldxqFh
+	l6AYArEG+IH5/6sFkrsYrkLDsAtDBwaax0m4rz9WGb+EXwOe/RlUJ00XVf3MFACb
+	maAHa7jEyfme0DivtBKuLxKEtt46pRnYcMtXMztMVn9ktMnQr33YV9JHOhThXXed
+	xmQqeCbhtPrc0pYCP6ooZ0N6Luyn6dfB6Oua3UMEbwPKr6D5mnMCuQzI6QKxK4EI
+	rWyVtB23jZJ13PIzrr06bsbDxv3gorkaimwMnKfTGdwC+NymRim4MwXx1PRV4zgk
+	nNB8cp8pdydNFA3PSGBENsYWU0Rq574Rb/xlQqPPiIC9IzWtsuLtOOhsUSC90grn
+	m2xpA7GA4A==
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2176.outbound.protection.outlook.com [104.47.58.176])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 46gmfg48ap-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 08 May 2025 09:11:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=PCHchXQWfMzoIWjFjPiUiydNa16k7Ixwm62C9MqIU2c4xm2jGvfHN5C20g2Z3x3NxO0zeZtDK8JRAPYs7XwT5SjIOwc7UeDLOOee+jbMA51Cu9TgBNScrw1FVY270suBJOrhW6g5IHVVapoNSa8yyMDXCnq9h+ahZhlK7+5/jkN57juX7oDej9VNvX5xcluWq+9p/FH43Vfir4EQC6DpapZ3SLrHWaHqt7oilyBCS867RubxagQAi6omx1T3AXd6mMUTVhz/cuA43UgIxR8I6hbiwMY2xdCSHAoZ43XlJmZnYQloHX4x5CpXgIYiAuOen2ynb1/4zWZ6O3C8x2ODRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n6Tf2vf325lJOroECkzcrhEHUN1cNt3/iRBv5pxojlo=;
+ b=j6lAtuMSJwPjZykzkMZQ1q4i5TVYOGtWKTeSxh8rvj2hCACp26cLNo86i9Za5zZrLVJIyEIYq0k3u1ilCKmlH00azMxzs6xi9Rjf/0szNAPNRwiz6icU6suFkv/0HSVb5vTaKXEk0U6eHcZsNRYd7UbrHhfUVDRMiZQoAMqNzoFpFL1yeHDIeeALKAqvbWFrZGFQyDrOypA48piy8zFGIYCMCSWtIEAHb8uP/+/agjq+UK6oUg6hcLFL4hNaRKQoSpLT1mdFCOEV6ciwn8zpQRDO6uZwAAXCfmAknem5MsyPv1FrsU7cSd16AWqzxpbbpP2TmzqeTUUZn37HQSwevQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from LV3PR15MB6455.namprd15.prod.outlook.com (2603:10b6:408:1ad::10)
+ by PH7PR15MB6501.namprd15.prod.outlook.com (2603:10b6:510:301::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.24; Thu, 8 May
+ 2025 16:11:22 +0000
+Received: from LV3PR15MB6455.namprd15.prod.outlook.com
+ ([fe80::595a:4648:51bc:d6e0]) by LV3PR15MB6455.namprd15.prod.outlook.com
+ ([fe80::595a:4648:51bc:d6e0%7]) with mapi id 15.20.8722.021; Thu, 8 May 2025
+ 16:11:21 +0000
+Message-ID: <80ba0638-e49b-498f-907b-24fb926a076e@meta.com>
+Date: Thu, 8 May 2025 12:11:13 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: What is the point of the wbc->for_kupdate check in
+ btree_writepages
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Chris Mason <clm@fb.com>, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        linux-mm@kvack.org
+References: <aBxJ8uBi5Cgz-CPu@infradead.org>
+ <2d1a8e78-b57a-4726-a566-4d916a36be8f@meta.com>
+ <aBzCrkI7Jfisdnaw@infradead.org>
+Content-Language: en-US
+From: Chris Mason <clm@meta.com>
+In-Reply-To: <aBzCrkI7Jfisdnaw@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN2PR08CA0005.namprd08.prod.outlook.com
+ (2603:10b6:208:239::10) To LV3PR15MB6455.namprd15.prod.outlook.com
+ (2603:10b6:408:1ad::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H4YWzsCTsSC=oup6_typt_PdNVAdAuK1RVhuH1nEto-eQ@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR15MB6455:EE_|PH7PR15MB6501:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0e6491b6-3682-48ac-c8b6-08dd8e4af937
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?TG5rUFNuRWdWTStRdVFNL2thTXJxYW91UWg5WWRNSkxrZFhMVlpVMVF5cW9w?=
+ =?utf-8?B?dTVYYTZYWjNPNUhNcFdpNW9LRTRzVElKOWs2MU1tdEIwNm5ZUWZqRmI1VjJi?=
+ =?utf-8?B?SHBMWkJBTzFlMzVoY0JOMEM5VllNVjBKaU82aERPclAvdG9qV2NQNTlPWDVj?=
+ =?utf-8?B?aVgvQ1FEb1Rudmk1eEs4U2oyL1hGTkdGSEdiK3hGdld5VlpwSjNwRE5BdWxM?=
+ =?utf-8?B?MlBCRlRvOGJOT1gxaWJra2ZuK3E2eW40OUhUcTVobW5FZmlHTlRoZDdYME0r?=
+ =?utf-8?B?RmNnY3JzUHhZU1h2TkY1c1NqdlB5dGdVejdaWEVMK0VpN1dESmNYeVk4bWdE?=
+ =?utf-8?B?VkxBYUhhV1V2eDNKU3BBKzAyYWk2eDVBWUJKN1lWY2kyamR5aHVEcTlsUE5i?=
+ =?utf-8?B?WklRYkFCLzFLeHcrNUxOSmN5TlRWQnZXK0RLZUJRSzNHVjRwYVhZQ3FIWmVH?=
+ =?utf-8?B?UUZoa0pQSFhia3ZLQTY3UjJJbC80U1lUS1FWUEE4RExJTkpRY2F2TWo4VFZI?=
+ =?utf-8?B?RzlhU3BBWkcrVHZIQU1wZUc1ZFp0eWoyenczODBoTE1oMUIwYlpyMisyemZr?=
+ =?utf-8?B?YnEvaFN3aEZPVXVNU09OdllxNGtuSEhCWHFaZm9saGpDUTVoeWp4MkN3eSt1?=
+ =?utf-8?B?VytBQXlXK1M3UlZ1ZllLeHhHU2FIeGtjSzFZWnVXUHM4TXd0R05wLzV1NEI2?=
+ =?utf-8?B?RnJmcWc2OFhLK2FZa1FPZjl2cmhOdXNoU0JPWlhlRlZ6c2krSlBGc3NkRTI0?=
+ =?utf-8?B?S29xUXRjdlE3ZDVxaHlQUXM2QlRPejVGSm1pWlR4b1JpenN5eFFhbWtLUXpL?=
+ =?utf-8?B?NHpXVDlzKytRWG96Q2J0cnI2cnV3aGc2VXNRQ3hKY1hVT21EbmJoVXlKVWR2?=
+ =?utf-8?B?SVpUeW1tdnJrVG5qRFVHQzk2ejJQZ1JvQWtaNUl2b2srNVJwdjNYNFFtL3Rw?=
+ =?utf-8?B?a1lOeWlaaHd2Q3pkVUJVRGZueFVhSWIwTXRjaWpoMW1SekVvZm9jOXVJanFn?=
+ =?utf-8?B?WTQzU3FndnJNS3FmeU90cHFoVVp4VWx6cjZDdDdyVDhBUmpjR2xBTUZVSENz?=
+ =?utf-8?B?RWl1SUFkT1U3cWU3aU5ZcUlVSVNZSFgyYWtSdFBKaHd6OVU2QUpDUjJHcmxB?=
+ =?utf-8?B?ZjUvczNJcEcwZ0R1MndOTDUwSkVRYWhXVW5mQUFyalh6NzRyLzMwZXV6RmhG?=
+ =?utf-8?B?WU1TMmdQYlZ5NWJTMXF4c1p0T1J5OC9KWkxaSU8vaVdJYVNJeGNRbGFpa0RH?=
+ =?utf-8?B?REt0cFh4TnIwM1V3S3VyTXM2VU5pSDYyM1NEWDF1TXpOVGNjc2E3UW1OVkJn?=
+ =?utf-8?B?Y1BaY0wybUVhb1VHb3N1akxJRWN3MktPRVN4blNuck1lWk5tT3Y1SUo0VXJt?=
+ =?utf-8?B?bVB2ZjRJWkJ6enl6ODFFcEJtS2dhVG5wRUlRRHYyV3Vqck16eTYxOFZZYmgz?=
+ =?utf-8?B?VFF0bVJvUDRqLzZMcU54UkRDTnJMaHZURzJzSk0vcWhsOHZzK1BzcjkyS2Rt?=
+ =?utf-8?B?c3MwdFRuR3JWaHBiYWxUZ1BwSldka0QyelVXaG1uOGlFTC94V0JsSXBKYkR5?=
+ =?utf-8?B?NkVJcnpWeFAvREJ2NTNuTDY1YjJCaHVZTGEwYnFTTjhqMStFOXNtOGhsRisy?=
+ =?utf-8?B?LzJuSC9CRlpldEdNVmJrRVJVSnJHSHVtRENEWnpsVjhKTk9CNG1laWJ2SlM0?=
+ =?utf-8?B?Qy9KalhJdmUxYUllK0cvREpOQ3NpK3BWM2daZ3ZyR1RvQTcva0t4WVd4c2VZ?=
+ =?utf-8?B?VHhnMnozMVg5eldVSjBzTnk4SWpwQVByUGtxaVFmYVpDTWVyeEUweW5IRTFj?=
+ =?utf-8?B?aUZLNElkNzQrOHdqc09hZGZLcnBVd1drYU9TRUpxbEZtcW1NUGNkWmRnOWQy?=
+ =?utf-8?B?ZHJucFFrRWdzaFdQN1B5SEV1czltc2RnVGxNMkVObkZVYy9yK1FscEQyRjdn?=
+ =?utf-8?Q?aDxxeDxxlC4=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR15MB6455.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?eDA3NmxTQjRrY2tXMFVIeVFpSHZQYmFhK21kZXYwRkhvUk8zVHdGdkgrME95?=
+ =?utf-8?B?SzNpb1hPYjZWb3RzNStvaWNTNU8yYXEyZFR1eXdSOGZwM3p3Y3c3c3A5Z3Uy?=
+ =?utf-8?B?Z2lTR0lpeE9LbEpYSlJxam9xaHFxU2RLOEM1czRmU3NRbk9SMTVtY0lRV3B2?=
+ =?utf-8?B?Wk1ZNGRGMjNUNjRWWW1kaEZDODdQNi9EK01FMTQrRFNaRkE1SzIwazNqY09i?=
+ =?utf-8?B?emZRR3JGY0dlU0d1Q3RqWlhncHdwRERSQUlWbmVPUmlWU040ZVJrVkRvbTFK?=
+ =?utf-8?B?azdsT2hmUk8vZDZuam13QUxwUHRkcUV2TDl2VllsYmppSmx6VWJXdXpTVTRD?=
+ =?utf-8?B?MHI2a2dST2UzV2c5OHM1S2pjNkhBYnBJaTZVbzViRXdFRXJBMjZlRllqL0xQ?=
+ =?utf-8?B?VWpKNURvUElSTmw3VTBWQVhRSE5sUC9TbjFhM2NUbE5tLzIrS1RkQnM1VzJy?=
+ =?utf-8?B?VXNHQWd6RzdiSFRUVjl2WVFnVWdaV1l2Lzc0M1JORWN0UVEzV0ZkbWxCOE9m?=
+ =?utf-8?B?TXlHYXZWWldEZW01TW4ydzhWbmFhWm14OGVFOG44VFZKU3BGWVRza05zWjRF?=
+ =?utf-8?B?a2RqQnZ1Tzg4SHZFRG9pTXFrdlUwY2J1UjVMeUlxTmZJRm1MSEJTNUloamFJ?=
+ =?utf-8?B?YUlxeTg1aFFGU25NdkRlY2hPQ1hBNy82NUpCMW1oNkZ6dGdHWmZSdlR3R0hx?=
+ =?utf-8?B?c1JiOUVsbW1WMXNXYlkzcmhsL0wyei9uMHlVelZoRmwzbjMxc0o0eUlOemlO?=
+ =?utf-8?B?aW9jZGlZSGNBWDFmQzQyZEJ2WHlnM0w5M0R4MDJZRm9PQTI3cE9FU0N3ZW5Y?=
+ =?utf-8?B?bmVKcmJhemJOQ2toSytUcE02OGkxMFdlc2ZIV05ydHBldlZsTXpSODA1VkZ3?=
+ =?utf-8?B?NzltN01hQkVBNUIySGN0Sko2V1ZtbUJJZjY1aERjc2x4NkhIVWxsb20xYUlQ?=
+ =?utf-8?B?NU1ENnlkK2lqd0w0ZEJIYlZhSnh2L3V3aHBhOWRrTmN0SkhEOUhtelFKU3Ix?=
+ =?utf-8?B?L1V2UHkrc2RucEpCUXMzd2I5cEhjZlJLVUZCWmxqNUZKYjF1OG5LemJmbFF3?=
+ =?utf-8?B?Q3VQcEpqaGU1L3djOEcveTI3dGxMQVpHaDlpdVlCVWZTd0dqOWUzb1RsbFdR?=
+ =?utf-8?B?ME9iMTNiUE9KOEZaZ1BCSjhuSHFVUWpwV1VTME5JT1FvMHdZb2V2aVdyK2hK?=
+ =?utf-8?B?YTN0NGxkTHdDS2RJVjJpeEptb1l3cmludGJScnNSM01XWnYzNTYvbWY4dS9p?=
+ =?utf-8?B?VnJaK2dwNFBkNmkvRlVqYVl6UkRVanIwRHoyWEJHSHhqUml4cWZzd3N6QnY3?=
+ =?utf-8?B?ejRKK000b1Zab3U1eUdMSnhpa3BSc0hjWW9HTTE2TEJydmsvbWhSbHo0eGs4?=
+ =?utf-8?B?ejFhU2pnTnFSOGRhNWg0MXFYRERYOW9pNmxGeFZ3K2NJY09EWFA3ZXkyLytN?=
+ =?utf-8?B?TytXWlpsMTAzRXVET1dwY3NjdHNUSUlQeTcwUHhGMUtDQTdrVkpiQ09mRW9m?=
+ =?utf-8?B?QmQzY1lGTGIrN2hNMnh2WHgrRWNVT0QwenpKNlhHbGZOSFIwTEhmYm5QR0RG?=
+ =?utf-8?B?Q1lqeVZKMlY0TGNiTWVQdDZYZk8rUURTWmRYaVZYanZyeFdCU0kxVFo2TUMy?=
+ =?utf-8?B?LzZBM3RaZEtmWVd6elJWQ0dETWNvK0t5bS8ydHFtWUhPVUxVREszQnFwMzB5?=
+ =?utf-8?B?WTlYa0h2TW1sL01KQzFRbWtETzFJc0wwQ1ViZHdCUk1USmQvdDZ0T1hESmVU?=
+ =?utf-8?B?MjMzdis5VjJ0OGJZNEhTN2Z1ZXJQQTAwZjl1Mjk5K0JxRk1WdFVReGlET1pZ?=
+ =?utf-8?B?anR2OGJjdFhkQW1WbGVaU1JOanFwbmtkRlZ4R3BSdHkzWDFvbmJFRVk2N2hM?=
+ =?utf-8?B?MEJNVjhaVzRQSGNWclBvVExIZ2J3UlZFUmREVDZKRUlhKzNyTFlZV21xWGxX?=
+ =?utf-8?B?ZkpSeVBLTnZFOU0zb0RTejdLKzlFd0JjNmhORkwyRTZyK3luWi92WjdKc2Rt?=
+ =?utf-8?B?UkFxbEVkU3dOb3hXblNDZWlncWFyL2lEK2pDQk14SHlZN3hxZmxrUHFvS2E4?=
+ =?utf-8?B?OHlGUHlQU1VvMlFrbDRURzIyekFsWUsvWVlEYXplRXNBb1hQZmpCMGxWeTY2?=
+ =?utf-8?Q?6PisObXrncNqdwLxN8dQIn2aW?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0e6491b6-3682-48ac-c8b6-08dd8e4af937
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR15MB6455.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2025 16:11:21.7945
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Vcii5irJ8l5EHrMVtWl9HWqx93qCjfYy/Cd/yHcxKbCFeE7XWSQ5t44PS/RIXwFE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR15MB6501
+X-Proofpoint-GUID: 8MF1phlEMxQQ5DFNcKcVYn7BPjCuDLqK
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA4MDE0MSBTYWx0ZWRfX5VzZEc995ced IsNtWur5c2MsIu1Q6viHpyecO8Xp5JTA2qVIx6qiTUy/APMKjJoUTUdL3YKoTw3/mdCq72QvLQB JZsOyVjqtvv/sCnSotiOjUewrReWUkIIj6u08qKXgE/CyGz3xJlVeUj8KR4mQ4h/W7tiwvqpwdc
+ ZqV5iI/z2ZV1FRiwmchj/iOkZVkYQBetWSxrn/N27j1Ma87UL+UIUnrwfXZtxrSkfEf/sR0KAGX WW7je43aFMrBT14T3mAdE0TgEiv046UfqT5BpO3TehmBGecyY2+exRGQvO6+lpiJZKIidwmn6qK YCQGVDwFyIJjTlwuz8qaJTscQPSWm5OxVAlRChdJNfVPTGPAiuUENZrJTD/Ss9WQVGXK3Mz7S5v
+ lFtE0D8psuiBpQXhqY3YfQnh1EJ8cMFpCNwtj3d0Fy7oSHsyHoGsU7Su0KBipakMQmIVoj0C
+X-Authority-Analysis: v=2.4 cv=VPTdn8PX c=1 sm=1 tr=0 ts=681cd7b0 cx=c_pps a=X8fexuRkk/LHRdmY6WyJkQ==:117 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=WkyblDKLlRiQ5xv_:21 a=xqWC_Br6kY4A:10
+ a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=t0UnWl3wcZ8KkGTeN48A:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: 8MF1phlEMxQQ5DFNcKcVYn7BPjCuDLqK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-08_05,2025-05-08_02,2025-02-21_01
 
-On Thu, May 08, 2025 at 02:43:36PM +0100, Filipe Manana wrote:
-> On Thu, May 8, 2025 at 12:12 AM Qu Wenruo <wqu@suse.com> wrote:
-> >
-> >
-> >
-> > 在 2025/5/8 08:03, Boris Burkov 写道:
-> > > On Wed, May 07, 2025 at 06:23:13PM +0100, fdmanana@kernel.org wrote:
-> > >> From: Filipe Manana <fdmanana@suse.com>
-> > >>
-> > >> If we fail to allocate an ordered extent for a COW write we end up leaking
-> > >> a qgroup data reservation since we called btrfs_qgroup_release_data() but
-> > >> we didn't call btrfs_qgroup_free_refroot() (which would happen when
-> > >> running the respective data delayed ref created by ordered extent
-> > >> completion or when finishing the ordered extent in case an error happened).
-> > >>
-> > >> So make sure we call btrfs_qgroup_free_refroot() if we fail to allocate an
-> > >> ordered extent for a COW write.
-> > >
-> > > I haven't tried it myself yet, but I believe that this patch will double
-> > > free reservation from the qgroup when this case occurs.
-> > >
-> > > Can you share the context where you saw this bug? Have you run fstests
-> > > with qgroups or squotas enabled? I think this should show pretty quickly
-> > > in generic/475 with qgroups on.
-> > >
-> > > Consider, for example, the following execution of the dio case:
-> > >
-> > > btrfs_dio_iomap_begin
-> > >    btrfs_check_data_free_space // reserves the data into `reserved`, sets dio_data->data_space_reserved
-> > >    btrfs_get_blocks_direct_write
-> > >      btrfs_create_dio_extent
-> > >        btrfs_alloc_ordered_extent
-> > >          alloc_ordered_extent // fails and frees refroot, reserved is "wrong" now.
-> > >        // error propagates up
-> > >      // error propagates up via PTR_ERR
-> > >
-> > > which brings us to the code:
-> > > if (ret < 0)
-> > >          goto unlock_err;
-> > > ...
-> > > unlock_err:
-> > > ...
-> > > if (dio_data->data_space_reserved) {
-> > >          btrfs_free_reserved_data_space()
-> > > }
-> > >
-> > > so the execution continues...
-> > >
-> > > btrfs_free_reserved_data_space
-> > >    btrfs_qgroup_free_data
-> > >      __btrfs_qgroup_release_data
-> > >        qgroup_free_reserved_data
-> > >          btrfs_qgroup_free_refroot
-> > >
-> > > This will result in a underflow of the reservation once everything
-> > > outstanding gets released.
-> >
-> > That should still be safe.
-> >
-> > Firstly at alloc_ordered_extent() we released the qgroup space already,
-> > thus there will be no EXTENT_QGROUP_RESERVED range in extent-io tree
-> > anymore.
-> >
-> > Then at the final cleanup, qgroup_free_reserved_data_space() will
-> > release/free nothing, because the extent-io tree no longer has the
-> > corresponding range with EXTENT_QGROUP_RESERVED.
-> >
-> > This is the core design of qgroup data reserved space, which allows us
-> > to call btrfs_release/free_data() twice without double accounting.
-> >
-> > >
-> > > Furthermore, raw calls to free_refroot in cases where we have a reserved
-> > > changeset make me worried, because they will run afoul of races with
-> > > multiple threads touching the various bits. I don't see the bugs here,
-> > > but the reservation lifetime is really tricky so I wouldn't be surprised
-> > > if something like that was wrong too.
-> >
-> > This free_refroot() is the common practice here. The extent-io tree
-> > based accounting can only cover the reserved space before ordered extent
-> > is allocated.
-> >
-> > Then the reserved space is "transferred" to ordered extent, and
-> > eventually go to the new data extent, and finally freed at
-> > btrfs_qgroup_account_extents(), which also goes the free_refroot() way.
-> >
-> > >
-> > > As of the last time I looked at this, I think cow_file_range handles
-> > > this correctly as well. Looking really quickly now, it looks like maybe
-> > > submit_one_async_extent() might not do a qgroup free, but I'm not sure
-> > > where the corresponding reservation is coming from.
-> > >
-> > > I think if you have indeed found a different codepath that makes a data
-> > > reservation but doesn't release the qgroup part when allocating the
-> > > ordered extent fails, then the fastest path to a fix is to do that at
-> > > the same level as where it calls btrfs_check_data_free_space or (however
-> > > it gets the reservation), as is currently done by the main
-> > > ordered_extent allocation paths. With async_extent, we might need to
-> > > plumb through the reserved extent changeset through the async chunk to
-> > > do it perfectly...
-> >
-> > I agree with you that, the extent io tree based double freeing
-> > prevention should only be the last safe net, not something we should
-> > abuse when possible.
-> >
-> > But I can't find a better solution, mostly due to the fact that after
-> > the btrfs_qgroup_release_data() call, the qgroup reserved space is
-> > already released, and we have no way to undo that...
-> >
-> > Maybe we can delayed the qgroup release/free calls until the ordered
-> > extent @entry is allocated?
-> 
-> At some point I considered allocating first the ordered extent and
-> then doing the qgroup free/release calls, and that would fix the leak
-> too.
-> At the moment it seemed more clear to me the way I did, but if
-> everyone prefers that other way I'm fine with it and will change it.
 
-I personally prefer not adding more naked btrfs_qgroup_free_refroots and
-think it's better to move the release call. Either way, please feel free
-to add:
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+On 5/8/25 10:41 AM, Christoph Hellwig wrote:
+> On Thu, May 08, 2025 at 10:33:24AM -0400, Chris Mason wrote:
+>> btrfs can keep changing dirty tree blocks in memory, but once we write
+>> them, we have to recow.  Between transaction writeback kicking in every
+>> 30 seconds and us calling balance_dirty_pages on the btree inode,
+>> kupdate was doing more harm than good (back in 2007).
+> 
+> I totally understand why you'd want to avoid background writeback.  I
+> just don't understand why it singles out for_kupdate.
+> 
+>> Is the goal to get rid of for_kupdate?
+> 
+> At least getting rid of exposing it to file systems, yes.
+> 
+>> I wonder if we can just flag the
+>> btree inode to exclude from kupdate, or keep it off whatever list
+>> kupdate cares about etc.
+> 
+> Not having the VM do writeback on metadata but running it from a fs
+> LRU was a huge win in XFS.  I'm not sure we have interfaces that keep
+> data in the pagecache but never do any background writeback.  But
+> if you are fine with treating all background writeback equal that
+> would be exactly where I'd like to go to.
+> 
 
-> 
-> Thanks.
-> 
-> 
-> >
-> > Thanks,
-> > Qu
-> >
-> >
-> > >
-> > > Thanks,
-> > > Boris
-> > >
-> > >>
-> > >> Fixes: 7dbeaad0af7d ("btrfs: change timing for qgroup reserved space for ordered extents to fix reserved space leak")
-> > >> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > >> ---
-> > >>   fs/btrfs/ordered-data.c | 12 +++++++++---
-> > >>   1 file changed, 9 insertions(+), 3 deletions(-)
-> > >>
-> > >> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> > >> index ae49f87b27e8..e44d3dd17caf 100644
-> > >> --- a/fs/btrfs/ordered-data.c
-> > >> +++ b/fs/btrfs/ordered-data.c
-> > >> @@ -153,9 +153,10 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
-> > >>      struct btrfs_ordered_extent *entry;
-> > >>      int ret;
-> > >>      u64 qgroup_rsv = 0;
-> > >> +    const bool is_nocow = (flags &
-> > >> +           ((1U << BTRFS_ORDERED_NOCOW) | (1U << BTRFS_ORDERED_PREALLOC)));
-> > >>
-> > >> -    if (flags &
-> > >> -        ((1U << BTRFS_ORDERED_NOCOW) | (1U << BTRFS_ORDERED_PREALLOC))) {
-> > >> +    if (is_nocow) {
-> > >>              /* For nocow write, we can release the qgroup rsv right now */
-> > >>              ret = btrfs_qgroup_free_data(inode, NULL, file_offset, num_bytes, &qgroup_rsv);
-> > >>              if (ret < 0)
-> > >> @@ -170,8 +171,13 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
-> > >>                      return ERR_PTR(ret);
-> > >>      }
-> > >>      entry = kmem_cache_zalloc(btrfs_ordered_extent_cache, GFP_NOFS);
-> > >> -    if (!entry)
-> > >> +    if (!entry) {
-> > >> +            if (!is_nocow)
-> > >> +                    btrfs_qgroup_free_refroot(inode->root->fs_info,
-> > >> +                                              btrfs_root_id(inode->root),
-> > >> +                                              qgroup_rsv, BTRFS_QGROUP_RSV_DATA);
-> > >>              return ERR_PTR(-ENOMEM);
-> > >> +    }
-> > >>
-> > >>      entry->file_offset = file_offset;
-> > >>      entry->num_bytes = num_bytes;
-> > >> --
-> > >> 2.47.2
-> > >>
-> > >
-> >
+I'm not sure how much dirty metadata can accumulate on XFS, but btrfs
+isn't bound by any logs, so the only limit on dirty metadata is the size
+of the filesystem and/or the size of ram.
+
+If we skipped all background writeout, we'd end up letting metadata grow
+until the full dirty limit was hit, which feels too bursty to me (please
+correct me if I've got that part wrong).
+
+Josef spent a bunch of time on metadata-in-slab and our own LRU, but
+with the volume of dirty tree blocks, my memory is that he basically
+would have needed to recreate a bunch of the dirty balance plumbing, and
+decided it wasn't worth it.
+
+I'd certainly be in favor of making balance_dirty_pages() and background
+writeback able to integrate with private LRUs.  If it's already possible
+that's going to be a much better solution than our !for_kupdate hack.
+
+-chris
+
 
