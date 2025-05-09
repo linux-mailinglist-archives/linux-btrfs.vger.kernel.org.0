@@ -1,93 +1,74 @@
-Return-Path: <linux-btrfs+bounces-13845-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13846-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C4C3AB0755
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 May 2025 02:54:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 588C9AB09C1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 May 2025 07:37:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D9041C06D5C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 May 2025 00:54:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58FF71C03E23
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 May 2025 05:37:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 637863B2A0;
-	Fri,  9 May 2025 00:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2318268C69;
+	Fri,  9 May 2025 05:37:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="uGsZg+r9";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="FBeBSfUT"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="tenmgMZl";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="tenmgMZl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b5-smtp.messagingengine.com (fout-b5-smtp.messagingengine.com [202.12.124.148])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3B52208AD
-	for <linux-btrfs@vger.kernel.org>; Fri,  9 May 2025 00:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF60B1FF5E3
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 May 2025 05:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746752046; cv=none; b=pVKCSEYV4CPY8rBc9JTW4DlabvNAiiCColIup6NQbgiamHNmT0KKlJcLU4QSlPCVguJ+AHFsYqKoZ2zLkdIQMCkHgQoeojjsHlWXIdIGzhRLKbfBpRZTYtsHqvIdSSZWnK53OZeW9vCqJQv858AJrQPJPoYBxirxSSXo662/G1w=
+	t=1746769038; cv=none; b=cSpcFKUt/FqX5pfIzSaiFuF/3kV1Ojd7HVr9y0fQhGfdF11YMoxuKcz4OOlRJh9IHGYf4MNQUt/qGMDbp7N4djBivfHToPU8n65MWvYAU4qqsemq5sWzoWzfc3xRqrWP100CVie4Rh+D/d8Y2b/QJOf0ltL540dnhN9pwjcY+9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746752046; c=relaxed/simple;
-	bh=3cXX8o5Ej1Oa/TeG8n6bz2BiAyZfrVVTt3WOMjhk8eU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KhSTNEpNMMQPO6omUs5eZ/dkKPSu/kfHFk1Vak7fSX6a339C6pVsgKUzbfltQiu3443+ZFd4ADFFLzXUc5cRHvSDK0ujvTO8OSM3p4JIQYJ0Xdd9EWpnqLEoGxzced6GtOdpWH1Dp3oe9SXOrdS0x3/HNXAEChyKKXoEGEMVi7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=uGsZg+r9; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=FBeBSfUT; arc=none smtp.client-ip=202.12.124.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfout.stl.internal (Postfix) with ESMTP id A83751140146;
-	Thu,  8 May 2025 20:54:01 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Thu, 08 May 2025 20:54:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm1; t=1746752041; x=1746838441; bh=8zY6Si9e6FUkDvZQRkXCC
-	ZOMunoMKXYOcJjXbMPOJp0=; b=uGsZg+r9HrfuLns5RzAwxJjwl9TtrZ6s+O2ec
-	OS/Fkq+9P6JyRcPmF+UyfMvVO2Jpr8JX6iO07NYWYUts9GT7Ziu53HknFPMszndE
-	I7UmQB5PevSSipXRwoWsiSVCkl0dSqTdWJc9tvVUWHEDZ9iSYLPLRfrERTP8YbJu
-	Xdj/4nfDY/jZHid+xzq468buiBFQwTX0RsuytNWamacNWzTd7i3RWpzDJyUw+4AC
-	jICyC071ktQ0diSkth3ZHipeb0/56O4cChk0v8McHfvf3/Qlky59RkJErXDE2PL5
-	qZXjKyPzWMj01hjABBepvWOF/ADjBNvrsj/rb9BQP6QkTPu0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1746752041; x=1746838441; bh=8zY6Si9e6FUkDvZQRkXCCZOMunoMKXYOcJj
-	XbMPOJp0=; b=FBeBSfUTIJCiVeItIgFZDzDeVQuiQtO9IqIbPVQRRYj/0znqRuC
-	xAOaPH3v6MquluLMI9eTKey9umMBF57soh0JuEUKe1JqTWYLz1NF1lv3y1fLhgBh
-	jvoneMsbS2YsS9ayn6nLoxX+MSCKR+2XOYL1ZdYwXGvFoGTpt+TDyyTlghLLmlot
-	GhWnSR6NgtFFJKmb3xavrmopRb5656j+p9ZN+zZmdKd57dG//iBCbHNcnEQGb1JN
-	YgYwMC1hcP49PokhVEcHpUkupcLmUUM2WiayO+z9g6lhHOZLiSeAEwhFlJ/rO8yB
-	bA+j9rCcBTj9TC0BTcsh/ug8YT11bShQ5Uw==
-X-ME-Sender: <xms:KFIdaMWruMiHSLfWAwchAOP7ShiLdK8JeFPO4sl069yZxcSTkCQIsQ>
-    <xme:KFIdaAk9htiGjndN8yeq-_ikXZ5qYcqKVmvAQqnUis4h6irqU9ZrXLD_f8IDRD8lp
-    Te3Oxu6ryfOA8bvjLc>
-X-ME-Received: <xmr:KFIdaAZrqtVi6GrazX22o5Dzhw3n7sX7tbiplK-Xc928TjQ_dbY1p_wf0D2UXjwhek6iYQ2Ad07XAPKJc_qUrHFeSpA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvleduvdefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvf
-    evufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcu
-    oegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepudduhfevvddugffgge
-    fgkeeggfdvieejgfegkedvudetkeehhfdvffeugeevfedunecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsg
-    gprhgtphhtthhopeefpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlihhnuhig
-    qdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvg
-    hlqdhtvggrmhesfhgsrdgtohhmpdhrtghpthhtohepughsthgvrhgsrgesshhushgvrdgt
-    ii
-X-ME-Proxy: <xmx:KFIdaLVhIjjJM1MQL5RLvxBFsnqWF_BV8HMovKdpOJXcg50thzNoHA>
-    <xmx:KFIdaGn8iw8GIHM_PsnlRhBMm00D3GQWBu5WGIbMsNDL3ylwXLNYVg>
-    <xmx:KFIdaAdrE6Op9lvGk7Y_-_Gvu1L8sszgAlWfJNIRfvEG1XhmsLtqJw>
-    <xmx:KFIdaIFtfhDJ8Uwfqp80uHttpVFXJiZn3IHn6cTCZPIM0z3Y5u-Crw>
-    <xmx:KVIdaFGK-BrDuuIfRoVJ7G6KG43GbfuEMdL1P7BrMzBPtY8r6_jTG9ie>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 8 May 2025 20:54:00 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
+	s=arc-20240116; t=1746769038; c=relaxed/simple;
+	bh=OztqAdof0+4d44BR5LJBLQgw7G0EwuTpechlDVXSr7Y=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=BFMzpE57Ax/7txvvQR1NmaJdjqQ6Kg+OzpDxKbrgq5h6+J0yp1G7BAL3UofkmfwNqGAhKn0brcMDKl8J8dFl9SL9r8SFulzVYNdTdQRt/+MG88/c+P9n76UoQ8DHk2fv66cABo3204Rvc/n9W7L0VOYlFuiZ5ymr0v7OlmTieRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=tenmgMZl; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=tenmgMZl; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7DEB31F38A;
+	Fri,  9 May 2025 05:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1746769033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=epVwbicIwOBla5zRcwbqv8Ew4j6OkHnF9FuOJuDUv1Q=;
+	b=tenmgMZlO/GLZ8lex9CdFeO7guWMJi2pWWOkWUi3eZNrV+lG52b67MhdgpgyQpFoWK1Xuc
+	Xw4PdBn8DjAjPD4ViXLem8jA6JqXnu+NA0xEXXkUdnqS9urbDwmAxUXCZHNcsW74Km+15e
+	NTff0GiPORmTpWNSOybuqkLfSDphuNE=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1746769033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=epVwbicIwOBla5zRcwbqv8Ew4j6OkHnF9FuOJuDUv1Q=;
+	b=tenmgMZlO/GLZ8lex9CdFeO7guWMJi2pWWOkWUi3eZNrV+lG52b67MhdgpgyQpFoWK1Xuc
+	Xw4PdBn8DjAjPD4ViXLem8jA6JqXnu+NA0xEXXkUdnqS9urbDwmAxUXCZHNcsW74Km+15e
+	NTff0GiPORmTpWNSOybuqkLfSDphuNE=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 77C8A13515;
+	Fri,  9 May 2025 05:37:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qznoDoiUHWhKKAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 09 May 2025 05:37:12 +0000
+From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Cc: dsterba@suse.cz
-Subject: [PATCH v2] btrfs: track current commit duration in commit_stats
-Date: Thu,  8 May 2025 17:54:41 -0700
-Message-ID: <9ef37010df953138ae847e6d5e8ba12847321036.1746751867.git.boris@bur.io>
+	fstests@vger.kernel.org
+Subject: [PATCH] fstests: btrfs/020: use device pool to avoid busy TEST_DEV
+Date: Fri,  9 May 2025 15:07:09 +0930
+Message-ID: <20250509053709.100446-1-wqu@suse.com>
 X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -96,149 +77,136 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
 
-When debugging/detecting outlier commit stalls, having an indicator that
-we are currently in a long commit critical section can be very useful.
-Extend the commit_stats sysfs file to also include the current commit
-critical section duration.
+[BUG]
+There is an internal report about btrfs/020 failure, the 020.full looks
+like this:
 
-Since this requires storing the last commit start time, use that rather
-than a separate stack variable for storing the finished commit durations
-as well.
+  ERROR: ioctl(DEV_REPLACE_START) failed on "/opt/test/020.5968.mnt": Read-only file system
 
-This also requires slightly moving up the timing of the stats updating
-to *inside* the critical section to avoid the transaction T+1 setting
-the critical_section_start_time to 0 before transaction T can update its
-stats, which would trigger the new ASSERT. This is an improvement in and
-of itself, as it makes the stats more accurately represent the true
-critical section time. It may be yet better to pull the stats up to where
-start_transaction gets unblocked, rather than the next commit, but this
-seems like a good enough place as well.
+  Performing full device TRIM /dev/loop8 (256.00MiB) ...
+  _check_btrfs_filesystem: filesystem on /dev/loop0 is inconsistent
+  *** fsck.btrfs output ***
+  ERROR: /dev/loop0 is currently mounted, use --force if you really intend to check the filesystem
+  Opening filesystem to check...
+  *** end fsck.btrfs output
+  *** mount output ***
+  [...]
+  /dev/loop0 on /opt/test type btrfs (rw,relatime,seclabel,ssd,discard=async,space_cache=v2,subvolid=5,subvol=/)
+  *** end mount output
 
-Signed-off-by: Boris Burkov <boris@bur.io>
+[CAUSE]
+Unfortunately I can not reproduce the situation here, but it looks like
+by somehow we didn't unmount the TEST_DEV before checking it.
+
+This may or may not be caused by the fact we're using loop back devices
+on TEST_MNT.
+
+[FIX]
+For this particluar test case, we really do not need to use TEST_MNT and
+create complex loopback devices.
+
+We can just ask for 3 devices from the device pool, use 2 for the raid1
+fs, and then use the spare one for dev replace.
+
+This should greately simplify the test case setup and cleanup, thus
+avoid the above busy TEST_DEV and false test failure.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changelog:
-v2:
-* Fix ASSERT triggered by multiple commits interleaving s.t. commit T+1
-  reset the start time set by commit T before T could update the stats.
-* Rename commit_stats variable to critical_section_start_time to
-  differentiate from cur_trans->start_time.
+ tests/btrfs/020 | 51 +++++++++++++++++--------------------------------
+ 1 file changed, 17 insertions(+), 34 deletions(-)
 
- fs/btrfs/fs.h          |  2 ++
- fs/btrfs/sysfs.c       |  8 ++++++++
- fs/btrfs/transaction.c | 18 +++++++++---------
- 3 files changed, 19 insertions(+), 9 deletions(-)
-
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index cf805b4032af..6ae6203d2b9e 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -419,6 +419,8 @@ struct btrfs_commit_stats {
- 	u64 last_commit_dur;
- 	/* The total commit duration in ns */
- 	u64 total_commit_dur;
-+	/* Start of the last critical section in ns. */
-+	u64 critical_section_start_time;
- };
+diff --git a/tests/btrfs/020 b/tests/btrfs/020
+index 7e5c6fd7..8c05196b 100755
+--- a/tests/btrfs/020
++++ b/tests/btrfs/020
+@@ -12,44 +12,27 @@
+ . ./common/preamble
+ _begin_fstest auto quick replace volume
  
- struct btrfs_fs_info {
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 5d93d9dd2c12..04715201c643 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -1138,13 +1138,21 @@ static ssize_t btrfs_commit_stats_show(struct kobject *kobj,
- 				       struct kobj_attribute *a, char *buf)
- {
- 	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-+	u64 now = ktime_get_ns();
-+	u64 start_time = fs_info->commit_stats.critical_section_start_time;
-+	u64 pending = 0;
-+
-+	if (start_time)
-+		pending = now - start_time;
- 
- 	return sysfs_emit(buf,
- 		"commits %llu\n"
-+		"cur_commit_ms %llu\n"
- 		"last_commit_ms %llu\n"
- 		"max_commit_ms %llu\n"
- 		"total_commit_ms %llu\n",
- 		fs_info->commit_stats.commit_count,
-+		div_u64(pending, NSEC_PER_MSEC),
- 		div_u64(fs_info->commit_stats.last_commit_dur, NSEC_PER_MSEC),
- 		div_u64(fs_info->commit_stats.max_commit_dur, NSEC_PER_MSEC),
- 		div_u64(fs_info->commit_stats.total_commit_dur, NSEC_PER_MSEC));
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index b96195d6480f..b518a6c3517b 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -2163,13 +2163,19 @@ static void add_pending_snapshot(struct btrfs_trans_handle *trans)
- 	list_add(&trans->pending_snapshot->list, &cur_trans->pending_snapshots);
- }
- 
--static void update_commit_stats(struct btrfs_fs_info *fs_info, ktime_t interval)
-+static void update_commit_stats(struct btrfs_fs_info *fs_info)
- {
-+	ktime_t now = ktime_get_ns();
-+	ktime_t interval = now - fs_info->commit_stats.critical_section_start_time;
-+
-+	ASSERT(fs_info->commit_stats.critical_section_start_time);
-+
- 	fs_info->commit_stats.commit_count++;
- 	fs_info->commit_stats.last_commit_dur = interval;
- 	fs_info->commit_stats.max_commit_dur =
- 			max_t(u64, fs_info->commit_stats.max_commit_dur, interval);
- 	fs_info->commit_stats.total_commit_dur += interval;
-+	fs_info->commit_stats.critical_section_start_time = 0;
- }
- 
- int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
-@@ -2178,8 +2184,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	struct btrfs_transaction *cur_trans = trans->transaction;
- 	struct btrfs_transaction *prev_trans = NULL;
- 	int ret;
--	ktime_t start_time;
--	ktime_t interval;
- 
- 	ASSERT(refcount_read(&trans->use_count) == 1);
- 	btrfs_trans_state_lockdep_acquire(fs_info, BTRFS_LOCKDEP_TRANS_COMMIT_PREP);
-@@ -2312,8 +2316,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	 * Get the time spent on the work done by the commit thread and not
- 	 * the time spent waiting on a previous commit
- 	 */
--	start_time = ktime_get_ns();
+-# Override the default cleanup function.
+-_cleanup()
+-{
+-	cd /
+-	rm -f $tmp.*
+-	$UMOUNT_PROG $loop_mnt
+-	_destroy_loop_device $loop_dev1
+-	losetup -d $loop_dev2 >/dev/null 2>&1
+-	_destroy_loop_device $loop_dev3
+-	rm -rf $loop_mnt
+-	rm -f $fs_img1 $fs_img2 $fs_img3
+-}
 -
-+	fs_info->commit_stats.critical_section_start_time = ktime_get_ns();
- 	extwriter_counter_dec(cur_trans, trans->type);
+ . ./common/filter
  
- 	ret = btrfs_start_delalloc_flush(fs_info);
-@@ -2545,6 +2548,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	if (ret)
- 		goto scrub_continue;
+-_require_test
+-_require_loop
++_require_scratch_dev_pool 3
++
++_fixed_by_kernel_commit bbb651e469d9 \
++	"Btrfs: don't allow the replace procedure on read only filesystems"
++
++_scratch_dev_pool_get 2
++_spare_dev_get
++
++_scratch_pool_mkfs -m raid1 -d raid1 >> $seqres.full 2>&1
++_scratch_mount -o ro
++
++$BTRFS_UTIL_PROG replace start -B 2 $SPARE_DEV $SCRATCH_MNT >> $seqres.full 2>&1 && \
++	echo "FAIL: Device replaced on RO btrfs"
++
++_scratch_unmount
++_spare_dev_put
++_scratch_dev_pool_put
  
-+	update_commit_stats(fs_info);
- 	/*
- 	 * We needn't acquire the lock here because there is no other task
- 	 * which can change it.
-@@ -2581,8 +2585,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ echo "Silence is golden"
  
- 	trace_btrfs_transaction_commit(fs_info);
- 
--	interval = ktime_get_ns() - start_time;
+-loop_mnt=$TEST_DIR/$seq.$$.mnt
+-fs_img1=$TEST_DIR/$seq.$$.img1
+-fs_img2=$TEST_DIR/$seq.$$.img2
+-fs_img3=$TEST_DIR/$seq.$$.img3
+-mkdir $loop_mnt
+-$XFS_IO_PROG -f -c "truncate 256m" $fs_img1 >>$seqres.full 2>&1
+-$XFS_IO_PROG -f -c "truncate 256m" $fs_img2 >>$seqres.full 2>&1
+-$XFS_IO_PROG -f -c "truncate 256m" $fs_img3 >>$seqres.full 2>&1
 -
- 	btrfs_scrub_continue(fs_info);
- 
- 	if (current->journal_info == trans)
-@@ -2590,8 +2592,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 
- 	kmem_cache_free(btrfs_trans_handle_cachep, trans);
- 
--	update_commit_stats(fs_info, interval);
+-loop_dev1=`_create_loop_device $fs_img1`
+-loop_dev2=`_create_loop_device $fs_img2`
+-loop_dev3=`_create_loop_device $fs_img3`
 -
- 	return ret;
- 
- unlock_reloc:
+-_mkfs_dev -m raid1 -d raid1 $loop_dev1 $loop_dev2 >>$seqres.full 2>&1
+-_mount -o ro $loop_dev1 $loop_mnt
+-
+-$BTRFS_UTIL_PROG replace start -B 2 $loop_dev3 $loop_mnt >>$seqres.full 2>&1 && \
+-_fail "FAIL: Device replaced on RO btrfs"
+-
+ status=0
+ exit
 -- 
-2.49.0
+2.47.1
 
 
