@@ -1,254 +1,159 @@
-Return-Path: <linux-btrfs+bounces-13865-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13866-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 340D4AB26F4
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 May 2025 08:49:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA53CAB275C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 May 2025 10:46:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03D307A3B02
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 May 2025 06:47:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1992D1766E1
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 May 2025 08:46:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64FC19E98B;
-	Sun, 11 May 2025 06:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PmIA/tuB";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PmIA/tuB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350A41BD9F0;
+	Sun, 11 May 2025 08:46:28 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3050418E02A
-	for <linux-btrfs@vger.kernel.org>; Sun, 11 May 2025 06:48:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296551A2387
+	for <linux-btrfs@vger.kernel.org>; Sun, 11 May 2025 08:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746946137; cv=none; b=rc7GaQL+18d0J5aG7M/3sWS1eQVExKgi7a1+VIUhHOAz8hlVyXHTqNnJR0Z9/nIGrnCRy6/InpFmJ447X43FsY3AKdwp7ASSDaSlNNQYxCT2G+j7BO787RbWEJrJgkCGQksoK/j9JkSaGyhipZg+JTBQusKRxMBysiwhEbI0m2c=
+	t=1746953187; cv=none; b=OLJZCol0A/eQsybGCSMFmDqUXQJD+FEGOtk+sRxlNjU2m7WF4s15RMZpwQ3Ij9xQ4CA94wPx7rosO+UMhZ5EPjTjN4VJER10UYcs3b+L5Yby1E0L5tIA0t6NWFtv6FvHvV0jUaum1Us4pCytrNH/+S5tzzN+nkZFH3A/r3yZsis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746946137; c=relaxed/simple;
-	bh=kY32oXYTM7KWi+nCuH7wCIYnZfjcGExzwkVNoaalDRI=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j8iiV/zIHsQ+OmKdMXtrylK3I08uoE6dNuZ9Ss4MfOyA6/XTy7xNFSILHYzzFx6cIEu+/a95ncmdwUH6fj04pCCdp/I8b3VQEt6FRwNMJBQC9REt7bpqgqGnyja+E50o5skOnIO4XYMkikkS4cnlfzZAc41AQPA4IKxMqFut9OA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PmIA/tuB; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PmIA/tuB; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0412E1F38F
-	for <linux-btrfs@vger.kernel.org>; Sun, 11 May 2025 06:48:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1746946128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Lgpj+GBPaNT/2QVYPmadLxyxesrgQsw2cuyPegmQdAs=;
-	b=PmIA/tuBjJbJNJozlIqIg9sYlABZKx4QiJqk3wZxn478V62UsQZi82GLCuZgnGUIIypq/v
-	aSVi3qG3Z7fVCbWM1JKJqzktizRE8/RCaJpDgyACr/gI1o31B8uPKS/HvQiv7PsmbVIKDf
-	wPnCs5RsJwUL/dm2zLym08g8yrnpywI=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="PmIA/tuB"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1746946128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Lgpj+GBPaNT/2QVYPmadLxyxesrgQsw2cuyPegmQdAs=;
-	b=PmIA/tuBjJbJNJozlIqIg9sYlABZKx4QiJqk3wZxn478V62UsQZi82GLCuZgnGUIIypq/v
-	aSVi3qG3Z7fVCbWM1JKJqzktizRE8/RCaJpDgyACr/gI1o31B8uPKS/HvQiv7PsmbVIKDf
-	wPnCs5RsJwUL/dm2zLym08g8yrnpywI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 45BB1137E8
-	for <linux-btrfs@vger.kernel.org>; Sun, 11 May 2025 06:48:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id CBLPAk9IIGh5BwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sun, 11 May 2025 06:48:47 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs-progs: fix-data-csums: show affected files
-Date: Sun, 11 May 2025 16:18:21 +0930
-Message-ID: <df99f51ac9e66a5a16552567d90b75b85d7951da.1746945864.git.wqu@suse.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1746945864.git.wqu@suse.com>
-References: <cover.1746945864.git.wqu@suse.com>
+	s=arc-20240116; t=1746953187; c=relaxed/simple;
+	bh=tdwV9uMJEf4NMRgTSEOT3PiGCISiiyNTBOB3ugi872c=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hbfLP0NgdMxMBRX9ZVWSjb93PjVvTt69Z9g49r9ecugde6l85BbsE6z4yFGk+VenClwSRThEaPAvDit9Hb5vxCNOMHCWJNyLJAc5qUfKH0iLca97Mhy8O6yEbs3zd90sxped5NX/wq7Yd4auHQLj5fiBSXDLnB9Krq49IEkQZDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3d8eda6c48cso45586525ab.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 11 May 2025 01:46:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746953185; x=1747557985;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/QSPiADpLuqs4nC4D6n6vms9x4J46qbiGQAZeQ4r3S8=;
+        b=wFyDdJhohWtpNxe99JQ7Pf7I3gvhJPtqGGMBoTmY+da4xcKbSw1qqsmcNjmEvkb1kc
+         4tc/7GSEXwk/ukO128/zSL12TmfEHHqzxqCsr1wZSCFIsR2uqUHHIjaVhqAztWjiVCGF
+         0/X/zLq4UaeuGqk8XB7M4QhWlvQ2OY3J0e802u6nJRP0zNKFeIPSpzueWzRzm6pX4ldS
+         KhsLY351k1NdVyZMJfTkrdK19cRwfn46L6nEV4rsrv/hOcE/cM9ciIEYN0UGzQ8u8baV
+         yly1CvUMBku4Oah3IjDgJ78M2NB6xJn5xpzn16Ie6QHsmb6P5kSyUeMOr17HeqxWgMzA
+         50Yw==
+X-Forwarded-Encrypted: i=1; AJvYcCVNJDrt4CyPOD9BsoHoOg/aaDcgXZ8l0uV6LZBa44Rym/CzGYStpMp6Hg9FRfHwGk//C2MmmMfZFyWcuw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyN3RtQTpuie0DgJG4O7SHrJDGMj4DPn7Ibdihi6z2vRMYlL706
+	etj99qd66hZt4BYXS5EO4Pa97UzsleV6vKd3zuVpe5dppEj8uycve3UbDEw9fbqSPgx+PtsmMnT
+	gXUqHCEEctrDXJxTnKvEZ2Kk/nvcPtpb92rN8WK13jpIBldmEDRax73o=
+X-Google-Smtp-Source: AGHT+IEryGv/28ms8Lmi8Al5fWjAYkjejyNHiM9Dz5hl5tu930d9/HXVCxAxpTuFOaQH7O4JwCWfLmY6uL3j8Im256Sc3s/fp2qp
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 0412E1F38F
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DKIM_TRACE(0.00)[suse.com:+];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Action: no action
+X-Received: by 2002:a05:6e02:1293:b0:3d3:de5f:af25 with SMTP id
+ e9e14a558f8ab-3da78494c5cmr129873055ab.0.1746953185207; Sun, 11 May 2025
+ 01:46:25 -0700 (PDT)
+Date: Sun, 11 May 2025 01:46:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <682063e1.050a0220.f2294.002a.GAE@google.com>
+Subject: [syzbot] [btrfs?] VFS: Busy inodes after unmount (use-after-free) (2)
+From: syzbot <syzbot+1134d3a5b062e9665a7a@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Previously "btrfs rescue fix-data-csums" only show affected logical
-bytenr, which is not helpful to determine which files are affected.
+Hello,
 
-Enhance the output by also outputting the affected subvolumes (in
-numeric form), and the file paths inside that subvolume.
+syzbot found the following issue on:
 
-The example looks like this:
+HEAD commit:    e0f4c8dd9d2d Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1481fb68580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=868079b7b8989c3c
+dashboard link: https://syzkaller.appspot.com/bug?extid=1134d3a5b062e9665a7a
+compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10edfa70580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=115a84d4580000
 
-  logical=13631488 corrtuped mirrors=1 affected files:
-    (subvolume 5)/foo
-    (subvolume 5)/dir/bar
-  logical=13635584 corrtuped mirrors=1 affected files:
-    (subvolume 5)/foo
-    (subvolume 5)/dir/bar
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/463c704c2ee6/disk-e0f4c8dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1bb99dd967d9/vmlinux-e0f4c8dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/505fe552b9a8/Image-e0f4c8dd.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/3eef91541df5/mount_0.gz
+  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=176dfa70580000)
 
-Although the end result is still not perfect, it's still much easier to
-find out which files are affected.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1134d3a5b062e9665a7a@syzkaller.appspotmail.com
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+BTRFS info (device loop0): last unmount of filesystem c9fe44da-de57-406a-8241-57ec7d4412cf
+VFS: Busy inodes after unmount of loop0 (btrfs)
+------------[ cut here ]------------
+kernel BUG at fs/super.c:652!
+Internal error: Oops - BUG: 00000000f2000800 [#1]  SMP
+Modules linked in:
+CPU: 1 UID: 0 PID: 6484 Comm: syz-executor107 Not tainted 6.15.0-rc4-syzkaller-ge0f4c8dd9d2d #0 PREEMPT 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
+pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : generic_shutdown_super+0x2b4/0x2b8 fs/super.c:650
+lr : generic_shutdown_super+0x2b4/0x2b8 fs/super.c:650
+sp : ffff8000a43f7ba0
+x29: ffff8000a43f7ba0 x28: 00007dfe9b1ba808 x27: ffff80008f301de8
+x26: ffffffffffffffff x25: dfff800000000000 x24: 1fffe00018b9bcf0
+x23: ffff80008b2817e0 x22: dfff800000000000 x21: 0000000000000000
+x20: ffff80008fa4d4c0 x19: ffff0000c5cde000 x18: 1fffe00036711a76
+x17: ffff80008f2fe000 x16: ffff80008ada5d6c x15: 0000000000000001
+x14: 1ffff0001487eee0 x13: 0000000000000000 x12: 0000000000000000
+x11: ffff70001487eee1 x10: 0000000000ff0100 x9 : 9c3427ac6e3c7500
+x8 : 9c3427ac6e3c7500 x7 : 0000000000000001 x6 : 0000000000000001
+x5 : ffff8000a43f7538 x4 : ffff80008f3f4fa0 x3 : ffff800082faeee4
+x2 : 0000000000000001 x1 : 0000000100000000 x0 : 000000000000002f
+Call trace:
+ generic_shutdown_super+0x2b4/0x2b8 fs/super.c:650 (P)
+ kill_anon_super+0x4c/0x7c fs/super.c:1237
+ btrfs_kill_super+0x40/0x58 fs/btrfs/super.c:2099
+ deactivate_locked_super+0xc4/0x12c fs/super.c:473
+ deactivate_super+0xe0/0x100 fs/super.c:506
+ cleanup_mnt+0x31c/0x3ac fs/namespace.c:1435
+ __cleanup_mnt+0x20/0x30 fs/namespace.c:1442
+ task_work_run+0x1dc/0x260 kernel/task_work.c:227
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ do_notify_resume+0x16c/0x1ec arch/arm64/kernel/entry-common.c:151
+ exit_to_user_mode_prepare arch/arm64/kernel/entry-common.c:169 [inline]
+ exit_to_user_mode arch/arm64/kernel/entry-common.c:178 [inline]
+ el0_svc+0xb0/0x150 arch/arm64/kernel/entry-common.c:745
+ el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:762
+ el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
+Code: b0051160 91350000 9119a261 97cfbb64 (d4210000) 
+---[ end trace 0000000000000000 ]---
+
+
 ---
- cmds/rescue-fix-data-csums.c | 59 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 56 insertions(+), 3 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/cmds/rescue-fix-data-csums.c b/cmds/rescue-fix-data-csums.c
-index 66e34b279f13..bcba2741f2df 100644
---- a/cmds/rescue-fix-data-csums.c
-+++ b/cmds/rescue-fix-data-csums.c
-@@ -18,6 +18,7 @@
- #include "kernel-shared/disk-io.h"
- #include "kernel-shared/ctree.h"
- #include "kernel-shared/volumes.h"
-+#include "kernel-shared/backref.h"
- #include "common/messages.h"
- #include "common/open-utils.h"
- #include "cmds/rescue.h"
-@@ -201,6 +202,49 @@ static int iterate_one_csum_item(struct btrfs_fs_info *fs_info, struct btrfs_pat
- 	return ret;
- }
- 
-+static int print_filenames(u64 ino, u64 offset, u64 rootid, void *ctx)
-+{
-+	struct btrfs_fs_info *fs_info = ctx;
-+	struct btrfs_root *root;
-+	struct btrfs_key key;
-+	struct inode_fs_paths *ipath;
-+	struct btrfs_path path = { 0 };
-+	int ret;
-+
-+	key.objectid = rootid;
-+	key.type = BTRFS_ROOT_ITEM_KEY;
-+	key.offset = (u64)-1;
-+
-+	root = btrfs_read_fs_root(fs_info, &key);
-+	if (IS_ERR(root)) {
-+		ret = PTR_ERR(root);
-+		errno = -ret;
-+		error("failed to get subvolume %llu: %m", rootid);
-+		return ret;
-+	}
-+	ipath = init_ipath(128 * BTRFS_PATH_NAME_MAX, root, &path);
-+	if (IS_ERR(ipath)) {
-+		ret = PTR_ERR(ipath);
-+		errno = -ret;
-+		error("failed to initialize ipath: %m");
-+		return ret;
-+	}
-+	ret = paths_from_inode(ino, ipath);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to resolve root %llu ino %llu to paths: %m", rootid, ino);
-+		goto out;
-+	}
-+	for (int i = 0; i < ipath->fspath->elem_cnt; i++)
-+		printf("  (subvolume %llu)/%s\n", rootid, (char *)ipath->fspath->val[i]);
-+	if (ipath->fspath->elem_missed)
-+		printf("  (subvolume %llu) %d files not printed\n", rootid,
-+		       ipath->fspath->elem_missed);
-+out:
-+	free_ipath(ipath);
-+	return ret;
-+}
-+
- static int iterate_csum_root(struct btrfs_fs_info *fs_info, struct btrfs_root *csum_root)
- {
- 	struct btrfs_path path = { 0 };
-@@ -240,9 +284,10 @@ next:
- 	return ret;
- }
- 
--static void report_corrupted_blocks(void)
-+static void report_corrupted_blocks(struct btrfs_fs_info *fs_info)
- {
- 	struct corrupted_block *entry;
-+	struct btrfs_path path = { 0 };
- 
- 	if (list_empty(&corrupted_blocks)) {
- 		printf("No data checksum mismatch found\n");
-@@ -251,6 +296,7 @@ static void report_corrupted_blocks(void)
- 
- 	list_for_each_entry(entry, &corrupted_blocks, list) {
- 		bool has_printed = false;
-+		int ret;
- 
- 		printf("logical=%llu corrtuped mirrors=", entry->logical);
- 		/* Poor man's bitmap print. */
-@@ -262,7 +308,14 @@ static void report_corrupted_blocks(void)
- 				has_printed=true;
- 			}
- 		}
--		printf("\n");
-+		printf(" affected files:\n");
-+		ret = iterate_inodes_from_logical(entry->logical, fs_info, &path,
-+						  print_filenames, fs_info);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to iterate involved files: %m");
-+			break;
-+		}
- 	}
- }
- 
-@@ -318,7 +371,7 @@ int btrfs_recover_fix_data_csums(const char *path, enum btrfs_fix_data_csums_mod
- 		errno = -ret;
- 		error("failed to iterate csum tree: %m");
- 	}
--	report_corrupted_blocks();
-+	report_corrupted_blocks(fs_info);
- out_close:
- 	free_corrupted_blocks();
- 	close_ctree_fs_info(fs_info);
--- 
-2.49.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
