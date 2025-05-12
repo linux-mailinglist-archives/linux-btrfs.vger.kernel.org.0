@@ -1,195 +1,177 @@
-Return-Path: <linux-btrfs+bounces-13880-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13881-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7DA9AB324C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 10:54:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D10AAB33D4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 11:39:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 155CD18978EA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 08:55:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EAC4172ABD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 09:39:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BCF825A2B2;
-	Mon, 12 May 2025 08:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A97DB25B68F;
+	Mon, 12 May 2025 09:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="fEJAhf81"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="D7rPGHZ+";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="D7rPGHZ+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86AE433CB
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 08:54:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06626255F5F
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 09:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747040088; cv=none; b=cAeYRgBr+uUrpO3HHQLil3D+8GODFoVRnnGFJv32Snf0YV8oQ8vZtDpuVmQWeLKzn+E+jadyBaKJKYgWVQO4VLUn8IpgoTRO29tEcgQvOUr1uRC8Ot+juR2c0ZVpVIOqDfCHzcRFV9WIJCMFHSjjXxthsmAxCjgyCs7LOvHAPsc=
+	t=1747042773; cv=none; b=HbvCrCJ8yV/N1J8CsxT5Vmc8E8xID1n/iJtJxgDuS0G4RCjTgDZ93ixSv/XrLZ5LMCxWpq1zvXnIiYGQGo+mJl12b32Xd7sJmQJEJVlZtjpHRUqKDcSPMsSFG0mCiCYvWaOLjNIUfinVMrTt5p5UsM6ti1IzqBoUfEKAtJycqcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747040088; c=relaxed/simple;
-	bh=OjWG9Ry+r7vMcwiMDEKXA37Z5Ine5SenLQLOeEqIr9Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KUser+d0BRRTkrRsLwxGOK15sYWaRUtpS1PtT2ea69fpVccGCMrc38nHyTldWstt6knmZ7WK4FzbI13xLfk1hN3jYVUFbjoTC+MBTSZtKuG459UoOxnQTqdudnA5YBqAo4+6x/8qdjCUeKtuvdTICXb0FJNHj2NUgWPOrVQXKEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=fEJAhf81; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1747040081; x=1747644881; i=quwenruo.btrfs@gmx.com;
-	bh=8rnEu3M/3DUn2PwMc925A14EmqG9k3LobAv7kwpRs8k=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=fEJAhf81Lq8DOwa0ny48BIP5VgCSixKSB6Ssk9fwV3bj67t6pXPZOq6Q8IykdPpU
-	 Qi3TvPvzG0UAv0MMS+W6fgE1xc5oB07msxh4XyXIJk5dscLBkpv5gHxws1q87uXYC
-	 UCLlmP/CyJRjFiUGrtXlHFC3YRqCJGUigC5JjTx4ormQco7+ZbBz1QgjYXyKpNwd4
-	 1qAvBWbhO0TZXFZ8fATBaUIxKPkUMN6PtTUIBOIt48yaBY59XfmTFJT4zno4batGW
-	 eHWMpFeXQcVIGNFLeL2X7OwPq1MuPDJsbvFVJ43DBiF+fEtwFOZYIORn2l/BE6gSN
-	 U7i2eig7HEBL0Ab3GA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYvY8-1uRcKe1L8q-00SwPp; Mon, 12
- May 2025 10:54:40 +0200
-Message-ID: <f4dcfef5-1d6d-465a-a679-7f69489345d9@gmx.com>
-Date: Mon, 12 May 2025 18:24:37 +0930
+	s=arc-20240116; t=1747042773; c=relaxed/simple;
+	bh=0U/6r77ztBk40ItNqYITD5/h9UDzZBN6JmgWs3ackuU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Zs+yVekqycQeXkO0zcr47IQtJewMGccxXaYyBKhC3a4ZXY1WKWREGLak9S4/Drgmg5DQeIU151FPaLCtY/uZt6xQpLpIieZqAJqRIL5jG3Uvwdh6ySeb9DZg0CE3vBa0c8VwnWQfqREVNSiBncxPSEb9mZ2HPc/tdO4O7egRwBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=D7rPGHZ+; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=D7rPGHZ+; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3EEDC21184;
+	Mon, 12 May 2025 09:39:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1747042769; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=hRcmQVsUFRLP87p1BSv7HcogrgPbJQ/TuFr3mIaMYf8=;
+	b=D7rPGHZ+jxm6trm+iQhT+KjC0+KgGo0EfFq9ID7igHbme8jxxyblBjeMBHS8XBw4vqnmtQ
+	vrUI/r06I1MN7AlV9rYtnXi3gpo2bLMTsaCcp9XVAmBZgITCGwk603ClMD5QPfExw73JK8
+	CCyeTffJwl6Z80DoStFE78z2s3dy4Ao=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1747042769; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=hRcmQVsUFRLP87p1BSv7HcogrgPbJQ/TuFr3mIaMYf8=;
+	b=D7rPGHZ+jxm6trm+iQhT+KjC0+KgGo0EfFq9ID7igHbme8jxxyblBjeMBHS8XBw4vqnmtQ
+	vrUI/r06I1MN7AlV9rYtnXi3gpo2bLMTsaCcp9XVAmBZgITCGwk603ClMD5QPfExw73JK8
+	CCyeTffJwl6Z80DoStFE78z2s3dy4Ao=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0AB80137D2;
+	Mon, 12 May 2025 09:39:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id C3L5L8/BIWhMPQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Mon, 12 May 2025 09:39:27 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2] fstests: btrfs: a new test case to verify scrub and rescue=idatacsums
+Date: Mon, 12 May 2025 19:09:10 +0930
+Message-ID: <20250512093910.390688-1-wqu@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: log error codes during failures when writing super
- blocks
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <bb1c6b0212c4e60ef4a6b08be741f1c50ace6afb.1747035917.git.fdmanana@suse.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <bb1c6b0212c4e60ef4a6b08be741f1c50ace6afb.1747035917.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RX5yJ+xXdGejSp1bcaWTcnNSSX/0fXYq9Lr5JaUkOJpIcwpHn/0
- pQoq4oSqaE5Mpi2hYf2X71SuHMXX0ieLQwDGyD8kwgnhC/7boei0j5aH0f49fEew+d6mfKY
- kz2vKN4rLI2VXCneLths+pg6V5IqKliBxjNJyYJIQVUc2i5KM6KYHulTEdY+/D/NP2Qmm7Q
- TzTLTOXiqQvRG+Sb9C4+A==
+Content-Transfer-Encoding: 8bit
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:t/zJTfOyfQ0=;M+pdaERhc/3OYq+vmnQBq0T/kM2
- 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
+X-Spam-Score: -2.80
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid]
 
+There is a kernel bug report that scrub will trigger a NULL pointer
+dereference when rescue=idatacsums mount option is provided.
 
+Add a test case for such situation, to verify kernel can gracefully
+reject scrub when  there is no csum tree.
 
-=E5=9C=A8 2025/5/12 17:18, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> From: Filipe Manana <fdmanana@suse.com>
->=20
-> When writing super blocks, at write_dev_supers(), we log an error messag=
-e
-> when we get some error but we don't show which error we got and we have
-> that information. So enchance the error messages with the error codes.
->=20
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+Changelog:
+v2:
+- Strictly require the scrub to fail
+  Suggested by Filipe
+---
+ tests/btrfs/336     | 35 +++++++++++++++++++++++++++++++++++
+ tests/btrfs/336.out |  2 ++
+ 2 files changed, 37 insertions(+)
+ create mode 100755 tests/btrfs/336
+ create mode 100644 tests/btrfs/336.out
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-
-> ---
->   fs/btrfs/disk-io.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 5bcf11246ba6..1beb9458f622 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -3752,8 +3752,8 @@ static int write_dev_supers(struct btrfs_device *d=
-evice,
->   			continue;
->   		} else if (ret < 0) {
->   			btrfs_err(device->fs_info,
-> -				"couldn't get super block location for mirror %d",
-> -				i);
-> +			  "couldn't get super block location for mirror %d error %d",
-> +			  i, ret);
->   			atomic_inc(&device->sb_write_errors);
->   			continue;
->   		}
-> @@ -3772,8 +3772,8 @@ static int write_dev_supers(struct btrfs_device *d=
-evice,
->   					    GFP_NOFS);
->   		if (IS_ERR(folio)) {
->   			btrfs_err(device->fs_info,
-> -			    "couldn't get super block page for bytenr %llu",
-> -			    bytenr);
-> +			  "couldn't get super block page for bytenr %llu error %ld",
-> +			  bytenr, PTR_ERR(folio));
->   			atomic_inc(&device->sb_write_errors);
->   			continue;
->   		}
+diff --git a/tests/btrfs/336 b/tests/btrfs/336
+new file mode 100755
+index 00000000..f6691bae
+--- /dev/null
++++ b/tests/btrfs/336
+@@ -0,0 +1,35 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2025 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 336
++#
++# Make sure read-only scrub won't cause NULL pointer dereference with
++# rescue=idatacsums mount option
++#
++. ./common/preamble
++_begin_fstest auto scrub quick
++
++_fixed_by_kernel_commit 6aecd91a5c5b \
++	"btrfs: avoid NULL pointer dereference if no valid extent tree"
++
++_require_scratch
++_scratch_mkfs >> $seqres.full
++
++_try_scratch_mount "-o ro,rescue=ignoredatacsums" > /dev/null 2>&1 ||
++	_notrun "rescue=ignoredatacsums mount option not supported"
++
++# For unpatched kernel this will cause NULL pointer dereference and crash the kernel.
++$BTRFS_UTIL_PROG scrub start -Br $SCRATCH_MNT >> $seqres.full 2>&1
++# For patched kernel scrub will be gracefully rejected.
++if [ $? -eq 0 ]; then
++	echo "read-only scrub should fail but didn't"
++fi
++
++_scratch_unmount
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/336.out b/tests/btrfs/336.out
+new file mode 100644
+index 00000000..9263628e
+--- /dev/null
++++ b/tests/btrfs/336.out
+@@ -0,0 +1,2 @@
++QA output created by 336
++Silence is golden
+-- 
+2.47.1
 
 
