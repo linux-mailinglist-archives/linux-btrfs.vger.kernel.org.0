@@ -1,45 +1,45 @@
-Return-Path: <linux-btrfs+bounces-13913-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13914-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8A87AB4226
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 20:18:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD377AB421D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 20:18:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E54807B8199
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 18:14:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 489E01B60DEE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 18:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26EF92BCF5E;
-	Mon, 12 May 2025 18:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32A02BE0E5;
+	Mon, 12 May 2025 18:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EuszHWs1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vIL/9tBU"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51F6529E04F;
-	Mon, 12 May 2025 18:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D147297A76;
+	Mon, 12 May 2025 18:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747073112; cv=none; b=BqUQ6IxV5E8JrvECaURxGFKqm34OOp5lWKWGV3/9sEEyLDo+H4UuIQb5bAlPWVbG/dcD00f/+4j/CHBnH830uF4hsgN/iqEpMRjkPUJchiJX1iAgarn0v5Wy+C6N2MVmVsGeHlmvNQVdtoluyy0gR1dBhG5MWUgHBH5GaGtkNAw=
+	t=1747073124; cv=none; b=bYy9NkD7QDsempQMutzZ00TielZFfQiTT64SXoXQTC6qv3EB1dP9mYsQ1J4eIP+w4Ak9DasBEsD52tiJawe1ccNloFJG1azsWKw+QQC4Y6ruPENXUy3YnkxPns6vxJls5r4JksNzrlOzy42D77c/eykhhhm5sIeuZzNbVBwLb0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747073112; c=relaxed/simple;
-	bh=AgTCjWtTnceNZNHPVA461xtebQce1P3X1TcG8LA0Nnk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MJfZVMwRrknfyzrEqe8CKLk6PWx7Lh28+VtDXleZRyMJtxC27oOpXWqERjsGx03JLxFfBvIYgyjPdEXNWTviVjYfPeZviqgdDya5a8TZAymSZnTTKC7rhkXTp2uwkxU6Hf9TU1voOx5p3ovpJORyCoiJFYA0GybnVEeJezTKuJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EuszHWs1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C49BBC4CEE9;
-	Mon, 12 May 2025 18:05:10 +0000 (UTC)
+	s=arc-20240116; t=1747073124; c=relaxed/simple;
+	bh=c1zh+yjHIHQUJetlMqiEaDrBOq5R6MpNy2YGpI5k8BA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VJsRZ3pzKUbcdn0zwTT1ehKMFn1eveV1q5pITKcNibbENmxx1cQWAaSzCWgAphKy/dtW57K8AmtaI2p5j+xkRwq/m5ASFyR6EL//y3OtDPnNxIVTbIJNyp8tAxciYunhXBX+dbRhoCVSQVJMcHfD6mvm7hDylBXEExDqTPcf+5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vIL/9tBU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DA81C4CEE7;
+	Mon, 12 May 2025 18:05:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747073112;
-	bh=AgTCjWtTnceNZNHPVA461xtebQce1P3X1TcG8LA0Nnk=;
+	s=k20201202; t=1747073124;
+	bh=c1zh+yjHIHQUJetlMqiEaDrBOq5R6MpNy2YGpI5k8BA=;
 	h=From:To:Cc:Subject:Date:From;
-	b=EuszHWs1I6+DaKdGOyfYDPc/EkvUOEv7PODFR6xz7hNm4QYErqO6exmExQjrbRuDv
-	 eDvnp+Lm7r4U/uqmZ5gC1rPJX0icKBuvdjcEaw1afQlioIaAqpwD/baTe7FO6x1F6j
-	 w8K0sF1ZUzACCa4kvOvX847U4k8niH3eOeKft45txla9wGDKBGCbCqzf92VEoyChVO
-	 HlXylecRMb+r+HcSVEcg/I47ZpPhK3dGyKy6cP+T6OXeM49PNv5SDf7D5Q7w7zfW5n
-	 X4KrQsu47s49UiFc4UCSO+CunsYcRYz1qpCo4V61Wtjwc7z2tYJRYwvXRKXHlgg9jH
-	 uD3AavCymw7Eg==
+	b=vIL/9tBUllgCMoRiIe1Y+l982D8rY7/WTKg3uBxySJ/7vue+fJ47UDRRR5uZQfu/m
+	 Lb4wntfDD2sw+BqPMbnVQkvTP8ZFtwK8h2/C4U9JOuYnXrhOODGswtEx6rD4+8kAL4
+	 2LXyxVzC/8xzrVXWa4HtGwE7ZqZtrFDnY6gmZ2gNTsxrgLlejcyu3LhBTuAvkJiwGD
+	 InHWhj8vKaKlAKjbLVNQNXH3E07H7pYxL9rlw74rKn2FoyolSEjq/B73LKsDQHA55+
+	 EHGsCv/WaoQFUi+yy34mTRP/T+m/arJJOo06050vFb48jejIaMMiwVwHHHDE28mJAE
+	 /+vW3SQ/zB3CA==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
@@ -54,9 +54,9 @@ Cc: Goldwyn Rodrigues <rgoldwyn@suse.de>,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 1/4] btrfs: correct the order of prelim_ref arguments in btrfs__prelim_ref
-Date: Mon, 12 May 2025 14:05:04 -0400
-Message-Id: <20250512180508.437991-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 1/3] btrfs: correct the order of prelim_ref arguments in btrfs__prelim_ref
+Date: Mon, 12 May 2025 14:05:16 -0400
+Message-Id: <20250512180518.438085-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -66,7 +66,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.138
+X-stable-base: Linux 5.15.182
 Content-Transfer-Encoding: 8bit
 
 From: Goldwyn Rodrigues <rgoldwyn@suse.de>
@@ -131,10 +131,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 7a6c5a870d33c..31847ccae4936 100644
+index 9271b5dfae4c4..a5f77b685c55f 100644
 --- a/include/trace/events/btrfs.h
 +++ b/include/trace/events/btrfs.h
-@@ -1847,7 +1847,7 @@ DECLARE_EVENT_CLASS(btrfs__prelim_ref,
+@@ -1788,7 +1788,7 @@ DECLARE_EVENT_CLASS(btrfs__prelim_ref,
  	TP_PROTO(const struct btrfs_fs_info *fs_info,
  		 const struct prelim_ref *oldref,
  		 const struct prelim_ref *newref, u64 tree_size),
