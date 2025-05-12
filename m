@@ -1,139 +1,110 @@
-Return-Path: <linux-btrfs+bounces-13902-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13903-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DABEAB4083
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 19:55:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FC26AB4165
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 20:05:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 025923AC57E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 17:53:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BB65461526
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 18:04:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C07296D30;
-	Mon, 12 May 2025 17:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A77A297132;
+	Mon, 12 May 2025 18:04:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="XVEuLeqw";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="W+p46fTM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O2rSVFbm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C5A7254879;
-	Mon, 12 May 2025 17:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD61B297118;
+	Mon, 12 May 2025 18:04:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747072403; cv=none; b=DwYdBiKhE9jcdY57l1I2HLrs0bFLFET3uT3OhvUQ5K8AVkolEr19i69ON21wUyNP/32ZSIKkzNWQMQY8g7yKHwIJmDpil3kVNOUEy+WIfBqC1hve01ERp2Rkwbe5WK957Pwo8xDZXkWLd5hVMHCoAXZtcBpUfW9cN0vrAKd2KIQ=
+	t=1747073043; cv=none; b=gjLxA3uToRyyFKin52q28mm2H0glXxo+iPIIZe9g8HBcNm/E0eqonovYT4bexn/L+N5Jx1b0r9SBbgE1USQwiqFG0CpoE6RYzlWji+/+ez7V6gFAMXmWpFRQScyD2rb9xSMPR4d9bi0i1/WgKnDHWCoHMWB0wpgk/NlnaRXA1Lk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747072403; c=relaxed/simple;
-	bh=U0aycZU3nL8B3sPAjX2RrQuFxgX3wKcotQ348hOj6NU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rj4rmhp83SB9x0axYPFaMn7WODk3Cbw8cRA+XX+/NBKrrn52IL1yIj8746GVSGJGly5mJ23ijObnCACthnIT9vvpu8dZzYjtAZP0gXzFJyqoD7NcN9a5qU2pwQXO5RGXnjcwjG/s5Sl6nyh6VOoYrNXTKsZWGbLUUHfOWtWkJgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=XVEuLeqw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=W+p46fTM; arc=none smtp.client-ip=103.168.172.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 711001140121;
-	Mon, 12 May 2025 13:53:19 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Mon, 12 May 2025 13:53:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1747072399; x=1747158799; bh=VXmW3ltCTa
-	H7AoKDzv6sYaMiQCFrnONwdydPYaY9q2c=; b=XVEuLeqwAdAa9UWRVW9DN+XLz7
-	OG/rntCzlyiNY7B5UkLjzuCGo5Ae6SBBZYFeZKIw4YIvueif2PUpKQiRlh4TnIoI
-	s+WQelYIEwUPm/mf63Z+Iw+lT48yehwVGRSEyxrMxDPZKer/ABrT8J6+8qa67Wni
-	VWqFgZhBNiufXvPdp3Zvz9qpXY09ndT0laIsI1a7apbv8rNlxejYbLOVK+UZgN/t
-	KOWUJPu2BChhpFrkgBs/T6LfJPoC7clP3CEsFgBrrgw3sMhXVIHZRsabwU8tYGZK
-	Yz0yzd9y8D7ImI6NSb3/tIsNaDxsMKM5eCVCMdLcZ2KjlqF93mJo8cyHBJXQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1747072399; x=1747158799; bh=VXmW3ltCTaH7AoKDzv6sYaMiQCFrnONwdyd
-	PYaY9q2c=; b=W+p46fTM0bbbYCL6IE5tZUS4Sby2PVJ2567PP7vDr1FmzwZnLem
-	ufaPhg5PGbVkgXZK5xO4a3EqDVgNfxze8pLdKl6hGzEYUDOUhB+7fcWmvAX+j5Kd
-	/1IYmspSXJwWOATj+/HHAbWsTStts5BP/5V0XBMfLD+0mL0ZcDhU2YMpTgfE7xQf
-	DBm66wvis6sMRB+E4w8TKV3YLE/sSJdCPl8cZIynu8pbrnbsK7Y7wTPpClYGuEzK
-	ZSjcxbWldLNal/BGVWstvzk8YvztLr1xKpClmtTYPnYuMuAz1dwIlcoNg4WDiqwc
-	0DrCiPVwrRtx3OM0xIFsOHX8Y1oaNfz3mSg==
-X-ME-Sender: <xms:jzUiaNdqmIcrl0NgcOFobAIJYgQWSGDYm4tOfHcx64Wzsf2-egcbog>
-    <xme:jzUiaLPDDOQpbZumzkQCR9zqFH2rh5HtqKt9ktPC6VIA0rwioO-ErosaAPpx4394Q
-    UMipDvuHe9JKpquHxs>
-X-ME-Received: <xmr:jzUiaGh9pisKB39VC99RJYkXQZChZGw0oLnO4jx_Y67_TD7tCkz7z9KnkwP-1ZkkREcQm5_1BTMhE-lM0mzB-3NW83U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeftdduleduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
-    vdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqe
-    enucggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedu
-    gfeugfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepiedpmhhouggv
-    pehsmhhtphhouhhtpdhrtghpthhtohepnhgvvghlgiesshhushgvrdgtohhmpdhrtghpth
-    htoheptghlmhesfhgsrdgtohhmpdhrtghpthhtohepjhhoshgvfhesthhogihitghprghn
-    uggrrdgtohhmpdhrtghpthhtohepughsthgvrhgsrgesshhushgvrdgtohhmpdhrtghpth
-    htoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphht
-    thhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:jzUiaG9BUjsl6ItdiNpcNnibXb4JKL4wpaVkqfGCQXO-_FiIb2EO9w>
-    <xmx:jzUiaJtaZ_mXordzNyyCKBa-lNbjxkSNocN8pknvCO7o3HEViS4iLQ>
-    <xmx:jzUiaFFyM376utRw9PVERqSb5fE3Cc_9OSHt61-ymxLkj_qeTDk69g>
-    <xmx:jzUiaAME5gcrsSCw-Zm5QiR3uRWX1vUU1fuKPIo0QcU797fesxqeYg>
-    <xmx:jzUiaLGP3nPZdriNVJFipOjXfzCEBUVS65UtG7yS7VTpuROFU-O_r0n8>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 12 May 2025 13:53:18 -0400 (EDT)
-Date: Mon, 12 May 2025 10:53:53 -0700
-From: Boris Burkov <boris@bur.io>
-To: Daniel Vacek <neelx@suse.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	s=arc-20240116; t=1747073043; c=relaxed/simple;
+	bh=9Y3YEnLLJXEj8uwqZEJhtuyKzP26zmYEx1wU24ofGj8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=uO9Q6nU0vtOsRKftS51R9FfNuabUwS/xhkneqz6FfwujhkzJKBY4zQ1NzqrPnIJG1jX9yP8Y19D/7FC+bzqLNeKOogmpfsKqlwLirHTauA0a49pJOG1KE49+mUZX33kVDETpVFH+kx19uEDcvsvIhy96Y1T3RyJ5qrLjlbmSVjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O2rSVFbm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 118B7C4CEF2;
+	Mon, 12 May 2025 18:04:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747073043;
+	bh=9Y3YEnLLJXEj8uwqZEJhtuyKzP26zmYEx1wU24ofGj8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=O2rSVFbmY4QY55ZBjYix2kfitkV94Buycu8pnycBOsrspjnpYmzhe8gx6JBryjZWV
+	 MyEMswx+N6l+MLCyfdkc14OpxlFIjcx3cVpIrZj6sNCHlJNk0yWXHRMCKm2KM6QVDx
+	 jOsforTezXUuOrAtyYCIxD1S7PZVNlRLt8InChB34Grz9kg+OVkkWoKFQ+VkeWbTXo
+	 /2C3Mm6ZjtxNFb8YFYN+ekz9td0Ix7A7srV44lM83KUunCmY6eYYaKg8TL1UF/5u2z
+	 od+PBMCpQwt83n8YILBvjYNZtg8iHST8MDSQPPRgELJw6fZLVwguV5w8ZdXCkDWr7r
+	 LPcO0+SYIOtnA==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: Kees Cook <kees@kernel.org>,
+	Qu Wenruo <wqu@suse.com>,
+	David Sterba <dsterba@suse.com>,
+	Sasha Levin <sashal@kernel.org>,
+	clm@fb.com,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: correct the assert for subpage case
-Message-ID: <20250512175353.GA3472716@zen.localdomain>
-References: <20250512132850.2973032-1-neelx@suse.com>
+Subject: [PATCH AUTOSEL 6.14 04/15] btrfs: compression: adjust cb->compressed_folios allocation type
+Date: Mon, 12 May 2025 14:03:39 -0400
+Message-Id: <20250512180352.437356-4-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250512180352.437356-1-sashal@kernel.org>
+References: <20250512180352.437356-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250512132850.2973032-1-neelx@suse.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.14.6
+Content-Transfer-Encoding: 8bit
 
-On Mon, May 12, 2025 at 03:28:50PM +0200, Daniel Vacek wrote:
-> The assert is only true in !subpage case. We can either fix it this way
-> or completely remove it.
-> 
-> This fixes and should be folded into:
-> 	btrfs: fix broken drop_caches on extent buffer folios
-> 
-> Signed-off-by: Daniel Vacek <neelx@suse.com>
+From: Kees Cook <kees@kernel.org>
 
-I would lean towards removing it, personally. But LGTM, thanks.
+[ Upstream commit 6f9a8ab796c6528d22de3c504c81fce7dde63d8a ]
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+In preparation for making the kmalloc() family of allocators type aware,
+we need to make sure that the returned type from the allocation matches
+the type of the variable being assigned. (Before, the allocator would
+always return "void *", which can be implicitly cast to any pointer type.)
 
-> ---
->  fs/btrfs/extent_io.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 80a8563a25add..3b3f73894ffe2 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3411,7 +3411,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
->  			continue;
->  		}
->  
-> -		ASSERT(!folio_test_private(folio));
-> +		ASSERT(!btrfs_meta_is_subpage(fs_info) && !folio_test_private(folio));
->  		folio_put(folio);
->  		eb->folios[i] = NULL;
->  	}
-> -- 
-> 2.47.2
-> 
+The assigned type is "struct folio **" but the returned type will be
+"struct page **". These are the same allocation size (pointer size), but
+the types don't match. Adjust the allocation type to match the assignment.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Kees Cook <kees@kernel.org>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/compression.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 0c4d486c3048d..18d2210dc7249 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -606,7 +606,7 @@ void btrfs_submit_compressed_read(struct btrfs_bio *bbio)
+ 	free_extent_map(em);
+ 
+ 	cb->nr_folios = DIV_ROUND_UP(compressed_len, PAGE_SIZE);
+-	cb->compressed_folios = kcalloc(cb->nr_folios, sizeof(struct page *), GFP_NOFS);
++	cb->compressed_folios = kcalloc(cb->nr_folios, sizeof(struct folio *), GFP_NOFS);
+ 	if (!cb->compressed_folios) {
+ 		ret = BLK_STS_RESOURCE;
+ 		goto out_free_bio;
+-- 
+2.39.5
+
 
