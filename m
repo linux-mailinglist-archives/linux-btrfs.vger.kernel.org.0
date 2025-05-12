@@ -1,159 +1,168 @@
-Return-Path: <linux-btrfs+bounces-13866-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13867-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA53CAB275C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 May 2025 10:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C93AB2F02
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 07:26:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1992D1766E1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 May 2025 08:46:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A37B31784FF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 05:26:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350A41BD9F0;
-	Sun, 11 May 2025 08:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B33AD2550A9;
+	Mon, 12 May 2025 05:26:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RjUJwPoD";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RjUJwPoD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296551A2387
-	for <linux-btrfs@vger.kernel.org>; Sun, 11 May 2025 08:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D229619DF41
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 05:26:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746953187; cv=none; b=OLJZCol0A/eQsybGCSMFmDqUXQJD+FEGOtk+sRxlNjU2m7WF4s15RMZpwQ3Ij9xQ4CA94wPx7rosO+UMhZ5EPjTjN4VJER10UYcs3b+L5Yby1E0L5tIA0t6NWFtv6FvHvV0jUaum1Us4pCytrNH/+S5tzzN+nkZFH3A/r3yZsis=
+	t=1747027579; cv=none; b=pqz7En6BjIuuwRh9CxcnMZASpeZEgeIQFMLfIIUxjyXjv4qwk5g4ZESfUCeJDsxllHP/DLdVBcl5YjWX0CUM0fbclz5xXE91R59CCjIQfY9pXMw+Plo9vnbkAB4nenirp+k3jb3GXkBrRuNeCBZxC9yTJabecTFI0v7wHL1jsNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746953187; c=relaxed/simple;
-	bh=tdwV9uMJEf4NMRgTSEOT3PiGCISiiyNTBOB3ugi872c=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hbfLP0NgdMxMBRX9ZVWSjb93PjVvTt69Z9g49r9ecugde6l85BbsE6z4yFGk+VenClwSRThEaPAvDit9Hb5vxCNOMHCWJNyLJAc5qUfKH0iLca97Mhy8O6yEbs3zd90sxped5NX/wq7Yd4auHQLj5fiBSXDLnB9Krq49IEkQZDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3d8eda6c48cso45586525ab.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 11 May 2025 01:46:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746953185; x=1747557985;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/QSPiADpLuqs4nC4D6n6vms9x4J46qbiGQAZeQ4r3S8=;
-        b=wFyDdJhohWtpNxe99JQ7Pf7I3gvhJPtqGGMBoTmY+da4xcKbSw1qqsmcNjmEvkb1kc
-         4tc/7GSEXwk/ukO128/zSL12TmfEHHqzxqCsr1wZSCFIsR2uqUHHIjaVhqAztWjiVCGF
-         0/X/zLq4UaeuGqk8XB7M4QhWlvQ2OY3J0e802u6nJRP0zNKFeIPSpzueWzRzm6pX4ldS
-         KhsLY351k1NdVyZMJfTkrdK19cRwfn46L6nEV4rsrv/hOcE/cM9ciIEYN0UGzQ8u8baV
-         yly1CvUMBku4Oah3IjDgJ78M2NB6xJn5xpzn16Ie6QHsmb6P5kSyUeMOr17HeqxWgMzA
-         50Yw==
-X-Forwarded-Encrypted: i=1; AJvYcCVNJDrt4CyPOD9BsoHoOg/aaDcgXZ8l0uV6LZBa44Rym/CzGYStpMp6Hg9FRfHwGk//C2MmmMfZFyWcuw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyN3RtQTpuie0DgJG4O7SHrJDGMj4DPn7Ibdihi6z2vRMYlL706
-	etj99qd66hZt4BYXS5EO4Pa97UzsleV6vKd3zuVpe5dppEj8uycve3UbDEw9fbqSPgx+PtsmMnT
-	gXUqHCEEctrDXJxTnKvEZ2Kk/nvcPtpb92rN8WK13jpIBldmEDRax73o=
-X-Google-Smtp-Source: AGHT+IEryGv/28ms8Lmi8Al5fWjAYkjejyNHiM9Dz5hl5tu930d9/HXVCxAxpTuFOaQH7O4JwCWfLmY6uL3j8Im256Sc3s/fp2qp
+	s=arc-20240116; t=1747027579; c=relaxed/simple;
+	bh=Rbrr0n251goTD3DT/M6Bh89cPYf3x6faRWZfdmYLYTo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=JbngyQt20dQ2QCllQoF4hxMaFbU2yp3ZQJuWPxvZrSnMkPdDtREGalCx4GN/k4Xqy4pwYw3ILRCuHEIaxV3N9RfIAET6rlAmnJT/je3lpxw2tegkQ3Skx0dCyc//56TrgthcrugBrHIIDG4R4v5e8Ep23TTbJ9UrBvKEInK3F3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RjUJwPoD; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RjUJwPoD; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0D44421197;
+	Mon, 12 May 2025 05:26:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1747027574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=1hRMK3laAUEJXwPmiG9PM3q4Qdn/Xmd/GOu9Ia225aQ=;
+	b=RjUJwPoDHeaHBNiJuRvRrXh3O7f47HCeCdvv2phmpI/mo7rr78TknZlzwR/N5zaFG2IElh
+	rZrO0kkkTFFottSNkB3Y7fuxurBZy+17AMj3iYeGONhuDsYZqABrcn9L8Xo081deR0JXRU
+	Mt7UJucr6UVTVplfHWoEoy2z0XzeYMU=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1747027574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=1hRMK3laAUEJXwPmiG9PM3q4Qdn/Xmd/GOu9Ia225aQ=;
+	b=RjUJwPoDHeaHBNiJuRvRrXh3O7f47HCeCdvv2phmpI/mo7rr78TknZlzwR/N5zaFG2IElh
+	rZrO0kkkTFFottSNkB3Y7fuxurBZy+17AMj3iYeGONhuDsYZqABrcn9L8Xo081deR0JXRU
+	Mt7UJucr6UVTVplfHWoEoy2z0XzeYMU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 15480137D2;
+	Mon, 12 May 2025 05:26:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id y5u1MnSGIWhdZgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Mon, 12 May 2025 05:26:12 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: [PATCH] fstests: btrfs: a new test case to verify scrub and rescue=idatacsums
+Date: Mon, 12 May 2025 14:55:51 +0930
+Message-ID: <20250512052551.236243-1-wqu@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1293:b0:3d3:de5f:af25 with SMTP id
- e9e14a558f8ab-3da78494c5cmr129873055ab.0.1746953185207; Sun, 11 May 2025
- 01:46:25 -0700 (PDT)
-Date: Sun, 11 May 2025 01:46:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <682063e1.050a0220.f2294.002a.GAE@google.com>
-Subject: [syzbot] [btrfs?] VFS: Busy inodes after unmount (use-after-free) (2)
-From: syzbot <syzbot+1134d3a5b062e9665a7a@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
+	URIBL_BLOCKED(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
 
-Hello,
+There is a kernel bug report that scrub will trigger a NULL pointer
+dereference when rescue=idatacsums mount option is provided.
 
-syzbot found the following issue on:
+Add a test case for such situation, to verify kernel can gracefully
+reject scrub when  there is no csum tree.
 
-HEAD commit:    e0f4c8dd9d2d Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1481fb68580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=868079b7b8989c3c
-dashboard link: https://syzkaller.appspot.com/bug?extid=1134d3a5b062e9665a7a
-compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10edfa70580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=115a84d4580000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/463c704c2ee6/disk-e0f4c8dd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1bb99dd967d9/vmlinux-e0f4c8dd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/505fe552b9a8/Image-e0f4c8dd.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/3eef91541df5/mount_0.gz
-  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=176dfa70580000)
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1134d3a5b062e9665a7a@syzkaller.appspotmail.com
-
-BTRFS info (device loop0): last unmount of filesystem c9fe44da-de57-406a-8241-57ec7d4412cf
-VFS: Busy inodes after unmount of loop0 (btrfs)
-------------[ cut here ]------------
-kernel BUG at fs/super.c:652!
-Internal error: Oops - BUG: 00000000f2000800 [#1]  SMP
-Modules linked in:
-CPU: 1 UID: 0 PID: 6484 Comm: syz-executor107 Not tainted 6.15.0-rc4-syzkaller-ge0f4c8dd9d2d #0 PREEMPT 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : generic_shutdown_super+0x2b4/0x2b8 fs/super.c:650
-lr : generic_shutdown_super+0x2b4/0x2b8 fs/super.c:650
-sp : ffff8000a43f7ba0
-x29: ffff8000a43f7ba0 x28: 00007dfe9b1ba808 x27: ffff80008f301de8
-x26: ffffffffffffffff x25: dfff800000000000 x24: 1fffe00018b9bcf0
-x23: ffff80008b2817e0 x22: dfff800000000000 x21: 0000000000000000
-x20: ffff80008fa4d4c0 x19: ffff0000c5cde000 x18: 1fffe00036711a76
-x17: ffff80008f2fe000 x16: ffff80008ada5d6c x15: 0000000000000001
-x14: 1ffff0001487eee0 x13: 0000000000000000 x12: 0000000000000000
-x11: ffff70001487eee1 x10: 0000000000ff0100 x9 : 9c3427ac6e3c7500
-x8 : 9c3427ac6e3c7500 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff8000a43f7538 x4 : ffff80008f3f4fa0 x3 : ffff800082faeee4
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 000000000000002f
-Call trace:
- generic_shutdown_super+0x2b4/0x2b8 fs/super.c:650 (P)
- kill_anon_super+0x4c/0x7c fs/super.c:1237
- btrfs_kill_super+0x40/0x58 fs/btrfs/super.c:2099
- deactivate_locked_super+0xc4/0x12c fs/super.c:473
- deactivate_super+0xe0/0x100 fs/super.c:506
- cleanup_mnt+0x31c/0x3ac fs/namespace.c:1435
- __cleanup_mnt+0x20/0x30 fs/namespace.c:1442
- task_work_run+0x1dc/0x260 kernel/task_work.c:227
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- do_notify_resume+0x16c/0x1ec arch/arm64/kernel/entry-common.c:151
- exit_to_user_mode_prepare arch/arm64/kernel/entry-common.c:169 [inline]
- exit_to_user_mode arch/arm64/kernel/entry-common.c:178 [inline]
- el0_svc+0xb0/0x150 arch/arm64/kernel/entry-common.c:745
- el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:762
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-Code: b0051160 91350000 9119a261 97cfbb64 (d4210000) 
----[ end trace 0000000000000000 ]---
-
-
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ tests/btrfs/336     | 32 ++++++++++++++++++++++++++++++++
+ tests/btrfs/336.out |  2 ++
+ 2 files changed, 34 insertions(+)
+ create mode 100755 tests/btrfs/336
+ create mode 100644 tests/btrfs/336.out
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/tests/btrfs/336 b/tests/btrfs/336
+new file mode 100755
+index 00000000..f76a8e21
+--- /dev/null
++++ b/tests/btrfs/336
+@@ -0,0 +1,32 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2025 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 336
++#
++# Make sure read-only scrub won't cause NULL pointer dereference with
++# rescue=idatacsums mount option
++#
++. ./common/preamble
++_begin_fstest auto scrub quick
++
++_fixed_by_kernel_commit 6aecd91a5c5b \
++	"btrfs: avoid NULL pointer dereference if no valid extent tree"
++
++_require_scratch
++_scratch_mkfs >> $seqres.full
++
++_try_scratch_mount "-o ro,rescue=ignoredatacsums" > /dev/null 2>&1 ||
++	_notrun "rescue=ignoredatacsums mount option not supported"
++
++# For unpatched kernel this will cause NULL pointer dereference and crash the kernel.
++# For patched kernel scrub will be gracefully rejected.
++$BTRFS_UTIL_PROG scrub start -Br $SCRATCH_MNT >> $seqres.full 2>&1
++
++_scratch_unmount
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/336.out b/tests/btrfs/336.out
+new file mode 100644
+index 00000000..9263628e
+--- /dev/null
++++ b/tests/btrfs/336.out
+@@ -0,0 +1,2 @@
++QA output created by 336
++Silence is golden
+-- 
+2.47.1
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
