@@ -1,98 +1,97 @@
-Return-Path: <linux-btrfs+bounces-13923-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13924-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BF7EAB42AA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 20:25:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C31A0AB42C2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 20:26:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F01D41B61D4A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 18:24:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C60AF3BDA77
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 18:24:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A5882989B1;
-	Mon, 12 May 2025 18:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715D82989BA;
+	Mon, 12 May 2025 18:08:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="CCTCNdAU";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="e53ciu+O"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Otj9K8Ok";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="gWEf1yaV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FDA4298999
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD73A298999
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747073282; cv=fail; b=m5cIQ5FgadFQT/RGdIQ+akgjXsO5HgXnwKvH1KGrI5PmBRXF+QZwrq3TT6Y/q+P6IHpsjq/dnUiTafPbZkkLphcImrJcyBTChdqB/ju2421bnTqIL9nqVr2HxxN4+xnnmYFfPpTbJTosK9wJ0iUaDCSbu0hvBWV15trL2f99sLk=
+	t=1747073286; cv=fail; b=nXVKYYT4tUtHgp1fmwuG3K4mUZ+JQzyS4CYrwfnTCOpxkwv91RIpJPylllXRe32AaP91+ox99iQ0goznaKexokuNIUR9c/ynWm6qzXtcXFo96BPPWirqHNOZyLb68pvrjAk1z1eMOTqTPgVKpRKnPXPWnjkHvESONWiJyhNgntc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747073282; c=relaxed/simple;
-	bh=Fqf6S9Osu4VOgmgoxe8ak3MsohlFs4XSS8X8RKt7iME=;
+	s=arc-20240116; t=1747073286; c=relaxed/simple;
+	bh=7k2tIB3CH0EJi0X1E728WyxFvMFnElg2vqjBwRZ8pVo=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ILc65jUEvbn23m2KAugUhKwtbIM3S1caC1LUOGGUrEjXqH/nLYmIV2vk5/ffYPVfHUH+sl2VyByUms5g0V61/DHhpigZYbBIA09RqxUHL398wGB74Nc5TUj+xxtpsOZxtDKskmaEQFymBuIKXcFF+SYPT/VmN5ugbXfQq0RRl9g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=CCTCNdAU; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=e53ciu+O; arc=fail smtp.client-ip=205.220.177.32
+	 Content-Type:MIME-Version; b=cg4yH78iMAug3RLXMkbUoPRu4pIWOioRrCZai7/ZZ6nXWc0NalvJE5pncNXNTeFR4vHmORZhfjHxVMJeBjK2kV8/0s5GnEMdTyy0Ce6rmLK/2AnGe2XrL7sVTKfhXIq0H9jv4W7PqO08tpJA3NhBsy41E4H/Qor0c62wsxyHigU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Otj9K8Ok; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=gWEf1yaV; arc=fail smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54CH0unE007074
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:07:59 GMT
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54CH0x9k004056
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:04 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
 	content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=tFZp/+flB53hWH7dlIm0Lp0r5kSkJ+zCHRqnTZD8Uhw=; b=
-	CCTCNdAUELUFIN+ZtGZASBHcOIXCIdEW1WIySBo8omMm2OCjCCAL7L0XRIafR2qW
-	qn88i2hCb9U1eDAwlRedY8CZKg3b8YPzX7kJyksPlXUcVLXomRk1CjnP/AsusIKF
-	kxr4IkrGklUO9k6rEB50ncMxDx8E/wrNM9sI5rhPbjBAWWlVo0dvVy11nf9Rhl0B
-	V+RqQ1noppLv7vuia496WIkUr8USk+1YbZI9G30neZDzxPHuC9jAPkl6nGbFZMfo
-	7R0rNFI+OHFHWBNWph03htmYoQlPTk9tvmkedTzElpIdU6fKOBa6wPhqUZMXadTc
-	bubRpJPBCDT4zvo9MfbreQ==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46j11c33hp-1
+	corp-2025-04-25; bh=8lKw5lBa0Tdeg4UCE706eqcaMiDVouTvU9xoIO+Ddw4=; b=
+	Otj9K8Ok9/iP2fSw0IyzYy6xTx+IaPKQoSSr6gXAVe7WhEynJL+KOJPbBc+acWLd
+	Wk5bl5PZ3Pfw6V/FrU6b9a4LrlkyQhU5OkF8SNIos126aXfgoGdbCOrieg/wbwZI
+	mhQL36pl6otBvSrmCpri1pnD2iijAkxN/9HOU4My1TDniaoTp7Mo1tlU6HP6BRK3
+	M5bP2t0y4pdCRFTbLzU3uW0rBpVtVjT+JEj4OtFw3tFg6sTElNJeEgrlcxP+Sdph
+	DpCKFMI4xxEIb5FRexgLn5WfNX+Adk12cpC6qruSDMdlQWtR4Dt9ZlnSpQHyANOw
+	2e9lRz2hrFtY7Ndj0OHfVA==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46j13r355c-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:07:59 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 54CGx9Bw015449
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:07:58 GMT
-Received: from sj2pr03cu002.outbound.protection.outlook.com (mail-westusazlp17013078.outbound.protection.outlook.com [40.93.1.78])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 46hw87pynu-1
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:03 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 54CGWkoO022377
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:03 GMT
+Received: from cy4pr05cu001.outbound.protection.outlook.com (mail-westcentralusazlp17010006.outbound.protection.outlook.com [40.93.6.6])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 46hw88q741-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:07:58 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:03 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=AqFDKZrBy3ZDJ6ZewaQVdg5tjXlXiXGr8XY4GhDKQuvjpNBzOXOaxOlCunOjUw+mm79Dpepjc5jGlDO9J6WnkI1MSKRmEox4s3+1JHymEDCM8Iguuz7FEdq+cKQlyhH1Y1syhHXUxkTR6T5LDIxXHrtE9WDYkY9AIlTlU5YOA0IfU1rFmQ8N/YmxSBgwDGbyK/RRc4Ynjla2OltNSaYopuPlsuVuj6uCPNfZohcp4TLSBdBFQz3ZjoDbAOsTSKA76paw+gtnCwHYnf+UTAY7w7FDSFIulpJ88IWcppkCiPdyorEEeOnYSU1YJHxqZrwnB/aNTpmAXGHxwyatOBJMbA==
+ b=Y02naTlK3zermbUMqvcykuHRi8ecIKgRn2NrbhhZpv9+l0zIUfA/9oZZGHqbj9H4w6lVGPDYygJS9HQ1v4/tl3+IG92KgQq5o8YmBf+83iizg4Bs3l8bgqi92e3pEl+WcmJW9sJlhV6MAvUUiFD9R3A4gdiD6UB4F66oKabaaSTy6YtUous/XCnvJjYDHDEmFDnQ/Of9yVN1YPDW0xxJD66EpJmwcYu19Ii+ufIPEdE9NrLQZn29J0paRcOxIqKE3XlAA5X+uKIWrSGyvNzdtN6kWSsIgHkd0e/JNE9Tave/DXcIOc1TtCMWPCPReIz4VxpFHp5Ty/THTAZ9Z6nIAQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tFZp/+flB53hWH7dlIm0Lp0r5kSkJ+zCHRqnTZD8Uhw=;
- b=CU9K+p2WTFYEM6JCYlNPB0ZTtf1kmED5Q87EGhMPrcCSguCNG5BjFti+D9KGyjBWGdI4jvn/GZn/7nnLtfKcUAV5AmuophhsH1O6Ihp6xUtomENqSOvmJFB31z5DIHauL9v63G8dLDuEZWBwFQJLCCGE5sY+jcfRlSSbAJC4zZwnq5AtJ/go61FmcvkX9/UcOHsUwgEKXV24h91Ihy80XQGPWCZoj/SY5WulQKZyiFk+1AsZaWryPcwAU3O4ObwrSz/MM3zrOyXAPOci+XiLevEQWmswaEsEYpl8aNI3ScCvQTosT1aoHyuTyJEKG9ig23SBBS/uzfawsG3BWKNMYg==
+ bh=8lKw5lBa0Tdeg4UCE706eqcaMiDVouTvU9xoIO+Ddw4=;
+ b=Btq8B2ESIGJWBZmr2h7RlSdhPU08tNkczeQQKfZpT2a6sty9MEOtIjDMxqcddxg8qEL7rdyvgjOejq5O4CMksUXXrQySJ4yY5MNeDW9DP4emt1svuEFHgUeQ70CDGnXNOpdxEtR13Q6msQO6dbK3y50ja4rhd1DlRqbG2Za9YDcBnRqXLIIQn8F//KZl92W9XEy9Xfwf6HitjpxphqPm78y1CG9yaq4Mmz4XghT0mNGYnBI4JKyQn65AX0rBBhFjspRHarc/RZhDUNfA28XfJGueM7irs/t5rx0o5pE2L3At8nk1iW5wPOk8olvSq7eHT1bdjaQ3OdwA3L3T61f9Qg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tFZp/+flB53hWH7dlIm0Lp0r5kSkJ+zCHRqnTZD8Uhw=;
- b=e53ciu+OgsawhZVs0mb3X2T7k7PoE6djZ5IYahFck8c0SHq4CnrREVpWwINQ37GTTZaVrypo0vU3mXp62xWOEziQR1iUMpodI9dmhZW6Ag4UweZltWRP6EJGF+B/3Js8mNMUx1m7RacN694V/WXLqebiHVY9LFbg11dlVSm+Rk4=
+ bh=8lKw5lBa0Tdeg4UCE706eqcaMiDVouTvU9xoIO+Ddw4=;
+ b=gWEf1yaVTEqwhOv+5Yb7W6/Mo7QpdFjmQhn+VG8e1H2hA+tJ+4qDbp56VqbLat9A9inR4Ub9zzJeg7Sb3LfT2qF6kBUI4j/BodUMdRUiS3cqo5llm28o5iN15N+a+eG1B3S+mNJgolBZdJeW6ZmGKOwdX//7v8lPwzLYiMoXun8=
 Received: from IA4PR10MB8710.namprd10.prod.outlook.com (2603:10b6:208:569::5)
  by DS0PR10MB8199.namprd10.prod.outlook.com (2603:10b6:8:1fe::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.24; Mon, 12 May
- 2025 18:07:56 +0000
+ 2025 18:08:01 +0000
 Received: from IA4PR10MB8710.namprd10.prod.outlook.com
  ([fe80::997b:17f9:80e3:b5]) by IA4PR10MB8710.namprd10.prod.outlook.com
  ([fe80::997b:17f9:80e3:b5%4]) with mapi id 15.20.8722.024; Mon, 12 May 2025
- 18:07:56 +0000
+ 18:08:01 +0000
 From: Anand Jain <anand.jain@oracle.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 06/10] btrfs: skip device sorting when only one device is present
-Date: Tue, 13 May 2025 02:07:12 +0800
-Message-ID: <40643b80906c686f31202a41b785bc8586adf3a5.1747070147.git.anand.jain@oracle.com>
+Subject: [PATCH 07/10] btrfs: refactor chunk allocation device handling to use list_head
+Date: Tue, 13 May 2025 02:07:13 +0800
+Message-ID: <35b49f3742e290e8f19101ce624d57b7db256d4e.1747070147.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1747070147.git.anand.jain@oracle.com>
 References: <cover.1747070147.git.anand.jain@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0083.apcprd02.prod.outlook.com
- (2603:1096:4:90::23) To IA4PR10MB8710.namprd10.prod.outlook.com
- (2603:10b6:208:569::5)
+X-ClientProxiedBy: SG2P153CA0015.APCP153.PROD.OUTLOOK.COM (2603:1096::25) To
+ IA4PR10MB8710.namprd10.prod.outlook.com (2603:10b6:208:569::5)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -101,119 +100,383 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: IA4PR10MB8710:EE_|DS0PR10MB8199:EE_
-X-MS-Office365-Filtering-Correlation-Id: c933cd32-9f19-49d0-11f7-08dd917fec15
+X-MS-Office365-Filtering-Correlation-Id: ca3eab50-56ff-49ef-7918-08dd917fee91
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?23tXg2tWNG05+C40mGoYxwrZeXB40Md4Rir31gMOJysgjzyIES5D4gsS4Efb?=
- =?us-ascii?Q?h8OXTj57/INe1Ni+UQdML27eHfJIqOlP8c3VTlp5p74pcrirZtG+0NzKnIh9?=
- =?us-ascii?Q?Z5D3vXFjO8AC5KlIesTWM+Qm9097L1dVaBeFUxIKUTf07GaqDS1jHMJVgN2P?=
- =?us-ascii?Q?kBqsVlxw+MKpU8SLbL0BXY1kAgpCxOUWyvVtX8CaBeo1fk1hZ3XlxpWKNyWD?=
- =?us-ascii?Q?zLTeHFSa/0feowM7lz5DyrO7VrBO293m2O6kE6CF5YuwzuXTrbUKgXftX12s?=
- =?us-ascii?Q?SGYjYq/GI8wxbDeLj0YQD4Bryxjx4NDClJwi2JwIaT45C+UdRdoG50yMtWU+?=
- =?us-ascii?Q?GGpf2u0jc1St9CDJ2zNWjlnmPQ15sruK0onCTuBrXfxC5Q39gEftWmVfth89?=
- =?us-ascii?Q?zDSXnuMVs6RnVuGCVKjgdj7egHTBOrux/g9K7lEorfeJqbsYUalspT7UMNfs?=
- =?us-ascii?Q?ewsUIc1W5TB1x9OMoR0hHIgt8lHLOi/aR86PPqwpg9KsDHMeQO0h55ML4bRb?=
- =?us-ascii?Q?/87Z04RqdCRyBrBrnH6U1FrmgY/+bXonksc5tDFe5wNlxTrjKQGoYGi+aytf?=
- =?us-ascii?Q?irxi/f8AGBT0xjP2J1/NCW/E4E1RG+OoB9bzTiQcFzRtZp14KQm9HkD4Jzql?=
- =?us-ascii?Q?A3o9ECUN7OXVBzYwsMG706HHrimKzsmcNJthCf1FG6bmd/pqAbL5TOt3589h?=
- =?us-ascii?Q?QfDRxpBswJavag4BAqeA3nl7t8aeViYgXE2Mijeg54NhIkvy1zGch9zfzlTt?=
- =?us-ascii?Q?E/qawIUKtNGHmPTnal8dv7GQboLQN/yeGuKEkAl/Gh/h8bmOPkiGXpnflexz?=
- =?us-ascii?Q?6n6Zg6qor4Rw+udHye5FO0CYw5XBBR7QlWZGWVbUBDkBL44+7ozzUGePh9Hd?=
- =?us-ascii?Q?wMF03tN57o9NmfjXJbCWgr38ODlO29oJlRv1Bk6JAo6fBblTbZ8oAplQfc8u?=
- =?us-ascii?Q?c4KmJmKMd+FDiJJwX9JtZBvpeMXvN5QqTTnapHwmGtoe6So4Aj0KwkK+fQ/P?=
- =?us-ascii?Q?BDvX2CIwYWMqrwvvsLZ8c9YeEBkIMvh8+7hCZ028vSXkRLU58UKWtQHwoIjR?=
- =?us-ascii?Q?DLheP+EWQdjWxQP+GeCYDOi8kPOEh5q56r6eA4q6xE3iAAryFyx4EqxsuzWF?=
- =?us-ascii?Q?wyeA/WCLUf3rGJk0sM7J5JaXQ3ni8cegCVpKmJnpYBpvYdI3k7ZRHGAXp/l6?=
- =?us-ascii?Q?AU4sg5k0/WoM9eSRj4IFsR7xEHlAdZi61iOAYogDjPYg7B233D2hnJX1skXW?=
- =?us-ascii?Q?FGICs/mphSYujjNXkuhT+yV/8YOMDlSRyyFKv/5n78CBqlI13TeMfqojKLIg?=
- =?us-ascii?Q?I2lQ7tP9Zqykxmq42+jPFqCAkblC3j9Z2/SMSggiyh0zOJ09RriwXiNTySGq?=
- =?us-ascii?Q?x3KW0MmXc6DGdF9TgVtP5Mh9YFJRIFmtwsax6TrqkEla3MohhnsJ+0LwZ8aX?=
- =?us-ascii?Q?V3Oi8Hy4wBU=3D?=
+	=?us-ascii?Q?w/W/qtIGVLjB+xrVtvi1nCliU1YXeEVCwC8yWqBXkAMwjTOdNIjlJ3kfywoB?=
+ =?us-ascii?Q?RU+5x6paIjXNn7ua1zMHGn8psT+J369ybXFawiLj/LEoS2IVsgNJdII9TsX5?=
+ =?us-ascii?Q?Lg/pbjBLcRtQfCb5eQtbFPBLC/QoPN9pvvnvRh2m25iECcSAsgP1Xjg/sCzZ?=
+ =?us-ascii?Q?m4QpZn1N7et4pmZmA9lP4oHpTL5SU8sLSBOIdULC40hpKjMqkcGZGixqZnJp?=
+ =?us-ascii?Q?Df9jUMra2lhs9mf/AUFyK7iAiiiC7z/+UFTK0I8Frr+XdFbnYcAl8PjA1/fl?=
+ =?us-ascii?Q?RjKTDx3rPWB6cxSysS+hFViZLQGEr+qZdJMf4IgMyeOjVF7XMVaGus+lS8oK?=
+ =?us-ascii?Q?EnjdyaqQG8uAKDK4Y/6tza1wmfFzS3Nxlve4Cwp60qq/oOTzBKCBp+pbMhQ0?=
+ =?us-ascii?Q?cJc6uVqApIs8X9E1SaVwfnK9UmEPAIXmITw/FVli51rabV6uPojUpuUu4NQ+?=
+ =?us-ascii?Q?D4SnLUvpaa+TzzHaEIbqTGjqzWQMuo4lWbZxeeaUq9tIco8v8L7pdsR6mA0A?=
+ =?us-ascii?Q?51pcqANqXcv5RAxuayFHtJN2kXEM951H+oMbMzxn+8/vwtlAgVsQylYASrK6?=
+ =?us-ascii?Q?HJFmMIyu7iIGtm6WDbTTC7WQEj6EVmjfxhlbvCbmZ1Sw0I/Vh7mp48gWgC3D?=
+ =?us-ascii?Q?8FqzyWJ/uNXD/Q+iHynB9TCXczm+lrn+x6rLLJYACA7nvrZXrgKInEEuqono?=
+ =?us-ascii?Q?t2ljhI63rYNe80WKdhbNds8p19LVU4N/oki/VW8sQdtPN7feQquRwOSxSSdc?=
+ =?us-ascii?Q?9rjkTZGpWbLJrY/NjE4pEMrfyGIGGrKYsM+Wiw6bRhPEHU/McznKrrpm5U29?=
+ =?us-ascii?Q?lTm96pZNIk8gooABDXGjp6Bb6QD9eBbqCVrjGrCHBGT9N22EwMf8lkD2X3G6?=
+ =?us-ascii?Q?XIxQIFPtfbDxNBHK0ruGgOH7khDAdVUv5zqANWC4ULIp2bHSdE1GWEaOPLLv?=
+ =?us-ascii?Q?ohFjswVc6JfZ8MjFcBL+oKDXVhgDwQHSaH05y2I75yayC/ZgaRY7DljbmEo8?=
+ =?us-ascii?Q?zCn9coUssYLzMvzpWM3v/9lGRHVSFZsmjfggEF7jelHO+jyxGSLfNBr6Wc2Z?=
+ =?us-ascii?Q?8dwJnh7NNImy3WikbT0/d6kPLqp5rQLbGpqa1GALYYz14auddmBwkvyfYs+b?=
+ =?us-ascii?Q?tv6ZGdPQj4KO66Ch6JXTaQZMLWZxc5FRGp6XPlZZ7TLEsr4lQfWEM3S/aK3R?=
+ =?us-ascii?Q?F5/Yb3Ks5Il7ndsn0Us/OCGFaTrOpk9ko/Ue/Uc+AZSjDdG29Gt33G6fljrO?=
+ =?us-ascii?Q?7yrhyVe/sSkyAFZhR1abzt0+/VET9+HDnMu21k6F45Q7u7OiAIamf7GdqbwQ?=
+ =?us-ascii?Q?q5NXmSqTC+af+X6HLTP2kfStB+PKSMaRQoMr7U4m58SH1nya0wvfNrc+yF5W?=
+ =?us-ascii?Q?SV1AUU46OPW3+n0K6Kkg2AAiM0Uua6l1EKxlzQIsqxllno0VzeC/QWAd+Jio?=
+ =?us-ascii?Q?MJVdvrfl7jI=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA4PR10MB8710.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?lK8C+Ydp0wwFiKYc6pXkLIpQx56ppSiACVSCuZ1tmcPPEzU8a+4BCaB7M5LH?=
- =?us-ascii?Q?/5lHKfwTG3arAdkprN5Axuu01RxK3IrHKgNJwwVnich+ztiW42Lzw/y6mQg8?=
- =?us-ascii?Q?a1tGDhN5kZrQF0k7alrfG9fuB9g3I/yGQ5zWJcH0aYLLeyoT9l5FB+sIyg7A?=
- =?us-ascii?Q?hX5H8SPeO5IwrXUFqRmh1CZ/jpqRkjA22s2UzLnG+PAYdjHxpYjRVz7mIPeF?=
- =?us-ascii?Q?Jnze3NTBgaBo+W62AJkwQgLM0Gb6L2gCGJ4RAO9nKKt8lcylX0w9SmGha6Ua?=
- =?us-ascii?Q?XVbq6A8DfTnkfLLfauTaQ5ki8PC2SaJiTFrwFHLBNm9+kiJ5++qdBnLrTXbe?=
- =?us-ascii?Q?GOwsu8a1vHo2y8TNNQjqyyFRl2YAgza0U2f1CWfMnMCP+TKIq96ZJIfdO7pj?=
- =?us-ascii?Q?wu+qYV9PNamjKLNJOC8Jsa2KtLlfeBftiSR8R1h51keEIThA+ZhiijE5cYZJ?=
- =?us-ascii?Q?dKkuX3NMZhX5gJNiRJZKn5S+gtmhbH4ZDm8lbHJ+sU4yu4DMhZmJ1gq3u5oZ?=
- =?us-ascii?Q?q/BAwxBK99cra82PhjGXYUFYt/D3BYhV18KwVMWuKcqzqy/QyMon1ZAl9GO0?=
- =?us-ascii?Q?qUrjrFHkxiquyhU3h1T1xW0kpiOmFL7ULPyDG2j4WmG6rttkqvrgdibK1Gpa?=
- =?us-ascii?Q?UMl3g4n7988LQAEgkKs1WjOjQ6Z/bfeMQi9J3sWtqwOYa7N8ZpLqeSJaokwv?=
- =?us-ascii?Q?4AdJm+8TefPfneVy9dFw/Q0XCQV1ATn8p7H/0lLgZDcHF04kbeEvD3jTe8LX?=
- =?us-ascii?Q?aGEjXQ1O05WWPELB07atb3s/DR5vCrXtGvIP3TnbJKddPLbZn29VPisd9WZ6?=
- =?us-ascii?Q?OTKrOVuD1WSpHHshGnKXQjTsmpm55CYEAYFNt3Zkkg4EnLQ1FdRFzvjfz/jb?=
- =?us-ascii?Q?M9mG4gM0/F2vqKL0wrIwIzN2hCsF1b8svz8OsjXOyNnVP0NH5tnieaNaYVmJ?=
- =?us-ascii?Q?wIYdFEYGVspr6RzcdFG9rH2FZwv8uevuZGJZOUWP58WsUYSGUO5oc46VBZ6a?=
- =?us-ascii?Q?+gfYngoIDjtV2dv/g39St45kX10wRzzJ7JUMTdOD72l2atzANzc4AGEkoUCq?=
- =?us-ascii?Q?pjZRcElOU/xECKxI/OP6tjTDgo1foy8o40HVsd53/L74AhmtutinEBDu3Xn6?=
- =?us-ascii?Q?OKQXMXyuDIC+z6Lp2IkF7fXfIauqNXGJqTDsqdJUaBowINtzu7MaL1Fg5Qmm?=
- =?us-ascii?Q?UtepMfEp3cchTEKJ63mOYdJJ0e2BhIjaiGiNjucQSqeb4ZRvYOh5Ct3Bl08B?=
- =?us-ascii?Q?Rh8k3i4c7m899xKby3wANkrIIl8D1Y6DMpK9sMLe8yNO6KeIRKwDizCrniXM?=
- =?us-ascii?Q?AIQfO7EOqSmVTNYGyyeAQve6+Jim5KCTe/JBcyt075XMoBOm7XLAgiFVIfS8?=
- =?us-ascii?Q?a4CwoD1pYBdJtWsEoPQaVSo9oDGXTuOC+SYzt3CM3Vg7BPfvR8aWVGIVtkCt?=
- =?us-ascii?Q?hJabIvkJ6mg/s+0JOSNfhbAPf/WUOjroV92nqYlncXC0yaLmhnIcdNNnLNfX?=
- =?us-ascii?Q?YZU1G4mk4P9va2cL39wQZzRd/l1XSJprWLYXP/T+P2uVpca7SyClAK/qvCXQ?=
- =?us-ascii?Q?QhPMswLqkWtfM0qOStA+octa8eNsXQKTnYrDAtYP?=
+	=?us-ascii?Q?Fg7cfuIM579ZUrnezJcggQvizwV5FeTclSHolFfL4OzObaDHVIvxkxzKC/nx?=
+ =?us-ascii?Q?7JCKOG96UJlwHqhrTiBECt2oU44RqA/J4VBGaDz5sUe3ko3K5MBLDT3AdW8C?=
+ =?us-ascii?Q?J/pxMx1oC/FLjIHIruvedKu651RzXOKi8ntihcM6M34dzVpxec8hHimUYCby?=
+ =?us-ascii?Q?x4i/AORK4jkCYWcz8Cyd8b1pi4xtOjnBk/F8JWY32ndpuEv+/Z/7sYhhGK5L?=
+ =?us-ascii?Q?ha2cfc52M6RtFMHl9fkcyWMUNMi+us7DO/Lg2ru2HqvtDlzDqZqOIndt7QeS?=
+ =?us-ascii?Q?v6QYZNQQ0O/W6aQ0TsNA1bOsb/Xb9wjNwk+xty7NJZdZMmMzSCwHG615aD2Z?=
+ =?us-ascii?Q?a/uk1bi8VT4TEGCDy2qtslQE17P2GhKLsZujAGlVHHuy9xqi3dqAIU8SoF/1?=
+ =?us-ascii?Q?eKVVOV5fGiFpzZ+l804apIMXXYxmlcz5CodnVqY9VJufyouG0Y6PeZkBXJnO?=
+ =?us-ascii?Q?h78FO8wH3hJMKqIYCPCRtPZa+XbqHA0Lr9Cm3N0Hq2OEdw4FBlPVfsdSoC4I?=
+ =?us-ascii?Q?lTy+EkpScluaSt6SAMfskFvSbAOHeOX+OqqMiNn6PCgo2H2mh6vKUjAkpmdh?=
+ =?us-ascii?Q?L3FHFBuLtB4OVS3+eEBCm1IRrfj1KkVXJziCha+A0v/4LMHnI43A72/SMMaI?=
+ =?us-ascii?Q?bkrTfHNTDOqpXG+BnAbnffAEk0/kt7y9tGs12aNEOvU1zFLkcwRG/HEPS+X5?=
+ =?us-ascii?Q?O+ls8gR/fMBvhX9/tqDg9O5ZIuSEgE6juFPU9/U+UoFPdAvWEAGaRzE5x0/D?=
+ =?us-ascii?Q?imrVanVw5tgBZPYFSyG6aPYrff8XgJqUl9o3MW9IFNyj7+e8CVdcALIk06ME?=
+ =?us-ascii?Q?hB1XZwpguTZXeBAhaE7e9SDW/BvtSCTaaCA8Xii5vNwhKzIrquY3dmawn1I8?=
+ =?us-ascii?Q?U+yd9YBDnIPB3WcMNGRpLPZODsNivfKk8B8aSvfYqyyUj+NdwEjgqSSZ7w+9?=
+ =?us-ascii?Q?88IvHGYUM5yVCHZ2yNkq9Tnuf/KOkTiWbhl8XVH+BTltsENvbP2QGxsLGqPQ?=
+ =?us-ascii?Q?zhc3TEERiMuwOsHi+ew7xOUVw9g2ooxBgaOiPeDfTxLTDAZcv6Q/ZxDzxP9A?=
+ =?us-ascii?Q?vtqpfIoYeLkjos7hqa7WlVGLrBmTGLErs0I/Stbv1XiZFKRBzpLU/G2Twp4z?=
+ =?us-ascii?Q?L5eVVFSNXl8KZsiywZKHK4oeGLASsKiC3iPYjoUsOH7nm92OA4r4qFFJAlbe?=
+ =?us-ascii?Q?nn8IbdQZ7dvQfe9JSyZ/v414nXvdyTU6CA+1mQSTgvJm1JSHjcIqqdaUWDGs?=
+ =?us-ascii?Q?yFRzuOQitxA5Yyg3WTchHNM+1dYRsVlNDVzUxoYKm4Ea9tAamCxD1PtBTp3F?=
+ =?us-ascii?Q?qaRL+TYUmG23GJ23buPUQnwJxu0fOp2Zq4U6OoW/0TNpdmDXryBBnPDy0DrV?=
+ =?us-ascii?Q?YwmyqSLj7YquAsyUpRWrd+EWgk4sEmGtjV3Z2M+gEu29Ik8hLXhfZ3I+K2Pv?=
+ =?us-ascii?Q?Cd1OD6/x6yOlQPnrRB1+P4SpuZc9+L4BOfUUIJy7XOQB+6e/QaAh4nUgZ2Z+?=
+ =?us-ascii?Q?PDFwBwm2Xu2pIWeXXFXLS76GBjU1JSePz45xFUxD4NligrgwID+UeUc+DEil?=
+ =?us-ascii?Q?ASN+SZA0StY2D/8dBpvJ2blwb79rYLe44mtqXF0s?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	H3N7HmAhsh0CUVm3TdhoBkmosYjpaEF8yFIjpgGXbRr3ctybXelSnCx2iZDdTJClunz+8Qk9B0ZY4c6qXJS02RUhcklNdpU81Afz0CDybeE6kN1AoO/+idfvu1sNLLdSysPM+wqJUm4JjzULPRQc+HM4bTE4xWrXr7xBGIc/u6Cn6e13qbh+1yXDXyQFiVJ2o8c8p6618DoX+p3Zy+R4cplV80ZToYSwMZTsab0x2CjpnRMOMeaqSaZBTr+dToXRmFcdJu1XyjZ3fGtFEPgVnzHvXbfKxJlhDi+Nrg1r2twFvfPqHtSgJYuEo7Pp7mKa608vCyIy9LHS0btJV3m4IBsNdDJsBK9um27cDoWXl3BO9AjQ2IUBfo4ks58f32Kyuzu9sExM0s7UQ2iqySZ90IpctZBO+7ZIHYNzlx2BtoYCgb0izPdyV2279Rg3BMXWrKc763F/XuD+D6R2aU7lOhjfjZmzZVcLmj93isLCckXO9TF620s1VXXM8pb0VCjR9SPDLyKyuDXYsZ0Ug5P4lKUUfGsXDHaGB3qWWsK0axFz4QxY6s/DVfnAPRutNswoyMf1/i0nuijrDu1r3karhuT5Ew8cBrhd2giTBoC1Q0g=
+	U6+Kp6d4WUtUFMpSlW+2Jf8EXphP39+sTnopG/1K+59blUUz+K4WPCiEvdujVulBC7s5dMgOx6kGT3uguDTgy0PDTrl9r4uJXuXKAoqaGtXc7o/AWs2imjK3beq7zvscbwpwodmhvNKuTPAdvS1tjjvrX0MKTa/USS/Tfg3OP/zJ/lg32rYHOwCpq5UQzjHIv4OXBi4uRRFuZunNoiHwRtqg8SwUtMQhBqano9UdiGIIgDPRBUIlN6RIXv+5MIYHXx3yB/7L57o9KRSswf50NgQWcQNdO5pIpBdzEMHt5QbtkpvsdJJQbI/Ej6DA6KjUFpadYhy4gTHfraRssSHGiRRpev2lb4xq1+3Xe7tghdObRWEwSBcWFNkmd3e2mGX0uGO27gfJNyiTBw9NXrN/+JwfacEU0APYpIgarj3Kx0XYNzbcCltNPk06JN3JQJH62NvE/uCwA9y/Fdyu2vtunQCZoMqe8xPqo4uL0w/8o7QBpYegwVE7aXNn89AYZglAzawB1/nZj5J3zy6M4RBv4G/VTautj18cx9fx7ESTG1gEaupjvbzHyR4FmuBq7HyiM2kxRiXzr+MCHphPx9zdxKOmUZM+Wc/4da/k8ipnTqs=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c933cd32-9f19-49d0-11f7-08dd917fec15
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca3eab50-56ff-49ef-7918-08dd917fee91
 X-MS-Exchange-CrossTenant-AuthSource: IA4PR10MB8710.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2025 18:07:56.5509
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2025 18:08:00.9546
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i6/xtGcvMBtL6gIr5Ml2b2tIbiZGBuyQSeQHgcC4XSU31BV8zAbdx/rYkBVKGboyIunc9cVwLDZUyz0gFeuPxA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7OEzz7gCLGdnP5Yoy8+G89dvlOSouSI+quL/w/qI6YnhhFhiffBNOFiFBOAH4y7Rph9VTTXFYsJ3xCCTqOA66A==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB8199
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-05-12_06,2025-05-09_01,2025-02-21_01
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0 phishscore=0
+ spamscore=0 malwarescore=0 mlxscore=0 phishscore=0 suspectscore=0
  bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2504070000 definitions=main-2505120186
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTEyMDE4NiBTYWx0ZWRfX0jKhUCJUlqmh hxTJ1hHrr/r8XcNWzhDsttC/OXiRZETiWnTDxWRJQPUDhDdmLI6YhGvdadMdrufyHE5fWtLAgMD 3nTe1uZ+Au5jv/bYnawTgXV4xoGsShbPzWjrYazJSUsm7ROjcDEzSkx/1sFpawr7QfOr/PiVnu8
- dY9L5q8p9nFi2HjIxag9g+2ub4RYlafjFgbAiKpDt3YmOQynxJJFt7a2V86YY0FepOlJ6YFfV7x GELyy0n1FFykNecF542N/aIlJglktQj94bdIpj9iIk7c7wvGeMvQTj6jip3dQun66uotQtxklJU n27oK2nW+uXQ+BCxSITWRdQnBjIFqiho2KVnOX6wSKovl1f+NgR7p6+DdumLVPKcSOoIS72rxiW
- ZVrqyyPHHwO3nZWTy3gvcIXRq2d3PdUmcBnO2fse7ggjtGWqa5x4157D1ljD+APl2myeCxUG
-X-Authority-Analysis: v=2.4 cv=YJ2fyQGx c=1 sm=1 tr=0 ts=682238ff cx=c_pps a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10
- a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=72QNezgb5yyMdUjwpC0A:9 a=zZCYzV9kfG8A:10
-X-Proofpoint-GUID: n792nXxZosstEjOPpYm0BbOruAI8Wlrc
-X-Proofpoint-ORIG-GUID: n792nXxZosstEjOPpYm0BbOruAI8Wlrc
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTEyMDE4NiBTYWx0ZWRfX+no2VQOyrIDG eOoOO18Gr46KxijGHmP0Yk3YkqeV1FF/UcCo0caIJaczDxmGcj5D6uFvnC5AuoHF541ZpKQrabx nBxYgXapGRtsgQ2q3eCkkH4yjosaRdhUFVmLkhW1pLD8WGzycjJhhPa/xiNthWvFE3RSMC0Sigr
+ GAYNgsNhDCjvlwPl+o6I1EUpZ5sXyyECDVZttuQc4nzR8cB7C0+zNMuSG/zFTmq6TpGyAmtIwL2 5xYv5WYu1JNHz5Xx+jbgDcx9OGP2lGQsXqLhorNQg940NgG1UcbtwI5TLEu2qPKu4iSXz2+xNhq WbcTvOcIYaJCe6gHCjma1lKtp5maMK/8BoUnwkrah6Iyfn/4nXRmsGy6MY/E3SIKdA+H+d3rg9F
+ EhY+tMfTP2XofCQN2MwMi7S3GBnMhNPz3q19vlioeB3p9rIvczpjKY8+a2yCCxowOjhqgiNa
+X-Proofpoint-GUID: 1iY9EhcsNG1qREPel1S4Cy_7U1PbK6Uf
+X-Proofpoint-ORIG-GUID: 1iY9EhcsNG1qREPel1S4Cy_7U1PbK6Uf
+X-Authority-Analysis: v=2.4 cv=M6hNKzws c=1 sm=1 tr=0 ts=68223903 cx=c_pps a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10
+ a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=r3DxsCx48UUfYcQ2vO0A:9
 
-No need to sort devices if there is only a single device.
-Return early to avoid unnecessary work.
+Refactor the chunk allocation path to use list_head for managing
+btrfs_device_info, replacing the previous kcalloc()d array and sort()
+approach. Provides better code consistency and prepares for adding more
+sort choices in following patches.
+
+Device info structs are now allocated individually via kzalloc(), added to
+a list, and sorted using list_sort(). Associated functions are updated to
+take struct list_head * as arg. Cleanup iterates the list for kfree().
+
+Finally, calculates smallest_space during gather_device_info() and stores
+it in alloc_chunk_ctl to simplify decide_stripe_size_*() logic, avoiding
+lookups in the sorted list.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- fs/btrfs/volumes.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/btrfs/volumes.c | 101 ++++++++++++++++++++++++++++-----------------
+ fs/btrfs/volumes.h |   1 +
+ 2 files changed, 65 insertions(+), 37 deletions(-)
 
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 9592c30217a2..704ef78999e0 100644
+index 704ef78999e0..2ae6ead3fb43 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -5287,6 +5287,10 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+@@ -5071,10 +5071,14 @@ static int btrfs_add_system_chunk(struct btrfs_fs_info *fs_info,
+ /*
+  * sort the devices in descending order by max_avail, total_avail
+  */
+-static int btrfs_cmp_device_info(const void *a, const void *b)
++static int btrfs_cmp_device_space(void *priv, const struct list_head *a,
++				  const struct list_head *b)
+ {
+-	const struct btrfs_device_info *di_a = a;
+-	const struct btrfs_device_info *di_b = b;
++	const struct btrfs_device_info *di_a;
++	const struct btrfs_device_info *di_b;
++
++	di_a = list_entry(a, struct btrfs_device_info, list);
++	di_b = list_entry(b, struct btrfs_device_info, list);
+ 
+ 	if (di_a->max_avail > di_b->max_avail)
+ 		return -1;
+@@ -5131,6 +5135,8 @@ struct alloc_chunk_ctl {
+ 	u64 dev_extent_min;
+ 	u64 stripe_size;
+ 	u64 chunk_size;
++	/* Smallest free space of all available devices */
++	u64 smallest_avail;
+ 	int ndevs;
+ 	/* Space_info the block group is going to belong. */
+ 	struct btrfs_space_info *space_info;
+@@ -5205,6 +5211,7 @@ static void init_alloc_chunk_ctl(struct btrfs_fs_devices *fs_devices,
+ 	ctl->ncopies = btrfs_raid_array[index].ncopies;
+ 	ctl->nparity = btrfs_raid_array[index].nparity;
+ 	ctl->ndevs = 0;
++	ctl->smallest_avail = 0;
+ 
+ 	switch (fs_devices->chunk_alloc_policy) {
+ 	default:
+@@ -5221,9 +5228,10 @@ static void init_alloc_chunk_ctl(struct btrfs_fs_devices *fs_devices,
+ 
+ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+ 			      struct alloc_chunk_ctl *ctl,
+-			      struct btrfs_device_info *devices_info)
++			      struct list_head *devices_info)
+ {
+ 	struct btrfs_fs_info *info = fs_devices->fs_info;
++	struct btrfs_device_info *device_info;
+ 	struct btrfs_device *device;
+ 	u64 total_avail;
+ 	u64 dev_extent_want = ctl->max_stripe_size * ctl->dev_stripes;
+@@ -5233,7 +5241,7 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+ 	u64 dev_offset;
+ 
+ 	/*
+-	 * in the first pass through the devices list, we gather information
++	 * In the first pass through the devices list, we gather information
+ 	 * about the available holes on each device.
+ 	 */
+ 	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list) {
+@@ -5274,16 +5282,26 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+ 			continue;
+ 		}
+ 
++		if (ctl->smallest_avail == 0 || ctl->smallest_avail > max_avail)
++			ctl->smallest_avail = max_avail;
++
+ 		if (ndevs == fs_devices->rw_devices) {
+ 			WARN(1, "%s: found more than %llu devices\n",
+ 			     __func__, fs_devices->rw_devices);
+ 			break;
+ 		}
+-		devices_info[ndevs].dev_offset = dev_offset;
+-		devices_info[ndevs].max_avail = max_avail;
+-		devices_info[ndevs].total_avail = total_avail;
+-		devices_info[ndevs].dev = device;
++
++		device_info = kzalloc(sizeof(*device_info), GFP_KERNEL);
++		if (!device_info)
++			return -ENOMEM;
++
++		list_add_tail(&device_info->list, devices_info);
+ 		++ndevs;
++
++		device_info->dev_offset = dev_offset;
++		device_info->max_avail = max_avail;
++		device_info->total_avail = total_avail;
++		device_info->dev = device;
  	}
  	ctl->ndevs = ndevs;
  
-+	/* No sorting is required if there is only one device */
-+	if (ctl->ndevs == 1)
-+		return 0;
-+
- 	/*
- 	 * Now sort the devices by hole size / available space.
+@@ -5298,16 +5316,14 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+ 	default:
+ 		fallthrough;
+ 	case BTRFS_DEV_ALLOC_BY_SPACE:
+-		sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
+-		     btrfs_cmp_device_info, NULL);
++		list_sort(NULL, devices_info, btrfs_cmp_device_space);
+ 		break;
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static int decide_stripe_size_regular(struct alloc_chunk_ctl *ctl,
+-				      struct btrfs_device_info *devices_info)
++static int decide_stripe_size_regular(struct alloc_chunk_ctl *ctl)
+ {
+ 	/* Number of stripes that count for block group size */
+ 	int data_stripes;
+@@ -5319,8 +5335,7 @@ static int decide_stripe_size_regular(struct alloc_chunk_ctl *ctl,
+ 	 * The DUP profile stores more than one stripe per device, the
+ 	 * max_avail is the total size so we have to adjust.
  	 */
+-	ctl->stripe_size = div_u64(devices_info[ctl->ndevs - 1].max_avail,
+-				   ctl->dev_stripes);
++	ctl->stripe_size = div_u64(ctl->smallest_avail, ctl->dev_stripes);
+ 	ctl->num_stripes = ctl->ndevs * ctl->dev_stripes;
+ 
+ 	/* This will have to be fixed for RAID1 and RAID10 over more drives */
+@@ -5354,19 +5369,23 @@ static int decide_stripe_size_regular(struct alloc_chunk_ctl *ctl,
+ }
+ 
+ static int decide_stripe_size_zoned(struct alloc_chunk_ctl *ctl,
+-				    struct btrfs_device_info *devices_info)
++				    struct list_head *devices_info)
+ {
+-	u64 zone_size = devices_info[0].dev->zone_info->zone_size;
++	struct btrfs_device_info *device_info;
++	u64 zone_size;
+ 	/* Number of stripes that count for block group size */
+ 	int data_stripes;
+ 
++	device_info = list_first_entry(devices_info,
++				       struct btrfs_device_info, list);
++	zone_size = device_info->dev->zone_info->zone_size;
+ 	/*
+ 	 * It should hold because:
+ 	 *    dev_extent_min == dev_extent_want == zone_size * dev_stripes
+ 	 */
+-	ASSERT(devices_info[ctl->ndevs - 1].max_avail == ctl->dev_extent_min,
++	ASSERT(ctl->smallest_avail == ctl->dev_extent_min,
+ 	       "ndevs=%d max_avail=%llu dev_extent_min=%llu", ctl->ndevs,
+-	       devices_info[ctl->ndevs - 1].max_avail, ctl->dev_extent_min);
++	       ctl->smallest_avail, ctl->dev_extent_min);
+ 
+ 	ctl->stripe_size = zone_size;
+ 	ctl->num_stripes = ctl->ndevs * ctl->dev_stripes;
+@@ -5391,7 +5410,7 @@ static int decide_stripe_size_zoned(struct alloc_chunk_ctl *ctl,
+ 
+ static int decide_stripe_size(struct btrfs_fs_devices *fs_devices,
+ 			      struct alloc_chunk_ctl *ctl,
+-			      struct btrfs_device_info *devices_info)
++			      struct list_head *devices_info)
+ {
+ 	struct btrfs_fs_info *info = fs_devices->fs_info;
+ 
+@@ -5418,7 +5437,7 @@ static int decide_stripe_size(struct btrfs_fs_devices *fs_devices,
+ 		btrfs_warn_unknown_chunk_allocation(fs_devices->chunk_alloc_policy);
+ 		fallthrough;
+ 	case BTRFS_CHUNK_ALLOC_REGULAR:
+-		return decide_stripe_size_regular(ctl, devices_info);
++		return decide_stripe_size_regular(ctl);
+ 	case BTRFS_CHUNK_ALLOC_ZONED:
+ 		return decide_stripe_size_zoned(ctl, devices_info);
+ 	}
+@@ -5511,15 +5530,17 @@ struct btrfs_chunk_map *btrfs_alloc_chunk_map(int num_stripes, gfp_t gfp)
+ }
+ 
+ static struct btrfs_block_group *create_chunk(struct btrfs_trans_handle *trans,
+-			struct alloc_chunk_ctl *ctl,
+-			struct btrfs_device_info *devices_info)
++					      struct alloc_chunk_ctl *ctl,
++					      struct list_head *devices_info)
+ {
+ 	struct btrfs_fs_info *info = trans->fs_info;
+ 	struct btrfs_chunk_map *map;
+ 	struct btrfs_block_group *block_group;
++	struct btrfs_device_info *device_info;
+ 	u64 start = ctl->start;
+ 	u64 type = ctl->type;
+ 	int ret;
++	int dev_cnt = 0;
+ 
+ 	map = btrfs_alloc_chunk_map(ctl->num_stripes, GFP_NOFS);
+ 	if (!map)
+@@ -5534,13 +5555,17 @@ static struct btrfs_block_group *create_chunk(struct btrfs_trans_handle *trans,
+ 	map->sub_stripes = ctl->sub_stripes;
+ 	map->num_stripes = ctl->num_stripes;
+ 
+-	for (int i = 0; i < ctl->ndevs; i++) {
++	list_for_each_entry(device_info, devices_info, list) {
++		if (dev_cnt >= ctl->ndevs)
++			break;
+ 		for (int j = 0; j < ctl->dev_stripes; j++) {
+-			int s = i * ctl->dev_stripes + j;
+-			map->stripes[s].dev = devices_info[i].dev;
+-			map->stripes[s].physical = devices_info[i].dev_offset +
++			int s = dev_cnt * ctl->dev_stripes + j;
++
++			map->stripes[s].dev = device_info->dev;
++			map->stripes[s].physical = device_info->dev_offset +
+ 						   j * ctl->stripe_size;
+ 		}
++		dev_cnt++;
+ 	}
+ 
+ 	trace_btrfs_chunk_alloc(info, map, start, ctl->chunk_size);
+@@ -5583,7 +5608,7 @@ struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
+ {
+ 	struct btrfs_fs_info *info = trans->fs_info;
+ 	struct btrfs_fs_devices *fs_devices = info->fs_devices;
+-	struct btrfs_device_info *devices_info = NULL;
++	LIST_HEAD(devices_info);
+ 	struct alloc_chunk_ctl ctl;
+ 	struct btrfs_block_group *block_group;
+ 	int ret;
+@@ -5612,27 +5637,29 @@ struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
+ 	ctl.space_info = space_info;
+ 	init_alloc_chunk_ctl(fs_devices, &ctl);
+ 
+-	devices_info = kcalloc(fs_devices->rw_devices, sizeof(*devices_info),
+-			       GFP_NOFS);
+-	if (!devices_info)
+-		return ERR_PTR(-ENOMEM);
+-
+-	ret = gather_device_info(fs_devices, &ctl, devices_info);
++	ret = gather_device_info(fs_devices, &ctl, &devices_info);
+ 	if (ret < 0) {
+ 		block_group = ERR_PTR(ret);
+ 		goto out;
+ 	}
+ 
+-	ret = decide_stripe_size(fs_devices, &ctl, devices_info);
++	ret = decide_stripe_size(fs_devices, &ctl, &devices_info);
+ 	if (ret < 0) {
+ 		block_group = ERR_PTR(ret);
+ 		goto out;
+ 	}
+ 
+-	block_group = create_chunk(trans, &ctl, devices_info);
++	block_group = create_chunk(trans, &ctl, &devices_info);
+ 
+ out:
+-	kfree(devices_info);
++	while (!list_empty(&devices_info)) {
++		struct btrfs_device_info *device_info;
++
++		device_info = list_first_entry(&devices_info,
++					       struct btrfs_device_info, list);
++		list_del(&device_info->list);
++		kfree(device_info);
++	}
+ 	return block_group;
+ }
+ 
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 0cc799629ccf..dea6265a2dc8 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -594,6 +594,7 @@ struct btrfs_io_context {
+ };
+ 
+ struct btrfs_device_info {
++	struct list_head list;
+ 	struct btrfs_device *dev;
+ 	u64 dev_offset;
+ 	u64 max_avail;
 -- 
 2.49.0
 
