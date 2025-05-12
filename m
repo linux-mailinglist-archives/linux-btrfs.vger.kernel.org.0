@@ -1,97 +1,98 @@
-Return-Path: <linux-btrfs+bounces-13925-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13927-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9E54AB42B5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 20:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DB23AB42BC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 20:26:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 741731B610B0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 18:25:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85D6F1B61DF2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 18:25:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79251298C3A;
-	Mon, 12 May 2025 18:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17385298CC9;
+	Mon, 12 May 2025 18:08:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="WI5+QR0J";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="ArGi6y0/"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="eEH8MNtB";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="dm9QLPfY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F3DE2989BE
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52677298CBC
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747073291; cv=fail; b=ZygY/za/jFG6mQf/yycXvZCNixsJXPqJZ/w668wRQbiTVtxhETRz+u1nIBEsN8ayMKBry0+sYMC4ffpBHKptALYibB1cPlH+p0BTKS8iBmiqaradeIdh00MK7AlzlyX8GTZEc9UURBtiG4i3HW0haCM8ukGBVNT94TY4lqcxr6Y=
+	t=1747073320; cv=fail; b=GGH1bwksrto5C++SDJ8FUwKZE/IE3+5Ta8t8yuJSElm00COs7GBsh7yxzlUadAcBgKdCFLAbjeL4tNJ3dSXmoax3p7/ea41gcX3MfqVK+21o04X6D+WGNe4otoNe/sA80gZ/GrXo3alxpArE1YMia9ULXVtzbnOchU+JLQBkrLU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747073291; c=relaxed/simple;
-	bh=FUIBxp4oFJhIyL5xIMVM4fA+cDHhbUFgMAylobY9OXc=;
+	s=arc-20240116; t=1747073320; c=relaxed/simple;
+	bh=A1e3BGE5mFutkmHqPzSWnOGbpSZ0FBQxf4456feK684=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=p8LfnKsQFLYdRq/5US/RFoP5dvlpqq3ItWJ62PBZ55XHdFkx60l/KPFoB6JYkV6Kphfhi89TVdcQ6APCc5dUBFoexh87U5i0MTS0Os9ju2oj7VBlQcgU37uWey4yQIAnlEH3YuNNkiL2qFsqa/mWYuQYFln5rfhMo58OAXVzw48=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=WI5+QR0J; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=ArGi6y0/; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Type:MIME-Version; b=XMEURSUJQRvdCqkMr8iLdccC/Jn+7fq6zp3uInzGpAz/S2MJWR/XZImfZhIsJ1A+qAykX1SE43mb+bRwyWvX52p4UJWZM1JrDCGRgOkjld4T1gm9mrOIXZ13A7xC8h0vV00lGMP1XGG37aDWiBvZxftosrvNpcdGRQ7zl0/aOEk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=eEH8MNtB; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=dm9QLPfY; arc=fail smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54CH0wdf026945
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:09 GMT
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54CH0tYL003938
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:37 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
 	content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=ZlLSaYM38ZZFOGffblGjWeHgwUQ1xupEhNgqVkWXgoM=; b=
-	WI5+QR0JA9tbPSQps/6rOpSFsxJ/ItMWY/ZxB+gkHTTiRai2dqP3orC4gwVpfTyG
-	fGrg7g6rN7BjjUbuKdfgJBOk5cqGY2ieVHszwCm8FQdu/Yfqw9ZlXlZx2d1toa5M
-	4WAwXrYaQ1Cbd2dLQfWYX9g2tA9ljmAXXmH+OwJNgj8hUsnr0hS2SMm+Frn7BuOC
-	ar1OXyy+rjowo39PNynC1KGEkm/BGGWbX0qI6G1ruEF+y1Xp9P51MibphgCXSjoT
-	nILFNdcNUL4urCUYwjLElJBxk9k9Sk+Y6E/yHjJCN3wLagdq+er+j0GHlf1FmQOx
-	MFn3C1IjxPstbSfDfc+G1g==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46j16637rk-1
+	corp-2025-04-25; bh=f4OQ1n5GlhRzg+A3VfXWxwyW1zTSCGi7t4Fm9cAa7pA=; b=
+	eEH8MNtBSAX7it+K7rV4Ft3tBJjCyMGkisY39Ixgw6euTqQzutGAONJyHvBBgya5
+	IypPFYWhIv7GljXc1Ye8dhwoTRoOkR7WeY5rQm8gf8OibNbuuvqWo9ZLs4y6UnfG
+	olkS6GUq6J69obHLrh+pQXIxTHyw78AZDaeHqRDsV52jzi0KRVomp44RjP9Ri1EP
+	Npqhfony43mkwyThHm6fk+kJy8o4IL0RheuVHll0whexY4HVUWmTmHuD1S/MX+DG
+	KahL49YA0SeUrwqiiExD/YuwxjIStItTFKHh4EvxjXJCMoJSK49IDazLwt8zRuVn
+	zgJ0NAZ6a7CC1XYEkpt34w==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46j0gwk6r3-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:08 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 54CGdTGN002040
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:07 GMT
-Received: from cy4pr05cu001.outbound.protection.outlook.com (mail-westcentralusazlp17010004.outbound.protection.outlook.com [40.93.6.4])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 46hw8e76cy-1
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:36 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 54CHOKdG015429
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:35 GMT
+Received: from ch4pr04cu002.outbound.protection.outlook.com (mail-northcentralusazlp17013059.outbound.protection.outlook.com [40.93.20.59])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 46hw87pyxg-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:07 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:08:35 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=IhJPItw4xyu7i6SmSwT162EtLmXZss7a9j0YYu/MNZ7a1afSdaVBSyPDKZvTW/P21JNM8Gi6ssY+MuP+ZcNsng3dsm75mtuLyU7MQ9XO6DH4homOHLL4ZStxQmlJ4JkLbGz/LsnsCln2PmU7FBymyA+MWl9mbg5bYuxtroCPY92wuuoPHKMaK7Mzwg3EhJaHhKNcW84bp5TcaGAXAmzAqIc6WnawchqWsn6tvCkwfez9QVKuZAUIh9YIjolkS0l5NHK7TEWZbbAAz/euQnIAReYmqnox0PvLGEbz3bRsfjK3EXb6u/f3GQ71jmioH/SBXi1iYDCQINA+WeegS4vLfQ==
+ b=eQTJ9enaR5PyHOPp6kOOJEk2qrTb6bBY+5DiwpDn4S7SZpPegTMqipuqv2i8XxRjrsd4yze0//P+VqgWE0IPi8iLJ49zMAuZrhUImkNXQN5hnKy0aT2XZwYqiiKFOz7llhBollCpXw6jaZmvK2PifRvNtSn0QslGFLu1EgFlg/BuegOStbH2JO6z9gxtrWcmrZ6MwRimH40fvOZjfKrMOoEPlVwe7gS82cmi1V1BrwfRnqNnuWvqgjvwAWFFO0iancPut6i7kRiB6yLVaksLKJYmNuoR3eZvofwm+HwAzDnpOQpJcEEJPwk7sLvFdq15Y7ffGZxdkZAzWi8pIUN2Ww==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZlLSaYM38ZZFOGffblGjWeHgwUQ1xupEhNgqVkWXgoM=;
- b=OmgMlNxralwFhn269rS2GgbEqdKdozyNVQUQcXYdxnthOjZpt7zZnlIjpPGWed4V0S72TJHs89A3CxMEzBtGDWz2wafnwtsYHkOvACVG3UMWj+tbG+x/EOkIdpQqdqrTnH1otF3ITORB0lYdeFo1VcI8XbhYdEl7uPi8L2TN/VCbEpgeQxwQLOMyPmNcIcPNkV2ZXbK0ZMxIyx3fowMRpkaDXbGynGu2vI7SRL1rFP2ZvqaPyAbGH7DbQ/i7hG5/aOnoQ6ZGzMth2dL3S+qn/dbDX1nUUc1Pl4MRy/wQGHWFHaHa8XLFuW98E/Ws6auxbsCjv/i5kR6NPLCzErgN7g==
+ bh=f4OQ1n5GlhRzg+A3VfXWxwyW1zTSCGi7t4Fm9cAa7pA=;
+ b=lkgFMdw2x3uM9rY1kTP41efE9cV7KcES+rBVVEpQ7c0ped5+3HLqQzMFWRv1uXGAZC8l5o/WPoCRiSqm4r/+QEED4NLzAfzAkP0svSemCehEv1jFznFCrKom0t8hqJq9ySKOBuVRHno4jQTaFlTaHrtJBA2CFYSBiqMKf4s9z4aNOmuvEHB49j8Jx3neNtjon5wUqQk5F3r6KwENbeCzsts8MWZtLzXxWWbwCAzeahj4SzVs4CT/g6xVTN6iMjC4F4LpmBz8KEoVgdXERJjTJNDzDXRaZGFwBkkfKCMelBGZPktzAOyH9BPAV+YZsDczetmskTNlDsognNv0m75jlA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZlLSaYM38ZZFOGffblGjWeHgwUQ1xupEhNgqVkWXgoM=;
- b=ArGi6y0/tHxvN3YPBMkRuLk4tUEyFMKIaBsc2YKzCLVZwe7kQ3b9H8vKdP7zOfgGKeitIC0WCRkFFNak9yMN7rl8wG8pFIRk7mNFVg/0n3V1ei1vyt/wBoypbFaJeBLtBiN72pf1nCtgGZLMlnfQBanB0B4O9psgTBs+C2JKcrs=
+ bh=f4OQ1n5GlhRzg+A3VfXWxwyW1zTSCGi7t4Fm9cAa7pA=;
+ b=dm9QLPfYzdv8A7Dd2HWdgdt+BT9REehgHr7SrflWdrDVwwM0qjWn1f6Y7lN5QfccmsU1bDKBFoTBOuqmxvhHZexurpf/BkrHcwkuvdtCastTsWLVd01ohwE9Sx5G4/hGjrd1uqut4ZpGpmiQj0TewXZ8d6vNJAMago5q1FH58yw=
 Received: from IA4PR10MB8710.namprd10.prod.outlook.com (2603:10b6:208:569::5)
  by DS0PR10MB8199.namprd10.prod.outlook.com (2603:10b6:8:1fe::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.24; Mon, 12 May
- 2025 18:08:05 +0000
+ 2025 18:08:09 +0000
 Received: from IA4PR10MB8710.namprd10.prod.outlook.com
  ([fe80::997b:17f9:80e3:b5]) by IA4PR10MB8710.namprd10.prod.outlook.com
  ([fe80::997b:17f9:80e3:b5%4]) with mapi id 15.20.8722.024; Mon, 12 May 2025
- 18:08:05 +0000
+ 18:08:09 +0000
 From: Anand Jain <anand.jain@oracle.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 08/10] btrfs: introduce explicit device roles for block groups
-Date: Tue, 13 May 2025 02:07:14 +0800
-Message-ID: <1c9fadc2550ef86d5e46534cd9c163d177cc7b3c.1747070147.git.anand.jain@oracle.com>
+Subject: [PATCH 09/10] btrfs: introduce ROLE_THEN_SPACE device allocation method
+Date: Tue, 13 May 2025 02:07:15 +0800
+Message-ID: <d03216808c6b06aa61563e84ccaf3cb4acaf2620.1747070147.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1747070147.git.anand.jain@oracle.com>
 References: <cover.1747070147.git.anand.jain@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SGBP274CA0024.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::36)
- To IA4PR10MB8710.namprd10.prod.outlook.com (2603:10b6:208:569::5)
+X-ClientProxiedBy: SG2PR01CA0128.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:40::32) To IA4PR10MB8710.namprd10.prod.outlook.com
+ (2603:10b6:208:569::5)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -100,197 +101,335 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: IA4PR10MB8710:EE_|DS0PR10MB8199:EE_
-X-MS-Office365-Filtering-Correlation-Id: 19241185-5e2a-4dce-7877-08dd917ff152
+X-MS-Office365-Filtering-Correlation-Id: b26b4780-81d9-43f3-10de-08dd917ff3f0
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?TgtOjFfn15/KYmZQvgJZvxMZFJFH72sj9RdKnPY0pClzXDahkNnE70yGgPmt?=
- =?us-ascii?Q?9P+rI6UAyYStKZMJxPEdqw0oLeWiA/Y4k3c6IGeLrVklafrWTnJhcCdpVYRe?=
- =?us-ascii?Q?knl5YXI7e3BvYQqWA8h19F3ta5C+1SJEb1ht/lLdNEvnjkwjuyEuJWIEN8BI?=
- =?us-ascii?Q?pU+jFhSh/wCOhvDWj61l+qGSs1WFkllFl6F5dYhY4RhcE52xep6NgAYNEpLX?=
- =?us-ascii?Q?98eOMCSXz7tiK58fejEVbs5AfMRGREakOT1pc5hXZFlLl/bVhykdy9aaUma8?=
- =?us-ascii?Q?W6y183YGDNnrGukYSXPlQnunFxHnP+E9fhphmnuBTilS5IQOPYKEKUxaCI+P?=
- =?us-ascii?Q?P3SGDsxRmyGDTGLi30/LNcLGefhxsOXP6wqPhW5L4KTvtYy5TTyqDkVVdLio?=
- =?us-ascii?Q?HpO3OAQxSQI5Gd4bI7cptJWRrfRq8ybIFaJ3urOyJQ5lB7JyvricYbjMieCa?=
- =?us-ascii?Q?uGp/55RoEOkuKM8qvXI4S28B+yBkyVDZOTdv3mSYaXHJjlA76z/jVXwGFwOM?=
- =?us-ascii?Q?1hmItkQimWagP4GINPTw92kQVaDR4o0kgNlUgTP5Z/Eymg7yP9Xv/xgxdHCN?=
- =?us-ascii?Q?mIZvaTuNTksjFzi4La3He2hmVUGyQAFoJCVCPRz3D0HDV8o/sQmTgKOkqH+p?=
- =?us-ascii?Q?gYkeyuJ9wEDxBG/zMjmqNTsAYqppQmxZi0ObEL3qqPr9jG8sLKm7mjIg2nYY?=
- =?us-ascii?Q?kMR5K/X5SD7e/EITdllnsSrP9Zn7lZpknY61N7NtarMVzFspOLcY+3DlNhOs?=
- =?us-ascii?Q?3cU1MfMlyOGSwLXjPMtpZ2E90I2mpApV7NQf6U1fiwaVrzPZHpZ+Lk9zga7j?=
- =?us-ascii?Q?bH2jw1X+QNzZ/8YS132D7KYneelEhNvgKkcjGHmAAjaHsIuJe33ywexXmIkO?=
- =?us-ascii?Q?v7g1EJsXKcTAAu/EKF6HWYhzFuz7kEOcmoMyYjzIIdrXbNQpQhADSntPs8Bw?=
- =?us-ascii?Q?NW+n0uhTYfw88CHzL3SL9FBsVmVBt8F9tiInWB+8lnYKrdMYnOvv9JigI3na?=
- =?us-ascii?Q?AsWVVRhXTo8IeMeaTTyRYEImaX5/rgwauRXbLmKwqkf9is/Ki4j6wK6D3DbB?=
- =?us-ascii?Q?kkQuwzukSL0MBxWpEvBhrbhr138+yS6vJnmKuL5OYd0JNVKh/d7zs5gZRBGQ?=
- =?us-ascii?Q?UHW+a9pZfey17Cs6hynrX7Ibp0JQUscY4rp7MTH/yuPbyhc7KdAEGZ3VEc2C?=
- =?us-ascii?Q?/jDGVfl1rODYypnCBKkILQHHxZmkT8hYlCz2sTrbqpjsMn99Dx6p4MXG2el3?=
- =?us-ascii?Q?LkH1JRp8eQrFy0+bopgjrnybMBcveHu4Kw+75Wd0Sx0rfoihrunkr05zhXFe?=
- =?us-ascii?Q?rd5+GYtrPQVUSzUCLo5gC0XM43iBlEb7kXqgaGKymcbq16ANu4RjZDhaW53d?=
- =?us-ascii?Q?7smpusMYrjEFT694wy/2cJ+TL62lBeKQIOFeByVWcDgknHLF/Hdy/oFSfLn3?=
- =?us-ascii?Q?utboPi1JHw4=3D?=
+	=?us-ascii?Q?K55ao9UgVAQGG08ZjSU/XyuktnnHLkS0gJgf2N0KDySMDeGpTEjUXP1lXabr?=
+ =?us-ascii?Q?8SxwIsYkdaJBa2/ZqR3Qd9+gMJzb8rUd2lXU0MKtgrBbBjMB/w7tAZyiMjw4?=
+ =?us-ascii?Q?mveeyCNF1IiYaOnyELc5DmqNnl4EkRxEQlvNV4KV+og4Os9eEso31w4aKkEl?=
+ =?us-ascii?Q?m2WOb9EvFHlVieHBLRsqBVVyb8nqCbZkpVCrX1shzzHLCCEPrqJHkWdFmieq?=
+ =?us-ascii?Q?yzrH/Biv3Djg+xTbmCYxsCDtsX7TnhwGGvxqWpsvSg47qLiPXn7NakyNZhtg?=
+ =?us-ascii?Q?pMyZoDOKWVZiOepg6ULYcdziIp0Pe4fLQctb6AdpYi6YKgImwlwvM08AZtmQ?=
+ =?us-ascii?Q?jEagDmKcgZzYW0ikQfyhg2T8wBu5/ag69fNtIHGflqNd8EBQqEzhG2GxaWCD?=
+ =?us-ascii?Q?YJE1GvvwY3hmnjShWloSQ3xNubLC+yQFagVBijzHodVXpwyv4x43y8byznLz?=
+ =?us-ascii?Q?LgvifceIGdufB7nk3rHVOcCqAje4mir37V5k4FxEquHbtCmn5aAnekp3YFJl?=
+ =?us-ascii?Q?P+sEhGEUgcDyLgXA2VC2zVu/bqJBl4QK7GbMw0PCzlceWEcL0RWfmC5qdED7?=
+ =?us-ascii?Q?56ErPRwgrKy304OkbKMyHMJrubIj6OZ7+KEALAKRB8sMlv4TqEwFK9gChNfo?=
+ =?us-ascii?Q?J3goMlJkOw1q2c3FPxPr3VyR8VIEQFWro93mMhy08wWE7cgmRV3iup+kfhQf?=
+ =?us-ascii?Q?LyLbSBTTIjoTr6r7eVHkYwQJz+e7X9VfjLCUPhoT8pTOMtYaJZxbNefHbv4/?=
+ =?us-ascii?Q?UdvZ01hKYhxjN/rzECL4dSdnbKMB938BiliVlVzuKlbPOj/h96TfA9qVZWdS?=
+ =?us-ascii?Q?jwyY4uZuwVI+60qkk+1dUVmvgCgYw63NCCpaeEF429OA8peyEQtoNCRilulJ?=
+ =?us-ascii?Q?8v893q2iXGJNaHpmX/s0++sgSfdZP3uccez5eVk4g+joY7Y0HpeJnkylXrnk?=
+ =?us-ascii?Q?QYtnm3YrMga1IRBJK4PL9/+bDQDyD1UZFZfhpPOfRP+lFB8beQTRLa6bWmlz?=
+ =?us-ascii?Q?bCDFCqwLUnOxBIIIpjiXMkSu+wT06mF8eev31pX6qv5COiYKNr3eV60TFKyh?=
+ =?us-ascii?Q?D7YoEgaOiLu2YxQaYaixDdqlQhvx2FWxu660FtZFVtR8ya+GihLIRYmquTwd?=
+ =?us-ascii?Q?RgBbqbRY8PPXpMralxbBy22eTwFGR5j8fTq9BdCc96lnMjJYaF/FguJq137U?=
+ =?us-ascii?Q?JlAsTPmpFifwHYp4Rv4I90zQZZg35qLFXbkR5HW1mX9DbhBisciPh5bc3OZC?=
+ =?us-ascii?Q?DWcJOEzxV+nLvYeIV4w+H05KgNLM2u/NWtb5w3KJBQEY5oIrPCwqyOueqmxl?=
+ =?us-ascii?Q?auegvroREWozN25WPSK/SmK4vQ/nLr4AHdZQE4uSm7xry8xYbEblDDwlducv?=
+ =?us-ascii?Q?r3hcgpt76+2dhXHs9XHpEsosDQWDCtJ7E9JbggMnd8/3Jrj+NQ=3D=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA4PR10MB8710.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?oXm6hxBMpuv0/ksF1CCbTnpE+9FRKX2On3lbEGgKGHG0Ou2tqwbhBqNttczS?=
- =?us-ascii?Q?WNeE2uhMLSBGzS5vPBDBLZUcyY1i9vD1P8vI/uAdal/1J2jAwPjMCWDpSrsn?=
- =?us-ascii?Q?U3aTKoiW1K+DA7LtZxa4HZrO8Y6GhvwRXqvnRlnFylU1MTNaaIUyjFIZPQaR?=
- =?us-ascii?Q?nE/003WmMEovOH2k8v9hXUeq2PT5RyUe/8V0pytQFfOUABO/TVTvOqfc5vCB?=
- =?us-ascii?Q?QuNYKDcNnGsx2QvfuOJi26ZolCciw15roSmHROpll0EM0KhzYBCjSI8vek81?=
- =?us-ascii?Q?YqGnz+KxlNdNXLQdWdh75qtMyEogShhaYSFz1LBRlPArwHzEhiUFQqUw+QCA?=
- =?us-ascii?Q?tuwJHu8YXMwbPC8PLVMwWiXV+2vrxES5rYz16XzsGI3kbynkQLlL0DExGxJo?=
- =?us-ascii?Q?hX4fMPyFZhF1ieibtPl+qdfzpeqrN5xH1nGSgMn7V1xARM7JnK3IqtPZjXSd?=
- =?us-ascii?Q?eqxzIufTQ7QX3VYbVWXIHf9NrxWG1Se9ZOSNBVyg9FS7yzP6AK/Cud4EiDfa?=
- =?us-ascii?Q?MupkGcgD+x00ecqvG1IcgSX9213Kz2IxTP3YAIcrWUJ5TdZvD7HBjwZyOY6N?=
- =?us-ascii?Q?QPXPhudpEoEzymI6GOFSEXynAk2BMh5TR05maxBGrj4qPf2Z8OCqa5GxUiYv?=
- =?us-ascii?Q?KzsHWfPhV0jyVsNISASGwAThr+xc79xhHc+TJFV1Vwe94mgDdHLVHgbjBQ37?=
- =?us-ascii?Q?HqEX+iNKl62KtDk6qdffjAODYfbDQFU+z4CO2GqHoD686Cqw6Ddg6qJyWYhB?=
- =?us-ascii?Q?ywMLI5eZlY8g29DZ9UCDhJZ8rLjqIQXzkksJ8SAPAsulc5fsxALZwx6Y4BpI?=
- =?us-ascii?Q?WqETou1S3aRt6kAgI/oVIBuxE6StNX0UY8PJEbO2kZeI4w9ivTCnyuvuhXkl?=
- =?us-ascii?Q?O0DCf+6dCLE8wTZJYMGuBjZzUQXhfe5T6qdDy3FM3VdrliInjCn8QiTyq63m?=
- =?us-ascii?Q?Ua/syKluHIpHsRa9rtAef54lkcM1piGIq5mj7o2Fy0Xs+hrxWAtK9hf+7jAI?=
- =?us-ascii?Q?yp6Dr71hNz93Oso5Zx9CDIgdyv84vDLBZyanrMer43ClFBLah42rRR0uEMx8?=
- =?us-ascii?Q?7gvgxUiXWDi4nSdV7cf0nKYMUfmhtUxa5bCPu+NtU449+D60y1QC/6V2m/Hv?=
- =?us-ascii?Q?lm+F/UxsIq3+bGd8TMNYBJTg5PIpc3fAqMxsPKAsh0Vdocv70ZzwujgxAtEx?=
- =?us-ascii?Q?dkPSraW09qWXM7vZ2rDlqkfza4yvHDLtxVA/9ZIR5/zIIk2f95RpnX9WEDXC?=
- =?us-ascii?Q?cOWJW7gVSeCB+duFaEnUWTyMhVLZyJMqSOQFY/Bmh6tCJO+/ZT4GBVYyKK09?=
- =?us-ascii?Q?gsZcH7FxDEV0iiPDWhj2T7QF44c3aByp28tZpMUMA/mX4756Ef1vCQmppdgb?=
- =?us-ascii?Q?vp7S/OeRjAww1+r81lz2k3ezS6MpSFieI1LFPk4p2kXksyNrRW18YOuKltnC?=
- =?us-ascii?Q?Jr7H6umRtOCKuUfeWe3MJCDJ6FR2MJ2zr7hVqsxvsfVrWhPoMUxEp8Q0/hIF?=
- =?us-ascii?Q?Lqu9SdvNXdD8GnukLNZWSSbw+T1BuRId6D2WOUsBRbYiIcEwsYZGDqH4N99/?=
- =?us-ascii?Q?75J+e0p150GU1wRmOPSFMvSZVzdEuyKnM2xa0bFw?=
+	=?us-ascii?Q?/BG2ne9cl8sz+QYBvOY4OCCnuYCA5gf1bIiPJK6cqq2OwxB0ItCW0s5fQW62?=
+ =?us-ascii?Q?9HUp546eBrNRrW9GNm8As5lWRgKPOvMJare1NEtjWGx79B16+BEAYGbPTXXS?=
+ =?us-ascii?Q?LUd//Y/keE70geNxasBpW5j8Lm+V1wT4H1pLvYfBC4cv4Cl/jEaHxk/4a5hv?=
+ =?us-ascii?Q?McSKK+OO9jOpmEYLXXtMoCOlo0hiz2OdapvzKFH3NCpQ+5F8oNZa70dUAVdX?=
+ =?us-ascii?Q?4TaQrNSKOhO8y9WWqeAlmxWfxrv9NEoxiBr4JIF7CwMERG7G6pZFYly0Otjh?=
+ =?us-ascii?Q?7HG2McPkYUsEEjLul82kAQ/7zbnbfc0iUbTjHcr2bkHtsS6FwuIEw+szIWBZ?=
+ =?us-ascii?Q?3K7v1ycq9ISTiEpf1h9WvIVeZRP/PJdZks+zTwLkkqMBTctM1gSSJiS7hSxa?=
+ =?us-ascii?Q?e+huy+0pRVZ9Wg5oS8AIEKX05HcsJjFShwZAGU7uudXzmI4Jj8e9DzSc6nw+?=
+ =?us-ascii?Q?ObFzsRv2arepoeqDL86TUizDyBtRfiwoWSNqxe0ZOjUPGR6/KGTimw8dhaLR?=
+ =?us-ascii?Q?STjkQpcRJtdR3ErmR1Wv3NIAfYKTZIVNsf36MbDbiAuj9rJqKVcVaGJFP3bT?=
+ =?us-ascii?Q?abpqoniO7HmtHRxhqAvO82wyfGjDXHa4WShEFcR62d6/vsqqqnyTL501a4aH?=
+ =?us-ascii?Q?eHFpm/FuStCCS53ahfHYvQEp1tc0s51bCoL2fIpe/e1EXTtNRQocJpwizPy3?=
+ =?us-ascii?Q?fWDEreYRahSkYEJeRCm90oPW98F6i0Yc/MrDaeQ2Uu6XAGBFGq4YeGhQvhFI?=
+ =?us-ascii?Q?16qaOEijFgNMC43PthBscNselMEqEYzrJBfY/tTqFsAEixwUFieMiNTCoY21?=
+ =?us-ascii?Q?7FKiWUsVjl84w2w58PpuqRDZgyV1AGfBV2AEC/BhbYU58h5GpFaQokqtmDkP?=
+ =?us-ascii?Q?9Z6DcxrfjHFq4+f/GlAfG/UvgQLr+xekJiIFcSLy5ipZFs0Tl3ykg1qhoLDk?=
+ =?us-ascii?Q?VyBGjc+zZ/itAnajf3HZ6MuHEm9cnebyoQ2XBlUrpDtL1M77Ce4nQEe6j8tS?=
+ =?us-ascii?Q?TT8gD0GKUFxtz4U6cnzUu2YfbfzzyjSceA9J6M6PF9i3DLP18JZkzmidI7DT?=
+ =?us-ascii?Q?epy2T2OU18EOrGn3B7F4ILK+/tFwkQBtGCuKQBMQd8pZwkqRyrQWJqlzEQdU?=
+ =?us-ascii?Q?3jhYPI3E9lSJGflBKQlfzGk3WQ/auaW+ct9ANHKiUN3xP+Ifh/XQshgGqDSt?=
+ =?us-ascii?Q?i3vLFlHBzl5U1dbPK35FD/UWRckmFmN9ROmKwF9VxvWfKkro0izGgHKrxeGB?=
+ =?us-ascii?Q?OCKMpeQSo1VL5jtw1X6C/N/CcSLH6Xj2nFBfouDkOvp2kxd++2zdtVqUksip?=
+ =?us-ascii?Q?SpwWFUZDH8ciHMyTq6ztKDZtdyPhuWBlP5b+xvi7Yhi7r8LY1nkbE/yrxsis?=
+ =?us-ascii?Q?pB8X01vZaZq6IBQVIUenk+3hUwHIBFEMGNb4tSwBUlAhsSysiZDaXSJTQrbt?=
+ =?us-ascii?Q?a+e5aBfOWITbf8RBzFzflCkU7oKelNo3A4pZV/5uQtTb8Db84gBaZ1MyssV5?=
+ =?us-ascii?Q?bRO0AZUW+8DRixcYk7r4BUejNkbMDaTUVihsEsYhtZcaK8AIpkYtkgUdAJEH?=
+ =?us-ascii?Q?vxgb5GC3HM6BEBGkyyLzyEP/6fNQgl0yrqVJuubG?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	rU51kxhXgcBI1ie+BvjTeiuDjnC0tuavyAeg0QP/gUosKb5L4v3ePrdEX4B5DVaMhU0IZ/waqCqVGsWY1ASZETWCp2zlIswMjZ3UgoWuH0TtT4fnimgcHQsbdROrZPFa8jhDdQON4MzCcmZ7+BMb8FifY4Xab+hbCIHKUHBzjvAlzjOAJssHqsEQSr20BIkMlB4SKkvTV1Xjvs0a9xyPFZEcfufaXkmVg3uirJpN7yMhtNedyXKNHap2GHIc6A+xnsxdsJ3L4hpS+yesdIJR48XGuBbXVo4B+r2nLTQGAFk+qhNdabZzOezyC+txRqj9PH7rtBSMAirqJzBdSAYwxpj7sNe/hgPLEc/GeUjmPkXjy2/5pLA1kV1DQ62QhMvwBDPbSJ+f5aT2KdRBDcfVLvDTtc2BR3mmHS1rBaTfMDLQ0hTN+1tRXn3b67ivqZeYgMRfLDdI5LBYVvRxI+Q9+TGhJAA0UKn+pqy50kBI/yCtZXEg5UYFtxy/nosQ3EZDxFpXvAHrWsnWTTHwF9SoHm3EwHzWIy2UdbLiRUYJC1Hs34Z4BxC4F8WzbpbA6eo0rTY5Qo+J5WYepcZuyUmNETkiogIadZDFtpuc5PJQ+AU=
+	k88hvYxfgPbxW+bVBhRpHjvs2Wz9lE/3RDXMlwD9QVF7Aptdi32g0Q9D0D3/cJZqE5GygWEGtWMiHoAplOlLg6UOSwZFnfNeisSejfopIN6W5Crm455pe2esrVLPd2iuAyiR5WP67moLKh8YYPhK4X4hh1aZc1FYmeNiuZ7VBRAoiVTxd26hwpiFTOtMzIlNqvPUigQdH4t99aIKoc7QCBpXFT7G5Rfe2JWomYB8eizuAkxFR86yToG4GzEOg0USJqIMpRPhe5tF1sV2T52WFUAVq+A3QQLRa3V2ZJZ+VjJ5r2X7Pgis6rTGUa5Tg7480NYmkMJAysVNfMWBD1GaxeRxh27FXwu6chQFpNiCxCsE6Qx/SnmBpSt5Pd8whes0bDefH8Ex/Fvz+Su48hIgEWsahnITQC/mMl3riungllaUkGvUtzZ58Z/RHaAilhkfseRjU8+VPQP3H7lAUTHRhS0GxHndRiyOF2AXb/OehOZ3DfACEq9WwkxtiyFOfKbZFnFG+v0x8HolqRAaLxUSzPe8OpIBSInO9LrbNu8ZAURt3mlHA8u6X1t2JdxjChz3bSI6JV7p8q9c7Je1vmAxL3LM2Pm94nbEJqO63MGmuMI=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19241185-5e2a-4dce-7877-08dd917ff152
+X-MS-Exchange-CrossTenant-Network-Message-Id: b26b4780-81d9-43f3-10de-08dd917ff3f0
 X-MS-Exchange-CrossTenant-AuthSource: IA4PR10MB8710.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2025 18:08:05.3554
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2025 18:08:09.7689
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: t7cns+UPpcPTe1WAgcMyV3RmJvSlU6Fq43qV3+gTZPHjTadIRocF0XoYGLWKfn+oyRzAHh7qCYTc9A6CJNEA2A==
+X-MS-Exchange-CrossTenant-UserPrincipalName: ugIWsPurzAdbShxb7ABnwq7wjjfzJwBD7wjsF36usGOFulbI/bJsL2zFlrzZ2z5av26S8AWl2YeB/nvlzQgFdw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB8199
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-05-12_06,2025-05-09_01,2025-02-21_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 suspectscore=0
- adultscore=0 bulkscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2504070000
- definitions=main-2505120186
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTEyMDE4NiBTYWx0ZWRfX/VL3rpjN1A6r FX+sU/pdcQUE3KBCSSB2fo6DAVq+Huh5inbLz/ZilyBtDetr4TCE4hOvUNrqVBxERgBObh2uRsz h9iq6omAi4+SUuoVG0Jjonq3+7x5zZXByICo7a12jFlz5e1If6iWy3gqdZqaEe7NDGCcGDnmdX+
- /iuSj6csUBvdjR2JpkxT4uMz6NKrmlNWI2QJgpsFX8GucFp4IS3d2ndqOjUlxUh5FSHQ5evhXgl zW/sbi0UwtVjev9sOTtIikqa8+yiIeOUPPyxo2PnCebM3fzT5pWG/U241580skTQer9hzJyyw2l 4/vxePIRLFffSddUX3HPrf/qzxAoq/MJF6so7CpviQkKKCFpnaV9HTm61vfcx5SeIqS/f5V/Jms
- 4AOdK607NeKQ318IwjmZD84MwP+YYTJn30Pe8ijj3Rk0WXxnn4DzhCKo7gqYyR5TTaOlFFgs
-X-Authority-Analysis: v=2.4 cv=VMDdn8PX c=1 sm=1 tr=0 ts=68223909 b=1 cx=c_pps a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19
- a=xqWC_Br6kY4A:10 a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=GkyKHyEqgEX5SKnQKroA:9 cc=ntf awl=host:13185
-X-Proofpoint-ORIG-GUID: WGaYQylEB_orZt7Fge696rdeFoRrTbzi
-X-Proofpoint-GUID: WGaYQylEB_orZt7Fge696rdeFoRrTbzi
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2504070000 definitions=main-2505120187
+X-Authority-Analysis: v=2.4 cv=M8hNKzws c=1 sm=1 tr=0 ts=68223925 cx=c_pps a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10
+ a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=QB_BQE_NPUGtjjfa-PMA:9
+X-Proofpoint-GUID: dIi2Gq1XTpKSFlafbn6WbVsfNtwQc84s
+X-Proofpoint-ORIG-GUID: dIi2Gq1XTpKSFlafbn6WbVsfNtwQc84s
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTEyMDE4NiBTYWx0ZWRfXx+FsWk8rbWgY i+Gm9biPc3oNV6EKK6TZKQw1lPf/zB4qsqEWZJgyQFLuyFdnd2qEG7JXK5tjjLYVW+oL+5AWnFi fBafwbZHHCcPdMAWSgo+11UNFQgHvDUw0RVnM8QWPyMqmS3fPOTQcO2IsbCTIXH9rDafkSOlxny
+ wa+xqAB74/PvvKTTXIi/P4prK+1Pcyl+yoK/3x5J9bfCEw1VpEAbMivbeDjDH9uzAPIEc9N7cTQ fOiHXuAsqFa0bynDyH7N91mvNjF4zU8aHiMvThY91g7mLj4SiBg/PBY+SfWpi+0G55n1Jl80IdY SPfn0Gz6vgKyM/RhS/QLP+GUjMXlZh234v+DRyCD1GhbyMYoHBxAQlr2jwUci9l4VMfa3FmCLPb
+ 5/0WtiLHJLozdj9HGH4JjZeZMw1zKzPsYLu3wNvlmJmcxLs3n6FTejC9Ehp7wHAqfjZHqVEI
 
-This commit introduces device roles to manage the intended usage of
-devices for metadata and data block groups. Four distinct roles are
-defined in the `enum btrfs_device_roles`:
+Introduce a new device allocation method, BTRFS_DEV_ALLOC_BY_ROLE_THEN_SPACE,
+allowing chunk allocation to prioritize devices based on role suitability
+before considering free space.
 
-  enum btrfs_device_roles {
-	BTRFS_DEVICE_ROLE_METADATA_ONLY = 20,
-	BTRFS_DEVICE_ROLE_METADATA      = 40,
-	BTRFS_DEVICE_ROLE_NONE          = 80,
-	BTRFS_DEVICE_ROLE_DATA          = 100,
-	BTRFS_DEVICE_ROLE_DATA_ONLY     = 120,
-  };
+This patch adds:
+- Filtering in gather_device_info() to skip devices whose role
+  (e.g., DATA_ONLY, METADATA_ONLY) is incompatible with the current
+  allocation type (DATA, METADATA, SYSTEM).
+- A new comparator, btrfs_cmp_device_role(), to sort devices based on
+  role suitability for the given allocation type.
+- Logic in gather_device_info() for the new policy: first uses
+  list_sort() with btrfs_cmp_device_role(), then sorts again within
+  each role group using list_sort() with btrfs_cmp_device_space().
 
-Devices marked with the `_ONLY` suffix are dedicated exclusively to the
-specified block group type (metadata or data). In contrast, devices
-without the `_ONLY` suffix indicate a preference for the designated
-block group. While these devices will primarily be used for their
-preferred type, they can also accommodate other block group types if a
-critical out-of-space condition arises, allowing for allocation to
-succeed.
+This allows for more granular control over chunk placement based on
+defined device roles.
 
-The `parse_device_role()` function helps conversion of string ("metadata",
-"data", "metadata-only", "data-only", and their abbreviations "m", "d",
-"monly", "donly") into the corresponding `enum btrfs_device_roles` value.
-This will be used to configure device roles.
+To check if 'role-then-space' is active for testing, updates the
+previously added sysfs interface for role-then-space:
+
+    $ cat /sys/fs/btrfs/UUID/device_allocation
+	[space] role-then-space
+
+Compatibility:
+ - In older on-disk formats, dev_item::type:4 is zero. This implies
+   BTRFS_DEVICE_ROLE_NONE in the newer kernel, which is acceptable.
+   Although BTRFS_DEVICE_ROLE_NONE is not equal to 0, the kernel always
+   writes it as 0, thus maintaining backward compatibility. Therefore,
+   older on-disk formats will seamlessly work on newer kernels and
+   vice versa if the device roles are not activated.
+
+   However, if the on-disk format is newer and device roles are active
+   (i.e., dev_item::type:4 != 0) and you want to mount it on an older
+   it also works because the kernel or btrfs check never enforced that
+   dev_item::type must be zero. However, when mounted on older kernel
+   the chunks maybe allocated will be only based on the space avaialbe.
+
+Compatibility:
+ - In older on-disk formats, `dev_item::type:4` is zero. This implies
+   `BTRFS_DEVICE_ROLE_NONE` in newer kernels, which is acceptable.
+   Although `BTRFS_DEVICE_ROLE_NONE` is not equal to 0, the kernel always
+   writes it as 0, thus maintaining backward compatibility (if needed).
+   Therefore, older on-disk formats will seamlessly work on newer kernels
+   and vice versa if device roles are not activated.
+
+ - However, if the on-disk format is newer and device roles are active
+   (i.e., `dev_item::type:4 != 0`), mounting on an older kernel also works
+   because the kernel or btrfs checks never enforced that `dev_item::type`
+   must be zero. Nevertheless, when mounted on an older kernel, chunk
+   allocation will likely be based solely on available space.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- fs/btrfs/volumes.c | 21 +++++++++++++++++++++
- fs/btrfs/volumes.h | 20 ++++++++++++++++++++
- 2 files changed, 41 insertions(+)
+ fs/btrfs/sysfs.c   |  1 +
+ fs/btrfs/volumes.c | 90 +++++++++++++++++++++++++++++++++++++++++-----
+ fs/btrfs/volumes.h |  2 ++
+ 3 files changed, 85 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 2ae6ead3fb43..a44749103410 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2687,6 +2687,27 @@ static int btrfs_finish_sprout(struct btrfs_trans_handle *trans)
- 	return ret;
- }
- 
-+int parse_device_role(char *str, enum btrfs_device_roles *role)
-+{
-+	if (strncmp(str, "m", strlen(str)) == 0 ||
-+	    strncmp(str, "metadata", strlen(str)) == 0) {
-+		*role = BTRFS_DEVICE_ROLE_METADATA;
-+	} else if (strncmp(str, "d", strlen(str)) == 0 ||
-+	    strncmp(str, "data", strlen(str)) == 0) {
-+		*role = BTRFS_DEVICE_ROLE_DATA;
-+	} else if (strncmp(str, "monly", strlen(str)) == 0 ||
-+	    strncmp(str, "metadata-only", strlen(str)) == 0) {
-+		*role = BTRFS_DEVICE_ROLE_METADATA_ONLY;
-+	} else if (strncmp(str, "donly", strlen(str)) == 0 ||
-+	    strncmp(str, "data-only", strlen(str)) == 0) {
-+		*role = BTRFS_DEVICE_ROLE_DATA_ONLY;
-+	} else {
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path)
- {
- 	struct btrfs_root *root = fs_info->dev_root;
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index dea6265a2dc8..7dbdfe502481 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -82,6 +82,25 @@ enum btrfs_raid_types {
- 	BTRFS_NR_RAID_TYPES
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index d07c22e05088..db008a421450 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1525,6 +1525,7 @@ BTRFS_ATTR_RW(, read_policy, btrfs_read_policy_show, btrfs_read_policy_store);
+  */
+ static const char *btrfs_dev_alloc_name[] = {
+ 	"space",
++	"role-then-space"
  };
  
-+#define BTRFS_DEVICE_ROLE_MASK	0xff
-+/*
-+ * device_role value and how it will be used.
-+ * 	      0: Unused
-+ *	   1-20: Metadata only
-+ *	  21-40: Metadata preferred
-+ *	  41-80: Anything|None
-+ *	 81-100: Data preferred
-+ *	101-128: Data only
-+ * Declare some predefined easy to use device_bg_type values
-+ */
-+enum btrfs_device_roles {
-+	BTRFS_DEVICE_ROLE_METADATA_ONLY = 20,
-+	BTRFS_DEVICE_ROLE_METADATA      = 40,
-+	BTRFS_DEVICE_ROLE_NONE          = 80,
-+	BTRFS_DEVICE_ROLE_DATA          = 100,
-+	BTRFS_DEVICE_ROLE_DATA_ONLY     = 120,
+ static int btrfs_dev_alloc_name_to_enum(const char *str, s64 *value_ret)
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index a44749103410..fb86d5684454 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5097,21 +5097,61 @@ static int btrfs_cmp_device_space(void *priv, const struct list_head *a,
+ {
+ 	const struct btrfs_device_info *di_a;
+ 	const struct btrfs_device_info *di_b;
++	enum btrfs_device_roles *role = priv;
+ 
+ 	di_a = list_entry(a, struct btrfs_device_info, list);
+ 	di_b = list_entry(b, struct btrfs_device_info, list);
+ 
+-	if (di_a->max_avail > di_b->max_avail)
+-		return -1;
+-	if (di_a->max_avail < di_b->max_avail)
+-		return 1;
+-	if (di_a->total_avail > di_b->total_avail)
+-		return -1;
+-	if (di_a->total_avail < di_b->total_avail)
+-		return 1;
++	if (!role || ((di_a->role == *role) && (di_b->role == *role))) {
++		if (di_a->max_avail > di_b->max_avail)
++			return -1;
++		if (di_a->max_avail < di_b->max_avail)
++			return 1;
++		if (di_a->total_avail > di_b->total_avail)
++			return -1;
++		if (di_a->total_avail < di_b->total_avail)
++			return 1;
++	}
++
+ 	return 0;
+ }
+ 
++static int btrfs_cmp_role(enum btrfs_device_roles a, enum btrfs_device_roles b,
++			  bool assend)
++{
++	if (a == 0)
++		a = BTRFS_DEVICE_ROLE_NONE;
++
++	if (b == 0)
++		b = BTRFS_DEVICE_ROLE_NONE;
++
++	if (assend)
++		return a > b ? -1 : a < b ? 1 : 0;
++	else
++		return a < b ? -1 : a > b ? 1 : 0;
++}
++
++/* Sort the devices by their role to suit the allocation type. */
++static int btrfs_cmp_device_role(void *priv, const struct list_head *a,
++				 const struct list_head *b)
++{
++	const struct btrfs_device_info *di_a;
++	const struct btrfs_device_info *di_b;
++	u64 *type = (u64 *)priv;
++	enum btrfs_device_roles role_a;
++	enum btrfs_device_roles role_b;
++	bool assend;
++
++	di_a = list_entry(a, struct btrfs_device_info, list);
++	role_a = di_a->role;
++	di_b = list_entry(b, struct btrfs_device_info, list);
++	role_b = di_b->role;
++
++	assend = ((*type & BTRFS_BLOCK_GROUP_TYPE_MASK) == BTRFS_BLOCK_GROUP_DATA);
++
++	return btrfs_cmp_role(role_a, role_b, assend);
++}
++
+ static void check_raid56_incompat_flag(struct btrfs_fs_info *info, u64 type)
+ {
+ 	if (!(type & BTRFS_BLOCK_GROUP_RAID56_MASK))
+@@ -5247,6 +5287,14 @@ static void init_alloc_chunk_ctl(struct btrfs_fs_devices *fs_devices,
+ 	}
+ }
+ 
++static const enum btrfs_device_roles dev_roles[] = {
++	BTRFS_DEVICE_ROLE_METADATA_ONLY,
++	BTRFS_DEVICE_ROLE_METADATA,
++	BTRFS_DEVICE_ROLE_NONE,
++	BTRFS_DEVICE_ROLE_DATA,
++	BTRFS_DEVICE_ROLE_DATA_ONLY,
 +};
 +
- /*
-  * Use sequence counter to get consistent device stat data on
-  * 32-bit processors.
-@@ -756,6 +775,7 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
- struct btrfs_device *btrfs_find_device(const struct btrfs_fs_devices *fs_devices,
- 				       const struct btrfs_dev_lookup_args *args);
- int btrfs_shrink_device(struct btrfs_device *device, u64 new_size);
-+int parse_device_role(char *str, enum btrfs_device_roles *role);
- int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *path);
- int btrfs_balance(struct btrfs_fs_info *fs_info,
- 		  struct btrfs_balance_control *bctl,
+ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+ 			      struct alloc_chunk_ctl *ctl,
+ 			      struct list_head *devices_info)
+@@ -5256,6 +5304,7 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+ 	struct btrfs_device *device;
+ 	u64 total_avail;
+ 	u64 dev_extent_want = ctl->max_stripe_size * ctl->dev_stripes;
++	u64 alloc_type = ctl->type & BTRFS_BLOCK_GROUP_TYPE_MASK;
+ 	int ret;
+ 	int ndevs = 0;
+ 	u64 max_avail;
+@@ -5266,6 +5315,11 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+ 	 * about the available holes on each device.
+ 	 */
+ 	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list) {
++		unsigned int dev_role = device->type & BTRFS_DEVICE_ROLE_MASK;
++
++		if (!dev_role)
++			dev_role = BTRFS_DEVICE_ROLE_NONE;
++
+ 		if (!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+ 			WARN(1, KERN_ERR
+ 			       "BTRFS: read-only device in alloc_list\n");
+@@ -5277,6 +5331,14 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+ 		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
+ 			continue;
+ 
++		if (alloc_type == BTRFS_BLOCK_GROUP_DATA) {
++			if (dev_role == BTRFS_DEVICE_ROLE_METADATA_ONLY)
++				continue;
++		} else {
++			if (dev_role == BTRFS_DEVICE_ROLE_DATA_ONLY)
++				continue;
++		}
++
+ 		if (device->total_bytes > device->bytes_used)
+ 			total_avail = device->total_bytes - device->bytes_used;
+ 		else
+@@ -5323,6 +5385,7 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+ 		device_info->max_avail = max_avail;
+ 		device_info->total_avail = total_avail;
+ 		device_info->dev = device;
++		device_info->role = dev_role;
+ 	}
+ 	ctl->ndevs = ndevs;
+ 
+@@ -5339,6 +5402,17 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+ 	case BTRFS_DEV_ALLOC_BY_SPACE:
+ 		list_sort(NULL, devices_info, btrfs_cmp_device_space);
+ 		break;
++	case BTRFS_DEV_ALLOC_BY_ROLE_THEN_SPACE:
++		/* First, Sort by device roles for the given allocation type */
++		list_sort((void *)&ctl->type, devices_info, btrfs_cmp_device_role);
++
++		/* Next, for each device role, sort the devices by free space */
++		for (int i = 0; i < ARRAY_SIZE(dev_roles); i++) {
++			enum btrfs_device_roles role = dev_roles[i];
++
++			list_sort((void *)&role, devices_info, btrfs_cmp_device_space);
++		}
++		break;
+ 	}
+ 
+ 	return 0;
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 7dbdfe502481..73e26bcb19f5 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -317,6 +317,7 @@ BTRFS_DEVICE_GETSET_FUNCS(bytes_used);
+ /* Btrfs on disk chunk allocation methods. */
+ enum btrfs_device_allocation_method {
+ 	BTRFS_DEV_ALLOC_BY_SPACE,
++	BTRFS_DEV_ALLOC_BY_ROLE_THEN_SPACE,
+ 	BTRFS_DEV_ALLOC_NR,
+ };
+ 
+@@ -618,6 +619,7 @@ struct btrfs_device_info {
+ 	u64 dev_offset;
+ 	u64 max_avail;
+ 	u64 total_avail;
++	enum btrfs_device_roles role;
+ };
+ 
+ struct btrfs_raid_attr {
 -- 
 2.49.0
 
