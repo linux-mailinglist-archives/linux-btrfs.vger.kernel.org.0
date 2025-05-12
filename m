@@ -1,147 +1,117 @@
-Return-Path: <linux-btrfs+bounces-13870-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13871-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D807AB30B9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 09:44:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2CF3AB30BE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 09:47:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E0057A26CF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 07:43:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E319177D83
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 07:47:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31A882571AB;
-	Mon, 12 May 2025 07:44:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B4E2255E39;
+	Mon, 12 May 2025 07:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HOKsWgh9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AQSTU44s"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB1719E97C;
-	Mon, 12 May 2025 07:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1EA2561B9
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 07:47:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747035885; cv=none; b=HYpb/PNYftN3Bqp10RvGKIivg9OYO7OBwyUE4tJWwfB4s8ukFQet86UHMfuJURNdTJrMPo2FYswJmYWe6XtMFfGnWD7cId7rlJXkacALnw+uDwsxbodLp7Ceu+fgz6PmyYEfLNErqNh7fMwODyJxAX6T8IuyTAMD2MLjsh+ToDk=
+	t=1747036050; cv=none; b=Jvs9kBma+JUSEMmT/R/SBl8QaQHKZEaGToxCC8hK9Lj8rji0MebCCz0NDlcbHV/1zVGD4gaDCwRptQsnqccU1pTdy4BJRx0JVh4XYxOA7QgIahgT73NVXrHte6Qo/D1utp1tIaO0wcLEwBrNRqz8WOUslNXjFU1ClhzhPptTdas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747035885; c=relaxed/simple;
-	bh=Dnaticd4DVBeB/X1+gFdv0OYs/tYKPaCA8+XH+C1NXQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bo5zDgEJn2AadmHTlrQ/l59OmbD19vStUgqrHAizY0b8NA4ze64Uu82NoCka09K+lWSpPnrrLXI1xN+CbLnvjaON9guLgQIV3aa0rCZncYIGBM+6FFGxOT7evHbIp1zYnXeKCTvVnFpoI8O94pTjWtXRLDkT8fHmrti3XUETWBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HOKsWgh9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C82B2C4CEEF;
-	Mon, 12 May 2025 07:44:44 +0000 (UTC)
+	s=arc-20240116; t=1747036050; c=relaxed/simple;
+	bh=TencTL14RtTZIH3xKI4cTNqCN4P6NvjkMCZGlAgpMbw=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=UISL5tRnJ8GW5O9+wbV5uZYKZQRCRqWBMU9hLA0yhEbsICsvJ72pv8gbxLoz6If+h8aX4i2S54XBzadMdvdn0Q/nYVfIWixdGg0+oJ9Qf09R77Aj+YwZd2+O5KJcH43FczkySSNmtSGzLHEoVDJW4re912pEmYLars0sztTyYDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AQSTU44s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 439BEC4CEE7
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 07:47:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747035884;
-	bh=Dnaticd4DVBeB/X1+gFdv0OYs/tYKPaCA8+XH+C1NXQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=HOKsWgh976ABSUCp3D47zbSV32DLPO0ChSJCN52tQgHWw2/lTdg6h7VxK59oz+FPo
-	 i92OfZK5tnH0bWLF5AfmOakDAM/XvNZmw0e5kYmUY8nBlPNRyIpoo2TTLZetI8hKLC
-	 SgLpF8ZDj0BzzLFN75sZBN/5R37frmPbM1UYzSHS3TKP2Kpqrq2piZob5j4Nbzs53+
-	 bICdD39/Qxt8wDuMjGn4oZHJNJmz9bxBSP/F29TCzM5/iSx2axDHnbTFE4OU4JGbmn
-	 CtNF+Xs8Ess3Uu1a4qCwCJswBHz10LFioqx8/Nw78esgG17rKSC229IZhx1lYjWioa
-	 JhUTpJhfU6IJw==
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-ad21cc2594eso421849366b.1;
-        Mon, 12 May 2025 00:44:44 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUNHpeOcCujIgCbQEn0YxgPbaf2XDvYkUMDusxz4D4oNlT4fhpRNuVsBOqu4aFAY93DsGbpoSKm@vger.kernel.org
-X-Gm-Message-State: AOJu0YwAoDRJ/L1JTv29GCyDJNfZaisD8te8S3cVdGzwkriJayXOZsC4
-	NyjtgvI9qYtK0V/0qgSFsR4tQqXo2/bzUyAUXn/fk1QGm5tG9KKdXtlGxlxFO+6MIcX8yvUnjNP
-	mkGbXa+iDKXOAl02JR5i7azUhWLE=
-X-Google-Smtp-Source: AGHT+IEBQKdQdn/bt57J/rNAcZBekQzBiDhiBsPXLiaWQnq450Ncx9vPv5gYz5RmJVN6XrCWpW6GK6KQb94/GWR5HcE=
-X-Received: by 2002:a17:907:3fa2:b0:ad2:59c4:8c with SMTP id
- a640c23a62f3a-ad259c4b415mr144559466b.54.1747035883269; Mon, 12 May 2025
- 00:44:43 -0700 (PDT)
+	s=k20201202; t=1747036049;
+	bh=TencTL14RtTZIH3xKI4cTNqCN4P6NvjkMCZGlAgpMbw=;
+	h=From:To:Subject:Date:From;
+	b=AQSTU44slynDSgDRDCBjC1iLJhAGWjdiIqVJbYEwIP2x68AopT2AN4fxqOrsepp/j
+	 fhyMPDnoqE+N6U9Cmsf7pMMr0IKpo2JZo9ThOEa+w7UpMPnr/ijJUuQt5wp+YBFRo0
+	 6AcYAAguKjQJ7J6fdhbZ98Q1RdheG9ZMLeURIHxHTk48PXuH6XvXB5IaZSv5/OwzCm
+	 SQMCZqNp9yD2psyDXheKh9EwViPL1wiQUqaa3zX/EnzvvyLsgEuu6b/SBzBYT3ZrMl
+	 ckAQ4Ud4j6x1xSpKnlL0GZGz3zjSbN1poTu7aKCc7hjjBYlC//Eo1IluMNnkTDWTQ+
+	 AWGFPOVDII61A==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: return real error from __filemap_get_folio() calls
+Date: Mon, 12 May 2025 08:47:26 +0100
+Message-Id: <bd0068a988e80be345b7a513df5448ee9da4a0d7.1747035899.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250512052551.236243-1-wqu@suse.com>
-In-Reply-To: <20250512052551.236243-1-wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 12 May 2025 08:44:05 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7cqfhVNwEJ6dgXgZSmfUbOrSNZuua3MPWTs0LJ43BQXQ@mail.gmail.com>
-X-Gm-Features: AX0GCFuuqmwHg9L6vUi6tT_11C06O7SAa5VuLoy2mz_JAjwYaW1qfk2tKOP4pOA
-Message-ID: <CAL3q7H7cqfhVNwEJ6dgXgZSmfUbOrSNZuua3MPWTs0LJ43BQXQ@mail.gmail.com>
-Subject: Re: [PATCH] fstests: btrfs: a new test case to verify scrub and rescue=idatacsums
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, May 12, 2025 at 6:26=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> There is a kernel bug report that scrub will trigger a NULL pointer
-> dereference when rescue=3Didatacsums mount option is provided.
->
-> Add a test case for such situation, to verify kernel can gracefully
-> reject scrub when  there is no csum tree.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  tests/btrfs/336     | 32 ++++++++++++++++++++++++++++++++
->  tests/btrfs/336.out |  2 ++
->  2 files changed, 34 insertions(+)
->  create mode 100755 tests/btrfs/336
->  create mode 100644 tests/btrfs/336.out
->
-> diff --git a/tests/btrfs/336 b/tests/btrfs/336
-> new file mode 100755
-> index 00000000..f76a8e21
-> --- /dev/null
-> +++ b/tests/btrfs/336
-> @@ -0,0 +1,32 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2025 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 336
-> +#
-> +# Make sure read-only scrub won't cause NULL pointer dereference with
-> +# rescue=3Didatacsums mount option
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto scrub quick
-> +
-> +_fixed_by_kernel_commit 6aecd91a5c5b \
-> +       "btrfs: avoid NULL pointer dereference if no valid extent tree"
-> +
-> +_require_scratch
-> +_scratch_mkfs >> $seqres.full
-> +
-> +_try_scratch_mount "-o ro,rescue=3Dignoredatacsums" > /dev/null 2>&1 ||
-> +       _notrun "rescue=3Dignoredatacsums mount option not supported"
-> +
-> +# For unpatched kernel this will cause NULL pointer dereference and cras=
-h the kernel.
-> +# For patched kernel scrub will be gracefully rejected.
-> +$BTRFS_UTIL_PROG scrub start -Br $SCRATCH_MNT >> $seqres.full 2>&1
+From: Filipe Manana <fdmanana@suse.com>
 
-If the scrub is supposed to fail, as the comment says, then we should
-check that it fails.
-Right now we're ignoring whether it succeeds or fails.
+We have a few places that always assume a -ENOMEM error happened in case a
+call to __filemap_get_folio() returns an error, which is just too much of
+an assumption and even if it would be the case at some point in time, it's
+not future proof and there's nothing in the documentation that guarantees
+that only ERR_PTR(-ENOMEM) can be returned with the flags we are passing
+to it.
 
-Otherwise it looks fine, thanks.
+So use the exact error returned by __filemap_get_folio() instead.
 
-> +
-> +_scratch_unmount
-> +
-> +echo "Silence is golden"
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/336.out b/tests/btrfs/336.out
-> new file mode 100644
-> index 00000000..9263628e
-> --- /dev/null
-> +++ b/tests/btrfs/336.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 336
-> +Silence is golden
-> --
-> 2.47.1
->
->
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/free-space-cache.c | 2 +-
+ fs/btrfs/inode.c            | 2 +-
+ fs/btrfs/reflink.c          | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 18496ebdee9d..4b34ea1f01c2 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -457,7 +457,7 @@ static int io_ctl_prepare_pages(struct btrfs_io_ctl *io_ctl, bool uptodate)
+ 					    mask);
+ 		if (IS_ERR(folio)) {
+ 			io_ctl_drop_pages(io_ctl);
+-			return -ENOMEM;
++			return PTR_ERR(folio);
+ 		}
+ 
+ 		ret = set_folio_extent_mapped(folio);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 8c1f7196636a..0420be88063a 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -4938,7 +4938,7 @@ int btrfs_truncate_block(struct btrfs_inode *inode, u64 offset, u64 start, u64 e
+ 			btrfs_delalloc_release_space(inode, data_reserved,
+ 						     block_start, blocksize, true);
+ 		btrfs_delalloc_release_extents(inode, blocksize);
+-		ret = -ENOMEM;
++		ret = PTR_ERR(folio);
+ 		goto out;
+ 	}
+ 
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index 42c268dba11d..62161beca559 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -87,7 +87,7 @@ static int copy_inline_to_page(struct btrfs_inode *inode,
+ 					FGP_LOCK | FGP_ACCESSED | FGP_CREAT,
+ 					btrfs_alloc_write_mask(mapping));
+ 	if (IS_ERR(folio)) {
+-		ret = -ENOMEM;
++		ret = PTR_ERR(folio);
+ 		goto out_unlock;
+ 	}
+ 
+-- 
+2.47.2
+
 
