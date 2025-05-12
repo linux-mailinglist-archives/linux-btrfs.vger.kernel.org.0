@@ -1,98 +1,97 @@
-Return-Path: <linux-btrfs+bounces-13944-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13945-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10448AB435A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 20:33:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31E2AAB4321
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 20:30:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E17488C5999
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 18:29:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E93D91701CE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 18:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E84B929B216;
-	Mon, 12 May 2025 18:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE3D729711A;
+	Mon, 12 May 2025 18:12:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="L/biePZA";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="AQsW4pEA"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="l227spMq";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="LRHPulZH"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A544229711A
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E091629B21C
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:12:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747073548; cv=fail; b=Rx6B7X26dYie0pJTpMpifvQ2uEg5DAhLZQXFor82hTP3Fyk+0I2av9yblqLJSCBcTjtaoO3K1vJSUV0CXU+jWNyzQBbXezDTPgH3lNm4aW3Jo7AsyAPD5r5XcHBqcXib9iBQJ7mAADzxIMOURZFjfjpxUfIHIluuuNnZCMgWSys=
+	t=1747073554; cv=fail; b=ert2lw1QrKdd2h6wD592TuyGXGHn3gi4imgAKCAQuXZnuSjQJjAgFtTQToSrkNZDIlpCEZPrEnbO9/BlxF7JfX/wlOV4puOTam+AGksnxGgILYoTVpdwSkacZpVdme3NEfmKe7rw1PGr9BxcJnL/bSr19zcSVixvSiidTB3UR+4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747073548; c=relaxed/simple;
-	bh=kY7obzkVoQ/ylIcVHusBVU4M/FVbp03HW+lfsaY7BF0=;
+	s=arc-20240116; t=1747073554; c=relaxed/simple;
+	bh=BlcxwOEt8/5dO5D3doZmUaHhF3QoUV9Gi6CdagL+Bew=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=o3qcPUyo57oCvtuJNp5+F+2XUAtxSCiPSiLDAdYCKKZbZShrP0VUOo9sIsEnf/kLWjYMGbFtZNEZoeIVOUg2in+0zmrk0nZQklLuupJbzpvz74Ezq2JCb0rN4aULuved7nFmzL+O9TvJ8yHF8XeKKr7WgfSkfe+7A3eMM7WMlBg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=L/biePZA; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=AQsW4pEA; arc=fail smtp.client-ip=205.220.177.32
+	 Content-Type:MIME-Version; b=tEQ+MG4M4PZAxONh6csngCGoe8rxNnQVevl1jgujf2vF06TnYoa2IkBXhp9EHeOrPpM0GP6WuAFCu8iLVOLHK9xTZqYR69U3D7OZGne8RNy2wiagPBvBMflh0RqsjIugeH2U7YirzghCjNnGr44zoeY+z8fgoiSoPW2Utf/SQPQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=l227spMq; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=LRHPulZH; arc=fail smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54CH0rZQ000508
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:12:25 GMT
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54CH0tiT003931
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:12:30 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
 	content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=0iCb+dxQVinVrg3biC6x9ZnkVOzmvXICVxWkffSEFY8=; b=
-	L/biePZAEiXKjmFWLG7XJuuWUUino2Eyaning4AXglxYsODNu6MkQGF0UNVu2/FU
-	7b8Q/5AJkF7S+PGncSYXirnYT+otmxN+tQREbfi3XULDo8oGWYzqHIMLzWdHSfD2
-	k0Zes5IBB6zky1QwsGVTPfL1p8RDAC61Ffdtevr1dXIGm1jFNH7RJOW32i2FTWEA
-	PIYr2wAdobljv/ClBd0s8sFH7ZX5xRv7CYoUp21aXREWkROc9qfYsZDlqZY5DWHv
-	/Q5ILfPBYF2k45V2QdxSCGhvfmAdIp9Dhl2zUDn4D/QrXDEdhr/hsEIW7ddRdPLx
-	IMQvoNVhhna/1RxslIQ71w==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46j1jnk6fn-1
+	corp-2025-04-25; bh=wyvgFphlm4lbVDyTheSV9EjF4Et3w13ejt0uVDQfRew=; b=
+	l227spMqXWXUilgIQhAuaB+AimqqT/KgiROfl0bC6G4OyvPJOayNiACeEIbrDGGV
+	A/oXferU/bjar9XOxvkse/Pn7KZ3ZeIWTYmlhy5yB6aWhISsAWBalokn7rnt3V86
+	BNBMMivVG0jpxxdfOljop+q+JQOx1hUQ9IoU7VUro/Kb0SFTVMPCVfgPo7rzV4BP
+	dcwkBC438LKFMYLJbBfcC7KBRG9si7YUJW2jl5yM96QtycXaj0kkMI9CMvZEquNq
+	eZXYo55sDq41ycoraeWMwi5eJchhKKCY1vKQtFMUJSEObCu6lP+5cLRSjteDb2aw
+	HIdXltusCm6e4N0Oe9lDPQ==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46j0gwk740-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:12:25 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 54CHFFNV036176
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:12:24 GMT
-Received: from cy4pr05cu001.outbound.protection.outlook.com (mail-westcentralusazlp17010006.outbound.protection.outlook.com [40.93.6.6])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 46hw87q8fm-1
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:12:30 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 54CHfHQ2022329
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:12:29 GMT
+Received: from sj2pr03cu002.outbound.protection.outlook.com (mail-westusazlp17013077.outbound.protection.outlook.com [40.93.1.77])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 46hw88qc20-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:12:24 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 18:12:28 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=uWNRV3sLT1i19CWxAi3728sroEgD7qzqysTzv7bAiYWPKf/5u+7SKV2HMl37RhqngNAhZy5CP+yFC3VICildevU2f+OHj6DPOLas4hLTwfboozQTKgo5IvvoJmtoWiazp7ARzS5lljQju5YPsllZRZlwOvC+HxnaasGrd5ZFJez2myuroD20dEhM1qw9nlerQpdLjkw3Bn2n6/UI5y6sHa8iAxcSzIgF2EEkelo8aOnX/Ess9iNCZeavFi0/QmlvBVKWcBait2n8E61G+u3mTmjwdgb6ULoWvAS1eEuXHKl8HPeUbreyZmmWdBCDzN0QU6/NAAna5hdety3oEoRo3Q==
+ b=noVbdOo5EMJ1GiaD+Yh5aPfYI5vo7aIeJOJU/HMdF5suC+oFXHe8O38F0IMQ2w+S8ZZqSVLfMvAi8E6X2gsMhiDFcKB8TFjtkOu+/j7E/TfIYjzl6RDNF617LAlN9GJ86p4q4JyxPZMtBL6+kb6wdxntDGrFbrm5snxnwukyO6QYDqMlWdgDH96vB32PzNZVOMPALKemP35PYr+e2UdF72Z9Gv035gqQugXfdrf6s0RxhMzQc/LyhGXNhJwGd7/krvO8acF9TJyrk+7X8nRk4OV2IDbSWqmvRcijS0VS2qBX+iDpsuFR+Cqr8Wh6Jnw5QMBuzIkLHbgvoxqi4mK3YA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0iCb+dxQVinVrg3biC6x9ZnkVOzmvXICVxWkffSEFY8=;
- b=uMXKLkMQ+IVJouuCv0zhxNi0UgWQI5zbNSSo6PfN9AsyRNTlYoCm82f1b1pwQfwFdvsK/UpiumD0tjfAHjnAYyRXSiaZKGRAVVdFXWSvtaRo+/xn7M5AaP5jsnjmKRYMpS39b0Sv9JQIiXwEDpfgSJ+UPzye7Ex+DB8XbA90SbXYdiYSAWKgVTbIlbDz8wj4G/H6YXYhyMBX6LPpPLJgPplPgKo3PJaR6BTv2P0Ezb9zQmfYLC38OutwfmoFGfBnUUHr7x6wcWt7br0JErM3mSWy7BQNlC3dBoFiMH8QfAStlnIYI6RMZKJBY20+LcyWAyTd8KRDv2+IFxKrpcnZyw==
+ bh=wyvgFphlm4lbVDyTheSV9EjF4Et3w13ejt0uVDQfRew=;
+ b=NHaE+hT8qEYbwSK1pCNBNqdbgdXMyLkbyniBsezBTQ0sYrVchKAr5KmMwehJUTWkzOIhbw/L3IUoX8woj0aRpyTqh0OKF/knUh7zsIFghS6ZcOoxWS6tE45W4rhaaWUaBJhaqCEF9Ba7u0Ru7MTNb29IogtN+VhSp/7a7lL7m7adF1nUjpnJ62wDftO2zxYwdR/eEmQK1n6gg7gy1/j0cyoHMeb/RwSOA5tIok7Xm3xEEyGXtAQD0MpZLSG1Pt7rprT9lQIMV24NEZhUBaNFAZUyrgmeLHHZKpTqggmv+U0CMqF79jUfYb3i3aucZ0ZiGSLnacvVIHxcSlALd1KMKQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0iCb+dxQVinVrg3biC6x9ZnkVOzmvXICVxWkffSEFY8=;
- b=AQsW4pEAEvx/QOeMXrWb0GnTEc7HL0r6IXO+d6fasIhrSdZrWQda90EsEwM2Wwct+3gDjlRaoR2bWJTlNv/GKDfulZ0ffom+W4iuFkTZFSHDE503ViPA3I7Q5l28SsOFARIBS50xn1f38Ntg5QkKUin6TALw2gmwtQ1PfpDrfpQ=
+ bh=wyvgFphlm4lbVDyTheSV9EjF4Et3w13ejt0uVDQfRew=;
+ b=LRHPulZHFiH30bBXLH/FC8SkE42wtX8FVzsHtbVi8qob4x8Fw1MHR58NPPYyaE2u/DMvpjXFrDEVX+zlNmDci3BvMjkFwXSCIT3NNdjBYcydH+bQ3fG+dH1w79DGWUtSbdyg9PQNBTHOCnZKt6jaKPSmFdNNWOT/u4GTwaRLbkU=
 Received: from IA4PR10MB8710.namprd10.prod.outlook.com (2603:10b6:208:569::5)
  by CO6PR10MB5789.namprd10.prod.outlook.com (2603:10b6:303:140::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.28; Mon, 12 May
- 2025 18:12:22 +0000
+ 2025 18:12:26 +0000
 Received: from IA4PR10MB8710.namprd10.prod.outlook.com
  ([fe80::997b:17f9:80e3:b5]) by IA4PR10MB8710.namprd10.prod.outlook.com
  ([fe80::997b:17f9:80e3:b5%4]) with mapi id 15.20.8722.024; Mon, 12 May 2025
- 18:12:21 +0000
+ 18:12:26 +0000
 From: Anand Jain <anand.jain@oracle.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] fstests: common/btrfs: add _require_btrfs_feature_device_roles
-Date: Tue, 13 May 2025 02:11:40 +0800
-Message-ID: <7fdf37215e33ad51b59fa7ed8216c940249a9da2.1747070864.git.anand.jain@oracle.com>
+Subject: [PATCH 2/2] fstests: btrfs/366: add test for device role-based chunk allocation
+Date: Tue, 13 May 2025 02:11:41 +0800
+Message-ID: <092097c319fde45298613562307e893de2bb35ed.1747070864.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1747070864.git.anand.jain@oracle.com>
 References: <cover.1747070864.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0130.apcprd01.prod.exchangelabs.com
- (2603:1096:4:40::34) To IA4PR10MB8710.namprd10.prod.outlook.com
- (2603:10b6:208:569::5)
+X-ClientProxiedBy: SG2PR06CA0183.apcprd06.prod.outlook.com (2603:1096:4:1::15)
+ To IA4PR10MB8710.namprd10.prod.outlook.com (2603:10b6:208:569::5)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -101,123 +100,552 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: IA4PR10MB8710:EE_|CO6PR10MB5789:EE_
-X-MS-Office365-Filtering-Correlation-Id: ddf75b7d-c1f0-4d5f-c502-08dd91808a39
+X-MS-Office365-Filtering-Correlation-Id: 4f59178c-0ccf-48d0-f434-08dd91808ce5
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?g2gb7hz37f0+HQpxaatjmmSDcX4JOYOhQvUKC75M/LFrZHQstxnUDzUs9BPX?=
- =?us-ascii?Q?XO+eTpvrXNnPm/fcZXxfugStD3myUdjCz5us45dVFVuCjunzfwPhfR98T8NC?=
- =?us-ascii?Q?IVPEA8HoBJbLN1MgIFqwXClhfc6eg1XClUW6Pno43vYu1sLw9vG+SIe/b1Me?=
- =?us-ascii?Q?sc5xT9WKuIuWrwQU7nwcwbrf/hg23dj6ywc7nopO7iPZATwRr8BrNpm70x0Z?=
- =?us-ascii?Q?DXlH9VWKIewbhD3PFwo+NZj4xNmiJZFYQlx/8EsQyHUdUtfRmAmTXUAErJ0B?=
- =?us-ascii?Q?thZof9mnwQQVOFwSMS4FS2/cB5PLyec+q5UTSEE3dsTAAZVW9yTL0pVq5/eF?=
- =?us-ascii?Q?PUc96+ZGWQIl+p9aHfVJLNFaKS/NCTIs9QgRTZOqexmBEfaO1tgzAXzsblRu?=
- =?us-ascii?Q?ohFmy+3QYPqe0G5aP6/Sdm7S8X1puB/ogFIZh6/u28xEnuN1MxtEGm8MEPtz?=
- =?us-ascii?Q?GkZVhcbpx0GTzrg13tRqLUMXcx8ZFnFFbK2h+U0jtJPtd3axuwzmPWXZ9KEy?=
- =?us-ascii?Q?uEXGQ31xjV2JIIaljuAOs1wvX4FmkROEc89N/k/M9kGzKY1OWVcg3cuNBCid?=
- =?us-ascii?Q?dOpbcx3o3LshH/pJQqYAGW94bDjtfkWTT6f5gHpYw93ZFP4E5gT/0pjP85E+?=
- =?us-ascii?Q?C8VS8IZZnqz4sIzjXR007iI1utYkkDwXbIdzXNwuTtdW16HyXV1bPfLXbXO9?=
- =?us-ascii?Q?+YlI8kWgfV3AZ5L0ncUcu8JJilsZtk++5nfsExhsRhKiBo3lRVW7XnsIJlV0?=
- =?us-ascii?Q?xQq69HVwDo1tKAbNlXwgcPNe4Wu6mC0PAbZnix2gngbiO3y1demPVGzE1Pga?=
- =?us-ascii?Q?is97zQ/CYldZbqJ+Y5bCLi3SzdC3rCwsrJvkwf9Ud0VL0sAqNMwuJkMwdbdx?=
- =?us-ascii?Q?dVG45aTMZnRVrcp3ptUJPkUPQoG9/PHT1eGsZ0N+SX03jUlKZhSpo9uvjVNM?=
- =?us-ascii?Q?l8BTKQ1B5/0846Lx7ROJqDpgWKyiTLLu83hQau6tst8zHDuOzCipyx0nooch?=
- =?us-ascii?Q?EQn5+dQyu9aEpfKvN1agAmuvbCxAc/SSCe8fJOmJ58nMFztuhzVSbVhSQ/Zb?=
- =?us-ascii?Q?Mv/QTyYbF0r8H1Z/KssHLqGW6xboS+F4gk/VbGY58tYh29uZNJFqHANi7ZQT?=
- =?us-ascii?Q?NLsSrK+KAT7HQpuREASCApRQ++H+PJaEAKvQiYQct1K3HXQERkbC6p4CKTxV?=
- =?us-ascii?Q?9qDwVbtQNw1GYY6EVO5AZkH8YMRfIKR4BFvz/klP+WE0moqLmGH0+XcOUQS1?=
- =?us-ascii?Q?Xph/LofsNPmmGPPcH8LVbYljBbWWvBui2rHUhhVTCx3T9zkguAl5AaCalAzr?=
- =?us-ascii?Q?RxddzlBuhO8j8tbX7pBHpt5hic9RJm93p2Cvpg9aS1Le8qCkNNFvinG4Od1C?=
- =?us-ascii?Q?pFmNEfHlgk6BPsisPZXy5s5A+rgie0dy2+B1MgDCuFWHQJJdHg=3D=3D?=
+	=?utf-8?B?YnF0SmdBOFNJeGpZQUFxU01nT2JBK3Z6cW5ja0IveGwzeXI5QlkwbnN5Zlc3?=
+ =?utf-8?B?cjR0aDFLNWUyYXh1MFdwSXpodjRDa1h3dWJlSFhxaVJiRGZxUDliSXozTko5?=
+ =?utf-8?B?Q2h1bHRNOGsvaytrMmczRUZMMXN1TWRLQm0vVXNhOVdBdG1TQnBKN3VmMnFm?=
+ =?utf-8?B?RUtXQTlVNXhjZGFLZGJ5dUNlN3I1dXpCbWZ1NFZlRmVER0EvQVhMbG9NdHZn?=
+ =?utf-8?B?SnhaV1hxY3lZTE1NWkVqRFhqVnhYd2RHWXVmcHQ3cW5ybHZ4R0s0TUdZY0NF?=
+ =?utf-8?B?WU02Ri94WU9vODZ1NTZ4alJuRzhJTnpzSVBQR0V4Z0JyMExRbHAyMksyK1kr?=
+ =?utf-8?B?SWhQOVZHYi9JdVdsMlBMTm0wSjY0azhUalJqbHk4d3AyN29xQTYyM1Y0Wmtp?=
+ =?utf-8?B?K3hHVWgzZCtMcFMvMmdKU0RtbHM0d0JTUi9NaUpLcU1ndmlWU3Zhb2twajVT?=
+ =?utf-8?B?bS96V3U4ejhKUmRtNE5jZ1l4ekJ5Y3N5aGVBaGlGNkxEWlBZVVZoL0NScFNQ?=
+ =?utf-8?B?ZlBhazBsanBjWENkOStsZVg5ai9aM1hyL2IyMHp6RW5hS3Q3YS9kQ0VUUTVs?=
+ =?utf-8?B?alBJK1V0VmUxVDRWL2tKWW1FaDFrdVhDUE1nMmhadFNXWlFDdmhJb09UZTdC?=
+ =?utf-8?B?Ym5tSEQ2MWowWjFDdUlmZERCOGhDVmhLVGJSQVJGa1VZYUVnaklOeVFOaFNF?=
+ =?utf-8?B?czlXeUZJdHNkSkQwUmI5OWg5N2w4NWJuQlhTVEtOeWpRVEIxeTRVaFViN09z?=
+ =?utf-8?B?aGo2WitlNWdUTzJPOGRlZ0svd2RzTmRjNU4vNmEyOVZnK0dncUN1b1VaVEJX?=
+ =?utf-8?B?ZDc3T1QrdDZRUzYyaWxPWFk2a1ZabW5lZFBHa1VhVGlQOGhwVTBBV2p1dUxL?=
+ =?utf-8?B?QXpsblZMTS9wR09WOVR4V0JwQldJVW1rTXZLNHdsOGdwNUVrSEhWeDNSWHVr?=
+ =?utf-8?B?QlRpM0Y5MUNvZEFxRUZjUFhNNVFGR3g1RTM2OUFGZjBVVHAzK0NhQWh5eDVY?=
+ =?utf-8?B?UFd1RFVScDd4Zy8zVC9OQnJqckVHQWpHbG5ZeFZqenJEU3JuMGMzN3dmNXBt?=
+ =?utf-8?B?TVVLR25IbVA2NWlpVFBBdE9FRkJlSHBRMU95cW9uRmIvcm55dzB5Q2diSTM5?=
+ =?utf-8?B?OVlBVmp3N085NFNtenlRSkNaYTVuOCtQU0ZXRUhZQXYyTGNrRkFQaXBsYitj?=
+ =?utf-8?B?UGtJd2R0N0pyYUQ4VHlTYVVNZ2MvWkFidUU2bEdsWk9WSWgranhyM09IMXo0?=
+ =?utf-8?B?d2oxV1NqRlVXeVdqUUxXc2REenl1R1hwbGVXaVpFNm5FeUE4SlNST1o0OVVV?=
+ =?utf-8?B?K1l0dVdPUU1FNXJCZ2xHTVJWOEVUV3A0U1BLN3NyNk9pTHlXSGViOEw3RFA2?=
+ =?utf-8?B?QmxSUWhlYmpHcGNIZzI5MGlGMmo0MEhBWk9ISVVOOUhxQUs4ZmlkY2JRVnpk?=
+ =?utf-8?B?S1orYW1sRGlsZVBrWWxndVhWZUtUaTFZTnc5K1g1VDBPTGdvcDVPYXllRExF?=
+ =?utf-8?B?eklhTDNxbUptNzYxUW5mNzRxRGRSNGszRmdnSDhZTmlNOStJUjNTY21RSGov?=
+ =?utf-8?B?M2p5TWNUdmhaRExIcFZqUXRGU1F2ZUVLK1hxZGxscUNJaHJ3cHRUajI5d1BF?=
+ =?utf-8?B?YUFsZFRNTkVTU1NqUFplcEVlNkNlbmFWbldUTnVmS05FK3pwelBIRERMb21w?=
+ =?utf-8?B?d1JvRTlXQkVLNUdKSTVtOHQ5bUFqTjFsY05UdlFjUDVFRC85RWM3VnVrN21o?=
+ =?utf-8?B?dnRKYzloSkkwbERBUElwREVzcnRVM2V3aE01c3gybzFIQTVMamgxWjJ4VWtu?=
+ =?utf-8?B?Q0YwWmJ4MWRKVDRKaUxnYnRBQlZhV0kzMUJGM1pGNTRPMU9rNmFuQWlqTEd5?=
+ =?utf-8?B?WVkxMlBpVzZhS3BaRXRtTHU1RVlKRFBhMEdHc3YrT2pWeVVPOHhkWWUvODdB?=
+ =?utf-8?Q?S2df6noqU2U=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA4PR10MB8710.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?5SDzH7eBAB7th7NBmw6q02dcPvTQp3z1K0MhGUzsvPuoZVDAZI2XWt36sJeC?=
- =?us-ascii?Q?vNaKh9lF3Il070pXkhh7fhYyHohVABD9anL9QtsaW/PebL+W6UMFkAi7OSE+?=
- =?us-ascii?Q?+zf4xhxzuzDI2Ol5iLfWZNERCl4BsMJ3uhBTF56d49X52/dClVKLcDRoT81D?=
- =?us-ascii?Q?CSbqeErsm3twipX9Yu6ZbCnhFziZSn2/6I4cPnNOUSJcjdKhGvrUIgBxKWRU?=
- =?us-ascii?Q?xFBVPbT85r9jyHTHZQZ2sbA13d0EuwFi+YH3bFb19p4oeETkmWEH569kMmPl?=
- =?us-ascii?Q?8AvFzhotyAqG5ZtX26ezda2EUi27VPQGfqzCAh9J+jMz0nMIHMVTCfzq1OXG?=
- =?us-ascii?Q?/wcZv/L24BnQ4Sq1mct6fenkBR4vxD3/T5zWgrViJBuxO/JyLRhzxO+QvfcS?=
- =?us-ascii?Q?lDFJ+o+683b0o2lT9YXKSHLIJzIr6lp5+JE25lkXpNkLaFjhuvWuvborqYWl?=
- =?us-ascii?Q?qr8SgmIYDgdnKhY97BNU70DR+CJAh8BYlUPCRsONYXXLsbV5uc4nE4kk93M9?=
- =?us-ascii?Q?tUYwXjDht1AabtuYQ9ycLa+bCHA/PyvDy9mJhBOnPUJUFEpsONZFZ1kIgmO4?=
- =?us-ascii?Q?zWsGqTyRik3nYCvK1UOdO3wTKtyAHpHusstMubhE6OCJzkBEkiSG9I8+pxWn?=
- =?us-ascii?Q?jRAC8gTrduOr23WpH/ro5DT4q5DucZF0/QQI9d1IsoEiR8C39d5gX5MJqw+2?=
- =?us-ascii?Q?S57BFws8YGdOOYjqNdBy/0yw52Yr7mK499IFCMpyHBr5wlONxN2TjOhnIkd3?=
- =?us-ascii?Q?P0hykHI387sUuuKs7+rwmRosLp6oMc8VQ7adEzyBoWYaP2zTuZ7X4avij537?=
- =?us-ascii?Q?Nu7qQM/oruc8WOOb2FeAwREbfeeLYLKgj1zeVWGilFg3p0WncdH7gKJl0XC4?=
- =?us-ascii?Q?nykYjVMFwt306IK9LCtm2FP+BH6+3rPjHRcsHEtv2tDRnTPnrB7sQO+wI32F?=
- =?us-ascii?Q?HORssGxAtZRCHQGmz6MH9LHWhX6/T/vjwSodYXjbdeuxIsmk8Xqt/xAmh6AK?=
- =?us-ascii?Q?yDgw9yU6QFwM+OY9ibQpVa5Yd46mcXdeynTMonUQzAaU0G5PeyoOP4BlkyXo?=
- =?us-ascii?Q?7Cid407tGbG148JUBIFV0QFme6hfOYXjQFDFUdK7bRtClcLjdHJ6QyPb7TeX?=
- =?us-ascii?Q?Vk12DQ0unTIMlpxl/5lMBI41Ke+/scG3Mj9AjHU+muRpCgbU2SGd5anQ2XZ4?=
- =?us-ascii?Q?KDfQZfdd1iC9ULvn2fnQTl8jkwEJmEkc2moAK+IgRaF1gE49lvizUbBDwvEp?=
- =?us-ascii?Q?BISu4ULdQjbZK9KjyIInSNQe0ELCfTc83zig9a4A+KYsIzGX6lY2licX4HAU?=
- =?us-ascii?Q?hpxXOmhi07QbhMkdx2TlqtntDOcxoFL3CK0Ga6+CgvnB+AuV0xSWgqKUTY5v?=
- =?us-ascii?Q?uBCVcKWMn9gu9g3eg7O6xja9rzRmrmi5BfmmvsdrdnYlSrlUSYdhStkh2blw?=
- =?us-ascii?Q?8tjEX/kx0LqFDwvwP57ym+cn9b5BXiYVwLFy3mwwlrZGYWyERvGYMMh20EWT?=
- =?us-ascii?Q?ecO+QBcaV8AH35ghNvvqkOUrA/W016LUZtlH9u+ro0nakBnTpgCHWpj+J+jb?=
- =?us-ascii?Q?v2Byue+g568MVSRaluO0fch7CsS7dm3JQUN15KoU?=
+	=?utf-8?B?NDZ6WTZQb1oxRVF4NjRLeDZoZWFGb094UDkzUUo5cjM4OXd2RGVERisrWGgv?=
+ =?utf-8?B?dG5SWEZKVGNVNXNnSk14S0ZJYWpmZU4zWkhETFhsUFpZclo2R0tKdDBCN3gr?=
+ =?utf-8?B?Y2xMK0VyY3JBQlNKaGZnR3I0WFZQaytPSlJ4U1ZjemcwRXRibmJxaXVKOGNt?=
+ =?utf-8?B?T2hPVXBrTW9OY3QvemdUZmoyeWxnY3JBMGlZMzYyMWVxbDRMQXdaYkpqc3Fu?=
+ =?utf-8?B?K0IrU05TVHM4Y0NReUcycWJjSGErVkdNRFRXNFlNYW5jOERDUm9TdTNBZjRk?=
+ =?utf-8?B?blBrS0FVL053UGhZem10UEF1Ty9SdmJiN05TTjhwQ0FGSlh3WTVjV1JUVGtk?=
+ =?utf-8?B?dkNwdXphZHZsdVNIaVUwUnY3N3dVeUZWZkxtb3cyOUwxV05HVHZ0MS96QWZG?=
+ =?utf-8?B?cFNzUW5RZ013SElPOWdnQitRUUdLd3lERVcxMzI2NlBnNzFnNHNGNnpNVGtX?=
+ =?utf-8?B?TFZTU1N2YlVEeVFaL0xSQlJFTE82NWJQeDBadzdwWGQrdTlFMGFEYnFSNUht?=
+ =?utf-8?B?cTZVTmlCcGJoM0t0YlR1SndUVlQ2MDBySFRDditmckFmNnB1WTBaVCtMRmFQ?=
+ =?utf-8?B?ZUxlbUZ4VWl0WHlsRUZPSW05SXFjUmhWOVFTMWlBSWpsYWZLSThBUkRiUHVM?=
+ =?utf-8?B?a3djRHpoN1RPbVAzVFpWVlZUSHJScVlDVHM1bmRCUlYrTFJROXpDNStOQWNw?=
+ =?utf-8?B?WGJSNFEzdy92YzVoMFk5NGN2eUNNOUQ5azQ4OHhoZ0NCdDF1TGZrdjZZbkt6?=
+ =?utf-8?B?aTdBY2F5OEthdlhlNVozZU5aczFweGRSTUdJTEliSUNTUXVtNjBTSGFRaC9P?=
+ =?utf-8?B?NnBkYkZZSm1rTGUrdktodVBkKzBEWU51QTZ6SEF1Z3RyS25rTGQyazhycmJp?=
+ =?utf-8?B?MjVhemt3NTFFdWdLZUZXVkpHZ2Q0cE9qdFdCdmNKM3QyNVVXbTZ5R1VuY2Jm?=
+ =?utf-8?B?Smt3VnNJNTdNOEtmZEV5Z2VhT2N1RGdsaWlVN0IvdlV4MjJOV2FRUWhvQ1lX?=
+ =?utf-8?B?TmlvSGlNbmJKOXR4aGVZNW9LWDBCeEdBVXFCRWpsSEoxUEpOdDFZWHlkc0tS?=
+ =?utf-8?B?UEd2MmVKSnM5UE1na0VneXpnVmVCRXYrSDdDMTdWTFV2YTY1ZERUSjYxL1gx?=
+ =?utf-8?B?YkR2VjhMNzdzSzkvRHpvNXNvVFAyUStna0NENmRUVVE0akJhTEdIZVd1MGN6?=
+ =?utf-8?B?M01xZks2THRNb2JWSDF4ZjZrRGw5cXlrOXBQR2s5NjJwWnZRSHFraS8xdU80?=
+ =?utf-8?B?N1p4VnBXc3JkUndJR2pmRkhxK2ZOcGt4a3VBOG1RNWpSTW1yMzMyMCs5ZjZt?=
+ =?utf-8?B?KzA0TkgvclAwUkJPVUN4bkZKRmlhOFo5bldHYi9CTjlQWjQ3Q3dKOHpwa3l1?=
+ =?utf-8?B?a3lkOFdoa3VlYU1jNkZBUW0yNkFBVnRjdm5BK2h4YkZMQXN2d2J6b2FIYi9F?=
+ =?utf-8?B?c1ZmdU1XSjJBaUVORG83NEZmQkxQcVR0Y25wRzJTQUx0Um04RU5sMGZhTzQy?=
+ =?utf-8?B?dDhqWmJLbHpTM1A2OVVYeHJCbFg0RUFNYitsNnA4UE9ldjEyS3d5NHhMdGFS?=
+ =?utf-8?B?cEsveC95QVdDM2JZdzd6ZnFZV21teWRLUXdRVy9SY2ZCYWgwMTZlcUdiYTZ4?=
+ =?utf-8?B?SU1XZnNvTkJGc3lJTlhaZDlvZ3FNUk4zODZNc1ZtQ3h2VEk4NHdzd1VRV2Vz?=
+ =?utf-8?B?d0dWT2tHZGYwZS92cUlmSy9hWDFvTEM4WjlncklHNWtLdlB1c2YwaGxldDNz?=
+ =?utf-8?B?T0J1TkxIcXhGNzhWaGFDbUx2U2gxWldPMk1JQXZoVmI5SmxwMnY5d2tmKzha?=
+ =?utf-8?B?blBVM1Uvb3plUUFTTUMrczVEQVhHU0JjdzU3ZXMvMS9Mbi85TDQySXFPS3Vx?=
+ =?utf-8?B?bGFQTWFmYStkVXV6SS81NE51WXJEOFRTbHlycEZ1NFMwUDZoQ2NxUUlGZVBM?=
+ =?utf-8?B?S0RvQVNvQ2M5NFc4UEFOTndRZEY4eWhqZUlDcEsyYU93NFBGOHg3Q0p6VTlZ?=
+ =?utf-8?B?clY3YmJqK21XVXhqNDNVeXdpQ3ZSNk1RYlZZRGZHcE45bEtoQVhVM0xlR3Uw?=
+ =?utf-8?B?a05LQVhTbjd2RlltYlZic0d4bmk2bkhMQWpUbjhJcy9qaWtncTRsVjFNdDFr?=
+ =?utf-8?Q?vqgPxp8Y0qd2SBbS2uOjz1Klj?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	UlAtwFWBcMsQXrk9507X+XFEnJNGypjtyEwFcsyBtEfFGeHLI0TzNPC411sB+suSSZyQZ8ax+b3tGM71FgMOz2o2ji99QWybWXbAJMHerh4vM00JnTzuBQgTDch4qLiSSiW94qfbL5tuDh/Bl7SIJCmTboNH7905bLksle2v+hpLTq9c+OpeKpZnlKEY9neKo2bwvGVVN+CHw+a6G2yZy0u6XoF1CndHs4yAps6TjKt/Bj22Evv6t7Zxd6ACusbx7FViySJNrnsdrp3B7NgCFxWTH7EuewRBAjCX7nmmLYTfQsn+ZTN+QHCEiXtSTnRjHXimaHltiOnIBdZCMcVy6x69NJze+XkLlnBJai0n7ncON3kAJgflVtOyzLfInCNqsqCB5kvk4lrFp+ODXRZWQf8ATXzbHA/6K6ieDfR2X1ZBRjmZ0rgsy5gnpEMnZ+Z48bj+mikRY/MZ1yacMAHJ21cqECapASokMyn0xQA/kl09a3CE3GXThVmjesZjzcJfVsMIt7avXGKARhNCz78i2p9hK+ufdynkzImkKgi/x78mnt15JRurAYAiLFOqILTs9UT2gwaJ3RvahWBHdgtqW1Oq6Ivc6d18nO0QUU0BS58=
+	bi8YsYNkDZF6AaMvxU1ZHG07kxRdBlKx2yCQROYFRpiuT//ddIPCJc9TlcUz11UiWfjxOF99gjq4XD+shpolYHDgA/JzaJl3Fe0FsBFH/TR6vIVpZ0kVeKROHKxVuVSIYBx0BNpkqdcEKSTxiuamKdKjRwjyKhcich9S9qf0JqeCPAXxFN9wk12FPBKBi6zW6rTsFQ5BHxR3hSvuFxWsDNyiJbsjimS5XMx1KtXOAMTtuU1BXm30pngb1zKJnK2HVSwa2xNy0ICueqDq3PdYMWFjvNUdd1QhtB3wCNfQL1ElEGxJTXYKPm9QlZKj+9RgGIwpSIGzj7b5PdxVItSBq8wSoaSj+8aeg/Qg7c9y08Tv0YRy3S1IVRCXUjalbWRIraXS5uGaS0IaA0b42KfiERaK1FfcmPQgVbfPYIBNd9sRIU4+vB52H5FlqHgaf2CHco4ZT64Zu48nEZn0FhAA9hStlAwV3EPlHetCesggZCU/TWFo918IxrioOxZTosN4M6cq+UnaQUIDRbLpcy6JCsy7fJMggfjRH/nhynaVp9WyHVrvSuIHkZLUJa0ImD8nkMaRPgT9Ncyp/j3zht6YuNkcKa7b2W8E0/HhE2wxrfg=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ddf75b7d-c1f0-4d5f-c502-08dd91808a39
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f59178c-0ccf-48d0-f434-08dd91808ce5
 X-MS-Exchange-CrossTenant-AuthSource: IA4PR10MB8710.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2025 18:12:21.8454
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2025 18:12:26.5788
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aArR+9QIhQNyedpuG5GpEM21ewpbjn+RK2hMRjhhT2n1DK/Cdlch8cMsuTCbWczXUGZVCDNfrHisz05t4FCr7w==
+X-MS-Exchange-CrossTenant-UserPrincipalName: HDczHRhAav5Ja8Gxd7E/DahS187NGU2UD92i9Am7ZZgog/WTkMF8/tHldnQbXq1pXTuzH29XUIvuSmZaAJHTIA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5789
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-05-12_06,2025-05-09_01,2025-02-21_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ spamscore=0 malwarescore=0 mlxscore=0 phishscore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2504070000 definitions=main-2505120187
-X-Proofpoint-GUID: NsC5gmGHxmlWeuQsBXSCleSl9X3owNeU
-X-Authority-Analysis: v=2.4 cv=PeH/hjhd c=1 sm=1 tr=0 ts=68223a09 b=1 cx=c_pps a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19
- a=xqWC_Br6kY4A:10 a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=HNV-wAe26yvVrFTaTX4A:9 cc=ntf awl=host:13186
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTEyMDE4NyBTYWx0ZWRfX+zW3+2n4vps3 kgKqtWRUrWz7yaePPTUyM0ZcxUeeg1ctUmJJjNX3RVOxDnDt/XMDEet0b129reSuQIEjmccBLeU 1F7l9DS8b3UH+RqkAlr6gBDme4XRsU3MECI1F93jXXS+qies7bK+kJJG/8K/qowLPXmwqOn+oY2
- 0pgl4fIwlcUvQTRgYNpPSpAszUx/7kNzQiO9aE1peCiCAexWALLgEXd97qMhvPaMj9nAp+iai0t cUtPTC4spWRxqTwXYLfvKAg3jJyD5TpyII1R1fiUEVf5RAj/7oIcTbsc9aJ8fs87QHGk5FmIG5w s8A7WtTGcYvcvqKyCWjwyhKYP7kRjKCa08+h1guDy9I4/n3nhF+qsvj+z8AqguHQ3SdfRaE/Yb/
- n64EnWHsJ15rPQ8RW9eLs1PUZxoX4tvGhEfpZbhVM+L9aVXo9YTDn+SdADUG/O2i+xWraPfH
-X-Proofpoint-ORIG-GUID: NsC5gmGHxmlWeuQsBXSCleSl9X3owNeU
+X-Authority-Analysis: v=2.4 cv=M8hNKzws c=1 sm=1 tr=0 ts=68223a0e cx=c_pps a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10
+ a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=wRMfDo9w51eDp8D3sOwA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: nfCITRMabif3AZ7XxO-sX6PcgflKqKES
+X-Proofpoint-ORIG-GUID: nfCITRMabif3AZ7XxO-sX6PcgflKqKES
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTEyMDE4NyBTYWx0ZWRfX553FnzbvX+YB om4/leuEXYDEt4IH+fohxsviB8WBCtf36aIMAkZT7HivH25CYjBDzQsmiJvOpjfZBbfRceUjG6B +mQ20WR0FscR+b2bxxbdMTdZ38H9p9ewVuRhdWQ/lPfl8+vv/eIgL35+NS5+Iu0z2WnLpMkWpwc
+ zEQKuSJFtbBSO190lKqtYRgZTehs/PsXRMHInlsCuz194LSD0zhJl+BYuIj4kI32GxEtnEstTEn S/5G7P3rDkugOqsiEp1RdnyMaXSXTcFITKUa7xSpl2AU8QN3fc2/fN4E5vC55kDeKEMHDfTleqU KCFmlwff0Qh0TaVJGvKGHuzPKHBOmWvcA3it/aI0nX+jtEPcF8TvRlIZPvE68T4nU+JjhA8cbLm
+ XScebYIK2VTcItfMiyHf7+kM7arcx2mTdC75O7dvc0YszIuZ0z5SqZ6Huq4yiZxtv47zQjpk
 
-In order to test the new btrfs device role feature, check if btrfs-progs
-and the kernel support it.
+Add a new test to verify the btrfs device-role feature.
+
+Earlier, chunk allocation depended only on available device space.
+With device roles, allocation is guided by assigned roles. This test
+creates scratch devices of varying sizes, triggers relocations, and
+checks if chunk placement follows the role-based policy.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- common/btrfs | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ tests/btrfs/336     | 259 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/336.out | 153 ++++++++++++++++++++++++++
+ 2 files changed, 412 insertions(+)
+ create mode 100755 tests/btrfs/336
+ create mode 100644 tests/btrfs/336.out
 
-diff --git a/common/btrfs b/common/btrfs
-index 6a1095ff8934..ab75975e7711 100644
---- a/common/btrfs
-+++ b/common/btrfs
-@@ -1048,3 +1048,15 @@ _require_btrfs_iouring_encoded_read()
- 		_notrun "btrfs io_uring encoded read failed with -EOPNOTSUPP"
- 	fi
- }
+diff --git a/tests/btrfs/336 b/tests/btrfs/336
+new file mode 100755
+index 000000000000..703e0279ebe9
+--- /dev/null
++++ b/tests/btrfs/336
+@@ -0,0 +1,259 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2025 Oracle.  All Rights Reserved.
++#
++# FS QA Test 336
++#
++# Verify the device role is working.
 +
-+_require_btrfs_feature_device_roles()
++. ./common/preamble
++_begin_fstest auto quick volume
++
++. ./common/sysfs
++. ./common/filter.btrfs
++
++_require_test
++_require_loop
++_require_btrfs_command inspect-internal dump-tree
++_require_btrfs_command inspect-internal list-chunks
++_require_btrfs_feature_device_roles
++_require_fs_sysfs_attr_policy $TEST_DEV device_allocation role-then-space
++
++_cleanup()
 +{
-+	_require_btrfs_fs_sysfs
-+	_require_btrfs_fs_feature device_allocation
-+
-+	$MKFS_BTRFS_PROG --help 2>&1 | \
-+				grep -q "Device-specific roles or profiles"
-+	if (($? != 0)); then
-+		_notrun "Requires btrfs-progs device roles support"
-+	fi
++	losetup -d ${DEV[@]} > /dev/null 2>&1
++	rm -f ${IMG[@]} > /dev/null 2>&1
 +}
++
++declare -a TEST_VECTORS=(
++# $m_profile:$d_profile:$monly_nr:$m_nr:$none_nr:$d_nr:$donly_nr
++"single:single:0:4:4:4:0"
++"dup:single:0:1:1:1:0"
++"raid1:single:0:2:1:2:0"
++"raid10:raid10:0:4:1:4:0"
++# Unusual config but must pass.
++"raid1:raid1:0:1:0:1:0"
++# Must fail as of now.
++"single:single:1:0:0:0:1"
++)
++
++# Check if at least 4Gb space is available.
++_require_fs_space $TEST_DIR $((4*1000*1000))
++
++# Make sure TEST_VECTORS would need not more than MAX_NDEVS scratch devices of
++# different size.
++MAX_NDEVS=12
++for testcase in "${TEST_VECTORS[@]}"; do
++	IFS=':' read -ra args <<< $testcase
++	ndevs=$((args[2] + args[3] + args[4] + args[5] + args[6]))
++
++	if (( MAX_NDEVS < ndevs )); then
++		_fail "'$testcase' needs more than max '$MAX_NDEVS' devs"
++	fi
++done
++
++declare -a IMG="(  )"
++declare -a DEV="(  )"
++
++# As the disk allocaiton depend on the free space, create scratch devices with
++# different sizes
++# Make sure there are MAX_NDEVS elements here
++sizes=(256 768 512 1280 1024 1536 2048 1792 2304 3072 2816 3328)
++for ((i=0; i<MAX_NDEVS; i++)); do
++	size=${sizes[i]}
++	path=$TEST_DIR/$$_${i}_${size}.img
++	truncate -s ${size}M ${path} || _fail "truncate ${path}"
++
++	DEV[$i]=$(_create_loop_device ${path})
++	IMG[$i]=$path
++	echo $(stat --format=%n,%s,%i ${IMG[$i]}) ${DEV[$i]} >> $seqres.full
++done
++
++filter()
++{
++	awk '
++	{
++		for (i = 1; i <= NF; i++) {
++			is_excluded_value = 0
++			# Check the preceding field only if we are not on the
++			# first field
++			if (i > 1) {
++				if ($(i-1) == "num_stripes" || \
++				    $(i-1) == "sub_stripes" || \
++				    $(i-1) == "stripe" || $(i-1) == "devid") {
++					is_excluded_value = 1
++				}
++			}
++
++			# Check if the current field consists only of digits
++			is_numeric = ($i ~ /^[0-9]+$/)
++
++			# If it is numeric and its preceding keyword is not in
++			# the exclusion list, sanitize it
++			if (is_numeric && !is_excluded_value) {
++				$i = "X"  # Replace the number with "X"
++			}
++		}
++		print $0
++	}' "$@"
++}
++
++extract()
++{
++	awk '
++	/^[ \t]*item [0-9]+ key/ {
++		if (keep && block) { print block }
++		block = $0
++		keep = 0
++		next
++	}
++	!/^[ \t]*item [0-9]+ key/ && block {
++		block = block "\n" $0
++		if ($0 ~ /type (METADATA|DATA)/) {
++			keep = 1
++		}
++	}
++	END {
++		if (keep && block) { print block }
++	}' "$@"
++}
++
++dump_tree()
++{
++	local dev=$1
++
++	# make sure the ondisk has the mkfs
++	sync
++	$BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 ${dev} | \
++		grep -A2 DEV_ITEMS | grep -E 'devid|type' | \
++		perl -pe 's/(?<!devid |type )\b\d+\b/X/g'
++	$BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 ${dev} | \
++		extract | grep -v 'io_align' | grep -E 'DATA|stripe' | filter
++}
++
++dump_chunks()
++{
++	# Make sure relocation chunks are synced before dumping them.
++	$XFS_IO_PROG -c sync $SCRATCH_MNT
++
++$BTRFS_UTIL_PROG inspect-internal list-chunks --raw --sort lstart $SCRATCH_MNT >> \
++								${seqres}.full
++
++	# We don't care how many chunks there are, but we do ensure that all of
++	# are on the correct device.
++$BTRFS_UTIL_PROG inspect-internal list-chunks --raw --sort lstart $SCRATCH_MNT | \
++		$AWK_PROG '{print $1" "$3}' | grep -E 'Data' | sort -u
++
++$BTRFS_UTIL_PROG inspect-internal list-chunks --raw --sort lstart $SCRATCH_MNT | \
++		$AWK_PROG '{print $1" "$3}' | grep -E 'Metadata' | sort -u
++}
++
++verify()
++{
++	IFS=':' read -ra args <<< $1
++	local m_profile=${args[0]}
++	local d_profile=${args[1]}
++	local monly_nr=${args[2]}
++	local m_nr=${args[3]}
++	local none_nr=${args[4]}
++	local d_nr=${args[5]}
++	local donly_nr=${args[6]}
++
++	local assigned_devs_string=""
++	local ref_dev
++	local dev_idx=0 # Keeps track of indexing 'DEV' array
++	local i # Loop counter
++
++	# --- Loop to assign devices based on roles ---
++
++	# Assign devices for metadata only role (monly)
++	for ((i=0; i<monly_nr; i++)); do
++		assigned_devs_string+=" ${DEV[$dev_idx]}:monly"
++		((dev_idx++))
++	done
++
++	# Assign devices for metadata role (m)
++	for ((i=0; i<m_nr; i++)); do
++		assigned_devs_string+=" ${DEV[$dev_idx]}:m"
++		((dev_idx++))
++	done
++
++	# Assign devices for data role (d)
++	for ((i=0; i<d_nr; i++)); do
++		assigned_devs_string+=" ${DEV[$dev_idx]}:d"
++		((dev_idx++))
++	done
++
++	# Assign devices for data only role (donly)
++	for ((i=0; i<donly_nr; i++)); do
++		assigned_devs_string+=" ${DEV[$dev_idx]}:donly"
++		((dev_idx++))
++	done
++
++	# Assign devices with no specific role (none)
++	# Make sure role-none gets devs with larger size.
++	dev_idx=$MAX_NDEVS
++	for ((i=0; i<none_nr; i++)); do
++		assigned_devs_string+=" ${DEV[$dev_idx]}"
++		((dev_idx--))
++	done
++
++	# Remove potential leading space
++	assigned_devs_string="${assigned_devs_string# }"
++
++	# Print the results for verification/debugging
++	echo "mkfs opt: $m_profile $d_profile \"$assigned_devs_string\"" >> \
++								$seqres.full
++	ref_dev=$(echo $assigned_devs_string | sed 's/:.*//g')
++	echo $ref_dev >> ${seqres}.full
++
++	# --- End of assignment loop ---
++
++
++	echo -e "\nTest Vector: $1"
++
++	# Roles like metadata_only or data_only aren’t supported yet. Just make
++	# sure they fail cleanly.
++	echo $assigned_devs_string | grep -q only
++	if [[ $? == 0 ]]; then
++		_try_mkfs_dev "-q -m $m_profile -d $d_profile $assigned_devs_string"
++		return
++	else
++		_mkfs_dev "-q -m $m_profile -d $d_profile $assigned_devs_string"
++	fi
++
++	# Make sure the golden output verifies that the roles are updated in the
++	# on-disk structure.
++	dump_tree $ref_dev
++
++	# Keep data seperate use max_inline
++	_mount "-o max_inline=0" $ref_dev $SCRATCH_MNT
++	$XFS_IO_PROG -f -c "pwrite -i /dev/zero 0 1M" $SCRATCH_MNT/foo > \
++								/dev/null 2>&1
++
++	_set_fs_sysfs_attr ${ref_dev} device_allocation space
++	_get_fs_sysfs_attr ${ref_dev} device_allocation
++	_run_btrfs_balance_start $SCRATCH_MNT >> $seqres.full
++
++	# When testing with different options like ^free-space-tree,
++	# block-group-tree, etc the number of allocated chunks can vary and they
++	# might not be on the same device. Therefore, when we are not using
++	# role-then-space, do not dump chunk location so that the golden output
++	# remains compatible.
++	#dump_chunks
++
++	_set_fs_sysfs_attr ${ref_dev} device_allocation role-then-space
++	_get_fs_sysfs_attr ${ref_dev} device_allocation
++	_run_btrfs_balance_start $SCRATCH_MNT >> $seqres.full
++
++	dump_chunks
++
++	_scratch_unmount
++}
++
++for testcase in "${TEST_VECTORS[@]}"; do
++	verify $testcase
++done
++
++status=0
++exit
+diff --git a/tests/btrfs/336.out b/tests/btrfs/336.out
+new file mode 100644
+index 000000000000..c4d519462538
+--- /dev/null
++++ b/tests/btrfs/336.out
+@@ -0,0 +1,153 @@
++QA output created by 336
++
++Test Vector: single:single:0:4:4:4:0
++		devid 1 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 40
++		devid 2 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 40
++		devid 3 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 40
++		devid 4 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 40
++		devid 5 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 0
++		devid 6 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 0
++		devid 7 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 0
++		devid 8 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 100
++		devid 9 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 100
++		devid 10 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 100
++		devid 11 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 100
++length X owner X stripe_len X type METADATA|single
++		num_stripes 1 sub_stripes 1
++stripe 0 devid 1 offset X
++length X owner X stripe_len X type DATA|single
++		num_stripes 1 sub_stripes 1
++stripe 0 devid 1 offset X
++[space] role-then-space
++space [role-then-space]
++10 Data/single
++4 Metadata/single
++
++Test Vector: dup:single:0:1:1:1:0
++		devid 1 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 40
++		devid 2 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 100
++length X owner X stripe_len X type DATA|single
++		num_stripes 1 sub_stripes 1
++stripe 0 devid 1 offset X
++length X owner X stripe_len X type METADATA|DUP
++		num_stripes 2 sub_stripes 1
++stripe 0 devid 1 offset X
++stripe 1 devid 1 offset X
++[space] role-then-space
++space [role-then-space]
++2 Data/single
++1 Metadata/DUP
++
++Test Vector: raid1:single:0:2:1:2:0
++		devid 1 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 40
++		devid 2 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 40
++		devid 3 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 100
++		devid 4 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 100
++length X owner X stripe_len X type DATA|single
++		num_stripes 1 sub_stripes 1
++stripe 0 devid 1 offset X
++length X owner X stripe_len X type METADATA|RAID1
++		num_stripes 2 sub_stripes 1
++stripe 0 devid 4 offset X
++stripe 1 devid 2 offset X
++[space] role-then-space
++space [role-then-space]
++4 Data/single
++1 Metadata/RAID1
++2 Metadata/RAID1
++
++Test Vector: raid10:raid10:0:4:1:4:0
++		devid 1 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 40
++		devid 2 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 40
++		devid 3 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 40
++		devid 4 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 40
++		devid 5 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 100
++		devid 6 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 100
++		devid 7 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 100
++		devid 8 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 100
++length X owner X stripe_len X type METADATA|RAID10
++		num_stripes 8 sub_stripes 2
++stripe 0 devid 5 offset X
++stripe 1 devid 6 offset X
++stripe 2 devid 7 offset X
++stripe 3 devid 8 offset X
++stripe 4 devid 1 offset X
++stripe 5 devid 2 offset X
++stripe 6 devid 3 offset X
++stripe 7 devid 4 offset X
++length X owner X stripe_len X type DATA|RAID10
++		num_stripes 8 sub_stripes 2
++stripe 0 devid 1 offset X
++stripe 1 devid 2 offset X
++stripe 2 devid 3 offset X
++stripe 3 devid 4 offset X
++stripe 4 devid 5 offset X
++stripe 5 devid 6 offset X
++stripe 6 devid 7 offset X
++stripe 7 devid 8 offset X
++[space] role-then-space
++space [role-then-space]
++1 Data/RAID10
++2 Data/RAID10
++3 Data/RAID10
++4 Data/RAID10
++5 Data/RAID10
++6 Data/RAID10
++7 Data/RAID10
++8 Data/RAID10
++1 Metadata/RAID10
++2 Metadata/RAID10
++3 Metadata/RAID10
++4 Metadata/RAID10
++5 Metadata/RAID10
++6 Metadata/RAID10
++7 Metadata/RAID10
++8 Metadata/RAID10
++
++Test Vector: raid1:raid1:0:1:0:1:0
++		devid 1 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 40
++		devid 2 total_bytes X bytes_used X
++		io_align X io_width X sector_size X type 100
++length X owner X stripe_len X type METADATA|RAID1
++		num_stripes 2 sub_stripes 1
++stripe 0 devid 2 offset X
++stripe 1 devid 1 offset X
++length X owner X stripe_len X type DATA|RAID1
++		num_stripes 2 sub_stripes 1
++stripe 0 devid 1 offset X
++stripe 1 devid 2 offset X
++[space] role-then-space
++space [role-then-space]
++1 Data/RAID1
++2 Data/RAID1
++1 Metadata/RAID1
++2 Metadata/RAID1
++
++Test Vector: single:single:1:0:0:0:1
++ERROR: Metadata_only and or Data_only is not yet supported
 -- 
 2.49.0
 
