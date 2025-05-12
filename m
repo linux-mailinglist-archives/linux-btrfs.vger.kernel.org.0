@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-13879-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13880-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE658AB324B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 10:54:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7DA9AB324C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 10:54:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 520F216C2CC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 08:54:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 155CD18978EA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 May 2025 08:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDD325A2B2;
-	Mon, 12 May 2025 08:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BCF825A2B2;
+	Mon, 12 May 2025 08:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="GBJ7asAi"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="fEJAhf81"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C4B433CB
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 08:54:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86AE433CB
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 May 2025 08:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747040061; cv=none; b=fKGEMzsDJoA6EgU1eU2MO+rGbTArWJY4kSmyPmdz5QkrvsqXHx4QktWgIc2+moyUMT1eINWIi/UigyqCQgNM4zpGlkGKzZe+P8RarnaJds7fdKowkJLhHcLqoPGh3TR3TRfs5iMUv8w4wnGP+53swwlaaWEuKAhRQJU0VhjeAXQ=
+	t=1747040088; cv=none; b=cAeYRgBr+uUrpO3HHQLil3D+8GODFoVRnnGFJv32Snf0YV8oQ8vZtDpuVmQWeLKzn+E+jadyBaKJKYgWVQO4VLUn8IpgoTRO29tEcgQvOUr1uRC8Ot+juR2c0ZVpVIOqDfCHzcRFV9WIJCMFHSjjXxthsmAxCjgyCs7LOvHAPsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747040061; c=relaxed/simple;
-	bh=93D+a2inyAmyRdXWBTY6spFOeqgWLkxd+EvfkdXMNSk=;
+	s=arc-20240116; t=1747040088; c=relaxed/simple;
+	bh=OjWG9Ry+r7vMcwiMDEKXA37Z5Ine5SenLQLOeEqIr9Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=pf34T22Y3vXaTR8DxCS3gf0bGTc7zj6+AoyyIMfyFvv9MTnb/yM/LXSdjMxc9O4PBWXyoEhh0xlhZq9cwbDD7XuHC8Bk4s6h2JiwLu74rQl09oBmVgYM5Oiwfx8SdeYxKYYBUaeSdtzwjmJLQkvBtZJxGJIzT3EvKPE+4W6mWvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=GBJ7asAi; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=KUser+d0BRRTkrRsLwxGOK15sYWaRUtpS1PtT2ea69fpVccGCMrc38nHyTldWstt6knmZ7WK4FzbI13xLfk1hN3jYVUFbjoTC+MBTSZtKuG459UoOxnQTqdudnA5YBqAo4+6x/8qdjCUeKtuvdTICXb0FJNHj2NUgWPOrVQXKEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=fEJAhf81; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1747040053; x=1747644853; i=quwenruo.btrfs@gmx.com;
-	bh=rwdFEjuk3fALuxShPjjufxHmSm1pfwl12LrtU3ptLZs=;
+	s=s31663417; t=1747040081; x=1747644881; i=quwenruo.btrfs@gmx.com;
+	bh=8rnEu3M/3DUn2PwMc925A14EmqG9k3LobAv7kwpRs8k=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=GBJ7asAih56pM1rlM/GtT3rTCROaxsIap63zyxJA86YljEA51j8h3qNx1PlImPx1
-	 RwpPBCHucm5HPqgHmNPhtR+ZNIo4kzNIj8A0utk41iM8xNVt5nMYwRJ36DWsrxaxK
-	 Vh/gTYZSHINwN353xtlXcyw686On7a5Tr+t+ueDpSzgV87895ZFs6OBSwejjsITTW
-	 urfqhIT9r+NWA1QGWt4LLLDypLwxyOQrDlHqJ5HSVbZ2p71xZBZWDF6BnwgPJFvyJ
-	 VH3R8JAL/8yM+emZahxytQTOkSMYD+Co4x/wU7KvWbFwkYH2aXybejGNcdu01Pecz
-	 zFz5/gLA54e2TSY7rw==
+	b=fEJAhf81Lq8DOwa0ny48BIP5VgCSixKSB6Ssk9fwV3bj67t6pXPZOq6Q8IykdPpU
+	 Qi3TvPvzG0UAv0MMS+W6fgE1xc5oB07msxh4XyXIJk5dscLBkpv5gHxws1q87uXYC
+	 UCLlmP/CyJRjFiUGrtXlHFC3YRqCJGUigC5JjTx4ormQco7+ZbBz1QgjYXyKpNwd4
+	 1qAvBWbhO0TZXFZ8fATBaUIxKPkUMN6PtTUIBOIt48yaBY59XfmTFJT4zno4batGW
+	 eHWMpFeXQcVIGNFLeL2X7OwPq1MuPDJsbvFVJ43DBiF+fEtwFOZYIORn2l/BE6gSN
+	 U7i2eig7HEBL0Ab3GA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLQxX-1uWLBP2VBj-00Tc4D; Mon, 12
- May 2025 10:54:13 +0200
-Message-ID: <7cbc5e90-9c05-45c1-a554-079c09e141c3@gmx.com>
-Date: Mon, 12 May 2025 18:24:07 +0930
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYvY8-1uRcKe1L8q-00SwPp; Mon, 12
+ May 2025 10:54:40 +0200
+Message-ID: <f4dcfef5-1d6d-465a-a679-7f69489345d9@gmx.com>
+Date: Mon, 12 May 2025 18:24:37 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,10 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: simplify error return logic when getting folio at
- prepare_one_folio()
+Subject: Re: [PATCH] btrfs: log error codes during failures when writing super
+ blocks
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <0ef572363b52c57d95cc1a8912430187f868a7d5.1747035909.git.fdmanana@suse.com>
+References: <bb1c6b0212c4e60ef4a6b08be741f1c50ace6afb.1747035917.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,76 +88,69 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <0ef572363b52c57d95cc1a8912430187f868a7d5.1747035909.git.fdmanana@suse.com>
+In-Reply-To: <bb1c6b0212c4e60ef4a6b08be741f1c50ace6afb.1747035917.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VOFRgRX3p6mSNnjKFDdxMzR0mik/IZF9aAzFxsxbxl+XRnKVFbT
- mLStWLcEbrisuRlqoP8gNpWGaDIgkdWEYKA+EsA9ZtpafWpDpu2HR+B0lMcuTN9cV9OyY5y
- R95flJEyCg/mkeLk6XsbbstrcM2nkAcVySjxqnTfjlXxFU6kzM0OKT3B4gZflbe6RwEbMaf
- 7rN+KBNbjLhC1xt3Uc+Ag==
+X-Provags-ID: V03:K1:RX5yJ+xXdGejSp1bcaWTcnNSSX/0fXYq9Lr5JaUkOJpIcwpHn/0
+ pQoq4oSqaE5Mpi2hYf2X71SuHMXX0ieLQwDGyD8kwgnhC/7boei0j5aH0f49fEew+d6mfKY
+ kz2vKN4rLI2VXCneLths+pg6V5IqKliBxjNJyYJIQVUc2i5KM6KYHulTEdY+/D/NP2Qmm7Q
+ TzTLTOXiqQvRG+Sb9C4+A==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:t3cirBhGvZY=;vnLfRvg0IKpBddv0HzCAgtMQEqR
- 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
- rLyyKFTsGFeh0=
+UI-OutboundReport: notjunk:1;M01:P0:t/zJTfOyfQ0=;M+pdaERhc/3OYq+vmnQBq0T/kM2
+ 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
 
 
 
 =E5=9C=A8 2025/5/12 17:18, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >=20
-> There's no need to have special logic to return -EAGAIN in case the call
-> to __filemap_get_folio() fails, because when FGP_NOWAIT is passed to
-> __filemap_get_folio() it returns ERR_PTR(-EAGAIN) if it needs to do
-> something that would imply blocking.
->=20
-> The reason we have this logic is from the days before we migrated to the
-> folio interface, when we called pagecache_get_page() which would return
-> NULL instead of an error pointer.
->=20
-> So remove this special casing and always return the error that the call
-> to __filemap_get_folio() returned.
+> When writing super blocks, at write_dev_supers(), we log an error messag=
+e
+> when we get some error but we don't show which error we got and we have
+> that information. So enchance the error messages with the error codes.
 >=20
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -167,31 +160,36 @@ Thanks,
 Qu
 
 > ---
->   fs/btrfs/file.c | 10 +++-------
->   1 file changed, 3 insertions(+), 7 deletions(-)
+>   fs/btrfs/disk-io.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
 >=20
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index c9a3e75befb9..8d6a4a835bfa 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -866,13 +866,9 @@ static noinline int prepare_one_folio(struct inode =
-*inode, struct folio **folio_
->  =20
->   again:
->   	folio =3D __filemap_get_folio(inode->i_mapping, index, fgp_flags, mas=
-k);
-> -	if (IS_ERR(folio)) {
-> -		if (nowait)
-> -			ret =3D -EAGAIN;
-> -		else
-> -			ret =3D PTR_ERR(folio);
-> -		return ret;
-> -	}
-> +	if (IS_ERR(folio))
-> +		return PTR_ERR(folio);
-> +
->   	ret =3D set_folio_extent_mapped(folio);
->   	if (ret < 0) {
->   		folio_unlock(folio);
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 5bcf11246ba6..1beb9458f622 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3752,8 +3752,8 @@ static int write_dev_supers(struct btrfs_device *d=
+evice,
+>   			continue;
+>   		} else if (ret < 0) {
+>   			btrfs_err(device->fs_info,
+> -				"couldn't get super block location for mirror %d",
+> -				i);
+> +			  "couldn't get super block location for mirror %d error %d",
+> +			  i, ret);
+>   			atomic_inc(&device->sb_write_errors);
+>   			continue;
+>   		}
+> @@ -3772,8 +3772,8 @@ static int write_dev_supers(struct btrfs_device *d=
+evice,
+>   					    GFP_NOFS);
+>   		if (IS_ERR(folio)) {
+>   			btrfs_err(device->fs_info,
+> -			    "couldn't get super block page for bytenr %llu",
+> -			    bytenr);
+> +			  "couldn't get super block page for bytenr %llu error %ld",
+> +			  bytenr, PTR_ERR(folio));
+>   			atomic_inc(&device->sb_write_errors);
+>   			continue;
+>   		}
 
 
