@@ -1,420 +1,394 @@
-Return-Path: <linux-btrfs+bounces-13975-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13976-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE85FAB574F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 May 2025 16:37:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0390DAB59D6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 May 2025 18:29:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 755D016AF2D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 May 2025 14:38:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0037C7B11A3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 May 2025 16:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FD5F201031;
-	Tue, 13 May 2025 14:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46DB92BEC4C;
+	Tue, 13 May 2025 16:28:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VJ0wFnZz"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="c+iWUD3U";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GXFkfLM6";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="c+iWUD3U";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GXFkfLM6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C687DDDC1
-	for <linux-btrfs@vger.kernel.org>; Tue, 13 May 2025 14:37:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75D441F03C0
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 May 2025 16:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747147071; cv=none; b=u+AKUGavL4wW0V0/bL3CL8h/16dssyxNkKmSiUVj4oHk8+mKCdzkhsXGJzV5t7ScKWJYbxTQGdl/Xpgm3VNeTcxM9C3qovDB3g9vmReU98gEsVEM7TLf7C/YcbgkSsHVKLSkGQlqGoFxA4BB9sQxNpeW0n1YlLhB3RK9a7GNhsc=
+	t=1747153725; cv=none; b=i8gCIrDUCCAZsJb9oViTrYX5klqHMWdbIr6IX/EPIHFRokIpL8+UNwX8LADdUZzbQwox+YIHcCbMq0bN6V2DTRxIaDYznIF52ED7cBqklfLatBveTG6hMhpFHk1If9oG9/c7dZJKSKIwzxnL2RZip/Fo4kNPZICQ+cxQNoXgLk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747147071; c=relaxed/simple;
-	bh=CQ1eTpAirWAWicVJP9Z4ssU7VJWA2MrVQn6FMscmAM0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O2TREO9+wY4k4ktyCVwatdfEVMQgAZwQqRRrHozxDiqnXou43s2go/3nnD3vaQyANx5mjkb6zCMxRzVJsV0fvOXOJBPfto0T3hFG4abxWbMiRM+VGMiNhNIuQ5v5auTQjAU823P1zEbWfO+ZMGz7+nIdGOC7RtjbPtjh8VN3b/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VJ0wFnZz; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-ad23ec87134so539202166b.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 May 2025 07:37:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1747147067; x=1747751867; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qBbAyLqny0RImEAM2CODiB0gqDeoovZSecFLzkFrj30=;
-        b=VJ0wFnZz0qBPSgKt5EDqPT3URSJL49pCk+uib4XiEV6nBpjVLM0A+fz6Cv1J65N4Pl
-         8g5CXvmW+HRQPkO/kqF+Oxj7uNuleeOj47Y9CmtoBHlcyyPCB4uGpXmIYIC3BrUuBsuS
-         2dvdaNxFhQKAZleQXQ0bjyN7WgvcXd7d3uJJfZMNaCAC4Nt/vCjH5GJXyg3kqnKKqpzB
-         LTMZS9i2usdV+qVsDEqjrFs5GaEaXXz4GCI9Jf/LkiTHEFnqN08TyxnUnq9XvmH2kHz8
-         NuZTpfNUAn4ZetQtJRAzhgICW9UG8sdUjasNhRdynV/p/iEgSy6A6D7YcTktszui5uSA
-         +frg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747147067; x=1747751867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qBbAyLqny0RImEAM2CODiB0gqDeoovZSecFLzkFrj30=;
-        b=HfXSQdd0ow1bak/goAmUEYWMP1/h5CWY/yL5SMUA3g72nPs53izWsX3/PdgmMeA5Ws
-         IPOUgZrdKZdFzM9KzDOszKOnHFkkEGOXYUu6qi+vmpE2foPA33rq6U/Wbhl+FmTi8Jd4
-         BcDEzpYcmQ8nGyUG8dRJeGW0JWob1n2qKa8nh+lAi4zC696evzhsPUhpBLPdS2nue6Lb
-         cOTpklCWr6IzLQTsVU3eK7BRobIgvvrE26XDfCWsI/C3+4VTG5M1mWpBbIPz+Y//7iDH
-         /Mracjyyxyi8WunK88s32dqH8iOCi9ngMhj6FjtVEdzG+jHQrdXuQ8T07qlhCSXxfRjN
-         8R+w==
-X-Forwarded-Encrypted: i=1; AJvYcCUgxYIjUYj7H0NEuX3m0LjXazxb8BRIh1jIS1by9mpxolpunNl6tqIQSq70qk6VkRpH9NLYXwm5+8HztQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxmdqfe9rkmPZqiTysAanzwheJhzJtrIa04LIy3Wev8S8C1L8DW
-	d7OaMFBgEgkOEKYmAZkhPeVl8qZMxqiyUbtMAdrRQHbxfiTjPdgKch0+7yj577+WXblf9A39PcZ
-	g23BvNdlg7oPHkVsyV118cionH4F79YK+b10fzg==
-X-Gm-Gg: ASbGnctgA1bZ656cdMB2koSNmTYXl3R8NW7JQJzwf887mnRZ8orMxDxtwpgpEeF90UV
-	jrn1W4HBqiPNfBxeeXGkv2Jb+tJKRd2ylCb0RfoivnPE/UJ2ZLVAatT9xkyRtE0yOw+Iwulz+f7
-	ML+IPiSjYmaaonM8MRv0xam/c9OPOhWzDIVlhkQv5XPA==
-X-Google-Smtp-Source: AGHT+IG8jJwG6WGrQYdVHirdz+fmJ6PUu4jl3YppfzRPrSvGdsxCuj94hLlUgd48ZLTDCHIu5fuySiAUFzGa1Bem4VI=
-X-Received: by 2002:a17:906:6a0a:b0:ad2:2a5d:b1af with SMTP id
- a640c23a62f3a-ad22a5db5b9mr1571684066b.55.1747147066907; Tue, 13 May 2025
- 07:37:46 -0700 (PDT)
+	s=arc-20240116; t=1747153725; c=relaxed/simple;
+	bh=9bwxlCsRBcLv0NvvdgpjIpAXcU8yxhbZsXToP15CVN0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rn+t1/1RPFPFtVk0/QCy1dsCwUjYz5mJR7AZCRkMmVhrQHVm1x4KqwrVZwRflbP+h1YPDSxBBxH/xUSe9+Yp+HHbqX3sM4amUTXZcF/HUjZoCWOMk0wZIdE9bI6lfNcAJzKP1LaUuic3xXImQSeVq9xaoVpD+p9+l2sVyKAdlBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=c+iWUD3U; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GXFkfLM6; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=c+iWUD3U; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GXFkfLM6; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 19470211D1;
+	Tue, 13 May 2025 16:28:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1747153720;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0REsCQLIDRvowuESA9a7z8fh6gu/E+iTv6JfzsQ+9bg=;
+	b=c+iWUD3UjVNEny775lVDdAwQ1p1qowLaOYwC7o5H5OmuzkAza09XykxiRXGJiiJ/S/Dwyn
+	vO+hDBkWPiFzqCdoEhLXwpxEFL/PCUSImdcrxti/JQEWvFS3fVdvHPrpaT+KNj0dZoDNVx
+	VAn4ufvf8QlM0LwTQol51GRi57lMteE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1747153720;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0REsCQLIDRvowuESA9a7z8fh6gu/E+iTv6JfzsQ+9bg=;
+	b=GXFkfLM6CxcMNJAHdunpeg0NWezxCfWIQ9pN9W8JUArJxIxJpRWNRNcG/AMdNQtDT8RBRZ
+	TYshQ0BaOSkTOjBg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1747153720;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0REsCQLIDRvowuESA9a7z8fh6gu/E+iTv6JfzsQ+9bg=;
+	b=c+iWUD3UjVNEny775lVDdAwQ1p1qowLaOYwC7o5H5OmuzkAza09XykxiRXGJiiJ/S/Dwyn
+	vO+hDBkWPiFzqCdoEhLXwpxEFL/PCUSImdcrxti/JQEWvFS3fVdvHPrpaT+KNj0dZoDNVx
+	VAn4ufvf8QlM0LwTQol51GRi57lMteE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1747153720;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0REsCQLIDRvowuESA9a7z8fh6gu/E+iTv6JfzsQ+9bg=;
+	b=GXFkfLM6CxcMNJAHdunpeg0NWezxCfWIQ9pN9W8JUArJxIxJpRWNRNcG/AMdNQtDT8RBRZ
+	TYshQ0BaOSkTOjBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CB1E6137E8;
+	Tue, 13 May 2025 16:28:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id GK1XMTdzI2jcGQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 13 May 2025 16:28:39 +0000
+Date: Tue, 13 May 2025 18:28:38 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Zhi Yang <Zhi.Yang@eng.windriver.com>
+Cc: stable@vger.kernel.org, fdmanana@suse.com, xiangyu.chen@windriver.com,
+	zhe.he@windriver.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, osandov@fb.com
+Subject: Re: [PATCH 5.10.y] btrfs: get rid of warning on transaction commit
+ when using flushoncommit
+Message-ID: <20250513162838.GA9140@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250513024200.1811319-1-Zhi.Yang@eng.windriver.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250512172321.3004779-1-neelx@suse.com> <CAL3q7H5WVUu3sHAJYhP+n2UKKKRNLbYHayBUvc8W9RC2_i5nuQ@mail.gmail.com>
-In-Reply-To: <CAL3q7H5WVUu3sHAJYhP+n2UKKKRNLbYHayBUvc8W9RC2_i5nuQ@mail.gmail.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Tue, 13 May 2025 16:37:34 +0200
-X-Gm-Features: AX0GCFvgvhkhbNq5oCfHwVUrBRPkmkAca-V7VKJFmnNUEJPf22R4TzuLjJxbfp8
-Message-ID: <CAPjX3FdOBKFYNkMiAa=cV6VUdqCLVGoHDCGnJsEP0-Mgn7azjQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: index buffer_tree using node size
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250513024200.1811319-1-Zhi.Yang@eng.windriver.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,qemu.org:url,imap1.dmz-prg2.suse.org:helo,suse.com:email,fb.com:email,windriver.com:email];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 
-On Tue, 13 May 2025 at 12:12, Filipe Manana <fdmanana@kernel.org> wrote:
->
-> On Mon, May 12, 2025 at 6:24=E2=80=AFPM Daniel Vacek <neelx@suse.com> wro=
-te:
-> >
-> > So far we are deriving the buffer tree index using the sector size. But=
- each
-> > extent buffer covers multiple sectors. This makes the buffer tree rathe=
-r sparse.
-> >
-> > For example the typical and quite common configuration uses sector size=
- of 4KiB
-> > and node size of 16KiB. In this case it means the buffer tree is using =
-up to
-> > the maximum of 25% of it's slots. Or in other words at least 75% of the=
- tree
-> > slots are wasted as never used.
-> >
-> > We can score significant memory savings on the required tree nodes by i=
-ndexing
-> > the tree using the node size instead. As a result far less slots are wa=
-sted
-> > and the tree can now use up to all 100% of it's slots this way.
->
-> Did you do any benchmarks? What results did you get?
+On Tue, May 13, 2025 at 10:42:00AM +0800, Zhi Yang wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> commit a0f0cf8341e34e5d2265bfd3a7ad68342da1e2aa upstream.
+> 
+> When using the flushoncommit mount option, during almost every transaction
+> commit we trigger a warning from __writeback_inodes_sb_nr():
+> 
+>   $ cat fs/fs-writeback.c:
+>   (...)
+>   static void __writeback_inodes_sb_nr(struct super_block *sb, ...
+>   {
+>         (...)
+>         WARN_ON(!rwsem_is_locked(&sb->s_umount));
+>         (...)
+>   }
+>   (...)
+> 
+> The trace produced in dmesg looks like the following:
+> 
+>   [947.473890] WARNING: CPU: 5 PID: 930 at fs/fs-writeback.c:2610 __writeback_inodes_sb_nr+0x7e/0xb3
+>   [947.481623] Modules linked in: nfsd nls_cp437 cifs asn1_decoder cifs_arc4 fscache cifs_md4 ipmi_ssif
+>   [947.489571] CPU: 5 PID: 930 Comm: btrfs-transacti Not tainted 95.16.3-srb-asrock-00001-g36437ad63879 #186
+>   [947.497969] RIP: 0010:__writeback_inodes_sb_nr+0x7e/0xb3
+>   [947.502097] Code: 24 10 4c 89 44 24 18 c6 (...)
+>   [947.519760] RSP: 0018:ffffc90000777e10 EFLAGS: 00010246
+>   [947.523818] RAX: 0000000000000000 RBX: 0000000000963300 RCX: 0000000000000000
+>   [947.529765] RDX: 0000000000000000 RSI: 000000000000fa51 RDI: ffffc90000777e50
+>   [947.535740] RBP: ffff888101628a90 R08: ffff888100955800 R09: ffff888100956000
+>   [947.541701] R10: 0000000000000002 R11: 0000000000000001 R12: ffff888100963488
+>   [947.547645] R13: ffff888100963000 R14: ffff888112fb7200 R15: ffff888100963460
+>   [947.553621] FS:  0000000000000000(0000) GS:ffff88841fd40000(0000) knlGS:0000000000000000
+>   [947.560537] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   [947.565122] CR2: 0000000008be50c4 CR3: 000000000220c000 CR4: 00000000001006e0
+>   [947.571072] Call Trace:
+>   [947.572354]  <TASK>
+>   [947.573266]  btrfs_commit_transaction+0x1f1/0x998
+>   [947.576785]  ? start_transaction+0x3ab/0x44e
+>   [947.579867]  ? schedule_timeout+0x8a/0xdd
+>   [947.582716]  transaction_kthread+0xe9/0x156
+>   [947.585721]  ? btrfs_cleanup_transaction.isra.0+0x407/0x407
+>   [947.590104]  kthread+0x131/0x139
+>   [947.592168]  ? set_kthread_struct+0x32/0x32
+>   [947.595174]  ret_from_fork+0x22/0x30
+>   [947.597561]  </TASK>
+>   [947.598553] ---[ end trace 644721052755541c ]---
+> 
+> This is because we started using writeback_inodes_sb() to flush delalloc
+> when committing a transaction (when using -o flushoncommit), in order to
+> avoid deadlocks with filesystem freeze operations. This change was made
+> by commit ce8ea7cc6eb313 ("btrfs: don't call btrfs_start_delalloc_roots
+> in flushoncommit"). After that change we started producing that warning,
+> and every now and then a user reports this since the warning happens too
+> often, it spams dmesg/syslog, and a user is unsure if this reflects any
+> problem that might compromise the filesystem's reliability.
+> 
+> We can not just lock the sb->s_umount semaphore before calling
+> writeback_inodes_sb(), because that would at least deadlock with
+> filesystem freezing, since at fs/super.c:freeze_super() sync_filesystem()
+> is called while we are holding that semaphore in write mode, and that can
+> trigger a transaction commit, resulting in a deadlock. It would also
+> trigger the same type of deadlock in the unmount path. Possibly, it could
+> also introduce some other locking dependencies that lockdep would report.
+> 
+> To fix this call try_to_writeback_inodes_sb() instead of
+> writeback_inodes_sb(), because that will try to read lock sb->s_umount
+> and then will only call writeback_inodes_sb() if it was able to lock it.
+> This is fine because the cases where it can't read lock sb->s_umount
+> are during a filesystem unmount or during a filesystem freeze - in those
+> cases sb->s_umount is write locked and sync_filesystem() is called, which
+> calls writeback_inodes_sb(). In other words, in all cases where we can't
+> take a read lock on sb->s_umount, writeback is already being triggered
+> elsewhere.
+> 
+> An alternative would be to call btrfs_start_delalloc_roots() with a
+> number of pages different from LONG_MAX, for example matching the number
+> of delalloc bytes we currently have, in which case we would end up
+> starting all delalloc with filemap_fdatawrite_wbc() and not with an
+> async flush via filemap_flush() - that is only possible after the rather
+> recent commit e076ab2a2ca70a ("btrfs: shrink delalloc pages instead of
+> full inodes"). However that creates a whole new can of worms due to new
+> lock dependencies, which lockdep complains, like for example:
+> 
+> [ 8948.247280] ======================================================
+> [ 8948.247823] WARNING: possible circular locking dependency detected
+> [ 8948.248353] 5.17.0-rc1-btrfs-next-111 #1 Not tainted
+> [ 8948.248786] ------------------------------------------------------
+> [ 8948.249320] kworker/u16:18/933570 is trying to acquire lock:
+> [ 8948.249812] ffff9b3de1591690 (sb_internal#2){.+.+}-{0:0}, at: find_free_extent+0x141e/0x1590 [btrfs]
+> [ 8948.250638]
+>                but task is already holding lock:
+> [ 8948.251140] ffff9b3e09c717d8 (&root->delalloc_mutex){+.+.}-{3:3}, at: start_delalloc_inodes+0x78/0x400 [btrfs]
+> [ 8948.252018]
+>                which lock already depends on the new lock.
+> 
+> [ 8948.252710]
+>                the existing dependency chain (in reverse order) is:
+> [ 8948.253343]
+>                -> #2 (&root->delalloc_mutex){+.+.}-{3:3}:
+> [ 8948.253950]        __mutex_lock+0x90/0x900
+> [ 8948.254354]        start_delalloc_inodes+0x78/0x400 [btrfs]
+> [ 8948.254859]        btrfs_start_delalloc_roots+0x194/0x2a0 [btrfs]
+> [ 8948.255408]        btrfs_commit_transaction+0x32f/0xc00 [btrfs]
+> [ 8948.255942]        btrfs_mksubvol+0x380/0x570 [btrfs]
+> [ 8948.256406]        btrfs_mksnapshot+0x81/0xb0 [btrfs]
+> [ 8948.256870]        __btrfs_ioctl_snap_create+0x17f/0x190 [btrfs]
+> [ 8948.257413]        btrfs_ioctl_snap_create_v2+0xbb/0x140 [btrfs]
+> [ 8948.257961]        btrfs_ioctl+0x1196/0x3630 [btrfs]
+> [ 8948.258418]        __x64_sys_ioctl+0x83/0xb0
+> [ 8948.258793]        do_syscall_64+0x3b/0xc0
+> [ 8948.259146]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [ 8948.259709]
+>                -> #1 (&fs_info->delalloc_root_mutex){+.+.}-{3:3}:
+> [ 8948.260330]        __mutex_lock+0x90/0x900
+> [ 8948.260692]        btrfs_start_delalloc_roots+0x97/0x2a0 [btrfs]
+> [ 8948.261234]        btrfs_commit_transaction+0x32f/0xc00 [btrfs]
+> [ 8948.261766]        btrfs_set_free_space_cache_v1_active+0x38/0x60 [btrfs]
+> [ 8948.262379]        btrfs_start_pre_rw_mount+0x119/0x180 [btrfs]
+> [ 8948.262909]        open_ctree+0x1511/0x171e [btrfs]
+> [ 8948.263359]        btrfs_mount_root.cold+0x12/0xde [btrfs]
+> [ 8948.263863]        legacy_get_tree+0x30/0x50
+> [ 8948.264242]        vfs_get_tree+0x28/0xc0
+> [ 8948.264594]        vfs_kern_mount.part.0+0x71/0xb0
+> [ 8948.265017]        btrfs_mount+0x11d/0x3a0 [btrfs]
+> [ 8948.265462]        legacy_get_tree+0x30/0x50
+> [ 8948.265851]        vfs_get_tree+0x28/0xc0
+> [ 8948.266203]        path_mount+0x2d4/0xbe0
+> [ 8948.266554]        __x64_sys_mount+0x103/0x140
+> [ 8948.266940]        do_syscall_64+0x3b/0xc0
+> [ 8948.267300]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [ 8948.267790]
+>                -> #0 (sb_internal#2){.+.+}-{0:0}:
+> [ 8948.268322]        __lock_acquire+0x12e8/0x2260
+> [ 8948.268733]        lock_acquire+0xd7/0x310
+> [ 8948.269092]        start_transaction+0x44c/0x6e0 [btrfs]
+> [ 8948.269591]        find_free_extent+0x141e/0x1590 [btrfs]
+> [ 8948.270087]        btrfs_reserve_extent+0x14b/0x280 [btrfs]
+> [ 8948.270588]        cow_file_range+0x17e/0x490 [btrfs]
+> [ 8948.271051]        btrfs_run_delalloc_range+0x345/0x7a0 [btrfs]
+> [ 8948.271586]        writepage_delalloc+0xb5/0x170 [btrfs]
+> [ 8948.272071]        __extent_writepage+0x156/0x3c0 [btrfs]
+> [ 8948.272579]        extent_write_cache_pages+0x263/0x460 [btrfs]
+> [ 8948.273113]        extent_writepages+0x76/0x130 [btrfs]
+> [ 8948.273573]        do_writepages+0xd2/0x1c0
+> [ 8948.273942]        filemap_fdatawrite_wbc+0x68/0x90
+> [ 8948.274371]        start_delalloc_inodes+0x17f/0x400 [btrfs]
+> [ 8948.274876]        btrfs_start_delalloc_roots+0x194/0x2a0 [btrfs]
+> [ 8948.275417]        flush_space+0x1f2/0x630 [btrfs]
+> [ 8948.275863]        btrfs_async_reclaim_data_space+0x108/0x1b0 [btrfs]
+> [ 8948.276438]        process_one_work+0x252/0x5a0
+> [ 8948.276829]        worker_thread+0x55/0x3b0
+> [ 8948.277189]        kthread+0xf2/0x120
+> [ 8948.277506]        ret_from_fork+0x22/0x30
+> [ 8948.277868]
+>                other info that might help us debug this:
+> 
+> [ 8948.278548] Chain exists of:
+>                  sb_internal#2 --> &fs_info->delalloc_root_mutex --> &root->delalloc_mutex
+> 
+> [ 8948.279601]  Possible unsafe locking scenario:
+> 
+> [ 8948.280102]        CPU0                    CPU1
+> [ 8948.280508]        ----                    ----
+> [ 8948.280915]   lock(&root->delalloc_mutex);
+> [ 8948.281271]                                lock(&fs_info->delalloc_root_mutex);
+> [ 8948.281915]                                lock(&root->delalloc_mutex);
+> [ 8948.282487]   lock(sb_internal#2);
+> [ 8948.282800]
+>                 *** DEADLOCK ***
+> 
+> [ 8948.283333] 4 locks held by kworker/u16:18/933570:
+> [ 8948.283750]  #0: ffff9b3dc00a9d48 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x1d2/0x5a0
+> [ 8948.284609]  #1: ffffa90349dafe70 ((work_completion)(&fs_info->async_data_reclaim_work)){+.+.}-{0:0}, at: process_one_work+0x1d2/0x5a0
+> [ 8948.285637]  #2: ffff9b3e14db5040 (&fs_info->delalloc_root_mutex){+.+.}-{3:3}, at: btrfs_start_delalloc_roots+0x97/0x2a0 [btrfs]
+> [ 8948.286674]  #3: ffff9b3e09c717d8 (&root->delalloc_mutex){+.+.}-{3:3}, at: start_delalloc_inodes+0x78/0x400 [btrfs]
+> [ 8948.287596]
+>               stack backtrace:
+> [ 8948.287975] CPU: 3 PID: 933570 Comm: kworker/u16:18 Not tainted 5.17.0-rc1-btrfs-next-111 #1
+> [ 8948.288677] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> [ 8948.289649] Workqueue: events_unbound btrfs_async_reclaim_data_space [btrfs]
+> [ 8948.290298] Call Trace:
+> [ 8948.290517]  <TASK>
+> [ 8948.290700]  dump_stack_lvl+0x59/0x73
+> [ 8948.291026]  check_noncircular+0xf3/0x110
+> [ 8948.291375]  ? start_transaction+0x228/0x6e0 [btrfs]
+> [ 8948.291826]  __lock_acquire+0x12e8/0x2260
+> [ 8948.292241]  lock_acquire+0xd7/0x310
+> [ 8948.292714]  ? find_free_extent+0x141e/0x1590 [btrfs]
+> [ 8948.293241]  ? lock_is_held_type+0xea/0x140
+> [ 8948.293601]  start_transaction+0x44c/0x6e0 [btrfs]
+> [ 8948.294055]  ? find_free_extent+0x141e/0x1590 [btrfs]
+> [ 8948.294518]  find_free_extent+0x141e/0x1590 [btrfs]
+> [ 8948.294957]  ? _raw_spin_unlock+0x29/0x40
+> [ 8948.295312]  ? btrfs_get_alloc_profile+0x124/0x290 [btrfs]
+> [ 8948.295813]  btrfs_reserve_extent+0x14b/0x280 [btrfs]
+> [ 8948.296270]  cow_file_range+0x17e/0x490 [btrfs]
+> [ 8948.296691]  btrfs_run_delalloc_range+0x345/0x7a0 [btrfs]
+> [ 8948.297175]  ? find_lock_delalloc_range+0x247/0x270 [btrfs]
+> [ 8948.297678]  writepage_delalloc+0xb5/0x170 [btrfs]
+> [ 8948.298123]  __extent_writepage+0x156/0x3c0 [btrfs]
+> [ 8948.298570]  extent_write_cache_pages+0x263/0x460 [btrfs]
+> [ 8948.299061]  extent_writepages+0x76/0x130 [btrfs]
+> [ 8948.299495]  do_writepages+0xd2/0x1c0
+> [ 8948.299817]  ? sched_clock_cpu+0xd/0x110
+> [ 8948.300160]  ? lock_release+0x155/0x4a0
+> [ 8948.300494]  filemap_fdatawrite_wbc+0x68/0x90
+> [ 8948.300874]  ? do_raw_spin_unlock+0x4b/0xa0
+> [ 8948.301243]  start_delalloc_inodes+0x17f/0x400 [btrfs]
+> [ 8948.301706]  ? lock_release+0x155/0x4a0
+> [ 8948.302055]  btrfs_start_delalloc_roots+0x194/0x2a0 [btrfs]
+> [ 8948.302564]  flush_space+0x1f2/0x630 [btrfs]
+> [ 8948.302970]  btrfs_async_reclaim_data_space+0x108/0x1b0 [btrfs]
+> [ 8948.303510]  process_one_work+0x252/0x5a0
+> [ 8948.303860]  ? process_one_work+0x5a0/0x5a0
+> [ 8948.304221]  worker_thread+0x55/0x3b0
+> [ 8948.304543]  ? process_one_work+0x5a0/0x5a0
+> [ 8948.304904]  kthread+0xf2/0x120
+> [ 8948.305184]  ? kthread_complete_and_exit+0x20/0x20
+> [ 8948.305598]  ret_from_fork+0x22/0x30
+> [ 8948.305921]  </TASK>
+> 
+> It all comes from the fact that btrfs_start_delalloc_roots() takes the
+> delalloc_root_mutex, in the transaction commit path we are holding a
+> read lock on one of the superblock's freeze semaphores (via
+> sb_start_intwrite()), the async reclaim task can also do a call to
+> btrfs_start_delalloc_roots(), which ends up triggering writeback with
+> calls to filemap_fdatawrite_wbc(), resulting in extent allocation which
+> in turn can call btrfs_start_transaction(), which will result in taking
+> the freeze semaphore via sb_start_intwrite(), forming a nasty dependency
+> on all those locks which can be taken in different orders by different
+> code paths.
+> 
+> So just adopt the simple approach of calling try_to_writeback_inodes_sb()
+> at btrfs_start_delalloc_flush().
+> 
+> Link: https://lore.kernel.org/linux-btrfs/20220130005258.GA7465@cuci.nl/
+> Link: https://lore.kernel.org/linux-btrfs/43acc426-d683-d1b6-729d-c6bc4a2fff4d@gmail.com/
+> Link: https://lore.kernel.org/linux-btrfs/6833930a-08d7-6fbc-0141-eb9cdfd6bb4d@gmail.com/
+> Link: https://lore.kernel.org/linux-btrfs/20190322041731.GF16651@hungrycats.org/
+> Reviewed-by: Omar Sandoval <osandov@fb.com>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> [ add more link reports ]
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> [Minor context change fixed]
+> Signed-off-by: Zhi Yang <Zhi.Yang@windriver.com>
+> Signed-off-by: He Zhe <zhe.he@windriver.com>
+> ---
+> Build test passed.
+  ^^^^^^^^^^^^^^^^^
 
-Not really benchmarks. I just run fstests to make sure nothing fails.
+This is insufficient for the backport. I remember some functional
+changes that are not present in 5.10 and have to be either added as
+dependencies or verified as not necessary. This is what stopped the
+patch from stable trees in the past. At least one patch for reference is
+88090ad36a64af1eb5b78d26 and there are probably like 1-2 more.
 
-> If we could get in practice such a huge amount of space gains and
-> waste so much less memory, you should observe faster operations on the
-> buffer tree (xarray) as well, as we would get a smaller data
-> structure, with fewer nodes.
-
-That's precisely the point, to save the memory with less nodes. I
-don't expect to see any faster operations, really. I believe the radix
-tree is quite efficient in the kernel. And for a tree in general
-theory the operations are O(log(n)), so a bigger tree does not have
-that much higher overhead.
-But this reduces the tree height by one level tops. More likely not
-even that. I still quite believe the tree operations overhead is well
-below the threshold of noise for fs operations. You would really have
-to microbenchmark just the tree operations themselves to see the
-difference.
-
-But I can still be pleasantly surprised.
-
-> However, while this is a logically sound thing to do, in practice we
-> will always get many unused slots per xarray node, because:
->
-> 1) We don't keep all extent buffers in memory all the time - some are
-> less frequently used and get evicted from memory after a while or
-> rarely get loaded in the first place, not all parts of a btree are
-> equally "hot";
-
-No questions about that. This part does not change.
-
-> 2) It's a COW filesystem and metadata is always COWed, so you get
-> extent buffers allocated all over the place with big gaps between
-> them, in different block groups, etc.
-
-Yes, and sparse leaf nodes are actually expected and perfectly fine.
-Still, there is no need to be more sparse than actually needed. Wasted
-slots are wasted slots. Some leaf nodes are still full with 16 ebs
-while 64 could have been fitted.
-
-> And what about memory usage, did you see any significant reduction for
-> some workload? What was the reduction, what was the workload?
-
-I did not really check, to be honest. But since you're asking...
-
-On my laptop with an uptime of two months and with a handful of sleep
-cycles, workload about what you do on your workstation (couple VMs,
-many FF tabs, many terminals and a live crash running), mem stats from
-`top` below, 1T NVMe, there are 20610 ebs and 6455 tree leaves as I
-type at the moment (but I bet it was similar yday or a week ago). The
-highest tree index is 4341c9c which means 5 levels (with the patch it
-would still be 5 levels, just the width would be 1/4 as the index
-would become 10d0727) and that FS (/home) has 13k of the ebs and 4150
-of leave nodes (/ is 7600 ebs / 2300 leaves and /boot has 10/5
-allocated in memory), so you can see the tree is still fairly sparse
-as there are way less ebs then available slots. Not even 3.2 ebs in
-one leaf on average.
-
-MiB Mem :  58470,3 total,   6035,4 free,  34408,7 used,  19525,8 buff/cache
-MiB Swap:  32768,0 total,  15929,4 free,  16838,6 used.  24061,6 avail Mem
-
-But I believe there are also huge parts of the tree not even
-allocated. For example there are no nodes needed between indices 41ccc
-and 3cc1d88 as there are no ebs allocated in this range. I did not
-check but I guess the hole actually begins with the end of one bg and
-ends with the start of another bg??
-
-With the patch I guess you could expect something like 4k leaf nodes
-instead of the 6k5 I see now. I estimate something like 30-40% savings
-instead of the theoretical 75% if the ebs were fully present. Well
-that's still not bad.
-
-On the other hand if you check the absolute numbers, that's roughly
-1.5 megs saved on a 64 gigs machine. And that's provided the slabs
-were released, but see below...
-
-Now even though it looks like a huge win if you focused only in terms
-of btrfs, compared to the rest of the system it looks almost
-insignificant:
-
-> crash> kmem -s radix_tree_node
-> CACHE             OBJSIZE  ALLOCATED     TOTAL  SLABS  SSIZE  NAME
-> ffff9eecc0045b00      576     464807    542899  19393    16k  radix_tree_=
-node
-
-I guess most of the tree nodes are used in memory mappings, vmas and
-stuff, and inode mapping to page cache.
-
-If btrfs is using 6.5k tree nodes (just for leaves to be fair, there
-will be some more for inner nodes) out of the total of 0.5M nodes in
-flight system-wide it's something over 1%, so maybe 2%. This patch can
-reduce it by something like 0.5% being generous. Well, I can take it.
-
-So yeah, we're wasting some memory and that can be fixed. But we're
-far from being any significant user in the kernel. Just to fill in the
-perspective.
-
-> Xarray uses a kmem_cache to allocate nodes, so if we get such huge
-> gains as the change log claims, we should see a reduction by
-> monitoring files inside /sys/kernel/slab/radix_tree_node, like the
-> "objects" and "total_objects" files which tell the us the total amount
-> of allocated xarray nodes and how many are in use - this is for all
-> xarrays, so many will not belong to the buffer tree or even btrfs, but
-> it should still be very noticeable reduction on a workload that is
-> heavy on metadata, like fs_mark with empty files creating a large fs
-> tree (a few gigabytes at least).
->
-> Thanks.
->
->
-> >
-> > Signed-off-by: Daniel Vacek <neelx@suse.com>
-> > ---
-> >  fs/btrfs/disk-io.c   |  1 +
-> >  fs/btrfs/extent_io.c | 30 +++++++++++++++---------------
-> >  fs/btrfs/fs.h        |  3 ++-
-> >  3 files changed, 18 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> > index 5bcf11246ba66..dcea5b0a2db50 100644
-> > --- a/fs/btrfs/disk-io.c
-> > +++ b/fs/btrfs/disk-io.c
-> > @@ -3395,6 +3395,7 @@ int __cold open_ctree(struct super_block *sb, str=
-uct btrfs_fs_devices *fs_device
-> >         fs_info->delalloc_batch =3D sectorsize * 512 * (1 + ilog2(nr_cp=
-u_ids));
-> >
-> >         fs_info->nodesize =3D nodesize;
-> > +       fs_info->node_bits =3D ilog2(nodesize);
-> >         fs_info->sectorsize =3D sectorsize;
-> >         fs_info->sectorsize_bits =3D ilog2(sectorsize);
-> >         fs_info->csums_per_leaf =3D BTRFS_MAX_ITEM_SIZE(fs_info) / fs_i=
-nfo->csum_size;
-> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > index 4d3584790cf7f..80a8563a25add 100644
-> > --- a/fs/btrfs/extent_io.c
-> > +++ b/fs/btrfs/extent_io.c
-> > @@ -1774,7 +1774,7 @@ static noinline_for_stack bool lock_extent_buffer=
-_for_io(struct extent_buffer *e
-> >          */
-> >         spin_lock(&eb->refs_lock);
-> >         if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &eb->bflags)) {
-> > -               XA_STATE(xas, &fs_info->buffer_tree, eb->start >> fs_in=
-fo->sectorsize_bits);
-> > +               XA_STATE(xas, &fs_info->buffer_tree, eb->start >> fs_in=
-fo->node_bits);
-> >                 unsigned long flags;
-> >
-> >                 set_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags);
-> > @@ -1874,7 +1874,7 @@ static void set_btree_ioerr(struct extent_buffer =
-*eb)
-> >  static void buffer_tree_set_mark(const struct extent_buffer *eb, xa_ma=
-rk_t mark)
-> >  {
-> >         struct btrfs_fs_info *fs_info =3D eb->fs_info;
-> > -       XA_STATE(xas, &fs_info->buffer_tree, eb->start >> fs_info->sect=
-orsize_bits);
-> > +       XA_STATE(xas, &fs_info->buffer_tree, eb->start >> fs_info->node=
-_bits);
-> >         unsigned long flags;
-> >
-> >         xas_lock_irqsave(&xas, flags);
-> > @@ -1886,7 +1886,7 @@ static void buffer_tree_set_mark(const struct ext=
-ent_buffer *eb, xa_mark_t mark)
-> >  static void buffer_tree_clear_mark(const struct extent_buffer *eb, xa_=
-mark_t mark)
-> >  {
-> >         struct btrfs_fs_info *fs_info =3D eb->fs_info;
-> > -       XA_STATE(xas, &fs_info->buffer_tree, eb->start >> fs_info->sect=
-orsize_bits);
-> > +       XA_STATE(xas, &fs_info->buffer_tree, eb->start >> fs_info->node=
-_bits);
-> >         unsigned long flags;
-> >
-> >         xas_lock_irqsave(&xas, flags);
-> > @@ -1986,7 +1986,7 @@ static unsigned int buffer_tree_get_ebs_tag(struc=
-t btrfs_fs_info *fs_info,
-> >         rcu_read_lock();
-> >         while ((eb =3D find_get_eb(&xas, end, tag)) !=3D NULL) {
-> >                 if (!eb_batch_add(batch, eb)) {
-> > -                       *start =3D (eb->start + eb->len) >> fs_info->se=
-ctorsize_bits;
-> > +                       *start =3D (eb->start + eb->len) >> fs_info->no=
-de_bits;
-> >                         goto out;
-> >                 }
-> >         }
-> > @@ -2008,7 +2008,7 @@ static struct extent_buffer *find_extent_buffer_n=
-olock(
-> >                 struct btrfs_fs_info *fs_info, u64 start)
-> >  {
-> >         struct extent_buffer *eb;
-> > -       unsigned long index =3D start >> fs_info->sectorsize_bits;
-> > +       unsigned long index =3D start >> fs_info->node_bits;
-> >
-> >         rcu_read_lock();
-> >         eb =3D xa_load(&fs_info->buffer_tree, index);
-> > @@ -2114,8 +2114,8 @@ void btrfs_btree_wait_writeback_range(struct btrf=
-s_fs_info *fs_info, u64 start,
-> >                                       u64 end)
-> >  {
-> >         struct eb_batch batch;
-> > -       unsigned long start_index =3D start >> fs_info->sectorsize_bits=
-;
-> > -       unsigned long end_index =3D end >> fs_info->sectorsize_bits;
-> > +       unsigned long start_index =3D start >> fs_info->node_bits;
-> > +       unsigned long end_index =3D end >> fs_info->node_bits;
-> >
-> >         eb_batch_init(&batch);
-> >         while (start_index <=3D end_index) {
-> > @@ -2151,7 +2151,7 @@ int btree_write_cache_pages(struct address_space =
-*mapping,
-> >
-> >         eb_batch_init(&batch);
-> >         if (wbc->range_cyclic) {
-> > -               index =3D (mapping->writeback_index << PAGE_SHIFT) >> f=
-s_info->sectorsize_bits;
-> > +               index =3D (mapping->writeback_index << PAGE_SHIFT) >> f=
-s_info->node_bits;
-> >                 end =3D -1;
-> >
-> >                 /*
-> > @@ -2160,8 +2160,8 @@ int btree_write_cache_pages(struct address_space =
-*mapping,
-> >                  */
-> >                 scanned =3D (index =3D=3D 0);
-> >         } else {
-> > -               index =3D wbc->range_start >> fs_info->sectorsize_bits;
-> > -               end =3D wbc->range_end >> fs_info->sectorsize_bits;
-> > +               index =3D wbc->range_start >> fs_info->node_bits;
-> > +               end =3D wbc->range_end >> fs_info->node_bits;
-> >
-> >                 scanned =3D 1;
-> >         }
-> > @@ -3037,7 +3037,7 @@ struct extent_buffer *alloc_test_extent_buffer(st=
-ruct btrfs_fs_info *fs_info,
-> >         eb->fs_info =3D fs_info;
-> >  again:
-> >         xa_lock_irq(&fs_info->buffer_tree);
-> > -       exists =3D __xa_cmpxchg(&fs_info->buffer_tree, start >> fs_info=
-->sectorsize_bits,
-> > +       exists =3D __xa_cmpxchg(&fs_info->buffer_tree, start >> fs_info=
-->node_bits,
-> >                               NULL, eb, GFP_NOFS);
-> >         if (xa_is_err(exists)) {
-> >                 ret =3D xa_err(exists);
-> > @@ -3353,7 +3353,7 @@ struct extent_buffer *alloc_extent_buffer(struct =
-btrfs_fs_info *fs_info,
-> >  again:
-> >         xa_lock_irq(&fs_info->buffer_tree);
-> >         existing_eb =3D __xa_cmpxchg(&fs_info->buffer_tree,
-> > -                                  start >> fs_info->sectorsize_bits, N=
-ULL, eb,
-> > +                                  start >> fs_info->node_bits, NULL, e=
-b,
-> >                                    GFP_NOFS);
-> >         if (xa_is_err(existing_eb)) {
-> >                 ret =3D xa_err(existing_eb);
-> > @@ -3456,7 +3456,7 @@ static int release_extent_buffer(struct extent_bu=
-ffer *eb)
-> >                  * in this case.
-> >                  */
-> >                 xa_cmpxchg_irq(&fs_info->buffer_tree,
-> > -                              eb->start >> fs_info->sectorsize_bits, e=
-b, NULL,
-> > +                              eb->start >> fs_info->node_bits, eb, NUL=
-L,
-> >                                GFP_ATOMIC);
-> >
-> >                 btrfs_leak_debug_del_eb(eb);
-> > @@ -4294,9 +4294,9 @@ static int try_release_subpage_extent_buffer(stru=
-ct folio *folio)
-> >  {
-> >         struct btrfs_fs_info *fs_info =3D folio_to_fs_info(folio);
-> >         struct extent_buffer *eb;
-> > -       unsigned long start =3D folio_pos(folio) >> fs_info->sectorsize=
-_bits;
-> > +       unsigned long start =3D folio_pos(folio) >> fs_info->node_bits;
-> >         unsigned long index =3D start;
-> > -       unsigned long end =3D index + (PAGE_SIZE >> fs_info->sectorsize=
-_bits) - 1;
-> > +       unsigned long end =3D index + (PAGE_SIZE >> fs_info->node_bits)=
- - 1;
-> >         int ret;
-> >
-> >         xa_lock_irq(&fs_info->buffer_tree);
-> > diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> > index cf805b4032af3..8c9113304fabe 100644
-> > --- a/fs/btrfs/fs.h
-> > +++ b/fs/btrfs/fs.h
-> > @@ -778,8 +778,9 @@ struct btrfs_fs_info {
-> >
-> >         struct btrfs_delayed_root *delayed_root;
-> >
-> > -       /* Entries are eb->start / sectorsize */
-> > +       /* Entries are eb->start >> node_bits */
-> >         struct xarray buffer_tree;
-> > +       int node_bits;
-> >
-> >         /* Next backup root to be overwritten */
-> >         int backup_root_index;
-> > --
-> > 2.47.2
-> >
-> >
+Stable team, please don't add this unless there are test results
+with/without this patch + potential dependencies applied.
 
