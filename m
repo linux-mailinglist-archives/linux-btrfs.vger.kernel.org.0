@@ -1,92 +1,96 @@
-Return-Path: <linux-btrfs+bounces-13951-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13952-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BA5EAB4852
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 May 2025 02:15:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE0E6AB485D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 May 2025 02:21:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23B851656DA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 May 2025 00:15:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57176867486
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 May 2025 00:21:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B542117BD6;
-	Tue, 13 May 2025 00:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC4B01BC2A;
+	Tue, 13 May 2025 00:21:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="TEQhJcOp";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Y7/M1J0X"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="FXw+H0lp";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="uSaCKJ1p"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fhigh-b6-smtp.messagingengine.com (fhigh-b6-smtp.messagingengine.com [202.12.124.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F2517D2
-	for <linux-btrfs@vger.kernel.org>; Tue, 13 May 2025 00:15:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2355BA932
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 May 2025 00:21:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747095350; cv=none; b=aLxJlmTU0wtHZ3STCSXx31mH3SgiJbXCvpSRi4qJEZgp8Ek8Mrwslr0r/LeLraDqnwcoS4969G+a3sMKAldqUkJQyTrvec+PXx1gCqBdiQawqOFihhMJwdybS2g45AzAXy8XR8B2BNsCU1XRkveWh9PBoU9fqy6ShXyfxcNO2u8=
+	t=1747095697; cv=none; b=Tv7qlMw5l/vIOHZIUvSHYZgDB+moN8LD1RxFLeNj0B6HIP5fcplKVoneU6s6crGaTUFylJh2tLBQFBXmQsOWNY6O702jj1MBh/mM6zkp5Z9jIQj9XQLPDcSkpn77N+2WD9HT/e0E33d0yqOc+m/nO8EUHxHjeUceGWvpaabsebQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747095350; c=relaxed/simple;
-	bh=Y0Csdo2PstefX806COxJQC5aEhafHlYGGDbWr0o7FKM=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=QgY6s4XPLKhJ0xCO8P8GqRvlh0pdvCiQZWNU+WW7qOJb1kCeNjSpAiRLNdFRJznQQhfw9P9amThmWkTDBW9M75fwONWha/9W1HhMQ1uvozM3am474eHhCrkkHZWiFmGKAGmjpZdh6B0wgdzI54f/EP7+Zrd0+u/lxzKYIkSNfAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=TEQhJcOp; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Y7/M1J0X; arc=none smtp.client-ip=202.12.124.157
+	s=arc-20240116; t=1747095697; c=relaxed/simple;
+	bh=juEHr94saBUhyUEUxGOjNBqVLh7qpJri3EDJrGu/46w=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=LnD+JWoDYras5wnU3rFxWYFCLkhCyyXXwL20Om/NtqVSXgcjBJufC1JnIVyL67jC1OFlHH7vSfzR78Pk3V/RZvUk1s2kLwApeTA97Tgk2GyDQhGTgiDWh/Itju38pfNThI/MYGD98vBh9ipG9rJhkhTvCv1aLrkSuI85d89S/dI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=FXw+H0lp; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=uSaCKJ1p; arc=none smtp.client-ip=202.12.124.157
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id DB89E25400A0;
-	Mon, 12 May 2025 20:15:44 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-09.internal (MEProxy); Mon, 12 May 2025 20:15:44 -0400
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id EA81B2540070;
+	Mon, 12 May 2025 20:21:33 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Mon, 12 May 2025 20:21:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
 	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm1; t=1747095344; x=1747181744; bh=0KLm7BKGaCenp/IcMoWao
-	HEjDd3LoziLurABAthf9CM=; b=TEQhJcOpQHGVZK0LcXRTxd0Gt0/5ynhUYGrOD
-	muXJFUPBoJLYdwhHm+lyJOnKNCefVETvk73AvLHplkCptL97dZhXmgkRm8yGIrKV
-	OqbOUlIc5HkBnWEy2/55qOdrLqS+rMeqTXQaCrUETWzFqGveKWilCliS/E0nbOf8
-	Ab2Csl4D38VO7OP2cYRGgKv9deTB9MRs7AwA7p3//O5oqgm9JFtSkmSCFEgHbkqe
-	v0sfsE9lXKaE7DcMv5jyc7x1xfngK9LS253KhGI0lvaReXyy5VRt7jxH3MGFnWIp
-	um/BsOtHmeQR7oR55YhPavy0sCHYJjHPeNVRv4kc8GHaJQneQ==
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1747095693; x=
+	1747182093; bh=LSLWOT+fEKl+zBbUVmNErLysocR6yxSqa4MIqJOBH28=; b=F
+	Xw+H0lp3mEazQSrAc7JGYpUNywrgOExLwESLvkwvCqeZe9nXyK0mlxi8tQ0GgF4K
+	g6dcMhdOr90KUEtZ/xOP2sWDLU3BMg5GQx/FI4ZmQ7d0eREtAV7vqf6DA4WgfPVg
+	yhqVorcOoo18NwXIvd0clnCQtSM7OZuBiiBSCMB7q6/jDcTjMHpnUtXf9Pbok+oJ
+	V3ib/YmNtD15XdYdKKgaJBO9s6yepN88/xmyEstNzlRpdwphY1RKj90rraOUWB+z
+	ycAgxpJ1ckJNotFIqt084AK/yroASVXHdZbRTgzwgQkItd3sjRG2QiZPr7/AK2x/
+	FIkbf+ZgYAihljUW0YODA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:content-transfer-encoding:content-type
 	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1747095344; x=1747181744; bh=0KLm7BKGaCenp/IcMoWaoHEjDd3LoziLurA
-	BAthf9CM=; b=Y7/M1J0XKKwG60f9pTGmE/FdkbdwWZv1q8l5CBF6y8/DAUSEuYP
-	Ik6sYtYQKpGrsm538JF7nyR0vXsVJn/8p82qFo8BPgTmyB6Ub6dw+1o2XqIqFc72
-	MrW9c3i4ws7Xm+ZeQyZ8DWL58M6I5Nct5gXY35CZr+Hl473pmrMdAVdDbHTX8Bv+
-	Kk2sGaDdGzW9PgmAE1xzv+OnQPZ9ou6wVyBssMK+B9zbrscxDrnWJI1/TdfA5oZ/
-	4eXciuJ+SXtoxfn/huG3Z+kXYnZp9LWz02pY+AW4a8vx3Qxq1WKcfMYWeLC/CwYn
-	iUL5wBwQkuCoNeWTzuX2VEOSoIuxVrgEtbw==
-X-ME-Sender: <xms:MI8iaHbiymnzqcAv5LcFNEs3zrSuZZW5DUZjYGKIE0CrEahqJVUJ1g>
-    <xme:MI8iaGaMlrNUVS82MCD00YSKKDhn5EF2Ep75zBlIo084q3iPAgLQQk3hCru2nETsx
-    6MKQih3pQ9lzwEgkuo>
-X-ME-Received: <xmr:MI8iaJ_DpZIHvjxMktKaQxsnmaupmcNqPv8FrRbRAvSr7HxaSib50dZKT7D42kDh5aQ8u4cWmMkjCUGAp8NguqltkxM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeftddvieejucetufdoteggodetrf
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1747095693; x=1747182093; bh=LSLWOT+fEKl+zBbUVmNErLysocR6
+	yxSqa4MIqJOBH28=; b=uSaCKJ1pU3I+cGKEwH8qR1d4Q51iQkRvzWUj359N69KP
+	ZP1G6wv9BG+001dMJMi8QfoEcAVg0hzi1KBnr4lhG5TCNeZQZf5D1kMsACTUi+Wd
+	TDDgwoLd8txQcPu2LqqXVwd8cM8TlOtDE+ZK9KYnY/2q1bKfdOZ7kNROBXUBzlBY
+	RlX0uYyjg11MlZHaP068NuHtM4ldtZnF2dG8vDprqVbx75DLQhtcTyINYMLFrk+h
+	lcYTpZfZoedW2um01puzeT9jUv9KdckBDVjuJDdDgpnCTvrGW3dN1LIdNzvtVmJL
+	INVY5lVp9wpRxf+ded6ugbz9py4tHFyQuTawBDyjcQ==
+X-ME-Sender: <xms:jZAiaCiNSGKFfrY5MaV12hULMPPX-0i64QAhGSPnW7Y1KztnjVE1sA>
+    <xme:jZAiaDAmjCCt_v3ds_2EdAMcsuDAsue2Ng90odYKjWlSaYZLnZgnaXLWKtcmFWNC1
+    dJZuspqXcbI9UY3uyM>
+X-ME-Received: <xmr:jZAiaKG6m5Fo5jGmGffsr1EjEhAx-NaiyOTF6zrXSd0Z2RKA48vzNtd4WitaoPXSeypN16s6tZMqkA34Lil-IcXQfc8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeftddvieekucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
     pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvf
-    fufffkofgggfestdekredtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceo
-    sghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelff
-    evleeifefgjeejieegkeduudetfeekffeftefhvdejveenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspg
-    hrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugidq
-    sghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgvlh
-    dqthgvrghmsehfsgdrtghomh
-X-ME-Proxy: <xmx:MI8iaNqQzNvvt6iyhBH_sJtIThUDLuGjfRXZ2yBK_sfd_XHJa5T2fg>
-    <xmx:MI8iaCpNeTGWWTLCaRV7w9wCp6lBE0GwpYlY6FpxWy4NAAIwAYHLkw>
-    <xmx:MI8iaDQzmBuwUkrqbiwnR3gLGiPitoP_lbaI0q1wYHTZioFDllNWtA>
-    <xmx:MI8iaKoWXDyxzb-O-HEYk4fClicnD1gNBZLCWZq5nOn-G6Ir7LBpxw>
-    <xmx:MI8iaN-NeI2vWpBP0VGQ5h0j8DYtQERYAmRn39CKAXTJ3MhHRthIQrE6>
+    fufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhv
+    uceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeuje
+    fhheeigfekvedujeejjeffvedvhedtudefiefhkeegueehleenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnh
+    gspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhu
+    gidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnh
+    gvlhdqthgvrghmsehfsgdrtghomh
+X-ME-Proxy: <xmx:jZAiaLSIStj_11c1pksJ7BFHX83hrxnjmF8MZeu6XZlFZT9lgzCdUQ>
+    <xmx:jZAiaPywwWizg2T_W68f3zPgk5iYRJcLT7CTn3F9aJ1ec9sgHAYLug>
+    <xmx:jZAiaJ5fsdDM81U_VP806DTWVvHTiOsvdxBCg-oW3Q6JMUITi73qRQ>
+    <xmx:jZAiaMw7s9Pw70GVX62KFcrM_QzkGLvD-C5i_lJy1hUqdR-rfCM1AQ>
+    <xmx:jZAiaLFCKS5Yb5RK9wgXlWhq_sxxAapG9eBe5diYQ25piBvcucgtKvKS>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 12 May 2025 20:15:44 -0400 (EDT)
+ 12 May 2025 20:21:33 -0400 (EDT)
 From: Boris Burkov <boris@bur.io>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH RFC] btrfs: collect untracked allocation stats
-Date: Mon, 12 May 2025 17:16:17 -0700
-Message-ID: <e42e7c06710b0406ac548739945b386d8319b48e.1747095022.git.boris@bur.io>
+Subject: [PATCH] btrfs: collect untracked allocation stats
+Date: Mon, 12 May 2025 17:22:07 -0700
+Message-ID: <95f5c89f52556f69decc7f18a6fd1f2c09d711c9.1747095560.git.boris@bur.io>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <e42e7c06710b0406ac548739945b386d8319b48e.1747095022.git.boris@bur.io>
+References: <e42e7c06710b0406ac548739945b386d8319b48e.1747095022.git.boris@bur.io>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -102,38 +106,37 @@ the total memory and comparing to the amount free, but that is clumsy to
 do, breaks when new memory accounting is added in the mm subsystem and
 lacks any useful granularity.
 
-I have recently worked on two separate types of leaks in these
-allocations which would have been easier to detect and measure the
-resolution of with this kind of data collection.
-
 This RFC proposes explicitly tracking btrfs's untracked allocations and
 reporting them in /sys/fs/btrfs/<uuid>/memory_stats.
 
-Main open questions in my mind:
-1. Does this seem worth pursuing?
+Open questions:
+1. Is this useful?
 2. What is the best concurrency model? I experimented with percpu
    variables which I don't think allow us to split it by fs_info in a
    reasonable way (short of dynamically growing a pointed-to percpu
    array as we add fs-es). I haven't thought too hard between spinlock,
    atomic, etc..
-3. Am I missing any other untracked allocations / is this a valid
-   "class" of allocations to care about?
+3. Am I missing any classes of untracked allocations?
 
-So far, for validation, I have just run fstests. I haven't yet tried to
-super carefully vet the accuracy of the stats.
+If this does sound like a good idea to people, I will work harder on
+validating the correctness of the data and picking an optimal
+concurrency model. So far, I've just run fstests with this patch.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
+Note: Resent with a completely dumb work-in-progress commit on the
+sysfs.c code squashed in. This one should actually apply/compile..
+
  fs/btrfs/compression.c | 31 +++++++++++++++++++++++++++----
  fs/btrfs/compression.h |  6 ++++--
  fs/btrfs/extent_io.c   | 23 ++++++++++++++++++++++-
  fs/btrfs/fs.h          | 10 ++++++++++
  fs/btrfs/inode.c       | 16 ++++++++++------
  fs/btrfs/lzo.c         | 10 ++++++----
- fs/btrfs/sysfs.c       | 17 ++++++++++-------
+ fs/btrfs/sysfs.c       | 15 +++++++++++++++
  fs/btrfs/zlib.c        | 16 +++++++---------
  fs/btrfs/zstd.c        | 16 +++++++---------
- 9 files changed, 103 insertions(+), 42 deletions(-)
+ 9 files changed, 108 insertions(+), 35 deletions(-)
 
 diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
 index 48d07939fee4..988887cc79ff 100644
@@ -454,38 +457,31 @@ index d403641889ca..741cf70375a9 100644
  						   &cur_out, sectorsize);
  		if (ret < 0)
 diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 5e6377a8f0f9..ff4ae6dd9e5c 100644
+index 5d93d9dd2c12..ff4ae6dd9e5c 100644
 --- a/fs/btrfs/sysfs.c
 +++ b/fs/btrfs/sysfs.c
-@@ -1132,18 +1132,20 @@ static ssize_t btrfs_sectorsize_show(struct kobject *kobj,
+@@ -1132,6 +1132,20 @@ static ssize_t btrfs_sectorsize_show(struct kobject *kobj,
  	return sysfs_emit(buf, "%u\n", fs_info->sectorsize);
  }
  
--static ssize_t btrfs_memory_usage_show(struct kobject *kobj,
 +static ssize_t btrfs_memory_stats_show(struct kobject *kobj,
-                                         struct kobj_attribute *a, char *buf)
- {
--    struct btrfs_fs_info *fs_info = to_fs_info(kobj);
--    unsigned long memory_used = fs_info->memory_used; // Assume this variable exists
--    unsigned long memory_free = fs_info->memory_free; // Assume this variable exists
++                                        struct kobj_attribute *a, char *buf)
++{
 +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
 +	struct btrfs_memory_stats *memory_stats = &fs_info->memory_stats;
- 
--    return sysfs_emit(buf, "memory_used %lu\nmemory_free %lu\n",
--                      memory_used, memory_free);
++
 +	return sysfs_emit(buf,
 +			  "compressed_io_folios %lu\n"
 +			  "extent_buffer_folios %lu\n",
 +			  memory_stats->nr_compressed_io_folios,
 +			  memory_stats->nr_extent_buffer_folios);
- }
- 
--BTRFS_ATTR(, memory_usage, btrfs_memory_usage_show);
++}
++
 +BTRFS_ATTR(, memory_stats, btrfs_memory_stats_show);
  BTRFS_ATTR(, sectorsize, btrfs_sectorsize_show);
  
  static ssize_t btrfs_commit_stats_show(struct kobject *kobj,
-@@ -1600,6 +1602,7 @@ static const struct attribute *btrfs_attrs[] = {
+@@ -1588,6 +1602,7 @@ static const struct attribute *btrfs_attrs[] = {
  	BTRFS_ATTR_PTR(, bg_reclaim_threshold),
  	BTRFS_ATTR_PTR(, commit_stats),
  	BTRFS_ATTR_PTR(, temp_fsid),
