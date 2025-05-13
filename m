@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-13979-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13980-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 785D5AB5FC3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 01:03:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1837AB5FD0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 01:14:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 035B546305A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 May 2025 23:03:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F1418646C5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 May 2025 23:14:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 634161F0E50;
-	Tue, 13 May 2025 23:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6717E204F9B;
+	Tue, 13 May 2025 23:14:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Ak6UjYlt";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Ak6UjYlt"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JWzKJ5Qd";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JWzKJ5Qd"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE911DFD8B
-	for <linux-btrfs@vger.kernel.org>; Tue, 13 May 2025 23:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8411F4C6C
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 May 2025 23:14:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747177409; cv=none; b=n/k86HL9hBBaU7c59EyBVNw8O9f6lTdq3TKWSSiPZGXnfEA7GXiIQ6ulpMUOkxvutLpIONgqBdqklcp0PWF+rLXtQf0GAKGN4+YhCcgeDftdDhvYD+oGE6nEhxdFkiVeofoOlUChjoNXlPCWlBPs8FJgwA7oyafopCnDIGaBVv0=
+	t=1747178085; cv=none; b=ai1kF95J5NDIZtd2ruOzLUE1mersdOXE05oWIahItOgP1VVizP7nJrZKX3x5tfC2mjXcTKigmxHtZv6MlzMuAtQyUG00gytBXLM/dLt7iE7HTJnWtYBOuu0UA1Rgdm2scpOs572KDM3KfrctdFl2DVZE70qMULsiExB5j9l3GRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747177409; c=relaxed/simple;
-	bh=QfpYBqEgZXQUfAPkRyz7ayZgD/ReGr8O3T/wEukouGA=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=vFVb3UoAl95xeopBXwtI9OaDhkbg5RCzWL1Lf8hU5oJUMCGNqkDMEJnSi7wC2/vdMEmw0S8JfmNaypYMK8xXULl58l7UMZwOgQP2LNaWAuIr5RPHrY0A/X99r3fI9f2Ocu/+8Z6xnBxPjbnMyLvF0+FwEjm2AdHtsOSxPyje3F0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Ak6UjYlt; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Ak6UjYlt; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1747178085; c=relaxed/simple;
+	bh=lt2/cSFlp6ecHpjJdJCHQsLG4Di0dWDZFz+Ho3p/zOk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Dao2czJ9g3xbZzqSqbZ9AAqYH5J9ry1hpKnDtlJMrVNUZIiT54O2ePW6UWEVC33g7B3toyo2GDtvZYTqKPGwuOGAy7B+jdrDFMAv2fmXwB2vDJo0az3iKQWTyBAbhcIZyPPUFtDAAgYM/aBvdiGBeSTSBaAcOL5wkFztjPzNI80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JWzKJ5Qd; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JWzKJ5Qd; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 66193211E0;
-	Tue, 13 May 2025 23:03:24 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4B415211E8
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 May 2025 23:14:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1747177404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1747178081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ZEvNSYzTHXxy3yyJGsnfgBPn+Qb2sFShi2xTrl2y7k4=;
-	b=Ak6UjYltn1v9Ig4T0zb3en3kyT+ArfTPwjf5Uc8ThpW0T7xOeJGQO9tB6xlwPVc3gJBvJX
-	PdUJbVGhnu7nqMqiJ0KBjXsqd+xEIX9siJKbwC5awueHlmjnXFqGnSpjn7/1PyZJBNHGq/
-	+QAvw20ZsoHrk0AWCvk8nXkiJYnXrro=
+	bh=gvm14DjWHiM85Pjit2BT0OwbOuYnV1vFjfkJdW8sBKE=;
+	b=JWzKJ5QdueUMRHMd1+YcN8NnS7J2Mk9X1hzwR7Zt78eu0CojL0u6xIEYvmP21QzDj108OC
+	RxK2HU3AsBichtKLw/B7/37cnfyLJuecPYQKaKak2jEjvzL7JhblZ3v6TYkAhkh4pA6Lpt
+	mURytGpl5QuWDN/mX2jk4mdP3W1buso=
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=Ak6UjYlt
+	dkim=pass header.d=suse.com header.s=susede1 header.b=JWzKJ5Qd
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1747177404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1747178081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ZEvNSYzTHXxy3yyJGsnfgBPn+Qb2sFShi2xTrl2y7k4=;
-	b=Ak6UjYltn1v9Ig4T0zb3en3kyT+ArfTPwjf5Uc8ThpW0T7xOeJGQO9tB6xlwPVc3gJBvJX
-	PdUJbVGhnu7nqMqiJ0KBjXsqd+xEIX9siJKbwC5awueHlmjnXFqGnSpjn7/1PyZJBNHGq/
-	+QAvw20ZsoHrk0AWCvk8nXkiJYnXrro=
+	bh=gvm14DjWHiM85Pjit2BT0OwbOuYnV1vFjfkJdW8sBKE=;
+	b=JWzKJ5QdueUMRHMd1+YcN8NnS7J2Mk9X1hzwR7Zt78eu0CojL0u6xIEYvmP21QzDj108OC
+	RxK2HU3AsBichtKLw/B7/37cnfyLJuecPYQKaKak2jEjvzL7JhblZ3v6TYkAhkh4pA6Lpt
+	mURytGpl5QuWDN/mX2jk4mdP3W1buso=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 67BAB137E8;
-	Tue, 13 May 2025 23:03:23 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8878C137E8
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 May 2025 23:14:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 5fq3CrvPI2jMAQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Tue, 13 May 2025 23:03:23 +0000
+	id cNDSEmDSI2iABAAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 May 2025 23:14:40 +0000
 From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: [PATCH v2] fstests: btrfs/020: use device pool to avoid busy TEST_DEV
-Date: Wed, 14 May 2025 08:33:01 +0930
-Message-ID: <20250513230301.69503-1-wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: replace: fix an unexpected new line when replace failed
+Date: Wed, 14 May 2025 08:44:18 +0930
+Message-ID: <76f6e03df7209fd09af92c36a572489e2009abc5.1747178054.git.wqu@suse.com>
 X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -78,162 +78,92 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 66193211E0
+X-Rspamd-Queue-Id: 4B415211E8
 X-Spam-Flag: NO
 X-Spam-Score: -3.01
 X-Spam-Level: 
 X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
+	BAYES_HAM(-3.00)[99.99%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_NONE(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
 	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MIME_TRACE(0.00)[0:+];
+	FROM_EQ_ENVFROM(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCPT_COUNT_ONE(0.00)[1];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DKIM_TRACE(0.00)[suse.com:+]
 X-Rspamd-Action: no action
 
 [BUG]
-There is an internal report about btrfs/020 failure, the 020.full looks
-like this:
+When a device replace failed, e.g. try to replace a device on a RO
+mounted btrfs, the error message is incorrectly broken into two lines:
 
-  ERROR: ioctl(DEV_REPLACE_START) failed on "/opt/test/020.5968.mnt": Read-only file system
+ [adam@btrfs-vm ~]$ sudo btrfs replace start -fB 1 /dev/test/scratch3  /mnt/btrfs/
+ Performing full device TRIM /dev/mapper/test-scratch3 (10.00GiB) ...
+ ERROR: ioctl(DEV_REPLACE_START) failed on "/mnt/btrfs/": Read-only file system
 
-  Performing full device TRIM /dev/loop8 (256.00MiB) ...
-  _check_btrfs_filesystem: filesystem on /dev/loop0 is inconsistent
-  *** fsck.btrfs output ***
-  ERROR: /dev/loop0 is currently mounted, use --force if you really intend to check the filesystem
-  Opening filesystem to check...
-  *** end fsck.btrfs output
-  *** mount output ***
-  [...]
-  /dev/loop0 on /opt/test type btrfs (rw,relatime,seclabel,ssd,discard=async,space_cache=v2,subvolid=5,subvol=/)
-  *** end mount output
+ [adam@btrfs-vm ~]$
+
+Note the newline after the "Read-only file system" error message.
 
 [CAUSE]
-Unfortunately I can not reproduce the situation here, but it looks like
-by somehow we didn't unmount the TEST_DEV before checking it.
+Inside cmd_replace_start(), if the ioctl failed we need to handle the
+error messages different depeneding on start_args.result.
 
-This may or may not be caused by the fact we're using loop back devices
-on TEST_MNT.
+If the result is not BTRFS_IOCTL_DEV_REPLACE_RESULT_NO_RESULT we will
+append extra info to the error message.
+
+But the initial error message is using error(), which implies a newline.
+
+This results the above incorrectly splitted error message.
 
 [FIX]
-For this particluar test case, we really do not need to use TEST_MNT and
-create complex loopback devices.
-
-We can just ask for 3 devices from the device pool, use 2 for the raid1
-fs, and then use the spare one for dev replace.
-
-This should greately simplify the test case setup and cleanup, thus
-avoid the above busy TEST_DEV and false test failure.
-
-Furthermore use the golden output to match the error message, and since
-we're here also handle a bug in btrfs-progs where the error message is
-incorrectly split into two lines.
+Instead of manually appending an extra reason to the existing error
+message, just do different output depending on the start_args.result in
+the first place.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changelog:
-v2:
-- Use golden output to match the error
-- Add a filter to filter out the unexpected new line
-  Btrfs-progs will also get a fix for the incorrect line break.
----
- tests/btrfs/020     | 47 +++++++++++++++------------------------------
- tests/btrfs/020.out |  2 +-
- 2 files changed, 17 insertions(+), 32 deletions(-)
+ cmds/replace.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/tests/btrfs/020 b/tests/btrfs/020
-index 7e5c6fd7..3b5f9f2f 100755
---- a/tests/btrfs/020
-+++ b/tests/btrfs/020
-@@ -12,44 +12,29 @@
- . ./common/preamble
- _begin_fstest auto quick replace volume
+diff --git a/cmds/replace.c b/cmds/replace.c
+index 5f1222b241da..887c3251a725 100644
+--- a/cmds/replace.c
++++ b/cmds/replace.c
+@@ -319,12 +319,11 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
+ 	ret = ioctl(fdmnt, BTRFS_IOC_DEV_REPLACE, &start_args);
+ 	if (do_not_background) {
+ 		if (ret < 0) {
+-			error("ioctl(DEV_REPLACE_START) failed on \"%s\": %m", path);
+-			if (start_args.result != BTRFS_IOCTL_DEV_REPLACE_RESULT_NO_RESULT)
+-				pr_stderr(LOG_DEFAULT, ", %s\n",
+-					replace_dev_result2string(start_args.result));
++			if (start_args.result == BTRFS_IOCTL_DEV_REPLACE_RESULT_NO_RESULT)
++				error("ioctl(DEV_REPLACE_START) failed on \"%s\": %m", path);
+ 			else
+-				pr_stderr(LOG_DEFAULT, "\n");
++				error("ioctl(DEV_REPLACE_START) failed on \"%s\": %m, %s",
++				      path, replace_dev_result2string(start_args.result));
  
--# Override the default cleanup function.
--_cleanup()
--{
--	cd /
--	rm -f $tmp.*
--	$UMOUNT_PROG $loop_mnt
--	_destroy_loop_device $loop_dev1
--	losetup -d $loop_dev2 >/dev/null 2>&1
--	_destroy_loop_device $loop_dev3
--	rm -rf $loop_mnt
--	rm -f $fs_img1 $fs_img2 $fs_img3
--}
--
- . ./common/filter
- 
--_require_test
--_require_loop
-+_require_scratch_dev_pool 3
- 
--echo "Silence is golden"
-+_fixed_by_kernel_commit bbb651e469d9 \
-+	"Btrfs: don't allow the replace procedure on read only filesystems"
- 
--loop_mnt=$TEST_DIR/$seq.$$.mnt
--fs_img1=$TEST_DIR/$seq.$$.img1
--fs_img2=$TEST_DIR/$seq.$$.img2
--fs_img3=$TEST_DIR/$seq.$$.img3
--mkdir $loop_mnt
--$XFS_IO_PROG -f -c "truncate 256m" $fs_img1 >>$seqres.full 2>&1
--$XFS_IO_PROG -f -c "truncate 256m" $fs_img2 >>$seqres.full 2>&1
--$XFS_IO_PROG -f -c "truncate 256m" $fs_img3 >>$seqres.full 2>&1
-+_scratch_dev_pool_get 2
-+_spare_dev_get
- 
--loop_dev1=`_create_loop_device $fs_img1`
--loop_dev2=`_create_loop_device $fs_img2`
--loop_dev3=`_create_loop_device $fs_img3`
-+_scratch_pool_mkfs -m raid1 -d raid1 >> $seqres.full 2>&1
-+_scratch_mount -o ro
- 
--_mkfs_dev -m raid1 -d raid1 $loop_dev1 $loop_dev2 >>$seqres.full 2>&1
--_mount -o ro $loop_dev1 $loop_mnt
-+# The replace is expected to fail.
-+#
-+# There is an unexpected newline at the middle of the error message, filter it out
-+# to handle older progs (unexpected new line) and newer ones (new line removed).
-+$BTRFS_UTIL_PROG replace start -B 2 $SPARE_DEV $SCRATCH_MNT 2>&1 >> $seqres.full | \
-+	sed -e "/^$/d" | _filter_scratch
- 
--$BTRFS_UTIL_PROG replace start -B 2 $loop_dev3 $loop_mnt >>$seqres.full 2>&1 && \
--_fail "FAIL: Device replaced on RO btrfs"
-+_scratch_unmount
-+_spare_dev_put
-+_scratch_dev_pool_put
- 
- status=0
- exit
-diff --git a/tests/btrfs/020.out b/tests/btrfs/020.out
-index 20d7944e..a3ede235 100644
---- a/tests/btrfs/020.out
-+++ b/tests/btrfs/020.out
-@@ -1,2 +1,2 @@
- QA output created by 020
--Silence is golden
-+ERROR: ioctl(DEV_REPLACE_START) failed on "SCRATCH_MNT": Read-only file system
+ 			if (errno == EOPNOTSUPP)
+ 				warning("device replace of RAID5/6 not supported with this kernel");
 -- 
 2.49.0
 
