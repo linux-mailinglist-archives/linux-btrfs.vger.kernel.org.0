@@ -1,246 +1,216 @@
-Return-Path: <linux-btrfs+bounces-13994-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13995-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B51DAB61A1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 06:40:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80147AB682E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 11:57:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3BA74A2A38
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 04:40:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 649BD7AEB3A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 09:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4051F0996;
-	Wed, 14 May 2025 04:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F69F2627E9;
+	Wed, 14 May 2025 09:56:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Mrbm4RRR"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UUXeOEWm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E94A21CFBC
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 May 2025 04:40:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45B5126AC3
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 May 2025 09:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747197606; cv=none; b=ZHZA4HdD/cA1Hef5eP0i2jY9m+axvMThf7RwMfpb1XhMfXtUafK/NQYtnlsP7PNpOA/aU8nkEtqZ4Ke/CguKLwCZljAQdq2IPMKnuoNnSPjn9Y1wwglAud0gosRXj+gzSKicWDvL8SqodLTwTXNmzzQ4LFSxB/PBpEWuYaU+55U=
+	t=1747216573; cv=none; b=gSpB0ykIcOHxc4/3HcGc8fqmF5cldmFATk5MGqPuxfNDiL4wcgqFPXZ16I5lTN2UXpbyZ5mq4iJ1SKXQxoqQDA9bACoxsZ4yDU2QuJ+pxepnqtIuFsqeaG+N8ewa1GtmJ9d5c32l7G4ZJjftpZvkgy7On+jvE7IviI16i7xb3Ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747197606; c=relaxed/simple;
-	bh=oqqjlKHLQ1upk7+p+z7ggO+cev87Jl3d892yaShiEVI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=rtsw0lO//DEZ382qGAVk70C2vIjQGnuMPJspXNGzRfuaaAnVJd30YNeEYNAbdinkq8Ppfdo3OFph8TCOh6DQEPSzS5XBDlKqc/YidUnbXfIidor6JKZy7V6nSZfmWws9jtX9RHg1/Q6EucxUdbEeS+9txrm1xXngYXwc5dCC4DQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Mrbm4RRR; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1747197597; x=1747802397; i=quwenruo.btrfs@gmx.com;
-	bh=nicpWLXVEs9ytbXyFtrB2JWLpS6ZlWS+lvI8ePyQwb8=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=Mrbm4RRRHR+kpeSeewYkg6agPenu/RJ3sTA0v63NA85L0xaFjwB7TPtUQUOU2DKV
-	 dmWRiJFW90vaOs6JjutkwlTSolsw6rSMF3CB/TS4Pvg5+W362VRb7LuiiQLk6b2C/
-	 FB/mQ9HwTkpIt1h502zXfj0ovJWsAied8NFfxZw31/ugNLvONLrSwFKj5t3douVZt
-	 QM1CGWCKH1+jHEzJlRb4xeWk7caiqIhmq5zV7CAQicCCJoe6c2iboiZTbXzm6ObtU
-	 XEFXy+CxIuknIBc97QlW15tRFg+izONPTs8nHztV2nmbzdiETJICuzj4SVhjDcHY8
-	 H0mJMtnEm8JmbiWzCg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MQv8x-1uapeE0wYp-00Z65W; Wed, 14
- May 2025 06:39:57 +0200
-Message-ID: <9c437137-4334-44a4-925d-51690769b97c@gmx.com>
-Date: Wed, 14 May 2025 14:09:53 +0930
+	s=arc-20240116; t=1747216573; c=relaxed/simple;
+	bh=7pZWUFb9HmQvHOr67mlD8XeHdJuE9CJ02sKRMD4EOMw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UknikVWMX11hGxgtT9m6Q59nlp3WXUYPhu8ZYmWLog/L62cfTK2KkjsXEw6e9dVcBl5whdjRQcIXAQ95b8ELID55xfrVX70mcgh09dewXzOPaXZsWPO78Iip750QDe+EXleYKfqDnv/GgFdlwWtQwyM6rSe7mwq1Kp/Bl4mYvZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UUXeOEWm; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-ad4ffb005d8so73312966b.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 May 2025 02:56:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1747216569; x=1747821369; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7pZWUFb9HmQvHOr67mlD8XeHdJuE9CJ02sKRMD4EOMw=;
+        b=UUXeOEWmm/XXf9FOq4cN6hBj9AHk0QZD8gJ+Nu6CGdU3nVEYpQV1SsO6TbSpThS+0M
+         LZzMZCOTJhPYc+Vd5dmCDDE6g8NW+NAaLvi3TivY6TIk/pgrXLhDJBJW38nUqruLT5AI
+         xCakQQ4kwAAB6ZnVudByxxwI00Q5pemvcVKt7MSWxZgTNa0JR8ZAGYd3/nj1By6uhS4L
+         zElfywdc7qr2FYjVpGGrnuchzLXHWGVEW9yagBfLABZR5AxaTXyBh8nLjOF6Ta2+TsoG
+         jeX72nRcPEEQNTJ7lioI9v5ZCSAOiuEcC227g1I9kaLIF/EQG+55b0I4yGqkjYwU0q2b
+         2OIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747216569; x=1747821369;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7pZWUFb9HmQvHOr67mlD8XeHdJuE9CJ02sKRMD4EOMw=;
+        b=wRxJEdY58CiLL9ypbIlZpYxyb6CIDL4ZgYruBHVoHhK0T9kcYVeNocQS7QK9PsvGi9
+         VT01Mt9ia4RjgTy5YFBoYKTQqq/e4JNc53DbK3tgn5939YBAMbVpZIjPoNVwKmIpBwtA
+         jxQvjjW3M4hae9jDXM3TQExnfXMOAGiuw5rEQvsRStdpieHqg8IsQDC+rfV3ghDSBZrT
+         u2es+aO2KidA3QM3E4iuFIHWjxDzHpgN/VwCVIB1kTxaORdBp0lz9G8sxQkaJh5yvs4P
+         7Iex2WjTl/xJ7VPlMmFgIZLCfaQb1jRhzXREVjVMKxYbF8Tcjp9w+QofFcDempgNtXEm
+         Yj4A==
+X-Forwarded-Encrypted: i=1; AJvYcCUdQ8C0ldaTuQKjuHTJmu6jbLw6m473Hzh4wAHIVLB2wHjCHsm1GJDv/fDBsecTrDsqTThKJ5tNoCIVaA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw7VKsROPC9LV8RPBU9xQNRgrCoWD5E42qtpmAZnlS5Bk/5QMA6
+	utyimjZDARZnVzmfKdgSuhIj93Qwl2GZisczXpifiwoPHc5M+vIJMywO1QVbDnOo2oW/DxPuq38
+	1PGK5cEG2xoTN3SqmgsFjNsIobDni6kWF0ne3+Q==
+X-Gm-Gg: ASbGncuJr8jc2S6Pfhtw40N7iFspdREZfrviV/pK7k+F4YAJX5pKlmaK6jEoP611Yft
+	thS1LOy2Hyqg+pIe5FMt2o8T1gtR3dpDy0cgOwBfMgz3SifLTQFycCVbLobM96qDW7Bg7qNgcqr
+	CU87tP+XcTKf7k4DHG83YsVzr42bsSCoA=
+X-Google-Smtp-Source: AGHT+IF40a6Z0554V4pGLebUeFU/ySRMLQkenNnwyYHmdPAZa+WyLPu0lLBNkCojqP8ZMyuFEdH5HF15VUaevHbQCWs=
+X-Received: by 2002:a17:907:728a:b0:ace:3a1b:d3d with SMTP id
+ a640c23a62f3a-ad4f70d41femr281384366b.2.1747216569424; Wed, 14 May 2025
+ 02:56:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: add prefix for the scrub error message
-To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <7cb4279a93d2a3c244e18db8e5c778795f24c884.1747187092.git.anand.jain@oracle.com>
- <9ba1fc52-38b2-43f6-9c29-df924d8045a4@gmx.com>
- <8630908b-2bdd-4726-889f-b9496d947c4d@oracle.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <8630908b-2bdd-4726-889f-b9496d947c4d@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xuaQayKHdINvHyfCFUqAFf67Vz5phQE3V1mBCFesZ2KoVhQWr2X
- op2AxQQUM3HwT0CE1g9T81cGwfhjjE2ps+OkyGQjxEH6zra0qxeqp3qtd8E7OlZtO/asMAW
- hDDt6b5F0/xr6Y2Pe5hEU3R/3Mmfw3nxvcm1PcIoGpdCFApv8DT6wYu7zKkRR5SGX5+gaIT
- C8FQ1rYQM9BS2W/bbuEBA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:fR1AtLTZz+4=;4R5Soo2v6W8FcBWIXFBx6iIFurJ
- 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
- UiOeVA3xneOVk=
+References: <20250512172321.3004779-1-neelx@suse.com> <20250512202054.GX9140@twin.jikos.cz>
+ <CAPjX3Fe1izCGUJhTWk1mB=9uK7kNHeCOj51_TZQG7DOe_aooig@mail.gmail.com> <20250513171039.GC9140@twin.jikos.cz>
+In-Reply-To: <20250513171039.GC9140@twin.jikos.cz>
+From: Daniel Vacek <neelx@suse.com>
+Date: Wed, 14 May 2025 11:55:58 +0200
+X-Gm-Features: AX0GCFuBxnVKslCn40-HTNQff2wu26HSsjEL8fSwRFHyPOgr2Q8bBPvLqdwa1N4
+Message-ID: <CAPjX3FfhfYGdMJLi4KLKnTd9BdhMLzScxtN0KKQxwYQ8JScxjg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: index buffer_tree using node size
+To: dsterba@suse.cz
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Tue, 13 May 2025 at 19:10, David Sterba <dsterba@suse.cz> wrote:
+>
+> On Tue, May 13, 2025 at 09:56:19AM +0200, Daniel Vacek wrote:
+> > On Mon, 12 May 2025 at 22:20, David Sterba <dsterba@suse.cz> wrote:
+> > >
+> > > On Mon, May 12, 2025 at 07:23:20PM +0200, Daniel Vacek wrote:
+> > > > So far we are deriving the buffer tree index using the sector size. But each
+> > > > extent buffer covers multiple sectors. This makes the buffer tree rather sparse.
+> > > >
+> > > > For example the typical and quite common configuration uses sector size of 4KiB
+> > > > and node size of 16KiB. In this case it means the buffer tree is using up to
+> > > > the maximum of 25% of it's slots. Or in other words at least 75% of the tree
+> > > > slots are wasted as never used.
+> > > >
+> > > > We can score significant memory savings on the required tree nodes by indexing
+> > > > the tree using the node size instead. As a result far less slots are wasted
+> > > > and the tree can now use up to all 100% of it's slots this way.
+> > >
+> > > This looks interesting. Is there a way to get xarray stats? I don't see
+> > > anything in the public API, e.g. depth, fanout, slack per level. For
+> > > debugging purposes we can put it to sysfs or as syslog message,
+> > > eventually as non-debugging output to commit_stats.
+> >
+> > I'm using a python script in crash (even live on my laptop). I believe
+> > you could do the same in dragon. Though that's not the runtime stats
+> > you described. And I don't really think it's worth it.
+>
+> How come you don't think it's worth it? You claim some numbers and we
+> don't have a way to verify that or gather on various setups or
+> workloads. I'd be interested in the numbers also to better understand
+> how xarray performs with the extent buffers but I don't now how to write
+> the analysis scripts in any of the tools, nor have time for that.
 
+Well, xarray behaves as a generic radix tree. That's basic theory. It
+is just a tool. A tool you know. You know how it works, what it is
+good for and what to expect from it. That's why you decide to use it,
+right?
 
-=E5=9C=A8 2025/5/14 13:57, Anand Jain =E5=86=99=E9=81=93:
->=20
->=20
-> On 14/5/25 11:37, Qu Wenruo wrote:
->>
->>
->> =E5=9C=A8 2025/5/14 11:15, Anand Jain =E5=86=99=E9=81=93:
->>> Below is the dmesg output for the failing scrub. Since scrub messages=
-=20
->>> are
->>> prefixed with "scrub:", please add this to the missing error as well.
->>> It helps dmesg grep for monitoring and debug.
->>>
->>> [ 5948.614757] BTRFS info (device sda state C): scrub: started on=20
->>> devid 1
->>> [ 5948.615141] BTRFS error (device sda state C): no valid extent or=20
->>> csum root for scrub
->>> [ 5948.615144] BTRFS info (device sda state C): scrub: not finished=20
->>> on devid 1 with status: -117
->>>
->>> Fixes: f95d186255b3 ("btrfs: avoid NULL pointer dereference if no=20
->>> valid csum tree")
->>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->>> ---
->>> =C2=A0 fs/btrfs/scrub.c | 3 ++-
->>> =C2=A0 1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
->>> index ed120621021b..521c977b6c87 100644
->>> --- a/fs/btrfs/scrub.c
->>> +++ b/fs/btrfs/scrub.c
->>> @@ -1658,7 +1658,8 @@ static int scrub_find_fill_first_stripe(struct=
-=20
->>> btrfs_block_group *bg,
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(!extent_root || !csum_root=
-)) {
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_err(fs_info, "no val=
-id extent or csum root for scrub");
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_err(fs_info,
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 "scrub: no valid extent or csum root for scrub");
->>
->> In that case we can remove the phrase of "for scrub".
->>
->=20
-> Done.
->=20
-> -----------------------------------------------------
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 521c977b6c87..fe64cde14170 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -1659,7 +1659,7 @@ static int scrub_find_fill_first_stripe(struct=20
-> btrfs_block_group *bg,
->=20
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(!extent_root ||=
- !csum_root)) {
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 btrfs_err(fs_info,
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 "scrub: no valid extent or csum root for scrub");
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 "scrub: no valid extent or csum root found");
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 return -EUCLEAN;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(stripe->sectors, 0, s=
-izeof(struct=20
-> scrub_sector_verification) *
-> -----------------------------------------------------
->=20
+I only claim, we're now limited to using 16 slots per node (mistakenly
+skipping every 3 out of 4 slots as we're not using the last 2 bits
+from the index) and this can be quite simply fixed by correct indexing
+and we can use the xarray correctly. Basically we're not using the
+tool correctly at the moment and we are using it very inefficiently. I
+believe you can see that. So far so good, right?
+No stats would explain it better than this. This is already the best
+information you can get to describe, depict and understand the issue,
+IMO.
 
-Looks good to me.
+In my experience, sometimes more stats can be misleading or
+misinterpreted. Even by kernel engineers. Sometimes the stats can be
+confusing or even not really relevant. So it's better to focus on the
+right facts for the given issue.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+And I also believe there is a reason xarray does not provide or even
+keep any stats. What for? Would users need it? Would they benefit? Do
+you care about any tree stats on your cell phone? I quite doubt so.
+And kernel would be doing additional work just to keep the stats for
+no use. That would also be inefficient and useless overhead.
+Perhaps if it was an optional feature only for debug builds, maybe
+useful during the development process??? But even then, you already
+know you need to use this tool. And if you don't implement it from
+scratch and you rather use the one kernel provides, you also know it
+already works the best it can. In the end it's just a plain radix
+tree.
 
-Thanks,
-Qu>
-> Rvb?
->=20
-> Thanks, Anand
->=20
->=20
->=20
->> Thanks,
->> Qu>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return =
--EUCLEAN;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(stripe->sectors, 0, sizeof(struc=
-t=20
->>> scrub_sector_verification) *
->>
->=20
->=20
+Looking at it the other way around. The fact that xarray does not
+provide any stats perhaps means no one really needed that so far? It
+won't be that hard to implement if someone really needed it.
+So why is it not there already? Maybe it would be just an additional
+overhead which seems not justified so far, considering the feature is
+still not implemented.
+And IMO, that fact itself that it's still not implemented is also a
+very good hint that it does not make much sense to really check.
+Either it's the right tool for you no matter how the stats would end
+up, or you need a different tool.
 
+Now if you'd like some numbers to refresh how radix trees behave in
+general, I can show the numbers I pulled yday for Filipe as he was
+also curious. I'm going to be rather brief below, for further details
+check my other email.
+
+So for a radix tree, the height as well as the width of the tree are
+fully determined by the maximal index. The one implemented in kernel
+grows and shrinks accordingly. All the leaves are on the same/last
+level. In a sense the leaves are kinda 'flat'.
+Checking my /home fs on the lap I'm now writing from, the max
+buffer_radix index at the moment was 4341c9c which means 5 levels.
+Xarray uses radix 64 which means each 6 bits of index need a new tree
+level. Now, since we're filling the last 2 bits of index with zeroes
+(well, depending on the eb->start offset/alignment maybe some other
+constant, but still a constant) we're effectively using only 4 bits
+for the last (leaf) level. That's why we fill the leaves only up to
+25% tops (provided the ebs densely follow each other). Of course we
+don't always allocate all ebs, so the tree can be sparse by design.
+But that's still OK, that's what we want. But...
+We also make the tree needlessly wider than what would be optimal.
+Correctly (what this patch does) we should get rid of the 2
+constant/redundant index bits: 4341c9c >> 2 = 10d0727. See? Now the
+width of the tree would be 10d0727 instead of 4341c9c. It's still the
+same 5 levels of height, but it's now much more narrow/dense.
+Depending on how sparse the tree is some nodes can be merged to one
+this way. In theory up to 4, but again - that depends on how dense or
+sparse the tree is to begin with.
+The difference really is that the tree will not use more nodes than
+needed which unfortunately can happen without the fix as the tree is
+additionally filled with a thin air.
+
+Out of curiosity I also checked how many ebs were actually present and
+how many leaves were used in the tree. For this FS it was 13k of ebs
+fitted in 4150 leaf nodes. So on average a bit over 3 ebs per leaf.
+I'd estimate that with the fix we can get in a ballpark of 7-9 ebs per
+leaf. Maybe something like 1600 leaves instead of 4150 for the same
+13k ebs. IMO, that's a very nice win indeed.
+The worst case would be no change. But the tree is not that sparse really.
+
+Now imagine, if you wanted to use the rb tree here, you'd need 13k
+tree nodes, but they'd be embedded in the ebs themselves. But the tree
+height would be something like 14-28 depending on balancing.
+
+In terms of used memory, for this example the rb tree would use about
+300KB while the xarray could be estimated to about 900KB with this
+patch (using 2.4MB now). That's if I estimate 1.5 megs saved by the
+fix. That's the difference between using the tree correctly and
+incorrectly.
+And even if the estimation is not exact, we'll always get at least some savings.
+
+Hopefully this gives you a better picture to satisfy your curiosity.
 
