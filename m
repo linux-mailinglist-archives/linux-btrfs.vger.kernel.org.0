@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-13992-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-13994-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A7FDAB6179
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 06:28:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B51DAB61A1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 06:40:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 315807B2B24
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 04:26:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3BA74A2A38
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 04:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43A491F1921;
-	Wed, 14 May 2025 04:27:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4051F0996;
+	Wed, 14 May 2025 04:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="taIYBEC5"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Mrbm4RRR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF930191F92;
-	Wed, 14 May 2025 04:27:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E94A21CFBC
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 May 2025 04:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747196876; cv=none; b=t3xtpKd7S32/49qHkg77JvpfsetSj8wjXnYqbXHyrVD+PFjnzKSUG09xve2l97pIenSX0lYkEnXrQDNeHNgzZlLZknfPL66GisATryBSpw7Ntyjcj+axX2pXkDNLGKR7E1qARtkNo/ndkq4E4CJaH4M+glcZn9UnG7V6uEQte8I=
+	t=1747197606; cv=none; b=ZHZA4HdD/cA1Hef5eP0i2jY9m+axvMThf7RwMfpb1XhMfXtUafK/NQYtnlsP7PNpOA/aU8nkEtqZ4Ke/CguKLwCZljAQdq2IPMKnuoNnSPjn9Y1wwglAud0gosRXj+gzSKicWDvL8SqodLTwTXNmzzQ4LFSxB/PBpEWuYaU+55U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747196876; c=relaxed/simple;
-	bh=KFtCo11p6akAIQn4I+Etdm6iUFuXGArX89R8Z4gD4/s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sp1AI9y2XLy6WUqkaCksa93CA4GDtXdV88QU6g/+3is6LtMtWJ549SFEq3KdVnRt5F/QOOG1KZ7GTx9JBUD2byBLeEKVzF9TYpuoTNPxlnKxY5UmjydkRrSAn6+v50d5Kjiwv73k0rb6HV1pN1YG6qXI8tzCCYqY+hf8qH+bAGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=taIYBEC5; arc=none smtp.client-ip=212.227.17.22
+	s=arc-20240116; t=1747197606; c=relaxed/simple;
+	bh=oqqjlKHLQ1upk7+p+z7ggO+cev87Jl3d892yaShiEVI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=rtsw0lO//DEZ382qGAVk70C2vIjQGnuMPJspXNGzRfuaaAnVJd30YNeEYNAbdinkq8Ppfdo3OFph8TCOh6DQEPSzS5XBDlKqc/YidUnbXfIidor6JKZy7V6nSZfmWws9jtX9RHg1/Q6EucxUdbEeS+9txrm1xXngYXwc5dCC4DQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Mrbm4RRR; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1747196872; x=1747801672; i=quwenruo.btrfs@gmx.com;
-	bh=r4lEE824JU8/h8vWdaPoxkRgQ8/9fIywrnU1ZjbxEPU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1747197597; x=1747802397; i=quwenruo.btrfs@gmx.com;
+	bh=nicpWLXVEs9ytbXyFtrB2JWLpS6ZlWS+lvI8ePyQwb8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=taIYBEC5xTXq45/iJCZQ5I7N0Jl7FQZPDKoZvFCX8ms3k/2SoIHfd1jmzYVbFZT2
-	 MTXffdoSCTmWbAGyQNhB4ASsRO7ef8EnBS0c3vdOawSj+GauXC64+wCXEH//yKiJn
-	 Lmk0PSiotm7dh20sT8g8a9wSoY2gk7Rpu0WP0cfmMu9Bcrzte7VGKg3CzitRgOUHZ
-	 6+76JBhY/KSUHnaloIj0/Ugd0rScj+oW9gZPqLKHtxE5bupaifNw7y/+QCbqlhd20
-	 2bcOolQQA3ZoHTeEX2u2yZXhJNnEgdm2tqKwpZTD6wqrGc30ppMtzV17ASIfZPMsn
-	 rPZDLEjsTHF54lDv2A==
+	b=Mrbm4RRRHR+kpeSeewYkg6agPenu/RJ3sTA0v63NA85L0xaFjwB7TPtUQUOU2DKV
+	 dmWRiJFW90vaOs6JjutkwlTSolsw6rSMF3CB/TS4Pvg5+W362VRb7LuiiQLk6b2C/
+	 FB/mQ9HwTkpIt1h502zXfj0ovJWsAied8NFfxZw31/ugNLvONLrSwFKj5t3douVZt
+	 QM1CGWCKH1+jHEzJlRb4xeWk7caiqIhmq5zV7CAQicCCJoe6c2iboiZTbXzm6ObtU
+	 XEFXy+CxIuknIBc97QlW15tRFg+izONPTs8nHztV2nmbzdiETJICuzj4SVhjDcHY8
+	 H0mJMtnEm8JmbiWzCg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MuDXp-1v7Ql815un-0110X1; Wed, 14
- May 2025 06:27:51 +0200
-Message-ID: <95cb8a81-9cd8-455e-afc5-f4104329e217@gmx.com>
-Date: Wed, 14 May 2025 13:57:48 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MQv8x-1uapeE0wYp-00Z65W; Wed, 14
+ May 2025 06:39:57 +0200
+Message-ID: <9c437137-4334-44a4-925d-51690769b97c@gmx.com>
+Date: Wed, 14 May 2025 14:09:53 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fstests: btrfs/336: misc extra fixes for the testcase
-To: Anand Jain <anand.jain@oracle.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <9c9683df7928397142cb345ac5bbef2456972bf7.1747185899.git.anand.jain@oracle.com>
- <6c89137d-a835-447a-90db-da7b5e78263b@gmx.com>
- <843f86bc-90ee-42b5-80d0-b9800ac9fd9c@oracle.com>
+Subject: Re: [PATCH] btrfs: add prefix for the scrub error message
+To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <7cb4279a93d2a3c244e18db8e5c778795f24c884.1747187092.git.anand.jain@oracle.com>
+ <9ba1fc52-38b2-43f6-9c29-df924d8045a4@gmx.com>
+ <8630908b-2bdd-4726-889f-b9496d947c4d@oracle.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,239 +89,157 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <843f86bc-90ee-42b5-80d0-b9800ac9fd9c@oracle.com>
+In-Reply-To: <8630908b-2bdd-4726-889f-b9496d947c4d@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YNLmvNyn7Jwx8QVmdQJXkrQCwCuKSaDS4o9GT33J2zZ/dYUVork
- hTXFqKcO6UvtuurAMyQOUCBfMSU5iPVURi9OzeMQpKopeaTTCnJnnaspD7djGfgqTeYLE2o
- U0xVrQaDiwQwXCqzMb9TJAp66OraYaH2vvQdgCA90lY7aO28JhCx/24uY1VeleGL7dIpLM2
- 0zrSN1odNT4z2kAUlBOVQ==
+X-Provags-ID: V03:K1:xuaQayKHdINvHyfCFUqAFf67Vz5phQE3V1mBCFesZ2KoVhQWr2X
+ op2AxQQUM3HwT0CE1g9T81cGwfhjjE2ps+OkyGQjxEH6zra0qxeqp3qtd8E7OlZtO/asMAW
+ hDDt6b5F0/xr6Y2Pe5hEU3R/3Mmfw3nxvcm1PcIoGpdCFApv8DT6wYu7zKkRR5SGX5+gaIT
+ C8FQ1rYQM9BS2W/bbuEBA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:7vkhBHCjs9o=;zcZHthsQb6FPrJl4oBqeA8IwxSm
- DzRwrziSgDFOX4FOO8gT51OALgkjqtPvx3jm3iPtqFuQtOWWEaIW8ib19psL0RU5mU8gkFg6s
- 72vMWOzQBM/FxfvWTOHg8d3b4XP/6QEXP887ta/8ff+PExs0uFnWJZDc4lzqmnkKcAdzIZgeN
- PUnckoKL1xy3/hOpHI3LqaVtgjUWKJEH6WifnbOE6VI3XAm3zul0SsrZEJDMxLnyD/m5a3Ddp
- Kdw34JdQuEYiulYiujPg0s9kq0da0h04CSpJnAIlvA6LsKtrwwuOTOoOD6d+USRuRFmLVRCIu
- BjM1XkUJoCUnmg5YootK4lcU/g3KS1+zkkw+BzdAmMEWPG8q0dp5RNR486b7KKbt23s+j650u
- nX7wqdvXvOJshvXFeuXn8i6+ruCXAJLE+cArvn54O/W1rsWRRffUsCEqpfBmLRLEzFuUdzmhn
- VX/o2mMLNoEmydqETkZhksXwzxfLqH+3rGPVXXxg2IGd5Ecslgzg/kUjn+78kHh5bFS6j8x+F
- l6a38X3WYEr3TF8QRtVK2AX+DQhmGnlQUtdRGlLVnQbaWmqRwY4whFFewir/shF83nw21uef/
- 2260Zd8JxNenCK6FrfEwTUyJ8aPfOmFHHOguM6tEnEthYKsvRFAih4LU4F0rd+YqPLy+axu4F
- PWcBMdN/AK7Sf83WlcgO5LoLglFoQKolCl9bBkH9rC+SyNZHcKWVlFHZZD3jdAAuzbC9no0uP
- T2MQCA00bClR4XtU0KZTHn6RNLiUbjt35qgACQcr7YIXo0y13ep4ZA6y+LvISYzN6ZhYsPeN2
- Z8JqE53xhW9ha2GM9vMrLyiaH5Ko/SvghDDTItyWUvY8eT+e+oHY0+74GeqJ5ZtS5wBmFSWka
- QdTs5s3evdG+91LWEFc87y1v2boqRhiT9f4QsooMnp0rFM88vmft0p4gK/8eLB3A4MgpJvKVn
- wDf1NHgiQx9O4tFph0KV9CSjMW1C6t118MM3sbSqLBrnC7ovi8CpZC4FO4FsRdERFWgK2KZ8x
- pyEG/7PxSAedmeTuMIOusxDic07gvsOsvxxteC8DR+usTy8lBczgbKTh85tCZ4z3tEMV7Truw
- CyZ7hXClxBM2pifuvXXs+pvLNjjiOsP+5uJmu161td3uOmUYamJ4TzZ23GNXLGXxQB1xnlDig
- 03o74wy1GBceHiVBSeozSol6zjx1CqIqB+o78spzsjkUNPo0PhLu2n8b0bkV1f4aQFrelKkzS
- sx/8X0YaLE5Se/xgZHwuj/K9yEpj0ztc6tGD9IESKhY29ydpATKPuoJmkOTjYQ+tr4fLMreKn
- Za34D/eQAeQ0J4sO63/pf4CDT4c46u8TcdqL5o4Oc9lP2sLP1xqB6FByTmn+iqJwLCxKAhppe
- JpcxQY6/JwpSbcpweZdVDrDlPgSBokZIn9mlehxkQ/qYCMWXGZLo9rI9TD2SBMjlXwR37ceug
- 8xSvcTkUxXUn49AHRe+KiNyTlaZalfHHi2AuwZ9uhMbF6Y9lXMKfr3XpTLU1kmosU88aP9+xl
- VLNWhV/b8rj+ew3hc0TXnT6c02JBuUZt0NUjNS5vzFTku2+3iT8EyF23Z6ZeDXXTEr2yVmSGB
- oUAM99yKx+fIniz10pfdK2HN1oXlIe/zRkcl8TW+zGmueRB5QiQmFMR8J5yGJvE6apcYzxT7a
- JeJn5Xvr5Rd/eyg0g/kpr4c4ISZaziR6YNFnUpNivde2GnHobaJc1BKQzL0/v+eCtEv6LwEf7
- Y4e84b1VkPrAZSsuEPMwpQvaVdob+zzk8UDrcwYXReqKnghaquD8RJIAYs3jA3ZF5DFLR9EI/
- Q+CUAbnGUYGmyTqKxOxYtoNLjLWEAuErMPPW8zmaFJkFQZanYkeeJkoI5TsWGhpOhL4RdvTre
- M8m8ir/c2QiaPUhAq8H4tMMwLzygT3wpEorEvr6rwN8V6UsVUijFO2cqJiT12jchFQNXISZOf
- ekyh6nXoYWaEA5/5HVkt2hykXOzD6TNrW2xwcAljQMGr2vjzv7jPiqkDzpY913P78EAHWTgGe
- toUTB9aWwaWO+ryVMgkXa0Gk8snahlZfYSfg8S0rWm7VZK8JbR3Sbge9KZZ5n6GUWmVfV+xNf
- r4ygg1wxpMgZJkt17mD4aeGfKTZhej9SLUNTXOG4Z7hXKe/pJsKLyAoXF39RjR0BPcNE7zhIs
- BUbf07X9nraoJh2hYNftaXgjWZfeip96eo9szY+dDWfvVOSQpwTR04CEt4NkxlL+H7jr4NmEh
- xkdtvjIMz5MGE2xOAcmOuIj+AiWlcdU3/SJ+qbeLsJ9WMCf18b/hueO7y9UF+UXjNIf/DI8Jx
- zF9EAsDsYduCj6PDOFmaRK4o5SHnO98laOJhG/4fOOb64D01sJ7Dg6CT6nNgYzi54A/FCmnPp
- w7CP965uFlv6U2LmM0oggLb1HrAemNaGQRfriqISqqy8d7/WLjQFnQP995aUFVrlRktQyWKUE
- wMm4AOjomP7xU5YM53PNQrqJ/AMUsRJ88awDvxvccK06jJbnChozbr8upkXnaYvQbe1E4Lj6N
- eI68ivBWqGhk/KWnbakvFHB9OSW3u3VOTld8EJQvB+YU+/iMqHsCfJiOaxmQ9zzf/zA5GybQH
- jlMf4/QPVBvv1bmTV6fNGyq095yzKhI+As6tIMVvnQLAMeFi/j7ZTcLsP0hduojMM8L1NQUSf
- 3KlyWTEU4tjrAYFLEsaIbtSJ0Hmo8o7V2ljo8aU9Q/oTCzdC2Pd5pjutXN8sv1vRtGw3gjn+c
- M/9So2EFcA0KZnLuTJ6v85qjnoDTb1AXnXCFVmy+lf3jLt702NDFDj1OCbmHjzaFuzhAMi6fg
- OZKIlz+aYX9qNgx3iAJQwqR78N11PM53uLD75oSTUyvaksH9Y2VhxeZOEaprLfit7NGA3u40o
- hqMY/8duPPXfXw1Bk39wxohSRAPFB6eXCabA6NfIEJC9kM5k4opd8AE/0IPovSnVeI6Y81Jzs
- Tiy3RjumVPhPpKbUJzkWTcl4krTG1JHVlRThyr56ZZM7crx6BrhqqF+FJEPIvigryPsbpExnQ
- Q1lGu10u7XaIQy8amVZ8r+0ivU6lXGV4h51gKk06apGZw/nvfkg5MBHyhR9FdDXJtCNFaxMLR
- avKy4UtVQ+8QvUqng2m5AW3hU6WjOszf9d
+UI-OutboundReport: notjunk:1;M01:P0:fR1AtLTZz+4=;4R5Soo2v6W8FcBWIXFBx6iIFurJ
+ 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
+ UiOeVA3xneOVk=
 
 
 
-=E5=9C=A8 2025/5/14 13:49, Anand Jain =E5=86=99=E9=81=93:
+=E5=9C=A8 2025/5/14 13:57, Anand Jain =E5=86=99=E9=81=93:
 >=20
 >=20
-> On 14/5/25 09:47, Qu Wenruo wrote:
+> On 14/5/25 11:37, Qu Wenruo wrote:
 >>
 >>
->> =E5=9C=A8 2025/5/14 11:05, Anand Jain =E5=86=99=E9=81=93:
->>> =C2=A0=C2=A0 Along with adding group dangerous..
->>> =C2=A0=C2=A0 Fix the fixed_by_kernel_commit with the correct commit.
->>> =C2=A0=C2=A0 Use the golden output to check for the expected error.
+>> =E5=9C=A8 2025/5/14 11:15, Anand Jain =E5=86=99=E9=81=93:
+>>> Below is the dmesg output for the failing scrub. Since scrub messages=
+=20
+>>> are
+>>> prefixed with "scrub:", please add this to the missing error as well.
+>>> It helps dmesg grep for monitoring and debug.
 >>>
+>>> [ 5948.614757] BTRFS info (device sda state C): scrub: started on=20
+>>> devid 1
+>>> [ 5948.615141] BTRFS error (device sda state C): no valid extent or=20
+>>> csum root for scrub
+>>> [ 5948.615144] BTRFS info (device sda state C): scrub: not finished=20
+>>> on devid 1 with status: -117
+>>>
+>>> Fixes: f95d186255b3 ("btrfs: avoid NULL pointer dereference if no=20
+>>> valid csum tree")
 >>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 >>> ---
->>> Qu, This change is big for the last minute merge time fixes for the
->>> testcase with rbs. Pls review.
+>>> =C2=A0 fs/btrfs/scrub.c | 3 ++-
+>>> =C2=A0 1 file changed, 2 insertions(+), 1 deletion(-)
 >>>
->>> =C2=A0 tests/btrfs/336=C2=A0=C2=A0=C2=A0=C2=A0 | 25 +++++++++++++-----=
-=2D------
->>> =C2=A0 tests/btrfs/336.out |=C2=A0 3 ++-
->>> =C2=A0 2 files changed, 15 insertions(+), 13 deletions(-)
->>>
->>> diff --git a/tests/btrfs/336 b/tests/btrfs/336
->>> index f6691bae6bbc..503ff03b377a 100755
->>> --- a/tests/btrfs/336
->>> +++ b/tests/btrfs/336
->>> @@ -8,10 +8,12 @@
->>> =C2=A0 # rescue=3Didatacsums mount option
->>> =C2=A0 #
->>> =C2=A0 . ./common/preamble
->>> -_begin_fstest auto scrub quick
->>> +_begin_fstest auto scrub quick dangerous
->>> -_fixed_by_kernel_commit 6aecd91a5c5b \
->>> -=C2=A0=C2=A0=C2=A0 "btrfs: avoid NULL pointer dereference if no valid=
- extent tree"
->>> +. ./common/filter
->>> +
->>> +_fixed_by_kernel_commit f95d186255b3 \
->>> +=C2=A0=C2=A0=C2=A0 "btrfs: avoid NULL pointer dereference if no valid=
- csum tree"
->>
->> My bad, wrong commit. I'm totally fine with the fix on the group and=20
->> fix commit.
->>
->>> =C2=A0 _require_scratch
->>> =C2=A0 _scratch_mkfs >> $seqres.full
->>> @@ -19,16 +21,15 @@ _scratch_mkfs >> $seqres.full
->>> =C2=A0 _try_scratch_mount "-o ro,rescue=3Dignoredatacsums" > /dev/null=
- 2>&1 ||
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 _notrun "rescue=3Dignoredatacsums mount=
- option not supported"
->>> -# For unpatched kernel this will cause NULL pointer dereference and=
+>>> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+>>> index ed120621021b..521c977b6c87 100644
+>>> --- a/fs/btrfs/scrub.c
+>>> +++ b/fs/btrfs/scrub.c
+>>> @@ -1658,7 +1658,8 @@ static int scrub_find_fill_first_stripe(struct=
 =20
->>> crash the kernel.
->>> -$BTRFS_UTIL_PROG scrub start -Br $SCRATCH_MNT >> $seqres.full 2>&1
->>> -# For patched kernel scrub will be gracefully rejected.
->>> -if [ $? -eq 0 ]; then
->>> -=C2=A0=C2=A0=C2=A0 echo "read-only scrub should fail but didn't"
->>> -fi
->>> -
->>> -_scratch_unmount
->>> +filter_scrub_error()
->>> +{
->>> +=C2=A0=C2=A0=C2=A0 grep -E "ERROR|Status" | _filter_scratch
->>> +}
+>>> btrfs_block_group *bg,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(!extent_root || !csum_root=
+)) {
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_err(fs_info, "no val=
+id extent or csum root for scrub");
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_err(fs_info,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 "scrub: no valid extent or csum root for scrub");
 >>
->> Again I prefer not to catch exact error.
->>
->> The output message has changed in btrfs-progs commit e578b59bf612=20
->> ("btrfs-progs: convert strerror to implicit %m").
+>> In that case we can remove the phrase of "for scrub".
 >>
 >=20
->> And there is no guarantee it will not change again, nor the kernel may=
-=20
->> change the error number/behavior, I just prefer not to play the filter=
-=20
->> game on something non-critical.
+> Done.
 >=20
-> IMO, we have some flexibility with error messages printed to stdout.
-> However, to maintain the kABI (Kernel Application Binary Interface)
-> across kernel releases, it's must that when a test case expects a
-> command to fail due to an ioctl(), we verify the returned error number,
-> not the error text.
+> -----------------------------------------------------
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index 521c977b6c87..fe64cde14170 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -1659,7 +1659,7 @@ static int scrub_find_fill_first_stripe(struct=20
+> btrfs_block_group *bg,
 >=20
-> For consistency within fstests, we should stick to this approach unless
-> it affects backward compatibility. I've dropped the new filter below.
-> Does it look reasonable?
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(!extent_root ||=
+ !csum_root)) {
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 btrfs_err(fs_info,
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 "scrub: no valid extent or csum root for scrub");
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 "scrub: no valid extent or csum root found");
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 return -EUCLEAN;
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(stripe->sectors, 0, s=
+izeof(struct=20
+> scrub_sector_verification) *
+> -----------------------------------------------------
 >=20
-> -------
-> diff --git a/tests/btrfs/336 b/tests/btrfs/336
-> index 503ff03b377a..b418ca885e34 100755
-> --- a/tests/btrfs/336
-> +++ b/tests/btrfs/336
-> @@ -21,15 +21,10 @@ _scratch_mkfs >> $seqres.full
->  =C2=A0_try_scratch_mount "-o ro,rescue=3Dignoredatacsums" > /dev/null 2=
->&1 ||
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 _notrun "rescue=3Dignoredata=
-csums mount option not supported"
->=20
-> -filter_scrub_error()
-> -{
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 grep -E "ERROR|Status" | _filter_s=
-cratch
-> -}
-> -
->  =C2=A0# For a patched kernel, scrub will be gracefully rejected. Howeve=
-r, for
->  =C2=A0# an unpatched kernel, this will cause a NULL pointer dereference=
- and
->  =C2=A0# crash the kernel.
-> -$BTRFS_UTIL_PROG scrub start -Br $SCRATCH_MNT 2>&1 | filter_scrub_error
-> +$BTRFS_UTIL_PROG scrub start -Br $SCRATCH_MNT > /dev/null |=20
-> _filter_scratch
->=20
->  =C2=A0# success, all done
->  =C2=A0status=3D0
-> diff --git a/tests/btrfs/336.out b/tests/btrfs/336.out
-> index 63b53ef43650..982b0adbc3e8 100644
-> --- a/tests/btrfs/336.out
-> +++ b/tests/btrfs/336.out
-> @@ -1,3 +1,2 @@
->  =C2=A0QA output created by 336
->  =C2=A0ERROR: scrubbing SCRATCH_MNT failed for device id 1: ret=3D-1, er=
-rno=3D117=20
-> (Structure needs
-> cleaning)
 
-Although this will not work with older progs (v4.19), but that one=20
-should be assumed as EOL, I'm fine with this one.
+Looks good to me.
 
-
-
-But I still stand on my previous point, relying on the progs error=20
-message (nor kernel message or whatever) is not a reliable way to catch=20
-any error.
-
-And we should not spend any more time on the stupid filter game.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
-Qu
-
-> -Status:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 abo=
-rted
-> -------
->=20
+Qu>
+> Rvb?
 >=20
 > Thanks, Anand
 >=20
 >=20
->> To me the current make-sure-it-fails behavior is already good enough,=
-=20
->> and more future proof.
->=20
->=20
 >=20
 >> Thanks,
->> Qu
+>> Qu>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return =
+-EUCLEAN;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(stripe->sectors, 0, sizeof(struc=
+t=20
+>>> scrub_sector_verification) *
 >>
->>> -echo "Silence is golden"
->>> +# For a patched kernel, scrub will be gracefully rejected. However, f=
-or
->>> +# an unpatched kernel, this will cause a NULL pointer dereference and
->>> +# crash the kernel.
->>> +$BTRFS_UTIL_PROG scrub start -Br $SCRATCH_MNT 2>&1 | filter_scrub_err=
-or
->>> =C2=A0 # success, all done
->>> =C2=A0 status=3D0
->>> diff --git a/tests/btrfs/336.out b/tests/btrfs/336.out
->>> index 9263628ee7e8..63b53ef43650 100644
->>> --- a/tests/btrfs/336.out
->>> +++ b/tests/btrfs/336.out
->>> @@ -1,2 +1,3 @@
->>> =C2=A0 QA output created by 336
->>> -Silence is golden
->>> +ERROR: scrubbing SCRATCH_MNT failed for device id 1: ret=3D-1,=20
->>> errno=3D117 (Structure needs cleaning)
->>> +Status:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 a=
-borted
 >=20
 >=20
 
