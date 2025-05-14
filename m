@@ -1,656 +1,209 @@
-Return-Path: <linux-btrfs+bounces-14014-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14015-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12126AB6E26
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 16:28:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CD9AAB7042
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 17:47:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80B154C2527
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 14:28:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D7E73B1F0C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 15:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 201B31A8F93;
-	Wed, 14 May 2025 14:27:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 583DA1DF75D;
+	Wed, 14 May 2025 15:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="VC6tlYit";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="N5H1d+iY"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Wd+dpkSb";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="ELFVHOfi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82C313B284
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 May 2025 14:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747232875; cv=none; b=LTni3ZqiYWvsNDFUSu5N7E4r1aM/vdjrx1o/RV+zfuw5P1I4nncaPmE1UQ5Gb1wyHY2Vn0HMteWz3Tc7ioIM3uzxZ9NzrmOv6DPZpHMBkGjp3fsG1Ntu/6ucTK/silz/jQzHn5M8KzwMyqWoATciUk0BnvxINbYam8EOmvPwR5Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747232875; c=relaxed/simple;
-	bh=JCcBdbV78Z4I4lTSBooGvYgYb1ycPQeYyy3zWI3+G5s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IW8JG9hwibXRNcMhrEM6ZyTxsHwJNtcDVccPZY04RFFfHk9F1ZJ8GqIB2OhZmjJdXhP3n2X1HehEVeLSDh55293ub1THC5ae/jSZO08zdQdgU6OWixw+b1UuiLH+b29cfJaATkQyDpF7jDdlzorfhDH5bIWSkQuJN/NJVh0AnsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=VC6tlYit; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=N5H1d+iY; arc=none smtp.client-ip=103.168.172.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfout.phl.internal (Postfix) with ESMTP id EE4C21380202;
-	Wed, 14 May 2025 10:27:50 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Wed, 14 May 2025 10:27:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1747232870; x=1747319270; bh=BOYf89Xc6u
-	EBDtMuSgNOWbPg3BdGy9nCMwCB0GfScI0=; b=VC6tlYitdIb78IoTOcrWkK9VoI
-	8Mkqtxm1o+Tx525vL53MpVWEcBcH9y7Ihns1ZBJYRWHfZimRbro+kPDgTZvxjqfv
-	XlmzIytNDGOb+dXL5EFcKXJdwtMLaWi9YrRMJs4vwUSlukJKfiLTMwpkPlyb6V5S
-	SrdN5/E3GdBiFlWR03O1HOsJg3x+MX1ePWyGtwQ/kUp30LvdpMMNonu6GmaJNtmi
-	6gN092J4DsJArKPKkZ7Qe4LAJZkvOmZsSJhlcnVKPU4bBLBjBu0pLziaUvFvM0k8
-	NGCUKYDpNLcyLj+CsreImG68FBXKvyH2qvqb/go1K1jPqMes/okNOX5zRoOQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1747232870; x=1747319270; bh=BOYf89Xc6uEBDtMuSgNOWbPg3BdGy9nCMwC
-	B0GfScI0=; b=N5H1d+iYmLk918Cpb428DNlZUrXB6EECdm1pWjLoBV+rke4EfjR
-	XVsC9b4GykOL0bBK7Wyf+nk/uyp9FKeKe0FtYaIb/BBsKBI65kWVVLjK1NMgx67j
-	u87KwxSZhWfoESn+JFJKNndh1k40qp0qlifRHM1Z+bNQC1V6aUx3QGHIwF8s60t/
-	2SUrsi8vLCOeQ4YbL3+5zsgfSTrWOBUlU6u+TKkRMs/X+RUfVKfKcgs13cmhSVXy
-	hwkFz4rQXPxY4svrYuH93foywgDwd9cVI9RsZb2JMsU3vpjZaRrWPndGdTqd8Tbw
-	ubTbAJJOq6Yo0c6F50AtJi1DlAmhEZYuzIg==
-X-ME-Sender: <xms:ZqgkaEwB4J0oEL9mu-Vu_I4f_UrZlBKI-73zZSZW692Mt09MRokFJg>
-    <xme:ZqgkaITxkNtPw3L_35usvFdAhxC61bku_P-eJUJV5vC04r-ZjEv-ksmB5tvIbAOMP
-    MqHO0tXFygiR4AV1Ds>
-X-ME-Received: <xmr:ZqgkaGXFw8ovXJHcCbKuYq7wwocK2NkfuS2D_hx_XTTBlICyS5xCTu9g0X74QoseZmEU3tB1yV6XpPLTw8sQe2MrUFQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeftdejvdefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpeffhf
-    fvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhho
-    vhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepkedvkeffjeelle
-    fhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopd
-    hnsggprhgtphhtthhopeefpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehnvggv
-    lhigsehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrh
-    drkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgt
-    ohhm
-X-ME-Proxy: <xmx:ZqgkaCg2swx2GKoKW7hcgAKEJB52ZJ4g5MWFtUQsC6EkZjzSSJYAXQ>
-    <xmx:ZqgkaGDDGUTvSHFh9mSkgr0Pr1yQUWBwPzS0VwbaUpwAI1HxHpkIBA>
-    <xmx:ZqgkaDIM5wGRNenSWtsCHOIMvgIt8mDs7fy2munSo5RA2UQoIY38eQ>
-    <xmx:ZqgkaNCuCnEsEj57vXv5vYvV1pQEmcaIrPEk8LOcSHIrhOR6lKvkqQ>
-    <xmx:ZqgkaIxw84gDVRxoq9w20rmiiojv6oJHQoNXekttimz5UQai0lqOw66r>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 14 May 2025 10:27:50 -0400 (EDT)
-Date: Wed, 14 May 2025 07:28:21 -0700
-From: Boris Burkov <boris@bur.io>
-To: Daniel Vacek <neelx@suse.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: collect untracked allocation stats
-Message-ID: <20250514142821.GA1544463@zen.localdomain>
-References: <e42e7c06710b0406ac548739945b386d8319b48e.1747095022.git.boris@bur.io>
- <95f5c89f52556f69decc7f18a6fd1f2c09d711c9.1747095560.git.boris@bur.io>
- <CAPjX3FeVuLj=WDcY9_gaa5Ljj-4w3-hOc+JevXfEwXODO9kgYw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DAC51DAC92;
+	Wed, 14 May 2025 15:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.144
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747237619; cv=fail; b=FA4SISqepgQzK3TmF4FBVijfJ8Tm613QIQweIJIgTitW3QBFf2WC8L/rbhIgD1Vr2R2I4/+z6aBn6pkROW+0zrscriCHELtF4hZyAu23Va6iWq2q/T+RDHo3HledEx5A918gorzpO6iv/haD6Y8WRuv8lvVS/5JW9Jf3cvTAIWU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747237619; c=relaxed/simple;
+	bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=GYkIJYOKjSmVTSi5V+Xuek7+bo9EHhFnusrMox93oH0gytRnPK+RZrww8LLHqM4pVJOb+RyRqrJeqVehGo/YRdNrRWUyqvQ+K/aNgFr2LU4sFRgu+vBzLY2OCntzjZ4beCPJCtRvM86VF3CMxSrNH6VsyjtcVp47sMgP30Xjm0k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Wd+dpkSb; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=ELFVHOfi; arc=fail smtp.client-ip=216.71.153.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1747237617; x=1778773617;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+  b=Wd+dpkSbgCHAPUdHvUHeR4ok1uAicmWrHRlaUtIEVkzp+vKrBQna9qSm
+   mq61qRQY/9N5H//xGDMkjAevYQ1cTePCd35TpaBngj1P0vlFPjtUTTjYh
+   D1Y3jDFRC7UACOg77zusmt9VzsWvJWM7dO81E3b3iRPg7+AB449TqM3Df
+   1Zhcaw3dj0zc7plR1g9W7Z6IM3jB0dGUVecF9ZBxrad3ptvX2bUgvZJ7Y
+   1oimmsKOIOjWCiEQOqo4W7Dithly6pATDXCvXn9bckwQi7x9X4/PAl8jB
+   7Kg5vFn9629fqnVLXoD0EWN/+k1htybagiCBhE0H6v9vjvxUyjzs8QcCz
+   Q==;
+X-CSE-ConnectionGUID: +dPKz5MBSyuT+xypnjnXUw==
+X-CSE-MsgGUID: n3yBGb+7QqujV67y8+IHUg==
+X-IronPort-AV: E=Sophos;i="6.15,288,1739808000"; 
+   d="scan'208";a="81182425"
+Received: from mail-bn1nam02lp2049.outbound.protection.outlook.com (HELO NAM02-BN1-obe.outbound.protection.outlook.com) ([104.47.51.49])
+  by ob1.hgst.iphmx.com with ESMTP; 14 May 2025 23:46:56 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=quHHJp2mdr4BKzmLMMnw3q6US4S9VXayVJ8v8HD984cpE8/GjS6Iq+nAptfTZAyj8KI4ZABUJwGrqLravJbZMfE9GxaTZwWShelFIJ5ql2Lv2SjeBDiwUF1wWbYTKYeWsoaHVCApEbmp1QjK0CSD1JfZdDl7LV6x5sh8qqlDjzJN29UBMzKdxpHeG9UaiRJ8Yk3SZPhweApvptKrmoQcW/RJj3aQcx2uZdFRslWrit2IHUmUfHeW6mWulUiYgP6lVXWafIn++y7l2Grhy9qiZKso4jm0gZhKicMLHp+1mx4Ud+pZVEeh84Ank3aJ55KhMxLZPyGBHXqrDZsE1VU4qg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=cSGcakTTGzIxsRuac6Xu7eIx4cmS0w05SY0qfCKJg7pZxpOsToUSgYItkWpunrSj+dyf5cV+alg/m7NehG567R84OIffDjB2lMoUtyaXbydwEkKu5HjXvRFNNxaWNuEdfeqGVSwrVWlaFIzeWuTmHMNTuA+s7Hq5J8ETzwIWReqf5CuG8mMNGXSXoPymNQQSuY/0eqRvQDqJXtui82TPvuuRTWID7sN+hAXsWyhcbbi1IcxDHsxZJTtoPo73vqP2/lsR8NLJvqdIwNOdHhws/DXFkbbgQQWc0aLblSLuIB5iCu/1UH0LA4B17wECnuGDDfYZZSF/4JJCmxCOuwP8Fg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=ELFVHOfiybTlhEmdNLAbdKJe8sh6vqWdQtyKOWVUhZ+mchlERdlmMfNo6nSn3HBazFxa1RTwYnGzh6+1xsbJbZItS1TsyJS2ZRua7iq78vZf6Z+AQu5NnkHK6q7ed0gHAcKIMeTFwZUMFWUftfOfmj9hMJH/BWbmQRPD7Nt4tW4=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by DM6PR04MB6684.namprd04.prod.outlook.com (2603:10b6:5:245::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.31; Wed, 14 May
+ 2025 15:46:52 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969%5]) with mapi id 15.20.8722.027; Wed, 14 May 2025
+ 15:46:52 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: Daniel Vacek <neelx@suse.com>, Chris Mason <clm@fb.com>, Josef Bacik
+	<josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
+CC: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: btrfs_backref_link_edge() cleanup
+Thread-Topic: [PATCH] btrfs: btrfs_backref_link_edge() cleanup
+Thread-Index: AQHbxNH2yFtPkzrFOUmgsJCFS0QwRrPSRS4A
+Date: Wed, 14 May 2025 15:46:52 +0000
+Message-ID: <3c08a5d6-bf17-4a74-a889-b1658a2a75d1@wdc.com>
+References: <20250514131240.3343747-1-neelx@suse.com>
+In-Reply-To: <20250514131240.3343747-1-neelx@suse.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|DM6PR04MB6684:EE_
+x-ms-office365-filtering-correlation-id: 00a3189f-e512-4876-ad62-08dd92fe8bf7
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|1800799024|10070799003|366016|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?SHFuQVh5NkRZMUV3L3gvZVZUK2Z6andETDRNN0ZzcUNqV2p6SjMxTGkrZmJG?=
+ =?utf-8?B?YUZyd29sbldJYkJPQ3g5Kzl4U2t4QzUwQ0JrTGhZVk5QTDh5d1JaRkIwVnhH?=
+ =?utf-8?B?UFRNcDl4b3NQcWxuaXdIbFRUV2oxY0R5cW9vdkVOSytpRHRNQWdlMkN6eHJ0?=
+ =?utf-8?B?aGlvUDBwc29rUmQ4L0JRcnJyOEkxdjJ4TitXQ0x1dmZKNnFyVXd4elVFSHEw?=
+ =?utf-8?B?YVJBUk5EdStScDRFakNJOEx5Uy95bGdyVE8yc1p2VFlNbEUyM3JFczltb1M0?=
+ =?utf-8?B?WHVyWHhDNytOOXZkUFJOb0NBWHcxMStrQmNlcGMxVXkrMHVDSGU0VDZJYnVT?=
+ =?utf-8?B?TURialMydWZmRVUyMWRIVjhmMmI0TzRBMjVURFpvK3BUL1NZOGhDVmRiVjhv?=
+ =?utf-8?B?YTNyTHNWZEpJOXZOOTMxTjU5VHNHYXZ0eUplRWt5TUt3RHRXWk5XdUV2a1V5?=
+ =?utf-8?B?eExqb2htVjYxZWZaWHhXc1RJb3RpSzN1OFlUN3dLL3Mrb1o1L2NEUE9pN3hk?=
+ =?utf-8?B?K0lsK1ZLc3AzSFhWemdLRUZOdjUxQVNLNmlFeHkvNEF1Y1A5Z1V5T2hUZXBR?=
+ =?utf-8?B?cGVjZWN5VzJ2ZmhzOEVIQTl3V3JpU2ZxK2pZdmxnckFCVzZReTFLQ3I1Z010?=
+ =?utf-8?B?eU9zcFgrOWhZdlhyVmowaXJjSHZaNE1iQ0hCRTlEV0tZeVFmUUxsNWRhdEhL?=
+ =?utf-8?B?MDBjVzlmVUFCRGxOai9wbHpsVlBReVdaZThaam1sNE5qQXVUcXphQktoZ2dE?=
+ =?utf-8?B?TE1kb1JCOFZIVFd0Z0hKT09ldWNvbU51N3o4cnNvUTB0aDczVWxnVW5Zc2tE?=
+ =?utf-8?B?UldEck9DUnhEdXo2ZmRwam1EaDUwUzF1SExpbHlNeGJCN1FFcE1oOE9CMGN5?=
+ =?utf-8?B?TERSTUQxZkJKbmF2czZGbThhK3FuWVlPTWVMc0JMQlRCdDVUcHhKUlI2cCtR?=
+ =?utf-8?B?QmlWTzh3UGJxR1NYRnJWcEErcGpGcEZxNW9JUENWczQ1QTlSSUVKV1kzZFpq?=
+ =?utf-8?B?eWFFTFY2Rkx0M1IxVUFEZ3ViSWZSZU9vZVRTejVOWmRXTjZPSUEvM3V5WjZ5?=
+ =?utf-8?B?RkM4a2pLUnpNRXFIdE9jNFJXSHArZUVxZzh4bEkxZEdQd1hNVE9iRXh0dExw?=
+ =?utf-8?B?cnhkNFFFbE9rMS95SlhwWGRSYnJqTzZzTFBnR0xsQjNzeUpQTm1EcUg1Z1pi?=
+ =?utf-8?B?TEZuUjlvOUlFdVF5b3dxb3ZlV2h4TjRWTGpLVGNMNGhwOFd3c2ZNeFR4SThX?=
+ =?utf-8?B?K09aM24xcENGcE1DcytjQllhdVJodGswczcxZXEzRHZvVVp6elNzUkJGN2Mw?=
+ =?utf-8?B?amJqenVoMkxUUEZobkExR0RnWDJsZXhjck1XUFZrc0lidXVEaE9CMWZHR3dV?=
+ =?utf-8?B?MklSZ2NoWUMzbUJBaFMybHQ1c3ZERGxYdDN3V0NpbU9BejJXY3VlNFAwODlQ?=
+ =?utf-8?B?Rkx5QllaR2kvNnJ2VkE2ZDU5SWVEVDdLVmVFMVg2OVlWQVNEaWQxTXVBNkhW?=
+ =?utf-8?B?M0lNaW1hYnU3MEsyZmVlVjJRNTZKZTJzYzVIaFkwVW93d1NNN3dHaHRHRTlr?=
+ =?utf-8?B?eWIwdkZ4ZHJYRXVTNnhpcWdia2t0NUJEbDJEdFhjUk1ZU2h6dXJ3dTBQUU11?=
+ =?utf-8?B?dnJPYnhSSHlhYmZkZlBCVFR0Z3ZWR2UzTlM0aDlKU2F0OVZ5L09SOUdlb3NT?=
+ =?utf-8?B?aDNweHNnZnJDVktGdDFTU1VaMkI2dmFvOXpjblZ3M0xuTGcxTjc4UmloVUZk?=
+ =?utf-8?B?cGVlYjBtaS9Nb2t6MnZSWGxhNXVmTUFmVmVMM3h5YVZvV050VDVTaUNPUWZV?=
+ =?utf-8?B?bGdrZCsyYmloR21iOFlEYlJRL2hTdlltSUkzUkdZRW5vdkJGMmNiVzUvMUlt?=
+ =?utf-8?B?aVM0RWpQQUYvdnJuMzdhUmpIdDMxNFdiWjhDbmZQTERJV3V6MGtNOU9jN25L?=
+ =?utf-8?B?ZzFQcGNnTUk1OUV4Q3Qwa081QXRaVHFjT2NvejZwQ3hpSW1Tb0lhY29HOUNX?=
+ =?utf-8?Q?pfFvKapUoPfVBVVC2IQWxM7exCgi3o=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(10070799003)(366016)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?L29CQUZSeXY0aWNPcXJ0WjRyR2RTQ0hxdHNlVXgxSUw2dU9od3J4M2Mrd2RJ?=
+ =?utf-8?B?RG9MMEp2TVR1WjVRVW52WHh6R2VjcjRIMm5ETEw3eWdiR0JOQVVkVnZlMzNH?=
+ =?utf-8?B?NXVpVnVtZWFFK0doQmVlMERMZXdON3lBQS9veHJhYXhQd1U0ZnBEMFRrODFx?=
+ =?utf-8?B?V1NrdDRLcllJM3NDYnFDaENodHNHamRVUTd1K1oyK04rTjdyZGJtOUluckxo?=
+ =?utf-8?B?Umdic3R6NnRxQU02SE5rUjM3VUJiZy8wSWtKSFJaTkpvOFd4eGxEbm1IRGtl?=
+ =?utf-8?B?a3FWZkxodkRKbWIxVmhHZUdNcFZ5bnRBamJMTWdoalRBWjlaaFlNT3JkZ1lS?=
+ =?utf-8?B?MElIQmZkbURoN3hJUmNkZ3kyczhyS3c0UkEyN3lZVk9IcHNGMXBFSTlUWFdO?=
+ =?utf-8?B?YmZYZ1F6S1JkRG9BemNEamhDQ0ppVDNHeXpsNjlQQjdWOXdERUMvTUFoRHJB?=
+ =?utf-8?B?dkpMWFpWNzUzZG80NDJlT1drdVhIS3hmeVF0a2xoTDdNUjZsUUJoTnFIdGRx?=
+ =?utf-8?B?M2RJZHBua1dRUThYUVZFRG4vdFc5WXc0Q0J3Q3RHbjN6ZXhyQ3U0Zk9pRHBv?=
+ =?utf-8?B?cmdJZndNSkprZzZ5bTJPV2VPM2xmWEIwSmdvVzhUSEFZdFRDVjJlT1hTUVE1?=
+ =?utf-8?B?RVhrckxzZ2pTejJmWFVRR1laK0Y5YXBYcDlzU2J0WXIvMWRWRkhWZFNMMmhp?=
+ =?utf-8?B?emlWOW5LVEFZMm80TW9FRDZmS3M1VzFURmo4aTdPaXpHQnlUQ2I2RURUUjNT?=
+ =?utf-8?B?TEVRMVQvUGZHYkhwTUtmK3JLY0tOTjlkR2xoUGh1Z0xsQWhHRU1GeEtLSjlW?=
+ =?utf-8?B?WGJraXBSRTYvWU1FMnZOYlk5TGh0V1NZblJIYXJHZy9Db1ZGRHJsNnc0ZTZk?=
+ =?utf-8?B?RDZWVkhQbk9OK21NQWF3NmxxUksvSGh4T2RPQXJwTzZQVnoyNkxjaTZ6Y1VR?=
+ =?utf-8?B?YXI1cEY1YmRUYkE1K3hrK0trT1cva1piVUtOL1dzR1NyS1E2OGFjcGVDNjNr?=
+ =?utf-8?B?VEpUVlJCcm1QY0dTaTRFenhXQmhpUGFEckdFYWJWTndBejdxWkRkalpFV1FL?=
+ =?utf-8?B?ZlpFOHBaemsvRU9vSW00M1pxdTZEU3p1clRyRXJpcUFWN2VJMWpsT2NZMFhB?=
+ =?utf-8?B?VG82dGZYM0dwYzhya2M2MEwwQysrVVlBS2NXbWttWWZ4bWZLQnRZQW9nc3dD?=
+ =?utf-8?B?OGxWR28zTkFIVFkrcVFjaENHQmtFSEpSNXNYa25sbFFscnYxdER0QWw5M2xP?=
+ =?utf-8?B?OFc3NkJsdm54RVVwYU4wVGhYUGZxSXdIUzVSNGt0eWUyVWR6c0dBMGloQ1ZG?=
+ =?utf-8?B?dG42RUJ2MmFEeDVFL2ZBYjJud1YzRHBud0ZxZ2gzbUlTdUk4bWEwZVJJdHFM?=
+ =?utf-8?B?Z01qR0hYWWFTRHVHeHpWSmhxNENHZEdKT3NITkp5ZVVlY01HWHNWTUQ0NVps?=
+ =?utf-8?B?VVlhbENSVXE2ZXowQ2M2Z3dYNGd0elBuanM1NE5kKzBHUTNYNGdPYWJTSkFC?=
+ =?utf-8?B?YTBMdnNLemdLb0FrT0owcVM2aENIdVpmZFBIeVpIS29yWjRreHkxOUFNRzU3?=
+ =?utf-8?B?RWxoeXRsY0NITEhISjg3amNneU93cUdDR3pLOXhXN2ZEOUNYaC9aK0dHdXpn?=
+ =?utf-8?B?Q1kveC9pN1h3UUcwS0JoOXoyck00bHI0RUhzWkI0SWpia3lyRlNJWktYZWtt?=
+ =?utf-8?B?V3VsOUpwa0xucWdDYThMRTlPRCsxd2R0WDk3K2JyRzg4TlNtSzUwaXRRTnpn?=
+ =?utf-8?B?cHlOczRlTi8rc3FFNlB4dFN4SnkyMkJaK3FWamNrdWJiVi9JZ0V3NWhNR1Zp?=
+ =?utf-8?B?cTZqdFFKSzk3ditBTmdjc1F4RUloWUE1ZWwrZGMyMHlWRHVvdG92VU1nMVdQ?=
+ =?utf-8?B?aHBvVkF0Yzk5cTVYcktGN3BwbGF1SGdoZFVrMUlHcGJ1Z1RrVmRXWk5MYnhQ?=
+ =?utf-8?B?WkZPZFc2eXN0UUdaME1QYkhEbkZmNGt1elV2K1FnMG9sS3FqV2xDZ1N6cHo4?=
+ =?utf-8?B?V3VKRmR0Q2dMdlNHS09NdGlIQ0pXTU1QL1I3dmpSRCsyTFQrY0QrVVMxcXJt?=
+ =?utf-8?B?NzZaYU4zOUJwTmNoNVdWVjBDVkVIV1RhRnNIVWhpVnkvbUZTdDZKL29MY2NQ?=
+ =?utf-8?B?T0s3OFJFTkU3QVUwWVc1UUJpS1AyaU5YOGs2Rjl1VzNaYzBoNlNwZ2hSQmtx?=
+ =?utf-8?B?aENJZitTMlVCYnFJMkVOYWJTNktSMjM1Tm81VEZrdmJxWkpadWxGaEV5N3lu?=
+ =?utf-8?B?U0wvaU5MZzlLQW5nbndkeGFka3Z3PT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8CA03560EC390849AC07DE87D202E5AD@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPjX3FeVuLj=WDcY9_gaa5Ljj-4w3-hOc+JevXfEwXODO9kgYw@mail.gmail.com>
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	qoOK/P9m9GkgYAWhf5yfUKwNvQmxa24ypKTBAxGGXB3A8fdll39q74qDCWOU/efceo3ZTNxsbwXWbSL6wl5Iw33vWHA5ayqXDjUs6QeAOUkNx8cTin63fyrU4rzxQpxTJQGMTaar8vP1LlN1qJdc8PlHYW1RTTlNBGEiBib2NE0n9mdarh2CgqfrdGqdF2cjmoZyqWriAtBM1kqerHsmQn6ZN1XQCli11dj4oIL+1A0RN6hWKXoHE/QXRzv2HB84afytZntspcp8GSrn2Q/hsXFBWalyYYEcdq70nD3qZo5Tk9h5FaGWfAhOgt5yw1wQ4P3cIuk6ghDC5PjHawvVCPEK939qfZF8Qv3hubbctfDzvVlKNRUe2r/nV3QZ4v95aHRhRgF5SBKUCUvKvDTFtX8b7IR1fSg8AUg96t8Vx0WcIszh/gLRM6t4jURxL/3uTOzF92uGIaC5IYUstkDq504VdiL4mPPpNVygh6nlQPgVZMXA8gIk+126mutPaG/ti14DZej6i/ryK9sFYCtuorCDvsAebYN8SZymUYwrwnL54fm5wyEg0gIiMawl5bPYoBdBSnDr9fsvHYH1tZjOXUdo3YGlf35s8k/m1+MyNHQ7T8T1eo4bcbLY7iXCvbE4
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 00a3189f-e512-4876-ad62-08dd92fe8bf7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 May 2025 15:46:52.4008
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Z46pqJ6mGIrD0fjX/irMiRhApiCj9dc/3s1kPTIHDyNN1zRCP09JlMiWsoEFjDBTetdg04bpAS6uLMm/39PXvb1mZjXQUm5fNOlG2FuG9HA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6684
 
-On Wed, May 14, 2025 at 02:11:42PM +0200, Daniel Vacek wrote:
-> On Tue, 13 May 2025 at 02:21, Boris Burkov <boris@bur.io> wrote:
-> >
-> > We allocate memory for extent_buffers and compressed io in a manner that
-> > isn't tracked by any memory statistic. It is, in principle, possible to
-> 
-> Should the eb folios be tracked as page cache/buffers? You can find
-> them in btree_inode mapping pages after all.
-
-Actually, I think you're right. When we call filemap_add_folio on the
-extent_buffer folios, I think they get accounted under nr_file_pages.
-
-> 
-> I guess the same would apply to compressed io folios. Perhaps we just
-> need to account both of them as buffers.
-> 
-> 
-
-I think we don't attach the compressed folios to any filemap. Worth
-thinking about.
-
-Even if both do get accounted as file pages, it still seems interesting
-to track our own granular stats, though at that point it would not have
-much of a benefit towards *detecting* leaks, only debugging them. And at
-that point we can probably get there with drgn scripts.
-
-Thanks for the suggestion,
-Boris
-
-> > sort of track this memory by subtracting all trackable allocations from
-> > the total memory and comparing to the amount free, but that is clumsy to
-> > do, breaks when new memory accounting is added in the mm subsystem and
-> > lacks any useful granularity.
-> >
-> > This RFC proposes explicitly tracking btrfs's untracked allocations and
-> > reporting them in /sys/fs/btrfs/<uuid>/memory_stats.
-> >
-> > Open questions:
-> > 1. Is this useful?
-> > 2. What is the best concurrency model? I experimented with percpu
-> >    variables which I don't think allow us to split it by fs_info in a
-> >    reasonable way (short of dynamically growing a pointed-to percpu
-> >    array as we add fs-es). I haven't thought too hard between spinlock,
-> >    atomic, etc..
-> > 3. Am I missing any classes of untracked allocations?
-> >
-> > If this does sound like a good idea to people, I will work harder on
-> > validating the correctness of the data and picking an optimal
-> > concurrency model. So far, I've just run fstests with this patch.
-> >
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> > Note: Resent with a completely dumb work-in-progress commit on the
-> > sysfs.c code squashed in. This one should actually apply/compile..
-> >
-> >  fs/btrfs/compression.c | 31 +++++++++++++++++++++++++++----
-> >  fs/btrfs/compression.h |  6 ++++--
-> >  fs/btrfs/extent_io.c   | 23 ++++++++++++++++++++++-
-> >  fs/btrfs/fs.h          | 10 ++++++++++
-> >  fs/btrfs/inode.c       | 16 ++++++++++------
-> >  fs/btrfs/lzo.c         | 10 ++++++----
-> >  fs/btrfs/sysfs.c       | 15 +++++++++++++++
-> >  fs/btrfs/zlib.c        | 16 +++++++---------
-> >  fs/btrfs/zstd.c        | 16 +++++++---------
-> >  9 files changed, 108 insertions(+), 35 deletions(-)
-> >
-> > diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> > index 48d07939fee4..988887cc79ff 100644
-> > --- a/fs/btrfs/compression.c
-> > +++ b/fs/btrfs/compression.c
-> > @@ -160,8 +160,10 @@ static int compression_decompress(int type, struct list_head *ws,
-> >
-> >  static void btrfs_free_compressed_folios(struct compressed_bio *cb)
-> >  {
-> > +       struct btrfs_fs_info *fs_info = cb->bbio.inode->root->fs_info;
-> > +
-> >         for (unsigned int i = 0; i < cb->nr_folios; i++)
-> > -               btrfs_free_compr_folio(cb->compressed_folios[i]);
-> > +               btrfs_free_compr_folio(fs_info, cb->compressed_folios[i]);
-> >         kfree(cb->compressed_folios);
-> >  }
-> >
-> > @@ -223,7 +225,7 @@ static unsigned long btrfs_compr_pool_scan(struct shrinker *sh, struct shrink_co
-> >  /*
-> >   * Common wrappers for page allocation from compression wrappers
-> >   */
-> > -struct folio *btrfs_alloc_compr_folio(void)
-> > +struct folio *btrfs_alloc_compr_folio(struct btrfs_fs_info *fs_info)
-> >  {
-> >         struct folio *folio = NULL;
-> >
-> > @@ -238,10 +240,13 @@ struct folio *btrfs_alloc_compr_folio(void)
-> >         if (folio)
-> >                 return folio;
-> >
-> > -       return folio_alloc(GFP_NOFS, 0);
-> > +       folio = folio_alloc(GFP_NOFS, 0);
-> > +       if (folio)
-> > +               btrfs_inc_compressed_io_folios(fs_info);
-> > +       return folio;
-> >  }
-> >
-> > -void btrfs_free_compr_folio(struct folio *folio)
-> > +void btrfs_free_compr_folio(struct btrfs_fs_info *fs_info, struct folio *folio)
-> >  {
-> >         bool do_free = false;
-> >
-> > @@ -259,6 +264,22 @@ void btrfs_free_compr_folio(struct folio *folio)
-> >
-> >         ASSERT(folio_ref_count(folio) == 1);
-> >         folio_put(folio);
-> > +       btrfs_dec_compressed_io_folios(fs_info);
-> > +}
-> > +
-> > +void btrfs_inc_compressed_io_folios(struct btrfs_fs_info *fs_info) {
-> > +       spin_lock(&fs_info->memory_stats_lock);
-> > +       fs_info->memory_stats.nr_compressed_io_folios++;
-> > +       spin_unlock(&fs_info->memory_stats_lock);
-> > +}
-> > +
-> > +void btrfs_dec_compressed_io_folios(struct btrfs_fs_info *fs_info)
-> > +{
-> > +       spin_lock(&fs_info->memory_stats_lock);
-> > +       ASSERT(fs_info->memory_stats.nr_compressed_io_folios > 0,
-> > +              "%lu", fs_info->memory_stats.nr_compressed_io_folios);
-> > +       fs_info->memory_stats.nr_compressed_io_folios--;
-> > +       spin_unlock(&fs_info->memory_stats_lock);
-> >  }
-> >
-> >  static void end_bbio_compressed_read(struct btrfs_bio *bbio)
-> > @@ -617,6 +638,8 @@ void btrfs_submit_compressed_read(struct btrfs_bio *bbio)
-> >                 status = BLK_STS_RESOURCE;
-> >                 goto out_free_compressed_pages;
-> >         }
-> > +       for (int i = 0; i < cb->nr_folios; i++)
-> > +               btrfs_inc_compressed_io_folios(fs_info);
-> >
-> >         add_ra_bio_pages(&inode->vfs_inode, em_start + em_len, cb, &memstall,
-> >                          &pflags);
-> > diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-> > index d34c4341eaf4..a72a58337c76 100644
-> > --- a/fs/btrfs/compression.h
-> > +++ b/fs/btrfs/compression.h
-> > @@ -105,8 +105,8 @@ void btrfs_submit_compressed_read(struct btrfs_bio *bbio);
-> >
-> >  int btrfs_compress_str2level(unsigned int type, const char *str);
-> >
-> > -struct folio *btrfs_alloc_compr_folio(void);
-> > -void btrfs_free_compr_folio(struct folio *folio);
-> > +struct folio *btrfs_alloc_compr_folio(struct btrfs_fs_info *fs_info);
-> > +void btrfs_free_compr_folio(struct btrfs_fs_info *fs_info, struct folio *folio);
-> >
-> >  enum btrfs_compression_type {
-> >         BTRFS_COMPRESS_NONE  = 0,
-> > @@ -188,5 +188,7 @@ struct list_head *zstd_alloc_workspace(int level);
-> >  void zstd_free_workspace(struct list_head *ws);
-> >  struct list_head *zstd_get_workspace(int level);
-> >  void zstd_put_workspace(struct list_head *ws);
-> > +void btrfs_inc_compressed_io_folios(struct btrfs_fs_info *fs_info);
-> > +void btrfs_dec_compressed_io_folios(struct btrfs_fs_info *fs_info);
-> >
-> >  #endif
-> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > index 281bb036fcb8..56e036ee3c87 100644
-> > --- a/fs/btrfs/extent_io.c
-> > +++ b/fs/btrfs/extent_io.c
-> > @@ -611,6 +611,22 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
-> >         return 0;
-> >  }
-> >
-> > +static void inc_extent_buffer_folios(struct btrfs_fs_info *fs_info)
-> > +{
-> > +       spin_lock(&fs_info->memory_stats_lock);
-> > +       fs_info->memory_stats.nr_extent_buffer_folios++;
-> > +       spin_unlock(&fs_info->memory_stats_lock);
-> > +}
-> > +
-> > +static void dec_extent_buffer_folios(struct btrfs_fs_info *fs_info)
-> > +{
-> > +       spin_lock(&fs_info->memory_stats_lock);
-> > +       ASSERT(fs_info->memory_stats.nr_extent_buffer_folios > 0,
-> > +              "%lu", fs_info->memory_stats.nr_extent_buffer_folios);
-> > +       fs_info->memory_stats.nr_extent_buffer_folios--;
-> > +       spin_unlock(&fs_info->memory_stats_lock);
-> > +}
-> > +
-> >  /*
-> >   * Populate needed folios for the extent buffer.
-> >   *
-> > @@ -626,8 +642,10 @@ static int alloc_eb_folio_array(struct extent_buffer *eb, bool nofail)
-> >         if (ret < 0)
-> >                 return ret;
-> >
-> > -       for (int i = 0; i < num_pages; i++)
-> > +       for (int i = 0; i < num_pages; i++) {
-> >                 eb->folios[i] = page_folio(page_array[i]);
-> > +               inc_extent_buffer_folios(eb->fs_info);
-> > +       }
-> >         eb->folio_size = PAGE_SIZE;
-> >         eb->folio_shift = PAGE_SHIFT;
-> >         return 0;
-> > @@ -2816,6 +2834,7 @@ static void btrfs_release_extent_buffer_folios(const struct extent_buffer *eb)
-> >                         continue;
-> >
-> >                 detach_extent_buffer_folio(eb, folio);
-> > +               dec_extent_buffer_folios(eb->fs_info);
-> >         }
-> >  }
-> >
-> > @@ -2865,6 +2884,7 @@ static void cleanup_extent_buffer_folios(struct extent_buffer *eb)
-> >                 detach_extent_buffer_folio(eb, eb->folios[i]);
-> >                 folio_put(eb->folios[i]);
-> >                 eb->folios[i] = NULL;
-> > +               dec_extent_buffer_folios(eb->fs_info);
-> >         }
-> >  }
-> >
-> > @@ -3418,6 +3438,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
-> >                 ASSERT(!folio_test_private(folio));
-> >                 folio_put(folio);
-> >                 eb->folios[i] = NULL;
-> > +               dec_extent_buffer_folios(eb->fs_info);
-> >         }
-> >         btrfs_release_extent_buffer(eb);
-> >         if (ret < 0)
-> > diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> > index 4394de12a767..47a66251ed1f 100644
-> > --- a/fs/btrfs/fs.h
-> > +++ b/fs/btrfs/fs.h
-> > @@ -3,6 +3,7 @@
-> >  #ifndef BTRFS_FS_H
-> >  #define BTRFS_FS_H
-> >
-> > +#include "compression.h"
-> >  #include <linux/blkdev.h>
-> >  #include <linux/sizes.h>
-> >  #include <linux/time64.h>
-> > @@ -422,6 +423,11 @@ struct btrfs_commit_stats {
-> >         u64 total_commit_dur;
-> >  };
-> >
-> > +struct btrfs_memory_stats {
-> > +       unsigned long nr_compressed_io_folios;
-> > +       unsigned long nr_extent_buffer_folios;
-> > +};
-> > +
-> >  struct btrfs_fs_info {
-> >         u8 chunk_tree_uuid[BTRFS_UUID_SIZE];
-> >         unsigned long flags;
-> > @@ -866,6 +872,9 @@ struct btrfs_fs_info {
-> >         /* Updates are not protected by any lock */
-> >         struct btrfs_commit_stats commit_stats;
-> >
-> > +       spinlock_t memory_stats_lock;
-> > +       struct btrfs_memory_stats memory_stats;
-> > +
-> >         /*
-> >          * Last generation where we dropped a non-relocation root.
-> >          * Use btrfs_set_last_root_drop_gen() and btrfs_get_last_root_drop_gen()
-> > @@ -897,6 +906,7 @@ struct btrfs_fs_info {
-> >  #endif
-> >  };
-> >
-> > +
-> >  #define folio_to_inode(_folio) (BTRFS_I(_Generic((_folio),                     \
-> >                                           struct folio *: (_folio))->mapping->host))
-> >
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index 964088d3f3f7..6a19f13d2eb6 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -1026,13 +1026,14 @@ static void compress_file_range(struct btrfs_work *work)
-> >         if (folios) {
-> >                 for (i = 0; i < nr_folios; i++) {
-> >                         WARN_ON(folios[i]->mapping);
-> > -                       btrfs_free_compr_folio(folios[i]);
-> > +                       btrfs_free_compr_folio(fs_info, folios[i]);
-> >                 }
-> >                 kfree(folios);
-> >         }
-> >  }
-> >
-> > -static void free_async_extent_pages(struct async_extent *async_extent)
-> > +static void free_async_extent_pages(struct btrfs_fs_info *fs_info,
-> > +                                   struct async_extent *async_extent)
-> >  {
-> >         int i;
-> >
-> > @@ -1041,7 +1042,7 @@ static void free_async_extent_pages(struct async_extent *async_extent)
-> >
-> >         for (i = 0; i < async_extent->nr_folios; i++) {
-> >                 WARN_ON(async_extent->folios[i]->mapping);
-> > -               btrfs_free_compr_folio(async_extent->folios[i]);
-> > +               btrfs_free_compr_folio(fs_info, async_extent->folios[i]);
-> >         }
-> >         kfree(async_extent->folios);
-> >         async_extent->nr_folios = 0;
-> > @@ -1175,7 +1176,7 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
-> >         if (async_chunk->blkcg_css)
-> >                 kthread_associate_blkcg(NULL);
-> >         if (free_pages)
-> > -               free_async_extent_pages(async_extent);
-> > +               free_async_extent_pages(fs_info, async_extent);
-> >         kfree(async_extent);
-> >         return;
-> >
-> > @@ -1190,7 +1191,7 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
-> >                                      EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING,
-> >                                      PAGE_UNLOCK | PAGE_START_WRITEBACK |
-> >                                      PAGE_END_WRITEBACK);
-> > -       free_async_extent_pages(async_extent);
-> > +       free_async_extent_pages(fs_info, async_extent);
-> >         if (async_chunk->blkcg_css)
-> >                 kthread_associate_blkcg(NULL);
-> >         btrfs_debug(fs_info,
-> > @@ -9723,6 +9724,7 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
-> >                         ret = -ENOMEM;
-> >                         goto out_folios;
-> >                 }
-> > +               btrfs_inc_compressed_io_folios(fs_info);
-> >                 kaddr = kmap_local_folio(folios[i], 0);
-> >                 if (copy_from_iter(kaddr, bytes, from) != bytes) {
-> >                         kunmap_local(kaddr);
-> > @@ -9845,8 +9847,10 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
-> >         btrfs_unlock_extent(io_tree, start, end, &cached_state);
-> >  out_folios:
-> >         for (i = 0; i < nr_folios; i++) {
-> > -               if (folios[i])
-> > +               if (folios[i]) {
-> >                         folio_put(folios[i]);
-> > +                       btrfs_dec_compressed_io_folios(fs_info);
-> > +               }
-> >         }
-> >         kvfree(folios);
-> >  out:
-> > diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
-> > index d403641889ca..741cf70375a9 100644
-> > --- a/fs/btrfs/lzo.c
-> > +++ b/fs/btrfs/lzo.c
-> > @@ -128,7 +128,8 @@ static inline size_t read_compress_length(const char *buf)
-> >   *
-> >   * Will allocate new pages when needed.
-> >   */
-> > -static int copy_compressed_data_to_page(char *compressed_data,
-> > +static int copy_compressed_data_to_page(struct btrfs_fs_info *fs_info,
-> > +                                       char *compressed_data,
-> >                                         size_t compressed_size,
-> >                                         struct folio **out_folios,
-> >                                         unsigned long max_nr_folio,
-> > @@ -152,7 +153,7 @@ static int copy_compressed_data_to_page(char *compressed_data,
-> >         cur_folio = out_folios[*cur_out / PAGE_SIZE];
-> >         /* Allocate a new page */
-> >         if (!cur_folio) {
-> > -               cur_folio = btrfs_alloc_compr_folio();
-> > +               cur_folio = btrfs_alloc_compr_folio(fs_info);
-> >                 if (!cur_folio)
-> >                         return -ENOMEM;
-> >                 out_folios[*cur_out / PAGE_SIZE] = cur_folio;
-> > @@ -178,7 +179,7 @@ static int copy_compressed_data_to_page(char *compressed_data,
-> >                 cur_folio = out_folios[*cur_out / PAGE_SIZE];
-> >                 /* Allocate a new page */
-> >                 if (!cur_folio) {
-> > -                       cur_folio = btrfs_alloc_compr_folio();
-> > +                       cur_folio = btrfs_alloc_compr_folio(fs_info);
-> >                         if (!cur_folio)
-> >                                 return -ENOMEM;
-> >                         out_folios[*cur_out / PAGE_SIZE] = cur_folio;
-> > @@ -213,6 +214,7 @@ int lzo_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >                         u64 start, struct folio **folios, unsigned long *out_folios,
-> >                         unsigned long *total_in, unsigned long *total_out)
-> >  {
-> > +       struct btrfs_fs_info *fs_info = BTRFS_I(mapping->host)->root->fs_info;
-> >         struct workspace *workspace = list_entry(ws, struct workspace, list);
-> >         const u32 sectorsize = inode_to_fs_info(mapping->host)->sectorsize;
-> >         struct folio *folio_in = NULL;
-> > @@ -263,7 +265,7 @@ int lzo_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >                         goto out;
-> >                 }
-> >
-> > -               ret = copy_compressed_data_to_page(workspace->cbuf, out_len,
-> > +               ret = copy_compressed_data_to_page(fs_info, workspace->cbuf, out_len,
-> >                                                    folios, max_nr_folio,
-> >                                                    &cur_out, sectorsize);
-> >                 if (ret < 0)
-> > diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> > index 5d93d9dd2c12..ff4ae6dd9e5c 100644
-> > --- a/fs/btrfs/sysfs.c
-> > +++ b/fs/btrfs/sysfs.c
-> > @@ -1132,6 +1132,20 @@ static ssize_t btrfs_sectorsize_show(struct kobject *kobj,
-> >         return sysfs_emit(buf, "%u\n", fs_info->sectorsize);
-> >  }
-> >
-> > +static ssize_t btrfs_memory_stats_show(struct kobject *kobj,
-> > +                                        struct kobj_attribute *a, char *buf)
-> > +{
-> > +       struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-> > +       struct btrfs_memory_stats *memory_stats = &fs_info->memory_stats;
-> > +
-> > +       return sysfs_emit(buf,
-> > +                         "compressed_io_folios %lu\n"
-> > +                         "extent_buffer_folios %lu\n",
-> > +                         memory_stats->nr_compressed_io_folios,
-> > +                         memory_stats->nr_extent_buffer_folios);
-> > +}
-> > +
-> > +BTRFS_ATTR(, memory_stats, btrfs_memory_stats_show);
-> >  BTRFS_ATTR(, sectorsize, btrfs_sectorsize_show);
-> >
-> >  static ssize_t btrfs_commit_stats_show(struct kobject *kobj,
-> > @@ -1588,6 +1602,7 @@ static const struct attribute *btrfs_attrs[] = {
-> >         BTRFS_ATTR_PTR(, bg_reclaim_threshold),
-> >         BTRFS_ATTR_PTR(, commit_stats),
-> >         BTRFS_ATTR_PTR(, temp_fsid),
-> > +       BTRFS_ATTR_PTR(, memory_stats),
-> >  #ifdef CONFIG_BTRFS_EXPERIMENTAL
-> >         BTRFS_ATTR_PTR(, offload_csum),
-> >  #endif
-> > diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
-> > index 5292cd341f70..56dd7acaa50b 100644
-> > --- a/fs/btrfs/zlib.c
-> > +++ b/fs/btrfs/zlib.c
-> > @@ -137,6 +137,8 @@ int zlib_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >                          u64 start, struct folio **folios, unsigned long *out_folios,
-> >                          unsigned long *total_in, unsigned long *total_out)
-> >  {
-> > +       struct btrfs_inode *inode = BTRFS_I(mapping->host);
-> > +       struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> >         struct workspace *workspace = list_entry(ws, struct workspace, list);
-> >         int ret;
-> >         char *data_in = NULL;
-> > @@ -155,9 +157,7 @@ int zlib_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >
-> >         ret = zlib_deflateInit(&workspace->strm, workspace->level);
-> >         if (unlikely(ret != Z_OK)) {
-> > -               struct btrfs_inode *inode = BTRFS_I(mapping->host);
-> > -
-> > -               btrfs_err(inode->root->fs_info,
-> > +               btrfs_err(fs_info,
-> >         "zlib compression init failed, error %d root %llu inode %llu offset %llu",
-> >                           ret, btrfs_root_id(inode->root), btrfs_ino(inode), start);
-> >                 ret = -EIO;
-> > @@ -167,7 +167,7 @@ int zlib_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >         workspace->strm.total_in = 0;
-> >         workspace->strm.total_out = 0;
-> >
-> > -       out_folio = btrfs_alloc_compr_folio();
-> > +       out_folio = btrfs_alloc_compr_folio(fs_info);
-> >         if (out_folio == NULL) {
-> >                 ret = -ENOMEM;
-> >                 goto out;
-> > @@ -225,9 +225,7 @@ int zlib_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >
-> >                 ret = zlib_deflate(&workspace->strm, Z_SYNC_FLUSH);
-> >                 if (unlikely(ret != Z_OK)) {
-> > -                       struct btrfs_inode *inode = BTRFS_I(mapping->host);
-> > -
-> > -                       btrfs_warn(inode->root->fs_info,
-> > +                       btrfs_warn(fs_info,
-> >                 "zlib compression failed, error %d root %llu inode %llu offset %llu",
-> >                                    ret, btrfs_root_id(inode->root), btrfs_ino(inode),
-> >                                    start);
-> > @@ -252,7 +250,7 @@ int zlib_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >                                 ret = -E2BIG;
-> >                                 goto out;
-> >                         }
-> > -                       out_folio = btrfs_alloc_compr_folio();
-> > +                       out_folio = btrfs_alloc_compr_folio(fs_info);
-> >                         if (out_folio == NULL) {
-> >                                 ret = -ENOMEM;
-> >                                 goto out;
-> > @@ -288,7 +286,7 @@ int zlib_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >                                 ret = -E2BIG;
-> >                                 goto out;
-> >                         }
-> > -                       out_folio = btrfs_alloc_compr_folio();
-> > +                       out_folio = btrfs_alloc_compr_folio(fs_info);
-> >                         if (out_folio == NULL) {
-> >                                 ret = -ENOMEM;
-> >                                 goto out;
-> > diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
-> > index 4a796a049b5a..77cf8a605532 100644
-> > --- a/fs/btrfs/zstd.c
-> > +++ b/fs/btrfs/zstd.c
-> > @@ -389,6 +389,8 @@ int zstd_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >                          u64 start, struct folio **folios, unsigned long *out_folios,
-> >                          unsigned long *total_in, unsigned long *total_out)
-> >  {
-> > +       struct btrfs_inode *inode = BTRFS_I(mapping->host);
-> > +       struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> >         struct workspace *workspace = list_entry(ws, struct workspace, list);
-> >         zstd_cstream *stream;
-> >         int ret = 0;
-> > @@ -412,8 +414,6 @@ int zstd_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >         stream = zstd_init_cstream(&workspace->params, len, workspace->mem,
-> >                         workspace->size);
-> >         if (unlikely(!stream)) {
-> > -               struct btrfs_inode *inode = BTRFS_I(mapping->host);
-> > -
-> >                 btrfs_err(inode->root->fs_info,
-> >         "zstd compression init level %d failed, root %llu inode %llu offset %llu",
-> >                           workspace->req_level, btrfs_root_id(inode->root),
-> > @@ -432,7 +432,7 @@ int zstd_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >         workspace->in_buf.size = cur_len;
-> >
-> >         /* Allocate and map in the output buffer */
-> > -       out_folio = btrfs_alloc_compr_folio();
-> > +       out_folio = btrfs_alloc_compr_folio(fs_info);
-> >         if (out_folio == NULL) {
-> >                 ret = -ENOMEM;
-> >                 goto out;
-> > @@ -448,9 +448,7 @@ int zstd_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >                 ret2 = zstd_compress_stream(stream, &workspace->out_buf,
-> >                                 &workspace->in_buf);
-> >                 if (unlikely(zstd_is_error(ret2))) {
-> > -                       struct btrfs_inode *inode = BTRFS_I(mapping->host);
-> > -
-> > -                       btrfs_warn(inode->root->fs_info,
-> > +                       btrfs_warn(fs_info,
-> >  "zstd compression level %d failed, error %d root %llu inode %llu offset %llu",
-> >                                    workspace->req_level, zstd_get_error_code(ret2),
-> >                                    btrfs_root_id(inode->root), btrfs_ino(inode),
-> > @@ -482,7 +480,7 @@ int zstd_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >                                 ret = -E2BIG;
-> >                                 goto out;
-> >                         }
-> > -                       out_folio = btrfs_alloc_compr_folio();
-> > +                       out_folio = btrfs_alloc_compr_folio(fs_info);
-> >                         if (out_folio == NULL) {
-> >                                 ret = -ENOMEM;
-> >                                 goto out;
-> > @@ -525,7 +523,7 @@ int zstd_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >                 if (unlikely(zstd_is_error(ret2))) {
-> >                         struct btrfs_inode *inode = BTRFS_I(mapping->host);
-> >
-> > -                       btrfs_err(inode->root->fs_info,
-> > +                       btrfs_err(fs_info,
-> >  "zstd compression end level %d failed, error %d root %llu inode %llu offset %llu",
-> >                                   workspace->req_level, zstd_get_error_code(ret2),
-> >                                   btrfs_root_id(inode->root), btrfs_ino(inode),
-> > @@ -549,7 +547,7 @@ int zstd_compress_folios(struct list_head *ws, struct address_space *mapping,
-> >                         ret = -E2BIG;
-> >                         goto out;
-> >                 }
-> > -               out_folio = btrfs_alloc_compr_folio();
-> > +               out_folio = btrfs_alloc_compr_folio(fs_info);
-> >                 if (out_folio == NULL) {
-> >                         ret = -ENOMEM;
-> >                         goto out;
-> > --
-> > 2.49.0
-> >
-> >
+TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
+dW1zaGlybkB3ZGMuY29tPg0K
 
