@@ -1,82 +1,82 @@
-Return-Path: <linux-btrfs+bounces-14020-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14021-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF70FAB777A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 23:01:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFC92AB777D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 23:01:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D1204A0AB2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 21:01:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5875817AD7F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 May 2025 21:01:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 837B21F5434;
-	Wed, 14 May 2025 21:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD9722156A;
+	Wed, 14 May 2025 21:01:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dGM1lwHO"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VEEGKy7L"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69BBAC8CE
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 May 2025 21:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FCE04315E
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 May 2025 21:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747256474; cv=none; b=annqvkZiM22DfGf7uDAvLPlDXs3vo77AxVZ2qpUQmoI6037rK71P9N/h6gD3MZTqeUhh3qhyZkUQQHoY/a7Zs4qaxHE/H/XTLPS4f6O0HDso9mf2aKjhRU0eYAe3m949zC1pOb8i1tcz1KFIO7+V+G/AItZEM6jtURFjFQIy0e8=
+	t=1747256498; cv=none; b=PHVehVBD6VwJqg/XnNqYHMXvBl2qgMGZFdDBKubPJBpIGkG4tJzlqlgQjy8xD7gV91ZvUVjuIFMxJLGx+3cO1R3o0BaLjeyfF/jjHROrR5vmmerehOinDILmpVVf+bWctogwEwuFKGNQB0qyBtCs+OEL4/xviPr9UNH6i4qEXO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747256474; c=relaxed/simple;
-	bh=e8bGBQFFcHxkuV9htApyoGgZNWtyhesu1licY/H+i0E=;
+	s=arc-20240116; t=1747256498; c=relaxed/simple;
+	bh=MNR5k7WwgZRlT1lEemHnon/7qMwUqQZc6T4B/hoaUDY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=j0OzTz4U6TKn/g96Fi0tqdQF78oIIt0S/vbsD3oWH+iRidR8X3kXW+td/F6CE0c9/Rly93ENX3od9qm0sI4SSrDzBS0srISFR4+no4yIfaCHFnA/gub+fMRA20glfhf2+w6Lq4U22WrMg28bvUzcgLKoYCF4yOi0Pg1ladTtw80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dGM1lwHO; arc=none smtp.client-ip=209.85.221.44
+	 In-Reply-To:Content-Type; b=j5tNJKTxvVU9xoln3PI5KjGBaA8sRZFRp2FLp4+xRN2VSSCZLcWceQ5pWrN7FL87bcGdR3xxJLNG+FJXRLuByxvYPaYftckwEKjWvd69CzBmgl/cN9mAvjmkx35pgrm/uraUOzk80gEQgqPVapcLOzEHzmUtAIcMYqgX9OLAbFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VEEGKy7L; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a1fb18420aso202762f8f.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 May 2025 14:01:12 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a0be321968so111200f8f.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 May 2025 14:01:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1747256470; x=1747861270; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1747256495; x=1747861295; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=eVBkA21ITsYGIhoUTCzu9bXe5//IWEAFIsjIpmNbvtA=;
-        b=dGM1lwHO63kR0twdbUVET9bF8UNCIQ468MoThHSoM3lGJWPeugU7oZJCTUYAk7wCFP
-         ZTTz1u479KmJJEXNY38nQJo1GrgToPWerE2Kv96BO068C1VKPlCNLH9AUpXC1nUI6Iog
-         DW/kjW4SLr2M4SnZVbNLqDjdLwiNd+vIJuyLF+evQ6uYxHTZEoP1EpjqplArDYCdHPcU
-         zwnqdELafKE/gRHVFcr0dG6j+W9xXW0PPZtjBdtJs2x9ufei9SEx9c4ii+EBvqYLp19l
-         4EiCkIHnh+IK/o3Vb0jBCO0u/ESS6aUfYga2G1gihdpuGrn3Rd+/KLY5AnP8vkB2WnZN
-         Mq5A==
+        bh=BQjfUFfLguXWUL0Lbgi2gmV1vBJyDPFKlIUnAaLDRTk=;
+        b=VEEGKy7LEH8qGTbXTXZlkcYzX3dtYNiDJziObVjLKVvp7O++emS18sSypbpnIZMj+4
+         dtRhNc0jKBJGhWuJqN0iKpgPBvq7HB8K3+oNRW5TyNbiPWxtkytzbwIJN5zXNSc0aldn
+         L5iLR7uqU7Vrxpq2w5tqOYxXK3pru5uE/PNqJNXFaDvxI0Z7y8XZqM8b1sDwqh5/MIRE
+         WjCrDfEbBlOqkJHsp0W3bkuwuuNdcVZixHGLEgGlILqN12isoRLY5NUw92A60Wr1Fol6
+         A7pC/2gpO4XccNe34C1b4DySFQczkklIsX5kn5QcUqLBWdhozceeFl9MHUCs/YPR/CIY
+         7nOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747256470; x=1747861270;
+        d=1e100.net; s=20230601; t=1747256495; x=1747861295;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=eVBkA21ITsYGIhoUTCzu9bXe5//IWEAFIsjIpmNbvtA=;
-        b=i3JxHFduF9DIMpixEzG8Etaaw3AIJ6+EUlYSt3EMLf/Fuy3qiXKkshWvZJwxTkKhAr
-         bjtMUBCeDK4DlgukQUXRJBUe9ScG77NZxVBUUSzyUidLbQCdoHfOsKzqgGI/YYq8AE4H
-         uSQj6yMy/7qXyYerGCL/NKB63IlPV3WQA8DwJm9ezzjS4nOYRSvy9d1FqhWmPwE6yfgL
-         6NQ5kBp+rGQqL8ym4qv73o3Nt1Yzqb3mcgvo6DM05lwzm3jv5P99OZyhILLZaT7SzA33
-         TjZ9CU4VswGWOBX8Io9CstRBfA9QSsCzH+VyU7Nb8VflZnY/YAM1EsZQW9fjpZxVDjn5
-         u5Jw==
-X-Forwarded-Encrypted: i=1; AJvYcCXjmyoAHsA9AxWuWqmucBS/h6okz2aP0EKuqiEr+7qTBLspMwSK8ecr0n0OVGqUSKJvG2Q+fSmYOuhDJQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxj8dT03IDtg8rAo0rL3KHJUKP+6YkDUA2dUH2bEw1Mrx3bHg83
-	156CReszC9lApktK7nUHzi44Y0pCtzxfGjuhKuITJx75sSq9/5BJjsVM6zIPdMJZPc+qZgPvnxI
-	f
-X-Gm-Gg: ASbGncvJuPlKBa+itshxLdIfmyun5qQWum1QsWBd+YIHfgW5oL3/Hk+mgRy22kxDUrH
-	069e3qRcdww6as/r2MVW7MJKLE41vIbQDQGNbvug5nETWfm9GjIxzDyn0dWpEhcKrM3aQwqTk71
-	mmvAbjhXw9z3IsI14FHc8Ou6q+OymwOqG0UlmiC4EDQGQldotNNwF+yTLKS8EkbPAQHx6rliPh5
-	JRvBf4ACHFCY4O6j8cqKI9TdsifGu3ac/JSYm0qRId68mzzL5OA+fmyoqENJJ8SzOwGlDnVJGze
-	9JGEaHbrWdmzVk0rsVeaRBWQaVwdXS8dZmmcCxxBnFx88pTdq7wIESLSBCko2sws2mCYkFRR0TE
-	YtIM=
-X-Google-Smtp-Source: AGHT+IHPcvLoSGU3PSnQfykrAMEq9bUHD6mS0275tUV4YybiN3cidVVclngWzKi4Pnq96wMXK7+diw==
-X-Received: by 2002:a05:6000:1a86:b0:3a0:b807:7435 with SMTP id ffacd0b85a97d-3a349922ddemr4482145f8f.40.1747256470363;
-        Wed, 14 May 2025 14:01:10 -0700 (PDT)
+        bh=BQjfUFfLguXWUL0Lbgi2gmV1vBJyDPFKlIUnAaLDRTk=;
+        b=lYb7KTlUPvq1uVM/PPlA9lFPO0J4VJR13zfelxYbU2bV84CYCl+KORwkZnYQZjBAFf
+         qH4Kl4sweVT6f69V4CiJcklGZdC00YY3h4RCpGUJ2aJgBFORYqYiwXnbUa94Eb1YA5ip
+         q9GrJtLyKWbSChXW8KWAMlCuAcr5uaujnm4LbFBgU9DY/NnWHKQivhh/YdVM/+Ap/uhO
+         jMCRkre2yo9gjGYKmAizpXKjFaOyslisZTePJ/K0LJm2WyBV0N/fzX9jxaudZHEWZlXm
+         7zVyTTW9C6iSoKelOJ6NeSRtpiqXn7k//7enDzXv7J3Xd2+tJDngWWIKEbqWxGVw8chg
+         gYBg==
+X-Forwarded-Encrypted: i=1; AJvYcCXwG4oeds0bpGsTv+VTcu1L2BZGnqDq4DDKl4SykB+sJgsfWLnGdRdHGFL1M/vAAKb7b8GzOR2jZmRgzQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKSpXqBEO4Cqdph4jK1aVL+CpQgm0q8x8SlBzn9y0fVTXRBfOx
+	G/SS9SQlX4VeFoOqC6R52GPQOVCpzQKhclW8FwkBJtFu8Sh33TGaq2ccgHUSaiigbdGIZ42Wd3S
+	l
+X-Gm-Gg: ASbGncs1B3oysVlkZ6pWL/n4QxOxo0P2SSsxnNluhieTULKS1jvIHjlZmhzDzHYfpz+
+	gczXEM18CkPs3SNCIerwE7U2pV/o+1U5fZrP8vHmSJlqpF/WBkqDDdXLDNZMWUZ8D75MMuM36Vw
+	v+3kj0f6lLpyP8JjDG2bKyY700QErO6qaouKaEYgWBnuv9/WIRaaoDD6NjoLgYTJ5JpOPvMu1Sw
+	R258nDRfXIfnqq2VIM+l4hD4lB5bWymZHXkWAm6Qun6Xo10chvfhRCshGCAfl5bpPJrUJ3oUCom
+	TNO9IGVlGOzr7GIJSepDUxvmM32weztWJ5BZfqJNaBJm+U5CZPiQDPXwIzp3rP7oONSOEEiuOCU
+	UOBrHLQPiT0Aiuw==
+X-Google-Smtp-Source: AGHT+IGVXq5HWpqQ3vXkSja0kZsH5irQmie1XJFKG8i6xitL2MqVVBYSOiNAVBgg9CWFZAlr3mPW7Q==
+X-Received: by 2002:a05:6000:430d:b0:3a0:b9a8:b94c with SMTP id ffacd0b85a97d-3a34994c044mr3898748f8f.50.1747256494682;
+        Wed, 14 May 2025 14:01:34 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc7544f81sm103624245ad.43.2025.05.14.14.01.08
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74237a40589sm10298453b3a.145.2025.05.14.14.01.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 May 2025 14:01:09 -0700 (PDT)
-Message-ID: <f7d7d87b-e147-453b-8850-4030c1eacd56@suse.com>
-Date: Thu, 15 May 2025 06:31:04 +0930
+        Wed, 14 May 2025 14:01:33 -0700 (PDT)
+Message-ID: <0eca5d5d-0c41-434a-9784-c53ba10d7fbc@suse.com>
+Date: Thu, 15 May 2025 06:31:29 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,11 +84,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/5] btrfs: simplify early error checking in
- btrfs_page_mkwrite()
+Subject: Re: [PATCH v2 4/5] btrfs: don't return VM_FAULT_SIGBUS on failure to
+ set delalloc for mmap write
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1747222631.git.fdmanana@suse.com>
- <401500c0e0108d519a4b5b5910c8678723885ed1.1747222631.git.fdmanana@suse.com>
+ <1d26d64ba145f0bd53608c40c0fcd90d0f92b41d.1747222631.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -115,7 +115,7 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <401500c0e0108d519a4b5b5910c8678723885ed1.1747222631.git.fdmanana@suse.com>
+In-Reply-To: <1d26d64ba145f0bd53608c40c0fcd90d0f92b41d.1747222631.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
@@ -124,92 +124,37 @@ Content-Transfer-Encoding: 8bit
 在 2025/5/14 21:08, fdmanana@kernel.org 写道:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> We have this entangled error checks early at btrfs_page_mkwrite():
+> If the call to btrfs_set_extent_delalloc() fails we are always returning
+> VM_FAULT_SIGBUS, which is odd since the error means "bad access" and the
+> most likely cause for btrfs_set_extent_delalloc() is -ENOMEM, which should
+> be translated to VM_FAULT_OOM.
 > 
-> 1) Try to reserve delalloc space by calling btrfs_delalloc_reserve_space()
->     and storing the return value in the ret2 variable;
-> 
-> 2) If the reservation succeed, call file_update_time() and store the
->     return value in ret2 and also set the local variable 'reserved' to
->     true (1);
-> 
-> 3) Then do an error check on ret2 to see if any of the previous calls
->     failed and if so, jump either to the 'out' label or to the
->     'out_noreserve' label, depending on whether 'reserved' is true or
->     not.
-> 
-> This is unnecessarily complex. Instead change this to a simpler and
-> more straighforward approach:
-> 
-> 1) Call btrfs_delalloc_reserve_space(), if that returns an error jump to
->     the 'out_noreserve' label;
-> 
-> 2) The call file_update_time() and if that returns an error jump to the
->     'out' label.
-> 
-> Like this there's less nested if statements, no need to use a local
-> variable to track if space was reserved and if statements are used only
-> to check errors.
-> 
-> Also move the call to extent_changeset_free() out of the 'out_noreserve'
-> label and under the 'out' label  since the changeset is allocated only if
-> the call to reserve delalloc space succeeded.
+> Instead of returning VM_FAULT_SIGBUS return vmf_error(ret2), which gives
+> us a more appropriate return value, and we use that everywhere else too.
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
-Qu> ---
->   fs/btrfs/file.c | 15 +++++++--------
->   1 file changed, 7 insertions(+), 8 deletions(-)
+Qu
+
+> ---
+>   fs/btrfs/file.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index a2b1fc536fdd..9ecb9f3bd057 100644
+> index 9ecb9f3bd057..f6b32f24185c 100644
 > --- a/fs/btrfs/file.c
 > +++ b/fs/btrfs/file.c
-> @@ -1843,7 +1843,6 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->   	size_t fsize = folio_size(folio);
->   	vm_fault_t ret;
->   	int ret2;
-> -	int reserved = 0;
->   	u64 reserved_space;
->   	u64 page_start;
->   	u64 page_end;
-> @@ -1866,17 +1865,17 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->   	 */
->   	ret2 = btrfs_delalloc_reserve_space(BTRFS_I(inode), &data_reserved,
->   					    page_start, reserved_space);
-> -	if (!ret2) {
-> -		ret2 = file_update_time(vmf->vma->vm_file);
-> -		reserved = 1;
-> -	}
+> @@ -1937,7 +1937,7 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+>   					&cached_state);
 >   	if (ret2) {
->   		ret = vmf_error(ret2);
-> -		if (reserved)
-> -			goto out;
->   		goto out_noreserve;
->   	}
->   
-> +	ret2 = file_update_time(vmf->vma->vm_file);
-> +	if (ret2) {
+>   		btrfs_unlock_extent(io_tree, page_start, page_end, &cached_state);
+> -		ret = VM_FAULT_SIGBUS;
 > +		ret = vmf_error(ret2);
-> +		goto out;
-> +	}
-> +
->   	/* Make the VM retry the fault. */
->   	ret = VM_FAULT_NOPAGE;
->   again:
-> @@ -1972,9 +1971,9 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->   	btrfs_delalloc_release_extents(BTRFS_I(inode), fsize);
->   	btrfs_delalloc_release_space(BTRFS_I(inode), data_reserved, page_start,
->   				     reserved_space, true);
-> +	extent_changeset_free(data_reserved);
->   out_noreserve:
->   	sb_end_pagefault(inode->i_sb);
-> -	extent_changeset_free(data_reserved);
->   	return ret;
->   }
+>   		goto out_unlock;
+>   	}
 >   
 
 
