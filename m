@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-14029-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14028-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F323DAB7F88
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 May 2025 10:01:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87A04AB7F83
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 May 2025 10:01:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E5581BA5F15
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 May 2025 08:01:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11C704C4F60
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 May 2025 08:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7647570807;
-	Thu, 15 May 2025 08:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A46D12820D1;
+	Thu, 15 May 2025 08:00:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NN1Pr3yb";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Mqw1a/8g"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SK/Hlera";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SK/Hlera"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB8B2283FC8
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED6E38DD8
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747296058; cv=none; b=NAtSdSox0rykofIY8N9hlbEakuMtgdPa1taHY7v2BUjCNKPYe+O/+vxxo8UyB7cfVQW/R0+eKny8qkt8vD1GIWgTnIdKCnAwE0w2KILoRqIbM+jJguK5vIjCkZH7GcxO2OTavL18SsRBCyceUh8jx7Ceg0zg16RQym3XAaqitgE=
+	t=1747296054; cv=none; b=YWv0nQdI6dUMQpfWfJMzfq6WdZqyG93rXEe8kDVjaxFoBqM1Rtmue76sd9Kj6KF+wTOAIPgHGTOCHANC4EPGTV2WdR1kUTzXgrBaBps3FTEhf89N+wBZBzC9w3ET9FlMJ63zl8MCekIMST9sG1ZAUwzJeVarCp3AafVKI25tBXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747296058; c=relaxed/simple;
-	bh=8papjk8Cy4BY7Q6lD7xnchgqIyYadgjg4g7jMFX5TRs=;
+	s=arc-20240116; t=1747296054; c=relaxed/simple;
+	bh=LTwLPDUhOVX7oy5aWDb9xHD0l5s0Qj805K5q1yrcZrk=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=o3K2fWnNHj5XWum6yC7G/Xqcu6QtEnLsU42IaLSgE5Vk+R7UmdaI/fV5V9U98r9O/RNiouBA0CrdjbydzY3R9r8PIcGF09HY25jajKuvr3rkBJn2ZKYqTygUMFG42+AxbkmFDAQyMkcH4CD9wDeWUHjXtGtuN9l20CzjMoDbcxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NN1Pr3yb; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Mqw1a/8g; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=kZl9U6DT5Zs2IonEUnuYiiHo+XKzNQZpikuqgH074Kn78ChfHnr+ebfslo/aBNi/fvFNsSw0/8Mm+KppVSrZHcDyiibGw1rZWs10+F7lgv7QaGBFEhM6q5gtRIzd7L/6pfHUPZomDq5Q/2TuoN7b1V3XfWMffAXktKHH/jLfnbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SK/Hlera; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SK/Hlera; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5E31421246
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:42 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 982451F7B7
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
 	t=1747296043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UByntW3C51CBjqO1cx+3mTPbGiMB5y488KBlvRyu3cI=;
-	b=NN1Pr3ybLPSiJG4z+Iv2wCO0e0xZ5I/ImALvUp4kGbJEQZCf92WJ8keTU5X+9f3HowUXDq
-	HXZzwrO/Prz4hZLHnRV/2sfQV+Oqwp8jHj7PpcrSzcanPnl8H4NoAjiICV2UbpOxOi+tMO
-	DlkTMUliJdbHt1tO++7fLt1tL9wh400=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="Mqw1a/8g"
+	bh=HIrT9GDAO/A++uVweSTh/y9cntR0pisJw9ksbXXqcoY=;
+	b=SK/Hlerass9mS1Jh8SVgV2rAE+zneZXcDndh4yXttJO4o52zxtV2hsR0VdVwY1ti3E6cnM
+	vNCfuKr2YKmpBD6NmIT67Zi+xvysqytxRomxvRjCqxx1IWP+eYiOQdv6dCVyO3pagdjlJa
+	tfFBc/uvOPgXjGaFXUdnRQVRhBKCwOE=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b="SK/Hlera"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1747296042; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1747296043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UByntW3C51CBjqO1cx+3mTPbGiMB5y488KBlvRyu3cI=;
-	b=Mqw1a/8gWr2+lf0MKrspPUr1r13CRHevq/7br0JVXOdGGiY3SUCS1wpc5JnBWq4kJFfJtj
-	/BTDH8arTOQieht1bfWectivbGD/Xzeam2m5y3W5uEkR1n75Ll8JT7V8BxpXgDeOzVC2oA
-	mFghuMPJ+o6yTuDqpMiKBqta72R3IIk=
+	bh=HIrT9GDAO/A++uVweSTh/y9cntR0pisJw9ksbXXqcoY=;
+	b=SK/Hlerass9mS1Jh8SVgV2rAE+zneZXcDndh4yXttJO4o52zxtV2hsR0VdVwY1ti3E6cnM
+	vNCfuKr2YKmpBD6NmIT67Zi+xvysqytxRomxvRjCqxx1IWP+eYiOQdv6dCVyO3pagdjlJa
+	tfFBc/uvOPgXjGaFXUdnRQVRhBKCwOE=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 99CF1137E8
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:41 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D27C9139D0
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mEbxFimfJWi8LwAAD6G6ig
+	id 4PG9JCqfJWi8LwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:41 +0000
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:42 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/6] btrfs-progs: fix a bug in btrfs_find_item()
-Date: Thu, 15 May 2025 17:30:17 +0930
-Message-ID: <7c72856dd5939761a9dd34a4554fddf94389090d.1747295965.git.wqu@suse.com>
+Subject: [PATCH v2 3/6] btrfs-progs: fix-data-checksum: show affected files
+Date: Thu, 15 May 2025 17:30:18 +0930
+Message-ID: <6112e51519a5914c181dd1e5deb07bf165e15c72.1747295965.git.wqu@suse.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1747295965.git.wqu@suse.com>
 References: <cover.1747295965.git.wqu@suse.com>
@@ -84,11 +84,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 982451F7B7
 X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 5E31421246
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Score: -3.01
+X-Spam-Level: 
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
@@ -116,116 +116,138 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
 	FROM_HAS_DN(0.00)[]
-X-Spam-Score: -3.01
+X-Rspamd-Action: no action
 
-[BUG]
-There is a seldomly utilized function, btrfs_find_item(), which has no
-document and is not behaving correctly.
+Previously "btrfs rescue fix-data-checksum" only show affected logical
+bytenr, which is not helpful to determine which files are affected.
 
-Inside backref.c, iterate_inode_refs() and btrfs_ref_to_path() both
-utilize this function, to find the parent inode.
+Enhance the output by also outputting the affected subvolumes (in
+numeric form), and the file paths inside that subvolume.
 
-However btrfs_find_item() will never return 0 if @ioff is passed as 0
-for such usage, result early failure for all kinds of inode iteration
-functions.
+The example looks like this:
 
-[CAUSE]
-Both functions pass 0 as the @ioff parameter initially, e.g:
+  logical=13631488 corrtuped mirrors=1 affected files:
+    (subvolume 5)/foo
+    (subvolume 5)/dir/bar
+  logical=13635584 corrtuped mirrors=1 affected files:
+    (subvolume 5)/foo
+    (subvolume 5)/dir/bar
 
- We have the following fs tree root:
-
-  	item 0 key (256 INODE_ITEM 0) itemoff 16123 itemsize 160
-		generation 3 transid 9 size 6 nbytes 16384
-		block group 0 mode 40755 links 1 uid 0 gid 0 rdev 0
-		sequence 1 flags 0x0(none)
-	item 1 key (256 INODE_REF 256) itemoff 16111 itemsize 12
-		index 0 namelen 2 name: ..
-	item 2 key (256 DIR_ITEM 2507850652) itemoff 16078 itemsize 33
-		location key (257 INODE_ITEM 0) type FILE
-		transid 9 data_len 0 name_len 3
-		name: foo
-	item 3 key (256 DIR_INDEX 2) itemoff 16045 itemsize 33
-		location key (257 INODE_ITEM 0) type FILE
-		transid 9 data_len 0 name_len 3
-		name: foo
-	item 4 key (257 INODE_ITEM 0) itemoff 15885 itemsize 160
-		generation 9 transid 9 size 16384 nbytes 16384
-		block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
-		sequence 4 flags 0x0(none)
-	item 5 key (257 INODE_REF 256) itemoff 15872 itemsize 13
-		index 2 namelen 3 name: foo
-	item 6 key (257 EXTENT_DATA 0) itemoff 15819 itemsize 53
-		generation 9 type 1 (regular)
-		extent data disk byte 13631488 nr 16384
-		extent data offset 0 nr 16384 ram 16384
-		extent compression 0 (none)
-
-  Then we call paths_from_inode() with:
-  - @inum = 257
-  - ipath = {.fs_root = 5}
-
-  Then we got the following sequence:
-
-  iterate_irefs(257, fs_root, inode_to_path)
-  |- iterate_inode_refs()
-     |- inode_ref_info()
-        |- btrfs_find_item(257, 0, fs_root)
-	|  Returned 1, with @found_key updated to
-	|  (257, INODE_REF, 256).
-
-  This makes iterate_irefs() exit immediately, but obviously that
-  btrfs_find_item() call is to find any INODE_REF, not to find the
-  exact match.
-
-[FIX]
-If btrfs_find_item() found an item matching the objectid and type, then
-it should return 0 other than 1.
-
-Fix it and keep the behavior the same across btrfs-progs and the kernel.
-
-Since we're here, also add some comments explaining the function.
+Although the end result is still not perfect, it's still much easier to
+find out which files are affected.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- kernel-shared/ctree.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ cmds/rescue-fix-data-checksum.c | 59 +++++++++++++++++++++++++++++++--
+ 1 file changed, 56 insertions(+), 3 deletions(-)
 
-diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
-index 3184c916175e..f90de606e7b1 100644
---- a/kernel-shared/ctree.c
-+++ b/kernel-shared/ctree.c
-@@ -1246,6 +1246,17 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
+diff --git a/cmds/rescue-fix-data-checksum.c b/cmds/rescue-fix-data-checksum.c
+index 7e613ba57f76..bf3a65b31c71 100644
+--- a/cmds/rescue-fix-data-checksum.c
++++ b/cmds/rescue-fix-data-checksum.c
+@@ -18,6 +18,7 @@
+ #include "kernel-shared/disk-io.h"
+ #include "kernel-shared/ctree.h"
+ #include "kernel-shared/volumes.h"
++#include "kernel-shared/backref.h"
+ #include "common/messages.h"
+ #include "common/open-utils.h"
+ #include "cmds/rescue.h"
+@@ -158,6 +159,49 @@ static int iterate_one_csum_item(struct btrfs_fs_info *fs_info, struct btrfs_pat
+ 	return ret;
+ }
+ 
++static int print_filenames(u64 ino, u64 offset, u64 rootid, void *ctx)
++{
++	struct btrfs_fs_info *fs_info = ctx;
++	struct btrfs_root *root;
++	struct btrfs_key key;
++	struct inode_fs_paths *ipath;
++	struct btrfs_path path = { 0 };
++	int ret;
++
++	key.objectid = rootid;
++	key.type = BTRFS_ROOT_ITEM_KEY;
++	key.offset = (u64)-1;
++
++	root = btrfs_read_fs_root(fs_info, &key);
++	if (IS_ERR(root)) {
++		ret = PTR_ERR(root);
++		errno = -ret;
++		error("failed to get subvolume %llu: %m", rootid);
++		return ret;
++	}
++	ipath = init_ipath(128 * BTRFS_PATH_NAME_MAX, root, &path);
++	if (IS_ERR(ipath)) {
++		ret = PTR_ERR(ipath);
++		errno = -ret;
++		error("failed to initialize ipath: %m");
++		return ret;
++	}
++	ret = paths_from_inode(ino, ipath);
++	if (ret < 0) {
++		errno = -ret;
++		error("failed to resolve root %llu ino %llu to paths: %m", rootid, ino);
++		goto out;
++	}
++	for (int i = 0; i < ipath->fspath->elem_cnt; i++)
++		printf("  (subvolume %llu)/%s\n", rootid, (char *)ipath->fspath->val[i]);
++	if (ipath->fspath->elem_missed)
++		printf("  (subvolume %llu) %d files not printed\n", rootid,
++		       ipath->fspath->elem_missed);
++out:
++	free_ipath(ipath);
++	return ret;
++}
++
+ static int iterate_csum_root(struct btrfs_fs_info *fs_info, struct btrfs_root *csum_root)
+ {
+ 	struct btrfs_path path = { 0 };
+@@ -197,9 +241,10 @@ next:
+ 	return ret;
+ }
+ 
+-static void report_corrupted_blocks(void)
++static void report_corrupted_blocks(struct btrfs_fs_info *fs_info)
+ {
+ 	struct corrupted_block *entry;
++	struct btrfs_path path = { 0 };
+ 
+ 	if (list_empty(&corrupted_blocks)) {
+ 		printf("No data checksum mismatch found\n");
+@@ -208,6 +253,7 @@ static void report_corrupted_blocks(void)
+ 
+ 	list_for_each_entry(entry, &corrupted_blocks, list) {
+ 		bool has_printed = false;
++		int ret;
+ 
+ 		printf("logical=%llu corrtuped mirrors=", entry->logical);
+ 		/* Poor man's bitmap print. */
+@@ -223,7 +269,14 @@ static void report_corrupted_blocks(void)
+ 				has_printed=true;
+ 			}
+ 		}
+-		printf("\n");
++		printf(" affected files:\n");
++		ret = iterate_inodes_from_logical(entry->logical, fs_info, &path,
++						  print_filenames, fs_info);
++		if (ret < 0) {
++			errno = -ret;
++			error("failed to iterate involved files: %m");
++			break;
++		}
  	}
  }
  
-+/*
-+ * Find the first key in @fs_root that matches all the following conditions:
-+ *
-+ * - key.obojectid == @iobjectid
-+ * - key.type == @key_type
-+ * - key.offset >= ioff
-+ *
-+ * Return 0 if such key can be found, and @found_key is updated.
-+ * Return >0 if no such key can be found.
-+ * Return <0 for critical errors.
-+ */
- int btrfs_find_item(struct btrfs_root *fs_root, struct btrfs_path *found_path,
- 		u64 iobjectid, u64 ioff, u8 key_type,
- 		struct btrfs_key *found_key)
-@@ -1280,10 +1291,10 @@ int btrfs_find_item(struct btrfs_root *fs_root, struct btrfs_path *found_path,
- 
- 	btrfs_item_key_to_cpu(eb, found_key, path->slots[0]);
- 	if (found_key->type != key.type ||
--			found_key->objectid != key.objectid) {
-+	    found_key->objectid != key.objectid)
- 		ret = 1;
--		goto out;
--	}
-+	else
-+		ret = 0;
- 
- out:
- 	if (path != found_path)
+@@ -280,7 +333,7 @@ int btrfs_recover_fix_data_checksum(const char *path,
+ 		errno = -ret;
+ 		error("failed to iterate csum tree: %m");
+ 	}
+-	report_corrupted_blocks();
++	report_corrupted_blocks(fs_info);
+ out_close:
+ 	free_corrupted_blocks();
+ 	close_ctree_fs_info(fs_info);
 -- 
 2.49.0
 
