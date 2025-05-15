@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-14031-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14030-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 227ECAB7F89
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 May 2025 10:01:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4332AB7F8A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 May 2025 10:01:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8F471BA7199
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 May 2025 08:01:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 866013A7663
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 May 2025 08:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E80D283FD7;
-	Thu, 15 May 2025 08:01:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57C44286887;
+	Thu, 15 May 2025 08:01:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="hFo7uh0A";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="hFo7uh0A"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MwGQgfBK";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MwGQgfBK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D644E2820D1
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:01:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B01BC285409
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747296064; cv=none; b=nvwYccdVtcBL1Tx0ksxM0YfvqEtS8jW7lrYVulI1wq6N1Mvl+R/soHMSx1HIs9HIPh4Xk0w7PPE7sJ+CstpGizMbUkCspzz/aDW/HeS6lJsksZ5XijvjeY2Zf3+xl8d5ZVfwhrPMEGADwKxApH7r6WWzXZGtBw7oi66h53qB/SY=
+	t=1747296060; cv=none; b=KtoCGCmbBQhWVJHeiH2C+IEoL0I9889iuaB7JsMnS0y7eDHsV7D/85cIGI2cGGn64ODOTqJypP9HCZu7u2KWfi12JENn0vGYT+fqo+xr6uJ+oZ6qzS18Uni7LN/Bse53xesHh/gTdsBLJMNJlYw5VHnAFErl3vbQDJXEvXx93z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747296064; c=relaxed/simple;
-	bh=jTMtP3fKYxehcwuErvosobjLm3vh4AVWngzxsYzO5NQ=;
+	s=arc-20240116; t=1747296060; c=relaxed/simple;
+	bh=obM4l1hsjltJQS4MLTcu8JM8lc0VqVI/Hj/N1moFYRY=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nrOyuy6zQbhm2zQEB+Ovb3TIvN/TYmQ/8j8D35kAxZMgMDVsTD/5XXdGXe7r1AcnbcgcraOjNl14rTR5URb7w9UPNyx4Ym88e6XUF92FYsohOkwGVbYxoKh3xWt70PhfwTO5w8AZwJmna5yN2z+aZpnnfQf7N0SR3D81ZYr0E68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=hFo7uh0A; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=hFo7uh0A; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=fJ6LspSQYwZE5OVpEaRELeOg7V78ouxST8SLszEjlAb0vwRmVNN69iqm+lQtH+fa66UIcR2SjHWCsSv37UnlVqrPLzVmdfcKbhsvudFY2BO8GKIkichbRKfKD3QRT13OQ61BqV0BhoJ9er06qRxKZ+eVWOAbKQ6RZVu8lwJk8lU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MwGQgfBK; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MwGQgfBK; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D036121202
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:44 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 150741F7BF
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1747296044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1747296046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ps3XT5HpyyQVIPP+Ywu8B/eXxwvxkBdfc257RIPR+EI=;
-	b=hFo7uh0AlPgBHH6aWygdjPDQSPDSL5gBzuXDCFl17Ey/e2tLYRIT41bQQcEIPZ0NFZFo7N
-	KrJjTkrO74igeZm7e+sf15NjjBiVaLit+UUA01PtSHyBwluFaUjn1MA7SnyBsSzLZ7w5+A
-	DIBLYeTOu/Ona7YXxyh0Skp4wwDm/Io=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=hFo7uh0A
+	bh=vIz4akfdFXzzCc8XWhT2Usx/Dw76iiqsGaAihUzXfn4=;
+	b=MwGQgfBKMcOCwTRD5KIfWEDlGlcnlOvL66RT9vz5nU2SU90CCHzn9OP/tvAoOHex9dJD11
+	QnIJCV2mUCZBdWW4b6HWEfmpU1lD9eom/pS9D+wV9yTEamLzqlHFNumU1M5gzNu1peICEV
+	zlfZHW8s896YAC0ytW0Co1E4Qs18fSE=
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1747296044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1747296046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ps3XT5HpyyQVIPP+Ywu8B/eXxwvxkBdfc257RIPR+EI=;
-	b=hFo7uh0AlPgBHH6aWygdjPDQSPDSL5gBzuXDCFl17Ey/e2tLYRIT41bQQcEIPZ0NFZFo7N
-	KrJjTkrO74igeZm7e+sf15NjjBiVaLit+UUA01PtSHyBwluFaUjn1MA7SnyBsSzLZ7w5+A
-	DIBLYeTOu/Ona7YXxyh0Skp4wwDm/Io=
+	bh=vIz4akfdFXzzCc8XWhT2Usx/Dw76iiqsGaAihUzXfn4=;
+	b=MwGQgfBKMcOCwTRD5KIfWEDlGlcnlOvL66RT9vz5nU2SU90CCHzn9OP/tvAoOHex9dJD11
+	QnIJCV2mUCZBdWW4b6HWEfmpU1lD9eom/pS9D+wV9yTEamLzqlHFNumU1M5gzNu1peICEV
+	zlfZHW8s896YAC0ytW0Co1E4Qs18fSE=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 17062137E8
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:43 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4FA03137E8
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id YDSTMiufJWi8LwAAD6G6ig
+	id SJDIBC2fJWi8LwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:43 +0000
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 May 2025 08:00:45 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 4/6] btrfs-progs: fix-data-checksum: introduce interactive mode
-Date: Thu, 15 May 2025 17:30:19 +0930
-Message-ID: <c0f551f03f8d81e2a46e35a08339ef096b46984f.1747295965.git.wqu@suse.com>
+Subject: [PATCH v2 5/6] btrfs-progs: fix-data-checksum: update csum items to fix csum mismatch
+Date: Thu, 15 May 2025 17:30:20 +0930
+Message-ID: <c78f6903cbb952acad86ac026dd597645d0af31b.1747295965.git.wqu@suse.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1747295965.git.wqu@suse.com>
 References: <cover.1747295965.git.wqu@suse.com>
@@ -84,231 +84,277 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: D036121202
 X-Spam-Flag: NO
-X-Spam-Score: -3.01
+X-Spam-Score: -2.80
 X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
+X-Spamd-Result: default: False [-2.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
 	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Action: no action
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
 
-This mode will ask user for how to fix each block.
+This adds a new group of action in the interactive mode to fix a csum
+mismatch.
 
-User input can match the first letter or the whole action name to
-specify given action, the input is verified case insensitive.
+The output looks like this:
 
-If no user input is provided, the default action is to ignore the
-corrupted block.
+  logical=13631488 corrtuped mirrors=1 affected files:
+    (subvolume 5)/foo
+    (subvolume 5)/dir/bar
+  <<I>>gnore/<1>:1
+  Csum item for logical 13631488 updated using data from mirror 1
 
-If the input matches no action, a warning is outputted and user must
-retry until a valid input is provided.
+In the interactive mode, the update-csum-item behavior is outputted as
+all available mirror numbers.
+
+Considering all the existing (and future) action should starts with an
+alphabet, it's pretty easy to distinguish mirror number from other
+actions.
+
+The update-csum-item action itself is pretty straight-forward, just read
+out the data from specified mirror, then calculate a new checksum, and
+update the corresponding csum item in csum tree.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- Documentation/btrfs-rescue.rst  |  3 ++
- cmds/rescue-fix-data-checksum.c | 69 ++++++++++++++++++++++++++++++++-
- cmds/rescue.c                   |  9 ++++-
- cmds/rescue.h                   |  1 +
- 4 files changed, 78 insertions(+), 4 deletions(-)
+ cmds/rescue-fix-data-checksum.c | 119 +++++++++++++++++++++++++++++---
+ kernel-shared/file-item.c       |   2 +-
+ kernel-shared/file-item.h       |   5 ++
+ 3 files changed, 114 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/btrfs-rescue.rst b/Documentation/btrfs-rescue.rst
-index 7a237ba8ebbb..0e6da4397f51 100644
---- a/Documentation/btrfs-rescue.rst
-+++ b/Documentation/btrfs-rescue.rst
-@@ -69,6 +69,9 @@ fix-data-checksum <device>
- 		readonly mode, only scan and report for data checksum mismatch,
- 		do no repair
- 
-+	-i|--interactive
-+		interactive mode, ask for how to repair, ignore the error by default
-+
- .. _man-rescue-clear-ino-cache:
- 
- clear-ino-cache <device>
 diff --git a/cmds/rescue-fix-data-checksum.c b/cmds/rescue-fix-data-checksum.c
-index bf3a65b31c71..9a4f3fd73aaf 100644
+index 9a4f3fd73aaf..86924d61823e 100644
 --- a/cmds/rescue-fix-data-checksum.c
 +++ b/cmds/rescue-fix-data-checksum.c
-@@ -14,6 +14,7 @@
-  * Boston, MA 021110-1307, USA.
-  */
- 
-+#include <ctype.h>
- #include "kerncompat.h"
- #include "kernel-shared/disk-io.h"
+@@ -20,6 +20,8 @@
  #include "kernel-shared/ctree.h"
-@@ -45,6 +46,21 @@ struct corrupted_block {
- 	unsigned long *error_mirror_bitmap;
+ #include "kernel-shared/volumes.h"
+ #include "kernel-shared/backref.h"
++#include "kernel-shared/transaction.h"
++#include "kernel-shared/file-item.h"
+ #include "common/messages.h"
+ #include "common/open-utils.h"
+ #include "cmds/rescue.h"
+@@ -48,6 +50,7 @@ struct corrupted_block {
+ 
+ enum fix_data_checksum_action_value {
+ 	ACTION_IGNORE,
++	ACTION_UPDATE_CSUM,
+ 	ACTION_LAST,
  };
  
-+enum fix_data_checksum_action_value {
-+	ACTION_IGNORE,
-+	ACTION_LAST,
-+};
-+
-+static const struct fix_data_checksum_action {
-+	enum fix_data_checksum_action_value value;
-+	const char *string;
-+} actions[] = {
-+	[ACTION_IGNORE] = {
-+		.value = ACTION_IGNORE,
-+		.string = "ignore",
+@@ -59,6 +62,10 @@ static const struct fix_data_checksum_action {
+ 		.value = ACTION_IGNORE,
+ 		.string = "ignore",
+ 	},
++	[ACTION_UPDATE_CSUM] = {
++		.value = ACTION_UPDATE_CSUM,
++		.string = "update-csum",
 +	},
-+};
-+
- static int global_repair_mode;
- LIST_HEAD(corrupted_blocks);
+ };
  
-@@ -241,10 +257,49 @@ next:
- 	return ret;
+ static int global_repair_mode;
+@@ -258,10 +265,13 @@ next:
  }
  
--static void report_corrupted_blocks(struct btrfs_fs_info *fs_info)
-+#define ASK_ACTION_BUFSIZE	(32)
-+static enum fix_data_checksum_action_value ask_action()
-+{
-+	char buf[ASK_ACTION_BUFSIZE] = { 0 };
-+	bool printed;
-+
-+again:
-+	printed = false;
-+	for (int i = 0; i < ACTION_LAST; i++) {
-+		if (printed)
-+			printf("/");
-+		/* Mark Ignore as default */
-+		if (i == ACTION_IGNORE)
-+			printf("<<%c>>%s", toupper(actions[i].string[0]),
-+			       actions[i].string + 1);
-+		else
-+			printf("<%c>%s", toupper(actions[i].string[0]),
-+			       actions[i].string + 1);
+ #define ASK_ACTION_BUFSIZE	(32)
+-static enum fix_data_checksum_action_value ask_action()
++static enum fix_data_checksum_action_value ask_action(unsigned int num_mirrors,
++						      unsigned int *mirror_ret)
+ {
++	unsigned long ret;
+ 	char buf[ASK_ACTION_BUFSIZE] = { 0 };
+ 	bool printed;
++	char *endptr;
+ 
+ again:
+ 	printed = false;
+@@ -269,12 +279,22 @@ again:
+ 		if (printed)
+ 			printf("/");
+ 		/* Mark Ignore as default */
+-		if (i == ACTION_IGNORE)
++		if (i == ACTION_IGNORE) {
+ 			printf("<<%c>>%s", toupper(actions[i].string[0]),
+ 			       actions[i].string + 1);
+-		else
++		} else if (i == ACTION_UPDATE_CSUM) {
++			/*
++			 * For update-csum action, we need a mirror number,
++			 * so output all valid mirrors numbers instead.
++			 */
++			for (int cur_mirror = 1; cur_mirror <= num_mirrors;
++			     cur_mirror++)
++				printf("<%u>", cur_mirror);
++		} else {
+ 			printf("<%c>%s", toupper(actions[i].string[0]),
+ 			       actions[i].string + 1);
++		}
++		printed = true;
+ 	}
+ 	printf(":");
+ 	fflush(stdout);
+@@ -285,13 +305,79 @@ again:
+ 		return ACTION_IGNORE;
+ 	/* Check exact match or matching the initial letter. */
+ 	for (int i = 0; i < ACTION_LAST; i++) {
+-		if (strncasecmp(buf, actions[i].string, 1) == 0 ||
+-		    strncasecmp(buf, actions[i].string, ASK_ACTION_BUFSIZE) == 0)
++		if ((strncasecmp(buf, actions[i].string, 1) == 0 ||
++		     strncasecmp(buf, actions[i].string, ASK_ACTION_BUFSIZE) == 0) &&
++		     actions[i].value != ACTION_UPDATE_CSUM)
+ 			return actions[i].value;
+ 	}
+-	/* No valid action found, retry. */
+-	warning("invalid action, please retry");
+-	goto again;
++	/* No match, check if it's some numeric string. */
++	ret = strtoul(buf, &endptr, 10);
++	if (endptr == buf || ret == ULONG_MAX) {
++		/* No valid action found, retry. */
++		warning("invalid action, please retry");
++		goto again;
 +	}
-+	printf(":");
-+	fflush(stdout);
-+	/* Default to Ignore if no action provided. */
-+	if (!fgets(buf, sizeof(buf) - 1, stdin))
-+		return ACTION_IGNORE;
-+	if (buf[0] == '\n')
-+		return ACTION_IGNORE;
-+	/* Check exact match or matching the initial letter. */
-+	for (int i = 0; i < ACTION_LAST; i++) {
-+		if (strncasecmp(buf, actions[i].string, 1) == 0 ||
-+		    strncasecmp(buf, actions[i].string, ASK_ACTION_BUFSIZE) == 0)
-+			return actions[i].value;
++	if (ret > num_mirrors || ret == 0) {
++		warning("invalid mirror number %lu, must be in range [1, %d], please retry",
++			ret, num_mirrors);
++		goto again;
 +	}
-+	/* No valid action found, retry. */
-+	warning("invalid action, please retry");
-+	goto again;
++	*mirror_ret = ret;
++	return ACTION_UPDATE_CSUM;
 +}
 +
-+static void report_corrupted_blocks(struct btrfs_fs_info *fs_info,
-+				    enum btrfs_fix_data_checksum_mode mode)
- {
- 	struct corrupted_block *entry;
- 	struct btrfs_path path = { 0 };
-+	enum fix_data_checksum_action_value action;
++static int update_csum_item(struct btrfs_fs_info *fs_info, u64 logical,
++			    unsigned int mirror)
++{
++	struct btrfs_trans_handle *trans;
++	struct btrfs_root *csum_root = btrfs_csum_root(fs_info, logical);
++	struct btrfs_path path = { 0 };
++	struct btrfs_csum_item *citem;
++	u64 read_len = fs_info->sectorsize;
++	u8 csum[BTRFS_CSUM_SIZE] = { 0 };
++	u8 *buf;
++	int ret;
++
++	buf = malloc(fs_info->sectorsize);
++	if (!buf)
++		return -ENOMEM;
++	ret = read_data_from_disk(fs_info, buf, logical, &read_len, mirror);
++	if (ret < 0) {
++		errno = -ret;
++		error("failed to read block at logical %llu mirror %u: %m",
++			logical, mirror);
++		goto out;
++	}
++	trans = btrfs_start_transaction(csum_root, 1);
++	if (IS_ERR(trans)) {
++		ret = PTR_ERR(trans);
++		errno = -ret;
++		error_msg(ERROR_MSG_START_TRANS, "%m");
++		goto out;
++	}
++	citem = btrfs_lookup_csum(trans, csum_root, &path, logical,
++				  BTRFS_EXTENT_CSUM_OBJECTID, fs_info->csum_type, 1);
++	if (IS_ERR(citem)) {
++		ret = PTR_ERR(citem);
++		errno = -ret;
++		error("failed to find csum item for logical %llu: $m", logical);
++		btrfs_abort_transaction(trans, ret);
++		goto out;
++	}
++	btrfs_csum_data(fs_info, fs_info->csum_type, buf, csum, fs_info->sectorsize);
++	write_extent_buffer(path.nodes[0], csum, (unsigned long)citem, fs_info->csum_size);
++	btrfs_release_path(&path);
++	ret = btrfs_commit_transaction(trans, csum_root);
++	if (ret < 0) {
++		errno = -ret;
++		error_msg(ERROR_MSG_COMMIT_TRANS, "%m");
++	}
++	printf("Csum item for logical %llu updated using data from mirror %u\n",
++		logical, mirror);
++out:
++	free(buf);
++	btrfs_release_path(&path);
++	return ret;
+ }
  
- 	if (list_empty(&corrupted_blocks)) {
- 		printf("No data checksum mismatch found\n");
-@@ -277,6 +332,16 @@ static void report_corrupted_blocks(struct btrfs_fs_info *fs_info)
- 			error("failed to iterate involved files: %m");
- 			break;
+ static void report_corrupted_blocks(struct btrfs_fs_info *fs_info,
+@@ -307,6 +393,7 @@ static void report_corrupted_blocks(struct btrfs_fs_info *fs_info,
+ 	}
+ 
+ 	list_for_each_entry(entry, &corrupted_blocks, list) {
++		unsigned int mirror;
+ 		bool has_printed = false;
+ 		int ret;
+ 
+@@ -334,10 +421,20 @@ static void report_corrupted_blocks(struct btrfs_fs_info *fs_info,
  		}
-+		switch (mode) {
-+		case BTRFS_FIX_DATA_CSUMS_INTERACTIVE:
-+			action = ask_action();
-+			UASSERT(action == ACTION_IGNORE);
-+			fallthrough;
-+		case BTRFS_FIX_DATA_CSUMS_READONLY:
+ 		switch (mode) {
+ 		case BTRFS_FIX_DATA_CSUMS_INTERACTIVE:
+-			action = ask_action();
+-			UASSERT(action == ACTION_IGNORE);
+-			fallthrough;
++			action = ask_action(entry->num_mirrors, &mirror);
++			break;
+ 		case BTRFS_FIX_DATA_CSUMS_READONLY:
++			action = ACTION_IGNORE;
 +			break;
 +		default:
 +			UASSERT(0);
 +		}
- 	}
++
++		switch (action) {
++		case ACTION_IGNORE:
++			break;
++		case ACTION_UPDATE_CSUM:
++			ret = update_csum_item(fs_info, entry->logical, mirror);
+ 			break;
+ 		default:
+ 			UASSERT(0);
+diff --git a/kernel-shared/file-item.c b/kernel-shared/file-item.c
+index 18791c0647b7..503ad657c661 100644
+--- a/kernel-shared/file-item.c
++++ b/kernel-shared/file-item.c
+@@ -112,7 +112,7 @@ fail:
+ 	return err;
  }
  
-@@ -333,7 +398,7 @@ int btrfs_recover_fix_data_checksum(const char *path,
- 		errno = -ret;
- 		error("failed to iterate csum tree: %m");
- 	}
--	report_corrupted_blocks(fs_info);
-+	report_corrupted_blocks(fs_info, mode);
- out_close:
- 	free_corrupted_blocks();
- 	close_ctree_fs_info(fs_info);
-diff --git a/cmds/rescue.c b/cmds/rescue.c
-index 0d3f86f7e8d6..0c19de47895a 100644
---- a/cmds/rescue.c
-+++ b/cmds/rescue.c
-@@ -280,7 +280,8 @@ static const char * const cmd_rescue_fix_data_checksum_usage[] = {
- 	"btrfs rescue fix-data-checksum <device>",
- 	"Fix data checksum mismatches.",
- 	"",
--	OPTLINE("-r", "readonly mode, only report errors without repair"),
-+	OPTLINE("-r|--readonly", "readonly mode, only report errors without repair"),
-+	OPTLINE("-i|--interactive", "interactive mode, ignore the error by default."),
- 	HELPINFO_INSERT_GLOBALS,
- 	HELPINFO_INSERT_VERBOSE,
- 	NULL
-@@ -298,15 +299,19 @@ static int cmd_rescue_fix_data_checksum(const struct cmd_struct *cmd,
- 		enum { GETOPT_VAL_DRYRUN = GETOPT_VAL_FIRST, };
- 		static const struct option long_options [] = {
- 			{"readonly", no_argument, NULL, 'r'},
-+			{"interactive", no_argument, NULL, 'i'},
- 			{"NULL", 0, NULL, 0},
- 		};
--		c = getopt_long(argc, argv, "r", long_options, NULL);
-+		c = getopt_long(argc, argv, "ri", long_options, NULL);
- 		if (c < 0)
- 			break;
- 		switch (c) {
- 		case 'r':
- 			mode = BTRFS_FIX_DATA_CSUMS_READONLY;
- 			break;
-+		case 'i':
-+			mode = BTRFS_FIX_DATA_CSUMS_INTERACTIVE;
-+			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
- 		}
-diff --git a/cmds/rescue.h b/cmds/rescue.h
-index 331b595f1c6f..4ae43cbb4cd4 100644
---- a/cmds/rescue.h
-+++ b/cmds/rescue.h
-@@ -22,6 +22,7 @@
- 
- enum btrfs_fix_data_checksum_mode {
- 	BTRFS_FIX_DATA_CSUMS_READONLY,
-+	BTRFS_FIX_DATA_CSUMS_INTERACTIVE,
- 	BTRFS_FIX_DATA_CSUMS_LAST,
- };
- 
+-static struct btrfs_csum_item *
++struct btrfs_csum_item *
+ btrfs_lookup_csum(struct btrfs_trans_handle *trans,
+ 		  struct btrfs_root *root,
+ 		  struct btrfs_path *path,
+diff --git a/kernel-shared/file-item.h b/kernel-shared/file-item.h
+index cab0bc4e9ce0..5a5d8da10266 100644
+--- a/kernel-shared/file-item.h
++++ b/kernel-shared/file-item.h
+@@ -89,6 +89,11 @@ int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_file_extent_item *stack_fi);
+ int btrfs_csum_file_block(struct btrfs_trans_handle *trans, u64 logical,
+ 			  u64 csum_objectid, u32 csum_type, const char *data);
++struct btrfs_csum_item *
++btrfs_lookup_csum(struct btrfs_trans_handle *trans,
++		  struct btrfs_root *root,
++		  struct btrfs_path *path,
++		  u64 bytenr, u64 csum_objectid, u16 csum_type, int cow);
+ int btrfs_insert_inline_extent(struct btrfs_trans_handle *trans,
+ 			       struct btrfs_root *root, u64 objectid,
+ 			       u64 offset, const char *buffer, size_t size,
 -- 
 2.49.0
 
