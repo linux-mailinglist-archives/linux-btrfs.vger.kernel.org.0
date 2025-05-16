@@ -1,61 +1,61 @@
-Return-Path: <linux-btrfs+bounces-14071-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14072-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE116AB9454
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 May 2025 05:07:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6A01AB9455
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 May 2025 05:07:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12FFC1BC5EB6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 May 2025 03:07:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 683B37B8979
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 May 2025 03:06:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D15B288C1A;
-	Fri, 16 May 2025 03:04:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E269288CA1;
+	Fri, 16 May 2025 03:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="OHprdw/a"
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="IRTYhyLC"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from OS8PR02CU002.outbound.protection.outlook.com (mail-japanwestazon11012023.outbound.protection.outlook.com [40.107.75.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8D902868BF;
-	Fri, 16 May 2025 03:04:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFAB9288C04;
+	Fri, 16 May 2025 03:04:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.75.23
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747364662; cv=fail; b=ZAYOsJMlbE3nn9RK+G+rfWFVQs9JsiX5WwKlsvfeyHlRfByKlcEtMeLhlHxZkSYn23RWgJQsRzujO6++6CJp1K43ncE06CRSwIGO26CZYFbbBqBEEtoQQFcTbS0ByUO15zCMBXxZnt2AKZ2jkRWqXblcPD/SqWZTIxwtj2BnqPc=
+	t=1747364664; cv=fail; b=C779rrV0142IIY26n2XbxXNLyBnihg/86jIBzImgealrkFA2h9jBYsEB0A7JCCWxnadz6AedOfH7FIngYUBsu7wky5TW/rW/tfOtCbx0NMxR7ZpITfY+zw8NJLjZpSQQql5tcpByPVKhxhwjgOYOm60eNgyl4IA2GyOaVDqPOek=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747364662; c=relaxed/simple;
-	bh=VD9UJqgOadgTE1lrUil1vFVauRkLPEukhoK9JZGQajM=;
+	s=arc-20240116; t=1747364664; c=relaxed/simple;
+	bh=MV9uQs3am4/pOZ/iqnO7IbzA7Ox5tVqHC6ywSEvy7Jo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dwzI8MC3eOCVn98DosnLmJYic1uP/UQMvF7VaVEC/Y46oAOvggsa4Q7+fbJ3ofHtSgbf8eeD4AayA1qEqdELdJxjdt6wz8sSai9EC6vAiOhRPBufvoo/ksF/DW3tBtNiM60TH+7nbvzeKUGC4vfWHEW2Zy/QibFCsNxG394+3UM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=OHprdw/a; arc=fail smtp.client-ip=40.107.75.23
+	 Content-Type:MIME-Version; b=Dh/vnqE/ttTdI04RRI61lqN0vzl6REsIyLBsoSoDn51I5hRSc5GLe/0ZBgzc3QPh2vruEspKQTEoEKMFnebYGK7m/VaN7Q1Bv7Kbv+kW26ZkZyKMKIFX6zNyvQIS8qO7/sjFU693W/zM67mf25BA1DJGWV1N4+LaT7b+7doVnzU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=IRTYhyLC; arc=fail smtp.client-ip=40.107.75.23
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=fzIizkKNyMz6S2EIYjBpqIFnrEPDnauSwQQyfmdFQa86QKaaioAPoGEdVSe9dCJz4OcBCTkmJ0n8rIXxGWS5uhxil6ptDti2o3rJGD03UtHsVgSJ4Xn95X/GmERT2v1+kw0B5LrxAyzfIBDZ8zEFbHTl53J7Lo2IkBhJT9nR+AaA/1iFDjxQe426UInVKcw7JNJ7RHULyeGrbUgwQp8zddFq692+z/jpQCda9UQcLWUsThW9hzK+dj1OtBTtp6R8oy4U1LrPztx4GXObLNZqwfoTIAE+wIFGdXu78V1uOAU2GOvXBUEVnB2NNwkwKbw5NoqVlLEjkeKlI20f7Nhbcg==
+ b=rgNrmv/sDgJRGHBk15fToh6tf7uPAOSm/9U8zXB/U6p6zAod9pMIjZy6A6R2ZpWvWqtsKCQNZ8idgIGLVE0yDEfw/zVCiEM5e6y917wxaCpxROo53quDzRQbn4uORxyUInK1Y/+tbk9HjedUGu61JndZtvqmhY1/VYLiDNXUAPcxarfBJiYCXKNiVEiNmB3rIBXBzQBmFx8JrVWItuHIoAXm01Ig/lZO1DDU4C+jIefvQcnQ3joA+rJhchsgYm5Rs7GbTHyNdKLvKv72Bv1w9SG2CUlwClFCFZqnMy1lggtDP/AJcyFmyBSZDut831tpcEtXIJQbJw+WTbSltcUGZg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nQI7o7wB6TGMHyE2FjoTpA5v+YtJrTYy19j3HM0HDWM=;
- b=LW01oOKmb3ry1XgFV77KiBxJ8dPdAv1gASViOCQbm/BOqs9lxpzDFqAeJqW8Kzu1GNRCZZdDbQ6r5NhLzHIV9uJWksFqzPIXnEVIJ49BXTX9ke4O5RtY4bg7JKnkPuDdTtmeszCRHH4nDrp3Y81q7qbh4SMPoTCzRFEcSZ72vovS/oFmICxmHNuOhhQYuVy/btwOrLsO93KOY+D75VSVG89fhVkwKqeJZvHPzpMF9XnizQb+C+kuJwQbt+1BYTLiaOt5vGGO+sEU8CgVhakKNx8+WWKcfu9yqpY2Va/4kfk0Fs3dAOhR9eifXvd6JUE/DofSQrL8212mUhfxeMUYfA==
+ bh=H8me0HjxqGxLwkFj9kETaAS13Wr8n5xxlU9KpKa5ADI=;
+ b=zThPTjlvBip4i1sNzAhKRB4cqbg5Sk79t4OVAYGoX5lKVRvGmOjL631uI8/v4pBq9aSNapK6k8Ii75R7AIu7Wh8U/67rk6Xwd1yCbW3UElhhWLpzUrSs8GwL7ZIyE6ddVp1EeNdOap2bSNYDlLdnNh7rBM4O/rnqAj6r+SG5ROXA2NUI0ejXgMgdkGKzFv9MsQ0d0WD0WxZ8sI+xsrHCGYOMpGq9b9F9tj0vqiUMZGudf74IEa7bjxyaViUMfauorhK7tIE4B1vOhhQNCheDsltmdAKRyhG9eZe5L2UNp+2zx9B6UEuAFoPvCxap+ZixCmCrFL70Umy/ifS5bt0iiw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nQI7o7wB6TGMHyE2FjoTpA5v+YtJrTYy19j3HM0HDWM=;
- b=OHprdw/amVR5NoSxp/YHLIC2IIJNI5vknOYvHZyucBnK46v1EUoVLMHv0n5VOZ6QnPQhUghaB4HxUJjecZLQ8WO3BkK53TSwzWJjyCW8BTI+YO+NHIlEnA5WBMyS4ilzcrEqTM5ACjXwgjRouKoiVbz1VvvdTlfcpNLZTLPAnWwBK2N452QL31qeaAX1MtMx2cQEYaTZnVx4gYGDJtOEyt8MX3z2bi4JgBzlXsnfpjmBQ8B6G0xk4EXGJCSArVSM+KI2vWSrNFi0G+NM3kgfm/FjWEYKTrmJ5yalSUXguJ69KIEhEx83mifZC1zq47etHUUv5zFvv5iQQEyQ+5LW5Q==
+ bh=H8me0HjxqGxLwkFj9kETaAS13Wr8n5xxlU9KpKa5ADI=;
+ b=IRTYhyLCBv4yh3mU1/lqZoiI4aUtA9z/FhC7TPuMlZO19PfshQc2IxpE+MDgyYnFzlKYdTjDJ4rrNtzOFkjjROj+dl3yKapu9Fd2NJsWrDhVxEpYBK2aNi3SqX+Y5xwdG/LZ49vOqGai/LUrl0hGC1G9R3014h6UhfY66JjNA9YoDAil/OKiblldtYjBtghFMcrTiKcRQQslSZrx8Q5CkHoYS9tYeKrlyFAlK6vCpnlgC+qcQFYIuTHLu3/muYHmaK0f6Ehe6VLdeMCKjB00pD2ugiYkrDYxaLoM04qKyfAobnlTdNr5BuJswEns5CXDxPIW/1AdwP2uEkKW+oF5YA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=vivo.com;
 Received: from TYSPR06MB7646.apcprd06.prod.outlook.com (2603:1096:405:bf::11)
  by SEZPR06MB5200.apcprd06.prod.outlook.com (2603:1096:101:74::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.32; Fri, 16 May
- 2025 03:04:17 +0000
+ 2025 03:04:19 +0000
 Received: from TYSPR06MB7646.apcprd06.prod.outlook.com
  ([fe80::b735:577c:48bd:c7c5]) by TYSPR06MB7646.apcprd06.prod.outlook.com
  ([fe80::b735:577c:48bd:c7c5%5]) with mapi id 15.20.8722.027; Fri, 16 May 2025
- 03:04:17 +0000
+ 03:04:18 +0000
 From: Pan Chuang <panchuang@vivo.com>
 To: clm@fb.com,
 	josef@toxicpanda.com,
@@ -64,9 +64,9 @@ To: clm@fb.com,
 Cc: linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Pan Chuang <panchuang@vivo.com>
-Subject: [PATCH v2 13/15] btrfs: use rb_find_add() in btrfs_qgroup_add_swapped_blocks()
-Date: Fri, 16 May 2025 11:03:31 +0800
-Message-Id: <20250516030333.3758-14-panchuang@vivo.com>
+Subject: [PATCH v2 14/15] btrfs: pass struct rb_simple_node pointer directly in rb_simple_insert()
+Date: Fri, 16 May 2025 11:03:32 +0800
+Message-Id: <20250516030333.3758-15-panchuang@vivo.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20250516030333.3758-1-panchuang@vivo.com>
 References: <20250516030333.3758-1-panchuang@vivo.com>
@@ -83,184 +83,245 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: TYSPR06MB7646:EE_|SEZPR06MB5200:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1955bdee-8b53-41f2-899d-08dd9426584b
+X-MS-Office365-Filtering-Correlation-Id: 8fe1f08e-c9a0-4e3f-38da-08dd9426596d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|376014|52116014|1800799024|366016|38350700014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?+wH2FjLcqm4fW/cZi8pjOO/ULLWFdwVojane+nXdw/HGYn1LzP5fN0kDZxF+?=
- =?us-ascii?Q?4RwtV7p589bmx9u0NvLeDAJEi+LIywA3eWGjI5awlgptSFr8QF17DJpdRYwu?=
- =?us-ascii?Q?FIHXuG2FgDjx8puU1eJL/nngs9UqEQC7N12dP1qkmZE3C0YRj7JVubeLxiC/?=
- =?us-ascii?Q?sm86x66sj3xWopxzqqFV1SfuA4Jx1JS2fEhp7/PqixzJ9LOsP03Mczqm7+bD?=
- =?us-ascii?Q?ucEGczmJgjX8uUVLvchnreb3dXkt+cPL62Rs+maYpqCH8lzSsWZ/49ZtzNlv?=
- =?us-ascii?Q?tNBGiSv2oipz70T6jedeZab3QnL9x+XbVf1gG7Mcws7Szc30gQLZvddqLN0o?=
- =?us-ascii?Q?HreJrxVAifN74aJ1ATrDvtX6PZo8VLMgzCUi41jcxy4CJY/4+EESxbpa+3PL?=
- =?us-ascii?Q?Fs3Kcsa5GaLoiviKyx79ae78yZ8phQIVuvbZFCgFJJYavGJn6vU5LGQlJLzB?=
- =?us-ascii?Q?sai6tzBybsdwWxXFTBvr9pMd2lnap365b8eBZ4jqyvpUcfosYYeyjsVuxeg/?=
- =?us-ascii?Q?BfEOSCkT+h/MUchT4ObzGW9jZ6Tz+s9IhGRDpltuBMen1yjlnkWhWwUTRa0X?=
- =?us-ascii?Q?08AsyYxrNf2WdAgClt7b8Wuv3X5nEHduRFz22a43jLk/vZX5ij6Y0YenX3xT?=
- =?us-ascii?Q?/er7EmnWkVa9ulGZsUEob+ORmmOaP3hNVUiijR+8pBvaBn1GfNxsDbB1+x0i?=
- =?us-ascii?Q?C2qhxPxJtlQ3I/jtGmFuEc96/mOmGU2VBV7YYME2SIqO+2xajQo495mR4/Gh?=
- =?us-ascii?Q?I++So1PivE11tnpu8fD+y+UOb+uzbL+6OTz+eBQuKKjdckvYL+fzMNlm62oB?=
- =?us-ascii?Q?B/o+Ec7uIkVTimVCkOE1Zn6cm95Cv7qfG1PE1TzjxE0msKcUNe050l6mwdaD?=
- =?us-ascii?Q?K25Ra3xAGXn2nA3Yr2I5iNmPIx5rIe01BJQQInoVGltvAgkQvbldIrYJ7BBK?=
- =?us-ascii?Q?ZnDttJ5qqFHKg8WzKbP8js+cPJxYAwMEiI/RBCqygSZ85LfemscBhPh7vQib?=
- =?us-ascii?Q?+r8R4KPd0zCNQK71z0AHWccKUnj1JcJn8MOOmjFKTht0bf8Ec8wOGI98055i?=
- =?us-ascii?Q?0SjBaIydpDRVXlleUD6YLlhE5AZMReCjsgpIfV/3n1dYOrxMratbpesMp45G?=
- =?us-ascii?Q?tXiLXyFltxZt+AGhv7Pdy52AcTXwwW42PNERoKOBm14F18M3qakQRRjgq173?=
- =?us-ascii?Q?DBBo4tPbr7+x/dVzRFMASaE1wYfO6TdAqfdm9w5cV/EnD4eiIEPrGbeROkf9?=
- =?us-ascii?Q?8AvvyJ3X4rL7FkcuPEHL0OHl3RHdYEHOZCHYKefN2rIWTYVl+mYqNyyo9JAE?=
- =?us-ascii?Q?sxptMFVhOp8+7nIhlqZMzHzwGd/Vix+C6nleHTLs8TkNOZB+/COhOd0wTepF?=
- =?us-ascii?Q?HnzShggxQ+hoI2akdAjxQQL4Yp6r2HSxwVv0XIWpQmk8uIB06l/fUBt6+yEl?=
- =?us-ascii?Q?MJT35R/4/WEea4df2kw8ypGAoARIBVFeq26PPgy33mYWsNSlIT3NfQ=3D=3D?=
+	=?us-ascii?Q?mLLM2bMXjbmBRFBf2t1wkn05p4VrBTn1gYMcTUcgMDLtQc2Es+u+5WuKkFRQ?=
+ =?us-ascii?Q?N3i9kT6EkzJgtbAzP+CF0NJbn9gUU6Lmp8xHnmPxXujcR/yUoqqG/zy+Ak5S?=
+ =?us-ascii?Q?k27qfF41tUYtUm34UmpUnnX/YBfoAlVAkwH80MyAb3b+Vxo8IGbPqwGB+QGH?=
+ =?us-ascii?Q?vWrCDbWVe8f8EMtoBsx7Wt0RbV8OXKrYsjy9MBsWKvfuBqRn02cBNoaa2Btx?=
+ =?us-ascii?Q?3JgDkDHwJs4CPc8BDmWAXUm1G1XULf8VOieQapqCqANhUwPAXVoioh3ZoGmr?=
+ =?us-ascii?Q?h0/OXEZs431pD4GIRcdmLvkYWZ8hovOxijmj9qGsgwHbdJLVnNlFYG9lM7q4?=
+ =?us-ascii?Q?23ooWeoP6lAVxa4dm3UiZ4Jw4FTLX2P8TqxFArI+aPRRtZpRYga2Qs6n7fbP?=
+ =?us-ascii?Q?Q/DOJE2rxwRAJj1qKcbzYjcTSD9mEpLnvOW01XegeTLNQYGubr0aJQUYiI9l?=
+ =?us-ascii?Q?oKJ8COMssYKd/kBJctjab2T6dGCRAQN/3X2ZIzCm7Emk8i2EvvgbEvwcvpsV?=
+ =?us-ascii?Q?b/EdfjaZLm0nST7tl+2LmwGlh4o4AkUzfzTQgVFbPAbIq51yvdstbxBvmo8u?=
+ =?us-ascii?Q?f2g8LsFsBmMjbix/JLjxZj+eENYtQ4f3iKtqCiGhjiuxhrhggtSLGxpeeimp?=
+ =?us-ascii?Q?Pew2VsaaJdUIAwJtv3mZiABmoEPn135PL1x+IgVGGM8GBnsD03rseWazNW8n?=
+ =?us-ascii?Q?xplMDJQpjZMOfLbVeQgn0HCn2weQ/CyVhExkvXA4gi0mMustiAIGbD1HhncV?=
+ =?us-ascii?Q?42J4VKDGt/7MoZ8zuIDzHm+UOvROOLcOw06th8gVfoPeLklsa99IOospiTcy?=
+ =?us-ascii?Q?Pc3+QTA+uEUhMxzUiP0cI9WOd6lo/Ppi462eutpAldxtuvFOjPlVrB3XLEls?=
+ =?us-ascii?Q?x61/TAujuTSoioxAfy4gxXssDoKX2+13d64fI05+p5LZ08uWhDhu5RK1RQK5?=
+ =?us-ascii?Q?RmEIzZwKd8lC2Coy+3SbEnfi41jBu5tgywvt2FcB9AClWyoMHanT8s+qrrlf?=
+ =?us-ascii?Q?meEl5RPM8WBwXZwiH/L0DHil4OyQs33JKxBQp7s3w1+EFMbyIKVg4dId/6y3?=
+ =?us-ascii?Q?cAlPnqzXMq9eu6aaUwh9o8wtFambDPDyPAfCHd8DSawMEGCAGjy5PIhaWc6J?=
+ =?us-ascii?Q?JBPvDNkNWk2eYpNnS9g7c3WbmDteiwLaZr1Am5PAMcW2ZqOol3JPRfGLVdhF?=
+ =?us-ascii?Q?lfXg4qZBBkAmnOI+MP6azcBWu5/0hy0AaszdjkJ5N2IHr2kno2BhudkRr8mx?=
+ =?us-ascii?Q?nwo2PtZjGBVdQLDw8an6OXpFmbaJq0oSpucgeABvgekFLTKExcRxDTq8u8As?=
+ =?us-ascii?Q?JuYRALs/FzBdjAnCZEs6ghm1l6xCf4PQo2TPcT6TBC4S7FAn2w5UGkKsICHL?=
+ =?us-ascii?Q?Hg/leoJwVrOpdSNgglkJPrIb3XQpQE2ztJ/eVp+X3ovyz63RtbEXg5VZLX75?=
+ =?us-ascii?Q?Y/eLYWRzKW435aSjFVqvhD4zYd1fOL/FE2qCP2tivVl/+olQ7Iu9sQ=3D=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYSPR06MB7646.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(52116014)(1800799024)(366016)(38350700014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?8FPhJUmTpcLq4BVrMbsdgvzY0B0T7nq7TgtyR/d7/on0hujS0Gz27POD86+9?=
- =?us-ascii?Q?e190kZYybeVA8H2QU9GLbTrZrDRnirM4aZp4MrJXCQabLe2zwiUezPP6FOnV?=
- =?us-ascii?Q?NE2zhjuYasMumrnKnBri2wzwo+VTclEwZOPeHPbe4rJXTpk7t0uC8EzCFtcN?=
- =?us-ascii?Q?ys+3B/ykUdGub83CK6QYPT/a2xM8S2Yygerju+Pn0f3oEXWpGDJsh4L20SB5?=
- =?us-ascii?Q?V3/hmifCMsyaQukGOCrcG23GCLKXO5iIVT401XIhbN6R7VSBRwkH+gt+28cy?=
- =?us-ascii?Q?+GfTgdjfv5hHjpXrIMNLCMrt7LNuLuW5adlUP4rbLwILMD+MeL/tGTq7mjT+?=
- =?us-ascii?Q?3vLWhtci9g832HhqchOMx45MnAq5Dez3s9IEQ23UYwSlMxTffa3xUQViGE3V?=
- =?us-ascii?Q?1xq47zYDzPwchup8CC5bKeqHobFKPtpHxLMpUugD3diDsEC4cd2c1nYGqpcf?=
- =?us-ascii?Q?kefL0Z61j6kLBzrLOjOPVmk/hQOYS/RsA/mPeq7/yOsrovGyBWsH0fppl1qj?=
- =?us-ascii?Q?OluqnTOhBIjymILZAsbTzSSDpsAisCbt4uCu/FBwzpx7Ns7VM2E1lUPgPvI3?=
- =?us-ascii?Q?Tr4MYPJB4LHKCeJyPy7Rwfr+ciEm+U4APUfMcexlX4P6te9NMN3bksNIHOU+?=
- =?us-ascii?Q?4HiDsxePXGoyDd9c7dmoWOkkOLFHhlocLK1zkXNbxWrIi6FyRxve7zW/swIb?=
- =?us-ascii?Q?vIty0VVWx/zwq8uJcmVR1/QwCyGpvOe63T4/9sMSAE6Z5CkFI69jheK3YCLi?=
- =?us-ascii?Q?3e3qQOPeCpzW8mVgCbbdHF4zD0xHfWqyQWvPoFhTTHnJbjB4PVYWofugwdns?=
- =?us-ascii?Q?SM9AAU8J7/QPj7XO1R8ISUm/MTN5BnQpZDACHAUr2Vx7huDMEA8nnD12+bV8?=
- =?us-ascii?Q?wVgZMb5Lz6zYdLLCswTiNhTlAmgQS3z0H2LYG+z4sU2XYunNk7hdBkSmHomJ?=
- =?us-ascii?Q?Gb0DL9NaPlZRUWVcR1ER2Sew4GnyCuIbfOo8n9tN8eGSpgh+pWkdPAq1h7TK?=
- =?us-ascii?Q?rdr3A12SixsXzvVLT5nIWPa40eC8ZU787et4z470VBY0oGwoQhIvVZLfNUaA?=
- =?us-ascii?Q?HRQJClaOvEMg6sB4LO5Yzh02qhOSFHKKVZSsFUntIM+AFIc3TYnUCC8zlo/p?=
- =?us-ascii?Q?DNsIUnk1LMZ7u8o5ZeiefG3EwN6S0v5rhbXphvb6OqIx7owyaemxWu9/+nUV?=
- =?us-ascii?Q?Qoq7X3HLYx0bIn1t0QggN2U2k7pR5NLIGHrLk+79ustb33EWu/6dYJ2OJtl1?=
- =?us-ascii?Q?eC6108Pyev8CXZyB8As1jp2HaxEcxUMtfyxu9ytVtHFx6i/OOtvsqwotujmW?=
- =?us-ascii?Q?B7erTDoPURi4B8AsHtZu17pBhj+4HDhfKU6h39s9tB+MoqxfWmadeT/A2ZrT?=
- =?us-ascii?Q?Szkc/J8Hk0H3YvtUqtdCxiCOfw3lC/XT7WLK6p3CTj/tGAsE8KR2dSxtNw6S?=
- =?us-ascii?Q?fk3MBTkp6Q4tk+5gEndUdhcB/6Q1uuv17UF/O7EbsXtHmj/zXKumlOrFMXnY?=
- =?us-ascii?Q?jE3muwJvgCEYcr4t12oANyWaKJEFWnx20XXRbcQTebbaV+6X+EL3n8nKfx5q?=
- =?us-ascii?Q?KVGKVnNCEi4B9kxGnG0PmLnXaKNmlOgwMH0w5tAY?=
+	=?us-ascii?Q?7+/o1oavCZavByWSYiENJUtMCZm7JZq+bdsiKanW9uZQmT2XT8U6Pi3Iz/hP?=
+ =?us-ascii?Q?dRmbjq749of9JQdx/IupBNvMT+HUtOPuYOByuIhKIEg99JS7WkqnTmhrKYCS?=
+ =?us-ascii?Q?YacmlLhaS7lthgk1cqzu5ZYRB24/+eqrwhutlDK3OIJefjGwTHqDX6QYOvK2?=
+ =?us-ascii?Q?S+TSeD7TKmt6UM77ydlrKc5aTq1HLg/xQZ/nXun2kwQqpTJPjNAbgfgWyuVI?=
+ =?us-ascii?Q?RdOfyuumaKGarEbBy7y2nW+J0gGEBAMhzs/FDds0lvx6UYolrluOPexVBRS9?=
+ =?us-ascii?Q?9t7UNqbGtBA9XFn8I9tasMlr/tdgP1Ow7Hg9+yEVAgwegR6H5o/IekjSgWPs?=
+ =?us-ascii?Q?b2INjIYKvAZYjpf5vELBQAAoScQN0j9QF0NyloLRiMPpcHrcMQQcp85EW4ss?=
+ =?us-ascii?Q?dJ+hm0StbjaPlNTOYg6B2tCkaeLBt0Hc+zy40SggX+6dNGffI4k1AdfKG5mh?=
+ =?us-ascii?Q?yRlPCcdQEZv4r10MUz0sFcwAWcuw4OxDGmUtJVELceRGOEBLcqIl4DKZqHoG?=
+ =?us-ascii?Q?9PnwTbyiZ7JeUoOqbtVKXbCF2kdzJKTY45e3IQ3unaLEoxmQldY5sjHgysci?=
+ =?us-ascii?Q?nd7zovhGrQzQ9knloe2qbxr/Vk39/W8UdOWkULNH7ECiJfawdCpBmyEXOwkp?=
+ =?us-ascii?Q?YO90ms+vdbzohBAKZAImLvXDPOafclmAdBG4gqSH1g7PFf0+79LPyqELxbNa?=
+ =?us-ascii?Q?C+p8jdT4cY0zZQQeuHLVfufyHjb3gU6G/7V/HPYChiCphW8fJ3JudKoN6EVw?=
+ =?us-ascii?Q?TmAG3JZxrbpiMz11Dmegj3EkXqfnVrn8bdiuTN6loMk6ir5jsW1z6BPR2QQo?=
+ =?us-ascii?Q?34I/6t8IJlzVizm7td8z28zd0i6VvamieWp9sLG3pDItQNJETI2Ckfz+mFZI?=
+ =?us-ascii?Q?z5mdwxTHvFuExnbO+VY5D3JcvauTs/ICx7FewKin7VanjcqbH/frPq1mKZNR?=
+ =?us-ascii?Q?U55XqcBCZzCczsTV07T7EzhQKuug+VJgNdGi0mrk9e09AadULXpAtWR3wO61?=
+ =?us-ascii?Q?25Z7DWg+M34G06r8GiUDRFILoSOeaRW4aFyiHwMNlRwgV7wiUxwEccCwDpS5?=
+ =?us-ascii?Q?9a8qJxTZ5TayTV+I52ZXb8tL8vZeFO8+uuTaFY2vqmIGmLlJivd2he84/6KK?=
+ =?us-ascii?Q?1m4ZwXMx4VGfOqjAKet4k300vnxbW5tjgZdZ3yGHoh3uNs2/2JJQKKgPG3/u?=
+ =?us-ascii?Q?zr1u+y1vXIilZl5EKFKmTF1D6ZxwU2Y2ezYU2pAuV6QPa529fsH3cMkNTzmP?=
+ =?us-ascii?Q?WdFUfh3cm6Oe51+GuGwLafnDTJgfa/CE0/6i0dOgJ8ibhmp8+jSSZu4+zvta?=
+ =?us-ascii?Q?x6Qhvp0u/e9hzf6cSgqJb02hch8gobC0B8NAch15GHB9sRmhnOWL2WWrJyg2?=
+ =?us-ascii?Q?1AEcfHNYlZOt04L7Mayj/rtl//oG0bB3aOpLPFZkMdArsb2tx3Cm5o8O93Uk?=
+ =?us-ascii?Q?9SxDHLRHv6eW+sL9DVOmelUW6WUn2KraE23eed/moZh0+UNlnTPp2n3TVLSU?=
+ =?us-ascii?Q?8Qe2ljJ2MM053i8vRttr9InG7UleRlaFJazbRUDScQkatX926NyUpzRj/D1C?=
+ =?us-ascii?Q?RAuY33ETTKJEbYssOGSHTfcwI3XlaxM8qdqeKJfe?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1955bdee-8b53-41f2-899d-08dd9426584b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8fe1f08e-c9a0-4e3f-38da-08dd9426596d
 X-MS-Exchange-CrossTenant-AuthSource: TYSPR06MB7646.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 May 2025 03:04:17.1047
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 May 2025 03:04:18.8722
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GSZxr5DIV8b0+1b0PXNxFdBB/2gYlmvARGIQ+VAfDOjazbqq5pRlQ70v32rGAUwQIrPmt7y83idRJCZATtJuow==
+X-MS-Exchange-CrossTenant-UserPrincipalName: LPkvuwH4WVx44YTHMljum6jsSt81CX77JpOlxI+08HPnUSmQxRpmzHcdsS2rS0VId4qQty9mt76t4xBXcggRnw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5200
 
-From: Yangtao Li <frank.li@vivo.com>
+1. Replace struct embedding with union to enable safe type conversion in
+   btrfs_backref_node, tree_block and mapping_node.
+2. Adjust function calls to use the new unified API, eliminating redundant
+   parameters.
 
-Use the rb-tree helper so we don't open code the search and insert
-code.
-
-Signed-off-by: Yangtao Li <frank.li@vivo.com>
 Signed-off-by: Pan Chuang <panchuang@vivo.com>
 ---
-v2:
- - Standardize coding style without logical change.
----
- fs/btrfs/qgroup.c | 59 +++++++++++++++++++++++------------------------
- 1 file changed, 29 insertions(+), 30 deletions(-)
+ fs/btrfs/backref.c    |  6 +++---
+ fs/btrfs/backref.h    | 12 ++++++++----
+ fs/btrfs/misc.h       | 12 ++++++------
+ fs/btrfs/relocation.c | 30 +++++++++++++++++++-----------
+ 4 files changed, 36 insertions(+), 24 deletions(-)
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 2e8f6ab004e9..e9498c6a55d2 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -4685,6 +4685,14 @@ static int qgroup_swapped_block_bytenr_key_cmp(const void *key, const struct rb_
- 	return 0;
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index ed497f5f8d1b..878baeb0660b 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -3570,7 +3570,7 @@ int btrfs_backref_finish_upper_links(struct btrfs_backref_cache *cache,
+ 
+ 	ASSERT(start->checked);
+ 
+-	rb_node = rb_simple_insert(&cache->rb_root, start->bytenr, &start->rb_node);
++	rb_node = rb_simple_insert(&cache->rb_root, &start->simple_node);
+ 	if (rb_node)
+ 		btrfs_backref_panic(cache->fs_info, start->bytenr, -EEXIST);
+ 
+@@ -3621,8 +3621,8 @@ int btrfs_backref_finish_upper_links(struct btrfs_backref_cache *cache,
+ 			return -EUCLEAN;
+ 		}
+ 
+-		rb_node = rb_simple_insert(&cache->rb_root, upper->bytenr,
+-					   &upper->rb_node);
++		rb_node = rb_simple_insert(&cache->rb_root,
++				&upper->simple_node);
+ 		if (unlikely(rb_node)) {
+ 			btrfs_backref_panic(cache->fs_info, upper->bytenr, -EEXIST);
+ 			return -EUCLEAN;
+diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+index 953637115956..d59c51072fad 100644
+--- a/fs/btrfs/backref.h
++++ b/fs/btrfs/backref.h
+@@ -313,10 +313,14 @@ int btrfs_backref_iter_next(struct btrfs_backref_iter *iter);
+  * Represent a tree block in the backref cache
+  */
+ struct btrfs_backref_node {
+-	struct {
+-		struct rb_node rb_node;
+-		u64 bytenr;
+-	}; /* Use rb_simple_node for search/insert */
++	union{
++		struct {
++			struct rb_node rb_node;
++			u64 bytenr;
++		}; /* Use rb_simple_node for search/insert */
++
++		struct rb_simple_node simple_node;
++	};
+ 
+ 	/*
+ 	 * This is a sanity check, whenever we COW a block we will update
+diff --git a/fs/btrfs/misc.h b/fs/btrfs/misc.h
+index 0d599fd847c9..e28bca1b3de5 100644
+--- a/fs/btrfs/misc.h
++++ b/fs/btrfs/misc.h
+@@ -119,8 +119,8 @@ static inline struct rb_node *rb_simple_search_first(const struct rb_root *root,
+ 	return ret;
  }
  
-+static int qgroup_swapped_block_bytenr_cmp(struct rb_node *new, const struct rb_node *exist)
-+{
-+	const struct btrfs_qgroup_swapped_block *new_block =
-+		rb_entry(new, struct btrfs_qgroup_swapped_block, node);
-+
-+	return qgroup_swapped_block_bytenr_key_cmp(&new_block->subvol_bytenr, exist);
-+}
-+
- /*
-  * Add subtree roots record into @subvol_root.
-  *
-@@ -4704,8 +4712,7 @@ int btrfs_qgroup_add_swapped_blocks(struct btrfs_root *subvol_root,
- 	struct btrfs_fs_info *fs_info = subvol_root->fs_info;
- 	struct btrfs_qgroup_swapped_blocks *blocks = &subvol_root->swapped_blocks;
- 	struct btrfs_qgroup_swapped_block *block;
--	struct rb_node **cur;
--	struct rb_node *parent = NULL;
-+	struct rb_node *node;
- 	int level = btrfs_header_level(subvol_parent) - 1;
- 	int ret = 0;
+-static inline struct rb_node *rb_simple_insert(struct rb_root *root, u64 bytenr,
+-					       struct rb_node *node)
++static inline struct rb_node *rb_simple_insert(struct rb_root *root,
++					       struct rb_simple_node *simple_node)
+ {
+ 	struct rb_node **p = &root->rb_node;
+ 	struct rb_node *parent = NULL;
+@@ -130,16 +130,16 @@ static inline struct rb_node *rb_simple_insert(struct rb_root *root, u64 bytenr,
+ 		parent = *p;
+ 		entry = rb_entry(parent, struct rb_simple_node, rb_node);
  
-@@ -4754,40 +4761,32 @@ int btrfs_qgroup_add_swapped_blocks(struct btrfs_root *subvol_root,
- 
- 	/* Insert @block into @blocks */
- 	spin_lock(&blocks->lock);
--	cur = &blocks->blocks[level].rb_node;
--	while (*cur) {
-+	node = rb_find_add(&block->node, &blocks->blocks[level],
-+				qgroup_swapped_block_bytenr_cmp);
-+	if (node) {
- 		struct btrfs_qgroup_swapped_block *entry;
- 
--		parent = *cur;
--		entry = rb_entry(parent, struct btrfs_qgroup_swapped_block,
-+		entry = rb_entry(node, struct btrfs_qgroup_swapped_block,
- 				 node);
- 
--		if (entry->subvol_bytenr < block->subvol_bytenr) {
--			cur = &(*cur)->rb_left;
--		} else if (entry->subvol_bytenr > block->subvol_bytenr) {
--			cur = &(*cur)->rb_right;
--		} else {
--			if (entry->subvol_generation !=
--					block->subvol_generation ||
--			    entry->reloc_bytenr != block->reloc_bytenr ||
--			    entry->reloc_generation !=
--					block->reloc_generation) {
--				/*
--				 * Duplicated but mismatch entry found.
--				 * Shouldn't happen.
--				 *
--				 * Marking qgroup inconsistent should be enough
--				 * for end users.
--				 */
--				DEBUG_WARN("duplicated but mismatched entry found");
--				ret = -EEXIST;
--			}
--			kfree(block);
--			goto out_unlock;
-+		if (entry->subvol_generation !=
-+				block->subvol_generation ||
-+		    entry->reloc_bytenr != block->reloc_bytenr ||
-+		    entry->reloc_generation !=
-+				block->reloc_generation) {
-+			/*
-+			 * Duplicated but mismatch entry found.
-+			 * Shouldn't happen.
-+			 *
-+			 * Marking qgroup inconsistent should be enough for end
-+			 * users.
-+			 */
-+			WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-+			ret = -EEXIST;
- 		}
-+		kfree(block);
-+		goto out_unlock;
+-		if (bytenr < entry->bytenr)
++		if (simple_node->bytenr < entry->bytenr)
+ 			p = &(*p)->rb_left;
+-		else if (bytenr > entry->bytenr)
++		else if (simple_node->bytenr > entry->bytenr)
+ 			p = &(*p)->rb_right;
+ 		else
+ 			return parent;
  	}
--	rb_link_node(&block->node, parent, cur);
--	rb_insert_color(&block->node, &blocks->blocks[level]);
- 	blocks->swapped = true;
- out_unlock:
- 	spin_unlock(&blocks->lock);
+ 
+-	rb_link_node(node, parent, p);
+-	rb_insert_color(node, root);
++	rb_link_node(&simple_node->rb_node, parent, p);
++	rb_insert_color(&simple_node->rb_node, root);
+ 	return NULL;
+ }
+ 
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 02086191630d..6323129510cd 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -90,10 +90,14 @@
+  * map address of tree root to tree
+  */
+ struct mapping_node {
+-	struct {
+-		struct rb_node rb_node;
+-		u64 bytenr;
+-	}; /* Use rb_simle_node for search/insert */
++	union{
++		struct {
++			struct rb_node rb_node;
++			u64 bytenr;
++		}; /* Use rb_simple_node for search/insert */
++
++		struct rb_simple_node simple_node;
++	};
+ 	void *data;
+ };
+ 
+@@ -106,10 +110,14 @@ struct mapping_tree {
+  * present a tree block to process
+  */
+ struct tree_block {
+-	struct {
+-		struct rb_node rb_node;
+-		u64 bytenr;
+-	}; /* Use rb_simple_node for search/insert */
++	union{
++		struct {
++			struct rb_node rb_node;
++			u64 bytenr;
++		}; /* Use rb_simple_node for search/insert */
++
++		struct rb_simple_node simple_node;
++	};
+ 	u64 owner;
+ 	struct btrfs_key key;
+ 	u8 level;
+@@ -481,7 +489,7 @@ static int __add_reloc_root(struct btrfs_root *root)
+ 
+ 	spin_lock(&rc->reloc_root_tree.lock);
+ 	rb_node = rb_simple_insert(&rc->reloc_root_tree.rb_root,
+-				   node->bytenr, &node->rb_node);
++				   &node->simple_node);
+ 	spin_unlock(&rc->reloc_root_tree.lock);
+ 	if (rb_node) {
+ 		btrfs_err(fs_info,
+@@ -565,7 +573,7 @@ static int __update_reloc_root(struct btrfs_root *root)
+ 	spin_lock(&rc->reloc_root_tree.lock);
+ 	node->bytenr = root->node->start;
+ 	rb_node = rb_simple_insert(&rc->reloc_root_tree.rb_root,
+-				   node->bytenr, &node->rb_node);
++				   &node->simple_node);
+ 	spin_unlock(&rc->reloc_root_tree.lock);
+ 	if (rb_node)
+ 		btrfs_backref_panic(fs_info, node->bytenr, -EEXIST);
+@@ -3155,7 +3163,7 @@ static int add_tree_block(struct reloc_control *rc,
+ 	block->key_ready = false;
+ 	block->owner = owner;
+ 
+-	rb_node = rb_simple_insert(blocks, block->bytenr, &block->rb_node);
++	rb_node = rb_simple_insert(blocks, &block->simple_node);
+ 	if (rb_node)
+ 		btrfs_backref_panic(rc->extent_root->fs_info, block->bytenr,
+ 				    -EEXIST);
 -- 
 2.39.0
 
