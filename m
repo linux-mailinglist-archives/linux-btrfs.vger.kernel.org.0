@@ -1,116 +1,238 @@
-Return-Path: <linux-btrfs+bounces-14093-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14094-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25C96ABA310
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 May 2025 20:41:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5F38ABA3E3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 May 2025 21:37:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E294C4A7C5E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 May 2025 18:41:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C526F7B430A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 May 2025 19:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC4627F756;
-	Fri, 16 May 2025 18:41:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M2Doq0Du"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1170280006;
+	Fri, 16 May 2025 19:37:23 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from naboo.endor.pl (naboo.endor.pl [91.194.229.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A141F27F731
-	for <linux-btrfs@vger.kernel.org>; Fri, 16 May 2025 18:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4509722B59A
+	for <linux-btrfs@vger.kernel.org>; Fri, 16 May 2025 19:37:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.194.229.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747420874; cv=none; b=el2WeV6wM1CAec0ET3AJg8doJAWAGGwe2/oQxrp3m/f9NPN+ro8oFRa3tD2cbhEFsmWugnPcSVsXm+m6oM2wUJ6kZSns+WyGMspnv59cBmh41xH200EfjjBldCi27Z2X9ZIAQd+8xu4vDzB7+k6xFo38ZS0O9/xmOwdkluI5RCs=
+	t=1747424243; cv=none; b=qVlMlvti0V1MV9jhowy9F38ZyHoIqkjXfqcm+YJ5OgoSgd9Nm8b1nEtELad0m9/SA8Yv176Aporlg6LTqckZIDm9TcOMc9q6seUHLcHREAfsd7G8m5x6zRBbQn68qJf+cHaqQMhsPv68oxzWMM/oWmSEP7f7VGN7CTzjJiTO1VU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747420874; c=relaxed/simple;
-	bh=DlwIZk3+0T8WvUPJPMWApppXsGzWNhH6oR08e5L5194=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=aPfPF3kbUxOfOnBXKo0NuzvxaOTnt3v6tmgs1pMlw1xNv3i+jjjDAT9mc5asQEUwXbH44+RjMFv+XAFIy2cjo6iRCp0itQAw71y0MdN7X/ZxSWMb7RmlLdl+Y26jIhOoEfe6KgttSWv/VSuqfVv8EcR/slccCb8Ogy+8869pUS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M2Doq0Du; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FFF3C4CEED
-	for <linux-btrfs@vger.kernel.org>; Fri, 16 May 2025 18:41:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747420874;
-	bh=DlwIZk3+0T8WvUPJPMWApppXsGzWNhH6oR08e5L5194=;
-	h=From:To:Subject:Date:From;
-	b=M2Doq0DubhMn+1WH9lWvLi3LURQ3QHRDHcvSr0MbHDWLKrbhfKsQjBZZXvopkQtYw
-	 0FGOT7G+pksOGypnucL7epXvijXE69b/AP3cpcJ6Fk27SylYnXUrifYr1pGS8iNrBh
-	 JM72l/HBZveOOb6+3I4InU0v+QdDOYh/cEqcr9QBH1OEJGBn8rO7VObacTGV4Fl9SP
-	 bc59sGiZBJi3wo+KoCDmF7J2SUPI40dBuyt67rekN8l83kVlwQs3uqEn3w4yOKV20Z
-	 Bd9Pv8HgjLuR8M83VVmzaB/To2zpgqfsAom6Cm0Xxp0pH3aAkO4KrdCcnXWnAK1Pk4
-	 DtoCDT7FDkBHw==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: unfold transaction abort at clone_copy_inline_extent()
-Date: Fri, 16 May 2025 19:41:10 +0100
-Message-Id: <390968e8253cb5624145c3e2e84b784fe25cf522.1747420784.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1747424243; c=relaxed/simple;
+	bh=sQMnmn7qbrpFngiMEVuvWflvtAxmMfT0RzN5muuyvkE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PKVnwUqWUz1cd0qxWzo5BRCJxWZ5W1RorT6tVeUMKm7iwvB4xj0EtBQZd5wt3cxGa5p+ga59x5ZR6LlNfp6hWHLUjSa0HaGRkmrjMfGMinxMheG7V2KYmvMHJWOYsF22R9PtttOnBXoHGEB7JunQHrYNy2hlJYMFKXsVbOtx/z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubiel.pl; spf=pass smtp.mailfrom=dubiel.pl; arc=none smtp.client-ip=91.194.229.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubiel.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubiel.pl
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by naboo.endor.pl (Postfix) with ESMTP id B82ACC06CD6;
+	Fri, 16 May 2025 21:37:16 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at 
+Received: from naboo.endor.pl ([91.194.229.15])
+	by localhost (naboo.endor.pl [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id DRwIYsbHJ7NQ; Fri, 16 May 2025 21:37:14 +0200 (CEST)
+Received: from [192.168.36.35] (176.100.193.184.studiowik.net.pl [176.100.193.184])
+	(Authenticated sender: leszek@dubiel.pl)
+	by naboo.endor.pl (Postfix) with ESMTPSA id 06354C06CD3;
+	Fri, 16 May 2025 21:37:13 +0200 (CEST)
+Message-ID: <af5ad9ce-6c14-421f-9896-28e34a8d7b26@dubiel.pl>
+Date: Fri, 16 May 2025 21:37:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Snapshot send, modify, receive ->
+To: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc: Andrei Borzenkov <arvidjaar@gmail.com>
+References: <5bd5b9b8-10f9-41de-9bc3-b511482bbc34@dubiel.pl>
+ <CAA91j0XWdnZmjqcF15s=AAGgzbuSRWtvYGT0byt41w+DNFWxXg@mail.gmail.com>
+Content-Language: en-US, pl-PL
+From: Leszek Dubiel <leszek@dubiel.pl>
+In-Reply-To: <CAA91j0XWdnZmjqcF15s=AAGgzbuSRWtvYGT0byt41w+DNFWxXg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
 
-We have a common error path where we abort the transaction, but like this
-in case we get a transaction abort stack trace we don't know exactly which
-previous function call failed. Instead abort the transaction after any
-function call that returns an error, so that we can easily indentify which
-function failed.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/reflink.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+W dniu 16.05.2025 o 14:16, Andrei Borzenkov pisze
+>> # ssh backup-server 'btrfs send -p "bak-first" "after-modif"' | btrfs
+>> receive ./
+>> At subvol after-modif
+>> At snapshot after-modif
+>> ERROR: clone: did not find source subvol
+>>
+>>
+>> Source subvol is "bak-first" if I understand correctly.
+>>
+>> # ssh backup-server 'btrfs sub show "bak-first"' | grep UUID
+>>       UUID:             9ad9ede3-f11e-b144-ba12-3f69dd14e665
+>>       Parent UUID:         b84b0730-c76f-0448-9f7a-e9b5ac288411
+>>       Received UUID:         3241acf1-44ef-f641-8b7f-c9ae8ccbf41c (5)
+>>
+>> root@lip24:/mnt/root/mylap_snaps# btrfs sub show "bak-first" | grep UUID
+>>       UUID:             3241acf1-44ef-f641-8b7f-c9ae8ccbf41c (5)
+>>       Parent UUID:         586996e9-8dea-454d-9a21-ddb414e90ce7
+>>       Received UUID:         -
+>>
+>>
+>> "bak-first" on remote server is the same as "bak-first" on local server
+>> — same UUID as Received UUID.
+>>
+>>
+>>
+>> Is there any solution I can transfer "after-modif" to main server?
+>>
+> What you do should work. You may consider running
+>
+> btrfs receive --dump
+>
+> to see the actual UUID that is sent.
 
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index 5eacd3584a8d..0197bd9160a7 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -268,11 +268,15 @@ static int clone_copy_inline_extent(struct btrfs_inode *inode,
- 	drop_args.end = aligned_end;
- 	drop_args.drop_cache = true;
- 	ret = btrfs_drop_extents(trans, root, inode, &drop_args);
--	if (ret)
-+	if (ret) {
-+		btrfs_abort_transaction(trans, ret);
- 		goto out;
-+	}
- 	ret = btrfs_insert_empty_item(trans, root, path, new_key, size);
--	if (ret)
-+	if (ret) {
-+		btrfs_abort_transaction(trans, ret);
- 		goto out;
-+	}
- 
- 	write_extent_buffer(path->nodes[0], inline_data,
- 			    btrfs_item_ptr_offset(path->nodes[0],
-@@ -281,6 +285,8 @@ static int clone_copy_inline_extent(struct btrfs_inode *inode,
- 	btrfs_update_inode_bytes(inode, datal, drop_args.bytes_found);
- 	btrfs_set_inode_full_sync(inode);
- 	ret = btrfs_inode_set_file_extent_range(inode, 0, aligned_end);
-+	if (ret)
-+		btrfs_abort_transaction(trans, ret);
- out:
- 	if (!ret && !trans) {
- 		/*
-@@ -295,10 +301,8 @@ static int clone_copy_inline_extent(struct btrfs_inode *inode,
- 			trans = NULL;
- 		}
- 	}
--	if (ret && trans) {
--		btrfs_abort_transaction(trans, ret);
-+	if (ret && trans)
- 		btrfs_end_transaction(trans);
--	}
- 	if (!ret)
- 		*trans_out = trans;
- 
--- 
-2.47.2
+
+
+
+
+# ssh backup-server "btrfs send -p 'bak-first' 'after-modif'" | btrfs 
+receive --dump | head
+At subvol after-modif
+snapshot        ./after-modif uuid=e7cfb051-10c9-424f-87d8-28b9d5dd6caa 
+(*1*)   transid=513 parent_uuid=3241acf1-44ef-f641-8b7f-c9ae8ccbf41c 
+(*2*) parent_transid=428
+utimes          ./after-modif/ atime=2025-05-14T00:21:15+0200 
+mtime=2025-05-13T23:23:49+0200 ctime=2025-05-13T23:23:49+0200
+utimes          ./after-modif/boot atime=2025-05-14T00:30:30+0200 
+mtime=2025-05-13T23:19:00+0200 ctime=2025-05-13T23:19:00+0200
+utimes          ./after-modif/boot/efi atime=2025-05-14T00:28:10+0200 
+mtime=2023-11-19T13:12:48+0100 ctime=2025-05-14T00:16:20+0200
+utimes          ./after-modif/etc atime=2025-05-13T23:18:59+0200 
+mtime=2025-05-13T23:20:23+0200 ctime=2025-05-13T23:20:23+0200
+utimes          ./after-modif/var/lib/apt/lists 
+atime=2025-05-13T23:03:38+0200 mtime=2025-05-13T23:03:38+0200 
+ctime=2025-05-13T23:03:38+0200
+utimes          ./after-modif/var/lib/apt/lists/partial 
+atime=2025-05-13T23:20:25+0200 mtime=2025-05-13T23:20:25+0200 
+ctime=2025-05-13T23:20:25+0200
+utimes          ./after-modif/var/cache/apt 
+atime=2025-05-13T23:20:27+0200 mtime=2025-05-13T23:20:27+0200 
+ctime=2025-05-13T23:20:27+0200
+utimes          ./after-modif/bin atime=2025-05-14T00:28:10+0200 
+mtime=2023-11-19T13:12:59+0100 ctime=2025-05-14T00:16:20+0200
+utimes          ./after-modif/usr atime=2025-05-14T00:30:30+0200 
+mtime=2024-02-14T23:42:44+0100 ctime=2025-05-14T00:16:20+0200
+
+
+
+on main server:
+
+# btrfs subv show 'bak-first' | grep UUID
+     UUID: 3241acf1-44ef-f641-8b7f-c9ae8ccbf41c           (*2*)
+     Parent UUID:         586996e9-8dea-454d-9a21-ddb414e90ce7
+     Received UUID:         -
+
+
+
+on backup server:
+
+# ssh backup-server "btrfs subv show 'bak-first'" | grep UUID
+     UUID:             9ad9ede3-f11e-b144-ba12-3f69dd14e665
+     Parent UUID:         b84b0730-c76f-0448-9f7a-e9b5ac288411
+     Received UUID: 3241acf1-44ef-f641-8b7f-c9ae8ccbf41c      (*2*)
+
+# ssh backup-server "btrfs subv show 'after-modif'" | grep UUID
+     UUID:             e7cfb051-10c9-424f-87d8-28b9d5dd6caa (*1*)
+     Parent UUID:         79370999-3114-e545-af15-f1b6b9d74506
+     Received UUID:         -
+
+
+UUID-s match (*1*) and (*2*).
+
+
+
+Error occurs after 4.73 MiB (pv used):
+
+# ssh backup-server "btrfs send -p 'bak-first' 'after-modif'" | pv 
+-rafbt | btrfs receive ./
+At subvol after-modif
+At snapshot after-modif
+ERROR: clone: did not find source subvol
+4,73MiB 0:00:00 [6,44MiB/s] [6,44MiB/s]
+
+
+
+Here is full output "receive --dump" filter out of typical operations:
+
+
+# ssh backup-server "btrfs send -p 'bak-first' 'after-modif'" | pv 
+-rafbt | btrfs receive --dump | grep -Ev 
+'^(write|utimes|rename|rmdir|unlink|chown|mkfile|mkdir|chmod|link|set_xattr) 
+'
+At subvol after-modif
+snapshot        ./after-modif uuid=e7cfb051-10c9-424f-87d8-28b9d5dd6caa 
+transid=513 parent_uuid=3241acf1-44ef-f641-8b7f-c9ae8ccbf41c 
+parent_transid=428
+truncate ./after-modif/home/leszek/.config/variety/history.txt size=7542
+clone ./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+offset=32768 len=4096 
+from=./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+clone_offset=32768
+clone ./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+offset=40960 len=8192 
+from=./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+clone_offset=40960
+clone ./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+offset=339968 len=8192 
+from=./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+clone_offset=339968
+clone ./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+offset=352256 len=4096 
+from=./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+clone_offset=352256
+clone ./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+offset=581632 len=8192 
+from=./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+clone_offset=581632
+clone ./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+offset=921600 len=4096 
+from=./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+clone_offset=921600
+clone ./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+offset=1232896 len=4096 
+from=./after-modif/home/leszek/.cache/mesa_shader_cache/index 
+clone_offset=1232896
+5 len=8 0:00:03 [4,28MiB/s] [7,55MiB/s]
+truncate 
+./after-modif/var/log/journal/40d884e2227544829ccabadefcfe028b/system@0006350af7c9c02a-10d146c7a9f065d1.journal~ 
+size=8388608
+5 len=8
+truncate 
+./after-modif/var/log/journal/40d884e2227544829ccabadefcfe028b/user-1000.journal 
+size=8388608
+5 len=8 0:00:46 [10,2MiB/s] [8,69MiB/s]
+truncate 
+./after-modif/var/log/journal/40d884e2227544829ccabadefcfe028b/system.journal 
+size=8388608
+symlink         ./after-modif/o343645-507-0 dest=/tmp
+mksock          ./after-modif/o343667-507-0
+mksock          ./after-modif/o343670-507-0
+mksock          ./after-modif/o343672-507-0
+mksock          ./after-modif/o344580-509-0
+mksock          ./after-modif/o344581-509-0
+  569MiB 0:01:03 [8,99MiB/s] [8,99MiB/s]
+
+
+
+
+
+
+
+
 
 
