@@ -1,122 +1,144 @@
-Return-Path: <linux-btrfs+bounces-14102-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14103-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0634ABAABC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 May 2025 16:34:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E10F5ABABF2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 May 2025 21:02:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7722217E73E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 May 2025 14:34:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB795189E848
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 May 2025 19:02:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D80202C21;
-	Sat, 17 May 2025 14:34:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C75BA15624D;
+	Sat, 17 May 2025 19:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gn+QFStc"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xHzSJerG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LeESPEnC";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xHzSJerG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LeESPEnC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f65.google.com (mail-pj1-f65.google.com [209.85.216.65])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 572091E519
-	for <linux-btrfs@vger.kernel.org>; Sat, 17 May 2025 14:34:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F6E1F956
+	for <linux-btrfs@vger.kernel.org>; Sat, 17 May 2025 19:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747492483; cv=none; b=nuUy2OZm9cQ5e3CS5gtYqdgRNoOr+PSQPMMXNfn2wHG2HnxZE6d0iw3GrGmPLJbXZcMYfry/0CSMhErHhGO1i99j2fZuav/cmuJohA/gyvgHwu6z9+rZEV2H91m9qzlxsjY/Xufv0ZrKrrpvfXZFU6XMNFQQoK0t2pSYUf7JRO8=
+	t=1747508538; cv=none; b=XJsWCXe5TLrr5ORDHAy6whii8huMXijb7/hfZWhZNpMNqSTowsoAPfrjqcgby/ka0xQF+BCmIwNsCJFkxX5gc2N+yKpTUqMqZjwWfdpCvIZcPxYhm0qLrFr7yL1tFo+zEZTK6aNGU+HbkWNltj9tsJiPSMLX+9lw4l5P7Okgn/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747492483; c=relaxed/simple;
-	bh=ad3t/I5wO2258ZQxGE9JXBS/Hr/CnWL6rsw3fMPNbfM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jgu1lbr4ArGj/ddHNUQ2Y+JsfcfKe7mbSSyYbqEYa9p7kPWUcspqPuaeKQ2w/fKsq85Dp+rvVFQbCrrtSiQInZfOqCEUlD1Fc1DQdJO4ogXrLU/PG5wtEYojLvzFGcMlBFNJR8T2B04L0Ra7rs47Osdv+x2HnCay5BOBb+FQkV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gn+QFStc; arc=none smtp.client-ip=209.85.216.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f65.google.com with SMTP id 98e67ed59e1d1-30eccc61f96so28706a91.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 17 May 2025 07:34:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747492480; x=1748097280; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oAUX5dYR94RbSH6j9jgLxozC6/Ke28EcbfMiH5D4U0Y=;
-        b=gn+QFStcuFG+IVwa7hEJh07o6+vMm3sgaIt4r4kfLLePcPbF5gdZi0jUnTiwwQnX+g
-         RhnktupTcWQ40amjrRUukK0ah0hDbxFxWa3tDeb8TJgcEo6q0krM9PynBYXQQOewKCpb
-         vBcIzEY/XocYnCQEichdH7CYqh6AJyIAnqlun/Ci/FRVbUt212f19Uw13vwoJw8vLfGw
-         70ig6pwNs2GYC9EnmqPjvkZI3bVz8NyalSspJ3hnSd8FJgE0Q5RzQFVkNJhsmCjf5iZW
-         ejbVL06JGdK13Az8Tq6H0ENKnMrfm44m/CgeG/MF9TdHohWgc6OCdFOh4ASE6lLr2I1c
-         iW6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747492480; x=1748097280;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oAUX5dYR94RbSH6j9jgLxozC6/Ke28EcbfMiH5D4U0Y=;
-        b=u5Yc1KmWJv3HIahrjh01jyeOp+mmeTjcoR6JEiV4hkeGkBKgw+7tiNLyivLJ5zErNV
-         UowK3bqdJv2Ok79ZB+4qCoCcQToG1O67oUc9Cq/VcgqX1DW9BAK2PvzZkrpKS+zTzdNj
-         1OvNlWQcdmVuUznGLu0llYeGsJusnjPkBwm0jty5oAm3vRLI2upvOiB09JbJGOZDIorY
-         45QrsTUJKKDwpXsrYd36W/XCLX5flN7Vl9DBjezqpM9b6tSqGOZcteZJ9PNNhBEQE3Sq
-         36acpebpKkXyvDJGdYinPCF1V2lfz44s6QXiHwcAnSsQhoP6iIPsPIkqAC7v6UqyP8+h
-         Cnpw==
-X-Gm-Message-State: AOJu0Yx9K6UWNneymBWUJo02gsdbxvG8rsJrNHQc68ZIkhp1QzOFtQWN
-	4Hi3MAn/aeka1Gw5hQhGo/Ia2gQeUqb1zx7OkFxeIazQJOh2zppJe2cV
-X-Gm-Gg: ASbGncsuYObg8L6ANrzdUzzk/EpcLZqlvxXw+89FvFbUV5aL+Rl7fKlIXnLbGKTKIzH
-	+gdNsSY2GCFNk0rIp6HjhCFlo2KsQYXxGEre1nGiWg+O3yQsaIWN+qhryzQmyT1L3ZWG81zgjsI
-	kPyXTGzEdOSMdFXWU7qT5/dOkUBjkBMubRdx6rdRT/LrpDwZ2lcrnqYwQaNJra9x7ThgCjJl3xT
-	8yyJV2UxujMQdlfw9u4AH7c9PpFWsuNzlTNMNGGmxXXUzuDv7e+P5kSOE6r9iKinCicM8vNjNaq
-	cR6KmrYMEBhNPQskcgKp3p/lDzws0jJ7SK4C6srC0HBtsorwYA==
-X-Google-Smtp-Source: AGHT+IGVX7Mp7RBxgGBnTTaHoVUSKplmDegAIx8wWaClO30m/nKPECDNT2rczaBG1PuOWko91mrXtg==
-X-Received: by 2002:a17:90b:3905:b0:30a:9935:be98 with SMTP id 98e67ed59e1d1-30e7d5be2femr3795054a91.4.1747492480558;
-        Sat, 17 May 2025 07:34:40 -0700 (PDT)
-Received: from SaltyKitkat.. ([154.3.35.91])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30e7b4dda42sm3487857a91.35.2025.05.17.07.34.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 May 2025 07:34:40 -0700 (PDT)
-From: Sun YangKai <sunk67188@gmail.com>
-To: sunk67188@gmail.com
+	s=arc-20240116; t=1747508538; c=relaxed/simple;
+	bh=vsObvAXIrhtMsi4N+74Xb0Ybuk/nV3PyvhoFno5uBg4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Be9U/6h1575wNtvIzYc90YMQrzzXrksPjoviR78zJhObQL/5yUuygEYvdvCuljwA/jHZhgsxawGyYIYblObwfAU9n7aF7nexYEE/LJhnhR1maa9l0CkOiSqVSvv63X5nMECZEIS6qulbJqKwktqk+lY2R2TY5PeZQ2kfq0RPHVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xHzSJerG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LeESPEnC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xHzSJerG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LeESPEnC; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2D3AA21FFF;
+	Sat, 17 May 2025 19:02:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1747508533;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DoQzragk4V0Z0Dh3qO9X3QT9KKHCK97ZZlaimm3SCn8=;
+	b=xHzSJerGZmBjEqIn+0PyR6Pn//qiw80gq7Yp1pFJ9KiSSfrpJ0peVHZj/tbGN5A0iwMFfj
+	+K+Uol2HusMVEWBVr/mjYRxq+/spil9E+O4/bKd9gaN/S1Z/6t5al54WCs40KhwE/xqzaM
+	OLsJCqz1EL4RXIiwyCa0PasnCijbDCc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1747508533;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DoQzragk4V0Z0Dh3qO9X3QT9KKHCK97ZZlaimm3SCn8=;
+	b=LeESPEnCmTxipgTMzhHlT2L+iNRjh/85oWowfe1wstshXBnWtQ9SoO6qOoS2pkWyY2pDlC
+	187yW+zdX0Wlh6Ag==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1747508533;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DoQzragk4V0Z0Dh3qO9X3QT9KKHCK97ZZlaimm3SCn8=;
+	b=xHzSJerGZmBjEqIn+0PyR6Pn//qiw80gq7Yp1pFJ9KiSSfrpJ0peVHZj/tbGN5A0iwMFfj
+	+K+Uol2HusMVEWBVr/mjYRxq+/spil9E+O4/bKd9gaN/S1Z/6t5al54WCs40KhwE/xqzaM
+	OLsJCqz1EL4RXIiwyCa0PasnCijbDCc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1747508533;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DoQzragk4V0Z0Dh3qO9X3QT9KKHCK97ZZlaimm3SCn8=;
+	b=LeESPEnCmTxipgTMzhHlT2L+iNRjh/85oWowfe1wstshXBnWtQ9SoO6qOoS2pkWyY2pDlC
+	187yW+zdX0Wlh6Ag==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 106E813991;
+	Sat, 17 May 2025 19:02:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PC5/AzXdKGgvbwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Sat, 17 May 2025 19:02:13 +0000
+Date: Sat, 17 May 2025 21:02:11 +0200
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
 Cc: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix the comment of btrfs_path fields
-Date: Sat, 17 May 2025 22:34:16 +0800
-Message-ID: <20250517143435.31536-1-sunk67188@gmail.com>
-X-Mailer: git-send-email 2.49.0
+Subject: Re: [PATCH] btrfs: unfold transaction abort at
+ clone_copy_inline_extent()
+Message-ID: <20250517190211.GA25863@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <390968e8253cb5624145c3e2e84b784fe25cf522.1747420784.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <390968e8253cb5624145c3e2e84b784fe25cf522.1747420784.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -1.00
+X-Spamd-Result: default: False [-1.00 / 50.00];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:replyto,twin.jikos.cz:mid,imap1.dmz-prg2.suse.org:helo];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 
-This comment is originally added in
-commit 925baeddc5b0 ("Btrfs: Start btree concurrency work."), for the
-field keep_locks. The field keep_locks had been moved to another line,
-while this comment is left in place.
+On Fri, May 16, 2025 at 07:41:10PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> We have a common error path where we abort the transaction, but like this
+> in case we get a transaction abort stack trace we don't know exactly which
+> previous function call failed. Instead abort the transaction after any
+> function call that returns an error, so that we can easily indentify which
+> function failed.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Move the comment to the right place.
-
-Signed-off-by: Sun YangKai <sunk67188@gmail.com>
----
- fs/btrfs/ctree.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 075a06db43a1..00f67079f2ec 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -61,7 +61,6 @@ struct btrfs_path {
- 	/* if there is real range locking, this locks field will change */
- 	u8 locks[BTRFS_MAX_LEVEL];
- 	u8 reada;
--	/* keep some upper locks as we walk down */
- 	u8 lowest_level;
- 
- 	/*
-@@ -69,6 +68,7 @@ struct btrfs_path {
- 	 * and to force calls to keep space in the nodes
- 	 */
- 	unsigned int search_for_split:1;
-+	/* Keep some upper locks as we walk down */
- 	unsigned int keep_locks:1;
- 	unsigned int skip_locking:1;
- 	unsigned int search_commit_root:1;
--- 
-2.49.0
-
+Reviewed-by: David Sterba <dsterba@suse.com>
 
