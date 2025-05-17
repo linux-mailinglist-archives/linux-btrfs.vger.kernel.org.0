@@ -1,86 +1,81 @@
-Return-Path: <linux-btrfs+bounces-14101-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14102-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F8E6ABAA7D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 May 2025 15:47:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0634ABAABC
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 May 2025 16:34:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A937C17DC4A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 May 2025 13:47:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7722217E73E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 May 2025 14:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73F71F55FA;
-	Sat, 17 May 2025 13:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D80202C21;
+	Sat, 17 May 2025 14:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E0ipUb5Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gn+QFStc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f68.google.com (mail-pj1-f68.google.com [209.85.216.68])
+Received: from mail-pj1-f65.google.com (mail-pj1-f65.google.com [209.85.216.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79527A957
-	for <linux-btrfs@vger.kernel.org>; Sat, 17 May 2025 13:47:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 572091E519
+	for <linux-btrfs@vger.kernel.org>; Sat, 17 May 2025 14:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747489652; cv=none; b=HMHDlTiAPFD0q9QE1p7gAUOzBDFD4pT/axC7DmwTkUuyhJxYrSLLPtTqoES/2MlvAOUyak3DUndgZFETR0E9FUHa91lWlSxyz5ooJfIk259Bp+UxpnChrgboDaKXl9cX66jyslj7bCRkTfyhtjaWEqG2P5Gb9bogEhw87UkSwUI=
+	t=1747492483; cv=none; b=nuUy2OZm9cQ5e3CS5gtYqdgRNoOr+PSQPMMXNfn2wHG2HnxZE6d0iw3GrGmPLJbXZcMYfry/0CSMhErHhGO1i99j2fZuav/cmuJohA/gyvgHwu6z9+rZEV2H91m9qzlxsjY/Xufv0ZrKrrpvfXZFU6XMNFQQoK0t2pSYUf7JRO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747489652; c=relaxed/simple;
-	bh=+9yGuiYqKFpI6vIQIyg5uPAFqoBFsv+7yD/BOmayG6g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XfGhfyGvh/ApsRx28V4sPQny80DiCQLFmY1m7LDuJzWrn9uCgvFzH/aL9lblzPexeaDmtAcX2tFdBf5ptEeiKXUdO4uBtiEO3Kvrdqe6ebsuyxj55aZ5l2+hDYhc9fPPY2Q4FJNMUxWxfmXjT0XfXu9/0QolocqfdzJFxfDotjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E0ipUb5Q; arc=none smtp.client-ip=209.85.216.68
+	s=arc-20240116; t=1747492483; c=relaxed/simple;
+	bh=ad3t/I5wO2258ZQxGE9JXBS/Hr/CnWL6rsw3fMPNbfM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jgu1lbr4ArGj/ddHNUQ2Y+JsfcfKe7mbSSyYbqEYa9p7kPWUcspqPuaeKQ2w/fKsq85Dp+rvVFQbCrrtSiQInZfOqCEUlD1Fc1DQdJO4ogXrLU/PG5wtEYojLvzFGcMlBFNJR8T2B04L0Ra7rs47Osdv+x2HnCay5BOBb+FQkV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gn+QFStc; arc=none smtp.client-ip=209.85.216.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f68.google.com with SMTP id 98e67ed59e1d1-30e7d9e9a47so266169a91.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 17 May 2025 06:47:30 -0700 (PDT)
+Received: by mail-pj1-f65.google.com with SMTP id 98e67ed59e1d1-30eccc61f96so28706a91.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 17 May 2025 07:34:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747489650; x=1748094450; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=53vwS7lAa1NFsxXE5+tsyhuLFDMXlHeAtMDPKHXZUUM=;
-        b=E0ipUb5QzSWyhSt7KB+57ML+O+WoKu+yIvq//cmw08i6qFw8bQGmwaz21wQ0QyP5Vw
-         J1sX18SvvKeBI5D4BFB99H0uGP8xxgwNNKkM/pKdYOV1OVDkQhazEg1fLP2eC+xIL6PD
-         blfrARW1VI26N/C8VyJTxAIQCKAxOyVGnVSvuy9BjPpT9/4eIQ3gzaYjlIXxLpHbfTse
-         S1Y1nkWycAISpI+mmvpb1XoHdyrIrHBt4zTt2w/DavWdH54t71KKDzCY6YyZsXN4t/Mc
-         aTiCwecKp9t5OG2z1WkfwlKsSIX+egB/tku8Pf0u7KutGGB8U8ThiF5LEHZmAiGGsupm
-         aPsw==
+        d=gmail.com; s=20230601; t=1747492480; x=1748097280; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oAUX5dYR94RbSH6j9jgLxozC6/Ke28EcbfMiH5D4U0Y=;
+        b=gn+QFStcuFG+IVwa7hEJh07o6+vMm3sgaIt4r4kfLLePcPbF5gdZi0jUnTiwwQnX+g
+         RhnktupTcWQ40amjrRUukK0ah0hDbxFxWa3tDeb8TJgcEo6q0krM9PynBYXQQOewKCpb
+         vBcIzEY/XocYnCQEichdH7CYqh6AJyIAnqlun/Ci/FRVbUt212f19Uw13vwoJw8vLfGw
+         70ig6pwNs2GYC9EnmqPjvkZI3bVz8NyalSspJ3hnSd8FJgE0Q5RzQFVkNJhsmCjf5iZW
+         ejbVL06JGdK13Az8Tq6H0ENKnMrfm44m/CgeG/MF9TdHohWgc6OCdFOh4ASE6lLr2I1c
+         iW6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747489650; x=1748094450;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=53vwS7lAa1NFsxXE5+tsyhuLFDMXlHeAtMDPKHXZUUM=;
-        b=ftpo3gn1RrjKVAue1IZBjkeK/du3yXWWjZZemobKYbCV8UHgEidN6AmrD3R2j0dvll
-         Mbn9AdQVMLpS/Lsoz9ZbyY59fOJmqapVWlFr5e0y2UjEPzPeBn4Q3eRYU5MjB89ZffBA
-         bhjh3LkrZAuOxxYpzH4mok1jzr7uWIYQ2zfAf1b2jM9DDFxH7MkBOtSA2Mxnu17Ig+eW
-         1VH/FErepNxfxe9jWiKQPKYpzeOa6AcqzC5QbPustR8ax4vPfbIgmSWWnVQk3DQkrqEO
-         KdRlFDXcUC7yH7IYqVlIBqqOMMh4k0Dg7g5joCyKuCYO0PhFHVjE7950zcjsTYwEnvao
-         CTGA==
-X-Gm-Message-State: AOJu0YzF9gtWFHTkfBrpNcKC6u2isb+YGnBZXDdw3AeeDZt/k1gfKi28
-	0FTKuIWGlXrjr3w/VZ5u4Rfticp5aXllFyy03nBM6yS+lVLN0pJtPevz
-X-Gm-Gg: ASbGncs8j9zOyB7s5vpi73xe0Y5EUPf+fXYKMZl0koZ5LePV/vpcTAwx2cVP0cbqIp7
-	OoIz7oKhI7HUAjLeKcZVNHmNtj1Z61znfxbhHD6JBO1AM5sbpuLawreC71gK4fyZPYguH0Ab6rv
-	lUXvwcZRADgqBMTW05TCCTCRJ4QXoGylcBgDQptfm0bt7K6ZTgEkENS66z278wsDGYMAuV2Wv24
-	lxYRdK+B9FeyZKz/5pQXvzs5spI3ly2P0HgjTBMf/2hc/tFzP3LWM/7JBiZyaiQuXMJdEs3OZsQ
-	lfLQK63YAy2vOe7vcwR3iXK43ponmaWj8HartrADyCrRGWtbFQ==
-X-Google-Smtp-Source: AGHT+IHKF7gS8d59qbQQWjlBHpAvTXmv8pCOqmzLgBhjBqoyLfG/F2F19ye/8+9hmahu+wHtK7nM5Q==
-X-Received: by 2002:a17:902:dacc:b0:223:5525:622f with SMTP id d9443c01a7336-231d43882f0mr33205405ad.1.1747489649545;
-        Sat, 17 May 2025 06:47:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1747492480; x=1748097280;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oAUX5dYR94RbSH6j9jgLxozC6/Ke28EcbfMiH5D4U0Y=;
+        b=u5Yc1KmWJv3HIahrjh01jyeOp+mmeTjcoR6JEiV4hkeGkBKgw+7tiNLyivLJ5zErNV
+         UowK3bqdJv2Ok79ZB+4qCoCcQToG1O67oUc9Cq/VcgqX1DW9BAK2PvzZkrpKS+zTzdNj
+         1OvNlWQcdmVuUznGLu0llYeGsJusnjPkBwm0jty5oAm3vRLI2upvOiB09JbJGOZDIorY
+         45QrsTUJKKDwpXsrYd36W/XCLX5flN7Vl9DBjezqpM9b6tSqGOZcteZJ9PNNhBEQE3Sq
+         36acpebpKkXyvDJGdYinPCF1V2lfz44s6QXiHwcAnSsQhoP6iIPsPIkqAC7v6UqyP8+h
+         Cnpw==
+X-Gm-Message-State: AOJu0Yx9K6UWNneymBWUJo02gsdbxvG8rsJrNHQc68ZIkhp1QzOFtQWN
+	4Hi3MAn/aeka1Gw5hQhGo/Ia2gQeUqb1zx7OkFxeIazQJOh2zppJe2cV
+X-Gm-Gg: ASbGncsuYObg8L6ANrzdUzzk/EpcLZqlvxXw+89FvFbUV5aL+Rl7fKlIXnLbGKTKIzH
+	+gdNsSY2GCFNk0rIp6HjhCFlo2KsQYXxGEre1nGiWg+O3yQsaIWN+qhryzQmyT1L3ZWG81zgjsI
+	kPyXTGzEdOSMdFXWU7qT5/dOkUBjkBMubRdx6rdRT/LrpDwZ2lcrnqYwQaNJra9x7ThgCjJl3xT
+	8yyJV2UxujMQdlfw9u4AH7c9PpFWsuNzlTNMNGGmxXXUzuDv7e+P5kSOE6r9iKinCicM8vNjNaq
+	cR6KmrYMEBhNPQskcgKp3p/lDzws0jJ7SK4C6srC0HBtsorwYA==
+X-Google-Smtp-Source: AGHT+IGVX7Mp7RBxgGBnTTaHoVUSKplmDegAIx8wWaClO30m/nKPECDNT2rczaBG1PuOWko91mrXtg==
+X-Received: by 2002:a17:90b:3905:b0:30a:9935:be98 with SMTP id 98e67ed59e1d1-30e7d5be2femr3795054a91.4.1747492480558;
+        Sat, 17 May 2025 07:34:40 -0700 (PDT)
 Received: from SaltyKitkat.. ([154.3.35.91])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4eba501sm30651205ad.173.2025.05.17.06.47.27
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30e7b4dda42sm3487857a91.35.2025.05.17.07.34.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 May 2025 06:47:29 -0700 (PDT)
+        Sat, 17 May 2025 07:34:40 -0700 (PDT)
 From: Sun YangKai <sunk67188@gmail.com>
 To: sunk67188@gmail.com
-Cc: linux-btrfs@vger.kernel.org,
-	dsterba@suse.cz
-Subject: [PATCH v3] btrfs: remove nonzero lowest level handling in btrfs_search_forward()
-Date: Sat, 17 May 2025 21:47:12 +0800
-Message-ID: <20250517134723.25843-1-sunk67188@gmail.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix the comment of btrfs_path fields
+Date: Sat, 17 May 2025 22:34:16 +0800
+Message-ID: <20250517143435.31536-1-sunk67188@gmail.com>
 X-Mailer: git-send-email 2.49.0
-In-Reply-To: <2803405.mvXUDI8C0e@saltykitkat>
-References: <2803405.mvXUDI8C0e@saltykitkat>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -89,142 +84,38 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Commit 323ac95bce44 ("Btrfs: don't read leaf blocks containing only
-checksums during truncate") changed the condition from `level == 0` to
-`level == path->lowest_level`, while its origional purpose is just to do
-some leaf nodes handling (calling btrfs_item_key_to_cpu()) and skip some
-code that doesn't fit leaf nodes.
+This comment is originally added in
+commit 925baeddc5b0 ("Btrfs: Start btree concurrency work."), for the
+field keep_locks. The field keep_locks had been moved to another line,
+while this comment is left in place.
 
-After changing the condition, the code path
-1. also handle the non-leaf nodes when path->lowest_level is nonzero,
-   which is wrong. However, it seems that btrfs_search_forward() is never
-   called with a nonzero path->lowest_level, which makes this bug not
-   found before.
-2. makes the later if block with the same condition, which is origionally
-   used to handle non-leaf node (calling btrfs_node_key_to_cpu()) when
-   lowest_level is not zero, dead code.
+Move the comment to the right place.
 
-Considering this function is never called with a nonzero
-path->lowest_path for years and the code handling this case is wrongly
-implemented, the path->lowest_level related logic is fully removed.
-
-Related dead codes are also removed, and related goto logic is replaced
-with if conditions, which makes the code easier to read for new comers.
-
-This changes the behavior when btrfs_search_forward() is called with
-nonzero path->lowest_level: now we will get a warning, and still use
-0 as lowest_level. But since this never happens in the current codebase,
-and the previous behavior is wrong. So the behavior change of behavior
-will not be a problem.
-
-The bevavior of the function called with a zero path->lowest_level, which
-is acturally how this function is used in current codebase, should be the
-same with previous version.
-
-Fix: commit 323ac95bce44 ("Btrfs: don't read leaf blocks containing only checksums during truncate")
 Signed-off-by: Sun YangKai <sunk67188@gmail.com>
 ---
- fs/btrfs/ctree.c | 58 ++++++++++++++++++++++--------------------------
- 1 file changed, 26 insertions(+), 32 deletions(-)
+ fs/btrfs/ctree.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index a2e7979372cc..32844277f2cd 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -4592,8 +4592,9 @@ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
-  * into min_key, so you can call btrfs_search_slot with cow=1 on the
-  * key and get a writable path.
-  *
-- * This honors path->lowest_level to prevent descent past a given level
-- * of the tree.
-+ * This does not honor path->lowest_level any more because this
-+ * function is never called with a nonzero path->lowest_level and the
-+ * implementation of handling it in this function is broken for years.
-  *
-  * min_trans indicates the oldest transaction that you are interested
-  * in walking through.  Any nodes or leaves older than min_trans are
-@@ -4615,6 +4616,7 @@ int btrfs_search_forward(struct btrfs_root *root, struct btrfs_key *min_key,
- 	int keep_locks = path->keep_locks;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 075a06db43a1..00f67079f2ec 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -61,7 +61,6 @@ struct btrfs_path {
+ 	/* if there is real range locking, this locks field will change */
+ 	u8 locks[BTRFS_MAX_LEVEL];
+ 	u8 reada;
+-	/* keep some upper locks as we walk down */
+ 	u8 lowest_level;
  
- 	ASSERT(!path->nowait);
-+	WARN_ON(path->lowest_level > 0);
- 	path->keep_locks = 1;
- again:
- 	cur = btrfs_read_lock_root_node(root);
-@@ -4636,38 +4638,29 @@ int btrfs_search_forward(struct btrfs_root *root, struct btrfs_key *min_key,
- 			goto out;
- 		}
- 
--		/* at the lowest level, we're done, setup the path and exit */
--		if (level == path->lowest_level) {
--			if (slot >= nritems)
--				goto find_next_key;
--			ret = 0;
--			path->slots[level] = slot;
--			/* Save our key for returning back. */
--			btrfs_item_key_to_cpu(cur, min_key, slot);
--			goto out;
--		}
--		if (sret && slot > 0)
--			slot--;
--		/*
--		 * check this node pointer against the min_trans parameters.
--		 * If it is too old, skip to the next one.
--		 */
--		while (slot < nritems) {
--			u64 gen;
--
--			gen = btrfs_node_ptr_generation(cur, slot);
--			if (gen < min_trans) {
-+		if (level > 0) {
-+			/*
-+			 * Not at the lowest level and not a perfect match,
-+			 * go one slot back if possible to search lower level.
-+			 */
-+			if (sret && slot > 0)
-+				slot--;
-+			/*
-+			 * Check this node pointer against the min_trans parameters.
-+			 * If it is too old, skip to the next one.
-+			 */
-+			while (slot < nritems) {
-+				if (btrfs_node_ptr_generation(cur, slot) >= min_trans)
-+					break;
- 				slot++;
--				continue;
- 			}
--			break;
- 		}
--find_next_key:
-+
-+		path->slots[level] = slot;
- 		/*
--		 * we didn't find a candidate key in this node, walk forward
--		 * and find another one
-+		 * We didn't find a candidate key in this node, walk forward
-+		 * and find another one.
- 		 */
--		path->slots[level] = slot;
- 		if (slot >= nritems) {
- 			sret = btrfs_find_next_key(root, path, min_key, level,
- 						  min_trans);
-@@ -4678,12 +4671,13 @@ int btrfs_search_forward(struct btrfs_root *root, struct btrfs_key *min_key,
- 				goto out;
- 			}
- 		}
--		if (level == path->lowest_level) {
-+		/* At the lowest level, we're done. Set the key and exit. */
-+		if (level == 0) {
- 			ret = 0;
--			/* Save our key for returning back. */
--			btrfs_node_key_to_cpu(cur, min_key, slot);
-+			btrfs_item_key_to_cpu(cur, min_key, slot);
- 			goto out;
- 		}
-+		/* Search down to a lower level. */
- 		cur = btrfs_read_node_slot(cur, slot);
- 		if (IS_ERR(cur)) {
- 			ret = PTR_ERR(cur);
+ 	/*
+@@ -69,6 +68,7 @@ struct btrfs_path {
+ 	 * and to force calls to keep space in the nodes
+ 	 */
+ 	unsigned int search_for_split:1;
++	/* Keep some upper locks as we walk down */
+ 	unsigned int keep_locks:1;
+ 	unsigned int skip_locking:1;
+ 	unsigned int search_commit_root:1;
 -- 
 2.49.0
 
