@@ -1,50 +1,50 @@
-Return-Path: <linux-btrfs+bounces-14118-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14119-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14174ABBBFF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 May 2025 13:08:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08BFFABBC25
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 May 2025 13:18:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B5C07A4AF0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 May 2025 11:07:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21542189C91A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 May 2025 11:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69149274650;
-	Mon, 19 May 2025 11:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B482749EB;
+	Mon, 19 May 2025 11:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VC3OQRUo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kp9hI2xz"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0861F462C
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 May 2025 11:08:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A1626A08F
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 May 2025 11:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747652911; cv=none; b=emuhLywSt0LPiZEFOt97U++bHQuxKUr/cxQZAiHLhu9VA8hRbI3EmLvQVY01kjFSx2YwJu7FqIAboEvoaTGiWgtsBVOVFWChtCG+zftKDIHf1U3TRplmfBam6zf1qkM2at4eKfnwvYp2MmAPyVs88ZRK7p5PmeoPgz8+SD4nn2Y=
+	t=1747653523; cv=none; b=hsdYF46QL8c/x3C0I6G9IjN3D0y4HBza0D9PpHuVJnDMDGfkgmK0AsTAbxYsEXsDahNcMdb99lwOp+mSDMC6DV03EpWotoTKr+d9f5pE+mRIa4GHN/JFXgjm0Wx8uRH0v4tRtoeTetn+8UZfGbZM/YFtYN0Fc5xggFUZA/lgCc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747652911; c=relaxed/simple;
-	bh=PSJPp5dsEIHO83FWP8572PJ49X8gxlFu8UhZ36FRN24=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=OPY/NQtQMLCNxpv0GrXlThLCQrFR7khnMWtZBfPpDG9u6Gl6pSdSxxD6bV89Zki3e5qIF7l45p7Xr7jH2SZ16RrplaC70SgnEBaBPibMhbFLqrm7akdiCttOZxWF1p4KMoUJaiQ1MDZA8tDi4gAH5WmjZ7mD9W7wpcRwTMdQc6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VC3OQRUo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4E56C4CEEB
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 May 2025 11:08:29 +0000 (UTC)
+	s=arc-20240116; t=1747653523; c=relaxed/simple;
+	bh=b5FVawChubRn0U35mInM1grwAuAIbGd24tqG3uBq7Ks=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=SA6MPb0JTMSLZfOd2ezaaLBuaJzvxB0CBABqvEkNpBZvzjML3GJy0Pw2zMbBqMGX6a2KIHlAI5ye3lYxHAankoJGtWis41d+Bu8+0ktMXLlYNNHvI0YgqFp9MI6eY22OA2wqvqHvMK2niNLwlA78VCYFWCPmHb9KZF3n+FE5i7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kp9hI2xz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27592C4CEE4
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 May 2025 11:18:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747652910;
-	bh=PSJPp5dsEIHO83FWP8572PJ49X8gxlFu8UhZ36FRN24=;
+	s=k20201202; t=1747653522;
+	bh=b5FVawChubRn0U35mInM1grwAuAIbGd24tqG3uBq7Ks=;
 	h=From:To:Subject:Date:From;
-	b=VC3OQRUoDKXlxME4vaaMrcfrgb/F36dhHhIuxBpR/ufU4hDgwkyWANj+nsMBqDI6u
-	 4ZeEEpQw2ewWMvMVj2bZDAiIqulPtXObuR4LzbsZ84ywheY3mN55Fc5PLzl6iVBaSZ
-	 nl9ANKz+7XJXMvFBuebhGJaykZ6cBQVR0gnCSaMwE/otTOpp/jyB721J/493IWGypu
-	 WoyMLBLa2hViM8E9r33ftUYwC87IpRz4fjfKezv1heZpgrgbpI0+UYNFzeWOeR3/PV
-	 UXZ0oLY1gT19YCZ26aQoDdUknOx4qD3tMknQsspIMC5vONCaT14IT9Dd+YC0J5MIpf
-	 X5LlsZHiyGqMw==
+	b=Kp9hI2xzO4nrkSWH3NZLJ5u1NzTKYvXWnKTP49oDW1Wn17UgAW8wywyGj075CAkov
+	 TlQ18RbtCuz2MWM6t/xctMY785AqFL41681BHFP1PtdskY40jxH+7k8pLI1Yo3AuDO
+	 fSD+7HFiuOYXdTE40tRHlzjFgkFh4Yqj1tYzlTXxrEtT0qVBE2vVKsAk+5iIPRPMQR
+	 n10bsvFfuo5jMMW8vAmPzwrB9GemrJfwuVGO2b6p8Q3p9FZlF3apkLOgKHqByXTG8H
+	 1x4pie8huQcfg69TKmPLFAmiP10SlXeRVcud5R1fOjMPY0F7WGtYd1ZL0KGT5yHgpI
+	 6xBnNFws5ntCQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: unfold transaction abort at __btrfs_update_delayed_inode()
-Date: Mon, 19 May 2025 12:08:26 +0100
-Message-Id: <a6bf92c79d644323883eb18bbde8f45dde8e6476.1747652848.git.fdmanana@suse.com>
+Subject: [PATCH] btrfs: unfold transaction abort at btrfs_insert_one_raid_extent()
+Date: Mon, 19 May 2025 12:18:39 +0100
+Message-Id: <abe65dcfac248737e735f5c3b9d7e9f165dac802.1747653415.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -64,66 +64,29 @@ function failed.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/delayed-inode.c | 25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+ fs/btrfs/raid-stripe-tree.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index c7cc24a5dd5e..3d25510db388 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1008,8 +1008,16 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 	ret = btrfs_lookup_inode(trans, root, path, &key, mod);
- 	if (ret > 0)
- 		ret = -ENOENT;
--	if (ret < 0)
-+	if (ret < 0) {
-+		/*
-+		 * If we fail to update the delayed inode we need to abort the
-+		 * transaction, because we could leave the inode with the
-+		 * improper counts behind.
-+		 */
-+		if (ret != -ENOENT)
+diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
+index 1834011ccc49..cab0b291088c 100644
+--- a/fs/btrfs/raid-stripe-tree.c
++++ b/fs/btrfs/raid-stripe-tree.c
+@@ -329,11 +329,14 @@ int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *trans,
+ 
+ 	ret = btrfs_insert_item(trans, stripe_root, &stripe_key, stripe_extent,
+ 				item_size);
+-	if (ret == -EEXIST)
++	if (ret == -EEXIST) {
+ 		ret = update_raid_extent_item(trans, &stripe_key, stripe_extent,
+ 					      item_size);
+-	if (ret)
++		if (ret)
 +			btrfs_abort_transaction(trans, ret);
- 		goto out;
++	} else if (ret) {
+ 		btrfs_abort_transaction(trans, ret);
 +	}
  
- 	leaf = path->nodes[0];
- 	inode_item = btrfs_item_ptr(leaf, path->slots[0],
-@@ -1034,8 +1042,10 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 
- 		btrfs_release_path(path);
- 		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
--		if (ret < 0)
-+		if (ret < 0) {
-+			btrfs_abort_transaction(trans, ret);
- 			goto err_out;
-+		}
- 		ASSERT(ret > 0);
- 		ASSERT(path->slots[0] > 0);
- 		ret = 0;
-@@ -1057,21 +1067,14 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 	 * in the same item doesn't exist.
- 	 */
- 	ret = btrfs_del_item(trans, root, path);
-+	if (ret < 0)
-+		btrfs_abort_transaction(trans, ret);
- out:
- 	btrfs_release_delayed_iref(node);
- 	btrfs_release_path(path);
- err_out:
- 	btrfs_delayed_inode_release_metadata(fs_info, node, (ret < 0));
- 	btrfs_release_delayed_inode(node);
--
--	/*
--	 * If we fail to update the delayed inode we need to abort the
--	 * transaction, because we could leave the inode with the improper
--	 * counts behind.
--	 */
--	if (ret && ret != -ENOENT)
--		btrfs_abort_transaction(trans, ret);
--
- 	return ret;
- }
+ 	kfree(stripe_extent);
  
 -- 
 2.47.2
