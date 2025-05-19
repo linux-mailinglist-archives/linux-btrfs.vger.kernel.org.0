@@ -1,54 +1,51 @@
-Return-Path: <linux-btrfs+bounces-14117-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14118-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85FCCABBB56
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 May 2025 12:42:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14174ABBBFF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 May 2025 13:08:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8DCC1896F71
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 May 2025 10:42:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B5C07A4AF0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 May 2025 11:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C34274FFB;
-	Mon, 19 May 2025 10:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69149274650;
+	Mon, 19 May 2025 11:08:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gXiUFORk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VC3OQRUo"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF9A27466A
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 May 2025 10:42:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0861F462C
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 May 2025 11:08:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747651330; cv=none; b=Zntvdjuaj5/QkF65BL89ADbxe3jx6n9mbQ2+bq49hbSuqiRqguyXjXiVk2G7LNIWWHozhHJWQjXuhQ9XlIw7PECJnonfCzcAiUA3tuuc2tjCWcd5lZqq1OA1a3Ho7FG3ic0ueh/IvdhhagX0jJg8vOCjhhCHmy1JT7cnNFZBxb0=
+	t=1747652911; cv=none; b=emuhLywSt0LPiZEFOt97U++bHQuxKUr/cxQZAiHLhu9VA8hRbI3EmLvQVY01kjFSx2YwJu7FqIAboEvoaTGiWgtsBVOVFWChtCG+zftKDIHf1U3TRplmfBam6zf1qkM2at4eKfnwvYp2MmAPyVs88ZRK7p5PmeoPgz8+SD4nn2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747651330; c=relaxed/simple;
-	bh=uuvRDgntS2KCRtrriKvB40PXCuiuaZGCKG9EGa711CQ=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XYZgwIHMYv5ZIGAsQ33qsul6FKI3wvj0t4E1gPVzdjMpVvOamV5PdEkscXc2tfNA3/34XwxRIBoU1ApAsheSEz8nv7+K2TW171UcsutNACHX1S8FPedFPHiI4gVifcsEa2Nfin1v8gn2Y/96zJNi76Wn5jA6KHHAE7JghWZmUQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gXiUFORk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DD57C4CEE4
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 May 2025 10:42:09 +0000 (UTC)
+	s=arc-20240116; t=1747652911; c=relaxed/simple;
+	bh=PSJPp5dsEIHO83FWP8572PJ49X8gxlFu8UhZ36FRN24=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=OPY/NQtQMLCNxpv0GrXlThLCQrFR7khnMWtZBfPpDG9u6Gl6pSdSxxD6bV89Zki3e5qIF7l45p7Xr7jH2SZ16RrplaC70SgnEBaBPibMhbFLqrm7akdiCttOZxWF1p4KMoUJaiQ1MDZA8tDi4gAH5WmjZ7mD9W7wpcRwTMdQc6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VC3OQRUo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4E56C4CEEB
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 May 2025 11:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747651330;
-	bh=uuvRDgntS2KCRtrriKvB40PXCuiuaZGCKG9EGa711CQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=gXiUFORkBVV+ozbZ8avBZL+bPmodkWvfCs+e7FWJK2b3L2XIXOJTAiwUHY/c3u5YD
-	 sEgPOO6UOiHPhtMTQTy3pflyqkVGi/JU/3ZHovq1jyE/WUR+KUa8a6C0Iu73YQAWbz
-	 ZhzbDBxxg0Dc2fpuhMuxjuAxK9GQjArTDp70pxrHd2MhUfwvt9hFzTjWDWDWfcVk4r
-	 52UFgBm80rKq5cTIPKXaykx0pMBbJ03/A/3WqmgP7Ke3NncqpLQT8RtonndklWve/N
-	 pBh0ov4J35sJjDs/v1VEv/itmIFAzhLHQtMNfakq4+miUPA5AHptO7v/3vYUxOTjUd
-	 w4a8L2jLKZwlQ==
+	s=k20201202; t=1747652910;
+	bh=PSJPp5dsEIHO83FWP8572PJ49X8gxlFu8UhZ36FRN24=;
+	h=From:To:Subject:Date:From;
+	b=VC3OQRUoDKXlxME4vaaMrcfrgb/F36dhHhIuxBpR/ufU4hDgwkyWANj+nsMBqDI6u
+	 4ZeEEpQw2ewWMvMVj2bZDAiIqulPtXObuR4LzbsZ84ywheY3mN55Fc5PLzl6iVBaSZ
+	 nl9ANKz+7XJXMvFBuebhGJaykZ6cBQVR0gnCSaMwE/otTOpp/jyB721J/493IWGypu
+	 WoyMLBLa2hViM8E9r33ftUYwC87IpRz4fjfKezv1heZpgrgbpI0+UYNFzeWOeR3/PV
+	 UXZ0oLY1gT19YCZ26aQoDdUknOx4qD3tMknQsspIMC5vONCaT14IT9Dd+YC0J5MIpf
+	 X5LlsZHiyGqMw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: abort transaction on unexpected eb generation at btrfs_copy_root()
-Date: Mon, 19 May 2025 11:42:05 +0100
-Message-Id: <dcdf72739099f866948759b2171794db87fb0c09.1747649462.git.fdmanana@suse.com>
+Subject: [PATCH] btrfs: unfold transaction abort at __btrfs_update_delayed_inode()
+Date: Mon, 19 May 2025 12:08:26 +0100
+Message-Id: <a6bf92c79d644323883eb18bbde8f45dde8e6476.1747652848.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1747649462.git.fdmanana@suse.com>
-References: <cover.1747649462.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -59,37 +56,75 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-If we find an unexpected generation for the extent buffer we are cloning
-at btrfs_copy_root(), we just WARN_ON() and don't error out and abort the
-transaction, meaning we allow to persist metadata with an unexpected
-generation. Instead of warning only, abort the transaction and return
--EUCLEAN.
+We have a common error path where we abort the transaction, but like this
+in case we get a transaction abort stack trace we don't know exactly which
+previous function call failed. Instead abort the transaction after any
+function call that returns an error, so that we can easily indentify which
+function failed.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ fs/btrfs/delayed-inode.c | 25 ++++++++++++++-----------
+ 1 file changed, 14 insertions(+), 11 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index ae6cd77282f5..a5ee6ce312cf 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -283,7 +283,14 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
- 
- 	write_extent_buffer_fsid(cow, fs_info->fs_devices->metadata_uuid);
- 
--	WARN_ON(btrfs_header_generation(buf) > trans->transid);
-+	if (unlikely(btrfs_header_generation(buf) > trans->transid)) {
-+		btrfs_tree_unlock(cow);
-+		free_extent_buffer(cow);
-+		ret = -EUCLEAN;
-+		btrfs_abort_transaction(trans, ret);
-+		return ret;
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index c7cc24a5dd5e..3d25510db388 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1008,8 +1008,16 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
+ 	ret = btrfs_lookup_inode(trans, root, path, &key, mod);
+ 	if (ret > 0)
+ 		ret = -ENOENT;
+-	if (ret < 0)
++	if (ret < 0) {
++		/*
++		 * If we fail to update the delayed inode we need to abort the
++		 * transaction, because we could leave the inode with the
++		 * improper counts behind.
++		 */
++		if (ret != -ENOENT)
++			btrfs_abort_transaction(trans, ret);
+ 		goto out;
 +	}
-+
- 	if (new_root_objectid == BTRFS_TREE_RELOC_OBJECTID) {
- 		ret = btrfs_inc_ref(trans, root, cow, 1);
- 		if (ret)
+ 
+ 	leaf = path->nodes[0];
+ 	inode_item = btrfs_item_ptr(leaf, path->slots[0],
+@@ -1034,8 +1042,10 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
+ 
+ 		btrfs_release_path(path);
+ 		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+-		if (ret < 0)
++		if (ret < 0) {
++			btrfs_abort_transaction(trans, ret);
+ 			goto err_out;
++		}
+ 		ASSERT(ret > 0);
+ 		ASSERT(path->slots[0] > 0);
+ 		ret = 0;
+@@ -1057,21 +1067,14 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
+ 	 * in the same item doesn't exist.
+ 	 */
+ 	ret = btrfs_del_item(trans, root, path);
++	if (ret < 0)
++		btrfs_abort_transaction(trans, ret);
+ out:
+ 	btrfs_release_delayed_iref(node);
+ 	btrfs_release_path(path);
+ err_out:
+ 	btrfs_delayed_inode_release_metadata(fs_info, node, (ret < 0));
+ 	btrfs_release_delayed_inode(node);
+-
+-	/*
+-	 * If we fail to update the delayed inode we need to abort the
+-	 * transaction, because we could leave the inode with the improper
+-	 * counts behind.
+-	 */
+-	if (ret && ret != -ENOENT)
+-		btrfs_abort_transaction(trans, ret);
+-
+ 	return ret;
+ }
+ 
 -- 
 2.47.2
 
