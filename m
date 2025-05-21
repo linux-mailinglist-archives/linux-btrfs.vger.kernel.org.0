@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-14150-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14151-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 092EFABEA8E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 06:06:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83DB2ABEADA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 06:15:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11FA13AFF37
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 04:06:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65B881BA4F62
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 04:15:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0CDA22D9EB;
-	Wed, 21 May 2025 04:06:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A601423184C;
+	Wed, 21 May 2025 04:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="KJRnS4Bp"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="HnUBg8fX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77A233993
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 May 2025 04:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A101322F74C
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 May 2025 04:13:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747800405; cv=none; b=DDvC5eDgs6ImRNX2bUs0u06b7MV6t30/ZZmXGbKGufU+hgaz//6fpYtYLnws6uy0b/QSCmbFJrVpuuLLAo/eT4HXpmNKaIu8m2Zxo+LLjOouU0WHrDNch19oc/Lli5X1e2Drvk7LPLiY/P616T0pkVzhWcTKj6asQXIgPYhOr0w=
+	t=1747800817; cv=none; b=KoWQmkp6uxum7hRdrVbBuHwlI5DCSZoGbzJl9rBvaTffXTBqKYLNjB2nPy2W2JGHV/4aNhYHDvpRdDeBXRFfm2lzZW3wN7jwfWmroq7LozJtYDcVXbBXM3/efdj1X/UOLSFrJ9T8nj64YeJL83LHIgKAfMLdCd6Uj1MotnVpdvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747800405; c=relaxed/simple;
-	bh=zMXKKz2RSM8ang3VzYOYpF0f02GYNSJQ+Rsy7v4Xo9U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=hjOhQkj2EFKWHgoEA7JSWtLp0AK0GSlEvg9eoVUJcncFbPOSDwp5vmsqMRj5JEPKyz9VsymuH7gcDKe/Kd8i4hwnLzctZxfIEmOM5keWIVlgivV4V+rRyFVUWwZZz7no1uPdA/Cq0lWz8qEbSAqqfCRW3Q7njBs4qymzmgPplSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=KJRnS4Bp; arc=none smtp.client-ip=212.227.17.21
+	s=arc-20240116; t=1747800817; c=relaxed/simple;
+	bh=ru2AVToLu6bHyyG30L63bLTtIcmZ3BOQghMM00/MeH0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UlANpAlkcqoXjyEka4LI/Yixn1X4UnBHyoKgIKgsoQMkOTzKxKWxg1AWMxpoxuiJncTOyEUM5pexmjPwnzEKhr495LXKCNVurSzjUfrNhJMRq3ySFu/CNHf72MLVCvy2g87xKGUQdDZIh9oSH/PdsEtVVAoqU8juzOGTSE5HS4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=HnUBg8fX; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1747800369; x=1748405169; i=quwenruo.btrfs@gmx.com;
-	bh=zMXKKz2RSM8ang3VzYOYpF0f02GYNSJQ+Rsy7v4Xo9U=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	s=s31663417; t=1747800812; x=1748405612; i=quwenruo.btrfs@gmx.com;
+	bh=aGdjomUTxkQhYfDprWQkUsMVVNl66k0ojY4E1WYRQEQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=KJRnS4BpUfRQtnx2mAaHwQodwYvqON5LURcs3F/njwgWtXCm5n7DKxrQA1CyDkeQ
-	 vYBqQEMoVlgbyWtBjUyRxg9AA75zhDaggw9SRh0n3WwUz66yFffqHPcRIogy9MFkN
-	 MEe/UuG46bBqOpaEJR4ZWzn6S1TVrqeNUGePeQWjZYNVFbObrTFdMeAWqkRG1gIed
-	 tKuqc74wP6TnadgkzWYcArzOo1QjAk5L9ms0L8f6/DkkMgCkvrI9L/Qcp60kUM7N2
-	 q/n+ZhrHwoy4zG1OudoUOMOOEA+me4IA9/igQ3D71LDammLyvGnOqd6H9wT2o3w5B
-	 wocAapWcxSERQxatig==
+	b=HnUBg8fXVhvnQaK4pNhnPxhVA0QLY7S6Vo7cSBYCPN2aIBplXJ8La5wVszTwVTyk
+	 38TNrVyCJpW7GTOWJn9NMAFL2ETv3OR4f2muvLjUKbFY3wKok/4T4+brsNjpcPhnB
+	 H29kZ489Lg18Ya6i1HIvAELmP6tKD1Io7xWvQgLBZBymm8y1vzmaiHJnZXxee+C83
+	 j1A2pRvQ16U/0XL1BWkDKfuh7xnaYfsVvwVjwlpf0q/fHMe3cjBrOtnjMQMIawr1U
+	 bPiywu3BvIRZqe4+QgoLl01/qmSQnF9Dfdjr8ByMv9XPv5YBUNZV63gBVA5frVkSS
+	 ODEoXR6e2ttM+adcPQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.228] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MPGRp-1uZwPl42A9-00WLzg; Wed, 21
- May 2025 06:06:09 +0200
-Message-ID: <bd7d0253-f3b7-4ac9-bcba-be4064246400@gmx.com>
-Date: Wed, 21 May 2025 13:36:06 +0930
+Received: from [172.16.0.228] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MiJVG-1uulL80BYk-00dWHo; Wed, 21
+ May 2025 06:13:32 +0200
+Message-ID: <68a7d14b-913b-48e0-be12-5bba0d17ea2b@gmx.com>
+Date: Wed, 21 May 2025 13:43:28 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: preserve mount-supplied device path
-To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <85256ecce9bfcf8fc7aa0939126a2c58a26d374e.1747740113.git.anand.jain@oracle.com>
- <da820980-ecc2-41d2-8406-fcde11b0bfb5@gmx.com>
- <74ee4615-09c7-41c9-9197-c83b171f1c74@oracle.com>
- <1d27523e-76ed-4a92-bd79-49643c5272bb@gmx.com>
- <fbc3c413-c4c9-47c3-9c5f-4fcd7a772e61@oracle.com>
+Subject: Re: [PATCH 1/2] btrfs: Raise nobarrier log level to warn
+To: sawara04.o@gmail.com, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc: linux-btrfs@vger.kernel.org
+References: <20250521032713.7552-1-sawara04.o@gmail.com>
+ <20250521032713.7552-2-sawara04.o@gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,186 +89,120 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <fbc3c413-c4c9-47c3-9c5f-4fcd7a772e61@oracle.com>
+In-Reply-To: <20250521032713.7552-2-sawara04.o@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:T8szC2Fk5S+uNfhoJWSkWNGt7Hc0jXbai+hpMUsmr5JqPfyUceK
- BIvVPYaPXAW1eN2cJEcQPM53Hm9mJFn+o3sZXEo7fKHfQ/fN1gchRCFLsypqapz0S/q62+m
- NsZtT27o/xXlXkaZ8VgKViKuPT5dh4f5JENqKTYpCigR7DP/KKa7FXKo/c+BO+kjyVi2Mrq
- yzRXt6IUfkuNNheuGBFdg==
+X-Provags-ID: V03:K1:bqHRqPb9mO4ar1WWGjy9r7aufdL+rUdzISaGgCelI6nHUTSQd/c
+ frQVW2h/BkaWZT/w9jW5x0SmDaPm9mMQ5Wp2253x7PUfg9OpSaKVS+RL6gLYkfs+DeiksWD
+ hpK/eJfLcjhcKI0rqYN57rhgiNfz72ws8iepwTInAfUSkWsaR22UtvgEpYx7la+1imheVri
+ nkTqiOeK6LAemZfynulXg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:MrwLzxIablI=;pBw1MLeK/rACmgozoSD70jEwuos
- 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
- wObuWZ/MaoHkI2MQqAFmVxx8N7X3esgItm
+UI-OutboundReport: notjunk:1;M01:P0:Y6wbwLAkKMU=;TMgghvAnvIEY4WeZ73Kax3EMxRu
+ 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
 
 
 
-=E5=9C=A8 2025/5/21 13:22, Anand Jain =E5=86=99=E9=81=93:
-[...]
->> That's not the how fixes tag should be used.
->>
->> Let me be clear again, you're working around a bug in libblkid, which=
-=20
->> is not the correct way to go.
->>
+=E5=9C=A8 2025/5/21 12:57, sawara04.o@gmail.com =E5=86=99=E9=81=93:
+> From: Kyoji Ogasawara <sawara04.o@gmail.com>
 >=20
+> The nobarrier option disables barriers, improving performance at the cos=
+t
+> of potential data loss during crashes or power failures especially on de=
+vices
+> without reliable write-back caching.
+> To better reflect this risk, the log level has been raised to warn.
 >=20
-> No, it=E2=80=99s not. The point is that each individual software compone=
-nt has
-> to do the right thing so that it inter-operates well. Think about why
-> this problem doesn=E2=80=99t exist in ext4 and XFS =E2=80=94 you=E2=80=
-=99ll get the answer.
+> Signed-off-by: Kyoji Ogasawara <sawara04.o@gmail.com>
+> ---
+>   fs/btrfs/super.c | 7 ++++---
+>   1 file changed, 4 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 7310e2fa8526..012b63a07ab1 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -407,10 +407,12 @@ static int btrfs_parse_param(struct fs_context *fc=
+, struct fs_parameter *param)
+>   		}
+>   		break;
+>   	case Opt_barrier:
+> -		if (result.negated)
+> +		if (result.negated) {
+>   			btrfs_set_opt(ctx->mount_opt, NOBARRIER);
+> -		else
+> +			btrfs_warn(NULL, "turning off barriers, use with care");
+> +		} else {
+>   			btrfs_clear_opt(ctx->mount_opt, NOBARRIER);
+> +		}
+>   		break;
+>   	case Opt_thread_pool:
+>   		if (result.uint_32 =3D=3D 0) {
+> @@ -1439,7 +1441,6 @@ static void btrfs_emit_options(struct btrfs_fs_inf=
+o *info,
+>   	btrfs_info_if_set(info, old, NODATASUM, "setting nodatasum");
+>   	btrfs_info_if_set(info, old, SSD, "enabling ssd optimizations");
+>   	btrfs_info_if_set(info, old, SSD_SPREAD, "using spread ssd allocation=
+ scheme");
+> -	btrfs_info_if_set(info, old, NOBARRIER, "turning off barriers");
 
-BS, firstly it's libblkid resolving the path to the mapper path, and=20
-passing it to fsconfig for us to mount.
+I know you want to avoid duplicated messages about the nobarrier.
 
-But if you do not use libblkid and pass path directly to fsconfig,=20
-kernel will still properly mount the fs.
+But it is better to use btrfs_emit_options() to add the warning.
 
-You ignored the fact that the device name passed in is already modified=20
-by libblkid.
-If you do the same using the mount from busybox, there is no extra=20
-device path modification, and your workaround makes no sense.
+The problem of showing the error in btrfs_parse_param() is, it can be=20
+triggered multiple times.
 
+E.g. mount -o nobarrier,nobarrier,nobarrier $dev $mnt
 
-Secondly, XFS/EXT4 doesn't bother the device name, because they are both=
-=20
-single device filesystems, they only care about the block device=20
-major/minor numbers.
+Then there will be 3 lines of "turning of barrier, use with care".
+But inside btrfs_emit_options() it will be only once.
 
-The device name used is not handled by them, but VFS (struct=20
-mount::mnt_devname), and it's again back to the first point, it's=20
-modified by libbblkid.
-
-And btrfs is not a single device fs, it needs to manage all the devices,=
-=20
-and that's why we implement our own show_devname() call backs.
-
-We can choose to show whatever device name (the latest device, or the=20
-olddest device or any live device in the array), just like the user=20
-space which can pass whatever weird path they want.
-
-Wake up from the mindset that there is only one "mount" program in the=20
-world. Then you can see why the workaround doesn't make sense.
+In fact this also affect the warning for excessive commit mount option,=20
+but there is no better solution for that option, but we can do better here=
+.
 
 Thanks,
 Qu
-
->=20
->=20
-> -Anand
->=20
->=20
->=20
->>>
->>> Thanks, Anand
->>>
->>>
->>>> Thanks,
->>>> Qu
->>>>
->>>>>
->>>>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->>>>> ---
->>>>> =C2=A0 fs/btrfs/volumes.c | 7 ++++---
->>>>> =C2=A0 1 file changed, 4 insertions(+), 3 deletions(-)
->>>>>
->>>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>>>> index 89835071cfea..37f7e0367977 100644
->>>>> --- a/fs/btrfs/volumes.c
->>>>> +++ b/fs/btrfs/volumes.c
->>>>> @@ -778,7 +778,7 @@ static bool is_same_device(struct btrfs_device=
-=20
->>>>> *device, const char *new_path)
->>>>> =C2=A0=C2=A0 */
->>>>> =C2=A0 static noinline struct btrfs_device *device_list_add(const ch=
-ar=20
->>>>> *path,
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_super_block *disk_super,
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 bool *new_device_added)
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 bool *new_device_added, bool mounting)
->>>>> =C2=A0 {
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_device *device;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_fs_devices *fs_devices =
-=3D NULL;
->>>>> @@ -889,7 +889,7 @@ static noinline struct btrfs_device=20
->>>>> *device_list_add(const char *path,
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 MAJOR(path_devt), MINOR(path_devt),
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 current->comm, task_pid_nr(current));
->>>>> -=C2=A0=C2=A0=C2=A0 } else if (!device->name || !is_same_device(devi=
-ce, path)) {
->>>>> +=C2=A0=C2=A0=C2=A0 } else if (!device->name || mounting || !=20
->>>>> is_same_device(device, path)) {
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * When =
-FS is already mounted.
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * 1. If=
- you are here and if the device->name is NULL that
->>>>> @@ -1482,7 +1482,8 @@ struct btrfs_device=20
->>>>> *btrfs_scan_one_device(const char *path, blk_mode_t flags,
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto free_dis=
-k_super;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>> -=C2=A0=C2=A0=C2=A0 device =3D device_list_add(path, disk_super, &ne=
-w_device_added);
->>>>> +=C2=A0=C2=A0=C2=A0 device =3D device_list_add(path, disk_super, &ne=
-w_device_added,
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mount_arg_dev);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!IS_ERR(device) && new_device_add=
-ed)
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_free_st=
-ale_devices(device->devt, device);
->>>>
->>>
->>
->=20
-
 
