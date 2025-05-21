@@ -1,383 +1,367 @@
-Return-Path: <linux-btrfs+bounces-14143-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14144-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 125ABABE8A4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 02:45:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DBC8ABEA41
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 05:15:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E4A64A6C48
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 00:45:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13EC54E27C2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 03:15:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF1B847B;
-	Wed, 21 May 2025 00:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A4022DF8D;
+	Wed, 21 May 2025 03:15:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="L3G9h7TY"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="haesHfv/";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="xHGMOv9u"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A61794B1E6D
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 May 2025 00:45:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747788336; cv=none; b=UF12JpEVYeiWL6yUpy4QVHPlVCzC4dcEJI+Cfatfgp6WC2gZcJkmObGGHtMQfAe0cnGeQ9O6x9V7h/4zAXJFp7sbm5kHzmT72JTOyi7Nt2THSmA3iifD8dbVD0OhE2fwSx1Rysf6PXuSktVyk5PBV7rE+G6T/eBVXTn5jyRY46Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747788336; c=relaxed/simple;
-	bh=NcN/8lIXrwVGdzkOunf2VIuEnGzFeNJUngfv/lYjOFs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c390imCzVEUQdy3D4axv/aPDu1iSw0eGd8xAbC6D7LgJMKf/uxe6PS5U9LeKbHJXZ/Pmf0EKUteE1SVVtBRa61+3HNtn3FS7z748H+oOjUQILb6SnPMV6hJ3ewD8Wq6FpTKs0Xan29/g5VDBP8SoCnAIbj2f2+68z/02x7l0JcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=L3G9h7TY; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1747788327; x=1748393127; i=quwenruo.btrfs@gmx.com;
-	bh=O6jhYfTruq43OMK9VsxRn91RVt1se95ma2sivZuwEhM=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=L3G9h7TYyBSuUuIIh0AJ/CSDiabFeObRoD0ZhdiJvh2iuDsurR1MBAwc3ObcKcSv
-	 K4tpYCjGh9fTN2pxkbjUvqkonj1+CLHaUAkc372VkxPPnhoSlM3FV6MiG/W8L44FY
-	 TSPsCWKZyFSyuVbh/3nldzd4h9tP7dyQ8QCfO2k1SivyqUcaMmW8WEGmQKruxz5Ey
-	 qNN02Zzu3ZatmDivPCjIsN4ekRd6MWHSM3kYugT005+HeQbmg6X9PrZ+iCrBddOVd
-	 mxKqFpTRmKWE+VL5AJy6bAVqHeL7MUBefqb18vgsUu+ZcZxLrDLgstur88wYsStzu
-	 A35U9IEX5UV7nH0owA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.228] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MfHEJ-1utNNd2qWR-00ZwSf; Wed, 21
- May 2025 02:45:27 +0200
-Message-ID: <80208aaa-2fa0-4f38-8d1c-90a35d9843be@gmx.com>
-Date: Wed, 21 May 2025 10:15:23 +0930
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E5F22D9E7
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 May 2025 03:15:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747797304; cv=fail; b=Xj33NS4p37I3h1IvapSp37QPhf3E2yk4bZ7jB7tznAQwsu3EzHqw9ku3xgUnOOPDYdYRJ+tBrGNW7ffEj8k6K1FmECUmcMG/aGgQT1Oa0bVjqkEbGPESDb5ggfE1aRVRsKhGJZFoYsuXaXKAWS0JbwUssJAweRiorXs7MpDQRao=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747797304; c=relaxed/simple;
+	bh=UkHNzBhUD6IL4NGB3Ql5e1PJlq2qQnaIsvwDC1qAGnU=;
+	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=rbEKLN3ki7Lp3OkIDpu+QWDgFDa8o9nTcxHnvWpY0n0RCGAgxDrqvAwBxLqrv/F6uTVIcWA/M9gekuUHrdtkoSOwSoGcrng2NUBF6BBFelbQsMHrouwtTgIMl8308vBFwTMn9IHKBSRiDnQPu8jQao4m8HNCK38Z0sZTDerO3yk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=haesHfv/; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=xHGMOv9u; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54L2u44o004933;
+	Wed, 21 May 2025 03:14:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=HGHFxzcwZmPh/0rB/OF+RZqfBmgcQR+ubwuauIMFuYE=; b=
+	haesHfv/x8NlRSIV2vFhiWlaJXBvugN9xnD1ARFSrIxGegFeIKOr+fUMZvRO00I4
+	FOY0syRju5vFRuYgJ7uROBDjtDUVCeeDOAMQFPFa93NbSZjQwanYnhOdkn/J6EZY
+	PuyTOvHUAiNCw7mPImCMf+Yu9jgLQfvrlnSqMzCJE7Aw7NsTDrwzWOe+RsI6bR1j
+	uCWm+zL3pz9Azqn1iG2AW/L6b3qCIV8zx4+xRAM7NGef8/6VcGGcGzyxM1bB1pqX
+	myzVM7li6qqTM3ROz5mZSnUdaVihWqZsCLZiOmdazqhfif++AoRS/YnuUsy1wwcF
+	bSDVtUTbsJnPe3Dq9PjwUQ==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46s671g1xy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 21 May 2025 03:14:59 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 54L2DalX034612;
+	Wed, 21 May 2025 03:14:57 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11on2046.outbound.protection.outlook.com [40.107.223.46])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 46rwep9yvn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 21 May 2025 03:14:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=hj1Bn8wi8qP21ne7goUt11QDJbppluRAgLRPpJiNaF2zLHcGXcyxiMtTSIkfFO2XGZt9a/9IfQnnCt6o1xkj1lW7pfLi5GZIOc+1fsZa+jvkNcx1T+0H+YlXBfuo8kEIw1zrpYh4Yc7iyKK159BFUJ8tqX95F1Q7a6Kg7B5ZJ5/Hknu0TbhgLXfkJ9GaLcl3qi5zvSAvnSCz31AcMEjnz01jEx9IS6czQrak1Ju4D+cbf22p3H+oDs7we4rgOfVMyTa//cK92QRXuccFsxQmFhMclbZhbG6bzluZs+ZIKDU5tHfptio3a3UA0bU7dLzQjs46W7Dddsk3VeFWZijjIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HGHFxzcwZmPh/0rB/OF+RZqfBmgcQR+ubwuauIMFuYE=;
+ b=RHKWItrYYdcPzaElI11/ZZyyZE5LWIZ1AJ2d4zSExzlIyVUwMHrfh5oQDcAnfbuX6U8TaA2N8lHPD6CYCVuvmdGqUUSq1uSphk5BQpkMNJ6KCegBBbcsRDvzlQgHWUUI6vc0pN5x/ss9a/ia9b8NeW3Shtojn0QiLeQR+e60lktxNVf2qQHlKFc8HtEu+664i8B8yxDRekLTkVmDbzwPj34aWJ4h7ADse5AkVeA9K7lAHOH4o+nQQ+WoCu/LddRIqOTFia5NWEUGNW7enfpXFeAMU+nYc6b3X8k3R+jiMcs4Xz6UDVqrF7YLCj0FbUqG0R/lX3UWSz/gx3k96R40BQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HGHFxzcwZmPh/0rB/OF+RZqfBmgcQR+ubwuauIMFuYE=;
+ b=xHGMOv9uplADNuFhgrYmSXIjra5wYTYGhImPj0TGsUU3mlJeMMSJnZlUPDEMc9TcI7O+LqjYWXdEHx3UcwJJs9V9XuwG1M39qsPnyqJLk65HRuKNz9jJWHNaCVJmoafcKAhh+ArzLBmlx5kU935Qh/9F5Fi8iTj+hBqS9EYsdds=
+Received: from IA4PR10MB8710.namprd10.prod.outlook.com (2603:10b6:208:569::5)
+ by MW4PR10MB6606.namprd10.prod.outlook.com (2603:10b6:303:228::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.33; Wed, 21 May
+ 2025 03:14:55 +0000
+Received: from IA4PR10MB8710.namprd10.prod.outlook.com
+ ([fe80::997b:17f9:80e3:b5]) by IA4PR10MB8710.namprd10.prod.outlook.com
+ ([fe80::997b:17f9:80e3:b5%4]) with mapi id 15.20.8746.030; Wed, 21 May 2025
+ 03:14:55 +0000
+Message-ID: <74ee4615-09c7-41c9-9197-c83b171f1c74@oracle.com>
+Date: Wed, 21 May 2025 11:14:46 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: preserve mount-supplied device path
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <85256ecce9bfcf8fc7aa0939126a2c58a26d374e.1747740113.git.anand.jain@oracle.com>
+ <da820980-ecc2-41d2-8406-fcde11b0bfb5@gmx.com>
+Content-Language: en-US
+From: Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <da820980-ecc2-41d2-8406-fcde11b0bfb5@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2P153CA0019.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::6)
+ To IA4PR10MB8710.namprd10.prod.outlook.com (2603:10b6:208:569::5)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] [RESEND] btrfs-progs: add slack space for mkfs
- --shrink
-To: Leo Martins <loemra.dev@gmail.com>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-Cc: Mark Harmstone <maharmstone@fb.com>
-References: <60e0cc5d215e79ba47b2484aad89a726812049b6.1743463442.git.loemra.dev@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <60e0cc5d215e79ba47b2484aad89a726812049b6.1743463442.git.loemra.dev@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4S2VvBGjPOCgthvJb/INk3GJgHyccREBbbQKwZffw4cSh+3mXRU
- A8ExjfLzIeh/qudrRdMI0wfkq+XD+Tlgp9qfZKJF99y1iEXLClrHsb08bw58i3JMJulWjmn
- PxLt8ToE5MF5c3q6HM2cIVEzknt2UaAnD5MvCiDpbBsq0g8lVhjHuxyTaK/pWWX8LGSs5yt
- p/pjY2VRJvPiA3hius2/g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:61K03FueCNo=;1nmG2n6MFYQ0MWYMDza1GdOrIj1
- 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
- 1QPY=
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA4PR10MB8710:EE_|MW4PR10MB6606:EE_
+X-MS-Office365-Filtering-Correlation-Id: 58992c4d-7f0a-429e-d241-08dd9815a898
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?UERXZzhmeGgxU0Q5ZU5KUzJ2MStLNk5RVWQzektwb0U2REszdE54TkZBbnN3?=
+ =?utf-8?B?NDk3Q1BQUkVNNmozcU5DNDNab2hJL0dWSGdLSjFLU2pJVk4xNDBvZnlDK3Ji?=
+ =?utf-8?B?dlFINEpqL01DelBMTlRKZEZEbnZqVTFrbmtjUHY0M01YQ0FkTWw2NDFkTmFC?=
+ =?utf-8?B?MEorbjllZjh0Ti9WTFExaXV5SHdsZWJYSStmVTNDUE4zQllIRnovazliblJD?=
+ =?utf-8?B?ZVRyWkRBQjlOa3p4YU5iMU10SjV6aDJ1SjNPdFVhUVhsZEpWeVl1V1p2YU5X?=
+ =?utf-8?B?YnhaSk9mbm5zOUFxN1p2eG83TU9wM3BuWTVDck52dXFqaGpVU2R2LytWNi9S?=
+ =?utf-8?B?V3M2WEN5K3M1SU1abzBKQmt3YUJNenNmbTFMS1lkbFV3U3NQUzd5UGtTRURH?=
+ =?utf-8?B?aytpSi83L3l2MG4xdW1xRVJDTVdhVUh0VHYxWXlEZU16cXlMWDhWMTdVOTNH?=
+ =?utf-8?B?ZDc1VnR2RU1Qd05vOC9hVG5xNnZTaHZxNExSZDk2b2xtelc1TGJCTm1jVFh4?=
+ =?utf-8?B?WDZVWDZ2czBzMG5jRzVvNlI3V0tha3Y1S3FJSXRqQWlDZWlMOFhXWTAyMXRD?=
+ =?utf-8?B?RzNDNE95V0VRQ1hFUDVNWFdoUC9scTR2R1lWeFVqUS9WSE05ZkFlcHFwZTlX?=
+ =?utf-8?B?NEJqc0YvUUMyaFE5NktuTlRhcmZqOWZEWTZEajZNNlJTRnFrTGRqNzA1OHZ6?=
+ =?utf-8?B?S0E0YUtpNVI1dEZXcDNvNnV5RDRUa2wvNkdNVEtjUGRQZG8ydVBYS3lRUXdV?=
+ =?utf-8?B?YnU5RXF4NmIrMVlTdVdmRlF0ZU05am4zYW5KeUhDUEI1b0RNRWJuUXJyOVlQ?=
+ =?utf-8?B?aWlDSWx3ZHVVSkh0QXcxNHkzUXJIcXZ3QithdGFnNUJPd25MM3l2MkVpK1hS?=
+ =?utf-8?B?NDRsWWFPVEhlaVZWT2RpVTdTaTNUK09OZExwbWkxYkhHdTF1ZXRIcERPTHQw?=
+ =?utf-8?B?NVgvRThNb1pDdzZLbDBEREtTWXNJK0dyZ2NqZE9ic0t0YVpid1l0QVpIV0JN?=
+ =?utf-8?B?WWpxdHozUmVKQzVXNmhnRkRqZG5kZlZyNzVEaktRUWJieDI0VU1XTU15czM3?=
+ =?utf-8?B?MFpKNE9lQTAxRzROaEZ5Wlh5S0xRNzNubXRScFlpSGs2ZXFFNlRqbzBjQXZn?=
+ =?utf-8?B?dHJ5Ymd6ZmNCSU5KaDZhenh2c0dHL3pOWTJrLzMzQWR0c3pyNHRBbVRISFUx?=
+ =?utf-8?B?akN1TG1ENVFFVGdkSkZxQitYYS9yOTArZGMvRkpNRXROWTFUcjIyQ0dQbDlx?=
+ =?utf-8?B?UVZ6WTZucFlUNWp6WHREMWJkTFhxQmxnSVl5WTZOTVdyWCtlbEwzUUUxaXhu?=
+ =?utf-8?B?ZGZ2MDFwVEYvVUNNOUZUcDY1dGtjc25uQkc1ZHJUbUJNdFl6N1dVaXBmNTRk?=
+ =?utf-8?B?VnA3TGV2WGlMRFFZeFpxNDM0aTVyMzl5MGdhYnFpdDQwSlBtUjY0V3paWFpB?=
+ =?utf-8?B?M2xZZ3dPRTJndHhuSXBwQkNvcGJkNkhsWGpWUHdDb3cyL1QyZXhwcUtqWG1D?=
+ =?utf-8?B?SHp0MXJ4L1BLYnRyMUV2Z2pSWWVJQUxjcjhYaEduM1JUZE9vYkxqdmk1UGNx?=
+ =?utf-8?B?MFNjUTVoazlhYTF3eDBiVmdtYjlnWDhZc3htZlZyaEwvbzk5ZVVEQm54Sjl3?=
+ =?utf-8?B?SzYyL0k3d0NncEpaeTh2bWczUkRUc3YwV1ZJd2FYY0U1MXMvdTVzOGZMRG8y?=
+ =?utf-8?B?Zm4rQWZqdzhTbklvMFZnZHB1Y21ySXM5QUphRnlzd0d5TWpQejVpeEhuT1Iy?=
+ =?utf-8?B?TmZkQnUvam5hRDNiUEJSSncyS0dibHNlYXpKZG01eGpuWG95SVRjcjlxUnB3?=
+ =?utf-8?B?SHRFNlMxRWlvOUlINFZKWmxDVGRJTVJWQnVoZmN0TlFlSlRFaFBGWEVDZWV0?=
+ =?utf-8?B?MTFYUWFmYzZhY3RvYXBVS3BDNTFGNHlrWWxjbU1SNlZld2NoZGF5U0F4TkxX?=
+ =?utf-8?Q?nX5ioxpz4Dg=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA4PR10MB8710.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RVhJMHcrODg5UjBsOGJBclBOb2FweFVyNk9UcnI5MlRQNnVKeVhWY2dyMDlr?=
+ =?utf-8?B?UGhyYzBUSVlYTlhoQ3lrakVjOU5uSVJIUEhSUDFTTkRST3JEWUNMNExtTDRu?=
+ =?utf-8?B?NXBBdXBxQWM3bk9ING9mWVowVllZUTNlWjFvVFRmdW8zMUg4QVNWdTIyZ1Bq?=
+ =?utf-8?B?a0xSdXJLVXpUWHNpWGNkZnRmUzQzUmptb2JIWVFMTnlTTncvVUR1Ri9UTDlK?=
+ =?utf-8?B?cWJ3ZHoxN2pNY0Y5OFN0cEtxL1llaTZkZ3ZPSHg4bE9uMy9pK3Y4VzEzaU13?=
+ =?utf-8?B?V2FCYzJka1htd0drR29QT1hTcjRGekI5UW5JcnBaYloyenI5TGNIUzl3dzRk?=
+ =?utf-8?B?VXhjU3A2SlBHcDNGWHo3QktvcG9WU0cxTEtJV0piUGdna21EZ1Y4a2hzdXNM?=
+ =?utf-8?B?RXUyNyt6SHlnbnA5eFZHQnlUL2VFVXlneVFvUm9SblFibEtLdFpieWJ6TXVJ?=
+ =?utf-8?B?MnZzeXpvVkNoOVA2RUNiQ0lBSThLUGVqNHhsN004ZzdBeHpVcDJxZWdjS0Fi?=
+ =?utf-8?B?Q012REJnSERyRHpOYW1RcXBUY1l6MnZqQjd4UFRKVmxvQ1lSR3hSdlFVNmRC?=
+ =?utf-8?B?d3pHWUJHZXN4WXZoRTZDM0lyQ0crUGIwd3RYWHVwRlozekxYeXNvemNkZjZC?=
+ =?utf-8?B?N3ltMkdNRnppWDNKYTMrMW1IOW9mZGZWREpGTWxUNEZMSTNYcmhybHV3TzAy?=
+ =?utf-8?B?Q3paZDZrU3owVUVOaXBrT1B3TXlNbHVCUGtYRXZ6S2swSnBHUWFMWldoSkt3?=
+ =?utf-8?B?Ulc2c0dSMWtDV1oyZXNJWmVGN1hLbzN6N0p5blVxSnQxc0ZETzgraWZOYTUz?=
+ =?utf-8?B?ZmJxbWdFQ09CdDhTY2xWb0RCb3hKcG5oM3cwZ0JsM0xUMmxUSThXa0ZDZmk3?=
+ =?utf-8?B?VXJYZTFMRWdjdHZPSWFORlpialNqNFNKemtjckdraHYva1NsUnB2a09wUjhx?=
+ =?utf-8?B?cmgyVVNnekZmcmJUUklkYzhVeU0rbHpWeHZZQjVydC96cEdDcWkvdEhWc25N?=
+ =?utf-8?B?c3N2S2Q2cWlGMU5ValNSWWFWYVRNdUQ5TFYyZy9pREhCeHBlTlYzcnQrNDBx?=
+ =?utf-8?B?a3BPKzhPK2RYYWEvQ29kbGhiZDRsNzIvcEh5MndDdkVXckE3SkpJUG5yaVhj?=
+ =?utf-8?B?cU5DcEZqT09PMDlXeUwvVllJQlhiNGtlK082ZHJxQ3hoN0czR1hPWER4Zi9M?=
+ =?utf-8?B?emttb1F6ZzFoakxMLy9LMmdJcElYN0Nka1pDbWFGK2cxVkZuOU85cDk0MkxX?=
+ =?utf-8?B?OVRlTkxvbXZxblJvbzJWWS9DQ3poRVFuNWNRc0NLRUIwT0RFd0RVMkFrZlJ5?=
+ =?utf-8?B?VHVYNGJYMTk1UXJiaXExTUJ6SXU3L044V3U5bHl3Snp1MEQxeVBieWsvM3VF?=
+ =?utf-8?B?OHFYOVFVZFlTYUp4Q2g0WEhhQ2FVUFdXcFhPdTNNR0JVaExxRWdrdFRQU1JY?=
+ =?utf-8?B?ZnJZRVB4MEgzR0ZHMUg2SWZVaDR6Vys5RlcwVEF3Ym9McW5neWFjN293THhX?=
+ =?utf-8?B?S1hKOERrakdTRmc5YmJVZE9GYTQ1S0NpYWt0OEFpcmU2YVBnQmlVbnNCWllr?=
+ =?utf-8?B?czRkRWJuTlh1aWdjN3Z0Q0JTWE9DVGhGRloxYkdwbnQ0cCtUNzFpYldJendL?=
+ =?utf-8?B?QmpwMEVBUm9Lb1dNN3dXNVlFUVQ5TVFCZFZFSFdFQjV1a3pPQmRzWFZuZVZJ?=
+ =?utf-8?B?WTJsZzRFVGc3a1dsaHBob213VDBqVFdJa2I4WlNOd1JZLzh3RDNTdXVIbjIr?=
+ =?utf-8?B?ZXBZSUxPOFJWTTRTbXBXYk1ld0xyNFVEemZmb250MlQyZkp0cFljbVdPMHp1?=
+ =?utf-8?B?cTBxN1BuOG9rYlhaYVpIWnlJYzJieWd4ajY2T2l1U09LMnd1ZFBHbFA0eGRt?=
+ =?utf-8?B?ZjVocUl4Q0Jnd0Y5cUd4MElidlhidVdXS3p3dUdjV3pxc1RjMVFtMFpZMU9Z?=
+ =?utf-8?B?SkJYTkF0WW8rV01JSWcyV1lURHB6bUpTaEd5ODBoUytZM1FhYUpUbEZYOVhr?=
+ =?utf-8?B?bjBXT1U5T3Y2bFZmME5tdEpqR1ZIYXIzZUYrRXNWeG1wUFRjNDNQUUczY1RU?=
+ =?utf-8?B?NDJXMFZTRFU1b3pvVVdUYjJEQ2FBVEZCNUZ6UTI0ZnpTbzBYVjBiR0FuUlM5?=
+ =?utf-8?Q?EeKQ7J+dFXZiAgvhGcC9XBeS1?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	G9DzktQXGEHVwfgMaNok474om9QucE1L9WnTBG80ZNygbm3fM4ztILhVXLgM7QwFOczMthI4MCD+sVOMlfSuo8yfxTSQvBSDU0gMLHT10yscqLgByz8y7Bo6InJ8is5QEeRjIqzlSYfdSA3Tr7kPq6JnMfQ2iAqNxR1pd745ev7wI/xOHN6Hk6km+0Cns0cueoRYa7Nt6r8c2dEmVB+yjT5/CHbplWXahhFTCyjeaBCtdKdWO1n0n+A171Zn3xzrCcdYGJCR1SN3HLFipsHcUD5ge/TKqXc+MP1WVqH4GkroDFwgatxXPWugZHrFWyWBwd/kDURvgGMvoIxXAzxDpOOUwE3dhlQgWk0pMA1zjpMzceroHHR0IfbA0U9UFF65+YkbPc/fD+0JNGfQU9Ds+faqfg6ZJVjJcnaaJbAX4zd/LjwGjQLnAkv7GCjLrA4fUZlSt0LEQQqCBpsyQhjhRuGSsVTq7Ysqlbad+9vsjVxIPeewvgtN4XBBwH/zk9/o+cVKaBFXn3/SHaXz7PptA5b1S4hg9M8lHntTZyoehHdXBj4fmGg8LEQS0PZ0N5Gt2PvUHH5BFIcL3DqcgjkRiDZXQD/QYjntN6caEnKQSbM=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58992c4d-7f0a-429e-d241-08dd9815a898
+X-MS-Exchange-CrossTenant-AuthSource: IA4PR10MB8710.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2025 03:14:55.0525
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kVVPt7oaCcJC8JJqP7ExLB7DzNwTZZ7b2kf1uP+kveY/DAyUgur+3ciWFZRmW+VJ1TKyJ7Q7EuKzsh0D+BLyhw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB6606
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-21_01,2025-05-20_03,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 spamscore=0
+ suspectscore=0 adultscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
+ definitions=main-2505210029
+X-Authority-Analysis: v=2.4 cv=A/tsP7WG c=1 sm=1 tr=0 ts=682d4533 b=1 cx=c_pps a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19
+ a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=0F0CHYbJwk1biDvzvJ4A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 cc=ntf awl=host:13188
+X-Proofpoint-GUID: qiwQpmGWHpGzjq-YzU5mgYCkyxhOauFx
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIxMDAyOSBTYWx0ZWRfXxBIuba16OZLK PSZe9nNB8srDbra5PVuVwa1swCyM+3PHJlf8UFeeAI8+JxrXkZI9u9ASPhY6WWOQ/riIutfGG2q ZroMFMfdz34TBcjPViR7fGd+o0dDG2AGd/ovp6G+QWLZXE5NmH8izil/g8BLETkfL0I5LZdmyxA
+ JeycqxVmT2sfKQKNq5mlQnTSgItq6xTOlaIbYB0OVMcZa8GbORhphu1R0I7Lx6/UBfG9WssygxZ zojEcRHGSkxV1KptjCkWYfwOpP53tYYay+Jr7XNb7opZhB1aG6xnzK5yRwHmRvMxC7IT6yjQxG2 MhI84JzpbH8+u69F7+DnEmN5AnovIWsNZIDrkKKZdsDJGYNNXTDNJmGhN1WoWZqjIcjbtZYygN3
+ dcVGVtkU097hY7uQrtttwQ1Q34ksfT17pUl6cAvw7Dfb2DENg132VOWDZ8AsJUlcjFBHNZv/
+X-Proofpoint-ORIG-GUID: qiwQpmGWHpGzjq-YzU5mgYCkyxhOauFx
 
 
 
-=E5=9C=A8 2025/5/17 03:05, Leo Martins =E5=86=99=E9=81=93:
-> This patch adds a flag `--shrink-slack-size SIZE` to the mkfs.btrfs
-> allowing users to specify slack when shrinking the filesystem.
-> Previously if you wanted to use --shrink and include extra space in the
-> filesystem you would need to use btrfs resize, however, this requires
-> mounting the filesystem which requires CAP_SYS_ADMIN.
+On 21/5/25 06:25, Qu Wenruo wrote:
+> 
+> 
+> 在 2025/5/20 20:53, Anand Jain 写道:
+>> Commit 2e8b6bc0ab41 ("btrfs: avoid unnecessary device path update for the
+>> same device") addresses the bug in its commit log shown below:
+>>
+>>    BTRFS info: devid 1 device path /dev/mapper/cr_root changed to / 
+>> dev/dm-0 scanned by (udev-worker) (14476)
+>>    BTRFS info: devid 1 device path /dev/dm-0 changed to /dev/mapper/ 
+>> cr_root scanned by (udev-worker) (14476)
+>>    BTRFS info: devid 1 device path /dev/mapper/cr_root changed to / 
+>> proc/self/fd/3 scanned by (true) (14475)
+>>
+>> Here, the device path keeps changing — from `/dev/mapper/cr_root` to
+>> `/dev/dm-0`, back to `/dev/mapper/cr_root`, and finally to `/proc/ 
+>> self/fd/3`.
+>>
+>> While the patch prevents these unnecessary device path changes, it also
+>> blocks the mount thread from passing the correct device path. Normally,
+>> when you pass a DM device to `mount`, it resolves to the mapper path
+>> before being sent to the kernel.
+>>
+>>    For example:
+>>      mount --verbose -o device=/dev/dm-1 /dev/dm-0 /mnt/scratch
+>>      mount: /dev/mapper/vg_fstests-lv1 mounted on /mnt/scratch.
+> 
+> So what is the problem here?
+> 
+> No matter if it's dm-1/dm-0, or mapper path, btrfs shouldn't need to 
+> bother.
+> 
+> I guess you're again trying to address the libblkid bug in kernel.
+> 
+>>
+>> Although the patch in the mailing list (`btrfs-progs: mkfs: use
+>> path_canonicalize for input device`) fixes the specific mkfs trigger,
+>> we still need a kernel-side fix. As BTRFS_IOC_SCAN_DEV is an KAPI
+>> other unknown tools using it may still update the device path. So the
+>> mount-supplied path should be allowed to update the internal path,
+>> when appropriate.
+> This doesn't look good to me.
+> 
+> The path resolve is util-linux specific, and remember there are other 
+> projects implementing "mount", like busybox.
+> Are you going to check every "mount" implementation and handle their 
+> quirks?
+> 
+>  From the past path canonicalization we learnt you will never win a 
+> mouse cat game.
+> 
+> 
+> Again, if it's a bug in libblk, try to fix it.
+> 
 
-Or create the initial fs with shrink, check how large the fs is, then=20
-re-create a file with extra space, then create the same fs without=20
-=2D-shrink option.
+ext4 and xfs don’t hit this because they use the mount thread’s device
+path—we don’t.
 
-If you're not happy with two runs, just calculate the size of the source=
-=20
-directory, add 20% (already very conservative) for metadata, then adds=20
-the slack space, finally create fs without shrink.
+Sure, libblkid could be smarter understanding that /dev/dm-0 vs /dev/
+mapper/test-scratch1 are same, but that’s separate.
+Between mount and unmount, we should just stick to the path from mount
+so everything stays in sync. As these tools including mount use
+libblkid.
 
-Neither solution requires root privilege.
+Or please look at this like this-
+
+The Btrfs kernel needs a device path to display, which comes from
+either:
+
+Threads BTRFS_IOC_SCAN_DEV (only Btrfs specific),
+   or
+Threads going through open_ctree() (usually mount-related, system
+specific)
+
+This patch makes sure the path from the mount thread (open_ctree()),
+are  preserved because that's system wide common to ext4 and xfs,
+BTRFS_IOC_SCAN_DEV is specific to btrfs.
+
+Why now?
+
+Commit 2e8b6bc0ab41 blocked the mount thread from updating the device
+path, which it used to do. That’s now leading to incorrect paths being
+shown—often from BTRFS_IOC_SCAN_DEV (mkfs)
+
+What was that commit fixing?
+
+It was suppressing noisy path flips caused by Btrfs’s udev rule on a 
+mounted btrfs filesystem.
+
+ENV{DM_NAME}=="?*", RUN{builtin}+="btrfs ready /dev/mapper/$env{DM_NAME}"
+
+That rule switches paths like this:
+
+/dev/mapper/test-scratch1 → /dev/dm-4 → /dev/mapper/test-scratch1
+
+With this patch we will still block such flips.
+
+So this patch restores expected behavior by preferring the mount
+thread’s device path.
+
+In fact:
+
+Fixes:
+2e8b6bc0ab41 ("btrfs: avoid unnecessary device path update for the same 
+device")
+
+Thanks, Anand
 
 
-I'm not a super huge fan of the shrink slack idea, especially it may not=
-=20
-work as you expected.
-
-The shrink itself is already chunk based, meaning there may be as large=20
-as 1GiB free space for data/metadata already.
-
-Furthermore even with slack space reserved, the next RW mount may easily=
-=20
-cause extra chunk allocation to take up the whole slack space.
-And if that allocation is for metadata, it may appear that there is no=20
-slack space at all soon after a RW mount.
-
-Mind to explain the use case with more details?
-And I'm also wondering how the feature is working for other filesystems?
-
-I see no shrink like options in mkfs.ext4 nor mkfs.xfs, if you guys can=20
-handle ext4/xfs without shrinking, why not doing the same for btrfs?
-
-Thanks,
-Qu
-
->=20
-> The new syntax is:
-> `mkfs.btrfs --shrink --shrink-slack-size SIZE`
->=20
-> Where slack size is an argument specifying the desired
-> free space to add to a shrunk fs. If not provided, the default
-> slack size is 0.
->=20
-> V3:
-> - warn if block device size < fs size
-> V2:
-> - change --shrink[=3DSLACK SIZE] to --shrink-slack-size SIZE
-> - check for slack size alignment
-> - fix formatting
-> - remove new_size > device size warning message
->=20
->=20
-> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-> Reviewed-by: Mark Harmstone <maharmstone@fb.com>
-> ---
->   mkfs/main.c    | 26 +++++++++++++++++++++++++-
->   mkfs/rootdir.c | 23 ++++++++++++++++++++++-
->   mkfs/rootdir.h |  2 +-
->   3 files changed, 48 insertions(+), 3 deletions(-)
->=20
-> diff --git a/mkfs/main.c b/mkfs/main.c
-> index dc73de47..715e939c 100644
-> --- a/mkfs/main.c
-> +++ b/mkfs/main.c
-> @@ -461,6 +461,8 @@ static const char * const mkfs_usage[] =3D {
->   	OPTLINE("", "- default - the SUBDIR will be a subvolume and also set =
-as default (can be specified only once)"),
->   	OPTLINE("", "- default-ro - like 'default' and is created as read-onl=
-y subvolume (can be specified only once)"),
->   	OPTLINE("--shrink", "(with --rootdir) shrink the filled filesystem to=
- minimal size"),
-> +	OPTLINE("--shrink-slack-size SIZE",
-> +		"(with --shrink) include extra slack space after shrinking (default 0=
-)"),
->   	OPTLINE("-K|--nodiscard", "do not perform whole device TRIM"),
->   	OPTLINE("-f|--force", "force overwrite of existing filesystem"),
->   	"",
-> @@ -1173,6 +1175,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->   	int i;
->   	bool ssd =3D false;
->   	bool shrink_rootdir =3D false;
-> +	u64 shrink_slack_size =3D 0;
->   	u64 source_dir_size =3D 0;
->   	u64 min_dev_size;
->   	u64 shrink_size;
-> @@ -1217,6 +1220,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->   		int c;
->   		enum {
->   			GETOPT_VAL_SHRINK =3D GETOPT_VAL_FIRST,
-> +			GETOPT_VAL_SHRINK_SLACK_SIZE,
->   			GETOPT_VAL_CHECKSUM,
->   			GETOPT_VAL_GLOBAL_ROOTS,
->   			GETOPT_VAL_DEVICE_UUID,
-> @@ -1247,6 +1251,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->   			{ "quiet", 0, NULL, 'q' },
->   			{ "verbose", 0, NULL, 'v' },
->   			{ "shrink", no_argument, NULL, GETOPT_VAL_SHRINK },
-> +			{ "shrink-slack-size", required_argument, NULL,
-> +			  GETOPT_VAL_SHRINK_SLACK_SIZE },
->   			{ "compress", required_argument, NULL,
->   				GETOPT_VAL_COMPRESS },
->   #if EXPERIMENTAL
-> @@ -1383,6 +1389,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->   			case GETOPT_VAL_SHRINK:
->   				shrink_rootdir =3D true;
->   				break;
-> +			case GETOPT_VAL_SHRINK_SLACK_SIZE:
-> +				shrink_slack_size =3D arg_strtou64_with_suffix(optarg);
-> +				break;
->   			case GETOPT_VAL_CHECKSUM:
->   				csum_type =3D parse_csum_type(optarg);
->   				break;
-> @@ -1430,6 +1439,12 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->   		ret =3D 1;
->   		goto error;
->   	}
-> +	if (shrink_slack_size > 0 && !shrink_rootdir) {
-> +		error("the option --shrink-slack-size must be used with --shrink");
-> +		ret =3D 1;
-> +		goto error;
-> +
-> +	}
->   	if (!list_empty(&subvols) && source_dir =3D=3D NULL) {
->   		error("option --subvol must be used with --rootdir");
->   		ret =3D 1;
-> @@ -2108,8 +2123,17 @@ raid_groups:
->  =20
->   		if (shrink_rootdir) {
->   			pr_verbose(LOG_DEFAULT, "  Shrink:           yes\n");
-> +			if (shrink_slack_size > 0) {
-> +				pr_verbose(
-> +					LOG_DEFAULT,
-> +					"  Shrink slack:           %llu (%s)\n",
-> +					shrink_slack_size,
-> +					pretty_size(shrink_slack_size));
-> +			}
->   			ret =3D btrfs_mkfs_shrink_fs(fs_info, &shrink_size,
-> -						   shrink_rootdir);
-> +						   shrink_rootdir,
-> +						   shrink_slack_size);
-> +
->   			if (ret < 0) {
->   				errno =3D -ret;
->   				error("error while shrinking filesystem: %m");
-> diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-> index 19273947..5634d8c2 100644
-> --- a/mkfs/rootdir.c
-> +++ b/mkfs/rootdir.c
-> @@ -17,6 +17,8 @@
->    */
->  =20
->   #include "kerncompat.h"
-> +#include <linux/fs.h>
-> +#include <sys/ioctl.h>
->   #include <sys/stat.h>
->   #include <sys/xattr.h>
->   #include <dirent.h>
-> @@ -52,6 +54,7 @@
->   #include "common/root-tree-utils.h"
->   #include "common/path-utils.h"
->   #include "common/rbtree-utils.h"
-> +#include "common/units.h"
->   #include "mkfs/rootdir.h"
->  =20
->   #define LZO_LEN 4
-> @@ -1924,9 +1927,10 @@ err:
->   }
->  =20
->   int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_=
-ret,
-> -			 bool shrink_file_size)
-> +			 bool shrink_file_size, u64 slack_size)
->   {
->   	u64 new_size;
-> +	u64 blk_device_size;
->   	struct btrfs_device *device;
->   	struct list_head *cur;
->   	struct stat file_stat;
-> @@ -1954,6 +1958,14 @@ int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs=
-_info, u64 *new_size_ret,
->   		return -EUCLEAN;
->   	}
->  =20
-> +	if (!IS_ALIGNED(slack_size, fs_info->sectorsize)) {
-> +		error("slack size %llu not aligned to %u",
-> +				slack_size, fs_info->sectorsize);
-> +		return -EUCLEAN;
-> +	}
-> +
-> +	new_size +=3D slack_size;
-> +
->   	device =3D list_entry(fs_info->fs_devices->devices.next,
->   			   struct btrfs_device, dev_list);
->   	ret =3D set_device_size(fs_info, device, new_size);
-> @@ -1968,6 +1980,15 @@ int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs=
-_info, u64 *new_size_ret,
->   			error("failed to stat devid %llu: %m", device->devid);
->   			return ret;
->   		}
-> +		if (S_ISBLK(file_stat.st_mode)) {
-> +			ioctl(device->fd, BLKGETSIZE64, &blk_device_size);
-> +			if (blk_device_size < new_size) {
-> +				warning("blkdev size %llu (%s) is smaller than fs size %llu (%s)",
-> +					blk_device_size,
-> +					pretty_size(blk_device_size), new_size,
-> +					pretty_size(new_size));
-> +			}
-> +		}
->   		if (!S_ISREG(file_stat.st_mode))
->   			return ret;
->   		ret =3D ftruncate(device->fd, new_size);
-> diff --git a/mkfs/rootdir.h b/mkfs/rootdir.h
-> index b32fda5b..1eee3824 100644
-> --- a/mkfs/rootdir.h
-> +++ b/mkfs/rootdir.h
-> @@ -52,6 +52,6 @@ int btrfs_mkfs_fill_dir(struct btrfs_trans_handle *tra=
-ns, const char *source_dir
->   u64 btrfs_mkfs_size_dir(const char *dir_name, u32 sectorsize, u64 min_=
-dev_size,
->   			u64 meta_profile, u64 data_profile);
->   int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_=
-ret,
-> -			 bool shrink_file_size);
-> +			 bool shrink_file_size, u64 slack_size);
->  =20
->   #endif
+> Thanks,
+> Qu
+> 
+>>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>>   fs/btrfs/volumes.c | 7 ++++---
+>>   1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 89835071cfea..37f7e0367977 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -778,7 +778,7 @@ static bool is_same_device(struct btrfs_device 
+>> *device, const char *new_path)
+>>    */
+>>   static noinline struct btrfs_device *device_list_add(const char *path,
+>>                  struct btrfs_super_block *disk_super,
+>> -               bool *new_device_added)
+>> +               bool *new_device_added, bool mounting)
+>>   {
+>>       struct btrfs_device *device;
+>>       struct btrfs_fs_devices *fs_devices = NULL;
+>> @@ -889,7 +889,7 @@ static noinline struct btrfs_device 
+>> *device_list_add(const char *path,
+>>                   MAJOR(path_devt), MINOR(path_devt),
+>>                   current->comm, task_pid_nr(current));
+>> -    } else if (!device->name || !is_same_device(device, path)) {
+>> +    } else if (!device->name || mounting || !is_same_device(device, 
+>> path)) {
+>>           /*
+>>            * When FS is already mounted.
+>>            * 1. If you are here and if the device->name is NULL that
+>> @@ -1482,7 +1482,8 @@ struct btrfs_device *btrfs_scan_one_device(const 
+>> char *path, blk_mode_t flags,
+>>           goto free_disk_super;
+>>       }
+>> -    device = device_list_add(path, disk_super, &new_device_added);
+>> +    device = device_list_add(path, disk_super, &new_device_added,
+>> +                 mount_arg_dev);
+>>       if (!IS_ERR(device) && new_device_added)
+>>           btrfs_free_stale_devices(device->devt, device);
+> 
 
 
