@@ -1,286 +1,283 @@
-Return-Path: <linux-btrfs+bounces-14153-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14154-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F544ABEB04
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 06:44:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76C25ABEB22
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 07:08:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 344864A5968
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 04:44:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EB0E1B63F88
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 05:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2463E22F758;
-	Wed, 21 May 2025 04:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8507E22F389;
+	Wed, 21 May 2025 05:08:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Kg2KjdgK";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="tdcPDlRz"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="n1b+pzhx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887464430
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 May 2025 04:44:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747802655; cv=fail; b=kH8IvoSu3JzxcGNPmSw4ig7VYySXqHmRg5g8NhEmAQGY3eqL3WeYJboqUMbIeW5SJWyawcRQ1Gp/E3YagKE6oDPavwvMSxvro17K2Ar5TACOLR54XVcsc7Z1tzsGv50O542Vzvho0I4uJf7bc/i/3GrrFan4git9eM6+5oaj1Og=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747802655; c=relaxed/simple;
-	bh=sgqm1IWJ+UV1khpg0j+DFJQdPrGED0TxAB+GRfJ67UQ=;
-	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SeUorrQHJt/ZZkS4oI88zdf9j5jSoq3/jUXfVxC4VNrsHvhLtkQKx8yPPIx7h0tFGjMCZz7oMgwSlIfQji9JR93eqh/DPwylyzHd9ECPZQbDOXChwXmjhaCOXr1NeBC6WsYpfYLTOgvB9yleunwZRiunQlVoixT6Am/UxgtQ+Rc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Kg2KjdgK; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=tdcPDlRz; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54L0gNN3005834;
-	Wed, 21 May 2025 04:44:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=aEjwc/HnvJWWSScsHiusETMIRKODRvB3GKLU+007k7E=; b=
-	Kg2KjdgKIjFcSYqpf3NeRmuYldhb/VnesMZCadFpeDUZwhMeOcDcn/qHkvKZQxva
-	8OlHGCJ1XjZL5M5wVJPAFNgeKEJvBOQWXVKAs/n6nb/yrwhm84XaZ/UI4vpzB5md
-	hdT/wXBvlIwMUSeZtQiD5++28IKjosat1qIv6o9BflNfzW26l93oG3XUgmKfgj3e
-	v4CLpvsjbc/hOw7TmtcCcep+8y24uLFGnC/g8k2YLyGeYZRdEUnVy5Rwhh5l2t74
-	Gq16Uud0GZgqaHQ8Ho7mtDCbuZGp3ENfYJt8ULmSa0uNLPeCZAfka5BVcM4kIm8Y
-	5Mfu0Q1r+ddC479jICQy9A==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46s4h109st-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 21 May 2025 04:44:10 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 54L2DhhM001761;
-	Wed, 21 May 2025 04:44:09 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11on2072.outbound.protection.outlook.com [40.107.223.72])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 46rweruy7q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 21 May 2025 04:44:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=et6uEirhjEKYy5N2rez6I2FOdAcGxVbgR86Hli882/qudi+1WFo4MI9ubcwcUyOSaUcWdK3LR3/V/fexWNusCJ9qYsRWEcwoHTODGdfwa1guzgRnMvvbD3kT7w0tF6eRlaAY2NWE+yui8FS8r5EFrCQ+H/yRdBzM6JgRqp+xSJOObmy4u1mLtt2f8d4eMOck1tFKih6Y1098Yw7zEtQkijSIJvxRV1hJowGW5b9aQ2orWbJ4Ck1pQ7QzBPGjFHfONAwiLsQdeuPMjnEIE4jnrsJtYBcQkwPqXMBYSIj5hYUhIvAecxR2+oGqTPONxyo+Bw1zMdMGz+YnM8LS1OWDEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aEjwc/HnvJWWSScsHiusETMIRKODRvB3GKLU+007k7E=;
- b=JDuGAltYTtQZR+McA8XuF1pmKCJWm7B7Jzg8uyNjLWhsLSglA+WWOtzJ2/iLmM4veTfzww7c/kWGiVt8xf/M+n1whBM7itYwqBQd+6u+kMXJXUSyRcef/MBBqawcA1zaVCmKVtXR+ilymlJqcE6zKyRocPvrRjAJ7OOF1kpiYYJ7VDWTtBOUIlW7MhC4rEfCxn6F5l4gLz/0NjiWur+g1PFaKBo81LaFtdG0/y9PWJcnlSUYe3jqta8NVhN43xSPj7hcgScZ/mHc43NIOexExUwK/PnNDBhPh56Mij7pKQ1tPItkSXcDQP3u7LKbY4bOf8WyDRjxD/Zg+TEPZ/0l1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aEjwc/HnvJWWSScsHiusETMIRKODRvB3GKLU+007k7E=;
- b=tdcPDlRzzdd9VAknoYj32biutRR+tA0BafQFY/jiZg/CcBYjidiLZlZNk39ypg6WPet+Re3tiK4QwT7YECgsptIQ97/mt7FjvXHFZsUBcbQSo13d1kwEobnK4N1rHsRgDKKhrJFUO9vkChGC0/fWFaBTm7WWOLBBv1Xb7IWUQpA=
-Received: from IA4PR10MB8710.namprd10.prod.outlook.com (2603:10b6:208:569::5)
- by SA1PR10MB6471.namprd10.prod.outlook.com (2603:10b6:806:2b0::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.29; Wed, 21 May
- 2025 04:44:07 +0000
-Received: from IA4PR10MB8710.namprd10.prod.outlook.com
- ([fe80::997b:17f9:80e3:b5]) by IA4PR10MB8710.namprd10.prod.outlook.com
- ([fe80::997b:17f9:80e3:b5%4]) with mapi id 15.20.8746.030; Wed, 21 May 2025
- 04:44:07 +0000
-Message-ID: <6b27ac62-a876-43d4-8d38-c691146e8d0a@oracle.com>
-Date: Wed, 21 May 2025 12:44:02 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: preserve mount-supplied device path
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <85256ecce9bfcf8fc7aa0939126a2c58a26d374e.1747740113.git.anand.jain@oracle.com>
- <da820980-ecc2-41d2-8406-fcde11b0bfb5@gmx.com>
- <74ee4615-09c7-41c9-9197-c83b171f1c74@oracle.com>
- <1d27523e-76ed-4a92-bd79-49643c5272bb@gmx.com>
- <fbc3c413-c4c9-47c3-9c5f-4fcd7a772e61@oracle.com>
- <bd7d0253-f3b7-4ac9-bcba-be4064246400@gmx.com>
-Content-Language: en-US
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <bd7d0253-f3b7-4ac9-bcba-be4064246400@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR01CA0193.apcprd01.prod.exchangelabs.com
- (2603:1096:4:189::18) To IA4PR10MB8710.namprd10.prod.outlook.com
- (2603:10b6:208:569::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 613F6176ADB
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 May 2025 05:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747804116; cv=none; b=bIBZhOnVoR31fvVj1/dcV8LAal59jLe+Uq/bAWYyQfkRU71Q546jOvEaM2abUo5QTCmu5EI05l/VeinqeJjXDBxAaj3lruI2ePTC8sAT13vSs6yuyHrfYYc7UaBXjkmfHFfokVavmiNj7LLhImqhlvWirshGwHPEzrYjqjbf5xM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747804116; c=relaxed/simple;
+	bh=lrJs5HavIxZRL1oFh1BiGhLfZjm8zS8ON0JzbIk96r4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=RJ9le/U1Mq/45ZUooXfAUpTQiJ77c/SwlLjyvb4gXqdBOUc3nN3n1UU0SVXR7K8QSh18BMys0X0556ztu85xTeSGHsWM4WDwSYsY/g47BCNbZEcURr/Fk5ok30rP9fe0kKrzK+uo1fD1hlCG6EWnil/K62TXZaB5KTWdYqDYJRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=n1b+pzhx; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1747804112; x=1748408912; i=quwenruo.btrfs@gmx.com;
+	bh=NlincCceWkuswxKdOveQ9Nei3Xts/oVwTdMMGBq+Iko=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=n1b+pzhxuQy/9vdCXtituJva52DnVro7pR7mb9QIpRkuUQIQBVadwPHWVUB5JFbX
+	 vR6VudFrPjYEsGFkf00nETz5m6QyOF7Bss81aqeS8Sg2QeRppIlm4dJQ464ipzpwx
+	 BrEnehU5Gh7a0Bbv7ORx/B7L652FG2KoVeVP+Q8wSJHw2A/IouM+bog715uN9ScIi
+	 nzow+j4Pv+TuwEDh7+59C5xTIKYmVP6Cyygd8WSw+QT87DCWW6wVGj72HGG0dpFhW
+	 oLXmPku/XiG4cOTIjs8G/1jiYhBYxA+BT8xt2hVjJRsgXMEGltR9CT+8XRjxLfBb3
+	 +TWl4tuDU6xlgRBnFw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.228] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MPokN-1udn6y1rV5-00KTfI; Wed, 21
+ May 2025 07:08:32 +0200
+Message-ID: <5836236c-5425-496f-8083-a3e636ce3abb@gmx.com>
+Date: Wed, 21 May 2025 14:38:26 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA4PR10MB8710:EE_|SA1PR10MB6471:EE_
-X-MS-Office365-Filtering-Correlation-Id: 571321f4-b22f-42c2-5573-08dd98221e9e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?NTdraXEvRFIxZWhrcjZuaHJGc1ZheVl0VHF4eVlKNnNNcVlqSElzbDBDTlpW?=
- =?utf-8?B?enhUYWh5NVR6aUQ1VUdwK1AybHo5OHBZL29iZEpOT0NzSjNTbXFKZ1NYOTdK?=
- =?utf-8?B?d09FR3ZHR0RqVmZUdEJEL3dyUDgzbXFBZVBCVkFScGUyR0FrMHFvOCtPNlY4?=
- =?utf-8?B?UzkzWXZEWVZIa2FyVkxQTk51bzlHUmJmZ25seHhvRlFJMVVrZE1QaU1nTVdV?=
- =?utf-8?B?bURCc2EyL1h5dS8vT2J1b2ZsWmtPSEZCL29IUXJoRUIvbzFZVDhBbEJFbUtq?=
- =?utf-8?B?YXZqV0JvQ3h4U1JqeGVHU2RsY2hoMXlJcUcwNXJPN1paOEg4TG9yQSsvL0Jm?=
- =?utf-8?B?UExPRDMvQk5UajB0am5aVEFCWXpkbDMwbHhHVHZJY1ZyZ0pydCtzbE9kZ2JD?=
- =?utf-8?B?MzZkY3VXdTZ3bUZjUGtyUzRJdTVWa25IMTBVNVFMTmFKRGRxS3EvWXRnWGN5?=
- =?utf-8?B?SmpaYWVKTzQ4czdMTFp0WEpHTXBOMGw1RjhIa3hOdmhabEJHTy9rbDUrcnVB?=
- =?utf-8?B?SEVqeGRzbFYwRVp6amMzSG80aDlocHJ0bVM0ZHVkOHB6SkI4c1Z1OTFBWitz?=
- =?utf-8?B?S3h6ZFVWRWxvMEwzZ0JIVUhxczFmZW1kMG5IUEQvVkVFc21lYXlIeW15VjRh?=
- =?utf-8?B?TktxWHd2dFdMdFp4dFdQMmF5WGJHUFI4MjVreWhFK2FCZGNiRjNjOXVVZy85?=
- =?utf-8?B?ZDRpcVhZTjBWZGdyZVNUWmhMdEJhUVNJMzdHYlI1SVhiaHhab3hVNjd2TzZU?=
- =?utf-8?B?aTFpcXJNeU00MEsvODk1bThISXhqZUkvUC9sRFI1MVN0dGZLWitFOHFQQnc0?=
- =?utf-8?B?bytVS1pZUnM2VmNJeW8xNXFjTFFveTJIQnZ1amFSbEs2TzBoVXdHYTZ1K2pS?=
- =?utf-8?B?dmlKMnJ6dlRkb1U5dGlsQ2FPcnlUSzRqUmpIVkpRd24zZnNTSUkwMlM0TkxW?=
- =?utf-8?B?cWZpSFM3OUlCWjd3Ykd4b2o4dHQwMXc1anVtdXV2MDAxVkJVY0hZM0YvTUI0?=
- =?utf-8?B?R3RlNWFwQzNYN1d0RkVHRXJvUHV5WU10NXk4UTlIR2MrYzE4d0YrK2dFNUZ2?=
- =?utf-8?B?YTJLYUVwSkNiOW1EYmhma2xlNm1FTjY0UW82RFRjV2dsRzNuWmQ4SUtBYmFU?=
- =?utf-8?B?eGdFNGJEdXJOLzVXeHFNRmF2cnJsUU42SmFUV2lIU3k3bDc2NWpJbEQreEtn?=
- =?utf-8?B?RWtSTTdyTE0rS2lycSs2a212WW0ySVlJNGRzT1NRTTZMMVJSc0krR3R2ay8x?=
- =?utf-8?B?cU9QTCtoanVqdW00RFJtSlBpZmZSZklRdXpTN0YyYk1jZ3JBS2xiSC9oQkhv?=
- =?utf-8?B?WGhHZ3VaMU00VnJ5ZE5ZNzVIS1dpcGNvWVJYSEd5Q2Z5QVpWSG9TdU10ZkNE?=
- =?utf-8?B?Q0dTSDdZTDlaU2NXdjFrbE5UeUNYL1AzUFdzSXdrNm1GQkEvN3k1YXBielJq?=
- =?utf-8?B?S1RzcjNyV2dVVUZobDNHV1NLd1RWN1VlL0F1aTVqcUxBQU9QTWYwWEJLTmZ2?=
- =?utf-8?B?WlVCVHdpci9rL2tQYUlxZFNxYS9saGdJTDhyVDQvV3NJRDd6QzI5Ync3cUxZ?=
- =?utf-8?B?L2NqbmdGbjUwV21kYjdBMGxSNUhOZkFtQzVpVWxNbDRKdk1ZMUY4MUllUlZr?=
- =?utf-8?B?R2xsdjN5akxqU29rVGE5czBUMWNYZUhlY2hwL203UFg3VVZOZTlwWGUrRG1k?=
- =?utf-8?B?ZHRhL2RZVkhFL21OdXJ2Uk80QlFYa096WHlrMWpJMElRenU0ZDM2U3M1R3Bi?=
- =?utf-8?B?VEthS0w2dVM0SEQwWHBwbU5sOWhvL0QyaUg1cFdRbWhNVkZvT0xDQ085QkZP?=
- =?utf-8?B?b1B0TUh0MFBOSDdrMnZubUtTajgveGdTaUlveGduMlF3T3FhK0I5ZG5NNEM2?=
- =?utf-8?B?TjAwMGlrTnZQWU53Mm1CdFRxZWhQUXdtMG1IM1htT043ZnNTMWJzSjUxR1Zs?=
- =?utf-8?Q?edOK2hM1euA=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA4PR10MB8710.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bjNCT3lTY1lxb29Ub004SGRXWWs4Z0pJL1pxVGp1VHNTV0NkVmVyb3dNQVpF?=
- =?utf-8?B?YW5LZ2czbE8vcHB0MGlDSjlnNlpoSkV3UXhEOEFUcTZDUmoxOGI1L0VNemZi?=
- =?utf-8?B?WGNtYWhKeFRPWGNpU2F3c1o4NGxpa2sxZTFDOVhld1VRd3U5TlFyaXVNZVZo?=
- =?utf-8?B?SWRWUThJRXdXVk5GOG1ueEhJWDduN2ZmMGxJZUZXdFVvYjVRU1FaNGdkT0M0?=
- =?utf-8?B?cHBZVUpvYk9iM0R1ZEYreUxWN0tkK3dTTHpSUWdrZnJIQU52RGovS0ZGUmRh?=
- =?utf-8?B?L2ZzSE42RDVJdWpndjBwaEdhelJWSDNNcTU2T3FjU3NpeXlpUU5uOWZ3eE9I?=
- =?utf-8?B?NDFuUW9qS2l6a1V0a3lDK0ZpckJTSlBYelRJditEdWVNU3lmSktBOG1IcE1N?=
- =?utf-8?B?UEl0L0dlYXpTMm5tZWZNMi9haVFSTFhhdXR5d2pnbHhQNUg4dzM1d053SU1U?=
- =?utf-8?B?MEdHTmJ3S0dUbStsbDBVVWdLWG9DMHNrN2JkYVU1ODN2bW1KWDBpRjB6L1lT?=
- =?utf-8?B?VVBlc21wbTdtTmd6cnU3RHd2dHVZOW9VOXlCWnlZRXpGZ3daUUdWVzBsK0xB?=
- =?utf-8?B?N09tVzBoVFhaTjFLSFZuWnhQVUtzU2x2cjg3S282SFk2bXVhTW5OQnRnZDlE?=
- =?utf-8?B?aEtNOWpXVkVjbnVIemVkSVJUZFJQSjNrMkVLOGZRcERXbkl3ZDN5NDBBUXZt?=
- =?utf-8?B?VTRrbmxaQUE0N2FRN2lxaURiRGdHSThGN2FTQzYyTUlHRUJKUkZKWERUcHJM?=
- =?utf-8?B?bmlDVFpCZzdncFVBakRpNTVmVnpkRmtuc2pJeVRxc2ZOUmNtbEdoN3BxZzNE?=
- =?utf-8?B?VCs3OXJFK3V3a2JVZS9vcURnKzNGellWVVBnTk8rTGhxaDZJYS9HU3c3eXVH?=
- =?utf-8?B?SnZOeExVWWlQMW12REdQaEJPdnZrRmZyd1VDcnltYzhKUU5NMGlOUGkrYSs3?=
- =?utf-8?B?Tys3aTV0dE16L2E3cjdPc2JsSXhYK2VHQVcwcFNPQ0pRcHJibXIrdzZVdENy?=
- =?utf-8?B?eWxnT3JZNWFjeVlSanBqTWRGVDNxSTZZQSt6WlI0TXh2Y1dWazFYQUl0b1ph?=
- =?utf-8?B?WFZ6R3kwQmw3Qm1GbmxqRFRVSmJHNVprYTMvOWppTFMwenU4UmVCc1ZHR2JS?=
- =?utf-8?B?N3A1NE5zd2lOUFlWR0RISTNkakxoZWNybUtjdzBHTEFCZVlCSXpJdGZJeVdV?=
- =?utf-8?B?K0JjeVF6MzhmNXFPd25FdkI1U3BpcGtPemxUZjE3dGEzNzErdnRqMllhZzI4?=
- =?utf-8?B?aWJseU83dGpkK3h2QzhKQWNkNEVVY2pJOXJrQ1BYVHJNMW1FRHRNT2VNczMw?=
- =?utf-8?B?Tzlaa2t4ZUt2NVlFMVRsaGNFWGhLRlh3UUIxUmNINjEwUEF5RHZyQUlrYVJN?=
- =?utf-8?B?QTJCS25BdDFnNkF2MHBzWDNzQit5Y1NxSnVadXNuM1E3Ymh6TWplTm9Gb3pz?=
- =?utf-8?B?ejhEV0ErVW1oVnE4YXk1YlVDdFpEWFFSc3NUdFVwaktvS0lsTnlNaDFZdzVB?=
- =?utf-8?B?R3NPLy9mT0dBZ3JiK1JjTUMyb2F4ZGpXNFU2QXpoZVNJZEhmS0ljeHgraVNX?=
- =?utf-8?B?cWtBVU40SzEwSWhodWwrcGNyWmsxbW5uRmtUa21TZEljTml0Vysra28rYW52?=
- =?utf-8?B?dHU2eHJUdDEweWRGbnZzRDFyOUhGM0xxS2hwYXpHbktHTlZmQzBJMUl3ZzVF?=
- =?utf-8?B?aXp0QzJMbFdSQnEzdGR2Ri9nVDlCQUt6c0VpQmtCZzA3THhLN3Qveldra25J?=
- =?utf-8?B?MTRjS0JDRnFadHE1YlcrV3VFOE8rY3FPVld4SnBid0docHNZa1hFSHd4QTBX?=
- =?utf-8?B?SlF2MXhOaExselFRbG9FaTc1azNrdEpQTEpVY1VJYW1Qb09RWW1jOURmZW4v?=
- =?utf-8?B?WGN3TWZUZVRmU2w5VmtUcXJsamp1cG9FVHdqaGlLUmQ3L0NvUGlDYVp4NnhW?=
- =?utf-8?B?amdoWWIzQkthZnh1bFNXM1JDZjNwYk5jbmxTbm1Nbnh4Rzg4d1FZcE9oRXI4?=
- =?utf-8?B?MHJmYWR3UFh3MlEzVkpKNHVrWFIwSWZFK1lsV3VaMmFFMzdGeFE1SzI3d3BT?=
- =?utf-8?B?a1NYYk5TODhnREN6eTRZazB4RXJwQVZEYlgvTHVEVC82Rkp5cnlueHZaR2E1?=
- =?utf-8?Q?jzqdk/WjkbY3GZKYsB/T32rk7?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	fk1EpjpnWbiAm2SmZKLNK5Im0TI1+9k0Bnd/OOPYQFdeoiW6GBPfGkQMOHOYykym19k4NED9YHPc6mqIcPrQagRA2U/F743le//4H7gilMKbQ8aJiPUMdcslvoo++n2p09N045JN+4BABV/zMgPiDrxVhkKZaoHoNfeUvbBBPqf39WFTGrrl6Ju4/Cp0nm1dveBNCjdCucBbqfP/6pOgvCTqUIbDYOneWXu4/qrELOWx4NkoFh83uND89iO6hwkKIGLuZjDdt0C9ZHr6X7aXm5LFxvi+MlHEPS9AtxzpEWpTTjCH3+MTsF7BFs780ct15CtKgqAtXD00oW9qJuoVybstcpnXzTMdMteXCVN5gOREKCKuEjYqozgTvdU8lW1wtz5+TONSdduo5XIhaGZ1LJfwNd0P8JGkvXAzdh1WpFSUUjmii+4aVxu3lORa1qLw65qcpB0RmCwjahnCbw01JH1lTrkomJcpQcjWipGGWZRIM1Y/SVh6KpynNLkeFok4KVlsyNWLw6fByv0QFcSwE8lu4WeFRvFR6sGjQtwGcvNBqZyDjdeyrxEakaAYt8Nq8ncW70aZVnTkYsJo3HS0hvIdWQg5YBzqton1qxs4QT8=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 571321f4-b22f-42c2-5573-08dd98221e9e
-X-MS-Exchange-CrossTenant-AuthSource: IA4PR10MB8710.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2025 04:44:06.9901
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: skEXup+Tq7Tu83PpGjkz2vESbsaxtcxvKyn6fr4wNbV556oAAzIxy/Tp+2xHVfBZJ95gff4nR9sxFDkEGZGRrw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6471
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-21_01,2025-05-20_03,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- spamscore=0 bulkscore=0 adultscore=0 mlxscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2505160000 definitions=main-2505210044
-X-Proofpoint-ORIG-GUID: T9xw5KATy8nyZh4OnuYh7n1iJxD9O2dp
-X-Authority-Analysis: v=2.4 cv=d/b1yQjE c=1 sm=1 tr=0 ts=682d5a1a cx=c_pps a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10
- a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=GoEa3M9JfhUA:10 a=W8m8L6Qrlf43_rX2UY4A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: T9xw5KATy8nyZh4OnuYh7n1iJxD9O2dp
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIxMDA0NCBTYWx0ZWRfX/937b0ORQf0v qRk03G6Ie4VGFZQA92jBlqfoxHQVvwiAToaQp/2A4nmeUMLNNpqPjNDC7IezUaKuVAUwuleea7l T1eZI4EN4hvVUPWs1QCVs1rMfrXIahZXPSuGhKHqU+qoKeU0hLmSaVZCFO/7dunhTAqDTMcuhHp
- h+n2V+cuRycOlJzkDmSVo9emL8MMeZGAqHr/fDc3g2/T/afmjbq4AJY26B8QcAe/dsOM3l99AyM hyu9COK1Y2A/XCq1R3J8P4+bPxJ1GpKQHwDsrXoRM5JiaxEjnJRoKwSm2EvSzaZNdA00gEh892q OgOnKNb+F7aQqTgwPuodt9l31kB7NuSUhdP1EhvNiYC9vjSiuAZivbNl1KgPz37u76/dG5ygYRE
- Mevu+zjvUNfFOfnc38nIcqGLrVf1BiFexrPdFcU7h0hulq1lxGfAPHtn3pUq9QIltrHbcNGC
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: preserve mount-supplied device path
+To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <85256ecce9bfcf8fc7aa0939126a2c58a26d374e.1747740113.git.anand.jain@oracle.com>
+ <da820980-ecc2-41d2-8406-fcde11b0bfb5@gmx.com>
+ <74ee4615-09c7-41c9-9197-c83b171f1c74@oracle.com>
+ <1d27523e-76ed-4a92-bd79-49643c5272bb@gmx.com>
+ <fbc3c413-c4c9-47c3-9c5f-4fcd7a772e61@oracle.com>
+ <bd7d0253-f3b7-4ac9-bcba-be4064246400@gmx.com>
+ <6b27ac62-a876-43d4-8d38-c691146e8d0a@oracle.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <6b27ac62-a876-43d4-8d38-c691146e8d0a@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:wmFClU6WBsOThwVHLv3jjAyg1iaYaBP0UmtpmQxYibde3oSexqy
+ slSDG0yat4nE80Bsn0feR3UARyd1Dp+e2KwE2EqP0gwSbC08bzscRV0yvFvzSahsxdoyTJ1
+ 6Dg2UTVi8hpHASD2ARzNT2KeV4wGCpY16/fMWeuRCsBLBX+HqaDeEGmCr8Usro4d+WySndq
+ UZUpog1I5SNAMrU1V5dzw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:8xz20WjQF4k=;fyG99aPvau3X0bxWuTSOX7ZY7Sq
+ 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
+ Sch9x6I3YIDGPMpYbZ09Z167HoJ5VPMSH7
 
 
 
-On 21/5/25 12:06, Qu Wenruo wrote:
-> 
-> 
-> 在 2025/5/21 13:22, Anand Jain 写道:
-> [...]
->>> That's not the how fixes tag should be used.
->>>
->>> Let me be clear again, you're working around a bug in libblkid, which 
->>> is not the correct way to go.
->>>
+=E5=9C=A8 2025/5/21 14:14, Anand Jain =E5=86=99=E9=81=93:
+>=20
+>=20
+> On 21/5/25 12:06, Qu Wenruo wrote:
 >>
 >>
->> No, it’s not. The point is that each individual software component has
->> to do the right thing so that it inter-operates well. Think about why
->> this problem doesn’t exist in ext4 and XFS — you’ll get the answer.
-> 
-> BS, firstly it's libblkid resolving the path to the mapper path, and 
-> passing it to fsconfig for us to mount.
- > > But if you do not use libblkid and pass path directly to fsconfig,
-> kernel will still properly mount the fs.
-> 
-> You ignored the fact that the device name passed in is already modified 
-> by libblkid.
-> If you do the same using the mount from busybox, there is no extra 
-> device path modification, and your workaround makes no sense.
-> 
-> 
-> Secondly, XFS/EXT4 doesn't bother the device name, because they are both 
-> single device filesystems, they only care about the block device major/ 
-> minor numbers.
-> 
-> The device name used is not handled by them, but VFS (struct 
-> mount::mnt_devname), and it's again back to the first point, it's 
-> modified by libbblkid.
-> 
-> And btrfs is not a single device fs, it needs to manage all the devices, 
-> and that's why we implement our own show_devname() call backs.
-> 
-> We can choose to show whatever device name (the latest device, or the 
-> olddest device or any live device in the array), just like the user 
-> space which can pass whatever weird path they want.
-> 
-> Wake up from the mindset that there is only one "mount" program in the 
-> world. Then you can see why the workaround doesn't make sense.
+>> =E5=9C=A8 2025/5/21 13:22, Anand Jain =E5=86=99=E9=81=93:
+>> [...]
+>>>> That's not the how fixes tag should be used.
+>>>>
+>>>> Let me be clear again, you're working around a bug in libblkid,=20
+>>>> which is not the correct way to go.
+>>>>
+>>>
+>>>
+>>> No, it=E2=80=99s not. The point is that each individual software compo=
+nent has
+>>> to do the right thing so that it inter-operates well. Think about why
+>>> this problem doesn=E2=80=99t exist in ext4 and XFS =E2=80=94 you=E2=80=
+=99ll get the answer.
+>>
+>> BS, firstly it's libblkid resolving the path to the mapper path, and=20
+>> passing it to fsconfig for us to mount.
+>  > > But if you do not use libblkid and pass path directly to fsconfig,
+>> kernel will still properly mount the fs.
+>>
+>> You ignored the fact that the device name passed in is already=20
+>> modified by libblkid.
+>> If you do the same using the mount from busybox, there is no extra=20
+>> device path modification, and your workaround makes no sense.
+>>
+>>
+>> Secondly, XFS/EXT4 doesn't bother the device name, because they are=20
+>> both single device filesystems, they only care about the block device=
+=20
+>> major/ minor numbers.
+>>
+>> The device name used is not handled by them, but VFS (struct=20
+>> mount::mnt_devname), and it's again back to the first point, it's=20
+>> modified by libbblkid.
+>>
+>> And btrfs is not a single device fs, it needs to manage all the=20
+>> devices, and that's why we implement our own show_devname() call backs.
+>>
+>> We can choose to show whatever device name (the latest device, or the=
+=20
+>> olddest device or any live device in the array), just like the user=20
+>> space which can pass whatever weird path they want.
+>>
+>> Wake up from the mindset that there is only one "mount" program in the=
+=20
+>> world. Then you can see why the workaround doesn't make sense.
+>=20
+> You're putting words in my mouth. I didn=E2=80=99t say what you're claim=
+ing I
+> did.
+>=20
+> Let me be clear: each software unit must behave correctly and
+> independently. That=E2=80=99s the only way to avoid interoperability iss=
+ues when
+> other components change.
 
-You're putting words in my mouth. I didn’t say what you're claiming I
-did.
+We're showing the correct device, no matter if it's mapper path or dm-*=20
+path.
 
-Let me be clear: each software unit must behave correctly and
-independently. That’s the only way to avoid interoperability issues when
-other components change.
+The only interoperability problem is:
 
-If BusyBox wants to use /dev/xyz at open_ctree(), it must be allowed to
-update the device path. In fact, your commit 2e8b6bc0ab41 (“btrfs: avoid
-unnecessary device path update for the same device”) blocks this, and
-that’s a problem.
-Same with mount. If it prefers /dev/mapper/... over /dev/dm-..., it
-should be free to update the path. But your commit forces the path from
-the device register ioctl to be preserved no matter what. That’s not
-just rigid—it’s wrong.
+- Mount is using libblkid to change the device path
+   To a mapper path.
 
-You're calling my method broken, but what's actually broken is the
-assumption that the device path from the pre-mount context must be
-preserved in the post-mount context, which your commit 2e8b6bc0ab41
-wrongly enforces.
+- Libblkid can only handle device paths
+   It can not properly detect dm-* or other soft links devices.
 
+The only thing btrfs involves is, btrfs maintains its own device path,=20
+and we do not care the one passed in for mount/mkfs, just the first one=20
+passed for scan.
+
+So btrfs "breaks" the mount hack, by not bothering the path passed in.
+But is our path broken? No, it's still a correct path (until the device=20
+is gone, and a new rescan is triggered)
+
+But you know what breaks the mount hack? Any "mount" problem that=20
+doesn't utilized libbkid to resolve the device path.
+Or any other thing that triggered btrfs dev scan before mount.
+
+Btrfs is not the critical link, it's the mount hack and the fact=20
+libblkid can not handle any path other than the mapper path.
+
+That's why I call it out loudly, no matter if you choose to ignore.
+
+
+>=20
+> If BusyBox wants to use /dev/xyz at open_ctree(), it must be allowed to
+> update the device path. In fact, your commit 2e8b6bc0ab41 (=E2=80=9Cbtrf=
+s: avoid
+> unnecessary device path update for the same device=E2=80=9D) blocks this=
+, and
+> that=E2=80=99s a problem.
+> Same with mount. If it prefers /dev/mapper/... over /dev/dm-..., it
+> should be free to update the path. But your commit forces the path from
+> the device register ioctl to be preserved no matter what. That=E2=80=99s=
+ not
+> just rigid=E2=80=94it=E2=80=99s wrong.
+
+BS again, why it bothers which path btrfs keeps internally?
+
+No matter if it's mapper or dm names, as long as it's accessible at the=20
+first rescan (can be mount or udev rules or manually scan), we keep it.
+
+There is no reason to change the device path just because libblkid wants=
+=20
+certain format.
+
+>=20
+> You're calling my method broken, but what's actually broken is the
+> assumption that the device path from the pre-mount context must be
+> preserved in the post-mount context, which your commit 2e8b6bc0ab41
+> wrongly enforces.
+And I'll call your workaround broken again and again and again, because=20
+there are more ways to "break" libblkid.
+
+E.g. even with your workaround, then we do a dev-replace.
+The device name used here is a dm-* one.
+
+Now btrfs reports its device name using the latest and replaced device=20
+path, which is dm-* again, breaking libbkid again.
+
+The same applies to dev-add too.
+
+Now say it again, which part is broken?
 
 
