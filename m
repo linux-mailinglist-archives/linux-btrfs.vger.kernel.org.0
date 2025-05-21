@@ -1,212 +1,497 @@
-Return-Path: <linux-btrfs+bounces-14172-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14173-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E626AABF494
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 14:44:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A221ABF4CD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 14:53:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3BC64E03A4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 12:44:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25E517B1D56
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 12:51:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3728267732;
-	Wed, 21 May 2025 12:43:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C057272E45;
+	Wed, 21 May 2025 12:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="GWoHaiT9";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="hU9zPVU/"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nr82jxWc";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nr82jxWc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F341266F19
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 May 2025 12:43:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.143.124
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747831436; cv=fail; b=lOeULC64763VRF/gBQum7oONffv8LMNOxZhbjpD1yZ36iFVtFJwccHJnnezQPfTuiFVSJqwu8+8clwgCFunGxPPsxd41LhiV56whPxjzObNSA52WxzO8mCjIin+Xh+5JwGYj0dYk3EEuagNLWSyQ03u7T/6nM7Hd0p8HTQOekQk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747831436; c=relaxed/simple;
-	bh=uHz9HkC3DTFsBXm7K4HCYinbQm2zMM8f6g8ECuNDKs0=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=lNcV3Rg6vdm094lVFfW8li5Hmo5/JdVp4KH+cLCcUcDZLdGGLsE5sSnCEr4DIY2umhk2nM4phM561gSTUogbpkK2f4hgC+M5wjJ+X+qQFAD6x2PKOLo9xbkBIRMQ5EQUyXopdjNvmcOTfwsaJPVQlK3v8T0MgyX459VgTELGHsc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=GWoHaiT9; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=hU9zPVU/; arc=fail smtp.client-ip=68.232.143.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1747831434; x=1779367434;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=uHz9HkC3DTFsBXm7K4HCYinbQm2zMM8f6g8ECuNDKs0=;
-  b=GWoHaiT9cX5gD+GG4oYHRDn1lZlctJ8V1Tfl+DSpiRnVC2rNXbNTufmQ
-   ahOea6kVTSW4CG6W+v+vvITxl0Q/2/cpvMJRhGdqvaGaVm0bg2SHsbmso
-   ZfzPrQgVshmgL34h5aWRc0651opMvPx7e0OPbUFy7r3kaupnrvHVPLWn5
-   4v+AJsfIaWDBEefCKoL3Nlo3cv77+HWV0Y/af4iNTilWq3XPBg8i3847M
-   pkpKj+lKX/pu2xt5ew26XFRdEe4MMtQppHRshwxLxuQh1ycibNMWHsBV/
-   Gn6B/pd+s2bIy2XnH6xa/lpF7aEU44X6PcJ+X7c1ZRkg1z/yVFhCp+doY
-   A==;
-X-CSE-ConnectionGUID: L/neG8LcR8Kc1PH3DBhu6Q==
-X-CSE-MsgGUID: ORIfAsIyS2O32LyFpeHEfg==
-X-IronPort-AV: E=Sophos;i="6.15,303,1739808000"; 
-   d="scan'208";a="88661065"
-Received: from mail-mw2nam12lp2043.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.43])
-  by ob1.hgst.iphmx.com with ESMTP; 21 May 2025 20:43:52 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=dUteCJ27tPZgAZiSBzThBXaIW5wY1ESMkKnFhaJH04N1zsUrKuecPJUgwLD4P5zCShn72XdfXcjR1bMxkYAPzrErD6YV8tsXjTft7Bu3NfGvbNkRTM0GS5beJ7VShJJmo0JqIT3e0s4DJ9eVb5NOBbsDFJIg5baqXTDM69q+NZ5jFPZFIp3PPvL/SGmsDj/4IiLGRw3YuUXQrZGJvJNQkyxIfEx+FnMDhd0kfw0Y7/rDT5GVoZl33KSQEEDyxBcO723L+p7Z9T0Sjsp4sNRwYTHQJYEeRjFtym1Ml7eRuof3M8xS8u3GHdBAbLYM7pk4qA04epgwHa4yKd3ChY4clA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uHz9HkC3DTFsBXm7K4HCYinbQm2zMM8f6g8ECuNDKs0=;
- b=wKiqwkABijSsZd5ml6IGs3CgUqsdblLyeY2SpXeQ23OBV++f3z4ks6r/DIZBa1VixRlLCG5dzJQIT6rOTOw1PWENJ6Q9ResOT4hPXKznbdOlf4TJ9p3JmwdVglXxLi3Z2dMoWjRGcFSWvCO9jwBDu87NHzAV+9wPEbqah7k9l8aIjdTHD/Xir6HCX20pabAkbar5gmnKV8nIjt0pAkVmFSi6HJbjJFq5HjLlpk3bpSX6UBiq6RUdujUmIpAXY71ahxFQGKDI5uIbMjWeuF4r4sGuBHcT8fdYiK3i85y7ma8FPGj2eF9oH+ROHMoqzWCIU67AEeEFxStU3p3UvC4ZrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uHz9HkC3DTFsBXm7K4HCYinbQm2zMM8f6g8ECuNDKs0=;
- b=hU9zPVU/hcvpKfPjqFJEaKcARDX5L4f1wbEQzrRk04QjaD9ysMzdTHFoiWXwN9BOjMpLPx9m/HZsa9bHf7kPwUYyxiCMXh6XZG/Va5QnHF4EGH2ImCDI/1kzYZxq4JdvkrZZlj8s0uwsHBod8vUSRkZcP/FCpsiJm04m3NsEx/s=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by CH1PR04MB9711.namprd04.prod.outlook.com (2603:10b6:610:2ad::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.31; Wed, 21 May
- 2025 12:43:49 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969%5]) with mapi id 15.20.8769.019; Wed, 21 May 2025
- 12:43:49 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: Mark Harmstone <maharmstone@fb.com>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-Subject: Re: [RFC PATCH 01/10] btrfs: add definitions and constants for
- remap-tree
-Thread-Topic: [RFC PATCH 01/10] btrfs: add definitions and constants for
- remap-tree
-Thread-Index: AQHbxbe4MkRT+aV44ke4sIf2OR6SNrPdEI4A
-Date: Wed, 21 May 2025 12:43:49 +0000
-Message-ID: <33145376-05e7-427a-a20e-6933ff0b949d@wdc.com>
-References: <20250515163641.3449017-1-maharmstone@fb.com>
- <20250515163641.3449017-2-maharmstone@fb.com>
-In-Reply-To: <20250515163641.3449017-2-maharmstone@fb.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|CH1PR04MB9711:EE_
-x-ms-office365-filtering-correlation-id: a975f365-28f6-4a63-923c-08dd98652266
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|366016|1800799024|376014|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?d05pamhZbXNQcVkrN0tYMUltQk5DUzRvbUpoRDNudlBOamdmWTU0UmN6T09z?=
- =?utf-8?B?aVliams4T1ZwZEJ4WmxmMEs5d3poMTVYVVBJNXJFd0FmbE5CR0xVcDVyUitt?=
- =?utf-8?B?dVIwd0ZwYWdnM1Eyd3E2QmpWcGdSbnl3Tk5uZ3dmL0UvNlRkQWtMQkVZc0Rs?=
- =?utf-8?B?OG5iUzNmVFhIZVovZWxzbjJhZkZOV3lodWNnZTF6VDNEZG85UGhYNlpVVHR4?=
- =?utf-8?B?L2VrTk5IcWJGTlQwdVV1WUZ1OG1PNXJnWG0zOGdIbE5kN2F0bE9JQXhpSUhF?=
- =?utf-8?B?UURKWTFrb1lKazk1K2VqOGFMUVdKVVJmL0l6ZmJoa0JJK0hrT3VEc25Mb2Ft?=
- =?utf-8?B?V2V6M3lmNVQ2SjZ0MW4xOGRsYmdhUE55UDNtbkp4VTFrZTFKWFpuMlZyTm9X?=
- =?utf-8?B?Nm9qekQ4bEhNNDRIeWxPRnNvQUZwaDlRWW1LYS9oV0Y0VTBOeFhwLytDazg2?=
- =?utf-8?B?OHBFZE1mYXFaMlZwVjlFTERKVEt4VXZXQStGenVnYkNFSXUyMVZKWFo2RWRl?=
- =?utf-8?B?aG1neFlPdHFES3FkTE12bVM1YUxTRmFEN09HaExVODN6T3JPMEp3TmRsZTI4?=
- =?utf-8?B?Mk4wazlKZUt6cUVNWCthb3dBbnE2Tk5Ra0doa1hCdWZWYU5VM0xJRzNsSWxB?=
- =?utf-8?B?czBsdWprbzlrcmI0eXhESVAvZHJoZC9vZjI5ZVgwVFVuZzRLYjZVbkpEVThn?=
- =?utf-8?B?ZnJWc3JaZmg2cUZVRmJrNEYwZnhnZFhwSTlCQ0E0NXFHdmpxTXFieFhNcGN3?=
- =?utf-8?B?Mko2cFdERFJwdEsyTmY1U2VyNk92a0dlTnpGMlhURTYwSVlXMDVJNUV0TkFJ?=
- =?utf-8?B?cTEwQlZYSmxyZ29wZ0FxYkU2N21wSFFNZTQvbXhaVXNDOGE4dHU5UnNWSDg4?=
- =?utf-8?B?WHdpS2YzYWVzOWhLKzFTaG45VHVEZ0xTdjYyMDBFL3EvcjVLaEhqYkVReWZN?=
- =?utf-8?B?b2JONW9qV2UyaGVEVHpLVlhZakRqdVlVUlZDUnFZeWhKdWpRc2pRTmlLWFBJ?=
- =?utf-8?B?akRaMDZkN3EzNk9uMHZIYy93Ry9MQ3piNCtiemlNc3lQZEVXSXpSSUVpdHc2?=
- =?utf-8?B?cHh4RVNNeU9yeVIvVTZiK0wvYUt5U05pZmxkSzJmNlVpL1RJdDQwUXZSUm4r?=
- =?utf-8?B?M0F4Zzc4c2NGOXkrTjFIdUQzdjZNMkRIUXUvZnZvTjV5VmllMnM3VnRXRzVv?=
- =?utf-8?B?TGxMWlNiSzZxODJCa3N2MVhsb0dQKzlYdlQ1Q1BlWDZGRjM3aSs5cHZGUWFt?=
- =?utf-8?B?YmR0eWF3dG9wQ21KWENDQ1MxLzEzQ0FCSUhMYUdoMDJJYnphMGYweFpVUXd2?=
- =?utf-8?B?NEk5MXpGdVNLanEvRWdCYmJxK3UxeTNWclJjVEJCZWpPUG94aUJRS2FTNXRP?=
- =?utf-8?B?M0xYYWNaaU9uRlRBdW9BdUJMZEJxamI0dVdzMjlMYW9JbU5WaFB6TExFZ0Fu?=
- =?utf-8?B?NXJMR2I3L3dNSkx0OS8vcnRSc0xSWFFsTnAxcnFiUkk4VE96dVhKUWorS3p1?=
- =?utf-8?B?dk96WkdZVTAxNnpNeXZnRDRUMEwzdWRKd3c1VitDQjhxN0xMZ2VYWkVBdnlF?=
- =?utf-8?B?OWF6ejVGeHNBSW9Wajh5ZnFkSnZCcXBCUUpTWWVsNEV0Z2t1Vk5QVjdmZzJs?=
- =?utf-8?B?S0hzb2E3anpFNHVqYkl1T2xWZUFVTllSQ0lyQ3hkMU1PVDdpWFdYMnRoc01m?=
- =?utf-8?B?SU1GSmZ3RmN6cTlaUldUckV3WXpDOXY1SFo2WnplSmkxOUoya2xmNkJCRzhi?=
- =?utf-8?B?K0tieDNaVXkxUkhacC9KRnl4Zld4QkdqZEZvSmhJVXVqZ21MUmRGM2xpNFJR?=
- =?utf-8?B?MVB0NS9rSTl2dGxsZm5zSTYzcERSVE4xYXVwMFhEdktkZ0liSmw5NG1LZGlU?=
- =?utf-8?B?enhEYWZveXB1RFJodHp3OHN4bDlvL1F5b25aR3VVTWRtclhQaTJBRENnczUy?=
- =?utf-8?B?VW15WWtvNHhaUXV6WmsraWNyTjVta2c0bENvYnB1SjdMRzBRNHkvaTNOd3BF?=
- =?utf-8?B?WEpuTklRYk5nPT0=?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?bDg4by9VMmN6b2h4cnNxRGlWb2hscVFFZUFydGhwdjhqSm1veHVWOC8xUW1h?=
- =?utf-8?B?aE1CZXNmOGR4ZmhWQmk0OUtRSUhtTzhDcWZtWmY0WDNVblFzMXNQaDdJaCtz?=
- =?utf-8?B?R1h4WGNLUHdIMlh2TEdpRXNJOVQ1UVpDNmxXOElYelJSTXh1amFwVWN2bHg5?=
- =?utf-8?B?Rmp1M0JOdVZsbyt0ZlExckd2ZzhmeGE0eWE1RFNqNHphNGhFKzIzbk40OFhG?=
- =?utf-8?B?RkZaamtpUzc2ZXdzbUhUL3AvVmg3clBlOFJBSzkyL0xCcnM3elFJaXpKRitS?=
- =?utf-8?B?R1JPd09KMk1iL1AzQS9uSEJ6N3NDMWJOa1RXWWR3NC81R3dwZFRZSXRocUJu?=
- =?utf-8?B?Z0t2OE1UNzlDODZvVVFTUVNpbWJ0bVFwZjVPZlkwazgreUo4M25PRnBPaVpY?=
- =?utf-8?B?MTU5d1hiWU84K2RJSVAxT0dQREllOTF4OUhHWEtsMERYUU84bkNyd1pUb2xP?=
- =?utf-8?B?ZnpCUU4vUW4reEU5UHhFTGFJa2MyQ0MwSHhId3pYb3h0MXlrYlMranlXd3lp?=
- =?utf-8?B?WWhxa0FnSkVSajhCeVJGUEhjMWd3RVJVeGZqZnhWNHMvb05HenUxUkF6bzJQ?=
- =?utf-8?B?QjNZVHNtUElyaHJ0KysvTEgwN2ltVlJmZ1kyeldIUTBEdm5aTUJiZHFqWVE3?=
- =?utf-8?B?emRscFJVZ0Q3SFQ2WDJ6Tnh2OUttU0pvSXl1MjFnM0FpSFZ1NG1WVTVDN3JQ?=
- =?utf-8?B?TzlldlFtQXBKKzBUV1NVRTZ4T3BjQTFHRDAwODFiVXFjR0xkcHU4MWlLamRa?=
- =?utf-8?B?VmhCRlg4d3VleGRoRklqMzlTZXBVQStxeXRYZnU4Wi9NVWZFdjZEclhCWDdF?=
- =?utf-8?B?elV6anlzM2lFQWh4VXFzTzlhTHlNcWFDSllaVGNhNlJQblZKQUFkeURXUUVN?=
- =?utf-8?B?SVI3TDNLbzFJZDdVOEU3SHY5Mm42VXg2RTQ2RzhGZjVQRFNpYktDM0EwSVM4?=
- =?utf-8?B?RDl1SE1JVHcyY0Z3SVdxdGpOK1Y2dnR1MHNKU2FzcEdERjhNR0Zta3Jjbitw?=
- =?utf-8?B?U2ZJVDBKSk5RYVVjamhoU2RCbmR2czBkYXMwOEw3bVFGU1RpbThnVzYzQ1Q1?=
- =?utf-8?B?THM2dTFhQ01tTmdWaEpJSTBudkQ0UkJmZEN1TFYvNFo2c2dJL214Vnl6T2pM?=
- =?utf-8?B?WU5NQk84NmQ1RnV3OStUUVJvZld2S2N0U1R6enNxQkkrd21pSzU3NWgxVlZt?=
- =?utf-8?B?UExsaXdhK0hFcVh5bE1XUlVkekFFWkd4L1UweEdudWNjK3crbklqd1JOY290?=
- =?utf-8?B?d01LTE9sdjg5Mm0xbG9rR2tZdVlqeG1yTXJDc1pIYnN3UVNpeTlKZ3Vrd2xp?=
- =?utf-8?B?OWhDZGJKRGFhMWNwOVpXNXRsZnpFdGhQa3JkU3UwSTJzQlFIMGl5Qy9KM2hu?=
- =?utf-8?B?azFsWDRURVBaOGovSzR0N05LTXVtR1RKS0dVVi9sdnFzSGxJSTBJbk9TdTZM?=
- =?utf-8?B?RVFvcjlDbUlsem1YZjhuNGtiQlUvSnhwOTUvRTZWSWM5V3M5YW1BeVErV1Bz?=
- =?utf-8?B?alY4Z0tqaEcvcHdaRmExcmpadWhNc0NLN2o1QjZHa0R0QU5FeW01NGtjOW45?=
- =?utf-8?B?emlNK25BUHlxSTgrSW1kL1VXRGlReDNRcGRydms2Z3lwQ2pXcms2aXVSUmN3?=
- =?utf-8?B?THNwakw0UmpWbXIyaDhqMmg2Wnh6SlcxZVNDWWtncjArMGxXK041TmNGVU10?=
- =?utf-8?B?Sm9LcmdQeEgyUUVYNnJ4RlNaN3AzZnJMRklVaDcxWXczamJYU050SlMvaGVS?=
- =?utf-8?B?bHVhZXZGQ2xXZUtpK1RjN1BCQndsOHF0bVByUmkrVllHNDk2ZnFZNlhKMkRw?=
- =?utf-8?B?T21KeHBKWWlhODl0WnFVUHUyK0pQNkFRVEJ1Nm0raDFyT29INDJZYTNaZ0pX?=
- =?utf-8?B?VlZSOVY3dDFIb2hkN3NRS0p3TmUwVngrMU1WS0dBQ2dNRElndFhhMDg5ckRy?=
- =?utf-8?B?UlJrNmZpQnNza04rUUw4MTNlWmhEdjdYZjRURWJtQ2F0elVHdlRhdU1lak5u?=
- =?utf-8?B?czRWY0s3Mkd5a0JreGZBQWNCWk5GOCs1S2VLUS85NHFlRjM0VTFVZHljQk15?=
- =?utf-8?B?dHJ4VTljSW9JSGZJUjFNNy9JSXJHMytzdzdGeFhGOGpWRlh0RHhjTG11bTla?=
- =?utf-8?B?RHdhZUluT3hoUnBLZE5Qbzk3WDI4L1BGam4zZzREWmw3cDFrUkpReTZvYkNO?=
- =?utf-8?B?OFE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <81B4ACBDED292D4F97457FE4283BAB06@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0FDC2701D3
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 May 2025 12:51:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747831887; cv=none; b=GhSmf9B6cNd0eL1T8qhUs8G71MemJYpW3mf0hjPo64kRihnhwXL6botQAFmh0ixdaBbwCAmBdh/AVNnfX0PzsGNGgJf1fXPBBNhmgHgFLhdPOZNa1Zzb8N4itWuBrH89Qegiz7ZgpCFk+AwQCg5oXRUMhmUOnmP025V3CL+lU7I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747831887; c=relaxed/simple;
+	bh=dWR+tcPoEG8n2BnyHoFZ6lmBKYAFYE2zAL1AjR9XkQQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IqTvhl9VuxIhAbuiT2DVJRwvk+kxB+8vsmdZqnyY+plrhuwEbz1rQu89Qhp28rgk6fxp6yiwbZ722Y/aLG7g2fkBbVLXPZ3sveqEJ+ABM5u4oPMrh/bAkjh5tm8yLFqtcXKcCLFwiiM8F4KKy6yfFfgiddFmAgep3R6Ty3zpEQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nr82jxWc; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nr82jxWc; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9603520ACE;
+	Wed, 21 May 2025 12:51:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1747831881; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8J42c1LkVdPPnPlurxrNDQClL1rnKlkqniHECxRXW58=;
+	b=nr82jxWcYPM38DsZ5rS4GNB1zcvSbUhfmv2Ulz8Q90P9xknxU3JgU1JlPSjLzPJymlZUXi
+	2VWGw+WNuH+3cVFu4i89JZbysQUx6UWJrHge+1ol9lt1tTsKD4tX63KaWGPRiZn702IUgv
+	ez6HlyVx9wGMWoM73mHFBUGpQ0o1+EE=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=nr82jxWc
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1747831881; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8J42c1LkVdPPnPlurxrNDQClL1rnKlkqniHECxRXW58=;
+	b=nr82jxWcYPM38DsZ5rS4GNB1zcvSbUhfmv2Ulz8Q90P9xknxU3JgU1JlPSjLzPJymlZUXi
+	2VWGw+WNuH+3cVFu4i89JZbysQUx6UWJrHge+1ol9lt1tTsKD4tX63KaWGPRiZn702IUgv
+	ez6HlyVx9wGMWoM73mHFBUGpQ0o1+EE=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8F6A513AA0;
+	Wed, 21 May 2025 12:51:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 6G7/IknMLWg9eQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Wed, 21 May 2025 12:51:21 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs updates for 6.16
+Date: Wed, 21 May 2025 14:51:16 +0200
+Message-ID: <cover.1747826882.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	8qxKOXb+yPnQEsnfdf1N5PjEVRIZ22lQBmp93G+Kxk4UTzBRfwXjv9yhZbbSy+/LHhC+rD5V4G8b+Vo17eUlgJV4BMSt+QCZSTjeGZFnxI71eq9GD2XVlA3yoUA7SleMgbNhg6kvbG+vJg49S0FDC+TecfLuDAtEn6iSMuSWlT4ygaUa0BRP2LSJ2DCYq3VFj74eMaWFRlz6jVvr7uwrG0YldALwit1SI3j4TqBB5HY4qgEz+uF+FOLZT7j8LDBTS+C6Fgqe6R3r0xKinKZKWsKgy7E4iy6xdFwWv+Vc//rlgmdS2QLM/FVNWVhWKQrd9sUOEMzEf7lYA/wUnD01HKfBclHljnPDMSLKm/KVQvADSbZtxEhCCTXbUkg4i3zxRYaECaYfV/A3RaJ0guCWGM1QmFWyz/suexF78ngkh3XA30zj9qZBmXM7irEsdmEDWKF6n/WnN+QGAz7Q8VeFM2BJvEDZdk/JSBIkdy0KAuuai0lgN6UQ6QRThyHb1mD7Y1bmiGJeHUNQZdivQ4E24RKCBYpSKtTljahu0l+1kvF6xuRLZrsxekaMGFpxKMeQL3WSP6qBG4y5OB4IL8PHIeGlp993CjV780V/X39QWhIdm91UZwACFqVTbxbmxca8
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a975f365-28f6-4a63-923c-08dd98652266
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2025 12:43:49.2233
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uLBET4xmHBUcYWDSJ3xdHq2Uf5QV05IZ15ouM/A7AJbbVkH8srlui9VJsFYQt//QRH4AzoMYaiMt+sYoFmAN4ZhEkB71RonU+yMNq0qzLIE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH1PR04MB9711
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Bar: /
+X-Spam-Flag: NO
+X-Spam-Score: -0.01
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 9603520ACE
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-0.01 / 50.00];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
 
-T24gMTUuMDUuMjUgMTg6MzgsIE1hcmsgSGFybXN0b25lIHdyb3RlOg0KPiBAQCAtMjgyLDYgKzI4
-NSwxMCBAQA0KPiAgIA0KPiAgICNkZWZpbmUgQlRSRlNfUkFJRF9TVFJJUEVfS0VZCTIzMA0KDQpK
-dXN0IGEgc21hbGwgaGVhZHMgdXAsIEknZCBuZWVkIDIzMSBmb3IgQlRSRlNfUkFJRF9TVFJJUEVf
-UEFSSVRZX0tFWQ0KYW5kIG1heWJlIGEgMjMyIGFzIHdlbGwsIHNvIHRoZXJlJ3Mgc3RpbGwgc3Bh
-Y2UganVzdCB0byBsZXQgeW91IGtub3cuDQoNCj4gICANCj4gKyNkZWZpbmUgQlRSRlNfSURFTlRJ
-VFlfUkVNQVBfS0VZIAkyMzQNCj4gKyNkZWZpbmUgQlRSRlNfUkVNQVBfS0VZCQkgCTIzNQ0KPiAr
-I2RlZmluZSBCVFJGU19SRU1BUF9CQUNLUkVGX0tFWQkgCTIzNg0KDQo=
+Hi,
+
+please pull the following updates for btrfs. Apart from numerous
+cleanups, there are some performance improvements and one minor mount
+option update. There's one more radix-tree conversion (one remaining),
+and continued work towards enabling large folios (almost finished).
+
+Thanks.
+
+Performance:
+
+- extent buffer conversion to xarray gains throughput and runtime
+  improvements on metadata heavy operations doing writeback (sample test
+  shows +50% throughput, -33% runtime)
+
+- extent io tree cleanups lead to performance improvements by avoiding
+  unnecessary searches or repeated searches
+
+- more efficient extent unpinning when committing transaction (estimated
+  run time improvement 3-5%)
+
+User visible changes:
+
+- remove standalone mount option 'nologreplay', deprecated in 5.9,
+  replacement is 'rescue=nologreplay'
+
+- in scrub, update reporting, add back device stats message after
+  detected errors (accidentally removed during recent refactoring)
+
+Core:
+
+- convert extent buffer radix tree to xarray
+
+- in subpage mode, move block perfect compression out of experimental
+  build
+
+- in zoned mode, introduce sub block groups to allow managing special
+  block groups, like the one for relocation or tree-log, to handle some
+  corner cases of ENOSPC
+
+- in scrub, simplify bitmaps for block tracking status
+
+- continued preparations for large folios
+  - remove assertions for folio order 0
+  - add support where missing: compression, buffered write, defrag, hole
+    punching, subpage, send
+
+- fix fsync of files with no hard links not persisting deletion
+
+- reject tree blocks which are not nodesize aligned, a precaution from
+  4.9 times
+
+- move transaction abort calls closer to the error sites
+
+- remove usage of some struct bio_vec internals
+
+- simplifications in extent map
+
+- extent IO cleanups and optimizations
+
+- error handling improvements
+
+- enhanced ASSERT() macro with optional format strings
+
+- cleanups
+  - remove unused code
+  - naming unifications, dropped __, added prefix
+  - merge similar functions
+  - use common helpers for various data structures
+
+----------------------------------------------------------------
+The following changes since commit 088d13246a4672bc03aec664675138e3f5bff68c:
+
+  Merge tag 'kbuild-fixes-v6.15' of git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild ()
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.16-tag
+
+for you to fetch changes up to eeb133a6341280a1315c12b5b24a42e1fbf35487:
+
+  btrfs: move misplaced comment of btrfs_path::keep_locks (2025-05-17 21:15:08 +0200)
+
+----------------------------------------------------------------
+Boris Burkov (1):
+      btrfs: fix broken drop_caches on extent buffer folios
+
+Charles Han (1):
+      btrfs: update and correct description of btrfs_get_or_create_delayed_node()
+
+Christoph Hellwig (7):
+      btrfs: remove the alignment checks in end_bbio_data_read()
+      btrfs: track the next file offset in struct btrfs_bio_ctrl
+      btrfs: pass a physical address to btrfs_repair_io_failure()
+      btrfs: move kmapping out of btrfs_check_sector_csum()
+      btrfs: simplify bvec iteration in index_one_bio()
+      btrfs: scrub: use virtual addresses directly
+      btrfs: use bvec_kmap_local() in btrfs_decompress_buf2page()
+
+Daniel Vacek (6):
+      btrfs: remove unused flag EXTENT_BUFFER_READ_ERR
+      btrfs: remove unused flag EXTENT_BUFFER_READAHEAD
+      btrfs: remove unused flag EXTENT_BUFFER_CORRUPT
+      btrfs: remove unused flag EXTENT_BUFFER_IN_TREE
+      btrfs: move folio initialization to one place in attach_eb_folio_to_filemap()
+      btrfs: get rid of goto in alloc_test_extent_buffer()
+
+David Sterba (43):
+      btrfs: use rb_entry_safe() where possible to simplify code
+      btrfs: do more trivial BTRFS_PATH_AUTO_FREE conversions
+      btrfs: use BTRFS_PATH_AUTO_FREE in may_destroy_subvol()
+      btrfs: use BTRFS_PATH_AUTO_FREE in btrfs_set_inode_index_count()
+      btrfs: use BTRFS_PATH_AUTO_FREE in can_nocow_extent()
+      btrfs: use BTRFS_PATH_AUTO_FREE in btrfs_encoded_read_inline()
+      btrfs: use BTRFS_PATH_AUTO_FREE in btrfs_del_inode_extref()
+      btrfs: use BTRFS_PATH_AUTO_FREE in btrfs_insert_inode_extref()
+      btrfs: tree-checker: more unlikely annotations
+      btrfs: rename iov_iter iterator parameter in btrfs_buffered_write()
+      btrfs: enhance ASSERT() to take optional format string
+      btrfs: use verbose ASSERT() in volumes.c
+      btrfs: add debug build only WARN
+      btrfs: convert WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG)) to DEBUG_WARN
+      btrfs: convert ASSERT(0) with handled errors to DEBUG_WARN()
+      btrfs: use list_first_entry() everywhere
+      btrfs: remove unused btrfs_io_stripe::length
+      btrfs: use unsigned types for constants defined as bit shifts
+      btrfs: merge __setup_root() to btrfs_alloc_root()
+      btrfs: drop redundant local variable in raid_wait_write_end_io()
+      btrfs: change return type of btrfs_lookup_bio_sums() to int
+      btrfs: change return type of btrfs_csum_one_bio() to int
+      btrfs: change return type of btree_csum_one_bio() to int
+      btrfs: change return type of btrfs_bio_csum() to int
+      btrfs: rename ret to status in btrfs_submit_chunk()
+      btrfs: rename error to ret in btrfs_submit_chunk()
+      btrfs: simplify reading bio status in end_compressed_writeback()
+      btrfs: rename ret to status in btrfs_submit_compressed_read()
+      btrfs: rename ret2 to ret in btrfs_submit_compressed_read()
+      btrfs: change return type of btrfs_alloc_dummy_sum() to int
+      btrfs: raid56: rename parameter err to status in endio helpers
+      btrfs: trivial conversion to return bool instead of int
+      btrfs: switch int dev_replace_is_ongoing variables/parameters to bool
+      btrfs: reformat comments in acls_after_inode_item()
+      btrfs: on unknown chunk allocation policy fallback to regular
+      btrfs: rename btrfs_discard workqueue to btrfs-discard
+      btrfs: move transaction aborts to the error site in convert_free_space_to_bitmaps()
+      btrfs: move transaction aborts to the error site in convert_free_space_to_extents()
+      btrfs: move transaction aborts to the error site in remove_from_free_space_tree()
+      btrfs: move transaction aborts to the error site in add_to_free_space_tree()
+      btrfs: send: remove btrfs_debug() calls
+      btrfs: update list of features built under experimental config
+      btrfs: update Kconfig option descriptions
+
+Filipe Manana (87):
+      btrfs: fix fsync of files with no hard links not persisting deletion
+      btrfs: remove leftover EXTENT_UPTODATE clear from an inode's io_tree
+      btrfs: stop searching for EXTENT_DIRTY bit in the excluded extents io tree
+      btrfs: remove EXTENT_UPTODATE io tree flag
+      btrfs: update comment for try_release_extent_state()
+      btrfs: allow folios to be released while ordered extent is finishing
+      btrfs: pass a pointer to get_range_bits() to cache first search result
+      btrfs: use clear_extent_bit() at try_release_extent_state()
+      btrfs: use clear_extent_bits() at chunk_map_device_clear_bits()
+      btrfs: use clear_extent_bits() instead of clear_extent_bit() where possible
+      btrfs: simplify last record detection at test_range_bit_exists()
+      btrfs: fix documentation for tree_search_for_insert()
+      btrfs: remove redundant check at find_first_extent_bit_state()
+      btrfs: simplify last record detection at test_range_bit()
+      btrfs: remove redundant record start offset check at test_range_bit()
+      btrfs: tracepoints: use btrfs_root_id() to get the id of a root
+      btrfs: remove extent_io_tree_to_inode() and is_inode_io_tree()
+      btrfs: add btrfs prefix to trace events for extent state alloc and free
+      btrfs: add btrfs prefix to main lock, try lock and unlock extent functions
+      btrfs: add btrfs prefix to dio lock and unlock extent functions
+      btrfs: rename __lock_extent() and __try_lock_extent()
+      btrfs: rename the functions to clear bits for an extent range
+      btrfs: rename set_extent_bit() to include a btrfs prefix
+      btrfs: rename the functions to search for bits in extent ranges
+      btrfs: rename the functions to get inode and fs_info from an extent io tree
+      btrfs: directly grab inode at __btrfs_debug_check_extent_io_range()
+      btrfs: rename the functions to init and release an extent io tree
+      btrfs: rename the functions to count, test and get bit ranges in io trees
+      btrfs: rename free_extent_state() to include a btrfs prefix
+      btrfs: rename remaining exported functions from extent-io-tree.h
+      btrfs: remove double underscore prefix from __set_extent_bit()
+      btrfs: make btrfs_find_contiguous_extent_bit() return bool instead of int
+      btrfs: tracepoints: add btrfs prefix to names where it's missing
+      btrfs: tracepoints: remove no longer used tracepoints for eb locking
+      btrfs: rename exported extent map compression functions
+      btrfs: rename extent map functions to get block start, end and check if in tree
+      btrfs: rename functions to allocate and free extent maps
+      btrfs: rename remaining exported extent map functions
+      btrfs: rename __lookup_extent_mapping() to remove double underscore prefix
+      btrfs: rename __tree_search() to remove double underscore prefix
+      btrfs: remove duplicate error check at btrfs_clear_extent_bit_changeset()
+      btrfs: exit after state split error at btrfs_clear_extent_bit_changeset()
+      btrfs: add missing error return to btrfs_clear_extent_bit_changeset()
+      btrfs: use bools for local variables at btrfs_clear_extent_bit_changeset()
+      btrfs: avoid extra tree search at btrfs_clear_extent_bit_changeset()
+      btrfs: simplify last record detection at btrfs_clear_extent_bit_changeset()
+      btrfs: remove duplicate error check at btrfs_convert_extent_bit()
+      btrfs: exit after state split error at btrfs_convert_extent_bit()
+      btrfs: exit after state insertion failure at btrfs_convert_extent_bit()
+      btrfs: avoid unnecessary next node searches when clearing bits from extent range
+      btrfs: avoid repeated extent state processing when converting extent bits
+      btrfs: avoid re-searching tree when converting bits in an extent range
+      btrfs: simplify last record detection at btrfs_convert_extent_bit()
+      btrfs: exit after state insertion failure at set_extent_bit()
+      btrfs: exit after state split error at set_extent_bit()
+      btrfs: simplify last record detection at set_extent_bit()
+      btrfs: avoid repeated extent state processing when setting extent bits
+      btrfs: avoid re-searching tree when setting bits in an extent range
+      btrfs: remove unnecessary NULL checks before freeing extent state
+      btrfs: don't BUG_ON() when unpinning extents during transaction commit
+      btrfs: remove variable to track trimmed bytes at btrfs_finish_extent_commit()
+      btrfs: make extent unpinning more efficient when committing transaction
+      btrfs: simplify getting and extracting previous transaction during commit
+      btrfs: simplify getting and extracting previous transaction at clean_pinned_extents()
+      btrfs: simplify cow only root list extraction during transaction commit
+      btrfs: raid56: use list_last_entry() at cache_rbio()
+      btrfs: simplify extracting delayed node at btrfs_first_delayed_node()
+      btrfs: simplify extracting delayed node at btrfs_first_prepared_delayed_node()
+      btrfs: simplify csum list release at btrfs_put_ordered_extent()
+      btrfs: defrag: use list_last_entry() at defrag_collect_targets()
+      btrfs: use verbose assert at peek_discard_list()
+      btrfs: fix qgroup reservation leak on failure to allocate ordered extent
+      btrfs: check we grabbed inode reference when allocating an ordered extent
+      btrfs: fold error checks when allocating ordered extent and update comments
+      btrfs: use boolean for delalloc argument to btrfs_free_reserved_bytes()
+      btrfs: use boolean for delalloc argument to btrfs_free_reserved_extent()
+      btrfs: fix invalid data space release when truncating block in NOCOW mode
+      btrfs: remove superfluous return value check at btrfs_dio_iomap_begin()
+      btrfs: return real error from __filemap_get_folio() calls
+      btrfs: simplify error return logic when getting folio at prepare_one_folio()
+      btrfs: log error codes during failures when writing super blocks
+      btrfs: fix harmless race getting delayed ref head count when running delayed refs
+      btrfs: fix wrong start offset for delalloc space release during mmap write
+      btrfs: pass true to btrfs_delalloc_release_space() at btrfs_page_mkwrite()
+      btrfs: simplify early error checking in btrfs_page_mkwrite()
+      btrfs: don't return VM_FAULT_SIGBUS on failure to set delalloc for mmap write
+      btrfs: use a single variable to track return value at btrfs_page_mkwrite()
+
+Josef Bacik (3):
+      btrfs: convert the buffer_radix to an xarray
+      btrfs: set DIRTY and WRITEBACK tags on the buffer_tree
+      btrfs: use buffer xarray for extent buffer writeback operations
+
+Mark Harmstone (1):
+      btrfs: fix typo in space info explanation
+
+Naohiro Aota (13):
+      btrfs: pass btrfs_space_info to btrfs_reserve_data_bytes()
+      btrfs: pass struct btrfs_inode to btrfs_free_reserved_data_space_noquota()
+      btrfs: factor out init_space_info() from create_space_info()
+      btrfs: factor out do_async_reclaim_{data,metadata}_space()
+      btrfs: factor out check_removing_space_info() from btrfs_free_block_groups()
+      btrfs: add space_info argument to btrfs_chunk_alloc()
+      btrfs: add space_info parameter for block group creation
+      btrfs: introduce btrfs_space_info sub-group
+      btrfs: introduce tree-log sub-space_info
+      btrfs: tweak extent/chunk allocation for space_info sub-space
+      btrfs: use proper data space_info for zoned mode
+      btrfs: add block reserve for treelog
+      btrfs: add support for reclaiming from sub-space space_info
+
+Qu Wenruo (32):
+      btrfs: move block perfect compression out of experimental features
+      btrfs: remove force_page_uptodate variable from btrfs_buffered_write()
+      btrfs: cleanup the reserved space inside loop of btrfs_buffered_write()
+      btrfs: factor out space reservation code from btrfs_buffered_write()
+      btrfs: factor out the main loop of btrfs_buffered_write() into a helper
+      btrfs: refactor how we handle reserved space inside copy_one_range()
+      btrfs: prepare btrfs_buffered_write() for large data folios
+      btrfs: prepare btrfs_punch_hole_lock_range() for large data folios
+      btrfs: fix the file offset calculation inside btrfs_decompress_buf2page()
+      btrfs: send: remove the again label inside put_file_data()
+      btrfs: send: prepare put_file_data() for large data folios
+      btrfs: prepare btrfs_page_mkwrite() for large data folios
+      btrfs: prepare prepare_one_folio() for large data folios
+      btrfs: prepare end_bbio_data_write() for large data folios
+      btrfs: subpage: prepare for large data folios
+      btrfs: zlib: prepare copy_data_into_buffer() for large data folios
+      btrfs: remove unnecessary early exits in delalloc folio lock and unlock
+      btrfs: use folio_contains() for EOF detection
+      btrfs: prepare compression paths for large data folios
+      btrfs: enable large data folios support for defrag
+      btrfs: raid56: store a physical address in structure sector_ptr
+      btrfs: subpage: reject tree blocks which are not nodesize aligned
+      btrfs: merge btrfs_read_dev_one_super() into btrfs_read_disk_super()
+      btrfs: get rid of btrfs_read_dev_super()
+      btrfs: scrub: update device stats when an error is detected
+      btrfs: scrub: move error reporting members to stack
+      btrfs: scrub: fix a wrong error type when metadata bytenr mismatches
+      btrfs: scrub: aggregate small bitmaps into a larger one
+      btrfs: handle unaligned EOF truncation correctly for subpage cases
+      btrfs: handle aligned EOF truncation correctly for subpage cases
+      btrfs: scrub: reduce memory usage of struct scrub_sector_verification
+      btrfs: remove standalone "nologreplay" mount option
+
+Sun YangKai (1):
+      btrfs: move misplaced comment of btrfs_path::keep_locks
+
+Yangtao Li (3):
+      btrfs: reuse exit helper for cleanup in btrfs_bioset_init()
+      btrfs: simplify return logic from btrfs_delayed_ref_init()
+      btrfs: remove BTRFS_REF_LAST from enum btrfs_ref_type
+
+ fs/btrfs/Kconfig                  |  32 +-
+ fs/btrfs/async-thread.c           |   3 +-
+ fs/btrfs/backref.c                |  12 +-
+ fs/btrfs/backref.h                |   4 +-
+ fs/btrfs/bio.c                    |  55 ++-
+ fs/btrfs/bio.h                    |   3 +-
+ fs/btrfs/block-group.c            | 196 ++++----
+ fs/btrfs/block-group.h            |  11 +-
+ fs/btrfs/block-rsv.c              |  11 +
+ fs/btrfs/block-rsv.h              |   1 +
+ fs/btrfs/btrfs_inode.h            |   7 +-
+ fs/btrfs/compression.c            |  75 +--
+ fs/btrfs/compression.h            |  11 +-
+ fs/btrfs/ctree.h                  |   2 +-
+ fs/btrfs/defrag.c                 | 141 +++---
+ fs/btrfs/delalloc-space.c         |  51 +-
+ fs/btrfs/delalloc-space.h         |   4 +-
+ fs/btrfs/delayed-inode.c          |  73 ++-
+ fs/btrfs/delayed-ref.c            |   9 +-
+ fs/btrfs/delayed-ref.h            |   1 -
+ fs/btrfs/dev-replace.c            |  22 +-
+ fs/btrfs/dev-replace.h            |   2 +-
+ fs/btrfs/direct-io.c              |  75 ++-
+ fs/btrfs/discard.c                |   4 +-
+ fs/btrfs/disk-io.c                | 199 +++-----
+ fs/btrfs/disk-io.h                |   5 +-
+ fs/btrfs/extent-io-tree.c         | 510 +++++++++++---------
+ fs/btrfs/extent-io-tree.h         | 187 ++++----
+ fs/btrfs/extent-tree.c            | 162 ++++---
+ fs/btrfs/extent-tree.h            |   4 +-
+ fs/btrfs/extent_io.c              | 960 ++++++++++++++++++--------------------
+ fs/btrfs/extent_io.h              |   9 +-
+ fs/btrfs/extent_map.c             | 175 ++++---
+ fs/btrfs/extent_map.h             |  45 +-
+ fs/btrfs/fiemap.c                 |   9 +-
+ fs/btrfs/file-item.c              |  49 +-
+ fs/btrfs/file-item.h              |   6 +-
+ fs/btrfs/file.c                   | 782 +++++++++++++++++--------------
+ fs/btrfs/free-space-cache.c       |  52 +--
+ fs/btrfs/free-space-tree.c        |  62 ++-
+ fs/btrfs/fs.h                     |   6 +-
+ fs/btrfs/inode-item.c             |  31 +-
+ fs/btrfs/inode.c                  | 680 +++++++++++++++------------
+ fs/btrfs/ioctl.c                  |  18 +-
+ fs/btrfs/locking.c                |   8 +-
+ fs/btrfs/locking.h                |   2 +-
+ fs/btrfs/lzo.c                    |   5 +-
+ fs/btrfs/messages.h               |  83 +++-
+ fs/btrfs/ordered-data.c           |  73 +--
+ fs/btrfs/qgroup.c                 |  55 +--
+ fs/btrfs/raid56.c                 | 219 ++++-----
+ fs/btrfs/reflink.c                |  15 +-
+ fs/btrfs/relocation.c             | 112 +++--
+ fs/btrfs/scrub.c                  | 458 +++++++++++-------
+ fs/btrfs/send.c                   |  88 +---
+ fs/btrfs/space-info.c             | 174 ++++---
+ fs/btrfs/space-info.h             |  12 +-
+ fs/btrfs/subpage.c                |   6 +-
+ fs/btrfs/super.c                  |  24 +-
+ fs/btrfs/sysfs.c                  |  27 +-
+ fs/btrfs/tests/btrfs-tests.c      |  32 +-
+ fs/btrfs/tests/extent-io-tests.c  |  61 ++-
+ fs/btrfs/tests/extent-map-tests.c | 102 ++--
+ fs/btrfs/tests/inode-tests.c      | 107 +++--
+ fs/btrfs/transaction.c            |  74 +--
+ fs/btrfs/tree-checker.c           |  22 +-
+ fs/btrfs/tree-log.c               |  66 +--
+ fs/btrfs/volumes.c                | 345 +++++++-------
+ fs/btrfs/volumes.h                |  11 +-
+ fs/btrfs/zlib.c                   |   9 +-
+ fs/btrfs/zoned.c                  |  28 +-
+ fs/btrfs/zstd.c                   |  10 +-
+ include/trace/events/btrfs.h      |  89 ++--
+ 73 files changed, 3791 insertions(+), 3282 deletions(-)
 
