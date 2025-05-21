@@ -1,729 +1,383 @@
-Return-Path: <linux-btrfs+bounces-14142-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14143-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1190EABE864
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 02:04:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 125ABABE8A4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 02:45:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 130941BC2CCE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 00:04:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E4A64A6C48
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 00:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DE42905;
-	Wed, 21 May 2025 00:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF1B847B;
+	Wed, 21 May 2025 00:45:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="NklhGQVf";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="c8GRLlXs"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="L3G9h7TY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB11910F1
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 May 2025 00:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A61794B1E6D
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 May 2025 00:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747785850; cv=none; b=OlVYF0seU1VvmT8SosOyFOJ+Te4ldZ1IucpAjdrUWUbNTGy5DqKOtGELs3bS9G8618wLF44ASTvCAPviIdX1qf2c7G6QKtiWHHI1nDsGMCcM6DoSQYYxbtvVtuOXT0fvWORuudVC+WcPVP3QjPWRIE7Hpn+9p1sQ8VZIp6156Uc=
+	t=1747788336; cv=none; b=UF12JpEVYeiWL6yUpy4QVHPlVCzC4dcEJI+Cfatfgp6WC2gZcJkmObGGHtMQfAe0cnGeQ9O6x9V7h/4zAXJFp7sbm5kHzmT72JTOyi7Nt2THSmA3iifD8dbVD0OhE2fwSx1Rysf6PXuSktVyk5PBV7rE+G6T/eBVXTn5jyRY46Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747785850; c=relaxed/simple;
-	bh=Xu/FeMXRYP/Oq8krDaLuqFTXmzOwvY47/413mY6Z+Tc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cLbWdGAShy+7Y/UQCTv1x/bIaQ2WW5004os696yQ/3/H+VzGNlnA68eXoX0nqbZ9J1tSU500o1K0CREvmFHMMoAADbKMaGTjSDSQ4FoM8RHVYvlkt6dZy373HZiP7G3N8xqVZbmhDXgkLck8XaFz0vkMWg90wRR0dfQIMOR1MG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=NklhGQVf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=c8GRLlXs; arc=none smtp.client-ip=202.12.124.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id C382125400F5;
-	Tue, 20 May 2025 20:04:04 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-08.internal (MEProxy); Tue, 20 May 2025 20:04:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1747785844; x=1747872244; bh=GZyQEDupNn
-	lN1zzDjeo+J/NUogJxRtrjdwD9fUjwwdI=; b=NklhGQVfS8phy2aAXqC9GhMxvY
-	bh5YmZbsEpLID94qBv0iUiB2vgxlKpU/TaOsMIREQTUvZllAGagFPDwaw7dJaWoz
-	WYxXBspiATVi0S3ktjPmlCWmeoFVKo4J5IUFCpm85deX0fd1S/rIKJfMKrnK47Q7
-	0nE1N4I5fjCDmBv+QEKwPRD4Z2mD6kgFN6xWXYUCPeSJ8TxGnrE979Udtb0lMZsm
-	StYMDiFIo2ZvEAq7Ffc3Uya6TxvhMNqspFM9e8vVO88pp81TrOyr4LPnLpk7nnpG
-	/XgHno6nY29Plk4G6DWJSa4ug3uHyl6+kl5/uy4PG/ldE8FohW0l318K3uzw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1747785844; x=1747872244; bh=GZyQEDupNnlN1zzDjeo+J/NUogJxRtrjdwD
-	9fUjwwdI=; b=c8GRLlXsfSUPYDef3qqIyrsYrKXECdYXU0D00DBCokISQA2sC80
-	m70L7xn6rrdhu5nh1sfUdDOtWL+BVHxSpckJpx6YWcqtpAIIKfZDG9gxIe3lrRXn
-	OMKJdDkFEOJHrPiUs/UnOXGy3ofYdO/2sCf8k/AGFrQMK8gveVtbOanLdjhc/NFQ
-	rvTaBzru/u7bWpjkj6o/aJAVECO7N/9EVdawBxJgtoFavxMvaTbaLt/Ris9JoL2g
-	/9jQd55VJ9E9/DA1Ckswks7z4Uwh381Zw43TAViB7/NtQgVAWmX/sm7Fm2xTKYL7
-	qeapUVdAHCZaQLxfh1auyeORcBeL9NsFcVA==
-X-ME-Sender: <xms:cxgtaIgs2HngEdnNsq50y6FYkhtX2xysY45x9e3WaWMVMgDq_NJahA>
-    <xme:cxgtaBBCY16eNoXyMjlv-1mJg8tsN-MrorGvd4wVu867eWviMXCWpe_h4SGPQL5tM
-    HTIcdPKu8oGjSJ1yYM>
-X-ME-Received: <xmr:cxgtaAHZvRvWQXLUGeli74cxIluVosi-8WiCga-K8HO9Iv8n_He6M5_8pj0QdyB7i1lD0gMMMhBCfjJtTbC3t0UBtNc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgdduieduucdltddurdegfedvrddttd
-    dmucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgf
-    nhhsuhgsshgtrhhisggvpdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttd
-    enucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhgg
-    tggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorh
-    hishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjedu
-    hfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghp
-    thhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepmhgrhhgrrhhmshhtoh
-    hnvgesfhgsrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhk
-    vghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:dBgtaJS3m5AB6OS2_BFNf_YMwqTrbvTz0KqIuwOWM8jlvlpSOifHIg>
-    <xmx:dBgtaFzm70lFJWljSoJD89MSSfadf3-Ib5riqDjjzLC9qxE1bgT0PA>
-    <xmx:dBgtaH5Z0qmGcnC8a2oJUrotG6AOMjguioKFDGYYfu8hMkrXiGfVYg>
-    <xmx:dBgtaCzgvIGmkgE34go382XOk-1TX_N2SAFG8kB196ZLY2UxaxD21Q>
-    <xmx:dBgtaBGofWxj9u8whgoFobTpcIum7yo7_kRPg3aUl-9MYefLvjzkTHMB>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 20 May 2025 20:04:03 -0400 (EDT)
-Date: Tue, 20 May 2025 17:04:23 -0700
-From: Boris Burkov <boris@bur.io>
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [RFC PATCH 10/10] btrfs: replace identity maps with actual
- remaps when doing relocations
-Message-ID: <20250521000423.GA204755@zen.localdomain>
-References: <20250515163641.3449017-1-maharmstone@fb.com>
- <20250515163641.3449017-11-maharmstone@fb.com>
+	s=arc-20240116; t=1747788336; c=relaxed/simple;
+	bh=NcN/8lIXrwVGdzkOunf2VIuEnGzFeNJUngfv/lYjOFs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c390imCzVEUQdy3D4axv/aPDu1iSw0eGd8xAbC6D7LgJMKf/uxe6PS5U9LeKbHJXZ/Pmf0EKUteE1SVVtBRa61+3HNtn3FS7z748H+oOjUQILb6SnPMV6hJ3ewD8Wq6FpTKs0Xan29/g5VDBP8SoCnAIbj2f2+68z/02x7l0JcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=L3G9h7TY; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1747788327; x=1748393127; i=quwenruo.btrfs@gmx.com;
+	bh=O6jhYfTruq43OMK9VsxRn91RVt1se95ma2sivZuwEhM=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=L3G9h7TYyBSuUuIIh0AJ/CSDiabFeObRoD0ZhdiJvh2iuDsurR1MBAwc3ObcKcSv
+	 K4tpYCjGh9fTN2pxkbjUvqkonj1+CLHaUAkc372VkxPPnhoSlM3FV6MiG/W8L44FY
+	 TSPsCWKZyFSyuVbh/3nldzd4h9tP7dyQ8QCfO2k1SivyqUcaMmW8WEGmQKruxz5Ey
+	 qNN02Zzu3ZatmDivPCjIsN4ekRd6MWHSM3kYugT005+HeQbmg6X9PrZ+iCrBddOVd
+	 mxKqFpTRmKWE+VL5AJy6bAVqHeL7MUBefqb18vgsUu+ZcZxLrDLgstur88wYsStzu
+	 A35U9IEX5UV7nH0owA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.228] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MfHEJ-1utNNd2qWR-00ZwSf; Wed, 21
+ May 2025 02:45:27 +0200
+Message-ID: <80208aaa-2fa0-4f38-8d1c-90a35d9843be@gmx.com>
+Date: Wed, 21 May 2025 10:15:23 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250515163641.3449017-11-maharmstone@fb.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] [RESEND] btrfs-progs: add slack space for mkfs
+ --shrink
+To: Leo Martins <loemra.dev@gmail.com>, linux-btrfs@vger.kernel.org,
+ kernel-team@fb.com
+Cc: Mark Harmstone <maharmstone@fb.com>
+References: <60e0cc5d215e79ba47b2484aad89a726812049b6.1743463442.git.loemra.dev@gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <60e0cc5d215e79ba47b2484aad89a726812049b6.1743463442.git.loemra.dev@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:4S2VvBGjPOCgthvJb/INk3GJgHyccREBbbQKwZffw4cSh+3mXRU
+ A8ExjfLzIeh/qudrRdMI0wfkq+XD+Tlgp9qfZKJF99y1iEXLClrHsb08bw58i3JMJulWjmn
+ PxLt8ToE5MF5c3q6HM2cIVEzknt2UaAnD5MvCiDpbBsq0g8lVhjHuxyTaK/pWWX8LGSs5yt
+ p/pjY2VRJvPiA3hius2/g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:61K03FueCNo=;1nmG2n6MFYQ0MWYMDza1GdOrIj1
+ 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
+ 1QPY=
 
-On Thu, May 15, 2025 at 05:36:38PM +0100, Mark Harmstone wrote:
-> Add a function do_remap_tree_reloc(), which does the actual work of
-> doing a relocation using the remap tree.
-> 
-> In a loop we call do_remap_tree_reloc_trans(), which searches for the
-> first identity remap for the block group. We call btrfs_reserve_extent()
-> to find space elsewhere for it, and read the data into memory and write
-> it to the new location. We then carve out the identity remap and replace
-> it with an actual remap, which points to the new location in which to
-> look.
-> 
-> Once the last identity remap has been removed we call
-> last_identity_remap_gone(), which, as with deletions, removes the
-> chunk's stripes and device extents.
 
-I think this is a good candidate for unit testing. Just hammer a bunch
-of cases adding/removing/merging remaps.
 
-> 
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+=E5=9C=A8 2025/5/17 03:05, Leo Martins =E5=86=99=E9=81=93:
+> This patch adds a flag `--shrink-slack-size SIZE` to the mkfs.btrfs
+> allowing users to specify slack when shrinking the filesystem.
+> Previously if you wanted to use --shrink and include extra space in the
+> filesystem you would need to use btrfs resize, however, this requires
+> mounting the filesystem which requires CAP_SYS_ADMIN.
+
+Or create the initial fs with shrink, check how large the fs is, then=20
+re-create a file with extra space, then create the same fs without=20
+=2D-shrink option.
+
+If you're not happy with two runs, just calculate the size of the source=
+=20
+directory, add 20% (already very conservative) for metadata, then adds=20
+the slack space, finally create fs without shrink.
+
+Neither solution requires root privilege.
+
+
+I'm not a super huge fan of the shrink slack idea, especially it may not=
+=20
+work as you expected.
+
+The shrink itself is already chunk based, meaning there may be as large=20
+as 1GiB free space for data/metadata already.
+
+Furthermore even with slack space reserved, the next RW mount may easily=
+=20
+cause extra chunk allocation to take up the whole slack space.
+And if that allocation is for metadata, it may appear that there is no=20
+slack space at all soon after a RW mount.
+
+Mind to explain the use case with more details?
+And I'm also wondering how the feature is working for other filesystems?
+
+I see no shrink like options in mkfs.ext4 nor mkfs.xfs, if you guys can=20
+handle ext4/xfs without shrinking, why not doing the same for btrfs?
+
+Thanks,
+Qu
+
+>=20
+> The new syntax is:
+> `mkfs.btrfs --shrink --shrink-slack-size SIZE`
+>=20
+> Where slack size is an argument specifying the desired
+> free space to add to a shrunk fs. If not provided, the default
+> slack size is 0.
+>=20
+> V3:
+> - warn if block device size < fs size
+> V2:
+> - change --shrink[=3DSLACK SIZE] to --shrink-slack-size SIZE
+> - check for slack size alignment
+> - fix formatting
+> - remove new_size > device size warning message
+>=20
+>=20
+> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+> Reviewed-by: Mark Harmstone <maharmstone@fb.com>
 > ---
->  fs/btrfs/relocation.c | 522 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 522 insertions(+)
-> 
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 7da95b82c798..bcf04d4c5af1 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -4660,6 +4660,60 @@ static int mark_bg_remapped(struct btrfs_trans_handle *trans,
->  	return ret;
->  }
->  
-
-Thinking out loud: I wonder if you do end up re-modeling the
-transactions s.t. we do one transaction per loop or something, then
-maybe you can use btrfs_for_each_slot.
-
-> +static int find_next_identity_remap(struct btrfs_trans_handle *trans,
-> +				    struct btrfs_path *path, u64 bg_end,
-> +				    u64 last_start, u64 *start,
-> +				    u64 *length)
-> +{
-> +	int ret;
-> +	struct btrfs_key key, found_key;
-> +	struct btrfs_root *remap_root = trans->fs_info->remap_root;
-> +	struct extent_buffer *leaf;
-> +
-> +	key.objectid = last_start;
-> +	key.type = BTRFS_IDENTITY_REMAP_KEY;
-> +	key.offset = 0;
-> +
-> +	ret = btrfs_search_slot(trans, remap_root, &key, path, 0, 0);
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	leaf = path->nodes[0];
-> +	while (true) {
-> +		btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
-> +
-> +		if (found_key.objectid >= bg_end) {
-> +			ret = -ENOENT;
-> +			goto out;
-> +		}
-> +
-> +		if (found_key.type == BTRFS_IDENTITY_REMAP_KEY) {
-> +			*start = found_key.objectid;
-> +			*length = found_key.offset;
-> +			ret = 0;
-> +			goto out;
-> +		}
-> +
-> +		path->slots[0]++;
-> +		if (path->slots[0] >= btrfs_header_nritems(leaf)) {
-> +			ret = btrfs_next_leaf(remap_root, path);
-> +
-> +			if (ret != 0) {
-> +				if (ret == 1)
-> +					ret = -ENOENT;
-> +				goto out;
-> +			}
-> +
-> +			leaf = path->nodes[0];
-> +		}
-> +	}
-> +
-> +out:
-> +	btrfs_release_path(path);
-> +
-> +	return ret;
-> +}
-> +
->  static int remove_chunk_stripes(struct btrfs_trans_handle *trans,
->  				struct btrfs_chunk_map *chunk,
->  				struct btrfs_path *path)
-> @@ -4779,6 +4833,288 @@ static int adjust_identity_remap_count(struct btrfs_trans_handle *trans,
->  	return ret;
->  }
->  
-> +static int merge_remap_entries(struct btrfs_trans_handle *trans,
-> +			       struct btrfs_path *path,
-> +			       struct btrfs_block_group *src_bg, u64 old_addr,
-> +			       u64 new_addr, u64 length)
-> +{
-> +	struct btrfs_fs_info *fs_info = trans->fs_info;
-> +	struct btrfs_remap *remap_ptr;
-> +	struct extent_buffer *leaf;
-> +	struct btrfs_key key, new_key;
-> +	u64 last_addr, old_length;
-> +	int ret;
-> +
-> +	leaf = path->nodes[0];
-> +	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-> +
-> +	remap_ptr = btrfs_item_ptr(leaf, path->slots[0],
-> +				   struct btrfs_remap);
-> +
-> +	last_addr = btrfs_remap_address(leaf, remap_ptr);
-> +	old_length = key.offset;
-> +
-> +	if (last_addr + old_length != new_addr)
-> +		return 0;
-> +
-> +	/* Merge entries. */
-> +
-> +	new_key.objectid = key.objectid;
-> +	new_key.type = BTRFS_REMAP_KEY;
-> +	new_key.offset = old_length + length;
-> +
-> +	btrfs_set_item_key_safe(trans, path, &new_key);
-> +
-> +	btrfs_release_path(path);
-> +
-> +	/* Merge backref too. */
-> +
-> +	key.objectid = new_addr - old_length;
-> +	key.type = BTRFS_REMAP_BACKREF_KEY;
-> +	key.offset = old_length;
-> +
-> +	ret = btrfs_search_slot(trans, fs_info->remap_root, &key, path, 0, 1);
-> +	if (ret < 0) {
-> +		return ret;
-> +	} else if (ret == 1) {
-> +		btrfs_release_path(path);
-> +		return -ENOENT;
-> +	}
-> +
-> +	new_key.objectid = new_addr - old_length;
-> +	new_key.type = BTRFS_REMAP_BACKREF_KEY;
-> +	new_key.offset = old_length + length;
-> +
-> +	btrfs_set_item_key_safe(trans, path, &new_key);
-> +
-> +	btrfs_release_path(path);
-> +
-> +	/* Fix the following identity map. */
-> +
-> +	key.objectid = old_addr;
-> +	key.type = BTRFS_IDENTITY_REMAP_KEY;
-> +	key.offset = 0;
-> +
-> +	ret = btrfs_search_slot(trans, fs_info->remap_root, &key, path, 0, 1);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-> +
-> +	if (key.objectid != old_addr || key.type != BTRFS_IDENTITY_REMAP_KEY)
-> +		return -ENOENT;
-> +
-> +	if (key.offset == length) {
-> +		ret = btrfs_del_item(trans, fs_info->remap_root, path);
-> +		if (ret)
-> +			return ret;
-> +
-> +		btrfs_release_path(path);
-> +
-> +		ret = adjust_identity_remap_count(trans, path, src_bg, -1);
-> +		if (ret)
-> +			return ret;
-> +
-> +		return 1;
-> +	}
-> +
-> +	new_key.objectid = old_addr + length;
-> +	new_key.type = BTRFS_IDENTITY_REMAP_KEY;
-> +	new_key.offset = key.offset - length;
-> +
-> +	btrfs_set_item_key_safe(trans, path, &new_key);
-> +
-> +	btrfs_release_path(path);
-> +
-> +	return 1;
-> +}
-> +
-> +static int add_new_remap_entry(struct btrfs_trans_handle *trans,
-> +			       struct btrfs_path *path,
-> +			       struct btrfs_block_group *src_bg, u64 old_addr,
-> +			       u64 new_addr, u64 length)
-> +{
-> +	struct btrfs_fs_info *fs_info = trans->fs_info;
-> +	struct btrfs_key key, new_key;
-> +	struct btrfs_remap remap;
-> +	int ret;
-> +	int identity_count_delta = 0;
-> +
-> +	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-> +
-> +	/* Shorten or delete identity mapping entry. */
-> +
-> +	if (key.objectid == old_addr) {
-> +		ret = btrfs_del_item(trans, fs_info->remap_root, path);
-> +		if (ret)
-> +			return ret;
-> +
-> +		identity_count_delta--;
-> +	} else {
-> +		new_key.objectid = key.objectid;
-> +		new_key.type = BTRFS_IDENTITY_REMAP_KEY;
-> +		new_key.offset = old_addr - key.objectid;
-> +
-> +		btrfs_set_item_key_safe(trans, path, &new_key);
-> +	}
-> +
-> +	btrfs_release_path(path);
-> +
-> +	/* Create new remap entry. */
-> +
-> +	new_key.objectid = old_addr;
-> +	new_key.type = BTRFS_REMAP_KEY;
-> +	new_key.offset = length;
-> +
-> +	ret = btrfs_insert_empty_item(trans, fs_info->remap_root,
-> +		path, &new_key, sizeof(struct btrfs_remap));
-> +	if (ret)
-> +		return ret;
-> +
-> +	btrfs_set_stack_remap_address(&remap, new_addr);
-> +
-> +	write_extent_buffer(path->nodes[0], &remap,
-> +		btrfs_item_ptr_offset(path->nodes[0], path->slots[0]),
-> +		sizeof(struct btrfs_remap));
-> +
-> +	btrfs_release_path(path);
-> +
-> +	/* Add entry for remainder of identity mapping, if necessary. */
-> +
-> +	if (key.objectid + key.offset != old_addr + length) {
-> +		new_key.objectid = old_addr + length;
-> +		new_key.type = BTRFS_IDENTITY_REMAP_KEY;
-> +		new_key.offset = key.objectid + key.offset - old_addr - length;
-> +
-> +		ret = btrfs_insert_empty_item(trans, fs_info->remap_root,
-> +					      path, &new_key, 0);
-> +		if (ret)
-> +			return ret;
-> +
-> +		btrfs_release_path(path);
-> +
-> +		identity_count_delta++;
-> +	}
-> +
-> +	/* Add backref. */
-> +
-> +	new_key.objectid = new_addr;
-> +	new_key.type = BTRFS_REMAP_BACKREF_KEY;
-> +	new_key.offset = length;
-> +
-> +	ret = btrfs_insert_empty_item(trans, fs_info->remap_root, path,
-> +				      &new_key, sizeof(struct btrfs_remap));
-> +	if (ret)
-> +		return ret;
-> +
-> +	btrfs_set_stack_remap_address(&remap, old_addr);
-> +
-> +	write_extent_buffer(path->nodes[0], &remap,
-> +		btrfs_item_ptr_offset(path->nodes[0], path->slots[0]),
-> +		sizeof(struct btrfs_remap));
-> +
-> +	btrfs_release_path(path);
-> +
-> +	if (identity_count_delta == 0)
-> +		return 0;
-> +
-> +	ret = adjust_identity_remap_count(trans, path, src_bg,
-> +					  identity_count_delta);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static int add_remap_entry(struct btrfs_trans_handle *trans,
-> +			   struct btrfs_path *path,
-> +			   struct btrfs_block_group *src_bg, u64 old_addr,
-> +			   u64 new_addr, u64 length)
-> +{
-> +	struct btrfs_fs_info *fs_info = trans->fs_info;
-> +	struct btrfs_key key;
-> +	struct extent_buffer *leaf;
-> +	int ret;
-> +
-> +	key.objectid = old_addr;
-> +	key.type = BTRFS_IDENTITY_REMAP_KEY;
-> +	key.offset = 0;
-> +
-
-Can this lookup code be shared at all with the remapping logic in the
-previous patch? It seems fundamentally both are finding a remap entry for
-a given logical address. Or is it impossible since this one needs cow?
-
-Maybe some kind of prev_item helper that's either remap tree specific or
-for this use case of going back exactly one item instead of obeying a
-min_objectid?
-
-> +	ret = btrfs_search_slot(trans, fs_info->remap_root, &key, path, 0, 1);
-> +	if (ret < 0)
-> +		goto end;
-> +
-> +	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-> +
-> +	if (key.objectid >= old_addr) {
-> +		if (path->slots[0] == 0) {
-> +			ret = btrfs_prev_leaf(trans, fs_info->remap_root, path,
-> +					      0, 1);
-> +			if (ret < 0)
-> +				goto end;
-> +		} else {
-> +			path->slots[0]--;
-> +		}
-> +	}
-> +
-> +	while (true) {
-> +		leaf = path->nodes[0];
-> +		if (path->slots[0] >= btrfs_header_nritems(leaf)) {
-> +			ret = btrfs_next_leaf(fs_info->remap_root, path);
-> +			if (ret < 0)
-> +				goto end;
-> +			else if (ret == 1)
+>   mkfs/main.c    | 26 +++++++++++++++++++++++++-
+>   mkfs/rootdir.c | 23 ++++++++++++++++++++++-
+>   mkfs/rootdir.h |  2 +-
+>   3 files changed, 48 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index dc73de47..715e939c 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -461,6 +461,8 @@ static const char * const mkfs_usage[] =3D {
+>   	OPTLINE("", "- default - the SUBDIR will be a subvolume and also set =
+as default (can be specified only once)"),
+>   	OPTLINE("", "- default-ro - like 'default' and is created as read-onl=
+y subvolume (can be specified only once)"),
+>   	OPTLINE("--shrink", "(with --rootdir) shrink the filled filesystem to=
+ minimal size"),
+> +	OPTLINE("--shrink-slack-size SIZE",
+> +		"(with --shrink) include extra slack space after shrinking (default 0=
+)"),
+>   	OPTLINE("-K|--nodiscard", "do not perform whole device TRIM"),
+>   	OPTLINE("-f|--force", "force overwrite of existing filesystem"),
+>   	"",
+> @@ -1173,6 +1175,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   	int i;
+>   	bool ssd =3D false;
+>   	bool shrink_rootdir =3D false;
+> +	u64 shrink_slack_size =3D 0;
+>   	u64 source_dir_size =3D 0;
+>   	u64 min_dev_size;
+>   	u64 shrink_size;
+> @@ -1217,6 +1220,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   		int c;
+>   		enum {
+>   			GETOPT_VAL_SHRINK =3D GETOPT_VAL_FIRST,
+> +			GETOPT_VAL_SHRINK_SLACK_SIZE,
+>   			GETOPT_VAL_CHECKSUM,
+>   			GETOPT_VAL_GLOBAL_ROOTS,
+>   			GETOPT_VAL_DEVICE_UUID,
+> @@ -1247,6 +1251,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   			{ "quiet", 0, NULL, 'q' },
+>   			{ "verbose", 0, NULL, 'v' },
+>   			{ "shrink", no_argument, NULL, GETOPT_VAL_SHRINK },
+> +			{ "shrink-slack-size", required_argument, NULL,
+> +			  GETOPT_VAL_SHRINK_SLACK_SIZE },
+>   			{ "compress", required_argument, NULL,
+>   				GETOPT_VAL_COMPRESS },
+>   #if EXPERIMENTAL
+> @@ -1383,6 +1389,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   			case GETOPT_VAL_SHRINK:
+>   				shrink_rootdir =3D true;
+>   				break;
+> +			case GETOPT_VAL_SHRINK_SLACK_SIZE:
+> +				shrink_slack_size =3D arg_strtou64_with_suffix(optarg);
 > +				break;
-> +			leaf = path->nodes[0];
-> +		}
+>   			case GETOPT_VAL_CHECKSUM:
+>   				csum_type =3D parse_csum_type(optarg);
+>   				break;
+> @@ -1430,6 +1439,12 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   		ret =3D 1;
+>   		goto error;
+>   	}
+> +	if (shrink_slack_size > 0 && !shrink_rootdir) {
+> +		error("the option --shrink-slack-size must be used with --shrink");
+> +		ret =3D 1;
+> +		goto error;
 > +
-> +		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-> +
-> +		if (key.objectid >= old_addr + length) {
-> +			ret = -ENOENT;
-> +			goto end;
-> +		}
-> +
-> +		if (key.type != BTRFS_REMAP_KEY &&
-> +		    key.type != BTRFS_IDENTITY_REMAP_KEY) {
-> +			path->slots[0]++;
-> +			continue;
-> +		}
-> +
-> +		if (key.type == BTRFS_REMAP_KEY &&
-> +		    key.objectid + key.offset == old_addr) {
-> +			ret = merge_remap_entries(trans, path, src_bg, old_addr,
-> +						  new_addr, length);
-> +			if (ret < 0) {
-> +				goto end;
-> +			} else if (ret == 0) {
-> +				path->slots[0]++;
-> +				continue;
+> +	}
+>   	if (!list_empty(&subvols) && source_dir =3D=3D NULL) {
+>   		error("option --subvol must be used with --rootdir");
+>   		ret =3D 1;
+> @@ -2108,8 +2123,17 @@ raid_groups:
+>  =20
+>   		if (shrink_rootdir) {
+>   			pr_verbose(LOG_DEFAULT, "  Shrink:           yes\n");
+> +			if (shrink_slack_size > 0) {
+> +				pr_verbose(
+> +					LOG_DEFAULT,
+> +					"  Shrink slack:           %llu (%s)\n",
+> +					shrink_slack_size,
+> +					pretty_size(shrink_slack_size));
 > +			}
-> +			break;
+>   			ret =3D btrfs_mkfs_shrink_fs(fs_info, &shrink_size,
+> -						   shrink_rootdir);
+> +						   shrink_rootdir,
+> +						   shrink_slack_size);
+> +
+>   			if (ret < 0) {
+>   				errno =3D -ret;
+>   				error("error while shrinking filesystem: %m");
+> diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
+> index 19273947..5634d8c2 100644
+> --- a/mkfs/rootdir.c
+> +++ b/mkfs/rootdir.c
+> @@ -17,6 +17,8 @@
+>    */
+>  =20
+>   #include "kerncompat.h"
+> +#include <linux/fs.h>
+> +#include <sys/ioctl.h>
+>   #include <sys/stat.h>
+>   #include <sys/xattr.h>
+>   #include <dirent.h>
+> @@ -52,6 +54,7 @@
+>   #include "common/root-tree-utils.h"
+>   #include "common/path-utils.h"
+>   #include "common/rbtree-utils.h"
+> +#include "common/units.h"
+>   #include "mkfs/rootdir.h"
+>  =20
+>   #define LZO_LEN 4
+> @@ -1924,9 +1927,10 @@ err:
+>   }
+>  =20
+>   int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_=
+ret,
+> -			 bool shrink_file_size)
+> +			 bool shrink_file_size, u64 slack_size)
+>   {
+>   	u64 new_size;
+> +	u64 blk_device_size;
+>   	struct btrfs_device *device;
+>   	struct list_head *cur;
+>   	struct stat file_stat;
+> @@ -1954,6 +1958,14 @@ int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs=
+_info, u64 *new_size_ret,
+>   		return -EUCLEAN;
+>   	}
+>  =20
+> +	if (!IS_ALIGNED(slack_size, fs_info->sectorsize)) {
+> +		error("slack size %llu not aligned to %u",
+> +				slack_size, fs_info->sectorsize);
+> +		return -EUCLEAN;
+> +	}
+> +
+> +	new_size +=3D slack_size;
+> +
+>   	device =3D list_entry(fs_info->fs_devices->devices.next,
+>   			   struct btrfs_device, dev_list);
+>   	ret =3D set_device_size(fs_info, device, new_size);
+> @@ -1968,6 +1980,15 @@ int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs=
+_info, u64 *new_size_ret,
+>   			error("failed to stat devid %llu: %m", device->devid);
+>   			return ret;
+>   		}
+> +		if (S_ISBLK(file_stat.st_mode)) {
+> +			ioctl(device->fd, BLKGETSIZE64, &blk_device_size);
+> +			if (blk_device_size < new_size) {
+> +				warning("blkdev size %llu (%s) is smaller than fs size %llu (%s)",
+> +					blk_device_size,
+> +					pretty_size(blk_device_size), new_size,
+> +					pretty_size(new_size));
+> +			}
 > +		}
-> +
-> +		if (key.objectid <= old_addr &&
-> +		    key.type == BTRFS_IDENTITY_REMAP_KEY &&
-> +		    key.objectid + key.offset > old_addr) {
-> +			ret = add_new_remap_entry(trans, path, src_bg,
-> +						  old_addr, new_addr, length);
-> +			if (ret)
-> +				goto end;
-> +			break;
-> +		}
-> +
-> +		path->slots[0]++;
-> +	}
-> +
-> +	ret = 0;
-> +
-> +end:
-> +	btrfs_release_path(path);
-> +
-> +	return ret;
-> +}
-> +
->  static int mark_chunk_remapped(struct btrfs_trans_handle *trans,
->  			       struct btrfs_path *path, uint64_t start)
->  {
-> @@ -4828,6 +5164,188 @@ static int mark_chunk_remapped(struct btrfs_trans_handle *trans,
->  	return ret;
->  }
->  
-> +static int do_remap_tree_reloc_trans(struct btrfs_fs_info *fs_info,
-> +				     struct btrfs_block_group *src_bg,
-> +				     struct btrfs_path *path, u64 *last_start)
-> +{
-> +	struct btrfs_trans_handle *trans;
-> +	struct btrfs_root *extent_root;
-> +	struct btrfs_key ins;
-> +	struct btrfs_block_group *dest_bg = NULL;
-> +	struct btrfs_chunk_map *chunk;
-> +	u64 start, remap_length, length, new_addr, min_size;
-> +	int ret;
-> +	bool no_more = false;
-> +	bool is_data = src_bg->flags & BTRFS_BLOCK_GROUP_DATA;
-> +	bool made_reservation = false, bg_needs_free_space;
-> +	struct btrfs_space_info *sinfo = src_bg->space_info;
-> +
-> +	extent_root = btrfs_extent_root(fs_info, src_bg->start);
-> +
-> +	trans = btrfs_start_transaction(extent_root, 0);
-> +	if (IS_ERR(trans))
-> +		return PTR_ERR(trans);
-> +
-> +	mutex_lock(&fs_info->remap_mutex);
-> +
-> +	ret = find_next_identity_remap(trans, path, src_bg->start + src_bg->length,
-> +				       *last_start, &start, &remap_length);
-> +	if (ret == -ENOENT) {
-> +		no_more = true;
-> +		goto next;
-> +	} else if (ret) {
-> +		mutex_unlock(&fs_info->remap_mutex);
-> +		btrfs_end_transaction(trans);
-> +		return ret;
-> +	}
-> +
-> +	/* Try to reserve enough space for block. */
-> +
-> +	spin_lock(&sinfo->lock);
-> +	btrfs_space_info_update_bytes_may_use(sinfo, remap_length);
+>   		if (!S_ISREG(file_stat.st_mode))
+>   			return ret;
+>   		ret =3D ftruncate(device->fd, new_size);
+> diff --git a/mkfs/rootdir.h b/mkfs/rootdir.h
+> index b32fda5b..1eee3824 100644
+> --- a/mkfs/rootdir.h
+> +++ b/mkfs/rootdir.h
+> @@ -52,6 +52,6 @@ int btrfs_mkfs_fill_dir(struct btrfs_trans_handle *tra=
+ns, const char *source_dir
+>   u64 btrfs_mkfs_size_dir(const char *dir_name, u32 sectorsize, u64 min_=
+dev_size,
+>   			u64 meta_profile, u64 data_profile);
+>   int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_=
+ret,
+> -			 bool shrink_file_size);
+> +			 bool shrink_file_size, u64 slack_size);
+>  =20
+>   #endif
 
-Why isn't this partly leaked if btrfs_reserve_extent returns a smaller extent than
-remap_length?
-
-> +	spin_unlock(&sinfo->lock);
-> +
-> +	if (is_data)
-> +		min_size = fs_info->sectorsize;
-> +	else
-> +		min_size = fs_info->nodesize;
-> +
-> +	ret = btrfs_reserve_extent(fs_info->fs_root, remap_length,
-> +				   remap_length, min_size,
-> +				   0, 0, &ins, is_data, false);
-
-^ i.e., this will reduce bytes_may_use by the amount it actually
-reserved, and I don't see anywhere where we make up the difference. Then
-it looks like we will remap the extent we can, find the next free range
-and come back to this function and that remaining range to bytes_may_use
-a second time.
-
-> +	if (ret) {
-> +		spin_lock(&sinfo->lock);
-> +		btrfs_space_info_update_bytes_may_use(sinfo, -remap_length);
-> +		spin_unlock(&sinfo->lock);
-> +
-> +		mutex_unlock(&fs_info->remap_mutex);
-> +		btrfs_end_transaction(trans);
-> +		return ret;
-> +	}
-> +
-> +	made_reservation = true;
-> +
-> +	new_addr = ins.objectid;
-> +	length = ins.offset;
-> +
-> +	if (!is_data && length % fs_info->nodesize) {
-> +		u64 new_length = length - (length % fs_info->nodesize);
-
-Why not use the IS_ALIGNED / ALIGN_DOWN macros? Nodesize is a power of
-two, so I think it should be quicker. Probably doesn't matter, but it
-does seem to be the predominant pattern in the code base. Also avoids
-ever worrying about dividing by zero.
-
-> +
-> +		btrfs_free_reserved_extent(fs_info, new_addr + new_length,
-> +					   length - new_length, 0);
-> +
-> +		length = new_length;
-> +	}
-> +
-> +	ret = add_to_free_space_tree(trans, start, length);
-
-Can you explain this? Intuitively, to me, the old remapped address is
-not a logical range we can allocate from, so it should not be in the
-free space tree. Is this a hack to get the bytes back into the
-accounting and allocations are blocked by the remapped block group being
-remapped / read-only?
-
-> +	if (ret)
-> +		goto fail;
-> +
-> +	dest_bg = btrfs_lookup_block_group(fs_info, new_addr);
-> +
-> +	mutex_lock(&dest_bg->free_space_lock);
-> +	bg_needs_free_space = test_bit(BLOCK_GROUP_FLAG_NEEDS_FREE_SPACE,
-> +				       &dest_bg->runtime_flags);
-> +	mutex_unlock(&dest_bg->free_space_lock);
-> +
-> +	if (bg_needs_free_space) {
-> +		ret = add_block_group_free_space(trans, dest_bg);
-> +		if (ret)
-> +			goto fail;
-> +	}
-> +
-> +	ret = remove_from_free_space_tree(trans, new_addr, length);
-> +	if (ret)
-> +		goto fail;
-
-I think you have also discussed this recently with Josef, but it seems
-a little sketchy. I suppose it depends if the remap tree ends up getting
-delayed refs and going in the extent tree? I think this is currently
-only called from alloc_reserved_extent.
-
-> +
-> +	ret = do_copy(fs_info, start, new_addr, length);
-> +	if (ret)
-> +		goto fail;
-> +
-> +	ret = add_remap_entry(trans, path, src_bg, start, new_addr, length);
-> +	if (ret)
-> +		goto fail;
-> +
-> +	adjust_block_group_remap_bytes(trans, dest_bg, length);
-> +	btrfs_free_reserved_bytes(dest_bg, length, 0);
-> +
-> +	spin_lock(&sinfo->lock);
-> +	sinfo->bytes_readonly += length;
-> +	spin_unlock(&sinfo->lock);
-> +
-> +next:
-> +	if (dest_bg)
-> +		btrfs_put_block_group(dest_bg);
-> +
-> +	if (made_reservation)
-> +		btrfs_dec_block_group_reservations(fs_info, new_addr);
-> +
-> +	if (src_bg->used == 0 && src_bg->remap_bytes == 0) {
-> +		chunk = btrfs_find_chunk_map(fs_info, src_bg->start, 1);
-> +		if (!chunk) {
-> +			mutex_unlock(&fs_info->remap_mutex);
-> +			btrfs_end_transaction(trans);
-> +			return -ENOENT;
-> +		}
-> +
-> +		ret = last_identity_remap_gone(trans, chunk, src_bg, path);
-> +		if (ret) {
-> +			btrfs_free_chunk_map(chunk);
-> +			mutex_unlock(&fs_info->remap_mutex);
-> +			btrfs_end_transaction(trans);
-> +			return ret;
-> +		}
-> +
-> +		btrfs_free_chunk_map(chunk);
-> +	}
-> +
-> +	mutex_unlock(&fs_info->remap_mutex);
-> +
-> +	ret = btrfs_end_transaction(trans);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (no_more)
-> +		return 1;
-> +
-> +	*last_start = start;
-> +
-> +	return 0;
-> +
-> +fail:
-> +	if (dest_bg)
-> +		btrfs_put_block_group(dest_bg);
-> +
-> +	btrfs_free_reserved_extent(fs_info, new_addr, length, 0);
-> +
-> +	mutex_unlock(&fs_info->remap_mutex);
-> +	btrfs_end_transaction(trans);
-> +
-> +	return ret;
-> +}
-> +
-> +static int do_remap_tree_reloc(struct btrfs_fs_info *fs_info,
-> +			       struct btrfs_path *path,
-> +			       struct btrfs_block_group *bg)
-> +{
-> +	u64 last_start;
-> +	int ret;
-> +
-> +	last_start = bg->start;
-> +
-> +	while (true) {
-> +		ret = do_remap_tree_reloc_trans(fs_info, bg, path,
-> +						&last_start);
-> +		if (ret) {
-> +			if (ret == 1)
-> +				ret = 0;
-> +			break;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  int btrfs_translate_remap(struct btrfs_fs_info *fs_info, u64 *logical,
->  			  u64 *length)
->  {
-> @@ -5073,6 +5591,10 @@ int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start,
->  		}
->  
->  		err = start_block_group_remapping(fs_info, path, bg);
-> +		if (err)
-> +			goto out;
-> +
-> +		err = do_remap_tree_reloc(fs_info, path, rc->block_group);
->  
->  		goto out;
->  	}
-> -- 
-> 2.49.0
-> 
 
