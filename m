@@ -1,193 +1,211 @@
-Return-Path: <linux-btrfs+bounces-14178-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14179-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA549ABFC7C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 19:44:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D27FAC0352
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 May 2025 06:09:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 530A97AB095
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 May 2025 17:43:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5A891BA021F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 May 2025 04:09:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D545D28ECCA;
-	Wed, 21 May 2025 17:44:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ewowpMsv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA4A415A85A;
+	Thu, 22 May 2025 04:09:20 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 263751E0E00
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 May 2025 17:44:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E840A923
+	for <linux-btrfs@vger.kernel.org>; Thu, 22 May 2025 04:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=174.142.148.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747849461; cv=none; b=C5JQEe9A1cD7+py1zyl85C/owddemy5YBWBHJ4lHj3Jp1c3+lBGnk+T2wLyLKhf1rOk0o97IHGihCBsJRVQqF35hK3+6teeF0aJD+EfLkU6Bx1P/PNnnEcPUpy5yhjdFEwDhU8qITRC9kz/+lQ2208kYwCi7T+xNuNHPmfdl124=
+	t=1747886960; cv=none; b=a9MJXX8GDfDEQzUAKtLdWN5desEhuP4rBe24X/JN/o4YYOH+sW82xITdQcZkriCNY1/6UdBJajjd+kRum55kOuP21CCCg04olwiL+xJx01+QOwsyplKVKSqjS1iiuVFceX6m1GcU/ncNY/uAI92lFJXLAdxPyjvvKCbxQb0MzCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747849461; c=relaxed/simple;
-	bh=+Xrku2H/1A2xesZFrf7Q+nsCauNGimaTzeXoCXiyouo=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WVnmCLsX84FPmP5GSNqIs9YikuxDl3RAMSX84tG2LYFoRnlqxf303dWTGuFMcjKgf378f6v9AWM9ZG0YBx5ZRr+b+Nq5BfqcvV4mOpll57ImkGPOVn5OTlsaszI7AbcMfLEoxD75WZ91hYA2YLZfyaDDdrFkB7/ymNLi9y2F4ZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ewowpMsv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 185E0C4CEE7
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 May 2025 17:44:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747849458;
-	bh=+Xrku2H/1A2xesZFrf7Q+nsCauNGimaTzeXoCXiyouo=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=ewowpMsvN74+dg/UvRefUXve6qMcvjGwGkE25SYguZylHMDLjK8PD0f5maM2Ni2z2
-	 yLTbkGZz2pQDb9DoMqvnzXt+MflvYQd/j/IBNEcj1gVM5dR25BtTCyBzFA139Vrmqa
-	 MEagZVnBYgvo2GyF3nDuQxDkEKsL17lxLgYMQChIwpYdV98IUpZU7r7cUnEZn2tv3r
-	 TOnedAoAqmomFoeuTMJ5Ukjw+awiTlBSxGg6d4wryPZmgfAX0W9FGPR+MBE1sLvCkR
-	 zSq3MQHMWtjlb7K7ReS9stBTpj7lPzt8RbI5860LKtC3MLMav7hfintpRIrpwvbwqN
-	 mPw20V3DIukxQ==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/4] btrfs: simplify error detection flow during log replay
-Date: Wed, 21 May 2025 18:44:11 +0100
-Message-Id: <38866d5521ba35134ea69b5b66e551e3f23a961b.1747848779.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1747848778.git.fdmanana@suse.com>
-References: <cover.1747848778.git.fdmanana@suse.com>
+	s=arc-20240116; t=1747886960; c=relaxed/simple;
+	bh=L5eOZq5SfVn/sA1q4fUBeoUuVsB++KNwC7NrRaaozyc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CeKtTpyKiJ/b0ano63mFn3r7qOotgvGgBse/50b0Yb4eRa9iKPToVZ6K1fbP3p+EhUM4l4nmkVioqrQbLWQzizrJ3JgPCXaSqiU8SuDsGEN/QPh9KiZM/cV4zkoF69G4gAmN8tEGj18nqijsryPqNQXvj6/u6ruEB45J6HQnTp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=umail.furryterror.org; spf=pass smtp.mailfrom=drax.hungrycats.org; arc=none smtp.client-ip=174.142.148.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=umail.furryterror.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=drax.hungrycats.org
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+	id 39E6613C462C; Thu, 22 May 2025 00:07:45 -0400 (EDT)
+Date: Thu, 22 May 2025 00:07:45 -0400
+From: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] btrfs: new performance-based chunk allocation
+ using device roles
+Message-ID: <aC6jEehifdWWq4Pq@hungrycats.org>
+References: <cover.1747070147.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1747070147.git.anand.jain@oracle.com>
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, May 13, 2025 at 02:07:06AM +0800, Anand Jain wrote:
+> In host hardware, devices can have different speeds. Generally, faster
+> devices come with lesser capacity while slower devices come with larger
+> capacity. A typical configuration would expect that:
+> 
+>  - A filesystem's read/write performance is evenly distributed on average
+>  across the entire filesystem. This is not achievable with the current
+>  allocation method because chunks are allocated based only on device free
+>  space.
+> 
+>  - Typically, faster devices are assigned to metadata chunk allocations
+>  while slower devices are assigned to data chunk allocations.
+> 
+> Introducing Device Roles:
+> 
+>  Here I define 5 device roles in a specific order for metadata and in the
+>  reverse order for data: metadata_only, metadata, none, data, data_only.
+>  One or more devices may have the same role.
+>
+>  The metadata and data roles indicate preference but not exclusivity for
+>  that role, whereas data_only and metadata_only are exclusive roles.
 
-We have this fuzzy logic at btrfs_recover_log_trees() where we don't
-abort the transaction and exit immediately after each function call that
-returned an error, and instead have if-then-else logic or check if the
-previous function call returned success before calling the next function.
+Using role-based names like these presents three problems:
 
-Make the flow more straighforward by immediately aborting the transaction
-and exiting after each function call failure. This also allows to avoid
-two consecutive if statements that test the same conditions:
+1. **Stripe incompatibility** -- These roles imply a hierarchy that breaks
+in some multi-device arrays. e.g. with 5 devices of equal size and mixed
+roles ("data_only" vs "data"), it's impossible to form a 5-device-wide
+data chunk.
 
-   if (!ret && wc.stage == LOG_WALK_REPLAY_ALL) {
-        (...)
-   }
+2. **Poor extensibility** -- The role system doesn't scale when
+introducing additional allocation types. Any new category (e.g. PPL or
+journal) would require duplicating preference permutations like "data,
+then journal, then metadata" vs "journal, then data, then metadata",
+resulting in combinatorial explosion.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/tree-log.c | 53 +++++++++++++++++++++++++--------------------
- 1 file changed, 29 insertions(+), 24 deletions(-)
+3. **Misleading terminology** -- The name "none" is used in a misleading
+way.  That name should be reserved for the case that prohibits all new
+chunk allocations--a critical use case for array reshaping. A clearer
+term would be "default," but the scheme would be even clearer if all
+the legacy role names were discarded.
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index ca2a2ee3c5f1..0d5b79402312 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -7192,8 +7192,6 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
- 	struct btrfs_path *path;
- 	struct btrfs_trans_handle *trans;
- 	struct btrfs_key key;
--	struct btrfs_key found_key;
--	struct btrfs_root *log;
- 	struct btrfs_fs_info *fs_info = log_root_tree->fs_info;
- 	struct walk_control wc = {
- 		.process_func = process_one_buffer,
-@@ -7227,6 +7225,9 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
- 	key.offset = (u64)-1;
- 
- 	while (1) {
-+		struct btrfs_root *log;
-+		struct btrfs_key found_key;
-+
- 		ret = btrfs_search_slot(NULL, log_root_tree, &key, path, 0, 0);
- 
- 		if (ret < 0) {
-@@ -7255,6 +7256,7 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
- 						   true);
- 		if (IS_ERR(wc.replay_dest)) {
- 			ret = PTR_ERR(wc.replay_dest);
-+			wc.replay_dest = NULL;
- 			if (ret != -ENOENT) {
- 				btrfs_put_root(log);
- 				btrfs_abort_transaction(trans, ret);
-@@ -7273,35 +7275,35 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
- 			 * each subsequent pass.
- 			 */
- 			ret = btrfs_pin_extent_for_log_replay(trans, log->node);
--			btrfs_put_root(log);
--
--			if (!ret)
--				goto next;
--			btrfs_abort_transaction(trans, ret);
--			goto error;
-+			if (ret) {
-+				btrfs_put_root(log);
-+				btrfs_abort_transaction(trans, ret);
-+				goto error;
-+			}
-+			goto next;
- 		}
- 
- 		wc.replay_dest->log_root = log;
- 		ret = btrfs_record_root_in_trans(trans, wc.replay_dest);
- 		if (ret) {
--			/* The loop needs to continue due to the root refs */
- 			btrfs_abort_transaction(trans, ret);
--		} else {
--			ret = walk_log_tree(trans, log, &wc);
--			if (ret)
--				btrfs_abort_transaction(trans, ret);
-+			goto next;
- 		}
- 
--		if (!ret && wc.stage == LOG_WALK_REPLAY_ALL) {
--			ret = fixup_inode_link_counts(trans, wc.replay_dest,
--						      path);
--			if (ret)
--				btrfs_abort_transaction(trans, ret);
-+		ret = walk_log_tree(trans, log, &wc);
-+		if (ret) {
-+			btrfs_abort_transaction(trans, ret);
-+			goto next;
- 		}
- 
--		if (!ret && wc.stage == LOG_WALK_REPLAY_ALL) {
-+		if (wc.stage == LOG_WALK_REPLAY_ALL) {
- 			struct btrfs_root *root = wc.replay_dest;
- 
-+			ret = fixup_inode_link_counts(trans, wc.replay_dest, path);
-+			if (ret) {
-+				btrfs_abort_transaction(trans, ret);
-+				goto next;
-+			}
- 			/*
- 			 * We have just replayed everything, and the highest
- 			 * objectid of fs roots probably has changed in case
-@@ -7311,17 +7313,20 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
- 			 * could only happen during mount.
- 			 */
- 			ret = btrfs_init_root_free_objectid(root);
--			if (ret)
-+			if (ret) {
- 				btrfs_abort_transaction(trans, ret);
-+				goto next;
-+			}
-+		}
-+next:
-+		if (wc.replay_dest) {
-+			wc.replay_dest->log_root = NULL;
-+			btrfs_put_root(wc.replay_dest);
- 		}
--
--		wc.replay_dest->log_root = NULL;
--		btrfs_put_root(wc.replay_dest);
- 		btrfs_put_root(log);
- 
- 		if (ret)
- 			goto error;
--next:
- 		if (found_key.offset == 0)
- 			break;
- 		key.offset = found_key.offset - 1;
--- 
-2.47.2
+I suggest replacing roles with a pair of orthogonal properties per device
+for each allocation type:
+
+* Per-type tier level -- A simple u8 tier number that expresses allocation
+preference. Allocators attempt to satisfy allocation using devices at
+the lowest available tier, expanding the set to higher tiers as needed
+until the minimum number of devices is reached.
+
+* Per-type enable bit -- Indicates whether the device allows allocations
+of that type at all. This can be stored explicitly, or encoded using a
+reserved tier value (e.g. 0xFF = disabled).
+
+Encoding this way makes "0" a reasonable default value for each field.
+
+Then you get all of the required combinations, e.g.
+
+* metadata 0, data 0 - what btrfs does now, equal preference
+
+* metadata 2, data 1 - metadata preferred, data allowed
+
+* metadata 1, data 2 - data preferred, metadata allowed
+
+* metadata 0, data 255 - metadata only, no data
+
+* metadata 255, data 0 - data only, no metadata
+
+* metadata 255, data 255 - no new chunk allocations
+
+This model offers cleaner semantics and more robust scaling:
+
+* It eliminates unintended allocation spillover. A device either allows
+data/metadata, or it doesn't.
+* It expresses preference via explicit tiering rather than role overlap.
+* It generalizes easily to future allocation types without rewriting
+role logic.
+
+"Allow nothing" is an important case for reshaping arrays.  If you are
+upgrading 4 out of 12 disks in a striped raid filesystem, you don't
+want to rewrite all the data in the filesystem 4 times.  Instead, set
+the devices you want to remove to "allow nothing", run a balance with a
+`devid` filter targeting each device to evacuate the data, and then run
+device delete on the 4 empty drives.
+
+> Introducing Role-then-Space allocation method:
+> 
+>  Metadata allocation can happen on devices with the roles metadata_only,
+>  metadata, none, and data in that order. If multiple devices share a role,
+>  they are arranged based on device free space.
+> 
+>  Similarly, data allocation can happen on devices with the roles data_only,
+>  data, none, and metadata in that order. If multiple devices share a role,
+>  they are arranged based on device free space.
+> 
+> Finding device speed automatically:
+> 
+>  Measuring device read/write latency for the allocaiton is not good idea,
+>  as the historical readings and may be misleading, as they could include
+>  iostat data from periods with issues that have since been fixed. Testing
+>  to determine relative latency and arranging in ascending order for metadata
+>  and descending for data is possible, but is better handled by an external
+>  tool that can still set device roles.
+> 
+> On-Disk Format changes:
+> 
+>  The following items are defined but are unused on-disk format:
+> 
+> 	btrfs_dev_item::
+> 	 __le64 type; // unused
+> 	 __le64 start_offset; // unused
+> 	 __le32 dev_group; // unused
+> 	 __u8 seek_speed; // unused
+> 	 __u8 bandwidth; // unused
+> 
+>  The device roles is using the dev_item::type 8-bit field to store each
+>  device's role.
+
+In the other implementations of this idea, allocation roles are stored in
+`dev_item::type`, a single `u8` field, for simplicity; however, it would
+be better to store these roles in the filesystem tree--e.g. using a
+`BTRFS_PERSISTENT_ITEM_KEY` with a dedicated objectid for allocation
+roles, and offset values corresponding to device IDs. This would enable
+versioning of the schema and flexible extension (e.g., to add migration
+policies, size-based allocation preferences, or other enhancements).
+
+Since btrfs loads the trees before allocation can occur, tree-based
+role data will be available in time for allocation, and we don't need
+to store roles in the superblocks.
+
+A longer version of this with use cases and some discussion is available
+here:
+
+	https://github.com/kakra/linux/pull/36#issuecomment-2784251968
+
+	https://github.com/kakra/linux/pull/36#issuecomment-2784434490
+
+> Anand Jain (10):
+>   btrfs: fix thresh scope in should_alloc_chunk()
+>   btrfs: refactor should_alloc_chunk() arg type
+>   btrfs: introduce btrfs_split_sysfs_arg() for argument parsing
+>   btrfs: introduce device allocation method
+>   btrfs: sysfs: show device allocation method
+>   btrfs: skip device sorting when only one device is present
+>   btrfs: refactor chunk allocation device handling to use list_head
+>   btrfs: introduce explicit device roles for block groups
+>   btrfs: introduce ROLE_THEN_SPACE device allocation method
+>   btrfs: pass device roles through device add ioctl
+> 
+>  fs/btrfs/block-group.c |  11 +-
+>  fs/btrfs/ioctl.c       |  12 +-
+>  fs/btrfs/sysfs.c       | 130 ++++++++++++++++++++--
+>  fs/btrfs/volumes.c     | 242 +++++++++++++++++++++++++++++++++--------
+>  fs/btrfs/volumes.h     |  35 +++++-
+>  5 files changed, 366 insertions(+), 64 deletions(-)
+> 
+> -- 
+> 2.49.0
+> 
+> 
 
 
