@@ -1,170 +1,173 @@
-Return-Path: <linux-btrfs+bounces-14187-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14188-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC83FAC2236
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 May 2025 13:54:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5075AC224C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 May 2025 14:00:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7511A5038E5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 May 2025 11:54:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58A375026F7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 May 2025 12:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F832356DC;
-	Fri, 23 May 2025 11:54:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABBB2356A8;
+	Fri, 23 May 2025 12:00:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="D9As2q3i"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="lTj23hjy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01D3E22A1E1
-	for <linux-btrfs@vger.kernel.org>; Fri, 23 May 2025 11:54:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E180122F764
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 May 2025 12:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748001255; cv=fail; b=Ug+UT7qRPQzdSudjS639Zyr7eKcHk7ZXSW4O5G/oJ4tSYPZ1jz+QRkjuuH5TeVrM/j9pwqEEB4BbFaJhU7Dsi+4W37pu9I1hCV9S5a+DnYMnDr64bGCtH8YdkP8GiE9L1M3AB9L4YHHV/Q5qufnqkxiN8NEew772suf2dabPWi8=
+	t=1748001618; cv=fail; b=MOusddvbIygj0XsBJ0pwPfkINZ1oCQ8b8TXLUoqNPZkYCok5N9w/VJtWJx3CccKRP0bHWCL3AesRMA3e0Wlu1Rwbh1ypQozMN4YuNPkOzbOEAnjqhb68+E/zUGDmGPqJyOZzq8FrVksozESo8E+Br89Aiaanz/MmX/dQGa0p46k=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748001255; c=relaxed/simple;
-	bh=1w/7/Oe8rgHRPmOSebBazbQTbxeqiXCxsY0AxAkDTgQ=;
+	s=arc-20240116; t=1748001618; c=relaxed/simple;
+	bh=mmszDZv/zRtncA7PNmGLgRseMYZUszAPWYIzP9OjoBY=;
 	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=U0JyPbV1SXIkfVVLWThSJtXW6TEdxSb+X3UkFkV8+VcnAvV/jiOI8BhYQ/ZHO/htGstFxtD7yIF5AeA9j+b7EUjbjSHXv+HRADZQRPf/eLJs1NWN5sH+7VeMfNbAF0XijgfOAkxj+OFDCr2Cw2Ki8+oXEsgRwmXbdkszCX7m9uA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=D9As2q3i; arc=fail smtp.client-ip=67.231.145.42
+	 MIME-Version:Content-Type; b=d61ljJ+Y9zwKWiGF3CEdbEa1ZBNdhVdSLyu3pzpo0bSp9HC6+1k6Ri10g2/SondIbP62MKaCk6302fjLr+3sfOBE3Ze4ic7WpZIIJgf8OMG4iHpFd7zmG6b/hhKWuVU2PVJ/JZq8y1Fm9PYsv1EREJRvrsrcI470yvDO1IGbI7Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=lTj23hjy; arc=fail smtp.client-ip=67.231.153.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54MMxSPd024496
-	for <linux-btrfs@vger.kernel.org>; Fri, 23 May 2025 04:54:13 -0700
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54N587Eq002829
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 May 2025 05:00:14 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=
 	content-id:content-transfer-encoding:content-type:date:from
 	:in-reply-to:message-id:mime-version:references:subject:to; s=
-	s2048-2021-q4; bh=j991C5K+5bY7VdOleOvVWXUIf9tQMtu/XNDZ7DufjpE=; b=
-	D9As2q3i0pmAmGsIaRdVf2Se5zG73IPg72sPg8YrYpJ00NPvbB2hc1LKm0XVcJFy
-	W2bby/fIHy36giPCCKqkD3VdWH+o6WhcKbcvFcwX3rbtnF05futE7KZcd58z8g0r
-	1jL8Kr8C0SWfCNvsESpOK8/uoVMonhh5L0zAg/xwN4ly//wG5qjDqmxVWAa51iv2
-	WPmhYgjHS14CLSVRqxZkeKCkxb+7AUDGbTCfAahdnAvelMGzofJdqswyqJ9wiVJh
-	4rFguKjtPBG6d14MJvOrNoUVgHuQs9BlJZow0/WHdqC4kaoPD9VWnr4fb/rvH1nZ
-	fz6YLR5dscf1vcdN8RzlCA==
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12on2080.outbound.protection.outlook.com [40.107.243.80])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 46syca2kgv-2
+	s2048-2021-q4; bh=mmszDZv/zRtncA7PNmGLgRseMYZUszAPWYIzP9OjoBY=; b=
+	lTj23hjyzw7rWyjE72fKHToU2GevPE/7ass3N4vlJ18a0YCh3svok2L4IQ82oiNA
+	MUeYOd+HMsspYUtmr1RpKiSeRe+0VIaK+q7U//1sefUzrnH1zYEUgIU0loWcs/FF
+	W8X/+X8JWHSKGSaD3oce1qoatyQesJq/XFXP0BDscKeQXz46AWs5lskEhx1n08Zk
+	itYM+zlq/E3U2W0eqK2I/5LC4xPy4EFkch4Ayp0COlhiXhTgtCZL6HUTtWPbXgZa
+	UFqlfsPy2NlWdCLp6fGDEPgbsre9OMPUzbHWTI9OAveFa5tuuvCQLOGOK6k6JEFz
+	QUyS+umfITL35HbGCUTffw==
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11on2051.outbound.protection.outlook.com [40.107.236.51])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 46tjkp9wnr-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Fri, 23 May 2025 04:54:12 -0700 (PDT)
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 May 2025 05:00:14 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=lZKJKEtUcr1aw+UaTm8WjZ+xFRrlM/+CU9XTxybNW0GaVj/Dl/32BasNceR7rWCcMXvz779DBblVvSwJhY7CYa458y2/OcjmZWDOmBV2FFCCEF9db/xHbbLE8L4XbpjNZmATx8LI5vxVvSdNj67tfLSy8G5k+fj3tnJl3jVRIH38eofQyco2mR9nxKmeanqunzQ61dpnUzH5c6CgEQR4rtlYpEdfrkCkV6kBtZNGXb2+kgQmSksMwxnU8oF6E1t+4zv6lhN9+t/HNc8YzgTk8UZqseoFCCSNKgKixebCqrEz0/9YnpEHwfGyizWjA1ZAKY7V6pEgqfBDiEybU2xMUQ==
+ b=nqPHrMBdoBEYhXT3Etk5SR3FmSCRV1dga+dKmmOqSPm5z8jJPGLT6YEsakHpq/SlO6a8/C2K+wGdbmMmB5a36bXeTBd+m5x5fCOMR1IuyLIVmKxIKtOXdD6042B02SrWtcveGEu9P5dMpKe/ZOVdiBnxiAPwCSnnPrDwn83fK+JwiwN8crhk9hbVmPAAaYvnozhpqNFkc5BalqMCWk3UuOJsN7Xw1FVaS10Ab9VlYA5gh+0Fubn3sscr3oTljmSwGdAk8CKc1IwL3PT1c5QTNtr/VyZZxxJwpRkLWNeRrIimN3IqqTS+AM0xTVEKC4Sd6zjN+ZLHA1CInaWd+i6ebA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nnnTvuuXLmYjbMwmYb0zAabggrpgNI5rFyFGM9YJ/gU=;
- b=GjNhX8acq67VC6ejsuAnDjKHyB+pMbc7BOPiIIE1y2uQCjxS37/WXyzGDGireEpHW7wTPLDWe9bWnRC/HTkMZJwEP+qZHibmzKAW5e2yZFgmizxqZ7V/D2fuJyqYjsW/5oHi8fQISwjkONySohyi7gYsUVb5OT6jGynMv3K9e8AkqjH4zzHMhPVR1Xd9ONSEMKs/dARrheRuTAZ6uuczoOrJRJcO0OD17eV/nADxhol2iD6NdWu+AC/7Zf2O+UVCL/GJfSByX0o/y8zaqLuJKljQGX7L3TpaKhDjHWfUSwamY69/S+FmxmOwbJJe+0tTq8FrieeXgZ2MsS/zx3Melg==
+ bh=/nVJLZxZl26YX6ihODI2UkZnoAO2g4NdjwJktrFIRYE=;
+ b=xYcG1E5l+SXZUBuSsOoteSxDRdmWX2YQ4W66aciJdLKzazAC6uF1XZG19N86De7lOeIvz56bhK94dpk3n6XxTFeVzWa2VdyzveKQTOBazr6Vev2z2bzTxlL/GZCBbT3V2n9LFTbPb5i75/gzH7hPoU+WiZTKAAI9SY9xy6YpGwv2o7u/9w5lbWurwlgFWW5gzxlC6suI5lF4KirSsz0et9KPtDh8bjxDiajbkkGGcqzuZ1aC7qIGERRhh5Nzt0t7sBmmLPnz1eiYi3r+rKYBidSzUVZqYnDGW4kHERG7dS6R8x5nGOrENDYjQck5cr8/aSammKw0PShUevegj5f5zQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
 Received: from PH0PR15MB5659.namprd15.prod.outlook.com (2603:10b6:510:282::21)
- by DM3PPF7911AB4DD.namprd15.prod.outlook.com (2603:10b6:f:fc00::422) with
+ by DS4PPF9EF34FBD3.namprd15.prod.outlook.com (2603:10b6:f:fc00::9ae) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.30; Fri, 23 May
- 2025 11:53:54 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8769.21; Fri, 23 May
+ 2025 12:00:11 +0000
 Received: from PH0PR15MB5659.namprd15.prod.outlook.com
  ([fe80::dffe:b107:49d:a49d]) by PH0PR15MB5659.namprd15.prod.outlook.com
  ([fe80::dffe:b107:49d:a49d%5]) with mapi id 15.20.8746.030; Fri, 23 May 2025
- 11:53:54 +0000
+ 12:00:11 +0000
 From: Mark Harmstone <maharmstone@meta.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Mark Harmstone <maharmstone@meta.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [RFC PATCH 06/10] btrfs: redirect I/O for remapped block groups
-Thread-Topic: [RFC PATCH 06/10] btrfs: redirect I/O for remapped block groups
-Thread-Index: AQHbxbeQ9ZfuQ0xjMEKFdnsAKEMY17PgCfgAgAAdToA=
-Date: Fri, 23 May 2025 11:53:54 +0000
-Message-ID: <76aee017-6488-4185-92cf-c9442f1a36e1@meta.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>
+Subject: Re: [RFC PATCH 04/10] btrfs: add extended version of struct
+ block_group_item
+Thread-Topic: [RFC PATCH 04/10] btrfs: add extended version of struct
+ block_group_item
+Thread-Index: AQHbxbeUTTsdIT+lD0uHwy2HbCs3vbPgBbGAgAAjVgA=
+Date: Fri, 23 May 2025 12:00:11 +0000
+Message-ID: <c0280288-cb7c-4135-81b0-46e4cf6e4c54@meta.com>
 References: <20250515163641.3449017-1-maharmstone@fb.com>
- <20250515163641.3449017-7-maharmstone@fb.com>
- <d5aeaff6-3e04-4525-861d-36dfa358eb45@gmx.com>
-In-Reply-To: <d5aeaff6-3e04-4525-861d-36dfa358eb45@gmx.com>
+ <20250515163641.3449017-5-maharmstone@fb.com>
+ <1b511b2f-0738-42a1-95af-546bd7b4e51e@gmx.com>
+In-Reply-To: <1b511b2f-0738-42a1-95af-546bd7b4e51e@gmx.com>
 Accept-Language: en-GB, en-US
 Content-Language: en-GB
 X-MS-Has-Attach:
 X-MS-TNEF-Correlator:
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR15MB5659:EE_|DM3PPF7911AB4DD:EE_
-x-ms-office365-filtering-correlation-id: 3c4d4946-3949-434e-fa80-08dd99f07e09
+x-ms-traffictypediagnostic: PH0PR15MB5659:EE_|DS4PPF9EF34FBD3:EE_
+x-ms-office365-filtering-correlation-id: 253f9f96-7189-4fad-dd8a-08dd99f15f03
 x-fb-source: Internal
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|366016|376014|38070700018;
+x-microsoft-antispam: BCL:0;ARA:13230040|366016|1800799024|376014|38070700018;
 x-microsoft-antispam-message-info:
- =?utf-8?B?alNkY2VHTC9JSWh0aXJGVHdmckNOd0RWWittYU1vVVdWYW5ncmRTUGhtQWF3?=
- =?utf-8?B?eE9xa0h1aWVxQ2FhaEFZVFdIRElEdW01V1ptTGJBN2dkaWQ3elRVdEVNSmZq?=
- =?utf-8?B?clJaVEljOEQ4TVhmYzdkdy9FdHdqZ1lYK2lIZm9UdXVHVXUrRzhXMnhSU0Nh?=
- =?utf-8?B?L2k5K0hhcCs5VHdENU1seTdqOUVUcHh0S0xPajRqZjBPV3NqNkVhcHA3L255?=
- =?utf-8?B?NWx2NTdhV0tpT1NIQmRzWXVadzVYb0hXaVc3MDJOeHlIb2NMTzgwSWdxeCtu?=
- =?utf-8?B?QXBQQ3RVQ0RFTmJzandyUWk4cmNHLzgyS2NyM2dTUlZpYm1jY1JDY3p1dDFq?=
- =?utf-8?B?eUNjeXlETmtvZUNnOXpWb1JOc01tR1JMYmR6aXNPekFBYlFqRHA0SGhXNlk1?=
- =?utf-8?B?TFkrUnF0cWdWejlqZGJ3dkViTmpheG4zTnZRendBUFFRaGlrY0FQVVRsSkxV?=
- =?utf-8?B?anZTeWZEbWp4ODJ2SUFJZnVxbjd3WDFVZUhBeGZJWUlqM0Qxbm9aRE9zN25k?=
- =?utf-8?B?MlFXNit1MEJuazU4SWg4b01odm1ma1M3ZXEzZjh0Z0o2SzNTckhJc1RkbHZ5?=
- =?utf-8?B?NVFCcVNFbURUMVlTK2RTd24wdmJWQzMrL2ZnRS9lMkp0WStxOEhLOHNhdXdJ?=
- =?utf-8?B?YVhJWW9LdzEwb1VIYkpqVEFIcCtYWGZoZ2JZUlg1cFFsWXFSR1gyQkg1RWZS?=
- =?utf-8?B?OHUweGYvaDhmUkU2UzJNdlgrb1dJSXpxeGFWM2hlZS9BZHVLRjlEOWhZNDIz?=
- =?utf-8?B?QmcwWmhac1hPdm9QYzQyMkJxazltODhJNHEvVFZ1c2JDQm0wYlNNNXBxS0Z1?=
- =?utf-8?B?ZlhJeWxMM21adjd4Nm5tWEphOElPMDVteEc1M3FtaEFzTnNRMk5wYTRoZ2dV?=
- =?utf-8?B?NDE1eHhqYnI3TlN6VVBuNnd1WkJuUThLd2Q1NjVKWFVEcXZyMTV6bElPS2pZ?=
- =?utf-8?B?U2xsUlFtNllUMTFDMGdWZUJKaTh4dlZQRnB3WGJkL2t3OXRGbUk4QXpUakxJ?=
- =?utf-8?B?YlRPMXRlZWNxZWtNQk1zdkJ4WUMyUkxFR0ptdnhHUjRTTmdWUHVIdFMvbVR0?=
- =?utf-8?B?WWlHcXFQQlIxc1piZCtJaEV0enIwcERQdkFaTEl5Znd2QkhzMjlwdW16cFo2?=
- =?utf-8?B?eFp0VmNTR3JkZE5xaFIrT0x2YlAxY3RVTWVqamNvZzQ2RjRJaDliM1ROR2JF?=
- =?utf-8?B?T2ZPeWdBZTMreG5DUml4aXJibU9lMitOOFIzc3Nnbk9hdVlYdjE1cGEzV2U0?=
- =?utf-8?B?T1dweFg4SUEvSEN2ZXV2bk1UQ2NFU1VNQlVrUk9XZ2EvUzFKYjhQeE9rSkNO?=
- =?utf-8?B?Y3dPZUlaNXZwL2RPSmROSWt2eGw2RVk5SENuc2k2b2RTaFZneGZML24vVlRK?=
- =?utf-8?B?NTNSbWY3bUQvNzV2enNyNEViczZPSWVzRDVMWitML21vS1BEZTJVYzQ4K0FF?=
- =?utf-8?B?ZGVMRzNHc1VYNEtxVHpkK3BsbjlXTndqV0lYcldwMDlGdG9neHFMOFNPNGJ4?=
- =?utf-8?B?bTRLb0ZmRE5MRmF3Q0h1N0pBVTZ5NEVuMGk5cG5uRHgwYjQ4OWR6UWVmWVNL?=
- =?utf-8?B?UjE3OHEzZ1JVSjlMdjZTN2g3OXZmVmdLaDhNSkF5dDlhWTJ6aE9JMmwweEEx?=
- =?utf-8?B?MlFhZVpRcUVmQ1ZoNkJBaHp3K0xtMFNHZ0xscUZXeGtDYktkZVRJSlpkTFBh?=
- =?utf-8?B?T1lJeXJHbmZkUi9FOTE4Q2t4QjhrVE9zMVlrZXpVVUd2dkRDeWhybk5mV0N4?=
- =?utf-8?B?RUZzZFQ1Wi9hNUN6V3pFdG1ZTHZyOEVROWFPbWloT2hPYW44QnMrRzZqU2k5?=
- =?utf-8?B?WVM3N251dkxRWWRjVjhDUVh6RndiOXlTdDZzMlJCY0JJanlhS0hQOW96MVRD?=
- =?utf-8?B?b0hLanJYNGhMeUFkZ2xLODhodE9acnNCSG9wVHNrY245SkF5Q0w3R0JlMy9l?=
- =?utf-8?B?Yk1LYTdwMEZTYlMxazNzQUNHaHE0MUhac3UvVVBXWmRSbEFQVzJKZDBEVGE0?=
- =?utf-8?Q?Y7xeAUBBieV+vjQ7h5F9uE/9MSVk8o=3D?=
+ =?utf-8?B?SXdaVE12U1FJZkcvWVNsRjN1cWVtckRXeXFmcXNNRWRRRXpBYTBqRldCYVJD?=
+ =?utf-8?B?V25wbEhCL05MbzVLTjFBMlJFNHNCQnZkNHc2MWlpRGtidEdHbTd5ZkN4QXhJ?=
+ =?utf-8?B?NzBsTkVzcE41b1cyaGYxV3pjNTM2dk1jV2cxT2REeXA3eVB6T05lZTYrSDZq?=
+ =?utf-8?B?MjBvemppYS9mTGU3cXR1WENaYnptU1E1L0l2Ymk0a1JES2FyRzBwOHdTQ0Q5?=
+ =?utf-8?B?NUJjYTBVVlBTcHZBOVdUdTRWNUNZTWl6ZDdya3NvdFo5M0xWdjlCY3pwNmlh?=
+ =?utf-8?B?b1ZOdFNENFdjcEhScEZDVEo4NnBQaUJ5MlloV3V5T2NCRFBTdnAwNzFFaytj?=
+ =?utf-8?B?dkNHS0IxTmtFblNkRTBDSmcvay9aNEQ2SHNuRU05UjBYL3Yzb0VRVTNLaXBJ?=
+ =?utf-8?B?M29WMUpWRkpCMldGOHViOTBrZ3g1a1grQW1QalJzNHdvWWR4RSt6eDhGeDRx?=
+ =?utf-8?B?Z0lwcW8vemxxVm8rZ1kxOWhvc1pGYmtvM2hsUnExUmk1THpYdjM0TWQ1NXd6?=
+ =?utf-8?B?Mng2eFBuVmIreWJ2NjVtZmdDVHBidkRzYjFlb2RuTmJqWU56YWZlMTVzNTNy?=
+ =?utf-8?B?SmY0Q1RHS0dOYTByS0JKVVdGTmtkN21NcWtjR2pyQ2RlZTdxMjJuRzU2eldW?=
+ =?utf-8?B?dVVnSjR2cWwvNDlvMk5JR1MxZ25ha0VlU0kvSE8zMXdBVG9jVmNqa3MyOEoz?=
+ =?utf-8?B?a3lKaEN4MjBsVHZEcmIycXo0NUdWc3VoU21tNE5UMEZlS1lWNEY4dXROTEs1?=
+ =?utf-8?B?VXoyZEc3eTRvbHZFZ1poY2gxUXcvN0pSYzkwY0hYNFRzUW85NUVQbjlRZ2Qx?=
+ =?utf-8?B?S1B2V25EQ3ZjOGoyUEs1VHR2b3VpL0FTYjVrTmdiNGg1RE94YVhkRXpQQkww?=
+ =?utf-8?B?Rk5wb0xBYmdabURzZGRPWkY1TGIrSVlId2l6WllyQmV1S2tscjdmamxJdTJz?=
+ =?utf-8?B?L1IvVnU3RG5kRkdJekhDaXQyMmNjaDlIR3d3NC80aTNFMUZmMyswUmpvdU0y?=
+ =?utf-8?B?TjhpUnNGeHQxTW53TVk2Uy9mME5hMU9IZGtpaHg4cHNxN2FXVWNUMHB3MFNC?=
+ =?utf-8?B?RXU5RkZSZmtWbUpSL3BWaFFmYldqTnc3STl0SFl2VUNwUzlaTU04dVZMNENx?=
+ =?utf-8?B?b3dMbzMzRUtHUnNIc1VrOHY2YkhEbDErbnRIc0RnRkx2ZExETTMyZkhLR1c0?=
+ =?utf-8?B?QmxTL3VtZ2E2cEl2UWU0SGVNMU1RWnJXUmpXcHlCYUxOb0NuT0tHNlB5Q1d0?=
+ =?utf-8?B?dUcwVzFIOGhZd2srckN5Q083Y2N2Rk1sbjVwTml6SXloZkNOOHRBZlhSSUpQ?=
+ =?utf-8?B?S3U3aXJ1RXh6ZzNjbUROY25DajNNOGNjaUxTcXgyRDBydmlvb2RVZHdJT0hp?=
+ =?utf-8?B?Ukp6amhpa0FEVnBWRTFyajA4NnRYN3JUdGd5Ykx5UXBQemI2cFo0TkNCcW41?=
+ =?utf-8?B?R1dsNGY2NU9EemFNRW90TkJwLzZTazVIdUJVSUgvWk02SHJsMWtEU3FDTllD?=
+ =?utf-8?B?eGZPRlpZWDhpM29YQUtieUtBQ3hqTWJTeWtXRGZIQTZtOVJ3Y0k1cDJlcFk3?=
+ =?utf-8?B?Zkxja01DangyckZQRiszYnZFWUswaVFZLzZ4N1JNMHExQ1BCYkVSSS85clcy?=
+ =?utf-8?B?S3hQNVhQd0tYbDBHNmxyTHp4RStjUjFoN1BaSlpBVHRYRXQ5TkZZM3FZeFU0?=
+ =?utf-8?B?R2xGZExEKy96bExicFE1dFZCdk1qdENILytjOWFsS3VDQmVHWDNuTC93SGhK?=
+ =?utf-8?B?SzRtTHJ5T3NxOWtlRTJadjZXMVQwdlJYMHp6ZGNzRnN2YWtQbW43bkh2Z1NU?=
+ =?utf-8?B?ZmgyN1BFS0lnWDUxb1ZzNVU5T0RRUkVBZy9aYldkMDhuVExIUEVRSHFhN0RB?=
+ =?utf-8?B?ZXpRMHdxSW5UQ2lwWlNMdGtBVW1jbFlFaDIzQUpnOFBVYkV0MEVwSmZBQTZK?=
+ =?utf-8?B?azA1WEpBb1o3aVVmWjRGNTk0bTdrMk53RmRkK1JtZUV6S2JzTDZJTUVPbFUx?=
+ =?utf-8?B?bnF4S2U4dGNRPT0=?=
 x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR15MB5659.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(38070700018);DIR:OUT;SFP:1101;
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR15MB5659.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(38070700018);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
 x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?aXM2ZWRzdU9LYWljb3d6QlFmc1FDY2xmVUc5TG5vbFNSTUNaK3BabGp0Vy9B?=
- =?utf-8?B?V2g0ejZxU24zSU9TK0ZVdm1XVndUbVY0dmtETlZOUXVlcFJIQXZ3cEx5VEhm?=
- =?utf-8?B?U1VhYUdmSWNPNE9tY3FRcWtuemV3M2FlaVVqNGYzTGhNNnkrTUViQzZEMGJ6?=
- =?utf-8?B?eTZueFRZZCtBb2VQZ28zU0lEMUwzYnd3MU0yQ3ZNVHNyT0JxLzEwaTZiSTRw?=
- =?utf-8?B?dzViamVOcXc4OEZlSmQ2Z3c3S0RMNEtuWUM2UmlvQjVXOEEyK2ptcGJIeWtI?=
- =?utf-8?B?WFk2VmNaSlp4dVQxV3pITHl3NldLZHUzeHBwZU9WRnpPVzhZdVYzOERrUy9K?=
- =?utf-8?B?VE9DNzVEM0xreUVTbGlLbFJ1RERJWVJlaDN1OTRVNUVGR29HaFFoaW5XbDBa?=
- =?utf-8?B?dDV0NTkzNDUwSm10ZXBrWXlnK1VxVzBObWQ2aUhXT3JNaWJlQ3pWd3VMUXRW?=
- =?utf-8?B?M3gxSm1IT2s4ZWVqamNQTjI3STJDaU5uNS8xQkJMSGhraUtRRTlUZjRrYkIy?=
- =?utf-8?B?RDd6NXhUaEUzR1FRb1kzV3NGbUgyWENGa3RLV2lzS1ZpRzkycGM2TEhRY0xD?=
- =?utf-8?B?MUtOeW95b05jdlFPRlNrNTFtRnpaUlJzZ0VPQWdoaGZCUWRxc2lNTjFMcHI5?=
- =?utf-8?B?UkpUblVBTGVoc3JIYSs0K3VObmZSc3NSYXhkSHUxei9jWXZLZkQxQ0VnSlpQ?=
- =?utf-8?B?dVJQaE1JY1FnaHBnSEN0T08vTDlMaisxbXR5TGJFTUFlS1ppeUp3N1ZrdlFZ?=
- =?utf-8?B?S0VBOGp4YnNsc0xtVWFNN29PekVVS0ZuZ0V0OVpVMFJ4UGxXL0hqZ3RZVXdZ?=
- =?utf-8?B?ejVEOUc3aERUS0pVZHlzeVdTTktwTnE5bFlObWZNbDZqWFFWd01CU1VuNTFs?=
- =?utf-8?B?SDNWZ0JYdXF2RU5mazViNFVaN1FJQVpNVnJ3emNGTEx6UXdJbTcrVk1nM2lt?=
- =?utf-8?B?eVN0cHdER1NkRzB6aDVCT1FGc1dmclpWMXlKSWFaakd2Q2tYUzNVZmU1SVND?=
- =?utf-8?B?am5ZMGpWazRPb2t0SEQ2UTU2ZWlQZkFlNlRYREdNYUVUaCt3Qm9SR2NRS3hG?=
- =?utf-8?B?b0hYVUZTWU4rTVVzUkpRYkhRMVhSWEliMElMRmNMdzBsK0ltZWNVU3ZDWEN6?=
- =?utf-8?B?TDJObzUwOGJtdFBoUVB1bDNuZy9uS0VWYTZGcEZGYkJCK2FFd0RReHFmMS9x?=
- =?utf-8?B?RlFWS3lCR0l6T1o2ZTNVZ0c1RVBUY1ViQnBpMXhQN3I1S1UvQ1M4MG1yamc0?=
- =?utf-8?B?Qnowc0RabG1QNDRxUndMbUlIdUxybFZDTUNtTnBpbXNWSGlwS0dtcTBtSGIv?=
- =?utf-8?B?T2lzMXR0QlBFQU1hdkI1S3U2YWxvL05pSzRLeFYxNnVDNm5xM096NW9ZaDFZ?=
- =?utf-8?B?VzFMSEloU3YzSHVWelVkYjBmVy9xaTNLakRDTWt3OGxsNmJ5Zmh5MHZzQmx6?=
- =?utf-8?B?NVAxUndqU0F1MFJ0ZCtpKzlabWpPTjlpWDgzWW1ROG9CRmFOcGRrNXludldC?=
- =?utf-8?B?a2ZpS1N4eVRjVVNwelArdE9FSTlySThWY2dXVHVpOWIxWUY1dllvaWk2RXc4?=
- =?utf-8?B?cVV6Uno1K1VpelI2S05YV01rTWh1K056OUhGWUsvanprQTB1RjNjMXNFNm56?=
- =?utf-8?B?SnBSTnVzNERXaUlhaE5LVldCeXhIeERheUFUTFpoUi8zQ0NsaHkwSzZLYlJN?=
- =?utf-8?B?a1dybC95UTFHalRYNWJEY1UzNDVPeGVmY3ZYQUFZWEc3dzd1cHpaVHhIOTdw?=
- =?utf-8?B?blZ5MWlIZXJmZ2dRSUxQa05ZcFZjY2xDYWRmUERjdG5QYk9PTTVNbjk5ZXhB?=
- =?utf-8?B?N2IvaWc1NUV5M2ZWRUt1bnUyMVRsaXdRVkdqWTB0eElOYUs1NklKbi9pbW82?=
- =?utf-8?B?eVFiNkh3WElNRC9HQURzckpaYmllZGVtQXk4b3pwdmhPdVd2ZW5PQ2I3M01J?=
- =?utf-8?B?OVJoMjhkeDhxbzg1Z280NWFjdW5vWWdvZTNadTlxUXRTM294VG1qRUtMZDli?=
- =?utf-8?B?TVZxOWhvREJkcmM2VVJFWU9Xd2swWS9MeG9DY0NubFBsQStjeEFBTEptc1Fk?=
- =?utf-8?B?R21GOHE3WHBGRjVpVTB0VXRzOWFVZExTMDhnSXZRS3dReThjemg5MUJQU0pW?=
- =?utf-8?Q?05zQ=3D?=
+ =?utf-8?B?Z1ZUS2xCNGdmNE9YRHdrenRvQmFLRE1HWFBiRHR3Skp6d2VnMHFqUTdSVnlU?=
+ =?utf-8?B?cVFFSjY2dld0R2N4bGFwYkU0Rldaa3ZyZExHL0FoVDVoUm5xYUN3VVM4dGh2?=
+ =?utf-8?B?NWFzdXdZbzJNMnAxNENkK2VNTU1VblFWRC9ON0FYWmhaTkhhQjVIcWRENTJ6?=
+ =?utf-8?B?NThMdk5mYldXVlpEcEJDc2JlR1hhNnh5R1ZTczBuSEh5cDgrY3RVTSs2K0U2?=
+ =?utf-8?B?V3pYa0IvRldBeDFJYXJJNVNoZ1dRYU85eGRXL1NvYTVaeENXSTJ2SEswWGdI?=
+ =?utf-8?B?MFc0cE4xRC9qdy9XcWZhbThmOXoxODJZMUlRdHFOZGhQYndlTEE1Q1NHTzFS?=
+ =?utf-8?B?N3JocW9hNVVoTXY4M0EyYm5JZ2Nwcmh5N0hRVEwyOUZTUXdpVTJMWWFOM3ND?=
+ =?utf-8?B?bXFJZmlxVmtlWG9xZ2Z0NzVicmZBSjU0TDBpbkNRYnAycEtoWU5GYUpmZEFw?=
+ =?utf-8?B?UURlc3RxUHZQSGRiSTlmaVk4YmV3NXJFQ3pTZ0J3TEs2SGJyWXJSaWNBbmRG?=
+ =?utf-8?B?d0FvcFVpSXpVWEN2d0h6eXBGMzFGbWliVndKZFdVYXNVd1V3K3N2dlZLUE5u?=
+ =?utf-8?B?d0pRK3VwTVNucEhWb2NrMEl3V2lwTzdaVlJ2ODBJTGZhUC9kQlJtOVZHUHhK?=
+ =?utf-8?B?d09DRS9mNTFRSm5xUVpXcVMzQW9oMWExclRER2VoMUZ0MmtyUG1rSGt6eWlS?=
+ =?utf-8?B?VFdrZ3Z0aUxkTlJjdndZMWU5TDdPc21aTUliN1A3b3BXaWp6QWpwQk9nbnV2?=
+ =?utf-8?B?dlBNaWJHQTdlY1pXOUxoUDRrOUNKend4SjNIVnkwSyt0UXM5bWhvK3drbnBI?=
+ =?utf-8?B?Mm1WeTVjUGVsU2oxSHBkNEdkMy9jeHNiZE9KZ1lTSHVBUURqVlo3VUJnNWFS?=
+ =?utf-8?B?Q3BGUEx0MW5FNXhHTjRiQlowcWI1dFR5U3crU2RMM3FoM2FFUDFmNitXVDdL?=
+ =?utf-8?B?b09tNURNbXdiTVZTZVRMWjNETTc0MnNZTWtpaTR1UTRlV0pLc1IrV0pqaUVY?=
+ =?utf-8?B?cHBPVk0yUkRxVHBYWlhXbmphRTJNS0hrZ1JLVFlHck1yQjNKUlZBa3dBNFFI?=
+ =?utf-8?B?RndIVjV1MDN6RDJOOCs1Qlh5a0VyK1J1Ujk4TFpaSEFCRTBNWnQzTWwzWDZF?=
+ =?utf-8?B?cEVwVm5JcFlqMFBZWFpiZUorK0pnM3ZaVTB2SlRWdUVtM2hsVE52Z2pZVktM?=
+ =?utf-8?B?U3VMc0NkWk9RQUZzbE1SdEp2QjhoRTRjRWZXOXB0KytBa0JYd3RnK2V6Qk5x?=
+ =?utf-8?B?Z0p5d3hsTmVjbHhqaHVHU0NUS1F2am9odW9jL0w5Wm1KWFlDeVhxMDlZSkpQ?=
+ =?utf-8?B?RU0wNWtvZlZiQi9sUlBvV2R2MG9hUlpFK0tMWFdtd3BSejRCVUhQcHVyL2Zj?=
+ =?utf-8?B?OXByNktNUVNWWU9oNUVaNXdrSnl5YXp1aDdPM1BhVExLQmt2Z21zUVhyL09B?=
+ =?utf-8?B?Uy9qRzRJZGlCSk53ZjNlOVREUS9KcVZuWXJlSjB0ZDZaZXdLWFZ5RGV2OHJl?=
+ =?utf-8?B?K0ZZVWRIWXo3MmxEdnlTZzBNdlUyZmxUcnBjK0dLazFhVjRBYk94WXN4a09T?=
+ =?utf-8?B?eVU2dHl4djg2V3BMc2xSWmxCb1l1cXFobUVFck5TbGJuUWdRYkdTK1paN0hP?=
+ =?utf-8?B?bHMrREdSSXlVT0JhVTB0OENNWGhRQ3VXWlVtSkFEQTlKSGZBWVBtL0ZhM0dG?=
+ =?utf-8?B?M2UyRDJYV3dmU3QxcE5qekhlTTNIRWJzcXg4Wk5tVU90SnVOZkJabU1EQ0Iv?=
+ =?utf-8?B?bEcwdkZaK05OaytCNWY2eitqaUxVUDM1emJYNFpSSlhFZmhTQUI5ekRzdWNU?=
+ =?utf-8?B?VnBDcUg0c25EdVJGamxrOTlFeko4OE5zWWlSTHBqYXdTTVR2eUk1T1JsaXFM?=
+ =?utf-8?B?d05adVhlbzgyOXZ1c2R0bHJCVHlpZE1iaFpiQnBjMjZqV2Yram96ZlkydW1M?=
+ =?utf-8?B?ZmhBV2VEOFdqZkhkeXdyMVVsSEJ2YndBWUZUM3hhMjI0MWFZcmlIYjNETnlF?=
+ =?utf-8?B?SHl5bVdEajJheHVhQU9zQkk1Qi9DOEYwRnZGTTVMRWVmYU56YkRlamQ3Y1Fm?=
+ =?utf-8?B?enEwNkpzaUZBb2dSU01KeUdaUk5pb1lhM2RVWnlHSnhnclNic3I0dGszdm9G?=
+ =?utf-8?Q?bhiQ=3D?=
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -174,347 +177,552 @@ MIME-Version: 1.0
 X-OriginatorOrg: meta.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR15MB5659.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c4d4946-3949-434e-fa80-08dd99f07e09
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 May 2025 11:53:54.1700
+X-MS-Exchange-CrossTenant-Network-Message-Id: 253f9f96-7189-4fad-dd8a-08dd99f15f03
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 May 2025 12:00:11.6324
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7ji7W6sI/pLerUNNDpqAE5ClL2YKVcYaWZEPbDRgWWs1VGpPdW/Prv3+cdxMuzwSdsvVGv2Q6HPWg7OddpMNaw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PPF7911AB4DD
+X-MS-Exchange-CrossTenant-userprincipalname: aKkOZAaK7SMObNbwmk/2fG/a+B2dVJzXOPWXEtFVc2w3q0xBI5HTQ9PAp3eKW0toqahbWQsNNj+UF8rilXP8vg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS4PPF9EF34FBD3
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Content-ID: <AB38ACC500A29443B2D217D4EBD44A92@namprd15.prod.outlook.com>
-X-Proofpoint-GUID: emrdele1pOWVrazC25T_xpPVcx1jAgKO
-X-Authority-Analysis: v=2.4 cv=CLUqXQrD c=1 sm=1 tr=0 ts=683061e4 cx=c_pps a=TbfGeTIpFbm9CS5WQd39hg==:117 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=dt9VzEwgFbYA:10 a=FOH2dFAWAAAA:8 a=k2V0E7TfCpLqQOjRFj4A:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: emrdele1pOWVrazC25T_xpPVcx1jAgKO
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIzMDEwNCBTYWx0ZWRfX9hC42Q70cU9v Oh4uixK8R7k5o+hRVrMzszxin03N+JPwfzGqv5Uwfc01cOYKnS9JW0oh15Klb47eWtJKovgm4E2 fwo5VbtR9xzWqlGlne1Pxza+a+uQBov3rBwsBdr8WE3pWMENsyWMuuC1gprGAa4uC9oktBgxpHw
- EC99/eSpVLJWPL8iA43zoOsrg1uR01lgB2bsuEHmCVQiDT4egPoy5D0XQLK4EEyr3G9g3CZeJEp 9/npFrp3Ja8edr6JAI5G0geOH5WqB5hMUtgCzicYukr/FxKw6lD5D24t97HTquWSonXeuUrPjDP gTgjgszQaIHuOEdbgB6uVHfjrd1pHX4G7AjE3ez80+P+YRkmUjjygHjuWWbp8us3XsGRf4v1Td3
- 0RNOLxCinswTQvD3Ny8K51jAu2xWQwbDL8wSbaYDO0+T2j9i+40lIgaWQ/IjSge9d/+0SGgu
+Content-ID: <1F0BDC0CFA05D44581163CFC4836E3A0@namprd15.prod.outlook.com>
+X-Authority-Analysis: v=2.4 cv=Q+bS452a c=1 sm=1 tr=0 ts=6830634e cx=c_pps a=0de+TxTBwdPc9w0nPmKirg==:117 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
+ a=dt9VzEwgFbYA:10 a=FOH2dFAWAAAA:8 a=XwSrxwvGr9Sa_0Hq1G0A:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTIzMDEwNSBTYWx0ZWRfX9UoYdfIP88gP eHDHeVRQnyEs8wOXwRHIyWho6ncRKPdV4JkQyCi+WP4+2z6IDd6BDon+tiNuh4UzvJOsEwyViZX d56gcu1a9W5SUoF1aNoNqHGZlalTfMyJRi4845j19LytKtbZSiGPyWlIyERGLrSId+2snIABPxa
+ ZRSAEReXxAru+GIA9VYwi51cqCtvDTMzrsLxg4HyXwvUDkViXriq7j4rTM2tcun/ehr7vrG/KgA dH8RGZUkFKpOeBevrnKfHoT+3AVRvfugI0n9UghSFer5LLXVFBzC7o3WevVfbZUDWOkGJf5Ud1j lAxYti3YYKiWmg16aMb991aok1ZxeI+F80toguIHUoHvsXd7sOFnnfj1tj+2zh85mjrufyszWYF
+ ijMxZ9gkx+5jjMSUnqbn3ZmylJbOIBxUvFTk8pYD92Hs8KMYGStoNOAff52mjqCEISb5/+g5
+X-Proofpoint-GUID: 1OsKPLO69Fv13ha8_hqxubVnyHaSyMz9
+X-Proofpoint-ORIG-GUID: 1OsKPLO69Fv13ha8_hqxubVnyHaSyMz9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-05-23_03,2025-05-22_01,2025-03-28_01
 
-On 23/5/25 11:09, Qu Wenruo wrote:
+On 23/5/25 10:53, Qu Wenruo wrote:
 > >=20
 >=20
 >=20
 > =E5=9C=A8 2025/5/16 02:06, Mark Harmstone =E5=86=99=E9=81=93:
->> Change btrfs_map_block() so that if the block group has the REMAPPED
->> flag set, we call btrfs_translate_remap() to obtain a new address.
+>> Add a struct btrfs_block_group_item_v2, which is used in the block group
+>> tree if the remap-tree incompat flag is set.
+>>
+>> This adds two new fields to the block group item: `remap_bytes` and
+>> `identity_remap_count`.
+>>
+>> `remap_bytes` records the amount of data that's physically within this
+>> block group, but nominally in another, remapped block group. This is
+>> necessary because this data will need to be moved first if this block
+>> group is itself relocated. If `remap_bytes` > 0, this is an indicator to
+>> the relocation thread that it will need to search the remap-tree for
+>> backrefs. A block group must also have `remap_bytes` =3D=3D 0 before it =
+can
+>> be dropped.
+>>
+>> `identity_remap_count` records how many identity remap items are located
+>> in the remap tree for this block group. When relocation is begun for
+>> this block group, this is set to the number of holes in the free-space
+>> tree for this range. As identity remaps are converted into actual remaps
+>> by the relocation process, this number is decreased. Once it reaches 0,
+>> either because of relocation or because extents have been deleted, the
+>> block group has been fully remapped and its chunk's device extents are
+>> removed.
 >=20
-> I'm wondering if we can do it a little simpler:
+> Can we add those two items into a new item other than a completely new=20
+> v2 block group item?
 >=20
-> - Delete the chunk item for a fully relocated/remapped chunk
->  =C2=A0 So that future read/write into that logical range will not find a=
- chunk.
+> I mean for regular block groups they do not need those members, and all=20
+> block groups starts from regular ones at mkfs time.
 >=20
-> - If chunk map lookup failed, search remap tree instead
->=20
-> By this we do not need the REMAPPED flag at all.
+> We can add a regular block group flag to indicate if the bg has the=20
+> extra members.
 >=20
 > Thanks,
 > Qu
 
-You would still need the REMAPPED flag, as that's also set on=20
-partially-remapped block groups.
-
-The life cycle is:
-* Normal block group
-* Block group with REMAPPED flag set and identity remaps covering its=20
-data. The REMAPPED flag is an instruction to search the remap tree for=20
-this BG, and also means that no new allocations can be made from it
-* Block group with a mixture of identity remaps and actual remaps
-* Fully-remapped block group, with no chunk stripes and no identity=20
-remaps left
-
-My concern with making fully-remapped block groups implicit is that it=20
-makes it harder to diagnose corruption. If we see an address that's=20
-outside of a block group but has no remap entry, is it a bit-flip error=20
-or a bug in the remap tree code?
+I did consider that, but the downside of doing that is that it makes the=20
+timing of updating the block group tree less predictable. It would imply=20
+that when relocating a block group we have to lock the BGT up to the=20
+root, as we'd be changing keys and the length of items rather than doing=20
+everything in place.
+This didn't seem worth it to save a few bytes, particularly as it's=20
+anticipated that in practice most block groups will have the REMAPPED=20
+flag set.
 
 Mark
 
 >=20
 >>
->> btrfs_translate_remap() searches the remap tree for a range
->> corresponding to the logical address passed to btrfs_map_block(). If it
->> is within an identity remap, this part of the block group hasn't yet
->> been relocated, and so we use the existing address.
->>
->> If it is within an actual remap, we subtract the start of the remap
->> range and add the address of its destination, contained in the item's
->> payload.
->>
 >> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
 >> ---
->> =C2=A0 fs/btrfs/ctree.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 11 ++++---
->> =C2=A0 fs/btrfs/ctree.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 3 ++
->> =C2=A0 fs/btrfs/relocation.c | 75 ++++++++++++++++++++++++++++++++++++++=
-+++++
->> =C2=A0 fs/btrfs/relocation.h |=C2=A0 2 ++
->> =C2=A0 fs/btrfs/volumes.c=C2=A0=C2=A0=C2=A0 | 19 +++++++++++
->> =C2=A0 5 files changed, 105 insertions(+), 5 deletions(-)
+>> =C2=A0 fs/btrfs/accessors.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 20 +++++++
+>> =C2=A0 fs/btrfs/block-group.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 | 101 ++++++++++++++++++++++++--------
+>> =C2=A0 fs/btrfs/block-group.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |=C2=A0 14 ++++-
+>> =C2=A0 fs/btrfs/tree-checker.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 |=C2=A0 10 +++-
+>> =C2=A0 include/uapi/linux/btrfs_tree.h |=C2=A0=C2=A0 8 +++
+>> =C2=A0 5 files changed, 126 insertions(+), 27 deletions(-)
 >>
->> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
->> index a2e7979372cc..7808f7bc2303 100644
->> --- a/fs/btrfs/ctree.c
->> +++ b/fs/btrfs/ctree.c
->> @@ -2331,7 +2331,8 @@ int btrfs_search_old_slot(struct btrfs_root=20
->> *root, const struct btrfs_key *key,
->> =C2=A0=C2=A0 * This may release the path, and so you may lose any locks =
-held at the
->> =C2=A0=C2=A0 * time you call it.
->> =C2=A0=C2=A0 */
->> -static int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path=20
->> *path)
->> +int btrfs_prev_leaf(struct btrfs_trans_handle *trans, struct=20
->> btrfs_root *root,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 stru=
-ct btrfs_path *path, int ins_len, int cow)
->> =C2=A0 {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_key key;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_key orig_key;
->> @@ -2355,7 +2356,7 @@ static int btrfs_prev_leaf(struct btrfs_root=20
->> *root, struct btrfs_path *path)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_release_path(path);
->> -=C2=A0=C2=A0=C2=A0 ret =3D btrfs_search_slot(NULL, root, &key, path, 0,=
- 0);
->> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_search_slot(trans, root, &key, path, i=
-ns_len, cow);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret <=3D 0)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> @@ -2454,7 +2455,7 @@ int btrfs_search_slot_for_read(struct btrfs_root=20
->> *root,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (p->slots[0] =
-=3D=3D 0) {
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =
-=3D btrfs_prev_leaf(root, p);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =
-=3D btrfs_prev_leaf(NULL, root, p, 0, 0);
+>> diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
+>> index 5f5eda8d6f9e..6e6dd664217b 100644
+>> --- a/fs/btrfs/accessors.h
+>> +++ b/fs/btrfs/accessors.h
+>> @@ -264,6 +264,26 @@ BTRFS_SETGET_FUNCS(block_group_flags, struct=20
+>> btrfs_block_group_item, flags, 64);
+>> =C2=A0 BTRFS_SETGET_STACK_FUNCS(stack_block_group_flags,
 >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 if (ret < 0)
+=C2=A0 struct btrfs_block_group_item, flags, 64);
+>> +/* struct btrfs_block_group_item_v2 */
+>> +BTRFS_SETGET_STACK_FUNCS(stack_block_group_v2_used, struct=20
+>> btrfs_block_group_item_v2,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 used, 64);
+>> +BTRFS_SETGET_FUNCS(block_group_v2_used, struct=20
+>> btrfs_block_group_item_v2, used, 64);
+>> +BTRFS_SETGET_STACK_FUNCS(stack_block_group_v2_chunk_objectid,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 struct btrfs_block_group_item_v2, chunk_objectid, 64);
+>> +BTRFS_SETGET_FUNCS(block_group_v2_chunk_objectid,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btr=
+fs_block_group_item_v2, chunk_objectid, 64);
+>> +BTRFS_SETGET_STACK_FUNCS(stack_block_group_v2_flags,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 struct btrfs_block_group_item_v2, flags, 64);
+>> +BTRFS_SETGET_FUNCS(block_group_v2_flags, struct=20
+>> btrfs_block_group_item_v2, flags, 64);
+>> +BTRFS_SETGET_STACK_FUNCS(stack_block_group_v2_remap_bytes,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 struct btrfs_block_group_item_v2, remap_bytes, 64);
+>> +BTRFS_SETGET_FUNCS(block_group_v2_remap_bytes, struct=20
+>> btrfs_block_group_item_v2,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 remap_byte=
+s, 64);
+>> +BTRFS_SETGET_STACK_FUNCS(stack_block_group_v2_identity_remap_count,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 struct btrfs_block_group_item_v2, identity_remap_count,=20
+>> 32);
+>> +BTRFS_SETGET_FUNCS(block_group_v2_identity_remap_count, struct=20
+>> btrfs_block_group_item_v2,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 identity_r=
+emap_count, 32);
+>> +
+>> =C2=A0 /* struct btrfs_free_space_info */
+>> =C2=A0 BTRFS_SETGET_FUNCS(free_space_extent_count, struct=20
+>> btrfs_free_space_info,
 >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 if (!ret) {
->> @@ -5003,7 +5004,7 @@ int btrfs_previous_item(struct btrfs_root *root,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 while (1) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (path->slots[0=
-] =3D=3D 0) {
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =
-=3D btrfs_prev_leaf(root, path);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =
-=3D btrfs_prev_leaf(NULL, root, path, 0, 0);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 if (ret !=3D 0)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
->> @@ -5044,7 +5045,7 @@ int btrfs_previous_extent_item(struct btrfs_root=20
->> *root,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 while (1) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (path->slots[0=
-] =3D=3D 0) {
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =
-=3D btrfs_prev_leaf(root, path);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =
-=3D btrfs_prev_leaf(NULL, root, path, 0, 0);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 if (ret !=3D 0)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
->> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->> index 075a06db43a1..90a0d38a31c9 100644
->> --- a/fs/btrfs/ctree.h
->> +++ b/fs/btrfs/ctree.h
->> @@ -721,6 +721,9 @@ static inline int btrfs_next_leaf(struct=20
->> btrfs_root *root, struct btrfs_path *pa
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return btrfs_next_old_leaf(root, path, 0);
+ extent_count, 32);
+>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>> index 5b0cb04b2b93..6a2aa792ccb2 100644
+>> --- a/fs/btrfs/block-group.c
+>> +++ b/fs/btrfs/block-group.c
+>> @@ -2351,7 +2351,7 @@ static int=20
+>> check_chunk_block_group_mappings(struct btrfs_fs_info *fs_info)
 >> =C2=A0 }
->> +int btrfs_prev_leaf(struct btrfs_trans_handle *trans, struct=20
->> btrfs_root *root,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 stru=
-ct btrfs_path *path, int ins_len, int cow);
->> +
->> =C2=A0 static inline int btrfs_next_item(struct btrfs_root *root, struct=
-=20
->> btrfs_path *p)
+>> =C2=A0 static int read_one_block_group(struct btrfs_fs_info *info,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 struct btrfs_block_group_item *bgi,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 struct btrfs_block_group_item_v2 *bgi,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct btrfs_key *key,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int need_clear)
 >> =C2=A0 {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return btrfs_next_old_item(root, p, 0);
->> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
->> index 02086191630d..e5571c897906 100644
->> --- a/fs/btrfs/relocation.c
->> +++ b/fs/btrfs/relocation.c
->> @@ -3897,6 +3897,81 @@ static const char *stage_to_string(enum=20
->> reloc_stage stage)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return "unknown";
->> =C2=A0 }
->> +int btrfs_translate_remap(struct btrfs_fs_info *fs_info, u64 *logical,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 u64 *length)
->> +{
->> +=C2=A0=C2=A0=C2=A0 int ret;
->> +=C2=A0=C2=A0=C2=A0 struct btrfs_key key, found_key;
->> +=C2=A0=C2=A0=C2=A0 struct extent_buffer *leaf;
->> +=C2=A0=C2=A0=C2=A0 struct btrfs_remap *remap;
->> +=C2=A0=C2=A0=C2=A0 BTRFS_PATH_AUTO_FREE(path);
->> +
->> +=C2=A0=C2=A0=C2=A0 path =3D btrfs_alloc_path();
->> +=C2=A0=C2=A0=C2=A0 if (!path)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM;
->> +
->> +=C2=A0=C2=A0=C2=A0 key.objectid =3D *logical;
->> +=C2=A0=C2=A0=C2=A0 key.type =3D BTRFS_IDENTITY_REMAP_KEY;
->> +=C2=A0=C2=A0=C2=A0 key.offset =3D 0;
->> +
->> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_search_slot(NULL, fs_info->remap_root,=
- &key, path,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 0, 0);
->> +=C2=A0=C2=A0=C2=A0 if (ret < 0)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> +
->> +=C2=A0=C2=A0=C2=A0 leaf =3D path->nodes[0];
->> +
->> +=C2=A0=C2=A0=C2=A0 if (path->slots[0] >=3D btrfs_header_nritems(leaf)) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_next_leaf(fs_i=
-nfo->remap_root, path);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retu=
-rn ret;
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 leaf =3D path->nodes[0];
->> +=C2=A0=C2=A0=C2=A0 }
->> +
->> +=C2=A0=C2=A0=C2=A0 btrfs_item_key_to_cpu(leaf, &found_key, path->slots[=
-0]);
->> +
->> +=C2=A0=C2=A0=C2=A0 if (found_key.objectid > *logical) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (path->slots[0] =3D=3D 0)=
- {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =
-=3D btrfs_prev_leaf(NULL, fs_info->remap_root, path,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 0, 0);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (=
-ret) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 if (ret =3D=3D 1)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -ENOENT;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 return ret;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 leaf=
- =3D path->nodes[0];
+>> @@ -2366,11 +2366,16 @@ static int read_one_block_group(struct=20
+>> btrfs_fs_info *info,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->length =3D key->offset;
+>> -=C2=A0=C2=A0=C2=A0 cache->used =3D btrfs_stack_block_group_used(bgi);
+>> +=C2=A0=C2=A0=C2=A0 cache->used =3D btrfs_stack_block_group_v2_used(bgi);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->commit_used =3D cache->used;
+>> -=C2=A0=C2=A0=C2=A0 cache->flags =3D btrfs_stack_block_group_flags(bgi);
+>> -=C2=A0=C2=A0=C2=A0 cache->global_root_id =3D btrfs_stack_block_group_ch=
+unk_objectid(bgi);
+>> +=C2=A0=C2=A0=C2=A0 cache->flags =3D btrfs_stack_block_group_v2_flags(bg=
+i);
+>> +=C2=A0=C2=A0=C2=A0 cache->global_root_id =3D=20
+>> btrfs_stack_block_group_v2_chunk_objectid(bgi);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->space_info =3D btrfs_find_space_in=
+fo(info, cache->flags);
+>> +=C2=A0=C2=A0=C2=A0 cache->remap_bytes =3D btrfs_stack_block_group_v2_re=
+map_bytes(bgi);
+>> +=C2=A0=C2=A0=C2=A0 cache->commit_remap_bytes =3D cache->remap_bytes;
+>> +=C2=A0=C2=A0=C2=A0 cache->identity_remap_count =3D
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_stack_block_group_v2_i=
+dentity_remap_count(bgi);
+>> +=C2=A0=C2=A0=C2=A0 cache->commit_identity_remap_count =3D cache->identi=
+ty_remap_count;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_free_space_tree_thresholds(cache);
+>> @@ -2435,7 +2440,7 @@ static int read_one_block_group(struct=20
+>> btrfs_fs_info *info,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (cache->length =3D=3D cache->us=
+ed) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->cached =3D=
+ BTRFS_CACHE_FINISHED;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_free_exclud=
+ed_extents(cache);
+>> -=C2=A0=C2=A0=C2=A0 } else if (cache->used =3D=3D 0) {
+>> +=C2=A0=C2=A0=C2=A0 } else if (cache->used =3D=3D 0 && cache->remap_byte=
+s =3D=3D 0) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->cached =3D=
+ BTRFS_CACHE_FINISHED;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_add=
+_new_free_space(cache, cache->start,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 cache->start + cache->length, NULL);
+>> @@ -2455,7 +2460,8 @@ static int read_one_block_group(struct=20
+>> btrfs_fs_info *info,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_avail_alloc_bits(info, cache->flags);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (btrfs_chunk_writeable(info, cache->st=
+art)) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cache->used =3D=3D 0) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cache->used =3D=3D 0 && =
+cache->identity_remap_count =3D=3D 0 &&
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cach=
+e->remap_bytes =3D=3D 0) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 ASSERT(list_empty(&cache->bg_list));
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 if (btrfs_test_opt(info, DISCARD_ASYNC))
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_discard_queue_work(&info->discard_ctl,=
+ cache);
+>> @@ -2559,9 +2565,10 @@ int btrfs_read_block_groups(struct=20
+>> btrfs_fs_info *info)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 need_clear =3D 1;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 while (1) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_block_group_ite=
+m bgi;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_block_group_ite=
+m_v2 bgi;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct extent_buf=
+fer *leaf;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int slot;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 size_t size;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D find_firs=
+t_block_group(info, path, &key);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret > 0)
+>> @@ -2572,8 +2579,16 @@ int btrfs_read_block_groups(struct=20
+>> btrfs_fs_info *info)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 leaf =3D path->no=
+des[0];
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 slot =3D path->sl=
+ots[0];
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (btrfs_fs_incompat(info, =
+REMAP_TREE)) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 size=
+ =3D sizeof(struct btrfs_block_group_item_v2);
 >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 path=
-->slots[0]--;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 size=
+ =3D sizeof(struct btrfs_block_group_item);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrf=
+s_set_stack_block_group_v2_remap_bytes(&bgi, 0);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrf=
+s_set_stack_block_group_v2_identity_remap_count(&bgi,=20
+>> 0);
 >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
 >> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_item_key_to_cpu(leaf, =
-&found_key, path->slots[0]);
->> +=C2=A0=C2=A0=C2=A0 }
->> +
->> +=C2=A0=C2=A0=C2=A0 if (found_key.type !=3D BTRFS_REMAP_KEY &&
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 found_key.type !=3D BTRFS_ID=
-ENTITY_REMAP_KEY) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOENT;
->> +=C2=A0=C2=A0=C2=A0 }
->> +
->> +=C2=A0=C2=A0=C2=A0 if (found_key.objectid > *logical ||
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 found_key.objectid + found_k=
-ey.offset <=3D *logical) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOENT;
->> +=C2=A0=C2=A0=C2=A0 }
->> +
->> +=C2=A0=C2=A0=C2=A0 if (*logical + *length > found_key.objectid + found_=
-key.offset)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *length =3D found_key.object=
-id + found_key.offset - *logical;
->> +
->> +=C2=A0=C2=A0=C2=A0 if (found_key.type =3D=3D BTRFS_IDENTITY_REMAP_KEY)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->> +
->> +=C2=A0=C2=A0=C2=A0 remap =3D btrfs_item_ptr(leaf, path->slots[0], struc=
-t btrfs_remap);
->> +
->> +=C2=A0=C2=A0=C2=A0 *logical =3D *logical - found_key.objectid +=20
->> btrfs_remap_address(leaf, remap);
->> +
->> +=C2=A0=C2=A0=C2=A0 return 0;
->> +}
->> +
->> =C2=A0 /*
->> =C2=A0=C2=A0 * function to relocate all extents in a block group.
->> =C2=A0=C2=A0 */
->> diff --git a/fs/btrfs/relocation.h b/fs/btrfs/relocation.h
->> index 788c86d8633a..f07dbd9a89c6 100644
->> --- a/fs/btrfs/relocation.h
->> +++ b/fs/btrfs/relocation.h
->> @@ -30,5 +30,7 @@ int btrfs_should_cancel_balance(const struct=20
->> btrfs_fs_info *fs_info);
->> =C2=A0 struct btrfs_root *find_reloc_root(struct btrfs_fs_info *fs_info,=
-=20
->> u64 bytenr);
->> =C2=A0 bool btrfs_should_ignore_reloc_root(const struct btrfs_root *root=
-);
->> =C2=A0 u64 btrfs_get_reloc_bg_bytenr(const struct btrfs_fs_info *fs_info=
-);
->> +int btrfs_translate_remap(struct btrfs_fs_info *fs_info, u64 *logical,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 read_extent_buffe=
+r(leaf, &bgi, btrfs_item_ptr_offset(leaf,=20
+>> slot),
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sizeof(bgi));
 >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 u64 *length);
->> =C2=A0 #endif
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 77194bb46b40..4777926213c0 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -6620,6 +6620,25 @@ int btrfs_map_block(struct btrfs_fs_info=20
->> *fs_info, enum btrfs_map_op op,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(map))
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return PTR_ERR(ma=
-p);
->> +=C2=A0=C2=A0=C2=A0 if (map->type & BTRFS_BLOCK_GROUP_REMAPPED) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 new_logical =3D logical;
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_translate_rema=
-p(fs_info, &new_logical, length);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retu=
-rn ret;
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (new_logical !=3D logical=
-) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrf=
-s_free_chunk_map(map);
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 map =
-=3D btrfs_get_chunk_map(fs_info, new_logical,
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 size);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_item_key_to=
+_cpu(leaf, &key, slot);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_release_pat=
+h(path);
+>> @@ -2643,25 +2658,38 @@ static int insert_block_group_item(struct=20
+>> btrfs_trans_handle *trans,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_block_group *=
+block_group)
+>> =C2=A0 {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *fs_info =3D trans->=
+fs_info;
+>> -=C2=A0=C2=A0=C2=A0 struct btrfs_block_group_item bgi;
+>> +=C2=A0=C2=A0=C2=A0 struct btrfs_block_group_item_v2 bgi;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_root *root =3D btrfs_block_g=
+roup_root(fs_info);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_key key;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 old_commit_used;
+>> +=C2=A0=C2=A0=C2=A0 size_t size;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock(&block_group->lock);
+>> -=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_used(&bgi, block_group->=
+used);
+>> -=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_chunk_objectid(&bgi,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 block_group->global_root_id);
+>> -=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_flags(&bgi, block_group-=
+>flags);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_v2_used(&bgi, block_grou=
+p->used);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_v2_chunk_objectid(&bgi,
 >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
 =A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 *length);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (=
-IS_ERR(map))
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 block_group->global_root_id);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_v2_flags(&bgi, block_gro=
+up->flags);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_v2_remap_bytes(&bgi,
 >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 return PTR_ERR(map);
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 block_group->remap_bytes);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_v2_identity_remap_count(=
+&bgi,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 block_group->identity_remap_c=
+ount);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 old_commit_used =3D block_group->commit_u=
+sed;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 block_group->commit_used =3D block_group-=
+>used;
+>> +=C2=A0=C2=A0=C2=A0 block_group->commit_remap_bytes =3D block_group->rem=
+ap_bytes;
+>> +=C2=A0=C2=A0=C2=A0 block_group->commit_identity_remap_count =3D
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 block_group->identity_remap_=
+count;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.objectid =3D block_group->start;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.type =3D BTRFS_BLOCK_GROUP_ITEM_KEY;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.offset =3D block_group->length;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock(&block_group->lock);
+>> -=C2=A0=C2=A0=C2=A0 ret =3D btrfs_insert_item(trans, root, &key, &bgi, s=
+izeof(bgi));
+>> +=C2=A0=C2=A0=C2=A0 if (btrfs_fs_incompat(fs_info, REMAP_TREE))
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 size =3D sizeof(struct btrfs=
+_block_group_item_v2);
+>> +=C2=A0=C2=A0=C2=A0 else
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 size =3D sizeof(struct btrfs=
+_block_group_item);
 >> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 logi=
-cal =3D new_logical;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_insert_item(trans, root, &key, &bgi, s=
+ize);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock(&block_=
+group->lock);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 block_group->comm=
+it_used =3D old_commit_used;
+>> @@ -3116,10 +3144,12 @@ static int update_block_group_item(struct=20
+>> btrfs_trans_handle *trans,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_root *root =3D btrfs_block_g=
+roup_root(fs_info);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long bi;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct extent_buffer *leaf;
+>> -=C2=A0=C2=A0=C2=A0 struct btrfs_block_group_item bgi;
+>> +=C2=A0=C2=A0=C2=A0 struct btrfs_block_group_item_v2 bgi;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_key key;
+>> -=C2=A0=C2=A0=C2=A0 u64 old_commit_used;
+>> -=C2=A0=C2=A0=C2=A0 u64 used;
+>> +=C2=A0=C2=A0=C2=A0 u64 old_commit_used, old_commit_remap_bytes;
+>> +=C2=A0=C2=A0=C2=A0 u32 old_commit_identity_remap_count;
+>> +=C2=A0=C2=A0=C2=A0 u64 used, remap_bytes;
+>> +=C2=A0=C2=A0=C2=A0 u32 identity_remap_count;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Block group items update can be t=
+riggered out of commit=20
+>> transaction
+>> @@ -3129,13 +3159,21 @@ static int update_block_group_item(struct=20
+>> btrfs_trans_handle *trans,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock(&cache->lock);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 old_commit_used =3D cache->commit_used;
+>> +=C2=A0=C2=A0=C2=A0 old_commit_remap_bytes =3D cache->commit_remap_bytes;
+>> +=C2=A0=C2=A0=C2=A0 old_commit_identity_remap_count =3D cache-=20
+>> >commit_identity_remap_count;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 used =3D cache->used;
+>> -=C2=A0=C2=A0=C2=A0 /* No change in used bytes, can safely skip it. */
+>> -=C2=A0=C2=A0=C2=A0 if (cache->commit_used =3D=3D used) {
+>> +=C2=A0=C2=A0=C2=A0 remap_bytes =3D cache->remap_bytes;
+>> +=C2=A0=C2=A0=C2=A0 identity_remap_count =3D cache->identity_remap_count;
+>> +=C2=A0=C2=A0=C2=A0 /* No change in values, can safely skip it. */
+>> +=C2=A0=C2=A0=C2=A0 if (cache->commit_used =3D=3D used &&
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->commit_remap_bytes =
+=3D=3D remap_bytes &&
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->commit_identity_remap=
+_count =3D=3D identity_remap_count) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock(&cach=
+e->lock);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->commit_used =3D used;
+>> +=C2=A0=C2=A0=C2=A0 cache->commit_remap_bytes =3D remap_bytes;
+>> +=C2=A0=C2=A0=C2=A0 cache->commit_identity_remap_count =3D identity_rema=
+p_count;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock(&cache->lock);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.objectid =3D cache->start;
+>> @@ -3151,11 +3189,23 @@ static int update_block_group_item(struct=20
+>> btrfs_trans_handle *trans,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 leaf =3D path->nodes[0];
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bi =3D btrfs_item_ptr_offset(leaf, path->=
+slots[0]);
+>> -=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_used(&bgi, used);
+>> -=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_chunk_objectid(&bgi,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 cache->global_root_id);
+>> -=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_flags(&bgi, cache->flags=
+);
+>> -=C2=A0=C2=A0=C2=A0 write_extent_buffer(leaf, &bgi, bi, sizeof(bgi));
+>> +=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_v2_used(&bgi, used);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_v2_chunk_objectid(&bgi,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->global_root_id);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_v2_flags(&bgi, cache->fl=
+ags);
+>> +
+>> +=C2=A0=C2=A0=C2=A0 if (btrfs_fs_incompat(fs_info, REMAP_TREE)) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_=
+v2_remap_bytes(&bgi,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->remap_bytes);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_set_stack_block_group_=
+v2_identity_remap_count(&bgi,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache=
+->identity_remap_count);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 write_extent_buffer(leaf, &b=
+gi, bi,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sizeof(struct btrfs_block_gro=
+up_item_v2));
+>> +=C2=A0=C2=A0=C2=A0 } else {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 write_extent_buffer(leaf, &b=
+gi, bi,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sizeof(struct btrfs_block_gro=
+up_item));
 >> +=C2=A0=C2=A0=C2=A0 }
 >> +
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_copies =3D btrfs_chunk_map_num_copies=
-(map);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (io_geom.mirror_num > num_copies)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
+>> =C2=A0 fail:
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_release_path(path);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> @@ -3170,6 +3220,9 @@ static int update_block_group_item(struct=20
+>> btrfs_trans_handle *trans,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0 && ret !=3D -ENOENT) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock(&cache-=
+>lock);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->commit_use=
+d =3D old_commit_used;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->commit_remap_bytes =
+=3D old_commit_remap_bytes;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->commit_identity_remap=
+_count =3D
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 old_=
+commit_identity_remap_count;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock(&cach=
+e->lock);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>> diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+>> index 9de356bcb411..c484118b8b8d 100644
+>> --- a/fs/btrfs/block-group.h
+>> +++ b/fs/btrfs/block-group.h
+>> @@ -127,6 +127,8 @@ struct btrfs_block_group {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 flags;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 cache_generation;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 global_root_id;
+>> +=C2=A0=C2=A0=C2=A0 u64 remap_bytes;
+>> +=C2=A0=C2=A0=C2=A0 u32 identity_remap_count;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * The last committed used bytes of =
+this block group, if the=20
+>> above @used
+>> @@ -134,6 +136,15 @@ struct btrfs_block_group {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * group item of this block group.
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 commit_used;
+>> +=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * The last committed remap_bytes value of this=
+ block group.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0 u64 commit_remap_bytes;
+>> +=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * The last commited identity_remap_count value=
+ of this block group.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0 u32 commit_identity_remap_count;
+>> +
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If the free space extent count ex=
+ceeds this number, convert=20
+>> the block
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * group to bitmaps.
+>> @@ -275,7 +286,8 @@ static inline bool btrfs_is_block_group_used(const=20
+>> struct btrfs_block_group *bg)
+>> =C2=A0 {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lockdep_assert_held(&bg->lock);
+>> -=C2=A0=C2=A0=C2=A0 return (bg->used > 0 || bg->reserved > 0 || bg->pinn=
+ed > 0);
+>> +=C2=A0=C2=A0=C2=A0 return (bg->used > 0 || bg->reserved > 0 || bg->pinn=
+ed > 0 ||
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bg->remap_bytes > 0);
+>> =C2=A0 }
+>> =C2=A0 static inline bool btrfs_is_block_group_data_only(const struct=20
+>> btrfs_block_group *block_group)
+>> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+>> index fd83df06e3fb..25311576fab6 100644
+>> --- a/fs/btrfs/tree-checker.c
+>> +++ b/fs/btrfs/tree-checker.c
+>> @@ -687,6 +687,7 @@ static int check_block_group_item(struct=20
+>> extent_buffer *leaf,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 chunk_objectid;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 flags;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 type;
+>> +=C2=A0=C2=A0=C2=A0 size_t exp_size;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Here we don't really care about a=
+lignment since extent=20
+>> allocator can
+>> @@ -698,10 +699,15 @@ static int check_block_group_item(struct=20
+>> extent_buffer *leaf,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EUCLEAN;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> -=C2=A0=C2=A0=C2=A0 if (unlikely(item_size !=3D sizeof(bgi))) {
+>> +=C2=A0=C2=A0=C2=A0 if (btrfs_fs_incompat(fs_info, REMAP_TREE))
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 exp_size =3D sizeof(struct b=
+trfs_block_group_item_v2);
+>> +=C2=A0=C2=A0=C2=A0 else
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 exp_size =3D sizeof(struct b=
+trfs_block_group_item);
+>> +
+>> +=C2=A0=C2=A0=C2=A0 if (unlikely(item_size !=3D exp_size)) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 block_group_err(l=
+eaf, slot,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 "invalid item size, have %u expect %zu",
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 item_size, sizeof(bgi));
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 item_size, exp_size);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EUCLEAN;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/=20
+>> btrfs_tree.h
+>> index 9a36f0206d90..500e3a7df90b 100644
+>> --- a/include/uapi/linux/btrfs_tree.h
+>> +++ b/include/uapi/linux/btrfs_tree.h
+>> @@ -1229,6 +1229,14 @@ struct btrfs_block_group_item {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __le64 flags;
+>> =C2=A0 } __attribute__ ((__packed__));
+>> +struct btrfs_block_group_item_v2 {
+>> +=C2=A0=C2=A0=C2=A0 __le64 used;
+>> +=C2=A0=C2=A0=C2=A0 __le64 chunk_objectid;
+>> +=C2=A0=C2=A0=C2=A0 __le64 flags;
+>> +=C2=A0=C2=A0=C2=A0 __le64 remap_bytes;
+>> +=C2=A0=C2=A0=C2=A0 __le32 identity_remap_count;
+>> +} __attribute__ ((__packed__));
+>> +
+>> =C2=A0 struct btrfs_free_space_info {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __le32 extent_count;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __le32 flags;
 >=20
 
 
