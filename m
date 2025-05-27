@@ -1,82 +1,82 @@
-Return-Path: <linux-btrfs+bounces-14263-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14264-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E158AC5D23
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 May 2025 00:28:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 620CEAC5D24
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 May 2025 00:29:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 725584C053D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 May 2025 22:28:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F67F3A4DAB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 May 2025 22:29:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FD9E2110;
-	Tue, 27 May 2025 22:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BE8B217679;
+	Tue, 27 May 2025 22:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Y+qymA2j"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YhjYo/Vz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB651F460B
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 May 2025 22:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9E8212FA0
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 May 2025 22:29:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748384864; cv=none; b=k5gvzqayHSq4/Q2lbxUwVHJC7MuPs+YvQfFcyFjKa41FtT0RBbaeuAL4F44GNDM9EueHNwr8npBk3x5gtWkPXrhV+NKEw0IpLWG3jq1/0uwSsJPdMZ0FOOV8Mj4zQ6RfU4aKRvkINAOMdjYm+NaxC25Er1Vw2RqOT/qVaOQSzls=
+	t=1748384979; cv=none; b=jlaRlRRtC2fbneh7zfmPc4O58pfACkVUGQDGxpFSylFEHClscg549N/cdQg3gk12ScKC9Iudg2IaZWveSawyi8sjtqPYPetXyRT9RQuwMcG/nOv/QrWiUCsl0+VFHvl2cv7pwHK0h5pX6e6YPvFg+QGM6qqwQ+etRPpawovSmUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748384864; c=relaxed/simple;
-	bh=zd3L7e82mjYWEsgC98Bc/+Q0tYX0v2qGty+MxhVIt50=;
+	s=arc-20240116; t=1748384979; c=relaxed/simple;
+	bh=XpVKmwX2rdlgWegzvH90tdtBHwgrTIIo/M18s0MfAYI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=sbLz7BcFLvHy4/lKWY0N1X0nMriNYrqpdr2Ng8pXAEHWe5O8ZU1fDFKAWpI3KCX4r3DL3v35LYo2vJggzR2E+MUZkGFgP1JvAb6/yUzEFXafrQeIdShRrlyPY2zFZOOevMSSgjvm+nAuWrkDNCzPwt5wGm9xxWtHeGmdDbGoTvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Y+qymA2j; arc=none smtp.client-ip=209.85.221.51
+	 In-Reply-To:Content-Type; b=ZpygKdplxIhmM9m1Vw3gjfaHqzYEZVb+NCutvU59YM26T0ZKAiCa/yLaaeDo2++4WOWWYT3KNuo7oB++UfNFFgVMRGgf5oKWuZ7tdVB4vTHojNsMD9jX+3hgBAwOOj0DaskzXvcxdngpSFq4TqMV1BlNQx2Sve8JgwUYW596sNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YhjYo/Vz; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3a4dba2c767so192045f8f.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 May 2025 15:27:41 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-43cfe63c592so51087995e9.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 May 2025 15:29:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1748384860; x=1748989660; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1748384974; x=1748989774; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=pAo5vK38R1gUCrJGwnhfCIQIAzhCtu7FeH3UEg/pH94=;
-        b=Y+qymA2jO2+FRb9A/T2aoG+Dg9eH3Il1C6e8qPqhECfadIr/D6vvlFbpvNAheBdYYJ
-         2VlWezP2Cwaqccp69nhQv+U6TufaLoA8KtGlPDEy4Rst018NarzYZ+qa5Wn4j91eU7mA
-         YWvXJ4Rlz6u1cc9QuHzALQ9l91Ria8Q1HxlHzKs/RGTlRLQd6PXdQGrt8EgFPlFnt6tX
-         43tVvDewQ7d7qg4Ces0YkDa2uBvEBZWzeCj6CLWj7zvlUkjKsUVoEP1f5vTj8KTDFotV
-         3gC8V4Y2QwwAjjD7cEqMAEo3sTnB64GaSnHlkELlif63HXe7nl4oAACjwvtdGUZBFX6v
-         w26A==
+        bh=feYtp37CycM4c+4DBclDHQuQqI0K0pyowXBiJCNxH/o=;
+        b=YhjYo/Vz92QzvWTjz52iX6ReSMqsm6jVz6L83mMohe9vt/1ABdu09rzt5F2yiwjae5
+         7WK0kjXjB9Ed0i2i9mVuyauN9OTferX2KN6MUOm2ohhlFmE7KYGtfVyx/E0yGS6yXtF4
+         OZJvuDtvYP8l2ndDFsLMIHp4hpxlChRaavkNaY0kz6vwPCgaKq8XTrEmT/vw449LQEpD
+         /z9xAkYeYyNnMBJoKNxdhaxf+B/one2/VFev8Wpp8Jk+uJ7hOEs7qs3rzQJk9fLeNAne
+         +fjzWLEXTIeTDbySGTHh+bjkWxqoeEPatOfGo1jK2yLZyqxZN6Sy9g5WnYfph022bz13
+         eAOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748384860; x=1748989660;
+        d=1e100.net; s=20230601; t=1748384974; x=1748989774;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pAo5vK38R1gUCrJGwnhfCIQIAzhCtu7FeH3UEg/pH94=;
-        b=Xb8Cqrz6G4ays7BAwacVqcPg7OD0sUCfUiNrwDYf23S9B1z6NLVDGdJMNDnuYWX9GR
-         Gi+f831+qZA4CWB43C/N052I9aXjjdvQz3h8+Wc5jMjAL7qfvWvIqpg3jpA0l8UXVR1/
-         12gaa5eZyFul4XMgA9MuGtDGlIz4WLQjNZCLQ92P2ht281kYcvQRUkP5syxC0f9iT4ZE
-         Koat5ftWlCm/h2St0OGbAcHfvBTSCuyRXEs8N2bwq3c184P4ClemqlSzJOOnUaraNM47
-         Z5w/mmF/IAOK00hX8xIBA3n9NhbwbWJ2y+FjSF/IBjxIPVcPeqt1UvOBx+o8YlZq/Fc5
-         mxXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUzoHyv6mCgFPCYTUjJcvF4CKfj5jsUqGeOvrGa/BwzquymliQtXQo5qKTq9QtRrccmBSdgzmZJ8lIzCw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxvRXk4UkGKwMNaiYb/6iCDzVh2R+te11Mt1Ep3S+r7CaauqEeo
-	JPpVpyPcrlsOA9xSrUuh+NlkZhV5pGf/qG7r2PnKjJMGxXP6Geoq8JC2U+ZvBOqQHcPDLdYvJXc
-	uR9Z1
-X-Gm-Gg: ASbGncsXIuNPGQgIs/9oUfVmG/6XG8vFhh+EpmdozAI6MNb1C7DlxKB0/v8p2YW2lX9
-	G9OBNaigG+i95JkEvcRdKjfnG4c/oFV3IGnTI+pR0+JAFcXgt9Hef2BP+Az2PhxU8zAAzWMaCFb
-	ByeChFuUimQsqNDU8GQ7mT329DZgGAkCVpt+sVy/WncN37jOiRmApV7JA3nJq4Dr+nvrMJH3D4L
-	kW3XGsxBfYKCJ5DOaSwcAsaQiGR+1TFRqtNC5slGXxiw6fLALvU0LeM2wUopnhv1LKAmuyhyIFq
-	MB+r8H2HHu3Du1EUHV8Gl9OUrCpCa9ooa6NqV8ZOAlU+Dk6Bfha/WDzpq2GTOkHkKcCdZZ0nrdp
-	T8lo=
-X-Google-Smtp-Source: AGHT+IF8ALSWIzdYdSWqpNGIjy5ygL6hvB0kfNKTaJrePbEr1JElTWSQb7ggDCSJ8v0Swr3XRzmUmA==
-X-Received: by 2002:a05:6000:40cc:b0:3a4:cec5:b599 with SMTP id ffacd0b85a97d-3a4e5eac252mr2127163f8f.26.1748384859558;
-        Tue, 27 May 2025 15:27:39 -0700 (PDT)
+        bh=feYtp37CycM4c+4DBclDHQuQqI0K0pyowXBiJCNxH/o=;
+        b=Y4hoGpi8kjeA0tIHxmyeA5USmqXkpmV0e7lAidTfVnw/KPifrFr9kSwdRplviQGDRB
+         tBSacn4SgUpfP18petljq+rYVfK5jdh4W2Bp9y2utxkJ8pk9gIoMFRq8MyIWUeQgeVK0
+         jQblQEmcrXulJS2Mzk+QRuZj6cp629UfuD1x5VQqUj+hRkm0yKB2aM5+7ydDmT2FpJLt
+         JY0ItFERADKzgIJuVhKd/y1y+mHMM72sHObnfDBHaF1gi1bg9XIBqOqZi05UCaON+7GB
+         L3Xh9wWZRsPey9LypfsPZlnMkPugHc4AaSImEUSK+QhqU5sL0NO9u776oCqrZCa1pKc9
+         EKMw==
+X-Forwarded-Encrypted: i=1; AJvYcCUFoN8KJtRBkVRb1ixQTH7Ckt26LNdCc7rjsaR/5Z69UslayAY9DGsUvvQJi5TctOGeQabQSKX7FuYAYg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9fJM4eC95dBBi+Ds0hDRANEm6Xgkn7lPFFm6vQsCwufOlqp4W
+	uwlnjqnp4laNHs2g2CI3Lv19f3FKYnvbAbaYCWDC6tOjGxZKB6bqWAoEk09CNvD/cPxZ0HMdTAU
+	IVyUG
+X-Gm-Gg: ASbGncvE8vfS4TvaOdwtWAITBJtHfDonkdra6gMdfhmbq6VWEn0Vv7eSNw+4DlsmWNt
+	J5o2hFBIRZO8kL6io+WLtH+8vVuMT09miwZKpiDb9Q0/QmMUwwqZewCpzLkGHzY9Ncesh2qfapl
+	jo+rOxZhRcFoLs4EbSwdIj9PDRFwyFnP03ColcUDme9nxtG/c15nnQq4yJ8WIBXff7C3bEwE/fk
+	EqGPllqpreQ/4+2FsKMIudLIeDbA5HWjNSHFuIbl/5Oh1NgK0azQzeMPkG65achujXlLG3MuWln
+	8kybmz/b2xdusIW+CfIVvi8BgDmVkVZaBbfie138je3X4u/GY3XW0pq1EgWdnNX8kDgPVpYhuWJ
+	HrzGHZA2K9rA0ig==
+X-Google-Smtp-Source: AGHT+IGapqf1mweJmPUicDgL9TVYTXfYCAQNCfcQYWsmBT3KdPBYF4Pr3V4CnqrETHmDcq1uZd7OCA==
+X-Received: by 2002:a05:6000:1acf:b0:3a4:d673:af99 with SMTP id ffacd0b85a97d-3a4d673b308mr9169087f8f.34.1748384973903;
+        Tue, 27 May 2025 15:29:33 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::e9d? (2403-580d-fda1--e9d.ip6.aussiebb.net. [2403:580d:fda1::e9d])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7465e65feecsm94044b3a.37.2025.05.27.15.27.37
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-234cc218b64sm862655ad.151.2025.05.27.15.29.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 May 2025 15:27:39 -0700 (PDT)
-Message-ID: <a5232598-53cb-4c7a-ac26-17ef38f2d80a@suse.com>
-Date: Wed, 28 May 2025 07:57:35 +0930
+        Tue, 27 May 2025 15:29:33 -0700 (PDT)
+Message-ID: <bdd36e78-b9bc-4950-a933-b36d5d518be2@suse.com>
+Date: Wed, 28 May 2025 07:59:30 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,9 +84,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] btrfs: some cleanups for btrfs_copy_root()
+Subject: Re: [PATCH] btrfs: unfold transaction abort at
+ btrfs_insert_one_raid_extent()
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1747649462.git.fdmanana@suse.com>
+References: <abe65dcfac248737e735f5c3b9d7e9f165dac802.1747653415.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -113,29 +114,52 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <cover.1747649462.git.fdmanana@suse.com>
+In-Reply-To: <abe65dcfac248737e735f5c3b9d7e9f165dac802.1747653415.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/5/19 20:12, fdmanana@kernel.org 写道:
+在 2025/5/19 20:48, fdmanana@kernel.org 写道:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> A couple simple cleanups, details in the change logs.
+> We have a common error path where we abort the transaction, but like this
+> in case we get a transaction abort stack trace we don't know exactly which
+> previous function call failed. Instead abort the transaction after any
+> function call that returns an error, so that we can easily indentify which
+> function failed.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
+> ---
+>   fs/btrfs/raid-stripe-tree.c | 7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
 > 
-> Filipe Manana (2):
->    btrfs: unfold transaction abort at btrfs_copy_root()
->    btrfs: abort transaction on unexpected eb generation at btrfs_copy_root()
-> 
->   fs/btrfs/ctree.c | 19 +++++++++++++++----
->   1 file changed, 15 insertions(+), 4 deletions(-)
-> 
+> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
+> index 1834011ccc49..cab0b291088c 100644
+> --- a/fs/btrfs/raid-stripe-tree.c
+> +++ b/fs/btrfs/raid-stripe-tree.c
+> @@ -329,11 +329,14 @@ int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *trans,
+>   
+>   	ret = btrfs_insert_item(trans, stripe_root, &stripe_key, stripe_extent,
+>   				item_size);
+> -	if (ret == -EEXIST)
+> +	if (ret == -EEXIST) {
+>   		ret = update_raid_extent_item(trans, &stripe_key, stripe_extent,
+>   					      item_size);
+> -	if (ret)
+> +		if (ret)
+> +			btrfs_abort_transaction(trans, ret);
+> +	} else if (ret) {
+>   		btrfs_abort_transaction(trans, ret);
+> +	}
+>   
+>   	kfree(stripe_extent);
+>   
 
 
