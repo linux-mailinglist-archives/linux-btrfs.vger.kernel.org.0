@@ -1,135 +1,111 @@
-Return-Path: <linux-btrfs+bounces-14255-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14256-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25BC5AC4E50
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 May 2025 14:09:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B092DAC5AAC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 May 2025 21:28:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D818D189EB6E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 May 2025 12:10:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4918F3A9471
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 May 2025 19:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E1426B970;
-	Tue, 27 May 2025 12:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BAE72882DC;
+	Tue, 27 May 2025 19:28:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="s+Ti7MXo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F6P50A9y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f195.google.com (mail-oi1-f195.google.com [209.85.167.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA01E269CEB;
-	Tue, 27 May 2025 12:08:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4870F1E1C1A
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 May 2025 19:28:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748347727; cv=none; b=UesiYV9eLiRMcCHffMn8cC/3vPUqj4E/YqbjVlYiAioLxKmTGv5/asCgTf1Bmd5K+105ipaZx5XiRKQigcyCS3J7CAkLDfvtYQf0kf39rWzDZMwQb6LW2FMXPJ3e5Y48DtJDeVxZ4Q5yC7ajIFSrroSXAvspBI2fhVBTJIqn5wI=
+	t=1748374129; cv=none; b=N/wCnf6b0Beftw/CEQ3WfVZUAlg9INhMt0mCfLYmhCrBl4COwYQNXuSiCuh+bIttkAdt8Ka8IUnShb4PGfcsIPPFVbPwZ9UBD9FymLArQexANSE2iFqnCfxA3fwdp8MVTod34W7KbhP1oUVIDPKFs3MccMC1AFLahLiClmPHau8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748347727; c=relaxed/simple;
-	bh=DJh0fSsNTxpWskCHLzce9KZ1XBIbWlMxXlEfoax1bgs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MjWry0o4CEWZHGlUDYdSzYIUZUMeKlnX6fjkICbuZdpQ8KtYHTBm05dRmDa4xAOl8C0Slqf/bbTxHV1nl5zsHM0veCO6d9ALIcCv8AQ5RZnPke3pt+f2aejH34Mm+dFH17Qnnv3I0TPNiJg7NKh6wmUmpus7/XT2CFmSYO4aEK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=s+Ti7MXo; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1748347715; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=ucGCQ/Msy4ajI/sJWFTysSC39Fz9Wpl7nrZUi7mKTAI=;
-	b=s+Ti7MXoN401fkWUmeiU4v1f8UQUGRsYIuVgt5KeH7q8TOd96Xr0CSANs/ngZpWNKBaHf4jR+fyqFNIciSjem0o7pci7xDUixRtNlQUj14UjtAKo4MR5tNc0WIMi51VZTvCaRZkDjN4WQUIRpW9BUsfjLlyi+E2zWHKanO0i+Sc=
-Received: from 30.170.233.0(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Wc0xUnh_1748347710 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 27 May 2025 20:08:34 +0800
-Message-ID: <b3abd55d-8713-4807-b736-00eb99dad610@linux.alibaba.com>
-Date: Tue, 27 May 2025 20:08:30 +0800
+	s=arc-20240116; t=1748374129; c=relaxed/simple;
+	bh=oSqFc4gAInFNL5tVodLOcyEh1qxhEUPH8ljRZ3szuTo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=qq/oLG0MKB+nli/CTPtjrv0jS+nPVxZnn6qECrvuGf5UylzfRa7EkDniR4MCUzmkMJwIMIQy2Gj4C1dLk6oSrZHtocb4XzFRmJTVU9plSUOj9+ie0OaShZqOpPxjdqEMgKnYpFnh68q0e5ak8HFypu7dwCXyecd2VXlSkEqYHR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F6P50A9y; arc=none smtp.client-ip=209.85.167.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f195.google.com with SMTP id 5614622812f47-400fa6eafa9so2199395b6e.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 May 2025 12:28:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748374127; x=1748978927; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BRd3UzX9m7YwvdMxGIE1G5F1dotPkfwW74b6a4iL2gE=;
+        b=F6P50A9y6XohvhicJqFazpSCWFPL2I40VQ1sgN5j5CF7958AQlgEzvSNRLS7VKcuC3
+         HgSEIqhFJdzbjou1a7ar2U9ojM4PoD+eTpz9erSpkSZ6jmDSD5crLCINnhIsKM9r8MBo
+         ziAok5lpX9JefC1IGyiua+/ibD5kM5D6hxJVaWV5u9mDP0sAqbPc6U3PY/YX7NG6qcZV
+         EcqylnS5aKMDE4OPUNKySr8d1RHpH9RqJ0ehY1lqTUjBm1YCJ9T8XgCgQvywMk4DPOui
+         kQa1vBwPR8qaY5iwVtnCstA3Ot+n8r3YlwHiy6wpOxhBlt3QF6ktCcH6/H5MypDPwAmn
+         W43A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748374127; x=1748978927;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BRd3UzX9m7YwvdMxGIE1G5F1dotPkfwW74b6a4iL2gE=;
+        b=WQa33jSBHZNJ24PtFii982jjnRiUJ4rfbvbD2DcAYJh5veU4qOfS5SkUNwxWzwd5+8
+         AMjKIYpmdjRH+0NQ0Bh/PuriLExgDd8wCLjacKy90cEveMLJD63EamFWXhJKDb/Fyhpo
+         FUyOXzijpAvlwFRdy+jfhagttwwBun9Q02DSNsBaWs3/IsLBT0zxx0gTQBLE4FIyETFR
+         8OcIBvAebdYn89l/1/FQHX4fLAOBNpLad/qDyG5KA7E99I7d2lC1l9vQg/RDGyE5+ymz
+         KkFtQ3CjC84whKN0dtm8jVNKq/oPdxYa8y68JWVIvQ/InsQMFVz7kbUxa7fOmc2ocx4D
+         XlFw==
+X-Gm-Message-State: AOJu0YxLmPhS/CpxuHLr2H7fnCahiSmLlIBdwp32xiX8FwwXGl1Baboy
+	rT7PvzPGdd60A143S/KSwRGMg5D2YJ8YX431QXRBLrzgRVr+EYW7Sc+pMBZxA3/Y
+X-Gm-Gg: ASbGncsLOJO4l/Auzz3ic7R2P95nwSwmK+J4qC83nOw/dCeqqzFbWsYmm8qcFXVvvhM
+	OYjHCeBZLJVqj+OuLxwHXA2vZE1Q3GYHWp5atYkqruEbfL0SShLi/Ti3DLc0zbe8aUyVFgsd70J
+	ykk3hAgaZQSPc8olE9jlb2poRb4s+AaYt2aEsz4PJ0jvc3AR9Gc351TXCa4THm6V4frFz/oPTea
+	8b20VFfg0DV3JyJT/o0QXOxPumNj18EXgt0OtAGpn9ltZRKAh4h5IAou9ASjjgbX99atngFl24g
+	mngAUfzrbH77aXXMaahdzMwnX2x9DF7GHB+WMoxNFXdvINxCrtBhJSUS
+X-Google-Smtp-Source: AGHT+IGmEldJDOW2q4mWPkIkoYs3wglVC4OHHYMI1eYl0tjn/RNlZVC0afpTvmCj/bRHFtT99JCWMg==
+X-Received: by 2002:a05:6808:6b97:b0:401:188e:caa2 with SMTP id 5614622812f47-40646872337mr10013331b6e.35.1748374126795;
+        Tue, 27 May 2025 12:28:46 -0700 (PDT)
+Received: from localhost ([2a03:2880:11ff:6::])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-404d98b2762sm4791069b6e.32.2025.05.27.12.28.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 May 2025 12:28:45 -0700 (PDT)
+From: Leo Martins <loemra.dev@gmail.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH 0/2] delayed_node leak bug
+Date: Tue, 27 May 2025 12:28:34 -0700
+Message-ID: <cover.1748373059.git.loemra.dev@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 6/6] btrfs: zlib: add support for zlib-deflate through
- acomp
-To: dsterba@suse.cz
-Cc: Eric Biggers <ebiggers@kernel.org>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "Cabiddu, Giovanni" <giovanni.cabiddu@intel.com>,
- Josef Bacik <josef@toxicpanda.com>, "clm@fb.com" <clm@fb.com>,
- "dsterba@suse.com" <dsterba@suse.com>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
- "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
- qat-linux <qat-linux@intel.com>, "embg@meta.com" <embg@meta.com>,
- "Collet, Yann" <cyan@meta.com>, "Will, Brian" <brian.will@intel.com>,
- "Li, Weigang" <weigang.li@intel.com>
-References: <20240426110941.5456-1-giovanni.cabiddu@intel.com>
- <20240426110941.5456-7-giovanni.cabiddu@intel.com>
- <20240429135645.GA3288472@perftesting> <20240429154129.GD2585@twin.jikos.cz>
- <aBos48ctZExFqgXt@gcabiddu-mobl.ger.corp.intel.com>
- <aBrEOXWy8ldv93Ym@gondor.apana.org.au> <20250507121754.GE9140@suse.cz>
- <20250508041914.GA669573@sol>
- <baafb2ad-e2a2-4d40-9759-109c2cad559c@linux.alibaba.com>
- <20250527111731.GC4037@suse.cz>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <20250527111731.GC4037@suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi David,
+Currently investigating a bug I believe is caused by leaked
+delayed_nodes. The following patches fix a potential delayed_node leak
+in an assert function (I don't believe this is the cause of the bug) and
+add a warning if a root still contains delayed_nodes when it is freed.
 
-On 2025/5/27 19:17, David Sterba wrote:
-> On Tue, May 27, 2025 at 10:32:00AM +0800, Gao Xiang wrote:
->>
->>
->> On 2025/5/8 12:19, Eric Biggers wrote:
->>
->> ...
->>
->>>
->>> BTW, I also have to wonder why this patchset is proposing accelerating zlib
->>> instead of Zstandard.  Zstandard is a much more modern algorithm.
->>
->> I think simply because QAT doesn't support the Zstandard native offload.
->> At least, for Intel Xeon Sapphire Rapids processors (it seems to have
->> built-in QAT 4xxx), only LZ4 and deflate-family are natively supported.
->>
->> I've confirmed that SPR QAT deflate hardware decompresion already surpasses
->> LZ4 software decompression on our cloud server setup, which is useful since
->> it greatly improves decompression performance (even compared to software LZ4)
->> and saves CPU overhead completely.
-> 
-> Does this measure the overall time of decompression (including the setup
-> steps, like the scatter/gather or similar, allocating requests, waiting
-> etc)?. Comparing that to the library calls plus the input page iteration.
-> I haven't found any public benchmarks with the QAT enabled compression.
-> I'm interested how it's benchmarked because we'v had people pointing out
-> that LZ4 itself is very fast, but when the overhead is taken into
-> account it's reducing the overall performance. Thanks.
+A little more on the bug I'm investigating in case anyone has seen
+something similar...
 
-Yes, EROFS already supports QAT end-to-end since the ongoing Linux 6.16:
+Started seeing soft lockups in btrfs_kill_all_delayed_nodes due to an
+infinte loop. Further investigation showed that there was a
+delayed_node that was not being erased from the root->delayed_nodes xarray.
+The delayed_node had a reference count of one meaning that it is failing
+to be released somewhere.
 
-Processor: Intel(R) Xeon(R) Platinum 8475B (192 cores)
-Memory: 512 GiB
-Dataset: enwik9
-Test command: fio --filename=enwik9 -rw=read -readonly -bs=4k -ioengine=psync -name=job1
+Leo Martins (2):
+  btrfs: fix refcount leak in debug assertion
+  btrfs: warn if leaking delayed_nodes
 
-1) $ mkfs.erofs -zdeflate -C1048576 enwik9.dfl enwik9
-    $ echo qat_deflate > /sys/fs/erofs/accel
-    READ: bw=662MiB/s (694MB/s), 662MiB/s-662MiB/s (694MB/s-694MB/s), io=954MiB (1000MB), run=1440-1440msec
-    $ echo >  /sys/fs/erofs/accel
-    READ: bw=381MiB/s (400MB/s), 381MiB/s-381MiB/s (400MB/s-400MB/s), io=954MiB (1000MB), run=2500-2500msec
+ fs/btrfs/delayed-inode.c | 7 ++++++-
+ fs/btrfs/disk-io.c       | 2 ++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-2) $ mkfs.erofs -zlz4hc -C1048576 enwik9.lz4 enwik9
-    READ: bw=541MiB/s (568MB/s), 541MiB/s-541MiB/s (568MB/s-568MB/s), io=954MiB (1000MB), run=1762-1762msec
+-- 
+2.47.1
 
-However, my current test case that the cloud disk is slow (I use the cheapest
-cloud disk setup because it will be used for rootfs and container images), so
-the overall e2e is I/O bound instead of CPU bound, so in that case since
-deflate can compress better (so can save more disk I/Os), it can surpass the
-LZ4 one (because even LZ4 is faster but cost more I/Os due to large image).
-
-If the storage/CPU combination is CPU bound, I think it could have different
-results anyway.
-
-Thanks,
-Gao Xiang
 
