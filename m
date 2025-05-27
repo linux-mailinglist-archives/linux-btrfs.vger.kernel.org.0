@@ -1,192 +1,209 @@
-Return-Path: <linux-btrfs+bounces-14247-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14248-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34C2FAC4727
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 May 2025 06:07:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03B8DAC477A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 May 2025 07:17:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 176027A8060
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 May 2025 04:06:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B42C6177550
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 May 2025 05:17:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4991D432D;
-	Tue, 27 May 2025 04:07:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202222AF10;
+	Tue, 27 May 2025 05:17:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fFCUafKi"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="gPPeEecO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACBEA1487F4
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 May 2025 04:07:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83956382
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 May 2025 05:16:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748318852; cv=none; b=QGnWyHcEeZyp6KzneYjLMcXQOCWpgbuFiZ9WyS9Rr7hxBkXSRSQSpH7oKJ4oBaKgY77YwajWx74sYio0pInz6s9HDxZEYD5ASxgQyU35Jj1mttuE98j3ucnGehVLTdFRAN+aZuRwx6ThHyLN5IVcWGPFGgnsPl9zupSoufenL4k=
+	t=1748323022; cv=none; b=CDI7jR/nkzjPMarHoRrH0XE0LD6L9qMKnX5JqTn+kbrbicnvjlnyKIeDOhFI8REbGKqfdNP7xKaec9cArY/8gX0Y8qV12PceQ/+3CWyjw6D5T2X1zddxEtm2sZdmU+J1h1ihu5jg8uteCStnfxDNH5UCI1XfUvK+/pTAUeYIZO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748318852; c=relaxed/simple;
-	bh=AUEyQQQyqgLUdPXBur2ZHltsHPkma0X7HyCGHD0SgYo=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=qiPAJR+r4vicxfTRvvHbeaOP2atrdXh73nU0KnpAfKwN06uZxIYaMXN2s3W5I5+TdMSXdwsVaVJ3PrNmbeC7mJo7sOe0z9JMyuaWfiULYW25qy9ML2NlgQGe4OY9H4BhYLUjHaruCPUJ2Uif1Tto6d5tSG5uRI/t8IeR4qbnjBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fFCUafKi; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1748318849;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=YLO49BBVfv2dLLPNONoP9dM7xhb3SydtgrIyljAGfZE=;
-	b=fFCUafKiZaUvQlMRwbs5l2dr2nEOTH5rQ3hovaFT2sF0ZZtdrejhuuu+8dFsRa14C0z0jI
-	/NKyn0FVbnrYEJMGm1Vmx4p+Sjpvq3WxmUo41PdcqJzDPjA1XDgGpvg0W5HQ32iOn/fjbY
-	FmDOGJ3y4p8l/Gj9NojBVNydgkBxJuo=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-300-JRRyZKz4NP2ZFq8c5hug7g-1; Tue, 27 May 2025 00:07:26 -0400
-X-MC-Unique: JRRyZKz4NP2ZFq8c5hug7g-1
-X-Mimecast-MFC-AGG-ID: JRRyZKz4NP2ZFq8c5hug7g_1748318845
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7c5f876bfe0so465129785a.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 May 2025 21:07:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748318845; x=1748923645;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YLO49BBVfv2dLLPNONoP9dM7xhb3SydtgrIyljAGfZE=;
-        b=VLrjdUX7CC9AYnH/FdeHcA1sXTVTbbNuVfRXCM1vsRgU+n2kIjJp8tJhApktz/H11T
-         FIqxVBlSjJy8UDCKa84r8jdXFcquJUVTjskMYS52PyZgbDuZKfcz8wrqrZTiaWTSBvcl
-         hQMyNkveYXAvwWxjQDM74f0sxlzReLQIghFUR3YKVHkUm+uv0QMS53xUSBiYmPRRXFLW
-         opsfXazAEXG24SlhdR6P0luo3oSdRRj63VWJPOokwbhKbO5tMfeDNcDwDQvgLmVHkynw
-         ztuEl6pQJg6uJ1fhIkk29qhKZoLyBAgtv7VN0ZEgwr8pDOwwPQyfWSM4z2W5XvjH431o
-         pxNA==
-X-Gm-Message-State: AOJu0Yz86P3vfmDrvgaqZGuBuUv8umhiDLU/hxNkx9blv9LBH1g4Y+Ps
-	5yNbaQ5zJU1Id/qiEmfStrcPPTQLAJuBGEra5BzZOUycuppT9uXMwt3r/QMKJXN5aleQs1bEb9g
-	dTH4EkpR6rPCOQsJ5ZsH4VycSt7Jor2hKmRqAaGT+TGvecjvec3BGXQSi4XVLybcwWzLGSzQ2uH
-	IsCe7Uyd4dV/i57U5BD35Nv1xWIfow429uETkYcYMk4xLkq9qv2A==
-X-Gm-Gg: ASbGncuP7zWESkzkJTxFBtCdYM8aFE9bxfPKx2CMTCP9jj9tDukkuA0ijuJ5HCmUs0l
-	t3FaKa4ZOGlhxGLoaDSiZDaOuynkdWJhDkvWH8aLDzrol9y8hYwZCQ5LUz2FaNBQGA9t6pQ==
-X-Received: by 2002:a05:6e02:2407:b0:3d9:3e8e:60ce with SMTP id e9e14a558f8ab-3dc9b74dbffmr104515325ab.19.1748318835192;
-        Mon, 26 May 2025 21:07:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEcPwP4hw52btz22YSfS0zaEmMTkCfoI+WLVUUQnouFLlq9+hsTSEq0/4BhU/7QlCZQVu0FRQx7ku5kMdUR/A8=
-X-Received: by 2002:a05:6102:dd0:b0:4e4:1d6c:a808 with SMTP id
- ada2fe7eead31-4e4240613c9mr8134202137.5.1748318823634; Mon, 26 May 2025
- 21:07:03 -0700 (PDT)
+	s=arc-20240116; t=1748323022; c=relaxed/simple;
+	bh=esG+fnS5boJy7urLllQaxWok2F/sRJonanHmOVwwzpo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=fgGrpIHPE0lSDj9LDJ2Q9wsHjFVJCHsOlZz/2e7A2yegSbvccsElc1525hPRoaf4ejCFvQ1W5PUJ8d81DM9XeqofSyR/+69++/d6A1bx80rODrMgn5YYorvQXfmtodn7ITnniwyCXSf234gQrDy5D7umnutJMlcR/YE5vhs+k1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=gPPeEecO; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1748323017; x=1748927817; i=quwenruo.btrfs@gmx.com;
+	bh=zlz0qDMSxde1cZHLvFKWAcYOBzN9qE+Juz+7oeEPAus=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=gPPeEecO25mSnWHYXs7t2yoM4ytZL/vOcCkhiJTITMu02yd4fLeSmEDTaUwyPwNh
+	 MyDbpGPaQ4bRs9PzMKAWx0quHPZEZTzxXUo6Ww8zDHY9rp2PYqhYv9pN9Uj66eeDg
+	 QpI2FnZ6PUFVTVHLcDvtct5lTSz764DKzZ95Xi3bK22/3U6YmC+5pmJH4OQGgsc9F
+	 QSrX5JBXKfeWi/iJqtIkUtpxThNWVTODy3wfUjfJKtCkhnKYiJtNQWDpu+HtP3wGr
+	 2FM6QWaalqn46xXMoH+Ww0S4QYS36c9MIHsOb8jhqsyubyHv6Q66WHxI10U/JzyWb
+	 r8NOqWD7f5IbzhVQJw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MVNB1-1uRjA73GgJ-00Yjyx; Tue, 27
+ May 2025 07:16:57 +0200
+Message-ID: <3d1c4611-d385-4d31-96de-3a617e02c94c@gmx.com>
+Date: Tue, 27 May 2025 14:46:53 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Ming Lei <ming.lei@redhat.com>
-Date: Tue, 27 May 2025 12:06:52 +0800
-X-Gm-Features: AX0GCFvaQllsn909fbL_wB84PEHmHDumj7cL3yF_2z3lw2wcX7xFjpX3jKEvDH0
-Message-ID: <CAFj5m9LWYk4OX8UijOutKFV-Hgga_w7KPT=MRLLyOscKBwCA-g@mail.gmail.com>
-Subject: [Bug] v6.15+: kernel panic when mount & umount btrfs
-To: Btrfs BTRFS <linux-btrfs@vger.kernel.org>, linux-fsdevel@vger.kernel.org, 
-	David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: Portable HDD Keeps Going Read Only
+To: Matthew Jurgens <btrfs@edcint.co.nz>, linux-btrfs@vger.kernel.org
+References: <7e8abcd3-c84c-4cd3-8cec-3a51fcf98670@edcint.co.nz>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <7e8abcd3-c84c-4cd3-8cec-3a51fcf98670@edcint.co.nz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:uqIYJMaK0JV9ephfXpambj2EKgza2vpsxQ6X/J5sLrhVid5u2U8
+ dDQFmp0ZyNCmvVIThgkMc0cUt/oDUEfcsBSPX1sof6ej4r+XrJ9oeP3OmfttwxCXLcAFX/y
+ fH5cjsrKa5v+0tjcsB2WXhXbyLblOKaW40BzeKO7+IMdnoUsqlISreNFSYnL0fIea+vFJ4Z
+ NL4mT0VRDsGOfncED5Riw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:PsxGoyfMiQg=;OtRTThWzl/Obz0VmTZzfmIG68+x
+ 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
 
-Hello,
-
-Just try the latest linus tree by running `rublk` builtin test on
-Fedora, and found
-the following panic:
-
-git clone https://github.com/ublk-org/rublk
-cd rublk
-cargo test
 
 
-[   24.153674] BTRFS: device fsid b99703ee-349d-40fa-b3d6-b5b451f979ab
-devid 1 transid 8 /dev/ublkb1 (259:3) scanned by moun)
-[   24.154624] BTRFS info (device ublkb1): first mount of filesystem
-b99703ee-349d-40fa-b3d6-b5b451f979ab
-[   24.155123] BTRFS info (device ublkb1): using crc32c (crc32c-x86)
-checksum algorithm
-[   24.155777] BTRFS info (device ublkb1): using free-space-tree
-[   24.157502] BTRFS info (device ublkb1): host-managed zoned block
-device /dev/ublkb1, 256 zones of 4194304 bytes
-[   24.158503] BTRFS info (device ublkb1): zoned mode enabled with
-zone size 4194304
-[   24.159541] BTRFS info (device ublkb1): checking UUID tree
-[   24.166324] EXT4-fs (ublkb5): mounted filesystem
-ae8f9776-4cb7-4edd-9acd-44291433e146 r/w with ordered data mode. Quota
-mode: none.
-[   24.169139] EXT4-fs (ublkb8): mounted filesystem
-4beadbbc-d9c3-484d-b37b-8ea7ceb4cade r/w with ordered data mode. Quota
-mode: none.
-[   24.171259] EXT4-fs (ublkb5): unmounting filesystem
-ae8f9776-4cb7-4edd-9acd-44291433e146.
-[   24.173862] EXT4-fs (ublkb8): unmounting filesystem
-4beadbbc-d9c3-484d-b37b-8ea7ceb4cade.
-[   24.336068] ------------[ cut here ]------------
-[   24.336449] kernel BUG at fs/btrfs/extent_io.c:2776!
-[   24.336786] Oops: invalid opcode: 0000 [#1] SMP NOPTI
-[   24.337064] CPU: 7 UID: 0 PID: 119 Comm: kworker/u64:2 Not tainted
-6.15.0+ #279 PREEMPT(full)
-[   24.337530] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-BIOS 1.16.3-1.fc39 04/01/2014
-[   24.337985] Workqueue: writeback wb_workfn (flush-btrfs-2)
-[   24.338293] RIP: 0010:detach_extent_buffer_folio+0xca/0xd0
-[   24.338595] Code: 4d 34 74 18 84 db 74 96 4d 8d 75 7c 5b 4c 89 f7
-5d 41 5c 41 5d 41 5e e9 54 f7 aa 00 48 89 ef e8 8c 48 d0 ff eb de 0f
-0b0
-[   24.339599] RSP: 0018:ffffd34500477880 EFLAGS: 00010202
-[   24.339887] RAX: 0017ffffc000400a RBX: 0000000000000001 RCX: ffffd34500477838
-[   24.340280] RDX: 0000000000000001 RSI: fffff5a2442fb280 RDI: ffff8bf88590ef74
-[   24.340697] RBP: fffff5a2442fb280 R08: 0000000000000024 R09: 0000000000000000
-[   24.341143] R10: 0000000000000001 R11: ffff8bf896b39500 R12: ffff8bf88de8cd20
-[   24.341597] R13: ffff8bf88590eef8 R14: ffff8bf88590ef74 R15: ffffd34500477970
-[   24.342106] FS:  0000000000000000(0000) GS:ffff8bfd3ffb6000(0000)
-knlGS:0000000000000000
-[   24.342739] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   24.343087] CR2: 00007f55e0cdff10 CR3: 00000002af824002 CR4: 0000000000772ef0
-[   24.343504] PKRU: 55555554
-[   24.343667] Call Trace:
-[   24.343823]  <TASK>
-[   24.343956]  release_extent_buffer+0x9b/0xd0
-[   24.344209]  btree_write_cache_pages+0x1de/0x590
-[   24.344486]  do_writepages+0xc8/0x170
-[   24.344707]  __writeback_single_inode+0x41/0x340
-[   24.344979]  writeback_sb_inodes+0x21b/0x4e0
-[   24.345234]  wb_writeback+0x98/0x330
-[   24.345449]  wb_workfn+0xc2/0x450
-[   24.345648]  ? try_to_wake_up+0x308/0x740
-[   24.346052]  process_one_work+0x188/0x340
-[   24.346445]  worker_thread+0x257/0x3a0
-[   24.346811]  ? __pfx_worker_thread+0x10/0x10
-[   24.347206]  kthread+0xfc/0x240
-[   24.347560]  ? __pfx_kthread+0x10/0x10
-[   24.347924]  ret_from_fork+0x34/0x50
-[   24.348284]  ? __pfx_kthread+0x10/0x10
-[   24.348672]  ret_from_fork_asm+0x1a/0x30
-[   24.349046]  </TASK>
-[   24.349344] Modules linked in: iscsi_tcp libiscsi_tcp libiscsi
-scsi_transport_iscsi target_core_pscsi target_core_file
-target_core_iblockg
-[   24.353785] Dumping ftrace buffer:
-[   24.354170]    (ftrace buffer empty)
-[   24.354584] ---[ end trace 0000000000000000 ]---
-[   24.355021] RIP: 0010:detach_extent_buffer_folio+0xca/0xd0
-[   24.355525] Code: 4d 34 74 18 84 db 74 96 4d 8d 75 7c 5b 4c 89 f7
-5d 41 5c 41 5d 41 5e e9 54 f7 aa 00 48 89 ef e8 8c 48 d0 ff eb de 0f
-0b0
-[   24.357039] RSP: 0018:ffffd34500477880 EFLAGS: 00010202
-[   24.357571] RAX: 0017ffffc000400a RBX: 0000000000000001 RCX: ffffd34500477838
-[   24.358183] RDX: 0000000000000001 RSI: fffff5a2442fb280 RDI: ffff8bf88590ef74
-[   24.358807] RBP: fffff5a2442fb280 R08: 0000000000000024 R09: 0000000000000000
-[   24.359443] R10: 0000000000000001 R11: ffff8bf896b39500 R12: ffff8bf88de8cd20
-[   24.360070] R13: ffff8bf88590eef8 R14: ffff8bf88590ef74 R15: ffffd34500477970
-[   24.360746] FS:  0000000000000000(0000) GS:ffff8bfd3ffb6000(0000)
-knlGS:0000000000000000
-[   24.361451] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   24.362055] CR2: 00007f55e0cdff10 CR3: 00000002af824002 CR4: 0000000000772ef0
-[   24.362812] PKRU: 55555554
-[   24.363145] Kernel panic - not syncing: Fatal exception
-[   24.363845] Dumping ftrace buffer:
-[   24.364213]    (ftrace buffer empty)
-[   24.364602] Kernel Offset: 0x27000000 from 0xffffffff81000000
-(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-[   24.365385] ---[ end Kernel panic - not syncing: Fatal exception ]---
+=E5=9C=A8 2025/5/27 13:28, Matthew Jurgens =E5=86=99=E9=81=93:
+> I have a portable HDD that I just use for backups (so I can lose the=20
+> data on this drive if I need to).
+>=20
+> It keeps going read only. Sometimes at mount time and other times after=
+=20
+> a small amount of usage.
+>=20
+> The dmesg and btrfs check output is large so I have attached it.
+>=20
+> Steps:
+>=20
+> 1. connect drive via USB. The system tries to automatically mount it.=20
+> The drive mounts as read only. The result of this is in dmesg1.txt
+>=20
+> 2. umount the drive. Run a btrfs check. This results of this check are=
+=20
+> in btrfs_check1.txt
+>=20
+> 3. mount drive manually. Drive appears to mount ok. Run a find over the=
+=20
+> drive. It starts listing lots of file. Cancel the find. Start a scrub.=
+=20
+> The scrub aborts within a few seconds. The result of this a in dmesg2.tx=
+t
+>=20
+> This is now the 2nd portable drive that I have that has had a problem=20
+> with data on the BTRFS file system in about a month. I just recreated=20
+> the file system on the other drive. But this time, I'd like to see if=20
+> anyone can help with finding out what is going wrong.
+
+The fsck result shows the fs has extent tree corruption on the free=20
+space cache tree.
+
+There are free space tree blocks but without its proper backref items.
+
+On the other hand, there are a lot of tree backrefs without a proper=20
+tree block.
+
+Just judging from the bytenr, I can't find an obvious clue, the=20
+differences are pretty large, definitely not simple bitflip.
+
+But as usual, mind to run a memtest just in case?
 
 Thanks,
+Qu
 
+>=20
+> uname -a
+> Linux host 6.14.6-300.fc42.x86_64 #1 SMP PREEMPT_DYNAMIC Fri May 9=20
+> 20:11:19 UTC 2025 x86_64 GNU/Linux
+>=20
+> btrfs --version
+> btrfs-progs v6.14
+> -EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED=20
+> CRYPTO=3Dlibgcrypt
+>=20
+> btrfs fi show
+> Label: 'PHDD_WD5TB'=C2=A0 uuid: 83f64b18-a2e8-443b-bfa8-78ff90dc86de
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 1 FS bytes use=
+d 3.67TiB
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 si=
+ze 4.55TiB used 3.69TiB path /dev/sdb
+>
 
