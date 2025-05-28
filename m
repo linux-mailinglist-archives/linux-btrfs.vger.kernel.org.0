@@ -1,124 +1,152 @@
-Return-Path: <linux-btrfs+bounces-14269-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14270-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E9F3AC6884
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 May 2025 13:42:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 700AEAC6AD7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 May 2025 15:43:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26A104A1A7C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 May 2025 11:42:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F039189F06C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 May 2025 13:44:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED859283C8E;
-	Wed, 28 May 2025 11:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1C82882A1;
+	Wed, 28 May 2025 13:43:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sPA6lSSV"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x1Y/rjJF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cnRTkbWb";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x1Y/rjJF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cnRTkbWb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B35D84A3E;
-	Wed, 28 May 2025 11:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB5D257440
+	for <linux-btrfs@vger.kernel.org>; Wed, 28 May 2025 13:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748432548; cv=none; b=fEOPs4pgyn1nwDhq+Wp8aOCm03Vavrs27Cc5L4+BZsonKhtoa+0Ed48eSj9bEpWm8LKejuwU5mPyEW2JAPd+74guOt9pDRTlLMs1X4M/RtZKbhqC332E2UnJdkeFFh9PeA+7LLvdF8KqvxVgwCtPRuQhMFXmeGi480RehCyFNIY=
+	t=1748439830; cv=none; b=tKTuBfL4J/wPRJrCeidy+KliLgiGuG/ZnNAmY3Fl53Vn88mrThB4vkfrTScTUnKWC7ehpu0Gup0iBBj4LKeCVhefKRGgAQ5LVA9yrcGgwu4GrmwrvtBA45cc0aDT3XmOWbwluk5by+6aeCkJE75JN+JXh9kCE6DvDnm35gd4HL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748432548; c=relaxed/simple;
-	bh=itcKsvmYwrqflZ1s+3+cNkVKpxeVBDeBvRtfCi6xjqo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QbEn1O+TliGf1VSR9Y5C/2PbmFrml959jbSjnKx1Oxhvv4yXqsVXxby48yUFIygNdPb1QE2QJbfIkvzf8vwK0vK5CUccQ2GPeP1P6pJU6H91/62zTuCu7y8ecloeUdTzYlYfux9bFYZlEN9KEukCGj9sPlyEpOdZzxCRgQ89ZtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sPA6lSSV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D00DEC4CEE7;
-	Wed, 28 May 2025 11:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748432547;
-	bh=itcKsvmYwrqflZ1s+3+cNkVKpxeVBDeBvRtfCi6xjqo=;
-	h=From:To:Cc:Subject:Date:From;
-	b=sPA6lSSVI17ydxdN1RzJEdeylnVv1HWB9YvgX16obm8WNjMnThQwACiwzoUGEzdBl
-	 44x+/ywwQtMu0p3/nMTrSEjQcSpswY1bQ6iZEqbr2UAYQhqMDeLr7Gh0WMcW5aMpN9
-	 bHZAlRoKTueItpSXPXKatrRPkkgTv7b0WzDCFBbmWszWWH/dk8NM9ztu7aNYBRi6zQ
-	 pdihJpOJmRsjQv9Kyu8blCI2q3dfKkYpc/Ad9Gx68U+xRT28acNKPnRrgSIqcRKoDm
-	 Awe+LBmBfKYZQCh4m4/KYz5EU35XzUWvBANXFx0tyhGcp330CvOT7rayjMEIVPPqqV
-	 PZRO+NCzc66Sw==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] generic/032: fix failure due to attempt to wait for non-child process
-Date: Wed, 28 May 2025 12:42:20 +0100
-Message-ID: <ad779afaef849e0febdce26cbcb5503beed87341.1748432418.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
+	s=arc-20240116; t=1748439830; c=relaxed/simple;
+	bh=mNAC+0Ss8DPuaj9OX1SiZu8CYmHgwn69lrE1D/Y1PLs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CeJgYoNPL5Xoqjn8vEH2RZW/vyZUAbZshy+qiE4w391M6heDNf5/Vn4IAjEglRuFqHXSJaBrhWz8FMmrlxZaT8GDgdTaWibNNwIwssS6EecPNkDdG0tAeFWfZDfOUERcqJZ2B+JYFs0qejr9MfEzzxsAeCxifN6AxFbcHA643A4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x1Y/rjJF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cnRTkbWb; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x1Y/rjJF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cnRTkbWb; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9388B21AA5;
+	Wed, 28 May 2025 13:43:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748439826;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z/PFd+W5hMhu6f2gOq5+OmJJUofAwJaZLRO2Kro7RGg=;
+	b=x1Y/rjJFuWInSRQNchFVBsRDCzP4MwlMeMLbQWZY+HCObx0i+x4RMoxkL9ezYs3ZmYUIQr
+	9VQg9Jr00RjEi3O56x1ZD0rn9ssyouqePUdYIH52XR+aWozKcEMs0dwC/N/3I/QdK+BXHf
+	Per0jJfEWu+irv4MAO5txnRMT8Xj8YA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748439826;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z/PFd+W5hMhu6f2gOq5+OmJJUofAwJaZLRO2Kro7RGg=;
+	b=cnRTkbWbkIYITNQDGAs6k0Rd/6/kWwME1vJHSXeHnezI2FtkpGO5RbysREqjaIrTcYvUN3
+	ViVfuzJh5ShSKqCg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="x1Y/rjJF";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=cnRTkbWb
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748439826;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z/PFd+W5hMhu6f2gOq5+OmJJUofAwJaZLRO2Kro7RGg=;
+	b=x1Y/rjJFuWInSRQNchFVBsRDCzP4MwlMeMLbQWZY+HCObx0i+x4RMoxkL9ezYs3ZmYUIQr
+	9VQg9Jr00RjEi3O56x1ZD0rn9ssyouqePUdYIH52XR+aWozKcEMs0dwC/N/3I/QdK+BXHf
+	Per0jJfEWu+irv4MAO5txnRMT8Xj8YA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748439826;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z/PFd+W5hMhu6f2gOq5+OmJJUofAwJaZLRO2Kro7RGg=;
+	b=cnRTkbWbkIYITNQDGAs6k0Rd/6/kWwME1vJHSXeHnezI2FtkpGO5RbysREqjaIrTcYvUN3
+	ViVfuzJh5ShSKqCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 862C0136E3;
+	Wed, 28 May 2025 13:43:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kRCGIBITN2jLPgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 28 May 2025 13:43:46 +0000
+Date: Wed, 28 May 2025 15:43:45 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add root id output for direct IO error messages
+Message-ID: <20250528134344.GD4037@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <af31c7ae4ba5c76d57527f5a774f3816f69b54d8.1747695628.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af31c7ae4ba5c76d57527f5a774f3816f69b54d8.1747695628.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 9388B21AA5
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:dkim,suse.cz:replyto]
+X-Spam-Score: -4.21
+X-Spam-Level: 
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, May 20, 2025 at 08:30:32AM +0930, Qu Wenruo wrote:
+> When debugging a kernel warning caused by generic/475, the error
+> messages from direct IO lacks the subvolume id, meanwhile th error
+> messages from buffered IO contains both subvolume id and inode number.
+> 
+> This makes debugging much harder to grasp which inode (and its
+> subvolume) is causing the problem.
+> 
+> Add the subvolume id for direct IO failure message.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Running generic/032 can sporadically fail like this:
-
-  generic/032 11s ... - output mismatch (see /home/fdmanana/git/hub/xfstests/results//generic/032.out.bad)
-      --- tests/generic/032.out   2023-03-02 21:47:53.884609618 +0000
-      +++ /home/fdmanana/git/hub/xfstests/results//generic/032.out.bad    2025-05-28 10:39:34.549499493 +0100
-      @@ -1,5 +1,6 @@
-       QA output created by 032
-       100 iterations
-      +/home/fdmanana/git/hub/xfstests/tests/generic/032: line 90: wait: pid 3708239 is not a child of this shell
-       000000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  >................<
-       *
-       100000
-      ...
-      (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/generic/032.out /home/fdmanana/git/h
-
-This is because we are attempting to wait for a process that is not a
-child process of the test process and it's instead a child of a process
-spawned by the test.
-
-To make sure that after we kill the process running _syncloop() there
-isn't any xfs_io process still running syncfs, add instead a trap to
-to _syncloop() that waits for xfs_io to finish before the process running
-that function exits.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/generic/032 | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
-
-diff --git a/tests/generic/032 b/tests/generic/032
-index 48d594fe..b04b84de 100755
---- a/tests/generic/032
-+++ b/tests/generic/032
-@@ -28,6 +28,10 @@ _cleanup()
- 
- _syncloop()
- {
-+	# Wait for any running xfs_io command running syncfs before we exit so
-+	# that unmount will not fail due to the mount being pinned by xfs_io.
-+	trap "wait; exit" SIGTERM
-+
- 	while [ true ]; do
- 		_scratch_sync
- 	done
-@@ -81,15 +85,6 @@ echo $iters iterations
- kill $syncpid
- wait
- 
--# The xfs_io instance started by _scratch_sync could be stuck in D state when
--# the subshell running _syncloop & is killed.  That xfs_io process pins the
--# mount so we must kill it and wait for it to die before cycling the mount.
--dead_syncfs_pid=$(_pgrep xfs_io)
--if [ -n "$dead_syncfs_pid" ]; then
--	_pkill xfs_io
--	wait $dead_syncfs_pid
--fi
--
- # clear page cache and dump the file
- _scratch_cycle_mount
- _hexdump $SCRATCH_MNT/file
--- 
-2.47.2
-
+Reviewed-by: David Sterba <dsterba@suse.com>
 
