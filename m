@@ -1,46 +1,45 @@
-Return-Path: <linux-btrfs+bounces-14277-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14278-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C0C5AC731D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 May 2025 23:57:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ED32AC732C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 May 2025 23:58:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36E9A4A7370
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 May 2025 21:57:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67BBD1BA4757
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 May 2025 21:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B45223DC2;
-	Wed, 28 May 2025 21:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4B8226D1A;
+	Wed, 28 May 2025 21:56:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OR531LDS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sj+VDPW6"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A292223329;
-	Wed, 28 May 2025 21:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4DF22655E;
+	Wed, 28 May 2025 21:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748469366; cv=none; b=CY30+MHDGzkFtEl505SEY7oZxO7Jc7TbHqqxEiWxuV+kUJiuXmnlsqA/uSeBGDL+WjVyFhL/9TwfoErB/cWU26UqIFZbrvlOEFrEcg5+Aa6A1CgEKwKg/K7+IjHm7BN6YpUlWiLRltioTNCBblZ5jb9Kp4Tn115hRMbIbfMyjAs=
+	t=1748469374; cv=none; b=UXNLBHE0nE/X6AWnSBvD3MAyRF/DmBzcZy2T5+Sw2j4Bwqr3zbjxd+3KWhysSIzc/X7KC8xHX/b6nqXCvcwZ3/GDFA7a3z77ff/ZUOAP2WfJa087Snk1Q+up5GOg2JizAL+vYEVbFEBMoxSeW5vpPbyQxl9GPILBGBbbEPkb7Eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748469366; c=relaxed/simple;
-	bh=SZjpqvNp57s+WP0nOIxZ3GIUL0r9AuFIfXWTVM7PpRg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UM/eWwd5I4avAX8wAliDdMayBNAGCz+QEBbnJ0CFSkj/thKPsEJEyAG9T5u5ZZzVQRzaf/xmA3XtIXtPC68w+D6aX6oLN5XI1rexpf/RxyXT5LRVTmB3Mxhp2cHNXJ8W1/6AZtN2YXibGTC+tpDhDUvkFqSOIbIHgaIgSqxJU54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OR531LDS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35360C4CEED;
-	Wed, 28 May 2025 21:56:05 +0000 (UTC)
+	s=arc-20240116; t=1748469374; c=relaxed/simple;
+	bh=2VThknpY4Vs8QWakS9sWYR2G/1Ip+G8eS/08RVfhu18=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=CrP67qm60oIMhd9Gch0tdBxiVS4ijaGi3EPvaBknd/E4k7LkIbOtDVUPWziOGI01NmBrOFLrOvpVCY6sxlwXrKkaSb0Xx0yPDwKqm95b2oe61PZoTKvWHZ6ejdaQtweoTvEKsTzgo8RtJLCcwz17/7sokmAueM/689E5/hqiSkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sj+VDPW6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B777EC4CEE3;
+	Wed, 28 May 2025 21:56:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748469366;
-	bh=SZjpqvNp57s+WP0nOIxZ3GIUL0r9AuFIfXWTVM7PpRg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OR531LDS+EeDrLMFgDN+0wuRNWdgvv2olFwluboQcw1qx5swXy78gSD7iP+kyg9qu
-	 RSFBZOesg9aS8oZcSzsEn/MdU6HzzP62UmLK0GE0oqhYCituQQGZ2VjJhXJWzxo+o/
-	 bdTZRM7vzQS8yewYVzZgXjX5t9gOtl0KijY6AcpBRwjx3Ykt4z2nr6TJ3e9ymntXxj
-	 gfjlbWqHjeMRX57qM9Hx9ZOQ6ug29jseH3Vu4vMWyprrO91Q9SNu6Qs+a919kWHOnS
-	 N66HBx69Nn9B1eBQocbCq41bRxglJa4yXh+sQP0JpGboOj2ga2Unl459Whz/f0/4bV
-	 hO8NlgMgnIMZQ==
+	s=k20201202; t=1748469373;
+	bh=2VThknpY4Vs8QWakS9sWYR2G/1Ip+G8eS/08RVfhu18=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Sj+VDPW6AkU+hUfcg8bxTXr7+AkZMEZvknDeXWuu1nmMPY46WLDQZEW5jJ/HYplN2
+	 ciDA+acn6TRAJ8+s84PGWaNlp1l+CC72VTiDEPfDJ4kFENbKpUOaL9jOsQm55oGg2x
+	 JZF8eokCDSKG2X1RnC/fsH8CH/igDzLJ22g8HobskNMv1GiXmpTCH7jeJA9K2u1Ni1
+	 TQ+BvbmiR6h26N7JxakU7aSKfhaugRpazXXlf/fe5rCX8ZOwk5XMBl9VdZjIjaM6/H
+	 QW2JBcGAIqhGHAIuhcWeYAnEolsnZXkVTV3i/AsywF/kvUw/a7zl8oQgQd4aBpn8DC
+	 rqlIyGjjJzLNg==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
@@ -51,12 +50,10 @@ Cc: Filipe Manana <fdmanana@suse.com>,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.15 5/9] btrfs: exit after state split error at set_extent_bit()
-Date: Wed, 28 May 2025 17:55:55 -0400
-Message-Id: <20250528215559.1983214-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.14 1/8] btrfs: exit after state insertion failure at btrfs_convert_extent_bit()
+Date: Wed, 28 May 2025 17:56:04 -0400
+Message-Id: <20250528215611.1983429-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250528215559.1983214-1-sashal@kernel.org>
-References: <20250528215559.1983214-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -65,22 +62,23 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.15
+X-stable-base: Linux 6.14.8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit 41d69d4d78d8b179bf3bcdfc56d28a12b3a608d2 ]
+[ Upstream commit 3bf179e36da917c5d9bec71c714573ed1649b7c1 ]
 
-If split_state() returned an error we call extent_io_tree_panic() which
-will trigger a BUG() call. However if CONFIG_BUG is disabled, which is an
-uncommon and exotic scenario, then we fallthrough and hit a use after free
-when calling set_state_bits() since the extent state record which the
-local variable 'prealloc' points to was freed by split_state().
+If insert_state() state failed it returns an error pointer and we call
+extent_io_tree_panic() which will trigger a BUG() call. However if
+CONFIG_BUG is disabled, which is an uncommon and exotic scenario, then
+we fallthrough and call cache_state() which will dereference the error
+pointer, resulting in an invalid memory access.
 
-So jump to the label 'out' after calling extent_io_tree_panic() and set
-the 'prealloc' pointer to NULL since split_state() has already freed it
-when it hit an error.
+So jump to the 'out' label after calling extent_io_tree_panic(), it also
+makes the code more clear besides dealing with the exotic scenario where
+CONFIG_BUG is disabled.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
@@ -88,74 +86,62 @@ Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
-**YES** This commit should be backported to stable kernel trees. Here's
-my extensive analysis: ## Analysis of the Code Changes The commit fixes
-a critical use-after-free bug in the btrfs filesystem's extent I/O tree
-management. Examining the specific code changes: **Problem Location**:
-In `fs/btrfs/extent-io-tree.c`, function `set_extent_bit()` around lines
-1254-1256: ```c ret = split_state(tree, state, prealloc, end + 1); if
-(ret) extent_io_tree_panic(tree, state, "split", ret); ``` **The Bug**:
-After `split_state()` fails and `extent_io_tree_panic()` is called, the
-code continues to execute `set_state_bits(tree, prealloc, bits,
-changeset)` on line 1258. However, when `split_state()` fails, it frees
-the `prealloc` extent state, making this a use-after-free vulnerability.
-**The Fix**: The commit adds proper error handling: ```c ret =
-split_state(tree, state, prealloc, end + 1); if (ret) {
-extent_io_tree_panic(tree, state, "split", ret); prealloc = NULL; goto
-out; } ``` ## Why This Should Be Backported ### 1. **Critical Security
-Issue** - **Use-after-free vulnerability**: This is a serious memory
-safety issue that can lead to kernel crashes, data corruption, or
-potentially exploitable conditions - **Affects btrfs filesystem**: A
-widely used filesystem in production environments ### 2. **Specific Edge
-Case Scenario** From my examination of the kernel code: -
-`extent_io_tree_panic()` calls `btrfs_panic()` which calls `BUG()` -
-When `CONFIG_BUG` is disabled (uncommon but possible), `BUG()` becomes a
-no-op loop instead of halting execution - This allows execution to
-continue to the use-after-free code ### 3. **Minimal Risk Change** -
-**Small, targeted fix**: Only adds 3 lines of code - **Clear logic**:
-Sets pointer to NULL and jumps to cleanup - **No functional changes**:
-Doesn't alter normal operation paths - **No architectural changes**:
-Pure bug fix without affecting subsystem design ### 4. **Comparison with
-Similar Commits** Looking at the reference commits: - Similar to
-"Similar Commit #2" (marked YES) which also improved error handling in
-extent bit operations - Unlike commits marked NO, this doesn't add
-features or make architectural changes - Follows the same pattern as
-other accepted backports for memory safety fixes ### 5. **Clear Bug Fix
-Criteria** - **Fixes a real bug**: Use-after-free is a concrete,
-exploitable issue - **Minimal scope**: Only affects error path in one
-function - **No side effects**: Change only affects already-failing code
-paths - **Well-understood impact**: Risk is contained to btrfs extent
-I/O operations ### 6. **Production Impact** - While `CONFIG_BUG` being
-disabled is rare, when it occurs this creates a serious vulnerability -
-btrfs is used in production environments where memory safety is critical
-- The fix prevents potential kernel crashes or memory corruption ### 7.
-**Stable Tree Compatibility** - **Self-contained**: Doesn't depend on
-other recent changes - **Backwards compatible**: No API changes - **Low
-regression risk**: Only affects error handling path that was already
-broken The commit perfectly fits stable tree criteria: it's a small,
-important bugfix with minimal risk that addresses a real security issue
-in a widely-used filesystem.
+**YES** This commit should be backported to stable kernel trees.
+**Detailed Analysis:** **1. Bug Description and Impact:** The commit
+fixes a serious potential memory corruption bug in the btrfs filesystem.
+When `insert_state()` fails in `btrfs_convert_extent_bit()`, it returns
+an error pointer (ERR_PTR). The current code calls
+`extent_io_tree_panic()` which triggers `BUG()`, but if `CONFIG_BUG` is
+disabled, the code continues executing and calls
+`cache_state(inserted_state, cached_state)` with the error pointer,
+causing invalid memory access. **2. Code Changes Analysis:** The fix is
+minimal and surgical - just adding a single `goto out;` statement after
+the `extent_io_tree_panic()` call: ```c if (IS_ERR(inserted_state)) {
+ret = PTR_ERR(inserted_state); extent_io_tree_panic(tree, prealloc,
+"insert", ret); + goto out; // <-- The fix } ``` This ensures that when
+`CONFIG_BUG` is disabled, execution jumps to the cleanup code instead of
+continuing with an invalid pointer. **3. Comparison with Similar
+Commits:** This commit aligns with the pattern seen in "Similar Commit
+#2" (Status: YES), which also: - Removes reliance on `BUG_ON()` behavior
+- Provides graceful error handling - Has minimal risk - Fixes a
+potential crash/corruption scenario Similar to commit #3 and #5 (both
+Status: NO), this touches BUG() handling, but unlike those commits which
+make broader architectural changes to error handling patterns, this fix
+is much more contained. **4. Stable Tree Criteria Assessment:** ✅
+**Fixes important bug**: Prevents potential memory corruption/crashes ✅
+**Small and contained**: Single line addition ✅ **Minimal risk**: Only
+affects error path when insert_state() fails AND CONFIG_BUG is disabled
+✅ **No new features**: Pure bug fix ✅ **No architectural changes**:
+Preserves existing error handling, just prevents fallthrough ✅
+**Critical subsystem**: btrfs filesystem corruption prevention ✅ **Clear
+side effects**: No unintended consequences beyond fixing the bug **5.
+Risk Assessment:** - **Very Low Risk**: The change only affects an error
+condition that's already problematic - **Exotic scenario**: Only impacts
+systems with `CONFIG_BUG` disabled (uncommon but not impossible) - **No
+regression potential**: The change only prevents executing invalid code,
+doesn't change normal operation - **Well-contained**: Affects only one
+function in one file **6. Security Implications:** While `CONFIG_BUG`
+disabled is uncommon, this could potentially be exploited if an attacker
+can trigger the `insert_state()` failure condition, leading to memory
+corruption. The fix prevents this attack vector. This is a clear
+candidate for stable backporting - it fixes a real bug with minimal risk
+and follows the stable tree rules perfectly.
 
- fs/btrfs/extent-io-tree.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/btrfs/extent-io-tree.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-index 92cfde37b1d33..b5b44ea91f999 100644
+index 6d08c100b01de..bb3aaf610652a 100644
 --- a/fs/btrfs/extent-io-tree.c
 +++ b/fs/btrfs/extent-io-tree.c
-@@ -1252,8 +1252,11 @@ static int __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 		if (!prealloc)
- 			goto search_again;
- 		ret = split_state(tree, state, prealloc, end + 1);
--		if (ret)
-+		if (ret) {
- 			extent_io_tree_panic(tree, state, "split", ret);
-+			prealloc = NULL;
+@@ -1456,6 +1456,7 @@ int convert_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 		if (IS_ERR(inserted_state)) {
+ 			ret = PTR_ERR(inserted_state);
+ 			extent_io_tree_panic(tree, prealloc, "insert", ret);
 +			goto out;
-+		}
- 
- 		set_state_bits(tree, prealloc, bits, changeset);
- 		cache_state(prealloc, cached_state);
+ 		}
+ 		cache_state(inserted_state, cached_state);
+ 		if (inserted_state == prealloc)
 -- 
 2.39.5
 
