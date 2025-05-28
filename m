@@ -1,162 +1,161 @@
-Return-Path: <linux-btrfs+bounces-14281-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14282-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7043DAC735D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 May 2025 00:02:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAB00AC73E5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 May 2025 00:21:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6C201BC108A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 May 2025 22:02:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75042500C69
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 May 2025 22:21:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F66122FDFA;
-	Wed, 28 May 2025 21:56:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE1722127B;
+	Wed, 28 May 2025 22:21:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f66FTtVy"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ty8+naf1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Kd4qRZnn";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ty8+naf1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Kd4qRZnn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C41722F773;
-	Wed, 28 May 2025 21:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4BD220F59
+	for <linux-btrfs@vger.kernel.org>; Wed, 28 May 2025 22:21:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748469388; cv=none; b=rBciQ0lqu7XZ9LXf0kWIrucZpbgl1SEX0wrE6pbSsBeXN4Y8FgzRo6gYz56+As9/b7oR4NjJ3ORpXVmzLLtFVs0z0VbS1wFsnVu0qAWlkJYzXprCEFOqeRGZMoVvz0fuNuYv+CwIBn80wY9pstZE1R2cXvABhMDWErQcWq1pRW8=
+	t=1748470888; cv=none; b=kmgIiR7mUIwAxt4EGQwL92C7ucJAZPZiPx9K6artYgF+3Dpb4HSJJjWq4fvivtPUIX3uW1nJaI5a7rXWYaVOtzGiJW4iPF/tgrbPDdZfp9sLSK8S30agOsLnDCg8/8Yx60IscvaUFxb8Ytwem2od94zJktuOEILvlNktLGU3asc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748469388; c=relaxed/simple;
-	bh=MCZd/iWjYbUsuvm/RmPIwChcn8pcnR3PdyFWbQlGmwA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nspkY/ANeH1991ckO2xGL5CBNgtb7oNwIAHp+qaMdcyqc6XAwUswFHb0bOK+w09I5FUr270Yra+n8LC3QyP6yh8DYF4IS9L82v0w6oFBP1tStRIWHR8WmOOhUrscMAkjbiangobPSSizZV1YUnH+AX72XuyxFS9BO+Gs8+U+jfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f66FTtVy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24B8BC4CEEE;
-	Wed, 28 May 2025 21:56:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748469388;
-	bh=MCZd/iWjYbUsuvm/RmPIwChcn8pcnR3PdyFWbQlGmwA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=f66FTtVyxuiQHRVzEbjSVr6Jc6mEfQOChXlQAMxgx3BY7v1GMbE85sAm8TgQklOuV
-	 W8HBaYW3T9S5ICnBsfjKP4WGufphVSXFFZeFix1lL3mzg6i4menb9CZh60iHbxrvXS
-	 HlMEeLtRiwVP11BQtqOZZ0ssO7PoHlHvwkd5ExoxJK3S66Ri/oUO/6GyxyqZcijI7f
-	 pKbw9QhHL5hJ+tOuJLckHueB5N989dbi776pT+5B5lHiPu3kBzI3eXFoUR7a3dfjIh
-	 u293GCyYyChn3qEDqAIMXBBz3Ml4myC35CyH6StJJE89bM7eH9JIq1VjapuPCowsQc
-	 BiEOIeI2K0a/g==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
-	David Sterba <dsterba@suse.com>,
-	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 4/7] btrfs: exit after state split error at set_extent_bit()
-Date: Wed, 28 May 2025 17:56:19 -0400
-Message-Id: <20250528215622.1983622-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250528215622.1983622-1-sashal@kernel.org>
-References: <20250528215622.1983622-1-sashal@kernel.org>
+	s=arc-20240116; t=1748470888; c=relaxed/simple;
+	bh=FnR+4+b/l1nZeDzTpvOnJTe+qz9W/iK7frMcm2M2Rb4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OJGaLmM1laQvF6/uoff6aneZ+jw0zgsh6EboHFDZ7D7D9jVzPA02JYVw6r2Ldc0lzLOqZKpVzBs9vobLLJXsaGps4g4RsV7ZiPuKEyQrDN2JNlzXcf77F9nkQdov0d5UynvKhl8Dy8yUe5OufZ0LR+Z8pbBLpVfBgQ2e5H2DWQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ty8+naf1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Kd4qRZnn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ty8+naf1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Kd4qRZnn; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3BDD21F79C;
+	Wed, 28 May 2025 22:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748470884;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kcs6PeQ5LYK8Vz7ip+tNDGCLt/08EZqVgWOSZJmlnm4=;
+	b=Ty8+naf1waxXzboVdgyIaQT20cGyhy6jvPGdFrqc5BIIeeZjErFLbxTn+is+Ni/EA/AuJF
+	l9qI2Cr0W8pcQxUxxyEfnLQlx+oqNo3hRoPvBeTGR8AbbFnRtEmlp6Fbquk0VKtfuQqs3M
+	g4GWLSVv2/OqUyRT5BgaoyPz0bIqu3o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748470884;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kcs6PeQ5LYK8Vz7ip+tNDGCLt/08EZqVgWOSZJmlnm4=;
+	b=Kd4qRZnnVFKEQzm3Fw5IEFy/nyoLoZlG3aPLOcUJx/3Nlejw2sKSBPu4Gfqeq5QoKbhpOz
+	aSEM4K0jRookwpAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748470884;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kcs6PeQ5LYK8Vz7ip+tNDGCLt/08EZqVgWOSZJmlnm4=;
+	b=Ty8+naf1waxXzboVdgyIaQT20cGyhy6jvPGdFrqc5BIIeeZjErFLbxTn+is+Ni/EA/AuJF
+	l9qI2Cr0W8pcQxUxxyEfnLQlx+oqNo3hRoPvBeTGR8AbbFnRtEmlp6Fbquk0VKtfuQqs3M
+	g4GWLSVv2/OqUyRT5BgaoyPz0bIqu3o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748470884;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kcs6PeQ5LYK8Vz7ip+tNDGCLt/08EZqVgWOSZJmlnm4=;
+	b=Kd4qRZnnVFKEQzm3Fw5IEFy/nyoLoZlG3aPLOcUJx/3Nlejw2sKSBPu4Gfqeq5QoKbhpOz
+	aSEM4K0jRookwpAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1D31D136E3;
+	Wed, 28 May 2025 22:21:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id cGGcBmSMN2hxTQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 28 May 2025 22:21:24 +0000
+Date: Thu, 29 May 2025 00:21:22 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: Ming Lei <ming.lei@redhat.com>,
+	Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+	linux-fsdevel@vger.kernel.org, David Sterba <dsterba@suse.com>
+Subject: Re: [Bug] v6.15+: kernel panic when mount & umount btrfs
+Message-ID: <20250528222122.GH4037@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <CAFj5m9LWYk4OX8UijOutKFV-Hgga_w7KPT=MRLLyOscKBwCA-g@mail.gmail.com>
+ <5e7d42e4-7d77-4926-b2fd-593ea581477d@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.30
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <5e7d42e4-7d77-4926-b2fd-593ea581477d@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, May 27, 2025 at 02:51:33PM +0930, Qu Wenruo wrote:
+> 
+> 
+> 在 2025/5/27 13:36, Ming Lei 写道:
+> > Hello,
+> > 
+> > Just try the latest linus tree by running `rublk` builtin test on
+> > Fedora, and found
+> > the following panic:
+> > 
+> > git clone https://github.com/ublk-org/rublk
+> > cd rublk
+> > cargo test
+> 
+> There is a bug in commit 5e121ae687b8 ("btrfs: use buffer xarray for 
+> extent buffer writeback operations"), and there is already a fix queued 
+> for the next pull request:
+> 
+> https://lore.kernel.org/linux-btrfs/b964b92f482453cbd122743995ff23aa7158b2cb.1747677774.git.josef@toxicpanda.com/
 
-[ Upstream commit 41d69d4d78d8b179bf3bcdfc56d28a12b3a608d2 ]
-
-If split_state() returned an error we call extent_io_tree_panic() which
-will trigger a BUG() call. However if CONFIG_BUG is disabled, which is an
-uncommon and exotic scenario, then we fallthrough and hit a use after free
-when calling set_state_bits() since the extent state record which the
-local variable 'prealloc' points to was freed by split_state().
-
-So jump to the label 'out' after calling extent_io_tree_panic() and set
-the 'prealloc' pointer to NULL since split_state() has already freed it
-when it hit an error.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-**YES** This commit should be backported to stable kernel trees. Here's
-my extensive analysis: ## Analysis of the Code Changes The commit fixes
-a critical use-after-free bug in the btrfs filesystem's extent I/O tree
-management. Examining the specific code changes: **Problem Location**:
-In `fs/btrfs/extent-io-tree.c`, function `set_extent_bit()` around lines
-1254-1256: ```c ret = split_state(tree, state, prealloc, end + 1); if
-(ret) extent_io_tree_panic(tree, state, "split", ret); ``` **The Bug**:
-After `split_state()` fails and `extent_io_tree_panic()` is called, the
-code continues to execute `set_state_bits(tree, prealloc, bits,
-changeset)` on line 1258. However, when `split_state()` fails, it frees
-the `prealloc` extent state, making this a use-after-free vulnerability.
-**The Fix**: The commit adds proper error handling: ```c ret =
-split_state(tree, state, prealloc, end + 1); if (ret) {
-extent_io_tree_panic(tree, state, "split", ret); prealloc = NULL; goto
-out; } ``` ## Why This Should Be Backported ### 1. **Critical Security
-Issue** - **Use-after-free vulnerability**: This is a serious memory
-safety issue that can lead to kernel crashes, data corruption, or
-potentially exploitable conditions - **Affects btrfs filesystem**: A
-widely used filesystem in production environments ### 2. **Specific Edge
-Case Scenario** From my examination of the kernel code: -
-`extent_io_tree_panic()` calls `btrfs_panic()` which calls `BUG()` -
-When `CONFIG_BUG` is disabled (uncommon but possible), `BUG()` becomes a
-no-op loop instead of halting execution - This allows execution to
-continue to the use-after-free code ### 3. **Minimal Risk Change** -
-**Small, targeted fix**: Only adds 3 lines of code - **Clear logic**:
-Sets pointer to NULL and jumps to cleanup - **No functional changes**:
-Doesn't alter normal operation paths - **No architectural changes**:
-Pure bug fix without affecting subsystem design ### 4. **Comparison with
-Similar Commits** Looking at the reference commits: - Similar to
-"Similar Commit #2" (marked YES) which also improved error handling in
-extent bit operations - Unlike commits marked NO, this doesn't add
-features or make architectural changes - Follows the same pattern as
-other accepted backports for memory safety fixes ### 5. **Clear Bug Fix
-Criteria** - **Fixes a real bug**: Use-after-free is a concrete,
-exploitable issue - **Minimal scope**: Only affects error path in one
-function - **No side effects**: Change only affects already-failing code
-paths - **Well-understood impact**: Risk is contained to btrfs extent
-I/O operations ### 6. **Production Impact** - While `CONFIG_BUG` being
-disabled is rare, when it occurs this creates a serious vulnerability -
-btrfs is used in production environments where memory safety is critical
-- The fix prevents potential kernel crashes or memory corruption ### 7.
-**Stable Tree Compatibility** - **Self-contained**: Doesn't depend on
-other recent changes - **Backwards compatible**: No API changes - **Low
-regression risk**: Only affects error handling path that was already
-broken The commit perfectly fits stable tree criteria: it's a small,
-important bugfix with minimal risk that addresses a real security issue
-in a widely-used filesystem.
-
- fs/btrfs/extent-io-tree.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-index bb3aaf610652a..5f9a43734812e 100644
---- a/fs/btrfs/extent-io-tree.c
-+++ b/fs/btrfs/extent-io-tree.c
-@@ -1252,8 +1252,11 @@ static int __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 		if (!prealloc)
- 			goto search_again;
- 		ret = split_state(tree, state, prealloc, end + 1);
--		if (ret)
-+		if (ret) {
- 			extent_io_tree_panic(tree, state, "split", ret);
-+			prealloc = NULL;
-+			goto out;
-+		}
- 
- 		set_state_bits(tree, prealloc, bits, changeset);
- 		cache_state(prealloc, cached_state);
--- 
-2.39.5
-
+Now merged to master.
 
