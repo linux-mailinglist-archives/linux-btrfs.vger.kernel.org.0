@@ -1,172 +1,82 @@
-Return-Path: <linux-btrfs+bounces-14299-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14300-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C74A4AC7FF2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 May 2025 17:00:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A6BAAC857F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 01:53:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84AC74A2FD8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 May 2025 15:00:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30ED01BC4104
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 May 2025 23:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E39522AE68;
-	Thu, 29 May 2025 15:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BE921E0B7;
+	Thu, 29 May 2025 23:52:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GmjQdxdv";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jKYf5twL";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RUh2TOPA";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sbi4k777"
+	dkim=pass (2048-bit key) header.d=velocifyer.com header.i=@velocifyer.com header.b="j563QnzW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F07017A31B
-	for <linux-btrfs@vger.kernel.org>; Thu, 29 May 2025 15:00:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9991AB67F
+	for <linux-btrfs@vger.kernel.org>; Thu, 29 May 2025 23:52:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748530841; cv=none; b=uDMe4icU85FF9TdY6DtL4U6smnH6Xs93QaWA75yPP+/b4omcKOadHL+CajFzyxsC6WMzPqkMsBZevoGBcPNa4g1qc2g4/nApdPqqjs+msnAhAqX8AIxQlcbEyOPIYVbqmwPUJ4wtCeeLJi3/o2RJEynRr9apS1h7TgSj68m7P7E=
+	t=1748562777; cv=none; b=FTjeZMrLDGRglV6IIQGYCNUDo7jw4ZjyajjiEROWfCeeeZ/yNrUYCmPNR9zTKTQaKCYxsh5HyfDrbbs2CPnu5I8iRNjXKvwP58bS20XtapOixuJOcNrAhBBzLWG0m1Ja5HHbJOFUaTDGO+n+SfZZJwCzXBmW/cqvJrrymijwpDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748530841; c=relaxed/simple;
-	bh=sPDQqg0yp68uVstvJ6EHfX05QONZb2LxnFnFGnFO9qE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LRZK0JEhMdxCyQvhsRceE7lKvEJlniUX84nNZaWEwrypV2rjA0cvcaGLzs7eR+vAg7szGgLrOphD1DTKNhPvc3vDEZP/FKy3gJQGjgvIQMwJy4Y+XOpNXucNTNHpuz51zGmhSSccWOs9CK3zkjIQd7jnesg6Jry9cqRXhCM6EeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GmjQdxdv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jKYf5twL; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RUh2TOPA; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sbi4k777; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BBD7D21BE1;
-	Thu, 29 May 2025 15:00:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748530838;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DdB+/2ZrtGZWew7m+UsS9vT3B4+cdGcg2/ejLDxbWZk=;
-	b=GmjQdxdvstOYCXz5wgb6j5EYMQcePGPmY5aHmGxPDq3MkvnVNZiM6EiX8ddG27pPjZfHIq
-	ZBFJM4Gu805RIpgvlaz5c3RPjPDiFvuPI2zzdD7JrLy0Ujd5AvilXJuWtbSq3W4+mc1qZj
-	MuuGAojZAtg8/3QHrvEHD7LCBT1M6U4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748530838;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DdB+/2ZrtGZWew7m+UsS9vT3B4+cdGcg2/ejLDxbWZk=;
-	b=jKYf5twLeFQTr2pv51BKfITpk+xSKQuj7v0s7ni9ANwsxfGh9sfN8b3VtPfD0YAwr0boGb
-	3qQwpBYNXDngX1BQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=RUh2TOPA;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=sbi4k777
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748530836;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DdB+/2ZrtGZWew7m+UsS9vT3B4+cdGcg2/ejLDxbWZk=;
-	b=RUh2TOPAKQ1s/sTviDQFupIEOYzOAr7ibxiZUlgd92jYvtw6EE0E9EENC5WlFnbcN4nzou
-	6C1AcgCifNHRwc08c0va9JYOrnOBajk/2g4aLOq4kaA3MO26KJbJ8ie020tBktfVg9etns
-	scGLiZENW4cP3wjOutM0vOMNew41FT0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748530836;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DdB+/2ZrtGZWew7m+UsS9vT3B4+cdGcg2/ejLDxbWZk=;
-	b=sbi4k7776AFIijsKZXFh82qO7tUCTFK8UO+K4qCTqi1cEBlS86FVWor+q8O8baSWDMtUZ5
-	VhOB4UwPwG5SR+AQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A04DD136E0;
-	Thu, 29 May 2025 15:00:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Zy94JpR2OGh9TgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 29 May 2025 15:00:36 +0000
-Date: Thu, 29 May 2025 17:00:34 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, dsterba@suse.cz
-Subject: Re: [PATCH v2] btrfs: track current commit duration in commit_stats
-Message-ID: <20250529150034.GO4037@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <9ef37010df953138ae847e6d5e8ba12847321036.1746751867.git.boris@bur.io>
+	s=arc-20240116; t=1748562777; c=relaxed/simple;
+	bh=njO/rhSgPnCfBx47mQ5oP/w3qxKayZsV4xfBdC4DAMQ=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=i7TbvQYWgUJ2BiS7PvDKVDdDx44fILbPNJNj0r7v09up9SptnXAekJkXcLnlVmdmIGcTjhc8lO/GAjbzzgv/4/923gSeQ8xEeXqbuaDgQ8d4PuHzI7bBABbEZp63tEvQ2+TcMty1w6kElni0XmMf2Z1d04nujGLh9idvQ0j63ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=velocifyer.com; spf=pass smtp.mailfrom=velocifyer.com; dkim=pass (2048-bit key) header.d=velocifyer.com header.i=@velocifyer.com header.b=j563QnzW; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=velocifyer.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=velocifyer.com
+Message-ID: <9d74d71f-b65d-4f06-adb3-18f7698edb8a@velocifyer.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=velocifyer.com;
+	s=key1; t=1748562772;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
+	bh=+xuE0iNUdTp59HCiHRliL2CHBYyy3iBjq0k8yxrk6XQ=;
+	b=j563QnzWukY+HV9Tj3uQeasO+ec40/c7moWCOjKxepCULMSaeDJrS8isqmMeXAbmSsj0Xe
+	pGyJVELfg8X63OM3R2cNCHwsMpJXofugRqX6Awv61xj1h5+o2gUHTiDcVtYqlhsjKQdbDp
+	hgnmiHUafpsXx/obAoGGh1drb2xUbyUhsjML0jiRS8tluT9el8H8M18fJx2TRh15Cgrdht
+	nUrfc7hu3Av9j+wX8de1ELy08/VA9bXLM97zht5sIcCifwpLWAzAhHI9+8NalswOTCjpIP
+	hCyd9XvbXKwYwHhoLv5fcNapO3kWbYUw94dTUP5W3wqtoUHbxCHg4Eu9Mqotng==
+Date: Thu, 29 May 2025 19:52:31 -0400
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ef37010df953138ae847e6d5e8ba12847321036.1746751867.git.boris@bur.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,twin.jikos.cz:mid]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: BBD7D21BE1
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -4.21
+To: linux-btrfs@vger.kernel.org
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: =?UTF-8?B?8J2VjfCdlZbwnZWd8J2VoPCdlZTwnZWa8J2Vl/CdlarwnZWW8J2Vow==?=
+ <velocifyer@velocifyer.com>
+Subject: Why does defragmenting break reflinks?
+Autocrypt: addr=velocifyer@velocifyer.com; keydata=
+ xjMEaCpEhBYJKwYBBAHaRw8BAQdAZBZWSN4ekixMHE7duMBmw/2uteCfmp68D/mxaYk/dyrN
+ JlZlbG9jaWZ5ZXIgPHZlbG9jaWZ5ZXJAdmVsb2NpZnllci5jb20+wo8EExYIADcWIQQboPxL
+ gODyGwJpjO5jTr+HQMdIvgUCaCpEhAUJBaOagAIbAwQLCQgHBRUICQoLBRYCAwEAAAoJEGNO
+ v4dAx0i+HU8BAJGd99DA1VdBzcYgch16XK7mC78ZqEwGegVCRerWry8RAQC3MJUOiyQ062Ol
+ /3iNXY6zk2QXaAsV8eUbFKUo1HiwAs44BGgqRIUSCisGAQQBl1UBBQEBB0CEoaVGilG8Qt/y
+ Xp135G4fhWjJH7VQkPIFo8/MsZspfwMBCAfCfgQYFggAJhYhBBug/EuA4PIbAmmM7mNOv4dA
+ x0i+BQJoKkSFBQkFo5qAAhsMAAoJEGNOv4dAx0i+yNYBAKcE1fbRCPqWwsIpRvOjSq9Spvhl
+ veEFpUMPaQ1tp7qOAPkBfZroJ8veENH/8sz+Gf/QK6O1kcqC4d/vAASzMpOiAQ==
+Disposition-Notification-To: =?UTF-8?B?8J2VjfCdlZbwnZWd8J2VoPCdlZTwnZWa?=
+ =?UTF-8?B?8J2Vl/CdlarwnZWW8J2Vow==?= <velocifyer@velocifyer.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, May 08, 2025 at 05:54:41PM -0700, Boris Burkov wrote:
-> When debugging/detecting outlier commit stalls, having an indicator that
-> we are currently in a long commit critical section can be very useful.
-> Extend the commit_stats sysfs file to also include the current commit
-> critical section duration.
-> 
-> Since this requires storing the last commit start time, use that rather
-> than a separate stack variable for storing the finished commit durations
-> as well.
-> 
-> This also requires slightly moving up the timing of the stats updating
-> to *inside* the critical section to avoid the transaction T+1 setting
-> the critical_section_start_time to 0 before transaction T can update its
-> stats, which would trigger the new ASSERT. This is an improvement in and
-> of itself, as it makes the stats more accurately represent the true
-> critical section time. It may be yet better to pull the stats up to where
-> start_transaction gets unblocked, rather than the next commit, but this
-> seems like a good enough place as well.
-> 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
-> Changelog:
-> v2:
-> * Fix ASSERT triggered by multiple commits interleaving s.t. commit T+1
->   reset the start time set by commit T before T could update the stats.
-> * Rename commit_stats variable to critical_section_start_time to
->   differentiate from cur_trans->start_time.
+BTRFS-FILESYSTEM(8) says "defragmenting  with  Linux kernel versions < 
+3.9 or ≥ 3.14-rc2 as well as with Linux stable kernel versions ≥ 
+3.10.31, ≥ 3.12.12 or ≥ 3.13.4 will break up the reflinks of COW data 
+(for example files copied with cp --reflink, snapshots or de-duplicated 
+data)." Why does defragmenting not preserve reflinks and why was it removed?
 
-Added to for-next, thanks.
+-- 
+George truly, 𝕍𝕖𝕝𝕠𝕔𝕚𝕗𝕪𝕖𝕣
+This email does not constitute a legally binding contract
 
