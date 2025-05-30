@@ -1,49 +1,82 @@
-Return-Path: <linux-btrfs+bounces-14301-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14302-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16336AC85A9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 02:24:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83F02AC85AC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 02:28:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA9A61BC2827
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 00:24:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B96C69E7D65
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 00:27:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 851CA20E6;
-	Fri, 30 May 2025 00:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4F28F40;
+	Fri, 30 May 2025 00:28:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sotapeli.fi header.i=@sotapeli.fi header.b="L63oY/LM"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="g5zYLA5d"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from se.sotapeli.fi (se.sotapeli.fi [206.168.212.219])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91264DDCD
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 00:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.168.212.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C444685
+	for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 00:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748564657; cv=none; b=bNSuONYdOkEdqkIMsklRSTEBZU8DgIVD8Yw7TxzTPR7HY1G7o1iUZtoxI2nMR3kU1EAsICYJSu0cvrxsOO5CCs+sCSg5zanmXGzvxDOaa2Fv6HH4mIqFMfDvqw6pGxgo8DJOETgOrXricxxuCqTy60hYPMFqFzTivrjnvrlYRbo=
+	t=1748564885; cv=none; b=o4BU3mQV+JbPmvStzJMdR/P1VNgsmTOQQ6cRL79wSisEog1OSBk8ZK4UO0dkeRTpnpOH8EsEpdg3ELWBFOLrayuh7VNkjDn4SExZBFCuKMfwmU2DCk3LC2nXPyDBrE2UaJk6GV7hx5H64VkGwL2Ju26YMZqMpGEuWT7KSGNIn2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748564657; c=relaxed/simple;
-	bh=ANrsI33DGySMiDqIM5fvsDdpungNgbVcVE6lsjiOs08=;
+	s=arc-20240116; t=1748564885; c=relaxed/simple;
+	bh=+PjNLrf3ufLhgjsEMy7GHdPYdJYSsYnlv4UVmrxMkhE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=cChS45S5b/ldbHQZ/+9NR5su+Nn1YGEH8UdOHpMwSMX2gW+JHYCqDyL3JPwPBwJesakXEpggjpXSeKSY21ni/tZZ9b2jb7U8iGdJNP5XMd6//dOtVFnGVj+Ahg/SYnd+NEyDPho9hjzaGgm6+JQ/Au0KbRSKyjbQaLeZM0iN5/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sotapeli.fi; spf=pass smtp.mailfrom=sotapeli.fi; dkim=pass (2048-bit key) header.d=sotapeli.fi header.i=@sotapeli.fi header.b=L63oY/LM; arc=none smtp.client-ip=206.168.212.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sotapeli.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sotapeli.fi
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7C254181AA1D;
-	Fri, 30 May 2025 02:15:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sotapeli.fi; s=dkim;
-	t=1748564145; h=from:subject:date:message-id:to:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references:autocrypt;
-	bh=BXAX6tDMoWbhsfirHXIM9dXHLoBZZmPaQ7ctgOHM7Ew=;
-	b=L63oY/LM1TNJiIonfEh10w2N/wFy2dLEypFi3RMIjhevFe41JyPy91ymc2vE8q0mgIdSVL
-	LRTeOZBLNsIp4Gf68rC1SwtFvzLFB0g+ZVJ2SRw3m4oQAy14I4U33vC5Pq25REnC0vk7fJ
-	DWUJZGSaDeXn1e40mqUPhznT6rmoZzq6Ief1CYtTVZ3ww3SekvTiYt448FT1nF/k36m2eB
-	Wcdg2BNVA1Noxsd5Ba4lpK7ewpSRwBCyT4H0zuway2kAHfOOUhfDU4kDCIY4pYHWbgEY8k
-	biF79EkNCusSGl5aHQK1F0DESg+lmRZ+0AdwwIpBm9Sw377UjQly3bQzf5jbUw==
-Message-ID: <8e02ce99-7968-4312-8526-8b8c0cfee225@sotapeli.fi>
-Date: Fri, 30 May 2025 03:15:40 +0300
+	 In-Reply-To:Content-Type; b=gPelthFy/rdnYEb4V7oZ3jKZHAurpx9nrdL16Sggm7K03SVTRXYvycHmOJiQex2r/qjcMRLl0+gPm3+V+cEKUTZb5HT96BDjHXwqoaKKfxexkHhSe6k/ecu0lECdP8FNX5wNr5YrbUX9X7ghAsnkPvH37t6NX8RT35kwL1+mIQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=g5zYLA5d; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43edecbfb46so10958745e9.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 May 2025 17:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1748564880; x=1749169680; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=2ZeTMWwGKuZb2rDfhOGtyMx2xjHvnDVOhwHavRdrdQI=;
+        b=g5zYLA5dCc/Bx9RUm6LDtm43XHBhJwY1W2sMq6t88DFJPtOM/Zt0IvdYENd3rVJeXn
+         RH9dTP2l6lIqPGg7NayttC7Q7MVG0SDtBo79yhfZvw+M0xQ+RNGEbVjcorIa9zE9PLeK
+         l1vVMoVvOhIDY34a8bsb4/cWFzEYyYDCJnTsSPKC/wtbdGiZP2O+hXQDn4hxRc8lZ6j0
+         J1ry3Cndmx5cuhAzSKgCxdKndfMbjZ7tNnbmObUHrWMvDos4Uk3qprhRZEJghCdUubYo
+         m2iKMaYL25Nknl4fj3i788bd/yT0XxNy2vGsimfA/Maa+VHkZ/QW5l4Jnyy4hOCrZT3p
+         raXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748564880; x=1749169680;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2ZeTMWwGKuZb2rDfhOGtyMx2xjHvnDVOhwHavRdrdQI=;
+        b=mpl2fWWl8dlAOw8haCTSn2rLFyCxTgYpZOXO1lrtnc2fXIZAJkl38j1FGOA6FutWXK
+         9+VdFJOhiT4hBlVxfy/WxTwRa7gIlTZwPu9Pmsu02aleejo7Bh1LZO/7qdg081CJlVx0
+         763D62gHF/GZ33u6PlZ7nxapMliJYFEfaT7DdYWOebR4bnec/O/Q/sXaBmH/Cp/1Nt3h
+         Stt8Mj9fsZgRSMOUm3jEIcI7PTiuSLizD/nu+sJzFh6M17cWzq6IqH9yqIbXWeEZpx8T
+         Mf1NK8LAvllh6EMvIhXX2H+ErzamE+Gu6NVcYZc0i0qNexMSXcOGOgiiMR7Ddnkrp9qH
+         Sk6A==
+X-Forwarded-Encrypted: i=1; AJvYcCWHgPNRC6bKTHnXIotFSEfbkEOvkBABDoiovSX6TUwts+LmPuUIujHoTVKOyHGiFTcbS5ENY7fXSiWjgA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzd+oQIwR/UQC3kPHvBpN8mKrHwxHLE7TXTVoeki6wJQ3YYeU+C
+	IvGiyeYN7mfr8ol5Gbsrt/qq/h1tAT1uQJEgMpY6E51a9U1b+piZKlbJRqwrjzP/jeOWeM4t90d
+	7ScX7
+X-Gm-Gg: ASbGnctsYJtjgo3PmbqDfdeLYjW2Ndi/LozWlPPfULy2NKXj+Dz2hulRG4DTfLw1DQK
+	iGI6nPnrDgUDpxvss1k0KXu99c/xTUhQgvP8VCMcc+SD7n5Aq99L+6wRgVg5yQYHJHU3pyg3KUo
+	Q3YSx7sM0Ww3k0dHrPZwyLWuJziCEc/eKwFqUJIYW9T6xftkrKmFs9J7WlZvqiwjyij5SmOPUdj
+	ALuQlEvpRfprS8mKQkGwGJ0mKzc/hlbZwUotzeYwg3YsVNnAcg9km9NqXbsKSzOdtNtoXEumL/x
+	28WByBfPEnG7J1IIkE8V6/8W64nwrNdxE9p17eTDp7EyqQJPZ79QixIm+kgBRqlPlF8LA1aLLdX
+	dZcg=
+X-Google-Smtp-Source: AGHT+IHDdZkJE4aEREjGyanNCwBldB2/Hhan2SCWuUFO7i4LEAzELs7dMoxLcGHPD/JhVryTpdhrcA==
+X-Received: by 2002:a05:6000:2485:b0:3a4:f52d:8b05 with SMTP id ffacd0b85a97d-3a4f89d354cmr167403f8f.35.1748564879766;
+        Thu, 29 May 2025 17:27:59 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3124e3221a4sm115253a91.42.2025.05.29.17.27.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 May 2025 17:27:59 -0700 (PDT)
+Message-ID: <b407459f-5c9b-49e8-ab77-07768cb30783@suse.com>
+Date: Fri, 30 May 2025 09:57:44 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -51,82 +84,52 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 00/10] btrfs: new performance-based chunk allocation
- using device roles
-To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <cover.1747070147.git.anand.jain@oracle.com>
+Subject: Re: Why does defragmenting break reflinks?
+To: =?UTF-8?B?8J2VjfCdlZbwnZWd8J2VoPCdlZTwnZWa8J2Vl/CdlarwnZWW8J2Vow==?=
+ <velocifyer@velocifyer.com>, linux-btrfs@vger.kernel.org
+References: <9d74d71f-b65d-4f06-adb3-18f7698edb8a@velocifyer.com>
 Content-Language: en-US
-From: Jani Partanen <jiipee@sotapeli.fi>
-Autocrypt: addr=jiipee@sotapeli.fi; keydata=
- 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
-In-Reply-To: <cover.1747070147.git.anand.jain@oracle.com>
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <9d74d71f-b65d-4f06-adb3-18f7698edb8a@velocifyer.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 8bit
 
-On 12/05/2025 21.07, Anand Jain wrote:
-> In host hardware, devices can have different speeds. Generally, faster
-> devices come with lesser capacity while slower devices come with larger
-> capacity. A typical configuration would expect that:
->
->   - A filesystem's read/write performance is evenly distributed on average
->   across the entire filesystem. This is not achievable with the current
->   allocation method because chunks are allocated based only on device free
->   space.
->
->   - Typically, faster devices are assigned to metadata chunk allocations
->   while slower devices are assigned to data chunk allocations.
 
-Now if this could be expanded to allow tagging fast drives as 
-write-cache, example I would add 256GB nvme drives or partitions as 
-write-cache so even with HDD's as main data storage, I would get very 
-fast writing.
 
-Ofcourse cache would need some task to empty it after x time or it would 
-have not much use. This is currently issue with lvm caching. There is 2 
-type of caches, one is for read/write but when cache is full, it has not 
-much help for writes anymore because it filled with read cache. Another 
-is just write-cache.
+在 2025/5/30 09:22, 𝕍𝕖𝕝𝕠𝕔𝕚𝕗𝕪𝕖𝕣 写道:
+> BTRFS-FILESYSTEM(8) says "defragmenting  with  Linux kernel versions < 
+> 3.9 or ≥ 3.14-rc2 as well as with Linux stable kernel versions ≥ 
+> 3.10.31, ≥ 3.12.12 or ≥ 3.13.4 will break up the reflinks of COW data 
+> (for example files copied with cp --reflink, snapshots or de-duplicated 
+> data)." Why does defragmenting not preserve reflinks and why was it 
+> removed?
+> 
 
+Defrag means to re-dirty the data, and write them back again, which will 
+cause COW.
+And by nature this breaks reflinked data extents.
 
