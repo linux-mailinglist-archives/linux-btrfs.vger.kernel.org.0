@@ -1,157 +1,191 @@
-Return-Path: <linux-btrfs+bounces-14341-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14342-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD7F4AC965A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 22:08:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5680AC97B2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 31 May 2025 00:24:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 798963B408E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 20:07:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED8DD16B5FA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 22:24:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CABD5280CE5;
-	Fri, 30 May 2025 20:07:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BF427A454;
+	Fri, 30 May 2025 22:23:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ki10m+UO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XVMbYQ/1";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2roUrlgT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ecmANkgv"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BW4fZCmr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6142367CA
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 20:07:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79BB5221573
+	for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 22:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748635678; cv=none; b=SBU3RIAB8COlwMckKS7sqMhb762XHCtqszgGn3rC5Wb7SbQkQCq5veCf88+hch8fohcPh7GTk54u7UVYpHsEGDzU8x1/EEgaI5xX+D2cC+dUxFVAsMKu9xOQJFwMcAB60ss72aVxi0OTrZoVbP1X3B0Bu1+Wa49Ty5eci7HaXBs=
+	t=1748643838; cv=none; b=IB8OjkJvzXNe8NvfYdQ/7eiTBay38fAAt4ClMEXib4DFy1Qcs8g1ZkG0FBqE3ekeL/l6WOpps9znFs8AavkfZZTQb+eyfgj6L2bijahvFhIZRuJSALEQ/b/IkBkc47Q/Exspvblq/ZEaOg36Ouo7ZQQ0dNnj8fixxqdhJc4Ng6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748635678; c=relaxed/simple;
-	bh=p+da9L8oykvz2EClzTkerZNsMeSS1I3D4FTbrRjkZkQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xdf71LdN6FD+Ftr17IwBZ8Kd5+pOcorm++8ZcYzl3JTW+FNxkNzYfFaxHQIPhx1InKazni4Wk4nmXC9b/1/LbdNDM2u3ZCXLZ284zUufiVSX6d6kmKtec7sDed7oP9+vJqRTMXqwGNkJUcyUhG0UCsIGw/n/lt3sqcbFhD7R5g0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ki10m+UO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XVMbYQ/1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2roUrlgT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ecmANkgv; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7F6F91F46E;
-	Fri, 30 May 2025 20:07:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748635673;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/mFQKx+WuP5uz1EoCQYWZziS7JLdZh6u4Lx2TfYE/c8=;
-	b=Ki10m+UObHLk7qHko28i3eMuyuxGl0iqlkAdnoar67lYL9AbcxxSfsB+lz9ucV4OISe2Ch
-	V6hpbjOFnT7buoJ4iD0XRZpQLVJwDCnUcpT1TB3b36JWwiTeUwPG6akwhRkNz/hlwOnBGy
-	a3F2GWh3x13/nCLroGQEhdumpASnJ10=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748635673;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/mFQKx+WuP5uz1EoCQYWZziS7JLdZh6u4Lx2TfYE/c8=;
-	b=XVMbYQ/1cNld1bS4Ce0CGOoyZj+2ntE/089tbFm+Xqb4AxmPM5GkrdFEDDvaqwSTBqyfMz
-	AhGb6M2v7SgQ9cCQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2roUrlgT;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ecmANkgv
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748635672;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/mFQKx+WuP5uz1EoCQYWZziS7JLdZh6u4Lx2TfYE/c8=;
-	b=2roUrlgTs70ayLL0Fnul1LIKIohuRu1GI82TiSdJOOt710kfdmv/a4cWAxSm6POgDS2jRP
-	EW97ZzEq6CRZIdICcMeukZvS3sseCTvtBWIvMY+HEZFHIC8K9fuIiur1R1P77vhb2SjwSj
-	JscdkCTJRmNzDo+xuAHSuF6AEFkQs9w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748635672;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/mFQKx+WuP5uz1EoCQYWZziS7JLdZh6u4Lx2TfYE/c8=;
-	b=ecmANkgvkhClMAoOPJutOvurQLoafp95h7QS97hN9fFsG/sTKSbfI2g8nzxftgy5rYays/
-	AmAWF1orfeCRR+Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6CEED13889;
-	Fri, 30 May 2025 20:07:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Vp0VGhgQOmjkJQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 30 May 2025 20:07:52 +0000
-Date: Fri, 30 May 2025 22:07:46 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/9] btrfs-progs: convert: fix a long bug that bgt
- feature never works
-Message-ID: <20250530200746.GB4037@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1748049973.git.wqu@suse.com>
+	s=arc-20240116; t=1748643838; c=relaxed/simple;
+	bh=85pP7tcRGSDPJmSueZpF/MKmxAY2IiuoP3TPdyZFqKE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=czwTJEzKiVhu+1krs8cDJ1+KcbQrkv/cHFPyhKRZ4Stw4K2B2fFWmgomhCi7JhdcuImcl003JEg6x3ir3bL/BzYCd4tH2mJlHKEJIAbIEtakaBXcgyNPbU1uM125GA9R0+ZLBL9X2tADBXi/vRcayN2/yqq+DBvSvDd6IJKKLfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BW4fZCmr; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-442e9c00bf4so15901935e9.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 15:23:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1748643834; x=1749248634; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=RqDJGzyob/tBt6i9jmUQdrVONRk4zMfA/Z04HgjJ/S0=;
+        b=BW4fZCmrUtgNVKJdzU86BoCcE522mWlRWzjXD/wcjNDklB7eXFAB/WhlqSny5a8PSw
+         BqZE03N2EBwJ2mns/+tBFKrfBrFSVM231fPbhqajLhLhuN6tRtXn2ZL/3gj1nlyunF3O
+         Ms4KcqKAwOlC+tdEik0UevQw7lR1KligyzBhYnsOtBn41sFblbFd0tyBiJi5tXWtb52m
+         wkuacR9jr6d8u1CthN/nltsIJkN5kEuqE0QqKkNL9R72ogs5wUtJtPa7SKVtFA0gow1k
+         QzF5gRyJEvxBRJ6PQfSAOQgk+mXPjVgKLvSUwkOsjPihUg8ATnkF8umeIHqO5fqa/QS5
+         Jd5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748643834; x=1749248634;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RqDJGzyob/tBt6i9jmUQdrVONRk4zMfA/Z04HgjJ/S0=;
+        b=VEC+Ev5+x0XpENRsafiNAdMxJnLcixvpMXaC7fGB7XEUAKqflRhlI2i1cQbIqQLohk
+         8e/Gh7MLOe/OXegQ7pMeDwm+KFhr5g6MD/n+IiKgpkSvSmy+iHUW8vxmt8aeuxYuuffL
+         KYkbHkUVQN89HwtM6m9MeLciSeN4If+MT4hvtskOpst7NHlSRyD4QymA6YnElG7vZJ9v
+         dm2Ubo2689oPGwBT/EktDYlMP3dnMc10V0nlu1oiD8doSbJ3rCbDWetPegpoVkHlmIsX
+         UpFV8vjwpbN9by83jh+BOsVRruizjBWISVo2xX+gyKGDx+FIcTSWV6f4yMpsdR+AyNC+
+         qndA==
+X-Gm-Message-State: AOJu0Yx0lZSQ151OypecO6mj2h27XPdgJxLRTY2mhzJLWwotmRzfN0ns
+	AWjwJp7wE2NWwNM8xb/gTk2w7cxmcY3OnBk2OLVokiR779jkzG3hl0GtwTWPbtpxWts=
+X-Gm-Gg: ASbGncsE4jW7CdmWBNKHhEMQzMYgAhBouU9Nq9tZXLczzS7hM9eTscNfmAaDvedVcuW
+	R692X16IMqogKzWLJ3TEnHG2rvovyfEpBV3L8GkWuDx8056juSk/RXDaVgxIDQ0ICADKA0hl3bQ
+	eOS2xNvne1DHq0wqpWFqH8XIOWq0pp0jkz4ALYKyzfnrfMSc6au4oYsUpYGRWoO+iZuKSLzCdlx
+	Jd0Iq2Vo3LaCPxGajpbP3z6h7ghYpmPbEtilXxkX8UvJqP4Z9pmkffw1wbv0rrIlFL5/ZgZt6nk
+	hsQXq7LKzln1FJ0WA2c1zpAC7xe/yJ8nZQbfL3MOsfVL8YqQAejkuuqYJEZbpWEJxPfl1aDTL8K
+	+5lI=
+X-Google-Smtp-Source: AGHT+IHwfNcPPpOP8cAu0djk4agnGBZdUpCc/E3pMhMz61frLmHJgpc41RH/ssYXfY7NyRNksUJaaA==
+X-Received: by 2002:a05:6000:1aca:b0:3a4:ef98:74f6 with SMTP id ffacd0b85a97d-3a4f89ad216mr3233000f8f.14.1748643833483;
+        Fri, 30 May 2025 15:23:53 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-747afeab820sm3626534b3a.60.2025.05.30.15.23.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 May 2025 15:23:52 -0700 (PDT)
+Message-ID: <8064a4e8-fd7e-4a14-b7c3-ddfd75359664@suse.com>
+Date: Sat, 31 May 2025 07:53:48 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1748049973.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 7F6F91F46E
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -4.21
-X-Spam-Level: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/6] btrfs-progs: fix-data-checksum: update csum items
+ to fix csum mismatch
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1747295965.git.wqu@suse.com>
+ <c78f6903cbb952acad86ac026dd597645d0af31b.1747295965.git.wqu@suse.com>
+ <20250530111945.GU4037@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20250530111945.GU4037@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat, May 24, 2025 at 11:38:05AM +0930, Qu Wenruo wrote:
-> There is a long bug that, "btrfs-convert -O bgt" doesn't create a fs
-> with bgt feature at all.
-> 
-> In fact "mkfs.btrfs -O bgt" is no different than "mkfs.btrfs -O ^bgt".
-> 
-> The root cause is explained and fixed in the second last patch.
-> 
-> The first 7 patches are mostly preparation and cleanup for properly
-> intorduce block group tree at temprory fs creation time.
 
-Thanks for fixing it, this escaped everybody. The cleanups done along
-the way are good.
+
+在 2025/5/30 20:49, David Sterba 写道:
+> On Thu, May 15, 2025 at 05:30:20PM +0930, Qu Wenruo wrote:
+>> +static int update_csum_item(struct btrfs_fs_info *fs_info, u64 logical,
+>> +			    unsigned int mirror)
+>> +{
+>> +	struct btrfs_trans_handle *trans;
+>> +	struct btrfs_root *csum_root = btrfs_csum_root(fs_info, logical);
+>> +	struct btrfs_path path = { 0 };
+>> +	struct btrfs_csum_item *citem;
+>> +	u64 read_len = fs_info->sectorsize;
+>> +	u8 csum[BTRFS_CSUM_SIZE] = { 0 };
+>> +	u8 *buf;
+>> +	int ret;
+>> +
+>> +	buf = malloc(fs_info->sectorsize);
+>> +	if (!buf)
+>> +		return -ENOMEM;
+> 
+> Not fixed, but the block buffers can be on stack as well if they're just
+> for the single function, the size is bounded.
+
+Unfortunately the sectorsize is still runtime determined, thus it can 
+not be on-stack.
+
+Thanks,
+Qu>
+>> +	ret = read_data_from_disk(fs_info, buf, logical, &read_len, mirror);
+>> +	if (ret < 0) {
+>> +		errno = -ret;
+>> +		error("failed to read block at logical %llu mirror %u: %m",
+>> +			logical, mirror);
+>> +		goto out;
+>> +	}
+>> +	trans = btrfs_start_transaction(csum_root, 1);
+>> +	if (IS_ERR(trans)) {
+>> +		ret = PTR_ERR(trans);
+>> +		errno = -ret;
+>> +		error_msg(ERROR_MSG_START_TRANS, "%m");
+>> +		goto out;
+>> +	}
+>> +	citem = btrfs_lookup_csum(trans, csum_root, &path, logical,
+>> +				  BTRFS_EXTENT_CSUM_OBJECTID, fs_info->csum_type, 1);
+>> +	if (IS_ERR(citem)) {
+>> +		ret = PTR_ERR(citem);
+>> +		errno = -ret;
+>> +		error("failed to find csum item for logical %llu: $m", logical);
+>> +		btrfs_abort_transaction(trans, ret);
+>> +		goto out;
+>> +	}
+>> +	btrfs_csum_data(fs_info, fs_info->csum_type, buf, csum, fs_info->sectorsize);
+>> +	write_extent_buffer(path.nodes[0], csum, (unsigned long)citem, fs_info->csum_size);
+>> +	btrfs_release_path(&path);
+>> +	ret = btrfs_commit_transaction(trans, csum_root);
+>> +	if (ret < 0) {
+>> +		errno = -ret;
+>> +		error_msg(ERROR_MSG_COMMIT_TRANS, "%m");
+>> +	}
+>> +	printf("Csum item for logical %llu updated using data from mirror %u\n",
+>> +		logical, mirror);
+>> +out:
+>> +	free(buf);
+>> +	btrfs_release_path(&path);
+>> +	return ret;
+>>   }
+>>   
+>>   static void report_corrupted_blocks(struct btrfs_fs_info *fs_info,
+
 
