@@ -1,155 +1,168 @@
-Return-Path: <linux-btrfs+bounces-14343-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14344-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4039AC97D0
-	for <lists+linux-btrfs@lfdr.de>; Sat, 31 May 2025 00:42:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8009AC97DB
+	for <lists+linux-btrfs@lfdr.de>; Sat, 31 May 2025 00:53:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3D90504CA4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 22:42:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD21D3BE4FC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 22:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFA0A2882A2;
-	Fri, 30 May 2025 22:42:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39E0B230D1E;
+	Fri, 30 May 2025 22:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=velocifyer.com header.i=@velocifyer.com header.b="dWkUKMhL"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KtlxAReD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913DD2222C2
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 22:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3B3F283CA2
+	for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 22:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748644927; cv=none; b=BgSYJHXuy12Vu2CpPmecAcrPfUGiW+Xnm1pRUwhqHVZzxB5+hQtgtSmVo15vif/FA8KEVgXtiCYld9v1+mxPLTZAd1dVu2tIcki/2z6I+zaQJ5ilWjmrhbHtM9RDLEzRibLf2M1fdHEAkwOxc11Km2/mSAU5+04YO78d6iaILQM=
+	t=1748645625; cv=none; b=HKVLLOoecBE9on+ZBJmmTr4TnBA/wtUkRaCdGnPUxymEefOfJM+InmHHs52URxnAI2EOaPf5kjiSGj6nLE+4KLWsDQg6yKxLMWk290c57OyoNmLpSKAp9GGVTKRq7PhDCN6AJyf5jVu6/4LobvQE+oLa84d3Ggl85etDOar/T8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748644927; c=relaxed/simple;
-	bh=mYe5iMU86irkYVNCD9IxWI7fUn6BtvHm6PspFVg8qAg=;
+	s=arc-20240116; t=1748645625; c=relaxed/simple;
+	bh=9M2aUk21zpyaB5+qPXvp8o7feeiSnkIwk4U6HwlAQdc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=L3RVO2rrAlB6bQk8He27/BqXSvVcc6G+wqN1ZlmCaOK0fNbKIR5wJIcT6vo4pdbcB8vf6rdVGlU6Jc/FnR8KyMw7aVh1+vKzx2boAmvtaEpLUJ2Gd4j0sxTIgWmmToF7WWbK45OS8Xhj/RQF13qtMwh7XV+n+e3k1Dn9Ctiy4bw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=velocifyer.com; spf=pass smtp.mailfrom=velocifyer.com; dkim=pass (2048-bit key) header.d=velocifyer.com header.i=@velocifyer.com header.b=dWkUKMhL; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=velocifyer.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=velocifyer.com
-Message-ID: <a1c1a92b-79b7-4032-a967-57d17d0e2026@velocifyer.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=velocifyer.com;
-	s=key1; t=1748644920;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=mYe5iMU86irkYVNCD9IxWI7fUn6BtvHm6PspFVg8qAg=;
-	b=dWkUKMhLGMxgx4PXSWIiiLwjAUbkmGHDz694KTD5cd0nesUkOe1escTSgLNTzaNVBOlxW5
-	JSl4ZxJdT9ItaYW1hHvNRSQLTo5uMHxoJdpPpGI4oH/ysWts2ELbOBxy86iAD5+kJVs7y9
-	zNdxiGcOaDS3yelJ7Kf7P/GirZMYs1zrRE/fS364y0aNdY8qkRY05vWy76Z5GoG2UdcPWW
-	X5wxeUD1QDox8zFhsvy6gaEoo78t5hu8IBsWsIt4QScUCJwojfK9hJgzt5kwVGutpK1lcX
-	rvdt1K6BsZjI/Rr3gfKI21mNDAWYz9wSUHmz8ekbXV6ri7ih8rR8zbPQ4auDWw==
-Date: Fri, 30 May 2025 18:41:55 -0400
+	 In-Reply-To:Content-Type; b=UblXslQzWfuY2U+larLT8ye5Ech4WC/155Jau0zlZMhe26Xn3/dj4oFIWcbRisZS89PPKLtKOq3N2wAOi25YO+sPaFNqPRpDKy30T9zHm1hHvCqwLmiFUzw/CJqW+5COXD5n1a0SMILUBs5+1WJTtqddk/jI0sNxKUhortKn3fY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KtlxAReD; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-43ea40a6e98so26050295e9.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 15:53:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1748645621; x=1749250421; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=lUBFXK1IoWHq6cn3mtZgmEtB8Wbr6W/AwdAsknpYAg4=;
+        b=KtlxAReDNYr+D0PtmlQ3FV14cG/N0yHcwN6A//GQViDeHFmpPR4KiPUisOha85d9xr
+         +kZIsgmb9qFlQQ+04h8+ZQomLDTV64nlsNgRa9K5EciTVk1rSw4MsU3+KBEQUs+7jTu5
+         q/ekSXGQFMywt9fL7ePRAHcE+BDJIyQn6o3CtXaoz7gUz0j3ElAi2AbiV9ypG60MNZgg
+         KAhGI4m2EPIZwshcUPg9g41RgFB+3wyRCkiXr00+sixxKVaFcDTjXogirAxtJnAPWQF6
+         zt+MiWMLc841yfiHFsVvdrSe4v1a3ATg5t5fh+FlQ86cSIQCqlva/avgvqfU0bbxIG/q
+         x9EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748645621; x=1749250421;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lUBFXK1IoWHq6cn3mtZgmEtB8Wbr6W/AwdAsknpYAg4=;
+        b=YY/uMAR82kJGehZEUgj0r6XVf2BqJZSxXmn3Ib/LjeBr4cvqJluBfo6TMsK/q3F1xd
+         YaRJU3mJkSfHIdLLZjYuWPdgrd5oXPR+kXvvDsjY6DVf3HOXaxEhwDZGZSWdNPoKcxrH
+         0ushraHJ/2M/LU318J6aRlN40lsMmhXcG4r6etap024NUY8o1oLqREYOODyjX7dmAnEo
+         Vh8ivqLdbBXSbvyz3sKTboMhI5Jggx5ENQ4tOzrQSc/5hIpDsGaavQdELlPgIzSEcdWK
+         lK6vZqSUgjQLWI3MfSWBPPxcSKaWV87dS4wVsoO+uGJEDuJOmOQav7m1MVb3nYq480N4
+         hdng==
+X-Forwarded-Encrypted: i=1; AJvYcCXOOxWD6/68li+sfHRTnDOyaTnRGj+JdwsBheYZkHYjR7Q2WrPuk3oJd2/+ERC0X9ETDOXA0TPw49qesw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6CwwcecuBA/Au3Wti1QsPOq7ZuClFX40lT6GzdTGEYHYH7U5j
+	meb5QaDOh1sgD1wpenMGLYykk+e5HCvMXsIni8Xs1BEfBYro/bu3OFR6V83wywnrLLJtXrqqDz8
+	vxPW1
+X-Gm-Gg: ASbGnctA7kDsCjakbywmEO5BmLGwaGo16mnU3oUzZ9Szhs/xK8d3dwiUjRhhpRT8iZN
+	A+ndO0hQ+WaEek8ozZfMPYRNBVtkh6fZeKtapUOODt7Foko0tyzzXDSNyYvPBu0L5wrXNhxmTEp
+	F0BX7xKutUnMnAveh0AV4hXpceLWF4MpJohE53nrJC/upDGzyJb48JjC4AIqWm84f2f5/+1nzF1
+	pKIhOb9K+ZLPichC6CRLNeuWlLO+ceY43W180zIrcYKyjWzhLtd9/tRp2cTizLH50YDuXd0/zSZ
+	MWoF10idGCDE8767vC4Vh7jWdqch5Fj8byCgmW7S6+zlKo4DUjFZZjFT74Kh5e41bQJqm52A9lG
+	0kvmWHCA/OltBtw==
+X-Google-Smtp-Source: AGHT+IFqY2VAe0zTQV6b0zbtQB4cG6fDD+kRJCDygCay43VxEbKpBHiNjuFlO+pF9Lc/gg6ATmEziQ==
+X-Received: by 2002:a5d:6f18:0:b0:3a4:f892:de86 with SMTP id ffacd0b85a97d-3a4f892df7cmr2721331f8f.33.1748645620640;
+        Fri, 30 May 2025 15:53:40 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-747affcf84asm3650546b3a.130.2025.05.30.15.53.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 May 2025 15:53:40 -0700 (PDT)
+Message-ID: <0b95e062-8f11-48c9-86c7-d6a74390cf9a@suse.com>
+Date: Sat, 31 May 2025 08:23:36 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: Why does defragmenting break reflinks?
-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+To: =?UTF-8?B?8J2VjfCdlZbwnZWd8J2VoPCdlZTwnZWa8J2Vl/CdlarwnZWW8J2Vow==?=
+ <velocifyer@velocifyer.com>, linux-btrfs@vger.kernel.org
 References: <9d74d71f-b65d-4f06-adb3-18f7698edb8a@velocifyer.com>
  <b407459f-5c9b-49e8-ab77-07768cb30783@suse.com>
+ <3eabd123-e2a8-4554-b57b-0c84b713cd10@velocifyer.com>
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: =?UTF-8?B?8J2VjfCdlZbwnZWd8J2VoPCdlZTwnZWa8J2Vl/CdlarwnZWW8J2Vow==?=
- <velocifyer@velocifyer.com>
-Autocrypt: addr=velocifyer@velocifyer.com; keydata=
- xjMEaCpEhBYJKwYBBAHaRw8BAQdAZBZWSN4ekixMHE7duMBmw/2uteCfmp68D/mxaYk/dyrN
- JlZlbG9jaWZ5ZXIgPHZlbG9jaWZ5ZXJAdmVsb2NpZnllci5jb20+wo8EExYIADcWIQQboPxL
- gODyGwJpjO5jTr+HQMdIvgUCaCpEhAUJBaOagAIbAwQLCQgHBRUICQoLBRYCAwEAAAoJEGNO
- v4dAx0i+HU8BAJGd99DA1VdBzcYgch16XK7mC78ZqEwGegVCRerWry8RAQC3MJUOiyQ062Ol
- /3iNXY6zk2QXaAsV8eUbFKUo1HiwAs44BGgqRIUSCisGAQQBl1UBBQEBB0CEoaVGilG8Qt/y
- Xp135G4fhWjJH7VQkPIFo8/MsZspfwMBCAfCfgQYFggAJhYhBBug/EuA4PIbAmmM7mNOv4dA
- x0i+BQJoKkSFBQkFo5qAAhsMAAoJEGNOv4dAx0i+yNYBAKcE1fbRCPqWwsIpRvOjSq9Spvhl
- veEFpUMPaQ1tp7qOAPkBfZroJ8veENH/8sz+Gf/QK6O1kcqC4d/vAASzMpOiAQ==
-In-Reply-To: <b407459f-5c9b-49e8-ab77-07768cb30783@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------JxPMq29G8N1nNGUBrs4cpdTn"
-X-Migadu-Flow: FLOW_OUT
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------JxPMq29G8N1nNGUBrs4cpdTn
-Content-Type: multipart/mixed; boundary="------------On8ZGygTr6d0sY3kP4IxKwxS";
- protected-headers="v1"
-From: =?UTF-8?B?8J2VjfCdlZbwnZWd8J2VoPCdlZTwnZWa8J2Vl/CdlarwnZWW8J2Vow==?=
- <velocifyer@velocifyer.com>
-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Message-ID: <a1c1a92b-79b7-4032-a967-57d17d0e2026@velocifyer.com>
-Subject: Re: Why does defragmenting break reflinks?
-References: <9d74d71f-b65d-4f06-adb3-18f7698edb8a@velocifyer.com>
- <b407459f-5c9b-49e8-ab77-07768cb30783@suse.com>
-In-Reply-To: <b407459f-5c9b-49e8-ab77-07768cb30783@suse.com>
-
---------------On8ZGygTr6d0sY3kP4IxKwxS
-Content-Type: multipart/mixed; boundary="------------98u8KvuOnK5YCokwggMegDdO"
-
---------------98u8KvuOnK5YCokwggMegDdO
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <3eabd123-e2a8-4554-b57b-0c84b713cd10@velocifyer.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 
-T24gNS8yOS8yNSAyMDoyNywgUXUgV2VucnVvIHdyb3RlOg0KPg0KPg0KPiDlnKggMjAyNS81
-LzMwIDA5OjIyLCDwnZWN8J2VlvCdlZ3wnZWg8J2VlPCdlZrwnZWX8J2VqvCdlZbwnZWjIOWG
-memBkzoNCj4+IEJUUkZTLUZJTEVTWVNURU0oOCkgc2F5cyAiZGVmcmFnbWVudGluZyB3aXRo
-wqAgTGludXgga2VybmVsIHZlcnNpb25zIDwgDQo+PiAzLjkgb3Ig4omlIDMuMTQtcmMyIGFz
-IHdlbGwgYXMgd2l0aCBMaW51eCBzdGFibGUga2VybmVsIHZlcnNpb25zIOKJpSANCj4+IDMu
-MTAuMzEsIOKJpSAzLjEyLjEyIG9yIOKJpSAzLjEzLjQgd2lsbCBicmVhayB1cCB0aGUgcmVm
-bGlua3Mgb2YgQ09XIGRhdGEgDQo+PiAoZm9yIGV4YW1wbGUgZmlsZXMgY29waWVkIHdpdGgg
-Y3AgLS1yZWZsaW5rLCBzbmFwc2hvdHMgb3IgDQo+PiBkZS1kdXBsaWNhdGVkIGRhdGEpLiIg
-V2h5IGRvZXMgZGVmcmFnbWVudGluZyBub3QgcHJlc2VydmUgcmVmbGlua3MgDQo+PiBhbmQg
-d2h5IHdhcyBpdCByZW1vdmVkPw0KPj4NCj4NCj4gRGVmcmFnIG1lYW5zIHRvIHJlLWRpcnR5
-IHRoZSBkYXRhLCBhbmQgd3JpdGUgdGhlbSBiYWNrIGFnYWluLCB3aGljaCANCj4gd2lsbCBj
-YXVzZSBDT1cuDQo+IEFuZCBieSBuYXR1cmUgdGhpcyBicmVha3MgcmVmbGlua2VkIGRhdGEg
-ZXh0ZW50cy4NCg0KQnV0IHdoeSBkaWQgaXQgcHJldml1c2x5IG5vdCBicmVhayByZWZsaW5r
-cz8NCg0KLS0gDQpHZW9yZ2UgdHJ1bHksIPCdlY3wnZWW8J2VnfCdlaDwnZWU8J2VmvCdlZfw
-nZWq8J2VlvCdlaMgSW1wcm92ZSB5b3VyIHdpZmkgcmVjZXB0aW9uIGZvciBmcmVlIA0KPGh0
-dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9TFk4V2k3WFJYQ0E+SG9tZSBhbG9uZSBh
-bnklIHdvcmxkIA0KPGh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9SU1zdEZJS1pM
-cEk+cmVjb3JkIHNldCBieSANCvCdlY3wnZWW8J2VnfCdlaDwnZWU8J2VmvCdlZfwnZWq8J2V
-lvCdlaMgDQo8aHR0cHM6Ly93d3cuc3BlZWRydW4uY29tL2hvbWVfYWxvbmVfbmVzL3J1bnMv
-enBrcTk3OHk+IFRoaXMgZW1haWwgZG9lcyANCm5vdCBjb25zdGl0dXRlIGEgbGVnYWxseSBi
-aW5kaW5nIGNvbnRyYWN0DQo=
---------------98u8KvuOnK5YCokwggMegDdO
-Content-Type: application/pgp-keys; name="OpenPGP_0x634EBF8740C748BE.asc"
-Content-Disposition: attachment; filename="OpenPGP_0x634EBF8740C748BE.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
 
------BEGIN PGP PUBLIC KEY BLOCK-----
 
-xjMEaCpEhBYJKwYBBAHaRw8BAQdAZBZWSN4ekixMHE7duMBmw/2uteCfmp68D/mx
-aYk/dyrNJlZlbG9jaWZ5ZXIgPHZlbG9jaWZ5ZXJAdmVsb2NpZnllci5jb20+wo8E
-ExYIADcWIQQboPxLgODyGwJpjO5jTr+HQMdIvgUCaCpEhAUJBaOagAIbAwQLCQgH
-BRUICQoLBRYCAwEAAAoJEGNOv4dAx0i+HU8BAJGd99DA1VdBzcYgch16XK7mC78Z
-qEwGegVCRerWry8RAQC3MJUOiyQ062Ol/3iNXY6zk2QXaAsV8eUbFKUo1HiwAs44
-BGgqRIUSCisGAQQBl1UBBQEBB0CEoaVGilG8Qt/yXp135G4fhWjJH7VQkPIFo8/M
-sZspfwMBCAfCfgQYFggAJhYhBBug/EuA4PIbAmmM7mNOv4dAx0i+BQJoKkSFBQkF
-o5qAAhsMAAoJEGNOv4dAx0i+yNYBAKcE1fbRCPqWwsIpRvOjSq9SpvhlveEFpUMP
-aQ1tp7qOAPkBfZroJ8veENH/8sz+Gf/QK6O1kcqC4d/vAASzMpOiAQ=3D=3D
-=3DtVgn
------END PGP PUBLIC KEY BLOCK-----
+在 2025/5/31 08:09, 𝕍𝕖𝕝𝕠𝕔𝕚𝕗𝕪𝕖𝕣 写道:
+> On 5/29/25 20:27, Qu Wenruo wrote:
+>>
+>>
+>> 在 2025/5/30 09:22, 𝕍𝕖𝕝𝕠𝕔𝕚𝕗𝕪𝕖𝕣 写道:
+>>> BTRFS-FILESYSTEM(8) says "defragmenting with  Linux kernel versions < 
+>>> 3.9 or ≥ 3.14-rc2 as well as with Linux stable kernel versions ≥ 
+>>> 3.10.31, ≥ 3.12.12 or ≥ 3.13.4 will break up the reflinks of COW data 
+>>> (for example files copied with cp --reflink, snapshots or de- 
+>>> duplicated data)." Why does defragmenting not preserve reflinks and 
+>>> why was it removed?
+>>>
+>>
+>> Defrag means to re-dirty the data, and write them back again, which 
+>> will cause COW.
+>> And by nature this breaks reflinked data extents.
+> 
+> But why did it not break reflinks previusly?
 
---------------98u8KvuOnK5YCokwggMegDdO--
+It looks like it's technical difficulties.
 
---------------On8ZGygTr6d0sY3kP4IxKwxS--
+The commit is 8101c8dbf624 ("Btrfs: disable snapshot aware defrag for now").
 
---------------JxPMq29G8N1nNGUBrs4cpdTn
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+I do not have all the details, but at least a quick glance already shows 
+that the old detection is not taking reflink into consideration.
+It only considers snapshot, but reflink can happen within a single 
+subvolume, or between subvolumes (not snapshot).
 
------BEGIN PGP SIGNATURE-----
+So the old method is not reliable in the first place.
 
-wnsEABYIACMWIQQboPxLgODyGwJpjO5jTr+HQMdIvgUCaDo0MwUDAAAAAAAKCRBjTr+HQMdIvpKW
-AP9ThG04700xtEaIR+n7xjQTXRwOm9t5+1mRlPZ0Rh6kCgD+J5jEmiU8V7ynYfNtap2hwBeG77vs
-UpvwejGKKmDNsAE=
-=P1g2
------END PGP SIGNATURE-----
+Thanks,
+Qu
 
---------------JxPMq29G8N1nNGUBrs4cpdTn--
+
+
+> 
+> -- 
+> George truly, 𝕍𝕖𝕝𝕠𝕔𝕚𝕗𝕪𝕖𝕣 Improve your wifi reception for free <https:// 
+> www.youtube.com/watch?v=LY8Wi7XRXCA>Home alone any% world <https:// 
+> www.youtube.com/watch?v=IMstFIKZLpI>record set by 𝕍𝕖𝕝𝕠𝕔𝕚𝕗𝕪𝕖𝕣 <https:// 
+> www.speedrun.com/home_alone_nes/runs/zpkq978y> This email does not 
+> constitute a legally binding contract
+
 
