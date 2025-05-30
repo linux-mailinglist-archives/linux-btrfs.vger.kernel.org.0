@@ -1,99 +1,102 @@
-Return-Path: <linux-btrfs+bounces-14312-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14313-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61F2CAC8D08
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 13:37:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81EFFAC903C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 15:33:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09A271BA063A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 11:37:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B09BA175896
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 13:33:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9093E226193;
-	Fri, 30 May 2025 11:37:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B3A16132F;
+	Fri, 30 May 2025 13:33:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JlfyPnCI";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kSIexFGV";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JlfyPnCI";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kSIexFGV"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mmmraJgw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="D6gHar/V";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mmmraJgw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="D6gHar/V"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31795433D1
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 11:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C085C20326
+	for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 13:32:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748605029; cv=none; b=vFlWcMgTLTEGgZtGt0FsdNbgv0DFNKp4ivkv6/NeKfIDvwBbSE0Bab1orNgMBNJifCPsESEv9SsoHgtmocrEkQyVEFjLPGmVViYlcVKMhw42u026KWMa7Mavyym7GEke0Ye1ooTEYOpa5ck16AGpPPVCpVR6eXdKuvma6JSDD7A=
+	t=1748611980; cv=none; b=ovNYDL4VJ5B2vwmZ/s+OyQhHgccqUo4P0vh2yeRM9yepK+MqSp58NQelIOrWQv4fPmP1MmOffK89Hz7Nf1jyqDg7CVyfXLhYO5PU7jcnVdaZLff9DNsY1Zbf4qJEBxEbTjJZRXc5QHvha8PiPVQg+pcCfzAoBO9Z10gpWnFsFyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748605029; c=relaxed/simple;
-	bh=nKcfbpwxVwyyMY5so3XZeTVpjfzJoZgmcqaGxeY4SII=;
+	s=arc-20240116; t=1748611980; c=relaxed/simple;
+	bh=nrRSpI3znhXDAEMyqSonaMCwKe44E0Z4SNjZgelr468=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t4BRspYhuPqxX2cZ0G8ykxuQql7ZUoU5j2MCPET7JTXQU0J1pZU195FK35vg/IMIHovndeuc0u/h8EgcPU/6FcL44oeRWSHOLiHN+uxlGV1XgnUXbyRVRurEgOQv6gD4SofxdxfpQgSn4BjloE5bXR1AW1w1kxJ+9m/O+IkqPxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JlfyPnCI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kSIexFGV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JlfyPnCI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kSIexFGV; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=s2IzThaVRLZWQR/zARxue5tRHdEIVzKLenymaCQ7/pT43h49VQRMr+Ge0k5d/sEBQnStlR8Ceqz18lYMJn2OoqiR8WyHLXz9GwNa8Tw4FW2UddEYtuDhCHIdjdYkELCld2CdS9FNSkh/oWhv1QO9LPzoocXs1ggU2SQgcOhfEes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mmmraJgw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=D6gHar/V; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mmmraJgw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=D6gHar/V; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 64F3821A4E;
-	Fri, 30 May 2025 11:37:06 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 49CFE1F822;
+	Fri, 30 May 2025 13:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748605026;
+	t=1748611970;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mLSg+boR/c3rwL1TijuZEcOVjF4HlX4L7YB258o+To8=;
-	b=JlfyPnCIf/RDTYiw4INiJ2uGCzrTd6dn0M6s+XkeJg2vpQe+bKT77EYVQYK47KG9puq5xE
-	laJ3Uc8HxgEJvsz8jDn1PHK5VjCyNaaoe6YMksxXySH4eOeXzUs/9cs1OadWNpewTmK6ec
-	pfiMb1CRlBKCJRGTA4JdJ3HOyEQ18uk=
+	bh=gPWi/l0SGv8PPp8c7F+gSe8ZwWbQLl9rCk0KUjTsTKY=;
+	b=mmmraJgw8EL/6gYpiHnEYY6Kh84Ria7HDTUtlIKV8BEWFlurBJtLF/PdRoKqoCbodHZ2Lp
+	Cwe9nTAoTqkS7P24iR7KsWaYAOwXcyer2CmjiRrn8w5H3goOtB1cufz2dapD/L75YyajVg
+	ENgmkpzq8MG7rSmYmGItct8hXd8Nm3Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748605026;
+	s=susede2_ed25519; t=1748611970;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mLSg+boR/c3rwL1TijuZEcOVjF4HlX4L7YB258o+To8=;
-	b=kSIexFGVMK7pwzvV3ojAFt+U/BhuDd4TuSNlAmO6TntdsChdLKWWz+PABx5pC+6uv4qZ/f
-	DaPJmUfoogKNYFCA==
-Authentication-Results: smtp-out1.suse.de;
-	none
+	bh=gPWi/l0SGv8PPp8c7F+gSe8ZwWbQLl9rCk0KUjTsTKY=;
+	b=D6gHar/V6MeWxPD47D0lKVsNMN6/QlCyyao6h0MeaVtYhvT9Z4xqUmZy9By8Us5k2Wgeaa
+	h7c7zFF28hgvYiCA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=mmmraJgw;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="D6gHar/V"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748605026;
+	t=1748611970;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mLSg+boR/c3rwL1TijuZEcOVjF4HlX4L7YB258o+To8=;
-	b=JlfyPnCIf/RDTYiw4INiJ2uGCzrTd6dn0M6s+XkeJg2vpQe+bKT77EYVQYK47KG9puq5xE
-	laJ3Uc8HxgEJvsz8jDn1PHK5VjCyNaaoe6YMksxXySH4eOeXzUs/9cs1OadWNpewTmK6ec
-	pfiMb1CRlBKCJRGTA4JdJ3HOyEQ18uk=
+	bh=gPWi/l0SGv8PPp8c7F+gSe8ZwWbQLl9rCk0KUjTsTKY=;
+	b=mmmraJgw8EL/6gYpiHnEYY6Kh84Ria7HDTUtlIKV8BEWFlurBJtLF/PdRoKqoCbodHZ2Lp
+	Cwe9nTAoTqkS7P24iR7KsWaYAOwXcyer2CmjiRrn8w5H3goOtB1cufz2dapD/L75YyajVg
+	ENgmkpzq8MG7rSmYmGItct8hXd8Nm3Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748605026;
+	s=susede2_ed25519; t=1748611970;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mLSg+boR/c3rwL1TijuZEcOVjF4HlX4L7YB258o+To8=;
-	b=kSIexFGVMK7pwzvV3ojAFt+U/BhuDd4TuSNlAmO6TntdsChdLKWWz+PABx5pC+6uv4qZ/f
-	DaPJmUfoogKNYFCA==
+	bh=gPWi/l0SGv8PPp8c7F+gSe8ZwWbQLl9rCk0KUjTsTKY=;
+	b=D6gHar/V6MeWxPD47D0lKVsNMN6/QlCyyao6h0MeaVtYhvT9Z4xqUmZy9By8Us5k2Wgeaa
+	h7c7zFF28hgvYiCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4755A132D8;
-	Fri, 30 May 2025 11:37:06 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3BEFA13889;
+	Fri, 30 May 2025 13:32:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id XFfgEGKYOWjZFwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 30 May 2025 11:37:06 +0000
-Date: Fri, 30 May 2025 13:37:01 +0200
+	id wahtDoKzOWjmOAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 30 May 2025 13:32:50 +0000
+Date: Fri, 30 May 2025 15:32:48 +0200
 From: David Sterba <dsterba@suse.cz>
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs-progs: fix an old bug in lowmem mode
-Message-ID: <20250530113700.GW4037@twin.jikos.cz>
+Subject: Re: [PATCH 1/3] btrfs-progs: remove the unused fs_info parameter for
+ btrfs_csum_data()
+Message-ID: <20250530133248.GX4037@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1748503407.git.wqu@suse.com>
+References: <cover.1748232037.git.wqu@suse.com>
+ <c40ac545ab7da66339e9943dbad83409521d2347.1748232037.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -102,59 +105,57 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1748503407.git.wqu@suse.com>
+In-Reply-To: <c40ac545ab7da66339e9943dbad83409521d2347.1748232037.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.00 / 50.00];
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 49CFE1F822
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.21 / 50.00];
 	BAYES_HAM(-3.00)[99.99%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MX_GOOD(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[twin.jikos.cz:mid];
+	TO_DN_SOME(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:replyto]
+X-Spam-Score: -4.21
 X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
 
-On Thu, May 29, 2025 at 04:58:18PM +0930, Qu Wenruo wrote:
-> Inspired by Mark's recent enhanced super block dev item check against
-> chunk tree device item, it turns out there are several existing images
-> not passing the check.
+On Mon, May 26, 2025 at 01:32:35PM +0930, Qu Wenruo wrote:
+> The parameter @fs_info is not utilized at all, and there are already
+> several call sites passing NULL as @fs_info.
 > 
-> One of the check is fsck/020/keyed_data_ref_with_reloc_leaf.img, which
-> may be caused by some older kernels (the bug is already fixed a long
-> time ago).
+> And there is no counter-part in kernel (we use crypto_shash_* interface
+> instead), there is no need to keep the parameter list the same.
 > 
-> The first patch is to fix a lowmem mode check bug, that it doesn't
-> correctly account the keyed backref with shared backref.
-> 
-> This is exposed by the image from the next patch.
-> 
-> Then the last patch is to update the image with a proper note on how to
-> re-create it.
-> And the new image also acts as a regression test for the above lowmem
-> bug.
-> 
-> Please note this is not the last fsck image which has such problem,
-> fsck/057 is another one, and will be addressed in a dedicated patch.
-> 
-> Qu Wenruo (2):
->   btrfs-progs: check/lowmem: fix a false alert when counting the refs
->   btrfs-progs: fsck-tests: fix an image which has incorrect super dev
->     item
+> So just remove the unused parameter.
 
-Added to devel, thanks.
+This is a bit unfortunate, I need to fs_info parameter for checksumming
+functions for the authenticated hashes, I have a prototype and work on
+it in spare time.
+
+I'll probably apply this cleanup as I don't have ETA for the other
+patchset and some things are still not finalized. It may be feasible to
+pass the key context from the global config and not as parameter.
 
