@@ -1,101 +1,100 @@
-Return-Path: <linux-btrfs+bounces-14304-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14305-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 152CEAC8CA6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 13:11:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EED29AC8CA9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 13:12:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C56D5174A0D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 11:11:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68C897A9810
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 11:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8192722A7F8;
-	Fri, 30 May 2025 11:10:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20108225A3B;
+	Fri, 30 May 2025 11:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gC/IQqrP";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wPc7b9DC";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gC/IQqrP";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wPc7b9DC"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kopKgofR";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CvQM/C0B";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ElRg9oMw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/jq/DkcK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3196B226D1E
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 11:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB1B19AD70
+	for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 11:11:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748603442; cv=none; b=c/fVGf/o/th9U8eQv/8co2+67JFks0z/+EvzAR6xVQHFYRtmCa2H5H0Q0y4rBTWVMB9IAw4t5gDWCaBYlVWLcEHwTfGhwJvURNXUdJ0IhWWPCrr4EpgB+KoHXvUb+km34RIQWNIWXNA72RyXa6NOU9o+wh9a7nQDfmMBbAnm1so=
+	t=1748603514; cv=none; b=E/+qKN3KWz+WHfaXDnCvK9Iyogm+G3ztx/HKSe1N79C9w1EnG9GcNvXLgH9mEPp2rwfdaAJZPFvwPZzNdGU6Q/9hR0Psl3Jqpv5Bow1/AlYrZBMO7AKXIX8txT8udP95VOMoh5UA2NebWNzWB+0NZxU+vza0U3qbEpQSuNhWK6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748603442; c=relaxed/simple;
-	bh=3z1MiakHSlepl5WACJo/NjhcI5SyRjMl+wdHgmtBsZ8=;
+	s=arc-20240116; t=1748603514; c=relaxed/simple;
+	bh=5JcUo6okZeZC+h/Bi+Q/0Imc+I6piX/Z/mSj1UbHcjw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BCJUi3/t2oUt0ilPXDzgUQYS8rhzn/H9K0eHKfVaFq20WbE7EO7DguzrRE9dQe9VBt1mAF+61tWzWGRI/2usagEJfPS1Q80uTsC5xqX1WpNFhnb0Sgo2KhAsQBY8edd/N81gpJKF9TNsJqakoFyebgaNNatplqcwu3gghpp3mAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gC/IQqrP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wPc7b9DC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gC/IQqrP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wPc7b9DC; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=loyAsr5l0FKrN82PvCQWr7DxYJ2a6J3SIcPSnubcwZk0RMHy1Soguidt3T5eCu/ovYV5EkjxD/PlBkI8S/gjT2UcyvNnJQaG/Wbe/rSEWE7AXgpzTRn8eM/wTGAOcODAV2fbAhv34dOcj4Ihdzi/CPBqnGbY31QaXZCl/YxubTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kopKgofR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CvQM/C0B; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ElRg9oMw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/jq/DkcK; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 498BD2175B;
-	Fri, 30 May 2025 11:10:39 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DEC901F7CE;
+	Fri, 30 May 2025 11:11:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748603439;
+	t=1748603511;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OLwBrQOhP1ljC9kE4fdyAm8pzBiJrYLQ7p8Ay36HO/U=;
-	b=gC/IQqrPKPpWong59bZpcHLX+K/SGVWjS7k+jK7+U8QHVev0+IUdPGWIrTp3HO28dfkGcV
-	mUlJcSBOaezy+JLtJ5HZy/ghLVSXyObwQr0B8ZtmCks9GR8MW6TUBnLP3BWvlxuvMdm58j
-	+evORld/1tU8TmBSILDSSD1R9SiMzro=
+	bh=aDSlYKQgVJCRYW4ZLw/1iFaQhW8MhkmbKQvZLCZCJIs=;
+	b=kopKgofR1R7Tsf4SVb/TkyfGeUhUAcSQjnKwGft/VasCiDjSETcNnWHJ0qnj+7RrP2566X
+	vvcOYPxVnTssW0GRxVhTSZPucm7qE0RZa/3GVjQfJKNeOGBHaijZmCn/I2ei2QiUEN9Us3
+	JvekMDgN3L1MR+ojdWlYSSX8FIRsGLA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748603439;
+	s=susede2_ed25519; t=1748603511;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OLwBrQOhP1ljC9kE4fdyAm8pzBiJrYLQ7p8Ay36HO/U=;
-	b=wPc7b9DCQYgSRGItYucOxHP5tFsfcucZhb4Tnwl6eRBMcb32NiRDZ2OIj2jXOafatGjlCI
-	jzAiWX0ySkhkN8Bg==
-Authentication-Results: smtp-out1.suse.de;
+	bh=aDSlYKQgVJCRYW4ZLw/1iFaQhW8MhkmbKQvZLCZCJIs=;
+	b=CvQM/C0BiVnfshCXLrdyEMmev2L9QZMq3TTgNL4s4kcfM/gCHWgnz5wqcQZz2CfI1PxI+X
+	NAjezvhZLomDuWAA==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748603439;
+	t=1748603510;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OLwBrQOhP1ljC9kE4fdyAm8pzBiJrYLQ7p8Ay36HO/U=;
-	b=gC/IQqrPKPpWong59bZpcHLX+K/SGVWjS7k+jK7+U8QHVev0+IUdPGWIrTp3HO28dfkGcV
-	mUlJcSBOaezy+JLtJ5HZy/ghLVSXyObwQr0B8ZtmCks9GR8MW6TUBnLP3BWvlxuvMdm58j
-	+evORld/1tU8TmBSILDSSD1R9SiMzro=
+	bh=aDSlYKQgVJCRYW4ZLw/1iFaQhW8MhkmbKQvZLCZCJIs=;
+	b=ElRg9oMw1opeAOTSAbk4/r6+Uo1/7GIVNKa3uPUzU8sSo6TaV10j6Y3MbN+k8D2i4o/eoS
+	tgiZ1Ij8pZLtnDRBsAxPJgSoG7RDqH7Mky1cxL+wqZvQkDh4AOZfiWeg9Ub3Kl+j7jq1tY
+	Sln9Syhg6StstAs/PYnaq6obwxAtRDo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748603439;
+	s=susede2_ed25519; t=1748603510;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OLwBrQOhP1ljC9kE4fdyAm8pzBiJrYLQ7p8Ay36HO/U=;
-	b=wPc7b9DCQYgSRGItYucOxHP5tFsfcucZhb4Tnwl6eRBMcb32NiRDZ2OIj2jXOafatGjlCI
-	jzAiWX0ySkhkN8Bg==
+	bh=aDSlYKQgVJCRYW4ZLw/1iFaQhW8MhkmbKQvZLCZCJIs=;
+	b=/jq/DkcKAeHnCgkcxohP62VIwPlIwv9cClimBnUpi3nInHrAIMAbmKc2F4sag16If/chmx
+	qV9H91iiZ72xTbCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2CB8713889;
-	Fri, 30 May 2025 11:10:39 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BEE3313889;
+	Fri, 30 May 2025 11:11:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2u5vCi+SOWhQEAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 30 May 2025 11:10:39 +0000
-Date: Fri, 30 May 2025 13:10:29 +0200
+	id rDlnLnaSOWi2EAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 30 May 2025 11:11:50 +0000
+Date: Fri, 30 May 2025 13:11:41 +0200
 From: David Sterba <dsterba@suse.cz>
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] btrfs-progs: introduce "btrfs rescue
- fix-data-checksum"
-Message-ID: <20250530111029.GQ4037@twin.jikos.cz>
+Subject: Re: [PATCH v2 2/6] btrfs-progs: fix a bug in btrfs_find_item()
+Message-ID: <20250530111141.GR4037@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1747295965.git.wqu@suse.com>
- <a91001c175a5dd38a8873c6550bf856f1f4c5cde.1747295965.git.wqu@suse.com>
+ <7c72856dd5939761a9dd34a4554fddf94389090d.1747295965.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -104,108 +103,147 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a91001c175a5dd38a8873c6550bf856f1f4c5cde.1747295965.git.wqu@suse.com>
+In-Reply-To: <7c72856dd5939761a9dd34a4554fddf94389090d.1747295965.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
 X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	RCPT_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
 	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.com:email,imap1.dmz-prg2.suse.org:helo];
 	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
 
-On Thu, May 15, 2025 at 05:30:16PM +0930, Qu Wenruo wrote:
-> +static void report_corrupted_blocks(void)
-> +{
-> +	struct corrupted_block *entry;
-> +
-> +	if (list_empty(&corrupted_blocks)) {
-> +		printf("No data checksum mismatch found\n");
+On Thu, May 15, 2025 at 05:30:17PM +0930, Qu Wenruo wrote:
+> [BUG]
+> There is a seldomly utilized function, btrfs_find_item(), which has no
+> document and is not behaving correctly.
+> 
+> Inside backref.c, iterate_inode_refs() and btrfs_ref_to_path() both
+> utilize this function, to find the parent inode.
+> 
+> However btrfs_find_item() will never return 0 if @ioff is passed as 0
+> for such usage, result early failure for all kinds of inode iteration
+> functions.
+> 
+> [CAUSE]
+> Both functions pass 0 as the @ioff parameter initially, e.g:
+> 
+>  We have the following fs tree root:
+> 
+>   	item 0 key (256 INODE_ITEM 0) itemoff 16123 itemsize 160
+> 		generation 3 transid 9 size 6 nbytes 16384
+> 		block group 0 mode 40755 links 1 uid 0 gid 0 rdev 0
+> 		sequence 1 flags 0x0(none)
+> 	item 1 key (256 INODE_REF 256) itemoff 16111 itemsize 12
+> 		index 0 namelen 2 name: ..
+> 	item 2 key (256 DIR_ITEM 2507850652) itemoff 16078 itemsize 33
+> 		location key (257 INODE_ITEM 0) type FILE
+> 		transid 9 data_len 0 name_len 3
+> 		name: foo
+> 	item 3 key (256 DIR_INDEX 2) itemoff 16045 itemsize 33
+> 		location key (257 INODE_ITEM 0) type FILE
+> 		transid 9 data_len 0 name_len 3
+> 		name: foo
+> 	item 4 key (257 INODE_ITEM 0) itemoff 15885 itemsize 160
+> 		generation 9 transid 9 size 16384 nbytes 16384
+> 		block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
+> 		sequence 4 flags 0x0(none)
+> 	item 5 key (257 INODE_REF 256) itemoff 15872 itemsize 13
+> 		index 2 namelen 3 name: foo
+> 	item 6 key (257 EXTENT_DATA 0) itemoff 15819 itemsize 53
+> 		generation 9 type 1 (regular)
+> 		extent data disk byte 13631488 nr 16384
+> 		extent data offset 0 nr 16384 ram 16384
+> 		extent compression 0 (none)
+> 
+>   Then we call paths_from_inode() with:
+>   - @inum = 257
+>   - ipath = {.fs_root = 5}
+> 
+>   Then we got the following sequence:
+> 
+>   iterate_irefs(257, fs_root, inode_to_path)
+>   |- iterate_inode_refs()
+>      |- inode_ref_info()
+>         |- btrfs_find_item(257, 0, fs_root)
+> 	|  Returned 1, with @found_key updated to
+> 	|  (257, INODE_REF, 256).
+> 
+>   This makes iterate_irefs() exit immediately, but obviously that
+>   btrfs_find_item() call is to find any INODE_REF, not to find the
+>   exact match.
+> 
+> [FIX]
+> If btrfs_find_item() found an item matching the objectid and type, then
+> it should return 0 other than 1.
+> 
+> Fix it and keep the behavior the same across btrfs-progs and the kernel.
+> 
+> Since we're here, also add some comments explaining the function.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  kernel-shared/ctree.c | 17 ++++++++++++++---
+>  1 file changed, 14 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
+> index 3184c916175e..f90de606e7b1 100644
+> --- a/kernel-shared/ctree.c
+> +++ b/kernel-shared/ctree.c
+> @@ -1246,6 +1246,17 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
+>  	}
+>  }
+>  
+> +/*
+> + * Find the first key in @fs_root that matches all the following conditions:
+> + *
+> + * - key.obojectid == @iobjectid
+> + * - key.type == @key_type
+> + * - key.offset >= ioff
+> + *
+> + * Return 0 if such key can be found, and @found_key is updated.
+> + * Return >0 if no such key can be found.
+> + * Return <0 for critical errors.
+> + */
+>  int btrfs_find_item(struct btrfs_root *fs_root, struct btrfs_path *found_path,
+>  		u64 iobjectid, u64 ioff, u8 key_type,
+>  		struct btrfs_key *found_key)
+> @@ -1280,10 +1291,10 @@ int btrfs_find_item(struct btrfs_root *fs_root, struct btrfs_path *found_path,
+>  
+>  	btrfs_item_key_to_cpu(eb, found_key, path->slots[0]);
+>  	if (found_key->type != key.type ||
+> -			found_key->objectid != key.objectid) {
+> +	    found_key->objectid != key.objectid)
 
-printf(...) -> pr_verbose(LOG_DEFAULT, ...) so the verbosity options are
-respected. The semantics is the same as printf, so there's no implicit "\n"
-and you can glue the lines as you need.
+This fits one line. We don't have perfect 1:1 line matching with kernel
+so the style can be fixed.
 
-> +		return;
-> +	}
-> +
-> +	list_for_each_entry(entry, &corrupted_blocks, list) {
-> +		bool has_printed = false;
-> +
-> +		printf("logical=%llu corrtuped mirrors=", entry->logical);
-> +		/* Poor man's bitmap print. */
-> +		for (int i = 0; i < entry->num_mirrors; i++) {
-> +			if (test_bit(i, entry->error_mirror_bitmap)) {
-> +				if (has_printed)
-> +					printf(",");
-> +				/*
-> +				 * Bit 0 means mirror 1, thus we need to increase
-> +				 * the value by 1.
-> +				 */
-> +				printf("%d", i + 1);
-> +				has_printed=true;
-> +			}
-> +		}
-> +		printf("\n");
-> +	}
-> +}
-
-> +static int cmd_rescue_fix_data_checksum(const struct cmd_struct *cmd,
-> +					int argc, char **argv)
-> +{
-> +	enum btrfs_fix_data_checksum_mode mode = BTRFS_FIX_DATA_CSUMS_READONLY;
-> +	int ret;
-> +	optind = 0;
-> +
-> +	while (1) {
-> +		int c;
-> +		enum { GETOPT_VAL_DRYRUN = GETOPT_VAL_FIRST, };
-
-The ending "," does not need to be there
-
-> +		static const struct option long_options [] = {
-> +			{"readonly", no_argument, NULL, 'r'},
-> +			{"NULL", 0, NULL, 0},
-> +		};
-
-Missing newline
-
-> +		c = getopt_long(argc, argv, "r", long_options, NULL);
-> +		if (c < 0)
-> +			break;
-> +		switch (c) {
-> +		case 'r':
-> +			mode = BTRFS_FIX_DATA_CSUMS_READONLY;
-> +			break;
-> +		default:
-> +			usage_unknown_option(cmd, argv);
-> +		}
-> +	}
-> +	if (check_argc_min(argc - optind, 1))
-> +		return 1;
-> +	ret = btrfs_recover_fix_data_checksum(argv[optind], mode);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error("failed to fix data checksums: %m");
-> +	}
-> +	return !!ret;
-> +}
-> +static DEFINE_SIMPLE_COMMAND(rescue_fix_data_checksum, "fix-data-checksum");
+>  		ret = 1;
+> -		goto out;
+> -	}
+> +	else
+> +		ret = 0;
+>  
+>  out:
+>  	if (path != found_path)
+> -- 
+> 2.49.0
+> 
 
