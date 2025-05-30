@@ -1,79 +1,58 @@
-Return-Path: <linux-btrfs+bounces-14332-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14333-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2D79AC9366
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 18:20:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7543AC935E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 18:19:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A696AA607ED
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 16:18:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6D621C017EF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 May 2025 16:19:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE331A2C11;
-	Fri, 30 May 2025 16:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HgbDVNGC";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HgbDVNGC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254C71A5B91;
+	Fri, 30 May 2025 16:18:52 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB691494A8
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 16:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2B81494A8
+	for <linux-btrfs@vger.kernel.org>; Fri, 30 May 2025 16:18:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748621925; cv=none; b=hz7Cj2RZC+ZC2hQG1F+stq1oTZxnhWcbSh0sWuG/j4K+rqi+hBVbfSeE+Oy/ooBTaZmqfDRFLm2xvwPi1pFLfAuOy7vhOdJaKGOos9CB0J7DRvLUtC1EcsgGXvMLGwVXYioYH7YjoqNw3PYxSkXRwFQCyQBuSVJhQ+yfaYpSf30=
+	t=1748621931; cv=none; b=Y6ZflCu2KL3xUfqZw9vt+YbOzhUkgZf3vCVVhJpCRxSiquG/RERdp/0TqFn4aQd/jdAFTJ/kTW0CEk4t2/DH7kdi2CaygRWvQ5KFmVtDYWrizaodTDd00bydyySRgmW102+BJSXWus3DihThq2GwrKWvcAtinOewbondhXWFBvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748621925; c=relaxed/simple;
-	bh=epYtDAc7U5JwajaJeqfWSNdy+ahTLWkDTM1/rdhwfm0=;
+	s=arc-20240116; t=1748621931; c=relaxed/simple;
+	bh=/eH5xJT+9gCJjpN7TrnPhG76yDmpjoXIZupcjaCIDSA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TZkunxMSmxb9p5/SiesbXbKQt7VE5q5g9qXZp3FWlIGFjhkpXH0QQk1I/V841heBGn6QlHvHf47CB4sgLcBlJeIS+FPaSgLK4FwVyuyrxyHdtCvN3Tzcohtisj4xahOu9Budcu5gDdrEXV+8CSap82fySFkkB8AFUPJRkbLM3T4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HgbDVNGC; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HgbDVNGC; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=FxryV1zfg/DZpbZZmcXKnrNkpfVOKrlHsApkF9auam2vlf5UxfEd1WUsk6MyJU7vT1BrQTg5bZvkb49Qf7HaJjismh0ynpEsJ7UeCag5TmFtwIxFiuSN6VYs4HL5giODU7NQiWnmlz7BOx6iFnL//5NuaLY0F0y6AVwoel5jjBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A93E621A53;
-	Fri, 30 May 2025 16:18:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1748621911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TnXTwov9KWmuxcr0/6SkXhmF4R7znt8oS71gm3jf+ng=;
-	b=HgbDVNGCKQUR52/cbAYCuei2e665poK/f9LvQvXt9uQwhXmho8l3Nk9TQHw7Nfz5ivr69F
-	XSqPf9DbcooI6Wy/BWCzm5f+r+n5p4ttRlrgcahzkzM80WW6/iEOgJJZV5DVRMyfU4kHUF
-	dxZlH0zTyo0U607bDY5n1lmXthD/Dtk=
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 127DD21A4F;
+	Fri, 30 May 2025 16:18:38 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1748621911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TnXTwov9KWmuxcr0/6SkXhmF4R7znt8oS71gm3jf+ng=;
-	b=HgbDVNGCKQUR52/cbAYCuei2e665poK/f9LvQvXt9uQwhXmho8l3Nk9TQHw7Nfz5ivr69F
-	XSqPf9DbcooI6Wy/BWCzm5f+r+n5p4ttRlrgcahzkzM80WW6/iEOgJJZV5DVRMyfU4kHUF
-	dxZlH0zTyo0U607bDY5n1lmXthD/Dtk=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A2AB913889;
-	Fri, 30 May 2025 16:18:31 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0C24313889;
+	Fri, 30 May 2025 16:18:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id AUW1J1faOWjSZwAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Fri, 30 May 2025 16:18:31 +0000
+	id +m7zAl7aOWjhZwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Fri, 30 May 2025 16:18:38 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 14/22] btrfs: rename err to ret in btrfs_link()
-Date: Fri, 30 May 2025 18:18:31 +0200
-Message-ID: <02baba85dda2ef5fe5e557d5e26d16071ccac846.1748621715.git.dsterba@suse.com>
+Subject: [PATCH 15/22] btrfs: rename err to ret in btrfs_symlink()
+Date: Fri, 30 May 2025 18:18:33 +0200
+Message-ID: <f900b7c51bdd5f0563524a0230a9b7b59ad51035.1748621715.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <cover.1748621715.git.dsterba@suse.com>
 References: <cover.1748621715.git.dsterba@suse.com>
@@ -84,116 +63,109 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-6.80 / 50.00];
-	REPLY(-4.00)[];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
 X-Spam-Flag: NO
-X-Spam-Score: -6.80
+X-Rspamd-Queue-Id: 127DD21A4F
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Spam-Score: -4.00
 
 Unify naming of return value to the preferred way.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/inode.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ fs/btrfs/inode.c | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9d200f4246ba..fd76c551ae57 100644
+index fd76c551ae57..a91ee8155376 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -6802,7 +6802,7 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
- 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
- 	struct fscrypt_name fname;
- 	u64 index;
+@@ -8779,7 +8779,7 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
+ 		.dentry = dentry,
+ 	};
+ 	unsigned int trans_num_items;
 -	int err;
 +	int ret;
- 	int drop_inode = 0;
+ 	int name_len;
+ 	int datasize;
+ 	unsigned long ptr;
+@@ -8806,26 +8806,26 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
+ 	inode_set_bytes(inode, name_len);
  
- 	/* do not allow sys_link's with other subvols of the same device */
-@@ -6812,12 +6812,12 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
- 	if (inode->i_nlink >= BTRFS_LINK_MAX)
- 		return -EMLINK;
- 
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &fname);
+ 	new_inode_args.inode = inode;
+-	err = btrfs_new_inode_prepare(&new_inode_args, &trans_num_items);
 -	if (err)
-+	ret = fscrypt_setup_filename(dir, &dentry->d_name, 0, &fname);
++	ret = btrfs_new_inode_prepare(&new_inode_args, &trans_num_items);
 +	if (ret)
- 		goto fail;
+ 		goto out_inode;
+ 	/* 1 additional item for the inline extent */
+ 	trans_num_items++;
  
--	err = btrfs_set_inode_index(BTRFS_I(dir), &index);
--	if (err)
-+	ret = btrfs_set_inode_index(BTRFS_I(dir), &index);
-+	if (ret)
- 		goto fail;
- 
- 	/*
-@@ -6828,7 +6828,7 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
- 	 */
- 	trans = btrfs_start_transaction(root, inode->i_nlink ? 5 : 6);
+ 	trans = btrfs_start_transaction(root, trans_num_items);
  	if (IS_ERR(trans)) {
 -		err = PTR_ERR(trans);
 +		ret = PTR_ERR(trans);
- 		trans = NULL;
- 		goto fail;
+ 		goto out_new_inode_args;
  	}
-@@ -6841,24 +6841,24 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
- 	ihold(inode);
- 	set_bit(BTRFS_INODE_COPY_EVERYTHING, &BTRFS_I(inode)->runtime_flags);
  
--	err = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
-+	ret = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
- 			     &fname.disk_name, 1, index);
+-	err = btrfs_create_new_inode(trans, &new_inode_args);
+-	if (err)
++	ret = btrfs_create_new_inode(trans, &new_inode_args);
++	if (ret)
+ 		goto out;
  
+ 	path = btrfs_alloc_path();
+ 	if (!path) {
+-		err = -ENOMEM;
+-		btrfs_abort_transaction(trans, err);
++		ret = -ENOMEM;
++		btrfs_abort_transaction(trans, ret);
+ 		discard_new_inode(inode);
+ 		inode = NULL;
+ 		goto out;
+@@ -8834,10 +8834,9 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
+ 	key.type = BTRFS_EXTENT_DATA_KEY;
+ 	key.offset = 0;
+ 	datasize = btrfs_file_extent_calc_inline_size(name_len);
+-	err = btrfs_insert_empty_item(trans, root, path, &key,
+-				      datasize);
 -	if (err) {
+-		btrfs_abort_transaction(trans, err);
++	ret = btrfs_insert_empty_item(trans, root, path, &key, datasize);
 +	if (ret) {
- 		drop_inode = 1;
- 	} else {
- 		struct dentry *parent = dentry->d_parent;
++		btrfs_abort_transaction(trans, ret);
+ 		btrfs_free_path(path);
+ 		discard_new_inode(inode);
+ 		inode = NULL;
+@@ -8859,16 +8858,16 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
+ 	btrfs_free_path(path);
  
--		err = btrfs_update_inode(trans, BTRFS_I(inode));
--		if (err)
-+		ret = btrfs_update_inode(trans, BTRFS_I(inode));
-+		if (ret)
- 			goto fail;
- 		if (inode->i_nlink == 1) {
- 			/*
- 			 * If new hard link count is 1, it's a file created
- 			 * with open(2) O_TMPFILE flag.
- 			 */
--			err = btrfs_orphan_del(trans, BTRFS_I(inode));
--			if (err)
-+			ret = btrfs_orphan_del(trans, BTRFS_I(inode));
-+			if (ret)
- 				goto fail;
- 		}
- 		d_instantiate(dentry, inode);
-@@ -6874,7 +6874,7 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
- 		iput(inode);
- 	}
+ 	d_instantiate_new(dentry, inode);
+-	err = 0;
++	ret = 0;
+ out:
+ 	btrfs_end_transaction(trans);
  	btrfs_btree_balance_dirty(fs_info);
+ out_new_inode_args:
+ 	btrfs_new_inode_args_destroy(&new_inode_args);
+ out_inode:
+-	if (err)
++	if (ret)
+ 		iput(inode);
 -	return err;
 +	return ret;
  }
  
- static struct dentry *btrfs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
+ static struct btrfs_trans_handle *insert_prealloc_file_extent(
 -- 
 2.47.1
 
