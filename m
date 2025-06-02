@@ -1,203 +1,246 @@
-Return-Path: <linux-btrfs+bounces-14383-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14384-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1C43ACB906
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 17:54:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C19CACB989
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 18:21:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE4867A55B4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 15:52:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68924189B03E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 16:21:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E709223DF6;
-	Mon,  2 Jun 2025 15:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8720D227E94;
+	Mon,  2 Jun 2025 16:20:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qfVgSCGj";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qfVgSCGj"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Mf6CeCEM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025F3223DD1
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 15:53:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B57227E8A
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 16:20:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748879618; cv=none; b=VrspOCemXt0PLxesKK/WJOF078B2ii0REVOHLx5ghx+5qIfyKDAVRupAp8xHnTv5N7wsLUlJflnHZRSe+8zknVv98Zq/Mn4W+dGAwlmkPgw5a2Vu1HexIMNe230ClcOKlxz98X/lz9oqeBHkpZgvxblYdtLNeGNd1ebEEfcj/cw=
+	t=1748881233; cv=none; b=cb4v5BvOWBCKxQNSxMLz1s+Zq3FxnTydhB413GCValuMhL/xxMK8IftoCUx0F6f0j4KMTH+QaddluHykrYhML7dZmi1WwhhmB1iK7WaqXvWj/OZfthS53v+G2MRhrrJx6FeYiLNOph5nQ6MgcgxFj/A9xFcjQp1kY/T+DMj2Gvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748879618; c=relaxed/simple;
-	bh=go1PPFz+AMC/M5zXK7Is9Mi6bbDhxdFN6LXeNEBwDLs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X/1JlaTMbcIqLowMug2nkyagAvw1JzjySE5TSvDW9gfuIp86qi3TFsuErr2nvGJQISkdROMqv0BR65o92F1q30uUXjRnEN2q7H4XZHewKABSfGD4dOxSxBxAbDX9X3IUqpBpgf5+cBkHDemK/QsRZ9weEcIQUsZsC3gCVYyjRpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qfVgSCGj; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qfVgSCGj; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1748881233; c=relaxed/simple;
+	bh=DsZcXrH0q1cyTGbvTIUopMG4Kh4tREueZn/GnGsnq58=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XuP01fltV1FO5fID8vZuC6rYgO915pCjBiQPcAvFgYoziOZwlxyFzBlFQXLrz9Z7iauwpyTCSdeUZnYpm0TtKfnG4dg3zEO4bXK3J3q9+T7QAgRZAuPSe3tW6r6lPfmJtmdJinFURMklrEy61LZLc1llLlIrNeAlQPfcPDj+hb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Mf6CeCEM; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 494D22120E;
-	Mon,  2 Jun 2025 15:53:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1748879603; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QWkGADfqpetKnnKrUkvD8J/JBZ9PJNS7K0KKvu/tSqU=;
-	b=qfVgSCGjjop2VBVuGiaPUPGkJ6lG5Z22jYedW+2/NljDiwUvWWCIk9wvnOGvex5LWmAixP
-	0Hf34TDX71FO+JxkOxmi+3h0efZwl4DTSUYT9+oXhbbmZjxKCcHqh2Q1KvtpkGUzsm4R7M
-	9eSx05DvlzSGVdptBRnhQxyF0tM4MOE=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1748879603; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QWkGADfqpetKnnKrUkvD8J/JBZ9PJNS7K0KKvu/tSqU=;
-	b=qfVgSCGjjop2VBVuGiaPUPGkJ6lG5Z22jYedW+2/NljDiwUvWWCIk9wvnOGvex5LWmAixP
-	0Hf34TDX71FO+JxkOxmi+3h0efZwl4DTSUYT9+oXhbbmZjxKCcHqh2Q1KvtpkGUzsm4R7M
-	9eSx05DvlzSGVdptBRnhQxyF0tM4MOE=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2E98113A63;
-	Mon,  2 Jun 2025 15:53:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id IB7GCvPIPWhIBQAAD6G6ig
-	(envelope-from <neelx@suse.com>); Mon, 02 Jun 2025 15:53:23 +0000
-From: Daniel Vacek <neelx@suse.com>
-To: Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	Nick Terrell <terrelln@fb.com>
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Daniel Vacek <neelx@suse.com>
-Subject: [PATCH v3 2/2] btrfs: harden parsing of compress mount options
-Date: Mon,  2 Jun 2025 17:53:19 +0200
-Message-ID: <20250602155320.1854888-3-neelx@suse.com>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250602155320.1854888-1-neelx@suse.com>
-References: <20250602155320.1854888-1-neelx@suse.com>
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-adb2e9fd208so744157366b.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Jun 2025 09:20:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1748881229; x=1749486029; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HQoqbZmXiqjyKHCA9hno/RCliaWCvmNN/QoAh8wKk88=;
+        b=Mf6CeCEM+J4TLxTUuv4tR9BN7rsXPinePRSbSFERs6dTH+wSAE6wpMTpDIUUrrtBta
+         1t9+lQGwCmRY2nl+yOGEtZ/3mDrmKKZW7pbuTv+nLRAZ8AEmHx647rUvDbfDCW3CSpjZ
+         ezBlZYyT67ERzqL0hhnS+yF6L4Is2w/QzQ+K1VrtemjhwZS/Cyv2RxG2kU1FXXKf9O5M
+         ZLjLy8Vyv0qR8VSrJGeBMEx5mumIPkU9L9ODLSHjzFN+qmg6FRf2PdpcObPWqdPoxXMn
+         U677Ft2agMGHRT3ruy0m1UAK+VMmb7O9GVuTR7mugh+FjUZhUK7Iqh5wLo3kCttzxVtf
+         z+8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748881229; x=1749486029;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HQoqbZmXiqjyKHCA9hno/RCliaWCvmNN/QoAh8wKk88=;
+        b=iHX/hiB3XnkRHCTMbck03Sp34ykAtWfAsSwasrqg9LaFYrWDs104H3hQ+acCLCsm2e
+         0ZLcgMTc9WOdBjZRQDH7blxqSbAkBiWEOFZptUJ/Bg5ME3VcPUaeP5RJAznKboi1NHTn
+         njgz2CGrU7zi8/uOWbxcJ9s1w5/kFWmjznSZ3DggxWmozND3G70G0PnuGeRKK6p3a9I8
+         7pCIv8zNXloytsp8mnT8osT5RzGRdSSxig3P+uefizq2j4GbndSozKia0Rv0d/brGsdO
+         r/Y0khXq9E+OG+GYd0cnhYRDGXoR3It5V92gWI+QB2beeNtYEEepYJlVFxPu9Uy2mNWF
+         cT6g==
+X-Forwarded-Encrypted: i=1; AJvYcCXlV7TCwMINSUn9H4QevomuE7KXvRA6gVc4gVDkoEkNWZdbSED/tlHCO2P9Dr8f4JrVVo3H0UbvELKHMQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yznwg9E/lKF1IBs/mb2RlMkqX9pM5l/xwPuGDb65++WgmPI3F3P
+	M+zKCEj5S1K86baacWyL5ZqMTUNvSHa3R8RA2T/EWVDDKyFnpY5shWskLJOM9AXivZPltKCbKJm
+	e3RJCtjjE0kPNfko5ipQiyAK85p94uSCfmkzwJEcN8aOUuLKMhNX//BoWXA==
+X-Gm-Gg: ASbGncvUD77a28LN0dmJDzqxsq4Ykf/C6VPPZdCc8xjUfg5fhlYbyb87072nrfh0zjk
+	vP7onPLbefxtipepCDcUTscV18/YkZ3kmvcajysjGFqkyBGShpKCpJHjjGvdz4shPSKkS1BklFd
+	UsQSlNOHfC1vYpc1fb1qt417wkYdCX8dg=
+X-Google-Smtp-Source: AGHT+IEbhydfFm+QJHG3z3+ijrBqI/pxE8xv0hyEwM2GzyFEpHnQLZ462dO/1xCNDT6GH77lT3T9a2mqEWflI9dMvkE=
+X-Received: by 2002:a17:907:2d27:b0:ad5:55db:e411 with SMTP id
+ a640c23a62f3a-adb322afc89mr1429636266b.27.1748881229480; Mon, 02 Jun 2025
+ 09:20:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-6.80 / 50.00];
-	REPLY(-4.00)[];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -6.80
+References: <14d1a4a5621f5059dae764a8bfc9b114b6df029c.1748789125.git.fdmanana@suse.com>
+ <6172770.lOV4Wx5bFT@saltykitkat> <CAL3q7H4j_W0rANN8oJdzk1x36oOYLJB1=TSAsEA90vKeKX=7Rg@mail.gmail.com>
+In-Reply-To: <CAL3q7H4j_W0rANN8oJdzk1x36oOYLJB1=TSAsEA90vKeKX=7Rg@mail.gmail.com>
+From: Daniel Vacek <neelx@suse.com>
+Date: Mon, 2 Jun 2025 18:20:18 +0200
+X-Gm-Features: AX0GCFttCj5xkJyhYraUPJePm34YJIs67oq2BGVVP99bikSt_lViNjpwTbFz-ZE
+Message-ID: <CAPjX3FeiJSXaPZxhKNmq0o7tzOvQ+58oBHOf8qR=y+JAh7T8cQ@mail.gmail.com>
+Subject: Re: [PATCH 03/14] btrfs: free path sooner at __btrfs_unlink_inode()
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Sun YangKai <sunk67188@gmail.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Btrfs happily but incorrectly accepts the `-o compress=zlib+foo` and similar
-options with any random suffix.
+On Mon, 2 Jun 2025 at 15:28, Filipe Manana <fdmanana@kernel.org> wrote:
+>
+> On Mon, Jun 2, 2025 at 2:25=E2=80=AFPM Sun YangKai <sunk67188@gmail.com> =
+wrote:
+> >
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > >
+> > > After calling btrfs_delete_one_dir_name() there's no need for the pat=
+h
+> > > anymore so we can free it immediately after. After that point we do
+> > > some btree operations that take time and in those call chains we end =
+up
+> > > allocating paths for these operations, so we're unnecessarily holding=
+ on
+> > > to the path we allocated early at __btrfs_unlink_inode().
+> > >
+> > > So free the path as soon as we don't need it and add a comment. This
+> > > also allows to simplify the error path, removing two exit labels and
+> > > returning directly when an error happens.
+> > >
+> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > > ---
+> > >
+> > >  fs/btrfs/inode.c | 31 ++++++++++++++-----------------
+> > >  1 file changed, 14 insertions(+), 17 deletions(-)
+> > >
+> > > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> > > index 7bad21ec41f8..a9a37553bc45 100644
+> > > --- a/fs/btrfs/inode.c
+> > > +++ b/fs/btrfs/inode.c
+> > > @@ -4215,20 +4215,22 @@ static int __btrfs_unlink_inode(struct
+> > > btrfs_trans_handle *trans,>
+> > >       u64 dir_ino =3D btrfs_ino(dir);
+> > >
+> > >       path =3D btrfs_alloc_path();
+> > >
+> > > -     if (!path) {
+> > > -             ret =3D -ENOMEM;
+> > > -             goto out;
+> > > -     }
+> > > +     if (!path)
+> > > +             return -ENOMEM;
+> > >
+> > >       di =3D btrfs_lookup_dir_item(trans, root, path, dir_ino, name, =
+-1);
+> > >       if (IS_ERR_OR_NULL(di)) {
+> > >
+> > > -             ret =3D di ? PTR_ERR(di) : -ENOENT;
+> > > -             goto err;
+> > > +             btrfs_free_path(path);
+> > > +             return di ? PTR_ERR(di) : -ENOENT;
+> >
+> > Maybe we could define the path using `BTRFS_PATH_AUTO_FREE(path);` so t=
+hat we
+> > don't need to write btrfs_free_path before every return statement like =
+this.
+> >
+> > Forgive me if I'm mistaken, as I'm not completely familiar with this.
+>
+> For the error case only, yes. But the goal here is to free the path as
+> soon as it's not needed for the expected, non-error case.
+> So no, it wouldn't do it.
 
-Fix that by explicitly checking the end of the strings.
+You can actually combine explicit btrfs_free_path(path) with auto free
+if you follow with path =3D NULL. In such a case the second free will
+result in nop.
+Of course, a comment would be proper at such a location if you really
+wanted to use it.
 
-Signed-off-by: Daniel Vacek <neelx@suse.com>
----
-v3 changes: Split into two patches to ease backporting,
-            no functional changes.
-
- fs/btrfs/super.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 6291ab45ab2a5..4510c5f7a785e 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -270,9 +270,20 @@ static inline blk_mode_t btrfs_open_mode(struct fs_context *fc)
- 	return sb_open_mode(fc->sb_flags) & ~BLK_OPEN_RESTRICT_WRITES;
- }
- 
-+static bool btrfs_match_compress_type(char *string, char *type, bool may_have_level)
-+{
-+	int len = strlen(type);
-+
-+	return strncmp(string, type, len) == 0 &&
-+		((may_have_level && string[len] == ':') ||
-+				    string[len] == '\0');
-+}
-+
- static int btrfs_parse_compress(struct btrfs_fs_context *ctx,
- 				struct fs_parameter *param, int opt)
- {
-+	char *string = param->string;
-+
- 	/*
- 	 * Provide the same semantics as older kernels that don't use fs
- 	 * context, specifying the "compress" option clears
-@@ -288,36 +299,37 @@ static int btrfs_parse_compress(struct btrfs_fs_context *ctx,
- 		btrfs_set_opt(ctx->mount_opt, COMPRESS);
- 		btrfs_clear_opt(ctx->mount_opt, NODATACOW);
- 		btrfs_clear_opt(ctx->mount_opt, NODATASUM);
--	} else if (strncmp(param->string, "zlib", 4) == 0) {
-+	} else if (btrfs_match_compress_type(string, "zlib", true)) {
- 		ctx->compress_type = BTRFS_COMPRESS_ZLIB;
- 		ctx->compress_level =
- 			btrfs_compress_str2level(BTRFS_COMPRESS_ZLIB,
--						 param->string + 4);
-+						 string + 4);
- 		btrfs_set_opt(ctx->mount_opt, COMPRESS);
- 		btrfs_clear_opt(ctx->mount_opt, NODATACOW);
- 		btrfs_clear_opt(ctx->mount_opt, NODATASUM);
--	} else if (strncmp(param->string, "lzo", 3) == 0) {
-+	} else if (btrfs_match_compress_type(string, "lzo", false)) {
- 		ctx->compress_type = BTRFS_COMPRESS_LZO;
- 		ctx->compress_level = 0;
- 		btrfs_set_opt(ctx->mount_opt, COMPRESS);
- 		btrfs_clear_opt(ctx->mount_opt, NODATACOW);
- 		btrfs_clear_opt(ctx->mount_opt, NODATASUM);
--	} else if (strncmp(param->string, "zstd", 4) == 0) {
-+	} else if (btrfs_match_compress_type(string, "zstd", true)) {
- 		ctx->compress_type = BTRFS_COMPRESS_ZSTD;
- 		ctx->compress_level =
- 			btrfs_compress_str2level(BTRFS_COMPRESS_ZSTD,
--						 param->string + 4);
-+						 string + 4);
- 		btrfs_set_opt(ctx->mount_opt, COMPRESS);
- 		btrfs_clear_opt(ctx->mount_opt, NODATACOW);
- 		btrfs_clear_opt(ctx->mount_opt, NODATASUM);
--	} else if (strncmp(param->string, "no", 2) == 0) {
-+	} else if (btrfs_match_compress_type(string, "no", false) ||
-+		   btrfs_match_compress_type(string, "none", false)) {
- 		ctx->compress_level = 0;
- 		ctx->compress_type = 0;
- 		btrfs_clear_opt(ctx->mount_opt, COMPRESS);
- 		btrfs_clear_opt(ctx->mount_opt, FORCE_COMPRESS);
- 	} else {
- 		btrfs_err(NULL, "unrecognized compression value %s",
--			  param->string);
-+			  string);
- 		return -EINVAL;
- 	}
- 	return 0;
--- 
-2.47.2
-
+> > >       }
+> > >       ret =3D btrfs_delete_one_dir_name(trans, root, path, di);
+> > >
+> > > +     /*
+> > > +      * Down the call chains below we'll also need to allocate a pat=
+h, so no
+> > > +      * need to hold on to this one for longer than necessary.
+> > > +      */
+> > > +     btrfs_free_path(path);
+> > >
+> > >       if (ret)
+> > >
+> > > -             goto err;
+> > > -     btrfs_release_path(path);
+> > > +             return ret;
+> > >
+> > >       /*
+> > >
+> > >        * If we don't have dir index, we have to get it by looking up
+> > >
+> > > @@ -4254,7 +4256,7 @@ static int __btrfs_unlink_inode(struct
+> > > btrfs_trans_handle *trans,>
+> > >          "failed to delete reference to %.*s, root %llu inode %llu pa=
+rent
+> > %llu",
+> > >
+> > >                          name->len, name->name, btrfs_root_id(root), =
+ino, dir_ino);
+> > >
+> > >               btrfs_abort_transaction(trans, ret);
+> > >
+> > > -             goto err;
+> > > +             return ret;
+> > >
+> > >       }
+> > >
+> > >  skip_backref:
+> > >       if (rename_ctx)
+> > >
+> > > @@ -4263,7 +4265,7 @@ static int __btrfs_unlink_inode(struct
+> > > btrfs_trans_handle *trans,>
+> > >       ret =3D btrfs_delete_delayed_dir_index(trans, dir, index);
+> > >       if (ret) {
+> > >
+> > >               btrfs_abort_transaction(trans, ret);
+> > >
+> > > -             goto err;
+> > > +             return ret;
+> > >
+> > >       }
+> > >
+> > >       /*
+> > >
+> > > @@ -4287,19 +4289,14 @@ static int __btrfs_unlink_inode(struct
+> > > btrfs_trans_handle *trans,>
+> > >        * holding.
+> > >        */
+> > >
+> > >       btrfs_run_delayed_iput(fs_info, inode);
+> > >
+> > > -err:
+> > > -     btrfs_free_path(path);
+> > > -     if (ret)
+> > > -             goto out;
+> > >
+> > >       btrfs_i_size_write(dir, dir->vfs_inode.i_size - name->len * 2);
+> > >       inode_inc_iversion(&inode->vfs_inode);
+> > >       inode_set_ctime_current(&inode->vfs_inode);
+> > >       inode_inc_iversion(&dir->vfs_inode);
+> > >
+> > >       inode_set_mtime_to_ts(&dir->vfs_inode,
+> > >       inode_set_ctime_current(&dir->vfs_inode));>
+> > > -     ret =3D btrfs_update_inode(trans, dir);
+> > > -out:
+> > > -     return ret;
+> > > +
+> > > +     return btrfs_update_inode(trans, dir);
+> > >
+> > >  }
+> > >
+> > >  int btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+> > >
+> > > --
+> > > 2.47.2
+> >
+> >
+>
 
