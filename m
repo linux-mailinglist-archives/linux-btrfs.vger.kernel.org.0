@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-14374-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14375-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4039ACAC8C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 12:34:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6362EACAC8D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 12:34:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE29D3BBB97
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 10:33:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8519189F595
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 10:34:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 432CD20DD7D;
-	Mon,  2 Jun 2025 10:33:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DBD520E330;
+	Mon,  2 Jun 2025 10:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VZkO8Okz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nA1VP/Wd"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883FA20C489
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 10:33:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E7A20C49E
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 10:33:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748860406; cv=none; b=Pmh7u+vpEkV2TAHjDCQiGYNgfwU5yddX8z498wC0nyfegZ0god9PWrzvTcwL+ewgFdvWpD8QgDf9YQ3dmSbchnXrhqdU1uvKOkyJoi+rhb0mN1FxlYQezcgZ12wPISh5ukYCi56CTDNlXNiaMdno41WQqNswzxTH4E3qOgRnP08=
+	t=1748860408; cv=none; b=uTDeZTNBbu9IFIGLBhS8ullpVltfDJO9LHt70snsvUOTjtrjMTz8j9M1E+Qkzevtml1OcumTZ3NToL2ciCLM58SQ4+vAxmnHa/j+EUX8jP7FtAKKGbLc1bHvPrVsSMoLZ0yY5kf5LyhdFPL6X/zxC5EwPUYnhyiU+cicTL6i+Bo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748860406; c=relaxed/simple;
-	bh=CG46I01Sn8JZAlZrayuqDBXMOGr7Rd+ahwy3VsUlp0E=;
+	s=arc-20240116; t=1748860408; c=relaxed/simple;
+	bh=Rtk8m0CG6pRsAS/KyLAsDYR56l3Qbx/Pd/VYT5PBy40=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MfJUKQswgGwQQEtR+RWWWmMFM3wFlwmsBwgV3lmnhifzoZzI9sn1EHShZ++zKlAYXfwHDcdh1ApP88+0+p1BPoSkqEnIVr4iBrfnVXPhLttxqA2e0r3za1Z6IqaQTDyDZToBmVAR1hYE8zuhHOLF7NV0tnr0gmlk4bGBFarlEoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VZkO8Okz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D748DC4CEED
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 10:33:25 +0000 (UTC)
+	 MIME-Version; b=qr1RRHxy1EnMrb1MbqHeTfX0RShvM11v4o3mDm1pey5H+HzxB2L2AIc1tuRlKcpv1SPn0lLdHjIlVe3dBAROGtFDDp9rEHI6ZWeM9EdjXzd4o0lrm0SQwXcP3QgSm/0v688WV8cVoBpaBFXBaZwO4yHuDSSPfbDv5lb75v0PSKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nA1VP/Wd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF43AC4CEED
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 10:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748860406;
-	bh=CG46I01Sn8JZAlZrayuqDBXMOGr7Rd+ahwy3VsUlp0E=;
+	s=k20201202; t=1748860407;
+	bh=Rtk8m0CG6pRsAS/KyLAsDYR56l3Qbx/Pd/VYT5PBy40=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=VZkO8OkzvpB63tBIIvYVJUDfRAVcs/Qz0j/pTKQG3yf4KUtVY72TCiEOFBgwobZ74
-	 ECA7Ju8lnz7wEolfBkvHz0G6dpOaJITGF+wBPX5m7f0F1ELipnSNPbTsoVOBw58zYz
-	 O/M+sEhy8z+U/rDeI7hgNY0REXH96lBIogY++wxXNa1QqMyxOIjGC/FFzxVPzNJOZQ
-	 SfQQSGht43W6i+nQ25qGyw98Dx4c0DSEw9ipNUoXI4UH7rStw0llPyc5Tg1ydJBvdi
-	 jOzJA1l49egJ/6tqMc0DdhwVLxlNtz+8pEMV+AIrAXcbQm8IZfk9ShWiqIVifqsIha
-	 kv6jwnChpIUuQ==
+	b=nA1VP/WdjZFP9yd4kj0TXFyrtPDKr9ymv3H7ag4TIpB5Qu38YLs31JNT0/y+/Kkye
+	 WHHBo3LZs82VgJ3kvEPtsIlwiEeXnukjXPYc2FAwqsW0sU20oJ4srpNVaYoUFCgybS
+	 UXD1+bbfAGjAuRAfLutmkYzrsj6SiLRepu3gN+lC542JvVQ5B1fnIaFB2hXeRW4N4j
+	 FbYHWexIv6BfplNk2zSDGme7uaYCOPlOsYyuYxeYLnhm9V2vSnxsnk0LpE4Eef0P7L
+	 qynrLeoKIcAmC+2AEtY+jJffanCNqkbrnPPqcNpfDghs9iUFf4tlrd8VjpxTX5zPxS
+	 K5qGB9Dsm+qig==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 12/14] btrfs: add details to error messages at btrfs_delete_delayed_dir_index()
-Date: Mon,  2 Jun 2025 11:33:05 +0100
-Message-ID: <4366183ebe680ab6f8fb75cc1db9034daa6450e9.1748789125.git.fdmanana@suse.com>
+Subject: [PATCH 13/14] btrfs: make btrfs_should_delete_dir_index() return a bool instead
+Date: Mon,  2 Jun 2025 11:33:06 +0100
+Message-ID: <9ae7b77042c2a59c93f5ed5e0e9ae99c94656bbb.1748789125.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1748789125.git.fdmanana@suse.com>
 References: <cover.1748789125.git.fdmanana@suse.com>
@@ -59,53 +59,55 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Update the error messages with:
-
-1) Fix typo in the first one, deltiona -> deletion;
-
-2) Remove redundant part of the first message, the part following the
-   comma, and including all the useful information: root, inode, index
-   and error value;
-
-3) Update the second message to use more formal language (example 'error'
-   instead of 'err'), , remove redundant part about "deletion tree of
-   delayed node..." and print the relevant information in the same
-   format and order as the first message, without the ugly opening
-   parenthesis without a space separating from the previous word.
-   This also makes the message similar in format to the one we have at
-   btrfs_insert_delayed_dir_index().
+There's no need to return errors and we currently return 1 in case the
+index should be deleted and 0 otherwise, so change the return type from
+int to bool as this is a boolean function and it's more clear this way.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/delayed-inode.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/delayed-inode.c | 7 +++----
+ fs/btrfs/delayed-inode.h | 3 +--
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 6918340f4b38..1e9bec6d24f7 100644
+index 1e9bec6d24f7..050723ade942 100644
 --- a/fs/btrfs/delayed-inode.c
 +++ b/fs/btrfs/delayed-inode.c
-@@ -1618,7 +1618,8 @@ int btrfs_delete_delayed_dir_index(struct btrfs_trans_handle *trans,
- 	 */
- 	if (ret < 0) {
- 		btrfs_err(trans->fs_info,
--"metadata reservation failed for delayed dir item deltiona, should have been reserved");
-+"metadata reservation failed for delayed dir item deletion, index: %llu, root: %llu, inode: %llu, error: %d",
-+			  index, btrfs_root_id(node->root), node->inode_id, ret);
- 		btrfs_release_delayed_item(item);
- 		goto end;
+@@ -1734,17 +1734,16 @@ void btrfs_readdir_put_delayed_items(struct btrfs_inode *inode,
+ 	downgrade_write(&inode->vfs_inode.i_rwsem);
+ }
+ 
+-int btrfs_should_delete_dir_index(const struct list_head *del_list,
+-				  u64 index)
++bool btrfs_should_delete_dir_index(const struct list_head *del_list, u64 index)
+ {
+ 	struct btrfs_delayed_item *curr;
+-	int ret = 0;
++	bool ret = false;
+ 
+ 	list_for_each_entry(curr, del_list, readdir_list) {
+ 		if (curr->index > index)
+ 			break;
+ 		if (curr->index == index) {
+-			ret = 1;
++			ret = true;
+ 			break;
+ 		}
  	}
-@@ -1627,9 +1628,8 @@ int btrfs_delete_delayed_dir_index(struct btrfs_trans_handle *trans,
- 	ret = __btrfs_add_delayed_item(node, item);
- 	if (unlikely(ret)) {
- 		btrfs_err(trans->fs_info,
--			  "err add delayed dir index item(index: %llu) into the deletion tree of the delayed node(root id: %llu, inode id: %llu, errno: %d)",
--			  index, btrfs_root_id(node->root),
--			  node->inode_id, ret);
-+"failed to add delayed dir index item, root: %llu, inode: %llu, index: %llu, error: %d",
-+			  index, btrfs_root_id(node->root), node->inode_id, ret);
- 		btrfs_delayed_item_release_metadata(dir->root, item);
- 		btrfs_release_delayed_item(item);
- 	}
+diff --git a/fs/btrfs/delayed-inode.h b/fs/btrfs/delayed-inode.h
+index c4b4ba122beb..73d13fac8917 100644
+--- a/fs/btrfs/delayed-inode.h
++++ b/fs/btrfs/delayed-inode.h
+@@ -150,8 +150,7 @@ bool btrfs_readdir_get_delayed_items(struct btrfs_inode *inode,
+ void btrfs_readdir_put_delayed_items(struct btrfs_inode *inode,
+ 				     struct list_head *ins_list,
+ 				     struct list_head *del_list);
+-int btrfs_should_delete_dir_index(const struct list_head *del_list,
+-				  u64 index);
++bool btrfs_should_delete_dir_index(const struct list_head *del_list, u64 index);
+ int btrfs_readdir_delayed_dir_index(struct dir_context *ctx,
+ 				    const struct list_head *ins_list);
+ 
 -- 
 2.47.2
 
