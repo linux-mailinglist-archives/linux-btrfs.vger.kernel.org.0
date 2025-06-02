@@ -1,142 +1,240 @@
-Return-Path: <linux-btrfs+bounces-14358-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14359-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6875BACA8E0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 07:27:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BC4FACA90E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 07:43:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E22CA1668C6
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 05:27:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C952189C5AD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 05:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BBE17B506;
-	Mon,  2 Jun 2025 05:27:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ASNZCx2T"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63FAF1865FA;
+	Mon,  2 Jun 2025 05:43:26 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0787212CDA5
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 05:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7752C3242
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 05:43:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748842063; cv=none; b=j24AXRexi4XYVh1jZVCTh4JA9Jp03gUKLJIn1JMFYeuDcZIms6sT7Ks1c/cnF47WBk3i9tD8o2bU7/l84ZYn5IBU/MSvXLDNrecDGoS3Oa8up+w7qDO0E2nsibHJ4qGrtG/JJf4TBWZ0qlkU9njvdv3Vxidp4DNklE5wbZzerA0=
+	t=1748843006; cv=none; b=MenY6jI5ZxVFKDQ6Xaau4SDRO5erOh7YnkXPztM+lSzAhA4pZSZXUDcWyxMEgUPct23/TWnlvgcffCCNvfl2qbpdnXgOO/H1vGkh9schiZZvzUQrxyr+0yUQR/dTd4z0eC2tPsMimoKaykzc29cMzUgiURUxMJqNLJdnL2LWSTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748842063; c=relaxed/simple;
-	bh=iMsQBKWmQo5ervVm/xYqHQHfREJYt0aPDRRlgIbhiJw=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=mP1kWNomRVvkYJI/yC/QXy+4OC8Rqhd7Z1L8g0TiOwpuUvSwuOsfOu3KD+VVH43FXGPTFbMDgF+Q6/R3/vFg3mioTyrP+yUQbD8yl3o52ivZx6AqlmfA+jge+PX9bBoXoM3lLS4EfoVMB2QQWw47SbbhDlb+Lnz5BFCkE/KAC9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ASNZCx2T; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3a3771c0f8cso2377884f8f.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 01 Jun 2025 22:27:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1748842059; x=1749446859; darn=vger.kernel.org;
-        h=content-transfer-encoding:autocrypt:subject:from:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aCH0bGmkwFQ0oUtv+YEu8TOogqu6Zwww1ytD8yRSxs8=;
-        b=ASNZCx2TnaltOr2B0IdTXZCkd6LYzK5HIQXljnW4HJ0ZRoia9ST6Ot7edEV/xCfxmA
-         Tdy/UPZP5AWFxIzPpzk24Z2aGx8Y6habmZZPaXyNYx6qH7eV75NBIPB2hMxeYtoMFdLr
-         yr84UtNFJtpj4AOFdRGKTogYK9pFf4CCw1NTxtM9pu3njngkupHEis9d7OM76RJmgzNm
-         WA9A6sRia2/rRnVcKRtamHL7pWxdHavvO2SEE4jbgEARBozPhIAg0dC5HiJa5VtpLJ8Q
-         rGs9vWsq5KAoPgeTS6amTnQ1f1tvu5EnyZbv5kRNXnLULg04U15FQOa+SIFJsSKujfD9
-         28Fg==
+	s=arc-20240116; t=1748843006; c=relaxed/simple;
+	bh=1FFaBPcHxXEQTLJ2C6D2WNkdNYqh47xliVhMEearWME=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ARuhCsO+jGI9kD0o6GtGyYGrmd8aNv749JFqQA9RdJ139oIyoKK2NVn31xwXEPJmgaiHzDllinf6W0n8p9gOYdkRTEZa9dwJtnll/vU4ySGgAc9wUH2+N+n85CNnZ4ZGu2wsrDcPuYs5b0/9TBp352sMVzU/Syp7UUSGyFihnWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3a0ac853894so3770837f8f.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 01 Jun 2025 22:43:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748842059; x=1749446859;
-        h=content-transfer-encoding:autocrypt:subject:from:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aCH0bGmkwFQ0oUtv+YEu8TOogqu6Zwww1ytD8yRSxs8=;
-        b=runwu86NE9hIC5egaW3bZgFrxGFdleH8jc1/frdNWFyKw+jdVQGGewWActQimtM8uQ
-         ednk4ig0ObY/YwBqeoCfQL+M1WY3zTHR+fkZ93qIKzQuF7kYimWGeZpVGBAKUNi4IpuZ
-         iMqZmcAyVxVTvyfUzjD82wvmwOYlAUNJ/JwvMv2QYuVcwMKWk0ypAiQCPjgna2ASgZoQ
-         AakirM6PfoDfN1LwbjGL48kMAJNQz3eTxovh0LKBUH+co5Zn1jMQFbR1QCfyZjxoMMpI
-         JCinJXnWzyzGfXh3kPMNjnOyT34vUFupAungoPO7dFP07aosN4IPRCSBTLBayyrVsh8A
-         1rRg==
-X-Forwarded-Encrypted: i=1; AJvYcCXKevYJTGRjsL2BlT3+YQzLu7TVpesQWfrWdQH+PhHpEIijKxP1DYOcW42rdbmcPIX1TXIm7OmOWIN0sg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5ZSp+KF+7kJDy41vQ81Wel3pEOC/v6S2/eUD5nIT83taW3uCs
-	EhtwiFgWAU4DzdEdl6GHw2XcMKG4VWIcJVU0bH6L3vlbd3Uiy3vz7FQJbzPbYNtnoy8=
-X-Gm-Gg: ASbGnctqTfZ7b+9h3AYt2TtIimIu4DbrN83lHmeTM7GhAFq5RcfvB5s+rxwdVUEz9n5
-	udJhq0b3r6JhPQt+UcQAgTiIKjocb2frQ1Qh87u5GpPo5wBHoQjpCFc2fhKEw52s32/g67akQDJ
-	6zxscf3/bgp3z/khRFqdjH2w2fziejMF4CtAGOIbI7BrHY1dyegetlFJFdEBnnS6SdCbkp45TZU
-	qitNjezC81oQCf14q0VgnsvxJ6Qrw9fKmP87s3XMuJQ21cVVP+V9v23AoeXXf9WggiNNqwto1Xu
-	pkMgUHfySATGr0oyzG3z9ppllW54UAxEm2Ax0YVCeYvEjfeAhqqwsmkXygmonnXtKt2uoLX+vwz
-	gECU=
-X-Google-Smtp-Source: AGHT+IFvrvR3g9f/QlYbsKHR6XQ6lLC7CrFLCNUVuDtc6HQwWob3qcqCbe+Z2M1LwkP/xtmvsCethQ==
-X-Received: by 2002:a05:6000:40c7:b0:3a4:ead4:5ea4 with SMTP id ffacd0b85a97d-3a4f89ab616mr8721464f8f.24.1748842059172;
-        Sun, 01 Jun 2025 22:27:39 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506cf468esm62830385ad.165.2025.06.01.22.27.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Jun 2025 22:27:38 -0700 (PDT)
-Message-ID: <cd39db71-be9d-4df4-8e4e-e7b5d7a09179@suse.com>
-Date: Mon, 2 Jun 2025 14:57:31 +0930
+        d=1e100.net; s=20230601; t=1748843002; x=1749447802;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VK5ABjtyTEYvFaMc4PaNvxvS09L+85+fi3NJvmEd5rA=;
+        b=FbxNiolXiqnVibyxv2vvz+0naxiJZSP0IiOxc9bZvkjcR612ghkUm6dLxjreq1ySkc
+         84sPhaZ2QcumB/rV6ic7Aq2exVFUb6exm1m4roy1qoQtW4ICWsJfo/qGwc1KxIuflH0J
+         N4KDKGatKJ0i9YAZl5i1kQndhM6KbxKESex0AzMBVph0/OCVJkKMgr33lKD8X9W/uHHD
+         DiEd8NZ1WTrEdhJA/v2DoQw/6Mo0mDxeWpyl0NFESoOyEfNQdIaMUibiuzN+fA0Ak7mT
+         QPV4JWi7KcmCr5nMSmTX1NeAmj5TK/JFslekPV+I9K6qjr5/45nwsa3GlDiVXWACFvsS
+         BMzQ==
+X-Gm-Message-State: AOJu0Ywcph0SdZ98R2PXxSEZjTsrllvLzLi7dfKvmKscE+yhim8YeHKr
+	60AFBjdG3/O6Dl3Z5CTo7j4UsehRy1/jjiD3xwzhavdUCadwGbwg3sBDPWl6nA==
+X-Gm-Gg: ASbGncueCbDnF1urD9NrgGzEtruBWkiXSZ1xg+LD56OC1+YDrQhMqQJ2Y3g3r1qFJ+r
+	Cmn83ckPluSEMxuPbcUp8nv0I9DbOmckGijsFyZ00s8/t2HslWm+SBwb4lkbIAxPyzhNMkDrS6I
+	m6ZNc1bVVMsCjvUL0Aez/KF8nU2Wr6pYjK9V0SwZYKidAfm2ZZJpR3OB1KHAJB9Oim5D0nkxw8F
+	bp0d9HcJczyAusLhp9z9cXliMIbr48hTrsJOiNQrwDQtv6vdRZyE1JT3leXPGubI69dVoba9/se
+	SQH6OVlHzuPVyrAMnmoak46zAN+FWrFcWGxaUdT5Fyc3DWDZd/E2h/eeoh3hmmLvE4F9jBeq1bF
+	bONy/eykv0AmTvjU0f7+sO8vvNFuX4sKEHS1dof/QcEat
+X-Google-Smtp-Source: AGHT+IGbNc6pMF3ES+otE2F4NCD9RB3bFwh8vg96u1Z492eL1p5webhioKLOI+PFokt11g6osL8Qcg==
+X-Received: by 2002:a05:6000:310f:b0:3a4:f744:e01b with SMTP id ffacd0b85a97d-3a4fe395603mr4765343f8f.39.1748843002214;
+        Sun, 01 Jun 2025 22:43:22 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f734a100fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f734:a100:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4efe5b887sm13898832f8f.18.2025.06.01.22.43.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Jun 2025 22:43:21 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2] btrfs: zoned: reserve data_reloc block group on mount
+Date: Mon,  2 Jun 2025 07:43:12 +0200
+Message-ID: <6133ab918b19507738e4fa08be23b73be0d8d84e.1748842937.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-From: Qu Wenruo <wqu@suse.com>
-Subject: Weird failure count if generic/210 fails without any output
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Recently I'm hitting the following failure, the failure itself is a 
-known one, but the point is there are two failures, but only reported one:
+Create a blog group dedicated for data relocation on mount of a zoned
+filesystem.
 
-   Failures:  generic/747
-   Failed 2 of 1091 tests
+If there is already more than one empty DATA block group on mount, this
+one is picked for the data relocation block group, instead of a newly
+created one.
 
-The missing one is generic/210, which fails like this:
+This is done to ensure, there is always space for performing garbage
+collection and the filesystem is not hitting ENOSPC under heavy overwrite
+workloads.
 
-   generic/210 1s ...  1s
-          [failed, exit status 126]no qualified output
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+Changes to v1:
+- Fix build error with CONFIG_BLK_DEV_ZONED=n
 
-But it's not shown in the "Failures:" line.
+ fs/btrfs/disk-io.c |  1 +
+ fs/btrfs/zoned.c   | 84 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/zoned.h   |  3 ++
+ 3 files changed, 88 insertions(+)
 
-Furthermore, I can no longer reproduce the failure on generic/210 just 
-after checking out the latest patches-in-queue, and re-make.
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 3def93016963..b211dc8cdb86 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3562,6 +3562,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		goto fail_sysfs;
+ 	}
+ 
++	btrfs_zoned_reserve_data_reloc_bg(fs_info);
+ 	btrfs_free_zone_cache(fs_info);
+ 
+ 	btrfs_check_active_zone_reservation(fs_info);
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 19710634d63f..446f6cee10c2 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -17,6 +17,7 @@
+ #include "fs.h"
+ #include "accessors.h"
+ #include "bio.h"
++#include "transaction.h"
+ 
+ /* Maximum number of zones to report per blkdev_report_zones() call */
+ #define BTRFS_REPORT_NR_ZONES   4096
+@@ -2443,6 +2444,89 @@ void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg)
+ 	spin_unlock(&fs_info->relocation_bg_lock);
+ }
+ 
++void btrfs_zoned_reserve_data_reloc_bg(struct btrfs_fs_info *fs_info)
++{
++	struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
++	struct btrfs_space_info *space_info;
++	struct btrfs_root *root;
++	struct btrfs_trans_handle *trans = NULL;
++	struct btrfs_block_group *bg;
++	u64 alloc_flags;
++	bool initial = false;
++	int index;
++	int ret;
++
++	if (!btrfs_is_zoned(fs_info))
++		return;
++
++	if (fs_info->data_reloc_bg)
++		return;
++
++	if (sb_rdonly(fs_info->sb))
++		return;
++
++	space_info = data_sinfo->sub_group[0];
++	ASSERT(space_info->subgroup_id == BTRFS_SUB_GROUP_DATA_RELOC);
++	alloc_flags = btrfs_get_alloc_profile(fs_info, space_info->flags);
++	index = btrfs_bg_flags_to_raid_index(alloc_flags);
++
++	list_for_each_entry(bg, &data_sinfo->block_groups[index], list) {
++		btrfs_get_block_group(bg);
++		if (!bg->used) {
++			if (!initial) {
++				initial = true;
++				btrfs_put_block_group(bg);
++				continue;
++			}
++
++			fs_info->data_reloc_bg = bg->start;
++			set_bit(BLOCK_GROUP_FLAG_ZONED_DATA_RELOC,
++				&bg->runtime_flags);
++			btrfs_zone_activate(bg);
++
++			btrfs_put_block_group(bg);
++			return;
++		}
++		btrfs_put_block_group(bg);
++	}
++
++	if (btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE))
++		root = fs_info->block_group_root;
++	else
++		root = btrfs_extent_root(fs_info, 0);
++
++	trans = btrfs_join_transaction(root);
++	if (IS_ERR(trans))
++		return;
++
++	mutex_lock(&fs_info->chunk_mutex);
++	bg = btrfs_create_chunk(trans, space_info, alloc_flags);
++	if (IS_ERR(bg)) {
++		mutex_unlock(&fs_info->chunk_mutex);
++		ret = PTR_ERR(bg);
++		btrfs_abort_transaction(trans, ret);
++		btrfs_end_transaction(trans);
++		return;
++	}
++
++	ret = btrfs_chunk_alloc_add_chunk_item(trans, bg);
++	if (ret) {
++		mutex_unlock(&fs_info->chunk_mutex);
++		btrfs_abort_transaction(trans, ret);
++		btrfs_end_transaction(trans);
++		return;
++	}
++	mutex_unlock(&fs_info->chunk_mutex);
++
++	btrfs_get_block_group(bg);
++	fs_info->data_reloc_bg = bg->start;
++	set_bit(BLOCK_GROUP_FLAG_ZONED_DATA_RELOC, &bg->runtime_flags);
++	btrfs_zone_activate(bg);
++	btrfs_put_block_group(bg);
++
++	btrfs_end_transaction(trans);
++}
++
+ void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info)
+ {
+ 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
+index 9672bf4c3335..6e11533b8e14 100644
+--- a/fs/btrfs/zoned.h
++++ b/fs/btrfs/zoned.h
+@@ -88,6 +88,7 @@ void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical,
+ void btrfs_schedule_zone_finish_bg(struct btrfs_block_group *bg,
+ 				   struct extent_buffer *eb);
+ void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg);
++void btrfs_zoned_reserve_data_reloc_bg(struct btrfs_fs_info *fs_info);
+ void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info);
+ bool btrfs_zoned_should_reclaim(const struct btrfs_fs_info *fs_info);
+ void btrfs_zoned_release_data_reloc_bg(struct btrfs_fs_info *fs_info, u64 logical,
+@@ -241,6 +242,8 @@ static inline void btrfs_schedule_zone_finish_bg(struct btrfs_block_group *bg,
+ 
+ static inline void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg) { }
+ 
++static inline void btrfs_zoned_reserve_data_reloc_bg(struct btrfs_fs_info *fs_info) { }
++
+ static inline void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info) { }
+ 
+ static inline bool btrfs_zoned_should_reclaim(const struct btrfs_fs_info *fs_info)
+-- 
+2.43.0
 
-This failure may be caused by my recent system update, which can lead to 
-old binaries to fail to load due to changed .so libraries.
-
-But this still makes me wonder, is there some error detection bug in the 
-check script that can miss some test failures?
-
-Thanks,
-Qu
 
