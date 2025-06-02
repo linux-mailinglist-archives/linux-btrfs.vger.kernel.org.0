@@ -1,246 +1,232 @@
-Return-Path: <linux-btrfs+bounces-14384-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14385-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C19CACB989
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 18:21:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F4A0ACB98A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 18:22:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68924189B03E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 16:21:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B55177AC1FC
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 16:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8720D227E94;
-	Mon,  2 Jun 2025 16:20:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Mf6CeCEM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A856122A7EA;
+	Mon,  2 Jun 2025 16:20:50 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B57227E8A
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 16:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A5322A4EE
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 16:20:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748881233; cv=none; b=cb4v5BvOWBCKxQNSxMLz1s+Zq3FxnTydhB413GCValuMhL/xxMK8IftoCUx0F6f0j4KMTH+QaddluHykrYhML7dZmi1WwhhmB1iK7WaqXvWj/OZfthS53v+G2MRhrrJx6FeYiLNOph5nQ6MgcgxFj/A9xFcjQp1kY/T+DMj2Gvk=
+	t=1748881250; cv=none; b=N+y5REzp/zlwmmwykxzI6mSSsrqCg7IVUii0yHaTO9/OkAFBb9MHo0c39PZqLeKI/oS3Cv3+jz5Jl2rTlpSam60XyeIgN+v5SMGQ1t4auHBrUHQOP08snkhocjzdyBJTPSo/IS0YimGz6B4gdy8F1ogRTJCZx0Zb19/Mm8NbbPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748881233; c=relaxed/simple;
-	bh=DsZcXrH0q1cyTGbvTIUopMG4Kh4tREueZn/GnGsnq58=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XuP01fltV1FO5fID8vZuC6rYgO915pCjBiQPcAvFgYoziOZwlxyFzBlFQXLrz9Z7iauwpyTCSdeUZnYpm0TtKfnG4dg3zEO4bXK3J3q9+T7QAgRZAuPSe3tW6r6lPfmJtmdJinFURMklrEy61LZLc1llLlIrNeAlQPfcPDj+hb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Mf6CeCEM; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-adb2e9fd208so744157366b.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Jun 2025 09:20:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1748881229; x=1749486029; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HQoqbZmXiqjyKHCA9hno/RCliaWCvmNN/QoAh8wKk88=;
-        b=Mf6CeCEM+J4TLxTUuv4tR9BN7rsXPinePRSbSFERs6dTH+wSAE6wpMTpDIUUrrtBta
-         1t9+lQGwCmRY2nl+yOGEtZ/3mDrmKKZW7pbuTv+nLRAZ8AEmHx647rUvDbfDCW3CSpjZ
-         ezBlZYyT67ERzqL0hhnS+yF6L4Is2w/QzQ+K1VrtemjhwZS/Cyv2RxG2kU1FXXKf9O5M
-         ZLjLy8Vyv0qR8VSrJGeBMEx5mumIPkU9L9ODLSHjzFN+qmg6FRf2PdpcObPWqdPoxXMn
-         U677Ft2agMGHRT3ruy0m1UAK+VMmb7O9GVuTR7mugh+FjUZhUK7Iqh5wLo3kCttzxVtf
-         z+8w==
+	s=arc-20240116; t=1748881250; c=relaxed/simple;
+	bh=Cc4aLVgkzFhyCb82ScAh2wQ+357QJqSa1D9sT7pte+g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AyJDShQHmsKYig7vQt2MCzkpw2v/EzvEBAHANbzWE8dbi9BdeNqudQe4kKGW7Ull76XWeyBOs7IcX12lLro4MsZi3xEP0cRuC6MwemXpw5mepGvasngNRx8OVPeo/NozRdxf5O0krxYGPoH3lS0aOz+REc5zcrHrrgwdFiYHIKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a4f89c6e61so1835795f8f.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Jun 2025 09:20:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748881229; x=1749486029;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HQoqbZmXiqjyKHCA9hno/RCliaWCvmNN/QoAh8wKk88=;
-        b=iHX/hiB3XnkRHCTMbck03Sp34ykAtWfAsSwasrqg9LaFYrWDs104H3hQ+acCLCsm2e
-         0ZLcgMTc9WOdBjZRQDH7blxqSbAkBiWEOFZptUJ/Bg5ME3VcPUaeP5RJAznKboi1NHTn
-         njgz2CGrU7zi8/uOWbxcJ9s1w5/kFWmjznSZ3DggxWmozND3G70G0PnuGeRKK6p3a9I8
-         7pCIv8zNXloytsp8mnT8osT5RzGRdSSxig3P+uefizq2j4GbndSozKia0Rv0d/brGsdO
-         r/Y0khXq9E+OG+GYd0cnhYRDGXoR3It5V92gWI+QB2beeNtYEEepYJlVFxPu9Uy2mNWF
-         cT6g==
-X-Forwarded-Encrypted: i=1; AJvYcCXlV7TCwMINSUn9H4QevomuE7KXvRA6gVc4gVDkoEkNWZdbSED/tlHCO2P9Dr8f4JrVVo3H0UbvELKHMQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yznwg9E/lKF1IBs/mb2RlMkqX9pM5l/xwPuGDb65++WgmPI3F3P
-	M+zKCEj5S1K86baacWyL5ZqMTUNvSHa3R8RA2T/EWVDDKyFnpY5shWskLJOM9AXivZPltKCbKJm
-	e3RJCtjjE0kPNfko5ipQiyAK85p94uSCfmkzwJEcN8aOUuLKMhNX//BoWXA==
-X-Gm-Gg: ASbGncvUD77a28LN0dmJDzqxsq4Ykf/C6VPPZdCc8xjUfg5fhlYbyb87072nrfh0zjk
-	vP7onPLbefxtipepCDcUTscV18/YkZ3kmvcajysjGFqkyBGShpKCpJHjjGvdz4shPSKkS1BklFd
-	UsQSlNOHfC1vYpc1fb1qt417wkYdCX8dg=
-X-Google-Smtp-Source: AGHT+IEbhydfFm+QJHG3z3+ijrBqI/pxE8xv0hyEwM2GzyFEpHnQLZ462dO/1xCNDT6GH77lT3T9a2mqEWflI9dMvkE=
-X-Received: by 2002:a17:907:2d27:b0:ad5:55db:e411 with SMTP id
- a640c23a62f3a-adb322afc89mr1429636266b.27.1748881229480; Mon, 02 Jun 2025
- 09:20:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1748881246; x=1749486046;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0W0Y1De58/fPO/OrtJss93BYip5p1NUZf0kCf2pBxeU=;
+        b=G+Z/8W3TsQOb3qeb5rGlqyHzimLTDVoVlTTspETjAYQSo/mMmeNoWLbgnTH/Vvkt1O
+         mLLu+dduhf/HGqTA3TY6U5mQsigXr1IBC+69QkRHaV9U4+TAvX7gL0M8t8SXyBL7kgbT
+         V10pUiJIekDNq9tyVqMf4Jmb8UwazSxa9g0GmCgp2Ir25USkI2ilBvQWD5UFqU/SNUX2
+         g27RTVnHou8wFycqVz1dM3uIq43b63CVsJD2rdFbEe7L7obNLAltoK8wFyL58yyHQqwB
+         AuGWObOV3arQ0bPwNcLFN/XYU97+3IQfX8TEzpWX5P11NrdNVPmE91KFduANv+iVZLoa
+         vgUw==
+X-Gm-Message-State: AOJu0YwPvNA/P8Cg9ZerARlqDXioLK+Bz7pgaZgtUhgVybjZIwrpH3CJ
+	NbA6LWjOcl5Ahq0kKe75KbQ+j5tvZ+XZikW4Vi8cYTTY5iGGjqV2LyL3qDITkg==
+X-Gm-Gg: ASbGncsZnswqIb7lpqtK1DBE9ieC+8QA5UOo/8hhYjhUdYM3hCcvJukxTpNiO15Yteb
+	UZ9hjLBMgxXZof/qjHzWawfEeQcOaVhQ8BuzofsGH63axtRZxxwE5FANHvvMG3FWXMNkXB1j4OT
+	EnEVbhLartLiXGd2/a6c5odOUZNNVzZUflc+i8JD90QvAvc14f3xH6ZrxZa55O/CqXoKw2vXrFv
+	U+J3pvt+ZjLCCt6J/uyX/twB0UhqWLCPBnJcBESxfqTGrnJ38nniSBZwk3qqDVY/+MowAZZY+JG
+	qnH1ZjQCeGUBfsOE8xd8PhKCpRnhtYtqSU8P1m0IVUCDQGH/iIkDwQ4afxlAjRfHInDZ9smd+h3
+	2EHTza19+AYo37+3/Gofu9zdmMDgx0QibTA==
+X-Google-Smtp-Source: AGHT+IHrI26bgITFsawlVc3e6Dl67JHWpz9T/ZY1v7OVPTDmNSEzwOvhejT5aT/YxRtqr/eCxLG5pA==
+X-Received: by 2002:a05:6000:230d:b0:3a4:ddd6:427f with SMTP id ffacd0b85a97d-3a4fe3947d1mr7607118f8f.35.1748881246329;
+        Mon, 02 Jun 2025 09:20:46 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f734a100fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f734:a100:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-450d7f8edc0sm126771515e9.5.2025.06.02.09.20.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Jun 2025 09:20:45 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Filipe Manana <fdmanana@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v3] btrfs: zoned: reserve data_reloc block group on mount
+Date: Mon,  2 Jun 2025 18:20:38 +0200
+Message-ID: <20250602162038.3840-1-jth@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <14d1a4a5621f5059dae764a8bfc9b114b6df029c.1748789125.git.fdmanana@suse.com>
- <6172770.lOV4Wx5bFT@saltykitkat> <CAL3q7H4j_W0rANN8oJdzk1x36oOYLJB1=TSAsEA90vKeKX=7Rg@mail.gmail.com>
-In-Reply-To: <CAL3q7H4j_W0rANN8oJdzk1x36oOYLJB1=TSAsEA90vKeKX=7Rg@mail.gmail.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Mon, 2 Jun 2025 18:20:18 +0200
-X-Gm-Features: AX0GCFttCj5xkJyhYraUPJePm34YJIs67oq2BGVVP99bikSt_lViNjpwTbFz-ZE
-Message-ID: <CAPjX3FeiJSXaPZxhKNmq0o7tzOvQ+58oBHOf8qR=y+JAh7T8cQ@mail.gmail.com>
-Subject: Re: [PATCH 03/14] btrfs: free path sooner at __btrfs_unlink_inode()
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Sun YangKai <sunk67188@gmail.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2 Jun 2025 at 15:28, Filipe Manana <fdmanana@kernel.org> wrote:
->
-> On Mon, Jun 2, 2025 at 2:25=E2=80=AFPM Sun YangKai <sunk67188@gmail.com> =
-wrote:
-> >
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > After calling btrfs_delete_one_dir_name() there's no need for the pat=
-h
-> > > anymore so we can free it immediately after. After that point we do
-> > > some btree operations that take time and in those call chains we end =
-up
-> > > allocating paths for these operations, so we're unnecessarily holding=
- on
-> > > to the path we allocated early at __btrfs_unlink_inode().
-> > >
-> > > So free the path as soon as we don't need it and add a comment. This
-> > > also allows to simplify the error path, removing two exit labels and
-> > > returning directly when an error happens.
-> > >
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > ---
-> > >
-> > >  fs/btrfs/inode.c | 31 ++++++++++++++-----------------
-> > >  1 file changed, 14 insertions(+), 17 deletions(-)
-> > >
-> > > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > > index 7bad21ec41f8..a9a37553bc45 100644
-> > > --- a/fs/btrfs/inode.c
-> > > +++ b/fs/btrfs/inode.c
-> > > @@ -4215,20 +4215,22 @@ static int __btrfs_unlink_inode(struct
-> > > btrfs_trans_handle *trans,>
-> > >       u64 dir_ino =3D btrfs_ino(dir);
-> > >
-> > >       path =3D btrfs_alloc_path();
-> > >
-> > > -     if (!path) {
-> > > -             ret =3D -ENOMEM;
-> > > -             goto out;
-> > > -     }
-> > > +     if (!path)
-> > > +             return -ENOMEM;
-> > >
-> > >       di =3D btrfs_lookup_dir_item(trans, root, path, dir_ino, name, =
--1);
-> > >       if (IS_ERR_OR_NULL(di)) {
-> > >
-> > > -             ret =3D di ? PTR_ERR(di) : -ENOENT;
-> > > -             goto err;
-> > > +             btrfs_free_path(path);
-> > > +             return di ? PTR_ERR(di) : -ENOENT;
-> >
-> > Maybe we could define the path using `BTRFS_PATH_AUTO_FREE(path);` so t=
-hat we
-> > don't need to write btrfs_free_path before every return statement like =
-this.
-> >
-> > Forgive me if I'm mistaken, as I'm not completely familiar with this.
->
-> For the error case only, yes. But the goal here is to free the path as
-> soon as it's not needed for the expected, non-error case.
-> So no, it wouldn't do it.
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-You can actually combine explicit btrfs_free_path(path) with auto free
-if you follow with path =3D NULL. In such a case the second free will
-result in nop.
-Of course, a comment would be proper at such a location if you really
-wanted to use it.
+Create a block group dedicated for data relocation on mount of a zoned
+filesystem.
 
-> > >       }
-> > >       ret =3D btrfs_delete_one_dir_name(trans, root, path, di);
-> > >
-> > > +     /*
-> > > +      * Down the call chains below we'll also need to allocate a pat=
-h, so no
-> > > +      * need to hold on to this one for longer than necessary.
-> > > +      */
-> > > +     btrfs_free_path(path);
-> > >
-> > >       if (ret)
-> > >
-> > > -             goto err;
-> > > -     btrfs_release_path(path);
-> > > +             return ret;
-> > >
-> > >       /*
-> > >
-> > >        * If we don't have dir index, we have to get it by looking up
-> > >
-> > > @@ -4254,7 +4256,7 @@ static int __btrfs_unlink_inode(struct
-> > > btrfs_trans_handle *trans,>
-> > >          "failed to delete reference to %.*s, root %llu inode %llu pa=
-rent
-> > %llu",
-> > >
-> > >                          name->len, name->name, btrfs_root_id(root), =
-ino, dir_ino);
-> > >
-> > >               btrfs_abort_transaction(trans, ret);
-> > >
-> > > -             goto err;
-> > > +             return ret;
-> > >
-> > >       }
-> > >
-> > >  skip_backref:
-> > >       if (rename_ctx)
-> > >
-> > > @@ -4263,7 +4265,7 @@ static int __btrfs_unlink_inode(struct
-> > > btrfs_trans_handle *trans,>
-> > >       ret =3D btrfs_delete_delayed_dir_index(trans, dir, index);
-> > >       if (ret) {
-> > >
-> > >               btrfs_abort_transaction(trans, ret);
-> > >
-> > > -             goto err;
-> > > +             return ret;
-> > >
-> > >       }
-> > >
-> > >       /*
-> > >
-> > > @@ -4287,19 +4289,14 @@ static int __btrfs_unlink_inode(struct
-> > > btrfs_trans_handle *trans,>
-> > >        * holding.
-> > >        */
-> > >
-> > >       btrfs_run_delayed_iput(fs_info, inode);
-> > >
-> > > -err:
-> > > -     btrfs_free_path(path);
-> > > -     if (ret)
-> > > -             goto out;
-> > >
-> > >       btrfs_i_size_write(dir, dir->vfs_inode.i_size - name->len * 2);
-> > >       inode_inc_iversion(&inode->vfs_inode);
-> > >       inode_set_ctime_current(&inode->vfs_inode);
-> > >       inode_inc_iversion(&dir->vfs_inode);
-> > >
-> > >       inode_set_mtime_to_ts(&dir->vfs_inode,
-> > >       inode_set_ctime_current(&dir->vfs_inode));>
-> > > -     ret =3D btrfs_update_inode(trans, dir);
-> > > -out:
-> > > -     return ret;
-> > > +
-> > > +     return btrfs_update_inode(trans, dir);
-> > >
-> > >  }
-> > >
-> > >  int btrfs_unlink_inode(struct btrfs_trans_handle *trans,
-> > >
-> > > --
-> > > 2.47.2
-> >
-> >
->
+If there is already more than one empty DATA block group on mount, this
+one is picked for the data relocation block group, instead of a newly
+created one.
+
+This is done to ensure, there is always space for performing garbage
+collection and the filesystem is not hitting ENOSPC under heavy overwrite
+workloads.
+
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+Changes to v2:
+- Don't take references
+- Use btrfs_chunk_alloc()
+- Don't abort the transaction
+- Decrease indendation
+
+
+ fs/btrfs/disk-io.c |  1 +
+ fs/btrfs/zoned.c   | 71 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/zoned.h   |  3 ++
+ 3 files changed, 75 insertions(+)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 3def93016963..b211dc8cdb86 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3562,6 +3562,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		goto fail_sysfs;
+ 	}
+ 
++	btrfs_zoned_reserve_data_reloc_bg(fs_info);
+ 	btrfs_free_zone_cache(fs_info);
+ 
+ 	btrfs_check_active_zone_reservation(fs_info);
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 19710634d63f..663cd194522b 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -17,6 +17,7 @@
+ #include "fs.h"
+ #include "accessors.h"
+ #include "bio.h"
++#include "transaction.h"
+ 
+ /* Maximum number of zones to report per blkdev_report_zones() call */
+ #define BTRFS_REPORT_NR_ZONES   4096
+@@ -2443,6 +2444,76 @@ void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg)
+ 	spin_unlock(&fs_info->relocation_bg_lock);
+ }
+ 
++void btrfs_zoned_reserve_data_reloc_bg(struct btrfs_fs_info *fs_info)
++{
++	struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
++	struct btrfs_space_info *space_info = data_sinfo->sub_group[0];
++	struct btrfs_trans_handle *trans;
++	struct btrfs_block_group *bg;
++	u64 alloc_flags;
++	bool initial = false;
++	int index;
++	int ret;
++
++	if (!btrfs_is_zoned(fs_info))
++		return;
++
++	if (fs_info->data_reloc_bg)
++		return;
++
++	if (sb_rdonly(fs_info->sb))
++		return;
++
++	ASSERT(space_info->subgroup_id == BTRFS_SUB_GROUP_DATA_RELOC);
++	alloc_flags = btrfs_get_alloc_profile(fs_info, space_info->flags);
++	index = btrfs_bg_flags_to_raid_index(alloc_flags);
++
++	list_for_each_entry(bg, &data_sinfo->block_groups[index], list) {
++		if (bg->used > 0)
++			continue;
++
++		if (!initial) {
++			initial = true;
++			continue;
++		}
++
++		fs_info->data_reloc_bg = bg->start;
++		set_bit(BLOCK_GROUP_FLAG_ZONED_DATA_RELOC,
++			&bg->runtime_flags);
++		btrfs_zone_activate(bg);
++
++		return;
++	}
++
++	trans = btrfs_join_transaction(fs_info->tree_root);
++	if (IS_ERR(trans))
++		return;
++
++	ret = btrfs_chunk_alloc(trans, space_info, alloc_flags, CHUNK_ALLOC_FORCE);
++	if (ret != 1)
++		goto out;
++
++	list_for_each_entry(bg, &space_info->block_groups[index], list) {
++		if (bg->used > 0)
++			continue;
++
++		if (!initial) {
++			initial = true;
++			continue;
++		}
++
++		fs_info->data_reloc_bg = bg->start;
++		set_bit(BLOCK_GROUP_FLAG_ZONED_DATA_RELOC,
++			&bg->runtime_flags);
++		btrfs_zone_activate(bg);
++
++		break;
++	}
++
++out:
++	btrfs_end_transaction(trans);
++}
++
+ void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info)
+ {
+ 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
+index 9672bf4c3335..6e11533b8e14 100644
+--- a/fs/btrfs/zoned.h
++++ b/fs/btrfs/zoned.h
+@@ -88,6 +88,7 @@ void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical,
+ void btrfs_schedule_zone_finish_bg(struct btrfs_block_group *bg,
+ 				   struct extent_buffer *eb);
+ void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg);
++void btrfs_zoned_reserve_data_reloc_bg(struct btrfs_fs_info *fs_info);
+ void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info);
+ bool btrfs_zoned_should_reclaim(const struct btrfs_fs_info *fs_info);
+ void btrfs_zoned_release_data_reloc_bg(struct btrfs_fs_info *fs_info, u64 logical,
+@@ -241,6 +242,8 @@ static inline void btrfs_schedule_zone_finish_bg(struct btrfs_block_group *bg,
+ 
+ static inline void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg) { }
+ 
++static inline void btrfs_zoned_reserve_data_reloc_bg(struct btrfs_fs_info *fs_info) { }
++
+ static inline void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info) { }
+ 
+ static inline bool btrfs_zoned_should_reclaim(const struct btrfs_fs_info *fs_info)
+-- 
+2.49.0
+
 
