@@ -1,969 +1,347 @@
-Return-Path: <linux-btrfs+bounces-14353-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14354-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4BAAACA7F9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 03:24:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87A55ACA882
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 06:24:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E7C11778D1
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 01:24:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ABA9189C35E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 04:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D539819CC28;
-	Mon,  2 Jun 2025 00:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69853770FE;
+	Mon,  2 Jun 2025 04:24:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rGQeOLgP";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HXhyt5tH"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Vbn7scao";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="urWdlto3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA6CE13B293
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 00:39:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748824776; cv=none; b=LcATPJw6mPjslWT230d2Qf/WiBPRRqaAEfjIF57hWwLCJvXOR0hmRUlLJdX3HZdxTaq1aUEvELg/i1PZC5xD0WHbMPYCqTycFKRqJ1U5WufQ6ExKSeW13bJ32UtNJwZK9lRKE7u51sIVGAR0/Gd+N8nkAxALyZNnBr/6kwA2vBc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748824776; c=relaxed/simple;
-	bh=0qjpZHs82Sz0VjJ4pt3ua1YN3y2NmorFbCUy5hJ/Vw0=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eMflaP1Tm9hD/j2bwVhirim6zLdxSvi6qG/yfKk8devawiGSXpjSfzl6mK9T9hbcHdaxkhLEs1714TaXvJKGQZ+zYeQ3+zH+ljVOJhKk6Qs6L/i/0OejgHRpSPB9W8zheTCPsUYB3e0xo1e2yw6wlVdSLtpmXZFwJTNpJonhl4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rGQeOLgP; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HXhyt5tH; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A528021A07
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 00:39:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1748824759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x8E4ChD4ehgzlw/Uc9tUgxMo1OwirhYTfUARV5D6jMw=;
-	b=rGQeOLgPHw0jxf/AF1NkC1ZewJwrBy0dd/UpjSjoCELLeJdqSSJuwIIogyeN+RRbXWm/u2
-	rN+tHVxUitZci8ebi33staZd81P5JaelAmLZU4baA9cBrxoDpFDZzAyG/9rKSO+1RNU8WR
-	WKAtdXGSz6m2bSXdk0XFvhI0hju8qQ0=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=HXhyt5tH
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1748824758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x8E4ChD4ehgzlw/Uc9tUgxMo1OwirhYTfUARV5D6jMw=;
-	b=HXhyt5tH8TXtJk/5aWo1tOw9NmTqW3q8C49l4k4LRl4N7vCx49ohiJbyNZDWleZsXCspzT
-	yhRylnWi8rQvOeET6T9BEJdE54x7qR031dSgKqHikZj+9Q3PQ+KlMw/cGeNEAJ2JTJqMwe
-	EFu9xO470X2aLTBFX3FenGihezFCpWs=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 99B8313A63
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 00:39:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2F/yFrXyPGgOdwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 02 Jun 2025 00:39:17 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: rename btrfs_subpage structure
-Date: Mon,  2 Jun 2025 10:08:53 +0930
-Message-ID: <6b4186ddd82e23e4bb30b8736a9f1cde8ba1a0d5.1748824641.git.wqu@suse.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1748824641.git.wqu@suse.com>
-References: <cover.1748824641.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D04C63FB0E
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 04:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1748838264; cv=fail; b=gAoj0KNVzSE4ecjBlOgcpUnPyRVTxhs1hAKOe1EaU0/gXDdtFZjBCEW7S5eDZZD5j2qp9I7lfu7SGoDJDcPyy7a9nOMqco8UX3sHlB7E84fs0rSmSzbVaUHXjme1D0YCms9rIW6+gXKsEXicmX4ss0NBt1pB6REuWiYpFUx6RXs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1748838264; c=relaxed/simple;
+	bh=j79ZMW4v6JXrGbGGl/d3Kv4GAkMlb0yMQxdDu18RcrY=;
+	h=Message-ID:Date:From:Subject:To:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=aemvluwdNPxFsClSJsLDm3Y7mRKSS5Q+Nh6hwTMIxzVrZ4MVRab4POCKok2o5VLtYS/NcSEP6IefVeNv6T5HRYgMIWe93DKDSD5j98r2l6PHRlNezsMNmAQFXKrKoIy9h7Lo7poc69k+MQuI1AAzQQfTL6B56b5ZRNzs22K9xUo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Vbn7scao; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=urWdlto3; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5520KlLB029886;
+	Mon, 2 Jun 2025 04:24:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=zE9OMvr6h09p9kK+P7xir0NbSOqzNLsB7dXe+NlvTnE=; b=
+	Vbn7scaoZ4Z9qdaESsOTRvDnB4rYzIzybaxFbMBBHnsYII8m1HjPAbwDNVT22jJ+
+	zEgQAUq51L11uP2aNhW+muL0W9AArbkiDH5sDTe4dGFPWejFd+TYOGZy9Qq7Hu/t
+	iF+wTdv5Ki757w6uJzGOr9Ti72Xkv72qKcTcgBDU3G0+Sa6dZbUm2tkUPELy9Jje
+	AN2pi2lPzm3x2Kd7AkdLgydovkMtcCuDfsmHXDs0Gfj8goGVVW0c/o4F188Gmnp8
+	xM3imF7atmxgWs0PY2rxhy+SuZDq+BtoqJkoZuZD/EMsfaubb6360jgwZfnP2C7x
+	qCSShAFIwen53r779JWhHg==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46yrpe1rr5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 02 Jun 2025 04:24:20 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5521i28U040721;
+	Mon, 2 Jun 2025 04:24:19 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02on2076.outbound.protection.outlook.com [40.107.95.76])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 46yr77qqny-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 02 Jun 2025 04:24:19 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=RBQyLtx+v1wqlV4SQo40fUUng9t9o4fR2k+9/M7K9/YTCDcbuzx5+Efi6jKV3UxLEhZ1PwBvI5x/okTBmaKA6uovkraBpEO2+WD9lT8gLN32fuxD9TbwZiqcitou7s5K4u+EzmkQFXCHwKq6+F71hVtRVgGrF42rzgiQS8b3IVeGz7+0NJy2XXdCLSqByKfEf+JYe+jBJfNIb9aNZgf9IEVKcwkHTKuG4UJn5Eo0k4ys4SxxO0OLpltOxMYmhYFw/9009EUpPczCe9tXMbgxxiCRCkVh684pZx7HoUXF/UaMXthlJr3Fikq5m2pxKwNSULKjm7P2QYdq4MwLSvZH0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zE9OMvr6h09p9kK+P7xir0NbSOqzNLsB7dXe+NlvTnE=;
+ b=pn87RywSc/RRFAP6loPedgeLv6Npl6C0sWwmwFYyCIZPf8so3Er6DQAvMlCgWE5mVSbyTRRRMRf7OzONM6Xu9FxPRVCQsm8+G+/95xoy2sscCI9hS1c2+20HvcKjDRyehZGUwZGtgHDmYtHAk6nT62U2HbnyiSH1utmno6s3Qn2lUrxUEKR0v3HtRmclWIAZ7e4vmycHNNF/dUBpYsUyBzUw+XPCqXmVI4MPZC3imKRoJTuJA83ik+5dxB7qzxLNnSRmx7pyrlqz6wWMQ+bzlbhCvJdTu6f0cb3DfIY0w4+iMnZ/V1FyRlGnB6hJq2Xyi7HIO6UWCOy6JFZDUwIbYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zE9OMvr6h09p9kK+P7xir0NbSOqzNLsB7dXe+NlvTnE=;
+ b=urWdlto3oc7aGLGXhzQaFzfE6hUMTqvQUI5/HLtwF3uiAoYb2iQb7L65Jx1Y3XHR1PMz6rZO++WD9gsSP8xkk9CwHhd1qUlKQ5xsN+Qzf6WMuxvE8hgfePsEwfJRYA8vhLFonpBj/E2ifQZ3Yv2zLQp9mizb5aN5Xwo1dwB1hGU=
+Received: from IA4PR10MB8710.namprd10.prod.outlook.com (2603:10b6:208:569::5)
+ by SJ0PR10MB4736.namprd10.prod.outlook.com (2603:10b6:a03:2d6::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.41; Mon, 2 Jun
+ 2025 04:24:17 +0000
+Received: from IA4PR10MB8710.namprd10.prod.outlook.com
+ ([fe80::997b:17f9:80e3:b5]) by IA4PR10MB8710.namprd10.prod.outlook.com
+ ([fe80::997b:17f9:80e3:b5%4]) with mapi id 15.20.8746.030; Mon, 2 Jun 2025
+ 04:24:17 +0000
+Message-ID: <67bf4ef7-6718-4ab8-85c1-8b8035a8981e@oracle.com>
+Date: Mon, 2 Jun 2025 12:24:13 +0800
+User-Agent: Mozilla Thunderbird
+From: Anand Jain <anand.jain@oracle.com>
+Subject: Re: [PATCH RFC 00/10] btrfs: new performance-based chunk allocation
+ using device roles
+To: Ferry Toth <fntoth@gmail.com>, linux-btrfs@vger.kernel.org
+References: <cover.1747070147.git.anand.jain@oracle.com>
+ <fee4ece3-b5f6-4510-89d0-40f964da2720@gmail.com>
+Content-Language: en-US
+In-Reply-To: <fee4ece3-b5f6-4510-89d0-40f964da2720@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR02CA0115.apcprd02.prod.outlook.com
+ (2603:1096:4:92::31) To IA4PR10MB8710.namprd10.prod.outlook.com
+ (2603:10b6:208:569::5)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: A528021A07
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email]
-X-Spam-Score: -3.01
-X-Spam-Level: 
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA4PR10MB8710:EE_|SJ0PR10MB4736:EE_
+X-MS-Office365-Filtering-Correlation-Id: d7501c85-1adf-4d0d-46d1-08dda18d5630
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?ckNWSVBrUXN4V2xoOFpRbFVVRmhmS2hRRDR1VEpYTGVFU1oyQUtXY1JKQW9F?=
+ =?utf-8?B?dTlUK1ZSN2RWaUVwTUtieUc1a25NZW13TElzZWpmV0hVa01JRTBPWjNxTnND?=
+ =?utf-8?B?RVA3cDdVQUFjNnd5K3VyWERYNTV0cVlwRWE2UExrWmhsM1RZZWJsdHIyUWRo?=
+ =?utf-8?B?ck5vcjVBWWZoSnFYVnBGeW1RdUlLQVJONXhTUWJ4eFRLalpWVEtqVG9oN1pP?=
+ =?utf-8?B?NDhGTndid2RLdldvcFdLdjR5ajFMZFdNbWdyblBzakpuSWROVHp2bXZZejFN?=
+ =?utf-8?B?Z3VoMUlVKzBjV0JaMk1mOVc1YStTUkdQeWJ4UFdlM3U3MTQ0dHZJVjM0cmYx?=
+ =?utf-8?B?eDkwcTI4Rjd6aHJlNWtzeERxSHIvVGVKV2pkVjJjem56bmM5dUpheTBGOFBT?=
+ =?utf-8?B?dUQzTnVXaWlHbHE0ZksvNUhLMGYxY0JiZTBwV1FZUkE3MFl0aytnbGgyOHd2?=
+ =?utf-8?B?NUZQL1RyQ1daazZvdVh6bHBQQ2JiTzdpTlZzV0R1VnVNS2FHdFRGWEloeTRL?=
+ =?utf-8?B?QjhNZ3hhUlNIVnNOV2xXYXpTT1RhT3BXYkVqS2plOEZNZmtBRkdzbVMyQUkv?=
+ =?utf-8?B?SXVDcXF5NndQaTkrM1ZjMFRaUWdMRHNHV05SMFg2YzkvSjBxbmc4dDEvV3pm?=
+ =?utf-8?B?QUZIdTFrS0xFQnlyYmFWZy9oUGxSeDJHbTRrcnJPaFNZWlBjQVZ5ZUtXMjlj?=
+ =?utf-8?B?MkgxQXprSllIOXRubWRsKy84bGtvUFc1K1B3Mkh0UEFFTURUVUJXanRCcVdt?=
+ =?utf-8?B?d0s1L2JFUVdZZkpCUDU1V0FvYm1VTlp1TVdYbnl5VEZ6ZmpkUWx2aG1jK0RC?=
+ =?utf-8?B?eEg1NURHNktldFY2TmlwS05PNHJmdmZSUkQ5eEZnRDFLSGcvei9Md1o4NDFn?=
+ =?utf-8?B?dGp6UW5GQXdTMUp1ZWN6MW1lVEdzVm9JWU5uQ1dCaUw3WHZNRXpGODZxbkJl?=
+ =?utf-8?B?MUdzWVdpanY2VjhCQUx4WU9XVmNhTVBPOHBUeFFqMGc0NittMll3SWoyb2dm?=
+ =?utf-8?B?U1pqQWFNakhqL3I5QTdpRE4xaWNLRjNRNC85U0V3ZERaMWJUSlYvZXRhcktG?=
+ =?utf-8?B?cHRnaGt6N1g3d3RFbVB0UHJTRGUwS0o4dDdiSjhRRWRWN2tab1d4UzRNdUZp?=
+ =?utf-8?B?TmI4RXlqZHdRdk5uTkJ3TyszSUJSTStXTDNIYTlMbjRDK3l2Vjc4Uy9DTDcw?=
+ =?utf-8?B?QnNPTnh3dDVNb0FvSmRpZldWcGVNWWhraGQ5bEp4UWZXTDdRK1ZvNGNobXA2?=
+ =?utf-8?B?M0xrc0VhZDZFVkUzUkFocStGS1E3RTgxTFRWQjhDb3hMc1VkQUZJYXhBdDNw?=
+ =?utf-8?B?TW1iR2YzRy85L0tnOWtPTHBwbTZacW91UE5ZcGlmK3A4NldWamo2MnhMMDJz?=
+ =?utf-8?B?bFcwVllGUTZnbUtMTFkxWUN6S3BrSUNmSTRSSEpmZWQ5U2FPQkF3anRCaE5t?=
+ =?utf-8?B?Mkl0QUIvNFNrNnhlR29QUDNTc2ZPOHdrdThLZ2IvemlreGVBOHB2alBmREs0?=
+ =?utf-8?B?R1lLVUFneURNSmFlQ3V1YkFYaEd0aS9WZTgvcUtpNHFvek1ETzhQZ2RpbXI4?=
+ =?utf-8?B?d29BcGpRTTlvWWtHakdSdW92My9SeXBmWVVBbkxnVnNoUUVFV2R2OW5aT2VK?=
+ =?utf-8?B?bTJnbTI4K3IzUFVRVjA2YTFQTWxtajhqYWxacGNaWm9hbEhDV3hlYXRmWUpV?=
+ =?utf-8?B?NW1XdnFQN1JMcUI0aXEyUjFNZmh0alFJT3RmTy9PZ0NHeWpmUVAzSTA1N2Z3?=
+ =?utf-8?B?TmZBR21sNGlaZXIvSUtiYmV4bnlxRXlSQWpqV0hHbklCUWhWNGNqODJTaXhG?=
+ =?utf-8?B?STRHQlc3dXd3aSs0T1lacXN3RjVVNzh4aGcyazJVci9NWG5vRllYRzExM1Nt?=
+ =?utf-8?B?S1lmNWVZU2ROZFNVYmpVWjFldEVSYXJkRzFXc3VQUUoyalRHSUJtQ1d5NzJF?=
+ =?utf-8?Q?cH8iVmR7jM8=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA4PR10MB8710.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?eE9mdXJEcWlzL2psZWdIZy9Zcm1HSGQyeitWTHREUVQxc0dwNjBRZ3lCa1dY?=
+ =?utf-8?B?ZXltSG9ZWUZ3ckovL0poTlFMbzl3VGdFamNaRlpnWlpPckpoeUhwWHFKK0Z3?=
+ =?utf-8?B?OUhYSlVsSk45bm0wRXNNSkpZMm9NQ01uK1BZNWdlM29xaFNLWkpDTnBzTGpn?=
+ =?utf-8?B?TVNCYjU1TmwrY04xK3JiYVFmZkZyVGNwakU2N01FMGlLVVczaWh0U1ZTNFAr?=
+ =?utf-8?B?Yk8zdzBVZDNLS2VkQUpZbWFzYkhSN0U4MTA4UFZHRnRsUVh4NHNBeE9XSDln?=
+ =?utf-8?B?WTIxK0Jnb05IekRJS0RkaEdCRkZIV2x2TVlCZkxHL2JXbTB2U3p0RCtnc3dL?=
+ =?utf-8?B?QjJwWjdnODVFTy9DeHE1N3Rkcm5qVlIycm5xYzRhSDZHMnMwSTVqMXRoVzJn?=
+ =?utf-8?B?UlFkM3ZOVzlpcDJWN3JwT1ZLZXZ0N3BNQjlkSkNYRzlrVWFLcEpjMnVreFc0?=
+ =?utf-8?B?WFV6MHU4MUxlYWtyektJV2F1OFVpZHdRRHJSQ1ZwRU02bXo4UHhWZTliQkg1?=
+ =?utf-8?B?QnJDcEI0TFl6R1FtSmtsUnFqTERacTdZcnpQSkJKTG0xdjhKVWFIay9KRTdO?=
+ =?utf-8?B?c1I4b0tzeHJWVUNWS0psZUZpZy96U2QrRHVGZ2cwRDdxYy9KbURWVDhyVUdJ?=
+ =?utf-8?B?ZXBKVTRsNUpxd0JaR2lGUG1xQmdqN0RGeUNaSmxtMUtlcnBSTDlFUmpSbWov?=
+ =?utf-8?B?T01pTExWQmFGcmJFUEZwMEhhR28wY1NPRmdMYlJVZ0lGQy9JUUd4MmRlYVZP?=
+ =?utf-8?B?bVo0RVN2R3dyQmh5NUdyWlJ5WXBqSTc1R29TMWdXcXJBV3Z4N1ZvdEhsdS95?=
+ =?utf-8?B?ZHA1aG9VUWFxZDU4TTZ6OG5YVUhEbjlBcDRSZEx2WVlTUVh0Ync2cTMyd1hB?=
+ =?utf-8?B?S05icDBEZ2VrdW5iRWwwYjIxK05GMlRselZBTnhwNE1vWmJqeVJRb2djWkVt?=
+ =?utf-8?B?SisvR2w5NjlqMmVlZTYxRmp1aTU0cTEvUkVsK3VFcFZHdkhzbzNHU0gzRzZ3?=
+ =?utf-8?B?UTJJUVFQWVN3YU5FZi8vbjFLSHp2aHpWbzVaN1NkOG1HR05wUnVEd1NzekZM?=
+ =?utf-8?B?RHIrZ0ZEVGRXcUR0TVRzNyt4eHRlWC9vTlEyRHMzRmxvNWUrWms3dWdtclFU?=
+ =?utf-8?B?MVdlRS92MXQzYW5zZy9zWkxWRkpOSGkvdmJnS3dLU3RaNlY5a3F6NlRUV1FB?=
+ =?utf-8?B?NXdDdWJYdGtQMkJBZ3JoMnZuOHVTVFNDbWJyWVkwc2gxMmlnNGU0eFdzTjRs?=
+ =?utf-8?B?MG12SXVBSksvcWJVY0FOK2dKRnpDaHNxaTlnMG5iQXQzb3FSWnkxckZveFNB?=
+ =?utf-8?B?cEJVeWhFVUtXWU1xWllrOHRac1JDZmhGTzNQa3pvVWhyamhNSUZIZU5NSkdG?=
+ =?utf-8?B?L0w4d3A5N2xjZndPRktTc2h5eEJHTDJta1R0TE1Db1FMb3dXZnZnMERnMFJ5?=
+ =?utf-8?B?OWZHZmpxVUxYeHk4aDBCbU1MQUdRa3ZLKzFUTTZjUGhYRXRhUHA0L2VqSWVw?=
+ =?utf-8?B?amhIZ2dDUmgrV1lTdEs5M2RGaUV1K25zYmlsQzFnc3djYlFaZ2xPdS9HWTgw?=
+ =?utf-8?B?WVVHSEp4RkNIOHJWekZVTVpqdHorc2kxLy9UVHBzL2NZRzFpbDIxd2pUcENm?=
+ =?utf-8?B?dEdZZEZ4K2N3ZmpjSXRNdkNvSmNLMy9wVEMvekVSVExRZm1YVVFteUNGdVMv?=
+ =?utf-8?B?UmR5dUs0T0JUWUdHZlhnWk4rT09QaW9id1JWdGJ0MEs4Rmp3cUFucTVjWlQ1?=
+ =?utf-8?B?L2NpZFBTZWJDMktLb1VKOVdSWWozRHVpM0k1UFRBTVgrTldBZkwvS1BoclZ2?=
+ =?utf-8?B?SDZuSTNDNTZxRWNRUXI5akRCY3lUYWMxUFlWbkVycnhIMU1NSDEzOTZoMlJi?=
+ =?utf-8?B?d3Z3NTlJZFZCWXZ1QnZHMDJSUUhIc3ZXUjRHMWRMYkN1QnFrMVJCMWdocG55?=
+ =?utf-8?B?UXlTejZsMEs3bzBodmdGeGZtRHN1SGhpL25Qd280QW42Q0w0TDdPbmxFYVZk?=
+ =?utf-8?B?ektLaWNsM081RWZvR1ZBRnRQZXdQMXQvS1BJNFpnY1dhd2YwZzQ2T0tCTXVU?=
+ =?utf-8?B?SjVOQklJd2xIK1ZVZG9oa2hQdjB5QURDdm04dGY4Y1hoL0NXOXMwZVRrM2Vr?=
+ =?utf-8?Q?5nqForPlmmuuf38RtavBqyyBB?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	tQ6mD0S42WvBV+7UwaePQ0BRKItQCdDmOWPAB4fUFijaSfh0N+T2w5OLaYz/HgnYZiUNdBHasJ9kbbtgFxD1I/JV3C2g6pWhbrPmG6mtAx3waDMhz2QFmNEP+lwzJhmwOJsnrW6PPOJ/89a4nSukU3ca7Hn9iVzni2ydQIWrnbUiA6dJshuaBklxowISu51y8SuOgPcmvVdnrjOsWUW9orDk6WSMAwshwtPRxIuJ8kecpHBIHBXO08iWCF19pIBpFhsEPQmM8oNSMUV75ugNZaTxbaGnUJ9n6pLvn8qLXuaDFf3+/VZOaJEQRlbAM1vEHwodDDyaF7Yd4DeE5jlhploBrm0hyWcNB+dtI+/ucx3du86rW763EYesD610zP+xnjtigQUNElNVGUKYAN28ip/v74wdQJhm2ufWQhIGDvfBqUHMso96TzlO8aHIsLKV3NO5SNQhJPX5hdW4LPX3j2iRCWwvGHtdFn49Be88zFZztgE9WjdGeCAbBCxx5hSi+I32Evsl0zbHPF/NRq90/Yk5sjnnrSS3rWAKnYnbw4VHRIc2Ck/oAt+rX8GV7A0FifsCCL4xncS2GCCqBypcHmku624KeWfjnVaLpW/GOK8=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7501c85-1adf-4d0d-46d1-08dda18d5630
+X-MS-Exchange-CrossTenant-AuthSource: IA4PR10MB8710.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2025 04:24:16.9111
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: h8BLmxIlqMS97X0FUQULEuN90Au87zAa1yWpu5dgyPpQ4+2rHn8BUUnZOlxyf6sghtl4rHJzTnSL701pzsYfdw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4736
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-06-02_01,2025-05-30_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 malwarescore=0
+ phishscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
+ definitions=main-2506020034
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjAyMDAzNCBTYWx0ZWRfX8AaQu+6IXXfL Wyzv7Y6vIxuJiD9MqVwdC2n1pP0QKbGS7Hsz8Dd2c0rj22kX+taCkz3bQWLAnJhse/CC5F9SmAs ZrOc6lM3yggURH5Kl1Z/rmMvyEyfbK9GsgD50MyY63FDWv+yD1mQy0m7eYSHDpg2GiFy/YbK3h/
+ mRCMrzRkmAkAqOHjzb+C0OOEHKQSouVkGA0HiwsriAFs7GayhDMlcTBfixXzZcwME9hfOOFcPZS +t/2YHMPrp5Q0GPoTi6+IMLwhNq44xCi24UUg5OFdC+LiguKB8kVtn0sz/QsUdipAbtosPZYZeS b0GsOAUPTBOD3uGi+h+2XSDWOY1i5WFwbgmbumiNV72JSO6xuGrRUyQlVg1QH+TO6xGAGSGVzdC
+ 0EmKcYqzP1oSQK9mQ3Afb7pxyAjfSxQeVNkzH24cgelCrB0U9QUoE6TxQ819Mwh0VVzI7wL9
+X-Authority-Analysis: v=2.4 cv=NN7V+16g c=1 sm=1 tr=0 ts=683d2774 b=1 cx=c_pps a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
+ a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10 a=GoEa3M9JfhUA:10 a=VnqsGTdlBYqaH7PNJsYA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 cc=ntf awl=host:13206
+X-Proofpoint-GUID: qkEaE4MdL-yCKSjlClRWlN-_QxnDJaFV
+X-Proofpoint-ORIG-GUID: qkEaE4MdL-yCKSjlClRWlN-_QxnDJaFV
 
-With the incoming large data folios support, the structure name
-btrfs_subpage is no longer correct, as for we can have multiple blocks
-inside a large folio, and the block size is still page size.
+On 23/5/25 04:39, Ferry Toth wrote:
+> Hi,
+> 
+> Op 12-05-2025 om 20:07 schreef Anand Jain:
+>> In host hardware, devices can have different speeds. Generally, faster
+>> devices come with lesser capacity while slower devices come with larger
+>> capacity. A typical configuration would expect that:
+>>
+>>   - A filesystem's read/write performance is evenly distributed on 
+>> average
+>>   across the entire filesystem. This is not achievable with the current
+>>   allocation method because chunks are allocated based only on device 
+>> free
+>>   space.
+>>
+>>   - Typically, faster devices are assigned to metadata chunk allocations
+>>   while slower devices are assigned to data chunk allocations.
+> 
+> Finally a new effort in this direction.
+> 
+>> Introducing Device Roles:
+>>
+>>   Here I define 5 device roles in a specific order for metadata and in 
+>> the
+>>   reverse order for data: metadata_only, metadata, none, data, data_only.
+>>   One or more devices may have the same role.
+>>
+>>   The metadata and data roles indicate preference but not exclusivity for
+>>   that role, whereas data_only and metadata_only are exclusive roles.
+>>
+>> Introducing Role-then-Space allocation method:
+>>
+>>   Metadata allocation can happen on devices with the roles metadata_only,
+>>   metadata, none, and data in that order. If multiple devices share a 
+>> role,
+>>   they are arranged based on device free space.
+>>
+>>   Similarly, data allocation can happen on devices with the roles 
+>> data_only,
+>>   data, none, and metadata in that order. If multiple devices share a 
+>> role,
+>>   they are arranged based on device free space.
+> 
+> I can see the use case for large pools of disks used in server 
+> environments where disks get assigned a role.
+> 
+> For desktop use I would like it a lot better with no roles, just a 
+> performance-based chunk allocation to select between a ssd and a hdd. 
+> And then used more like a hint to the allocator. Really nothing should 
+> go wrong if a data or meta-data gets allocated on the wrong / sub- 
+> optimal disk.
+> 
+> This could then bring back the old hot relocation idea, finally.
+> 
+>> Finding device speed automatically:
+>>
+>>   Measuring device read/write latency for the allocaiton is not good 
+>> idea,
+>>   as the historical readings and may be misleading, as they could include
+>>   iostat data from periods with issues that have since been fixed. 
+>> Testing
+>>   to determine relative latency and arranging in ascending order for 
+>> metadata
+>>   and descending for data is possible, but is better handled by an 
+>> external
+>>   tool that can still set device roles.
+>>
+>> On-Disk Format changes:
+>>
+>>   The following items are defined but are unused on-disk format:
+>>
+>>     btrfs_dev_item::
+>>      __le64 type; // unused
+>>      __le64 start_offset; // unused
+>>      __le32 dev_group; // unused
+>>      __u8 seek_speed; // unused
+>>      __u8 bandwidth; // unused
+>>
+>>   The device roles is using the dev_item::type 8-bit field to store each
+>>   device's role.
+> 
+> I think filling the fields with either measured or user entered data 
+> should be fine, as long as when the disk behavior changes you can re- 
+> measure or re-enter.
+> 
+> The difference between a ssd and a hdd will be so huge small changes 
+> will have no real effect.
 
-So to follow the schema of iomap, rename btrfs_subpage to
-btrfs_folio_state, along with involved enums.
 
-There are still exported functions with "btrfs_subpage_" prefix, and I
-believe for metadata the name "subpage" will stay forever as we will
-never allocate a folio larger than nodesize anyway.
+Yeah, for desktop setups with SSDs and HDDs, the distinction is clear
+and stable, so assigning data or metadata based on device type makes
+sense. It’s straightforward to handle statically, and a
+--set-roles-by-type mkfs option will make it automatic.
 
-The full cleanup of the word "subpage" will happen in much smaller steps
-in the future.
+Even if the SSD temporarily slows down during a balance, we’d still
+prefer to keep metadata on it, assuming the slowdown is short-lived.
+SSD performance typically recovers, so there's no need to overreact
+to transient dips.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c |  29 +++---
- fs/btrfs/inode.c     |   8 +-
- fs/btrfs/subpage.c   | 239 +++++++++++++++++++++----------------------
- fs/btrfs/subpage.h   |  32 ++++--
- 4 files changed, 158 insertions(+), 150 deletions(-)
+For virtual devices, mkfs --set-roles-by-iostat should also work well.
+And later if performance characteristics change permanently, a
+balance-time option like --recalibrate-role-by-iostat could
+re-evaluate based on I/O stats, confirm with the user, and relocate
+chunks accordingly.
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 849199768664..c562b589876e 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -782,7 +782,7 @@ static void submit_extent_folio(struct btrfs_bio_ctrl *bio_ctrl,
- 
- static int attach_extent_buffer_folio(struct extent_buffer *eb,
- 				      struct folio *folio,
--				      struct btrfs_subpage *prealloc)
-+				      struct btrfs_folio_state *prealloc)
- {
- 	struct btrfs_fs_info *fs_info = eb->fs_info;
- 	int ret = 0;
-@@ -806,7 +806,7 @@ static int attach_extent_buffer_folio(struct extent_buffer *eb,
- 
- 	/* Already mapped, just free prealloc */
- 	if (folio_test_private(folio)) {
--		btrfs_free_subpage(prealloc);
-+		btrfs_free_folio_state(prealloc);
- 		return 0;
- 	}
- 
-@@ -815,7 +815,7 @@ static int attach_extent_buffer_folio(struct extent_buffer *eb,
- 		folio_attach_private(folio, prealloc);
- 	else
- 		/* Do new allocation to attach subpage */
--		ret = btrfs_attach_subpage(fs_info, folio, BTRFS_SUBPAGE_METADATA);
-+		ret = btrfs_attach_folio_state(fs_info, folio, BTRFS_SUBPAGE_METADATA);
- 	return ret;
- }
- 
-@@ -831,7 +831,7 @@ int set_folio_extent_mapped(struct folio *folio)
- 	fs_info = folio_to_fs_info(folio);
- 
- 	if (btrfs_is_subpage(fs_info, folio))
--		return btrfs_attach_subpage(fs_info, folio, BTRFS_SUBPAGE_DATA);
-+		return btrfs_attach_folio_state(fs_info, folio, BTRFS_SUBPAGE_DATA);
- 
- 	folio_attach_private(folio, (void *)EXTENT_FOLIO_PRIVATE);
- 	return 0;
-@@ -848,7 +848,7 @@ void clear_folio_extent_mapped(struct folio *folio)
- 
- 	fs_info = folio_to_fs_info(folio);
- 	if (btrfs_is_subpage(fs_info, folio))
--		return btrfs_detach_subpage(fs_info, folio, BTRFS_SUBPAGE_DATA);
-+		return btrfs_detach_folio_state(fs_info, folio, BTRFS_SUBPAGE_DATA);
- 
- 	folio_detach_private(folio);
- }
-@@ -2731,13 +2731,13 @@ static int extent_buffer_under_io(const struct extent_buffer *eb)
- 
- static bool folio_range_has_eb(struct folio *folio)
- {
--	struct btrfs_subpage *subpage;
-+	struct btrfs_folio_state *bfs;
- 
- 	lockdep_assert_held(&folio->mapping->i_private_lock);
- 
- 	if (folio_test_private(folio)) {
--		subpage = folio_get_private(folio);
--		if (atomic_read(&subpage->eb_refs))
-+		bfs = folio_get_private(folio);
-+		if (atomic_read(&bfs->eb_refs))
- 			return true;
- 	}
- 	return false;
-@@ -2787,7 +2787,7 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
- 	 * attached to one dummy eb, no sharing.
- 	 */
- 	if (!mapped) {
--		btrfs_detach_subpage(fs_info, folio, BTRFS_SUBPAGE_METADATA);
-+		btrfs_detach_folio_state(fs_info, folio, BTRFS_SUBPAGE_METADATA);
- 		return;
- 	}
- 
-@@ -2798,7 +2798,7 @@ static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct fo
- 	 * page range and no unfinished IO.
- 	 */
- 	if (!folio_range_has_eb(folio))
--		btrfs_detach_subpage(fs_info, folio, BTRFS_SUBPAGE_METADATA);
-+		btrfs_detach_folio_state(fs_info, folio, BTRFS_SUBPAGE_METADATA);
- 
- 	spin_unlock(&mapping->i_private_lock);
- }
-@@ -3141,7 +3141,7 @@ static bool check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
-  * The caller needs to free the existing folios and retry using the same order.
-  */
- static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
--				      struct btrfs_subpage *prealloc,
-+				      struct btrfs_folio_state *prealloc,
- 				      struct extent_buffer **found_eb_ret)
- {
- 
-@@ -3224,7 +3224,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	int attached = 0;
- 	struct extent_buffer *eb;
- 	struct extent_buffer *existing_eb = NULL;
--	struct btrfs_subpage *prealloc = NULL;
-+	struct btrfs_folio_state *prealloc = NULL;
- 	u64 lockdep_owner = owner_root;
- 	bool page_contig = true;
- 	int uptodate = 1;
-@@ -3269,7 +3269,8 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	 * manually if we exit earlier.
- 	 */
- 	if (btrfs_meta_is_subpage(fs_info)) {
--		prealloc = btrfs_alloc_subpage(fs_info, PAGE_SIZE, BTRFS_SUBPAGE_METADATA);
-+		prealloc = btrfs_alloc_folio_state(fs_info, PAGE_SIZE,
-+						   BTRFS_SUBPAGE_METADATA);
- 		if (IS_ERR(prealloc)) {
- 			ret = PTR_ERR(prealloc);
- 			goto out;
-@@ -3280,7 +3281,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	/* Allocate all pages first. */
- 	ret = alloc_eb_folio_array(eb, true);
- 	if (ret < 0) {
--		btrfs_free_subpage(prealloc);
-+		btrfs_free_folio_state(prealloc);
- 		goto out;
- 	}
- 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 7074f975c033..a1516615c335 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7368,13 +7368,13 @@ struct extent_map *btrfs_create_io_em(struct btrfs_inode *inode, u64 start,
- static void wait_subpage_spinlock(struct folio *folio)
- {
- 	struct btrfs_fs_info *fs_info = folio_to_fs_info(folio);
--	struct btrfs_subpage *subpage;
-+	struct btrfs_folio_state *bfs;
- 
- 	if (!btrfs_is_subpage(fs_info, folio))
- 		return;
- 
- 	ASSERT(folio_test_private(folio) && folio_get_private(folio));
--	subpage = folio_get_private(folio);
-+	bfs = folio_get_private(folio);
- 
- 	/*
- 	 * This may look insane as we just acquire the spinlock and release it,
-@@ -7387,8 +7387,8 @@ static void wait_subpage_spinlock(struct folio *folio)
- 	 * Here we just acquire the spinlock so that all existing callers
- 	 * should exit and we're safe to release/invalidate the page.
- 	 */
--	spin_lock_irq(&subpage->lock);
--	spin_unlock_irq(&subpage->lock);
-+	spin_lock_irq(&bfs->lock);
-+	spin_unlock_irq(&bfs->lock);
- }
- 
- static int btrfs_launder_folio(struct folio *folio)
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index d4f019233493..9b63a4d1c989 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -49,7 +49,7 @@
-  * Implementation:
-  *
-  * - Common
-- *   Both metadata and data will use a new structure, btrfs_subpage, to
-+ *   Both metadata and data will use a new structure, btrfs_folio_state, to
-  *   record the status of each sector inside a page.  This provides the extra
-  *   granularity needed.
-  *
-@@ -63,10 +63,10 @@
-  *   This means a slightly higher tree locking latency.
-  */
- 
--int btrfs_attach_subpage(const struct btrfs_fs_info *fs_info,
--			 struct folio *folio, enum btrfs_subpage_type type)
-+int btrfs_attach_folio_state(const struct btrfs_fs_info *fs_info,
-+			     struct folio *folio, enum btrfs_folio_type type)
- {
--	struct btrfs_subpage *subpage;
-+	struct btrfs_folio_state *bfs;
- 
- 	/* For metadata we don't support large folio yet. */
- 	if (type == BTRFS_SUBPAGE_METADATA)
-@@ -87,18 +87,18 @@ int btrfs_attach_subpage(const struct btrfs_fs_info *fs_info,
- 	if (type == BTRFS_SUBPAGE_DATA && !btrfs_is_subpage(fs_info, folio))
- 		return 0;
- 
--	subpage = btrfs_alloc_subpage(fs_info, folio_size(folio), type);
--	if (IS_ERR(subpage))
--		return  PTR_ERR(subpage);
-+	bfs = btrfs_alloc_folio_state(fs_info, folio_size(folio), type);
-+	if (IS_ERR(bfs))
-+		return PTR_ERR(bfs);
- 
--	folio_attach_private(folio, subpage);
-+	folio_attach_private(folio, bfs);
- 	return 0;
- }
- 
--void btrfs_detach_subpage(const struct btrfs_fs_info *fs_info, struct folio *folio,
--			  enum btrfs_subpage_type type)
-+void btrfs_detach_folio_state(const struct btrfs_fs_info *fs_info, struct folio *folio,
-+			      enum btrfs_folio_type type)
- {
--	struct btrfs_subpage *subpage;
-+	struct btrfs_folio_state *bfs;
- 
- 	/* Either not subpage, or the folio already has private attached. */
- 	if (!folio_test_private(folio))
-@@ -108,15 +108,15 @@ void btrfs_detach_subpage(const struct btrfs_fs_info *fs_info, struct folio *fol
- 	if (type == BTRFS_SUBPAGE_DATA && !btrfs_is_subpage(fs_info, folio))
- 		return;
- 
--	subpage = folio_detach_private(folio);
--	ASSERT(subpage);
--	btrfs_free_subpage(subpage);
-+	bfs = folio_detach_private(folio);
-+	ASSERT(bfs);
-+	btrfs_free_folio_state(bfs);
- }
- 
--struct btrfs_subpage *btrfs_alloc_subpage(const struct btrfs_fs_info *fs_info,
--				size_t fsize, enum btrfs_subpage_type type)
-+struct btrfs_folio_state *btrfs_alloc_folio_state(const struct btrfs_fs_info *fs_info,
-+						  size_t fsize, enum btrfs_folio_type type)
- {
--	struct btrfs_subpage *ret;
-+	struct btrfs_folio_state *ret;
- 	unsigned int real_size;
- 
- 	ASSERT(fs_info->sectorsize < fsize);
-@@ -136,11 +136,6 @@ struct btrfs_subpage *btrfs_alloc_subpage(const struct btrfs_fs_info *fs_info,
- 	return ret;
- }
- 
--void btrfs_free_subpage(struct btrfs_subpage *subpage)
--{
--	kfree(subpage);
--}
--
- /*
-  * Increase the eb_refs of current subpage.
-  *
-@@ -152,7 +147,7 @@ void btrfs_free_subpage(struct btrfs_subpage *subpage)
-  */
- void btrfs_folio_inc_eb_refs(const struct btrfs_fs_info *fs_info, struct folio *folio)
- {
--	struct btrfs_subpage *subpage;
-+	struct btrfs_folio_state *bfs;
- 
- 	if (!btrfs_meta_is_subpage(fs_info))
- 		return;
-@@ -160,13 +155,13 @@ void btrfs_folio_inc_eb_refs(const struct btrfs_fs_info *fs_info, struct folio *
- 	ASSERT(folio_test_private(folio) && folio->mapping);
- 	lockdep_assert_held(&folio->mapping->i_private_lock);
- 
--	subpage = folio_get_private(folio);
--	atomic_inc(&subpage->eb_refs);
-+	bfs = folio_get_private(folio);
-+	atomic_inc(&bfs->eb_refs);
- }
- 
- void btrfs_folio_dec_eb_refs(const struct btrfs_fs_info *fs_info, struct folio *folio)
- {
--	struct btrfs_subpage *subpage;
-+	struct btrfs_folio_state *bfs;
- 
- 	if (!btrfs_meta_is_subpage(fs_info))
- 		return;
-@@ -174,9 +169,9 @@ void btrfs_folio_dec_eb_refs(const struct btrfs_fs_info *fs_info, struct folio *
- 	ASSERT(folio_test_private(folio) && folio->mapping);
- 	lockdep_assert_held(&folio->mapping->i_private_lock);
- 
--	subpage = folio_get_private(folio);
--	ASSERT(atomic_read(&subpage->eb_refs));
--	atomic_dec(&subpage->eb_refs);
-+	bfs = folio_get_private(folio);
-+	ASSERT(atomic_read(&bfs->eb_refs));
-+	atomic_dec(&bfs->eb_refs);
- }
- 
- static void btrfs_subpage_assert(const struct btrfs_fs_info *fs_info,
-@@ -228,7 +223,7 @@ static void btrfs_subpage_clamp_range(struct folio *folio, u64 *start, u32 *len)
- static bool btrfs_subpage_end_and_test_lock(const struct btrfs_fs_info *fs_info,
- 					    struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 	const int start_bit = subpage_calc_start_bit(fs_info, folio, locked, start, len);
- 	const int nbits = (len >> fs_info->sectorsize_bits);
- 	unsigned long flags;
-@@ -238,7 +233,7 @@ static bool btrfs_subpage_end_and_test_lock(const struct btrfs_fs_info *fs_info,
- 
- 	btrfs_subpage_assert(fs_info, folio, start, len);
- 
--	spin_lock_irqsave(&subpage->lock, flags);
-+	spin_lock_irqsave(&bfs->lock, flags);
- 	/*
- 	 * We have call sites passing @lock_page into
- 	 * extent_clear_unlock_delalloc() for compression path.
-@@ -246,18 +241,18 @@ static bool btrfs_subpage_end_and_test_lock(const struct btrfs_fs_info *fs_info,
- 	 * This @locked_page is locked by plain lock_page(), thus its
- 	 * subpage::locked is 0.  Handle them in a special way.
- 	 */
--	if (atomic_read(&subpage->nr_locked) == 0) {
--		spin_unlock_irqrestore(&subpage->lock, flags);
-+	if (atomic_read(&bfs->nr_locked) == 0) {
-+		spin_unlock_irqrestore(&bfs->lock, flags);
- 		return true;
- 	}
- 
--	for_each_set_bit_from(bit, subpage->bitmaps, start_bit + nbits) {
--		clear_bit(bit, subpage->bitmaps);
-+	for_each_set_bit_from(bit, bfs->bitmaps, start_bit + nbits) {
-+		clear_bit(bit, bfs->bitmaps);
- 		cleared++;
- 	}
--	ASSERT(atomic_read(&subpage->nr_locked) >= cleared);
--	last = atomic_sub_and_test(cleared, &subpage->nr_locked);
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	ASSERT(atomic_read(&bfs->nr_locked) >= cleared);
-+	last = atomic_sub_and_test(cleared, &bfs->nr_locked);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- 	return last;
- }
- 
-@@ -280,7 +275,7 @@ static bool btrfs_subpage_end_and_test_lock(const struct btrfs_fs_info *fs_info,
- void btrfs_folio_end_lock(const struct btrfs_fs_info *fs_info,
- 			  struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 
- 	ASSERT(folio_test_locked(folio));
- 
-@@ -296,7 +291,7 @@ void btrfs_folio_end_lock(const struct btrfs_fs_info *fs_info,
- 	 * Since we own the page lock, no one else could touch subpage::locked
- 	 * and we are safe to do several atomic operations without spinlock.
- 	 */
--	if (atomic_read(&subpage->nr_locked) == 0) {
-+	if (atomic_read(&bfs->nr_locked) == 0) {
- 		/* No subpage lock, locked by plain lock_page(). */
- 		folio_unlock(folio);
- 		return;
-@@ -310,7 +305,7 @@ void btrfs_folio_end_lock(const struct btrfs_fs_info *fs_info,
- void btrfs_folio_end_lock_bitmap(const struct btrfs_fs_info *fs_info,
- 				 struct folio *folio, unsigned long bitmap)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 	const unsigned int blocks_per_folio = btrfs_blocks_per_folio(fs_info, folio);
- 	const int start_bit = blocks_per_folio * btrfs_bitmap_nr_locked;
- 	unsigned long flags;
-@@ -323,42 +318,42 @@ void btrfs_folio_end_lock_bitmap(const struct btrfs_fs_info *fs_info,
- 		return;
- 	}
- 
--	if (atomic_read(&subpage->nr_locked) == 0) {
-+	if (atomic_read(&bfs->nr_locked) == 0) {
- 		/* No subpage lock, locked by plain lock_page(). */
- 		folio_unlock(folio);
- 		return;
- 	}
- 
--	spin_lock_irqsave(&subpage->lock, flags);
-+	spin_lock_irqsave(&bfs->lock, flags);
- 	for_each_set_bit(bit, &bitmap, blocks_per_folio) {
--		if (test_and_clear_bit(bit + start_bit, subpage->bitmaps))
-+		if (test_and_clear_bit(bit + start_bit, bfs->bitmaps))
- 			cleared++;
- 	}
--	ASSERT(atomic_read(&subpage->nr_locked) >= cleared);
--	last = atomic_sub_and_test(cleared, &subpage->nr_locked);
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	ASSERT(atomic_read(&bfs->nr_locked) >= cleared);
-+	last = atomic_sub_and_test(cleared, &bfs->nr_locked);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- 	if (last)
- 		folio_unlock(folio);
- }
- 
- #define subpage_test_bitmap_all_set(fs_info, folio, name)		\
- ({									\
--	struct btrfs_subpage *subpage = folio_get_private(folio);	\
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);	\
- 	const unsigned int blocks_per_folio =				\
- 				btrfs_blocks_per_folio(fs_info, folio); \
- 									\
--	bitmap_test_range_all_set(subpage->bitmaps,			\
-+	bitmap_test_range_all_set(bfs->bitmaps,				\
- 			blocks_per_folio * btrfs_bitmap_nr_##name,	\
- 			blocks_per_folio);				\
- })
- 
- #define subpage_test_bitmap_all_zero(fs_info, folio, name)		\
- ({									\
--	struct btrfs_subpage *subpage = folio_get_private(folio);	\
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);	\
- 	const unsigned int blocks_per_folio =				\
- 				btrfs_blocks_per_folio(fs_info, folio); \
- 									\
--	bitmap_test_range_all_zero(subpage->bitmaps,			\
-+	bitmap_test_range_all_zero(bfs->bitmaps,			\
- 			blocks_per_folio * btrfs_bitmap_nr_##name,	\
- 			blocks_per_folio);				\
- })
-@@ -366,43 +361,43 @@ void btrfs_folio_end_lock_bitmap(const struct btrfs_fs_info *fs_info,
- void btrfs_subpage_set_uptodate(const struct btrfs_fs_info *fs_info,
- 				struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
- 							uptodate, start, len);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&subpage->lock, flags);
--	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
-+	spin_lock_irqsave(&bfs->lock, flags);
-+	bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
- 	if (subpage_test_bitmap_all_set(fs_info, folio, uptodate))
- 		folio_mark_uptodate(folio);
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- }
- 
- void btrfs_subpage_clear_uptodate(const struct btrfs_fs_info *fs_info,
- 				  struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
- 							uptodate, start, len);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&subpage->lock, flags);
--	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
-+	spin_lock_irqsave(&bfs->lock, flags);
-+	bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
- 	folio_clear_uptodate(folio);
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- }
- 
- void btrfs_subpage_set_dirty(const struct btrfs_fs_info *fs_info,
- 			     struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
- 							dirty, start, len);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&subpage->lock, flags);
--	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_lock_irqsave(&bfs->lock, flags);
-+	bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- 	folio_mark_dirty(folio);
- }
- 
-@@ -419,17 +414,17 @@ void btrfs_subpage_set_dirty(const struct btrfs_fs_info *fs_info,
- bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
- 					struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
- 							dirty, start, len);
- 	unsigned long flags;
- 	bool last = false;
- 
--	spin_lock_irqsave(&subpage->lock, flags);
--	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
-+	spin_lock_irqsave(&bfs->lock, flags);
-+	bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
- 	if (subpage_test_bitmap_all_zero(fs_info, folio, dirty))
- 		last = true;
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- 	return last;
- }
- 
-@@ -446,91 +441,91 @@ void btrfs_subpage_clear_dirty(const struct btrfs_fs_info *fs_info,
- void btrfs_subpage_set_writeback(const struct btrfs_fs_info *fs_info,
- 				 struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
- 							writeback, start, len);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&subpage->lock, flags);
--	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
-+	spin_lock_irqsave(&bfs->lock, flags);
-+	bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
- 	if (!folio_test_writeback(folio))
- 		folio_start_writeback(folio);
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- }
- 
- void btrfs_subpage_clear_writeback(const struct btrfs_fs_info *fs_info,
- 				   struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
- 							writeback, start, len);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&subpage->lock, flags);
--	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
-+	spin_lock_irqsave(&bfs->lock, flags);
-+	bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
- 	if (subpage_test_bitmap_all_zero(fs_info, folio, writeback)) {
- 		ASSERT(folio_test_writeback(folio));
- 		folio_end_writeback(folio);
- 	}
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- }
- 
- void btrfs_subpage_set_ordered(const struct btrfs_fs_info *fs_info,
- 			       struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
- 							ordered, start, len);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&subpage->lock, flags);
--	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
-+	spin_lock_irqsave(&bfs->lock, flags);
-+	bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
- 	folio_set_ordered(folio);
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- }
- 
- void btrfs_subpage_clear_ordered(const struct btrfs_fs_info *fs_info,
- 				 struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
- 							ordered, start, len);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&subpage->lock, flags);
--	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
-+	spin_lock_irqsave(&bfs->lock, flags);
-+	bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
- 	if (subpage_test_bitmap_all_zero(fs_info, folio, ordered))
- 		folio_clear_ordered(folio);
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- }
- 
- void btrfs_subpage_set_checked(const struct btrfs_fs_info *fs_info,
- 			       struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
- 							checked, start, len);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&subpage->lock, flags);
--	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
-+	spin_lock_irqsave(&bfs->lock, flags);
-+	bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
- 	if (subpage_test_bitmap_all_set(fs_info, folio, checked))
- 		folio_set_checked(folio);
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- }
- 
- void btrfs_subpage_clear_checked(const struct btrfs_fs_info *fs_info,
- 				 struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);
- 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
- 							checked, start, len);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&subpage->lock, flags);
--	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
-+	spin_lock_irqsave(&bfs->lock, flags);
-+	bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
- 	folio_clear_checked(folio);
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- }
- 
- /*
-@@ -541,16 +536,16 @@ void btrfs_subpage_clear_checked(const struct btrfs_fs_info *fs_info,
- bool btrfs_subpage_test_##name(const struct btrfs_fs_info *fs_info,	\
- 			       struct folio *folio, u64 start, u32 len)	\
- {									\
--	struct btrfs_subpage *subpage = folio_get_private(folio);	\
-+	struct btrfs_folio_state *bfs = folio_get_private(folio);	\
- 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,	\
- 						name, start, len);	\
- 	unsigned long flags;						\
- 	bool ret;							\
- 									\
--	spin_lock_irqsave(&subpage->lock, flags);			\
--	ret = bitmap_test_range_all_set(subpage->bitmaps, start_bit,	\
-+	spin_lock_irqsave(&bfs->lock, flags);			\
-+	ret = bitmap_test_range_all_set(bfs->bitmaps, start_bit,	\
- 				len >> fs_info->sectorsize_bits);	\
--	spin_unlock_irqrestore(&subpage->lock, flags);			\
-+	spin_unlock_irqrestore(&bfs->lock, flags);			\
- 	return ret;							\
- }
- IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(uptodate);
-@@ -662,10 +657,10 @@ IMPLEMENT_BTRFS_PAGE_OPS(checked, folio_set_checked, folio_clear_checked,
- {									\
- 	const unsigned int blocks_per_folio =				\
- 				btrfs_blocks_per_folio(fs_info, folio);	\
--	const struct btrfs_subpage *subpage = folio_get_private(folio);	\
-+	const struct btrfs_folio_state *bfs = folio_get_private(folio);	\
- 									\
- 	ASSERT(blocks_per_folio <= BITS_PER_LONG);			\
--	*dst = bitmap_read(subpage->bitmaps,				\
-+	*dst = bitmap_read(bfs->bitmaps,				\
- 			   blocks_per_folio * btrfs_bitmap_nr_##name,	\
- 			   blocks_per_folio);				\
- }
-@@ -690,7 +685,7 @@ IMPLEMENT_BTRFS_PAGE_OPS(checked, folio_set_checked, folio_clear_checked,
- void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
- 				  struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage;
-+	struct btrfs_folio_state *bfs;
- 	unsigned int start_bit;
- 	unsigned int nbits;
- 	unsigned long flags;
-@@ -705,15 +700,15 @@ void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
- 
- 	start_bit = subpage_calc_start_bit(fs_info, folio, dirty, start, len);
- 	nbits = len >> fs_info->sectorsize_bits;
--	subpage = folio_get_private(folio);
--	ASSERT(subpage);
--	spin_lock_irqsave(&subpage->lock, flags);
--	if (unlikely(!bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits))) {
-+	bfs = folio_get_private(folio);
-+	ASSERT(bfs);
-+	spin_lock_irqsave(&bfs->lock, flags);
-+	if (unlikely(!bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits))) {
- 		SUBPAGE_DUMP_BITMAP(fs_info, folio, dirty, start, len);
--		ASSERT(bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits));
-+		ASSERT(bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits));
- 	}
--	ASSERT(bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits));
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	ASSERT(bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits));
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- }
- 
- /*
-@@ -726,7 +721,7 @@ void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
- void btrfs_folio_set_lock(const struct btrfs_fs_info *fs_info,
- 			  struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage;
-+	struct btrfs_folio_state *bfs;
- 	unsigned long flags;
- 	unsigned int start_bit;
- 	unsigned int nbits;
-@@ -736,19 +731,19 @@ void btrfs_folio_set_lock(const struct btrfs_fs_info *fs_info,
- 	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, folio))
- 		return;
- 
--	subpage = folio_get_private(folio);
-+	bfs = folio_get_private(folio);
- 	start_bit = subpage_calc_start_bit(fs_info, folio, locked, start, len);
- 	nbits = len >> fs_info->sectorsize_bits;
--	spin_lock_irqsave(&subpage->lock, flags);
-+	spin_lock_irqsave(&bfs->lock, flags);
- 	/* Target range should not yet be locked. */
--	if (unlikely(!bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits))) {
-+	if (unlikely(!bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits))) {
- 		SUBPAGE_DUMP_BITMAP(fs_info, folio, locked, start, len);
--		ASSERT(bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits));
-+		ASSERT(bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits));
- 	}
--	bitmap_set(subpage->bitmaps, start_bit, nbits);
--	ret = atomic_add_return(nbits, &subpage->nr_locked);
-+	bitmap_set(bfs->bitmaps, start_bit, nbits);
-+	ret = atomic_add_return(nbits, &bfs->nr_locked);
- 	ASSERT(ret <= btrfs_blocks_per_folio(fs_info, folio));
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- }
- 
- /*
-@@ -776,7 +771,7 @@ bool btrfs_meta_folio_clear_and_test_dirty(struct folio *folio, const struct ext
- void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
- 				      struct folio *folio, u64 start, u32 len)
- {
--	struct btrfs_subpage *subpage;
-+	struct btrfs_folio_state *bfs;
- 	const unsigned int blocks_per_folio = btrfs_blocks_per_folio(fs_info, folio);
- 	unsigned long uptodate_bitmap;
- 	unsigned long dirty_bitmap;
-@@ -788,18 +783,18 @@ void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
- 
- 	ASSERT(folio_test_private(folio) && folio_get_private(folio));
- 	ASSERT(blocks_per_folio > 1);
--	subpage = folio_get_private(folio);
-+	bfs = folio_get_private(folio);
- 
--	spin_lock_irqsave(&subpage->lock, flags);
-+	spin_lock_irqsave(&bfs->lock, flags);
- 	GET_SUBPAGE_BITMAP(fs_info, folio, uptodate, &uptodate_bitmap);
- 	GET_SUBPAGE_BITMAP(fs_info, folio, dirty, &dirty_bitmap);
- 	GET_SUBPAGE_BITMAP(fs_info, folio, writeback, &writeback_bitmap);
- 	GET_SUBPAGE_BITMAP(fs_info, folio, ordered, &ordered_bitmap);
- 	GET_SUBPAGE_BITMAP(fs_info, folio, checked, &checked_bitmap);
- 	GET_SUBPAGE_BITMAP(fs_info, folio, locked, &locked_bitmap);
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- 
--	dump_page(folio_page(folio, 0), "btrfs subpage dump");
-+	dump_page(folio_page(folio, 0), "btrfs folio state dump");
- 	btrfs_warn(fs_info,
- "start=%llu len=%u page=%llu, bitmaps uptodate=%*pbl dirty=%*pbl locked=%*pbl writeback=%*pbl ordered=%*pbl checked=%*pbl",
- 		    start, len, folio_pos(folio),
-@@ -815,14 +810,14 @@ void btrfs_get_subpage_dirty_bitmap(struct btrfs_fs_info *fs_info,
- 				    struct folio *folio,
- 				    unsigned long *ret_bitmap)
- {
--	struct btrfs_subpage *subpage;
-+	struct btrfs_folio_state *bfs;
- 	unsigned long flags;
- 
- 	ASSERT(folio_test_private(folio) && folio_get_private(folio));
- 	ASSERT(btrfs_blocks_per_folio(fs_info, folio) > 1);
--	subpage = folio_get_private(folio);
-+	bfs = folio_get_private(folio);
- 
--	spin_lock_irqsave(&subpage->lock, flags);
-+	spin_lock_irqsave(&bfs->lock, flags);
- 	GET_SUBPAGE_BITMAP(fs_info, folio, dirty, ret_bitmap);
--	spin_unlock_irqrestore(&subpage->lock, flags);
-+	spin_unlock_irqrestore(&bfs->lock, flags);
- }
-diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index 52546e0e97ce..7889a97365f0 100644
---- a/fs/btrfs/subpage.h
-+++ b/fs/btrfs/subpage.h
-@@ -32,7 +32,16 @@ struct folio;
- enum {
- 	btrfs_bitmap_nr_uptodate = 0,
- 	btrfs_bitmap_nr_dirty,
-+
-+	/*
-+	 * This can be changed to atomic eventually.
-+	 * But this change will rely on the async delalloc range rework for
-+	 * locked bitmap.
-+	 * As async delalloc can unlock its range and mark blocks writeback
-+	 * at random timing.
-+	 */
- 	btrfs_bitmap_nr_writeback,
-+
- 	/*
- 	 * The ordered and checked flags are for COW fixup, already marked
- 	 * deprecated, and will be removed eventually.
-@@ -57,7 +66,7 @@ enum {
-  * Structure to trace status of each sector inside a page, attached to
-  * page::private for both data and metadata inodes.
-  */
--struct btrfs_subpage {
-+struct btrfs_folio_state {
- 	/* Common members for both data and metadata pages */
- 	spinlock_t lock;
- 	union {
-@@ -65,7 +74,7 @@ struct btrfs_subpage {
- 		 * Structures only used by metadata
- 		 *
- 		 * @eb_refs should only be operated under private_lock, as it
--		 * manages whether the subpage can be detached.
-+		 * manages whether the btrfs_folio_state can be detached.
- 		 */
- 		atomic_t eb_refs;
- 
-@@ -79,7 +88,7 @@ struct btrfs_subpage {
- 	unsigned long bitmaps[];
- };
- 
--enum btrfs_subpage_type {
-+enum btrfs_folio_type {
- 	BTRFS_SUBPAGE_METADATA,
- 	BTRFS_SUBPAGE_DATA,
- };
-@@ -119,15 +128,18 @@ static inline bool btrfs_is_subpage(const struct btrfs_fs_info *fs_info,
- }
- #endif
- 
--int btrfs_attach_subpage(const struct btrfs_fs_info *fs_info,
--			 struct folio *folio, enum btrfs_subpage_type type);
--void btrfs_detach_subpage(const struct btrfs_fs_info *fs_info, struct folio *folio,
--			  enum btrfs_subpage_type type);
-+int btrfs_attach_folio_state(const struct btrfs_fs_info *fs_info,
-+			     struct folio *folio, enum btrfs_folio_type type);
-+void btrfs_detach_folio_state(const struct btrfs_fs_info *fs_info, struct folio *folio,
-+			      enum btrfs_folio_type type);
- 
- /* Allocate additional data where page represents more than one sector */
--struct btrfs_subpage *btrfs_alloc_subpage(const struct btrfs_fs_info *fs_info,
--				size_t fsize, enum btrfs_subpage_type type);
--void btrfs_free_subpage(struct btrfs_subpage *subpage);
-+struct btrfs_folio_state *btrfs_alloc_folio_state(const struct btrfs_fs_info *fs_info,
-+						  size_t fsize, enum btrfs_folio_type type);
-+static inline void btrfs_free_folio_state(struct btrfs_folio_state *bfs)
-+{
-+	kfree(bfs);
-+}
- 
- void btrfs_folio_inc_eb_refs(const struct btrfs_fs_info *fs_info, struct folio *folio);
- void btrfs_folio_dec_eb_refs(const struct btrfs_fs_info *fs_info, struct folio *folio);
--- 
-2.49.0
+Also, I'm trying not to introduce too many options or configuration
+paths, just enough to keep Btrfs simple to use.
+
+Does that sound reasonable?
+
+Thanks, Anand
+
+>> Anand Jain (10):
+>>    btrfs: fix thresh scope in should_alloc_chunk()
+>>    btrfs: refactor should_alloc_chunk() arg type
+>>    btrfs: introduce btrfs_split_sysfs_arg() for argument parsing
+>>    btrfs: introduce device allocation method
+>>    btrfs: sysfs: show device allocation method
+>>    btrfs: skip device sorting when only one device is present
+>>    btrfs: refactor chunk allocation device handling to use list_head
+>>    btrfs: introduce explicit device roles for block groups
+>>    btrfs: introduce ROLE_THEN_SPACE device allocation method
+>>    btrfs: pass device roles through device add ioctl
+>>
+>>   fs/btrfs/block-group.c |  11 +-
+>>   fs/btrfs/ioctl.c       |  12 +-
+>>   fs/btrfs/sysfs.c       | 130 ++++++++++++++++++++--
+>>   fs/btrfs/volumes.c     | 242 +++++++++++++++++++++++++++++++++--------
+>>   fs/btrfs/volumes.h     |  35 +++++-
+>>   5 files changed, 366 insertions(+), 64 deletions(-)
+>>
+> 
 
 
