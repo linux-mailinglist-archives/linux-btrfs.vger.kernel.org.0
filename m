@@ -1,109 +1,200 @@
-Return-Path: <linux-btrfs+bounces-14394-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14395-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6914FACBB0A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 20:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 581B6ACBC35
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 22:16:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F99E173C23
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 18:20:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12910173488
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Jun 2025 20:16:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C781CDFD4;
-	Mon,  2 Jun 2025 18:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2558E14B965;
+	Mon,  2 Jun 2025 20:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fOG/AozZ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NDlzFDJx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2A0k63G9";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NDlzFDJx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2A0k63G9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59CFA40849
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 18:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEDFE23CE
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 20:16:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748888413; cv=none; b=HtP7FlW6kNGoZEQW6eokRm7Iveh9FIV14Rwrv3R2GDWcPbYE8VVrBnfQOl7wGvym80zkYX4xHSq6bupaveySVcVFmkXZU85Lf3mEiw5XlZM3Bc23OJjR7IxyD6RqUwn7N3dhLCCfzkzf9f4k+aVC0e8Mz6QAy4aDrNeAf/e3yds=
+	t=1748895374; cv=none; b=BKeVaR68yUuRbxdmhiWTredd52EtfMgC4ewdXgprK/sedG33ougOHEsx5Yg6sC9QnikXpiCwMQBcdmmAnXIoKtSYoXJEbJahpFtjK4L2lCXhA9DR21GR7B5n6TVXgimNBBIcePK3NSLW4kW5Li+kcRtYTUKfDFCTjaa935iv3O8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748888413; c=relaxed/simple;
-	bh=VEvLoSuzEMrlofp63xht9FRFhoDE55oy1kAf2IC8pnw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XsWgx7623RyDZYmQXqcPkDJFiPbSoF6jZr1f4JdCor6bcX4Lzaw8ecYPGT0ZQ5/ZQNAE87Rcme0AfxgRU1wXGq0ltW1GcQwduAGoFREA94XH76l6xMNF273hRKUdIHrUpRhm3QPCJ0t7ATe0zs59DOUJ5+dBfrAqwqOOfDTrwMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fOG/AozZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C552CC4CEEB
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Jun 2025 18:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748888412;
-	bh=VEvLoSuzEMrlofp63xht9FRFhoDE55oy1kAf2IC8pnw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=fOG/AozZeXkYbRW7GNjWMUx+QmDacesMFDSoFVNbnpVtpRQxv596Dt9xP5CpFKaum
-	 LW4WpTtTyEugzsCloEL4Jr2XePHQD1BZk0plFpzdW6QKICyY0DPnp5ls1FYSQWaiFq
-	 zpgilO6VyTq0mesKUP14m/2t2n8qjrz6hJu6qUABGYfDsaCNtEBYHVELTaOY68hIck
-	 kFqJFd3iOrF40UVhASzuXMiaQ6wBGutb/9Co8pCE6dPt6vhvufe/MSHwPsUGFzzOzB
-	 sQ83Hz9w+8jVI2e+EbmdTifwy+z7MVnehkwldddmCLsJ/Ua2RQ3kmO73nNrQB9P7Lg
-	 Q2Y+REHVfpA1Q==
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-6046ecc3e43so7906103a12.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Jun 2025 11:20:12 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV60YYl8LFs2blgZf3c8qr8Flznob5ikHBAX9RObn0WyYn+KqNRlDwt34IGcMnMVNjSgpSqcTgvskv6SQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsyCr1vbto7qP3a11KA0IcR/PG/JyrsUXPmTsNppGYzpPMeuqV
-	J3hoU2j/9tEk5A4dq531Tbb3FBVP9z8VUaBbGN9+0II30Kcw/x8S6h0S7U3bjKoFcHYyhQfHEFk
-	JXuwqNBXwFM/ULyROAsyVnOvc1Rdvw1A=
-X-Google-Smtp-Source: AGHT+IF49z5sIcVK82Kdgt8zsATGQdIoc5md3oz1VMgM0xRi7SMFPfYv1By/rJ5LDEDHlVVZjtsfPjqynZM6wmVno1g=
-X-Received: by 2002:a17:907:7ea4:b0:ad8:9909:20a3 with SMTP id
- a640c23a62f3a-adb3242f4f0mr1407823566b.43.1748888411362; Mon, 02 Jun 2025
- 11:20:11 -0700 (PDT)
+	s=arc-20240116; t=1748895374; c=relaxed/simple;
+	bh=FPXDRTxtsJoDHSJYpap+UBMRRwjVRvYlwPB5jaP2OVg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=twtSIITrTPUY+SW0dUFY8e/ilXD94geUGnA3M3HOXNPkrNqh73bwNGIzjZSvAG5dmztuzAc7qAwh4zEQ1pVECZ3C4NdEJWPH5VOwaF0O9MJXQwwu/axbQv++sCKqMvL9tXzqV9SR28rMBv988lBmkEpNN6dXhkkM0nEvfKXvBwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NDlzFDJx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2A0k63G9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NDlzFDJx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2A0k63G9; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B117F1F7BB;
+	Mon,  2 Jun 2025 20:16:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748895370;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5eqShJfjpTGkeiejEy8KwUz3K3USF3jwaRsnzPXwIaI=;
+	b=NDlzFDJxb6BX5sqPp1awqEfNjGU5tlS3IzwPb5C9eNNf2hZiclZtCz7a757/jKc2CRSblA
+	aAXNLUKCtIbGzPBGOS5/mF80q+ZrNaKLpHU8Jo46wrJvWJ2GZByA123IgrNNsmzcJXzu0l
+	2sq3sQbUznVpD2ZmtOKJ/rV+k1xGTW8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748895370;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5eqShJfjpTGkeiejEy8KwUz3K3USF3jwaRsnzPXwIaI=;
+	b=2A0k63G9iuv+DQhujxA6U2EcumYXKKDCVhoQ3Ub0jFi7esVhTKYySJT1S3SjKj0gdd8gi1
+	ZGSQFZ1dV4w1FwCg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748895370;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5eqShJfjpTGkeiejEy8KwUz3K3USF3jwaRsnzPXwIaI=;
+	b=NDlzFDJxb6BX5sqPp1awqEfNjGU5tlS3IzwPb5C9eNNf2hZiclZtCz7a757/jKc2CRSblA
+	aAXNLUKCtIbGzPBGOS5/mF80q+ZrNaKLpHU8Jo46wrJvWJ2GZByA123IgrNNsmzcJXzu0l
+	2sq3sQbUznVpD2ZmtOKJ/rV+k1xGTW8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748895370;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5eqShJfjpTGkeiejEy8KwUz3K3USF3jwaRsnzPXwIaI=;
+	b=2A0k63G9iuv+DQhujxA6U2EcumYXKKDCVhoQ3Ub0jFi7esVhTKYySJT1S3SjKj0gdd8gi1
+	ZGSQFZ1dV4w1FwCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 94E95136C7;
+	Mon,  2 Jun 2025 20:16:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id HnDMI4oGPmi4VgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 02 Jun 2025 20:16:10 +0000
+Date: Mon, 2 Jun 2025 22:16:09 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Mark Harmstone <maharmstone@fb.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: update superblock's device bytes_used when
+ dropping chunk
+Message-ID: <20250602201609.GH4037@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250529093821.2818081-1-maharmstone@fb.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250602162038.3840-1-jth@kernel.org> <CAL3q7H4p4RQ46vCUJYREn3BgYa9SBY1eMeaGpyM=0Jz15WH35A@mail.gmail.com>
- <7b04d71a-fe25-4d98-bb7b-25515be65177@wdc.com>
-In-Reply-To: <7b04d71a-fe25-4d98-bb7b-25515be65177@wdc.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 2 Jun 2025 19:19:33 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5Cp9hTpwebScKaVc73d6HQLYVesnb=xXJdMYbhE53upA@mail.gmail.com>
-X-Gm-Features: AX0GCFsjPAxVCmOrzSnaekUcEF0TfpOZ6dG04njUayhaAkGW453M_oeAmz5s_mw
-Message-ID: <CAL3q7H5Cp9hTpwebScKaVc73d6HQLYVesnb=xXJdMYbhE53upA@mail.gmail.com>
-Subject: Re: [PATCH v3] btrfs: zoned: reserve data_reloc block group on mount
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc: Johannes Thumshirn <jth@kernel.org>, 
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, David Sterba <dsterba@suse.com>, 
-	Naohiro Aota <Naohiro.Aota@wdc.com>, Josef Bacik <josef@toxicpanda.com>, 
-	Damien Le Moal <dlemoal@kernel.org>, Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250529093821.2818081-1-maharmstone@fb.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:replyto];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
 
-On Mon, Jun 2, 2025 at 5:46=E2=80=AFPM Johannes Thumshirn
-<Johannes.Thumshirn@wdc.com> wrote:
->
-> On 02.06.25 18:37, Filipe Manana wrote:
-> > Instead of duplicating the iteration code, we could use a label and a
-> > boolean to track if we already allocated a chunk, something like this:
-> >
-> > https://pastebin.com/raw/jrFtUVFj
->
-> Not quite, the 1st one iterates over data_sinfo the 2nd over space_info
-> which is data_sinfo->sub_spaceinfo[0].
->
-> I could've made a helper function, but that seemed a bit excessive for th=
-is.
+On Thu, May 29, 2025 at 10:37:44AM +0100, Mark Harmstone wrote:
+> Each superblock contains a copy of the device item for that device. In a
+> transaction which drops a chunk but doesn't create any new ones, we were
+> correctly updating the device item in the chunk tree but not copying
+> over the new bytes_used value to the superblock.
+> 
+> This can be seen by doing the following:
+> 
+>  # cd
+>  # dd if=/dev/zero of=test bs=4096 count=2621440
+>  # mkfs.btrfs test
+>  # mount test /root/temp
+> 
+>  # cd /root/temp
+>  # for i in {00..10}; do dd if=/dev/zero of=$i bs=4096 count=32768; done
+>  # sync
+>  # rm *
+>  # sync
+>  # btrfs balance start -dusage=0 .
+>  # sync
+> 
+>  # cd
+>  # umount /root/temp
+>  # btrfs check test
+> 
+> (For btrfs-check to detect this, you will also need my patch at
+> https://github.com/kdave/btrfs-progs/pull/991.)
+> 
+> Change btrfs_remove_dev_extents() so that it adds the devices to the
 
-There's no need for that, the again label approach still works if we
-just used a local list_head pointer variable and use it in the
-list_for_each_entry() call, like this:
+There's no btrfs_remove_dev_extents(), the code is in
+btrfs_remove_chunk()
 
-https://pastebin.com/raw/Aq2SVB4W
+> post_commit_list if they're not there already. This causes
+> btrfs_commit_device_sizes() to be called, which updates the bytes_used
+> value in the superblock.
+> 
+> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+> ---
+>  fs/btrfs/volumes.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index e59aa0b5c4f3..ee886dc08d15 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -3272,6 +3272,12 @@ int btrfs_remove_dev_extents(struct btrfs_trans_handle *trans,
+>  					device->bytes_used - dev_extent_len);
+>  			atomic64_add(dev_extent_len, &fs_info->free_chunk_space);
+>  			btrfs_clear_space_info_full(fs_info);
+> +
+> +			if (list_empty(&device->post_commit_list)) {
+> +				list_add_tail(&device->post_commit_list,
+> +					      &trans->transaction->dev_update_list);
+> +			}
 
->
-> Note: locally I've deleted the line breaks for the set_bit() calls as
-> well. They fit in 80 chars now.
+There are 2 cases, one is being fixed here. I wonder if we can add some
+sort of assertion or transaction commit time verification that we don't
+miss that in the future. The pattern seems to be after
+btrfs_device_set_bytes_used() and btrfs_clear_space_info_full(). We'd
+have to have something set a bit in btrfs_device_set_bytes_used() and
+check it in commit unless something unset it when adding the device to
+the dev_update_list.
 
-Nice.
+Otherwise ok,
 
-Thanks.
-
->
-> Thanks,
->         Johannes
+Reviewed-by: David Sterba <dsterba@suse.com>
 
