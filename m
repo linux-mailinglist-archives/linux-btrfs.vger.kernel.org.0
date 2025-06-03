@@ -1,111 +1,122 @@
-Return-Path: <linux-btrfs+bounces-14423-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14424-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E16AACCDA8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jun 2025 21:37:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B27F1ACCDB1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jun 2025 21:38:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26D2317120E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jun 2025 19:37:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FA6F3A6650
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jun 2025 19:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB88E1F3BA4;
-	Tue,  3 Jun 2025 19:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20454219A7E;
+	Tue,  3 Jun 2025 19:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ou5e2IUt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VfQwGX41";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OM9c5LKM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y5AkqZ1c"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Uak5v9tD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="F5ifxise";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YBPInJE2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k4FlNKqF"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6426A86359
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Jun 2025 19:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57BA86359
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Jun 2025 19:38:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748979433; cv=none; b=rOD2jRvEUsfd+IEyCGmIE3JvzTpouUutEVDUZ03O+Yxw0f2QcBQpp36iCttwr4dHuMTVpxD5Jj+48yBqzoKWqUjElD7El1eqec5RU+Ze9PHFmWmN58RqyUJi6RVosAzmLzFUm01zJf+aQPPLbs/LTytJ0HnGHPM4uQbrntS1cRw=
+	t=1748979504; cv=none; b=PlgFr1jElwiRfuGIRXJDI4OVHu+p8LAgQzT7xhq3EAgiRm4ZUMskdYT+tLIstyBqEcpw1M6ohmaThmgykTz6a+pG9KajdBzvKnI+jRCypylKEsG9sNDcB150E1PTSEb231yve3uTHWQta23ph0p80e0aoeguD29NgfkrdMRvSQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748979433; c=relaxed/simple;
-	bh=ZPvFtDD5er7tAzagy0bu9lW0LvAbE+nJzVXB8Pd/uGA=;
+	s=arc-20240116; t=1748979504; c=relaxed/simple;
+	bh=eT3clanCmXJqpWoJJQZoOouOJr5Juqug/eyClaf06is=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PMpB+mx/LS5pGS2MYuTkY29A0ncVwVlvhlEZyt7Ws02V5Stl3FxQb9QXKaeo+PYJ+ePC8RUP/B9U14whuzpcjQXKbS49BjBrkFuMhBfPeIqhxc7HsWfV0JBVxiDjspeGiaBbY3IxN1zgxCp1qpaRq4asCfwKWI0VEqoAJxX81H0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ou5e2IUt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VfQwGX41; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OM9c5LKM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Y5AkqZ1c; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=bJYTMMMNhop9WAStVL9G8QM49ogtCSx3SgFpeqLY8xdLXEi8ZkDUxXcUEi9AXWEw39WTwZ5IO3GpZwcYy+PPp2geAZ1wQUoWXrhPBfn1tGj1Rk0zQ+vnelIRlZDM8BNdq4106SiodQMa9iRjxvRmOQNsKtuvbWjp2oQ7c/Tkjos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Uak5v9tD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=F5ifxise; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YBPInJE2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=k4FlNKqF; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id ED04E1F443;
-	Tue,  3 Jun 2025 19:37:08 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F16C31F825;
+	Tue,  3 Jun 2025 19:38:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748979429;
+	t=1748979501;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tzm5A2Px5qYYjiKvYPp13DWjjz56mEdTo0/7X1vXm+I=;
-	b=ou5e2IUtWD9lFWOrVqpeVdi+M2XKyJbsS9gOlX6y+jdZti5bhRhNbZC1yFqKs6W3LDmcx1
-	w2Er7rPND/fDph+ARurnXVAR4Cq1l5kxU51x6irQxIeCKCIM8IMz+SJDh3Rd1sc4bLF4fb
-	NYPdfjuk6uVGxOHLeg4TwQ2G6lHPjvI=
+	bh=HpIFLoLkeRo4SvvTkAA4/FXtgbOfkc1OzOToQQOFSQ4=;
+	b=Uak5v9tD16IDi6Z5/IVlXz89TEK0YdG1qYff5wFAA5LIGAzoXoZRAhq2nynMYO4AjbUqRM
+	wrv3RRCbmFDRsuz+j1D6Q+SsQLKZnOr31N/E0PtvCBfzKGTfl6iIvNalR/mqmdvq5n7KLp
+	EWeufjNa6uNDDP7zrjoLvPMbXXdS8sI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748979429;
+	s=susede2_ed25519; t=1748979501;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tzm5A2Px5qYYjiKvYPp13DWjjz56mEdTo0/7X1vXm+I=;
-	b=VfQwGX419ot5fWtZujcCR1XAUwT497SNKO7iRNRaYGwczeN5JccGkydnizzk8rPZi6GXdR
-	J7SoUH4fyQs1IvAA==
+	bh=HpIFLoLkeRo4SvvTkAA4/FXtgbOfkc1OzOToQQOFSQ4=;
+	b=F5ifxisenps1n1NlqY1fzQsLxENV0rjkLfNWnWFZF2mdyFVbYm6zkJA7Sw9un6JnZ+X8A4
+	+y0gAzAYzAjF2ADg==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=OM9c5LKM;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Y5AkqZ1c
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=YBPInJE2;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=k4FlNKqF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1748979428;
+	t=1748979500;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tzm5A2Px5qYYjiKvYPp13DWjjz56mEdTo0/7X1vXm+I=;
-	b=OM9c5LKMw2w3wUJI04KGWsXZBD+Ea4oh6JDBvKA5Ht//RZzIH4hve4Ypu2jpjKbuSjNxDH
-	MwxH1EEhT3LhOveWA2gYNrXwGPtXsQ4fXVbA+EovWE26TkiH7PHi/uCgo1VoWHjkhV8NyZ
-	5ebZXJQtibarDPoESebEboeI124kvuo=
+	bh=HpIFLoLkeRo4SvvTkAA4/FXtgbOfkc1OzOToQQOFSQ4=;
+	b=YBPInJE2IdrrDy8k7hhnjMnfkIQ5gpbVlZ9US+Ikm9xzuhmPMlQ52s8/OA2kxNbEuMH3O7
+	Hp8At3p7V+D96lP26yrDmhTC8nCg+fyWq3/D+pAiPmPNARbhZoE9/OJXJ5FMydXVF+cCWG
+	K8/IIdIB516JVOIb1Frti0t2U49v27Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1748979428;
+	s=susede2_ed25519; t=1748979500;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tzm5A2Px5qYYjiKvYPp13DWjjz56mEdTo0/7X1vXm+I=;
-	b=Y5AkqZ1ckqhjl24FY90i+u6LYTOePZs08V9V79x2ByDJ20NnHBFxM7+/7xSQs+8MAWWzVh
-	1RUXSRhPnSc8hQAw==
+	bh=HpIFLoLkeRo4SvvTkAA4/FXtgbOfkc1OzOToQQOFSQ4=;
+	b=k4FlNKqFumi6HUVPpA8vaFx8p6e3zfdSBkb5wLbJiO18ysDK6RVAcmSCCyKNJLD32AqtJL
+	sqLet810SI/2BkCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D0CE713A92;
-	Tue,  3 Jun 2025 19:37:08 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D135013A92;
+	Tue,  3 Jun 2025 19:38:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8wHFMuROP2i2AwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 03 Jun 2025 19:37:08 +0000
-Date: Tue, 3 Jun 2025 21:36:59 +0200
+	id SE3hMixPP2gTBAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 03 Jun 2025 19:38:20 +0000
+Date: Tue, 3 Jun 2025 21:38:15 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Boris Burkov <boris@bur.io>
-Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/2] btrfs: add helper folio_end()
-Message-ID: <20250603193659.GK4037@suse.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	Klara Modin <klarasmodin@gmail.com>
+Subject: Re: [PATCH v3] btrfs_get_tree_subvol(): switch from fc_mount() to
+ vfs_create_mount()
+Message-ID: <20250603193815.GL4037@suse.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1748938504.git.dsterba@suse.com>
- <bb27f76180bb5bc365b4917310c7bc283ba91c6b.1748938504.git.dsterba@suse.com>
- <20250603185442.GA2633115@zen.localdomain>
+References: <20250505030345.GD2023217@ZenIV>
+ <20250506193405.GS2023217@ZenIV>
+ <20250506195826.GU2023217@ZenIV>
+ <9a49247a-91dd-4c13-914a-36a5bfc718ba@suse.com>
+ <20250603075902.GJ4037@twin.jikos.cz>
+ <74260737-f153-437f-bf98-1f3944f493d6@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250603185442.GA2633115@zen.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <74260737-f153-437f-bf98-1f3944f493d6@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spamd-Result: default: False [-4.21 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
@@ -115,105 +126,67 @@ X-Spamd-Result: default: False [-4.21 / 50.00];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:mid,suse.cz:replyto,suse.com:email];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmx.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.com];
+	FREEMAIL_CC(0.00)[suse.com,zeniv.linux.org.uk,vger.kernel.org,gmail.com];
+	RCPT_COUNT_FIVE(0.00)[6];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	DKIM_TRACE(0.00)[suse.cz:+];
-	RCPT_COUNT_THREE(0.00)[3];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:replyto,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 X-Spam-Level: 
 X-Spam-Flag: NO
-X-Rspamd-Queue-Id: ED04E1F443
+X-Rspamd-Queue-Id: F16C31F825
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Score: -4.21
 
-On Tue, Jun 03, 2025 at 11:54:42AM -0700, Boris Burkov wrote:
-> On Tue, Jun 03, 2025 at 10:16:17AM +0200, David Sterba wrote:
-> > There are several cases of folio_pos + folio_size, add a convenience
-> > helper for that. Rename local variable in defrag_prepare_one_folio() to
-> > avoid name clash.
+On Tue, Jun 03, 2025 at 06:53:47PM +0930, Qu Wenruo wrote:
+> 
+> 
+> 在 2025/6/3 17:29, David Sterba 写道:
+> > On Thu, May 08, 2025 at 06:59:04PM +0930, Qu Wenruo wrote:
+> >>
+> >>
+> >> 在 2025/5/7 05:28, Al Viro 写道:
+> >>> [Aaarghh...]
+> >>> it's simpler to do btrfs_reconfigure_for_mount() right after vfs_get_tree() -
+> >>> no need to mess with ->s_umount.
+> >>>       
+> >>> [fix for braino(s) folded in - kudos to Klara Modin <klarasmodin@gmail.com>]
+> >>> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> >>
+> >> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> >> Test-by: Qu Wenruo <wqu@suse.com>
+> >>
+> >> Although the commit message can be enhanced a little, I can handle it at
+> >> merge time, no need to re-send.
 > > 
-> > Signed-off-by: David Sterba <dsterba@suse.com>
-> > ---
-> >  fs/btrfs/defrag.c | 8 ++++----
-> >  fs/btrfs/misc.h   | 7 +++++++
-> >  2 files changed, 11 insertions(+), 4 deletions(-)
+> > If you're going to add the patch to for-next, please fix the subject
+> > line and update the changelog. Thanks.
 > > 
-> > diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-> > index 6dca263b224e87..e5739835ad02f0 100644
-> > --- a/fs/btrfs/defrag.c
-> > +++ b/fs/btrfs/defrag.c
-> > @@ -849,7 +849,7 @@ static struct folio *defrag_prepare_one_folio(struct btrfs_inode *inode, pgoff_t
-> >  	struct address_space *mapping = inode->vfs_inode.i_mapping;
-> >  	gfp_t mask = btrfs_alloc_write_mask(mapping);
-> >  	u64 folio_start;
-> > -	u64 folio_end;
-> > +	u64 folio_last;
 > 
-> This is nitpicky, but I think introducing the new word "last" in in an
-> inconsistent fashion is a mistake.
+> I have merged this one to for-next just minutes ago.
 > 
-> In patch 2 at truncate_block_zero_beyond_eof() and
-> btrfs_writepage_fixup_worker, you have variables called "X_end" that get
-> assigned to folio_end() - 1. Either those should also get called
-> "X_last" or this one should have "end" in its name.
-
-Ok, then the "-1" should be renamed to _last, so it's "last byte of the
-range", but unfortunatelly the "_end" suffix could mean the same.
-
-> >  	struct extent_state *cached_state = NULL;
-> >  	struct folio *folio;
-> >  	int ret;
-> > diff --git a/fs/btrfs/misc.h b/fs/btrfs/misc.h
-> > index 9cc292402696cc..ff5eac84d819d8 100644
-> > --- a/fs/btrfs/misc.h
-> > +++ b/fs/btrfs/misc.h
-> > @@ -158,4 +160,9 @@ static inline bool bitmap_test_range_all_zero(const unsigned long *addr,
-> >  	return (found_set == start + nbits);
-> >  }
-> >  
-> > +static inline u64 folio_end(struct folio *folio)
-> > +{
-> > +	return folio_pos(folio) + folio_size(folio);
-> > +}
+> However the version I pushed doesn't only have its commit 
+> message/subject modified, but also modified its error handling, to align 
+> with our error-first behavior.
+> (Which is much easier to read compared to the one in the patch)
 > 
-> Is there a reason we can't propose this is a generic folio helper
-> function alongside folio_pos() and folio_size()?
+> So I have sent the updated version to the mail list just for reference.
 
-We can eventually. The difference is that now it's a local convenience
-helper while in MM it would be part of the API and I haven't done the
-extensive research of it's use.
-
-A quick grep (folio_size + folio_end) in fs/ shows
-
-     24 btrfs
-      4 iomap
-      4 ext4
-      2 xfs
-      2 netfs
-      1 gfs2
-      1 f2fs
-      1 buffer.c
-      1 bcachefs
-
-where bcachefs has its own helper folio_end_pos() with 19 uses. In mm/
-there are 2.
-
-> Too many variables out
-> there called folio_end from places that would include it?
-
-I found only a handful of cases, so should be doable.
+Perfect, thanks.
 
