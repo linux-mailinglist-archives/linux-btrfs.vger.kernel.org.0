@@ -1,219 +1,165 @@
-Return-Path: <linux-btrfs+bounces-14399-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14400-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8F7EACC010
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jun 2025 08:14:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5756ACC128
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jun 2025 09:23:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9B58166A70
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jun 2025 06:14:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06EBA3A3ABC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Jun 2025 07:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DCE91F63D9;
-	Tue,  3 Jun 2025 06:14:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7323C2690F2;
+	Tue,  3 Jun 2025 07:23:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="y/Wktw10";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Hf6ujG1n";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="y/Wktw10";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Hf6ujG1n"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D4223774
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Jun 2025 06:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18872690EB
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Jun 2025 07:23:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748931253; cv=none; b=J3OK0rWZ3dI9FS+mvVwfI9rQuU1MivOHVIJCt40DOwIRk4Oiy/ZBfvALbGCEzKiB8KCWytDCNtcXX5apAp4I4kxzLYHydV9Wuno3ny8vt2fb5ssijVNHGTYylcOFgfHeKf9QH7sCt9pBu5fg4NWiVc89kTUqsw4l6S983C+6fsM=
+	t=1748935400; cv=none; b=Mt/acinikx4j2i6ra51Yt6oij+9mtkPYrjj/yRXXV7USEJm5VF0AAiVA7xL5wUif5EkyEBzn8DVh9Sd3BwGN9+0AsRZKIoS/q8NSCJwUY7ABBi0jIjNLmcnkHq6uRNIosHCDCRqkvfzRi+yQPlFwdSp+6BOqHnkSviMv7TM0m4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748931253; c=relaxed/simple;
-	bh=eO9pSk8RswpIaChZmyi/2xhBcTwm8eTLG5mLM2dGsgE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LxhvNNoFFu4usifM3rwGfYNda+TMfhzZtZNfWx6zlQzhxjKgBAGN2rycpbb2WLTf6IBFCRPag9SKkr70UBW21QLMhFWTxcG3LmGhbED8j0PTpCfeZxloa1M+5l1/UTo/Mdmpie6jdg0jl590Ldvh2BqyBpNlnUvN/RbWgTBg/10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3a36748920cso5875834f8f.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Jun 2025 23:14:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748931249; x=1749536049;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NB+jVq7WeDiNa8ZtSG0IVtpvQLVqxUcrNHyJgHg2BfY=;
-        b=famc8NW4pOakPrz4LSh217UIxA//iBcOOis4STwnpKkL9kh0oE/ZZiMLN+wDhqxDSL
-         KPkcYIenLsSYDxIBSFviDy3D/XVNjQy2qfLIA1l9xynnKtjhpgWaR2c5rsy8l5G5KNyS
-         p7I5BrLnfLs79hxt3kCho7h2+eOsWvH9X9gUg/bWWh7n7sN2MDnwI6WfZBrMBCajRyIC
-         oCUp+L5n0H4OSHQ6DPGzhHHXNcFzSF7WeNhw7ztM6k8rzRD9qIKNU4JhfOA+dkMGuURK
-         HkZzGeghsF1yeqnMN7pHmNVr7cZYRe/pkVaH12TMLNBoSO/Tfsqk2znixFwyE1jm9ZzN
-         zo2A==
-X-Gm-Message-State: AOJu0Yz2do7ZJQ9QnPQi8u6tDvfSeIfmJwfevfgr6Z4MpV1ueU69nQup
-	5vc9rp+sN99/t6E1q7TWLys9c17zG24BO/c+c+thyp19QsjUDRy80akLBiFjEg==
-X-Gm-Gg: ASbGncuW6n+klbO6WEAQRI9uhmXHXNfVsW9BWpf0ideJ1rQPm5dXdhA30VQLSKup44g
-	B5usiDDU9EBMRMVzeQNADMcK5c1blayFttYHGbbk+fb7gLQTaDs96CkkhLFR5Ys8VleIVcGAkVu
-	EE9uFng/wuBGXukDkOGSHCa7HCV4DSxdFkcMp2ydEBfZ55RexDR3m4zza/pJHlCDRoofDcTL8Ms
-	ODKJeKcWM1OCuGyyOkIz0mvRfhJFp+mtGxkgf34dmuC0C+QPaKFlXfwNhkNnG21XtGu0mC+lW1x
-	r1LVdvsz5MKJ9zB48gWHfHa3QopFELDCieFsIyR6Fcqd/PORBBRUfnaIWC07vKkdJaRyqVcY7JF
-	iIOSkdUPgVgjUw/4kx48fbV6/eQAcoeTu4hkdEq0=
-X-Google-Smtp-Source: AGHT+IE9oCJsGnmY9T+E4yxEvdtzmF+NJJLCpWjuNEKwjGiDOHhNLyWaalWt29xuZEd6qRK0/hjfYw==
-X-Received: by 2002:a05:6000:2407:b0:3a4:d924:e65e with SMTP id ffacd0b85a97d-3a4f89df89bmr12431241f8f.59.1748931249105;
-        Mon, 02 Jun 2025 23:14:09 -0700 (PDT)
-Received: from mayhem.fritz.box (p200300f6f734a1006f354b1e839513ef.dip0.t-ipconnect.de. [2003:f6:f734:a100:6f35:4b1e:8395:13ef])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-451df07ac73sm48674175e9.9.2025.06.02.23.14.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Jun 2025 23:14:08 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-To: linux-btrfs@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	David Sterba <dsterba@suse.com>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v4] btrfs: zoned: reserve data_reloc block group on mount
-Date: Tue,  3 Jun 2025 08:14:01 +0200
-Message-ID: <20250603061401.217412-1-jth@kernel.org>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1748935400; c=relaxed/simple;
+	bh=0aCZ6WSNapRAFR2WZ2FRBxDQ/wQmUptZjeVcX6HN58s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cjh1+CHDzc96WXgmbSc5qMNQLtDzeo79X7gXARGIGvsYhEBmLAiQOxA+zmcvP5Ea+fCS1bnmTcZ3Pj0VaWNG30oTtyV/mCZ61c/SDwr5LZmtAbjbEkpP6ufoLq7rZZLlqvbeD9sRJzvu0W6C3CqeWUvFIRXR6YnPxJbzN1o6dKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=y/Wktw10; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Hf6ujG1n; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=y/Wktw10; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Hf6ujG1n; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AFFED218D6;
+	Tue,  3 Jun 2025 07:23:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748935395;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8CXv2zctPE28IC/OCWZTuj+VRrLSZOb0nUwqESdRFTE=;
+	b=y/Wktw10EG2DjWaIFmdijAnD/ckAZzioEkA0Sgh/nL1tZhYRGVi17pOTOitp3NBqGNtLW7
+	wOei8X4oH51945tZgMjPJvoxrTENw4IURFQUBBXN3cazXwZUqt7Eu12pGYP+7qazJjobGe
+	mJRG9BEgV1wbrVbKo+bLKdLbZ/vdHmw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748935395;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8CXv2zctPE28IC/OCWZTuj+VRrLSZOb0nUwqESdRFTE=;
+	b=Hf6ujG1nHF7jxdxScjhhLHF5O9ICvhsebEZhZ1FZ0vLScTie10D7ty0nlE2/7nrs4c1yU6
+	SO+lIbU8c6QO3TBA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="y/Wktw10";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Hf6ujG1n
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1748935395;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8CXv2zctPE28IC/OCWZTuj+VRrLSZOb0nUwqESdRFTE=;
+	b=y/Wktw10EG2DjWaIFmdijAnD/ckAZzioEkA0Sgh/nL1tZhYRGVi17pOTOitp3NBqGNtLW7
+	wOei8X4oH51945tZgMjPJvoxrTENw4IURFQUBBXN3cazXwZUqt7Eu12pGYP+7qazJjobGe
+	mJRG9BEgV1wbrVbKo+bLKdLbZ/vdHmw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1748935395;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8CXv2zctPE28IC/OCWZTuj+VRrLSZOb0nUwqESdRFTE=;
+	b=Hf6ujG1nHF7jxdxScjhhLHF5O9ICvhsebEZhZ1FZ0vLScTie10D7ty0nlE2/7nrs4c1yU6
+	SO+lIbU8c6QO3TBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9BA4613A92;
+	Tue,  3 Jun 2025 07:23:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id xfp6JeOiPmgmDgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 03 Jun 2025 07:23:15 +0000
+Date: Tue, 3 Jun 2025 09:23:06 +0200
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 00/14] btrfs: directory logging bug fix and several
+ updates
+Message-ID: <20250603072305.GI4037@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1748789125.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1748789125.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: AFFED218D6
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_NONE(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -4.21
+X-Spam-Level: 
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Mon, Jun 02, 2025 at 11:32:53AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> These fix a race between renames and directory logging and several cleanups
+> and small optimizations. Details in the change logs.
+> 
+> Filipe Manana (14):
+>   btrfs: fix a race between renames and directory logging
+>   btrfs: assert we join log transaction at btrfs_del_inode_ref_in_log()
+>   btrfs: free path sooner at __btrfs_unlink_inode()
+>   btrfs: use btrfs_del_item() at del_logged_dentry()
+>   btrfs: assert we join log transaction at btrfs_del_dir_entries_in_log()
+>   btrfs: allocate path earlier at btrfs_del_dir_entries_in_log()
+>   btrfs: allocate path earlier at btrfs_log_new_name()
+>   btrfs: allocate scratch eb earlier at btrfs_log_new_name()
+>   btrfs: pass NULL index to btrfs_del_inode_ref() where not needed
+>   btrfs: switch del_all argument of replay_dir_deletes() from int to bool
+>   btrfs: make btrfs_delete_delayed_insertion_item() return a boolean
+>   btrfs: add details to error messages at btrfs_delete_delayed_dir_index()
+>   btrfs: make btrfs_should_delete_dir_index() return a bool instead
+>   btrfs: make btrfs_readdir_delayed_dir_index() return a bool instead
 
-Create a block group dedicated for data relocation on mount of a zoned
-filesystem.
-
-If there is already more than one empty DATA block group on mount, this
-one is picked for the data relocation block group, instead of a newly
-created one.
-
-This is done to ensure, there is always space for performing garbage
-collection and the filesystem is not hitting ENOSPC under heavy overwrite
-workloads.
-
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
----
-Changes to v3:
-- Use jump label to only have search loop once (Filipe)
-
- fs/btrfs/disk-io.c |  1 +
- fs/btrfs/zoned.c   | 61 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/zoned.h   |  3 +++
- 3 files changed, 65 insertions(+)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 3def93016963..b211dc8cdb86 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3562,6 +3562,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		goto fail_sysfs;
- 	}
- 
-+	btrfs_zoned_reserve_data_reloc_bg(fs_info);
- 	btrfs_free_zone_cache(fs_info);
- 
- 	btrfs_check_active_zone_reservation(fs_info);
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 19710634d63f..a31aa129cb0f 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -17,6 +17,7 @@
- #include "fs.h"
- #include "accessors.h"
- #include "bio.h"
-+#include "transaction.h"
- 
- /* Maximum number of zones to report per blkdev_report_zones() call */
- #define BTRFS_REPORT_NR_ZONES   4096
-@@ -2443,6 +2444,66 @@ void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg)
- 	spin_unlock(&fs_info->relocation_bg_lock);
- }
- 
-+void btrfs_zoned_reserve_data_reloc_bg(struct btrfs_fs_info *fs_info)
-+{
-+	struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
-+	struct btrfs_space_info *space_info = data_sinfo->sub_group[0];
-+	struct btrfs_trans_handle *trans;
-+	struct btrfs_block_group *bg;
-+	struct list_head *bg_list;
-+	u64 alloc_flags;
-+	bool initial = false;
-+	bool did_chunk_alloc = false;
-+	int index;
-+	int ret;
-+
-+	if (!btrfs_is_zoned(fs_info))
-+		return;
-+
-+	if (fs_info->data_reloc_bg)
-+		return;
-+
-+	if (sb_rdonly(fs_info->sb))
-+		return;
-+
-+	ASSERT(space_info->subgroup_id == BTRFS_SUB_GROUP_DATA_RELOC);
-+	alloc_flags = btrfs_get_alloc_profile(fs_info, space_info->flags);
-+	index = btrfs_bg_flags_to_raid_index(alloc_flags);
-+
-+	bg_list = &data_sinfo->block_groups[index];
-+again:
-+	list_for_each_entry(bg, bg_list, list) {
-+		if (bg->used > 0)
-+			continue;
-+
-+		if (!initial) {
-+			initial = true;
-+			continue;
-+		}
-+
-+		fs_info->data_reloc_bg = bg->start;
-+		set_bit(BLOCK_GROUP_FLAG_ZONED_DATA_RELOC, &bg->runtime_flags);
-+		btrfs_zone_activate(bg);
-+
-+		return;
-+	}
-+
-+	if (did_chunk_alloc)
-+		return;
-+
-+	trans = btrfs_join_transaction(fs_info->tree_root);
-+	if (IS_ERR(trans))
-+		return;
-+
-+	ret = btrfs_chunk_alloc(trans, space_info, alloc_flags, CHUNK_ALLOC_FORCE);
-+	btrfs_end_transaction(trans);
-+	if (ret == 1) {
-+		did_chunk_alloc = true;
-+		bg_list = &space_info->block_groups[index];
-+		goto again;
-+	}
-+}
-+
- void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index 9672bf4c3335..6e11533b8e14 100644
---- a/fs/btrfs/zoned.h
-+++ b/fs/btrfs/zoned.h
-@@ -88,6 +88,7 @@ void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical,
- void btrfs_schedule_zone_finish_bg(struct btrfs_block_group *bg,
- 				   struct extent_buffer *eb);
- void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg);
-+void btrfs_zoned_reserve_data_reloc_bg(struct btrfs_fs_info *fs_info);
- void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info);
- bool btrfs_zoned_should_reclaim(const struct btrfs_fs_info *fs_info);
- void btrfs_zoned_release_data_reloc_bg(struct btrfs_fs_info *fs_info, u64 logical,
-@@ -241,6 +242,8 @@ static inline void btrfs_schedule_zone_finish_bg(struct btrfs_block_group *bg,
- 
- static inline void btrfs_clear_data_reloc_bg(struct btrfs_block_group *bg) { }
- 
-+static inline void btrfs_zoned_reserve_data_reloc_bg(struct btrfs_fs_info *fs_info) { }
-+
- static inline void btrfs_free_zone_cache(struct btrfs_fs_info *fs_info) { }
- 
- static inline bool btrfs_zoned_should_reclaim(const struct btrfs_fs_info *fs_info)
--- 
-2.49.0
-
+The cleanup patches look ok. Feel free to add the whole series to
+for-next, I'm not sure how much review from others you'll get for the
+lgging magic.
 
