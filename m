@@ -1,274 +1,145 @@
-Return-Path: <linux-btrfs+bounces-14453-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14454-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BFDFACDC08
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 12:37:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEB58ACDDD4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 14:24:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 201DB1667DB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 10:37:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 894183A458F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 12:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E948428C5DA;
-	Wed,  4 Jun 2025 10:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88CA28E575;
+	Wed,  4 Jun 2025 12:24:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HQYIBwIH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kgb5xc5k";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HQYIBwIH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kgb5xc5k"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACE713D3B8
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Jun 2025 10:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF6628D8ED
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Jun 2025 12:24:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749033461; cv=none; b=FecmIhaNN86tsTOTsWO9Hv7st/f8ahxzTLxjKunZ3nfSl29knpspgDj/zdpdoSesugtXfVB/q5hY+zryzzF2Jj4D0TCxdk9cA8lS4lUHfryK9DFvyy2cpNQ/XMRfPY7lV+klcY+UAGMBHDE2N7IF9ZcxbIU5/8CTQooo0VnFTmU=
+	t=1749039852; cv=none; b=VhoUwZQCPaHk1BqssuxxLBWelEIsLt301QpuC4S70jvztrrfwg4Q782WKkUcIjPk9I+nXrq6gOJDWoUtCdQ7Z1mzyDrgKrtj65eVXjlnVqq/fx28ssein757e4aG8WlKAVdYBVXEDcyW18r956/ku4VgZAgxc/ILxn2CMdwB0F0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749033461; c=relaxed/simple;
-	bh=pyb/ZxeEyaO9Ctfs9p0Nie/h1rAChgz09IJq2xadMYM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bLQ5SGxYiSnlQzAKuXNrHsyAWHk9XG3i6H42nWzhYy7WJXrodrdDyVBKMrvlr4VkMsssWbCGPjkJmYBsfE7r3JamX0hi1fjw0atli5duW/UIcAXbmF9GVO6Vb7EHVwcfPeDhU+j/cSO2UGOv/kx+iDYzlrjsub5FGt6HBMYJN1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43cfe63c592so77328255e9.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Jun 2025 03:37:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749033458; x=1749638258;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YwfNS1q8D+yAZ/SIrcUPIUi0P9iWkJK0yOFaI6KQfXU=;
-        b=qdT4ZVqtpUDmpSomMBc2djtKohKDLityJTmuyUr34oOsoe0CY1A6GzJuhekFQIRiVA
-         BnXJ5BSIqyZUiXRC7/hFLoGGI8aAdZ+CTCfjcxJqYrSqGwhrYusP/Y1tKTFDEQkS5/Td
-         xdQ9OCZtQBDtIqV7ORSUaheqW3ZavlaQ2ArZTlGPm48T2KI2+KuOf7S6dOJXWqUosR00
-         LgPJMDdyFJQPq+B+1uLy4ARcEpqPjWXKI0UZTiiA3EBHR6oNnrnpuqZn4tVoDCvtgn3w
-         6Helo8yWSKBxiiGQ4AEBBqZKNSSxKYn1hckBu9139VawdzKWpx2xWQZA0eTQpWdRgvzS
-         rmJA==
-X-Gm-Message-State: AOJu0Yx5pr/b8SW2I3CzXGi0GK1dbXIQl8YHU7ia6Thk/DYUu/524iL6
-	xPuhV/JxV3Ftpp6w8EP1JefMlSCH3mF/I75uTov0D7K8geu1MRn5ncb7tExWNA==
-X-Gm-Gg: ASbGncsLT8EWhuWmH/31U/aj2ed6+Had9TsPe/Ws8hgi2U0v89bS1LRPk3fq2zzbZ0Q
-	7CDbsnVK+0Hf30eq/Kse+HFb2VFXCZ6jpWuTFcom2DIpo1FtuV7+RS5x0U8wk8RAN+Yb228AeB5
-	PimoTo+4GNBaSOXe21ts7aNrQrtPxMR8jPgHkpmw3ayPpJcPJCT2IznCLXkPk8kM6I6sXS9TgJz
-	v/RtygBn65Xd0LUF9vXxUaOA4OwVQjI1l5X+eAb+LNAgD+d6vLE0Pqvf36h5NuHy4dg10+fvAba
-	cy7PEVN7ZrUB1MGXbK+jwD2KwKVM30TK0po6KW5rOeCKcfgGtYehoqleQWds3Z5Er8ayXODTzLa
-	EM2F/9+wVlD3I9DCQbN52mQC3LRvhgtne51GBD7WPZ3asAKblUg==
-X-Google-Smtp-Source: AGHT+IEn4DFbREP3bm9kinAAXxYB/4+qTpTEtfO8Dr0ByozXbajSDF0bZNhS2MNaPABaEtyFhagDdg==
-X-Received: by 2002:a05:600c:4f94:b0:43c:fcbc:9680 with SMTP id 5b1f17b1804b1-451f0b24269mr18022825e9.25.1749033457596;
-        Wed, 04 Jun 2025 03:37:37 -0700 (PDT)
-Received: from mayhem.fritz.box (p200300f6f734a1006f354b1e839513ef.dip0.t-ipconnect.de. [2003:f6:f734:a100:6f35:4b1e:8395:13ef])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-450d8000e3esm193933515e9.22.2025.06.04.03.37.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Jun 2025 03:37:37 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	David Sterba <dsterba@suse.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH] btrfs: zoned: fix alloc_offset calculation for partly conventional block groups
-Date: Wed,  4 Jun 2025 12:37:30 +0200
-Message-ID: <20250604103730.358907-1-jth@kernel.org>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1749039852; c=relaxed/simple;
+	bh=Qkwx2PtMdY+GZWm2JOqQf/ukPSLmPiibxLqpLaOjYEQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=agbvMEW4Wcx6GucHipy1bebkVt+gFxcKKhnebEYo6ymW7ahWC7eJ2zqN+kpPwYS2e/YKxpzC8Q49BYQmQopGQmmsrSmGME387FUHKOAo6Uqlu7U+1Lfx4TRjsS9hWzQm30x/4pZ4B2CEObW5b7aiaOuBMj2/VaOFRonxTYRaHg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HQYIBwIH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kgb5xc5k; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HQYIBwIH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kgb5xc5k; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5C6123402E;
+	Wed,  4 Jun 2025 12:24:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1749039848;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FbqMC5BYvJtWKjIDqSzE3ICLmFGbUmgRu0MvuGf0dfU=;
+	b=HQYIBwIH7f+kxUlqa4ZuEO9z7CY7c8NuW2IM6NaJaDTycKzK79EzComU+4+BjF8cPYJRfz
+	LRXjaSH+iFe2GJOjDppgkPixM//8SGzSiNn2oGu5fhudSXFCK3RD/j8qR4X8T/7fgoXGdd
+	V/LyT1NQzUCpr3lWVxSRwhGP/B4jOTE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1749039848;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FbqMC5BYvJtWKjIDqSzE3ICLmFGbUmgRu0MvuGf0dfU=;
+	b=kgb5xc5kGO3nAd5/1hmYjzRicvHqoJCg0U9dPNgHqWaEeSxPaiylwFovGXLYPRWxGEQCa4
+	E8dAHp0ST426CfAA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1749039848;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FbqMC5BYvJtWKjIDqSzE3ICLmFGbUmgRu0MvuGf0dfU=;
+	b=HQYIBwIH7f+kxUlqa4ZuEO9z7CY7c8NuW2IM6NaJaDTycKzK79EzComU+4+BjF8cPYJRfz
+	LRXjaSH+iFe2GJOjDppgkPixM//8SGzSiNn2oGu5fhudSXFCK3RD/j8qR4X8T/7fgoXGdd
+	V/LyT1NQzUCpr3lWVxSRwhGP/B4jOTE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1749039848;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FbqMC5BYvJtWKjIDqSzE3ICLmFGbUmgRu0MvuGf0dfU=;
+	b=kgb5xc5kGO3nAd5/1hmYjzRicvHqoJCg0U9dPNgHqWaEeSxPaiylwFovGXLYPRWxGEQCa4
+	E8dAHp0ST426CfAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4449E13A63;
+	Wed,  4 Jun 2025 12:24:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id sZF7EOg6QGgkTQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 04 Jun 2025 12:24:08 +0000
+Date: Wed, 4 Jun 2025 14:24:02 +0200
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] btrfs: don't silently ignore unexpected extent
+ type when replaying log
+Message-ID: <20250604122402.GS4037@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1748985387.git.fdmanana@suse.com>
+ <7a4820f91854e3e0e52ec39a4dd89ce9878193d6.1748985387.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7a4820f91854e3e0e52ec39a4dd89ce9878193d6.1748985387.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-0.999];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.996];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:replyto];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Tue, Jun 03, 2025 at 10:19:58PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> If there's an unexpected (invalid) extent type, we just silently ignore
+> it. This means a corruption or some bug somewhere, so instead return
+> -EUCLEAN to the caller, making log replay fail, and print an error message
+> with relevant information.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-When one of two zones composing a DUP block group is a conventional zone,
-we have the zone_info[i]->alloc_offset = WP_CONVENTIONAL. That will, of
-course, not match the write pointer of the other zone, and fails that
-block group.
-
-This commit solves that issue by properly recovering the emulated write
-pointer from the last allocated extent. The offset for the SINGLE, DUP,
-and RAID1 are straight-forward: it is same as the end of last allocated
-extent. The RAID0 and RAID10 are a bit tricky that we need to do the math
-of striping.
-
-This is the kernel equivalent of Naohiro's user-space commit:
-1e85aa96e107 ("btrfs-progs: zoned: fix alloc_offset calculation for partly conventional block groups")
-
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/zoned.c | 85 ++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 71 insertions(+), 14 deletions(-)
-
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 4e122d6c19c0..69f1a6d36add 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1404,7 +1404,8 @@ static int btrfs_load_block_group_single(struct btrfs_block_group *bg,
- static int btrfs_load_block_group_dup(struct btrfs_block_group *bg,
- 				      struct btrfs_chunk_map *map,
- 				      struct zone_info *zone_info,
--				      unsigned long *active)
-+				      unsigned long *active,
-+				      u64 last_alloc)
- {
- 	struct btrfs_fs_info *fs_info = bg->fs_info;
- 
-@@ -1427,6 +1428,13 @@ static int btrfs_load_block_group_dup(struct btrfs_block_group *bg,
- 			  zone_info[1].physical);
- 		return -EIO;
- 	}
-+
-+	if (zone_info[0].alloc_offset == WP_CONVENTIONAL)
-+		zone_info[0].alloc_offset = last_alloc;
-+
-+	if (zone_info[1].alloc_offset == WP_CONVENTIONAL)
-+		zone_info[1].alloc_offset = last_alloc;
-+
- 	if (zone_info[0].alloc_offset != zone_info[1].alloc_offset) {
- 		btrfs_err(bg->fs_info,
- 			  "zoned: write pointer offset mismatch of zones in DUP profile");
-@@ -1447,7 +1455,8 @@ static int btrfs_load_block_group_dup(struct btrfs_block_group *bg,
- static int btrfs_load_block_group_raid1(struct btrfs_block_group *bg,
- 					struct btrfs_chunk_map *map,
- 					struct zone_info *zone_info,
--					unsigned long *active)
-+					unsigned long *active,
-+					u64 last_alloc)
- {
- 	struct btrfs_fs_info *fs_info = bg->fs_info;
- 	int i;
-@@ -1462,10 +1471,12 @@ static int btrfs_load_block_group_raid1(struct btrfs_block_group *bg,
- 	bg->zone_capacity = min_not_zero(zone_info[0].capacity, zone_info[1].capacity);
- 
- 	for (i = 0; i < map->num_stripes; i++) {
--		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
--		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
-+		if (zone_info[i].alloc_offset == WP_MISSING_DEV)
- 			continue;
- 
-+		if (zone_info[i].alloc_offset == WP_CONVENTIONAL)
-+			zone_info[i].alloc_offset = last_alloc;
-+
- 		if ((zone_info[0].alloc_offset != zone_info[i].alloc_offset) &&
- 		    !btrfs_test_opt(fs_info, DEGRADED)) {
- 			btrfs_err(fs_info,
-@@ -1495,7 +1506,8 @@ static int btrfs_load_block_group_raid1(struct btrfs_block_group *bg,
- static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
- 					struct btrfs_chunk_map *map,
- 					struct zone_info *zone_info,
--					unsigned long *active)
-+					unsigned long *active,
-+					u64 last_alloc)
- {
- 	struct btrfs_fs_info *fs_info = bg->fs_info;
- 
-@@ -1506,10 +1518,29 @@ static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
- 	}
- 
- 	for (int i = 0; i < map->num_stripes; i++) {
--		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
--		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
-+		if (zone_info[i].alloc_offset == WP_MISSING_DEV)
- 			continue;
- 
-+		if (zone_info[i].alloc_offset == WP_CONVENTIONAL) {
-+			u64 stripe_nr, full_stripe_nr;
-+			u64 stripe_offset;
-+			int stripe_index;
-+
-+			stripe_nr = last_alloc / map->stripe_size;
-+			stripe_offset = stripe_nr * map->stripe_size;
-+			full_stripe_nr = stripe_nr / map->num_stripes;
-+			stripe_index = stripe_nr % map->num_stripes;
-+
-+			zone_info[i].alloc_offset =
-+				full_stripe_nr * map->stripe_size;
-+
-+			if (stripe_index > i)
-+				zone_info[i].alloc_offset += map->stripe_size;
-+			else if (stripe_index == i)
-+				zone_info[i].alloc_offset +=
-+					(last_alloc - stripe_offset);
-+		}
-+
- 		if (test_bit(0, active) != test_bit(i, active)) {
- 			if (!btrfs_zone_activate(bg))
- 				return -EIO;
-@@ -1527,7 +1558,8 @@ static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
- static int btrfs_load_block_group_raid10(struct btrfs_block_group *bg,
- 					 struct btrfs_chunk_map *map,
- 					 struct zone_info *zone_info,
--					 unsigned long *active)
-+					 unsigned long *active,
-+					 u64 last_alloc)
- {
- 	struct btrfs_fs_info *fs_info = bg->fs_info;
- 
-@@ -1538,8 +1570,7 @@ static int btrfs_load_block_group_raid10(struct btrfs_block_group *bg,
- 	}
- 
- 	for (int i = 0; i < map->num_stripes; i++) {
--		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
--		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
-+		if (zone_info[i].alloc_offset == WP_MISSING_DEV)
- 			continue;
- 
- 		if (test_bit(0, active) != test_bit(i, active)) {
-@@ -1550,6 +1581,28 @@ static int btrfs_load_block_group_raid10(struct btrfs_block_group *bg,
- 				set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &bg->runtime_flags);
- 		}
- 
-+		if (zone_info[i].alloc_offset == WP_CONVENTIONAL) {
-+			u64 stripe_nr, full_stripe_nr;
-+			u64 stripe_offset;
-+			int stripe_index;
-+
-+			stripe_nr = last_alloc / map->stripe_size;
-+			stripe_offset = stripe_nr * map->stripe_size;
-+			full_stripe_nr = stripe_nr /
-+				(map->num_stripes / map->sub_stripes);
-+			stripe_index = stripe_nr %
-+				(map->num_stripes / map->sub_stripes);
-+
-+			zone_info[i].alloc_offset =
-+				full_stripe_nr * map->stripe_size;
-+
-+			if (stripe_index > (i / map->sub_stripes))
-+				zone_info[i].alloc_offset += map->stripe_size;
-+			else if (stripe_index == (i / map->sub_stripes))
-+				zone_info[i].alloc_offset +=
-+					(last_alloc - stripe_offset);
-+		}
-+
- 		if ((i % map->sub_stripes) == 0) {
- 			bg->zone_capacity += zone_info[i].capacity;
- 			bg->alloc_offset += zone_info[i].alloc_offset;
-@@ -1638,18 +1691,22 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
- 		ret = btrfs_load_block_group_single(cache, &zone_info[0], active);
- 		break;
- 	case BTRFS_BLOCK_GROUP_DUP:
--		ret = btrfs_load_block_group_dup(cache, map, zone_info, active);
-+		ret = btrfs_load_block_group_dup(cache, map, zone_info, active,
-+						 last_alloc);
- 		break;
- 	case BTRFS_BLOCK_GROUP_RAID1:
- 	case BTRFS_BLOCK_GROUP_RAID1C3:
- 	case BTRFS_BLOCK_GROUP_RAID1C4:
--		ret = btrfs_load_block_group_raid1(cache, map, zone_info, active);
-+		ret = btrfs_load_block_group_raid1(cache, map, zone_info,
-+						   active, last_alloc);
- 		break;
- 	case BTRFS_BLOCK_GROUP_RAID0:
--		ret = btrfs_load_block_group_raid0(cache, map, zone_info, active);
-+		ret = btrfs_load_block_group_raid0(cache, map, zone_info,
-+						   active, last_alloc);
- 		break;
- 	case BTRFS_BLOCK_GROUP_RAID10:
--		ret = btrfs_load_block_group_raid10(cache, map, zone_info, active);
-+		ret = btrfs_load_block_group_raid10(cache, map, zone_info,
-+						    active, last_alloc);
- 		break;
- 	case BTRFS_BLOCK_GROUP_RAID5:
- 	case BTRFS_BLOCK_GROUP_RAID6:
--- 
-2.49.0
-
+Reviewed-by: David Sterba <dsterba@suse.com>
 
