@@ -1,145 +1,143 @@
-Return-Path: <linux-btrfs+bounces-14454-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14455-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEB58ACDDD4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 14:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80993ACDEDF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 15:20:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 894183A458F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 12:23:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 557F23A6F29
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 13:20:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88CA28E575;
-	Wed,  4 Jun 2025 12:24:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HQYIBwIH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kgb5xc5k";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HQYIBwIH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kgb5xc5k"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49EE28F950;
+	Wed,  4 Jun 2025 13:20:31 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF6628D8ED
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Jun 2025 12:24:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CED3143AA9
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Jun 2025 13:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749039852; cv=none; b=VhoUwZQCPaHk1BqssuxxLBWelEIsLt301QpuC4S70jvztrrfwg4Q782WKkUcIjPk9I+nXrq6gOJDWoUtCdQ7Z1mzyDrgKrtj65eVXjlnVqq/fx28ssein757e4aG8WlKAVdYBVXEDcyW18r956/ku4VgZAgxc/ILxn2CMdwB0F0=
+	t=1749043231; cv=none; b=rHjhYBsdC0Q54eEa4QRSp9j/P3hC9tDY0quIzEq95oNeeqKPReVCR3+KmOLKb6kc5sIt5be1DZ7nMZUYv1rlY1GNFz+p/M6OhhbB6s7CYwfNqpFgFkXhUxMhvJA2pCCaxcXF0xEEerTJctxeXvNA1/EjzH4okWLFvKTqHCayAAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749039852; c=relaxed/simple;
-	bh=Qkwx2PtMdY+GZWm2JOqQf/ukPSLmPiibxLqpLaOjYEQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=agbvMEW4Wcx6GucHipy1bebkVt+gFxcKKhnebEYo6ymW7ahWC7eJ2zqN+kpPwYS2e/YKxpzC8Q49BYQmQopGQmmsrSmGME387FUHKOAo6Uqlu7U+1Lfx4TRjsS9hWzQm30x/4pZ4B2CEObW5b7aiaOuBMj2/VaOFRonxTYRaHg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HQYIBwIH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kgb5xc5k; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HQYIBwIH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kgb5xc5k; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5C6123402E;
-	Wed,  4 Jun 2025 12:24:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1749039848;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FbqMC5BYvJtWKjIDqSzE3ICLmFGbUmgRu0MvuGf0dfU=;
-	b=HQYIBwIH7f+kxUlqa4ZuEO9z7CY7c8NuW2IM6NaJaDTycKzK79EzComU+4+BjF8cPYJRfz
-	LRXjaSH+iFe2GJOjDppgkPixM//8SGzSiNn2oGu5fhudSXFCK3RD/j8qR4X8T/7fgoXGdd
-	V/LyT1NQzUCpr3lWVxSRwhGP/B4jOTE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1749039848;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FbqMC5BYvJtWKjIDqSzE3ICLmFGbUmgRu0MvuGf0dfU=;
-	b=kgb5xc5kGO3nAd5/1hmYjzRicvHqoJCg0U9dPNgHqWaEeSxPaiylwFovGXLYPRWxGEQCa4
-	E8dAHp0ST426CfAA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1749039848;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FbqMC5BYvJtWKjIDqSzE3ICLmFGbUmgRu0MvuGf0dfU=;
-	b=HQYIBwIH7f+kxUlqa4ZuEO9z7CY7c8NuW2IM6NaJaDTycKzK79EzComU+4+BjF8cPYJRfz
-	LRXjaSH+iFe2GJOjDppgkPixM//8SGzSiNn2oGu5fhudSXFCK3RD/j8qR4X8T/7fgoXGdd
-	V/LyT1NQzUCpr3lWVxSRwhGP/B4jOTE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1749039848;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FbqMC5BYvJtWKjIDqSzE3ICLmFGbUmgRu0MvuGf0dfU=;
-	b=kgb5xc5kGO3nAd5/1hmYjzRicvHqoJCg0U9dPNgHqWaEeSxPaiylwFovGXLYPRWxGEQCa4
-	E8dAHp0ST426CfAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4449E13A63;
-	Wed,  4 Jun 2025 12:24:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sZF7EOg6QGgkTQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 04 Jun 2025 12:24:08 +0000
-Date: Wed, 4 Jun 2025 14:24:02 +0200
-From: David Sterba <dsterba@suse.cz>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] btrfs: don't silently ignore unexpected extent
- type when replaying log
-Message-ID: <20250604122402.GS4037@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1748985387.git.fdmanana@suse.com>
- <7a4820f91854e3e0e52ec39a4dd89ce9878193d6.1748985387.git.fdmanana@suse.com>
+	s=arc-20240116; t=1749043231; c=relaxed/simple;
+	bh=GtwuQJuy51N4t1zq/Q9Z6lCX128Pom+l/Co0cYVYgYo=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=gb3LHz7Gh2sEwYPfaOB+tQZhZAxxJxoqltfnQSUIekxSbrjHwKSdgu3WAot6i6VW8e3Ljo2Nq7npN7bh35J1ZyWoQBDEiuavkZ8XyhGDdQBRv9dhGILNnoANdrIYZptR6UMV0u/ER4gYuZA7vFM06fJKGIEcbyXu4m+GvMR35FU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3ddc2d3a2cfso4418545ab.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Jun 2025 06:20:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749043229; x=1749648029;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=10aIB0t8KM36XkuxFgyqCSaNeuDx3XE/NxbhTOsT0v0=;
+        b=ZAXTINC0e0pGe6gzHEBjwHTmOn1eJTgyUJxekupCL24HsdiODhbT0UUxeCvHBQ5NAX
+         16ggl+FKSfzaO5rBedo+i4Bl3lVRljPCScBd8hySNKxB3LGd+blfi3aLTK70yGr4Bln3
+         bUJaxXe+1GdMx4yKU6KfSqr5gNdIR0NKiorfOQ8zKwjTn6SdFSFvZF3yNMi+2mPRd0Sz
+         B8OwUvq0B/LjEs4HpYBze1bAo2NpMLA7Nn4DhRZmGTMNadAB3S38HhJ2YVdzcKvEMUrz
+         xEREZfGEEzbr5GbEKAahP8LAhy5nR/lLwHt5FdY9rMZyeAYHOVQoaca23O3TgykrD1ka
+         u5QQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVt3uOo2iFlm4oShTneSUds8aqxk0qy7qVloI0QYx8HsmYF5f7sSu4m2GFsvPN7zNyJ/D0WsJ35bHEL5w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNAT20aWlPwfUXiQkR6mHtSUwmZE1WYPAmfcA3hi8qcL5Ic2O9
+	L5iA5hxI6N3d0cDFnUCCcQwJbd8AIidlP/HAXQKt+76O9Vl0adZKeTmireYN4MZBI8UOsgHaKRJ
+	FgWt0SCeUWOUjcPV1e2tB+gUl530pVOdeIFEfh9lbdI0UMG79CTPZGXpM3eM=
+X-Google-Smtp-Source: AGHT+IGwseWAf5OxBFbNEQ2+7rV/HvgblxWQTAb1qtVGBtvaspTA9QK9LkA8yHip5XZ3Qtm+IDi1O0NxObvlABQKQCrI0iybkd/M
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7a4820f91854e3e0e52ec39a4dd89ce9878193d6.1748985387.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-0.999];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.996];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:replyto];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
+X-Received: by 2002:a05:6e02:3b07:b0:3dc:88ca:5ebd with SMTP id
+ e9e14a558f8ab-3ddbedfca9emr32646245ab.20.1749043228917; Wed, 04 Jun 2025
+ 06:20:28 -0700 (PDT)
+Date: Wed, 04 Jun 2025 06:20:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6840481c.a00a0220.d4325.000c.GAE@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_add_delayed_iput
+From: syzbot <syzbot+0ed30ad435bf6f5b7a42@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jun 03, 2025 at 10:19:58PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> If there's an unexpected (invalid) extent type, we just silently ignore
-> it. This means a corruption or some bug somewhere, so instead return
-> -EUCLEAN to the caller, making log replay fail, and print an error message
-> with relevant information.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Hello,
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+syzbot found the following issue on:
+
+HEAD commit:    3a83b350b5be Add linux-next specific files for 20250530
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=117a3ed4580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=28859360c84ac63d
+dashboard link: https://syzkaller.appspot.com/bug?extid=0ed30ad435bf6f5b7a42
+compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e18e458d13c9/disk-3a83b350.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a1c40854811c/vmlinux-3a83b350.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/571f670b130a/bzImage-3a83b350.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0ed30ad435bf6f5b7a42@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 65 at fs/btrfs/inode.c:3420 btrfs_add_delayed_iput+0x2f8/0x370 fs/btrfs/inode.c:3420
+Modules linked in:
+CPU: 0 UID: 0 PID: 65 Comm: kworker/u8:4 Not tainted 6.15.0-next-20250530-syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+Workqueue: btrfs-endio-write btrfs_work_helper
+RIP: 0010:btrfs_add_delayed_iput+0x2f8/0x370 fs/btrfs/inode.c:3420
+Code: 4e ad 5d fe 48 8b 3b 48 83 c4 28 5b 41 5c 41 5d 41 5e 41 5f 5d e9 f8 bc ca fd e8 03 2a fa fd e9 e6 fd ff ff e8 f9 29 fa fd 90 <0f> 0b 90 e9 41 fe ff ff 44 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 72
+RSP: 0018:ffffc9000213f780 EFLAGS: 00010293
+RAX: ffffffff83c635b7 RBX: ffff888058920000 RCX: ffff88801c769e00
+RDX: 0000000000000000 RSI: 0000000000000100 RDI: 0000000000000000
+RBP: 0000000000000001 R08: ffff888058921b67 R09: 1ffff1100b12436c
+R10: dffffc0000000000 R11: ffffed100b12436d R12: 0000000000000001
+R13: dffffc0000000000 R14: ffff88807d748000 R15: 0000000000000100
+FS:  0000000000000000(0000) GS:ffff888125c53000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00002000000bd038 CR3: 000000006a142000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_put_ordered_extent+0x19f/0x470 fs/btrfs/ordered-data.c:635
+ btrfs_finish_one_ordered+0x11d8/0x1b10 fs/btrfs/inode.c:3312
+ btrfs_work_helper+0x399/0xc20 fs/btrfs/async-thread.c:312
+ process_one_work kernel/workqueue.c:3238 [inline]
+ process_scheduled_works+0xae1/0x17b0 kernel/workqueue.c:3321
+ worker_thread+0x8a0/0xda0 kernel/workqueue.c:3402
+ kthread+0x70e/0x8a0 kernel/kthread.c:464
+ ret_from_fork+0x3fc/0x770 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
