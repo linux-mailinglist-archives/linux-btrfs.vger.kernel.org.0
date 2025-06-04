@@ -1,81 +1,80 @@
-Return-Path: <linux-btrfs+bounces-14464-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14465-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09555ACE626
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 23:29:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F192ACE633
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 23:36:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B427F172879
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 21:29:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA0063A77DB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 21:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49817212B28;
-	Wed,  4 Jun 2025 21:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3B5202961;
+	Wed,  4 Jun 2025 21:36:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UGhGZyiC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ETr5U080"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0FE2BA42
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Jun 2025 21:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CDC11FAC4D
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Jun 2025 21:36:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749072574; cv=none; b=KhYTeQqn3v+RmlG5sA2VzcQWF8yNWEaCr0Nzrwr2lTFTCCgR2L+kBwhL8orZTEAFdcKEr5F6TCtHokBXFfwKsWCQCPJEOFK9NWdbeOuSIPhJq00bZ8yZKhijbRrYZizielz826EP/yyyvz2NkPfYF7t7N19RFgiQ7Wz6uNhmeOk=
+	t=1749073008; cv=none; b=lU8ExCMkYJuJEkSsxCkXwEG0xRz459x6UfPJzI5Eac/7jLIlrkFHW/11hLtMEmfuqXUiHiGp67Jn7mlgsRMwXZJtfvE2vNpeEOn+A5xiK38qhkqngjX23G9DAUo0OVMRC1osNgbKnWtOMpQsHkz5RpIOl4f3pUR8QlcdDRJQIno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749072574; c=relaxed/simple;
-	bh=ON5orqwACNpdcOGrdaIuqOZFSTgqrfVta5ZuRm9/mBM=;
+	s=arc-20240116; t=1749073008; c=relaxed/simple;
+	bh=w+EsebHWDwX9qXnb53CMVp5OmDT/lw1v2xdsrOI4kGc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ln8uoeDM498cEsz40TeHfe8WABUT0SX949g4WzL94RAmBaJZKASceYHoFkAuxWuBHgaN+86RuIyHGdFAYm32dEKOVvBua7VQ/uY7GgIOe/SpQOTPdK9cvqYq1LvudgcGk55etbTmCwRz12uw5gsv3kkVT4mJkwNhgzePZgF1UAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UGhGZyiC; arc=none smtp.client-ip=209.85.218.42
+	 In-Reply-To:Content-Type; b=SpaTq7Yw9KljP5DrNED+QN1yaYooZpijJZUd/x6ukj/fFCJAVtREqalHU+MlpbK/BKI8V6DlzmmaYnIsCkn7TbYLAWFXgK8eVasLEHgittQsOt3+zUieI1vvn/25G/z1ryeFoJibJHYsQmELFmfkd1Osdi7/Mqvs0afHBoA2Yvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ETr5U080; arc=none smtp.client-ip=209.85.208.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-ad574992fcaso44547166b.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Jun 2025 14:29:32 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-606b6dbe316so446899a12.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Jun 2025 14:36:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749072571; x=1749677371; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749072998; x=1749677798; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=8RoS+OMp3SSn9TgOPbWMKXmVQDrBdwXTGUYG9B4x81Y=;
-        b=UGhGZyiC0iB1+MMIWM/+lMuJVmrHjvdoQWZ2lv7e5cq8IqebDctI3G5mYOiF2fkF9Y
-         PooaOfdIYRkCt3V2dFNNjvLlBs5blCVEm8MbLbUtKUKQCsnmr2dUzM67bN+fdJE+0Gm1
-         0hP7UVaTY/t0rB5Y1vquOutzKximlMw/2QwE7hLmDIhJbQDutMHPLd7Fg9+Vx3n1xoo0
-         Ky+QlANnF2xrcKcUh0n8HSTIzs+umuZRu2b3lGsrIuPZ/bRewwUmDauhP+XfSyBpsch9
-         zPQ5RMaEy0U9WMGYWD3t3NU2lGyicqhMWBvSO1xZFBk1HwN3lCDwT9aankHlrJXU+1QV
-         Ssww==
+        bh=T0ai4Vk+Pr2CFkChJO5T5nwc2vzR0EdQ/25VF+MLXxA=;
+        b=ETr5U080TLaxB1h+lxHyHW8vwbNJO4qozzuN9oYMXlqc/fIphSP+ApUNiZ4fXFeJ4A
+         IaoaWIOV7HJlueAznWRHi44OxXozP2gtNukCmDLjBoNzd6drSZivnqEGgSQfL0ynO4tk
+         oktZGCqCrlFnSH+ezw76KaDkfLdnrNDTiven8Y4DLLMt9r9H+GTduORbkTRKdL9JPBOM
+         evT8BGmm1YplknBw7QP2fgPJJ0c8x51zokemCdjJZ9iRHuhVp/UOe9mWD3QbkcrWhU+r
+         ua/kcobXjJ4abbicL1FbHH2tXe7eBc8BaoE6SC2ECmujR9HIlrm/L6Ss78JFFctcM2BI
+         1oFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749072571; x=1749677371;
+        d=1e100.net; s=20230601; t=1749072998; x=1749677798;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8RoS+OMp3SSn9TgOPbWMKXmVQDrBdwXTGUYG9B4x81Y=;
-        b=lISASdLQCtbW7XT01Tz1tr0o0s7UfPMaPmWjfoUWtab4vpko6G03KjAxE09ckSBw0e
-         Ir4ENZFkc9wzH8lmvhBaBI02pIu81P3hTi9n2BosZPy089XZ4zaYzYTcUgUVrkVbLp45
-         n98VRnioWq1xb1SUgpq0+i2ZaD5mVspjl/PtgslapySyMFQ3EzpMESDZy0hG/l0eWw7o
-         xwcHyuog+mY8l8sXR7p0s/WOUKs+ovkigvP6zD2dNSB/xTrw24ZxPgyaAqzdixEgEST7
-         SNuczPQgBF6XBMOXXN+lyI+AqpviYCtlcALu7cyXW3sS9YGREp4XxPjLxlZMR0jxZG6C
-         6lEA==
-X-Forwarded-Encrypted: i=1; AJvYcCXoRaPwbAJsUFykBTYyArbTHKdnk2TmmAcdbnkTnmJzaJoFpCgwAAVxImbji2bMfw3S79FcPraHDh7w4w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxOvy2/lASfH6IKTtPBi8tZJPl1anXW3lYdua4AbsCTIW6TL5Xj
-	lHTYN6iOYaI6SAJQDXPoaFNAuFXHYL3w5gklX+p/oQkYGV/svGpzB/wd
-X-Gm-Gg: ASbGncuRMjidbyRofDAcL5aXsy9CVi1VLQnB8+jbZXzqdDVQx9j3DpbzSA+C5UdmEvm
-	3UtijsgZzt6xBN5OpOGnVRJbY0c8jYxfXBtLoqpg9wFTm812uk/SHlzS9yC+48Y32auCkirviFB
-	P7ruNNS+drOkD3rU3gB9WGEIBCp6hYsCsyjTNOWy9UdKAlGhMGYzzvv4lNfTWnoxn0Dl6AS6Hl3
-	wT3hye+pwOoaaFejnBytDmBHWdI8/L5uawvnLuot/US/ONpNGO+MMeWvMZRYRL9ddNu0Okki1aD
-	K3Vg0St5+41+4rZrlJBmNbMvGYzkXy1IbhzKrgrKBI3JtvEBYaMtAp13Vae6Plj+fXHil7uvEBl
-	U9tKEIY7PvUy7E9mYrgpWR2FyOTtI669m922MuYQ3L/EwDM9S/0rNdfyeh8hrNJ43Owjh3O+7Wr
-	t84dWnwlk=
-X-Google-Smtp-Source: AGHT+IHtQDKBWWBLOylQ13HbBA9BzAmVnmg0ATk/JRJ6lk4BjxviRjP2b57uCskxY/gXQ3QDaN1Ohg==
-X-Received: by 2002:a17:906:6a28:b0:ad5:3e27:ebc with SMTP id a640c23a62f3a-addf8fd93d8mr427055166b.57.1749072570628;
-        Wed, 04 Jun 2025 14:29:30 -0700 (PDT)
+        bh=T0ai4Vk+Pr2CFkChJO5T5nwc2vzR0EdQ/25VF+MLXxA=;
+        b=AWetmRGjk4wa/7nsdz9e5VsXW6wwNgGUVYDaEdrEkW7e71Brgqse1tDNX9IPe9C1K1
+         8gPjKsKIWr2QamRYhLZKKzlYxuaqGyba/lar601tyRkXtlU5+RnbEZPTP6PW6rN2bX6a
+         Nlu7su2vZxyl3DlQ7tnuwZlHg26b12MKEP5yUcUHgXPka+ZZ2Ru0sq7ufiuxYHb7oGal
+         1X50TfmgBBB6d18zRHQUUqgNy+GtPBPNL4UToxbBGge22sitxAny8+gm0sHas4x+rkcZ
+         /Eck49Fnh0Bnv4XNM9cdEBTdb+B0LooeYVZLUXmIWQWXaaalM/pyAgQuxGeRrOR/+qMU
+         34xA==
+X-Forwarded-Encrypted: i=1; AJvYcCW+Ujw8e/GXmqfx9icy2kLsKwOtX9xokAA6dsm4XXth5JQ3CRUJfWZgiBOww8Fvw11M2NsLlGRtrkAtTw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8S0LncGKYqLXexoJyHT+O/jEJBnGOUpvVfUm4s+IyfZFJ/nV9
+	fxLH1bsk+dTNy88MmRyTK8ntmYKKydBlAGHWRsKlLOnIQk8+55qNGeb8Vwv4hwyW
+X-Gm-Gg: ASbGncu+re4GVUtJ7sKv+mzxSyEpOYj5d0z7wlIpPIjy9y/GW6d2ge0JjEXyXVAI4eO
+	879hFSC+ZpcWA93JOOb5Gk0iylzPJzCv6RDlMw6XbPziRJe5EUcl9szk0cJAiXz4Wt3uU7GGSi1
+	3BKweLCLzUbDGOwRSy7mjsOOwWDsmQHs/SasnTewbImrfoSaQSfKSFKWKcSl5/1V2hJmHykOuW6
+	VjkRsAMCKGrX5Wg2FDwyOt0T6ZWQe/skC6UJ8k2jpxdkcOGUoffv1cUw4CIwpRTT5aw0WdHOixB
+	0yVWEQdKXLlrpTSG68k5sV06v9mxjH2jWgMDRsk1RUd9uGgHjyaHWw8vGTJAXHzQtf38MiDqHK5
+	bmF3N0JOBqGLw7cNNQYqvQTHCq5uat0jjIoyHOFNMNqesfko3UKiBtOx3LlnF7IEStx1NaXh8
+X-Google-Smtp-Source: AGHT+IELz/fBg6EzCtXAW3E5i/zR64oubbrysQJ2oDwy4ZDycXo0dW+Cf4PfgLMALKJx2Df0T59ruA==
+X-Received: by 2002:a17:907:6ea1:b0:ad8:8efe:3206 with SMTP id a640c23a62f3a-addf8f5879bmr388138266b.42.1749072998500;
+        Wed, 04 Jun 2025 14:36:38 -0700 (PDT)
 Received: from ?IPV6:2a02:a466:68ed:1:9386:40ea:f665:2d25? (2a02-a466-68ed-1-9386-40ea-f665-2d25.fixed6.kpn.net. [2a02:a466:68ed:1:9386:40ea:f665:2d25])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-addfc4e04a1sm123140166b.143.2025.06.04.14.29.30
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ada5e2bf011sm1158127766b.105.2025.06.04.14.36.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Jun 2025 14:29:30 -0700 (PDT)
-Message-ID: <4ca355b0-f4d8-4e84-80b5-17e5a42e8273@gmail.com>
-Date: Wed, 4 Jun 2025 23:29:29 +0200
+        Wed, 04 Jun 2025 14:36:38 -0700 (PDT)
+Message-ID: <3fea5116-8532-4076-a824-620dc4c5a627@gmail.com>
+Date: Wed, 4 Jun 2025 23:36:37 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -83,168 +82,40 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 00/10] btrfs: new performance-based chunk allocation
- using device roles
-To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <cover.1747070147.git.anand.jain@oracle.com>
- <fee4ece3-b5f6-4510-89d0-40f964da2720@gmail.com>
- <67bf4ef7-6718-4ab8-85c1-8b8035a8981e@oracle.com>
+Subject: Re: Why does defragmenting break reflinks?
+To: Qu Wenruo <wqu@suse.com>, =?UTF-8?B?8J2VjfCdlZbwnZWd8J2VoPCdlZTwnZWa?=
+ =?UTF-8?B?8J2Vl/CdlarwnZWW8J2Vow==?= <velocifyer@velocifyer.com>,
+ linux-btrfs@vger.kernel.org
+References: <9d74d71f-b65d-4f06-adb3-18f7698edb8a@velocifyer.com>
+ <b407459f-5c9b-49e8-ab77-07768cb30783@suse.com>
 Content-Language: en-US
 From: Ferry Toth <fntoth@gmail.com>
-In-Reply-To: <67bf4ef7-6718-4ab8-85c1-8b8035a8981e@oracle.com>
+In-Reply-To: <b407459f-5c9b-49e8-ab77-07768cb30783@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Op 30-05-2025 om 02:27 schreef Qu Wenruo:
+> 
+> 
+> 在 2025/5/30 09:22, 𝕍𝕖𝕝𝕠𝕔𝕚𝕗𝕪𝕖𝕣 写道:
+>> BTRFS-FILESYSTEM(8) says "defragmenting  with  Linux kernel versions < 
+>> 3.9 or ≥ 3.14-rc2 as well as with Linux stable kernel versions ≥ 
+>> 3.10.31, ≥ 3.12.12 or ≥ 3.13.4 will break up the reflinks of COW data 
+>> (for example files copied with cp --reflink, snapshots or de- 
+>> duplicated data)." Why does defragmenting not preserve reflinks and 
+>> why was it removed?
+>>
+> 
+> Defrag means to re-dirty the data, and write them back again, which will 
+> cause COW.
 
-Op 02-06-2025 om 06:24 schreef Anand Jain:
-> On 23/5/25 04:39, Ferry Toth wrote:
->> Hi,
->>
->> Op 12-05-2025 om 20:07 schreef Anand Jain:
->>> In host hardware, devices can have different speeds. Generally, faster
->>> devices come with lesser capacity while slower devices come with larger
->>> capacity. A typical configuration would expect that:
->>>
->>>   - A filesystem's read/write performance is evenly distributed on 
->>> average
->>>   across the entire filesystem. This is not achievable with the current
->>>   allocation method because chunks are allocated based only on device 
->>> free
->>>   space.
->>>
->>>   - Typically, faster devices are assigned to metadata chunk allocations
->>>   while slower devices are assigned to data chunk allocations.
->>
->> Finally a new effort in this direction.
->>
->>> Introducing Device Roles:
->>>
->>>   Here I define 5 device roles in a specific order for metadata and 
->>> in the
->>>   reverse order for data: metadata_only, metadata, none, data, 
->>> data_only.
->>>   One or more devices may have the same role.
->>>
->>>   The metadata and data roles indicate preference but not exclusivity 
->>> for
->>>   that role, whereas data_only and metadata_only are exclusive roles.
->>>
->>> Introducing Role-then-Space allocation method:
->>>
->>>   Metadata allocation can happen on devices with the roles 
->>> metadata_only,
->>>   metadata, none, and data in that order. If multiple devices share a 
->>> role,
->>>   they are arranged based on device free space.
->>>
->>>   Similarly, data allocation can happen on devices with the roles 
->>> data_only,
->>>   data, none, and metadata in that order. If multiple devices share a 
->>> role,
->>>   they are arranged based on device free space.
->>
->> I can see the use case for large pools of disks used in server 
->> environments where disks get assigned a role.
->>
->> For desktop use I would like it a lot better with no roles, just a 
->> performance-based chunk allocation to select between a ssd and a hdd. 
->> And then used more like a hint to the allocator. Really nothing should 
->> go wrong if a data or meta-data gets allocated on the wrong / sub- 
->> optimal disk.
->>
->> This could then bring back the old hot relocation idea, finally.
->>
->>> Finding device speed automatically:
->>>
->>>   Measuring device read/write latency for the allocaiton is not good 
->>> idea,
->>>   as the historical readings and may be misleading, as they could 
->>> include
->>>   iostat data from periods with issues that have since been fixed. 
->>> Testing
->>>   to determine relative latency and arranging in ascending order for 
->>> metadata
->>>   and descending for data is possible, but is better handled by an 
->>> external
->>>   tool that can still set device roles.
->>>
->>> On-Disk Format changes:
->>>
->>>   The following items are defined but are unused on-disk format:
->>>
->>>     btrfs_dev_item::
->>>      __le64 type; // unused
->>>      __le64 start_offset; // unused
->>>      __le32 dev_group; // unused
->>>      __u8 seek_speed; // unused
->>>      __u8 bandwidth; // unused
->>>
->>>   The device roles is using the dev_item::type 8-bit field to store each
->>>   device's role.
->>
->> I think filling the fields with either measured or user entered data 
->> should be fine, as long as when the disk behavior changes you can re- 
->> measure or re-enter.
->>
->> The difference between a ssd and a hdd will be so huge small changes 
->> will have no real effect.
-> 
-> 
-> Yeah, for desktop setups with SSDs and HDDs, the distinction is clear
-> and stable, so assigning data or metadata based on device type makes
-> sense. It’s straightforward to handle statically, and a
-> --set-roles-by-type mkfs option will make it automatic.
-> 
-> Even if the SSD temporarily slows down during a balance, we’d still
-> prefer to keep metadata on it, assuming the slowdown is short-lived.
-> SSD performance typically recovers, so there's no need to overreact
-> to transient dips.
-> 
-> For virtual devices, mkfs --set-roles-by-iostat should also work well.
-> And later if performance characteristics change permanently, a
-> balance-time option like --recalibrate-role-by-iostat could
-> re-evaluate based on I/O stats, confirm with the user, and relocate
-> chunks accordingly.
-> 
-> Also, I'm trying not to introduce too many options or configuration
-> paths, just enough to keep Btrfs simple to use.
-> 
-> Does that sound reasonable?
+That sounds like an implementation choice.
 
-That sounds very good.
+> And by nature this breaks reflinked data extents.
 
-I  am curious what happens when the fast device fills up, what will the 
-allocator do? I guess it will fall back to allocating to the slow device?
+With a different implementation this would not by nature be the case.
 
-If so, we're going to need some periodic or just in time "move files 
-that have for a long time not been written / read" to the slow disk.
-
-While that file my be referenced from multiple subvolumes, and you 
-wouldn't want those duped (like happens with defragmenting).
-
-> Thanks, Anand
-> 
->>> Anand Jain (10):
->>>    btrfs: fix thresh scope in should_alloc_chunk()
->>>    btrfs: refactor should_alloc_chunk() arg type
->>>    btrfs: introduce btrfs_split_sysfs_arg() for argument parsing
->>>    btrfs: introduce device allocation method
->>>    btrfs: sysfs: show device allocation method
->>>    btrfs: skip device sorting when only one device is present
->>>    btrfs: refactor chunk allocation device handling to use list_head
->>>    btrfs: introduce explicit device roles for block groups
->>>    btrfs: introduce ROLE_THEN_SPACE device allocation method
->>>    btrfs: pass device roles through device add ioctl
->>>
->>>   fs/btrfs/block-group.c |  11 +-
->>>   fs/btrfs/ioctl.c       |  12 +-
->>>   fs/btrfs/sysfs.c       | 130 ++++++++++++++++++++--
->>>   fs/btrfs/volumes.c     | 242 +++++++++++++++++++++++++++++++++--------
->>>   fs/btrfs/volumes.h     |  35 +++++-
->>>   5 files changed, 366 insertions(+), 64 deletions(-)
->>>
->>
-> 
-
+Actually this makes defrag a very dangerous operation on disks with many 
+snapshots (> 20). When you would defrag each snapshot suddenly your 5% 
+full disk would be 100%.
 
