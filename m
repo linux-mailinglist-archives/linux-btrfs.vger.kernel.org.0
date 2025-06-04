@@ -1,183 +1,200 @@
-Return-Path: <linux-btrfs+bounces-14461-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14462-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 537A8ACE212
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 18:18:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDEE0ACE423
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 20:03:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85976189B546
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 16:18:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CE483A7909
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 18:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC981DE4E3;
-	Wed,  4 Jun 2025 16:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F6719DF4A;
+	Wed,  4 Jun 2025 18:03:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WnPb5U2d"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="GGSfTmya";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KOjA4qQf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A2C339A1
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Jun 2025 16:18:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB772171A1
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Jun 2025 18:03:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749053897; cv=none; b=MCRecADIobBVTEzXHkTbgHNWKtJ5LlUBZPN7nBXPlU2cTRYVAU4cTSc8xD0d2E7R8QklAhxTnF/IyLYqXWKkKXI7hzGWfsSMwi7HYQC/597cwZhmh/lRTffGs2KPKqMcLQfgISNGLhsJR8602tp7/J7Ne69nIUgkJJRpl2XYK1c=
+	t=1749060192; cv=none; b=CFVOZ90y0KaB5hNkT1gKJUQZi/eJbn0sCnxBu361aKAiv+lolvqsKynMznee1T9nZo0lrV5LxhmfWPyWUEveVUnI2MfkmiBgHLw8gZl84w+wWMlwdgBpSigWNXhx2QwA2Dc8yUMin5UhSzxjHY1OlcRvupMe1YRBm5uJ1zZr6gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749053897; c=relaxed/simple;
-	bh=jnWgCgiGMXouwcC8SMxazoohUOwl7KCdc5BSw6MgCa8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=dSJ/LT0aNMjArqbtz3dvvppM72j2eNABEA8Zc80NsqAbNAQ8w6uPWaaqbDeC9aYSuxvCRQdFqbfLQx6GXqB//YTH7diI6ZY5ACrHdp83gNnPTXbPg/kWdQlIrUZ5Sv9j9lv2rUGeGseeuLmAvZuzkWcMyBJ8Y+UsjyHKUjb47TY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WnPb5U2d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5172DC4CEE4
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Jun 2025 16:18:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749053895;
-	bh=jnWgCgiGMXouwcC8SMxazoohUOwl7KCdc5BSw6MgCa8=;
-	h=From:To:Subject:Date:From;
-	b=WnPb5U2dhw2x3vmwIW3F6TwSB/eCfbsLIV4VX8QfzwxE3TDKP4etk1qULY7fLbD36
-	 LtDdkAYATU1wGnXHfgcA3Pgme7g0pS7/r9nPUXVV8gvKBlVBQ07DhBRfAOLolPFmmJ
-	 brnkHiS7A4EtAtr2ZFJjFvMWH41ydyHUsCcQcEJ/nyY/U/AvyIyYo9rSpA7JxgGfI4
-	 sExBOVGi3WOmKDu/g1hY5gzmINoZUOLvAjk7li3VfgeTcN8EMummzWzADpAnddwmks
-	 5n364JztNl1HvSB3YLGylxmkLjs1Mu+jyAinq5IZgNf8Z0UhkPQNL8R8rWVGKQJWE6
-	 qGL2a+zcEHKzw==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix race between async reclaim worker and close_ctree()
-Date: Wed,  4 Jun 2025 17:18:11 +0100
-Message-ID: <59c8f858b893a9d37b76d4b3bdf985c904b4c8fe.1749052938.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
+	s=arc-20240116; t=1749060192; c=relaxed/simple;
+	bh=OvV9wbvpJCoRJ98gVHzRUcQaFcJneI73D8C+6Q+1xj0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RhaNKK0w5QSbgnISgushVfZ8Jhry6S1maqJg4zVF0yaFDzOWGOqfnrj/tt/jcfZkrdABWeLfOsXDVoAVEHgyTnvB1h7ibD6UgSmI2lk//0zlYw40i41wahuQd4w5Dgy2dO7OVxybglISEbfXLUMpSpzAI2SSeY2SMCJ53K/twUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=GGSfTmya; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KOjA4qQf; arc=none smtp.client-ip=202.12.124.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfout.stl.internal (Postfix) with ESMTP id 984941140109;
+	Wed,  4 Jun 2025 14:03:08 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-03.internal (MEProxy); Wed, 04 Jun 2025 14:03:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1749060188; x=1749146588; bh=+tn9bbvTEP
+	K9OWUfA7MX+9Wh0g5eyhJNjFTPb+VxTL8=; b=GGSfTmyalcOBaDI0rduLDluUtM
+	Oz2UjZFUTooot+klvMJY3bFg48pQTA9+hOdSCABR8MLQCwNLCKSP+etbw2kBGCge
+	kKsPEwCKWF3x6zwV9PUXGFBRmpQMFiV0YqCqPRqjMlb0pdXqPwzTeDxb/GfmBva9
+	at9clei5w/9+PUs1cJ/Ih88z10TXw9km5sGgJY0pb0yXdwN0qW25NwjsU7qEoOuU
+	e7bvzPvhKIH4Rr+8NMl2hD8igClhgCR9uN0CX9tgZCvFgfw/jKTmOwLm6SJ2MbBM
+	Tkj7T+XGcPQBHQkwH8TRKrknaWgtygqUlwF7Xaavu9UiOwgJF/FwjHajW25g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1749060188; x=1749146588; bh=+tn9bbvTEPK9OWUfA7MX+9Wh0g5eyhJNjFT
+	Pb+VxTL8=; b=KOjA4qQfFHJWe9DY9B7eqTfe4+UCl3ACNrRkZB/oI3oqWCqLYht
+	AQh/Pwq7SOHJMK3SVnOHZqE9dAsDoAI3CcG61YFpcX18JCsnBNhFnrRmLuT/yhcF
+	dOClRvh/AIp3KRnDDQYVkZ+8xdJXBcYT55+sLWBMbA+dMxX1rfZJivU8FS/R2S0j
+	Z6VM6KtdYrvDQR6HjhrVI3PsuUtChojdHbAR3C4QATes56x/t1HLNKtqdqatsYi+
+	21udIViWgPw7wUt0wcQyEj556x8Crmz2b+JgnF0Nh8H71FAV7JyZNSoFxIR+LWop
+	naVy0MlBgNbONmVvmfIEenJ8kvyDWs2EoBg==
+X-ME-Sender: <xms:XIpAaMNiwnuBiGfUUv47VTTiU-kw7mJv5HVTBCqt-aYuhc_SCFV1Tw>
+    <xme:XIpAaC9bOcRNpuaN0Go-EuX5bdKqSIj30XZdXdh4rVjPe3dXQV48gSj1pm2w_s5tZ
+    LiSkL-ixLyFYTYwjCQ>
+X-ME-Received: <xmr:XIpAaDRlDN2XVdqI2vSj_buKCU4sA-yUNuheAnCbDJukwCyVP7Hd9Rk_3Q6vG8pAIUeYNN9MKP2cDX_p--RTAGJwOLM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugddvgeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvden
+    ucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenuc
+    ggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeu
+    gfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepiedpmhhouggvpehs
+    mhhtphhouhhtpdhrtghpthhtohephhgthhesihhnfhhrrgguvggrugdrohhrghdprhgtph
+    htthhopehjihhmihhssehgmhigrdhnvghtpdhrtghpthhtoheplhhinhhugidqsghtrhhf
+    shesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehquhifvghnrhhuohdrsg
+    htrhhfshesghhmgidrtghomhdprhgtphhtthhopegrnhgrnhgurdhjrghinhesohhrrggt
+    lhgvrdgtohhmpdhrtghpthhtohepfihilhhlhiesihhnfhhrrgguvggrugdrohhrgh
+X-ME-Proxy: <xmx:XIpAaEs7B-q_RHdd7UC9GaV0_0O3JSrZOzfaleUQ9Nw01hJAKwbzHg>
+    <xmx:XIpAaEdlwRO55-PAp1RYI4p4vPgtd-LxrtbF9RiIGdN8ViQpDYpLeQ>
+    <xmx:XIpAaI2FsJp4Ou-Yg-rFXPExNTuDgJKZeHNLTciNl4sYKcANqZTaCQ>
+    <xmx:XIpAaI8cv0vYUGwUx85I3-CZlcwz4kYxYVnvTN2rrT3TFAHKEv2vbg>
+    <xmx:XIpAaD1Py5BeZbubDQqkt_a_G72RcEhSGe6e7ls5SslMC1BOZwKmTVN->
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 4 Jun 2025 14:03:07 -0400 (EDT)
+Date: Wed, 4 Jun 2025 11:03:03 -0700
+From: Boris Burkov <boris@bur.io>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Dimitrios Apostolou <jimis@gmx.net>, linux-btrfs@vger.kernel.org,
+	Qu Wenruo <quwenruo.btrfs@gmx.com>,
+	Anand Jain <anand.jain@oracle.com>,
+	Matthew Wilcox <willy@infradead.org>
+Subject: Re: Sequential read(8K) from compressed files are very slow
+Message-ID: <20250604180303.GA978719@zen.localdomain>
+References: <34601559-6c16-6ccc-1793-20a97ca0dbba@gmx.net>
+ <20250604013611.GA485082@zen.localdomain>
+ <aD_mE1n1fmQ09klP@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aD_mE1n1fmQ09klP@infradead.org>
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Jun 03, 2025 at 11:22:11PM -0700, Christoph Hellwig wrote:
+> On Tue, Jun 03, 2025 at 06:36:11PM -0700, Boris Burkov wrote:
+> > However, I do observe the huge delta between bs=8k and bs=128k for
+> > compressed which is interesting, even if I am doing something dumb and
+> > failing to reproduce the fast uncompressed reads.
+> > 
+> > I also observe that the performance rapidly drops off below bs=32k.
+> > Using the highly compressible file, I get 1.4GB/s with 128k, 64k, 32k
+> > and then 200-400MB/s for 4k-16k.
+> > 
+> > IN THEORY, add_ra_bio_pages is supposed to be doing our own readahead
+> > caching for compressed pages that we have read, so I think any overhead
+> > we incur is not going to be making tons more IO. It will probably be in
+> > that readahead caching or in some interaction with VFS readahead.
+> 
+> > However, I do see that in the 8k case, we are repeatedly calling
+> > btrfs_readahead() while in the 128k case, we only call btrfs_readahead
+> > ~2500 times, and the rest of the time we loop inside btrfs_readahead
+> > calling btrfs_do_readpage.
+> 
+> Btw, I found the way add_ra_bio_pages in btrfs always a little
+> odd.  The core readahead code provides a readahead_expand() that should
+> do something similar, but more efficiently.  The difference is that it
+> only works for actual readahead calls and not ->read_folio, but the
+> latter is pretty much a last resort these days.
+> 
 
-Syzbot reported an assertion failure due to an attempt to add a delayed
-iput after we have set BTRFS_FS_STATE_NO_DELAYED_IPUT in the fs_info
-state:
+Some more evidence that our add_ra_bio_pages is at least a big part of
+where things are going slow:
 
-   WARNING: CPU: 0 PID: 65 at fs/btrfs/inode.c:3420 btrfs_add_delayed_iput+0x2f8/0x370 fs/btrfs/inode.c:3420
-   Modules linked in:
-   CPU: 0 UID: 0 PID: 65 Comm: kworker/u8:4 Not tainted 6.15.0-next-20250530-syzkaller #0 PREEMPT(full)
-   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-   Workqueue: btrfs-endio-write btrfs_work_helper
-   RIP: 0010:btrfs_add_delayed_iput+0x2f8/0x370 fs/btrfs/inode.c:3420
-   Code: 4e ad 5d (...)
-   RSP: 0018:ffffc9000213f780 EFLAGS: 00010293
-   RAX: ffffffff83c635b7 RBX: ffff888058920000 RCX: ffff88801c769e00
-   RDX: 0000000000000000 RSI: 0000000000000100 RDI: 0000000000000000
-   RBP: 0000000000000001 R08: ffff888058921b67 R09: 1ffff1100b12436c
-   R10: dffffc0000000000 R11: ffffed100b12436d R12: 0000000000000001
-   R13: dffffc0000000000 R14: ffff88807d748000 R15: 0000000000000100
-   FS:  0000000000000000(0000) GS:ffff888125c53000(0000) knlGS:0000000000000000
-   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-   CR2: 00002000000bd038 CR3: 000000006a142000 CR4: 00000000003526f0
-   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-   Call Trace:
-    <TASK>
-    btrfs_put_ordered_extent+0x19f/0x470 fs/btrfs/ordered-data.c:635
-    btrfs_finish_one_ordered+0x11d8/0x1b10 fs/btrfs/inode.c:3312
-    btrfs_work_helper+0x399/0xc20 fs/btrfs/async-thread.c:312
-    process_one_work kernel/workqueue.c:3238 [inline]
-    process_scheduled_works+0xae1/0x17b0 kernel/workqueue.c:3321
-    worker_thread+0x8a0/0xda0 kernel/workqueue.c:3402
-    kthread+0x70e/0x8a0 kernel/kthread.c:464
-    ret_from_fork+0x3fc/0x770 arch/x86/kernel/process.c:148
-    ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-    </TASK>
+stats from an 8K run:
+$ sudo bpftrace readahead.bt
+Attaching 4 probes...
 
-This can happen due to a race with the async reclaim worker like this:
+@add_ra_delay_ms: 19450
+@add_ra_delay_ns: 19450937640
+@add_ra_delay_s: 19
 
-1) The async metadata reclaim worker enters shrink_delalloc(), which calls
-   btrfs_start_delalloc_roots() with an nr_pages argument that has a value
-   less than LONG_MAX, and that in turn enters start_delalloc_inodes(),
-   which sets the local variable 'full_flush' to false because
-   wbc->nr_to_write is less than LONG_MAX;
+@ra_sz_freq[8]: 81920
+@ra_sz_hist:
+[8, 16)            81920 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
 
-2) There it finds inode X in a root's delalloc list, grabs a reference for
-   inode X (with igrab()), and triggers writeback for it with
-   filemap_fdatawrite_wbc(), which creates an ordered extent for inode X;
 
-3) The unmount sequence starts from another task, we enter close_ctree()
-   and we flush the workqueue fs_info->endio_write_workers, which waits
-   for the ordered extent for inode X to complete and when dropping the
-   last reference of the ordered extent, with btrfs_put_ordered_extent(),
-   when we call btrfs_add_delayed_iput() we don't add the inode to the
-   list of delayed iputs because it has a refcount of 2, so we decrement
-   it to 1 and return;
+stats from a 128K run:
+$ sudo bpftrace readahead.bt
+Attaching 4 probes...
 
-4) Shortly after at close_ctree() we call btrfs_run_delayed_iputs() which
-   runs all delayed iputs, and then we set BTRFS_FS_STATE_NO_DELAYED_IPUT
-   in the fs_info state;
+@add_ra_delay_ms: 15
+@add_ra_delay_ns: 15333301
+@add_ra_delay_s: 0
 
-5) The async reclaim worker, after calling filemap_fdatawrite_wbc(), now
-   calls btrfs_add_delayed_iput() for inode X and there we trigger an
-   assertion failure since the fs_info state has the flag
-   BTRFS_FS_STATE_NO_DELAYED_IPUT set.
+@ra_sz_freq[512]: 1
+@ra_sz_freq[256]: 1
+@ra_sz_freq[128]: 2
+@ra_sz_freq[1024]: 2559
+@ra_sz_hist:
+[128, 256)             2 |                                                    |
+[256, 512)             1 |                                                    |
+[512, 1K)              1 |                                                    |
+[1K, 2K)            2559 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
 
-Fix this by setting BTRFS_FS_STATE_NO_DELAYED_IPUT only after we wait for
-the async reclaim workers to finish, after we call cancel_work_sync() for
-them at close_ctree(), and by running delayed iputs after wait for the
-reclaim workers to finish and before setting the bit.
 
-This race was recently introduced by commit 19e60b2a95f5 ("btrfs: add
-extra warning if delayed iput is added when it's not allowed") and we
-didn't have any assertion failure, crash or inode leak in this described
-scenario because before that commit since btrfs_commit_super(), called
-later at close_ctree(), runs delayed iputs again, and there was no such
-assertion about BTRFS_FS_STATE_NO_DELAYED_IPUT at btrfs_add_delayed_iput()
-of course.
+so we are spending 19 seconds (vs 0) in add_ra_bio_pages and calling
+btrfs_readahead() 81920 times with 8 pages vs 2559 times with 1024
+pages.
 
-Reported-by: syzbot+0ed30ad435bf6f5b7a42@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/linux-btrfs/6840481c.a00a0220.d4325.000c.GAE@google.com/T/#u
-Fixes: 19e60b2a95f5 ("btrfs: add extra warning if delayed iput is added when it's not allowed")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/disk-io.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+The total time difference is ~30s on my setup, so there are still ~10
+seconds unaccounted for in my analysis here, though.
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 3def93016963..84c8f9f19649 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4324,15 +4324,29 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	btrfs_flush_workqueue(fs_info->endio_write_workers);
- 	/* Ordered extents for free space inodes. */
- 	btrfs_flush_workqueue(fs_info->endio_freespace_worker);
-+	/*
-+	 * Run delayed iputs in case an async reclaim worker is waiting for them
-+	 * to be run as mentioned above.
-+	 */
- 	btrfs_run_delayed_iputs(fs_info);
--	/* There should be no more workload to generate new delayed iputs. */
--	set_bit(BTRFS_FS_STATE_NO_DELAYED_IPUT, &fs_info->fs_state);
- 
- 	cancel_work_sync(&fs_info->async_reclaim_work);
- 	cancel_work_sync(&fs_info->async_data_reclaim_work);
- 	cancel_work_sync(&fs_info->preempt_reclaim_work);
- 	cancel_work_sync(&fs_info->em_shrinker_work);
- 
-+	/*
-+	 * Run delayed iputs again because an async reclaim worker may have
-+	 * added new ones if it was flushing delalloc:
-+	 *
-+	 * shrink_delalloc() -> btrfs_start_delalloc_roots() ->
-+	 *    start_delalloc_inodes() -> btrfs_add_delayed_iput()
-+	 */
-+	btrfs_run_delayed_iputs(fs_info);
-+
-+	/* There should be no more workload to generate new delayed iputs. */
-+	set_bit(BTRFS_FS_STATE_NO_DELAYED_IPUT, &fs_info->fs_state);
-+
- 	/* Cancel or finish ongoing discard work */
- 	btrfs_discard_cleanup(fs_info);
- 
--- 
-2.47.2
-
+> > I removed all the extent locking as an experiment, as it is not really
+> > needed for safety in this single threaded test and did see an
+> > improvement but not full parity between 8k and 128k for the compressed
+> > file. I'll keep poking at the other sources of overhead in the builtin
+> > readahead logic and in calling btrfs_readahead more looping inside it.
+> > 
+> > I'll keep trying that to see if I can get a full reproduction and try to
+> > actually explain the difference.
+> > 
+> > If you are able to use some kind of tracing to see if these findings
+> > hold on your system, I think that would be interesting.
+> > 
+> > Also, if someone more knowledgeable in how the generic readahead works
+> > like Christoph could give me a hint to how to hack up the 8k case to
+> > make fewer calls to btrfs_readahead, I think that could help bolster the
+> > theory.
+> 
+> I'm not really a readahead expert, but I added who I suspect is (willy).
+> But my guess is using readahead_expand is the right answer here, but
+> another thing to look at might if the compressed extent handling in
+> btrfs somehow messes up the read ahead window calculations.
+> 
 
