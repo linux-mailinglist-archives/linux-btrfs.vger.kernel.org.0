@@ -1,62 +1,62 @@
-Return-Path: <linux-btrfs+bounces-14482-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14485-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B59F0ACF42A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 18:24:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6EB3ACF437
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 18:25:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16F131886597
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 16:24:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3FDC7AB8F2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 16:23:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A028921ABA4;
-	Thu,  5 Jun 2025 16:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 001A12749E8;
+	Thu,  5 Jun 2025 16:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="Sd/gwX/0"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="a+HS8ga0"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31CC727467A
-	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 16:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0B62E659
+	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 16:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749140635; cv=none; b=GClD2LYoNSue8GN4o1R1DgjL02HWWoxgkFBz0TB+hQIG7MVjA462h33SeFUdBCPHe9z9jJ48eepGXC38Nme+0pLY70vex4zNfvGxPEXkCWB0jzr87ihjZxALH7g8aootuYO9q+/L6lPv6MxRiyVwYjI+Y7wiSUrr96pYpcWP2Zs=
+	t=1749140637; cv=none; b=llDuFgK7LcOVYVA38I51xSTGo+ked1igBFxwPfzayLXn1UI4bNHmJOMmdXyxDX3Z4XKGtWmPj6tlW9GGd/k0qSFLF8LQjtTcufzP2/XGjjbCM6lnPTbMVUO/00XD/BHil5Kg3fRbs/UeXsacnlKQMI5pW0DonRFRywYJSmQxUDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749140635; c=relaxed/simple;
-	bh=t6G1/8PAw2iqE09WsgLV2p7FHErxy+GdSJ/UlnmfkpU=;
+	s=arc-20240116; t=1749140637; c=relaxed/simple;
+	bh=30kyVnqj5m88qi/hv4Zh97gujMecwKwMOidFy+I5EoA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kQE8qOMxxx8V+SyIUAW0FDOOH9OswaalzKYNgqZ26Nzmubeju4MA8L0BLQg0cTsHDnLdTfXOSOH24Hcx3jcQSvFjemx/Dc9T+XRm0kyJAmVsjwi+vG9G6Fo+uJvqzRsJ6DZLhjI3L4hYpJhoBpUfVwV0UftHfWN1b+HkHT0gyaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=Sd/gwX/0; arc=none smtp.client-ip=67.231.145.42
+	 MIME-Version:Content-Type; b=Ej9f8YQDbrz9ZUf8W4YZGrqzHVPWWbkeK6vOSxUWAMnZ2fqxf1BqDQpOpd9TqnLm3mVuOB8lS3SPYvW6fn7qN+4Fv8IRCkaqHuXAdtTKje63Qq0afzsxkyhP2j7tsnw+LYdMTdVrPoAVoYdAlqOl9P/2uzAYBrSzYG4XmHXlK9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=a+HS8ga0; arc=none smtp.client-ip=67.231.145.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
 Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 555Dw0bP027778
-	for <linux-btrfs@vger.kernel.org>; Thu, 5 Jun 2025 09:23:53 -0700
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 555Dw0bS027778
+	for <linux-btrfs@vger.kernel.org>; Thu, 5 Jun 2025 09:23:54 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=facebook; bh=x
-	pAXVZfxBVfMVWjc01VXpLGCAfeNLuiCcXJsSf0neUw=; b=Sd/gwX/0jl65DmXP9
-	avt0CKK28V/LkEhWoJ6RiY86PHqX9NgOEB2Ake3jEGJtnjr3tX0gVmkYmVGcaKjO
-	rEjq/3xvUrjVz9pmBDvs+6ryQRHUFFJMx+ydrGDhUPlsZqGsV3MPPVYgy1u7RArx
-	oaVsawFJ127o7wY+FNs0ZZh9sM=
+	:message-id:mime-version:references:subject:to; s=facebook; bh=T
+	lFa1XtkRuOWXhPCJvlwSTzrcy/eC9xfsSIWKG4VIUA=; b=a+HS8ga0o9MlkCW/k
+	ylFzhT70hjksyzCYslhrQBA77TzKq9fHNwoK9+yFBI4ba0wR0+KK9Eh7p7ASizku
+	eO5FP00o7Qt0oWTfwEKCicxB2e75/Z60T/7anutG5+xK0JejifYMucctjQH2uYKD
+	U0A8wwcClvyCQiXwNLMDd0l7/c=
 Received: from maileast.thefacebook.com ([163.114.135.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4739tktdmr-4
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4739tktdmr-7
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Thu, 05 Jun 2025 09:23:53 -0700 (PDT)
-Received: from twshared35278.32.frc3.facebook.com (2620:10d:c0a8:1b::30) by
+	for <linux-btrfs@vger.kernel.org>; Thu, 05 Jun 2025 09:23:54 -0700 (PDT)
+Received: from twshared0377.32.frc3.facebook.com (2620:10d:c0a8:1b::8e35) by
  mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1748.24; Thu, 5 Jun 2025 16:23:50 +0000
+ 15.2.1748.24; Thu, 5 Jun 2025 16:23:51 +0000
 Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id 4534CFEC2E64; Thu,  5 Jun 2025 17:23:48 +0100 (BST)
+	id 4868AFEC2E66; Thu,  5 Jun 2025 17:23:48 +0100 (BST)
 From: Mark Harmstone <maharmstone@fb.com>
 To: <linux-btrfs@vger.kernel.org>
 CC: Mark Harmstone <maharmstone@fb.com>
-Subject: [PATCH 03/12] btrfs: allow remapped chunks to have zero stripes
-Date: Thu, 5 Jun 2025 17:23:33 +0100
-Message-ID: <20250605162345.2561026-4-maharmstone@fb.com>
+Subject: [PATCH 04/12] btrfs: remove remapped block groups from the free-space tree
+Date: Thu, 5 Jun 2025 17:23:34 +0100
+Message-ID: <20250605162345.2561026-5-maharmstone@fb.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250605162345.2561026-1-maharmstone@fb.com>
 References: <20250605162345.2561026-1-maharmstone@fb.com>
@@ -69,131 +69,102 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Authority-Analysis: v=2.4 cv=ZbEdNtVA c=1 sm=1 tr=0 ts=6841c499 cx=c_pps a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17 a=6IFa9wvqVegA:10 a=FOH2dFAWAAAA:8 a=SO1JP5Dnl31tz9C7ukcA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjA1MDE0NCBTYWx0ZWRfXyPXtCGWbiNim wMXNwbqsQj74Ke8oTrkDu2eJGSAMjr87MkN283sA0SVpPB3WCG10N0jUeW/7mKVqDYttcRAxb7a QVdgQivysUQSwpSJEe7k+eSp++kmk3+IMr0dVz9melHywwmmbSB7M2SIit143a9jMWNyn1Rs/mR
- Mp9mApfiIs1k/+9U57GdOm/fVfdKotyHTVeC+oLRNa8AK9SYQlV+vgN2vltFdLCxNjvuQXlfLem JBTMCaoHNnFgMoWAXeeQidpBgodAsTU5cN9VRB+GLfSJ2U8sur1J/hK/13b+piak60ryFGxNdxO BFBmyz4LT6CvlL8XxXKvvw5kWADlme/7NbSWA2YNsKp6GZWpXLcTBuFTJIHjT4kqB4YmbSnRmBM
- tepN5250OzuGCDRiDp6F0Y5OJf//L+qftHlcZU5Z5oU6f82H34Av9ePrmPe0mdtM35GoGfa0
-X-Proofpoint-GUID: Atu1KaLAiWQCy3NjboxTMcL0n9gD5QLP
-X-Proofpoint-ORIG-GUID: Atu1KaLAiWQCy3NjboxTMcL0n9gD5QLP
+X-Authority-Analysis: v=2.4 cv=ZbEdNtVA c=1 sm=1 tr=0 ts=6841c49a cx=c_pps a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17 a=6IFa9wvqVegA:10 a=FOH2dFAWAAAA:8 a=Qc5qBXgPbixPto1ALjsA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjA1MDE0NCBTYWx0ZWRfX0/ae1K+jMcQp y2cV5RIhISCF+emSSZASbS1AmWF8GclQpKRBeDtzhYKTuE7Yl6ubRaye5jCKqwSrb0psbs613g3 X3L/Q50yW7hu5m4v4cnPL/yRzsXRYBRULCq0eOc6/Zz/p3CvFuMqEHZgiWStlZ/7mHNCwTs3rWb
+ JSIYYfnNcJFrfYbugijBpGgu81BebywA0cyWJMgqvHCuwzQngSDjEn6cn2NYK3rasXvhE8ITHOu 2Nn4G1Mp8zP8fRUIPU2CxpZXAayy1PeAnt1Kh6LDKwEGTqB3LL2eSPO60GGScE5lfpJ3XuqXVLe xzbKbnYqvyvWg8mZNX7IXEiM62WL5mpYxdfbZNEhZyO7tGrw6s5UWZdKUBMDIOmc9WQWpSj9Oxd
+ +i99tDdmGMeJpVENwW+e/5OhGUlA8mmWbVatMtYPfFSRY8WuR8AT/eUdcZf8Sz/0esbPpipa
+X-Proofpoint-GUID: Oc9h3IehkaHu3eaP2Lsa9arSV-k-zLHy
+X-Proofpoint-ORIG-GUID: Oc9h3IehkaHu3eaP2Lsa9arSV-k-zLHy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-06-05_04,2025-06-05_01,2025-03-28_01
 
-When a chunk has been fully remapped, we are going to set its
-num_stripes to 0, as it will no longer represent a physical location on
-disk.
+No new allocations can be done from block groups that have the REMAPPED f=
+lag
+set, so there's no value in their having entries in the free-space tree.
 
-Change tree-checker to allow for this, and fix a couple of
-divide-by-zeroes seen elsewhere.
+Prevent a search through the free-space tree being scheduled for such a
+block group, and prevent discard being run for a fully-remapped block
+group.
 
 Signed-off-by: Mark Harmstone <maharmstone@fb.com>
 ---
- fs/btrfs/tree-checker.c | 16 +++++++++-------
- fs/btrfs/volumes.c      |  8 +++++++-
- 2 files changed, 16 insertions(+), 8 deletions(-)
+ fs/btrfs/block-group.c | 21 ++++++++++++++++-----
+ fs/btrfs/discard.c     |  9 +++++++++
+ 2 files changed, 25 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 0505f8d76581..fd83df06e3fb 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -829,7 +829,7 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_inf=
-o *fs_info,
- 	u64 type;
- 	u64 features;
- 	u32 chunk_sector_size;
--	bool mixed =3D false;
-+	bool mixed =3D false, remapped;
- 	int raid_index;
- 	int nparity;
- 	int ncopies;
-@@ -853,12 +853,14 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_i=
-nfo *fs_info,
- 	ncopies =3D btrfs_raid_array[raid_index].ncopies;
- 	nparity =3D btrfs_raid_array[raid_index].nparity;
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 5b0cb04b2b93..9b3b5358f1ba 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -920,6 +920,13 @@ int btrfs_cache_block_group(struct btrfs_block_group=
+ *cache, bool wait)
+ 	if (btrfs_is_zoned(fs_info))
+ 		return 0;
 =20
--	if (unlikely(!num_stripes)) {
-+	remapped =3D type & BTRFS_BLOCK_GROUP_REMAPPED;
++	/*
++	 * No allocations can be done from remapped block groups, so they have
++	 * no entries in the free-space tree.
++	 */
++	if (cache->flags & BTRFS_BLOCK_GROUP_REMAPPED)
++		return 0;
 +
-+	if (unlikely(!remapped && !num_stripes)) {
- 		chunk_err(fs_info, leaf, chunk, logical,
- 			  "invalid chunk num_stripes, have %u", num_stripes);
- 		return -EUCLEAN;
- 	}
--	if (unlikely(num_stripes < ncopies)) {
-+	if (unlikely(!remapped && num_stripes < ncopies)) {
- 		chunk_err(fs_info, leaf, chunk, logical,
- 			  "invalid chunk num_stripes < ncopies, have %u < %d",
- 			  num_stripes, ncopies);
-@@ -960,7 +962,7 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_inf=
-o *fs_info,
- 		}
- 	}
-=20
--	if (unlikely((type & BTRFS_BLOCK_GROUP_RAID10 &&
-+	if (unlikely(!remapped && ((type & BTRFS_BLOCK_GROUP_RAID10 &&
- 		      sub_stripes !=3D btrfs_raid_array[BTRFS_RAID_RAID10].sub_stripes=
-) ||
- 		     (type & BTRFS_BLOCK_GROUP_RAID1 &&
- 		      num_stripes !=3D btrfs_raid_array[BTRFS_RAID_RAID1].devs_min) ||
-@@ -975,7 +977,7 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_inf=
-o *fs_info,
- 		     (type & BTRFS_BLOCK_GROUP_DUP &&
- 		      num_stripes !=3D btrfs_raid_array[BTRFS_RAID_DUP].dev_stripes) |=
-|
- 		     ((type & BTRFS_BLOCK_GROUP_PROFILE_MASK) =3D=3D 0 &&
--		      num_stripes !=3D btrfs_raid_array[BTRFS_RAID_SINGLE].dev_stripes=
-))) {
-+		      num_stripes !=3D btrfs_raid_array[BTRFS_RAID_SINGLE].dev_stripes=
-)))) {
- 		chunk_err(fs_info, leaf, chunk, logical,
- 			"invalid num_stripes:sub_stripes %u:%u for profile %llu",
- 			num_stripes, sub_stripes,
-@@ -999,11 +1001,11 @@ static int check_leaf_chunk_item(struct extent_buf=
-fer *leaf,
- 	struct btrfs_fs_info *fs_info =3D leaf->fs_info;
- 	int num_stripes;
-=20
--	if (unlikely(btrfs_item_size(leaf, slot) < sizeof(struct btrfs_chunk)))=
- {
-+	if (unlikely(btrfs_item_size(leaf, slot) < offsetof(struct btrfs_chunk,=
- stripe))) {
- 		chunk_err(fs_info, leaf, chunk, key->offset,
- 			"invalid chunk item size: have %u expect [%zu, %u)",
- 			btrfs_item_size(leaf, slot),
--			sizeof(struct btrfs_chunk),
-+			offsetof(struct btrfs_chunk, stripe),
- 			BTRFS_LEAF_DATA_SIZE(fs_info));
- 		return -EUCLEAN;
- 	}
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index e7c467b6af46..9159d11cb143 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6133,6 +6133,12 @@ struct btrfs_discard_stripe *btrfs_map_discard(str=
-uct btrfs_fs_info *fs_info,
- 		goto out_free_map;
- 	}
-=20
-+	/* avoid divide by zero on fully-remapped chunks */
-+	if (map->num_stripes =3D=3D 0) {
-+		ret =3D -EOPNOTSUPP;
-+		goto out_free_map;
+ 	caching_ctl =3D kzalloc(sizeof(*caching_ctl), GFP_NOFS);
+ 	if (!caching_ctl)
+ 		return -ENOMEM;
+@@ -1235,9 +1242,11 @@ int btrfs_remove_block_group(struct btrfs_trans_ha=
+ndle *trans,
+ 	 * another task to attempt to create another block group with the same
+ 	 * item key (and failing with -EEXIST and a transaction abort).
+ 	 */
+-	ret =3D remove_block_group_free_space(trans, block_group);
+-	if (ret)
+-		goto out;
++	if (!(block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED)) {
++		ret =3D remove_block_group_free_space(trans, block_group);
++		if (ret)
++			goto out;
 +	}
+=20
+ 	ret =3D remove_block_group_item(trans, path, block_group);
+ 	if (ret < 0)
+@@ -2457,10 +2466,12 @@ static int read_one_block_group(struct btrfs_fs_i=
+nfo *info,
+ 	if (btrfs_chunk_writeable(info, cache->start)) {
+ 		if (cache->used =3D=3D 0) {
+ 			ASSERT(list_empty(&cache->bg_list));
+-			if (btrfs_test_opt(info, DISCARD_ASYNC))
++			if (btrfs_test_opt(info, DISCARD_ASYNC) &&
++			    !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
+ 				btrfs_discard_queue_work(&info->discard_ctl, cache);
+-			else
++			} else {
+ 				btrfs_mark_bg_unused(cache);
++			}
+ 		}
+ 	} else {
+ 		inc_block_group_ro(cache, 1);
+diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
+index 89fe85778115..1015a4d37fb2 100644
+--- a/fs/btrfs/discard.c
++++ b/fs/btrfs/discard.c
+@@ -698,6 +698,15 @@ void btrfs_discard_punt_unused_bgs_list(struct btrfs=
+_fs_info *fs_info)
+ 	/* We enabled async discard, so punt all to the queue */
+ 	list_for_each_entry_safe(block_group, next, &fs_info->unused_bgs,
+ 				 bg_list) {
++		/* Fully remapped BGs have nothing to discard */
++		spin_lock(&block_group->lock);
++		if (block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED &&
++		    !btrfs_is_block_group_used(block_group)) {
++			spin_unlock(&block_group->lock);
++			continue;
++		}
++		spin_unlock(&block_group->lock);
 +
- 	offset =3D logical - map->start;
- 	length =3D min_t(u64, map->start + map->chunk_len - logical, length);
- 	*length_ret =3D length;
-@@ -6953,7 +6959,7 @@ u64 btrfs_calc_stripe_length(const struct btrfs_chu=
-nk_map *map)
- {
- 	const int data_stripes =3D calc_data_stripes(map->type, map->num_stripe=
-s);
-=20
--	return div_u64(map->chunk_len, data_stripes);
-+	return data_stripes ? div_u64(map->chunk_len, data_stripes) : 0;
- }
-=20
- #if BITS_PER_LONG =3D=3D 32
+ 		list_del_init(&block_group->bg_list);
+ 		btrfs_discard_queue_work(&fs_info->discard_ctl, block_group);
+ 		/*
 --=20
 2.49.0
 
