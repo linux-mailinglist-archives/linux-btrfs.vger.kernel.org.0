@@ -1,172 +1,162 @@
-Return-Path: <linux-btrfs+bounces-14507-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14508-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 917C3ACF88E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 22:05:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF212ACF8E3
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 22:43:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0267D3B01F4
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 20:04:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA32C178E52
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 20:43:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224281FE474;
-	Thu,  5 Jun 2025 20:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A690927EC80;
+	Thu,  5 Jun 2025 20:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DXNdj+Y3"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="l6fXyAx2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZxJAaaYM";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SDJOTGzv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="R9cut5jV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A1E1FC0FC
-	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 20:05:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 700771E5B9F
+	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 20:43:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749153907; cv=none; b=VHnSYlznFKR799KgcjnsjmChkvfxw+mq6az/X3dNCZJBUxPJTrJvdwBW/c/dFw98pztUcX55UqxWLfATd5e4W0utIKoulyiNNLMU02Vjn5rS+AnejMYd7TGq1fNVpSrn9/h+gWs54StF93CbZho2jA5VZN1eSiVE6vBHuZ70omc=
+	t=1749156222; cv=none; b=iTCpHrTPz69HYQ0aWxZULFKolDywgdW6ph97zOPmKicJhncLjO1BaJ4fM9LqCobtZwJbEpDrhTECs/pE8Rc2CEURfZG90rbIW4STqC/XqFnyG1IYuB2xn/DB8xuU/RxtyjXfvVPGNcoSGBc8iLVLG20ni09K+1xJXXNKZw5YGow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749153907; c=relaxed/simple;
-	bh=QbSEV2p7SfJ+DL9G1cqAPFlu3zV51OHTDt/UIACmevI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=IvTsvcnPu9nSZKUuj4qPxc45lySqkMDhSw8K+ZwwsOB+B5eVdNDvbJgN4K5up84L8SA0h7I5mMGGMVTxMuwzkaXO1v+eDG0Hpz7fAZmY49Gutf1HQSW3OW65CoxU5PwUjXUCkVfZjNUre+VxPhbXwYyBn7dFsj5LT4SFbhc/oFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DXNdj+Y3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EE55C4CEE7
-	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 20:05:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749153906;
-	bh=QbSEV2p7SfJ+DL9G1cqAPFlu3zV51OHTDt/UIACmevI=;
-	h=From:To:Subject:Date:From;
-	b=DXNdj+Y3GyJX1wF+ywTR/Bc1ABjiZeVq4PwksfIbQPmXTStVA1WHic+0cBmyzAvbb
-	 mn6bJOwCwU8HQN6hb9nj2m87jYiiKBtHh9DR/X1oHefE2Z53EflKbztGoCgkLwFW7E
-	 zuKr8u6Cv3fOW/LEJeZbIEc6UCCkbf25iFsZ1nftkZ+0Sb/uV5PIvs1ToZhkfbvClc
-	 0VrfVqVAWRufmorn9qi9+Zxs8ZGO59s/otdm84CVK0zJGDVENMgvEZKfbh2UM9UFBw
-	 XXYo2iWmI9bRZbuHI6UeTjXgnttdqPXuIN1WVIREXLr/U00wB04qiUTIHFetmgBXY9
-	 3vzk+G7ZA1/zA==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix assertion when building free space tree
-Date: Thu,  5 Jun 2025 21:05:03 +0100
-Message-ID: <f60761dc5dd7376ac91d0a645bd2c3a59a68cee7.1749153697.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
+	s=arc-20240116; t=1749156222; c=relaxed/simple;
+	bh=YjrwhlBnlNPW+TXhRlj/k+agiEo0gJM0Hipgd9YC/0A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Scb3c3152cwM2f5rUB0GG7TjWuSS6yk8bfmAF/vlRa1fMzPOQwPvFjATaGqPntookBtkqW8qL1rin8QbB3xRH0v8n1g6DWSdf+4fM9sTCRkE6QHcurfZSarOWk1JKEeUkZwcCOy/poKLN76CajO+QWMfYnOguqsgVchmrHhFbFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=l6fXyAx2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZxJAaaYM; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SDJOTGzv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=R9cut5jV; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BB26B1F769;
+	Thu,  5 Jun 2025 20:43:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1749156218;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/tPpFbUzP9VjmoGo9EmlYqsMXhTIKTB/1mxB2S7nDrM=;
+	b=l6fXyAx2k5OCJyLE7COjrq0fqiWzZosM1Qhh3VYN7IHiaYrEyeSj6yURPqqufxjR7Kf1Wc
+	YjPyKAaxANq0nE4FEIfsEtfBKEPTAshBd8viQYERUZcBL8NpruZnMaj1OyuK2p0N7Exva8
+	8dqKcJTKS/lpBXKsqae08859nqqbYCE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1749156218;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/tPpFbUzP9VjmoGo9EmlYqsMXhTIKTB/1mxB2S7nDrM=;
+	b=ZxJAaaYMTx8/rjcdBwcMU+QeN6Ezsr0qRidNfl2cYt/UMbZtV/MCDsesP6xdGshPT6aB9o
+	RTw3zE0OdC9S+sCQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SDJOTGzv;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=R9cut5jV
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1749156217;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/tPpFbUzP9VjmoGo9EmlYqsMXhTIKTB/1mxB2S7nDrM=;
+	b=SDJOTGzvbtlxwxS/kKZflT/QAjUqUXn9wJUkQN8oFr0uzEAi0freYfFnZi4/14rnEo874u
+	zkMMDH3yesdLFT9stotUGEMm66w+ZY4dNtFcU8Yz3Sg5HKecFS0+aVssMyEl2V1GRvgTgn
+	8TavZMgpDNMN9FXvcIDprJoL5HiaFkA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1749156217;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/tPpFbUzP9VjmoGo9EmlYqsMXhTIKTB/1mxB2S7nDrM=;
+	b=R9cut5jVKL8vZV6t3sVmTdW6lDUEcmUfTp/GdtOJVIgW5JLlsPkZ9QSlPyNpf727OqjmQK
+	QC6alTUFEbb6cFBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9BA1D1373E;
+	Thu,  5 Jun 2025 20:43:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id dL59JXkBQmhnPQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 05 Jun 2025 20:43:37 +0000
+Date: Thu, 5 Jun 2025 22:43:35 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH] btrfs: add comma delimiter for zone_unusable to
+ space_info dump
+Message-ID: <20250605204335.GT4037@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250605152431.396419-1-jth@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250605152431.396419-1-jth@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[wdc.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: BB26B1F769
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -4.21
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, Jun 05, 2025 at 05:24:31PM +0200, Johannes Thumshirn wrote:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> 
+> On a space_info dump all values but 'zone_unusable' are delimited by a
+> comma.
+> 
+> Add the missing comma between 'readonly' and 'zone_unusable' to be
+> consistent and make parsing easier.
 
-When building the free space tree with the block group tree feature
-enabled, we can hit an assertion failure like this:
+So this makes it consistent with the rest of the line but is otherwise
+inconsistent with the style of values printed elsewhere, ie. without the
+"=" between name and value.
 
-   BTRFS info (device loop0 state M): rebuilding free space tree
-   assertion failed: ret == 0, in fs/btrfs/free-space-tree.c:1102
-   ------------[ cut here ]------------
-   kernel BUG at fs/btrfs/free-space-tree.c:1102!
-   Internal error: Oops - BUG: 00000000f2000800 [#1]  SMP
-   Modules linked in:
-   CPU: 1 UID: 0 PID: 6592 Comm: syz-executor322 Not tainted 6.15.0-rc7-syzkaller-gd7fa1af5b33e #0 PREEMPT
-   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-   pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-   pc : populate_free_space_tree+0x514/0x518 fs/btrfs/free-space-tree.c:1102
-   lr : populate_free_space_tree+0x514/0x518 fs/btrfs/free-space-tree.c:1102
-   sp : ffff8000a4ce7600
-   x29: ffff8000a4ce76e0 x28: ffff0000c9bc6000 x27: ffff0000ddfff3d8
-   x26: ffff0000ddfff378 x25: dfff800000000000 x24: 0000000000000001
-   x23: ffff8000a4ce7660 x22: ffff70001499cecc x21: ffff0000e1d8c160
-   x20: ffff0000e1cb7800 x19: ffff0000e1d8c0b0 x18: 00000000ffffffff
-   x17: ffff800092f39000 x16: ffff80008ad27e48 x15: ffff700011e740c0
-   x14: 1ffff00011e740c0 x13: 0000000000000004 x12: ffffffffffffffff
-   x11: ffff700011e740c0 x10: 0000000000ff0100 x9 : 94ef24f55d2dbc00
-   x8 : 94ef24f55d2dbc00 x7 : 0000000000000001 x6 : 0000000000000001
-   x5 : ffff8000a4ce6f98 x4 : ffff80008f415ba0 x3 : ffff800080548ef0
-   x2 : 0000000000000000 x1 : 0000000100000000 x0 : 000000000000003e
-   Call trace:
-    populate_free_space_tree+0x514/0x518 fs/btrfs/free-space-tree.c:1102 (P)
-    btrfs_rebuild_free_space_tree+0x14c/0x54c fs/btrfs/free-space-tree.c:1337
-    btrfs_start_pre_rw_mount+0xa78/0xe10 fs/btrfs/disk-io.c:3074
-    btrfs_remount_rw fs/btrfs/super.c:1319 [inline]
-    btrfs_reconfigure+0x828/0x2418 fs/btrfs/super.c:1543
-    reconfigure_super+0x1d4/0x6f0 fs/super.c:1083
-    do_remount fs/namespace.c:3365 [inline]
-    path_mount+0xb34/0xde0 fs/namespace.c:4200
-    do_mount fs/namespace.c:4221 [inline]
-    __do_sys_mount fs/namespace.c:4432 [inline]
-    __se_sys_mount fs/namespace.c:4409 [inline]
-    __arm64_sys_mount+0x3e8/0x468 fs/namespace.c:4409
-    __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-    invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
-    el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
-    do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-    el0_svc+0x58/0x17c arch/arm64/kernel/entry-common.c:767
-    el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:786
-    el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-   Code: f0047182 91178042 528089c3 9771d47b (d4210000)
-   ---[ end trace 0000000000000000 ]---
-
-This happens because we are processing an empty block group, which has
-no extents allocated from it, there are no items for this block group,
-including the block group item since block group items are stored in a
-dedicated tree when using the block group tree feature. It also means
-this is the block group with the highest start offset, so there are no
-higher keys in the extent root, hence btrfs_search_slot_for_read()
-returns 1 (no higher key found).
-
-Fix this by asserting 'ret' is 0 only if the block group tree feature
-is not enabled, in which case we should find a block group item for
-the block group since it's stored in the extent root and block group
-item keys are greater than extent item keys (the value for
-BTRFS_BLOCK_GROUP_ITEM_KEY is 192 and for BTRFS_EXTENT_ITEM_KEY and
-BTRFS_METADATA_ITEM_KEY the values are 168 and 169 respectively).
-In case 'ret' is 1, we just need to add a record to the free space
-tree which spans the whole block group, and we can achieve this by
-making 'ret == 0' as the while loop's condition.
-
-Reported-by: syzbot+36fae25c35159a763a2a@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/linux-btrfs/6841dca8.a00a0220.d4325.0020.GAE@google.com/
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/free-space-tree.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index af51cf784a5b..15721b9bbfe2 100644
---- a/fs/btrfs/free-space-tree.c
-+++ b/fs/btrfs/free-space-tree.c
-@@ -1115,11 +1115,21 @@ static int populate_free_space_tree(struct btrfs_trans_handle *trans,
- 	ret = btrfs_search_slot_for_read(extent_root, &key, path, 1, 0);
- 	if (ret < 0)
- 		goto out_locked;
--	ASSERT(ret == 0);
-+	/*
-+	 * If ret is 1 (no key found), it means this is an empty block group,
-+	 * without any extents allocated from it and there's no block group
-+	 * item (key BTRFS_BLOCK_GROUP_ITEM_KEY) located in the extent tree
-+	 * because we are using the block group tree feature, so block group
-+	 * items are stored in the block group tree. It also means there are no
-+	 * extents allocated for block groups with a start offset beyond this
-+	 * block group's end offset (this is the last, highest, block group).
-+	 */
-+	if (!btrfs_fs_compat_ro(trans->fs_info, BLOCK_GROUP_TREE))
-+		ASSERT(ret == 0);
- 
- 	start = block_group->start;
- 	end = block_group->start + block_group->length;
--	while (1) {
-+	while (ret == 0) {
- 		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
- 
- 		if (key.type == BTRFS_EXTENT_ITEM_KEY ||
-@@ -1149,8 +1159,6 @@ static int populate_free_space_tree(struct btrfs_trans_handle *trans,
- 		ret = btrfs_next_item(extent_root, path);
- 		if (ret < 0)
- 			goto out_locked;
--		if (ret)
--			break;
- 	}
- 	if (start < end) {
- 		ret = __add_to_free_space_tree(trans, block_group, path2,
--- 
-2.47.2
-
+But it seems it's been quite inconsistent everywhere. The only place
+where the style is unified is tracepoints. I'm not sure if we should do
+the same in the normal syslog messges, either with the space as
+delimiter or with "=". In both cases the "," can be dropped though.
 
