@@ -1,192 +1,263 @@
-Return-Path: <linux-btrfs+bounces-14495-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14496-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2794FACF458
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 18:30:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C40EACF495
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 18:44:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AFDD77A9724
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 16:29:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66A451886776
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 16:44:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76B961F09AD;
-	Thu,  5 Jun 2025 16:30:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E416E205ABB;
+	Thu,  5 Jun 2025 16:43:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cXXJhsU+"
+	dkim=pass (2048-bit key) header.d=jse-io.20230601.gappssmtp.com header.i=@jse-io.20230601.gappssmtp.com header.b="xewap3Ln"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25FBD4315A
-	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 16:30:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A5C2749C0
+	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 16:43:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749141042; cv=none; b=qDytCYBDbb8ZR5ZuvYxHE9K4erbEQZvQ486HR4bp66jdUACIpPH+khsOpvRAuMHN5g6DeOVEDgvdGMH/tOpH1mHcAEz9MaDU7sSRA3ArIdV9eNIvexGSgxaX+d4sbGLmi5RUeAIkX3LZ/7wapj9WcbA+k0GgqaNuZ+P81fqgMYc=
+	t=1749141837; cv=none; b=Idw55LCNoZp69eFhnK/due9znKyp8eB8mrDSICmRBhVapLtHKpDwUInYVZIUnX0rVbFJkraitPmuJ0HwecYCdm6u9Djr0bBtwkTZ0Q1LHyqVSaUaHIFeyqez3VBi0dx453+CsZqRazZLKXrhRFTtS6CVFSRaxGExzyXANYk/b7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749141042; c=relaxed/simple;
-	bh=oXYYDzTPGNs+ypmcj1eS5D+KOVWsyqBy1Q0BqMjYayk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZR99ROGLb6x0aLhxiuyPwNyiSJKlllPiEMVGG/kupN6syJw8vlnHrNZkbYUjXfnqLlT+p490pSelmjHaRggVYN+qacyX60atu+u00c28+K70L4ngdFuwCKhV1XAS2odYcf3l/K17361c6rJ6ADoA2ONTXhv2pf9BEdLyCSSk44o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cXXJhsU+; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1749141040;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L12XX5ma/UkaofRsTldbekTX43EjtYhEhxzfoIm0/dw=;
-	b=cXXJhsU+0pDK+1FCwZEf8mZzf2rgi5kyXEKy+iiGq0AjwumvbuwavfI4qOMv6cUyDqwscw
-	nFTRclnZ1WJDm+Q7nRSaD2ppbIzdXxsMrz/J9bTFJ6mExRTT9RWOJNjVhxf1KJiR+ITI5f
-	WkQONXffEmmOCN/Yb8L3b1db7+zriWU=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-651-YBzG1vkiMqanCxJJ6T017Q-1; Thu, 05 Jun 2025 12:30:38 -0400
-X-MC-Unique: YBzG1vkiMqanCxJJ6T017Q-1
-X-Mimecast-MFC-AGG-ID: YBzG1vkiMqanCxJJ6T017Q_1749141037
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-235eefe6a8fso8499255ad.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Jun 2025 09:30:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749141037; x=1749745837;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1749141837; c=relaxed/simple;
+	bh=CyHI0erxVu+LRiA2EhXmWtBLQFawk9FivkiGkKmX7WU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UE0vm4MvrIYCb9dur31THosDyVxXsm9yZwwmHrcWKkBycdyPwDpeYNsxQYjuBsdg4gY3sTeugTOzzf1tSbMVDdz0ngkIKIsh1RPk/UTBrbc05zteFRwZVlmIn2Aa8h2RFgsYr1kWZLPt+8ePSeNuO/4RBVPYCkxuzwnhfqQdqoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=jse.io; spf=pass smtp.mailfrom=jse.io; dkim=pass (2048-bit key) header.d=jse-io.20230601.gappssmtp.com header.i=@jse-io.20230601.gappssmtp.com header.b=xewap3Ln; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=jse.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jse.io
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-e7dae2a8121so158178276.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Jun 2025 09:43:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jse-io.20230601.gappssmtp.com; s=20230601; t=1749141834; x=1749746634; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L12XX5ma/UkaofRsTldbekTX43EjtYhEhxzfoIm0/dw=;
-        b=gMnS7QtlgEZQnmRRh13JhcLzFLkXX92jvAtB9tecj1xQxQHk2je4DV3BF5ERtUldPj
-         PS85Z+eW2m6DYuLpqYfAVhzd2uhtxm85/pEgD7PVsaCGV5ofLTHZ5VhLQ45G8+sqp6sy
-         9EDD/yPkoPZpaC+3+EjEjC9mSlAj/DkFYSIurvjOEeqBRBCxYQ+o8pSUuucYBI3/BsyN
-         3TOR6sJ6JMZYwocNBnt20qdsIpGTVYApcLhPEw60ZJzZxiCJyQXMiSQ3ygexHdzsF8qJ
-         RpQyZLWzZ9l9BWOW8L37Mmuy2Y/htO8YcSR08ymw5OrJt2PF5l84eHg8yMxG1/ASmSUb
-         5A5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW1FwaKQuyyIR66K3zd4keP2yjQFu/Cahz1oVdrfZ3/W/udJ60OEySSA1K8CzgFhgWob50wgaaG3YSxdA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJFgbn4eTH0PUpwuLV7c5LfLlMgL6tY3mBSe+07oeHflxSLchi
-	gyyVY/dzIBA93GyDLxEEO6bDC2iu9fVVTPIsRM5hWwRWCMShXpoSlwdUpg0HhAqplG//rjZ5O4Z
-	NKsKLxsrtRKtqxo7nRN8BioWE5T5EwCwHu98DHz85oDOjpbg5kaqvrabAcByda7kuFdvFO638
-X-Gm-Gg: ASbGncs9JUIjG22MggBz2nC0bAMdH+e+ocXqlZCJu/KrVQo27lERiNLqEogsLvrh2DD
-	ZDfq7jKOEvhIm03TFdCJYfQ+fmH/kNxsZMh6l5uMTQEA5H80A1nriB3sUgaANxBsavqPHPTipnN
-	v4HP0cbF7NYb8pL2QyDv/6EWDNKLPXPDt0MPezZQ21HFrd8RUPOBrgWflN6BU6pPTUw7ph5Ps75
-	Sus6xWxapbta20shEGXZC/MyGWdgFbJkJXfgeejKIt4jwYfDRzwGtgXNJxxlTiOaHzMHp3BbO/E
-	VF9fBs4i1XA4NjHFafWNFIgfUzs89TT6RuMGy/JDwCmSpEViHesWxNZSy4e9YI8=
-X-Received: by 2002:a17:902:f602:b0:234:d7c5:a0f6 with SMTP id d9443c01a7336-23601d4ed01mr216215ad.31.1749141036975;
-        Thu, 05 Jun 2025 09:30:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGnt68u95749X80LDtx+XH9djrLQpxwmELcFErgZKaQ0qOXdRdzUH8UJYVv5Idd6yTk5GqTHg==
-X-Received: by 2002:a17:902:f602:b0:234:d7c5:a0f6 with SMTP id d9443c01a7336-23601d4ed01mr215185ad.31.1749141036266;
-        Thu, 05 Jun 2025 09:30:36 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506bd949bsm121673255ad.91.2025.06.05.09.30.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jun 2025 09:30:35 -0700 (PDT)
-Date: Fri, 6 Jun 2025 00:30:32 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] generic/094: fix test ignoring failures
-Message-ID: <20250605163032.kroyvzlhwjcdfgir@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <7425c940548e19ab996b8458717dd3c3c3c55630.1748518250.git.fdmanana@suse.com>
+        bh=VvyqmJnBnFH07m3tAcX0yPC9n8yuCsH9W8QjK/gdVf4=;
+        b=xewap3Ln154EnS6Zb7cZMk/81fcfYHGJsmSjhzSJwWPtvM2oiEiyr6N/I7liAa7B/m
+         /oBGiTgT2ilwPlwKMJTtzfAg3ypUBqGnReBvtT2I5ZbgLeHj11MzjL87LFWB3Uk/sfUG
+         gXQ8tuKlZgQjXhCruwdJI8ZHS9nS78DVsb5trPjJ9hyjKA52fP7m68NFJY2XHVLIimcC
+         6K1WtvPnDH3zwdck9dl/GS1XsRMeIKyBRAk2qbs7SkrncJjD5o0a0zvDnUNWDgwk+Mt8
+         SiKmMIaiTTk0NnaC/Fay/ZfprrI5CIcTBCNPv9FpZCEp84uFz+zFkB5srLXOvvPG50aK
+         rSUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749141834; x=1749746634;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VvyqmJnBnFH07m3tAcX0yPC9n8yuCsH9W8QjK/gdVf4=;
+        b=bv1/AzIEQALdiEecTe73vbzA5KWyauN4k8hHePJlm1gHHQ9kYLoq/1xnZhzsmrS0J8
+         ZbtAs9MQ+S8sSynblP6pZHqsFiyho0SEZlRvCOsofrctOxktp6TY+9GQvnwcC5r5SHIi
+         NWv594SbmQY8t8CDSUsoBpLAw7hiamd9VFJHz5Dyrjwk2as7/GMF878KmFlYE/ZCFre8
+         kKTi4ViOgFYuq5JeJWqbajrJTA9DSRZOSGlnXKEaNpXcpRkBLuqpAl5UBgl4l9C4ri4q
+         Up8Ol45ddlXH4TEV88Gindjl4pbPMK1C3t6dJs6hrRNtqILuMpWSCzWLwRwGfNc1uBAD
+         YC+A==
+X-Gm-Message-State: AOJu0Yw/9jUoOmJA5oKt8LLxoNgv5MFxAKIKhwSMiDspKL5bI9CbaDb4
+	ZqQ/DDit5UpNEIWEfRXPUj2vNIQF5CE3k9kxb6sgy1vDAlp6IMjUBXGKvwb8i1nEVDs6xor8Gov
+	QOXbHE5wDCDTZ8Nzp6dE2bTbQ9fTzXjtk8SrcI0xmsg==
+X-Gm-Gg: ASbGnctI6QhRh5f1SYpY45E+FBUNzwX0VTl6ruO8TlgXl4bleMkjlpCHhjxBljo6+m1
+	r0s8pCEZzbDjqmJ7iNWe3l8Dy+z7PZhEOVAqtlcENk2uTpZypV4zoKJDO8oAb5fNivMCWRwuOwc
+	PhnSmrf2M3jOAHiYsVbHxSG1Ry2CtJQ4w=
+X-Google-Smtp-Source: AGHT+IGgajcAM6+v4kskuCqoqRzLwkYuv/GDzPbnNcFk5aU55h0LEl8bhwd4AR9EirBinP2g15puem1Iq5nxuoXyMDw=
+X-Received: by 2002:a05:6902:2842:b0:e81:75a2:d69 with SMTP id
+ 3f1490d57ef6-e81a28baeadmr203314276.9.1749141833878; Thu, 05 Jun 2025
+ 09:43:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7425c940548e19ab996b8458717dd3c3c3c55630.1748518250.git.fdmanana@suse.com>
+References: <20250605162345.2561026-1-maharmstone@fb.com>
+In-Reply-To: <20250605162345.2561026-1-maharmstone@fb.com>
+From: Jonah Sabean <jonah@jse.io>
+Date: Thu, 5 Jun 2025 13:43:18 -0300
+X-Gm-Features: AX0GCFtR3ig0KezavNxs-ot4jvQgKrAYq15y23yRaTsA3FM7z901AfxuJh-UeHs
+Message-ID: <CAFMvigdEQVj-uJqfCVqYXf8a51xY48gsYg+tvFNFrC3gPyF-gA@mail.gmail.com>
+Subject: Re: [PATCH 00/12] btrfs: remap tree
+To: Mark Harmstone <maharmstone@fb.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 29, 2025 at 12:33:13PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> The test is ignoring failures completely:
-> 
-> 1) If mounting the scratch device fails it redirects both stdout and
->    stderr to /dev/null, so it gets unnoticed and the test runs against
->    a different fs than expected (in my test environment $SCRATCH_MNT
->    points to a directory in an ext4 fs for example but I want to test
->    btrfs);
+On Thu, Jun 5, 2025 at 1:25=E2=80=AFPM Mark Harmstone <maharmstone@fb.com> =
+wrote:
+>
+> This patch series adds a disk format change gated behind
+> CONFIG_BTRFS_EXPERIMENTAL to add a "remap tree", which acts as a layer of
+> indirection when doing I/O. When doing relocation, rather than fixing up =
+every
+> tree, we instead record the old and new addresses in the remap tree. This=
+ should
+> hopefully make things more reliable and flexible, as well as enabling som=
+e
+> future changes we'd like to make, such as larger data extents and reducin=
+g
+> write amplification by removing cow-only metadata items.
+>
+> The remap tree lives in a new REMAP chunk type. This is because bootstrap=
+ping
+> means that it can't be remapped itself, and has to be relocated by COWing=
+ it as
+> at present. It can't go in the SYSTEM chunk as we are then limited by the=
+ chunk
+> item needing to fit in the superblock.
+>
+> For more on the design and rationale, please see my RFC sent last month[1=
+], as
+> well as Josef Bacik's original design document[2]. The main change from J=
+osef's
+> design is that I've added remap backrefs, as we need to be able to move a
+> chunk's existing remaps before remapping it.
+>
+> You will also need my patches to btrfs-progs[3] to make
+> `mkfs.btrfs -O remap-tree` work, as well as allowing `btrfs check` to rec=
+ognize
+> the new format.
+>
+> Changes since the RFC:
+>
+> * I've reduce the REMAP chunk size from the normal 1GB to 32MB, to match =
+the
+>   SYSTEM chunk. For a filesystem with 4KB sectors and 16KB node size, the=
+ worst
+>   case is that one leaf covers ~1MB of data, and the best case ~250GB. Fo=
+r a
+>   chunk, that implies a worst case of ~2GB and a best case of ~500TB.
+>   This isn't a disk-format change, so we can always adjust it if it prove=
+s too
+>   big or small in practice. mkfs creates 8MB chunks, as it does for every=
+thing.
 
-Yeah, I really don't recommend redirecting all outputs of _scratch_mkfs
-to /dev/null. Some old cases might still do that.
+One thing I'd like to see fixed is the fragmentation of dev_extents on
+stripped profiles when you have less than 1G left of space, as btrfs
+will allocate these smaller chunks across a stripped array (ie raid0,
+10, 5 or 6), otherwise being able to support larger extents can be
+made moot because you can end up with chunks being less as small as
+1MiB. Depending on if you add/remove devices often and balance often
+you can end up with a lot of chunks across all disks that can be made
+smaller, so one hacky way I've got around this is to align partitions
+and force the system chunk to 1G with this patch:
+https://pastebin.com/4PWbgEXV
 
-> 
-> 2) We are redirecting the stdout and stderr of fiemap-tester to the
->    $seqres.full file, so if it fails it gets completely unnoticed and
->    the test succeeds.
+Ideally, I'd like this problem solved, but it seems to me this will
+just add yet another small chunk in the mix that makes alignment
+harder in this case. Really makes striping a curse on btrfs.
 
-I'm surprised that this test case neither check the test output nor
-check the return value of src/fiemap-tester.
-
-> 
-> For the first issue fix this by not even using the scratch filesystem and
-> use instead the test filesystem, since the test creates a 2M file which
-> is small enough.
-> 
-> For the second issue simply don't redirect the stdout and stderr, so that
-> if the test program fails it causes a mismatch with the golden output,
-> making the test fail.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
-
-This change makes sense to me,
-
-Reviewed-by: Zorro Lang <zlang@redhat.com>
-
->  tests/generic/094 | 20 +++++++++++---------
->  1 file changed, 11 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tests/generic/094 b/tests/generic/094
-> index c82efced..6ae417c3 100755
-> --- a/tests/generic/094
-> +++ b/tests/generic/094
-> @@ -9,18 +9,22 @@
->  . ./common/preamble
->  _begin_fstest auto quick prealloc fiemap
->  
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -fr $tmp.*
-> +	rm -f $fiemapfile
-> +}
-> +
->  # Import common functions.
->  . ./common/filter
->  
-> -_require_scratch
-> +_require_test
->  _require_odirect
->  _require_xfs_io_command "fiemap"
->  _require_xfs_io_command "falloc"
->  
-> -_scratch_mkfs > /dev/null 2>&1
-> -_scratch_mount > /dev/null 2>&1
-> -
-> -fiemapfile=$SCRATCH_MNT/$seq.fiemap
-> +fiemapfile=$TEST_DIR/$seq.fiemap
->  
->  _require_test_program "fiemap-tester"
->  
-> @@ -29,12 +33,10 @@ seed=`date +%s`
->  echo "using seed $seed" >> $seqres.full
->  
->  echo "fiemap run with sync"
-> -$here/src/fiemap-tester -q -S -s $seed -r 200 $fiemapfile 2>&1 | \
-> -	tee -a $seqres.full
-> +$here/src/fiemap-tester -q -S -s $seed -r 200 $fiemapfile
->  
->  echo "fiemap run without sync"
-> -$here/src/fiemap-tester -q -s $seed -r 200 $fiemapfile 2>&1 | \
-> -	tee -a $seqres.full
-> +$here/src/fiemap-tester -q -s $seed -r 200 $fiemapfile
->  
->  status=0
->  exit
-> -- 
-> 2.47.2
-> 
-> 
-
+>
+> * You can't make new allocations from remapped block groups, so I've chan=
+ged
+>   it so there's no free-space entries for these (thanks to Boris Burkov f=
+or the
+>   suggestion).
+>
+> * The remap tree doesn't have metadata items in the extent tree (thanks t=
+o Josef
+>   for the suggestion). This was to work around some corruption that delay=
+ed refs
+>   were causing, but it also fits it with our future plans of removing all
+>   metadata items for COW-only trees, reducing write amplification.
+>   A knock-on effect of this is that I've had to disable balancing of the =
+remap
+>   chunk itself. This is because we can no longer walk the extent tree, an=
+d will
+>   have to walk the remap tree instead. When we remove the COW-only metada=
+ta
+>   items, we will also have to do this for the chunk and root trees, as
+>   bootstrapping means they can't be remapped.
+>
+> * btrfs_translate_remap() uses search_commit_root when doing metadata loo=
+kups,
+>   to avoid nested locking issues. This also seems to be a lot quicker (bt=
+rfs/187
+>   went from ~20mins to ~90secs).
+>
+> * Unused remapped block groups should now get cleaned up more aggressivel=
+y
+>
+> * Other miscellaneous cleanups and fixes
+>
+> Known issues:
+>
+> * Relocation still needs to be implemented for the remap tree itself (see=
+ above)
+>
+> * Some test failures: btrfs/156, btrfs/170, btrfs/226, btrfs/250
+>
+> * nodatacow extents aren't safe, as they can race with the relocation thr=
+ead.
+>   We either need to follow the btrfs_inc_nocow_writers() approach, which =
+COWs
+>   the extent, or change it so that it blocks here.
+>
+> * When initially marking a block group as remapped, we are walking the fr=
+ee-
+>   space tree and creating the identity remaps all in one transaction. For=
+ the
+>   worst-case scenario, i.e. a 1GB block group with every other sector all=
+ocated
+>   (131,072 extents), this can result in transaction times of more than 10=
+ mins.
+>   This needs to be changed to allow this to happen over multiple transact=
+ions.
+>
+> * All this is disabled for zoned devices for the time being, as I've not =
+been
+>   able to test it. I'm planning to make it compatible with zoned at a lat=
+er
+>   date.
+>
+> Thanks
+>
+> [1] https://lwn.net/Articles/1021452/
+> [2] https://github.com/btrfs/btrfs-todo/issues/54
+> [3] https://github.com/maharmstone/btrfs-progs/tree/remap-tree
+>
+> Mark Harmstone (12):
+>   btrfs: add definitions and constants for remap-tree
+>   btrfs: add REMAP chunk type
+>   btrfs: allow remapped chunks to have zero stripes
+>   btrfs: remove remapped block groups from the free-space tree
+>   btrfs: don't add metadata items for the remap tree to the extent tree
+>   btrfs: add extended version of struct block_group_item
+>   btrfs: allow mounting filesystems with remap-tree incompat flag
+>   btrfs: redirect I/O for remapped block groups
+>   btrfs: handle deletions from remapped block group
+>   btrfs: handle setting up relocation of block group with remap-tree
+>   btrfs: move existing remaps before relocating block group
+>   btrfs: replace identity maps with actual remaps when doing relocations
+>
+>  fs/btrfs/Kconfig                |    2 +
+>  fs/btrfs/accessors.h            |   29 +
+>  fs/btrfs/block-group.c          |  202 +++-
+>  fs/btrfs/block-group.h          |   15 +-
+>  fs/btrfs/block-rsv.c            |    8 +
+>  fs/btrfs/block-rsv.h            |    1 +
+>  fs/btrfs/discard.c              |   11 +-
+>  fs/btrfs/disk-io.c              |   91 +-
+>  fs/btrfs/extent-tree.c          |  152 ++-
+>  fs/btrfs/free-space-tree.c      |    4 +-
+>  fs/btrfs/free-space-tree.h      |    5 +-
+>  fs/btrfs/fs.h                   |    7 +-
+>  fs/btrfs/relocation.c           | 1897 ++++++++++++++++++++++++++++++-
+>  fs/btrfs/relocation.h           |    8 +-
+>  fs/btrfs/space-info.c           |   22 +-
+>  fs/btrfs/sysfs.c                |    4 +
+>  fs/btrfs/transaction.c          |    7 +
+>  fs/btrfs/tree-checker.c         |   37 +-
+>  fs/btrfs/volumes.c              |  115 +-
+>  fs/btrfs/volumes.h              |   17 +-
+>  include/uapi/linux/btrfs.h      |    1 +
+>  include/uapi/linux/btrfs_tree.h |   29 +-
+>  22 files changed, 2444 insertions(+), 220 deletions(-)
+>
+> --
+> 2.49.0
+>
+>
 
