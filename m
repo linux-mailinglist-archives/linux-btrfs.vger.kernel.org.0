@@ -1,167 +1,106 @@
-Return-Path: <linux-btrfs+bounces-14471-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14472-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3916ACE751
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 01:55:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35FEEACE8C4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 05:52:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 889497A8C33
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Jun 2025 23:54:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC2DB1893377
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 03:53:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85AB274649;
-	Wed,  4 Jun 2025 23:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6C21F7060;
+	Thu,  5 Jun 2025 03:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="hRTlMEu5";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="hRTlMEu5"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=edcint.co.nz header.i=@edcint.co.nz header.b="6/qr8wWG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from h1.out1.mxs.au (h1.out1.mxs.au [110.232.143.235])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0895F79D0
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Jun 2025 23:55:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CBB61F30B2
+	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 03:52:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=110.232.143.235
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749081348; cv=none; b=ksJ8hNjdUUBz2LhH9NEL9RLBcdNoNdo/8wUVAeEefeTlHbXNtSkfu+cidAmArTgAHsi0Nsk1XjcvDcljEu1Nx+eNCYsx3OxplNZMcqgQ8upqNVoBRRlJrN8VTrqOvjOfOUu9mUXYTc3n2rH5N7WIkAssVwfNsBtFzJp4L4O2EDs=
+	t=1749095562; cv=none; b=DiNlCddHCsUb/9Pr8ci+RM/atTuga0dROlIrN1fovKgcsX0SZp52DrMQM1kyNDTPpFPf9UVnqH02Kq/LUmk+LDPW798Yl+6Io6uMzeXdzqb5SaVYTjiO7Yl6eymgHx4w94XtaNtSazZJbWdTmn0uzkcN8vJpbiOeGC04lSP5DuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749081348; c=relaxed/simple;
-	bh=487lMXqsA8opQPvnqgZoh2SJB6hMupvwyiV88ZwxLLQ=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=GK/GDVxOXlHYksrIjzV68SMQYcuhvronfWx6Di3hzJXN6s86yfUW9IHNSzuasbss9zkZeQdlsSB4AIlx6/dR6EBShdSFfNpqjRSzdtLyQx8CAhIYihqbT8oe6y3DLZGojIQ/rlKoSMULliovRTSn7TcCHzeukOCoGFYK/KP7HtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=hRTlMEu5; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=hRTlMEu5; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 20B792074F;
-	Wed,  4 Jun 2025 23:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1749081343; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=lNrO3yJebky8p4+PW5ypvBCJlSheqWJcBXHyjpfr9VQ=;
-	b=hRTlMEu5i5BIw2OBIXxlcy7PucRIOAZE39N1IbmVB5mOVlLMCqH4QFMu1iZmcFzsIlur02
-	lS4Ox93ZFFziiCPalP3JAwYm8utBHgzWMQlPe7ickYIrutymLtC8c9DlehdBzlyy7kLMBE
-	SjS6PoCs8/iygAlhEX+jGDF8Bqjp9AI=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1749081343; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=lNrO3yJebky8p4+PW5ypvBCJlSheqWJcBXHyjpfr9VQ=;
-	b=hRTlMEu5i5BIw2OBIXxlcy7PucRIOAZE39N1IbmVB5mOVlLMCqH4QFMu1iZmcFzsIlur02
-	lS4Ox93ZFFziiCPalP3JAwYm8utBHgzWMQlPe7ickYIrutymLtC8c9DlehdBzlyy7kLMBE
-	SjS6PoCs8/iygAlhEX+jGDF8Bqjp9AI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1E5781336F;
-	Wed,  4 Jun 2025 23:55:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wDXfM/3cQGjWKwAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 04 Jun 2025 23:55:41 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: [PATCH] fstests: generic/741: make cleanup to handle test failure properly
-Date: Thu,  5 Jun 2025 09:25:24 +0930
-Message-ID: <20250604235524.26356-1-wqu@suse.com>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1749095562; c=relaxed/simple;
+	bh=G72DxP2kmkh4jBt00oq6o2sAW5+3uc5f+1iFKAjfvIo=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ThmAH7NV+sDALvukOx4uDJaQODf2fWtSHdzLtsbWK/iLxQdv7KefUpklZhSNbcEpu5PecOKxSljssQAIB7BBJT5YEQcSsWXs+e/j1MyRObmgKHJuIXm6beaQMPL/UjULTlMcYKjHRI8d9Bl7uyS0oEFHOALHOeRpThkt54TnW44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=edcint.co.nz; spf=fail smtp.mailfrom=edcint.co.nz; dkim=pass (2048-bit key) header.d=edcint.co.nz header.i=@edcint.co.nz header.b=6/qr8wWG; arc=none smtp.client-ip=110.232.143.235
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=edcint.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=edcint.co.nz
+Received: from s02bd.syd2.hostingplatform.net.au (s02bd.syd2.hostingplatform.net.au [103.27.32.42])
+	by out1.mxs.au (Halon) with ESMTPS (TLSv1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	id 694178ee-41c0-11f0-ad0b-00163c39b365
+	for <linux-btrfs@vger.kernel.org>;
+	Thu, 05 Jun 2025 13:51:50 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=edcint.co.nz; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=U0bazPuEbr1lxpcYtBCjjpECHmAtCNri1M2P995zERU=; b=6/qr8wWGYBPiX2OucJjh5wpb6g
+	h1G9v74CVpeS8aFgyZF74/io+Cx1XZIjUEyvn2fbc56esMrTsZVd3pu0Erb6eLFspK9Co5kZsmc2I
+	9anrTuKCydtyKNNQDHkYS3oehpXn/cd7xT9CvotBLQdJDHXd99DgEgUBPWaI3iy0mcYODJ8YXWGOQ
+	dk7v1GrfAc4uGUNnqF7VxdEHu8gzYfbVkzllkpBYsjabrvb5gQmbO9fz2J0Ns8meUmmY5FyHrSwj0
+	bu1zssryf99DDuqBcNCIWWKyGEWd5Vjr3VVNTxwXAiBvbOfyP9dntP6Wl2Vg4Y5rYEE2EUWwqF69h
+	HRMw32qQ==;
+Received: from [159.196.20.165] (port=57861 helo=[192.168.2.80])
+	by s02bd.syd2.hostingplatform.net.au with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.98.1)
+	(envelope-from <btrfs@edcint.co.nz>)
+	id 1uN1eV-00000002t7A-47gK;
+	Thu, 05 Jun 2025 13:52:28 +1000
+Message-ID: <bdfe67ea-8668-4768-8102-42d78e9537f9@edcint.co.nz>
+Date: Thu, 5 Jun 2025 13:52:27 +1000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Portable HDD Keeps Going Read Only
+From: Matthew Jurgens <btrfs@edcint.co.nz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Daniel Vacek <neelx@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <83a43be7-7058-4099-80d9-07749cf77a8d@edcint.co.nz>
+ <CAPjX3FcqJ-cNMjVia_gYmBZwDhQVxPEOhYYQUzL31m7momByEQ@mail.gmail.com>
+ <5de3840d-70c5-48cb-a7c0-7db17e789e95@edcint.co.nz>
+ <ffbd0c96-313d-4524-9b6e-b24437fc0347@gmx.com>
+ <b2dbfdb5-4cce-459c-8d30-01ac6124d9ad@edcint.co.nz>
+Content-Language: en-US
+In-Reply-To: <b2dbfdb5-4cce-459c-8d30-01ac6124d9ad@edcint.co.nz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - s02bd.syd2.hostingplatform.net.au
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - edcint.co.nz
+X-Get-Message-Sender-Via: s02bd.syd2.hostingplatform.net.au: authenticated_id: default@edcint.co.nz
+X-Authenticated-Sender: s02bd.syd2.hostingplatform.net.au: default@edcint.co.nz
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-[BUG]
-When I was tinkering the bdev open holder parameter, it caused a bug
-that it no longer rejects mounting the underlying device of a
-device-mapper.
+> 2 more rounds of mem test passed
+>
+> Output of "btrfs check --mode=lowmem" below
+>
+> Let me know if this is worth pursuing (for the sake or btrfs) or if I 
+> should be recreate it
+>
+And another 2 mem tests passed as well.
 
-And the test case properly detects the regression:
+If there is nothing here that might help the btrfs team then I will 
+rebuild the drive.
 
-generic/741 1s ... umount: /mnt/test: target is busy.
-_check_btrfs_filesystem: filesystem on /dev/mapper/test-test is inconsistent
-(see /home/adam/xfstests/results//generic/741.full for details)
-Trying to repair broken TEST_DEV file system
-_check_btrfs_filesystem: filesystem on /dev/mapper/test-scratch1 is inconsistent
-(see /home/adam/xfstests/results//generic/741.full for details)
-- output mismatch (see /home/adam/xfstests/results//generic/741.out.bad)
-    --- tests/generic/741.out	2024-04-06 08:10:44.773333344 +1030
-    +++ /home/adam/xfstests/results//generic/741.out.bad	2025-06-05 09:18:03.675049206 +0930
-    @@ -1,3 +1,2 @@
-     QA output created by 741
-    -mount: TEST_DIR/extra_mnt: SCRATCH_DEV already mounted or mount point busy
-    -mount: TEST_DIR/extra_mnt: SCRATCH_DEV already mounted or mount point busy
-    +rm: cannot remove '/mnt/test/extra_mnt': Device or resource busy
-    ...
-    (Run 'diff -u /home/adam/xfstests/tests/generic/741.out /home/adam/xfstests/results//generic/741.out.bad'  to see the entire diff)
+Please let me know if you want any more info before I rebuild the drive.
 
-The problem is, all later test will fail, because the $SCRATCH_DEV is
-still mounted at $extra_mnt:
-
- TEST_DEV=/dev/mapper/test-test is mounted but not on TEST_DIR=/mnt/test - aborting
- Already mounted result:
- /dev/mapper/test-test /mnt/test /dev/mapper/test-test /mnt/test
-
-[CAUSE]
-The test case itself is doing two expected-to-fail mounts, but the
-cleanup function is only doing unmount once, if the mount succeeded
-unexpectedly, the $SCRATCH_DEV will be mounted at $extra_mnt forever.
-
-[ENHANCEMENT]
-To avoid screwing up later test cases, do the $extra_mnt cleanup twice
-to handle the unexpected mount success.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/generic/741 | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tests/generic/741 b/tests/generic/741
-index cac7045e..c15dc434 100755
---- a/tests/generic/741
-+++ b/tests/generic/741
-@@ -13,6 +13,10 @@ _begin_fstest auto quick volume tempfsid
- # Override the default cleanup function.
- _cleanup()
- {
-+	# If by somehow the fs mounted the underlying device (twice), we have
-+	# to  make sure $extra_mnt is not mounted, or TEST_DEV can not be
-+	# unmounted for fsck.
-+	_unmount $extra_mnt &> /dev/null
- 	_unmount $extra_mnt &> /dev/null
- 	rm -rf $extra_mnt
- 	_unmount_flakey
--- 
-2.49.0
+Thanks
 
 
