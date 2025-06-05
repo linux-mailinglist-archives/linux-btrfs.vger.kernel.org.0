@@ -1,183 +1,172 @@
-Return-Path: <linux-btrfs+bounces-14506-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14507-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1713EACF81F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 21:38:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 917C3ACF88E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 22:05:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADE847A2031
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 19:37:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0267D3B01F4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 20:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06DFD2750FC;
-	Thu,  5 Jun 2025 19:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224281FE474;
+	Thu,  5 Jun 2025 20:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cph2m9ul"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DXNdj+Y3"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 413747260C;
-	Thu,  5 Jun 2025 19:38:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A1E1FC0FC
+	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 20:05:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749152302; cv=none; b=YBr6JLpw5inwUmZprn99sm799nTMfvhOley3QBANWLhFzLba9JyBBJrXAwUvHGC3zs929VwzdFygtMBilKF50lTppnKcCQPKoQljb9Yd5r6bxwecqNTfynM2wGbJMS7kUz03JZJ/O8bDDu2CZe8d41gx53/iqaX+s6cqA8JelDY=
+	t=1749153907; cv=none; b=VHnSYlznFKR799KgcjnsjmChkvfxw+mq6az/X3dNCZJBUxPJTrJvdwBW/c/dFw98pztUcX55UqxWLfATd5e4W0utIKoulyiNNLMU02Vjn5rS+AnejMYd7TGq1fNVpSrn9/h+gWs54StF93CbZho2jA5VZN1eSiVE6vBHuZ70omc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749152302; c=relaxed/simple;
-	bh=dyH6RiFTISsak2E9X/cen0d7peVWpHE1EyY0UXYk804=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YtUlueILSczaqQh7csIoOvB6EpNf59l9Cn/PQ87uZ42QxKPn1RJULcX61s0OUudwsKdpAj0Oe6FYoVHXVqdju64cbI3yop3wOCCebvBrNgrFC1BuXSxbCIalDo0TRRYi2aNq815Os6byNhlMcxRaEqFXy5A0WdRRFtYf3n+vjj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cph2m9ul; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81FF2C4CEE7;
-	Thu,  5 Jun 2025 19:38:15 +0000 (UTC)
+	s=arc-20240116; t=1749153907; c=relaxed/simple;
+	bh=QbSEV2p7SfJ+DL9G1cqAPFlu3zV51OHTDt/UIACmevI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=IvTsvcnPu9nSZKUuj4qPxc45lySqkMDhSw8K+ZwwsOB+B5eVdNDvbJgN4K5up84L8SA0h7I5mMGGMVTxMuwzkaXO1v+eDG0Hpz7fAZmY49Gutf1HQSW3OW65CoxU5PwUjXUCkVfZjNUre+VxPhbXwYyBn7dFsj5LT4SFbhc/oFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DXNdj+Y3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EE55C4CEE7
+	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 20:05:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749152296;
-	bh=dyH6RiFTISsak2E9X/cen0d7peVWpHE1EyY0UXYk804=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Cph2m9ulOiJJJK6IHrF2i+w/mKgzQpa0NLjxKN2ohAV7W//qoHwOGSIfpEYtc0UAx
-	 OYmcbyxPa4uyhdL8NNFfu8SxjC98Bf4cSnVW13O5CgSm7nTC/G5V87Ge1c6mK85rM8
-	 KBmRdLQMG41jPZFckQYkpwzNVQRFXo9WM5lY/fiBvLbQnS+0KHLQd0hdVnmSILIb+B
-	 yTyGouTQwciejA9S8B7/4V6ff6WZhYsoEjeltNkrJz2T4PKkLN+6RUQK18zhcS+IlK
-	 6j25xKIWScG0mgQz2Z8uB5XmAMCjo2c3MzakFXbV43QFRTEc9W3K6DDf3PWKkiGIUy
-	 NU7de+msQtozg==
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-606b6dbe316so2443673a12.3;
-        Thu, 05 Jun 2025 12:38:15 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVDmkm7ipGr7OVP4tV1W4jI7PgNZw5J5Mg92YJpYLxrstCVF69rdc+WQGoiYfYmhW7vptOhPUgscLgeoUA=@vger.kernel.org, AJvYcCXWHQPqbvaB9fm4cLjjIqizilTOc3e90zRT+ZkaRMqctUha3L0EBS12V+mnmVP6waRt3lyu3734@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyq5O7D6E75Z1yWeRVyz7nMF8nrNo3G0U8x7CY2ffAmovEeDyxs
-	aKgR7K9bQuHkA6JqDm62RCGz83hI29jpozG/2BqPAKwKd4Kvm2/6FISeDWzaW0VX1k6fhj0xTRP
-	+JtkXd8smfOjtB/40ZMgaEs0YvZLinKE=
-X-Google-Smtp-Source: AGHT+IG6/xm9d5UyC4RIT+5onNDev/TCUhEa55Ztsy5StOW+h9VIHr8wTzUHbeJUCoF0wHReX+ctT+4efCEdWeHdSSE=
-X-Received: by 2002:a17:907:2d92:b0:ad2:4b0c:ee8c with SMTP id
- a640c23a62f3a-ade1a92d206mr44347666b.35.1749152294126; Thu, 05 Jun 2025
- 12:38:14 -0700 (PDT)
+	s=k20201202; t=1749153906;
+	bh=QbSEV2p7SfJ+DL9G1cqAPFlu3zV51OHTDt/UIACmevI=;
+	h=From:To:Subject:Date:From;
+	b=DXNdj+Y3GyJX1wF+ywTR/Bc1ABjiZeVq4PwksfIbQPmXTStVA1WHic+0cBmyzAvbb
+	 mn6bJOwCwU8HQN6hb9nj2m87jYiiKBtHh9DR/X1oHefE2Z53EflKbztGoCgkLwFW7E
+	 zuKr8u6Cv3fOW/LEJeZbIEc6UCCkbf25iFsZ1nftkZ+0Sb/uV5PIvs1ToZhkfbvClc
+	 0VrfVqVAWRufmorn9qi9+Zxs8ZGO59s/otdm84CVK0zJGDVENMgvEZKfbh2UM9UFBw
+	 XXYo2iWmI9bRZbuHI6UeTjXgnttdqPXuIN1WVIREXLr/U00wB04qiUTIHFetmgBXY9
+	 3vzk+G7ZA1/zA==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix assertion when building free space tree
+Date: Thu,  5 Jun 2025 21:05:03 +0100
+Message-ID: <f60761dc5dd7376ac91d0a645bd2c3a59a68cee7.1749153697.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ad779afaef849e0febdce26cbcb5503beed87341.1748432418.git.fdmanana@suse.com>
- <20250605165225.fajg7aj3btuejhnp@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-In-Reply-To: <20250605165225.fajg7aj3btuejhnp@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 5 Jun 2025 20:37:35 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6h98w--8=-TUridEaOt03v70J3gvLA_g=72iL9hFYL1w@mail.gmail.com>
-X-Gm-Features: AX0GCFsHwAZnzu7_gBOLqBTog1Rg0DmMLMiwJ4KSqyVeHJe55r0lBNo6_Ac2WAU
-Message-ID: <CAL3q7H6h98w--8=-TUridEaOt03v70J3gvLA_g=72iL9hFYL1w@mail.gmail.com>
-Subject: Re: [PATCH] generic/032: fix failure due to attempt to wait for
- non-child process
-To: Zorro Lang <zlang@redhat.com>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jun 5, 2025 at 5:52=E2=80=AFPM Zorro Lang <zlang@redhat.com> wrote:
->
-> On Wed, May 28, 2025 at 12:42:20PM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > Running generic/032 can sporadically fail like this:
-> >
-> >   generic/032 11s ... - output mismatch (see /home/fdmanana/git/hub/xfs=
-tests/results//generic/032.out.bad)
-> >       --- tests/generic/032.out   2023-03-02 21:47:53.884609618 +0000
-> >       +++ /home/fdmanana/git/hub/xfstests/results//generic/032.out.bad =
-   2025-05-28 10:39:34.549499493 +0100
-> >       @@ -1,5 +1,6 @@
-> >        QA output created by 032
-> >        100 iterations
-> >       +/home/fdmanana/git/hub/xfstests/tests/generic/032: line 90: wait=
-: pid 3708239 is not a child of this shell
-> >        000000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  >.......=
-.........<
-> >        *
-> >        100000
-> >       ...
-> >       (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/generic/032.o=
-ut /home/fdmanana/git/h
-> >
-> > This is because we are attempting to wait for a process that is not a
-> > child process of the test process and it's instead a child of a process
-> > spawned by the test.
-> >
-> > To make sure that after we kill the process running _syncloop() there
-> > isn't any xfs_io process still running syncfs, add instead a trap to
-> > to _syncloop() that waits for xfs_io to finish before the process runni=
-ng
-> > that function exits.
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
->
-> Oh... I didn't remove the _pgrep when I reverted those "setsid" things.
->
-> CC Darrick, what do you think if I remove the _pgrep from common/rc
-> and generic/032 :) On the other words, revert the:
->
->   commit 1bb15a27573eea1df493d4b7223ada2e6c04a07a
->   Author: Darrick J. Wong <djwong@kernel.org>
->   Date:   Mon Feb 3 14:00:29 2025 -0800
->
->       generic/032: fix pinned mount failure
+From: Filipe Manana <fdmanana@suse.com>
 
-Reverting that commit won't fix anything. One still needs a mechanism
-to ensure that we don't attempt to unmount the scratch device while
-xfs_io from sync_pid is still running. The mechanism implemented in
-that commit is buggy and the trap based one from this patch should
-always work (and we do this trap based approach on several other tests
-to solve this same problem).
+When building the free space tree with the block group tree feature
+enabled, we can hit an assertion failure like this:
 
-Thanks.
+   BTRFS info (device loop0 state M): rebuilding free space tree
+   assertion failed: ret == 0, in fs/btrfs/free-space-tree.c:1102
+   ------------[ cut here ]------------
+   kernel BUG at fs/btrfs/free-space-tree.c:1102!
+   Internal error: Oops - BUG: 00000000f2000800 [#1]  SMP
+   Modules linked in:
+   CPU: 1 UID: 0 PID: 6592 Comm: syz-executor322 Not tainted 6.15.0-rc7-syzkaller-gd7fa1af5b33e #0 PREEMPT
+   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+   pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+   pc : populate_free_space_tree+0x514/0x518 fs/btrfs/free-space-tree.c:1102
+   lr : populate_free_space_tree+0x514/0x518 fs/btrfs/free-space-tree.c:1102
+   sp : ffff8000a4ce7600
+   x29: ffff8000a4ce76e0 x28: ffff0000c9bc6000 x27: ffff0000ddfff3d8
+   x26: ffff0000ddfff378 x25: dfff800000000000 x24: 0000000000000001
+   x23: ffff8000a4ce7660 x22: ffff70001499cecc x21: ffff0000e1d8c160
+   x20: ffff0000e1cb7800 x19: ffff0000e1d8c0b0 x18: 00000000ffffffff
+   x17: ffff800092f39000 x16: ffff80008ad27e48 x15: ffff700011e740c0
+   x14: 1ffff00011e740c0 x13: 0000000000000004 x12: ffffffffffffffff
+   x11: ffff700011e740c0 x10: 0000000000ff0100 x9 : 94ef24f55d2dbc00
+   x8 : 94ef24f55d2dbc00 x7 : 0000000000000001 x6 : 0000000000000001
+   x5 : ffff8000a4ce6f98 x4 : ffff80008f415ba0 x3 : ffff800080548ef0
+   x2 : 0000000000000000 x1 : 0000000100000000 x0 : 000000000000003e
+   Call trace:
+    populate_free_space_tree+0x514/0x518 fs/btrfs/free-space-tree.c:1102 (P)
+    btrfs_rebuild_free_space_tree+0x14c/0x54c fs/btrfs/free-space-tree.c:1337
+    btrfs_start_pre_rw_mount+0xa78/0xe10 fs/btrfs/disk-io.c:3074
+    btrfs_remount_rw fs/btrfs/super.c:1319 [inline]
+    btrfs_reconfigure+0x828/0x2418 fs/btrfs/super.c:1543
+    reconfigure_super+0x1d4/0x6f0 fs/super.c:1083
+    do_remount fs/namespace.c:3365 [inline]
+    path_mount+0xb34/0xde0 fs/namespace.c:4200
+    do_mount fs/namespace.c:4221 [inline]
+    __do_sys_mount fs/namespace.c:4432 [inline]
+    __se_sys_mount fs/namespace.c:4409 [inline]
+    __arm64_sys_mount+0x3e8/0x468 fs/namespace.c:4409
+    __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+    invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
+    el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
+    do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
+    el0_svc+0x58/0x17c arch/arm64/kernel/entry-common.c:767
+    el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:786
+    el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
+   Code: f0047182 91178042 528089c3 9771d47b (d4210000)
+   ---[ end trace 0000000000000000 ]---
 
+This happens because we are processing an empty block group, which has
+no extents allocated from it, there are no items for this block group,
+including the block group item since block group items are stored in a
+dedicated tree when using the block group tree feature. It also means
+this is the block group with the highest start offset, so there are no
+higher keys in the extent root, hence btrfs_search_slot_for_read()
+returns 1 (no higher key found).
 
->
-> Thanks,
-> Zorro
->
-> >  tests/generic/032 | 13 ++++---------
-> >  1 file changed, 4 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/tests/generic/032 b/tests/generic/032
-> > index 48d594fe..b04b84de 100755
-> > --- a/tests/generic/032
-> > +++ b/tests/generic/032
-> > @@ -28,6 +28,10 @@ _cleanup()
-> >
-> >  _syncloop()
-> >  {
-> > +     # Wait for any running xfs_io command running syncfs before we ex=
-it so
-> > +     # that unmount will not fail due to the mount being pinned by xfs=
-_io.
-> > +     trap "wait; exit" SIGTERM
-> > +
-> >       while [ true ]; do
-> >               _scratch_sync
-> >       done
-> > @@ -81,15 +85,6 @@ echo $iters iterations
-> >  kill $syncpid
-> >  wait
-> >
-> > -# The xfs_io instance started by _scratch_sync could be stuck in D sta=
-te when
-> > -# the subshell running _syncloop & is killed.  That xfs_io process pin=
-s the
-> > -# mount so we must kill it and wait for it to die before cycling the m=
-ount.
-> > -dead_syncfs_pid=3D$(_pgrep xfs_io)
-> > -if [ -n "$dead_syncfs_pid" ]; then
-> > -     _pkill xfs_io
-> > -     wait $dead_syncfs_pid
-> > -fi
-> > -
-> >  # clear page cache and dump the file
-> >  _scratch_cycle_mount
-> >  _hexdump $SCRATCH_MNT/file
-> > --
-> > 2.47.2
-> >
-> >
->
+Fix this by asserting 'ret' is 0 only if the block group tree feature
+is not enabled, in which case we should find a block group item for
+the block group since it's stored in the extent root and block group
+item keys are greater than extent item keys (the value for
+BTRFS_BLOCK_GROUP_ITEM_KEY is 192 and for BTRFS_EXTENT_ITEM_KEY and
+BTRFS_METADATA_ITEM_KEY the values are 168 and 169 respectively).
+In case 'ret' is 1, we just need to add a record to the free space
+tree which spans the whole block group, and we can achieve this by
+making 'ret == 0' as the while loop's condition.
+
+Reported-by: syzbot+36fae25c35159a763a2a@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/linux-btrfs/6841dca8.a00a0220.d4325.0020.GAE@google.com/
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/free-space-tree.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+index af51cf784a5b..15721b9bbfe2 100644
+--- a/fs/btrfs/free-space-tree.c
++++ b/fs/btrfs/free-space-tree.c
+@@ -1115,11 +1115,21 @@ static int populate_free_space_tree(struct btrfs_trans_handle *trans,
+ 	ret = btrfs_search_slot_for_read(extent_root, &key, path, 1, 0);
+ 	if (ret < 0)
+ 		goto out_locked;
+-	ASSERT(ret == 0);
++	/*
++	 * If ret is 1 (no key found), it means this is an empty block group,
++	 * without any extents allocated from it and there's no block group
++	 * item (key BTRFS_BLOCK_GROUP_ITEM_KEY) located in the extent tree
++	 * because we are using the block group tree feature, so block group
++	 * items are stored in the block group tree. It also means there are no
++	 * extents allocated for block groups with a start offset beyond this
++	 * block group's end offset (this is the last, highest, block group).
++	 */
++	if (!btrfs_fs_compat_ro(trans->fs_info, BLOCK_GROUP_TREE))
++		ASSERT(ret == 0);
+ 
+ 	start = block_group->start;
+ 	end = block_group->start + block_group->length;
+-	while (1) {
++	while (ret == 0) {
+ 		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+ 
+ 		if (key.type == BTRFS_EXTENT_ITEM_KEY ||
+@@ -1149,8 +1159,6 @@ static int populate_free_space_tree(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_next_item(extent_root, path);
+ 		if (ret < 0)
+ 			goto out_locked;
+-		if (ret)
+-			break;
+ 	}
+ 	if (start < end) {
+ 		ret = __add_to_free_space_tree(trans, block_group, path2,
+-- 
+2.47.2
+
 
