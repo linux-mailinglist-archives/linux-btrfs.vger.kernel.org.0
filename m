@@ -1,214 +1,211 @@
-Return-Path: <linux-btrfs+bounces-14499-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14500-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1106ACF4F8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 19:06:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 978C8ACF508
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 19:09:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 221A03AEA6A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 17:05:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EF363AD6B1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 17:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42C5E27990A;
-	Thu,  5 Jun 2025 17:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12FE92750E3;
+	Thu,  5 Jun 2025 17:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="NF8inJlK";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fVoUHAfV"
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=jimis@gmx.net header.b="uifqDFus"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D237D27603C
-	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 17:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69EE13D521
+	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 17:09:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749143111; cv=none; b=JshRWVfxoGeUM1r6pEUFmsYwL5vL6v7dFZQ9L6UMJS90czPmHg3+n6+Jv0q/OmX8m2IZnUauAbR6n5fTTPewWyxhYoNilB6jwKof4KO1X3iWW4NDw6l9zZCmntQh6xfLTq4CFfBeZJWQrbY3xM02yl8Vjv2ekjhY0M0ZKtQHDfY=
+	t=1749143369; cv=none; b=IfgwIgOapVHmsX6vRnKyUtJnWO7xTpgVZz3vDcqN013Vys/cYAT9sYTI3OoyRup6gEizpP0wopKa4NtNyiQiLVR5wQToKumPHSgIBuhTN4uVcjAHxgIoRoMiUtaWZYg3pR6yGyBJezz1XQu2okh1BprWcZEl//0PZK77QVfhRT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749143111; c=relaxed/simple;
-	bh=O24Ya5ljSrlvN4KlmCkkVSVB6C5zSt10T0IoaPQX+Fg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yoa46dhIoU3rq4tJ7bSDndXJxi/4T48Jh7MJOG1pY4K2vlXdhOOUMHxnlnZr4xA6RY6AeIukwUkp9RSgqsWCHALvAie/QUsrdO9AEH5O/HwSYlXVdAKRCTcbZw3qcPUheJFixnQIiVDGoIfOtY11Sb3+50B7qkSOFXuwrUMJzP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=NF8inJlK; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fVoUHAfV; arc=none smtp.client-ip=103.168.172.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id A952A114012D;
-	Thu,  5 Jun 2025 13:05:06 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Thu, 05 Jun 2025 13:05:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1749143106; x=1749229506; bh=6RSH9C743/
-	+uE9g4mIkMFSyzmjPm8G0GS7ywn4lCgEA=; b=NF8inJlKOTjcska8OhRBG8G9W/
-	k3RIBNfzlIEAIhJn3RywT42feqMFSgJJ11xEAk1ROJUSQFtbKmRbWYd1VkiQRPvZ
-	iigXImiX5/lnfBfu8Kq7sxhgtXNIAfxH/E/mpu+6jszkIkxfphU+OT61bcrNLxhB
-	8P6TVuUr1gDTe2hdkJ1L+cjl5455GJRmpJsYjcyD9E52bYMTlZG58nbeJ2/j0Yxh
-	PjeJe0Wk/VMvMeUYHmpWqZrK8v5sqMzn7MTRlnBbFnZxynu5aoF/Gnpry46TgkS2
-	EL7EH3/JvIETxOfbKLofCGKzI4z+iYDZI7onh2eB9pQW7Rcr1D2MNGVBSu3Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1749143106; x=1749229506; bh=6RSH9C743/+uE9g4mIkMFSyzmjPm8G0GS7y
-	wn4lCgEA=; b=fVoUHAfVScT9FZJmnDv2067E9zYjHpK5FMTvajIkbj4id+H0l1X
-	yUq51kZWZrOzsUDoK07PPpV0jKJWUhsNSi9X7L7r684dF0Iaild2ASZFv+DAlR1Q
-	LVFWcgUS44gYwS33zHKdQeAFxmFDeZ+JaITI7piZp38RtCe8+aksfvq4O1Yhw9xl
-	nGG4sgUbHbC/C2B3qHTDsMCxRiRjj0z9H8k9SKF1qYbkomyFnjR0YIiJu4rOJlrL
-	KycAyIbbwK5d3Kri9lXZn11sgXAmbEr86acDySMveXyGNE+6RfkrjV2be+P980Hj
-	YyEF0bw9+OHr5ggmN877PACEivyxG1A6tsw==
-X-ME-Sender: <xms:Qs5BaGvDo5gx4Cm9KJojZOojDeWXGGpdqqQMtLzKUHaiqwPp5ihT4w>
-    <xme:Qs5BaLdy5lc6TfOlDR6RkgRtjLhV9fxZoHvuj8i2N8wVM6hGKN_jnMMuIqL1fb3M3
-    xm2U3t21eiwU_GbL3k>
-X-ME-Received: <xmr:Qs5BaByaQ-LybJClvfDHrCIO6Rfu0FNI1k-s-zaA-9lMtiz3_D7etfLVhkyRHKWrojOMnhVfrrjYmv4_Ep6Q1d1EC3o>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdefleduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvden
-    ucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenuc
-    ggtffrrghtthgvrhhnpeehtdfhvefghfdtvefghfelhffgueeugedtveduieehieehteel
-    geehvdefgeefgeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-    pdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopeifqh
-    husehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdr
-    khgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:Qs5BaBMy8bE_s8bJPdohxbasKJHz3ZTj0dXGyu6877Fz7GXq2jp08Q>
-    <xmx:Qs5BaG8od1bNyAvl4ZjJJsM20mfQ4G-IuM1xpDzcBsZDa8TqIT3vSg>
-    <xmx:Qs5BaJWNSuhMDMAOwHx8NHrhAHm1vxRIPIVC0DgYE7Ssu7tdVgZU5w>
-    <xmx:Qs5BaPe36xDFS357TeBwl_vThMQFGbeajEYEIKz8IqJGOwhOUuZT8Q>
-    <xmx:Qs5BaGO8hKSF-XTlucEZCb6XbiuQcaE8NJYn1274YBzcihczi17unde1>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 5 Jun 2025 13:05:05 -0400 (EDT)
-Date: Thu, 5 Jun 2025 10:05:00 -0700
-From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: use fs_info as the block device holder
-Message-ID: <20250605170431.GA3475402@zen.localdomain>
-References: <8c2f064770e5bf7a78d768b3e0a2cad9643169d7.1749116730.git.wqu@suse.com>
+	s=arc-20240116; t=1749143369; c=relaxed/simple;
+	bh=SE3Jho3qINuzIEWKx936N+56/UrEAag3IIRkbStZ1DA=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=tMu/PEyzjA8q1Rmkmg0zsvSdHxvDkBDKQHXC23Us+zbqFa6IYDrD0/nOayAlgFnzjGjKYPQWikEx5otxh10DEJqr3aOElf6GLIPbXz59s6ayRTjZay8w891DRkupD13/gcSkSXES8LR0kpVrvjMURSyRGFs2yyENoYm3J5iVdVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=jimis@gmx.net header.b=uifqDFus; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1749143349; x=1749748149; i=jimis@gmx.net;
+	bh=6UlKvnoDbPaQKwqEu4ip7TVzTxKsESppNl9xobFkgjQ=;
+	h=X-UI-Sender-Class:Date:From:To:cc:Subject:In-Reply-To:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=uifqDFuslUQawdu+ZBDUefcmiK1p3atPNeQ+wApGIQPyljQ+lshu/XShKxK3s8KV
+	 0mxg4ZYqHC2h3tg3OPI0CJpw2CkNWlkFgeaiNuVthqnCnsQsTExR13duWmLo6ub7q
+	 ATKuf9m3BYT78a5fDkk44D7cHE5yvKsTdQDAKRrAKZrsO/xY84T9nNr/CmMUJB7vy
+	 eZA2HmdFeTWq0FZ0q6xgO5lveJ8qYTS5mqlng+WHdQrXcLMDlt3SduVjvGvktscwT
+	 XeHA++MhHxqpU2Gb70ruzvSidwl8Q3L8uyMsIK9z94W+WRJWO634s4q12mNAX71mU
+	 VkekxNjRyfJJ/7+O1w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.9.70.81] ([185.55.106.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M2O2W-1uR3qE2lp8-003MU0; Thu, 05
+ Jun 2025 19:09:08 +0200
+Date: Thu, 5 Jun 2025 19:09:07 +0200 (CEST)
+From: Dimitrios Apostolou <jimis@gmx.net>
+To: Boris Burkov <boris@bur.io>
+cc: Christoph Hellwig <hch@infradead.org>, linux-btrfs@vger.kernel.org, 
+    Qu Wenruo <quwenruo.btrfs@gmx.com>, Anand Jain <anand.jain@oracle.com>, 
+    Matthew Wilcox <willy@infradead.org>
+Subject: Re: Sequential read(8K) from compressed files are very slow
+In-Reply-To: <20250604180303.GA978719@zen.localdomain>
+Message-ID: <d934d1ea-4e3e-71ef-8b42-698ccd747799@gmx.net>
+References: <34601559-6c16-6ccc-1793-20a97ca0dbba@gmx.net> <20250604013611.GA485082@zen.localdomain> <aD_mE1n1fmQ09klP@infradead.org> <20250604180303.GA978719@zen.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c2f064770e5bf7a78d768b3e0a2cad9643169d7.1749116730.git.wqu@suse.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Provags-ID: V03:K1:EdsdcI7rQkp/TfhUa+zl9sc/fSpFFoVgr7f0+ffLwtd2KczxFYG
+ QXvcwJ3Q5QLs4o406lYgdTpPKL2yp2qnvCx5iMl3P+N49W0ydoghMG6mtKVeiO0EaV69pK5
+ fxJY0bfXaWANowd49TTqBD1GT5YZlPtaZAncc6T+4oLb9vWS48R67D81+uHe6U8aNA4Kq3+
+ AdIi6a/AGcnq5Xv68vaxw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:wbEfw7+BZAw=;yH/jWRvZcnS40ekNTk38GPr/JRj
+ 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
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 05, 2025 at 07:15:48PM +0930, Qu Wenruo wrote:
-> Currently btrfs uses "btrfs_fs_type" as the bdev holder for all opened
-> device, which means all btrfses shares the same holder value.
-> 
-> That's only fine when there is no blk_holder_ops provided, but we're
-> going to implement blk_holder_ops soon, so replace the "btrfs_fs_type"
-> holder usage, and replace it with a proper fs_info instead.
-> 
-> This means we can remove the btrfs_fs_info::bdev_holder completely.
+Hi Boris, thank you for investigating! I've been chasing this for years=20
+and I was hitting a wall, the bottleneck was not obvious at all when=20
+looking from outside the kernel. I've started a few threads before but=20
+they were fruitless.
 
-I definitely support this, I always found it quite weird that we had a
-single generic holder and relied on our own checking to ensure we only
-mount each device once. I think this should help insulate us from
-bizarre fsid bugs like we've seen with seed+sprout in the past.
+On Wed, 4 Jun 2025, Boris Burkov wrote:
 
-However, I'm a little confused, as I thought Johannes and Christoph made
-the change to using the super block as the holder a while ago:
-https://lore.kernel.org/linux-btrfs/20231218044933.706042-1-hch@lst.de/
+>
+> stats from an 8K run:
+> $ sudo bpftrace readahead.bt
+> Attaching 4 probes...
+>
+> @add_ra_delay_ms: 19450
+> @add_ra_delay_ns: 19450937640
+> @add_ra_delay_s: 19
+>
+> @ra_sz_freq[8]: 81920
+> @ra_sz_hist:
+> [8, 16)            81920 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@=
+@@@@@@|
+>
+>
+> stats from a 128K run:
+> $ sudo bpftrace readahead.bt
+> Attaching 4 probes...
+>
+> @add_ra_delay_ms: 15
+> @add_ra_delay_ns: 15333301
+> @add_ra_delay_s: 0
+>
+> @ra_sz_freq[512]: 1
+> @ra_sz_freq[256]: 1
+> @ra_sz_freq[128]: 2
+> @ra_sz_freq[1024]: 2559
+> @ra_sz_hist:
+> [128, 256)             2 |                                              =
+      |
+> [256, 512)             1 |                                              =
+      |
+> [512, 1K)              1 |                                              =
+      |
+> [1K, 2K)            2559 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@=
+@@@@@@|
+>
+>
+> so we are spending 19 seconds (vs 0) in add_ra_bio_pages and calling
+> btrfs_readahead() 81920 times with 8 pages vs 2559 times with 1024
+> pages.
 
-Did that end up failing to get in? Or it got reverted? I don't see it in
-the git history.
+I specifically like the bpftrace utility you are using, it opens up new=20
+possibilities without custom kernel compiles, so I want to experiment.=20
+Could you please include the script you used for this histogram?
 
-Those patches have a lot more going on, so I'm also wondering if any of
-that is necessary for making this change? Haven't fully refreshed myself
-on that old series, though, so it's a fairly naive question. Also, it
-does seem like other fs-es uses sb, but I don't have a strong opinion on
-that and don't see why fs_info can't work.
+>
+> The total time difference is ~30s on my setup, so there are still ~10
+> seconds unaccounted for in my analysis here, though.
 
-Thanks,
-Boris
+This is outstanding. I expect such improvement will give a *huge* boost to=
+=20
+postgresql workloads on compressed filesystems. By huge I mean 5-10x for=
+=20
+sequential table scans.
 
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/dev-replace.c | 2 +-
->  fs/btrfs/fs.h          | 2 --
->  fs/btrfs/super.c       | 3 +--
->  fs/btrfs/volumes.c     | 4 ++--
->  4 files changed, 4 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-> index 2decb9fff445..cf63f4b29327 100644
-> --- a/fs/btrfs/dev-replace.c
-> +++ b/fs/btrfs/dev-replace.c
-> @@ -250,7 +250,7 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
->  	}
->  
->  	bdev_file = bdev_file_open_by_path(device_path, BLK_OPEN_WRITE,
-> -					fs_info->bdev_holder, NULL);
-> +					   fs_info, NULL);
->  	if (IS_ERR(bdev_file)) {
->  		btrfs_err(fs_info, "target device %s is invalid!", device_path);
->  		return PTR_ERR(bdev_file);
-> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> index b239e4b8421c..d90304d4e32c 100644
-> --- a/fs/btrfs/fs.h
-> +++ b/fs/btrfs/fs.h
-> @@ -715,8 +715,6 @@ struct btrfs_fs_info {
->  	u32 data_chunk_allocations;
->  	u32 metadata_ratio;
->  
-> -	void *bdev_holder;
-> -
->  	/* Private scrub information */
->  	struct mutex scrub_lock;
->  	atomic_t scrubs_running;
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 2d0d8c6e77b4..c1efd20166cc 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -1865,7 +1865,7 @@ static int btrfs_get_tree_super(struct fs_context *fc)
->  	fs_devices = device->fs_devices;
->  	fs_info->fs_devices = fs_devices;
->  
-> -	ret = btrfs_open_devices(fs_devices, mode, &btrfs_fs_type);
-> +	ret = btrfs_open_devices(fs_devices, mode, fs_info);
->  	mutex_unlock(&uuid_mutex);
->  	if (ret)
->  		return ret;
-> @@ -1905,7 +1905,6 @@ static int btrfs_get_tree_super(struct fs_context *fc)
->  	} else {
->  		snprintf(sb->s_id, sizeof(sb->s_id), "%pg", bdev);
->  		shrinker_debugfs_rename(sb->s_shrink, "sb-btrfs:%s", sb->s_id);
-> -		btrfs_sb(sb)->bdev_holder = &btrfs_fs_type;
->  		ret = btrfs_fill_super(sb, fs_devices);
->  		if (ret) {
->  			deactivate_locked_super(sb);
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index d3e749328e0f..606ddf42ddc3 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -2705,7 +2705,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
->  		return -EROFS;
->  
->  	bdev_file = bdev_file_open_by_path(device_path, BLK_OPEN_WRITE,
-> -					fs_info->bdev_holder, NULL);
-> +					   fs_info, NULL);
->  	if (IS_ERR(bdev_file))
->  		return PTR_ERR(bdev_file);
->  
-> @@ -7168,7 +7168,7 @@ static struct btrfs_fs_devices *open_seed_devices(struct btrfs_fs_info *fs_info,
->  	if (IS_ERR(fs_devices))
->  		return fs_devices;
->  
-> -	ret = open_fs_devices(fs_devices, BLK_OPEN_READ, fs_info->bdev_holder);
-> +	ret = open_fs_devices(fs_devices, BLK_OPEN_READ, fs_info);
->  	if (ret) {
->  		free_fs_devices(fs_devices);
->  		return ERR_PTR(ret);
-> -- 
-> 2.49.0
-> 
+I'm also wondering, in the past I was trying to see if it makes any=20
+difference to tweak the setting /sys/block/sdX/queue/read_ahead_kb but=20
+couldn't see any substantial change. Do you see it affecting your results,=
+=20
+with your patch applied? Or is btrfs following different code paths and=20
+completely ignoring that?
+
+>
+>>> I removed all the extent locking as an experiment, as it is not really
+>>> needed for safety in this single threaded test and did see an
+>>> improvement but not full parity between 8k and 128k for the compressed
+>>> file. I'll keep poking at the other sources of overhead in the builtin
+>>> readahead logic and in calling btrfs_readahead more looping inside it.
+
+Since your findings indicate that the issue is probably lock contention,=
+=20
+you might want to try /proc/lock_stat. It requires a kernel built with=20
+CONFIG_LOCK_STAT, which is what blocks me at the moment, but it might be=
+=20
+easier for you if you already compile it for developing btrfs. Docs at:
+
+https://docs.kernel.org/locking/lockstat.html
+
+
+Thank you,
+Dimitris
+
 
