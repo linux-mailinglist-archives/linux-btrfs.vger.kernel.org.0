@@ -1,149 +1,108 @@
-Return-Path: <linux-btrfs+bounces-14479-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14480-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67279ACF15B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 15:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63B3BACF2FF
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 17:26:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A93C7A482A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 13:54:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91D507A2F49
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Jun 2025 15:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90478272E7C;
-	Thu,  5 Jun 2025 13:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PcJ9xB+o"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A381C5F14;
+	Thu,  5 Jun 2025 15:24:47 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67735272E5F
-	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 13:55:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89763198A2F
+	for <linux-btrfs@vger.kernel.org>; Thu,  5 Jun 2025 15:24:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749131718; cv=none; b=uVI7M5+Zre62BccpF8qsFPiqxfNIYHZ8ePBXhMV0AGXRpfCOUAmHCHYJA9YI8HY4RYoI+XYNEHNk63hUFv4fuYw3nvlVZaPzHMvn/9qxT+HvlCPCQr2N0eKDAzrmKezMjAiMFr1uMr3VjhrhFKt47UOKmWTRq4ln5ZVRZgi0ZmU=
+	t=1749137087; cv=none; b=ePGYr1kqirPTYLRJUjVsAgvrBmNgpNfxsvgYJayv64bmvpM3o5/qOiOyHsRI9mxxzsFX+z31MAsiN/Iig9kM+IcCu/r93BiUgGNx+oLSgnwGLMXjfFe6cjJ07jl/2GOtGZi/0Sd8KoP1+6lw0QbDWJLsexDy0erx2TXsW9c8RU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749131718; c=relaxed/simple;
-	bh=SctAiA2foXNqJYEjm4cfizK+TOHRUkuQ934+6AeZttw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dGSzISTOyTgffdCA9t4l+XjOmRLAT4hMGJhGmRpV5MYdB489ct/iA98qVG1VCbZoMJzoHJl9MgjcTg/WluzhmX3mXgCof1QvJ6TMzHniRpIdm4dRQeMHTMnCOau49nUTdEq7wHMTVJ7sn3Ykqlx1yBnFuJBUgj2aCd4hDF9ktRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PcJ9xB+o; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1749131714;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=z/XMxkrrr1TxOmh0FzeoJV9OksOg2fvjSm32Qoykdbs=;
-	b=PcJ9xB+o0ijThlHs+QC2ceUeiXvWfus/NItetZLiuApeNpuF3fX3Ssd1ZMcdLPY1W0ek7B
-	VEcwGYRhnpMaahiuhdFLlwQtQwSkGn+aXGN+4CbFifcMiOYz6LgFMQAVKBWig90x8QLr6n
-	B6N8AjuLf8Xz9ueVpMLv2lzE5P2IpP8=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-686-3Z6Du_aWOjqJImUD3drIsg-1; Thu, 05 Jun 2025 09:55:12 -0400
-X-MC-Unique: 3Z6Du_aWOjqJImUD3drIsg-1
-X-Mimecast-MFC-AGG-ID: 3Z6Du_aWOjqJImUD3drIsg_1749131712
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-234aceaf591so7060315ad.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Jun 2025 06:55:12 -0700 (PDT)
+	s=arc-20240116; t=1749137087; c=relaxed/simple;
+	bh=Y3c9u4ar0IIMN8XkxJXaplsGd+1o1rMecQQ3x4KRD3Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lPpZXZuzpCxrZsMNhrK/+s8ksoaCVX+0xy0Aqduc8E+fLhDKVGu9KGY+iQqq9amfrK15dm1Lj14xjnEb8f8p+b2KA3DhcjgkdYQb9Inc+1qVTIrATd6CbiJ45t7lGL/p4hD0Nnh3O3t/zlMCaPJ5BaMws8zjB/xWUR57zm80BKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a51481a598so670087f8f.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Jun 2025 08:24:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749131712; x=1749736512;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z/XMxkrrr1TxOmh0FzeoJV9OksOg2fvjSm32Qoykdbs=;
-        b=Q9KKynZN+fwiNaO9vQdPbeGSkF0HAzcLJZjVfujSUwMUqeLznwFHTbS7veE1xUdUPY
-         OhLSIu9GLF1hwW9IsNvn+jOaSy0KvASs/PUI7U5dufFGZjVHvzjLHn5sF56Vsha/3upo
-         P8Cuzw8pbNB4kcnJXcgtYzYkRfDoel7UruorOIOHFFgwzawxkTQC3PNk/yjnnuMOw1Q0
-         s8HPkISzB+0mozNylA6WmGZarsad+vOyEX/V4BzIZ9dNZpg5xLRl4eOtTbG79Qo9PG3M
-         m2AjtlvEtTJ1hDtgW9H7lY3Zv25PiCqkL/QAT1WWB55ieK6bDTdaXUCWKf7aRDn6Llx5
-         zeFA==
-X-Gm-Message-State: AOJu0YxKZLEGNlV6ChpVPqvIS3WeTPffvTXJpFB6O7kk1lbCfHUWkqTt
-	FppgQ/ubcF8A1EsLtZT6B6L5r96r1iYkSXUDXbWbDfjP0ou4Ca/sTPhq4AzGy1ILNpn7a5C1zUq
-	8qmw+Nk24OY6AkV1HLaFKqsr3NqdHi49171A1ITRaAxDa3jeKIyXqBGLUoQAJddcB
-X-Gm-Gg: ASbGncvrgUqtaByenpDTrY1jJ0ad3DC5zT4Q6cX6u3zKoMT5n+EzyaXUa3fFhXHZY1t
-	vqPrVDypM5uLNQOwlZi9fOOVJLYQDuhvm2pKfHwiDIMCrnjfenfDHv1DeE/Vu6E3HNRwS1LcYEo
-	q4s84C/CU6oDaH0/0Y+0Ss8jK7lcGsyYJ253IA75gvW/Dh+H00xHnJBu6Rilt/QBHGsPfVk0sYx
-	3qiKFOsHzxCsyqCssuQydYSEDaoy+F6jSk3PDHFT7NWaz8SV/f4DuirOD04AboDHAl+AceP9gtY
-	O+fl3svN1sZettg/AY9TPD4wQC6ov84znHQcXcTdSByV863DpEPo
-X-Received: by 2002:a17:902:e944:b0:234:b735:dca8 with SMTP id d9443c01a7336-235e1013660mr82291685ad.6.1749131711738;
-        Thu, 05 Jun 2025 06:55:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEPeRasX+K/ZN2buQ4TvMBEli7yK2HlC3J8Gb/ufoo79cVnvz1wScp+KlOQbmKyRpGFN2l7jw==
-X-Received: by 2002:a17:902:e944:b0:234:b735:dca8 with SMTP id d9443c01a7336-235e1013660mr82291375ad.6.1749131711369;
-        Thu, 05 Jun 2025 06:55:11 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506cd8d06sm119857405ad.143.2025.06.05.06.55.09
+        d=1e100.net; s=20230601; t=1749137081; x=1749741881;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Bj2kqqH6ffjZnvxSqcgjJK3qExx/Cm9vzR14ymNdrz4=;
+        b=Z1iaJYJ3nN48emBLyM238ONnnF9x6+lSnZrIVVGfssz25+DlAiAJnT53IWCsEnYzJt
+         dpcAkc98SCleUvXSxHryBkvEbAwp0ueD6B7GlOMiTdfDpziGpk1OwcByGxJBCVdCF8MH
+         Luxe7b4b61qcqUS9dhNS08e5x3ZO+YeQn0jjw9beTqC0UZmtx9CKuQ9RKer971UjSdIp
+         VO6nDja4I3GsSwcW0GYvSwkPKm1mn7+dHrFrcHHKXFl7pQVdd2PTiAmRaVOrjX8plObb
+         xi/eWENTd5iREijG8o8pv07Rto2IBdq3p+ugr6Ixjmqo/xiMXOnuS2vLKvkM2ajLwwsQ
+         4l/Q==
+X-Gm-Message-State: AOJu0YxouD00IhzdJpIygMd+egLqy25ScMbYn8slHGXjsEPxdXT6n5WN
+	zsAF6VAwLb+thTDvOB/TKRcq2MLUaL1OwilsLG+aQDPhE3AaAZ0vEApqNIZmJg==
+X-Gm-Gg: ASbGncs+PmBedSCwgFpoLwAihoJGKX2sKp7Teb60RxEOK2Cijt69j3P1Go8os3Rs48p
+	Ax7nMW613HRxbiD24we6MNBvwb//4bc2kjTesW8zO8vvV0G30iGKrUdylLZ66IZb0t9XDvl/XDv
+	m23wf6csBB+DMur2HdNssiyiDgZNUojD1zHaIiVxbQWADTtkldM5Lkivs83NI6FLoUUBCgnZW1h
+	dxHTi6CX8ChtdR1XCehW1NcrbEYkGIm7d7beDMCm/aP8WmYjxyhh5PjKEuCXAa6FRFWieuSWl2J
+	VYAyBoH9+mDEAKLsPoQ4mGgFoIM5F7B+WGzuZlwugp6uClls0Ajl0zmrk8mtmq1wjsX57roXzfE
+	StZ2c5mG5LFz4QOHH7bbYA6TFWpsEBmersOzUqQk=
+X-Google-Smtp-Source: AGHT+IGbQn8irZDZcDz2IrICuua2pJiNpj8gf9Fh+JNo5XyjtX3brPH7fxW35sGMOmEjloUiRcqbzw==
+X-Received: by 2002:a05:6000:40e1:b0:3a4:f975:30f7 with SMTP id ffacd0b85a97d-3a51d984af3mr7116294f8f.56.1749137080521;
+        Thu, 05 Jun 2025 08:24:40 -0700 (PDT)
+Received: from mayhem.fritz.box (p200300f6f734a1006f354b1e839513ef.dip0.t-ipconnect.de. [2003:f6:f734:a100:6f35:4b1e:8395:13ef])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-451fb178379sm21861275e9.10.2025.06.05.08.24.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jun 2025 06:55:11 -0700 (PDT)
-Date: Thu, 5 Jun 2025 21:55:07 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH] fstests: generic/730: exclude btrfs for now
-Message-ID: <20250605135507.5ofwqd2fwf4lcvtz@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20250604062509.227462-1-wqu@suse.com>
+        Thu, 05 Jun 2025 08:24:39 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] btrfs: add comma delimiter for zone_unusable to space_info dump
+Date: Thu,  5 Jun 2025 17:24:31 +0200
+Message-ID: <20250605152431.396419-1-jth@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250604062509.227462-1-wqu@suse.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jun 04, 2025 at 03:55:09PM +0930, Qu Wenruo wrote:
-> The test case always fail for btrfs:
-> 
->   generic/730       - output mismatch (see /home/adam/xfstests-dev/results//generic/730.out.bad)
->     --- tests/generic/730.out	2024-04-25 18:13:45.203549435 +0930
->     +++ /home/adam/xfstests-dev/results//generic/730.out.bad	2025-06-04 15:10:39.062430952 +0930
->     @@ -1,2 +1 @@
->      QA output created by 730
->     -cat: -: Input/output error
->     ...
-> 
-> The root reasons are:
-> 
-> - Btrfs doesn't support shutdown callbacks
-> 
-> - The current shutdown callbacks are per-fs
->   Meanwhile btrfs is a multi-device fs, it needs to know which block
->   device is triggerring shutdown, and needs to do extra evaluation
->   (e.g. can the remaining devices support RW operations) before
->   triggering a full fs shutdown.
-> 
-> I'm trying to improve the situation, but until then just exlucde btrfs
-> from the test case for now.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  tests/generic/730 | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/tests/generic/730 b/tests/generic/730
-> index 6251980e..cae6489f 100755
-> --- a/tests/generic/730
-> +++ b/tests/generic/730
-> @@ -26,6 +26,10 @@ _require_test
->  _require_block_device $TEST_DEV
->  _require_scsi_debug
->  
-> +if [ "$FSTYP" = "btrfs" ]; then
-> +	_notrun "btrfs doesn't support per-fs shutdown yet"
-> +fi
-> +
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Please use `_exclude_fs btrfs`, if you still hope to _notrun it on btrfs later :)
+On a space_info dump all values but 'zone_unusable' are delimited by a
+comma.
 
->  size=$(_small_fs_size_mb 256)
->  SCSI_DEBUG_DEV=`_get_scsi_debug_dev 512 512 0 $size`
->  test -b "$SCSI_DEBUG_DEV" || _notrun "Failed to initialize scsi debug device"
-> -- 
-> 2.49.0
-> 
-> 
+Add the missing comma between 'readonly' and 'zone_unusable' to be
+consistent and make parsing easier.
+
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/space-info.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 517916004f21..a2da9b4ab3ac 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -607,7 +607,7 @@ static void __btrfs_dump_space_info(const struct btrfs_fs_info *fs_info,
+ 		   (s64)(info->total_bytes - btrfs_space_info_used(info, true)),
+ 		   info->full ? "" : "not ");
+ 	btrfs_info(fs_info,
+-"space_info total=%llu, used=%llu, pinned=%llu, reserved=%llu, may_use=%llu, readonly=%llu zone_unusable=%llu",
++"space_info total=%llu, used=%llu, pinned=%llu, reserved=%llu, may_use=%llu, readonly=%llu, zone_unusable=%llu",
+ 		info->total_bytes, info->bytes_used, info->bytes_pinned,
+ 		info->bytes_reserved, info->bytes_may_use,
+ 		info->bytes_readonly, info->bytes_zone_unusable);
+-- 
+2.49.0
 
 
