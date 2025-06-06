@@ -1,260 +1,281 @@
-Return-Path: <linux-btrfs+bounces-14523-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14524-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9B25ACFCF4
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Jun 2025 08:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8C1DACFD55
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Jun 2025 09:18:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 933F4171C7A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Jun 2025 06:42:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACDB9167A39
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Jun 2025 07:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37F0B26A0EE;
-	Fri,  6 Jun 2025 06:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kWKceBrr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6741F1E2853;
+	Fri,  6 Jun 2025 07:17:53 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86F06255247
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Jun 2025 06:42:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27E6F3596A
+	for <linux-btrfs@vger.kernel.org>; Fri,  6 Jun 2025 07:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749192146; cv=none; b=R2QPjOJhgPhry8u/UfGdcY7IrG5roORO/YF7NdvXoYD0fPSDzk5yUM3xp2zAd6U3/Jew0k5qPM/bJAKOGW+olgwOK56jhOV/aDlqLXUFm46UdEyTJpemESEhx6ZhpIHK3A8BVFnwOhxWIHQU1//7bOr8MRxZXfs2O/lwYDo+duE=
+	t=1749194273; cv=none; b=LAp4MhwiQ+ZuuhHrHhBzkVS28/F3LF/geShCbebgbS/JHs/yoWYiJgPPgELAeP4lg2tXoll2gtPb9SDJ3iXDlT99BrP05rrA5eYgMYpX6rgr8uuzqWohV7agThqFg9ecC/rk6uUR9T+A/qSVjWw1QjuCAb9aeHMldoO44XYYHtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749192146; c=relaxed/simple;
-	bh=zXhzX4woctBm+ZgESQf1WUuKky+7BJcUTCU9fvKwcNU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jyI+jCWr2WrhCMeIiWz5RiGbfFalxIK1gYm1ow7b/DtZGmsrq/zIxFiuoZ9K1keKP4iDj1zUaI3J2vP7L89wBWoBqp2+X50+aPrlmoG3qmBtnxB6+4eeE0D8r+ietQYyeGNQkqyXZBJoNFqk/81jJ7+X1EsKQIhbARqRLZ4OeTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kWKceBrr; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1749192144; x=1780728144;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zXhzX4woctBm+ZgESQf1WUuKky+7BJcUTCU9fvKwcNU=;
-  b=kWKceBrrWFDhkKO5LtWHZ5DBMncw5AnGb2OHt1et2VWnQV9BVM87498o
-   qFHMeeI8OvUC2T2EXxwELwZxC5ua2juJqIjbhV5okFJXtxN9srlYcOu9q
-   UxACRHy+UYCY9dBuFnSBqLHA3HRIlXch/I1v1VvY/hMWM0BstDyTEwoHH
-   nvdRiJWMc/xUPljj75I+JrudLnBsSLq0FPI6vAdmQpqOm+BQgYh5Cxn3V
-   o116sCEEv4sJKhrUOTJrGErcOikRjXwiikYDNJtDy/k/Mzvg/TmUdVLlj
-   wlJO8e0xmHJkQH4JzTaZNmZuwmdu/3LS2lr0W/SDbqmHmSkcTB2OKPfeR
-   Q==;
-X-CSE-ConnectionGUID: UbGmW+J3QrK0cvsPFXjNTQ==
-X-CSE-MsgGUID: HpxxFo9mQTONdG8ZZslVDQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11455"; a="62378932"
-X-IronPort-AV: E=Sophos;i="6.16,214,1744095600"; 
-   d="scan'208";a="62378932"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2025 23:42:19 -0700
-X-CSE-ConnectionGUID: LeL/J/qfR9K80Qg+bnUadQ==
-X-CSE-MsgGUID: LzXa+m9GRUia6SnTcSkSIQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,214,1744095600"; 
-   d="scan'208";a="145692485"
-Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 05 Jun 2025 23:42:18 -0700
-Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uNQmN-0004nV-2p;
-	Fri, 06 Jun 2025 06:42:15 +0000
-Date: Fri, 6 Jun 2025 14:41:22 +0800
-From: kernel test robot <lkp@intel.com>
-To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Mark Harmstone <maharmstone@fb.com>
-Subject: Re: [PATCH 04/12] btrfs: remove remapped block groups from the
- free-space tree
-Message-ID: <202506061455.6kk5l6Ct-lkp@intel.com>
-References: <20250605162345.2561026-5-maharmstone@fb.com>
+	s=arc-20240116; t=1749194273; c=relaxed/simple;
+	bh=PquHxi4oJtinRNbTK0HHldrpy5WloTkTYPBn0u7kH/s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l0Vi85Z0OksiM7y0W91exrzUKNAtzdYGI1yidcTbdfwcupH2jvFRtx+ifw0WAXxbqNRdLpv6bDKWDslme6XAyIV1CMc1uXbzdWSdvvZG0rTzFfij/B1wp13FR5fEs5wuczPVqMXN8l6reLUeH89YKWDDj2zw0zQUb+KKz/7oaS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-450ce671a08so11219395e9.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Jun 2025 00:17:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749194269; x=1749799069;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fm8ROhNCBhuDWMTr/abEozFxnCIq/qBAsH7qm4Lv1KA=;
+        b=SWmUbXrGSAyUeFARxCvtEoWs1atWb40Z3DOGx+F2mysZWrHpEe2UL8KMNJGkNL6hoc
+         wOfSRBTFAxsVcoWXEMYWHFL62WEcb7cbH/gSKlErk/7GufNMyOhsZM6HTab/t03PJnyf
+         jA6d7/0MgyMctdq/IXpBkUy0lK26tHLoSmfGHjn5YJLSfpa0/aJNzqupElitDvORvhdc
+         9DLcbujn5tLHJIH1P/iT9QoHtPb2dqWTbrhuo8Prodst1XkDItp0E9CXxpDvkXbQH/Yw
+         FeYsuUAI+FYPbWs7rr3hbXLF6oclJKmpIg1Xby7rdDSjIM5ImaC1k03MzuDiOmnDNCtl
+         Y1AQ==
+X-Gm-Message-State: AOJu0YyRa+3KOkUTJAvqA4C0q7UogZr4ZTrHJMp0EXYHGKab37erYpXX
+	5rAK0ZGqnf3nvVHwPHF0v2fHvbpeu4PFVZpQ3n1QG35Rqb3V1o+raHUOMovL1g==
+X-Gm-Gg: ASbGncsM+HUnaychkllcuBD+e9yVhJP/J+luQtCUtRWZtpUyDxezUAD0Ylibkwh+Zv1
+	ebo/Oq/aas2oE0vmjrrQ+dpsRvTMfUpHYh50mQkVYIP+MuR1xvrP5KMSiJxSd6/Jp5YHdu/SbdP
+	WpqyfVYCpdLvcwx5M0PRdI1/27WoiuxAlwAGAOWUbLvFdUcLgxCrUvBc51rwc6scqYe1V5KMlBj
+	WpWN2DJA26rcn4LT7W6GGWT1+GUpiba8EvMsaQeLuuNqUxZq4FnXoUQFotHW1ZXvUs9jfeNgSUs
+	F/+YvTFrhbZFouuX54zqTMVGN8fKaIaPqfmXbXV6Ds6au+7smIk5b76KlbrnSqJIEWJiyalmhCe
+	FR7ItAuLYU846b/J0Cfdv4ksE+KrNqBNHotqSgK8s6vxpDKQ53Q==
+X-Google-Smtp-Source: AGHT+IFITtiBb3YIFsJ6eWukSMC2iLW3aeut4EcXDFU+ntGfgbuva8MBg/FohhuGGBoRx2ocERAAow==
+X-Received: by 2002:a05:6000:2c0f:b0:3a5:2257:17b4 with SMTP id ffacd0b85a97d-3a5319b5aa1mr2001715f8f.55.1749194269151;
+        Fri, 06 Jun 2025 00:17:49 -0700 (PDT)
+Received: from mayhem.fritz.box (p200300f6f734a1006f354b1e839513ef.dip0.t-ipconnect.de. [2003:f6:f734:a100:6f35:4b1e:8395:13ef])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-452730b9b3esm11760405e9.25.2025.06.06.00.17.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Jun 2025 00:17:48 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: linux-btrfs@vger.kernel.org
+Cc: Naohiro Aota <naohiro.aota@wdc.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	David Sterba <dsterba@suse.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v3] btrfs: zoned: fix alloc_offset calculation for partly conventional block groups
+Date: Fri,  6 Jun 2025 09:17:41 +0200
+Message-ID: <20250606071741.409240-1-jth@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250605162345.2561026-5-maharmstone@fb.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Mark,
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-kernel test robot noticed the following build warnings:
+When one of two zones composing a DUP block group is a conventional zone,
+we have the zone_info[i]->alloc_offset = WP_CONVENTIONAL. That will, of
+course, not match the write pointer of the other zone, and fails that
+block group.
 
-[auto build test WARNING on kdave/for-next]
-[also build test WARNING on linus/master next-20250605]
-[cannot apply to v6.15]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This commit solves that issue by properly recovering the emulated write
+pointer from the last allocated extent. The offset for the SINGLE, DUP,
+and RAID1 are straight-forward: it is same as the end of last allocated
+extent. The RAID0 and RAID10 are a bit tricky that we need to do the math
+of striping.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mark-Harmstone/btrfs-add-definitions-and-constants-for-remap-tree/20250606-002804
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/20250605162345.2561026-5-maharmstone%40fb.com
-patch subject: [PATCH 04/12] btrfs: remove remapped block groups from the free-space tree
-config: i386-randconfig-014-20250606 (https://download.01.org/0day-ci/archive/20250606/202506061455.6kk5l6Ct-lkp@intel.com/config)
-compiler: clang version 20.1.2 (https://github.com/llvm/llvm-project 58df0ef89dd64126512e4ee27b4ac3fd8ddf6247)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250606/202506061455.6kk5l6Ct-lkp@intel.com/reproduce)
+This is the kernel equivalent of Naohiro's user-space commit:
+1e85aa96e107 ("btrfs-progs: zoned: fix alloc_offset calculation for partly conventional block groups")
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202506061455.6kk5l6Ct-lkp@intel.com/
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+Changes to v2:
+- Fix kbuild error on 32bit due to modulos
 
-All warnings (new ones prefixed by >>):
+Changes to v1:
+- Fix kbuild error on 32bit due to divisions
+---
+ fs/btrfs/zoned.c | 86 ++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 72 insertions(+), 14 deletions(-)
 
->> fs/btrfs/block-group.c:2470:23: warning: use of logical '&&' with constant operand [-Wconstant-logical-operand]
-    2470 |                             !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
-         |                                            ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~
-   fs/btrfs/block-group.c:2470:23: note: use '&' for a bitwise operation
-    2470 |                             !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
-         |                                            ^~
-         |                                            &
-   fs/btrfs/block-group.c:2470:23: note: remove constant to silence this warning
-    2470 |                             !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
-         |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> fs/btrfs/block-group.c:2470:26: warning: converting the result of '<<' to a boolean always evaluates to true [-Wtautological-constant-compare]
-    2470 |                             !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
-         |                                               ^
-   include/uapi/linux/btrfs_tree.h:1171:47: note: expanded from macro 'BTRFS_BLOCK_GROUP_REMAPPED'
-    1171 | #define BTRFS_BLOCK_GROUP_REMAPPED      (1ULL << 11)
-         |                                               ^
-   2 warnings generated.
-
-
-vim +2470 fs/btrfs/block-group.c
-
-  2361	
-  2362	static int read_one_block_group(struct btrfs_fs_info *info,
-  2363					struct btrfs_block_group_item *bgi,
-  2364					const struct btrfs_key *key,
-  2365					int need_clear)
-  2366	{
-  2367		struct btrfs_block_group *cache;
-  2368		const bool mixed = btrfs_fs_incompat(info, MIXED_GROUPS);
-  2369		int ret;
-  2370	
-  2371		ASSERT(key->type == BTRFS_BLOCK_GROUP_ITEM_KEY);
-  2372	
-  2373		cache = btrfs_create_block_group_cache(info, key->objectid);
-  2374		if (!cache)
-  2375			return -ENOMEM;
-  2376	
-  2377		cache->length = key->offset;
-  2378		cache->used = btrfs_stack_block_group_used(bgi);
-  2379		cache->commit_used = cache->used;
-  2380		cache->flags = btrfs_stack_block_group_flags(bgi);
-  2381		cache->global_root_id = btrfs_stack_block_group_chunk_objectid(bgi);
-  2382		cache->space_info = btrfs_find_space_info(info, cache->flags);
-  2383	
-  2384		set_free_space_tree_thresholds(cache);
-  2385	
-  2386		if (need_clear) {
-  2387			/*
-  2388			 * When we mount with old space cache, we need to
-  2389			 * set BTRFS_DC_CLEAR and set dirty flag.
-  2390			 *
-  2391			 * a) Setting 'BTRFS_DC_CLEAR' makes sure that we
-  2392			 *    truncate the old free space cache inode and
-  2393			 *    setup a new one.
-  2394			 * b) Setting 'dirty flag' makes sure that we flush
-  2395			 *    the new space cache info onto disk.
-  2396			 */
-  2397			if (btrfs_test_opt(info, SPACE_CACHE))
-  2398				cache->disk_cache_state = BTRFS_DC_CLEAR;
-  2399		}
-  2400		if (!mixed && ((cache->flags & BTRFS_BLOCK_GROUP_METADATA) &&
-  2401		    (cache->flags & BTRFS_BLOCK_GROUP_DATA))) {
-  2402				btrfs_err(info,
-  2403	"bg %llu is a mixed block group but filesystem hasn't enabled mixed block groups",
-  2404					  cache->start);
-  2405				ret = -EINVAL;
-  2406				goto error;
-  2407		}
-  2408	
-  2409		ret = btrfs_load_block_group_zone_info(cache, false);
-  2410		if (ret) {
-  2411			btrfs_err(info, "zoned: failed to load zone info of bg %llu",
-  2412				  cache->start);
-  2413			goto error;
-  2414		}
-  2415	
-  2416		/*
-  2417		 * We need to exclude the super stripes now so that the space info has
-  2418		 * super bytes accounted for, otherwise we'll think we have more space
-  2419		 * than we actually do.
-  2420		 */
-  2421		ret = exclude_super_stripes(cache);
-  2422		if (ret) {
-  2423			/* We may have excluded something, so call this just in case. */
-  2424			btrfs_free_excluded_extents(cache);
-  2425			goto error;
-  2426		}
-  2427	
-  2428		/*
-  2429		 * For zoned filesystem, space after the allocation offset is the only
-  2430		 * free space for a block group. So, we don't need any caching work.
-  2431		 * btrfs_calc_zone_unusable() will set the amount of free space and
-  2432		 * zone_unusable space.
-  2433		 *
-  2434		 * For regular filesystem, check for two cases, either we are full, and
-  2435		 * therefore don't need to bother with the caching work since we won't
-  2436		 * find any space, or we are empty, and we can just add all the space
-  2437		 * in and be done with it.  This saves us _a_lot_ of time, particularly
-  2438		 * in the full case.
-  2439		 */
-  2440		if (btrfs_is_zoned(info)) {
-  2441			btrfs_calc_zone_unusable(cache);
-  2442			/* Should not have any excluded extents. Just in case, though. */
-  2443			btrfs_free_excluded_extents(cache);
-  2444		} else if (cache->length == cache->used) {
-  2445			cache->cached = BTRFS_CACHE_FINISHED;
-  2446			btrfs_free_excluded_extents(cache);
-  2447		} else if (cache->used == 0) {
-  2448			cache->cached = BTRFS_CACHE_FINISHED;
-  2449			ret = btrfs_add_new_free_space(cache, cache->start,
-  2450						       cache->start + cache->length, NULL);
-  2451			btrfs_free_excluded_extents(cache);
-  2452			if (ret)
-  2453				goto error;
-  2454		}
-  2455	
-  2456		ret = btrfs_add_block_group_cache(cache);
-  2457		if (ret) {
-  2458			btrfs_remove_free_space_cache(cache);
-  2459			goto error;
-  2460		}
-  2461	
-  2462		trace_btrfs_add_block_group(info, cache, 0);
-  2463		btrfs_add_bg_to_space_info(info, cache);
-  2464	
-  2465		set_avail_alloc_bits(info, cache->flags);
-  2466		if (btrfs_chunk_writeable(info, cache->start)) {
-  2467			if (cache->used == 0) {
-  2468				ASSERT(list_empty(&cache->bg_list));
-  2469				if (btrfs_test_opt(info, DISCARD_ASYNC) &&
-> 2470				    !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
-  2471					btrfs_discard_queue_work(&info->discard_ctl, cache);
-  2472				} else {
-  2473					btrfs_mark_bg_unused(cache);
-  2474				}
-  2475			}
-  2476		} else {
-  2477			inc_block_group_ro(cache, 1);
-  2478		}
-  2479	
-  2480		return 0;
-  2481	error:
-  2482		btrfs_put_block_group(cache);
-  2483		return ret;
-  2484	}
-  2485	
-
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 4e122d6c19c0..79b72f6673e7 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -1404,7 +1404,8 @@ static int btrfs_load_block_group_single(struct btrfs_block_group *bg,
+ static int btrfs_load_block_group_dup(struct btrfs_block_group *bg,
+ 				      struct btrfs_chunk_map *map,
+ 				      struct zone_info *zone_info,
+-				      unsigned long *active)
++				      unsigned long *active,
++				      u64 last_alloc)
+ {
+ 	struct btrfs_fs_info *fs_info = bg->fs_info;
+ 
+@@ -1427,6 +1428,13 @@ static int btrfs_load_block_group_dup(struct btrfs_block_group *bg,
+ 			  zone_info[1].physical);
+ 		return -EIO;
+ 	}
++
++	if (zone_info[0].alloc_offset == WP_CONVENTIONAL)
++		zone_info[0].alloc_offset = last_alloc;
++
++	if (zone_info[1].alloc_offset == WP_CONVENTIONAL)
++		zone_info[1].alloc_offset = last_alloc;
++
+ 	if (zone_info[0].alloc_offset != zone_info[1].alloc_offset) {
+ 		btrfs_err(bg->fs_info,
+ 			  "zoned: write pointer offset mismatch of zones in DUP profile");
+@@ -1447,7 +1455,8 @@ static int btrfs_load_block_group_dup(struct btrfs_block_group *bg,
+ static int btrfs_load_block_group_raid1(struct btrfs_block_group *bg,
+ 					struct btrfs_chunk_map *map,
+ 					struct zone_info *zone_info,
+-					unsigned long *active)
++					unsigned long *active,
++					u64 last_alloc)
+ {
+ 	struct btrfs_fs_info *fs_info = bg->fs_info;
+ 	int i;
+@@ -1462,10 +1471,12 @@ static int btrfs_load_block_group_raid1(struct btrfs_block_group *bg,
+ 	bg->zone_capacity = min_not_zero(zone_info[0].capacity, zone_info[1].capacity);
+ 
+ 	for (i = 0; i < map->num_stripes; i++) {
+-		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
+-		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
++		if (zone_info[i].alloc_offset == WP_MISSING_DEV)
+ 			continue;
+ 
++		if (zone_info[i].alloc_offset == WP_CONVENTIONAL)
++			zone_info[i].alloc_offset = last_alloc;
++
+ 		if ((zone_info[0].alloc_offset != zone_info[i].alloc_offset) &&
+ 		    !btrfs_test_opt(fs_info, DEGRADED)) {
+ 			btrfs_err(fs_info,
+@@ -1495,7 +1506,8 @@ static int btrfs_load_block_group_raid1(struct btrfs_block_group *bg,
+ static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
+ 					struct btrfs_chunk_map *map,
+ 					struct zone_info *zone_info,
+-					unsigned long *active)
++					unsigned long *active,
++					u64 last_alloc)
+ {
+ 	struct btrfs_fs_info *fs_info = bg->fs_info;
+ 
+@@ -1506,10 +1518,29 @@ static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
+ 	}
+ 
+ 	for (int i = 0; i < map->num_stripes; i++) {
+-		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
+-		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
++		if (zone_info[i].alloc_offset == WP_MISSING_DEV)
+ 			continue;
+ 
++		if (zone_info[i].alloc_offset == WP_CONVENTIONAL) {
++			u64 stripe_nr, full_stripe_nr;
++			u64 stripe_offset;
++			int stripe_index;
++
++			stripe_nr = div64_u64(last_alloc, map->stripe_size);
++			stripe_offset = stripe_nr * map->stripe_size;
++			full_stripe_nr = div_u64(stripe_nr, map->num_stripes);
++			div_u64_rem(stripe_nr, map->num_stripes, &stripe_index);
++
++			zone_info[i].alloc_offset =
++				full_stripe_nr * map->stripe_size;
++
++			if (stripe_index > i)
++				zone_info[i].alloc_offset += map->stripe_size;
++			else if (stripe_index == i)
++				zone_info[i].alloc_offset +=
++					(last_alloc - stripe_offset);
++		}
++
+ 		if (test_bit(0, active) != test_bit(i, active)) {
+ 			if (!btrfs_zone_activate(bg))
+ 				return -EIO;
+@@ -1527,7 +1558,8 @@ static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
+ static int btrfs_load_block_group_raid10(struct btrfs_block_group *bg,
+ 					 struct btrfs_chunk_map *map,
+ 					 struct zone_info *zone_info,
+-					 unsigned long *active)
++					 unsigned long *active,
++					 u64 last_alloc)
+ {
+ 	struct btrfs_fs_info *fs_info = bg->fs_info;
+ 
+@@ -1538,8 +1570,7 @@ static int btrfs_load_block_group_raid10(struct btrfs_block_group *bg,
+ 	}
+ 
+ 	for (int i = 0; i < map->num_stripes; i++) {
+-		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
+-		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
++		if (zone_info[i].alloc_offset == WP_MISSING_DEV)
+ 			continue;
+ 
+ 		if (test_bit(0, active) != test_bit(i, active)) {
+@@ -1550,6 +1581,29 @@ static int btrfs_load_block_group_raid10(struct btrfs_block_group *bg,
+ 				set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &bg->runtime_flags);
+ 		}
+ 
++		if (zone_info[i].alloc_offset == WP_CONVENTIONAL) {
++			u64 stripe_nr, full_stripe_nr;
++			u64 stripe_offset;
++			int stripe_index;
++
++			stripe_nr = div64_u64(last_alloc, map->stripe_size);
++			stripe_offset = stripe_nr * map->stripe_size;
++			full_stripe_nr = div_u64(stripe_nr,
++					 map->num_stripes / map->sub_stripes);
++			div_u64_rem(stripe_nr,
++				    (map->num_stripes / map->sub_stripes),
++				    &stripe_index);
++
++			zone_info[i].alloc_offset =
++				full_stripe_nr * map->stripe_size;
++
++			if (stripe_index > (i / map->sub_stripes))
++				zone_info[i].alloc_offset += map->stripe_size;
++			else if (stripe_index == (i / map->sub_stripes))
++				zone_info[i].alloc_offset +=
++					(last_alloc - stripe_offset);
++		}
++
+ 		if ((i % map->sub_stripes) == 0) {
+ 			bg->zone_capacity += zone_info[i].capacity;
+ 			bg->alloc_offset += zone_info[i].alloc_offset;
+@@ -1638,18 +1692,22 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
+ 		ret = btrfs_load_block_group_single(cache, &zone_info[0], active);
+ 		break;
+ 	case BTRFS_BLOCK_GROUP_DUP:
+-		ret = btrfs_load_block_group_dup(cache, map, zone_info, active);
++		ret = btrfs_load_block_group_dup(cache, map, zone_info, active,
++						 last_alloc);
+ 		break;
+ 	case BTRFS_BLOCK_GROUP_RAID1:
+ 	case BTRFS_BLOCK_GROUP_RAID1C3:
+ 	case BTRFS_BLOCK_GROUP_RAID1C4:
+-		ret = btrfs_load_block_group_raid1(cache, map, zone_info, active);
++		ret = btrfs_load_block_group_raid1(cache, map, zone_info,
++						   active, last_alloc);
+ 		break;
+ 	case BTRFS_BLOCK_GROUP_RAID0:
+-		ret = btrfs_load_block_group_raid0(cache, map, zone_info, active);
++		ret = btrfs_load_block_group_raid0(cache, map, zone_info,
++						   active, last_alloc);
+ 		break;
+ 	case BTRFS_BLOCK_GROUP_RAID10:
+-		ret = btrfs_load_block_group_raid10(cache, map, zone_info, active);
++		ret = btrfs_load_block_group_raid10(cache, map, zone_info,
++						    active, last_alloc);
+ 		break;
+ 	case BTRFS_BLOCK_GROUP_RAID5:
+ 	case BTRFS_BLOCK_GROUP_RAID6:
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.49.0
+
 
