@@ -1,281 +1,260 @@
-Return-Path: <linux-btrfs+bounces-14522-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14523-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE636ACFC55
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Jun 2025 08:01:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9B25ACFCF4
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Jun 2025 08:42:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E875170AD0
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Jun 2025 06:01:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 933F4171C7A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Jun 2025 06:42:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C2AB24EF88;
-	Fri,  6 Jun 2025 06:01:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37F0B26A0EE;
+	Fri,  6 Jun 2025 06:42:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="DrRhJW8t"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kWKceBrr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A747724DD0E;
-	Fri,  6 Jun 2025 06:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86F06255247
+	for <linux-btrfs@vger.kernel.org>; Fri,  6 Jun 2025 06:42:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749189671; cv=none; b=ijMAvH/kmIl+fxmgvRfiyQKXnV9JpkYrbqWxoLWmRvgVif+Jmckwfv0HNDW/BCJHgTXZ0Ime8yUicMWrtFkuEfXdu+N1C8iC+nF02QONW4Xuba9nfLS+RZq5s98bnx4OkXb1iLxqx9AkK1llOkcYCjqSQSCDR/jhzOz8tx2U8cg=
+	t=1749192146; cv=none; b=R2QPjOJhgPhry8u/UfGdcY7IrG5roORO/YF7NdvXoYD0fPSDzk5yUM3xp2zAd6U3/Jew0k5qPM/bJAKOGW+olgwOK56jhOV/aDlqLXUFm46UdEyTJpemESEhx6ZhpIHK3A8BVFnwOhxWIHQU1//7bOr8MRxZXfs2O/lwYDo+duE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749189671; c=relaxed/simple;
-	bh=jiFF3Itfxy4xCY3odOQIM7SjqWLExZZZml+T9HR3t8s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=soTCw/NSSDmLKDrGF2xSODAnwT3WcrWA3IOLzc51dCUAfwElGVbir0jM5PQk4fNrHu1hDOQ9iz9mTOu+py4lcqTh/3ZuaaOJtsyu55F+Gk5Cq6rD8fPvTq2fkchgZNCoUmh3DXUjE1gbIv8zSJjvYnx0TFXRfi2U5YNZH7DvPjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=DrRhJW8t; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1749189662; x=1749794462; i=quwenruo.btrfs@gmx.com;
-	bh=VsvDKFT8kZsAt4DmdzN3tWgY5mr7+SbmF/CLpsCJeUI=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=DrRhJW8tiEMiKM22wL0WlADmaky+qvZJmw145A8kslJsR8vSmQOGP+W/sUbiJKKe
-	 0/njdQROZGlc4jR6qabgfZy7SMl9kxXhFe/9GWCs6Q4rANyFGj1qOKJyT4g2BykSN
-	 o8ZiVkFThITGpiH3UerIk/TVNG6jyC0DX9U3lDILKu5/iCr2m7tKOoHttBta21g+D
-	 M6eOKfmXSj/E55F6/CtqzcRZh6F2sTZWGug0Ehq9v4Yo1zRG6+4DV6OxRtBnsm3UV
-	 R4DpnLVBWjs7vaA/nPcGI5YvoHZTsv6SP2NahV1W6geXUD2WY87YH1G6qQ1nMNt2S
-	 sv1lcy6WDsUm74dYOA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MrhQC-1vApNh1sn6-00lk4T; Fri, 06
- Jun 2025 08:01:01 +0200
-Message-ID: <c966cbd6-3016-4735-9853-91a75144e429@gmx.com>
-Date: Fri, 6 Jun 2025 15:30:58 +0930
+	s=arc-20240116; t=1749192146; c=relaxed/simple;
+	bh=zXhzX4woctBm+ZgESQf1WUuKky+7BJcUTCU9fvKwcNU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jyI+jCWr2WrhCMeIiWz5RiGbfFalxIK1gYm1ow7b/DtZGmsrq/zIxFiuoZ9K1keKP4iDj1zUaI3J2vP7L89wBWoBqp2+X50+aPrlmoG3qmBtnxB6+4eeE0D8r+ietQYyeGNQkqyXZBJoNFqk/81jJ7+X1EsKQIhbARqRLZ4OeTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kWKceBrr; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1749192144; x=1780728144;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zXhzX4woctBm+ZgESQf1WUuKky+7BJcUTCU9fvKwcNU=;
+  b=kWKceBrrWFDhkKO5LtWHZ5DBMncw5AnGb2OHt1et2VWnQV9BVM87498o
+   qFHMeeI8OvUC2T2EXxwELwZxC5ua2juJqIjbhV5okFJXtxN9srlYcOu9q
+   UxACRHy+UYCY9dBuFnSBqLHA3HRIlXch/I1v1VvY/hMWM0BstDyTEwoHH
+   nvdRiJWMc/xUPljj75I+JrudLnBsSLq0FPI6vAdmQpqOm+BQgYh5Cxn3V
+   o116sCEEv4sJKhrUOTJrGErcOikRjXwiikYDNJtDy/k/Mzvg/TmUdVLlj
+   wlJO8e0xmHJkQH4JzTaZNmZuwmdu/3LS2lr0W/SDbqmHmSkcTB2OKPfeR
+   Q==;
+X-CSE-ConnectionGUID: UbGmW+J3QrK0cvsPFXjNTQ==
+X-CSE-MsgGUID: HpxxFo9mQTONdG8ZZslVDQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11455"; a="62378932"
+X-IronPort-AV: E=Sophos;i="6.16,214,1744095600"; 
+   d="scan'208";a="62378932"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2025 23:42:19 -0700
+X-CSE-ConnectionGUID: LeL/J/qfR9K80Qg+bnUadQ==
+X-CSE-MsgGUID: LzXa+m9GRUia6SnTcSkSIQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,214,1744095600"; 
+   d="scan'208";a="145692485"
+Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 05 Jun 2025 23:42:18 -0700
+Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uNQmN-0004nV-2p;
+	Fri, 06 Jun 2025 06:42:15 +0000
+Date: Fri, 6 Jun 2025 14:41:22 +0800
+From: kernel test robot <lkp@intel.com>
+To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Mark Harmstone <maharmstone@fb.com>
+Subject: Re: [PATCH 04/12] btrfs: remove remapped block groups from the
+ free-space tree
+Message-ID: <202506061455.6kk5l6Ct-lkp@intel.com>
+References: <20250605162345.2561026-5-maharmstone@fb.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fstests: generic/741: make cleanup to handle test failure
- properly
-To: Zorro Lang <zlang@redhat.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
- fstests@vger.kernel.org
-References: <20250604235524.26356-1-wqu@suse.com>
- <20250605171047.vl3u6j7yojbw6pfe@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <dbf243a2-ac0e-437c-a308-9832f89ca274@gmx.com>
- <20250606010622.imrfexkypzq5zpm6@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250606010622.imrfexkypzq5zpm6@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:kgz/mtdcCurxIi1MUEJX2QDgP70/AlAtk9FgXjmAZyP5L+iUwxt
- xdZF/tkdx+iS7HuXHXqqo8JQpfWGsWMmpmN/1wQmgtVqTi0IFs6Cl7IQj62BN97BR+PVRn6
- PNpAjLbfktO1MemYVTK7dJyYBS8pvI6zl5RO5KT71aCzyy/m4VRTcBurQBMPzidb9oQMzIU
- h35XyHkS6QhxNVpv++qWA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:8iK6+NwBlgk=;P8q2wPFlbiiSNzmJkmh9LhY1bAD
- /7Ky+k5eP3Da5/s5n8DyBX8aRuvpYhrOmSAwXdHOHGXTyTQmx508dXacCBCF4tnL9/b/VPw3P
- 72QyH/F9G1+9luf8sdaH5sWYRV3iael3NUyavJiBQriGjxtOlLcyKKuH4tcdVPS933+R+y3ZQ
- bA+tXhYB80zEk+Q28LOcHj+RMkLOsSbCqpO948wY9UkCOzX+DquItVAnHElcu2yHJ53MB4QXz
- Uru4ELa84iPKbM+ec07RgOGJ1IsX+8o7M8IUWEVMfmoxZLyK7hETQGZKqnu1nk5zatArGrQAO
- z9mnqLktZopGyqREovKLn9EdEyXqyPLNCRAUR7OEyWfnelDELLoEc8DVxl55NpAOwDXRos/bM
- lXe1F6mXV2Quxg7Wf9X+F+GUp35IL+fGksfx8yJ8u3DYsrSupelc2CU1UeUfT/696kYiDpD+M
- Fa3Tba1SnqiKGhHybUJ6uje8bK8Dr+QtXdiSx7e92T92NRCi3ElM3RQX3vLD90HJcZro8LcTy
- yQFFGl5K2vF6qetjW/j2CVsteYWXyQhZrHu0Tl5D0eCUvDFup8nb0TS+MOtDC+RvZiZl+RuQh
- 00mdGgR49h4uCqx1/Z4OTxgXogHBxESi/JtWtu0h+qKhrIqyq/O+dIltRD/d9ekGvHRRZ/qA0
- 6IOX3E7FTYAa11ggi+FuilkoBgNTj3Vxgcndt5js0LXgbaAAuW+jiC/M7fTYs8OOMOJj5EZuj
- am9a1stDWMt8q002AQioZ2tEfvQBX+2LnA7y4YzqzidgVMXttXkQoWuUUo5lCtqpje/5BCcsF
- SPVnN5ZaUTzp/BnNrW7Pc3YtkiCQGCuH8ayqfeWdaZwbwc0W3P9SkQw+/K0mauMd7UD5TtVef
- 2j0dLdChnCtdQqLpOqWuWNFSyDAU2P/1CUgutufpZ/nzIwH3kelG76JObZMahJNu8t9s0W00/
- We53uw8ov7goW+qJ9/w58NZgMSv8NcZQ7KfkUudU6VRkvP6McpYYaltrK9HchLbN4RiaXxP9V
- MV+kOYTE2fKGuysR56Retc7RdhrONXxww1lFjqVnWprafHFB6rg37VbXf5vfiHOg1cWsm2x3c
- kwUubr7SaVe4LycbXbC8RPldaZ6np0KfNy1MLqqqSyezDvc5VRZkKCMbgYm1P9ybDflMXe4dD
- M/cHwQZ/OMK7KAw8vVZsrdIZnmQozw5QAAB+wXRjKf2g5/zqiQp1PSjy5WyFOFB0qjAH6VR+R
- qmJvXzPC2BJG0+VGldY1hAcVJVQY4Lr8hSLve1dBfelQd9L79p8Xpa97Ue/HNJtQooTC/cXrM
- IVYfkMZ08nmv3lhyGRsTC67WD2EJnU4Zm0xwshtQw98JM+sjQ7/6WwxAuRZLFys3D75dBbnqo
- ZvR0XUyPQPJEnhwkCzi7lZy1djmmTtJ/Gh0igf3oE7X16iOZnzvkeURZR4SvpsE+wCPZKs+OK
- gW1rBSxCkenbDmfLQgZVZ0UKRCMgm0ucOatSLG1urmquVb7cZGFh7vMF3Iqq9MGWqVz4lEfh+
- 9g2B+qUdqIBfuU4XW2xV4lMq0++v4m83Y1lEtxUqmnuMpnN28bRB72sP8mnWlxVBJZZM8q9Gd
- YvJ978K8Ybh6P4d5T6sRS5M22uo/c8OA8dnRnF+afs6+8WZr/YUgMOsVvrzG2/vHs7tn8EAjH
- uHE5P487i+38dH8KA26Pbp+DjmxNK4+zvk+O3nN05pYA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250605162345.2561026-5-maharmstone@fb.com>
+
+Hi Mark,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on kdave/for-next]
+[also build test WARNING on linus/master next-20250605]
+[cannot apply to v6.15]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Mark-Harmstone/btrfs-add-definitions-and-constants-for-remap-tree/20250606-002804
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/20250605162345.2561026-5-maharmstone%40fb.com
+patch subject: [PATCH 04/12] btrfs: remove remapped block groups from the free-space tree
+config: i386-randconfig-014-20250606 (https://download.01.org/0day-ci/archive/20250606/202506061455.6kk5l6Ct-lkp@intel.com/config)
+compiler: clang version 20.1.2 (https://github.com/llvm/llvm-project 58df0ef89dd64126512e4ee27b4ac3fd8ddf6247)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250606/202506061455.6kk5l6Ct-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202506061455.6kk5l6Ct-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> fs/btrfs/block-group.c:2470:23: warning: use of logical '&&' with constant operand [-Wconstant-logical-operand]
+    2470 |                             !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
+         |                                            ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+   fs/btrfs/block-group.c:2470:23: note: use '&' for a bitwise operation
+    2470 |                             !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
+         |                                            ^~
+         |                                            &
+   fs/btrfs/block-group.c:2470:23: note: remove constant to silence this warning
+    2470 |                             !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
+         |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> fs/btrfs/block-group.c:2470:26: warning: converting the result of '<<' to a boolean always evaluates to true [-Wtautological-constant-compare]
+    2470 |                             !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
+         |                                               ^
+   include/uapi/linux/btrfs_tree.h:1171:47: note: expanded from macro 'BTRFS_BLOCK_GROUP_REMAPPED'
+    1171 | #define BTRFS_BLOCK_GROUP_REMAPPED      (1ULL << 11)
+         |                                               ^
+   2 warnings generated.
 
 
+vim +2470 fs/btrfs/block-group.c
 
-=E5=9C=A8 2025/6/6 10:36, Zorro Lang =E5=86=99=E9=81=93:
-> On Fri, Jun 06, 2025 at 07:39:56AM +0930, Qu Wenruo wrote:
->>
->>
->> =E5=9C=A8 2025/6/6 02:40, Zorro Lang =E5=86=99=E9=81=93:
->>> On Thu, Jun 05, 2025 at 09:25:24AM +0930, Qu Wenruo wrote:
->>>> [BUG]
->>>> When I was tinkering the bdev open holder parameter, it caused a bug
->>>> that it no longer rejects mounting the underlying device of a
->>>> device-mapper.
->>>>
->>>> And the test case properly detects the regression:
->>>>
->>>> generic/741 1s ... umount: /mnt/test: target is busy.
->>>> _check_btrfs_filesystem: filesystem on /dev/mapper/test-test is incon=
-sistent
->>>> (see /home/adam/xfstests/results//generic/741.full for details)
->>>> Trying to repair broken TEST_DEV file system
->>>> _check_btrfs_filesystem: filesystem on /dev/mapper/test-scratch1 is i=
-nconsistent
->>>> (see /home/adam/xfstests/results//generic/741.full for details)
->>>> - output mismatch (see /home/adam/xfstests/results//generic/741.out.b=
-ad)
->>>>       --- tests/generic/741.out	2024-04-06 08:10:44.773333344 +1030
->>>>       +++ /home/adam/xfstests/results//generic/741.out.bad	2025-06-05=
- 09:18:03.675049206 +0930
->>>>       @@ -1,3 +1,2 @@
->>>>        QA output created by 741
->>>>       -mount: TEST_DIR/extra_mnt: SCRATCH_DEV already mounted or moun=
-t point busy
->>>>       -mount: TEST_DIR/extra_mnt: SCRATCH_DEV already mounted or moun=
-t point busy
->>>>       +rm: cannot remove '/mnt/test/extra_mnt': Device or resource bu=
-sy
->>>>       ...
->>>>       (Run 'diff -u /home/adam/xfstests/tests/generic/741.out /home/a=
-dam/xfstests/results//generic/741.out.bad'  to see the entire diff)
->>>>
->>>> The problem is, all later test will fail, because the $SCRATCH_DEV is
->>>> still mounted at $extra_mnt:
->>>>
->>>>    TEST_DEV=3D/dev/mapper/test-test is mounted but not on TEST_DIR=3D=
-/mnt/test - aborting
->>>>    Already mounted result:
->>>>    /dev/mapper/test-test /mnt/test /dev/mapper/test-test /mnt/test
->>>>
->>>> [CAUSE]
->>>> The test case itself is doing two expected-to-fail mounts, but the
->>>> cleanup function is only doing unmount once, if the mount succeeded
->>>> unexpectedly, the $SCRATCH_DEV will be mounted at $extra_mnt forever.
->>>>
->>>> [ENHANCEMENT]
->>>> To avoid screwing up later test cases, do the $extra_mnt cleanup twic=
-e
->>>> to handle the unexpected mount success.
->>>>
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>> ---
->>>>    tests/generic/741 | 4 ++++
->>>>    1 file changed, 4 insertions(+)
->>>>
->>>> diff --git a/tests/generic/741 b/tests/generic/741
->>>> index cac7045e..c15dc434 100755
->>>> --- a/tests/generic/741
->>>> +++ b/tests/generic/741
->>>> @@ -13,6 +13,10 @@ _begin_fstest auto quick volume tempfsid
->>>>    # Override the default cleanup function.
->>>>    _cleanup()
->>>>    {
->>>> +	# If by somehow the fs mounted the underlying device (twice), we ha=
-ve
->>>> +	# to  make sure $extra_mnt is not mounted, or TEST_DEV can not be
->>>> +	# unmounted for fsck.
->>>> +	_unmount $extra_mnt &> /dev/null
->>>
->>> Hmm... I'm not sure a "double" (even treble) umount is good solution f=
-or
->>> temporary "Device or resource busy" after umount. Many other cases mig=
-ht
->>> hit this problem sometimes.
->>> Maybe we can have a helper to do a certain umount which make sure the =
-fs
->>> is truely umounted before returning :)
->>
->> This is not about the umount after EBUSY.
->>
->> The problem is, the test case itself is expecting two mounts to fail.
->> But if the mount succeeded, it will mount twice and need to be unmounte=
-d
->> twice.
->>
->> It's to make the cleanup to match the test case's worst scenario.
->=20
-> Oh, sorry I didn't get your point. If so, how about _fail the case direc=
-tly if
-> the first mount (which should be failed) passed, e.g.
->=20
->    diff --git a/tests/generic/741 b/tests/generic/741
->    index cac7045eb..5538b3a1b 100755
->    --- a/tests/generic/741
->    +++ b/tests/generic/741
->    @@ -44,6 +44,9 @@ mkdir -p $extra_mnt
->     # Filters alter the return code of the mount.
->     _mount $SCRATCH_DEV $extra_mnt 2>&1 | \
->                            _filter_testdir_and_scratch | _filter_error_m=
-ount
->    +if [ ${PIPESTATUS[0]} -eq 0 ];then
->    +       _fail "Unexpected mount pass"
->    +fi
->=20
-> Anyway, I can't say which way is better, both are good to me, depends on=
- your
-> choice :)
+  2361	
+  2362	static int read_one_block_group(struct btrfs_fs_info *info,
+  2363					struct btrfs_block_group_item *bgi,
+  2364					const struct btrfs_key *key,
+  2365					int need_clear)
+  2366	{
+  2367		struct btrfs_block_group *cache;
+  2368		const bool mixed = btrfs_fs_incompat(info, MIXED_GROUPS);
+  2369		int ret;
+  2370	
+  2371		ASSERT(key->type == BTRFS_BLOCK_GROUP_ITEM_KEY);
+  2372	
+  2373		cache = btrfs_create_block_group_cache(info, key->objectid);
+  2374		if (!cache)
+  2375			return -ENOMEM;
+  2376	
+  2377		cache->length = key->offset;
+  2378		cache->used = btrfs_stack_block_group_used(bgi);
+  2379		cache->commit_used = cache->used;
+  2380		cache->flags = btrfs_stack_block_group_flags(bgi);
+  2381		cache->global_root_id = btrfs_stack_block_group_chunk_objectid(bgi);
+  2382		cache->space_info = btrfs_find_space_info(info, cache->flags);
+  2383	
+  2384		set_free_space_tree_thresholds(cache);
+  2385	
+  2386		if (need_clear) {
+  2387			/*
+  2388			 * When we mount with old space cache, we need to
+  2389			 * set BTRFS_DC_CLEAR and set dirty flag.
+  2390			 *
+  2391			 * a) Setting 'BTRFS_DC_CLEAR' makes sure that we
+  2392			 *    truncate the old free space cache inode and
+  2393			 *    setup a new one.
+  2394			 * b) Setting 'dirty flag' makes sure that we flush
+  2395			 *    the new space cache info onto disk.
+  2396			 */
+  2397			if (btrfs_test_opt(info, SPACE_CACHE))
+  2398				cache->disk_cache_state = BTRFS_DC_CLEAR;
+  2399		}
+  2400		if (!mixed && ((cache->flags & BTRFS_BLOCK_GROUP_METADATA) &&
+  2401		    (cache->flags & BTRFS_BLOCK_GROUP_DATA))) {
+  2402				btrfs_err(info,
+  2403	"bg %llu is a mixed block group but filesystem hasn't enabled mixed block groups",
+  2404					  cache->start);
+  2405				ret = -EINVAL;
+  2406				goto error;
+  2407		}
+  2408	
+  2409		ret = btrfs_load_block_group_zone_info(cache, false);
+  2410		if (ret) {
+  2411			btrfs_err(info, "zoned: failed to load zone info of bg %llu",
+  2412				  cache->start);
+  2413			goto error;
+  2414		}
+  2415	
+  2416		/*
+  2417		 * We need to exclude the super stripes now so that the space info has
+  2418		 * super bytes accounted for, otherwise we'll think we have more space
+  2419		 * than we actually do.
+  2420		 */
+  2421		ret = exclude_super_stripes(cache);
+  2422		if (ret) {
+  2423			/* We may have excluded something, so call this just in case. */
+  2424			btrfs_free_excluded_extents(cache);
+  2425			goto error;
+  2426		}
+  2427	
+  2428		/*
+  2429		 * For zoned filesystem, space after the allocation offset is the only
+  2430		 * free space for a block group. So, we don't need any caching work.
+  2431		 * btrfs_calc_zone_unusable() will set the amount of free space and
+  2432		 * zone_unusable space.
+  2433		 *
+  2434		 * For regular filesystem, check for two cases, either we are full, and
+  2435		 * therefore don't need to bother with the caching work since we won't
+  2436		 * find any space, or we are empty, and we can just add all the space
+  2437		 * in and be done with it.  This saves us _a_lot_ of time, particularly
+  2438		 * in the full case.
+  2439		 */
+  2440		if (btrfs_is_zoned(info)) {
+  2441			btrfs_calc_zone_unusable(cache);
+  2442			/* Should not have any excluded extents. Just in case, though. */
+  2443			btrfs_free_excluded_extents(cache);
+  2444		} else if (cache->length == cache->used) {
+  2445			cache->cached = BTRFS_CACHE_FINISHED;
+  2446			btrfs_free_excluded_extents(cache);
+  2447		} else if (cache->used == 0) {
+  2448			cache->cached = BTRFS_CACHE_FINISHED;
+  2449			ret = btrfs_add_new_free_space(cache, cache->start,
+  2450						       cache->start + cache->length, NULL);
+  2451			btrfs_free_excluded_extents(cache);
+  2452			if (ret)
+  2453				goto error;
+  2454		}
+  2455	
+  2456		ret = btrfs_add_block_group_cache(cache);
+  2457		if (ret) {
+  2458			btrfs_remove_free_space_cache(cache);
+  2459			goto error;
+  2460		}
+  2461	
+  2462		trace_btrfs_add_block_group(info, cache, 0);
+  2463		btrfs_add_bg_to_space_info(info, cache);
+  2464	
+  2465		set_avail_alloc_bits(info, cache->flags);
+  2466		if (btrfs_chunk_writeable(info, cache->start)) {
+  2467			if (cache->used == 0) {
+  2468				ASSERT(list_empty(&cache->bg_list));
+  2469				if (btrfs_test_opt(info, DISCARD_ASYNC) &&
+> 2470				    !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
+  2471					btrfs_discard_queue_work(&info->discard_ctl, cache);
+  2472				} else {
+  2473					btrfs_mark_bg_unused(cache);
+  2474				}
+  2475			}
+  2476		} else {
+  2477			inc_block_group_ro(cache, 1);
+  2478		}
+  2479	
+  2480		return 0;
+  2481	error:
+  2482		btrfs_put_block_group(cache);
+  2483		return ret;
+  2484	}
+  2485	
 
-I thought it was recommended to let the test continue and rely on the=20
-golden output to detect errors.
-
-I'm fine either way. This is only triggered because I did cause a=20
-regression during my development.
-
-There is no real world hit (yet), so it's not that urgent.
-
-Thanks,
-Qu
-
->=20
-> Thanks,
-> Zorro
->=20
->>
->> Thanks,
->> Qu
->>
->>>
->>> Thanks,
->>> Zorro
->>>
->>>>    	_unmount $extra_mnt &> /dev/null
->>>>    	rm -rf $extra_mnt
->>>>    	_unmount_flakey
->>>> --=20
->>>> 2.49.0
->>>>
->>>>
->>>
->>>
->>
->=20
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
