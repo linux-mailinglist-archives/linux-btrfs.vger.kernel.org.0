@@ -1,139 +1,222 @@
-Return-Path: <linux-btrfs+bounces-14542-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14543-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90348AD0D4D
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Jun 2025 14:15:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2493DAD0D57
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Jun 2025 14:20:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44B0D17000C
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Jun 2025 12:15:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF12517326E
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Jun 2025 12:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55457221FD3;
-	Sat,  7 Jun 2025 12:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AAA421C189;
+	Sat,  7 Jun 2025 12:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ORaCwNJ8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3A021FF41
-	for <linux-btrfs@vger.kernel.org>; Sat,  7 Jun 2025 12:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914BB4C8F
+	for <linux-btrfs@vger.kernel.org>; Sat,  7 Jun 2025 12:20:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749298504; cv=none; b=dwvKDLlRNeFtlGJLUVXTLdjJOQEaQJHtJiBKnsr+6mMByHSpII7+XwmwNDLFpCPe+yY4zR8LEFnDhXb6qQTJ9vxPvnSwyjHmtRTwMo1n09UlIMSjPN7ecrP3UZigk4KBKYO0B302YrprG4j7ZQoUEe6QqHX9VoHUorRjaGjVuRY=
+	t=1749298826; cv=none; b=piLDD3C+j6oxQAh3p6C+RY1GvaebiqGtF1syJRE3FjM67VPosKPSLPc7fWonIBCzOdD/BS2TxKjZ+pA/SU6W48OYj6OuMGlde0yi0ufwyHY9jbWZxHaBbYOcsp/6Xtp89fVBKugA1CsPL2+d9OLlNA2OzYP5RjC9G8PmtQEX+ME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749298504; c=relaxed/simple;
-	bh=oLtwGz2om7Uq3VZsgJHxRqVOBLG1WKvnFPqv+epsekE=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=sAhKDlI3Ncke8CpNJMadjAonYA2+/txzHwghZcEzsRNjodtmpq6hyBvCQfVZhcfkG5nTRSNO1JPG0ClKcwkUUqT/0Vqb5fAbiOC242CGisb7pPReUCELcG6yDvlVC+vHIH5Kpye1mqLSg6CDoG4G3HNjON+85DwK7ok8+5iEnZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3ddafe52d04so64452275ab.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 07 Jun 2025 05:15:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749298502; x=1749903302;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f6khKyuzNrG0UiD6tiQwVZA1S1mtehdI0hb+YyqvtkU=;
-        b=dpHEZT5T0uC2VO+QGQAnjHmsMSowFak1QHMxwomQZAdbOpxwu4GkcpK6uOvgr0w/sD
-         0tAijrZARB8Ata3AbaMMoeFVivv9Wnp9TtE2BK974d6JsT7iNe8aiYCzCgF3dQEoDN46
-         JUfMpQhN55mEZQ0/hINLZAOvEpqbMi3M5pn/BKYEaolvs9Gv4Qhpff1O8KffQ0v5VJMb
-         JHBrrg1lAQPQDZfZhuZWHYszu6VhhgY3Ayyd7DSyH9N/vWiBbJqZSa/avdF2SH7J/aB/
-         jBzOEbRDfifUj01+fLDxPpDr6rSeA07oabk2WjCe71J7alId2LwjDI4o9vrF/2+Ove07
-         n7GA==
-X-Forwarded-Encrypted: i=1; AJvYcCWPrD3B4TzmT3rwdikPmpo8vF7L8JwDpBOS9NGkmhbbEGs10eXrwkNDjM/1Br3Pt64oT5rq9Rj60dIBFA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzYpK3bsuQyO9dXmASIUR+YJM8a3IaHaOfcG+nmWcot6viBua6b
-	k2yCAq5VDgpyQbXv078w5uuLfyVzsVfuhDZ1MVuYZH+PRbO/gn8Ixo6R3ecGTKw0c8oLGzfG4GC
-	ZQkwTvsTbKCrQspfrk1RA9rTMbnItuge302K/1kv9TF9YG1PmxcBLRMEZNxE=
-X-Google-Smtp-Source: AGHT+IHmL9BLSnu80DN+JqbFo/KZW5om0NI59h0+mNh5EYW7C17VUc7j20kQei8sTorluQ6q/UGSySzVRqbRuxM686EwmuOHiLb1
+	s=arc-20240116; t=1749298826; c=relaxed/simple;
+	bh=bxI1pOJadgO9YNtZ71BMErkprcfbv/VWsaA985ZPo2Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c/+0SSCKi87YooCLBbCfeUpibQH4nG4vB1bPwaiO9RvztrXjXPed/VVt5KcjrzGTMTYzukJ0jgimpiIeNkOqyPufaa9qq3q0GChxIceeQKiKKUOwMziLIUL4J1M+wsThzVwG5b9x8lpri6VXlViPg+6F12P1tERNuPwNDzsHKRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ORaCwNJ8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 167D3C4CEE4
+	for <linux-btrfs@vger.kernel.org>; Sat,  7 Jun 2025 12:20:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749298826;
+	bh=bxI1pOJadgO9YNtZ71BMErkprcfbv/VWsaA985ZPo2Q=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ORaCwNJ8urHvmGE7OyrnxhSMkjqMnY1JqiEgA4SwrfS/gfVaCzUGn1QJ1te0mUEuv
+	 Ridjxv8CH6Skw9ljSg4or0YYBh1tndvK74vMSc7gmvJAusZM9eRvKtk3IdJsBU57cv
+	 WckV0AUBbgqy8AH5wnzCrKv7e6G5Vp2OOX0XIvAbalo0ya5LxuITyzE85aVPU5XDOs
+	 +inx3VXLoKcvbeQnQ9yJyPr3qD6BdKRYdIgLF9Cd4H3vHzAHIMfzfRZgPt/fS6orDT
+	 UZkwKhsVxSUbbbHCPynA5ADY3aD6TnYwF6Y+GUuCc5yzYnL4pX5QqBvNT5o524RLoe
+	 dhhLxTUtULByw==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-addfe17ec0bso709049766b.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 07 Jun 2025 05:20:26 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX8i7nGDK7ZV2mO5cyFnCbrEGy7mC+gkzx1JWaUXuoSgOUn4LUs4bTDxJAp3Dw2D8UOU5FQS1IkU4JhgA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyvij0UjXNphLgIwo95/voEASHNHhDcHt+OQmwymbn3O0UFDYp0
+	k9W460flCph+XR4XaTqDuYe2XDPpm/grRjRtUejrHe2bxPyWJOtuErDu1iaZHZYgPUvo2QJdqAq
+	FmVI6K8DPoCnWkWNA5naim971UmwZ7T0=
+X-Google-Smtp-Source: AGHT+IGcmgZxBl5iUJ3tVPTIhxMa7jEs1fMl05iTCCRXtxyJ/hbv/spPXprJG9FdPFpZd5X32QnyNrhwMfuS0TTzlGs=
+X-Received: by 2002:a17:907:1c26:b0:ad8:942b:1d53 with SMTP id
+ a640c23a62f3a-ade078951c7mr890570366b.27.1749298824677; Sat, 07 Jun 2025
+ 05:20:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1569:b0:3dc:7b3d:6a37 with SMTP id
- e9e14a558f8ab-3ddce423461mr75897805ab.8.1749298502572; Sat, 07 Jun 2025
- 05:15:02 -0700 (PDT)
-Date: Sat, 07 Jun 2025 05:15:02 -0700
-In-Reply-To: <CAJZ91LC2PXK-F8D7br-JKWiREf0hb2BFbEXvugN+=xzuTPdK5Q@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68442d46.a70a0220.27c366.0045.GAE@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in populate_free_space_tree
-From: syzbot <syzbot+36fae25c35159a763a2a@syzkaller.appspotmail.com>
-To: abinashlalotra@gmail.com, clm@fb.com, dsterba@suse.com, 
-	josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20250607111531.28065-1-abinashsinghlalotra@gmail.com>
+In-Reply-To: <20250607111531.28065-1-abinashsinghlalotra@gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Sat, 7 Jun 2025 13:19:47 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6mBPDryyOtVWvv98+otergLUZxNN300R6PGwEgnvn+2g@mail.gmail.com>
+X-Gm-Features: AX0GCFsLBHf5kILZAybHEA_Xvoh5ArU9Z2LeK5Hs17IrkJRfBJJ-kbOdY92VFN0
+Message-ID: <CAL3q7H6mBPDryyOtVWvv98+otergLUZxNN300R6PGwEgnvn+2g@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: remove ASSERT in populate_free_space_tree for
+ empty extent tree btrfs_search_slot_for_read() returns 1 when no items are found
+To: avinashlalotra <abinashlalotra@gmail.com>
+Cc: syzbot+36fae25c35159a763a2a@syzkaller.appspotmail.com, clm@fb.com, 
+	josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
+	avinashlalotra <abinashsinghlalotra@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Sat, Jun 7, 2025 at 12:16=E2=80=AFPM avinashlalotra <abinashlalotra@gmai=
+l.com> wrote:
+>
+>  but populate_free_space_tree() has ASSERT(ret =3D=3D 0) which panics on =
+empty
+>  extent trees. Empty extent trees are valid (new block groups, after
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in btrfs_rebuild_free_space_tree
+No, an empty extent tree is impossible.
+There are always some metadata trees and a default subvolume tree,
+even on empty fs, and therefore there are metadata extents allocated
+and the extent tree is not empty.
 
-BTRFS warning: 'usebackuproot' is deprecated, use 'rescue=usebackuproot' instead
-BTRFS info (device loop2 state M): rebuilding free space tree
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -17)
-WARNING: CPU: 1 PID: 7626 at fs/btrfs/free-space-tree.c:1341 btrfs_rebuild_free_space_tree+0x470/0x54c fs/btrfs/free-space-tree.c:1341
-Modules linked in:
-CPU: 1 UID: 0 PID: 7626 Comm: syz.2.25 Not tainted 6.15.0-rc7-syzkaller-00085-gd7fa1af5b33e-dirty #0 PREEMPT 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : btrfs_rebuild_free_space_tree+0x470/0x54c fs/btrfs/free-space-tree.c:1341
-lr : btrfs_rebuild_free_space_tree+0x470/0x54c fs/btrfs/free-space-tree.c:1341
-sp : ffff80009c4f7740
-x29: ffff80009c4f77b0 x28: ffff0000d4c3f400 x27: 0000000000000000
-x26: dfff800000000000 x25: ffff70001389eee8 x24: 0000000000000003
-x23: 1fffe000182b6e7b x22: 0000000000000000 x21: ffff0000c15b73d8
-x20: 00000000ffffffef x19: ffff0000c15b7378 x18: 1fffe0003386f276
-x17: ffff80008f31e000 x16: ffff80008adbe98c x15: 0000000000000001
-x14: 1fffe0001b281550 x13: 0000000000000000 x12: 0000000000000000
-x11: ffff60001b281551 x10: 0000000000000003 x9 : 1c8922000a902c00
-x8 : 1c8922000a902c00 x7 : ffff800080485878 x6 : 0000000000000000
-x5 : 0000000000000001 x4 : 0000000000000001 x3 : ffff80008047843c
-x2 : 0000000000000001 x1 : ffff80008b3ebc40 x0 : 0000000000000001
-Call trace:
- btrfs_rebuild_free_space_tree+0x470/0x54c fs/btrfs/free-space-tree.c:1341 (P)
- btrfs_start_pre_rw_mount+0xa78/0xe10 fs/btrfs/disk-io.c:3074
- btrfs_remount_rw fs/btrfs/super.c:1319 [inline]
- btrfs_reconfigure+0x828/0x2418 fs/btrfs/super.c:1543
- reconfigure_super+0x1d4/0x6f0 fs/super.c:1083
- do_remount fs/namespace.c:3365 [inline]
- path_mount+0xb34/0xde0 fs/namespace.c:4200
- do_mount fs/namespace.c:4221 [inline]
- __do_sys_mount fs/namespace.c:4432 [inline]
- __se_sys_mount fs/namespace.c:4409 [inline]
- __arm64_sys_mount+0x3e8/0x468 fs/namespace.c:4409
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
- el0_svc+0x58/0x17c arch/arm64/kernel/entry-common.c:767
- el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:786
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-irq event stamp: 330
-hardirqs last  enabled at (329): [<ffff80008048590c>] raw_spin_rq_unlock_irq kernel/sched/sched.h:1525 [inline]
-hardirqs last  enabled at (329): [<ffff80008048590c>] finish_lock_switch+0xb0/0x1c0 kernel/sched/core.c:5130
-hardirqs last disabled at (330): [<ffff80008adb9e60>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:511
-softirqs last  enabled at (10): [<ffff8000801fbf10>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (8): [<ffff8000801fbedc>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
-BTRFS: error (device loop2 state MA) in btrfs_rebuild_free_space_tree:1341: errno=-17 Object already exists
-BTRFS warning (device loop2 state EMA): failed to rebuild free space tree: -17
+You could have checked that with a fs just created with mkfs.btrfs for
+example...
+So no, that's not the reason why the assertion is being triggered.
+
+I also suggest next time to use a shorter subject instead of this:
+
+"btrfs: remove ASSERT in populate_free_space_tree for empty extent
+tree btrfs_search_slot_for_read() returns 1 when no items are found"
+
+That has to be the longest subject I have ever seen. There's no need
+to explain everything in a subject, just summarize.
+
+>  deletions) so remove the assert and handle ret =3D=3D 1 by skipping the =
+scan
+>  loop.
+>
+> Reported-by: syzbot+36fae25c35159a763a2a@syzkaller.appspotmail.com
+> Signed-off-by: avinashlalotra <abinashsinghlalotra@gmail.com>
+> ---
+>  fs/btrfs/free-space-tree.c | 62 ++++++++++++++++++++------------------
+>  1 file changed, 32 insertions(+), 30 deletions(-)
+>
+> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+> index 0c573d46639a..beffe52dfa59 100644
+> --- a/fs/btrfs/free-space-tree.c
+> +++ b/fs/btrfs/free-space-tree.c
+> @@ -1115,43 +1115,45 @@ static int populate_free_space_tree(struct btrfs_=
+trans_handle *trans,
+>         ret =3D btrfs_search_slot_for_read(extent_root, &key, path, 1, 0)=
+;
+>         if (ret < 0)
+>                 goto out_locked;
+> -       ASSERT(ret =3D=3D 0);
+>
+>         start =3D block_group->start;
+>         end =3D block_group->start + block_group->length;
+> -       while (1) {
+> -               btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0=
+]);
+> -
+> -               if (key.type =3D=3D BTRFS_EXTENT_ITEM_KEY ||
+> -                   key.type =3D=3D BTRFS_METADATA_ITEM_KEY) {
+> -                       if (key.objectid >=3D end)
+> -                               break;
+>
+> -                       if (start < key.objectid) {
+> -                               ret =3D __add_to_free_space_tree(trans,
+> -                                                              block_grou=
+p,
+> -                                                              path2, sta=
+rt,
+> -                                                              key.object=
+id -
+> -                                                              start);
+> -                               if (ret)
+> -                                       goto out_locked;
+> +       if (ret =3D=3D 0) {
+> +               while (1) {
+
+There's no need to surround everything with such an if statement and
+add yet more indentation to the code...
+
+Anyway this was already fixed several days ago at:
+
+https://lore.kernel.org/linux-btrfs/f60761dc5dd7376ac91d0a645bd2c3a59a68cee=
+7.1749153697.git.fdmanana@suse.com/
+
+Thanks.
 
 
-Tested on:
-
-commit:         d7fa1af5 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=152cfc0c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=89c13de706fbf07a
-dashboard link: https://syzkaller.appspot.com/bug?extid=36fae25c35159a763a2a
-compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=168d7282580000
-
+> +                       btrfs_item_key_to_cpu(path->nodes[0], &key, path-=
+>slots[0]);
+> +
+> +                       if (key.type =3D=3D BTRFS_EXTENT_ITEM_KEY ||
+> +                           key.type =3D=3D BTRFS_METADATA_ITEM_KEY) {
+> +                               if (key.objectid >=3D end)
+> +                                       break;
+> +
+> +                               if (start < key.objectid) {
+> +                                       ret =3D __add_to_free_space_tree(=
+trans,
+> +                                                                      bl=
+ock_group,
+> +                                                                      pa=
+th2, start,
+> +                                                                      ke=
+y.objectid -
+> +                                                                      st=
+art);
+> +                                       if (ret)
+> +                                               goto out_locked;
+> +                               }
+> +                               start =3D key.objectid;
+> +                               if (key.type =3D=3D BTRFS_METADATA_ITEM_K=
+EY)
+> +                                       start +=3D trans->fs_info->nodesi=
+ze;
+> +                               else
+> +                                       start +=3D key.offset;
+> +                       } else if (key.type =3D=3D BTRFS_BLOCK_GROUP_ITEM=
+_KEY) {
+> +                               if (key.objectid !=3D block_group->start)
+> +                                       break;
+>                         }
+> -                       start =3D key.objectid;
+> -                       if (key.type =3D=3D BTRFS_METADATA_ITEM_KEY)
+> -                               start +=3D trans->fs_info->nodesize;
+> -                       else
+> -                               start +=3D key.offset;
+> -               } else if (key.type =3D=3D BTRFS_BLOCK_GROUP_ITEM_KEY) {
+> -                       if (key.objectid !=3D block_group->start)
+> +
+> +                       ret =3D btrfs_next_item(extent_root, path);
+> +                       if (ret < 0)
+> +                               goto out_locked;
+> +                       if (ret)
+>                                 break;
+>                 }
+> -
+> -               ret =3D btrfs_next_item(extent_root, path);
+> -               if (ret < 0)
+> -                       goto out_locked;
+> -               if (ret)
+> -                       break;
+> -       }
+> +       }
+>         if (start < end) {
+>                 ret =3D __add_to_free_space_tree(trans, block_group, path=
+2,
+>                                                start, end - start);
+> --
+> 2.43.0
+>
+>
 
