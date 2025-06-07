@@ -1,162 +1,139 @@
-Return-Path: <linux-btrfs+bounces-14541-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14542-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9CBDAD0D0F
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Jun 2025 13:20:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90348AD0D4D
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Jun 2025 14:15:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44F43188F494
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Jun 2025 11:20:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44B0D17000C
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Jun 2025 12:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 072F4220699;
-	Sat,  7 Jun 2025 11:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QooI0x5Y"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55457221FD3;
+	Sat,  7 Jun 2025 12:15:05 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20FDEC4
-	for <linux-btrfs@vger.kernel.org>; Sat,  7 Jun 2025 11:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3A021FF41
+	for <linux-btrfs@vger.kernel.org>; Sat,  7 Jun 2025 12:15:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749295206; cv=none; b=t7z+9g8lnJhf3nfceALCZkQ+jCZuVmMMBUJqg8YQCEwCk7aUyZDiKwZtkX0CmSrvaHv4sJjV/WoN9lccZYFKN2xYHTZbsc40jVCNjJyJhKXXs7a1Cb5dhM6d8u0wJQ1DfWXD7X/FjfAFLEk+50gZC7PFbweKzc3xvc+C08WkDxU=
+	t=1749298504; cv=none; b=dwvKDLlRNeFtlGJLUVXTLdjJOQEaQJHtJiBKnsr+6mMByHSpII7+XwmwNDLFpCPe+yY4zR8LEFnDhXb6qQTJ9vxPvnSwyjHmtRTwMo1n09UlIMSjPN7ecrP3UZigk4KBKYO0B302YrprG4j7ZQoUEe6QqHX9VoHUorRjaGjVuRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749295206; c=relaxed/simple;
-	bh=uykssuTMyYpC0FOYmAa9do9te5/Yb3iSp4QRB8LTdAk=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=UCcPVeXBZKFNqXJBnObQ4JpSwAW8kFHnwO+JTyyj2sv3sTjg/8UDtJjj7E495M9H20npZOEJXGvQg8zEJ/C0Nm965DJFQQ6CUOTFzMcLGFIuSL+Qd9dgXKKpCEqn7InPa/dMCk740sGA+KeolF0ueMuM5wBYJySHnDLzU99TfgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QooI0x5Y; arc=none smtp.client-ip=209.85.217.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-4e771347693so1180801137.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 07 Jun 2025 04:20:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749295203; x=1749900003; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Tudgey6ZL6GNA6z89mMpbd9CtrQDT/5gyFkqzZJJ6m8=;
-        b=QooI0x5YBfZt0WUGJiuffA26BPsewR2nAFYY+RkNnpCAEXjgCuUQPQPhwXrlTwckV0
-         yJj88w2E9SseeRmdrj7EBO3myaFji8EFz3aBoaWD3WRcJvH9X3R+q9hKTusGZ/YMJeFM
-         UapconIlpgJE9XdBjtFMNVGqZdBf5M/cLVjxRysU6A+K8tTsR8p8bL+fAiNZZ42AytwK
-         qjQSUoPU6XQW+ogOTheuTUS6Agq0nO4dfEcduqnbTy9AySKaY5BUtqLr4t/Wi6xRebxD
-         PRie7qN4vD/7fI7B08xartKFxTNB5GLVaQAQD9zKEPANqO+FJ07vjUAGEzMG4IpQ60JG
-         l7JQ==
+	s=arc-20240116; t=1749298504; c=relaxed/simple;
+	bh=oLtwGz2om7Uq3VZsgJHxRqVOBLG1WKvnFPqv+epsekE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=sAhKDlI3Ncke8CpNJMadjAonYA2+/txzHwghZcEzsRNjodtmpq6hyBvCQfVZhcfkG5nTRSNO1JPG0ClKcwkUUqT/0Vqb5fAbiOC242CGisb7pPReUCELcG6yDvlVC+vHIH5Kpye1mqLSg6CDoG4G3HNjON+85DwK7ok8+5iEnZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3ddafe52d04so64452275ab.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 07 Jun 2025 05:15:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749295203; x=1749900003;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Tudgey6ZL6GNA6z89mMpbd9CtrQDT/5gyFkqzZJJ6m8=;
-        b=ALsQCNJ6ptqpzSR1JliZaWAilBTtxXLZ5+f/NB5FRgjOvYYFCKVhVfdLZsBQ2WTgQ7
-         dCw/Zukhco11KbjF97cHmo4MjtNcawkwKIi3aFdlcSbiaySgO2E8aDQ4W7l/fEb8SFrz
-         5zujWM5Zwi5gKwJibo227712iGsVW3vNDHTk40h/vqMsM2UtUgTTucPQGLfXJtauRqPO
-         HoxuBp1lLgjl6ZEYAM7sk9N2HfxQzG1m53WgdQmr24HrJ3TUsy+iY8dFCHMtNtNexQx5
-         o2St66asSRtQSnXo8S8u0H7RtcHVPUbu9ZOxVnaZg2XU6QLE1zY05Krs60WCv2P23sF0
-         agcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUSKOZSS+8I69w/h4nXhFaThTeoeMzXOVyQmEyzgYOfe09RvriZa/jRMaRxPS6YeFE/6cHN4P/nruUMMg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwNmVyDmgBK0e2yWr/j4CogRMl5JMClapFiSt65WvUV72USzQ5I
-	RrveH6Vxc3o2Q+3AjCwUEhsN2IYI7r1HzGQkBeuVUnlkHJ+H7LfF0a67JCzKhJ+EDv3mczGWs3y
-	f0kdPuFjdB+LJMKmUgrFPD0hBbw0V7Dw=
-X-Gm-Gg: ASbGncuQT5ZMyFbRxXRIq/uAXtnfm8f5200VW3A+RRIl4ioDw5LTNXLbOoNf+rdP0z8
-	Zpks0u/L/fqDsF61UWG2ElMdOQ2g7W/5KtZ3ZGnCL09M7Qvw5LOr8HT4nRL4tbcLZUd5tKS2Zhn
-	8Rtj4Bn8LxAWicwd31CGtaL71vPRn3Sm3QwuPbswo+a3IX
-X-Google-Smtp-Source: AGHT+IFYl+Ft0kbG2NiyWrlW2MV6b/ZVFtkAFRZSxwWhddKmAQ1nyJGlhgP5vBH1kUixT8v5vBmcy4TQMoIbgpTDnC8=
-X-Received: by 2002:a05:6102:41a7:b0:4e5:992e:e397 with SMTP id
- ada2fe7eead31-4e772a6c096mr6525681137.19.1749295203579; Sat, 07 Jun 2025
- 04:20:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1749298502; x=1749903302;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f6khKyuzNrG0UiD6tiQwVZA1S1mtehdI0hb+YyqvtkU=;
+        b=dpHEZT5T0uC2VO+QGQAnjHmsMSowFak1QHMxwomQZAdbOpxwu4GkcpK6uOvgr0w/sD
+         0tAijrZARB8Ata3AbaMMoeFVivv9Wnp9TtE2BK974d6JsT7iNe8aiYCzCgF3dQEoDN46
+         JUfMpQhN55mEZQ0/hINLZAOvEpqbMi3M5pn/BKYEaolvs9Gv4Qhpff1O8KffQ0v5VJMb
+         JHBrrg1lAQPQDZfZhuZWHYszu6VhhgY3Ayyd7DSyH9N/vWiBbJqZSa/avdF2SH7J/aB/
+         jBzOEbRDfifUj01+fLDxPpDr6rSeA07oabk2WjCe71J7alId2LwjDI4o9vrF/2+Ove07
+         n7GA==
+X-Forwarded-Encrypted: i=1; AJvYcCWPrD3B4TzmT3rwdikPmpo8vF7L8JwDpBOS9NGkmhbbEGs10eXrwkNDjM/1Br3Pt64oT5rq9Rj60dIBFA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYpK3bsuQyO9dXmASIUR+YJM8a3IaHaOfcG+nmWcot6viBua6b
+	k2yCAq5VDgpyQbXv078w5uuLfyVzsVfuhDZ1MVuYZH+PRbO/gn8Ixo6R3ecGTKw0c8oLGzfG4GC
+	ZQkwTvsTbKCrQspfrk1RA9rTMbnItuge302K/1kv9TF9YG1PmxcBLRMEZNxE=
+X-Google-Smtp-Source: AGHT+IHmL9BLSnu80DN+JqbFo/KZW5om0NI59h0+mNh5EYW7C17VUc7j20kQei8sTorluQ6q/UGSySzVRqbRuxM686EwmuOHiLb1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Abinash <abinashlalotra@gmail.com>
-Date: Sat, 7 Jun 2025 16:49:52 +0530
-X-Gm-Features: AX0GCFv4euMr1lG0iH6e_EvZ4yri_2LlzjMTfXyuNO6Jcn67n5Mx5miRqybKsxM
-Message-ID: <CAJZ91LC2PXK-F8D7br-JKWiREf0hb2BFbEXvugN+=xzuTPdK5Q@mail.gmail.com>
-Subject: kernel BUG in populate_free_space_tre
-To: syzbot+36fae25c35159a763a2a@syzkaller.appspotmail.com
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
-	linux-btrfs@vger.kernel.org
-Content-Type: multipart/mixed; boundary="0000000000003795ac0636f9872b"
-
---0000000000003795ac0636f9872b
-Content-Type: multipart/alternative; boundary="0000000000003795a90636f98729"
-
---0000000000003795a90636f98729
+X-Received: by 2002:a05:6e02:1569:b0:3dc:7b3d:6a37 with SMTP id
+ e9e14a558f8ab-3ddce423461mr75897805ab.8.1749298502572; Sat, 07 Jun 2025
+ 05:15:02 -0700 (PDT)
+Date: Sat, 07 Jun 2025 05:15:02 -0700
+In-Reply-To: <CAJZ91LC2PXK-F8D7br-JKWiREf0hb2BFbEXvugN+=xzuTPdK5Q@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68442d46.a70a0220.27c366.0045.GAE@google.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in populate_free_space_tree
+From: syzbot <syzbot+36fae25c35159a763a2a@syzkaller.appspotmail.com>
+To: abinashlalotra@gmail.com, clm@fb.com, dsterba@suse.com, 
+	josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-#syz test
+Hello,
 
---0000000000003795a90636f98729
-Content-Type: text/html; charset="UTF-8"
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in btrfs_rebuild_free_space_tree
 
-<div dir="ltr">#syz test</div>
+BTRFS warning: 'usebackuproot' is deprecated, use 'rescue=usebackuproot' instead
+BTRFS info (device loop2 state M): rebuilding free space tree
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -17)
+WARNING: CPU: 1 PID: 7626 at fs/btrfs/free-space-tree.c:1341 btrfs_rebuild_free_space_tree+0x470/0x54c fs/btrfs/free-space-tree.c:1341
+Modules linked in:
+CPU: 1 UID: 0 PID: 7626 Comm: syz.2.25 Not tainted 6.15.0-rc7-syzkaller-00085-gd7fa1af5b33e-dirty #0 PREEMPT 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : btrfs_rebuild_free_space_tree+0x470/0x54c fs/btrfs/free-space-tree.c:1341
+lr : btrfs_rebuild_free_space_tree+0x470/0x54c fs/btrfs/free-space-tree.c:1341
+sp : ffff80009c4f7740
+x29: ffff80009c4f77b0 x28: ffff0000d4c3f400 x27: 0000000000000000
+x26: dfff800000000000 x25: ffff70001389eee8 x24: 0000000000000003
+x23: 1fffe000182b6e7b x22: 0000000000000000 x21: ffff0000c15b73d8
+x20: 00000000ffffffef x19: ffff0000c15b7378 x18: 1fffe0003386f276
+x17: ffff80008f31e000 x16: ffff80008adbe98c x15: 0000000000000001
+x14: 1fffe0001b281550 x13: 0000000000000000 x12: 0000000000000000
+x11: ffff60001b281551 x10: 0000000000000003 x9 : 1c8922000a902c00
+x8 : 1c8922000a902c00 x7 : ffff800080485878 x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000001 x3 : ffff80008047843c
+x2 : 0000000000000001 x1 : ffff80008b3ebc40 x0 : 0000000000000001
+Call trace:
+ btrfs_rebuild_free_space_tree+0x470/0x54c fs/btrfs/free-space-tree.c:1341 (P)
+ btrfs_start_pre_rw_mount+0xa78/0xe10 fs/btrfs/disk-io.c:3074
+ btrfs_remount_rw fs/btrfs/super.c:1319 [inline]
+ btrfs_reconfigure+0x828/0x2418 fs/btrfs/super.c:1543
+ reconfigure_super+0x1d4/0x6f0 fs/super.c:1083
+ do_remount fs/namespace.c:3365 [inline]
+ path_mount+0xb34/0xde0 fs/namespace.c:4200
+ do_mount fs/namespace.c:4221 [inline]
+ __do_sys_mount fs/namespace.c:4432 [inline]
+ __se_sys_mount fs/namespace.c:4409 [inline]
+ __arm64_sys_mount+0x3e8/0x468 fs/namespace.c:4409
+ __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
+ el0_svc+0x58/0x17c arch/arm64/kernel/entry-common.c:767
+ el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:786
+ el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
+irq event stamp: 330
+hardirqs last  enabled at (329): [<ffff80008048590c>] raw_spin_rq_unlock_irq kernel/sched/sched.h:1525 [inline]
+hardirqs last  enabled at (329): [<ffff80008048590c>] finish_lock_switch+0xb0/0x1c0 kernel/sched/core.c:5130
+hardirqs last disabled at (330): [<ffff80008adb9e60>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:511
+softirqs last  enabled at (10): [<ffff8000801fbf10>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
+softirqs last disabled at (8): [<ffff8000801fbedc>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
+---[ end trace 0000000000000000 ]---
+BTRFS: error (device loop2 state MA) in btrfs_rebuild_free_space_tree:1341: errno=-17 Object already exists
+BTRFS warning (device loop2 state EMA): failed to rebuild free space tree: -17
 
---0000000000003795a90636f98729--
---0000000000003795ac0636f9872b
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-btrfs-remove-ASSERT-in-populate_free_space_tree-for-.patch"
-Content-Disposition: attachment; 
-	filename="0001-btrfs-remove-ASSERT-in-populate_free_space_tree-for-.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_mbm55ulw0>
-X-Attachment-Id: f_mbm55ulw0
 
-RnJvbSBkMjVkOWZiMDdkM2VhYjk5NDIzNDY2NWViYjBkOThiMjk4YWE1OWM0IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBhdmluYXNobGFsb3RyYSA8YWJpbmFzaHNpbmdobGFsb3RyYUBn
-bWFpbC5jb20+CkRhdGU6IFNhdCwgNyBKdW4gMjAyNSAxNjoxOTo0MSArMDUzMApTdWJqZWN0OiBb
-UEFUQ0hdIGJ0cmZzOiByZW1vdmUgQVNTRVJUIGluIHBvcHVsYXRlX2ZyZWVfc3BhY2VfdHJlZSBm
-b3IgZW1wdHkKIGV4dGVudCB0cmVlIGJ0cmZzX3NlYXJjaF9zbG90X2Zvcl9yZWFkKCkgcmV0dXJu
-cyAxIHdoZW4gbm8gaXRlbXMgYXJlIGZvdW5kCgogYnV0IHBvcHVsYXRlX2ZyZWVfc3BhY2VfdHJl
-ZSgpIGhhcyBBU1NFUlQocmV0ID09IDApIHdoaWNoIHBhbmljcyBvbiBlbXB0eQogZXh0ZW50IHRy
-ZWVzLiBFbXB0eSBleHRlbnQgdHJlZXMgYXJlIHZhbGlkIChuZXcgYmxvY2sgZ3JvdXBzLCBhZnRl
-cgogZGVsZXRpb25zKSBzbyByZW1vdmUgdGhlIGFzc2VydCBhbmQgaGFuZGxlIHJldCA9PSAxIGJ5
-IHNraXBwaW5nIHRoZSBzY2FuCiBsb29wLgoKUmVwb3J0ZWQtYnk6IHN5emJvdCszNmZhZTI1YzM1
-MTU5YTc2M2EyYUBzeXprYWxsZXIuYXBwc3BvdG1haWwuY29tClNpZ25lZC1vZmYtYnk6IGF2aW5h
-c2hsYWxvdHJhIDxhYmluYXNoc2luZ2hsYWxvdHJhQGdtYWlsLmNvbT4KLS0tCiBmcy9idHJmcy9m
-cmVlLXNwYWNlLXRyZWUuYyB8IDYyICsrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0t
-LS0tCiAxIGZpbGUgY2hhbmdlZCwgMzIgaW5zZXJ0aW9ucygrKSwgMzAgZGVsZXRpb25zKC0pCgpk
-aWZmIC0tZ2l0IGEvZnMvYnRyZnMvZnJlZS1zcGFjZS10cmVlLmMgYi9mcy9idHJmcy9mcmVlLXNw
-YWNlLXRyZWUuYwppbmRleCAwYzU3M2Q0NjYzOWEuLmJlZmZlNTJkZmE1OSAxMDA2NDQKLS0tIGEv
-ZnMvYnRyZnMvZnJlZS1zcGFjZS10cmVlLmMKKysrIGIvZnMvYnRyZnMvZnJlZS1zcGFjZS10cmVl
-LmMKQEAgLTExMTUsNDMgKzExMTUsNDUgQEAgc3RhdGljIGludCBwb3B1bGF0ZV9mcmVlX3NwYWNl
-X3RyZWUoc3RydWN0IGJ0cmZzX3RyYW5zX2hhbmRsZSAqdHJhbnMsCiAJcmV0ID0gYnRyZnNfc2Vh
-cmNoX3Nsb3RfZm9yX3JlYWQoZXh0ZW50X3Jvb3QsICZrZXksIHBhdGgsIDEsIDApOwogCWlmIChy
-ZXQgPCAwKQogCQlnb3RvIG91dF9sb2NrZWQ7Ci0JQVNTRVJUKHJldCA9PSAwKTsKIAogCXN0YXJ0
-ID0gYmxvY2tfZ3JvdXAtPnN0YXJ0OwogCWVuZCA9IGJsb2NrX2dyb3VwLT5zdGFydCArIGJsb2Nr
-X2dyb3VwLT5sZW5ndGg7Ci0Jd2hpbGUgKDEpIHsKLQkJYnRyZnNfaXRlbV9rZXlfdG9fY3B1KHBh
-dGgtPm5vZGVzWzBdLCAma2V5LCBwYXRoLT5zbG90c1swXSk7Ci0KLQkJaWYgKGtleS50eXBlID09
-IEJUUkZTX0VYVEVOVF9JVEVNX0tFWSB8fAotCQkgICAga2V5LnR5cGUgPT0gQlRSRlNfTUVUQURB
-VEFfSVRFTV9LRVkpIHsKLQkJCWlmIChrZXkub2JqZWN0aWQgPj0gZW5kKQotCQkJCWJyZWFrOwog
-Ci0JCQlpZiAoc3RhcnQgPCBrZXkub2JqZWN0aWQpIHsKLQkJCQlyZXQgPSBfX2FkZF90b19mcmVl
-X3NwYWNlX3RyZWUodHJhbnMsCi0JCQkJCQkJICAgICAgIGJsb2NrX2dyb3VwLAotCQkJCQkJCSAg
-ICAgICBwYXRoMiwgc3RhcnQsCi0JCQkJCQkJICAgICAgIGtleS5vYmplY3RpZCAtCi0JCQkJCQkJ
-ICAgICAgIHN0YXJ0KTsKLQkJCQlpZiAocmV0KQotCQkJCQlnb3RvIG91dF9sb2NrZWQ7CisJaWYg
-KHJldCA9PSAwKSB7CisJCXdoaWxlICgxKSB7CisJCQlidHJmc19pdGVtX2tleV90b19jcHUocGF0
-aC0+bm9kZXNbMF0sICZrZXksIHBhdGgtPnNsb3RzWzBdKTsKKworCQkJaWYgKGtleS50eXBlID09
-IEJUUkZTX0VYVEVOVF9JVEVNX0tFWSB8fAorCQkJICAgIGtleS50eXBlID09IEJUUkZTX01FVEFE
-QVRBX0lURU1fS0VZKSB7CisJCQkJaWYgKGtleS5vYmplY3RpZCA+PSBlbmQpCisJCQkJCWJyZWFr
-OworCisJCQkJaWYgKHN0YXJ0IDwga2V5Lm9iamVjdGlkKSB7CisJCQkJCXJldCA9IF9fYWRkX3Rv
-X2ZyZWVfc3BhY2VfdHJlZSh0cmFucywKKwkJCQkJCQkJICAgICAgIGJsb2NrX2dyb3VwLAorCQkJ
-CQkJCQkgICAgICAgcGF0aDIsIHN0YXJ0LAorCQkJCQkJCQkgICAgICAga2V5Lm9iamVjdGlkIC0K
-KwkJCQkJCQkJICAgICAgIHN0YXJ0KTsKKwkJCQkJaWYgKHJldCkKKwkJCQkJCWdvdG8gb3V0X2xv
-Y2tlZDsKKwkJCQl9CisJCQkJc3RhcnQgPSBrZXkub2JqZWN0aWQ7CisJCQkJaWYgKGtleS50eXBl
-ID09IEJUUkZTX01FVEFEQVRBX0lURU1fS0VZKQorCQkJCQlzdGFydCArPSB0cmFucy0+ZnNfaW5m
-by0+bm9kZXNpemU7CisJCQkJZWxzZQorCQkJCQlzdGFydCArPSBrZXkub2Zmc2V0OworCQkJfSBl
-bHNlIGlmIChrZXkudHlwZSA9PSBCVFJGU19CTE9DS19HUk9VUF9JVEVNX0tFWSkgeworCQkJCWlm
-IChrZXkub2JqZWN0aWQgIT0gYmxvY2tfZ3JvdXAtPnN0YXJ0KQorCQkJCQlicmVhazsKIAkJCX0K
-LQkJCXN0YXJ0ID0ga2V5Lm9iamVjdGlkOwotCQkJaWYgKGtleS50eXBlID09IEJUUkZTX01FVEFE
-QVRBX0lURU1fS0VZKQotCQkJCXN0YXJ0ICs9IHRyYW5zLT5mc19pbmZvLT5ub2Rlc2l6ZTsKLQkJ
-CWVsc2UKLQkJCQlzdGFydCArPSBrZXkub2Zmc2V0OwotCQl9IGVsc2UgaWYgKGtleS50eXBlID09
-IEJUUkZTX0JMT0NLX0dST1VQX0lURU1fS0VZKSB7Ci0JCQlpZiAoa2V5Lm9iamVjdGlkICE9IGJs
-b2NrX2dyb3VwLT5zdGFydCkKKworCQkJcmV0ID0gYnRyZnNfbmV4dF9pdGVtKGV4dGVudF9yb290
-LCBwYXRoKTsKKwkJCWlmIChyZXQgPCAwKQorCQkJCWdvdG8gb3V0X2xvY2tlZDsKKwkJCWlmIChy
-ZXQpCiAJCQkJYnJlYWs7CiAJCX0KLQotCQlyZXQgPSBidHJmc19uZXh0X2l0ZW0oZXh0ZW50X3Jv
-b3QsIHBhdGgpOwotCQlpZiAocmV0IDwgMCkKLQkJCWdvdG8gb3V0X2xvY2tlZDsKLQkJaWYgKHJl
-dCkKLQkJCWJyZWFrOwotCX0KKwl9CQogCWlmIChzdGFydCA8IGVuZCkgewogCQlyZXQgPSBfX2Fk
-ZF90b19mcmVlX3NwYWNlX3RyZWUodHJhbnMsIGJsb2NrX2dyb3VwLCBwYXRoMiwKIAkJCQkJICAg
-ICAgIHN0YXJ0LCBlbmQgLSBzdGFydCk7Ci0tIAoyLjQzLjAKCg==
---0000000000003795ac0636f9872b--
+Tested on:
+
+commit:         d7fa1af5 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=152cfc0c580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=89c13de706fbf07a
+dashboard link: https://syzkaller.appspot.com/bug?extid=36fae25c35159a763a2a
+compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=168d7282580000
+
 
