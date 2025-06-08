@@ -1,247 +1,169 @@
-Return-Path: <linux-btrfs+bounces-14544-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14545-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2215AD11FA
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Jun 2025 14:14:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75159AD1505
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Jun 2025 00:10:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CADA1887350
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Jun 2025 12:14:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 301C2168ECB
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Jun 2025 22:10:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 056A620487E;
-	Sun,  8 Jun 2025 12:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cQJQUcUi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD90254B17;
+	Sun,  8 Jun 2025 22:10:31 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2EB61F12FB
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Jun 2025 12:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D8EE1FF1D1
+	for <linux-btrfs@vger.kernel.org>; Sun,  8 Jun 2025 22:10:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749384845; cv=none; b=MHF1p+CkYEDr5mtjtaRQh8G4c4XnRFwyqFElzCzS8Gwy4Csk7YmCeDl9xsxc/BXsWqkitRTGVYMbfwr0zjq9gaBSvIijWYIZXfSF9clMeV9s3VMs0bzUTDA1lTfWzf0jZd3jS363ti+U0v3WJEy3I0U9da3PZIs/vgy3KCArsZo=
+	t=1749420631; cv=none; b=Zmytjifb2xSAtSCxr2dUjYDw8kHs81Fdnx0e+fEZOilDQqEMdFW1z1+ythDB93RU2sBEV/EKSDhilKhZg4lIuf44LBZe87kjkHd1MEvoprp/nmJzgyjUHvZkm4j9uJwh9i69a8RavGmCjzvVdSNzxbSgVapiZc2vlqQAUp8oU60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749384845; c=relaxed/simple;
-	bh=oVuRnXNqj89eT9fDXrnTTRsoIsCkWPZ0ygTWAyPcnao=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mDIVlw8Vnz1KYkkeHg2dF8Y55aXvd/bGPYWJouvfbUPbZXpssxlc9SbokZmTE1/vba4wqIR4AkQV8vE9kVwJ0wIyzb3kcmYQU1FFo5BHwH0o83v3fZn5fp2jDzORW9qXsg6EQGJvencSl4+0IVNWxCF+F+1PhsdxbRkjJvUqGbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cQJQUcUi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1749384841;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gBaXOCUDiP13canSq8dpJc7uc2pQjYPYOxVlcevllo4=;
-	b=cQJQUcUi5yOh77dyCFOTIrbDh8rKqXqeHA72B1xDaV2Ff52Cl9/9HWh3Y5t2DlMYipteus
-	puWbtEuT0ByKTvohNtJ6TE8h1M05d5UFyIOas+fi12oFe8Ij1qcW75o9VGY0Pw4sXC8rLQ
-	NekHBwC/Yo24PEcsZhll084000BVaw0=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-241-3zDZJmGMNjKPICnpULVjuQ-1; Sun, 08 Jun 2025 08:14:00 -0400
-X-MC-Unique: 3zDZJmGMNjKPICnpULVjuQ-1
-X-Mimecast-MFC-AGG-ID: 3zDZJmGMNjKPICnpULVjuQ_1749384839
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-7391d68617cso3279739b3a.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 08 Jun 2025 05:13:59 -0700 (PDT)
+	s=arc-20240116; t=1749420631; c=relaxed/simple;
+	bh=lPSB7kzCuFDsyKZcCDyQcY133wGxZ8f2OySUDkXj3Ck=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=km0uJzyRC4hJW5TLH16sYC/MuskACOClcr2+XHkSg+2SPdaikHigMGmEtN4P7TnUoeJM3rU3pyLnPWQ96sCGhRAT+AFfzb1qBHdbbJ4To4iNLA87rMMPi80y1iVNXG+I8sBKP0QHmF6Ni85FRCQ1NCYVwm/8Ucpu1q7RU9nbyHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-86f4e2434b6so393014039f.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 08 Jun 2025 15:10:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749384839; x=1749989639;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gBaXOCUDiP13canSq8dpJc7uc2pQjYPYOxVlcevllo4=;
-        b=ryROgOz8m7PzHP2sRHogqei0Hk5hcMiHZD0Ckd1rHL9HlDylbhTQSPM5CBocskBN9p
-         VXGE/Mfmr9qCaoJtDLcxgZiHVTtudq4qV2uWNKH/FdvEbiDlLseYvshp6OoeFY53qMfy
-         fHZMxc3yVFv6iaQdJy8Uhd1ECLnwnJzsDXwF7etpwsiQpT86Ey1L8PJ8bR9hi1yItUA6
-         NiQUZJJV3AaXZR/8kyi8uHs/jzTDn2YzUZCtuKnHjn+SE0c0zAcsDo3NkkmklnQnTCix
-         QnYboxwc/As0bRGwif6oy0TqNDjZI53BrB9naE8AE0KEGhWK8pDsCUQKEZNLx2GNkcLL
-         g5pQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVFOrBvOlX1hxup8B1OVgFQzshLIibQNbzhi9G7cdekszi6V3l+BhsoQoYyrKAFip7s+IDaX5Rg1v0ZDA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwSb8OX2aQuuSihLMe07UjUS0I5Til1DPgGboa5b4NFbeLfMYh/
-	6MAaVU2WaiaCGV2R295nACiC8ZC4jd8t4L2GeD6j0Y2oGAtQ0/t4bYMH8s4XJk4uR42R/q0z7QM
-	siP6mb0CvhWAhzfIs4nHjROUOXi/Lov0Pn/I9wu1MfYGI2QzRAmfV0z5sfhJPYkku
-X-Gm-Gg: ASbGnctQAU994XbOWJrA1UHUX/B3nPNwUmPPMGqEH8UxWFuIffIRBReO5GgJ3t8Lsn0
-	jiQaL0sHBKU9TA83vqTSlKVbDmjokhN8eogl5gmdqk+sIwUzjNVNE/tQzQt5tKgmz5/CBNJMsxh
-	O5fdcYYWyGY+aEEA71/Vy+WxMRKuA1HNL7DlUEh0+dn3+paaOrxLPYhHGTCQFWC0LAm3eEAwmI+
-	Q72w1Yvpu/WZbai/ZkjueNavIevq8KMLkfxEFCzHDi9KF6kV2D8bKQVesJ0nDb5CTAxnJqkDS2h
-	/PeWmI48QUyGNE0l5Dvh1CW9mzC8uTx9SQf5PnFFEkJ/yGBdgVQ+
-X-Received: by 2002:a05:6a21:6da0:b0:21f:56d0:65dc with SMTP id adf61e73a8af0-21f56d06839mr3172509637.13.1749384839023;
-        Sun, 08 Jun 2025 05:13:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHpNncbX0lV7YcYVl+1NdzBR4pEAqUL4jnqrMJ+X48TmDCPeCrrHuZyreiPVFWLkGqrqhcTZg==
-X-Received: by 2002:a05:6a21:6da0:b0:21f:56d0:65dc with SMTP id adf61e73a8af0-21f56d06839mr3172493637.13.1749384838645;
-        Sun, 08 Jun 2025 05:13:58 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b2f5ee70090sm3712571a12.28.2025.06.08.05.13.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Jun 2025 05:13:58 -0700 (PDT)
-Date: Sun, 8 Jun 2025 20:13:54 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: Re: [PATCH] fstests: generic/741: make cleanup to handle test
- failure properly
-Message-ID: <20250608121354.krwybs6scn5ovj7w@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20250604235524.26356-1-wqu@suse.com>
- <20250605171047.vl3u6j7yojbw6pfe@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <dbf243a2-ac0e-437c-a308-9832f89ca274@gmx.com>
- <20250606010622.imrfexkypzq5zpm6@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <c966cbd6-3016-4735-9853-91a75144e429@gmx.com>
+        d=1e100.net; s=20230601; t=1749420628; x=1750025428;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rfvDTEqcQRn5tT2CV9k08iD+3Mt7MRIhn+0umO+AibY=;
+        b=lhs1Wk6Pf57krP0UBP3zXoQcwGLgH9U4R/PeZPdJ7SoY4ywWxKN1FJ2UppolG3VY7x
+         7NxUcdCNgvgbF9NricRi/F+6j7iF3hiIgJ6d2j9mhgylaFvZ9XgjHafpmIf7K6xKOyN0
+         uIN4wlmKh/gNgElGpvcFCk7Gws/VceGpyJiaELQ0BD3nV48SjsV3Ez6/am3Rv6vSyQDd
+         CNGd8rkSqOmz2piMj1+W09Uttn0a96dD/dCVN29ZcxWycBzh626+wsV2v6DdGMux0XgG
+         bMRo5t5oLg62eg+8OFzAzl0FZFCGLfuIr20PO7Nm9cKmJURsj5FtHoh0zvsDbbrfbwZB
+         yDJA==
+X-Forwarded-Encrypted: i=1; AJvYcCVhb27rhCPD8zFuCauZPwwfgoLreBdp70mdVbRfYbhTKI0u+NNevpbVdDZbA3zV1tV1LUvKY8hUNFTwQQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUYZ5tV2Gd13F6BpCDYzMrb+8LJNAlAAMkljLAAh2uIg13Oqwh
+	zvmWCVBDin6r52dlBn33Bv9L2nheotivWMSN5eKD0xi/euMDyP1Ie5UEZPjDPVJZaXOOIsjPtue
+	sizx4lbsG/A5WXacBzrt2khgFulUNxcGnu6Rx5pUC5a3fdYLbbEFGe+h+YFY=
+X-Google-Smtp-Source: AGHT+IGJsCHEu/pt7o7yqGhvL24hgEVMtSq2pQsQ/muXg1IsOa11NA8rXFwNdC627zKAFeqiAzKHCiUgy5trS3yHtVseAJV2VCqa
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c966cbd6-3016-4735-9853-91a75144e429@gmx.com>
+X-Received: by 2002:a05:6e02:2142:b0:3dd:c4ed:39ba with SMTP id
+ e9e14a558f8ab-3ddce3ce038mr126748085ab.1.1749420628664; Sun, 08 Jun 2025
+ 15:10:28 -0700 (PDT)
+Date: Sun, 08 Jun 2025 15:10:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68460a54.050a0220.daf97.0af5.GAE@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_rebuild_free_space_tree
+From: syzbot <syzbot+d0014fb0fc39c5487ae5@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Jun 06, 2025 at 03:30:58PM +0930, Qu Wenruo wrote:
-> 
-> 
-> 在 2025/6/6 10:36, Zorro Lang 写道:
-> > On Fri, Jun 06, 2025 at 07:39:56AM +0930, Qu Wenruo wrote:
-> > > 
-> > > 
-> > > 在 2025/6/6 02:40, Zorro Lang 写道:
-> > > > On Thu, Jun 05, 2025 at 09:25:24AM +0930, Qu Wenruo wrote:
-> > > > > [BUG]
-> > > > > When I was tinkering the bdev open holder parameter, it caused a bug
-> > > > > that it no longer rejects mounting the underlying device of a
-> > > > > device-mapper.
-> > > > > 
-> > > > > And the test case properly detects the regression:
-> > > > > 
-> > > > > generic/741 1s ... umount: /mnt/test: target is busy.
-> > > > > _check_btrfs_filesystem: filesystem on /dev/mapper/test-test is inconsistent
-> > > > > (see /home/adam/xfstests/results//generic/741.full for details)
-> > > > > Trying to repair broken TEST_DEV file system
-> > > > > _check_btrfs_filesystem: filesystem on /dev/mapper/test-scratch1 is inconsistent
-> > > > > (see /home/adam/xfstests/results//generic/741.full for details)
-> > > > > - output mismatch (see /home/adam/xfstests/results//generic/741.out.bad)
-> > > > >       --- tests/generic/741.out	2024-04-06 08:10:44.773333344 +1030
-> > > > >       +++ /home/adam/xfstests/results//generic/741.out.bad	2025-06-05 09:18:03.675049206 +0930
-> > > > >       @@ -1,3 +1,2 @@
-> > > > >        QA output created by 741
-> > > > >       -mount: TEST_DIR/extra_mnt: SCRATCH_DEV already mounted or mount point busy
-> > > > >       -mount: TEST_DIR/extra_mnt: SCRATCH_DEV already mounted or mount point busy
-> > > > >       +rm: cannot remove '/mnt/test/extra_mnt': Device or resource busy
-> > > > >       ...
-> > > > >       (Run 'diff -u /home/adam/xfstests/tests/generic/741.out /home/adam/xfstests/results//generic/741.out.bad'  to see the entire diff)
-> > > > > 
-> > > > > The problem is, all later test will fail, because the $SCRATCH_DEV is
-> > > > > still mounted at $extra_mnt:
-> > > > > 
-> > > > >    TEST_DEV=/dev/mapper/test-test is mounted but not on TEST_DIR=/mnt/test - aborting
-> > > > >    Already mounted result:
-> > > > >    /dev/mapper/test-test /mnt/test /dev/mapper/test-test /mnt/test
-> > > > > 
-> > > > > [CAUSE]
-> > > > > The test case itself is doing two expected-to-fail mounts, but the
-> > > > > cleanup function is only doing unmount once, if the mount succeeded
-> > > > > unexpectedly, the $SCRATCH_DEV will be mounted at $extra_mnt forever.
-> > > > > 
-> > > > > [ENHANCEMENT]
-> > > > > To avoid screwing up later test cases, do the $extra_mnt cleanup twice
-> > > > > to handle the unexpected mount success.
-> > > > > 
-> > > > > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > > > > ---
-> > > > >    tests/generic/741 | 4 ++++
-> > > > >    1 file changed, 4 insertions(+)
-> > > > > 
-> > > > > diff --git a/tests/generic/741 b/tests/generic/741
-> > > > > index cac7045e..c15dc434 100755
-> > > > > --- a/tests/generic/741
-> > > > > +++ b/tests/generic/741
-> > > > > @@ -13,6 +13,10 @@ _begin_fstest auto quick volume tempfsid
-> > > > >    # Override the default cleanup function.
-> > > > >    _cleanup()
-> > > > >    {
-> > > > > +	# If by somehow the fs mounted the underlying device (twice), we have
-> > > > > +	# to  make sure $extra_mnt is not mounted, or TEST_DEV can not be
-> > > > > +	# unmounted for fsck.
-> > > > > +	_unmount $extra_mnt &> /dev/null
-> > > > 
-> > > > Hmm... I'm not sure a "double" (even treble) umount is good solution for
-> > > > temporary "Device or resource busy" after umount. Many other cases might
-> > > > hit this problem sometimes.
-> > > > Maybe we can have a helper to do a certain umount which make sure the fs
-> > > > is truely umounted before returning :)
-> > > 
-> > > This is not about the umount after EBUSY.
-> > > 
-> > > The problem is, the test case itself is expecting two mounts to fail.
-> > > But if the mount succeeded, it will mount twice and need to be unmounted
-> > > twice.
-> > > 
-> > > It's to make the cleanup to match the test case's worst scenario.
-> > 
-> > Oh, sorry I didn't get your point. If so, how about _fail the case directly if
-> > the first mount (which should be failed) passed, e.g.
-> > 
-> >    diff --git a/tests/generic/741 b/tests/generic/741
-> >    index cac7045eb..5538b3a1b 100755
-> >    --- a/tests/generic/741
-> >    +++ b/tests/generic/741
-> >    @@ -44,6 +44,9 @@ mkdir -p $extra_mnt
-> >     # Filters alter the return code of the mount.
-> >     _mount $SCRATCH_DEV $extra_mnt 2>&1 | \
-> >                            _filter_testdir_and_scratch | _filter_error_mount
-> >    +if [ ${PIPESTATUS[0]} -eq 0 ];then
-> >    +       _fail "Unexpected mount pass"
-> >    +fi
-> > 
-> > Anyway, I can't say which way is better, both are good to me, depends on your
-> > choice :)
-> 
-> I thought it was recommended to let the test continue and rely on the golden
-> output to detect errors.
-> 
-> I'm fine either way. This is only triggered because I did cause a regression
-> during my development.
-> 
-> There is no real world hit (yet), so it's not that urgent.
+Hello,
 
-OK, this patch is good to me:
+syzbot found the following issue on:
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
+HEAD commit:    d7fa1af5b33e Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=143b9282580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=89c13de706fbf07a
+dashboard link: https://syzkaller.appspot.com/bug?extid=d0014fb0fc39c5487ae5
+compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1264740c580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=123b9282580000
 
-> 
-> Thanks,
-> Qu
-> 
-> > 
-> > Thanks,
-> > Zorro
-> > 
-> > > 
-> > > Thanks,
-> > > Qu
-> > > 
-> > > > 
-> > > > Thanks,
-> > > > Zorro
-> > > > 
-> > > > >    	_unmount $extra_mnt &> /dev/null
-> > > > >    	rm -rf $extra_mnt
-> > > > >    	_unmount_flakey
-> > > > > -- 
-> > > > > 2.49.0
-> > > > > 
-> > > > > 
-> > > > 
-> > > > 
-> > > 
-> > 
-> 
-> 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/da97ad659b2c/disk-d7fa1af5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/659e123552a8/vmlinux-d7fa1af5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6ec5dbf4643e/Image-d7fa1af5.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/c104fe6fa41d/mount_0.gz
+  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=16d34c0c580000)
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d0014fb0fc39c5487ae5@syzkaller.appspotmail.com
+
+btrfs: Deprecated parameter 'usebackuproot'
+BTRFS warning: 'usebackuproot' is deprecated, use 'rescue=usebackuproot' instead
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -17)
+WARNING: CPU: 0 PID: 8268 at fs/btrfs/free-space-tree.c:1339 btrfs_rebuild_free_space_tree+0x470/0x54c fs/btrfs/free-space-tree.c:1339
+Modules linked in:
+CPU: 0 UID: 0 PID: 8268 Comm: syz-executor373 Not tainted 6.15.0-rc7-syzkaller-gd7fa1af5b33e #0 PREEMPT 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : btrfs_rebuild_free_space_tree+0x470/0x54c fs/btrfs/free-space-tree.c:1339
+lr : btrfs_rebuild_free_space_tree+0x470/0x54c fs/btrfs/free-space-tree.c:1339
+sp : ffff80009c4d7740
+x29: ffff80009c4d77b0 x28: ffff0000c1934000 x27: 0000000000000000
+x26: dfff800000000000 x25: ffff70001389aee8 x24: 0000000000000003
+x23: 1fffe0001bb6ceea x22: 0000000000000000 x21: ffff0000ddb67750
+x20: 00000000ffffffef x19: ffff0000ddb676f0 x18: 00000000ffffffff
+x17: 0000000000000000 x16: ffff80008adbe9e4 x15: 0000000000000001
+x14: 1fffe0003386aae2 x13: 0000000000000000 x12: 0000000000000000
+x11: ffff60003386aae3 x10: 0000000000ff0100 x9 : c8aea423d56d4800
+x8 : c8aea423d56d4800 x7 : 0000000000000001 x6 : 0000000000000001
+x5 : ffff80009c4d7098 x4 : ffff80008f415ba0 x3 : ffff8000807b4b68
+x2 : 0000000000000001 x1 : 0000000100000000 x0 : 0000000000000000
+Call trace:
+ btrfs_rebuild_free_space_tree+0x470/0x54c fs/btrfs/free-space-tree.c:1339 (P)
+ btrfs_start_pre_rw_mount+0xa78/0xe10 fs/btrfs/disk-io.c:3074
+ btrfs_remount_rw fs/btrfs/super.c:1319 [inline]
+ btrfs_reconfigure+0x828/0x2418 fs/btrfs/super.c:1543
+ reconfigure_super+0x1d4/0x6f0 fs/super.c:1083
+ do_remount fs/namespace.c:3365 [inline]
+ path_mount+0xb34/0xde0 fs/namespace.c:4200
+ do_mount fs/namespace.c:4221 [inline]
+ __do_sys_mount fs/namespace.c:4432 [inline]
+ __se_sys_mount fs/namespace.c:4409 [inline]
+ __arm64_sys_mount+0x3e8/0x468 fs/namespace.c:4409
+ __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
+ el0_svc+0x58/0x17c arch/arm64/kernel/entry-common.c:767
+ el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:786
+ el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
+irq event stamp: 230
+hardirqs last  enabled at (229): [<ffff80008055041c>] __up_console_sem kernel/printk/printk.c:344 [inline]
+hardirqs last  enabled at (229): [<ffff80008055041c>] __console_unlock+0x70/0xc4 kernel/printk/printk.c:2885
+hardirqs last disabled at (230): [<ffff80008adb9eb8>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:511
+softirqs last  enabled at (8): [<ffff8000801fbf10>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
+softirqs last disabled at (6): [<ffff8000801fbedc>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
+---[ end trace 0000000000000000 ]---
+BTRFS: error (device loop2 state MA) in btrfs_rebuild_free_space_tree:1339: errno=-17 Object already exists
+BTRFS warning (device loop2 state EMA): failed to rebuild free space tree: -17
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
