@@ -1,149 +1,209 @@
-Return-Path: <linux-btrfs+bounces-14574-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14575-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C651AD261F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Jun 2025 20:52:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C8A6AD263D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Jun 2025 20:55:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49EEB7A7C8D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Jun 2025 18:51:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EE983A1D4D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Jun 2025 18:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEDB321D3E1;
-	Mon,  9 Jun 2025 18:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0582921D3D6;
+	Mon,  9 Jun 2025 18:55:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WgXziGkC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dFA1Fsfy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WgXziGkC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dFA1Fsfy"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lrN14B9a";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rfd8vAwe";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lrN14B9a";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rfd8vAwe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A043C21C18C
-	for <linux-btrfs@vger.kernel.org>; Mon,  9 Jun 2025 18:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E3421D3C0
+	for <linux-btrfs@vger.kernel.org>; Mon,  9 Jun 2025 18:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749495109; cv=none; b=niYFzkiIFOtS/XhZS6AaUBPF0sEV3gSZz5XIOthuXKaGw1oY0GDzoNu+QZBC2GVliqvDkXX5fR9KdsfV/+YHOi59JEFJRjyG8NQfrIi+co1xVR2w4eVqjVIQ5h1fqgHPoM8eoiEWr9eJoU9iGIbOFx+LvD9LDK7jzoMG9Sph4aY=
+	t=1749495340; cv=none; b=J5xktgYchwDod80wXZEGTnqvols2W5HQLa/V4gXiYBdKJlUB/5/aEHEb1NYKlK0wBnQEO7Hu9mn3VofPn0DFLjnCJw2XfnpbvvD/3ZrcIRg1Jsa02ynDsX5T55UK6OkN2qxCBw3hEORT7LAv0sPViHwcjk+n1mbjUuiV+zSOnuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749495109; c=relaxed/simple;
-	bh=wMomh/rSMj/XVkLgXZ01mfMHWwTdw3vt5q23EXMkq7U=;
+	s=arc-20240116; t=1749495340; c=relaxed/simple;
+	bh=AioD6RMQEkpTX0EqSOuZCIVpXp771GvIf7xT2KZjZ50=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mri67O67jQNzyPLsRcAUxNb2QQLSlJ7xQ4SueDhpk8q5UaxWQef8Ic71aFJNlfMVaVW3Zi1tBcUUJcwNFtDE6KqHGRW/IaPRhfw+VQjAuCdCYLUYtZIM7cti6ytnS3tqQB4Fri9MzAXoWCr/kdJvSsuowAv1dMTwhXXyobChH04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WgXziGkC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dFA1Fsfy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WgXziGkC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dFA1Fsfy; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=oeOGJblicypeXFAiXmpgeiYYksz9lTLSdqdY+E1Ae9MB+eaOTlMSrMcNPL7iQU0IWDBVRZ/gboZYwYttkwN07K/nGgXBv/LXpX8sDcLv4uXWnHTs9t4VYz71XO32+8MRFtTqjgkbC3Gjg1qVR1l3sXBiPxv17h/+tljK9GaIeak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lrN14B9a; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Rfd8vAwe; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lrN14B9a; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Rfd8vAwe; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D88A521190;
-	Mon,  9 Jun 2025 18:51:45 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BFD9F1F46E;
+	Mon,  9 Jun 2025 18:55:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1749495105;
+	t=1749495336;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uoJfMxDUKzQNmfH3lmNeCbL7NAVs/d78jVH3iYZ+xeI=;
-	b=WgXziGkC2pSpDUveWYr3Ovv5lLrNwBCAe9LBqGMpejPoyG2Lpx+bE1aUkaD91y8hm2PE7I
-	a6UOuoetBSxtudIJO19R99+74TNr7/Rqyf6+wPs73xk2KFFEtNvR+qRVquLdg7+DC38e3h
-	pi17IDPpEU1dgfpaxb3bq8ZNBSI2rsA=
+	bh=WHPGhuVu0/HD5F0DlgIkjRcoudKH5A7enzJRcAefwJg=;
+	b=lrN14B9afx+mXbyrDVRwHN+Kv3t+dPr8mq8p9YZ6djvbFY/E3CdRoPSE310QjiWCKYvobs
+	g3pHgYHcr1/4NGzfedLnzScKdgFQaZHtKSKjuq5RbBe/J8Cxq0aNCEl+IfLLSkhytM16MJ
+	c8h9v8azA1mW8NK7PI+rV0BzkNP0gD8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1749495105;
+	s=susede2_ed25519; t=1749495336;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uoJfMxDUKzQNmfH3lmNeCbL7NAVs/d78jVH3iYZ+xeI=;
-	b=dFA1FsfyEalqHl2QDQMa3KxCTF/hsTewxHJdCktYxaYxdXWHtJpD6L7gdjg7TLDMFZ0SBl
-	4BzSwWQHw5DpqMDA==
-Authentication-Results: smtp-out1.suse.de;
-	none
+	bh=WHPGhuVu0/HD5F0DlgIkjRcoudKH5A7enzJRcAefwJg=;
+	b=Rfd8vAwemMQVWNx4KDFy1FizQkeuMFWnM5lDNbWTCSJCxp6u5ZEDADqGRFEyS0St4V1Sqt
+	G7erlX8Prj9mCDAg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=lrN14B9a;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Rfd8vAwe
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1749495105;
+	t=1749495336;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uoJfMxDUKzQNmfH3lmNeCbL7NAVs/d78jVH3iYZ+xeI=;
-	b=WgXziGkC2pSpDUveWYr3Ovv5lLrNwBCAe9LBqGMpejPoyG2Lpx+bE1aUkaD91y8hm2PE7I
-	a6UOuoetBSxtudIJO19R99+74TNr7/Rqyf6+wPs73xk2KFFEtNvR+qRVquLdg7+DC38e3h
-	pi17IDPpEU1dgfpaxb3bq8ZNBSI2rsA=
+	bh=WHPGhuVu0/HD5F0DlgIkjRcoudKH5A7enzJRcAefwJg=;
+	b=lrN14B9afx+mXbyrDVRwHN+Kv3t+dPr8mq8p9YZ6djvbFY/E3CdRoPSE310QjiWCKYvobs
+	g3pHgYHcr1/4NGzfedLnzScKdgFQaZHtKSKjuq5RbBe/J8Cxq0aNCEl+IfLLSkhytM16MJ
+	c8h9v8azA1mW8NK7PI+rV0BzkNP0gD8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1749495105;
+	s=susede2_ed25519; t=1749495336;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uoJfMxDUKzQNmfH3lmNeCbL7NAVs/d78jVH3iYZ+xeI=;
-	b=dFA1FsfyEalqHl2QDQMa3KxCTF/hsTewxHJdCktYxaYxdXWHtJpD6L7gdjg7TLDMFZ0SBl
-	4BzSwWQHw5DpqMDA==
+	bh=WHPGhuVu0/HD5F0DlgIkjRcoudKH5A7enzJRcAefwJg=;
+	b=Rfd8vAwemMQVWNx4KDFy1FizQkeuMFWnM5lDNbWTCSJCxp6u5ZEDADqGRFEyS0St4V1Sqt
+	G7erlX8Prj9mCDAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BDC33137FE;
-	Mon,  9 Jun 2025 18:51:45 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A638F137FE;
+	Mon,  9 Jun 2025 18:55:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NSobLkEtR2hnOAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 09 Jun 2025 18:51:45 +0000
-Date: Mon, 9 Jun 2025 20:51:44 +0200
+	id YYlcKCguR2hwOQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 09 Jun 2025 18:55:36 +0000
+Date: Mon, 9 Jun 2025 20:55:35 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 00/12] btrfs: remap tree
-Message-ID: <20250609185144.GZ4037@twin.jikos.cz>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RESEND] btrfs: add extra warning when qgroup is marked
+ inconsistent
+Message-ID: <20250609185535.GA4037@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20250605162345.2561026-1-maharmstone@fb.com>
+References: <e4811c2208b00be4b3206f24db6b81691b3de74e.1749467712.git.wqu@suse.com>
+ <CAL3q7H5MXb0QK02o39HWFS4CHVJ2ybD9SX7njzQbPYjTm5G7NA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250605162345.2561026-1-maharmstone@fb.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H5MXb0QK02o39HWFS4CHVJ2ybD9SX7njzQbPYjTm5G7NA@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: BFD9F1F46E
+X-Rspamd-Action: no action
 X-Spam-Flag: NO
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[];
+	MX_GOOD(-0.01)[];
+	URIBL_BLOCKED(0.00)[suse.com:email,twin.jikos.cz:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:replyto];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,twin.jikos.cz:mid];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_THREE(0.00)[3];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:dkim,suse.cz:replyto,twin.jikos.cz:mid]
+X-Spam-Score: -4.21
 X-Spam-Level: 
 
-On Thu, Jun 05, 2025 at 05:23:30PM +0100, Mark Harmstone wrote:
-> * The remap tree doesn't have metadata items in the extent tree (thanks to Josef
->   for the suggestion). This was to work around some corruption that delayed refs
->   were causing, but it also fits it with our future plans of removing all
->   metadata items for COW-only trees, reducing write amplification.
+On Mon, Jun 09, 2025 at 01:17:30PM +0100, Filipe Manana wrote:
+> On Mon, Jun 9, 2025 at 12:16 PM Qu Wenruo <wqu@suse.com> wrote:
+> >
+> > Unlike qgroup rescan, which always shows whether it cleared the
+> > inconsistent flag, we do not have a proper way to show if qgroup is
+> > marked inconsistent.
+> >
+> > This was not a big deal before as there aren't that many locations that
+> > can mark qgroup  inconsistent.
+> >
+> > But with the introduction of drop_subtree_threshold, qgroup can be
+> > marked inconsistent very frequently, especially for dropping large
+> > subvolume.
+> >
+> > Although most user space tools relying on qgroup should do their own
+> > checks and queue a rescan if needed, we have no idea when qgroup is
+> > marked inconsistent, and will be much harder to debug.
+> >
+> > So this patch will add an extra warning (btrfs_warn_rl()) when the
+> > qgroup flag is flipped into inconsistent for the first time.
+> >
+> > Combined with the existing qgroup rescan messages, it should provide
+> > some clues for debugging.
+> >
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > ---
+> > Pure resent, I thought it was already merged but it's not the case.
+> > It will be very helpful for debugging qgroup related problems caused by
+> > qgroup being marked inconsistent.
+> > ---
+> >  fs/btrfs/qgroup.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> > index a1afc549c404..45f587bd9ce6 100644
+> > --- a/fs/btrfs/qgroup.c
+> > +++ b/fs/btrfs/qgroup.c
+> > @@ -350,6 +350,8 @@ static void qgroup_mark_inconsistent(struct btrfs_fs_info *fs_info)
+> >  {
+> >         if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_SIMPLE)
+> >                 return;
+> > +       if (!(fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT))
+> > +               btrfs_warn_rl(fs_info, "qgroup marked inconsistent");
+> 
+> About half the callers already log some message right before or right
+> after calling this function.
+> But this won't tell us much about why/where the qgroup was marked
+> inconsistent for all the other callers.
+> 
+> Perhaps we can pass a string to this function and include it in the
+> warning message? And then remove the logging from all callers that do
+> it.
+> Additionally turning this into a macro, and then printing __FILE__ and
+> __LINE__ too, would make it a lot more useful for debugging.
 
->   A knock-on effect of this is that I've had to disable balancing of the remap
->   chunk itself.
+If this is meant for debugging then the message level should be either
+debug or info, but not warn. If it's for user information then the file
+and line is not relevant.
 
-Not relocatable at all? How will the shrink or device deletion work,
-this uses relocation to move the chunks.
-
->   This is because we can no longer walk the extent tree, and will
->   have to walk the remap tree instead. When we remove the COW-only metadata
->   items, we will also have to do this for the chunk and root trees, as
->   bootstrapping means they can't be remapped.
+Otherwise agreed about printing the reason why it's marked inconsistent.
 
