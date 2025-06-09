@@ -1,54 +1,75 @@
-Return-Path: <linux-btrfs+bounces-14549-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14550-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAEEAAD1552
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Jun 2025 00:44:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BCE1AD183E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Jun 2025 07:20:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 096711884F46
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Jun 2025 22:44:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 839D03A7E65
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Jun 2025 05:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709BD25D202;
-	Sun,  8 Jun 2025 22:43:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5B6194C96;
+	Mon,  9 Jun 2025 05:20:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JAa8x7S3"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Zj3ths8d";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Zj3ths8d"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B934325A2C9
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Jun 2025 22:43:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A14BE2F4A
+	for <linux-btrfs@vger.kernel.org>; Mon,  9 Jun 2025 05:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749422622; cv=none; b=NSYwgWlDnP4YSDp/1oBfSV4FHRIj52zJ6DAQvCYulJkA/bitBTyH2XRFb6OIfqjDYziT55ih+e+OLmTjZ1Cq+5JjI21JIcA2R5uHzlV2DI/ORd4/5pYcZ0YJJ0PAVzJaBFbL4pveIHJxDBAIe1Lx1OJzFWDSSTaKg/qYAkV3z/w=
+	t=1749446413; cv=none; b=DaW/H9g4I1Jn3OLhvqxe4Y/2/CXWadhDUMGLe6VtT2fNlBtP8MPCMThTED7OItGk6EeT9+iweZL3BUf38VUDVRqIGiSz+/8QOredNl5MI8/Zbx0VSvKqcmIvUGnOHW7ULHFXqhiRgrviEFok4JQwe/5dckTdkKGJEXa+jhs+w2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749422622; c=relaxed/simple;
-	bh=68qiLTYsg1xT8D7eVRtT3UQVT6GPsNXjt8X5cH/HPfE=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=is83l3UMDU2OyXo84NUffstHEQIinbHw9jxLR9NwmgSIOMCcVXaqX47dg2UlfI9tRtMd5BomNeleAhmB/y+XuW3tPIGQ5XV+bRZlguPD2OiiXBk4gNAzq6QSDC/8ID+BuRVV1TEjBj/kUP3Lqy19Qwka2j+KwYZjMawYCFA4Xuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JAa8x7S3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A83D8C4CEEF
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Jun 2025 22:43:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749422622;
-	bh=68qiLTYsg1xT8D7eVRtT3UQVT6GPsNXjt8X5cH/HPfE=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=JAa8x7S3hZz7V0dfVBt1bsh3+4BYGNeXlIIOLcn0uTQXslXIR9XhOg1szZUn6wBZz
-	 oCDSDqkH2pi8kitUK5xVrqvF09uYwItgTHnSy1do1fjHreXOjolR2fUYal0k3dJLpL
-	 yOOZ8lrOSl6OqKH4YCwTAAPOIdtosxGYn+n1xv35DWeJ6N6uLEMSOpom1bAcDs86+Z
-	 3FZzlJ8OHlw7icp+EEQms6pX3oCfeHxRYwx0dMckkxLy1/+9yMGFd/TA1d4YzXslWW
-	 OdeJgqULnRZw34hCY6m0Cqtk1eHcNex8NYS3rv2EZrsRrRibSPZSXqcxk8I1Gl2Wi9
-	 HUcNIudTLBvXQ==
-From: fdmanana@kernel.org
+	s=arc-20240116; t=1749446413; c=relaxed/simple;
+	bh=uuskJ05Q9mqEH6r+ksSOvdChC59qIc99ez2AHMgr76o=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=IW2yYwp3U3Np7DIICNxrrme6YjuiaQSvQEgEKG9+OILdIlDghEYMXDRRZyRr+68+dkaiYKwSEyzfdu+8CsXaBR2xpyZgqq+rVWYCMDmxBBKo6/H2FzmGrznGFxC9jYzpNdWxBoMOCiQD8zgU9SHLLF5d+kThZJFG3dyGdrteAYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Zj3ths8d; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Zj3ths8d; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A426C1F395
+	for <linux-btrfs@vger.kernel.org>; Mon,  9 Jun 2025 05:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1749446408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wNkE6ItF2CZYsoOJUUB88LfDw5HSnEg1lqjEFVaLIFU=;
+	b=Zj3ths8dG3gkVUbe/fZdp6DXXUD8X9/SQBFCvbG5wkK42+Ijf9agLGC2FWWRAALyaCoOg9
+	p8FQYUc44PX5pud9XkMJQzsD09RpLEwrHWs3AUA9shw2KIoBO5G6pii9qxunjBW9yijfe0
+	xmXreF3Jlx3Xzv2Gl+L240zbnEzUGeI=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=Zj3ths8d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1749446408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wNkE6ItF2CZYsoOJUUB88LfDw5HSnEg1lqjEFVaLIFU=;
+	b=Zj3ths8dG3gkVUbe/fZdp6DXXUD8X9/SQBFCvbG5wkK42+Ijf9agLGC2FWWRAALyaCoOg9
+	p8FQYUc44PX5pud9XkMJQzsD09RpLEwrHWs3AUA9shw2KIoBO5G6pii9qxunjBW9yijfe0
+	xmXreF3Jlx3Xzv2Gl+L240zbnEzUGeI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D3679137FE
+	for <linux-btrfs@vger.kernel.org>; Mon,  9 Jun 2025 05:20:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id bAXqJAdvRmjqVQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 09 Jun 2025 05:20:07 +0000
+From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: check BLOCK_GROUP_FLAG_NEEDS_FREE_SPACE at __add_block_group_free_space()
-Date: Sun,  8 Jun 2025 23:43:34 +0100
-Message-ID: <40dd299a0b7551fb8163da00a6ed716a8f8c3d46.1749421865.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <cover.1749421865.git.fdmanana@suse.com>
-References: <cover.1749421865.git.fdmanana@suse.com>
+Subject: [PATCH v2 0/4] btrfs: introduce btrfs specific bdev holder ops and implement mark_dead() call back
+Date: Mon,  9 Jun 2025 14:49:46 +0930
+Message-ID: <cover.1749446257.git.wqu@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -56,132 +77,103 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	FROM_HAS_DN(0.00)[];
+	ARC_NA(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: A426C1F395
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -3.01
 
-From: Filipe Manana <fdmanana@suse.com>
+[CHANGELOG]
+v2:
+- Extra patches to properly handle fs mounting/unmounting races
 
-Every caller of __add_block_group_free_space() is checking if the flag
-BLOCK_GROUP_FLAG_NEEDS_FREE_SPACE is set before calling it. This is
-duplicate code and it's prone to some mistake in case we add more callers
-in the future. So move the check for that flag into the start of
-__add_block_group_free_space().
+- Harden freeze/thaw races
+  As they can be called on a per-fs and per-bdev basis, can cause extra
+  races.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/free-space-tree.c | 58 ++++++++++++++++++--------------------
- 1 file changed, 28 insertions(+), 30 deletions(-)
+Btrfs doesn't implement any callbacks of blk_holder_ops, this means:
 
-diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index af005fb4b676..f03f3610b713 100644
---- a/fs/btrfs/free-space-tree.c
-+++ b/fs/btrfs/free-space-tree.c
-@@ -816,11 +816,9 @@ int __remove_from_free_space_tree(struct btrfs_trans_handle *trans,
- 	u32 flags;
- 	int ret;
- 
--	if (test_bit(BLOCK_GROUP_FLAG_NEEDS_FREE_SPACE, &block_group->runtime_flags)) {
--		ret = __add_block_group_free_space(trans, block_group, path);
--		if (ret)
--			return ret;
--	}
-+	ret = __add_block_group_free_space(trans, block_group, path);
-+	if (ret)
-+		return ret;
- 
- 	info = search_free_space_info(NULL, block_group, path, 0);
- 	if (IS_ERR(info))
-@@ -1011,11 +1009,9 @@ int __add_to_free_space_tree(struct btrfs_trans_handle *trans,
- 	u32 flags;
- 	int ret;
- 
--	if (test_bit(BLOCK_GROUP_FLAG_NEEDS_FREE_SPACE, &block_group->runtime_flags)) {
--		ret = __add_block_group_free_space(trans, block_group, path);
--		if (ret)
--			return ret;
--	}
-+	ret = __add_block_group_free_space(trans, block_group, path);
-+	if (ret)
-+		return ret;
- 
- 	info = search_free_space_info(NULL, block_group, path, 0);
- 	if (IS_ERR(info))
-@@ -1403,9 +1399,12 @@ static int __add_block_group_free_space(struct btrfs_trans_handle *trans,
- 					struct btrfs_block_group *block_group,
- 					struct btrfs_path *path)
- {
-+	bool own_path = false;
- 	int ret;
- 
--	clear_bit(BLOCK_GROUP_FLAG_NEEDS_FREE_SPACE, &block_group->runtime_flags);
-+	if (!test_and_clear_bit(BLOCK_GROUP_FLAG_NEEDS_FREE_SPACE,
-+				&block_group->runtime_flags))
-+		return 0;
- 
- 	/*
- 	 * While rebuilding the free space tree we may allocate new metadata
-@@ -1430,10 +1429,19 @@ static int __add_block_group_free_space(struct btrfs_trans_handle *trans,
- 	 */
- 	set_bit(BLOCK_GROUP_FLAG_FREE_SPACE_ADDED, &block_group->runtime_flags);
- 
-+	if (!path) {
-+		path = btrfs_alloc_path();
-+		if (!path) {
-+			btrfs_abort_transaction(trans, -ENOMEM);
-+			return -ENOMEM;
-+		}
-+		own_path = true;
-+	}
-+
- 	ret = add_new_free_space_info(trans, block_group, path);
- 	if (ret) {
- 		btrfs_abort_transaction(trans, ret);
--		return ret;
-+		goto out;
- 	}
- 
- 	ret = __add_to_free_space_tree(trans, block_group, path,
-@@ -1441,33 +1449,23 @@ static int __add_block_group_free_space(struct btrfs_trans_handle *trans,
- 	if (ret)
- 		btrfs_abort_transaction(trans, ret);
- 
--	return 0;
-+out:
-+	if (own_path)
-+		btrfs_free_path(path);
-+
-+	return ret;
- }
- 
- int add_block_group_free_space(struct btrfs_trans_handle *trans,
- 			       struct btrfs_block_group *block_group)
- {
--	struct btrfs_fs_info *fs_info = trans->fs_info;
--	struct btrfs_path *path = NULL;
--	int ret = 0;
-+	int ret;
- 
--	if (!btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
-+	if (!btrfs_fs_compat_ro(trans->fs_info, FREE_SPACE_TREE))
- 		return 0;
- 
- 	mutex_lock(&block_group->free_space_lock);
--	if (!test_bit(BLOCK_GROUP_FLAG_NEEDS_FREE_SPACE, &block_group->runtime_flags))
--		goto out;
--
--	path = btrfs_alloc_path();
--	if (!path) {
--		ret = -ENOMEM;
--		btrfs_abort_transaction(trans, ret);
--		goto out;
--	}
--
--	ret = __add_block_group_free_space(trans, block_group, path);
--out:
--	btrfs_free_path(path);
-+	ret = __add_block_group_free_space(trans, block_group, NULL);
- 	mutex_unlock(&block_group->free_space_lock);
- 	return ret;
- }
+- No sync/freeze/thaw support for an opened btrfs device
+  Not sure if this is the root cause of btrfs + hiberantion data loss,
+  but it won't hurt if we have such support.
+
+- No ability to detect dead device at runtime
+  Meaning we can have "living" dead device in btrfs, the worst case is
+  generic/730, that the single device of a btrfs is removed, and btrfs
+  just abort transaction when it fails to write the transaction.
+
+This series improve the situation by:
+
+- Use a per-fs holder for block device
+  This is a dependency to implement proper blk_holder_ops, as we need a
+  way to grab the fs_info from a block device.
+
+- Use bdev_fput() for btrfs devices
+  This ensures the bdev holder reclaim will not be delayed, thus ensure
+  the fs_info's lifespan is always covering any opened block devices.
+
+  This is another dependency to implement blk_holder_ops, or we can grab
+  an fs_info which is already released.
+
+- Implement per-bdev sync/freeze/thaw callbacks
+  This has a special requirement for freeze/thaw, as freeze/thaw can be
+  triggered from two different paths, by ioctl (aka, per-fs) and by
+  block device (aka, per-bdev).
+
+  This means for the worst case, per-fs and per-dev freezing/thawing can
+  race with each other, and this requires fs level serialization.
+
+- Implement the mark_dead() call back
+  This will automatically mark the dead devices as missing, and degrade
+  the fs.
+
+  Furthermore, if the remaining devices can no longer maintain RW
+  operations, immediately mark the fs as error (thus also read-only) to
+  prevent further data loss.
+
+
+Qu Wenruo (4):
+  btrfs: use fs_info as the block device holder
+  btrfs: replace fput() with bdev_fput() for block devices
+  btrfs: implement a basic per-block-device call backs
+  btrfs: add a simple dead device detection mechanism
+
+ fs/btrfs/dev-replace.c |   4 +-
+ fs/btrfs/disk-io.c     |  11 +++
+ fs/btrfs/fs.h          |  14 +++-
+ fs/btrfs/ioctl.c       |   4 +-
+ fs/btrfs/super.c       |  27 ++++++--
+ fs/btrfs/super.h       |   2 +
+ fs/btrfs/volumes.c     | 154 +++++++++++++++++++++++++++++++++++++----
+ fs/btrfs/volumes.h     |   6 ++
+ 8 files changed, 197 insertions(+), 25 deletions(-)
+
 -- 
-2.47.2
+2.49.0
 
 
