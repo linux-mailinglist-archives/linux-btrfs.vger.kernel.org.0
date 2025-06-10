@@ -1,155 +1,254 @@
-Return-Path: <linux-btrfs+bounces-14590-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14591-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C9A6AD3BE2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jun 2025 16:57:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93B73AD3EF4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jun 2025 18:30:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9325D3A90FF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jun 2025 14:55:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0820C17A004
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jun 2025 16:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A6322FACE;
-	Tue, 10 Jun 2025 14:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1A52241131;
+	Tue, 10 Jun 2025 16:30:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=borehabit.cfd header.i=@borehabit.cfd header.b="V88M6tGu"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bPvBFdcV";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bPvBFdcV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from borehabit.cfd (ip160.ip-51-81-179.us [51.81.179.160])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27E5D227EBD
-	for <linux-btrfs@vger.kernel.org>; Tue, 10 Jun 2025 14:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.81.179.160
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85D44221FB2
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Jun 2025 16:30:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749567369; cv=none; b=tSCMMmP6e2dptejBY8CukdRNVFSHHIIvftbX5IvLPI4JtdvBuNJWptSkA5cuc6ZBM13IWkWIcfz33/07UZdU1NXHoxj+b06rl9V26AsIoABr1rbWC69cLxFaUNG5nsyZV6fybVVl6YHv4I3B7n0VUjoCbdXek+i7vh1rhPuN0a8=
+	t=1749573016; cv=none; b=tpmEEPiE+vZmmG2c6k42oI5OITGZkyb7UrJVemoC905NV3Jf7Ge4tXGgZA5dAQsMJAKAYQIB1D2+Ac7h9FiAphR1bF6AGKXSYyqOWnoFcM57U/jjLj3hWQxqPgbJ+l4J7NDsBmWtDLt3DBmz2qTRFS72OUyzaBux+FUxY8UDQcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749567369; c=relaxed/simple;
-	bh=j/qZ6nCFDOcbnwIbag40JF9HDzOLw0n9TJz9U1mz3X8=;
-	h=To:Subject:Date:From:Message-ID:MIME-Version:Content-Type; b=iGF2BDg/PhkbNArmhLCsSJ0UNeqSMpIzTA12UZkzXvxX0JcyC9N5txIw5QD20lVUgHuMqvx9BZwEb+84RWtE06RF1dThlYmNeYneLnrMr19GHRw+ASbliZViuPASDKHds49Jejo1gbpmwckXLLeyXB5dUPKIMJmuiGZ5L+mWisA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=borehabit.cfd; spf=pass smtp.mailfrom=borehabit.cfd; dkim=pass (1024-bit key) header.d=borehabit.cfd header.i=@borehabit.cfd header.b=V88M6tGu; arc=none smtp.client-ip=51.81.179.160
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=borehabit.cfd
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=borehabit.cfd
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=borehabit.cfd; s=mail; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-ID:Reply-To:From:Date:Subject:To:Sender:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=CFYjPvEUim5mD5QwWelE+Axpgk7p2gwnF2M5gpb++Rg=; b=V88M6tGuL+W6/ErabirTryZma1
-	/ZOk+OZ+nl3eNP12iu5A/dnb1QucPpE/Glpv/LFYFyVapRw8BvkqB5613gsU+rmRxEiXo1CFUtzRe
-	QdSy7gVojvAKxkKYznN3TOwaPUlYG2fgSxBK8CqkPXnJdycJ8DzDkCAdBzeBG/StbMxE=;
-Received: from admin by borehabit.cfd with local (Exim 4.90_1)
-	(envelope-from <support@borehabit.cfd>)
-	id 1uP0OV-000W9C-9W
-	for linux-btrfs@vger.kernel.org; Tue, 10 Jun 2025 21:56:07 +0700
+	s=arc-20240116; t=1749573016; c=relaxed/simple;
+	bh=tB+wTUiLSk5AhhctoEsIQ0G5IUZX/2UG5lRo/TEnMwo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D9RrV41IS2WB8qJ3KyOmUeiMZ6adSXpV1EGYZm0Vr6RZUphgpUVTeOvz3MiCJFxfatLByfDAgqefiVVHcjoKJkikALXji/cbynnNGklGOJ8AZ6JuM3nyt2v7cwsNBkP/UMt9WWInhKzuxFV+ZXfyaTEV4B9/xe99agTTuTQWV0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bPvBFdcV; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bPvBFdcV; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8C99E21981;
+	Tue, 10 Jun 2025 16:30:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1749573012; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=lHqWVYQTRYLYPIfBhjrkPHx6VCnryGaDQTsyJW50V1s=;
+	b=bPvBFdcVJ6SIX8N7pWWJK8wlIWCIRq2+ucMu1SnikY+O7XA6KwMCfKWiSE1oHx9j6TuBy3
+	JW7VjF7RKkGRKgP7qsKkzjyK3W95ihOB5cfyV0BJkQVdulXoSUkG+Rl2zGGxyCLqh4UUXc
+	hwOL3vmCvw5arQCoyj93uQGPS3gm9dY=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=bPvBFdcV
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1749573012; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=lHqWVYQTRYLYPIfBhjrkPHx6VCnryGaDQTsyJW50V1s=;
+	b=bPvBFdcVJ6SIX8N7pWWJK8wlIWCIRq2+ucMu1SnikY+O7XA6KwMCfKWiSE1oHx9j6TuBy3
+	JW7VjF7RKkGRKgP7qsKkzjyK3W95ihOB5cfyV0BJkQVdulXoSUkG+Rl2zGGxyCLqh4UUXc
+	hwOL3vmCvw5arQCoyj93uQGPS3gm9dY=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 83C23139E2;
+	Tue, 10 Jun 2025 16:30:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id lKZ2H5RdSGh+YwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Tue, 10 Jun 2025 16:30:12 +0000
+From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: WTS Available laptops and Memory
-Date: Tue, 10 Jun 2025 14:56:07 +0000
-From: Exceptional One PC <support@borehabit.cfd>
-Reply-To: info@exceptionalonepc.com
-Message-ID: <03d769d606669d6a2dd295ffc4d98617@borehabit.cfd>
+Cc: David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: tree-log: add and rename extent bits for dirty_log_pages tree
+Date: Tue, 10 Jun 2025 18:30:09 +0200
+Message-ID: <20250610163009.26520-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 8C99E21981
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:dkim,suse.com:email];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Score: -3.01
+X-Spam-Level: 
 
-Hello,
+The dirty_log_pages tree is used for tree logging and marks extents
+based on log_transid. The bits could be renamed to resemble the
+LOG1/LOG2 naming used for the BTRFS_FS_LOG1_ERR bits.
 
-Looking for a buyer to move any of the following Items located in USA.
+The DIRTY bit is renamed to LOG1 and NEW to LOG2.
 
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/extent-io-tree.h        |  3 ++-
+ fs/btrfs/extent-tree.c           |  4 ++--
+ fs/btrfs/tests/extent-io-tests.c |  3 ++-
+ fs/btrfs/transaction.c           |  4 ++--
+ fs/btrfs/tree-log.c              | 12 ++++++------
+ include/trace/events/btrfs.h     |  3 ++-
+ 6 files changed, 16 insertions(+), 13 deletions(-)
 
-Used MICRON SSD 7300 PRO 3.84TB 
-U.2 HTFDHBE3T8TDF SSD 2.5" NVMe 3480GB
-Quantity 400, price $100 EACH 
-
-
- 005052112 _ 7.68TB HDD -$200 PER w/ caddies refurbished 
- Quantity 76, price $100
-
-
-
-Brand New CISCO C9300-48UXM-E
-Available 5
-$2000 EACH
-
-
-Brand New C9200L-48T-4X-E
-$1,200 EACH
-QTY4
-
-HP 1040G3 Elite Book Folio Processor :- Intel Core i5
-◻Processor :- Intel Core i5
-◻Generation :- 6th
-◻RAM :- 16GB
-◻Storage :- 256G SSD
-◻Display :- 14 inch" Touch Screen 
-QTY 340 $90 EA
-
-
-
-SK HYNIX 16GB 2RX4 PC4 - 2133P-RAO-10
-HMA42GR7AFR4N-TF TD AB 1526
-QTY560 $20 EA
-
-
-Xeon Gold 6442Y (60M Cache, 2.60 GHz)	
- PK8071305120500	 
- QTY670 700 each 
-
-
-SAMSUNG 64GB 4DRX4 PC4-2666V-LD2-12-MAO
-M386A8K40BM2-CTD60 S
-QTY 320 $42 each
-
-
-
-Brand New CISCO C9300-48UXM-E
-Available 5
-$2500 EACH
-
-
-Core i3-1315U (10M Cache, up to 4.50 GHz)	
- FJ8071505258601
-QTY50  $80 EA
-
-Intel Xeon Gold 5418Y Processors
-QTY28 $780 each
-
-
-Brand New C9200L-48T-4X-E  
-$1000 EACH
-QTY4
-
-
-Brand New Gigabyte NVIDIA GeForce RTX 5090 AORUS
-MASTER OC Graphics Card GPU 32GB GDDR7
-QTY50 $1,300
-
-
- Brand New N9K-C93108TC-FX-24 Nexus
-9300-FX w/ 24p 100M/1/10GT & 6p 40/100G
-Available 4
-$3000 each
-
-
-
-Brand New NVIDIA GeForce RTX 4090 Founders
-Edition 24GB - QTY: 56 - $700 each
-
-
-
-
-Charles Lawson
-Exceptional One PC
-3645 Central Ave, Riverside
-CA 92506, United States
-www.exceptionalonepc.com
-info@exceptionalonepc.com
-Office: (951)-556-3104
+diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+index 0a18ca9c59c3..819da07bff09 100644
+--- a/fs/btrfs/extent-io-tree.h
++++ b/fs/btrfs/extent-io-tree.h
+@@ -19,7 +19,8 @@ enum {
+ 	ENUM_BIT(EXTENT_DIRTY),
+ 	ENUM_BIT(EXTENT_LOCKED),
+ 	ENUM_BIT(EXTENT_DIO_LOCKED),
+-	ENUM_BIT(EXTENT_NEW),
++	ENUM_BIT(EXTENT_DIRTY_LOG1),
++	ENUM_BIT(EXTENT_DIRTY_LOG2),
+ 	ENUM_BIT(EXTENT_DELALLOC),
+ 	ENUM_BIT(EXTENT_DEFRAG),
+ 	ENUM_BIT(EXTENT_BOUNDARY),
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 1c3bfb9ff025..1244729dd8ba 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -5142,11 +5142,11 @@ btrfs_init_new_buffer(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 		if (buf->log_index == 0)
+ 			btrfs_set_extent_bit(&root->dirty_log_pages, buf->start,
+ 					     buf->start + buf->len - 1,
+-					     EXTENT_DIRTY, NULL);
++					     EXTENT_DIRTY_LOG1, NULL);
+ 		else
+ 			btrfs_set_extent_bit(&root->dirty_log_pages, buf->start,
+ 					     buf->start + buf->len - 1,
+-					     EXTENT_NEW, NULL);
++					     EXTENT_DIRTY_LOG2, NULL);
+ 	} else {
+ 		buf->log_index = -1;
+ 		btrfs_set_extent_bit(&trans->transaction->dirty_pages, buf->start,
+diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
+index 00da54f0164c..557d05220de1 100644
+--- a/fs/btrfs/tests/extent-io-tests.c
++++ b/fs/btrfs/tests/extent-io-tests.c
+@@ -75,7 +75,8 @@ static void extent_flag_to_str(const struct extent_state *state, char *dest)
+ 	dest[0] = 0;
+ 	PRINT_ONE_FLAG(state, dest, cur, DIRTY);
+ 	PRINT_ONE_FLAG(state, dest, cur, LOCKED);
+-	PRINT_ONE_FLAG(state, dest, cur, NEW);
++	PRINT_ONE_FLAG(state, dest, cur, DIRTY_LOG1);
++	PRINT_ONE_FLAG(state, dest, cur, DIRTY_LOG2);
+ 	PRINT_ONE_FLAG(state, dest, cur, DELALLOC);
+ 	PRINT_ONE_FLAG(state, dest, cur, DEFRAG);
+ 	PRINT_ONE_FLAG(state, dest, cur, BOUNDARY);
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 825d135ef6c7..2e07c90be5cd 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1232,11 +1232,11 @@ int btrfs_wait_tree_log_extents(struct btrfs_root *log_root, int mark)
+ 	ASSERT(btrfs_root_id(log_root) == BTRFS_TREE_LOG_OBJECTID);
+ 
+ 	ret = __btrfs_wait_marked_extents(fs_info, dirty_pages);
+-	if ((mark & EXTENT_DIRTY) &&
++	if ((mark & EXTENT_DIRTY_LOG1) &&
+ 	    test_and_clear_bit(BTRFS_FS_LOG1_ERR, &fs_info->flags))
+ 		errors = true;
+ 
+-	if ((mark & EXTENT_NEW) &&
++	if ((mark & EXTENT_DIRTY_LOG2) &&
+ 	    test_and_clear_bit(BTRFS_FS_LOG2_ERR, &fs_info->flags))
+ 		errors = true;
+ 
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 3f5593fe1215..768f872b08bd 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -2961,9 +2961,9 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 	}
+ 
+ 	if (log_transid % 2 == 0)
+-		mark = EXTENT_DIRTY;
++		mark = EXTENT_DIRTY_LOG1;
+ 	else
+-		mark = EXTENT_NEW;
++		mark = EXTENT_DIRTY_LOG2;
+ 
+ 	/* we start IO on  all the marked extents here, but we don't actually
+ 	 * wait for them until later.
+@@ -3094,7 +3094,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 
+ 	ret = btrfs_write_marked_extents(fs_info,
+ 					 &log_root_tree->dirty_log_pages,
+-					 EXTENT_DIRTY | EXTENT_NEW);
++					 EXTENT_DIRTY_LOG1 | EXTENT_DIRTY_LOG2);
+ 	blk_finish_plug(&plug);
+ 	/*
+ 	 * As described above, -EAGAIN indicates a hole in the extents. We
+@@ -3114,7 +3114,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 	ret = btrfs_wait_tree_log_extents(log, mark);
+ 	if (!ret)
+ 		ret = btrfs_wait_tree_log_extents(log_root_tree,
+-						  EXTENT_NEW | EXTENT_DIRTY);
++						  EXTENT_DIRTY_LOG1 | EXTENT_DIRTY_LOG2);
+ 	if (ret) {
+ 		btrfs_set_log_full_commit(trans);
+ 		mutex_unlock(&log_root_tree->log_mutex);
+@@ -3240,9 +3240,9 @@ static void free_log_tree(struct btrfs_trans_handle *trans,
+ 			 */
+ 			btrfs_write_marked_extents(log->fs_info,
+ 						   &log->dirty_log_pages,
+-						   EXTENT_DIRTY | EXTENT_NEW);
++						   EXTENT_DIRTY_LOG1 | EXTENT_DIRTY_LOG2);
+ 			btrfs_wait_tree_log_extents(log,
+-						    EXTENT_DIRTY | EXTENT_NEW);
++						    EXTENT_DIRTY_LOG1 | EXTENT_DIRTY_LOG2);
+ 
+ 			if (trans)
+ 				btrfs_abort_transaction(trans, ret);
+diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+index a32305044371..d54fe354b390 100644
+--- a/include/trace/events/btrfs.h
++++ b/include/trace/events/btrfs.h
+@@ -144,7 +144,8 @@ FLUSH_STATES
+ #define EXTENT_FLAGS						\
+ 	{ EXTENT_DIRTY,			"DIRTY"},		\
+ 	{ EXTENT_LOCKED,		"LOCKED"},		\
+-	{ EXTENT_NEW,			"NEW"},			\
++	{ EXTENT_DIRTY_LOG1,		"DIRTY_LOG1"},		\
++	{ EXTENT_DIRTY_LOG2,		"DIRTY_LOG2"},		\
+ 	{ EXTENT_DELALLOC,		"DELALLOC"},		\
+ 	{ EXTENT_DEFRAG,		"DEFRAG"},		\
+ 	{ EXTENT_BOUNDARY,		"BOUNDARY"},		\
+-- 
+2.47.1
 
 
