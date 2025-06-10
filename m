@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-14576-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14577-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02664AD293B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jun 2025 00:13:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A662AD2D71
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jun 2025 07:43:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58CA616FDE7
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Jun 2025 22:13:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71BCF16D88A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jun 2025 05:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B280F22488E;
-	Mon,  9 Jun 2025 22:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6BE25F788;
+	Tue, 10 Jun 2025 05:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="N1MfFAPx"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="AehJV7/H"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0AC2940D
-	for <linux-btrfs@vger.kernel.org>; Mon,  9 Jun 2025 22:13:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851D625EFBB;
+	Tue, 10 Jun 2025 05:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749507230; cv=none; b=j9BZBOt4YvJ3IZdS83FRzW7dXcxkhEhAhrgtFWJJCRNXYCs6bBhyntYzcaMWSpmRWsFRywbx5Tg7ZvbRA5/MC5YqlsBw2YTdMwvnfdSdOTzLKkK28Y7H1Jp3FeaV/lTJquJTyNQG1WstIFCl/BTtp5WW5NA00sAlBYZfnraqJG0=
+	t=1749534213; cv=none; b=rdOXemuZXJiFVHuVMr8NPX93OqRy1MySGFjw8E/OnMqqvzYThR3W5fQfe2M3bphUNPVIzAlD6aPevgtUqQEkAamaQ5X+Thmy/raNVcG5sQOIPvVuN7kXXqkU98n1agwrqZG4ldYk8dXX7qRNMK0X+TrNZ7PLlw0pEFoqbkvfwmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749507230; c=relaxed/simple;
-	bh=WTXKI/oBQmuoWnGc2EuasljaFGU3qqspXQCuTTV/DtY=;
+	s=arc-20240116; t=1749534213; c=relaxed/simple;
+	bh=Uru25gMkR5IQyueTs0DVQl8s1ziyhbrYD/59QT0ywAg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Dj6O9BlJGVlAxp+1EL/TDzX28RJ2edEKXt4tDBzntYItME7T5CMVTvtywuIMy2Eu+rLLxBWr/lnQ6zXIAh254pEn7wJmH6/xNSEfOiaSQCzM8dAhaRrElTMzZIq7Mqe/z5QpeyfN6INA905Ewg6IY2skn2Sui1gtw1LR/Sy1pJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=N1MfFAPx; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=mVy962S9ZyX9Y91e3p2bEL5hG9uC1gxLV70Q/NaAAFe6lQWjOuqzkPdiW7kT9YnwVJjP+hCqud8CLYoRHH8on3YLEiH4MM6Cy8O9nqOYtr14mRQKx1rxC7myudNbhSgFO+rlU5HDyF1IHjKIzhA2tfSuCUdXraDTmMGJBgHvdL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=AehJV7/H; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1749507225; x=1750112025; i=quwenruo.btrfs@gmx.com;
-	bh=kiDKtaL/Iuiui74hYzBtojricAAp5/sag01atXSp+Wc=;
+	s=s31663417; t=1749534204; x=1750139004; i=quwenruo.btrfs@gmx.com;
+	bh=xIvHXA1+JetSZWNV6SIySYqtK1pFmyyO4FG7BweavSE=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=N1MfFAPxVquFxuAa/zFXYcoSbcbZTH5ss/N/V/TEuuXsvuDfnyKJvuYUQyM8rRKp
-	 YoeCfkgDSLMfQ1PICOYnd3Prre/I/M7vnh3C3EeLVkEMVgN1PCUEbBmLUbk/8DhQm
-	 +FBX4ePvUq+9/fwkxNLFcypN25qkWYmiudTgAi7r1PK9UbgSk6+5kOUutWCbI8DJ8
-	 K1jwd8spqmA18SCM88ZM1eSxO9CKh7ZkA9Ap5H3ehrmueYMcnehCd4coe4o9263j7
-	 S9e/OYdDO5I1nIZrRSak/ihbYrZjrA54XAkvL/Uaa+MamMv4jaOn7YRAwYvRnOlMQ
-	 2SAXMkOfb0cStPJHKw==
+	b=AehJV7/HRQ4FZkqXCfpM2xy2wePjRN7aF7KwaJr3gICKQ1UUne+cwfaB5p+Ppt4W
+	 Dnc3NapFc9VqnkwvG2EEy63fc46JnCMPQ1h2i9ftVYUa0V31gy082Ruivobaj5pau
+	 eYOKWFD7Nm0i2k6sNOZmF3cxBDrRBX9Gw1KbXijF+fEP59tOu5iRq6nH2L9GeVK1g
+	 YEhHz6DdDrcWFZVwZ3Tj30mr9NEohj8xRkTWeMpxTE4DZ23+F1nhgFwKV8Up4rsye
+	 MT09MxEznulrGaKXTF+/UnGjB0LDCNzxekuzMab+EvMSNE9yGtzW6zhqIpWPUL9T9
+	 w5O4cIbHX6w4Cp2IJA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmlTC-1v5GmN0awA-00qfd0; Tue, 10
- Jun 2025 00:13:45 +0200
-Message-ID: <1fcb4fd5-a147-4614-a6c5-76857ee9503f@gmx.com>
-Date: Tue, 10 Jun 2025 07:43:41 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYvY8-1uKRtD2fOC-00SyGc; Tue, 10
+ Jun 2025 07:43:24 +0200
+Message-ID: <76257b31-d679-4066-b047-a27bbde8046c@gmx.com>
+Date: Tue, 10 Jun 2025 15:13:19 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND] btrfs: add extra warning when qgroup is marked
- inconsistent
-To: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <e4811c2208b00be4b3206f24db6b81691b3de74e.1749467712.git.wqu@suse.com>
- <CAL3q7H5MXb0QK02o39HWFS4CHVJ2ybD9SX7njzQbPYjTm5G7NA@mail.gmail.com>
- <20250609185535.GA4037@twin.jikos.cz>
+Subject: Re: [PATCH 2/5] btrfs: call btrfs_close_devices from ->kill_sb
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>, Chris Mason
+ <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Christoph Hellwig <hch@lst.de>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240214-hch-device-open-v1-0-b153428b4f72@wdc.com>
+ <20240214-hch-device-open-v1-2-b153428b4f72@wdc.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,152 +91,196 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250609185535.GA4037@twin.jikos.cz>
+In-Reply-To: <20240214-hch-device-open-v1-2-b153428b4f72@wdc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0ZWu1xxEygEk6VjdOUyZbxoJKw+2+ibF6E/IjDV+ZTvpfhhCF/3
- kRug0lvg6uRRNWhQbeMZ+73Iv4kMsSDoS/6lVb1CQVdwOLSzqjm4qrXCxKaavF4WPW8mglK
- 2zQHKfUnAxYuld+qqXO19YCr8PmwPWKN0O73TqkeADmZbvJRmU7skGYG7X0QPRwKopsn7qK
- 9I9gblZ54MmQgxSzMDIvQ==
+X-Provags-ID: V03:K1:Xa1v+YPImzFNo5YcZ5whRAr1F5whG930WheUTV6f21RMnSh7poh
+ xoIG++8NcTr7Kdc1uClmudwfVKmCb1/cgzGbbpDk4jOQ7jUOd1+2EfYKzi0gHW5HwBBqMGo
+ yw8R7ANAUzKVszTW7tb62/dnKxnErS5HmTLjfBAixcPYYQzxSXHGcWwbvAbwV7HwvxViDpD
+ WSbItFalqo7vLVHGTHvCA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:7cx09ywdRKs=;Oz8yCquF2pyBFV/AC1cpGDB9ylK
- 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
- Ckg7xDvKzdzb9LmA
+UI-OutboundReport: notjunk:1;M01:P0:RYjs75UCa6M=;J/Nu8vih8/RbZ913ikweRCYzLWY
+ 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
 
 
 
-=E5=9C=A8 2025/6/10 04:25, David Sterba =E5=86=99=E9=81=93:
-> On Mon, Jun 09, 2025 at 01:17:30PM +0100, Filipe Manana wrote:
->> On Mon, Jun 9, 2025 at 12:16=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
->>>
->>> Unlike qgroup rescan, which always shows whether it cleared the
->>> inconsistent flag, we do not have a proper way to show if qgroup is
->>> marked inconsistent.
->>>
->>> This was not a big deal before as there aren't that many locations tha=
-t
->>> can mark qgroup  inconsistent.
->>>
->>> But with the introduction of drop_subtree_threshold, qgroup can be
->>> marked inconsistent very frequently, especially for dropping large
->>> subvolume.
->>>
->>> Although most user space tools relying on qgroup should do their own
->>> checks and queue a rescan if needed, we have no idea when qgroup is
->>> marked inconsistent, and will be much harder to debug.
->>>
->>> So this patch will add an extra warning (btrfs_warn_rl()) when the
->>> qgroup flag is flipped into inconsistent for the first time.
->>>
->>> Combined with the existing qgroup rescan messages, it should provide
->>> some clues for debugging.
->>>
->>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>> ---
->>> Pure resent, I thought it was already merged but it's not the case.
->>> It will be very helpful for debugging qgroup related problems caused b=
-y
->>> qgroup being marked inconsistent.
->>> ---
->>>   fs/btrfs/qgroup.c | 2 ++
->>>   1 file changed, 2 insertions(+)
->>>
->>> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
->>> index a1afc549c404..45f587bd9ce6 100644
->>> --- a/fs/btrfs/qgroup.c
->>> +++ b/fs/btrfs/qgroup.c
->>> @@ -350,6 +350,8 @@ static void qgroup_mark_inconsistent(struct btrfs_=
-fs_info *fs_info)
->>>   {
->>>          if (btrfs_qgroup_mode(fs_info) =3D=3D BTRFS_QGROUP_MODE_SIMPL=
-E)
->>>                  return;
->>> +       if (!(fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_INCONSI=
-STENT))
->>> +               btrfs_warn_rl(fs_info, "qgroup marked inconsistent");
->>
->> About half the callers already log some message right before or right
->> after calling this function.
->> But this won't tell us much about why/where the qgroup was marked
->> inconsistent for all the other callers.
->>
->> Perhaps we can pass a string to this function and include it in the
->> warning message? And then remove the logging from all callers that do
->> it.
->> Additionally turning this into a macro, and then printing __FILE__ and
->> __LINE__ too, would make it a lot more useful for debugging.
+=E5=9C=A8 2024/2/15 03:12, Johannes Thumshirn =E5=86=99=E9=81=93:
+> From: Christoph Hellwig <hch@lst.de>
 >=20
-> If this is meant for debugging then the message level should be either
-> debug or info, but not warn. If it's for user information then the file
-> and line is not relevant.
+> blkdev_put must not be called under sb->s_umount to avoid a lock order
+> reversal with disk->open_mutex once call backs from block devices to
+> the file system using the holder ops are supported.  Move the call
+> to btrfs_close_devices into btrfs_free_fs_info so that it is closed
+> from ->kill_sb (which is also called from the mount failure handling
+> path unlike ->put_super) as well as when an fs_info is freed because
+> an existing superblock already exists.
 >=20
-> Otherwise agreed about printing the reason why it's marked inconsistent.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>   fs/btrfs/disk-io.c |  4 ++--
+>   fs/btrfs/super.c   | 27 ++++++++++++++-------------
+>   2 files changed, 16 insertions(+), 15 deletions(-)
 >=20
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 8ab185182c30..4aa67e2a48f6 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -1266,6 +1266,8 @@ static void free_global_roots(struct btrfs_fs_info=
+ *fs_info)
+>  =20
+>   void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
+>   {
+> +	if (fs_info->fs_devices)
+> +		btrfs_close_devices(fs_info->fs_devices);
+>   	percpu_counter_destroy(&fs_info->dirty_metadata_bytes);
+>   	percpu_counter_destroy(&fs_info->delalloc_bytes);
+>   	percpu_counter_destroy(&fs_info->ordered_bytes);
+> @@ -3609,7 +3611,6 @@ int __cold open_ctree(struct super_block *sb, stru=
+ct btrfs_fs_devices *fs_device
+>  =20
+>   	iput(fs_info->btree_inode);
+>   fail:
+> -	btrfs_close_devices(fs_info->fs_devices);
+>   	ASSERT(ret < 0);
+>   	return ret;
+>   }
+> @@ -4389,7 +4390,6 @@ void __cold close_ctree(struct btrfs_fs_info *fs_i=
+nfo)
+>   	iput(fs_info->btree_inode);
+>  =20
+>   	btrfs_mapping_tree_free(fs_info);
+> -	btrfs_close_devices(fs_info->fs_devices);
+>   }
+>  =20
+>   void btrfs_mark_buffer_dirty(struct btrfs_trans_handle *trans,
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index b6cadf4f21b8..51b8fd272b15 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -1822,10 +1822,8 @@ static int btrfs_get_tree_super(struct fs_context=
+ *fc)
+>   	if (ret)
+>   		return ret;
+>  =20
+> -	if (!(fc->sb_flags & SB_RDONLY) && fs_devices->rw_devices =3D=3D 0) {
+> -		ret =3D -EACCES;
+> -		goto error;
+> -	}
+> +	if (!(fc->sb_flags & SB_RDONLY) && fs_devices->rw_devices =3D=3D 0)
+> +		return -EACCES;
+>  =20
+>   	bdev =3D fs_devices->latest_dev->bdev;
+>  =20
+> @@ -1839,15 +1837,12 @@ static int btrfs_get_tree_super(struct fs_contex=
+t *fc)
+>   	 * otherwise it's tied to the lifetime of the super_block.
+>   	 */
+>   	sb =3D sget_fc(fc, btrfs_fc_test_super, set_anon_super_fc);
+> -	if (IS_ERR(sb)) {
+> -		ret =3D PTR_ERR(sb);
+> -		goto error;
+> -	}
+> +	if (IS_ERR(sb))
+> +		return PTR_ERR(sb);
+>  =20
+>   	set_device_specific_options(fs_info);
+>  =20
+>   	if (sb->s_root) {
+> -		btrfs_close_devices(fs_devices);
+>   		if ((fc->sb_flags ^ sb->s_flags) & SB_RDONLY)
+>   			ret =3D -EBUSY;
+>   	} else {
+> @@ -1866,10 +1861,6 @@ static int btrfs_get_tree_super(struct fs_context=
+ *fc)
+>  =20
+>   	fc->root =3D dget(sb->s_root);
+>   	return 0;
+> -
+> -error:
+> -	btrfs_close_devices(fs_devices);
+> -	return ret;
+>   }
+>  =20
+>   /*
+> @@ -1962,10 +1953,20 @@ static int btrfs_get_tree_super(struct fs_contex=
+t *fc)
+>    */
+>   static struct vfsmount *btrfs_reconfigure_for_mount(struct fs_context =
+*fc)
+>   {
+> +	struct btrfs_fs_info *fs_info =3D fc->s_fs_info;
+>   	struct vfsmount *mnt;
+>   	int ret;
+>   	const bool ro2rw =3D !(fc->sb_flags & SB_RDONLY);
+>  =20
+> +	/*
+> +	 * We got a reference to our fs_devices, so we need to close it here t=
+o
+> +	 * make sure we don't leak our reference on the fs_devices.
+> +	 */
+> +	if (fs_info->fs_devices) {
+> +		btrfs_close_devices(fs_info->fs_devices);
+> +		fs_info->fs_devices =3D NULL;
+> +	}
+> +
 
-The message is to inform the end user that qgroup is marked=20
-inconsistent, which is a common thing.
+This changed quite some after commit 951a3f59d268 ("btrfs: fix mount=20
+failure due to remount races") and "btrfs: open code fc_mount() to avoid=
+=20
+releasing s_umount rw_sempahore" (only in for-next branch).
 
-It's not for error paths, thus filename and line is not really needed.
-
-And for the reason, there are really one or two (except error cases):
-
-- We're dropping a high subtree
-   Either we queue the whole subtree for accounting, which is super slow
-   and can hang the current transaction.
-   Or we mark qgroup inconsistent and call it a day
-
-- We're doing snapshot where the source and destination have different
-   parent qgroup
-   The reason is pretty much the same as the above case.
-
-I can add the reason, but for most cases it will be the above two.
-
-In that case do we still really need such reason?
+This part will need some refresh.
 
 Thanks,
-Qu
+Qu>   	/*
+>   	 * We got an EBUSY because our SB_RDONLY flag didn't match the existi=
+ng
+>   	 * super block, so invert our setting here and retry the mount so we
+>=20
+
 
