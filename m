@@ -1,231 +1,204 @@
-Return-Path: <linux-btrfs+bounces-14588-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14589-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 472C1AD35F0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jun 2025 14:20:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D02ADAD3B27
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jun 2025 16:32:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA48A188926F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jun 2025 12:20:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92CA23A593C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Jun 2025 14:31:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F38A128FAAA;
-	Tue, 10 Jun 2025 12:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D8DE146D65;
+	Tue, 10 Jun 2025 14:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z3oxugXR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KYIrFThp";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jhyTtsqb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KQD6V69d"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="eBfeAamJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A0128FAA6
-	for <linux-btrfs@vger.kernel.org>; Tue, 10 Jun 2025 12:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749558028; cv=none; b=PCUmQte0nVNSdxh/A2FaFWME6GMSOkZ9tQK3bKixI9XRnF/fbFP5HKCUYMvYNkz4cxpPEGtInwT3680nUon6L59vpAL6oCs0oAmQ2J6tDrB7m9nVJmFh3KliqKhLuHOjK9DMdjqM0q6PbY/0kXJyP7wogPB9FN73mRUG4dRcRmQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749558028; c=relaxed/simple;
-	bh=f7yD9ZGIhlp3wMt87NudjlLxPD8nm+2ppHsZrg6F2ig=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=melFQlPJyzCvU2Ai8XbSTD+SB2ulHUuClhuxFT/aO2RhJPB/FsDk0VOvl+dctAhFDaSJ8/LwmaxVYxAA29TYW0u3s8VoGx6gGvrXoZFapEmPTyaB1WMxlyCj7bC8rf4/IjIvUXCfEEW/Bq2maVDrruOobBjnbSOtcuxLtYEgK88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Z3oxugXR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KYIrFThp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jhyTtsqb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KQD6V69d; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 43EFD1F7BF;
-	Tue, 10 Jun 2025 12:20:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1749558024;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VhmeiPUjgaYX7zCsgw8wK/pQGG2YZ13Iv4uu655+FMg=;
-	b=Z3oxugXRn5K0RhfxquMLXuaJBGZDAgYvxm9F5yfgle5+8AWRPznw3FgMSize1mRrfya+5b
-	gBRTWtP36/SnohLCUvn2a043WvyLiKOUzn9S5LjMr8tIu/8cZxUF1NfNd9luaO1mseBTFz
-	LzGVPnGpT3iJzW2KVN6yvYVeg3fy2jQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1749558024;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VhmeiPUjgaYX7zCsgw8wK/pQGG2YZ13Iv4uu655+FMg=;
-	b=KYIrFThpRoOvKvtjYfx2JJrQEZI9jZuk8ZRZIvXmhwVH10ZZLuZJnWKoI25958FDgbu3+l
-	bGfLAVrbtuuk8XAQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=jhyTtsqb;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=KQD6V69d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1749558023;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VhmeiPUjgaYX7zCsgw8wK/pQGG2YZ13Iv4uu655+FMg=;
-	b=jhyTtsqbuRTkuwjcCm1AYtxCvTL2+L7cbKVzgDfuDC5v4bX6V0oLu0NUyyI6Jfw5VNmfH/
-	G1CFulqJ275d+Nkq6h9G6m/Rvs0QHiUjbWQqgWP4S9FcXDPOVdzGIBx/F4D5x3X+v8FiAu
-	QveEhJwkhi1twKDOHceoNK7J4CSl2Dc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1749558023;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VhmeiPUjgaYX7zCsgw8wK/pQGG2YZ13Iv4uu655+FMg=;
-	b=KQD6V69dq0jQ7y27xyYQLknz/hhcbr5biPoJzwYlGJfqPGiGqzRqBnlVM6E6ew13tORNKm
-	0/DawP26xus6V7DA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 26A40139E2;
-	Tue, 10 Jun 2025 12:20:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id E6V+CAcjSGhPdAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 10 Jun 2025 12:20:23 +0000
-Date: Tue, 10 Jun 2025 14:20:21 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Zhiyu Zhang <zhiyuzhang999@gmail.com>,
-	Longxing Li <coregee2000@gmail.com>
-Subject: Re: [PATCH] btrfs: handle csum tree error with rescue=ibadroots
- correctly
-Message-ID: <20250610122020.GB4037@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <54f393590b28e5f827f2f195000208845928ea7d.1749253719.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E810B1CBA02
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Jun 2025 14:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.145.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1749565909; cv=fail; b=VY2J1ipj8UneVx18M9P0SFt1+PxMKHhXF/HpFTkytj+jKhY0FeSoKUpYgnYTf3FReEYwbLZZ9Q80N0HFYOvXuo1EPtHydGCrUwp5oHzaN4cKpFPuK66SnHNE3Of6jgYYyUX+ac8iys8zmmfWHAXDeD+52hH82baeQb5LqybS6EI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1749565909; c=relaxed/simple;
+	bh=hQ2oszZWAXXUS8lf3idbLwIxwCcN6EpvrRbIuCYNAJ4=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=nFuf4C6Rg3LzO5/+PkvxceNbTqfr/4aKSb11WLF0OnPwypU4TQTcYh67SV/5CbQRsqwPkP5/3QJb1AojrpQAfUQtwjLgG0+/dAJhkmfDcOa0f64KW5VqEgQtH/PFz/VDEPC7QeF11PJW00F3lCjfyKJ7meInpS3oRZHkUl5UPgw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=eBfeAamJ; arc=fail smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55ADSYlW015329
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Jun 2025 07:31:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=
+	content-id:content-transfer-encoding:content-type:date:from
+	:in-reply-to:message-id:mime-version:references:subject:to; s=
+	s2048-2021-q4; bh=hQ2oszZWAXXUS8lf3idbLwIxwCcN6EpvrRbIuCYNAJ4=; b=
+	eBfeAamJinSG/cvksB2W6OUgt8GwLEHlMdd+vIIPKDeR25Y2CIvxMDkPdzBnm6rL
+	YWZ+Ng5izUJlj6/60HDU/4w51CpR6xUIN+7ZWjN5N0jh/lXDtqWFK37IIKLqaJko
+	K05mXGF5G5SG3RnhYFZUCQUXb7k3q8Ek4UWqvj9M+XKcYkRJkLkfmgfdFs/xJEN2
+	NWx4eMfS2iww+u/ombzV2zbrkeKAkHCF0UwvSYkdZ7i6BhTPLHCM/1OG1f5KSPia
+	TmosLdJoElIM1XYNcEv4SEyi+9j0vMY09fnQyG/opO6dzswWUdxkepSSrM0p5PcS
+	uRt/zALq/gyrP7g8fYd6JA==
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12on2063.outbound.protection.outlook.com [40.107.244.63])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 476fj6jphx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Jun 2025 07:31:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=XYBtWH6BcbFNQOqQPA0fy5/uOIZGliVuUe4Hc6EdZxyH10aRKFrkEWUKqB/+2A+6FiMl72DRH58cmOHp+IZIGqFfKEnjhpzaQRPL+bA14g3PU3sDLUHI11zGYJmcQEcuMp0eQZGx+FVRLce6/FAMKEmrbv2xHGT5+bZscCuKXbgrdH1WhTLxl3Dj7U1r+miR+gu0D1BjhgMCjrbkPeIxVWnE0f5g8CMRDjB9QThnftS+bqwNGzVg+fjEIa7QadeqQRwemga6UbfMy9Dw5NdSzzfCw3isSvZV76oky4EyhbMQVOgPoNba9WbonZzOgsNaAHzpIJofocwcvJfJkuLeyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hQ2oszZWAXXUS8lf3idbLwIxwCcN6EpvrRbIuCYNAJ4=;
+ b=X3XFpOoPWdd5L/BW+Qa+kIRK3gmR5qeHNBr6oipsTULpbBlwXJuz11+q46rTWXdAzS+S4n17LF1ABbtkEL/PRRu2jDnpOKF+sE3oUcViDFSNq+vZq2j1B8iIz7DsIdHFFp76VQVBbMYBohNclaZIA79XkqM7SUXZ5aYeUFEaO6VWR+s0q9bjlC7VBMDoOTcYe1HSjWcXJQ9XVZXSC9GA/wGCri6ALJCK0R/UB7mqyePkPLSD9zUrt0UbdhBD3X6cdq6otl+LJDRnz4ecQYDgjK2aZJSb0TVPrPFRNsnJ3JeeeEGHYS0e3wgWRhrq/8kVU328Srt1HFdfc7qSiYSe3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SJ2PR15MB5669.namprd15.prod.outlook.com (2603:10b6:a03:4c0::15)
+ by SJ0PR15MB4696.namprd15.prod.outlook.com (2603:10b6:a03:37d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.18; Tue, 10 Jun
+ 2025 14:31:45 +0000
+Received: from SJ2PR15MB5669.namprd15.prod.outlook.com
+ ([fe80::bff4:aff5:7657:9fe8]) by SJ2PR15MB5669.namprd15.prod.outlook.com
+ ([fe80::bff4:aff5:7657:9fe8%5]) with mapi id 15.20.8813.024; Tue, 10 Jun 2025
+ 14:31:45 +0000
+From: Mark Harmstone <maharmstone@meta.com>
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 00/12] btrfs: remap tree
+Thread-Topic: [PATCH 00/12] btrfs: remap tree
+Thread-Index: AQHb1jY9ptj9DkqFPkuHGxeXOfmKP7P8fFoA
+Date: Tue, 10 Jun 2025 14:31:45 +0000
+Message-ID: <dc9e87c5-03c2-47f0-b727-43c9e1d5c086@meta.com>
+References: <20250605162345.2561026-1-maharmstone@fb.com>
+In-Reply-To: <20250605162345.2561026-1-maharmstone@fb.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ2PR15MB5669:EE_|SJ0PR15MB4696:EE_
+x-ms-office365-filtering-correlation-id: 4a9f644b-0d1b-4504-f576-08dda82b869d
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|366016|376014|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?Q2ViZFpYZCtwRThGRERqS1FyclhjOVV0WGRjc2NQbFR6M2s2YlorT2tESVE4?=
+ =?utf-8?B?cnpYZXJhNDRyVWRjWkwycDR6QXZnS29UOEo1bThCL05CQ2xvSXBJbSswWVpH?=
+ =?utf-8?B?L0gyVnNGMXozNytpV2d2VW91N3NTN2Rzd21ia01VNE82bXFtQXFRMzZRZ2dD?=
+ =?utf-8?B?TWV4WDZxaUR2NWdnOW9zaTBDZWF4RFd6MnR4U2V0WnFLRGtuVlNYRllxSFEv?=
+ =?utf-8?B?V1E5cjJ2dGxGYThEc2piQndaUXRBdi91TGJqOHVqQml6eWdxVlhxN3A2NVN0?=
+ =?utf-8?B?S05ZaXoxckR6YXFVdTBGSHdCd1J1eE1NRVo0SXhpSHZyNTJJT09ZcmgrMEww?=
+ =?utf-8?B?bm90eWNSVGtwTXFra0E3Wkg4YjBGaDZXOFhDeHFQcFNOSUJVdmE5ZkJwODBr?=
+ =?utf-8?B?bFdTSjhFTkh2TGI1cnNFbVp1ekJZRHhxZWdaQkZDTWhsenN2N2RFMjhIY1ds?=
+ =?utf-8?B?SGg0VW5ydHJ2S2tLTjJXVW1MdE1tVzc2YWVmTndHcGZCQTRiSkdqRWlzdDZR?=
+ =?utf-8?B?SGZCVkRZMEdIR3BOWGYwSUcrdkgwZFErNDhvVzkwaEdlNmpCM2Yvd3dNSkh3?=
+ =?utf-8?B?QlVPSDB4dTQrRU1WYVJUQ2grb1pnbW9HclVyaFQzbERLSGIwb0QvRUwwZVd2?=
+ =?utf-8?B?aEgwbUpCYm9mamkxQ1VlN3Y2amN4L2k3U3FBQW9neGtkTFRPL3VlRkgraGFj?=
+ =?utf-8?B?YkRnMStyYTFXM0o1RzROaGRLMDVTLys3QkJOZjE3aDgwQlpRK3VxNWxJaklV?=
+ =?utf-8?B?Rzd6bFd3STV6Mm4zbVFzaE9Qbi8rcFFMYU5TSHhoMGxUOHdIVWFZdVRsMC9x?=
+ =?utf-8?B?NmYrcGt2UFovR0N4aGFYVkY0Q2R0S1ZIb3dMM2l1dDJzMjRsQ2NIOWxEZkZT?=
+ =?utf-8?B?VHdIK21LVXRIWlFpQjZuN3B6cTROdUFFaTdva2VLeXFyMU1MWkV0MDdjbVls?=
+ =?utf-8?B?UlI3T0ZyY2IxQmZJZ00xSWtvZWhwUWI3NnVIZFAzYlZIcFNudU80cndFZE5o?=
+ =?utf-8?B?Qno2Rk5maXU0c1pxL0YzSGpqODRRWVdYVllWVHdIbXArcTd6ZlErZGxwUWhu?=
+ =?utf-8?B?d1EzcDVDLy8venVHLzUvZ1VIQmwxMWx0TVMvUHhXUUNIMXVkckxVejBwcm44?=
+ =?utf-8?B?WmQ2bXU0bGN3cGw5UDl0REdlblRadGZnOHd0QktIOTZQQnZKQTY5TzRFT3Nq?=
+ =?utf-8?B?cExWSXVvYUxQakM5cUVlN2RvcTJ0aWtuMERDak9nR2lMMm1xaEpNQWk1a2ZQ?=
+ =?utf-8?B?WDFWU2lYZURDeFdlL1Y3ZUJ3Lzcrem9PM2VsdURqNDNncVQwS1FXcEZsZXgr?=
+ =?utf-8?B?azhHRFd4eUdMR2V2RHYzU1lIdkNtT3Z1TTJwZVh1VE9rcHhuazF6YmRGQmNL?=
+ =?utf-8?B?T1p2dWJNYTBoK1J4N3FBK1lJaWUyTEZmNVVxNEppRGJrUHJmellwTGZ2bEdX?=
+ =?utf-8?B?WWdKU1ZwTVBFUDFJNFBFbUJKMERqeEo0Zk5mSERFVVQvN1lZcXV0eXU4M0pq?=
+ =?utf-8?B?ckhYdTVkb1RyY3pXbXB3RnV1cDhUTnZyTXdKb3JJQnlFL3cyUVZKejFQUUJY?=
+ =?utf-8?B?WW1ldTUrOVRpczJYSHdjeDM3c3FhSk1iNFhNK0FQWlNBNFM1b3hYRUVQSzR6?=
+ =?utf-8?B?ME9CQ0pPeWtqeUp2d2lLcjRaMUxGL2REWGF1cW5QNEQ3QWZBalRtMEZGWDFw?=
+ =?utf-8?B?WnpnQUdrY3RxeUJabWk4eUVVYzUwYjM3Ni9VV2R5aGRnaEtHOWN1TlNFdFlB?=
+ =?utf-8?B?d3BKTVNkWUxZaTFxUkd4cjNYV0lKUzN2YnYvTDh5WDFUQ3ZhVE5maElDUkhx?=
+ =?utf-8?B?dUVmdHc2Slp0TGkrZHh6aXQxS3pPeElDL3VaZUh0NmN4ekgzUFgzdWowWjZR?=
+ =?utf-8?B?QVdiZmJ4UHRVZGlrMkNLVW1uc1J5cjh1MnUvWXlvV2V6MGlYQW4xdGVyeTF3?=
+ =?utf-8?B?UGpHYUdXbXRsQTNZcHJMTlg0T0V0SjJ1YllmcGhXaEZwU09yVFY2S24zandL?=
+ =?utf-8?B?dDhuM2JFN3NRPT0=?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:ja;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR15MB5669.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?ZmJrWktyVTFwTy9aYlQrRjdvM05SRmhNdmkydjhjK2FnK1QzV0F3M3d3Tzl1?=
+ =?utf-8?B?ZUFiQmFDSXFoMU1xWmtlYkxjVEtaMHZFNTBpYWFkVXY4MFNVU1h2Ylh2aXVK?=
+ =?utf-8?B?aXhTaVFjdEVTRk9tT1VLaC9hbDg1bkM0ZVVlRkk4SG5saUxpcWQ3cGMzejRq?=
+ =?utf-8?B?SGozS252SzhzdFdWUEdUbnFiT2ZldEpEVkNhdmJsVzgxMUx4RHJmK3BvYm4z?=
+ =?utf-8?B?Y2ZLV1hSRElXdUNYMjhBeDY3M296eVpMdHZ2bG54K1h5Y2RkTnBjVDVsT1Vm?=
+ =?utf-8?B?VjN5M2taTHdWRVVsdEdaMEhLd3lkOHlLZnRGVVFCUkR5ekRCdEkwVWs0bExo?=
+ =?utf-8?B?Q20zTHRKQW1CemliQnZEb3ErUXFTVVgrb0tkSnVLN0hlK3oxcUhKYWdaSHEy?=
+ =?utf-8?B?aEJmUU50QVhtbUhXNDBGdGpyMzJpVkVoSG5wc1FRa284Q1FQNEgvSW00anZn?=
+ =?utf-8?B?S3Vqc09PakYvYjljcGFGMHJIS1R2TUpsenpPN3lFV0JSRmJ3SnlnQXkzQm44?=
+ =?utf-8?B?T2wwaW1KaUlxbkQ1WVF3a0FhNVRUTVBadUxkSDY4QlJ4NlY1RXRaaUNTam1S?=
+ =?utf-8?B?cnc2aXJybmI3R0lzdWR2RGQ1TXZhMHVYcS9ZNHBJU0tucVRncHFEYmdzWlg3?=
+ =?utf-8?B?bTl3eG0yeFdGVUdXZzNKVndWNVc5OTRyRjBUMzlGamRWSVFrbVVYaHk2WjRK?=
+ =?utf-8?B?eUp5MnhGT3BoZm4xMURXZGwrb2w1T2xRVnN0MHNMVHFlWXpZN2hpdjZKV2hB?=
+ =?utf-8?B?MFpZVGJIMzlrenVZQityaWdWRFVURVNIUnpIRktyTG5kUVJjNWhzZjBXL2tz?=
+ =?utf-8?B?d3YrVVVjYmhKSmVTSFFBVFdYdVE3WlU2WTZoR25LY2UrSjVtOS9FOVJISURp?=
+ =?utf-8?B?eXIyM2tXclUzaENmL29HdHRlcjVsVWF6bmpEanlIeG1KblgwNEFISGpnNHhG?=
+ =?utf-8?B?Yzl3VG55QUd1R2NSczVjRHA1bnpQTkpEMldGTk03bEh6Y2JoZjZ6VlhGTFdh?=
+ =?utf-8?B?YkxrbjM2NWt5bzYvTDR0cHU1dmxKMmhrTGtNOVdmQnQ0TXltZ08vQjF5YjZi?=
+ =?utf-8?B?aTY4anhGOXRQS0luWXM5elFrdUNzU0JZVFpLbEF6YXRUc1piQnBqdVFzRnVx?=
+ =?utf-8?B?bzBzdU1yRkxsQ3NQRno3UENsTlhUNnZpdi9OUnhrRVZZTnM2TDFxSkphcExz?=
+ =?utf-8?B?aVk3YTlOOU9RbFVaOGdGc1B0TnhDU0FRYVBHZXZ6WHY0U3NYSENoRWsvWnNX?=
+ =?utf-8?B?NlRQL3ZXQk45Y2N0blRocHBCSjRQQnljMGxTU0llemUyMTZOQnJMOGlpdGE0?=
+ =?utf-8?B?WTFJMUJDTys0clp1WTErVGhXNGxrN1dNaTVQYTNjUG1IK1J1MjRndEdJRFhn?=
+ =?utf-8?B?TEtBb3JYa0g4aXN1a3licmVobjlBdFRTVmhaUUUyaVZkZmFKYTNCY1hWbkVF?=
+ =?utf-8?B?VlZXSjhHTkRoTnk4WUhwL1daUldsbUpWWGZEZWNXekNIUjRqSWNOak1sWjcz?=
+ =?utf-8?B?cHArTDZ5WUNTRzdqZDlacTJCUmJsRW4zRm1rb3FTSUx4V1NIUTl0bW1WRDd4?=
+ =?utf-8?B?UmtIbE9HU0ZVcHBML3B4dHBsR3htN1RncUR2T0tSODRnYm96NWFZQjlqZGJ6?=
+ =?utf-8?B?SEdGTndQbzhIZ3Z3OW5VcHB4bDFxb0RRZjJJMUVmeXlPdmRiQlNaS3JmTnM5?=
+ =?utf-8?B?OW1ORldPc3piR3BhMUN1bzQzYXE0TlU3aTJyZFRzZGQ1WjU4VTVpTmN3NSt4?=
+ =?utf-8?B?akNzTFVUODdabllrK3JWMXloQS9PMzhBU0Z1ZG4vZHJ5Nk1jWjRYMnBQa0F3?=
+ =?utf-8?B?ZlJyeWo1MWpzOWZER3JvMDNKZkVqelNUakpYVHhBZDlyU0k2S1RjTFdhTW5z?=
+ =?utf-8?B?YmJweWU2cERtc0d3SWZzVUEvRFpYTWdXQ0Fzc2ZoTUVuKy96ZVJGWW1IcnpX?=
+ =?utf-8?B?K1ROTSt5VWpsUXpyVDlvbHM4R214TkVxa2hEVnkyVGFhRGtNZHlmVTdPUHJH?=
+ =?utf-8?B?ampIeERnR1dQeVBjNDk4bVRiNWlpSVNlbk9VQnlmMTg3ancxeUVwS2tlWWIx?=
+ =?utf-8?B?TVcrejN4eFZqTE1vOVJqWHNJSXdjaGFwZzV2TW1EUkhUQVlwZ2FQMmp5Mzhj?=
+ =?utf-8?Q?lQjI=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <83C5E444F832C8458BC3BBD0DA1E6CCD@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54f393590b28e5f827f2f195000208845928ea7d.1749253719.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,twin.jikos.cz:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 43EFD1F7BF
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -4.21
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR15MB5669.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a9f644b-0d1b-4504-f576-08dda82b869d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jun 2025 14:31:45.1903
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2Df+0ykLC53bSub+GbwuRufnMsfVrmeVI8Jzso9iQJ7Q+jE5VikO/L6CDltMSo6i5oIeeNfpxLB+d6X2675AKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4696
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjEwMDExNSBTYWx0ZWRfX8oJa/Z7dVDqm +ukkA1c6sEGk4MF6z3KXQxg0hdIOSR48Gx0zEbavmcu6d1/hHp2jv1U7w0a6H6o3QEGx/fxbluZ kSIZdHpFZMhdt7wXpbkxnYbMNApftrJS2G4K5R8LTv0ZyLEG4kp9VqSDX5BcrPPJ27cf65CzBZH
+ dfJpX7SxnkdfqHg/ix6kGH8lsI8iWqgYcvi5ZRneQudY0jdiasizNNo7MdfqKCbOscO61jpoJj3 7JED9JZNsXDdfzxOL4j1U6NgqGnIDoF8Hs0XoFz30lp0RhSlvdLoX6HYFvGKSnxya182bmNJqJk 7sYTxINl8E1wvCsGvKXiYyTa2lh3gk3aRn3qZI/pm0FKg8fMAmyPxq09B5CSCZShvNW7YQms89x
+ ukGVGNWbdLUQm6bc5uqFQUiit6q8ZQ7rdXJUasHW/KWqdFroL+Cy+H7stzDGuRN7QZOoyfcP
+X-Proofpoint-ORIG-GUID: 5QUsi2nZT9Rpq_yK5zEwYr0PyINQvCnN
+X-Proofpoint-GUID: 5QUsi2nZT9Rpq_yK5zEwYr0PyINQvCnN
+X-Authority-Analysis: v=2.4 cv=TpjmhCXh c=1 sm=1 tr=0 ts=684841d3 cx=c_pps a=d3Zdq4q2+BwSKBEBY0tlvg==:117 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
+ a=6IFa9wvqVegA:10 a=ZcyWNXxhMd9Q1DZErb8A:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-06-10_05,2025-06-10_01,2025-03-28_01
 
-On Sat, Jun 07, 2025 at 09:18:43AM +0930, Qu Wenruo wrote:
-> [BUG]
-> There is syzbot based reproducer that can crash the kernel, with the
-> following call trace: (With some debug output added)
-> 
->  DEBUG: rescue=ibadroots parsed
->  BTRFS: device fsid 14d642db-7b15-43e4-81e6-4b8fac6a25f8 devid 1 transid 8 /dev/loop0 (7:0) scanned by repro (1010)
->  BTRFS info (device loop0): first mount of filesystem 14d642db-7b15-43e4-81e6-4b8fac6a25f8
->  BTRFS info (device loop0): using blake2b (blake2b-256-generic) checksum algorithm
->  BTRFS info (device loop0): using free-space-tree
->  BTRFS warning (device loop0): checksum verify failed on logical 5312512 mirror 1 wanted 0xb043382657aede36608fd3386d6b001692ff406164733d94e2d9a180412c6003 found 0x810ceb2bacb7f0f9eb2bf3b2b15c02af867cb35ad450898169f3b1f0bd818651 level 0
->  DEBUG: read tree root path failed for tree csum, ret=-5
->  BTRFS warning (device loop0): checksum verify failed on logical 5328896 mirror 1 wanted 0x51be4e8b303da58e6340226815b70e3a93592dac3f30dd510c7517454de8567a found 0x51be4e8b303da58e634022a315b70e3a93592dac3f30dd510c7517454de8567a level 0
->  BTRFS warning (device loop0): checksum verify failed on logical 5292032 mirror 1 wanted 0x1924ccd683be9efc2fa98582ef58760e3848e9043db8649ee382681e220cdee4 found 0x0cb6184f6e8799d9f8cb335dccd1d1832da1071d12290dab3b85b587ecacca6e level 0
->  process 'repro' launched './file2' with NULL argv: empty string added
->  DEBUG: no csum root, idatacsums=0 ibadroots=134217728
->  Oops: general protection fault, probably for non-canonical address 0xdffffc0000000041: 0000 [#1] SMP KASAN NOPTI
->  KASAN: null-ptr-deref in range [0x0000000000000208-0x000000000000020f]
->  CPU: 5 UID: 0 PID: 1010 Comm: repro Tainted: G           OE       6.15.0-custom+ #249 PREEMPT(full)
->  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 02/02/2022
->  RIP: 0010:btrfs_lookup_csum+0x93/0x3d0 [btrfs]
->  Call Trace:
->   <TASK>
->   btrfs_lookup_bio_sums+0x47a/0xdf0 [btrfs]
->   btrfs_submit_bbio+0x43e/0x1a80 [btrfs]
->   submit_one_bio+0xde/0x160 [btrfs]
->   btrfs_readahead+0x498/0x6a0 [btrfs]
->   read_pages+0x1c3/0xb20
->   page_cache_ra_order+0x4b5/0xc20
->   filemap_get_pages+0x2d3/0x19e0
->   filemap_read+0x314/0xde0
->   __kernel_read+0x35b/0x900
->   bprm_execve+0x62e/0x1140
->   do_execveat_common.isra.0+0x3fc/0x520
->   __x64_sys_execveat+0xdc/0x130
->   do_syscall_64+0x54/0x1d0
->   entry_SYSCALL_64_after_hwframe+0x76/0x7e
->  ---[ end trace 0000000000000000 ]---
-> 
-> [CAUSE]
-> Firstly the fs has a corrupted csum tree root, thus to mount the fs we
-> have to go "ro,rescue=ibadroots" mount option.
-> 
-> Normally with that mount option, a bad csum tree root should set
-> BTRFS_FS_STATE_NO_DATA_CSUMS flag, so that any future data read will
-> ignore csum search.
-> 
-> But in this particular case, we have the following call trace that
-> caused NULL csum root, but not setting BTRFS_FS_STATE_NO_DATA_CSUMS:
-> 
-> load_global_roots_objectid():
-> 
-> 		ret = btrfs_search_slot();
-> 		/* Succeeded */
-> 		btrfs_item_key_to_cpu()
-> 		found = true;
-> 		/* We found the root item for csum tree. */
-> 		root = read_tree_root_path();
-> 		if (IS_ERR(root)) {
-> 			if (!btrfs_test_opt(fs_info, IGNOREBADROOTS))
-> 			/*
-> 			 * Since we have rescue=ibadroots mount option,
-> 			 * @ret is still 0.
-> 			 */
-> 			break;
-> 	if (!found || ret) {
-> 		/* @found is true, @ret is 0, error handling for csum
-> 		 * tree is skipped.
-> 		 */
-> 	}
-> 
-> This means we completely skipped to set BTRFS_FS_STATE_NO_DATA_CSUMS if
-> the csum tree is corrupted, which results unexpected later csum lookup.
-> 
-> [FIX]
-> If read_tree_root_path() failed, always populate @ret to the error
-> number.
-> 
-> As at the end of the function, we need @ret to determine if we need to
-> do the extra error handling for csum tree.
-> 
-> Fixes: abed4aaae4f7 ("btrfs: track the csum, extent, and free space trees in a rb tree")
-> Reported-by: Zhiyu Zhang <zhiyuzhang999@gmail.com>
-> Reported-by: Longxing Li <coregee2000@gmail.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Reviewed-by: David Sterba <dsterba@suse.com>
+T24gNS82LzI1IDE3OjIzLCBNYXJrIEhhcm1zdG9uZSB3cm90ZToNCj4gKiBTb21lIHRlc3QgZmFp
+bHVyZXM6IGJ0cmZzLzE1NiwgYnRyZnMvMTcwLCBidHJmcy8yMjYsIGJ0cmZzLzI1MA0KDQpUaGVz
+ZSBhbGwgdHVybmVkIG91dCB0byBiZSBzcHVyaW91cy4NCg0KYnRyZnMvMjI2IGlzIGJyb2tlbiBm
+b3IgbWUgb24gdGhlIGJ0cmZzL2Zvci1uZXh0IGJyYW5jaCB0aGF0IEkgYmFzZWQgDQp0aGVzZSBv
+biAoMjU0YWUyNjA2YjI1OGE2M2I1MDYzYmVkMDNiYjRjZjg3YTY4ODUwMikNCg0KYnRyZnMvMTU2
+LCBidHJmcy8xNzAsIGFuZCBidHJmcy8yNTAgYWxsIGludm9sdmUgY3JlYXRpbmcgc21hbGwgDQpm
+aWxlc3lzdGVtcywgd2hpY2ggYXJlIHRoZW4gRU5PU1BDaW5nIGJlY2F1c2Ugb2YgdGhlIGV4dHJh
+IFJFTUFQIGNodW5rLg0K
 
