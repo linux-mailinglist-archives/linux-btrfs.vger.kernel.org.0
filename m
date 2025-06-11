@@ -1,63 +1,63 @@
-Return-Path: <linux-btrfs+bounces-14598-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14599-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EAD0AD50C8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jun 2025 12:03:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1489FAD50CC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jun 2025 12:04:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70D893A7C8B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jun 2025 10:03:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EB1E1889662
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jun 2025 10:04:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BEF5262FFD;
-	Wed, 11 Jun 2025 10:03:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 231CB220F33;
+	Wed, 11 Jun 2025 10:03:23 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 667EB26280F
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Jun 2025 10:03:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E188C219FC
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Jun 2025 10:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749636201; cv=none; b=scS2lr8EbYQ+zh6GsQBLvZUeftbz5KMxMk4yQW8hvdyJjVqwVMowaGEeCbGQlSeiSzfeFDs04RD+tFJi0pD92ELKUaCXExqlX5pgIFDSmXqBz1OMwjfi/tQRiAj7egJMl1MMPD7KYS5S2RTzxhSclznKuy0+bdHzWX2Y7rkcdQQ=
+	t=1749636202; cv=none; b=JUc0UUcBTjwJixiAEYmX0vjOBXBoDK56ghkiNC6s5gjjkB01AFMS13eAhD6Cw1K3+Q0Gegmm48qdL3/GlxJKWXqMvYta6VwLpjgc6XCxDAcND4Kw8z5sblDobV4OzM1/7YRLzDA9pIm1uRNM12wWln+MuOVeldc9/bVmNAkCIpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749636201; c=relaxed/simple;
-	bh=NlOOao6x5oHzbQZUKMFupO3E+QEEttYo6ITQQKfVmd4=;
+	s=arc-20240116; t=1749636202; c=relaxed/simple;
+	bh=atTkZXf8x5vj7KfY/odJSKHthsR2lqLB3DuQfX/Cet0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oEJoH+vmibNuApFP3PN/IWhgFiOnb1jQ7P9V4DMqGC4WKhmo3fyOFAkS6Kh+NeTPSAKBt6NMu4v8iokSZhSnJVcvA19KHCYti3xQAjwP6wrqHX6NopdQ0JpwM2XBwPbCBtswNp7qoKw/MhSriFR0FZHIeefQ+wMoCrsPemdZOWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.45
+	 MIME-Version; b=sz2vG0kYzAqMRDjjb5GrQiiwhrrfcwzcReMOr77d16pyCaM2yMcauvMGWuQcOhtoEqDEmBIHaQG4YLYjboz28frtCmTrQlFDt3W3Y8i3WtDYVQegWGy7wFfNu3/Tf2jfTvSOqotVf0RnPyd3oxiW4h/4yehE+hWT1x5Fb5g7uKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3a510432236so5060937f8f.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jun 2025 03:03:19 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3a51481a598so3729632f8f.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jun 2025 03:03:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749636198; x=1750240998;
+        d=1e100.net; s=20230601; t=1749636199; x=1750240999;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4o6mYgYM0reNoVieo1JoNCUCX5oT/WNVv4iRRoQhq20=;
-        b=FQsxSgnbuIXUBxWxLjQ/KPY4A13AzakipPSGszokdR4xMt1ZtCcqXS72dPii/Tn3DF
-         NwVi+8WBCyz4gUfm2/92fI9M+1BIdzCDNVhb3wMdnyYgCwn2z2/aNfeu5P7MQzdbgGv9
-         G0vxP+AQEvI7jWmDz2fIHtO5S1jTgR+6tooiLs3NwUHOrt5NgdE8uCpRCsJLQSwKoKDu
-         OvbiuiHmDQ+CiipUkIqCEah4vxL7KVs1DfADZbCr/Vb9iCfPSldjyniFdDNbBKPJt5oW
-         FW6pCqzaAsdFPYXws40nALa/8vDiIQfwJ7qTzek/1gr/XyWgCNkCRSxuD2ro+U3v642J
-         WXtQ==
-X-Gm-Message-State: AOJu0YwnSnjJHjyVkQmTStqM2QWRJnkp/U/2N0Z7k7maTKQWHZFtG87S
-	JYu1dnFOcd0tSa84gHixyO0unkLoc4DB1CAvTWkS19B2dgg4yygDeXhAW8cYcg==
-X-Gm-Gg: ASbGncsJnV/G5DtjWhfDAmtHemNXbm5AkpV+bgBG+xCLS5cTsBDybSXZkoR+j0ZSF90
-	luiICdx+zH3UXW5kKHxwutI3PrQy6BK063Oyj687G3abMgJcZPgftV1H6ItRSJMhUTn7O5mh0p/
-	TSSTiUJVmBDjSZmVcyBv/3CchJ0hPX3P3dcN2CgiJDrTXXrHPAfvfruPzUlgfNIUUxwiuvgnrwU
-	J3z7gAYL4mQSbpZXih/BQ2VgCKBWGVsf4NI1qBrESgHZUK2+J9v6LjsSlJ/Zg7URbTK1Tn8DFfG
-	LMjO6fX7H/fpHP7dYnsLGydv00u1xZzN0F/V6pG++mXt83xO0Xe7Qs9Cof4ipm/hDaZInIFaXUW
-	Sa8O0+YBW2iZJ7U7zWyZHR9J3LignsycP38wLic2o+GOlSR/N9g==
-X-Google-Smtp-Source: AGHT+IHp4HDVRVgZhtjDeo7/Oq0niHJRcEMm7eFPJhX5oyW8G3hq+aB7UHDIL/yoszd4FU3DXIJKdg==
-X-Received: by 2002:a5d:64c8:0:b0:3a4:e740:cd72 with SMTP id ffacd0b85a97d-3a5586c9bc7mr1959128f8f.13.1749636197421;
-        Wed, 11 Jun 2025 03:03:17 -0700 (PDT)
+        bh=s3DJDA8kQvuZCmWmwJaXPpkEthqkvmBCg45o/ZsvVxE=;
+        b=xRAr7yqd1PVr6mxnxVTnNvOufJwTgewQxw204/q1v11iDSBE55+GDpetI5md+FIuhW
+         ctPGIVnCD7cZqERNV5FsukzuWwmXfKFGerGbhPNxP+ThSH+Lx1g9KtFrYV3mST1vGWTQ
+         F/OQBf3bgbtc83KEBup2QfFTMJfC/6jHk2ymJ6Akb5C17iNSplJCFb1OR8Ao7TbiOr1I
+         TRG8dfZCQHrlG/R9Oo4V3MJ1uXRVEX7addtqJ4kMAYkNWOMAVTBl653mHYACeVdLdl+6
+         OWhJ0VjXp4IMWr9eNZnPeorIZY2weQvK5b4VKt4Nea7L+MNPpK/nJ3r7h9NTwZcMboJf
+         Dj8g==
+X-Gm-Message-State: AOJu0YzM1qXeychwLRdDUD9AKjiZ3eVcat18Y4076/zG1eZNdUch3ABd
+	BebMyLTVGzY5t2vvZ8nHx4HeXSbuo5OT6b7zST3as3YN5tfDZW2cKro39iNDNA==
+X-Gm-Gg: ASbGnctWSWoKEKOHNBxBzlMAlqdzvqhet2PpjaCSTT8Ivizd2EzuQ7MVN9pQbF2AijU
+	89YoIFfgLPoSt4t9wKLpor933fnYPFSRSM0BJlD4tSpRc5J7bTFbGLGFRjJyflH6C4+3Ayc1nvb
+	LfJUQSHaNsaBHbfAhc+rWHA3x9rTrktPaWb3SbuaYyoRORRTF9hvRs6N02fogohP2D9yEQ07dsU
+	X/gDnEMMb2OeBJl2FparBeO+ykPP2gR0DyC8Mlqt+vu4J/YXKKHRoIbZpvyS1Nlk1EvQns2SliF
+	PxXGz9pquz7TKjcNQtCgGBhDSMWr0Hq7q3pag2K7DleGMkJrwmeP8KSr8whUIuRpeqYq7NYxFXF
+	N3anMv9QFTMWbBmay2+tiM1Ela9A8JWDJV47RWXj0DL2rub6d6g==
+X-Google-Smtp-Source: AGHT+IGgEb+ZTze0iJcQAOe2F5uSBBo6mR6CYN9WWRLmhK4THH1ebWzM9rMQpZQn5aV0dQnVg96Dcw==
+X-Received: by 2002:a05:6000:1788:b0:3a5:39e9:928d with SMTP id ffacd0b85a97d-3a5586866femr2089062f8f.0.1749636199021;
+        Wed, 11 Jun 2025 03:03:19 -0700 (PDT)
 Received: from mayhem.fritz.box (p200300f6f734a1006f354b1e839513ef.dip0.t-ipconnect.de. [2003:f6:f734:a100:6f35:4b1e:8395:13ef])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a53244f02asm14654274f8f.83.2025.06.11.03.03.15
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a53244f02asm14654274f8f.83.2025.06.11.03.03.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Jun 2025 03:03:16 -0700 (PDT)
+        Wed, 11 Jun 2025 03:03:18 -0700 (PDT)
 From: Johannes Thumshirn <jth@kernel.org>
 To: linux-btrfs@vger.kernel.org
 Cc: Boris Burkov <boris@bur.io>,
@@ -66,9 +66,9 @@ Cc: Boris Burkov <boris@bur.io>,
 	David Sterba <dsterba@suse.com>,
 	Josef Bacik <josef@toxicpanda.com>,
 	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 1/5] btrfs: always open the device read-only in btrfs_scan_one_device
-Date: Wed, 11 Jun 2025 12:02:59 +0200
-Message-ID: <20250611100303.110311-2-jth@kernel.org>
+Subject: [PATCH v2 2/5] btrfs: call btrfs_close_devices from ->kill_sb
+Date: Wed, 11 Jun 2025 12:03:00 +0200
+Message-ID: <20250611100303.110311-3-jth@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250611100303.110311-1-jth@kernel.org>
 References: <20250611100303.110311-1-jth@kernel.org>
@@ -82,97 +82,123 @@ Content-Transfer-Encoding: 8bit
 
 From: Christoph Hellwig <hch@lst.de>
 
-btrfs_scan_one_device opens the block device only to read the super
-block.  Instead of passing a blk_mode_t argument to sometimes open
-it for writing, just hard code BLK_OPEN_READ as it will never write
-to the device or hand the block_device out to someone else.
+blkdev_put must not be called under sb->s_umount to avoid a lock order
+reversal with disk->open_mutex once call backs from block devices to
+the file system using the holder ops are supported.  Move the call
+to btrfs_close_devices into btrfs_free_fs_info so that it is closed
+from ->kill_sb (which is also called from the mount failure handling
+path unlike ->put_super) as well as when an fs_info is freed because
+an existing superblock already exists.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/super.c   | 9 ++++-----
- fs/btrfs/volumes.c | 4 ++--
- fs/btrfs/volumes.h | 2 +-
- 3 files changed, 7 insertions(+), 8 deletions(-)
+ fs/btrfs/disk-io.c |  4 ++--
+ fs/btrfs/super.c   | 29 ++++++++++++++++-------------
+ 2 files changed, 18 insertions(+), 15 deletions(-)
 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 0d6ad7512f21..6360d44acaa9 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1247,6 +1247,8 @@ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
+ 	struct percpu_counter *em_counter = &fs_info->evictable_extent_maps;
+ 
+ 	percpu_counter_destroy(&fs_info->stats_read_blocks);
++	if (fs_info->fs_devices)
++		btrfs_close_devices(fs_info->fs_devices);
+ 	percpu_counter_destroy(&fs_info->dirty_metadata_bytes);
+ 	percpu_counter_destroy(&fs_info->delalloc_bytes);
+ 	percpu_counter_destroy(&fs_info->ordered_bytes);
+@@ -3681,7 +3683,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 
+ 	iput(fs_info->btree_inode);
+ fail:
+-	btrfs_close_devices(fs_info->fs_devices);
+ 	ASSERT(ret < 0);
+ 	return ret;
+ }
+@@ -4428,7 +4429,6 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 	iput(fs_info->btree_inode);
+ 
+ 	btrfs_mapping_tree_free(fs_info);
+-	btrfs_close_devices(fs_info->fs_devices);
+ }
+ 
+ void btrfs_mark_buffer_dirty(struct btrfs_trans_handle *trans,
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 2d0d8c6e77b4..b9e08a59da4e 100644
+index b9e08a59da4e..eaecf1525078 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -364,10 +364,9 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		break;
- 	case Opt_device: {
- 		struct btrfs_device *device;
--		blk_mode_t mode = btrfs_open_mode(fc);
+@@ -1869,10 +1869,8 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 	if (ret)
+ 		return ret;
  
- 		mutex_lock(&uuid_mutex);
--		device = btrfs_scan_one_device(param->string, mode, false);
-+		device = btrfs_scan_one_device(param->string, false);
- 		mutex_unlock(&uuid_mutex);
- 		if (IS_ERR(device))
- 			return PTR_ERR(device);
-@@ -1855,7 +1854,7 @@ static int btrfs_get_tree_super(struct fs_context *fc)
- 	 * With 'true' passed to btrfs_scan_one_device() (mount time) we expect
- 	 * either a valid device or an error.
+-	if (!(fc->sb_flags & SB_RDONLY) && fs_devices->rw_devices == 0) {
+-		ret = -EACCES;
+-		goto error;
+-	}
++	if (!(fc->sb_flags & SB_RDONLY) && fs_devices->rw_devices == 0)
++		return -EACCES;
+ 
+ 	bdev = fs_devices->latest_dev->bdev;
+ 
+@@ -1886,21 +1884,20 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 	 * otherwise it's tied to the lifetime of the super_block.
  	 */
--	device = btrfs_scan_one_device(fc->source, mode, true);
-+	device = btrfs_scan_one_device(fc->source, true);
- 	ASSERT(device != NULL);
- 	if (IS_ERR(device)) {
- 		mutex_unlock(&uuid_mutex);
-@@ -2233,7 +2232,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
- 		 * Scanning outside of mount can return NULL which would turn
- 		 * into 0 error code.
+ 	sb = sget_fc(fc, btrfs_fc_test_super, set_anon_super_fc);
+-	if (IS_ERR(sb)) {
+-		ret = PTR_ERR(sb);
+-		goto error;
+-	}
++	if (IS_ERR(sb))
++		return PTR_ERR(sb);
+ 
+ 	set_device_specific_options(fs_info);
+ 
+ 	if (sb->s_root) {
+-		btrfs_close_devices(fs_devices);
+ 		/*
+ 		 * At this stage we may have RO flag mismatch between
+ 		 * fc->sb_flags and sb->s_flags.  Caller should detect such
+ 		 * mismatch and reconfigure with sb->s_umount rwsem held if
+ 		 * needed.
  		 */
--		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
-+		device = btrfs_scan_one_device(vol->name, false);
- 		ret = PTR_ERR_OR_ZERO(device);
- 		mutex_unlock(&uuid_mutex);
- 		break;
-@@ -2251,7 +2250,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
- 		 * Scanning outside of mount can return NULL which would turn
- 		 * into 0 error code.
- 		 */
--		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
-+		device = btrfs_scan_one_device(vol->name, false);
- 		if (IS_ERR_OR_NULL(device)) {
- 			mutex_unlock(&uuid_mutex);
- 			if (IS_ERR(device))
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 1535a425e8f9..1ebfc69012a2 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1440,7 +1440,7 @@ static bool btrfs_skip_registration(struct btrfs_super_block *disk_super,
-  * the device or return an error. Multi-device and seeding devices are registered
-  * in both cases.
++		if ((fc->sb_flags ^ sb->s_flags) & SB_RDONLY)
++			ret = -EBUSY;
+ 	} else {
+ 		snprintf(sb->s_id, sizeof(sb->s_id), "%pg", bdev);
+ 		shrinker_debugfs_rename(sb->s_shrink, "sb-btrfs:%s", sb->s_id);
+@@ -1916,10 +1913,6 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 
+ 	fc->root = dget(sb->s_root);
+ 	return 0;
+-
+-error:
+-	btrfs_close_devices(fs_devices);
+-	return ret;
+ }
+ 
+ /*
+@@ -1997,8 +1990,18 @@ static int btrfs_get_tree_super(struct fs_context *fc)
   */
--struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
-+struct btrfs_device *btrfs_scan_one_device(const char *path,
- 					   bool mount_arg_dev)
+ static int btrfs_reconfigure_for_mount(struct fs_context *fc)
  {
- 	struct btrfs_super_block *disk_super;
-@@ -1461,7 +1461,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 	 * values temporarily, as the device paths of the fsid are the only
- 	 * required information for assembling the volume.
- 	 */
--	bdev_file = bdev_file_open_by_path(path, flags, NULL, NULL);
-+	bdev_file = bdev_file_open_by_path(path, BLK_OPEN_READ, NULL, NULL);
- 	if (IS_ERR(bdev_file))
- 		return ERR_CAST(bdev_file);
++	struct btrfs_fs_info *fs_info = fc->s_fs_info;
+ 	int ret = 0;
  
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 6d8b1f38e3ee..afa71d315c46 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -719,7 +719,7 @@ struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
- void btrfs_mapping_tree_free(struct btrfs_fs_info *fs_info);
- int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 		       blk_mode_t flags, void *holder);
--struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
-+struct btrfs_device *btrfs_scan_one_device(const char *path,
- 					   bool mount_arg_dev);
- int btrfs_forget_devices(dev_t devt);
- void btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
++	/*
++	 * We got a reference to our fs_devices, so we need to close it here to
++	 * make sure we don't leak our reference on the fs_devices.
++	 */
++	if (fs_info->fs_devices) {
++		btrfs_close_devices(fs_info->fs_devices);
++		fs_info->fs_devices = NULL;
++	}
++
+ 	if (!(fc->sb_flags & SB_RDONLY) && (fc->root->d_sb->s_flags & SB_RDONLY))
+ 		ret = btrfs_reconfigure(fc);
+ 
 -- 
 2.49.0
 
