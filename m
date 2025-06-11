@@ -1,81 +1,81 @@
-Return-Path: <linux-btrfs+bounces-14608-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14609-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DA3AAD614B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jun 2025 23:29:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5D73AD61A2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jun 2025 23:42:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5DBF7A4B0A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jun 2025 21:27:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C7E91BC4581
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jun 2025 21:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1865D23C39A;
-	Wed, 11 Jun 2025 21:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEE32245008;
+	Wed, 11 Jun 2025 21:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BCnOALI/"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KjMhvunV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35EF288D6
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Jun 2025 21:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B3FB23AB94
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Jun 2025 21:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749677344; cv=none; b=ETCV66V2cVhHXel+3NqE6pTh0IYUvgcQuAkAW+WOHgzKlTPi5yuOf9Q5O4+vw0u5RUO9nmc3zgfmkbzyBoOqU3plZBoaKjuiSQVCgBD0utj7urcqOijIMC2E/pxIW/uWjXpXsoaBLDHeCn3whXv6c5Sn4OzBqn0x6iEbTKvemF0=
+	t=1749677884; cv=none; b=UzaBuFh9TOqkCFO4SxPyuWBxwl65VHo7gyMirLu5V3f1Vn8KW9CESv9v1CFmQlUd7kaFjR6tunf56dMkaEo512lUcOae9qJ5aIfBC3aRmVXPKtv66cBbqRT4o9KjNUcpNcHRxxtwaN6k71Cfo6E79FqcU0h0kvLFnPBL/C8iNR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749677344; c=relaxed/simple;
-	bh=VUCOQY5W7jFEbI4bLsMT3qtHqv6OXB8il3ofX28yfLA=;
+	s=arc-20240116; t=1749677884; c=relaxed/simple;
+	bh=Wzpejxe0wFSKMwq6zHQA4EX/YhgpbDyfGvj/91MnkQs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=syYUrlxSSXk2H/CdRHwYKgfY4PID52KPszx4RHQlPLtnQUd8khLlAylU2DUSgAJ8t00klfXqBC4ToGUbTORTjpm3LTdtMqJRxEzNw7wZNpunPsBmf+sLQPAgLYpAf1cI80/w0EVDTHlBv8ySyS7dkKEkDqFIB/e0WgoVjFK264E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BCnOALI/; arc=none smtp.client-ip=209.85.128.42
+	 In-Reply-To:Content-Type; b=i1jHB+VP3rm13oNfUBVNpTNprNR7THZIpJVnmvWnMSsvLsL95zCEcYM5+vYEnValh1oiwgiVU9E4+UHn301I/pSJxdRevXw6KXMwuf1ZwYGYMV++4brwwK2KoUKfq5/OWj7qLmQrhGJKErtigREvaoS+U4G9zbAfNqtd4gEBRWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KjMhvunV; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-45024721cbdso1895525e9.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jun 2025 14:29:01 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3a5257748e1so244893f8f.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jun 2025 14:38:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1749677340; x=1750282140; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1749677881; x=1750282681; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=uNizbGJEAt3jvDN5Qul0deJO0ANLQ3Z2lH9JQrVhEK4=;
-        b=BCnOALI/nSewmeBhixKlq65HQqfafj0/qu3weHeH4nBPfEWIPPDCZSKQyerveFvpDe
-         NY0vAjIvVk4jaboYNoick1GD9Fns2uztkhY+Bp2Zu3Eh09G3lYBYcIjwRFQbPmYTMn2c
-         rgR0ij5UlPfKJP//MXsDJmA0SNkUwxPm3r0o1AWoaTcux2QSmvPi1rwev5Lrak5dSCx5
-         0xfuG260B+oQRTo5BDi/GN+AD/4Vtv0FBaUOea/snymbqP2AIfZzpYG/Tk8tAE0FTGre
-         9KVHd8o194eCJgqXfvFsFF7Yv87rj0RzmluwgTcfiHxSGwH8cYfA3YcasODxHYihtZvF
-         ti9w==
+        bh=sVTr2qGQ6crKPPGVbxVvbxdCkwGuO8w6ti1rBANX8lQ=;
+        b=KjMhvunVHJBrrcdG4kyKa3wTSl41dgAvDfHe2s4pim9+ORxtHrEaC4E/OlFwmLbfK+
+         XKNDCHHeDrqNVXxM01SVG6NH8o7qYIr7Q3yOFIaQ4Gj2bVOPSw8DukrMr0Dd4M7VKtr1
+         W8NVAxgd93T+/vlUbdZvMyoHM88Ydi91EY/G9Uf2HRMSdT9Pr0veJB42s9BG3cMOac5a
+         cCCmAcg7YU+zfRIVogjUmED6ekEZsUzgwP8rEfkZhPSaPOMXya8wpjbAFNDio03Cea7K
+         DLUQzAULR0pCV41P3lJKJvjIfeYW6bHPC5UNOmzwOJSMm2hw60Rqq7HF7AuqkZH6g4cA
+         8sOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749677340; x=1750282140;
+        d=1e100.net; s=20230601; t=1749677881; x=1750282681;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uNizbGJEAt3jvDN5Qul0deJO0ANLQ3Z2lH9JQrVhEK4=;
-        b=sDYNut6VfqhHRx+nYBFypxGXnMJ1d/JzI3WtGxWxlSgZYjr9+8skVMUgYBeCE2tQnD
-         L/AysyOtpYGXJoYv3e81+7Y8uiNC1a6lvBrA9yMQhjjOXP79qze0NiIXEED/kMrt8nHT
-         JhINGDckz6KYMb7h0LS91oIz3/ycodZGR9jg03WJEJQh1keqd06lvpdhs6DGH8mYy4Hs
-         VumGN4e9GO1hS00GVzwGyw2G3gMrctFR8ExMoNkudvS+maSrwPFeouy9yMK7W8/Wk9SS
-         MSPFUJ7leTj0gCVQyGA+S+3OGX9jC4p1mHeTlS00z58P3W5HZfzUpLmSb8uJBF5a2hSd
-         89Og==
-X-Forwarded-Encrypted: i=1; AJvYcCVqkKql3IguJGu1b7vEdMZIEd84DESVeFSc2jSUFn21gHoPSK9djqGlLpgINwuApoQ/2H8oY3ZpmOpM2A==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzDuv7VOLy1d6FCQ7pDhwaitUlBx50tU+aStgZeqtEzkDnIOjGr
-	ELTynKIHKdCoPVAOYBdeaYbYugS/PoTnRiQ1pi23reu31ynCEzHF/6m9kI9J4+qeJJY=
-X-Gm-Gg: ASbGncu4fWnoygV4a5TmyxxpwSsibKvlO5Q1sAgvxGWRjCgPyoLmaFwB9NwnX06Yit9
-	jtJMHDnaq3b31lbLWLaLcWRInMsHPWgfpAHrqruvuwLJL9XMUfPePCqS4IHb+IfMm1XZP3hssCw
-	bEBpprkB4VtLj2S0nU7vl9Fgt3YKG0sRSQvmmk4iW1h00pGE+BRv2VweT2Em5AScBBWLRl6WQWx
-	TR2OF243QB/ELP2pJnMQyy4Ljd8+XDBNxxsHuNOg524yke6IsBwIrkEV9aFvG6d8QGk1I7SgG6u
-	4sFIzzBD/+ADfIp+6yzia4SLaWTYoMKWfzwyCh4Dygfgd75/ZvO/BkrRhdCe4I/dC95GA4ZS+Eu
-	vdjrXWh+5GbXLzg==
-X-Google-Smtp-Source: AGHT+IEGJP7Tn27j8rcf8qprFMS9XraQDYJbpOlCUDmxwtfVuuGPO49v9uSlcQy1dQ86qXnJHWc93g==
-X-Received: by 2002:a05:6000:40cc:b0:3a5:52d4:5b39 with SMTP id ffacd0b85a97d-3a5586dcc0cmr3655581f8f.8.1749677339786;
-        Wed, 11 Jun 2025 14:28:59 -0700 (PDT)
+        bh=sVTr2qGQ6crKPPGVbxVvbxdCkwGuO8w6ti1rBANX8lQ=;
+        b=GRsO6mljoPq1F9PnUtGGDu6RBajAzMGpieFhZcV8QbgU0C7sAiEAzC9hUOCcxHz6Gj
+         wQpvfAqtaN1uJNdGuSBUnG7l5acA4p2fwcMDNXQmGamh1p+HtNteAJ6mFToCDnfVKhBK
+         l3frMr7j61t+5O1Az3yBHgxWtafhYhSFV1FB1pZ6YCoQDl99GMi625d1ujnuPCEc0SoW
+         ZbfNEXTYJMtlOfHMxB3PY/gUuJHcmxx5NphKPR8fVt+UiyIa1t/ouylbme3vwPKqBosf
+         V7IBHhAlgKavGXGyU0JE3xpCAjUaiqC5o+nBqh9H9pIOb38lE9EQ78OsAwYy6ZfkH6Sc
+         QFrw==
+X-Forwarded-Encrypted: i=1; AJvYcCWDRYRDnfPV5y0uolSGu5sRrZZXf9mS+Si+mYyOV8AZ/PD/orRQayz+GZwg1BZg4Wrmg8mJMkdzp4PEVQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGI2hfbZ7pKsHe1YGHGqpe3SzlPUB9drSxeupwNXIjf4DZXdV4
+	scDrZ9igiKqWPyW+s5W+OplDCyx65ebUi4oXces3n4Zs43B0egTe3GZGMJbzfWanT/E=
+X-Gm-Gg: ASbGncv15IUrHYF4blFKqxU/Xz/zh8x1HgCTJPjgjI5+smLPhMQdJxh5X6blyeUxFJC
+	GfEwEbVSZZwDkb7y1G3ujKCm4T3ewiCKxjjyCMkFHvRlOdLU2s9QDgkHTrujk3+mLv0iUREJu2E
+	AaipcWAjxbIU3cJxmjQTL6x63TcuSr30OpJfvaGc3UIJ80xUdgyG+xQrBbCK1wFw9B2BzOILRQv
+	lzVh9FYkbosE2eg0YwhFRkChAd65t7JwvKhg5ii3AzMeLI1S2fQad0J/frGEB4Fgu9VMelf92F9
+	7wQnLKlsweSHGKcU3rRHph3xPkHhs7MHscwanFr9Ncr/zi3bbH9aLBJ15WERsQeM4rRw6wXlYoQ
+	Skvo3tiInJGvD9g==
+X-Google-Smtp-Source: AGHT+IEKx3/rWKP2k2pdELVmQLpnrBbt70zj8q9xr+rOuS07et1peo7eXDplr/LVokgbBgJg3DnaMg==
+X-Received: by 2002:a05:6000:40c7:b0:3a5:25e0:ab53 with SMTP id ffacd0b85a97d-3a561349677mr355452f8f.32.1749677880641;
+        Wed, 11 Jun 2025 14:38:00 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2364e702d9dsm265605ad.180.2025.06.11.14.28.56
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-748808963f6sm40342b3a.55.2025.06.11.14.37.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Jun 2025 14:28:59 -0700 (PDT)
-Message-ID: <e26c5163-e492-4275-bfaa-b36d81e363ea@suse.com>
-Date: Thu, 12 Jun 2025 06:58:53 +0930
+        Wed, 11 Jun 2025 14:38:00 -0700 (PDT)
+Message-ID: <2b1e6373-9621-4c26-8a46-d0ef15c5f5d6@suse.com>
+Date: Thu, 12 Jun 2025 07:07:55 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -83,14 +83,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/5] btrfs: always open the device read-only in
- btrfs_scan_one_device
+Subject: Re: [PATCH v2 2/5] btrfs: call btrfs_close_devices from ->kill_sb
 To: Johannes Thumshirn <jth@kernel.org>, linux-btrfs@vger.kernel.org
 Cc: Boris Burkov <boris@bur.io>, Christoph Hellwig <hch@lst.de>,
  David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
  Johannes Thumshirn <johannes.thumshirn@wdc.com>
 References: <20250611100303.110311-1-jth@kernel.org>
- <20250611100303.110311-2-jth@kernel.org>
+ <20250611100303.110311-3-jth@kernel.org>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -117,111 +116,152 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250611100303.110311-2-jth@kernel.org>
+In-Reply-To: <20250611100303.110311-3-jth@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/6/11 19:32, Johannes Thumshirn 写道:
+在 2025/6/11 19:33, Johannes Thumshirn 写道:
 > From: Christoph Hellwig <hch@lst.de>
 > 
-> btrfs_scan_one_device opens the block device only to read the super
-> block.  Instead of passing a blk_mode_t argument to sometimes open
-> it for writing, just hard code BLK_OPEN_READ as it will never write
-> to the device or hand the block_device out to someone else.
+> blkdev_put must not be called under sb->s_umount
+
+Btrfs doesn't utilize blkdev_put(), it only calls regular fput() which 
+do delayed cleanup.
+
+So you may want to apply this patch first:
+
+https://lore.kernel.org/linux-btrfs/eaf6ba3672a82ba940678d269ab16f8a702eaf32.1749446257.git.wqu@suse.com/T/#u
+
+> to avoid a lock order
+> reversal with disk->open_mutex once call backs from block devices to
+> the file system using the holder ops are supported.  Move the call
+> to btrfs_close_devices into btrfs_free_fs_info so that it is closed
+> from ->kill_sb (which is also called from the mount failure handling
+> path unlike ->put_super) as well as when an fs_info is freed because
+> an existing superblock already exists.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>   fs/btrfs/disk-io.c |  4 ++--
+>   fs/btrfs/super.c   | 29 ++++++++++++++++-------------
+>   2 files changed, 18 insertions(+), 15 deletions(-)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 0d6ad7512f21..6360d44acaa9 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -1247,6 +1247,8 @@ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
+>   	struct percpu_counter *em_counter = &fs_info->evictable_extent_maps;
+>   
+>   	percpu_counter_destroy(&fs_info->stats_read_blocks);
+> +	if (fs_info->fs_devices)
+> +		btrfs_close_devices(fs_info->fs_devices);
+>   	percpu_counter_destroy(&fs_info->dirty_metadata_bytes);
+>   	percpu_counter_destroy(&fs_info->delalloc_bytes);
+>   	percpu_counter_destroy(&fs_info->ordered_bytes);
+> @@ -3681,7 +3683,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+>   
+>   	iput(fs_info->btree_inode);
+>   fail:
+> -	btrfs_close_devices(fs_info->fs_devices);
+>   	ASSERT(ret < 0);
+>   	return ret;
+>   }
+> @@ -4428,7 +4429,6 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+>   	iput(fs_info->btree_inode);
+>   
+>   	btrfs_mapping_tree_free(fs_info);
+> -	btrfs_close_devices(fs_info->fs_devices);
+>   }
+>   
+>   void btrfs_mark_buffer_dirty(struct btrfs_trans_handle *trans,
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index b9e08a59da4e..eaecf1525078 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -1869,10 +1869,8 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+>   	if (ret)
+>   		return ret;
+>   
+> -	if (!(fc->sb_flags & SB_RDONLY) && fs_devices->rw_devices == 0) {
+> -		ret = -EACCES;
+> -		goto error;
+> -	}
+> +	if (!(fc->sb_flags & SB_RDONLY) && fs_devices->rw_devices == 0)
+> +		return -EACCES;
+>   
+>   	bdev = fs_devices->latest_dev->bdev;
+>   
+> @@ -1886,21 +1884,20 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+>   	 * otherwise it's tied to the lifetime of the super_block.
+>   	 */
+>   	sb = sget_fc(fc, btrfs_fc_test_super, set_anon_super_fc);
+> -	if (IS_ERR(sb)) {
+> -		ret = PTR_ERR(sb);
+> -		goto error;
+> -	}
+> +	if (IS_ERR(sb))
+> +		return PTR_ERR(sb);
+>   
+>   	set_device_specific_options(fs_info);
+>   
+>   	if (sb->s_root) {
+> -		btrfs_close_devices(fs_devices);
+>   		/*
+>   		 * At this stage we may have RO flag mismatch between
+>   		 * fc->sb_flags and sb->s_flags.  Caller should detect such
+>   		 * mismatch and reconfigure with sb->s_umount rwsem held if
+>   		 * needed.
+>   		 */
+> +		if ((fc->sb_flags ^ sb->s_flags) & SB_RDONLY)
+> +			ret = -EBUSY;
+>   	} else {
+>   		snprintf(sb->s_id, sizeof(sb->s_id), "%pg", bdev);
+>   		shrinker_debugfs_rename(sb->s_shrink, "sb-btrfs:%s", sb->s_id);
+> @@ -1916,10 +1913,6 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+>   
+>   	fc->root = dget(sb->s_root);
+>   	return 0;
+> -
+> -error:
+> -	btrfs_close_devices(fs_devices);
+> -	return ret;
+>   }
+>   
+>   /*
+> @@ -1997,8 +1990,18 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+>    */
+>   static int btrfs_reconfigure_for_mount(struct fs_context *fc)
+>   {
+> +	struct btrfs_fs_info *fs_info = fc->s_fs_info;
+>   	int ret = 0;
+>   
+> +	/*
+> +	 * We got a reference to our fs_devices, so we need to close it here to
+> +	 * make sure we don't leak our reference on the fs_devices.
+> +	 */
+> +	if (fs_info->fs_devices) {
+> +		btrfs_close_devices(fs_info->fs_devices);
+> +		fs_info->fs_devices = NULL;
+> +	}
+> +
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+This is what I didn't get, there is really nothing special for 
+btrfs_reconfigure_for_mount() nowadays, we always go into this function 
+and I didn't see any special reason why we always want to close all 
+devices here.
+
+Mind to explain it more like where the reference is from, and why it can 
+be leaked?
 
 Thanks,
 Qu
 
-> ---
->   fs/btrfs/super.c   | 9 ++++-----
->   fs/btrfs/volumes.c | 4 ++--
->   fs/btrfs/volumes.h | 2 +-
->   3 files changed, 7 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 2d0d8c6e77b4..b9e08a59da4e 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -364,10 +364,9 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
->   		break;
->   	case Opt_device: {
->   		struct btrfs_device *device;
-> -		blk_mode_t mode = btrfs_open_mode(fc);
+>   	if (!(fc->sb_flags & SB_RDONLY) && (fc->root->d_sb->s_flags & SB_RDONLY))
+>   		ret = btrfs_reconfigure(fc);
 >   
->   		mutex_lock(&uuid_mutex);
-> -		device = btrfs_scan_one_device(param->string, mode, false);
-> +		device = btrfs_scan_one_device(param->string, false);
->   		mutex_unlock(&uuid_mutex);
->   		if (IS_ERR(device))
->   			return PTR_ERR(device);
-> @@ -1855,7 +1854,7 @@ static int btrfs_get_tree_super(struct fs_context *fc)
->   	 * With 'true' passed to btrfs_scan_one_device() (mount time) we expect
->   	 * either a valid device or an error.
->   	 */
-> -	device = btrfs_scan_one_device(fc->source, mode, true);
-> +	device = btrfs_scan_one_device(fc->source, true);
->   	ASSERT(device != NULL);
->   	if (IS_ERR(device)) {
->   		mutex_unlock(&uuid_mutex);
-> @@ -2233,7 +2232,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
->   		 * Scanning outside of mount can return NULL which would turn
->   		 * into 0 error code.
->   		 */
-> -		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
-> +		device = btrfs_scan_one_device(vol->name, false);
->   		ret = PTR_ERR_OR_ZERO(device);
->   		mutex_unlock(&uuid_mutex);
->   		break;
-> @@ -2251,7 +2250,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
->   		 * Scanning outside of mount can return NULL which would turn
->   		 * into 0 error code.
->   		 */
-> -		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
-> +		device = btrfs_scan_one_device(vol->name, false);
->   		if (IS_ERR_OR_NULL(device)) {
->   			mutex_unlock(&uuid_mutex);
->   			if (IS_ERR(device))
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 1535a425e8f9..1ebfc69012a2 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1440,7 +1440,7 @@ static bool btrfs_skip_registration(struct btrfs_super_block *disk_super,
->    * the device or return an error. Multi-device and seeding devices are registered
->    * in both cases.
->    */
-> -struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
-> +struct btrfs_device *btrfs_scan_one_device(const char *path,
->   					   bool mount_arg_dev)
->   {
->   	struct btrfs_super_block *disk_super;
-> @@ -1461,7 +1461,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
->   	 * values temporarily, as the device paths of the fsid are the only
->   	 * required information for assembling the volume.
->   	 */
-> -	bdev_file = bdev_file_open_by_path(path, flags, NULL, NULL);
-> +	bdev_file = bdev_file_open_by_path(path, BLK_OPEN_READ, NULL, NULL);
->   	if (IS_ERR(bdev_file))
->   		return ERR_CAST(bdev_file);
->   
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 6d8b1f38e3ee..afa71d315c46 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -719,7 +719,7 @@ struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
->   void btrfs_mapping_tree_free(struct btrfs_fs_info *fs_info);
->   int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
->   		       blk_mode_t flags, void *holder);
-> -struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
-> +struct btrfs_device *btrfs_scan_one_device(const char *path,
->   					   bool mount_arg_dev);
->   int btrfs_forget_devices(dev_t devt);
->   void btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
 
 
