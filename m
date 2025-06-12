@@ -1,198 +1,190 @@
-Return-Path: <linux-btrfs+bounces-14629-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14630-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93549AD75FD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jun 2025 17:28:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E25CDAD7749
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jun 2025 18:00:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B950E7B357F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jun 2025 15:24:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A8533B1B23
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jun 2025 15:53:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41BA12D543A;
-	Thu, 12 Jun 2025 15:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539A71A265E;
+	Thu, 12 Jun 2025 15:51:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UeeCKjZQ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nam/V4ck";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WCOOz/8G";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ihi8Z1kM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NatzaEqO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B926B29A327
-	for <linux-btrfs@vger.kernel.org>; Thu, 12 Jun 2025 15:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2530C298CB3
+	for <linux-btrfs@vger.kernel.org>; Thu, 12 Jun 2025 15:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749741545; cv=none; b=B+7EVqazPT6Azy4cNZnO7Ot0MqMROVBOt64FKQkamKZPj5IKl017cOtInm2JIA8PDKVb6WbyfTzSBUjSV577ZklYLo6vfytgG+qbZXdBmm2ED5GK5KaRFT7ckCQgzb6ZwYWMvYrlC1KnDugBUBQkYDTzzywn2fxC1EuKJ4Bvxm8=
+	t=1749743467; cv=none; b=o3iGgdrjlEXc0ZiO2R+m2DtO8fYN7TGUd5N145em89GtFuSi7LrvwOr6QOffPgwkC4mCx46rHhzWPgV3bjpgBXG/DHOf8yAumDkErofBJ6jmaluH8rzL1/nnsA4tsD594p/NEzZw2xYbnUe9/YARriH75Z5ciqKGyYFAY7s/oGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749741545; c=relaxed/simple;
-	bh=hredmp1gq53XGfzfOOANLN3abqlJ6ooEsfxytDqfW8c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I6f0agknYw6X26O5GJ6z2qhVW7Ul8Dtou/jiBC835dxhRiaVnZOk3QZqOa+Ukpp3L4LdHm3hKDXKHD8YVrd0SCpPKLlR/VICLFhV9YWLkgZ4TMl9YNJLePdRNe1L/ljlJi/zYYAP8lxHpmV2387Imea1UBAlpj/FYNcpAc8xfyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UeeCKjZQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nam/V4ck; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WCOOz/8G; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ihi8Z1kM; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B213D219CD;
-	Thu, 12 Jun 2025 15:19:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1749741542;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bnsifuXamSpD0/0oot88ELgCsTj5itLPtPGx9RDn5Z4=;
-	b=UeeCKjZQqL2YRSazl8jzuS9C4uFgFc3BwtbKE2ih1lMhsdba2/HB55Q34/7reLwiFimnWJ
-	TSIqjZYnIakxvcq1pcr1WP0AjOpIzd9JuXdoNmMWoYQ3ftC5A6R8OOUPMbgQM+AEUzCUy2
-	E3dajvTHoDUvAjYONe2Un14jbencC3U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1749741542;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bnsifuXamSpD0/0oot88ELgCsTj5itLPtPGx9RDn5Z4=;
-	b=nam/V4ckxM32n5hkeK85TM1X2dm1dApzphSbGDk1g190nDt9pH1WhSEAcbmbiH/A3OKrP8
-	ZnYGtNF3LDu+kFCg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="WCOOz/8G";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ihi8Z1kM
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1749741540;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bnsifuXamSpD0/0oot88ELgCsTj5itLPtPGx9RDn5Z4=;
-	b=WCOOz/8G38jQagO20pe/FT14Y2Rodsm0r+BIca+/CbKCI5uOzTIumQm+fmJteaY5Ln+9d3
-	UUpKVD6o6z6N9sbbT/cwkRs0W/BRnvHCkHH6AHMZjWOg2mpQ0IRmrRTOZQwvlW5kylUqRF
-	h8JOOdLjOqeH3m6mr/rUJDh9c37/rjA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1749741540;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bnsifuXamSpD0/0oot88ELgCsTj5itLPtPGx9RDn5Z4=;
-	b=ihi8Z1kMH9isFJyOOKIRMTzlc2yvAfO7lOsmj5guPZBzk6fBgQ0NxG4rP3mEFyo/y1BYKg
-	jrOt+pKuC1zHEfAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E715139E2;
-	Thu, 12 Jun 2025 15:19:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +wOHIuTvSmiJKwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 12 Jun 2025 15:19:00 +0000
-Date: Thu, 12 Jun 2025 17:18:51 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Daniel Vacek <neelx@suse.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, Nick Terrell <terrelln@fb.com>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] btrfs: harden parsing of compress mount options
-Message-ID: <20250612151851.GD4037@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20250602155320.1854888-1-neelx@suse.com>
- <20250602155320.1854888-3-neelx@suse.com>
- <20250602172904.GE4037@twin.jikos.cz>
- <CAPjX3FdyMGKGFch-k=CmOD7wP_as_iaB9hmnbbui5=off+m+iQ@mail.gmail.com>
+	s=arc-20240116; t=1749743467; c=relaxed/simple;
+	bh=llZ4faunlT0bsAZRXk5nryDXyayq5XqzkP+6pSIm6Sg=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dh48z84eO82fXaoaz4FT48I6B5X3mu9Oa3E4OCQ3BGQcRuACPMC0ty+3WQiRvM0LSiJuA4AOlXgFFn50/DNGBsut6WIs31hW+lm6ZAMoHUna75Igl1uKmdPI+g5Mo9BjcZkvi+IvE6Gi+qRgYptHBfpwLy6akLtEyo/RtiV7SFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NatzaEqO; arc=none smtp.client-ip=209.85.214.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-234c26f8a25so1868235ad.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Jun 2025 08:51:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749743465; x=1750348265; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cXm0Mqs7w7SEiM1KZm3mOOr1/Wn9uWLh+Nb7KKQpsag=;
+        b=NatzaEqOPKHAVJSPODK89+6+m4Ki1fYt7Gzb5pzDCXaL2kbV+bFYjtqG3H8ypDqTyr
+         wyVz1fgspDSX84iEfhqIhl9kqffJvMmaUbRskni/RwaUGwixgrFp7x2Ngo9nkVCUMNKR
+         9ffvGvZbYvV3rDsXWvR/XiheAkSW5J+MifGzg8An59stMt8iJ72gWObrFy0eLBbgQx6e
+         2sIvq0fBQt/QYRoRyLxLT7AB82lz7X/yH7/ASj6IYspe0saZWJn5cOFe9hzR+LHozLqz
+         QIoIoW1SYDSD7nu12uR16sV1WEFKzQs4Xi/5OUbK93a7b3xFMgo5IxBmd7Oy39rIf3GT
+         iwjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749743465; x=1750348265;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cXm0Mqs7w7SEiM1KZm3mOOr1/Wn9uWLh+Nb7KKQpsag=;
+        b=gmG/BerpCrZnKi3mqQuwR/6qTb5Zb7/hcqPXcgZfeZkqSfSZw12kHUNvpc6lGzQhCo
+         +BHLbDUFMywkHnuqbrlW6ekf0cd8KirVczp0iqT/yPxsbMnui9dXKLvjGgn/8ss4+4j5
+         g/UDAhxQf6y5BKlwVTctfNRsoKmDQDvHSC2ovj64NaYTIRgnF8b+EuoXTuN7QZCouiUx
+         ZLDP1KMniGURlgo2cZO5eaymTfEZDETMCrOOXZysOF+wbDQzEoy3SsdlgcO8eNXXHDPn
+         hEgooYWujBJbiF6Yv2vsPm5qxpmJhjro+vj5F4YGgt1E+/iqeyXAAx0iUbYwtkTMlTXE
+         jSaw==
+X-Gm-Message-State: AOJu0YymST0hnfW7FwYVosm5GI7/Ll3fSs8uTo4J+dDi5YPe9+giI1XY
+	enj701GEzQ1b6Qq45XatYJsDKEE0UOMcoXlszoJzGLCVZ/pAUCv1QYeCOTHzqrhFud/BEQ==
+X-Gm-Gg: ASbGncttzlu1r3di+5kt28A484VyZZbquS4ZOroXFUwhPJE2WI6c6AVUOZjdQRqEOqb
+	NV62qCXNl4SBJCeAi5OdTuYEY4iRT5lRiM+OpjUdpinvNTtmmkrCEctkir06yOoTVkn3bTAM6cq
+	hkXyUp6HD22oaHQvX/Aim1qEU77krLZ0VTn8dVRnBQVLEW/MahIe+HuW7168ZNHkI1jQz7N562B
+	3khLh6LcpBG+uH5e2EVyY50SHb5z4GrtIzKKJpTrQJMWjwbMRu62YMK4tvcxHSDJWWRwkljNnAT
+	ZmeiesarOSq+B54UC/m2pQ8HhruWod8vIaEMV/nXq+PqSwiBV6DKDB8kEXhYdKp7tTfZknl8
+X-Google-Smtp-Source: AGHT+IFtc7RgzHmHWNpKij3JEAuPZElw7dngFqEL/dsJSPehi3C+UNDXZJQ0NeTZctvTJVwovuLbew==
+X-Received: by 2002:a17:902:ec89:b0:234:e170:88f3 with SMTP id d9443c01a7336-23641aceb61mr39937315ad.8.1749743465407;
+        Thu, 12 Jun 2025 08:51:05 -0700 (PDT)
+Received: from saltykitkat.localnet ([154.31.113.14])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2364e6343a8sm15745785ad.64.2025.06.12.08.51.04
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Jun 2025 08:51:05 -0700 (PDT)
+From: Sun YangKai <sunk67188@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Subject:
+ Re: [PATCH v3] btrfs: fix nonzero lowest level handling in
+ btrfs_search_forward()
+Date: Thu, 12 Jun 2025 23:51:01 +0800
+Message-ID: <6166825.lOV4Wx5bFT@saltykitkat>
+In-Reply-To: <20250612083522.24878-1-sunk67188@gmail.com>
+References: <20250612083522.24878-1-sunk67188@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPjX3FdyMGKGFch-k=CmOD7wP_as_iaB9hmnbbui5=off+m+iQ@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: B213D219CD
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -4.21
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 
-On Thu, Jun 12, 2025 at 03:29:21PM +0200, Daniel Vacek wrote:
-> On Mon, 2 Jun 2025 at 19:29, David Sterba <dsterba@suse.cz> wrote:
-> >
-> > On Mon, Jun 02, 2025 at 05:53:19PM +0200, Daniel Vacek wrote:
-> > > Btrfs happily but incorrectly accepts the `-o compress=zlib+foo` and similar
-> > > options with any random suffix.
-> > >
-> > > Fix that by explicitly checking the end of the strings.
-> > >
-> > > Signed-off-by: Daniel Vacek <neelx@suse.com>
-> > > ---
-> > > v3 changes: Split into two patches to ease backporting,
-> > >             no functional changes.
-> > >
-> > >  fs/btrfs/super.c | 26 +++++++++++++++++++-------
-> > >  1 file changed, 19 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> > > index 6291ab45ab2a5..4510c5f7a785e 100644
-> > > --- a/fs/btrfs/super.c
-> > > +++ b/fs/btrfs/super.c
-> > > @@ -270,9 +270,20 @@ static inline blk_mode_t btrfs_open_mode(struct fs_context *fc)
-> > >       return sb_open_mode(fc->sb_flags) & ~BLK_OPEN_RESTRICT_WRITES;
-> > >  }
-> > >
-> > > +static bool btrfs_match_compress_type(char *string, char *type, bool may_have_level)
-> >
-> > const also here, string, type
-> >
-> > > +{
-> > > +     int len = strlen(type);
-> > > +
-> > > +     return strncmp(string, type, len) == 0 &&
-> > > +             ((may_have_level && string[len] == ':') ||
-> > > +                                 string[len] == '\0');
-> > > +}
-> > > +
-> > >  static int btrfs_parse_compress(struct btrfs_fs_context *ctx,
-> > >                               struct fs_parameter *param, int opt)
-> > >  {
-> > > +     char *string = param->string;
-> >
-> > and here
+> Commit 323ac95bce44 ("Btrfs: don't read leaf blocks containing only
+> checksums during truncate") changed the condition from `level == 0` to
+> `level == path->lowest_level`, while its origional purpose is just to do
+> some leaf nodes handling (calling btrfs_item_key_to_cpu()) and skip some
+> code that doesn't fit leaf nodes.
 > 
-> Can be done at merge time. Or do you want a re-send?
+> After changing the condition, the code path
+> 1. also handle the non-leaf nodes when path->lowest_level is nonzero,
+>    which is wrong. However, it seems that btrfs_search_forward() is never
+>    called with a nonzero path->lowest_level, which makes this bug not
+>    found before.
+> 2. makes the later if block with the same condition, which is origionally
+>    used to handle non-leaf node (calling btrfs_node_key_to_cpu()) when
+>    lowest_level is not zero, dead code.
+> 
+> This changes the behavior when btrfs_search_forward() is called with
+> nonzero path->lowest_level. But this never happens in the current code
+> base, and the previous behavior is wrong. So the change of behavior will
+> not be a problem.
+> 
+> Fix: commit 323ac95bce44 ("Btrfs: don't read leaf blocks containing only
+> checksums during truncate") Signed-off-by: Sun YangKai
+> <sunk67188@gmail.com>
+> ---
+>  fs/btrfs/ctree.c | 18 +++++-------------
+>  1 file changed, 5 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index a2e7979372cc..56a49d85b2a4 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -4585,16 +4585,13 @@ int btrfs_del_items(struct btrfs_trans_handle
+> *trans, struct btrfs_root *root,
+> 
+>  /*
+>   * A helper function to walk down the tree starting at min_key, and looking
+> - * for nodes or leaves that are have a minimum transaction id.
+> + * for leaves that are have a minimum transaction id.
+>   * This is used by the btree defrag code, and tree logging
+>   *
+>   * This does not cow, but it does stuff the starting key it finds back
+>   * into min_key, so you can call btrfs_search_slot with cow=1 on the
+>   * key and get a writable path.
+>   *
+> - * This honors path->lowest_level to prevent descent past a given level
+> - * of the tree.
+> - *
+>   * min_trans indicates the oldest transaction that you are interested
+>   * in walking through.  Any nodes or leaves older than min_trans are
+>   * skipped over (without reading them).
+> @@ -4615,6 +4612,7 @@ int btrfs_search_forward(struct btrfs_root *root,
+> struct btrfs_key *min_key, int keep_locks = path->keep_locks;
+> 
+>  	ASSERT(!path->nowait);
+> +	ASSERT(path->lowest_level == 0);
+>  	path->keep_locks = 1;
+>  again:
+>  	cur = btrfs_read_lock_root_node(root);
+> @@ -4636,8 +4634,8 @@ int btrfs_search_forward(struct btrfs_root *root,
+> struct btrfs_key *min_key, goto out;
+>  		}
+> 
+> -		/* at the lowest level, we're done, setup the path and exit */
+> -		if (level == path->lowest_level) {
+> +		/* at the level 0, we're done, setup the path and exit */
+> +		if (level == 0) {
+>  			if (slot >= nritems)
+>  				goto find_next_key;
+>  			ret = 0;
+> @@ -4678,12 +4676,6 @@ int btrfs_search_forward(struct btrfs_root *root,
+> struct btrfs_key *min_key, goto out;
+>  			}
+>  		}
+> -		if (level == path->lowest_level) {
+> -			ret = 0;
+> -			/* Save our key for returning back. */
+> -			btrfs_node_key_to_cpu(cur, min_key, slot);
+> -			goto out;
+> -		}
+>  		cur = btrfs_read_node_slot(cur, slot);
+>  		if (IS_ERR(cur)) {
+>  			ret = PTR_ERR(cur);
+> @@ -4699,7 +4691,7 @@ int btrfs_search_forward(struct btrfs_root *root,
+> struct btrfs_key *min_key, out:
+>  	path->keep_locks = keep_locks;
+>  	if (ret == 0)
+> -		btrfs_unlock_up_safe(path, path->lowest_level + 1);
+> +		btrfs_unlock_up_safe(path, 1);
+>  	return ret;
+>  }
 
-No resend needed, I updated the patch in for-next. This was to let you
-know so that I don't need to fix it in future patches.
+This patch is suggest by Qu Wenruo.
+Should I add a line like
+Suggest-by: Qu Wenruo <wqu@suse.com>
+
+
+
 
