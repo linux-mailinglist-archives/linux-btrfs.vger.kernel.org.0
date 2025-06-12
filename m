@@ -1,278 +1,133 @@
-Return-Path: <linux-btrfs+bounces-14612-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14613-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 409FBAD622A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jun 2025 00:06:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB6CAD646D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jun 2025 02:23:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21DEB3A5E64
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Jun 2025 22:06:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC8D617458F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jun 2025 00:23:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17ED8248F5C;
-	Wed, 11 Jun 2025 22:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F47E11CA9;
+	Thu, 12 Jun 2025 00:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="D+AePX5q"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="M6wzEEnA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 026CC17736
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Jun 2025 22:06:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7121EB3D
+	for <linux-btrfs@vger.kernel.org>; Thu, 12 Jun 2025 00:22:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749679607; cv=none; b=HfZP9PgKcC9q2vxr3QKFifPSRxDNRFXgYGaRBUTvhA8++ya50d1sYXo/ZV9CGib+b44nQEwit6cI9O2CMQtJIWDpacLLmp9q6xVPlhDM0mXcypVozYqs/EZmmDJkXTm9/Mmn2JiCnTvlcAGGkyETW/oD35/mvvphnUQKLfSUOKU=
+	t=1749687776; cv=none; b=i0FYpIbxRmG1NTWDNKjAsWXVElxaupDzOlpgvgN1Wt7UNoWh+KuHCVuyxgCJrzc0WPamx/DwCirlQs3SyMqpZgyzKcjUQ+p+RBK1QHwmYzWqBv7Q1PmJ1jbpDXI1zYc1FT+O2SMONY56HN7uj7LUV4/ZHCIRzY/PMP7ZsZtujXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749679607; c=relaxed/simple;
-	bh=QBY8FUsAe8PHJXIdWtvLziaLx8Xx3FihTRD3msVTbzM=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=V5MAkEu/86cR4LyjCZDZNBlXcWSyCRvrzohv9isSAClNh3VQj8MdE8YTe/hgbdbRMmMm0x7kkLEmQ6dOq49FgUVwnhKuiJHIIfPri/1X4YJu1a15K+FYa55+j2j+VXCr4bDeKkeVm7BzWGvBlx6AXDRn9GTmKvoXVALeoSWKCdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=D+AePX5q; arc=none smtp.client-ip=209.85.221.42
+	s=arc-20240116; t=1749687776; c=relaxed/simple;
+	bh=R0lHJUgl9IdY0ThEkJpsSaRIKBC11mHpH7tPgAJJitw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ud/dofhtE+eXNylsUer4xI8NImM/4tdQ06F0lUPJFSxBGud7V4YV0Rl4LsXcsfjwNGu9HjcSi23ypNM0XzSwIkS1RLu4EkO18ZsJ+dXFUtI0BNsuKLwoLjrSC34E1IM9YNpqFJglKjieog0gr2N/7k/z3IjUhZbLIHnFZhn9WDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=M6wzEEnA; arc=none smtp.client-ip=209.85.128.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3a4f72cba73so1045957f8f.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jun 2025 15:06:44 -0700 (PDT)
+Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-441d437cfaaso1897395e9.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Jun 2025 17:22:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1749679603; x=1750284403; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=RD61jaDwiQ2ABHJnajoJKzYvL4DuuKYKFrFIoaYHiNU=;
-        b=D+AePX5qylaXlLkz54opLGlg4nePcSdqByi5Fx3srCAD2HMO9xRxhpxaE/iUgz85RX
-         BGa7MwpsL0prY1e4E55vvCbbeZJG2tbZwHRdDHjNWb27q95uW5jUeOEgz6PQDJNyvLuL
-         0Mu6fUJSI6Avq9Lq1/mrctobjRiz6rU1sBYiEgGha9fFaV9td9IssTKkpavjAlsXxC8v
-         VMtnMsRa0SdOTuj35PmwWjn5lOklEwxjzULgkT2acAf8f7e3E+/2GEFYMVf/UqvHblfc
-         ATyCrnfrUaMalA0YzTM9HFAGbg9DctcoB87mDy4zhhpVThsvlX3SKaO8aO+PzUVHj1oJ
-         4qRg==
+        d=suse.com; s=google; t=1749687771; x=1750292571; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=y1ZCi6QOzzN/4qT4qcIY6G+WRRBr2/w4jmlKG9lb/Lw=;
+        b=M6wzEEnAUwjwIWCMbBs5lz2FWSQLFCt/8bLZpBldQ8+nl5isbJX0+3gK9/dY9hACde
+         9n3qFhOAwR7tavr1WW5oZN6UtJ/hEznBwTpLX2nXW5wsuVEK0V06ej000ZTxGKCTw5pl
+         YaJP+G3FKTYk+ToSRuMaW7D76C7fEOJul/D6DL+kkAIAldd0L93cUlRdlvM6mSIgagU5
+         /1nYntVlyHry+O5SI9LcjOtuOGiKaUWiVx8hUv0pbCS9JMq9t32gXcG0BXryD8XD/RY9
+         FpHjwI1t9bSDQ1wCHJtdFDmFrToXvd06+aZ4Wb0Os0+pzyGTg3tcuPjiokMuRyXygLRA
+         gdmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749679603; x=1750284403;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1749687771; x=1750292571;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RD61jaDwiQ2ABHJnajoJKzYvL4DuuKYKFrFIoaYHiNU=;
-        b=eAARII+W9mBd60BqM45COdaZgl4t+b9kQuFKK1ozU5Czoi5YE8RbFM2RakiuUVAqZj
-         URnq4AM9Xj5NYasCbR2whVPIkUn7uxdBlS9/w5jOqgplfiZsrOfxO4zc+QMDkW7ZmFL5
-         nB6VrrvLobIFwXXVTOOcU14kPxheAWb9lvSJTCbxFeoq68jXFER3dyii+MKoCCK8wrEi
-         fE5wWOJRdV8YHWdGwz0kwNulFWMvR9WOhTLqd7zHCGUUVaXGV9FZ0xQXz/ce7eEPPyV+
-         B8ONKYUXDWJE/Fd4hYRgQMwiyt6JiZ7vImWgGCcs1Hwq9AH+hABPPOvcVWV1nEbPCjpH
-         uazQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXZzx2T73yQuf6l/cYXo37GoFxSRKOPVhuvVTav2mKgpd6pcHFI/JdNzHckG8rsPajPSdRctuaXlZlTCg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHJs6YSr00quKLQLvXWZraCEJcsIec6/vdif8wOcPWohLaFt3b
-	dEav9RGKjVcXLa3L8F0udlrvepnOld3w7rXjuBNP6+TmjyZJ+PdLGskm/zX90+ACK20=
-X-Gm-Gg: ASbGncvsSrMDA18MqV6GPEHamoiF3a2HxgXRzepYrg54kwQEVkvmp7rYmrLx8frJure
-	UyKFVonfI0FDd0aCeFWVkvMKF13EZ5m8L3c6Egk6BR8YaX9cJ2sMm8gD+yTLMoRNrYxgbisAlL7
-	YBlOr5CBbtmkbHnIAUYTRr56rWhMQzCjM+W3/rcOxsPckCfcz5Q/5ngBV0LS1lNVfy+zRcjfZwA
-	/Bw+YtUjsZR9rCBBZB2N+i5lBY87dsVoeTIAVh/pWw3kD2JqjsIqzR8bHkgXBybgbPBXbrvOpi2
-	I7CcYG6B4zV7UpjH22nbBOzPFGDtrW7I7lwwqB570lbE+1OCpn0fgpQij/tE7Z1j/aHTz+z0Z/Q
-	LXQC7Wc0L8T7wvQ==
-X-Google-Smtp-Source: AGHT+IFPZOiBGeYJXqBnR0t6QWMZ54fDCwNk+TJqhagiE9tIiziVaOffMIiE1SL2B8TB9eWOKelnSQ==
-X-Received: by 2002:a05:6000:240d:b0:3a4:d685:3de7 with SMTP id ffacd0b85a97d-3a560778f99mr860420f8f.8.1749679603052;
-        Wed, 11 Jun 2025 15:06:43 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2364e632c53sm675105ad.54.2025.06.11.15.06.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Jun 2025 15:06:42 -0700 (PDT)
-Message-ID: <69982e5e-96d3-4e60-891c-ade4474253cc@suse.com>
-Date: Thu, 12 Jun 2025 07:36:37 +0930
+        bh=y1ZCi6QOzzN/4qT4qcIY6G+WRRBr2/w4jmlKG9lb/Lw=;
+        b=mc5FSkBPFWypNwU4HQDOF+lrRekK+wAHFcubY2Q3CN+5zW7MdkY88Uw6rWmASRHT9C
+         ce5zzaK/O1lkdUN/c7d04ZLjhi3wYd5OA2jDizocWdPVMiWYeQo2vgrIOKo5UT3//MlJ
+         9mwJogKAsj97pR0JneEoTohFy242KttHSVAAExvWFXgZ9eJj5/oHyoPuLtAO7U1kfREs
+         2DnHmiypTel4nFCxORsj4joKFc4pxIqmEeFKX2Wcpgk5zlfO0zeGAmct+Pdsfd98RG77
+         B0VmfBzAcysogL7f0mPvgiJwB9BKwpSbqb4gXLxWbgl5nK53/rT9MNtkiIkyWCIi13nI
+         8+7A==
+X-Gm-Message-State: AOJu0YyLMfKdeVNWzWfK3bpyYtipwvo7pIsn4NR87wFtUVVDIV6ZeyBG
+	Wfjarl2h6wFUj1LTvd6a/tpEVO8EgrzZdReEJAjVRIWJcqMG4P4UuxQlrpDAO6gxKZNAeGpTVeE
+	ZP8agf1+a3w==
+X-Gm-Gg: ASbGncv8J8CHr7j+BU6pobUKNEZZ8hKZsmKdsEfK64w1q9U8jP+EBiJuqwQrZb2QUWC
+	y/RLMn++BSmbOCQZ8Vmi3EPRQ7DP6/ml0ms8SCE4vqAWVYluHTatcJ5e0KF77huGSELbUMiXo3B
+	m3DZ7HfRuunVSidy2yVD2T2FDzDtC77LptiKsGda9+Vj3zs1zxGJURUpWUkAVRZBBqxTxQChJVi
+	DVwvXJWqA9pbahZb/60/J0TIHnaRLFzy0hR0CN0dRGjD7KnYlbtX0d4LiTGrZfILjtp6TQ9BxfC
+	SsKOEFKgF55ptz0pqXQc0LtynDy2dmqxkaJrXYC2pQLZVVgnaXfwBJy9fUkFVgoU2HxnlI9Fum5
+	wGXTsEUUMWDNsGIbF9eovNq2hPg==
+X-Google-Smtp-Source: AGHT+IHbfUNwiHrBTIwaUj+IdVgLCgNeNaJ/RLu5SArQrhlGHfUM1cAmzrFmG8rfBQBOxvvml7tvTg==
+X-Received: by 2002:a05:600c:3f07:b0:450:d00d:588b with SMTP id 5b1f17b1804b1-4532b8ae1eemr17117155e9.9.1749687770962;
+        Wed, 11 Jun 2025 17:22:50 -0700 (PDT)
+Received: from daedalus.nue.suse.com (115.39.160.45.gramnet.com.br. [45.160.39.115])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a561b65c2fsm408042f8f.98.2025.06.11.17.22.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Jun 2025 17:22:50 -0700 (PDT)
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: wqu@suse.com,
+	dsterba@suse.com,
+	anand.jain@oracle.com,
+	Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH] btrfs-progs: restore: Remove stale debug message
+Date: Wed, 11 Jun 2025 21:22:44 -0300
+Message-ID: <20250612002244.381346-1-mpdesouza@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/5] btrfs: use the super_block as bdev holder
-From: Qu Wenruo <wqu@suse.com>
-To: Johannes Thumshirn <jth@kernel.org>, linux-btrfs@vger.kernel.org
-Cc: Boris Burkov <boris@bur.io>, Christoph Hellwig <hch@lst.de>,
- David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <20250611100303.110311-1-jth@kernel.org>
- <9093e0d6-d33e-4c4b-814f-9134d568f395@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <9093e0d6-d33e-4c4b-814f-9134d568f395@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+The message was introduced on 502d2872
+("btrfs-progs: restore: add global verbose option"), and it was never
+changed. The debug message shows the offset of one  EXTENT_DATA from
+the file being restore, but it's only shown when it's not zero.
 
+This field is non zero when the extent was first snapshoted (or a
+subvolume was created), and later changed partially, so the extent was
+split in the part that remained the same and the one that changed.
 
-在 2025/6/12 07:19, Qu Wenruo 写道:
-> 
-> 
-> 在 2025/6/11 19:32, Johannes Thumshirn 写道:
->> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->>
->> This is a series I've picked up from Christoph, it changes the
->> block_device's bdev holder from fs_type to the super block.
->>
->> As the re-base was non trivial, I opted to drop Boris' Reviewed-by tags.
->>
->> Here's the original cover letter:
->> Hi all,
->>
->> this series contains the btrfs parts of the "remove get_super" from June
->> that managed to get lost.
->>
->> I've dropped all the reviews from back then as the rebase against the new
->> mount API conversion led to a lot of non-trivial conflicts.
->>
->> Josef kindly ran it through the CI farm and provided a fixup based on 
->> that.
-> 
-> Unfortunately it crashed immediately on btrfs/001:
-> 
-> [   23.878153] BTRFS info (device dm-0): using free-space-tree
-> [   23.891318] BUG: kernel NULL pointer dereference, address: 
-> 00000000000006f0
-> [   23.894047] #PF: supervisor read access in kernel mode
-> [   23.896010] #PF: error_code(0x0000) - not-present page
-> [   23.897982] PGD 0 P4D 0
-> [   23.899016] Oops: Oops: 0000 [#1] SMP NOPTI
-> [   23.900738] CPU: 9 UID: 0 PID: 768 Comm: mount Not tainted 6.16.0- 
-> rc1-custom+ #253 PREEMPT(full)
-> [   23.904288] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 
-> unknown 02/02/2022
-> [   23.907696] RIP: 0010:btrfs_get_tree+0x29c/0x670 [btrfs]
+It's not useful to have this message being printed without proper
+context to the end user. The message itself isn't very useful in
+debugging sessions, since it would be necessary more data about a
+problematic file/extent. And given that the message is here for
+more than 5 years being unnecessary printed, it's better to remove it
+since it can annoy the users.
 
-This is at the line "if (fs_info->fs_devices)", so at this stage fs_info 
-is NULL already.
+If a problem appears at this point in the code, a more appropriate debug
+code could be introduced instead.
 
-And it's again back to the original comment on the 2nd patch, why we 
-need to close the devices at btrfs_reconfigure_for_mount().
+Link: https://github.com/kdave/btrfs-progs/issues/920
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ cmds/restore.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Thanks,
-Qu
-
-> [   23.910090] Code: 89 83 50 02 00 00 e9 b0 fe ff ff 48 c7 c7 a0 4c 6f 
-> a0 48 89 04 24 e8 63 6d 67 e1 8b 2c 24 e9 e9 fe ff ff 49 8b ae 80 00 00 
-> 00 <48> 8b bd f0 06 00 00 48 85 ff 74 10 e8 03 c6 05 00 48 c7 85 f0 06
-> [   23.917698] RSP: 0018:ffffc90002663e00 EFLAGS: 00010246
-> [   23.919769] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 
-> 0000000000000000
-> [   23.922817] RDX: 7fffffffffffffff RSI: 0000000000000000 RDI: 
-> ffffffff835d9d80
-> [   23.925869] RBP: 0000000000000000 R08: 0000000000000005 R09: 
-> ffff888101ba6000
-> [   23.928916] R10: 00000000000000c8 R11: ffff88810a8fe280 R12: 
-> ffff888109932d80
-> [   23.932083] R13: ffff8881061ef640 R14: ffff888104dab840 R15: 
-> ffff888109932d80
-> [   23.935160] FS:  00007f9aa721ab80(0000) GS:ffff8882f4762000(0000) 
-> knlGS:0000000000000000
-> [   23.938582] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   23.941060] CR2: 00000000000006f0 CR3: 0000000128bc2000 CR4: 
-> 00000000000006f0
-> [   23.944122] Call Trace:
-> [   23.945228]  <TASK>
-> [   23.946189]  ? fscontext_read+0x118/0x130
-> [   23.947947]  vfs_get_tree+0x29/0xd0
-> [   23.949507]  vfs_cmd_create+0x57/0xd0
-> [   23.951131]  __do_sys_fsconfig+0x4b6/0x650
-> [   23.952891]  do_syscall_64+0x54/0x1d0
-> [   23.954522]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [   23.956703] RIP: 0033:0x7f9aa736fefe
-> [   23.958313] Code: 73 01 c3 48 8b 0d 12 be 0c 00 f7 d8 64 89 01 48 83 
-> c8 ff c3 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 49 89 ca b8 af 01 00 00 0f 
-> 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e2 bd 0c 00 f7 d8 64 89 01 48
-> [   23.966225] RSP: 002b:00007ffe79405e18 EFLAGS: 00000246 ORIG_RAX: 
-> 00000000000001af
-> [   23.969431] RAX: ffffffffffffffda RBX: 000055f970791430 RCX: 
-> 00007f9aa736fefe
-> [   23.972466] RDX: 0000000000000000 RSI: 0000000000000006 RDI: 
-> 0000000000000003
-> [   23.975485] RBP: 00007ffe79405e50 R08: 0000000000000000 R09: 
-> 0000000000000000
-> [   23.978527] R10: 0000000000000000 R11: 0000000000000246 R12: 
-> 00007f9aa7499980
-> [   23.981535] R13: 0000000000000000 R14: 000055f970792720 R15: 
-> 00007f9aa748e8e0
-> [   23.984548]  </TASK>
-> [   23.985537] Modules linked in: crc32c_cryptoapi vfat fat btrfs 
-> blake2b_generic xor zstd_compress iTCO_wdt iTCO_vendor_support psmouse 
-> pcspkr lpc_ich i2c_i801 i2c_smbus joydev intel_agp intel_gtt mousedev 
-> agpgart raid6_pq drm fuse loop qemu_fw_cfg ext4 crc16 mbcache jbd2 
-> dm_mod virtio_net net_failover virtio_rng failover virtio_balloon 
-> virtio_console virtio_blk rng_core virtio_scsi virtio_pci serio_raw 
-> usbhid virtio_pci_legacy_dev virtio_pci_modern_dev
-> [   24.002094] Dumping ftrace buffer:
-> [   24.003601]    (ftrace buffer empty)
-> [   24.005188] CR2: 00000000000006f0
-> [   24.006735] ---[ end trace 0000000000000000 ]---
-> [   25.685915] RIP: 0010:btrfs_get_tree+0x29c/0x670 [btrfs]
-> [   25.688118] Code: 89 83 50 02 00 00 e9 b0 fe ff ff 48 c7 c7 a0 4c 6f 
-> a0 48 89 04 24 e8 63 6d 67 e1 8b 2c 24 e9 e9 fe ff ff 49 8b ae 80 00 00 
-> 00 <48> 8b bd f0 06 00 00 48 85 ff 74 10 e8 03 c6 05 00 48 c7 85 f0 06
-> [   25.695103] RSP: 0018:ffffc90002663e00 EFLAGS: 00010246
-> [   25.697125] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 
-> 0000000000000000
-> [   25.699813] RDX: 7fffffffffffffff RSI: 0000000000000000 RDI: 
-> ffffffff835d9d80
-> [   25.702464] RBP: 0000000000000000 R08: 0000000000000005 R09: 
-> ffff888101ba6000
-> [   25.705185] R10: 00000000000000c8 R11: ffff88810a8fe280 R12: 
-> ffff888109932d80
-> [   25.708000] R13: ffff8881061ef640 R14: ffff888104dab840 R15: 
-> ffff888109932d80
-> [   25.710720] FS:  00007f9aa721ab80(0000) GS:ffff8882f4762000(0000) 
-> knlGS:0000000000000000
-> [   25.713772] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   25.716003] CR2: 00000000000006f0 CR3: 0000000128bc2000 CR4: 
-> 00000000000006f0
-> [   25.718657] Kernel panic - not syncing: Fatal exception
-> [   25.721077] Dumping ftrace buffer:
-> [   25.722398]    (ftrace buffer empty)
-> [   25.723775] Kernel Offset: disabled
-> [   27.228888] Rebooting in 5 seconds..>
->>
->>
->> Link to rebase v1:
->> https://lore.kernel.org/linux-btrfs/20240214-hch-device-open-v1-0- 
->> b153428b4f72@wdc.com/
->>
->> Link to original posting:
->> https://lore.kernel.org/linux-btrfs/ 
->> b083ae24-2273-479f-8c9e-96cb9ef083b8@wdc.com/
->>
->> Christoph Hellwig (5):
->>    btrfs: always open the device read-only in btrfs_scan_one_device
->>    btrfs: call btrfs_close_devices from ->kill_sb
->>    btrfs: split btrfs_fs_devices.opened
->>    btrfs: open block devices after superblock creation
->>    btrfs: use the super_block as holder when mounting file systems
->>
->>   fs/btrfs/disk-io.c |  4 +--
->>   fs/btrfs/super.c   | 70 +++++++++++++++++++++++++++-------------------
->>   fs/btrfs/volumes.c | 62 ++++++++++++++++++++--------------------
->>   fs/btrfs/volumes.h |  8 ++++--
->>   4 files changed, 80 insertions(+), 64 deletions(-)
->>
-> 
-> 
+diff --git a/cmds/restore.c b/cmds/restore.c
+index 6bc619b3..464a7079 100644
+--- a/cmds/restore.c
++++ b/cmds/restore.c
+@@ -391,8 +391,6 @@ static int copy_one_extent(struct btrfs_root *root, int fd,
+ 		size_left -= offset;
+ 	}
+ 
+-	pr_verbose(offset ? 1 : 0, "offset is %llu\n", offset);
+-
+ 	inbuf = malloc(size_left);
+ 	if (!inbuf) {
+ 		error_msg(ERROR_MSG_MEMORY, NULL);
+-- 
+2.49.0
 
 
