@@ -1,190 +1,147 @@
-Return-Path: <linux-btrfs+bounces-14630-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14631-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E25CDAD7749
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jun 2025 18:00:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3605DAD793B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jun 2025 19:43:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A8533B1B23
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jun 2025 15:53:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B40AA3A746F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Jun 2025 17:42:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539A71A265E;
-	Thu, 12 Jun 2025 15:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71CA329B8CE;
+	Thu, 12 Jun 2025 17:43:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NatzaEqO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y1EjKmCQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2530C298CB3
-	for <linux-btrfs@vger.kernel.org>; Thu, 12 Jun 2025 15:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22BC34C85
+	for <linux-btrfs@vger.kernel.org>; Thu, 12 Jun 2025 17:43:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749743467; cv=none; b=o3iGgdrjlEXc0ZiO2R+m2DtO8fYN7TGUd5N145em89GtFuSi7LrvwOr6QOffPgwkC4mCx46rHhzWPgV3bjpgBXG/DHOf8yAumDkErofBJ6jmaluH8rzL1/nnsA4tsD594p/NEzZw2xYbnUe9/YARriH75Z5ciqKGyYFAY7s/oGM=
+	t=1749750196; cv=none; b=NP9xKTSaAEcTAR/mU8bFl8MXE5pxBdTK3BU1KdFjwitt4FI3W4llma9XbKazmaNmyngn+Swj9C0qJ+knjPo+QHnuchEDup9LJbh10KvLSZO4qs8obI1kdFrLspyeTiRCwGxhrcrpMu8Ai2MfbLa+gevSJFOdIxzpCGqn3S4THT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749743467; c=relaxed/simple;
-	bh=llZ4faunlT0bsAZRXk5nryDXyayq5XqzkP+6pSIm6Sg=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dh48z84eO82fXaoaz4FT48I6B5X3mu9Oa3E4OCQ3BGQcRuACPMC0ty+3WQiRvM0LSiJuA4AOlXgFFn50/DNGBsut6WIs31hW+lm6ZAMoHUna75Igl1uKmdPI+g5Mo9BjcZkvi+IvE6Gi+qRgYptHBfpwLy6akLtEyo/RtiV7SFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NatzaEqO; arc=none smtp.client-ip=209.85.214.196
+	s=arc-20240116; t=1749750196; c=relaxed/simple;
+	bh=mKHho2mFgPdm8x+CzhTwYDf7RZo0YkhLCIkkTGT5y6s=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=PceuJY0HxClO+xxEfTmQBvhSg3iFRatA8SUT3eLGvcuqkCt1pxALO1y6X00eSRaK2qtsBzj73HWi2yMCZdOd86NHeSvk9UY+LIXPNcxYfysAwhLIXJOmEMoHhrbebG++H9877cM71bjYYKwfQR1JrVPU6IXyX6FtcdRh1K9RwlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y1EjKmCQ; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-234c26f8a25so1868235ad.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Jun 2025 08:51:05 -0700 (PDT)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-607434e1821so1970150a12.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Jun 2025 10:43:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749743465; x=1750348265; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cXm0Mqs7w7SEiM1KZm3mOOr1/Wn9uWLh+Nb7KKQpsag=;
-        b=NatzaEqOPKHAVJSPODK89+6+m4Ki1fYt7Gzb5pzDCXaL2kbV+bFYjtqG3H8ypDqTyr
-         wyVz1fgspDSX84iEfhqIhl9kqffJvMmaUbRskni/RwaUGwixgrFp7x2Ngo9nkVCUMNKR
-         9ffvGvZbYvV3rDsXWvR/XiheAkSW5J+MifGzg8An59stMt8iJ72gWObrFy0eLBbgQx6e
-         2sIvq0fBQt/QYRoRyLxLT7AB82lz7X/yH7/ASj6IYspe0saZWJn5cOFe9hzR+LHozLqz
-         QIoIoW1SYDSD7nu12uR16sV1WEFKzQs4Xi/5OUbK93a7b3xFMgo5IxBmd7Oy39rIf3GT
-         iwjA==
+        d=gmail.com; s=20230601; t=1749750193; x=1750354993; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7fA2uymrUs+uWUrCA7iFGZ6JZJrx6dkVEm8IGNGfE+c=;
+        b=Y1EjKmCQrT3DLVwADnT2VuxgoA7uJrIDeq7vvPtLhz7edanz2VjQdar1IGhnyP6FDJ
+         8HF7Xe2GIDK0G7vz5oB+j7IfFAh1vkY6+0z9U4Oba8gZERyRIM2CXZ9SMyx0LmNdYVD3
+         yeAYr2jmjbeUfuZxg97ZIDAyjpcm66cxFOtaciOD6m2r2nkOpvgcppfxRhAu0Fe5iXch
+         xLNfKPFR0OWyQdLUbpx4jgu8HSjcsArYYthPboWpgR6HAo310vUQxODd1KbidSAz6F1M
+         GK+/64RqYRT8y0NeqWbUEIaKZSrMsvQdPD4UBo5hGq2z7u+UoaL7LKOVAtLATcUi636a
+         g7gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749743465; x=1750348265;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cXm0Mqs7w7SEiM1KZm3mOOr1/Wn9uWLh+Nb7KKQpsag=;
-        b=gmG/BerpCrZnKi3mqQuwR/6qTb5Zb7/hcqPXcgZfeZkqSfSZw12kHUNvpc6lGzQhCo
-         +BHLbDUFMywkHnuqbrlW6ekf0cd8KirVczp0iqT/yPxsbMnui9dXKLvjGgn/8ss4+4j5
-         g/UDAhxQf6y5BKlwVTctfNRsoKmDQDvHSC2ovj64NaYTIRgnF8b+EuoXTuN7QZCouiUx
-         ZLDP1KMniGURlgo2cZO5eaymTfEZDETMCrOOXZysOF+wbDQzEoy3SsdlgcO8eNXXHDPn
-         hEgooYWujBJbiF6Yv2vsPm5qxpmJhjro+vj5F4YGgt1E+/iqeyXAAx0iUbYwtkTMlTXE
-         jSaw==
-X-Gm-Message-State: AOJu0YymST0hnfW7FwYVosm5GI7/Ll3fSs8uTo4J+dDi5YPe9+giI1XY
-	enj701GEzQ1b6Qq45XatYJsDKEE0UOMcoXlszoJzGLCVZ/pAUCv1QYeCOTHzqrhFud/BEQ==
-X-Gm-Gg: ASbGncttzlu1r3di+5kt28A484VyZZbquS4ZOroXFUwhPJE2WI6c6AVUOZjdQRqEOqb
-	NV62qCXNl4SBJCeAi5OdTuYEY4iRT5lRiM+OpjUdpinvNTtmmkrCEctkir06yOoTVkn3bTAM6cq
-	hkXyUp6HD22oaHQvX/Aim1qEU77krLZ0VTn8dVRnBQVLEW/MahIe+HuW7168ZNHkI1jQz7N562B
-	3khLh6LcpBG+uH5e2EVyY50SHb5z4GrtIzKKJpTrQJMWjwbMRu62YMK4tvcxHSDJWWRwkljNnAT
-	ZmeiesarOSq+B54UC/m2pQ8HhruWod8vIaEMV/nXq+PqSwiBV6DKDB8kEXhYdKp7tTfZknl8
-X-Google-Smtp-Source: AGHT+IFtc7RgzHmHWNpKij3JEAuPZElw7dngFqEL/dsJSPehi3C+UNDXZJQ0NeTZctvTJVwovuLbew==
-X-Received: by 2002:a17:902:ec89:b0:234:e170:88f3 with SMTP id d9443c01a7336-23641aceb61mr39937315ad.8.1749743465407;
-        Thu, 12 Jun 2025 08:51:05 -0700 (PDT)
-Received: from saltykitkat.localnet ([154.31.113.14])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2364e6343a8sm15745785ad.64.2025.06.12.08.51.04
+        d=1e100.net; s=20230601; t=1749750193; x=1750354993;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7fA2uymrUs+uWUrCA7iFGZ6JZJrx6dkVEm8IGNGfE+c=;
+        b=Ew9nP59BxxVLsnoz92TvTrVSuokke3lpS/bQ9qFvHsf7ROFbRhObfGfN6vwvr1srLm
+         InM/8ngUwJZ9XzDosQRr+RbjnV/cx96ijamfpbb73YHr1/8jCz91AxDOzwfa1e9dEWUR
+         bBv/F4Fralx5mqHmWSdyx9eCEowhItnJ+zfGX/I6mk6TRgtSpspan/wRqrci6BwWoHpU
+         d/OwVjMjicIN2Z1Lxfh/HtVGakOkjR2aDp9RqJ169Yn2/lNHaaCOwM65SHTEEF+pcSlO
+         8tRegpaABLSYeDQma63jZz3GecQioe01YQ4F3G8PsXzpBQB4rD57xGXaUr0dnjfL+kY1
+         YlwQ==
+X-Gm-Message-State: AOJu0YwqrzB+7GX4hlmFQYOELZkTVIjntJPzsfpqG+Bkjqu7G4L9IuU7
+	zEpzmjY5W/vF9ZIw2aNuPCecagl2t13p9/2Nt1+Nqv7ZhESQxqVK/WmnuKZts09C
+X-Gm-Gg: ASbGncsHPBRICw639g1zy7iF8NvrRJsmaXemefEW+g1pKmxXl/4JN2R/Po0OTldb3Ow
+	UTyfHAU31/8152PPmJshHivmIvFB0W5hynFzwQ64IMBW5IAC/rekgB0GRqcXnmnJ79W28Tc2Rcl
+	54eBfXxlY0262uuT3hLFuuZinSTWce1mSqSOc11XfuLLgyJupGBpLRbYDP/dlYh7NQVsjSfqpnN
+	ud+CL63KwFPtNNzAGzKtCzkArGd+F6h7RPsoyq8QxiLyZrORRlS/NUL298tlUP3u9Vw/EN80gbm
+	vr+KI+dzkmcI/DFQsrTiv+VjLw4Rk0TI/5c8zLr+0xRz25G0Ozz+/MR8963Z35RZcy8bw/KEl0d
+	ydV3r8Gq8M8ODnPZH8/xxV/rHjW86+xTVHUxMVociQA==
+X-Google-Smtp-Source: AGHT+IEiAGc9kLYC8Mvwt6YNnXj6a/8OGcswzf/1I/uLwdrrg+Y/De5udGag57jmCk29uaK8l2axqg==
+X-Received: by 2002:a05:6402:2554:b0:606:c5f9:8b0f with SMTP id 4fb4d7f45d1cf-60863aca3f1mr4599792a12.22.1749750192812;
+        Thu, 12 Jun 2025 10:43:12 -0700 (PDT)
+Received: from [192.168.88.169] (91-246-244-193.dynamic.t-2.net. [91.246.244.193])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6086a551246sm1505629a12.8.2025.06.12.10.43.12
         for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Jun 2025 08:51:05 -0700 (PDT)
-From: Sun YangKai <sunk67188@gmail.com>
-To: linux-btrfs@vger.kernel.org
-Subject:
- Re: [PATCH v3] btrfs: fix nonzero lowest level handling in
- btrfs_search_forward()
-Date: Thu, 12 Jun 2025 23:51:01 +0800
-Message-ID: <6166825.lOV4Wx5bFT@saltykitkat>
-In-Reply-To: <20250612083522.24878-1-sunk67188@gmail.com>
-References: <20250612083522.24878-1-sunk67188@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Jun 2025 10:43:12 -0700 (PDT)
+Message-ID: <a90b9418-48e8-47bf-8ec0-dd377a7c1f4e@gmail.com>
+Date: Thu, 12 Jun 2025 19:43:11 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-btrfs@vger.kernel.org
+From: Tine Mezgec <tine.mezgec@gmail.com>
+Subject: Stuck in CHANGING_BG_TREE state after interrupted btrfstune
+ --convert-to-block-group-tree
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-> Commit 323ac95bce44 ("Btrfs: don't read leaf blocks containing only
-> checksums during truncate") changed the condition from `level == 0` to
-> `level == path->lowest_level`, while its origional purpose is just to do
-> some leaf nodes handling (calling btrfs_item_key_to_cpu()) and skip some
-> code that doesn't fit leaf nodes.
-> 
-> After changing the condition, the code path
-> 1. also handle the non-leaf nodes when path->lowest_level is nonzero,
->    which is wrong. However, it seems that btrfs_search_forward() is never
->    called with a nonzero path->lowest_level, which makes this bug not
->    found before.
-> 2. makes the later if block with the same condition, which is origionally
->    used to handle non-leaf node (calling btrfs_node_key_to_cpu()) when
->    lowest_level is not zero, dead code.
-> 
-> This changes the behavior when btrfs_search_forward() is called with
-> nonzero path->lowest_level. But this never happens in the current code
-> base, and the previous behavior is wrong. So the change of behavior will
-> not be a problem.
-> 
-> Fix: commit 323ac95bce44 ("Btrfs: don't read leaf blocks containing only
-> checksums during truncate") Signed-off-by: Sun YangKai
-> <sunk67188@gmail.com>
-> ---
->  fs/btrfs/ctree.c | 18 +++++-------------
->  1 file changed, 5 insertions(+), 13 deletions(-)
-> 
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index a2e7979372cc..56a49d85b2a4 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -4585,16 +4585,13 @@ int btrfs_del_items(struct btrfs_trans_handle
-> *trans, struct btrfs_root *root,
-> 
->  /*
->   * A helper function to walk down the tree starting at min_key, and looking
-> - * for nodes or leaves that are have a minimum transaction id.
-> + * for leaves that are have a minimum transaction id.
->   * This is used by the btree defrag code, and tree logging
->   *
->   * This does not cow, but it does stuff the starting key it finds back
->   * into min_key, so you can call btrfs_search_slot with cow=1 on the
->   * key and get a writable path.
->   *
-> - * This honors path->lowest_level to prevent descent past a given level
-> - * of the tree.
-> - *
->   * min_trans indicates the oldest transaction that you are interested
->   * in walking through.  Any nodes or leaves older than min_trans are
->   * skipped over (without reading them).
-> @@ -4615,6 +4612,7 @@ int btrfs_search_forward(struct btrfs_root *root,
-> struct btrfs_key *min_key, int keep_locks = path->keep_locks;
-> 
->  	ASSERT(!path->nowait);
-> +	ASSERT(path->lowest_level == 0);
->  	path->keep_locks = 1;
->  again:
->  	cur = btrfs_read_lock_root_node(root);
-> @@ -4636,8 +4634,8 @@ int btrfs_search_forward(struct btrfs_root *root,
-> struct btrfs_key *min_key, goto out;
->  		}
-> 
-> -		/* at the lowest level, we're done, setup the path and exit */
-> -		if (level == path->lowest_level) {
-> +		/* at the level 0, we're done, setup the path and exit */
-> +		if (level == 0) {
->  			if (slot >= nritems)
->  				goto find_next_key;
->  			ret = 0;
-> @@ -4678,12 +4676,6 @@ int btrfs_search_forward(struct btrfs_root *root,
-> struct btrfs_key *min_key, goto out;
->  			}
->  		}
-> -		if (level == path->lowest_level) {
-> -			ret = 0;
-> -			/* Save our key for returning back. */
-> -			btrfs_node_key_to_cpu(cur, min_key, slot);
-> -			goto out;
-> -		}
->  		cur = btrfs_read_node_slot(cur, slot);
->  		if (IS_ERR(cur)) {
->  			ret = PTR_ERR(cur);
-> @@ -4699,7 +4691,7 @@ int btrfs_search_forward(struct btrfs_root *root,
-> struct btrfs_key *min_key, out:
->  	path->keep_locks = keep_locks;
->  	if (ret == 0)
-> -		btrfs_unlock_up_safe(path, path->lowest_level + 1);
-> +		btrfs_unlock_up_safe(path, 1);
->  	return ret;
->  }
+Hi,
 
-This patch is suggest by Qu Wenruo.
-Should I add a line like
-Suggest-by: Qu Wenruo <wqu@suse.com>
+I have a Btrfs filesystem mounted at /media/storage with the following 
+setup, that took minutes to mount:
 
+Label: 'data'  uuid: 7e1efcb0-96c7-4e8f-861c-ee3edba3e028
+Total devices 11  FS bytes used 40.33TiB
 
+devid    2 size 10.91TiB used  3.79TiB path /dev/sdd
+devid    3 size  7.28TiB used     0.00B path /dev/sdc
+devid    4 size  7.28TiB used     0.00B path /dev/sdg
+devid    5 size  7.28TiB used   215.00GiB path /dev/sda
+devid    8 size 16.37TiB used  8.93TiB path /dev/sdk
+devid    9 size 16.37TiB used  9.50TiB path /dev/sdh
+devid   12 size 14.55TiB used  7.41TiB path /dev/sdi
+devid   13 size 14.55TiB used  7.71TiB path /dev/sdj
+devid   15 size 18.19TiB used 10.74TiB path /dev/sdf
+devid   16 size 23.65TiB used 16.20TiB path /dev/sdb
+devid   17 size 23.65TiB used 16.20TiB path /dev/sde
 
+I ran (after unmounting):
+
+btrfstune --convert-to-block-group-tree /dev/sdd
+(using btrfs-progs 6.6.3-1.1build2 from Ubuntu 24.04), but the system 
+lost power during the conversion.
+
+After reboot, rerunning the command gives:
+
+ERROR: failed to find block group for bytenr 186297726533632
+ERROR: failed to convert the filesystem to block group tree feature
+ERROR: btrfstune failed
+
+extent buffer leak: start 185256860958720 len 16384
+
+Trying with kernel 6.15.2 and btrfs-progs 6.14 gives the same result.
+
+The superblock flags now show:
+
+0x4000000001 (WRITTEN | CHANGING_BG_TREE)
+
+Attempting to revert:
+
+btrfstune --convert-from-block-group-tree /dev/sdd
+fails with:
+ERROR: filesystem doesn't have block-group-tree feature
+ERROR: btrfstune failed
+
+So I'm stuck with a filesystem in a half-converted state — not fully 
+converted, but marked as changing.
+
+What’s the best way to either complete the conversion or revert/abort it 
+cleanly?
+
+Thanks,
+-Tine
 
