@@ -1,45 +1,46 @@
-Return-Path: <linux-btrfs+bounces-14644-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14645-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81E41AD9492
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 20:39:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6289EAD9495
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 20:39:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EB9A1E4148
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 18:39:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB3621E4925
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 18:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71406232376;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B63A42343B6;
 	Fri, 13 Jun 2025 18:39:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xk6CR/sn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MZmqv2BC"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB04B20F09B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FD722F76C;
 	Fri, 13 Jun 2025 18:39:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749839952; cv=none; b=EvUXpUuL1Xqg1oQcY4zvEi48AeD2qHyyGDCcHuS0D4MO8QikdK9mWafQowjuNNmg7VKcT2tqZb0meJIM/uY9yy+DxkC1eS7//XpCQE28XSC24ZE3HV9Lk1AILaflM3Z76is3HmUfTwNSiZxHbTfcOxn/wDt13KTxyRQvSSrlhUw=
+	t=1749839953; cv=none; b=tLvRtpDu2j2XNdYmz3LghZLlFLNWNKXoVGeyshzb15TccRbDumbmP8F6SI3tIoWbfrmn9uHFiQmdNVmR3b5cmWQ4Yi/Kn7ucj5J3HAUU1POanbFdjoe0HiZ8NeqyZy/gHsaBHNaPSAkzQl9K7sxtAvObbS6ZUE3OXKn/FDEVqt8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749839952; c=relaxed/simple;
-	bh=uxON06BiFkyn8kpoggwcIgSEOCzuk/HH+w7AfcQmYok=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rLsJfGnPgqbjvK76VBCfH85E0PXXCIlIeOoupBaS/Rkwa433N7iJFTfFWYGKGEmc6zkugq+tsEA/SQysNFOWE6Y6Ihk3x6RSA6QssP3iRI/0AuGjEJuuWQjs0NTRqaHVfWx4iKzzEVEKPc5Z5fYI7DbjQ7k2Q6Y6QcD235ugehc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xk6CR/sn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9405C4CEE3;
-	Fri, 13 Jun 2025 18:39:11 +0000 (UTC)
+	s=arc-20240116; t=1749839953; c=relaxed/simple;
+	bh=xl1b59oPWmJ1rntLzD003FXPGqJCUJXZnbl4FDjH9ss=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=og9FtKF4C12grSsEhP21+XFz+dGU36jNyZKUdCkLCxAY63JpJTBAohUihY9s8cC1iXEEmAXb3gE5zCNVdB7Pvc9ZfteuwDX5VmMaqHDKcbQIq3a75P5IY4Mm4hi7OccGoG1j3fcmoJjDfAkd0KFcTOi2KmZcLALs9dfWSRzfuwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MZmqv2BC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F16CC4CEEB;
+	Fri, 13 Jun 2025 18:39:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1749839952;
-	bh=uxON06BiFkyn8kpoggwcIgSEOCzuk/HH+w7AfcQmYok=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Xk6CR/snAuOmRpGz+7mjH0nfkUQBqWC/UPP+PlUrcF1LEw6AwPHjSGh4mCCHJb5er
-	 lrlur8pKGLyF5i/wRt7XxaqE6XlEEmk52gO/dnaz2dIMvrrDI6vCt/Kd5KPIgXPTZt
-	 MPk+wv7TzxVumEWXDqXYy4C1C/N7e0Fno0tZ9sFKHSewHqaBKU8M/mU9LI3jkneuDi
-	 fovB82ooy7YIdcv+14NlyFkk1s5Wouohv+t3bqLSIqP06nIhE8L0E9VoOcuFxoCjaZ
-	 0f884wLCs3vCdaoQ9cyAu7zHAvARI1KGUNW7l8mZiGJ2k6pqMKEywk0aMEGmmGv7MX
-	 CLlgxmrVZT8Vg==
+	bh=xl1b59oPWmJ1rntLzD003FXPGqJCUJXZnbl4FDjH9ss=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=MZmqv2BCb3NXXmBTAuOFQzmOdMdh9O6VYvqLiKmtNRElGbgJoeDMPrd/RP0iXyuWU
+	 iVaUzVaspNA57y7DeiAodSP/l+Qz/BBe6l5nlKhUtfTtBAxxA8WwAhjndmVunZfgQt
+	 xnM08m3NdlNb4vhBBv6Aa2Myw9v2ZNIA6GWnggHmH4RItwktzNsXtqcXdJaxyGg1t8
+	 xCOkUwj8AThrJ+hLRpOxpoFEY2LjYRiEOKVVsv2LSDs7D+PjydigC5vdD152aVIjJl
+	 TQo8OaKElXe18E8f0sN8Du+qZzYnhfCbiGvYPd4IGltpN1TtAwitleEfCoo9QZiA6G
+	 aio13oCn7zb2Q==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-kernel@vger.kernel.org
 Cc: linux-crypto@vger.kernel.org,
@@ -49,10 +50,12 @@ Cc: linux-crypto@vger.kernel.org,
 	Chris Mason <clm@fb.com>,
 	Josef Bacik <josef@toxicpanda.com>,
 	David Sterba <dsterba@suse.com>
-Subject: [PATCH 0/2] Simplify the shash wrappers for the CRC32 library
-Date: Fri, 13 Jun 2025 11:37:51 -0700
-Message-ID: <20250613183753.31864-1-ebiggers@kernel.org>
+Subject: [PATCH 1/2] btrfs: stop parsing crc32c driver name
+Date: Fri, 13 Jun 2025 11:37:52 -0700
+Message-ID: <20250613183753.31864-2-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250613183753.31864-1-ebiggers@kernel.org>
+References: <20250613183753.31864-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -61,36 +64,43 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series simplifies how the CRC32 library functions are exposed
-through the crypto_shash API.  We'll now have just one shash algorithm
-each for "crc32" and "crc32c", and their driver names will just always
-be "crc32-lib" and "crc32c-lib" respectively.  This seems to be all
-that's actually needed.
+From: Eric Biggers <ebiggers@google.com>
 
-As mentioned in patch 2, this does change the content of
-/sys/fs/btrfs/$uuid/checksum again, but that should be fine.
+To determine whether the crc32c implementation is "fast", use
+crc32_optimizations() instead of parsing the crypto_shash driver name.
+This keeps the code working as intended after the driver name is changed
+by the next patch.
 
-This is based on v6.16-rc1, and I'm planning to take these patches
-through the crc-next tree.  These supersede
-https://lore.kernel.org/r/20250601224441.778374-2-ebiggers@kernel.org/
-and
-https://lore.kernel.org/r/20250601224441.778374-3-ebiggers@kernel.org/,
-and they fix the warning in the full crypto self-tests reported at
-https://lore.kernel.org/r/aExLZaoBCg55rZWJ@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com/
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/btrfs/disk-io.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-Eric Biggers (2):
-  btrfs: stop parsing crc32c driver name
-  crypto/crc32[c]: register only "-lib" drivers
-
- crypto/Makefile    |  2 --
- crypto/crc32.c     | 65 +++++----------------------------------------
- crypto/crc32c.c    | 66 ++++------------------------------------------
- crypto/testmgr.c   |  2 ++
- fs/btrfs/disk-io.c |  8 ++----
- 5 files changed, 15 insertions(+), 128 deletions(-)
-
-
-base-commit: 19272b37aa4f83ca52bdf9c16d5d81bdd1354494
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 1beb9458f622a..7bb453b69639c 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2024,18 +2024,14 @@ static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
+ 		return PTR_ERR(csum_shash);
+ 	}
+ 
+ 	fs_info->csum_shash = csum_shash;
+ 
+-	/*
+-	 * Check if the checksum implementation is a fast accelerated one.
+-	 * As-is this is a bit of a hack and should be replaced once the csum
+-	 * implementations provide that information themselves.
+-	 */
++	/* Check if the checksum implementation is a fast accelerated one. */
+ 	switch (csum_type) {
+ 	case BTRFS_CSUM_TYPE_CRC32:
+-		if (!strstr(crypto_shash_driver_name(csum_shash), "generic"))
++		if (crc32_optimizations() & CRC32C_OPTIMIZATION)
+ 			set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
+ 		break;
+ 	case BTRFS_CSUM_TYPE_XXHASH:
+ 		set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
+ 		break;
 -- 
 2.49.0
 
