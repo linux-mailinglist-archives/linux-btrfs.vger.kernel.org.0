@@ -1,221 +1,200 @@
-Return-Path: <linux-btrfs+bounces-14654-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14655-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2EA6AD97CF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 23:56:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38583AD97E1
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Jun 2025 00:00:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DFD83B6A2F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 21:56:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA50C4A0850
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 22:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C1BE28D85C;
-	Fri, 13 Jun 2025 21:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E69A271462;
+	Fri, 13 Jun 2025 22:00:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="g8+tLo9O"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="YZ0bg7zH";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="qmFO4lXB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548A41E231D
-	for <linux-btrfs@vger.kernel.org>; Fri, 13 Jun 2025 21:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5DD1632DD
+	for <linux-btrfs@vger.kernel.org>; Fri, 13 Jun 2025 22:00:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749851781; cv=none; b=B+oB4SZDq1fxCPsI9y7pzOU6GhKWiLggTpw/R3vspXB4l8TJH40H2Z1i3BkNZY9swhhOhcIJ6gNQAB2eG8L7jsXqnIn35bViPi6roQK3XUyRLgATIL3Gxo178I3tibraEXIk9qGaSjjgaPVrfMMeY1L6J9n5b7swu2OhMTqZSmc=
+	t=1749852039; cv=none; b=aSovBQdWAHwmBPHKzPd5oG5aiNXLBoLaZVK8CytX2OapCPqCgBBDjDiKxg07Xgp+2IRFNQ0iOkj6CUTli+E7ub+nm1rE0nuY/W7GEeeXqdhKArDiEWrIboo4r4qO9rvq+SPj7/mL3Eq5i3ePg5yOvHFRoO17TFAOuaXh7fV2D5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749851781; c=relaxed/simple;
-	bh=jeWhzNWFjtJoxrb6TIdFwPK7KQr7Z0twAgkdhlMeHxc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s01AvLnT9r39hAezfT3Aa8r/pPuWgSZahaoyQ5h5WHhECvwbn6zKm22UZt8LUrep2AVy7VCMuOYB3lNUjwUNL5GvxaUodEW60iK9zrYHl9FbSIP04CUUpTK1Q5R+/FsHA3M3YdY73GR4b1FpHvQ1QamVmbs4PAeiI+jY4W3xwSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=g8+tLo9O; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1749851775; x=1750456575; i=quwenruo.btrfs@gmx.com;
-	bh=jeWhzNWFjtJoxrb6TIdFwPK7KQr7Z0twAgkdhlMeHxc=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=g8+tLo9OAo1Cy0JolQCiHJ/3a29z4AAWt1MF2vzWEzsR8CbUJye1XTaN7xqWp99V
-	 DEtOQmb8k95tj3lG0L3dboFvgfVcvfE6VgIPWjqCTGE+NQDZyHHIDmwg17KHxWhIA
-	 vDfQLL2Hm1AsOZA2OXFRqnio50ynzjh46jEzj9W+r/aNf8YGBCmTeNa7bLql4U42p
-	 ++bzYYNV5QyrDZbwNZay4JnxGkO3K5Sl1vdzy/7yOWtaVVK9PvKLXhGTP4ULqFUEo
-	 a1QxFHtguqG8JL4NIBfhof3fqpM84bDiNeYEmLu3KRtbQbugm2czCb4yaUDx+7S3d
-	 uBRX/WR3G2yaTQ4m6Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MXGvG-1uJ7TM2Bp8-00N6ps; Fri, 13
- Jun 2025 23:56:15 +0200
-Message-ID: <74f37537-d4cd-4a35-b5e6-958ff0d1da99@gmx.com>
-Date: Sat, 14 Jun 2025 07:26:10 +0930
+	s=arc-20240116; t=1749852039; c=relaxed/simple;
+	bh=bidNjAf+HCGgB5UtwMtjct2DLW2vX2ESjLKOLJ/f1Pg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jhd+exfQIi0w0K1wbwPjzqT/jCu6qsHhuzxGWiJyaW7oyIB0OiujVY7C8kfo5IKqlc8WDkmQvWh9V9q6JLo8msTofzOmGLjbzHpLPXKY45sBk3NSfIaVY5QfqFI0493OMMS8bO2gSakb8SvmVLStUw1Gm8wPZJLJujCXCs5oTek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=YZ0bg7zH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=qmFO4lXB; arc=none smtp.client-ip=103.168.172.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfout.phl.internal (Postfix) with ESMTP id 5B5E3138026B;
+	Fri, 13 Jun 2025 18:00:35 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-05.internal (MEProxy); Fri, 13 Jun 2025 18:00:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1749852035; x=1749938435; bh=2Q7kYw+lKh
+	T5VSX51J+o3pD1OotzaGU0aNbTp9KYjVU=; b=YZ0bg7zHazHbiTAuwLlq98aDLB
+	hC7ff6qZCbjVQnWJKcVq1XLjpmfb/P2g3MYR8wrvFVm1xHMloKoULrbgBP17v37H
+	xO25n3xIXFQ/RfOEvGldiDRdE7KlmeIG+AyWNVSUScGdayz9DtLIwN//IdBAnXrn
+	dAEgy3YoI9x9oHA4EOcmufNUS68lmF/PsJxYswP2aa2IElUmux/V2zyIWzoAtgGr
+	elbJqTJoEIZlgXcvXp77aG6Hh4wB+UCOWYn7T28vdp75lvDkiiXUWv7IUxfpRfnV
+	ZIODppCayKszcEvgdh5zsAvANMKfllLk4dMOmtT4PHUxzDrhDt8YhbzkPE/A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1749852035; x=1749938435; bh=2Q7kYw+lKhT5VSX51J+o3pD1OotzaGU0aNb
+	Tp9KYjVU=; b=qmFO4lXBvMmAjmnc7K7lC9BRC4c2MMpWM3wIfby4wY8Wzh+SIdj
+	7WitAWzXihdzfdjZebKlvd5bkxf/79Iu9QKXkXxXTadQGr9EqPjPz3MoCrx5INir
+	9VJ8EF4RnzXxYSpmtoSINLTIbZjN7EgDBrllr9snWHyHOagVv4j+ZGclxhHy3Qij
+	eEo+ywR9VavQHzBf9Te+jCDGfRIFWAywDQxxZkkZVj5kk6A80VAeacb1U6e5b6DI
+	5jxSx9mRubQQw72VwUUMPjE65eCsXw4JAQAgyEfghBaptBH0qkmAuHiHOryEr8va
+	UJlko3Q5JoBAwYqlcpUGVXXyl7oNXFEbTcg==
+X-ME-Sender: <xms:g59MaIxcvaAGzeC_hEgbQux6tDciNM08cUnBlff5FV5-07QXVqoO_w>
+    <xme:g59MaMRLzJIfBr4r6k_VZvm-006YAWkeFV90oBPhAFTpg5F-dEimQdK14iruaH3YH
+    oRdVyiD_wdhmJmnxrU>
+X-ME-Received: <xmr:g59MaKWyHtUnCbKTgEOsp5c57ANJvXihVW9ibagvUe5T3YGSw_3QwbmrHGXRq4cxLfLOUj60R8rUHmH-6xhDyzSqIl0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdduledtlecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
+    necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
+    cuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfg
+    uefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmohguvgep
+    shhmthhpohhuthdprhgtphhtthhopehmrghhrghrmhhsthhonhgvsehfsgdrtghomhdprh
+    gtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:g59MaGi6kV2byi5dDqv3s4TD4nhUMyOZFpANuuQxXvTDiPhn3VNlyw>
+    <xmx:g59MaKCSqQiqoX_XIuNf5l3ALfGzAETuqJlPA4lCgoZ3S8YwYk6kRg>
+    <xmx:g59MaHLKVXYckgJa8ugZrORtYO9FD3BSOtRsqFwdbGE6uBufzYy9Eg>
+    <xmx:g59MaBAwH2Y9qwMvjxYi_dbOyLEJwkhW8i9kpvSyolis6__-Y07lTw>
+    <xmx:g59MaFXGdix1hdogsob1DQtQEG9DAtE7ck8-bTuUj9n5DRtohyO_Fexp>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 13 Jun 2025 18:00:34 -0400 (EDT)
+Date: Fri, 13 Jun 2025 15:00:15 -0700
+From: Boris Burkov <boris@bur.io>
+To: Mark Harmstone <maharmstone@fb.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 04/12] btrfs: remove remapped block groups from the
+ free-space tree
+Message-ID: <20250613220015.GD3621880@zen.localdomain>
+References: <20250605162345.2561026-1-maharmstone@fb.com>
+ <20250605162345.2561026-5-maharmstone@fb.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Portable HDD Keeps Going Read Only
-To: Matthew Jurgens <btrfs@edcint.co.nz>, Daniel Vacek <neelx@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <83a43be7-7058-4099-80d9-07749cf77a8d@edcint.co.nz>
- <CAPjX3FcqJ-cNMjVia_gYmBZwDhQVxPEOhYYQUzL31m7momByEQ@mail.gmail.com>
- <5de3840d-70c5-48cb-a7c0-7db17e789e95@edcint.co.nz>
- <ffbd0c96-313d-4524-9b6e-b24437fc0347@gmx.com>
- <b2dbfdb5-4cce-459c-8d30-01ac6124d9ad@edcint.co.nz>
- <bdfe67ea-8668-4768-8102-42d78e9537f9@edcint.co.nz>
- <08d37392-a7a5-4c43-87ce-86146e58323f@gmx.com>
- <5e8a4887-2bd9-4c99-9329-8e4c91202974@edcint.co.nz>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <5e8a4887-2bd9-4c99-9329-8e4c91202974@edcint.co.nz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:/qcIQ7Vu0SEIAde8tWtMqMLXzazajox5OgsalDywSef5Cl/Z9Jt
- LcABarpQahzCVciqDvFHAh6hTfntMbycIw34goJaI4REdandjox2gw9i7y04mkjj6hCDOqU
- UOgSmXJOwBsREjLmhJ7xWU7uIHy2qMpDXyHdNE5UHeLj7zMAkQPq3J2iraEaedsYr5gaqq0
- FyyQtX/Gszm2+9mxrxGpw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:DcTJHZHp39o=;0v1ujyhfg7x3XR+lsq2z+bDJ7Ui
- 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
- vlw8=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250605162345.2561026-5-maharmstone@fb.com>
 
-DQoNCuWcqCAyMDI1LzYvMTMgMjA6MzUsIE1hdHRoZXcgSnVyZ2VucyDlhpnpgZM6DQo+IEZ1cnRo
-ZXIsIEkgcmVjcmVhdGVkIHRoZSBmaWxlIHN5c3RlbSBhbmQgY29waWVkIGRhdGEgdG8gaXQuIFRo
-ZW4gYSB3ZWVrIA0KPiBsYXRlciwgd2hlbiBJIHRyeSBhbmQgbW91bnQgaXQsIGl0IGZhaWxlZA0K
-PiANCj4gTm93DQo+IA0KPiBidHJmcyBjaGVjayAtLW1vZGU9bG93bWVtIC9kZXYvc2RoDQo+IA0K
-PiBPcGVuaW5nIGZpbGVzeXN0ZW0gdG8gY2hlY2suLi4NCj4gcGFyZW50IHRyYW5zaWQgdmVyaWZ5
-IGZhaWxlZCBvbiA2MTM1ODA4MDAgd2FudGVkIDE0NzQgZm91bmQgMTQ3NQ0KDQpUaGlzIG9uZSBp
-cyBhIGh1Z2UgaW5kaWNhdG9yIG9mIGJhZCBiYXJyaWVyIGJlaGF2aW9yLg0KDQpUaGlzIG1lYW5z
-IHRoZSB3cml0ZXMgYXJlIGZyb20gdGhlIGZ1dHVyZSwgYW5kIGJyZWFraW5nIG1ldGFkYXRhIENP
-Vy4NCk5vcm1hbGx5IGl0J3MgYSBwcm9ibGVtIHdpdGggdGhlIHVuZGVybHlpbmcgbGF5ZXJzLCBh
-bmQgc2luY2UgdGhlcmUgaXMgDQpubyBvdGhlciBsYXllcnMgbGlrZSBkbSBpbnZvbHZlZCwgaXQn
-cyBhbiBpbmRpY2F0b3IgdGhlIHBvcnRhYmxlIEhERCANCmRvZXNuJ3QgZG8gaXRzIGJhcnJpZXIg
-Y29ycmVjdGx5Lg0KDQpUaGlzIGlzIGVzcGVjaWFsbHkgY3JpdGljYWwgZm9yIHBvcnRhYmxlIGRl
-dmljZXMsIGFzIGJhcnJpZXIgaXMgdGhlIA0Kc2Vjb25kIGxhc3Qgb3BlcmF0aW9uIHdoZW4gc3lu
-Y2luZyBhbiBmcy4NCg0KQW5kIGFmdGVyIHN5bmNpbmcgaXMgZG9uZSwgb25lIHdpbGwgYXNzdW1l
-IHRoZSBkZXZpY2VzIGNhbiBiZSBzYWZlbHkgDQpyZW1vdmVkLiBCdXQgaWYgYmFycmllciBpcyBu
-b3QgZG9uZSwgaXQgbWVhbnMgZWl0aGVyIHNvbWUgb2xkZXIgZGF0YSBpcyANCm5vdCB3cml0dGVu
-IGludG8gdGhlIGRpc2sgYW5kIGxvc3QsIG9yIHNvbWV0aGluZyBtdXN0IGJlIHdyaXR0ZW4gYmFj
-ayANCmJlZm9yZSBvdGhlciB0aGluZ3MgYXJlIG5vdCBwcm9wZXJseSB3cml0dGVuIGJhY2ssIGNh
-dXNpbmcgdHJhbnNpZCBtaXNtYXRjaC4NCg0KSSBndWVzcyB0aGlzIHdvdWxkIGV4cGxhaW4gd2h5
-IHRoZSBmcyBvbiB0aGF0IHBvcnRhYmxlIEhERCBpcyBhbHdheXMgDQpzaG9ydCBsaXZlZC4NCg0K
-VGhhbmtzLA0KUXUNCg0KPiBwYXJlbnQgdHJhbnNpZCB2ZXJpZnkgZmFpbGVkIG9uIDYxMzU4MDgw
-MCB3YW50ZWQgMTQ3NCBmb3VuZCAxNDc1DQo+IHBhcmVudCB0cmFuc2lkIHZlcmlmeSBmYWlsZWQg
-b24gNjEzNTgwODAwIHdhbnRlZCAxNDc0IGZvdW5kIDE0NzUNCj4gSWdub3JpbmcgdHJhbnNpZCBm
-YWlsdXJlDQo+IEVSUk9SOiBjb3VsZCBub3Qgc2V0dXAgZXh0ZW50IHRyZWUNCj4gRVJST1I6IGNh
-bm5vdCBvcGVuIGZpbGUgc3lzdGVtDQo+IA0KPiBzbWFydGN0bCAtQSAvZGV2L3NkaA0KPiBzbWFy
-dGN0bCA3LjUgMjAyNS0wNC0zMCByNTcxNCBbeDg2XzY0LWxpbnV4LTYuMTQuOS0zMDAuZmM0Mi54
-ODZfNjRdIA0KPiAobG9jYWwgYnVpbGQpDQo+IENvcHlyaWdodCAoQykgMjAwMi0yNSwgQnJ1Y2Ug
-QWxsZW4sIENocmlzdGlhbiBGcmFua2UsIHd3dy5zbWFydG1vbnRvb2xzLm9yZw0KPiANCj4gPT09
-IFNUQVJUIE9GIFJFQUQgU01BUlQgREFUQSBTRUNUSU9OID09PQ0KPiBTTUFSVCBBdHRyaWJ1dGVz
-IERhdGEgU3RydWN0dXJlIHJldmlzaW9uIG51bWJlcjogMTYNCj4gVmVuZG9yIFNwZWNpZmljIFNN
-QVJUIEF0dHJpYnV0ZXMgd2l0aCBUaHJlc2hvbGRzOg0KPiBJRCMgQVRUUklCVVRFX05BTUXCoCDC
-oCDCoCDCoCDCoCBGTEFHwqAgwqAgwqBWQUxVRSBXT1JTVCBUSFJFU0ggVFlQRSDCoCBVUERBVEVE
-ICANCj4gV0hFTl9GQUlMRUQgUkFXX1ZBTFVFDQo+ICDCoCAxIFJhd19SZWFkX0Vycm9yX1JhdGXC
-oCDCoCDCoDB4MDAyZsKgIMKgMjAwwqAgwqAyMDDCoCDCoDA1MSBQcmUtZmFpbMKgIEFsd2F5cyAg
-DQo+ICDCoCDCoCDCoC3CoCDCoCDCoCDCoDANCj4gIMKgIDMgU3Bpbl9VcF9UaW1lwqAgwqAgwqAg
-wqAgwqAgwqAgMHgwMDI3wqAgwqAyNTPCoCDCoDI1M8KgIMKgMDIxIFByZS1mYWlswqAgQWx3YXlz
-ICANCj4gIMKgIMKgIMKgLcKgIMKgIMKgIMKgMzY0MQ0KPiAgwqAgNCBTdGFydF9TdG9wX0NvdW50
-wqAgwqAgwqAgwqAgMHgwMDMywqAgwqAxMDDCoCDCoDEwMMKgIMKgMDAwwqAgwqAgT2xkX2FnZSAN
-Cj4gIMKgQWx3YXlzwqAgwqAgwqAgwqAtwqAgwqAgwqAgwqA5MA0KPiAgwqAgNSBSZWFsbG9jYXRl
-ZF9TZWN0b3JfQ3TCoCDCoDB4MDAzM8KgIMKgMjAwwqAgwqAyMDDCoCDCoDE0MCBQcmUtZmFpbMKg
-IEFsd2F5cyAgDQo+ICDCoCDCoCDCoC3CoCDCoCDCoCDCoDANCj4gIMKgIDcgU2Vla19FcnJvcl9S
-YXRlwqAgwqAgwqAgwqAgwqAweDAwMmXCoCDCoDIwMMKgIMKgMjAwwqAgwqAwMDDCoCDCoCBPbGRf
-YWdlIA0KPiAgwqBBbHdheXPCoCDCoCDCoCDCoC3CoCDCoCDCoCDCoDANCj4gIMKgIDkgUG93ZXJf
-T25fSG91cnPCoCDCoCDCoCDCoCDCoCAweDAwMzLCoCDCoDA5OMKgIMKgMDk4wqAgwqAwMDDCoCDC
-oCBPbGRfYWdlIA0KPiAgwqBBbHdheXPCoCDCoCDCoCDCoC3CoCDCoCDCoCDCoDIwMzINCj4gIMKg
-MTAgU3Bpbl9SZXRyeV9Db3VudMKgIMKgIMKgIMKgIDB4MDAzMsKgIMKgMTAwwqAgwqAyNTPCoCDC
-oDAwMMKgIMKgIE9sZF9hZ2UgDQo+ICDCoEFsd2F5c8KgIMKgIMKgIMKgLcKgIMKgIMKgIMKgMA0K
-PiAgwqAxMSBDYWxpYnJhdGlvbl9SZXRyeV9Db3VudCAweDAwMzLCoCDCoDEwMMKgIMKgMjUzwqAg
-wqAwMDDCoCDCoCBPbGRfYWdlIA0KPiAgwqBBbHdheXPCoCDCoCDCoCDCoC3CoCDCoCDCoCDCoDAN
-Cj4gIMKgMTIgUG93ZXJfQ3ljbGVfQ291bnTCoCDCoCDCoCDCoDB4MDAzMsKgIMKgMTAwwqAgwqAx
-MDDCoCDCoDAwMMKgIMKgIE9sZF9hZ2UgDQo+ICDCoEFsd2F5c8KgIMKgIMKgIMKgLcKgIMKgIMKg
-IMKgNDgNCj4gMTkyIFBvd2VyLU9mZl9SZXRyYWN0X0NvdW50IDB4MDAzMsKgIMKgMjAwwqAgwqAy
-MDDCoCDCoDAwMMKgIMKgIE9sZF9hZ2UgwqBBbHdheXMgIA0KPiAgwqAgwqAgwqAtwqAgwqAgwqAg
-wqA0Mw0KPiAxOTMgTG9hZF9DeWNsZV9Db3VudMKgIMKgIMKgIMKgIDB4MDAzMsKgIMKgMjAwwqAg
-wqAyMDDCoCDCoDAwMMKgIMKgIE9sZF9hZ2UgwqBBbHdheXMgIA0KPiAgwqAgwqAgwqAtwqAgwqAg
-wqAgwqAzMjENCj4gMTk0IFRlbXBlcmF0dXJlX0NlbHNpdXPCoCDCoCDCoDB4MDAyMsKgIMKgMTMw
-wqAgwqAxMTDCoCDCoDAwMMKgIMKgIE9sZF9hZ2UgwqBBbHdheXMgIA0KPiAgwqAgwqAgwqAtwqAg
-wqAgwqAgwqAyMg0KPiAxOTYgUmVhbGxvY2F0ZWRfRXZlbnRfQ291bnQgMHgwMDMywqAgwqAyMDDC
-oCDCoDIwMMKgIMKgMDAwwqAgwqAgT2xkX2FnZSDCoEFsd2F5cyAgDQo+ICDCoCDCoCDCoC3CoCDC
-oCDCoCDCoDANCj4gMTk3IEN1cnJlbnRfUGVuZGluZ19TZWN0b3LCoCAweDAwMzLCoCDCoDIwMMKg
-IMKgMjAwwqAgwqAwMDDCoCDCoCBPbGRfYWdlIMKgQWx3YXlzICANCj4gIMKgIMKgIMKgLcKgIMKg
-IMKgIMKgMA0KPiAxOTggT2ZmbGluZV9VbmNvcnJlY3RhYmxlwqAgwqAweDAwMzDCoCDCoDEwMMKg
-IMKgMjUzwqAgwqAwMDDCoCDCoCBPbGRfYWdlIA0KPiAgwqBPZmZsaW5lwqAgwqAgwqAgLcKgIMKg
-IMKgIMKgMA0KPiAxOTkgVURNQV9DUkNfRXJyb3JfQ291bnTCoCDCoCAweDAwMzLCoCDCoDIwMMKg
-IMKgMjAwwqAgwqAwMDDCoCDCoCBPbGRfYWdlIMKgQWx3YXlzICANCj4gIMKgIMKgIMKgLcKgIMKg
-IMKgIMKgMA0KPiAyMDAgTXVsdGlfWm9uZV9FcnJvcl9SYXRlwqAgwqAweDAwMDjCoCDCoDEwMMKg
-IMKgMjUzwqAgwqAwMDDCoCDCoCBPbGRfYWdlIA0KPiAgwqBPZmZsaW5lwqAgwqAgwqAgLcKgIMKg
-IMKgIMKgMA0KPiANCg0K
+On Thu, Jun 05, 2025 at 05:23:34PM +0100, Mark Harmstone wrote:
+> No new allocations can be done from block groups that have the REMAPPED flag
+> set, so there's no value in their having entries in the free-space tree.
+> 
+> Prevent a search through the free-space tree being scheduled for such a
+> block group, and prevent discard being run for a fully-remapped block
+> group.
+> 
+> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+> ---
+>  fs/btrfs/block-group.c | 21 ++++++++++++++++-----
+>  fs/btrfs/discard.c     |  9 +++++++++
+>  2 files changed, 25 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 5b0cb04b2b93..9b3b5358f1ba 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -920,6 +920,13 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, bool wait)
+>  	if (btrfs_is_zoned(fs_info))
+>  		return 0;
+>  
+> +	/*
+> +	 * No allocations can be done from remapped block groups, so they have
+> +	 * no entries in the free-space tree.
+> +	 */
+> +	if (cache->flags & BTRFS_BLOCK_GROUP_REMAPPED)
+> +		return 0;
+> +
+>  	caching_ctl = kzalloc(sizeof(*caching_ctl), GFP_NOFS);
+>  	if (!caching_ctl)
+>  		return -ENOMEM;
+> @@ -1235,9 +1242,11 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+>  	 * another task to attempt to create another block group with the same
+>  	 * item key (and failing with -EEXIST and a transaction abort).
+>  	 */
+> -	ret = remove_block_group_free_space(trans, block_group);
+> -	if (ret)
+> -		goto out;
+
+nit: it feels nicer to hide the check inside the function.
+
+> +	if (!(block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED)) {
+> +		ret = remove_block_group_free_space(trans, block_group);
+> +		if (ret)
+> +			goto out;
+> +	}
+>  
+>  	ret = remove_block_group_item(trans, path, block_group);
+>  	if (ret < 0)
+> @@ -2457,10 +2466,12 @@ static int read_one_block_group(struct btrfs_fs_info *info,
+>  	if (btrfs_chunk_writeable(info, cache->start)) {
+>  		if (cache->used == 0) {
+>  			ASSERT(list_empty(&cache->bg_list));
+> -			if (btrfs_test_opt(info, DISCARD_ASYNC))
+> +			if (btrfs_test_opt(info, DISCARD_ASYNC) &&
+
+I asked this on the previous patch, but I guess this means we will never
+discard these blocks? Is that desirable? Or are we discarding them at
+some other point in the life-cycle?
+
+> +			    !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
+>  				btrfs_discard_queue_work(&info->discard_ctl, cache);
+> -			else
+> +			} else {
+>  				btrfs_mark_bg_unused(cache);
+> +			}
+>  		}
+>  	} else {
+>  		inc_block_group_ro(cache, 1);
+> diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
+> index 89fe85778115..1015a4d37fb2 100644
+> --- a/fs/btrfs/discard.c
+> +++ b/fs/btrfs/discard.c
+> @@ -698,6 +698,15 @@ void btrfs_discard_punt_unused_bgs_list(struct btrfs_fs_info *fs_info)
+>  	/* We enabled async discard, so punt all to the queue */
+>  	list_for_each_entry_safe(block_group, next, &fs_info->unused_bgs,
+>  				 bg_list) {
+> +		/* Fully remapped BGs have nothing to discard */
+
+Same question. If we simply *don't* discard them, I feel like this
+comment is misleadingly worded.
+
+> +		spin_lock(&block_group->lock);
+> +		if (block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED &&
+> +		    !btrfs_is_block_group_used(block_group)) {
+> +			spin_unlock(&block_group->lock);
+> +			continue;
+> +		}
+> +		spin_unlock(&block_group->lock);
+> +
+>  		list_del_init(&block_group->bg_list);
+>  		btrfs_discard_queue_work(&fs_info->discard_ctl, block_group);
+>  		/*
+> -- 
+> 2.49.0
+> 
 
