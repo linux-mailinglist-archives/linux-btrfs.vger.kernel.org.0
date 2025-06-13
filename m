@@ -1,239 +1,221 @@
-Return-Path: <linux-btrfs+bounces-14653-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14654-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D00D5AD9772
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 23:43:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2EA6AD97CF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 23:56:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4208C7A4C92
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 21:42:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DFD83B6A2F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 21:56:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66BD28D8E6;
-	Fri, 13 Jun 2025 21:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C1BE28D85C;
+	Fri, 13 Jun 2025 21:56:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="dwhSPGiQ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="rP9An7Q1"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="g8+tLo9O"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a8-smtp.messagingengine.com (fhigh-a8-smtp.messagingengine.com [103.168.172.159])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9363528D859
-	for <linux-btrfs@vger.kernel.org>; Fri, 13 Jun 2025 21:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548A41E231D
+	for <linux-btrfs@vger.kernel.org>; Fri, 13 Jun 2025 21:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749851005; cv=none; b=J92QHD+0dsZrfpQPNBvXmqNvV2uhmqPRlLn5jQIF7jn4QSQG/6LcANO27eG/MuZPrTjLHTwLn33upXa8mzrM2e3TpG/opPmmjcJxWO7e9Y/DjmNz8UwS1azrea9BrxcrF2Jd12S1WRkof8Lvi3ZjCMqOVByyRDJJ7LeZKluXc3Q=
+	t=1749851781; cv=none; b=B+oB4SZDq1fxCPsI9y7pzOU6GhKWiLggTpw/R3vspXB4l8TJH40H2Z1i3BkNZY9swhhOhcIJ6gNQAB2eG8L7jsXqnIn35bViPi6roQK3XUyRLgATIL3Gxo178I3tibraEXIk9qGaSjjgaPVrfMMeY1L6J9n5b7swu2OhMTqZSmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749851005; c=relaxed/simple;
-	bh=wC0VfCsV07ASe4k73DAAYWOc8aMS2E/E6UOh/T3AcsM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BfzpG+CeOdfU1p21VkCUCXwqyWtdF+nzk8XpeaRy0V5mslqJcMIHIMxprmE2w8XgZHu9kRFX+JWSLl5x0v774WSwykYW2qFVc+EMsxuBYXBcuvqIRX8yQZhUCT0zHPNFexBmTKUWiobSIwkLPC3v8kI/YiMUUujn1/4Z2b3eOWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=dwhSPGiQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=rP9An7Q1; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 2A2AC11400C3;
-	Fri, 13 Jun 2025 17:41:27 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-03.internal (MEProxy); Fri, 13 Jun 2025 17:41:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1749850887; x=1749937287; bh=JcXVfUEydt
-	WJjJQ2NMQFlVxAdu9L/HLVlp5KDkdnEt4=; b=dwhSPGiQjV9upUZA9xvF0fXofS
-	US+qpvBiMiqyj5vkKhEqRaGPGLPKsyeHmMWe2XVsTd6lDCTd6j9/HpnKEyPiau2A
-	zbSKYJ1y+V24pV70mvLi3aIEzNolSp4YpYypR+fzBYekrV7puUy3XVn5/uM9z9s9
-	Lc7C89B/wV+4fxpucZ4NTO9fCL5PjB8E8Nmktw/W7zzZ20NOAZsXC52/erYAO+lo
-	IRkqx7IZmnwLI8xHdvhWCmF8d0oGvTWJ577M5P0vNbV6Oh/JC+Ti9kxZfpy+0ZWD
-	9mdkuzbQGav8RM+DEhX6i2EXvQ0rsZj52iYHxyMzTPmNoJRT8IT+87nyD+RA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1749850887; x=1749937287; bh=JcXVfUEydtWJjJQ2NMQFlVxAdu9L/HLVlp5
-	KDkdnEt4=; b=rP9An7Q1NQkm8wuLidQtvbKGNa5Z3+Tz/VaH2Dq9bxzAdE1UOL6
-	cjl6DUOmTDqKi7A7tqhoAXQHR47rU/1d3fDPMo0MI0fgEx9gePp9H6UGPT8ifJPc
-	ptkhyybiZYIQBPJfVDszJRRLHnI4U1aoc9QPfRQmqBoVoNnwK2rYEw1xHPj6IQd5
-	mhQdc/XU6iuCdlcTK2DMgB0Ep3468nzQYM3cCPVLsKg4KFgD42A2YRd1nWMBh8D8
-	MIxwI42zwizZ2YF8tseFEHs+G4VESXLud9UP2mliEHpYAvm2lH9fT9l0soo0qs03
-	cxdyQOjWpVaiJRpR2qexzRtW0rzmrGiumNQ==
-X-ME-Sender: <xms:B5tMaKG0a9JveGYW04iXXhB6TW7aKpJXFxmfWr01Zf-4kTocoWBPsg>
-    <xme:B5tMaLWqhsbLUHmv16xYw0OQFcy9NipnWRKwsLTQeh1lktj5Q9NkoBqq7UUAoWp8R
-    m0rgDIcoErWo3woQNI>
-X-ME-Received: <xmr:B5tMaEKl8dAiGGK-DNyQrEwWlXXPlMC76AgjfrCF-bKkR86YU49FkHKi1qKhxwP3TRSK32pcpXybTfZWdSDN36Y0jEY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdduledthecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
-    necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
-    cuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfg
-    uefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmohguvgep
-    shhmthhpohhuthdprhgtphhtthhopehmrghhrghrmhhsthhonhgvsehfsgdrtghomhdprh
-    gtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:B5tMaEEVGOsLQ7rAe_JJEZFBAn06I-RwOiNEwqkns2gylJLG9NKHIQ>
-    <xmx:B5tMaAU3ie6H8i7XECDWK68bbeLLOkOf8oYD3IVEKuqsDKzv_TR-Rw>
-    <xmx:B5tMaHOHXWcKpSypFtkvOOPrIKpwkLXyknj9Ugaru4Tp_aXXX_zY-A>
-    <xmx:B5tMaH2PJRUdnjsE65bNTUZfw8nIJnbqXgw4YuJ7_wKIPE_oVRNN9w>
-    <xmx:B5tMaDqBgV5lp5mJR7RRPLv73NzbtqjjSm33uNMsCDhEkANVHhvG7SwN>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 13 Jun 2025 17:41:26 -0400 (EDT)
-Date: Fri, 13 Jun 2025 14:41:07 -0700
-From: Boris Burkov <boris@bur.io>
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 03/12] btrfs: allow remapped chunks to have zero stripes
-Message-ID: <20250613214107.GC3621880@zen.localdomain>
-References: <20250605162345.2561026-1-maharmstone@fb.com>
- <20250605162345.2561026-4-maharmstone@fb.com>
+	s=arc-20240116; t=1749851781; c=relaxed/simple;
+	bh=jeWhzNWFjtJoxrb6TIdFwPK7KQr7Z0twAgkdhlMeHxc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s01AvLnT9r39hAezfT3Aa8r/pPuWgSZahaoyQ5h5WHhECvwbn6zKm22UZt8LUrep2AVy7VCMuOYB3lNUjwUNL5GvxaUodEW60iK9zrYHl9FbSIP04CUUpTK1Q5R+/FsHA3M3YdY73GR4b1FpHvQ1QamVmbs4PAeiI+jY4W3xwSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=g8+tLo9O; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1749851775; x=1750456575; i=quwenruo.btrfs@gmx.com;
+	bh=jeWhzNWFjtJoxrb6TIdFwPK7KQr7Z0twAgkdhlMeHxc=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=g8+tLo9OAo1Cy0JolQCiHJ/3a29z4AAWt1MF2vzWEzsR8CbUJye1XTaN7xqWp99V
+	 DEtOQmb8k95tj3lG0L3dboFvgfVcvfE6VgIPWjqCTGE+NQDZyHHIDmwg17KHxWhIA
+	 vDfQLL2Hm1AsOZA2OXFRqnio50ynzjh46jEzj9W+r/aNf8YGBCmTeNa7bLql4U42p
+	 ++bzYYNV5QyrDZbwNZay4JnxGkO3K5Sl1vdzy/7yOWtaVVK9PvKLXhGTP4ULqFUEo
+	 a1QxFHtguqG8JL4NIBfhof3fqpM84bDiNeYEmLu3KRtbQbugm2czCb4yaUDx+7S3d
+	 uBRX/WR3G2yaTQ4m6Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MXGvG-1uJ7TM2Bp8-00N6ps; Fri, 13
+ Jun 2025 23:56:15 +0200
+Message-ID: <74f37537-d4cd-4a35-b5e6-958ff0d1da99@gmx.com>
+Date: Sat, 14 Jun 2025 07:26:10 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250605162345.2561026-4-maharmstone@fb.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Portable HDD Keeps Going Read Only
+To: Matthew Jurgens <btrfs@edcint.co.nz>, Daniel Vacek <neelx@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <83a43be7-7058-4099-80d9-07749cf77a8d@edcint.co.nz>
+ <CAPjX3FcqJ-cNMjVia_gYmBZwDhQVxPEOhYYQUzL31m7momByEQ@mail.gmail.com>
+ <5de3840d-70c5-48cb-a7c0-7db17e789e95@edcint.co.nz>
+ <ffbd0c96-313d-4524-9b6e-b24437fc0347@gmx.com>
+ <b2dbfdb5-4cce-459c-8d30-01ac6124d9ad@edcint.co.nz>
+ <bdfe67ea-8668-4768-8102-42d78e9537f9@edcint.co.nz>
+ <08d37392-a7a5-4c43-87ce-86146e58323f@gmx.com>
+ <5e8a4887-2bd9-4c99-9329-8e4c91202974@edcint.co.nz>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <5e8a4887-2bd9-4c99-9329-8e4c91202974@edcint.co.nz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:/qcIQ7Vu0SEIAde8tWtMqMLXzazajox5OgsalDywSef5Cl/Z9Jt
+ LcABarpQahzCVciqDvFHAh6hTfntMbycIw34goJaI4REdandjox2gw9i7y04mkjj6hCDOqU
+ UOgSmXJOwBsREjLmhJ7xWU7uIHy2qMpDXyHdNE5UHeLj7zMAkQPq3J2iraEaedsYr5gaqq0
+ FyyQtX/Gszm2+9mxrxGpw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:DcTJHZHp39o=;0v1ujyhfg7x3XR+lsq2z+bDJ7Ui
+ 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
+ vlw8=
 
-On Thu, Jun 05, 2025 at 05:23:33PM +0100, Mark Harmstone wrote:
-> When a chunk has been fully remapped, we are going to set its
-> num_stripes to 0, as it will no longer represent a physical location on
-> disk.
-> 
-> Change tree-checker to allow for this, and fix a couple of
-> divide-by-zeroes seen elsewhere.
-> 
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
-> ---
->  fs/btrfs/tree-checker.c | 16 +++++++++-------
->  fs/btrfs/volumes.c      |  8 +++++++-
->  2 files changed, 16 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 0505f8d76581..fd83df06e3fb 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -829,7 +829,7 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_info *fs_info,
->  	u64 type;
->  	u64 features;
->  	u32 chunk_sector_size;
-> -	bool mixed = false;
-> +	bool mixed = false, remapped;
-
-nit:
-I *personally* don't like such declarations. I think they are lightly if
-not decisively discouraged in the Linux Coding Style document as well
-(at least to my reading). In our code, I found some examples where they
-are used where both values are related and get assigned. But I haven't
-seen any like this for unrelated variables with mixed assignment.
-
->  	int raid_index;
->  	int nparity;
->  	int ncopies;
-> @@ -853,12 +853,14 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_info *fs_info, >  	ncopies = btrfs_raid_array[raid_index].ncopies;
->  	nparity = btrfs_raid_array[raid_index].nparity;
->  
-> -	if (unlikely(!num_stripes)) {
-> +	remapped = type & BTRFS_BLOCK_GROUP_REMAPPED;
-> +
-> +	if (unlikely(!remapped && !num_stripes)) {
->  		chunk_err(fs_info, leaf, chunk, logical,
->  			  "invalid chunk num_stripes, have %u", num_stripes);
->  		return -EUCLEAN;
->  	}
-> -	if (unlikely(num_stripes < ncopies)) {
-> +	if (unlikely(!remapped && num_stripes < ncopies)) {
-
-I think remapped only permits you exactly num_stripes == 0, not
-num_stripes = 2 if ncopies = 3, right? Though it makes the logic less
-neat, I would make the check as precise as possible on the invariants.
-
->  		chunk_err(fs_info, leaf, chunk, logical,
->  			  "invalid chunk num_stripes < ncopies, have %u < %d",
->  			  num_stripes, ncopies);
-> @@ -960,7 +962,7 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_info *fs_info,
->  		}
->  	}
->  
-> -	if (unlikely((type & BTRFS_BLOCK_GROUP_RAID10 &&
-> +	if (unlikely(!remapped && ((type & BTRFS_BLOCK_GROUP_RAID10 &&
->  		      sub_stripes != btrfs_raid_array[BTRFS_RAID_RAID10].sub_stripes) ||
->  		     (type & BTRFS_BLOCK_GROUP_RAID1 &&
->  		      num_stripes != btrfs_raid_array[BTRFS_RAID_RAID1].devs_min) ||
-> @@ -975,7 +977,7 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_info *fs_info,
->  		     (type & BTRFS_BLOCK_GROUP_DUP &&
->  		      num_stripes != btrfs_raid_array[BTRFS_RAID_DUP].dev_stripes) ||
->  		     ((type & BTRFS_BLOCK_GROUP_PROFILE_MASK) == 0 &&
-> -		      num_stripes != btrfs_raid_array[BTRFS_RAID_SINGLE].dev_stripes))) {
-> +		      num_stripes != btrfs_raid_array[BTRFS_RAID_SINGLE].dev_stripes)))) {
->  		chunk_err(fs_info, leaf, chunk, logical,
->  			"invalid num_stripes:sub_stripes %u:%u for profile %llu",
->  			num_stripes, sub_stripes,
-> @@ -999,11 +1001,11 @@ static int check_leaf_chunk_item(struct extent_buffer *leaf,
->  	struct btrfs_fs_info *fs_info = leaf->fs_info;
->  	int num_stripes;
->  
-> -	if (unlikely(btrfs_item_size(leaf, slot) < sizeof(struct btrfs_chunk))) {
-> +	if (unlikely(btrfs_item_size(leaf, slot) < offsetof(struct btrfs_chunk, stripe))) {
->  		chunk_err(fs_info, leaf, chunk, key->offset,
->  			"invalid chunk item size: have %u expect [%zu, %u)",
->  			btrfs_item_size(leaf, slot),
-> -			sizeof(struct btrfs_chunk),
-> +			offsetof(struct btrfs_chunk, stripe),
->  			BTRFS_LEAF_DATA_SIZE(fs_info));
->  		return -EUCLEAN;
-
-Same complaint as above for nstripes < ncopies. Is there some way to
-more generically bypass stripe checking if we detect the case we care
-about: (remapped && num_stripes == 0) ?
-
->  	}
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index e7c467b6af46..9159d11cb143 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -6133,6 +6133,12 @@ struct btrfs_discard_stripe *btrfs_map_discard(struct btrfs_fs_info *fs_info,
->  		goto out_free_map;
->  	}
->  
-> +	/* avoid divide by zero on fully-remapped chunks */
-> +	if (map->num_stripes == 0) {
-> +		ret = -EOPNOTSUPP;
-> +		goto out_free_map;
-> +	}
-> +
-
-This seems kinda sketchy to me. Presumably once we have remapped a block
-group, we do want to discard it. But this makes that impossible? Does
-the discarding happen before we set num_stripes to 0? Even with
-discard=async?
-
->  	offset = logical - map->start;
->  	length = min_t(u64, map->start + map->chunk_len - logical, length);
->  	*length_ret = length;
-> @@ -6953,7 +6959,7 @@ u64 btrfs_calc_stripe_length(const struct btrfs_chunk_map *map)
->  {
->  	const int data_stripes = calc_data_stripes(map->type, map->num_stripes);
->  
-> -	return div_u64(map->chunk_len, data_stripes);
-> +	return data_stripes ? div_u64(map->chunk_len, data_stripes) : 0;
-
-Rather than making 0 a special value meaning remapped, would it be
-useful/clearer to also include a remapped flag on the btrfs_chunk_map?
-This function would have to behave the same way, presumably, but it
-would be less implicit, and we could make assertions on chunk maps that
-they have 0 stripes iff remapped at various places where we use the
-stripe length. That would raise confidence that all the uses of stripe
-logic account for remapped chunks.
-
->  }
->  
->  #if BITS_PER_LONG == 32
-> -- 
-> 2.49.0
-> 
+DQoNCuWcqCAyMDI1LzYvMTMgMjA6MzUsIE1hdHRoZXcgSnVyZ2VucyDlhpnpgZM6DQo+IEZ1cnRo
+ZXIsIEkgcmVjcmVhdGVkIHRoZSBmaWxlIHN5c3RlbSBhbmQgY29waWVkIGRhdGEgdG8gaXQuIFRo
+ZW4gYSB3ZWVrIA0KPiBsYXRlciwgd2hlbiBJIHRyeSBhbmQgbW91bnQgaXQsIGl0IGZhaWxlZA0K
+PiANCj4gTm93DQo+IA0KPiBidHJmcyBjaGVjayAtLW1vZGU9bG93bWVtIC9kZXYvc2RoDQo+IA0K
+PiBPcGVuaW5nIGZpbGVzeXN0ZW0gdG8gY2hlY2suLi4NCj4gcGFyZW50IHRyYW5zaWQgdmVyaWZ5
+IGZhaWxlZCBvbiA2MTM1ODA4MDAgd2FudGVkIDE0NzQgZm91bmQgMTQ3NQ0KDQpUaGlzIG9uZSBp
+cyBhIGh1Z2UgaW5kaWNhdG9yIG9mIGJhZCBiYXJyaWVyIGJlaGF2aW9yLg0KDQpUaGlzIG1lYW5z
+IHRoZSB3cml0ZXMgYXJlIGZyb20gdGhlIGZ1dHVyZSwgYW5kIGJyZWFraW5nIG1ldGFkYXRhIENP
+Vy4NCk5vcm1hbGx5IGl0J3MgYSBwcm9ibGVtIHdpdGggdGhlIHVuZGVybHlpbmcgbGF5ZXJzLCBh
+bmQgc2luY2UgdGhlcmUgaXMgDQpubyBvdGhlciBsYXllcnMgbGlrZSBkbSBpbnZvbHZlZCwgaXQn
+cyBhbiBpbmRpY2F0b3IgdGhlIHBvcnRhYmxlIEhERCANCmRvZXNuJ3QgZG8gaXRzIGJhcnJpZXIg
+Y29ycmVjdGx5Lg0KDQpUaGlzIGlzIGVzcGVjaWFsbHkgY3JpdGljYWwgZm9yIHBvcnRhYmxlIGRl
+dmljZXMsIGFzIGJhcnJpZXIgaXMgdGhlIA0Kc2Vjb25kIGxhc3Qgb3BlcmF0aW9uIHdoZW4gc3lu
+Y2luZyBhbiBmcy4NCg0KQW5kIGFmdGVyIHN5bmNpbmcgaXMgZG9uZSwgb25lIHdpbGwgYXNzdW1l
+IHRoZSBkZXZpY2VzIGNhbiBiZSBzYWZlbHkgDQpyZW1vdmVkLiBCdXQgaWYgYmFycmllciBpcyBu
+b3QgZG9uZSwgaXQgbWVhbnMgZWl0aGVyIHNvbWUgb2xkZXIgZGF0YSBpcyANCm5vdCB3cml0dGVu
+IGludG8gdGhlIGRpc2sgYW5kIGxvc3QsIG9yIHNvbWV0aGluZyBtdXN0IGJlIHdyaXR0ZW4gYmFj
+ayANCmJlZm9yZSBvdGhlciB0aGluZ3MgYXJlIG5vdCBwcm9wZXJseSB3cml0dGVuIGJhY2ssIGNh
+dXNpbmcgdHJhbnNpZCBtaXNtYXRjaC4NCg0KSSBndWVzcyB0aGlzIHdvdWxkIGV4cGxhaW4gd2h5
+IHRoZSBmcyBvbiB0aGF0IHBvcnRhYmxlIEhERCBpcyBhbHdheXMgDQpzaG9ydCBsaXZlZC4NCg0K
+VGhhbmtzLA0KUXUNCg0KPiBwYXJlbnQgdHJhbnNpZCB2ZXJpZnkgZmFpbGVkIG9uIDYxMzU4MDgw
+MCB3YW50ZWQgMTQ3NCBmb3VuZCAxNDc1DQo+IHBhcmVudCB0cmFuc2lkIHZlcmlmeSBmYWlsZWQg
+b24gNjEzNTgwODAwIHdhbnRlZCAxNDc0IGZvdW5kIDE0NzUNCj4gSWdub3JpbmcgdHJhbnNpZCBm
+YWlsdXJlDQo+IEVSUk9SOiBjb3VsZCBub3Qgc2V0dXAgZXh0ZW50IHRyZWUNCj4gRVJST1I6IGNh
+bm5vdCBvcGVuIGZpbGUgc3lzdGVtDQo+IA0KPiBzbWFydGN0bCAtQSAvZGV2L3NkaA0KPiBzbWFy
+dGN0bCA3LjUgMjAyNS0wNC0zMCByNTcxNCBbeDg2XzY0LWxpbnV4LTYuMTQuOS0zMDAuZmM0Mi54
+ODZfNjRdIA0KPiAobG9jYWwgYnVpbGQpDQo+IENvcHlyaWdodCAoQykgMjAwMi0yNSwgQnJ1Y2Ug
+QWxsZW4sIENocmlzdGlhbiBGcmFua2UsIHd3dy5zbWFydG1vbnRvb2xzLm9yZw0KPiANCj4gPT09
+IFNUQVJUIE9GIFJFQUQgU01BUlQgREFUQSBTRUNUSU9OID09PQ0KPiBTTUFSVCBBdHRyaWJ1dGVz
+IERhdGEgU3RydWN0dXJlIHJldmlzaW9uIG51bWJlcjogMTYNCj4gVmVuZG9yIFNwZWNpZmljIFNN
+QVJUIEF0dHJpYnV0ZXMgd2l0aCBUaHJlc2hvbGRzOg0KPiBJRCMgQVRUUklCVVRFX05BTUXCoCDC
+oCDCoCDCoCDCoCBGTEFHwqAgwqAgwqBWQUxVRSBXT1JTVCBUSFJFU0ggVFlQRSDCoCBVUERBVEVE
+ICANCj4gV0hFTl9GQUlMRUQgUkFXX1ZBTFVFDQo+ICDCoCAxIFJhd19SZWFkX0Vycm9yX1JhdGXC
+oCDCoCDCoDB4MDAyZsKgIMKgMjAwwqAgwqAyMDDCoCDCoDA1MSBQcmUtZmFpbMKgIEFsd2F5cyAg
+DQo+ICDCoCDCoCDCoC3CoCDCoCDCoCDCoDANCj4gIMKgIDMgU3Bpbl9VcF9UaW1lwqAgwqAgwqAg
+wqAgwqAgwqAgMHgwMDI3wqAgwqAyNTPCoCDCoDI1M8KgIMKgMDIxIFByZS1mYWlswqAgQWx3YXlz
+ICANCj4gIMKgIMKgIMKgLcKgIMKgIMKgIMKgMzY0MQ0KPiAgwqAgNCBTdGFydF9TdG9wX0NvdW50
+wqAgwqAgwqAgwqAgMHgwMDMywqAgwqAxMDDCoCDCoDEwMMKgIMKgMDAwwqAgwqAgT2xkX2FnZSAN
+Cj4gIMKgQWx3YXlzwqAgwqAgwqAgwqAtwqAgwqAgwqAgwqA5MA0KPiAgwqAgNSBSZWFsbG9jYXRl
+ZF9TZWN0b3JfQ3TCoCDCoDB4MDAzM8KgIMKgMjAwwqAgwqAyMDDCoCDCoDE0MCBQcmUtZmFpbMKg
+IEFsd2F5cyAgDQo+ICDCoCDCoCDCoC3CoCDCoCDCoCDCoDANCj4gIMKgIDcgU2Vla19FcnJvcl9S
+YXRlwqAgwqAgwqAgwqAgwqAweDAwMmXCoCDCoDIwMMKgIMKgMjAwwqAgwqAwMDDCoCDCoCBPbGRf
+YWdlIA0KPiAgwqBBbHdheXPCoCDCoCDCoCDCoC3CoCDCoCDCoCDCoDANCj4gIMKgIDkgUG93ZXJf
+T25fSG91cnPCoCDCoCDCoCDCoCDCoCAweDAwMzLCoCDCoDA5OMKgIMKgMDk4wqAgwqAwMDDCoCDC
+oCBPbGRfYWdlIA0KPiAgwqBBbHdheXPCoCDCoCDCoCDCoC3CoCDCoCDCoCDCoDIwMzINCj4gIMKg
+MTAgU3Bpbl9SZXRyeV9Db3VudMKgIMKgIMKgIMKgIDB4MDAzMsKgIMKgMTAwwqAgwqAyNTPCoCDC
+oDAwMMKgIMKgIE9sZF9hZ2UgDQo+ICDCoEFsd2F5c8KgIMKgIMKgIMKgLcKgIMKgIMKgIMKgMA0K
+PiAgwqAxMSBDYWxpYnJhdGlvbl9SZXRyeV9Db3VudCAweDAwMzLCoCDCoDEwMMKgIMKgMjUzwqAg
+wqAwMDDCoCDCoCBPbGRfYWdlIA0KPiAgwqBBbHdheXPCoCDCoCDCoCDCoC3CoCDCoCDCoCDCoDAN
+Cj4gIMKgMTIgUG93ZXJfQ3ljbGVfQ291bnTCoCDCoCDCoCDCoDB4MDAzMsKgIMKgMTAwwqAgwqAx
+MDDCoCDCoDAwMMKgIMKgIE9sZF9hZ2UgDQo+ICDCoEFsd2F5c8KgIMKgIMKgIMKgLcKgIMKgIMKg
+IMKgNDgNCj4gMTkyIFBvd2VyLU9mZl9SZXRyYWN0X0NvdW50IDB4MDAzMsKgIMKgMjAwwqAgwqAy
+MDDCoCDCoDAwMMKgIMKgIE9sZF9hZ2UgwqBBbHdheXMgIA0KPiAgwqAgwqAgwqAtwqAgwqAgwqAg
+wqA0Mw0KPiAxOTMgTG9hZF9DeWNsZV9Db3VudMKgIMKgIMKgIMKgIDB4MDAzMsKgIMKgMjAwwqAg
+wqAyMDDCoCDCoDAwMMKgIMKgIE9sZF9hZ2UgwqBBbHdheXMgIA0KPiAgwqAgwqAgwqAtwqAgwqAg
+wqAgwqAzMjENCj4gMTk0IFRlbXBlcmF0dXJlX0NlbHNpdXPCoCDCoCDCoDB4MDAyMsKgIMKgMTMw
+wqAgwqAxMTDCoCDCoDAwMMKgIMKgIE9sZF9hZ2UgwqBBbHdheXMgIA0KPiAgwqAgwqAgwqAtwqAg
+wqAgwqAgwqAyMg0KPiAxOTYgUmVhbGxvY2F0ZWRfRXZlbnRfQ291bnQgMHgwMDMywqAgwqAyMDDC
+oCDCoDIwMMKgIMKgMDAwwqAgwqAgT2xkX2FnZSDCoEFsd2F5cyAgDQo+ICDCoCDCoCDCoC3CoCDC
+oCDCoCDCoDANCj4gMTk3IEN1cnJlbnRfUGVuZGluZ19TZWN0b3LCoCAweDAwMzLCoCDCoDIwMMKg
+IMKgMjAwwqAgwqAwMDDCoCDCoCBPbGRfYWdlIMKgQWx3YXlzICANCj4gIMKgIMKgIMKgLcKgIMKg
+IMKgIMKgMA0KPiAxOTggT2ZmbGluZV9VbmNvcnJlY3RhYmxlwqAgwqAweDAwMzDCoCDCoDEwMMKg
+IMKgMjUzwqAgwqAwMDDCoCDCoCBPbGRfYWdlIA0KPiAgwqBPZmZsaW5lwqAgwqAgwqAgLcKgIMKg
+IMKgIMKgMA0KPiAxOTkgVURNQV9DUkNfRXJyb3JfQ291bnTCoCDCoCAweDAwMzLCoCDCoDIwMMKg
+IMKgMjAwwqAgwqAwMDDCoCDCoCBPbGRfYWdlIMKgQWx3YXlzICANCj4gIMKgIMKgIMKgLcKgIMKg
+IMKgIMKgMA0KPiAyMDAgTXVsdGlfWm9uZV9FcnJvcl9SYXRlwqAgwqAweDAwMDjCoCDCoDEwMMKg
+IMKgMjUzwqAgwqAwMDDCoCDCoCBPbGRfYWdlIA0KPiAgwqBPZmZsaW5lwqAgwqAgwqAgLcKgIMKg
+IMKgIMKgMA0KPiANCg0K
 
