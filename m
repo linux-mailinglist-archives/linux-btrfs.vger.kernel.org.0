@@ -1,200 +1,259 @@
-Return-Path: <linux-btrfs+bounces-14655-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14656-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38583AD97E1
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Jun 2025 00:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 15684AD981B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Jun 2025 00:21:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA50C4A0850
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 22:00:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3C864A15FB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Jun 2025 22:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E69A271462;
-	Fri, 13 Jun 2025 22:00:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBC4D28D8D5;
+	Fri, 13 Jun 2025 22:21:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="YZ0bg7zH";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="qmFO4lXB"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="srMJxMJ6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5DD1632DD
-	for <linux-btrfs@vger.kernel.org>; Fri, 13 Jun 2025 22:00:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B30A92E11D0;
+	Fri, 13 Jun 2025 22:21:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749852039; cv=none; b=aSovBQdWAHwmBPHKzPd5oG5aiNXLBoLaZVK8CytX2OapCPqCgBBDjDiKxg07Xgp+2IRFNQ0iOkj6CUTli+E7ub+nm1rE0nuY/W7GEeeXqdhKArDiEWrIboo4r4qO9rvq+SPj7/mL3Eq5i3ePg5yOvHFRoO17TFAOuaXh7fV2D5E=
+	t=1749853302; cv=none; b=IHwAtFMYdcdwNmwE4oSMK8ZvdgbFX6h80vnUwZZTQyEzF4TnfcEmjfTBymb/IYyafW8V4f/N3B+2lKZAcnWG9m0LwJX1FcCX9ja/XgRf3JOpQNLn+Rw9+X7sfXpeoYleSUpyFm6muBQRPKHm5zC1FNzWCZLRtiikt7/IA7WD8+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749852039; c=relaxed/simple;
-	bh=bidNjAf+HCGgB5UtwMtjct2DLW2vX2ESjLKOLJ/f1Pg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jhd+exfQIi0w0K1wbwPjzqT/jCu6qsHhuzxGWiJyaW7oyIB0OiujVY7C8kfo5IKqlc8WDkmQvWh9V9q6JLo8msTofzOmGLjbzHpLPXKY45sBk3NSfIaVY5QfqFI0493OMMS8bO2gSakb8SvmVLStUw1Gm8wPZJLJujCXCs5oTek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=YZ0bg7zH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=qmFO4lXB; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfout.phl.internal (Postfix) with ESMTP id 5B5E3138026B;
-	Fri, 13 Jun 2025 18:00:35 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Fri, 13 Jun 2025 18:00:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1749852035; x=1749938435; bh=2Q7kYw+lKh
-	T5VSX51J+o3pD1OotzaGU0aNbTp9KYjVU=; b=YZ0bg7zHazHbiTAuwLlq98aDLB
-	hC7ff6qZCbjVQnWJKcVq1XLjpmfb/P2g3MYR8wrvFVm1xHMloKoULrbgBP17v37H
-	xO25n3xIXFQ/RfOEvGldiDRdE7KlmeIG+AyWNVSUScGdayz9DtLIwN//IdBAnXrn
-	dAEgy3YoI9x9oHA4EOcmufNUS68lmF/PsJxYswP2aa2IElUmux/V2zyIWzoAtgGr
-	elbJqTJoEIZlgXcvXp77aG6Hh4wB+UCOWYn7T28vdp75lvDkiiXUWv7IUxfpRfnV
-	ZIODppCayKszcEvgdh5zsAvANMKfllLk4dMOmtT4PHUxzDrhDt8YhbzkPE/A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1749852035; x=1749938435; bh=2Q7kYw+lKhT5VSX51J+o3pD1OotzaGU0aNb
-	Tp9KYjVU=; b=qmFO4lXBvMmAjmnc7K7lC9BRC4c2MMpWM3wIfby4wY8Wzh+SIdj
-	7WitAWzXihdzfdjZebKlvd5bkxf/79Iu9QKXkXxXTadQGr9EqPjPz3MoCrx5INir
-	9VJ8EF4RnzXxYSpmtoSINLTIbZjN7EgDBrllr9snWHyHOagVv4j+ZGclxhHy3Qij
-	eEo+ywR9VavQHzBf9Te+jCDGfRIFWAywDQxxZkkZVj5kk6A80VAeacb1U6e5b6DI
-	5jxSx9mRubQQw72VwUUMPjE65eCsXw4JAQAgyEfghBaptBH0qkmAuHiHOryEr8va
-	UJlko3Q5JoBAwYqlcpUGVXXyl7oNXFEbTcg==
-X-ME-Sender: <xms:g59MaIxcvaAGzeC_hEgbQux6tDciNM08cUnBlff5FV5-07QXVqoO_w>
-    <xme:g59MaMRLzJIfBr4r6k_VZvm-006YAWkeFV90oBPhAFTpg5F-dEimQdK14iruaH3YH
-    oRdVyiD_wdhmJmnxrU>
-X-ME-Received: <xmr:g59MaKWyHtUnCbKTgEOsp5c57ANJvXihVW9ibagvUe5T3YGSw_3QwbmrHGXRq4cxLfLOUj60R8rUHmH-6xhDyzSqIl0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdduledtlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
-    necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
-    cuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfg
-    uefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmohguvgep
-    shhmthhpohhuthdprhgtphhtthhopehmrghhrghrmhhsthhonhgvsehfsgdrtghomhdprh
-    gtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:g59MaGi6kV2byi5dDqv3s4TD4nhUMyOZFpANuuQxXvTDiPhn3VNlyw>
-    <xmx:g59MaKCSqQiqoX_XIuNf5l3ALfGzAETuqJlPA4lCgoZ3S8YwYk6kRg>
-    <xmx:g59MaHLKVXYckgJa8ugZrORtYO9FD3BSOtRsqFwdbGE6uBufzYy9Eg>
-    <xmx:g59MaBAwH2Y9qwMvjxYi_dbOyLEJwkhW8i9kpvSyolis6__-Y07lTw>
-    <xmx:g59MaFXGdix1hdogsob1DQtQEG9DAtE7ck8-bTuUj9n5DRtohyO_Fexp>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 13 Jun 2025 18:00:34 -0400 (EDT)
-Date: Fri, 13 Jun 2025 15:00:15 -0700
-From: Boris Burkov <boris@bur.io>
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 04/12] btrfs: remove remapped block groups from the
- free-space tree
-Message-ID: <20250613220015.GD3621880@zen.localdomain>
-References: <20250605162345.2561026-1-maharmstone@fb.com>
- <20250605162345.2561026-5-maharmstone@fb.com>
+	s=arc-20240116; t=1749853302; c=relaxed/simple;
+	bh=Jx82pmmUEK2s4Y6kMShiJ/tUvun4PrLkyXObw1hvTE4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bKKVZSfeWJ5gWBLZAL8UI3Cn036Rb1D1y0GEA1q872xg9kM0G2/X3JJMx+Jl+wcbtEBCKsOKDTSnxG8rDlSnA/QjwnBo2AYRr3gFEBNucTlNTdDvjS7T1qTrRIAr0m+c5+CWcRrwEOce5gwTm9lks/Su3dLoUVrRnWY+JoxdorE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=srMJxMJ6; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1749853297; x=1750458097; i=quwenruo.btrfs@gmx.com;
+	bh=+mVlf8s2gfUT8/pj+AZSlaSag3Olrcbxn5eyjMsS7eA=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=srMJxMJ6tCA1uC9W7TLqkIXu+pvjmC428p548x+4Undl4H9eNbAt2PLtNynN3juM
+	 Ji7fPZPf9aZMPcz4vFcQGMyWHLC7lVTdMgni4O49Dm9xzKuglIDkSUgbESyxFePdv
+	 9oamcBDbrqVGh/3FXZs6JV5kf2n6RI5Q5kvPym4zxLuo23MV7Ler3CbXRZ9pz6v6C
+	 AzZXQWjmhnnBIIpTlHQz9Tr9BCytIshLE51H5kUOjPpNfsDqjd+ZGjQbUhBQpby7I
+	 lqQ76M6PchHIlZ11bxN/KysOFjaef+E81zsEP4ZQ6YQuwYMY//YcbE4HuHsRCQhpw
+	 W0ibdv5OSxvJ9xqZgA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MpUYu-1v99Uz0XLY-00fSja; Sat, 14
+ Jun 2025 00:21:37 +0200
+Message-ID: <637146dc-bc63-496e-8652-c759505c6315@gmx.com>
+Date: Sat, 14 Jun 2025 07:51:33 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250605162345.2561026-5-maharmstone@fb.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs/300: set umask to avoid failure on systems with a
+ different umask
+To: fdmanana@kernel.org, fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <4ae9bff4369f3d0700ba0ae2afddce01bd0ffc62.1749819852.git.fdmanana@suse.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <4ae9bff4369f3d0700ba0ae2afddce01bd0ffc62.1749819852.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7iuM02BO0H2/MvEofJ45HRfpw/INH/Ci+oIyNApvejRzcJXQUbG
+ IR2DpF7w8ywq/aP1AkW5nCrSfXhc+XgXjO7U/Aabeqw/GAseRJP2bCnTXsPxXpep0AvhNv3
+ 9IXhLkZcTA9Yx/KrJFA86VP5PJT5a1p0Qy6ne9hc24W5H+BwrIE67H3S6/0T75ZGWi6d+CE
+ MntYqZ5Y7MNZ3vAI9l9lQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:QuhN04fwlfE=;SGQQPtGx+CCIjtQOR4OPJXOx8ww
+ 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
+ E56HS5y8g9TvIaQl33FEr64fVU7zia32i2zCgg==
 
-On Thu, Jun 05, 2025 at 05:23:34PM +0100, Mark Harmstone wrote:
-> No new allocations can be done from block groups that have the REMAPPED flag
-> set, so there's no value in their having entries in the free-space tree.
-> 
-> Prevent a search through the free-space tree being scheduled for such a
-> block group, and prevent discard being run for a fully-remapped block
-> group.
-> 
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+
+
+=E5=9C=A8 2025/6/13 22:35, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
+>=20
+> The test is assuming a umask of 0022, which is the default on many Linux
+> setups, but often we can find other umasks such as in recent Debian box
+> I have where the default umask is 0002, and this makes the test fail lik=
+e
+> this:
+>=20
+>    $ ./check btrfs/300
+>    FSTYP         -- btrfs
+>    PLATFORM      -- Linux/x86_64 debian7 6.16.0-rc1-btrfs-next-200+ #1 S=
+MP PREEMPT_DYNAMIC Thu Jun 12 16:07:55 WEST 2025
+>    MKFS_OPTIONS  -- /dev/sdb
+>    MOUNT_OPTIONS -- /dev/sdb /scratch
+>=20
+>    btrfs/300 2s ... - output mismatch (see /xfstests/results//btrfs/300.=
+out.bad)
+>      --- tests/btrfs/300.out	2024-05-20 11:27:55.949395116 +0100
+>      +++ /xfstests/results//btrfs/300.out.bad	2025-06-12 22:58:20.449228=
+230 +0100
+>      @@ -2,16 +2,16 @@
+>       Create subvolume './subvol'
+>       Create subvolume 'subvol/subsubvol'
+>       drwxr-xr-x fsgqa fsgqa ./
+>      -drwxr-xr-x fsgqa fsgqa ./subvol
+>      --rw-r--r-- fsgqa fsgqa ./subvol/1
+>      --rw-r--r-- fsgqa fsgqa ./subvol/2
+>      --rw-r--r-- fsgqa fsgqa ./subvol/3
+>      ...
+>      (Run 'diff -u /xfstests/tests/btrfs/300.out /xfstests/results//btrf=
+s/300.out.bad'  to see the entire diff)
+>=20
+>    HINT: You _MAY_ be missing kernel fix:
+>          94628ad94408 btrfs: copy dir permission and time when creating =
+a stub subvolume
+>=20
+>    Ran: btrfs/300
+>    Failures: btrfs/300
+>    Failed 1 of 1 tests
+>=20
+>    $ diff -u /xfstests/tests/btrfs/300.out /xfstests/results//btrfs/300.=
+out.bad
+>    --- /xfstests/tests/btrfs/300.out	2024-05-20 11:27:55.949395116 +0100
+>    +++ /xfstests/results//btrfs/300.out.bad	2025-06-12 22:58:20.44922823=
+0 +0100
+>    @@ -2,16 +2,16 @@
+>     Create subvolume './subvol'
+>     Create subvolume 'subvol/subsubvol'
+>     drwxr-xr-x fsgqa fsgqa ./
+>    -drwxr-xr-x fsgqa fsgqa ./subvol
+>    --rw-r--r-- fsgqa fsgqa ./subvol/1
+>    --rw-r--r-- fsgqa fsgqa ./subvol/2
+>    --rw-r--r-- fsgqa fsgqa ./subvol/3
+>    -drwxr-xr-x fsgqa fsgqa ./subvol/subsubvol
+>    --rw-r--r-- fsgqa fsgqa ./subvol/subsubvol/4
+>    --rw-r--r-- fsgqa fsgqa ./subvol/subsubvol/5
+>    --rw-r--r-- fsgqa fsgqa ./subvol/subsubvol/6
+>    -drwxr-xr-x fsgqa fsgqa ./snapshot
+>    --rw-r--r-- fsgqa fsgqa ./snapshot/1
+>    --rw-r--r-- fsgqa fsgqa ./snapshot/2
+>    --rw-r--r-- fsgqa fsgqa ./snapshot/3
+>    +drwxrwxr-x fsgqa fsgqa ./subvol
+>    +-rw-rw-r-- fsgqa fsgqa ./subvol/1
+>    +-rw-rw-r-- fsgqa fsgqa ./subvol/2
+>    +-rw-rw-r-- fsgqa fsgqa ./subvol/3
+>    +drwxrwxr-x fsgqa fsgqa ./subvol/subsubvol
+>    +-rw-rw-r-- fsgqa fsgqa ./subvol/subsubvol/4
+>    +-rw-rw-r-- fsgqa fsgqa ./subvol/subsubvol/5
+>    +-rw-rw-r-- fsgqa fsgqa ./subvol/subsubvol/6
+>    +drwxrwxr-x fsgqa fsgqa ./snapshot
+>    +-rw-rw-r-- fsgqa fsgqa ./snapshot/1
+>    +-rw-rw-r-- fsgqa fsgqa ./snapshot/2
+>    +-rw-rw-r-- fsgqa fsgqa ./snapshot/3
+>     drwxr-xr-x fsgqa fsgqa ./snapshot/subsubvol
+>=20
+> The mismatch with the golden output is because the test is expecting an
+> umask of 0022 where the write bit is not set for owner group, but with
+> a umask of 0002 for example, the write bit is set for the owner group.
+>=20
+> Fix this by making the test set a umask of 0022, so that it works for
+> any system or user defined umask.
+>=20
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+
 > ---
->  fs/btrfs/block-group.c | 21 ++++++++++++++++-----
->  fs/btrfs/discard.c     |  9 +++++++++
->  2 files changed, 25 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 5b0cb04b2b93..9b3b5358f1ba 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -920,6 +920,13 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, bool wait)
->  	if (btrfs_is_zoned(fs_info))
->  		return 0;
->  
-> +	/*
-> +	 * No allocations can be done from remapped block groups, so they have
-> +	 * no entries in the free-space tree.
-> +	 */
-> +	if (cache->flags & BTRFS_BLOCK_GROUP_REMAPPED)
-> +		return 0;
-> +
->  	caching_ctl = kzalloc(sizeof(*caching_ctl), GFP_NOFS);
->  	if (!caching_ctl)
->  		return -ENOMEM;
-> @@ -1235,9 +1242,11 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
->  	 * another task to attempt to create another block group with the same
->  	 * item key (and failing with -EEXIST and a transaction abort).
->  	 */
-> -	ret = remove_block_group_free_space(trans, block_group);
-> -	if (ret)
-> -		goto out;
+>   tests/btrfs/300 | 1 +
+>   1 file changed, 1 insertion(+)
+>=20
+> diff --git a/tests/btrfs/300 b/tests/btrfs/300
+> index 7fcb444a..218ed831 100755
+> --- a/tests/btrfs/300
+> +++ b/tests/btrfs/300
+> @@ -36,6 +36,7 @@ chown $qa_user:$qa_group $test_dir
+>   # sets the namespace for the running shell. The test must run in one u=
+ser
+>   # subshell to preserve the namespace over multiple commands.
+>   _user_do "
+> +umask 0022;
+>   cd ${test_dir};
+>   unshare --user --keep-caps --map-auto --map-root-user;
+>   $BTRFS_UTIL_PROG subvolume create subvol;
 
-nit: it feels nicer to hide the check inside the function.
 
-> +	if (!(block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED)) {
-> +		ret = remove_block_group_free_space(trans, block_group);
-> +		if (ret)
-> +			goto out;
-> +	}
->  
->  	ret = remove_block_group_item(trans, path, block_group);
->  	if (ret < 0)
-> @@ -2457,10 +2466,12 @@ static int read_one_block_group(struct btrfs_fs_info *info,
->  	if (btrfs_chunk_writeable(info, cache->start)) {
->  		if (cache->used == 0) {
->  			ASSERT(list_empty(&cache->bg_list));
-> -			if (btrfs_test_opt(info, DISCARD_ASYNC))
-> +			if (btrfs_test_opt(info, DISCARD_ASYNC) &&
-
-I asked this on the previous patch, but I guess this means we will never
-discard these blocks? Is that desirable? Or are we discarding them at
-some other point in the life-cycle?
-
-> +			    !(cache->flags && BTRFS_BLOCK_GROUP_REMAPPED)) {
->  				btrfs_discard_queue_work(&info->discard_ctl, cache);
-> -			else
-> +			} else {
->  				btrfs_mark_bg_unused(cache);
-> +			}
->  		}
->  	} else {
->  		inc_block_group_ro(cache, 1);
-> diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
-> index 89fe85778115..1015a4d37fb2 100644
-> --- a/fs/btrfs/discard.c
-> +++ b/fs/btrfs/discard.c
-> @@ -698,6 +698,15 @@ void btrfs_discard_punt_unused_bgs_list(struct btrfs_fs_info *fs_info)
->  	/* We enabled async discard, so punt all to the queue */
->  	list_for_each_entry_safe(block_group, next, &fs_info->unused_bgs,
->  				 bg_list) {
-> +		/* Fully remapped BGs have nothing to discard */
-
-Same question. If we simply *don't* discard them, I feel like this
-comment is misleadingly worded.
-
-> +		spin_lock(&block_group->lock);
-> +		if (block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED &&
-> +		    !btrfs_is_block_group_used(block_group)) {
-> +			spin_unlock(&block_group->lock);
-> +			continue;
-> +		}
-> +		spin_unlock(&block_group->lock);
-> +
->  		list_del_init(&block_group->bg_list);
->  		btrfs_discard_queue_work(&fs_info->discard_ctl, block_group);
->  		/*
-> -- 
-> 2.49.0
-> 
 
