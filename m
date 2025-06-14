@@ -1,290 +1,284 @@
-Return-Path: <linux-btrfs+bounces-14661-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14662-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6915AD98DD
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Jun 2025 02:04:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00EB8AD98DE
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Jun 2025 02:04:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15BED3B6F56
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Jun 2025 00:04:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2F9C17D0FC
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Jun 2025 00:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0563A2CA9;
-	Sat, 14 Jun 2025 00:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB53D1FDA;
+	Sat, 14 Jun 2025 00:04:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="AkYXvYFr";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="aFhhlRVN"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="btGulk/3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B662710F2
-	for <linux-btrfs@vger.kernel.org>; Sat, 14 Jun 2025 00:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF6F217D7
+	for <linux-btrfs@vger.kernel.org>; Sat, 14 Jun 2025 00:04:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749859466; cv=none; b=QnRdh6DCGaSfmZnrsY03xELH9erBTJc+d8iOebj4ZwocxqoyggllpOjitQz7JMX3rmyqFDr4Q0BjOIS3JcUVwzW3CJvjydIvg1uTAdF1TA8sK3DGLWK0sVJSBBSwPZ7YXP9gIP3G6zH8AR+1xwsrLuq3em+DdNtvIA35hWDkaUM=
+	t=1749859482; cv=none; b=PKoGalBWdZGbl13F6+0D94BNoUOLJzCsPdnti678U9vgHDaujg36zTnI97W7UvJCtRHZaBlnT47pY+JgefCZbNdv2JBWi5uR+QK432iDff+oNlJNk7c4d5+CRhWM5O4u2awx2sg2WBF6E6zU/my4psFznHmzznGWOSsyiw8a6iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749859466; c=relaxed/simple;
-	bh=TougHU1SGuLrcmRM8ABIqsnBErQouRew5K4qpKBuy0Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rpcbzlcqmzFh8D+UMBr70xCrxd3zsODTaymASPCOlc4jq4TCB683hof37c4QBP3FR0n7lR2+SZ//Vh3/MBhd1OVhKnF1DaY1kGoE4bS63YQjJH8Yy3zvj+sOPmdeYS84Y+bOVCzztcOG6XOBcvtPqsEWtoN2Rk7GZmv1N3pWA/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=AkYXvYFr; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=aFhhlRVN; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id A8422114012A;
-	Fri, 13 Jun 2025 20:04:22 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Fri, 13 Jun 2025 20:04:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1749859462; x=1749945862; bh=PFlgAy/3jH
-	ewgiITY/bZ3PDDwG1GjJI2FMyeF1gQ9+8=; b=AkYXvYFrtuJUcwHhV0cLXAwZM9
-	fYJn6rBz0R/6yE8lf73Wcd3ZqC4Rh8DwnR2IClsMLTLPDo8oBxIoDvVSLZP7GHPE
-	3dHyydbTgakfUOGGmi9Li/QBieEBGdZJr2n9mB/UqXDwK+KuxT7YSHwNWPw0sgZ9
-	GiSv6AeExCWPhoE1VNHmv9YjRQentLoffn3WvcLsrNKncfTUJ6b24AiNLSY2TWf/
-	pUic+ZLtUj3PgvOz3hev4PyBbyfuh5jlBtT/lZt8/WZfagCoQmmJJ2QE4AN2bjMZ
-	AeC8HdysruFN92Z9Ts1DEWCm3yaNtB26JvclQ0mVdW3fTPJ76g9kINZjwYgQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1749859462; x=1749945862; bh=PFlgAy/3jHewgiITY/bZ3PDDwG1GjJI2FMy
-	eF1gQ9+8=; b=aFhhlRVNZ8SbYpdB6FGb18MPpbMmgF88ua+QPqVXoPC1YwJmvmT
-	cUGBrCTUAJYXJ0dqAUERMqJcyTks4SNe0W2MtZoFD45ZDjTB3bwrNSmoK3h7JjXU
-	3e1sWWXa04bOn/CeKHCPCb6XcZbwkzItWsg1gC9wxePHxd5PAsQHdjx0knX/DNPz
-	O1S2ysbslZW/PvX3kDtg59mejUxC511qgst4vnu5xu05lMON3JU8bnd5OmkbgJi2
-	O96FwJ1TOn6rmqV7aLviltzCJr4PtWAXTm+eeIx1py87m+T2A3WPJk2mkC+cc54C
-	QHNdrxTAARyU+aN7l9tZs42OqCID5PyJgfA==
-X-ME-Sender: <xms:hrxMaKikjecXq5Acp7OHwk2QfJ7y4ljhtNCZZCxSDzqyp-im35mqXQ>
-    <xme:hrxMaLAnFJxK6oEGSFj9uHRIX1MUe7ijJESC3YodRRfCUDoYgs5itXSHktL2tUbt_
-    7HlZsKXPFShfd6d6cw>
-X-ME-Received: <xmr:hrxMaCFe3b001ZqKnWYphTmLwokSptTaHWp7Qu1ikVj6V80p3WJz9ZPE9S_onIPig-ceJYLLn3EX1Z8uzkYR7Nr4Cag>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdduleefgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
-    necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
-    cuggftrfgrthhtvghrnhepgeelffefvdegfeegudegueeujeetledtheduleeuueelveek
-    udevfeevvdfgudeinecuffhomhgrihhnpehlfihnrdhnvghtpdhgihhthhhusgdrtghomh
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhr
-    ihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpd
-    hrtghpthhtohepmhgrhhgrrhhmshhtohhnvgesfhgsrdgtohhmpdhrtghpthhtoheplhhi
-    nhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:hrxMaDQmImNQqZl9geShkYqTVTv7IVCvfl247ew4Fb-j39NpdFGN6Q>
-    <xmx:hrxMaHzAEHBfcTny9g3sT9TQHTwRgj3p0tIdFIKYEcxRs2j5IAhCVA>
-    <xmx:hrxMaB75Rz_IB-IbAp-iUxRsBFJ9YXKBwZspWQQlqzzOuW68qykHfw>
-    <xmx:hrxMaEyXu7kGe4kfug1Ea-2pDxz4WdtyS_xRA-CY4rJjLdxLn03hxw>
-    <xmx:hrxMaDEStmOu0-ak0BU_WNKaQGofp_D0Vsu400kUf77ppIvYR_le-EPY>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 13 Jun 2025 20:04:22 -0400 (EDT)
-Date: Fri, 13 Jun 2025 17:04:02 -0700
-From: Boris Burkov <boris@bur.io>
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 00/12] btrfs: remap tree
-Message-ID: <20250614000402.GH3621880@zen.localdomain>
-References: <20250605162345.2561026-1-maharmstone@fb.com>
+	s=arc-20240116; t=1749859482; c=relaxed/simple;
+	bh=eYoKo+ajUB+a2HKnx4e7SOODK9HD88qVME63V7HMtFk=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=MjRTOcHCFJJ76G2GEqkN/8JdveJCyAxPM3NX8OYRINFM+qUlFBdEnoEjNpBOuHxDqF1VVJQmhmUG+/SysRyAf55HEy6aifmtFb+tQumYLNPCJpOjGwwbbewXbISXpUQP43sSbOsXRdw3Eh4o31ZwXnpowVTehbAWi4CfDxeZNSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=btGulk/3; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3a50fc819f2so2228470f8f.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Jun 2025 17:04:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1749859478; x=1750464278; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=2U1fdQi/S+1uFMty+UwWDfILNhm/sAW3yuSRr+qbPMY=;
+        b=btGulk/39G+Jnp8ofqLyqpqta3cdyeYmtazPjViNtEqjFqWKODSlOKrc4PqR3UyE76
+         hj+0t1EI0P3TXI5eBaKVgiVivI4g05UQ9/TSplzIRBWvgl2gdXgpYdgJxIq0M16jbljS
+         C2KVPrJ+kiugE4K1tJHZcmkIDClZUuxTeM6L5gGfM6wI3hCqeoq3hosruQSXvJMTJIXR
+         hnELKw8FILsZuq9Ff9qMMqks36qMT7VwEvCpaoDyT7VuV+QtxIi5KoUuuWC7aPQRuSi4
+         3oX5ZZgq6mYqAXh48osXb7ove+LU8Yt1uSABky16N6lTBqHswvuA4YBCweLAz6Oz9Vkz
+         jFlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749859478; x=1750464278;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2U1fdQi/S+1uFMty+UwWDfILNhm/sAW3yuSRr+qbPMY=;
+        b=Qq2Fp/UHQrpDGsaRM7v77ks5bQn+LfHblaSBNTPGAZVjWeftXfP49vZ/vtZ4Pr72I9
+         Z49QI8JqfaxldA/way2viK0w0v6v2alBYl6tMgAjUr7AeMHZN7XgBnQbjqvd6ycKxJZQ
+         ZTjf9ShHG8ps/snNrIOqtmAhG0IO/Ru+F6jVtpoJ/YqVh5PIE633Ttgp3UNek234mVV4
+         m/+qoDobq25ZOXtxSscOvXwYtSkQsIi2Z/yWF8sPY4nIXD8q8lpUCGTZizOZf4PrbZ04
+         aptJhGfpGwQiDnx1Y7PILgvVAlikwp2trVB1IHUsJF4FeStcuEHPdCXs/uIaN/ogjuoR
+         rBfQ==
+X-Gm-Message-State: AOJu0YyIOmpBPcKj1NgXMoRC5wb3QQbLeUrTxvwKkrx9Dq6vtP1R+5E+
+	2Y6z6RA1WDTklSy3dToX6YGdGZVwHayJuT0rS/UjUeYuX/oiZauPF7Wik4Pdt21yevw=
+X-Gm-Gg: ASbGncsveQLj3le+aw2P7+eFV9VRmMELJZcARndpC9vfxlF1xzrZfPwaoRi8xKo/qi6
+	123a7dLyOOXM99EqRPauhcDUQZ0+QxCF1d4c0UPEhiP/aZ7Db2WL9z1J2G2BNWbVeCW+7fcnL/u
+	7xJN6iiZ5LDUyUFg9Km+q9VzbuPK1spcJQS89tzqjF/rLQe5w5M1kEDhfRrLtxkyELXhTnCEEWw
+	f0R+DB3sSq7CecZ/fP6JWSW/RwZbKlhPDl927jOvIP3cn6TNgPKr9sJYWjydMC1nXON0Rp4pr1J
+	mwRABgp9s8r9LkLCcbmBZDWW/K9a6UoyfOA531iUxOJtl3ah7KIAOj8XUFvlfHXeLZjxdhr/coB
+	nQ4YwBQnsAyBg6ttEO76POZ+C
+X-Google-Smtp-Source: AGHT+IFmTa6ZLRs6uyFPHQi5wTOeDVb69m8+E0D2x4O4TWBaamvM+z3qtljRpQUw0kzBg1B08uZJyg==
+X-Received: by 2002:a05:6000:1a88:b0:3a4:eeb5:58c0 with SMTP id ffacd0b85a97d-3a5723a43b5mr1662223f8f.20.1749859477793;
+        Fri, 13 Jun 2025 17:04:37 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365de77610sm20518695ad.135.2025.06.13.17.04.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Jun 2025 17:04:37 -0700 (PDT)
+Message-ID: <d06fc615-8d66-4df3-b9ec-9931abc25227@suse.com>
+Date: Sat, 14 Jun 2025 09:34:33 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250605162345.2561026-1-maharmstone@fb.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] btrfs: Convert test_find_delalloc() to use a folio,
+ part two
+From: Qu Wenruo <wqu@suse.com>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>, Chris Mason
+ <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20250613190705.3166969-1-willy@infradead.org>
+ <20250613190705.3166969-3-willy@infradead.org>
+ <375ecc77-7a5f-4baf-a6ec-fc7e8dc02bfb@suse.com>
+Content-Language: en-US
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <375ecc77-7a5f-4baf-a6ec-fc7e8dc02bfb@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jun 05, 2025 at 05:23:30PM +0100, Mark Harmstone wrote:
-> This patch series adds a disk format change gated behind
-> CONFIG_BTRFS_EXPERIMENTAL to add a "remap tree", which acts as a layer of
-> indirection when doing I/O. When doing relocation, rather than fixing up every
-> tree, we instead record the old and new addresses in the remap tree. This should
-> hopefully make things more reliable and flexible, as well as enabling some
-> future changes we'd like to make, such as larger data extents and reducing
-> write amplification by removing cow-only metadata items.
-> 
-> The remap tree lives in a new REMAP chunk type. This is because bootstrapping
-> means that it can't be remapped itself, and has to be relocated by COWing it as
-> at present. It can't go in the SYSTEM chunk as we are then limited by the chunk
-> item needing to fit in the superblock.
-> 
-> For more on the design and rationale, please see my RFC sent last month[1], as
-> well as Josef Bacik's original design document[2]. The main change from Josef's
-> design is that I've added remap backrefs, as we need to be able to move a
-> chunk's existing remaps before remapping it.
-> 
-> You will also need my patches to btrfs-progs[3] to make
-> `mkfs.btrfs -O remap-tree` work, as well as allowing `btrfs check` to recognize
-> the new format.
-> 
-> Changes since the RFC:
-> 
-> * I've reduce the REMAP chunk size from the normal 1GB to 32MB, to match the
->   SYSTEM chunk. For a filesystem with 4KB sectors and 16KB node size, the worst
->   case is that one leaf covers ~1MB of data, and the best case ~250GB. For a
->   chunk, that implies a worst case of ~2GB and a best case of ~500TB.
->   This isn't a disk-format change, so we can always adjust it if it proves too
->   big or small in practice. mkfs creates 8MB chunks, as it does for everything.
-> 
-> * You can't make new allocations from remapped block groups, so I've changed
->   it so there's no free-space entries for these (thanks to Boris Burkov for the
->   suggestion).
-> 
-> * The remap tree doesn't have metadata items in the extent tree (thanks to Josef
->   for the suggestion). This was to work around some corruption that delayed refs
->   were causing, but it also fits it with our future plans of removing all
->   metadata items for COW-only trees, reducing write amplification.
->   A knock-on effect of this is that I've had to disable balancing of the remap
->   chunk itself. This is because we can no longer walk the extent tree, and will
->   have to walk the remap tree instead. When we remove the COW-only metadata
->   items, we will also have to do this for the chunk and root trees, as
->   bootstrapping means they can't be remapped.
-> 
-> * btrfs_translate_remap() uses search_commit_root when doing metadata lookups,
->   to avoid nested locking issues. This also seems to be a lot quicker (btrfs/187
->   went from ~20mins to ~90secs).
-> 
-> * Unused remapped block groups should now get cleaned up more aggressively
-> 
-> * Other miscellaneous cleanups and fixes
-> 
-> Known issues:
-> 
-> * Relocation still needs to be implemented for the remap tree itself (see above)
-> 
-> * Some test failures: btrfs/156, btrfs/170, btrfs/226, btrfs/250
-> 
-> * nodatacow extents aren't safe, as they can race with the relocation thread.
->   We either need to follow the btrfs_inc_nocow_writers() approach, which COWs
->   the extent, or change it so that it blocks here.
-> 
-> * When initially marking a block group as remapped, we are walking the free-
->   space tree and creating the identity remaps all in one transaction. For the
->   worst-case scenario, i.e. a 1GB block group with every other sector allocated
->   (131,072 extents), this can result in transaction times of more than 10 mins.
->   This needs to be changed to allow this to happen over multiple transactions.
-> 
-> * All this is disabled for zoned devices for the time being, as I've not been
->   able to test it. I'm planning to make it compatible with zoned at a later
->   date.
-> 
-> Thanks
 
-This is really great, thanks Mark. I have tried to review the setup
-patches some more, as during the RFC I mostly looked at the "remap
-copying" stuff.
 
-I still owe you more thorough review on the chunk map bit (looks quite
-reasonable to me, though) and the details on the identity remaps going
-away.
-
-With that said, some more high level thoughts:
-
-Do you have a design document for the new structures, new invariants,
-etc..? This is changing some pretty fundamental assumptions about the
-extent tree, free space tree, is introducing double logical mapping,
-etc... Whether it is in the patches that introduce the new on disk
-stuff, or a separate doc patch, I think it is quite critical. Perhaps
-that will primarily live with the progs changes, but I still think some
-thorough exposition in these patches will be good.
-
-Reading all the patches, I found myself a bit concerned about the
-proliferation of special cases for the remapped case that didn't feel
-fully fleshed out or understood. I apologize if they were all carefully
-considered, but just going through the code some of them felt thrown in
-to not have to worry about it. I feel like that incurs non-trivial tech
-debt in the long run and I would really like to avoid it. Each special
-case should be thoroughly reasoned and as elegantly "hidden" as
-possible, IMO. I understand that this is kind of picky and high-level,
-so I also tried to call out the ones where I had a specific reason I felt
-they didn't make sense or the code could be improved to make this
-complaint as concrete as possible.
-
-Performance numbers like you started sharing in your reply would be great.
-In particular, in addition to what you shared, I would like to know:
-1. How badly does it beat regular relocation when lots of backrefs are
-involved? Jack up the snapshots/reflinks and show the scaling. I
-*assume* it should blow the doors off relocation v1 in that case, but I
-want to see it :)
-2. How bad is the overhead on the remapped reads in the happy case in
-practice?
-
-There were concerns (I think from Qu) about this increasing
-file fragmentation by breaking up the remapped allocations down to block
-size. Should we separate that change out? I think slipping that in as an
-incidental side-effect with this is not ideal, as we aren't sure we want
-that. I personally kind of think it is neat and makes relocation more
-robust, but that's just a hunch.
-
-I'd also love to hear what others view as blockers on moving forward with
-this. So far I think we have concerns about:
-- new space info
-- relocating the remap tree itself being needed for full balances but
-  not supported
-- potential read perf issues
-- increased file fragmentation
-- transaction latency issues for the "read all the free space tree holes
-  and write out identity remaps" transaction
-
-and maybe some others I'm forgetting. Which are blockers to landing
-behind EXPERIMENTAL? Which are blockers for moving from EXPERIMENTAL to
-fully legit status? This question is probably more directed at other
-reviewers and the development group at large rather than you, Mark.
-
-Thanks again for your excellent work on this patch series, and I
-earnestly hope we can all start reaping the benefits of this soon!
-
-Boris
-
+在 2025/6/14 09:05, Qu Wenruo 写道:
 > 
-> [1] https://lwn.net/Articles/1021452/
-> [2] https://github.com/btrfs/btrfs-todo/issues/54
-> [3] https://github.com/maharmstone/btrfs-progs/tree/remap-tree
 > 
-> Mark Harmstone (12):
->   btrfs: add definitions and constants for remap-tree
->   btrfs: add REMAP chunk type
->   btrfs: allow remapped chunks to have zero stripes
->   btrfs: remove remapped block groups from the free-space tree
->   btrfs: don't add metadata items for the remap tree to the extent tree
->   btrfs: add extended version of struct block_group_item
->   btrfs: allow mounting filesystems with remap-tree incompat flag
->   btrfs: redirect I/O for remapped block groups
->   btrfs: handle deletions from remapped block group
->   btrfs: handle setting up relocation of block group with remap-tree
->   btrfs: move existing remaps before relocating block group
->   btrfs: replace identity maps with actual remaps when doing relocations
+> 在 2025/6/14 04:37, Matthew Wilcox (Oracle) 写道:
+>> Replace the 'page' variable with 'folio'.  Removes six calls to
+>> compound_head().
+>>
+>> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+>> ---
+>>   fs/btrfs/tests/extent-io-tests.c | 32 +++++++++++++++++---------------
+>>   1 file changed, 17 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent- 
+>> io-tests.c
+>> index 8bdf742d90fd..36720b77b440 100644
+>> --- a/fs/btrfs/tests/extent-io-tests.c
+>> +++ b/fs/btrfs/tests/extent-io-tests.c
+>> @@ -111,7 +111,7 @@ static int test_find_delalloc(u32 sectorsize, u32 
+>> nodesize)
+>>       struct btrfs_root *root = NULL;
+>>       struct inode *inode = NULL;
+>>       struct extent_io_tree *tmp;
+>> -    struct page *page;
+>> +    struct folio *folio;
+>>       struct folio *locked_folio = NULL;
+>>       unsigned long index = 0;
+>>       /* In this test we need at least 2 file extents at its maximum 
+>> size */
+>> @@ -152,23 +152,25 @@ static int test_find_delalloc(u32 sectorsize, 
+>> u32 nodesize)
+>>       btrfs_extent_io_tree_init(NULL, tmp, IO_TREE_SELFTEST);
+>>       /*
+>> -     * First go through and create and mark all of our pages dirty, 
+>> we pin
+>> -     * everything to make sure our pages don't get evicted and screw 
+>> up our
+>> +     * First go through and create and mark all of our folios dirty, 
+>> we pin
+>> +     * everything to make sure our folios don't get evicted and screw 
+>> up our
+>>        * test.
+>>        */
+>>       for (index = 0; index < (total_dirty >> PAGE_SHIFT); index++) {
+>> -        page = find_or_create_page(inode->i_mapping, index, GFP_KERNEL);
+>> -        if (!page) {
+>> -            test_err("failed to allocate test page");
+>> +        folio = __filemap_get_folio(inode->i_mapping, index,
+>> +                FGP_LOCK | FGP_ACCESSED | FGP_CREAT,
+>> +                GFP_KERNEL);
+>> +        if (!folio) {
+>> +            test_err("failed to allocate test folio");
+>>               ret = -ENOMEM;
+>>               goto out;
+>>           }
+>> -        SetPageDirty(page);
+>> +        folio_mark_dirty(folio);
 > 
->  fs/btrfs/Kconfig                |    2 +
->  fs/btrfs/accessors.h            |   29 +
->  fs/btrfs/block-group.c          |  202 +++-
->  fs/btrfs/block-group.h          |   15 +-
->  fs/btrfs/block-rsv.c            |    8 +
->  fs/btrfs/block-rsv.h            |    1 +
->  fs/btrfs/discard.c              |   11 +-
->  fs/btrfs/disk-io.c              |   91 +-
->  fs/btrfs/extent-tree.c          |  152 ++-
->  fs/btrfs/free-space-tree.c      |    4 +-
->  fs/btrfs/free-space-tree.h      |    5 +-
->  fs/btrfs/fs.h                   |    7 +-
->  fs/btrfs/relocation.c           | 1897 ++++++++++++++++++++++++++++++-
->  fs/btrfs/relocation.h           |    8 +-
->  fs/btrfs/space-info.c           |   22 +-
->  fs/btrfs/sysfs.c                |    4 +
->  fs/btrfs/transaction.c          |    7 +
->  fs/btrfs/tree-checker.c         |   37 +-
->  fs/btrfs/volumes.c              |  115 +-
->  fs/btrfs/volumes.h              |   17 +-
->  include/uapi/linux/btrfs.h      |    1 +
->  include/uapi/linux/btrfs_tree.h |   29 +-
->  22 files changed, 2444 insertions(+), 220 deletions(-)
+> Crashing immediately when loading the module.
+> (Need CONFIG_BTRFS_FS_RUN_SANITY_TESTS=y)
 > 
-> -- 
-> 2.49.0
+> [   20.626710] BUG: kernel NULL pointer dereference, address: 
+> 0000000000000000
+
+This is from the a_ops, which is NULL for testing inodes.
+
+So here we should not call folio_mark_dirty(), as it will call 
+dirty_folio() callbacks unconditionally no matter if the mapping has 
+such call backs.
+
+Instead we should call noop_dirty_folio() instead, which is the 
+equivalent of SetPageDirty().
+
+Thanks,
+Qu
+
+> [   20.628812] #PF: supervisor instruction fetch in kernel mode
+> [   20.630648] #PF: error_code(0x0010) - not-present page
+> [   20.632156] PGD 0 P4D 0
+> [   20.632893] Oops: Oops: 0010 [#1] SMP NOPTI
+> [   20.634052] CPU: 6 UID: 0 PID: 622 Comm: insmod Tainted: G OE       
+> 6.16.0-rc1-custom+ #253 PREEMPT(full)
+> [   20.636879] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+> [   20.638321] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 
+> unknown 02/02/2022
+> [   20.640524] RIP: 0010:0x0
+> [   20.641290] Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+> [   20.643075] RSP: 0018:ffffc90001587c88 EFLAGS: 00010246
+> [   20.644519] RAX: ffff88810b144670 RBX: 0000000000000000 RCX: 
+> 0000000000000001
+> [   20.646490] RDX: 0000000000000000 RSI: ffffea0004128200 RDI: 
+> ffff88810b144670
+> [   20.648496] RBP: ffff88810b144500 R08: 0000000000000000 R09: 
+> ffffffff83549b20
+> [   20.650524] R10: 00000000000002c0 R11: 0000000000000000 R12: 
+> 0000000000000000
+> [   20.652642] R13: ffff88810b1443a8 R14: ffffea0004128200 R15: 
+> 0000000000001000
+> [   20.654778] FS:  00007f2e60e99740(0000) GS:ffff8882f45e2000(0000) 
+> knlGS:0000000000000000
+> [   20.657158] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   20.658980] CR2: ffffffffffffffd6 CR3: 00000001040b9000 CR4: 
+> 00000000000006f0
+> [   20.661219] Call Trace:
+> [   20.662057]  <TASK>
+> [   20.662757]  btrfs_test_extent_io+0x17a/0xf40 [btrfs]
+> [   20.664266]  btrfs_run_sanity_tests.cold+0x84/0x11e [btrfs]
+> [   20.665839]  init_btrfs_fs+0x4d/0xb0 [btrfs]
+> [   20.667380]  ? __pfx_init_btrfs_fs+0x10/0x10 [btrfs]
+> [   20.668883]  do_one_initcall+0x76/0x250
+> [   20.670098]  do_init_module+0x62/0x250
+> [   20.671359]  init_module_from_file+0x85/0xc0
+> [   20.672586]  idempotent_init_module+0x148/0x340
+> [   20.673900]  __x64_sys_finit_module+0x6d/0xd0
+> [   20.675074]  do_syscall_64+0x54/0x1d0
+> [   20.676167]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
 > 
+> 
+> Furthermore, the error handling of __filemap_get_folio() is incorrect.
+> That function returns either a valid folio, or an ERR_PTR(), no more NULL.
+> 
+> This applies to all folio calls like filemap_lock_folio() too.
+> 
+> Thanks,
+> Qu
+> 
+>>           if (index) {
+>> -            unlock_page(page);
+>> +            folio_unlock(folio);
+>>           } else {
+>> -            get_page(page);
+>> -            locked_folio = page_folio(page);
+>> +            folio_get(folio);
+>> +            locked_folio = folio;
+>>           }
+>>       }
+>> @@ -283,14 +285,14 @@ static int test_find_delalloc(u32 sectorsize, 
+>> u32 nodesize)
+>>        * Now to test where we run into a page that is no longer dirty 
+>> in the
+>>        * range we want to find.
+>>        */
+>> -    page = find_get_page(inode->i_mapping,
+>> +    folio = filemap_get_folio(inode->i_mapping,
+>>                    (max_bytes + SZ_1M) >> PAGE_SHIFT);
+>> -    if (!page) {
+>> -        test_err("couldn't find our page");
+>> +    if (!folio) {
+>> +        test_err("couldn't find our folio");
+>>           goto out_bits;
+>>       }
+>> -    ClearPageDirty(page);
+>> -    put_page(page);
+>> +    folio_clear_dirty(folio);
+>> +    folio_put(folio);
+>>       /* We unlocked it in the previous test */
+>>       folio_lock(locked_folio);
+> 
+
 
