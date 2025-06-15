@@ -1,251 +1,388 @@
-Return-Path: <linux-btrfs+bounces-14664-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14665-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92647AD9B0B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Jun 2025 09:34:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D069EADA24E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Jun 2025 17:21:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 896B3189D598
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Jun 2025 07:35:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D884F1890940
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Jun 2025 15:21:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD721DDC04;
-	Sat, 14 Jun 2025 07:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55FC7279DDE;
+	Sun, 15 Jun 2025 15:21:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Z6cqSx8D"
+	dkim=pass (2048-bit key) header.d=zadara.com header.i=@zadara.com header.b="dohG8V55"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0F1A2E11D2
-	for <linux-btrfs@vger.kernel.org>; Sat, 14 Jun 2025 07:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E57A1E1C3F
+	for <linux-btrfs@vger.kernel.org>; Sun, 15 Jun 2025 15:21:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749886482; cv=none; b=QtrcGtCjOTLY+8r+vHCHFs1/Lcgfxreo3+qlB7U+nSUcbUqjc0znir90E2sviv5nsCz816O8zFW2PVtshWrH2QwluONKgKcfyTjNJXBC47n+8NwCBt5ua9GVXXjp+yc2YPT08MRwBrCG0YNCZPzwrMxW5L4E7g/MwgnmK9FmOqc=
+	t=1750000886; cv=none; b=YcmJ11x2aApRP00iYoIcapuVcpueTNn/RpWPe2p+s9+2vRLiF1ZJ3hJ4YDHcKRwVV72wg+nQ9NI1gJWw496TaPtgSusuNLTtGqeiTWEoFBoc9a4JXI+dBOwfHd3jot6zOWEnzjaxdMbiC/DdmMKao5MpgJ1kR1ZzY29CHspNKvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749886482; c=relaxed/simple;
-	bh=jolG9XBsa22RpqcL1qxzuIzC66bh4P/JncqvrRDsR9A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=OJovpJQ+oIEYZg1CzrYJHvKSEOPEtxQgh8ARxU8OuXgxNZ/IvmIUDwy7n77bzMiDLmAo+asjDynnZn17M33EajW1kN41On08S+irwzjsTpRPr7k4oEPUwODGuS5E8LkXAOVBlqAPKGtBi/5BTCoQ9NVBpMQsTJ3cVNjAr7omEbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Z6cqSx8D; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1749886478; x=1750491278; i=quwenruo.btrfs@gmx.com;
-	bh=q37aQtkXWryQXbVJ6a7SzQ59SHAl1zbNzPwPWFYcnJM=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=Z6cqSx8D+OUYyyrF89bAa+PMglSUhSj6mCick8g+NeWdTF36O0ykMDyxCLdltBcS
-	 47B//xX6fk/1HdOJEKKlnfx2LoKazHqP/CeSyR1nFVySVe4Q3DUWtBZRTQonplCPO
-	 iPb/cj581dlqHgg/Py8q9j+lROR2W9DZ2c6Rc7amTWjbTDbsDqQYf2sT46pkms+l3
-	 ND8T2UZzhshHnyQKQjYVvNEO3vEtF4ZeDD2pD66s98nGRlOpDr6N0OPeiRtZhiDNW
-	 1yvG8GNomeAeQ0vVbMZ4zbCYZUp9HM0Lhf0L17xUM5DQrPJ/1M3tFpDgCKptwceR7
-	 hFB/S9O4h6FnUK+39w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFbRm-1uamLT1ci6-007Ix2; Sat, 14
- Jun 2025 09:34:37 +0200
-Message-ID: <bc326ef2-9808-4be3-8ccb-2ad7bd3b3db7@gmx.com>
-Date: Sat, 14 Jun 2025 17:04:35 +0930
+	s=arc-20240116; t=1750000886; c=relaxed/simple;
+	bh=+RwxJrS+UW6SDy0E9+8EthTonjxmnWL+iRC0IXhewUg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XZxwyh2HXhpDCi4aIIKzIwU/phsOz2FlVuo+Ab9PlPy6Zwvylydee9fvE9Z3k9hqdhiMyPH5DJ9jknKG+VhOdgIjUUxKkvqW64J8cbCTsdTuK0HM8VPsS/wL1B9wR+Odp+lwm4v97Tg0KLJTapNN4DiYS5W5h9Qpj8siT/i+akk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zadara.com; spf=pass smtp.mailfrom=zadarastorage.com; dkim=pass (2048-bit key) header.d=zadara.com header.i=@zadara.com header.b=dohG8V55; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zadara.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zadarastorage.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-747c2cc3419so2801155b3a.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Jun 2025 08:21:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=zadara.com; s=google; t=1750000883; x=1750605683; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RlEPN2zPXA/yA0tuNT4ear8r5sbBUr6y98MNLRALjwk=;
+        b=dohG8V55+8JAkSGL4znFLC4Jtm1K3S/u9It69yKQp2UeCB1jbeyuwAY+brHVLkne5H
+         1Xl+1x32YY+4Quf/vi0vTjPvWRS7Lxq59o9pwBB5+Jp3P2eoOKQQydNx9AGe0qUPhLWi
+         zOnjh8gU+RS82mvzw/cDjGFDEd1S8TaQlJGPR7nLZL39fYyuw42SURrx/DIlUmGT6oEI
+         ecx7HphatcAw6fZqZ9P7tMZah98c73yKCo8d7wMGQVmxQtXWErAT8FYJZITa+y+wiMON
+         ogMu3DVwmzUPwgm36IkkzPKM7l7wK5RYuo2AI8OVq84VA9mfdpcq4mbgE+M+Jdpi81gl
+         6EcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750000883; x=1750605683;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RlEPN2zPXA/yA0tuNT4ear8r5sbBUr6y98MNLRALjwk=;
+        b=Zcu92y2hn64wv9TXg8JYdOXqWuZjGV/RMgRAlhV/wMjkzAkdm+wpbn1Ra5SdVEvdKv
+         8V+OMh7/m252zAYGcYXSl5gRUerrlCGtCFpWXVMr4d1mF6mgvY309UxCxfv0L+Ejkzss
+         CqBIyUdTMJT2+EBs2m60cI6a96qV3phuHHrSk9m25aIejQ858i3FbaeebfyMS7TxxqYE
+         +p15fDN4w+r1fBhttNmdNZQAwiCgEkR1BQrtYKr5ccwncTWQuDKX6550DUG8tHqSH36F
+         fXEOqELh9Z6o7OKXE7nsoHE0Oq2hEOx6nimmM48HxmJZrHaXkWVdxsd7/IeMM+P8zQDh
+         ZsrQ==
+X-Gm-Message-State: AOJu0YzyJiEarPzeMSNPErc46j4Gi1oQEvc7SvaFBOpyXSxiIikpPiCw
+	fZz7qV6Y/J0iKa69HkjcODMThTLc92k1pOGEY9pLiWZnSmeQ3Z5BIhVn6eCUxASPFTGRjGwpEu3
+	wNB55E/kxpLyw5ZR+dORIcpxL5EUTs8fs26HWf/QZSA==
+X-Gm-Gg: ASbGnctXVHYd9q3p7Jc2CxDL8TJGnHGTbWxMBuqYPcYpa8L4JGXLrupYEJA1Bn6x4iB
+	33Sj0CBWeIsiXx7PV/taH5x9+OdESc/LnuCsJossFddnODhyKYBzz0Alduw2fb81Gfn3W+XVdmw
+	3eWDolvipxF4/b74NJ3pdk7ZHU0GlSFCUBURm1a9jYCMM=
+X-Google-Smtp-Source: AGHT+IGcUapSYTM9rKtBvfKMfywAIc66uUncf9wK9h3ltTpToO0YXkCqKA689lwxmo86wE6V/wlp8eCigLXl7WQSMtQ=
+X-Received: by 2002:a05:6a00:2185:b0:740:6f69:8d94 with SMTP id
+ d2e1a72fcca58-7489cd4987fmr7934851b3a.0.1750000883459; Sun, 15 Jun 2025
+ 08:21:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: simplify btrfs_lookup_inode_extref() by removing
- unused parameters
-To: Sun YangKai <sunk67188@gmail.com>, linux-btrfs@vger.kernel.org
-References: <20250614033920.3874-1-sunk67188@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250614033920.3874-1-sunk67188@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <f64b44109b568df8a12daa8ee21fec172ef9cb26.1723040386.git.josef@toxicpanda.com>
+ <CAOcd+r2r7NJiG-2VMwr51qGxznv9XrgO6_38Qf+J727X57=vig@mail.gmail.com>
+In-Reply-To: <CAOcd+r2r7NJiG-2VMwr51qGxznv9XrgO6_38Qf+J727X57=vig@mail.gmail.com>
+From: Alex Lyakas <alex.lyakas@zadara.com>
+Date: Sun, 15 Jun 2025 18:21:12 +0300
+X-Gm-Features: AX0GCFue2rcaTBgq-BMj6RtZv45UHpevpYifQRzJuLeJCmZugbyAKrgXiaXFl-8
+Message-ID: <CAOcd+r2iS2URrHbaHfFjX2HPL0UG7oAoqjskgUTzapQFFUb0vw@mail.gmail.com>
+Subject: Re: [PATCH][RESEND] btrfs: check delayed refs when we're checking if
+ a ref exists
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, 
+	Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:eK0cDBCjAQlM5k+0tJDhxaIwmqGLqCEG5yeTWto3IsejSljFHmB
- 1jh+W/MkwScmXrgF8TAtxzHf72CJgT0jFesHdUk6M+T/RYuhMKTrcyq+lzuSKu0ZRKhoXuS
- pPUffjjVQg8I4Aaj7OMv+nqOGVtNM40xe2xURxqqpqdwoP/tcXNMneF17XYzDdE62qCX7j1
- zhxdQQNICOSxwfIR1WQ3g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:omG2KN7I/xk=;TK3DTJhuyOGfou8SPj9lCAqxGFl
- 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
- 8oVjyNZQVmFGZr5d
 
+Hi Josef,
 
+> On Wed, Aug 7, 2024 at 5:21=E2=80=AFPM Josef Bacik <josef@toxicpanda.com>=
+ wrote:
+> >
+> > In the patch 78c52d9eb6b7 ("btrfs: check for refs on snapshot delete
+> > resume") I added some code to handle file systems that had been
+> > corrupted by a bug that incorrectly skipped updating the drop progress
+> > key while dropping a snapshot.  This code would check to see if we had
+> > already deleted our reference for a child block, and skip the deletion
+> > if we had already.
+> >
+> > Unfortunately there is a bug, as the check would only check the on-disk
+> > references.  I made an incorrect assumption that blocks in an already
+> > deleted snapshot that was having the deletion resume on mount wouldn't
+> > be modified.
+> >
+> > If we have 2 pending deleted snapshots that share blocks, we can easily
+> > modify the rules for a block.  Take the following example
+> >
+> > subvolume a exists, and subvolume b is a snapshot of subvolume a.  They
+> > share references to block 1.  Block 1 will have 2 full references, one
+> > for subvolume a and one for subvolume b, and it belongs to subvolume a
+> > (btrfs_header_owner(block 1) =3D=3D subvolume a).
+> >
+> > When deleting subvolume a, we will drop our full reference for block 1,
+> > and because we are the owner we will drop our full reference for all of
+> > block 1's children, convert block 1 to FULL BACKREF, and add a shared
+> > reference to all of block 1's children.
+> >
+> > Then we will start the snapshot deletion of subvolume b.  We look up th=
+e
+> > extent info for block 1, which checks delayed refs and tells us that
+> > FULL BACKREF is set, so sets parent to the bytenr of block 1.  However
+> > because this is a resumed snapshot deletion, we call into
+> > check_ref_exists().  Because check_ref_exists() only looks at the disk,
+> > it doesn't find the shared backref for the child of block 1, and thus
+> > returns 0 and we skip deleting the reference for the child of block 1
+> > and continue.  This orphans the child of block 1.
+> >
+> > The fix is to lookup the delayed refs, similar to what we do in
+> > btrfs_lookup_extent_info().  However we only care about whether the
+> > reference exists or not.  If we fail to find our reference on disk, go
+> > look up the bytenr in the delayed refs, and if it exists look for an
+> > existing ref in the delayed ref head.  If that exists then we know we
+> > can delete the reference safely and carry on.  If it doesn't exist we
+> > know we have to skip over this block.
+> >
+> > This bug has existed since I introduced this fix, however requires
+> > having multiple deleted snapshots pending when we unmount.  We noticed
+> > this in production because our shutdown path stops the container on the
+> > system, which deletes a bunch of subvolumes, and then reboots the box.
+> > This gives us plenty of opportunities to hit this issue.  Looking at th=
+e
+> > history we've seen this occasionally in production, but we had a big
+> > spike recently thanks to faster machines getting jobs with multiple
+> > subvolumes in the job.
+> >
+> > Chris Mason wrote a reproducer which does the following
+> >
+> > mount /dev/nvme4n1 /btrfs
+> > btrfs subvol create /btrfs/s1
+> > simoop -E -f 4k -n 200000 -z /btrfs/s1
+> > while(true) ; do
+> >         btrfs subvol snap /btrfs/s1 /btrfs/s2
+> >         simoop -f 4k -n 200000 -r 10 -z /btrfs/s2
+> >         btrfs subvol snap /btrfs/s2 /btrfs/s3
+> >         btrfs balance start -dusage=3D80 /btrfs
+> >         btrfs subvol del /btrfs/s2 /btrfs/s3
+> >         umount /btrfs
+> >         btrfsck /dev/nvme4n1 || exit 1
+> >         mount /dev/nvme4n1 /btrfs
+> > done
+> >
+> > On the second loop this would fail consistently, with my patch it has
+> > been running for hours and hasn't failed.
+> >
+> > I also used dm-log-writes to capture the state of the failure so I coul=
+d
+> > debug the problem.  Using the existing failure case to test my patch
+> > validated that it fixes the problem.
+> >
+> > Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> > Fixes: 78c52d9eb6b7 ("btrfs: check for refs on snapshot delete resume")
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-=E5=9C=A8 2025/6/14 13:09, Sun YangKai =E5=86=99=E9=81=93:
-> The `btrfs_lookup_inode_extref()` function no longer requires transactio=
-n
-> handle, insert length, or COW flag, as the onlycaller now perform a
-> read-only lookup using `trans =3D NULL`, `ins_len =3D 0`, and `cow =3D 0=
-`.
->=20
-> This patch removes the unused parameters from the function signature and
-> call sites, simplifying the interface and clarifying its current usage a=
-s
-> a read-only lookup helper.
->=20
-> No functional changes intended.
->=20
-> Signed-off-by: Sun YangKai <sunk67188@gmail.com>
+I see that this patch is marked as:
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+CC: stable@vger.kernel.org # 5.4+
 
-This function is introduced in the early days where extref feature is=20
-introduced by commit f186373fef00 ("btrfs: extended inode refs").
-Then some cleanup is done in commit 33b98f227111 ("btrfs: cleanup:=20
-removed unused 'btrfs_get_inode_ref_index'"), which removed the only=20
-caller passing trans and other COW specific options.
+However, in kernel 6.6 stable, this patch doesn't appear. Can you
+please comment?
 
 Thanks,
-Qu
+Alex.
 
-> ---
->   fs/btrfs/inode-item.c | 8 +++-----
->   fs/btrfs/inode-item.h | 4 +---
->   fs/btrfs/tree-log.c   | 5 ++---
->   3 files changed, 6 insertions(+), 11 deletions(-)
->=20
-> diff --git a/fs/btrfs/inode-item.c b/fs/btrfs/inode-item.c
-> index a61c3540d67b..a35abe10de64 100644
-> --- a/fs/btrfs/inode-item.c
-> +++ b/fs/btrfs/inode-item.c
-> @@ -79,12 +79,10 @@ struct btrfs_inode_extref *btrfs_find_name_in_ext_ba=
-ckref(
->  =20
->   /* Returns NULL if no extref found */
->   struct btrfs_inode_extref *
-> -btrfs_lookup_inode_extref(struct btrfs_trans_handle *trans,
-> -			  struct btrfs_root *root,
-> +btrfs_lookup_inode_extref(struct btrfs_root *root,
->   			  struct btrfs_path *path,
->   			  const struct fscrypt_str *name,
-> -			  u64 inode_objectid, u64 ref_objectid, int ins_len,
-> -			  int cow)
-> +			  u64 inode_objectid, u64 ref_objectid)
->   {
->   	int ret;
->   	struct btrfs_key key;
-> @@ -93,7 +91,7 @@ btrfs_lookup_inode_extref(struct btrfs_trans_handle *t=
-rans,
->   	key.type =3D BTRFS_INODE_EXTREF_KEY;
->   	key.offset =3D btrfs_extref_hash(ref_objectid, name->name, name->len)=
+
+> > ---
+> > I dropped the ball on this, I've rebased it and I'm re-sending it just =
+to make
+> > sure people know I'm going to merge this.  If there are any questions l=
+et me
+> > know, otherwise I'll push this into our for-next branch tomorrow.
+> >
+> >  fs/btrfs/delayed-ref.c | 67 ++++++++++++++++++++++++++++++++++++++++++
+> >  fs/btrfs/delayed-ref.h |  2 ++
+> >  fs/btrfs/extent-tree.c | 51 ++++++++++++++++++++++++++++----
+> >  3 files changed, 114 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+> > index 2ac9296edccb..06a9e0542d70 100644
+> > --- a/fs/btrfs/delayed-ref.c
+> > +++ b/fs/btrfs/delayed-ref.c
+> > @@ -1134,6 +1134,73 @@ btrfs_find_delayed_ref_head(struct btrfs_delayed=
+_ref_root *delayed_refs, u64 byt
+> >         return find_ref_head(delayed_refs, bytenr, false);
+> >  }
+> >
+> > +static int find_comp(struct btrfs_delayed_ref_node *entry, u64 root, u=
+64 parent)
+> > +{
+> > +       int type =3D parent ? BTRFS_SHARED_BLOCK_REF_KEY : BTRFS_TREE_B=
+LOCK_REF_KEY;
+> > +
+> > +       if (type < entry->type)
+> > +               return -1;
+> > +       if (type > entry->type)
+> > +               return 1;
+> > +
+> > +       if (type =3D=3D BTRFS_TREE_BLOCK_REF_KEY) {
+> > +               if (root < entry->ref_root)
+> > +                       return -1;
+> > +               if (root > entry->ref_root)
+> > +                       return 1;
+> > +       } else {
+> > +               if (parent < entry->parent)
+> > +                       return -1;
+> > +               if (parent > entry->parent)
+> > +                       return 1;
+> > +       }
+> > +       return 0;
+> > +}
+> > +
+> > +/*
+> > + * Check to see if a given root/parent reference is attached to the he=
+ad.  This
+> > + * only checks for BTRFS_ADD_DELAYED_REF references that match, as tha=
+t
+> > + * indicates the reference exists for the given root or parent.  This =
+is for
+> > + * tree blocks only.
+> > + *
+> > + * @head: the head of the bytenr we're searching.
+> > + * @root: the root objectid of the reference if it is a normal referen=
+ce.
+> > + * @parent: the parent if this is a shared backref.
+> > + */
+> > +bool btrfs_find_delayed_tree_ref(struct btrfs_delayed_ref_head *head,
+> > +                                u64 root, u64 parent)
+> > +{
+> > +       struct rb_node *node;
+> > +       bool found =3D false;
+> > +
+> > +       lockdep_assert_held(&head->mutex);
+> > +
+> > +       spin_lock(&head->lock);
+> > +       node =3D head->ref_tree.rb_root.rb_node;
+> > +       while (node) {
+> > +               struct btrfs_delayed_ref_node *entry;
+> > +               int ret;
+> > +
+> > +               entry =3D rb_entry(node, struct btrfs_delayed_ref_node,=
+ ref_node);
+> > +               ret =3D find_comp(entry, root, parent);
+> > +               if (ret < 0) {
+> > +                       node =3D node->rb_left;
+> > +               } else if (ret > 0) {
+> > +                       node =3D node->rb_right;
+> > +               } else {
+> > +                       /*
+> > +                        * We only want to count ADD actions, as drops =
+mean the
+> > +                        * ref doesn't exist.
+> > +                        */
+> > +                       if (entry->action =3D=3D BTRFS_ADD_DELAYED_REF)
+> > +                               found =3D true;
+> > +                       break;
+> > +               }
+> > +       }
+> > +       spin_unlock(&head->lock);
+> > +       return found;
+> > +}
+> > +
+> >  void __cold btrfs_delayed_ref_exit(void)
+> >  {
+> >         kmem_cache_destroy(btrfs_delayed_ref_head_cachep);
+> > diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+> > index ef15e998be03..05f634eb472d 100644
+> > --- a/fs/btrfs/delayed-ref.h
+> > +++ b/fs/btrfs/delayed-ref.h
+> > @@ -389,6 +389,8 @@ void btrfs_dec_delayed_refs_rsv_bg_updates(struct b=
+trfs_fs_info *fs_info);
+> >  int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
+> >                                   enum btrfs_reserve_flush_enum flush);
+> >  bool btrfs_check_space_for_delayed_refs(struct btrfs_fs_info *fs_info)=
 ;
->  =20
-> -	ret =3D btrfs_search_slot(trans, root, &key, path, ins_len, cow);
-> +	ret =3D btrfs_search_slot(NULL, root, &key, path, 0, 0);
->   	if (ret < 0)
->   		return ERR_PTR(ret);
->   	if (ret > 0)
-> diff --git a/fs/btrfs/inode-item.h b/fs/btrfs/inode-item.h
-> index c11b97fdccc4..c57661bdde30 100644
-> --- a/fs/btrfs/inode-item.h
-> +++ b/fs/btrfs/inode-item.h
-> @@ -102,12 +102,10 @@ int btrfs_lookup_inode(struct btrfs_trans_handle *=
-trans,
->   		       struct btrfs_key *location, int mod);
->  =20
->   struct btrfs_inode_extref *btrfs_lookup_inode_extref(
-> -			  struct btrfs_trans_handle *trans,
->   			  struct btrfs_root *root,
->   			  struct btrfs_path *path,
->   			  const struct fscrypt_str *name,
-> -			  u64 inode_objectid, u64 ref_objectid, int ins_len,
-> -			  int cow);
-> +			  u64 inode_objectid, u64 ref_objectid);
->  =20
->   struct btrfs_inode_ref *btrfs_find_name_in_backref(const struct extent=
-_buffer *leaf,
->   						   int slot,
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 97e933113b82..66fff2bc60f3 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -1125,9 +1125,8 @@ static inline int __add_inode_ref(struct btrfs_tra=
-ns_handle *trans,
->   	btrfs_release_path(path);
->  =20
->   	/* Same search but for extended refs */
-> -	extref =3D btrfs_lookup_inode_extref(NULL, root, path, name,
-> -					   inode_objectid, parent_objectid, 0,
-> -					   0);
-> +	extref =3D btrfs_lookup_inode_extref(root, path, name,
-> +					   inode_objectid, parent_objectid);
->   	if (IS_ERR(extref)) {
->   		return PTR_ERR(extref);
->   	} else if (extref) {
-
+> > +bool btrfs_find_delayed_tree_ref(struct btrfs_delayed_ref_head *head,
+> > +                                u64 root, u64 parent);
+> >
+> >  static inline u64 btrfs_delayed_ref_owner(struct btrfs_delayed_ref_nod=
+e *node)
+> >  {
+> > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> > index ff9f0d41987e..feec49e6f9c8 100644
+> > --- a/fs/btrfs/extent-tree.c
+> > +++ b/fs/btrfs/extent-tree.c
+> > @@ -5472,23 +5472,62 @@ static int check_ref_exists(struct btrfs_trans_=
+handle *trans,
+> >                             struct btrfs_root *root, u64 bytenr, u64 pa=
+rent,
+> >                             int level)
+> >  {
+> > +       struct btrfs_delayed_ref_root *delayed_refs;
+> > +       struct btrfs_delayed_ref_head *head;
+> >         struct btrfs_path *path;
+> >         struct btrfs_extent_inline_ref *iref;
+> >         int ret;
+> > +       bool exists =3D false;
+> >
+> >         path =3D btrfs_alloc_path();
+> >         if (!path)
+> >                 return -ENOMEM;
+> > -
+> > +again:
+> >         ret =3D lookup_extent_backref(trans, path, &iref, bytenr,
+> >                                     root->fs_info->nodesize, parent,
+> >                                     btrfs_root_id(root), level, 0);
+> > +       if (ret !=3D -ENOENT) {
+> > +               /*
+> > +                * If we get 0 then we found our reference, return 1, e=
+lse
+> > +                * return the error if it's not -ENOENT;
+> > +                */
+> > +               btrfs_free_path(path);
+> > +               return (ret < 0 ) ? ret : 1;
+> > +       }
+> > +
+> > +       /*
+> > +        * We could have a delayed ref with this reference, so look it =
+up while
+> > +        * we're holding the path open to make sure we don't race with =
+the
+> > +        * delayed ref running.
+> > +        */
+> > +       delayed_refs =3D &trans->transaction->delayed_refs;
+> > +       spin_lock(&delayed_refs->lock);
+> > +       head =3D btrfs_find_delayed_ref_head(delayed_refs, bytenr);
+> > +       if (!head)
+> > +               goto out;
+> > +       if (!mutex_trylock(&head->mutex)) {
+> > +               /*
+> > +                * We're contended, means that the delayed ref is runni=
+ng, get a
+> > +                * reference and wait for the ref head to be complete a=
+nd then
+> > +                * try again.
+> > +                */
+> > +               refcount_inc(&head->refs);
+> > +               spin_unlock(&delayed_refs->lock);
+> > +
+> > +               btrfs_release_path(path);
+> > +
+> > +               mutex_lock(&head->mutex);
+> > +               mutex_unlock(&head->mutex);
+> > +               btrfs_put_delayed_ref_head(head);
+> > +               goto again;
+> > +       }
+> > +
+> > +       exists =3D btrfs_find_delayed_tree_ref(head, root->root_key.obj=
+ectid, parent);
+> > +       mutex_unlock(&head->mutex);
+> > +out:
+> > +       spin_unlock(&delayed_refs->lock);
+> >         btrfs_free_path(path);
+> > -       if (ret =3D=3D -ENOENT)
+> > -               return 0;
+> > -       if (ret < 0)
+> > -               return ret;
+> > -       return 1;
+> > +       return exists ? 1 : 0;
+> >  }
+> >
+> >  /*
+> > --
+> > 2.43.0
+> >
+> >
 
