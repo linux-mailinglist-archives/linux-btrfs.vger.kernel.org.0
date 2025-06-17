@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-14731-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14732-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4CE3ADD60F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 18:29:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B914ADD5D6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 18:26:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9D012C5A3C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 16:19:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33EC4400085
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 16:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D422F3626;
-	Tue, 17 Jun 2025 16:13:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41B02EE260;
+	Tue, 17 Jun 2025 16:13:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SXa9cxvS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OhTpaMK6"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F432F3625
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 16:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E34F92F3639
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 16:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750176794; cv=none; b=KfBIvm1J/PcS7eUVCCetd2FoSrACgBSiueZFwb6m+EtCJfc0YkSSZQRMaWfuos6K6jlsBlajeccfHhQjSYidNQNLoooI/jx0MvpncugGMFPQ0ux11bVQ+VRzJaxxr9zmnydlsdyAy1r4uZPH4qeue6lnqT6ChW7nnRl0RyX9TVY=
+	t=1750176795; cv=none; b=ISMo0naTW2JokQS/cvKnYUsi8jjKdHEK6eJmcqxCNpOzEahmf1tjR7nk1bdaHPN9JoVMrxYrB+TWOrejjufXH1F75dDCX8VZyLqSbEZA5uUB1mzmEFQ2n/rnO7fYo30FyFMJyvEkHgTFEBMCdW/9Y0ZnpeG3r1O4kzIrNLMTnc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750176794; c=relaxed/simple;
-	bh=qxl3Lt4v0CHsyCWuY3LdmCvuhtI/0kh065tlUY7KsMk=;
+	s=arc-20240116; t=1750176795; c=relaxed/simple;
+	bh=MszGsIcsIQct+dunysEiEbp184/0v0AbJsuiwbdYcm4=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OEyzG6+7AXIOBP6I+RD/jAF516QKiKqHg48Rtb93icIK6Yv4TDLClTgfoasBGj5T9fGP9ZttoLAxWz6XDeY4r84R8l2hv8sJcc2e2RlPjOar9a5rV5RLeV6o5RNIG9vAFpBda5arXSEyiKACzZjo5cdDWSFuren27RGhNFD+h8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SXa9cxvS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2889AC4CEE3
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 16:13:12 +0000 (UTC)
+	 MIME-Version; b=QYfXlwnSHeofoHhEDgRHRRdNw9BffRi6iv4CFXP3P5fYQibWRu5LPQOOyrXmMmTbGpkjmSRxrYxF5FMs/ldrqRTNtxIGppwk73TAqWkTpJKLOCLHA6pXIqxs9LPcK/Gpb04OVcWPukPFQKEwpWqSkcTD3JQMKVm7/A8I3DU36hU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OhTpaMK6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C2FAC4CEE7
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 16:13:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750176793;
-	bh=qxl3Lt4v0CHsyCWuY3LdmCvuhtI/0kh065tlUY7KsMk=;
+	s=k20201202; t=1750176794;
+	bh=MszGsIcsIQct+dunysEiEbp184/0v0AbJsuiwbdYcm4=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=SXa9cxvSghJKbMvfEzb8B/ORJXxrxKIeaXwDLzx4niYe9EUTaOvVi3k1MdzqSlxtV
-	 yhtfncqt70zX5WWqfzIS91LyYoKx5ARlJAkkitv5l3jSp8N3LNZvcpRt36lVmEV2u6
-	 w+If2F6xX53QcfQmwg8DvcP947SZAsFqMFUqb2N5HDONjsVY4L2hTYrbYPfZpAf83Y
-	 Mj2HhvZysNIA6zq3GC5S1ZhSOmP1AeIerefvonpaRby9Y74in3bvt6aBOLTCp0ffEb
-	 ASgw740nrEB37c9jC/5ct/QzkqrC3St+WXhNysQj4jNpr4LPseUrqPTd+Il71gjMrt
-	 HyPdHiBgHdEjw==
+	b=OhTpaMK6miqRGJPUlhEwjJBxydwfZBI/1a64hNWuxu2Faa5D3IwFR34e9slCFal12
+	 o8RXkFzTaXIyicyzq2NdUMqhlqxC0UtBBM/qfs3mSg8EzPIt/lYo7LVK/PnUAcwU08
+	 SOnlo0K7vaTbvQyDhCAOlpX0r3PjWyRU36zysu8RkBDUS7uM2OSqtsPkDSlIEK5M1+
+	 ALe+OZffOn6b1x4A7AMoh7hDlsgvhpgoAfGH3xIXtz88c61ruZBWho5YbHOtDNhR7N
+	 81dqqS19xgZRp8R6f0h/ZfaD0mw10A7yAORpUh4PdIVv14ZUt150781l6XtAjle4AF
+	 oMnr/E+eyb+Lw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 02/16] btrfs: remove pointless out label from update_free_space_extent_count()
-Date: Tue, 17 Jun 2025 17:12:57 +0100
-Message-ID: <44c3fb3b1c25b4aeab82595f6d64460e2aa76b2d.1750075579.git.fdmanana@suse.com>
+Subject: [PATCH 03/16] btrfs: make extent_buffer_test_bit() return a boolean instead
+Date: Tue, 17 Jun 2025 17:12:58 +0100
+Message-ID: <3b31cb90b9170b14931c0f4500069eb6e5709096.1750075579.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1750075579.git.fdmanana@suse.com>
 References: <cover.1750075579.git.fdmanana@suse.com>
@@ -59,39 +59,93 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Just return directly, we don't need the label since all we do under it is
-to return.
+All the callers want is to determine if a bit is set and all of them call
+the function and do a double negation (!!) on its result to get a boolean.
+So change it to return a boolean and simplify callers.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/free-space-tree.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ fs/btrfs/extent_io.c             |  4 ++--
+ fs/btrfs/extent_io.h             |  4 ++--
+ fs/btrfs/free-space-tree.c       |  2 +-
+ fs/btrfs/tests/extent-io-tests.c | 14 +++++++-------
+ 4 files changed, 12 insertions(+), 12 deletions(-)
 
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index e9ba80a56172..c7811fe493f3 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4108,8 +4108,8 @@ static inline void eb_bitmap_offset(const struct extent_buffer *eb,
+  * @start:  offset of the bitmap item in the extent buffer
+  * @nr:     bit number to test
+  */
+-int extent_buffer_test_bit(const struct extent_buffer *eb, unsigned long start,
+-			   unsigned long nr)
++bool extent_buffer_test_bit(const struct extent_buffer *eb, unsigned long start,
++			    unsigned long nr)
+ {
+ 	unsigned long i;
+ 	size_t offset;
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 65bb87f1dce6..61130786b9a3 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -345,8 +345,8 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
+ 			   unsigned long len);
+ void memzero_extent_buffer(const struct extent_buffer *eb, unsigned long start,
+ 			   unsigned long len);
+-int extent_buffer_test_bit(const struct extent_buffer *eb, unsigned long start,
+-			   unsigned long pos);
++bool extent_buffer_test_bit(const struct extent_buffer *eb, unsigned long start,
++			    unsigned long pos);
+ void extent_buffer_bitmap_set(const struct extent_buffer *eb, unsigned long start,
+ 			      unsigned long pos, unsigned long len);
+ void extent_buffer_bitmap_clear(const struct extent_buffer *eb,
 diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index 6418b3b5d16a..29fada10158c 100644
+index 29fada10158c..b24c23312892 100644
 --- a/fs/btrfs/free-space-tree.c
 +++ b/fs/btrfs/free-space-tree.c
-@@ -491,10 +491,9 @@ static int update_free_space_extent_count(struct btrfs_trans_handle *trans,
- 		return 0;
- 
- 	info = search_free_space_info(trans, block_group, path, 1);
--	if (IS_ERR(info)) {
--		ret = PTR_ERR(info);
--		goto out;
--	}
-+	if (IS_ERR(info))
-+		return PTR_ERR(info);
-+
- 	flags = btrfs_free_space_flags(path->nodes[0], info);
- 	extent_count = btrfs_free_space_extent_count(path->nodes[0], info);
- 
-@@ -510,7 +509,6 @@ static int update_free_space_extent_count(struct btrfs_trans_handle *trans,
- 		ret = convert_free_space_to_extents(trans, block_group, path);
- 	}
- 
--out:
- 	return ret;
+@@ -532,7 +532,7 @@ int free_space_test_bit(struct btrfs_block_group *block_group,
+ 	ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
+ 	i = div_u64(offset - found_start,
+ 		    block_group->fs_info->sectorsize);
+-	return !!extent_buffer_test_bit(leaf, ptr, i);
++	return extent_buffer_test_bit(leaf, ptr, i);
  }
+ 
+ static void free_space_set_bits(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
+index 00da54f0164c..d2a6f769fd76 100644
+--- a/fs/btrfs/tests/extent-io-tests.c
++++ b/fs/btrfs/tests/extent-io-tests.c
+@@ -343,11 +343,11 @@ static int check_eb_bitmap(unsigned long *bitmap, struct extent_buffer *eb)
+ 	unsigned long i;
+ 
+ 	for (i = 0; i < eb->len * BITS_PER_BYTE; i++) {
+-		int bit, bit1;
++		bool bit_set, bit1_set;
+ 
+-		bit = !!test_bit(i, bitmap);
+-		bit1 = !!extent_buffer_test_bit(eb, 0, i);
+-		if (bit1 != bit) {
++		bit_set = test_bit(i, bitmap);
++		bit1_set = extent_buffer_test_bit(eb, 0, i);
++		if (bit1_set != bit_set) {
+ 			u8 has;
+ 			u8 expect;
+ 
+@@ -360,9 +360,9 @@ static int check_eb_bitmap(unsigned long *bitmap, struct extent_buffer *eb)
+ 			return -EINVAL;
+ 		}
+ 
+-		bit1 = !!extent_buffer_test_bit(eb, i / BITS_PER_BYTE,
+-						i % BITS_PER_BYTE);
+-		if (bit1 != bit) {
++		bit1_set = extent_buffer_test_bit(eb, i / BITS_PER_BYTE,
++						  i % BITS_PER_BYTE);
++		if (bit1_set != bit_set) {
+ 			u8 has;
+ 			u8 expect;
  
 -- 
 2.47.2
