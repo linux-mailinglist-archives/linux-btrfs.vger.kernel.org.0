@@ -1,60 +1,95 @@
-Return-Path: <linux-btrfs+bounces-14752-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14753-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 328C4ADDD6D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 22:48:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB5B6ADDE1E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 23:39:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B44DF171F31
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 20:48:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53E4517E27E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 21:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6E1132103;
-	Tue, 17 Jun 2025 20:48:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89BB2F5313;
+	Tue, 17 Jun 2025 21:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lgSJ0lqk"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="TzEL7xjw";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="B5vcklUr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9578C1E9B3A;
-	Tue, 17 Jun 2025 20:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78B9F2F5308
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 21:39:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750193306; cv=none; b=ah42a+SQjY+6JuBWs58wtPRVhap612/wU7g0O7NM13PCSmVhPCfliKgB8E+zAyfIPDFZQThnwEW0QYFp5J8kqKoVbaOTYsi25EfPcDGceWSk6dJVZnplfzO6eosB7r41XV89Dekiz7Td9iBSH21vX9SdmloY5KU1CGftvjC01cA=
+	t=1750196376; cv=none; b=g8iJzAcgl+5AnU+q5GCxUxocutTtDbk8Q8FnFC0myGozD3/xEGIaBcHrLwSbGyggrG2pZXHLQK/D6cEd3U1cDkt/SHKQ0iajfxhZqiSFTEreSH6C7ob0TQCyt6Xd9ZUjwPpzT7tZb8qAx9gcg1dd04kRW7HaPui0k3Nxm9ahLNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750193306; c=relaxed/simple;
-	bh=Wec92PgEyyyypFkgDUUa/r5kvbTpPe84rjzT+I7CgGo=;
+	s=arc-20240116; t=1750196376; c=relaxed/simple;
+	bh=iR7X+CUpeZfliEj/+1mqk08bEJKLfTsQ68ODpAB8SbI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cyzwj34IFGAjp6uXtaHDDnTvrpmbN/Hsg4XFiR/9Lm/DFZ+pZJDEFhfwM86vgb7KEtzGB2NZOTiMR2aZmRJ8x4mBpPBIMOqxezLS5t5p6myRd9imo4vBmvJAITUwAlaHleCEVGk2y6LyENzINRRJlFzfzfjeyYN6Y0N2qM8lcWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lgSJ0lqk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9BCBC4CEE3;
-	Tue, 17 Jun 2025 20:48:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750193306;
-	bh=Wec92PgEyyyypFkgDUUa/r5kvbTpPe84rjzT+I7CgGo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lgSJ0lqkBuEtJ1chPa4W9jPDllq9N2AjyD4mbN6tSXLughX0fEeaTftNIVJ7kk8V3
-	 /ysj3OU0qgCaaTI8DuPOPGE7odUV0cnfCcAV+ZrZGRrSOSDIINlL5GA9mmBmvYhHQ6
-	 td2nB3wliud1qlR4G99+QEBTcckMpp9R158DXC5g1dB6frhMZIT2LzoUhORQXaUdZw
-	 ZFHq1LG2aeKAiLjhWR7DvJxi8EdSTD1BGzX8brKAGjDjs687TwfJuX5VzYrm3GnR+/
-	 mjQyMVemT+6KVcdEsqlS7yzkKx4Fg7miyt0XB4/yQkh2RnMC99te7eKP3Q1DN9l58A
-	 42bQUpgocBj8Q==
-Date: Tue, 17 Jun 2025 13:47:56 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: David Sterba <dsterba@suse.cz>
-Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	Ard Biesheuvel <ardb@kernel.org>, linux-btrfs@vger.kernel.org,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 2/2] crypto/crc32[c]: register only "-lib" drivers
-Message-ID: <20250617204756.GD1288@sol>
-References: <20250613183753.31864-1-ebiggers@kernel.org>
- <20250613183753.31864-3-ebiggers@kernel.org>
- <20250617201748.GE4037@suse.cz>
- <20250617202050.GB1288@sol>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YyQpF9Lk17C8qM7HjO9U+VG/wl/tckjLXN+CUJG9mip9pkBX6ZOEyMWLdG1KW+kcFNHPo6kcmU43koe6bS9ESKbxnZbqq4us8q8HaIXZXZ+2XJDU2hrXDza6Ms/Aa6ph3MuT893vPGJUVVsnHNm/qbLzwZG6l/uFPNKtdQJS+Yo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=TzEL7xjw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=B5vcklUr; arc=none smtp.client-ip=202.12.124.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 6ABF0254009D;
+	Tue, 17 Jun 2025 17:39:33 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-03.internal (MEProxy); Tue, 17 Jun 2025 17:39:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1750196373; x=1750282773; bh=+l3RDQbX2k
+	KAOuAR8mu+HQxBy9OU40KHbAiO4rL++qw=; b=TzEL7xjwinpWZkS1QieGOOJVQy
+	VeKL5+s9NmufbPiAeCFacgVfPGUcrP+almgGDYBNTzLka2skYsW02dEi3VHwvLYh
+	3fZulCrkXtKbkzTREKoeaFynsJrs4WldLtP/s1XIQ3R/nyNwvKRhaDsuK0lFVdRJ
+	uzvIikn7XWgMPyaYV8fDRuwk0if5FvPhMhaGRWLeR0TyAXhi3BdZz5hUMvkenNbQ
+	HNj8s6bWRl8uG/joIRjC6MooNrzBotrm9b9lo8Tb9VjtAYu/2cX7XTa3JH/e6du6
+	OvVRAizVAg4zdtbhXGGnx3gJARDAthca2VKQONot0lrWBgVekUQCey8TmHgg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1750196373; x=1750282773; bh=+l3RDQbX2kKAOuAR8mu+HQxBy9OU40KHbAi
+	O4rL++qw=; b=B5vcklUr1WR2uB2rOZmhhFDrEh0Y2ZSFUBpZgX6KEgvtUCosn5P
+	OiMnSlCiaCx9Qfcky0G3GG+k32nepEfbsk0egdOyHk+SZlvEWQnIKNGmHjpzjNQ2
+	0f8aVuXY0FKEvD5DnluyYgLHFAbouclbSkTWSXWxqzLLJ6ECjzGn3dPsEAjgSOIR
+	+GWxwRmNU4+EeIetJjFi3mOXVV7mc11+MtRZ49mnx4mlyzMtrPVynimGaY3reLzv
+	pG4HkqhiedKKAXuYroYczC62tYq89FuBkn+Sdzr3OfyRzExQlEuisWgbWTGFlJ95
+	FxxxBM5zY+pUs4VDcr8DWmH/0yWFAjXoAsQ==
+X-ME-Sender: <xms:leBRaNDb2Lmns57iZemZBERS8STAC7ObrX0WzJ7KmB8kabPosFOKjg>
+    <xme:leBRaLiTiEInVC2R1cSvKAJ_yOkbXIm8XRpEzma5nuPbzSiYJQfH8LCgRMe6ACa5X
+    kqmocTh81_GTJiPRUU>
+X-ME-Received: <xmr:leBRaImN3r0kx7UcpQe3wpoh_-AJnSkF_nR_KHD-5Mw1HkVD57TTxUnvdem3IgZmbNY8sStq66oH-A6ql9iawFk8fnM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgdduvdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvve
+    fukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcu
+    oegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepkedvkeffjeellefhve
+    ehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsg
+    gprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehfughmrghn
+    rghnrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvh
+    hgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:leBRaHzFGlhVK3KjsuZnxCLvuvMvrWwZHayOZMh3pjlAAbPDpSq3pw>
+    <xmx:leBRaCRCZ2NyjWfLUeVRILFPQUjhIUUzbDJ-ommzoD2eqm_GDVvs3w>
+    <xmx:leBRaKYdesruhkTsjM7vcvz9t4YA26jLcjVh1adpPD_g8a-CpyoVAg>
+    <xmx:leBRaDRVR6jYqZtbT-MN_M1JAV3HNuLmv_7cnm16Ja3ZGqXUMK7-vg>
+    <xmx:leBRaF9oy-R8FTDnWmFO4z3BnF6Lfm1IowLV8diEItHTsY-Sk04pyfH2>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 17 Jun 2025 17:39:32 -0400 (EDT)
+Date: Tue, 17 Jun 2025 14:41:11 -0700
+From: Boris Burkov <boris@bur.io>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 15/16] btrfs: add and use helper to determine if using
+ bitmaps in free space tree
+Message-ID: <20250617214111.GA2330659@zen.localdomain>
+References: <cover.1750075579.git.fdmanana@suse.com>
+ <3a6d4004a9bda4c4596d559c7c43b98e74151f11.1750075579.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -63,62 +98,120 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250617202050.GB1288@sol>
+In-Reply-To: <3a6d4004a9bda4c4596d559c7c43b98e74151f11.1750075579.git.fdmanana@suse.com>
 
-On Tue, Jun 17, 2025 at 01:20:50PM -0700, Eric Biggers wrote:
-> On Tue, Jun 17, 2025 at 10:17:48PM +0200, David Sterba wrote:
-> > On Fri, Jun 13, 2025 at 11:37:53AM -0700, Eric Biggers wrote:
-> > > From: Eric Biggers <ebiggers@google.com>
-> > > 
-> > > For the "crc32" and "crc32c" shash algorithms, instead of registering
-> > > "*-generic" drivers as well as conditionally registering "*-$(ARCH)"
-> > > drivers, instead just register "*-lib" drivers.  These just use the
-> > > regular library functions crc32_le() and crc32c(), so they just do the
-> > > right thing and are fully accelerated when supported by the CPU.
-> > > 
-> > > This eliminates the need for the CRC library to export crc32_le_base()
-> > > and crc32c_base().  Separate patches make those static functions.
-> > > 
-> > > Since this patch removes the "crc32-generic" and "crc32c-generic" driver
-> > > names which crypto/testmgr.c expects to exist, update crypto/testmgr.c
-> > > accordingly.  This does mean that crypto/testmgr.c will no longer
-> > > fuzz-test the "generic" implementation against the "arch" implementation
-> > > for crc32 and crc32c, but this was redundant with crc_kunit anyway.
-> > > 
-> > > Besides the above, and btrfs_init_csum_hash() which the previous patch
-> > > fixed, no code appears to have been relying on the "crc32-generic" or
-> > > "crc32c-generic" driver names specifically.
-> > > 
-> > > btrfs does export the checksum driver name in
-> > > /sys/fs/btrfs/$uuid/checksum.  This patch makes that file contain
-> > > "crc32c-lib" instead of "crc32c-generic" or "crc32c-$(ARCH)".  This
-> > > should be fine, since in practice the purpose of this file seems to have
-> > > been just to allow users to manually check whether they needed to enable
-> > > the optimized CRC32C code.  This was needed only because of the bug in
-> > > old kernels where the optimized CRC32C code defaulted to off and even
-> > > needed to be explicitly added to the ramdisk to be used.  Now that it
-> > > just works in Linux 6.14 and later, there's no need for users to take
-> > > any action and this file is basically obsolete.
-> > 
-> > Well, not the whole file, because it says which checksumming algo is
-> > used for the filesystem, but the implementation part is.
+On Tue, Jun 17, 2025 at 05:13:10PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Oh, right.  It's one of those sysfs files that don't follow the normal sysfs
-> convention and contain multiple values.  I'll update the paragraph above to
-> clarify that it's referring to the driver name part of the file.
+> When adding and removing free space to the free space tree, we need to
+> lookup the respective block group's free info item in the free space tree,
+> check its flags for the BTRFS_FREE_SPACE_USING_BITMAPS bit and then
+> release the path.
+> 
+> Move these steps into a helper function and use it in both sites.
+> This will also help avoiding duplicate code in a subsequent change.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/free-space-tree.c | 50 ++++++++++++++++++++------------------
+>  1 file changed, 26 insertions(+), 24 deletions(-)
+> 
+> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+> index c85ca7ce2683..3c8bb95fa044 100644
+> --- a/fs/btrfs/free-space-tree.c
+> +++ b/fs/btrfs/free-space-tree.c
+> @@ -791,32 +791,40 @@ static int remove_free_space_extent(struct btrfs_trans_handle *trans,
+>  	return update_free_space_extent_count(trans, block_group, path, new_extents);
+>  }
+>  
+> +static int use_bitmaps(struct btrfs_block_group *bg, struct btrfs_path *path)
 
-I revised it to:
+I think 'using_bitmaps' makes more sense, given the name of the flag.
+Ditto for the next patch and the caching variables.
 
-btrfs does export the checksum name and checksum driver name in
-/sys/fs/btrfs/$uuid/checksum.  This commit makes the driver name portion
-of that file contain "crc32c-lib" instead of "crc32c-generic" or
-"crc32c-$(ARCH)".  This should be fine, since in practice the purpose of
-the driver name portion of this file seems to have been just to allow
-users to manually check whether they needed to enable the optimized
-CRC32C code.  This was needed only because of the bug in old kernels
-where the optimized CRC32C code defaulted to off and even needed to be
-explicitly added to the ramdisk to be used.  Now that it just works in
-Linux 6.14 and later, there's no need for users to take any action and
-the driver name portion of this is basically obsolete.  (Also, note that
-the crc32c driver name already changed in 6.14.)
+> +{
+> +	struct btrfs_free_space_info *info;
+> +	u32 flags;
+> +
+> +	info = btrfs_search_free_space_info(NULL, bg, path, 0);
+> +	if (IS_ERR(info))
+> +		return PTR_ERR(info);
+> +	flags = btrfs_free_space_flags(path->nodes[0], info);
+> +	btrfs_release_path(path);
+> +
+> +	return (flags & BTRFS_FREE_SPACE_USING_BITMAPS) ? 1 : 0;
+> +}
+> +
+>  EXPORT_FOR_TESTS
+>  int __btrfs_remove_from_free_space_tree(struct btrfs_trans_handle *trans,
+>  					struct btrfs_block_group *block_group,
+>  					struct btrfs_path *path, u64 start, u64 size)
+>  {
+> -	struct btrfs_free_space_info *info;
+> -	u32 flags;
+>  	int ret;
+>  
+>  	ret = __add_block_group_free_space(trans, block_group, path);
+>  	if (ret)
+>  		return ret;
+>  
+> -	info = btrfs_search_free_space_info(NULL, block_group, path, 0);
+> -	if (IS_ERR(info))
+> -		return PTR_ERR(info);
+> -	flags = btrfs_free_space_flags(path->nodes[0], info);
+> -	btrfs_release_path(path);
+> +	ret = use_bitmaps(block_group, path);
+> +	if (ret < 0)
+> +		return ret;
+>  
+> -	if (flags & BTRFS_FREE_SPACE_USING_BITMAPS) {
+> +	if (ret)
+>  		return modify_free_space_bitmap(trans, block_group, path,
+>  						start, size, true);
+> -	} else {
+> -		return remove_free_space_extent(trans, block_group, path,
+> -						start, size);
+> -	}
+> +
+> +	return remove_free_space_extent(trans, block_group, path, start, size);
+>  }
+>  
+>  int btrfs_remove_from_free_space_tree(struct btrfs_trans_handle *trans,
+> @@ -984,27 +992,21 @@ int __btrfs_add_to_free_space_tree(struct btrfs_trans_handle *trans,
+>  				   struct btrfs_block_group *block_group,
+>  				   struct btrfs_path *path, u64 start, u64 size)
+>  {
+> -	struct btrfs_free_space_info *info;
+> -	u32 flags;
+>  	int ret;
+>  
+>  	ret = __add_block_group_free_space(trans, block_group, path);
+>  	if (ret)
+>  		return ret;
+>  
+> -	info = btrfs_search_free_space_info(NULL, block_group, path, 0);
+> -	if (IS_ERR(info))
+> -		return PTR_ERR(info);
+> -	flags = btrfs_free_space_flags(path->nodes[0], info);
+> -	btrfs_release_path(path);
+> +	ret = use_bitmaps(block_group, path);
+> +	if (ret < 0)
+> +		return ret;
+>  
+> -	if (flags & BTRFS_FREE_SPACE_USING_BITMAPS) {
+> +	if (ret)
+>  		return modify_free_space_bitmap(trans, block_group, path,
+>  						start, size, false);
+> -	} else {
+> -		return add_free_space_extent(trans, block_group, path, start,
+> -					     size);
+> -	}
+> +
+> +	return add_free_space_extent(trans, block_group, path, start, size);
+>  }
+>  
+>  int btrfs_add_to_free_space_tree(struct btrfs_trans_handle *trans,
+> -- 
+> 2.47.2
+> 
 
