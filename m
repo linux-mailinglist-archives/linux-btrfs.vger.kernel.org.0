@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-14732-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14733-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B914ADD5D6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 18:26:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE3BDADD5D4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 18:26:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33EC4400085
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 16:18:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B716540022B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 16:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41B02EE260;
-	Tue, 17 Jun 2025 16:13:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A902EE26D;
+	Tue, 17 Jun 2025 16:13:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OhTpaMK6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L4Ny/ULd"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E34F92F3639
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 16:13:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1182EE264
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 16:13:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750176795; cv=none; b=ISMo0naTW2JokQS/cvKnYUsi8jjKdHEK6eJmcqxCNpOzEahmf1tjR7nk1bdaHPN9JoVMrxYrB+TWOrejjufXH1F75dDCX8VZyLqSbEZA5uUB1mzmEFQ2n/rnO7fYo30FyFMJyvEkHgTFEBMCdW/9Y0ZnpeG3r1O4kzIrNLMTnc4=
+	t=1750176795; cv=none; b=BIJzq9kqqPoKKjULeeqJsPu9+S7wPe3/EHAlw+EHFOyOGPgjLW+XjnLClf5+9XEqkO77U3c5BZMwxqd+8+k22p3RNTBO9kTWTvyU7GQeAQvQ4ybHQkweKmGx6w8Rjsu8uEzZkZdmoR5CTfWosyx8mnMebuUVD0m69mgUQ44ptPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1750176795; c=relaxed/simple;
-	bh=MszGsIcsIQct+dunysEiEbp184/0v0AbJsuiwbdYcm4=;
+	bh=E/I0Gb8hJryIOmcJCs+krnnkZnjCCBoNq8zyNYdpVc0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QYfXlwnSHeofoHhEDgRHRRdNw9BffRi6iv4CFXP3P5fYQibWRu5LPQOOyrXmMmTbGpkjmSRxrYxF5FMs/ldrqRTNtxIGppwk73TAqWkTpJKLOCLHA6pXIqxs9LPcK/Gpb04OVcWPukPFQKEwpWqSkcTD3JQMKVm7/A8I3DU36hU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OhTpaMK6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C2FAC4CEE7
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 16:13:13 +0000 (UTC)
+	 MIME-Version; b=fwXd2Mm3hqWqNEbVczQB1+2QFB3Y0lzNmodkBvjZHaDDW5nPDqKNOs3KBl1hkxrVnPcrkrArFXdQCD/djJGGnLTtfh+lQPMq8kremAA+hvWhfU1Wkt7ZpEeyolxzodZ4bA1kvLPt7NBoxaJ9VgZsLrND2O97WVPaPck7vWhGERE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L4Ny/ULd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F168C4CEE7
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 16:13:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750176794;
-	bh=MszGsIcsIQct+dunysEiEbp184/0v0AbJsuiwbdYcm4=;
+	s=k20201202; t=1750176795;
+	bh=E/I0Gb8hJryIOmcJCs+krnnkZnjCCBoNq8zyNYdpVc0=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=OhTpaMK6miqRGJPUlhEwjJBxydwfZBI/1a64hNWuxu2Faa5D3IwFR34e9slCFal12
-	 o8RXkFzTaXIyicyzq2NdUMqhlqxC0UtBBM/qfs3mSg8EzPIt/lYo7LVK/PnUAcwU08
-	 SOnlo0K7vaTbvQyDhCAOlpX0r3PjWyRU36zysu8RkBDUS7uM2OSqtsPkDSlIEK5M1+
-	 ALe+OZffOn6b1x4A7AMoh7hDlsgvhpgoAfGH3xIXtz88c61ruZBWho5YbHOtDNhR7N
-	 81dqqS19xgZRp8R6f0h/ZfaD0mw10A7yAORpUh4PdIVv14ZUt150781l6XtAjle4AF
-	 oMnr/E+eyb+Lw==
+	b=L4Ny/ULdop4wuYYBSOSSLB4Xm+EtPL2ES5zriG5VpyIaW3fkGcXyzPBkHCrv3T1Kx
+	 9o0iWGjoclUlEthZQOwjUUbK9MqXL8VI8QJKRblRwUdBrrd7CuCuxTN0sydTDvdbnO
+	 jK680dgdnknDGYzkpmcHu0F3w6+r2YS5ZWfClSVzGYnCzbcg1P6exqFHxkvkBWzlAp
+	 l/hP+9gheIpS+WQFoqAJ8pPPVI1RN5PoKW3lgvFTc4CQarT20Uplc3bjGI2n9N1PJd
+	 W4h8D1bMgnmFPypsdCAlr7GLbhEEkw9Hd7Kq/82eK0etHDpUyt0I8rts6Sn9rdMrIP
+	 YszmUE53DPBnA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 03/16] btrfs: make extent_buffer_test_bit() return a boolean instead
-Date: Tue, 17 Jun 2025 17:12:58 +0100
-Message-ID: <3b31cb90b9170b14931c0f4500069eb6e5709096.1750075579.git.fdmanana@suse.com>
+Subject: [PATCH 04/16] btrfs: make free_space_test_bit() return a boolean instead
+Date: Tue, 17 Jun 2025 17:12:59 +0100
+Message-ID: <55f2de2aa39cbe869fb0ae4d83082cd59aedca39.1750075579.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1750075579.git.fdmanana@suse.com>
 References: <cover.1750075579.git.fdmanana@suse.com>
@@ -59,94 +59,149 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-All the callers want is to determine if a bit is set and all of them call
-the function and do a double negation (!!) on its result to get a boolean.
-So change it to return a boolean and simplify callers.
+The function returns the result of another function that returns a boolean
+(extent_buffer_test_bit()), and all the callers need is a boolean an not
+an integer. So change its return type from int to bool, and modify the
+callers to store results in booleans instead of integers, which also makes
+them simpler.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_io.c             |  4 ++--
- fs/btrfs/extent_io.h             |  4 ++--
- fs/btrfs/free-space-tree.c       |  2 +-
- fs/btrfs/tests/extent-io-tests.c | 14 +++++++-------
- 4 files changed, 12 insertions(+), 12 deletions(-)
+ fs/btrfs/free-space-tree.c | 37 ++++++++++++++++++-------------------
+ fs/btrfs/free-space-tree.h |  4 ++--
+ 2 files changed, 20 insertions(+), 21 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index e9ba80a56172..c7811fe493f3 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4108,8 +4108,8 @@ static inline void eb_bitmap_offset(const struct extent_buffer *eb,
-  * @start:  offset of the bitmap item in the extent buffer
-  * @nr:     bit number to test
-  */
--int extent_buffer_test_bit(const struct extent_buffer *eb, unsigned long start,
--			   unsigned long nr)
-+bool extent_buffer_test_bit(const struct extent_buffer *eb, unsigned long start,
-+			    unsigned long nr)
- {
- 	unsigned long i;
- 	size_t offset;
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 65bb87f1dce6..61130786b9a3 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -345,8 +345,8 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
- 			   unsigned long len);
- void memzero_extent_buffer(const struct extent_buffer *eb, unsigned long start,
- 			   unsigned long len);
--int extent_buffer_test_bit(const struct extent_buffer *eb, unsigned long start,
--			   unsigned long pos);
-+bool extent_buffer_test_bit(const struct extent_buffer *eb, unsigned long start,
-+			    unsigned long pos);
- void extent_buffer_bitmap_set(const struct extent_buffer *eb, unsigned long start,
- 			      unsigned long pos, unsigned long len);
- void extent_buffer_bitmap_clear(const struct extent_buffer *eb,
 diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index 29fada10158c..b24c23312892 100644
+index b24c23312892..4cd1f46cd694 100644
 --- a/fs/btrfs/free-space-tree.c
 +++ b/fs/btrfs/free-space-tree.c
-@@ -532,7 +532,7 @@ int free_space_test_bit(struct btrfs_block_group *block_group,
- 	ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
- 	i = div_u64(offset - found_start,
- 		    block_group->fs_info->sectorsize);
--	return !!extent_buffer_test_bit(leaf, ptr, i);
-+	return extent_buffer_test_bit(leaf, ptr, i);
+@@ -513,8 +513,8 @@ static int update_free_space_extent_count(struct btrfs_trans_handle *trans,
  }
  
- static void free_space_set_bits(struct btrfs_trans_handle *trans,
-diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
-index 00da54f0164c..d2a6f769fd76 100644
---- a/fs/btrfs/tests/extent-io-tests.c
-+++ b/fs/btrfs/tests/extent-io-tests.c
-@@ -343,11 +343,11 @@ static int check_eb_bitmap(unsigned long *bitmap, struct extent_buffer *eb)
- 	unsigned long i;
+ EXPORT_FOR_TESTS
+-int free_space_test_bit(struct btrfs_block_group *block_group,
+-			struct btrfs_path *path, u64 offset)
++bool free_space_test_bit(struct btrfs_block_group *block_group,
++			 struct btrfs_path *path, u64 offset)
+ {
+ 	struct extent_buffer *leaf;
+ 	struct btrfs_key key;
+@@ -612,7 +612,8 @@ static int modify_free_space_bitmap(struct btrfs_trans_handle *trans,
+ 	struct btrfs_key key;
+ 	u64 end = start + size;
+ 	u64 cur_start, cur_size;
+-	int prev_bit, next_bit;
++	bool prev_bit_set = false;
++	bool next_bit_set = false;
+ 	int new_extents;
+ 	int ret;
  
- 	for (i = 0; i < eb->len * BITS_PER_BYTE; i++) {
--		int bit, bit1;
-+		bool bit_set, bit1_set;
+@@ -631,7 +632,7 @@ static int modify_free_space_bitmap(struct btrfs_trans_handle *trans,
+ 		if (ret)
+ 			goto out;
  
--		bit = !!test_bit(i, bitmap);
--		bit1 = !!extent_buffer_test_bit(eb, 0, i);
--		if (bit1 != bit) {
-+		bit_set = test_bit(i, bitmap);
-+		bit1_set = extent_buffer_test_bit(eb, 0, i);
-+		if (bit1_set != bit_set) {
- 			u8 has;
- 			u8 expect;
+-		prev_bit = free_space_test_bit(block_group, path, prev_block);
++		prev_bit_set = free_space_test_bit(block_group, path, prev_block);
  
-@@ -360,9 +360,9 @@ static int check_eb_bitmap(unsigned long *bitmap, struct extent_buffer *eb)
- 			return -EINVAL;
+ 		/* The previous block may have been in the previous bitmap. */
+ 		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+@@ -648,8 +649,6 @@ static int modify_free_space_bitmap(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_search_prev_slot(trans, root, &key, path, 0, 1);
+ 		if (ret)
+ 			goto out;
+-
+-		prev_bit = -1;
+ 	}
+ 
+ 	/*
+@@ -681,28 +680,26 @@ static int modify_free_space_bitmap(struct btrfs_trans_handle *trans,
+ 				goto out;
  		}
  
--		bit1 = !!extent_buffer_test_bit(eb, i / BITS_PER_BYTE,
--						i % BITS_PER_BYTE);
--		if (bit1 != bit) {
-+		bit1_set = extent_buffer_test_bit(eb, i / BITS_PER_BYTE,
-+						  i % BITS_PER_BYTE);
-+		if (bit1_set != bit_set) {
- 			u8 has;
- 			u8 expect;
+-		next_bit = free_space_test_bit(block_group, path, end);
+-	} else {
+-		next_bit = -1;
++		next_bit_set = free_space_test_bit(block_group, path, end);
+ 	}
  
+ 	if (remove) {
+ 		new_extents = -1;
+-		if (prev_bit == 1) {
++		if (prev_bit_set) {
+ 			/* Leftover on the left. */
+ 			new_extents++;
+ 		}
+-		if (next_bit == 1) {
++		if (next_bit_set) {
+ 			/* Leftover on the right. */
+ 			new_extents++;
+ 		}
+ 	} else {
+ 		new_extents = 1;
+-		if (prev_bit == 1) {
++		if (prev_bit_set) {
+ 			/* Merging with neighbor on the left. */
+ 			new_extents--;
+ 		}
+-		if (next_bit == 1) {
++		if (next_bit_set) {
+ 			/* Merging with neighbor on the right. */
+ 			new_extents--;
+ 		}
+@@ -1552,7 +1549,7 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
+ 	struct btrfs_fs_info *fs_info;
+ 	struct btrfs_root *root;
+ 	struct btrfs_key key;
+-	int prev_bit = 0, bit;
++	bool prev_bit_set = false;
+ 	/* Initialize to silence GCC. */
+ 	u64 extent_start = 0;
+ 	u64 end, offset;
+@@ -1583,10 +1580,12 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
+ 
+ 		offset = key.objectid;
+ 		while (offset < key.objectid + key.offset) {
+-			bit = free_space_test_bit(block_group, path, offset);
+-			if (prev_bit == 0 && bit == 1) {
++			bool bit_set;
++
++			bit_set = free_space_test_bit(block_group, path, offset);
++			if (!prev_bit_set && bit_set) {
+ 				extent_start = offset;
+-			} else if (prev_bit == 1 && bit == 0) {
++			} else if (prev_bit_set && !bit_set) {
+ 				u64 space_added;
+ 
+ 				ret = btrfs_add_new_free_space(block_group,
+@@ -1602,11 +1601,11 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
+ 				}
+ 				extent_count++;
+ 			}
+-			prev_bit = bit;
++			prev_bit_set = bit_set;
+ 			offset += fs_info->sectorsize;
+ 		}
+ 	}
+-	if (prev_bit == 1) {
++	if (prev_bit_set) {
+ 		ret = btrfs_add_new_free_space(block_group, extent_start, end, NULL);
+ 		if (ret)
+ 			goto out;
+diff --git a/fs/btrfs/free-space-tree.h b/fs/btrfs/free-space-tree.h
+index e6c6d6f4f221..32e71d0c8dd4 100644
+--- a/fs/btrfs/free-space-tree.h
++++ b/fs/btrfs/free-space-tree.h
+@@ -53,8 +53,8 @@ int convert_free_space_to_bitmaps(struct btrfs_trans_handle *trans,
+ int convert_free_space_to_extents(struct btrfs_trans_handle *trans,
+ 				  struct btrfs_block_group *block_group,
+ 				  struct btrfs_path *path);
+-int free_space_test_bit(struct btrfs_block_group *block_group,
+-			struct btrfs_path *path, u64 offset);
++bool free_space_test_bit(struct btrfs_block_group *block_group,
++			 struct btrfs_path *path, u64 offset);
+ #endif
+ 
+ #endif
 -- 
 2.47.2
 
