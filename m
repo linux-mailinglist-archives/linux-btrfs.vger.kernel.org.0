@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-14735-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14736-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B6A1ADD5D5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 18:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0354BADD5EB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 18:28:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E01A2C3F20
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 16:19:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 393B62C7B34
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Jun 2025 16:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44332EE286;
-	Tue, 17 Jun 2025 16:13:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26A02EE28F;
+	Tue, 17 Jun 2025 16:13:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dcbKWCMA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hxyut/ie"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8F042EE27D
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 16:13:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41572EE28A
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 16:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750176797; cv=none; b=XFCerxVlQG9V5wOzY7Eel2lAEQ7YDCfs4HqAvijccXs5z+CVNvDZop0Hv4dX9wQgdSvRhG2Z5VYSj+vxVZVPFh8XnUsagVONbti33pPJ5SGLjkJP4w4NyXvSGOSJ2jQ1btksT3MB9tER/l6hg3vqRpwNBYFSdsijGLDScrccu5k=
+	t=1750176799; cv=none; b=pwQBLhuubHzLY80hgoc35dGcznHt5qQvxsiBxX7ZOfLKociAwNPbw64R3JXPZalk+T4CVPJDeA+klujNM4/H5k1A0yqXhBFsKu4ma+SXv3ZXZ3fY7DJNXJ8PFIPLbwpfM32ac1Dmi7m0Ltrjd+qgbet2VPRzCFJIHyor6lAFS+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750176797; c=relaxed/simple;
-	bh=QMkLra88lHbPRAqzCHBo4+2RRoH9PABpUS+CNjldjXw=;
+	s=arc-20240116; t=1750176799; c=relaxed/simple;
+	bh=t0e25Fj6TM3bJZJ3pNXx7FHCLNNzXUNT9MplIXybZWw=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fK/uNa/GuHu+7HWfuwkpws+izcr0Jy1SWECITyq6khGAsEyK9v4IsO1y2SGRp6642SNpd1MD/0Mq2I496UsmcOk7q9lKkHWCeCdg5JS4m5ePlGS3pRSvrw9cZ83P4dTWBMlUAl1QldqyT8yAQRE5Q7Cc9erfjng72RI1/NxSkic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dcbKWCMA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36170C4CEE7
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 16:13:17 +0000 (UTC)
+	 MIME-Version; b=Qlo9IkRQwDEyUdrAnlhTim0THmCspdDrkeCj3cxBfW+fkcZXs1InMD/DBOuqUWwC5LonR3IpJIy+bDYehklEXpHegVVK4Xh/zYMEZGqTmW7+ycy6T4YL92oRoYuvJMzM/luXFbP9uM1VVj5Ka1n87eE+XYhc2KAOdHmQhYPjhSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hxyut/ie; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39564C4CEE7
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Jun 2025 16:13:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750176797;
-	bh=QMkLra88lHbPRAqzCHBo4+2RRoH9PABpUS+CNjldjXw=;
+	s=k20201202; t=1750176798;
+	bh=t0e25Fj6TM3bJZJ3pNXx7FHCLNNzXUNT9MplIXybZWw=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=dcbKWCMAfUTAV+wudLWEC2YCXe5BtC/8xq2mOCIu3HFDKDJ/ygil3aTPe+UFWMlLo
-	 PHzC5NuF3g6VTPkCFAVTZI+MJRFiaGEdExEOTLDzQETPNshWyRqqX48Z0YDHNhjvSC
-	 bIq2lOLwH+JSavL3IJq+TW29h1JlEzTM458oghRufPqMHbCheqRn4M5AGCsjJeBz8Q
-	 Q8NwN1ilGuqG2a3Ugg0SnoRN8iWBOS2XOhpvxOdD/l0+NSAOjRJVGEMsmsUWFrrSQV
-	 E6I4bcFg7M1ZlpYuBWuWhYCNrMhyn5y967GZj+0EDwf0VwlMt5NtGL8IMpMdvNTzEG
-	 lgTehF74R1xsg==
+	b=Hxyut/ieBohkWHesYJz+rZYgAMlg0nod+K+Ws3uftYHH7dkHzCSCx9+QG2s2v9r5L
+	 UQorQIK+8bR769q65p4Dr933cLaOXba2TNZ/+YA7E0IwO7aaAg/KzJsIczN9LsIsUo
+	 4wcbrgSdjrk21utH2IylbN6iSZlK4SYSUZDZzMUS8Nn5MWieP2W8DCIzJqoVrNkkql
+	 MeJeUTgvFen7Yhdm7Tq/o8U3qe97voBEbqF6RAHW61+Cs03EwPoX/UzxFlO3Nrv7hQ
+	 eJuW8yk0i4TFkjFGoK1yWROp5YEwjKEbGHbiRSj8YCdport9owOsL+jFx600UimDbH
+	 Kvf28OIfZuJJA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 06/16] btrfs: remove pointless out label from remove_free_space_extent()
-Date: Tue, 17 Jun 2025 17:13:01 +0100
-Message-ID: <1150f2a5c103e7db1dc1e26c2e1f84eff660c54f.1750075579.git.fdmanana@suse.com>
+Subject: [PATCH 07/16] btrfs: remove pointless out label from add_free_space_extent()
+Date: Tue, 17 Jun 2025 17:13:02 +0100
+Message-ID: <4e86d9839a9bf0f95cadb3787437334c13c10db7.1750075579.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1750075579.git.fdmanana@suse.com>
 References: <cover.1750075579.git.fdmanana@suse.com>
@@ -64,14 +64,14 @@ just return directly whenever we get an error.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/free-space-tree.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ fs/btrfs/free-space-tree.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
 diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index a4909393840a..cba097dbdebb 100644
+index cba097dbdebb..1f76860ec61e 100644
 --- a/fs/btrfs/free-space-tree.c
 +++ b/fs/btrfs/free-space-tree.c
-@@ -727,7 +727,7 @@ static int remove_free_space_extent(struct btrfs_trans_handle *trans,
+@@ -900,7 +900,7 @@ static int add_free_space_extent(struct btrfs_trans_handle *trans,
  
  	ret = btrfs_search_prev_slot(trans, root, &key, path, -1, 1);
  	if (ret)
@@ -80,32 +80,39 @@ index a4909393840a..cba097dbdebb 100644
  
  	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
  
-@@ -759,7 +759,7 @@ static int remove_free_space_extent(struct btrfs_trans_handle *trans,
- 	/* Delete the existing key (cases 1-4). */
- 	ret = btrfs_del_item(trans, root, path);
+@@ -923,7 +923,7 @@ static int add_free_space_extent(struct btrfs_trans_handle *trans,
+ 	if (found_end == start) {
+ 		ret = btrfs_del_item(trans, root, path);
+ 		if (ret)
+-			goto out;
++			return ret;
+ 		new_key.objectid = found_start;
+ 		new_key.offset += key.offset;
+ 		new_extents--;
+@@ -940,7 +940,7 @@ static int add_free_space_extent(struct btrfs_trans_handle *trans,
+ 
+ 	ret = btrfs_search_prev_slot(trans, root, &key, path, -1, 1);
  	if (ret)
 -		goto out;
 +		return ret;
  
- 	/* Add a key for leftovers at the beginning (cases 3 and 4). */
- 	if (start > found_start) {
-@@ -770,7 +770,7 @@ static int remove_free_space_extent(struct btrfs_trans_handle *trans,
- 		btrfs_release_path(path);
- 		ret = btrfs_insert_empty_item(trans, root, path, &key, 0);
- 		if (ret)
--			goto out;
-+			return ret;
- 		new_extents++;
- 	}
+ 	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
  
-@@ -783,16 +783,12 @@ static int remove_free_space_extent(struct btrfs_trans_handle *trans,
- 		btrfs_release_path(path);
- 		ret = btrfs_insert_empty_item(trans, root, path, &key, 0);
+@@ -964,7 +964,7 @@ static int add_free_space_extent(struct btrfs_trans_handle *trans,
+ 	if (found_start == end) {
+ 		ret = btrfs_del_item(trans, root, path);
  		if (ret)
 -			goto out;
 +			return ret;
- 		new_extents++;
+ 		new_key.offset += key.offset;
+ 		new_extents--;
  	}
+@@ -974,14 +974,10 @@ static int add_free_space_extent(struct btrfs_trans_handle *trans,
+ 	/* Insert the new key (cases 1-4). */
+ 	ret = btrfs_insert_empty_item(trans, root, path, &new_key, 0);
+ 	if (ret)
+-		goto out;
++		return ret;
  
  	btrfs_release_path(path);
 -	ret = update_free_space_extent_count(trans, block_group, path,
