@@ -1,250 +1,265 @@
-Return-Path: <linux-btrfs+bounces-14776-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14777-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 999AFADF23B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jun 2025 18:15:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D881EADF37F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jun 2025 19:07:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 399344A0ACF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jun 2025 16:15:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8A1B1BC0278
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jun 2025 17:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92FC02EB5C5;
-	Wed, 18 Jun 2025 16:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0299A2F3C3C;
+	Wed, 18 Jun 2025 17:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ehqtdz6U"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NHroZLiP";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="G3RePS1F";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NHroZLiP";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="G3RePS1F"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8542063E7
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Jun 2025 16:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C9082EA738
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Jun 2025 17:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750263321; cv=none; b=aKRcgfvAsnFifW6IZ2DcJEXfUwXPr26QSmXieKqnjQ2edE8awtUYRZDVziGOC296O95JyJdd99ptwBseRWQ6/sOFS0mmDKoBUPclb+cp/B8ZiJmYXzqEP2zhZHA8BBpFT72O8Bd83JYfARtNNGSt7zCUzrMFxuYGJBxqYLaYRWk=
+	t=1750266374; cv=none; b=IHV3YtuxSy55awSlcFhy68+TM1JIUU61Dc6lK8ItQfP602q23ywAzj69FwQuZo+stJKKu4QgkqhWx8EJHWABC0JYQiO6cQEjxG+Dl3hmLDJ2NgcQL0A6izc6tipwOKRFSymanJDMHPNLdeqIHH6RhZC9mgUuVETib213XGb6sFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750263321; c=relaxed/simple;
-	bh=D0mrRqgIl/7VDVTuSZ50v1QjOdj8U1c6/LirYwO5Bj0=;
+	s=arc-20240116; t=1750266374; c=relaxed/simple;
+	bh=u/MUMNb60uBK+vsx1qODNxoJrBOmSeznx6yE9JyHvlQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HaFAn7szpByZ27p37jFxCPkL+zYqn5hPszdtlDLb74omY9edxSlU2I9KK3aXSmJDRDZiXuNxqunpZfa6OycOmGj1syOsYAi4EJQjpbGLLDvBuNzGqZftJONcULwyyfATa6MDuzKptZ8MgT9X8yaMqm5Hxuf69JuucKC5Xx7ahDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ehqtdz6U; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1750263317;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	 Content-Type:Content-Disposition:In-Reply-To; b=siGmL0aVpGZpTO5/BOJBUTfLiNm4sD/ldFgx8F4epP8nGmSoQWwNIFj5UMOkix4gsPzrjQsQk+TSIQT8qduUS+mgn/8aZowMeFKMsvypiMLShj/hHHmUW5+tVz7OePlZJmk7EZ06dLg6MsKvbsQqoZVc6VUmeVjn29claECkB9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NHroZLiP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=G3RePS1F; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NHroZLiP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=G3RePS1F; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 86D521F7C8;
+	Wed, 18 Jun 2025 17:06:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750266368;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wrchTGE3j452OoiC9LNMCkJ2p4RKo+nkfCDMyJA3t1k=;
-	b=ehqtdz6U06Iu7Jr0kUjaawUNOteFaOCDqgVccuggGGfsV1sIL82tru4wWdvGXN7SMMrVQ9
-	/sKzL0vf4Y10qZAh1xZVFg+c118GEJN9nTzmUfmlzcpW6eQHjmXmPegojtGnRy3GGFtr8f
-	BIiL4nizLwhdLPhXCv7XH995hAnQqpE=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-146-tN0EY7oMPBuaE7rozwSnlw-1; Wed, 18 Jun 2025 12:15:16 -0400
-X-MC-Unique: tN0EY7oMPBuaE7rozwSnlw-1
-X-Mimecast-MFC-AGG-ID: tN0EY7oMPBuaE7rozwSnlw_1750263315
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-235e1d70d67so64433195ad.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Jun 2025 09:15:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750263315; x=1750868115;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wrchTGE3j452OoiC9LNMCkJ2p4RKo+nkfCDMyJA3t1k=;
-        b=TRo4kQ86d2Uwt4h6asVCFvP5XGiJZIzPntOyvRB8thmITEhcICVFuJ8G3aGw8s8DNU
-         x1QVfqEx8hE/kA4JNd7zn4jTArwgsQ+YA7J5AMM2oyTPAS0f+/wK9on1dyUjUvGCskbz
-         IcNNjtEmP8Sekjom9skIjbkrDjqEgx3nodT2JHG32FrD19tUWoQafMCNsKjjyH6LQPlM
-         rJwQk7zALAAvIb4kM2m9oWYubUQC4RpQ8FcOtn6PnoAmWLPIQ83Zz/Ga8LQwwQcImTPn
-         IytwAEEW1uERtiLm5Rt+fbmOm9GgPXeyViUD8aUf/R+xs1jOiRMGGJzYzRtLEsMwxOKu
-         ZzgA==
-X-Forwarded-Encrypted: i=1; AJvYcCUaJHhAi0NDAbrIkPcsZq+lR9OuqGm0crPtrHy+3K2vLqivTDY8khjWt32duV5XOXdG3d7X8JcbN9ICdg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxbcntXpxYI7JpdsQJy5CP32bI0Jrm4tp7uqqZN5c5kUpXmLfHK
-	E3Lb+Zix8mOMZg4sQPRT171brGkR8oMBHGih2bSkb0sKIrDwUEhIugnMdFwTXF59jnCXxCremt7
-	2ivGlXKPASUu0eb4S+WhHmBVx/YxVs3TdxKMuDzdLvmVzthXhn+IHEt1I2Z8bA53X
-X-Gm-Gg: ASbGncu6fE/l81l6KFwIPWeJcmtE6oXsa+hExFqbOOwvrzA1Bn2dpVS0ZTA+yl210BI
-	GwqBLkZXpXjwNJGy1WLT57/QZN1FWsaNc/iyujiz5s57TNNdlZJn3OsTet/++MxQPajFFqN9oXL
-	vl+Ss0i8HdoKcIB+YpidK5EG/vhj+ldO4ljqhEHJw/1MCQKmQD1zEf3MVL7TWvfDiHelOnYqgQs
-	1gSieX9UGtreUd83AEQ+xmbVNeMPPVJgXMS0JyinUJGt3A43/877FP6g6W4+MQ13OIp6pGk5DrQ
-	0tTfD/ZSQqUll7FIeexRSNZmR0/s9tBspcDU+eSyPszC5lcPrzd7k0Rq8AZaQpk=
-X-Received: by 2002:a17:903:1b05:b0:234:b41e:37a4 with SMTP id d9443c01a7336-2366afe98dcmr213018055ad.6.1750263314888;
-        Wed, 18 Jun 2025 09:15:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGTahDyDcmODgmG94C/Zo2qR87d8iLdvWQ/A6BwsGGalOtNH/BqFSqQccT99G7l5z55+fEqkg==
-X-Received: by 2002:a17:903:1b05:b0:234:b41e:37a4 with SMTP id d9443c01a7336-2366afe98dcmr213017485ad.6.1750263314304;
-        Wed, 18 Jun 2025 09:15:14 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365d88c061sm102572565ad.1.2025.06.18.09.15.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jun 2025 09:15:13 -0700 (PDT)
-Date: Thu, 19 Jun 2025 00:15:09 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, fstests@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] generic/032: fix failure due to attempt to wait for
- non-child process
-Message-ID: <20250618161509.5guwfq5hktlnwkvs@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <ad779afaef849e0febdce26cbcb5503beed87341.1748432418.git.fdmanana@suse.com>
- <20250605165225.fajg7aj3btuejhnp@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <CAL3q7H6h98w--8=-TUridEaOt03v70J3gvLA_g=72iL9hFYL1w@mail.gmail.com>
- <20250606005304.p36cjy23ekdlg53u@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <CAL3q7H42puqn4=eX1SthjE_7eowQKvgWAzmbTx79eh+jJbtBqQ@mail.gmail.com>
+	bh=SAxHe4/SFOgVVfwP/YkVikw5O0UdBvLzL0DaWVhZNTM=;
+	b=NHroZLiPV+1/rO8sD9qZX/5PHN5D5Rfo5Zb5aOHdYXCyTajLXhRkymKkUo6NqEKT1i51Wq
+	3jzRv5I50TsK881TQSExVKFBTV1uPJb21aJuIaeXllkCTjwU0SL7U9SX534GcVuTrf9MkN
+	z5adrX6FKDM+9HUfScghJAj+d4/N4Kw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750266368;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SAxHe4/SFOgVVfwP/YkVikw5O0UdBvLzL0DaWVhZNTM=;
+	b=G3RePS1FfsxZPpVKpINLhWACefVqXMozYLP/NJ+59JpdNLld0DBJsRsQUOr6wb7MNlldLN
+	KfEZjWEX4nPtmqCQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=NHroZLiP;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=G3RePS1F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750266368;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SAxHe4/SFOgVVfwP/YkVikw5O0UdBvLzL0DaWVhZNTM=;
+	b=NHroZLiPV+1/rO8sD9qZX/5PHN5D5Rfo5Zb5aOHdYXCyTajLXhRkymKkUo6NqEKT1i51Wq
+	3jzRv5I50TsK881TQSExVKFBTV1uPJb21aJuIaeXllkCTjwU0SL7U9SX534GcVuTrf9MkN
+	z5adrX6FKDM+9HUfScghJAj+d4/N4Kw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750266368;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SAxHe4/SFOgVVfwP/YkVikw5O0UdBvLzL0DaWVhZNTM=;
+	b=G3RePS1FfsxZPpVKpINLhWACefVqXMozYLP/NJ+59JpdNLld0DBJsRsQUOr6wb7MNlldLN
+	KfEZjWEX4nPtmqCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D50B313721;
+	Wed, 18 Jun 2025 17:06:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 4kJvM//xUmgeMgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 18 Jun 2025 17:06:07 +0000
+Date: Wed, 18 Jun 2025 19:06:06 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Sterba <dsterba@suse.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Benjamin LaHaise <bcrl@kvack.org>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Tigran A . Aivazian" <aivazian.tigran@gmail.com>,
+	Kees Cook <kees@kernel.org>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>,
+	Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>,
+	coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>,
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Sandeep Dhavale <dhavale@google.com>,
+	Hongbo Li <lihongbo22@huawei.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>,
+	Yuezhang Mo <yuezhang.mo@sony.com>, Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Viacheslav Dubeyko <slava@dubeyko.com>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Dave Kleikamp <shaggy@kernel.org>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Bob Copeland <me@bobcopeland.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.org>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Bharath SM <bharathsm@microsoft.com>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Carlos Maiolino <cem@kernel.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <jth@kernel.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>,
+	Pedro Falcato <pfalcato@suse.de>, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, v9fs@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+	linux-aio@kvack.org, linux-unionfs@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-mm@kvack.org,
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
+	jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev,
+	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+	linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
+Subject: Re: [PATCH 10/10] fs: replace mmap hook with .mmap_prepare for
+ simple mappings
+Message-ID: <20250618170606.GI4037@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
+ <f528ac4f35b9378931bd800920fee53fc0c5c74d.1750099179.git.lorenzo.stoakes@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H42puqn4=eX1SthjE_7eowQKvgWAzmbTx79eh+jJbtBqQ@mail.gmail.com>
+In-Reply-To: <f528ac4f35b9378931bd800920fee53fc0c5c74d.1750099179.git.lorenzo.stoakes@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 86D521F7C8
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.71 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,oracle.com,kernel.dk,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,kernel.org,ionkov.net,codewreck.org,crudebyte.com,suse.com,redhat.com,auristor.com,zeniv.linux.org.uk,suse.cz,kvack.org,szeredi.hu,linux.dev,fb.com,toxicpanda.com,cs.cmu.edu,tyhicks.com,linux.alibaba.com,google.com,huawei.com,samsung.com,sony.com,mit.edu,dilger.ca,mail.parknet.co.jp,dubeyko.com,physik.fu-berlin.de,vivo.com,nod.at,cambridgegreys.com,sipsolutions.net,artax.karlin.mff.cuni.cz,infradead.org,paragon-software.com,fasheh.com,evilplan.org,bobcopeland.com,omnibond.com,samba.org,manguebit.org,microsoft.com,talpey.com,wdc.com,suse.de,vger.kernel.org,lists.freedesktop.org,lists.linux.dev,lists.infradead.org,coda.cs.cmu.edu,lists.ozlabs.org,lists.sourceforge.net,lists.orangefs.org,lists.samba.org];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[113];
+	TAGGED_RCPT(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,oracle.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:dkim,suse.cz:replyto]
+X-Spam-Score: -2.71
+X-Spam-Level: 
 
-On Fri, Jun 13, 2025 at 02:02:53PM +0100, Filipe Manana wrote:
-> On Fri, Jun 6, 2025 at 1:53 AM Zorro Lang <zlang@redhat.com> wrote:
-> >
-> > On Thu, Jun 05, 2025 at 08:37:35PM +0100, Filipe Manana wrote:
-> > > On Thu, Jun 5, 2025 at 5:52 PM Zorro Lang <zlang@redhat.com> wrote:
-> > > >
-> > > > On Wed, May 28, 2025 at 12:42:20PM +0100, fdmanana@kernel.org wrote:
-> > > > > From: Filipe Manana <fdmanana@suse.com>
-> > > > >
-> > > > > Running generic/032 can sporadically fail like this:
-> > > > >
-> > > > >   generic/032 11s ... - output mismatch (see /home/fdmanana/git/hub/xfstests/results//generic/032.out.bad)
-> > > > >       --- tests/generic/032.out   2023-03-02 21:47:53.884609618 +0000
-> > > > >       +++ /home/fdmanana/git/hub/xfstests/results//generic/032.out.bad    2025-05-28 10:39:34.549499493 +0100
-> > > > >       @@ -1,5 +1,6 @@
-> > > > >        QA output created by 032
-> > > > >        100 iterations
-> > > > >       +/home/fdmanana/git/hub/xfstests/tests/generic/032: line 90: wait: pid 3708239 is not a child of this shell
-> > > > >        000000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  >................<
-> > > > >        *
-> > > > >        100000
-> > > > >       ...
-> > > > >       (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/generic/032.out /home/fdmanana/git/h
-> > > > >
-> > > > > This is because we are attempting to wait for a process that is not a
-> > > > > child process of the test process and it's instead a child of a process
-> > > > > spawned by the test.
-> > > > >
-> > > > > To make sure that after we kill the process running _syncloop() there
-> > > > > isn't any xfs_io process still running syncfs, add instead a trap to
-> > > > > to _syncloop() that waits for xfs_io to finish before the process running
-> > > > > that function exits.
-> > > > >
-> > > > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > > > ---
-> > > >
-> > > > Oh... I didn't remove the _pgrep when I reverted those "setsid" things.
-> > > >
-> > > > CC Darrick, what do you think if I remove the _pgrep from common/rc
-> > > > and generic/032 :) On the other words, revert the:
-> > > >
-> > > >   commit 1bb15a27573eea1df493d4b7223ada2e6c04a07a
-> > > >   Author: Darrick J. Wong <djwong@kernel.org>
-> > > >   Date:   Mon Feb 3 14:00:29 2025 -0800
-> > > >
-> > > >       generic/032: fix pinned mount failure
-> > >
-> > > Reverting that commit won't fix anything. One still needs a mechanism
-> > > to ensure that we don't attempt to unmount the scratch device while
-> > > xfs_io from sync_pid is still running. The mechanism implemented in
-> > > that commit is buggy and the trap based one from this patch should
-> > > always work (and we do this trap based approach on several other tests
-> > > to solve this same problem).
-> >
-> > Sure, don't worry, I didn't try to Nack your patch:) Just due to you remove
-> > the _pgrep() in your patch, then I thought it can be removed from common/rc
-> > totally, looks like nothing need that function. So I tried to confirm that
-> > with Darrick (who brought in this function:)
-> >
-> > Due to commit 1bb15a27573 does two things:
-> > 1) create a new function _pgrep
-> > 2) call _pgrep in g/032
-> >
-> > You've removed the 2) in this patch, so I'm wondering how about removing
-> > the 1) and 2) totally. As you can see, g/032 is the only one place uses
-> > _pgrep:
+On Mon, Jun 16, 2025 at 08:33:29PM +0100, Lorenzo Stoakes wrote:
+> Since commit c84bf6dd2b83 ("mm: introduce new .mmap_prepare() file
+> callback"), the f_op->mmap() hook has been deprecated in favour of
+> f_op->mmap_prepare().
 > 
-> Ok, but that shouldn't be a blocker to fix a bug.
-> Can we make some progress on this?
-
-Sure, you're right. It'll be merged in this week fstests release. You
-can find it in patches-in-queue branch :)
-
+> This callback is invoked in the mmap() logic far earlier, so error handling
+> can be performed more safely without complicated and bug-prone state
+> unwinding required should an error arise.
 > 
-> Do you want me to remove the function in a v2 of this patch, or do it
-> as a separate patch?
-
-I'll send a patch to remove it, don't worry.
-
-Reviewed-by: Zorro Lang <zlang@redhat.com>
-
+> This hook also avoids passing a pointer to a not-yet-correctly-established
+> VMA avoiding any issues with referencing this data structure.
 > 
-> Thanks.
+> It rather provides a pointer to the new struct vm_area_desc descriptor type
+> which contains all required state and allows easy setting of required
+> parameters without any consideration needing to be paid to locking or
+> reference counts.
 > 
-> >
-> > $ grep -rsn _pgrep .
-> > ./common/rc:40:_pgrep()
-> > ./tests/generic/032:87:dead_syncfs_pid=$(_pgrep xfs_io)
-> >
-> > Thanks,
-> > Zorro
-> >
-> >
-> > >
-> > > Thanks.
-> > >
-> > >
-> > > >
-> > > > Thanks,
-> > > > Zorro
-> > > >
-> > > > >  tests/generic/032 | 13 ++++---------
-> > > > >  1 file changed, 4 insertions(+), 9 deletions(-)
-> > > > >
-> > > > > diff --git a/tests/generic/032 b/tests/generic/032
-> > > > > index 48d594fe..b04b84de 100755
-> > > > > --- a/tests/generic/032
-> > > > > +++ b/tests/generic/032
-> > > > > @@ -28,6 +28,10 @@ _cleanup()
-> > > > >
-> > > > >  _syncloop()
-> > > > >  {
-> > > > > +     # Wait for any running xfs_io command running syncfs before we exit so
-> > > > > +     # that unmount will not fail due to the mount being pinned by xfs_io.
-> > > > > +     trap "wait; exit" SIGTERM
-> > > > > +
-> > > > >       while [ true ]; do
-> > > > >               _scratch_sync
-> > > > >       done
-> > > > > @@ -81,15 +85,6 @@ echo $iters iterations
-> > > > >  kill $syncpid
-> > > > >  wait
-> > > > >
-> > > > > -# The xfs_io instance started by _scratch_sync could be stuck in D state when
-> > > > > -# the subshell running _syncloop & is killed.  That xfs_io process pins the
-> > > > > -# mount so we must kill it and wait for it to die before cycling the mount.
-> > > > > -dead_syncfs_pid=$(_pgrep xfs_io)
-> > > > > -if [ -n "$dead_syncfs_pid" ]; then
-> > > > > -     _pkill xfs_io
-> > > > > -     wait $dead_syncfs_pid
-> > > > > -fi
-> > > > > -
-> > > > >  # clear page cache and dump the file
-> > > > >  _scratch_cycle_mount
-> > > > >  _hexdump $SCRATCH_MNT/file
-> > > > > --
-> > > > > 2.47.2
-> > > > >
-> > > > >
-> > > >
-> > >
-> >
+> Note that nested filesystems like overlayfs are compatible with an
+> .mmap_prepare() callback since commit bb666b7c2707 ("mm: add mmap_prepare()
+> compatibility layer for nested file systems").
 > 
+> In this patch we apply this change to file systems with relatively simple
+> mmap() hook logic - exfat, ceph, f2fs, bcachefs, zonefs, btrfs, ocfs2,
+> orangefs, nilfs2, romfs, ramfs and aio.
+> 
+> Signed-off-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+> ---
 
+For
+
+>  fs/btrfs/file.c       |  7 ++++---
+
+Acked-by: David Sterba <dsterba@suse.com>
 
