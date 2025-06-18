@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-14768-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14769-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1360ADE9F6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jun 2025 13:30:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC89FADE9FA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jun 2025 13:30:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8A6D17B34D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jun 2025 11:30:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 033867A6BE0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Jun 2025 11:29:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 821272BCF73;
-	Wed, 18 Jun 2025 11:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1EF2BEFF1;
+	Wed, 18 Jun 2025 11:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ALoDvquy";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ALoDvquy"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RAMAHlp+";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RAMAHlp+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7EDC29B8E4
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Jun 2025 11:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5CC92BE7C8
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Jun 2025 11:29:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750246195; cv=none; b=k4z48Q3PyFpfjVZ7Sxhb+mN4Szj4CEUFiiJ6xStji7fODSqB8GQJlcGQ8AzFVGMdif0F1vSLH9ulQm1kTpxGrOCsscw7g8tE59f65fyMVOaRhzrSk1AWlpwjcTKN3iL8sIUIb7nixpJZy9jC6VkU4qVzI6BomESojPi03ClvYFs=
+	t=1750246198; cv=none; b=L87MTGq3lJIJwIkrBNeoEiNGZP+EvqmYCjyRX1j75VmcQvThw03EqWz2JZIIajwF3ylyfiT+CrpvrTLvHkc1tOKis8FGxwkMnx64A+yWrcpKp8pr64ibpePu6EKJ0xSmZj3goluQ8sEIxKNpp83adsWeG3e/rzTP4cpnJEtM9AI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750246195; c=relaxed/simple;
-	bh=8CcFXv40GWCBym2gdmuXWoNzeShEDzTf9wGg6456X1I=;
+	s=arc-20240116; t=1750246198; c=relaxed/simple;
+	bh=KTUlt/A/ftcNl2tDjQ3mo2YnqlSxSudRWI8UrCbGNbI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h31waJVK19uqeQKF8rATqRMWDIunVkPZ/YY++xd0Els1ztEUideG722PysiFrS+XBqSPXOCFRv8nHJ54V4bzDSuhPREX6Ii/W0RUVZm+1xbi3d+OrNOQ2nnxzuYT9hW6F4XOoCyo3IZW/fQuCTcdQyKlqk/C8JrpI9OQW6uNkfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ALoDvquy; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ALoDvquy; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=GLHlIRqVZHVu90MRV0Oy70fTlI0umJA0HMHkWGYmcQzFyYDL/oyv/22eT0vQk+CIJmyXXvE2CQuaQsxhwei2YkYo1K3S68DvgxsI2BPi7yfC5QLCeKDHdhWhb3qOhLsYAHMuw0CQD5ddqWgKHV3jKkmfFeZLgQ61ht/3oxHG09E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RAMAHlp+; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RAMAHlp+; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 087501F7C2;
-	Wed, 18 Jun 2025 11:29:52 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 230CC2121C;
+	Wed, 18 Jun 2025 11:29:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1750246192; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1750246195; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OrI+8YZtYSjnzkJNQU43kmQBBqHsX2u5cMPqPw9S4h0=;
-	b=ALoDvquy+Q/6X9v+gn5Sz8vyV4omQOO6sSbpp6gwBHe6MxZFmMlhWMLc6PLuEPofLP/BiA
-	sS5aQ+js6lHROp1Le6ZSfQRZ/cMedJ3uD4Z/i82V5jB6F8I84GNXhESdmfHWu1qOn+N9Sm
-	cdCf5E0EJPpc5guAX1UoIODrPMCOSqM=
-Authentication-Results: smtp-out2.suse.de;
+	bh=miCYiu6IQVGA+HHVM+0L5I4I1fM6CUx4RnRqhF29ei0=;
+	b=RAMAHlp+sDfZGE6HWzNxhKxUd+W0JAfnN9TSnLfTZBE+8I88fH6nfWHUhd1mb/qy/uNp8X
+	Q3nfH/JGS2Sr+DiIRLUzxTo3uFCwcUln8bAOHBukF0s0/mt8NgByrNDEFhNdYGWwXL9Erj
+	7KWmtrhGSdb5bd52jK3cMNWyzU5Xw64=
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1750246192; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1750246195; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OrI+8YZtYSjnzkJNQU43kmQBBqHsX2u5cMPqPw9S4h0=;
-	b=ALoDvquy+Q/6X9v+gn5Sz8vyV4omQOO6sSbpp6gwBHe6MxZFmMlhWMLc6PLuEPofLP/BiA
-	sS5aQ+js6lHROp1Le6ZSfQRZ/cMedJ3uD4Z/i82V5jB6F8I84GNXhESdmfHWu1qOn+N9Sm
-	cdCf5E0EJPpc5guAX1UoIODrPMCOSqM=
+	bh=miCYiu6IQVGA+HHVM+0L5I4I1fM6CUx4RnRqhF29ei0=;
+	b=RAMAHlp+sDfZGE6HWzNxhKxUd+W0JAfnN9TSnLfTZBE+8I88fH6nfWHUhd1mb/qy/uNp8X
+	Q3nfH/JGS2Sr+DiIRLUzxTo3uFCwcUln8bAOHBukF0s0/mt8NgByrNDEFhNdYGWwXL9Erj
+	7KWmtrhGSdb5bd52jK3cMNWyzU5Xw64=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0168913A3F;
-	Wed, 18 Jun 2025 11:29:52 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1BE7813A3F;
+	Wed, 18 Jun 2025 11:29:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id U0pWADCjUmiiPwAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Wed, 18 Jun 2025 11:29:52 +0000
+	id Ty7PBjOjUmipPwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Wed, 18 Jun 2025 11:29:55 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 1/5] btrfs: rename error to ret in btrfs_may_delete()
-Date: Wed, 18 Jun 2025 13:29:27 +0200
-Message-ID: <bf32c57e59ff8339025a77c6ab780bd7e4f39087.1750246061.git.dsterba@suse.com>
+Subject: [PATCH 2/5] btrfs: rename error to ret in btrfs_mksubvol()
+Date: Wed, 18 Jun 2025 13:29:28 +0200
+Message-ID: <107edad2046a728174ad8849668447418e3a24ad.1750246061.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1750246061.git.dsterba@suse.com>
 References: <cover.1750246061.git.dsterba@suse.com>
@@ -104,7 +104,7 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
 	RCVD_TLS_ALL(0.00)[]
 X-Spam-Level: 
 
@@ -112,35 +112,75 @@ Unify naming of return value to the preferred way.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/ioctl.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/ioctl.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 00047367655968..7cd6ae0c12c994 100644
+index 7cd6ae0c12c994..b38acf43ebb563 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -841,7 +841,7 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
- static int btrfs_may_delete(struct mnt_idmap *idmap,
- 			    struct inode *dir, struct dentry *victim, int isdir)
- {
+@@ -903,28 +903,27 @@ static noinline int btrfs_mksubvol(const struct path *parent,
+ 	struct btrfs_fs_info *fs_info = inode_to_fs_info(dir);
+ 	struct dentry *dentry;
+ 	struct fscrypt_str name_str = FSTR_INIT((char *)name, namelen);
 -	int error;
 +	int ret;
  
- 	if (d_really_is_negative(victim))
- 		return -ENOENT;
-@@ -851,9 +851,9 @@ static int btrfs_may_delete(struct mnt_idmap *idmap,
- 		return -EINVAL;
- 	audit_inode_child(dir, victim, AUDIT_TYPE_CHILD_DELETE);
- 
--	error = inode_permission(idmap, dir, MAY_WRITE | MAY_EXEC);
--	if (error)
+-	error = down_write_killable_nested(&dir->i_rwsem, I_MUTEX_PARENT);
+-	if (error == -EINTR)
 -		return error;
-+	ret = inode_permission(idmap, dir, MAY_WRITE | MAY_EXEC);
-+	if (ret)
++	ret = down_write_killable_nested(&dir->i_rwsem, I_MUTEX_PARENT);
++	if (ret == -EINTR)
 +		return ret;
- 	if (IS_APPEND(dir))
- 		return -EPERM;
- 	if (check_sticky(idmap, dir, d_inode(victim)) ||
+ 
+ 	dentry = lookup_one(idmap, &QSTR_LEN(name, namelen), parent->dentry);
+-	error = PTR_ERR(dentry);
++	ret = PTR_ERR(dentry);
+ 	if (IS_ERR(dentry))
+ 		goto out_unlock;
+ 
+-	error = btrfs_may_create(idmap, dir, dentry);
+-	if (error)
++	ret = btrfs_may_create(idmap, dir, dentry);
++	if (ret)
+ 		goto out_dput;
+ 
+ 	/*
+ 	 * even if this name doesn't exist, we may get hash collisions.
+ 	 * check for them now when we can safely fail
+ 	 */
+-	error = btrfs_check_dir_item_collision(BTRFS_I(dir)->root,
+-					       dir->i_ino, &name_str);
+-	if (error)
++	ret = btrfs_check_dir_item_collision(BTRFS_I(dir)->root, dir->i_ino, &name_str);
++	if (ret)
+ 		goto out_dput;
+ 
+ 	down_read(&fs_info->subvol_sem);
+@@ -933,11 +932,11 @@ static noinline int btrfs_mksubvol(const struct path *parent,
+ 		goto out_up_read;
+ 
+ 	if (snap_src)
+-		error = create_snapshot(snap_src, dir, dentry, readonly, inherit);
++		ret = create_snapshot(snap_src, dir, dentry, readonly, inherit);
+ 	else
+-		error = create_subvol(idmap, dir, dentry, inherit);
++		ret = create_subvol(idmap, dir, dentry, inherit);
+ 
+-	if (!error)
++	if (!ret)
+ 		fsnotify_mkdir(dir, dentry);
+ out_up_read:
+ 	up_read(&fs_info->subvol_sem);
+@@ -945,7 +944,7 @@ static noinline int btrfs_mksubvol(const struct path *parent,
+ 	dput(dentry);
+ out_unlock:
+ 	btrfs_inode_unlock(BTRFS_I(dir), 0);
+-	return error;
++	return ret;
+ }
+ 
+ static noinline int btrfs_mksnapshot(const struct path *parent,
 -- 
 2.49.0
 
