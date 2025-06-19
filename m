@@ -1,117 +1,133 @@
-Return-Path: <linux-btrfs+bounces-14797-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14802-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05881AE0CAC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 20:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 05A41AE0DFF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 21:28:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F6241891F70
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 18:19:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 547121890287
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 19:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2252EE264;
-	Thu, 19 Jun 2025 18:03:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E2E628B51F;
+	Thu, 19 Jun 2025 19:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="t8bvAQ56"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="Ud5etnuA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (unknown [62.3.69.246])
+Received: from mail-qv1-f98.google.com (mail-qv1-f98.google.com [209.85.219.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B81F2ED15D;
-	Thu, 19 Jun 2025 18:03:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.3.69.246
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D60B245032
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Jun 2025 19:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750356215; cv=none; b=U4TtIHFf9kUqh8FqQPeParfIxjh9icXOMYq7qDahRZNxtPHXBUnODhO/JsZHYXXcESwgUPJSy12qFDVFao73rAyICf2G//ofOr8b2RGWL2sjbH4reU/lTP/B3KdRFLB0UALo9LjmRfpW7pqMbpMlOluC9gSWv5JLCS7FwaTaVbk=
+	t=1750361281; cv=none; b=oAfS6czTOzdnBm9/GWasR2J0VwwxfdEqSTCUjllqlGk6t5+0hK4u0feeLTS9io8Tq2yVnNCd5SWOk4trikOPweDebTecS5ncRP7GWCAEQj5tB8K/FqZkqjwpwL0JdMhMNqbsUrwUs797thwXnnrJ6hfZQ9LRqBcxbbVtKzJ2AUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750356215; c=relaxed/simple;
-	bh=mHAMYuIGEsFqdsF3yX/wqLMTXEHswZHPRaMvZ11doms=;
-	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ElBgO9y1tGWaIAD9y0rxSVJeswGJ+aPRTdczZEMa5YFVlP0+Dd9QRcM0fmMThmzEbuoTzXw3yIHo8brRfWNx6mtwpYAmfciVwF6B1qy5/bgcejkEJ/Zpr7pegw6zzgzcaPe7NR/Ln5lOJ+qEs7JOKK+ivrH9EUnPw7iZ9jfEWzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=t8bvAQ56; arc=none smtp.client-ip=62.3.69.246
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
-Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
-	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
-	by mail.burntcomma.com (Postfix) with ESMTPS id E356428978C;
-	Thu, 19 Jun 2025 19:03:27 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1750356208;
-	bh=tspvUCiguj3Wm3D+7sYAUwox/ingERnQvBTjDZbBptE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=t8bvAQ562dcHIUDPtyM7scI11vnx0aLskD+4QOHQg4HN+c7YXxVTD81a7ukUWfqHO
-	 kBGx3GCgE8p9ZXb96k85zfwwBBMuB22fA7gsgxbBJ68D/nGSbC5DLWqgy7Zz6Qmcq8
-	 696ed9DqULoa6gkGmniB4LpfRrj2r4tACWKK4Itc=
-Message-ID: <fcb1bd45-f703-4df7-a3dd-f5cdae9c3983@harmstone.com>
-Date: Thu, 19 Jun 2025 19:03:27 +0100
+	s=arc-20240116; t=1750361281; c=relaxed/simple;
+	bh=sijI63S00ZgLzoop5Ca6++6nAMYhSyYN82X6IBrZOM4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bVke8237c7b2h4tgDKd3KWa8EX/0NEBHFHKwQmKvSLFp+IwpTqACnbhqad0QadoS/JQYiqgCclFhDmaBW6QG6wyvi0Vf8LFm3FUSvGUO7XNz/bqLJHHLbys0vCllEHwieBkjGCD+0c3OfmIwicdSgUz7fQJEPOIrz+rgql+qB+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=Ud5etnuA; arc=none smtp.client-ip=209.85.219.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-qv1-f98.google.com with SMTP id 6a1803df08f44-6fb57fe217fso1006366d6.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Jun 2025 12:27:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1750361276; x=1750966076; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UgbxT3rUHbJcwXp+d4U0s8gCt8pvR9AU1IXgLNjEg00=;
+        b=Ud5etnuAFg21/3ql02kuJSUljsqKzAeZ0DCGWdyOWTJYz9kEhQQG8Baf60AVfCcf6R
+         9UgVg2Nzl7xAhI3eSH6qiE9Fw1KZRDp67Em2P3eXYq6wtvc8RcPG070krEZXIqXxibal
+         /OoR14V4CHN6To0O275iNfbbtIBR2Uflj5MEM+MxH7YzGphdujNkj1jkmWrnwlvJrY4r
+         eUmaj+Cgs/6n1f9Tq0TCgs5Dj/Xrn2r91tnCvNYnFxtyTVtrJZSJi/VyXB8EluAXJbFn
+         acWY2aTqNc37YfIeWTKo8DhOR58rtGooyZDUqrG7G+ymFlEretM6754Gps4yA114P6vz
+         IoDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750361276; x=1750966076;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UgbxT3rUHbJcwXp+d4U0s8gCt8pvR9AU1IXgLNjEg00=;
+        b=oLn2/ezmgzh2sU22X81+UlW8t8alB97jjqIgGCLOaOcD5zTxKFqGkgNFkzf2Xs0XMc
+         Qtgk4q+u/BmaVy0x1yJMm9Pet0/P4Bbh7OPtJgK9qE9/HUoiSLTT+u82hmemcoGT6/V9
+         sl11MRPJUSLp2AKFIYyBt0CAh8f/953IgabNz+QUjWGq1AugjuNM3VamF4gRTvZ85mI6
+         7WiMFkFoJBSnTYqlX4ZqTa9Ct6ArfqEaNpa6Tk+ekMODmvKOtj2Rrax0/78OB/SpiGjd
+         RPPuBScMEsDFqn8tCSh1skaBOqKY98nBpduexnrWMRxCpqXvTt9YvpQRQktODfVI/SGn
+         hj/A==
+X-Forwarded-Encrypted: i=1; AJvYcCVSg92MzW36vhSPg2q0OsSUit5TKf9pgQdQRWsQh6mJ7BNN79U6nQV2S/HVVh00FHk6lVDnJqd/JAOMzg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdfUsVm0lSAllamC2mV+1foJ/PVSKEQaPiwYI34joBAhEwiaek
+	7IPkSH+rZlnjTeutjp8JBX1pb5eAG/bpooPE2DGgqJPcoLGc4JiEXqKtDTE9IYtiv88gkkvV8Jx
+	6hHt5R5pQZ8A8e5rDrw5O0xgco1VrX9iBzUhnxkp5rYnfBKrfstb4
+X-Gm-Gg: ASbGncv+BOeegGrxTPuRTXKEJaOYCRuNBC43qmbwk8Z1tiYVm0sedDg9EgMn7snI2Yh
+	0qoMCdbm/8ZVTNXX2cFBqkgyR3YbLCylj2P9VuCLL/SP6aaY0cHpZXoDVW5X4me2ySmn9eKBFxt
+	HotB6Xl8TOG+iEoEo2c5CzEiybygpv2rgaWzihbF8EY8NHZ2eqFQks0a2a1iOpi+CoK4nJ/buU8
+	+ADiIkeFTARMkc8itZq8F1RmcIhsHVvUw9zuFXzwsnVaSCtiWq0R5YNiT+vTj4QolaWRxs7GF5w
+	vLEhLhTk6xrtkqCGh/fsmUW5rih7XxcCvIeDG/ld
+X-Google-Smtp-Source: AGHT+IHz10o1j4yWo0MElDZwSQq9lzFuxMzdz16AoaaK4BkVl1R49On+ZMbhjl9V+Kl3D2KIomY0GccVT6QO
+X-Received: by 2002:a0c:f096:0:10b0:6fa:b8a1:abaa with SMTP id 6a1803df08f44-6fd0a2ff22bmr2120546d6.0.1750361276346;
+        Thu, 19 Jun 2025 12:27:56 -0700 (PDT)
+Received: from c7-smtp-2023.dev.purestorage.com ([2620:125:9017:12:36:3:5:0])
+        by smtp-relay.gmail.com with ESMTPS id 6a1803df08f44-6fd095627c8sm299176d6.70.2025.06.19.12.27.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Jun 2025 12:27:56 -0700 (PDT)
+X-Relaying-Domain: purestorage.com
+Received: from dev-csander.dev.purestorage.com (dev-csander.dev.purestorage.com [10.7.70.37])
+	by c7-smtp-2023.dev.purestorage.com (Postfix) with ESMTP id 70C423400E6;
+	Thu, 19 Jun 2025 13:27:55 -0600 (MDT)
+Received: by dev-csander.dev.purestorage.com (Postfix, from userid 1557716354)
+	id 6B9D1E4410B; Thu, 19 Jun 2025 13:27:55 -0600 (MDT)
+From: Caleb Sander Mateos <csander@purestorage.com>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Jens Axboe <axboe@kernel.dk>
+Cc: Mark Harmstone <maharmstone@fb.com>,
+	linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Caleb Sander Mateos <csander@purestorage.com>
+Subject: [PATCH 0/4] io_uring/btrfs: remove struct io_uring_cmd_data
+Date: Thu, 19 Jun 2025 13:27:44 -0600
+Message-ID: <20250619192748.3602122-1-csander@purestorage.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH v2] btrfs: replace deprecated strcpy with strscpy
-To: Brahmajit Das <listout@listout.xyz>
-Cc: linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
- dsterba@suse.com, kees@kernel.org, ailiop@suse.com
-References: <20250619140623.3139-1-listout@listout.xyz>
- <20250619153904.25889-1-listout@listout.xyz>
- <b8945d37-3eb9-4ad6-b3eb-2725dbb008ad@harmstone.com>
- <rbjjfbhrwh4qjfj4pjhb5zzrvyddjlekfed6kfcrtuurj2ovgg@dm6xesb7nuzm>
-Content-Language: en-US
-From: Mark Harmstone <mark@harmstone.com>
-Autocrypt: addr=mark@harmstone.com; keydata=
- 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
-In-Reply-To: <rbjjfbhrwh4qjfj4pjhb5zzrvyddjlekfed6kfcrtuurj2ovgg@dm6xesb7nuzm>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On 19/06/2025 6.59 pm, Brahmajit Das wrote:
-> On 19.06.2025 18:06, Mark Harmstone wrote:
->> On 19/06/2025 4.39 pm, Brahmajit Das wrote:
-> ...
->>
->> Surely this doesn't compile... strscpy takes three parameters.
->>
-> It does, the third parameter is optional. From include/linux/string.h
-> 
-> #define strscpy(dst, src, ...) \
-> 	CONCATENATE(__strscpy, COUNT_ARGS(__VA_ARGS__))(dst, src, __VA_ARGS__)
-> 
-> But I'm more than happy to add the third parameter.
+btrfs's ->uring_cmd() implementations are the only ones using io_uring_cmd_data
+to store data that lasts for the lifetime of the uring_cmd. But all uring_cmds
+have to pay the memory and CPU cost of initializing this field and freeing the
+pointer if necessary when the uring_cmd ends. There is already a pdu field in
+struct io_uring_cmd that ->uring_cmd() implementations can use for storage. The
+only benefit of op_data seems to be that io_uring initializes it, so
+->uring_cmd() can read it to tell if there was a previous call to ->uring_cmd().
 
-Okay. It looks like this was added by e6584c3964f2ff76a9fb5a701e4a59997b35e547 in
-2023 - the docs don't seem to have caught up yet.
+Introduce a flag IORING_URING_CMD_REISSUE that ->uring_cmd() implementations can
+use to tell if this is the first call to ->uring_cmd() or a reissue of the
+uring_cmd. Switch btrfs to use the pdu storage for its btrfs_uring_encoded_data.
+If IORING_URING_CMD_REISSUE is unset, allocate a new btrfs_uring_encoded_data.
+If it's set, use the existing one in op_data. Free the btrfs_uring_encoded_data
+in the btrfs layer instead of relying on io_uring to free op_data. Finally,
+remove io_uring_cmd_data since it's now unused.
+
+Caleb Sander Mateos (4):
+  btrfs/ioctl: don't skip accounting in early ENOTTY return
+  io_uring/cmd: introduce IORING_URING_CMD_REISSUE flag
+  btrfs/ioctl: store btrfs_uring_encoded_data in io_btrfs_cmd
+  io_uring/cmd: remove struct io_uring_cmd_data
+
+ fs/btrfs/ioctl.c             | 41 +++++++++++++++++++++++++-----------
+ include/linux/io_uring/cmd.h | 11 ++--------
+ io_uring/uring_cmd.c         | 14 +++---------
+ io_uring/uring_cmd.h         |  1 -
+ 4 files changed, 34 insertions(+), 33 deletions(-)
+
+-- 
+2.45.2
+
 
