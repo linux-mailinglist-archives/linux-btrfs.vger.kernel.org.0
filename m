@@ -1,84 +1,84 @@
-Return-Path: <linux-btrfs+bounces-14798-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14799-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25F1EAE0DFD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 21:28:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0760AE0DFA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 21:28:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 044AC17E645
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 19:28:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56F443B3E24
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 19:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 794842459F0;
-	Thu, 19 Jun 2025 19:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470FD246BB6;
+	Thu, 19 Jun 2025 19:28:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="N0R2zRDu"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="e2b/efYD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ot1-f97.google.com (mail-ot1-f97.google.com [209.85.210.97])
+Received: from mail-qt1-f226.google.com (mail-qt1-f226.google.com [209.85.160.226])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB7521FF3B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F0023956A
 	for <linux-btrfs@vger.kernel.org>; Thu, 19 Jun 2025 19:27:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.97
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750361279; cv=none; b=DkuW7TlfCCj3TsLerE/UOA8qX4c7Shke+qWco5QB9oOfFFjr6QRayPNrWMFV0Ih3pfrLqKXXGYEG4bMFlvNWG73X0ZjDNLCeTyI+mwga2e9MDrxXzz5qsA5Zkxd3yUZNqJyPWL2aMKR3YQNeKSezdS8vY75BdEV7qBN2ZOOqUoc=
+	t=1750361280; cv=none; b=f4+3O8deat7ERLVVrHn+kdS75SN6aOI+RFoziPLvF7McF1wisn2npO5v4Iurkknxgy7UKGGS55Zd7zJ50lU0nmguWP8OXlo+QPhFs9GWcYhu2A23WG4DRc5xU3tRIvhEKm1PmPxetFa7oMQcO1wcAhW0UlX8X0GPkpKdHYNiVwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750361279; c=relaxed/simple;
-	bh=K4VZVi3xDLWT0DEl3LNGUBjrD17+mi5NFECXhkIiWrY=;
+	s=arc-20240116; t=1750361280; c=relaxed/simple;
+	bh=7hNsEhABE0MDxTWghxo/fSZvRqPJ7Q0SQ5s7b9NdLn8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DrlHit4PU2r8j5KtxnD3HmHqT8l3ZQRdtxU5uJzP3A4f5uMMzFm6n3ox21Px0DfC8yuCCzCKkkiazHXGKhHX8jaSoDofK3qG9CEpMv5U4xEqXExDvh7TMyh4VFogB0XtsxMxzkiECkoVutqZweAIjkjxCSnTOWDRUDITkTKl66E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=N0R2zRDu; arc=none smtp.client-ip=209.85.210.97
+	 MIME-Version; b=pBfhDbWN83rjhBtEcNsGSBVlue0YK2LBeQeMC5d7byuqO4Bl/tZ+gYk4ipU1KEVhBTPOYfQ9zDxzm/cinFRY4FM5hnRFDwqTXyvc2J9Gkb5+IKEw8GwzUwl1G61jZBJYWYHIgukM/HNKnUgx8MrzELuHrTzuz/V9iwr14x0AVh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=e2b/efYD; arc=none smtp.client-ip=209.85.160.226
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-ot1-f97.google.com with SMTP id 46e09a7af769-72c02e22d96so155091a34.2
+Received: by mail-qt1-f226.google.com with SMTP id d75a77b69052e-479009c951cso1418151cf.1
         for <linux-btrfs@vger.kernel.org>; Thu, 19 Jun 2025 12:27:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1750361277; x=1750966077; darn=vger.kernel.org;
+        d=purestorage.com; s=google2022; t=1750361278; x=1750966078; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Pd50J9nYsG0TeiIeJPqTSZq8OKqwb6u/EH2G1EHnbLs=;
-        b=N0R2zRDuoRfzgfUiO1AcWFzICfQ3al3GoC94JDFHhiABvJd5154MlbhJm9MDthWHGU
-         WiSAJGST5UQXcWz+uDSOquTk3dscvMlcMsMrgsMj/MS1xmir6HPpvlE0eoarK4ALIt66
-         jUQV8oDZkm2ThMXGcQJTY6EIw5rrZcLP0wVu1kDOku1p4miBTc41fbHQLI3XzMUhxG7J
-         lvHoM0S4QjRz8CjJ9xxnDuLdu+3eNtczDXBMkSGNKsQDY1W/hLLLgX9fg3l7tM4QDyyW
-         UXkPVeevwhCItJZNCfxPX/Y7zZOVH3WgczUz7MORJJKvxEqy7Jy6S4ynv76c53SBqYeF
-         6rsg==
+        bh=sL/gnD+RoXyhkM+7is5bQz7YiFPCrbWYEFKrkuC7LHU=;
+        b=e2b/efYDRBZyc9OlMjY3ceghHYSrNX2WOvBeiFN5gV0gBxeFRToOmbD5ufcp/d9/TV
+         9QahCsh0Fm1XJhyLYrj2por/u/V2lfbjtxw4Zp+0agUFCdn6Qffusmho0FBduO/5lyAN
+         /UfsU5N0JmNUPJJERhAACR3pCZhdMh0g7/ZdNzeIgoBUr3uJQkliQVI7m7kAk0U0NpA0
+         ef88hXzzgkorLbc415WY7m3EfayI7bm5HoSmEczwQ9Mbnk7RG4Itq4J66JuXfPEa6EzU
+         d5tGdy5LCTrO3XliKIYCm+9TtKgmyXFBOxQLn76kR4iP24OQogvKN8h2zwa/qV/40KZ9
+         7RbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750361277; x=1750966077;
+        d=1e100.net; s=20230601; t=1750361278; x=1750966078;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Pd50J9nYsG0TeiIeJPqTSZq8OKqwb6u/EH2G1EHnbLs=;
-        b=pSVgNS2UegHNQWgqqCOT5c8Ph+17fkhQyAkYoeCMOoRr7vj5Z87HoJKnXqgO364cB3
-         qva7L9JzB4p5A33izbp9h2Ded/azeAY8rx+oluyAo1c0E2VqVR46KKSlozJ7PZl45mQe
-         GclC8mAYbExTywCNaQRz5fLE7gRZnCtjkG+Mrq81mRrEGsjpgzDi5j6X95tDR4vKsDQr
-         4SxQ0Nm7tGWRy19+NhkHvLUhdo3mZlezaHswHs2zAwCtqKAA/orVDmsfYaJx5m2sehVG
-         DQV5tv5mg466G1SDL9RHYIckliLwvt1bBclIZJz2H4Vg7alvqyVviuMC/O8NUFFS0CsM
-         YKDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUMMLedN3oMpgbBl33ay/xLtCHJB09XwF+HTGDkxNWdpwPOwzFEfKp8POTQ4ZO9QBPwL6P2BeAH0m+fIw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwWpqETo0aP4Vm7Xjs14DaTkiu4FVMz4ShYLb9BCjorgeIcr/AL
-	mIHszZzWcJGQZFVLxEMwguQBFbuGfWHjIr5yt71OASYw/gtmkfntFRbYVSRqpqH33bAmyQayvhC
-	LJ7jUKWceC49EQYLOR0iuFDs39HI4mAXWqYKM
-X-Gm-Gg: ASbGncsn42LfqlzpVGrWQVuudn8JckVeedicgpy97zcDJAV05uALGKgyGQKE9G4m6O0
-	CPim0twVaKZ2H0yRtd0mFqmil3ciOUqX/whFVEH1n6377xrPpCrW/imAaU1tcPGefuxtj0a0vHH
-	t3pWiIAyHp8Xz4wHUmOVnlswOwepGmacMHpT/VCBFxhUnS9LR/hKsOhMnkornWscEzPr7m9Ta6m
-	Bj2J1N+DXWZfHPzdFdJnkw1FuD+LOaXr3nzsG/Jo2nw4sh5ZdzjERgf91jY1RA5pF8+Euta2PVu
-	Qka1NcQFbX0Ei8SOMgFkeHCQpJ0s/7p8car1d4eGUymvNGkfhYhpXQE=
-X-Google-Smtp-Source: AGHT+IFJTkxUOsR6hHqwhzCVU/31oTbq4J6u3JvNzvDfBfkf4G2km3lw6QOOl6Hu+u0klImFrFzJNZ4BngML
-X-Received: by 2002:a05:6871:205:b0:2ea:9842:68e2 with SMTP id 586e51a60fabf-2eeee56f4e5mr63594fac.10.1750361277182;
+        bh=sL/gnD+RoXyhkM+7is5bQz7YiFPCrbWYEFKrkuC7LHU=;
+        b=B8f2T0zdpK/RhPuna0agTptk+2flDlbGwgGPhaYKVpK+VHnXyTqZOwVpsAjY//hQm9
+         vRGSPBpAX0Xur1gWANxkYz+ponGl4ZlJQxc6LZx00ECUTFwD8Y0PSrxPQZkuz2xWCoAg
+         aMcsz3qkGhaJMRBqucBAN6dmqFkbphAgBQDg3fuJhWXKpMQKy+buGYTKwgUKzf/NiWf6
+         mZAsgHM0eDty6L0qCZDfGpsjnZmVba1luDzmW6+My0XE61Q2NjKA6ED5eKVFrrQvd8Y8
+         /Kn+X/EM0+aWHsyzdWF02o0gSFdLGR2/BK8pZ6tBmNrJ7gY21qLaVvjO9kMLLxe1CGuL
+         9qIg==
+X-Forwarded-Encrypted: i=1; AJvYcCVT09tOTKAKwIsYQ6rFlO8837vPW0qPhVZM68SqKnbVeNXxoz4+sSCk9bM4y18CWt0Baq4ZhIEftB17RQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx4EDCowmxylRV+1NYMTkBAgeWaxI+vZkwq6vlMxoVE9bP4KYJI
+	vqbFp4aRw9R2hXKjSCzYXhPmT21EseA7orW3saA/4W/dLlWwuBQNOk+morPuhyZrsZD7ny7RH0m
+	bHCYR6hM/rx1Fq8EFYNcxJufBXPgmv8INfjXo
+X-Gm-Gg: ASbGncsYQiz1m33HcFtcTgKaJn4/hOiqEJSPVq0qhvt6cQujqsNkvRaytgxbLrmaIvw
+	Bm2Dk4x6nYChIXfGqNzyAAy38E15oRgjDrwB1+0V6D6R4SSNHh//AByF9+905VqmsI4d/pt0m/5
+	WNuPQQJMOqjY83tIn/xJraSx6RAPQBijqSpjJJHwlumhXw44Tto9HbfQuMQqqGVvrWr0NrmFJr6
+	59/o+JReLVpqHx9VphIrw2ysIlL1G99UhCR+KmAsC9HEwfmcsoePncQzdQLH4ZKboVW49KoqdML
+	Mw/H3eVi6j2xZMwxXgjUNDbt+Tad/uZs/vgDpFPVBfTb/KJ6V2T1tjk=
+X-Google-Smtp-Source: AGHT+IHzFp7Ayin7ZLuxdt5epZwacsJfi24ByOHXtA/2tQ3yV9AYUgiGyGENqzR3VrIwLw6XQlKq/HIcpRov
+X-Received: by 2002:ac8:5704:0:b0:4a5:a4d8:3a6b with SMTP id d75a77b69052e-4a77a1aecc3mr1743701cf.2.1750361277885;
         Thu, 19 Jun 2025 12:27:57 -0700 (PDT)
 Received: from c7-smtp-2023.dev.purestorage.com ([208.88.159.129])
-        by smtp-relay.gmail.com with ESMTPS id 586e51a60fabf-2ee8a78e987sm17874fac.32.2025.06.19.12.27.56
+        by smtp-relay.gmail.com with ESMTPS id d75a77b69052e-4a77a157998sm71631cf.13.2025.06.19.12.27.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 19 Jun 2025 12:27:57 -0700 (PDT)
 X-Relaying-Domain: purestorage.com
-Received: from dev-csander.dev.purestorage.com (dev-csander.dev.purestorage.com [10.7.70.37])
-	by c7-smtp-2023.dev.purestorage.com (Postfix) with ESMTP id 34E5034031F;
+Received: from dev-csander.dev.purestorage.com (unknown [IPv6:2620:125:9007:640:ffff::1199])
+	by c7-smtp-2023.dev.purestorage.com (Postfix) with ESMTP id D4B483400E6;
 	Thu, 19 Jun 2025 13:27:56 -0600 (MDT)
 Received: by dev-csander.dev.purestorage.com (Postfix, from userid 1557716354)
-	id 32ED7E4410B; Thu, 19 Jun 2025 13:27:56 -0600 (MDT)
+	id D2579E4410B; Thu, 19 Jun 2025 13:27:56 -0600 (MDT)
 From: Caleb Sander Mateos <csander@purestorage.com>
 To: Chris Mason <clm@fb.com>,
 	Josef Bacik <josef@toxicpanda.com>,
@@ -89,9 +89,9 @@ Cc: Mark Harmstone <maharmstone@fb.com>,
 	io-uring@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Caleb Sander Mateos <csander@purestorage.com>
-Subject: [PATCH 1/4] btrfs/ioctl: don't skip accounting in early ENOTTY return
-Date: Thu, 19 Jun 2025 13:27:45 -0600
-Message-ID: <20250619192748.3602122-2-csander@purestorage.com>
+Subject: [PATCH 2/4] io_uring/cmd: introduce IORING_URING_CMD_REISSUE flag
+Date: Thu, 19 Jun 2025 13:27:46 -0600
+Message-ID: <20250619192748.3602122-3-csander@purestorage.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20250619192748.3602122-1-csander@purestorage.com>
 References: <20250619192748.3602122-1-csander@purestorage.com>
@@ -103,35 +103,51 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-btrfs_uring_encoded_read() returns early with -ENOTTY if the uring_cmd
-is issued with IO_URING_F_COMPAT but the kernel doesn't support compat
-syscalls. However, this early return bypasses the syscall accounting.
-goto out_acct instead to ensure the syscall is counted.
+Add a flag IORING_URING_CMD_REISSUE that ->uring_cmd() implementations
+can use to tell whether this is the first or subsequent issue of the
+uring_cmd. This will allow ->uring_cmd() implementations to store
+information in the io_uring_cmd's pdu across issues.
 
 Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
-Fixes: 34310c442e17 ("btrfs: add io_uring command for encoded reads (ENCODED_READ ioctl)")
 ---
- fs/btrfs/ioctl.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/io_uring/cmd.h | 2 ++
+ io_uring/uring_cmd.c         | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 913acef3f0a9..ff15160e2581 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4827,11 +4827,12 @@ static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd, unsigned int issue
+diff --git a/include/linux/io_uring/cmd.h b/include/linux/io_uring/cmd.h
+index 53408124c1e5..29892f54e0ac 100644
+--- a/include/linux/io_uring/cmd.h
++++ b/include/linux/io_uring/cmd.h
+@@ -6,10 +6,12 @@
+ #include <linux/io_uring_types.h>
+ #include <linux/blk-mq.h>
  
- 	if (issue_flags & IO_URING_F_COMPAT) {
- #if defined(CONFIG_64BIT) && defined(CONFIG_COMPAT)
- 		copy_end = offsetofend(struct btrfs_ioctl_encoded_io_args_32, flags);
- #else
--		return -ENOTTY;
-+		ret = -ENOTTY;
-+		goto out_acct;
- #endif
- 	} else {
- 		copy_end = copy_end_kernel;
+ /* only top 8 bits of sqe->uring_cmd_flags for kernel internal use */
+ #define IORING_URING_CMD_CANCELABLE	(1U << 30)
++/* io_uring_cmd is being issued again */
++#define IORING_URING_CMD_REISSUE	(1U << 31)
+ 
+ struct io_uring_cmd {
+ 	struct file	*file;
+ 	const struct io_uring_sqe *sqe;
+ 	/* callback to defer completions to task context */
+diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+index 929cad6ee326..7cddc4c1c554 100644
+--- a/io_uring/uring_cmd.c
++++ b/io_uring/uring_cmd.c
+@@ -257,10 +257,12 @@ int io_uring_cmd(struct io_kiocb *req, unsigned int issue_flags)
+ 			req->iopoll_start = ktime_get_ns();
+ 		}
  	}
  
+ 	ret = file->f_op->uring_cmd(ioucmd, issue_flags);
++	if (ret == -EAGAIN)
++		ioucmd->flags |= IORING_URING_CMD_REISSUE;
+ 	if (ret == -EAGAIN || ret == -EIOCBQUEUED)
+ 		return ret;
+ 	if (ret < 0)
+ 		req_set_fail(req);
+ 	io_req_uring_cleanup(req, issue_flags);
 -- 
 2.45.2
 
