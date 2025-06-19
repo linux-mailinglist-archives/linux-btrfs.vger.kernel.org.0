@@ -1,34 +1,34 @@
-Return-Path: <linux-btrfs+bounces-14792-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14793-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95302AE0BA8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 19:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B25FAE0BBB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 19:06:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E56C216A27C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 17:03:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0262F4A235F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 17:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2B628C5A1;
-	Thu, 19 Jun 2025 17:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA3B528C87D;
+	Thu, 19 Jun 2025 17:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="YLVRc4tJ"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="aLglzQ+y"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail.burntcomma.com (unknown [62.3.69.246])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D877A23CB;
-	Thu, 19 Jun 2025 17:03:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC262367B1;
+	Thu, 19 Jun 2025 17:06:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.3.69.246
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750352606; cv=none; b=ZaZYYKBNEPwP/umyYq55eE7/KwjhyZtOCn9sKXrSzQ/KmuCUmdg6v3OhBJZQPH/zdTDYwkFPOLheJAejx2KhykeEc8O6K5FPWdqLPICROc2NIc1veifFMeZ3lnju0zdMLZNdx6DyFd3s1fdv7OF4V8EfMiPWpz7EAwDhAtm9RmA=
+	t=1750352778; cv=none; b=qlgrX0KyP9ZbKVNBRErt+kidMlOoYCFygR/WcMmQx2CH9v/Eat4BUCw5lZhS0m6dTipDsnRhacXInlVK+9++5b9JJM6/t8QOvu4Mib0RZt3J8zD9FBNjXaX8k7ArXe3Eh6MRoR7kfi095ABq1o+7zw2PR5lsVPkLDnT9wRXNlCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750352606; c=relaxed/simple;
-	bh=7xdCPxzJB1e5/qHFc8iHQXbuzlLFAz6G4Dm9ux1O3/c=;
+	s=arc-20240116; t=1750352778; c=relaxed/simple;
+	bh=ByMVe8IbdMaFOUossUjxMjeIcyVLSrx4rAhlwxACzAs=;
 	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hgox5OlJPlYe1G9LQP3TlsW6Y2UhbRQBqlAIt9dohQj6YjFWzb51aF4lznDPsig+XQ3AAQkk/aZchzRNohF0z366vrPzRK1T5mKJXfjmV/CoBAnkNMyE4nyVv1JY4L0gZ0u6Jv510aKp+Ymi4e+snfleI01cNSomAb5jPBZm3kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=YLVRc4tJ; arc=none smtp.client-ip=62.3.69.246
+	 In-Reply-To:Content-Type; b=Ffpo4WHNDIODNK6Zbcmc5CWsQJ7r4TSAEkjxeitkHVz2B3OlxRVLc/M9zfoF2J4hX7GiVLrNXy3o7xNXnGAONYh5ds6wAeIz14YFs0juniCdruZEx5cGNoMfwTgD//T5bAI8Bt07BpZcBEXtZW8AGh2pV8y2PT9BVAEUG1FoGBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=aLglzQ+y; arc=none smtp.client-ip=62.3.69.246
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
 Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
@@ -36,28 +36,30 @@ Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
 	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
 	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
-	by mail.burntcomma.com (Postfix) with ESMTPS id CF0482896A8;
-	Thu, 19 Jun 2025 18:03:11 +0100 (BST)
+	by mail.burntcomma.com (Postfix) with ESMTPS id 8654C2896B7;
+	Thu, 19 Jun 2025 18:06:12 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1750352591;
-	bh=vWnhfExwlsZUvukzyJutPT1fPw8hF7WbCkSYIyCGvjM=;
+	s=mail; t=1750352772;
+	bh=XEHNEzk9V6MYTH1qzKl38JyGH0PE4klJDHTC7EE6U8g=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=YLVRc4tJOC8Ks1PBiT9IW4hydKawbAlMfEeOdEgrifAbUhTDl9kPJEVwsqjTGbjDH
-	 d5htbL3+wx7uuQI2Gev3JBJ0kieRqRXbO7taU+k+e4zYhP3RN9kLqrzbVP70lV5+N8
-	 v5iN5ocfKm7uFXC6XlcnXi00MugsJEQ/wBEvh7bc=
-Message-ID: <c278bbd3-c024-41ea-8640-d7bf7e8cff47@harmstone.com>
-Date: Thu, 19 Jun 2025 18:03:11 +0100
+	b=aLglzQ+yruUfBzpJGuilvw+ClmbljmsHUSaRpAhdO88LpgOwGN63s4a4tER0vloFr
+	 Lzgj3sbEft4G7UuDnwjR2Az6KoVtt56PTPho2Jvf1FMHVjVSMAdhDpntM7ycIe4bkX
+	 vrhr1AmCaElZXu6uf1+p/5OLWhwkTFfosB+H6xng=
+Message-ID: <b8945d37-3eb9-4ad6-b3eb-2725dbb008ad@harmstone.com>
+Date: Thu, 19 Jun 2025 18:06:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Subject: Re: [PATCH] btrfs: replace deprecated strcpy with strscpy
+Subject: Re: [PATCH v2] btrfs: replace deprecated strcpy with strscpy
 To: Brahmajit Das <listout@listout.xyz>, linux-hardening@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, kees@kernel.org
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, kees@kernel.org,
+ ailiop@suse.com
 References: <20250619140623.3139-1-listout@listout.xyz>
+ <20250619153904.25889-1-listout@listout.xyz>
 Content-Language: en-US
 From: Mark Harmstone <mark@harmstone.com>
 Autocrypt: addr=mark@harmstone.com; keydata=
@@ -90,20 +92,64 @@ Autocrypt: addr=mark@harmstone.com; keydata=
  6bZCBtwr/O+CwVVqWRzKDQgVo4t1xk2ts1F0R1uHHLsX7mIgfXBYdo/y4UgFBAJH5NYUcBR+
  QQcOgUUZeF2MC9i0oUaHJOIuuN2q+m9eMpnJdxVKAUQcZxDDvNjZwZh+ejsgG4Ejd2XR/T0y
  XFoR/dLFIhf2zxRylN1xq27M9P2t1xfQFocuYToPsVk=
-In-Reply-To: <20250619140623.3139-1-listout@listout.xyz>
+In-Reply-To: <20250619153904.25889-1-listout@listout.xyz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 19/06/2025 3.06 pm, Brahmajit Das wrote:
+On 19/06/2025 4.39 pm, Brahmajit Das wrote:
 > strcpy is deprecated due to lack of bounds checking. This patch replaces
 > strcpy with strscpy, the recommended alternative for null terminated
 > strings, to follow best practices.
+> 
+> There are instances where strscpy cannot be used such as where both the
+> source and destination are character pointers. In that instance we can
+> use sysfs_emit or a memcpy.
+> 
+> Update in v2: using sysfs_emit instead of scnprintf
+> 
+> No functional changes intended.
+> 
+> Link: https://github.com/KSPP/linux/issues/88
+> 
+> Suggested-by: Anthony Iliopoulos <ailiop@suse.com>
+> Signed-off-by: Brahmajit Das <listout@listout.xyz>
+> ---
+>   fs/btrfs/ioctl.c   | 2 +-
+>   fs/btrfs/send.c    | 2 +-
+>   fs/btrfs/volumes.c | 2 +-
+>   fs/btrfs/xattr.c   | 4 ++--
+>   4 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 913acef3f0a9..203f309f00b1 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -4200,7 +4200,7 @@ static int btrfs_ioctl_set_fslabel(struct file *file, void __user *arg)
+>   	}
+>   
+>   	spin_lock(&fs_info->super_lock);
+> -	strcpy(super_block->label, label);
+> +	strscpy(super_block->label, label);
+>   	spin_unlock(&fs_info->super_lock);
+>   	ret = btrfs_commit_transaction(trans);
 
-I think calling strcpy "deprecated" is a bit tendentious. IMHO the way to proceed
-is to use KASAN, which catches the misuse of strcpy as well as other bugs.
+Surely this doesn't compile... strscpy takes three parameters.
 
-> ...snip...
-
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 2891ec4056c6..66ee9e1b1e96 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -758,7 +758,7 @@ static int send_header(struct send_ctx *sctx)
+>   {
+>   	struct btrfs_stream_header hdr;
+>   
+> -	strcpy(hdr.magic, BTRFS_SEND_STREAM_MAGIC);
+> +	strscpy(hdr.magic, BTRFS_SEND_STREAM_MAGIC);
+>   	hdr.version = cpu_to_le32(sctx->proto);
+>   	return write_buf(sctx->send_filp, &hdr, sizeof(hdr),
+>   					&sctx->send_off);
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 89835071cfea..ec5304f19ac2 100644
 > --- a/fs/btrfs/volumes.c
 > +++ b/fs/btrfs/volumes.c
 > @@ -215,7 +215,7 @@ void btrfs_describe_block_groups(u64 bg_flags, char *buf, u32 size_buf)
@@ -115,13 +161,30 @@ is to use KASAN, which catches the misuse of strcpy as well as other bugs.
 >   		return;
 >   	}
 
-These aren't equivalent. strcpy copies the source plus its trailing null - the
-equivalent would be memcpy(bp, "NONE", 4). So 4 here should really be 5 - but
-you shouldn't be hardcoding magic numbers anyway.
+Same issue here as with the other patch.
 
-On top of that memcpy is just as "unsafe" as strcpy, so there's no benefit to
-this particular change. gcc -O2 compiles it the same way anyway:
-https://godbolt.org/z/8fEaKTTzo
+>   
+> diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
+> index 3e0edbcf73e1..9f652932895c 100644
+> --- a/fs/btrfs/xattr.c
+> +++ b/fs/btrfs/xattr.c
+> @@ -12,6 +12,7 @@
+>   #include <linux/posix_acl_xattr.h>
+>   #include <linux/iversion.h>
+>   #include <linux/sched/mm.h>
+> +#include <linux/string.h>
+>   #include "ctree.h"
+>   #include "fs.h"
+>   #include "messages.h"
+> @@ -516,8 +517,7 @@ static int btrfs_initxattrs(struct inode *inode,
+>   			ret = -ENOMEM;
+>   			break;
+>   		}
+> -		strcpy(name, XATTR_SECURITY_PREFIX);
+> -		strcpy(name + XATTR_SECURITY_PREFIX_LEN, xattr->name);
+> +		sysfs_emit(name, "%s%s", XATTR_SECURITY_PREFIX, xattr->name);
+>   
+>   		if (strcmp(name, XATTR_NAME_CAPS) == 0)
+>   			clear_bit(BTRFS_INODE_NO_CAP_XATTR, &BTRFS_I(inode)->runtime_flags);
 
-Mark
 
