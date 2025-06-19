@@ -1,172 +1,155 @@
-Return-Path: <linux-btrfs+bounces-14788-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14789-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FFA7AE07DA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 15:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3631AAE084E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 16:07:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FE813B6AE7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 13:52:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC1A63B7640
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Jun 2025 14:06:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B5A28A72D;
-	Thu, 19 Jun 2025 13:51:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B61728B418;
+	Thu, 19 Jun 2025 14:06:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dDDxfYt9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="92MG6WuY";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dDDxfYt9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="92MG6WuY"
+	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="iQPG8qTL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6D0227E1B1
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Jun 2025 13:51:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E828B26FA58;
+	Thu, 19 Jun 2025 14:06:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750341089; cv=none; b=SUOdYqehHXyN7cgjWFh37h1O6/U/8y8TaYVyuuaachuR2HUY+YTErH07GugxJFwH8/ovY55Tpg9z8CycRpVYoTu2iKjatLN4sepUbI84Qr/lub5DL9sOGZiqd9oSqDBXQ2XPZSC4b5UqQHdxZEfRfNXtyaAeAp7opxirbZzVw/E=
+	t=1750342008; cv=none; b=LSnhSUBwYEgcErXRLg9WohNJHzI5BKT3gIWiCXqQdaD5epqBjSs6pB9La91q0027bSaKahlsLWMmOD6DSHkLs65KonFB2EYktfl5JuNO0bnGXeXWhmr/2ogKw40Keo+gwdr36XDZUCgywRClmpDnn6+cDhg/Nyx0QKiMfCsdUlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750341089; c=relaxed/simple;
-	bh=mC8A3U2GUpteiJmo5YjxvEwg/kH+zzGSf9HDNz/ETmo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l5YhMxLCFpcsqL7pM4nTkZ/3qBMwDeHgiLqncLYvjHHMwAroMZCRYBZMsZ/ZxRWpU43J7lztVL16q0ApKzNecNhNQzriB5oHMRPqAiUZsGfpFdLdLeUBKnQGhqjVtfzbvfBqUf/3z4VUjx8uBG5w5iw4kUDxMxsTR80yvEKa8EE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dDDxfYt9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=92MG6WuY; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dDDxfYt9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=92MG6WuY; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	s=arc-20240116; t=1750342008; c=relaxed/simple;
+	bh=NYBkuq0cnX17OM4U0p5kofF8HhaPNGilDGSLVZI+Bz4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fe1nBp0cAw3mwvut5CcAIpLVuk75xZ9YTyOp1MTUR3P2wnQF/IJsOUKF3tljdN3zvruNCyzQFh9fKcdqSM/0qtQDzOkdcfkFOKaa6xKvXiNf+9qaxIkj/OBX5ZC56Q8wWQhFHEf1OY1irIalbThSt1LXVhZSVOHUjoKw39ipql8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=iQPG8qTL; arc=none smtp.client-ip=80.241.56.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D7A6B1F38D;
-	Thu, 19 Jun 2025 13:51:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750341085;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y2zfxl8QoCvFcLU2Jsf1YAYvLE7xKJtUQmP49b2cc5g=;
-	b=dDDxfYt9dYLlScN9dyOMkkfK/H5m7+fMGydphvUBRiodVmU+m4s7+Ng+eh0VClhq4KUQwi
-	YRAym3CGR2xVn9ztRIXb5/wL8NzeZN7sp9828dUpVQSpplouFk4QvLQQqQh+VS0WW+5Q95
-	8GQ3OdnyibFIMrKhOfv+z7pt+jEa4Xg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750341085;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y2zfxl8QoCvFcLU2Jsf1YAYvLE7xKJtUQmP49b2cc5g=;
-	b=92MG6WuYpVQmK+NfllwTGi9btaoSYja2bo/NBjNK0VRcSrLRDzx7PTlRDkAE6WQeZcGgdB
-	1or9QKzYblBXRMCw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750341085;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y2zfxl8QoCvFcLU2Jsf1YAYvLE7xKJtUQmP49b2cc5g=;
-	b=dDDxfYt9dYLlScN9dyOMkkfK/H5m7+fMGydphvUBRiodVmU+m4s7+Ng+eh0VClhq4KUQwi
-	YRAym3CGR2xVn9ztRIXb5/wL8NzeZN7sp9828dUpVQSpplouFk4QvLQQqQh+VS0WW+5Q95
-	8GQ3OdnyibFIMrKhOfv+z7pt+jEa4Xg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750341085;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y2zfxl8QoCvFcLU2Jsf1YAYvLE7xKJtUQmP49b2cc5g=;
-	b=92MG6WuYpVQmK+NfllwTGi9btaoSYja2bo/NBjNK0VRcSrLRDzx7PTlRDkAE6WQeZcGgdB
-	1or9QKzYblBXRMCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C03FC136CC;
-	Thu, 19 Jun 2025 13:51:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OtG3Lt0VVGg3FwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 19 Jun 2025 13:51:25 +0000
-Date: Thu, 19 Jun 2025 15:51:20 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Sun YangKai <sunk67188@gmail.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: search_tree ioctl performance improvements
- and cleanups
-Message-ID: <20250619135120.GN4037@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20250612043311.22955-1-sunk67188@gmail.com>
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4bNMq55XVsz9tFm;
+	Thu, 19 Jun 2025 16:06:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
+	t=1750342001;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=PGfE/9y3eqH7Zr/2zxMvSStMMitvqBr+4f1cr+9I1IM=;
+	b=iQPG8qTLKrmvkILdtOt3CNspdU0SD0GDyKlQ1BnXkMRLG6VW3EIIHcadxZg0n1z+nwrAyq
+	R4IvC2brbZ5iWgAopHBw1lM3sSkmqy/JMOa292dYp4Vtdo/sc9ZbWxjuO/3Go9ze3EGS7A
+	U1sz4UdgszLlEAVHlbk9T3wwZcRNL9soG2XaxRRNBz4rByuaApK8WHuqvQRP1SASzVMjZK
+	UY1LJ/B5uK1mJkAeZn+tFe96gnpAJJt26s7Ojsy9JKJrt22zBCAEx8B0BBFY7srZ0mAk5/
+	cCn4h3IBEDbjWk/+6xQm7rM9F7xIukfa+ikRRmcheTsWqEhEEF5U8VNi5VR4jQ==
+From: Brahmajit Das <listout@listout.xyz>
+To: linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org
+Cc: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	kees@kernel.org
+Subject: [PATCH] btrfs: replace deprecated strcpy with strscpy
+Date: Thu, 19 Jun 2025 19:36:23 +0530
+Message-ID: <20250619140623.3139-1-listout@listout.xyz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250612043311.22955-1-sunk67188@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[twin.jikos.cz:mid,suse.cz:replyto];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: 4bNMq55XVsz9tFm
 
-On Thu, Jun 12, 2025 at 12:31:10PM +0800, Sun YangKai wrote:
-> This series optimizes the search_tree ioctl path used by tools like compsize
-> and cleans up related code:
+strcpy is deprecated due to lack of bounds checking. This patch replaces
+strcpy with strscpy, the recommended alternative for null terminated
+strings, to follow best practices.
 
-IIRC there were proposals to have a ioctl for compression size but I
-can't find the most recent version now. The SEARCH_TREE what compsize
-does is a "temporary" workaround.
+There are instances where strscpy cannot be used such as where both the
+source and destination are character pointers. In that instance we can
+use scnprintf or a memcpy.
 
-> Patch 1: Narrow loop variable scope
-> 
-> Patch 2: Early exit for out-of-range keys
-> 
->     Replaces continue with early exit when keys exceed max_key
-> 
->     Provides measurable performance improvements:
->     Cold cache: 34.61s → 30.40s (about 12% improvement)
->     Hot cache: 14.19s → 10.57s (about 25% improvement)
-> 
-> Patch 3: Simplify key range checking
-> 
->     Replaces key_in_sk() helper with direct comparisons
-> 
->     Adds WARN_ON for min_key validation (safe due to forward search)
-> 
->     Maintains equivalent functionality with cleaner implementation
-> 
-> These changes optimize a critical path for filesystem analysis tools while
-> improving code maintainability. The performance gains are particularly
-> noticeable when scanning large filesystems.
+No functional changes intended.
 
-Thanks. The changes look good to me, and with a measurable performance
-improvement.
+Link: https://github.com/KSPP/linux/issues/88
+
+Signed-off-by: Brahmajit Das <listout@listout.xyz>
+---
+ fs/btrfs/ioctl.c   | 2 +-
+ fs/btrfs/send.c    | 2 +-
+ fs/btrfs/volumes.c | 2 +-
+ fs/btrfs/xattr.c   | 5 +++--
+ 4 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 913acef3f0a9..203f309f00b1 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -4200,7 +4200,7 @@ static int btrfs_ioctl_set_fslabel(struct file *file, void __user *arg)
+ 	}
+ 
+ 	spin_lock(&fs_info->super_lock);
+-	strcpy(super_block->label, label);
++	strscpy(super_block->label, label);
+ 	spin_unlock(&fs_info->super_lock);
+ 	ret = btrfs_commit_transaction(trans);
+ 
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 2891ec4056c6..66ee9e1b1e96 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -758,7 +758,7 @@ static int send_header(struct send_ctx *sctx)
+ {
+ 	struct btrfs_stream_header hdr;
+ 
+-	strcpy(hdr.magic, BTRFS_SEND_STREAM_MAGIC);
++	strscpy(hdr.magic, BTRFS_SEND_STREAM_MAGIC);
+ 	hdr.version = cpu_to_le32(sctx->proto);
+ 	return write_buf(sctx->send_filp, &hdr, sizeof(hdr),
+ 					&sctx->send_off);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 89835071cfea..ec5304f19ac2 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -215,7 +215,7 @@ void btrfs_describe_block_groups(u64 bg_flags, char *buf, u32 size_buf)
+ 	u32 size_bp = size_buf;
+ 
+ 	if (!flags) {
+-		strcpy(bp, "NONE");
++		memcpy(bp, "NONE", 4);
+ 		return;
+ 	}
+ 
+diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
+index 3e0edbcf73e1..6b3485112840 100644
+--- a/fs/btrfs/xattr.c
++++ b/fs/btrfs/xattr.c
+@@ -12,6 +12,7 @@
+ #include <linux/posix_acl_xattr.h>
+ #include <linux/iversion.h>
+ #include <linux/sched/mm.h>
++#include <linux/string.h>
+ #include "ctree.h"
+ #include "fs.h"
+ #include "messages.h"
+@@ -516,8 +517,8 @@ static int btrfs_initxattrs(struct inode *inode,
+ 			ret = -ENOMEM;
+ 			break;
+ 		}
+-		strcpy(name, XATTR_SECURITY_PREFIX);
+-		strcpy(name + XATTR_SECURITY_PREFIX_LEN, xattr->name);
++		scnprintf(name, sizeof(name), "%s%s", XATTR_SECURITY_PREFIX,
++			  xattr->name);
+ 
+ 		if (strcmp(name, XATTR_NAME_CAPS) == 0)
+ 			clear_bit(BTRFS_INODE_NO_CAP_XATTR, &BTRFS_I(inode)->runtime_flags);
+-- 
+2.50.0
+
 
