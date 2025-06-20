@@ -1,81 +1,56 @@
-Return-Path: <linux-btrfs+bounces-14834-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14835-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF8CDAE25BC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Jun 2025 00:30:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DAE7AE2677
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Jun 2025 01:29:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB6983B9829
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 22:30:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85D455A01AB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 23:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE0C23C4F9;
-	Fri, 20 Jun 2025 22:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D2C2417F8;
+	Fri, 20 Jun 2025 23:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ADSLt6eC"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="S5+VCp+J"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479D01E1E06
-	for <linux-btrfs@vger.kernel.org>; Fri, 20 Jun 2025 22:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5A53210FB
+	for <linux-btrfs@vger.kernel.org>; Fri, 20 Jun 2025 23:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750458554; cv=none; b=AfCyvVdhm2u4pglwscUUs1eyjZicC0CZtdcN2VbR/5BdGQCSr9p6nMQPye8g9EC4fLGDcIG/bGwUskttHvs5yuYDWLQAmaVHB29T29lw2HvQuP46jOdYPwtHAkWBFXLzgs6jxh4lij8sO/Kwbm6W+IuIqpTy2tQNhpDsG2o1nxc=
+	t=1750462176; cv=none; b=Rl0070Nv/RaCBk2vhnE0+qyrUBe+NafWw3RnzjOcLEc5Yc0kDIWooAaVxZFvwHWtfjARWsuO+66QUm9l73HgXFR8mWuN63L+AFkCJlA8V/sr1/+hGAYU/KEHzRG2SBt74bjR7Wj5HeLOT+7qLGtd0mRf35Q8b4aXra/YJETX6Qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750458554; c=relaxed/simple;
-	bh=HrWx1aLg++h1TyjkSpd1s44MbZzuBlSsJv4FmSdOs50=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=e3/BOZBoXqdqjQwl57fXlOcyvqN2olmMzbJDjsrGNrhxzuNchkaTv0NvMEZI9s2MI96bAWjK6yJddEjB9cVBy88lCUSNKlJy4E24MnD0iwK6gl43rpaUDF3wX+N0qB17KI+BT7l7/yF0KSSeIpGbmua0Ajxf9aL93lJ21jrcPt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ADSLt6eC; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3a6d1369d4eso664046f8f.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Jun 2025 15:29:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1750458549; x=1751063349; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ovwQWhUGx5OnUn3PeV5RrUWGEUl2YB3J5kUfTcFsM8=;
-        b=ADSLt6eCQBp6GExt0HVo7sF9swbVBpsTO0XyYfYO9PVzetH50f87N2r69DDmGzb3k4
-         BBBqEd9tpMjMazHmS0q/Ma4B79uG9Fs3/cIgZLWWj3Yeuz+B45JXzlah3ViKUBDAWYap
-         ujTgqjRAOezwSBtL40a/U+RLrSws1VHviHb/YF9+hCVB/Yi7FT0U4jJLcg7TE2vOqOWH
-         NN15erIscek8vUkzSdnqCazoJiSywuzweVwlH7qnjxMMcIaGL4GI2uxmiD8IT2RfZ+OZ
-         ft+bdGq3BccWUs9cmF4y0kE3/v5LbpNKYnZAxRlIEm+S0wlI6l0hV9qZMJhOkXb7SWoa
-         JuKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750458549; x=1751063349;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+ovwQWhUGx5OnUn3PeV5RrUWGEUl2YB3J5kUfTcFsM8=;
-        b=UnTQCVlN5MkfcRNACyJxFGUDYTdeRL79GraCrXbSzw2dhiM0t5odjoyGlZp+XBYiMe
-         KMXRR3x16sGEVay5QO3u6ATu5bUmFvFQHMhYwW5R9ehCipnLjCuofwnnvZwzGq9I52Td
-         AfLCMjIZ0MztbAn4WwFLysqHPhqV9kckGR+4vjT0fr/sDNgKfYHjfX4M/DzQQeDgcGfu
-         tgobrYM7kbQfKdtH461sJZ3JpAmlWtLT4Yh8XhIdBUgbuoMH7OgYKUqkuxvKuHKKJ0Dv
-         /Eeze3v50KwJfNxByDxKyndx2uyjpBaFWy8wA7o2UJtKhTMDDVSxWVk40GGPBndw9jx/
-         xqJg==
-X-Forwarded-Encrypted: i=1; AJvYcCVy6x624vUlquonODee6Ga/pHpy//9h2YKF1EqOiZAx8DfG4QK9hqk/cm5VRz2Yb+0LOSVhyWJZ1rdFQA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywh0iPmNQnrn6H7NqjXOxWvMWYahfJ1opgx0PcldZzDRq6Thzop
-	fxDNOgjtBj9vht93+aPD3jvXj5rQ7qWhOMANuv7evsOZ/e8Dq/N9BUUi3LsW6QlR/+8=
-X-Gm-Gg: ASbGnctGeHD0TRkiCUlypjIU03GX60JnvKQOPglVVZRMFpdlFUJYGGzniQf1a3igreF
-	ZAdEMtyTvW3Ys6+iRT8WeyFZo75Ai5l2SWagoOwZT4n9Km9nM6deYI1eciGRlqpSX42RfwSAhrD
-	r+2kS6fAtjPW1vGpGKxTZZIcORtCyexepCKOOvI9h7EGL76BgYphy9ER+7B9q9YPm1ovVv4v9a9
-	XcBXQ7IdhzkByPG5iGc+w81GlVa36sEM3/C/Af9EPc/CeN9zgy9bhPfR7iNgJ8sYkqeRSNlbctt
-	er9Wwi5oBvMyTZ1u4dlXF2ov895sFSNZLWaLhp5A9DXFwzAGYOP80VBpgl5zZ8ogbF4mDpRxxry
-	iiVYPKUJPLer3JkqHwZ/jyvvM
-X-Google-Smtp-Source: AGHT+IHyPZ3Lq0gBBzUoxabIgntOXaSzM8n5trwuIatP9URfnK3aBQQIt//hDqu6FTJNB9Jvr99CLw==
-X-Received: by 2002:a05:6000:188c:b0:3a5:39a0:2309 with SMTP id ffacd0b85a97d-3a6d12ec198mr3819588f8f.55.1750458549278;
-        Fri, 20 Jun 2025 15:29:09 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3158a334211sm5000541a91.48.2025.06.20.15.29.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Jun 2025 15:29:08 -0700 (PDT)
-Message-ID: <203ead44-d0b4-4edb-907d-5134ac95e1ce@suse.com>
-Date: Sat, 21 Jun 2025 07:59:04 +0930
+	s=arc-20240116; t=1750462176; c=relaxed/simple;
+	bh=P+pIfS0beSIYpzUCAVVHiL4jNmVSvQDDRHx313RYBGw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FS5FYINgMoDPTukp3y/6ErBFhulOBamO5B4zbdx4XjXEa3jYjSvDlsU57bbtzl65BQ3cPnkf/Wd+GD1Vs891v9+Cjh/pXl/n8EV4cxObbyEFCEk/JmDtLCDe0pfBnZURruXt5UxNFAaEwI4IW1mwHZkgtNVdTal9+0Ne3/Tu2r0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=S5+VCp+J; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1750462170; x=1751066970; i=quwenruo.btrfs@gmx.com;
+	bh=0Mak9ticvkXs3Utosw/rVqfkcUL5WYJFGV1U4DI6cNk=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=S5+VCp+JnMhCv8h0EJk+A4JXEXWrx7RWtgEOMW+jFQEepBwqiCN1aAnVNZ9/F3lu
+	 l5SEJmHboGa9WETN49NIkfCgLajyO5IrH4HUQTSYiaIABkRXFltZYfHc+Tb6VdY0K
+	 ENMOJ90gPVZCfhFL15aCYOmZs98IJqt17WZ+zYO9/QUj+JVLNTVdA/TdwYZ05FmO2
+	 LEmuLwLjN9LkhT8W+o/q+m8BpeH3aN1M6G/n2FWzHK3JVGrQnS+NIbVWUjRHBO00y
+	 sPktHAvweVSGq0mr8cyBUmoRdaSrNaz4roH+tOmpOfxncEmX8g/vsmDkB2p3YwJUh
+	 UQksy3K1noNRdsj0Gw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYvY8-1uFTU93pJY-00NKUd; Sat, 21
+ Jun 2025 01:29:30 +0200
+Message-ID: <61b3844e-2f15-437c-bd78-99a36274e774@gmx.com>
+Date: Sat, 21 Jun 2025 08:59:26 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -83,218 +58,130 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: use our message helpers instead of
- pr_err/pr_warn/pr_info
-To: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20250620160645.3744830-1-dsterba@suse.com>
+Subject: Re: [PATCH 3/3] btrfs-progs: misc-tests: add an image for btrfstune
+ bgt conversion
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1750223785.git.wqu@suse.com>
+ <7c9fe963270c9fea38a8ce5a1625957a09aa10d5.1750223785.git.wqu@suse.com>
+ <20250620170825.GC4037@twin.jikos.cz>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250620160645.3744830-1-dsterba@suse.com>
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <20250620170825.GC4037@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:6CvN54QDgMbtaY0izVrSrfjXEeHWzHNtPshws4eCvSK3VN4VOtF
+ +7KLsXRr56lZesYWBsDPksVnceMmTrrgTHx1Ood8wCswYqdlCroK71b3yzB3j7mlqZWohBE
+ f0k1e8Y+dYbpH8KmaW8BRFgj9ZBB5vm2K1a0/Z7rRx8OOnAffR8JZhZQGLH/g0jjrD0HcJO
+ Pnskik0e1HsKexSHFv7+A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:l3dE3mLdNrQ=;y2po50PZbspRwuSDh9VV4kAOVFS
+ 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
 
 
 
-在 2025/6/21 01:36, David Sterba 写道:
-> Our message helpers accept NULL for the fs_info in the context that does
-> not provide and print the common header of the message. The use of pr_*
-> helpers is only for special reasons, like module loading, device
-> scanning or multi-line output (print-tree).
-> 
-> Signed-off-by: David Sterba <dsterba@suse.com>
+=E5=9C=A8 2025/6/21 02:38, David Sterba =E5=86=99=E9=81=93:
+> On Wed, Jun 18, 2025 at 02:53:41PM +0930, Qu Wenruo wrote:
+>> The image has a half converted fs, unfortunately btrfs-image can not
+>> properly maintain the CHANGING_BG_TREE super block flags, thus we have
+>> to go raw image.
+>>
+>> And since we're here, also introduce the support for the .raw.zst suffi=
+x
+>> for ZSTD compressed raw images.
+>=20
+> Why? XZ is there because it can get us the best results and I don't see
+> any benefit using zstd. Also I've recompressed some images with "xz -e
+> -9" in the past.
+>=20
+> I've noticed the test image size as the mail took some time to load, the
+> image being 3M.
+>=20
+> uncompressed: 	268435456
+> zstd:             2760068
+> xz -9:            2634928
+> xz -e -9:         2219716
+>=20
+> Which saves like 0.5M. In the long run the .git dir will only grow and I
+> don't want to limit us to add more crafted images, rather to make them
+> minimal.
+>=20
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+You're right, I was using zstd just to save some time compressing, but=20
+didn't notice xz can result a higher compression ratio.
+
+Should I re-compress the image and remove the zstd support in the devel=20
+branch?
 
 Thanks,
 Qu
-
-> ---
->   fs/btrfs/compression.c    | 10 +++++-----
->   fs/btrfs/disk-io.c        |  2 +-
->   fs/btrfs/extent-io-tree.c |  3 ++-
->   fs/btrfs/extent_io.c      |  4 ++--
->   fs/btrfs/print-tree.c     |  2 +-
->   fs/btrfs/sysfs.c          |  5 ++---
->   fs/btrfs/volumes.c        |  8 ++++----
->   fs/btrfs/zstd.c           |  3 +--
->   8 files changed, 18 insertions(+), 19 deletions(-)
-> 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 48d07939fee4a0..a4934eb1ecdc99 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -789,8 +789,8 @@ static void btrfs_init_workspace_manager(int type)
->   	 */
->   	workspace = alloc_workspace(type, 0);
->   	if (IS_ERR(workspace)) {
-> -		pr_warn(
-> -	"BTRFS: cannot preallocate compression workspace, will try later\n");
-> +		btrfs_warn(NULL,
-> +			   "cannot preallocate compression workspace, will try later");
->   	} else {
->   		atomic_set(&wsm->total_ws, 1);
->   		wsm->free_ws = 1;
-> @@ -888,9 +888,9 @@ struct list_head *btrfs_get_workspace(int type, int level)
->   					/* once per minute */ 60 * HZ,
->   					/* no burst */ 1);
->   
-> -			if (__ratelimit(&_rs)) {
-> -				pr_warn("BTRFS: no compression workspaces, low memory, retrying\n");
-> -			}
-> +			if (__ratelimit(&_rs))
-> +				btrfs_warn(NULL,
-> +				"no compression workspaces, low memory, retrying");
->   		}
->   		goto again;
->   	}
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 0cd22952286358..1f8abc3f4f8bf7 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -3995,7 +3995,7 @@ int btrfs_get_num_tolerated_disk_barrier_failures(u64 flags)
->   	}
->   
->   	if (min_tolerated == INT_MAX) {
-> -		pr_warn("BTRFS: unknown raid flag: %llu", flags);
-> +		btrfs_warn(NULL, "unknown raid flag: %llu", flags);
->   		min_tolerated = 0;
->   	}
->   
-> diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-> index 84da01996336c1..66361325f6dcea 100644
-> --- a/fs/btrfs/extent-io-tree.c
-> +++ b/fs/btrfs/extent-io-tree.c
-> @@ -43,7 +43,8 @@ static inline void btrfs_extent_state_leak_debug_check(void)
->   
->   	while (!list_empty(&states)) {
->   		state = list_first_entry(&states, struct extent_state, leak_list);
-> -		pr_err("BTRFS: state leak: start %llu end %llu state %u in tree %d refs %d\n",
-> +		btrfs_err(NULL,
-> +		       "state leak: start %llu end %llu state %u in tree %d refs %d",
->   		       state->start, state->end, state->state,
->   		       extent_state_in_tree(state),
->   		       refcount_read(&state->refs));
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index c8c53a008c5315..aec2a7390b5c1c 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -75,8 +75,8 @@ void btrfs_extent_buffer_leak_debug_check(struct btrfs_fs_info *fs_info)
->   	while (!list_empty(&fs_info->allocated_ebs)) {
->   		eb = list_first_entry(&fs_info->allocated_ebs,
->   				      struct extent_buffer, leak_list);
-> -		pr_err(
-> -	"BTRFS: buffer leak start %llu len %u refs %d bflags %lu owner %llu\n",
-> +		btrfs_err(fs_info,
-> +		       "buffer leak start %llu len %u refs %d bflags %lu owner %llu",
->   		       eb->start, eb->len, refcount_read(&eb->refs), eb->bflags,
->   		       btrfs_header_owner(eb));
->   		list_del(&eb->leak_list);
-> diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-> index 21605b03f51188..74e38da9bd39cd 100644
-> --- a/fs/btrfs/print-tree.c
-> +++ b/fs/btrfs/print-tree.c
-> @@ -190,7 +190,7 @@ static void print_uuid_item(const struct extent_buffer *l, unsigned long offset,
->   			    u32 item_size)
->   {
->   	if (!IS_ALIGNED(item_size, sizeof(u64))) {
-> -		pr_warn("BTRFS: uuid item with illegal size %lu!\n",
-> +		btrfs_warn(l->fs_info, "uuid item with illegal size %lu",
->   			(unsigned long)item_size);
->   		return;
->   	}
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index b860470cffc4c8..9e7a812651e826 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -160,8 +160,7 @@ static int can_modify_feature(struct btrfs_feature_attr *fa)
->   		clear = BTRFS_FEATURE_INCOMPAT_SAFE_CLEAR;
->   		break;
->   	default:
-> -		pr_warn("btrfs: sysfs: unknown feature set %d\n",
-> -				fa->feature_set);
-> +		btrfs_warn(NULL, "sysfs: unknown feature set %d", fa->feature_set);
->   		return 0;
->   	}
->   
-> @@ -2247,7 +2246,7 @@ void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action)
->   
->   	ret = kobject_uevent(&disk_to_dev(bdev->bd_disk)->kobj, action);
->   	if (ret)
-> -		pr_warn("BTRFS: Sending event '%d' to kobject: '%s' (%p): failed\n",
-> +		btrfs_warn(NULL, "sending event %d to kobject: '%s' (%p): failed",
->   			action, kobject_name(&disk_to_dev(bdev->bd_disk)->kobj),
->   			&disk_to_dev(bdev->bd_disk)->kobj);
->   }
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 0fbda06162594b..1b623bae927cff 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -675,8 +675,8 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
->   	if (btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING) {
->   		if (btrfs_super_incompat_flags(disk_super) &
->   		    BTRFS_FEATURE_INCOMPAT_METADATA_UUID) {
-> -			pr_err(
-> -		"BTRFS: Invalid seeding and uuid-changed device detected\n");
-> +			btrfs_err(NULL,
-> +				  "invalid seeding and uuid-changed device detected");
->   			goto error_free_page;
->   		}
->   
-> @@ -820,7 +820,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->   		if (same_fsid_diff_dev) {
->   			generate_random_uuid(fs_devices->fsid);
->   			fs_devices->temp_fsid = true;
-> -		pr_info("BTRFS: device %s (%d:%d) using temp-fsid %pU\n",
-> +			btrfs_info(NULL, "device %s (%d:%d) using temp-fsid %pU",
->   				path, MAJOR(path_devt), MINOR(path_devt),
->   				fs_devices->fsid);
->   		}
-> @@ -1474,7 +1474,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
->   
->   	devt = file_bdev(bdev_file)->bd_dev;
->   	if (btrfs_skip_registration(disk_super, path, devt, mount_arg_dev)) {
-> -		pr_debug("BTRFS: skip registering single non-seed device %s (%d:%d)\n",
-> +		btrfs_debug(NULL, "skip registering single non-seed device %s (%d:%d)",
->   			  path, MAJOR(devt), MINOR(devt));
->   
->   		btrfs_free_stale_devices(devt, NULL);
-> diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
-> index 4a796a049b5a24..ff0292615e1f37 100644
-> --- a/fs/btrfs/zstd.c
-> +++ b/fs/btrfs/zstd.c
-> @@ -200,8 +200,7 @@ void zstd_init_workspace_manager(void)
->   
->   	ws = zstd_alloc_workspace(ZSTD_BTRFS_MAX_LEVEL);
->   	if (IS_ERR(ws)) {
-> -		pr_warn(
-> -		"BTRFS: cannot preallocate zstd compression workspace\n");
-> +		btrfs_warn(NULL, "cannot preallocate zstd compression workspace");
->   	} else {
->   		set_bit(ZSTD_BTRFS_MAX_LEVEL - 1, &wsm.active_map);
->   		list_add(ws, &wsm.idle_ws[ZSTD_BTRFS_MAX_LEVEL - 1]);
 
 
