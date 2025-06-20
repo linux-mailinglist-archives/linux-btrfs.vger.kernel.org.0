@@ -1,103 +1,104 @@
-Return-Path: <linux-btrfs+bounces-14816-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14817-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8CAAAE1AE3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 14:25:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6224BAE1AE9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 14:27:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D35817780E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 12:25:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A6833B83FD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 12:27:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BE0A28A1C5;
-	Fri, 20 Jun 2025 12:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 339B828B412;
+	Fri, 20 Jun 2025 12:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="u0oXERgJ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZavtSotM";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="T9WXQkAi";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aS6aEaO+"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XTKisOjD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="x1VXfJZv";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XTKisOjD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="x1VXfJZv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F672080E8
-	for <linux-btrfs@vger.kernel.org>; Fri, 20 Jun 2025 12:24:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 171302080E8
+	for <linux-btrfs@vger.kernel.org>; Fri, 20 Jun 2025 12:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750422300; cv=none; b=Sai+qW++r4YZzWbcHFU//bILrsMnMHMs2tYqExCfhhc+6o+0/tNuppDNUG/mvZv0KAt5X8+5mL+qZPCaWa8FfD6AesRpkacYz6+OqIm3TT211bl8xL4wn78J39P174mJcIuLjgtNEIkKaBJPR1FEZoyF+se1bIsBDvTjmUCmk38=
+	t=1750422441; cv=none; b=oxE2pf2nwkRGZHv3tkbZp4FzvWGgMc7sk4a3QdYJgwM+timS0I/lvfLEeM0aNHyYp7khfp18JNFPULJCkRxbtGg41r7O1Pw5wBJg5HEQGkrIy4xbOtdz7qapNW687kTHlv+0B9lzv00y/WYZqr0BsjOX61/FPBLXSPP92t128Uw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750422300; c=relaxed/simple;
-	bh=kQ57ynQHlzguTCtd25OsxWeyGSATwkUu6klxgJ1OZn0=;
+	s=arc-20240116; t=1750422441; c=relaxed/simple;
+	bh=tX37v4gyoxennChCQjy16+67csIbio+cpP+xJt9Rkwg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MrXNNyZDvmo5AQ8GFYnsy4yWQksFl/k2tRTaJfwyzlC+AEH/qJvJAetDg+uRPaHnflVI/grFN6RQZwX+vyIBedzDPu6YpdcaihNi1EmyLGM433HivsCh5Itx7aGLbyL/ZK81UlNvPZhCb6LK1etMkGQYBONb+HP+rPojoZ2w0h4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=u0oXERgJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZavtSotM; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=T9WXQkAi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aS6aEaO+; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=RL/1fpZymbgFyboyxCrWaMHDO/xENw2TN+yj5ziALfxaZb6MajJqNrC8DB6sGiMfKaPhQ1y0kcz7QXO5tlxwnPlqX0mOQfRrm1h3+0gobI5EG8Mz2aBDS64X3RUC46uVQ5Kc5PSyvwoq/DWjsr6+QkyqecDdk1rRGTYJysOSIGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XTKisOjD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=x1VXfJZv; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XTKisOjD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=x1VXfJZv; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D42942120C;
-	Fri, 20 Jun 2025 12:24:55 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 32E1B1F38D;
+	Fri, 20 Jun 2025 12:27:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750422297;
+	t=1750422437;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PW0iIxe9ZNKz17kTP3+6HZcuvg8xdWqNczi9Txt7Pp0=;
-	b=u0oXERgJHTutHWiOm+ygaHwy89GT4IZJri/RIUWIIKTK/czp6vP7JmRoau4cNWjGaphzkQ
-	RhLVMifvg1K+F7aVhFab6+8SnTlpFLKNWw90Y5V7wVnnGGK44zwV3ZyPmjBj8p9qsPqEnM
-	6xvX6AI2I1I1FyKFXx5QS7cyX7Q/3Hc=
+	bh=3/Yy654QcQTRuj4MwSbC85PZYTXBTs5gVtteaaVNdCM=;
+	b=XTKisOjDYkQx7syjKIyWZ6Gug3DIHwnmqRO3mZ3V90hSA951elbcdNHd4I9GjOfTJjKC88
+	wkZBFYf0JHpn6XktUOU9u21qt/lJg5cBAMmhxRMLH4istfL6hPYJ4v0wx2zBt4DJncy6+D
+	CVw+ubMhRZCBDN+CgujzY3D9/AknvCs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750422297;
+	s=susede2_ed25519; t=1750422437;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PW0iIxe9ZNKz17kTP3+6HZcuvg8xdWqNczi9Txt7Pp0=;
-	b=ZavtSotMpV2nh21UjGd3bXEh2z3O3+ruGxKDBANM7uYgdwQH4tUwIRy0+I4Dt9CJUBlNay
-	GXPAfdNwnnV+4zCA==
-Authentication-Results: smtp-out1.suse.de;
-	none
+	bh=3/Yy654QcQTRuj4MwSbC85PZYTXBTs5gVtteaaVNdCM=;
+	b=x1VXfJZvbm/mvW4K1jPVQA2PhFlatnIlRiFi2Xb7YLFpsO/BKP8xvfLntSPV5e/wEp5c5D
+	vyfJy1YIyjMN4CBA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=XTKisOjD;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=x1VXfJZv
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750422295;
+	t=1750422437;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PW0iIxe9ZNKz17kTP3+6HZcuvg8xdWqNczi9Txt7Pp0=;
-	b=T9WXQkAiRRPOXDg+V4xHTMigfcOQXpaPp2A1oablK+TaNJ0f1r8gS08yFaXkSLs8KEkHht
-	CNY0oV/0zZ5TNcl86Q6hSnrw/M+U1/H8lD2VotU7QloDYMF2/ZbSd3oFg4nvCzsElRLWAj
-	RJnq7eNhO5iALfLkLmQOLhNhrUA//1Q=
+	bh=3/Yy654QcQTRuj4MwSbC85PZYTXBTs5gVtteaaVNdCM=;
+	b=XTKisOjDYkQx7syjKIyWZ6Gug3DIHwnmqRO3mZ3V90hSA951elbcdNHd4I9GjOfTJjKC88
+	wkZBFYf0JHpn6XktUOU9u21qt/lJg5cBAMmhxRMLH4istfL6hPYJ4v0wx2zBt4DJncy6+D
+	CVw+ubMhRZCBDN+CgujzY3D9/AknvCs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750422295;
+	s=susede2_ed25519; t=1750422437;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PW0iIxe9ZNKz17kTP3+6HZcuvg8xdWqNczi9Txt7Pp0=;
-	b=aS6aEaO+CCuZZnYULAyFGoDasenUbhXj2IGBsIRLZRvpj361nzdPji9PlygjawnYLo/kZ1
-	McWhV2z653UiDVBQ==
+	bh=3/Yy654QcQTRuj4MwSbC85PZYTXBTs5gVtteaaVNdCM=;
+	b=x1VXfJZvbm/mvW4K1jPVQA2PhFlatnIlRiFi2Xb7YLFpsO/BKP8xvfLntSPV5e/wEp5c5D
+	vyfJy1YIyjMN4CBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AA39C136BA;
-	Fri, 20 Jun 2025 12:24:55 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 130BF136BA;
+	Fri, 20 Jun 2025 12:27:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Qq5LKRdTVWg+JwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 20 Jun 2025 12:24:55 +0000
-Date: Fri, 20 Jun 2025 14:24:54 +0200
+	id PoZwBKVTVWjXJwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 20 Jun 2025 12:27:17 +0000
+Date: Fri, 20 Jun 2025 14:27:15 +0200
 From: David Sterba <dsterba@suse.cz>
 To: Brahmajit Das <listout@listout.xyz>
-Cc: Mark Harmstone <mark@harmstone.com>, linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, kees@kernel.org
-Subject: Re: [PATCH] btrfs: replace deprecated strcpy with strscpy
-Message-ID: <20250620122454.GQ4037@twin.jikos.cz>
+Cc: linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, kees@kernel.org, ailiop@suse.com,
+	Mark Harmstone <mark@harmstone.com>
+Subject: Re: [PATCH v3] btrfs: replace deprecated strcpy with strscpy
+Message-ID: <20250620122715.GR4037@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20250619140623.3139-1-listout@listout.xyz>
- <c278bbd3-c024-41ea-8640-d7bf7e8cff47@harmstone.com>
- <gsykswmdo5yusthxun4y5duhim6etxirrfezq6o6w4tlalcvxp@3wqjjzurypzc>
+References: <20250619153904.25889-1-listout@listout.xyz>
+ <20250620014344.27589-1-listout@listout.xyz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -106,71 +107,69 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <gsykswmdo5yusthxun4y5duhim6etxirrfezq6o6w4tlalcvxp@3wqjjzurypzc>
+In-Reply-To: <20250620014344.27589-1-listout@listout.xyz>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 32E1B1F38D
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	MX_GOOD(-0.01)[];
 	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[godbolt.org:url,twin.jikos.cz:mid,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[twin.jikos.cz:mid,suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
 	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spam-Score: -4.21
 X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
 
-On Thu, Jun 19, 2025 at 11:32:58PM +0530, Brahmajit Das wrote:
-> On 19.06.2025 18:03, Mark Harmstone wrote:
-> > On 19/06/2025 3.06 pm, Brahmajit Das wrote:
-> > > strcpy is deprecated due to lack of bounds checking. This patch replaces
-> > > strcpy with strscpy, the recommended alternative for null terminated
-> > > strings, to follow best practices.
-> > 
-> > I think calling strcpy "deprecated" is a bit tendentious. IMHO the way to proceed
-> > is to use KASAN, which catches the misuse of strcpy as well as other bugs.
-> > 
-> Understood, thanks for point it out.
-> > > ...snip...
-> > 
-> > > --- a/fs/btrfs/volumes.c
-> > > +++ b/fs/btrfs/volumes.c
-> > > @@ -215,7 +215,7 @@ void btrfs_describe_block_groups(u64 bg_flags, char *buf, u32 size_buf)
-> > >   	u32 size_bp = size_buf;
-> > >   	if (!flags) {
-> > > -		strcpy(bp, "NONE");
-> > > +		memcpy(bp, "NONE", 4);
-> > >   		return;
-> > >   	}
-> > 
-> > These aren't equivalent. strcpy copies the source plus its trailing null - the
-> > equivalent would be memcpy(bp, "NONE", 4). So 4 here should really be 5 - but
-> > you shouldn't be hardcoding magic numbers anyway.
-> > 
-> > On top of that memcpy is just as "unsafe" as strcpy, so there's no benefit to
-> > this particular change. gcc -O2 compiles it the same way anyway:
-> > https://godbolt.org/z/8fEaKTTzo
-> > 
-> > Mark
-> > 
+On Fri, Jun 20, 2025 at 07:13:44AM +0530, Brahmajit Das wrote:
+> strcpy is deprecated due to lack of bounds checking. This patch replaces
+> strcpy with strscpy, the recommended alternative for null terminated
+> strings, to follow best practices.
 > 
-> I was planning to use strscpy, but it doesn't work with char pointers,
-> hence went with memcpy. If you or anyone has a better approach for this,
-> I'm more than happy to send that as a v3.
+> There are instances where strscpy cannot be used such as where both the
+> source and destination are character pointers. In that instance we can
+> use sysfs_emit or a memcpy.
+> 
+> Update in v2: using sysfs_emit instead of scnprintf
+> Update in v3: Removed string.h in xattr, since we are not using any
+> fucntions from string.h and fixed length in memcpy in volumes.c
 
-As the code is structured, you can move "NONE" as initial value of buf
-in describe_relocation() and just return from "if (!flags)".
+This should be placed under the "---" marker. If it's a new information
+relevant for the patch then it should be a normal part of the changelog.
+
+> No functional changes intended.
+
+No need to write this.
+
+> 
+> Link: https://github.com/KSPP/linux/issues/88
+
+No newline here.
+
+> Suggested-by: Anthony Iliopoulos <ailiop@suse.com>
+> Suggested-by: Mark Harmstone <mark@harmstone.com>
+> Signed-off-by: Brahmajit Das <listout@listout.xyz>
+
+Otherwise it looks good, thanks.
 
