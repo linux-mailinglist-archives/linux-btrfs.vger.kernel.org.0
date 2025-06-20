@@ -1,118 +1,110 @@
-Return-Path: <linux-btrfs+bounces-14821-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14822-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5851BAE1BD8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 15:15:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 818A5AE1BE3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 15:17:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2348D7B195E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 13:14:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24CBF165A1D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 13:17:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4BF428C037;
-	Fri, 20 Jun 2025 13:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08D7928B7EC;
+	Fri, 20 Jun 2025 13:16:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cEB+ug4R";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nT+Yo9OV";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cEB+ug4R";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nT+Yo9OV"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PrIUFu+g";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aF9PCbHP";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PrIUFu+g";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aF9PCbHP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F891D6AA
-	for <linux-btrfs@vger.kernel.org>; Fri, 20 Jun 2025 13:15:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A238D7494
+	for <linux-btrfs@vger.kernel.org>; Fri, 20 Jun 2025 13:16:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750425310; cv=none; b=NCQXfmAUNu1KOPrvW9Vg8Yhzftc82JuMPr3D50z0V3ZJVCtx8KmWJ0IPzlOJdHpfS6vIM499+QwTz81Pdq6L3g4T82zuctOnNctbDpLvpDY7HMqQFI3P9+aCPc953YvBG4HxPPasReLBbWJccCghoJMG4aybU2184+9ovWR+JqM=
+	t=1750425414; cv=none; b=JV+MurdQaNPFn3nkY5gXPvu3B2gIAaZAkwXl7d1wGTy5IPMCCsjZ8/pjiw1rAtmiKlFpiFEnTqN7iImIxNHPKH6AnZly7agXNrX9IFUdgPi1JR0kstvHSsBV83Xov8dsOg1Tm5QqTedmzmiv50Y0UFBN+AM4aFt0seMVV5+DA98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750425310; c=relaxed/simple;
-	bh=je76kGXG4+1kXDpwCgSpCTIG4FaPVJQnG5bQBNqG4Tk=;
+	s=arc-20240116; t=1750425414; c=relaxed/simple;
+	bh=QXvKSTJVsujp1fgnDXrmCqG3IIieQCr1r2bJH4zgVyA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i/OZUTlEsIplM00ZCyKq78eLKhelhdmaZ0Gq/bXgXc/TxH0UMujYl9FJRJ08JYtJFkoTXgIuBi81JinyfEfVPIE5x0s+YqgdkmTQAr+Om9dNU3G73CYHJu8p/IiqwpmEilqfVKfYp+3/HIXtrLrMegFTQ4E1tHEn1UojotWe8ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cEB+ug4R; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nT+Yo9OV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cEB+ug4R; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nT+Yo9OV; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=YSTBbKqlxHTZdih2FMA0a9Or+oCFNSuMJmx4B3kR4oGJr6vBfeLmLgqqKjFXHGFNFEH3l0Y169XVZbGnw2BuZgwWmMQ9GAz+hctoz9xwl3LpUVtwa4wn9t5vJ3vUaGNBFkoJLPyJBKuHB87Q9d5MI1m7KZ4KHc3P17vQW2rYr9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PrIUFu+g; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aF9PCbHP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PrIUFu+g; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aF9PCbHP; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C6E081F38D;
-	Fri, 20 Jun 2025 13:15:05 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BF87C21174;
+	Fri, 20 Jun 2025 13:16:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750425305;
+	t=1750425410;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=D24GwzWGzROMuiBukeaSM6+Y6O+u+7V8pF5wtkdPY2g=;
-	b=cEB+ug4R8upAoH5hKHCrgp9D0jGdiFjH5v757mS6Lmvxs6prlE3cSBcmRu46pJZasMJueR
-	WC3t8+FNaRsMSw7Vomcu/9z9rEB7SmxkVRJZrd/zR+3kTTkonqmadzQb/GhjJM3CWnKBpA
-	4b3AuzIWqn9/DjeFMEwAFktHEMEHGfw=
+	bh=dTWKwgHggj/k6+j+DOM+rvwRUGMPVPZLTleNMuJSR8g=;
+	b=PrIUFu+gM1NKYzlW99cT29bPerrfOZ1bViewIfx5F8Rqq+TX6gOxFLc+lh1WmsE1s0z/O7
+	zVXYbrdR/Wk7MDzC7br6RNO2wWeggWDbTw+tgui4yxfth8l6eW+igG1mZrprQFRPugB0Fd
+	hfV3hRkwF4TgCvvbPeIXq2Yme8YaAVA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750425305;
+	s=susede2_ed25519; t=1750425410;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=D24GwzWGzROMuiBukeaSM6+Y6O+u+7V8pF5wtkdPY2g=;
-	b=nT+Yo9OVG1f0R8/JQaNQhyo9Nsyj+2fzzDMaVXIC3TshxmEbipDSOzyWpcbjU2bh9L877t
-	3K1jB0z1PWVeCrDA==
-Authentication-Results: smtp-out2.suse.de;
+	bh=dTWKwgHggj/k6+j+DOM+rvwRUGMPVPZLTleNMuJSR8g=;
+	b=aF9PCbHPngTY++uTx4KRe1NJrmmCT0nWp/qsRelYvj3RRym5xpAP2XjshAV+PkX8y6mrzD
+	btOnMn7BzNJAmEAQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750425305;
+	t=1750425410;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=D24GwzWGzROMuiBukeaSM6+Y6O+u+7V8pF5wtkdPY2g=;
-	b=cEB+ug4R8upAoH5hKHCrgp9D0jGdiFjH5v757mS6Lmvxs6prlE3cSBcmRu46pJZasMJueR
-	WC3t8+FNaRsMSw7Vomcu/9z9rEB7SmxkVRJZrd/zR+3kTTkonqmadzQb/GhjJM3CWnKBpA
-	4b3AuzIWqn9/DjeFMEwAFktHEMEHGfw=
+	bh=dTWKwgHggj/k6+j+DOM+rvwRUGMPVPZLTleNMuJSR8g=;
+	b=PrIUFu+gM1NKYzlW99cT29bPerrfOZ1bViewIfx5F8Rqq+TX6gOxFLc+lh1WmsE1s0z/O7
+	zVXYbrdR/Wk7MDzC7br6RNO2wWeggWDbTw+tgui4yxfth8l6eW+igG1mZrprQFRPugB0Fd
+	hfV3hRkwF4TgCvvbPeIXq2Yme8YaAVA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750425305;
+	s=susede2_ed25519; t=1750425410;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=D24GwzWGzROMuiBukeaSM6+Y6O+u+7V8pF5wtkdPY2g=;
-	b=nT+Yo9OVG1f0R8/JQaNQhyo9Nsyj+2fzzDMaVXIC3TshxmEbipDSOzyWpcbjU2bh9L877t
-	3K1jB0z1PWVeCrDA==
+	bh=dTWKwgHggj/k6+j+DOM+rvwRUGMPVPZLTleNMuJSR8g=;
+	b=aF9PCbHPngTY++uTx4KRe1NJrmmCT0nWp/qsRelYvj3RRym5xpAP2XjshAV+PkX8y6mrzD
+	btOnMn7BzNJAmEAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A03B4136BA;
-	Fri, 20 Jun 2025 13:15:05 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A5EEF13736;
+	Fri, 20 Jun 2025 13:16:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LFyCJtleVWjGNQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 20 Jun 2025 13:15:05 +0000
-Date: Fri, 20 Jun 2025 15:14:56 +0200
+	id l0H4J0JfVWhGNgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 20 Jun 2025 13:16:50 +0000
+Date: Fri, 20 Jun 2025 15:16:44 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/3] btrfs: Convert test_find_delalloc() to use a folio
-Message-ID: <20250620131456.GW4037@twin.jikos.cz>
+To: Qianfeng Rong <rongqianfeng@vivo.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH] btrfs: increase usage of folio_next_index() helper
+Message-ID: <20250620131642.GX4037@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20250613190705.3166969-1-willy@infradead.org>
- <20250613190705.3166969-2-willy@infradead.org>
- <aFN62U-Fx4RZGj6Q@casper.infradead.org>
- <f1cc6120-0410-4c69-b5ec-19194508148a@suse.com>
+References: <20250619101501.139837-1-rongqianfeng@vivo.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f1cc6120-0410-4c69-b5ec-19194508148a@suse.com>
+In-Reply-To: <20250619101501.139837-1-rongqianfeng@vivo.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	BAYES_HAM(-3.00)[99.99%];
@@ -120,66 +112,30 @@ X-Spamd-Result: default: False [-4.00 / 50.00];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,twin.jikos.cz:mid];
 	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,twin.jikos.cz:mid]
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 X-Spam-Level: 
 X-Spam-Flag: NO
 X-Spam-Score: -4.00
 
-On Thu, Jun 19, 2025 at 03:11:16PM +0930, Qu Wenruo wrote:
+On Thu, Jun 19, 2025 at 06:15:01PM +0800, Qianfeng Rong wrote:
+> Simplify code pattern of 'folio->index + folio_nr_pages(folio)' by using
+> the existing helper folio_next_index().
 > 
-> 
-> 在 2025/6/19 12:20, Matthew Wilcox 写道:
-> > On Fri, Jun 13, 2025 at 08:07:00PM +0100, Matthew Wilcox (Oracle) wrote:
-> >> @@ -201,17 +200,16 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
-> >>   	 *           |--- search ---|
-> >>   	 */
-> >>   	test_start = SZ_64M;
-> >> -	locked_page = find_lock_page(inode->i_mapping,
-> >> +	locked_folio = filemap_lock_folio(inode->i_mapping,
-> >>   				     test_start >> PAGE_SHIFT);
-> >> -	if (!locked_page) {
-> >> -		test_err("couldn't find the locked page");
-> >> +	if (!locked_folio) {
-> >> +		test_err("couldn't find the locked folio");
-> >>   		goto out_bits;
-> >>   	}
-> >>   	btrfs_set_extent_bit(tmp, sectorsize, max_bytes - 1, EXTENT_DELALLOC, NULL);
-> >>   	start = test_start;
-> >>   	end = start + PAGE_SIZE - 1;
-> >> -	found = find_lock_delalloc_range(inode, page_folio(locked_page), &start,
-> >> -					 &end);
-> >> +	found = find_lock_delalloc_range(inode, locked_folio, &start, &end);
-> >>   	if (!found) {
-> >>   		test_err("couldn't find delalloc in our range");
-> >>   		goto out_bits;
-> > 
-> > Hm.  How much do you test the failure paths here?  It seems to me that
-> > the 'locked_folio' is still locked at this point ...
-> 
-> Yep, you're right, the error paths here should have the folio unlocked
-> (all the error handling after fielmap_lock_folio()).
-> 
-> It's just very rare to have a commit that won't pass selftest pushed to 
-> upstream.
-> 
-> Mind to fix it in another patch or you wish us to handle it before your 
-> series?
+> Signed-off-by: Qianfeng Rong <rongqianfeng@vivo.com>
 
-Please fix it separately before the series, this needs runtime testing
-and is specific to the selftest environment, while the folio conversions
-are API-level and straightforward.
+Added to for-next, thanks.
 
