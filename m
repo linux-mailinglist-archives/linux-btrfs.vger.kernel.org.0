@@ -1,220 +1,150 @@
-Return-Path: <linux-btrfs+bounces-14812-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14813-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 776FCAE135A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 07:48:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1BDAAE1A94
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 14:09:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5FD419E187F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 05:48:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54BD74A6742
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Jun 2025 12:10:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E4F21B9C4;
-	Fri, 20 Jun 2025 05:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3391B28A40F;
+	Fri, 20 Jun 2025 12:09:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="L4Xw3BpB";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="L4Xw3BpB"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Jbwv5b78"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453A721D5B4
-	for <linux-btrfs@vger.kernel.org>; Fri, 20 Jun 2025 05:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C4328A400
+	for <linux-btrfs@vger.kernel.org>; Fri, 20 Jun 2025 12:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750398495; cv=none; b=gmgUBwBDg4zpW3GOaxHjd0gyJReuVxk391/qzEFpDReN3lwCIAxkMhhX5eKjxdirTntRlF2FJHf6KEPR/uoMtjNbcPaNd9mA/50w+ZC5ojPO3V7v/pwyufHBPbWM63JDfCwm9AA7LhgLgy9BIMrt9sDbMGoWsdlC5cX7G56jO5M=
+	t=1750421392; cv=none; b=O7CTXVJuYreRm6F5u091OIbn/7gZukETHuTERxetnqJMBh664e+GyDr3YTgh5r99cxFxUz37SKttJUBGMry1olhsSM3Iwj3aFNDwg9dB/O22LnunG0yhKZwe3OHRYFPj/atHrjpg9wg7t8JCI3ipS5qq0X26JEYq9RAJj9pmbSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750398495; c=relaxed/simple;
-	bh=7wKLKtFSYqajcXunez9xN7Fz+p3+MCMbOKKL0+Z+R60=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BRbivfwlbb1mi+w2GO2ruqVDpnbXXMO6qgY3Q2mSDkqjIFW9Swjgdk8oKa+eWKyJc1qlLiCoNdVYTYVtEiU+ZbZIWDcO/MEC/pmmpfHkwWYXcOVoFoDlISUa3JKeIxIfa4PY6FRFv/gxvSBnf/9LpGzPYej6JgjM7wUoA4WVC4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=L4Xw3BpB; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=L4Xw3BpB; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1750421392; c=relaxed/simple;
+	bh=c4ttkA5lmffN+32M4fxq6N1nx5ih5J2uCTXEoBBRhQY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=c2gL2OL6FF6UyOswxlYMR7NoxdLexHcRQWiGZfFs0altTkUl1/c0W7IHyjCMBogXvR73XRJTlCiMucuf8meOaYRKcjtBbpQrpCboqB3S+aQX0FzSgd6QA59BpToESNga7luOMejmKOMNYuw5GGatznDcH87J6xEAm5H54bHLyPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Jbwv5b78; arc=none smtp.client-ip=209.85.128.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3CDB121211;
-	Fri, 20 Jun 2025 05:48:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1750398482; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1gL7f2lHr2tQfsAFI680yVqiEP4o8iBfd45IdXIoFPM=;
-	b=L4Xw3BpBlYS+bcyzDFcD5LROuI7A09QJnovQDCqKVlFLYCEm4WoWskPJZGN0tWxaIG9Q4A
-	oV5x6HaaV4WFdcubZFY/IuLMGq0LjMyu3EGGUxGd2uw5E9UYFkSk9bRRtlteuuVkfu9g/3
-	tfMBzL1tuYEAtuKV74ma40yViJchY8s=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1750398482; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1gL7f2lHr2tQfsAFI680yVqiEP4o8iBfd45IdXIoFPM=;
-	b=L4Xw3BpBlYS+bcyzDFcD5LROuI7A09QJnovQDCqKVlFLYCEm4WoWskPJZGN0tWxaIG9Q4A
-	oV5x6HaaV4WFdcubZFY/IuLMGq0LjMyu3EGGUxGd2uw5E9UYFkSk9bRRtlteuuVkfu9g/3
-	tfMBzL1tuYEAtuKV74ma40yViJchY8s=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F67A13318;
-	Fri, 20 Jun 2025 05:48:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id QPyKEBD2VGi2NAAAD6G6ig
-	(envelope-from <wqu@suse.com>); Fri, 20 Jun 2025 05:48:00 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Cc: viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz
-Subject: [PATCH RFC 6/6] btrfs: implement shutdown_bdev super operation callback
-Date: Fri, 20 Jun 2025 15:17:29 +0930
-Message-ID: <9ee35786df0864cfd6fa368d25c7d09f27116869.1750397889.git.wqu@suse.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1750397889.git.wqu@suse.com>
-References: <cover.1750397889.git.wqu@suse.com>
+Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-450ce3a2dd5so16545965e9.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Jun 2025 05:09:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1750421388; x=1751026188; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=aoFpRnLAzMijZIUgSiwFKVzvI1avk3stXk6JH4QklpQ=;
+        b=Jbwv5b78Wy1iSj4gjTDIh4VSWt3cfKWCRiwhzNg+fkZ3oboVKYx1OpYgsVxkAzLmx1
+         qbAOJaxJSF88UyF6AaaAcE9fJ82rFsYiQ8989xQVRHbTBpwK99gN2F1tQ9XtMAtWCUYs
+         EFvQx9LzGp2SF+lEx9IY0fgJ16g32CCDOX8QJI+J5f7kgpU8p5BdemomEemBWl5kjmU5
+         qpXL/ajhxNWgGMVCLXRT3uDHlfj2aivE46j9QA2ZqMtebGRPJQjcyXdzFZMrDz3yvt8z
+         ZZeK+AiE82wLk6ZOQtd7ZJxpUvXS10k3REObZDiRQ/Dv+3do1bVFEYAfpCXOarrGC1x0
+         8nYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750421388; x=1751026188;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aoFpRnLAzMijZIUgSiwFKVzvI1avk3stXk6JH4QklpQ=;
+        b=W5428QGCeq98RC4VRhC8VKqrMj/bE7WfkRHgwVi9e34cckEwGcIjqcI1ctSDwu7J4/
+         k6O/SRfmPxYDAZ676YOTxlP/aptaU/JWumQgDzkXQJhDQ175q38u1iHRbNpFGhJ9sGZR
+         dIZNju5HLpR3tJhcW3KYjlfqKCPKNzfLgZulKT0fxyhvEdqLrOjWWBwQMpkbxySa7XK7
+         wRnPxOm8dm2zgdQUl2yWNeZ5EZGZ8goSJXEP91+TYMRP3fK7Yk9Z3ormA0TfcKjC9RB8
+         BPVo40vVrLHEJ3LmsfAidKWnLkeYKcOdO7w86GQY9eNLtvBGy+nxrURVYUoj+fIKfD6s
+         XrBA==
+X-Gm-Message-State: AOJu0YzKV3Oa9ciqF5+P8Gvb1TAD8AlliVlMiex0VIQGrbeVAGeE/1q6
+	LO34n4t+dRwah0RRzLOtw+M13zN9Epbak7Wd1y98Wu53pk7Im7DP8STBhmqUdEmXnUWproORBZr
+	hpV0gzqr4gQ==
+X-Gm-Gg: ASbGncsyCkrWKUkpXlz/pLr9xjxvFQ1moxgxGAneUj7Ss+6rKyYyIH9MClyHyuVSVrX
+	vduqR/fFMGECB4WZMnnhJjVnD1/3QPfWU8dXsNLtLeSY77/ElMGvi9spqCsaTljhzSUNWVEWJnn
+	lHPy45PZbdJu1MQOgSDE+TXe3MKx1Q2t0AL8h9ar+T2YkpGZ8da3DelX2TRi3iiYlynfKvlHFme
+	BUuvmmA+j+xuGGgQKIoH6rcaRLxH0XucsVRj7RJF5rPSEztG6KQVj3w/nFYflkvgrzIaSUZPnG2
+	9Qncrm3nhRs9/9w6jq8GpjbfJA79rwV984S2KUJ7UTk2WXrW4+wNp4iapVPviFghDM9i4Vl6PfI
+	HgtTze0D5Q/qkaw==
+X-Google-Smtp-Source: AGHT+IE/Asco5W/QWmU3j6V7i1FjgBNo/T4BMBtPxetAUfywBKthurbUdMU2h/M8FJBHvUw3S/5qOw==
+X-Received: by 2002:a05:600c:1f0e:b0:43d:2230:300f with SMTP id 5b1f17b1804b1-453653925d3mr25463375e9.0.1750421388116;
+        Fri, 20 Jun 2025 05:09:48 -0700 (PDT)
+Received: from [192.168.3.33] (25.37.160.45.gramnet.com.br. [45.160.37.25])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4535a14221csm55331025e9.1.2025.06.20.05.09.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Jun 2025 05:09:47 -0700 (PDT)
+Message-ID: <0be69f379a9a7a3cb4cc6d1f5fdeae2172095b8c.camel@suse.com>
+Subject: Re: [PATCH] btrfs-progs: filesystems: Check DATA profile before
+ creating swapfile
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: wqu@suse.com, dsterba@suse.com
+Date: Fri, 20 Jun 2025 09:09:44 -0300
+In-Reply-To: <20250606150826.119456-1-mpdesouza@suse.com>
+References: <20250606150826.119456-1-mpdesouza@suse.com>
+Autocrypt: addr=mpdesouza@suse.com; prefer-encrypt=mutual;
+ keydata=mDMEZ/0YqhYJKwYBBAHaRw8BAQdA4JZz0FED+JD5eKlhkNyjDrp6lAGmgR3LPTduPYGPT
+ Km0Kk1hcmNvcyBQYXVsbyBkZSBTb3V6YSA8bXBkZXNvdXphQHN1c2UuY29tPoiTBBMWCgA7FiEE2g
+ gC66iLbhUsCBoBemssEuRpLLUFAmf9GKoCGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgk
+ QemssEuRpLLWGxwD/S1I0bjp462FlKb81DikrOfWbeJ0FOJP44eRzmn20HmEBALBZIMrfIH2dJ5eM
+ GO8seNG8sYiP6JfRjl7Hyqca6YsE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.1 (by Flathub.org) 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
 
-For this callback, btrfs will:
+On Fri, 2025-06-06 at 12:08 -0300, Marcos Paulo de Souza wrote:
+> Link: https://github.com/kdave/btrfs-progs/issues/840
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> ---
+>=20
+> I'm not sure if it would be better to just add a new helper method to
+> check
+> for profiles, please let me know if you would like to have a helper
+> instead.
+>=20
+>=20
 
-- Go degraded if the fs can still maintain RW operations
+gentle ping :)
 
-- Shutdown if the fs can not maintain RW operations
-
-I know the shutdown can be a little overkilled, if one has a RAID1
-metadata and RAID0 data, in that case one can still read data with 50%
-rate to got some good data.
-
-But it can also be as bad as the only device went missing for a single
-device btrfs.
-
-So here we go safe other than sorry when handling missing device.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/super.c   | 34 ++++++++++++++++++++++++++++++++++
- fs/btrfs/volumes.c |  2 ++
- fs/btrfs/volumes.h |  5 +++++
- 3 files changed, 41 insertions(+)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 82ce0625b2f0..f82f9be41321 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2397,6 +2397,39 @@ static long btrfs_free_cached_objects(struct super_block *sb, struct shrink_cont
- 	return 0;
- }
- 
-+static void btrfs_shutdown_bdev(struct super_block *sb, struct block_device *bdev)
-+{
-+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
-+	struct btrfs_device *device;
-+	struct btrfs_dev_lookup_args lookup_args = { .devt = bdev->bd_dev };
-+
-+	mutex_lock(&fs_info->fs_devices->device_list_mutex);
-+	device = btrfs_find_device(fs_info->fs_devices, &lookup_args);
-+	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
-+	if (!device) {
-+		btrfs_warn(fs_info, "unable to find btrfs device for block device '%pg'",
-+			   bdev);
-+		return;
-+	}
-+	set_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
-+	device->fs_devices->missing_devices++;
-+	if (test_and_clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
-+		list_del_init(&device->dev_alloc_list);
-+		device->fs_devices->rw_devices--;
-+	}
-+	if (!btrfs_check_rw_degradable(fs_info, device)) {
-+		btrfs_warn_in_rcu(fs_info,
-+	"btrfs device id %llu path %s has gone missing, can not maintain read-write",
-+				  device->devid, btrfs_dev_name(device));
-+		btrfs_shutdown(fs_info);
-+		return;
-+	}
-+	btrfs_warn_in_rcu(fs_info,
-+	"btrfs device id %llu path %s has gone missing, continue degraded",
-+			  device->devid, btrfs_dev_name(device));
-+	btrfs_set_opt(fs_info->mount_opt, DEGRADED);
-+}
-+
- static const struct super_operations btrfs_super_ops = {
- 	.drop_inode	= btrfs_drop_inode,
- 	.evict_inode	= btrfs_evict_inode,
-@@ -2412,6 +2445,7 @@ static const struct super_operations btrfs_super_ops = {
- 	.unfreeze_fs	= btrfs_unfreeze,
- 	.nr_cached_objects = btrfs_nr_cached_objects,
- 	.free_cached_objects = btrfs_free_cached_objects,
-+	.shutdown_bdev	= btrfs_shutdown_bdev,
- };
- 
- static const struct file_operations btrfs_ctl_fops = {
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 541d17ca5dcf..5639df71ef91 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6792,6 +6792,8 @@ static bool dev_args_match_fs_devices(const struct btrfs_dev_lookup_args *args,
- static bool dev_args_match_device(const struct btrfs_dev_lookup_args *args,
- 				  const struct btrfs_device *device)
- {
-+	if (args->devt)
-+		return device->devt == args->devt;
- 	if (args->missing) {
- 		if (test_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state) &&
- 		    !device->bdev)
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index afa71d315c46..2c5e3ebc5a2b 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -652,6 +652,11 @@ struct btrfs_dev_lookup_args {
- 	u64 devid;
- 	u8 *uuid;
- 	u8 *fsid;
-+	/*
-+	 * If devt is specified, all other members will be ignored as it is
-+	 * enough to uniquely locate a device.
-+	 */
-+	dev_t devt;
- 	bool missing;
- };
- 
--- 
-2.49.0
-
+> =C2=A0cmds/filesystem.c | 11 ++++++++++-
+> =C2=A01 file changed, 10 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
+> index 64373532..21ff4d7a 100644
+> --- a/cmds/filesystem.c
+> +++ b/cmds/filesystem.c
+> @@ -1718,12 +1718,21 @@ static int cmd_filesystem_mkswapfile(const
+> struct cmd_struct *cmd, int argc, cha
+> =C2=A0		return 1;
+> =C2=A0
+> =C2=A0	fname =3D argv[optind];
+> -	pr_verbose(LOG_INFO, "create file %s with mode 0600\n",
+> fname);
+> =C2=A0	fd =3D open(fname, O_RDWR | O_CREAT | O_EXCL, 0600);
+> =C2=A0	if (fd < 0) {
+> =C2=A0		error("cannot create new swapfile: %m");
+> =C2=A0		return 1;
+> =C2=A0	}
+> +
+> +	ret =3D sysfs_open_fsid_file(fd,
+> "allocation/data/single/total_bytes");
+> +	if (ret < 0) {
+> +		error("swapfile isn't supported on a filesystem with
+> DATA profile different from single");
+> +		ret =3D 1;
+> +		goto out;
+> +	}
+> +
+> +	pr_verbose(LOG_INFO, "create file %s with mode 0600\n",
+> fname);
+> +
+> =C2=A0	ret =3D ftruncate(fd, 0);
+> =C2=A0	if (ret < 0) {
+> =C2=A0		error("cannot truncate file: %m");
 
