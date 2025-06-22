@@ -1,264 +1,154 @@
-Return-Path: <linux-btrfs+bounces-14839-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14840-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A8A2AE312D
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Jun 2025 19:34:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 277A8AE32F1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Jun 2025 01:04:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21FF11889F29
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Jun 2025 17:34:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FEC63AD7D6
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Jun 2025 23:04:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48D4518D656;
-	Sun, 22 Jun 2025 17:34:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A8B1DE4C3;
+	Sun, 22 Jun 2025 23:04:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IXBQdXUK"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="FvLbSpmv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88D4372
-	for <linux-btrfs@vger.kernel.org>; Sun, 22 Jun 2025 17:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4BC6136
+	for <linux-btrfs@vger.kernel.org>; Sun, 22 Jun 2025 23:04:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750613668; cv=none; b=hAsmksab2LdfdVg5i392ecBBjduxcHzuByAqNvYrYO5J5IER0UddHx/R6u8kzjxIoptDJrrl2QbXHFgQrNHSn5oZWK1iOtUETrBG/JoglzMfBtlE2AH4FAuLlGsukEZ4JpKx6cWS9wWeQKa8e6KqdzkSfiSVspgV2XADKTEBBL0=
+	t=1750633492; cv=none; b=RRMPZLoRRh2lEbxgBRph4hoNYdEUL2efKjqhbBNyTbOXP2325B654YuvMvEnPL15SsgvSdiOFOUGxOfbS8xiSB/ho8WY4uufBDTZC4s632GEJedJPb0s/tyLmrUv89/BcvqYgpK1M0jA+CXu6zXJOCcXPIjjxiPCHCBljMtB9lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750613668; c=relaxed/simple;
-	bh=uzzwGqsD9zYxsePA4v9rzZsVr5IjcVwnOvKxy+X6BFQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=SzpNovJ2vf3Y9iRxiXmX1OJ23/g34XX9hkgj8Us34UlDGLVg2/glv3g7NhUlcbgxn4wp+98MR/cLxMcnFZUTHNqY3mj7Cq7IUW4iYSQyKX/AZcR6P/+0TxLIrReBx9zVuuMOvLRbw81yW4lxjQfG2dcyJsTe0V44tVXCnY/L6cM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IXBQdXUK; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4a4312b4849so40536151cf.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Jun 2025 10:34:26 -0700 (PDT)
+	s=arc-20240116; t=1750633492; c=relaxed/simple;
+	bh=oKL7Ajwn6RjSypn8Ok+QViP+Wi07lzTLNuDjrIOhUWU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KrKvOmn7NHdAI+1Uz0y3DyHf4ph18ZU+BlDlQ0XLnJe0PNrd2SdlNjWZNEjMudN7WnYrOot8t7yKDgv3OQTD06hyFg6TvfkyT33IsC101jo6q075mc6gJzdnUpN0D4tXq5bpgMZZqFvnWck+qcOeSlbyWNdMqVyj+zt+EbHnHRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=FvLbSpmv; arc=none smtp.client-ip=209.85.221.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-3a582e09144so2120454f8f.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Jun 2025 16:04:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750613665; x=1751218465; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nZDB0+uM2HnaoO3xXHVZe1sqR0e1eDVlPqb7jqoW3Tg=;
-        b=IXBQdXUK99yiT7rE4H4CkdPOj36XZkzCud0xlfkiTH3Gu5a7afgQpoh1N7d+Hu8so4
-         Z0ow3FObwb6/DOup7ZdCBL7HtkJfpnd3Gv3Sm6qgtLPDW9XHcrVcNtISMbiM4y3s+ESW
-         5uONxZ+BlnoKG5nXPr7r+kztkD2OMoDngUTwyYY1zJkgkRu9D++5SXP2zkth2iy9iYqO
-         rfJ9NDzeKEB/5QG2ZrRGBgac/c/lg4bmZTgUxc4Q8Up4ku6flLnryTKOIdELCUFeJiYq
-         vvEkxK/bstfm/qdzVAU7LHUZnyoYcQinr3XkTeId2o1DbBhcq5HAm+/TOIloyXvl+fEz
-         +WeA==
+        d=suse.com; s=google; t=1750633489; x=1751238289; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=hRQzdZo9TQSEv5a+p3lB9Y8HC+xfJfGwbcANHdv+pSQ=;
+        b=FvLbSpmvUQgv5Pui4/zqoscXwiH4zYnynixqwC4+KyO9hZy/vjuSDJJig7XgZqLrKm
+         Ht4jy1bJMYzMcaASFTxAXjGKmrnA06uFmxqvoeYHe9B5CG018g9Xi5HPSay1bCoJ3irh
+         K5q0aI7JOlOqucUIRdt+ZSgBta7q2T2FpEobWsKcc/Um8mwmIaHUCV+TlWmoQz5BFDxT
+         n4IE1qMiVnaCLYFUV4XQQrQF4kXlDsh1vA4AIZ48lyql+wSlaK2Gvjod/+AE9zOpXDN1
+         zETa6x1hQHu1Q8fck6kO7X9j+xdXTqod1h8YP7HvyEhXhcNWF9peiEtAXEoR4srteBxS
+         AOFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750613665; x=1751218465;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+        d=1e100.net; s=20230601; t=1750633489; x=1751238289;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nZDB0+uM2HnaoO3xXHVZe1sqR0e1eDVlPqb7jqoW3Tg=;
-        b=sB15nKpRKtdW6RHu/phuWyV0hG3BSPcuoxKZsjhAmp5oY5kG373+IqWdS8CJ72RA2z
-         m3Sz5B4/8r1LRBH+Vi+BTbZG3O0BG7ugS+x7kI00TK9NwFH71LkS9ciaIkSkxw9Ans47
-         1ETgciy9M06elfu3CEysmas6ASns6/7tDaVSr6oCBvfR3u+nMwFmAUzLZQAWUAOjWtRp
-         2r2bn5aBttk+OGCvjwTeHUqz1A7FlO9ou3BlcsKQX3GHk9yM12eRbPvVfc3KGck2WUZ0
-         VJ6G6THUq15HI9bWuZ2ETsd2jOlQzfe2Kyuw6jQg6gYyTQwT4QtbJPrGHqWj+OMQI65q
-         WoUA==
-X-Gm-Message-State: AOJu0Yz6BSzvNicL2caRji1gDirNOCcUrC7TZXdpM06EQZzC/Tp4GBQW
-	5A0ZK3K8bhu3FmvZAPzAsU18iH170knsAkY/RTXERSfhts/QE0aeb9jNDGWkVVmrZMvnq78d3nE
-	7pjDL3xaWNKcVf/+ZSzPhtC5/UIbURTmQ9A==
-X-Gm-Gg: ASbGncvtG6UfkuOGQzreWdg1LX1MNe7WFKz1rD+dOhe6RLg7fo0/iXJCpIy4JOyW6bm
-	dGJJ1+R9UwdznFVcMH1WgLKb4aclAwkxRX2QTsIEl/4kd+CvTtM78H6HSCoHSiXVedLCtYHGHYF
-	7X8Hyf2Ohg//kw3LN728b1G9p33vT8SZrhQnXrg/NRUghUIQA4PYGoQES5xvwNnfJuFwUSkyUi7
-	ftQ
-X-Google-Smtp-Source: AGHT+IHF9rjSHDvcCMZVO9QvBAP8LslJcm9GzMZcBN+JDOXEc64BgxIqia8LebDgSM6lE3MVDbf3Xs7fLR+LaKZmmWA=
-X-Received: by 2002:ac8:5849:0:b0:4a1:3b18:598a with SMTP id
- d75a77b69052e-4a77a1fed3dmr155200891cf.5.1750613665349; Sun, 22 Jun 2025
- 10:34:25 -0700 (PDT)
+        bh=hRQzdZo9TQSEv5a+p3lB9Y8HC+xfJfGwbcANHdv+pSQ=;
+        b=WjWSng2+Dpzy513rT4XrWUmS3cu0o0ccjf9l6M/KMXnL6TSVWKodug4MBVyQdEfbV7
+         mO9FUd7WSCFqpZpk6E/FTfFky0+VU2UMjsztwVmrakyqFvE4vEbMApnABfJIpP+er9kV
+         7vh+gIEYwZ02Uxj6gl4Wa8A4edOnad2b3+4MoKAssuaQ5vmW9Q/pGJwHiFhX/DMKy42c
+         T0r1SEcQ06gpgVWrdJIf465lUQLXW88/gWIkYtfMfXzOJ7KUBjMARI7RErJXaFPsPcor
+         dNaQtLUn6JUv9rPFmx4VIcr5Z5RRLZ8bbtKhlMvcbBKaVwEKxGt1LGS2JR0BaexKc7fS
+         IeTQ==
+X-Gm-Message-State: AOJu0Yzn9f48lGwpsvy5MGF01tKuYabWG8zVr1a9sSEjPW9JYgz3XB6o
+	78nhXRPYuh00EBdhV3xl3T27g2TibZOHfqu6ciLJR0XE+fpBHdbMwyUmZW+pwRVW9e8=
+X-Gm-Gg: ASbGnctO9gW2+lMiJ9QLVJRxz7XZ2ujDEElfXIPT96JP0Z6RGq2GypqzfzpGKyF9TAl
+	sxF4jKZcPfrxFQsSSBN4/Z0XL7yNwQlufQQXYtkBS0MzUkwArLHz1MPVoe5NltuOV2l825f8cwt
+	uyiuz6hB66MDk5qQ13VrInVS8fNAjMIS+undkZv9iZWjxrVWZnkGxA5CYoiuN4i0Dor0VEzilCb
+	107awUNO++s/macLhWRUjRwiSkNihjnLO2symvr+5Ymua7IFMfsnf5WAGIgpMtcYAiV6e91/Ph4
+	8fMmelLRdvGC81MVGc1UdC7DRgPwxIGWRVVYrIysxk8YL0pR0vXIKbsdEPzWGt0E4y1Dh9hZL+W
+	uHxtvueq8btgMUg==
+X-Google-Smtp-Source: AGHT+IHGsGJ5ViwS3Z+PySWsZj6bHCPteYR7MbOVAnhAfMCwXbqLf3HcP4oD33cy6T/VfdMKWAW47A==
+X-Received: by 2002:a05:6000:2810:b0:3a4:d0ed:257b with SMTP id ffacd0b85a97d-3a6d12dd6c5mr5453346f8f.22.1750633488690;
+        Sun, 22 Jun 2025 16:04:48 -0700 (PDT)
+Received: from [192.168.3.33] (25.37.160.45.gramnet.com.br. [45.160.37.25])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-237d83c7d45sm68939745ad.55.2025.06.22.16.04.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Jun 2025 16:04:48 -0700 (PDT)
+Message-ID: <0a414c3661943e45d6b297f62b1c680e14affa75.camel@suse.com>
+Subject: Re: [PATCH] btrfs-progs: filesystems: Check DATA profile before
+ creating swapfile
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org, wqu@suse.com, dsterba@suse.com
+Date: Sun, 22 Jun 2025 20:03:13 -0300
+In-Reply-To: <20250620165431.GB4037@twin.jikos.cz>
+References: <20250606150826.119456-1-mpdesouza@suse.com>
+	 <20250620165431.GB4037@twin.jikos.cz>
+Autocrypt: addr=mpdesouza@suse.com; prefer-encrypt=mutual;
+ keydata=mDMEZ/0YqhYJKwYBBAHaRw8BAQdA4JZz0FED+JD5eKlhkNyjDrp6lAGmgR3LPTduPYGPT
+ Km0Kk1hcmNvcyBQYXVsbyBkZSBTb3V6YSA8bXBkZXNvdXphQHN1c2UuY29tPoiTBBMWCgA7FiEE2g
+ gC66iLbhUsCBoBemssEuRpLLUFAmf9GKoCGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgk
+ QemssEuRpLLWGxwD/S1I0bjp462FlKb81DikrOfWbeJ0FOJP44eRzmn20HmEBALBZIMrfIH2dJ5eM
+ GO8seNG8sYiP6JfRjl7Hyqca6YsE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.1 (by Flathub.org) 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMthOuMkG7apm2thceT4rAkdJ-Y7aBBZSxF4Ct219aE6qiaGFw@mail.gmail.com>
-In-Reply-To: <CAMthOuMkG7apm2thceT4rAkdJ-Y7aBBZSxF4Ct219aE6qiaGFw@mail.gmail.com>
-From: Kai Krakow <hurikhan77@gmail.com>
-Date: Sun, 22 Jun 2025 19:33:59 +0200
-X-Gm-Features: AX0GCFtctbQSU4lrdxc_ClA59dlwt9U2Fc-eiDYiFAu6rcf0NGX0nGZQSYaq41s
-Message-ID: <CAMthOuNtOBVa41+MXEYXwqfEJgUsDjKnzPGnmRmbARNKcKPhbQ@mail.gmail.com>
-Subject: btrfs dies in RIP: 0010:btrfs_get_64+0x65/0x110
-To: linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 
-Hello btrfs list!
+On Fri, 2025-06-20 at 18:54 +0200, David Sterba wrote:
+> On Fri, Jun 06, 2025 at 12:08:26PM -0300, Marcos Paulo de Souza
+> wrote:
+> > Link: https://github.com/kdave/btrfs-progs/issues/840
+> > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> > ---
+> >=20
+> > I'm not sure if it would be better to just add a new helper method
+> > to check
+> > for profiles, please let me know if you would like to have a helper
+> > instead.
+>=20
+> > +	ret =3D sysfs_open_fsid_file(fd,
+> > "allocation/data/single/total_bytes");
+> > +	if (ret < 0) {
+> > +		error("swapfile isn't supported on a filesystem
+> > with DATA profile different from single");
+> > +		ret =3D 1;
+> > +		goto out;
+> > +	}
+>=20
+> This works, new helper can be added in case we'd need this pattern
+> more
+> often.
+>=20
+> But I'm not sure the error and exit is right here, it's up to the
+> kernel
+> implementation to check the constraints. In progs it's better to warn
+> and say kernel may not support that, for features where this may
+> change
+> in the future.
 
-Added a missing subject... Sorry for the extra noise.
+I agree, just printing a warning should be good enough for cases like
+this, since the file creation works but later on swapon fails due to
+the nature of the data profile not being single, returning -EINVAL.
+This also throws a btrfs_warn.
 
-Am So., 22. Juni 2025 um 19:31 Uhr schrieb Kai Krakow <hurikhan77@gmail.com>:
->
-> Hello btrfs list!
->
-> Once in a while, we are seeing the following kernel bug during the
-> night while the backup is putting some additional load on the system:
->
-> Jun 22 04:11:29 vch01 kernel: rcu: INFO: rcu_sched self-detected stall on CPU
-> Jun 22 04:11:29 vch01 kernel: rcu:         10-....: (2100 ticks this
-> GP) idle=0494/1/0x4000000000000000 softirq=164826140/164826187
-> fqs=1052
-> Jun 22 04:11:29 vch01 kernel: rcu:         (t=2100 jiffies g=358306033
-> q=2241752 ncpus=16)
-> Jun 22 04:11:29 vch01 kernel: CPU: 10 UID: 0 PID: 1524681 Comm:
-> map_0x178e45670 Not tainted 6.12.21-gentoo #1
-> Jun 22 04:11:29 vch01 kernel: Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
-> Jun 22 04:11:29 vch01 kernel: RIP: 0010:btrfs_get_64+0x65/0x110
-> Jun 22 04:11:29 vch01 kernel: Code: d3 ed 48 8b 4f 70 48 8b 31 83 e6
-> 40 74 11 0f b6 49 40 41 bc 00 10 00 00 49 d3 e4 49 83 ec 01 4a 8b 5c
-> ed 70 49 21 d4 45 89 c9 <48> 2b 1d 7c 99 09 01 49 01 c1 8b 55 08 49 8d
-> 49 08 44 8b 75 0c 48
-> Jun 22 04:11:29 vch01 kernel: RSP: 0018:ffffbb7ad531bba0 EFLAGS: 00000202
-> Jun 22 04:11:29 vch01 kernel: RAX: 0000000000001f15 RBX:
-> fffff437ea382200 RCX: fffff437cb891200
-> Jun 22 04:11:29 vch01 kernel: RDX: 000001922b68df2a RSI:
-> 0000000000000000 RDI: ffffa434c3e66d20
-> Jun 22 04:11:29 vch01 kernel: RBP: ffffa434c3e66d20 R08:
-> 000001922b68c000 R09: 0000000000000015
-> Jun 22 04:11:29 vch01 kernel: R10: 6c0000000000000a R11:
-> 0000000009fe7000 R12: 0000000000000f2a
-> Jun 22 04:11:29 vch01 kernel: R13: 0000000000000001 R14:
-> ffffa43192e6d230 R15: ffffa43160c4c800
-> Jun 22 04:11:29 vch01 kernel: FS:  000055d07085e6c0(0000)
-> GS:ffffa4452bc80000(0000) knlGS:0000000000000000
-> Jun 22 04:11:29 vch01 kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> Jun 22 04:11:29 vch01 kernel: CR2: 00007fff204ecfc0 CR3:
-> 0000000121a0b000 CR4: 00000000001506f0
-> Jun 22 04:11:29 vch01 kernel: DR0: 0000000000000000 DR1:
-> 0000000000000000 DR2: 0000000000000000
-> Jun 22 04:11:29 vch01 kernel: DR3: 0000000000000000 DR6:
-> 00000000fffe0ff0 DR7: 0000000000000400
-> Jun 22 04:11:29 vch01 kernel: Call Trace:
-> Jun 22 04:11:29 vch01 kernel:  <IRQ>
-> Jun 22 04:11:29 vch01 kernel:  ? rcu_dump_cpu_stacks+0xd3/0x100
-> Jun 22 04:11:29 vch01 kernel:  ? rcu_sched_clock_irq+0x4ff/0x920
-> Jun 22 04:11:29 vch01 kernel:  ? update_process_times+0x6c/0xa0
-> Jun 22 04:11:29 vch01 kernel:  ? tick_nohz_handler+0x82/0x110
-> Jun 22 04:11:29 vch01 kernel:  ? tick_do_update_jiffies64+0xd0/0xd0
-> Jun 22 04:11:29 vch01 kernel:  ? __hrtimer_run_queues+0x10b/0x190
-> Jun 22 04:11:29 vch01 kernel:  ? hrtimer_interrupt+0xf1/0x200
-> Jun 22 04:11:29 vch01 kernel:  ? __sysvec_apic_timer_interrupt+0x44/0x50
-> Jun 22 04:11:29 vch01 kernel:  ? sysvec_apic_timer_interrupt+0x60/0x80
-> Jun 22 04:11:29 vch01 kernel:  </IRQ>
-> Jun 22 04:11:29 vch01 kernel:  <TASK>
-> Jun 22 04:11:29 vch01 kernel:  ? asm_sysvec_apic_timer_interrupt+0x16/0x20
-> Jun 22 04:11:29 vch01 kernel:  ? btrfs_get_64+0x65/0x110
-> Jun 22 04:11:29 vch01 kernel:  find_parent_nodes+0x1b84/0x1dc0
-> Jun 22 04:11:29 vch01 kernel:  btrfs_find_all_leafs+0x31/0xd0
-> Jun 22 04:11:29 vch01 kernel:  ? queued_write_lock_slowpath+0x30/0x70
-> Jun 22 04:11:29 vch01 kernel:  iterate_extent_inodes+0x6f/0x370
-> Jun 22 04:11:29 vch01 kernel:  ? update_share_count+0x60/0x60
-> Jun 22 04:11:29 vch01 kernel:  ? extent_from_logical+0x139/0x190
-> Jun 22 04:11:29 vch01 kernel:  ? release_extent_buffer+0x96/0xb0
-> Jun 22 04:11:29 vch01 kernel:  iterate_inodes_from_logical+0xaa/0xd0
-> Jun 22 04:11:29 vch01 kernel:  btrfs_ioctl_logical_to_ino+0xaa/0x150
-> Jun 22 04:11:29 vch01 kernel:  __x64_sys_ioctl+0x84/0xc0
-> Jun 22 04:11:29 vch01 kernel:  do_syscall_64+0x47/0x100
-> Jun 22 04:11:29 vch01 kernel:  entry_SYSCALL_64_after_hwframe+0x4b/0x53
-> Jun 22 04:11:29 vch01 kernel: RIP: 0033:0x55d07617eaaf
-> Jun 22 04:11:29 vch01 kernel: Code: 00 48 89 44 24 18 31 c0 48 8d 44
-> 24 60 c7 04 24 10 00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24
-> 10 b8 10 00 00 00 0f 05 <89> c2 3d 00 f0 ff ff 77 18 48 8b 44 24 18 64
-> 48 2b 04 25 28 00 00
-> Jun 22 04:11:29 vch01 kernel: RSP: 002b:000055d07085bc20 EFLAGS:
-> 00000246 ORIG_RAX: 0000000000000010
-> Jun 22 04:11:29 vch01 kernel: RAX: ffffffffffffffda RBX:
-> 000055d0402f8550 RCX: 000055d07617eaaf
-> Jun 22 04:11:29 vch01 kernel: RDX: 000055d07085bca0 RSI:
-> 00000000c038943b RDI: 0000000000000003
-> Jun 22 04:11:29 vch01 kernel: RBP: 000055d07085bea0 R08:
-> 00007fee46c84080 R09: 0000000000000000
-> Jun 22 04:11:29 vch01 kernel: R10: 0000000000000000 R11:
-> 0000000000000246 R12: 0000000000000003
-> Jun 22 04:11:29 vch01 kernel: R13: 000055d07085bf80 R14:
-> 000055d07085bf48 R15: 000055d07085c0b0
-> Jun 22 04:11:29 vch01 kernel:  </TASK>
->
-> Some more information about the environment and incident observations:
->
-> The kernel is compiled without module support, everything baked in, no
-> proprietary modules.
->
-> The file system has previously been recreated by restoring from backup
-> but we still see this problem once in a while, so I suspect there's no
-> file system inconsistency involved.
->
-> The rootfs itself is on xfs, so I can still login. But the system is
-> very slow, takes 5-10 minutes to log in via SSH, commands like
-> "reboot" time out because the system dbus is congested.
->
-> This bug cannot be easily triggered. So far, it only happened at
-> night, the system needs uptime of multiple days or weeks, with some
-> amount of swap used, and the backup (borg backup) has to run. So I
-> think this happens because we get some memory pressure while we also
-> have memory fragmentation going on for some time.
->
-> The system is running bees on the btrfs pool because naturally this
-> web and mail hosting system has a lot of duplicate files. Mysql is
-> running on xfs only. Temporary files during backup are created on xfs
-> only (the backup can access the btrfs only via r/o, no writes
-> allowed). Snapper takes snapshots every hour and cleans out older
-> snapshots over time.
->
-> I've now upgraded to the current Gentoo stable release 6.21.31 of the kernel.
->
-> btrfs is running in single data / raid1 meta on three disks provided
-> by KVM via virtio. The KVM images itself are served by drbd redundant
-> over multiple servers (outside of the VM). The hardware itself has no
-> known hardware issues (no memory errors, no storage errors). Scrubbing
-> finds no checksum or other errors. The VM or storage hasn't been
-> migrated at time of the incident or recently.
->
-> #  uname -a
-> Linux vch01 6.12.21-gentoo #2 SMP Thu May 15 18:02:52 CEST 2025 x86_64
-> Intel Xeon E3-12xx v2 (Ivy Bridge) GenuineIntel GNU/Linux
->
-> # free -m
->               total        used        free      shared  buff/cache   available
-> Mem:           84476       33122        1941        3344       48183       51353
-> Swap:          15358        5362        9996
->
-> #  cat /proc/cpuinfo | egrep 'processor|model|cpu|cache' | sort -u
-> bugs            : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass
-> l1tf mds swapgs itlb_multihit srbds mmio_unknown bhi
-> cache_alignment : 64
-> cache size      : 4096 KB
-> cpu cores       : 1
-> cpu family      : 6
-> cpuid level     : 13
-> cpu MHz         : 2399.998
-> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge
-> mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx rdtscp lm
-> constant_tsc rep_good nopl cpuid tsc_known_freq pni pclmulqdq ssse3
-> cx16 sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx f16c
-> rdrand hypervisor lahf_lm fsgsbase smep erms xsaveopt
-> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge
-> mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx rdtscp lm
-> constant_tsc rep_good nopl cpuid tsc_known_freq pni pclmulqdq ssse3
-> cx16 sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx f16c
-> rdrand hypervisor lahf_lm intel_ppin fsgsbase smep erms xsaveopt
-> model           : 58
-> model name      : Intel Xeon E3-12xx v2 (Ivy Bridge)
-> processor       : 0
-> processor       : 1
-> processor       : 10
-> processor       : 11
-> processor       : 12
-> processor       : 13
-> processor       : 14
-> processor       : 15
-> processor       : 2
-> processor       : 3
-> processor       : 4
-> processor       : 5
-> processor       : 6
-> processor       : 7
-> processor       : 8
-> processor       : 9
->
-> Thanks for looking into it. If you need more information, I may be
-> able to provide it as long as I don't have to get it from the still
-> running machine: it has been rebooted since the incident.
->
-> Regards,
-> Kai
+>=20
+> Do you have a usecase where you rely on this command failing? Maybe
+> we
+> can enhance it so it verifies the known limitations, separately from
+> the
+> actual file creation.
+
+Not really, just wanted to fix this behavior after seeing it on btrfs-
+progs issues on GitHub.
+
+In this case, do you think this is worth solving? Maybe keeping the
+same check for the data profile and just show a warning on btrfs-progs?
+
+
+Thanks in advance,
+  Marcos
 
