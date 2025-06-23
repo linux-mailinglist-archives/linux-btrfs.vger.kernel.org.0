@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-14844-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14845-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC099AE34CD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Jun 2025 07:35:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 796BCAE352F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Jun 2025 07:51:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6807E7A7498
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Jun 2025 05:34:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5E6E3B14B5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Jun 2025 05:50:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6F01C862E;
-	Mon, 23 Jun 2025 05:35:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FAF91D88D7;
+	Mon, 23 Jun 2025 05:51:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="dnb3T78r"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ppW5tDbk"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D56187FEC;
-	Mon, 23 Jun 2025 05:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1DD1C862B;
+	Mon, 23 Jun 2025 05:51:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750656913; cv=none; b=Zhv/owr6/U99pNIRktbiKx2Ez4+aVMcg+qpp8J6LgGMdxWsOLn0AoRo7gJHzXY0ukwSQYQoohmwFKZ80LCiP/ZegomynTkq8xBe/SBLgJ4lND/CQ1vfsGT6sZp8flN+qSQ779FlpgA535EHwmGNMzJpGsPKUkPH6fSgAyuHuPSI=
+	t=1750657877; cv=none; b=qH9rNPeQEGDDDR8taejltjNLjpwKsHMV4BnBvWnbbf2z7dcD+fas74AzNKdpYtZWcavYmNTzh897hTsyBQHrL+mSav2OLeXfYxKU39vUkrCLY6gXxqRd59erT+5xv2vzP0KfSyel6r5wELyDjg5q9bHKPnf8kw4uSj0qdddYWcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750656913; c=relaxed/simple;
-	bh=pqb5W54VQ7RGht3XVkgccw2KsKsBrFrTMKUWyfLiDhE=;
+	s=arc-20240116; t=1750657877; c=relaxed/simple;
+	bh=W9uwQoYw0YTbjz/35hZfFK3sYCCCdJSJqXLSMfmgecs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eEXB0qQyj5paN5d68vMAWqCWS+JDEFI48zIzBWgWnCYW58jkZubcLMHQ6PO38J/MuDOatuiTPT7lIBXvHvJzHMQjZFtKEZsz3Ny6A0i1F8RyErmRqouXverx0Vapsbum/ebvEHDh4E5cwRGq7GiW4SNTT17zoE790Y44ysR8nHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=dnb3T78r; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=aO+Kh3iu6V9tWLaNfk54tw1fmYkFETYojnA+C0Sm1gL+ZbW2wYItwIdZ0Ddj2q/vf80ytTXSXxnxjIfV8yaxT5uzldnFUkiP63F2rp0qD6dHpg5QJe6GApooCgk/l1iM6zsFUUCb/e/kSJj1PrUozGVHekBK/j/HAL4tCf8oAV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ppW5tDbk; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1750656898; x=1751261698; i=quwenruo.btrfs@gmx.com;
-	bh=7YTlshQ2gCmIGsHFUVFSCd34bvKabICD+/kFnyh8IIY=;
+	s=s31663417; t=1750657856; x=1751262656; i=quwenruo.btrfs@gmx.com;
+	bh=vTYRi7SsIOfrGQaEKPHppvlqcuX9j6RcjWAPG4EX80s=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=dnb3T78rpHUT6IZhdHAtcmmmx4Cy10oVD/ThI2sHnFIbxE0UxyhRDD8iy5Wq9O5l
-	 OXLAGPUXotL9/MmZ4YpdRdky/Nz7Zsmmm36yCh+Qt81mQ2jEud9zwLJU7MJLFMVHn
-	 bzh8BedT4T0sQ4GaGyqfNmiKIUXDY3n7E5w9IhrAYzd7ZVJOSPSUn9V0vS+wNmheY
-	 T2OvvzA2V73gw5qdu1yw7aqOW581B/V4DSnx5i4Nsyo9wjSaPli+ybRyIR+Oox8YI
-	 WCrsh+nhRJ+vS7hLRV2eTuP2OYQ2SlVegZuquMslGYY4jFarMp7H0UOcHp++Vnk3M
-	 LJDB9kwdho2e9khz9g==
+	b=ppW5tDbklJJ4TRjijQUnGn703dfQeyHE0Ede6BDEMaRYgysp5dgfxBN3uWrFrYMr
+	 9E2wK3fHovPe4J9jAKBY7+chssxwgMsXbtAdkhj+ApK1joo2+MeS7+cvQpNfSojzQ
+	 JVs89BjCq1U5hDI1NFVvvv02qVIMxljqvfK10KN60Lg689Fop8FgyGmCCLGMaRWkc
+	 EAEMwyrMGmugH2YHaRWkQjfvW1xuo/BNggZK1T2+yei2KPwXUbCoZD4ddgaCaWYff
+	 fmc4bO1b7ESJVH/EjJUNFENyo4JUkHhkDliMAuMtuRcToUwMegOfdk37t9GAEfo58
+	 7vH1KwuMSN8u+vB7Fw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N63RQ-1unA1x1hou-00yaT1; Mon, 23
- Jun 2025 07:34:57 +0200
-Message-ID: <1882d73e-b287-4c73-abcf-52e10b43edea@gmx.com>
-Date: Mon, 23 Jun 2025 15:04:51 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Ml6m4-1vAIoF2zz2-00bOwM; Mon, 23
+ Jun 2025 07:50:56 +0200
+Message-ID: <55c8b839-e844-49fe-bedc-948e60f681c7@gmx.com>
+Date: Mon, 23 Jun 2025 15:20:43 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,15 +58,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 5/6] fs: introduce a shutdown_bdev super block
- operation
-To: Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org
-References: <cover.1750397889.git.wqu@suse.com>
- <ef624790b57b76be25720e4a8021d7f5f03166cb.1750397889.git.wqu@suse.com>
- <wmvb4bnsz5bafoyu5mp33csjk4bcs63jemzi2cuqjzfy3rwogw@4t6fizv5ypna>
- <aFji5yfAvEeuwvXF@infradead.org>
+Subject: Re: [RFC] DEPT report on around btrfs, unlink, and truncate
+To: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org,
+ clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+ linux-btrfs@vger.kernel.org
+Cc: kernel_team@skhynix.com, torvalds@linux-foundation.org,
+ akpm@linux-foundation.org, yeoreum.yun@arm.com, yunseong.kim@ericsson.com,
+ gwan-gyeong.mun@intel.com, harry.yoo@oracle.com, ysk@kzalloc.com
+References: <20250623032152.GB70156@system.software.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -93,112 +92,468 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <aFji5yfAvEeuwvXF@infradead.org>
+In-Reply-To: <20250623032152.GB70156@system.software.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sotkFt4E5KFSia9dvfxTIQxcHOzsr6+8xabPOpZ048/WBp96uVI
- re4TLaisOLeXJRX+EwJsM8aKC+PqoxgvbYCwx8KAkUup5oGVwco6e2j9amnRc5Bwo4YPCe0
- tdiRn8wxPmD6lZFBU2/DCmvjDl6cNCMf+wmNbs6dnCICoglLoN2CUwB3hT9PouyvHtC/1Wi
- VlkE/LiqwSjLvZw0EdSyg==
+X-Provags-ID: V03:K1:iJhBABkkSVYjkvZtUcSeHuK119lRVUsMI9KOz1fq3F1/R9wu+mg
+ GxcMHnKuTtDI5s7YsXXTgv9JlVRKhZP33Pko2QLVympmiRveIqOMFM8Bic91ZC3dND1bx0a
+ dS4D04WL2hP6v5qH42h+YXZIWMLCBbpYJJPNhgGVTMVn1wS9YsLnO0s6B3INR6yphfsibrk
+ hdpXR/HZwIJhkxwI3mJrg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ddTYm4EhR4I=;qW3Y9hFpfxLN1BHXlSmMB6qgxyX
- qFJXd39zr5O7MgdUYFeCHob3QPhapebH4594Yv90+qg3kGR1xkCNpKG0CYAw9Le9wRpd9wV0m
- CIHcsL1yEFNNRQ4rocFIEYBtQS8Y4L0SH70jIAdmRyVPsBe+8OFI5Sp2fWQdqDz3DSZ5dJdbJ
- t2ZOiHCdA0D5cCxoOhDTD5IcHAT7+q2ICHdso1RjZMwDsJ/BD2H/FoRrYjLFGGy1zwmxCvJGj
- nYCcG9IH6FxpXOFtu9wRc0l322ZJ7tNjAbaeuUC4VLKCWCOlI80RdCpP1Jxls37DO7Mvs9zKn
- g5ayR0N+JC5JJBoKFQyOyjnFzIK6VUiJ5aCOzva5AHmCesgq+0TnAyV9+9thByWnOapKrACPH
- FM1dEfKogDs4vS/bM3by8bPJZ996Jj6WrkJcgtdYWY1soj0uyclCfuY016qpbtoxHeJly79ZE
- SFCbiUEdsGAiZJR6e8b+2TJJQrt+QPCOU8S3YNW30Tb9DSwF7OPgCeTViQUKV2gSGFuunyz2G
- g8b6+shqk6f1t9sMnyF4IZ4GqF5iWRD0nJhpku98z6VS0YM/JlWEM5nx88c03Y+rJPs2Z/+iE
- XpnmCGSYvVKF0qGzXuygvsTMYzEzCt1HuQjCgyeQToELfI/7Oi0MB/l0sPITQGLCO2peyq8o0
- Oq6Tbs4+dKYEQAUD9d34Zqy1bjaQi6ht0m+6dCnkovav/kAIGE2texr1xPFnIemqZ1nLs4Wsc
- NmgMj5d8a+t2DfxfcGGSBb+FsylpaAWb48icXFT2j7sV75NmqLTjuAaV//J9xXO2Tpa/ycTHr
- 5MHpLX2eWg9/VSaf+zPhnCkw1HyklKALKpsa6kaJJa5SjAAg8mkqqcApA43+t1c+P0mMwhtlk
- bUaN40VTdviUbQ1ViCHsDcA/3hUuJMYS4v/lpW6C2uigATAjkFD+YdoShV0dOLQfQYANA8FMz
- IeBy7T/DU/EoKgk28YhcnXu9Y8Z4DdyKUEjZtNKZoXvBQfC+WmuOTTsbHSRclxL1N81NdSYuA
- Od02fDu8kkR8/EOq/lzP/UNsDEwK0O67pT+kcL1RlzF+NXhG6+zmhXASU2shiAhK5Wd8gxa3+
- sbEuoxah89ue+jf+rCdsroKfsX/KAaFw2bJ3bWwiOiIWvI6eAlqghWciZ13gA8rYCmyx8GWHC
- N01s1NUJV8o/l3qjIeSu+8FykFok6ersXLVH7cKA0GA4AnI6oN9C+FwbYKPxIcGK3c4u3+6/v
- 0zkj0zJFZ1vwLaa+a1N767cNos8BRI2XrtYqNwotpa2UmRSyidLujC0KQFUB2KGH9jj+Jxi68
- rhzVcOSPEGcXCEVuJGDhL8CzjfzFfEixabFwSIJQtk2WwVy9vro5QmtSi5wnuA6KQntqQSuIa
- +avy7Kk3j5afxdpbLRLS6FeiEYdQj+VthFPthj3E1235CAPOtetS2IqbgLe5rvioAUmRKnvcA
- ur++UpfwFABMTudFre7WpufFkTGxFVOrlzYp02oKchSl/1bmvZLRwM97eXwAT7ft9eUzrNtTZ
- 6ZVRO2z/vIwvD31zND8ZgDI9XkUxbtZvSx5b87rFa9K6DxTvdvEa5YO5pGdkIg0L3EKVFtDGl
- J/V7yneCwp+UkN56/HifuXwUO8Sp7bl/UUO6bbilvZAOf4Zp5nFl4WfgCJOVk2MNv3XHzUzM+
- KRCM9FB2kQTe/e3ughyhcbK94sjHelmq7/KBCMm44Ja3l+OU2muwgB59XPWeX3sQTXkgHUydh
- K7ZZ9ZNDLHA7WT56TkRbpQOMyADLnFGl5w2NJYkD2psSNqmMwPNkosb3TKWDcgitzNSTDN8Vc
- qMx2MxZMiF/3ET2P+YczoDEEla5xz5HWWFUagaTIv8REgVb1svcKylGuD61bGgYInhPbNQV9E
- ddLNEOWMkEZxlXz9b6t7Udn1kFT7vAwDhnGNuX3AT6VWFjBYSvgOAGEFyFRZmyJchdOAyN3Db
- wXuQe17dr6oL5/4l/lkClFLhc1ETv1vMQvvJgm8rxg616K28zQZItQ284n6BW5Mpja4qVidqY
- +VC7BqcuuEUxB28FEelVdZDMGbS1eCYALhQwC94Y+EXlEzPsu7h8c2PuAvNoNFTh/hZImRbtr
- uTDxLyaVFOn1RQ/8VI+5u+ZwalI1wS/sPxQrOtKFzT1JoqAbhWawvH7bwQ9dUIjX5/EbG/7RN
- vZK4Wjx5xZcoP6L8HmjzoKiI2ZlkdJ0YdcdQM09lgCG0JdKckoDWQ148oJPcZJtWhllOhwRiC
- NlMLd6nCLIyblEXeyBYEcGIn1EVw1ayJVj3so+IdOSmGNGmyZZRMOPruop3xiUsI35285+w9g
- W9f3Qm7MtEER645yy80Y0TuVADA5aJEnibjWWLpcyd9MRNGjrmLeV5yG1NO/8iYMbxGtqm27+
- ZqNw5G3VPTtRrrJwa30CjwVLpQ70eilRSQtTXiFXv4DQrz4rU+5Yz/GbK/iQjvMEC3inBdtQc
- PZ3hBSYlm8CX4XENyxen5eW4XVft+CEVZyTBF6dii8BGrsgjFvvuqCkYCjevx7ujbpxjqYzxI
- Ax76X36EFOx7JQJEcTNlfe57uG1Q0MoArP1pA24iN78E+KCMUziAqXlpsPtBgJvv8qCiBrS1f
- 0fQJIW/hx3A3n1QCsnpTgUSUybwRl5w6LQr7NGoUfsiQXGBU5BGasmClQYT4+nlMIcw8Hb92o
- gLmogI7XTQ4+lePiKwzcnxRHU7PtwFJpcKZy5/IXaU9EzTH8/eyhP7fWzVn7GUrra9cC3+ZxD
- xS/KO6Y3/5OscajQ84JMsE/kQezganNgSKHE4yHZquNkijlNkEFVIUS0sEBpFhASNgkXIjq1S
- 6qZgDWiWi5NLTEGjctGU4OK+uviIGQ4hdneXAAIhCEblkQw7KxMJrkluwJR/aNxccB5U78yuf
- XSzaNMPZA7pK/rnOBci82EJeNW3Rsy4p1lEJagVgBRvScUGbyP++YXqvaAADBEUWZppQRWL6O
- Z+i80VHCc/I2xJUTrxza4lJndM05QML+C3yTW9d4FiEJfh5qgGNIPso7kVPcHKvYNo4fFmJJO
- FFWEY1pXIW/XBkHZCp3jzA2sy9w1Ng6fpv/1ZJAuzTvtF2EgqOMqilNVgwGqeEU7K1WY356uu
- o4+p2L/DM9yfEDDsfdblw6npoijWO/V+u8ZZHXwchm3WHlL0OkQ3aEyB9eajVT1rxfnLF44IA
- 4IHvvEmbyMw0l4RE+eZJxhzVBUWQORPRx4lTbe/LuQwx9OkNJ0oE4lbj8NNZOn37eTi+QyFr8
- hW6VUGVd6G1csNyf
+UI-OutboundReport: notjunk:1;M01:P0:dVF9Cxwd460=;HIqEMToi43dRwD3F0rtWGtrzJ76
+ zOQUQqQ85ob5LD8EYNPSUCWv2tlWzj/Hp+pOnPQBmsJl9X4gO/w+sdTTtkkqy6/wt4Aaned4v
+ zU8dI4gym3JOwNAjfV44ybe1KV4F42pmaO50y1ZxP6znFQdBXOEEQKEAs+4C0fPHBTWHEEBp8
+ 4ISFVbY5MIx+oho5yCjZbVLFi9g7zBTg6ZFX+Yk3VOacE1EY9To7dhlLYIu9rpDlAnHXaZIg+
+ smq2HEWLu6hlutwBt4cXcsZWr9ealDZnbqwV9h9/e/rmGDSCJCr5GuMlvMvWBLplaGhA9STcR
+ SIIbF9tkLzUj2FxXXKwakigrqVBoFUzMnygZG1bJL2PDm+r8CvJ437ZSEd3s5CSxD/WvHS2Wm
+ 9R6F+AfiDqbCgN2EtNgl/zoKXE0Ly/H/Wzs2QVRRPgoQpgrpuq3CatD+HjU2KSyFSuj6oxDwM
+ qLILvtB6mqt0LWUSTy9YmVZIKF6fYwMIyNvyvHXdKzbAaIfpwtQz2l+mgZPXTxBv0t6YuRCIK
+ F9PakFqGYYpwixdrgAADGZRUzJ235eQ2zp7FsiO8lyF6vK/ZSQIE2iKJUvovB2XCi+dOGOWfd
+ 7Wz64sMRWI4Y8WgzyhqHTriysS7jtzU78RiCFHXgOJZyJiXIV6Wjc8dQDdZI+TFBtiE5ljgl9
+ h5QGeItZ8uC+vogZXwed2T+CthYpETPh+MFv86hBexfaWjvz8MBG/HVyZdeXY6UlhdQxAzUKp
+ DfNJMIJH8yL6301G1k3eVdRCzqVTMZCNcoXMmmbJwWRvjwe4AkA9QacJ4SXAwZmCmQAV8cA3+
+ 6AMwEjXw31VQLDQVwkhmQa07Quiv12pIBE6hbqOfqKs5W5qBrZiTdHDjsz1BREl8ydHqFfqwy
+ VL1zCtmtZpSXx9jrPEimKbQfIR5XR0XevF8Ze7oBlkgm41PESGZ2qDQv74P06ItTt3jVdMVqR
+ MT0tKipsFUQ6vDVubQgMn5ZD0v5RMqhajTsg1J8kGCQa0t1lgwm0q5nN5GW27dVUatXIEnHy1
+ tRAwPEYcOJB2xr6CaQo6chTPG+/CykCFkF9cO4FmZwrnPm03AQyG16KSPz7lzkmcfkKFhfP9G
+ 8MFFwhT+5XUpP0CK7rfJ7VzMKSgGHXz/wF9lLUHF/ZS2uTkAtVmTYi3PTiFaRkXKkuzgNAHaj
+ TNN0Shs6j9bX5/0eHJ+t0NknuZGGk99pdUrVZR9LyM2Rf1EKq1yn93L7/B2xUZOQyvpn4lE4e
+ AnIDADtsYbnuvuMGpkzcFujqp6zGo4AsvUChJjh37bGUZ8mwERtM3NKU8EV+Tmso5ppTm4xTe
+ kSu5WYTdYJOxadiCM/U44WMyCdcRhKsetkpt+FKCuTrSQP4zkzJLTFogP8VZX9kTKQzu8ArhM
+ znbuMdCADDHKSze+80kYe5YaVI+w/ICuvEfjyzxpI1DEkZ19aNq3f6SDwhflQIRIOT8jwOBWa
+ IgoMlxD4cAgQoJeic1igcKzxpNQ2V8I+fCI7Irku9cwYSFoLDAzm91Lh4QyAIvSiPmG/1RUho
+ NJCr51FHcg3OqcTnC97LsrmsbnRsfsDYZ1munlQ73bZvVVCNeKGSlDLJwcAnsf9QE/vOcgvsa
+ TjHIwQI4D3M9vD0Z29EYBBpdcB36xyoYFealEQxnd60pNpGWYLUHBv1AbXfpjFWQMiMJ1QfUc
+ 7SCquR40IdkCWZp2d72bpO8xscK66HPox77C29P+Sc2SXda6+RnqL0vjqbIHekJ7zfG65LglS
+ zgrBG74jSuilFgGvEhh4jLyJ1EPj0P+t47CaGGSTTh3ZXIiZ1aBYdIQ8b29WvvlVHmadAKoqX
+ nliHmuhJok3pxZY7HTb5Uo0U1EcOV6/SXr3EfHD+PwSeTJBH4eiEU/ecTfjJjtvoQH7FEGK48
+ HGhymdAE6AGehJEh7Laph035ieudtWX8tHu6h5x6ukh/aoxnSPFDQq1JvCKlZxSRF6T/wNRDV
+ 4/hiIizwdgOzWG8ablSKPWLQZV/DNsQVgzmkVbFxAT/kWv4pJrQPPM9NcNaAaZijF9LlLe3rN
+ 5yXT7Jx4fGHgE8uMS61Glvk+JfiWnNgMWItyPNSaCx1kQPRB6r5Hu+Df/x3KeTYwfBWqsAEPq
+ f33a7UmNAcs0qvJotzntnPtF1B/0YYfRZwgIFcLfrYrv6N0FJuuzbi39ovUjzJi54A2DQUpQ0
+ 8TfjwuE8OoL+FGCiTOa/BeMGoafsUQKcfl/CYjP8/QG2veX2CoTnKWnzeHKJIKu7BSFB+WvzG
+ xdLbUNee84mNM8sU94XPWLqVg8pN6L7bUENlzSlykTPyXdVdZanOil4rWPUqGeQRXq+ampmL2
+ oMyeVQQ+wjBdSelDlvg6t4GrAvAAEn9Ol72C/NkyVcAsFncDAaJkUSbDE2PokYJCLe7GpPFwh
+ Y7gwLj+2KT9Khe0j+KRLAEz6bojUGrPDZ5w0muF/JhfOALh2bl66QM3hnNhbdtI2gt3V19X/g
+ 4HMsfiAOHxAOh5nVIQNqLsFJpxCLDGLeIeyEmHEOovVpeVptUiaXQE4LlXP3dwjIlGgJ84gCU
+ VE+vY1CQvyr+gTPrtxgpfOgDoqOWcMW2L7whgtJxjZ8dbw6W8LJ6JGd9lV/MgdCXdXk2PAzjt
+ N+CLpDcI9xCZI7s+gXeVci0K3OaCKmXoAz/DURNL77/LSCdI7y1n5nHCgfCW9ztjzKxR5lYyH
+ /s76UJbVQM/vJf/ckypaGtaY/il4sHFyWqe8HC/a3WHF7EqHLIEyJEfUW5UfS4OmiR4e/f/Az
+ JyjpY4VRD1P6IqVKD+o3QR5dV+IFDZc88dTBvA+6YmWI81fGo7dtNqcevjHrU17TJPjk5fauX
+ vrg72t6KKWKybYph6KujdIPtO8YjlwSCmnS/ZpVqafsSqTPR24IroV2zY4lp5Cl6kU6EMT8x7
+ I1p6wcjzAzrycq1QrBzaMDo7TshhfBvl0kLudPanL1LMB6fp0LgdMjICGiiLfeQ19L9wSjg6p
+ pjnR8S0MxHw54oNdgBEDM69D4tcQy7FyALDgmgWFgVE5CCb3DaChUz8en1ywATg+uLkiHD6vQ
+ 9p6RNvcbRSXsLuNLpvkjJAUbnNhgEICZpbsNx+/Twa/glu/X/lCQzkZ4vO++PKOmXzRRwxuAw
+ StWYZrE3owUJBBI9PdaTPGZgbSiLPBn1EjqDhyzOVHA2Jv5RMuagVs/Nr3w6XIa/f1bZ4Gui4
+ LryLxD4LPULkHt6jR7Nsj4w/zpbt7D03q5/uUO8HXyVJUuzk03gDe1TOhleN4ByJHXvRonXVC
+ rDeZa7n5waGj6qI2
 
 
 
-=E5=9C=A8 2025/6/23 14:45, Christoph Hellwig =E5=86=99=E9=81=93:
-> On Fri, Jun 20, 2025 at 05:36:52PM +0200, Jan Kara wrote:
->> On Fri 20-06-25 15:17:28, Qu Wenruo wrote:
->>> Currently we already have the super_operations::shutdown() callback,
->>> which is called when the block device of a filesystem is marked dead.
->>>
->>> However this is mostly for single(ish) block device filesystems.
->>>
->>> For multi-device filesystems, they may afford a missing device, thus m=
-ay
->>> continue work without fully shutdown the filesystem.
->>>
->>> So add a new super_operation::shutdown_bdev() callback, for mutli-devi=
-ce
->>> filesystems like btrfs and bcachefs.
->>>
->>> For now the only user is fs_holder_ops::mark_dead(), which will call
->>> shutdown_bdev() if supported.
->>> If not supported then fallback to the original shutdown() callback.
->>>
->>> Btrfs is going to add the usage of shutdown_bdev() soon.
->>>
->>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>
->> Thanks for the patch. I think that we could actually add 'bdev' that
->> triggered shutdown among arguments ->shutdown takes instead of introduc=
-ing
->> a new handler.
+=E5=9C=A8 2025/6/23 12:51, Byungchul Park =E5=86=99=E9=81=93:
+> Hi folks,
 >=20
-> I don't really think that's a good idea as-is.  The current ->shutdown
-> callback is called ->shutdown because it is expected to shut the file
-> system down.  That's why I suggested to Qu to add a new devloss callback=
-,
-> to describe that a device is lost.  In a file system with built-in
-> redundancy that is not a shutdown.  So Qu, please add a devloss
-> callback.  And maybe if we have no other good use for the shutdown
-> callback we can remove it in favor of the devloss one.  But having
-> something named shutdown take the block device and not always shutting
-> the file system down is highly confusing.
+> Thanks to Yunseong, we got two DEPT reports in btrfs.  It doesn't mean
+> it's obvious deadlocks, but after digging into the reports, I'm
+> wondering if it could happen by any chance.
+>=20
+> 1) The first scenario that I'm concerning is:
+>=20
+>    context A		  context B
+>=20
+> 			  do_truncate()
+> 			    ...
+> 			      btrfs_do_readpage() // with folio lock held
 
-OK, I got the point of the name "devloss" now, didn't notice the naming=20
-itself is important at that timing.
+				This one is for data.>    do_unlinkat()
+>      ...
+>        push_leaf_right()
+> 	btrfs_tree_lock_nested()
+> 	  down_write_nested(&eb->lock) // hold
+> 			        btrfs_get_extent()
+> 			          btrfs_lookup_file_extent()
+> 			            btrfs_search_slot()
+> 			              down_read_nested(&eb->lock) // stuck
 
-And in fact a new callback is much easier on me, no need to modify the=20
-code of other fses.
+					This one is for metadata.
 
-@Jan, would this be acceptable for a new devloss() callback instead?
+Data and metadata page cache will never cross into each other.
 
 Thanks,
 Qu
+
+> 	  __push_leaf_right()
+> 	    ...
+> 	      folio_lock() // stuck
+>=20
+> 2) The second scenario that I'm concerning is:
+>=20
+>    context A		  context B
+>=20
+> 			  do_truncate()
+> 			    ...
+> 			      btrfs_do_readpage() // with folio lock held
+>    do_unlinkat()
+>      ...
+>        btrfs_truncate_inode_items()
+> 	btrfs_lock_root_node()
+> 	  down_write_nested(&eb->lock) // hold
+> 	btrfs_del_items()
+> 	  push_leaf_right()
+> 	    __push_leaf_right()
+> 			        btrfs_get_extent()
+> 			          btrfs_lookup_file_extent()
+> 			            btrfs_search_slot()
+> 			              btrfs_read_lock_root_node()
+> 			                down_read_nested(&eb->lock) // stuck
+> 	      ...
+> 	        folio_lock() //stuck
+>=20
+> Am I missing something?
+>=20
+> FYI, the followings are the DEPT reports we got.
+>=20
+> 	Byungchul
+>=20
+> ---
+>   [  304.343395][ T7488] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>   [  304.343446][ T7488] DEPT: Circular dependency has been detected.
+>   [  304.343462][ T7488] 6.15.0-rc6-00043-ga83a69ec7f9f #5 Not tainted
+>   [  304.343477][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.343488][ T7488] summary
+>   [  304.343498][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.343509][ T7488] *** DEADLOCK ***
+>   [  304.343509][ T7488]
+>   [  304.343520][ T7488] context A
+>   [  304.343531][ T7488]    [S] lock(btrfs-tree-00:0)
+>   [  304.343545][ T7488]    [W] dept_page_wait_on_bit(pg_locked_map:0)
+>   [  304.343559][ T7488]    [E] unlock(btrfs-tree-00:0)
+>   [  304.343572][ T7488]
+>   [  304.343581][ T7488] context B
+>   [  304.343591][ T7488]    [S] (unknown)(pg_locked_map:0)
+>   [  304.343603][ T7488]    [W] lock(btrfs-tree-00:0)
+>   [  304.343616][ T7488]    [E] dept_page_clear_bit(pg_locked_map:0)
+>   [  304.343629][ T7488]
+>   [  304.343637][ T7488] [S]: start of the event context
+>   [  304.343647][ T7488] [W]: the wait blocked
+>   [  304.343656][ T7488] [E]: the event not reachable
+>   [  304.343666][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.343676][ T7488] context A's detail
+>   [  304.343686][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.343696][ T7488] context A
+>   [  304.343706][ T7488]    [S] lock(btrfs-tree-00:0)
+>   [  304.343718][ T7488]    [W] dept_page_wait_on_bit(pg_locked_map:0)
+>   [  304.343731][ T7488]    [E] unlock(btrfs-tree-00:0)
+>   [  304.343744][ T7488]
+>   [  304.343753][ T7488] [S] lock(btrfs-tree-00:0):
+>   [  304.343764][ T7488] [<ffff8000824f41d8>] btrfs_tree_lock_nested+0x3=
+8/0x324
+>   [  304.343796][ T7488] stacktrace:
+>   [  304.343805][ T7488]       down_write_nested+0xe4/0x21c
+>   [  304.343826][ T7488]       btrfs_tree_lock_nested+0x38/0x324
+>   [  304.343865][ T7488]       push_leaf_right+0x23c/0x628
+>   [  304.343896][ T7488]       btrfs_del_items+0x974/0xaec
+>   [  304.343916][ T7488]       btrfs_truncate_inode_items+0x1c5c/0x2b00
+>   [  304.343938][ T7488]       btrfs_evict_inode+0xa4c/0xd38
+>   [  304.343968][ T7488]       evict+0x340/0x7b0
+>   [  304.343993][ T7488]       iput+0x4ec/0x840
+>   [  304.344011][ T7488]       do_unlinkat+0x444/0x59c
+>   [  304.344038][ T7488]       __arm64_sys_unlinkat+0x11c/0x260
+>   [  304.344057][ T7488]       invoke_syscall+0x88/0x2e0
+>   [  304.344084][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+>   [  304.344104][ T7488]       do_el0_svc+0x44/0x60
+>   [  304.344123][ T7488]       el0_svc+0x50/0x188
+>   [  304.344151][ T7488]       el0t_64_sync_handler+0x10c/0x140
+>   [  304.344172][ T7488]       el0t_64_sync+0x198/0x19c
+>   [  304.344189][ T7488]
+>   [  304.344198][ T7488] [W] dept_page_wait_on_bit(pg_locked_map:0):
+>   [  304.344211][ T7488] [<ffff8000823b1d20>] __push_leaf_right+0x8f0/0x=
+c70
+>   [  304.344232][ T7488] stacktrace:
+>   [  304.344241][ T7488]       __push_leaf_right+0x8f0/0xc70
+>   [  304.344260][ T7488]       push_leaf_right+0x408/0x628
+>   [  304.344278][ T7488]       btrfs_del_items+0x974/0xaec
+>   [  304.344297][ T7488]       btrfs_truncate_inode_items+0x1c5c/0x2b00
+>   [  304.344314][ T7488]       btrfs_evict_inode+0xa4c/0xd38
+>   [  304.344335][ T7488]       evict+0x340/0x7b0
+>   [  304.344352][ T7488]       iput+0x4ec/0x840
+>   [  304.344369][ T7488]       do_unlinkat+0x444/0x59c
+>   [  304.344388][ T7488]       __arm64_sys_unlinkat+0x11c/0x260
+>   [  304.344407][ T7488]       invoke_syscall+0x88/0x2e0
+>   [  304.344425][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+>   [  304.344445][ T7488]       do_el0_svc+0x44/0x60
+>   [  304.344463][ T7488]       el0_svc+0x50/0x188
+>   [  304.344482][ T7488]       el0t_64_sync_handler+0x10c/0x140
+>   [  304.344503][ T7488]       el0t_64_sync+0x198/0x19c
+>   [  304.344518][ T7488]
+>   [  304.344527][ T7488] [E] unlock(btrfs-tree-00:0):
+>   [  304.344539][ T7488] (N/A)
+>   [  304.344549][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.344559][ T7488] context B's detail
+>   [  304.344568][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.344578][ T7488] context B
+>   [  304.344588][ T7488]    [S] (unknown)(pg_locked_map:0)
+>   [  304.344600][ T7488]    [W] lock(btrfs-tree-00:0)
+>   [  304.344613][ T7488]    [E] dept_page_clear_bit(pg_locked_map:0)
+>   [  304.344625][ T7488]
+>   [  304.344634][ T7488] [S] (unknown)(pg_locked_map:0):
+>   [  304.344646][ T7488] (N/A)
+>   [  304.344655][ T7488]
+>   [  304.344663][ T7488] [W] lock(btrfs-tree-00:0):
+>   [  304.344675][ T7488] [<ffff8000824f3b48>] btrfs_tree_read_lock_neste=
+d+0x38/0x330
+>   [  304.344694][ T7488] stacktrace:
+>   [  304.344703][ T7488]       down_read_nested+0xc8/0x368
+>   [  304.344720][ T7488]       btrfs_tree_read_lock_nested+0x38/0x330
+>   [  304.344737][ T7488]       btrfs_search_slot+0x1204/0x2dc8
+>   [  304.344756][ T7488]       btrfs_lookup_file_extent+0xe0/0x128
+>   [  304.344773][ T7488]       btrfs_get_extent+0x2cc/0x1e24
+>   [  304.344789][ T7488]       btrfs_do_readpage+0x628/0x1258
+>   [  304.344810][ T7488]       btrfs_read_folio+0x310/0x450
+>   [  304.344828][ T7488]       btrfs_truncate_block+0x2c0/0xb24
+>   [  304.344854][ T7488]       btrfs_cont_expand+0x11c/0xba8
+>   [  304.344870][ T7488]       btrfs_setattr+0x8d8/0x10f4
+>   [  304.344885][ T7488]       notify_change+0x900/0xfbc
+>   [  304.344906][ T7488]       do_truncate+0x154/0x210
+>   [  304.344937][ T7488]       vfs_truncate+0x55c/0x66c
+>   [  304.344957][ T7488]       __arm64_sys_truncate+0x16c/0x1e4
+>   [  304.344978][ T7488]       invoke_syscall+0x88/0x2e0
+>   [  304.344997][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+>   [  304.345017][ T7488]
+>   [  304.345025][ T7488] [E] dept_page_clear_bit(pg_locked_map:0):
+>   [  304.345037][ T7488] [<ffff80008249c284>] end_folio_read+0x3e4/0x590
+>   [  304.345056][ T7488] stacktrace:
+>   [  304.345065][ T7488]       folio_unlock+0x8c/0x160
+>   [  304.345099][ T7488]       end_folio_read+0x3e4/0x590
+>   [  304.345116][ T7488]       btrfs_do_readpage+0x830/0x1258
+>   [  304.345132][ T7488]       btrfs_read_folio+0x310/0x450
+>   [  304.345149][ T7488]       btrfs_truncate_block+0x2c0/0xb24
+>   [  304.345164][ T7488]       btrfs_cont_expand+0x11c/0xba8
+>   [  304.345179][ T7488]       btrfs_setattr+0x8d8/0x10f4
+>   [  304.345194][ T7488]       notify_change+0x900/0xfbc
+>   [  304.345213][ T7488]       do_truncate+0x154/0x210
+>   [  304.345232][ T7488]       vfs_truncate+0x55c/0x66c
+>   [  304.345252][ T7488]       __arm64_sys_truncate+0x16c/0x1e4
+>   [  304.345272][ T7488]       invoke_syscall+0x88/0x2e0
+>   [  304.345291][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+>   [  304.345310][ T7488]       do_el0_svc+0x44/0x60
+>   [  304.345328][ T7488]       el0_svc+0x50/0x188
+>   [  304.345347][ T7488]       el0t_64_sync_handler+0x10c/0x140
+>   [  304.345369][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.345379][ T7488] information that might be helpful
+>   [  304.345388][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.345402][ T7488] CPU: 1 UID: 0 PID: 7488 Comm: syz-executor Not =
+tainted 6.15.0-rc6-00043-ga83a69ec7f9f #5 PREEMPT
+>   [  304.345416][ T7488] Hardware name: QEMU KVM Virtual Machine, BIOS 2=
+025.02-8 05/13/2025
+>   [  304.345422][ T7488] Call trace:
+>   [  304.345426][ T7488]  show_stack+0x34/0x80 (C)
+>   [  304.345452][ T7488]  dump_stack_lvl+0x104/0x180
+>   [  304.345476][ T7488]  dump_stack+0x20/0x2c
+>   [  304.345490][ T7488]  cb_check_dl+0x1080/0x10ec
+>   [  304.345504][ T7488]  bfs+0x4d8/0x630
+>   [  304.345514][ T7488]  add_dep+0x1cc/0x364
+>   [  304.345526][ T7488]  __dept_wait+0x60c/0x16e0
+>   [  304.345537][ T7488]  dept_wait+0x168/0x1a8
+>   [  304.345548][ T7488]  btrfs_clear_buffer_dirty+0x420/0x820
+>   [  304.345561][ T7488]  __push_leaf_right+0x8f0/0xc70
+>   [  304.345575][ T7488]  push_leaf_right+0x408/0x628
+>   [  304.345589][ T7488]  btrfs_del_items+0x974/0xaec
+>   [  304.345603][ T7488]  btrfs_truncate_inode_items+0x1c5c/0x2b00
+>   [  304.345616][ T7488]  btrfs_evict_inode+0xa4c/0xd38
+>   [  304.345632][ T7488]  evict+0x340/0x7b0
+>   [  304.345644][ T7488]  iput+0x4ec/0x840
+>   [  304.345657][ T7488]  do_unlinkat+0x444/0x59c
+>   [  304.345671][ T7488]  __arm64_sys_unlinkat+0x11c/0x260
+>   [  304.345685][ T7488]  invoke_syscall+0x88/0x2e0
+>   [  304.345698][ T7488]  el0_svc_common.constprop.0+0xe8/0x2e0
+>   [  304.345713][ T7488]  do_el0_svc+0x44/0x60
+>   [  304.345726][ T7488]  el0_svc+0x50/0x188
+>   [  304.345741][ T7488]  el0t_64_sync_handler+0x10c/0x140
+>   [  304.345756][ T7488]  el0t_64_sync+0x198/0x19c
+>   [  304.345857][ T7488] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>   [  304.345995][ T7488] DEPT: Circular dependency has been detected.
+>   [  304.346006][ T7488] 6.15.0-rc6-00043-ga83a69ec7f9f #5 Not tainted
+>   [  304.346019][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.346029][ T7488] summary
+>   [  304.346038][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.346049][ T7488] *** DEADLOCK ***
+>   [  304.346049][ T7488]
+>   [  304.346058][ T7488] context A
+>   [  304.346069][ T7488]    [S] lock(btrfs-tree-01:0)
+>   [  304.346082][ T7488]    [W] dept_page_wait_on_bit(pg_locked_map:0)
+>   [  304.346095][ T7488]    [E] unlock(btrfs-tree-01:0)
+>   [  304.346108][ T7488]
+>   [  304.346117][ T7488] context B
+>   [  304.346126][ T7488]    [S] (unknown)(pg_locked_map:0)
+>   [  304.346139][ T7488]    [W] lock(btrfs-tree-01:0)
+>   [  304.346151][ T7488]    [E] dept_page_clear_bit(pg_locked_map:0)
+>   [  304.346164][ T7488]
+>   [  304.346173][ T7488] [S]: start of the event context
+>   [  304.346183][ T7488] [W]: the wait blocked
+>   [  304.346192][ T7488] [E]: the event not reachable
+>   [  304.346201][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.346211][ T7488] context A's detail
+>   [  304.346221][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.346231][ T7488] context A
+>   [  304.346240][ T7488]    [S] lock(btrfs-tree-01:0)
+>   [  304.346253][ T7488]    [W] dept_page_wait_on_bit(pg_locked_map:0)
+>   [  304.346266][ T7488]    [E] unlock(btrfs-tree-01:0)
+>   [  304.346278][ T7488]
+>   [  304.346287][ T7488] [S] lock(btrfs-tree-01:0):
+>   [  304.346299][ T7488] [<ffff8000824f41d8>] btrfs_tree_lock_nested+0x3=
+8/0x324
+>   [  304.346321][ T7488] stacktrace:
+>   [  304.346330][ T7488]       down_write_nested+0xe4/0x21c
+>   [  304.346347][ T7488]       btrfs_tree_lock_nested+0x38/0x324
+>   [  304.346363][ T7488]       btrfs_lock_root_node+0x70/0xac
+>   [  304.346379][ T7488]       btrfs_search_slot+0x3f8/0x2dc8
+>   [  304.346399][ T7488]       btrfs_truncate_inode_items+0x2ec/0x2b00
+>   [  304.346417][ T7488]       btrfs_evict_inode+0xa4c/0xd38
+>   [  304.346438][ T7488]       evict+0x340/0x7b0
+>   [  304.346456][ T7488]       iput+0x4ec/0x840
+>   [  304.346473][ T7488]       do_unlinkat+0x444/0x59c
+>   [  304.346492][ T7488]       __arm64_sys_unlinkat+0x11c/0x260
+>   [  304.346511][ T7488]       invoke_syscall+0x88/0x2e0
+>   [  304.346530][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+>   [  304.346550][ T7488]       do_el0_svc+0x44/0x60
+>   [  304.346568][ T7488]       el0_svc+0x50/0x188
+>   [  304.346588][ T7488]       el0t_64_sync_handler+0x10c/0x140
+>   [  304.346608][ T7488]       el0t_64_sync+0x198/0x19c
+>   [  304.346623][ T7488]
+>   [  304.346632][ T7488] [W] dept_page_wait_on_bit(pg_locked_map:0):
+>   [  304.346644][ T7488] [<ffff8000823b1d20>] __push_leaf_right+0x8f0/0x=
+c70
+>   [  304.346665][ T7488] stacktrace:
+>   [  304.346674][ T7488]       __push_leaf_right+0x8f0/0xc70
+>   [  304.346692][ T7488]       push_leaf_right+0x408/0x628
+>   [  304.346711][ T7488]       btrfs_del_items+0x974/0xaec
+>   [  304.346729][ T7488]       btrfs_truncate_inode_items+0x1c5c/0x2b00
+>   [  304.346747][ T7488]       btrfs_evict_inode+0xa4c/0xd38
+>   [  304.346767][ T7488]       evict+0x340/0x7b0
+>   [  304.346785][ T7488]       iput+0x4ec/0x840
+>   [  304.346802][ T7488]       do_unlinkat+0x444/0x59c
+>   [  304.346820][ T7488]       __arm64_sys_unlinkat+0x11c/0x260
+>   [  304.346850][ T7488]       invoke_syscall+0x88/0x2e0
+>   [  304.346871][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+>   [  304.346891][ T7488]       do_el0_svc+0x44/0x60
+>   [  304.346909][ T7488]       el0_svc+0x50/0x188
+>   [  304.346928][ T7488]       el0t_64_sync_handler+0x10c/0x140
+>   [  304.346949][ T7488]       el0t_64_sync+0x198/0x19c
+>   [  304.346963][ T7488]
+>   [  304.346972][ T7488] [E] unlock(btrfs-tree-01:0):
+>   [  304.346984][ T7488] (N/A)
+>   [  304.346994][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.347004][ T7488] context B's detail
+>   [  304.347013][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.347023][ T7488] context B
+>   [  304.347033][ T7488]    [S] (unknown)(pg_locked_map:0)
+>   [  304.347046][ T7488]    [W] lock(btrfs-tree-01:0)
+>   [  304.347058][ T7488]    [E] dept_page_clear_bit(pg_locked_map:0)
+>   [  304.347071][ T7488]
+>   [  304.347080][ T7488] [S] (unknown)(pg_locked_map:0):
+>   [  304.347092][ T7488] (N/A)
+>   [  304.347101][ T7488]
+>   [  304.347109][ T7488] [W] lock(btrfs-tree-01:0):
+>   [  304.347121][ T7488] [<ffff8000824f3b48>] btrfs_tree_read_lock_neste=
+d+0x38/0x330
+>   [  304.347140][ T7488] stacktrace:
+>   [  304.347149][ T7488]       down_read_nested+0xc8/0x368
+>   [  304.347165][ T7488]       btrfs_tree_read_lock_nested+0x38/0x330
+>   [  304.347181][ T7488]       btrfs_read_lock_root_node+0x70/0xb4
+>   [  304.347198][ T7488]       btrfs_search_slot+0x34c/0x2dc8
+>   [  304.347217][ T7488]       btrfs_lookup_file_extent+0xe0/0x128
+>   [  304.347233][ T7488]       btrfs_get_extent+0x2cc/0x1e24
+>   [  304.347248][ T7488]       btrfs_do_readpage+0x628/0x1258
+>   [  304.347270][ T7488]       btrfs_read_folio+0x310/0x450
+>   [  304.347287][ T7488]       btrfs_truncate_block+0x2c0/0xb24
+>   [  304.347302][ T7488]       btrfs_cont_expand+0x11c/0xba8
+>   [  304.347317][ T7488]       btrfs_setattr+0x8d8/0x10f4
+>   [  304.347332][ T7488]       notify_change+0x900/0xfbc
+>   [  304.347352][ T7488]       do_truncate+0x154/0x210
+>   [  304.347374][ T7488]       vfs_truncate+0x55c/0x66c
+>   [  304.347394][ T7488]       __arm64_sys_truncate+0x16c/0x1e4
+>   [  304.347414][ T7488]       invoke_syscall+0x88/0x2e0
+>   [  304.347433][ T7488]
+>   [  304.347441][ T7488] [E] dept_page_clear_bit(pg_locked_map:0):
+>   [  304.347453][ T7488] [<ffff80008249c284>] end_folio_read+0x3e4/0x590
+>   [  304.347471][ T7488] stacktrace:
+>   [  304.347480][ T7488]       folio_unlock+0x8c/0x160
+>   [  304.347504][ T7488]       end_folio_read+0x3e4/0x590
+>   [  304.347520][ T7488]       btrfs_do_readpage+0x830/0x1258
+>   [  304.347536][ T7488]       btrfs_read_folio+0x310/0x450
+>   [  304.347553][ T7488]       btrfs_truncate_block+0x2c0/0xb24
+>   [  304.347568][ T7488]       btrfs_cont_expand+0x11c/0xba8
+>   [  304.347583][ T7488]       btrfs_setattr+0x8d8/0x10f4
+>   [  304.347598][ T7488]       notify_change+0x900/0xfbc
+>   [  304.347617][ T7488]       do_truncate+0x154/0x210
+>   [  304.347636][ T7488]       vfs_truncate+0x55c/0x66c
+>   [  304.347656][ T7488]       __arm64_sys_truncate+0x16c/0x1e4
+>   [  304.347676][ T7488]       invoke_syscall+0x88/0x2e0
+>   [  304.347695][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+>   [  304.347714][ T7488]       do_el0_svc+0x44/0x60
+>   [  304.347732][ T7488]       el0_svc+0x50/0x188
+>   [  304.347751][ T7488]       el0t_64_sync_handler+0x10c/0x140
+>   [  304.347772][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.347782][ T7488] information that might be helpful
+>   [  304.347791][ T7488] -----------------------------------------------=
+=2D---
+>   [  304.347803][ T7488] CPU: 1 UID: 0 PID: 7488 Comm: syz-executor Not =
+tainted 6.15.0-rc6-00043-ga83a69ec7f9f #5 PREEMPT
+>   [  304.347815][ T7488] Hardware name: QEMU KVM Virtual Machine, BIOS 2=
+025.02-8 05/13/2025
+>   [  304.347821][ T7488] Call trace:
+>   [  304.347825][ T7488]  show_stack+0x34/0x80 (C)
+>   [  304.347852][ T7488]  dump_stack_lvl+0x104/0x180
+>   [  304.347870][ T7488]  dump_stack+0x20/0x2c
+>   [  304.347884][ T7488]  cb_check_dl+0x1080/0x10ec
+>   [  304.347897][ T7488]  bfs+0x4d8/0x630
+>   [  304.347906][ T7488]  add_dep+0x1cc/0x364
+>   [  304.347917][ T7488]  __dept_wait+0x60c/0x16e0
+>   [  304.347928][ T7488]  dept_wait+0x168/0x1a8
+>   [  304.347940][ T7488]  btrfs_clear_buffer_dirty+0x420/0x820
+>   [  304.347952][ T7488]  __push_leaf_right+0x8f0/0xc70
+>   [  304.347967][ T7488]  push_leaf_right+0x408/0x628
+>   [  304.347980][ T7488]  btrfs_del_items+0x974/0xaec
+>   [  304.347994][ T7488]  btrfs_truncate_inode_items+0x1c5c/0x2b00
+>   [  304.348007][ T7488]  btrfs_evict_inode+0xa4c/0xd38
+>   [  304.348023][ T7488]  evict+0x340/0x7b0
+>   [  304.348036][ T7488]  iput+0x4ec/0x840
+>   [  304.348048][ T7488]  do_unlinkat+0x444/0x59c
+>   [  304.348062][ T7488]  __arm64_sys_unlinkat+0x11c/0x260
+>   [  304.348076][ T7488]  invoke_syscall+0x88/0x2e0
+>   [  304.348090][ T7488]  el0_svc_common.constprop.0+0xe8/0x2e0
+>   [  304.348105][ T7488]  do_el0_svc+0x44/0x60
+>   [  304.348118][ T7488]  el0_svc+0x50/0x188
+>   [  304.348132][ T7488]  el0t_64_sync_handler+0x10c/0x140
+>   [  304.348148][ T7488]  el0t_64_sync+0x198/0x19c
+>   [  304.386144][ T8054] BTRFS info (device loop0): first mount of files=
+ystem 3a492a15-ac49-4ce6-945e-cef7a687c6c9
+>   [  304.389687][ T8054] BTRFS info (device loop0): using crc32c (crc32c=
+-arm64) checksum algorithm
+>   [  304.389788][ T8054] BTRFS info (device loop0): using free-space-tre=
+e
+>   [  304.701202][ T7488] BTRFS info (device loop3): last unmount of file=
+system 3a492a15-ac49-4ce6-945e-cef7a687c6c9
+>=20
+
 
