@@ -1,251 +1,541 @@
-Return-Path: <linux-btrfs+bounces-14850-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14851-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35991AE3B30
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Jun 2025 11:53:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1EBFAE3B34
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Jun 2025 11:53:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D992F1891C31
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Jun 2025 09:53:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65BB57AB094
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Jun 2025 09:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E89239581;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD7E239E94;
 	Mon, 23 Jun 2025 09:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ZnOa5aRJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2049.outbound.protection.outlook.com [40.107.244.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDAE322DA0C;
-	Mon, 23 Jun 2025 09:53:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750672385; cv=fail; b=lXNgay7wPfp+M6SpsZDkCnmQzkWHQ48VR0AKChssSde191v+2dKVcMmotcOl/hxkHEEljpeqR+WBqUB+14X5BcSMx5cBMhXToEYEmct37MKnZqkRmbMyDnoWTpjtuofzDS2nwII5uY1IHrLZ7QsmkXIZdZN7lA0E+xTJ27sNFkw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750672385; c=relaxed/simple;
-	bh=H6ZRMGGTnX6rssbOtOy9wuFTjz6cTTQTmLrZSqBuNEg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YXj5U4mwKQsAfjl0HOws3idq78Bh1AeZ/fws3AiQg6sCoiHIQRwAVQwZlOFEjjcoBLV/ykY959VSfQz9R67YqkltnuFyKaSFNFJjdzY0y488H97z/t3Ql+t4TRXk7SqSC+2eVcq0rl16VYomvsVCjxoru5joEyEfgcK1FLkoVZU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ZnOa5aRJ; arc=fail smtp.client-ip=40.107.244.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=TjWxbOpmk3Qb6NfX3/l9ttTC52JybFe7v4xjSYxMTmOkbwFACuYCG4qqPFppeGTTIV0WhnznwR+n6L0IZHyqEzz/W2wHwP/7WA55sJgJKKvr6TOZlCaMF0bPsDVfmjh38mbYITkGgI7An718ZSMgS12PUFKNH7dTgmVdHwWoCbQNo7p0i/aQhoAPnKegT85MPKr9x9+y7zEXfBW1awwPOzivAFEcr5TdCXj3OxKZUEcPp/EdeIR2jRS5uRuYMCGFqyleVNuGqPvjHSTfhjf/GxScQCII8JO9nt9cnfjwtfwwJHl2omutky6UQWCs/RF2c8rt8hDFgG9DZ53wsRmFBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cANi4d8otGA2QoVHiP3RKSYcGq7o07Z4eDJYTR8a3L4=;
- b=O9WUYhIQjNb4Au8xpERHEqhp6xBx1a291wEPCjQrsxo6s2Z/SRzjxEbPUkKJIF9LAABMo3OcQk6UvBl5qhZZ6jbD61vUHbijcyF2+YuLrsDl3T8DhPAVyUiB2xxSanZax2nfgjvoD9dbG4meu9fwblUFCnQTQVVE5YXmz86I+000E/Ukv0PfZpvbXXutpFERJvnboP6O/yTmgQXK0bP/+h6+IgPCIgsx3c6N7rJuiM72BpaeKdxFTN+YmAl73DvNj2njDZFrXB9blDt/treUK+OwCmx6nywLh0vpG9Zl40dLaKI6ZZc3xGP4EXSQb8AfRpDGqZgwrxxNetGEa/bjFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linux.dev smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cANi4d8otGA2QoVHiP3RKSYcGq7o07Z4eDJYTR8a3L4=;
- b=ZnOa5aRJ4gYYmNM5MJkU3tgjLg1pnJKcT2Ujvlf+jeoFjcSm7CTBuF2g32mHB39js/kegb3ksAYG66jWTFjBg1Ittl5wNtbW143tnIMTT41nL62mL7XeGA9aQSkpnWCQjYRR7aPtCXgv5PKU9e7TKvze4Sm3zw6M4s8jf4LvnC0=
-Received: from DM6PR06CA0094.namprd06.prod.outlook.com (2603:10b6:5:336::27)
- by CH3PR12MB9729.namprd12.prod.outlook.com (2603:10b6:610:253::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8857.21; Mon, 23 Jun
- 2025 09:52:59 +0000
-Received: from DS1PEPF00017093.namprd03.prod.outlook.com
- (2603:10b6:5:336:cafe::40) by DM6PR06CA0094.outlook.office365.com
- (2603:10b6:5:336::27) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8857.30 via Frontend Transport; Mon,
- 23 Jun 2025 09:52:59 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS1PEPF00017093.mail.protection.outlook.com (10.167.17.136) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.8880.14 via Frontend Transport; Mon, 23 Jun 2025 09:52:58 +0000
-Received: from kaveri.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Mon, 23 Jun
- 2025 04:52:51 -0500
-From: Shivank Garg <shivankg@amd.com>
-To: <kent.overstreet@linux.dev>, <clm@fb.com>, <josef@toxicpanda.com>,
-	<dsterba@suse.com>, <xiang@kernel.org>, <chao@kernel.org>,
-	<jaegeuk@kernel.org>, <willy@infradead.org>, <akpm@linux-foundation.org>,
-	<david@redhat.com>, <vbabka@suse.cz>
-CC: <zbestahu@gmail.com>, <jefflexu@linux.alibaba.com>, <dhavale@google.com>,
-	<lihongbo22@huawei.com>, <pankaj.gupta@amd.com>,
-	<linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
-	<linux-f2fs-devel@lists.sourceforge.net>, <linux-fsdevel@vger.kernel.org>,
-	<linux-mm@kvack.org>, <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>,
-	Shivank Garg <shivankg@amd.com>
-Subject: [PATCH V2 2/2] mm/filemap: Extend __filemap_get_folio() to support NUMA memory policies
-Date: Mon, 23 Jun 2025 09:39:43 +0000
-Message-ID: <20250623093939.1323623-6-shivankg@amd.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250623093939.1323623-4-shivankg@amd.com>
-References: <20250623093939.1323623-4-shivankg@amd.com>
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09F11F4604;
+	Mon, 23 Jun 2025 09:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1750672386; cv=none; b=n7kgdOwUTE2Ks11iewkYzNHkncUhyrQTSFqLuVJoogEQNmZvNh07gcJnzFde7QlkFXlWanqear+AaOEUKHtcG0yvMvls37HLXAG7q8XYA8z5FULtQwznD6lRBjSP1bfJHCyNB8gA6IFsrrRwL5V5EiOeQDLrIPIrQun4Vt32t6Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1750672386; c=relaxed/simple;
+	bh=DA01e2wmNUn7rXzYmXgdXg1RiYN3F1u4Bnx5EjTW3D4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fh4a2l+2UApzrj8VB5gX51aG2lVvjbXFC42bnqgvDPZ8OypEc5gPGJbAr++Uc66e5zrsoyUdQHQe3sAatn+PYBSaqKd9F1bjVZ5UswbDJszM0fzoo/iNvjMP+uMDbi+0lgxDCMMV65zqorwIaEFGPj/XsB4fNecg88qLRk7egWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-ed-685923f77868
+Date: Mon, 23 Jun 2025 18:52:50 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-kernel@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, linux-btrfs@vger.kernel.org,
+	kernel_team@skhynix.com, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, yeoreum.yun@arm.com,
+	yunseong.kim@ericsson.com, gwan-gyeong.mun@intel.com,
+	harry.yoo@oracle.com, ysk@kzalloc.com
+Subject: Re: [RFC] DEPT report on around btrfs, unlink, and truncate
+Message-ID: <20250623095250.GA3199@system.software.com>
+References: <20250623032152.GB70156@system.software.com>
+ <55c8b839-e844-49fe-bedc-948e60f681c7@gmx.com>
+ <20250623081919.GA53365@system.software.com>
+ <474347bb-bbba-4238-8964-299f87de664a@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF00017093:EE_|CH3PR12MB9729:EE_
-X-MS-Office365-Filtering-Correlation-Id: e41f6f37-eadd-4cf8-4f16-08ddb23bbc56
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|36860700013|376014|7416014|1800799024|13003099007|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?9X2eb1n+Trxc/DStueVMd8NGuzinR4+cqkSqSqn1maEneJ3YLzMlbff7t6HF?=
- =?us-ascii?Q?jFpibs4jHVqjIPx1v3HoPAjSEnLlHDZor9WEbAIKsnsthHUFho7CtTs1z9I3?=
- =?us-ascii?Q?e+g1qGGsj8ItRVLkNl+fevUU26XgfUY311TzV18W6KW7Xmj9kMrxuOE8lD/I?=
- =?us-ascii?Q?Mf/JUn4xHE0VpDT+j0b+vBg3BfG3Xc4ElFPACoctlhIdNRxWHEpZIbZvaAcy?=
- =?us-ascii?Q?/gxsCiS0O4CB6QobaY4hHvxtZY2onAepym24vyf3UCZKteUq2NFzEq2kSS8+?=
- =?us-ascii?Q?9jKCcuTodnQQs8+IHJojU7CRUjSD7hbkOwwJPkMR/qs5NA5/32Do1atL6slQ?=
- =?us-ascii?Q?E8AmJTII1zC9in1MeF7p5zY0RgeYp0tsefWtb4lvhvNQDSjvrhB+p0958YQ9?=
- =?us-ascii?Q?R2VVn+XNLInmaVGuPdeA73qQEvQes6K2ELUAWE9AcgBQlGxWHKXcB1c+qmvA?=
- =?us-ascii?Q?3m5v14DhIEC3P20b1kVGAVB9wYwp7QyZuogAaTXUQJf9Tdhxi9Ym8ruUPoDt?=
- =?us-ascii?Q?IdCiGROzQiI3ytmcRSNeo1ti4VkSKJm8uyWxtvpMp9HCYLMRc/Qpfej4RCtb?=
- =?us-ascii?Q?SUfZTsc2zzG7DJmYit5J9ImAcEz1OBBvDR5F6TkYCazbZLj4id1xfgkKjE6n?=
- =?us-ascii?Q?asw2Toq85D6K876cfxMWFPjMDrVhfnEPn8Yl4eUQ52m+/OLumswrsoolrGtu?=
- =?us-ascii?Q?78EjRZZ/4l17YlQYoo2KZZulGwJXn0q+UaxLRGsLl599ys3l5WKujtN1XUQ1?=
- =?us-ascii?Q?TYLttKTiowLHRh6F+J4MuRBQ02FPASXzP3iEjQ84VAqVKD93bNNxcFSvpkhp?=
- =?us-ascii?Q?SxdOCDX1kOsp7Gs+n+T0SB9zc4RtTpWqHru7Pa0xMUpZgdJoo+K9ldcavwzj?=
- =?us-ascii?Q?51H7ACqghb3XYlB5+vZmww+l6DJJ0DPNJHsQSsSMy6hzYGErc4dXvpnxtokA?=
- =?us-ascii?Q?iYYk/Sv22f215oyUM5RecNhqiIcXVblTf4jhfnazP7UmcI6Z7O0kpoHc3D3i?=
- =?us-ascii?Q?sFSTH2TeTzGyMc7AE+FexGQ53f5CbYSDLq2yAbniNwztTjC7zVkTfXcLxMNF?=
- =?us-ascii?Q?5HmLjZfubqY6gPS03uAo7djZQRscTaMtxjuggECLh1wHc+FsP2Iwmb57n+E+?=
- =?us-ascii?Q?2pKAlhNG35Usk1MU4zshrCFBW8L84V30oqCjQeDz5a8UirYVgWRc6oQi7M77?=
- =?us-ascii?Q?vJJsnq3QPGSiP4doEM7UNohutzGm4XAyDEQU2konTyyJbyi1LRVRHyZcr6b4?=
- =?us-ascii?Q?Lqysfdx42ZvOXdBskkkjyANkmbCmUd2H6vcRaXG0WT4FF4ExtXfs68Ym3A7N?=
- =?us-ascii?Q?kK28O0SFqwoqDYIpQ8qDu7Je6rnbra8lpvRkkFcXST/CKJLOEb3MOTv3RVmZ?=
- =?us-ascii?Q?P93OqBp5SiSeAOaWDa6nhs36L+CwM0x9CASVzGhsJSegq1h09lsBH378bPED?=
- =?us-ascii?Q?PrJVk+xF3Oo7foAYQFdOWK9hKz0wWDHq9bnnOLUlHBauumxqW2Dg/C79ofnH?=
- =?us-ascii?Q?ZaRWTx6LviiXElL7fVH4h8U4sHmcfXcLnm0GtZdmUX6UolGHVoycgmkmIw?=
- =?us-ascii?Q?=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(376014)(7416014)(1800799024)(13003099007)(921020);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2025 09:52:58.8300
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e41f6f37-eadd-4cf8-4f16-08ddb23bbc56
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS1PEPF00017093.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9729
+In-Reply-To: <474347bb-bbba-4238-8964-299f87de664a@gmx.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNIsWRmVeSWpSXmKPExsXC9ZZnke535cgMg1Of1SzmrF/DZjGpfwa7
+	xYUfjUwWF1//YbK4v+wZi8Wfh4YWlx6vYLe4vGsOm8Xi7jcsFo/63rJbzP1iaPFl9So2i7V/
+	rzE68HqsmbeG0ePX16tsHhOb37F73L2/kMlj8Z6XTB4Lf79g9jgx4zeLx8ent1g81m+5yuIx
+	YfNGVo/Pm+QCuKO4bFJSczLLUov07RK4Mr6cOM1csP8MY8XdK08ZGxg3T2XsYuTkkBAwkbj7
+	dS4bjP317kdmEJtFQFVi/6rVTCA2m4C6xI0bP8HiIgJqEl0npwDVc3EwCxxgkmia/54VJCEs
+	4CLx9d4sli5GDg5eAXOJyS0uIDVCAicZJdqnTwFbxisgKHFy5hMWEJsZaOifeZeYQeqZBaQl
+	lv/jgAjLSzRvnQ22i1PAWuLR27Vg40UFlCUObDvOBDJTQmAeu0T3wk52iKMlJQ6uuMEygVFw
+	FpIVs5CsmIWwYhaSFQsYWVYxCmXmleUmZuaY6GVU5mVW6CXn525iBEbhsto/0TsYP10IPsQo
+	wMGoxMObwBORIcSaWFZcmXuIUYKDWUmE95BTWIYQb0piZVVqUX58UWlOavEhRmkOFiVxXqNv
+	5SlCAumJJanZqakFqUUwWSYOTqkGxnKVhserf1ppq/K52Ho6xfnZW21dZ2mcuFiQ8eSCMveq
+	+EUOnPZFh26r1U+9UPz/vsSK6288FIWme26ymJB32fXb9vNmyuvXliTN2Ju5Zv2s3zxOPiem
+	nj97Qey8HaPHnrlH9t3mSEts8i7puicreF54k8dRA5YjRx0CBF/NE9FZ9sCr8+zfZUosxRmJ
+	hlrMRcWJAMDc20u+AgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsXC5WfdrPtdOTLD4Po5aYs569ewWUzqn8Fu
+	ceFHI5PFxdd/mCzuL3vGYvHnoaHF4bknWS0uPV7BbnF51xw2i8Xdb1gsHvW9ZbeY+8XQ4svq
+	VWwWa/9eY3Tg81gzbw2jx6+vV9k8Jja/Y/e4e38hk8fiPS+ZPBb+fsHscWLGbxaPj09vsXgs
+	fvGByWP9lqssHhM2b2T1+LxJLoAnissmJTUnsyy1SN8ugSvjy4nTzAX7zzBW3L3ylLGBcfNU
+	xi5GTg4JAROJr3c/MoPYLAKqEvtXrWYCsdkE1CVu3PgJFhcRUJPoOjmFrYuRi4NZ4ACTRNP8
+	96wgCWEBF4mv92axdDFycPAKmEtMbnEBqRESOMko0T59CtgCXgFBiZMzn7CA2MxAQ//Mu8QM
+	Us8sIC2x/B8HRFheonnrbLBdnALWEo/ergUbLyqgLHFg23GmCYx8s5BMmoVk0iyESbOQTFrA
+	yLKKUSQzryw3MTPHVK84O6MyL7NCLzk/dxMjMKaW1f6ZuIPxy2X3Q4wCHIxKPLwrvCMyhFgT
+	y4orcw8xSnAwK4nwHnIKyxDiTUmsrEotyo8vKs1JLT7EKM3BoiTO6xWemiAkkJ5YkpqdmlqQ
+	WgSTZeLglGpgvKU2u7Fq8fu2vle8N8/KaC74cTm1JEPs0pK7M35/WDmB0fTSoRPvuGWz/jze
+	3NV9wUCLj7koR87XQOXpPKZSbw/vdM+E89MfLd8kPH07bxBT3iopXv/Eu+EqYm6G7uknjGZs
+	+lQt4BlQ/YTD3+2ri5VC4ut70+QOGE7LveGT+19J/cOl91uXKrEUZyQaajEXFScCAGQArZql
+	AgAA
+X-CFilter-Loop: Reflected
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+On Mon, Jun 23, 2025 at 06:22:44PM +0930, Qu Wenruo wrote:
+> 在 2025/6/23 17:49, Byungchul Park 写道:
+> > On Mon, Jun 23, 2025 at 03:20:43PM +0930, Qu Wenruo wrote:
+> > > 在 2025/6/23 12:51, Byungchul Park 写道:
+> > > > Hi folks,
+> > > > 
+> > > > Thanks to Yunseong, we got two DEPT reports in btrfs.  It doesn't mean
+> > > > it's obvious deadlocks, but after digging into the reports, I'm
+> > > > wondering if it could happen by any chance.
+> > > > 
+> > > > 1) The first scenario that I'm concerning is:
+> > > > 
+> > > >     context A            context B
+> > > > 
+> > > >                          do_truncate()
+> > > >                            ...
+> > > >                              btrfs_do_readpage() // with folio lock held
+> > > 
+> > >                                 This one is for data.
+> > 
+> > Do you mean this folio is for data?  Thanks for the confirmation.
+> 
+> Yes, only data folios will go through btrfs_do_readpage().
+> 
+> For metadata, we never go through btrfs_do_readpage(), but
+> read_extent_buffer_pages_nowait().
+> 
+> 
+> > 
+> > > >     do_unlinkat()
+> > > >       ...
+> > > >         push_leaf_right()
+> > > >        btrfs_tree_lock_nested()
+> > > >          down_write_nested(&eb->lock) // hold
+> > 
+> > This is struct extent_buffer's rw_sem.  Right?
+> > 
+> > > >                                btrfs_get_extent()
+> > > >                                  btrfs_lookup_file_extent()
+> > > >                                    btrfs_search_slot()
+> > > >                                      down_read_nested(&eb->lock) // stuck
+> > > 
+> > >                                         This one is for metadata.
+> >                                               ^
+> >                                       I don't get this actually.
+> > 
+> > This is struct extent_buffer's rw_sem, too.  Cannot this rw_sem be the
+> > same as the rw_sem above in context A?
+> 
+> My bad, I thought you're talking about that down_read_nested()
+> conflicting with folio lock.
+> 
+> But if you're talking about extent_buffer::lock, then the one in context
+> B will wait for the one in context A, and that's expected.
 
-Extend __filemap_get_folio() to support NUMA memory policies by
-renaming the implementation to __filemap_get_folio_mpol() and adding
-a mempolicy parameter. The original function becomes a static inline
-wrapper that passes NULL for the mempolicy.
+Sounds good.
 
-This infrastructure will enable future support for NUMA-aware page cache
-allocations in guest_memfd memory backend KVM guests.
+> > > Data and metadata page cache will never cross into each other.
+> > > 
+> > > Thanks,
+> > > Qu
+> > > 
+> > > >          __push_leaf_right()
+> > > >            ...
+> > > >              folio_lock() // stuck
+> > 
+> > Did you mean this folio is always for metadata?
+> 
+> Can you explain more on where this folio_lock() comes from?
 
-Reviewed-by: Pankaj Gupta <pankaj.gupta@amd.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: Shivank Garg <shivankg@amd.com>
----
-Changes in V2:
-- fix checkpatch warnings.
-- touch up commit description and fix code alignments to make it
-  more readable.
-V1:
-https://lore.kernel.org/all/20250620143502.3055777-2-willy@infradead.org
+I should also rely on the following stacktrace in the dept report.  I
+asked Yunseong who reported this issue, for the decoded stacktrace, so
+that I can interpret that better.  I will get back once I figure out
+where the wait on PG_locked comes from.
 
- include/linux/pagemap.h | 10 ++++++++--
- mm/filemap.c            | 11 ++++++-----
- 2 files changed, 14 insertions(+), 7 deletions(-)
+   [  304.344198][ T7488] [W] dept_page_wait_on_bit(pg_locked_map:0):
+   [  304.344211][ T7488] [<ffff8000823b1d20>] __push_leaf_right+0x8f0/0xc70
+   [  304.344232][ T7488] stacktrace:
+   [  304.344241][ T7488]       __push_leaf_right+0x8f0/0xc70
+   [  304.344260][ T7488]       push_leaf_right+0x408/0x628
+   [  304.344278][ T7488]       btrfs_del_items+0x974/0xaec
+   [  304.344297][ T7488]       btrfs_truncate_inode_items+0x1c5c/0x2b00
+   [  304.344314][ T7488]       btrfs_evict_inode+0xa4c/0xd38
+   [  304.344335][ T7488]       evict+0x340/0x7b0
+   [  304.344352][ T7488]       iput+0x4ec/0x840
+   [  304.344369][ T7488]       do_unlinkat+0x444/0x59c
+   [  304.344388][ T7488]       __arm64_sys_unlinkat+0x11c/0x260
+   [  304.344407][ T7488]       invoke_syscall+0x88/0x2e0
+   [  304.344425][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+   [  304.344445][ T7488]       do_el0_svc+0x44/0x60
+   [  304.344463][ T7488]       el0_svc+0x50/0x188
+   [  304.344482][ T7488]       el0t_64_sync_handler+0x10c/0x140
+   [  304.344503][ T7488]       el0t_64_sync+0x198/0x19c
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 78ea357d2077..981ff97b4445 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -747,11 +747,17 @@ static inline fgf_t fgf_set_order(size_t size)
- }
- 
- void *filemap_get_entry(struct address_space *mapping, pgoff_t index);
--struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
--		fgf_t fgp_flags, gfp_t gfp);
-+struct folio *__filemap_get_folio_mpol(struct address_space *mapping,
-+		pgoff_t index, fgf_t fgf_flags, gfp_t gfp, struct mempolicy *policy);
- struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- 		fgf_t fgp_flags, gfp_t gfp);
- 
-+static inline struct folio *__filemap_get_folio(struct address_space *mapping,
-+		pgoff_t index, fgf_t fgf_flags, gfp_t gfp)
-+{
-+	return __filemap_get_folio_mpol(mapping, index, fgf_flags, gfp, NULL);
-+}
-+
- /**
-  * filemap_get_folio - Find and get a folio.
-  * @mapping: The address_space to search.
-diff --git a/mm/filemap.c b/mm/filemap.c
-index a30cd4dd085a..ec7de38c17c1 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1896,11 +1896,12 @@ void *filemap_get_entry(struct address_space *mapping, pgoff_t index)
- }
- 
- /**
-- * __filemap_get_folio - Find and get a reference to a folio.
-+ * __filemap_get_folio_mpol - Find and get a reference to a folio.
-  * @mapping: The address_space to search.
-  * @index: The page index.
-  * @fgp_flags: %FGP flags modify how the folio is returned.
-  * @gfp: Memory allocation flags to use if %FGP_CREAT is specified.
-+ * @policy: NUMA memory allocation policy to follow.
-  *
-  * Looks up the page cache entry at @mapping & @index.
-  *
-@@ -1911,8 +1912,8 @@ void *filemap_get_entry(struct address_space *mapping, pgoff_t index)
-  *
-  * Return: The found folio or an ERR_PTR() otherwise.
-  */
--struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
--		fgf_t fgp_flags, gfp_t gfp)
-+struct folio *__filemap_get_folio_mpol(struct address_space *mapping,
-+		pgoff_t index, fgf_t fgp_flags, gfp_t gfp, struct mempolicy *policy)
- {
- 	struct folio *folio;
- 
-@@ -1982,7 +1983,7 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
- 			err = -ENOMEM;
- 			if (order > min_order)
- 				alloc_gfp |= __GFP_NORETRY | __GFP_NOWARN;
--			folio = filemap_alloc_folio(alloc_gfp, order, NULL);
-+			folio = filemap_alloc_folio(alloc_gfp, order, policy);
- 			if (!folio)
- 				continue;
- 
-@@ -2029,7 +2030,7 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
- 		folio_clear_dropbehind(folio);
- 	return folio;
- }
--EXPORT_SYMBOL(__filemap_get_folio);
-+EXPORT_SYMBOL(__filemap_get_folio_mpol);
- 
- static inline struct folio *find_get_entry(struct xa_state *xas, pgoff_t max,
- 		xa_mark_t mark)
--- 
-2.43.0
+Thanks.
 
+	Byungchul
+
+> I didn't see any location where __push_leaf_right() is locking a folio
+> nor the original do_unlinkat().
+> 
+> So here I can only guess the folio is from __push_leaf_right() context,
+> that means it can only be a metadata folio.
+> 
+> > 
+> > If no, it could lead a deadlock in my opinion.  If yes, dept should
+> > assign different classes to folios between data data and metadata.
+> 
+> So far I believe the folio belongs to metadata.
+> 
+> And since btrfs has very different handling of metadata folios, and it's
+> a little confusing that, we also have a btree_inode to handle the
+> metadata page cache, but do not have read_folio() callbacks, it can be a
+> little confusing to some automatic tools.
+> 
+> Thanks,
+> Qu
+> 
+> > 
+> >       Byungchul
+> > 
+> > > > 2) The second scenario that I'm concerning is:
+> > > > 
+> > > >     context A            context B
+> > > > 
+> > > >                          do_truncate()
+> > > >                            ...
+> > > >                              btrfs_do_readpage() // with folio lock held
+> > > >     do_unlinkat()
+> > > >       ...
+> > > >         btrfs_truncate_inode_items()
+> > > >        btrfs_lock_root_node()
+> > > >          down_write_nested(&eb->lock) // hold
+> > > >        btrfs_del_items()
+> > > >          push_leaf_right()
+> > > >            __push_leaf_right()
+> > > >                                btrfs_get_extent()
+> > > >                                  btrfs_lookup_file_extent()
+> > > >                                    btrfs_search_slot()
+> > > >                                      btrfs_read_lock_root_node()
+> > > >                                        down_read_nested(&eb->lock) // stuck
+> > > >              ...
+> > > >                folio_lock() //stuck
+> > > > 
+> > > > Am I missing something?
+> > > > 
+> > > > FYI, the followings are the DEPT reports we got.
+> > > > 
+> > > >        Byungchul
+> > > > 
+> > > > ---
+> > > >    [  304.343395][ T7488] ===================================================
+> > > >    [  304.343446][ T7488] DEPT: Circular dependency has been detected.
+> > > >    [  304.343462][ T7488] 6.15.0-rc6-00043-ga83a69ec7f9f #5 Not tainted
+> > > >    [  304.343477][ T7488] ---------------------------------------------------
+> > > >    [  304.343488][ T7488] summary
+> > > >    [  304.343498][ T7488] ---------------------------------------------------
+> > > >    [  304.343509][ T7488] *** DEADLOCK ***
+> > > >    [  304.343509][ T7488]
+> > > >    [  304.343520][ T7488] context A
+> > > >    [  304.343531][ T7488]    [S] lock(btrfs-tree-00:0)
+> > > >    [  304.343545][ T7488]    [W] dept_page_wait_on_bit(pg_locked_map:0)
+> > > >    [  304.343559][ T7488]    [E] unlock(btrfs-tree-00:0)
+> > > >    [  304.343572][ T7488]
+> > > >    [  304.343581][ T7488] context B
+> > > >    [  304.343591][ T7488]    [S] (unknown)(pg_locked_map:0)
+> > > >    [  304.343603][ T7488]    [W] lock(btrfs-tree-00:0)
+> > > >    [  304.343616][ T7488]    [E] dept_page_clear_bit(pg_locked_map:0)
+> > > >    [  304.343629][ T7488]
+> > > >    [  304.343637][ T7488] [S]: start of the event context
+> > > >    [  304.343647][ T7488] [W]: the wait blocked
+> > > >    [  304.343656][ T7488] [E]: the event not reachable
+> > > >    [  304.343666][ T7488] ---------------------------------------------------
+> > > >    [  304.343676][ T7488] context A's detail
+> > > >    [  304.343686][ T7488] ---------------------------------------------------
+> > > >    [  304.343696][ T7488] context A
+> > > >    [  304.343706][ T7488]    [S] lock(btrfs-tree-00:0)
+> > > >    [  304.343718][ T7488]    [W] dept_page_wait_on_bit(pg_locked_map:0)
+> > > >    [  304.343731][ T7488]    [E] unlock(btrfs-tree-00:0)
+> > > >    [  304.343744][ T7488]
+> > > >    [  304.343753][ T7488] [S] lock(btrfs-tree-00:0):
+> > > >    [  304.343764][ T7488] [<ffff8000824f41d8>] btrfs_tree_lock_nested+0x38/0x324
+> > > >    [  304.343796][ T7488] stacktrace:
+> > > >    [  304.343805][ T7488]       down_write_nested+0xe4/0x21c
+> > > >    [  304.343826][ T7488]       btrfs_tree_lock_nested+0x38/0x324
+> > > >    [  304.343865][ T7488]       push_leaf_right+0x23c/0x628
+> > > >    [  304.343896][ T7488]       btrfs_del_items+0x974/0xaec
+> > > >    [  304.343916][ T7488]       btrfs_truncate_inode_items+0x1c5c/0x2b00
+> > > >    [  304.343938][ T7488]       btrfs_evict_inode+0xa4c/0xd38
+> > > >    [  304.343968][ T7488]       evict+0x340/0x7b0
+> > > >    [  304.343993][ T7488]       iput+0x4ec/0x840
+> > > >    [  304.344011][ T7488]       do_unlinkat+0x444/0x59c
+> > > >    [  304.344038][ T7488]       __arm64_sys_unlinkat+0x11c/0x260
+> > > >    [  304.344057][ T7488]       invoke_syscall+0x88/0x2e0
+> > > >    [  304.344084][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+> > > >    [  304.344104][ T7488]       do_el0_svc+0x44/0x60
+> > > >    [  304.344123][ T7488]       el0_svc+0x50/0x188
+> > > >    [  304.344151][ T7488]       el0t_64_sync_handler+0x10c/0x140
+> > > >    [  304.344172][ T7488]       el0t_64_sync+0x198/0x19c
+> > > >    [  304.344189][ T7488]
+> > > >    [  304.344198][ T7488] [W] dept_page_wait_on_bit(pg_locked_map:0):
+> > > >    [  304.344211][ T7488] [<ffff8000823b1d20>] __push_leaf_right+0x8f0/0xc70
+> > > >    [  304.344232][ T7488] stacktrace:
+> > > >    [  304.344241][ T7488]       __push_leaf_right+0x8f0/0xc70
+> > > >    [  304.344260][ T7488]       push_leaf_right+0x408/0x628
+> > > >    [  304.344278][ T7488]       btrfs_del_items+0x974/0xaec
+> > > >    [  304.344297][ T7488]       btrfs_truncate_inode_items+0x1c5c/0x2b00
+> > > >    [  304.344314][ T7488]       btrfs_evict_inode+0xa4c/0xd38
+> > > >    [  304.344335][ T7488]       evict+0x340/0x7b0
+> > > >    [  304.344352][ T7488]       iput+0x4ec/0x840
+> > > >    [  304.344369][ T7488]       do_unlinkat+0x444/0x59c
+> > > >    [  304.344388][ T7488]       __arm64_sys_unlinkat+0x11c/0x260
+> > > >    [  304.344407][ T7488]       invoke_syscall+0x88/0x2e0
+> > > >    [  304.344425][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+> > > >    [  304.344445][ T7488]       do_el0_svc+0x44/0x60
+> > > >    [  304.344463][ T7488]       el0_svc+0x50/0x188
+> > > >    [  304.344482][ T7488]       el0t_64_sync_handler+0x10c/0x140
+> > > >    [  304.344503][ T7488]       el0t_64_sync+0x198/0x19c
+> > > >    [  304.344518][ T7488]
+> > > >    [  304.344527][ T7488] [E] unlock(btrfs-tree-00:0):
+> > > >    [  304.344539][ T7488] (N/A)
+> > > >    [  304.344549][ T7488] ---------------------------------------------------
+> > > >    [  304.344559][ T7488] context B's detail
+> > > >    [  304.344568][ T7488] ---------------------------------------------------
+> > > >    [  304.344578][ T7488] context B
+> > > >    [  304.344588][ T7488]    [S] (unknown)(pg_locked_map:0)
+> > > >    [  304.344600][ T7488]    [W] lock(btrfs-tree-00:0)
+> > > >    [  304.344613][ T7488]    [E] dept_page_clear_bit(pg_locked_map:0)
+> > > >    [  304.344625][ T7488]
+> > > >    [  304.344634][ T7488] [S] (unknown)(pg_locked_map:0):
+> > > >    [  304.344646][ T7488] (N/A)
+> > > >    [  304.344655][ T7488]
+> > > >    [  304.344663][ T7488] [W] lock(btrfs-tree-00:0):
+> > > >    [  304.344675][ T7488] [<ffff8000824f3b48>] btrfs_tree_read_lock_nested+0x38/0x330
+> > > >    [  304.344694][ T7488] stacktrace:
+> > > >    [  304.344703][ T7488]       down_read_nested+0xc8/0x368
+> > > >    [  304.344720][ T7488]       btrfs_tree_read_lock_nested+0x38/0x330
+> > > >    [  304.344737][ T7488]       btrfs_search_slot+0x1204/0x2dc8
+> > > >    [  304.344756][ T7488]       btrfs_lookup_file_extent+0xe0/0x128
+> > > >    [  304.344773][ T7488]       btrfs_get_extent+0x2cc/0x1e24
+> > > >    [  304.344789][ T7488]       btrfs_do_readpage+0x628/0x1258
+> > > >    [  304.344810][ T7488]       btrfs_read_folio+0x310/0x450
+> > > >    [  304.344828][ T7488]       btrfs_truncate_block+0x2c0/0xb24
+> > > >    [  304.344854][ T7488]       btrfs_cont_expand+0x11c/0xba8
+> > > >    [  304.344870][ T7488]       btrfs_setattr+0x8d8/0x10f4
+> > > >    [  304.344885][ T7488]       notify_change+0x900/0xfbc
+> > > >    [  304.344906][ T7488]       do_truncate+0x154/0x210
+> > > >    [  304.344937][ T7488]       vfs_truncate+0x55c/0x66c
+> > > >    [  304.344957][ T7488]       __arm64_sys_truncate+0x16c/0x1e4
+> > > >    [  304.344978][ T7488]       invoke_syscall+0x88/0x2e0
+> > > >    [  304.344997][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+> > > >    [  304.345017][ T7488]
+> > > >    [  304.345025][ T7488] [E] dept_page_clear_bit(pg_locked_map:0):
+> > > >    [  304.345037][ T7488] [<ffff80008249c284>] end_folio_read+0x3e4/0x590
+> > > >    [  304.345056][ T7488] stacktrace:
+> > > >    [  304.345065][ T7488]       folio_unlock+0x8c/0x160
+> > > >    [  304.345099][ T7488]       end_folio_read+0x3e4/0x590
+> > > >    [  304.345116][ T7488]       btrfs_do_readpage+0x830/0x1258
+> > > >    [  304.345132][ T7488]       btrfs_read_folio+0x310/0x450
+> > > >    [  304.345149][ T7488]       btrfs_truncate_block+0x2c0/0xb24
+> > > >    [  304.345164][ T7488]       btrfs_cont_expand+0x11c/0xba8
+> > > >    [  304.345179][ T7488]       btrfs_setattr+0x8d8/0x10f4
+> > > >    [  304.345194][ T7488]       notify_change+0x900/0xfbc
+> > > >    [  304.345213][ T7488]       do_truncate+0x154/0x210
+> > > >    [  304.345232][ T7488]       vfs_truncate+0x55c/0x66c
+> > > >    [  304.345252][ T7488]       __arm64_sys_truncate+0x16c/0x1e4
+> > > >    [  304.345272][ T7488]       invoke_syscall+0x88/0x2e0
+> > > >    [  304.345291][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+> > > >    [  304.345310][ T7488]       do_el0_svc+0x44/0x60
+> > > >    [  304.345328][ T7488]       el0_svc+0x50/0x188
+> > > >    [  304.345347][ T7488]       el0t_64_sync_handler+0x10c/0x140
+> > > >    [  304.345369][ T7488] ---------------------------------------------------
+> > > >    [  304.345379][ T7488] information that might be helpful
+> > > >    [  304.345388][ T7488] ---------------------------------------------------
+> > > >    [  304.345402][ T7488] CPU: 1 UID: 0 PID: 7488 Comm: syz-executor Not tainted 6.15.0-rc6-00043-ga83a69ec7f9f #5 PREEMPT
+> > > >    [  304.345416][ T7488] Hardware name: QEMU KVM Virtual Machine, BIOS 2025.02-8 05/13/2025
+> > > >    [  304.345422][ T7488] Call trace:
+> > > >    [  304.345426][ T7488]  show_stack+0x34/0x80 (C)
+> > > >    [  304.345452][ T7488]  dump_stack_lvl+0x104/0x180
+> > > >    [  304.345476][ T7488]  dump_stack+0x20/0x2c
+> > > >    [  304.345490][ T7488]  cb_check_dl+0x1080/0x10ec
+> > > >    [  304.345504][ T7488]  bfs+0x4d8/0x630
+> > > >    [  304.345514][ T7488]  add_dep+0x1cc/0x364
+> > > >    [  304.345526][ T7488]  __dept_wait+0x60c/0x16e0
+> > > >    [  304.345537][ T7488]  dept_wait+0x168/0x1a8
+> > > >    [  304.345548][ T7488]  btrfs_clear_buffer_dirty+0x420/0x820
+> > > >    [  304.345561][ T7488]  __push_leaf_right+0x8f0/0xc70
+> > > >    [  304.345575][ T7488]  push_leaf_right+0x408/0x628
+> > > >    [  304.345589][ T7488]  btrfs_del_items+0x974/0xaec
+> > > >    [  304.345603][ T7488]  btrfs_truncate_inode_items+0x1c5c/0x2b00
+> > > >    [  304.345616][ T7488]  btrfs_evict_inode+0xa4c/0xd38
+> > > >    [  304.345632][ T7488]  evict+0x340/0x7b0
+> > > >    [  304.345644][ T7488]  iput+0x4ec/0x840
+> > > >    [  304.345657][ T7488]  do_unlinkat+0x444/0x59c
+> > > >    [  304.345671][ T7488]  __arm64_sys_unlinkat+0x11c/0x260
+> > > >    [  304.345685][ T7488]  invoke_syscall+0x88/0x2e0
+> > > >    [  304.345698][ T7488]  el0_svc_common.constprop.0+0xe8/0x2e0
+> > > >    [  304.345713][ T7488]  do_el0_svc+0x44/0x60
+> > > >    [  304.345726][ T7488]  el0_svc+0x50/0x188
+> > > >    [  304.345741][ T7488]  el0t_64_sync_handler+0x10c/0x140
+> > > >    [  304.345756][ T7488]  el0t_64_sync+0x198/0x19c
+> > > >    [  304.345857][ T7488] ===================================================
+> > > >    [  304.345995][ T7488] DEPT: Circular dependency has been detected.
+> > > >    [  304.346006][ T7488] 6.15.0-rc6-00043-ga83a69ec7f9f #5 Not tainted
+> > > >    [  304.346019][ T7488] ---------------------------------------------------
+> > > >    [  304.346029][ T7488] summary
+> > > >    [  304.346038][ T7488] ---------------------------------------------------
+> > > >    [  304.346049][ T7488] *** DEADLOCK ***
+> > > >    [  304.346049][ T7488]
+> > > >    [  304.346058][ T7488] context A
+> > > >    [  304.346069][ T7488]    [S] lock(btrfs-tree-01:0)
+> > > >    [  304.346082][ T7488]    [W] dept_page_wait_on_bit(pg_locked_map:0)
+> > > >    [  304.346095][ T7488]    [E] unlock(btrfs-tree-01:0)
+> > > >    [  304.346108][ T7488]
+> > > >    [  304.346117][ T7488] context B
+> > > >    [  304.346126][ T7488]    [S] (unknown)(pg_locked_map:0)
+> > > >    [  304.346139][ T7488]    [W] lock(btrfs-tree-01:0)
+> > > >    [  304.346151][ T7488]    [E] dept_page_clear_bit(pg_locked_map:0)
+> > > >    [  304.346164][ T7488]
+> > > >    [  304.346173][ T7488] [S]: start of the event context
+> > > >    [  304.346183][ T7488] [W]: the wait blocked
+> > > >    [  304.346192][ T7488] [E]: the event not reachable
+> > > >    [  304.346201][ T7488] ---------------------------------------------------
+> > > >    [  304.346211][ T7488] context A's detail
+> > > >    [  304.346221][ T7488] ---------------------------------------------------
+> > > >    [  304.346231][ T7488] context A
+> > > >    [  304.346240][ T7488]    [S] lock(btrfs-tree-01:0)
+> > > >    [  304.346253][ T7488]    [W] dept_page_wait_on_bit(pg_locked_map:0)
+> > > >    [  304.346266][ T7488]    [E] unlock(btrfs-tree-01:0)
+> > > >    [  304.346278][ T7488]
+> > > >    [  304.346287][ T7488] [S] lock(btrfs-tree-01:0):
+> > > >    [  304.346299][ T7488] [<ffff8000824f41d8>] btrfs_tree_lock_nested+0x38/0x324
+> > > >    [  304.346321][ T7488] stacktrace:
+> > > >    [  304.346330][ T7488]       down_write_nested+0xe4/0x21c
+> > > >    [  304.346347][ T7488]       btrfs_tree_lock_nested+0x38/0x324
+> > > >    [  304.346363][ T7488]       btrfs_lock_root_node+0x70/0xac
+> > > >    [  304.346379][ T7488]       btrfs_search_slot+0x3f8/0x2dc8
+> > > >    [  304.346399][ T7488]       btrfs_truncate_inode_items+0x2ec/0x2b00
+> > > >    [  304.346417][ T7488]       btrfs_evict_inode+0xa4c/0xd38
+> > > >    [  304.346438][ T7488]       evict+0x340/0x7b0
+> > > >    [  304.346456][ T7488]       iput+0x4ec/0x840
+> > > >    [  304.346473][ T7488]       do_unlinkat+0x444/0x59c
+> > > >    [  304.346492][ T7488]       __arm64_sys_unlinkat+0x11c/0x260
+> > > >    [  304.346511][ T7488]       invoke_syscall+0x88/0x2e0
+> > > >    [  304.346530][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+> > > >    [  304.346550][ T7488]       do_el0_svc+0x44/0x60
+> > > >    [  304.346568][ T7488]       el0_svc+0x50/0x188
+> > > >    [  304.346588][ T7488]       el0t_64_sync_handler+0x10c/0x140
+> > > >    [  304.346608][ T7488]       el0t_64_sync+0x198/0x19c
+> > > >    [  304.346623][ T7488]
+> > > >    [  304.346632][ T7488] [W] dept_page_wait_on_bit(pg_locked_map:0):
+> > > >    [  304.346644][ T7488] [<ffff8000823b1d20>] __push_leaf_right+0x8f0/0xc70
+> > > >    [  304.346665][ T7488] stacktrace:
+> > > >    [  304.346674][ T7488]       __push_leaf_right+0x8f0/0xc70
+> > > >    [  304.346692][ T7488]       push_leaf_right+0x408/0x628
+> > > >    [  304.346711][ T7488]       btrfs_del_items+0x974/0xaec
+> > > >    [  304.346729][ T7488]       btrfs_truncate_inode_items+0x1c5c/0x2b00
+> > > >    [  304.346747][ T7488]       btrfs_evict_inode+0xa4c/0xd38
+> > > >    [  304.346767][ T7488]       evict+0x340/0x7b0
+> > > >    [  304.346785][ T7488]       iput+0x4ec/0x840
+> > > >    [  304.346802][ T7488]       do_unlinkat+0x444/0x59c
+> > > >    [  304.346820][ T7488]       __arm64_sys_unlinkat+0x11c/0x260
+> > > >    [  304.346850][ T7488]       invoke_syscall+0x88/0x2e0
+> > > >    [  304.346871][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+> > > >    [  304.346891][ T7488]       do_el0_svc+0x44/0x60
+> > > >    [  304.346909][ T7488]       el0_svc+0x50/0x188
+> > > >    [  304.346928][ T7488]       el0t_64_sync_handler+0x10c/0x140
+> > > >    [  304.346949][ T7488]       el0t_64_sync+0x198/0x19c
+> > > >    [  304.346963][ T7488]
+> > > >    [  304.346972][ T7488] [E] unlock(btrfs-tree-01:0):
+> > > >    [  304.346984][ T7488] (N/A)
+> > > >    [  304.346994][ T7488] ---------------------------------------------------
+> > > >    [  304.347004][ T7488] context B's detail
+> > > >    [  304.347013][ T7488] ---------------------------------------------------
+> > > >    [  304.347023][ T7488] context B
+> > > >    [  304.347033][ T7488]    [S] (unknown)(pg_locked_map:0)
+> > > >    [  304.347046][ T7488]    [W] lock(btrfs-tree-01:0)
+> > > >    [  304.347058][ T7488]    [E] dept_page_clear_bit(pg_locked_map:0)
+> > > >    [  304.347071][ T7488]
+> > > >    [  304.347080][ T7488] [S] (unknown)(pg_locked_map:0):
+> > > >    [  304.347092][ T7488] (N/A)
+> > > >    [  304.347101][ T7488]
+> > > >    [  304.347109][ T7488] [W] lock(btrfs-tree-01:0):
+> > > >    [  304.347121][ T7488] [<ffff8000824f3b48>] btrfs_tree_read_lock_nested+0x38/0x330
+> > > >    [  304.347140][ T7488] stacktrace:
+> > > >    [  304.347149][ T7488]       down_read_nested+0xc8/0x368
+> > > >    [  304.347165][ T7488]       btrfs_tree_read_lock_nested+0x38/0x330
+> > > >    [  304.347181][ T7488]       btrfs_read_lock_root_node+0x70/0xb4
+> > > >    [  304.347198][ T7488]       btrfs_search_slot+0x34c/0x2dc8
+> > > >    [  304.347217][ T7488]       btrfs_lookup_file_extent+0xe0/0x128
+> > > >    [  304.347233][ T7488]       btrfs_get_extent+0x2cc/0x1e24
+> > > >    [  304.347248][ T7488]       btrfs_do_readpage+0x628/0x1258
+> > > >    [  304.347270][ T7488]       btrfs_read_folio+0x310/0x450
+> > > >    [  304.347287][ T7488]       btrfs_truncate_block+0x2c0/0xb24
+> > > >    [  304.347302][ T7488]       btrfs_cont_expand+0x11c/0xba8
+> > > >    [  304.347317][ T7488]       btrfs_setattr+0x8d8/0x10f4
+> > > >    [  304.347332][ T7488]       notify_change+0x900/0xfbc
+> > > >    [  304.347352][ T7488]       do_truncate+0x154/0x210
+> > > >    [  304.347374][ T7488]       vfs_truncate+0x55c/0x66c
+> > > >    [  304.347394][ T7488]       __arm64_sys_truncate+0x16c/0x1e4
+> > > >    [  304.347414][ T7488]       invoke_syscall+0x88/0x2e0
+> > > >    [  304.347433][ T7488]
+> > > >    [  304.347441][ T7488] [E] dept_page_clear_bit(pg_locked_map:0):
+> > > >    [  304.347453][ T7488] [<ffff80008249c284>] end_folio_read+0x3e4/0x590
+> > > >    [  304.347471][ T7488] stacktrace:
+> > > >    [  304.347480][ T7488]       folio_unlock+0x8c/0x160
+> > > >    [  304.347504][ T7488]       end_folio_read+0x3e4/0x590
+> > > >    [  304.347520][ T7488]       btrfs_do_readpage+0x830/0x1258
+> > > >    [  304.347536][ T7488]       btrfs_read_folio+0x310/0x450
+> > > >    [  304.347553][ T7488]       btrfs_truncate_block+0x2c0/0xb24
+> > > >    [  304.347568][ T7488]       btrfs_cont_expand+0x11c/0xba8
+> > > >    [  304.347583][ T7488]       btrfs_setattr+0x8d8/0x10f4
+> > > >    [  304.347598][ T7488]       notify_change+0x900/0xfbc
+> > > >    [  304.347617][ T7488]       do_truncate+0x154/0x210
+> > > >    [  304.347636][ T7488]       vfs_truncate+0x55c/0x66c
+> > > >    [  304.347656][ T7488]       __arm64_sys_truncate+0x16c/0x1e4
+> > > >    [  304.347676][ T7488]       invoke_syscall+0x88/0x2e0
+> > > >    [  304.347695][ T7488]       el0_svc_common.constprop.0+0xe8/0x2e0
+> > > >    [  304.347714][ T7488]       do_el0_svc+0x44/0x60
+> > > >    [  304.347732][ T7488]       el0_svc+0x50/0x188
+> > > >    [  304.347751][ T7488]       el0t_64_sync_handler+0x10c/0x140
+> > > >    [  304.347772][ T7488] ---------------------------------------------------
+> > > >    [  304.347782][ T7488] information that might be helpful
+> > > >    [  304.347791][ T7488] ---------------------------------------------------
+> > > >    [  304.347803][ T7488] CPU: 1 UID: 0 PID: 7488 Comm: syz-executor Not tainted 6.15.0-rc6-00043-ga83a69ec7f9f #5 PREEMPT
+> > > >    [  304.347815][ T7488] Hardware name: QEMU KVM Virtual Machine, BIOS 2025.02-8 05/13/2025
+> > > >    [  304.347821][ T7488] Call trace:
+> > > >    [  304.347825][ T7488]  show_stack+0x34/0x80 (C)
+> > > >    [  304.347852][ T7488]  dump_stack_lvl+0x104/0x180
+> > > >    [  304.347870][ T7488]  dump_stack+0x20/0x2c
+> > > >    [  304.347884][ T7488]  cb_check_dl+0x1080/0x10ec
+> > > >    [  304.347897][ T7488]  bfs+0x4d8/0x630
+> > > >    [  304.347906][ T7488]  add_dep+0x1cc/0x364
+> > > >    [  304.347917][ T7488]  __dept_wait+0x60c/0x16e0
+> > > >    [  304.347928][ T7488]  dept_wait+0x168/0x1a8
+> > > >    [  304.347940][ T7488]  btrfs_clear_buffer_dirty+0x420/0x820
+> > > >    [  304.347952][ T7488]  __push_leaf_right+0x8f0/0xc70
+> > > >    [  304.347967][ T7488]  push_leaf_right+0x408/0x628
+> > > >    [  304.347980][ T7488]  btrfs_del_items+0x974/0xaec
+> > > >    [  304.347994][ T7488]  btrfs_truncate_inode_items+0x1c5c/0x2b00
+> > > >    [  304.348007][ T7488]  btrfs_evict_inode+0xa4c/0xd38
+> > > >    [  304.348023][ T7488]  evict+0x340/0x7b0
+> > > >    [  304.348036][ T7488]  iput+0x4ec/0x840
+> > > >    [  304.348048][ T7488]  do_unlinkat+0x444/0x59c
+> > > >    [  304.348062][ T7488]  __arm64_sys_unlinkat+0x11c/0x260
+> > > >    [  304.348076][ T7488]  invoke_syscall+0x88/0x2e0
+> > > >    [  304.348090][ T7488]  el0_svc_common.constprop.0+0xe8/0x2e0
+> > > >    [  304.348105][ T7488]  do_el0_svc+0x44/0x60
+> > > >    [  304.348118][ T7488]  el0_svc+0x50/0x188
+> > > >    [  304.348132][ T7488]  el0t_64_sync_handler+0x10c/0x140
+> > > >    [  304.348148][ T7488]  el0t_64_sync+0x198/0x19c
+> > > >    [  304.386144][ T8054] BTRFS info (device loop0): first mount of filesystem 3a492a15-ac49-4ce6-945e-cef7a687c6c9
+> > > >    [  304.389687][ T8054] BTRFS info (device loop0): using crc32c (crc32c-arm64) checksum algorithm
+> > > >    [  304.389788][ T8054] BTRFS info (device loop0): using free-space-tree
+> > > >    [  304.701202][ T7488] BTRFS info (device loop3): last unmount of filesystem 3a492a15-ac49-4ce6-945e-cef7a687c6c9
+> > > > 
 
