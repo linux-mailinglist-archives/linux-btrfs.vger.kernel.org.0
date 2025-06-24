@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-14929-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14930-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CC07AE70B9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 22:30:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D984BAE7103
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 22:47:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69024165EC2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 20:30:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72B7A1BC034C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 20:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9C02EBB8A;
-	Tue, 24 Jun 2025 20:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE01257430;
+	Tue, 24 Jun 2025 20:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="qzoYe8VZ"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="s7oNQzo9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD2F2E92D0;
-	Tue, 24 Jun 2025 20:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0882405E8
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Jun 2025 20:46:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750797027; cv=none; b=ZrHHdITYJwOAUjONJjymHPy5lWDVSBAH1Ch7pe5EUF+IDsHuQ9Mqb2YkezW2Yh0VLAsJoAZKxjo0WfERf9DnvwgeXncz/eKnafnat2BOsuqu6YKVlIyo4qWznhVELs7iRh51eSv8b4FcGvkcqOckEdemuXFbaAKFiufiFeWg89Y=
+	t=1750798013; cv=none; b=DTvgdv2K981BZH/H1vGOiaNdFr5sYYOgnDwy9CUBXR6kNWtmZFcgr6M4/D8+Tys5WlKd8PjPgS652nKdEKoWiX1VPm3/QVV1TXsuS1+sc1hvdYZB244JFo0YGMzr65i2jeFiydbWmUNzhZs0SpEJn0/t8vS30m3IADV/9da3rXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750797027; c=relaxed/simple;
-	bh=PyNejFBO4DO2StpTrXnd2cn7yIq8+Cs7i/ymNy4BnNs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S/IpNsE3ZlSPme77iyE4/D29y8kP6/abtAtIxce4YRyFuWKUlesgUAsqK4sVY6pqxLFZWr+Vq9Wt7VCbA8I6vDVpV/2MaA8njGeTeJqldcWJ4GYiyiej2r9ghxN0UR3Z1c3kvEnzFGfR206DSpeLmV0WWJdphj2BaGhB8Y1eUrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=qzoYe8VZ; arc=none smtp.client-ip=212.227.17.20
+	s=arc-20240116; t=1750798013; c=relaxed/simple;
+	bh=8BYx6DYRSZx7EcYxnS/2MYddK6DZJaIb0zwldr1WLRY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=nChP0iZnhA55vjT+5AMdM1zQIK5yFCMsRiLickW4J3CItVAAqH8+YIQUIyvHeBNcmiRIsDGuEPOovIetolFbO9rer3on6MmxGqqSqF0yNEsZqZxuDlg994EBnOKECLnrK8H/qbBZmZrhAwiQVmxaDdQqYQ4aQ3BL3txmCEDj+Mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=s7oNQzo9; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1750797016; x=1751401816; i=quwenruo.btrfs@gmx.com;
-	bh=7ppGo3zQCLbcHl1LQFYeIQe1GzDLPuBEsBI4oBFVCoE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1750798008; x=1751402808; i=quwenruo.btrfs@gmx.com;
+	bh=1/P6jmJmB6bzxQRkVRGCHOcs0bgXzvk/xe/5knj0P8s=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=qzoYe8VZ53h8fh6JakZqK6x9ECs5Y3/qYUqSFHHEvZ2cwFKlcz6l+2/jG2Sb2LGN
-	 T5NcLFYmINdQMVp5/nBm4GK9IzRK09xOTXtxGtgIntWyaaavi1GlM6KsumWyeZuHX
-	 NhbNE8pIsBPlhDTb36ZVH581FjwMi/27laFspG9qpzgSAbawN/ED7QnBO+U0hpnxG
-	 LFA0uJbGhw1pW/POX0b38EQ3j0phHc8IYJ0wH2JvEc55ePhydItMcvaMcw73nozIR
-	 VljjLyC1o9thRex55EAiqkM/ktNd4waGy65B8utZ8QvZfptwIKtQ/SzWtjs01fqxn
-	 5qwq0YRpFCkBNaAdLw==
+	b=s7oNQzo9gVk2QeS+PxNmAgZPtVt8Nq36hScAfZDVXkCAVv/jXFDJbld6W851SrWT
+	 RIBQwepWJtQlaAKdtZOac3y3FbDuj2Tf3OwTCuxoaiz7v2yHS4ztrvs+dFHCLupaq
+	 lM59JU3dT5hTmdi8y9BiDzKNgpW0/g65hPt6YKasdLCDWUQqkzNhdfLxemq8rLvmi
+	 HI5as5rc8Db+/xYoKPWAmlAA7fGLzdSmkBnenDkPRW/ABKiqDnIC5Q2CF5vWc+aRn
+	 cKsCzX3BfgawbEfwDVsIDc+1VtvztinlAVosfDC6XaXnEnYIN/C7tRHh/V6KZeMYA
+	 mOydpCBpoIorHBlFOA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MvsJ5-1umFOa0mnf-010XM6; Tue, 24
- Jun 2025 22:30:16 +0200
-Message-ID: <2e81c9bf-64ea-4d6b-a771-1befd4c319c8@gmx.com>
-Date: Wed, 25 Jun 2025 06:00:09 +0930
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1OXT-1urlzY2ZUh-00rEus; Tue, 24
+ Jun 2025 22:46:48 +0200
+Message-ID: <50f1f675-6046-49c0-842b-3f469735d25d@gmx.com>
+Date: Wed, 25 Jun 2025 06:16:44 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,14 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH next] btrfs: fix deadlock in btrfs_read_chunk_tree
-To: Edward Adam Davis <eadavis@qq.com>,
- syzbot+fa90fcaa28f5cd4b1fc1@syzkaller.appspotmail.com
-Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com, wqu@suse.com
-References: <685aa401.050a0220.2303ee.0009.GAE@google.com>
- <tencent_C857B761776286CB137A836B096C03A34405@qq.com>
+Subject: Re: [PATCH] btrfs: fix a stupid bug masked by CONFIG_BTRFS_DEBUG
+To: Naohiro Aota <Naohiro.Aota@wdc.com>, WenRuo Qu <wqu@suse.com>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <9b16023e2cb31b509405dd5525bbd5d19a2f384b.1750746917.git.wqu@suse.com>
+ <DAUST0RXUM9H.3ORVRVN7V3A4O@wdc.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -92,177 +89,208 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <tencent_C857B761776286CB137A836B096C03A34405@qq.com>
+In-Reply-To: <DAUST0RXUM9H.3ORVRVN7V3A4O@wdc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Nft31E/Dvu8u2s8Mb0y80JLUtB2Rc7+ngFWFR1R/cdI6YOEIVoI
- RERtNzL9FlyRNUkJQfaNM5T8XS8dFSWRy/fPeKdAVoZWzM9SeaFlMP+0poV+59jjghi+dWk
- py3t+KPWinbfA+MX1x+rA4Z3NdunttteGDBMnxmDNoNWBSp70bv+gkx+EsiDBzXP6ISsMeV
- 0AxbQtAH7gjSlFURRVjeQ==
+X-Provags-ID: V03:K1:o5f3GmUoR4CK/vW2gzahhX4aiOK7sX/Qu0kTXk1EE+cw3kd0sOU
+ qXweqgFPX0RDreBfktMYCRrP1GkZeHliyOW+gCIcjBO9XHbVbeFbH+p2cqsk58yJ2XaaL31
+ VGM+A4ICYUCV7vOIpKVYJqcLb1/pMIT7sukdvUcxFEhoOSm1In+i3Zbg5N3LhCTyt8Q0OAJ
+ phhCbbvTQ5ZFem9h0lD3Q==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:khRzlRoIn6k=;Mi4hfelf3kv27v1QO8fGhuWTSXS
- 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
+UI-OutboundReport: notjunk:1;M01:P0:o9oL72Pq4tc=;SbEOyXFdyzPFKzwpK+OX4iy3H9t
+ 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
 
 
 
-=E5=9C=A8 2025/6/25 00:00, Edward Adam Davis =E5=86=99=E9=81=93:
-> Remove the lock uuid_mutex outside of sget_fc() to avoid the deadlock
-> reported by [1].
+=E5=9C=A8 2025/6/24 22:59, Naohiro Aota =E5=86=99=E9=81=93:
+> On Tue Jun 24, 2025 at 3:35 PM JST, Qu Wenruo wrote:
+>> [BUG]
+>> Naohiro reported a weird bug that with CONFIG_BTRFS_DEBUG=3Dn and
+>> CONFIG_BTRFS_EXPERIMENTAL=3Dy, test case btrfs/005 will crash with the
+>> following call trace:
+>>
+>>   page: refcount:5 mapcount:0 mapping:00000000a5ae9eff index:0x1c pfn:0=
+x113658
+>>   head: order:2 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount=
+:0
+>>   memcg:ffff888116d31280
+>>   aops:btrfs_aops [btrfs] ino:101 dentry name(?):"tmp_file"
+>>   flags: 0x2ffff800000406c(referenced|uptodate|lru|private|head|node=3D=
+0|zone=3D2|lastcpupid=3D0x1ffff)
+>>   page dumped because: VM_BUG_ON_FOLIO(!folio_test_locked(folio))
+>>   ------------[ cut here ]------------
+>>   kernel BUG at mm/filemap.c:1498!
+>>   Oops: invalid opcode: 0000 [#1] SMP NOPTI
+>>   CPU: 9 UID: 0 PID: 264 Comm: kworker/u50:3 Not tainted 6.16.0-rc1-cus=
+tom+ #261 PREEMPT(full)
+>>   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 02/0=
+2/2022
+>>   Workqueue: btrfs-endio btrfs_end_bio_work [btrfs]
+>>   RIP: 0010:folio_unlock+0x42/0x50
+>>   Code: 37 01 78 05 c3 cc cc cc cc 31 f6 e9 38 fb ff ff 48 c7 c6 58 e6 =
+45 82 e8 4c 69 05 00 0f 0b 48 c7 c6 b8 f3 47 82 e8 3e 69 05 00 <0f> 0b 90 =
+66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90
+>>   Call Trace:
+>>    <TASK>
+>>    end_bbio_data_read+0x10d/0x4c0 [btrfs]
+>>    ? end_bbio_compressed_read+0x49/0x140 [btrfs]
+>>    end_bbio_compressed_read+0x56/0x140 [btrfs]
+>>    process_one_work+0x1ff/0x570
+>>    worker_thread+0x1cb/0x3a0
+>>    ? __pfx_worker_thread+0x10/0x10
+>>    kthread+0xff/0x260
+>>    ? ret_from_fork+0x1b/0x1b0
+>>    ? lock_release+0xdd/0x2e0
+>>    ? __pfx_kthread+0x10/0x10
+>>    ret_from_fork+0x161/0x1b0
+>>    ? __pfx_kthread+0x10/0x10
+>>    ret_from_fork_asm+0x1a/0x30
+>>    </TASK>
+>>
+>> [CAUSE]
+>> CONFIG_BTRFS_EXPERIMENTAL=3Dy enables the large data folio support for
+>> btrfs, as can be seen from the "order: 2" output.
+>>
+>> On the other hand function btrfs_is_subpage() checks if we need to go
+>> through the subpage routine.
+>>
+>> Meanwhile CONFIG_BTRFS_DEBUG enables another debug-only feature, 2k
+>> block size, making BTRFS_MIN_BLOCKSIZE to be 2K.
+>>
+>> And at compile time if page size is larger than the minimal block size,
+>> btrfs_is_subpage() will do the proper check.
+>> But if page size is no larger than minimal block size,
+>> btrfs_is_subpage() is hard coded to return false as we believe there is
+>> no need for subpage support.
+>>
+>> But CONFIG_BTRFS_EXPERIMENTAL enables large data folio support, and
+>> without CONFIG_BTRFS_DEBUG, btrfs_is_subpage() will always return false=
+,
+>> causing bugs when hitting a large folio.
+>>
+>> [FIX]
+>> Remove the PAGE_SIZE > BTRFS_MIN_BLOCKSIZE checks completely.
+>>
+>> This fix will be folded into the large data folio enablement patch.
+>>
+>> Reported-by: Naohiro Aota <Naohiro.Aota@wdc.com>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/subpage.h | 14 --------------
+>>   1 file changed, 14 deletions(-)
 >=20
-> [1]
-> -> #1 (&type->s_umount_key#41/1){+.+.}-{4:4}:
->         lock_acquire+0x120/0x360 kernel/locking/lockdep.c:5871
->         down_write_nested+0x9d/0x200 kernel/locking/rwsem.c:1693
->         alloc_super+0x204/0x970 fs/super.c:345
->         sget_fc+0x329/0xa40 fs/super.c:761
->         btrfs_get_tree_super fs/btrfs/super.c:1867 [inline]
->         btrfs_get_tree_subvol fs/btrfs/super.c:2059 [inline]
->         btrfs_get_tree+0x4c6/0x12d0 fs/btrfs/super.c:2093
->         vfs_get_tree+0x8f/0x2b0 fs/super.c:1804
->         do_new_mount+0x24a/0xa40 fs/namespace.c:3902
->         do_mount fs/namespace.c:4239 [inline]
->         __do_sys_mount fs/namespace.c:4450 [inline]
->         __se_sys_mount+0x317/0x410 fs/namespace.c:4427
->         do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->         do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
->         entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> I did a similar hack (putting "return fs_info->sectorsize <
+> folio_size(folio);" to btrfs_is_subpage() in the "#else" branch) and it
+> worked well. So, this patch itself seems fine.
 >=20
-> -> #0 (uuid_mutex){+.+.}-{4:4}:
->         check_prev_add kernel/locking/lockdep.c:3168 [inline]
->         check_prevs_add kernel/locking/lockdep.c:3287 [inline]
->         validate_chain+0xb9b/0x2140 kernel/locking/lockdep.c:3911
->         __lock_acquire+0xab9/0xd20 kernel/locking/lockdep.c:5240
->         lock_acquire+0x120/0x360 kernel/locking/lockdep.c:5871
->         __mutex_lock_common kernel/locking/mutex.c:602 [inline]
->         __mutex_lock+0x182/0xe80 kernel/locking/mutex.c:747
->         btrfs_read_chunk_tree+0xef/0x2170 fs/btrfs/volumes.c:7462
->         open_ctree+0x17f2/0x3a10 fs/btrfs/disk-io.c:3458
->         btrfs_fill_super fs/btrfs/super.c:984 [inline]
->         btrfs_get_tree_super fs/btrfs/super.c:1922 [inline]
->         btrfs_get_tree_subvol fs/btrfs/super.c:2059 [inline]
->         btrfs_get_tree+0xc6f/0x12d0 fs/btrfs/super.c:2093
->         vfs_get_tree+0x8f/0x2b0 fs/super.c:1804
->         do_new_mount+0x24a/0xa40 fs/namespace.c:3902
->         do_mount fs/namespace.c:4239 [inline]
->         __do_sys_mount fs/namespace.c:4450 [inline]
->         __se_sys_mount+0x317/0x410 fs/namespace.c:4427
->         do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->         do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
->         entry_SYSCALL_64_after_hwframe+0x77/0x7f
->=20
-> other info that might help us debug this:
->=20
->   Possible unsafe locking scenario:
->=20
->         CPU0                    CPU1
->         ----                    ----
->    lock(&type->s_umount_key#41/1);
->                                 lock(uuid_mutex);
->                                 lock(&type->s_umount_key#41/1);
->    lock(uuid_mutex);
->=20
->   *** DEADLOCK ***
->=20
-> Fixes: 7aacdf6feed1 ("btrfs: delay btrfs_open_devices() until super bloc=
-k is created")
-> Reported-by: syzbot+fa90fcaa28f5cd4b1fc1@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=3Dfa90fcaa28f5cd4b1fc1
-> Tested-by: syzbot+fa90fcaa28f5cd4b1fc1@syzkaller.appspotmail.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> ---
->   fs/btrfs/super.c | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
->=20
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 237e60b53192..c2ce1eb53ad7 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -1864,11 +1864,10 @@ static int btrfs_get_tree_super(struct fs_contex=
-t *fc)
->   	fs_devices =3D device->fs_devices;
->   	fs_info->fs_devices =3D fs_devices;
->  =20
-> +	mutex_unlock(&uuid_mutex);
+> But, doesn't this mean some code under "btrfs_is_subpage()" condition is
+> necessray even on the non-subpage setup? Then, should we promote the
+> code to the "normal" case, instead? Sorry if I get the "subpage" concept=
+ wrong.
 
-No, you can not unlock uuid_mutex without opening the devices.
+The name "subpage" is no longer proper with larger folios.
 
-Just run the test case generic/604.
+The original term "subpage" is there because at that time our target is=20
+still page, thus only when block size < page size needs the extra=20
+infrastructure to record per-block status.
 
->   	sb =3D sget_fc(fc, btrfs_fc_test_super, set_anon_super_fc);
-> -	if (IS_ERR(sb)) {
-> -		mutex_unlock(&uuid_mutex);
-> +	if (IS_ERR(sb))
->   		return PTR_ERR(sb);
-> -	}
->  =20
->   	set_device_specific_options(fs_info);
->  =20
-> @@ -1887,6 +1886,7 @@ static int btrfs_get_tree_super(struct fs_context =
-*fc)
->   		 * But the fs_info->fs_devices is not opened, we should not let
->   		 * btrfs_free_fs_context() to close them.
->   		 */
-> +		mutex_lock(&uuid_mutex);
->   		fs_info->fs_devices =3D NULL;
->   		mutex_unlock(&uuid_mutex);
->  =20
-> @@ -1906,6 +1906,7 @@ static int btrfs_get_tree_super(struct fs_context =
-*fc)
->   		 */
->   		ASSERT(fc->s_fs_info =3D=3D NULL);
->  =20
-> +		mutex_lock(&uuid_mutex);
->   		ret =3D btrfs_open_devices(fs_devices, mode, sb);
->   		mutex_unlock(&uuid_mutex);
->   		if (ret < 0) {
+But with large folios, even if block size =3D=3D page size, we can still=
+=20
+have a large folio covering multiple pages, and we need the=20
+infrastructures to track per-block status inside a large folio.
 
+The more correct term would be "subfolio", but that also implies a folio=
+=20
+can be larger than a page.
+
+Hopes this would resolve your concern.
+
+Thanks,
+Qu
+
+>=20
+>>
+>> diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+>> index 7889a97365f0..453857f6c14d 100644
+>> --- a/fs/btrfs/subpage.h
+>> +++ b/fs/btrfs/subpage.h
+>> @@ -93,7 +93,6 @@ enum btrfs_folio_type {
+>>   	BTRFS_SUBPAGE_DATA,
+>>   };
+>>  =20
+>> -#if PAGE_SIZE > BTRFS_MIN_BLOCKSIZE
+>>   /*
+>>    * Subpage support for metadata is more complex, as we can have dummy=
+ extent
+>>    * buffers, where folios have no mapping to determine the owning inod=
+e.
+>> @@ -114,19 +113,6 @@ static inline bool btrfs_is_subpage(const struct b=
+trfs_fs_info *fs_info,
+>>   		ASSERT(is_data_inode(BTRFS_I(folio->mapping->host)));
+>>   	return fs_info->sectorsize < folio_size(folio);
+>>   }
+>> -#else
+>> -static inline bool btrfs_meta_is_subpage(const struct btrfs_fs_info *f=
+s_info)
+>> -{
+>> -	return false;
+>> -}
+>> -static inline bool btrfs_is_subpage(const struct btrfs_fs_info *fs_inf=
+o,
+>> -				    struct folio *folio)
+>> -{
+>> -	if (folio->mapping && folio->mapping->host)
+>> -		ASSERT(is_data_inode(BTRFS_I(folio->mapping->host)));
+>> -	return false;
+>> -}
+>> -#endif
+>>  =20
+>>   int btrfs_attach_folio_state(const struct btrfs_fs_info *fs_info,
+>>   			     struct folio *folio, enum btrfs_folio_type type);
 
 
