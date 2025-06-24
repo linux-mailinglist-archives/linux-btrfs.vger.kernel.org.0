@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-14921-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14922-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76CFDAE69DC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 16:58:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2112EAE69B7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 16:55:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E55D1C2827A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 14:49:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3DF24E12DF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 14:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9F22E0B75;
-	Tue, 24 Jun 2025 14:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9002E0B7F;
+	Tue, 24 Jun 2025 14:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hu1L22E3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fFt0xw+S"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1A92E0B6D
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Jun 2025 14:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F7042D8797
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Jun 2025 14:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750776152; cv=none; b=NvbQZKr2Z0tDE5/6sHV4pr7Sa7dpXbj2osi0cQWSmn9cmp/56juk//Fb+Pm2dcDwe7Um9AV2k73/pusuI9curH67ahzCvMoLPBTrHrE4WR1oqYs8g+jSZtVAdI8NdH4R5SsWOAgXwqDkCmxOWRr7cBYVX+8f/JlPfRi3ORGoiC8=
+	t=1750776153; cv=none; b=QcDjDfSSnKcKcEaZFsvF/htNBO4CJCtOhDD79ONOihnCE8SI8Ot3HeTblf/b3xUyj8gaeIXvj6trintljoeUtjy2ocJqozrVrszOihTc/shr/X7PJM0ZJygNfYa5joIDPFMiuAqYD0GhxUrmltopEssgvc/SdrEOoNc8Cd0Cn/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750776152; c=relaxed/simple;
-	bh=rK4jodbkLYE4WYwwIOkGFnckgPjP/CJ0qpudhvruQo4=;
+	s=arc-20240116; t=1750776153; c=relaxed/simple;
+	bh=keus9Q4wu97LRI7vAaAE4QOsbeadLpH0trEx2AxGxUI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t9hNMgoaDRTV3E20lZ320Y8XotBcfu9A1CfdhZpH6cjqFRT5zcFHffu9iKDHhw8nmnVxgweQADtKBVTBSrpUUyUAMV4bGMn4Ye5b2jYVJJIiL38CIjIsMppPocMVfso8sJE/zJAj/Wnzc4xMAw5lNZ/uU/De7f2bvp3vv8Oxf3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hu1L22E3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D9D9C4CEE3
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Jun 2025 14:42:31 +0000 (UTC)
+	 MIME-Version; b=qNMKvzOqYVrMbpqMQRlX0EypSg+PZB9y2KwrMM/YRLg8H2piC+mSz51GrxuWvuTkx6AqLXchiNNr4rgyMkRi1T5ByAl7gewdQhOf5OqXy8K5JTAMWUBDLTb1OkPEng0fIvLxQFRBmDhS6zIlIVuSZXi6ywVzUhIirPrULiAv2OU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fFt0xw+S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D901C4CEEE
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Jun 2025 14:42:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750776151;
-	bh=rK4jodbkLYE4WYwwIOkGFnckgPjP/CJ0qpudhvruQo4=;
+	s=k20201202; t=1750776152;
+	bh=keus9Q4wu97LRI7vAaAE4QOsbeadLpH0trEx2AxGxUI=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=hu1L22E3LAzM/k4XMDyOeQ1QB1n5XqjvPB3gFeaYHCDdLx/i4DKdM9OMUxmPdW1SL
-	 qy4ckbUQx1qVC9+n6RDDjcqC5ldBHnIA8Vm0MLOnOtbzf0wcVIxFJH1+Rc5Kuq7246
-	 KYVcfzgfdlighZeXLkAYwD/iUh6eKhDMOMleSSALTxmyMFGpUH/ZgI/83fyVSc0b9s
-	 QMsE5xlP/JUm8xhW8AF4VsyfURGhxelp9IBXhlDR5TH3by05NfgVTB2jUeLsXO4aGB
-	 +s0BZf0DB0HeIq5VnNgvG/KI2BhbdZ21G0wcQMm0ZqKbx0xMD535eePH4b3yHuPTvf
-	 ywNjAshltyKWg==
+	b=fFt0xw+S7ztLiorwT0js0pr8063JXJ7OOZnD/FqM1OyKz27GHDMBhAeXryuSbEAOb
+	 Ju4OfAqpB8zt/mTlXZ9uHFdyNXdDwYW/o5wbLG2MT+2WtJi7uHdxeFLHsi8mA01kEt
+	 m2Ij27yyablc5p5Wf6KB5WhFQBd9X2s23y6ASLlHotQJKunjcZWr6ekthMhzQayyZ1
+	 IPiaZRiinYGQhdreZdyhJY2hUlPFId4I9IaoAK4pWprSu9Dp+PljIRhFGSuA8JCC4F
+	 v0aDwvnmGqYwKXxnnsjzRVJeKa5F+s4tA1Nfzj+ve+TFGv2aJV0q8Pbu5EAfe2Fo2i
+	 vQ/2rlumtVvHQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 05/12] btrfs: propagate last_unlink_trans earlier when doing a rmdir
-Date: Tue, 24 Jun 2025 15:42:15 +0100
-Message-ID: <cb814b7a99065d951af9ae37b31a986e6c4eb3aa.1750709411.git.fdmanana@suse.com>
+Subject: [PATCH 06/12] btrfs: use btrfs_record_snapshot_destroy() during rmdir
+Date: Tue, 24 Jun 2025 15:42:16 +0100
+Message-ID: <cfd83c633ff032b9eabe4e71ec829151461bf168.1750709411.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1750709410.git.fdmanana@suse.com>
 References: <cover.1750709410.git.fdmanana@suse.com>
@@ -59,91 +59,37 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-In case the removed directory had a snapshot that was deleted, we are
-propagating its inode's last_unlink_trans to the parent directory after
-we removed the entry from the parent directory. This leaves a small race
-window where someone can log the parent directory after we removed the
-entry and before we updated last_unlink_trans, and as a result if we ever
-try to replay such a log tree, we will fail since we will attempt to
-remove a snapshot during log replay, which is currently not possible and
-results in the log replay (and mount) to fail. This is the type of failure
-described in commit 1ec9a1ae1e30 ("Btrfs: fix unreplayable log after
-snapshot delete + parent dir fsync").
+We are setting the parent directory's last_unlink_trans directly which
+may result in a concurrent task starting to log the directory not see the
+update and therefore can log the directory after we removed a child
+directory which had a snapshot within instead of falling back to a
+transaction commit. Replaying such a log tree would result in a mount
+failure since we can't currently delete snapshots (and subvolumes) during
+log replay. This is the type of failure described in commit 1ec9a1ae1e30
+("Btrfs: fix unreplayable log after snapshot delete + parent dir fsync").
 
-So fix this by propagating the last_unlink_trans to the parent directory
-before we remove the entry from it.
+Fix this by using btrfs_record_snapshot_destroy() which updates the
+last_unlink_trans field while holding the inode's log_mutex lock.
 
 Fixes: 44f714dae50a ("Btrfs: improve performance on fsync against new inode after rename/unlink")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+ fs/btrfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 80c72c594b19..252271cbde28 100644
+index 252271cbde28..12141348236d 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -4707,7 +4707,6 @@ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
- 	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
- 	int ret = 0;
- 	struct btrfs_trans_handle *trans;
--	u64 last_unlink_trans;
- 	struct fscrypt_name fname;
+@@ -4747,7 +4747,7 @@ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
+ 	 * deletes for directory foo.
+ 	 */
+ 	if (BTRFS_I(inode)->last_unlink_trans >= trans->transid)
+-		BTRFS_I(dir)->last_unlink_trans = BTRFS_I(inode)->last_unlink_trans;
++		btrfs_record_snapshot_destroy(trans, BTRFS_I(dir));
  
- 	if (inode->i_size > BTRFS_EMPTY_DIR_SIZE)
-@@ -4733,6 +4732,23 @@ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
- 		goto out_notrans;
- 	}
- 
-+	/*
-+	 * Propagate the last_unlink_trans value of the deleted dir to its
-+	 * parent directory. This is to prevent an unrecoverable log tree in the
-+	 * case we do something like this:
-+	 * 1) create dir foo
-+	 * 2) create snapshot under dir foo
-+	 * 3) delete the snapshot
-+	 * 4) rmdir foo
-+	 * 5) mkdir foo
-+	 * 6) fsync foo or some file inside foo
-+	 *
-+	 * This is because we can't unlink other roots when replaying the dir
-+	 * deletes for directory foo.
-+	 */
-+	if (BTRFS_I(inode)->last_unlink_trans >= trans->transid)
-+		BTRFS_I(dir)->last_unlink_trans = BTRFS_I(inode)->last_unlink_trans;
-+
  	if (unlikely(btrfs_ino(BTRFS_I(inode)) == BTRFS_EMPTY_SUBVOL_DIR_OBJECTID)) {
  		ret = btrfs_unlink_subvol(trans, BTRFS_I(dir), dentry);
- 		goto out;
-@@ -4742,27 +4758,11 @@ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
- 	if (ret)
- 		goto out;
- 
--	last_unlink_trans = BTRFS_I(inode)->last_unlink_trans;
--
- 	/* now the directory is empty */
- 	ret = btrfs_unlink_inode(trans, BTRFS_I(dir), BTRFS_I(d_inode(dentry)),
- 				 &fname.disk_name);
--	if (!ret) {
-+	if (!ret)
- 		btrfs_i_size_write(BTRFS_I(inode), 0);
--		/*
--		 * Propagate the last_unlink_trans value of the deleted dir to
--		 * its parent directory. This is to prevent an unrecoverable
--		 * log tree in the case we do something like this:
--		 * 1) create dir foo
--		 * 2) create snapshot under dir foo
--		 * 3) delete the snapshot
--		 * 4) rmdir foo
--		 * 5) mkdir foo
--		 * 6) fsync foo or some file inside foo
--		 */
--		if (last_unlink_trans >= trans->transid)
--			BTRFS_I(dir)->last_unlink_trans = last_unlink_trans;
--	}
- out:
- 	btrfs_end_transaction(trans);
- out_notrans:
 -- 
 2.47.2
 
