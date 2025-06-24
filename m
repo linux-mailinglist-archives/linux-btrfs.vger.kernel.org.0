@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-14930-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14931-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D984BAE7103
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 22:47:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 186FEAE7145
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 23:06:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72B7A1BC034C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 20:47:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E193E3BEDF6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 21:06:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE01257430;
-	Tue, 24 Jun 2025 20:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9536B256C8A;
+	Tue, 24 Jun 2025 21:06:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="s7oNQzo9"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="kKPZ1RKT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0882405E8
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Jun 2025 20:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4994C3074B5;
+	Tue, 24 Jun 2025 21:06:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750798013; cv=none; b=DTvgdv2K981BZH/H1vGOiaNdFr5sYYOgnDwy9CUBXR6kNWtmZFcgr6M4/D8+Tys5WlKd8PjPgS652nKdEKoWiX1VPm3/QVV1TXsuS1+sc1hvdYZB244JFo0YGMzr65i2jeFiydbWmUNzhZs0SpEJn0/t8vS30m3IADV/9da3rXs=
+	t=1750799207; cv=none; b=KQx131SWFTY8PZyYbCyvIdmJ6Hyg/Vk+bwHJ38fB3PJiF8QqV9O7uKhUfffEHxz8uUJygC8tOlTSpJfrfz1RjMOlSYMbcWoHlGmRHHOexZFU8yDUHmfYT7y+zHG88Z/GntsFilQKfxqmmF3TSCQC4OGgtcO1d2xBLIy+ogvtTZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750798013; c=relaxed/simple;
-	bh=8BYx6DYRSZx7EcYxnS/2MYddK6DZJaIb0zwldr1WLRY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=nChP0iZnhA55vjT+5AMdM1zQIK5yFCMsRiLickW4J3CItVAAqH8+YIQUIyvHeBNcmiRIsDGuEPOovIetolFbO9rer3on6MmxGqqSqF0yNEsZqZxuDlg994EBnOKECLnrK8H/qbBZmZrhAwiQVmxaDdQqYQ4aQ3BL3txmCEDj+Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=s7oNQzo9; arc=none smtp.client-ip=212.227.17.21
+	s=arc-20240116; t=1750799207; c=relaxed/simple;
+	bh=iH00NOPoob99oB2CH7I7kejxKqjAwcBvjTKajO6HZmE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CCPMeWKWG31g6vKGS6BtjkHqPBekopUkb1g7qeE5zHSQBSZnzGfGSVnJCh8Ifhonk62VEcmV3yfv2qPjpvTwLnlHLFKXh2RjLZvbbvvcgw/DAJfMbD2eRdoAv+3pZ3DV61AVXjouFRc9sOzR1/nV+uppMMfOMA0Vp1D7JQwwVTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=kKPZ1RKT; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1750798008; x=1751402808; i=quwenruo.btrfs@gmx.com;
-	bh=1/P6jmJmB6bzxQRkVRGCHOcs0bgXzvk/xe/5knj0P8s=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	s=s31663417; t=1750799183; x=1751403983; i=quwenruo.btrfs@gmx.com;
+	bh=iH00NOPoob99oB2CH7I7kejxKqjAwcBvjTKajO6HZmE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=s7oNQzo9gVk2QeS+PxNmAgZPtVt8Nq36hScAfZDVXkCAVv/jXFDJbld6W851SrWT
-	 RIBQwepWJtQlaAKdtZOac3y3FbDuj2Tf3OwTCuxoaiz7v2yHS4ztrvs+dFHCLupaq
-	 lM59JU3dT5hTmdi8y9BiDzKNgpW0/g65hPt6YKasdLCDWUQqkzNhdfLxemq8rLvmi
-	 HI5as5rc8Db+/xYoKPWAmlAA7fGLzdSmkBnenDkPRW/ABKiqDnIC5Q2CF5vWc+aRn
-	 cKsCzX3BfgawbEfwDVsIDc+1VtvztinlAVosfDC6XaXnEnYIN/C7tRHh/V6KZeMYA
-	 mOydpCBpoIorHBlFOA==
+	b=kKPZ1RKTKIVa3RHip9cPjvLKKtrInoy8x+P0epMA+DSpW1VVQnVgoerymJ2n0Cro
+	 85XEbn1R0QhEK4kBxR9PZwm8G+RD1VHHFv0phVg1978q/D97hCZvqSefk4IU9Alto
+	 UnQ+QGFPqLxLujgetNZC/qNhWCmQEznNVBtmA39Df5VnmcIzt9DRn28Z4+Y4YPMxd
+	 NjzkVD7xCeQmR2553MLvyVGMpzo9ZfC8I1nYVjvnxIsNMuPoYJGQJbiaXvEH89utH
+	 4DkpTaTZcHNomVHGDWzpMHyrDDVc6Qtqg2HWm9POb3xs1X3Is6ATpFCJARJATWybL
+	 eNGwQZpl8zuoJDQDTg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1OXT-1urlzY2ZUh-00rEus; Tue, 24
- Jun 2025 22:46:48 +0200
-Message-ID: <50f1f675-6046-49c0-842b-3f469735d25d@gmx.com>
-Date: Wed, 25 Jun 2025 06:16:44 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7zBb-1upZIC0tjn-00xodJ; Tue, 24
+ Jun 2025 23:06:23 +0200
+Message-ID: <eed720e5-2b1a-4177-bb5b-ef5c2cee955a@gmx.com>
+Date: Wed, 25 Jun 2025 06:36:19 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,23 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix a stupid bug masked by CONFIG_BTRFS_DEBUG
-To: Naohiro Aota <Naohiro.Aota@wdc.com>, WenRuo Qu <wqu@suse.com>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <9b16023e2cb31b509405dd5525bbd5d19a2f384b.1750746917.git.wqu@suse.com>
- <DAUST0RXUM9H.3ORVRVN7V3A4O@wdc.com>
+Subject: Re: [PATCH RFC 5/6] fs: introduce a shutdown_bdev super block
+ operation
+To: Christian Brauner <brauner@kernel.org>, Qu Wenruo <wqu@suse.com>
+Cc: Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+ linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ viro@zeniv.linux.org.uk
+References: <ef624790b57b76be25720e4a8021d7f5f03166cb.1750397889.git.wqu@suse.com>
+ <wmvb4bnsz5bafoyu5mp33csjk4bcs63jemzi2cuqjzfy3rwogw@4t6fizv5ypna>
+ <aFji5yfAvEeuwvXF@infradead.org>
+ <20250623-worte-idolisieren-75354608512a@brauner>
+ <aFldWPte-CK2PKSM@infradead.org>
+ <84d61295-9c4a-41e8-80f0-dcf56814d0ae@suse.com>
+ <20250624-geerntet-haare-2ce4cc42b026@brauner>
+ <8db82a80-242f-41ff-84b8-601d6dcd9b9d@suse.com>
+ <20250624-briefe-hassen-f693b4fe3501@brauner>
+ <abe98c94-b4e0-446b-90e7-c9cdb1c9d197@suse.com>
+ <20250624-goldschatz-wohnviertel-aeb3209ad47b@brauner>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,208 +101,200 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <DAUST0RXUM9H.3ORVRVN7V3A4O@wdc.com>
+In-Reply-To: <20250624-goldschatz-wohnviertel-aeb3209ad47b@brauner>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:o5f3GmUoR4CK/vW2gzahhX4aiOK7sX/Qu0kTXk1EE+cw3kd0sOU
- qXweqgFPX0RDreBfktMYCRrP1GkZeHliyOW+gCIcjBO9XHbVbeFbH+p2cqsk58yJ2XaaL31
- VGM+A4ICYUCV7vOIpKVYJqcLb1/pMIT7sukdvUcxFEhoOSm1In+i3Zbg5N3LhCTyt8Q0OAJ
- phhCbbvTQ5ZFem9h0lD3Q==
+X-Provags-ID: V03:K1:cdt/DUn6N4zcedTbz7fm6jK+XaB4uzE3gR/atOE8URxE58Ac7Ly
+ uB7cfilVsvOFkxrL0Ex2bnKypLHFwqSYF4MJVlzeJhco0V6b8wKZMpefx46gReBQl5e5Gud
+ ZbLyp0sfiEG/AjQ0pGlvNmGq2LZl1ngStaIIFBPACTjcbgVDy0Y7yW9F0d5dBGH2zepezzF
+ ZCMj9HSqRCjGLWUVuLpBg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:o9oL72Pq4tc=;SbEOyXFdyzPFKzwpK+OX4iy3H9t
- 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
+UI-OutboundReport: notjunk:1;M01:P0:cmmOsiyoerg=;WxAjMuCLMTWLaKMDCZOQiDFGlIQ
+ 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
+ tcE+Vy/qoDbCgyF9iALWW7CnojCQw==
 
 
 
-=E5=9C=A8 2025/6/24 22:59, Naohiro Aota =E5=86=99=E9=81=93:
-> On Tue Jun 24, 2025 at 3:35 PM JST, Qu Wenruo wrote:
->> [BUG]
->> Naohiro reported a weird bug that with CONFIG_BTRFS_DEBUG=3Dn and
->> CONFIG_BTRFS_EXPERIMENTAL=3Dy, test case btrfs/005 will crash with the
->> following call trace:
+=E5=9C=A8 2025/6/24 19:45, Christian Brauner =E5=86=99=E9=81=93:
+> On Tue, Jun 24, 2025 at 07:21:50PM +0930, Qu Wenruo wrote:
 >>
->>   page: refcount:5 mapcount:0 mapping:00000000a5ae9eff index:0x1c pfn:0=
-x113658
->>   head: order:2 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount=
-:0
->>   memcg:ffff888116d31280
->>   aops:btrfs_aops [btrfs] ino:101 dentry name(?):"tmp_file"
->>   flags: 0x2ffff800000406c(referenced|uptodate|lru|private|head|node=3D=
-0|zone=3D2|lastcpupid=3D0x1ffff)
->>   page dumped because: VM_BUG_ON_FOLIO(!folio_test_locked(folio))
->>   ------------[ cut here ]------------
->>   kernel BUG at mm/filemap.c:1498!
->>   Oops: invalid opcode: 0000 [#1] SMP NOPTI
->>   CPU: 9 UID: 0 PID: 264 Comm: kworker/u50:3 Not tainted 6.16.0-rc1-cus=
-tom+ #261 PREEMPT(full)
->>   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 02/0=
-2/2022
->>   Workqueue: btrfs-endio btrfs_end_bio_work [btrfs]
->>   RIP: 0010:folio_unlock+0x42/0x50
->>   Code: 37 01 78 05 c3 cc cc cc cc 31 f6 e9 38 fb ff ff 48 c7 c6 58 e6 =
-45 82 e8 4c 69 05 00 0f 0b 48 c7 c6 b8 f3 47 82 e8 3e 69 05 00 <0f> 0b 90 =
-66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90
->>   Call Trace:
->>    <TASK>
->>    end_bbio_data_read+0x10d/0x4c0 [btrfs]
->>    ? end_bbio_compressed_read+0x49/0x140 [btrfs]
->>    end_bbio_compressed_read+0x56/0x140 [btrfs]
->>    process_one_work+0x1ff/0x570
->>    worker_thread+0x1cb/0x3a0
->>    ? __pfx_worker_thread+0x10/0x10
->>    kthread+0xff/0x260
->>    ? ret_from_fork+0x1b/0x1b0
->>    ? lock_release+0xdd/0x2e0
->>    ? __pfx_kthread+0x10/0x10
->>    ret_from_fork+0x161/0x1b0
->>    ? __pfx_kthread+0x10/0x10
->>    ret_from_fork_asm+0x1a/0x30
->>    </TASK>
 >>
->> [CAUSE]
->> CONFIG_BTRFS_EXPERIMENTAL=3Dy enables the large data folio support for
->> btrfs, as can be seen from the "order: 2" output.
+>> =E5=9C=A8 2025/6/24 18:43, Christian Brauner =E5=86=99=E9=81=93:
+>> [...]
+>>>> It's not hard for btrfs to provide it, we already have a check functi=
+on
+>>>> btrfs_check_rw_degradable() to do that.
+>>>>
+>>>> Although I'd say, that will be something way down the road.
+>>>
+>>> Yes, for sure. I think long-term we should hoist at least the bare
+>>> infrastructure for multi-device filesystem management into the VFS.
 >>
->> On the other hand function btrfs_is_subpage() checks if we need to go
->> through the subpage routine.
->>
->> Meanwhile CONFIG_BTRFS_DEBUG enables another debug-only feature, 2k
->> block size, making BTRFS_MIN_BLOCKSIZE to be 2K.
->>
->> And at compile time if page size is larger than the minimal block size,
->> btrfs_is_subpage() will do the proper check.
->> But if page size is no larger than minimal block size,
->> btrfs_is_subpage() is hard coded to return false as we believe there is
->> no need for subpage support.
->>
->> But CONFIG_BTRFS_EXPERIMENTAL enables large data folio support, and
->> without CONFIG_BTRFS_DEBUG, btrfs_is_subpage() will always return false=
-,
->> causing bugs when hitting a large folio.
->>
->> [FIX]
->> Remove the PAGE_SIZE > BTRFS_MIN_BLOCKSIZE checks completely.
->>
->> This fix will be folded into the large data folio enablement patch.
->>
->> Reported-by: Naohiro Aota <Naohiro.Aota@wdc.com>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/subpage.h | 14 --------------
->>   1 file changed, 14 deletions(-)
+>> Just want to mention that, "multi-device filesystem" already includes f=
+ses
+>> with external journal.
 >=20
-> I did a similar hack (putting "return fs_info->sectorsize <
-> folio_size(folio);" to btrfs_is_subpage() in the "#else" branch) and it
-> worked well. So, this patch itself seems fine.
+> Yes, that's what I meant below by "We've already done a bit of that".
+> It's now possible to actually reach all devices associted with a
+> filesystem from the block layer. It works for xfs and ext4 with
+> journal fileystems. So for example, you can freeze the log device and
+> the main device as the block layer is now able to find both and the fs
+> stays frozen until both have been unfrozen. This wasn't possible before
+> the rework we did.
 >=20
-> But, doesn't this mean some code under "btrfs_is_subpage()" condition is
-> necessray even on the non-subpage setup? Then, should we promote the
-> code to the "normal" case, instead? Sorry if I get the "subpage" concept=
- wrong.
+> Now follows a tiny rant not targeted at you specifically but something
+> that still bugs me in general:
+>=20
+> We had worked on extending this to btrfs so that it's all integrated
+> properly with the block layer. And we heard long promises of how you
+> would make that switch happen but refused us to let us make that switch.
+> So now it's 2 years later and zero happend in that area.
 
-The name "subpage" is no longer proper with larger folios.
-
-The original term "subpage" is there because at that time our target is=20
-still page, thus only when block size < page size needs the extra=20
-infrastructure to record per-block status.
-
-But with large folios, even if block size =3D=3D page size, we can still=
+I believe we (the btrfs community) are not intentionally rejecting this,=
 =20
-have a large folio covering multiple pages, and we need the=20
-infrastructures to track per-block status inside a large folio.
-
-The more correct term would be "subfolio", but that also implies a folio=
+bad luck and lack of review bandwidth is involved, as at that time we're=
 =20
-can be larger than a page.
+focusing on migrating to the new fsconfig mount interface.
 
-Hopes this would resolve your concern.
+That delayed review of the original patchset from Christoph, then the=20
+old series no longer applies due to the fsconfig change, until Johannes=20
+revived the series for the first time.
+
+Then even more (minor) conflicts with recent mount ro/rw mount fixes,=20
+and although Johannes tried his best to refresh the series, those=20
+conflicts eventually resulted test failures.
+
+
+And I wasn't even following all those updates, until one day I'm=20
+eventually freed from btrfs large folio support, and had time to attack=20
+the long failure generic/730 due to lack of shutdown support.
+
+Then I was dragged into the rabbit hole and finally we're here.
+
+
+Also I have to admit, at least me do not have much experience in the=20
+block/VFS field, and sometimes we still assume the existing=20
+infrastructure is still mostly targeting single-ish block device=20
+filesystems, but it's not true anymore.
+
+We're improving this, and got quite some help from Christoph, e.g. he=20
+contributed the btrfs bio layer to do all the bio split/chain inside btrfs=
+.
+
+I hope this remove_bdev() call back can be a good start point to bridge=20
+the btrfs and block community closer.
+
+>=20
+> That also means block device freezing on btrfs is broken. If you freeze
+> a block device used by btrfs via the dm (even though unlikely) layer you
+> freeze the block device without btrfs being informed about that.
+
+Yes, you're totally right and I also believe that may be the reason of=20
+btrfs corruption after hibernation/suspension.
+
+>=20
+> It also means that block device removal is likely a bit yanky because
+> btrfs won't be notified when any device other than the main device is
+> suddenly yanked. You probably have logic there but the block layer can
+> easily inform the filesystem about such an event nowadays and let it
+> take appropriate action.
+
+Yep, btrfs doesn't handling removal of devices at runtime at all, but=20
+still tries to do IO on that device, only saved by the extra mirrors.
+
+Meaning unless a user is monitoring the dmesg, one won't notice the=20
+problem, which a huge degradation of availability happening silently.
+
+>=20
+> And fwiw, you also don't restrict writing to mounted block devices.
+> That's another thing you blocked us from implementing even though we
+> sent the changes for that already and so we disabled that in
+> ead622674df5 ("btrfs: Do not restrict writes to btrfs devices"). So
+> you're also still vulnerable to that stuff.
+
+Oh, that's something new and let me explore this after all the=20
+remove_bdev() callback thing.
 
 Thanks,
 Qu
 
 >=20
 >>
->> diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
->> index 7889a97365f0..453857f6c14d 100644
->> --- a/fs/btrfs/subpage.h
->> +++ b/fs/btrfs/subpage.h
->> @@ -93,7 +93,6 @@ enum btrfs_folio_type {
->>   	BTRFS_SUBPAGE_DATA,
->>   };
->>  =20
->> -#if PAGE_SIZE > BTRFS_MIN_BLOCKSIZE
->>   /*
->>    * Subpage support for metadata is more complex, as we can have dummy=
- extent
->>    * buffers, where folios have no mapping to determine the owning inod=
-e.
->> @@ -114,19 +113,6 @@ static inline bool btrfs_is_subpage(const struct b=
-trfs_fs_info *fs_info,
->>   		ASSERT(is_data_inode(BTRFS_I(folio->mapping->host)));
->>   	return fs_info->sectorsize < folio_size(folio);
->>   }
->> -#else
->> -static inline bool btrfs_meta_is_subpage(const struct btrfs_fs_info *f=
-s_info)
->> -{
->> -	return false;
->> -}
->> -static inline bool btrfs_is_subpage(const struct btrfs_fs_info *fs_inf=
-o,
->> -				    struct folio *folio)
->> -{
->> -	if (folio->mapping && folio->mapping->host)
->> -		ASSERT(is_data_inode(BTRFS_I(folio->mapping->host)));
->> -	return false;
->> -}
->> -#endif
->>  =20
->>   int btrfs_attach_folio_state(const struct btrfs_fs_info *fs_info,
->>   			     struct folio *folio, enum btrfs_folio_type type);
+>> Thus the new callback may be a good chance for those mature fses to exp=
+lore
+>> some corner case availability improvement, e.g. the loss of the externa=
+l
+>> journal device while there is no live journal on it.
+>=20
+> Already handled for xfs and ext4 cleanly since our rework iiuc.
+>=20
+>> (I have to admin it's super niche, and live-migration to internal journ=
+al
+>> may be way more complex than my uneducated guess)
+>>
+>> Thanks,
+>> Qu
+>>
+>>> Or we should at least explore whether that's feasible and if it's
+>>> overall advantageous to maintenance and standardization. We've already
+>>> done a bit of that and imho it's now a lot easier to reason about the
+>>> basics already.
+>>>
+>>>>
+>>>> We even don't have a proper way to let end user configure the device =
+loss
+>>>> behavior.
+>>>> E.g. some end users may prefer a full shutdown to be extra cautious, =
+other
+>>>> than continue degraded.
+>>>
+>>> Right.
+>>
+>=20
 
 
