@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-14926-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14925-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18A61AE69B8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 16:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 982A8AE69C7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 16:56:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A7793B9F4A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 14:48:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 635F36A43AE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Jun 2025 14:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185672E11AC;
-	Tue, 24 Jun 2025 14:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981922E11C5;
+	Tue, 24 Jun 2025 14:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VVFjO3JG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bF1p2Dnn"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C86E2E11BE
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Jun 2025 14:42:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD3AC2E11B0
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Jun 2025 14:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750776157; cv=none; b=eqDTaPj5kQQd3E50rkEeqxE7QZOjJciKHYr/ROVS6giIthOvJckxB+g+Ml/MZIXIwJWO5t4W2TB2XoTXU2KOfSYCHabXcz68DOi4E1q3AkDoURXtt9GcV0uO376g+BoSao+nj4DUTGUlB3IUIVqTdFAwrz/58M6d8furTcHXkuo=
+	t=1750776156; cv=none; b=kzf7dLZX0+M5zvKxnMMecytlv4EM4hfGx44dgH8Yrlt81MmC6EMMe4da/3D2HHGFWlZq80KDQYrWgEKnW8UkG7yI0NcWJ9JWVoIc1gVW7UhziItqq+lrkkEBfZJEx/B7OZ4WnuS54offhSpgPNPbOGi5pJCDByDlrPVCcjmN7CE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750776157; c=relaxed/simple;
-	bh=HlEenotTioa0WaIyHRbQydM4zRzLWnCcyGgORc/NpX4=;
+	s=arc-20240116; t=1750776156; c=relaxed/simple;
+	bh=mcBY3+1bUfxAcupfVTQzMW06RSO+kYfl1Fen6k55KcI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p5v0mhtTwYvgyiGIYERWpIA9q5LVVsDbjidhlxZtJ/hGG1FwnWDjW5D4lGugmoYyX0xnFzlnPRqx+tM6OxUJyPCCYhV4kLzIYJMGeOTQrRr49ACN0mDlI4c5WeEzJ5S7Av3XlETvYpRdKm4Md9NlmduCXLQQTZW6kF3Pt9y8+uU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VVFjO3JG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C94BC4CEEE
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Jun 2025 14:42:35 +0000 (UTC)
+	 MIME-Version; b=FoH2dwyS8ARaIBQdF+G9IfvveCPQPf6FTmncj1OhXkb/Qj7SriOSxWRvw9a9QgsVi+AnswxSfXBXiij/Qkor9KQGIUks0nY3Qzx2MN8lJQXyZeIQJWoN/Dqa1zJ/ZLDy8VF4s9Z5RLRWe75x++/0u2azFCdVposDeyWevDbOGXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bF1p2Dnn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B9B8C4CEE3
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Jun 2025 14:42:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750776155;
-	bh=HlEenotTioa0WaIyHRbQydM4zRzLWnCcyGgORc/NpX4=;
+	s=k20201202; t=1750776156;
+	bh=mcBY3+1bUfxAcupfVTQzMW06RSO+kYfl1Fen6k55KcI=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=VVFjO3JGTLsER/3V75/u/C9XOKfkfGehc4Cxn/Hagxni99jJSLkM8A+HIuslKiPzx
-	 eM3Jwfm+AAZFciWTysE4gu3eONIXC8PjrB3YXuXbjJObfVnVSow/U6h3Hz8Evo/Oig
-	 44oPanN1p7RthMKs8wQ5HpEPnka6BVK83rIifZTqNBiT3nC1Wfzu5vkWODf8XDIMJQ
-	 Gy+g4xuu6uy9mph3WuEt2owGnk9LV0xcCvHAgJkj28nMYCP5sXK3RBxJR6rTbwfPBU
-	 x46qNUwpyeh9TKrX/mNafC8uykQ80FyX2/cUkn8mB0l2om4oNRWRy6VZd0kP25IDVu
-	 mQ8wcmPl8eUmg==
+	b=bF1p2Dnnwb4lmBkzv7X/DCI+swsvqhjkUj30vM+hgZTkK57DfIptgSV53CH25b9g+
+	 hCbZd3UDQ2E4ld+x4On/XvvueoKS/h+pishSgjeuaIG/qtpZ4iNEPDR68tPjDPPNxl
+	 aXhkLjNVyICP3Jzm4K7Lo/Y44i19K1FaM+dClYyFI8qa67HbEIiG5s8EvRcAN+xZ9Q
+	 AqirjN3NQqA7tfF/U4PJAv8zhFRp4LWnde6fcEt+YHyDwnYAupBopex8F3cigGChdS
+	 DEEU1j9v6jKihwi9Sjv4aYGyrXA96u5VfFgAgakTGe+QZitsM1Y/Nd+zKM/O/ohThW
+	 NXsNjb/tjGVcw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 09/12] btrfs: split inode ref processing from __add_inode_ref() into a helper
-Date: Tue, 24 Jun 2025 15:42:19 +0100
-Message-ID: <d9b05a7bce29f816bd1880b2395cb1e49a925660.1750709411.git.fdmanana@suse.com>
+Subject: [PATCH 10/12] btrfs: split inode rextef processing from __add_inode_ref() into a helper
+Date: Tue, 24 Jun 2025 15:42:20 +0100
+Message-ID: <77fb4fa12feec93ced283745958274bf33747104.1750709411.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1750709410.git.fdmanana@suse.com>
 References: <cover.1750709410.git.fdmanana@suse.com>
@@ -60,66 +60,80 @@ Content-Transfer-Encoding: 8bit
 From: Filipe Manana <fdmanana@suse.com>
 
 The __add_inode_ref() function is quite big and with too much nesting, so
-move the code that processes inode refs into a helper function, to make
+move the code that processes inode extrefs into a helper function, to make
 the function easier to read and reduce the level of indentation too.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 106 ++++++++++++++++++++++++++------------------
- 1 file changed, 62 insertions(+), 44 deletions(-)
+ fs/btrfs/tree-log.c | 131 +++++++++++++++++++++++++-------------------
+ 1 file changed, 74 insertions(+), 57 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 7ccf513d7ec8..648e1705c1c4 100644
+index 648e1705c1c4..82664bb79d36 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -1041,6 +1041,59 @@ static noinline int backref_in_log(struct btrfs_root *log,
- 	return ret;
+@@ -1094,6 +1094,73 @@ static int unlink_refs_not_in_log(struct btrfs_trans_handle *trans,
+ 	return 0;
  }
  
-+static int unlink_refs_not_in_log(struct btrfs_trans_handle *trans,
-+				  struct btrfs_path *path,
-+				  struct btrfs_root *log_root,
-+				  struct btrfs_key *search_key,
-+				  struct btrfs_inode *dir,
-+				  struct btrfs_inode *inode,
-+				  u64 parent_objectid)
++static int unlink_extrefs_not_in_log(struct btrfs_trans_handle *trans,
++				     struct btrfs_path *path,
++				     struct btrfs_root *root,
++				     struct btrfs_root *log_root,
++				     struct btrfs_key *search_key,
++				     struct btrfs_inode *inode,
++				     u64 inode_objectid,
++				     u64 parent_objectid)
 +{
 +	struct extent_buffer *leaf = path->nodes[0];
-+	unsigned long ptr;
-+	unsigned long ptr_end;
++	const unsigned long base = btrfs_item_ptr_offset(leaf, path->slots[0]);
++	const u32 item_size = btrfs_item_size(leaf, path->slots[0]);
++	u32 cur_offset = 0;
 +
-+	/*
-+	 * Check all the names in this back reference to see if thet are in the
-+	 * log. If so, we allow them to stay otherwise they must be unlinked as
-+	 * a conflict.
-+	 */
-+	ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
-+	ptr_end = ptr + btrfs_item_size(leaf, path->slots[0]);
-+	while (ptr < ptr_end) {
++	while (cur_offset < item_size) {
++		struct btrfs_inode_extref *extref;
++		struct btrfs_inode *victim_parent;
 +		struct fscrypt_str victim_name;
-+		struct btrfs_inode_ref *victim_ref;
 +		int ret;
 +
-+		victim_ref = (struct btrfs_inode_ref *)ptr;
-+		ret = read_alloc_one_name(leaf, (victim_ref + 1),
-+					  btrfs_inode_ref_name_len(leaf, victim_ref),
++		extref = (struct btrfs_inode_extref *)(base + cur_offset);
++		victim_name.len = btrfs_inode_extref_name_len(leaf, extref);
++
++		if (btrfs_inode_extref_parent(leaf, extref) != parent_objectid)
++			goto next;
++
++		ret = read_alloc_one_name(leaf, &extref->name, victim_name.len,
 +					  &victim_name);
 +		if (ret)
 +			return ret;
 +
++		search_key->objectid = inode_objectid;
++		search_key->type = BTRFS_INODE_EXTREF_KEY;
++		search_key->offset = btrfs_extref_hash(parent_objectid,
++						       victim_name.name,
++						       victim_name.len);
 +		ret = backref_in_log(log_root, search_key, parent_objectid, &victim_name);
 +		if (ret) {
 +			kfree(victim_name.name);
 +			if (ret < 0)
 +				return ret;
-+			ptr = (unsigned long)(victim_ref + 1) + victim_name.len;
++next:
++			cur_offset += victim_name.len + sizeof(*extref);
 +			continue;
++		}
++
++		victim_parent = btrfs_iget_logging(parent_objectid, root);
++		if (IS_ERR(victim_parent)) {
++			kfree(victim_name.name);
++			return PTR_ERR(victim_parent);
 +		}
 +
 +		inc_nlink(&inode->vfs_inode);
 +		btrfs_release_path(path);
 +
-+		ret = unlink_inode_for_log_replay(trans, dir, inode, &victim_name);
++		ret = unlink_inode_for_log_replay(trans, victim_parent, inode,
++						  &victim_name);
++		iput(&victim_parent->vfs_inode);
 +		kfree(victim_name.name);
 +		if (ret)
 +			return ret;
@@ -132,63 +146,77 @@ index 7ccf513d7ec8..648e1705c1c4 100644
  static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
  				  struct btrfs_root *root,
  				  struct btrfs_path *path,
-@@ -1065,54 +1118,19 @@ static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
- 	if (ret < 0) {
- 		return ret;
- 	} else if (ret == 0) {
--		struct btrfs_inode_ref *victim_ref;
--		unsigned long ptr;
--		unsigned long ptr_end;
+@@ -1104,7 +1171,6 @@ static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
+ 				  u64 ref_index, struct fscrypt_str *name)
+ {
+ 	int ret;
+-	struct extent_buffer *leaf;
+ 	struct btrfs_dir_item *di;
+ 	struct btrfs_key search_key;
+ 	struct btrfs_inode_extref *extref;
+@@ -1139,62 +1205,13 @@ static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
+ 	if (IS_ERR(extref)) {
+ 		return PTR_ERR(extref);
+ 	} else if (extref) {
+-		u32 item_size;
+-		u32 cur_offset = 0;
+-		unsigned long base;
+-		struct btrfs_inode *victim_parent;
 -
 -		leaf = path->nodes[0];
 -
--		/* are we trying to overwrite a back ref for the root directory
--		 * if so, just jump out, we're done
-+		/*
-+		 * Are we trying to overwrite a back ref for the root directory?
-+		 * If so, we're done.
- 		 */
- 		if (search_key.objectid == search_key.offset)
- 			return 1;
- 
--		/* check all the names in this back reference to see
--		 * if they are in the log.  if so, we allow them to stay
--		 * otherwise they must be unlinked as a conflict
--		 */
--		ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
--		ptr_end = ptr + btrfs_item_size(leaf, path->slots[0]);
--		while (ptr < ptr_end) {
+-		item_size = btrfs_item_size(leaf, path->slots[0]);
+-		base = btrfs_item_ptr_offset(leaf, path->slots[0]);
+-
+-		while (cur_offset < item_size) {
 -			struct fscrypt_str victim_name;
 -
--			victim_ref = (struct btrfs_inode_ref *)ptr;
--			ret = read_alloc_one_name(leaf, (victim_ref + 1),
--				 btrfs_inode_ref_name_len(leaf, victim_ref),
--				 &victim_name);
+-			extref = (struct btrfs_inode_extref *)(base + cur_offset);
+-			victim_name.len = btrfs_inode_extref_name_len(leaf, extref);
+-
+-			if (btrfs_inode_extref_parent(leaf, extref) != parent_objectid)
+-				goto next;
+-
+-			ret = read_alloc_one_name(leaf, &extref->name,
+-						  victim_name.len, &victim_name);
 -			if (ret)
 -				return ret;
 -
+-			search_key.objectid = inode_objectid;
+-			search_key.type = BTRFS_INODE_EXTREF_KEY;
+-			search_key.offset = btrfs_extref_hash(parent_objectid,
+-							      victim_name.name,
+-							      victim_name.len);
 -			ret = backref_in_log(log_root, &search_key,
 -					     parent_objectid, &victim_name);
 -			if (ret < 0) {
 -				kfree(victim_name.name);
 -				return ret;
 -			} else if (!ret) {
--				inc_nlink(&inode->vfs_inode);
--				btrfs_release_path(path);
+-				victim_parent = btrfs_iget_logging(parent_objectid, root);
+-				if (IS_ERR(victim_parent)) {
+-					ret = PTR_ERR(victim_parent);
+-				} else {
+-					inc_nlink(&inode->vfs_inode);
+-					btrfs_release_path(path);
 -
--				ret = unlink_inode_for_log_replay(trans, dir, inode,
--						&victim_name);
+-					ret = unlink_inode_for_log_replay(trans,
+-							victim_parent,
+-							inode, &victim_name);
+-					iput(&victim_parent->vfs_inode);
+-				}
 -				kfree(victim_name.name);
 -				if (ret)
 -					return ret;
 -				goto again;
 -			}
 -			kfree(victim_name.name);
--
--			ptr = (unsigned long)(victim_ref + 1) + victim_name.len;
+-next:
+-			cur_offset += victim_name.len + sizeof(*extref);
 -		}
-+		ret = unlink_refs_not_in_log(trans, path, log_root, &search_key,
-+					     dir, inode, parent_objectid);
++		ret = unlink_extrefs_not_in_log(trans, path, root, log_root,
++						&search_key, inode,
++						inode_objectid, parent_objectid);
 +		if (ret == -EAGAIN)
 +			goto again;
 +		else if (ret)
