@@ -1,75 +1,60 @@
-Return-Path: <linux-btrfs+bounces-14963-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14965-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F56FAE92A5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 01:32:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37174AE92E7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 01:45:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 662CB3BAA8D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Jun 2025 23:31:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F9917A3C11
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Jun 2025 23:43:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 070CB2F3C0A;
-	Wed, 25 Jun 2025 23:20:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AtBuBfwN";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AtBuBfwN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC39E2D3EEC;
+	Wed, 25 Jun 2025 23:44:48 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp153-141.sina.com.cn (smtp153-141.sina.com.cn [61.135.153.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3918C2F3624
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Jun 2025 23:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22FA2F1FC1
+	for <linux-btrfs@vger.kernel.org>; Wed, 25 Jun 2025 23:44:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=61.135.153.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750893644; cv=none; b=LYAHedfwIs4TRtkyxvIOGLfsNPk+KfJcdHvSqC7sdPOIFwUKfL7Zfwrz1fWjxbCqdDutb++dZZWrGpF88+G0Ekd8A312UWQX9eXyrwy/cNmj8juei6vu0vdZtwWufpmPhQsk0NGClPH+kBMzHWk+/u0PrLI7rGHvfcfQlNFSLvI=
+	t=1750895088; cv=none; b=WGtQgef4ngsHpi8cC+XtaDZ9SdbeHFPbo4G4oOn5+B7F0hxjfiotWVVXeMu9wlpuTspuzkVBKXABRTnnaf5/wbeZ5HKlZbSnD8GirNEjvv62jdjxfnm8OrS4wjkMVuojmqkiIaXBXMmURPmZulzt8bFg9qHYNrM4Xanulfn0hc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750893644; c=relaxed/simple;
-	bh=FbezXqHmvRkXm8c0a1yC09gQ9MAOPKwdaaVhBTylqi0=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=YuR/bBZ/h3aWMlOMhrk1FYfHsR3v5aQxqT1ByhwKKvAho5UrwdaZ3Pu9ier4rfY3piJZtnFclDuJvQzf3F9qytZr3iAIrGwbWlr6tp6MET9MAJsmhY8dp/RXDevolx2wv7i7sdmARW4k/7+ecM2euJMb1iPm02oObWF4gVtgPKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AtBuBfwN; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AtBuBfwN; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 424341F460;
-	Wed, 25 Jun 2025 23:20:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1750893640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=tk29JGE7sdQz5KRIrs3zcifYS9tbBeHLehEwSSYzD4c=;
-	b=AtBuBfwNIypcrmR3uvFM4WfVbyOfe4HLEyDDY29d6wXPYRKCB7nE4XGCkjPtIG6I3slqoo
-	GcY+KmbKaGm8fwO1cz5ml6or+1c3DbdcFcwFDIbTGhwTh2qDU33x34cyRyX10i6PGwgIS5
-	mNPMR5n+GFQ+Qa2vRXpZSAIOHVrLb6U=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=AtBuBfwN
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1750893640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=tk29JGE7sdQz5KRIrs3zcifYS9tbBeHLehEwSSYzD4c=;
-	b=AtBuBfwNIypcrmR3uvFM4WfVbyOfe4HLEyDDY29d6wXPYRKCB7nE4XGCkjPtIG6I3slqoo
-	GcY+KmbKaGm8fwO1cz5ml6or+1c3DbdcFcwFDIbTGhwTh2qDU33x34cyRyX10i6PGwgIS5
-	mNPMR5n+GFQ+Qa2vRXpZSAIOHVrLb6U=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 432A313485;
-	Wed, 25 Jun 2025 23:20:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id YuzrAUeEXGhhKAAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 25 Jun 2025 23:20:39 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: [PATCH] common/rc: add btrfs support for _small_fs_size_mb()
-Date: Thu, 26 Jun 2025 08:50:21 +0930
-Message-ID: <20250625232021.69787-1-wqu@suse.com>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1750895088; c=relaxed/simple;
+	bh=mtrQNGlliUdKWWwwYHLIr198wqZ13tkZb3P4BHGPIJE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=nFgOUjJ/O8CvBE39JE0PnyCY1IJUxCI72w8fG+TPqtE5vrxeft+KALqvHvCi+4FXnjmhC6GGnJXzuWnKpu8ukoI11ojBq5cvkx72VMyBCuXwxR46QsJE1kOQPn60YdRxsGE3RsBwzuYmGWOMrDG5kHFIXeaB7N0coBfPqwaspYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=61.135.153.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([114.249.58.236])
+	by sina.com (10.54.253.31) with ESMTP
+	id 685C89DE000026EA; Wed, 26 Jun 2025 07:44:31 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 9282516816285
+X-SMAIL-UIID: 559E04F1492845D58A02B8FF3EE710FE-20250626-074431-1
+From: Hillf Danton <hdanton@sina.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Edward Adam Davis <eadavis@qq.com>,
+	syzbot+fa90fcaa28f5cd4b1fc1@syzkaller.appspotmail.com,
+	clm@fb.com,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH next] btrfs: fix deadlock in btrfs_read_chunk_tree
+Date: Thu, 26 Jun 2025 07:44:18 +0800
+Message-ID: <20250625234420.1798-1-hdanton@sina.com>
+In-Reply-To: <1d765fc0-e971-4c8b-95ab-4cdfcea183c8@gmx.com>
+References: <685aa401.050a0220.2303ee.0009.GAE@google.com> <tencent_C857B761776286CB137A836B096C03A34405@qq.com> <20250624235635.1661-1-hdanton@sina.com> <20250625124052.1778-1-hdanton@sina.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,99 +62,49 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 424341F460
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Score: -3.01
-X-Spam-Level: 
 
-[FAILURE]
-With the incoming shutdown ioctl and remove_bdev callback support, btrfs
-is able to run the shutdown group.
-
-However test case like generic/042 fails on btrfs:
-
-generic/042 9s ... [failed, exit status 1]- output mismatch (see /home/adam/xfstests/results//generic/042.out.bad)
-    --- tests/generic/042.out	2022-05-11 11:25:30.763333331 +0930
-    +++ /home/adam/xfstests/results//generic/042.out.bad	2025-06-26 08:43:56.078509452 +0930
-    @@ -1,10 +1 @@
-     QA output created by 042
-    -falloc -k
-    -wrote 65536/65536 bytes at offset 0
-    -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-    -fpunch
-    -wrote 65536/65536 bytes at offset 0
-    -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-    ...
-    (Run 'diff -u /home/adam/xfstests/tests/generic/042.out /home/adam/xfstests/results//generic/042.out.bad'  to see the entire diff)
-Ran: generic/042
-Failures: generic/042
-Failed 1 of 1 tests
-
-[CAUSE]
-The full output shows the reason directly:
-
-  ERROR: '/mnt/scratch/042.img' is too small to make a usable filesystem
-  ERROR: minimum size for each btrfs device is 114294784
-
-And the helper _small_fs_size_mb() doesn't support btrfs, thus the small
-25M file is not large enough to support a btrfs.
-
-[FIX]
-Fix the false alert by adding btrfs support in _small_fs_size_mb().
-
-The btrfs minimal size is depending on the profiles even on a single
-device, e.g. DUP data will cost extra space.
-
-So here we go safe by using 512MiB as the minimal size for btrfs.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- common/rc | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/common/rc b/common/rc
-index d8ee8328..2d8e7167 100644
---- a/common/rc
-+++ b/common/rc
-@@ -1195,6 +1195,11 @@ _small_fs_size_mb()
- 		# it will change again. So just set it 128M.
- 		fs_min_size=128
- 		;;
-+	btrfs)
-+		# Minimal btrfs size depends on the profiles, for single device
-+		# case, 512M should be enough.
-+		fs_min_size=512
-+		;;
- 	esac
- 	(( size < fs_min_size )) && size="$fs_min_size"
- 
--- 
-2.49.0
-
+On Thu, 26 Jun 2025 06:59:14 +0930 Qu Wenruo wrote:
+> =E5=9C=A8 2025/6/25 22:10, Hillf Danton =E5=86=99=E9=81=93:
+> > On Wed, 25 Jun 2025 20:19:06 +0930 Qu Wenruo wrote:
+> >> =3DE5=3D9C=3DA8 2025/6/25 09:26, Hillf Danton =3DE5=3D86=3D99=3DE9=3D81=
+> =3D93:
+> >>> On Wed, 25 Jun 2025 06:00:09 +0930 Qu Wenruo wrote:
+> >>>> =3D3DE5=3D3D9C=3D3DA8 2025/6/25 00:00, Edward Adam Davis =3D3DE5=3D3D=
+> 86=3D3D99=3D3DE9=3D
+> >> =3D3D81=3D3D93:
+> >>>>> Remove the lock uuid_mutex outside of sget_fc() to avoid the deadloc=
+> k
+> >>>>> reported by [1].
+> >>>>> =3D3D20
+> >>>>> [1]
+> >>>>> -> #1 (&type->s_umount_key#41/1){+.+.}-{4:4}:
+> >>>>>           lock_acquire+0x120/0x360 kernel/locking/lockdep.c:5871
+> >>>>>           down_write_nested+0x9d/0x200 kernel/locking/rwsem.c:1693
+> >>>>>           alloc_super+0x204/0x970 fs/super.c:345
+> >>> =3D20
+> >>> Given kzalloc [3], the syzbot report is false positive (a known lockde=
+> p
+> >>> issue) as nobody else should acquire s->s_umount lock.
+> >>> =3D20
+> >>> [3] https://web.git.kernel.org/pub/scm/linux/kernel/git/next/linux-nex=
+> t.=3D
+> >> git/tree/fs/super.c?id=3D3D7aacdf6feed1#n319
+> >>
+> >> Not a false alert either.
+> >>
+> >> sget_fc() can return an existing super block, we can race between a=3D2=
+> 0
+> >> mount and an unmount on the same super block.
+> >>
+> >> In that case it's going to cause problem.
+> >>
+> >> This is already fixed in the v4 (and later v5) patchset:
+> >>
+> >> https://lore.kernel.org/linux-btrfs/cover.1750724841.git.wqu@suse.com/
+> >>
+> > Can v5 survive the syzbot test?
+> 
+> Yes, I enabled lockdep during v5 tests.
+> 
+Fine, feel free to show us the Tested-by syzbot gave you.
 
