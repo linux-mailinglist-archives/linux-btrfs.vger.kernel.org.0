@@ -1,200 +1,175 @@
-Return-Path: <linux-btrfs+bounces-14964-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14963-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBCB0AE92A8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 01:32:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F56FAE92A5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 01:32:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 381DB165C2A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Jun 2025 23:32:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 662CB3BAA8D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Jun 2025 23:31:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6AEA202C46;
-	Wed, 25 Jun 2025 23:21:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 070CB2F3C0A;
+	Wed, 25 Jun 2025 23:20:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=edcint.co.nz header.i=@edcint.co.nz header.b="h0ZA4aR8"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AtBuBfwN";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AtBuBfwN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from h1.out4.mxs.au (h1.out4.mxs.au [110.232.143.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C5902F431D
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Jun 2025 23:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=110.232.143.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3918C2F3624
+	for <linux-btrfs@vger.kernel.org>; Wed, 25 Jun 2025 23:20:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750893686; cv=none; b=PrjpUUjZH8vwqNCr00pvrnbQXIU0owd/FKafcIe7eOTDDjlEWWkukc8lIJKhxhFhw9Gxvyy+UM+6D+i1OfHdT9Vw+lP0BXKo7HXwUuiys+DRZGTWMScCMQJPGE0i9nqhb6zLDyQ4mhNv6SBWvJnvI5TcoB5hRaCcJe3gXJtEr6A=
+	t=1750893644; cv=none; b=LYAHedfwIs4TRtkyxvIOGLfsNPk+KfJcdHvSqC7sdPOIFwUKfL7Zfwrz1fWjxbCqdDutb++dZZWrGpF88+G0Ekd8A312UWQX9eXyrwy/cNmj8juei6vu0vdZtwWufpmPhQsk0NGClPH+kBMzHWk+/u0PrLI7rGHvfcfQlNFSLvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750893686; c=relaxed/simple;
-	bh=l6gdjSsI1lcWWZhcDIAU8bL+EfcU0PB7fITZHJtO4Rs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FM1REcsT0MX+u3YO2OerHEa2hHuDhKWH2LUPcksalZz3/D8elcOGBIJo7q6U2PvyWEfrzD0Voqz1Oj9yD7DnOutQseB3TiFxgMXzgz0B6JGUZkBdtAPZqLEW+7o0i6pWZ/umCFnw/MoxHTvwuMYL05APOKif0Ee6qPNXl3lIIrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=edcint.co.nz; spf=fail smtp.mailfrom=edcint.co.nz; dkim=pass (2048-bit key) header.d=edcint.co.nz header.i=@edcint.co.nz header.b=h0ZA4aR8; arc=none smtp.client-ip=110.232.143.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=edcint.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=edcint.co.nz
-Received: from s02bd.syd2.hostingplatform.net.au (s02bd.syd2.hostingplatform.net.au [103.27.32.42])
-	by out4.mxs.au (Halon) with ESMTPS (TLSv1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	id eeb0a731-521a-11f0-8a1a-00163c87da3f
-	for <linux-btrfs@vger.kernel.org>;
-	Thu, 26 Jun 2025 09:20:07 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=edcint.co.nz; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=p/oneADWuVh9vHgobC/+U1JzGh9gN+eDZUrdKGWcYE4=; b=h0ZA4aR8SRgQHDgh0I6P4cfS2z
-	8s7MNiSveDBZukXwTFr8EZ0hh1QTOSnoJ4AuthDvwAYQaa2ocDjpSG1GrvbXPDj3MhHgFvHMbcUDo
-	k2dSENiHC1GyxeZbfKjrKwV/8xG2LtkoXVfv8dVc1OTe+EQ+ZbpcHY+9LE6m8V8KaRYgksDRrBcaI
-	EdHlPyvkJbXnU8y3GE4jGU7NllFMzfcBedZGPWTkUGMeRwVWB7yYVjlJNin5ZRXKZalJ5+rh0rzRX
-	EHrj5EHuUPbce5Cd+MmL/4BUpeNf1xrXrv7mFAa56w4S3mQw/cjUbL/VMa2WLWMDHp0a9S+CZHMSC
-	9xJiNgAw==;
-Received: from [159.196.20.165] (port=43543 helo=[192.168.2.80])
-	by s02bd.syd2.hostingplatform.net.au with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.1)
-	(envelope-from <btrfs@edcint.co.nz>)
-	id 1uUZPT-000000018t2-1x0W;
-	Thu, 26 Jun 2025 09:20:07 +1000
-Message-ID: <a1494d1c-7f6f-4bc8-9f42-553e79e4335e@edcint.co.nz>
-Date: Thu, 26 Jun 2025 09:20:07 +1000
+	s=arc-20240116; t=1750893644; c=relaxed/simple;
+	bh=FbezXqHmvRkXm8c0a1yC09gQ9MAOPKwdaaVhBTylqi0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=YuR/bBZ/h3aWMlOMhrk1FYfHsR3v5aQxqT1ByhwKKvAho5UrwdaZ3Pu9ier4rfY3piJZtnFclDuJvQzf3F9qytZr3iAIrGwbWlr6tp6MET9MAJsmhY8dp/RXDevolx2wv7i7sdmARW4k/7+ecM2euJMb1iPm02oObWF4gVtgPKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AtBuBfwN; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AtBuBfwN; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 424341F460;
+	Wed, 25 Jun 2025 23:20:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1750893640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=tk29JGE7sdQz5KRIrs3zcifYS9tbBeHLehEwSSYzD4c=;
+	b=AtBuBfwNIypcrmR3uvFM4WfVbyOfe4HLEyDDY29d6wXPYRKCB7nE4XGCkjPtIG6I3slqoo
+	GcY+KmbKaGm8fwO1cz5ml6or+1c3DbdcFcwFDIbTGhwTh2qDU33x34cyRyX10i6PGwgIS5
+	mNPMR5n+GFQ+Qa2vRXpZSAIOHVrLb6U=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=AtBuBfwN
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1750893640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=tk29JGE7sdQz5KRIrs3zcifYS9tbBeHLehEwSSYzD4c=;
+	b=AtBuBfwNIypcrmR3uvFM4WfVbyOfe4HLEyDDY29d6wXPYRKCB7nE4XGCkjPtIG6I3slqoo
+	GcY+KmbKaGm8fwO1cz5ml6or+1c3DbdcFcwFDIbTGhwTh2qDU33x34cyRyX10i6PGwgIS5
+	mNPMR5n+GFQ+Qa2vRXpZSAIOHVrLb6U=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 432A313485;
+	Wed, 25 Jun 2025 23:20:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id YuzrAUeEXGhhKAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 25 Jun 2025 23:20:39 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: [PATCH] common/rc: add btrfs support for _small_fs_size_mb()
+Date: Thu, 26 Jun 2025 08:50:21 +0930
+Message-ID: <20250625232021.69787-1-wqu@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Portable HDD Keeps Going Read Only
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Daniel Vacek <neelx@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <83a43be7-7058-4099-80d9-07749cf77a8d@edcint.co.nz>
- <CAPjX3FcqJ-cNMjVia_gYmBZwDhQVxPEOhYYQUzL31m7momByEQ@mail.gmail.com>
- <5de3840d-70c5-48cb-a7c0-7db17e789e95@edcint.co.nz>
- <ffbd0c96-313d-4524-9b6e-b24437fc0347@gmx.com>
- <b2dbfdb5-4cce-459c-8d30-01ac6124d9ad@edcint.co.nz>
- <bdfe67ea-8668-4768-8102-42d78e9537f9@edcint.co.nz>
- <08d37392-a7a5-4c43-87ce-86146e58323f@gmx.com>
-Content-Language: en-US
-From: Matthew Jurgens <btrfs@edcint.co.nz>
-In-Reply-To: <08d37392-a7a5-4c43-87ce-86146e58323f@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - s02bd.syd2.hostingplatform.net.au
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - edcint.co.nz
-X-Get-Message-Sender-Via: s02bd.syd2.hostingplatform.net.au: authenticated_id: default@edcint.co.nz
-X-Authenticated-Sender: s02bd.syd2.hostingplatform.net.au: default@edcint.co.nz
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 424341F460
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email];
+	RCPT_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Score: -3.01
+X-Spam-Level: 
 
-Further to this.
+[FAILURE]
+With the incoming shutdown ioctl and remove_bdev callback support, btrfs
+is able to run the shutdown group.
 
-I reformatted the drive, rewrote a backup to it and umounted it 
-(software only, did not physically disconnect it). When I tried to 
-remount it about 30 minutes later, it failed.
+However test case like generic/042 fails on btrfs:
 
-3 new files (dmesg, btrfs check and smartctl output) for 20250626 are 
-available at https://edcint.co.nz/tmp/btrfs_portable_hdd/
+generic/042 9s ... [failed, exit status 1]- output mismatch (see /home/adam/xfstests/results//generic/042.out.bad)
+    --- tests/generic/042.out	2022-05-11 11:25:30.763333331 +0930
+    +++ /home/adam/xfstests/results//generic/042.out.bad	2025-06-26 08:43:56.078509452 +0930
+    @@ -1,10 +1 @@
+     QA output created by 042
+    -falloc -k
+    -wrote 65536/65536 bytes at offset 0
+    -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+    -fpunch
+    -wrote 65536/65536 bytes at offset 0
+    -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+    ...
+    (Run 'diff -u /home/adam/xfstests/tests/generic/042.out /home/adam/xfstests/results//generic/042.out.bad'  to see the entire diff)
+Ran: generic/042
+Failures: generic/042
+Failed 1 of 1 tests
 
-I'll paste the check output below but adding the others will make this 
-message too long
+[CAUSE]
+The full output shows the reason directly:
 
-In another test I did, I reformatted the drive with xfs, but when 
-writing the backup to it, the rsync hung. I reproduced this 2 or 3 times 
-and gave up. Soon, I'll try ext4 on this drive.
+  ERROR: '/mnt/scratch/042.img' is too small to make a usable filesystem
+  ERROR: minimum size for each btrfs device is 114294784
 
-Maybe the controller on this drive has a problem. The smartctl output 
-does not show any clear signs of problems.
+And the helper _small_fs_size_mb() doesn't support btrfs, thus the small
+25M file is not large enough to support a btrfs.
 
-[1/8] checking log skipped (none written)
-[2/8] checking root items
-[3/8] checking extents
-ERROR: extent[32702464 16384] backref lost (owner: 1, level: 0) root 1
-ERROR: extent [603471872 16384] referencer bytenr mismatch, wanted: 
-603471872, have: 32505856
-ERROR: extent [876150784 16384] referencer bytenr mismatch, wanted: 
-876150784, have: 32686080
-ERROR: extent [565322235904 16384] referencer bytenr mismatch, wanted: 
-565322235904, have: 32636928
-ERROR: extent [1577378103296 16384] referencer bytenr mismatch, wanted: 
-1577378103296, have: 32620544
-ERROR: extent [1577378168832 16384] referencer bytenr mismatch, wanted: 
-1577378168832, have: 32538624
-ERROR: extent [1577493069824 16384] referencer bytenr mismatch, wanted: 
-1577493069824, have: 32587776
-ERROR: extent [2602211950592 16384] referencer bytenr mismatch, wanted: 
-2602211950592, have: 32686080
-ERROR: extent [2602616307712 16384] referencer bytenr mismatch, wanted: 
-2602616307712, have: 32686080
-ERROR: extent [3426921840640 16384] referencer bytenr mismatch, wanted: 
-3426921840640, have: 32571392
-ERROR: extent [3426922545152 16384] referencer bytenr mismatch, wanted: 
-3426922545152, have: 32571392
-ERROR: extent [3426922840064 16384] referencer bytenr mismatch, wanted: 
-3426922840064, have: 32653312
-ERROR: extent [3426922905600 16384] referencer bytenr mismatch, wanted: 
-3426922905600, have: 32669696
-ERROR: extent [3426923708416 16384] referencer bytenr mismatch, wanted: 
-3426923708416, have: 32686080
-ERROR: extent [3426924969984 16384] referencer bytenr mismatch, wanted: 
-3426924969984, have: 32686080
-ERROR: extent [3427015163904 16384] referencer bytenr mismatch, wanted: 
-3427015163904, have: 32587776
-ERROR: extent [3427101868032 16384] referencer bytenr mismatch, wanted: 
-3427101868032, have: 32686080
-ERROR: extent [3427101884416 16384] referencer bytenr mismatch, wanted: 
-3427101884416, have: 32686080
-ERROR: extent [3427102064640 16384] referencer bytenr mismatch, wanted: 
-3427102064640, have: 32686080
-ERROR: extent [3427120365568 16384] referencer bytenr mismatch, wanted: 
-3427120365568, have: 32473088
-ERROR: extent [3427120906240 16384] referencer bytenr mismatch, wanted: 
-3427120906240, have: 31506432
-ERROR: extent [3427124035584 16384] referencer bytenr mismatch, wanted: 
-3427124035584, have: 32522240
-ERROR: extent [3427125624832 16384] referencer bytenr mismatch, wanted: 
-3427125624832, have: 32686080
-ERROR: extent [3427126951936 16384] referencer bytenr mismatch, wanted: 
-3427126951936, have: 32686080
-ERROR: extent [3427127394304 16384] referencer bytenr mismatch, wanted: 
-3427127394304, have: 32686080
-ERROR: extent [3427128082432 16384] referencer bytenr mismatch, wanted: 
-3427128082432, have: 32686080
-ERROR: extent [3427128164352 16384] referencer bytenr mismatch, wanted: 
-3427128164352, have: 32702464
-ERROR: extent[32473088 16384] backref lost (owner: 4, level: 1) root 4
-ERROR: extent[32505856 16384] backref lost (owner: 4, level: 0) root 4
-ERROR: extent[32522240 16384] backref lost (owner: 10, level: 1) root 10
-ERROR: extent[31506432 16384] backref lost (owner: 10, level: 0) root 10
-ERROR: extent[32571392 16384] backref lost (owner: 10, level: 0) root 10
-ERROR: extent[32538624 16384] backref lost (owner: 10, level: 0) root 10
-ERROR: extent[32587776 16384] backref lost (owner: 10, level: 0) root 10
-ERROR: extent[32620544 16384] backref lost (owner: 10, level: 0) root 10
-ERROR: extent[32636928 16384] backref lost (owner: 10, level: 0) root 10
-ERROR: extent[32653312 16384] backref lost (owner: 10, level: 0) root 10
-ERROR: extent[32669696 16384] backref lost (owner: 10, level: 0) root 10
-ERROR: extent[32686080 16384] backref lost (owner: 10, level: 0) root 10
-ERROR: errors found in extent allocation tree or chunk allocation
-[4/8] checking free space tree
-could not load free space tree: No such file or directory
-************ SAME LINE REPEATED 1914 OTHER TIMES *************
-could not load free space tree: No such file or directory
-[5/8] checking fs roots
-[6/8] checking only csums items (without verifying data)
-[7/8] checking root refs done with fs roots in lowmem mode, skipping
-[8/8] checking quota groups skipped (not enabled on this FS)
-Opening filesystem to check...
-Checking filesystem on /dev/sdh
-UUID: 8746a931-ff21-4a57-8bd5-4793e436629f
-found 3889350197248 bytes used, error(s) found
-total csum bytes: 3793435968
-total tree bytes: 4871340032
-total fs tree bytes: 751026176
-total extent tree bytes: 155582464
-btree space waste bytes: 249038677
-file data blocks allocated: 3884478431232
-  referenced 3928014991360
+[FIX]
+Fix the false alert by adding btrfs support in _small_fs_size_mb().
+
+The btrfs minimal size is depending on the profiles even on a single
+device, e.g. DUP data will cost extra space.
+
+So here we go safe by using 512MiB as the minimal size for btrfs.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ common/rc | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/common/rc b/common/rc
+index d8ee8328..2d8e7167 100644
+--- a/common/rc
++++ b/common/rc
+@@ -1195,6 +1195,11 @@ _small_fs_size_mb()
+ 		# it will change again. So just set it 128M.
+ 		fs_min_size=128
+ 		;;
++	btrfs)
++		# Minimal btrfs size depends on the profiles, for single device
++		# case, 512M should be enough.
++		fs_min_size=512
++		;;
+ 	esac
+ 	(( size < fs_min_size )) && size="$fs_min_size"
+ 
+-- 
+2.49.0
 
 
