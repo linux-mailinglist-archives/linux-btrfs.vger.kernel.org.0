@@ -1,127 +1,89 @@
-Return-Path: <linux-btrfs+bounces-14991-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14992-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9C83AE9CC2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 13:44:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46F3AAE9D76
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 14:30:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15B5B188C694
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 11:44:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 560361C233A3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 12:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA33E27584C;
-	Thu, 26 Jun 2025 11:43:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b="Vfsfa6L7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81173296169;
+	Thu, 26 Jun 2025 12:30:07 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mxex1.tik.uni-stuttgart.de (mxex1.tik.uni-stuttgart.de [129.69.192.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C9017BA5
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Jun 2025 11:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.69.192.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A049F2951CB
+	for <linux-btrfs@vger.kernel.org>; Thu, 26 Jun 2025 12:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750938233; cv=none; b=r1I1HQmxOGAVutZYWBB33O8SlBlXgAVVAmFX+4A1I3p9lEBBmdqB5X7uGp5P/qov5OmcwKwqHa/5OUswca8YJyNPuPhdYeT++IvEZXZus7F4qbxqLIo/Qn1XypSSZ6wRJ0XMDPIDGcPM8YSSEclIbdr20brjuohejmgmmdGlmTw=
+	t=1750941007; cv=none; b=B3At7nnhTgnmPvlZB6JIWdGmbhv38LXEZwTDWt1nNUv1w8+jgGiDwriHccSqzn383y4uX3L5N03tfhvgc+NW1mSK87TSWUBteUE4b+FNDio0GF++1Wz0WlJ+Tz1McnVaOG4smRbruBq7DuKJkAdF0iQruDjIhT0D6ObuwiYs+uA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750938233; c=relaxed/simple;
-	bh=vDCotqTakoAEJkmBk6F26eU4yb+m8YjHb8NjpKDH6fU=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=kQX7O4xoyDSHYOzC2DoZfiqdt8ANDq9Wx7M0E9ZlP8cw1ghvayp+d7LRUCtGhn0kZXztMxFdx7Y4ZF7OoqoY3DNtA1OmYFf8IsOpz/rc6u18zwkcNKNG7CE4o5/qZtFcvm4VJB4WckI2tPjAJKL3rfC3G1MaJzl+qFxbNu38/W8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de; spf=pass smtp.mailfrom=rus.uni-stuttgart.de; dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b=Vfsfa6L7; arc=none smtp.client-ip=129.69.192.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rus.uni-stuttgart.de
-Received: from localhost (localhost [127.0.0.1])
-	by mxex1.tik.uni-stuttgart.de (Postfix) with ESMTP id 48CB360BC4
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Jun 2025 13:43:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=uni-stuttgart.de;
-	 h=x-mailer:user-agent:content-disposition:content-type
-	:content-type:mime-version:message-id:subject:subject:from:from
-	:date:date; s=dkim; i=@rus.uni-stuttgart.de; t=1750938225; x=
-	1752677026; bh=vDCotqTakoAEJkmBk6F26eU4yb+m8YjHb8NjpKDH6fU=; b=V
-	fsfa6L7ed+Vcc8iWmrH2z/fdqED2agb9+OIFd/xKZ6/k1vLOdxiDinblMKPars3o
-	8ep97W55W/wFHoxJbyuI6AZQZQLWL8wFu2kWhGxR3VmziCTmfYvjgWZzfpZ34ajc
-	CDXgcvZdaTfei1js72XHG/PXAxrYqb++T2ha6O1v1QDdYAOnTCpsm6KnzUXf9hMl
-	oqK/VkN02b5sfB8ed2td/DDK3opT+66nGG8iSCBPrPbDwVPCCL5jZTRxJyBEDfuN
-	u2YXl4xRxiVzmXiUk+GJzsZrdI4xDOIQBGKRYAArCCwvCcXJaRiGilVBPScbVIj+
-	IPY96cTkcYLKc1wGvlhWA==
-X-Virus-Scanned: USTUTT mailrelay AV services at mxex1.tik.uni-stuttgart.de
-Received: from mxex1.tik.uni-stuttgart.de ([127.0.0.1])
- by localhost (mxex1.tik.uni-stuttgart.de [127.0.0.1]) (amavis, port 10031)
- with ESMTP id 5w67eyDNGiHH for <linux-btrfs@vger.kernel.org>;
- Thu, 26 Jun 2025 13:43:45 +0200 (CEST)
-Received: from authenticated client
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxex1.tik.uni-stuttgart.de (Postfix) with ESMTPSA
-Date: Thu, 26 Jun 2025 13:43:45 +0200
-From: Ulli Horlacher <framstag@rus.uni-stuttgart.de>
-To: linux-btrfs@vger.kernel.org
-Subject: using snapshot for backup: best practise?
-Message-ID: <20250626114345.GA615977@tik.uni-stuttgart.de>
-Mail-Followup-To: linux-btrfs@vger.kernel.org
+	s=arc-20240116; t=1750941007; c=relaxed/simple;
+	bh=CXStEVJvcv+k2Q2vxM4gbvEwCMVyfWubEkIRfPVOaNY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=AmFmFUTOe2KhTzjLP3UK7UC3JcfYM3zyDVvYakWEegeog823oBhZxCqD1+DbddOQT/kI1KYuM/RXYa0PxLOkV1+/iC8c2Up/NTAi5mqGFqy0iQQTdXfR6OyEcAMl6Avg/eRAdx5Imu6s5KJLUDjSjsVYzRbriianCGPZQzd6TZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3df2d0b7c7eso9830715ab.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Jun 2025 05:30:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750941005; x=1751545805;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+1o3hxzaUWzzHbBMm9wAarkIlEGX97bbmCARttE5VPQ=;
+        b=TTjZN0IycWmnH64aL03GZKsNr9PX9M25gDrK3ZgjeQEN1A3egZ/rgQWZ5IfOCGKZXZ
+         Efafwhw5vUhGQujuho9VBjaumXjfhxkn45Wae6xkROe1VYzNwXsNpY13cxg6CoMxgkZd
+         DPfx7ZKbFK4qKhQ5MJiQ+eE0xmWmLTsIvq2QSXato1J67L+KSAcJI3oUx+yEuy1YQ/Uq
+         pxWAddfGvNOO25pq7Tv0JUC6Q6mboXXeYwojD1ZhfsrRibZgoKhD0/ShctKgx8Vf/9SY
+         e8n9LmMVoGLJWk2GGcYbPRf/Ft3Q2Plnd3X7ihXjP30E+NELKMT1lZIArNxEpG82Li8e
+         Qj1w==
+X-Forwarded-Encrypted: i=1; AJvYcCXuFmOuqHIOPX6+PaNZTOfKsHmIjfATIOStetxb8ynauCjDMpWvMd/yVu5AxzyTMiMUs1krbaR+F6jnbQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGG0cH6vcIr/uc7PeSlgV2ja0kVE30So0LtMQp7OoB0y3j88yU
+	lF7VQdUsrkJiz1iqAjmRQuOttYI3NP54wOa3iutcYGBosnDr+bSvcm4qs2DOmOxTRMhw01zjx0P
+	WFSmrYtRYqui5DImXwrLJCAbLvW3sAZbI4s7KzmngxCOK3KnRZv9lWdWmE2Q=
+X-Google-Smtp-Source: AGHT+IFmpFVzPKBoE8YpXAKWX9bRYgOts+wBkYkpz0Rmx1o0jFY1lr//x9Pitxn4d9qLuNlh9BrgPCyx/LGoedvKFAfm45VU3+2p
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Mailer: smtpsend-20240729
+X-Received: by 2002:a92:c241:0:b0:3de:265a:12b with SMTP id
+ e9e14a558f8ab-3df32996d19mr16301395ab.13.1750941004729; Thu, 26 Jun 2025
+ 05:30:04 -0700 (PDT)
+Date: Thu, 26 Jun 2025 05:30:04 -0700
+In-Reply-To: <ac0d17a3-34c6-41a4-9bb8-ad9f3900c809@suse.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <685d3d4c.050a0220.2303ee.01ca.GAE@google.com>
+Subject: Re: [syzbot] [btrfs?] possible deadlock in btrfs_read_chunk_tree
+From: syzbot <syzbot+fa90fcaa28f5cd4b1fc1@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	quwenruo.btrfs@gmx.com, syzkaller-bugs@googlegroups.com, wqu@suse.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hello,
 
-I am using fsfreeze when running a backup to ensure a consistent filesystem.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-While the backup is running writes to the filesystem are suspended and the
-whole system is unresponsive, e.g. logins are not possible.
-On certain errors the unfreeze will not happen and the system is locked
-forever.
+Reported-by: syzbot+fa90fcaa28f5cd4b1fc1@syzkaller.appspotmail.com
+Tested-by: syzbot+fa90fcaa28f5cd4b1fc1@syzkaller.appspotmail.com
 
-Using snapshots seems a better idea for backups :-)
+Tested on:
 
-But snapshots do not include subvolumes.
+commit:         743c198d btrfs: implement remove_bdev super operation ..
+git tree:       https://github.com/adam900710/linux.git shutdown
+console output: https://syzkaller.appspot.com/x/log.txt?x=13a5b182580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=79da270cec5ffd65
+dashboard link: https://syzkaller.appspot.com/bug?extid=fa90fcaa28f5cd4b1fc1
+compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
 
-For example the / filesystem has the subvolumes:
-/home
-/home/tux/test
-/var/spool
-
-When I run the command:
-
-btrfs subvolume snapshot / /.snapshot/_
-
-the snapshot will contain only the root subvolume.
-
-I have to manually add:
-
-rmdir /.snapshot/_/home
-btrfs subvolume snapshot /home /.snapshot/_/home
-rmdir /.snapshot/_/home/tux/test
-btrfs subvolume snapshot /home/tux/test /.snapshot/_/home/tux/test
-rmdir /.snapshot/_/var/spool
-btrfs subvolume snapshot /var/spool /.snapshot/_/var/spool
-
-Then run the backup on /.snapshot/_ und afterwards:
-
-btrfs subvolume del /.snapshot/_/var/spool
-btrfs subvolume del /.snapshot/_/home/tux/test
-btrfs subvolume del /.snapshot/_/home
-btrfs subvolume del /.snapshot/_
-
-But this will work only for this special example!
-And I have hundreds of systems to backup with different filesystem layout!
-
-Is there a best practise "Using snapshots for making backup"?
-I need automatic detecting, creating and removing of nested snapshots.
-
--- 
-Ullrich Horlacher              Server und Virtualisierung
-Rechenzentrum TIK
-Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
-Allmandring 30a                Tel:    ++49-711-68565868
-70569 Stuttgart (Germany)      WWW:    https://www.tik.uni-stuttgart.de/
-REF:<20250626114345.GA615977@tik.uni-stuttgart.de>
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
 
