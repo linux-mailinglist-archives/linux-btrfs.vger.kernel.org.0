@@ -1,164 +1,258 @@
-Return-Path: <linux-btrfs+bounces-14994-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14995-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E9D0AE9DD0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 14:50:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16345AE9E07
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 15:00:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C49F05A1267
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 12:49:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C2A4189A86F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 13:00:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062BE2E1C64;
-	Thu, 26 Jun 2025 12:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8223721CC62;
+	Thu, 26 Jun 2025 13:00:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b="Arcr34xC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P0bqP2cC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx1.mythic-beasts.com (mx1.mythic-beasts.com [46.235.224.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2751EB2F
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Jun 2025 12:49:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.224.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326EF2E336E;
+	Thu, 26 Jun 2025 13:00:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750942189; cv=none; b=ZblTrSTETSDd4EuHP7uWTRFV18qbawpgKt0C84k2j0rUPCW83VeKOE6EXZvb2dx1v7mqLimR8ny6jP7k2C5YjZtqNNulmRM+CUBVgwU6lJhxeTPljrQyRNz39DFJ40dR4r2v2PK+Haddw5FyAuk2f9iTcCNi9Q2B38JZdRhBDSk=
+	t=1750942813; cv=none; b=S1IzHo+k2azHq1H4lD0f3/bTzMSp0LgE8XDA11rHYunIybWHI83A5Ay2vpUOkrCEDXtLlR/WGQNfH13m1/9S1vo6iJaIFTBT1Jq3SVB2ZzhOu3xI7vAS6zU6muSsRJvAgHR7kypYp062PJQ/5ypO8FeFIRQs4X/NLRIrVxvAU6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750942189; c=relaxed/simple;
-	bh=yoM90IawnngJ19PSOOuElZ2sFrQY+zYnHr2EdBur+CI=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:References:
-	 In-Reply-To:Content-Type; b=jVC2Wo1BDuabqSvRDOg4PO3Six/ualJ8uhAEbPeL73YmljuqC2bh358rujn13IYT87Lnqtr1RKly3KLZiIo6guIEqJSHpDkM2RLP77/ctnf3Y9/7HXhEJSk3SYafsg7uva+8MH98AbSs0/6nCG9+F6pruZVdVhDHwvD9gkPJhXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cobb.uk.net; spf=pass smtp.mailfrom=cobb.uk.net; dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b=Arcr34xC; arc=none smtp.client-ip=46.235.224.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cobb.uk.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cobb.uk.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cobb.uk.net
-	; s=mythic-beasts-k1; h=To:Subject:From:Date;
-	bh=7NXICPgIsyP1I78o4/qSIDrQfw79e/VYIubpAeAJx/k=; b=Arcr34xC/kG+IHuTO1djazmuAN
-	rWtQ2Z3EAd+aj1Igh/ZiktnZWxCKv5Hy/KgYOHwld8lunUSfB2OI2UicKmpb2siZVMyXm9PguQScZ
-	eU8jV85LtJeniOd5yRz6aTAh/WKtI/XpKAQYDtEbbshTpreABgv/Lu0Ersbx7F0rHZA197NCeZ+gK
-	N/rL4tK4hsOQz7mvnIYhi2PYx9xWT7l2GqlzgsIFojWziAfc6GxKs90OimkeZHYOWi4ToFe8SnqLQ
-	oY53VM66MifN+upnA9DNFtAZhKIG+zw9+GBomQ3P6qBZVDR9t1Ko8I5XrrhuE2KqiyufIY+Abg2gf
-	DKD+PxbA==;
-Received: by mailhub-cam-d.mythic-beasts.com with esmtpa (Exim 4.94.2)
-	(envelope-from <g.btrfs@cobb.uk.net>)
-	id 1uUluw-005fzg-2j
-	for linux-btrfs@vger.kernel.org; Thu, 26 Jun 2025 13:41:26 +0100
-Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
-	by black.home.cobb.me.uk (Postfix) with ESMTP id 2ADD07DD708
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Jun 2025 13:41:23 +0100 (BST)
-Message-ID: <f36e47c9-f135-473c-b1f1-2fedaef8aa10@cobb.uk.net>
-Date: Thu, 26 Jun 2025 13:41:23 +0100
+	s=arc-20240116; t=1750942813; c=relaxed/simple;
+	bh=l59Q2IYzQjDwEuvddBhgYTuAAdI9DL0W+F7dsJFT5NA=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=XfazbgqRRdNix8JM+PPINrADOo4DGLbxBBMW/Lzc0MldM2xi2YOdheBPb8CjFu5A5BfpQbVae4CiVjHp6j6E0YGE7JsMZLEnYJYao/8vysLHHuXtW9fG7crafPaJkRZCAemyu6MlgUVpupkwnmVwxJUyKPaP0OTHxIoaJUG60gs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P0bqP2cC; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e733e25bfc7so795290276.3;
+        Thu, 26 Jun 2025 06:00:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750942811; x=1751547611; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=l59Q2IYzQjDwEuvddBhgYTuAAdI9DL0W+F7dsJFT5NA=;
+        b=P0bqP2cC7CVTBuqCv8+w+DSAosdpuUQRs0g7wrKrdQlXUHkN0Mn0glhJEWOv99qMMi
+         ot5TIVJL/o3z/7OJlZE2d6WqtqrLybcBt6vXGi6DMs1VqbObqDmwZYqHunSeyQYG1lwP
+         jgJY5sOJHAaW53B4+EEDR1CgG7a1Hh6bzfprLfo1zzJTHIwTjoYE3dVjQ4uVhke1648j
+         SpM17LcfcPN1I79q/irQ3WYTKJ8GJtuhNyEYzzc18CFPrAM8g0ic8utwZL61VkP33TEu
+         UrMbU3fwtqdPer0Pg50c1BBaWmZo8TBBXWN8ZUQpmzOHlQSO84E1vL2RBdE1PeBI6JbR
+         LcDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750942811; x=1751547611;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=l59Q2IYzQjDwEuvddBhgYTuAAdI9DL0W+F7dsJFT5NA=;
+        b=H+mNmiOop8UMQH9Lg/Qfq4WJIPYwxjUvOXz9gJU9YgCXtH8xvxCjUd1I339nFL6kdL
+         pNVkpbcSUc+0ge5qFLm1rM8FLlkAZov3SKkNz4KPxw+6zgCV/q3vjcpW/2lwd42XtyxF
+         Lu0SmkelUBZU99jPOGE8FRghJd07eavU8vwa4mX0GC1bRlJYsfZW4z6ASDd0Vq1lunMb
+         Z8ofrZ0/CXHMN1b7PHdTG0iw8xvT0N8q6owwEZyX47BNdbF+sZOAWM4wh2xMOM9QFpmC
+         gfnJGHjNw+MYTLwdMlImrsB5Y+8BxUst5F+0eySLBBPTgxouws7G+iCuwlQVwmFhEB+K
+         /5ZA==
+X-Forwarded-Encrypted: i=1; AJvYcCUpVTkWPV4oSZ83y7yeK6j+HzNpX+JfGsJ/y5EdcCk22kA/8UUUuFfaI+FwyPDYfVl8CdxXwDpm1JeXVhE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw2oWVnSEX0gSBe2rA3hPV6l5x3PE5nAmwaL5Jgg6US+P730rXW
+	7oYnHfOLZTTxT2hcJpJCB4WCaLMf5gcIvt7Q7hiIuvE8NsMH45oytkEprs3GXojrVC8X/td60Qn
+	qc6dg0YmOINMtwJU59+nBvuABBmHYW4w=
+X-Gm-Gg: ASbGncs3AyG8cghP4qqSXzxTDuRTK0A48E7kyfgahYaEGO+CAq1CAdUfGefJCSMcT6U
+	6eBZn49gaWV9g0LANR83yxeBeMgc04rO42J7SgjWodLVpcJ8uKT8tJHmiO2uLyaLQbsiz2nqRnU
+	kVLnHBT4PasuTUilyXDgnG5XskCC4kAIrTXVzuV3hTLA==
+X-Google-Smtp-Source: AGHT+IHX/V7BJDRjogcwcgoxwe/caxTF1FobH7YTTtUH61VqShQLBLZ+SuP6JaZgNIKj7lJqe1L2x+T+8vOf87tnMzE=
+X-Received: by 2002:a05:6902:6b0c:b0:e87:9bab:25d with SMTP id
+ 3f1490d57ef6-e879bab064dmr4262028276.39.1750942810614; Thu, 26 Jun 2025
+ 06:00:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Graham Cobb <g.btrfs@cobb.uk.net>
-Subject: Re: using snapshot for backup: best practise?
-To: linux-btrfs@vger.kernel.org
-References: <20250626114345.GA615977@tik.uni-stuttgart.de>
-Content-Language: en-US
-In-Reply-To: <20250626114345.GA615977@tik.uni-stuttgart.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-BlackCat-Spam-Score: 10
+From: cen zhang <zzzccc427@gmail.com>
+Date: Thu, 26 Jun 2025 20:59:58 +0800
+X-Gm-Features: Ac12FXzsG6MwkdNo-vfAOMfc9FQGmKEA_XcUaFyaxvJywwqyFAHjaDhqNFO2D9U
+Message-ID: <CAFRLqsV+cMDETFuzqdKSHk_FDm6tneea45krsHqPD6B3FetLpQ@mail.gmail.com>
+Subject: [BUG] btrfs: Data race between btrfs_quota_disable and
+ btrfs_qgroup_rescan leads to a UAF
+To: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	baijiaju1990@gmail.com, zhenghaoran154@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-I do various sorts of backups but the main one built around snapshots 
-uses btrbk. It doesn't solve the problem you mention below but it does 
-reduce the problem to listing each subvolume once in the config file 
-(which can easily be automated if you want). For example, here is an 
-extract from the btrbk.conf on one of my systems:
+Hello maintainers,
 
-#
-# Data pool
-#
-volume /mnt/data
-  snapshot_dir btrbk_snapshots
-  snapshot_create onchange
-  preserve_day_of_week monday
+I've encountered a kernel panic while using Btrfs. The issue appears
+to be a use-after-free (UAF) caused by a data race between the
+btrfs_quota_disable operation and a background btrfs_qgroup_rescan
+task.
 
-# On the disk itself only keep recent snapshots
-  snapshot_preserve_min  5d
-  snapshot_preserve 10d 4w
-  timestamp_format long-iso
+Kernel Version: 6.16.0-rc1-g7f6432600434-dirty
+Environment: QEMU Virtual Machine
 
-# On the backup disk keep historic monthlies
-  target_preserve_min no
-  target_preserve 30d 8w *m
-  target send-receive    /snapshots/black_snapshots
+Problem Description & Root Cause Analysis:
 
-#Do not snapshot the deb-proxy cache
-#subvolume home/cache
-# Do not snapshot emergency
-#subvolume emergency
-subvolume home/boinc-client
-# For boinc just keep the latest plus one daily
-  snapshot_preserve_min latest
-  snapshot_preserve 1d
-  target_preserve 4d 1w 1m
-subvolume home/cobb
-subvolume home/default-user
-subvolume home/dmarc-staging
-subvolume home/imap-archive
-subvolume projects
-subvolume home/mywiki
-.
-.
-.
+The issue is triggered by the concurrent execution of the
+btrfs_quota_disable function and the background btrfs_qgroup_rescan
+worker.
 
-And, of course, btrbk handles all the management of the snapshots 
-themselves (see the first half of the example file above, which keeps 10 
-daily snapshots and 4 weekly snapshots on the disk itself and a 
-different selection on another disk).
+When quotas are disabled via an ioctl call, the btrfs_quota_disable ->
+btrfs_free_qgroup_config path iterates through the qgroup tree and
+frees the memory for each btrfs_qgroup object using kfree.
 
+Simultaneously, a background qgroup rescan task (btrfs_qgroup_rescan
+-> qgroup_rescan_zero_tracking) may be running, which iterates over
+and accesses the very same qgroup tree.
 
-On 26/06/2025 12:43, Ulli Horlacher wrote:
-> 
-> I am using fsfreeze when running a backup to ensure a consistent filesystem.
-> 
-> While the backup is running writes to the filesystem are suspended and the
-> whole system is unresponsive, e.g. logins are not possible.
-> On certain errors the unfreeze will not happen and the system is locked
-> forever.
-> 
-> Using snapshots seems a better idea for backups :-)
-> 
-> But snapshots do not include subvolumes.
-> 
-> For example the / filesystem has the subvolumes:
-> /home
-> /home/tux/test
-> /var/spool
-> 
-> When I run the command:
-> 
-> btrfs subvolume snapshot / /.snapshot/_
-> 
-> the snapshot will contain only the root subvolume.
-> 
-> I have to manually add:
-> 
-> rmdir /.snapshot/_/home
-> btrfs subvolume snapshot /home /.snapshot/_/home
-> rmdir /.snapshot/_/home/tux/test
-> btrfs subvolume snapshot /home/tux/test /.snapshot/_/home/tux/test
-> rmdir /.snapshot/_/var/spool
-> btrfs subvolume snapshot /var/spool /.snapshot/_/var/spool
-> 
-> Then run the backup on /.snapshot/_ und afterwards:
-> 
-> btrfs subvolume del /.snapshot/_/var/spool
-> btrfs subvolume del /.snapshot/_/home/tux/test
-> btrfs subvolume del /.snapshot/_/home
-> btrfs subvolume del /.snapshot/_
-> 
-> But this will work only for this special example!
-> And I have hundreds of systems to backup with different filesystem layout!
-> 
-> Is there a best practise "Using snapshots for making backup"?
-> I need automatic detecting, creating and removing of nested snapshots.
-> 
+Due to a lack of proper locking to synchronize these two operations,
+the qgroup_rescan_zero_tracking function can access a btrfs_qgroup
+object that has just been freed by btrfs_free_qgroup_config.
 
+When it then attempts to modify a member of this dangling pointer
+(e.g., calling list_add in qgroup_dirty), it triggers a
+use-after-free, which ultimately leads to the kernel panic.
+
+We found this bug using our proprietary data-race detector in
+conjunction with syzkaller. Our tool first detected a race condition
+and then actively intervened by swapping the execution order of the
+conflicting operations. This controlled reordering directly exposed a
+latent use-after-free (UAF) vulnerability, which was subsequently
+caught and reported by KASAN.
+
+I believe this issue could be fixed by adding an appropriate
+synchronization mechanism (e.g., a mutex) between the
+btrfs_quota_disable path and the background qgroup scanning tasks.
+
+Full kernel panic log is attached below:
+
+var addr ffff888168296888, addr masked 888168296888
+Kernel panic: ============ DATARACE ============
+VarName 2268446652518064666, BlockLineNumber 9, IrLineNumber 1, is write 1
+Function: found_watchpoint kernel/kccwf/wp_checker.c:75 [inline]
+Function: watchpoints_monitor+0x1237/0x19a0 kernel/kccwf/wp_checker.c:155
+Function: kccwf_rec_mem_access+0x7d0/0xae0 kernel/kccwf/core.c:582
+Function: list_del include/linux/list.h:230 [inline]
+Function: __del_qgroup_rb+0x2c2/0x17c0 fs/btrfs/qgroup.c:233
+Function: btrfs_free_qgroup_config+0xa1/0x2b0 fs/btrfs/qgroup.c:645
+Function: btrfs_quota_disable+0x826/0x25e0 fs/btrfs/qgroup.c:1393
+Function: btrfs_ioctl_quota_ctl+0x3b3/0x4e0 fs/btrfs/ioctl.c:3703
+Function: btrfs_ioctl+0xb3f/0x1480 fs/btrfs/ioctl.c:5323
+Function: vfs_ioctl fs/ioctl.c:51 [inline]
+Function: __do_sys_ioctl fs/ioctl.c:907 [inline]
+Function: __se_sys_ioctl+0xd1/0x130 fs/ioctl.c:893
+Function: do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+Function: do_syscall_64+0xcf/0x240 arch/x86/entry/syscall_64.c:94
+Function: entry_SYSCALL_64_after_hwframe+0x77/0x7f
+Function: 0x0
+============OTHER_INFO============
+VarName 18129403906671370250, BlockLineNumber 22, IrLineNumber 1,
+watchpoint index 19991
+Function: set_report_info+0xa6/0x1f0 kernel/kccwf/report.c:49
+Function: setup_watchpoint kernel/kccwf/wp_checker.c:102 [inline]
+Function: watchpoints_monitor+0x7eb/0x19a0 kernel/kccwf/wp_checker.c:167
+Function: kccwf_rec_mem_access+0x7d0/0xae0 kernel/kccwf/core.c:582
+Function: __list_add include/linux/list.h:155 [inline]
+Function: list_add include/linux/list.h:169 [inline]
+Function: qgroup_dirty fs/btrfs/qgroup.c:1434 [inline]
+Function: qgroup_rescan_zero_tracking fs/btrfs/qgroup.c:4005 [inline]
+Function: btrfs_qgroup_rescan+0x4dc/0xa30 fs/btrfs/qgroup.c:4036
+Function: btrfs_ioctl_quota_rescan+0x42a/0x530 fs/btrfs/ioctl.c:3943
+Function: btrfs_ioctl+0x1187/0x1480 fs/btrfs/ioctl.c:5331
+Function: vfs_ioctl fs/ioctl.c:51 [inline]
+Function: __do_sys_ioctl fs/ioctl.c:907 [inline]
+Function: __se_sys_ioctl+0xd1/0x130 fs/ioctl.c:893
+Function: do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+Function: do_syscall_64+0xcf/0x240 arch/x86/entry/syscall_64.c:94
+Function: entry_SYSCALL_64_after_hwframe+0x77/0x7f
+=================END==============
+Found watch_point 19991
+BTRFS info (device sdb): balance: start -s
+BTRFS info (device sdb): balance: ended with status: 0
+BTRFS warning (device sdb): get dev_stats failed, device not found
+[...]
+==================================================================
+BUG: KASAN: slab-use-after-free in __list_del_entry
+include/linux/list.h:218 [inline]
+BUG: KASAN: slab-use-after-free in list_del_init
+include/linux/list.h:287 [inline]
+BUG: KASAN: slab-use-after-free in btrfs_run_qgroups+0x3cd/0x1ec0
+fs/btrfs/qgroup.c:3132
+Read of size 8 at addr ffff888168296890 by task btrfs-transacti/228
+
+CPU: 0 UID: 0 PID: 228 Comm: btrfs-transacti Not tainted
+6.16.0-rc1-g7f6432600434-dirty #52 PREEMPT(voluntary)
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS
+1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x108/0x150 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:408 [inline]
+ print_report+0x191/0x5b0 mm/kasan/report.c:521
+ kasan_report+0x139/0x170 mm/kasan/report.c:634
+ __list_del_entry include/linux/list.h:218 [inline]
+ list_del_init include/linux/list.h:287 [inline]
+ btrfs_run_qgroups+0x3cd/0x1ec0 fs/btrfs/qgroup.c:3132
+ commit_cowonly_roots+0x67c/0x1c10 fs/btrfs/transaction.c:1354
+ btrfs_commit_transaction+0x2a5b/0xc800 fs/btrfs/transaction.c:2457
+ transaction_kthread+0x5b7/0xcc0 fs/btrfs/disk-io.c:1590
+ kthread+0x351/0x780 kernel/kthread.c:464
+ ret_from_fork+0x10e/0x1c0 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+Allocated by task 127769:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
+ __kasan_kmalloc+0x82/0x90 mm/kasan/common.c:394
+ kmalloc_noprof include/linux/slab.h:905 [inline]
+ kzalloc_noprof include/linux/slab.h:1039 [inline]
+ btrfs_quota_enable+0x2d07/0x5d10 fs/btrfs/qgroup.c:1201
+ btrfs_ioctl_quota_ctl+0x36c/0x4e0 fs/btrfs/ioctl.c:3673
+ btrfs_ioctl+0xb3f/0x1480 fs/btrfs/ioctl.c:5323
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:907 [inline]
+ __se_sys_ioctl+0xd1/0x130 fs/ioctl.c:893
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcf/0x240 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Freed by task 127948:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:576
+ poison_slab_object mm/kasan/common.c:247 [inline]
+ __kasan_slab_free+0x36/0x50 mm/kasan/common.c:264
+ kasan_slab_free include/linux/kasan.h:233 [inline]
+ slab_free_hook mm/slub.c:2388 [inline]
+ slab_free mm/slub.c:4670 [inline]
+ kfree+0xfd/0x340 mm/slub.c:4869
+ btrfs_free_qgroup_config+0xcd/0x2b0 fs/btrfs/qgroup.c:647
+ btrfs_quota_disable+0x826/0x25e0 fs/btrfs/qgroup.c:1393
+ btrfs_ioctl_quota_ctl+0x3b3/0x4e0 fs/btrfs/ioctl.c:3703
+ btrfs_ioctl+0xb3f/0x1480 fs/btrfs/ioctl.c:5323
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:907 [inline]
+ __se_sys_ioctl+0xd1/0x130 fs/ioctl.c:893
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcf/0x240 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The buggy address belongs to the object at ffff888168296800
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 144 bytes inside of
+ freed 512-byte region [ffff888168296800, ffff888168296a00)
+[...]
+==================================================================
+Hope this helps in tracking down and fixing the issue.
+
+Here is the detail:
+
+Thank you for your attention to this matter.
+
+Best regards,
+Cen Zhang
 
