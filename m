@@ -1,80 +1,81 @@
-Return-Path: <linux-btrfs+bounces-14983-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14984-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3B39AE99B4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 11:11:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D98C4AE99C3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 11:18:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BCF63A70E8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 09:10:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79B1A1C24132
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 09:19:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900B32BCF54;
-	Thu, 26 Jun 2025 09:10:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82A4A29A331;
+	Thu, 26 Jun 2025 09:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fqnwnt/W"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="P5fgKDa+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DAA029E0EE
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Jun 2025 09:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 027263594E
+	for <linux-btrfs@vger.kernel.org>; Thu, 26 Jun 2025 09:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750929043; cv=none; b=GuYc1M0RXK01TbFCXxmQGx3ATeis/ntpierwLt56MI6oCNUrlF/WusjV+dShlMjGRrkdBpL+cFK7WBHX29yxkTChEqEy/YUQ0XhFaQC7EzXLIEHNjB4DlmgRM7XH/kKmq5ubP5h0m7x3cwnek+pl177JvkWsCVFg2R6+N9JRl2s=
+	t=1750929518; cv=none; b=opd4cUPqAXztwmseat7O/8lkCsbRM146ubqVwQbU0muwaOpWJUW/H59lb6weVzWAQi3Ro/znO2w51CsWQHfXrifTerAA6E1LwJf9CfH/A90DPk1N1ri8u2VWGJxUPWjI6rf3vIgY0CRUYNYv0TRiEd/iewYa4kTWOCU+vpewfHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750929043; c=relaxed/simple;
-	bh=U6RSnd+wYLm+0tjwMhOy8BFqRTtzEB822jcXyORqUuM=;
+	s=arc-20240116; t=1750929518; c=relaxed/simple;
+	bh=4q/7WtNfp2ZqEhqqzUo/NJxuU/TI/2QvHKkAb56VYdw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qtcw7WJe2uzojOF3B70pn5QoNZbwlpQ97ovyJK9CyFIcXdGCZVo9X6UnOLug9hifgqwZHfoYlXGMiLTE0bH0MbNktD4G8m0c/4PjeXWVfN38oRIDByEaNxVa6aDY7ccVgLa+qPYx8/dPu1/cdWUftXvBwRLN7gxMaQFv406L4Ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fqnwnt/W; arc=none smtp.client-ip=209.85.221.48
+	 In-Reply-To:Content-Type; b=X8m5yPi4ev98kzkX6isyi7nSRKHFvrM9/AoejWSE0YT0BsB6WJLaHSwvKG6HxD10+oS+gIy91+JzDFDOtqqjsw4kuMkfjO3Ieyap12TmxWjpN0gi81rT5azrpI89GnVAT/arVh6mbT0jsqOrNKNxUbQNSqNwlIi6PX6qRznC3zM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=P5fgKDa+; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3a6e8b1fa37so707871f8f.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Jun 2025 02:10:41 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3a510432236so564706f8f.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Jun 2025 02:18:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1750929040; x=1751533840; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1750929514; x=1751534314; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=uMd/JyGLuKS0RBMxfxqFgWYU1CCGC47M7FEupYZIOgQ=;
-        b=fqnwnt/WxwDSRD08qo4ZSglFYs0qBBCCkWxy/cd+2EPArRW2TgcZHweMyxORHy+PB+
-         Cj5FPvB0gi4bpI+kzWnE1XuH6oitx8yJhs+a+N3nUq0agtH887f93Rj7prAIXVEm9mCH
-         w/SJFfDgW+YLfjYXeNCfAZToSOGyzs3DgenOO4o+JWJRD5lvUoTYAxCZHkJPNt/MKXnZ
-         WNj1hqNKJ/u8YQcLWGQwAWkcU8NAr2CsTkh/Vy4MmTSUvwmjGOxbFU7O3Dkvym558mPM
-         780NmnuSrT/Yg7TmMoyIxSkyKAJjSeHR1USS+BT+qTmRgMDSw+fg29VICTCGZc82QBkw
-         41Jg==
+        bh=c6W4wlDqiomgp/Jq1hQYkIQoYQUhsw/H9C2s89PCdfg=;
+        b=P5fgKDa+Gqq8uSpZCnYleZZblcK8D79AZtDdJtfkQbbiXVnXkc49UK9Bq/93ZLLUh2
+         frm7S8fLmoyp4stmAnoUdf9Q/pDUxSqbWj/iQaxUnfmpAFKCyvmM8lwMSVy25hxNEbcG
+         S6cF4uKM/nSwr/HHObWP6cMLSps+a0Te85kPqUNI0UMbql57ogrpOrxZAqn+uPQ8P8mQ
+         Bqu4bDg6ibh7Ym9n461c1nJbfjVLR49AypIpJpAHJNTei0QVz0xuNiN6t4Q6Cr8yNpss
+         Ow6CIcA+/mbtU2jvF4AJhMPT361ueq22hAq5whMRz7unbMXfpvrWBNdETcEmum9z83G1
+         8yDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750929040; x=1751533840;
+        d=1e100.net; s=20230601; t=1750929514; x=1751534314;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uMd/JyGLuKS0RBMxfxqFgWYU1CCGC47M7FEupYZIOgQ=;
-        b=h1uL9lqIQpe02GMe72BpbIbwk2+QJRXnBxlFGUmzeP0WbfNQMxE7gmQcFeHL/pYYI3
-         4PEMC86I5TLJ9VAWcu1WuDglpIgN3+scrL+TtepaFVqfnp92tEcri/GNrtTQ19+kzFZ5
-         1N134YwAQmpDa1o2ftzqpvrbBYSLyQr/JFbOCSDVjPsVBWBFgD1h3c78nj8efhjjtH+5
-         aGubGeMjG2S5vz8Hab9z5HuKMj0N6IFefgwQn/6t5bCyEPtFV/BJKvdfc7hD7283D+NC
-         LNzbfsIgDvYx3B7lKbYfk23BaJTIHwnau8ly9j5SKaS9Lug1qJnArwBPLs53mowt1Zmu
-         qtxg==
-X-Gm-Message-State: AOJu0Yyl68yYDvANDn83UmEOp4mwJoUs7tqmbdonfosGLv7JZxH8dX+n
-	vExcxbMO7+W6YWpMNl2sq0QeP3NrSuDAl62hpXaitjZQL9ZHcdRUgL5ucio8IiZKroU=
-X-Gm-Gg: ASbGnct5h6tqF5ahCPw+eeFkSS4XBuUiaPQq9eTk/nK6KKj2xR9W+aCDdVan26ZU9sg
-	5hM2fy4kpaPzrL1rplZ0Ks9xkmzjBMtlOorjQUJxEcWaOsIR1fEzDbxrTemo/DnIlmn1VKKjVy4
-	TJrr6cT+xF93K34e5ihm+BDDNgJkfj6WZH2dJy8YZwWq4tuH8Mnf4RkBeJiFMpbObqSJfx35Omu
-	Sy3fUUAEu7xbowGeCzXsrqkoB5g3zIackLJrcFVjh45ESiyvzwwLFniIiw6AuqK+ln2URzv4OR6
-	//e79yUlB6wJKHSY8uXs7nGW3kxkmDJBdRV9p983i90kseeNQGP4RFNKSINTPbKZVf/btY6bhYM
-	cOfEvNVcP7jpElQ==
-X-Google-Smtp-Source: AGHT+IHD8Fu7B69vsQ7Tdx1hsXXvedNHpvs2Os8oK1UcXYCK/TyIDEmiHCApn/3mXgwyGxoQHZT4Qw==
-X-Received: by 2002:a05:6000:2207:b0:3a4:dfa9:ce28 with SMTP id ffacd0b85a97d-3a6ed5b880amr5409966f8f.5.1750929039376;
-        Thu, 26 Jun 2025 02:10:39 -0700 (PDT)
+        bh=c6W4wlDqiomgp/Jq1hQYkIQoYQUhsw/H9C2s89PCdfg=;
+        b=KoMASAw+nWCcUD6GL8OcDcwJUf1/KQGLoxY+Nzmqm5lUL/LDDltvsPqGRexS+Hu6la
+         aFKYiXCtGa2uClV5DBSWkhQ72TB8smSBZxxV5MZv5rZzeEqW4ELS+7AvpqXwa7AqSbTB
+         K9Swop7rPg7zlMqgWipnIwbVtLXWRvYw4Vc93UIaVlFfAQuSKpqEV5YFsdj+gTGt4FnT
+         h6yQIO/ko424xvDXpVwLl4qwF5n4uuRA1TXJICNrF5cpFUzAFAsvk7nQ2RtBrUpcoeoU
+         50DPfKnr7laWeFkDb9rLPXd2kNEz8wERUQGqvwUySjujEBwTiWMk0OWbxrOaeXPicKrM
+         1SQw==
+X-Forwarded-Encrypted: i=1; AJvYcCWiGu8aKHvCZbQ8zdPNKZiJWNHkYbDDb91YB4SiGooUI1G3XXcuLhKKUx6G6wrPgItTQewusy7o+a0MDQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxCNovqYzQgLI9AWtWJ3U0HEDcMHLXacpihMuh8ABPfgN1Y7l0P
+	ECel5rvS7+aBAPQzT+srWTp8MvZuYBI0liIgGzrNYc5m7I9RAXWn4RLwOZy7xlaL1sM=
+X-Gm-Gg: ASbGncukzKtJODcjbu7ewpoUqpz2K41yV70a23zwcPrfeOTuYaMWPb/dfq+D9Hj7MNJ
+	9Sfu/ryctfRxOxVfDb9mIIR5samzKmsEM9I2AIggLey1vd3Xqhaf+aZf6luhQb1HYpnXqOR+Y+m
+	ISx9FCrWAZiC3LIXunIivHVKSNYWZwmplkkZwdyVPLyn5F4En6lnT8aP+nlSi8X91sPF9Fj2J5M
+	pmCCidUDcWJpdF+R9NNW7WjUd8sAz1rkCSpmuVJJiTlQoabG0LcHq2jnR+ZFQyEXLXNEKa5UYJv
+	ERNsKI6Wzvnc6IfJ4YPmn7keI3uuGG1+CPiJ/omQlTrYmn2+Se4jpn38VjpbJZALlG+IxKyGOXt
+	lNkeIDZMoHFs4lw==
+X-Google-Smtp-Source: AGHT+IFAmnjJ1pjUbU6WkCuamLJK9N8VeYcd0XVx+r04EarjM02GChLGl7kM32anWrD0BGbJoTJFqg==
+X-Received: by 2002:a05:6000:25ca:b0:3a4:f379:65bc with SMTP id ffacd0b85a97d-3a6ed64a81emr5288789f8f.40.1750929513973;
+        Thu, 26 Jun 2025 02:18:33 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74ad0bd67d4sm4855793b3a.40.2025.06.26.02.10.36
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-315f5383eb6sm4034185a91.10.2025.06.26.02.18.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Jun 2025 02:10:38 -0700 (PDT)
-Message-ID: <3316b26c-346a-43a7-bfe3-b9c2d3b81c6f@suse.com>
-Date: Thu, 26 Jun 2025 18:40:34 +0930
+        Thu, 26 Jun 2025 02:18:33 -0700 (PDT)
+Message-ID: <fd3d7d4a-ebad-4ec2-8a9b-4bf783034a05@suse.com>
+Date: Thu, 26 Jun 2025 18:48:29 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,12 +83,15 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] Five data races in btrfs
-To: haoran zheng <zhenghaoran154@gmail.com>, clm@fb.com,
- josef@toxicpanda.com, dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- baijiaju1990@gmail.com, zzzccc427@gmail.com
-References: <CAKa5YKiTodi=aDMqa8gb4o+4RAdis=-OYFv4HP9nQ3EHcCTzMA@mail.gmail.com>
+Subject: Re: [PATCH 1/6] fs: add a new remove_bdev() super operations callback
+To: Christian Brauner <brauner@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, linux-btrfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz
+References: <cover.1750895337.git.wqu@suse.com>
+ <c8853ae1710df330e600a02efe629a3b196dde88.1750895337.git.wqu@suse.com>
+ <20250626-schildern-flutlicht-36fa57d43570@brauner>
+ <e8709e52-5a64-470e-922f-c026190fcd91@suse.com>
+ <20250626-fazit-neubau-ef77346c5d8b@brauner>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -114,107 +118,93 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <CAKa5YKiTodi=aDMqa8gb4o+4RAdis=-OYFv4HP9nQ3EHcCTzMA@mail.gmail.com>
+In-Reply-To: <20250626-fazit-neubau-ef77346c5d8b@brauner>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/6/26 17:53, haoran zheng 写道:
-> [BUG] Five data races in btrfs
+在 2025/6/26 18:40, Christian Brauner 写道:
+> On Thu, Jun 26, 2025 at 06:14:03PM +0930, Qu Wenruo wrote:
+>>
+>>
+>> 在 2025/6/26 18:08, Christian Brauner 写道:
+>>> On Thu, Jun 26, 2025 at 09:23:42AM +0930, Qu Wenruo wrote:
+>>>> The new remove_bdev() call back is mostly for multi-device filesystems
+>>>> to handle device removal.
+>>>>
+>>>> Some multi-devices filesystems like btrfs can have the ability to handle
+>>>> device lose according to the setup (e.g. all chunks have extra mirrors),
+>>>> thus losing a block device will not interrupt the normal operations.
+>>>>
+>>>> Btrfs will soon implement this call back by:
+>>>>
+>>>> - Automatically degrade the fs if read-write operations can be
+>>>>     maintained
+>>>>
+>>>> - Shutdown the fs if read-write operations can not be maintained
+>>>>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>> ---
+>>>>    fs/super.c         |  4 +++-
+>>>>    include/linux/fs.h | 18 ++++++++++++++++++
+>>>>    2 files changed, 21 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/super.c b/fs/super.c
+>>>> index 80418ca8e215..07845d2f9ec4 100644
+>>>> --- a/fs/super.c
+>>>> +++ b/fs/super.c
+>>>> @@ -1463,7 +1463,9 @@ static void fs_bdev_mark_dead(struct block_device *bdev, bool surprise)
+>>>>    		sync_filesystem(sb);
+>>>>    	shrink_dcache_sb(sb);
+>>>>    	evict_inodes(sb);
+>>>> -	if (sb->s_op->shutdown)
+>>>> +	if (sb->s_op->remove_bdev)
+>>>> +		sb->s_op->remove_bdev(sb, bdev, surprise);
+>>>> +	else if (sb->s_op->shutdown)
+>>>>    		sb->s_op->shutdown(sb);
+>>>
+>>> This makes ->remove_bdev() and ->shutdown() mutually exclusive. I really
+>>> really dislike this pattern. It introduces the possibility that a
+>>> filesystem accidently implement both variants and assumes both are
+>>> somehow called. That can be solved by an assert at superblock initation
+>>> time but it's still nasty.
+>>>
+>>> The other thing is that this just reeks of being the wrong api. We
+>>> should absolutely aim for the methods to not be mutually exclusive. I
+>>> hate that with a passion. That's just an ugly api and I want to have as
+>>> little of that as possible in our code.
+>>
+>> So what do you really want?
+>>
+>> The original path to expand the shutdown() callback is rejected, and now the
+>> new callback is also rejected.
+>>
+>> I guess the only thing left is to rename shutdown() to remove_bdev(), add
+>> the new parameters and keep existing fses doing what they do (aka,
+>> shutdown)?
 > 
-> Hello maintainers,
-> 
-> I would like to report five data race bugs we discovered in the BTRFS
-> filesystem on Linux kernel v6.16-rc3. These issues were identified
-> using our data race detector.
-> 
-> We are currently analyzing the Btrfs codebase and have identified
-> several instances that may involve potential data races during
-> concurrent execution. While we have reviewed the relevant code
-> paths carefully, we are uncertain whether these issues could lead
-> to any practical impact or system instability.
-> 
-> Below is a summary of the findings:
-> 
-> ---
-> 
-> 1. Race between `__btrfs_set_fs_incompat()` and `btrfs_fs_incompat()`
-> 
-> `__btrfs_set_fs_incompat()` performs a write to the
-> `super_copy->incompat_flags` field under `fs_info->super_lock` while
-> `btrfs_need_stripe_tree_update()` calls `btrfs_fs_incompat()` without
-> acquiring `super_lock`, which may read a stale or partially updated
-> value of `incompat_flags`.
+> Yes. My original understanding had been that ->remove_bdev() would be
+> called in a different codepath than ->shutdown() and they would be
+> complimentary. So sorry for the back and forth here. If that's not the
+> case I don't see any point in having two distinct methods.
 
-I think we should cache the super block incompat/compat_ro flags into 
-btrfs_fs_info, so that we can use bit operations.
-> ---
-> 
-> 2. Race between `btrfs_defrag_file()` and `inode_need_compress()`
-> 
-> In `btrfs_defrag_file()`, the field `inode->defrag_compress` is
-> assigned while holding the inode lock via `btrfs_inode_lock()`.
-> But in `inode_need_compress()`, the same field is read without
-> any apparent locking or memory barrier.
-I do not think we should hold any inode lock just to access defrag_compress.
+That's fine, just want to do a final confirmation that everyone is fine 
+with such change:
 
-Mind to explain why accessing that member without any lock can be 
-problematic?
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index b085f161ed22..c11b9219863b 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2367,7 +2367,8 @@ struct super_operations {
+                                   struct shrink_control *);
+         long (*free_cached_objects)(struct super_block *,
+                                     struct shrink_control *);
+-       void (*shutdown)(struct super_block *sb);
++       void (*remove_bdev)(struct super_block *sb, struct block_device 
+*bdev,
++                           bool surprise);
+  };
 
-The only thing I can think of is some unaligned access,
-but accessing a u8 alone shouldn't need special lock.
-
-> ---
-> 
-> 3. Race between `join_transaction()` and `btrfs_get_fs_generation()`
-> 
-> In `join_transaction()`, `fs_info->generation` is assigned while
-> holding the lock `fs_info->trans_lock`. But reads of
-> `fs_info->generation` are done using READ_ONCE() in
-> `btrfs_get_fs_generation()`.
-
-Again, I didn't see much problem accessing a single u64 value with or 
-without holding a lock.
-
-
-> ---
-> 
-> 4. Race between `btrfs_super_bytes_used()` and `btrfs_update_block_group()`
-> 
-> In `btrfs_set_backup_bytes_used()`, super_copy is read and stored  without
-> holding lock `info->delalloc_root_lock`. But in `btrfs_update_block_group()`
-> the `info->super_copy` is set concurrently.
-
-This is definitely false alert.
-
-In btrfs_update_block_group() it holds a transaction handle, thus no one 
-can commit the current transaction until the transaction handle is released.
-
-Furthermore, btrfs_super_bytes_used() is accessing the superblock copy, 
-but super block copy is only updated during the end of commit transaction.
-
-So it's very safe to access the super block members with a trans handle 
-hold.
-
-
-> ---
-> 
-> 5. Race between `btrfs_defrag_file()` and `btrfs_defrag_file()`
-> 
-> In the function btrfs_defrag_file(), we also noticed a possible
-> race condition involving the writeback_index field of the
-> address_space structure associated with the inode. Specifically,
-> the code performs a read and conditional write without any
-> evident locking:
-
-This may need some extra digging, but so far I'm seeing other fses doing 
-a similar work.
-
-And considering all the above 4 cases, I'm not that confident if your 
-reports are that helpful.
-
-Thanks,
-Qu
-
+  /*
 
