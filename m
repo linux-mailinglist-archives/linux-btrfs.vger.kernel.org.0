@@ -1,217 +1,318 @@
-Return-Path: <linux-btrfs+bounces-14977-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14978-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62429AE9784
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 10:08:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E491AE982D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 10:24:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B55B25A2781
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 08:07:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6C57188675A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 08:24:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E1E25C831;
-	Thu, 26 Jun 2025 08:08:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E423B27CB02;
+	Thu, 26 Jun 2025 08:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cXC41stB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ARqYvKm/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D815425C6E5;
-	Thu, 26 Jun 2025 08:08:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99033277CB4;
+	Thu, 26 Jun 2025 08:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750925285; cv=none; b=Jnr4vG7+hH0oeOXJPcdCv/Bv9gy7ENUlxI09zL95osKwqaTu+aNGsYgZqtkqWCzmJwFzAx1cEoz2GBGOGZ0ZIkXKt8rZRI88RvXYAPOKi/DVujC/0gVjlOdZQtcpWhqQMqCMmena7RCH7WUkNFlMh907z9sRwXtinlu5IiK5vKA=
+	t=1750926237; cv=none; b=hllYS3zb0DYwKj4SQefPO79kE87gsQTAW+itZD3JBlZLYfeNLV+UULwh7LPneVohVloQvu0IVrRX8cig8sIEJiFVExrvhZIQKHByQyQNsIPsgSQt4Sj2dVizao6aWh8DFYICUJ6Vc6FDf0x1eTH/y+4uieWGN77YseY4aYwCLIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750925285; c=relaxed/simple;
-	bh=gAzKTSgSp68b9IMQWQFKh+3mmgTpa4TDO4r6rFK720U=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=rnt7W/DHIySEcOfS+wrBk3hb6ck/M//UN/+ENB0Ty8n7vOjwiQVhi1yt8nSPCOM5RL3Lwi5NKlNSBXKU+2U1Ng/+QrriQrH6l7opFxQUUoWLDQyQOnM0jFhSpL1pedXMtdMgsGqrrhaZ7lMkB09wTYSVEBbtgKGBQmP29PP1r70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cXC41stB; arc=none smtp.client-ip=209.85.219.175
+	s=arc-20240116; t=1750926237; c=relaxed/simple;
+	bh=2sg4aKZ50PN6JTMf/VRT1394fNauO+9uaVnhwqbtqOs=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=p00VyhSsqTEVRH1bbxQyP/DB78t98x28yqo2e/qJYfsFzVk11/5rMSbJRwl2HYcpX0pVOnKcEuufbnsImUgRo+AGZNyy74yCgFAl59KM0+4lj1omzjTXWsMcWKXQVcEvA7hZzMxTb6Rdkl8+8Nu5Vk1c9whkuPwi4xpvg0MZ6I4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ARqYvKm/; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e8187601f85so579225276.2;
-        Thu, 26 Jun 2025 01:08:03 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-311e46d38ddso676525a91.0;
+        Thu, 26 Jun 2025 01:23:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750925283; x=1751530083; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750926235; x=1751531035; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=SjO1G/XUcJ7a9ivy0+i5qLS+ytfTqVMHX0FC/YbGVtU=;
-        b=cXC41stByorkxRb8qoYPcydawoPd7r6zF19hV83gInyH6Cny4mhE7FqGqYX4zpxM1Y
-         rlUnsATWqOO/yjJ+LzxyU2Hf3hbfokusw6Kc/9+0GPor7acS8dRVWGNgFnDlHV4lCxvh
-         uusNNg7Y6ZM/cEsPPWgVHVbEnO0iJaNpn4cqspTA9OPl8YLbDkHGquxq7A4VaEsGReVc
-         uJeAnUdyV8XFXYOjF/QSOMnMibxpv1cdzjkbTtAOWl6eBz5aUNnkcg+5Stq8cF94VmV6
-         gOuAD9eB9aktrt5BzS/fhYXGgEvFa2l4MqnVAW3i0aerrwI0ohrwEY15TrO9zEBe7JnQ
-         mRXQ==
+        bh=Tsh3K6SkAfSJY7NsGkkV19W6WnijDmjK5b+ryFXoGuk=;
+        b=ARqYvKm//MxRBaiNEndTA6EgHqBjl5UU8fMgVaQfVqtJRhA7oZSpPD6mabT/vfffnu
+         CcXsLFRDveQgddOsqqUTroCIU7jYoZti1pNhj+JY55BN5w7KwAA9SQ6Xl0C8C5Y2Kml4
+         TQbVH1dr+9ixPDzjGlm9b33YzrKv+1cXaHpSnaHLEWqLf/55BtEhHrBuTZwG5j62Rdca
+         0WVgzTZv8gv2XHKiNdkLvXqPObw4i7VEeMdAzyVFtsIGDCupuh/dq+xncU6QuCBf13pP
+         98GWiXSCYMJuqsA+PmT2b2roEwiUuft8Mz9zw9m60kB+m6o+LcSRAhVIYCFUp+S2FFbg
+         E9kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750925283; x=1751530083;
+        d=1e100.net; s=20230601; t=1750926235; x=1751531035;
         h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=SjO1G/XUcJ7a9ivy0+i5qLS+ytfTqVMHX0FC/YbGVtU=;
-        b=h2J8IxaGsLhk0c2In/Zjevmv1tNSQX+LxAAexDnnfYnKfJJ+lY0UPpaX94Um3XJcgi
-         AXLsvgo0Sjq/rKxnuWPKFE8E3vgwmOp4Khb/8yBb4p8mpdSQvKZcYl+QoBYITMV6CUxG
-         5b5MnpAz+gXZe+DYiSDMoR7xSTZwjpsEdslq9DqNrZylt9Qu6LmKhJbkPI7M6m3MNEZv
-         eubyLw2r0k0W34RdDMB+XXaY1kUdOInTLBTNJANNjxtD2RW5fZ8lItb0g8Xf76QnERyd
-         2bLeK4RV0QwM9c2kP+k6AEkAjKkJKJSst0kwskUgx8P8lbxWiqU2J7HzIFvpPynCRgW6
-         eCZg==
-X-Forwarded-Encrypted: i=1; AJvYcCUbjbh9lOQBJ3UF1vsWjFUVi9dsIybsr1AI/KbmSEWsbpZK5PwXr8Eda7RMwZMddQANMmdZs8g4qIFghJM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyjFEHCV/fZTGLUxUzTAZ3MYUcQPeNo67vP2AUFMewn4xpgOvIH
-	O6BHa4zSzFhwFC2Qzel3au3n2mNc8GhgmSYlrYPlKbALTdiZXtEugyo5gIPOrsfeS0P2wkWuVTd
-	dUMQXJpkHMccfS8HhJK0sU1iMFDAb2H0=
-X-Gm-Gg: ASbGncsZNSdwGn4lC6iFnFBH28HzhCz1mcwE64AE4r8QJCH89Puy32U2wVHl2HufV0x
-	IKtOVf8MbgwCapfydLaNsEO984AqiN40CjBvpxmqng9nJfg08380wMliMWBy9wXotPUpr3ZRFan
-	UyY7u7Sc2lEOGR1o+CccW2EwDh6TJJZN3G0NLAHmORWEdaEw==
-X-Google-Smtp-Source: AGHT+IFV7R4CkXPbX6sM9T1X2WigCRlTUzHAi+djdeWv610aFLocOhlbtP7KGbEizWHiDmwDy/mf0IK6w5eBJpZIviA=
-X-Received: by 2002:a05:6902:2683:b0:e81:b2a2:c633 with SMTP id
- 3f1490d57ef6-e8601765aa8mr7135237276.32.1750925282648; Thu, 26 Jun 2025
- 01:08:02 -0700 (PDT)
+        bh=Tsh3K6SkAfSJY7NsGkkV19W6WnijDmjK5b+ryFXoGuk=;
+        b=QlEoOhbv9n6PGjEhw+NBwF6SGbfVrudFuurmWA1y4vtkot/OFgbmYO5Vq/RX6/VPJC
+         LWjQkW1s1QqzGac0MhBpg2c0EYdS4kN75kGYFvISXeuwAWI9nAhdOKz8hnpp7hNU+zry
+         SjvGEnN1U1c5c5H+NeZNbpt7TnDuL2RO5eiQSom+pb38P6gwSROFhqpwRh0SU7rhBGgv
+         ZMoeO6zZbI3gA+BPxf+XXCZ3sCK1up1PluXXoD+okAEFRe/fd4qAWLaRVJNSTqazzblu
+         r9dwHS1b+bP+Hs94EmrPUB6ii28KYiaMRCZQkSRxH8YwJUuz5Se0AxudfsVlARHS3L2a
+         jYGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUfXM9+XabPWeYG1WLqZbw3bgrr/gNXW1VG+jWaM/+9rXMHYxq+K3Kp3toZEDjkVgESINVIyyi3RouACZ4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxlWOwkB50XNZjTjrwNLNCt4TN19kQdzB/UDVnwTRocPRfwpnT0
+	sqp6CVlalI2WoKa93w/rdyg889bKKWZjZt2jwStnRI3tM9BD5+Cj9UqiR2mv1wwxG95YJbVUMpT
+	l/XP+C9ANn+d0mH95KjLfUPxRhbm8U1s=
+X-Gm-Gg: ASbGncs7ZWcrMrWZrSIcR4hhg/o1+HyQqTPYxPG2TfNWrxCt5GlyNx8BcepCozLBF42
+	0FTdyOEErIKicJ9Iz898lqbhjxJHJqrF/Z+oCV/beuUaPrw96RW6IchnEq6hZ9GBtpEz0aTe5HG
+	5WGS/HxUqWEx7A4i9RqBFfJm1821TGQqY5A+bRiKJzOxI/3A==
+X-Google-Smtp-Source: AGHT+IEGKAohTJSHe22xS/jVsWWxT1Fmy3ETG3MSsLsZMPN88Wib90yrGSu/JbMYnIrfFkX0sXh5lR66MNgYDAZvlm8=
+X-Received: by 2002:a17:90b:3841:b0:313:27e5:7ff1 with SMTP id
+ 98e67ed59e1d1-316158914c3mr3651277a91.1.1750926234747; Thu, 26 Jun 2025
+ 01:23:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: cen zhang <zzzccc427@gmail.com>
-Date: Thu, 26 Jun 2025 16:07:51 +0800
-X-Gm-Features: Ac12FXyoRfr0TPbopbf5An2cqZRTVlmf2cyWmw_FJzHtOjGjaDV5xjkwsa8TFls
-Message-ID: <CAFRLqsVDimnqBx0_pDF-bqEQ3epha2d3r6cKm-0b6UdzkkE42Q@mail.gmail.com>
-Subject: [BUG] btrfs: Assertion failed in btrfs_exclop_balance on balance ioctl
+From: haoran zheng <zhenghaoran154@gmail.com>
+Date: Thu, 26 Jun 2025 16:23:43 +0800
+X-Gm-Features: Ac12FXx_b22x_S53c8T6GrLkNkO30iOuZVu8b-qSK91ehaiZWEJ-0il9Sa56c5s
+Message-ID: <CAKa5YKiTodi=aDMqa8gb4o+4RAdis=-OYFv4HP9nQ3EHcCTzMA@mail.gmail.com>
+Subject: [BUG] Five data races in btrfs
 To: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
 Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	baijiaju1990@gmail.com, zhenghaoran154@gmail.com
+	baijiaju1990@gmail.com, zzzccc427@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 
-Hello Btrfs maintainers,
+[BUG] Five data races in btrfs
 
-I would like to report a kernel BUG, which appears to be a state
-management issue in the balance ioctl path.
+Hello maintainers,
 
-The kernel panics due to a failed assertion in btrfs_exclop_balance()
-at fs/btrfs/fs.c:127. The assertion fs_info->exclusive_operation ==
-BTRFS_EXCLOP_BALANCE_PAUSED fails, indicating that the function was
-called with an unexpected exclusive operation state.
+I would like to report five data race bugs we discovered in the BTRFS
+filesystem on Linux kernel v6.16-rc3. These issues were identified
+using our data race detector.
 
-Here are the relevant details:
+We are currently analyzing the Btrfs codebase and have identified
+several instances that may involve potential data races during
+concurrent execution. While we have reviewed the relevant code
+paths carefully, we are uncertain whether these issues could lead
+to any practical impact or system instability.
 
-Kernel Version: 6.16.0-rc1-g7f6432600434-dirty
-Hardware: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996)
+Below is a summary of the findings:
 
-Crash Log:
-assertion failed: fs_info->exclusive_operation ==
-BTRFS_EXCLOP_BALANCE_PAUSED :: 0, in fs/btrfs/fs.c:127
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/fs.c:127!
-Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 95466 Comm: syz-executor.6 Not tainted
-6.16.0-rc1-g7f6432600434-dirty #52 PREEMPT(voluntary)
-Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS
-1.16.3-debian-1.16.3-2 04/01/2014
-RIP: 0010:btrfs_exclop_balance+0x632/0x640 fs/btrfs/fs.c:127
-Code: b5 fe e8 11 0c c7 fe 48 c7 c7 60 06 19 9c 48 c7 c6 80 08 19 9c
-31 d2 48 c7 c1 40 08 19 9c 41 b8 7f 00 00 00 e8 7f 2e 7b fe 90 <0f> 0b
-66 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90
-RSP: 0018:ffff88811c37fd88 EFLAGS: 00010246
-RAX: 0000000000000068 RBX: 0000000000000000 RCX: 7c00c5848baac500
-RDX: ffffc9001dfc5000 RSI: 000000000000092e RDI: 000000000000092f
-RBP: 1ffff110277c95ae R08: ffff88811c37fc2f R09: 1ffff1102386ff85
-R10: dffffc0000000000 R11: ffffed102386ff86 R12: ffff88813be4ad70
-R13: 1ffffda204ef92b5 R14: dffffc0000000000 R15: ffffed10277c95ae
-FS:  00007fda4d92c6c0(0000) GS:ffff88840ff1b000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b31222000 CR3: 000000012ebdb000 CR4: 00000000000006f0
-Call Trace:
- <TASK>
- btrfs_ioctl_balance+0x9bd/0xf10 fs/btrfs/ioctl.c:3548
- btrfs_ioctl+0x104f/0x1480 fs/btrfs/ioctl.c:5303
+---
+
+1. Race between `__btrfs_set_fs_incompat()` and `btrfs_fs_incompat()`
+
+`__btrfs_set_fs_incompat()` performs a write to the
+`super_copy->incompat_flags` field under `fs_info->super_lock` while
+`btrfs_need_stripe_tree_update()` calls `btrfs_fs_incompat()` without
+acquiring `super_lock`, which may read a stale or partially updated
+value of `incompat_flags`.
+
+===========================DATARACE===========================
+ __btrfs_set_fs_incompat+0x12b/0x150 fs/btrfs/fs.c:150
+ btrfs_ioctl_default_subvol+0x2e5/0x380 fs/btrfs/ioctl.c:2930
+ btrfs_ioctl+0xd1f/0xe40 fs/btrfs/ioctl.c:5249
  vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:907 [inline]
- __se_sys_ioctl+0xd1/0x130 fs/ioctl.c:893
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xcf/0x240 arch/x86/entry/syscall_64.c:94
+ __do_sys_ioctl fs/ioctl.c:906 [inline]
+ __se_sys_ioctl+0x91/0xf0 fs/ioctl.c:892
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xc9/0x1a0 arch/x86/entry/common.c:83
  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fda4e7fa35d
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fda4d92c0a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fda4e94c1f0 RCX: 00007fda4e7fa35d
-RDX: 0000000020008c40 RSI: 00000000c4009420 RDI: 0000000000000003
-RBP: 00007fda4e86b4b1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: ffffffffffffffb8 R14: 00007fda4e94c1f0 R15: 00007ffc61c2f0d0
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:btrfs_exclop_balance+0x632/0x640 fs/btrfs/fs.c:127
-Code: b5 fe e8 11 0c c7 fe 48 c7 c7 60 06 19 9c 48 c7 c6 80 08 19 9c
-31 d2 48 c7 c1 40 08 19 9c 41 b8 7f 00 00 00 e8 7f 2e 7b fe 90 <0f> 0b
-66 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90
-RSP: 0018:ffff88811c37fd88 EFLAGS: 00010246
-RAX: 0000000000000068 RBX: 0000000000000000 RCX: 7c00c5848baac500
-RDX: ffffc9001dfc5000 RSI: 000000000000092e RDI: 000000000000092f
-RBP: 1ffff110277c95ae R08: ffff88811c37fc2f R09: 1ffff1102386ff85
-R10: dffffc0000000000 R11: ffffed102386ff86 R12: ffff88813be4ad70
-R13: 1ffffda204ef92b5 R14: dffffc0000000000 R15: ffffed10277c95ae
-FS:  00007fda4d92c6c0(0000) GS:ffff88840ff1b000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b31222000 CR3: 000000012ebdb000 CR4: 00000000000006f0
-note: syz-executor.6[95466] exited with preempt_count 1
+ 0x0
+============OTHER_INFO============
+ get_unaligned_le64 include/linux/unaligned.h:28 [inline]
+ btrfs_super_incompat_flags fs/btrfs/accessors.h:890 [inline]
+ btrfs_need_stripe_tree_update fs/btrfs/raid-stripe-tree.h:42 [inline]
+ btrfs_map_block+0x426/0x1960 fs/btrfs/volumes.c:6674
+ btrfs_submit_chunk fs/btrfs/bio.c:694 [inline]
+ btrfs_submit_bbio+0x291/0xa70 fs/btrfs/bio.c:799
+ write_one_eb+0x8d8/0x960 fs/btrfs/extent_io.c:1828
+ submit_eb_page fs/btrfs/extent_io.c:1985 [inline]
+ btree_write_cache_pages+0x3b1/0x8e0 fs/btrfs/extent_io.c:2035
+ btree_writepages+0x6b/0x190 fs/btrfs/disk-io.c:520
+ do_writepages+0x102/0x370 mm/page-writeback.c:2687
+ filemap_fdatawrite_wbc mm/filemap.c:389 [inline]
+ __filemap_fdatawrite_range mm/filemap.c:422 [inline]
+ filemap_fdatawrite_range+0x9a/0xd0 mm/filemap.c:440
+ btrfs_write_marked_extents+0x130/0x230 fs/btrfs/transaction.c:1150
+ btrfs_sync_log+0xcfd/0x11f0 fs/btrfs/tree-log.c:3113
+ btrfs_sync_file+0x74b/0xaa0 fs/btrfs/file.c:1692
+ generic_write_sync include/linux/fs.h:2970 [inline]
+ btrfs_do_write_iter+0x4ba/0x5a0 fs/btrfs/file.c:1391
+ btrfs_file_write_iter+0x3d/0x60 fs/btrfs/file.c:1401
+ new_sync_write fs/read_write.c:586 [inline]
+ vfs_write+0x379/0x580 fs/read_write.c:679
+ ksys_write+0x93/0x120 fs/read_write.c:731
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xc9/0x1a0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+=================================
 
-Here is the machineinfo:
---------------------------------------------------------------------------------
-QEMU emulator version 8.2.2 (Debian 1:8.2.2+ds-0ubuntu1.7)
-qemu-system-x86_64 ["-m" "16384" "-smp" "4" "-chardev"
-"socket,id=SOCKSYZ,server=on,wait=off,host=localhost,port=24674"
-"-mon" "chardev=SOCKSYZ,mode=control" "-display" "none" "-serial"
-"stdio" "-no-reboot" "-name" "VM-1" "-device" "virtio-rng-pci"
-"-enable-kvm" "-hdb"
-"/home/zzzccc/go-work/syzkaller-old/syzkaller/test/btrfs/disk.qcow2"
-"-device" "e1000,netdev=net0" "-netdev"
-"user,id=net0,restrict=on,hostfwd=tcp:127.0.0.1:35475-:22,hostfwd=tcp::7313-:6060"
-"-hda" "/home/zzzccc/go-work/syzkaller-old/syzkaller/test/btrfs/bookworm.img"
-"-snapshot" "-kernel" "/home/zzzccc/linux-DDRD/arch/x86/boot/bzImage"
-"-append" "root=/dev/sda console=ttyS0 "]
+---
 
-[CPU Info]
-processor           : 0, 1, 2, 3
-vendor_id           : AuthenticAMD
-cpu family          : 15
-model               : 107
-model name          : QEMU Virtual CPU version 2.5+
-stepping            : 1
-microcode           : 0x1000065
-cpu MHz             : 3593.248
-cache size          : 512 KB
-physical id         : 0
-siblings            : 4
-core id             : 0, 1, 2, 3
-cpu cores           : 4
-apicid              : 0, 1, 2, 3
-initial apicid      : 0, 1, 2, 3
-fpu                 : yes
-fpu_exception       : yes
-cpuid level         : 13
-wp                  : yes
-flags               : fpu de pse tsc msr pae mce cx8 apic sep mtrr pge
-mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx lm rep_good
-nopl cpuid extd_apicid tsc_known_freq pni cx16 x2apic hypervisor
-lahf_lm cmp_legacy svm 3dnowprefetch vmmcall
-bugs                : fxsave_leak sysret_ss_attrs null_seg
-swapgs_fence amd_e400 spectre_v1 spectre_v2 spectre_v2_user
-bogomips            : 7186.49
-TLB size            : 1024 4K pages
-clflush size        : 64
-cache_alignment     : 64
-address sizes       : 40 bits physical, 48 bits virtual
-power management    :
+2. Race between `btrfs_defrag_file()` and `inode_need_compress()`
 
---------------------------------------------------------------------------------
+In `btrfs_defrag_file()`, the field `inode->defrag_compress` is
+assigned while holding the inode lock via `btrfs_inode_lock()`.
+But in `inode_need_compress()`, the same field is read without
+any apparent locking or memory barrier.
 
-Here is the log of this
-bug:https://github.com/zzzcccyyyggg/Syzkaller-log/blob/main/c206ec44dc552558339e6db76afe471d2dcee23b/log3
+===========================DATARACE===========================
+ btrfs_defrag_file+0x127d/0x1570 fs/btrfs/defrag.c:1501
+ btrfs_ioctl_defrag+0x256/0x2f0 fs/btrfs/ioctl.c:2574
+ btrfs_ioctl+0xba4/0xe40
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:906 [inline]
+ __se_sys_ioctl+0x91/0xf0 fs/ioctl.c:892
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xc9/0x1a0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+ 0x0
+============OTHER_INFO============
+ inode_need_compress fs/btrfs/inode.c:788 [inline]
+ btrfs_run_delalloc_range+0x206/0x8a0 fs/btrfs/inode.c:2336
+ writepage_delalloc+0x52c/0x8b0 fs/btrfs/extent_io.c:1255
+ extent_writepage fs/btrfs/extent_io.c:1558 [inline]
+ extent_write_cache_pages fs/btrfs/extent_io.c:2248 [inline]
+ btrfs_writepages+0x930/0xe70 fs/btrfs/extent_io.c:2376
+ do_writepages+0x102/0x370 mm/page-writeback.c:2687
+ filemap_fdatawrite_wbc mm/filemap.c:389 [inline]
+ __filemap_fdatawrite_range mm/filemap.c:422 [inline]
+ filemap_fdatawrite_range+0x9a/0xd0 mm/filemap.c:440
+ btrfs_fdatawrite_range+0x6b/0xf0 fs/btrfs/file.c:3701
+ btrfs_direct_write+0x37d/0x6b0 fs/btrfs/direct-io.c:960
+ btrfs_do_write_iter+0x21f/0x5a0 fs/btrfs/file.c:1381
+ btrfs_file_write_iter+0x3d/0x60 fs/btrfs/file.c:1401
+ new_sync_write fs/read_write.c:586 [inline]
+ vfs_write+0x379/0x580 fs/read_write.c:679
+ ksys_write+0x93/0x120 fs/read_write.c:731
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xc9/0x1a0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+=================================
 
-Thank you for your attention to this matter.
+---
 
-Best regards,
-Cen Zhang
+3. Race between `join_transaction()` and `btrfs_get_fs_generation()`
+
+In `join_transaction()`, `fs_info->generation` is assigned while
+holding the lock `fs_info->trans_lock`. But reads of
+`fs_info->generation` are done using READ_ONCE() in
+`btrfs_get_fs_generation()`.
+
+===========================DATARACE===========================
+ join_transaction+0x6ee/0x740 fs/btrfs/transaction.c:390
+ start_transaction+0x54e/0xea0 fs/btrfs/transaction.c:699
+ btrfs_join_transaction+0x42/0x60 fs/btrfs/transaction.c:823
+ btrfs_dirty_inode+0xa6/0x1c0 fs/btrfs/inode.c:6093
+ btrfs_update_time+0xa3/0xe0 fs/btrfs/inode.c:6127
+ inode_update_time fs/inode.c:2124 [inline]
+ touch_atime+0xb7/0x1d0 fs/inode.c:2197
+ file_accessed include/linux/fs.h:2601 [inline]
+ filemap_read+0x49d/0x520 mm/filemap.c:2763
+ btrfs_file_read_iter+0x71/0x190 fs/btrfs/file.c:3658
+ new_sync_read fs/read_write.c:484 [inline]
+ vfs_read+0x311/0x460 fs/read_write.c:565
+ ksys_read+0x93/0x120 fs/read_write.c:708
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xc9/0x1a0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+ 0x0
+============OTHER_INFO============
+ btrfs_get_fs_generation fs/btrfs/fs.h:915 [inline]
+ try_release_extent_mapping+0x13b/0x3a0 fs/btrfs/extent_io.c:2489
+ __btrfs_release_folio fs/btrfs/inode.c:7267 [inline]
+ btrfs_invalidate_folio+0x666/0x730 fs/btrfs/inode.c:7466
+ folio_invalidate mm/truncate.c:126 [inline]
+ truncate_cleanup_folio+0xf5/0x130 mm/truncate.c:146
+ truncate_inode_pages_range+0x126/0x4c0 mm/truncate.c:326
+ truncate_inode_pages mm/truncate.c:407 [inline]
+ truncate_pagecache mm/truncate.c:716 [inline]
+ truncate_setsize+0x71/0x90 mm/truncate.c:741
+ btrfs_setsize fs/btrfs/inode.c:5126 [inline]
+ btrfs_setattr+0x351/0xa30 fs/btrfs/inode.c:5165
+ notify_change+0x4d8/0x550 fs/attr.c:552
+ do_truncate+0x11b/0x160 fs/open.c:65
+ handle_truncate fs/namei.c:3451 [inline]
+ do_open fs/namei.c:3834 [inline]
+ path_openat+0xfad/0x1210 fs/namei.c:3989
+ do_filp_open+0xda/0x1d0 fs/namei.c:4016
+ do_sys_openat2+0x91/0x100 fs/open.c:1428
+ do_sys_open fs/open.c:1443 [inline]
+ __do_sys_open fs/open.c:1451 [inline]
+ __se_sys_open fs/open.c:1447 [inline]
+ __x64_sys_open+0xac/0xd0 fs/open.c:1447
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xc9/0x1a0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+=================================
+
+---
+
+4. Race between `btrfs_super_bytes_used()` and `btrfs_update_block_group()`
+
+In `btrfs_set_backup_bytes_used()`, super_copy is read and stored  without
+holding lock `info->delalloc_root_lock`. But in `btrfs_update_block_group()`
+the `info->super_copy` is set concurrently.
+
+===========================DATARACE===========================
+ get_unaligned_le64 include/linux/unaligned.h:28 [inline]
+ btrfs_super_bytes_used fs/btrfs/accessors.h:874 [inline]
+ backup_super_roots fs/btrfs/disk-io.c:1706 [inline]
+ write_all_supers+0xf9d/0x1dc0 fs/btrfs/disk-io.c:4101
+ btrfs_commit_transaction+0xf73/0x1c40 fs/btrfs/transaction.c:2528
+ transaction_kthread+0x1f8/0x330 fs/btrfs/disk-io.c:1602
+ kthread+0x2d5/0x300 kernel/kthread.c:464
+ ret_from_fork+0x4d/0x60 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+============OTHER_INFO============
+ btrfs_update_block_group+0xf0/0x7a0 fs/btrfs/block-group.c:3650
+ do_free_extent_accounting fs/btrfs/extent-tree.c:2975 [inline]
+ __btrfs_free_extent+0xde5/0x1d00 fs/btrfs/extent-tree.c:3338
+ btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:1976 [inline]
+ __btrfs_run_delayed_refs+0x5a3/0x1a50 fs/btrfs/extent-tree.c:2046
+ btrfs_run_delayed_refs+0xd1/0x2b0 fs/btrfs/extent-tree.c:2158
+ btrfs_commit_transaction+0x27a/0x1c40 fs/btrfs/transaction.c:2196
+ insert_balance_item fs/btrfs/volumes.c:3771 [inline]
+ btrfs_balance+0x11a4/0x1770 fs/btrfs/volumes.c:4647
+ btrfs_ioctl_balance+0x290/0x470 fs/btrfs/ioctl.c:3587
+ btrfs_ioctl+0xcaf/0xe40 fs/btrfs/ioctl.c:5305
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:906 [inline]
+ __se_sys_ioctl+0x91/0xf0 fs/ioctl.c:892
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xc9/0x1a0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77
+
+---
+
+5. Race between `btrfs_defrag_file()` and `btrfs_defrag_file()`
+
+In the function btrfs_defrag_file(), we also noticed a possible
+race condition involving the writeback_index field of the
+address_space structure associated with the inode. Specifically,
+the code performs a read and conditional write without any
+evident locking:
+
+===========================DATARACE===========================
+ btrfs_defrag_file+0x2ca/0x1570 fs/btrfs/defrag.c:1426
+ btrfs_ioctl_defrag+0x256/0x2f0 fs/btrfs/ioctl.c:2574
+ btrfs_ioctl+0xd56/0xe40
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:906 [inline]
+ __se_sys_ioctl+0x91/0xf0 fs/ioctl.c:892
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xc9/0x1a0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+ 0x0
+============OTHER_INFO============
+ btrfs_defrag_file+0x2fa/0x1570 fs/btrfs/defrag.c:1427
+ btrfs_ioctl_defrag+0x256/0x2f0 fs/btrfs/ioctl.c:2574
+ btrfs_ioctl+0xd56/0xe40
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:906 [inline]
+ __se_sys_ioctl+0x91/0xf0 fs/ioctl.c:892
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xc9/0x1a0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+=================================
 
