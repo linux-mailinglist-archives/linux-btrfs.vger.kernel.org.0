@@ -1,245 +1,164 @@
-Return-Path: <linux-btrfs+bounces-14993-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-14994-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E2C9AE9DB0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 14:40:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E9D0AE9DD0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 14:50:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6658A6A06F7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 12:38:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C49F05A1267
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Jun 2025 12:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B622E175E;
-	Thu, 26 Jun 2025 12:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062BE2E1C64;
+	Thu, 26 Jun 2025 12:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fl1q7bUB"
+	dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b="Arcr34xC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx1.mythic-beasts.com (mx1.mythic-beasts.com [46.235.224.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9341A2E11BF;
-	Thu, 26 Jun 2025 12:38:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2751EB2F
+	for <linux-btrfs@vger.kernel.org>; Thu, 26 Jun 2025 12:49:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.224.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750941501; cv=none; b=U4SpjucgO+Diko+LoJg3cKB29LsxpnPxyAoPUWQm7MtWehvEDb5QYzFGcUkjw0cHTHI3nXEhgQXAPdTWTBQmiA5OXl6lgZkRNsQlnzt82b8Uq7JqYAfacFqYGO4kkZQtgR26jrUfiA9TZJkNQL1Qsq3XjJOqAgn5cwMgUzsOIgY=
+	t=1750942189; cv=none; b=ZblTrSTETSDd4EuHP7uWTRFV18qbawpgKt0C84k2j0rUPCW83VeKOE6EXZvb2dx1v7mqLimR8ny6jP7k2C5YjZtqNNulmRM+CUBVgwU6lJhxeTPljrQyRNz39DFJ40dR4r2v2PK+Haddw5FyAuk2f9iTcCNi9Q2B38JZdRhBDSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750941501; c=relaxed/simple;
-	bh=qoJ/V6g3ybIgWJt3ixMc3C4/7uLcMcISIquwhMdpbzY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qE3TnGjlNEqifK4iS4piRgOtIfEgDheqCItUYUQY3nT5UrviBhwaumD4lX7fx9REiehnsuqNu1ljA8Rth8RPGfiuXeWwzBKKyYOhmpd5qg/UCnayQ1Yt+nM50FEXBekOaBOklpJbu9iZEGlM2uBhu+MPm49j+txbmqZHbS/SWyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fl1q7bUB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 170C1C4CEF2;
-	Thu, 26 Jun 2025 12:38:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750941501;
-	bh=qoJ/V6g3ybIgWJt3ixMc3C4/7uLcMcISIquwhMdpbzY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Fl1q7bUBaFS6s0LdTuAPDfOVnNJjCjxMfnS10DMFAIv7q2ZJrlyNcznkGVnfjiTnS
-	 WG3eD+z9NN2O+Kjayk+ruFD+JHeagw/otcRyUoSN3K7+nO6wI5CfQ7qAaK9YgxWWAF
-	 FnIW2Jd1do8+lbon5lSPPOJCtT3ms9NqzkDPQs1G/nl2XNGdWNGO4vG6zumDnPCA7+
-	 djBfo9hAAw1nr8tJ1uCT2b+irhxQNLECETsmQD3ZeCz7wUA3WHPgr6L7uqAi07eHV6
-	 S4hXnnEFzvc5pl1tUFEeX1Fab5NdptTUboHeA26J35Fq91FfmzR/4zhaX0VuwTCndt
-	 C2j2YDp2e+Jtw==
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-ae0d11bb2a7so129621566b.3;
-        Thu, 26 Jun 2025 05:38:21 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU4VZtBhaOSKtxOn4lcTEJsKvUr2SNM3bk0WKh99egpmvRg5M4lk0AOCmSkLGCO78w8GBuIIBRuVa/BIg==@vger.kernel.org, AJvYcCV0Lvw3knZB5S+5CvsjxzrNPKdf1T852VQNElXXbktJyQf4JCdHxsqAzpNcKzJpKN6GfkdOBx+EshCgmpoF@vger.kernel.org
-X-Gm-Message-State: AOJu0YwexRRe8KYKEzbBgG8b71OtaVJUxOGru316OHbeTydUIZhOKiNa
-	7MvH+o9N+jP0jMddWYr82dzzRozjaEs1wLTfKnjYFdd4vtdTMHwijbIrhdiy4nLDvKRvMu3xipd
-	SPrCNcKXmkru6qe7MyB/W5R1lbL5hciA=
-X-Google-Smtp-Source: AGHT+IGSo8di1mTgjiNFKcKBHT1kPgfvvEt28qnDnKWMQCww4lIuxf/VLshubGWazh1o7b/Dkq2MufvWrSTO2REYXR0=
-X-Received: by 2002:a17:907:7e82:b0:ad8:9b5d:2c16 with SMTP id
- a640c23a62f3a-ae0bebe9319mr695342766b.11.1750941499578; Thu, 26 Jun 2025
- 05:38:19 -0700 (PDT)
+	s=arc-20240116; t=1750942189; c=relaxed/simple;
+	bh=yoM90IawnngJ19PSOOuElZ2sFrQY+zYnHr2EdBur+CI=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:References:
+	 In-Reply-To:Content-Type; b=jVC2Wo1BDuabqSvRDOg4PO3Six/ualJ8uhAEbPeL73YmljuqC2bh358rujn13IYT87Lnqtr1RKly3KLZiIo6guIEqJSHpDkM2RLP77/ctnf3Y9/7HXhEJSk3SYafsg7uva+8MH98AbSs0/6nCG9+F6pruZVdVhDHwvD9gkPJhXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cobb.uk.net; spf=pass smtp.mailfrom=cobb.uk.net; dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b=Arcr34xC; arc=none smtp.client-ip=46.235.224.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cobb.uk.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cobb.uk.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cobb.uk.net
+	; s=mythic-beasts-k1; h=To:Subject:From:Date;
+	bh=7NXICPgIsyP1I78o4/qSIDrQfw79e/VYIubpAeAJx/k=; b=Arcr34xC/kG+IHuTO1djazmuAN
+	rWtQ2Z3EAd+aj1Igh/ZiktnZWxCKv5Hy/KgYOHwld8lunUSfB2OI2UicKmpb2siZVMyXm9PguQScZ
+	eU8jV85LtJeniOd5yRz6aTAh/WKtI/XpKAQYDtEbbshTpreABgv/Lu0Ersbx7F0rHZA197NCeZ+gK
+	N/rL4tK4hsOQz7mvnIYhi2PYx9xWT7l2GqlzgsIFojWziAfc6GxKs90OimkeZHYOWi4ToFe8SnqLQ
+	oY53VM66MifN+upnA9DNFtAZhKIG+zw9+GBomQ3P6qBZVDR9t1Ko8I5XrrhuE2KqiyufIY+Abg2gf
+	DKD+PxbA==;
+Received: by mailhub-cam-d.mythic-beasts.com with esmtpa (Exim 4.94.2)
+	(envelope-from <g.btrfs@cobb.uk.net>)
+	id 1uUluw-005fzg-2j
+	for linux-btrfs@vger.kernel.org; Thu, 26 Jun 2025 13:41:26 +0100
+Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
+	by black.home.cobb.me.uk (Postfix) with ESMTP id 2ADD07DD708
+	for <linux-btrfs@vger.kernel.org>; Thu, 26 Jun 2025 13:41:23 +0100 (BST)
+Message-ID: <f36e47c9-f135-473c-b1f1-2fedaef8aa10@cobb.uk.net>
+Date: Thu, 26 Jun 2025 13:41:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250626030806.665809-1-zhenghaoran154@gmail.com>
-In-Reply-To: <20250626030806.665809-1-zhenghaoran154@gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 26 Jun 2025 13:37:42 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6NVxiEHQfyMWbNQuszw74AyQqXo6_K9KzyKs=VRvK0yA@mail.gmail.com>
-X-Gm-Features: Ac12FXxIVRZyqW6L4qPKIvkq4abNhSkmhlJ9uQjSStR8wU8cQblKBWbzuSXPjic
-Message-ID: <CAL3q7H6NVxiEHQfyMWbNQuszw74AyQqXo6_K9KzyKs=VRvK0yA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Two data races in btrfs
-To: Hao-ran Zheng <zhenghaoran154@gmail.com>
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	baijiaju1990@gmail.com, zzzccc427@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: Graham Cobb <g.btrfs@cobb.uk.net>
+Subject: Re: using snapshot for backup: best practise?
+To: linux-btrfs@vger.kernel.org
+References: <20250626114345.GA615977@tik.uni-stuttgart.de>
+Content-Language: en-US
+In-Reply-To: <20250626114345.GA615977@tik.uni-stuttgart.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-BlackCat-Spam-Score: 10
 
-On Thu, Jun 26, 2025 at 4:08=E2=80=AFAM Hao-ran Zheng <zhenghaoran154@gmail=
-.com> wrote:
->
-> Hello maintainers,
->
-> I would like to report two data race bugs we discovered in BTRFS
-> filesystem on Linux kernel v6.16-rc3. These issues were identified
-> using our data race detector.
+I do various sorts of backups but the main one built around snapshots 
+uses btrbk. It doesn't solve the problem you mention below but it does 
+reduce the problem to listing each subvolume once in the config file 
+(which can easily be automated if you want). For example, here is an 
+extract from the btrbk.conf on one of my systems:
 
-This sort of text is not proper for a patch... Saying hello and saying
-that you are reporting is totally irrelevant and odd.
+#
+# Data pool
+#
+volume /mnt/data
+  snapshot_dir btrbk_snapshots
+  snapshot_create onchange
+  preserve_day_of_week monday
 
-And what do you mean by "our data race detector"? Is it something else
-other than KCSAN, something not in the linux kernel tree?
+# On the disk itself only keep recent snapshots
+  snapshot_preserve_min  5d
+  snapshot_preserve 10d 4w
+  timestamp_format long-iso
 
->
-> These issues were deemed non-critical after evaluation, as they
-> do not impact core functionality or security. To minimize
-> performance overhead while ensuring clarity for future maintenance,
-> I have annotated them with data_race() macros.
+# On the backup disk keep historic monthlies
+  target_preserve_min no
+  target_preserve 30d 8w *m
+  target send-receive    /snapshots/black_snapshots
 
-You have to explain things in far more detail.
-To me it seems you are sprinkling data_race() randomly just because
-it's fine in some other places.
-You don't explain why "these issues were deemed non-critical after evaluati=
-on".
+#Do not snapshot the deb-proxy cache
+#subvolume home/cache
+# Do not snapshot emergency
+#subvolume emergency
+subvolume home/boinc-client
+# For boinc just keep the latest plus one daily
+  snapshot_preserve_min latest
+  snapshot_preserve 1d
+  target_preserve 4d 1w 1m
+subvolume home/cobb
+subvolume home/default-user
+subvolume home/dmarc-staging
+subvolume home/imap-archive
+subvolume projects
+subvolume home/mywiki
+.
+.
+.
 
->
-> Below is a summary of the findings:
->
-> ---
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D DATARACE =3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
->  extent_write_cache_pages fs/btrfs/extent_io.c:2439 [inline]
->  btrfs_writepages+0x34fc/0x3d20 fs/btrfs/extent_io.c:2376
->  do_writepages+0x302/0x7c0 mm/page-writeback.c:2687
->  filemap_fdatawrite_wbc mm/filemap.c:389 [inline]
->   __filemap_fdatawrite_range mm/filemap.c:422 [inline]
->  filemap_fdatawrite_range+0x145/0x1d0 mm/filemap.c:440
->  btrfs_fdatawrite_range fs/btrfs/file.c:3701 [inline]
->  start_ordered_ops fs/btrfs/file.c:1439 [inline]
->  btrfs_sync_file+0x6e7/0x1d70 fs/btrfs/file.c:1550
->  generic_write_sync include/linux/fs.h:2970 [inline]
->  btrfs_do_write_iter+0xd0c/0x12f0 fs/btrfs/file.c:1391
->  btrfs_file_write_iter+0x3d/0x60 fs/btrfs/file.c:1401
->  new_sync_write fs/read_write.c:586 [inline]
->  vfs_write+0x940/0xd10 fs/read_write.c:679
->  ksys_write+0x116/0x200 fs/read_write.c:731
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xc9/0x1a0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
->  0x0
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DOTHER_INFO=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
->  extent_write_cache_pages fs/btrfs/extent_io.c:2439 [inline]
->  btrfs_writepages+0x34fc/0x3d20 fs/btrfs/extent_io.c:2376
->  do_writepages+0x302/0x7c0 mm/page-writeback.c:2687
->  filemap_fdatawrite_wbc mm/filemap.c:389 [inline]
->  __filemap_fdatawrite_range mm/filemap.c:422 [inline]
->  filemap_fdatawrite_range+0x145/0x1d0 mm/filemap.c:440
->  btrfs_fdatawrite_range fs/btrfs/file.c:3701 [inline]
->  start_ordered_ops fs/btrfs/file.c:1439 [inline]
->  btrfs_sync_file+0x509/0x1d70 fs/btrfs/file.c:1521
->  generic_write_sync include/linux/fs.h:2970 [inline]
->  btrfs_do_write_iter+0xd0c/0x12f0 fs/btrfs/file.c:1391
->  btrfs_file_write_iter+0x3d/0x60 fs/btrfs/file.c:1401
->  new_sync_write fs/read_write.c:586 [inline]
->  vfs_write+0x940/0xd10 fs/read_write.c:679
->  ksys_write+0x116/0x200 fs/read_write.c:731
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xc9/0x1a0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DEND=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3DDATA_RACE=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
->  btrfs_inode_safe_disk_i_size_write+0x144/0x190 fs/btrfs/file-item.c:65
->  btrfs_finish_one_ordered+0x999/0x1330 fs/btrfs/inode.c:3203
->  btrfs_finish_ordered_io+0x33/0x50 fs/btrfs/inode.c:3308
->  finish_ordered_fn+0x3a/0x50 fs/btrfs/ordered-data.c:331
->  btrfs_work_helper+0x199/0x6c0 fs/btrfs/async-thread.c:314
->  process_one_work kernel/workqueue.c:3238 [inline]
->  process_scheduled_works+0x21f/0x520 kernel/workqueue.c:3319
->  worker_thread+0x323/0x4a0 kernel/workqueue.c:3400
->  kthread+0x2d5/0x300 kernel/kthread.c:464
->  ret_from_fork+0x4d/0x60 arch/x86/kernel/process.c:148
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DOTHER_INFO=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
->  fill_stack_inode_item fs/btrfs/delayed-inode.c:1809 [inline]
->  btrfs_delayed_update_inode+0x1ab/0xa40 fs/btrfs/delayed-inode.c:1931
->  btrfs_update_inode+0x128/0x270 fs/btrfs/inode.c:4156
->  btrfs_setxattr_trans+0x143/0x280 fs/btrfs/xattr.c:266
->  btrfs_xattr_handler_set+0xb7/0xf0 fs/btrfs/xattr.c:380
->  __vfs_setxattr+0x21e/0x240 fs/xattr.c:200
->  __vfs_setxattr_noperm+0xa5/0x2d0 fs/xattr.c:234
->  vfs_setxattr+0xd5/0x1d0 fs/xattr.c:321
->  do_setxattr fs/xattr.c:636 [inline]
->  file_setxattr+0xb0/0x110 fs/xattr.c:646
->  path_setxattrat+0x217/0x260 fs/xattr.c:711
->  __do_sys_fsetxattr fs/xattr.c:761 [inline]
->  __se_sys_fsetxattr fs/xattr.c:758 [inline]
->  __x64_sys_fsetxattr+0x2c/0x40 fs/xattr.c:758
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xc9/0x1a0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Signed-off-by: Hao-ran Zheng <zhenghaoran154@gmail.com>
-> ---
->  fs/btrfs/extent_io.c | 2 +-
->  fs/btrfs/file-item.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 849199768664..0c03fafc3ae0 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2436,7 +2436,7 @@ static int extent_write_cache_pages(struct address_=
-space *mapping,
->         }
->
->         if (wbc->range_cyclic || (wbc->nr_to_write > 0 && range_whole))
-> -               mapping->writeback_index =3D done_index;
-> +               data_race(mapping->writeback_index =3D done_index);
->
->         btrfs_add_delayed_iput(BTRFS_I(inode));
->         return ret;
-> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> index 54d523d4f421..15572e79b6de 100644
-> --- a/fs/btrfs/file-item.c
-> +++ b/fs/btrfs/file-item.c
-> @@ -61,7 +61,7 @@ void btrfs_inode_safe_disk_i_size_write(struct btrfs_in=
-ode *inode, u64 new_i_siz
->                 i_size =3D min(i_size, end + 1);
->         else
->                 i_size =3D 0;
-> -       inode->disk_i_size =3D i_size;
-> +       data_race(inode->disk_i_size =3D i_size);
+And, of course, btrbk handles all the management of the snapshots 
+themselves (see the first half of the example file above, which keeps 10 
+daily snapshots and 4 weekly snapshots on the disk itself and a 
+different selection on another disk).
 
 
-These are two completely different cases, each should be in a
-dedicated patch with a proper analysis.
+On 26/06/2025 12:43, Ulli Horlacher wrote:
+> 
+> I am using fsfreeze when running a backup to ensure a consistent filesystem.
+> 
+> While the backup is running writes to the filesystem are suspended and the
+> whole system is unresponsive, e.g. logins are not possible.
+> On certain errors the unfreeze will not happen and the system is locked
+> forever.
+> 
+> Using snapshots seems a better idea for backups :-)
+> 
+> But snapshots do not include subvolumes.
+> 
+> For example the / filesystem has the subvolumes:
+> /home
+> /home/tux/test
+> /var/spool
+> 
+> When I run the command:
+> 
+> btrfs subvolume snapshot / /.snapshot/_
+> 
+> the snapshot will contain only the root subvolume.
+> 
+> I have to manually add:
+> 
+> rmdir /.snapshot/_/home
+> btrfs subvolume snapshot /home /.snapshot/_/home
+> rmdir /.snapshot/_/home/tux/test
+> btrfs subvolume snapshot /home/tux/test /.snapshot/_/home/tux/test
+> rmdir /.snapshot/_/var/spool
+> btrfs subvolume snapshot /var/spool /.snapshot/_/var/spool
+> 
+> Then run the backup on /.snapshot/_ und afterwards:
+> 
+> btrfs subvolume del /.snapshot/_/var/spool
+> btrfs subvolume del /.snapshot/_/home/tux/test
+> btrfs subvolume del /.snapshot/_/home
+> btrfs subvolume del /.snapshot/_
+> 
+> But this will work only for this special example!
+> And I have hundreds of systems to backup with different filesystem layout!
+> 
+> Is there a best practise "Using snapshots for making backup"?
+> I need automatic detecting, creating and removing of nested snapshots.
+> 
 
-At least this one for disk_i_size, I don't think data_race() is a good solu=
-tion.
-It doesn't prevent store and load tearing, which would result in an
-inode item with a bogus size.
-
-Please provide a rationale for the proposed solution for each case.
-We have gone through this in a patch you sent in the past (commit
-5324c4e10e9c2ce307a037e904c0d9671d7137d9), and there data_race() was
-ok because getting a stale value or some weird value due to the result
-of a load/store tearing would only makes us take unnecessary locks,
-therefore not affecting correctness - it's this type of analysis that
-you should place in a change log.
-
-Thanks.
-
->  out_unlock:
->         spin_unlock(&inode->lock);
->  }
-> --
-> 2.34.1
->
->
 
