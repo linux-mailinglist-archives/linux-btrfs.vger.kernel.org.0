@@ -1,204 +1,322 @@
-Return-Path: <linux-btrfs+bounces-15038-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15039-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92842AEB566
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jun 2025 12:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 492AAAEB5A3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jun 2025 13:02:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C361E3A7098
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jun 2025 10:51:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9647D3B6826
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jun 2025 11:01:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B8A2980DA;
-	Fri, 27 Jun 2025 10:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11127299948;
+	Fri, 27 Jun 2025 11:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="rUkvluBT"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="i4Wo0VD4";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="i4Wo0VD4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB3C2980A5
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Jun 2025 10:51:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F12CA1917FB
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Jun 2025 11:01:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751021482; cv=none; b=dAvBK7TiE8i0geQiMyBpfmoKRfGxNKQ89A0k28PSUwjt3SXoy0Jc+fysJEDHv75sJYKoLa87nTAXvwTy0v7UbbHWeD2ypDdsdYwyO65u157FceJRIKXJvviqgHr3sV60how/n4aNfD2Gc5VeKYxfSiz3tJ7rUbCHCBArdnz8vQg=
+	t=1751022082; cv=none; b=jjMPxzzjXl3JcQdBAXjnsAxeLhE2uNWZbY5O+nKfx9HNHvSxX38G0taoioJfu0RHBnv6Vnb7R4q6Maa3dWaId1plBlW2qwug3MlFDeJjC4Au+h3DKovwuOSpkFP+cTitKeIhjPlNXe6e3hSB+ASFdMCLyaI4K0OIX/vI2iVcmwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751021482; c=relaxed/simple;
-	bh=GoQXmGQPCYIIqs1NMH7mwhC/0I7s0Xc6tpCJGUhOOS0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=SBrShU+RqMVfPZemMD+lFpiALDkrciMf40UsjZ17qPpRfo1MirS3CLBSphiyvcCaVzRCbQprZ+K996KYTt1Jz+yXys37tyMN80uhspmB4zGjLSoIrrrF6cNaZU0DUcnPyR9wLcftCJbJU7izPA5zgNAAwrBXuk8r7P573bmWg5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=rUkvluBT; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1751021472; x=1751626272; i=quwenruo.btrfs@gmx.com;
-	bh=Z19rh6X/JiBfE3UHMge5ag64hvDRyMUsK574XzkW2O4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=rUkvluBT/eQDXx9g/rHyVzyIJQFhdxC1n5giCkatkhCZnvwHKEpgGTG5rJP5e+pZ
-	 Bfyp04YLaZGpw1pNv36bsllMYNNDVcgYEZJBmmQ7cpoIvONVGBt+qPnsBYMSsA/TZ
-	 PKBz3HtKNL0b3UnEjmfhH6SMhJi5LkQf0LvuiKbH3XIaIti32SPDhkRQh8bYoeOt4
-	 KyVlSWnD2gkPSR9VEVF0XfNGs7vshVASIUZzB1jB/g8wxSvnlAv9h+oCzGeYl0fc4
-	 H40kHX4UZE2ci3GYOI0+U7jLbQMX7PDLcAVsXHsiXHvRThWOtYDanbL//dYHOsvzJ
-	 8vv87lKowRuRvZNO0w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0X8u-1uhFjX22ei-0147t6; Fri, 27
- Jun 2025 12:51:12 +0200
-Message-ID: <2342e2ff-916c-45f8-9ac0-cb7b701e588e@gmx.com>
-Date: Fri, 27 Jun 2025 20:21:08 +0930
+	s=arc-20240116; t=1751022082; c=relaxed/simple;
+	bh=AJzT6GF6fKoCpPXQDXfcoYDZpwyRpSMuO5+Ftfz9IpU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g+Zt5hmwCYXmVj2UI6oAnYZl754G52aKIGQ9merI9DQxCC4gyzcdZcT9PMJx0VHdV/l3HzzWEy8xxYWiQKDca3NbRFfmMIYPwtcdXf4yJZNFSTryx8v20gaaMFgHHGqA1y9V/SaNZgXbBIlkNe8O6/tViwF13akC1S2sx8p/1gI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=i4Wo0VD4; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=i4Wo0VD4; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 319C31F390;
+	Fri, 27 Jun 2025 11:01:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1751022078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=fcoFKejPVHJFkTeEuG0qEoG44BxGKE3j+Cc8npPmHTk=;
+	b=i4Wo0VD4pY6cwXg+/5KvXKGyxmG44q8dO+2qjFhidTTnnS7cbgEvoyj+KITIdzzZe4JN+H
+	hMrt/EDoppkRMImmuabd3sQOXfATBq/pH/dpm+bfM3yivUTV2ol6yr8xfCy0Ts/1uNjYOu
+	JUOfhjA6vYr5kgHC9zmvZnjS0QNoC04=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1751022078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=fcoFKejPVHJFkTeEuG0qEoG44BxGKE3j+Cc8npPmHTk=;
+	b=i4Wo0VD4pY6cwXg+/5KvXKGyxmG44q8dO+2qjFhidTTnnS7cbgEvoyj+KITIdzzZe4JN+H
+	hMrt/EDoppkRMImmuabd3sQOXfATBq/pH/dpm+bfM3yivUTV2ol6yr8xfCy0Ts/1uNjYOu
+	JUOfhjA6vYr5kgHC9zmvZnjS0QNoC04=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 26D7E138A7;
+	Fri, 27 Jun 2025 11:01:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id aBskCf55XmhSDQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Fri, 27 Jun 2025 11:01:18 +0000
+From: David Sterba <dsterba@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: use pgoff_t for page index variables
+Date: Fri, 27 Jun 2025 13:01:17 +0200
+Message-ID: <20250627110117.3463102-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/12] btrfs: fix iteration of extrefs during log replay
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1750709410.git.fdmanana@suse.com>
- <894622cd2bfaf3d1871f2d88ba0a212e7661e136.1750709410.git.fdmanana@suse.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <894622cd2bfaf3d1871f2d88ba0a212e7661e136.1750709410.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:AaJnyTIxDUSnsms1F3KolAAXw3dNPI+0PW99YjHhSWfwbaJSYQx
- q2yA1I22/EqZ5uCM2Q4Cc/AvPavOX4XNZTDIcCo04+4ikN9lG68gO2iGM4AoEy8PuQD7hXM
- QtXOsixCamaUBiv4D1Q6wPDZA3jdMSFEhvj/Xt3+F8a5WaixpPdEYPYSa8NnN1a1dXBKh1G
- mC5lVfZ8ZVpB7ozjaxooQ==
+Content-Transfer-Encoding: 8bit
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:GpUJirWzp84=;GWWGn3AENk/nmowyH3u+G6q29oM
- 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
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email]
+X-Spam-Level: 
 
+Any conversion of offsets in the logical or the physical mapping space
+of the pages is done by a shift and the target type should be pgoff_t
+(type of struct page::index). Fix the locations where it's still
+unsigned long.
 
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/compression.c           | 12 ++++++------
+ fs/btrfs/extent_io.c             |  4 ++--
+ fs/btrfs/file.c                  |  2 +-
+ fs/btrfs/free-space-cache.c      |  2 +-
+ fs/btrfs/inode.c                 |  9 ++++-----
+ fs/btrfs/ioctl.c                 |  2 +-
+ fs/btrfs/relocation.c            |  8 ++++----
+ fs/btrfs/tests/extent-io-tests.c |  7 +++----
+ 8 files changed, 22 insertions(+), 24 deletions(-)
 
-=E5=9C=A8 2025/6/25 00:12, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> From: Filipe Manana <fdmanana@suse.com>
->=20
-> At __inode_add_ref() when processing extrefs, if we jump into the next
-> label he have an undefined value of victim_name.len, since we haven't
-
-         ^^ he?
-
-Otherwise looks good to me.
-
-I'll give a reviewed-by to the cover-letter to avoid bombarding the=20
-mailing list.
-
-Thanks,
-Qu
-
-> initialized it before we did the goto. This results in an invalid memory
-> access in the next iteration of the loop since victim_name.len was not
-> initialized to the length of the name of the current extref.
->=20
-> Fix this by initializing victim_name.len with the current extref's name
-> length.
->=20
-> Fixes: e43eec81c516 ("btrfs: use struct qstr instead of name and namelen=
- pairs")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->   fs/btrfs/tree-log.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 08948803c857..e862deaf27da 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -1146,13 +1146,13 @@ static inline int __add_inode_ref(struct btrfs_t=
-rans_handle *trans,
->   			struct fscrypt_str victim_name;
->  =20
->   			extref =3D (struct btrfs_inode_extref *)(base + cur_offset);
-> +			victim_name.len =3D btrfs_inode_extref_name_len(leaf, extref);
->  =20
->   			if (btrfs_inode_extref_parent(leaf, extref) !=3D parent_objectid)
->   				goto next;
->  =20
->   			ret =3D read_alloc_one_name(leaf, &extref->name,
-> -				 btrfs_inode_extref_name_len(leaf, extref),
-> -				 &victim_name);
-> +						  victim_name.len, &victim_name);
->   			if (ret)
->   				return ret;
->  =20
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 48d07939fee4a0..eb044ca8ba261b 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -282,8 +282,8 @@ static noinline void end_compressed_writeback(const struct compressed_bio *cb)
+ {
+ 	struct inode *inode = &cb->bbio.inode->vfs_inode;
+ 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
+-	unsigned long index = cb->start >> PAGE_SHIFT;
+-	unsigned long end_index = (cb->start + cb->len - 1) >> PAGE_SHIFT;
++	pgoff_t index = cb->start >> PAGE_SHIFT;
++	const pgoff_t end_index = (cb->start + cb->len - 1) >> PAGE_SHIFT;
+ 	struct folio_batch fbatch;
+ 	int i;
+ 	int ret;
+@@ -415,7 +415,7 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+ 				     int *memstall, unsigned long *pflags)
+ {
+ 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
+-	unsigned long end_index;
++	pgoff_t end_index;
+ 	struct bio *orig_bio = &cb->orig_bbio->bio;
+ 	u64 cur = cb->orig_bbio->file_offset + orig_bio->bi_iter.bi_size;
+ 	u64 isize = i_size_read(inode);
+@@ -446,8 +446,8 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+ 	end_index = (i_size_read(inode) - 1) >> PAGE_SHIFT;
+ 
+ 	while (cur < compressed_end) {
+-		u64 page_end;
+-		u64 pg_index = cur >> PAGE_SHIFT;
++		pgoff_t page_end;
++		pgoff_t pg_index = cur >> PAGE_SHIFT;
+ 		u32 add_size;
+ 
+ 		if (pg_index > end_index)
+@@ -1482,7 +1482,7 @@ static void heuristic_collect_sample(struct inode *inode, u64 start, u64 end,
+ 				     struct heuristic_ws *ws)
+ {
+ 	struct page *page;
+-	u64 index, index_end;
++	pgoff_t index, index_end;
+ 	u32 i, curr_sample_pos;
+ 	u8 *in_data;
+ 
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 03a55f1ee39c9f..44bc343464ab59 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1662,7 +1662,7 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
+ 	int ret;
+ 	size_t pg_offset;
+ 	loff_t i_size = i_size_read(&inode->vfs_inode);
+-	unsigned long end_index = i_size >> PAGE_SHIFT;
++	const pgoff_t end_index = i_size >> PAGE_SHIFT;
+ 	const unsigned int blocks_per_folio = btrfs_blocks_per_folio(fs_info, folio);
+ 
+ 	trace_extent_writepage(folio, &inode->vfs_inode, bio_ctrl->wbc);
+@@ -3146,7 +3146,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ 
+ 	struct btrfs_fs_info *fs_info = eb->fs_info;
+ 	struct address_space *mapping = fs_info->btree_inode->i_mapping;
+-	const unsigned long index = eb->start >> PAGE_SHIFT;
++	const pgoff_t index = eb->start >> PAGE_SHIFT;
+ 	struct folio *existing_folio;
+ 	int ret;
+ 
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 247676f34f2e66..05b046c6806fe5 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -856,7 +856,7 @@ static noinline int prepare_one_folio(struct inode *inode, struct folio **folio_
+ 				      loff_t pos, size_t write_bytes,
+ 				      bool nowait)
+ {
+-	unsigned long index = pos >> PAGE_SHIFT;
++	const pgoff_t index = pos >> PAGE_SHIFT;
+ 	gfp_t mask = get_prepare_gfp_flags(inode, nowait);
+ 	fgf_t fgp_flags = (nowait ? FGP_WRITEBEGIN | FGP_NOWAIT : FGP_WRITEBEGIN) |
+ 			  fgf_set_order(write_bytes);
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index efd21a28570c1e..5d8d1570a5c948 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -366,7 +366,7 @@ int btrfs_truncate_free_space_cache(struct btrfs_trans_handle *trans,
+ static void readahead_cache(struct inode *inode)
+ {
+ 	struct file_ra_state ra;
+-	unsigned long last_index;
++	pgoff_t last_index;
+ 
+ 	file_ra_state_init(&ra, inode->i_mapping);
+ 	last_index = (i_size_read(inode) - 1) >> PAGE_SHIFT;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 80c72c594b1950..5aaeb1bea8ab54 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -395,8 +395,8 @@ void btrfs_inode_unlock(struct btrfs_inode *inode, unsigned int ilock_flags)
+ static inline void btrfs_cleanup_ordered_extents(struct btrfs_inode *inode,
+ 						 u64 offset, u64 bytes)
+ {
+-	unsigned long index = offset >> PAGE_SHIFT;
+-	unsigned long end_index = (offset + bytes - 1) >> PAGE_SHIFT;
++	pgoff_t index = offset >> PAGE_SHIFT;
++	const pgoff_t end_index = (offset + bytes - 1) >> PAGE_SHIFT;
+ 	struct folio *folio;
+ 
+ 	while (index <= end_index) {
+@@ -808,12 +808,11 @@ static inline void inode_should_defrag(struct btrfs_inode *inode,
+ 
+ static int extent_range_clear_dirty_for_io(struct btrfs_inode *inode, u64 start, u64 end)
+ {
+-	unsigned long end_index = end >> PAGE_SHIFT;
++	const pgoff_t end_index = end >> PAGE_SHIFT;
+ 	struct folio *folio;
+ 	int ret = 0;
+ 
+-	for (unsigned long index = start >> PAGE_SHIFT;
+-	     index <= end_index; index++) {
++	for (pgoff_t index = start >> PAGE_SHIFT; index <= end_index; index++) {
+ 		folio = filemap_get_folio(inode->vfs_inode.i_mapping, index);
+ 		if (IS_ERR(folio)) {
+ 			if (!ret)
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 65763bc6a0f653..61c9ed01b8e0e7 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -4658,7 +4658,7 @@ static void btrfs_uring_read_finished(struct io_uring_cmd *cmd, unsigned int iss
+ 	struct btrfs_uring_priv *priv = bc->priv;
+ 	struct btrfs_inode *inode = BTRFS_I(file_inode(priv->iocb.ki_filp));
+ 	struct extent_io_tree *io_tree = &inode->io_tree;
+-	unsigned long index;
++	pgoff_t index;
+ 	u64 cur;
+ 	size_t page_offset;
+ 	ssize_t ret;
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index d7ec1d72821c26..bbd2afd3bacf9a 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -2814,13 +2814,13 @@ static u64 get_cluster_boundary_end(const struct file_extent_cluster *cluster,
+ 
+ static int relocate_one_folio(struct reloc_control *rc,
+ 			      struct file_ra_state *ra,
+-			      int *cluster_nr, unsigned long index)
++			      int *cluster_nr, pgoff_t index)
+ {
+ 	const struct file_extent_cluster *cluster = &rc->cluster;
+ 	struct inode *inode = rc->data_inode;
+ 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
+ 	u64 offset = BTRFS_I(inode)->reloc_block_group_start;
+-	const unsigned long last_index = (cluster->end - offset) >> PAGE_SHIFT;
++	const pgoff_t last_index = (cluster->end - offset) >> PAGE_SHIFT;
+ 	gfp_t mask = btrfs_alloc_write_mask(inode->i_mapping);
+ 	struct folio *folio;
+ 	u64 folio_start;
+@@ -2974,8 +2974,8 @@ static int relocate_file_extent_cluster(struct reloc_control *rc)
+ 	struct inode *inode = rc->data_inode;
+ 	const struct file_extent_cluster *cluster = &rc->cluster;
+ 	u64 offset = BTRFS_I(inode)->reloc_block_group_start;
+-	unsigned long index;
+-	unsigned long last_index;
++	pgoff_t index;
++	pgoff_t last_index;
+ 	struct file_ra_state *ra;
+ 	int cluster_nr = 0;
+ 	int ret = 0;
+diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
+index 87f7437be022b8..660141fc67a87f 100644
+--- a/fs/btrfs/tests/extent-io-tests.c
++++ b/fs/btrfs/tests/extent-io-tests.c
+@@ -23,8 +23,8 @@ static noinline int process_page_range(struct inode *inode, u64 start, u64 end,
+ {
+ 	int ret;
+ 	struct folio_batch fbatch;
+-	unsigned long index = start >> PAGE_SHIFT;
+-	unsigned long end_index = end >> PAGE_SHIFT;
++	pgoff_t index = start >> PAGE_SHIFT;
++	pgoff_t end_index = end >> PAGE_SHIFT;
+ 	int i;
+ 	int count = 0;
+ 	int loops = 0;
+@@ -114,7 +114,6 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
+ 	struct extent_io_tree *tmp;
+ 	struct page *page;
+ 	struct page *locked_page = NULL;
+-	unsigned long index = 0;
+ 	/* In this test we need at least 2 file extents at its maximum size */
+ 	u64 max_bytes = BTRFS_MAX_EXTENT_SIZE;
+ 	u64 total_dirty = 2 * max_bytes;
+@@ -157,7 +156,7 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
+ 	 * everything to make sure our pages don't get evicted and screw up our
+ 	 * test.
+ 	 */
+-	for (index = 0; index < (total_dirty >> PAGE_SHIFT); index++) {
++	for (pgoff_t index = 0; index < (total_dirty >> PAGE_SHIFT); index++) {
+ 		page = find_or_create_page(inode->i_mapping, index, GFP_KERNEL);
+ 		if (!page) {
+ 			test_err("failed to allocate test page");
+-- 
+2.49.0
 
 
