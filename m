@@ -1,171 +1,328 @@
-Return-Path: <linux-btrfs+bounces-15016-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15017-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23399AEACD7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jun 2025 04:37:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37132AEACF5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jun 2025 04:46:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7973F4A0111
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jun 2025 02:37:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7EE74A6DDD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Jun 2025 02:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C1917C211;
-	Fri, 27 Jun 2025 02:37:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80AC2199252;
+	Fri, 27 Jun 2025 02:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="XFwZ3V2f"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LTJPo4la";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LTJPo4la"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0557A3C01
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Jun 2025 02:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2047A2F1FC0
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Jun 2025 02:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750991859; cv=none; b=IJ7sWl84r8M11z7YYIwtPn7bJowLW2kx5xklXrT60dtdLF3KN1poxnGsLfhRAUlYQ/PqaxMoFVGs5tFQGjRQHGN1m3e1FEtYemKHPvTZcnSPHGswQtuuFbV3S8uc0tPYNx4e+LdubcmUyPE5Bfk0OHZnTImMVI1mL1kAP9TJyJo=
+	t=1750992395; cv=none; b=t0SQj3iWXZ9CYghJPIRGA9BJfCeR44awRDnOuGxLAJBMt6M1ZRQjaSxhqhL0kezKWSZ13jkSwzQv/7Sken/NNKlDCzqHdoHz/6eB3WHTiaKAYDD/s5ZtjJ6aJjjAeGUUQ/UPs+dlCfyJCFe5ataruQpOzaEwYpXmXzaJEYYV8oM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750991859; c=relaxed/simple;
-	bh=Emc6vosXjKW6xiE1Wux1t5mxDUZuOo92W7bQUOYGyT0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=l8fgAqmHfA0qxoe1bXSCVlPnKHzfu9atYpbL+29zkws9rzTqqxIQmq8VwMwYNDdckUQraZdLICV888wJH0CvqFPflFq7JRmAnw9sxCsZz97GygkQ+3m7HCGXCQFCcEaDmPDjzVLOguFKJN/NC80M291eWNsvTYD9Fx8HK1CDFHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=XFwZ3V2f; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1750991851; x=1751596651; i=quwenruo.btrfs@gmx.com;
-	bh=Emc6vosXjKW6xiE1Wux1t5mxDUZuOo92W7bQUOYGyT0=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=XFwZ3V2fJf9YigAwQyi3SS3/AoEH3bXwPczPnw6Nn0XvyOzDIW3JZOsZ1fK1o/61
-	 FT90LJwRTUuYxMtCu00yhFzJCsbme3GQ7F4ZGSOfY6vkl+/2oIjk3u0f5y+SJQ/E5
-	 On4E+1Sg2si500lultkRt3i9dDki41p7EjFhzCotDgQDYuU1yWuwkdrJQEfpC2NT/
-	 A7+G7EBFHma+RzfnpTK8nZY5U+n+VKVRXgloWg89P1wex5K6k0AAmsA88gJDiGmen
-	 Dr8FRatjD7y8k5/gUhfIj1is3KneoeLfyoFTAEaRSrEOTUrsMaUp32alcYo3aqSS5
-	 67VQE7excmhelW6hqw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8QS8-1uQbFq48XI-00EVAX; Fri, 27
- Jun 2025 04:37:31 +0200
-Message-ID: <8d6000bf-9317-4ccb-9383-a466a574df83@gmx.com>
-Date: Fri, 27 Jun 2025 12:07:27 +0930
+	s=arc-20240116; t=1750992395; c=relaxed/simple;
+	bh=4H9VTHdd7pD4lfX15KxLgY9uPpOYaB+DlcTb3cHSLzE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oRK7JlYnZXgKQADYqPV4Fq0Ein3e7nom9v85pzhN/hRf5eJw54KY7peTXbMT9qDEJQnPNqfOcknS2lky8mvT/fF8QA09hfH2hPmvmNpIeu5DOTdy4EwQwCrVwZiQlPdz9Hho9eagkT+PfUM7JVRUeVGVjWkd3K+eA1PjccHn9k4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=LTJPo4la; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=LTJPo4la; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 24A7821172;
+	Fri, 27 Jun 2025 02:46:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1750992391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=QZVIvgMaoHIVkfeLRnN9vv0t854C0Jh1vd5YvJ+OBkA=;
+	b=LTJPo4laHfH/s4ke6yWpm+pmI5du/L4rzXuviSK8W6U5LAFdhaFJYG5ekriSWlgwUxQwII
+	z37xa5Otd6p4tNbnbi60WEj8ywhLFkv/QCh3r5IZ53TdYz2BBigM5VNeS3S+YZhQvJkH40
+	fo18Bu39srVFFWFRLKqxAGlsJ6mYN4w=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=LTJPo4la
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1750992391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=QZVIvgMaoHIVkfeLRnN9vv0t854C0Jh1vd5YvJ+OBkA=;
+	b=LTJPo4laHfH/s4ke6yWpm+pmI5du/L4rzXuviSK8W6U5LAFdhaFJYG5ekriSWlgwUxQwII
+	z37xa5Otd6p4tNbnbi60WEj8ywhLFkv/QCh3r5IZ53TdYz2BBigM5VNeS3S+YZhQvJkH40
+	fo18Bu39srVFFWFRLKqxAGlsJ6mYN4w=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 21CD1138A7;
+	Fri, 27 Jun 2025 02:46:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id h1XnNAUGXmiLfgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 27 Jun 2025 02:46:29 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: syzbot+772bdfe41846e057fa83@syzkaller.appspotmail.com
+Subject: [PATCH v2] btrfs: fix a use-after-free race if btrfs_open_devices() failed
+Date: Fri, 27 Jun 2025 12:16:12 +0930
+Message-ID: <8f0b5071b96e7451a3b493c7c11f448b21688c26.1750992149.git.wqu@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix a use-after-free race if btrfs_open_devices()
- failed
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org,
- syzbot+772bdfe41846e057fa83@syzkaller.appspotmail.com
-References: <1c173aadfc405763e3920e4d87c56992cae9e278.1750983699.git.wqu@suse.com>
- <20250627010918.GD31241@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250627010918.GD31241@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VuNPgMzhnzUxKq34KpfhyP74xrkwUZrr0j0furiJU3WtRoa8Op7
- 0ozAXlUcry2k/aNWw6RcHKGdPxEoZiufDkurEM6ju039K6R8pXP0XeRdFGv1/TTVaEBkh5E
- sVSECQ7BGD7JGg+/QGKc/xXAI7vAk6BsNHXlR+Ltpx9tUQ9sR0CqvWwyveXP70sAn3RnJoE
- bnTXZ7m0EzlJI2TCxA79w==
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TAGGED_RCPT(0.00)[772bdfe41846e057fa83];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
+	RCPT_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Level: 
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:fhShvB3wUJA=;gPS7Rq3JeDZipVaYvEtJSJ7PMqh
- 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
+X-Rspamd-Queue-Id: 24A7821172
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -3.01
 
+[BUG]
+With the latest v5 version patchset "btrfs: use fs_holder_ops for btrfs"
+merged into linux-next, syzbot reported an use-after-free:
 
+==================================================================
+BUG: KASAN: slab-use-after-free in close_fs_devices+0x81f/0x870 fs/btrfs/volumes.c:1182
+Read of size 4 at addr ffff88802fe14930 by task syz.4.616/8589
 
-=E5=9C=A8 2025/6/27 10:39, David Sterba =E5=86=99=E9=81=93:
-> On Fri, Jun 27, 2025 at 09:52:58AM +0930, Qu Wenruo wrote:
->> [BUG]
->> With the latest v5 version patchset "btrfs: use fs_holder_ops for btrfs=
-"
->> merged into linux-next, syzbot reported an use-after-free:
-> ...
->> This will be folded into the patch "btrfs: delay btrfs_open_devices()
->> until super block is created".
->=20
-> Thanks, patch added to linux-next branch on top of the series for
-> clarity, for the next iteration it can be folded.
->=20
+CPU: 0 UID: 0 PID: 8589 Comm: syz.4.616 Not tainted 6.16.0-rc3-next-20250626-syzkaller #0 PREEMPT(full)
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:408 [inline]
+ print_report+0xd2/0x2b0 mm/kasan/report.c:521
+ kasan_report+0x118/0x150 mm/kasan/report.c:634
+ close_fs_devices+0x81f/0x870 fs/btrfs/volumes.c:1182
+ btrfs_close_devices+0xc5/0x560 fs/btrfs/volumes.c:1201
+ btrfs_free_fs_info+0x4f/0x3c0 fs/btrfs/disk-io.c:1250
+ deactivate_locked_super+0xbc/0x130 fs/super.c:474
+ btrfs_get_tree_super fs/btrfs/super.c:-1 [inline]
+ btrfs_get_tree_subvol fs/btrfs/super.c:2073 [inline]
+ btrfs_get_tree+0xd1e/0x17f0 fs/btrfs/super.c:2107
+ vfs_get_tree+0x92/0x2b0 fs/super.c:1804
+ do_new_mount+0x24a/0xa40 fs/namespace.c:3902
+ do_mount fs/namespace.c:4239 [inline]
+ __do_sys_mount fs/namespace.c:4450 [inline]
+ __se_sys_mount+0x317/0x410 fs/namespace.c:4427
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fedccd900ca
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fedcdc28e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fedcdc28ef0 RCX: 00007fedccd900ca
+RDX: 00002000000055c0 RSI: 0000200000005600 RDI: 00007fedcdc28eb0
+RBP: 00002000000055c0 R08: 00007fedcdc28ef0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000200000005600
+R13: 00007fedcdc28eb0 R14: 000000000000559d R15: 0000200000000440
+ </TASK>
 
-It turns out there are more locations needs similar handling.
+Allocated by task 8589:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
+ __kasan_kmalloc+0x93/0xb0 mm/kasan/common.c:394
+ kasan_kmalloc include/linux/kasan.h:260 [inline]
+ __kmalloc_cache_noprof+0x230/0x3d0 mm/slub.c:4396
+ kmalloc_noprof include/linux/slab.h:905 [inline]
+ kzalloc_noprof include/linux/slab.h:1039 [inline]
+ alloc_fs_devices+0x4f/0x1d0 fs/btrfs/volumes.c:384
+ device_list_add+0x6b7/0x20b0 fs/btrfs/volumes.c:813
+ btrfs_scan_one_device+0x3fd/0x5b0 fs/btrfs/volumes.c:1487
+ btrfs_get_tree_super fs/btrfs/super.c:1856 [inline]
+ btrfs_get_tree_subvol fs/btrfs/super.c:2073 [inline]
+ btrfs_get_tree+0x433/0x17f0 fs/btrfs/super.c:2107
+ vfs_get_tree+0x92/0x2b0 fs/super.c:1804
+ do_new_mount+0x24a/0xa40 fs/namespace.c:3902
+ do_mount fs/namespace.c:4239 [inline]
+ __do_sys_mount fs/namespace.c:4450 [inline]
+ __se_sys_mount+0x317/0x410 fs/namespace.c:4427
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-I'll need to send out a v2 update for this hot fix unfortunately...
+Freed by task 7454:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
+ kasan_save_free_info+0x46/0x50 mm/kasan/generic.c:576
+ poison_slab_object mm/kasan/common.c:247 [inline]
+ __kasan_slab_free+0x62/0x70 mm/kasan/common.c:264
+ kasan_slab_free include/linux/kasan.h:233 [inline]
+ slab_free_hook mm/slub.c:2417 [inline]
+ slab_free mm/slub.c:4680 [inline]
+ kfree+0x18e/0x440 mm/slub.c:4879
+ btrfs_free_stale_devices+0x61c/0x6b0 fs/btrfs/volumes.c:564
+ btrfs_scan_one_device+0x3d5/0x5b0 fs/btrfs/volumes.c:1481
+ btrfs_control_ioctl+0x11f/0x360 fs/btrfs/super.c:2256
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:907 [inline]
+ __se_sys_ioctl+0xf9/0x170 fs/ioctl.c:893
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+[CAUSE]
+The patch "btrfs: delay btrfs_open_devices() until super block is created"
+changed the timing when btrfs_open_devices() is called.
+
+Now it's called after sget_fc(), the changed timing is required for
+using super blocks as bdev holder.
+
+The problem is the changed error handling.
+
+Before the change if btrfs_open_devices() failed we error out directly,
+but now we need to call deactivate_locked_super().
+
+However since btrfs_open_devices() failed, fs_devices->opened is still
+0, meaning any reclaim request can free the fs_devices.
+
+But at the same time, deactivate_locked_super() will also cleanup the
+fs_info with btrfs_free_fs_info(), which calls btrfs_close_devices().
+
+This leads to the following race:
+
+       Mount process              |         Scan process
+----------------------------------+--------------------------------
+btrfs_get_tree_super()            |
+|- mutex_lock(&uuid_mutex)        |
+|- btrfs_open_devices()           |
+|  Which failed.                  |
+|  fs_devices->opened is still 0. |
+|- mutex_unlock(&uuid_mutex)      |
+|                                 | btrfs_control_ioctl()
+|                                 | |- btrfs_scan_one_device()
+|                                 |    |- btrfs_free_stale_devices()
+|                                 |       That fs_devices is freed
+|- deactivate_locked_super()      |
+   |- btrfs_free_fs_info()        |
+      |- btrfs_close_devices()
+         Now try to free the same
+	 fs_devices that is freed
+	 by the scan process.
+
+[FIX]
+If btrfs_open_devices() failed, we should not keep a pointer to it, as
+it can be freed at any time after uuid_mutex unlocked.
+
+So add an extra handling for btrfs_open_devices() to reset
+fs_info->fs_devices to NULL.
+
+This also applies to all the remaining handling of fs_devices, including:
+
+- Only modify fs_info->fs_devices under uuid_mutex
+  This is to be extra safe.
+  It is safe as long as fs_info->fs_devices is NULL before we enter
+  deactivate_locked_super().
+
+- Error handling if sget_fc() failed
+  The handling is the same.
+
+This will be folded into the patch "btrfs: delay btrfs_open_devices()
+until super block is created".
+
+Reported-by: syzbot+772bdfe41846e057fa83@syzkaller.appspotmail.com
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2: 
+- Add the missing error handling for sget_fc() error
+- Only modify fs_info->fs_devices with uuid_mutex hold
+  This is just for extra safety and consistency.
+  As long as fs_info->fs_devices is NULL before entering
+  deactivate_locked_super(), we should be safe.
+---
+ fs/btrfs/super.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 3fba3d6309a2..80486ce3422d 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1868,14 +1868,15 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 	 * the fs_devices itself won't be freed.
+ 	 */
+ 	btrfs_fs_devices_inc_holding(fs_devices);
++	fs_info->fs_devices = fs_devices;
+ 	mutex_unlock(&uuid_mutex);
+ 
+-	fs_info->fs_devices = fs_devices;
+ 
+ 	sb = sget_fc(fc, btrfs_fc_test_super, set_anon_super_fc);
+ 	if (IS_ERR(sb)) {
+ 		mutex_lock(&uuid_mutex);
+ 		btrfs_fs_devices_dec_holding(fs_devices);
++		fs_info->fs_devices = NULL;
+ 		mutex_unlock(&uuid_mutex);
+ 		return PTR_ERR(sb);
+ 	}
+@@ -1895,13 +1896,12 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 
+ 		mutex_lock(&uuid_mutex);
+ 		btrfs_fs_devices_dec_holding(fs_devices);
+-		mutex_unlock(&uuid_mutex);
+ 		/*
+ 		 * But the fs_info->fs_devices is not opened, we should not let
+ 		 * btrfs_free_fs_context() to close them.
+ 		 */
+ 		fs_info->fs_devices = NULL;
+-
++		mutex_unlock(&uuid_mutex);
+ 		/*
+ 		 * At this stage we may have RO flag mismatch between
+ 		 * fc->sb_flags and sb->s_flags.  Caller should detect such
+@@ -1921,6 +1921,17 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 		mutex_lock(&uuid_mutex);
+ 		btrfs_fs_devices_dec_holding(fs_devices);
+ 		ret = btrfs_open_devices(fs_devices, mode, sb);
++		/*
++		 * If btrfs_open_devices() failed, fs_devices is not opened and
++		 * can be freed by any reclaim request after uuid_mutex unlocked.
++		 *
++		 * But our fs_info is still using that fs_devices, thus it will
++		 * lead to use-after-free later.
++		 *
++		 * So here we must not use that fs_devices after open failure.
++		 */
++		if (ret < 0)
++			fs_info->fs_devices = NULL;
+ 		mutex_unlock(&uuid_mutex);
+ 		if (ret < 0) {
+ 			deactivate_locked_super(sb);
+-- 
+2.49.0
+
 
