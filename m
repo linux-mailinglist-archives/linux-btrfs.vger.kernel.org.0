@@ -1,216 +1,148 @@
-Return-Path: <linux-btrfs+bounces-15119-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15120-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAD18AEE509
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 18:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C2FACAEE50B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 18:54:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3731C166518
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 16:54:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E22B916FC46
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 16:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4605290DB2;
-	Mon, 30 Jun 2025 16:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F54128FFDA;
+	Mon, 30 Jun 2025 16:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="piJ250dI"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vOcQgiqr";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mdzxMzF5";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vOcQgiqr";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mdzxMzF5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36B9E28CF5C
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 16:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3307A28CF5C
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 16:54:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751302447; cv=none; b=Qk7kpbadf7z8PaMirklbmeAXnq3qhRHGcPbGxpFZSt2oSHJfTx6MOpkx+jmdREkGI5e9Hy0/GblB+LrnVDjhEzUP5CZbiFGY3IMzQvJRvqfPLUTifSrLfK/7mTQvW/5W0D+KaZiR0gClpGTxlE4NEq09psogVb/UXiJEI3g1PZ8=
+	t=1751302466; cv=none; b=A4UbE8VViuNkrjYsC4h4GTjGpQ/tJm9QXEUauq9Sas5aH4EesAhoOFTXIH5bE/XtGQjh+kZvE/Vw6jlnQafK+dTTs8Mntz2wAdrqqJEwXYzdTusaGk39QY5jInqU9kxWvoP6MZnVw760v3jfSjiU6gItg+CR1EV2PuSOpoBa6YI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751302447; c=relaxed/simple;
-	bh=uBaj65g979G14vNGqe3S6E69vn4gPXWbbnP20DLnM/A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IsNqBFseRptCzJVa1LxDLryt40bXPHdm3WDTvUpwaZqMwjIb9xI9lSEwcMJLetVGvCL5yJF/uPLFrEC0bNlTa/14/9BP6P4wOd3Y4wQUqQy9itf/mczccSQV8DO4Xi9AuyFOmoSxWMjpLA1jIew/yAy39evKVLf98AOdZ8poFIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=piJ250dI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B389EC4CEE3
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 16:54:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751302446;
-	bh=uBaj65g979G14vNGqe3S6E69vn4gPXWbbnP20DLnM/A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=piJ250dIpEsoU7Ntq+r+COTbl3xXdu6WtYPM6wUzpLYFWZLiU0I81v0NkZtVYkaBW
-	 zOt+IrWRQB/NZqL522S8Q2ydkZ05fUYQtsS+bv5s5sCMgsoeBlYXcb2v1An956hNLE
-	 pypqcfoZhxqWYk89Du8pkkVqDmnJlbF0nDVghOYId32ul3X6SPSuO5fCdBYEsMjpJH
-	 cA1V6Mf9IxaysAZtgnXMiobpOTYctPVeYENhH3RDZGw962JWv3EO8vVjohWHXo1V29
-	 lgdgGK8Zx4EBx9uCTtiPdSE2HVZMUk3zDMObOyufnucQVe/NZCim+asqIVZpBYN+nM
-	 gRliKlZFsqIpQ==
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-60c60f7eeaaso7943900a12.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 09:54:06 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwuTbySEcfZDhmgGWP3OdtHZFS2oQoLvB8LLCCsI7zK9sJ3+9R3
-	r8BqU85nLndd3+jRvlHSwq8djH5lSdsTB8ChPgbFRhjdDdFiRzjXm6u+HddwFsbZxO48q2w11yz
-	v0bBiZU3juidIgjD7lLDuC7mP3DzcKUU=
-X-Google-Smtp-Source: AGHT+IES/aRwxMTEmdRlff1L7FnlM/tECDetspxLDvQ5o6eHQmsm/D+L+5zU23IHtkUQjKL0pwYs90uguszDLB8QP30=
-X-Received: by 2002:a17:907:3cc2:b0:ae0:a88f:61fa with SMTP id
- a640c23a62f3a-ae3500f8663mr1399674866b.28.1751302445161; Mon, 30 Jun 2025
- 09:54:05 -0700 (PDT)
+	s=arc-20240116; t=1751302466; c=relaxed/simple;
+	bh=ChjvqQSOmOz5F/SHecT/ukDYfxWUQ3eiG8YzWmn+pUA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PCD5dARzzUpp5SKU+gaiJmDfGgkHmQSe94AE3v34fK0gX1A3kCgepXD1exmhgZDloWw0BtBpJvFrZZUNPma6d8OPbiEg5v0n8Jd482SB2dATuZYtPC2xh6WTKnc7Kk/enrfaeLt9aCdHj2XcyF3Mk/kojck1hMfFd3XtkBZzZ10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vOcQgiqr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mdzxMzF5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vOcQgiqr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mdzxMzF5; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6B4A8211B4;
+	Mon, 30 Jun 2025 16:54:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751302463;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kU1wLFZ2WL5zrZ79bRMbSTe8/sVsIRqHLXLh9Gm6stE=;
+	b=vOcQgiqrdOtO5Pv86jUzfrsz5YDc1Fz7SmuwMEMTGJPqTwVYlivOuvS6tfGKg7lWYolCRd
+	XCZueSg+2vPHkf6YITb7uJDrj1PyCrY1PyffubbNuZDmutY+PfCrAk7CJGGuXZe8zseBZl
+	csc6snH3ixhBm/Zi1hoiIYwtyzer8UM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751302463;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kU1wLFZ2WL5zrZ79bRMbSTe8/sVsIRqHLXLh9Gm6stE=;
+	b=mdzxMzF5h3HUihDndm0vRymVq8LvJnJVTj6zEAmxLSzmHDNxuHghbUCmS1qsaMDRHjhwWI
+	p+xcUcQdvNvvM0AQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751302463;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kU1wLFZ2WL5zrZ79bRMbSTe8/sVsIRqHLXLh9Gm6stE=;
+	b=vOcQgiqrdOtO5Pv86jUzfrsz5YDc1Fz7SmuwMEMTGJPqTwVYlivOuvS6tfGKg7lWYolCRd
+	XCZueSg+2vPHkf6YITb7uJDrj1PyCrY1PyffubbNuZDmutY+PfCrAk7CJGGuXZe8zseBZl
+	csc6snH3ixhBm/Zi1hoiIYwtyzer8UM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751302463;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kU1wLFZ2WL5zrZ79bRMbSTe8/sVsIRqHLXLh9Gm6stE=;
+	b=mdzxMzF5h3HUihDndm0vRymVq8LvJnJVTj6zEAmxLSzmHDNxuHghbUCmS1qsaMDRHjhwWI
+	p+xcUcQdvNvvM0AQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 52C7413983;
+	Mon, 30 Jun 2025 16:54:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id RdL7Ez/BYmh2IAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 30 Jun 2025 16:54:23 +0000
+Date: Mon, 30 Jun 2025 18:54:18 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: linux-btrfs@vger.kernel.org,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH] btrfs: change dump_block_groups in btrfs_dump_space_info
+ from int to bool
+Message-ID: <20250630165418.GM31241@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250630144735.224222-1-jth@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1751288689.git.fdmanana@suse.com> <19f775a9f256c4a5146cc97b7f521464429c81bc.1751288689.git.fdmanana@suse.com>
- <20250630163242.GA61133@zen.localdomain>
-In-Reply-To: <20250630163242.GA61133@zen.localdomain>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 30 Jun 2025 17:53:28 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4g-WNhksrGXT+hsYhHfvize9hdWJa8v4Er3F83Lkb55A@mail.gmail.com>
-X-Gm-Features: Ac12FXwc4DkKJZ4621N2AmAluPZNIpcmG8TOGPB42bg4QmXxzw67U08POHYJnQ4
-Message-ID: <CAL3q7H4g-WNhksrGXT+hsYhHfvize9hdWJa8v4Er3F83Lkb55A@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] btrfs: qgroup: fix race between quota disable and
- quota rescan ioctl
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250630144735.224222-1-jth@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -3.95
+X-Spamd-Result: default: False [-3.95 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.15)[-0.768];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Level: 
 
-On Mon, Jun 30, 2025 at 5:31=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> On Mon, Jun 30, 2025 at 02:07:47PM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > There's a race between a task disabling quotas and another running the
-> > rescan ioctl that can result in a use-after-free of qgroup records from
-> > the fs_info->qgroup_tree rbtree.
-> >
-> > This happens as follows:
-> >
-> > 1) Task A enters btrfs_ioctl_quota_rescan() -> btrfs_qgroup_rescan();
-> >
-> > 2) Task B enters btrfs_quota_disable() and calls
-> >    btrfs_qgroup_wait_for_completion(), which does nothing because at th=
-at
-> >    point fs_info->qgroup_rescan_running is false (it wasn't set yet by
-> >    task A);
-> >
-> > 3) Task B calls btrfs_free_qgroup_config() which starts freeing qgroups
-> >    from fs_info->qgroup_tree without taking the lock fs_info->qgroup_lo=
-ck;
-> >
-> > 4) Task A enters qgroup_rescan_zero_tracking() which starts iterating
-> >    the fs_info->qgroup_tree tree while holding fs_info->qgroup_lock,
-> >    but task B is freeing qgroup records from that tree without holding
-> >    the lock, resulting in a use-after-free.
-> >
-> > Fix this by taking fs_info->qgroup_lock at btrfs_free_qgroup_config().
-> > Also at btrfs_qgroup_rescan() don't start the rescan worker if quotas
-> > were already disabled.
-> >
-> > Reported-by: cen zhang <zzzccc427@gmail.com>
-> > Link: https://lore.kernel.org/linux-btrfs/CAFRLqsV+cMDETFuzqdKSHk_FDm6t=
-neea45krsHqPD6B3FetLpQ@mail.gmail.com/
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
->
-> Reviewed-by: Boris Burkov <boris@bur.io>
->
-> > ---
-> >  fs/btrfs/qgroup.c | 26 +++++++++++++++++++-------
-> >  1 file changed, 19 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> > index b83d9534adae..8fa874ef80b3 100644
-> > --- a/fs/btrfs/qgroup.c
-> > +++ b/fs/btrfs/qgroup.c
-> > @@ -636,22 +636,30 @@ bool btrfs_check_quota_leak(const struct btrfs_fs=
-_info *fs_info)
-> >
-> >  /*
-> >   * This is called from close_ctree() or open_ctree() or btrfs_quota_di=
-sable(),
-> > - * first two are in single-threaded paths.And for the third one, we ha=
-ve set
-> > - * quota_root to be null with qgroup_lock held before, so it is safe t=
-o clean
-> > - * up the in-memory structures without qgroup_lock held.
-> > + * first two are in single-threaded paths.
-> >   */
-> >  void btrfs_free_qgroup_config(struct btrfs_fs_info *fs_info)
-> >  {
-> >       struct rb_node *n;
-> >       struct btrfs_qgroup *qgroup;
-> >
-> > +     /*
-> > +      * btrfs_quota_disable() can be called concurrently with
-> > +      * btrfs_qgroup_rescan() -> qgroup_rescan_zero_tracking(), so tak=
-e the
-> > +      * lock.
-> > +      */
-> > +     spin_lock(&fs_info->qgroup_lock);
-> >       while ((n =3D rb_first(&fs_info->qgroup_tree))) {
-> >               qgroup =3D rb_entry(n, struct btrfs_qgroup, node);
-> >               rb_erase(n, &fs_info->qgroup_tree);
-> >               __del_qgroup_rb(qgroup);
-> > +             spin_unlock(&fs_info->qgroup_lock);
-> >               btrfs_sysfs_del_one_qgroup(fs_info, qgroup);
-> >               kfree(qgroup);
-> > +             spin_lock(&fs_info->qgroup_lock);
-> >       }
-> > +     spin_unlock(&fs_info->qgroup_lock);
-> > +
-> >       /*
-> >        * We call btrfs_free_qgroup_config() when unmounting
-> >        * filesystem and disabling quota, so we set qgroup_ulist
-> > @@ -4036,12 +4044,16 @@ btrfs_qgroup_rescan(struct btrfs_fs_info *fs_in=
-fo)
-> >       qgroup_rescan_zero_tracking(fs_info);
-> >
-> >       mutex_lock(&fs_info->qgroup_rescan_lock);
-> > -     fs_info->qgroup_rescan_running =3D true;
-> > -     btrfs_queue_work(fs_info->qgroup_rescan_workers,
-> > -                      &fs_info->qgroup_rescan_work);
-> > +     if (test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags)) {
->
-> could this be one of the helpers like !btrfs_qgroup_enabled() or maybe
-> even better !btrfs_qgroup_full_accounting()?
+On Mon, Jun 30, 2025 at 04:47:35PM +0200, Johannes Thumshirn wrote:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> 
+> btrfs_dump_space_info()'s parameter dump_block_groups is used as a boolean
+> although it is defined as an integer.
+> 
+> Change it from int to bool.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Yes, that's fine. I'll update to that when pushing to for-next:
+Reviewed-by: David Sterba <dsterba@suse.com>
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 98a53e6edb2c..5f1b4990f56f 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -4015,7 +4015,12 @@ btrfs_qgroup_rescan(struct btrfs_fs_info *fs_info)
-        qgroup_rescan_zero_tracking(fs_info);
-
-        mutex_lock(&fs_info->qgroup_rescan_lock);
--       if (test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags)) {
-+       /*
-+        * The rescan worker is only for full accounting qgroups, check if =
-it's
-+        * enabled as it is pointless to queue it otherwise. A concurrent q=
-uota
-+        * disable may also have just cleared BTRFS_FS_QUOTA_ENABLED.
-+        */
-+       if (btrfs_qgroup_full_accounting(fs_info)) {
-                fs_info->qgroup_rescan_running =3D true;
-                btrfs_queue_work(fs_info->qgroup_rescan_workers,
-                                 &fs_info->qgroup_rescan_work);
-
-
-Thanks.
-
->
-> > +             fs_info->qgroup_rescan_running =3D true;
-> > +             btrfs_queue_work(fs_info->qgroup_rescan_workers,
-> > +                              &fs_info->qgroup_rescan_work);
-> > +     } else {
-> > +             ret =3D -ENOTCONN;
-> > +     }
-> >       mutex_unlock(&fs_info->qgroup_rescan_lock);
-> >
-> > -     return 0;
-> > +     return ret;
-> >  }
-> >
-> >  int btrfs_qgroup_wait_for_completion(struct btrfs_fs_info *fs_info,
-> > --
-> > 2.47.2
-> >
+It may be possible to write a coccinelle script to find them, otherwise
+it's only by reading the code, so feel free to fix them on sight.
 
