@@ -1,34 +1,34 @@
-Return-Path: <linux-btrfs+bounces-15093-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15091-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAC6DAED984
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 12:14:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D831AED96A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 12:09:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99A807A5425
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 10:13:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07070189881F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 10:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D7122571DC;
-	Mon, 30 Jun 2025 10:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D51FC253922;
+	Mon, 30 Jun 2025 10:09:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="pVlxrw/b"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="rMX1j5R2"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851E8239090
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 10:14:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6CB23F27B
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 10:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751278462; cv=none; b=O9TyFqeXMXaWjDequsV0IfqKfzT9yYfgIjvyozW0nARZqI9ipIaDM6hokVgX1tVzwcLb0yuehvFCnLS2XXvJxyTwGNzgnaZGLzHJlNqTI9r917MpAetpTL8jG+BxJ/S0wueKw0C+8Mog1LPSAk7NMOUqi8SNwhGRZbEAYfPfDxc=
+	t=1751278164; cv=none; b=fmpHWrP18sGKC4Nk5VhiFsrHE9DKlJGrUX6LAjUWcRoJnnT0Ls469E9WPqfPTjwHpWL7yQbxtmjJ4stJ1yuOCexPC4mu4dhObaAcKyJy6A6b9i3M79rn/EOYGiwzpWl7Z2fyXBMc3hVfnlihbUHAv35eyH8QcIX1/6doIVXnfyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751278462; c=relaxed/simple;
-	bh=0oft7MVSyXcGuNXRm1gIpzAQUHQr50gpnB0+lnuwH/E=;
+	s=arc-20240116; t=1751278164; c=relaxed/simple;
+	bh=8bAv0bYUhy9TCGU8j0W9HbLS88I8oQawA6A+2LJTYes=;
 	h=Message-ID:Date:Mime-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=BD/6SSmkDx0KSSwEc7RoOTyFNAONP7N9iOdo9yzA2LEYkuCh9ZGeobNtS0GWg4eR9FZW19wiIC34FfB9fUGnLJaZ+ufl7j9u6ZeQVc1KIBOS9bUKETawRJ3d12JshoReFfUQbBOA+l3dyIoNdtIUxnwbyMKExnJfziX2XSrGEzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=pVlxrw/b; arc=none smtp.client-ip=217.169.27.34
+	 In-Reply-To:Content-Type; b=tvDxD3p2y/vHIiZymcJz9eRSvhgsVyrCx5WavMPcRA3e6RX46OBKM3p34pnGxE4xOkvMT2ucuJ0afToln0amRjvS2NJiAlsauwmq/dEC/ngCn0EOu4HWy4lE0Xm2ISaswGcyXzbr/rEXCSg8+jee1p0bVW6C4R2LLV4oTPaBkq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=rMX1j5R2; arc=none smtp.client-ip=217.169.27.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
 Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
@@ -36,26 +36,26 @@ Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
 	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
 	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
-	by mail.burntcomma.com (Postfix) with ESMTPS id 5153F2931A3;
-	Mon, 30 Jun 2025 11:07:06 +0100 (BST)
+	by mail.burntcomma.com (Postfix) with ESMTPS id 4C1452931A6;
+	Mon, 30 Jun 2025 11:09:14 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1751278026;
-	bh=l6kNuRaGfZIYcHzQTduMH2XcJHjuEfx5fuvsdiQxxQE=;
+	s=mail; t=1751278154;
+	bh=sU+98e1z47nHBSBif2vo5xoE2TPflnge2GQkvzXsAOk=;
 	h=Date:Subject:To:References:From:In-Reply-To;
-	b=pVlxrw/bF9Q0Ez+Mey7NbdUoEtV/ZKXODVsBqEsfeh8pfamPPl9WKAVRHA+g8cou0
-	 tDgr4QwSRO2FntkGMCfXBCdNlmHooSysf8b2pTMUDsFZLnQcltkyjS15KLi/suH47m
-	 NCBRkoyK4XLeV9AOCP4ik6uqfRbZVl18aC84IXss=
-Message-ID: <82b6ddab-0eef-47b8-8010-9b09fcb70444@harmstone.com>
-Date: Mon, 30 Jun 2025 11:07:06 +0100
+	b=rMX1j5R2skOhFhJMCWvSAWq6MnGp7pcuEa934BzP723l53dy1vWOhY8hIlU/pPT8c
+	 BoU6zYfGdZ6N8imJDQzH/guf0RAhkBoG616GuJJThGYWCgqSlr4wJXUaZx8IVRwtaf
+	 vC30vbFK64KmcJIvYSRgEQ2PRzGY+ZJXPgv7XirM=
+Message-ID: <b7d55f63-5827-4bbf-b0ff-dea46b00f7dd@harmstone.com>
+Date: Mon, 30 Jun 2025 11:09:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Subject: Re: restic backup with btrfs /
+Subject: Re: using snapshot for backup: best practise?
 To: linux-btrfs@vger.kernel.org, framstag@rus.uni-stuttgart.de
-References: <20250628173308.GB847325@tik.uni-stuttgart.de>
+References: <20250626114345.GA615977@tik.uni-stuttgart.de>
 Content-Language: en-US
 From: Mark Harmstone <mark@harmstone.com>
 Autocrypt: addr=mark@harmstone.com; keydata=
@@ -88,48 +88,58 @@ Autocrypt: addr=mark@harmstone.com; keydata=
  6bZCBtwr/O+CwVVqWRzKDQgVo4t1xk2ts1F0R1uHHLsX7mIgfXBYdo/y4UgFBAJH5NYUcBR+
  QQcOgUUZeF2MC9i0oUaHJOIuuN2q+m9eMpnJdxVKAUQcZxDDvNjZwZh+ejsgG4Ejd2XR/T0y
  XFoR/dLFIhf2zxRylN1xq27M9P2t1xfQFocuYToPsVk=
-In-Reply-To: <20250628173308.GB847325@tik.uni-stuttgart.de>
+In-Reply-To: <20250626114345.GA615977@tik.uni-stuttgart.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 28/06/2025 6.33 pm, Ulli Horlacher wrote:
-> restic (https://restic.net/) is a great backup tool but has some
-> limitations or design flaws: one is, it believes that any subvolume is on a
-> different filesystem. This means: "restic backup --one-file-system /" will
-> only backup the root subvolume, but no other subvolumes like /home
-> /var/spool etc...
+On 26/06/2025 12.43 pm, Ulli Horlacher wrote:
 > 
-> One has to add every subvolume to the argument list. Bad if you
-> create new subvolumes and forget to update the backup cronjob.
-> When you later need to restore a file, there will be none...
-
-This is a bug in Restic that needs to be fixed, though they may not see it that
-way. The issue is that btrfs uses a different device number for each subvolume -
-I believe this is because subvols can share inode numbers, and VFS gets confused
-otherwise.
-
-The same behaviour can be seen with rsync, which restic might well use
-internally.
-
-> My idea is now: I do not backup the original /, but do:
+> I am using fsfreeze when running a backup to ensure a consistent filesystem.
 > 
-> mount --bind / /backup/restic
-> restic backup /backup/restic
-> umount /backup/restic
+> While the backup is running writes to the filesystem are suspended and the
+> whole system is unresponsive, e.g. logins are not possible.
+> On certain errors the unfreeze will not happen and the system is locked
+> forever.
 > 
-> Next evolution step:
-> I could recursivly mount-bind other filesystems into /backup/restic/
-> For example:
+> Using snapshots seems a better idea for backups :-)
 > 
-> mount --bind /local /backup/restic/local
-> mount --bind /data /backup/restic/ldata
+> But snapshots do not include subvolumes.
 
-This is unlikely to work, as bind mounts will also be seen as different
-filesystems.
+Omar Sandoval had patches to add recursive snapshotting to btrfs-progs, but
+they never made it in, for reasons I can't remember.
 
-> That I would have a "all in one backup".
+> For example the / filesystem has the subvolumes:
+> /home
+> /home/tux/test
+> /var/spool
 > 
-> What do you think of this idea?
+> When I run the command:
+> 
+> btrfs subvolume snapshot / /.snapshot/_
+> 
+> the snapshot will contain only the root subvolume.
+> 
+> I have to manually add:
+> 
+> rmdir /.snapshot/_/home
+> btrfs subvolume snapshot /home /.snapshot/_/home
+> rmdir /.snapshot/_/home/tux/test
+> btrfs subvolume snapshot /home/tux/test /.snapshot/_/home/tux/test
+> rmdir /.snapshot/_/var/spool
+> btrfs subvolume snapshot /var/spool /.snapshot/_/var/spool
+> 
+> Then run the backup on /.snapshot/_ und afterwards:
+> 
+> btrfs subvolume del /.snapshot/_/var/spool
+> btrfs subvolume del /.snapshot/_/home/tux/test
+> btrfs subvolume del /.snapshot/_/home
+> btrfs subvolume del /.snapshot/_
+> 
+> But this will work only for this special example!
+> And I have hundreds of systems to backup with different filesystem layout!
+> 
+> Is there a best practise "Using snapshots for making backup"?
+> I need automatic detecting, creating and removing of nested snapshots.
 > 
 
 
