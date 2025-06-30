@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-15105-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15106-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D381AEDE9F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 15:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E52CAEDEA2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 15:16:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91CD6401756
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 13:11:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B87340186E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 13:11:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C1428D8C1;
-	Mon, 30 Jun 2025 13:07:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF9E228D8D1;
+	Mon, 30 Jun 2025 13:07:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HCrjLm+Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nSddz7kA"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29BE028D839
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 13:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E8D28D8C4
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 13:07:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751288876; cv=none; b=do3nIXy3TD0QzzQBmh5479fjYRKvO9zyy2ChG2XLFKBdA0IAr+G/CGpbR4qgjubORMcjDqGpyD0GHsQy4u3ljLHU247kktvlOiBrzbiAT5QsCjw5+0EWWV9EVxBeBB1aJ5SOon+bgQ4aiN285k2xCGbJbEFubyH/4uyJ+GUEzu0=
+	t=1751288877; cv=none; b=iH/TGrMg26iS19A/kbW1/MANUoSp323MJZxqD+NuFA0/V9fK4Ps5XJCLG8TPjgRGHHjcnnhF5Kje1t7ISqu68eHPIsy9j0KF9izYloQ0oGz/vNsqtL0OMbqKKPagfcIY1buiLcoJdKi9XBXTuBUH/gsL6L+JRUHlkdSJnGIoWU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751288876; c=relaxed/simple;
-	bh=YTZtVRIF8KKjo7SbqPLsgx/+KkIjqLskHVxyusC6ITc=;
+	s=arc-20240116; t=1751288877; c=relaxed/simple;
+	bh=yC9scquLWIGar1yXpjEalSGNdXM7MvKJu6lQUvzL1Ck=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j0LzjvL27sZ8FdxLmqTrFFokTsuxYpagnp14ax6kzZVJ7vzd4MmC5YmD/gWruUdh9JJFRGysB7oxPtasbFXrbysnTuUFqzuHqPm7wdF7hnHP7K+Ko+8IraEVs77QkJCFqU4aBrW5P/P9e6s4y0Fh2WIcIX3zmS8PFkSICxwd9PQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HCrjLm+Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34663C4CEEF
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 13:07:55 +0000 (UTC)
+	 MIME-Version; b=EVMNIrHQhGFJZoIy8AIwSp6wcgfjPqJG79WmsQEtDTm8UxQVWwKtMew5d/pecf2CNPvpCVgVkaPEV6KupQTDB8H68fu3Yp+zrk/2bwODw968GBt8OBO9uyqv8QaA43vArnI6n9YqxXO/sxHbu7zfd9AayY/pu7Sd28aZWaTFPQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nSddz7kA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3641AC4CEF9
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 13:07:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751288875;
-	bh=YTZtVRIF8KKjo7SbqPLsgx/+KkIjqLskHVxyusC6ITc=;
+	s=k20201202; t=1751288876;
+	bh=yC9scquLWIGar1yXpjEalSGNdXM7MvKJu6lQUvzL1Ck=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=HCrjLm+ZPUVr03fJa/2AHDf2jGyoXDXFpb6+8TP1zU/WWcw8gj+/0ZB9rEHFXa1QC
-	 7gGrnyOrr59gTnT904eEV47mVx+/XFs6+AQlOkjtzcbOgY3dkbaPMD8h+AAQVR45kl
-	 PA4FRxTjGlB1pM68nfUK9O6Xic6LVkkIGHyMRgtWKZHvSU101C+6UYZXFFjmR8DMfL
-	 eKZqSEtURG+Z/QOXHj8bZYWaQgUA59Nn8eq8l7JUMevBVXlT4LuwBZnLnlBRaHZSOv
-	 prG/rjOm/i5Ppd/BQFEhBlc1hwRzV46/2ksVVl77Da3ccF7ALxGxnAfUttlava0IZQ
-	 NYDt61iNS9JCw==
+	b=nSddz7kA/DJXuW7xh8uCJnejK24EBx02tRYCcy7mSS3/yPiC6bY/xx4/SSE/ue2uC
+	 4IkiDP9jay/iUseezfSk0EtH8Ur1xPSbYJix/P7bGGG1ZThtFuVr0N9ynTnGqM9Z5D
+	 Y0k4qr4g80kqUKXv69CWBoP7UTiIK1+PIDfd74wg8woeKttnBZvb4ELaorgbSj+Tmw
+	 yh2JazOiV61H++kGn4G8GEbRR2q7VRgn3DgDfLc8ETkwKdnpXzFdEeZIJWZUVP8kFc
+	 ZYMm5ywScx7+YNwiZnPNRUPn0bv/E69kL9k44XUgMWNIa14m6+Nal37PEspBWUfvTF
+	 sd7u5LIX1joJQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 1/2] btrfs: qgroup: fix race between quota disable and quota rescan ioctl
-Date: Mon, 30 Jun 2025 14:07:47 +0100
-Message-ID: <19f775a9f256c4a5146cc97b7f521464429c81bc.1751288689.git.fdmanana@suse.com>
+Subject: [PATCH v3 2/2] btrfs: qgroup: remove no longer used fs_info->qgroup_ulist
+Date: Mon, 30 Jun 2025 14:07:48 +0100
+Message-ID: <6051db0c1a943d7f896fbb5b9cd548908e161ed0.1751288689.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1751288689.git.fdmanana@suse.com>
 References: <cover.1751288689.git.fdmanana@suse.com>
@@ -59,97 +59,135 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-There's a race between a task disabling quotas and another running the
-rescan ioctl that can result in a use-after-free of qgroup records from
-the fs_info->qgroup_tree rbtree.
+It's not used anymore after commit 091344508249 ("btrfs: qgroup: use
+qgroup_iterator in qgroup_convert_meta()"), so remove it.
 
-This happens as follows:
-
-1) Task A enters btrfs_ioctl_quota_rescan() -> btrfs_qgroup_rescan();
-
-2) Task B enters btrfs_quota_disable() and calls
-   btrfs_qgroup_wait_for_completion(), which does nothing because at that
-   point fs_info->qgroup_rescan_running is false (it wasn't set yet by
-   task A);
-
-3) Task B calls btrfs_free_qgroup_config() which starts freeing qgroups
-   from fs_info->qgroup_tree without taking the lock fs_info->qgroup_lock;
-
-4) Task A enters qgroup_rescan_zero_tracking() which starts iterating
-   the fs_info->qgroup_tree tree while holding fs_info->qgroup_lock,
-   but task B is freeing qgroup records from that tree without holding
-   the lock, resulting in a use-after-free.
-
-Fix this by taking fs_info->qgroup_lock at btrfs_free_qgroup_config().
-Also at btrfs_qgroup_rescan() don't start the rescan worker if quotas
-were already disabled.
-
-Reported-by: cen zhang <zzzccc427@gmail.com>
-Link: https://lore.kernel.org/linux-btrfs/CAFRLqsV+cMDETFuzqdKSHk_FDm6tneea45krsHqPD6B3FetLpQ@mail.gmail.com/
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/qgroup.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+ fs/btrfs/disk-io.c |  1 -
+ fs/btrfs/fs.h      |  6 ------
+ fs/btrfs/qgroup.c  | 31 +------------------------------
+ 3 files changed, 1 insertion(+), 37 deletions(-)
 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index f6fa951c6be9..ee4911452cfd 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1947,7 +1947,6 @@ static void btrfs_init_qgroup(struct btrfs_fs_info *fs_info)
+ 	fs_info->qgroup_tree = RB_ROOT;
+ 	INIT_LIST_HEAD(&fs_info->dirty_qgroups);
+ 	fs_info->qgroup_seq = 1;
+-	fs_info->qgroup_ulist = NULL;
+ 	fs_info->qgroup_rescan_running = false;
+ 	fs_info->qgroup_drop_subtree_thres = BTRFS_QGROUP_DROP_SUBTREE_THRES_DEFAULT;
+ 	mutex_init(&fs_info->qgroup_rescan_lock);
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index b239e4b8421c..a731c883687d 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -740,12 +740,6 @@ struct btrfs_fs_info {
+ 	struct rb_root qgroup_tree;
+ 	spinlock_t qgroup_lock;
+ 
+-	/*
+-	 * Used to avoid frequently calling ulist_alloc()/ulist_free()
+-	 * when doing qgroup accounting, it must be protected by qgroup_lock.
+-	 */
+-	struct ulist *qgroup_ulist;
+-
+ 	/*
+ 	 * Protect user change for quota operations. If a transaction is needed,
+ 	 * it must be started before locking this lock.
 diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index b83d9534adae..8fa874ef80b3 100644
+index 8fa874ef80b3..98a53e6edb2c 100644
 --- a/fs/btrfs/qgroup.c
 +++ b/fs/btrfs/qgroup.c
-@@ -636,22 +636,30 @@ bool btrfs_check_quota_leak(const struct btrfs_fs_info *fs_info)
+@@ -397,12 +397,6 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+ 	if (!fs_info->quota_root)
+ 		return 0;
  
- /*
-  * This is called from close_ctree() or open_ctree() or btrfs_quota_disable(),
-- * first two are in single-threaded paths.And for the third one, we have set
-- * quota_root to be null with qgroup_lock held before, so it is safe to clean
-- * up the in-memory structures without qgroup_lock held.
-+ * first two are in single-threaded paths.
-  */
- void btrfs_free_qgroup_config(struct btrfs_fs_info *fs_info)
- {
- 	struct rb_node *n;
- 	struct btrfs_qgroup *qgroup;
- 
-+	/*
-+	 * btrfs_quota_disable() can be called concurrently with
-+	 * btrfs_qgroup_rescan() -> qgroup_rescan_zero_tracking(), so take the
-+	 * lock.
-+	 */
-+	spin_lock(&fs_info->qgroup_lock);
- 	while ((n = rb_first(&fs_info->qgroup_tree))) {
- 		qgroup = rb_entry(n, struct btrfs_qgroup, node);
- 		rb_erase(n, &fs_info->qgroup_tree);
- 		__del_qgroup_rb(qgroup);
-+		spin_unlock(&fs_info->qgroup_lock);
- 		btrfs_sysfs_del_one_qgroup(fs_info, qgroup);
- 		kfree(qgroup);
-+		spin_lock(&fs_info->qgroup_lock);
+-	fs_info->qgroup_ulist = ulist_alloc(GFP_KERNEL);
+-	if (!fs_info->qgroup_ulist) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-
+ 	path = btrfs_alloc_path();
+ 	if (!path) {
+ 		ret = -ENOMEM;
+@@ -587,8 +581,6 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+ 		if (fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN)
+ 			ret = qgroup_rescan_init(fs_info, rescan_progress, 0);
+ 	} else {
+-		ulist_free(fs_info->qgroup_ulist);
+-		fs_info->qgroup_ulist = NULL;
+ 		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_RESCAN;
+ 		btrfs_sysfs_del_qgroups(fs_info);
  	}
-+	spin_unlock(&fs_info->qgroup_lock);
-+
- 	/*
- 	 * We call btrfs_free_qgroup_config() when unmounting
- 	 * filesystem and disabling quota, so we set qgroup_ulist
-@@ -4036,12 +4044,16 @@ btrfs_qgroup_rescan(struct btrfs_fs_info *fs_info)
- 	qgroup_rescan_zero_tracking(fs_info);
+@@ -660,13 +652,6 @@ void btrfs_free_qgroup_config(struct btrfs_fs_info *fs_info)
+ 	}
+ 	spin_unlock(&fs_info->qgroup_lock);
  
- 	mutex_lock(&fs_info->qgroup_rescan_lock);
--	fs_info->qgroup_rescan_running = true;
--	btrfs_queue_work(fs_info->qgroup_rescan_workers,
--			 &fs_info->qgroup_rescan_work);
-+	if (test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags)) {
-+		fs_info->qgroup_rescan_running = true;
-+		btrfs_queue_work(fs_info->qgroup_rescan_workers,
-+				 &fs_info->qgroup_rescan_work);
-+	} else {
-+		ret = -ENOTCONN;
-+	}
- 	mutex_unlock(&fs_info->qgroup_rescan_lock);
- 
--	return 0;
-+	return ret;
+-	/*
+-	 * We call btrfs_free_qgroup_config() when unmounting
+-	 * filesystem and disabling quota, so we set qgroup_ulist
+-	 * to be null here to avoid double free.
+-	 */
+-	ulist_free(fs_info->qgroup_ulist);
+-	fs_info->qgroup_ulist = NULL;
+ 	btrfs_sysfs_del_qgroups(fs_info);
  }
  
- int btrfs_qgroup_wait_for_completion(struct btrfs_fs_info *fs_info,
+@@ -1012,7 +997,6 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
+ 	struct btrfs_qgroup *qgroup = NULL;
+ 	struct btrfs_qgroup *prealloc = NULL;
+ 	struct btrfs_trans_handle *trans = NULL;
+-	struct ulist *ulist = NULL;
+ 	const bool simple = (quota_ctl_args->cmd == BTRFS_QUOTA_CTL_ENABLE_SIMPLE_QUOTA);
+ 	int ret = 0;
+ 	int slot;
+@@ -1035,12 +1019,6 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
+ 	if (fs_info->quota_root)
+ 		goto out;
+ 
+-	ulist = ulist_alloc(GFP_KERNEL);
+-	if (!ulist) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-
+ 	ret = btrfs_sysfs_add_qgroups(fs_info);
+ 	if (ret < 0)
+ 		goto out;
+@@ -1080,9 +1058,6 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
+ 	if (fs_info->quota_root)
+ 		goto out;
+ 
+-	fs_info->qgroup_ulist = ulist;
+-	ulist = NULL;
+-
+ 	/*
+ 	 * initially create the quota tree
+ 	 */
+@@ -1281,17 +1256,13 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
+ 	if (ret)
+ 		btrfs_put_root(quota_root);
+ out:
+-	if (ret) {
+-		ulist_free(fs_info->qgroup_ulist);
+-		fs_info->qgroup_ulist = NULL;
++	if (ret)
+ 		btrfs_sysfs_del_qgroups(fs_info);
+-	}
+ 	mutex_unlock(&fs_info->qgroup_ioctl_lock);
+ 	if (ret && trans)
+ 		btrfs_end_transaction(trans);
+ 	else if (trans)
+ 		ret = btrfs_end_transaction(trans);
+-	ulist_free(ulist);
+ 	kfree(prealloc);
+ 	return ret;
+ }
 -- 
 2.47.2
 
