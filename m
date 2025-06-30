@@ -1,241 +1,216 @@
-Return-Path: <linux-btrfs+bounces-15118-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15119-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AF55AEE4E1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 18:44:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAD18AEE509
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 18:54:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE90817AB69
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 16:43:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3731C166518
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 16:54:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E783428F958;
-	Mon, 30 Jun 2025 16:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4605290DB2;
+	Mon, 30 Jun 2025 16:54:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="z9hzxuPz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HEC0BMn1";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="z9hzxuPz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HEC0BMn1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="piJ250dI"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6304A28DB76
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 16:43:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36B9E28CF5C
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 16:54:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751301813; cv=none; b=I/bSJVVkWmTPcoUQaxYb882RNWBU+y5y9IPsIbReRFDbQPboAzkr1C7/hAB/VgOeVfzDy4q98LaJvg/XgHj5rgokLBUsAbx7D4+E5IWdvP7Iy+UpGY5X2ophE7e1oTuG/n/A7MZ3TKNCu1xlytbBBEO12y047y7S9eXvKFg3TAk=
+	t=1751302447; cv=none; b=Qk7kpbadf7z8PaMirklbmeAXnq3qhRHGcPbGxpFZSt2oSHJfTx6MOpkx+jmdREkGI5e9Hy0/GblB+LrnVDjhEzUP5CZbiFGY3IMzQvJRvqfPLUTifSrLfK/7mTQvW/5W0D+KaZiR0gClpGTxlE4NEq09psogVb/UXiJEI3g1PZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751301813; c=relaxed/simple;
-	bh=NgS75co3vLMNEEra09wzGKAuLjEhOmFOtx5heyxWbgA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sv3os0Ea9Wj7huFSwr8uTkKRN6tAKDq8Mz9p8s0pl3vo2aSUgUKQYL6aK6Z0PGjb0NzTCzGvIRC3UTuLAANCZJjXt5yjigSW1UyYAuzQCBf6ESvMDQr8UJWmqwq1iV+D+5z0TYkOZB7lb5mhxiQsr5I8+wEPcIvowZ0OqAkyFTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=z9hzxuPz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HEC0BMn1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=z9hzxuPz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HEC0BMn1; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9973D1F445;
-	Mon, 30 Jun 2025 16:43:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751301809;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IsrnDI+9htVYkLaIhxIpZHVYEUQeXM4RXD6N1+/QN+Q=;
-	b=z9hzxuPzquzLMSIxxho1egQ0mtli2b6eY4hHpGcCr7lcqtWKkvKe4xQt80RrSJYD9X8U/U
-	b42DxVF3u4obZ6vN2crBOeP03LUJC5OfeQNkdr4eQO6YrIFpA4OMTpGTypRPTvddPqhDtx
-	y+qW+Fm9oDECogc5h2eYwVb8KFBLKm0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751301809;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IsrnDI+9htVYkLaIhxIpZHVYEUQeXM4RXD6N1+/QN+Q=;
-	b=HEC0BMn1v8+BZHQ/YPc0JNazLsTVqnaMN4OTcf7B8CBzxFVGEWdQ7BZrGyH5TJ21DuBc7/
-	rjQfK0HyGSax+dDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751301809;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IsrnDI+9htVYkLaIhxIpZHVYEUQeXM4RXD6N1+/QN+Q=;
-	b=z9hzxuPzquzLMSIxxho1egQ0mtli2b6eY4hHpGcCr7lcqtWKkvKe4xQt80RrSJYD9X8U/U
-	b42DxVF3u4obZ6vN2crBOeP03LUJC5OfeQNkdr4eQO6YrIFpA4OMTpGTypRPTvddPqhDtx
-	y+qW+Fm9oDECogc5h2eYwVb8KFBLKm0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751301809;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IsrnDI+9htVYkLaIhxIpZHVYEUQeXM4RXD6N1+/QN+Q=;
-	b=HEC0BMn1v8+BZHQ/YPc0JNazLsTVqnaMN4OTcf7B8CBzxFVGEWdQ7BZrGyH5TJ21DuBc7/
-	rjQfK0HyGSax+dDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D32A13983;
-	Mon, 30 Jun 2025 16:43:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id icBgHrG+YmhUHQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 30 Jun 2025 16:43:29 +0000
-Date: Mon, 30 Jun 2025 18:43:28 +0200
-From: David Sterba <dsterba@suse.cz>
-To: David Sterba <dsterba@suse.cz>
-Cc: Wang Yugui <wangyugui@e16-tech.com>, David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] btrfs: open code RCU for device name
-Message-ID: <20250630164328.GL31241@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1750858539.git.dsterba@suse.com>
- <1e539dfd73debc86ddc7c1b1716f86ace14d51aa.1750858539.git.dsterba@suse.com>
- <20250630102457.BFB9.409509F4@e16-tech.com>
- <20250630162130.GK31241@twin.jikos.cz>
+	s=arc-20240116; t=1751302447; c=relaxed/simple;
+	bh=uBaj65g979G14vNGqe3S6E69vn4gPXWbbnP20DLnM/A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IsNqBFseRptCzJVa1LxDLryt40bXPHdm3WDTvUpwaZqMwjIb9xI9lSEwcMJLetVGvCL5yJF/uPLFrEC0bNlTa/14/9BP6P4wOd3Y4wQUqQy9itf/mczccSQV8DO4Xi9AuyFOmoSxWMjpLA1jIew/yAy39evKVLf98AOdZ8poFIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=piJ250dI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B389EC4CEE3
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 16:54:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751302446;
+	bh=uBaj65g979G14vNGqe3S6E69vn4gPXWbbnP20DLnM/A=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=piJ250dIpEsoU7Ntq+r+COTbl3xXdu6WtYPM6wUzpLYFWZLiU0I81v0NkZtVYkaBW
+	 zOt+IrWRQB/NZqL522S8Q2ydkZ05fUYQtsS+bv5s5sCMgsoeBlYXcb2v1An956hNLE
+	 pypqcfoZhxqWYk89Du8pkkVqDmnJlbF0nDVghOYId32ul3X6SPSuO5fCdBYEsMjpJH
+	 cA1V6Mf9IxaysAZtgnXMiobpOTYctPVeYENhH3RDZGw962JWv3EO8vVjohWHXo1V29
+	 lgdgGK8Zx4EBx9uCTtiPdSE2HVZMUk3zDMObOyufnucQVe/NZCim+asqIVZpBYN+nM
+	 gRliKlZFsqIpQ==
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-60c60f7eeaaso7943900a12.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 09:54:06 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwuTbySEcfZDhmgGWP3OdtHZFS2oQoLvB8LLCCsI7zK9sJ3+9R3
+	r8BqU85nLndd3+jRvlHSwq8djH5lSdsTB8ChPgbFRhjdDdFiRzjXm6u+HddwFsbZxO48q2w11yz
+	v0bBiZU3juidIgjD7lLDuC7mP3DzcKUU=
+X-Google-Smtp-Source: AGHT+IES/aRwxMTEmdRlff1L7FnlM/tECDetspxLDvQ5o6eHQmsm/D+L+5zU23IHtkUQjKL0pwYs90uguszDLB8QP30=
+X-Received: by 2002:a17:907:3cc2:b0:ae0:a88f:61fa with SMTP id
+ a640c23a62f3a-ae3500f8663mr1399674866b.28.1751302445161; Mon, 30 Jun 2025
+ 09:54:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250630162130.GK31241@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Flag: NO
-X-Spam-Score: 1.00
-X-Spam-Level: *
-X-Spamd-Result: default: False [1.00 / 50.00];
-	REPLYTO_EQ_TO_ADDR(5.00)[];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,twin.jikos.cz:mid];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCPT_COUNT_THREE(0.00)[4]
+References: <cover.1751288689.git.fdmanana@suse.com> <19f775a9f256c4a5146cc97b7f521464429c81bc.1751288689.git.fdmanana@suse.com>
+ <20250630163242.GA61133@zen.localdomain>
+In-Reply-To: <20250630163242.GA61133@zen.localdomain>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 30 Jun 2025 17:53:28 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4g-WNhksrGXT+hsYhHfvize9hdWJa8v4Er3F83Lkb55A@mail.gmail.com>
+X-Gm-Features: Ac12FXwc4DkKJZ4621N2AmAluPZNIpcmG8TOGPB42bg4QmXxzw67U08POHYJnQ4
+Message-ID: <CAL3q7H4g-WNhksrGXT+hsYhHfvize9hdWJa8v4Er3F83Lkb55A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] btrfs: qgroup: fix race between quota disable and
+ quota rescan ioctl
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 30, 2025 at 06:21:30PM +0200, David Sterba wrote:
-> On Mon, Jun 30, 2025 at 10:24:57AM +0800, Wang Yugui wrote:
-> > Hi,
-> > 
-> > > The RCU protected string is only used for a device name, and RCU is used
-> > > so we can print the name and eventually synchronize against the rare
-> > > device rename in device_list_add().
-> > > 
-> > > We don't need the whole API just for that. Open code all the helpers and
-> > > access to the string itself.
-> > > 
-> > > Notable change is in device_list_add() when the device name is changed,
-> > > which is the only place that can actually happen at the same time as
-> > > message prints using the device name under RCU read lock.
-> > > 
-> > > Previously there was kfree_rcu() which used the embedded rcu_head to
-> > > delay freeing the object depending on the RCU mechanism. Now there's
-> > > kfree_rcu_mightsleep() which does not need the rcu_head and waits for
-> > > the grace period.
-> > > 
-> > > Sleeping is safe in this context and as this is a rare event it won't
-> > > interfere with the rest as it's holding the device_list_mutex.
-> > > 
-> > > Straightforward changes:
-> > > 
-> > > - rcu_string_strdup -> kstrdup
-> > > - rcu_str_deref -> rcu_dereference
-> > > - drop ->str from safe contexts
-> > > 
-> > > Historical notes:
-> > > 
-> > > Introduced in 606686eeac45 ("Btrfs: use rcu to protect device->name")
-> > > with a vague reference of the potential problem described in
-> > > https://lore.kernel.org/all/20120531155304.GF11775@ZenIV.linux.org.uk/ .
-> > > 
-> > > The RCU protection looks like the easiest and most lightweight way of
-> > > protecting the rare event of device rename racing device_list_add()
-> > > with a random printk() that uses the device name.
-> > > 
-> > > Alternatives: a spin lock would require to protect the printk
-> > > anyway, a fixed buffer for the name would be eventually wrong in case
-> > > the new name is overwritten when being printed, an array switching
-> > > pointers and cleaning them up eventually resembles RCU too much.
-> > > 
-> > > The cleanups up to this patch should hide special case of RCU to the
-> > > minimum that only the name needs rcu_dereference(), which can be further
-> > > cleaned up to use btrfs_dev_name().
-> > > 
-> > 
-> > There is still rcu warning when 'make  W=1 C=1'
-> > 
-> > /usr/hpc-bio/linux-6.12.35/fs/btrfs/volumes.c:405:21: warning: incorrect type in argument 1 (different address spaces)
-> > /usr/hpc-bio/linux-6.12.35/fs/btrfs/volumes.c:405:21:    expected void const *objp
-> > /usr/hpc-bio/linux-6.12.35/fs/btrfs/volumes.c:405:21:    got char const [noderef] __rcu *name
-> > 
-> > static void btrfs_free_device(struct btrfs_device *device)
-> > {
-> >     WARN_ON(!list_empty(&device->post_commit_list));
-> >     /* No need to call kfree_rcu(), nothing is reading the device name. */
-> > L405:    kfree(device->name);
-> > 
-> > do we need rcu_dereference here?
-> > --- a/fs/btrfs/volumes.c
-> > +++ b/fs/btrfs/volumes.c
-> > @@ -402,7 +402,7 @@ static void btrfs_free_device(struct btrfs_device *device)
+On Mon, Jun 30, 2025 at 5:31=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
+>
+> On Mon, Jun 30, 2025 at 02:07:47PM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > There's a race between a task disabling quotas and another running the
+> > rescan ioctl that can result in a use-after-free of qgroup records from
+> > the fs_info->qgroup_tree rbtree.
+> >
+> > This happens as follows:
+> >
+> > 1) Task A enters btrfs_ioctl_quota_rescan() -> btrfs_qgroup_rescan();
+> >
+> > 2) Task B enters btrfs_quota_disable() and calls
+> >    btrfs_qgroup_wait_for_completion(), which does nothing because at th=
+at
+> >    point fs_info->qgroup_rescan_running is false (it wasn't set yet by
+> >    task A);
+> >
+> > 3) Task B calls btrfs_free_qgroup_config() which starts freeing qgroups
+> >    from fs_info->qgroup_tree without taking the lock fs_info->qgroup_lo=
+ck;
+> >
+> > 4) Task A enters qgroup_rescan_zero_tracking() which starts iterating
+> >    the fs_info->qgroup_tree tree while holding fs_info->qgroup_lock,
+> >    but task B is freeing qgroup records from that tree without holding
+> >    the lock, resulting in a use-after-free.
+> >
+> > Fix this by taking fs_info->qgroup_lock at btrfs_free_qgroup_config().
+> > Also at btrfs_qgroup_rescan() don't start the rescan worker if quotas
+> > were already disabled.
+> >
+> > Reported-by: cen zhang <zzzccc427@gmail.com>
+> > Link: https://lore.kernel.org/linux-btrfs/CAFRLqsV+cMDETFuzqdKSHk_FDm6t=
+neea45krsHqPD6B3FetLpQ@mail.gmail.com/
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>
+> Reviewed-by: Boris Burkov <boris@bur.io>
+>
+> > ---
+> >  fs/btrfs/qgroup.c | 26 +++++++++++++++++++-------
+> >  1 file changed, 19 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> > index b83d9534adae..8fa874ef80b3 100644
+> > --- a/fs/btrfs/qgroup.c
+> > +++ b/fs/btrfs/qgroup.c
+> > @@ -636,22 +636,30 @@ bool btrfs_check_quota_leak(const struct btrfs_fs=
+_info *fs_info)
+> >
+> >  /*
+> >   * This is called from close_ctree() or open_ctree() or btrfs_quota_di=
+sable(),
+> > - * first two are in single-threaded paths.And for the third one, we ha=
+ve set
+> > - * quota_root to be null with qgroup_lock held before, so it is safe t=
+o clean
+> > - * up the in-memory structures without qgroup_lock held.
+> > + * first two are in single-threaded paths.
+> >   */
+> >  void btrfs_free_qgroup_config(struct btrfs_fs_info *fs_info)
 > >  {
-> >         WARN_ON(!list_empty(&device->post_commit_list));
-> >         /* No need to call kfree_rcu(), nothing is reading the device name. */
-> > -       kfree(device->name);
-> > +       kfree(rcu_dereference(device->name));
-> 
-> I got notified by the build bots (not CCed to the mailinglis) about
-> this. The dereference is not needed, the comment says why. The checkers
-> do not distinguish the context, some of them are safe like when the
-> device is being set up and not yet accessible by other processes, and at
-> deletion time, like here.
-> 
-> As we want to keep the __rcu annotation the rcu dereference is the
-> easiest workaround.
+> >       struct rb_node *n;
+> >       struct btrfs_qgroup *qgroup;
+> >
+> > +     /*
+> > +      * btrfs_quota_disable() can be called concurrently with
+> > +      * btrfs_qgroup_rescan() -> qgroup_rescan_zero_tracking(), so tak=
+e the
+> > +      * lock.
+> > +      */
+> > +     spin_lock(&fs_info->qgroup_lock);
+> >       while ((n =3D rb_first(&fs_info->qgroup_tree))) {
+> >               qgroup =3D rb_entry(n, struct btrfs_qgroup, node);
+> >               rb_erase(n, &fs_info->qgroup_tree);
+> >               __del_qgroup_rb(qgroup);
+> > +             spin_unlock(&fs_info->qgroup_lock);
+> >               btrfs_sysfs_del_one_qgroup(fs_info, qgroup);
+> >               kfree(qgroup);
+> > +             spin_lock(&fs_info->qgroup_lock);
+> >       }
+> > +     spin_unlock(&fs_info->qgroup_lock);
+> > +
+> >       /*
+> >        * We call btrfs_free_qgroup_config() when unmounting
+> >        * filesystem and disabling quota, so we set qgroup_ulist
+> > @@ -4036,12 +4044,16 @@ btrfs_qgroup_rescan(struct btrfs_fs_info *fs_in=
+fo)
+> >       qgroup_rescan_zero_tracking(fs_info);
+> >
+> >       mutex_lock(&fs_info->qgroup_rescan_lock);
+> > -     fs_info->qgroup_rescan_running =3D true;
+> > -     btrfs_queue_work(fs_info->qgroup_rescan_workers,
+> > -                      &fs_info->qgroup_rescan_work);
+> > +     if (test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags)) {
+>
+> could this be one of the helpers like !btrfs_qgroup_enabled() or maybe
+> even better !btrfs_qgroup_full_accounting()?
 
-I can't seem to reproduce the warning with the command, I'm going to apply this
-fixup:
+Yes, that's fine. I'll update to that when pushing to for-next:
 
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -402,9 +402,17 @@ static struct btrfs_fs_devices *alloc_fs_devices(const u8 *fsid)
- 
- static void btrfs_free_device(struct btrfs_device *device)
- {
-+       const char *name;
-+
-        WARN_ON(!list_empty(&device->post_commit_list));
--       /* No need to call kfree_rcu(), nothing is reading the device name. */
--       kfree(device->name);
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 98a53e6edb2c..5f1b4990f56f 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -4015,7 +4015,12 @@ btrfs_qgroup_rescan(struct btrfs_fs_info *fs_info)
+        qgroup_rescan_zero_tracking(fs_info);
+
+        mutex_lock(&fs_info->qgroup_rescan_lock);
+-       if (test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags)) {
 +       /*
-+        * No need to call kfree_rcu() or do RCU lock/unlock, nothing is
-+        * reading the device name but the checkers complain.
++        * The rescan worker is only for full accounting qgroups, check if =
+it's
++        * enabled as it is pointless to queue it otherwise. A concurrent q=
+uota
++        * disable may also have just cleared BTRFS_FS_QUOTA_ENABLED.
 +        */
-+       rcu_read_lock();
-+       name = rcu_dereference(device->name);
-+       rcu_read_unlock();
-+       kfree(name);
-        btrfs_extent_io_tree_release(&device->alloc_state);
-        btrfs_destroy_dev_zone_info(device);
-        kfree(device);
++       if (btrfs_qgroup_full_accounting(fs_info)) {
+                fs_info->qgroup_rescan_running =3D true;
+                btrfs_queue_work(fs_info->qgroup_rescan_workers,
+                                 &fs_info->qgroup_rescan_work);
+
+
+Thanks.
+
+>
+> > +             fs_info->qgroup_rescan_running =3D true;
+> > +             btrfs_queue_work(fs_info->qgroup_rescan_workers,
+> > +                              &fs_info->qgroup_rescan_work);
+> > +     } else {
+> > +             ret =3D -ENOTCONN;
+> > +     }
+> >       mutex_unlock(&fs_info->qgroup_rescan_lock);
+> >
+> > -     return 0;
+> > +     return ret;
+> >  }
+> >
+> >  int btrfs_qgroup_wait_for_completion(struct btrfs_fs_info *fs_info,
+> > --
+> > 2.47.2
+> >
 
