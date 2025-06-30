@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-15130-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15131-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA908AEE8E9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 23:00:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30D5BAEE908
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 23:01:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7B2F3E10BC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 21:00:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8190E3E1237
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 21:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04B328BABA;
-	Mon, 30 Jun 2025 21:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B35E2E3AED;
+	Mon, 30 Jun 2025 21:01:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gAzoY2ix"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rx3fTizi"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA3A17BD3;
-	Mon, 30 Jun 2025 21:00:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49FFA17BD3;
+	Mon, 30 Jun 2025 21:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751317219; cv=none; b=ZETi0KnlJh4LaltuSo3nrWG5eMSc4TzJ0ZoPIRYve1l0YCTLoAgBG/kfsNSyNZ2aTJri8/VezB6g8CjlbBEBxcjHE3qBaFzzt7wB5gKyI0Ozmpyk34lj9OreY45eaZVOeuK6u1BmpeKjvcCzKJ9SqyFJCUL8bHXWO2GZcNqC5FQ=
+	t=1751317264; cv=none; b=OatyFNLdGJj+BaHAw3JDUk7AKiWfxq6NzKtM7bxxi8qTvuXAuZAzsXz+rcOxNctpznqchOimpHsSjbiFGuU4YgtnOwfIHz22Kh8bYQpsEBB8Xt2poQImZ+O9SljhacInjZpjIIt7ijAiOAaSVfWmLURetD5ccFyAvz2UjipgFfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751317219; c=relaxed/simple;
-	bh=JjG2SEgESSp3VC4wRTf/mo0Y632/bEKgM9c2AfmeWC4=;
+	s=arc-20240116; t=1751317264; c=relaxed/simple;
+	bh=x1etpjVixqfw78hOmdf1pFb4iRXwIACDcng6fzFAdZQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ulu9PavUGIR2bcs6gszyuvTY4Ib7W2i8vMAO7PgZLsxb/kAQZszmgh/pSGeBEr5hFXdoWmjumAgZIgU1i5+TseV9W8IraWnkHZlCWP2xyyUp/TWXE980Ymj6RE/r49m+dpacmQvMcqrTAchL8UT2wjxHCrJHN544OZ5LmBhB3X0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gAzoY2ix; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D8EAC4CEEB;
-	Mon, 30 Jun 2025 21:00:16 +0000 (UTC)
+	 MIME-Version:Content-Type; b=C0AzLju9lQ9pW+6c3I9W98n0T14wZ9MgOyM8XqTqByCaB+cUiFoC8pjEAv/ui/bDnuT9uqU+OIHNt9GQkqkh0PrW+o3kzcwtAmyF+sOo/BRPJIe3+xRg1Vo/VQex3JyMLAKxfwvZukPMn59FyjbKL9etOHbVWDxSsbOIaWZdnds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rx3fTizi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01517C4CEEB;
+	Mon, 30 Jun 2025 21:01:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751317217;
-	bh=JjG2SEgESSp3VC4wRTf/mo0Y632/bEKgM9c2AfmeWC4=;
+	s=k20201202; t=1751317264;
+	bh=x1etpjVixqfw78hOmdf1pFb4iRXwIACDcng6fzFAdZQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gAzoY2ix627PhDNT4DFsbOk7Z501ndsiMTwA3JfwdqYbmsdqqF6KGbwd6/bqhjZGb
-	 GlcXZsVwMpCA2ErQqUqtFZMDvgv5N2ViTuNCV2mXY4itAONSAokqtV5U0RNp06sP9I
-	 vmJLG5mAWm9wIKVOAWgsonSHGP8djJdK2rx74r9FI2QJD9T5RYxY8vdklBZ3bpPGQX
-	 dzZk1TATBmuWC4MAQ1ixG34k5ShlZzwpSQ5gu3L7FeDFzsJaXXxLrOq5KAaFv3Uuv4
-	 hqHJLG2kJgSNSdhngH4hSLCfdjABW7BBCC7A07h7+5VR8XK3pMvDvAzqDHoKwe0Zl3
-	 xxw9zlN0p4Bgg==
+	b=rx3fTiziLOToirPRvvDRd/WU7oIPCh1clv5GgipNsDfhHRytoulbC5Bu9r3foVkD+
+	 6qQ3+g9o4ur2Ldh/5q0l+myv/tNuzMG8V726P5LuTRMYHaT6YEwZyoPTJktMDto/D7
+	 sANDfN41KziZGk5Ap9hMRnuJ00X6tD5HKt5CCEiqrT1UccCODxlT/7Laq9+U6gBTzd
+	 ZNFpoQqJV37Y9zeoCKvDtHFR0N/JH1i7iyeZ8X756F96lildVhkUpcJYi+q0VK4E7c
+	 AJJj/ie6V3LXwC+uJ3/ehnTqT6gi3UqNFLsd18RCd1fhtxqcUHFPKT0cx0QY16waiL
+	 hV4EYnEAGcnWA==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
@@ -52,12 +52,12 @@ Cc: Filipe Manana <fdmanana@suse.com>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 15/21] btrfs: fix assertion when building free space tree
-Date: Mon, 30 Jun 2025 16:45:30 -0400
-Message-Id: <20250630204536.1358327-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 10/14] btrfs: fix assertion when building free space tree
+Date: Mon, 30 Jun 2025 16:46:35 -0400
+Message-Id: <20250630204639.1358777-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250630204536.1358327-1-sashal@kernel.org>
-References: <20250630204536.1358327-1-sashal@kernel.org>
+In-Reply-To: <20250630204639.1358777-1-sashal@kernel.org>
+References: <20250630204639.1358777-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -66,7 +66,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.35
+X-stable-base: Linux 6.6.95
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
@@ -231,7 +231,7 @@ and 6.6.x stable series where the block group tree feature exists.
  1 file changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index 7ba50e133921a..308abbf8855b0 100644
+index a0d8160b53757..300ee0b68b498 100644
 --- a/fs/btrfs/free-space-tree.c
 +++ b/fs/btrfs/free-space-tree.c
 @@ -1104,11 +1104,21 @@ static int populate_free_space_tree(struct btrfs_trans_handle *trans,
