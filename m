@@ -1,126 +1,204 @@
-Return-Path: <linux-btrfs+bounces-15073-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15074-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59C09AED26E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 04:30:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54D67AED3D0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 07:29:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 956E11895079
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 02:30:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABAF61730C9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 05:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDCAC155CB3;
-	Mon, 30 Jun 2025 02:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA4C1C84C0;
+	Mon, 30 Jun 2025 05:29:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lL6a+SJv";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lL6a+SJv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out28-78.mail.aliyun.com (out28-78.mail.aliyun.com [115.124.28.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBCD2905
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 02:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.28.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B3A01A23BD
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 05:29:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751250630; cv=none; b=usJDDorbDjRHvUmYqqNyPkwVA6X+WLj68as0Uzr6/7C8dMLRJ/EbX/TAMYN1YqylFeoSBvBDEA6IR5ekiZcSwVRzXVIOA98ceWUQgvjt3YrWlWCzJ+O04xzjMUH3tijfqCML0LZpVqM9dB0N+ftRPWxwaxn2Z+sfzR12lyVcIPU=
+	t=1751261377; cv=none; b=d//wKScKuic2K7O9wiHTZv8+awR/siPZIUo4RCaz+cdp2ZetNqpN9OytdQoL4CoaVhJBzWeBrcHkqIOxXmGzWy69UhC/EISaOkXvh+EffA9cd9Xfi25xCt6xvKF99LTzekUl0ja2ed1zK+bdyh5sOZDz5YD+IIRMTPoUyF7so9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751250630; c=relaxed/simple;
-	bh=gpZMtx5WzTfULyPwLxFdfKssz13hiJty7b6LygVThe8=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:Message-Id:
-	 MIME-Version:Content-Type; b=gUdKpeKaPaWyoG9EkD3I4FDwLwI+vk3csGIYWts0NpyMLyRlPWDt3VkPOJhaAe0vR0VJkQF9owWHaNprDL512nEhG3qToppGwCIJ4VRczGINJ6R87N7BhcEV+GmpOaljaKLMC/d+nDh27BUvY4MtgoiiMx41VvCekjh9ssYgyWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com; spf=pass smtp.mailfrom=e16-tech.com; arc=none smtp.client-ip=115.124.28.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=e16-tech.com
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.dZj0.-0_1751250296 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Mon, 30 Jun 2025 10:24:57 +0800
-Date: Mon, 30 Jun 2025 10:24:57 +0800
-From: Wang Yugui <wangyugui@e16-tech.com>
-To: David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH v2 1/2] btrfs: open code RCU for device name
-Cc: linux-btrfs@vger.kernel.org
-In-Reply-To: <1e539dfd73debc86ddc7c1b1716f86ace14d51aa.1750858539.git.dsterba@suse.com>
-References: <cover.1750858539.git.dsterba@suse.com> <1e539dfd73debc86ddc7c1b1716f86ace14d51aa.1750858539.git.dsterba@suse.com>
-Message-Id: <20250630102457.BFB9.409509F4@e16-tech.com>
+	s=arc-20240116; t=1751261377; c=relaxed/simple;
+	bh=tVMDwsZaJfHtuMDSbuMYv7Yc9Ougu/q1BgVyXYkRab0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=ACkIsK1PvFgpwaYb/HFdb3tTWaBrZdxWopZAIfS68kQcUUnfKTAY/AeuLihLCVXpvDsXzxGuLWMcUbhlMlpn902hNQhWQ0TbboKUcL0DT4dNOnsQib3z6rHdE0audEV5IiaFS0IR64s7XMvyYVTkVyZKr8y9Ff49RN7enwwwaS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lL6a+SJv; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lL6a+SJv; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4A0132115F
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 05:29:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1751261372; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=j8pT5yhJW7gUh0hOh5V8CxGjNwVOFsKuK8r/jx9pHpU=;
+	b=lL6a+SJvTqZGl3AP3BIqUh75vUHcc5pF1A4yl4zxmuXk6TCMETFgLA6E1KrAdePPi9CIab
+	F2jnNMccGvqCbGAoJMbpT0pK2A6K5W6j+kC6eh/ME9ra7atxUPfZ9rjjGFpMTMJhGKu95J
+	pZkGxxWjoSNJZ8PAXxovLCvoXPYYPsM=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=lL6a+SJv
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1751261372; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=j8pT5yhJW7gUh0hOh5V8CxGjNwVOFsKuK8r/jx9pHpU=;
+	b=lL6a+SJvTqZGl3AP3BIqUh75vUHcc5pF1A4yl4zxmuXk6TCMETFgLA6E1KrAdePPi9CIab
+	F2jnNMccGvqCbGAoJMbpT0pK2A6K5W6j+kC6eh/ME9ra7atxUPfZ9rjjGFpMTMJhGKu95J
+	pZkGxxWjoSNJZ8PAXxovLCvoXPYYPsM=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 81F87139D4
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 05:29:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 6SGVELsgYmi4SAAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 05:29:31 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v6 0/8] btrfs: use fs_holder_ops for btrfs
+Date: Mon, 30 Jun 2025 14:59:04 +0930
+Message-ID: <cover.1751261286.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.81.08 [en]
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 4A0132115F
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_ONE(0.00)[1];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Score: -3.01
+X-Spam-Level: 
 
-Hi,
+[CHANGELOG]
+v6:
+- Fix an error handling bug that can lead to use-after-free
+  Reported by syzbot, that inside btrfs_get_tree_super() that if we
+  didn't open the devices, there are corner cases that
+  fs_info->fs_devices can be freed twice, causing use-after-free bug.
 
-> The RCU protected string is only used for a device name, and RCU is used
-> so we can print the name and eventually synchronize against the rare
-> device rename in device_list_add().
-> 
-> We don't need the whole API just for that. Open code all the helpers and
-> access to the string itself.
-> 
-> Notable change is in device_list_add() when the device name is changed,
-> which is the only place that can actually happen at the same time as
-> message prints using the device name under RCU read lock.
-> 
-> Previously there was kfree_rcu() which used the embedded rcu_head to
-> delay freeing the object depending on the RCU mechanism. Now there's
-> kfree_rcu_mightsleep() which does not need the rcu_head and waits for
-> the grace period.
-> 
-> Sleeping is safe in this context and as this is a rare event it won't
-> interfere with the rest as it's holding the device_list_mutex.
-> 
-> Straightforward changes:
-> 
-> - rcu_string_strdup -> kstrdup
-> - rcu_str_deref -> rcu_dereference
-> - drop ->str from safe contexts
-> 
-> Historical notes:
-> 
-> Introduced in 606686eeac45 ("Btrfs: use rcu to protect device->name")
-> with a vague reference of the potential problem described in
-> https://lore.kernel.org/all/20120531155304.GF11775@ZenIV.linux.org.uk/ .
-> 
-> The RCU protection looks like the easiest and most lightweight way of
-> protecting the rare event of device rename racing device_list_add()
-> with a random printk() that uses the device name.
-> 
-> Alternatives: a spin lock would require to protect the printk
-> anyway, a fixed buffer for the name would be eventually wrong in case
-> the new name is overwritten when being printed, an array switching
-> pointers and cleaning them up eventually resembles RCU too much.
-> 
-> The cleanups up to this patch should hide special case of RCU to the
-> minimum that only the name needs rcu_dereference(), which can be further
-> cleaned up to use btrfs_dev_name().
-> 
+  This one fixed two error paths:
+  * sget_fc() failure
+    Which is not the one reported by syzbot, but still possible to hit.
 
-There is still rcu warning when 'make  W=1 C=1'
+  * btrfs_open_devices() failure
+    Which I believe is the one reported by syzbot.
 
-/usr/hpc-bio/linux-6.12.35/fs/btrfs/volumes.c:405:21: warning: incorrect type in argument 1 (different address spaces)
-/usr/hpc-bio/linux-6.12.35/fs/btrfs/volumes.c:405:21:    expected void const *objp
-/usr/hpc-bio/linux-6.12.35/fs/btrfs/volumes.c:405:21:    got char const [noderef] __rcu *name
+  There is a dedicated fix pushed into linux-next.
 
-static void btrfs_free_device(struct btrfs_device *device)
-{
-    WARN_ON(!list_empty(&device->post_commit_list));
-    /* No need to call kfree_rcu(), nothing is reading the device name. */
-L405:    kfree(device->name);
+  This refreshed series is for the proper merge into our for-next
+  branch.
 
-do we need rcu_dereference here?
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -402,7 +402,7 @@ static void btrfs_free_device(struct btrfs_device *device)
- {
-        WARN_ON(!list_empty(&device->post_commit_list));
-        /* No need to call kfree_rcu(), nothing is reading the device name. */
--       kfree(device->name);
-+       kfree(rcu_dereference(device->name));
+v5:
+- Fix a tailing whitespace
+  This introduced by patch "btrfs: add comments to make super block
+  creation more clear", and that patch is created during a small
+  window where my commit checkpatch hook is broken.
 
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2025/06/30
+  And unfortunately that comment is also later updated by several
+  patches, causing several conflicts with that whitespace error fixed.
+
+v4:
+- Fix a lockdep error
+  In the patch "btrfs: delay btrfs_open_devices() until super block is
+  created", we call sget_fc() with uuid_mutex locked.
+  But during fs closing, we also try to lock uuid_mutex with s_umount
+  locked.
+
+  This leads to a reserved lock sequence and resuled a lockdep warning.
+
+  Fix it by introducing btrfs_fs_devices::holding (aka, the old solution
+  introduced by Christoph), but this time with no extra bugs during
+  fstests.
+
+- Add the patch to use fs_holder_ops
+  This patch is small and properly tested, it's more situable to include
+  this one here, other than delaying it to the next devloss feature.
+
+- Add the missing patch to always open device-readonly when scanning
+  My bad, there are a little too many patches pending, and I forgot to
+  include the first patch.
+
+v3:
+- Drop the btrfs_fs_devices::opened split
+  It turns out to cause problems during tests.
+
+- Extra cleanup related to the btrfs_get_tree_*()
+  Now the re-entry through vfs_get_tree() is completely dropped.
+
+- Extra comments explaining the sget_fc() behavior
+
+- Call bdev_fput() instead of fput()
+  This alignes us to all the other fses.
+
+- Updated patch to delay btrfs_open_devices() until sget_fc()
+  Instead of relying on the previous solution (split
+  btrfs_open_devices::opened), just expand the uuid_mutex critical
+  section.
+
+
+Christoph Hellwig (3):
+  btrfs: always open the device read-only in btrfs_scan_one_device
+  btrfs: call btrfs_close_devices from ->kill_sb
+  btrfs: use the super_block as holder when mounting file systems
+
+Qu Wenruo (5):
+  btrfs: get rid of the re-entry of btrfs_get_tree()
+  btrfs: add comments to make super block creation more clear
+  btrfs: call bdev_fput() to reclaim the blk_holder immediately
+  btrfs: delay btrfs_open_devices() until super block is created
+  btrfs: use fs_holder_ops for all opened devices
+
+ fs/btrfs/dev-replace.c |   4 +-
+ fs/btrfs/disk-io.c     |   4 +-
+ fs/btrfs/fs.h          |   2 -
+ fs/btrfs/ioctl.c       |   4 +-
+ fs/btrfs/super.c       | 129 ++++++++++++++++++++++-------------------
+ fs/btrfs/volumes.c     |  33 ++++++-----
+ fs/btrfs/volumes.h     |  27 ++++++++-
+ 7 files changed, 119 insertions(+), 84 deletions(-)
+
+-- 
+2.50.0
 
 
