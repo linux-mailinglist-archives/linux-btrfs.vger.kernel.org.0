@@ -1,125 +1,87 @@
-Return-Path: <linux-btrfs+bounces-15095-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15096-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62271AEDC3A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 14:06:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3808DAEDCD9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 14:33:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E5343B5E54
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 12:05:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66E2F7A6B6F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 12:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5B1289808;
-	Mon, 30 Jun 2025 12:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67219286D62;
+	Mon, 30 Jun 2025 12:33:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P+3cmejP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FPz+7EOs"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E01257435
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 12:06:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF2E627055E
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 12:33:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751285173; cv=none; b=McvDXSuGlpXQJCiJV4N1WHGpitabENKwAlAyOhVQWAZjwbpjAtz4wv7QVoAMS3KNw0ZDhQ9BJP5ZckpCL6ySWe95KEsN0CSs0OaTydIBAF2Vh5bvUP2ebF2oodOVTkYcxIfthT9vDuY197M/s7Jjq7bVkC/+Pzx1QZo8uwUIWi0=
+	t=1751286805; cv=none; b=BKN9LLpjvdlj14o/gEunGtOPWEWVBL/90cO11z0d0SOjrr3QWnQcX2sM09LyGzS48HD/hgKprZM+S8Fh8dTgUnbJWsL5BQV6HF5rIhXQFSP8okjxMR1kA5iWmeeO+UEmgUuHxo70mOhS4aHjnabUpOsBh5wzYlCPLXG3CGxlj/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751285173; c=relaxed/simple;
-	bh=YnNoiKFzXsAK+aNUJCj8tkr4gMlaAsGu8wtnpocYjdI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cUZfJ67rN1pRgp1Z40DOfxTEcvq9mD59rwoRNYmOkfCTCcXFWP325zxScKiZG+6V42ndMkz2urYOtisypynzfh4qtO6m6pkcgu2LXIPscqXqJi2oQiEc7X1adOgCXCwveNE20AR9bNWQZbZjfKEVTEEjq0CMz79bfj5/qfED0dI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P+3cmejP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0894C4AF09
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 12:06:12 +0000 (UTC)
+	s=arc-20240116; t=1751286805; c=relaxed/simple;
+	bh=ua2ipCTa7rkbrN7QoUJlpsJPQMnMzooNk2QLt09WCaQ=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=fObAf/D9PhIBQdI7tdx6kD3RVD6fFqi5378BX8xYxl5oH4ARbhaqBBBBeL2hALvHTsCE1ir0SVtc6sxfyJGJNHILI1Pxynf9ujVHwcNeSt5zqNIIw7eCuTgv/LtofLMmqgZvjmZOXrR5sp/g2SaVNW4Pjjfm+d/vIEtRpcVNoGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FPz+7EOs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD6C8C4CEE3
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 12:33:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751285173;
-	bh=YnNoiKFzXsAK+aNUJCj8tkr4gMlaAsGu8wtnpocYjdI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=P+3cmejP8PqwAuf0aMfZnc0KY+KR2MfeoHYuNK6BJIfLp7h/izcLJhZHjDaBka2PK
-	 g3x8pqpnuSXsruaARUO5CPzkQ5GfSUU14i1Mfy7cTOmKrNJD6cYcpmze+L22R9H9rJ
-	 nzwEclz9Vf63sFviNTrO8mGRMX7uc7OP01eP5qwIPokD1UoyU2lEoD3Jc0sQVN6R0J
-	 j6aAinwe3+ersAy97jDwmHBPQ/L4031D+LWa4CEv7fCHFZVwNhNnKan603IGkUSBCU
-	 aAr22mWwlf743ue4WUC9o64L09obuv6jfdGdykG6gjYy8NI/KwsX1PiHLvITywHJG6
-	 1/wrxchSnxxIQ==
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-ae36e88a5daso392820866b.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 05:06:12 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVNU+Cud383OqJzotPKEA8BNbpLmTJGhvrYHe/g3cHfUjtq5e64iTITkBhSVUc3mbA8YtRvWvpcT1OZUA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyy0uc/BKfyZR0AAPAFlCJG5IOTLURv3uVFvBiJKct7A4zXWRTZ
-	caXBgMrggyN2FwQppO/7tQYVimyLfu23348jxZFLHCEiXhOVSO9IJkpbK61SPTiufbdUCu7J7p4
-	gUSOYJOg/vWLr8MoQ8d9VvH5HR8eQ0Sk=
-X-Google-Smtp-Source: AGHT+IFq4XOwfSJBCoAxwykVmIdZVHKz5vRqvSQ+syOiG1isS487cLEPLHpJUEYkzULIYumbakDS1iu5hOhrm2i0H2Q=
-X-Received: by 2002:a17:907:3d8b:b0:ae3:60e5:ece3 with SMTP id
- a640c23a62f3a-ae360e5eebemr1098270966b.6.1751285171450; Mon, 30 Jun 2025
- 05:06:11 -0700 (PDT)
+	s=k20201202; t=1751286805;
+	bh=ua2ipCTa7rkbrN7QoUJlpsJPQMnMzooNk2QLt09WCaQ=;
+	h=From:To:Subject:Date:From;
+	b=FPz+7EOsmkm1lh5DcnRz6JWZ/L4LoF+7soVz4ebynMIEpxPMyIDtpAx9CHFVqyw2y
+	 UBsvyA3p4DCWfm/znveaTbYrGGq3ISr6e3Np8FFNE13E2SVGU9az6GVwfK93SL4wtB
+	 AjEfiDeS3zmfUBny4umHZe+5iFL2m0gQeoYq0PkHu43ZWcn5y7vnoX7suJEoMvps1C
+	 xG26CiprawOrZe1kDjTaGpoAlJ5YLvmczmKCep65E392WzF3SjvCqrkA5I4/gUbWh/
+	 d+yZkHvDtlDUKhlBG/Wi1fVgsFMD4ceXDigwOz4LEy6fVUGhyVCCr3P54wGQpvQtfO
+	 w54LHE0W2HWTw==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: clear dirty status from extent buffer on error at insert_new_root()
+Date: Mon, 30 Jun 2025 13:33:20 +0100
+Message-ID: <e9542d79dd176857624ab9e492acc7484a01b57b.1751282942.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250627091914.100715-1-jth@kernel.org> <20250627091914.100715-10-jth@kernel.org>
- <aF6CzXUlUNE5ruWH@infradead.org> <79d8cfd1-ec0d-4eec-a3e2-7875b94d0e53@wdc.com>
-In-Reply-To: <79d8cfd1-ec0d-4eec-a3e2-7875b94d0e53@wdc.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 30 Jun 2025 13:05:34 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6GU2E40oaj+=UsC53o0a0vF+iy6EoWtcJYLKEahCK8ig@mail.gmail.com>
-X-Gm-Features: Ac12FXyT0vp0kzUYwm2h24xzKUo5MK9CNDziMbBcCA_M1hWx--8-uUcGr3nZ9zM
-Message-ID: <CAL3q7H6GU2E40oaj+=UsC53o0a0vF+iy6EoWtcJYLKEahCK8ig@mail.gmail.com>
-Subject: Re: [PATCH RFC 9/9] btrfs: remove unused bgs on allocation failure
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc: "hch@infradead.org" <hch@infradead.org>, Johannes Thumshirn <jth@kernel.org>, 
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, Damien Le Moal <dlemoal@kernel.org>, 
-	Naohiro Aota <Naohiro.Aota@wdc.com>, David Sterba <dsterba@suse.com>, 
-	Josef Bacik <josef@toxicpanda.com>, Boris Burkov <boris@bur.io>, Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jun 30, 2025 at 12:46=E2=80=AFPM Johannes Thumshirn
-<Johannes.Thumshirn@wdc.com> wrote:
->
-> On 27.06.25 13:39, Christoph Hellwig wrote:
-> > On Fri, Jun 27, 2025 at 11:19:14AM +0200, Johannes Thumshirn wrote:
-> >> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> >>
-> >> In case find_free_extent() return ENOSPC, check if there are block-gro=
-ups
-> >> in the filsystem which have been marked as 'unused' and if so, reclaim=
- the
-> >> space occupied by these block-groups.
-> >>
-> >> Restart the search for free space to place the extent afterwards.
-> >>
-> >> In case the allocation is targeted for the data relocation root, skip =
-this
-> >> step, as it can cause deadlocks between block group deletion and reloc=
-ation.
-> >
-> > Assuming an unused BG is one without space in it that just needs a zone
-> > reset or discard (a quick look at the code seems to confirm that, but
-> > with some extra caveats):  why don't you reclaim it ASAP once it become=
-s
-> > unused, at least modulo those space reservation caveats (which I don't
-> > understand from that quick look).
-> >
-> >
->
-> I've looked into it looks promising. Threw it into fstests and (up to
-> now) nothing broke. So I'll run Damien's scripts on a ZNS drive and
-> we'll see if it helps.
+From: Filipe Manana <fdmanana@suse.com>
 
-That brings a new problem.
+If we failed to insert the tree mod log operation, we are not removing the
+dirty status from the allocated and dirtied extent buffer before we free
+it. Removing the dirty status is needed for several reasons such as to
+adjust the fs_info->dirty_metadata_bytes counter and remove the dirty
+status from the respective folios. So add the missing call to
+btrfs_clear_buffer_dirty().
 
-For example a data block group becomes empty and you delete it immediately.
-If a data allocation happens before the transaction used to delete the
-block group is committed and there are no other data block groups with
-enough space and there's no more unallocated device space, we will
--ENOSPC, whereas before we wouldn't.
+Fixes: f61aa7ba08ab ("btrfs: do not BUG_ON() on tree mod log failure at insert_new_root()")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/ctree.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Remember that a delete block group's space can only be allocated again
-after the transaction used to delete it is committed, to respect COW
-semantics.
-That's why you see the allocator using the commit root (at
-find_free_dev_extent()).
-And you can't commit the transaction as soon as the bg becomes used,
-as we're holding a transaction handle open and would deadlock.
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 2997f2420719..dc21e840664b 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -2881,6 +2881,7 @@ static noinline int insert_new_root(struct btrfs_trans_handle *trans,
+ 	if (ret < 0) {
+ 		int ret2;
+ 
++		btrfs_clear_buffer_dirty(trans, c);
+ 		ret2 = btrfs_free_tree_block(trans, btrfs_root_id(root), c, 0, 1);
+ 		if (ret2 < 0)
+ 			btrfs_abort_transaction(trans, ret2);
+-- 
+2.47.2
+
 
