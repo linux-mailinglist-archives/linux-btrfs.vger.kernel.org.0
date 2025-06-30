@@ -1,82 +1,56 @@
-Return-Path: <linux-btrfs+bounces-15134-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15135-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9941AEE96F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 23:24:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E8B3AEE973
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 23:30:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2113189B8E7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 21:24:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 442351BC099B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Jun 2025 21:31:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8085E224240;
-	Mon, 30 Jun 2025 21:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B56C230BE9;
+	Mon, 30 Jun 2025 21:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="A+8uBCST"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="sp9kkYQ0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 968861A0BE0
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 21:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 778882AD2F
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 21:30:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751318657; cv=none; b=CQ3nHKu/V9/xm54QV2g+Yn+CBgXfnNv8tASmXGtkckxhrLlwOdf2baRoI+XI7izgiPIbzEtW/roXUYosmZ+G05VdIIzBALOM7REF0DZHNyUYMIp9/tG07jiuOCJYB9WIU1ja/kZZfrrzWwjOlNekQSX+6AvPHNQOxDS64VbTrls=
+	t=1751319041; cv=none; b=kZun6yPBnQupdVVHZt5vEKw8UpH96wA3pBc/R/nYMPknahWHfvKr282aHbtxgYZU/DpY0ggeZuXgCBao/C9rOjgrx04oFKFgSTQMkopBgObyytMuHHRp8s9F24l+QT6mIsCXvvtuW0G2swM6KdCPj81Vh7dBGAUh2uKAHq9QfyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751318657; c=relaxed/simple;
-	bh=6GwBx70sN2JBI7hpyC2gpTEu3DB/7q4qEsdOYlo9Gp0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=h017EnULdWMG4kJvN4do3DZMOCPWCtxQiIb9ONxYsr84BG4NXIX158N0SNvOJwhABzLJ/CfchGgs2SAp2x5NbLzjoiGl+Ef1Tz2vbY4jUTGVS6ihqk3v2A6f34aMQIsT2cVfK5zX3+aRu+9jpV0cqxSWr6plar6mxxLftsEKow8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=A+8uBCST; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-450cfb79177so29051465e9.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Jun 2025 14:24:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1751318654; x=1751923454; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=9q3gCJ3fangaDb5c1I3OsLQwr4sawDCcfdZiz3Z3iv8=;
-        b=A+8uBCSTxb8BvDROYGSXRzgZBeyfCEvGTTGSyDVqNPvDNM1FEVxTcqsRWRH/CEzzf2
-         uDchSezWRKzpcpXEho1e6DgAUtkv/wqv03dP9UrreyOFITb/k7/IbSiNySIywStoKv5O
-         J9cQ8EExs6JpYZoLxq/CK43bW1Y9pAm82qhR+mOMxP1Q3I+KVeFktxp6d2uaNn8uQwJE
-         1wVcjteGRpIa4i2f3mM6AI66x9Yx++1YJX76S/OyBeMGl49K5OUmhm1klhGqMufHm7Rn
-         m7FZRaw8sJFnwL6MRYNA5ipVfXBXdI+hvsN3aKfhF70kmgOcW3gmVWmdhAcP7PF6S5CQ
-         6Hsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751318654; x=1751923454;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9q3gCJ3fangaDb5c1I3OsLQwr4sawDCcfdZiz3Z3iv8=;
-        b=D+ultoUmEqNxSqsWdy/NF8kaG33pOc17ZOR2PBJptJozglFR741RUyb6hsxXoDClie
-         f+qofTSwecYkqxUiZFZEF46uO78Vh95l+82cdFx2FQHf0GAD30wEYhWPzeaEf+sHFyLQ
-         okA4OPUJEaOTGRgTpGtvHy36MHiYPq4dkn+rRe6iuLCv/3C4bnb1Iu8frE3jW7x+NjpA
-         q0OptD8bzskNaDRUlxTJT5bx371qdZL7SX1/gBF4KhKNOeOVYNquI73T0FQqtwr7itix
-         2KphOrNfZ9hKngYOWQYvZeAH9i0ZxyFpvr24gsMOtC5XYaLg0XQZAsxxxYZAnUE2ikHk
-         81VQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW6zrd3Olv5EzC51Loub3lvjrf5al+gtgZkwHOe+UQbEVrfxabbNaOYL8d0Yxvy2Ke2k2oQ5bi0e086Cw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwpoHuna2yfF5Uf5FdF+eQXep8m0cPLPEfMKYLU9x7P8M72B3KQ
-	qmZVWaIRGeFUF9laBz26DbAE3x10yqgPCwHHkPH3i06Y0Ncoo63kJANgXm5Jn8yBQwLNW2lmmMS
-	B3X4+
-X-Gm-Gg: ASbGncvDZx7gC1HRn9CDhk9QSn0JQgkH8Z+6yYs4plMObuVwm4iyd/lvUnjMsf6ovct
-	Tur9mqATLMDVz5l5ZX+gLqhOH+2pW0iYwjiJ9hHvmPwVE2z+MVwFjwZLR/vLGtbwVPdTV5NsGVi
-	ivGYrLbu4Pit45/q6Ojszrlaoadmqw4ETnSuLvRu4Oit6eyBQQIM0Zauevcmrbg4AKYJud0HXfh
-	RvSH56UXvFJ/lnY81A6XIKoTVJVSdudzKH8MhPl4ItA+cNANzrRv+xXVSS8chCws3vfiuqEevyR
-	b+Y7jm+V2sP+12xfJdLvoj4onLZV6Vu8kZtNykvyGR1MOSsLUSzIhIFo2Nx/LXtSIPtARoWOD9D
-	bD6+zs/rGRI9DfA==
-X-Google-Smtp-Source: AGHT+IFatFzSqjE3IV2Nb/G0jrp2GHNZtNKIhleS/5XtzwilWtdB5fboa/SPJnO3a7Xzm148jHT2ag==
-X-Received: by 2002:adf:9c92:0:b0:3a1:f564:cd9d with SMTP id ffacd0b85a97d-3a8ffcca333mr9569260f8f.36.1751318653611;
-        Mon, 30 Jun 2025 14:24:13 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23acb3ba55asm88389725ad.198.2025.06.30.14.24.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Jun 2025 14:24:13 -0700 (PDT)
-Message-ID: <5ac95d1f-ae5e-4251-b1b1-7c42aeb77f24@suse.com>
-Date: Tue, 1 Jul 2025 06:54:09 +0930
+	s=arc-20240116; t=1751319041; c=relaxed/simple;
+	bh=olaSjuzDAg+68KwVQZOvHcopj+g/iPXFgFfwjGs3s2U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aAL5l+IjUc4JRuEQFtAURH4Eb2yybGiiEyneQvDelx9l7yNU2gHNB3HRBe6CxFfE83nTvx6lePJkyN1383hSJnQKlKpAwBN+mH+dLJRFjclN0ADbi9qJ7Rf51XpHGeLCGD04tmrlWwmmEWy83LRHvzlxjgIu2RnlltEtaCyXYbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=sp9kkYQ0; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1751319033; x=1751923833; i=quwenruo.btrfs@gmx.com;
+	bh=rM896DhjN6cRCHAfGcgp4lShNk5AwwwyUKwJV55ppgg=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=sp9kkYQ0HV0YoIc2opwNmNJuQx3Vb/cm5/fA2uEwBpykOx/3ijV+/a8Jjq/pGpot
+	 5u3f47MAcLX1Z8/ta44JtHB2/JVe/cjEN1RsU7imX9hDWt/V0bRAC2AlBbRyNLMWz
+	 4uH+eFFJsQKcSM52+m1mDbXL6Lf+rXWGLeJ/bHEf9ykBO5UNDUJShSYHYB4W2OlQK
+	 vpHBG6hzYu3kChabOSArwn34swPUmmCPKBguinQulFh2VtnYUlAVyLoLLAvMJDgvf
+	 kmHUEnepvvkbjVJpH65PlRLYQAARmfE0FgGbyIqKHGs0u7+p9fPKPUAeQd3bFQyN2
+	 RRr+b22ctLTJscdqfg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MqJqN-1v0W9j30BX-00fY9g; Mon, 30
+ Jun 2025 23:30:33 +0200
+Message-ID: <01442a4a-ba38-4821-a63b-9c3f112905a0@gmx.com>
+Date: Tue, 1 Jul 2025 07:00:29 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,182 +58,217 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] btrfs: qgroup: remove no longer used
- fs_info->qgroup_ulist
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1751288689.git.fdmanana@suse.com>
- <6051db0c1a943d7f896fbb5b9cd548908e161ed0.1751288689.git.fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: change dump_block_groups in btrfs_dump_space_info
+ from int to bool
+To: Johannes Thumshirn <jth@kernel.org>, linux-btrfs@vger.kernel.org
+Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20250630144735.224222-1-jth@kernel.org>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <6051db0c1a943d7f896fbb5b9cd548908e161ed0.1751288689.git.fdmanana@suse.com>
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <20250630144735.224222-1-jth@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:oXYLs6PiU8RvnAuNebJVLIrsbBxm9NK6sJGywZQx5xmmDeXhYdR
+ /mdrIOInmS/eB6LPkAlqGWbiQLHj5x72iWVYDGZuMkg3oexlHwvfzm7noPnoDMEmA13kdxo
+ uKbshkt47MnXMBa6BgfSepcRLLLRtOuEv3wYR0Hqrh+TpjSlE2oHqhiTWYl3WJF/MfT5kH1
+ SlEoAqM9IC3iWeiunuE0A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:0YSHZRrFYrc=;bhB+p5BUIdgP0q7pubjAUDznn2U
+ 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
+ zQ==
 
 
 
-在 2025/6/30 22:37, fdmanana@kernel.org 写道:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> It's not used anymore after commit 091344508249 ("btrfs: qgroup: use
-> qgroup_iterator in qgroup_convert_meta()"), so remove it.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks a lot for catching this.
+=E5=9C=A8 2025/7/1 00:17, Johannes Thumshirn =E5=86=99=E9=81=93:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>=20
+> btrfs_dump_space_info()'s parameter dump_block_groups is used as a boole=
+an
+> although it is defined as an integer.
+>=20
+> Change it from int to bool.
+>=20
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
+
 > ---
->   fs/btrfs/disk-io.c |  1 -
->   fs/btrfs/fs.h      |  6 ------
->   fs/btrfs/qgroup.c  | 31 +------------------------------
->   3 files changed, 1 insertion(+), 37 deletions(-)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index f6fa951c6be9..ee4911452cfd 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1947,7 +1947,6 @@ static void btrfs_init_qgroup(struct btrfs_fs_info *fs_info)
->   	fs_info->qgroup_tree = RB_ROOT;
->   	INIT_LIST_HEAD(&fs_info->dirty_qgroups);
->   	fs_info->qgroup_seq = 1;
-> -	fs_info->qgroup_ulist = NULL;
->   	fs_info->qgroup_rescan_running = false;
->   	fs_info->qgroup_drop_subtree_thres = BTRFS_QGROUP_DROP_SUBTREE_THRES_DEFAULT;
->   	mutex_init(&fs_info->qgroup_rescan_lock);
-> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> index b239e4b8421c..a731c883687d 100644
-> --- a/fs/btrfs/fs.h
-> +++ b/fs/btrfs/fs.h
-> @@ -740,12 +740,6 @@ struct btrfs_fs_info {
->   	struct rb_root qgroup_tree;
->   	spinlock_t qgroup_lock;
->   
-> -	/*
-> -	 * Used to avoid frequently calling ulist_alloc()/ulist_free()
-> -	 * when doing qgroup accounting, it must be protected by qgroup_lock.
-> -	 */
-> -	struct ulist *qgroup_ulist;
-> -
->   	/*
->   	 * Protect user change for quota operations. If a transaction is needed,
->   	 * it must be started before locking this lock.
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 8fa874ef80b3..98a53e6edb2c 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -397,12 +397,6 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
->   	if (!fs_info->quota_root)
->   		return 0;
->   
-> -	fs_info->qgroup_ulist = ulist_alloc(GFP_KERNEL);
-> -	if (!fs_info->qgroup_ulist) {
-> -		ret = -ENOMEM;
-> -		goto out;
-> -	}
-> -
->   	path = btrfs_alloc_path();
->   	if (!path) {
->   		ret = -ENOMEM;
-> @@ -587,8 +581,6 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
->   		if (fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN)
->   			ret = qgroup_rescan_init(fs_info, rescan_progress, 0);
->   	} else {
-> -		ulist_free(fs_info->qgroup_ulist);
-> -		fs_info->qgroup_ulist = NULL;
->   		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_RESCAN;
->   		btrfs_sysfs_del_qgroups(fs_info);
+>   fs/btrfs/block-group.c | 8 ++++----
+>   fs/btrfs/space-info.c  | 7 ++++---
+>   fs/btrfs/space-info.h  | 2 +-
+>   3 files changed, 9 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 4259d955e70f..dc0b29ed46c0 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1417,7 +1417,7 @@ static int inc_block_group_ro(struct btrfs_block_g=
+roup *cache, int force)
+>   	if (ret =3D=3D -ENOSPC && btrfs_test_opt(cache->fs_info, ENOSPC_DEBUG=
+)) {
+>   		btrfs_info(cache->fs_info,
+>   			"unable to make block group %llu ro", cache->start);
+> -		btrfs_dump_space_info(cache->fs_info, cache->space_info, 0, 0);
+> +		btrfs_dump_space_info(cache->fs_info, cache->space_info, 0, false);
 >   	}
-> @@ -660,13 +652,6 @@ void btrfs_free_qgroup_config(struct btrfs_fs_info *fs_info)
->   	}
->   	spin_unlock(&fs_info->qgroup_lock);
->   
-> -	/*
-> -	 * We call btrfs_free_qgroup_config() when unmounting
-> -	 * filesystem and disabling quota, so we set qgroup_ulist
-> -	 * to be null here to avoid double free.
-> -	 */
-> -	ulist_free(fs_info->qgroup_ulist);
-> -	fs_info->qgroup_ulist = NULL;
->   	btrfs_sysfs_del_qgroups(fs_info);
->   }
->   
-> @@ -1012,7 +997,6 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
->   	struct btrfs_qgroup *qgroup = NULL;
->   	struct btrfs_qgroup *prealloc = NULL;
->   	struct btrfs_trans_handle *trans = NULL;
-> -	struct ulist *ulist = NULL;
->   	const bool simple = (quota_ctl_args->cmd == BTRFS_QUOTA_CTL_ENABLE_SIMPLE_QUOTA);
->   	int ret = 0;
->   	int slot;
-> @@ -1035,12 +1019,6 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
->   	if (fs_info->quota_root)
->   		goto out;
->   
-> -	ulist = ulist_alloc(GFP_KERNEL);
-> -	if (!ulist) {
-> -		ret = -ENOMEM;
-> -		goto out;
-> -	}
-> -
->   	ret = btrfs_sysfs_add_qgroups(fs_info);
->   	if (ret < 0)
->   		goto out;
-> @@ -1080,9 +1058,6 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
->   	if (fs_info->quota_root)
->   		goto out;
->   
-> -	fs_info->qgroup_ulist = ulist;
-> -	ulist = NULL;
-> -
->   	/*
->   	 * initially create the quota tree
->   	 */
-> @@ -1281,17 +1256,13 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
->   	if (ret)
->   		btrfs_put_root(quota_root);
->   out:
-> -	if (ret) {
-> -		ulist_free(fs_info->qgroup_ulist);
-> -		fs_info->qgroup_ulist = NULL;
-> +	if (ret)
->   		btrfs_sysfs_del_qgroups(fs_info);
-> -	}
->   	mutex_unlock(&fs_info->qgroup_ioctl_lock);
->   	if (ret && trans)
->   		btrfs_end_transaction(trans);
->   	else if (trans)
->   		ret = btrfs_end_transaction(trans);
-> -	ulist_free(ulist);
->   	kfree(prealloc);
 >   	return ret;
 >   }
+> @@ -4315,7 +4315,7 @@ static void reserve_chunk_space(struct btrfs_trans=
+_handle *trans,
+>   	if (left < bytes && btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
+>   		btrfs_info(fs_info, "left=3D%llu, need=3D%llu, flags=3D%llu",
+>   			   left, bytes, type);
+> -		btrfs_dump_space_info(fs_info, info, 0, 0);
+> +		btrfs_dump_space_info(fs_info, info, 0, false);
+>   	}
+>  =20
+>   	if (left < bytes) {
+> @@ -4460,7 +4460,7 @@ static void check_removing_space_info(struct btrfs=
+_space_info *space_info)
+>   	 * indicates a real bug if this happens.
+>   	 */
+>   	if (WARN_ON(space_info->bytes_pinned > 0 || space_info->bytes_may_use=
+ > 0))
+> -		btrfs_dump_space_info(info, space_info, 0, 0);
+> +		btrfs_dump_space_info(info, space_info, 0, false);
+>  =20
+>   	/*
+>   	 * If there was a failure to cleanup a log tree, very likely due to a=
+n
+> @@ -4471,7 +4471,7 @@ static void check_removing_space_info(struct btrfs=
+_space_info *space_info)
+>   	if (!(space_info->flags & BTRFS_BLOCK_GROUP_METADATA) ||
+>   	    !BTRFS_FS_LOG_CLEANUP_ERROR(info)) {
+>   		if (WARN_ON(space_info->bytes_reserved > 0))
+> -			btrfs_dump_space_info(info, space_info, 0, 0);
+> +			btrfs_dump_space_info(info, space_info, 0, false);
+>   	}
+>  =20
+>   	WARN_ON(space_info->reclaim_size > 0);
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index 102fcc34ffe2..65cc36ef3f75 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -615,7 +615,7 @@ static void __btrfs_dump_space_info(const struct btr=
+fs_fs_info *fs_info,
+>  =20
+>   void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+>   			   struct btrfs_space_info *info, u64 bytes,
+> -			   int dump_block_groups)
+> +			   bool dump_block_groups)
+>   {
+>   	struct btrfs_block_group *cache;
+>   	u64 total_avail =3D 0;
+> @@ -1890,7 +1890,8 @@ int btrfs_reserve_metadata_bytes(struct btrfs_fs_i=
+nfo *fs_info,
+>   					      space_info->flags, orig_bytes, 1);
+>  =20
+>   		if (btrfs_test_opt(fs_info, ENOSPC_DEBUG))
+> -			btrfs_dump_space_info(fs_info, space_info, orig_bytes, 0);
+> +			btrfs_dump_space_info(fs_info, space_info, orig_bytes,
+> +					      false);
+>   	}
+>   	return ret;
+>   }
+> @@ -1921,7 +1922,7 @@ int btrfs_reserve_data_bytes(struct btrfs_space_in=
+fo *space_info, u64 bytes,
+>   		trace_btrfs_space_reservation(fs_info, "space_info:enospc",
+>   					      space_info->flags, bytes, 1);
+>   		if (btrfs_test_opt(fs_info, ENOSPC_DEBUG))
+> -			btrfs_dump_space_info(fs_info, space_info, bytes, 0);
+> +			btrfs_dump_space_info(fs_info, space_info, bytes, false);
+>   	}
+>   	return ret;
+>   }
+> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+> index 7de31541ab45..679f22efb407 100644
+> --- a/fs/btrfs/space-info.h
+> +++ b/fs/btrfs/space-info.h
+> @@ -278,7 +278,7 @@ u64 __pure btrfs_space_info_used(const struct btrfs_=
+space_info *s_info,
+>   void btrfs_clear_space_info_full(struct btrfs_fs_info *info);
+>   void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+>   			   struct btrfs_space_info *info, u64 bytes,
+> -			   int dump_block_groups);
+> +			   bool dump_block_groups);
+>   int btrfs_reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
+>   				 struct btrfs_space_info *space_info,
+>   				 u64 orig_bytes,
 
 
