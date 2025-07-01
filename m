@@ -1,162 +1,111 @@
-Return-Path: <linux-btrfs+bounces-15154-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15155-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D98FCAEF11E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 10:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 77FC0AEF173
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 10:41:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9CB81BC5CF4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 08:31:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2804188E9E0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 08:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C74125F78F;
-	Tue,  1 Jul 2025 08:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35ED26CE19;
+	Tue,  1 Jul 2025 08:41:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VlkR6qYw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UqYMOQ3v"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AE91E515
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Jul 2025 08:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF8251022;
+	Tue,  1 Jul 2025 08:41:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751358653; cv=none; b=L4r3ITl97nqbqmnqL+5rPYGi5ZSzmEkAv3Z8+GR/+mYo1OjafqK3PErauaMsyngSb21xu0DfyMMaRd8UYDMh6ZLpYEP9wUA/6yqFzuNb0hzK/uyb+IMpnbamCcHLQbFfKK9VDWraUX4kScETsmGdHsBxWbq0oQshjTjOXYcU7Zs=
+	t=1751359267; cv=none; b=Boim5Dvj40qJ4k6PoXSXEvaRAPL52NZOd8EXJfCOQKdcI5n2kWoDrxU3J9BoAARZkWQtNzbg3Yfg7sZLu5FrzULSGgjjXoVUZa/SQoi0YIGt2uO8CvJV44HpO+YdLwNeTzsy+JjxcqmCZqHaErrqIT+QR6w6sgfEwngv0QT3z20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751358653; c=relaxed/simple;
-	bh=jFVPizjC1SJlnLk2SyZjJwYurv2Ok3UhbdoJwg+tdkY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hW14PZ14hw8gkuDZGmGgI9hyl22IWN4qghBzctd1iBIsFXJbQKRwSxrWcnMOAma1fteGzXmc59i8hvbiTqi28UIH1aHR55l9+Xc76YEJ1Q098H+nefetplIAzqbqMI1ndWclKxmhxBCtFDfj1e4zC3YljTK8IFUMbxVh6Ti/1NE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VlkR6qYw; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-453643020bdso46438645e9.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 01 Jul 2025 01:30:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1751358650; x=1751963450; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=9/bQAEZcF0mBIWfmGiF+sYNUM1oOuQ28vDEPiWDOuPs=;
-        b=VlkR6qYw87QTrFCUm1I3xSkjfO+Zxt43UCSgsVZfovf2VN5RiKAZhOeInkzEHOKYhV
-         W6bmT5+Kn0byrfSh1tBLUI1FvGsuTy4CUelEgOU4I191DIkjJ1qoedNm+0jryhfziDhF
-         SvckcSj9EE3pdKjb3a7zbCaw50eR3c9N+chMOp6s0SE9DMO9ubGSRMGlDWlDCFz2olSk
-         OdqBc8T8VF5C5/Ai+eHcNVFdi5ucgrbTKc6tOr8dWIhmXD6PLOzLdeqZXsG1f7njFJz/
-         66OrosF/XsVbVxzQnh/zop8yjhXmO67/RwLVKeWl2AV/tQRTSe9msbojndOPtqZGNxTj
-         1IHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751358650; x=1751963450;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9/bQAEZcF0mBIWfmGiF+sYNUM1oOuQ28vDEPiWDOuPs=;
-        b=PSS0dF/D3e2mUNoOAqPQwJt1vvTRJkb+/aFhAVwCLrHv0/9O4xyTmhCp9FHfi9sMp1
-         +i5gkImBMTDIEh2rU9g2Aexid9UUu7sJZV04ZsIrS3Q8csPn+tkzlmAPL4u0+e4pHnmI
-         rpoQRptbwS4ElinyE63fksxiiu7WFlZc1fNWWPfJa+5WCBUv9SXTHnL0eNpcRFPfgNUa
-         fYVwNjGTGnXYsk+irJ7w9E+Win1UJx7njQGOm9vDu7btedlG4g5b1n2cs+vmCHvNh19Y
-         Dz3OfvrGO8wRx4zdjHwElKWto32XX3d92JFp4LVkd9kxfU8Ewb2STBtTvk6G/j2wEPEV
-         F4sw==
-X-Forwarded-Encrypted: i=1; AJvYcCWL9qPcwe6lPNGvde+E9hh9isI4kdB+qUXCgPMMX5zLj6nzZZcwo2cuSiNO2vhVCLDlESx5Jn6t7dhufg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8mH4rRMwxn55JPgf9weXtFlaiW9YQmMlKcBANIMsdPQW7xWMU
-	ZNpQBXEL9Iad6dbngI1uim3uPmGf6zxIzoMniFDfK4//NX3CHWUt10fDWKR5lQOeCdordjB2nNO
-	ndAqI
-X-Gm-Gg: ASbGncs+brGxVCvfr9zYlv0AWrJMdVKZ8+OfuJ7hnSpFigBTjSv2rluUZbP2XrzpJVb
-	cENQLiG2xRM39uoHvUIPSldeRY6EN5sWCRYCK22q351K8ESfTmoeCPFZFoM/CV2KbZWJPH+4J0j
-	eA0khL3owRJ+fSOcc/TUzVoEYBhLsp2FM9Uj8ukYYz3Fmb5kzYWYm+JVVleAYehvF6Xc+u/zoWG
-	Ucak4TUeEsL9d054OrY47jJJwsMoEujqxRFoTFlJBJeMPrBB3s9q8CFY+OHNPzJC7SqCvM0+0Zk
-	EM4nJzlk9cvawDe+fODoI/MheE8fPvD8v5fzitLh1xGJnCXS3hRVIc7yodLbU7lxUhssocbojnh
-	Frua1aVYMzLFve6BxCcK9ZYM7
-X-Google-Smtp-Source: AGHT+IHSkw6RSzLG3Mq8vgCv2qJnzOh7XFAbsxGFSLxdm1LXyo0ZldU763ptRnon5RRq20HSfPQKTQ==
-X-Received: by 2002:a5d:5f49:0:b0:3a5:5270:a52c with SMTP id ffacd0b85a97d-3a8f302a206mr13378986f8f.0.1751358649523;
-        Tue, 01 Jul 2025 01:30:49 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b34e31beab2sm10083514a12.47.2025.07.01.01.30.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jul 2025 01:30:49 -0700 (PDT)
-Message-ID: <c6ef9cda-3fc5-4531-9586-f22914607d53@suse.com>
-Date: Tue, 1 Jul 2025 18:00:40 +0930
+	s=arc-20240116; t=1751359267; c=relaxed/simple;
+	bh=GE1FdSfW6he+GnVWYoQZBrWesQRe1qmmmvrnDmUzBNM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FAVQCdcyQ6Jx8sdKPTFAthCBIkySoXh6wQaQu+kZWOP0nV90ltTAM1R6MHKH26cSh7aI9gmhztxq1m7VdEmpgWQwfSFH4nB3MKpsO1pWxjE5glTBahXDhHaaWP4YrxYoA09cH8ftSJ6ZFMkNv9JiF5iuIDUqH2G2WSdWH4JFZ34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UqYMOQ3v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D407C4CEEE;
+	Tue,  1 Jul 2025 08:41:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751359266;
+	bh=GE1FdSfW6he+GnVWYoQZBrWesQRe1qmmmvrnDmUzBNM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UqYMOQ3vrk2jwiOUfIt4fIC6B8GLLExBCIZt3+WLzN8NfStvVaHsyp4PyNHIdzBnY
+	 jcHxiYmxA7JiTIfW9yblevPtL473Nad0VFsjcedArsJ8/kpQy0M5T/Sq94tW8gR18N
+	 /QvRxsPQhq/VNxblvnLMopmtPN4c0pUkGhyKnFcciW3VCOLw3MGi3p9kmOeYhq2DJE
+	 8sYqCFR62tlA5NLCEKo016ifFxvoL6mN0ZDl3s2OHm6njCnXZZ29K7IRbp8hMFD48r
+	 Pogr99rfgSbX6JS1uB4vER8VLSme0vWUNUcX60uPexNE2vSbvOpx4ZpB3NGV5TRQXN
+	 kF1C5uNvAMW0w==
+Date: Tue, 1 Jul 2025 10:41:01 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, 
+	jack@suse.cz, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+Message-ID: <20250701-beziffern-penetrant-ed93dbc57654@brauner>
+References: <cover.1751347436.git.wqu@suse.com>
+ <6164b8c708b6606c640c066fbc42f8ca9838c24b.1751347436.git.wqu@suse.com>
+ <aGN8zsyYEArKr0DV@infradead.org>
+ <baec02a0-e2fb-4801-b2ad-f602fc4d1cfc@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/6] btrfs: implement remove_bdev super operation
- callback
-To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz
-References: <cover.1751347436.git.wqu@suse.com>
- <5c1f7441e3e2985143eb42e980cdcf081fdef61e.1751347436.git.wqu@suse.com>
- <d0d7243d-4254-41a3-85c6-887f9fb0db36@oracle.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <d0d7243d-4254-41a3-85c6-887f9fb0db36@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <baec02a0-e2fb-4801-b2ad-f602fc4d1cfc@gmx.com>
 
-
-
-在 2025/7/1 17:51, Anand Jain 写道:
+On Tue, Jul 01, 2025 at 04:05:03PM +0930, Qu Wenruo wrote:
 > 
 > 
->> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
->> +static void btrfs_remove_bdev(struct super_block *sb, struct 
->> block_device *bdev)
->> +{
->> +    struct btrfs_fs_info *fs_info = btrfs_sb(sb);
->> +    struct btrfs_device *device;
->> +    struct btrfs_dev_lookup_args lookup_args = { .devt = bdev->bd_dev };
->> +    bool can_rw;
->> +
->> +    mutex_lock(&fs_info->fs_devices->device_list_mutex);
->> +    device = btrfs_find_device(fs_info->fs_devices, &lookup_args);
->> +    if (!device) {
->> +        btrfs_warn(fs_info, "unable to find btrfs device for block 
->> device '%pg'",
->> +               bdev);
->> +        mutex_unlock(&fs_info->fs_devices->device_list_mutex);
->> +        return;
->> +    }
->> +    set_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
->> +    device->fs_devices->missing_devices++;
+> 在 2025/7/1 15:44, Christoph Hellwig 写道:
+> > On Tue, Jul 01, 2025 at 03:02:34PM +0930, Qu Wenruo wrote:
+> > > To allow those multi-device filesystems to be integrated to use
+> > > fs_holder_ops:
+> > > 
+> > > - Rename shutdown() call back to remove_bdev()
+> > >    To better describe when the call back is called.
+> > 
+> > What is renamed back here?
 > 
-> Where do we ensure that the block device wasn't already marked as
-> missing? If there's no such check, could missing_devices end up
-> exceeding total_devices?
+> Rename the old shutdown to remove_bdev().
+> 
+> > 
+> > > -static void exfat_shutdown(struct super_block *sb)
+> > > +static void exfat_shutdown(struct super_block *sb, struct block_device *bdev)
+> > >   {
+> > >   	exfat_force_shutdown(sb, EXFAT_GOING_DOWN_NOSYNC);
+> > >   }
+> > > @@ -202,7 +202,7 @@ static const struct super_operations exfat_sops = {
+> > >   	.put_super	= exfat_put_super,
+> > >   	.statfs		= exfat_statfs,
+> > >   	.show_options	= exfat_show_options,
+> > > -	.shutdown	= exfat_shutdown,
+> > > +	.remove_bdev	= exfat_shutdown,
+> > 
+> > Please also rename the function so that they match the method name.
+> 
+> I prefer not, and it is intentionally left as is.
+> 
+> This give us a very clear view what a fs is expected to do.
 
-Right, I'll change the device number related changes behind a 
-test_and_set_bit(), so that we won't double accounting the missing device.
+Qu, would you please rename the individual functions?
 
-Thanks,
-Qu>
-> Thanks, Anand
+The NAK later just because of this is unnecessary. I will say clearly
+that I will ignore gratuitous NAKs that are premised on large scale
+rewrites that are out of scope for the problem.
 
+Here the requested rework has an acceptable scope though and we can
+sidestep the whole problem and solve it so everyone's happy.
 
