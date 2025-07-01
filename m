@@ -1,560 +1,197 @@
-Return-Path: <linux-btrfs+bounces-15186-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15187-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18A36AF06E8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 01:19:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17342AF06F2
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 01:30:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0209D484C14
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 23:18:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2448485EFC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 23:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09C82EE5F7;
-	Tue,  1 Jul 2025 23:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="TNXvNT3d";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jcsob4Ua"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB7DD302CAE;
+	Tue,  1 Jul 2025 23:30:01 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-b2-smtp.messagingengine.com (fhigh-b2-smtp.messagingengine.com [202.12.124.153])
+Received: from out28-68.mail.aliyun.com (out28-68.mail.aliyun.com [115.124.28.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC501DF27E
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Jul 2025 23:18:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0DB72601
+	for <linux-btrfs@vger.kernel.org>; Tue,  1 Jul 2025 23:29:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.28.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751411935; cv=none; b=ubgQQ7rYopAWitx2a0S/rhUOdDcLd24ZLqLufzI/vxvyhDlZ1j2Sp10CXgybVajg1dxQ43yFhk4keouKoYF2jNDyaxzJ9alBqU3qYUnotwEyXCAUYUQ2+4CbShj6h86Ci9MaP125jkD/rjpmDN9X1NUeZ/XBVddPaW+f19Y/GxM=
+	t=1751412601; cv=none; b=N3VmWKhtSdld5LpditD/oNzODWJ9+3oycNnmNOQ0s/vwxsAxBKK794PuA0I6ZtP4bbeNGQGuoPqMYKPa9y+/50Jp1oBu4S7EmwdHkqY2kU+QbhFlAudiV8ujT27x/a7vBii0+QniLZpVFof/aMhUIjWFSNBhhj+wIzXiOssC+7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751411935; c=relaxed/simple;
-	bh=V9dLl7jVrjBD22VlrS7ktb16HckGIHQcxSd3OXlXVSo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fmY+k2Twj97/nNtwl9puK27DWYbpOD5WXMhjlEeEfmASAskwV8ugWmltrwqmHZGYinNM7C39Sq2SOoHwe/8tBKDl7AHGm8qZgdIrvsCNcX4ummxs1sbhYuJyVu/6pIvhjQltYGgG2Z/5Cq3NzOjdW2nNLj254oeDoJAzVzLYA44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=TNXvNT3d; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jcsob4Ua; arc=none smtp.client-ip=202.12.124.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 57EBD7A024C;
-	Tue,  1 Jul 2025 19:18:51 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Tue, 01 Jul 2025 19:18:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1751411931;
-	 x=1751498331; bh=PDhPNVbC4VLoYy4wcycXLbySnYs9RhUeYj0RZiN4qpg=; b=
-	TNXvNT3dEkVJc+pmspRTbrnTgCJcqzcnVIOIDMaWUg+I8OcMPwRRmZZR361h5l0q
-	4u9DdwTXGpFnO1qsJY0IRLXPE0Kmnr5TH1/gpbTY6NHdZlfK9S7CTXtYKO32vtk6
-	pUSs+sN6RvSp4f5lMb71bXyMux5jmXXF735aEZarZVpSCrxYUS9SHOWlkpHRqpDS
-	JChv21C84pOF98EOplqP1HqiSgobA9o+Tcg508k243p4C+9uIoM7vGyAjQXuIZtk
-	1UeXjfdjZBqD1SLOrZ4naT4cpXldLaQZ6zAHrUXDPBLKYVzVFI+3CRUUyzoB1yDU
-	dVhOAQzfZaCppG9H/yqIdA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1751411931; x=
-	1751498331; bh=PDhPNVbC4VLoYy4wcycXLbySnYs9RhUeYj0RZiN4qpg=; b=j
-	csob4UaG1zeLKJgZO6o3zRydZWlTnvEeHA4fXWPDRA/0WV+L91wm9jgjcLuXtqz2
-	ornDZUhixogslwZ4TQISqDGI5tRpHYbGCnFzRCsJ25I1kfJhrUkCA54AZRBcEaUE
-	HOPo0Zlj9/I2QlOCZwzUYGeqv2l724UwFhbTUhaGG7U8Zll5Cdy/UU88+I4cDgfV
-	o0872Ep4B6v0qnShvWfJYn9xt16KBc8Yy6hQEe80AmUGMl/Y9w1blIBzzwkp9zwN
-	iFIYpaeDXmKKgrS0Rlw9DJ9NYhC/ZvNslPt2F90omw/Wv4cB0hYEslWeB651noIj
-	rEcLZ2xRY+KkTjkB/OH8w==
-X-ME-Sender: <xms:2mxkaHSKixyEroFY_b3fzDwDYV9TmHsw_YdZeCA9BrbpCVS6WnDh-Q>
-    <xme:2mxkaIxHtAhLLTibvsxfZeg6pMEcE1__4bBuLOdbCeBeHuQnw-e5Nrzk4oGXNqBuP
-    XNeV-Aben6D3aIauNY>
-X-ME-Received: <xmr:2mxkaM2WegFlMkzm_Zny8S8f2f8SgVOUL6HJ73rV6xnZMZgqOTW4yIHFg6oVWt55YBsf0sf-Tpft1h5sfBSsDzoDgdE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduheekvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeehhf
-    duhefgkeehudefvdetgfetleeuiefgfefhfeegjeekfeehhffgkeejhfdvheenucffohhm
-    rghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopeef
-    pdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehfughmrghnrghnrgeskhgvrhhnvg
-    hlrdhorhhgpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgv
-    lhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehfsgdrtghomh
-X-ME-Proxy: <xmx:2mxkaHDPjdQTBZqothI8R9-PTZ_SFo4IQ2NNDDNfYxBV6bnS6XdMnA>
-    <xmx:22xkaAi3Q4AQjG1mPJrn8FOnvpaU-HrxqwLNpUFmqmRuyk1Z6jF7LQ>
-    <xmx:22xkaLq6jJ9O1UEx1kBhe65CFGmhINCQbh6iCdRsS7rNUBHs0uh3Rg>
-    <xmx:22xkaLguxEB3LGiv6qxQFMut4B90K-eQD3436qS0OCLb3UPr5KbStQ>
-    <xmx:22xkaAeVN0PTdME5N4aTGw2J3KXGrbFzw-qukPpMhtqKcgdJ_wsV1D50>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 1 Jul 2025 19:18:50 -0400 (EDT)
-Date: Tue, 1 Jul 2025 16:20:27 -0700
-From: Boris Burkov <boris@bur.io>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: use readahead_expand on compressed extents
-Message-ID: <20250701232027.GA1855241@zen.localdomain>
-References: <24414ba3107560a48f2e6a70e102de63b6bca4ca.1750112614.git.boris@bur.io>
- <CAL3q7H6t2qrKQ7qudfUp68=LLOHHy5QqTz8C1FLWcu2v2FX-Dw@mail.gmail.com>
+	s=arc-20240116; t=1751412601; c=relaxed/simple;
+	bh=F5En6XYWNa9GVY/BANIyhXcFrdYUL132AUj+NkxvSZQ=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:Message-Id:
+	 MIME-Version:Content-Type; b=poJj2VelK5n6YFGbdOdDs1myP3/r7mwLQddvZMN6yXCl8vKyB50iGbQ4hSAdcpxVi4yCnUTZSSLFmjPv0GSRoM/ZZnc6/CUAb7cEB1zTo2BWyTorruZpcW8IpeqDZEY5u6UaadJm9dLdj4Qnqp4wIUENUdpTh5hALWpTgWAtd1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com; spf=pass smtp.mailfrom=e16-tech.com; arc=none smtp.client-ip=115.124.28.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=e16-tech.com
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.dbcSRYH_1751412586 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Wed, 02 Jul 2025 07:29:46 +0800
+Date: Wed, 02 Jul 2025 07:29:47 +0800
+From: Wang Yugui <wangyugui@e16-tech.com>
+To: dsterba@suse.cz
+Subject: Re: [PATCH v2 1/2] btrfs: open code RCU for device name
+Cc: David Sterba <dsterba@suse.com>,
+ linux-btrfs@vger.kernel.org
+In-Reply-To: <20250630164328.GL31241@twin.jikos.cz>
+References: <20250630162130.GK31241@twin.jikos.cz> <20250630164328.GL31241@twin.jikos.cz>
+Message-Id: <20250702072946.6BE5.409509F4@e16-tech.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H6t2qrKQ7qudfUp68=LLOHHy5QqTz8C1FLWcu2v2FX-Dw@mail.gmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.81.08 [en]
 
-On Mon, Jun 16, 2025 at 11:53:05PM +0100, Filipe Manana wrote:
-> On Mon, Jun 16, 2025 at 11:22 PM Boris Burkov <boris@bur.io> wrote:
-> >
-> > We recently received a report of poor performance doing sequential
-> > buffered reads of a file with compressed extents. With bs=128k, a naive
-> > sequential dd ran as fast on a compressed file as on an uncompressed
-> > (1.2GB/s on my reproducing system) while with bs<32k, this performance
-> > tanked down to ~300MB/s.
-> >
-> > i.e.,
-> > slow:
-> > dd if=some-compressed-file of=/dev/null bs=4k count=X
-> > vs
-> > fast:
-> > dd if=some-compressed-file of=/dev/null bs=128k count=Y
-> >
-> > The cause of this slowness is overhead to do with looking up extent_maps
-> > to enable readahead pre-caching on compressed extents
-> > (add_ra_bio_pages()), as well as some overhead in the generic VFS
-> > readahead code we hit more in the slow case. Notably, the main
-> > difference between the two read sizes is that in the large sized request
-> > case, we call btrfs_readahead() relatively rarely while in the smaller
-> > request we call it for every compressed extent. So the fast case stays
-> > in the btrfs readahead loop:
-> >
-> > while ((folio = readahead_folio(rac)) != NULL)
-> >         btrfs_do_readpage(folio, &em_cached, &bio_ctrl, &prev_em_start);
-> >
-> > where the slower one breaks out of that loop every time. This results in
-> > calling add_ra_bio_pages a lot, doing lots of extent_map lookups,
-> > extent_map locking, etc.
-> >
-> > This happens because although add_ra_bio_pages() does add the
-> > appropriate un-compressed file pages to the cache, it does not
-> > communicate back to the ractl in any way. To solve this, we should be
-> > using readahead_expand() to signal to readahead to expand the readahead
-> > window.
-> >
-> > This change passes the readahead_control into the btrfs_bio_ctrl and in
-> > the case of compressed reads sets the expansion to the size of the
-> > extent_map we already looked up anyway. It skips the subpage case as
-> > that one already doesn't do add_ra_bio_pages().
-> 
-> Maybe add a comment in the code about why the subpage case is skipped?
-> And can't this be done for non-compressed extents too, why do we have
-> to skip them?
-> 
-> 
+Hi,
 
-I spent some more time on a non-compressed variant which clamps the
-expansion from above to BTRFS_MAX_UNCOMPRESSED.
+> On Mon, Jun 30, 2025 at 06:21:30PM +0200, David Sterba wrote:
+> > On Mon, Jun 30, 2025 at 10:24:57AM +0800, Wang Yugui wrote:
+> > > Hi,
+> > > 
+> > > > The RCU protected string is only used for a device name, and RCU is used
+> > > > so we can print the name and eventually synchronize against the rare
+> > > > device rename in device_list_add().
+> > > > 
+> > > > We don't need the whole API just for that. Open code all the helpers and
+> > > > access to the string itself.
+> > > > 
+> > > > Notable change is in device_list_add() when the device name is changed,
+> > > > which is the only place that can actually happen at the same time as
+> > > > message prints using the device name under RCU read lock.
+> > > > 
+> > > > Previously there was kfree_rcu() which used the embedded rcu_head to
+> > > > delay freeing the object depending on the RCU mechanism. Now there's
+> > > > kfree_rcu_mightsleep() which does not need the rcu_head and waits for
+> > > > the grace period.
+> > > > 
+> > > > Sleeping is safe in this context and as this is a rare event it won't
+> > > > interfere with the rest as it's holding the device_list_mutex.
+> > > > 
+> > > > Straightforward changes:
+> > > > 
+> > > > - rcu_string_strdup -> kstrdup
+> > > > - rcu_str_deref -> rcu_dereference
+> > > > - drop ->str from safe contexts
+> > > > 
+> > > > Historical notes:
+> > > > 
+> > > > Introduced in 606686eeac45 ("Btrfs: use rcu to protect device->name")
+> > > > with a vague reference of the potential problem described in
+> > > > https://lore.kernel.org/all/20120531155304.GF11775@ZenIV.linux.org.uk/ .
+> > > > 
+> > > > The RCU protection looks like the easiest and most lightweight way of
+> > > > protecting the rare event of device rename racing device_list_add()
+> > > > with a random printk() that uses the device name.
+> > > > 
+> > > > Alternatives: a spin lock would require to protect the printk
+> > > > anyway, a fixed buffer for the name would be eventually wrong in case
+> > > > the new name is overwritten when being printed, an array switching
+> > > > pointers and cleaning them up eventually resembles RCU too much.
+> > > > 
+> > > > The cleanups up to this patch should hide special case of RCU to the
+> > > > minimum that only the name needs rcu_dereference(), which can be further
+> > > > cleaned up to use btrfs_dev_name().
+> > > > 
+> > > 
+> > > There is still rcu warning when 'make  W=1 C=1'
+> > > 
+> > > /usr/hpc-bio/linux-6.12.35/fs/btrfs/volumes.c:405:21: warning: incorrect type in argument 1 (different address spaces)
+> > > /usr/hpc-bio/linux-6.12.35/fs/btrfs/volumes.c:405:21:    expected void const *objp
+> > > /usr/hpc-bio/linux-6.12.35/fs/btrfs/volumes.c:405:21:    got char const [noderef] __rcu *name
+> > > 
+> > > static void btrfs_free_device(struct btrfs_device *device)
+> > > {
+> > >     WARN_ON(!list_empty(&device->post_commit_list));
+> > >     /* No need to call kfree_rcu(), nothing is reading the device name. */
+> > > L405:    kfree(device->name);
+> > > 
+> > > do we need rcu_dereference here?
+> > > --- a/fs/btrfs/volumes.c
+> > > +++ b/fs/btrfs/volumes.c
+> > > @@ -402,7 +402,7 @@ static void btrfs_free_device(struct btrfs_device *device)
+> > >  {
+> > >         WARN_ON(!list_empty(&device->post_commit_list));
+> > >         /* No need to call kfree_rcu(), nothing is reading the device name. */
+> > > -       kfree(device->name);
+> > > +       kfree(rcu_dereference(device->name));
+> > 
+> > I got notified by the build bots (not CCed to the mailinglis) about
+> > this. The dereference is not needed, the comment says why. The checkers
+> > do not distinguish the context, some of them are safe like when the
+> > device is being set up and not yet accessible by other processes, and at
+> > deletion time, like here.
+> > 
+> > As we want to keep the __rcu annotation the rcu dereference is the
+> > easiest workaround.
+> 
+> I can't seem to reproduce the warning with the command, I'm going to apply this
+> fixup:
 
-This "worked" in the sense that it still passes fstests, but it has less
-obvious performance implications. In the compressed case, we are already
-creating these pages and stuffing them into pagecache, so playing nice
-with readahead makes sense to me. On the other hand with non-compressed
-we are sort of circumventing the generic readahead algorithm. I see more
-mixed results in fsperf with this version, and more memory usage.
+steps to reproduce the warning:
+1) install https://kojipkgs.fedoraproject.org/packages/sparse/0.6.4/
+2) make btrfs module(kernel 6.16) with the commands
+#uname_r=$(uname -r)
+uname_r=$(ls /boot/vmlinuz-6.16.* 2>/dev/null)
+uname_r=${uname_r##/boot/vmlinuz-}
+pwd_dir=$(pwd)
+make -C /lib/modules/${uname_r}/build M=${pwd_dir} modules -j 20 W=1 C=1 CF="-Wnocontext"
 
-I also don't see any other non network or read only fs-es which
-implement this behavior in a generic way.
 
-Since compressed is the most "free" case, I would lean to starting
-there, then perhaps trying uncompressed down the line if it is a big
-win.
+Then we can see other 4 warnings.
 
-What do you think?
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index bb91a7b..5080ab2 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -699,7 +699,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+ 	if (!device->name)
+ 		return -EINVAL;
+ 
+-	ret = btrfs_get_bdev_and_sb(device->name, flags, holder, 1,
++	ret = btrfs_get_bdev_and_sb(rcu_dereference(device->name), flags, holder, 1,
+ 				    &bdev_file, &disk_super);
+ 	if (ret)
+ 		return ret;
+@@ -1061,7 +1061,7 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
+ 		 * uuid mutex so nothing we touch in here is going to disappear.
+ 		 */
+ 		if (orig_dev->name)
+-			dev_path = orig_dev->name;
++			dev_path = rcu_dereference(orig_dev->name);
+ 
+ 		device = btrfs_alloc_device(NULL, &orig_dev->devid,
+ 					    orig_dev->uuid, dev_path);
+@@ -1436,7 +1436,7 @@ static bool btrfs_skip_registration(struct btrfs_super_block *disk_super,
+ 
+ 		list_for_each_entry(device, &fs_devices->devices, dev_list) {
+ 			if (device->bdev && (device->bdev->bd_dev == devt) &&
+-			    strcmp(device->name, path) != 0) {
++			    strcmp(rcu_dereference(device->name), path) != 0) {
+ 				mutex_unlock(&fs_devices->device_list_mutex);
+ 
+ 				/* Do not skip registration. */
+@@ -2197,7 +2197,7 @@ void btrfs_scratch_superblocks(struct btrfs_fs_info *fs_info, struct btrfs_devic
+ 	btrfs_kobject_uevent(bdev, KOBJ_CHANGE);
+ 
+ 	/* Update ctime/mtime for device path for libblkid */
+-	update_dev_time(device->name);
++	update_dev_time(rcu_dereference(device->name));
+ }
+ 
+ int btrfs_rm_device(struct btrfs_fs_info *fs_info,
 
-Thanks,
-Boris
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2025/07/02
 
-> >
-> > With this change, whether we use bs=4k or bs=128k, the readahead window
-> > opens up to the the largest compressed extent we have seen so far
-> > (in the trivial example: 128k) and the call stacks of the two modes look
-> > identical. Notably, we barely call add_ra_bio_pages at all. And the
-> > performance becomes identical as well. So this change certainly "fixes"
-> > this performance problem.
-> >
-> > Of course, it does seem to beg a few questions:
-> > 1. Will this waste too much page cache with a too large ra window?
-> > 2. Will this somehow cause bugs prevented by the more thoughtful
-> >    checking in add_ra_bio_pages?
-> > 3. Why only compressed extents?
-> > 4. Should we delete add_ra_bio_pages?
-> >
-> > My tenative answers/follow-ups:
-> > 1. Hard to say. See attempts at generic performance testing below. Is
-> >    there a "readahead_shrink" we should be using? Should we expand more
-> >    slowly, by half the remaining em size each time?
-> > 2. I think not. Since the new behavior is essentially indistiguishable
-> >    from reading the file with a larger read size passed in, I don't see
-> >    why one would be safe but not the other.
-> > 3. They have a nice natural cap on how big the readahead window will
-> >    get. It would almost certainly be a bad idea to expand it to the max
-> >    uncompressed extent size. Room for improvement here, though,
-> >    probably.
-> > 4. Probably! I tested that and it was fine in fstests, and it seems like
-> >    the pages would get re-used just as well in the readahead case.
-> >    However, it is possible some reads that use page cache but not
-> >    btrfs_readahead() could suffer.
-> >
-> > I tested the performance implications of this change in 3 ways (using
-> > compress-force=zstd:3 for compression):
-> >
-> > Directly test the affected workload of small sequential reads on a
-> > compressed file (improved from ~300MB/s to ~1.3GB/s)
-> >
-> > Built the linux kernel from clean (no change)
-> >
-> > Ran fsperf. Mostly neutral results with some improvements and
-> > regressions here and there. Notably dbench looked a lot faster, but most
-> > of the fio jobs didn't show anything conclusive. Some read improvements
-> > on some of the fio tests, but also some regressions on commit latency
-> > that feel like noise, but hard to be sure. No horrendous, must fix
-> > regressions as far as I can see.
-> >
-> > FSPERF RESULTS (excluding irrelevant dio tests):
-> > bufferedrandwrite16g results
-> >       metric          baseline     current    stdev         diff
-> > ======================================================================
-> > avg_commit_ms           2594.25     2607.85       0     0.52%
-> > commits                     106         105       0    -0.94%
-> > dev_read_iops                67         174       0   159.70%
-> > dev_read_kbytes            1072        2784       0   159.70%
-> > dev_write_iops          6182312     6172004       0    -0.17%
-> > dev_write_kbytes       50582368    50393220       0    -0.37%
-> > elapsed                     720         712       0    -1.11%
-> > end_state_mount_ns     42581144    44832716       0     5.29%
-> > end_state_umount_ns    7.83e+09    8.06e+09       0     2.96%
-> > max_commit_ms              4909        5009       0     2.04%
-> > sys_cpu                   16.54       16.58       0     0.25%
-> > write_bw_bytes         23906517    24164054       0     1.08%
-> > write_clat_ns_mean    170247.65   168027.72       0    -1.30%
-> > write_clat_ns_p50         24192       23680       0    -2.12%
-> > write_clat_ns_p99         77312       76288       0    -1.32%
-> > write_io_kbytes        16777216    16777216       0     0.00%
-> > write_iops              5836.55     5899.43       0     1.08%
-> > write_lat_ns_max       4.60e+09    4.71e+09       0     2.39%
-> > write_lat_ns_mean     170307.56   168084.36       0    -1.31%
-> > write_lat_ns_min          17290       16620       0    -3.88%
-> >
-> > dbench60 results
-> >       metric          baseline   current    stdev         diff
-> > ====================================================================
-> > avg_commit_ms            90.21      89.08       0    -1.25%
-> > close                     3.84       3.74       0    -2.66%
-> > commits                     24         24       0     0.00%
-> > deltree                 397.45     266.30       0   -33.00%
-> > dev_write_iops         1387847    1381466       0    -0.46%
-> > dev_write_kbytes      12669712   12355392       0    -2.48%
-> > end_state_mount_ns    21310089   17077137       0   -19.86%
-> > end_state_umount_ns   1.62e+09   1.64e+09       0     1.48%
-> > flush                   119.80     125.96       0     5.14%
-> > lockx                     0.83       0.36       0   -57.06%
-> > max_commit_ms              110        115       0     4.55%
-> > mkdir                     0.12       0.03       0   -72.36%
-> > ntcreatex                40.36      33.87       0   -16.08%
-> > readx                     3.82       3.80       0    -0.65%
-> > rename                   43.98      36.07       0   -17.98%
-> > throughput              480.34     493.91       0     2.82%
-> > unlink                   55.02      39.77       0   -27.73%
-> > unlockx                   0.59       0.90       0    50.59%
-> > writex                   52.24      42.94       0   -17.79%
-> >
-> > randwrite2xram results
-> >       metric          baseline     current    stdev         diff
-> > ======================================================================
-> > avg_commit_ms           1727.90     1691.89       0    -2.08%
-> > commits                      31          27       0   -12.90%
-> > dev_read_iops                 1           1       0     0.00%
-> > dev_read_kbytes              16          16       0     0.00%
-> > dev_write_iops          2773322     2723559       0    -1.79%
-> > dev_write_kbytes       15972064    15112412       0    -5.38%
-> > elapsed                     312         313       0     0.32%
-> > end_state_mount_ns     37474061    37768468       0     0.79%
-> > end_state_umount_ns    1.35e+10    1.12e+10       0   -17.02%
-> > max_commit_ms              3580        3508       0    -2.01%
-> > sys_cpu                    5.17        4.94       0    -4.47%
-> > write_bw_bytes         31705620    31497234       0    -0.66%
-> > write_clat_ns_mean    516037.52   519262.94       0     0.63%
-> > write_clat_ns_p50         22400       21888       0    -2.29%
-> > write_clat_ns_p99        127488      104960       0   -17.67%
-> > write_io_kbytes         9339256     9285840       0    -0.57%
-> > write_iops              7740.63     7689.75       0    -0.66%
-> > write_lat_ns_max       3.90e+09    3.81e+09       0    -2.34%
-> > write_lat_ns_mean     516098.08   519332.21       0     0.63%
-> > write_lat_ns_min           9151        9400       0     2.72%
-> >
-> > smallfiles100k results
-> >       metric          baseline     current    stdev         diff
-> > ======================================================================
-> > avg_commit_ms            664.53      680.53       0     2.41%
-> > commits                      15          15       0     0.00%
-> > dev_read_iops                77          85       0    10.39%
-> > dev_read_kbytes            1232        1360       0    10.39%
-> > dev_write_iops          2261542     2251234       0    -0.46%
-> > dev_write_kbytes       22295236    22187780       0    -0.48%
-> > elapsed                     487         484       0    -0.62%
-> > end_state_mount_ns     43139533    42184833       0    -2.21%
-> > end_state_umount_ns    1.15e+10    1.15e+10       0     0.26%
-> > max_commit_ms               908         988       0     8.81%
-> > sys_cpu                   35.95       35.88       0    -0.20%
-> > write_bw_bytes         4.31e+08    4.34e+08       0     0.70%
-> > write_clat_ns_mean     29920.68    29556.47       0    -1.22%
-> > write_clat_ns_p50         11584       11456       0    -1.10%
-> > write_clat_ns_p99         27776       27776       0     0.00%
-> > write_io_kbytes        2.04e+08    2.04e+08       0     0.00%
-> > write_iops            105319.81   106058.66       0     0.70%
-> > write_lat_ns_max       43247837    38438628       0   -11.12%
-> > write_lat_ns_mean      29978.36    29611.45       0    -1.22%
-> > write_lat_ns_min           7100        6931       0    -2.38%
-> >
-> > untarfirefox results
-> >       metric           baseline     current      stdev            diff
-> > ============================================================================
-> > avg_commit_ms                2166       2209        26.87     1.99%
-> > commits                         1          1            0     0.00%
-> > dev_write_iops              81689      81990       298.40     0.37%
-> > dev_write_kbytes          1050690    1053004      2146.78     0.22%
-> > elapsed                     43.48      43.24         0.14    -0.54%
-> > end_state_mount_ns    25958221.50   18432393   9346169.03   -28.99%
-> > end_state_umount_ns      9.73e+09   9.81e+09     2.39e+08     0.83%
-> > max_commit_ms                2166       2209        26.87     1.99%
-> >
-> > bufferedreadwrite16g results
-> >       metric          baseline   current    stdev         diff
-> > ====================================================================
-> > avg_commit_ms           558.20     628.20       0    12.54%
-> > commits                      5          5       0     0.00%
-> > dev_read_iops             1078       1009       0    -6.40%
-> > dev_read_kbytes        5209120    5210432       0     0.03%
-> > dev_write_iops          103848     104906       0     1.02%
-> > dev_write_kbytes      19690880   19707780       0     0.09%
-> > elapsed                     44         43       0    -2.27%
-> > end_state_mount_ns    35691645   35922610       0     0.65%
-> > end_state_umount_ns   9.03e+09   8.13e+09       0    -9.87%
-> > max_commit_ms              657        787       0    19.79%
-> > read_bw_bytes         1.97e+08   2.03e+08       0     3.10%
-> > read_clat_ns_mean      1782.71    1654.28       0    -7.20%
-> > read_clat_ns_p50           612        588       0    -3.92%
-> > read_clat_ns_p99          1736       1528       0   -11.98%
-> > read_io_bytes         8.59e+09   8.59e+09       0     0.00%
-> > read_io_kbytes         8392180    8392180       0     0.00%
-> > read_iops             48125.82   49615.59       0     3.10%
-> > read_lat_ns_max       42629453   42295738       0    -0.78%
-> > read_lat_ns_mean       1822.29    1685.25       0    -7.52%
-> > read_lat_ns_min            380        380       0     0.00%
-> > sys_cpu                  86.79      87.80       0     1.16%
-> > write_bw_bytes        1.97e+08   2.03e+08       0     3.10%
-> > write_clat_ns_mean    17720.61   17282.46       0    -2.47%
-> > write_clat_ns_p50        15552      15808       0     1.65%
-> > write_clat_ns_p99        32640      30080       0    -7.84%
-> > write_io_kbytes        8385036    8385036       0     0.00%
-> > write_iops            48084.85   49573.36       0     3.10%
-> > write_lat_ns_max      23628727   22092538       0    -6.50%
-> > write_lat_ns_mean     17770.70   17328.15       0    -2.49%
-> > write_lat_ns_min         12580      12560       0    -0.16%
-> >
-> > bufferedrandrw16g results
-> >       metric          baseline     current    stdev         diff
-> > ======================================================================
-> > avg_commit_ms           2388.47     2090.56       0   -12.47%
-> > commits                      17          55       0   223.53%
-> > dev_read_iops           2098095     2098107       0     0.00%
-> > dev_read_kbytes         8392980     8393172       0     0.00%
-> > dev_write_iops          2436170     2982710       0    22.43%
-> > dev_write_kbytes       30531984    39376068       0    28.97%
-> > elapsed                     477         502       0     5.24%
-> > end_state_mount_ns     42563800    40885321       0    -3.94%
-> > end_state_umount_ns    1.10e+10    1.05e+10       0    -5.04%
-> > max_commit_ms              4637        3915       0   -15.57%
-> > read_bw_bytes          18040576    17148429       0    -4.95%
-> > read_clat_ns_mean     189961.32   189943.65       0    -0.01%
-> > read_clat_ns_p50         193536      193536       0     0.00%
-> > read_clat_ns_p99         313344      370688       0    18.30%
-> > read_io_bytes          8.59e+09    8.59e+09       0     0.00%
-> > read_io_kbytes          8392180     8392180       0     0.00%
-> > read_iops               4404.44     4186.63       0    -4.95%
-> > read_lat_ns_max        23827276    19711541       0   -17.27%
-> > read_lat_ns_mean      190032.26   190001.95       0    -0.02%
-> > read_lat_ns_min           75311       75882       0     0.76%
-> > sys_cpu                   34.51       30.85       0   -10.60%
-> > write_bw_bytes         18025218    17133831       0    -4.95%
-> > write_clat_ns_mean     30433.26    46309.80       0    52.17%
-> > write_clat_ns_p50         22912       22656       0    -1.12%
-> > write_clat_ns_p99         75264       73216       0    -2.72%
-> > write_io_kbytes         8385036     8385036       0     0.00%
-> > write_iops              4400.69     4183.06       0    -4.95%
-> > write_lat_ns_max       7.60e+08    2.29e+09       0   200.56%
-> > write_lat_ns_mean      30536.15    46410.87       0    51.99%
-> > write_lat_ns_min          13110       12901       0    -1.59%
-> >
-> > bufferedrandread16g results
-> >       metric          baseline     current    stdev        diff
-> > =====================================================================
-> > avg_commit_ms            460.33      713.67       0   55.03%
-> > commits                       3           3       0    0.00%
-> > dev_read_iops           4194350     4194353       0    0.00%
-> > dev_read_kbytes        16777952    16778000       0    0.00%
-> > dev_write_iops            36169       36277       0    0.30%
-> > dev_write_kbytes       16831512    16833240       0    0.01%
-> > elapsed                     655         608       0   -7.18%
-> > end_state_mount_ns     39907520    37797198       0   -5.29%
-> > end_state_umount_ns    9.73e+09    1.04e+10       0    6.37%
-> > max_commit_ms               630         798       0   26.67%
-> > read_bw_bytes          26258473    28291169       0    7.74%
-> > read_clat_ns_mean     155255.66   144060.78       0   -7.21%
-> > read_clat_ns_p50         171008      162816       0   -4.79%
-> > read_clat_ns_p99         288768      268288       0   -7.09%
-> > read_io_bytes          1.72e+10    1.72e+10       0    0.00%
-> > read_io_kbytes         16777216    16777216       0    0.00%
-> > read_iops               6410.76     6907.02       0    7.74%
-> > read_lat_ns_max        14450146    13306941       0   -7.91%
-> > read_lat_ns_mean      155319.15   144139.23       0   -7.20%
-> > read_lat_ns_min           74752       74511       0   -0.32%
-> > sys_cpu                   24.17       23.73       0   -1.81%
-> >
-> > bufferedread16g results
-> >       metric          baseline     current    stdev         diff
-> > ======================================================================
-> > avg_commit_ms               683         718       0     5.12%
-> > commits                       3           3       0     0.00%
-> > dev_read_iops              2462        2335       0    -5.16%
-> > dev_read_kbytes        16778192    16778080       0    -0.00%
-> > dev_write_iops            36317       36259       0    -0.16%
-> > dev_write_kbytes       16833880    16832952       0    -0.01%
-> > elapsed                      29          28       0    -3.45%
-> > end_state_mount_ns     39222067    38744238       0    -1.22%
-> > end_state_umount_ns    9.43e+09    9.19e+09       0    -2.59%
-> > max_commit_ms               725         808       0    11.45%
-> > read_bw_bytes          6.17e+08    6.21e+08       0     0.69%
-> > read_clat_ns_mean       6450.45     6404.71       0    -0.71%
-> > read_clat_ns_p50            532         532       0     0.00%
-> > read_clat_ns_p99           1208        1128       0    -6.62%
-> > read_io_bytes          1.72e+10    1.72e+10       0     0.00%
-> > read_io_kbytes         16777216    16777216       0     0.00%
-> > read_iops             150549.32   151588.56       0     0.69%
-> > read_lat_ns_max        32655542    29052552       0   -11.03%
-> > read_lat_ns_mean        6482.87     6437.16       0    -0.71%
-> > read_lat_ns_min             430         430       0     0.00%
-> > sys_cpu                   22.46       22.29       0    -0.76%
-> >
-> > Link: https://lore.kernel.org/linux-btrfs/34601559-6c16-6ccc-1793-20a97ca0dbba@gmx.net/
-> 
-> We normally put the Reported-by tag too, right above the Link tag.
-> 
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >  fs/btrfs/extent_io.c | 29 ++++++++++++++++++++++++++++-
-> >  1 file changed, 28 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > index e9ba80a56172..4982290384a1 100644
-> > --- a/fs/btrfs/extent_io.c
-> > +++ b/fs/btrfs/extent_io.c
-> > @@ -110,6 +110,7 @@ struct btrfs_bio_ctrl {
-> >          * This is to avoid touching ranges covered by compression/inline.
-> >          */
-> >         unsigned long submit_bitmap;
-> > +       struct readahead_control *ractl;
-> >  };
-> >
-> >  static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
-> > @@ -882,6 +883,20 @@ static struct extent_map *get_extent_map(struct btrfs_inode *inode,
-> >
-> >         return em;
-> >  }
-> > +
-> > +static void btrfs_readahead_expand(struct readahead_control *ractl, struct extent_map *em)
-> 
-> The extent map can be made const.
-> 
-> > +{
-> > +       ASSERT(ractl);
-> 
-> We normally place code after all variable declarations, and neither
-> before or in the middle.
-> Without the ASSERT the stack trace of a NULL pointer deref would still
-> be easy to identify.
-> The only caller for now, already checks it's not NULL.
-> 
-> > +       u64 ra_pos = readahead_pos(ractl);
-> > +       u64 ra_len = readahead_length(ractl);
-> > +       u64 ra_end = ra_pos + ra_len;
-> 
-> ra_len is only used once, so we can replace it with
-> readahead_length(ractl) and get rid of the ra_len variable.
-> 
-> > +       u64 em_end = em->start + em->ram_bytes;
-> 
-> All the variables can be made const too.
-> 
-> > +
-> > +       ASSERT(em_end >= ra_pos);
-> > +       if (em_end > ra_end)
-> > +               readahead_expand(ractl, ra_pos, em_end - ra_pos);
-> > +}
-> > +
-> >  /*
-> >   * basic readpage implementation.  Locked extent state structs are inserted
-> >   * into the tree that are removed when the IO is done (by the end_io
-> > @@ -939,12 +954,21 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
-> >                         end_folio_read(folio, false, cur, end + 1 - cur);
-> >                         return PTR_ERR(em);
-> >                 }
-> > +
-> 
-> Stray new line, accidental?
-> 
-> >                 extent_offset = cur - em->start;
-> >                 BUG_ON(btrfs_extent_map_end(em) <= cur);
-> >                 BUG_ON(end < cur);
-> >
-> >                 compress_type = btrfs_extent_map_compression(em);
-> >
-> > +               if (bio_ctrl->ractl) {
-> > +                       bool subpage = fs_info->sectorsize < PAGE_SIZE;
-> 
-> We have a helper for this, btrfs_is_subpage(), which we use in most places.
-> 
-> > +                       bool compressed = compress_type != BTRFS_COMPRESS_NONE;
-> 
-> This is only used once, so we can just use the comparison expression below.
-> It also makes it consistent with the rest of the code in this function
-> - it would be odd to have such a variable for this block while the
-> rest of the function does that comparison.
-> 
-> Thanks.
-> 
-> > +
-> > +                       if (!subpage && compressed)
-> > +                               btrfs_readahead_expand(bio_ctrl->ractl, em);
-> > +               }
-> > +
-> >                 if (compress_type != BTRFS_COMPRESS_NONE)
-> >                         disk_bytenr = em->disk_bytenr;
-> >                 else
-> > @@ -2541,7 +2565,10 @@ int btrfs_writepages(struct address_space *mapping, struct writeback_control *wb
-> >
-> >  void btrfs_readahead(struct readahead_control *rac)
-> >  {
-> > -       struct btrfs_bio_ctrl bio_ctrl = { .opf = REQ_OP_READ | REQ_RAHEAD };
-> > +       struct btrfs_bio_ctrl bio_ctrl = {
-> > +               .opf = REQ_OP_READ | REQ_RAHEAD,
-> > +               .ractl = rac
-> > +       };
-> >         struct folio *folio;
-> >         struct btrfs_inode *inode = BTRFS_I(rac->mapping->host);
-> >         const u64 start = readahead_pos(rac);
-> > --
-> > 2.49.0
-> >
-> >
+
 
