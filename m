@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-15174-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15175-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96DC8AF01AD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 19:24:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B88FFAF01B5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 19:26:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE2F7520295
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 17:24:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FB971883E72
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 17:24:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D91227F19B;
-	Tue,  1 Jul 2025 17:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6FE327F728;
+	Tue,  1 Jul 2025 17:24:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="g5Z56Htc";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="g5Z56Htc"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="P8kqPTiy";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="P8kqPTiy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66FC126D4E3
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Jul 2025 17:24:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4863522B585
+	for <linux-btrfs@vger.kernel.org>; Tue,  1 Jul 2025 17:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751390643; cv=none; b=b2Dv0Sf5ZMcqSqyzbSb1zHQKdGw9uwMTN++xEa4PD09YYhuhqxH8vegbwhupiuQkATpy4sAtPLO5xElI5eL055v427AIcvc+vIX87+CHa63Hh5LDIKB9zZ7y+VdGVHipKNEh22ZjPQPMAbR94GIB1rB/ftL7BkLleuuWRVu67PU=
+	t=1751390648; cv=none; b=EqNhRj4tULRZJ9d28ddRq3bQB2ZaljzFWtCOeQXhoEaFj8sCIB/IHwdrmyjUZs43djTLFoDFl/DgE1eqN6fDyMAc/a+t6HqDx5J6N271sy45wue5LCY4KE4+dX/ruNuy4fKr8lR258mnC2gv1YWvs83huLJ3ggcrvwWZ2CiwTng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751390643; c=relaxed/simple;
-	bh=jS5tUzxG3DabkjCkntpHguHv6lx1v9FbLabf7avQ1J0=;
+	s=arc-20240116; t=1751390648; c=relaxed/simple;
+	bh=xu9QsvtwZWRemxzWGYs7XNkHen/x0yRyB3O3NKJETNI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nUJX78vFr+2w6cdK/cv3lZDQ76QarfGZsuo+eTl1sl9yRPLIXuPdTr0vTDDt+b/JcNq0Bo7wiyPzkBqeiAgtnEz0neg4K8RLpssmrokkAeW2Np0Z+GN7L92CGurqSs1yuVqOwNERMVG3OhjD0lWR1cQmnHiuzRwmQnpXv7riw34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=g5Z56Htc; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=g5Z56Htc; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=QhSZQ6ZZGv4wumv7IrxqO4alCsZQVdHEuZQDoqgOEAPoM8tcAKKuiK9ATy43YVk4NkgIOva3JKSA7I8ZtMbWIbJPXqw0dqqE5mP3Vb9X/7rOoWPB4oTuZhsN5ZhoROqif2zzmquH61bPzw3O8nnNm2wp/DMC1j3aSAh2WayeHNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=P8kqPTiy; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=P8kqPTiy; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 89B2F1F453;
-	Tue,  1 Jul 2025 17:23:59 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B13BF21188;
+	Tue,  1 Jul 2025 17:24:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1751390639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1751390641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+8QFhc8TOUdMfC6rqSgfYY0o8iNchioN9hWSYW7OtMI=;
-	b=g5Z56Htc/I3MpO6BnSXgL4hIrvfQdgtUrujNEW7gCa5wG3wSyB/9JSx85F49PySJtmWzj+
-	Jr8GnNLXOqdOIqoAxHaIexZImy5UGgqtythft5crX6bRdF8af2sI/BAPqSfQrFYVOUVPDb
-	2zSd0ToewNmgLQvt8vFO963QbNN6dzw=
-Authentication-Results: smtp-out2.suse.de;
+	bh=NEWYEu8Q+iHioN3mx0Vce6w6XXn1g0hhmc/dJ9ZVRfI=;
+	b=P8kqPTiyWeo0XKOSKEloq7CgKnTuk9tAyoMMZDElRtkUPIPPonNwlFD1rfd9oQEmkLy8MT
+	rC//XdAfbCFF39PiMSscPrBHo7R2vtyHTeo5zm67KoI8HdO8cRzZbCCnxyDZ7J6ZfN489A
+	V/+Bi48U4l76cloR7ZdqFzVrTaCo/NU=
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1751390639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1751390641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+8QFhc8TOUdMfC6rqSgfYY0o8iNchioN9hWSYW7OtMI=;
-	b=g5Z56Htc/I3MpO6BnSXgL4hIrvfQdgtUrujNEW7gCa5wG3wSyB/9JSx85F49PySJtmWzj+
-	Jr8GnNLXOqdOIqoAxHaIexZImy5UGgqtythft5crX6bRdF8af2sI/BAPqSfQrFYVOUVPDb
-	2zSd0ToewNmgLQvt8vFO963QbNN6dzw=
+	bh=NEWYEu8Q+iHioN3mx0Vce6w6XXn1g0hhmc/dJ9ZVRfI=;
+	b=P8kqPTiyWeo0XKOSKEloq7CgKnTuk9tAyoMMZDElRtkUPIPPonNwlFD1rfd9oQEmkLy8MT
+	rC//XdAfbCFF39PiMSscPrBHo7R2vtyHTeo5zm67KoI8HdO8cRzZbCCnxyDZ7J6ZfN489A
+	V/+Bi48U4l76cloR7ZdqFzVrTaCo/NU=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7844013890;
-	Tue,  1 Jul 2025 17:23:59 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AAAEB13890;
+	Tue,  1 Jul 2025 17:24:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tCFaHa8ZZGgzRgAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Tue, 01 Jul 2025 17:23:59 +0000
+	id XyOoKbEZZGg2RgAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Tue, 01 Jul 2025 17:24:01 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 1/7] btrfs: accessors: simplify folio bounds checks
-Date: Tue,  1 Jul 2025 19:23:48 +0200
-Message-ID: <bda0f63b597bd0c29e643caa73a725a02e65da68.1751390044.git.dsterba@suse.com>
+Subject: [PATCH 2/7] btrfs: accessors: use type sizeof constants directly
+Date: Tue,  1 Jul 2025 19:23:49 +0200
+Message-ID: <eedbe03f6ee33939841d4bf895519304dfa1c59f.1751390044.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1751390044.git.dsterba@suse.com>
 References: <cover.1751390044.git.dsterba@suse.com>
@@ -87,7 +87,7 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Flag: NO
 X-Spam-Score: -2.80
 X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
@@ -108,66 +108,73 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	RCVD_TLS_ALL(0.00)[]
 X-Spam-Level: 
 
-As we can have non-contiguous range in the eb->folios, any item can be
-straddling two folios and we need to check if it can be read in one go
-or in two parts. For that there's a check which is not implemented in
-the simplest way:
+Now unit_size is used only once, so use it directly in 'part'
+calculation. Don't cache sizeof(type) in a variable. While this is a
+compile-time constant, forcing the type 'int' generates worse code as it
+leads to additional conversion from 32 to 64 bit type on x86_64.
 
-  offset in folio + size <= folio size
-
-With a simple expression transformation:
-
-  oil + size <= unit_size
-        size <= unit_size - oil
-    sizeof() <= part
-
-this can be simplified and reusing existing run-time or compile-time
-constants.
-
-Add likely() annotation for this expression as this is the fast path and
-compiler sometimes reorders that after the followup block with the
-memcpy (observed in practice with other simplifications).
-
-Overall effect on stack consumption:
-
-  btrfs_get_8                                        -8 (80 -> 72)
-  btrfs_set_8                                        -8 (88 -> 80)
-
-And .ko size (due to optimizations making use of the direct constants):
-
-     text    data     bss     dec     hex filename
-  1456601  115665   16088 1588354  183c82 pre/btrfs.ko
-  1456093  115665   16088 1587846  183a86 post/btrfs.ko
-
-  DELTA: -508
+The sizeof() is used only a few times and it does not make the code that
+harder to read, so use it directly and let the compiler utilize the
+immediate constants in the context it needs. The .ko code size slightly
+increases (+50) but further patches will reduce that again.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/accessors.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/accessors.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
 diff --git a/fs/btrfs/accessors.c b/fs/btrfs/accessors.c
-index 5cfb0801700e6c..b54c8abe467a06 100644
+index b54c8abe467a06..2e90b9b14e73f4 100644
 --- a/fs/btrfs/accessors.c
 +++ b/fs/btrfs/accessors.c
-@@ -59,7 +59,7 @@ u##bits btrfs_get_##bits(const struct extent_buffer *eb,		\
+@@ -52,19 +52,17 @@ u##bits btrfs_get_##bits(const struct extent_buffer *eb,		\
+ 	const unsigned long idx = get_eb_folio_index(eb, member_offset);\
+ 	const unsigned long oil = get_eb_offset_in_folio(eb,		\
+ 							 member_offset);\
+-	const int unit_size = eb->folio_size;				\
+ 	char *kaddr = folio_address(eb->folios[idx]);			\
+-	const int size = sizeof(u##bits);				\
+-	const int part = unit_size - oil;				\
++	const int part = eb->folio_size - oil;				\
  	u8 lebytes[sizeof(u##bits)];					\
  									\
- 	ASSERT(check_setget_bounds(eb, ptr, off, size));		\
--	if (INLINE_EXTENT_BUFFER_PAGES == 1 || oil + size <= unit_size)	\
-+	if (INLINE_EXTENT_BUFFER_PAGES == 1 || likely(sizeof(u##bits) <= part))	\
+-	ASSERT(check_setget_bounds(eb, ptr, off, size));		\
++	ASSERT(check_setget_bounds(eb, ptr, off, sizeof(u##bits)));	\
+ 	if (INLINE_EXTENT_BUFFER_PAGES == 1 || likely(sizeof(u##bits) <= part))	\
  		return get_unaligned_le##bits(kaddr + oil);		\
  									\
  	memcpy(lebytes, kaddr + oil, part);				\
-@@ -82,7 +82,7 @@ void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,	\
+ 	kaddr = folio_address(eb->folios[idx + 1]);			\
+-	memcpy(lebytes + part, kaddr, size - part);			\
++	memcpy(lebytes + part, kaddr, sizeof(u##bits) - part);		\
+ 	return get_unaligned_le##bits(lebytes);				\
+ }									\
+ void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,	\
+@@ -74,13 +72,11 @@ void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,	\
+ 	const unsigned long idx = get_eb_folio_index(eb, member_offset);\
+ 	const unsigned long oil = get_eb_offset_in_folio(eb,		\
+ 							 member_offset);\
+-	const int unit_size = eb->folio_size;				\
+ 	char *kaddr = folio_address(eb->folios[idx]);			\
+-	const int size = sizeof(u##bits);				\
+-	const int part = unit_size - oil;				\
++	const int part = eb->folio_size - oil;				\
+ 	u8 lebytes[sizeof(u##bits)];					\
  									\
- 	ASSERT(check_setget_bounds(eb, ptr, off, size));		\
+-	ASSERT(check_setget_bounds(eb, ptr, off, size));		\
++	ASSERT(check_setget_bounds(eb, ptr, off, sizeof(u##bits)));	\
  	if (INLINE_EXTENT_BUFFER_PAGES == 1 ||				\
--	    oil + size <= unit_size) {					\
-+	    likely(sizeof(u##bits) <= part)) {				\
+ 	    likely(sizeof(u##bits) <= part)) {				\
  		put_unaligned_le##bits(val, kaddr + oil);		\
- 		return;							\
- 	}								\
+@@ -90,7 +86,7 @@ void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,	\
+ 	put_unaligned_le##bits(val, lebytes);				\
+ 	memcpy(kaddr + oil, lebytes, part);				\
+ 	kaddr = folio_address(eb->folios[idx + 1]);			\
+-	memcpy(kaddr, lebytes + part, size - part);			\
++	memcpy(kaddr, lebytes + part, sizeof(u##bits) - part);		\
+ }
+ 
+ DEFINE_BTRFS_SETGET_BITS(8)
 -- 
 2.49.0
 
