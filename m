@@ -1,53 +1,99 @@
-Return-Path: <linux-btrfs+bounces-15171-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15172-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E6A1AEFE91
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 17:42:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03D21AEFF89
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 18:21:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A30591736E2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 15:42:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0841344071F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 16:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B66627B4F7;
-	Tue,  1 Jul 2025 15:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC852797AA;
+	Tue,  1 Jul 2025 16:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DMXuASL/"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qWyFclSl";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gkvhwkag";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qWyFclSl";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gkvhwkag"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734FA27935C
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Jul 2025 15:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A695270EA4
+	for <linux-btrfs@vger.kernel.org>; Tue,  1 Jul 2025 16:20:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751384550; cv=none; b=XNc7DsPC9xdHzEspt35QlfV7u6ZuhmMwdwFYZ+sU5ACzengIAB3XD7IbxnYtCo1KX0wIXIiJb7ecjntgCC2395sG44gSwISU/HtwRzbHikzCRn0aW7047lrvH1h5m4ffr3uyEcFeJYFfAf6WZzp6+YQeqgtqfjTai0zq4tIfhiE=
+	t=1751386848; cv=none; b=ZtIfeSeU7cxsG8j7tBAuhfhyqvcoayjfja1tXciCMlMrfMZC/ARu4DLBdx82vlUaEdbCc0ARkOEnxqGgYAORhpEOGRDTf5ixEMJ+BI2HNk3z4Ammirw40QYXwDfd5dR/VbUdFrPYvHWvhQp9P8xB+GSLFbS+i+WGZ6rIrlo2HgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751384550; c=relaxed/simple;
-	bh=HT2RUBEBmON0PeW8K0u2p991r22+YdtDW4QCxgBY2ho=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M8QAIHtz1zSxyZK3aUKoIaSIG1aDWBR4gbw4/qkgWDVCZa1bAptFBSdCVEEGOkv0fEiBWlkmHCE9+n2eu/4GWZtHOLPNx3cI8b7XjcfneF8oOlZ+foE+wXCmOQhWtDm99NO6xoImNiebff8tFTIL+fbeexJ1HlHvd0Vg83K1eA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DMXuASL/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 668DBC4CEEF
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Jul 2025 15:42:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751384550;
-	bh=HT2RUBEBmON0PeW8K0u2p991r22+YdtDW4QCxgBY2ho=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=DMXuASL/A6wQhfSKZ49skh/8q4ukMdSqbRO6z1+Cbh6HERPwhqtaxt0keJqRPX4GG
-	 +xE5YXg7vAAkL25dCGsEFK/i89FESDdNKC/Z3vxpzGOlahsYmhB6/OocymFDwYCAIY
-	 6KBu923EMZx9CvEyk/x0oxUoQKFeg9YGyKTlPhNJZTYjDRomGcUZ1ZN6khdBIGZYPK
-	 xRbzdcX1qlhuIthHvfOjpBmf7Y3UbP8vkSKNGvMdUrQymKwdmYorJsBw9EsGyt9o68
-	 F/pgabpl+qEXP9MWn43VwOUh/kIA8pQueDEuoyarxy7bDCN0wLZHAQ4EMudXR3NnjV
-	 7q9Nlooh0IHQw==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: qgroup: use btrfs_qgroup_enabled() in ioctls
-Date: Tue,  1 Jul 2025 16:42:22 +0100
-Message-ID: <3fe4cd28b0cf16c62d2574868fd085086c9a7319.1751383079.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <cover.1751383079.git.fdmanana@suse.com>
+	s=arc-20240116; t=1751386848; c=relaxed/simple;
+	bh=uHYlpXF5PW6YqdcvGueXnmksphry+S9IGeCtf6V3oA8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X0U3jOPeU8SRVZBbibHOOAaEQ/QLD2uMkbjh5JQVbC/hh4NewkF2h4WOtG6zvEmLjHHhawYiBV4zxdCtx/rW7cUqcBQ7IihIn4AHE+4zG9bfr/IDyAz2QXyPvZv0vzBK5s4Q2UkBOvatpS/dW5Dp0VUgDwEhqmN6aD8iUleFyrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qWyFclSl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gkvhwkag; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qWyFclSl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gkvhwkag; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 51C2021181;
+	Tue,  1 Jul 2025 16:20:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751386845;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xqUoLYE/cliEFQlnUV8gcItWsOCAa0zsYfjcTsjI45w=;
+	b=qWyFclSljar/6tyIQ0dra5wuzFuAFSIQyPkZoeFzio/ziUSlsT1Jwla4YbbwqSmrAPLFnV
+	aK3M/NfhQANIJYHyEBUixfJdPyzY8H5NRjjKPsOJQLOR0AwentZeN7d9Dg24cDHG76HKnW
+	BNGsyQ/ePQI1Be4dbCo4HmGw46XMcS8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751386845;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xqUoLYE/cliEFQlnUV8gcItWsOCAa0zsYfjcTsjI45w=;
+	b=gkvhwkag9LM78FhN5dxZRbcwEv+GP5DmVqp1TfRMQgWQBa+noZ00gG/Rt+dHMS1uYr7NAd
+	w03ZMbPBObMi9XCA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=qWyFclSl;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=gkvhwkag
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751386845;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xqUoLYE/cliEFQlnUV8gcItWsOCAa0zsYfjcTsjI45w=;
+	b=qWyFclSljar/6tyIQ0dra5wuzFuAFSIQyPkZoeFzio/ziUSlsT1Jwla4YbbwqSmrAPLFnV
+	aK3M/NfhQANIJYHyEBUixfJdPyzY8H5NRjjKPsOJQLOR0AwentZeN7d9Dg24cDHG76HKnW
+	BNGsyQ/ePQI1Be4dbCo4HmGw46XMcS8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751386845;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xqUoLYE/cliEFQlnUV8gcItWsOCAa0zsYfjcTsjI45w=;
+	b=gkvhwkag9LM78FhN5dxZRbcwEv+GP5DmVqp1TfRMQgWQBa+noZ00gG/Rt+dHMS1uYr7NAd
+	w03ZMbPBObMi9XCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3E4C01364B;
+	Tue,  1 Jul 2025 16:20:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id oSuZDt0KZGgdNAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 01 Jul 2025 16:20:45 +0000
+Date: Tue, 1 Jul 2025 18:20:36 +0200
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/3] btrfs: qgroup fixes and a cleanup
+Message-ID: <20250701162036.GU31241@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
 References: <cover.1751383079.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -55,90 +101,54 @@ List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1751383079.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	TO_DN_NONE(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 51C2021181
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -4.21
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Jul 01, 2025 at 04:42:19PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> A couple fixes and a cleanup, details in the change logs.
+> 
+> Filipe Manana (3):
+>   btrfs: qgroup: set quota enabled bit if quota disable fails flushing reservations
+>   btrfs: qgroup: fix qgroup create ioctl returning success after quotas disabled
+>   btrfs: qgroup: use btrfs_qgroup_enabled() in ioctls
 
-We have a publicly exported btrfs_qgroup_enabled() and an ioctl.c private
-qgroup_enabled() helper. Both of these test if qgroups are enabled, the
-first check if the flag BTRFS_FS_QUOTA_ENABLED is set in fs_info->flags
-while the second checks if fs_info->quota_root is not NULL while holding
-the mutex fs_info->qgroup_ioctl_lock.
-
-We can get away with the private ioctl.c:qgroup_enabled(), as all entry
-points into the qgroup code check if fs_info->quota_root is NULL or not
-while holding the mutex fs_info->qgroup_ioctl_lock, and returning the
-error -ENOTCONN in case it's NULL.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ioctl.c | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 3621ed2eacd1..3c4619375bc9 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3714,22 +3714,6 @@ static long btrfs_ioctl_quota_ctl(struct file *file, void __user *arg)
- 	return ret;
- }
- 
--/*
-- * Quick check for ioctl handlers if quotas are enabled. Proper locking must be
-- * done before any operations.
-- */
--static bool qgroup_enabled(struct btrfs_fs_info *fs_info)
--{
--	bool ret = true;
--
--	mutex_lock(&fs_info->qgroup_ioctl_lock);
--	if (!fs_info->quota_root)
--		ret = false;
--	mutex_unlock(&fs_info->qgroup_ioctl_lock);
--
--	return ret;
--}
--
- static long btrfs_ioctl_qgroup_assign(struct file *file, void __user *arg)
- {
- 	struct inode *inode = file_inode(file);
-@@ -3744,7 +3728,7 @@ static long btrfs_ioctl_qgroup_assign(struct file *file, void __user *arg)
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 
--	if (!qgroup_enabled(root->fs_info))
-+	if (!btrfs_qgroup_enabled(fs_info))
- 		return -ENOTCONN;
- 
- 	ret = mnt_want_write_file(file);
-@@ -3814,7 +3798,7 @@ static long btrfs_ioctl_qgroup_create(struct file *file, void __user *arg)
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 
--	if (!qgroup_enabled(root->fs_info))
-+	if (!btrfs_qgroup_enabled(root->fs_info))
- 		return -ENOTCONN;
- 
- 	ret = mnt_want_write_file(file);
-@@ -3873,7 +3857,7 @@ static long btrfs_ioctl_qgroup_limit(struct file *file, void __user *arg)
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 
--	if (!qgroup_enabled(root->fs_info))
-+	if (!btrfs_qgroup_enabled(root->fs_info))
- 		return -ENOTCONN;
- 
- 	ret = mnt_want_write_file(file);
-@@ -3921,7 +3905,7 @@ static long btrfs_ioctl_quota_rescan(struct file *file, void __user *arg)
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 
--	if (!qgroup_enabled(fs_info))
-+	if (!btrfs_qgroup_enabled(fs_info))
- 		return -ENOTCONN;
- 
- 	ret = mnt_want_write_file(file);
--- 
-2.47.2
-
+Reviewed-by: David Sterba <dsterba@suse.com>
 
