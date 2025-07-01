@@ -1,253 +1,132 @@
-Return-Path: <linux-btrfs+bounces-15145-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15146-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 496A5AEEDA9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 07:34:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5ADBAEEDE4
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 07:41:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FAF6440544
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 05:33:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE44E7ACC33
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jul 2025 05:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F7323AB88;
-	Tue,  1 Jul 2025 05:33:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 733D5230D0A;
+	Tue,  1 Jul 2025 05:41:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UPu8vB0V";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UPu8vB0V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BGs+whJA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5A71F3FE2
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Jul 2025 05:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5572191493;
+	Tue,  1 Jul 2025 05:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751348018; cv=none; b=hC7uvt37gem0HDaIl+331YQg2aX4BpxJpFw7OPdiJJKKcS1t805ylAO/HCBG7Wu/Bq0RW4tjvyEXGfEQYiR4AYByDrqqcSyfjZDWVj0cazd9Yf59HA9MUl6EPYC8vEqQv71ajtzrzFNGEvMec6hy7CMqUHYl2oO9oAz+x0xs6gg=
+	t=1751348462; cv=none; b=taZwQwhY/B3BKjaFNTJKxn50cwygU/s9YUceiTY55P134AaHQ07AIWCYJ7zFCD4SlhBvFirTiyfsfTSSWcuNSshp4FyxPPDGZF3PWDzamIKAmJITL4s32thMdTbY7mOxgjaEuh8l+O1wPLwwVK7NT0GtDJ3z29kD1SpE/6cp0Xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751348018; c=relaxed/simple;
-	bh=4buNuFESZ8Ozqf0DY9GUoRZGQj/6p9qFNJIz71Tf/XQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eI0q418v4tem/HQfgqImALma7IVMqfUYP96pNoyM/ex4/DwipCOnqSuNDFyDmY8bUdVnMTIl7ldfwl9ZHq5CFm/tCN2T6Zmn3bHnBynE7cQzJ3pkK7eLwIVwhhBQ/rs5vf9MZer5l/wPufOnmgXMHfr+VjRmpKris3Z7e1sFUtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UPu8vB0V; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UPu8vB0V; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AF4351F44E;
-	Tue,  1 Jul 2025 05:33:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1751347992; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rr0lQapxNNx9X2jobuGOMZ3kOUeCnP1HJTkTSwGEx5Y=;
-	b=UPu8vB0VCTHTxrMnx7OHMcuEpQrM+1One+MPeTOymsUiRiIZTzBJveGmdsBiMHn2boho8x
-	m7K+GWMMa9GrSDsF6rAQCiSIVJ5AIKWJ3O5YHkWvwyVfWH+gwrp3ysAqJ31FioWSHJ/zkB
-	nU0fp/g86Igvo4UTmr9DcatP9D6dWEk=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1751347992; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rr0lQapxNNx9X2jobuGOMZ3kOUeCnP1HJTkTSwGEx5Y=;
-	b=UPu8vB0VCTHTxrMnx7OHMcuEpQrM+1One+MPeTOymsUiRiIZTzBJveGmdsBiMHn2boho8x
-	m7K+GWMMa9GrSDsF6rAQCiSIVJ5AIKWJ3O5YHkWvwyVfWH+gwrp3ysAqJ31FioWSHJ/zkB
-	nU0fp/g86Igvo4UTmr9DcatP9D6dWEk=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F28BF13890;
-	Tue,  1 Jul 2025 05:33:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id cJ2sLBZzY2hEYQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Tue, 01 Jul 2025 05:33:10 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Cc: viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz
-Subject: [PATCH v2 6/6] btrfs: implement remove_bdev super operation callback
-Date: Tue,  1 Jul 2025 15:02:39 +0930
-Message-ID: <5c1f7441e3e2985143eb42e980cdcf081fdef61e.1751347436.git.wqu@suse.com>
-X-Mailer: git-send-email 2.50.0
-In-Reply-To: <cover.1751347436.git.wqu@suse.com>
-References: <cover.1751347436.git.wqu@suse.com>
+	s=arc-20240116; t=1751348462; c=relaxed/simple;
+	bh=UDsiqeD9Rx7beaI8/Y2+5mhKK/YEz8suJYDVh5wpleg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pQjNuhZ5+/AtRvXp9uVoovunUhtU5evzqw3KqcPa+bpv7LWNwIRFp/I2ORq6WdKZl+TYEtc3BSFl56IW4Hnkll23H3qcwRTkdySFy4OOMBTxhVA2MM6zDbNsYEEVEjvk0kllwDK9hiAKnbfu+dzXpq0o0IgJRZBYtQXV6tLnkDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BGs+whJA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E2F0C4CEEB;
+	Tue,  1 Jul 2025 05:41:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751348462;
+	bh=UDsiqeD9Rx7beaI8/Y2+5mhKK/YEz8suJYDVh5wpleg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BGs+whJAJv9u3TGXfbF3ek+G4CspgAar85NzNF2hzg13LSB7qr7Sx1ZRyGI8Bd+bV
+	 KpYbTkVKW0RgugdZR7ALw7ATVVx2kgHv7uyWTbF1LzGkrBW2dyDkiq1qp9YkVO6In3
+	 9riQBRXi88FCK/DsBxzbBIBWPs7HqzYXT+MldcJvby7tnR7wM2yxqBwtQ/03bKNCxN
+	 TTcwx4YO9j1MG7PW16XM96od+XZ/jCwSbIgy0LgkvZGm7X7Bmt3LZSINsls5+VWoz5
+	 NQgLfd2rurC+Uk1letQK5rZP6CAhBaSbBV3mFHkE5pOdU3NBj2x+GNYXKl6DVa1ueF
+	 adjgbStbzlLGQ==
+Date: Mon, 30 Jun 2025 22:41:01 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Joanne Koong <joannelkoong@gmail.com>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Jeff Layton <jlayton@kernel.org>, miklos@szeredi.hu,
+	brauner@kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, bernd.schubert@fastmail.fm,
+	kernel-team@meta.com, linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v1 5/8] iomap: add iomap_writeback_dirty_folio()
+Message-ID: <20250701054101.GE10035@frogsfrogsfrogs>
+References: <20250606233803.1421259-6-joannelkoong@gmail.com>
+ <aEZoau3AuwoeqQgu@infradead.org>
+ <20250609171444.GL6156@frogsfrogsfrogs>
+ <aEetuahlyfHGTG7x@infradead.org>
+ <aEkHarE9_LlxFTAi@casper.infradead.org>
+ <ac1506958d4c260c8beb6b840809e1bc8167ba2a.camel@kernel.org>
+ <aFWlW6SUI6t-i0dN@casper.infradead.org>
+ <CAJnrk1b3HfGOAkxXrJuhm3sFfJDzzd=Z7vQbKk3HO_JkGAxVuQ@mail.gmail.com>
+ <aFuWhnjsKqo6ftit@infradead.org>
+ <CAJnrk1Zud2V5fn5SB6Wqbk8zyOFrD_wQp7B5jDBnUXiGyiJPvQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
+In-Reply-To: <CAJnrk1Zud2V5fn5SB6Wqbk8zyOFrD_wQp7B5jDBnUXiGyiJPvQ@mail.gmail.com>
 
-For this callback, btrfs will:
+On Wed, Jun 25, 2025 at 09:44:31AM -0700, Joanne Koong wrote:
+> On Tue, Jun 24, 2025 at 11:26 PM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > On Tue, Jun 24, 2025 at 10:26:01PM -0700, Joanne Koong wrote:
+> > > > The question is whether this is acceptable for all the filesystem
+> > > > which implement ->launder_folio today.  Because we could just move the
+> > > > folio_test_dirty() to after the folio_lock() and remove all the testing
+> > > > of folio dirtiness from individual filesystems.
+> > >
+> > > Or could the filesystems that implement ->launder_folio (from what I
+> > > see, there's only 4: fuse, nfs, btrfs, and orangefs) just move that
+> > > logic into their .release_folio implementation? I don't see why not.
+> > > In folio_unmap_invalidate(), we call:
+> >
+> > Without even looking into the details from the iomap POV that basically
+> > doesn't matter.  You'd still need the write back a single locked folio
+> > interface, which adds API surface, and because it only writes a single
+> > folio at a time is rather inefficient.  Not a deal breaker because
+> > the current version look ok, but it would still be preferable to not
+> > have an extra magic interface for it.
+> >
+> 
+> Yes but as I understand it, the focus right now is on getting rid of
+> ->launder_folio as an API. The iomap pov imo is a separate issue with
+> determining whether fuse in particular needs to write back the dirty
+> page before releasing or should just fail.
 
-- Go degraded if the fs can still maintain RW operations
-  And of course mark the target device as missing.
+This might not help for Joanne's case, but so far the lack of a
+launder_folio in my fuse+iomap prototype hasn't hindered it at all.
+From what I can tell it's ok to bounce EBUSY back to dio callers...
 
-- Shutdown if the fs can not maintain RW operations
+> btrfs uses ->launder_folio() to free some previously allocated
+> reservation (added in commit 872617a "btrfs: implement launder_folio
+> for clearing dirty page reserve") so at the very least, that logic
+> would need to be moved to .release_folio() (if that suffices? Adding
+> the btrfs group to cc). It's still vague to me whether
+> fuse/nfs/orangefs need to write back the dirty page, but it seems fine
 
-To support the lookup from bdev to a btrfs_device,
-btrfs_dev_lookup_args is enhanced to have a new @devt member.
-If set, we should be able to use that @devt member to uniquely locating a
-btrfs device.
+...but only because a retry will initiate another writeback so
+eventually we can make some forward progress.  But it helps a lot that
+fuse+iomap is handing the entire IO stack over to iomap.
 
-I know the shutdown can be a little overkilled, if one has a RAID1
-metadata and RAID0 data, in that case one can still read data with 50%
-chance to got some good data.
+> to me not to - as I understand it, the worst that can happen (and
+> please correct me if I'm wrong here, Matthew) from just failing it
+> with -EBUSY is that the folio lingers longer in the page cache until
+> it eventually gets written back and cleared out, and that only happens
+> if the file is mapped and written to in that window between
+> filemap_write_and_wait_range() and unmap_mapping_folio(). afaics, if
+> fuse/nfs/orangefs do need to write back the dirty folio instead of
+> failing w/ -EBUSY, they could just do that logic in .release_folio.
 
-But a filesystem returning -EIO for half of the time is not really
-considered usable.
-Further it can also be as bad as the only device went missing for a single
-device btrfs.
+What do you do in ->release_folio if writeback fails?  Redirty it and
+return false?
 
-So here we go safe other than sorry when handling missing device.
-
-And the remove_bdev callback will be hidden behind experimental features
-for now, the reasons are:
-
-- There are not enough btrfs specific bdev removal test cases
-  The existing test cases are all removing the only device, thus only
-  exercises the shutdown branch.
-
-- Not yet determined what's the expected behavior
-  Although the current auto-degrade behavior is no worse than the old
-  behavior, it may not always be what the end users want.
-
-  Before there is a concrete interface, better hide the new feature
-  from end users.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/super.c   | 45 +++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/volumes.c |  2 ++
- fs/btrfs/volumes.h |  5 +++++
- 3 files changed, 52 insertions(+)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 727d5c1d1bf1..d3ee4740fd22 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2421,6 +2421,48 @@ static long btrfs_free_cached_objects(struct super_block *sb, struct shrink_cont
- 	return 0;
- }
- 
-+#ifdef CONFIG_BTRFS_EXPERIMENTAL
-+static void btrfs_remove_bdev(struct super_block *sb, struct block_device *bdev)
-+{
-+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
-+	struct btrfs_device *device;
-+	struct btrfs_dev_lookup_args lookup_args = { .devt = bdev->bd_dev };
-+	bool can_rw;
-+
-+	mutex_lock(&fs_info->fs_devices->device_list_mutex);
-+	device = btrfs_find_device(fs_info->fs_devices, &lookup_args);
-+	if (!device) {
-+		btrfs_warn(fs_info, "unable to find btrfs device for block device '%pg'",
-+			   bdev);
-+		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
-+		return;
-+	}
-+	set_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
-+	device->fs_devices->missing_devices++;
-+	if (test_and_clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
-+		list_del_init(&device->dev_alloc_list);
-+		device->fs_devices->rw_devices--;
-+	}
-+	can_rw = btrfs_check_rw_degradable(fs_info, device);
-+	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
-+	/*
-+	 * Now device is considered missing, btrfs_device_name() won't give a
-+	 * meaningful result anymore, so only output the devid.
-+	 */
-+	if (!can_rw) {
-+		btrfs_crit(fs_info,
-+		"btrfs device id %llu has gone missing, can not maintain read-write",
-+			   device->devid);
-+		btrfs_force_shutdown(fs_info);
-+		return;
-+	}
-+	btrfs_warn(fs_info,
-+		   "btrfs device id %llu has gone missing, continue as degraded",
-+		   device->devid);
-+	btrfs_set_opt(fs_info->mount_opt, DEGRADED);
-+}
-+#endif
-+
- static const struct super_operations btrfs_super_ops = {
- 	.drop_inode	= btrfs_drop_inode,
- 	.evict_inode	= btrfs_evict_inode,
-@@ -2436,6 +2478,9 @@ static const struct super_operations btrfs_super_ops = {
- 	.unfreeze_fs	= btrfs_unfreeze,
- 	.nr_cached_objects = btrfs_nr_cached_objects,
- 	.free_cached_objects = btrfs_free_cached_objects,
-+#ifdef CONFIG_BTRFS_EXPERIMENTAL
-+	.remove_bdev	= btrfs_remove_bdev,
-+#endif
- };
- 
- static const struct file_operations btrfs_ctl_fops = {
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 8ea1a69808a3..8feac0129bdd 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6794,6 +6794,8 @@ static bool dev_args_match_fs_devices(const struct btrfs_dev_lookup_args *args,
- static bool dev_args_match_device(const struct btrfs_dev_lookup_args *args,
- 				  const struct btrfs_device *device)
- {
-+	if (args->devt)
-+		return device->devt == args->devt;
- 	if (args->missing) {
- 		if (test_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state) &&
- 		    !device->bdev)
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 6acb154ccf87..71e570f8337d 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -663,6 +663,11 @@ struct btrfs_dev_lookup_args {
- 	u64 devid;
- 	u8 *uuid;
- 	u8 *fsid;
-+	/*
-+	 * If devt is specified, all other members will be ignored as it is
-+	 * enough to uniquely locate a device.
-+	 */
-+	dev_t devt;
- 	bool missing;
- };
- 
--- 
-2.50.0
-
+--D
 
