@@ -1,127 +1,94 @@
-Return-Path: <linux-btrfs+bounces-15212-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15213-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0FF5AF62DB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 21:51:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65D3AAF6388
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 22:47:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2B9D521EE9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 19:51:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A28624E7BFE
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 20:47:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503922F5C43;
-	Wed,  2 Jul 2025 19:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C623C2D77E0;
+	Wed,  2 Jul 2025 20:47:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="QUHkN5Iy"
+	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="cbIOmuoW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291E02D46AE
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 19:51:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC3F52BE65F;
+	Wed,  2 Jul 2025 20:47:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751485903; cv=none; b=JSqDZipT1Ty3JFjY23CIlWg+gtZsNVeGdh3cuqYZjCOuz+jetUN8RdrDS1RhB5coy1Sqz2vqJjRoZ8NwwfGPZ6eA5ecJc7oaKFP3S7VuON9rOOZn9IoXC/OuEDHDZLysY0ahbFYv+ypu9BX7vIrVOGwYmC9P/KlGd1uYfVoYSkU=
+	t=1751489231; cv=none; b=mnnJW7oRV4VZ+OLVv5pWmzL14YHIMxagrr9WocplsxAKPVJNsfUGnMSJ/BPrtjlV5h5esX40lmS8yWJDTOoMqmYrk6wDj7vhXh/pHdBVfjm+Dy+w6FR50O9NEtxNO+4747yVKX0CHdEOcln6tCDS9oCNgTR7CXnvQHULLqPcDuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751485903; c=relaxed/simple;
-	bh=s084wtR88k+Zm0T48J86wDm0Hr7gnC1awK4eSCCArW4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UaG3KN4MvylhkEzlcRIel5V0TYwpxBA1Ppwen+TL/d0eiYs+LnDf6HNEUlncJLcUX9TItIVJ6ku9NmQ3lov/KsBQr/6rGxFE8uxA5xW2MNY7ZOB+yTcgF0SiA1xzFkJhJU78Nr2SKICCaNUrel9VXTQwM0WPCv+Zq9QxgF7sExc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=QUHkN5Iy; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2369da67bacso7509775ad.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Jul 2025 12:51:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1751485900; x=1752090700; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FztTel//e5oyaa7vSr+Ve5ZZ9B/kFDNC6EmcHFeFbgE=;
-        b=QUHkN5Iywct1or5wb2t3ssdRk8eTVsaWTmsS4Ap4npa7wXD47/p1UC8VpWb7s/t2pk
-         jWUU0xjgQdLmyVbtVcsOBKatgYYT6keeN8X8E0812GQ/wC+iWbxzPTzGwL6dIDL+NHrN
-         hzJO3Q7ibV0Hi0MrNNcHnrIwfWxT6gGKs/EvRVgSu/doAFCHmCsyQ6Il5307C4hu/JGu
-         leDzC1nNzwrSesoWI/JtgcfiDgUWCldox/r+vXzmS2EM0na8OB4SFSILY7Q4PAGVLis+
-         RnsMFvcp+rm4FhqTIe6bD+YAJuhyX9mRvt0Q15/Oxu+ocxqx68bd7dywHEaZp8RWp7g4
-         oVJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751485900; x=1752090700;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FztTel//e5oyaa7vSr+Ve5ZZ9B/kFDNC6EmcHFeFbgE=;
-        b=I7pSqz9tSjR2zgY+phOM/AuQlBQ3wxuZJtpX7G4Yky2OahMjR0k9heHGxQpA8X4G9W
-         WAl0Csukfk/1864hv86g7ZgTd6VjbqL89WJpwkmVHartZg/uEjupxzHY8HlSqxG+mPhk
-         JqOb3qiAa94MkAT5a99v4mVUsCpbS68HgAJjhYRPA9AoLtjHUsnal4aUno07j24tJfZ1
-         aTH21R0uMcZrxfjZNuoEtMW3aJJcUIBy9UCuOsMM99ljfH1n7Q80rx9SUx3+YegeUiIn
-         Df4lp7D2RORGqrwkEtyEP0YrlZcIq7WoFepY+YqAtvCeoARJLyEMexkE5ASssMwybLVh
-         UQsA==
-X-Forwarded-Encrypted: i=1; AJvYcCU6INp/r3X1Qc3HKX1wez4YhRBjczfqTmaOC/k0M7vVBOT0mNqgi8JndS3px5lf52d7dI0o8Rt8Fq8Cig==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzkqORf20q9OYuchecCmbeNh4FOu5lXrqvDboMCgazOLer9vJ0
-	m6iCZixMikO+KkgzHo3uvePbJ7KH1GzfQ9alC/sK0usie3H3c9syEb+dxNyPzJ67WmzHixgdTW+
-	a1dvy4aad8fZV9CHuccIMw4vSK1twvfxlqbrq57ppag==
-X-Gm-Gg: ASbGncvOI0Vs1W1Ot4rULRp+gR2f/88RsBpPMJgaTPl5P/Xv6atQQhn8KuMIas/wwKO
-	qxWaObmVTnvwho+jKCAvEMASPL5H982JGNr+VFlQzzjW2eSJqw9tInfZtY1G8a3c1+NsLwC8rkW
-	vK+lnGVxpHQPfr/63BYy5M7Eb3xIcaqVS8n32Bo3jsw9Q1tNQ3L125Vg==
-X-Google-Smtp-Source: AGHT+IHzKax4rWzgTagFExREvUdZKzP7gz6GIK5OKEX/A1gv3DbccqXrJXg9Q79q2ToGLz5xqYGJ7FpbAJTwCWI+3ts=
-X-Received: by 2002:a17:903:124d:b0:23c:5f36:46a6 with SMTP id
- d9443c01a7336-23c6fcea87bmr20535465ad.12.1751485900234; Wed, 02 Jul 2025
- 12:51:40 -0700 (PDT)
+	s=arc-20240116; t=1751489231; c=relaxed/simple;
+	bh=b7KpTvLGxlxB3a/FnKhICdjRjsnZi/EjjVjuL7ed9+8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CczavsrYvqFMpGkSa7pEYa+nWxbToQwVg2Dy32LjmCtKLSliLj5/KlC2nE4ncYWztRFDwjLn1B3OvA+g3cS/E/iGAWYnG32aB7eC2SRTH7G1BvzBdzfHbWvG/fytlGnIk/0JYqPxA4ga7/H4vXPpB+lhDOig8w9TQJAILsQMpqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=cbIOmuoW; arc=none smtp.client-ip=80.241.56.161
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4bXX4z2XGPz9t9v;
+	Wed,  2 Jul 2025 22:46:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
+	t=1751489219;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Cj9HS6v1hLzfdQ76bVuuUjdPTAKEhhmP3lT0F4JEgMs=;
+	b=cbIOmuoWsdnUS+VhCcJFdQKvp1C+3vx47T9m38YeVQekkwpWuPusmL3EbsDs/jVk0RMGeJ
+	zb8qJvAGsSfR1fGrlU6O7N8D3HzrJK5gWtkZseHygqRRy90cjJUCXgYPjQU5Qcj3VV4leU
+	iW/5NgQfZrgESGsWNQ8/+khwj6itDmmpETAOnLd/7Uh7cc/gt8OFDeIxFdZF4BykFkR6s2
+	m8pL1iPm53JWvHB10KZQC1FgclV4vvHMfPryKXRh2xTmnI7J4nX6nsWJ64yFShduVALgUg
+	SOATgFC7W5jG5J2oB1dpvLpDbvrp3aE3FGvq4bbaJU4vvwYBHSq/fnog83gx6Q==
+Date: Thu, 3 Jul 2025 02:16:48 +0530
+From: Brahmajit Das <listout@listout.xyz>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
+	kees@kernel.org, ailiop@suse.com, mark@harmstone.com, 
+	David Sterba <dsterba@suse.cz>, Brahmajit Das <bdas@suse.de>
+Subject: Re: [PATCH v4] btrfs: replace deprecated strcpy with strscpy
+Message-ID: <pef6rt4ggd2gizakr7kqr2p4yn5mh6rqlqojuwx3gaoiexycxi@bzgezdja3pst>
+References: <20250620164957.14922-1-listout@listout.xyz>
+ <20250702182712.GA3453770@ax162>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250619192748.3602122-1-csander@purestorage.com>
- <20250619192748.3602122-4-csander@purestorage.com> <c83a2cb6-3486-4977-9e1e-abda015a4dad@kernel.dk>
-In-Reply-To: <c83a2cb6-3486-4977-9e1e-abda015a4dad@kernel.dk>
-From: Caleb Sander Mateos <csander@purestorage.com>
-Date: Wed, 2 Jul 2025 15:51:28 -0400
-X-Gm-Features: Ac12FXzYvCEJprNA84OmEAiR_yc-BbACnKsWI1JFO0q24cJQIzcr5F8BHED8eZ4
-Message-ID: <CADUfDZr6A51QxVWw2hJF6_FZW7QYoUHwH-JtNEgmkAefMiUjqQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] btrfs/ioctl: store btrfs_uring_encoded_data in io_btrfs_cmd
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250702182712.GA3453770@ax162>
+X-Rspamd-Queue-Id: 4bXX4z2XGPz9t9v
 
-On Tue, Jul 1, 2025 at 3:06=E2=80=AFPM Jens Axboe <axboe@kernel.dk> wrote:
->
-> > @@ -4811,11 +4813,15 @@ static int btrfs_uring_encoded_read(struct io_u=
-ring_cmd *cmd, unsigned int issue
-> >       loff_t pos;
-> >       struct kiocb kiocb;
-> >       struct extent_state *cached_state =3D NULL;
-> >       u64 start, lockend;
-> >       void __user *sqe_addr;
-> > -     struct btrfs_uring_encoded_data *data =3D io_uring_cmd_get_async_=
-data(cmd)->op_data;
-> > +     struct io_btrfs_cmd *bc =3D io_uring_cmd_to_pdu(cmd, struct io_bt=
-rfs_cmd);
-> > +     struct btrfs_uring_encoded_data *data =3D NULL;
-> > +
-> > +     if (cmd->flags & IORING_URING_CMD_REISSUE)
-> > +             data =3D bc->data;
->
-> Can this be a btrfs io_btrfs_cmd specific flag? Doesn't seem like it
-> would need to be io_uring wide.
+On 02.07.2025 11:27, Nathan Chancellor wrote:
+> Hi Brahmajit,
+> 
+> On Fri, Jun 20, 2025 at 10:19:57PM +0530, Brahmajit Das wrote:
+... snip ...
+> 
+> It looks like the offset_in_page(buf) part of the WARN() in
+> sysfs_emit() gets triggered with this, presumably because kmalloc()
+> returns something that is not page aligned like sysfs_emit() requires?
+> 
+> Cheers,
+> Nathan
 
-Maybe. But where are you thinking it would be stored? I don't think
-io_uring_cmd's pdu field would work because it's not initialized
-before the first call to ->uring_cmd(). That's the whole reason I
-needed to add a flag to tell whether this was the first call to
-->uring_cmd() or a subsequent one.
-I also put the flag in the uring_cmd layer because that's where
-op_data was defined. Even though btrfs is the only current user of
-op_data, it seems like it was intended as a generic mechanism that
-other ->uring_cmd() implementations might want to use. It seems like
-the same argument would apply to this flag.
-Thoughts?
+Hey Nathan, thanks for reporting this. From the QEMU logs this looks
+like on ARM64. Unfortunately I didn't boot test on arm due to not having
+the hardware. I'll setup a qemu test env. for ARM and get back.
 
-Best,
-Caleb
+Sorry I'm new to kernel development.
+-- 
+Regards,
+listout
 
