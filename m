@@ -1,94 +1,171 @@
-Return-Path: <linux-btrfs+bounces-15213-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15215-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65D3AAF6388
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 22:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D61DAF641A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 23:37:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A28624E7BFE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 20:47:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EB1E4A85F2
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 21:37:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C623C2D77E0;
-	Wed,  2 Jul 2025 20:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E29F2D640B;
+	Wed,  2 Jul 2025 21:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="cbIOmuoW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IkVTD0eZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC3F52BE65F;
-	Wed,  2 Jul 2025 20:47:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2659F2BE630;
+	Wed,  2 Jul 2025 21:36:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751489231; cv=none; b=mnnJW7oRV4VZ+OLVv5pWmzL14YHIMxagrr9WocplsxAKPVJNsfUGnMSJ/BPrtjlV5h5esX40lmS8yWJDTOoMqmYrk6wDj7vhXh/pHdBVfjm+Dy+w6FR50O9NEtxNO+4747yVKX0CHdEOcln6tCDS9oCNgTR7CXnvQHULLqPcDuM=
+	t=1751492210; cv=none; b=KH5ZVWHAS6zGERHgFXDu5CE5664Cj/kzMv/PCtL6CpRJ+s88B4n2mx/7amA/WsoHvvqGi+rylQsOGw+4Uy7m/gc+FkNndCl9hAfubg4diEkONrbrLUfEPk8QKUNJmsAQ6fpuT6PMCWABWli0ioshghNDHfWIE+CHfmcsRdo6e1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751489231; c=relaxed/simple;
-	bh=b7KpTvLGxlxB3a/FnKhICdjRjsnZi/EjjVjuL7ed9+8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CczavsrYvqFMpGkSa7pEYa+nWxbToQwVg2Dy32LjmCtKLSliLj5/KlC2nE4ncYWztRFDwjLn1B3OvA+g3cS/E/iGAWYnG32aB7eC2SRTH7G1BvzBdzfHbWvG/fytlGnIk/0JYqPxA4ga7/H4vXPpB+lhDOig8w9TQJAILsQMpqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=cbIOmuoW; arc=none smtp.client-ip=80.241.56.161
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4bXX4z2XGPz9t9v;
-	Wed,  2 Jul 2025 22:46:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
-	t=1751489219;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Cj9HS6v1hLzfdQ76bVuuUjdPTAKEhhmP3lT0F4JEgMs=;
-	b=cbIOmuoWsdnUS+VhCcJFdQKvp1C+3vx47T9m38YeVQekkwpWuPusmL3EbsDs/jVk0RMGeJ
-	zb8qJvAGsSfR1fGrlU6O7N8D3HzrJK5gWtkZseHygqRRy90cjJUCXgYPjQU5Qcj3VV4leU
-	iW/5NgQfZrgESGsWNQ8/+khwj6itDmmpETAOnLd/7Uh7cc/gt8OFDeIxFdZF4BykFkR6s2
-	m8pL1iPm53JWvHB10KZQC1FgclV4vvHMfPryKXRh2xTmnI7J4nX6nsWJ64yFShduVALgUg
-	SOATgFC7W5jG5J2oB1dpvLpDbvrp3aE3FGvq4bbaJU4vvwYBHSq/fnog83gx6Q==
-Date: Thu, 3 Jul 2025 02:16:48 +0530
-From: Brahmajit Das <listout@listout.xyz>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
-	kees@kernel.org, ailiop@suse.com, mark@harmstone.com, 
-	David Sterba <dsterba@suse.cz>, Brahmajit Das <bdas@suse.de>
-Subject: Re: [PATCH v4] btrfs: replace deprecated strcpy with strscpy
-Message-ID: <pef6rt4ggd2gizakr7kqr2p4yn5mh6rqlqojuwx3gaoiexycxi@bzgezdja3pst>
-References: <20250620164957.14922-1-listout@listout.xyz>
- <20250702182712.GA3453770@ax162>
+	s=arc-20240116; t=1751492210; c=relaxed/simple;
+	bh=E4uzS6CMms6elvBobIW++yNP0Xp03xJB9bt4GThSsFA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=vAHCa8aak61oH3rcDncIieTgsu10HQ4pOnfPH6RMZaS/lX2qfkL5veR3wGJEg0/yA2ihodzx7N+4MPZGBcJaA8V3hCpQRRnLM3wagc+niNlp7xC7+QRrrWTtb5LZYpsvCM26GEUD3s5HrB/aGcSLpXxC0quQMWZ66uxLmTtufcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IkVTD0eZ; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4a5903bceffso101385371cf.3;
+        Wed, 02 Jul 2025 14:36:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751492208; x=1752097008; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Plb9BF29bvzrheIEVugeqNq8ipYFwItYmCmavrVWnAg=;
+        b=IkVTD0eZuZcDiQsVmHmSG4n7pmmRI2ti3LFCERnOaQC91akmdMGytwRHplpoAi9p7y
+         d5zdTbh3cxUgzB620fCVV9NUV9jT9+05GZv5FfPxfC0wACOJetLQe7KYsP2rW46OiDh3
+         +9M7pNvqji+77ZX9z1iOBKYrpvkAUiEqmAjvLn/ILAL9+R8fjPAzq3PU9JRtU+AZKg3V
+         Rb6Njw38eTkzAlU6abLcXX7Y2la6WZEFdK0cz02hjtUsNqZTkmINqcBmu8Xt4GVMX5HP
+         o56JTcUAaupjUrDui3Wo8YbM0K3X6piHbx4On62QUnY6Uy3Njone7t0q3DgKMSKccFCm
+         IKRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751492208; x=1752097008;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Plb9BF29bvzrheIEVugeqNq8ipYFwItYmCmavrVWnAg=;
+        b=UnZ1PFwijjZnvkBURqURD10zl9yogYTa9aaqvqNpKNBoeKXU7inkORYHGB7p8TxTRW
+         UpCa3A3EMbK40v7bLnj1Jhgav9VWYkRw/WuUdC5NrnA/sMAPssKzzywJUNFSEevrWWta
+         9czVzc5wHBUDETjj7wY6NAwCLcIgeO4Hexd8pDYVCFU2CrCNWFAdmdIMYBtZsRX3LaLJ
+         W0MjgkL7xJk+Ns0X2iRhKXMS1Mut7DNLj7uJztreQyWwlFcn24z45UuG/bPMyo9emnjz
+         xvUHQvrtW+X4UgY5uno5Mj7hKiWEnqMD2hsHg61xhfONrYKZ0EAIeng5dMWqUuai9TgH
+         mX0g==
+X-Forwarded-Encrypted: i=1; AJvYcCU5TlEv6dwxEBOzqHEHEAH99D0ggK0GB8sljrAyrSRyQhLRs8VfG+zwZN7mj0ls1R2QcUIVjdLX8F0nFv79DA==@vger.kernel.org, AJvYcCV9tjw/tAbLCjbXXxeLCxCx1Uzn0Z9Dtw/g7pgPkMKvR9htWxOnWO9E53YQdpjEmDFR0gDAdRBhkzQvGg==@vger.kernel.org, AJvYcCWrVehvHI2IyTGKON3ih2AB2YOh5GK2sngjcj69Rmd/oKY9mEOHpcW5T9rAlV/iFNsO0B6NUPQ8RSYl@vger.kernel.org, AJvYcCX3VOD3aSnf39+witNdj5R50pUtmkwL+iaXuWG0HMCS8Hpvgk0jt7pZpG+VY8WKdAqFhIDmu1Bf9Zuy@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw53Kks8iKz7KLvsxApHjffCVr6rtQ+bmWkjPMkZ+WvF1sdXDHn
+	2/t58OY4StQJFjHyR9Lba7lGqduvRH7pE/MbsZAA/ShScXSwp2J9A740tP//ENN9Nj0IQLXAVQL
+	b4JHfoPMptp0djpvTuI/VkzLCEL0hLAy4+FWG
+X-Gm-Gg: ASbGncuTyvjHpIR8zztsg7m0G8cbW/1M+814vLvr00U4DYHjIxdwI/QRqDuetw1xG9X
+	P1CWpsJhs4ol1vOgfi9/2Cpps6tLWFYkMQcYlooiiVv+G2k7YDA+1Qhgna747iagcI+4hWadYAr
+	n3dLwaSDuTXcxOCaomfQOV/CS+1+ql5XrFvLk7Ak7HbGWiM+qBXuK0YKgYYFz3hDAd/zo9wQ==
+X-Google-Smtp-Source: AGHT+IGoQva0z93Hsr6cBS/xQ/Id5Yqj3FdAJiwkeHWw3E4i6JnSDSeEzC3aoZIo+aKKEQD7P9uX+qd4H+iuIJAjkfw=
+X-Received: by 2002:ac8:5794:0:b0:4a6:b603:c37e with SMTP id
+ d75a77b69052e-4a987bd7e34mr16338791cf.2.1751492207835; Wed, 02 Jul 2025
+ 14:36:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250702182712.GA3453770@ax162>
-X-Rspamd-Queue-Id: 4bXX4z2XGPz9t9v
+References: <20250606233803.1421259-6-joannelkoong@gmail.com>
+ <aEZoau3AuwoeqQgu@infradead.org> <20250609171444.GL6156@frogsfrogsfrogs>
+ <aEetuahlyfHGTG7x@infradead.org> <aEkHarE9_LlxFTAi@casper.infradead.org>
+ <ac1506958d4c260c8beb6b840809e1bc8167ba2a.camel@kernel.org>
+ <aFWlW6SUI6t-i0dN@casper.infradead.org> <CAJnrk1b3HfGOAkxXrJuhm3sFfJDzzd=Z7vQbKk3HO_JkGAxVuQ@mail.gmail.com>
+ <aFuWhnjsKqo6ftit@infradead.org> <CAJnrk1Zud2V5fn5SB6Wqbk8zyOFrD_wQp7B5jDBnUXiGyiJPvQ@mail.gmail.com>
+ <20250701054101.GE10035@frogsfrogsfrogs>
+In-Reply-To: <20250701054101.GE10035@frogsfrogsfrogs>
+From: Joanne Koong <joannelkoong@gmail.com>
+Date: Wed, 2 Jul 2025 14:36:37 -0700
+X-Gm-Features: Ac12FXzkj0LAvJbdt1VVEKID79S4TlNmpTpl9CLd_GKa4oYm2ZgQZsYKKutZU60
+Message-ID: <CAJnrk1bRL47BawgTCjLdrsuK=hpd+zkRwA+ZgLDUN7GzzJzNxw@mail.gmail.com>
+Subject: Re: [PATCH v1 5/8] iomap: add iomap_writeback_dirty_folio()
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>, Matthew Wilcox <willy@infradead.org>, 
+	Jeff Layton <jlayton@kernel.org>, miklos@szeredi.hu, brauner@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	bernd.schubert@fastmail.fm, kernel-team@meta.com, linux-mm@kvack.org, 
+	linux-nfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 02.07.2025 11:27, Nathan Chancellor wrote:
-> Hi Brahmajit,
-> 
-> On Fri, Jun 20, 2025 at 10:19:57PM +0530, Brahmajit Das wrote:
-... snip ...
-> 
-> It looks like the offset_in_page(buf) part of the WARN() in
-> sysfs_emit() gets triggered with this, presumably because kmalloc()
-> returns something that is not page aligned like sysfs_emit() requires?
-> 
-> Cheers,
-> Nathan
+On Mon, Jun 30, 2025 at 10:41=E2=80=AFPM Darrick J. Wong <djwong@kernel.org=
+> wrote:
+>
+> On Wed, Jun 25, 2025 at 09:44:31AM -0700, Joanne Koong wrote:
+> > On Tue, Jun 24, 2025 at 11:26=E2=80=AFPM Christoph Hellwig <hch@infrade=
+ad.org> wrote:
+> > >
+> > > On Tue, Jun 24, 2025 at 10:26:01PM -0700, Joanne Koong wrote:
+> > > > > The question is whether this is acceptable for all the filesystem
+> > > > > which implement ->launder_folio today.  Because we could just mov=
+e the
+> > > > > folio_test_dirty() to after the folio_lock() and remove all the t=
+esting
+> > > > > of folio dirtiness from individual filesystems.
+> > > >
+> > > > Or could the filesystems that implement ->launder_folio (from what =
+I
+> > > > see, there's only 4: fuse, nfs, btrfs, and orangefs) just move that
+> > > > logic into their .release_folio implementation? I don't see why not=
+.
+> > > > In folio_unmap_invalidate(), we call:
+> > >
+> > > Without even looking into the details from the iomap POV that basical=
+ly
+> > > doesn't matter.  You'd still need the write back a single locked foli=
+o
+> > > interface, which adds API surface, and because it only writes a singl=
+e
+> > > folio at a time is rather inefficient.  Not a deal breaker because
+> > > the current version look ok, but it would still be preferable to not
+> > > have an extra magic interface for it.
+> > >
+> >
+> > Yes but as I understand it, the focus right now is on getting rid of
+> > ->launder_folio as an API. The iomap pov imo is a separate issue with
+> > determining whether fuse in particular needs to write back the dirty
+> > page before releasing or should just fail.
+>
+> This might not help for Joanne's case, but so far the lack of a
+> launder_folio in my fuse+iomap prototype hasn't hindered it at all.
+> From what I can tell it's ok to bounce EBUSY back to dio callers...
+>
+> > btrfs uses ->launder_folio() to free some previously allocated
+> > reservation (added in commit 872617a "btrfs: implement launder_folio
+> > for clearing dirty page reserve") so at the very least, that logic
+> > would need to be moved to .release_folio() (if that suffices? Adding
+> > the btrfs group to cc). It's still vague to me whether
+> > fuse/nfs/orangefs need to write back the dirty page, but it seems fine
+>
+> ...but only because a retry will initiate another writeback so
+> eventually we can make some forward progress.  But it helps a lot that
+> fuse+iomap is handing the entire IO stack over to iomap.
+>
+> > to me not to - as I understand it, the worst that can happen (and
+> > please correct me if I'm wrong here, Matthew) from just failing it
+> > with -EBUSY is that the folio lingers longer in the page cache until
+> > it eventually gets written back and cleared out, and that only happens
+> > if the file is mapped and written to in that window between
+> > filemap_write_and_wait_range() and unmap_mapping_folio(). afaics, if
+> > fuse/nfs/orangefs do need to write back the dirty folio instead of
+> > failing w/ -EBUSY, they could just do that logic in .release_folio.
+>
+> What do you do in ->release_folio if writeback fails?  Redirty it and
+> return false?
 
-Hey Nathan, thanks for reporting this. From the QEMU logs this looks
-like on ARM64. Unfortunately I didn't boot test on arm due to not having
-the hardware. I'll setup a qemu test env. for ARM and get back.
-
-Sorry I'm new to kernel development.
--- 
-Regards,
-listout
+Yeah, I was thinking we just redirty it and return false. I don't
+think that leads to any deviation from existing behavior (eg in
+folio_unmap_invalidate(), a failed writeback will return -EBUSY
+regardless of whether the writeback attempt happens from
+->launder_folio() or ->release_folio()).
+>
+> --D
 
