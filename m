@@ -1,199 +1,188 @@
-Return-Path: <linux-btrfs+bounces-15195-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15196-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E5E7AF1051
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 11:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66EAFAF12DF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 13:00:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDE535218B6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 09:43:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC3BB16CB33
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 10:59:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B53124C060;
-	Wed,  2 Jul 2025 09:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1AD240604;
+	Wed,  2 Jul 2025 10:59:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="G5fpQKbA"
+	dkim=pass (2048-bit key) header.d=heusel.eu header.i=christian@heusel.eu header.b="NrBYula1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from TYVP286CU001.outbound.protection.outlook.com (mail-japaneastazolkn19011039.outbound.protection.outlook.com [52.103.43.39])
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EA5248166
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 09:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.43.39
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751449241; cv=fail; b=XrjpC1Chl8FFJpLngcZ1Y8FDH2WFjsK//o4eb/ieIP+JJ6JS0wyYmzCB0NIBUEVqsR/tebrDUwzjMholTjYKDJXZdSbgytjfmXUtjoBbBUQkX0c6xGsXjrDTJG9qwi8uPWvedsXL9NoSpcSNvYMB/3pWpuPZFa8Y/PrBoNOuHME=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751449241; c=relaxed/simple;
-	bh=LtLVw8jU4ztIlFKazu7CXkvbV41vPKZIEbOf900UTEc=;
-	h=Message-ID:Date:To:From:Subject:Content-Type:MIME-Version; b=BNziRTiVI/5NoL6SjPCRiWzLyHMUlkT0Hfp2yYv5DKDe3ZHwMafdm5oTXmYQCqy9D2/5yfSTHFMeKnYVza/FPbUCNQsTXMT3OFde+590w5VFXe87ZZ/ZXPdsTw9QNxLavkYKaNt2Fq5OT1HhI0jYmmMq+KkYwfrLTO8O/f/SDgo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=G5fpQKbA; arc=fail smtp.client-ip=52.103.43.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=T7fKXDbjTgiYXrlzVsKazArtF1mVX7pnJkKyyklxzfvT+J8FWm5QSWxYpLMfvhLGNpZOVyI4CckblSF3lrkhRNxAnjUnmj4DE+0L5T0rhu+ujCC4uaQjmBoXTCs0zVyrehhsFVFuHzR+eAAEGjE9nyVmvPk14m+yVsRjmDSb7zU8Kgww0Nro861LFwMFKW54Ioo/HjQzISyqnNkdCg5TyUftw4j6yR/2GcooR33EzYuXbo1K1HTdKi73KlKzMJ1pow7rKgyPUFeeOzOtDL3IXY9RLp3S9wlenirvBBF6CDfBt2W4YsLQbC01xPNfaM3kgDsF8rk64MhhWIs6ny2A6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ChfXxSzii/MeAy3dpjv2AUDN//7Of4/YBO5h36E5uh8=;
- b=Km9qj/FHQs7/wVwEHnaiQu06DS8k3ODyZFywGmuTUEE7ttthDfnP2cidn+q1f7t6YCDxz8P+jnO0qroJFKis9byAugOypoE0b6rUL5nfhhCwwohkdW2GN4Paq9hjJ6SRIM8jxlhfD9DttYJj47cjwEtgHPN90NK1s5KDO8sbSbhoQSWQ2hOZ6exqUoC+5fO/LxCesZDVpnMhSRwiKaVLGM782yaH+SO/VhBYfrP3AHJi7mZ5GdyoHefmNWI/teCB2OKF16V9JhcafX0g3/cgn9d6eGut1jiI6KNgDPBAo24hkPyB5V3WMn131W0PgrCJfSMpYPUKT9KXwpj+Agbx2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ChfXxSzii/MeAy3dpjv2AUDN//7Of4/YBO5h36E5uh8=;
- b=G5fpQKbACbF1CtRsxdQqgRKjkfJqqQOR7FjM43ABlN8vMtMk7HNZfP3EXsVBtV84DZoeh9lAP1cqwokrZ/yqbvsOlMiWGD6tDYf6WSorgK2uASLCWf9BKvYBIoGhHPZWAOA943TYO709itNITbRIrwe3JuXFaKComSdAWP5v/UOlryJNhqCCFFZiJ18AeWtiXqfYZn02vZR6qeaZ7YQd3G9B4Z0lwaKMEKM64eF3tQVO17vG6Ul7i13rhKdCBGoFpvcQ7wUFpowa210O3AmHBKpOzA7VQeeE4ZUKxxVFYi6CFEkt9cESZ89vf4hzE8V+H/j9MPOjd1ybIcJVskaCNA==
-Received: from TY4PR01MB13853.jpnprd01.prod.outlook.com (2603:1096:405:1fc::7)
- by TYYPR01MB13984.jpnprd01.prod.outlook.com (2603:1096:405:213::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8880.31; Wed, 2 Jul
- 2025 09:40:37 +0000
-Received: from TY4PR01MB13853.jpnprd01.prod.outlook.com
- ([fe80::f159:9189:49ee:bc45]) by TY4PR01MB13853.jpnprd01.prod.outlook.com
- ([fe80::f159:9189:49ee:bc45%4]) with mapi id 15.20.8901.018; Wed, 2 Jul 2025
- 09:40:37 +0000
-Message-ID:
- <TY4PR01MB13853B64BF6DB7BEA98170AE99240A@TY4PR01MB13853.jpnprd01.prod.outlook.com>
-Date: Wed, 2 Jul 2025 21:40:32 +1200
-User-Agent: Betterbird (macOS/Silicon)
-To: linux-btrfs@vger.kernel.org
-Content-Language: en-US
-From: Mio <mio-19@outlook.com>
-Subject: multiple devices btrfs filesystem device detection on recent distro
- updates
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AK1P299CA0017.NZLP299.PROD.OUTLOOK.COM
- (2603:10c6:108:17::15) To TY4PR01MB13853.jpnprd01.prod.outlook.com
- (2603:1096:405:1fc::7)
-X-Microsoft-Original-Message-ID:
- <fe0de044-d0f0-4156-85fb-781026ec8a95@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C194F1DFE20
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 10:59:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.126.135
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1751453978; cv=none; b=NPm9apQnZCxZ4akb1JbCwwwZb6tsVOrz3077qMIiUNedusUVgaKHdbCgnr7yfoQYSFB/XsOuU/JkNFqwNKVKV42Wz40fMdqQ0I9ZK45bpZUDn1An5EU7CAl56hkA/0WUeQtzsDFJOvPHHqL8IE+dujeFcPWr3MEZIsaNXKJLZyU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1751453978; c=relaxed/simple;
+	bh=mWdPYGDB0ctwp5WjQEk5rvWjbKS+GE0AmuaIaFivaxo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZW0wYYWAi5KewaSAF9nxWRnbWVxR60qSNXNKu8gKJ9VUWuz3dsTMPNEWrN6ili7/TaHoqBHBwpp0DjFGa9rxCNfFqKJiyna1w8z23sP8FSkvweQ4WhZRBBKvSlVQq9R8/ArkXaZNtRXdOM/+1sctOXVzLp7vdxX99SM8BdTHwms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu; spf=pass smtp.mailfrom=heusel.eu; dkim=pass (2048-bit key) header.d=heusel.eu header.i=christian@heusel.eu header.b=NrBYula1; arc=none smtp.client-ip=212.227.126.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=heusel.eu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=heusel.eu;
+	s=s1-ionos; t=1751453966; x=1752058766; i=christian@heusel.eu;
+	bh=mWdPYGDB0ctwp5WjQEk5rvWjbKS+GE0AmuaIaFivaxo=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:In-Reply-To:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=NrBYula1e5pJ90pGvX6vdRmdvFSd++vrMm+I2YWtBRv4/E8PxBNzwhR6tnmF6T7E
+	 USOBU/xvfdG6kJMZkW317ZK/icVFMmmtO4T+JPefZVJRV3by23i++6tNpI385IXkL
+	 bU88FMzMvW2/OP96UfBakni1D0N9e3jm+MG3CLSO0lp35L2U3bgxdbVsYGYj5uLzQ
+	 6ThfSDyMtLtwg/9WcKq3SKmtmG1dRh+curolcXPwfa7ZMQbuYJgjMkXB7fNubcxkF
+	 KLN3vHP7VBM+Ww9sJeMcg9YitbMyiGcv6ClPNzyxlzhIIgFJbJRvL/xeeqt3uok5q
+	 ilp85+bFYiwKEdOqUg==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from localhost ([147.142.138.253]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1Mbiak-1v7tDY1qus-00kuMn; Wed, 02 Jul 2025 12:54:10 +0200
+Date: Wed, 2 Jul 2025 12:54:09 +0200
+From: Christian Heusel <christian@heusel.eu>
+To: Mio <mio-19@outlook.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: multiple devices btrfs filesystem device detection on recent
+ distro updates
+Message-ID: <7aa130d3-7772-47ba-97ea-9f5002c037d3@heusel.eu>
+References: <TY4PR01MB13853B64BF6DB7BEA98170AE99240A@TY4PR01MB13853.jpnprd01.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TY4PR01MB13853:EE_|TYYPR01MB13984:EE_
-X-MS-Office365-Filtering-Correlation-Id: 39847a92-3737-45fa-d510-08ddb94c7fe6
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|41001999006|7092599006|8060799009|15080799009|19110799006|6090799003|461199028|5072599009|1602099012|3412199025|40105399003|39105399003|51005399003|440099028|4302099013|10035399007|26104999006;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?WDBjTEVjYk02NzVmanVEaTlwc3ZySGw5b053RWdTd2pNMXIzMlVIcnV5Zlpv?=
- =?utf-8?B?K3d0ZWJVaFhWVFpoaGZ4U0NyWDlGb2hKdk1wVHEvdUMvWmIwaG5IZVhXa2w3?=
- =?utf-8?B?YXBUSUJPZ2lqZmFZaVoyWGhFR25pRHpyWENhTFgya29rUXY4Z3pxVC9OTDZ4?=
- =?utf-8?B?SGxETjJMOWF6SE82QlJQUVdIc3JIajNHb01JYWZhUVE5MytDaTZJb0VST0dH?=
- =?utf-8?B?ZXlZYktoK0ljekltV3ZiWTRsT2hiRTNYSHpSWHdJUGVRcituOExpcURUa1hY?=
- =?utf-8?B?REJwQnFIZ1NpM205YzZHdHl1dHAxZ2cvbG5LcnJ3cVpWblhBd0VWNWUxbk1o?=
- =?utf-8?B?UTJ2S2M2eUtqamdKSmE4UHVWQmhpQ3NWcmorKzBkWDZhSTRqN2oweXhlTmM5?=
- =?utf-8?B?ZGFtWVczdFRwaTA1Qk0vYndPMGNHUlg5bU1jcFc5eWRwcXRwYkRvdE5lKzVT?=
- =?utf-8?B?NUZUT2VzbWEwcFNQbUhLaVJweXZ6T0JMTXJSb1RqV3JyVjRaRlJvQjFaYTJn?=
- =?utf-8?B?K01DbTFTbkJhMkRITS9YL3N4TDdqaCthTEFyb3lUTEVtazFjUXJ6RGxEcTEr?=
- =?utf-8?B?OXo5TmF3VE5USXFsc2krblN2VEQ3VlovQlVCbFEyeEFiOUV6dm81QS80U1U3?=
- =?utf-8?B?VHY4UGFvZ0hQc0tiSDBTMnk4Q2N5UTB0cUxVUzJSeHc0c0xTUngremQvZ3FS?=
- =?utf-8?B?M1QzNExwdXNESGdhdmdjZVV0cWxQMElrVDZlS0VqV29pSU84L3VnZFZJYURw?=
- =?utf-8?B?VE5OTnMwT0lSSGNZYjgzYVJZK2Zick5icFFMRmxHYUFMRVpqVVJCUmZoTk1S?=
- =?utf-8?B?aUdiKy9WZmJubng5RzZ1Ujk4UmpkMVJURG1iVkFjM3hSTk1Uc2R3Ym8zWnZV?=
- =?utf-8?B?dFoxMzFJZWczR2ZwWDd0YWtYLzQ4YWtERnYyZnVMK1ZrTUcydFlpMzhMeWdE?=
- =?utf-8?B?ZSt3amRWWmtYSXdybEYxOXA0Zmt5c3JBSXdrK0toQVF0RnNmajdBRjYzdm4z?=
- =?utf-8?B?OVVocE5RNUVNNG9UbGZuejFaWmx4VWFHT3lTWUNWTldoUURHYXBIYlYyTFlH?=
- =?utf-8?B?dGtWT0V4amc3dEdyNCtSWkdQUjBZcmphTkxFUm1ENDhPUHB1cVZXSlZZWTVp?=
- =?utf-8?B?NE94eEVIdmVsdWxIbldYVkpsR0hIbUtpQVZaalE5Z2dBL1JPWGZQVHdOU2Fr?=
- =?utf-8?B?elQzM1VwVC9KdGdrdCtzTUtoQ3Avd3ZzeUsrMmNOc0V1SVJWVUxpV1R5L1Er?=
- =?utf-8?B?VFdtTFhPK0tDaEVZOXkrNnVEeTNJT3djVGt1cW9RcjFCZ2paMTh6aVN6V1hJ?=
- =?utf-8?B?ckZVWVlQaE11WDcrRGxUNHJzVUVXTjhFWkxQMzBCYjNWTlE3WjYrbzFHNUhP?=
- =?utf-8?B?blBhYUVBM1ZFbEVpTXAvZmNjV3I1SGI0UWVkc3AxUXNVZzUvKzNrWjNYUllJ?=
- =?utf-8?B?emllM2lUMzNxNXNvbTJibC9JcUEyRzdGUytNQ0ZwTFJKTFkvSWo4eGE4NjdG?=
- =?utf-8?B?NmVyUXZpeDZlWmlBRU1QQlB3NjhTdmhsTDBuVURqbUJPcGJqZjhRMFV4OVIy?=
- =?utf-8?B?SktZQzhOTXpkdjF3RkZqMWxnWXE5NXMyYkxQcms4cm9TVDI3ZTBnaHJGU3J2?=
- =?utf-8?B?WmhBV1hHY29BNmpmWlFqMGt1OUh5Y0ZIQ2JsclVNYldNOGNjeCtvSmltRGo4?=
- =?utf-8?B?TWcyK04zZHVmV2E0TTZ0L0NqR29USEI2V1Y1R0ZjYU5FaGh6RU5uWU9OVkt4?=
- =?utf-8?B?MXUyTXRLSzBOajlhNnNMM0Ewc0FJNTBISG16QzlVYnBNMDZVUUMzZG9RdTNm?=
- =?utf-8?B?WWQyYUUyY041Qm9memF4aFZiV0haMG9wUmE0Z0tpSDFwYllFei9Qd2lETVYx?=
- =?utf-8?Q?rX58FgELpGhAK?=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?RWFlcld1b1I0eEd5YzN6bWZOcFNiV2swanBMekhFVHZEODdnWU5ZQ2xCRTBl?=
- =?utf-8?B?OXYzWnp0RWFrdDlmTGpua0tJYndCb1MvQnM4SSs0dXh0dWRDVk1YSVE4Y2JW?=
- =?utf-8?B?dGxDR1B3QTR1SDNkUVY2elhMY01STkVSMDAyem5LYnZZRElDdkNyalZLeWJX?=
- =?utf-8?B?Q1FJVVlITHR0RVFHZWltVGt1RFV4YzNKSGg3bW14aURUL0k2N3pmUWdpaVBa?=
- =?utf-8?B?YnVFbm5uNU9KeEtZRXBNOUxFTmxMN0ljNFRpNC80UnoxVnhWVy9CTzhucTQz?=
- =?utf-8?B?dC9IOEI5TXVyK3JQRXdpeEJ0aG93bk1oalZha1VEVTZlQTJtbElDdVZQMTlk?=
- =?utf-8?B?Q2lpelhsalgrOTI1NVlKZ3J4dm9aK05CRXpJRDFzcFIyOHF4M3BJR3lvMDdD?=
- =?utf-8?B?MmJIUGQ4c3I2Y3UvVm02RGNwQzJpTnpBYzFtbHgvU1JWV1FubDdza1R4RkR6?=
- =?utf-8?B?b2k0V0Fsd3JjWURUVW9QMjNCaUtBYlZiRlNySWJ0NW1VVmpOSll2ZGh4Z1pz?=
- =?utf-8?B?MHMzYmtkT2t0bEh4UTlwazQ5aWRlakgwUkxPM3dKUWZhQjhuQk50UkxnUGFy?=
- =?utf-8?B?NnBXclF4b1ovVEFzUEZOTUZHNlZ1bGlBOGpQZ3FKNTVvSzhSOHJkcnB6V0Nw?=
- =?utf-8?B?ekJMSzRuQWRYS1kzb3ZpYW5NYUtGYzhHQzJ5bktiYk93Z2Flb3RjQ3IrTW4z?=
- =?utf-8?B?VEN3RWRkNWw2WHN0RmxBNGk3NThRU2pFUDRISlZLWnZ5TTJSZkszN09xN2NY?=
- =?utf-8?B?andUc0FVblRsLzZzcTV2RG5mTHFwL0FFNmo3K2Z5bDJaQXlhV0lMQnVIYWc4?=
- =?utf-8?B?MUFvajc5UFhEeEYvNW1MSlFOQXpjanhHazYwVGhxNU1jU3VMeGppd3czK2tM?=
- =?utf-8?B?V2VORWpmRDJVTTdOeVJwMHYxMkc4RUxXRDJBYkFFRG5JY2ZubElvZXZkSWd6?=
- =?utf-8?B?elJqOHF6WUpkMlpkb0p5V3NHcnVrdEpvalZyZ0FpbVlEalIyZ3ppT1hvZjBR?=
- =?utf-8?B?T0dLa2M2bEZZdG9KNEJDZUtRc2dGMXJkakdBM2prVlJNVkpUajQ2b2ZiL2dS?=
- =?utf-8?B?TnZ3VGIxT1R6eXUvUk5Vckk4blMwVjMwRTlSTkxYWmQxSU9iWTJuRW9PN2pM?=
- =?utf-8?B?OC9VQjFWd3d1aFM1UTBSRWtZeXFvMm1rMi9TOWpHeGhlbmJzSm92WDU1ZlQ4?=
- =?utf-8?B?bDJNaEM3cnVGZEN0K0lmTUhZb2RmQTVEdW9wVTZpYmN1UWdkMnM4K2t0eEcw?=
- =?utf-8?B?UC92Ui9KcVFCSk5DaHpQcnlrdnZWU0Z6ZTNYdSt3WTdEYU40MVZSaDVLeHJp?=
- =?utf-8?B?ZlhOcUZ4WitkWDZaZXc4aUJ1OG5YTGVRZ3Q2T01XUXJQNW95THp6Q0pTWlZS?=
- =?utf-8?B?WExjeWc1UnM1VFZ6bTJleGZTMklWbmtjbC9Pd0JuUm1mNE04SkdRWnhLaEp1?=
- =?utf-8?B?TVhCTSs5TDQwTFdyaWJwYmZRbHpXa0hUMFpoajYwSWRmUTFRbHFZUEVPTjVr?=
- =?utf-8?B?VVJ4emNJalg3RVRqZnNuRkNWRVpMZC9hQTZkRW5LS0ltSUlzOUJoYXBKWWhu?=
- =?utf-8?B?REJJVUtubGVsZHAxZ2pGVC9aTFlBSGgrWnFFNk9GTTRQNlNzLzBWWlgzeXVt?=
- =?utf-8?Q?3h/AbmpTMtWBGK0iVlFnDQdAKB667Lg0EnLErOHmOicU=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 39847a92-3737-45fa-d510-08ddb94c7fe6
-X-MS-Exchange-CrossTenant-AuthSource: TY4PR01MB13853.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2025 09:40:37.4300
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYPR01MB13984
-
-Hello btrfs mailing list
-
-I am facing a device detection bug on multiple recent distro releases 
-and rolling linux distro. It is a bug in userspace and not a bug in 
-linux kernel. I was able to test different linux kernel versions from 
-6.6 to 6.14 on some distros. The userspace with the problem shows errors 
-on all linux kernels and the userspace without the problem works fine 
-with any linux kernel.
-
-The problem is that lsblk -f command can only detect one device in my 
-btrfs filesystem. The filesystem has 3 devices. When I run the btrfs fi 
-show command, it shows a "Some devices missing" error message. However I 
-am able to mount it by using the device option and specifying all 3 
-devices manually. After that I can see my filesystem correctly displayed 
-in the output of btrfs fi show but lsblk -f still can detect one device.
-
-How could I inverstigate this issue further?
-
-I previously reported this problem on 
-https://bbs.archlinux.org/viewtopic.php?id=306625 and 
-https://github.com/NixOS/nixpkgs/issues/408631
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="c42n666wgeyzguk5"
+Content-Disposition: inline
+In-Reply-To: <TY4PR01MB13853B64BF6DB7BEA98170AE99240A@TY4PR01MB13853.jpnprd01.prod.outlook.com>
+X-Provags-ID: V03:K1:uJrCbVUWTvkmgc02fzH7c0LYstQF6s/9MqGfY677h+HX3Whk4Q8
+ xvckzQ8zp5ctwLVRNYzup2efr4KHkV92WQiPHn59VcKhIQMUPjSftfKhdfuwrHPK4OJc7Ie
+ TNnBAIfDE2lVHhqEs92CojbrQG9k0lQuhAYzRAa0o70vlBr3rMfSz6zCksG9BM4qObYOEOY
+ FxIM5pFZ1WkZMvzDU2fsQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:3jwRnsyWaoA=;WeEgNXq9D9l955zX17ogyespm8G
+ +unmg1uXC0bASBu6FukAn3NGccT7k8sY1eHa+XutPQCFXn5e7rBCflpA6ICmr4wz1xR1/A6lu
+ 1MvYi8EMTUji/Fh3kiJcM+gZuXJ2aCom23NOfu4YPpA/vVC5qbdwJRUOQNqvmk+gY2k1ndSmf
+ rxYefpBzdBM5KgAAnHR85K+U6B23y10OJFxYN3yQi9AKvOKbqOHoyfd9ql9bWnbGo1z8falaf
+ 5141Y+fZRaCyd01eXAjO6wFMLX2FuNTUM/MA9Rxmruwnqbv8C8TZO9OeMXUtxTSG6OAdv5lJx
+ Ie6j+7hDqyFpT1f4h4cO7jPRxQhLFjrO+y/HclBCxTJmBlzU0kBaIa9kqIYZsV/mGKW1eXklF
+ kimr+LDyg9BtSTwVYVMZs5LZehlOPi6RNDNrYzXnP21Uf36jEqwYnrHaK0M05JlA21Tqieapj
+ TxmKkMGfjCfCbuN08zJh2dhBPyuFuQsz4MbYqbMurnDgxDIXmYCrfDZTsmRGsrOOVa/PYxwvI
+ QLK9QRk5+tJikZbP5nq2rxBkCSQNXsYQxqkENPSRuVJEucnw7QKB7i44qP8RYa101BNUTX4tb
+ MyfEiJPah5dulLr6nDZpEhQQ+2x/gg7+hU9Z1ZReNtXhIdhHPH29wR7fP3ob3rOKVe7iQswGW
+ Bsf5lPEtgEJYiON4DHaInGI4VM2ArkX44q1MAlnSP221iBGRcJz7rKGE6UIW255nCe4/nAFro
+ 8qoTtEwr24Z8mHgt/V9nvj460zpbjQGwdK0pYnNQ1NQ5obOhhQCCdrtPw5uY8zRz4MaCieyEs
+ 7tJx3JN9ABCbvRSDIUURMyDTBKAz1uY6XnKFQF/b406qV8PUdCXNuggS/Or0vjfpHGXJDMpBg
+ e6jDx9eA1dGvG5jqVYX/uRWMmWF8OA6r2H7w31ONXeaCY8yvX1CCvn40qRyodw8GCWAimZm6I
+ 1+oM05o88dgauFpp5MQlBYpWJ7z8kQkoMc4j/IMPwAKl6eOjB84JwbfKZV+VejDEVB502Dn5G
+ kpsnNfyT1Qd+dj7O7NrQjyWHjFGpMkKSWPupxPoHdYgaV1AqV2eGpuokKgUjciGyc3SKk6i2n
+ 5C/USnfV+/xI8vSjX0aehbssbEhMrjfVQ0IrtYM5f/ngQ/nghnV3EVO6XA8wYK1HBkc0PTIHU
+ IScII4/Wpx//dFW6pcvtZahSvLzHsD10JrQ91cNLAiWQuPE8JpN6y8eteStS9jfOuH0cZgQNh
+ 55lyIxsX0UKEDHAsPfZhWnhXk4u6hhx5ybOWcMck10BvqpTuzbYAl/I8tbkXi/SewuN3KiYk3
+ YrwUDHepDI2EdtWSq2iA86vdwuwkReDgmu0vuYD/aUyfK0XjR6XuRU5FD4wlUOhjmtDotT40L
+ PSlFnZtVh0sH9AWB69Lcd6aW90sdMdeLrD3Ocgh8Wm7dBqr/DEdUQE8RwJIwW9jxvJHOrQBzQ
+ Iu8SQH1EBBT3xcNXG5C0yBy2fdaN2WhjLUByWhdcDAMp59qyzXCJ08vb6uLDAr+4cBAgAqxFF
+ CU14CEK8u1z26jcAKvo34BHfDvS0Yxu1Mk0lU8HRFqj3VxQ1h4skglOKs6VtOuo5AcOmZtkVL
+ ioRvE4Xf/yYTHtj8r7RGtN/GpzsdlI4
 
 
-I copied following output with OCR so the result might be slightly incorrect
+--c42n666wgeyzguk5
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: multiple devices btrfs filesystem device detection on recent
+ distro updates
+MIME-Version: 1.0
 
-btrfs fi show on archlinux 2025.06.01 livecd
+On 25/07/02 09:40PM, Mio wrote:
+> Hello btrfs mailing list
+>=20
+> I am facing a device detection bug on multiple recent distro releases and
+> rolling linux distro. It is a bug in userspace and not a bug in linux
+> kernel. I was able to test different linux kernel versions from 6.6 to 6.=
+14
+> on some distros. The userspace with the problem shows errors on all linux
+> kernels and the userspace without the problem works fine with any linux
+> kernel.
 
-Label: 'HDDPool-data' uuid: cae95f2?-f8c3-48c5-96d6-e263458efda2
-Total devices 3 FS bytes used 10.49TiB
-devid 3 size 9.00TiB used 6.96TiB path /dev/sdb
-*** Some devices missing
+Could you re-test with the 6.15 kernel (i.e. included in the archiso
+released on 2025-07-01) or even the latest mainline released candidate
+(which is 6.16-rc4 at the time)?
 
-btrfs fi show on archlinux 2025.01.01 livecd
+I have a prebuilt version of it ready here, but you'll need to find a
+way to run it on your system:
 
-Label: ' Rescue3' uuid: 623630d3-64d8-4917-ade8-412101d23b40
-Total devices 3 • FS bytes used 10.48TiB
-devid 1 size 10.91TiB used 10.48TiB path / dev/sde
-devid 2 size 14.55TiB used 10.50TiB path /dev/sdc
-devid 3 size 476.94GiB used 28.00GiB path /dev/sdd
+https://pkgbuild.com/~gromit/linux-bisection-kernels/linux-mainline-6.16rc4=
+-1-x86_64.pkg.tar.zst
 
+https://wiki.archlinux.org/title/Archiso#Kernel
+
+> The problem is that lsblk -f command can only detect one device in my btr=
+fs
+> filesystem. The filesystem has 3 devices. When I run the btrfs fi show
+> command, it shows a "Some devices missing" error message. However I am ab=
+le
+> to mount it by using the device option and specifying all 3 devices
+> manually. After that I can see my filesystem correctly displayed in the
+> output of btrfs fi show but lsblk -f still can detect one device.
+>=20
+> How could I inverstigate this issue further?
+>=20
+> I previously reported this problem on
+> https://bbs.archlinux.org/viewtopic.php?id=3D306625 and
+> https://github.com/NixOS/nixpkgs/issues/408631
+>=20
+>=20
+> I copied following output with OCR so the result might be slightly incorr=
+ect
+>=20
+> btrfs fi show on archlinux 2025.06.01 livecd
+>=20
+> Label: 'HDDPool-data' uuid: cae95f2?-f8c3-48c5-96d6-e263458efda2
+> Total devices 3 FS bytes used 10.49TiB
+> devid 3 size 9.00TiB used 6.96TiB path /dev/sdb
+> *** Some devices missing
+>=20
+> btrfs fi show on archlinux 2025.01.01 livecd
+>=20
+> Label: ' Rescue3' uuid: 623630d3-64d8-4917-ade8-412101d23b40
+> Total devices 3 =E2=80=A2 FS bytes used 10.48TiB
+> devid 1 size 10.91TiB used 10.48TiB path / dev/sde
+> devid 2 size 14.55TiB used 10.50TiB path /dev/sdc
+> devid 3 size 476.94GiB used 28.00GiB path /dev/sdd
+>=20
+>=20
+
+--c42n666wgeyzguk5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEb3ea3iR6a4oPcswTwEfU8yi1JYUFAmhlD9EACgkQwEfU8yi1
+JYWJAQ/6AyDhu+M9X4YFPsey+ZQe3ZT5wztpLcGynVbpfBPr44boQPVoYzeaeyxg
+R64MJXZdGq6SND6c70D+HGeWLHnACHRpyKIIJ52ifmzr2dtvhgM7hD0BwNWH/jG6
+K5+GYk34vPpLMCSMHHd3s35KvSzyvwU8ErdC+elkEcJQyJNZ4ous6CdrH1Rt/Ggg
+Vqs+252wCekJVuL6zbBxgfFj+GliZmR21rTYqJCXeicf2118NlWTE58XgIU/sk+l
+CsC9a6pnlFag6OJ6WKrrQGJiPCvUXlrWUehcJ5VxJ1E6qm3sT2/TRqXdup/GHzEK
+PpfWRFD1V9ffd+R5IbpNZ916fKK5urccoEFM09get+5fPcnjH63GCUhgNuLvpOr8
+U0CErnBZgz1Afobw4nsK+qkzzjIfhGah6/e1Tk1fHfrH0iouJr3UfQVE5DgMN8AO
+g5NW5Sl6P56OjJHSdorkAMZ3vTWJFIWS9yT79ghVd6BLIBvY31Zmz/Ujp8TPF8Ca
+n4yV0ZApNY2PFlS6bX70ii3zI/f6jCMie50AHYlNYeNGDwR4iX6d0irjuai7Uwdh
+BEY2kcZc/ll9EMUlOskQFp4/nEXXPQ1mLLBTnDs1wd4Frw2w+t8iz/5lPwGLWo0x
+hgDbr2qjRC8GgoBazqQ/aKGfexHuaWJI8ucmDeiRTN8iTCnuDuQ=
+=niSR
+-----END PGP SIGNATURE-----
+
+--c42n666wgeyzguk5--
 
