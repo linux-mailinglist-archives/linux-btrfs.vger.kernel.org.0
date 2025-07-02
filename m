@@ -1,188 +1,194 @@
-Return-Path: <linux-btrfs+bounces-15196-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15197-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66EAFAF12DF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 13:00:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1DD9AF15BF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 14:34:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC3BB16CB33
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 10:59:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EA921C2424F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 12:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1AD240604;
-	Wed,  2 Jul 2025 10:59:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D3E272819;
+	Wed,  2 Jul 2025 12:34:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=heusel.eu header.i=christian@heusel.eu header.b="NrBYula1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fotegxUF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C194F1DFE20
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 10:59:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.126.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5326624677B;
+	Wed,  2 Jul 2025 12:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751453978; cv=none; b=NPm9apQnZCxZ4akb1JbCwwwZb6tsVOrz3077qMIiUNedusUVgaKHdbCgnr7yfoQYSFB/XsOuU/JkNFqwNKVKV42Wz40fMdqQ0I9ZK45bpZUDn1An5EU7CAl56hkA/0WUeQtzsDFJOvPHHqL8IE+dujeFcPWr3MEZIsaNXKJLZyU=
+	t=1751459664; cv=none; b=DXJDaPkZPMfbrjUQA1cf25dyZ9ZdftSB1wVziiKR0AHY/G5NeBHCI0fTr+BbsGvcZEqZe+ybM70KCUL/j6/uGfi7FKIqpWUCYyGkWBJpuSDjLYvyDKCc7xoYF50y93wjNgiQ9jXlYwg7w3nFz4JR41oHhcLw3myeS9barxquMms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751453978; c=relaxed/simple;
-	bh=mWdPYGDB0ctwp5WjQEk5rvWjbKS+GE0AmuaIaFivaxo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZW0wYYWAi5KewaSAF9nxWRnbWVxR60qSNXNKu8gKJ9VUWuz3dsTMPNEWrN6ili7/TaHoqBHBwpp0DjFGa9rxCNfFqKJiyna1w8z23sP8FSkvweQ4WhZRBBKvSlVQq9R8/ArkXaZNtRXdOM/+1sctOXVzLp7vdxX99SM8BdTHwms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu; spf=pass smtp.mailfrom=heusel.eu; dkim=pass (2048-bit key) header.d=heusel.eu header.i=christian@heusel.eu header.b=NrBYula1; arc=none smtp.client-ip=212.227.126.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=heusel.eu
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=heusel.eu;
-	s=s1-ionos; t=1751453966; x=1752058766; i=christian@heusel.eu;
-	bh=mWdPYGDB0ctwp5WjQEk5rvWjbKS+GE0AmuaIaFivaxo=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:In-Reply-To:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=NrBYula1e5pJ90pGvX6vdRmdvFSd++vrMm+I2YWtBRv4/E8PxBNzwhR6tnmF6T7E
-	 USOBU/xvfdG6kJMZkW317ZK/icVFMmmtO4T+JPefZVJRV3by23i++6tNpI385IXkL
-	 bU88FMzMvW2/OP96UfBakni1D0N9e3jm+MG3CLSO0lp35L2U3bgxdbVsYGYj5uLzQ
-	 6ThfSDyMtLtwg/9WcKq3SKmtmG1dRh+curolcXPwfa7ZMQbuYJgjMkXB7fNubcxkF
-	 KLN3vHP7VBM+Ww9sJeMcg9YitbMyiGcv6ClPNzyxlzhIIgFJbJRvL/xeeqt3uok5q
-	 ilp85+bFYiwKEdOqUg==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost ([147.142.138.253]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1Mbiak-1v7tDY1qus-00kuMn; Wed, 02 Jul 2025 12:54:10 +0200
-Date: Wed, 2 Jul 2025 12:54:09 +0200
-From: Christian Heusel <christian@heusel.eu>
-To: Mio <mio-19@outlook.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: multiple devices btrfs filesystem device detection on recent
- distro updates
-Message-ID: <7aa130d3-7772-47ba-97ea-9f5002c037d3@heusel.eu>
-References: <TY4PR01MB13853B64BF6DB7BEA98170AE99240A@TY4PR01MB13853.jpnprd01.prod.outlook.com>
+	s=arc-20240116; t=1751459664; c=relaxed/simple;
+	bh=gdoP7odKWnop6WBe7JWeC91GPRBufTEUqAv5Bv3myOg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Gg8fhciFecRkMSQf+C/Ur7MaoOWHjnduups900EIz1inZNHcJ/BwCFgB7G3hXWnHXiFgVgU9VkKNTR6ULrRTFVqMTr6tg1f3UhZK2kXA09MtDZuNf85be3qycgPA5cwYFfOVEOTE8mMAezRXByM5HCtK4KjMRJmeNFbP9yxKNWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fotegxUF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C349FC4CEF0;
+	Wed,  2 Jul 2025 12:34:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751459663;
+	bh=gdoP7odKWnop6WBe7JWeC91GPRBufTEUqAv5Bv3myOg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=fotegxUF3W3K53tT96bB1pwsgBAZ4rfxAlKNTc0eL7PrN77Mwu+vy7tXdp31Ci6Rq
+	 N2VDCRPWJGH6oT2D9ugEALYlXH+LP8gppqNVPI9nSVzWnbwczwp3i/7IdTMI9U24fK
+	 j2cFgfN72t73zwaafYnFPcsfYU9OdAaPiDAgznBsG3rKjSQBdzoFQ/rMgAiPUD+aWV
+	 S+B7SJ6uW3JnwML4SKxjuRN+vzzQskdKAJv24SKy9Io7HXWQcWzfxSFrupJbTkcJeL
+	 IwEQQ7zMRsMsL32q+7x9MhEVekO+oafh8/bSGUduORwnCemvxNMDY3to9/BRBMPhg9
+	 YsY9/XLVf8ATw==
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-6099d89a19cso8457570a12.2;
+        Wed, 02 Jul 2025 05:34:23 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWp3OOh29D2KvLFgQIRIpnGzBHFv6OQQGd1BZViuENQ0879Q1YZRFzk2jmWC1d4ffov7hQo9Gk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWV6gw5QAV+KJHo2m7Lx7ueozG6u3dPO6MnZg518p1Gl7sNTrm
+	FQCu9ov7CnsJDPJiiQGL9odq/Du8Oq6wTo1vErVxfMdFbweP94SfO3CFCQiHx6VdRrqOad38GS7
+	bkL+xHc+Ly4IVErdVTlOym672/KSPy3o=
+X-Google-Smtp-Source: AGHT+IFll79N0iCfbBQojKvtNJaVx26oboo5/l4Z5kjm5UhXjtRWvln3asFe7WX9qSUfK03boNbfz4SEk9b/ww+Nz7E=
+X-Received: by 2002:a17:907:1ca3:b0:ae0:54b9:dc17 with SMTP id
+ a640c23a62f3a-ae3c2a90a00mr273856466b.11.1751459662352; Wed, 02 Jul 2025
+ 05:34:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="c42n666wgeyzguk5"
-Content-Disposition: inline
-In-Reply-To: <TY4PR01MB13853B64BF6DB7BEA98170AE99240A@TY4PR01MB13853.jpnprd01.prod.outlook.com>
-X-Provags-ID: V03:K1:uJrCbVUWTvkmgc02fzH7c0LYstQF6s/9MqGfY677h+HX3Whk4Q8
- xvckzQ8zp5ctwLVRNYzup2efr4KHkV92WQiPHn59VcKhIQMUPjSftfKhdfuwrHPK4OJc7Ie
- TNnBAIfDE2lVHhqEs92CojbrQG9k0lQuhAYzRAa0o70vlBr3rMfSz6zCksG9BM4qObYOEOY
- FxIM5pFZ1WkZMvzDU2fsQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:3jwRnsyWaoA=;WeEgNXq9D9l955zX17ogyespm8G
- +unmg1uXC0bASBu6FukAn3NGccT7k8sY1eHa+XutPQCFXn5e7rBCflpA6ICmr4wz1xR1/A6lu
- 1MvYi8EMTUji/Fh3kiJcM+gZuXJ2aCom23NOfu4YPpA/vVC5qbdwJRUOQNqvmk+gY2k1ndSmf
- rxYefpBzdBM5KgAAnHR85K+U6B23y10OJFxYN3yQi9AKvOKbqOHoyfd9ql9bWnbGo1z8falaf
- 5141Y+fZRaCyd01eXAjO6wFMLX2FuNTUM/MA9Rxmruwnqbv8C8TZO9OeMXUtxTSG6OAdv5lJx
- Ie6j+7hDqyFpT1f4h4cO7jPRxQhLFjrO+y/HclBCxTJmBlzU0kBaIa9kqIYZsV/mGKW1eXklF
- kimr+LDyg9BtSTwVYVMZs5LZehlOPi6RNDNrYzXnP21Uf36jEqwYnrHaK0M05JlA21Tqieapj
- TxmKkMGfjCfCbuN08zJh2dhBPyuFuQsz4MbYqbMurnDgxDIXmYCrfDZTsmRGsrOOVa/PYxwvI
- QLK9QRk5+tJikZbP5nq2rxBkCSQNXsYQxqkENPSRuVJEucnw7QKB7i44qP8RYa101BNUTX4tb
- MyfEiJPah5dulLr6nDZpEhQQ+2x/gg7+hU9Z1ZReNtXhIdhHPH29wR7fP3ob3rOKVe7iQswGW
- Bsf5lPEtgEJYiON4DHaInGI4VM2ArkX44q1MAlnSP221iBGRcJz7rKGE6UIW255nCe4/nAFro
- 8qoTtEwr24Z8mHgt/V9nvj460zpbjQGwdK0pYnNQ1NQ5obOhhQCCdrtPw5uY8zRz4MaCieyEs
- 7tJx3JN9ABCbvRSDIUURMyDTBKAz1uY6XnKFQF/b406qV8PUdCXNuggS/Or0vjfpHGXJDMpBg
- e6jDx9eA1dGvG5jqVYX/uRWMmWF8OA6r2H7w31ONXeaCY8yvX1CCvn40qRyodw8GCWAimZm6I
- 1+oM05o88dgauFpp5MQlBYpWJ7z8kQkoMc4j/IMPwAKl6eOjB84JwbfKZV+VejDEVB502Dn5G
- kpsnNfyT1Qd+dj7O7NrQjyWHjFGpMkKSWPupxPoHdYgaV1AqV2eGpuokKgUjciGyc3SKk6i2n
- 5C/USnfV+/xI8vSjX0aehbssbEhMrjfVQ0IrtYM5f/ngQ/nghnV3EVO6XA8wYK1HBkc0PTIHU
- IScII4/Wpx//dFW6pcvtZahSvLzHsD10JrQ91cNLAiWQuPE8JpN6y8eteStS9jfOuH0cZgQNh
- 55lyIxsX0UKEDHAsPfZhWnhXk4u6hhx5ybOWcMck10BvqpTuzbYAl/I8tbkXi/SewuN3KiYk3
- YrwUDHepDI2EdtWSq2iA86vdwuwkReDgmu0vuYD/aUyfK0XjR6XuRU5FD4wlUOhjmtDotT40L
- PSlFnZtVh0sH9AWB69Lcd6aW90sdMdeLrD3Ocgh8Wm7dBqr/DEdUQE8RwJIwW9jxvJHOrQBzQ
- Iu8SQH1EBBT3xcNXG5C0yBy2fdaN2WhjLUByWhdcDAMp59qyzXCJ08vb6uLDAr+4cBAgAqxFF
- CU14CEK8u1z26jcAKvo34BHfDvS0Yxu1Mk0lU8HRFqj3VxQ1h4skglOKs6VtOuo5AcOmZtkVL
- ioRvE4Xf/yYTHtj8r7RGtN/GpzsdlI4
-
-
---c42n666wgeyzguk5
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
+References: <78f495fb6fd5af1f67ef03ca6279342a1b806966.1751434663.git.wqu@suse.com>
+In-Reply-To: <78f495fb6fd5af1f67ef03ca6279342a1b806966.1751434663.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 2 Jul 2025 13:33:45 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7Dgo=XsMqG=VzOC5Sv61ioPpkArhkgpv8ak8JG18LYuQ@mail.gmail.com>
+X-Gm-Features: Ac12FXyFm8f1Aal-oPlUEnS4YZ4bdPfxvbhixYPhHbSVdC4pewZ5xJmPEIubGes
+Message-ID: <CAL3q7H7Dgo=XsMqG=VzOC5Sv61ioPpkArhkgpv8ak8JG18LYuQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: populate otime when logging an inode item
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: multiple devices btrfs filesystem device detection on recent
- distro updates
-MIME-Version: 1.0
 
-On 25/07/02 09:40PM, Mio wrote:
-> Hello btrfs mailing list
->=20
-> I am facing a device detection bug on multiple recent distro releases and
-> rolling linux distro. It is a bug in userspace and not a bug in linux
-> kernel. I was able to test different linux kernel versions from 6.6 to 6.=
-14
-> on some distros. The userspace with the problem shows errors on all linux
-> kernels and the userspace without the problem works fine with any linux
-> kernel.
+On Wed, Jul 2, 2025 at 6:38=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [TEST FAILURE WITH EXPERIMENTAL FEATURES]
+> When running test case generic/508, the test case will fail with the new
+> btrfs shutdown support:
+>
+> generic/508       - output mismatch (see /home/adam/xfstests/results//gen=
+eric/508.out.bad)
+>     --- tests/generic/508.out   2022-05-11 11:25:30.806666664 +0930
+>     +++ /home/adam/xfstests/results//generic/508.out.bad        2025-07-0=
+2 14:53:22.401824212 +0930
+>     @@ -1,2 +1,6 @@
+>      QA output created by 508
+>      Silence is golden
+>     +Before:
+>     +After : stat.btime =3D Thu Jan  1 09:30:00 1970
+>     +Before:
+>     +After : stat.btime =3D Wed Jul  2 14:53:22 2025
+>     ...
+>     (Run 'diff -u /home/adam/xfstests/tests/generic/508.out /home/adam/xf=
+stests/results//generic/508.out.bad'  to see the entire diff)
+> Ran: generic/508
+> Failures: generic/508
+> Failed 1 of 1 tests
+>
+> Please note that the test case requires shutdown support, thus the test
+> case will be skipped using the current upstream kernel, as it doesn't
+> have shutdown ioctl support.
+>
+> [CAUSE]
+> The direct cause the 0 time stamp in the log tree:
+>
+> leaf 30507008 items 2 free space 16057 generation 9 owner TREE_LOG
+> leaf 30507008 flags 0x1(WRITTEN) backref revision 1
+> checksum stored e522548d
+> checksum calced e522548d
+> fs uuid 57d45451-481e-43e4-aa93-289ad707a3a0
+> chunk uuid d52bd3fd-5163-4337-98a7-7986993ad398
+>         item 0 key (257 INODE_ITEM 0) itemoff 16123 itemsize 160
+>                 generation 9 transid 9 size 0 nbytes 0
+>                 block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
+>                 sequence 1 flags 0x0(none)
+>                 atime 1751432947.492000000 (2025-07-02 14:39:07)
+>                 ctime 1751432947.492000000 (2025-07-02 14:39:07)
+>                 mtime 1751432947.492000000 (2025-07-02 14:39:07)
+>                 otime 0.0 (1970-01-01 09:30:00) <<<
+>
+> But the old fs tree has all the correct time stamp:
+>
+> btrfs-progs v6.12
+> fs tree key (FS_TREE ROOT_ITEM 0)
+> leaf 30425088 items 2 free space 16061 generation 5 owner FS_TREE
+> leaf 30425088 flags 0x1(WRITTEN) backref revision 1
+> checksum stored 48f6c57e
+> checksum calced 48f6c57e
+> fs uuid 57d45451-481e-43e4-aa93-289ad707a3a0
+> chunk uuid d52bd3fd-5163-4337-98a7-7986993ad398
+>         item 0 key (256 INODE_ITEM 0) itemoff 16123 itemsize 160
+>                 generation 3 transid 0 size 0 nbytes 16384
+>                 block group 0 mode 40755 links 1 uid 0 gid 0 rdev 0
+>                 sequence 0 flags 0x0(none)
+>                 atime 1751432947.0 (2025-07-02 14:39:07)
+>                 ctime 1751432947.0 (2025-07-02 14:39:07)
+>                 mtime 1751432947.0 (2025-07-02 14:39:07)
+>                 otime 1751432947.0 (2025-07-02 14:39:07) <<<
+>
+> The root cause is that fill_inode_item() in tree-log.c is only
+> populating a/c/m time, not the otime (or btime in statx output).
+>
+> Part of the reason is that, the vfs inode only has a/c/m time, no native
+> btime support yet.
+>
+> [FIX]
+> Thankfully btrfs has its otime stored in btrfs_inode::i_otime_sec and
+> btrfs_inode::i_otime_nsec.
+>
+> So what we really need is just fill the otime time stamp in
+> fill_inode_item() of tree-log.c
+>
+> There is another fill_inode_item() in inode.c, which is doing the proper
+> otime population.
+>
+> CC: stable@vger.kernel.org
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Could you re-test with the 6.15 kernel (i.e. included in the archiso
-released on 2025-07-01) or even the latest mainline released candidate
-(which is 6.16-rc4 at the time)?
+Fixes: 94edf4ae43a5 ("Btrfs: don't bother committing delayed inode
+updates when fsyncing")
 
-I have a prebuilt version of it ready here, but you'll need to find a
-way to run it on your system:
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-https://pkgbuild.com/~gromit/linux-bisection-kernels/linux-mainline-6.16rc4=
--1-x86_64.pkg.tar.zst
+Thans.
 
-https://wiki.archlinux.org/title/Archiso#Kernel
-
-> The problem is that lsblk -f command can only detect one device in my btr=
-fs
-> filesystem. The filesystem has 3 devices. When I run the btrfs fi show
-> command, it shows a "Some devices missing" error message. However I am ab=
-le
-> to mount it by using the device option and specifying all 3 devices
-> manually. After that I can see my filesystem correctly displayed in the
-> output of btrfs fi show but lsblk -f still can detect one device.
->=20
-> How could I inverstigate this issue further?
->=20
-> I previously reported this problem on
-> https://bbs.archlinux.org/viewtopic.php?id=3D306625 and
-> https://github.com/NixOS/nixpkgs/issues/408631
->=20
->=20
-> I copied following output with OCR so the result might be slightly incorr=
-ect
->=20
-> btrfs fi show on archlinux 2025.06.01 livecd
->=20
-> Label: 'HDDPool-data' uuid: cae95f2?-f8c3-48c5-96d6-e263458efda2
-> Total devices 3 FS bytes used 10.49TiB
-> devid 3 size 9.00TiB used 6.96TiB path /dev/sdb
-> *** Some devices missing
->=20
-> btrfs fi show on archlinux 2025.01.01 livecd
->=20
-> Label: ' Rescue3' uuid: 623630d3-64d8-4917-ade8-412101d23b40
-> Total devices 3 =E2=80=A2 FS bytes used 10.48TiB
-> devid 1 size 10.91TiB used 10.48TiB path / dev/sde
-> devid 2 size 14.55TiB used 10.50TiB path /dev/sdc
-> devid 3 size 476.94GiB used 28.00GiB path /dev/sdd
->=20
->=20
-
---c42n666wgeyzguk5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEb3ea3iR6a4oPcswTwEfU8yi1JYUFAmhlD9EACgkQwEfU8yi1
-JYWJAQ/6AyDhu+M9X4YFPsey+ZQe3ZT5wztpLcGynVbpfBPr44boQPVoYzeaeyxg
-R64MJXZdGq6SND6c70D+HGeWLHnACHRpyKIIJ52ifmzr2dtvhgM7hD0BwNWH/jG6
-K5+GYk34vPpLMCSMHHd3s35KvSzyvwU8ErdC+elkEcJQyJNZ4ous6CdrH1Rt/Ggg
-Vqs+252wCekJVuL6zbBxgfFj+GliZmR21rTYqJCXeicf2118NlWTE58XgIU/sk+l
-CsC9a6pnlFag6OJ6WKrrQGJiPCvUXlrWUehcJ5VxJ1E6qm3sT2/TRqXdup/GHzEK
-PpfWRFD1V9ffd+R5IbpNZ916fKK5urccoEFM09get+5fPcnjH63GCUhgNuLvpOr8
-U0CErnBZgz1Afobw4nsK+qkzzjIfhGah6/e1Tk1fHfrH0iouJr3UfQVE5DgMN8AO
-g5NW5Sl6P56OjJHSdorkAMZ3vTWJFIWS9yT79ghVd6BLIBvY31Zmz/Ujp8TPF8Ca
-n4yV0ZApNY2PFlS6bX70ii3zI/f6jCMie50AHYlNYeNGDwR4iX6d0irjuai7Uwdh
-BEY2kcZc/ll9EMUlOskQFp4/nEXXPQ1mLLBTnDs1wd4Frw2w+t8iz/5lPwGLWo0x
-hgDbr2qjRC8GgoBazqQ/aKGfexHuaWJI8ucmDeiRTN8iTCnuDuQ=
-=niSR
------END PGP SIGNATURE-----
-
---c42n666wgeyzguk5--
+> ---
+>  fs/btrfs/tree-log.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 7e52d8f92e5b..5bdd89c44193 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -4233,6 +4233,9 @@ static void fill_inode_item(struct btrfs_trans_hand=
+le *trans,
+>         btrfs_set_timespec_sec(leaf, &item->ctime, inode_get_ctime_sec(in=
+ode));
+>         btrfs_set_timespec_nsec(leaf, &item->ctime, inode_get_ctime_nsec(=
+inode));
+>
+> +       btrfs_set_timespec_sec(leaf, &item->otime, BTRFS_I(inode)->i_otim=
+e_sec);
+> +       btrfs_set_timespec_nsec(leaf, &item->otime, BTRFS_I(inode)->i_oti=
+me_nsec);
+> +
+>         /*
+>          * We do not need to set the nbytes field, in fact during a fast =
+fsync
+>          * its value may not even be correct, since a fast fsync does not=
+ wait
+> --
+> 2.50.0
+>
+>
 
