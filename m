@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-15203-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15204-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EBF0AF5D6F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 17:42:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C77EBAF5D5A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 17:40:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52B0F4809F9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 15:39:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07AE94E2549
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 15:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7392E7BCE;
-	Wed,  2 Jul 2025 15:38:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D572F1988;
+	Wed,  2 Jul 2025 15:38:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u27jbZyb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DgDx/+V8"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29F02E7BC5
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 15:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22945289836
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 15:38:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751470718; cv=none; b=fJXx83lJUowSO2NaHrnRTHT0Kmo1Yi5ENrs+uoFBDVc/WzDa9sMgug9GmUb7tQuPuYqYC9kJkTSQkIYucP9a2kVE5zvfgfB8651Jm+PFW2rhwSSshkYfRLGbT0Cecv7ZkxlE1M/qcZxnAvkHVL3YAtNv/MbYcnCPgEUZOnPNGvM=
+	t=1751470719; cv=none; b=lCMlHCxft6q9gtGYguorvBT4aRwDQ3UhvtgpSvRBqbJNDVIl79mtLzYGwN9Umxn3xY+ZxbsE1zPVld8eqHH7iqeEF1H5mWRPe/WRNg6heGq/iNe6oOB8bJ/Ol0vpUlpUxnzKqDm7z/xn8PHbkOEZluvkKzIrpjhkvxRvW1o9t38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751470718; c=relaxed/simple;
-	bh=v/PMY5xRPadkc+fUt6vc7ZG5P3Ukn+ThaZwgE+1hPd8=;
+	s=arc-20240116; t=1751470719; c=relaxed/simple;
+	bh=FF7H/hQPNeSADOR9yj0nwLXKrI9e84Rnr0EpiyRJn8Q=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hBQWMEEbV1VarZ1oiLyTGe9GntQUxvFVnX19tLLH0kxeRYg0Pea5fqE2Igf6hnr4aIsTq/EirJOBZu0p4VxS247ikVJqY6pYyDXD9RMGdZ+4mCLeBStenSyN4GEk9zJj/5xTtYAJNyw0KXgHLW6LmnsIuS1mEEb++LVx/FN952c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u27jbZyb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D19EC4CEED
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 15:38:36 +0000 (UTC)
+	 MIME-Version; b=IEeSkXnn4cWQh1AoLRq0OiGsF8qGoRkN52TCc30lVaK5n0asCGuNX8g6rI0jfKJQHXSwNDtHZJ6+LQTT2SNbWvHwqdbP+8fUzj9DW93a468VFGWNRaHj6PNILkryVk5T87mAojdpjWTMoqV7lycgrw+mgjpYwp7ZejZpevSkrq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DgDx/+V8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E6F1C4CEE7
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 15:38:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751470717;
-	bh=v/PMY5xRPadkc+fUt6vc7ZG5P3Ukn+ThaZwgE+1hPd8=;
+	s=k20201202; t=1751470718;
+	bh=FF7H/hQPNeSADOR9yj0nwLXKrI9e84Rnr0EpiyRJn8Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=u27jbZyb3wE28JbqenSRvc+xe4fcyPM2UYZzN3QOvJcsnKGrrQBcOeNe2ozIvpvL/
-	 GJA+6SziOWFYqtD0IdyqRLD804qIuPshc1bGVp/Fd9w1YgGoidl/mCO62K5pzy2A1f
-	 +oxhhQJYf/DLx+MRH67Pj+ECRcBdg/20oYF8eEl6igdFePbaP0EsNvYlzSFzcZD880
-	 +KGwTXMohU4dEuzOUo1CQHSGGk+vTWDQgDkdGWwcFfFn4D3bxCfNXOPv7ulXmxWEbu
-	 uUIuDBc9d9O5jdKKk2xh30AlvB/ANS9LHKcXDeMGiGQeuLHYz7zWqUhEvfCw175Lw5
-	 d/z+aOv0Lo56w==
+	b=DgDx/+V8kvn6zBDxmW7byNbSWw1+KSClwFGEqR0j4uD4xY9hpQlKMwYRqJCMagpLl
+	 FchYdoo25W5LYCCXXr5WRdWcDXQzztnx0hun8niiYL7ObT0STFEUr8mv+nMe0yAFFH
+	 8lIREzUc1/rCQWazaSnj3k/grWokIHoy0EPc1JKhgrpwPlQvRTUf4F2z9XDEMiQbah
+	 pEIzU3dVlNjPQMTOo68/VnaWqODnl2zfEUCu9LalUMOx5KyuXHp07nH+OB9UpQ8fL1
+	 17qZwGfXUZ1XoowGHAqCxswL7/aG0wSZbFs1p/QJaS7RnU5d3LI4EiMHzkNmKdF22c
+	 LFhjw8GHbIFKw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs: avoid logging tree mod log elements for irrelevant extent buffers
-Date: Wed,  2 Jul 2025 16:38:30 +0100
-Message-ID: <ef9fd842939a1dd19ff4da7876fabf539e4e0ac1.1751460099.git.fdmanana@suse.com>
+Subject: [PATCH 2/3] btrfs: reduce size of struct tree_mod_elem
+Date: Wed,  2 Jul 2025 16:38:31 +0100
+Message-ID: <2917b083c5d147a0b60bceb23ca33fb49059e16d.1751460099.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1751460099.git.fdmanana@suse.com>
 References: <cover.1751460099.git.fdmanana@suse.com>
@@ -59,76 +59,107 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We are logging tree mod log operations for extent buffers from any tree
-but we only need to log for the extent tree and subvolume tree, since
-the tree mod log is used to get a consistent view, within a transaction,
-of extents and their backrefs. So it's pointless to log operations for
-trees such as the csum tree, free space tree, root tree, chunk tree,
-log trees, data crelocation tree, etc, as these trees are not used for
-backref walking and all tree mod log users are about backref walking.
+Several members are used for specific types of tree mod log operations so
+they can be placed in a union in order to reduce the structure's size.
 
-So skip extent buffers that don't belong either to the extent or to
-subvolume trees. This avoids unncessary memory allocations and having a
-larger tree mod log rbtree with nodes that are never needed.
+This reduces the structure size from 112 bytes to 88 bytes on x86_64,
+so we can now use the kmalloc-96 slab instead of the kmalloc-128 slab.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-mod-log.c | 28 ++++++++++++++++++++++++++--
- 1 file changed, 26 insertions(+), 2 deletions(-)
+ fs/btrfs/tree-mod-log.c | 53 +++++++++++++++++++++++++----------------
+ 1 file changed, 33 insertions(+), 20 deletions(-)
 
 diff --git a/fs/btrfs/tree-mod-log.c b/fs/btrfs/tree-mod-log.c
-index 1ac2678fc4ca..41dcd296b003 100644
+index 41dcd296b003..d15a84f695e4 100644
 --- a/fs/btrfs/tree-mod-log.c
 +++ b/fs/btrfs/tree-mod-log.c
-@@ -164,6 +164,30 @@ static noinline int tree_mod_log_insert(struct btrfs_fs_info *fs_info,
- 	return 0;
- }
+@@ -27,18 +27,29 @@ struct tree_mod_elem {
+ 	/* This is used for BTRFS_MOD_LOG_KEY* and BTRFS_MOD_LOG_ROOT_REPLACE. */
+ 	u64 generation;
  
-+static inline bool skip_eb_logging(const struct extent_buffer *eb)
-+{
-+	const u64 owner = btrfs_header_owner(eb);
+-	/* Those are used for op == BTRFS_MOD_LOG_KEY_{REPLACE,REMOVE}. */
+-	struct btrfs_disk_key key;
+-	u64 blockptr;
+-
+-	/* This is used for op == BTRFS_MOD_LOG_MOVE_KEYS. */
+-	struct {
+-		int dst_slot;
+-		int nr_items;
+-	} move;
+-
+-	/* This is used for op == BTRFS_MOD_LOG_ROOT_REPLACE. */
+-	struct tree_mod_root old_root;
++	union {
++		/*
++		 * This is used for the following op types:
++		 *
++		 *    BTRFS_MOD_LOG_KEY_REMOVE_WHILE_FREEING
++		 *    BTRFS_MOD_LOG_KEY_REMOVE_WHILE_MOVING
++		 *    BTRFS_MOD_LOG_KEY_REMOVE
++		 *    BTRFS_MOD_LOG_KEY_REPLACE
++		 */
++		struct {
++			struct btrfs_disk_key key;
++			u64 blockptr;
++		} slot_change;
 +
-+	if (btrfs_header_level(eb) == 0)
-+		return true;
++		/* This is used for op == BTRFS_MOD_LOG_MOVE_KEYS. */
++		struct {
++			int dst_slot;
++			int nr_items;
++		} move;
 +
-+	/*
-+	 * Tree mod logging exists so that there's a consistent view of the
-+	 * extents and backrefs of inodes even if while a task is iterating over
-+	 * them other tasks are modifying subvolume trees and the extent tree
-+	 * (including running delayed refs). So we only need to log extent
-+	 * buffers from the extent tree and subvolumes trees.
-+	 */
-+
-+	if (owner == BTRFS_EXTENT_TREE_OBJECTID)
-+		return false;
-+
-+	if (btrfs_is_fstree(owner))
-+		return false;
-+
-+	return true;
-+}
-+
++		/* This is used for op == BTRFS_MOD_LOG_ROOT_REPLACE. */
++		struct tree_mod_root old_root;
++	};
+ };
+ 
  /*
-  * Determines if logging can be omitted. Returns true if it can. Otherwise, it
-  * returns false with the tree_mod_log_lock acquired. The caller must hold
-@@ -174,7 +198,7 @@ static bool tree_mod_dont_log(struct btrfs_fs_info *fs_info, const struct extent
+@@ -228,15 +239,17 @@ static struct tree_mod_elem *alloc_tree_mod_elem(const struct extent_buffer *eb,
  {
- 	if (!test_bit(BTRFS_FS_TREE_MOD_LOG_USERS, &fs_info->flags))
- 		return true;
--	if (eb && btrfs_header_level(eb) == 0)
-+	if (eb && skip_eb_logging(eb))
- 		return true;
+ 	struct tree_mod_elem *tm;
  
- 	write_lock(&fs_info->tree_mod_log_lock);
-@@ -192,7 +216,7 @@ static bool tree_mod_need_log(const struct btrfs_fs_info *fs_info,
- {
- 	if (!test_bit(BTRFS_FS_TREE_MOD_LOG_USERS, &fs_info->flags))
- 		return false;
--	if (eb && btrfs_header_level(eb) == 0)
-+	if (eb && skip_eb_logging(eb))
- 		return false;
++	/* Can't be one of these types, due to union on struct tree_mod_elem. */
++	ASSERT(op != BTRFS_MOD_LOG_MOVE_KEYS);
++	ASSERT(op != BTRFS_MOD_LOG_ROOT_REPLACE);
++
+ 	tm = kzalloc(sizeof(*tm), GFP_NOFS);
+ 	if (!tm)
+ 		return NULL;
  
- 	return true;
+ 	tm->logical = eb->start;
+-	if (op != BTRFS_MOD_LOG_KEY_ADD) {
+-		btrfs_node_key(eb, &tm->key, slot);
+-		tm->blockptr = btrfs_node_blockptr(eb, slot);
+-	}
++	btrfs_node_key(eb, &tm->slot_change.key, slot);
++	tm->slot_change.blockptr = btrfs_node_blockptr(eb, slot);
+ 	tm->op = op;
+ 	tm->slot = slot;
+ 	tm->generation = btrfs_node_ptr_generation(eb, slot);
+@@ -854,8 +867,8 @@ static void tree_mod_log_rewind(struct btrfs_fs_info *fs_info,
+ 			fallthrough;
+ 		case BTRFS_MOD_LOG_KEY_REMOVE_WHILE_MOVING:
+ 		case BTRFS_MOD_LOG_KEY_REMOVE:
+-			btrfs_set_node_key(eb, &tm->key, tm->slot);
+-			btrfs_set_node_blockptr(eb, tm->slot, tm->blockptr);
++			btrfs_set_node_key(eb, &tm->slot_change.key, tm->slot);
++			btrfs_set_node_blockptr(eb, tm->slot, tm->slot_change.blockptr);
+ 			btrfs_set_node_ptr_generation(eb, tm->slot,
+ 						      tm->generation);
+ 			n++;
+@@ -864,8 +877,8 @@ static void tree_mod_log_rewind(struct btrfs_fs_info *fs_info,
+ 			break;
+ 		case BTRFS_MOD_LOG_KEY_REPLACE:
+ 			BUG_ON(tm->slot >= n);
+-			btrfs_set_node_key(eb, &tm->key, tm->slot);
+-			btrfs_set_node_blockptr(eb, tm->slot, tm->blockptr);
++			btrfs_set_node_key(eb, &tm->slot_change.key, tm->slot);
++			btrfs_set_node_blockptr(eb, tm->slot, tm->slot_change.blockptr);
+ 			btrfs_set_node_ptr_generation(eb, tm->slot,
+ 						      tm->generation);
+ 			break;
 -- 
 2.47.2
 
