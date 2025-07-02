@@ -1,100 +1,94 @@
-Return-Path: <linux-btrfs+bounces-15206-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15207-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DEC3AF5D84
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 17:45:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E32CAF6096
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 19:57:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19AF53A74DE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 15:43:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E1F95248D2
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 17:57:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF5A62459D7;
-	Wed,  2 Jul 2025 15:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B49130AAD2;
+	Wed,  2 Jul 2025 17:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hSRoSC+v";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iq6On60h";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hSRoSC+v";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iq6On60h"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="npikOab1";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Y0qp1CY/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b5-smtp.messagingengine.com (fhigh-b5-smtp.messagingengine.com [202.12.124.156])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D90267B01
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 15:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88EBC30113A
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 17:57:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751470989; cv=none; b=fgNSaxEtDCtgiZxyLm5vbNjq1h7BnEoh26anFsge+amJFlRtV/R9k2K9BcYY+XDb7kjToOGm5LPxBwlzMAHIfxdVa8OeT0M+Tt2jQixGzyN4V7+9LFO7EbnUlLh1k/dl0Rqiyf4BxJBt8RMtO89Y7ejTfRyssqwlNv32OheaYZ8=
+	t=1751479043; cv=none; b=MlAEd18lnlCoxSFmFNkliSc9v5VHE5nrVVkAnprtdlkr4wFEKIPVmTIYJ1O6ZjpEvwE9VogGE9LNhuiKHrBiqMIu6brJwvfGXo5tqoCyDwoUEQlzOTiHEBW+DBz9BxKryse5/r1Vp/xAObDsroERAX0pge3D/aNCsRdal6ry0JE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751470989; c=relaxed/simple;
-	bh=wQVFVe7IVkkEvRkHubgTxA4DRWP5Bv3vuwTeBH/lcgQ=;
+	s=arc-20240116; t=1751479043; c=relaxed/simple;
+	bh=DL3inrbvuCnO8NBI6Wa+qf6xaQ57Lm94OdiMcQ6LpPM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k3AotLulK79HkpWB6wWja2G5dnTppHDGBeCSbZI4nxEkb/4HGxLgUKryOhOuSDDrnWRSfUafiOgdMfKMArgjWpP2gP2VeD56QmwRNXKS/YaRDAGdg8sDnrDGY2Ia9f0NR0Is9zu2GExWXKy6K6e2TJk5wjtE5zqGDUliXGDNYv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hSRoSC+v; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iq6On60h; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hSRoSC+v; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iq6On60h; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 56FFE2118C;
-	Wed,  2 Jul 2025 15:43:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751470985;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wQVFVe7IVkkEvRkHubgTxA4DRWP5Bv3vuwTeBH/lcgQ=;
-	b=hSRoSC+v9fIxaZUCQvAfQJodM8p1mi+diByLTNUQV4Ai21pmgG5IOg+TnmJLhCtGAEpIMb
-	25LHtpwKCHV8V6ozbrNmM0mFv+WxVKUo3Za/Twk/cTIK4z8KrZO2rVfJ7StUQxvf+XVEWe
-	tdbHn1U70cr49Wc8Ug3c/9r2/lBj8C8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751470985;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wQVFVe7IVkkEvRkHubgTxA4DRWP5Bv3vuwTeBH/lcgQ=;
-	b=iq6On60hZhW9jFxrvk5ryGftucZPcgF0yYoRFW09wZ1fj7by0ixqOPPrnOfpeOmr/IfN4s
-	dfrL5qhwHC4DMJCg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hSRoSC+v;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=iq6On60h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751470985;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wQVFVe7IVkkEvRkHubgTxA4DRWP5Bv3vuwTeBH/lcgQ=;
-	b=hSRoSC+v9fIxaZUCQvAfQJodM8p1mi+diByLTNUQV4Ai21pmgG5IOg+TnmJLhCtGAEpIMb
-	25LHtpwKCHV8V6ozbrNmM0mFv+WxVKUo3Za/Twk/cTIK4z8KrZO2rVfJ7StUQxvf+XVEWe
-	tdbHn1U70cr49Wc8Ug3c/9r2/lBj8C8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751470985;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wQVFVe7IVkkEvRkHubgTxA4DRWP5Bv3vuwTeBH/lcgQ=;
-	b=iq6On60hZhW9jFxrvk5ryGftucZPcgF0yYoRFW09wZ1fj7by0ixqOPPrnOfpeOmr/IfN4s
-	dfrL5qhwHC4DMJCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 46C1213A24;
-	Wed,  2 Jul 2025 15:43:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id KDIMEYlTZWjGXQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 02 Jul 2025 15:43:05 +0000
-Date: Wed, 2 Jul 2025 17:43:04 +0200
-From: David Sterba <dsterba@suse.cz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rXeLIfgNMLT+UNo1xRqJAszTvPwIFzzmqpmpG32bGogNyLXTzbGXbdbuVZLS74kbrrJIov+qxGFy0y1eZxDz9bFmHao1HJGYSQ6x1SRpfxUoYj8s8f1fjvLECnXVMVe8xD2G/8Ae4BZSliAa3+p4n+Y5AsHg8hukUBmbAr0aZjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=npikOab1; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Y0qp1CY/; arc=none smtp.client-ip=202.12.124.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 6C6997A0288;
+	Wed,  2 Jul 2025 13:57:19 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-01.internal (MEProxy); Wed, 02 Jul 2025 13:57:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1751479039; x=1751565439; bh=vUciGWO/8q
+	aCkE1g+9Y9udBufNm2BCJbO5pSjlrFPTk=; b=npikOab1fx48fHuDzBv7hmu0UI
+	dMd7X1ytsSgK7I4QSWN1HbrpoKT/2jubX1EgCB55FoONViSN0QHL+wPw0VYT1TQx
+	U8ZWO6wWwWCqTp1E88IsExmlkBrpitG8uVSAwweIhbMi8Bmn6A7fL7mBXvCthtzO
+	c3sh/KK9cp6ButpVdxilr9JW5QDnYaT2V0hVB98ZhVu309QVMqbTLLJzOPT7VmKR
+	DreGBxfS+sOdrRYC0kRRshbpIfUGH9P5yMjthLc84i1NqHWSluQhZ8HyNMvDvs2X
+	tJLWSxeUUFzQXhk/ASsAFxcf7X0P7gzKu4MvkvmIRPTsN/KXLzz1mX7267tA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1751479039; x=1751565439; bh=vUciGWO/8qaCkE1g+9Y9udBufNm2BCJbO5p
+	SjlrFPTk=; b=Y0qp1CY/I3OKCafct82st+pGUqZJ6NSJHkp3KhdFBi68iXxr6s/
+	Iack7YTXvFZD1PXOE1MwTHq937xnxW+B8jGsL5ZN1XP/pnEKOZQHY4tNsRWatgHy
+	gNDBC9R9+r1KFdQTwCE4xGS9PWOryUUSp5TKvMEfhZmkVHXz3BeSppxhoUacJ1SH
+	Weq5AIdzvlCG6JTxP3RWMqqmYGkz6N2tusxOqGfrKsTivj/YQZsr3zm5m1qXkiW7
+	ImXMLHCsFieMYgYcFzW5e+A+KetC8TqtZKgsNLc4tsZjI2zVUmGYOCOVkBv9KMk+
+	z0HsJzo1n16bru1QJLlJSszwZLTDWWuZsIA==
+X-ME-Sender: <xms:_3JlaLmfpmIuO45ouM9eiImDQeogi8yyNe69OTBzq9yWHE4q-RFrDQ>
+    <xme:_3JlaO1T9KhorpBc8b3o0IB_JOiSPb2V0vKQ-gRDAfC2oCODniOEa_NfWSXcIgROX
+    WH5PQdFaXdPFRO-ktU>
+X-ME-Received: <xmr:_3JlaBoCS08Z-lZlJbN4V7F_Olk3XFcWDZkRV3XbFxjfqxZECoOWEN8Hb4-GnWbfsnv85gD37l2epEEkvZF3uOvtVFM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddukedtiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceu
+    uhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepkedvke
+    ffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
+    drihhopdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthho
+    pegushhtvghrsggrsehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfh
+    hssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:_3JlaDmtrueQykkvH62QicSaBaR9rAzG87qxO7YYyKc1uobgb3sr5w>
+    <xmx:_3JlaJ270O818mrRy5TtmjWtc5xYVK92nfoinWWf6VjIfqn4Ikv4Pg>
+    <xmx:_3JlaCuMEUD4SZRR6DRNevB9RsE0fLX4G0Vt5g9cVqem3AgjhnhFFg>
+    <xmx:_3JlaNXhqP9ehbLzbga1I1CES5HAJ8SKilqo5hhFaq_TkmD8Qmmk3w>
+    <xmx:_3JlaKHRexL-bxfWAlFCBfOOkQNQm-fc21D6662UaO0WMJvqRVgnbsdR>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 2 Jul 2025 13:57:18 -0400 (EDT)
+Date: Wed, 2 Jul 2025 10:58:54 -0700
+From: Boris Burkov <boris@bur.io>
 To: David Sterba <dsterba@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: convert several int parameters to bool
-Message-ID: <20250702154304.GV31241@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20250702143403.931542-1-dsterba@suse.com>
+Subject: Re: [PATCH 2/7] btrfs: accessors: use type sizeof constants directly
+Message-ID: <20250702175854.GA2308047@zen.localdomain>
+References: <cover.1751390044.git.dsterba@suse.com>
+ <eedbe03f6ee33939841d4bf895519304dfa1c59f.1751390044.git.dsterba@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -103,50 +97,87 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250702143403.931542-1-dsterba@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 56FFE2118C
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto]
-X-Spam-Score: -4.21
-X-Spam-Level: 
+In-Reply-To: <eedbe03f6ee33939841d4bf895519304dfa1c59f.1751390044.git.dsterba@suse.com>
 
-On Wed, Jul 02, 2025 at 04:34:03PM +0200, David Sterba wrote:
-> We're almost done cleaning the misused int/bool parameters. Convert a
-> few of them, found by manual grepping as we don't have a tool for that.
-> Note that btrfs_sync_fs() needs an int as it' mandated by the struct
-> super_operations prototype.
+On Tue, Jul 01, 2025 at 07:23:49PM +0200, David Sterba wrote:
+> Now unit_size is used only once, so use it directly in 'part'
+> calculation. Don't cache sizeof(type) in a variable. While this is a
+> compile-time constant, forcing the type 'int' generates worse code as it
+> leads to additional conversion from 32 to 64 bit type on x86_64.
+> 
+> The sizeof() is used only a few times and it does not make the code that
+> harder to read, so use it directly and let the compiler utilize the
+> immediate constants in the context it needs. The .ko code size slightly
+> increases (+50) but further patches will reduce that again.
+> 
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
+>  fs/btrfs/accessors.c | 16 ++++++----------
+>  1 file changed, 6 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/btrfs/accessors.c b/fs/btrfs/accessors.c
+> index b54c8abe467a06..2e90b9b14e73f4 100644
+> --- a/fs/btrfs/accessors.c
+> +++ b/fs/btrfs/accessors.c
+> @@ -52,19 +52,17 @@ u##bits btrfs_get_##bits(const struct extent_buffer *eb,		\
+>  	const unsigned long idx = get_eb_folio_index(eb, member_offset);\
+>  	const unsigned long oil = get_eb_offset_in_folio(eb,		\
+>  							 member_offset);\
+> -	const int unit_size = eb->folio_size;				\
+>  	char *kaddr = folio_address(eb->folios[idx]);			\
+> -	const int size = sizeof(u##bits);				\
+> -	const int part = unit_size - oil;				\
+> +	const int part = eb->folio_size - oil;				\
 
-And with a bit more refined seach I found way more:
+nit: the names oil and part are pretty non-sensical to me. Oil used to
+be oip for Offset In Page. Is it Offset In foLio?
 
-17 files changed, 56 insertions(+), 63 deletions(-)
+I can't figure out what part should mean.
 
-I'll probably do another pass once we'll code freeze for 6.17 so there
-are no conflicts with any pending patches.
+So while I see why you're doing all the changes, I can' help but notice
+that you removed the two named variables with logical names and left the
+confusing ones. :)
+
+>  	u8 lebytes[sizeof(u##bits)];					\
+>  									\
+> -	ASSERT(check_setget_bounds(eb, ptr, off, size));		\
+> +	ASSERT(check_setget_bounds(eb, ptr, off, sizeof(u##bits)));	\
+>  	if (INLINE_EXTENT_BUFFER_PAGES == 1 || likely(sizeof(u##bits) <= part))	\
+>  		return get_unaligned_le##bits(kaddr + oil);		\
+>  									\
+>  	memcpy(lebytes, kaddr + oil, part);				\
+>  	kaddr = folio_address(eb->folios[idx + 1]);			\
+> -	memcpy(lebytes + part, kaddr, size - part);			\
+> +	memcpy(lebytes + part, kaddr, sizeof(u##bits) - part);		\
+>  	return get_unaligned_le##bits(lebytes);				\
+>  }									\
+>  void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,	\
+> @@ -74,13 +72,11 @@ void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,	\
+>  	const unsigned long idx = get_eb_folio_index(eb, member_offset);\
+>  	const unsigned long oil = get_eb_offset_in_folio(eb,		\
+>  							 member_offset);\
+> -	const int unit_size = eb->folio_size;				\
+>  	char *kaddr = folio_address(eb->folios[idx]);			\
+> -	const int size = sizeof(u##bits);				\
+> -	const int part = unit_size - oil;				\
+> +	const int part = eb->folio_size - oil;				\
+>  	u8 lebytes[sizeof(u##bits)];					\
+>  									\
+> -	ASSERT(check_setget_bounds(eb, ptr, off, size));		\
+> +	ASSERT(check_setget_bounds(eb, ptr, off, sizeof(u##bits)));	\
+>  	if (INLINE_EXTENT_BUFFER_PAGES == 1 ||				\
+>  	    likely(sizeof(u##bits) <= part)) {				\
+>  		put_unaligned_le##bits(val, kaddr + oil);		\
+> @@ -90,7 +86,7 @@ void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,	\
+>  	put_unaligned_le##bits(val, lebytes);				\
+>  	memcpy(kaddr + oil, lebytes, part);				\
+>  	kaddr = folio_address(eb->folios[idx + 1]);			\
+> -	memcpy(kaddr, lebytes + part, size - part);			\
+> +	memcpy(kaddr, lebytes + part, sizeof(u##bits) - part);		\
+>  }
+>  
+>  DEFINE_BTRFS_SETGET_BITS(8)
+> -- 
+> 2.49.0
+> 
 
