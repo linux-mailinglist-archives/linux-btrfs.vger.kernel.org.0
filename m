@@ -1,57 +1,95 @@
-Return-Path: <linux-btrfs+bounces-15209-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15210-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E068DAF6147
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 20:27:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 039F1AF61DD
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 20:52:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A00B44A347F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 18:27:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 963F4486CC8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 18:52:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B67302E49B4;
-	Wed,  2 Jul 2025 18:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C007B2D0C9D;
+	Wed,  2 Jul 2025 18:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gpy5Ywhr"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Qt0jvtiO";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="N/DLXCT1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F23E12E4990;
-	Wed,  2 Jul 2025 18:27:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131FA1E633C
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 18:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751480840; cv=none; b=DmG2u16XVxxZqZ/lWOzWTsGbgKd+sLCRqaDhhihb0qplnzsN5MA5yN90Yfc+Y2jiiwqZO+Sf2Pi88VuJh1uP0DCRYYfIrTGF6E0KyWX/w1jCPOjot78l2EFFrT5oj4KSf8AkK5/utiPb8SFiKeOw9A8+5fuOW2QFxfwqQwaN7EU=
+	t=1751482325; cv=none; b=Q7xN2ionXp/f2gb9UZ1l+doPMipc663lxasxj5OurYspfl+338VPwWwW0Jz5qwuTjuAUQXLAn+4/9Ggm4x0zqTegrQVsJB70d5KC1HOg5hgozdzgcWD2WyS8ECFphlHhNR1gbiM5K1Yy0SalZhanipLYiDz0n67nn4SZuAMoj9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751480840; c=relaxed/simple;
-	bh=dug9JKJ8jzli2X+iTVUSEQZLGmtcSJ2d7RbXeaPWkg8=;
+	s=arc-20240116; t=1751482325; c=relaxed/simple;
+	bh=QdjAUuOoR0g3UTQdP4LHvNLcDWUUlSUa5hXi7bete18=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QiNGB0NsocB2RM7l/ZavRy0TIfi6QO3fkB5UDuPqazduOjZTxl4IaDIlPFWsyLXqxk4WfMupZDEP3SkV0kJsRdhhE6h3GhwcquZ+dD6fSwo+qJwAah14G70vfBKCPQAqV+gUPFl/ZMS36vVhmE7kPGbnOIS5R39u38RNwnIV3tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gpy5Ywhr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1614DC4CEE7;
-	Wed,  2 Jul 2025 18:27:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751480837;
-	bh=dug9JKJ8jzli2X+iTVUSEQZLGmtcSJ2d7RbXeaPWkg8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Gpy5YwhrnEizCphyRJl6J/BpYhjJnExkX+BBSfsX6vQnvNvN2rUpTEy9BI/XhlSCV
-	 M0COOxy3U5gNmMVRriVwMb8SoJj+o7rePGXPJk2kLWaXmLjrHP4ImQtq/bbfz/I6w7
-	 eQXST7zk9N2eOs6ODlFriRFF8pMqpR5Xg2YR7XVwl4aye4Dn+RCmSse8Rq9ie4QhhC
-	 u0KGIakUGby59qDY8npfx/Hfl6944hsOlSNboxK/1xhV90RJA7hg2K53sfySzOMU2o
-	 5JF/fTHq2YpARdiHLHYBYpzChSxq1cKBFt3FlPPZya7tJabFFX47xQRX1m5WH9jZF/
-	 B4FRENjpISMig==
-Date: Wed, 2 Jul 2025 11:27:12 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Brahmajit Das <listout@listout.xyz>
-Cc: linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, kees@kernel.org, ailiop@suse.com,
-	mark@harmstone.com, David Sterba <dsterba@suse.cz>,
-	Brahmajit Das <bdas@suse.de>
-Subject: Re: [PATCH v4] btrfs: replace deprecated strcpy with strscpy
-Message-ID: <20250702182712.GA3453770@ax162>
-References: <20250620164957.14922-1-listout@listout.xyz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IQm2V88kwr0IipRXmhbn8XJU+NDQE4HxmSlHXjG5KlpPWEYYEjd16Oe68iUngyzWpFlsmP9nKH+H7WaM5X7zOsSGQEQPoX1z28hqc8G5x/kGoUcx9JQnkvKUfQs6qcsXkwyoTVXuJqzO+maw9BqT00rAJOXIsLGsjctfBQFPdAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Qt0jvtiO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=N/DLXCT1; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 4025614001B6;
+	Wed,  2 Jul 2025 14:52:03 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-09.internal (MEProxy); Wed, 02 Jul 2025 14:52:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1751482323; x=1751568723; bh=gBkdAmDkmV
+	1l0Yhgd2Kf3vGDr8A2L6i7IFJZPcCSP2k=; b=Qt0jvtiO3PDDvRuASnP9+17dpR
+	oGUwQjfS0nd3pink7n8fUAFxJDIPcJMsTkJ/TXxOwa8w+B5hCtvn3T8yuTnvyCTo
+	ROwgJ13z1jp2/lXjxlaqdr/bHfLkc4/rEpyPB69RDyUGXXvuOuH3FgUIXUITkX8z
+	jIlRrI756LUtufnGTx2mZlXVozwCE18w1vAbKpJwgjISXEu/6N9Ctq8BsBPp3JEH
+	HZPqGY6ZvcXbFoQwEuqNjG03jEtS2OeuTS88iaUE6Mj8yP3n9KaEyhyFh38BBEQj
+	3wiDQgoF426OePjH71C/6J27RT5NF1irscpHUdL7sen/Ns9DKAeXGL9Q5QPw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1751482323; x=1751568723; bh=gBkdAmDkmV1l0Yhgd2Kf3vGDr8A2L6i7IFJ
+	ZPcCSP2k=; b=N/DLXCT1BbsPFT9W0NGti1jVUgmvAUx9+nc5ycOwo/pIfAoh+Ho
+	5RtZDrN2Q8/IrvpYkJg2JpJpjrVI+75wG4n756txPISbEqLd97PnNBmPebsM1NBz
+	Zfpb7fufDn2s5HUoS3mLQhumJ7AN+M420nFxj8Dm+sqjugO990Jrcmnds8fblinw
+	cXVe1/RmniTVP5NUtCyTczEpZy4oXU8yr9zodDXebfFpOzUKTv+ppHQ3g1zEr399
+	Tyzl8/LDHfm7i2vVQBZ64/zU36GKRdn5+hmSZ26GghVTmJilBThQnI0ac1ThVhlK
+	P/gstAsHHWXpP/qka7q0GkmZ1m5+NebkOng==
+X-ME-Sender: <xms:0n9laPkZ_FCLK07-SYb6ak2lkXwbIDquYyO4LA5RaMLjDMigFENFDA>
+    <xme:0n9laC3hLiKtdY4AhsvcBoUtK1m3MpMLRmy8pESyYCmLII5KZh8lUGFP6FskNJ4Zx
+    xqXNBuqduO3ZdY8dpE>
+X-ME-Received: <xmr:0n9laFqmID8mMloadz0HOLYLXnB-AJX3OUJLyM1_PLAm_xkr88HxBP_7849CPFMPznabwkEY9Z2cd9ez9MrxSeAiVsc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddukeduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceu
+    uhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepkedvke
+    ffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
+    drihhopdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthho
+    pegushhtvghrsggrsehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfh
+    hssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:0n9laHkcN-LPzkEeijAZ6c6vckOTfoYE3SkeugDvG8AhLtHpFYLKDA>
+    <xmx:0n9laN2Z2z7GH_85i_YcKNjhici51QL3ygNfAHjBTkGmZGAUsUV3Rw>
+    <xmx:0n9laGutXw4R8Nu0PEAgew_XG3JX9ICkAj2gavV53VLGuPrGJgovQA>
+    <xmx:0n9laBWKzC9mFllD8QpNEf-04eKaByIrnFAnzF9YqO-0KwCdRd2IGg>
+    <xmx:039laOFNnQdvxo_mcvGaWHJF8hhREtsGjlJlga2jZ89O4BiOaQ04qUUR>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 2 Jul 2025 14:52:02 -0400 (EDT)
+Date: Wed, 2 Jul 2025 11:53:37 -0700
+From: Boris Burkov <boris@bur.io>
+To: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 7/7] btrfs: accessors: factor out split memcpy with two
+ sources
+Message-ID: <20250702185337.GC2308047@zen.localdomain>
+References: <cover.1751390044.git.dsterba@suse.com>
+ <1db66bf81b5790c6e14183a5c30a8abf6d1b1126.1751390044.git.dsterba@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -60,87 +98,109 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250620164957.14922-1-listout@listout.xyz>
+In-Reply-To: <1db66bf81b5790c6e14183a5c30a8abf6d1b1126.1751390044.git.dsterba@suse.com>
 
-Hi Brahmajit,
+On Tue, Jul 01, 2025 at 07:23:54PM +0200, David Sterba wrote:
+> The case of a reading the bytes from 2 folios needs two memcpy()s, the
+> compiler does not emit calls but two inline loops.
+> 
+> Factoring out the code makes some improvement (stack, code) and in the
+> future will provide an optimized implementation as well. (The analogical
+> version with two destinations is not done as it increases stack usage
+> but can be done if needed.)
 
-On Fri, Jun 20, 2025 at 10:19:57PM +0530, Brahmajit Das wrote:
-> strcpy is deprecated due to lack of bounds checking. This patch replaces
-> strcpy with strscpy, the recommended alternative for null terminated
-> strings, to follow best practices.
+Is there some fundamental reason for this, or does it just happen to be
+so? Sort of interesting either way. Does it make you worry that this
+stuff will regress randomly in the future?
+
 > 
-> There are instances where strscpy cannot be used such as where both the
-> source and destination are character pointers. In that instance we can
-> use sysfs_emit.
+> The address of the second folio is reordered before the first memcpy,
+> which leads to an optimization reusing the vmemmap_base and
+> page_offset_base (implementing folio_address()).
 > 
-> Link: https://github.com/KSPP/linux/issues/88
-> Suggested-by: Anthony Iliopoulos <ailiop@suse.com>
-> Suggested-by: David Sterba <dsterba@suse.cz>
-> Signed-off-by: Brahmajit Das <bdas@suse.de>
-...
-> diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
-> index 3e0edbcf73e1..49fd8a49584a 100644
-> --- a/fs/btrfs/xattr.c
-> +++ b/fs/btrfs/xattr.c
-> @@ -516,8 +516,7 @@ static int btrfs_initxattrs(struct inode *inode,
->  			ret = -ENOMEM;
->  			break;
->  		}
-> -		strcpy(name, XATTR_SECURITY_PREFIX);
-> -		strcpy(name + XATTR_SECURITY_PREFIX_LEN, xattr->name);
-> +		sysfs_emit(name, "%s%s", XATTR_SECURITY_PREFIX, xattr->name);
+> Stack usage reduction:
+> 
+>   btrfs_get_32                                           -8 (32 -> 24)
+>   btrfs_get_64                                           -8 (32 -> 24)
+> 
+> Code size reduction:
+> 
+>      text    data     bss     dec     hex filename
+>   1454279  115665   16088 1586032  183370 pre/btrfs.ko
+>   1454229  115665   16088 1585982  18333e post/btrfs.ko
+> 
+>   DELTA: -50
+> 
+> As this is the last patch in this series, here's the overall diff
+> starting and including commit "btrfs: accessors: simplify folio bounds
+> checks":
+> 
+> Stack:
+> 
+>   btrfs_set_16                                          -72 (88 -> 16)
+>   btrfs_get_32                                          -56 (80 -> 24)
+>   btrfs_set_8                                           -72 (88 -> 16)
+>   btrfs_set_64                                          -64 (88 -> 24)
+>   btrfs_get_8                                           -72 (80 -> 8)
+>   btrfs_get_16                                          -64 (80 -> 16)
+>   btrfs_set_32                                          -64 (88 -> 24)
+>   btrfs_get_64                                          -56 (80 -> 24)
+> 
+>   NEW (48):
+> 	  report_setget_bounds                           48
+>   LOST/NEW DELTA:      +48
+>   PRE/POST DELTA:     -472
+> 
+> Code:
+> 
+>      text    data     bss     dec     hex filename
+>   1456601  115665   16088 1588354  183c82 pre/btrfs.ko
+>   1454229  115665   16088 1585982  18333e post/btrfs.ko
+> 
+>   DELTA: -2372
+
+Sweet!
+
+> 
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
+>  fs/btrfs/accessors.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/btrfs/accessors.c b/fs/btrfs/accessors.c
+> index af11f547371815..f554c4f723617f 100644
+> --- a/fs/btrfs/accessors.c
+> +++ b/fs/btrfs/accessors.c
+> @@ -20,6 +20,15 @@ static void __cold report_setget_bounds(const struct extent_buffer *eb,
+>  		   (unsigned long)ptr, eb->start, member_offset, size);
+>  }
 >  
->  		if (strcmp(name, XATTR_NAME_CAPS) == 0)
->  			clear_bit(BTRFS_INODE_NO_CAP_XATTR, &BTRFS_I(inode)->runtime_flags);
-
-This change is now in -next as commit d282edfe8850 ("btrfs: replace
-strcpy() with strscpy()"), where this hunk appears to causes a slew of
-warnings on my arm64 systems along the lines of:
-
-  ------------[ cut here ]------------
-  invalid sysfs_emit: buf:00000000581f52ce
-  WARNING: fs/sysfs/file.c:767 at sysfs_emit+0x60/0xe0, CPU#5: systemd/1
-  Modules linked in:
-  CPU: 5 UID: 0 PID: 1 Comm: systemd Tainted: G        W           6.16.0-rc4-next-20250702 #1 PREEMPT(voluntary)
-  Tainted: [W]=WARN
-  Hardware name: QEMU KVM Virtual Machine, BIOS edk2-20241117-5.fc42 11/17/2024
-  pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-  pc : sysfs_emit+0x60/0xe0
-  lr : sysfs_emit+0x60/0xe0
-  sp : ffff80008005b840
-  x29: ffff80008005b890 x28: ffff0000c0793f18 x27: ffffac7b3da61468
-  x26: 0000000000400100 x25: ffffac7b3f173a88 x24: ffffac7b3f2a6480
-  x23: ffff0000c0793f18 x22: ffff0000c6d4da38 x21: ffff0000c156b500
-  x20: ffff0000c0e2e640 x19: ffff0000c156b500 x18: 00000000ffffffff
-  x17: 65766c6f7365722d x16: 646d65747379732d x15: 0000000000000010
-  x14: 0000000000000000 x13: 0000000000000008 x12: 0000000000000020
-  x11: 0000000000000001 x10: 0000000000000001 x9 : ffffac7b3d2b97cc
-  x8 : ffffac7b40c1aa40 x7 : ffff80008005b4a0 x6 : ffffac7b40beaa00
-  x5 : ffff0003fd79c488 x4 : ffff5388bd8bc000 x3 : ffff0000c0960000
-  x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff0000c0960000
-  Call trace:
-   sysfs_emit+0x60/0xe0 (P)
-   btrfs_initxattrs+0x8c/0x148
-   security_inode_init_security+0x110/0x1d8
-   btrfs_xattr_security_init+0x30/0x58
-   btrfs_create_new_inode+0x3cc/0xc60
-   btrfs_create_common+0xdc/0x148
-   btrfs_mkdir+0x7c/0xc0
-   vfs_mkdir+0x1a0/0x290
-   do_mkdirat+0x150/0x190
-   __arm64_sys_mkdirat+0x54/0xb0
-   invoke_syscall.constprop.0+0x64/0xe8
-   el0_svc_common.constprop.0+0x40/0xe8
-   do_el0_svc+0x24/0x38
-   el0_svc+0x3c/0x170
-   el0t_64_sync_handler+0x10c/0x138
-   el0t_64_sync+0x1b0/0x1b8
-  ---[ end trace 0000000000000000 ]---
-
-It looks like the offset_in_page(buf) part of the WARN() in
-sysfs_emit() gets triggered with this, presumably because kmalloc()
-returns something that is not page aligned like sysfs_emit() requires?
-
-Cheers,
-Nathan
+> +/* Copy bytes from @src1 and @src2 to @dest. */
+> +static __always_inline void memcpy_split_src(char *dest, const char *src1,
+> +					     const char *src2, const size_t len1,
+> +					     const size_t total)
+> +{
+> +	memcpy(dest, src1, len1);
+> +	memcpy(dest + len1, src2, total - len1);
+> +}
+> +
+>  /*
+>   * Macro templates that define helpers to read/write extent buffer data of a
+>   * given size, that are also used via ctree.h for access to item members by
+> @@ -64,9 +73,9 @@ u##bits btrfs_get_##bits(const struct extent_buffer *eb,		\
+>  		kaddr = folio_address(eb->folios[idx + 1]);		\
+>  		lebytes[1] = *kaddr;					\
+>  	} else {							\
+> -		memcpy(lebytes, kaddr, part);				\
+> -		kaddr = folio_address(eb->folios[idx + 1]);		\
+> -		memcpy(lebytes + part, kaddr, sizeof(u##bits) - part);	\
+> +		memcpy_split_src(lebytes, kaddr,			\
+> +				 folio_address(eb->folios[idx + 1]),	\
+> +				 part, sizeof(u##bits));		\
+>  	}								\
+>  	return get_unaligned_le##bits(lebytes);				\
+>  }									\
+> -- 
+> 2.49.0
+> 
 
