@@ -1,159 +1,152 @@
-Return-Path: <linux-btrfs+bounces-15205-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15206-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19F27AF5D71
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 17:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DEC3AF5D84
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 17:45:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31C3C3AE52D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 15:40:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19AF53A74DE
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 15:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7702F19B7;
-	Wed,  2 Jul 2025 15:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF5A62459D7;
+	Wed,  2 Jul 2025 15:43:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GrUddS/a"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hSRoSC+v";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iq6On60h";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hSRoSC+v";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iq6On60h"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E762F1991
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 15:38:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D90267B01
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 15:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751470720; cv=none; b=uZ3e9jQR3bh+fFu5v1yzFbyqF9DfRZ6lcXiR2bycNNEumg+XBcicn0duj9PkMGCc0Rzrg2aJrsqW/Rxw2YeHwlEeRvZCQH9KvnHc8O1t5PN1sQr07rKVLujo7be85oCGjWzt8rMFXwTPFsnO8UJ74Sbz2M2tQGfBakKo8oWl5cc=
+	t=1751470989; cv=none; b=fgNSaxEtDCtgiZxyLm5vbNjq1h7BnEoh26anFsge+amJFlRtV/R9k2K9BcYY+XDb7kjToOGm5LPxBwlzMAHIfxdVa8OeT0M+Tt2jQixGzyN4V7+9LFO7EbnUlLh1k/dl0Rqiyf4BxJBt8RMtO89Y7ejTfRyssqwlNv32OheaYZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751470720; c=relaxed/simple;
-	bh=7PvH9FsmNL1B6gmW4y0iuXMUxnkiXG7BlZjHxRf3TrE=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D6+vqYUqKzCqjLbcJloo1lxcD7Z1h3Z+ZOt/sNXn1AzkUkAVlrZ9jkoFjqkjwHMD7WEygqR/ASCezxGINpinhaxQ2XmA9+y/5lwMWoYVXbdlXmlPDVoleFn1E4/4vpW7ZRUCKoAhQfMeM8szoWkaG09hKHTgEXTInA/ePeuRnfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GrUddS/a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11C6AC4CEF3
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 15:38:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751470719;
-	bh=7PvH9FsmNL1B6gmW4y0iuXMUxnkiXG7BlZjHxRf3TrE=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=GrUddS/aXxLzQ4CD0tbq+MygTQE9CGKTPbe9qtEyl0KodxzJi+VjRv8xe6TeAcO5A
-	 uNcAjaet6q3G3gQEksy8zXm0iJOqXXpYpZGQCZWnP1IFMhgzTOnzifCl1UMInjYFMY
-	 ExeREydE2dQgIrEkyUJMBvvz6NIfPhChajjuPI4GUt2NjT8Zb6e6cN0sf3PdGaQiV4
-	 41GsPMM0UdHweCw7tWll5RNWY+ivvMJTXnokUCIHKwtaodoXHpVmY86IlRYvl8Bi82
-	 z7nmybgxqDhwE0l9bWjEynp02xzTouwvTeCfdEVhEQpU2Qg3QJudmgi8Cu6favuOM8
-	 +OlzxZpAtcQGQ==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: set search_commit_root to false in iterate_inodes_from_logical()
-Date: Wed,  2 Jul 2025 16:38:32 +0100
-Message-ID: <4e7a7f5f5d2e282b6179f292b9afd6eaf9261967.1751460099.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <cover.1751460099.git.fdmanana@suse.com>
-References: <cover.1751460099.git.fdmanana@suse.com>
+	s=arc-20240116; t=1751470989; c=relaxed/simple;
+	bh=wQVFVe7IVkkEvRkHubgTxA4DRWP5Bv3vuwTeBH/lcgQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k3AotLulK79HkpWB6wWja2G5dnTppHDGBeCSbZI4nxEkb/4HGxLgUKryOhOuSDDrnWRSfUafiOgdMfKMArgjWpP2gP2VeD56QmwRNXKS/YaRDAGdg8sDnrDGY2Ia9f0NR0Is9zu2GExWXKy6K6e2TJk5wjtE5zqGDUliXGDNYv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hSRoSC+v; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iq6On60h; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hSRoSC+v; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iq6On60h; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 56FFE2118C;
+	Wed,  2 Jul 2025 15:43:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751470985;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wQVFVe7IVkkEvRkHubgTxA4DRWP5Bv3vuwTeBH/lcgQ=;
+	b=hSRoSC+v9fIxaZUCQvAfQJodM8p1mi+diByLTNUQV4Ai21pmgG5IOg+TnmJLhCtGAEpIMb
+	25LHtpwKCHV8V6ozbrNmM0mFv+WxVKUo3Za/Twk/cTIK4z8KrZO2rVfJ7StUQxvf+XVEWe
+	tdbHn1U70cr49Wc8Ug3c/9r2/lBj8C8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751470985;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wQVFVe7IVkkEvRkHubgTxA4DRWP5Bv3vuwTeBH/lcgQ=;
+	b=iq6On60hZhW9jFxrvk5ryGftucZPcgF0yYoRFW09wZ1fj7by0ixqOPPrnOfpeOmr/IfN4s
+	dfrL5qhwHC4DMJCg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hSRoSC+v;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=iq6On60h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751470985;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wQVFVe7IVkkEvRkHubgTxA4DRWP5Bv3vuwTeBH/lcgQ=;
+	b=hSRoSC+v9fIxaZUCQvAfQJodM8p1mi+diByLTNUQV4Ai21pmgG5IOg+TnmJLhCtGAEpIMb
+	25LHtpwKCHV8V6ozbrNmM0mFv+WxVKUo3Za/Twk/cTIK4z8KrZO2rVfJ7StUQxvf+XVEWe
+	tdbHn1U70cr49Wc8Ug3c/9r2/lBj8C8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751470985;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wQVFVe7IVkkEvRkHubgTxA4DRWP5Bv3vuwTeBH/lcgQ=;
+	b=iq6On60hZhW9jFxrvk5ryGftucZPcgF0yYoRFW09wZ1fj7by0ixqOPPrnOfpeOmr/IfN4s
+	dfrL5qhwHC4DMJCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 46C1213A24;
+	Wed,  2 Jul 2025 15:43:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id KDIMEYlTZWjGXQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 02 Jul 2025 15:43:05 +0000
+Date: Wed, 2 Jul 2025 17:43:04 +0200
+From: David Sterba <dsterba@suse.cz>
+To: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: convert several int parameters to bool
+Message-ID: <20250702154304.GV31241@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250702143403.931542-1-dsterba@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250702143403.931542-1-dsterba@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 56FFE2118C
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto]
+X-Spam-Score: -4.21
+X-Spam-Level: 
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Jul 02, 2025 at 04:34:03PM +0200, David Sterba wrote:
+> We're almost done cleaning the misused int/bool parameters. Convert a
+> few of them, found by manual grepping as we don't have a tool for that.
+> Note that btrfs_sync_fs() needs an int as it' mandated by the struct
+> super_operations prototype.
 
-There's no point in checking at iterate_inodes_from_logical() if the path
-has search_commit_root set, the only caller never sets search_commit_root
-to true and it doesn't make sense for it ever to be true for the current
-use case (logical_to_ino ioctl). So stop checking for that and since the
-only caller allocates the path just for it to be used by
-iterate_inodes_from_logical(), move the path allocation into that function.
+And with a bit more refined seach I found way more:
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/backref.c | 12 +++++++-----
- fs/btrfs/backref.h |  3 +--
- fs/btrfs/ioctl.c   | 10 +---------
- 3 files changed, 9 insertions(+), 16 deletions(-)
+17 files changed, 56 insertions(+), 63 deletions(-)
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 2e0d959092f5..6a450be293b1 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -2546,17 +2546,20 @@ static int build_ino_list(u64 inum, u64 offset, u64 num_bytes, u64 root, void *c
- }
- 
- int iterate_inodes_from_logical(u64 logical, struct btrfs_fs_info *fs_info,
--				struct btrfs_path *path,
- 				void *ctx, bool ignore_offset)
- {
- 	struct btrfs_backref_walk_ctx walk_ctx = { 0 };
- 	int ret;
- 	u64 flags = 0;
- 	struct btrfs_key found_key;
--	int search_commit_root = path->search_commit_root;
-+	struct btrfs_path *path;
-+
-+	path = btrfs_alloc_path();
-+	if (!path)
-+		return -ENOMEM;
- 
- 	ret = extent_from_logical(fs_info, logical, path, &found_key, &flags);
--	btrfs_release_path(path);
-+	btrfs_free_path(path);
- 	if (ret < 0)
- 		return ret;
- 	if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK)
-@@ -2569,8 +2572,7 @@ int iterate_inodes_from_logical(u64 logical, struct btrfs_fs_info *fs_info,
- 		walk_ctx.extent_item_pos = logical - found_key.objectid;
- 	walk_ctx.fs_info = fs_info;
- 
--	return iterate_extent_inodes(&walk_ctx, search_commit_root,
--				     build_ino_list, ctx);
-+	return iterate_extent_inodes(&walk_ctx, false, build_ino_list, ctx);
- }
- 
- static int inode_to_path(u64 inum, u32 name_len, unsigned long name_off,
-diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-index 61f53825226d..34b0193a181c 100644
---- a/fs/btrfs/backref.h
-+++ b/fs/btrfs/backref.h
-@@ -226,8 +226,7 @@ int iterate_extent_inodes(struct btrfs_backref_walk_ctx *ctx,
- 			  iterate_extent_inodes_t *iterate, void *user_ctx);
- 
- int iterate_inodes_from_logical(u64 logical, struct btrfs_fs_info *fs_info,
--				struct btrfs_path *path, void *ctx,
--				bool ignore_offset);
-+				void *ctx, bool ignore_offset);
- 
- int paths_from_inode(u64 inum, struct inode_fs_paths *ipath);
- 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 503c469249e5..680c4e794e67 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3353,7 +3353,6 @@ static long btrfs_ioctl_logical_to_ino(struct btrfs_fs_info *fs_info,
- 	int size;
- 	struct btrfs_ioctl_logical_ino_args *loi;
- 	struct btrfs_data_container *inodes = NULL;
--	struct btrfs_path *path = NULL;
- 	bool ignore_offset;
- 
- 	if (!capable(CAP_SYS_ADMIN))
-@@ -3387,14 +3386,7 @@ static long btrfs_ioctl_logical_to_ino(struct btrfs_fs_info *fs_info,
- 		goto out_loi;
- 	}
- 
--	path = btrfs_alloc_path();
--	if (!path) {
--		ret = -ENOMEM;
--		goto out;
--	}
--	ret = iterate_inodes_from_logical(loi->logical, fs_info, path,
--					  inodes, ignore_offset);
--	btrfs_free_path(path);
-+	ret = iterate_inodes_from_logical(loi->logical, fs_info, inodes, ignore_offset);
- 	if (ret == -EINVAL)
- 		ret = -ENOENT;
- 	if (ret < 0)
--- 
-2.47.2
-
+I'll probably do another pass once we'll code freeze for 6.17 so there
+are no conflicts with any pending patches.
 
