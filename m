@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-15204-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15205-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C77EBAF5D5A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 17:40:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19F27AF5D71
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 17:42:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07AE94E2549
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 15:40:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31C3C3AE52D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 15:40:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D572F1988;
-	Wed,  2 Jul 2025 15:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7702F19B7;
+	Wed,  2 Jul 2025 15:38:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DgDx/+V8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GrUddS/a"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22945289836
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 15:38:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E762F1991
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 15:38:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751470719; cv=none; b=lCMlHCxft6q9gtGYguorvBT4aRwDQ3UhvtgpSvRBqbJNDVIl79mtLzYGwN9Umxn3xY+ZxbsE1zPVld8eqHH7iqeEF1H5mWRPe/WRNg6heGq/iNe6oOB8bJ/Ol0vpUlpUxnzKqDm7z/xn8PHbkOEZluvkKzIrpjhkvxRvW1o9t38=
+	t=1751470720; cv=none; b=uZ3e9jQR3bh+fFu5v1yzFbyqF9DfRZ6lcXiR2bycNNEumg+XBcicn0duj9PkMGCc0Rzrg2aJrsqW/Rxw2YeHwlEeRvZCQH9KvnHc8O1t5PN1sQr07rKVLujo7be85oCGjWzt8rMFXwTPFsnO8UJ74Sbz2M2tQGfBakKo8oWl5cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751470719; c=relaxed/simple;
-	bh=FF7H/hQPNeSADOR9yj0nwLXKrI9e84Rnr0EpiyRJn8Q=;
+	s=arc-20240116; t=1751470720; c=relaxed/simple;
+	bh=7PvH9FsmNL1B6gmW4y0iuXMUxnkiXG7BlZjHxRf3TrE=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IEeSkXnn4cWQh1AoLRq0OiGsF8qGoRkN52TCc30lVaK5n0asCGuNX8g6rI0jfKJQHXSwNDtHZJ6+LQTT2SNbWvHwqdbP+8fUzj9DW93a468VFGWNRaHj6PNILkryVk5T87mAojdpjWTMoqV7lycgrw+mgjpYwp7ZejZpevSkrq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DgDx/+V8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E6F1C4CEE7
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 15:38:37 +0000 (UTC)
+	 MIME-Version; b=D6+vqYUqKzCqjLbcJloo1lxcD7Z1h3Z+ZOt/sNXn1AzkUkAVlrZ9jkoFjqkjwHMD7WEygqR/ASCezxGINpinhaxQ2XmA9+y/5lwMWoYVXbdlXmlPDVoleFn1E4/4vpW7ZRUCKoAhQfMeM8szoWkaG09hKHTgEXTInA/ePeuRnfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GrUddS/a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11C6AC4CEF3
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 15:38:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751470718;
-	bh=FF7H/hQPNeSADOR9yj0nwLXKrI9e84Rnr0EpiyRJn8Q=;
+	s=k20201202; t=1751470719;
+	bh=7PvH9FsmNL1B6gmW4y0iuXMUxnkiXG7BlZjHxRf3TrE=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=DgDx/+V8kvn6zBDxmW7byNbSWw1+KSClwFGEqR0j4uD4xY9hpQlKMwYRqJCMagpLl
-	 FchYdoo25W5LYCCXXr5WRdWcDXQzztnx0hun8niiYL7ObT0STFEUr8mv+nMe0yAFFH
-	 8lIREzUc1/rCQWazaSnj3k/grWokIHoy0EPc1JKhgrpwPlQvRTUf4F2z9XDEMiQbah
-	 pEIzU3dVlNjPQMTOo68/VnaWqODnl2zfEUCu9LalUMOx5KyuXHp07nH+OB9UpQ8fL1
-	 17qZwGfXUZ1XoowGHAqCxswL7/aG0wSZbFs1p/QJaS7RnU5d3LI4EiMHzkNmKdF22c
-	 LFhjw8GHbIFKw==
+	b=GrUddS/aXxLzQ4CD0tbq+MygTQE9CGKTPbe9qtEyl0KodxzJi+VjRv8xe6TeAcO5A
+	 uNcAjaet6q3G3gQEksy8zXm0iJOqXXpYpZGQCZWnP1IFMhgzTOnzifCl1UMInjYFMY
+	 ExeREydE2dQgIrEkyUJMBvvz6NIfPhChajjuPI4GUt2NjT8Zb6e6cN0sf3PdGaQiV4
+	 41GsPMM0UdHweCw7tWll5RNWY+ivvMJTXnokUCIHKwtaodoXHpVmY86IlRYvl8Bi82
+	 z7nmybgxqDhwE0l9bWjEynp02xzTouwvTeCfdEVhEQpU2Qg3QJudmgi8Cu6favuOM8
+	 +OlzxZpAtcQGQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] btrfs: reduce size of struct tree_mod_elem
-Date: Wed,  2 Jul 2025 16:38:31 +0100
-Message-ID: <2917b083c5d147a0b60bceb23ca33fb49059e16d.1751460099.git.fdmanana@suse.com>
+Subject: [PATCH 3/3] btrfs: set search_commit_root to false in iterate_inodes_from_logical()
+Date: Wed,  2 Jul 2025 16:38:32 +0100
+Message-ID: <4e7a7f5f5d2e282b6179f292b9afd6eaf9261967.1751460099.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1751460099.git.fdmanana@suse.com>
 References: <cover.1751460099.git.fdmanana@suse.com>
@@ -59,107 +59,100 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Several members are used for specific types of tree mod log operations so
-they can be placed in a union in order to reduce the structure's size.
-
-This reduces the structure size from 112 bytes to 88 bytes on x86_64,
-so we can now use the kmalloc-96 slab instead of the kmalloc-128 slab.
+There's no point in checking at iterate_inodes_from_logical() if the path
+has search_commit_root set, the only caller never sets search_commit_root
+to true and it doesn't make sense for it ever to be true for the current
+use case (logical_to_ino ioctl). So stop checking for that and since the
+only caller allocates the path just for it to be used by
+iterate_inodes_from_logical(), move the path allocation into that function.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-mod-log.c | 53 +++++++++++++++++++++++++----------------
- 1 file changed, 33 insertions(+), 20 deletions(-)
+ fs/btrfs/backref.c | 12 +++++++-----
+ fs/btrfs/backref.h |  3 +--
+ fs/btrfs/ioctl.c   | 10 +---------
+ 3 files changed, 9 insertions(+), 16 deletions(-)
 
-diff --git a/fs/btrfs/tree-mod-log.c b/fs/btrfs/tree-mod-log.c
-index 41dcd296b003..d15a84f695e4 100644
---- a/fs/btrfs/tree-mod-log.c
-+++ b/fs/btrfs/tree-mod-log.c
-@@ -27,18 +27,29 @@ struct tree_mod_elem {
- 	/* This is used for BTRFS_MOD_LOG_KEY* and BTRFS_MOD_LOG_ROOT_REPLACE. */
- 	u64 generation;
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index 2e0d959092f5..6a450be293b1 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -2546,17 +2546,20 @@ static int build_ino_list(u64 inum, u64 offset, u64 num_bytes, u64 root, void *c
+ }
  
--	/* Those are used for op == BTRFS_MOD_LOG_KEY_{REPLACE,REMOVE}. */
--	struct btrfs_disk_key key;
--	u64 blockptr;
--
--	/* This is used for op == BTRFS_MOD_LOG_MOVE_KEYS. */
--	struct {
--		int dst_slot;
--		int nr_items;
--	} move;
--
--	/* This is used for op == BTRFS_MOD_LOG_ROOT_REPLACE. */
--	struct tree_mod_root old_root;
-+	union {
-+		/*
-+		 * This is used for the following op types:
-+		 *
-+		 *    BTRFS_MOD_LOG_KEY_REMOVE_WHILE_FREEING
-+		 *    BTRFS_MOD_LOG_KEY_REMOVE_WHILE_MOVING
-+		 *    BTRFS_MOD_LOG_KEY_REMOVE
-+		 *    BTRFS_MOD_LOG_KEY_REPLACE
-+		 */
-+		struct {
-+			struct btrfs_disk_key key;
-+			u64 blockptr;
-+		} slot_change;
-+
-+		/* This is used for op == BTRFS_MOD_LOG_MOVE_KEYS. */
-+		struct {
-+			int dst_slot;
-+			int nr_items;
-+		} move;
-+
-+		/* This is used for op == BTRFS_MOD_LOG_ROOT_REPLACE. */
-+		struct tree_mod_root old_root;
-+	};
- };
- 
- /*
-@@ -228,15 +239,17 @@ static struct tree_mod_elem *alloc_tree_mod_elem(const struct extent_buffer *eb,
+ int iterate_inodes_from_logical(u64 logical, struct btrfs_fs_info *fs_info,
+-				struct btrfs_path *path,
+ 				void *ctx, bool ignore_offset)
  {
- 	struct tree_mod_elem *tm;
- 
-+	/* Can't be one of these types, due to union on struct tree_mod_elem. */
-+	ASSERT(op != BTRFS_MOD_LOG_MOVE_KEYS);
-+	ASSERT(op != BTRFS_MOD_LOG_ROOT_REPLACE);
+ 	struct btrfs_backref_walk_ctx walk_ctx = { 0 };
+ 	int ret;
+ 	u64 flags = 0;
+ 	struct btrfs_key found_key;
+-	int search_commit_root = path->search_commit_root;
++	struct btrfs_path *path;
 +
- 	tm = kzalloc(sizeof(*tm), GFP_NOFS);
- 	if (!tm)
- 		return NULL;
++	path = btrfs_alloc_path();
++	if (!path)
++		return -ENOMEM;
  
- 	tm->logical = eb->start;
--	if (op != BTRFS_MOD_LOG_KEY_ADD) {
--		btrfs_node_key(eb, &tm->key, slot);
--		tm->blockptr = btrfs_node_blockptr(eb, slot);
+ 	ret = extent_from_logical(fs_info, logical, path, &found_key, &flags);
+-	btrfs_release_path(path);
++	btrfs_free_path(path);
+ 	if (ret < 0)
+ 		return ret;
+ 	if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK)
+@@ -2569,8 +2572,7 @@ int iterate_inodes_from_logical(u64 logical, struct btrfs_fs_info *fs_info,
+ 		walk_ctx.extent_item_pos = logical - found_key.objectid;
+ 	walk_ctx.fs_info = fs_info;
+ 
+-	return iterate_extent_inodes(&walk_ctx, search_commit_root,
+-				     build_ino_list, ctx);
++	return iterate_extent_inodes(&walk_ctx, false, build_ino_list, ctx);
+ }
+ 
+ static int inode_to_path(u64 inum, u32 name_len, unsigned long name_off,
+diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+index 61f53825226d..34b0193a181c 100644
+--- a/fs/btrfs/backref.h
++++ b/fs/btrfs/backref.h
+@@ -226,8 +226,7 @@ int iterate_extent_inodes(struct btrfs_backref_walk_ctx *ctx,
+ 			  iterate_extent_inodes_t *iterate, void *user_ctx);
+ 
+ int iterate_inodes_from_logical(u64 logical, struct btrfs_fs_info *fs_info,
+-				struct btrfs_path *path, void *ctx,
+-				bool ignore_offset);
++				void *ctx, bool ignore_offset);
+ 
+ int paths_from_inode(u64 inum, struct inode_fs_paths *ipath);
+ 
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 503c469249e5..680c4e794e67 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3353,7 +3353,6 @@ static long btrfs_ioctl_logical_to_ino(struct btrfs_fs_info *fs_info,
+ 	int size;
+ 	struct btrfs_ioctl_logical_ino_args *loi;
+ 	struct btrfs_data_container *inodes = NULL;
+-	struct btrfs_path *path = NULL;
+ 	bool ignore_offset;
+ 
+ 	if (!capable(CAP_SYS_ADMIN))
+@@ -3387,14 +3386,7 @@ static long btrfs_ioctl_logical_to_ino(struct btrfs_fs_info *fs_info,
+ 		goto out_loi;
+ 	}
+ 
+-	path = btrfs_alloc_path();
+-	if (!path) {
+-		ret = -ENOMEM;
+-		goto out;
 -	}
-+	btrfs_node_key(eb, &tm->slot_change.key, slot);
-+	tm->slot_change.blockptr = btrfs_node_blockptr(eb, slot);
- 	tm->op = op;
- 	tm->slot = slot;
- 	tm->generation = btrfs_node_ptr_generation(eb, slot);
-@@ -854,8 +867,8 @@ static void tree_mod_log_rewind(struct btrfs_fs_info *fs_info,
- 			fallthrough;
- 		case BTRFS_MOD_LOG_KEY_REMOVE_WHILE_MOVING:
- 		case BTRFS_MOD_LOG_KEY_REMOVE:
--			btrfs_set_node_key(eb, &tm->key, tm->slot);
--			btrfs_set_node_blockptr(eb, tm->slot, tm->blockptr);
-+			btrfs_set_node_key(eb, &tm->slot_change.key, tm->slot);
-+			btrfs_set_node_blockptr(eb, tm->slot, tm->slot_change.blockptr);
- 			btrfs_set_node_ptr_generation(eb, tm->slot,
- 						      tm->generation);
- 			n++;
-@@ -864,8 +877,8 @@ static void tree_mod_log_rewind(struct btrfs_fs_info *fs_info,
- 			break;
- 		case BTRFS_MOD_LOG_KEY_REPLACE:
- 			BUG_ON(tm->slot >= n);
--			btrfs_set_node_key(eb, &tm->key, tm->slot);
--			btrfs_set_node_blockptr(eb, tm->slot, tm->blockptr);
-+			btrfs_set_node_key(eb, &tm->slot_change.key, tm->slot);
-+			btrfs_set_node_blockptr(eb, tm->slot, tm->slot_change.blockptr);
- 			btrfs_set_node_ptr_generation(eb, tm->slot,
- 						      tm->generation);
- 			break;
+-	ret = iterate_inodes_from_logical(loi->logical, fs_info, path,
+-					  inodes, ignore_offset);
+-	btrfs_free_path(path);
++	ret = iterate_inodes_from_logical(loi->logical, fs_info, inodes, ignore_offset);
+ 	if (ret == -EINVAL)
+ 		ret = -ENOENT;
+ 	if (ret < 0)
 -- 
 2.47.2
 
