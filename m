@@ -1,160 +1,127 @@
-Return-Path: <linux-btrfs+bounces-15211-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15212-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D88CAF61E2
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 20:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B0FF5AF62DB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 21:51:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01AA2179BD8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 18:53:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2B9D521EE9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jul 2025 19:51:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F5B221F10;
-	Wed,  2 Jul 2025 18:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503922F5C43;
+	Wed,  2 Jul 2025 19:51:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="hwzqoX0v";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iHjJLx3R"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="QUHkN5Iy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087D91BC099
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 18:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291E02D46AE
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Jul 2025 19:51:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751482387; cv=none; b=Y0n3sWgzqIdUFTXgyuRkovs0QFqKC8DjkZ0tNIDKEpUgOR8p4tg33Ty8gp9ppRh28kbVpGmm6Dq+nYa+WxWCz6k/DAVjETdSjcUXbvyGmIKYqAzfTXUf5+qz2onNIlQ2badh214jHxT6KlNswCNHZXJvIPWZD7JSk1SDbdU/fMQ=
+	t=1751485903; cv=none; b=JSqDZipT1Ty3JFjY23CIlWg+gtZsNVeGdh3cuqYZjCOuz+jetUN8RdrDS1RhB5coy1Sqz2vqJjRoZ8NwwfGPZ6eA5ecJc7oaKFP3S7VuON9rOOZn9IoXC/OuEDHDZLysY0ahbFYv+ypu9BX7vIrVOGwYmC9P/KlGd1uYfVoYSkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751482387; c=relaxed/simple;
-	bh=fffQpfN8O1E3BNloqh+bO9wuFbYG+lrrFaGM64jDrgo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WtGLiScrLX6CxOCe6xhFWvZzUT0cui6kuHF+KBjSFQQoMw4EWN1O6x4adXK+5hGHymn+tvsGaRlzOWBnu5ceVxPBxjKcu7yqsaHnJ23QBu/R5A5nP/AWJ0WVQzC2B6zcdv+FV5SqqVycLRmLfEQLncXN6WMxz/FhF/LGxg46N3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=hwzqoX0v; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iHjJLx3R; arc=none smtp.client-ip=103.168.172.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfout.phl.internal (Postfix) with ESMTP id F2D4AEC010E;
-	Wed,  2 Jul 2025 14:53:04 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Wed, 02 Jul 2025 14:53:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1751482384; x=1751568784; bh=R935fOF5bZ
-	wmg41+uXmMMwGjAXjYIW5s7TZ5yarSLIU=; b=hwzqoX0vD/VtT6E1fkPdHEFF2A
-	rr29OK71WciGqqnttHUe08lNJoOTlc93+K1wmOfJy8SThwtuzparplXc3gpCeVVx
-	QBE5RGryFVnE2hDwd5aG9KhHXkXb7Q3r511xpOhYllOYVVhDDBzHFto3gncF6J58
-	J03dJX5w0ufccX+meQ3qgfZxSUXoJybRNIoNniwxmhzDmZDxzdD1u59Yuh+iMT2/
-	AOZY4i5sfL04Ny6DilL0A/exXbhYVnwHx+soF1mSDYZQr+Tkcy9cGm/WNK5vnk36
-	Rr9F3wxwYC+nGp8+m+kTngM1EmBUw3N3R4jAho2FOJbEMQrl8DcjoFtL+CAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1751482384; x=1751568784; bh=R935fOF5bZwmg41+uXmMMwGjAXjYIW5s7TZ
-	5yarSLIU=; b=iHjJLx3RgafiAOuQ8dBtsNgLPNvy+8y9MsSLSvO6z3iZyrxKtHP
-	22uHdQKLPOR+AIxNt1GxdkDAlFWnuJkhG/Nl59pC5aYIfd1qWXty4KLlCAEoYcmM
-	zZOSYDjVMIuwjbv6loYeGi76lQ+VdYb9xpSWktKDSnDbLA5Ypt5N84iP1tF2mbVQ
-	d7zvN/Wck75u7TVaopar7JMGMafA3mE6cj/kF5LFBiB57p6WE6ueY/Ky3vpwDxIT
-	FSpwDtCtrkM+B1EPhO4MDWJxw7XfYbwOd4TrVQ9ZXTO/vR8cyPuMIQdwvXbGAqsD
-	vnJmpJm2ULXVobLabxnIS0mw9+DKvdqOnew==
-X-ME-Sender: <xms:EIBlaIFepJ35lZGM3oaljfnJRVDaEY6son4QPsXVFls4pa2Dq9rOzQ>
-    <xme:EIBlaBU_xhCduTaTthf3xFoP7Cp4WQNJqydZB_qK2qUI_QCAWKyYLLcSLahKIcMJA
-    kSDBeajMV-dxzruEPk>
-X-ME-Received: <xmr:EIBlaCIS0pWIlDrmjhZ93zxcywxaaLY9rcaH6IiTnYlt_6jw7ayGz4ghaFu60XgX_WDm9gtp9iWlCsBGu_IYRddXNTs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddukedujecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceu
-    uhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephedthf
-    evgffhtdevgffhlefhgfeuueegtdevudeiheeiheetleeghedvfeegfeegnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepvddp
-    mhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepughsthgvrhgsrgesshhushgvrdgtoh
-    hmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhr
-    gh
-X-ME-Proxy: <xmx:EIBlaKGw9_4yaUrYWdJ21WFYzNdnkCVGabakCpgXfEfjtJgzFh0ahw>
-    <xmx:EIBlaOWe1sYrWnN7acyYPbZVXk4BneYFfXkGout07mwgvOA_ith6RQ>
-    <xmx:EIBlaNMBJg5EbKwoVNopooPpuWEox086rlMnwuPCyJ02sLp6w-9_mg>
-    <xmx:EIBlaF3q80anf8p31HBVXPV8JwRhuW3jlcEGY1S9LPsJwog84GL72w>
-    <xmx:EIBlaKksNltzd9l0LGQ5eCRnadzjsQV7MX6qhLkqXvWro1opVWBqbIWv>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 2 Jul 2025 14:53:04 -0400 (EDT)
-Date: Wed, 2 Jul 2025 11:54:40 -0700
-From: Boris Burkov <boris@bur.io>
-To: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/7] Set/get accessor speedups
-Message-ID: <20250702185440.GD2308047@zen.localdomain>
-References: <cover.1751390044.git.dsterba@suse.com>
+	s=arc-20240116; t=1751485903; c=relaxed/simple;
+	bh=s084wtR88k+Zm0T48J86wDm0Hr7gnC1awK4eSCCArW4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UaG3KN4MvylhkEzlcRIel5V0TYwpxBA1Ppwen+TL/d0eiYs+LnDf6HNEUlncJLcUX9TItIVJ6ku9NmQ3lov/KsBQr/6rGxFE8uxA5xW2MNY7ZOB+yTcgF0SiA1xzFkJhJU78Nr2SKICCaNUrel9VXTQwM0WPCv+Zq9QxgF7sExc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=QUHkN5Iy; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2369da67bacso7509775ad.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Jul 2025 12:51:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1751485900; x=1752090700; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FztTel//e5oyaa7vSr+Ve5ZZ9B/kFDNC6EmcHFeFbgE=;
+        b=QUHkN5Iywct1or5wb2t3ssdRk8eTVsaWTmsS4Ap4npa7wXD47/p1UC8VpWb7s/t2pk
+         jWUU0xjgQdLmyVbtVcsOBKatgYYT6keeN8X8E0812GQ/wC+iWbxzPTzGwL6dIDL+NHrN
+         hzJO3Q7ibV0Hi0MrNNcHnrIwfWxT6gGKs/EvRVgSu/doAFCHmCsyQ6Il5307C4hu/JGu
+         leDzC1nNzwrSesoWI/JtgcfiDgUWCldox/r+vXzmS2EM0na8OB4SFSILY7Q4PAGVLis+
+         RnsMFvcp+rm4FhqTIe6bD+YAJuhyX9mRvt0Q15/Oxu+ocxqx68bd7dywHEaZp8RWp7g4
+         oVJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751485900; x=1752090700;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FztTel//e5oyaa7vSr+Ve5ZZ9B/kFDNC6EmcHFeFbgE=;
+        b=I7pSqz9tSjR2zgY+phOM/AuQlBQ3wxuZJtpX7G4Yky2OahMjR0k9heHGxQpA8X4G9W
+         WAl0Csukfk/1864hv86g7ZgTd6VjbqL89WJpwkmVHartZg/uEjupxzHY8HlSqxG+mPhk
+         JqOb3qiAa94MkAT5a99v4mVUsCpbS68HgAJjhYRPA9AoLtjHUsnal4aUno07j24tJfZ1
+         aTH21R0uMcZrxfjZNuoEtMW3aJJcUIBy9UCuOsMM99ljfH1n7Q80rx9SUx3+YegeUiIn
+         Df4lp7D2RORGqrwkEtyEP0YrlZcIq7WoFepY+YqAtvCeoARJLyEMexkE5ASssMwybLVh
+         UQsA==
+X-Forwarded-Encrypted: i=1; AJvYcCU6INp/r3X1Qc3HKX1wez4YhRBjczfqTmaOC/k0M7vVBOT0mNqgi8JndS3px5lf52d7dI0o8Rt8Fq8Cig==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxzkqORf20q9OYuchecCmbeNh4FOu5lXrqvDboMCgazOLer9vJ0
+	m6iCZixMikO+KkgzHo3uvePbJ7KH1GzfQ9alC/sK0usie3H3c9syEb+dxNyPzJ67WmzHixgdTW+
+	a1dvy4aad8fZV9CHuccIMw4vSK1twvfxlqbrq57ppag==
+X-Gm-Gg: ASbGncvOI0Vs1W1Ot4rULRp+gR2f/88RsBpPMJgaTPl5P/Xv6atQQhn8KuMIas/wwKO
+	qxWaObmVTnvwho+jKCAvEMASPL5H982JGNr+VFlQzzjW2eSJqw9tInfZtY1G8a3c1+NsLwC8rkW
+	vK+lnGVxpHQPfr/63BYy5M7Eb3xIcaqVS8n32Bo3jsw9Q1tNQ3L125Vg==
+X-Google-Smtp-Source: AGHT+IHzKax4rWzgTagFExREvUdZKzP7gz6GIK5OKEX/A1gv3DbccqXrJXg9Q79q2ToGLz5xqYGJ7FpbAJTwCWI+3ts=
+X-Received: by 2002:a17:903:124d:b0:23c:5f36:46a6 with SMTP id
+ d9443c01a7336-23c6fcea87bmr20535465ad.12.1751485900234; Wed, 02 Jul 2025
+ 12:51:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1751390044.git.dsterba@suse.com>
+References: <20250619192748.3602122-1-csander@purestorage.com>
+ <20250619192748.3602122-4-csander@purestorage.com> <c83a2cb6-3486-4977-9e1e-abda015a4dad@kernel.dk>
+In-Reply-To: <c83a2cb6-3486-4977-9e1e-abda015a4dad@kernel.dk>
+From: Caleb Sander Mateos <csander@purestorage.com>
+Date: Wed, 2 Jul 2025 15:51:28 -0400
+X-Gm-Features: Ac12FXzYvCEJprNA84OmEAiR_yc-BbACnKsWI1JFO0q24cJQIzcr5F8BHED8eZ4
+Message-ID: <CADUfDZr6A51QxVWw2hJF6_FZW7QYoUHwH-JtNEgmkAefMiUjqQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] btrfs/ioctl: store btrfs_uring_encoded_data in io_btrfs_cmd
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+	Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 01, 2025 at 07:23:47PM +0200, David Sterba wrote:
-> Followup to [1] bringing refactoring that allows compiler to do more
-> optimizations and stack usage reduction. As the set/get helpers are
-> heavily used in many functions this improves performance. I will provide
-> some numbers later as I've done mostly functional tests. During the
-> development I've identified a few more possible optimizations to improve
-> performance, but this series is OK as is.
-> 
-> Overall effects of this series:
-> 
-> Stack:
-> 
->   btrfs_set_16                                          -72 (88 -> 16)
->   btrfs_get_32                                          -56 (80 -> 24)
->   btrfs_set_8                                           -72 (88 -> 16)
->   btrfs_set_64                                          -64 (88 -> 24)
->   btrfs_get_8                                           -72 (80 -> 8)
->   btrfs_get_16                                          -64 (80 -> 16)
->   btrfs_set_32                                          -64 (88 -> 24)
->   btrfs_get_64                                          -56 (80 -> 24)
-> 
->   NEW (48):
-> 	  report_setget_bounds                           48
->   LOST/NEW DELTA:      +48
->   PRE/POST DELTA:     -472
-> 
-> Code:
-> 
->      text    data     bss     dec     hex filename
->   1456601  115665   16088 1588354  183c82 pre/btrfs.ko
->   1454229  115665   16088 1585982  18333e post/btrfs.ko
-> 
->   DELTA: -2372
+On Tue, Jul 1, 2025 at 3:06=E2=80=AFPM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> > @@ -4811,11 +4813,15 @@ static int btrfs_uring_encoded_read(struct io_u=
+ring_cmd *cmd, unsigned int issue
+> >       loff_t pos;
+> >       struct kiocb kiocb;
+> >       struct extent_state *cached_state =3D NULL;
+> >       u64 start, lockend;
+> >       void __user *sqe_addr;
+> > -     struct btrfs_uring_encoded_data *data =3D io_uring_cmd_get_async_=
+data(cmd)->op_data;
+> > +     struct io_btrfs_cmd *bc =3D io_uring_cmd_to_pdu(cmd, struct io_bt=
+rfs_cmd);
+> > +     struct btrfs_uring_encoded_data *data =3D NULL;
+> > +
+> > +     if (cmd->flags & IORING_URING_CMD_REISSUE)
+> > +             data =3D bc->data;
+>
+> Can this be a btrfs io_btrfs_cmd specific flag? Doesn't seem like it
+> would need to be io_uring wide.
 
-I sent some minor inline questions / suggestions, but overall this looks
-great and each patch makes a good deal of sense on its own.
+Maybe. But where are you thinking it would be stored? I don't think
+io_uring_cmd's pdu field would work because it's not initialized
+before the first call to ->uring_cmd(). That's the whole reason I
+needed to add a flag to tell whether this was the first call to
+->uring_cmd() or a subsequent one.
+I also put the flag in the uring_cmd layer because that's where
+op_data was defined. Even though btrfs is the only current user of
+op_data, it seems like it was intended as a generic mechanism that
+other ->uring_cmd() implementations might want to use. It seems like
+the same argument would apply to this flag.
+Thoughts?
 
-Reviewed-by: Boris Burkov <boris@bur.io>
-
-> 
-> [1] https://lore.kernel.org/linux-btrfs/cover.1751032655.git.dsterba@suse.com/
-> 
-> David Sterba (7):
->   btrfs: accessors: simplify folio bounds checks
->   btrfs: accessors: use type sizeof constants directly
->   btrfs: accessors: inline eb bounds check and factor out the error
->     report
->   btrfs: accessors: compile-time fast path for u8
->   btrfs: accessors: compile-time fast path for u16
->   btrfs: accessors: set target address at initialization
->   btrfs: accessors: factor out split memcpy with two sources
-> 
->  fs/btrfs/accessors.c | 84 +++++++++++++++++++++++++++-----------------
->  1 file changed, 51 insertions(+), 33 deletions(-)
-> 
-> -- 
-> 2.49.0
-> 
+Best,
+Caleb
 
