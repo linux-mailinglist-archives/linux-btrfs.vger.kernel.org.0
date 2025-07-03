@@ -1,51 +1,77 @@
-Return-Path: <linux-btrfs+bounces-15225-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15227-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F2AEAF7D82
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 18:13:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A247AF8159
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 21:29:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C3FC582E78
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 16:10:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21E933BEF28
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 19:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1DC2EE98D;
-	Thu,  3 Jul 2025 16:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F482F5493;
+	Thu,  3 Jul 2025 19:29:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WYOTfua2"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Ca9+/5Bf";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GevgGAV0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E002E7F39
-	for <linux-btrfs@vger.kernel.org>; Thu,  3 Jul 2025 16:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C648F2F2736
+	for <linux-btrfs@vger.kernel.org>; Thu,  3 Jul 2025 19:29:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751559010; cv=none; b=tCK/IqaUF/n5hLD4dFG7Zl0yY1nX1j7eCq3cLz9gAmal57MKmXAcJBSLl4Mh90L3eS30NgY6F3FbwCIiuz6yjL6AecW/VpHzbKHRazlOLOFZULVX87Xo6t0mnZ6k/lmodyIvfbNzPBSiGniVT95WHs7F+niuwmC2RJCNCC6Y9ng=
+	t=1751570978; cv=none; b=HuMX7T8/hGP3tXwqBbOaUB1UvIrPQ8FGSPhd2avAhU95zHBReknIxfYPBvyZ7selx7nz/pPalKhCXMsdend72IcpCkRKwYGrfm7xdbzoBdAwz5URcci/ovRFIpgpeE1K0NfKAXllIgeLrcs36zb4FE0KoNsaa27u9tDRIKuP9Qo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751559010; c=relaxed/simple;
-	bh=3/y/G/6FILEakliPdvqz5NhC++f0oqwChijMn3EzQ1o=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=RTijkJ4xYi2MkMuPom1ikmiWPDyuYYhnTKRfHdfJs0FoTt1iJrWqUZq/CYYAufNvACrmD+MV378dlKszgPkFMZVtqQ7SbnnRgRuRiE0y0Ytl2g6SNEpQque2VbK7NvLEOiBpPgMPfCG9QejOlVfiumpaNTI57ASJ/uk7Rlp2hag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WYOTfua2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C81CFC4CEE3
-	for <linux-btrfs@vger.kernel.org>; Thu,  3 Jul 2025 16:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751559010;
-	bh=3/y/G/6FILEakliPdvqz5NhC++f0oqwChijMn3EzQ1o=;
-	h=From:To:Subject:Date:From;
-	b=WYOTfua2UfybiNB6/jXdo+OFfayiOvFiHRbwI/BmZ0Hw81NNeu3vLsxN8JTk4nQVh
-	 WNS4Go31XeOm7vrWFzFAMQjlgx46FzVEJyxy3PP4Tqcpm25eOBT49Gjgi16OLLYcVA
-	 NPkMiw3FIrP+u/zOqjsIAmY7kd76oakomG8TaVnkXZwfOGlONTIZDaCDR98IuMLfRp
-	 2aD5dkRybZBFpK4e+Vl1rT223dOzhbTY79uKRZm8NZn+RVX4R1gKIoF6N8BdvqqZq2
-	 A98OYfkaOjjX7pA4/U9+KGdjKFRAIMp7Jv9s8CoLYxrSjE8VTuO4zZonjQsKZVw4ia
-	 IwlW4F958FPFg==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: send: directly return strcmp() result when comparing recorded refs
-Date: Thu,  3 Jul 2025 17:10:06 +0100
-Message-ID: <30bcc022fde1071a86db10f10c984bddd87fcef9.1751558928.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
+	s=arc-20240116; t=1751570978; c=relaxed/simple;
+	bh=CnJJn+MBhMRbk/qCHnFJEq3nhBL1fATJfmVPRhO+GtU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZNiCFqKEcsCxIovCV+b9bBzTlsORLXjTOm5MgA83eS8vAFAJPVV0Nk0E3VgXcaQhbXPl+g5KR+OHLJxoLYGUcdDddDEK3LgH0LnUCC4Vv8r7+ElSCL4CUunKVK2E0IWWkE/2N8+WwOHtuS/Y5k2MHEEcCFEEVyJM3nGrDZx+d30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Ca9+/5Bf; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GevgGAV0; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D21611F387;
+	Thu,  3 Jul 2025 19:29:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1751570973; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=p6OPTcT77LxACJK3g6G9aNPqhjTF+SGH5Xoofm93IyA=;
+	b=Ca9+/5BfSGkXdDJZb1PArnPfdiAP7tlrBpQokbivRDf29p4aMkOZcPHC61tzY/XtnzBG8T
+	T9obhYVnqIWGnqiyv5nZdccVq0GnASNm98AjkxFsIpg+v7pvnqyLrDYg5b8sAPeS2wQBuk
+	o5GZ8mEXuLepd2qZPEMmPKSbZ5zV1mA=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=GevgGAV0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1751570972; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=p6OPTcT77LxACJK3g6G9aNPqhjTF+SGH5Xoofm93IyA=;
+	b=GevgGAV07SwiPSnYr7+I3DmVGJI8dLthFJwAcvgxnQ0sAQIvB8GrW0jaeqm/WJjfbiE+aQ
+	unW0h3Y6lf0ACViYRBo4YrC9JVF5x3bcpQm7ArzkR0jsYPHzkL1V8tdbtO+la6BPUUg8Hs
+	8aGdUyiJq6c7LpDA3jWJx8e30xTxSrk=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BF7FB13721;
+	Thu,  3 Jul 2025 19:29:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id K3y4LhzaZmgqPwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Thu, 03 Jul 2025 19:29:32 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.16-rc5
+Date: Thu,  3 Jul 2025 21:29:28 +0200
+Message-ID: <cover.1751564436.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -53,65 +79,80 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: D21611F387
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 
-From: Filipe Manana <fdmanana@suse.com>
+Hi,
 
-There's no point in converting the return values from strcmp() as all we
-need is that it returns a negative value if the first argument is less
-than the second, a positive value if it's greater and 0 if equal. We do
-not have a need for -1 instead of any other negative value and no need
-for 1 instead of any other positive value - that's all that rb_find()
-needs and no where else we need specific negative and positive values.
+please pull a few more fixes. There are mostly tree-log fixes and a free
+space tree rebuild fix.
 
-So remove the intermediate local variable and checks and return directly
-the result from strcmp().
+Thanks.
 
-This also reduces the module's text size.
+- tree-log fixes
+  - fixes of log tracking of directories and subvolumes
+  - fix iteration and error handling of inode references during log
+    replay
 
-Before:
+- fix free space tree rebuild (reported by syzbot)
 
-  $ size fs/btrfs/btrfs.ko
-     text	   data	    bss	    dec	    hex	filename
-  1888116	 161347	  16136	2065599	 1f84bf	fs/btrfs/btrfs.ko
+----------------------------------------------------------------
+The following changes since commit c0d90a79e8e65b89037508276b2b31f41a1b3783:
 
-After:
+  btrfs: zoned: fix alloc_offset calculation for partly conventional block groups (2025-06-19 15:21:15 +0200)
 
-  $ size fs/btrfs/btrfs.ko
-     text	   data	    bss	    dec	    hex	filename
-  1888052	 161347	  16136	2065535	 1f847f	fs/btrfs/btrfs.ko
+are available in the Git repository at:
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/send.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.16-rc4-tag
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 01aab5b7c93a..09822e766e41 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -4628,7 +4628,6 @@ static int rbtree_ref_comp(const void *k, const struct rb_node *node)
- {
- 	const struct recorded_ref *data = k;
- 	const struct recorded_ref *ref = rb_entry(node, struct recorded_ref, node);
--	int result;
- 
- 	if (data->dir > ref->dir)
- 		return 1;
-@@ -4642,12 +4641,7 @@ static int rbtree_ref_comp(const void *k, const struct rb_node *node)
- 		return 1;
- 	if (data->name_len < ref->name_len)
- 		return -1;
--	result = strcmp(data->name, ref->name);
--	if (result > 0)
--		return 1;
--	if (result < 0)
--		return -1;
--	return 0;
-+	return strcmp(data->name, ref->name);
- }
- 
- static bool rbtree_ref_less(struct rb_node *node, const struct rb_node *parent)
--- 
-2.47.2
+for you to fetch changes up to 157501b0469969fc1ba53add5049575aadd79d80:
 
+  btrfs: use btrfs_record_snapshot_destroy() during rmdir (2025-06-27 19:58:12 +0200)
+
+----------------------------------------------------------------
+Filipe Manana (7):
+      btrfs: fix failure to rebuild free space tree using multiple transactions
+      btrfs: fix missing error handling when searching for inode refs during log replay
+      btrfs: fix iteration of extrefs during log replay
+      btrfs: fix inode lookup error handling during log replay
+      btrfs: record new subvolume in parent dir earlier to avoid dir logging races
+      btrfs: propagate last_unlink_trans earlier when doing a rmdir
+      btrfs: use btrfs_record_snapshot_destroy() during rmdir
+
+ fs/btrfs/block-group.h     |   2 +
+ fs/btrfs/free-space-tree.c |  40 +++++++++++++
+ fs/btrfs/inode.c           |  36 ++++++------
+ fs/btrfs/ioctl.c           |   4 +-
+ fs/btrfs/tree-log.c        | 137 +++++++++++++++++++++++----------------------
+ 5 files changed, 131 insertions(+), 88 deletions(-)
 
