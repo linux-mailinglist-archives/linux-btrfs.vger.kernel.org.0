@@ -1,215 +1,189 @@
-Return-Path: <linux-btrfs+bounces-15230-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15231-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCE32AF8255
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 22:57:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E736CAF8282
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 23:14:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 412D67A94DC
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 20:56:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47B54584AAD
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 21:14:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 128942BE643;
-	Thu,  3 Jul 2025 20:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9767B2BE7C7;
+	Thu,  3 Jul 2025 21:14:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0prnCv6D";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AVNavfso";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="f+4LH8dI";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NZtkW7Dg"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fM9x0Xmt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076B7770E2
-	for <linux-btrfs@vger.kernel.org>; Thu,  3 Jul 2025 20:57:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 864B32BD5BF
+	for <linux-btrfs@vger.kernel.org>; Thu,  3 Jul 2025 21:14:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751576243; cv=none; b=auz4jdHhopWirTryRfYlVJlYJSUa/I85J45sPYI5w+MEAaifPnzYF+UX6ZrwIppp5TR1bS3zG2tRnUrm/X0fIjbyM8Ao1KB9Ese1LNlgJ9sce5q+Bn8Cf24zVIx47MU+f5HmwgWVdt7/GnK4FO27NSOhmtqa650t4uD1tNPJXRc=
+	t=1751577257; cv=none; b=sZD1EyJ0iypYixXSVFAYxyQfJ+6rHvqn6r63mKLQtq9O4OPXV5jz48qkTEwHSdlira59G59dhg7i9kLxscAD/U41c4lEBRtMwByzPLyc6cW2O2DNjAeEzDcMmSrg1XYwiDK1QZHFpCjfupazD9AwiLg3pxdK5a8TK4PyleVHblI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751576243; c=relaxed/simple;
-	bh=s4pCe8fleBoXDvdhvfGnYIOl55Iy0dZk3X2NWZiT528=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Um6uQe+/0v4u4TQRddObAj7zA0LysnYGbgdLYL7FCWzCYbTUmlVPtvkGRIcuo8PEnIX8HloNXNgRz3v77mvdW5bBXPCZTtA/2aD5Sq0o7cC4XPJ8+PfQiRmc+pRXxdqmHhP1/TqIFc2S761OjTQ3rJtQisYGapn2hzAsMyDUeL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0prnCv6D; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AVNavfso; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=f+4LH8dI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NZtkW7Dg; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B231121185;
-	Thu,  3 Jul 2025 20:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751576237;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TateqvmmRKYA9Al2Kr2Ixdaolsmn3AGnez5p4BZWcfQ=;
-	b=0prnCv6DYRJCTHWjQBYWe9Nx59XS/PaTQfy5D7X+gCEDb5/MGPwL/OyYwph00MJx5+DsJa
-	mv8GzWv1Lbn9J4R42UdPjJCIgmZZeIrDpBBo8Mzw0Ty+zOfjmazD8CTQ4umZGQA7AFeKNr
-	ZC2y1sd7WJoa+MNn/8cuYjZhSPMoj4s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751576237;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TateqvmmRKYA9Al2Kr2Ixdaolsmn3AGnez5p4BZWcfQ=;
-	b=AVNavfsouWcWBMimFlAozjbgSCT0dwl3FTdJm4vjKXeGtiFF1SLMu/OplsLf1ByDNluBNE
-	2yPzOxZUyXD6iiCg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=f+4LH8dI;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=NZtkW7Dg
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751576235;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TateqvmmRKYA9Al2Kr2Ixdaolsmn3AGnez5p4BZWcfQ=;
-	b=f+4LH8dI08mnbM567JsN79lYjJQt5P6brdAUcoxxC02vEfKeaAjGsZ1luu5kw0alv0uTwi
-	IH7AzK/qTYSGLhkAC2hBSHFS9F0cCwy1MujoE9a87bgMJcB5owaEOSn7T8ENfWH3yLkZAg
-	28bIrJFBdMa/XnN3MkXUNiEFxPQlDMU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751576235;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TateqvmmRKYA9Al2Kr2Ixdaolsmn3AGnez5p4BZWcfQ=;
-	b=NZtkW7DgljlwZGShCn5OVlQ1EK6o2oWs4jR3Oo3Wa6RvhXmC871D727bIb1nt+1FqODjJP
-	0GtVDzZcQeqTGRCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E9BB1368E;
-	Thu,  3 Jul 2025 20:57:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id xMiTIqvuZmiKVgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 03 Jul 2025 20:57:15 +0000
-Date: Thu, 3 Jul 2025 22:57:10 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Boris Burkov <boris@bur.io>
-Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 7/7] btrfs: accessors: factor out split memcpy with two
- sources
-Message-ID: <20250703205710.GX31241@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1751390044.git.dsterba@suse.com>
- <1db66bf81b5790c6e14183a5c30a8abf6d1b1126.1751390044.git.dsterba@suse.com>
- <20250702185337.GC2308047@zen.localdomain>
+	s=arc-20240116; t=1751577257; c=relaxed/simple;
+	bh=7ZtsT7fAlt6dvtIqkaEdmTmfEynvhg8gy4XDqnx8LuA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=gWqAUceccRIqhoWU1KAA8DD7zUw2kgYC3FZFw5cD8FpBn3WzeTr4yaaEBuFKGQqt0ZlTvQtkPOL61wZ7vCyq+X01Y8M6b1Ky35EKR2ikeGkwGo7PChPpr9/P6gvTH/+I9FXJrHpsyIlTRN1vt8vNe6cduNX18CzRjChUyVggpf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fM9x0Xmt; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4538a2fc7ffso10263805e9.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Jul 2025 14:14:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1751577253; x=1752182053; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=6dhBI2hY9ot/tqwehbzjdHNoENiJJCRa9Aal8URpDR4=;
+        b=fM9x0XmtW7x/pfnnd2nVfdI9iOeGdihwBrifEv8pLwSUh8eY3jof19NfkhIRBzEUQK
+         kpl3FSB61cvD7VXdQLwJ9V1b07dFtNtSiSbLxV8TEhCxGFcMRx0eRDhYyCVE2wXro4mA
+         Vlj/Ep3SQlZtQL/tJMF4Ru9b9Qv82vPDt2OPYhdag+VfRLWecLm/DeO1JRzWNJvhc6FA
+         +GXf8GaE66rg8njMMYkAS272J1hl+eYCisyKeuLs5IgwVSMaXgxSc5XlrnG63YgXG1JC
+         zp/MvlpeL4Y/8P6MMw4K2qitT1kCYjWY6rKcVf9eweANgk2BqkCTee4+GNC1b3DTCiLr
+         KN8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751577253; x=1752182053;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6dhBI2hY9ot/tqwehbzjdHNoENiJJCRa9Aal8URpDR4=;
+        b=IB7k/p2AFAaTIicwwl/gmC7H60HRbLXyLE7z2Z5Bjb87MFUNt9tQ4eeh/QGHYDJ3gQ
+         AUzMDynxmsqqhNqHj5sJodcPu+9XzU6GLGb/lTD6XrY8cXT21Ykjwo+mdL6Baiyq7F2u
+         h1mPttRSdwyizsm0eP94NA5m5DGXypSPjsmx26w9V3sPFKu8oYdMcy7aFTCH9od1Ov17
+         C8hkUEnWwaeQNXzN39xQZFb5Spwi3GHjTBVQQ3oYhbhJHj/No7WHKuh1wX0vVpKubI2z
+         4Sir1+x8sTqxd0doCfVKh+dxrvkdT0CV8Gptmtw45eTIbd1FPYdHzaE/PO43L8wA/hdF
+         YFlA==
+X-Forwarded-Encrypted: i=1; AJvYcCU3O9w3gkHQWnisplHC8pWpEqDJgUyitXhkLoIJRYo4R8H9VCBN8O7PWdBJZvTv2f9kCMC3xadJ1GiOKQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxcqqW0VkNEslyw5eqymYc/NJRLK/6MWnQijeuZBVOYvP+pBej7
+	Wq3lu919mCgVefzPG7SnPC6+ihFarETtq80K1gdvIOLG7SoV9PsJOIyCVJ8yw2ZfawK8mFZZoEA
+	2oi2d
+X-Gm-Gg: ASbGnct7Gpo5q2JQ93C/hItVmAYOiyWXfdILWHD4tMq53KZclnl0JNZjVLF1Eo3gYuT
+	22iRaQZq2uybs+ztwBXWjyPovgw5XkyiIBFv1vtP+x7tWMbMPM7sust000BR1QEmdJKQ+S6tbr3
+	opiS4FvEfQIWAVtZxbO4G0aikkwdVt+uzNmVyhGNyHOmFnAft54VGo74hxVd2QJ0/ItsignJyUP
+	znRPaxCan++iFMgjH4RZz2zypkrr8z44smw/Gcs9nPsaKd0y4eubVEdOU/mfR4I6NSsa37BrErs
+	YnarLcNV3UXMANdBaevtrYodTg3obRczQPHyGOIQRVS+8BDDJ4CTrU5g2CNwffn6GIkYXwZa6PT
+	V2bXa4LEo/D+DGQ==
+X-Google-Smtp-Source: AGHT+IFoiUIxtzzCRAoesvgBp47Wbj2Qf+sZjwc7f964LYX5xdKBVnU0d6keqKvzsfhugZJeuM7Vmg==
+X-Received: by 2002:a05:6000:2801:b0:3aa:ac7b:705a with SMTP id ffacd0b85a97d-3b493204a97mr369521f8f.11.1751577252525;
+        Thu, 03 Jul 2025 14:14:12 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74ce417de1bsm427264b3a.83.2025.07.03.14.14.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jul 2025 14:14:11 -0700 (PDT)
+Message-ID: <953389f1-f23b-43ec-88b1-dd66778d5393@suse.com>
+Date: Fri, 4 Jul 2025 06:44:07 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250702185337.GC2308047@zen.localdomain>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: B231121185
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_THREE(0.00)[3];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:mid,suse.cz:replyto]
-X-Spam-Score: -4.21
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: send: directly return strcmp() result when
+ comparing recorded refs
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <30bcc022fde1071a86db10f10c984bddd87fcef9.1751558928.git.fdmanana@suse.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <30bcc022fde1071a86db10f10c984bddd87fcef9.1751558928.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 02, 2025 at 11:53:37AM -0700, Boris Burkov wrote:
-> On Tue, Jul 01, 2025 at 07:23:54PM +0200, David Sterba wrote:
-> > The case of a reading the bytes from 2 folios needs two memcpy()s, the
-> > compiler does not emit calls but two inline loops.
-> > 
-> > Factoring out the code makes some improvement (stack, code) and in the
-> > future will provide an optimized implementation as well. (The analogical
-> > version with two destinations is not done as it increases stack usage
-> > but can be done if needed.)
+
+
+在 2025/7/4 01:40, fdmanana@kernel.org 写道:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Is there some fundamental reason for this, or does it just happen to be
-> so? Sort of interesting either way. Does it make you worry that this
-> stuff will regress randomly in the future?
+> There's no point in converting the return values from strcmp() as all we
+> need is that it returns a negative value if the first argument is less
+> than the second, a positive value if it's greater and 0 if equal. We do
+> not have a need for -1 instead of any other negative value and no need
+> for 1 instead of any other positive value - that's all that rb_find()
+> needs and no where else we need specific negative and positive values.
+> 
+> So remove the intermediate local variable and checks and return directly
+> the result from strcmp().
+> 
+> This also reduces the module's text size.
+> 
+> Before:
+> 
+>    $ size fs/btrfs/btrfs.ko
+>       text	   data	    bss	    dec	    hex	filename
+>    1888116	 161347	  16136	2065599	 1f84bf	fs/btrfs/btrfs.ko
+> 
+> After:
+> 
+>    $ size fs/btrfs/btrfs.ko
+>       text	   data	    bss	    dec	    hex	filename
+>    1888052	 161347	  16136	2065535	 1f847f	fs/btrfs/btrfs.ko
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-My explanation for that is that it's in the compiler optimization black
-box, the function is inline and when evaluated in the context of the
-caller it just came out worse.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-This is the patch:
+Thanks,
+Qu
 
---- a/fs/btrfs/accessors.c
-+++ b/fs/btrfs/accessors.c
-@@ -29,6 +29,14 @@ static __always_inline void memcpy_split_src(char *dest, const char *src1,
-        memcpy(dest + len1, src2, total - len1);
- }
- 
-+static __always_inline void memcpy_split_dest(char *dest1, const char *src,
-+                                             char *dest2, const size_t len1,
-+                                             const size_t total)
-+{
-+       memcpy(dest1, src, len1);
-+       memcpy(dest2, src + len1, total - len1);
-+}
-+
- /*
-  * Macro templates that define helpers to read/write extent buffer data of a
-  * given size, that are also used via ctree.h for access to item members by
-@@ -105,9 +113,9 @@ void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,    \
-                kaddr = folio_address(eb->folios[idx + 1]);             \
-                *kaddr = lebytes[1];                                    \
-        } else {                                                        \
--               memcpy(kaddr, lebytes, part);                           \
--               kaddr = folio_address(eb->folios[idx + 1]);             \
--               memcpy(kaddr, lebytes + part, sizeof(u##bits) - part);  \
-+               memcpy_split_dest(kaddr, lebytes,                       \
-+                                 folio_address(eb->folios[idx + 1]),   \
-+                                 part, sizeof(u##bits));               \
-        }                                                               \
- }
- 
----
 
-And the evaluation:
+> ---
+>   fs/btrfs/send.c | 8 +-------
+>   1 file changed, 1 insertion(+), 7 deletions(-)
+> 
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 01aab5b7c93a..09822e766e41 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -4628,7 +4628,6 @@ static int rbtree_ref_comp(const void *k, const struct rb_node *node)
+>   {
+>   	const struct recorded_ref *data = k;
+>   	const struct recorded_ref *ref = rb_entry(node, struct recorded_ref, node);
+> -	int result;
+>   
+>   	if (data->dir > ref->dir)
+>   		return 1;
+> @@ -4642,12 +4641,7 @@ static int rbtree_ref_comp(const void *k, const struct rb_node *node)
+>   		return 1;
+>   	if (data->name_len < ref->name_len)
+>   		return -1;
+> -	result = strcmp(data->name, ref->name);
+> -	if (result > 0)
+> -		return 1;
+> -	if (result < 0)
+> -		return -1;
+> -	return 0;
+> +	return strcmp(data->name, ref->name);
+>   }
+>   
+>   static bool rbtree_ref_less(struct rb_node *node, const struct rb_node *parent)
 
-  btrfs_set_64                                           +8 (24 -> 32)
-  btrfs_set_32                                           +8 (24 -> 32)
-
-     text    data     bss     dec     hex filename
-  1454157  115665   16088 1585910  1832f6 pre/btrfs.ko
-  1454173  115665   16088 1585926  183306 post/btrfs.ko
-
-  DELTA: +16
-
-I excluded the patch because of the worse stack and code diff, because
-the other patches were all an improvement. This one was preparatory for
-the fancy optimization I have so it can be placed to a helper instead of
-the macro. Given the remaining time before code freeze it would not
-leave enough time for testing and it might also be a generic helper in
-the end.
 
