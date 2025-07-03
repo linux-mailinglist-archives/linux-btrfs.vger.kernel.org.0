@@ -1,182 +1,79 @@
-Return-Path: <linux-btrfs+bounces-15233-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15234-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1267AF8288
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 23:20:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1CC1AF8320
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Jul 2025 00:11:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DAC71C87FE8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 21:20:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 975293B2526
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 22:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC0AA28AB07;
-	Thu,  3 Jul 2025 21:20:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6329A2BEC20;
+	Thu,  3 Jul 2025 22:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Swvg7Ldr";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wNR1xGUf";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gvD+kVio";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bQ7ZGj/t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rh/E3xXD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BBD2AF19
-	for <linux-btrfs@vger.kernel.org>; Thu,  3 Jul 2025 21:20:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9422DE6EE;
+	Thu,  3 Jul 2025 22:11:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751577622; cv=none; b=BzGCF89PKdtasVtzBeMxF6YuswhlwGahdXIHJn6g+U3jiwkZuQ5yn/oX9DCY/CoXXC4dQbp/mnV1GP1ASX+e1qTMbi+SqidE0EPGua5v4c100akPy8VJz299R6J6UGT+ZkIso/Pix2W145wiuby0z655q7xjzWJJA6/jlCfKOVE=
+	t=1751580699; cv=none; b=eJP9Ec+cOawi3iTz0/MOkmxoW+4ua7j1nZ1Kaxp4bOa5bMcZZcugX3Ox8QJkD7hti2FUe3uUJkqdtRN7BDqJfx7QEd5DG11GX7ocVyZFO5OBkrFuQCotTUPmsdaXfDweVc7M+vUcRLXlmG8/5PZhSRJvT5F3z15gZq0qyK8n7/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751577622; c=relaxed/simple;
-	bh=xunz7BknqeisIbhorTpObjbG/C+Z7NIwSMg+uWQMDLs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=evEwYmoWlVBQ5UDETlvanF1xKbtYU+8Sno+GnGakccCgfxkawubeYor7vli3iOFE5IeORhEQWjfRz3/TIG8gKbkuyv1pzzcdvInxPLgjD68WPKCSiuxZMGv2Lwb6WKBuZfOt7MxQH/Y7hHJJy0m507wDVnwRJnCv/AOGFzMgcp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Swvg7Ldr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wNR1xGUf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gvD+kVio; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bQ7ZGj/t; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C809A1F38A;
-	Thu,  3 Jul 2025 21:20:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751577618;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lTR4KBMtK/LnZ+RlddevfR1kekrpTmmhOFxcOzWJJqw=;
-	b=Swvg7LdrEJC6udaJTdnqCfb5Hia6jte81uv8qLMk1ap9PwsSKZ0W+iicBOPwAInThOhVxB
-	EDZDiPKlHgzjLe7uG4ce10JLes/CljlG9xPCbCDZXff1aAog7h+AZinfSGpeztFGHaVbKf
-	a8RbsrZJuHrEPAN4qWn94Sq5Dj8jy6Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751577618;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lTR4KBMtK/LnZ+RlddevfR1kekrpTmmhOFxcOzWJJqw=;
-	b=wNR1xGUfOP8gQR9873d/JiWoYqilQA/dj2krQlcPFtCeBhTLg3nvJZOCNrzJuC+dvhNpIZ
-	AVlUVktApLyQAjBw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751577616;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lTR4KBMtK/LnZ+RlddevfR1kekrpTmmhOFxcOzWJJqw=;
-	b=gvD+kVioLJvVdwkmaYcLNPPYoII/djm6EyrCcuhxgMqLBtTbH+j6ymGdcFYagiD6XkSsZF
-	kxAbvlzXv2Z5FBwwb7Byo8OdD0UmG4jHSkf0CkEzIwrXNXJdC7ULsNd663uhgzwrONKAs/
-	aoftaQWFG69E+XijNJoMgD7x0wR5JIA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751577616;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lTR4KBMtK/LnZ+RlddevfR1kekrpTmmhOFxcOzWJJqw=;
-	b=bQ7ZGj/t86XWzjPPR/Fem9JZUF5K75Ok+Y99vh7/riuXjgNyeaQUAvEzr2QnEy06cB6h45
-	XprXJiWuWZNsTwBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A61D513721;
-	Thu,  3 Jul 2025 21:20:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4x8LKBD0ZmioXAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 03 Jul 2025 21:20:16 +0000
-Date: Thu, 3 Jul 2025 23:20:15 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Boris Burkov <boris@bur.io>
-Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/7] btrfs: accessors: use type sizeof constants directly
-Message-ID: <20250703212015.GZ31241@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1751390044.git.dsterba@suse.com>
- <eedbe03f6ee33939841d4bf895519304dfa1c59f.1751390044.git.dsterba@suse.com>
- <20250702175854.GA2308047@zen.localdomain>
+	s=arc-20240116; t=1751580699; c=relaxed/simple;
+	bh=g9SCffIKzZ24dS5eY3YbP/pqd56TdfLL1V00Io3Jh1c=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=IcWOHdFXLxqZCyvzHfQsq7PM2+/ZN0VQ75kAkvrkgny1AvXVlDojZ5PP/2NOdXiBElVjoJ/6Zg2IoaFD2A/3HjhlmMINDykDvrMhWA1B5cx7MsT9LF0HH61PLlXs+alrrX82pfcMoCEjS/mZmOF/Q+mX1YbPbVs7dGNtDGUeHcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rh/E3xXD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F282C4CEE3;
+	Thu,  3 Jul 2025 22:11:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751580699;
+	bh=g9SCffIKzZ24dS5eY3YbP/pqd56TdfLL1V00Io3Jh1c=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=rh/E3xXDcrKTBPziP68klMeItd4VpuF3PZKHvU+JrMCgDlWWdGRTYS47YaFvG7tIH
+	 ZDoeB4uDJaV9+2yZgaxVjc+fvfUvsG16KfDcvByYnlC7ZHpsrGy1gSoT252CwWQfea
+	 Hlg0776ZvqWGfa60oQ+NuErlx1U6+TIlK1NFqa97QFjRVfh6p5Ei1dkU5svLlthoWM
+	 OJSbYXh4hwUuNwCBpm8VIF+gv25VMZwzD1xkexm3QZIOYs09Ebdpi3mAXeb1GTWs9e
+	 J0izQWpmBlOspRrWt/S9g9WY5U+d6ZRa9Q7nWOTMopjKzSdxo2pae1qhm6gKq4xjZp
+	 wPoajCrtFEa4g==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB243383BA01;
+	Thu,  3 Jul 2025 22:12:04 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 6.16-rc5
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1751564436.git.dsterba@suse.com>
+References: <cover.1751564436.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1751564436.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.16-rc4-tag
+X-PR-Tracked-Commit-Id: 157501b0469969fc1ba53add5049575aadd79d80
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4c06e63b92038fadb566b652ec3ec04e228931e8
+Message-Id: <175158072351.1631256.15942682648522222538.pr-tracker-bot@kernel.org>
+Date: Thu, 03 Jul 2025 22:12:03 +0000
+To: David Sterba <dsterba@suse.com>
+Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250702175854.GA2308047@zen.localdomain>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:replyto,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -4.00
 
-On Wed, Jul 02, 2025 at 10:58:54AM -0700, Boris Burkov wrote:
-> On Tue, Jul 01, 2025 at 07:23:49PM +0200, David Sterba wrote:
-> > Now unit_size is used only once, so use it directly in 'part'
-> > calculation. Don't cache sizeof(type) in a variable. While this is a
-> > compile-time constant, forcing the type 'int' generates worse code as it
-> > leads to additional conversion from 32 to 64 bit type on x86_64.
-> > 
-> > The sizeof() is used only a few times and it does not make the code that
-> > harder to read, so use it directly and let the compiler utilize the
-> > immediate constants in the context it needs. The .ko code size slightly
-> > increases (+50) but further patches will reduce that again.
-> > 
-> > Signed-off-by: David Sterba <dsterba@suse.com>
-> > ---
-> >  fs/btrfs/accessors.c | 16 ++++++----------
-> >  1 file changed, 6 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/accessors.c b/fs/btrfs/accessors.c
-> > index b54c8abe467a06..2e90b9b14e73f4 100644
-> > --- a/fs/btrfs/accessors.c
-> > +++ b/fs/btrfs/accessors.c
-> > @@ -52,19 +52,17 @@ u##bits btrfs_get_##bits(const struct extent_buffer *eb,		\
-> >  	const unsigned long idx = get_eb_folio_index(eb, member_offset);\
-> >  	const unsigned long oil = get_eb_offset_in_folio(eb,		\
-> >  							 member_offset);\
-> > -	const int unit_size = eb->folio_size;				\
-> >  	char *kaddr = folio_address(eb->folios[idx]);			\
-> > -	const int size = sizeof(u##bits);				\
-> > -	const int part = unit_size - oil;				\
-> > +	const int part = eb->folio_size - oil;				\
-> 
-> nit: the names oil and part are pretty non-sensical to me. Oil used to
-> be oip for Offset In Page. Is it Offset In foLio?
-> 
-> I can't figure out what part should mean.
+The pull request you sent on Thu,  3 Jul 2025 21:29:28 +0200:
 
-It confused me the whole time I was looking at the code, it snuck in
-with the folio changes, it should have been 'oif' follwing the previous
-naming pattern.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.16-rc4-tag
 
-> So while I see why you're doing all the changes, I can' help but notice
-> that you removed the two named variables with logical names and left the
-> confusing ones. :)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4c06e63b92038fadb566b652ec3ec04e228931e8
 
-So I can sneak in a patch renaming it at the beginning or at the end,
-naming it 'oif' or 'foff' (there's the eb related offset as parameter so
-we need some kind of distinction).
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
