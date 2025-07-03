@@ -1,79 +1,194 @@
-Return-Path: <linux-btrfs+bounces-15234-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15235-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1CC1AF8320
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Jul 2025 00:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A447AF8460
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Jul 2025 01:42:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 975293B2526
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 22:11:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A68154412F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 23:42:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6329A2BEC20;
-	Thu,  3 Jul 2025 22:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17BF42DCC01;
+	Thu,  3 Jul 2025 23:42:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rh/E3xXD"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="haSb0ezo";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="haSb0ezo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9422DE6EE;
-	Thu,  3 Jul 2025 22:11:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C3FC2D94A4
+	for <linux-btrfs@vger.kernel.org>; Thu,  3 Jul 2025 23:42:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751580699; cv=none; b=eJP9Ec+cOawi3iTz0/MOkmxoW+4ua7j1nZ1Kaxp4bOa5bMcZZcugX3Ox8QJkD7hti2FUe3uUJkqdtRN7BDqJfx7QEd5DG11GX7ocVyZFO5OBkrFuQCotTUPmsdaXfDweVc7M+vUcRLXlmG8/5PZhSRJvT5F3z15gZq0qyK8n7/0=
+	t=1751586163; cv=none; b=uqQe6tueLLU9pqqEw/MdHOLYc6E+VdkZZXxToLXJBEkDK/bFGzC56XgsLSw6zAKU9SocUGwPRWXeU8HYFwjjW1sBr3XlsWwNA7VOwf4P9XcRJegUVfVf/8cXdcCZhIWK6NqdQxi74L/q6n5VrJchbEyovLDks0du4eHu392S19M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751580699; c=relaxed/simple;
-	bh=g9SCffIKzZ24dS5eY3YbP/pqd56TdfLL1V00Io3Jh1c=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=IcWOHdFXLxqZCyvzHfQsq7PM2+/ZN0VQ75kAkvrkgny1AvXVlDojZ5PP/2NOdXiBElVjoJ/6Zg2IoaFD2A/3HjhlmMINDykDvrMhWA1B5cx7MsT9LF0HH61PLlXs+alrrX82pfcMoCEjS/mZmOF/Q+mX1YbPbVs7dGNtDGUeHcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rh/E3xXD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F282C4CEE3;
-	Thu,  3 Jul 2025 22:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751580699;
-	bh=g9SCffIKzZ24dS5eY3YbP/pqd56TdfLL1V00Io3Jh1c=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=rh/E3xXDcrKTBPziP68klMeItd4VpuF3PZKHvU+JrMCgDlWWdGRTYS47YaFvG7tIH
-	 ZDoeB4uDJaV9+2yZgaxVjc+fvfUvsG16KfDcvByYnlC7ZHpsrGy1gSoT252CwWQfea
-	 Hlg0776ZvqWGfa60oQ+NuErlx1U6+TIlK1NFqa97QFjRVfh6p5Ei1dkU5svLlthoWM
-	 OJSbYXh4hwUuNwCBpm8VIF+gv25VMZwzD1xkexm3QZIOYs09Ebdpi3mAXeb1GTWs9e
-	 J0izQWpmBlOspRrWt/S9g9WY5U+d6ZRa9Q7nWOTMopjKzSdxo2pae1qhm6gKq4xjZp
-	 wPoajCrtFEa4g==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB243383BA01;
-	Thu,  3 Jul 2025 22:12:04 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.16-rc5
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1751564436.git.dsterba@suse.com>
-References: <cover.1751564436.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1751564436.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.16-rc4-tag
-X-PR-Tracked-Commit-Id: 157501b0469969fc1ba53add5049575aadd79d80
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4c06e63b92038fadb566b652ec3ec04e228931e8
-Message-Id: <175158072351.1631256.15942682648522222538.pr-tracker-bot@kernel.org>
-Date: Thu, 03 Jul 2025 22:12:03 +0000
-To: David Sterba <dsterba@suse.com>
-Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1751586163; c=relaxed/simple;
+	bh=RFWM45xJVYd7rFegDhhTqYCu82bypijDNv1FO1mDDJs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iy323r5byT5sGLritdCAF4l9MAhczUBUGeKgkFWlciPkBXx3IjC6Hb3M9qGQSVbZp8QKWtQiHT8YTuGB+rwX/x7yZ3NrEVyFD9ohROjTC0hOQ/FEG6kZoAtzwovIjS4zeSvGNzCvLuLdZySlo2h6MHtT6k54XY9qV6PgVYuQhyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=haSb0ezo; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=haSb0ezo; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4D61221193;
+	Thu,  3 Jul 2025 23:42:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1751586159; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=lkrFmyjy0GdjNu/kpR0u1n5zBBN37FJ9C5+1L3g94UQ=;
+	b=haSb0ezoP/Af+dUnX+1q1K0ySj8lRlXjDuizJjrviRMzYlb6SO7UuPgsuvJOvFJXBOrSws
+	zy9APMW/zuBjK0zque8qbkBtfiGtdR3Og6VMblDsWJfPiw43607jc3zUIYaZloGOiPb5/y
+	lEl0RDfOKglknMLxUL214aEGB1pZDck=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1751586159; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=lkrFmyjy0GdjNu/kpR0u1n5zBBN37FJ9C5+1L3g94UQ=;
+	b=haSb0ezoP/Af+dUnX+1q1K0ySj8lRlXjDuizJjrviRMzYlb6SO7UuPgsuvJOvFJXBOrSws
+	zy9APMW/zuBjK0zque8qbkBtfiGtdR3Og6VMblDsWJfPiw43607jc3zUIYaZloGOiPb5/y
+	lEl0RDfOKglknMLxUL214aEGB1pZDck=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B6E113721;
+	Thu,  3 Jul 2025 23:42:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id oC8kE20VZ2j7AQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 03 Jul 2025 23:42:37 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Cc: viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz
+Subject: [PATCH v3 0/6] btrfs: add remove_bdev() callback
+Date: Fri,  4 Jul 2025 09:12:13 +0930
+Message-ID: <cover.1751577459.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,imap1.dmz-prg2.suse.org:helo];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-The pull request you sent on Thu,  3 Jul 2025 21:29:28 +0200:
+[CHANGELOG]
+v3:
+- Also rename the callback functions inside each fs to *_remove_bdev()
+  To keep the consistency between the interface and implementation.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.16-rc4-tag
+- Add extra handling if the to-be-removed device is already missing in
+  btrfs
+  I do not know if a device can be double-removed, but the handling
+  inside btrfs is pretty simple, if the target device is already
+  missing, nothing needs to be done and can exit immediately.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4c06e63b92038fadb566b652ec3ec04e228931e8
+v2:
+- Enhance and rename shutdown() callback
+  Rename it to remove_bdev() and add a @bdev parameter.
+  For the existing call backs in filesystems, keep their callback
+  function names, now something like ".remove_bdev = ext4_shutdown,"
+  will be a quick indicator of the behavior.
 
-Thank you!
+- Remove the @surprise parameter for the remove_bdev() parameter.
+  The fs_bdev_mark_dead() is already trying to sync the fs if it's not
+  a surprise removal.
+  So there isn't much a filesystem can do with the @surprise parameter.
+
+- Fix btrfs error handling when the devices are not opened
+  There are several cases that the fs_devices is not opened, including:
+  * sget_fc() failure
+  * an existing super block is returned
+  * a new super block is returned but btrfS_open_fs_devices() failed
+
+  Handle the error properly so that fs_devices is not freed twice.
+
+RFC->v1:
+- Add a new remove_bdev() callback
+  Thanks all the feedback from Christian, Christoph and Jan on this new
+  name.
+
+- Add a @surprise parameter to the remove_bdev() callback
+  To keep it the same as the bdev_mark_dead().
+
+- Hide the shutdown ioctl and remove_bdev callback behind experimental 
+  With the shutdown ioctl, there are at least 2 test failures (g/388, g/508).
+
+  G/388 is related to the error handling with COW fixup.
+  G/508 looks like something related to log replay.
+
+  And the remove_bdev() doesn't have any btrfs specific test case yet to
+  check the auto-degraded behavior, nor the auto-degraded behavior is
+  fully discussed.
+
+  So hide both of them behind experimental features.
+
+- Do not use btrfs_handle_fs_error() to avoid freeze/thaw behavior change
+  btrfs_handle_fs_error() will flips the fs read-only, which will
+  affect freeze/thaw behavior.
+  And no other fs set the fs read-only when shutting down, so follow the
+  other fs to have a more consistent behavior.
+
+Qu Wenruo (6):
+  fs: enhance and rename shutdown() callback to remove_bdev()
+  btrfs: introduce a new fs state, EMERGENCY_SHUTDOWN
+  btrfs: reject file operations if in shutdown state
+  btrfs: reject delalloc ranges if in shutdown state
+  btrfs: implement shutdown ioctl
+  btrfs: implement remove_bdev super operation callback
+
+ fs/btrfs/file.c            | 25 ++++++++++++++++-
+ fs/btrfs/fs.h              | 28 +++++++++++++++++++
+ fs/btrfs/inode.c           | 14 +++++++++-
+ fs/btrfs/ioctl.c           | 43 ++++++++++++++++++++++++++++
+ fs/btrfs/messages.c        |  1 +
+ fs/btrfs/reflink.c         |  3 ++
+ fs/btrfs/super.c           | 57 ++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c         |  2 ++
+ fs/btrfs/volumes.h         |  5 ++++
+ fs/exfat/super.c           |  4 +--
+ fs/ext4/super.c            |  4 +--
+ fs/f2fs/super.c            |  4 +--
+ fs/ntfs3/super.c           |  6 ++--
+ fs/super.c                 |  4 +--
+ fs/xfs/xfs_super.c         |  7 +++--
+ include/linux/fs.h         |  7 ++++-
+ include/uapi/linux/btrfs.h |  9 ++++++
+ 17 files changed, 206 insertions(+), 17 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.50.0
+
 
