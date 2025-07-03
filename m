@@ -1,291 +1,164 @@
-Return-Path: <linux-btrfs+bounces-15223-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15224-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80E46AF7303
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 13:54:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E0F2AF7B09
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 17:21:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06564162852
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 11:54:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71EFC1CA6B67
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Jul 2025 15:14:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC0932E2F12;
-	Thu,  3 Jul 2025 11:54:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A842F0032;
+	Thu,  3 Jul 2025 15:12:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qeru9fJY"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="t3aB0RNQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4r8JsJti";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="t3aB0RNQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4r8JsJti"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314041E5711
-	for <linux-btrfs@vger.kernel.org>; Thu,  3 Jul 2025 11:54:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D607B2F0C40
+	for <linux-btrfs@vger.kernel.org>; Thu,  3 Jul 2025 15:12:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751543641; cv=none; b=Zk4hkNlGnfb8LBqU9hhb6+iTfqgvSsQBWuQbf8bxYeYHA5xjW0Ddw/gweln7JhIH12NZMXn/y5oRWlH3IlpPQFFSCBfzs43J6DOjJywF/6D+PNsEVBdd3hW+1VEbZlQ4JAdFeuRqmYGCkGce1ZPDrHas7ws7Uryr4OZWRt/ko8U=
+	t=1751555555; cv=none; b=ea7k/hy6E/aJW4miR5NOKDCLVKlJ3An+66K1sIpgcXFmAH2EhjR5OH4KB2igNnBIR8fIVld1jDhtLJ4rn1oG1Tqp1swW97F8Ft9p+QatbwTiFQD0y3sNr0kJaHFN/D/rIatVriq4YapUTnutM44eAdtejzVL5z70HUesdOU2Sjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751543641; c=relaxed/simple;
-	bh=Vz2Ly6MbFT6rp672cd88fP9Jt6KsVZFbSrnGtbSg5ho=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V7R69IifJdhygsrejY6bmod2U9tpZCDJomWCNHRJGzChEpxulpHC0UcaiaPRYxv2x3Ss2vKBY+XTyoBHdWIYjDmZDrYxYmEc4jn1dwMC3f6ISKRwBS6QDxbIYsXmcSYqrgByPsj9slb/+Scgw4Uk7PtZnD51FeF9CAw3QByZJSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qeru9fJY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A725DC4CEE3
-	for <linux-btrfs@vger.kernel.org>; Thu,  3 Jul 2025 11:54:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751543640;
-	bh=Vz2Ly6MbFT6rp672cd88fP9Jt6KsVZFbSrnGtbSg5ho=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=qeru9fJYO/CuPWvVkOBRfpa2AzMWTDVfM7rNnYye4CuhdQ5bhvZHHgVY82rk/bRNa
-	 LuSV6TyAmu5h30ExjGp2c3H7qllOyLLQVqsPJcVHEGAWx97okkOVor+powYdL9etdp
-	 Oc2BoOH4TGpR+zaAfU4q4M1dGKLELUuLPHkGwX3ldq5ZeXL1Cj0RO279la9qO6AhWN
-	 REA0mgozQExmVBtv88ryJFdgMi42Q0vMUuXjTmuT5Tutb6Q3Rt9PAZvxPWLe+bEHxS
-	 x1VHpU9hq9Mli9CxsIv+tbPpH7vf71YS241jd9mIP/u6biJH4NMBw4iDHZb4vfsH1+
-	 Z0V+cgawDzT8A==
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-ae3ec622d2fso46798366b.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Jul 2025 04:54:00 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzQ5W2jyEyDCumhuGXhsytqeOEJZpU0gKq3jZcnchG703hv6w6n
-	Zez146RYMOiRHMassPlUXkoLmOHw/LmS8nbJ51oVGMIXpbOU+//+UKthhc6slbjd2hmXn75Amc+
-	eDpyiYWEXcJIsh75XPh4SlXV/2lIEPbQ=
-X-Google-Smtp-Source: AGHT+IFyuMDKMi1Fn9wOm+dft5EO8ZreFDYJ5aZwXmab29pPSlA4un0FkPp7bNWsgQdXrQExaU0BWdg4ZkQGVvYfhX4=
-X-Received: by 2002:a17:906:3c7:b0:ae0:da16:f550 with SMTP id
- a640c23a62f3a-ae3c2c37f36mr567344466b.49.1751543639211; Thu, 03 Jul 2025
- 04:53:59 -0700 (PDT)
+	s=arc-20240116; t=1751555555; c=relaxed/simple;
+	bh=qe1JM/9Edxr517BEh9k1qGxj4Z6LKzeE0S/ti1xkI9s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nrvuE5cMXcHMF+G+Il80XriEBucFRxcLa3dUdBPciVZUV/0KY2BostA6xF7FepkzV5QDzn2RlCZ9xAFS8FcO07/5+iz5t012QGrzsNXfNIplTLGbosBzkuJP682mQHa2r8EcKhazLoOw6Sr5ZGkWPhPs7N1ZyP/PMcCrMoaafzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=t3aB0RNQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4r8JsJti; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=t3aB0RNQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4r8JsJti; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2CC4A1F387;
+	Thu,  3 Jul 2025 15:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751555552;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TlEXwrb7QIoZVzgJfIWUuvjzMFc9SONyRlwFyYMxNUs=;
+	b=t3aB0RNQhtEzflNi71/qB5mzvvPShp5ybcO+aVcXRXyI+L5YfZ+koXlDow25etVBgP8aIi
+	//c/RjUrsbQHGtQNchVuIPrraPposumEfvsMWLO8tQL1G/rhulFlmFA1V2bKA3GKWeUyQE
+	BtIKyjDmMkwmQp/xA4X0xhXpw9sxiKo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751555552;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TlEXwrb7QIoZVzgJfIWUuvjzMFc9SONyRlwFyYMxNUs=;
+	b=4r8JsJtiCrCHxjfKDlDa27Ag+Kok5NOfv4rGc8Qdy853A5E8EmzT/jMvtuN5+3p8OqkHvA
+	FjTckPJfYHYpysAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751555552;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TlEXwrb7QIoZVzgJfIWUuvjzMFc9SONyRlwFyYMxNUs=;
+	b=t3aB0RNQhtEzflNi71/qB5mzvvPShp5ybcO+aVcXRXyI+L5YfZ+koXlDow25etVBgP8aIi
+	//c/RjUrsbQHGtQNchVuIPrraPposumEfvsMWLO8tQL1G/rhulFlmFA1V2bKA3GKWeUyQE
+	BtIKyjDmMkwmQp/xA4X0xhXpw9sxiKo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751555552;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TlEXwrb7QIoZVzgJfIWUuvjzMFc9SONyRlwFyYMxNUs=;
+	b=4r8JsJtiCrCHxjfKDlDa27Ag+Kok5NOfv4rGc8Qdy853A5E8EmzT/jMvtuN5+3p8OqkHvA
+	FjTckPJfYHYpysAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10E4C13721;
+	Thu,  3 Jul 2025 15:12:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id dX3kA+CdZmhdcgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 03 Jul 2025 15:12:32 +0000
+Date: Thu, 3 Jul 2025 17:12:26 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Brahmajit Das <listout@listout.xyz>
+Cc: Nathan Chancellor <nathan@kernel.org>, linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, kees@kernel.org,
+	ailiop@suse.com, mark@harmstone.com, Brahmajit Das <bdas@suse.de>
+Subject: Re: [PATCH v4] btrfs: replace deprecated strcpy with strscpy
+Message-ID: <20250703151226.GW31241@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20250620164957.14922-1-listout@listout.xyz>
+ <20250702182712.GA3453770@ax162>
+ <25hcimtuueppt4w3ccvid3d7c3eots7nat4qspdr6t6minxfa2@zb4fmwz7qsyp>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <656838ec1232314a2657716e59f4f15a8eadba64.1751492111.git.boris@bur.io>
-In-Reply-To: <656838ec1232314a2657716e59f4f15a8eadba64.1751492111.git.boris@bur.io>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 3 Jul 2025 12:53:22 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4JPumV5YPUdbTU=gS6wyYOpUga0H47ffxgirqrEVE=pQ@mail.gmail.com>
-X-Gm-Features: Ac12FXwZAEikXPjXjeKitt987mN8o7cPey08pNp75KxoKika8FzSOJYRZj1BeUc
-Message-ID: <CAL3q7H4JPumV5YPUdbTU=gS6wyYOpUga0H47ffxgirqrEVE=pQ@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: use readahead_expand on compressed extents
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, willy@infradead.org, 
-	dhowells@redhat.com, hch@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <25hcimtuueppt4w3ccvid3d7c3eots7nat4qspdr6t6minxfa2@zb4fmwz7qsyp>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -4.00
 
-On Wed, Jul 2, 2025 at 10:36=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
+On Thu, Jul 03, 2025 at 06:08:24AM +0530, Brahmajit Das wrote:
+> On 02.07.2025 11:27, Nathan Chancellor wrote:
+> > Hi Brahmajit,
+> > 
+> > On Fri, Jun 20, 2025 at 10:19:57PM +0530, Brahmajit Das wrote:
+> ...
+> > 
+> > This change is now in -next as commit d282edfe8850 ("btrfs: replace
+> > strcpy() with strscpy()"), where this hunk appears to causes a slew of
+> > warnings on my arm64 systems along the lines of:
+> > 
+> ...
+> > 
+> > It looks like the offset_in_page(buf) part of the WARN() in
+> > sysfs_emit() gets triggered with this, presumably because kmalloc()
+> > returns something that is not page aligned like sysfs_emit() requires?
 >
-> We recently received a report of poor performance doing sequential
-> buffered reads of a file with compressed extents. With bs=3D128k, a naive
-> sequential dd ran as fast on a compressed file as on an uncompressed
-> (1.2GB/s on my reproducing system) while with bs<32k, this performance
-> tanked down to ~300MB/s.
->
-> i.e.,
-> slow:
-> dd if=3Dsome-compressed-file of=3D/dev/null bs=3D4k count=3DX
-> vs
-> fast:
-> dd if=3Dsome-compressed-file of=3D/dev/null bs=3D128k count=3DY
->
-> The cause of this slowness is overhead to do with looking up extent_maps
-> to enable readahead pre-caching on compressed extents
-> (add_ra_bio_pages()), as well as some overhead in the generic VFS
-> readahead code we hit more in the slow case. Notably, the main
-> difference between the two read sizes is that in the large sized request
-> case, we call btrfs_readahead() relatively rarely while in the smaller
-> request we call it for every compressed extent. So the fast case stays
-> in the btrfs readahead loop:
->
-> while ((folio =3D readahead_folio(rac)) !=3D NULL)
->         btrfs_do_readpage(folio, &em_cached, &bio_ctrl, &prev_em_start);
->
-> where the slower one breaks out of that loop every time. This results in
-> calling add_ra_bio_pages a lot, doing lots of extent_map lookups,
-> extent_map locking, etc.
->
-> This happens because although add_ra_bio_pages() does add the
-> appropriate un-compressed file pages to the cache, it does not
-> communicate back to the ractl in any way. To solve this, we should be
-> using readahead_expand() to signal to readahead to expand the readahead
-> window.
->
-> This change passes the readahead_control into the btrfs_bio_ctrl and in
-> the case of compressed reads sets the expansion to the size of the
-> extent_map we already looked up anyway. It skips the subpage case as
-> that one already doesn't do add_ra_bio_pages().
->
-> With this change, whether we use bs=3D4k or bs=3D128k, btrfs expands the
-> readahead window up to the largest compressed extent we have seen so far
-> (in the trivial example: 128k) and the call stacks of the two modes look
-> identical. Notably, we barely call add_ra_bio_pages at all. And the
-> performance becomes identical as well. So this change certainly "fixes"
-> this performance problem.
->
-> Of course, it does seem to beg a few questions:
-> 1. Will this waste too much page cache with a too large ra window?
-> 2. Will this somehow cause bugs prevented by the more thoughtful
->    checking in add_ra_bio_pages?
-> 3. Should we delete add_ra_bio_pages?
->
-> My stabs at some answers:
-> 1. Hard to say. See attempts at generic performance testing below. Is
->    there a "readahead_shrink" we should be using? Should we expand more
->    slowly, by half the remaining em size each time?
-> 2. I don't think so. Since the new behavior is indistiguishable from
->    reading the file with a larger read size passed in, I don't see why
->    one would be safe but not the other.
-> 3. Probably! I tested that and it was fine in fstests, and it seems like
->    the pages would get re-used just as well in the readahead case.
->    However, it is possible some reads that use page cache but not
->    btrfs_readahead() could suffer. I will investigate this further as a
->    follow up.
->
-> I tested the performance implications of this change in 3 ways (using
-> compress-force=3Dzstd:3 for compression):
->
-> Directly test the affected workload of small sequential reads on a
-> compressed file (improved from ~250MB/s to ~1.2GB/s)
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3Dfor-next=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> dd /mnt/lol/non-cmpr 4k
-> 1048576+0 records in
-> 1048576+0 records out
-> 4294967296 bytes (4.3 GB, 4.0 GiB) copied, 6.02983 s, 712 MB/s
-> dd /mnt/lol/non-cmpr 128k
-> 32768+0 records in
-> 32768+0 records out
-> 4294967296 bytes (4.3 GB, 4.0 GiB) copied, 5.92403 s, 725 MB/s
-> dd /mnt/lol/cmpr 4k
-> 1048576+0 records in
-> 1048576+0 records out
-> 4294967296 bytes (4.3 GB, 4.0 GiB) copied, 17.8832 s, 240 MB/s
-> dd /mnt/lol/cmpr 128k
-> 32768+0 records in
-> 32768+0 records out
-> 4294967296 bytes (4.3 GB, 4.0 GiB) copied, 3.71001 s, 1.2 GB/s
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3Dra-expand=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> dd /mnt/lol/non-cmpr 4k
-> 1048576+0 records in
-> 1048576+0 records out
-> 4294967296 bytes (4.3 GB, 4.0 GiB) copied, 6.09001 s, 705 MB/s
-> dd /mnt/lol/non-cmpr 128k
-> 32768+0 records in
-> 32768+0 records out
-> 4294967296 bytes (4.3 GB, 4.0 GiB) copied, 6.07664 s, 707 MB/s
-> dd /mnt/lol/cmpr 4k
-> 1048576+0 records in
-> 1048576+0 records out
-> 4294967296 bytes (4.3 GB, 4.0 GiB) copied, 3.79531 s, 1.1 GB/s
-> dd /mnt/lol/cmpr 128k
-> 32768+0 records in
-> 32768+0 records out
-> 4294967296 bytes (4.3 GB, 4.0 GiB) copied, 3.69533 s, 1.2 GB/s
->
-> Built the linux kernel from clean (no change)
->
-> Ran fsperf. Mostly neutral results with some improvements and
-> regressions here and there.
->
-> Reported-by: Dimitrios Apostolou <jimis@gmx.net>
-> Link: https://lore.kernel.org/linux-btrfs/34601559-6c16-6ccc-1793-20a97ca=
-0dbba@gmx.net/
-> Signed-off-by: Boris Burkov <boris@bur.io>
+> Nathan, can you help me with providing a bit more info to debug this. I
+> set up qemu aarch64 env with btrfs but couldn't reproduce this issue by
+> boot test. Basically trying to understand what workflow triggered this.
+> 
+> You can find my kernel config, dmesg log and boot logs here:
+> https://gist.github.com/listout/de8b6efa6ddb02805b5886f35c3f73d4
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Looks good, thanks.
-
-> ---
-> Changelog:
-> v2:
-> - added a comment about skipping non-compressed and subpage for now.
-> - fixed stray whitespace.
-> - fixed const on a few parameters and removed unhelpful extra parameters.
-> - used btrfs_is_subpage() and got rid of extra temporary variables.
-> - tested non-compressed extents; fixed a bug in btrfs_readahead_extent
->   from those, but did not add any reasonable clamping, as we are still
->   not calling it on non-compressed extents.
->
->  fs/btrfs/extent_io.c | 35 ++++++++++++++++++++++++++++++++++-
->  1 file changed, 34 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index b551e0641b0c..7ad4f10bb55a 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -110,6 +110,7 @@ struct btrfs_bio_ctrl {
->          * This is to avoid touching ranges covered by compression/inline=
-.
->          */
->         unsigned long submit_bitmap;
-> +       struct readahead_control *ractl;
->  };
->
->  static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
-> @@ -881,6 +882,25 @@ static struct extent_map *get_extent_map(struct btrf=
-s_inode *inode,
->
->         return em;
->  }
-> +
-> +static void btrfs_readahead_expand(struct readahead_control *ractl,
-> +                                  const struct extent_map *em)
-> +{
-> +       const u64 ra_pos =3D readahead_pos(ractl);
-> +       const u64 ra_end =3D ra_pos + readahead_length(ractl);
-> +       const u64 em_end =3D em->start + em->ram_bytes;
-> +
-> +       /* No expansion for holes and inline extents. */
-> +       if (em->disk_bytenr > EXTENT_MAP_LAST_BYTE)
-> +               return;
-> +
-> +       ASSERT(em_end >=3D ra_pos,
-> +              "extent_map %llu %llu ends before current readahead positi=
-on %llu",
-> +              em->start, em->len, ra_pos);
-> +       if (em_end > ra_end)
-> +               readahead_expand(ractl, ra_pos, em_end - ra_pos);
-> +}
-> +
->  /*
->   * basic readpage implementation.  Locked extent state structs are inser=
-ted
->   * into the tree that are removed when the IO is done (by the end_io
-> @@ -944,6 +964,16 @@ static int btrfs_do_readpage(struct folio *folio, st=
-ruct extent_map **em_cached,
->
->                 compress_type =3D btrfs_extent_map_compression(em);
->
-> +               /*
-> +                * Only expand readahead for extents which are already cr=
-eating
-> +                * the pages anyway in add_ra_bio_pages, which is compres=
-sed
-> +                * extents in the non subpage case.
-> +                */
-> +               if (bio_ctrl->ractl &&
-> +                   !btrfs_is_subpage(fs_info, folio) &&
-> +                   compress_type !=3D BTRFS_COMPRESS_NONE)
-> +                       btrfs_readahead_expand(bio_ctrl->ractl, em);
-> +
->                 if (compress_type !=3D BTRFS_COMPRESS_NONE)
->                         disk_bytenr =3D em->disk_bytenr;
->                 else
-> @@ -2540,7 +2570,10 @@ int btrfs_writepages(struct address_space *mapping=
-, struct writeback_control *wb
->
->  void btrfs_readahead(struct readahead_control *rac)
->  {
-> -       struct btrfs_bio_ctrl bio_ctrl =3D { .opf =3D REQ_OP_READ | REQ_R=
-AHEAD };
-> +       struct btrfs_bio_ctrl bio_ctrl =3D {
-> +               .opf =3D REQ_OP_READ | REQ_RAHEAD,
-> +               .ractl =3D rac
-> +       };
->         struct folio *folio;
->         struct btrfs_inode *inode =3D BTRFS_I(rac->mapping->host);
->         const u64 start =3D readahead_pos(rac);
-> --
-> 2.49.0
->
->
+sysfs_emit() is wrapper for scnprintf with implicit buffer length, so
+we can use that instead. I'll fix it in for-next.
 
