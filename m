@@ -1,240 +1,167 @@
-Return-Path: <linux-btrfs+bounces-15268-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15269-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8A52AFA2DF
-	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Jul 2025 05:37:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B70BCAFA359
+	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Jul 2025 08:59:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EFCB3BF1D6
-	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Jul 2025 03:37:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 098F317FE7D
+	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Jul 2025 06:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E12E19004A;
-	Sun,  6 Jul 2025 03:37:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 220131C6FFD;
+	Sun,  6 Jul 2025 06:59:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WdjkExy5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MV4tlC4v"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B5D83A1BA
-	for <linux-btrfs@vger.kernel.org>; Sun,  6 Jul 2025 03:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80241096F
+	for <linux-btrfs@vger.kernel.org>; Sun,  6 Jul 2025 06:59:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751773050; cv=none; b=RwwYVYu14b1Vgr6qFlCKWJt/hUfunPwBMgwWs4GNsSfIJs+QL0RHr2rfNVZwGV+Aye6WErDOqVG0WkiPcFGab50sFwpDh0xUJEhbbNyAIa4CVjzC87VGo3vQHOoJJ4WTfQtbPZBqxuQ0kLq6QomboaQCSLsqzcRolmQq/Z3q53A=
+	t=1751785152; cv=none; b=psWVJa+64efxgPnfKdCDMmz1L6EWw2yJWuio/1+jYj03Ted6Zsduq8BkQZ1DWKDReebCkziP9jlRLHIzI6s7ce/VtK2zzXRlwKqVGZQGcevXpjw8aJ+R7fLHzqdRm3DWKE0Roj6sDPXlSw4NR1FhYwNb5diyj3Ii81A4zroLTMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751773050; c=relaxed/simple;
-	bh=nxCvvt+md57djP10/vqkAB5m81CXVghLF0DzPPw+hl0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V2RKdZvK36XN8qtf84n11TE5yaXgJjvaRxoXtpxdCus8QpF6LMnfnZj/MaqCaSCOpZ45DkpawzNveRhHRK2pCX1PFi9mVOmCt/XlU6KJrWhvGCoHWTvlqmYRheMxZ86t5UAXoMtC37bi99HzC+b5gRRl+wNKRvJ0Mll9/hKNp64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WdjkExy5; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3a50fc7ac4dso885981f8f.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 05 Jul 2025 20:37:28 -0700 (PDT)
+	s=arc-20240116; t=1751785152; c=relaxed/simple;
+	bh=2Mlcc0AUVNnciuqbWCDnzxzIyvqBRLqGdHKta/yWr50=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=hBQgfgRR5QlBtdWw43izoS/hjWf8fOqj5c78dqyw0+oZfddXRXYpnO8xlrD7wvZeAVs7IsEryrN2mcz3PWl8iWC0+PYQbhuLKe1mrZVgrM7beF8+f/cj+zZgm5jYq28ulb0rWLXXgj21i+TSMcmvKulAhM9G0Exe5wejTfX5HxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MV4tlC4v; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-555163cd09aso2060404e87.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 05 Jul 2025 23:59:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1751773047; x=1752377847; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=uimqJ7Q/zYULB0k1zkbdsBjAIwCCdenpD3Zq/IQP814=;
-        b=WdjkExy5jrMp9BwVs4J4pWLAaaTuV2P0K4l6sjg3OK6h8wE3cHM+Hpi2vw5sVfUb2w
-         3+q3rEj5CwB4xAstbzPosMd0nuxiiY9QYtoryNyAAbpYmqWL8TzzAXAOuAWJAQWA7Tn1
-         dMO1mdc+A5VG3ex1vP0wEpL3IKOl/mUZnkcIx9y0bAJDNUiont9Hrka5crunkpqufe2P
-         BMTbVxUaysO01WEG3UVjvS8oPtLyRKNvVnzvXDV575UlCgevsr2+6/YOJfUALAlqlj2U
-         T9cM+Dq+C0M4L391VRO+wvHYd6jfAtxQTF8CF46Z0TnenPdHGkuA8Ua+R1E2zPgyzuDE
-         jWxw==
+        d=gmail.com; s=20230601; t=1751785149; x=1752389949; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=y1Ho6vQHMZ4zfLsZVaCxCAdgzd1SwLTbfidUwj0Fjjg=;
+        b=MV4tlC4vGdJmEQIMEqkHK9o0UalwBdUI5enbXj80Dqu+QlVM3nPaJSvwZ2Jvm7x0qt
+         UH8fMatQ9TW+6IzHqcRTV3xEQc+aG3TayPXEB+gdEX9n9BlKy3IjHLktcTpH6g/t5bh2
+         LNofOjSezR4egx++xDStr/up+3pfSQ/FbeFZTjEWhGaUGwXDnBbYQt5lUH8O0WtTlMzf
+         wKUBpD74eOJEwNEOOL1QaBTaNkhZwd90B9PVBSP+rXVLdnYSksTcO1ALTUnN2+0cEnjL
+         DYCl3iogBh8J36uDix7bw/YxNS2QjFdb4cgaEKB9eq9TQ938aAgX3zRxzyVcQHBNKw+D
+         byjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751773047; x=1752377847;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uimqJ7Q/zYULB0k1zkbdsBjAIwCCdenpD3Zq/IQP814=;
-        b=QCnQURcsgw6bqvyhnNbfXInMFIvgulqKHGunnPLUZcV6w6rYK09JyS54kJzfiqNRnT
-         1b57REa08QkScAhna4mRzF231yQT2h+fm4KqfBxD3pQTVzq0n/RTBEbOJzLgo8zxqmJP
-         WPU/xbvyw8v0txdd6JH9/46gCImvnvL0GfkoWEY4mn5l7iVFcPnPSEgW8CGgMiQmOS0v
-         oNSG1o1to0PcPTX9DQTk4ZtGmx0H9WdZaZPtDfBADLi3zNVgf/SkgwkGLJHcPE22Oe5R
-         IneFiotuiJhYi+fkgSYOhtBfO6T04eTMaW7T6tZ5GgmVnvJrbXMCYn8ZqdjP3uJpACPJ
-         BxuA==
-X-Gm-Message-State: AOJu0YxvmFIrrjPl6h+sUPmU3p1zdI9fXGb8EFBpYzXijTuCR5ncyZ9l
-	AQFfC6spLKdeYjn2bl+qxVK8Eyc7wTkGKXcUEeSr8unljauZatK95de6NRyuYnEYI1Y=
-X-Gm-Gg: ASbGncvTR+UmY1HeM+49yvqzSn2TEhJqs57CMJQm62wOCg4nnjySD5YlgQ0xSiFpBl9
-	myXfS/C7AYnlirmZOxcX3qgQrUbH+XXKu4EvXrf7kBTaWNUsChJs24hpHrBOsvFpm94Ckx5REFr
-	WXrhft6GGVcrINcW75nqt3yykVgzx9opQHKyycbQ/e1WGgnBkHPs+i2WxDIvsQGiO8pXJcoUE95
-	5ClY4qaaKEE0O0q0fdNuh5XCxlM1FabAXlQEMhEisFlN4erX5Sxpi1BJGHMkks8vJ5i5YQxymHN
-	1e4cGefJxeOlagNkAxJQid+/2Wm16KQJ0oTR9FjjFzkg3Y5yUC6/AFWaZH4VrrKwaj94XsMUjU9
-	dMcT3eLVOBNRoRg==
-X-Google-Smtp-Source: AGHT+IGlvFM8Q5ovcZC4SNydrrGv1juSo9zK/sjcWGNAHRCEcLuhxK/NI5Qt/fySOIGBgX0nc3jlWA==
-X-Received: by 2002:adf:e18c:0:b0:3a5:5270:a52c with SMTP id ffacd0b85a97d-3b49a97693cmr2824900f8f.0.1751773046461;
-        Sat, 05 Jul 2025 20:37:26 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23c84598b70sm57453105ad.204.2025.07.05.20.37.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Jul 2025 20:37:25 -0700 (PDT)
-Message-ID: <6642f8b5-d357-4fb6-a295-906178a633f9@suse.com>
-Date: Sun, 6 Jul 2025 13:07:19 +0930
+        d=1e100.net; s=20230601; t=1751785149; x=1752389949;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=y1Ho6vQHMZ4zfLsZVaCxCAdgzd1SwLTbfidUwj0Fjjg=;
+        b=AAzJijfHsLnEoCcDxEaDp7qLhJbkXayhv003XY5SYjRkoXmmHzWdMuWL0GUo+Fv1KB
+         uI0SKgkRZAib7F2J2bK6JY5yr+Rvu/7CfLgdwBPESJGk/y0nlqeE7T3u5hNnyHxI/THc
+         bmOmE33AGdHDJA+WOmX54SMcUb4zuspapimsS+GOJuTF8kLNKLUHT18BF7M+qpnfOCuL
+         pPaD1ETfpLEeUJ6BxQ+O1v02tWAClpVPj2pJqeuii90c8P5Zw9ZxVOlGvCf5AFTSUh7Z
+         8Q127YiiTPkKUCx32zEe7ZAdGvHHTNTO5ZPRm8sn6KJ6Mh07Pe3rqasxRMtH0b01Fjj+
+         QWtA==
+X-Gm-Message-State: AOJu0Yz+M/8y4CE/5GvpmH3z1RvJWet3tUCQH6u/m0wUdw0b2sAwnDAR
+	TkrTEvs4vWssjxQrGxjySKXJgfh9bBiJkUQg5K17QmE/pfvHWbvcG4xcXOPPCduAV1zoaGH+ZxP
+	OpLn6eINJuQXpXm1DpMC0Q4MfECJ59p5tQyNY
+X-Gm-Gg: ASbGncsnQfuueZ6+SAa665qgUWWJtRytchrMas+pwZQN3FhWJmVB/0PlEFMXw1cPwQm
+	SWKaiBbctPi25cN/nGZ/OjFRqD1Z90oeb5NL7dp6P3Yt2DtTB9fMUMhBr1qYqJ3wJ1IlvCBeUj3
+	JGao5A1usbWVZjSwtd7lsa2ayQAx2QaO7ARopik0fR7Uev
+X-Google-Smtp-Source: AGHT+IGRqVodNBvd6LTno67w3KVyHbrWmVWMyeIDISd4E8lEhWZRP/LC9UT9zGYVgtA5Qhm5x5RBkSjWi/h1GaEaLs8=
+X-Received: by 2002:a2e:be90:0:b0:32e:deb2:f75 with SMTP id
+ 38308e7fff4ca-32f19acdec1mr10851391fa.23.1751785148416; Sat, 05 Jul 2025
+ 23:59:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/6] btrfs: implement shutdown ioctl
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz
-References: <cover.1751589725.git.wqu@suse.com>
- <5ff44de2d9d7f8c2e59fa3a5fe68d5bb4c71a111.1751589725.git.wqu@suse.com>
- <20250705142230.GC4453@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250705142230.GC4453@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: PranshuTheGamer <12345qwertyman12345@gmail.com>
+Date: Sun, 6 Jul 2025 09:58:56 +0300
+X-Gm-Features: Ac12FXwdkrhFGlKGE5olWsNHny7q9PWSlfVjEhGmsqTnOZfhJ_bieaco8b10Ct8
+Message-ID: <CAPYq2E0yh0cfM9AXNqjHpz9dLnzRa3xZ76vJEKqsM9-jaJpktQ@mail.gmail.com>
+Subject: [help needed] parent verity error on HDD & btrfs restore segfault
+To: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hello, I am rewriting this email from
+https://lore.kernel.org/linux-btrfs/CAPYq2E3zdzx4vvSrGT3goRvikt4grUfgZuE5kB1hcoK=RRpseg@mail.gmail.com/T/#t
+because It seems to not have attracted any attention as I sent a total
+of 3 emails. I will update the other email thread to redirect them
+here.
 
+I have a backup of my files on a hard drive with btrfs. Recently while
+running something off the hard drive, it switched off by itself, and
+then when i tried remounting it, it gave me this:
 
-在 2025/7/5 23:52, David Sterba 写道:
-> On Fri, Jul 04, 2025 at 10:12:33AM +0930, Qu Wenruo wrote:
->> The shutdown ioctl should follow the XFS one, which use magic number 'X',
->> and ioctl number 125, with a u32 as flags.
->>
->> For now btrfs don't distinguish DEFAULT and LOGFLUSH flags (just like
->> f2fs), both will freeze the fs first (implies committing the current
->> transaction), setting the SHUTDOWN flag and finally thaw the fs.
->>
->> For NOLOGFLUSH flag, the freeze/thaw part is skipped thus the current
->> transaction is aborted.
->>
->> The new shutdown ioctl is hidden behind experimental features for more
->> testing.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/ioctl.c           | 40 ++++++++++++++++++++++++++++++++++++++
->>   include/uapi/linux/btrfs.h |  9 +++++++++
->>   2 files changed, 49 insertions(+)
->>
->> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
->> index 2f3b7be13bea..94eb7a8499db 100644
->> --- a/fs/btrfs/ioctl.c
->> +++ b/fs/btrfs/ioctl.c
->> @@ -5194,6 +5194,36 @@ static int btrfs_ioctl_subvol_sync(struct btrfs_fs_info *fs_info, void __user *a
->>   	return 0;
->>   }
->>   
->> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
->> +static int btrfs_emergency_shutdown(struct btrfs_fs_info *fs_info, u32 flags)
->> +{
->> +	int ret = 0;
->> +
->> +	if (flags >= BTRFS_SHUTDOWN_FLAGS_LAST)
->> +		return -EINVAL;
->> +
->> +	if (btrfs_is_shutdown(fs_info))
->> +		return 0;
->> +
->> +	switch (flags) {
->> +	case BTRFS_SHUTDOWN_FLAGS_LOGFLUSH:
->> +	case BTRFS_SHUTDOWN_FLAGS_DEFAULT:
->> +		ret = freeze_super(fs_info->sb, FREEZE_HOLDER_KERNEL, NULL);
-> 
-> Recently I've looked at scrub blocking filesystem freezing and it does
-> not work because it blocks on the semaphore taken in mnt_want_write,
-> also taken in freeze_super().
-> 
-> I have an idea for fix, basically pause scrub, undo mnt_want_write
-> and then call freeze_super. So we'll need that too for shutdown. Once
-> implemented the fixup would be to use btrfs_freeze_super callback here.
+I would like to note that since the last successful mount, there
+haven't been any important writes to the disk.
 
-It may not be that simple.
+> uname -a
+Linux pranshu-arch-1 6.15.4-arch2-1 #1 SMP PREEMPT_DYNAMIC Fri, 27 Jun
+2025 16:35:07 +0000 x86_64 GNU/Linux
 
-freeze_super() itself is doing extra works related to the 
-stage/freeze_owner/etc.
+> btrfs version
+btrfs-progs v6.15
+-EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED CRYPTO=libgcrypt
 
-I'm not sure if it's a good idea to completely skip that part.
+> sudo mount /dev/sdc1 /run/media/shivangi/LV-01
+mount: /run/media/shivangi/LV-01: can't read superblock on /dev/sdc1.
+       dmesg(1) may have more information after failed mount system call.
 
-I'd prefer scrub to check the frozen stage, and if it's already in any 
-FREEZE stages, exit early.
+> sudo dmesg
+[ 2049.529633] BTRFS: device /dev/sdc1 (8:33) using temp-fsid
+0f830c0c-e975-4c8d-974a-d8cc94bf49e7
+[ 2049.529643] BTRFS: device label LV-01 devid 1 transid 8301
+/dev/sdc1 (8:33) scanned by mount (5669)
+[ 2049.687040] BTRFS info (device sdc1): first mount of filesystem
+d9441c01-827c-47da-890c-491213f25ddb
+[ 2049.687057] BTRFS info (device sdc1): using crc32c (crc32c-x86)
+checksum algorithm
+[ 2049.687061] BTRFS info (device sdc1): using free-space-tree
+[ 2049.976371] BTRFS info (device sdc1): bdev /dev/sdc1 errs: wr 0, rd
+0, flush 0, corrupt 5, gen 0
+[ 2052.052541] BTRFS error (device sdc1): parent transid verify failed
+on logical 120422400 mirror 1 wanted 8301 found 5836
+[ 2052.083206] BTRFS error (device sdc1): parent transid verify failed
+on logical 120422400 mirror 2 wanted 8301 found 5836
+[ 2052.083258] BTRFS error (device sdc1): failed to read block groups: -5
+[ 2052.085958] BTRFS error (device sdc1): open_ctree failed: -5
 
-Thanks,
-Qu
+> sudo btrfs check --readonly /dev/sdc1
+Opening filesystem to check...
+parent transid verify failed on 120422400 wanted 8301 found 5836
+parent transid verify failed on 120422400 wanted 8301 found 5836
+parent transid verify failed on 120422400 wanted 8301 found 5836
+Ignoring transid failure
+parent transid verify failed on 120619008 wanted 8301 found 5836
+parent transid verify failed on 120619008 wanted 8301 found 5836
+parent transid verify failed on 120619008 wanted 8301 found 5836
+Ignoring transid failure
+ERROR: child eb corrupted: parent bytenr=40599552 item=4 parent
+level=2 child bytenr=120619008 child level=0
+ERROR: failed to read block groups: Input/output error
+ERROR: cannot open file system
 
-> 
->> +		if (ret)
->> +			return ret;
->> +		btrfs_force_shutdown(fs_info);
->> +		ret = thaw_super(fs_info->sb, FREEZE_HOLDER_KERNEL, NULL);
->> +		if (ret)
->> +			return ret;
->> +		break;
->> +	case BTRFS_SHUTDOWN_FLAGS_NOLOGFLUSH:
->> +		btrfs_force_shutdown(fs_info);
->> +		break;
->> +	}
->> +	return ret;
->> +}
->> +#endif
->> +
->>   long btrfs_ioctl(struct file *file, unsigned int
->>   		cmd, unsigned long arg)
->>   {
-> 
->> --- a/include/uapi/linux/btrfs.h
->> +++ b/include/uapi/linux/btrfs.h
->> @@ -1096,6 +1096,12 @@ enum btrfs_err_code {
->>   	BTRFS_ERROR_DEV_RAID1C4_MIN_NOT_MET,
->>   };
->>   
->> +/* Flags for IOC_SHUTDOWN, should match XFS' flags. */
->> +#define BTRFS_SHUTDOWN_FLAGS_DEFAULT	0x0
->> +#define BTRFS_SHUTDOWN_FLAGS_LOGFLUSH	0x1
->> +#define BTRFS_SHUTDOWN_FLAGS_NOLOGFLUSH	0x2
->> +#define BTRFS_SHUTDOWN_FLAGS_LAST	0x3
->> +
->>   #define BTRFS_IOC_SNAP_CREATE _IOW(BTRFS_IOCTL_MAGIC, 1, \
->>   				   struct btrfs_ioctl_vol_args)
->>   #define BTRFS_IOC_DEFRAG _IOW(BTRFS_IOCTL_MAGIC, 2, \
->> @@ -1217,6 +1223,9 @@ enum btrfs_err_code {
->>   #define BTRFS_IOC_SUBVOL_SYNC_WAIT _IOW(BTRFS_IOCTL_MAGIC, 65, \
->>   					struct btrfs_ioctl_subvol_wait)
->>   
->> +/* Shutdown ioctl should follow XFS's interfaces, thus not using btrfs magic. */
->> +#define BTRFS_IOC_SHUTDOWN	_IOR('X', 125, __u32)
-> 
-> In XFS it's
-> 
-> #define XFS_IOC_GOINGDOWN            _IOR ('X', 125, uint32_t)
-> 
-> It's right to use the same definition and ioctl value as this will
-> be a generic ioctl eventually, with 3 users at least. I like the name
-> SHUTDOWN better, ext4 also uses that.
+> sudo btrfs rescue chunk-recover /dev/sdc1
+Scanning: 789579710464 in dev0scan chunk headers error
 
+> sudo btrfs-find-root /dev/disk/by-label/LV-01
+parent transid verify failed on 120422400 wanted 8301 found 5836
+parent transid verify failed on 120422400 wanted 8301 found 5836
+ERROR: failed to read block groups: Input/output error
+Superblock thinks the generation is 8301
+Superblock thinks the level is 1
+Found tree root at 119324672 gen 8301 level 1
+Well block 35749888(gen: 8300 level: 1) seems good, but
+generation/level doesn't match, want gen: 8301 level: 1
+
+> sudo btrfs restore -D -s -S -x -m -i  --path-regex "^.*$" \
+/dev/disk/by-label/LV-01 .
+This is a dry-run, no files are going to be restored
+ERROR: failed to change owner of './Backups/Other/school/G12
+School/eng/hugo-portfolio/themes/risotto/exampleSite/content/_index.md':
+No such file or directory
+ERROR: failed to change owner of
+'./Snapshots/Backups/Other-1748279502.547062230_2025-05-26_20:11:42/school/G12
+School/eng/hugo-portfolio/themes/risotto/exampleSite/content/_index.md':
+No such file or directory
+[1]    11852 segmentation fault  sudo btrfs restore -D -s -S -x -m -i
+--path-regex "^.*$"  .
+
+Please help me with this drive, either recovering the files or fixing the drive.
 
