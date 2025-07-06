@@ -1,56 +1,80 @@
-Return-Path: <linux-btrfs+bounces-15267-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15268-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E92B3AFA1EA
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Jul 2025 23:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8A52AFA2DF
+	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Jul 2025 05:37:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 591993BB775
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Jul 2025 21:05:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EFCB3BF1D6
+	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Jul 2025 03:37:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F7B1DE2CF;
-	Sat,  5 Jul 2025 21:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E12E19004A;
+	Sun,  6 Jul 2025 03:37:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="JUTJSoo5"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WdjkExy5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EFA6218596
-	for <linux-btrfs@vger.kernel.org>; Sat,  5 Jul 2025 21:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B5D83A1BA
+	for <linux-btrfs@vger.kernel.org>; Sun,  6 Jul 2025 03:37:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751749567; cv=none; b=Mj0GIYINY8c3Yn5+o5pibotYTr9b3s/mCxFWdUeppeYT2gondco1SJk7A3OH4qxhxDzXYu2mh8gvCx21sNxm5ciOnAe0kMGEMUtYZ0uw1FY0IwN62aG+bwI5bSdjswrwudNUEuY4DUmtx6ywyQ9pEzFSZ95tIXQcCJXZDMTgCrs=
+	t=1751773050; cv=none; b=RwwYVYu14b1Vgr6qFlCKWJt/hUfunPwBMgwWs4GNsSfIJs+QL0RHr2rfNVZwGV+Aye6WErDOqVG0WkiPcFGab50sFwpDh0xUJEhbbNyAIa4CVjzC87VGo3vQHOoJJ4WTfQtbPZBqxuQ0kLq6QomboaQCSLsqzcRolmQq/Z3q53A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751749567; c=relaxed/simple;
-	bh=8O77c0oJMq98/VKamZKtvHLdGbuamW74khX0R1PZOIw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZUZLbokcKhCLOp8FgCJS7Ec0i5Mx8b3UTVaskmmtNlj1CayyP4AHMpqYPwE2is2r7J2/1HQQl9vun013oiMiCeYymlsrJoZpCht/xY4YrFe7BniiXthvlra1rCcvfjtBQG+iKejABN3pG4Dd0uU75LaMmYYtPDnGNGck+BQAugs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=JUTJSoo5; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1751749562; x=1752354362; i=quwenruo.btrfs@gmx.com;
-	bh=yGZVDaU7GoG0v2Xe30kCyu4rZqmDRHZ3lvrS2Ce+l9o=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=JUTJSoo5AhjS3jfRwpHJyAB7gRp7Gwmwv710KwohtrEzva8DSyd9A6UThwFiXArN
-	 o6L0wC3aF3cCKsaGlymlEFs2q45IHx7BCXpjrNCfhg6Y/p8zoZJ9vNshPZAnyL/9h
-	 zfWNGGXy2T9PEjhRw4FndcvNooHGrPhToamJ1Wy8TbYFIlz1gWd8vFb9w8A+mvfWb
-	 wCKoSeyKCvja+Fu9TOt9XZWmA8yBWmw22jXPfDuyDp2/3WGIZaz0asXCdv4X+wFKZ
-	 DjiEJSjsCvvk/TzaBghzCv9aKp6wsj5iACjrGKbnVFMbcMQz+PF95C2zqAxEkSseZ
-	 LJAPX2H9UeOSmSz3BA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mq2jC-1v3O1I0k42-00fHN5; Sat, 05
- Jul 2025 23:06:02 +0200
-Message-ID: <5c1dbb14-a137-4859-95c5-813add2b2145@gmx.com>
-Date: Sun, 6 Jul 2025 06:35:59 +0930
+	s=arc-20240116; t=1751773050; c=relaxed/simple;
+	bh=nxCvvt+md57djP10/vqkAB5m81CXVghLF0DzPPw+hl0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=V2RKdZvK36XN8qtf84n11TE5yaXgJjvaRxoXtpxdCus8QpF6LMnfnZj/MaqCaSCOpZ45DkpawzNveRhHRK2pCX1PFi9mVOmCt/XlU6KJrWhvGCoHWTvlqmYRheMxZ86t5UAXoMtC37bi99HzC+b5gRRl+wNKRvJ0Mll9/hKNp64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WdjkExy5; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3a50fc7ac4dso885981f8f.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 05 Jul 2025 20:37:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1751773047; x=1752377847; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=uimqJ7Q/zYULB0k1zkbdsBjAIwCCdenpD3Zq/IQP814=;
+        b=WdjkExy5jrMp9BwVs4J4pWLAaaTuV2P0K4l6sjg3OK6h8wE3cHM+Hpi2vw5sVfUb2w
+         3+q3rEj5CwB4xAstbzPosMd0nuxiiY9QYtoryNyAAbpYmqWL8TzzAXAOuAWJAQWA7Tn1
+         dMO1mdc+A5VG3ex1vP0wEpL3IKOl/mUZnkcIx9y0bAJDNUiont9Hrka5crunkpqufe2P
+         BMTbVxUaysO01WEG3UVjvS8oPtLyRKNvVnzvXDV575UlCgevsr2+6/YOJfUALAlqlj2U
+         T9cM+Dq+C0M4L391VRO+wvHYd6jfAtxQTF8CF46Z0TnenPdHGkuA8Ua+R1E2zPgyzuDE
+         jWxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751773047; x=1752377847;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uimqJ7Q/zYULB0k1zkbdsBjAIwCCdenpD3Zq/IQP814=;
+        b=QCnQURcsgw6bqvyhnNbfXInMFIvgulqKHGunnPLUZcV6w6rYK09JyS54kJzfiqNRnT
+         1b57REa08QkScAhna4mRzF231yQT2h+fm4KqfBxD3pQTVzq0n/RTBEbOJzLgo8zxqmJP
+         WPU/xbvyw8v0txdd6JH9/46gCImvnvL0GfkoWEY4mn5l7iVFcPnPSEgW8CGgMiQmOS0v
+         oNSG1o1to0PcPTX9DQTk4ZtGmx0H9WdZaZPtDfBADLi3zNVgf/SkgwkGLJHcPE22Oe5R
+         IneFiotuiJhYi+fkgSYOhtBfO6T04eTMaW7T6tZ5GgmVnvJrbXMCYn8ZqdjP3uJpACPJ
+         BxuA==
+X-Gm-Message-State: AOJu0YxvmFIrrjPl6h+sUPmU3p1zdI9fXGb8EFBpYzXijTuCR5ncyZ9l
+	AQFfC6spLKdeYjn2bl+qxVK8Eyc7wTkGKXcUEeSr8unljauZatK95de6NRyuYnEYI1Y=
+X-Gm-Gg: ASbGncvTR+UmY1HeM+49yvqzSn2TEhJqs57CMJQm62wOCg4nnjySD5YlgQ0xSiFpBl9
+	myXfS/C7AYnlirmZOxcX3qgQrUbH+XXKu4EvXrf7kBTaWNUsChJs24hpHrBOsvFpm94Ckx5REFr
+	WXrhft6GGVcrINcW75nqt3yykVgzx9opQHKyycbQ/e1WGgnBkHPs+i2WxDIvsQGiO8pXJcoUE95
+	5ClY4qaaKEE0O0q0fdNuh5XCxlM1FabAXlQEMhEisFlN4erX5Sxpi1BJGHMkks8vJ5i5YQxymHN
+	1e4cGefJxeOlagNkAxJQid+/2Wm16KQJ0oTR9FjjFzkg3Y5yUC6/AFWaZH4VrrKwaj94XsMUjU9
+	dMcT3eLVOBNRoRg==
+X-Google-Smtp-Source: AGHT+IGlvFM8Q5ovcZC4SNydrrGv1juSo9zK/sjcWGNAHRCEcLuhxK/NI5Qt/fySOIGBgX0nc3jlWA==
+X-Received: by 2002:adf:e18c:0:b0:3a5:5270:a52c with SMTP id ffacd0b85a97d-3b49a97693cmr2824900f8f.0.1751773046461;
+        Sat, 05 Jul 2025 20:37:26 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23c84598b70sm57453105ad.204.2025.07.05.20.37.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Jul 2025 20:37:25 -0700 (PDT)
+Message-ID: <6642f8b5-d357-4fb6-a295-906178a633f9@suse.com>
+Date: Sun, 6 Jul 2025 13:07:19 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,157 +82,159 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [HELP] BTRFS error: Failed to recover log tree after unclean
- shutdown
-To: Yevhenii Lysak <arch-knowledge@vaillen.tech>, linux-btrfs@vger.kernel.org
-References: <CALYdzHZdK+Ki8dsBonpJ+2-eW1xW1xhxDMEYkEQR=TntJ+40hQ@mail.gmail.com>
+Subject: Re: [PATCH v4 5/6] btrfs: implement shutdown ioctl
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz
+References: <cover.1751589725.git.wqu@suse.com>
+ <5ff44de2d9d7f8c2e59fa3a5fe68d5bb4c71a111.1751589725.git.wqu@suse.com>
+ <20250705142230.GC4453@twin.jikos.cz>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CALYdzHZdK+Ki8dsBonpJ+2-eW1xW1xhxDMEYkEQR=TntJ+40hQ@mail.gmail.com>
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20250705142230.GC4453@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZvPR3TJGrjU2QauFZviJTCk+EhpNsabqbR3aMUoCczIyZ40fmkA
- HY+jyF+3ElyHCK6vrBoOZaBijqOeODuE5Jny/YBwO0WgbpgX7I7vKUCkZBAVaz3y5He/LMs
- 34WrDVxWE+oyci1UV7S07KWf1t7rm7RBuoVWZ45dbb0RoHq/A+MjeUp/r0qWiOxWyIJbrWh
- P3AuHrVI4XOmPCxUZjy/Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:1DFcUnR6s04=;h/lTABpP/afBXd3wkhG9Ch35Plk
- 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
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A8 2025/7/4 06:17, Yevhenii Lysak =E5=86=99=E9=81=93:
-> After an unexpected system shutdown and system update, I'm facing
-> issues mounting my BTRFS partition. I'm getting the following error:
->=20
-> BTRFS: error (device dm-1) in btrfs_replay_log:104: errno=3D-5 IO
-> failure (Failed to recover log tree)
-> BTRFS error (device dm-1 state E): open_ctree failed
-> mount: /mnt/new_top: can't read superblock on /dev/mapper/tmpluks.
+在 2025/7/5 23:52, David Sterba 写道:
+> On Fri, Jul 04, 2025 at 10:12:33AM +0930, Qu Wenruo wrote:
+>> The shutdown ioctl should follow the XFS one, which use magic number 'X',
+>> and ioctl number 125, with a u32 as flags.
+>>
+>> For now btrfs don't distinguish DEFAULT and LOGFLUSH flags (just like
+>> f2fs), both will freeze the fs first (implies committing the current
+>> transaction), setting the SHUTDOWN flag and finally thaw the fs.
+>>
+>> For NOLOGFLUSH flag, the freeze/thaw part is skipped thus the current
+>> transaction is aborted.
+>>
+>> The new shutdown ioctl is hidden behind experimental features for more
+>> testing.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/ioctl.c           | 40 ++++++++++++++++++++++++++++++++++++++
+>>   include/uapi/linux/btrfs.h |  9 +++++++++
+>>   2 files changed, 49 insertions(+)
+>>
+>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+>> index 2f3b7be13bea..94eb7a8499db 100644
+>> --- a/fs/btrfs/ioctl.c
+>> +++ b/fs/btrfs/ioctl.c
+>> @@ -5194,6 +5194,36 @@ static int btrfs_ioctl_subvol_sync(struct btrfs_fs_info *fs_info, void __user *a
+>>   	return 0;
+>>   }
+>>   
+>> +#ifdef CONFIG_BTRFS_EXPERIMENTAL
+>> +static int btrfs_emergency_shutdown(struct btrfs_fs_info *fs_info, u32 flags)
+>> +{
+>> +	int ret = 0;
+>> +
+>> +	if (flags >= BTRFS_SHUTDOWN_FLAGS_LAST)
+>> +		return -EINVAL;
+>> +
+>> +	if (btrfs_is_shutdown(fs_info))
+>> +		return 0;
+>> +
+>> +	switch (flags) {
+>> +	case BTRFS_SHUTDOWN_FLAGS_LOGFLUSH:
+>> +	case BTRFS_SHUTDOWN_FLAGS_DEFAULT:
+>> +		ret = freeze_super(fs_info->sb, FREEZE_HOLDER_KERNEL, NULL);
+> 
+> Recently I've looked at scrub blocking filesystem freezing and it does
+> not work because it blocks on the semaphore taken in mnt_want_write,
+> also taken in freeze_super().
+> 
+> I have an idea for fix, basically pause scrub, undo mnt_want_write
+> and then call freeze_super. So we'll need that too for shutdown. Once
+> implemented the fixup would be to use btrfs_freeze_super callback here.
 
-Full dmesg please.
+It may not be that simple.
 
+freeze_super() itself is doing extra works related to the 
+stage/freeze_owner/etc.
 
->=20
-> System information:
-> - Arch Linux
-> - System locked up and I was forced to shut it off (unclean shutdown)
-> - After reboot, I ran a full system update
-> - I performed the manual intervention regarding linux-firmware as per
-> Arch news instructions
-> - After rebooting, I encountered error messages related to NVIDIA driver=
-s
-> - I booted into a live environment and ran cryptsetup open on my NVME de=
-vice
-> - When trying to mount it, I encounter the error shown above
-> - I tried mounting with options: ro,noatime,space_cache=3Dv2
->=20
-> The btrfs check command doesn't show any errors, but mounting still fail=
-s.
->=20
-> I would appreciate any help or guidance on how to recover access to my d=
-ata.
+I'm not sure if it's a good idea to completely skip that part.
 
-Normally just "btrfs rescue zero-log" would solve it.
-
-But I really want to find out why the log replay failed.
-
-Please also dump the following info before zeroing the log.
-
-# btrfs ins dump-super <device>
-# btrfs ins dump-tree -b <log_tree_bytenr> <device>
-
-Where <log_tree_bytenr> is grabbed using the following sequence:
-
-# btrfs ins dump-super <device>  | grep "log_root\s\s+"
-
-You will get the bytenr for the log root, then
-
-# btrfs ins dump-tree -b <log_root> | gerp bytenr
-
-You will get the log tree bytenr (may be multiple though)
-
-Then finally dump the log tree:
-
-# btrfs ins dump-tree -b <log_tree_bytenr> <device>
+I'd prefer scrub to check the frozen stage, and if it's already in any 
+FREEZE stages, exit early.
 
 Thanks,
 Qu
 
->=20
-> Thank you,
-> Yevhenii.
->=20
+> 
+>> +		if (ret)
+>> +			return ret;
+>> +		btrfs_force_shutdown(fs_info);
+>> +		ret = thaw_super(fs_info->sb, FREEZE_HOLDER_KERNEL, NULL);
+>> +		if (ret)
+>> +			return ret;
+>> +		break;
+>> +	case BTRFS_SHUTDOWN_FLAGS_NOLOGFLUSH:
+>> +		btrfs_force_shutdown(fs_info);
+>> +		break;
+>> +	}
+>> +	return ret;
+>> +}
+>> +#endif
+>> +
+>>   long btrfs_ioctl(struct file *file, unsigned int
+>>   		cmd, unsigned long arg)
+>>   {
+> 
+>> --- a/include/uapi/linux/btrfs.h
+>> +++ b/include/uapi/linux/btrfs.h
+>> @@ -1096,6 +1096,12 @@ enum btrfs_err_code {
+>>   	BTRFS_ERROR_DEV_RAID1C4_MIN_NOT_MET,
+>>   };
+>>   
+>> +/* Flags for IOC_SHUTDOWN, should match XFS' flags. */
+>> +#define BTRFS_SHUTDOWN_FLAGS_DEFAULT	0x0
+>> +#define BTRFS_SHUTDOWN_FLAGS_LOGFLUSH	0x1
+>> +#define BTRFS_SHUTDOWN_FLAGS_NOLOGFLUSH	0x2
+>> +#define BTRFS_SHUTDOWN_FLAGS_LAST	0x3
+>> +
+>>   #define BTRFS_IOC_SNAP_CREATE _IOW(BTRFS_IOCTL_MAGIC, 1, \
+>>   				   struct btrfs_ioctl_vol_args)
+>>   #define BTRFS_IOC_DEFRAG _IOW(BTRFS_IOCTL_MAGIC, 2, \
+>> @@ -1217,6 +1223,9 @@ enum btrfs_err_code {
+>>   #define BTRFS_IOC_SUBVOL_SYNC_WAIT _IOW(BTRFS_IOCTL_MAGIC, 65, \
+>>   					struct btrfs_ioctl_subvol_wait)
+>>   
+>> +/* Shutdown ioctl should follow XFS's interfaces, thus not using btrfs magic. */
+>> +#define BTRFS_IOC_SHUTDOWN	_IOR('X', 125, __u32)
+> 
+> In XFS it's
+> 
+> #define XFS_IOC_GOINGDOWN            _IOR ('X', 125, uint32_t)
+> 
+> It's right to use the same definition and ioctl value as this will
+> be a generic ioctl eventually, with 3 users at least. I like the name
+> SHUTDOWN better, ext4 also uses that.
 
 
