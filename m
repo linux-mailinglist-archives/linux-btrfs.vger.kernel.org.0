@@ -1,80 +1,56 @@
-Return-Path: <linux-btrfs+bounces-15299-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15300-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F280AFBE7D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 01:04:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69790AFBE91
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 01:23:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A4F8425DD8
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 23:04:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 165CA7B09D6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 23:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93BFC1373;
-	Mon,  7 Jul 2025 23:04:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DE428B3F9;
+	Mon,  7 Jul 2025 23:23:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="b2PAma9x"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Zjv8hKUP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B038621D3CA
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Jul 2025 23:04:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F17211F1302;
+	Mon,  7 Jul 2025 23:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751929459; cv=none; b=pd4seSnGybH/xLmX9L1vao7geG5X3KaG8aKWI9zjDcOL4AKSQ+Dcw7HXjIwyA7zBt+Xq1yjvlvtb1SscNNlIwlmb03ZU/2iNEJ4J15v3HA7iOf6Nmt1rJ7IJvKT3Vju2WiVZT765ELvvBJDQK29iFXEBwxHlIVZ6DMsqjd3jpc4=
+	t=1751930581; cv=none; b=cqHKhU6Q7mF2S0ev01oZKw2/7el3jimERLwf2ntHpTZQ/s0ffp3JqzFf4WMU9Os8j/hTQNPjctx5KFCoa8yM2HuVMLEHrFhkYgTqlBROdXn3st45Em6dZAzmMVRe18aE7fURU4Kv530nuLvJBFGNSG7iBZeEuQHI7HYIpaTAMYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751929459; c=relaxed/simple;
-	bh=iTcscXLpiNPkLALp2XqDRTyYaj6XRnBYFsKRM+hRvp4=;
+	s=arc-20240116; t=1751930581; c=relaxed/simple;
+	bh=AJ2YorkMO+xyn8pnD7583uO+MofRse2wmTScwQ26Tjg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KJqYL1PQBiEtgo7+pKDMdSQJHPGojJypyAWI6pDfrP/kHxoYdFHbWLFQvbji1CGIGMhQ6IlNgqYFRVRnmlmPONyC6xlX2CSm/5VIDU6hG+dnuBmO6Z0Tm6qk3JbvGlL5ostWQTa8wFbDn+x8wUthnRsULBPKjYt088mC46dhhG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=b2PAma9x; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3a57ae5cb17so2278906f8f.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Jul 2025 16:04:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1751929454; x=1752534254; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=iKJ3IWaVesX53YBHi2MAXOtjvL7dHq4KVlTeOhgVcrY=;
-        b=b2PAma9xgxSovs/6UCOeUOSFf29YA5Gnc2RsgdAfljqDjsp0A3uJhW8vad/CtUzc/C
-         YBzv1QGRH9ZZ4Jm59Pz+vn8bF0R3vyZat+SGyuUc8VVVJpZ+ZlkOcX/Bsd5RC/HzlCQx
-         5xLzFlat9zaqgA/8RtETgaeAwtP1qU0iCxDkke8fcDY2byXPKu0ptPsnNr449ZKHKOK8
-         tvOfFyL/ryRu4vspu5O57OnmP4d/RrSAPsGdZJ7vZW7CH4/H+WVBcIk14/YCX57EGgMP
-         zTU1NIVZ8VssG2yPUfAtMNiRFjqE/0tAjh+7RVAKLmZcKBk+RWSctimdx8MNYnpWniez
-         LEGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751929454; x=1752534254;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iKJ3IWaVesX53YBHi2MAXOtjvL7dHq4KVlTeOhgVcrY=;
-        b=wr0UXd5VLUeWVCbEUtcbP9ej9DuvdxMI7Jt8qnkuNOR0t2bOggtrcVswkFyNLL7Pzh
-         tChPuIvTySY/PuqMNeR9dMFTWwTtBaWPyvONSOW0r3CYa9Yjzm13jKI7O1uE5FDCe1he
-         gJQ1rk9GwlAOsGW6xR4Di8Is76W3bRhV+Da1dtcr+ZI2xEb2hpNNMI9pp3szSBDIh0kD
-         BzKE5buk5vSSyhXvtp/8lv/Rt+idgtxoriBaU6uaU/3w/CQ2wnRVwgSaWUGqj4+O59XM
-         hZ5OIi3JAgumgheI6gLxILgnvv0/kph8kMp9OmbcbXSJBKq0f8fYF3aiZfe13Kx+8uoz
-         W8ng==
-X-Gm-Message-State: AOJu0Yxz/ENerbjpX+SQMxqzDg3m0j2PaX6h2jCqN7o7ae4b+dmoOO8B
-	gpcqoenHfhzKZs/FsjSrooO8iT0nO5QcVM7cC1L1zN2nZLfkJndN1fYaf1Z1k8KLWq8=
-X-Gm-Gg: ASbGncuArBMTvxbJ95yyLJP0QA5maZJ4DKvm57JafMzhuh66qQZjz1KcGOy5JMpXL8z
-	/XF+9z0XtPFysHXf6McPWV30EN1bh8UNSnn6+q2po3NFedeW6WRP3VSCA9U4LF1VqV7clXY8AdI
-	DIIVLazMZIeEYSO5l9PZpSe49MHfTYVyy40QnB0clIda6IwxvLZxhixqf2b3fMqsyYPb531Dr+5
-	T2Girv8SDcRugAj5Z3pETLJBF0XeTbX2R1/7Ez3zDt5G239YmkX+g0qvFUyHOx5IoUNYxdJEl8m
-	v3dT871UP+E0sU6VMaRQb0fjtD2pa3UbL7ssb2XAqKYS2TUL0xJ1y3DdTcXfU0hounoIWC7Q2+Z
-	sEAqa5fYERdnzsA==
-X-Google-Smtp-Source: AGHT+IGattlpWjGt+2o+RMaSUgOSTRf8EPzXLwte5tyvRPcnP3BvyHxs2B7miIWwAIZD2rhaeoH/YQ==
-X-Received: by 2002:a5d:64e7:0:b0:3a4:ddde:13e4 with SMTP id ffacd0b85a97d-3b4964ee263mr10740028f8f.58.1751929453847;
-        Mon, 07 Jul 2025 16:04:13 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23c8431edb8sm101139545ad.50.2025.07.07.16.04.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jul 2025 16:04:13 -0700 (PDT)
-Message-ID: <eac924e4-fb2e-42fd-979a-4a0829f67377@suse.com>
-Date: Tue, 8 Jul 2025 08:34:09 +0930
+	 In-Reply-To:Content-Type; b=e1fUPSO4Eb/rzdOmjrghSoa8Xu3s4ux/q7UIWQmQ19D1Ybygua7pifNzJYmdSfJJDXN+tbiRGk26uzgE9VhMNhkErOuLOm94kVJn2KSWcokwltavwDlAvxIApXw49trGc5O1GCuvnPZ3LHD1rYOUIMCJ4pWVhwGiw7tYHXjs3zM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Zjv8hKUP; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1751930573; x=1752535373; i=quwenruo.btrfs@gmx.com;
+	bh=oDGxAytI/hZJOsHwe4zDzBvCFX7I/dRtdpEmiKudrRE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=Zjv8hKUPvtZLYQ/Db4xUW3RyEjTpXnamacdEVh6Rnw9sLCRtYcnHI36Dvdrs6RdL
+	 Cmqj6k4ihMDxox4yLKPVZcwLDbaTKg5EcYNN8Z7vluCz/+vV6h7q6glSoP4BjwFGN
+	 iCNCvtn97eFyU7DQr1vW0yNITj1/hV9lmVqrclk2b68zGtIWwsgZjSL8W04PIfP2+
+	 9jNFGSv0OC3ryOk+HPwgHpNr1XHXHu0xapcTUsL4UEIzHUoXNVIkMHCcbYUAZyeF/
+	 HYfJ4QZ4EEgwi/ZWEseP3TCbrcY0c+oB5COpC6xKnK25YPlPokunXoemznHj7tZ5I
+	 lRe1GAz7I8LGnOEqSA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWzjt-1uAxJV1a81-00Pnh5; Tue, 08
+ Jul 2025 01:22:52 +0200
+Message-ID: <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
+Date: Tue, 8 Jul 2025 08:52:47 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,97 +58,192 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/6] btrfs: implement shutdown ioctl
-To: dsterba@suse.cz
+Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+To: Dave Chinner <david@fromorbit.com>, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz
+ viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org
 References: <cover.1751589725.git.wqu@suse.com>
- <5ff44de2d9d7f8c2e59fa3a5fe68d5bb4c71a111.1751589725.git.wqu@suse.com>
- <20250705142230.GC4453@twin.jikos.cz>
- <6642f8b5-d357-4fb6-a295-906178a633f9@suse.com>
- <20250707205125.GI4453@twin.jikos.cz>
+ <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
+ <aGxSHKeyldrR1Q0T@dread.disaster.area>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250707205125.GI4453@twin.jikos.cz>
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <aGxSHKeyldrR1Q0T@dread.disaster.area>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Fh9STDID+y5LPw9/Fq2kSOxplS0SXa5VtGqgX/sxr1gsWYqYXA6
+ 1rRl/yaLLYb6KJ9q0c+H5/KrcT94wO8dtavXEpF09yKDKEx0aNXu7eKzbpJAnXG6echlBxK
+ 8Ienl9KdjETF35uTAwTfrMYVCOvaAJNRtB1JZs8RXDHmVaL63WxLIhFK7l5DKfXnpP5Jc0L
+ UlV+XmBBOycuGBFPFkvFw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:vxzf/0dc4gs=;cEtS4m0APqpDTI0YVG7hCD8EKfv
+ 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
 
 
 
-在 2025/7/8 06:21, David Sterba 写道:
-> On Sun, Jul 06, 2025 at 01:07:19PM +0930, Qu Wenruo wrote:
->> 在 2025/7/5 23:52, David Sterba 写道:
->>>> +static int btrfs_emergency_shutdown(struct btrfs_fs_info *fs_info, u32 flags)
->>>> +{
->>>> +	int ret = 0;
->>>> +
->>>> +	if (flags >= BTRFS_SHUTDOWN_FLAGS_LAST)
->>>> +		return -EINVAL;
->>>> +
->>>> +	if (btrfs_is_shutdown(fs_info))
->>>> +		return 0;
->>>> +
->>>> +	switch (flags) {
->>>> +	case BTRFS_SHUTDOWN_FLAGS_LOGFLUSH:
->>>> +	case BTRFS_SHUTDOWN_FLAGS_DEFAULT:
->>>> +		ret = freeze_super(fs_info->sb, FREEZE_HOLDER_KERNEL, NULL);
->>>
->>> Recently I've looked at scrub blocking filesystem freezing and it does
->>> not work because it blocks on the semaphore taken in mnt_want_write,
->>> also taken in freeze_super().
->>>
->>> I have an idea for fix, basically pause scrub, undo mnt_want_write
->>> and then call freeze_super. So we'll need that too for shutdown. Once
->>> implemented the fixup would be to use btrfs_freeze_super callback here.
+=E5=9C=A8 2025/7/8 08:32, Dave Chinner =E5=86=99=E9=81=93:
+> On Fri, Jul 04, 2025 at 10:12:29AM +0930, Qu Wenruo wrote:
+>> Currently all the filesystems implementing the
+>> super_opearations::shutdown() callback can not afford losing a device.
 >>
->> It may not be that simple.
+>> Thus fs_bdev_mark_dead() will just call the shutdown() callback for the
+>> involved filesystem.
 >>
->> freeze_super() itself is doing extra works related to the
->> stage/freeze_owner/etc.
+>> But it will no longer be the case, with multi-device filesystems like
+>> btrfs and bcachefs the filesystem can handle certain device loss withou=
+t
+>> shutting down the whole filesystem.
 >>
->> I'm not sure if it's a good idea to completely skip that part.
+>> To allow those multi-device filesystems to be integrated to use
+>> fs_holder_ops:
 >>
->> I'd prefer scrub to check the frozen stage, and if it's already in any
->> FREEZE stages, exit early.
-> 
-> I have working prototype for pausing scrub that does not need to exit,
-> so far I've tested it with fsfreeze in a VM, I still need to test actual
-> freezing for suspend purposes.
+>> - Replace super_opearation::shutdown() with
+>>    super_opearations::remove_bdev()
+>>    To better describe when the callback is called.
+>=20
+> This conflates cause with action.
+>=20
+> The shutdown callout is an action that the filesystem must execute,
+> whilst "remove bdev" is a cause notification that might require an
+> action to be take.
+>=20
+> Yes, the cause could be someone doing hot-unplug of the block
+> device, but it could also be something going wrong in software
+> layers below the filesystem. e.g. dm-thinp having an unrecoverable
+> corruption or ENOSPC errors.
+>=20
+> We already have a "cause" notification: blk_holder_ops->mark_dead().
+>=20
+> The generic fs action that is taken by this notification is
+> fs_bdev_mark_dead().  That action is to invalidate caches and shut
+> down the filesystem.
+>=20
+> btrfs needs to do something different to a blk_holder_ops->mark_dead
+> notification. i.e. it needs an action that is different to
+> fs_bdev_mark_dead().
+>=20
+> Indeed, this is how bcachefs already handles "single device
+> died" events for multi-device filesystems - see
+> bch2_fs_bdev_mark_dead().
 
-Not sure how would you test with running scrub and freeze, but please 
-enable lockdep for the potential reversed lock sequence related to btrfs 
-specific locks and s_umount/s_writers.rw_sem.
+I do not think it's the correct way to go, especially when there is=20
+already fs_holder_ops.
 
-But I guess we should have a test case utilizing freeze and scrub.
-Especially that fsstress doesn't include freeze, thus we have to 
-manually do scrub and freeze (maybe with fsstress at the background).
+We're always going towards a more generic solution, other than letting=20
+the individual fs to do the same thing slightly differently.
 
-We need such test case no matter if we allow scrub to be paused/canceled.
+Yes, the naming is not perfect and mixing cause and action, but the end=20
+result is still a more generic and less duplicated code base.
+
+>=20
+> Hence Btrfs should be doing the same thing as bcachefs. The
+> bdev_handle_ops structure exists precisly because it allows the
+> filesystem to handle block device events in the exact manner they
+> require....
+>=20
+>> - Add a new @bdev parameter to remove_bdev() callback
+>>    To allow the fs to determine which device is missing, and do the
+>>    proper handling when needed.
+>>
+>> For the existing shutdown callback users, the change is minimal.
+>=20
+> Except for the change in API semantics. ->shutdown is an external
+> shutdown trigger for the filesystem, not a generic "block device
+> removed" notification.
+
+The problem is, there is no one utilizing ->shutdown() out of=20
+fs_bdev_mark_dead().
+
+If shutdown ioctl is handled through super_operations::shutdown, it will=
+=20
+be more meaningful to split shutdown and dev removal.
+
+But that's not the case, and different fses even have slightly different=
+=20
+handling for the shutdown flags (not all fses even utilize journal to=20
+protect their metadata).
 
 Thanks,
 Qu
+
+
+>=20
+> Hooking blk_holder_ops->mark_dead means that btrfs can also provide
+> a ->shutdown implementation for when something external other than a
+> block device removal needs to shut down the filesystem....
+>=20
+> -Dave.
 
