@@ -1,48 +1,48 @@
-Return-Path: <linux-btrfs+bounces-15277-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15278-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E452AFAA4B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 05:35:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 277F9AFAA54
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 05:43:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1B15170EF1
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 03:35:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 220C17A2C90
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 03:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1ECE259CAB;
-	Mon,  7 Jul 2025 03:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0887725A2BF;
+	Mon,  7 Jul 2025 03:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qSkc+t9E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MCmLPdUs"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416EFF510
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Jul 2025 03:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C87B17D7
+	for <linux-btrfs@vger.kernel.org>; Mon,  7 Jul 2025 03:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751859345; cv=none; b=L8kNmaLX2qIwM1S5VPQzJEDwIsAb20I1aivFx5FcvO6hc5HAJ+JgC4hGN8Fsjt9tiPwr99f7+j6iMv2zpUwkj/Te/F0UGaQXmqXAnXg0i6Wgy8B4PR3Bp1vJEIucdNEDaOTFm2C7CLyXtiWcUZPEEu5k6YgV16tXQGeK1sI1muI=
+	t=1751859785; cv=none; b=grEmgU7NoiVuPtpqAO1UWmYIq8OL4kjKrRph2ouP08xnOCslSvmwJHTeV6xp9GnaUW0m5ioJ9q/168xxlixcsPbxlWjq8sPPsuZ9iSbvh5U88z4ZoaUv+f332+S1C1iXERjUVB3FPU40G2NZG8wqQ8UtbC6V2GX/v7UwDa42Y/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751859345; c=relaxed/simple;
-	bh=B26fjtY4GM1Gfj1Y/BrISS7kIMhc6T5Hu6EVm0oWMG4=;
+	s=arc-20240116; t=1751859785; c=relaxed/simple;
+	bh=wdTqDLG1BgxS4BLFQuPK54piIxLNad6Fj6vEtMSisHw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=qL3S7hHEVHe0vA2Rt1VnqjnVR09Ss0jqk5dYBrjkGh5+TZ4Roj00NEl71EjTts/sQywChXcGJjo7lf1BD63As0zO0MjLJWJ/ES/u3nQbR/QBjWqxy/pN472E+G0QZC5O8bNMlgqv7fjxWrpHorN6FQ8JzRaE88Nl1dRWgR1EFuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qSkc+t9E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CE95C4CEE3;
-	Mon,  7 Jul 2025 03:35:44 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=DsGI+D6Ar0bRSgyQiDEUPtyfXm8iX4nAhSTrjsmD2W86PtbYCCOXCcz2SyvFOnsyoL5dT7u2WoxqirPcO+K49fLvbHIWil6ir6XzA99HgHz6Tv5emTpQSPSswIrREEv69re6N0HQ/CuUVGEkV31nusgXxwkOMZ7ekWyeeDujLj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MCmLPdUs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D022C4CEE3;
+	Mon,  7 Jul 2025 03:43:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751859344;
-	bh=B26fjtY4GM1Gfj1Y/BrISS7kIMhc6T5Hu6EVm0oWMG4=;
+	s=k20201202; t=1751859784;
+	bh=wdTqDLG1BgxS4BLFQuPK54piIxLNad6Fj6vEtMSisHw=;
 	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=qSkc+t9Ebd4w2c9S3IejMQu9byRisIf6f8vo8zRcnWTymKrqlGaMHNQPSU+0EykNw
-	 H1gurn09kgFtQIq2Nm63hnlY7QAvWi+Op++c6eD3Ojg3Y3H9vzF4MAeCegNEz88fOu
-	 i72H7YSL6CdEZwurd7kfav//aNXCJwTVjd1qPsYrgVLTF+r3c/4IMcM8aXb6Hfdc1c
-	 TW7QopmDd9DoY99eMQTTyKWReqLS2UwIlLI6QjfPrpeFk0TkBvIJgI0+eFtrOW8AYV
-	 Tb0+N4tN2PUDrY5mzrr0Jh9hUIFkgaeIKYNUq8hiIIroAbpbW+mpH2tQvwvgkBJUrP
-	 uoFdFBHa9LFnw==
-Message-ID: <980ce4d7-fa7e-4320-8816-ab22d8021415@kernel.org>
-Date: Mon, 7 Jul 2025 12:33:34 +0900
+	b=MCmLPdUsraad3HKHb6FQatsR8MqoayQs7c9ccWXJS5tuPw1N21bgorlJR+3Fp87R9
+	 neSQZae9jSwitRNibe/lZso1t5+zme2cCzsxGnFuud0aEil6z8BJ8eq7eNVQjNYs5W
+	 3oLQWIFIjFtrhiRwfzrqV1tEmeGqFBpOREs3FmKiOXYAclbS/7VH754cU9ozRmUzhf
+	 5WEcULQf30N3uayve6kCC4JF/aN91Wo51GC9dkMzYYftbdLCy9yM80VPGrN1z79AIk
+	 wiMnQ4Bus87RLJUCvMzQQxKgNxIGriE1JtphmSlA0Pk3Ps3IjDUBJqCbiAqnnS7CmT
+	 jIBdj4tE/ePWA==
+Message-ID: <17bd900f-78a2-4c24-911a-6c29c6e9a520@kernel.org>
+Date: Mon, 7 Jul 2025 12:40:55 +0900
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -50,67 +50,64 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] btrfs: zoned: fix write time activation failure for
- metadata block group
+Subject: Re: [PATCH 3/3] btrfs: zoned: limit active zones to max_open_zones
 To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
 References: <cover.1751611657.git.naohiro.aota@wdc.com>
- <bb200206ae65453c68c2f3e316378838797e2502.1751611657.git.naohiro.aota@wdc.com>
+ <d2f36336c9eff5de35149223e9fd9b279028a804.1751611657.git.naohiro.aota@wdc.com>
 From: Damien Le Moal <dlemoal@kernel.org>
 Content-Language: en-US
 Organization: Western Digital Research
-In-Reply-To: <bb200206ae65453c68c2f3e316378838797e2502.1751611657.git.naohiro.aota@wdc.com>
+In-Reply-To: <d2f36336c9eff5de35149223e9fd9b279028a804.1751611657.git.naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 7/7/25 11:44 AM, Naohiro Aota wrote:
-> Since commit 13bb483d32ab ("btrfs: zoned: activate metadata block group on
-> write time"), we activate a metadata block group on the write time. If the
-
-on the write time -> at write time
-
-> zone capacity is small enough, we can allocate the entire region before the
-> first write. Then, we hit the btrfs_zoned_bg_is_full() in
-> btrfs_zone_activate() and the activation fails.
+> When there is no active zone limit, we can technically write into any
+> number of zones at the same time. However, exceeding the max open zones can
+> degrade performance. To prevent this, set the max_active_zones to
+> bdev_max_open_zones() if there is no active zone limit.
 > 
-> For a data block group, we already check the fullness condition in the
-> caller side. And, the fullness check is not necessary for metadata's
-> write-time activation. Replace it with a proper WARN.
-
-I am very confused by this explanation. If the BG is fully allocated before we
-issue the first write, we still need to activate that BG, no ? So why the
-WARN() ? That seems wrong to me. But I may not be understanding your
-explanation, which means you need to clarify it :)
-
-> 
-> Fixes: 13bb483d32ab ("btrfs: zoned: activate metadata block group on write time")
-> CC: stable@vger.kernel.org # 6.6+
 > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 > ---
->  fs/btrfs/zoned.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
+>  fs/btrfs/zoned.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 > diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 6fb4d95412d6..9c354e84ab07 100644
+> index 9c354e84ab07..bdcfabcb35e7 100644
 > --- a/fs/btrfs/zoned.c
 > +++ b/fs/btrfs/zoned.c
-> @@ -2169,10 +2169,13 @@ bool btrfs_zone_activate(struct btrfs_block_group *block_group)
->  		goto out_unlock;
->  	}
+> @@ -418,6 +418,8 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
+>  		zone_info->nr_zones++;
 >  
-> -	/* No space left */
-> -	if (btrfs_zoned_bg_is_full(block_group)) {
-> -		ret = false;
-> -		goto out_unlock;
-> +	if (block_group->flags & BTRFS_BLOCK_GROUP_DATA) {
-> +		if (WARN_ON_ONCE(btrfs_zoned_bg_is_full(block_group))) {
-> +			ret = false;
-> +			goto out_unlock;
-> +		}
-> +	} else {
-> +		WARN_ON_ONCE(block_group->meta_write_pointer != block_group->start);
->  	}
->  
->  	for (i = 0; i < map->num_stripes; i++) {
+>  	max_active_zones = bdev_max_active_zones(bdev);
+> +	if (!max_active_zones)
+> +		max_active_zones = bdev_max_open_zones(bdev);
+
+	max_active_zones = min_not_zero(bdev_max_active_zones(bdev),
+					bdev_max_open_zones(bdev));
+
+And what if the device has no limits at all ? (e.g. no max active limit and no
+max open limit). In this case, max_active_zones will be zero. Should we perhaps
+set in that case a default max_active zones ?
+
+For information, the block layer zone write plugging defaults to create a 128
+zones pull of write plugs if the device has no limits
+(BLK_ZONE_WPLUG_DEFAULT_POOL_SIZE in block/blk-zoned.c). I would recommend
+using that limit here too. So something like this:
+
+/* Default number of max active zones when the device has no limits. */
+#define BTRFS_ZONE_DEFAULT_MAX_ACTIVE	128
+
+	max_active_zones = min_not_zero(bdev_max_active_zones(bdev),
+					bdev_max_open_zones(bdev));
+	if (!max_active_zones &&
+	    bdev_nr_zones(bdev) > BTRFS_ZONE_DEFAULT_MAX_ACTIVE)
+		max_active_zones = BTRFS_ZONE_DEFAULT_MAX_ACTIVE;
+
+
+>  	if (max_active_zones && max_active_zones < BTRFS_MIN_ACTIVE_ZONES) {
+>  		btrfs_err(fs_info,
+>  "zoned: %s: max active zones %u is too small, need at least %u active zones",
 
 
 -- 
