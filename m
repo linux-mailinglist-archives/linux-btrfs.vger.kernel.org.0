@@ -1,184 +1,107 @@
-Return-Path: <linux-btrfs+bounces-15282-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15283-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 058ADAFAEAA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 10:31:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5F2CAFB18F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 12:47:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5306E17DB02
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 08:31:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 089064A22E1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 10:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C2928B3F9;
-	Mon,  7 Jul 2025 08:31:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A50D298CA6;
+	Mon,  7 Jul 2025 10:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="INDJODQq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="z10tIxzR";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="INDJODQq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="z10tIxzR"
+	dkim=pass (2048-bit key) header.d=cachyos.org header.i=@cachyos.org header.b="JTrafcw5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ptr1337.dev (mail.ptr1337.dev [202.61.224.105])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4465E2E36F3
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Jul 2025 08:31:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28D4293C45
+	for <linux-btrfs@vger.kernel.org>; Mon,  7 Jul 2025 10:46:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.61.224.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751877079; cv=none; b=t73lONwQntZQ0rdI/DKdG8J9pEXGSPcoa2+EKT7MB7avKv4bm9soWK1X+qcoRQuZxfrGQ+0CB8UXevxd1t+/bu5UqjPTkbu6KMlu2kMvl0qffK4OLfiRe+1V22/ApDwJ13iJRumwIZh0Y2KZ2p3rFKa8LSKGQyQPscbJpWnvPl0=
+	t=1751885210; cv=none; b=QMhmmmT8xcazBs//3Vw1Xuo/OZx/McNRLQxaMqWA7B00uE48J2fcLPiiDunDdCuGvp4YU3B4KBLzqlhc32AMumspWsAbZROz40sIPY08mBfeZfOgPePt+jP1z2ZfOmyHRrzJNqLtDsfV5s/CY3GGH8ZcO5XcZwuaUiXLfQUsl7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751877079; c=relaxed/simple;
-	bh=raQsBFIaSXKnL2XMPa7Ofruag6TyP/U9z0wS9xmSET8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iItNzWI3icajJKL0sWgvcr4diH+EBN7UWylUm9WV7AMxJNuoIMNPTwEpcCkhNBpM6kzvolYzCDTEyCAcqG+34KuU9LnxQfRdDw+RsekYjaX689gaFqOCOo/ZphT3snBZXTDtPikHkR/opaQr65vBwsjfXurtrBgQytSkkmck0tU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=INDJODQq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=z10tIxzR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=INDJODQq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=z10tIxzR; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0F72D1F38A;
-	Mon,  7 Jul 2025 08:31:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751877070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wiJGgUGtMR4NLXHH7zg2I8MW2e1KtWX3iqbU2F/fRtI=;
-	b=INDJODQqIb0gRlAO8QUNpWA2gpqpKBH9kwVjhJWGPsLvNzILLnv13c3XmU71KxSINxOrMd
-	Nc1Fo4lizmB7a2ej+sY0H5klbifmDKE2rjkqimrQAZfYvQOmUcavpn6t9GdhYaWjSXM6hB
-	xkZJvEYx6pzwq15RnBAGGO4A3hhjKxI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751877070;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wiJGgUGtMR4NLXHH7zg2I8MW2e1KtWX3iqbU2F/fRtI=;
-	b=z10tIxzRluGRyVtwblp/rPlfHDdGZrAOJk/Ki9Zg+1zMtMaD6IOvkI+17B2rd0Xlshw5S9
-	mkulWt5I6DxZiqDA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751877070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wiJGgUGtMR4NLXHH7zg2I8MW2e1KtWX3iqbU2F/fRtI=;
-	b=INDJODQqIb0gRlAO8QUNpWA2gpqpKBH9kwVjhJWGPsLvNzILLnv13c3XmU71KxSINxOrMd
-	Nc1Fo4lizmB7a2ej+sY0H5klbifmDKE2rjkqimrQAZfYvQOmUcavpn6t9GdhYaWjSXM6hB
-	xkZJvEYx6pzwq15RnBAGGO4A3hhjKxI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751877070;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wiJGgUGtMR4NLXHH7zg2I8MW2e1KtWX3iqbU2F/fRtI=;
-	b=z10tIxzRluGRyVtwblp/rPlfHDdGZrAOJk/Ki9Zg+1zMtMaD6IOvkI+17B2rd0Xlshw5S9
-	mkulWt5I6DxZiqDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0360C13757;
-	Mon,  7 Jul 2025 08:31:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id W1LNAM6Fa2irNAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 07 Jul 2025 08:31:10 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B2293A0992; Mon,  7 Jul 2025 10:31:09 +0200 (CEST)
-Date: Mon, 7 Jul 2025 10:31:09 +0200
-From: Jan Kara <jack@suse.cz>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Qu Wenruo <wqu@suse.com>, Jan Kara <jack@suse.cz>, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: restrict writes to opened btrfs devices
-Message-ID: <o22twrini5ofwxdch32ecptztbkp2hjxsqaun5tyxt6yxr2anh@wn267am44avm>
-References: <bf74fa9eee7917030235a8883e0a4ff53d9e0938.1751621865.git.wqu@suse.com>
- <20250707-wogen-karate-68a856159174@brauner>
+	s=arc-20240116; t=1751885210; c=relaxed/simple;
+	bh=E2dvSMlXafET2m5LuAcf1unj8iXvOVudr/wBzhVvsQ8=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=mwm441HZM/tLTYecAj9SAudo9whcHBN+pRIFFNEQ9jhLf7L5f6w9LkX9REclR0iQMUcck1Kiw630o0LffZgO5gTv/84/6wwTMQ67oc+Gmy+hnwSq+v258ykKjUSPHE1pAhBimARc44uRIoEtExOongOIY5qPyWd08FXE2gupgE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cachyos.org; spf=pass smtp.mailfrom=cachyos.org; dkim=pass (2048-bit key) header.d=cachyos.org header.i=@cachyos.org header.b=JTrafcw5; arc=none smtp.client-ip=202.61.224.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cachyos.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cachyos.org
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4656428399D;
+	Mon,  7 Jul 2025 12:46:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cachyos.org; s=dkim;
+	t=1751885206; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language;
+	bh=A+bMksYUgWdz4dYJtX2+IODbRnf76+bwa4lOmAYXzF0=;
+	b=JTrafcw5nHlBbcsV9O/YkGraxJuCjP/jvFiUk4F0a8qcmrQJtzTkYAYXKG8xJcN4zbJEn4
+	BcSczatC95sAmIkeZgh5wCj0YqfS58BAsp5xs6dG0+K8mOwQTMK2HSc3FTXbY1d7E3yTES
+	QSNTguS5R54LaDrfidGh5+HeLpzC0dUN+V0a7DIuqXRRM5Y/ri2dQHQfA7AzlkVu7Jinu5
+	kg2f4Rd94hYqEJbR+7pV/T8rAas8Sv6aK37lI2vjOqoxByfdsFynLtX7hjeeoKgHX/pgnt
+	nG7twbKfs29u2zPXd0LhqL9xYJ2RuCDpVpzflgyLUaamrfIK9aRKlvBhIooUdg==
+Message-ID: <fce139db-4458-4788-bb97-c29acf6cb1df@cachyos.org>
+Date: Mon, 7 Jul 2025 12:46:45 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250707-wogen-karate-68a856159174@brauner>
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FROM_EQ_ENVFROM(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -3.80
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-btrfs@vger.kernel.org, dave@jikos.cz,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: dnaim@cachyos.org
+From: Peter Jung <ptr1337@cachyos.org>
+Subject: Increased reports since 6.15.3 of corruption within the log tree
+Organization: CachyOS
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Mon 07-07-25 09:43:29, Christian Brauner wrote:
-> On Fri, Jul 04, 2025 at 07:08:03PM +0930, Qu Wenruo wrote:
-> > [WEIRD FLAG EXCLUSION]
-> > Commit ead622674df5 ("btrfs: Do not restrict writes to btrfs devices")
-> > removes the BLK_OPEN_RESTRICT_WRITES flag when opening the devices
-> > during mount.
-> > 
-> > However there is no filesystem except btrfs excluding this flag, which
-> > is weird, and lacks a proper explanation why we need such an exception.
-> > 
-> > [REASON TO EXCLUDE THAT FLAG]
-> > Btrfs needs to call btrfs_scan_one_device() to determine the fsid, no
-> > matter if we're mounting a new fs or an existing one.
-> > 
-> > But if a fs is already mounted and that BLK_OPEN_RESTRICT_WRITES is
-> > honored, meaning no other write open is allowed for the block device.
-> > 
-> > Then we want to mount a subvolume of the mounted fs to another mount
-> > point, we will call btrfs_scan_one_device() again, but it will fail due
-> > to the BLK_OPEN_RESTRICT_WRITES flag (no more write open allowed),
-> > causing only one mount point for the fs.
-> > 
-> > Thus at that time, we have to exclude the BLK_OPEN_RESTRICT_WRITES to
-> > allow multiple mount points for one fs.
-> > 
-> > [WHY IT'S SAFE NOW]
-> > The root problem is, we do not need to nor should use BLK_OPEN_WRITE for
-> > btrfs_scan_one_device().
-> > That function is only to read out the super block, no write at all, and
-> > BLK_OPEN_WRITE is only going to cause problems for such usage.
-> > 
-> > The root problem is fixed by patch "btrfs: always open the device
-> > read-only in btrfs_scan_one_device", so btrfs_scan_one_device() will
-> > always work no matter if the device is opened with
-> > BLK_OPEN_RESTRICT_WRITES.
-> > 
-> > [ENHANCEMENT]
-> > Just remove the btrfs_open_mode(), as the only call site can be replaced
-> > with regular sb_open_mode().
-> > 
-> > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > ---
-> 
-> Ok, very nice!
-> Reviewed-by: Christian Brauner <brauner@kernel.org>
+Hi all,
 
-Yup, very nice we finally got rid of this exception. Thanks Qu!
+There has been increased reports of users reporting that they could not 
+boot into their system anymore - sometimes after a needed force 
+shutdown, but also according the users after a normal shutdown/reboot 
+process.
 
-								Honza
+The filesystem can be accessible again, after running following command 
+in the chroot:
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+```
+sudo btrfs rescue zero-log /dev/sdX
+```
+
+There is no way to reproduce this constantly.
+
+Following commits did land in 6.15.3:
+
+btrfs: exit after state insertion failure at btrfs_convert_extent_bit()
+btrfs: exit after state split error at set_extent_bit()
+btrfs: fix fsync of files with no hard links not persisting deletion
+btrfs: fix invalid data space release when truncating block in NOCOW mode
+btrfs: fix wrong start offset for delalloc space release during mmap write
+btrfs: scrub: fix a wrong error type when metadata bytenr mismatches
+btrfs: scrub: update device stats when an error is detected
+
+Some reports:
+https://discussion.fedoraproject.org/t/fedora-kde-no-longer-booting-likely-filesystem-btrfs-corruption/157232/10
+https://www.reddit.com/r/cachyos/comments/1lmzmm4/failed_to_mount_on_real_rooted/
+https://www.reddit.com/r/cachyos/comments/1llin1n/error_failed_to_mount_uuid_on_real_root_cant_boot/
+https://www.reddit.com/r/cachyos/comments/1llrpcb/unable_to_boot_os_you_are_in_emergency_mode/
+https://www.reddit.com/r/cachyos/comments/1lr5nro/my_cachyos_is_down/
+
+We do not know, if the issues have decreased or improved since 
+6.15.4/6.15.5 since we can not ensure, that users have their system 
+fully updated.
+All in all we got on CachyOS around 50-80 reports since the push of 
+6.15.3, but there are also increased reports in Fedora and archlinux
+
+
+Best regards,
+
+Peter "ptr1337" Jung
 
