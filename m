@@ -1,180 +1,196 @@
-Return-Path: <linux-btrfs+bounces-15295-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15296-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 490BDAFBCD3
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 22:51:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01DC4AFBE2C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 00:16:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E940C1AA6537
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 20:52:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CFA24A53CC
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jul 2025 22:16:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2E61221555;
-	Mon,  7 Jul 2025 20:51:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D99A7226CE5;
+	Mon,  7 Jul 2025 22:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sLWivd0q";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mpRK+4mE";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sLWivd0q";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mpRK+4mE"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="geWertxo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D6E63597A
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Jul 2025 20:51:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70860186A
+	for <linux-btrfs@vger.kernel.org>; Mon,  7 Jul 2025 22:16:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751921494; cv=none; b=CrCjPqhbC6SrZRZpCO9mBIKz3J+iR+F/WuDrsCXYBzDfwbMFNyjETV9ZqAPg8Ca37wWdhzFAbYJ60gOdec7Vwu7dfWRyC5TE7bjtIzCaMlfpCseJGvKQz/L5oFx+/Ywz0kROhz73MvGe7QpqqknUPDS4DTpDn1k6TjXvPD7ANlE=
+	t=1751926604; cv=none; b=a6KMypx3N3F4Tqau+en1LJXjRi8lEi9dKLImI94NqVX+NjFr2EcymhK6O5ba2LAVbFBv1gEQ/9hwmBr60EjA1v8VYzSEV7TwjwBzBxtKC7V+2zUJX+oJQExh7ggDNi4170DVO7KBRvIWKV5tQTmfIleOrW+jpqRyoDsJ0tR7clo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751921494; c=relaxed/simple;
-	bh=1yUz1IZbwCWSLVw8uE+AkQXLbxkCX0n8DamyeD87+Yk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VKb04ZoBEA5IzlAR42+NDw8yzAFJj4SWMZMSjhsPhy7OloxDec93GGf18AJDgitT6VxEo3bbjgzMcnPEpwoPECpL788S1Q4DUKGCI0OithzmcFhwyNYFVBLNYb5/kt+HlLsjElIOR0JuFfW/WFldkcqE5hniCq8Uz5xswGJSZGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sLWivd0q; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mpRK+4mE; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sLWivd0q; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mpRK+4mE; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9E28E1F390;
-	Mon,  7 Jul 2025 20:51:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751921490;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AcipaQzwdaPp/YWmiL2/ORmkl7+h0mq8D8PPxQ9zMi8=;
-	b=sLWivd0qvmSmoeG/jp52UKr40rUglTLzkL4ZuT4e5SlV2in/UiW9Z9EjotHbeSbKz5pfXM
-	Z2nmeXjH3C7WBjSGfxRf9Nxk/RZX0zBwf977kD3gxceOyP2IYIwX2ezFcQKijDPYluGSVw
-	reSpkYdFTpEy1o1tiPyFfLvP0Q/sATs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751921490;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AcipaQzwdaPp/YWmiL2/ORmkl7+h0mq8D8PPxQ9zMi8=;
-	b=mpRK+4mEtto+eImBbboqSLA8VkrmSMk2vCVK8Yy8UhLFLBHNGsDtANKNdg1GLne5LR9bDU
-	z+oxiyxBibYY8uDQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751921490;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AcipaQzwdaPp/YWmiL2/ORmkl7+h0mq8D8PPxQ9zMi8=;
-	b=sLWivd0qvmSmoeG/jp52UKr40rUglTLzkL4ZuT4e5SlV2in/UiW9Z9EjotHbeSbKz5pfXM
-	Z2nmeXjH3C7WBjSGfxRf9Nxk/RZX0zBwf977kD3gxceOyP2IYIwX2ezFcQKijDPYluGSVw
-	reSpkYdFTpEy1o1tiPyFfLvP0Q/sATs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751921490;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AcipaQzwdaPp/YWmiL2/ORmkl7+h0mq8D8PPxQ9zMi8=;
-	b=mpRK+4mEtto+eImBbboqSLA8VkrmSMk2vCVK8Yy8UhLFLBHNGsDtANKNdg1GLne5LR9bDU
-	z+oxiyxBibYY8uDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8549813757;
-	Mon,  7 Jul 2025 20:51:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id DiBQIFIzbGiLIAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 07 Jul 2025 20:51:30 +0000
-Date: Mon, 7 Jul 2025 22:51:25 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, jack@suse.cz
-Subject: Re: [PATCH v4 5/6] btrfs: implement shutdown ioctl
-Message-ID: <20250707205125.GI4453@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1751589725.git.wqu@suse.com>
- <5ff44de2d9d7f8c2e59fa3a5fe68d5bb4c71a111.1751589725.git.wqu@suse.com>
- <20250705142230.GC4453@twin.jikos.cz>
- <6642f8b5-d357-4fb6-a295-906178a633f9@suse.com>
+	s=arc-20240116; t=1751926604; c=relaxed/simple;
+	bh=z/Jcde4Czi8gpQm3E/BjwYHxAx58PYpTeilxbUedkVc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m8hbUoJ71tfo34aD1Wvp4odeXaehiaI+YIZVNmElyz+XP1+c4pr4cLWlzZCOr/EZ9jgK0mxjEsPnKzynG309ipbKhuQ7Na5JlmzsrxucQnI+XK0sziHPx6k7m+4WD0MctOTAqhGlg9TFenUsRniYknKTI/K/t3l04SKapj63p74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=geWertxo; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-453398e90e9so25139735e9.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Jul 2025 15:16:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1751926598; x=1752531398; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=EM7/mfwxVYW/eoPE66Em3XNSgDatO/226j0hZ8nF8B4=;
+        b=geWertxoCdb8TqmE77tCuYhAaCoR0v7FHntWX5ckIDg6UOGu8xFPzgNTrRLPjeNR8F
+         orBoJsd6Iw0Mb5a1/acz+u6wGo+QOkUhwWk7VzT7qChsu0eu6eo4+LPwK2iGbeEgMmda
+         xQw85fFW6fgiePGJgSXR+Gat+zz9Zw75RrC1iv//HVS6cUiwraHsi++eFKJiiTXWDHlc
+         XjBi2iCbeW7zTyEGHX+RzathkcpuZj0k6fuPOoKsHxedfjBOrqM2zBSW7o0GCyGIgIr3
+         FundKNC26r6f4Gcogl36MBUrVgM2vSva84o2PbhKat8b7MLznuxXTmQ2xoom3g/NS6lr
+         Ah7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751926598; x=1752531398;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EM7/mfwxVYW/eoPE66Em3XNSgDatO/226j0hZ8nF8B4=;
+        b=pRa5eLsW77IU+DG7ahjSygui2/b/xziH8FB4yCJrzQosMmfOyjI/FmZto6+Wm2O1MI
+         9MMEl0AZ+hLwjBCcl/KczpLmdD7eIdtz0uy0ds34Y35U54L/Er5e7KCi7mi6HiIKrUyY
+         z+FAiuWll2JGJjCVwfceqDOlyMQctA2ra7VsAPOoXscE0wRvLZf7c1xl19c20Fz2dcRz
+         +SWuxyc4CXp7EsVvFMm/KwzPc0FyP0dG0WzNGus8AOYB/+JzyAAnB7ovsbFDnKWbfv6f
+         FDMw6xc4DyKN5SP9B1CSNRIPNah/Nc9adAD1no06f0Nc1QhL1FqBxsoxcN8n3qeJqmgw
+         OLUw==
+X-Gm-Message-State: AOJu0Yxg4ndUZaGSELBCNOCZDRAXvoLbFqfzunK0ggpK8OqtbqJbikxP
+	0bWgSNBKCn73cdsRzhPjLJRNQ/TmfSv83zHdsaebPqH7PDVnDHctnZNe486qh63IhBNjLbcrogb
+	NYkZ6
+X-Gm-Gg: ASbGncu6QdHph1/pe1rP+AybkRLY9ixOzIzIyueCcAhnrZhZTZTxh3sy8equSSGFjlR
+	ySPDk7ahhY5UORIzS4klagJE8Ilu2axfxiv2uAMl0pfbdWmdxI0ANVccYoqSg3w+g0OuMPRR78D
+	SoVbnLCupRqYMFQv++QdHEO2SzFp4prPauXD7KfTQi/8mDMZCOq2wQvzCrEyKatEMAE9emfVr6v
+	FYgrhscYMWhzezeHPPVV3Qs47jckatBFG3FjopXFnDlI+CnXB7fmR/iYVLxxmw/RzZfaXH5Wb68
+	XWMj7sLQJfhB1JWyGCgobUdEmmZIG+H/TnprMh4wtgjptalFDiu2PsQep1CoSFHEvOAmHMHcw/l
+	tCyVwNgd062vQPA==
+X-Google-Smtp-Source: AGHT+IHlkk+McnDDtQ2KOqAAUgOGNCgFUZt3rASmRY7bcr0Mkz9QwgHulxLr0/4RVVR4zTFy8Rn0vA==
+X-Received: by 2002:a05:6000:4011:b0:3a5:2ec5:35b8 with SMTP id ffacd0b85a97d-3b4964bbab2mr9711355f8f.11.1751926597428;
+        Mon, 07 Jul 2025 15:16:37 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31c220ed0f9sm247284a91.0.2025.07.07.15.16.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jul 2025 15:16:36 -0700 (PDT)
+Message-ID: <64c96919-5825-4cef-a456-8b625d0d176d@suse.com>
+Date: Tue, 8 Jul 2025 07:46:32 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC] btrfs: exit scrub and balance early if the fs is
+ being frozen
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+References: <9606fae20bff6c1fbe14dc7b067f3b333c2a955b.1751847905.git.wqu@suse.com>
+ <8abcc475-98c8-4bb7-add7-c4fa40065add@suse.com>
+ <20250707123026.GE4453@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20250707123026.GE4453@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6642f8b5-d357-4fb6-a295-906178a633f9@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -4.00
 
-On Sun, Jul 06, 2025 at 01:07:19PM +0930, Qu Wenruo wrote:
-> 在 2025/7/5 23:52, David Sterba 写道:
-> >> +static int btrfs_emergency_shutdown(struct btrfs_fs_info *fs_info, u32 flags)
-> >> +{
-> >> +	int ret = 0;
-> >> +
-> >> +	if (flags >= BTRFS_SHUTDOWN_FLAGS_LAST)
-> >> +		return -EINVAL;
-> >> +
-> >> +	if (btrfs_is_shutdown(fs_info))
-> >> +		return 0;
-> >> +
-> >> +	switch (flags) {
-> >> +	case BTRFS_SHUTDOWN_FLAGS_LOGFLUSH:
-> >> +	case BTRFS_SHUTDOWN_FLAGS_DEFAULT:
-> >> +		ret = freeze_super(fs_info->sb, FREEZE_HOLDER_KERNEL, NULL);
-> > 
-> > Recently I've looked at scrub blocking filesystem freezing and it does
-> > not work because it blocks on the semaphore taken in mnt_want_write,
-> > also taken in freeze_super().
-> > 
-> > I have an idea for fix, basically pause scrub, undo mnt_want_write
-> > and then call freeze_super. So we'll need that too for shutdown. Once
-> > implemented the fixup would be to use btrfs_freeze_super callback here.
-> 
-> It may not be that simple.
-> 
-> freeze_super() itself is doing extra works related to the 
-> stage/freeze_owner/etc.
-> 
-> I'm not sure if it's a good idea to completely skip that part.
-> 
-> I'd prefer scrub to check the frozen stage, and if it's already in any 
-> FREEZE stages, exit early.
 
-I have working prototype for pausing scrub that does not need to exit,
-so far I've tested it with fsfreeze in a VM, I still need to test actual
-freezing for suspend purposes.
+
+在 2025/7/7 22:00, David Sterba 写道:
+> On Mon, Jul 07, 2025 at 02:53:58PM +0930, Qu Wenruo wrote:
+>>> Reason for RFC:
+>>> I'm not sure if cancelling is the best solution, but it is the easiest
+>>> one to implementation.
+>>>
+>>> Pause the scrub/balance is not really feasible yet, as it will still hold the
+>>> mnt_want_write_file(), thus blocking freezing.
+>>>
+>>> Meanwhile for end users, pausing scrub/balance when freezing, and resume
+>>> when thawing should be the best outcome.
+>>
+>> I have explored some other solutions, like dropping and grabbing the
+>> s_writers.rw_sem during the balance/scrub.
+>>
+>> The problem of that solution is the reserved lock sequence, thus it will
+>> be deadlock prune.
+> 
+> What do you mean by 'reserved lock sequence'?
+
+
+The s_umount and s_writers.rw_sem are always locked way before any btrfs 
+specific locks.
+
+If you unhold the s_writers.rw_sem, it's very easy to cause ABBA lock 
+sequence thus lockdep warnings.
+
+
+> 
+>> Currently I guess the best solution would be introducing a special error
+>> code (maybe >0? -EGAIN may be a little too generic in this case) so that
+>> if we hit that specific error code, we error out as usual.
+>>
+>> But at the top level where we call mnt_want_write*() function, we drop
+>> the rw_sem, and retry other than exit.
+>>
+>> By this, we split the original long-running ioctl into several different
+>> smaller sections (the split only happens after the fs being frozen), so
+>> that they can properly follow the fs freeze behavior.
+> 
+> We have cancellable balance and scrub so there are checkpoints that can
+> be extended to also handle freezing in a way that pauses the operation
+> and waits until unfreeze. The sequence "drop locks/freeze/take locks"
+> should work.
+
+It will cause deadlock if you drop the lock then re-lock with any btrfs 
+specific lock hold.
+
+You have to return to where we call mnt_want_write_file() to unlock, 
+thus meaning a much different resume path.
+
+> For the exclusive ops it's guaranteed nothing else will
+> start so the state will remain the same.
+> 
+>> The challenge is how to resume from such interruption.
+>> Currently neither scrub nor balance can properly handle such resume and
+>> will restart from the beginning.
+>>
+>> And even with that resume implementation, the checks in this patch will
+>> still be needed.
+> 
+> The checks peek into the interals of the freezing mechanism, which I
+> think is not the right.
+
+Nope, that's completely common.
+
+f2fs is already doing that to skip its background gc.
+
+Thanks,
+Qu
+
 
