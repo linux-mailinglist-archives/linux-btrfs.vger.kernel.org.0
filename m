@@ -1,140 +1,147 @@
-Return-Path: <linux-btrfs+bounces-15338-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15339-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B30FAFD679
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 20:32:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85F3FAFD78B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 21:50:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB176482139
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 18:32:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81D9D586858
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 19:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C87E2DECB4;
-	Tue,  8 Jul 2025 18:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0832023B62B;
+	Tue,  8 Jul 2025 19:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="apBFbMGB"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="vl7+Rej6";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UPp1/7wg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF1C1E22FC
-	for <linux-btrfs@vger.kernel.org>; Tue,  8 Jul 2025 18:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DBE238D54
+	for <linux-btrfs@vger.kernel.org>; Tue,  8 Jul 2025 19:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751999558; cv=none; b=a7YE9kTYmysnE/8Wtnut/lkOWniEFVOZBxDYpZCJ7Z8BUKnDw2xc0sVRsT8c5mcy5krX6J5cXfxS4WSEGDmGZOoGtfW1xv19xidOpoVYO0bVmBp9Xcjd2lWXCvFd/8d84WazfaWor7KhM2mkpC+7CTdPjC9Wh2zxl2V9fNYKpcA=
+	t=1752004224; cv=none; b=tkgKKXbC14hxUM3qglWzCADyNaEw0Y/hiJdxuUGobyxUDnpMYhGGt2bcgh0k2pkLK6rTskSegCMTGmdEgxTFrbV/d/wRorfXGpxFwXLei+YzX1zq2OmPHJnFc0BqQIUYqjFLrdj/LeTXclWQkmf7QYqlKTDUzA13F6t9yy2b6iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751999558; c=relaxed/simple;
-	bh=O1GcTiIi/oWvVrYOvUmB5bjT3cWL6oGGPmNHOi/KSRk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=umlGN53k2H1RBDww9zp6c0AnNb4R/2S9oa/HzpjSCibhEv8aI9OS7+NEfu/BIwmHcYW9f9cMjxeaIY/VrMyp+VgIj+KlkDuiDMePUOrlKGS5nOUSktgA7yspVgpJ1yzcVcnjPAdtFUqhlapbOlH4BlSv0ssIm5nbEzyFqjLIVME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=apBFbMGB; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-237f5c7f4d7so6791925ad.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 08 Jul 2025 11:32:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1751999556; x=1752604356; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KG1Wx6OUZ9cQBjqvnO/QEWRp1+n48srDtYVZJzr7dSU=;
-        b=apBFbMGB//ztyDe0OTLIySD6nWBigzg6u21pe9kABNcjUVkigTBDqDwIkNDD7YdPy8
-         cIOyBUNPLTBB49x8OPMlopbVx2zzL9cy1kJ2b0fSOG8DfR1cbBK85KJHrZZcA//Sqxm7
-         syhIJDpFt8TsV7OQdemvqy/kQDvZ7x/VWwETmrbOTxPF7JWfO0sbZTNZPbBeurXJEu9u
-         wBqL6QdOMDym1/pK/evEbBefXExykl8kZnYR8/OucfreD9WfcGbIgFp0rvqF2yT1XxVl
-         78D3EIvK7ImxqtB2styUH/hrVaYie4YLc6cBIXkmiU/xmpjE5pcBTK4WfJRdx2x2XsQT
-         XRNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751999556; x=1752604356;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KG1Wx6OUZ9cQBjqvnO/QEWRp1+n48srDtYVZJzr7dSU=;
-        b=Wh84OSvaZJ5Xo8dVZeC3Ep4yQngqxSSrRvqbJoGL0W2jXx2NaRpgaSdQ2Hy3FzeXXI
-         uP/M52dSV9lkRIw5xUaVbmItF+3vrjeQlC/fldc2OQcDHhUCcMC2QAX9dzedGnJhR52C
-         b33svXV58qMgeubevEB98CM8KxfcG2sZZ9r3mHW+muB20lKTtgkTMPPAGDORQvlbZZL4
-         gSWJSJ2yz82AFa70S7rUwthFKbVZ47slm47GedJFRNZuSBx8rsHWsKdaBd3CHM246zv9
-         t3kSGLj+vsMyozxo1m1aXmJfPtij04j6tWT9Flx66DHPEIBBQ4Cjbp1QkVpbJ/QHgg2H
-         Utdw==
-X-Forwarded-Encrypted: i=1; AJvYcCVikAuiwE/DWu0FcC9odguHYx2TWL7P2om9IrK9Q1bvZ7Brz5Nassj7PWTReJ/+7p0yiMy8XVc9rOODag==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzU3j4NbusZkgYbmJY9v3WZgahkB9XL6rNrUlLGW3hp1tq1cDGP
-	/LJrdEHXZq7R4FNTuvHjlle5QWbfKBXLnUarI2NTbC1kgiJvFwPRABdBj23YF2pO2t8iGIei1+5
-	ZqWAVwPIdFZMueAuCXmdPXHu+1VPM/zqJE6Mf14sxxQ==
-X-Gm-Gg: ASbGncuyexafgmCXL1O0XQeArkSAeHOXi4dnuG/PSVI+7dbQmxj5ZELJ4Wo3fkd7APs
-	b3qClk4H3D1ixNSbVnD5QcKA8y3K5PWPGn6rP08M9TwbvNbL9aVHfMPmQy1zpobR46GYO/AfnPU
-	aJsFMPSkFp+S649T5Wz2XRUHbB5M1z7367gm6/enYcxaKj
-X-Google-Smtp-Source: AGHT+IGjquqT49t3mk9uGsBdWrji9vx+SHIhp2vhXIPomfvzssP2TLOXJlJDWqiYxr3KiEgZnyLCabCV7oJzVVEChrA=
-X-Received: by 2002:a17:90b:3e44:b0:311:c939:c842 with SMTP id
- 98e67ed59e1d1-31aaccd7e36mr9067045a91.7.1751999556030; Tue, 08 Jul 2025
- 11:32:36 -0700 (PDT)
+	s=arc-20240116; t=1752004224; c=relaxed/simple;
+	bh=2UztvTslP0ehI1rmuNABz+fWMKuRHZfKiTl8tPHvHy4=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=fblh5Wyl4wcFkGteIGfvz1bn3ngjt8Q/wrnrvwnS/3uW6tfsS1/DIaiY3GaAkMUFSi01k+DgSyuvBs6HJQhWjc76w73SK50MRA04NxgVLI3XmveJJDp6orFob06ni3yYOxuEe5hUe7K688jAsDi5KjOtpt/MMzyz3RE2RQhzEX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=vl7+Rej6; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UPp1/7wg; arc=none smtp.client-ip=202.12.124.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfout.stl.internal (Postfix) with ESMTP id 5293F1D00232;
+	Tue,  8 Jul 2025 15:50:21 -0400 (EDT)
+Received: from phl-imap-01 ([10.202.2.91])
+  by phl-compute-04.internal (MEProxy); Tue, 08 Jul 2025 15:50:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to; s=fm3; t=1752004221; x=1752090621; bh=m3TjWZiHSn04RYL9gDFGg
+	4y+bCHK5O43/Pv6L0Hyylg=; b=vl7+Rej6y91A3k5Ki7yYvxzFG46wCRQ/mlp73
+	/31+3oBucjTnBYEQQn+SS3KKID6FG+8nj88PLSeNm626+523LsQXJGAN/fD8BCvm
+	rXHeUb86erDndv69fa1m7pD9s6FphK1wSGIHPwOSsSGtAz5jyZdB8EhLNbkXIcNg
+	Mc5jUco9DYRe1m8pj6IVlAvtmpTJ6vlEishMncvUr4f0yfu5FVR9/PKUbZ0T+yc/
+	7zdX5W4cr/wUI8Th/XZaaruIahzW/5in8bG2eVWF1js4A3dDg5SurE9G7K2e9xLa
+	/J+XeAQdQ+BF33MSyciRi6upfIcsYLm0+gcLHu94okrpkI05A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm2; t=1752004221; x=1752090621; bh=m
+	3TjWZiHSn04RYL9gDFGg4y+bCHK5O43/Pv6L0Hyylg=; b=UPp1/7wg+2Z3/3kAC
+	o+SF4Myn/o247uLDZSCE4yLv7jlELoIHTQYJoRgXSbOAOb+Jew8OSbeOBH3QfvMl
+	Xw0u9dHX+vjjnLRblxEh0qaCyzhtDgpjEtiwmLZ01IT2GbzTqbPcPGLCuWvkJrK6
+	l7+sj9wFrZitboK8kw8KyGYKuhG62h1WrcrRLuHBOwdBijkkjhSbaieVfq58G53g
+	qYu6+UjP5S2Du/NE0RWV3+2591pmwQmTJsc4+NN+d1ovggEHaFiEx6JGWPM1MPyg
+	8jYYEHcdKO1D/y8iksW9YiN8L+dhdZ3/0CPugFTIBv9U5Wt+4fe2Ulucji4zucPw
+	jFj7A==
+X-ME-Sender: <xms:fXZtaDio27bw7uUD3npep-ES0sy3smLUmeR_6sV_OKhaimLdwIcBrQ>
+    <xme:fXZtaAAMPyAvojnjKjrt7HCNlCnrAULHlEc7MCQdpfMxtgH_Gr24Fhb3PgVcbBCJ3
+    blUUG2CcxcrlmO9eBQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdefheehjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedfvehhrhhishcu
+    ofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeetfeduheekheegkefhvdeghfejvdevuefhtdfgjefgveeiveei
+    vdefvdfhvedvgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmpdhnsggprhgtphht
+    thhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehprhgrnhhshhhurdhtrg
+    hnfigrrhesphhrohhtohhnrdhmvgdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehv
+    ghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:fXZtaHmL4wmuGQk0CbyXWAWImkBG9CE-QtcHII5cM0JurtMpJzy0hQ>
+    <xmx:fXZtaDyWgxBBr9KSz0V4Jg1g-V2eIWR-wO0Hghbmnh0JvsWrGjY7Tg>
+    <xmx:fXZtaPnK6GVIEdOqsUXR144Gbf-pRKXssC077zjt4NcDRfhkZpoNTw>
+    <xmx:fXZtaMfUmnExm4IurIZvdcxQTPErPiwIs1ktalEmlIP7IJW6ORTS4g>
+    <xmx:fXZtaIX59RL01z3Rmqr1Hc_u237fiWGc88EMlR0b_m2nU9lfk18ZNFNw>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id F3D0818C0066; Tue,  8 Jul 2025 15:50:20 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250619192748.3602122-1-csander@purestorage.com>
- <20250619192748.3602122-4-csander@purestorage.com> <c83a2cb6-3486-4977-9e1e-abda015a4dad@kernel.dk>
- <CADUfDZr6A51QxVWw2hJF6_FZW7QYoUHwH-JtNEgmkAefMiUjqQ@mail.gmail.com> <76ea020f-7f57-42d5-9f86-b21f732be603@kernel.dk>
-In-Reply-To: <76ea020f-7f57-42d5-9f86-b21f732be603@kernel.dk>
-From: Caleb Sander Mateos <csander@purestorage.com>
-Date: Tue, 8 Jul 2025 14:32:24 -0400
-X-Gm-Features: Ac12FXyEbJh8A-70IJqk1u3VgKtVIrMS8nYA9UhDEjT4t4zZd9AHBYP8tZeznMI
-Message-ID: <CADUfDZppvPG9iZg6ED0ZUW_ms1EnNUJwwYyAJ7eCTWsJqa417w@mail.gmail.com>
-Subject: Re: [PATCH 3/4] btrfs/ioctl: store btrfs_uring_encoded_data in io_btrfs_cmd
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-ThreadId: T0f06dcb0030a71c2
+Date: Tue, 08 Jul 2025 15:50:00 -0400
+From: "Chris Murphy" <lists@colorremedies.com>
+To: "Pranshu Tanwar" <pranshu.tanwar@proton.me>,
+ "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Message-Id: <da43965b-d22c-405e-bac6-206b36e968be@app.fastmail.com>
+In-Reply-To: 
+ <aNH6WIV_zJGBEaJfeLnCw0RqDLyn8O8OMUPMm-S34So8BWqu8xJP4iW8rfm3vGu6dDr8ibw2vt9EOaOfHIUgn5NxNQsuleebWRsBiyGOpYE=@proton.me>
+References: 
+ <CAPYq2E23F7VdgtwCydEVa9wdomEVbQUsQPgfyLVh5ac=KLBEdw@mail.gmail.com>
+ <CAPYq2E2BSbW=8mYOO2NxJtcXPgPZ75nzH8C014-2ncyFb64L2A@mail.gmail.com>
+ <1332fd28-ca5c-43d0-b815-c8da74c0a7b0@app.fastmail.com>
+ <aNH6WIV_zJGBEaJfeLnCw0RqDLyn8O8OMUPMm-S34So8BWqu8xJP4iW8rfm3vGu6dDr8ibw2vt9EOaOfHIUgn5NxNQsuleebWRsBiyGOpYE=@proton.me>
+Subject: Re: [help needed] parent verity error on HDD
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jul 8, 2025 at 2:17=E2=80=AFPM Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 7/2/25 1:51 PM, Caleb Sander Mateos wrote:
-> > On Tue, Jul 1, 2025 at 3:06?PM Jens Axboe <axboe@kernel.dk> wrote:
-> >>
-> >>> @@ -4811,11 +4813,15 @@ static int btrfs_uring_encoded_read(struct io=
-_uring_cmd *cmd, unsigned int issue
-> >>>       loff_t pos;
-> >>>       struct kiocb kiocb;
-> >>>       struct extent_state *cached_state =3D NULL;
-> >>>       u64 start, lockend;
-> >>>       void __user *sqe_addr;
-> >>> -     struct btrfs_uring_encoded_data *data =3D io_uring_cmd_get_asyn=
-c_data(cmd)->op_data;
-> >>> +     struct io_btrfs_cmd *bc =3D io_uring_cmd_to_pdu(cmd, struct io_=
-btrfs_cmd);
-> >>> +     struct btrfs_uring_encoded_data *data =3D NULL;
-> >>> +
-> >>> +     if (cmd->flags & IORING_URING_CMD_REISSUE)
-> >>> +             data =3D bc->data;
-> >>
-> >> Can this be a btrfs io_btrfs_cmd specific flag? Doesn't seem like it
-> >> would need to be io_uring wide.
-> >
-> > Maybe. But where are you thinking it would be stored? I don't think
-> > io_uring_cmd's pdu field would work because it's not initialized
-> > before the first call to ->uring_cmd(). That's the whole reason I
-> > needed to add a flag to tell whether this was the first call to
-> > ->uring_cmd() or a subsequent one.
-> > I also put the flag in the uring_cmd layer because that's where
-> > op_data was defined. Even though btrfs is the only current user of
-> > op_data, it seems like it was intended as a generic mechanism that
-> > other ->uring_cmd() implementations might want to use. It seems like
-> > the same argument would apply to this flag.
-> > Thoughts?
->
-> It's probably fine as-is, it was just some quick reading of it.
->
-> I'd like to stage this up so we can get it done for 6.17. Can you
-> respind with the other minor comments addressed? And then we can attempt
-> to work this out with the btrfs side.
 
-Sure, I can definitely incorporate the refactoring suggestion. Will
-try to resend the patch series today.
 
-Best,
-Caleb
+On Tue, Jul 8, 2025, at 12:05 PM, Pranshu Tanwar wrote:
+>> Copy files out with -o ro,rescue=all and reformat. The problem is probably the result of a drive firmware bug. Keep backups!
+> It did not mount, I got the files with btrfs restore to work in a 
+> snapshot of a shared snapshot to then restore the files. I am now 
+> working on rebuilding the drive with safer mount options for both 
+> drives.
+>
+> These are the options I came up with:
+>
+> /etc/udisks2/mount_options.conf
+> ---
+> [defaults]
+> btrfs_allow=compress,compress-force,datacow,nodatacow,datasum,nodatasum,autodefrag,noautodefrag,degraded,device,discard,nodiscard,subvol,subvolid,space_cache,commit,noatime,flushoncommit,noflushoncommit,barrier,nobarrier
+> btrfs_defaults=commit=1,noatime,compress=zstd,flushoncommit,barrier
+
+I don't know how udisks2/mount_options.conf affects anything. It should have no effect on the root file system. Anyway, you really want to use either upstream default mount options or your distribution's default mount options. You will run into trouble much faster otherwise.
+
+>
+> /etc/udev/rules.d/99-disable-write-cache.rules
+> ---
+> ACTION=="add", SUBSYSTEM=="block", KERNEL=="sd[a-z]", 
+> ENV{ID_USB_DRIVER}=="usb-storage", RUN+="/sbin/hdparm -W0 /dev/%k"
+>
+> But turning write caching off in hdparm is painfully slow, so for now 
+> I've commented it out, relying solely on flushoncommit and commit=1
+
+I don't think you'll be happy with the performance of commit=1 , it's too frequent. If there's a firmware bug resulting in flush or FUA transiently being ignored, then decreasing the commit interval just makes it more likely you'll run into a problem.
+
+In my opinion the solution is frequent backups. Btrfs snapshots and send-receive make this quite cheap to do often. But any backup solution that you understand and have tested restore is the one you should use.
+
+Best to reply to the list so responses are archived and everyone can chime in if they want.
+
+
+-- 
+Chris Murphy
 
