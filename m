@@ -1,148 +1,140 @@
-Return-Path: <linux-btrfs+bounces-15336-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15337-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 419E4AFCFF5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 18:00:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FEBEAFD648
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 20:18:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3D137AF9FA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 15:59:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F28C585945
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 18:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E57A2E3367;
-	Tue,  8 Jul 2025 16:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD1021CA1C;
+	Tue,  8 Jul 2025 18:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="KtTHtYec";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AV62bH57"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Fe8WUe+5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1AC2E3AF8
-	for <linux-btrfs@vger.kernel.org>; Tue,  8 Jul 2025 16:00:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5CB82AD16
+	for <linux-btrfs@vger.kernel.org>; Tue,  8 Jul 2025 18:17:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751990411; cv=none; b=RXKHggE/mjo37y87JxDfkA9gx2ZDzlbN6PMzsNQ88bpoqxLbQJMD/pnA9g/pnzySlreOh6xGkkQR07UjaISDxQFXIfQI19bMxCnis3eMT7fXuURpWsQBfiSvX93FNANQVvIoBlfMyZpuuRXrkH5RwdXOJ0FTzbUmLIoKR8smruE=
+	t=1751998670; cv=none; b=dnAViv6PC1nxx2Q5dod1EcXoN6c5VxR+a9ye56Z01r2PkSHGAuQHYsA9WZG8uNiEgqedMsaKKKXZiYostfrUT5OswuTSjULi6KjZT1LrX7mhc6lFzgY4cUPWIiihfbADa7Cf2wzbup41bfTbZOIjQYL+GHcFp3CDsFkanGLU+vE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751990411; c=relaxed/simple;
-	bh=x8NK2PIYJYFRtOjIMXCU7lLbZ4g+C4aG35WdbBXl1es=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GkRLUXTKNDv4HCmABhXMd5F7SwX3YOdC9+UuGd0q8XcGqnB0Exg5VvzO0MnKRzL5rcei2+GirooPEZzBEsMLxjhX4OS8UZcR7Erupn4PpiTwYMfyGhh7z3OZF842wOsRvGarCr5/++SDTlPptsfRiwaJHE+S6oDrSecORb715Do=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=KtTHtYec; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=AV62bH57; arc=none smtp.client-ip=103.168.172.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 2C50D14005D5;
-	Tue,  8 Jul 2025 12:00:08 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Tue, 08 Jul 2025 12:00:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1751990408; x=1752076808; bh=tWVVjm9U2K
-	rci7ROqysvb5RtDY8fyJ/ej60mKzCVw+I=; b=KtTHtYecK/6UeSNKJSO7onzQxv
-	LxNXl3Mr+3bFWSP79KInriJx229Xlz5vyqKuUxiQ853VN0RFQ64VLx2agybXF/RU
-	zWmWGCe2HSJ0+HDZePyDBfPRK1JSxSxrATLtVlysO89xHqd+f65nPghrahd84wKn
-	yWu0M8eU0ynFImaWetpUNYXtD7WAaC7L3cEcicb2C/IeTxqykuACxdbg3lzMPDwd
-	tA1jdA+9e/GteTT6e4jaBIFQwKmOmODsz5U81pg1zPrJbkVxgtbDRJ8CMbbpj93g
-	EtCJzBaO7rCvw5+0Bgc55283iAspARYz9UcrI7pOnfZ6eU8ZwLLiwqTQWDUA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1751990408; x=1752076808; bh=tWVVjm9U2Krci7ROqysvb5RtDY8fyJ/ej60
-	mKzCVw+I=; b=AV62bH57/reeJCkoZMMQW57ziEk/OlBsmFHREnRSxdzKeaABgjF
-	p1GlnfK01nsrdX+6GBPQ8+VtkXFZ4+l/EbT5db59z1XkqLOCkXxh48+VNowcIAwk
-	qL+QYp6BbjRQd3zEhqoiCxqs2QY3AtT4hCIxsQ0PEKafSAZq6mNIiKNVf8gTv5KH
-	5EhZ4gxKVpqBBCSHpdVdr0PX7sYi7KrIojPHGm4e6N1+M+vGbmsO3aif77xZQUCH
-	Nk1vK/duoiyv06aTXPvlgU5qGz4mLpknxZ47bFFbppQBIX9y8uxWh0HERXRWt6eM
-	rMmY014Ez4SvgrLk2DNV0T9/n2l9xmtFiww==
-X-ME-Sender: <xms:h0BtaLBhI1ylQfYsPcEWcdoFO3k38C_hCgN2Nsrj5CX6rjJMGdxXxw>
-    <xme:h0BtaEzAkueDXjpMo7txs-wL8_8ITbvgwb3cGMGpe1gCLmlgvWCS2jkuEHKuWaIyP
-    cNooi2duQqvdO2vuT0>
-X-ME-Received: <xmr:h0BtaACsGolNc97lFj0ZV1nv2nyOSqz0NyMM7TMSCWmsohRTxw4pMYX8gtuTZGqmSNFt44pxERRdxlUV38wYLKfGUtA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdefhedutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceu
-    uhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepkedvke
-    ffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
-    drihhopdhnsggprhgtphhtthhopeefpdhmohguvgepshhmthhpohhuthdprhgtphhtthho
-    pehjthhhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgsthhrfhhsse
-    hvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhohhgrnhhnvghsrdhthhhu
-    mhhshhhirhhnseifuggtrdgtohhm
-X-ME-Proxy: <xmx:h0BtaJa3RFFcOIZ3IQSQSK7K23sHtf1YLiFGDZqkSbUxlby8QwT8DQ>
-    <xmx:h0BtaAhwDLS-6Qw23D7YvVqWQofwajgqxNoNmzKW5eClp4oR9SfL4A>
-    <xmx:h0BtaD7tJXtN85PulSjlCLRagAX_Pigkd3ORsR4OOyc82iMO3KKQ0Q>
-    <xmx:h0BtaP53ol5CWmcSG8PgQcN6PR8oKVHj-HaaIZ9vHyHtWsmLhokSrg>
-    <xmx:iEBtaBYoL8FUvpGRe7K9nrAnyZr3uFoaL_KyAO_gV33KZM6YrV_qmYs->
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 8 Jul 2025 12:00:07 -0400 (EDT)
-Date: Tue, 8 Jul 2025 09:01:32 -0700
-From: Boris Burkov <boris@bur.io>
-To: Johannes Thumshirn <jth@kernel.org>
-Cc: linux-btrfs@vger.kernel.org,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH 0/2] btrfs: be less verbose on automatic bg reclaim
-Message-ID: <20250708160057.GA2659713@zen.localdomain>
-References: <20250708065504.63525-1-jth@kernel.org>
+	s=arc-20240116; t=1751998670; c=relaxed/simple;
+	bh=LpOkjb+ecQQBtOWkcVVUBt5c7MvC87zMsmyehH6sHDk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Klf3VONun20tsQO4Z8xhHOILm89QAIfLz/sbZpiHdZodBqoyenkZ2SCmXtMtIXMt4QAlXM9um5u8G2JmpTKwpj2LjIdfL4iF7IJtmhjujUk+84rowABCri17cwL37TUYLqZqsYlOyfqwhZFTuV7Si0znboPyW+w+nVhV22JDAnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Fe8WUe+5; arc=none smtp.client-ip=209.85.166.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-879502274cfso28126239f.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 08 Jul 2025 11:17:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1751998666; x=1752603466; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g7oks48muiKNQ9MQb0raKT3/XZo9cmEOj4qy77c9F8s=;
+        b=Fe8WUe+5bI4LSraBHXz64gIq1Y6YQHak3Lbyk0xWGgqJewgRMwjkaAFEoiudlRA036
+         eU7NMXRp2CCjCbB8HyiO1lMkXlDVFmvWXvkrvWpV3AZ1G0IGbuxNHLLWzZw+PKm/s43Y
+         17sgU8aZaN7F3KELr4F3xlyHL4d8E6iH2JBjfSZxb6E7OJz9znHtOgGFeNJb3ygeKKTX
+         zC7xaSSLSJcAmia3kkXONlJyPRTgdGQckLcG6JErKKETaG3Nj7QP7Td5l+4wlwMUZSRh
+         59S+phlVk+5YfPwbqVrhbkEkfrzI/Q2SM+x16x0rZZzfwo7TRk7xA5lFjdIv0zoFRKG9
+         unEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751998666; x=1752603466;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g7oks48muiKNQ9MQb0raKT3/XZo9cmEOj4qy77c9F8s=;
+        b=Gir+fe5tn1ba3R1XWL9du2zUSkDYH5H+FpX5uAM/URwQfhafVAIb4LFVRIdho/vCT0
+         6kXYORjrn/DV5BiiqOBuJhXDNrH8IxGTNLkp0joX+4BKxLSsJt0ff+tfa+b3ENFuECdi
+         oaYPIyYDrc4k5gXWpa1xnIu89qcv7hIFgpgHtZSFY9r0Laa15X9NYOYAAGc/jLBEAz0u
+         qowlV7p9SJk8eMFUcJbU759s2lqHIwRlJTtIA5skLFBIK2HbF+WhkqKZFt/hiXCwmrYe
+         tffnzI1F2AtTodyv+ZjzowwMkgktio1kszCW2XeGyCkhn5yS/lI52UjBzyYdb5uI7bff
+         7RCw==
+X-Forwarded-Encrypted: i=1; AJvYcCXj/jLKDgqO3WByn1BxHuJBdCWamK67AFDCN6phxvTPSvIFbY/Jn02qOobXms5U7ykqUzx+b8Qbf5ArpA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx272y1OPKEmr+KQDjl+x6Op3SpMUUr3Hn1nCFwpHAsJooB+aIs
+	mv+wQLYfGIOVAFpycf6ZN3V7dlGR4WAlgefGrJzBZZQLxiHcV0cVWYJtizZOz0OemtA=
+X-Gm-Gg: ASbGnctf8duqqRQod53RiX4ybFM1vedwLbfhOYvoLiWyVdrI2bNOJ64MVIguoJ753t/
+	4a7KGY0+ZP5iNV9W/5GTsNuUoIBJ3W5ykqHYaOoh5ShvoJgRCQjmemqVMYsozOMrIf1Xxgg4IP/
+	MNKW9uaDLnobSnGw4IjKURotqPSC8o19Q4qn42nZGGfAOOQOqPlAGQ3lRmpKjog6JB9ANcnsZpR
+	PWpIUQ7ZAThdBdky/Yye9Nk+O23j4yd6I7wLK3IjENxQdSVVVHQnQymao0CPgc8pJvoYmKLUjF6
+	JO6yn0KdrVOdda53qUD7iM/hK8Smyce6nJjD2eoNnEtzHQwonJo/FMjEnQ==
+X-Google-Smtp-Source: AGHT+IGQnxN9Juqo5ZTXTrtTXAYwJOZx2V2bAQvz67ZgmfrWs8KU5VcAU1pY9C/YikiytA7oWFC7vw==
+X-Received: by 2002:a05:6602:2cd1:b0:875:dcde:77a9 with SMTP id ca18e2360f4ac-876e1667944mr1871390039f.14.1751998665602;
+        Tue, 08 Jul 2025 11:17:45 -0700 (PDT)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id ca18e2360f4ac-876e07bc6bcsm297705939f.13.2025.07.08.11.17.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jul 2025 11:17:44 -0700 (PDT)
+Message-ID: <76ea020f-7f57-42d5-9f86-b21f732be603@kernel.dk>
+Date: Tue, 8 Jul 2025 12:17:43 -0600
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250708065504.63525-1-jth@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] btrfs/ioctl: store btrfs_uring_encoded_data in
+ io_btrfs_cmd
+To: Caleb Sander Mateos <csander@purestorage.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Mark Harmstone <maharmstone@fb.com>,
+ linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250619192748.3602122-1-csander@purestorage.com>
+ <20250619192748.3602122-4-csander@purestorage.com>
+ <c83a2cb6-3486-4977-9e1e-abda015a4dad@kernel.dk>
+ <CADUfDZr6A51QxVWw2hJF6_FZW7QYoUHwH-JtNEgmkAefMiUjqQ@mail.gmail.com>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <CADUfDZr6A51QxVWw2hJF6_FZW7QYoUHwH-JtNEgmkAefMiUjqQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jul 08, 2025 at 08:55:01AM +0200, Johannes Thumshirn wrote:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On 7/2/25 1:51 PM, Caleb Sander Mateos wrote:
+> On Tue, Jul 1, 2025 at 3:06?PM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>>> @@ -4811,11 +4813,15 @@ static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd, unsigned int issue
+>>>       loff_t pos;
+>>>       struct kiocb kiocb;
+>>>       struct extent_state *cached_state = NULL;
+>>>       u64 start, lockend;
+>>>       void __user *sqe_addr;
+>>> -     struct btrfs_uring_encoded_data *data = io_uring_cmd_get_async_data(cmd)->op_data;
+>>> +     struct io_btrfs_cmd *bc = io_uring_cmd_to_pdu(cmd, struct io_btrfs_cmd);
+>>> +     struct btrfs_uring_encoded_data *data = NULL;
+>>> +
+>>> +     if (cmd->flags & IORING_URING_CMD_REISSUE)
+>>> +             data = bc->data;
+>>
+>> Can this be a btrfs io_btrfs_cmd specific flag? Doesn't seem like it
+>> would need to be io_uring wide.
 > 
-> BTRFS filesystems with active automatic block-group reclaim (this
-> especially hits zoned file systems where automatic block-group reclaim is
-> used for garbage collection) do a lot of log spamming, because every
-> relocated block group is accompanied by three prints at info level.
-> 
-> The first patch removes the info message that is only present with
-> automatic block group reclaim, we have a tracepoint right next to it so
-> there's no need for the message at all.
-> 
-> The second patch introduces a `verbose` parameter for
-> `btrfs_relocate_chunk()` and `btrfs_relocate_block_group()` to control if
-> we want to add printks or not. Automatic reclaim calls into
-> `btrfs_relocate_chunk()` setting `verbose` to false while the user-space
-> triggered balance code path sets `verbose` to true retaining the old
-> behaviour. 
+> Maybe. But where are you thinking it would be stored? I don't think
+> io_uring_cmd's pdu field would work because it's not initialized
+> before the first call to ->uring_cmd(). That's the whole reason I
+> needed to add a flag to tell whether this was the first call to
+> ->uring_cmd() or a subsequent one.
+> I also put the flag in the uring_cmd layer because that's where
+> op_data was defined. Even though btrfs is the only current user of
+> op_data, it seems like it was intended as a generic mechanism that
+> other ->uring_cmd() implementations might want to use. It seems like
+> the same argument would apply to this flag.
+> Thoughts?
 
-We also struggle with the spam at Meta with automatic reclaim enabled
-though quite a bit less with dynamic.. :) In particular, users often
-think it means there is some kind of btrfs error happening.
+It's probably fine as-is, it was just some quick reading of it.
 
-This looks like a good compromise to me, and I'd be quite happy to see
-it go in.
+I'd like to stage this up so we can get it done for 6.17. Can you
+respind with the other minor comments addressed? And then we can attempt
+to work this out with the btrfs side.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
-
-Thanks!
-
-> 
-> Johannes Thumshirn (2):
->   btrfs: remove redundant auto reclaim log message
->   btrfs: don't print relocation messages from auto reclaim
-> 
->  fs/btrfs/block-group.c |  8 +-------
->  fs/btrfs/relocation.c  | 12 ++++++++----
->  fs/btrfs/relocation.h  |  3 ++-
->  fs/btrfs/volumes.c     | 14 ++++++++------
->  fs/btrfs/volumes.h     |  3 ++-
->  5 files changed, 21 insertions(+), 19 deletions(-)
-> 
-> -- 
-> 2.50.0
-> 
+-- 
+Jens Axboe
 
