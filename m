@@ -1,395 +1,271 @@
-Return-Path: <linux-btrfs+bounces-15317-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15319-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F22ECAFC6AA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 11:07:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B75D3AFC836
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 12:21:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95B087A3C9C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 09:05:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21FA4485116
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 10:20:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21412BF008;
-	Tue,  8 Jul 2025 09:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0438926AA93;
+	Tue,  8 Jul 2025 10:20:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MLAeueqs";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MLAeueqs"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gvcSW/jb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JPeLmiN4";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gvcSW/jb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JPeLmiN4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E88F02BE7CC
-	for <linux-btrfs@vger.kernel.org>; Tue,  8 Jul 2025 09:06:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C3A269CE1
+	for <linux-btrfs@vger.kernel.org>; Tue,  8 Jul 2025 10:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751965618; cv=none; b=YEwf1+m+ALc0fwxyIe+2biNNMZPiP4mAoID92KMVDq3PcdNJSueXAUdk08Tjh2RIdh3qAc9PXjS3gHZHd3/kWBEShGoQy4RyPyeErbRPV7mS6k9E9ENTvqT9mqOAdksVRMk+AUltXZzDjGi+oPgJfiXAPZDhZ2qvp5jVcobi+eU=
+	t=1751970005; cv=none; b=danZyWiBNl+RT0XdWDSioQAPipM0f8XqvpcBJtst30cywEWmgTbAzsu5Jtz/gKWaz2OcwHk6uVGX1TCXk7I+/9tNjRnvg2wNxLa8e/hgW9ta4ixFgOsFo1ZbewLPuXj/UAeCTqk1KtbRArZvEr0WPOtWITN50MifUx8kJ0H1OL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751965618; c=relaxed/simple;
-	bh=krfT6xeMEiNV19PUtOKgrgmnFE84I8DH1SFXoAMN54w=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LIjX92cSjPA5gYA5motWnxqiJ38EYmF9fuzdwdP0YFqxuu/unqPb0RwJC7YikFjMY1WW/hNAB+EvYBAnTqLGcmbBWqNZrUZ+oYZ1rwerbQXAO2tA+mZ7NSsf3FFU2N1p/GyVHGJURTKzbGFwgyyaB2pl93jeIs6Crnu5nbD4tS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MLAeueqs; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MLAeueqs; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	s=arc-20240116; t=1751970005; c=relaxed/simple;
+	bh=6F+F/iGv3OA5nxQdu8gCwkz1tTRlsBjIS7mrQcANGjY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H1KdHUJPUNVIGUCAw8C1vM7cjZOSDWUFsMEJ8ZefKUh3SC1JFt00kZUeDnsikRQRr15ZuSzg6HF9P9+IRKNpPo3zdfMMd1aazB5nA8b5U0PZfkTZc5IcCmynkFyLgyV2wFVqGgeMGOf3Cw02E3DoJ9/TruoBykOeFEBUoZShUjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gvcSW/jb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JPeLmiN4; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gvcSW/jb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JPeLmiN4; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2F62521190
-	for <linux-btrfs@vger.kernel.org>; Tue,  8 Jul 2025 09:06:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1751965614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 77A321F38D;
+	Tue,  8 Jul 2025 10:20:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751970001; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=K93/44PLOWjF6e6bvIEItkD5roGDYkhBNRo5hecleq8=;
-	b=MLAeueqseT1VOZ3cu6bRvs1Ez7VoHBV3MvOYfjeGx7wwqjKu3qk2B7L9AELIRj2CnBkWe+
-	J4XKUDjDoGWepfoZU4FZRgwmyuVksmSS5u6GoMWLefxLUgZBeSu61rcRsYlP948q29S9oo
-	eKcmCbs95kSzwS5p2/fj87RE/1+jJs8=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1751965614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
+	bh=hj1CDaVD+4BtlFnopoRZeD5WKkVDF86m6K5HhWwwKt8=;
+	b=gvcSW/jbIbPJe4xojVrkaRri64CmwfkMCivzcOcy7X/5Ulw+aCiQctp3+++b5kqbwtKWfd
+	XZQLG1KLyBLvSIpnHoUMBP0JhOPCk/9pWF975zNBS2Z89IyO8R3f1A0MnwdyqV1ahHhof+
+	2hJTSd2oiBrpFPJh/W1vOOSMyXPKh1E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751970001;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=K93/44PLOWjF6e6bvIEItkD5roGDYkhBNRo5hecleq8=;
-	b=MLAeueqseT1VOZ3cu6bRvs1Ez7VoHBV3MvOYfjeGx7wwqjKu3qk2B7L9AELIRj2CnBkWe+
-	J4XKUDjDoGWepfoZU4FZRgwmyuVksmSS5u6GoMWLefxLUgZBeSu61rcRsYlP948q29S9oo
-	eKcmCbs95kSzwS5p2/fj87RE/1+jJs8=
+	bh=hj1CDaVD+4BtlFnopoRZeD5WKkVDF86m6K5HhWwwKt8=;
+	b=JPeLmiN4a6hJiNlYT+wM83pfzh7kRvuR3E14GWwd7cCJViE7FCdJgiAGCQ4t0tbrbV7KE0
+	6is/9OuH+76f87BA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="gvcSW/jb";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=JPeLmiN4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1751970001; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hj1CDaVD+4BtlFnopoRZeD5WKkVDF86m6K5HhWwwKt8=;
+	b=gvcSW/jbIbPJe4xojVrkaRri64CmwfkMCivzcOcy7X/5Ulw+aCiQctp3+++b5kqbwtKWfd
+	XZQLG1KLyBLvSIpnHoUMBP0JhOPCk/9pWF975zNBS2Z89IyO8R3f1A0MnwdyqV1ahHhof+
+	2hJTSd2oiBrpFPJh/W1vOOSMyXPKh1E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1751970001;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hj1CDaVD+4BtlFnopoRZeD5WKkVDF86m6K5HhWwwKt8=;
+	b=JPeLmiN4a6hJiNlYT+wM83pfzh7kRvuR3E14GWwd7cCJViE7FCdJgiAGCQ4t0tbrbV7KE0
+	6is/9OuH+76f87BA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C4D313A68
-	for <linux-btrfs@vger.kernel.org>; Tue,  8 Jul 2025 09:06:53 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6340A13A54;
+	Tue,  8 Jul 2025 10:20:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2Fb3C63fbGgiYwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 08 Jul 2025 09:06:53 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 2/2] btrfs: do not poke into bdev's page cache for super block write
-Date: Tue,  8 Jul 2025 18:36:33 +0930
-Message-ID: <af25c52ef333d28531abd52e83c0b9ca3c71e8e9.1751965333.git.wqu@suse.com>
-X-Mailer: git-send-email 2.50.0
-In-Reply-To: <cover.1751965333.git.wqu@suse.com>
-References: <cover.1751965333.git.wqu@suse.com>
+	id 9+I3GNHwbGi7eQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 08 Jul 2025 10:20:01 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id EA382A098F; Tue,  8 Jul 2025 12:20:00 +0200 (CEST)
+Date: Tue, 8 Jul 2025 12:20:00 +0200
+From: Jan Kara <jack@suse.cz>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Dave Chinner <david@fromorbit.com>, 
+	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+Message-ID: <2dm6bsup7vxwl4vwmllkvt5erncirr272bov4ehd5gix7n2vnw@bkagb26tjtj5>
+References: <cover.1751589725.git.wqu@suse.com>
+ <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
+ <aGxSHKeyldrR1Q0T@dread.disaster.area>
+ <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
+ <20250708004532.GA2672018@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
+In-Reply-To: <20250708004532.GA2672018@frogsfrogsfrogs>
+X-Spamd-Result: default: False [-4.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	TO_DN_NONE(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid]
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	TO_DN_SOME(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[gmx.com,fromorbit.com,suse.com,vger.kernel.org,zeniv.linux.org.uk,kernel.org,suse.cz,lists.sourceforge.net,lists.linux.dev];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
 X-Spam-Flag: NO
-X-Spam-Score: -2.80
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 77A321F38D
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
 
-[EXISTING BEHAVIOR]
-Currently btrfs is utilizing block device's page cache to write super
-blocks.
+On Mon 07-07-25 17:45:32, Darrick J. Wong wrote:
+> On Tue, Jul 08, 2025 at 08:52:47AM +0930, Qu Wenruo wrote:
+> > 在 2025/7/8 08:32, Dave Chinner 写道:
+> > > On Fri, Jul 04, 2025 at 10:12:29AM +0930, Qu Wenruo wrote:
+> > > > Currently all the filesystems implementing the
+> > > > super_opearations::shutdown() callback can not afford losing a device.
+> > > > 
+> > > > Thus fs_bdev_mark_dead() will just call the shutdown() callback for the
+> > > > involved filesystem.
+> > > > 
+> > > > But it will no longer be the case, with multi-device filesystems like
+> > > > btrfs and bcachefs the filesystem can handle certain device loss without
+> > > > shutting down the whole filesystem.
+> > > > 
+> > > > To allow those multi-device filesystems to be integrated to use
+> > > > fs_holder_ops:
+> > > > 
+> > > > - Replace super_opearation::shutdown() with
+> > > >    super_opearations::remove_bdev()
+> > > >    To better describe when the callback is called.
+> > > 
+> > > This conflates cause with action.
+> > > 
+> > > The shutdown callout is an action that the filesystem must execute,
+> > > whilst "remove bdev" is a cause notification that might require an
+> > > action to be take.
+> > > 
+> > > Yes, the cause could be someone doing hot-unplug of the block
+> > > device, but it could also be something going wrong in software
+> > > layers below the filesystem. e.g. dm-thinp having an unrecoverable
+> > > corruption or ENOSPC errors.
+> > > 
+> > > We already have a "cause" notification: blk_holder_ops->mark_dead().
+> > > 
+> > > The generic fs action that is taken by this notification is
+> > > fs_bdev_mark_dead().  That action is to invalidate caches and shut
+> > > down the filesystem.
+> > > 
+> > > btrfs needs to do something different to a blk_holder_ops->mark_dead
+> > > notification. i.e. it needs an action that is different to
+> > > fs_bdev_mark_dead().
+> > > 
+> > > Indeed, this is how bcachefs already handles "single device
+> > > died" events for multi-device filesystems - see
+> > > bch2_fs_bdev_mark_dead().
+> > 
+> > I do not think it's the correct way to go, especially when there is already
+> > fs_holder_ops.
+> > 
+> > We're always going towards a more generic solution, other than letting the
+> > individual fs to do the same thing slightly differently.
+> 
+> On second thought -- it's weird that you'd flush the filesystem and
+> shrink the inode/dentry caches in a "your device went away" handler.
+> Fancy filesystems like bcachefs and btrfs would likely just shift IO to
+> a different bdev, right?  And there's no good reason to run shrinkers on
+> either of those fses, right?
 
-This has a long history, dating back to early days when we relies on the
-page's flags to determine if the IO is done or failed.
+I agree it is awkward and bcachefs avoids these in case of removal it can
+handle gracefully AFAICS.
 
-But later commit bc00965dbff7 ("btrfs: count super block write errors in
-device instead of tracking folio error state") uses extra atomic to
-track how many errors are hit, and we no longer rely on page flags to
-determine if the IO is done or failed.
+> > Yes, the naming is not perfect and mixing cause and action, but the end
+> > result is still a more generic and less duplicated code base.
+> 
+> I think dchinner makes a good point that if your filesystem can do
+> something clever on device removal, it should provide its own block
+> device holder ops instead of using fs_holder_ops.  I don't understand
+> why you need a "generic" solution for btrfs when it's not going to do
+> what the others do anyway.
 
-[PROBLEMS]
-But such direct usage of block devices' page cache is putting btrfs
-responsible to the implementation details of the block device.
+Well, I'd also say just go for own fs_holder_ops if it was not for the
+awkward "get super from bdev" step. As Christian wrote we've encapsulated
+that in fs/super.c and bdev_super_lock() in particular but the calling
+conventions for the fs_holder_ops are not very nice (holding
+bdev_holder_lock, need to release it before grabbing practically anything
+else) so I'd have much greater peace of mind if this didn't spread too
+much. Once you call bdev_super_lock() and hold on to sb with s_umount held,
+things are much more conventional for the fs land so I'd like if this
+step happened before any fs hook got called. So I prefer something like
+Qu's proposal of separate sb op for device removal over exporting
+bdev_super_lock(). Like:
 
-In fact this has already caused problem when the block device's page
-cache has large folio support enabled, fixed by commit 65f2a3b2323e
-("btrfs: remove folio order ASSERT()s in super block writeback path").
+static void fs_bdev_mark_dead(struct block_device *bdev, bool surprise)
+{
+        struct super_block *sb;
 
-This should give us a warning that poking into other layer's
-implementation is not a good idea.
+        sb = bdev_super_lock(bdev, false);
+        if (!sb)
+                return;
 
-[ENHANCEMENT]
-Instead of directly using block device's page cache, use the regular bio
-interfaces, this involves:
+	if (sb->s_op->remove_bdev) {
+		sb->s_op->remove_bdev(sb, bdev, surprise);
+		return;
+	}
 
-- Introduce extra buffer for all super blocks of a device
-  This is needed because we want to submit bios for all super blocks in
-  one go, and wait for them all.
-  This is to increase concurrency, thus we can not reuse a single super
-  block copy, and that's part of the reason we want to use page cache.
+	if (!surprise)
+		sync_filesystem(sb);
+	shrink_dcache_sb(sb);
+	evict_inodes(sb);
+	if (sb->s_op->shutdown)
+		sb->s_op->shutdown(sb);
 
-  Unfortunately this means we will have extra 12K memory usage for each
-  btrfs device.
+	super_unlock_shared(sb);
+}
 
-- Introduce ways to wait for super block writeback
-  Previously we rely on the page cache to wait for the IO to finish.
-  Now we have an atomic, @sb_write_running, to record how many running
-  super block writes are pending.
+> As an aside:
+> 'twould be nice if we could lift the *FS_IOC_SHUTDOWN dispatch out of
+> everyone's ioctl functions into the VFS, and then move the "I am dead"
+> state into super_block so that you could actually shut down any
+> filesystem, not just the seven that currently implement it.
 
-  And also a wait queue head for waiting.
+Yes, I should find time to revive that patch series... It was not *that*
+hard to do.
 
-  This greatly simplify wait_dev_supers(), now we only need to wait for
-  the pending ios to finish.
-
-- Simplify btrfs_end_super_write() function
-  Now we don't need to bother releasing the folio, we can get rid of the
-  bio iteration code.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c | 76 ++++++++++++++--------------------------------
- fs/btrfs/volumes.c | 13 ++++++++
- fs/btrfs/volumes.h |  6 ++++
- 3 files changed, 42 insertions(+), 53 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 44e7ae4a2e0b..de844772585d 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3692,27 +3692,23 @@ ALLOW_ERROR_INJECTION(open_ctree, ERRNO);
- static void btrfs_end_super_write(struct bio *bio)
- {
- 	struct btrfs_device *device = bio->bi_private;
--	struct folio_iter fi;
- 
--	bio_for_each_folio_all(fi, bio) {
--		if (bio->bi_status) {
--			btrfs_warn_rl(device->fs_info,
--				"lost super block write due to IO error on %s (%d)",
--				btrfs_dev_name(device),
--				blk_status_to_errno(bio->bi_status));
--			btrfs_dev_stat_inc_and_print(device,
--						     BTRFS_DEV_STAT_WRITE_ERRS);
--			/* Ensure failure if the primary sb fails. */
--			if (bio->bi_opf & REQ_FUA)
--				atomic_add(BTRFS_SUPER_PRIMARY_WRITE_ERROR,
--					   &device->sb_write_errors);
--			else
--				atomic_inc(&device->sb_write_errors);
--		}
--		folio_unlock(fi.folio);
--		folio_put(fi.folio);
-+	if (bio->bi_status) {
-+		btrfs_warn_rl(device->fs_info,
-+			"lost super block write due to IO error on %s (%d)",
-+			btrfs_dev_name(device),
-+			blk_status_to_errno(bio->bi_status));
-+		btrfs_dev_stat_inc_and_print(device,
-+					     BTRFS_DEV_STAT_WRITE_ERRS);
-+		/* Ensure failure if the primary sb fails. */
-+		if (bio->bi_opf & REQ_FUA)
-+			atomic_add(BTRFS_SUPER_PRIMARY_WRITE_ERROR,
-+				   &device->sb_write_errors);
-+		else
-+			atomic_inc(&device->sb_write_errors);
- 	}
--
-+	if (atomic_dec_and_test(&device->sb_write_running))
-+		wake_up(&device->sb_write_wait);
- 	bio_put(bio);
- }
- 
-@@ -3730,24 +3726,21 @@ static int write_dev_supers(struct btrfs_device *device,
- 			    struct btrfs_super_block *sb, int max_mirrors)
- {
- 	struct btrfs_fs_info *fs_info = device->fs_info;
--	struct address_space *mapping = device->bdev->bd_mapping;
- 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
- 	int i;
- 	int ret;
- 	u64 bytenr, bytenr_orig;
- 
- 	atomic_set(&device->sb_write_errors, 0);
-+	ASSERT(atomic_read(&device->sb_write_running) == 0);
- 
- 	if (max_mirrors == 0)
- 		max_mirrors = BTRFS_SUPER_MIRROR_MAX;
--
-+	ASSERT(max_mirrors <= BTRFS_SUPER_MIRROR_MAX);
- 	shash->tfm = fs_info->csum_shash;
- 
- 	for (i = 0; i < max_mirrors; i++) {
--		struct folio *folio;
- 		struct bio *bio;
--		struct btrfs_super_block *disk_super;
--		size_t offset;
- 
- 		bytenr_orig = btrfs_sb_offset(i);
- 		ret = btrfs_sb_log_location(device, i, WRITE, &bytenr);
-@@ -3769,21 +3762,7 @@ static int write_dev_supers(struct btrfs_device *device,
- 		crypto_shash_digest(shash, (const char *)sb + BTRFS_CSUM_SIZE,
- 				    BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE,
- 				    sb->csum);
--
--		folio = __filemap_get_folio(mapping, bytenr >> PAGE_SHIFT,
--					    FGP_LOCK | FGP_ACCESSED | FGP_CREAT,
--					    GFP_NOFS);
--		if (IS_ERR(folio)) {
--			btrfs_err(device->fs_info,
--			  "couldn't get super block page for bytenr %llu error %ld",
--			  bytenr, PTR_ERR(folio));
--			atomic_inc(&device->sb_write_errors);
--			continue;
--		}
--
--		offset = offset_in_folio(folio, bytenr);
--		disk_super = folio_address(folio) + offset;
--		memcpy(disk_super, sb, BTRFS_SUPER_INFO_SIZE);
-+		memcpy(device->sb_write_buf[i], sb, BTRFS_SUPER_INFO_SIZE);
- 
- 		/*
- 		 * Directly use bios here instead of relying on the page cache
-@@ -3796,7 +3775,7 @@ static int write_dev_supers(struct btrfs_device *device,
- 		bio->bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
- 		bio->bi_private = device;
- 		bio->bi_end_io = btrfs_end_super_write;
--		bio_add_folio_nofail(bio, folio, BTRFS_SUPER_INFO_SIZE, offset);
-+		bio_add_virt_nofail(bio, device->sb_write_buf[i], BTRFS_SUPER_INFO_SIZE);
- 
- 		/*
- 		 * We FUA only the first super block.  The others we allow to
-@@ -3805,6 +3784,7 @@ static int write_dev_supers(struct btrfs_device *device,
- 		 */
- 		if (i == 0 && !btrfs_test_opt(device->fs_info, NOBARRIER))
- 			bio->bi_opf |= REQ_FUA;
-+		atomic_inc(&device->sb_write_running);
- 		submit_bio(bio);
- 
- 		if (btrfs_advance_sb_log(device, i))
-@@ -3830,10 +3810,10 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 
- 	if (max_mirrors == 0)
- 		max_mirrors = BTRFS_SUPER_MIRROR_MAX;
-+	ASSERT(max_mirrors <= BTRFS_SUPER_MIRROR_MAX);
- 
-+	/* Calculate how many super blocks we really have. */
- 	for (i = 0; i < max_mirrors; i++) {
--		struct folio *folio;
--
- 		ret = btrfs_sb_log_location(device, i, READ, &bytenr);
- 		if (ret == -ENOENT) {
- 			break;
-@@ -3846,17 +3826,8 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 		if (bytenr + BTRFS_SUPER_INFO_SIZE >=
- 		    device->commit_total_bytes)
- 			break;
--
--		folio = filemap_get_folio(device->bdev->bd_mapping,
--					  bytenr >> PAGE_SHIFT);
--		/* If the folio has been removed, then we know it completed. */
--		if (IS_ERR(folio))
--			continue;
--
--		/* Folio will be unlocked once the write completes. */
--		folio_wait_locked(folio);
--		folio_put(folio);
- 	}
-+	wait_event(device->sb_write_wait, atomic_read(&device->sb_write_running) == 0);
- 
- 	errors += atomic_read(&device->sb_write_errors);
- 	if (errors >= BTRFS_SUPER_PRIMARY_WRITE_ERROR)
-@@ -3866,7 +3837,6 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 			  device->devid);
- 		return -1;
- 	}
--
- 	return errors < i ? 0 : -1;
- }
- 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 47f11e3c4a98..b58640e36ee1 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -400,6 +400,7 @@ static struct btrfs_fs_devices *alloc_fs_devices(const u8 *fsid)
- static void btrfs_free_device(struct btrfs_device *device)
- {
- 	WARN_ON(!list_empty(&device->post_commit_list));
-+	WARN_ON(atomic_read(&device->sb_write_running) != 0);
- 	/*
- 	 * No need to call kfree_rcu() nor do RCU lock/unlock, nothing is
- 	 * reading the device name.
-@@ -407,6 +408,8 @@ static void btrfs_free_device(struct btrfs_device *device)
- 	kfree(rcu_dereference_raw(device->name));
- 	btrfs_extent_io_tree_release(&device->alloc_state);
- 	btrfs_destroy_dev_zone_info(device);
-+	for (int i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++)
-+		kfree(device->sb_write_buf[i]);
- 	kfree(device);
- }
- 
-@@ -6905,6 +6908,8 @@ struct btrfs_device *btrfs_alloc_device(struct btrfs_fs_info *fs_info,
- 	INIT_LIST_HEAD(&dev->post_commit_list);
- 
- 	atomic_set(&dev->dev_stats_ccnt, 0);
-+	atomic_set(&dev->sb_write_running, 0);
-+	init_waitqueue_head(&dev->sb_write_wait);
- 	btrfs_device_data_ordered_init(dev);
- 	btrfs_extent_io_tree_init(fs_info, &dev->alloc_state, IO_TREE_DEVICE_ALLOC_STATE);
- 
-@@ -6937,6 +6942,14 @@ struct btrfs_device *btrfs_alloc_device(struct btrfs_fs_info *fs_info,
- 		rcu_assign_pointer(dev->name, name);
- 	}
- 
-+	for (int i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
-+		dev->sb_write_buf[i] = kmalloc(BTRFS_SUPER_INFO_SIZE, GFP_KERNEL);
-+		if (!dev->sb_write_buf[i]) {
-+			btrfs_free_device(dev);
-+			return ERR_PTR(-ENOMEM);
-+		}
-+	}
-+
- 	return dev;
- }
- 
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index d3b65f66a691..dd8e2cfdcd2d 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -20,6 +20,7 @@
- #include <linux/rbtree.h>
- #include <uapi/linux/btrfs.h>
- #include <uapi/linux/btrfs_tree.h>
-+#include "disk-io.h"
- #include "messages.h"
- #include "extent-io-tree.h"
- 
-@@ -182,6 +183,11 @@ struct btrfs_device {
- 	struct bio flush_bio;
- 	struct completion flush_wait;
- 
-+	/* Buffer for each super block. */
-+	struct btrfs_super_block *sb_write_buf[BTRFS_SUPER_MIRROR_MAX];
-+	atomic_t sb_write_running;
-+	wait_queue_head_t sb_write_wait;
-+
- 	/* per-device scrub information */
- 	struct scrub_ctx *scrub_ctx;
- 
+								Honza
 -- 
-2.50.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
