@@ -1,239 +1,169 @@
-Return-Path: <linux-btrfs+bounces-15314-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15315-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82253AFC35F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 08:55:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7724AFC4C5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 09:55:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34D087A7807
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 06:54:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA082422A7D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 07:55:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20858224B05;
-	Tue,  8 Jul 2025 06:55:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4577429DB61;
+	Tue,  8 Jul 2025 07:55:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgxuPBfh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6BB522154D
-	for <linux-btrfs@vger.kernel.org>; Tue,  8 Jul 2025 06:55:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D4B221282;
+	Tue,  8 Jul 2025 07:55:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751957716; cv=none; b=KQ2BBbBdAu+AjYQe16rnUb070EKr8b7YGQdsW7VzC6RwPNMdvhYA34zZ9NhKAY/ROMg7p8teV/pDFnsLkZrZxs3NhTOcXvVE80LqM3geGkwJ9EHCF5m1MW+6aSXhbOcFd5mvEIGeG4529OMBu7QAvymFgGzh1sVkX1jVIpQR22A=
+	t=1751961320; cv=none; b=UiZVNYDfkhpVvfDohNtu2JY/IpU106/bx2uiqCe5oTNx1YDWCtpFxZ3X7cnDFBpkS337bwIKjTh2NLqQKCZCAewTfRwGx1DxLXAjZQHJQa9eQn4FE+fFRuYqQcgfcaMdQtsRwRmgvzdwCkTDTav1M7Z+ykfvps8jZnbxcIr5dys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751957716; c=relaxed/simple;
-	bh=eE5aaAyoMcjlvLjiuYG5BZBGfNEKeMQy8zFb6FLOOAY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IdI7eP8VqeF4V/xvY4l+h2ix1YwxJqcnYUp+FJAQEkWy0b5R/4u8fe1BHv1QnbdpQlNcb5vCDJ7OJ+e9vfvT9ycEOU1u1oxlL/nWD6A2WHDIU0LHJ/FJCJ4mkZVhqLzhTZ24bC/oEB/esXvDSUkLqHRhRkIEjeRF5lsIQKJ7rqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-454aaade1fbso44371535e9.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Jul 2025 23:55:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751957713; x=1752562513;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mGMV6AIZPdJaEqIudm5h7+iKHSpYsmY+mq4V7AFR13w=;
-        b=l/BYX2kZv6JZn8SBiQa96HFWSIHx3QFVCV7xnY/giyUG9k8RASabXBPRI6kc9WdnBX
-         OnymnifPKjmCJRJpisOeyL4AJiVT/8tI5SGmcWQn2op2lqRIdhzh96zL0D0iNgYYu/ph
-         Xv638dQz47JHZB0U6G+3jdQF3+SfXe1X3XWWS4Qu7yJPSd50z2TzeHZ83aJH5HFaT6U0
-         4vOlulD954mr21CkNmjr5T/t9+03VubWqdI+aiLnjjUe2M25ihQ8HzH5ZgGi+Ot9hUMi
-         st9IYWtw/QUxh99PqeE8AET+X8llO7htk8nyp7U6YWQ0sJ9FDexeyVsWPnO7w7QTg1OK
-         VSkw==
-X-Gm-Message-State: AOJu0YzJcTskks2lxndZ47wU0QH1eAG7kLeosRSoUMfWGwRnlmxXMdoq
-	leJt715Ht6yvbmtfMxf7QaMUlliw1vFzYkAbwpiYufy498F4KGHrmjOgMHc2RNRj
-X-Gm-Gg: ASbGncvjshJX9XL5CktzM9wfnnv37D/FN2wW/r6AdSkm+cBzul8n1mtwKNkkMSBMK8P
-	Rlf7AQD/bK68xnlaNPALGb+aKh4/Cl2BT6/Jvq/VfRE3/5yoSIYnChr8ZZSkKXtIx22CgLNAwKX
-	IcGSdDBZPM57k0nCNqlZeOhswdBPC8K5ftrsPK3KdgtSAbFjOsOJ1QSOmPxIwkBrxc+/kbnz/0d
-	5W3SikyNwWnhIsrUiKO5XnmO1/f1hCWWJWAMM4jbcUbZR2I4KEzOoJtWsrcpVCngScrE6AEsjgE
-	J/rSKUmkb7m837zXOAPTs7WWrVQLRxMTmWWpZssH1Ll9dVXVu0hhGpN8kO0puJy6M1HeGE3oZFt
-	7nPhcLO+oi6lT63NMQezH/6EPhmmrRif01D728ObeinzfM7nLoQ==
-X-Google-Smtp-Source: AGHT+IF3O95LKMLja/5gJokswL2S55AWurjJtahqHQEIvSpWEvyMQ3fESu3ccsENvtMpMFtKxPdPDA==
-X-Received: by 2002:a05:600c:5292:b0:453:6146:1172 with SMTP id 5b1f17b1804b1-454b4e6e64dmr153723645e9.3.1751957712987;
-        Mon, 07 Jul 2025 23:55:12 -0700 (PDT)
-Received: from mayhem.fritz.box (p200300f6f71c45003fa4d1e815666221.dip0.t-ipconnect.de. [2003:f6:f71c:4500:3fa4:d1e8:1566:6221])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454cd3d275fsm12745075e9.20.2025.07.07.23.55.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jul 2025 23:55:12 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-To: linux-btrfs@vger.kernel.org
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 2/2] btrfs: don't print relocation messages from auto reclaim
-Date: Tue,  8 Jul 2025 08:55:03 +0200
-Message-ID: <20250708065504.63525-3-jth@kernel.org>
-X-Mailer: git-send-email 2.50.0
-In-Reply-To: <20250708065504.63525-1-jth@kernel.org>
-References: <20250708065504.63525-1-jth@kernel.org>
+	s=arc-20240116; t=1751961320; c=relaxed/simple;
+	bh=qsPSN2BpCezUCvdd+RaM6scGQ8lIU5NoJZv7E/OP/1I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MY2gHv0KybElIM+eF7K+SrSE74pcjdUOT6OCdWyniDDI5nEPUTxfRI6LcS2+JaKpq2B3iuGfFU4PkKSP4za2il6giWfDYtUlU7dA9BiVOl37QQhjcKg1aglhBMrYeEOym/T5IFBReM9ai+ZM1jHumYzPexLNERPGkvCxRMKH12Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sgxuPBfh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59B88C4CEED;
+	Tue,  8 Jul 2025 07:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751961320;
+	bh=qsPSN2BpCezUCvdd+RaM6scGQ8lIU5NoJZv7E/OP/1I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sgxuPBfh3cZ0dSDKch6I5Rqryw9OXZSRJcFlBBbK2wZk7UGITXp4prgxpzNUQi6VS
+	 +nmmibndMCtDY0Li8hfg7Jw/0gZudYRJblZ6FolRAubFzcLMuAsK7XEoKiSDxIgIW1
+	 9qRXNQoc/ihFCGt2UwXeahyM5dgBpX/hh1PBhZEkRleJQEzgoAcBwUYxCiRTCaUC1o
+	 XPGqDJKxSp5j5XzA1ld1uWapoMzVkWw9oV5u9f/lfYdSi0W1PygUXlIMOWdhVsP0C/
+	 ABdtdShHTLFroT13TzZA/Ayi8o093gg45lzstPUfEDRdSAW6wkVshNvzkuIsltRaXJ
+	 tIjDK/9jXsNog==
+Date: Tue, 8 Jul 2025 09:55:14 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Dave Chinner <david@fromorbit.com>, 
+	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	viro@zeniv.linux.org.uk, jack@suse.cz, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+Message-ID: <20250708-geahndet-rohmaterial-0419fd6a76b3@brauner>
+References: <cover.1751589725.git.wqu@suse.com>
+ <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
+ <aGxSHKeyldrR1Q0T@dread.disaster.area>
+ <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
+ <20250708004532.GA2672018@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250708004532.GA2672018@frogsfrogsfrogs>
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Mon, Jul 07, 2025 at 05:45:32PM -0700, Darrick J. Wong wrote:
+> On Tue, Jul 08, 2025 at 08:52:47AM +0930, Qu Wenruo wrote:
+> > 
+> > 
+> > 在 2025/7/8 08:32, Dave Chinner 写道:
+> > > On Fri, Jul 04, 2025 at 10:12:29AM +0930, Qu Wenruo wrote:
+> > > > Currently all the filesystems implementing the
+> > > > super_opearations::shutdown() callback can not afford losing a device.
+> > > > 
+> > > > Thus fs_bdev_mark_dead() will just call the shutdown() callback for the
+> > > > involved filesystem.
+> > > > 
+> > > > But it will no longer be the case, with multi-device filesystems like
+> > > > btrfs and bcachefs the filesystem can handle certain device loss without
+> > > > shutting down the whole filesystem.
+> > > > 
+> > > > To allow those multi-device filesystems to be integrated to use
+> > > > fs_holder_ops:
+> > > > 
+> > > > - Replace super_opearation::shutdown() with
+> > > >    super_opearations::remove_bdev()
+> > > >    To better describe when the callback is called.
+> > > 
+> > > This conflates cause with action.
+> > > 
+> > > The shutdown callout is an action that the filesystem must execute,
+> > > whilst "remove bdev" is a cause notification that might require an
+> > > action to be take.
+> > > 
+> > > Yes, the cause could be someone doing hot-unplug of the block
+> > > device, but it could also be something going wrong in software
+> > > layers below the filesystem. e.g. dm-thinp having an unrecoverable
+> > > corruption or ENOSPC errors.
+> > > 
+> > > We already have a "cause" notification: blk_holder_ops->mark_dead().
+> > > 
+> > > The generic fs action that is taken by this notification is
+> > > fs_bdev_mark_dead().  That action is to invalidate caches and shut
+> > > down the filesystem.
+> > > 
+> > > btrfs needs to do something different to a blk_holder_ops->mark_dead
+> > > notification. i.e. it needs an action that is different to
+> > > fs_bdev_mark_dead().
+> > > 
+> > > Indeed, this is how bcachefs already handles "single device
+> > > died" events for multi-device filesystems - see
+> > > bch2_fs_bdev_mark_dead().
+> > 
+> > I do not think it's the correct way to go, especially when there is already
+> > fs_holder_ops.
+> > 
+> > We're always going towards a more generic solution, other than letting the
+> > individual fs to do the same thing slightly differently.
+> 
+> On second thought -- it's weird that you'd flush the filesystem and
+> shrink the inode/dentry caches in a "your device went away" handler.
+> Fancy filesystems like bcachefs and btrfs would likely just shift IO to
+> a different bdev, right?  And there's no good reason to run shrinkers on
+> either of those fses, right?
+> 
+> > Yes, the naming is not perfect and mixing cause and action, but the end
+> > result is still a more generic and less duplicated code base.
+> 
+> I think dchinner makes a good point that if your filesystem can do
+> something clever on device removal, it should provide its own block
+> device holder ops instead of using fs_holder_ops.  I don't understand
+> why you need a "generic" solution for btrfs when it's not going to do
+> what the others do anyway.
 
-When BTRFS is doing automatic block-group reclaim, it is spamming the
-kernel log messages a lot.
+I think letting filesystems implement their own holder ops should be
+avoided if we can. Christoph may chime in here. I have no appettite for
+exporting stuff like get_bdev_super() unless absolutely necessary. We
+tried to move all that handling into the VFS to eliminate a slew of
+deadlocks we detected and fixed. I have no appetite to repeat that
+cycle.
 
-Add a `verbose` parameter to `btrfs_relocate_chunk()` and
-`btrfs_relocate_block_group()` to control the verbosity of these log
-message. This way the old behaviour of printing log messages on a
-user-space initiated balance operation can be kept while excessive log
-spamming due to auto reclaim is mitigated.
+The shutdown method is implemented only by block-based filesystems and
+arguably shutdown was always a misnomer because it assumed that the
+filesystem needs to actually shut down when it is called. IOW, we made
+it so that it is a call to action but that doesn't have to be the case.
+Calling it ->remove_bdev() is imo the correct thing because it gives
+block based filesystem the ability to handle device events how they see
+fit.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/block-group.c |  2 +-
- fs/btrfs/relocation.c  | 12 ++++++++----
- fs/btrfs/relocation.h  |  3 ++-
- fs/btrfs/volumes.c     | 14 ++++++++------
- fs/btrfs/volumes.h     |  3 ++-
- 5 files changed, 21 insertions(+), 13 deletions(-)
+Once we will have non-block based filesystems that need a method to
+always shut down the filesystem itself we might have to revisit this
+design anyway but no one had that use-case yet.
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index b01408f0b92a..042f8566c7cc 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1964,7 +1964,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
- 		spin_unlock(&bg->lock);
- 
- 		trace_btrfs_reclaim_block_group(bg);
--		ret = btrfs_relocate_chunk(fs_info, bg->start);
-+		ret = btrfs_relocate_chunk(fs_info, bg->start, false);
- 		if (ret) {
- 			btrfs_dec_block_group_ro(bg);
- 			btrfs_err(fs_info, "error relocating chunk %llu",
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 175fc3acc38b..47ee3216e1e0 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -3908,7 +3908,8 @@ static const char *stage_to_string(enum reloc_stage stage)
- /*
-  * function to relocate all extents in a block group.
-  */
--int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start)
-+int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start,
-+			       bool verbose)
- {
- 	struct btrfs_block_group *bg;
- 	struct btrfs_root *extent_root = btrfs_extent_root(fs_info, group_start);
-@@ -4000,7 +4001,8 @@ int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start)
- 		goto out;
- 	}
- 
--	describe_relocation(rc->block_group);
-+	if (verbose)
-+		describe_relocation(rc->block_group);
- 
- 	btrfs_wait_block_group_reservations(rc->block_group);
- 	btrfs_wait_nocow_writers(rc->block_group);
-@@ -4044,8 +4046,10 @@ int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start)
- 		if (rc->extents_found == 0)
- 			break;
- 
--		btrfs_info(fs_info, "found %llu extents, stage: %s",
--			   rc->extents_found, stage_to_string(finishes_stage));
-+		if (verbose)
-+			btrfs_info(fs_info, "found %llu extents, stage: %s",
-+				   rc->extents_found,
-+				   stage_to_string(finishes_stage));
- 	}
- 
- 	WARN_ON(rc->block_group->pinned > 0);
-diff --git a/fs/btrfs/relocation.h b/fs/btrfs/relocation.h
-index 788c86d8633a..5c36b3f84b57 100644
---- a/fs/btrfs/relocation.h
-+++ b/fs/btrfs/relocation.h
-@@ -12,7 +12,8 @@ struct btrfs_trans_handle;
- struct btrfs_ordered_extent;
- struct btrfs_pending_snapshot;
- 
--int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start);
-+int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start,
-+			       bool verbose);
- int btrfs_init_reloc_root(struct btrfs_trans_handle *trans, struct btrfs_root *root);
- int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
- 			    struct btrfs_root *root);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 31aecd291d6c..3f098ce07577 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -3412,7 +3412,8 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
- 	return ret;
- }
- 
--int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset)
-+int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset,
-+			 bool verbose)
- {
- 	struct btrfs_root *root = fs_info->chunk_root;
- 	struct btrfs_trans_handle *trans;
-@@ -3442,7 +3443,7 @@ int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset)
- 
- 	/* step one, relocate all the extents inside this chunk */
- 	btrfs_scrub_pause(fs_info);
--	ret = btrfs_relocate_block_group(fs_info, chunk_offset);
-+	ret = btrfs_relocate_block_group(fs_info, chunk_offset, true);
- 	btrfs_scrub_continue(fs_info);
- 	if (ret) {
- 		/*
-@@ -3552,7 +3553,8 @@ static int btrfs_relocate_sys_chunks(struct btrfs_fs_info *fs_info)
- 		btrfs_release_path(path);
- 
- 		if (chunk_type & BTRFS_BLOCK_GROUP_SYSTEM) {
--			ret = btrfs_relocate_chunk(fs_info, found_key.offset);
-+			ret = btrfs_relocate_chunk(fs_info, found_key.offset,
-+						   true);
- 			if (ret == -ENOSPC)
- 				failed++;
- 			else
-@@ -4217,7 +4219,7 @@ static int __btrfs_balance(struct btrfs_fs_info *fs_info)
- 			}
- 		}
- 
--		ret = btrfs_relocate_chunk(fs_info, found_key.offset);
-+		ret = btrfs_relocate_chunk(fs_info, found_key.offset, true);
- 		mutex_unlock(&fs_info->reclaim_bgs_lock);
- 		if (ret == -ENOSPC) {
- 			enospc_errors++;
-@@ -4985,7 +4987,7 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
- 			goto done;
- 		}
- 
--		ret = btrfs_relocate_chunk(fs_info, chunk_offset);
-+		ret = btrfs_relocate_chunk(fs_info, chunk_offset, true);
- 		mutex_unlock(&fs_info->reclaim_bgs_lock);
- 		if (ret == -ENOSPC) {
- 			failed++;
-@@ -8198,7 +8200,7 @@ static int relocating_repair_kthread(void *data)
- 	btrfs_info(fs_info,
- 		   "zoned: relocating block group %llu to repair IO failure",
- 		   target);
--	ret = btrfs_relocate_chunk(fs_info, target);
-+	ret = btrfs_relocate_chunk(fs_info, target, true);
- 
- out:
- 	if (cache)
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 7395cb5e1238..ab3163897049 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -765,7 +765,8 @@ void btrfs_describe_block_groups(u64 flags, char *buf, u32 size_buf);
- int btrfs_resume_balance_async(struct btrfs_fs_info *fs_info);
- int btrfs_recover_balance(struct btrfs_fs_info *fs_info);
- int btrfs_pause_balance(struct btrfs_fs_info *fs_info);
--int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset);
-+int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset,
-+			 bool verbose);
- int btrfs_cancel_balance(struct btrfs_fs_info *fs_info);
- bool btrfs_chunk_writeable(struct btrfs_fs_info *fs_info, u64 chunk_offset);
- void btrfs_dev_stat_inc_and_print(struct btrfs_device *dev, int index);
--- 
-2.50.0
+> 
+> Awkward naming is often a sign that further thought (or at least
+> separation of code) is needed.
+> 
+> As an aside:
+> 'twould be nice if we could lift the *FS_IOC_SHUTDOWN dispatch out of
+> everyone's ioctl functions into the VFS, and then move the "I am dead"
+> state into super_block so that you could actually shut down any
+> filesystem, not just the seven that currently implement it.
 
+That goes back to my earlier point. Fwiw, I think that's valuable work.
 
