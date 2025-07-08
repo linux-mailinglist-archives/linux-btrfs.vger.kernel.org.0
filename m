@@ -1,100 +1,95 @@
-Return-Path: <linux-btrfs+bounces-15335-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15336-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65A88AFCF8B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 17:43:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 419E4AFCFF5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 18:00:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 478B93AF80C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 15:41:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3D137AF9FA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 15:59:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1152E1749;
-	Tue,  8 Jul 2025 15:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E57A2E3367;
+	Tue,  8 Jul 2025 16:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ivSZf9i4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hWmkZO1v";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0qyPJpwF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LQdRBxrq"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="KtTHtYec";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AV62bH57"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A0A7231824
-	for <linux-btrfs@vger.kernel.org>; Tue,  8 Jul 2025 15:41:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1AC2E3AF8
+	for <linux-btrfs@vger.kernel.org>; Tue,  8 Jul 2025 16:00:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751989300; cv=none; b=Fmm6Yt6IScfmBFd2AXUvPVYkFrXnrTzLZbFoPDdwBJSzIBgsYX+Qkdoa71BEly95BNBji7sap5RIHqGPmCyrq5d3GrPrPYb0b7h6TlpAE1NCS8bDQgqkh2E1NaBm+il/noEYFZzDGDuLkSRW588FLgILjewY6ntMk6XwEypUD6Y=
+	t=1751990411; cv=none; b=RXKHggE/mjo37y87JxDfkA9gx2ZDzlbN6PMzsNQ88bpoqxLbQJMD/pnA9g/pnzySlreOh6xGkkQR07UjaISDxQFXIfQI19bMxCnis3eMT7fXuURpWsQBfiSvX93FNANQVvIoBlfMyZpuuRXrkH5RwdXOJ0FTzbUmLIoKR8smruE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751989300; c=relaxed/simple;
-	bh=q0J1PY/2tLRLP9cAt4s1wBNhrzgZSK5OO4eoSUpnJBI=;
+	s=arc-20240116; t=1751990411; c=relaxed/simple;
+	bh=x8NK2PIYJYFRtOjIMXCU7lLbZ4g+C4aG35WdbBXl1es=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jHY0ssCBNmh9a/nyQR7rdBAvgion7SJwdh+uvlT2WaTYiKaYvVwNu48HXgDL+SKoBM2LQMlQBKXeIUFqdAGpP5y17/npEGcyK/8SFSosuer4DTTDUOccvm7KvsyTQBSyRUxwAOudU3+2+/6qgpaU2P1kUcMyWYTijNF0AhrpkOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ivSZf9i4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hWmkZO1v; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0qyPJpwF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LQdRBxrq; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E9AFA1F38D;
-	Tue,  8 Jul 2025 15:41:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751989296;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z47lh4U0ZsRaYgPUDRGOaqf0hFwAE5iGkwm6ZvL+za0=;
-	b=ivSZf9i4WhWsRyCb1fNaOzhnnw6dULUtWny2R9S4fyq+pU23ldd1f44hm5Pw+uNWM/huy6
-	xbSHTAp5WrmMwjS6G7KvjDJZDOAKaPhLITohHXxHXDlFyIeKiKTFEKV2sIrBhIoD5UVNob
-	aKkidot/m82uT9VYDBiK5FmWXLeVOQo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751989296;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z47lh4U0ZsRaYgPUDRGOaqf0hFwAE5iGkwm6ZvL+za0=;
-	b=hWmkZO1vdfpoPk+ZAB1jftNe7hY7PklkfU5TZjgflODbf7IDEvR9VpWaO8YhVI51wrZ1MU
-	L1s0GirjhjYE+tCA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=0qyPJpwF;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=LQdRBxrq
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1751989295;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z47lh4U0ZsRaYgPUDRGOaqf0hFwAE5iGkwm6ZvL+za0=;
-	b=0qyPJpwF1LyrM+Y+Ohv+NXw5eoQbrSgAdnL+acTXwUbOuI7uRqqysExL6IWelCrVADXIMg
-	BbQ7vUQe8ME4c9TLxLWAAdHpOKe3lSWPThdDw8W8lK+TL0hGelIlPpTqYyZYpZmV7aAZsC
-	7VtLGo0grX/heJ6rX8g2sO9tDA2u+VI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1751989295;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z47lh4U0ZsRaYgPUDRGOaqf0hFwAE5iGkwm6ZvL+za0=;
-	b=LQdRBxrqbuGlOjD+SPZMXJ3mWELhaUZFoob/Ib8Cg/pc1EotoropjPLZea9pub0SyJmAAc
-	+9yn3JcAXvt4hLBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C594413A54;
-	Tue,  8 Jul 2025 15:41:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ul66Ly88bWjpYAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 08 Jul 2025 15:41:35 +0000
-Date: Tue, 8 Jul 2025 17:41:34 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v6] btrfs: try to search for data csums in commit root
-Message-ID: <20250708154134.GQ4453@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <8142f4eb91ae32eed53c5ae7121296b44b52d627.1751574142.git.boris@bur.io>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GkRLUXTKNDv4HCmABhXMd5F7SwX3YOdC9+UuGd0q8XcGqnB0Exg5VvzO0MnKRzL5rcei2+GirooPEZzBEsMLxjhX4OS8UZcR7Erupn4PpiTwYMfyGhh7z3OZF842wOsRvGarCr5/++SDTlPptsfRiwaJHE+S6oDrSecORb715Do=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=KtTHtYec; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=AV62bH57; arc=none smtp.client-ip=103.168.172.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 2C50D14005D5;
+	Tue,  8 Jul 2025 12:00:08 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-04.internal (MEProxy); Tue, 08 Jul 2025 12:00:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1751990408; x=1752076808; bh=tWVVjm9U2K
+	rci7ROqysvb5RtDY8fyJ/ej60mKzCVw+I=; b=KtTHtYecK/6UeSNKJSO7onzQxv
+	LxNXl3Mr+3bFWSP79KInriJx229Xlz5vyqKuUxiQ853VN0RFQ64VLx2agybXF/RU
+	zWmWGCe2HSJ0+HDZePyDBfPRK1JSxSxrATLtVlysO89xHqd+f65nPghrahd84wKn
+	yWu0M8eU0ynFImaWetpUNYXtD7WAaC7L3cEcicb2C/IeTxqykuACxdbg3lzMPDwd
+	tA1jdA+9e/GteTT6e4jaBIFQwKmOmODsz5U81pg1zPrJbkVxgtbDRJ8CMbbpj93g
+	EtCJzBaO7rCvw5+0Bgc55283iAspARYz9UcrI7pOnfZ6eU8ZwLLiwqTQWDUA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1751990408; x=1752076808; bh=tWVVjm9U2Krci7ROqysvb5RtDY8fyJ/ej60
+	mKzCVw+I=; b=AV62bH57/reeJCkoZMMQW57ziEk/OlBsmFHREnRSxdzKeaABgjF
+	p1GlnfK01nsrdX+6GBPQ8+VtkXFZ4+l/EbT5db59z1XkqLOCkXxh48+VNowcIAwk
+	qL+QYp6BbjRQd3zEhqoiCxqs2QY3AtT4hCIxsQ0PEKafSAZq6mNIiKNVf8gTv5KH
+	5EhZ4gxKVpqBBCSHpdVdr0PX7sYi7KrIojPHGm4e6N1+M+vGbmsO3aif77xZQUCH
+	Nk1vK/duoiyv06aTXPvlgU5qGz4mLpknxZ47bFFbppQBIX9y8uxWh0HERXRWt6eM
+	rMmY014Ez4SvgrLk2DNV0T9/n2l9xmtFiww==
+X-ME-Sender: <xms:h0BtaLBhI1ylQfYsPcEWcdoFO3k38C_hCgN2Nsrj5CX6rjJMGdxXxw>
+    <xme:h0BtaEzAkueDXjpMo7txs-wL8_8ITbvgwb3cGMGpe1gCLmlgvWCS2jkuEHKuWaIyP
+    cNooi2duQqvdO2vuT0>
+X-ME-Received: <xmr:h0BtaACsGolNc97lFj0ZV1nv2nyOSqz0NyMM7TMSCWmsohRTxw4pMYX8gtuTZGqmSNFt44pxERRdxlUV38wYLKfGUtA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdefhedutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceu
+    uhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepkedvke
+    ffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
+    drihhopdhnsggprhgtphhtthhopeefpdhmohguvgepshhmthhpohhuthdprhgtphhtthho
+    pehjthhhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgsthhrfhhsse
+    hvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhohhgrnhhnvghsrdhthhhu
+    mhhshhhirhhnseifuggtrdgtohhm
+X-ME-Proxy: <xmx:h0BtaJa3RFFcOIZ3IQSQSK7K23sHtf1YLiFGDZqkSbUxlby8QwT8DQ>
+    <xmx:h0BtaAhwDLS-6Qw23D7YvVqWQofwajgqxNoNmzKW5eClp4oR9SfL4A>
+    <xmx:h0BtaD7tJXtN85PulSjlCLRagAX_Pigkd3ORsR4OOyc82iMO3KKQ0Q>
+    <xmx:h0BtaP53ol5CWmcSG8PgQcN6PR8oKVHj-HaaIZ9vHyHtWsmLhokSrg>
+    <xmx:iEBtaBYoL8FUvpGRe7K9nrAnyZr3uFoaL_KyAO_gV33KZM6YrV_qmYs->
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Jul 2025 12:00:07 -0400 (EDT)
+Date: Tue, 8 Jul 2025 09:01:32 -0700
+From: Boris Burkov <boris@bur.io>
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: linux-btrfs@vger.kernel.org,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH 0/2] btrfs: be less verbose on automatic bg reclaim
+Message-ID: <20250708160057.GA2659713@zen.localdomain>
+References: <20250708065504.63525-1-jth@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -103,159 +98,51 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8142f4eb91ae32eed53c5ae7121296b44b52d627.1751574142.git.boris@bur.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: E9AFA1F38D
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,twin.jikos.cz:mid,lpc.events:url,bur.io:email]
-X-Spam-Score: -4.21
+In-Reply-To: <20250708065504.63525-1-jth@kernel.org>
 
-On Thu, Jul 03, 2025 at 01:23:24PM -0700, Boris Burkov wrote:
-> If you run a workload like:
-> - a cgroup that does tons of data reading, with a harsh memory limit
-> - a second cgroup that tries to write new files
+On Tue, Jul 08, 2025 at 08:55:01AM +0200, Johannes Thumshirn wrote:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > 
-> then what quickly occurs is:
-> - a high degree of contention on the csum root node eb rwsem
-> - memory starved cgroup doing tons of reclaim on CPU.
-> - many reader threads in the memory starved cgroup "holding" the sem
->   as readers, but not scheduling promptly. i.e., task __state == 0, but
->   not running on a cpu.
-> - btrfs_commit_transaction stuck trying to acquire the sem as a writer.
+> BTRFS filesystems with active automatic block-group reclaim (this
+> especially hits zoned file systems where automatic block-group reclaim is
+> used for garbage collection) do a lot of log spamming, because every
+> relocated block group is accompanied by three prints at info level.
 > 
-> This results in arbitrarily long transactions. This then results in
-> seriously degraded performance for any cgroup using the filesystem (the
-> victim cgroup in the script).
+> The first patch removes the info message that is only present with
+> automatic block group reclaim, we have a tracepoint right next to it so
+> there's no need for the message at all.
 > 
-> It isn't an academic problem, as we see this exact problem in production
-> at Meta with one cgroup over its memory limit ruining btrfs performance
-> for the whole system, stalling critical system services that depend on
-> btrfs syncs.
-> 
-> The underlying scheduling "problem" with global rwsems is sort of thorny
-> and apparently well known and was discussed at LPC 2024, for example.
-> 
-> As a result, our main lever in the short term is just trying to reduce
-> contention on our various rwsems. In the case of the csum tree, we can
-> either redesign btree locking (hard...) or try to use the commit root
-> when we can. Luckily, it seems likely that many reads are for old extents
-> written many transactions ago, and that for those we *can* in fact
-> search the commit root!
-> 
-> This change detects when we are trying to read an old extent (according
-> to extent map generation) and then wires that through bio_ctrl to the
-> btrfs_bio, which unfortunately isn't allocated yet when we have this
-> information. Luckily, we don't need this flag in the bio after
-> submitting, so we can save space by setting it on bbio->bio.bi_flags
-> and clear before submitting, so the block layer is unaffected.
-> 
-> When we go to lookup the csums in lookup_bio_sums we can check this
-> condition on the btrfs_bio and do the commit root lookup accordingly.
-> 
-> Note that a single bio_ctrl might collect a few extent_maps into a single
-> bio, so it is important to track a maximum generation across all the
-> extent_maps used for each bio to make an accurate decision on whether it
-> is valid to look in the commit root. If any extent_map is updated in the
-> current generation, we can't use the commit root.
-> 
-> To test and reproduce this issue, I wrote a script that does the
-> following:
-> - creates 512 20MiB files (10GiB) each in it's own subvolume (important
->   to avoid any contention on the fs-tree root lock)
-> - spawns 512 processes that loop using dd to read 1GiB at a random GiB
->   aligned offset of each file. These "villains" run in a cgroup with
->   memory.high set to 1GiB. Obviously this will generate a lot of memory
->   pressure on this cgroup.
-> - spawns 32 processes that loop creating new small files, to trigger a
->   decent amount of csum writes to create the csum root lock contention.
->   These run in a cgroup restricted to just one cpu with cpuset, but no
->   memory restriction. This cpu overlaps with the cpus available to the
->   bad neighbor villain cgroup.
-> - attempts to sync every 10 seconds
-> - after 60s, it waits for the final sync and kills all the processes via
->   their cg cgroup.kill file.
-> 
-> Without this patch, that reproducer:
-> hung indefinitely, I killed manually via the cgroup.kill file. At this
-> time, it had racked up 200s and counting in a btrfs commit critical
-> section and had 200+ threads stuck in D state on the csum reader lock:
-> 
-> elapsed: 914
-> commits 3
-> cur_commit_ms 0
-> last_commit_ms 233784
-> max_commit_ms 233784
-> total_commit_ms 235056
-> 214 hits state D, R comms dd
->                  btrfs_tree_read_lock_nested
->                  btrfs_read_lock_root_node
->                  btrfs_search_slot
->                  btrfs_lookup_csum
->                  btrfs_lookup_bio_sums
->                  btrfs_submit_bbio
-> 
-> With the patch, the reproducer exits naturally, in 75s, completing a
-> pretty decent 5 commits, depsite heavy memory pressure:
-> 
-> elapsed: 76
-> commits 5
-> cur_commit_ms 0
-> last_commit_ms 1801
-> max_commit_ms 3901
-> total_commit_ms 8727
-> pressure
-> some avg10=99.49 avg60=69.22 avg300=21.64 total=72068757
-> full avg10=44.81 avg60=24.18 avg300=6.97 total=23015022
-> 
-> some random rwalker samples showed the most common stack in reclaim,
-> rather than the csum tree:
-> 145 hits state R comms bash, sleep, dd, shuf
->                  shrink_folio_list
->                  shrink_lruvec
->                  shrink_node
->                  do_try_to_free_pages
->                  try_to_free_mem_cgroup_pages
->                  reclaim_high
-> 
-> Link: https://lpc.events/event/18/contributions/1883/
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
-> Changelog:
-> v6:
-> - properly handle bio_ctrl submitting a bbio spanning multiple
->   extent_maps with different generations. This was causing csum errors
->   on the previous versions.
+> The second patch introduces a `verbose` parameter for
+> `btrfs_relocate_chunk()` and `btrfs_relocate_block_group()` to control if
+> we want to add printks or not. Automatic reclaim calls into
+> `btrfs_relocate_chunk()` setting `verbose` to false while the user-space
+> triggered balance code path sets `verbose` to true retaining the old
+> behaviour. 
 
-We're close to code freeze, such change looks scary but it's v6 and we
-still have some time for testing so I think you can add it to for-next.
+We also struggle with the spam at Meta with automatic reclaim enabled
+though quite a bit less with dynamic.. :) In particular, users often
+think it means there is some kind of btrfs error happening.
+
+This looks like a good compromise to me, and I'd be quite happy to see
+it go in.
+
+Reviewed-by: Boris Burkov <boris@bur.io>
+
+Thanks!
+
+> 
+> Johannes Thumshirn (2):
+>   btrfs: remove redundant auto reclaim log message
+>   btrfs: don't print relocation messages from auto reclaim
+> 
+>  fs/btrfs/block-group.c |  8 +-------
+>  fs/btrfs/relocation.c  | 12 ++++++++----
+>  fs/btrfs/relocation.h  |  3 ++-
+>  fs/btrfs/volumes.c     | 14 ++++++++------
+>  fs/btrfs/volumes.h     |  3 ++-
+>  5 files changed, 21 insertions(+), 19 deletions(-)
+> 
+> -- 
+> 2.50.0
+> 
 
