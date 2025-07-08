@@ -1,147 +1,201 @@
-Return-Path: <linux-btrfs+bounces-15339-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15340-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85F3FAFD78B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 21:50:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFE57AFD83B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 22:21:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81D9D586858
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 19:50:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D58A540CA2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jul 2025 20:20:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0832023B62B;
-	Tue,  8 Jul 2025 19:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED76423E226;
+	Tue,  8 Jul 2025 20:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="vl7+Rej6";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UPp1/7wg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hPMEhSkU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DBE238D54
-	for <linux-btrfs@vger.kernel.org>; Tue,  8 Jul 2025 19:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BAC11D54E2;
+	Tue,  8 Jul 2025 20:20:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752004224; cv=none; b=tkgKKXbC14hxUM3qglWzCADyNaEw0Y/hiJdxuUGobyxUDnpMYhGGt2bcgh0k2pkLK6rTskSegCMTGmdEgxTFrbV/d/wRorfXGpxFwXLei+YzX1zq2OmPHJnFc0BqQIUYqjFLrdj/LeTXclWQkmf7QYqlKTDUzA13F6t9yy2b6iw=
+	t=1752006052; cv=none; b=dEPLau6gg5JBwuabax/pHvDyJMiiWCsRdkAkFnYeGj4h+V7MKGVtrUtFfyKJ0E/0kgcOCJdvDCHNblJnOnGgk+9ruZguYG/TVN0bScVecxJZooQPdIWV+jqJF9XJmUuN3WjnRb1FHGn4sjSd25edXqxM/e+6cV+wxmos4yynScU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752004224; c=relaxed/simple;
-	bh=2UztvTslP0ehI1rmuNABz+fWMKuRHZfKiTl8tPHvHy4=;
-	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=fblh5Wyl4wcFkGteIGfvz1bn3ngjt8Q/wrnrvwnS/3uW6tfsS1/DIaiY3GaAkMUFSi01k+DgSyuvBs6HJQhWjc76w73SK50MRA04NxgVLI3XmveJJDp6orFob06ni3yYOxuEe5hUe7K688jAsDi5KjOtpt/MMzyz3RE2RQhzEX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=vl7+Rej6; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UPp1/7wg; arc=none smtp.client-ip=202.12.124.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfout.stl.internal (Postfix) with ESMTP id 5293F1D00232;
-	Tue,  8 Jul 2025 15:50:21 -0400 (EDT)
-Received: from phl-imap-01 ([10.202.2.91])
-  by phl-compute-04.internal (MEProxy); Tue, 08 Jul 2025 15:50:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	colorremedies.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to; s=fm3; t=1752004221; x=1752090621; bh=m3TjWZiHSn04RYL9gDFGg
-	4y+bCHK5O43/Pv6L0Hyylg=; b=vl7+Rej6y91A3k5Ki7yYvxzFG46wCRQ/mlp73
-	/31+3oBucjTnBYEQQn+SS3KKID6FG+8nj88PLSeNm626+523LsQXJGAN/fD8BCvm
-	rXHeUb86erDndv69fa1m7pD9s6FphK1wSGIHPwOSsSGtAz5jyZdB8EhLNbkXIcNg
-	Mc5jUco9DYRe1m8pj6IVlAvtmpTJ6vlEishMncvUr4f0yfu5FVR9/PKUbZ0T+yc/
-	7zdX5W4cr/wUI8Th/XZaaruIahzW/5in8bG2eVWF1js4A3dDg5SurE9G7K2e9xLa
-	/J+XeAQdQ+BF33MSyciRi6upfIcsYLm0+gcLHu94okrpkI05A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm2; t=1752004221; x=1752090621; bh=m
-	3TjWZiHSn04RYL9gDFGg4y+bCHK5O43/Pv6L0Hyylg=; b=UPp1/7wg+2Z3/3kAC
-	o+SF4Myn/o247uLDZSCE4yLv7jlELoIHTQYJoRgXSbOAOb+Jew8OSbeOBH3QfvMl
-	Xw0u9dHX+vjjnLRblxEh0qaCyzhtDgpjEtiwmLZ01IT2GbzTqbPcPGLCuWvkJrK6
-	l7+sj9wFrZitboK8kw8KyGYKuhG62h1WrcrRLuHBOwdBijkkjhSbaieVfq58G53g
-	qYu6+UjP5S2Du/NE0RWV3+2591pmwQmTJsc4+NN+d1ovggEHaFiEx6JGWPM1MPyg
-	8jYYEHcdKO1D/y8iksW9YiN8L+dhdZ3/0CPugFTIBv9U5Wt+4fe2Ulucji4zucPw
-	jFj7A==
-X-ME-Sender: <xms:fXZtaDio27bw7uUD3npep-ES0sy3smLUmeR_6sV_OKhaimLdwIcBrQ>
-    <xme:fXZtaAAMPyAvojnjKjrt7HCNlCnrAULHlEc7MCQdpfMxtgH_Gr24Fhb3PgVcbBCJ3
-    blUUG2CcxcrlmO9eBQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdefheehjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefoggffhffvkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedfvehhrhhishcu
-    ofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeetfeduheekheegkefhvdeghfejvdevuefhtdfgjefgveeiveei
-    vdefvdfhvedvgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmpdhnsggprhgtphht
-    thhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehprhgrnhhshhhurdhtrg
-    hnfigrrhesphhrohhtohhnrdhmvgdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehv
-    ghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:fXZtaHmL4wmuGQk0CbyXWAWImkBG9CE-QtcHII5cM0JurtMpJzy0hQ>
-    <xmx:fXZtaDyWgxBBr9KSz0V4Jg1g-V2eIWR-wO0Hghbmnh0JvsWrGjY7Tg>
-    <xmx:fXZtaPnK6GVIEdOqsUXR144Gbf-pRKXssC077zjt4NcDRfhkZpoNTw>
-    <xmx:fXZtaMfUmnExm4IurIZvdcxQTPErPiwIs1ktalEmlIP7IJW6ORTS4g>
-    <xmx:fXZtaIX59RL01z3Rmqr1Hc_u237fiWGc88EMlR0b_m2nU9lfk18ZNFNw>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id F3D0818C0066; Tue,  8 Jul 2025 15:50:20 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1752006052; c=relaxed/simple;
+	bh=+yxZ08dKrAbdFZ6sAL+9jMwOYAMn3pq6/TMoNHiAVqM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=POqngLEtnY7UOEA1+VhFCNGe5YPKhl9DFMSdzSwhChJOxQopnmP7kwSOjfvFZHJ35dn/m7YMKRBX4K3+S5PZayMHntqKPQ7Dqxf/gmhWoLhnBUp3EMwOcl3iXvrC7zUZ0mtFvXwAYTI/PZpFsvHdIsVJQcfNkCwOuugM3Gc3oX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hPMEhSkU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58E7EC4CEED;
+	Tue,  8 Jul 2025 20:20:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752006051;
+	bh=+yxZ08dKrAbdFZ6sAL+9jMwOYAMn3pq6/TMoNHiAVqM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hPMEhSkUX/LsvtZLeds9iEsFR445eshxWZXvoRnSLujgLEPzAcfHTEY1hKzvOZwLi
+	 CO6xBgdyPLvwJKOyvRvQbfayjvwz//qmWRwCqXX9eJfnurVWX9yJjB+FGnGJqw9Bdo
+	 YvTa4ZUzOiq4x/0+MnhVWgvty8CXom2KMAk1lU1DdgCV3QPlLlzl63cgXPodHeUmuR
+	 c/DyafLAONZHqILRSCVnIMh6DkLySD8sZvd+yvzKsb2YGHyNZ8+dzvy79GVsPU2CIa
+	 QSxZLDXRKYoNFJq9mC7u92Mfs4HyGdJgpKNx3bbNB6DnNtxSNNOGKynr+rejYv2LwT
+	 nVQjowPhBvE+A==
+Date: Tue, 8 Jul 2025 13:20:50 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Dave Chinner <david@fromorbit.com>,
+	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev,
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
+ remove_bdev()
+Message-ID: <20250708202050.GG2672049@frogsfrogsfrogs>
+References: <cover.1751589725.git.wqu@suse.com>
+ <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
+ <aGxSHKeyldrR1Q0T@dread.disaster.area>
+ <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
+ <20250708004532.GA2672018@frogsfrogsfrogs>
+ <2dm6bsup7vxwl4vwmllkvt5erncirr272bov4ehd5gix7n2vnw@bkagb26tjtj5>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: T0f06dcb0030a71c2
-Date: Tue, 08 Jul 2025 15:50:00 -0400
-From: "Chris Murphy" <lists@colorremedies.com>
-To: "Pranshu Tanwar" <pranshu.tanwar@proton.me>,
- "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Message-Id: <da43965b-d22c-405e-bac6-206b36e968be@app.fastmail.com>
-In-Reply-To: 
- <aNH6WIV_zJGBEaJfeLnCw0RqDLyn8O8OMUPMm-S34So8BWqu8xJP4iW8rfm3vGu6dDr8ibw2vt9EOaOfHIUgn5NxNQsuleebWRsBiyGOpYE=@proton.me>
-References: 
- <CAPYq2E23F7VdgtwCydEVa9wdomEVbQUsQPgfyLVh5ac=KLBEdw@mail.gmail.com>
- <CAPYq2E2BSbW=8mYOO2NxJtcXPgPZ75nzH8C014-2ncyFb64L2A@mail.gmail.com>
- <1332fd28-ca5c-43d0-b815-c8da74c0a7b0@app.fastmail.com>
- <aNH6WIV_zJGBEaJfeLnCw0RqDLyn8O8OMUPMm-S34So8BWqu8xJP4iW8rfm3vGu6dDr8ibw2vt9EOaOfHIUgn5NxNQsuleebWRsBiyGOpYE=@proton.me>
-Subject: Re: [help needed] parent verity error on HDD
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2dm6bsup7vxwl4vwmllkvt5erncirr272bov4ehd5gix7n2vnw@bkagb26tjtj5>
 
+On Tue, Jul 08, 2025 at 12:20:00PM +0200, Jan Kara wrote:
+> On Mon 07-07-25 17:45:32, Darrick J. Wong wrote:
+> > On Tue, Jul 08, 2025 at 08:52:47AM +0930, Qu Wenruo wrote:
+> > > 在 2025/7/8 08:32, Dave Chinner 写道:
+> > > > On Fri, Jul 04, 2025 at 10:12:29AM +0930, Qu Wenruo wrote:
+> > > > > Currently all the filesystems implementing the
+> > > > > super_opearations::shutdown() callback can not afford losing a device.
+> > > > > 
+> > > > > Thus fs_bdev_mark_dead() will just call the shutdown() callback for the
+> > > > > involved filesystem.
+> > > > > 
+> > > > > But it will no longer be the case, with multi-device filesystems like
+> > > > > btrfs and bcachefs the filesystem can handle certain device loss without
+> > > > > shutting down the whole filesystem.
+> > > > > 
+> > > > > To allow those multi-device filesystems to be integrated to use
+> > > > > fs_holder_ops:
+> > > > > 
+> > > > > - Replace super_opearation::shutdown() with
+> > > > >    super_opearations::remove_bdev()
+> > > > >    To better describe when the callback is called.
+> > > > 
+> > > > This conflates cause with action.
+> > > > 
+> > > > The shutdown callout is an action that the filesystem must execute,
+> > > > whilst "remove bdev" is a cause notification that might require an
+> > > > action to be take.
+> > > > 
+> > > > Yes, the cause could be someone doing hot-unplug of the block
+> > > > device, but it could also be something going wrong in software
+> > > > layers below the filesystem. e.g. dm-thinp having an unrecoverable
+> > > > corruption or ENOSPC errors.
+> > > > 
+> > > > We already have a "cause" notification: blk_holder_ops->mark_dead().
+> > > > 
+> > > > The generic fs action that is taken by this notification is
+> > > > fs_bdev_mark_dead().  That action is to invalidate caches and shut
+> > > > down the filesystem.
+> > > > 
+> > > > btrfs needs to do something different to a blk_holder_ops->mark_dead
+> > > > notification. i.e. it needs an action that is different to
+> > > > fs_bdev_mark_dead().
+> > > > 
+> > > > Indeed, this is how bcachefs already handles "single device
+> > > > died" events for multi-device filesystems - see
+> > > > bch2_fs_bdev_mark_dead().
+> > > 
+> > > I do not think it's the correct way to go, especially when there is already
+> > > fs_holder_ops.
+> > > 
+> > > We're always going towards a more generic solution, other than letting the
+> > > individual fs to do the same thing slightly differently.
+> > 
+> > On second thought -- it's weird that you'd flush the filesystem and
+> > shrink the inode/dentry caches in a "your device went away" handler.
+> > Fancy filesystems like bcachefs and btrfs would likely just shift IO to
+> > a different bdev, right?  And there's no good reason to run shrinkers on
+> > either of those fses, right?
+> 
+> I agree it is awkward and bcachefs avoids these in case of removal it can
+> handle gracefully AFAICS.
+> 
+> > > Yes, the naming is not perfect and mixing cause and action, but the end
+> > > result is still a more generic and less duplicated code base.
+> > 
+> > I think dchinner makes a good point that if your filesystem can do
+> > something clever on device removal, it should provide its own block
+> > device holder ops instead of using fs_holder_ops.  I don't understand
+> > why you need a "generic" solution for btrfs when it's not going to do
+> > what the others do anyway.
+> 
+> Well, I'd also say just go for own fs_holder_ops if it was not for the
+> awkward "get super from bdev" step. As Christian wrote we've encapsulated
+> that in fs/super.c and bdev_super_lock() in particular but the calling
+> conventions for the fs_holder_ops are not very nice (holding
+> bdev_holder_lock, need to release it before grabbing practically anything
+> else) so I'd have much greater peace of mind if this didn't spread too
+> much. Once you call bdev_super_lock() and hold on to sb with s_umount held,
+> things are much more conventional for the fs land so I'd like if this
+> step happened before any fs hook got called. So I prefer something like
+> Qu's proposal of separate sb op for device removal over exporting
+> bdev_super_lock(). Like:
+> 
+> static void fs_bdev_mark_dead(struct block_device *bdev, bool surprise)
+> {
+>         struct super_block *sb;
+> 
+>         sb = bdev_super_lock(bdev, false);
+>         if (!sb)
+>                 return;
+> 
+> 	if (sb->s_op->remove_bdev) {
+> 		sb->s_op->remove_bdev(sb, bdev, surprise);
+> 		return;
+> 	}
 
+It feels odd but I could live with this, particularly since that's the
+direction that brauner is laying down. :)
 
-On Tue, Jul 8, 2025, at 12:05 PM, Pranshu Tanwar wrote:
->> Copy files out with -o ro,rescue=all and reformat. The problem is probably the result of a drive firmware bug. Keep backups!
-> It did not mount, I got the files with btrfs restore to work in a 
-> snapshot of a shared snapshot to then restore the files. I am now 
-> working on rebuilding the drive with safer mount options for both 
-> drives.
->
-> These are the options I came up with:
->
-> /etc/udisks2/mount_options.conf
-> ---
-> [defaults]
-> btrfs_allow=compress,compress-force,datacow,nodatacow,datasum,nodatasum,autodefrag,noautodefrag,degraded,device,discard,nodiscard,subvol,subvolid,space_cache,commit,noatime,flushoncommit,noflushoncommit,barrier,nobarrier
-> btrfs_defaults=commit=1,noatime,compress=zstd,flushoncommit,barrier
+Do we still need to super_unlock_shared here?
 
-I don't know how udisks2/mount_options.conf affects anything. It should have no effect on the root file system. Anyway, you really want to use either upstream default mount options or your distribution's default mount options. You will run into trouble much faster otherwise.
+--D
 
->
-> /etc/udev/rules.d/99-disable-write-cache.rules
-> ---
-> ACTION=="add", SUBSYSTEM=="block", KERNEL=="sd[a-z]", 
-> ENV{ID_USB_DRIVER}=="usb-storage", RUN+="/sbin/hdparm -W0 /dev/%k"
->
-> But turning write caching off in hdparm is painfully slow, so for now 
-> I've commented it out, relying solely on flushoncommit and commit=1
-
-I don't think you'll be happy with the performance of commit=1 , it's too frequent. If there's a firmware bug resulting in flush or FUA transiently being ignored, then decreasing the commit interval just makes it more likely you'll run into a problem.
-
-In my opinion the solution is frequent backups. Btrfs snapshots and send-receive make this quite cheap to do often. But any backup solution that you understand and have tested restore is the one you should use.
-
-Best to reply to the list so responses are archived and everyone can chime in if they want.
-
-
--- 
-Chris Murphy
+> 
+> 	if (!surprise)
+> 		sync_filesystem(sb);
+> 	shrink_dcache_sb(sb);
+> 	evict_inodes(sb);
+> 	if (sb->s_op->shutdown)
+> 		sb->s_op->shutdown(sb);
+> 
+> 	super_unlock_shared(sb);
+> }
+> 
+> > As an aside:
+> > 'twould be nice if we could lift the *FS_IOC_SHUTDOWN dispatch out of
+> > everyone's ioctl functions into the VFS, and then move the "I am dead"
+> > state into super_block so that you could actually shut down any
+> > filesystem, not just the seven that currently implement it.
+> 
+> Yes, I should find time to revive that patch series... It was not *that*
+> hard to do.
+> 
+> 								Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+> 
 
