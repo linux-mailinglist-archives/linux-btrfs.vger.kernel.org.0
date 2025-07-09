@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-15379-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15380-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5753AFE4DA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jul 2025 12:02:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B70C8AFE52B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jul 2025 12:10:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D17B16A05F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jul 2025 10:02:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 860EB3B95FB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jul 2025 10:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75129288524;
-	Wed,  9 Jul 2025 10:02:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2619289E32;
+	Wed,  9 Jul 2025 10:05:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="D3j+utso"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="BIkUwrLU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D81B2877F4
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Jul 2025 10:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F6E28B3FA
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Jul 2025 10:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752055372; cv=none; b=Q0DNwktG0oS8K6VQTq1vZvQKxXOhxNzTdtULtSi8obx4Jh6eJvBBkJW2P8oh/ednjQN33iLOQJpjN7OR84XTTurezzF3EvscS2JDRQYe/kK6nL6Iym1j2se3B1rxUSKC7Fi73j9qfNrr4vaIMyTI7EkQwiz8PxeCWd9jPCTBzNg=
+	t=1752055504; cv=none; b=KMsnqjAkUDjDu+NPCNUtaPwbM33Q3/uDilydDc+5DxcfPLdHRDiNGaV3x1fkZJoGdeMMN3jRqy7h8KaQIvN36AIrUpJwONQ/9Z1h1gotfAAyLK+ivY7c8neBuVDQVTYJhBbKvTwd0VQTfADKRtaPhpuzoxm2sSXdoQ1fz3GC+To=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752055372; c=relaxed/simple;
-	bh=SEj1ivMkUrJxXiYV9AqJA4gT/bfNDi4tMj7Om6kLG3c=;
+	s=arc-20240116; t=1752055504; c=relaxed/simple;
+	bh=2qVPdZYYrNbJga+wRoKCLaX/YwBjHANXxbeM/vvYUqk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=nJXi5N61w7J7PsBR67ldx4YlZS2TfH5mTHv1g6ATqF4y7bRkonQXohFmpyoO69LVOh5kdTQL6k8yOTmziEySKlO7RTErWn+zTrQjBaakNNolG0V1nQUX5qlJAhLPhVb/x4OIDE8oW6/hFToz2ejbt9ynvug+fOd9UQEicqKkWX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=D3j+utso; arc=none smtp.client-ip=212.227.15.18
+	 In-Reply-To:Content-Type; b=u0Q7f9wrqR4FUNFwsLs2Kqra7o3lAb2ulJ4Mp4V9pbGqcaPtRuLGmzCikrB8kg6LTBNyfcADdSAlNSMlU1dHNuzbSXzT026e9sP9VsOLoiev1+oocEHTxM/riCDDzxMOhy0YcAlBaxXfuyZgcXiMtQUVK2BYsWdBQDS2KaiTQM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=BIkUwrLU; arc=none smtp.client-ip=212.227.15.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1752055365; x=1752660165; i=quwenruo.btrfs@gmx.com;
-	bh=Azdtx5aZhvEojY13uBWqtbRCTeysuFqgiitENFPM5IE=;
+	s=s31663417; t=1752055496; x=1752660296; i=quwenruo.btrfs@gmx.com;
+	bh=v6AfraTyYi3U3ix/O5/J7BpMC/h94zle4kZryj+N+Mk=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=D3j+utsoxHBuRuolrYgK1fRVI6UGbtfQs/ih+yzQq0IqlrYGES+oUtRX3G3oNHoY
-	 NzEdPLlmlhcCdcsCqTaRin51ysR/nAorPryJrU6CIGYBhVPVTb2OL27OyanuZVzNe
-	 wc8gM0zwlofyMvz6S1tS978/FMictFwQEskCHAYsp3nYFoPFsBSiNtoj9rqafKgz5
-	 8N66VKELkEGOqJmqxOohCOHgi4HNHoZjwpcj6jWr50vzbYdr/gZmNXdnnMfsWREZG
-	 LnWhRZW/aGLI0a1astCNAukV2AiwpQLigSvv3hovM3rtY20jDfSeKtq9y+a+Kd11v
-	 cIXCh8XNViNYLyNjIA==
+	b=BIkUwrLUqDngfX9SCXTItQuyqqBJpborHzPaOnqz7/6HupsHKl9ZPaMh9qEBZ2B3
+	 oXS7yX/X/Wnfh4kk4ogSzXdi8PfQ0tsWUeHRTK/EprKgKr3fGpedi1ySmCr2/RuI7
+	 7g+f3/UN4ysBAT5pLXwCG10PVBDQMmvs0PGRWGNZYX8WiWMUR6bxO6R7+xKbioVX4
+	 QJ1l3NG9V3z5eZtfoa2XD31oOQ3FZA+KuXQC2ggpNTiIBRwiY2G9Judoiqu31QpX/
+	 DHgQfKGQq2GYBxRJ52nW+TCOUP3f4uJ3425X72dDcYi88eInlL56vHckdykhfk4E5
+	 0ThlwYozTUUzLXariw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MoO6M-1v27Z50bk0-00n0S3; Wed, 09
- Jul 2025 12:02:43 +0200
-Message-ID: <20489128-ca79-48be-9b43-dc125dfb9659@gmx.com>
-Date: Wed, 9 Jul 2025 19:32:40 +0930
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N33Ed-1ufNZz2gHt-011dXo; Wed, 09
+ Jul 2025 12:04:55 +0200
+Message-ID: <c10339a8-cb80-4fba-803d-797f51d9313d@gmx.com>
+Date: Wed, 9 Jul 2025 19:34:52 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] btrfs: use variable for io_tree when clearing range
- in btrfs_page_mkwrite()
+Subject: Re: [PATCH 3/3] btrfs: use btrfs_inode local variable at
+ btrfs_page_mkwrite()
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1752050704.git.fdmanana@suse.com>
- <a8b95fa1119a5cff19ccde53ffc182d2441c1172.1752050704.git.fdmanana@suse.com>
+ <6aefca8792028e0544de96b2d7f5b34ea836d1c7.1752050704.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,99 +89,218 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <a8b95fa1119a5cff19ccde53ffc182d2441c1172.1752050704.git.fdmanana@suse.com>
+In-Reply-To: <6aefca8792028e0544de96b2d7f5b34ea836d1c7.1752050704.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5bh31kElCkUG26yYUxbkmnKOETVNZyFEpAM7NUId24cW1HMOe39
- 6uRg1m+/4Qq6EXgVAxTEkhhKFl4sYd6UUA1F9QMKZv9W/o8rMD5pCiWt6a+Vs58UxRlb1Wi
- qtjEBMwhWWgMQm2y96nzVUOzsXT9p7bvSAx1YozCgvH481T1DAy9mN8ElH94dCkZzjMzwLv
- glRihSb+NdjE0SIhvGbRw==
+X-Provags-ID: V03:K1:46HTtAPStnXOUssJ3Os7nymUj3g7OHVOwYYFaoJzUJX8KhkRLdN
+ K4UTY2AsYcGVdYs6jtCVHOorbiw9B1E7jeOyyOssxvPh3XvxyTTIYwwMZ2GDDyO2NFg1NH4
+ orJ1ZlZMAGEf7BbqF+JAI8Uial0pFAarL0D0wILco365RbaiJwCZDPV0VPHmOUsdi0xXOuk
+ +0vjiWTI+LlKo5olVnLJA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:xFflp5LJHOU=;zxCpMuEEMHwOjh28gNyDO+BVK0w
- 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
- ng==
+UI-OutboundReport: notjunk:1;M01:P0:L2ekVpZ9WtY=;hIYkzD9/59yfQjaWza/3AncNZDJ
+ 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
 
 
 
 =E5=9C=A8 2025/7/9 18:23, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >=20
-> We have the inode's io_tree already stored in a local variable, so use i=
-t
-> instead of grabbing it again in the call to btrfs_clear_extent_bit().
+> Most of the time we want to use the btrfs_inode, so change the local ino=
+de
+> variable to be a btrfs_inode instead of a vfs inode, reducing verbosity
+> by eleminating a lot of BTRFS_I() calls.
 >=20
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
+[...]
+> -		if (btrfs_check_nocow_lock(BTRFS_I(inode), page_start,
+> -					   &write_bytes, false) <=3D 0)
+> +		if (btrfs_check_nocow_lock(inode, page_start, &write_bytes, false) <=
+=3D 0)
+
+I guess we are no longer limited by 80 chars line limit anymore?
+
+What would be the new limit? 100 from checkpatch or something slightly=20
+lower like 90?
 
 Thanks,
 Qu
 
-> ---
->   fs/btrfs/file.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index f08c72dbb530..e76e92873de5 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -1940,7 +1940,7 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fau=
-lt *vmf)
->   	 * clear any delalloc bits within this page range since we have to
->   	 * reserve data&meta space before lock_page() (see above comments).
+>   			goto out_noreserve;
+>  =20
+>   		if (write_bytes < reserved_space)
+> @@ -1876,11 +1875,11 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_f=
+ault *vmf)
+>  =20
+>   		only_release_metadata =3D true;
+>   	}
+> -	ret =3D btrfs_delalloc_reserve_metadata(BTRFS_I(inode), reserved_space=
+,
+> +	ret =3D btrfs_delalloc_reserve_metadata(inode, reserved_space,
+>   					      reserved_space, false);
+>   	if (ret < 0) {
+>   		if (!only_release_metadata)
+> -			btrfs_free_reserved_data_space(BTRFS_I(inode), data_reserved,
+> +			btrfs_free_reserved_data_space(inode, data_reserved,
+>   						       page_start, reserved_space);
+>   		goto out_noreserve;
+>   	}
+> @@ -1889,11 +1888,11 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_f=
+ault *vmf)
+>   	if (ret < 0)
+>   		goto out;
+>   again:
+> -	down_read(&BTRFS_I(inode)->i_mmap_lock);
+> +	down_read(&inode->i_mmap_lock);
+>   	folio_lock(folio);
+> -	size =3D i_size_read(inode);
+> +	size =3D i_size_read(&inode->vfs_inode);
+>  =20
+> -	if ((folio->mapping !=3D inode->i_mapping) ||
+> +	if ((folio->mapping !=3D inode->vfs_inode.i_mapping) ||
+>   	    (page_start >=3D size)) {
+>   		/* Page got truncated out from underneath us. */
+>   		goto out_unlock;
+> @@ -1911,11 +1910,11 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_f=
+ault *vmf)
+>   	 * We can't set the delalloc bits if there are pending ordered
+>   	 * extents.  Drop our locks and wait for them to finish.
 >   	 */
-> -	btrfs_clear_extent_bit(&BTRFS_I(inode)->io_tree, page_start, end,
-> +	btrfs_clear_extent_bit(io_tree, page_start, end,
+> -	ordered =3D btrfs_lookup_ordered_range(BTRFS_I(inode), page_start, fsi=
+ze);
+> +	ordered =3D btrfs_lookup_ordered_range(inode, page_start, fsize);
+>   	if (ordered) {
+>   		btrfs_unlock_extent(io_tree, page_start, page_end, &cached_state);
+>   		folio_unlock(folio);
+> -		up_read(&BTRFS_I(inode)->i_mmap_lock);
+> +		up_read(&inode->i_mmap_lock);
+>   		btrfs_start_ordered_extent(ordered);
+>   		btrfs_put_ordered_extent(ordered);
+>   		goto again;
+> @@ -1926,7 +1925,7 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fau=
+lt *vmf)
+>   		if (reserved_space < fsize) {
+>   			end =3D page_start + reserved_space - 1;
+>   			if (!only_release_metadata)
+> -				btrfs_delalloc_release_space(BTRFS_I(inode),
+> +				btrfs_delalloc_release_space(inode,
+>   							     data_reserved, end + 1,
+>   							     fsize - reserved_space,
+>   							     true);
+> @@ -1944,8 +1943,7 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fau=
+lt *vmf)
 >   			       EXTENT_DELALLOC | EXTENT_DO_ACCOUNTING |
 >   			       EXTENT_DEFRAG, &cached_state);
 >  =20
+> -	ret =3D btrfs_set_extent_delalloc(BTRFS_I(inode), page_start, end, 0,
+> -					&cached_state);
+> +	ret =3D btrfs_set_extent_delalloc(inode, page_start, end, 0, &cached_s=
+tate);
+>   	if (ret < 0) {
+>   		btrfs_unlock_extent(io_tree, page_start, page_end, &cached_state);
+>   		goto out_unlock;
+> @@ -1964,38 +1962,38 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_f=
+ault *vmf)
+>   	btrfs_folio_set_dirty(fs_info, folio, page_start, end + 1 - page_star=
+t);
+>   	btrfs_folio_set_uptodate(fs_info, folio, page_start, end + 1 - page_s=
+tart);
+>  =20
+> -	btrfs_set_inode_last_sub_trans(BTRFS_I(inode));
+> +	btrfs_set_inode_last_sub_trans(inode);
+>  =20
+>   	if (only_release_metadata)
+>   		btrfs_set_extent_bit(io_tree, page_start, end, EXTENT_NORESERVE,
+>   				     &cached_state);
+>  =20
+>   	btrfs_unlock_extent(io_tree, page_start, page_end, &cached_state);
+> -	up_read(&BTRFS_I(inode)->i_mmap_lock);
+> +	up_read(&inode->i_mmap_lock);
+>  =20
+> -	btrfs_delalloc_release_extents(BTRFS_I(inode), fsize);
+> +	btrfs_delalloc_release_extents(inode, fsize);
+>   	if (only_release_metadata)
+> -		btrfs_check_nocow_unlock(BTRFS_I(inode));
+> -	sb_end_pagefault(inode->i_sb);
+> +		btrfs_check_nocow_unlock(inode);
+> +	sb_end_pagefault(inode->vfs_inode.i_sb);
+>   	extent_changeset_free(data_reserved);
+>   	return VM_FAULT_LOCKED;
+>  =20
+>   out_unlock:
+>   	folio_unlock(folio);
+> -	up_read(&BTRFS_I(inode)->i_mmap_lock);
+> +	up_read(&inode->i_mmap_lock);
+>   out:
+> -	btrfs_delalloc_release_extents(BTRFS_I(inode), fsize);
+> +	btrfs_delalloc_release_extents(inode, fsize);
+>   	if (only_release_metadata)
+> -		btrfs_delalloc_release_metadata(BTRFS_I(inode), reserved_space, true)=
+;
+> +		btrfs_delalloc_release_metadata(inode, reserved_space, true);
+>   	else
+> -		btrfs_delalloc_release_space(BTRFS_I(inode), data_reserved,
+> -					     page_start, reserved_space, true);
+> +		btrfs_delalloc_release_space(inode, data_reserved, page_start,
+> +					     reserved_space, true);
+>   	extent_changeset_free(data_reserved);
+>   out_noreserve:
+>   	if (only_release_metadata)
+> -		btrfs_check_nocow_unlock(BTRFS_I(inode));
+> +		btrfs_check_nocow_unlock(inode);
+>  =20
+> -	sb_end_pagefault(inode->i_sb);
+> +	sb_end_pagefault(inode->vfs_inode.i_sb);
+>  =20
+>   	if (ret < 0)
+>   		return vmf_error(ret);
 
 
