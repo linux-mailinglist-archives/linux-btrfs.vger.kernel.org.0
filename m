@@ -1,55 +1,55 @@
-Return-Path: <linux-btrfs+bounces-15366-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15367-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 092FFAFE1B8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jul 2025 10:00:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32C79AFE251
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jul 2025 10:19:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D9AB3B23D3
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jul 2025 08:00:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 015321895768
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jul 2025 08:19:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F33DF21ABCB;
-	Wed,  9 Jul 2025 08:00:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093742701D0;
+	Wed,  9 Jul 2025 08:18:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vk7awDf8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GztuRSID"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457B01EB9F2
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Jul 2025 08:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3725226B76B
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Jul 2025 08:18:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752048020; cv=none; b=mtSfU6EGtswOc8A/7M/wiCi+KHxUKpmTLa/GAELfG/2s91hbMIRQLneHZwYH/BWX8eIUbh2KMtw/EaEyAjcaoVaUwXQHk/svtvSxbSaFVBHh7yrXNgOxZlVmR+kXJ5+Gf9cCIS/j/MNQd7E7WyLO77z8dD56hAzx9hvFCntPeIo=
+	t=1752049102; cv=none; b=aiVFQkHS7JCb1JJddTCvJ+pCmV/mLOiDULCw6kIc/PVAbB9o5LI1XGuk3nVOf6ahXfLd5X5+xK6yGAbWVzjYMGwVnl+FWhNR13fdR8kCwtXy81Fopeh1MyvlG0DTHmiaQJbJyYeM6aBhvpdI+tkQQ2V8VDIHL7/wmQ3HXW+LLGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752048020; c=relaxed/simple;
-	bh=vBI2jQF/MLno7XLV8Up3w3CX3npL+8xvXzKx8pwM1e4=;
+	s=arc-20240116; t=1752049102; c=relaxed/simple;
+	bh=EqdZaQnVbgDHnUwsn1bOoQQCmz33fOu8B8xft0Pp3E4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gEYE/6V1meXQNabNGNAPTRIvf4E3WmL7sbE7lrot1Vj07xRC5yDIVX7IY51edri4LS7HAjL8BU1X/nvwn51aOcjsc3uU75Mcq82Eu+XLjnsObPn2UuaohLy17/bwuQpmYao+JdMsEAX0EvpFoDQrboWyNdYwbvG6DQWEwZRRL3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vk7awDf8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CD67C4CEEF
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Jul 2025 08:00:19 +0000 (UTC)
+	 To:Cc:Content-Type; b=u0A3hmVIrbsA71obhgrFNpLZA3DuECaGMFxEEtXhaZ5BHO1I8pToreCx2MF2D7As3vZND+Z6xHBMFe7IA+oujHZ0o1kM9huJ/hGzqhc4Nb9gQijA/WKOLvzAs8bXtiqa8UoqfGPFGMABmwmnu0nr8mnNCKox78QNw4wBwkQx6kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GztuRSID; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3DD2C4CEEF
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Jul 2025 08:18:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752048019;
-	bh=vBI2jQF/MLno7XLV8Up3w3CX3npL+8xvXzKx8pwM1e4=;
+	s=k20201202; t=1752049101;
+	bh=EqdZaQnVbgDHnUwsn1bOoQQCmz33fOu8B8xft0Pp3E4=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Vk7awDf8sQjtxipmqJYOD/FBPfXLkAakRM6spLYt1+uC1FOCsYoLnHd9js9jRD0+y
-	 W1AOnOTqXWy4yF6HXVQ3zP+YwfbvsmfnanNbpe7zjFueecAQUZERVbAbI8YtBZFgsO
-	 6wpNkqZZEZjej+RLQHZMGGk/PZXCJQXQQFBQmBHZJeE+BpqsGJ7u/whoYglRP+/zhW
-	 +3l6PaXg+yJt1fOYWofxrxr2GJXairVKW2h+E5Cyb94IklTxuUoa4o9J8Aa6GuJWWI
-	 pl6RgcXdO5yyjbbOuuZmeq2wfiIEBPpSlFKBL2MqjoGYomqS8O0t5g8ez8ZnhCJ/M/
-	 7VMBTlcqfmzhA==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ae0c4945c76so813417866b.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Jul 2025 01:00:19 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwkSdM3QAPgVyC6lkto2xQ7W+obOVwvsQ0Hs0Tubg7blOs2CAE3
-	lOAEASdBIy405CCHLCplwUHAROEgu9E0Db/eEg9r/CLi7DUktJ16vvBJpWEHv/nsAYmYexZHptk
-	XKAKgex2PXkuAajkzw+Ob+XNJohc9veo=
-X-Google-Smtp-Source: AGHT+IFz8ak4HHWsum+ekcnv2IWbliyAvghUKEqa59iH5J4C5YMYLbT/dfCOtp5ADWazZ9a4gUEo6hCDktcFpg8H7Iw=
-X-Received: by 2002:a17:907:1c29:b0:ae3:696c:60a with SMTP id
- a640c23a62f3a-ae6cf5770bcmr143157766b.8.1752048016841; Wed, 09 Jul 2025
- 01:00:16 -0700 (PDT)
+	b=GztuRSIDxqdLX24O+IxREKy3nwhdQQcQNvUdCeWBgTg7iEmyuWci+SZc/Lfy/D/H4
+	 p5hx6Y30KQOD4iIueyUAMTCCx8iokNfR/jJjD4tkKOIrUQN8IrVhD3zpf13LPVzzt3
+	 GF4x8ZbknHstTuD4LA7bAhPbysmNteuzcP3K3ZY4PxIx36y34y3AX5UkMIL+WN0EN/
+	 +TOQkYWIVJHP1kUX1TJ53iBHBLXvs56Sy/Giq3rnky5ydK2/yglfrO9HUXhTOxNibk
+	 LZLOGSiQ03dnuelVmJW6cUOU9455IdpNbRJmyzvb+YXyMGlQR7mOKIaRVkyM28jvRY
+	 qzL103FDqjlwg==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-ae3be3eabd8so157910566b.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Jul 2025 01:18:21 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwA1qLi0uF4IzT4r2p/p0cOqhdCXxCWvHLGI4tRN/mWerEY6G/y
+	BY9mLAnX/UZ3fCKq78hoII+yvy7VhGc+rKB/VZk51oyb8NcXqNOaTfLElyLFkLe6N/8SzYj7i02
+	Sl84/ymhyIikpmUQJ4VYYrCqBmUiTbJo=
+X-Google-Smtp-Source: AGHT+IHuxOaQMg/iIyJvf3cVs1GAZstJVlbJ3qS6wEeiUGlIWHxxY8DNjbG5MDbBo8ZSpEUoFZ/H0wh93klJuAu5M8A=
+X-Received: by 2002:a17:907:3e21:b0:ae3:f3c4:c0b1 with SMTP id
+ a640c23a62f3a-ae6d12c43f0mr157205766b.7.1752049100104; Wed, 09 Jul 2025
+ 01:18:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -57,20 +57,20 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <8142f4eb91ae32eed53c5ae7121296b44b52d627.1751574142.git.boris@bur.io>
- <CAL3q7H7dVuiKPuuDE7DO+sSp4wH_uNjqJ_N6+PDmRPs796=hzQ@mail.gmail.com> <20250709001507.GA4390@zen.localdomain>
-In-Reply-To: <20250709001507.GA4390@zen.localdomain>
+ <CAL3q7H7dVuiKPuuDE7DO+sSp4wH_uNjqJ_N6+PDmRPs796=hzQ@mail.gmail.com> <20250709025557.GA87434@zen.localdomain>
+In-Reply-To: <20250709025557.GA87434@zen.localdomain>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 9 Jul 2025 08:59:39 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4DUOs1Yp6wD3N5Cicp139YCez1ZysqddyLg7ZRvPqJYg@mail.gmail.com>
-X-Gm-Features: Ac12FXzubV4SHGZe9k5zAkmcHi3HN5rhJdR-5SgADt9o5iFOW-6SRjVgHVkzXW4
-Message-ID: <CAL3q7H4DUOs1Yp6wD3N5Cicp139YCez1ZysqddyLg7ZRvPqJYg@mail.gmail.com>
+Date: Wed, 9 Jul 2025 09:17:43 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5q0q=0qg2Xh=vS_-ySagj3YxokjuKkLphCv5zjWm+EOw@mail.gmail.com>
+X-Gm-Features: Ac12FXyMEPeuxSGbgdRSkVnbiaNfuLjvvBnTTNLAJ98qa2gpxYcPhX61uVlbxWM
+Message-ID: <CAL3q7H5q0q=0qg2Xh=vS_-ySagj3YxokjuKkLphCv5zjWm+EOw@mail.gmail.com>
 Subject: Re: [PATCH v6] btrfs: try to search for data csums in commit root
 To: Boris Burkov <boris@bur.io>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 9, 2025 at 1:13=E2=80=AFAM Boris Burkov <boris@bur.io> wrote:
+On Wed, Jul 9, 2025 at 3:54=E2=80=AFAM Boris Burkov <boris@bur.io> wrote:
 >
 > On Tue, Jul 08, 2025 at 11:15:17PM +0100, Filipe Manana wrote:
 > > On Thu, Jul 3, 2025 at 9:22=E2=80=AFPM Boris Burkov <boris@bur.io> wrot=
@@ -94,29 +94,6 @@ r.
 > > root eb rwsem?
 > > It's not obvious - is this with the mount option flushoncommit set?
 > >
->
-> I have not set flushoncommit.
->
-> I see the following stack trace while the unpatched code runs:
->         btrfs_lock_root_node+1
->         btrfs_search_slot+956
->         btrfs_del_csums+669
->         __btrfs_free_extent.isra.0+2650
->         __btrfs_run_delayed_refs+2811
->         btrfs_run_delayed_refs+214
->         btrfs_commit_transaction+6318
-
-Ok, so this changes the whole picture and that makes things more clear.
-It's not the transaction commit itself, which I was finding odd why
-would it do changes to the csum tree, but running delayed refs for
-data extents that delete the last reference on the extent, therefore
-triggering csum deletion.
-But more on that in the reply to the  other message.
-
->
-> I also see similar stack traces without line numbers with rwalker for
-> the transaction thread stuck in D state.
->
 > > >
 > > > This results in arbitrarily long transactions. This then results in
 > > > seriously degraded performance for any cgroup using the filesystem (t=
@@ -193,25 +170,6 @@ via
 > > In case anyone wants to try this, it would be nice to paste the script
 > > here in the changelog.
 > >
->
-> For now, I'll simply share a link:
-> https://github.com/boryas/scripts/blob/main/sh/noisy-neighbor/run.sh
->
-> But this relies on some convenience infra I share between my various
-> reproducer shell scripts. In the past you asked me not to link to them,
-> but it seems I need to also come up with a way to produce them in the
-> commit messages. I'll think about the best way to do that while getting
-> to keep my own workflow.
-
-I don't see a problem in pasting the test script here... It makes
-everything more clear.
-
-Thanks.
-
->
-> Thanks for the review!
-> Boris
->
 > > >
 > > > Without this patch, that reproducer:
 > > > hung indefinitely, I killed manually via the cgroup.kill file. At thi=
@@ -544,6 +502,96 @@ csums
 > >
 > > I would like to have some explanation on that. Reading the comment and
 > > the changelog leaves me confused about that.
+>
+> Sorry, I missed this part of your review the first time I read it.
+>
+> Good question. I agree that fundamentally it is the same, but in
+> practice I believe the improvement comes from the fact that the commit
+> root semaphore has one rare writer (just the committer at switch root)
+> while the csum tree has many threads locking it write, not just
+> run_delayed_refs in commit transaction. And the priority inversion
+> rwsem issue needs a writer on the queue to trigger, so more writers more
+> frequently makes it more likely for such a pileup to happen. That's at
+> least my best handwavy explanation.
+>
+> I agree with you that if a single instance of readers vs. writers under
+> severe memory pressure caused trouble 100% of the time, then this wouldn'=
+t
+> help as you would immediately get stuck at changing the commit root. I
+> think this just reduces the pain.
+>
+> My (over) focus on commit_transaction in the commit message stems from
+> the fact that that is the best way to fully propagate a state of
+> universal D sadness across processes and cgroups. Once the csum root sem
+> is in this state (can be caused by all manner of writers/readers) AND
+> once the transaction gets stuck, that then stalls any thread that needs
+> a new transaction. That is when this issue gets really noticeable, so I
+> think I over-indexed on that aspect in the description.
+>
+> I will also attempt to collect more data on this, to make the
+> explanation more satisfying. I should be able to measure the relative
+> number of write lock attempts, for example.
+
+I don't think you need to collect more data.
+
+In the other message, the stack trace you showed makes everything clear:
+
+       btrfs_lock_root_node+1
+        btrfs_search_slot+956
+        btrfs_del_csums+669
+        __btrfs_free_extent.isra.0+2650
+        __btrfs_run_delayed_refs+2811
+        btrfs_run_delayed_refs+214
+        btrfs_commit_transaction+6318
+
+So I was puzzled because a transaction commit itself shouldn't have
+the need to do changes to the csum tree.
+
+The problem is really delayed refs that delete the last reference of a
+data extent, triggering csum deletions in the csum tree.
+We only run delayed refs in two places: committing a transaction and
+flushing space to satisfy reservations.
+
+So if we have many delayed refs that delete the last ref of data
+extents, we have a lot of write locking on the csum tree - not just
+the root node, but in a lot of nodes and leaves.
+
+Once the root node and higher level nodes are COWed, we normally don't
+need to write lock them again soon unless they get written before the
+transaction commits - but in that scenario, due to the memory
+pressure, the btree inode is getting flushed (writeback triggered)
+very often, so we end up having to COW them again and again, requiring
+the write lock (should_cow_block() returns true in btrfs_search_slot()
+and we have to restart the search and set the write lock level
+higher).
+
+So we should have such an explanation to the change log and that
+comment in the code.
+In short:
+
+- We need to have lots of delayed refs that delete the last ref of a
+data extent, and that triggers deletions in the csum tree, therefore
+lots of write lock attempts on csum tree nodes and leaves - not just
+the root node...
+
+- The memory pressure further increases write locking on the csum
+tree, we have to COW csum tree nodes/leaves more often because the
+btree inode gets flushed by the VM due to memory pressure.
+
+- More time running delayed refs means slowing down transaction commits.
+
+Now that makes it clear, and the commit_root_sem is only acquired once
+in write mode by a transaction commit for a relatively short period,
+and that's why it's better to make the reads use it and the csum
+commot root for looking up checksums.
+
+Thanks!
+
+
+>
+> Thanks again for the thoughtful questions,
+> Boris
+>
 > >
 > > Thanks.
 > >
