@@ -1,395 +1,217 @@
-Return-Path: <linux-btrfs+bounces-15361-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15362-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80876AFDEAD
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jul 2025 06:06:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1463AFDED5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jul 2025 06:40:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EED5A7AD4FB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jul 2025 04:05:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B10A61C228F6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jul 2025 04:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FD6925F986;
-	Wed,  9 Jul 2025 04:06:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98022268C42;
+	Wed,  9 Jul 2025 04:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="drU82PUN";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="drU82PUN"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="IoCu3ZM4";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Zr+uOM1Z"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC301E835D
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Jul 2025 04:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752033981; cv=none; b=K499x5LiqZHF6uDR34L5uwwgBFoePYCjTDPeP8dQB37i1mnKa1R0TG2KwFh6q7vWOV1EkZ06AWAU7QyMeZ3gGbA5Y+mNw4TL7IsaYEwSOqgRnR8UH5K0aFNYGfwkYTIQTCAwpaOZbbMlFPS0tuKFzabvqpNlOk8vmRoxfJ+x5kk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752033981; c=relaxed/simple;
-	bh=LHRo6bjgvKz8DJAKczyKIj3AutjlMleAkB3HXTu6lsI=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lkkBvAwkM4HIzCfMEtze8ejxewQOh51edCwXdaKdtmn4TEmos+jZashDWKyOvWATzZX6vG5UZJpthPe6FFyRfHMWjePB66kzQCHGElRGtYI7ls3KgHOK50v4igbXgBNTz3wmSV98OdAwBoFrSRhoIksWfqmkvLAjRmT1ruuH7k0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=drU82PUN; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=drU82PUN; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B586A2116D
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Jul 2025 04:06:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1752033970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cWZeEvmUyxwi0mqHy/zeWiradltnlTQFFb0qjvNauQY=;
-	b=drU82PUNsgU1SfvOwTxk5J2h/ySJeLGQDvlON+UnYCgfPMynZ8Pb0LEgxFfBZHQibQeb98
-	5HWRtIv6izp4V0JxeJ3/4+LFJZLhNZ/n+BI4L9NCPE3Y25WUK2LAWKZmwoLZcKh3HwJqNf
-	LaYGZ6G4L27VnRp5HyhvTApbfpQ93oc=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1752033970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cWZeEvmUyxwi0mqHy/zeWiradltnlTQFFb0qjvNauQY=;
-	b=drU82PUNsgU1SfvOwTxk5J2h/ySJeLGQDvlON+UnYCgfPMynZ8Pb0LEgxFfBZHQibQeb98
-	5HWRtIv6izp4V0JxeJ3/4+LFJZLhNZ/n+BI4L9NCPE3Y25WUK2LAWKZmwoLZcKh3HwJqNf
-	LaYGZ6G4L27VnRp5HyhvTApbfpQ93oc=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F2ABC13757
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Jul 2025 04:06:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id QM3PLLHqbWiwKgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 09 Jul 2025 04:06:09 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: do not poke into bdev's page cache for super block write
-Date: Wed,  9 Jul 2025 13:35:49 +0930
-Message-ID: <6b25aeba0d2c1713cb71b9622aa460a72d999b58.1752033203.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0528613A3F2;
+	Wed,  9 Jul 2025 04:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752036027; cv=fail; b=uCImlSRKJwjcIjxVWrBxtWf/b6P+n/0TyUeo3uxR6Bn/pakOwR6bN5C77Ksg8exkCg2EICqjsehP7+oci7Cc0zvYGJnLpBBJTQzwLLuTplP9Fup8e+Up8AX0dn5ox4D9WQEZ3+Gq1o319DuIF7CaySWmYjh3VKUnHfDiQ5JeC6k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752036027; c=relaxed/simple;
+	bh=ZI4zMZRyL0Mqx410To9QZY+QED0RummDnTHv0JcNCNI=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Rf3OZ0iNnbhm9iA/nkWWaDpPwEdVTlZUJdRRzy0U/YPCqKXQE2aj2qIjjeOYQLaGJDs60l75WMa2lGGX7xTp6o+mrrv9L9JoxTBRA0TCWbUUep3RJ5OmdLJMM/Qman+uOQq+K7jqywT6vR53OWi+x4YyStACW8/RIq08/xColLg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=IoCu3ZM4; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Zr+uOM1Z; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5694akua029774;
+	Wed, 9 Jul 2025 04:40:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=corp-2025-04-25; bh=x9eQyUJCsT3aF6RK
+	m2Srcv9dxktga4XJycUyxmJbGuY=; b=IoCu3ZM49ZayaK45nv6Ig6c6YI49Igws
+	d0HhDLPdQpVGx6awxdbVyad63ECChpiA9lTeB50kx8Fz0ibKgoNP8OfzWDFyUGu2
+	RJPWcgl1lUHWFauPet1UCm9pnoG9acOcXp5ygY1terBa4JzEpeJDwORZc8K51Mjm
+	Pi+HHdaG2DClonFFAMUnw61uwEVABvXiDrMau3xb5Q1qgbYLWYI1z63GZK2n1+Hs
+	Upn9jsvFt+rwIw2aBZfU29ieKW+w/qOdcYy1SVjAYmvUlZ9nnTGM/RZrKkFlR/UD
+	3b6Swm1eLz8aHtM+H06Xb2itbIPQerhZEQ7ZThQtl31S9CV+UGeWSw==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 47shj2005d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 09 Jul 2025 04:40:24 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5694E2lm024219;
+	Wed, 9 Jul 2025 04:40:23 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10on2065.outbound.protection.outlook.com [40.107.94.65])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 47ptgaq7eq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 09 Jul 2025 04:40:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=MDcow7r+yzgs9LBasO2q6c3F6Fd4eiVVWAUbpt1t80GlKfA08a66DNPeTxKnb9Miajyrz/nZDPKidses3TPMGeWxF6L5t/6hNOZyuDVIqTUKr7dDLtOSwsfdETCorJZCnt/ZCxUac6RcyLmH3cgV4YLjb20P4Ad0MMFIQgWsUuI6A1BgDLrjE7Jt4yjFAT+LpV0Av/EFkTx4PxvoBeAfNCZnBz1zNCGoez3m2f+ZMh2GRBjr4g0Oh0lK+pP/LuOYoL8KV5lh+v11AvzvHwvzLVic9DhzN1uXBC7EXRQ6fTE4KL0Eu/yDiny7WDxbm1fWk64GPeRYt9lqbjdRm+Ik4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x9eQyUJCsT3aF6RKm2Srcv9dxktga4XJycUyxmJbGuY=;
+ b=SZa6IZROlohI+ITcblTPd1og+eD6uX5LwE92ME1FOrHKnfgVN6TtdJbfxVukbeqNiiFXJ2JF1y7sm5nUFzOqRjdVaes1k8QrSRzUrraFlJHnKE+0upzCycVW0hJJLZb8VX1QK/3B1felRCT9fV4yXvF7UWkeMz83nECs6gNFbMxW9FtaPLo/V5OEjgieE5x6fU3GaP+JOPc+erO1d7RblEule887Ii7219vD7yDWTt1PbezHO5rlRjQEqmxRqS+R+SJeLR3xHD5Q/Ztuz4qS/xdNg5YOB5uqGZpaMEwzCnbjU/RpH5J3uHuCHovSKKnTMirVaUWqJv/PWEc9X8QffQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x9eQyUJCsT3aF6RKm2Srcv9dxktga4XJycUyxmJbGuY=;
+ b=Zr+uOM1ZgK/m6VUBgtysat9/1rrBWfN8BXrz5K/jDBZ/wY84X0+WGa7koVy6PzjVFNlWlTa/kswkFOn7xGDngm55Z5WiKXOege/MzQMCv7co+Fnk+iiJ5wyoVytXl9uGUoSpC+rYyWi/WBwBI0BnELeR561UNkFb0gjhNr7yxYA=
+Received: from DS0PR10MB6078.namprd10.prod.outlook.com (2603:10b6:8:ca::5) by
+ DS0PR10MB8008.namprd10.prod.outlook.com (2603:10b6:8:1fc::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8901.25; Wed, 9 Jul 2025 04:40:21 +0000
+Received: from DS0PR10MB6078.namprd10.prod.outlook.com
+ ([fe80::edc1:7c2:8fe8:a6b]) by DS0PR10MB6078.namprd10.prod.outlook.com
+ ([fe80::edc1:7c2:8fe8:a6b%4]) with mapi id 15.20.8901.024; Wed, 9 Jul 2025
+ 04:40:21 +0000
+From: Anand Jain <anand.jain@oracle.com>
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: [PATCH] fstests: generic/042: increase filesystem image size
+Date: Wed,  9 Jul 2025 12:40:10 +0800
+Message-ID: <05033925fe12eccf80c07396edb9acc8e1cb6778.1752035731.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.50.0
-In-Reply-To: <cover.1752033203.git.wqu@suse.com>
-References: <cover.1752033203.git.wqu@suse.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MA0PR01CA0071.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:ad::11) To DS0PR10MB6078.namprd10.prod.outlook.com
+ (2603:10b6:8:ca::5)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	URIBL_BLOCKED(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -2.80
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR10MB6078:EE_|DS0PR10MB8008:EE_
+X-MS-Office365-Filtering-Correlation-Id: 72ea99cf-2419-476d-ed69-08ddbea2b66e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?1h7lQCMmphdLKOy9YDKh5OjPMBCrCJAp7jPUTqMqIm6z7Wb1opzAbAKEyrPn?=
+ =?us-ascii?Q?sPVTSVXqg8SQUbQ7D6OtmGjt1Zho16UYvPoXNQK7b84oF35Bj5L0bul5RJu7?=
+ =?us-ascii?Q?F0ptYwTVxa6cbi/Hn/o27nIdHZBXpQoLPSFtYE3TTnRxPhh68AtogOypTvfy?=
+ =?us-ascii?Q?HBFjQkIqwTLUCkqIXcjk3HKtKNfwNBkBz9V14ggLM8FdsaSizJZ6BQJYI1ER?=
+ =?us-ascii?Q?0uGi3lLWKJfwPNMNH9tg7rMQRwyGzqUcs1nd+W5UjgWiHgN/NXTX+V4h4Viu?=
+ =?us-ascii?Q?u5XY1JYaOCVlCyCBpOwry5lTjIh/pXiox+KO3r6PQZUdUogt2Zde48dpSSXM?=
+ =?us-ascii?Q?C3HoLmmHVjLgsimvnuei61Ffx7qyZUM0C9y8+FpZS0cTrRdmGB/skmF8jc+M?=
+ =?us-ascii?Q?C32obgDUqqQV6yAaGw5XCVmChclLVN2vtZXU7cTrpFi/61YApx/iqACB8iP7?=
+ =?us-ascii?Q?NwLL6CUp38Hy9L1MFf8aYJVTxXDQKExrWLCc06dNIRkJ+sPCVnwcmrhkeBUw?=
+ =?us-ascii?Q?BZG1EoihLY63RTCFqr+Vjt5pZ1YtiXgrCDmvamA0O/g3SxVWDtb7+x3y+Aa3?=
+ =?us-ascii?Q?APbMcyL9WK9fBWExu5/rGpnmVoVdDgl2axH0BWwgVsKWiUk0QcO6Y8kMTXK/?=
+ =?us-ascii?Q?2IdQ5BNer45EoddVwTj/trjSelfqTOIkQKZFVehTaM6JKMwyRvNQpDGqownX?=
+ =?us-ascii?Q?2NmfSsdqg4R4y8gS9xQ+AluljjKMeCKJdlcVeyVp3IPBD4iLs2X4RKjEt56Y?=
+ =?us-ascii?Q?cb6tTjNuiWdPqgEoiBoF+aRy/eS7xDeUjEmmw3R76hBgFNOnB7n4/uoIKC2d?=
+ =?us-ascii?Q?9p26GrkEv+cip4nq1rx0XwKVUlsycK/K+axPL6zM0hxTzamELf0wkoj87z7h?=
+ =?us-ascii?Q?SKMGH450mupW7snsHOpQVBAcw8146bAggsDq82CLCAK1jHYnAXdnndzD2cdX?=
+ =?us-ascii?Q?33lxVEFAvKKulF2ciFgJH02+TEPjlm0Is0L9HidZUTR1U8pomtbBqKflqFyp?=
+ =?us-ascii?Q?giT52gFY6fDl5yZDgvrtPqwFLpeCeNmWJzFJUJKZS/YEQGirqCVhKx5kIB21?=
+ =?us-ascii?Q?0BviF2RQlpkSZMurS1nP1+U3LZDqqt64/B9rq//ISjKSQhr9u55c3ZntqF+B?=
+ =?us-ascii?Q?JVR3sytP/QDbfEOM+iUlliW6R7+O800wY9MSF0VHwEd0hK7GNoFnIWTNccOp?=
+ =?us-ascii?Q?Naq2C2wKHH5qdsMsZIt5niOu0tQCeCRdfoMYw1VVbSTS4FmJjmOw1C21lN66?=
+ =?us-ascii?Q?M+/FZ3/RSwyguqjPY2cJgGOx5bLPR+9cZpZrK1Hw4w7+83lMoJB/NyxvCg1z?=
+ =?us-ascii?Q?o+z+nbOzb6pEOON1dzliDyH/xj22PpmbNBKUOHOU5Zb3No7EyPokf6vAJSqz?=
+ =?us-ascii?Q?qzLO1wuh+rSH1ccbcm21a+8ZsoWh2B2/JhOyMCknlegY5F+7vA=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB6078.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Ih+1ycZW49fJJlGmsqoTVEvhnehzwB6lUi3m4KhBUu1gWhSboaKuu5kYHpt/?=
+ =?us-ascii?Q?6yTewiNdxcpLiXo35pGdsKNd0NCe48oxaHA9a+V75DbXIRoKek4oxZeE1P2h?=
+ =?us-ascii?Q?rqzi5Fgz6ySL1NVdV5aq8+LySvy+HgIG/7q8l0WCCaNKeci8l32JUbrCZR0S?=
+ =?us-ascii?Q?2/4FFpHW2LcNqgV/XW2vvvnsUpnOt5y5EVwL61lBHtRjSanyd3FNhue4EVzV?=
+ =?us-ascii?Q?a0ckkMN2wneLwMVA9yBTtZ3GHOzz7d+4xcQWLKQfupY/wBRdkdda7SiT5HEK?=
+ =?us-ascii?Q?UQDOjqVOvCSPwdpcRxFhdKgpAoBRnnB6jt1Iq/iAzRrYaD0zzyCwOzCdgHFZ?=
+ =?us-ascii?Q?RdddHnsqmvIioFrb9zCMPwkXmrB51KF1iZGQke5yhf+lM6bj0MNPBzmOOSTY?=
+ =?us-ascii?Q?nLh2VOCI0o6bVJ9mayPvGJREsCsn669r3Otde8gRF+SkOws9tHD8gijjCi7Z?=
+ =?us-ascii?Q?QK7tTF1nreCBUF9edeGLTQqzDVgBtEh5Ev1bzQFVIhcwmy4x6Jls3FvWt6ll?=
+ =?us-ascii?Q?3zqEA3ZX2JyUoKWmWF27XXxiPDj/NFnRUNWIS+dyAMUrHRBK2/ORl+9iPArH?=
+ =?us-ascii?Q?Y+H8be3PpqPNYRinOiI4c9mj9+1XcqI9lTb+i0KOA7meNKJEFEsflxzF9Tfu?=
+ =?us-ascii?Q?ZdCxTHgys/hnT+uluxv9zd524XYlQoOw3YklvT+XRkN/duuuAJ0O5WUmnFbF?=
+ =?us-ascii?Q?ffhPFDYVZJI1kXklZZMSFm/e/0ugCL+ZAQ0O5fQ2VYFcQM5RFZJXIZmxFrqD?=
+ =?us-ascii?Q?aJgoaOP8TN3T7MqD1HQiSoza6vYvSUUhpw8/FanMqsPQCwR2az57YTeR9kcF?=
+ =?us-ascii?Q?XLxfczV6Q1gXEKPQqXAQkhzBLDWXkezZU9hIAquiPWL0gzOvnpVcEh+4GtkY?=
+ =?us-ascii?Q?tekz2/dX/uiqRoyx0KdMhTF7jMpZePKYBCF4fOcTiDoXaHtjRfWuXEWAILQf?=
+ =?us-ascii?Q?667pgcu4Y4XyDfJK5HSUCnP8gbTjQBFkWFF4Jq87jNDBznhUK8jKayp5rpkh?=
+ =?us-ascii?Q?/dm3aa+6tOkqZ4FqJjxOLuQO4/LsFV/8dotIIhrzq8mIB6ntUQ77+GUOUwQx?=
+ =?us-ascii?Q?h6vI75D9NTsGuQo1QpwZ8WLR3oHogoDoCi3YWsGVEWYnj92WFuobwxVE7i9P?=
+ =?us-ascii?Q?GXqURF/GvYV/M/XiqLF1vEj2m3lSdJNKE0VxG2Rr8YUKRHuDgm/TVaIxq6fg?=
+ =?us-ascii?Q?2lqMZ/FyD1cewASRoCgkcy7Nx4TopGkE1BKkmSWnXB05F0GSuvtg8sWfedh2?=
+ =?us-ascii?Q?29mFG2dtF5+bwY7dlx5PEnWQeDXRHYifVrG/5487/03nZIFHg2on7bfgKxaU?=
+ =?us-ascii?Q?umt58b2ihJp+i3Q/qdnuutBBHudMVF6VJ/qiWc/EWUyfVF4uu84l3wk6+vvM?=
+ =?us-ascii?Q?xuF3q4/iSm9OU5vVyn7GOOV42R08ltdBioHqwOe+n3YxSclV8ykJfJ3iVn5S?=
+ =?us-ascii?Q?W1IOPy8VDQHzg2N5B2ZDNl/fjDEKO3Y5+DNLTrtmIgzYBFbEPgmUVfJCwcP1?=
+ =?us-ascii?Q?RiZEp9JNmh0QDTHAuzVVGZCl/W/V+Dh2PqxLReU9cDPpHgrrkHlZSI8+MY06?=
+ =?us-ascii?Q?Ra3NzaJmiuUF/lAsLTW10mcSr83yGbpxhEC0yY2v?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	QyXxY3fGNEPgCQhmVfNZ/fBgQx1qQkPRVcuPHqViMIYbQfAlktEWsAGcakyoepYZIigpE/3OdXh0q4TmBgZXTxggvK5DSqEAkXFq8nE/C3AD6VD6V4QglpyfJYxRCEzqCkvCa8gLSU1bsbtJ7TIojinMBCm0P1EJNmmmFyRsWJpdoJclxMPTpYmFYVqmE02zzHi13nw8YXClGbs3NMjCJJAAFbfohhXMVsAAUz+AnSaMQxgwiQ0ds5p8lhPTEkK0Gq6L6Ln0Khkc1Nne7DQwyiJqe4TCPLfsy1Y3I6UWJ7ws5lfb5VNkOC8JaIAMxGMCPaKTXWTxrwX1f6IZaKNtgYrtN0RdbqUvXWtwp0X2qOeAc8NyCFbSulwqYDqE/jT7lWaYIBC823NHfsef1EtmSHMpMmYMC+t1s8mm1ctLjYV/erZrtOLJjbqRp1AAAjVCL5E0JAs/otw5Arh+G7WgpfNlK6jkAAA0ZGRdG4tmi5rnxo7HhbxlxaDEvrWo9D+KTe94Sc7H+809baUD8497DuKxi5GtCsapjEmxUXJtQzgnNIDTuB7DmE+uy2Onta9BmNGXotRfTQqHtZQ7gRGR3x+TFeapD1Uh0CkrUh+9G5U=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72ea99cf-2419-476d-ed69-08ddbea2b66e
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB6078.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2025 04:40:21.3110
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8952FzIp4Ovf8VQJqn3OTsaX8yJeE10PMRZX1sPcklKPSfjbFo0IiYHwvRvzGLq2NTdRE72VqwZMCBMzJai+Vg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB8008
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-07-09_01,2025-07-08_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
+ definitions=main-2507090038
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzA5MDAzOCBTYWx0ZWRfXzHeDJvIr1/bl 7krmSR6hCA/4mT5YtylwEMosCFy6YwlG/AKV7/YWzP01mGpLD8Q9Ae01F7pJU+uz1jtYgsk4VDU KA6XP+0xOdjZ4YQG/MC2fkIOrl5vAEtegr+nX4Z45Mygl70U2PqJl40dajyWcqI2BP5KiuKHRdH
+ iuY8m+OhjvrgqQAnsThR+TL5iEeXoocf6ci2GGhF9mHHdZiorcGaq0/57hioF3xxvRT2XE4Cdiu iTUZWw0GxyJf1btWY0UrNkkVGUX/P63LXCLqROJhbVUo/QQ2XKK4rTZutCBSnFpc7iCumit+lqv Bv72FsunoP0ayaGOrOCg9BrYVtRhNErjbxCSUVDpaE2xCGHwbJpNByT2Q4tZQQULvJ22E+dRLhM
+ OT+ra4fuxOOt2TGZVLP6H1uKqAt/Hx8aBnIBE6lBzKphbCPr8/j7R4CEQJq6BX6v/l1V1dKT
+X-Authority-Analysis: v=2.4 cv=ZObXmW7b c=1 sm=1 tr=0 ts=686df2b8 b=1 cx=c_pps a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
+ a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=Wb1JkmetP80A:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=1aLMZdONxn7pKrVZINAA:9
+X-Proofpoint-ORIG-GUID: ml0bcl3WoTgDdI36R-bMuT5HWLjQut22
+X-Proofpoint-GUID: ml0bcl3WoTgDdI36R-bMuT5HWLjQut22
 
-[EXISTING BEHAVIOR]
-Currently btrfs is utilizing block device's page cache to write super
-blocks.
+During testing for shutdown, I found that generic/042 sets a size of
+25M, which is too small for btrfs. Setting it to 128M.
 
-This has a long history, dating back to early days when we relies on the
-page's flags to determine if the IO is done or failed.
+wrote 26214400/26214400 bytes at offset 0
+25 MiB, 6400 ops; 0.0468 sec (533.618 MiB/sec and 136606.1900 ops/sec)
+ERROR: '/mnt/scratch/042.img' is too small to make a usable filesystem
+ERROR: minimum size for each btrfs device is 114294784
 
-But later commit bc00965dbff7 ("btrfs: count super block write errors in
-device instead of tracking folio error state") uses extra atomic to
-track how many errors are hit, and we no longer rely on page flags to
-determine if the IO is done or failed.
-
-[PROBLEMS]
-But such direct usage of block devices' page cache is putting btrfs
-responsible to the implementation details of the block device.
-
-In fact this has already caused problem when the block device's page
-cache has large folio support enabled, fixed by commit 65f2a3b2323e
-("btrfs: remove folio order ASSERT()s in super block writeback path").
-
-This should give us a warning that poking into other layer's
-implementation is not a good idea.
-
-[ENHANCEMENT]
-Instead of directly using block device's page cache, use the regular bio
-interfaces, this involves:
-
-- Introduce extra buffer for all super blocks of a device
-  This is needed because we want to submit bios for all super blocks in
-  one go, and wait for them all.
-  This is to increase concurrency, thus we can not reuse a single super
-  block copy, and that's part of the reason we want to use page cache.
-
-  Unfortunately this means we will have extra 12K memory usage for each
-  btrfs device.
-
-- Introduce ways to wait for super block writeback
-  Previously we rely on the page cache to wait for the IO to finish.
-  Now we have an atomic, @sb_write_running, to record how many running
-  super block writes are pending.
-
-  And also a wait queue head for waiting.
-
-  This greatly simplify wait_dev_supers(), now we only need to wait for
-  the pending ios to finish.
-
-- Simplify btrfs_end_super_write() function
-  Now we don't need to bother releasing the folio, we can get rid of the
-  bio iteration code.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- fs/btrfs/disk-io.c | 76 ++++++++++++++--------------------------------
- fs/btrfs/volumes.c | 13 ++++++++
- fs/btrfs/volumes.h |  6 ++++
- 3 files changed, 42 insertions(+), 53 deletions(-)
+ tests/generic/042 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index c4b020187249..c93d7b908f66 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3692,27 +3692,23 @@ ALLOW_ERROR_INJECTION(open_ctree, ERRNO);
- static void btrfs_end_super_write(struct bio *bio)
- {
- 	struct btrfs_device *device = bio->bi_private;
--	struct folio_iter fi;
+diff --git a/tests/generic/042 b/tests/generic/042
+index ced145dde753..6cd2e7a3703a 100755
+--- a/tests/generic/042
++++ b/tests/generic/042
+@@ -26,7 +26,7 @@ _crashtest()
+ 	img=$SCRATCH_MNT/$seq.img
+ 	mnt=$SCRATCH_MNT/$seq.mnt
+ 	file=$mnt/file
+-	size=$(_small_fs_size_mb 25)M
++	size=$(_small_fs_size_mb 128)M
  
--	bio_for_each_folio_all(fi, bio) {
--		if (bio->bi_status) {
--			btrfs_warn_rl(device->fs_info,
--				"lost super block write due to IO error on %s (%d)",
--				btrfs_dev_name(device),
--				blk_status_to_errno(bio->bi_status));
--			btrfs_dev_stat_inc_and_print(device,
--						     BTRFS_DEV_STAT_WRITE_ERRS);
--			/* Ensure failure if the primary sb fails. */
--			if (bio->bi_opf & REQ_FUA)
--				atomic_add(BTRFS_SUPER_PRIMARY_WRITE_ERROR,
--					   &device->sb_write_errors);
--			else
--				atomic_inc(&device->sb_write_errors);
--		}
--		folio_unlock(fi.folio);
--		folio_put(fi.folio);
-+	if (bio->bi_status) {
-+		btrfs_warn_rl(device->fs_info,
-+			"lost super block write due to IO error on %s (%d)",
-+			btrfs_dev_name(device),
-+			blk_status_to_errno(bio->bi_status));
-+		btrfs_dev_stat_inc_and_print(device,
-+					     BTRFS_DEV_STAT_WRITE_ERRS);
-+		/* Ensure failure if the primary sb fails. */
-+		if (bio->bi_opf & REQ_FUA)
-+			atomic_add(BTRFS_SUPER_PRIMARY_WRITE_ERROR,
-+				   &device->sb_write_errors);
-+		else
-+			atomic_inc(&device->sb_write_errors);
- 	}
--
-+	if (atomic_dec_and_test(&device->sb_write_running))
-+		wake_up(&device->sb_write_wait);
- 	bio_put(bio);
- }
- 
-@@ -3730,24 +3726,21 @@ static int write_dev_supers(struct btrfs_device *device,
- 			    struct btrfs_super_block *sb, int max_mirrors)
- {
- 	struct btrfs_fs_info *fs_info = device->fs_info;
--	struct address_space *mapping = device->bdev->bd_mapping;
- 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
- 	int i;
- 	int ret;
- 	u64 bytenr, bytenr_orig;
- 
- 	atomic_set(&device->sb_write_errors, 0);
-+	ASSERT(atomic_read(&device->sb_write_running) == 0);
- 
- 	if (max_mirrors == 0)
- 		max_mirrors = BTRFS_SUPER_MIRROR_MAX;
--
-+	ASSERT(max_mirrors <= BTRFS_SUPER_MIRROR_MAX);
- 	shash->tfm = fs_info->csum_shash;
- 
- 	for (i = 0; i < max_mirrors; i++) {
--		struct folio *folio;
- 		struct bio *bio;
--		struct btrfs_super_block *disk_super;
--		size_t offset;
- 
- 		bytenr_orig = btrfs_sb_offset(i);
- 		ret = btrfs_sb_log_location(device, i, WRITE, &bytenr);
-@@ -3769,21 +3762,7 @@ static int write_dev_supers(struct btrfs_device *device,
- 		crypto_shash_digest(shash, (const char *)sb + BTRFS_CSUM_SIZE,
- 				    BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE,
- 				    sb->csum);
--
--		folio = __filemap_get_folio(mapping, bytenr >> PAGE_SHIFT,
--					    FGP_LOCK | FGP_ACCESSED | FGP_CREAT,
--					    GFP_NOFS);
--		if (IS_ERR(folio)) {
--			btrfs_err(device->fs_info,
--			  "couldn't get super block page for bytenr %llu error %ld",
--			  bytenr, PTR_ERR(folio));
--			atomic_inc(&device->sb_write_errors);
--			continue;
--		}
--
--		offset = offset_in_folio(folio, bytenr);
--		disk_super = folio_address(folio) + offset;
--		memcpy(disk_super, sb, BTRFS_SUPER_INFO_SIZE);
-+		memcpy(device->sb_write_buf[i], sb, BTRFS_SUPER_INFO_SIZE);
- 
- 		/*
- 		 * Directly use bios here instead of relying on the page cache
-@@ -3796,7 +3775,7 @@ static int write_dev_supers(struct btrfs_device *device,
- 		bio->bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
- 		bio->bi_private = device;
- 		bio->bi_end_io = btrfs_end_super_write;
--		bio_add_folio_nofail(bio, folio, BTRFS_SUPER_INFO_SIZE, offset);
-+		bio_add_virt_nofail(bio, device->sb_write_buf[i], BTRFS_SUPER_INFO_SIZE);
- 
- 		/*
- 		 * We FUA only the first super block.  The others we allow to
-@@ -3805,6 +3784,7 @@ static int write_dev_supers(struct btrfs_device *device,
- 		 */
- 		if (i == 0 && !btrfs_test_opt(device->fs_info, NOBARRIER))
- 			bio->bi_opf |= REQ_FUA;
-+		atomic_inc(&device->sb_write_running);
- 		submit_bio(bio);
- 
- 		if (btrfs_advance_sb_log(device, i))
-@@ -3830,10 +3810,10 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 
- 	if (max_mirrors == 0)
- 		max_mirrors = BTRFS_SUPER_MIRROR_MAX;
-+	ASSERT(max_mirrors <= BTRFS_SUPER_MIRROR_MAX);
- 
-+	/* Calculate how many super blocks we really have. */
- 	for (i = 0; i < max_mirrors; i++) {
--		struct folio *folio;
--
- 		ret = btrfs_sb_log_location(device, i, READ, &bytenr);
- 		if (ret == -ENOENT) {
- 			break;
-@@ -3846,17 +3826,8 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 		if (bytenr + BTRFS_SUPER_INFO_SIZE >=
- 		    device->commit_total_bytes)
- 			break;
--
--		folio = filemap_get_folio(device->bdev->bd_mapping,
--					  bytenr >> PAGE_SHIFT);
--		/* If the folio has been removed, then we know it completed. */
--		if (IS_ERR(folio))
--			continue;
--
--		/* Folio will be unlocked once the write completes. */
--		folio_wait_locked(folio);
--		folio_put(folio);
- 	}
-+	wait_event(device->sb_write_wait, atomic_read(&device->sb_write_running) == 0);
- 
- 	errors += atomic_read(&device->sb_write_errors);
- 	if (errors >= BTRFS_SUPER_PRIMARY_WRITE_ERROR)
-@@ -3866,7 +3837,6 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 			  device->devid);
- 		return -1;
- 	}
--
- 	return errors < i ? 0 : -1;
- }
- 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 03643c71addf..be638774b9eb 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -400,6 +400,7 @@ static struct btrfs_fs_devices *alloc_fs_devices(const u8 *fsid)
- static void btrfs_free_device(struct btrfs_device *device)
- {
- 	WARN_ON(!list_empty(&device->post_commit_list));
-+	WARN_ON(atomic_read(&device->sb_write_running) != 0);
- 	/*
- 	 * No need to call kfree_rcu() nor do RCU lock/unlock, nothing is
- 	 * reading the device name.
-@@ -407,6 +408,8 @@ static void btrfs_free_device(struct btrfs_device *device)
- 	kfree(rcu_dereference_raw(device->name));
- 	btrfs_extent_io_tree_release(&device->alloc_state);
- 	btrfs_destroy_dev_zone_info(device);
-+	for (int i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++)
-+		kfree(device->sb_write_buf[i]);
- 	kfree(device);
- }
- 
-@@ -6893,6 +6896,8 @@ struct btrfs_device *btrfs_alloc_device(struct btrfs_fs_info *fs_info,
- 	INIT_LIST_HEAD(&dev->post_commit_list);
- 
- 	atomic_set(&dev->dev_stats_ccnt, 0);
-+	atomic_set(&dev->sb_write_running, 0);
-+	init_waitqueue_head(&dev->sb_write_wait);
- 	btrfs_device_data_ordered_init(dev);
- 	btrfs_extent_io_tree_init(fs_info, &dev->alloc_state, IO_TREE_DEVICE_ALLOC_STATE);
- 
-@@ -6925,6 +6930,14 @@ struct btrfs_device *btrfs_alloc_device(struct btrfs_fs_info *fs_info,
- 		rcu_assign_pointer(dev->name, name);
- 	}
- 
-+	for (int i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
-+		dev->sb_write_buf[i] = kmalloc(BTRFS_SUPER_INFO_SIZE, GFP_KERNEL);
-+		if (!dev->sb_write_buf[i]) {
-+			btrfs_free_device(dev);
-+			return ERR_PTR(-ENOMEM);
-+		}
-+	}
-+
- 	return dev;
- }
- 
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index bf2e9a5a63ea..830a8383b73b 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -20,6 +20,7 @@
- #include <linux/rbtree.h>
- #include <uapi/linux/btrfs.h>
- #include <uapi/linux/btrfs_tree.h>
-+#include "disk-io.h"
- #include "messages.h"
- #include "extent-io-tree.h"
- 
-@@ -182,6 +183,11 @@ struct btrfs_device {
- 	struct bio flush_bio;
- 	struct completion flush_wait;
- 
-+	/* Buffer for each super block. */
-+	struct btrfs_super_block *sb_write_buf[BTRFS_SUPER_MIRROR_MAX];
-+	atomic_t sb_write_running;
-+	wait_queue_head_t sb_write_wait;
-+
- 	/* per-device scrub information */
- 	struct scrub_ctx *scrub_ctx;
- 
+ 	# Create an fs on a small, initialized image. The pattern is written to
+ 	# the image to detect stale data exposure.
 -- 
 2.50.0
 
