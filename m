@@ -1,785 +1,224 @@
-Return-Path: <linux-btrfs+bounces-15412-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15413-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DE21AFFA9F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 09:16:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D9DDAFFAE4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 09:29:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7DE24E5DC5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 07:15:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF3F41885CFD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 07:30:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F5B528852B;
-	Thu, 10 Jul 2025 07:15:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D141289371;
+	Thu, 10 Jul 2025 07:29:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GnhvXo9d"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QV2C4aEb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4423F2877FB
-	for <linux-btrfs@vger.kernel.org>; Thu, 10 Jul 2025 07:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9E41288C18
+	for <linux-btrfs@vger.kernel.org>; Thu, 10 Jul 2025 07:29:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752131746; cv=none; b=GbnS3ENfJgjEdHNnwan99QCngW26XhEW9rwvorP24Rc8qrjc6iVpDqC89AyL/4lWKPn4fGcm+wHnMJMWi8d/QNwPAYN7C1yutFN50gHe1E5K0pRZq4amSCizOrKj2KubfYBZGkdliWa8BglKwnnm2xSnVPJVOmhc0Yg7aNtSw7w=
+	t=1752132581; cv=none; b=urzLN3mnm0fQ58xdQE7tMJ3RpE+Akx/DMdfkia6fsMxgocg1z80uw93Apn5Or7SMcuEToXT+1AcGPZo/1MpnSe2tOqSU4neCorOpYmhkjjLoRAQJkjOLDFyXOsnde6WS+Vzu5CPKii0pcCeLNpMHKbKHF5T4EKRqA2twfhWOlek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752131746; c=relaxed/simple;
-	bh=gOefaeFb3fdg0Lp+EPSxNg1yOEisbIU4MdfvcJk87KY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=equyFOomF7ZSRfB0ZEL/NZu/L3MTmlYChyIJ0UmlMZNLa3GJhzcR6Lo+kFB54E/2XY+XovXXzBRCWDXNXiq7BqZ9bKEXzczBEvGf7EapbhMMWz827oa9dt4DDM2KmxBz8/R/fU3NcVBO7exM9QWR1gYJ/x/ndErzjgZooTbEGGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GnhvXo9d; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3a53359dea5so384526f8f.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Jul 2025 00:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1752131741; x=1752736541; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=5teUSZCs6Bnop4DrJlxkN0jl/JlsKsCwQY8kHrcUCnI=;
-        b=GnhvXo9dcDp/rzvrSda3w5jDCs4mTN8fARyn9X+0jqI7T5Ix2vS0p+w+h7zZDZ2Dwp
-         sfucUWg2HlKH1X49FEfj3p84YAwjEYTe5j0yvYyUquzcBnHxFdtZbz/pNkwxTtEW8Poz
-         6jnVK9/fxfdGgoLQdb1ABReDH9+OSUD8RJRnMv/DffUFMkvkt1+9xiPirPIy0dh3huyY
-         QdH7sFwA69X1G9KGfNQoQZXT22Grb9C023YPFtYT87IoG8M88Wqzk2nbtD9zS0CAtqAz
-         S4z6N1CCgMl8k96tlHM6uxmz2xYROUhdjshhrJnLjeI3Q4vYnSKdS3fVO0kHpgPi93Gb
-         h8yQ==
+	s=arc-20240116; t=1752132581; c=relaxed/simple;
+	bh=R8EipCxdU3PVl0tdLEk0mFFad9Gdcz9No/wiCW3k7/8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WFWOHukRV9dElCkVAmS07ACJuGGuRdoU5r/ascseF/S5feBTsOYdpxV7/jJTN8TOMTI2Pwp4CYa0KC5e/nhUE4aC+tBFEBlDKu5hi79hR+qEv3zapAuL9SpVcEzRynO56paR+PfdIwAzjekPqo+RdE74zRB88cogslZ56vw+bp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QV2C4aEb; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1752132578;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fepGkfCQMKLcAnWI7GqA+ecbi4ubuIxZYETmUVYEd94=;
+	b=QV2C4aEbQjobzsJRD/t9mqxM7FXzkOetsPGBfr5rUJKiPsxvw3guIQj4gd6lHTzNZFNZaJ
+	I43ntKphDNSUe5HPHqmuLFTJ/tlVMIzHKq+Q1CEKB2o2eSOurdaKxkCct7TQRiAnY1NgQ8
+	nFa5zbXvPGhU6Q06dRCWThVSBV7ZHu8=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-680-x5qwUIANNEWSnaNulzllQQ-1; Thu, 10 Jul 2025 03:29:34 -0400
+X-MC-Unique: x5qwUIANNEWSnaNulzllQQ-1
+X-Mimecast-MFC-AGG-ID: x5qwUIANNEWSnaNulzllQQ_1752132574
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-2369261224bso8135795ad.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Jul 2025 00:29:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752131741; x=1752736541;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5teUSZCs6Bnop4DrJlxkN0jl/JlsKsCwQY8kHrcUCnI=;
-        b=LqK0gNtwyc7aO8EWilKFUpX5Re6wPv1FY56MOTtpZe58SDyq60zaqgA3t/8j17uZMa
-         m0e2sDC4YdYE8Flwiwohe8bSTjh9QiLyxdYM1WsnCyldHds5lQjUuu9DeTTB8T5qat1q
-         HHA+71pYs+yrtduzlpFLUTgL2CgL/djNUyNDaKvMYbdf8Y3f5dqsHU4e8xaemCRJ/kAr
-         fk1LKG5RpiaT5OzsWNy6rVkLjj/Zs0bleHrfTXvHDfSo1fNRN2i7By8eYJi37vll022p
-         B0W3HiFlipuEiEzPw9ZsEJjwSkJ88/wWoYG8sHGtlMmh1rK1yCo2gyA+2GAt3UBveuWQ
-         zoTA==
-X-Forwarded-Encrypted: i=1; AJvYcCW5sfO56x0C4i//e/h8qCH++aAmjIaqdt8lyb7a8e13a2UpBn02uEjYSWJmGovSLSTBZoyMbGjbjqMYVg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwiW0girw2ynSRP1xebL+BP9ae7vISziijbjv2lu48Ufv7jTP81
-	+80jqn/BidyX4GXMNjesEq2x+66Cv/S0rSeVMZVoUNwVnQFDzu8S3LppOn1pQBbFpX8=
-X-Gm-Gg: ASbGncsf2KWK+NvDaqrxWYsOFxNBbO+dvtsmFRp1yhTUJf+1XCqZ3zZIa4XwayaxG1e
-	cy2hJ5qwGJ9L0zkoVYy/y4pYUTMUc4rkpE7tZkAD5umhv3GZHZNZA+eYdmW5tXxHEVnhrYJY7D0
-	DCJKGbsAI80A0gEh4comD4SFGwTUSqBCejpxPxv1U0Fmknv6dq/mWrmgVCvwks9cbe0Z56mYDVy
-	cN4DIJlO0QoeEdlqiazvAyoQR3DkNPkn0isGEy+N27siP/9n5TLQMVwiGUY16kA2tkgKwI/5etU
-	FOl1k12G6HY5ejfrKFxVI5Glcn1iLVE/DNr64DBoaQeslorRePNXi7YjpK3qzNtr7YZBnM6Nf+2
-	c2ZZRFLOoEi+ijQ==
-X-Google-Smtp-Source: AGHT+IGaR3IxfBiMMC8UZNDd+KTJ0ZHeEqr0Yq2tFcdVQ7NIFnHvSgkhxzYEtxV1qHzptwJ4hO+IHg==
-X-Received: by 2002:a05:6000:20ca:b0:3a6:d26a:f0f5 with SMTP id ffacd0b85a97d-3b5e86806c1mr1077799f8f.21.1752131741034;
-        Thu, 10 Jul 2025 00:15:41 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::e9d? (2403-580d-fda1--e9d.ip6.aussiebb.net. [2403:580d:fda1::e9d])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de42afc7esm11990485ad.79.2025.07.10.00.15.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jul 2025 00:15:40 -0700 (PDT)
-Message-ID: <98154adb-057a-44d7-97a4-9bfd669b9454@suse.com>
-Date: Thu, 10 Jul 2025 16:45:35 +0930
+        d=1e100.net; s=20230601; t=1752132574; x=1752737374;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fepGkfCQMKLcAnWI7GqA+ecbi4ubuIxZYETmUVYEd94=;
+        b=IgdIhpf1M0w6dE4jix4XBR3POGYcuYtldW1+FTgiESLzUtlfscCigkt3D6h2V9kWjY
+         xaMlP6p/05aWDpSyIrgSN/K5c1fdeRpN0q9lANKUhM3pC1SXntJU1bPODnOu9/ZpB1cv
+         MKQNZYmw0OM+Bn2TnBtH9E/9Je2/l2gFzqojDjuiNpD9wFnwJzglkxvemgJL5XMAZ2XN
+         L3hywNGBYfZ/W8Wyyc68XrK5cE+awp8KNvRPX0InC2GR5awqWTx5JiN0G+laDBOX1HNT
+         ZopBz3GQ828oqYBnnxkUQUvW1pzqaH9z9XWb+qZvGFmdNqiOaae5RuNq9Lyfm1wT4hut
+         e3Wg==
+X-Forwarded-Encrypted: i=1; AJvYcCXQKPp7IOtEAkGP9Zxi0f7LlVCZlUonXKySJN6sE7/IGu4tNlsYV/ZTVZVoCuquMr6SCjUKmZxagSj8Tw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdjpNwk6nahYNNEYIu8lbwNec/b1E0P3g/RPSkXbHMXvVtPosa
+	cYQk+tVkiZs4r9FDWhQeQR0HtRc6E+1OHcpR64fYbhviRwCyXPdD0xWqlnPobyVwqL6zFfEgF3D
+	ltJK+vMiehjo30SOO7lP5w5yKNbaxr9SxWzDglSGUdEH4lbFOhuGJE2J1M0WVPdru
+X-Gm-Gg: ASbGncuDQTnvvCl1/7Fpsfyog5UL0Osi2buiTv5H87HXuz8tyYj8o+MXq2QIrJZ5RN5
+	WF8Ht35pKKJ4Qj7eYYPi/XKWa4UOqzJKmNCiI4IY6RzEdccnhBkAjUwBiYHxVgeQ72pJ1Qe0IZb
+	2aVMIUcXAu0MdLFQlufjrfIX4JEaZMpaGPGkAMOcmaFmcAaEeFXKjdmdwfIrRF1RMmLmVZvpHXC
+	/lmce8kYTDbNLjdusbCvCmlzBucwAJinBxGIaq3UWL196mp78ZZDi8avrbC1+5kx53+XgwcyNwg
+	5WgLy4iSkGsMeacbEEggtmGzMByBMUJTGjdOitzQk4b14KwBkEmflA7FOncB+nU=
+X-Received: by 2002:a17:903:2445:b0:234:c549:da10 with SMTP id d9443c01a7336-23de4895596mr24082915ad.47.1752132573850;
+        Thu, 10 Jul 2025 00:29:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFKYKaiXyhmhsXDpt36xy6hcE+/2REseEbAF6LNznJ+WbhqMKbD4EV9+KnuZDFxJ/w7JT4tuQ==
+X-Received: by 2002:a17:903:2445:b0:234:c549:da10 with SMTP id d9443c01a7336-23de4895596mr24082665ad.47.1752132573501;
+        Thu, 10 Jul 2025 00:29:33 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de4341d51sm12218015ad.189.2025.07.10.00.29.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jul 2025 00:29:33 -0700 (PDT)
+Date: Thu, 10 Jul 2025 15:29:29 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: fdmanana@kernel.org
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] generic: test overwriting file with mmap on a full
+ filesystem
+Message-ID: <20250710072929.dfhksffdogk35ik7@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <f28ef5098ed18d53df6f94faded1b352bb833527.1752049536.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7] btrfs: try to search for data csums in commit root
-To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-References: <112a66d49285e38d7a567aa780d9545baafd3deb.1752101883.git.boris@bur.io>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <112a66d49285e38d7a567aa780d9545baafd3deb.1752101883.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f28ef5098ed18d53df6f94faded1b352bb833527.1752049536.git.fdmanana@suse.com>
 
-
-
-在 2025/7/10 08:30, Boris Burkov 写道:
-> If you run a workload with:
-> - a cgroup that does tons of parallel data reading, with a working set
->    much larger than its memory limit
-> - a second cgroup that writes relatively fewer files, with overwrites,
->    with no memory limit
-> (see full code listing at the bottom for a reproducer)
+On Wed, Jul 09, 2025 at 09:53:50AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> then what quickly occurs is:
-> - we have a large number of threads trying to read the csum tree
-> - we have a decent number of threads deleting csums running delayed refs
-> - we have a large number of threads in direct reclaim and thus high
->    memory pressure
+> Test that overwriting a file with mmap when the filesystem has no more
+> space available for data allocation works. The motivation here is to check
+> that NOCOW mode of a COW filesystem (such as btrfs) works as expected.
 > 
-> The result of this is that we writeback the csum tree repeatedly mid
-> transaction, to get back the extent_buffer folios for reclaim. As a
-> result, we repeatedly COW the csum tree for the delayed refs that are
-> deleting csums. This means repeatedly write locking the higher levels of
-> the tree.
+> This currently fails with btrfs but it's fixed by a kernel patch that has
+> the subject:
 > 
-> As a result of this, we achieve an unpleasant priority inversion. We
-> have:
-> - a high degree of contention on the csum root node (and other upper
->    nodes) eb rwsem
-> - a memory starved cgroup doing tons of reclaim on CPU.
-> - many reader threads in the memory starved cgroup "holding" the sem
->    as readers, but not scheduling promptly. i.e., task __state == 0, but
->    not running on a cpu.
-> - btrfs_commit_transaction stuck trying to acquire the sem as a writer.
->    (running delayed_refs, deleting csums for unreferenced data extents)
-
-Wow, you explain a complex problem pretty well that an idoit like me can 
-understand it now!
-
+>    btrfs: fix -ENOSPC mmap write failure on NOCOW files/extents
 > 
-> This results in arbitrarily long transactions. This then results in
-> seriously degraded performance for any cgroup using the filesystem (the
-> victim cgroup in the script).
-> 
-> It isn't an academic problem, as we see this exact problem in production
-> at Meta with one cgroup over its memory limit ruining btrfs performance
-> for the whole system, stalling critical system services that depend on
-> btrfs syncs.
-> 
-> The underlying scheduling "problem" with global rwsems is sort of thorny
-> and apparently well known and was discussed at LPC 2024, for example.
-> 
-> As a result, our main lever in the short term is just trying to reduce
-> contention on our various rwsems with an eye to reducing the frequency
-> of write locking, to avoid disabling the read lock fast acquistion path.
-> 
-> Luckily, it seems likely that many reads are for old extents written
-> many transactions ago, and that for those we *can* in fact search the
-> commit root. The commit_root_sem only gets taken write once, near the
-> end of transaction commit, no matter how much memory pressure there is,
-> so we have much less contention between readers and writers.
-> 
-> This change detects when we are trying to read an old extent (according
-> to extent map generation) and then wires that through bio_ctrl to the
-> btrfs_bio, which unfortunately isn't allocated yet when we have this
-> information. Luckily, we don't need this flag in the bio after
-> submitting, so we can save space by setting it on bbio->bio.bi_flags
-> and clear before submitting, so the block layer is unaffected.
-> 
-> When we go to lookup the csums in lookup_bio_sums we can check this
-> condition on the btrfs_bio and do the commit root lookup accordingly.
-> 
-> Note that a single bio_ctrl might collect a few extent_maps into a single
-> bio, so it is important to track a maximum generation across all the
-> extent_maps used for each bio to make an accurate decision on whether it
-> is valid to look in the commit root. If any extent_map is updated in the
-> current generation, we can't use the commit root.
-> 
-> To test and reproduce this issue, I used the following script and
-> accompanying C program (to avoid bottlenecks in constantly forking
-> thousands of dd processes):
-> 
-> ====== big-read.c ======
->    #include <fcntl.h>
->    #include <stdio.h>
->    #include <stdlib.h>
->    #include <sys/mman.h>
->    #include <sys/stat.h>
->    #include <unistd.h>
->    #include <errno.h>
-> 
->    #define BUF_SZ (128 * (1 << 10UL))
-> 
->    int read_once(int fd, size_t sz) {
->    	char buf[BUF_SZ];
->    	size_t rd = 0;
->    	int ret = 0;
-> 
->    	while (rd < sz) {
->    		ret = read(fd, buf, BUF_SZ);
->    		if (ret < 0) {
->    			if (errno == EINTR)
->    				continue;
->    			fprintf(stderr, "read failed: %d\n", errno);
->    			return -errno;
->    		} else if (ret == 0) {
->    			break;
->    		} else {
->    			rd += ret;
->    		}
->    	}
->    	return rd;
->    }
-> 
->    int read_loop(char *fname) {
->    	int fd;
->    	struct stat st;
->    	size_t sz = 0;
->    	int ret;
-> 
->    	while (1) {
->    		fd = open(fname, O_RDONLY);
->    		if (fd == -1) {
->    			perror("open");
->    			return 1;
->    		}
->    		if (!sz) {
->    			if (!fstat(fd, &st)) {
->    				sz = st.st_size;
->    			} else {
->    				perror("stat");
->    				return 1;
->    			}
->    		}
-> 
->                    ret = read_once(fd, sz);
->    		close(fd);
->    	}
->    }
-> 
->    int main(int argc, char *argv[]) {
->    	int fd;
->    	struct stat st;
->    	off_t sz;
->    	char *buf;
->    	int ret;
-> 
->    	if (argc != 2) {
->    		fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
->    		return 1;
->    	}
-> 
->    	return read_loop(argv[1]);
->    }
-> 
-> ====== repro.sh ======
->    #!/usr/bin/env bash
-> 
->    SCRIPT=$(readlink -f "$0")
->    DIR=$(dirname "$SCRIPT")
-> 
->    dev=$1
->    mnt=$2
->    shift
->    shift
-> 
->    CG_ROOT=/sys/fs/cgroup
->    BAD_CG=$CG_ROOT/bad-nbr
->    GOOD_CG=$CG_ROOT/good-nbr
->    NR_BIGGOS=1
->    NR_LITTLE=10
->    NR_VICTIMS=32
->    NR_VILLAINS=512
-> 
->    START_SEC=$(date +%s)
-> 
->    _elapsed() {
->    	echo "elapsed: $(($(date +%s) - $START_SEC))"
->    }
-> 
->    _stats() {
->    	local sysfs=/sys/fs/btrfs/$(findmnt -no UUID $dev)
-> 
->    	echo "================"
->    	date
->    	_elapsed
->    	cat $sysfs/commit_stats
->    	cat $BAD_CG/memory.pressure
->    }
-> 
->    _setup_cgs() {
->    	echo "+memory +cpuset" > $CG_ROOT/cgroup.subtree_control
->    	mkdir -p $GOOD_CG
->    	mkdir -p $BAD_CG
->    	echo max > $BAD_CG/memory.max
->    	# memory.high much less than the working set will cause heavy reclaim
->    	echo $((1 << 30)) > $BAD_CG/memory.high
-> 
->    	# victims get a subset of villain CPUs
->    	echo 0 > $GOOD_CG/cpuset.cpus
->    	echo 0,1,2,3 > $BAD_CG/cpuset.cpus
->    }
-> 
->    _kill_cg() {
->    	local cg=$1
->    	local attempts=0
->    	echo "kill cgroup $cg"
->    	[ -f $cg/cgroup.procs ] || return
->    	while true; do
->    		attempts=$((attempts + 1))
->    		echo 1 > $cg/cgroup.kill
->    		sleep 1
->    		procs=$(wc -l $cg/cgroup.procs | cut -d' ' -f1)
->    		[ $procs -eq 0 ] && break
->    	done
->    	rmdir $cg
->    	echo "killed cgroup $cg in $attempts attempts"
->    }
-> 
->    _biggo_vol() {
->    	echo $mnt/biggo_vol.$1
->    }
-> 
->    _biggo_file() {
->    	echo $(_biggo_vol $1)/biggo
->    }
-> 
->    _subvoled_biggos() {
->    	total_sz=$((10 << 30))
->    	per_sz=$((total_sz / $NR_VILLAINS))
->    	dd_count=$((per_sz >> 20))
->    	echo "create $NR_VILLAINS subvols with a file of size $per_sz bytes for a total of $total_sz bytes."
->    	for i in $(seq $NR_VILLAINS)
->    	do
->    		btrfs subvol create $(_biggo_vol $i) &>/dev/null
->    		dd if=/dev/zero of=$(_biggo_file $i) bs=1M count=$dd_count &>/dev/null
->    	done
->    	echo "done creating subvols."
->    }
-> 
->    _setup() {
->    	[ -f .done ] && rm .done
->    	findmnt -n $dev && exit 1
->          if [ -f .re-mkfs ]; then
-> 		mkfs.btrfs -f -m single -d single $dev >/dev/null || exit 2
-> 	else
-> 		echo "touch .re-mkfs to populate the test fs"
-> 	fi
-> 
->    	mount -o noatime $dev $mnt || exit 3
->    	[ -f .re-mkfs ] && _subvoled_biggos
->    	_setup_cgs
->    }
-> 
->    _my_cleanup() {
->    	echo "CLEANUP!"
->    	_kill_cg $BAD_CG
->    	_kill_cg $GOOD_CG
->    	sleep 1
->    	umount $mnt
->    }
-> 
->    _bad_exit() {
->    	_err "Unexpected Exit! $?"
->    	_stats
->    	exit $?
->    }
-> 
->    trap _my_cleanup EXIT
->    trap _bad_exit INT TERM
-> 
->    _setup
-> 
->    # Use a lot of page cache reading the big file
->    _villain() {
->    	local i=$1
->    	echo $BASHPID > $BAD_CG/cgroup.procs
->    	$DIR/big-read $(_biggo_file $i)
->    }
-> 
->    # Hit del_csum a lot by overwriting lots of small new files
->    _victim() {
->    	echo $BASHPID > $GOOD_CG/cgroup.procs
->    	i=0;
->    	while (true)
->    	do
->    		local tmp=$mnt/tmp.$i
-> 
->    		dd if=/dev/zero of=$tmp bs=4k count=2 >/dev/null 2>&1
->    		i=$((i+1))
->    		[ $i -eq $NR_LITTLE ] && i=0
->    	done
->    }
-> 
->    _one_sync() {
->    	echo "sync..."
->    	before=$(date +%s)
->    	sync
->    	after=$(date +%s)
->    	echo "sync done in $((after - before))s"
->    	_stats
->    }
-> 
->    # sync in a loop
->    _sync() {
->    	echo "start sync loop"
->    	syncs=0
->    	echo $BASHPID > $GOOD_CG/cgroup.procs
->    	while true
->    	do
->    		[ -f .done ] && break
->    		_one_sync
->    		syncs=$((syncs + 1))
->    		[ -f .done ] && break
->    		sleep 10
->    	done
->    	if [ $syncs -eq 0 ]; then
->    		echo "do at least one sync!"
->    		_one_sync
->    	fi
->    	echo "sync loop done."
->    }
-> 
->    _sleep() {
->    	local time=${1-60}
->    	local now=$(date +%s)
->    	local end=$((now + time))
->    	while [ $now -lt $end ];
->    	do
->    		echo "SLEEP: $((end - now))s left. Sleep 10."
->    		sleep 10
->    		now=$(date +%s)
->    	done
->    }
-> 
->    echo "start $NR_VILLAINS villains"
->    for i in $(seq $NR_VILLAINS)
->    do
->    	_villain $i &
->    	disown # get rid of annoying log on kill (done via cgroup anyway)
->    done
-> 
->    echo "start $NR_VICTIMS victims"
->    for i in $(seq $NR_VICTIMS)
->    do
->    	_victim &
->    	disown
->    done
-> 
->    _sync &
->    SYNC_PID=$!
-> 
->    _sleep $1
->    _elapsed
->    touch .done
->    wait $SYNC_PID
-> 
->    echo "OK"
->    exit 0
-> 
-> Without this patch, that reproducer:
-> - Ran for 6+ minutes instead of 60s
-> - Hung hundreds of threads in D state on the csum reader lock
-> - Got a commit stuck for 3 minutes
-> 
-> sync done in 388s
-> ================
-> Wed Jul  9 09:52:31 PM UTC 2025
-> elapsed: 420
-> commits 2
-> cur_commit_ms 0
-> last_commit_ms 159446
-> max_commit_ms 159446
-> total_commit_ms 160058
-> some avg10=99.03 avg60=98.97 avg300=75.43 total=418033386
-> full avg10=82.79 avg60=80.52 avg300=59.45 total=324995274
-> 
-> 419 hits state R, D comms big-read
->                   btrfs_tree_read_lock_nested
->                   btrfs_read_lock_root_node
->                   btrfs_search_slot
->                   btrfs_lookup_csum
->                   btrfs_lookup_bio_sums
->                   btrfs_submit_bbio
-> 
-> 1 hits state D comms btrfs-transacti
->                   btrfs_tree_lock_nested
->                   btrfs_lock_root_node
->                   btrfs_search_slot
->                   btrfs_del_csums
->                   __btrfs_run_delayed_refs
->                   btrfs_run_delayed_refs
-> 
-> With the patch, the reproducer exits naturally, in 65s, completing a
-> pretty decent 4 commits, despite heavy memory pressure. Occasionally you
-> can still trigger a rather long commit (couple seconds) but never one
-> that is minutes long.
-> 
-> sync done in 3s
-> ================
-> elapsed: 65
-> commits 4
-> cur_commit_ms 0
-> last_commit_ms 485
-> max_commit_ms 689
-> total_commit_ms 2453
-> some avg10=98.28 avg60=64.54 avg300=19.39 total=64849893
-> full avg10=74.43 avg60=48.50 avg300=14.53 total=48665168
-> 
-> some random rwalker samples showed the most common stack in reclaim,
-> rather than the csum tree:
-> 145 hits state R comms bash, sleep, dd, shuf
->                   shrink_folio_list
->                   shrink_lruvec
->                   shrink_node
->                   do_try_to_free_pages
->                   try_to_free_mem_cgroup_pages
->                   reclaim_high
-> 
-> Link: https://lpc.events/event/18/contributions/1883/
-> Signed-off-by: Boris Burkov <boris@bur.io>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 > ---
-> Changelog:
-> v7:
-> - fix various typos.
-> - remove an unneeded fs_info variable.
-> - rework the commit message and inline comment to better reflect the
->    important details of the difference in lock contention between the eb
->    rwsems and the commit_root_sem.
-> - include the full standalone reproduction script in the commit message.
-> v6:
-> - properly handle bio_ctrl submitting a bbio spanning multiple
->    extent_maps with different generations. This was causing csum errors
->    on the previous versions.
-> v5:
-> - static inline flag functions
-> - make bbio const for the getter
-> - move around and improve the comments
-> v4:
-> - replace generic private flag machinery with specific function for the
->    one flag
-> - move the bio_ctrl field to take advantage of alignment
-> v3:
-> - add some simple machinery for setting/getting/clearing btrfs private
->    flags in bi_flags
-> - clear those flags before bio_submit (ensure no-op wrt block layer)
-> - store the csum commit root flag there to save space
-> v2:
-> - hold the commit_root_sem for the duration of the entire lookup, not
->    just per btrfs_search_slot. Note that we can't naively do the thing
->    where we release the lock every loop as that is exactly what we are
->    trying to avoid. Theoretically, we could re-grab the lock and fully
->    start over if the lock is write contended or something. I suspect the
->    rwsem fairness features will let the commit writer get it fast enough
->    anyway.
+>  tests/generic/211     | 58 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/211.out |  6 +++++
+>  2 files changed, 64 insertions(+)
+>  create mode 100755 tests/generic/211
+>  create mode 100644 tests/generic/211.out
 > 
-> ---
->   fs/btrfs/bio.c         | 10 ++++++++++
->   fs/btrfs/bio.h         | 17 +++++++++++++++++
->   fs/btrfs/compression.c |  2 ++
->   fs/btrfs/extent_io.c   | 38 ++++++++++++++++++++++++++++++++++++++
->   fs/btrfs/file-item.c   | 29 +++++++++++++++++++++++++++++
->   5 files changed, 96 insertions(+)
-> 
-> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> index 50b5fc1c06d7..789cb3e5ba6d 100644
-> --- a/fs/btrfs/bio.c
-> +++ b/fs/btrfs/bio.c
-> @@ -93,6 +93,8 @@ static struct btrfs_bio *btrfs_split_bio(struct btrfs_fs_info *fs_info,
->   		refcount_inc(&orig_bbio->ordered->refs);
->   		bbio->ordered = orig_bbio->ordered;
->   	}
-> +	if (btrfs_bio_csum_search_commit_root(orig_bbio))
-> +		btrfs_bio_set_csum_search_commit_root(bbio);
->   	atomic_inc(&orig_bbio->pending_ios);
->   	return bbio;
->   }
-> @@ -479,6 +481,14 @@ static void btrfs_submit_mirrored_bio(struct btrfs_io_context *bioc, int dev_nr)
->   static void btrfs_submit_bio(struct bio *bio, struct btrfs_io_context *bioc,
->   			     struct btrfs_io_stripe *smap, int mirror_num)
->   {
-> +	/*
-> +	 * It is important to clear the bits we used in bio->bi_flags.
-> +	 * Because bio->bi_flags belongs to the block layer, we should
-> +	 * avoid leaving stray bits set when we transfer ownership of
-> +	 * the bio by submitting it.
-> +	 */
+> diff --git a/tests/generic/211 b/tests/generic/211
+> new file mode 100755
+> index 00000000..c77508fe
+> --- /dev/null
+> +++ b/tests/generic/211
+> @@ -0,0 +1,58 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2025 SUSE Linux Products GmbH.  All Rights Reserved.
+> +#
+> +# FS QA Test 211
+> +#
+> +# Test that overwriting a file with mmap when the filesystem has no more space
+> +# available for data allocation works. The motivation here is to check that
+> +# NOCOW mode of a COW filesystem (such as btrfs) works as expected.
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick rw mmap
+> +
+> +. ./common/filter
+> +
+> +_require_scratch
+> +
+> +[ "$FSTYP" = "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
+> +	"btrfs: fix -ENOSPC mmap write failure on NOCOW files/extents"
+> +
+> +# Use a 512M fs so that it's fast to fill it with data but not too small such
+> +# that on btrfs it results in a fs with mixed block groups - we want to have
+> +# dedicated block groups for data and metadata, so that after filling all the
+> +# data block groups we can do a NOCOW write with mmap (if we have enough free
+> +# metadata space available).
+> +fs_size=$(_small_fs_size_mb 512)
+> +_scratch_mkfs_sized $((fs_size * 1024 * 1024)) >>$seqres.full 2>&1 || \
+> +	_fail "mkfs failed"
 
-If that's the case, I'd prefer to have a dedicated flag for it.
+_scratch_mkfs_sized calls _notrun if it fails:
 
-In fact there is a 7 bytes hole inside btrfs_bio, and we don't need to 
-bother the extra helpers for this.
+  _scratch_mkfs_sized()
+  {
+        _try_scratch_mkfs_sized "$@" || _notrun "_scratch_mkfs_sized failed with ($*)"
+  }
 
-Otherwise it looks good to me.
+So you can let it _notrun:
+_scratch_mkfs_sized $((fs_size * 1024 * 1024)) >>$seqres.full 2>&1
+
+or you'd like to _fail:
+
+_try_scratch_mkfs_sized $((fs_size * 1024 * 1024)) >>$seqres.full 2>&1 || \
+	 _fail "mkfs failed"
+
+> +_scratch_mount
+> +
+> +touch $SCRATCH_MNT/foobar
+> +
+> +# Set the file to NOCOW mode on btrfs, which must be done while the file is
+> +# empty, otherwise it fails.
+> +if [ $FSTYP == "btrfs" ]; then
+> +	_require_chattr C
+> +	$CHATTR_PROG +C $SCRATCH_MNT/foobar
+> +fi
+> +
+> +# Add initial data to the file we will later overwrite with mmap.
+> +$XFS_IO_PROG -c "pwrite -S 0xab 0 1M" $SCRATCH_MNT/foobar | _filter_xfs_io
+> +
+> +# Now fill all the remaining space with data.
+> +blksz=$(_get_block_size $SCRATCH_MNT)
+> +dd if=/dev/zero of=$SCRATCH_MNT/filler bs=$blksz >>$seqres.full 2>&1
+
+As this's a generic test case, I'm wondering if the common/populate:_fill_fs()
+helps?
 
 Thanks,
-Qu
+Zorro
 
-> +	btrfs_bio_clear_csum_search_commit_root(btrfs_bio(bio));
 > +
->   	if (!bioc) {
->   		/* Single mirror read/write fast path. */
->   		btrfs_bio(bio)->mirror_num = mirror_num;
-> diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
-> index dc2eb43b7097..9f4bcbe0a76c 100644
-> --- a/fs/btrfs/bio.h
-> +++ b/fs/btrfs/bio.h
-> @@ -104,6 +104,23 @@ struct btrfs_bio *btrfs_bio_alloc(unsigned int nr_vecs, blk_opf_t opf,
->   				  btrfs_bio_end_io_t end_io, void *private);
->   void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status);
->   
-> +#define BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT	(1U << (BIO_FLAG_LAST + 1))
+> +# Overwrite the file with a mmap write. Should succeed.
+> +$XFS_IO_PROG -c "mmap -w 0 1M"        \
+> +	     -c "mwrite -S 0xcd 0 1M" \
+> +	     -c "munmap"              \
+> +	     $SCRATCH_MNT/foobar
 > +
-> +static inline void btrfs_bio_set_csum_search_commit_root(struct btrfs_bio *bbio)
-> +{
-> +	bbio->bio.bi_flags |= BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT;
-> +}
+> +# Cycle mount and dump the file's content. We expect to see the new data.
+> +_scratch_cycle_mount
+> +_hexdump $SCRATCH_MNT/foobar
 > +
-> +static inline void btrfs_bio_clear_csum_search_commit_root(struct btrfs_bio *bbio)
-> +{
-> +	bbio->bio.bi_flags &= ~BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT;
-> +}
-> +
-> +static inline bool btrfs_bio_csum_search_commit_root(const struct btrfs_bio *bbio)
-> +{
-> +	return bbio->bio.bi_flags & BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT;
-> +}
-> +
->   /* Submit using blkcg_punt_bio_submit. */
->   #define REQ_BTRFS_CGROUP_PUNT			REQ_FS_PRIVATE
->   
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index d09d622016ef..cadf5eccc640 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -602,6 +602,8 @@ void btrfs_submit_compressed_read(struct btrfs_bio *bbio)
->   	cb->compressed_len = compressed_len;
->   	cb->compress_type = btrfs_extent_map_compression(em);
->   	cb->orig_bbio = bbio;
-> +	if (btrfs_bio_csum_search_commit_root(bbio))
-> +		btrfs_bio_set_csum_search_commit_root(&cb->bbio);
->   
->   	btrfs_free_extent_map(em);
->   
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 685ee685ce92..a8b3d27699e8 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -101,6 +101,16 @@ struct btrfs_bio_ctrl {
->   	enum btrfs_compression_type compress_type;
->   	u32 len_to_oe_boundary;
->   	blk_opf_t opf;
-> +	/*
-> +	 * For data read bios, we attempt to optimize csum lookups if the extent
-> +	 * generation is older than the current one. To make this possible, we
-> +	 * need to track the maximum generation of an extent in a bio_ctrl to
-> +	 * make the decision when submitting the bio.
-> +	 *
-> +	 * See the comment in btrfs_lookup_bio_sums for more detail on the
-> +	 * need for this optimization.
-> +	 */
-> +	u64 generation;
->   	btrfs_bio_end_io_t end_io_func;
->   	struct writeback_control *wbc;
->   
-> @@ -113,6 +123,28 @@ struct btrfs_bio_ctrl {
->   	struct readahead_control *ractl;
->   };
->   
-> +/*
-> + * Helper to set the csum search commit root option for a bio_ctrl's bbio
-> + * before submitting the bio.
-> + *
-> + * Only for use by submit_one_bio().
-> + */
-> +static void bio_set_csum_search_commit_root(struct btrfs_bio_ctrl *bio_ctrl)
-> +{
-> +	struct btrfs_bio *bbio = bio_ctrl->bbio;
-> +
-> +	ASSERT(bbio);
-> +
-> +	if (!(btrfs_op(&bbio->bio) == BTRFS_MAP_READ && is_data_inode(bbio->inode)))
-> +		return;
-> +
-> +	if (bio_ctrl->generation &&
-> +	    bio_ctrl->generation < btrfs_get_fs_generation(bbio->inode->root->fs_info))
-> +		btrfs_bio_set_csum_search_commit_root(bio_ctrl->bbio);
-> +	else
-> +		btrfs_bio_clear_csum_search_commit_root(bio_ctrl->bbio);
-> +}
-> +
->   static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
->   {
->   	struct btrfs_bio *bbio = bio_ctrl->bbio;
-> @@ -123,6 +155,8 @@ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
->   	/* Caller should ensure the bio has at least some range added */
->   	ASSERT(bbio->bio.bi_iter.bi_size);
->   
-> +	bio_set_csum_search_commit_root(bio_ctrl);
-> +
->   	if (btrfs_op(&bbio->bio) == BTRFS_MAP_READ &&
->   	    bio_ctrl->compress_type != BTRFS_COMPRESS_NONE)
->   		btrfs_submit_compressed_read(bbio);
-> @@ -131,6 +165,8 @@ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
->   
->   	/* The bbio is owned by the end_io handler now */
->   	bio_ctrl->bbio = NULL;
-> +	/* Reset the generation for the next bio */
-> +	bio_ctrl->generation = 0;
->   }
->   
->   /*
-> @@ -1026,6 +1062,8 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
->   		if (prev_em_start)
->   			*prev_em_start = em->start;
->   
-> +		bio_ctrl->generation = max(bio_ctrl->generation, em->generation);
-> +
->   		btrfs_free_extent_map(em);
->   		em = NULL;
->   
-> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> index c09fbc257634..b33742aceacb 100644
-> --- a/fs/btrfs/file-item.c
-> +++ b/fs/btrfs/file-item.c
-> @@ -397,6 +397,33 @@ int btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
->   		path->skip_locking = 1;
->   	}
->   
-> +	/*
-> +	 * If we are searching for a csum of an extent from a past
-> +	 * transaction, we can search in the commit root and reduce
-> +	 * lock contention on the csum tree root node's extent buffer.
-> +	 *
-> +	 * This is important because that lock is an rwswem which gets
-> +	 * pretty heavy write load, unlike the commit_root_sem.
-> +	 *
-> +	 * Due to how rwsem is implemented, there is a possible
-> +	 * priority inversion where the readers holding the lock don't
-> +	 * get scheduled (say they're in a cgroup stuck in heavy reclaim)
-> +	 * which then blocks writers, including transaction commit. By
-> +	 * using a semaphore with fewer writers (only a commit switching
-> +	 * the roots), we make this issue less likely.
-> +	 *
-> +	 * Note that we don't rely on btrfs_search_slot to lock the
-> +	 * commit root csum. We call search_slot multiple times, which would
-> +	 * create a potential race where a commit comes in between searches
-> +	 * while we are not holding the commit_root_sem, and we get csums
-> +	 * from across transactions.
-> +	 */
-> +	if (btrfs_bio_csum_search_commit_root(bbio)) {
-> +		path->search_commit_root = 1;
-> +		path->skip_locking = 1;
-> +		down_read(&fs_info->commit_root_sem);
-> +	}
-> +
->   	while (bio_offset < orig_len) {
->   		int count;
->   		u64 cur_disk_bytenr = orig_disk_bytenr + bio_offset;
-> @@ -442,6 +469,8 @@ int btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
->   		bio_offset += count * sectorsize;
->   	}
->   
-> +	if (btrfs_bio_csum_search_commit_root(bbio))
-> +		up_read(&fs_info->commit_root_sem);
->   	return ret;
->   }
->   
+> +# success, all done
+> +_exit 0
+> diff --git a/tests/generic/211.out b/tests/generic/211.out
+> new file mode 100644
+> index 00000000..71cdf0f8
+> --- /dev/null
+> +++ b/tests/generic/211.out
+> @@ -0,0 +1,6 @@
+> +QA output created by 211
+> +wrote 1048576/1048576 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +000000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  >................<
+> +*
+> +100000
+> -- 
+> 2.47.2
+> 
+> 
+
 
