@@ -1,117 +1,271 @@
-Return-Path: <linux-btrfs+bounces-15433-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15434-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5023AB00FDF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jul 2025 01:50:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99312B00FE6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jul 2025 01:52:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD6797AB7F2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 23:48:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1D3E645A7C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 23:52:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6693D2951D5;
-	Thu, 10 Jul 2025 23:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F8C307AC5;
+	Thu, 10 Jul 2025 23:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lW45ncYE"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t8qyaQH6";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t8qyaQH6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C96269CF1
-	for <linux-btrfs@vger.kernel.org>; Thu, 10 Jul 2025 23:50:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB0B306DD3
+	for <linux-btrfs@vger.kernel.org>; Thu, 10 Jul 2025 23:51:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752191416; cv=none; b=PbzSEaNFXhEg1JsBpArbceIkBb3w2k+hsECdCYdaMAH1PeXoJhQrqU/KYLXvZiRozuCocr3vzlibdIXxYpGHQhYOkEV41aHADjV+tXTCoUuoBcJkPMoEOhVBxdPPxM2EtWnbY0oApqsuPGkwMh3GsIJnmI3Czya3JOrZf7pC1SM=
+	t=1752191515; cv=none; b=E0+ExjqqDtifVQXY2fe9hlPzShy+KXMcbC2N+w/bDWTZAXRqLN9L5FCsx5+S9Cacm/OD0HPFOVQRqsNHfHb5COmOfmV88lwAFWGw9hzSLWnnDbTVBFC0Bcu0ySIV+qCcjzyroBo5ctE8L3ilIaYSS6Gy4fkVZP6Kh6HK8D6kk2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752191416; c=relaxed/simple;
-	bh=3tzl65rBO3Yv8KHYuTFmnq/R4cPrySxS8jpRI9eQ1o4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e2YFPglTqr6/EvTlh7oQWLYtXTcsXebnuSkIiUwFcGhNn7AsMKDWEbfTSdylD10C+9S9xpEW9kXU6F6uxuPAKQ8/RabN+Ms3SpGNT7FWNc2492hPYmXcHRImMiPdIZVClh9X03J2mtgMm6iUqen7K/UucC17nrJu5qbgecyOx8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lW45ncYE; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1752191414; x=1783727414;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3tzl65rBO3Yv8KHYuTFmnq/R4cPrySxS8jpRI9eQ1o4=;
-  b=lW45ncYE5G/KrtzvNR7DovljqTXQ8v+oDpjwxlmwfbc7mYyzkVtbVDnh
-   L0W2vtGTyWcGoT0T4hHEz61AnXPPn+vd8/KIcaKzngwknguZ8A44c3kUx
-   scULcn7d3hWxc/Hhz8Y8WFM3+JdhjtFbCyiSZTfxz4yAjtuYkljQze1j4
-   H3RylABTqlSIx79RnLII8ia3KDgkxxVPQtnjQ7LCzIE+/PNjqt5yLsRWs
-   t4Y+YE0R36Nql1fNyRhvzx4qpB94uL9IE0HdU14h4DrdJ3jO2M46d6XRg
-   eL8m7weg9i+mBszITYgqm/cV7TJftKSH5pPv00dF+pItuaNedaRq47ICg
-   w==;
-X-CSE-ConnectionGUID: jqCUsbYER7qGwO/EsQgC2A==
-X-CSE-MsgGUID: oT43ORPkQReAloIUZ34k2g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11490"; a="65545855"
-X-IronPort-AV: E=Sophos;i="6.16,302,1744095600"; 
-   d="scan'208";a="65545855"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2025 16:50:13 -0700
-X-CSE-ConnectionGUID: TUQ/RxUxQP22EQzVZRqGgg==
-X-CSE-MsgGUID: 63uZ9fmXRq6aqPyC7IaGUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,302,1744095600"; 
-   d="scan'208";a="156944636"
-Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 10 Jul 2025 16:50:12 -0700
-Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ua11l-0005bX-2X;
-	Thu, 10 Jul 2025 23:50:09 +0000
-Date: Fri, 11 Jul 2025 07:49:17 +0800
-From: kernel test robot <lkp@intel.com>
-To: Leo Martins <loemra.dev@gmail.com>, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Cc: Paul Gazzillo <paul@pgazz.com>,
-	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-	oe-kbuild-all@lists.linux.dev, jlayton@kernel.org
-Subject: Re: [PATCH] btrfs: implement ref_tracker for delayed_nodes
-Message-ID: <202507110735.DbwDC17f-lkp@intel.com>
-References: <fa19acf9dc38e93546183fc083c365cdb237e89b.1752098515.git.loemra.dev@gmail.com>
+	s=arc-20240116; t=1752191515; c=relaxed/simple;
+	bh=Pfyvj0DswOZVOtAgMHxN0xPdmHStWQtPgvyae5DJ9L0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=XhUtHGsLGVGoE/eGg6dS8kJ9ffHSNVL1lEqxDRjPquCgi+4Zat9x7UyEdUvjS5y32obKETOSyCyg2Wui2BjJ7sHLauKYQG5Xmoc0mbzk12ZogDzZbzOapUrGftFQ7ooIPsqq9oNcDBJhpAg7FpNOWX+fs+XyI+jBj+2aRJOJtKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t8qyaQH6; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t8qyaQH6; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2348A1F38C;
+	Thu, 10 Jul 2025 23:51:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1752191511; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=f0OXafT/ST9O3LhTsts6tDQPcFhvU8PVesRTsFgBd3U=;
+	b=t8qyaQH6YWb3WXF8I2cTnEXOGSbjNnQXKcSWQvpsm3Re031NgtJVEZgSP1jNMaVqMQovFl
+	YK+58dXwYeMxq3nw6zXmKRjGUu8i6415WjdpRdgcL4M40CoM0cMedE9dAWLHXZ6prNokos
+	Zp4tgwSlWZ3RV3rlTPFUpVQqE7GKUjQ=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1752191511; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=f0OXafT/ST9O3LhTsts6tDQPcFhvU8PVesRTsFgBd3U=;
+	b=t8qyaQH6YWb3WXF8I2cTnEXOGSbjNnQXKcSWQvpsm3Re031NgtJVEZgSP1jNMaVqMQovFl
+	YK+58dXwYeMxq3nw6zXmKRjGUu8i6415WjdpRdgcL4M40CoM0cMedE9dAWLHXZ6prNokos
+	Zp4tgwSlWZ3RV3rlTPFUpVQqE7GKUjQ=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0AFFA136CB;
+	Thu, 10 Jul 2025 23:51:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id KTymLRVScGhOUAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 10 Jul 2025 23:51:49 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: [PATCH] btrfs/282: use timed writes to make sure scrub has enough run time
+Date: Fri, 11 Jul 2025 09:21:46 +0930
+Message-ID: <20250710235146.136358-1-wqu@suse.com>
+X-Mailer: git-send-email 2.50.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fa19acf9dc38e93546183fc083c365cdb237e89b.1752098515.git.loemra.dev@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -2.80
 
-Hi Leo,
+[FAILURE]
+Test case btrfs/282 still fails on some setup:
 
-kernel test robot noticed the following build warnings:
+    output mismatch (see /opt/xfstests/results//btrfs/282.out.bad)
+    --- tests/btrfs/282.out	2025-06-27 22:00:35.000000000 +0200
+    +++ /opt/xfstests/results//btrfs/282.out.bad	2025-07-08 20:40:50.042410321 +0200
+    @@ -1,3 +1,4 @@
+     QA output created by 282
+     wrote 2147483648/2147483648 bytes at offset 0
+     XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+    +scrub speed 2152038400 Bytes/s is not properly throttled, target is 1076019200 Bytes/s
+    ...
+    (Run diff -u /opt/xfstests/tests/btrfs/282.out /opt/xfstests/results//btrfs/282.out.bad  to see the entire diff)
 
-[auto build test WARNING on kdave/for-next]
-[also build test WARNING on linus/master v6.16-rc5 next-20250710]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+[CAUSE]
+Checking the full output, it shows the scrub is running too fast:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Leo-Martins/btrfs-implement-ref_tracker-for-delayed_nodes/20250710-060640
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/fa19acf9dc38e93546183fc083c365cdb237e89b.1752098515.git.loemra.dev%40gmail.com
-patch subject: [PATCH] btrfs: implement ref_tracker for delayed_nodes
-config: alpha-kismet-CONFIG_REF_TRACKER-CONFIG_BTRFS_DELAYED_NODE_REF_TRACKER-0-0 (https://download.01.org/0day-ci/archive/20250711/202507110735.DbwDC17f-lkp@intel.com/config)
-reproduce: (https://download.01.org/0day-ci/archive/20250711/202507110735.DbwDC17f-lkp@intel.com/reproduce)
+Starting scrub on devid 1
+scrub done for c45c8821-4e55-4d29-8172-f1bf30b7182c
+Scrub started:    Tue Jul  8 20:40:47 2025
+Status:           finished
+Duration:         0:00:00 <<<
+Total to scrub:   2.00GiB
+Rate:             2.00GiB/s
+Error summary:    no errors found
+Starting scrub on devid 1
+scrub done for c45c8821-4e55-4d29-8172-f1bf30b7182c
+Scrub started:    Tue Jul  8 20:40:48 2025
+Status:           finished
+Duration:         0:00:01
+Total to scrub:   2.00GiB
+Rate:             2.00GiB/s
+Error summary:    no errors found
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202507110735.DbwDC17f-lkp@intel.com/
+The original run takes less than 1 seconds, making the scrub rate
+calculation very unreliable, no wonder the speed limit is not able to
+properly work.
 
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for REF_TRACKER when selected by BTRFS_DELAYED_NODE_REF_TRACKER
-   WARNING: unmet direct dependencies detected for REF_TRACKER
-     Depends on [n]: STACKTRACE_SUPPORT
-     Selected by [y]:
-     - BTRFS_DELAYED_NODE_REF_TRACKER [=y] && BLOCK [=y] && BTRFS_DEBUG [=y]
+[FIX]
+Instead of using fixed 2GiB file size, let the test create a filler for
+4 seconds with direct IO, this would more or less ensure the scrub will
+take 4 seoncds to run.
 
+With 4 seconds as run time, the scrub rate can be calculated more or
+less reliably.
+
+On my testing VM, the result looks like this:
+
+Starting scrub on devid 1
+scrub done for b542bdfb-7be4-44b3-add0-ad3621927e2b
+Scrub started:    Fri Jul 11 09:13:31 2025
+Status:           finished
+Duration:         0:00:04
+Total to scrub:   2.72GiB
+Rate:             696.62MiB/s
+Error summary:    no errors found
+Starting scrub on devid 1
+scrub done for b542bdfb-7be4-44b3-add0-ad3621927e2b
+Scrub started:    Fri Jul 11 09:13:35 2025
+Status:           finished
+Duration:         0:00:08
+Total to scrub:   2.72GiB
+Rate:             348.31MiB/s
+Error summary:    no errors found
+
+However this exposed a new failure mode, that if the storage is too
+fast, like the original report, that the initial 4 seconds write can
+fill the fs and exit early.
+
+In that case we have no other solution but skipping the test case.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tests/btrfs/282     | 48 ++++++++++++++++++++++++++++++++++++++++-----
+ tests/btrfs/282.out |  3 +--
+ 2 files changed, 44 insertions(+), 7 deletions(-)
+
+diff --git a/tests/btrfs/282 b/tests/btrfs/282
+index 3b4ad9ea..39d2d8c0 100755
+--- a/tests/btrfs/282
++++ b/tests/btrfs/282
+@@ -9,13 +9,19 @@
+ . ./common/preamble
+ _begin_fstest auto scrub
+ 
++_cleanup()
++{
++	[ -n "$mount_pid" ] && kill $mount_pid &> /dev/null
++	wait
++}
++
+ . ./common/filter
+ 
+ _wants_kernel_commit eb3b50536642 \
+ 	"btrfs: scrub: per-device bandwidth control"
+ 
+-# We want at least 5G for the scratch device.
+-_require_scratch_size $(( 5 * 1024 * 1024))
++# We want at least 10G for the scratch device.
++_require_scratch_size $(( 10 * 1024 * 1024))
+ 
+ # Make sure we can create scrub progress data file
+ if [ -e /var/lib/btrfs ]; then
+@@ -36,9 +42,39 @@ if [ ! -f "${devinfo_dir}/scrub_speed_max" ]; then
+ 	_notrun "No sysfs interface for scrub speed throttle"
+ fi
+ 
+-# Create a 2G file for later scrub workload.
+-# The 2G size is chosen to fit even DUP on a 5G disk.
+-$XFS_IO_PROG -f -c "pwrite -i /dev/urandom 0 2G" $SCRATCH_MNT/file | _filter_xfs_io
++# Create a NOCOW file and do direct IO for 4 seconds to measure the performance.
++#
++# The only way to reach real disk performance is direct IO without falling back
++# to buffered IO, thus requiring NOCOW.
++touch $SCRATCH_MNT/filler
++chattr +C $SCRATCH_MNT/filler
++$XFS_IO_PROG -d -c "pwrite -b 128K 0 1E" "$SCRATCH_MNT/filler" >> $seqres.full 2>&1 &
++filler_pid=$!
++sleep 4
++kill $filler_pid
++wait
++
++# Make sure we still have some space left, if we hit ENOSPC, this means the
++# storage is too fast and the filler didn't reach full 4 seconds write before
++# hitting ENOSPC. In that case we have no reliable way to calculate scrub speed
++# but skip the run.
++_pwrite_byte 0x00 0 1M $SCRATCH_MNT/foobar >> $seqres.full 2>&1
++if [ $? -ne 0 ]; then
++	_notrun "Storage too fast, unreliable scrub speed"
++fi
++
++# But above NOCOW file has no csum, thus it won't really cause much
++# verification workload. Use the filesize of above run to re-create a file with data
++# checksum.
++size=$(_get_filesize $SCRATCH_MNT/filler)
++rm $SCRATCH_MNT/filler
++# Make sure the file is deleted.
++sync
++
++# Recreate one with COW thus checksum.
++touch $SCRATCH_MNT/filler
++chattr -C $SCRATCH_MNT/filler
++$XFS_IO_PROG -c "pwrite -i /dev/urandom 0 $size" $SCRATCH_MNT/filler >> $seqres.full
+ 
+ # Writeback above data, as scrub only verify the committed data.
+ sync
+@@ -83,6 +119,8 @@ if [ "$speed" -gt "$(( $target_speed * 11 / 10 ))" -o \
+ 	echo "scrub speed $speed Bytes/s is not properly throttled, target is $target_speed Bytes/s"
+ fi
+ 
++echo "Silence is golden"
++
+ # success, all done
+ status=0
+ exit
+diff --git a/tests/btrfs/282.out b/tests/btrfs/282.out
+index 8d53e7eb..9e837650 100644
+--- a/tests/btrfs/282.out
++++ b/tests/btrfs/282.out
+@@ -1,3 +1,2 @@
+ QA output created by 282
+-wrote 2147483648/2147483648 bytes at offset 0
+-XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Silence is golden
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.50.0
+
 
