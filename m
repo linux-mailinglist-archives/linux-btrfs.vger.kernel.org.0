@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-15431-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15432-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34BE6B00DB8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 23:27:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88BA4B00E59
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jul 2025 00:00:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F35AD548602
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 21:27:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5156F542AB5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 22:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B57552FE319;
-	Thu, 10 Jul 2025 21:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25D42292B3E;
+	Thu, 10 Jul 2025 22:00:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="FiexxIXh"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="L7RzkLqg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB6123506E
-	for <linux-btrfs@vger.kernel.org>; Thu, 10 Jul 2025 21:27:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0350123FC74;
+	Thu, 10 Jul 2025 22:00:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752182841; cv=none; b=o6qViNbcGR2SCXR11c6eVfibvJl+vkSHKtx4Mw+Ix0zwSXB5RYeVyRmM2Y66s13s+HpMhF+ZlDQkPR/mLN4FHoZmGz/xZnTIE3cXbBAXcps+GmK9iBgLJrWzHT2jNxGfz1nz3IzcEm5bQGFO0SFIYqIdBrLnSsiGzht6na6ayDs=
+	t=1752184841; cv=none; b=Vsbbw7MNs6RSS47akrZyGAnnJ65hTvSEqg6NJBf5+gFQyN0wctnVVVMpRWfXokx/VOpMJETv3DF3zObb5J5mWu7teiSWu7EnbrBwof26DBrd0RQlM961JdKFfbVEedBIl93U5Y2MgvTSyFI+ez13gep2O6pUVM1KviQr06R4CtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752182841; c=relaxed/simple;
-	bh=sIVuLMBSOmlGKJ1CsDb5dynfYdi7XSxz+3RJUMdpLLA=;
+	s=arc-20240116; t=1752184841; c=relaxed/simple;
+	bh=mFLvlq/sXqCTyhLWuvJC47rR5gikNZuQZVZZYlm8g38=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WYpwn3sTkhLl+hnuXLNL++6mfydujIlNX9DdbtygnfZ/bAhtKbLttKWBSo3o+uWe6pOfhFrWm18lNFcEcaxtgHunT+ZK23pm0jl1svbJa669RxYelRY7wJb2j6F8eSmQgTgp4oVUdPm5TJ65xxeLXM5m8XnJH4hiy+LQjV44LmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=FiexxIXh; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=UsbkCylMVWFVTv5+YouDrYL2nQAxFJLP4Qflk9U14kPwDfwM8CfsF/3mCCssXxFUUM3yyy6L8H7dkZXaVkCh9qZm+YSreI8oFl6e7zw+qLFKPG16uA5568axn7geL8wy3nV1dKyVfTQiP0zHCDelhn/LrbLD0vCc0a/j8LD1/iQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=L7RzkLqg; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1752182832; x=1752787632; i=quwenruo.btrfs@gmx.com;
-	bh=9foR64ufZI/PMF3LDtpnVOD9X0seyEesaVdwl4Wju5k=;
+	s=s31663417; t=1752184836; x=1752789636; i=quwenruo.btrfs@gmx.com;
+	bh=9ho8/L+5dWp0hUAoY9u+ymB+WKpequvLnS72Cgtt+Cc=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=FiexxIXhsgnoh1GRvTzdSZxlmzmKTYW45OpPXaGwxzHf8e9lg9qmjPv3RaSiqRJI
-	 sc0fLrEW+cY92xrEYh8Sf+SaCKKZfDvyJsS26TvSWTASNlX7FGaKs+ZRFyloL7pLg
-	 l4XI4jGph4N6UsUk/ozpEMnW7fb2VptvK966Ku/Q5coZfhWvGIST1I0Jw2GaVZ9bi
-	 bLHMU3+RyYBNWEFFobn69n8yD9GsEw1YfMCK+13VqGy/QbwwT6ZjEkirbkoswlG2Z
-	 GGwijV3AZkh3rfY+7X9eN6eUZ0qxLHlpUXqGFu0Dkz6ZgetJxW+fI9PrM7sDqZFWd
-	 iNNDPeZEoSNgXfL/JQ==
+	b=L7RzkLqgBUphvLcoEvcvo8DAVeIIwvXnzxaFNHt4nM+cHTnkmcu+iS+OTJNJ5DWi
+	 Sru1tQTyxm3nnTiF2G7XWbAGQHH+IHIcv9U5Zw3NbZwnuUav/lNpveAt8fY2X8ZaI
+	 SA7dq8CYGlNNKo9zT50i8DZ/t0I4A0HQb7ccvWQvBsSEk8BvvcmHKE5t9np5uFvPX
+	 B1tVIMza5tmppOgbdsucaIab18BepxveQQXMSRVJAHDfW2cT+sXSdhXGEYoAAnpsE
+	 TGE9KDBkKJQiHrZwbonDfyV3egqM5kdIZVMYCEP1+qfrTw43CTOrSu5CMc+UkXof0
+	 l6NSjzTKJyuYlpjZRw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1Obb-1ulzKH2NyN-00uzpA; Thu, 10
- Jul 2025 23:27:11 +0200
-Message-ID: <1dbd43cb-7e1f-455c-8de8-4b91826b800e@gmx.com>
-Date: Fri, 11 Jul 2025 06:57:06 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAfUe-1uTLUR3DCa-003RU6; Fri, 11
+ Jul 2025 00:00:36 +0200
+Message-ID: <7f5c6eb7-d1ae-4730-b7ee-daeb2b805e16@gmx.com>
+Date: Fri, 11 Jul 2025 07:30:31 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7] btrfs: try to search for data csums in commit root
-To: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <112a66d49285e38d7a567aa780d9545baafd3deb.1752101883.git.boris@bur.io>
- <98154adb-057a-44d7-97a4-9bfd669b9454@suse.com>
- <20250710152606.GB588947@zen.localdomain>
+Subject: Re: [PATCH v2] generic: test overwriting file with mmap on a full
+ filesystem
+To: fdmanana@kernel.org, fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <f28ef5098ed18d53df6f94faded1b352bb833527.1752049536.git.fdmanana@suse.com>
+ <681c9dcaca0bf16a694d8f56449618001cf20df6.1752166696.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,275 +90,198 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250710152606.GB588947@zen.localdomain>
+In-Reply-To: <681c9dcaca0bf16a694d8f56449618001cf20df6.1752166696.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LLFYFjl04eYqGaO0SCiGLTCJV95jBZGg6azef9o0i5T7wmFpCY3
- pK1kj9/J4sHfUkMqLqiOfZMZkoMJ93UxL84CqhllBvpww0iEtGH/LyrOt3YCL/f5niCn2AI
- Znq06IsN3dI6SqIL7T5M45daqTILZOtrwtZmlh9D3rItst0BVQ6tbSqeUkveMFK9FvEZXsM
- jHPmVXDIdH0NmU9bqzAIg==
+X-Provags-ID: V03:K1:zcMxsJ33zs7Fe2U838z6ArOfOj8KhxFKXjWFRZatXTWNFQzPaBR
+ 7sztL/y9aftI9OyMqynneRtwpMC3lSNacU1yvbTomfeK+n6GYQX/eJF1UIp/bWY/AKRdWDJ
+ /D41SG6aOlBvnWXY/qiD04bH6u0WKmmQZENnMMh5YfEFejAx6g6pVeGSQ3NUoHTzvWT/SSo
+ NQ6zPBRwZ6OwYL7cswgIg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:yrUxbTNg/Lk=;LkYFyD9bArlEw5KT5mUXuAhOXcu
- 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
- 1t/C8ULgqYkcBYCRwNSIxO4=
+UI-OutboundReport: notjunk:1;M01:P0:62869leODuI=;NhKIiAOx9hK2sQKGk4iI1AuXvUI
+ 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
+ 5zJthT4hj2qYxh/nGmB42vw=
 
 
 
-=E5=9C=A8 2025/7/11 00:56, Boris Burkov =E5=86=99=E9=81=93:
-> On Thu, Jul 10, 2025 at 04:45:35PM +0930, Qu Wenruo wrote:
-[...]
->> If that's the case, I'd prefer to have a dedicated flag for it.
->>
->> In fact there is a 7 bytes hole inside btrfs_bio, and we don't need to
->> bother the extra helpers for this.
+=E5=9C=A8 2025/7/11 02:33, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >=20
-> I'm happy either way. Sterba said he preferred to not add fields to the
-> btrfs_bio on v2:
-> https://lore.kernel.org/linux-btrfs/20241011174603.GA1609@twin.jikos.cz/
+> Test that overwriting a file with mmap when the filesystem has no more
+> space available for data allocation works. The motivation here is to che=
+ck
+> that NOCOW mode of a COW filesystem (such as btrfs) works as expected.
 >=20
-> But at that point I didn't even try to find a neat spot in the struct to
-> slot it in, and just dumped a bool on the end of the struct.
+> This currently fails with btrfs but it's fixed by a kernel patch that ha=
+s
+> the subject:
 >=20
-> For my learning, how are you finding the 7 byte hole? Do you have a tool
-> for dumping a particular compiled version of the struct you like? I
-> started trying to count up the sizes of stuff in struct btrfs_bio and
-> quickly lost steam halfway through the union with nested structs.
+>     btrfs: fix -ENOSPC mmap write failure on NOCOW files/extents
+>=20
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-The tried and true pa_hole tool.
-
-Passing the compiled kernel/module, and you get all the structures'=20
-layout, with extra cacheline and hole info.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
+> ---
 >=20
->>
->> Otherwise it looks good to me.
->>
->> Thanks,
->> Qu
->>
->>> +	btrfs_bio_clear_csum_search_commit_root(btrfs_bio(bio));
->>> +
->>>    	if (!bioc) {
->>>    		/* Single mirror read/write fast path. */
->>>    		btrfs_bio(bio)->mirror_num =3D mirror_num;
->>> diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
->>> index dc2eb43b7097..9f4bcbe0a76c 100644
->>> --- a/fs/btrfs/bio.h
->>> +++ b/fs/btrfs/bio.h
->>> @@ -104,6 +104,23 @@ struct btrfs_bio *btrfs_bio_alloc(unsigned int nr=
-_vecs, blk_opf_t opf,
->>>    				  btrfs_bio_end_io_t end_io, void *private);
->>>    void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status);
->>> +#define BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT	(1U << (BIO_FLAG_LAST =
-+ 1))
->>> +
->>> +static inline void btrfs_bio_set_csum_search_commit_root(struct btrfs=
-_bio *bbio)
->>> +{
->>> +	bbio->bio.bi_flags |=3D BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT;
->>> +}
->>> +
->>> +static inline void btrfs_bio_clear_csum_search_commit_root(struct btr=
-fs_bio *bbio)
->>> +{
->>> +	bbio->bio.bi_flags &=3D ~BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT;
->>> +}
->>> +
->>> +static inline bool btrfs_bio_csum_search_commit_root(const struct btr=
-fs_bio *bbio)
->>> +{
->>> +	return bbio->bio.bi_flags & BTRFS_BIO_FLAG_CSUM_SEARCH_COMMIT_ROOT;
->>> +}
->>> +
->>>    /* Submit using blkcg_punt_bio_submit. */
->>>    #define REQ_BTRFS_CGROUP_PUNT			REQ_FS_PRIVATE
->>> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
->>> index d09d622016ef..cadf5eccc640 100644
->>> --- a/fs/btrfs/compression.c
->>> +++ b/fs/btrfs/compression.c
->>> @@ -602,6 +602,8 @@ void btrfs_submit_compressed_read(struct btrfs_bio=
- *bbio)
->>>    	cb->compressed_len =3D compressed_len;
->>>    	cb->compress_type =3D btrfs_extent_map_compression(em);
->>>    	cb->orig_bbio =3D bbio;
->>> +	if (btrfs_bio_csum_search_commit_root(bbio))
->>> +		btrfs_bio_set_csum_search_commit_root(&cb->bbio);
->>>    	btrfs_free_extent_map(em);
->>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->>> index 685ee685ce92..a8b3d27699e8 100644
->>> --- a/fs/btrfs/extent_io.c
->>> +++ b/fs/btrfs/extent_io.c
->>> @@ -101,6 +101,16 @@ struct btrfs_bio_ctrl {
->>>    	enum btrfs_compression_type compress_type;
->>>    	u32 len_to_oe_boundary;
->>>    	blk_opf_t opf;
->>> +	/*
->>> +	 * For data read bios, we attempt to optimize csum lookups if the ex=
-tent
->>> +	 * generation is older than the current one. To make this possible, =
-we
->>> +	 * need to track the maximum generation of an extent in a bio_ctrl t=
-o
->>> +	 * make the decision when submitting the bio.
->>> +	 *
->>> +	 * See the comment in btrfs_lookup_bio_sums for more detail on the
->>> +	 * need for this optimization.
->>> +	 */
->>> +	u64 generation;
->>>    	btrfs_bio_end_io_t end_io_func;
->>>    	struct writeback_control *wbc;
->>> @@ -113,6 +123,28 @@ struct btrfs_bio_ctrl {
->>>    	struct readahead_control *ractl;
->>>    };
->>> +/*
->>> + * Helper to set the csum search commit root option for a bio_ctrl's =
-bbio
->>> + * before submitting the bio.
->>> + *
->>> + * Only for use by submit_one_bio().
->>> + */
->>> +static void bio_set_csum_search_commit_root(struct btrfs_bio_ctrl *bi=
-o_ctrl)
->>> +{
->>> +	struct btrfs_bio *bbio =3D bio_ctrl->bbio;
->>> +
->>> +	ASSERT(bbio);
->>> +
->>> +	if (!(btrfs_op(&bbio->bio) =3D=3D BTRFS_MAP_READ && is_data_inode(bb=
-io->inode)))
->>> +		return;
->>> +
->>> +	if (bio_ctrl->generation &&
->>> +	    bio_ctrl->generation < btrfs_get_fs_generation(bbio->inode->root=
-->fs_info))
->>> +		btrfs_bio_set_csum_search_commit_root(bio_ctrl->bbio);
->>> +	else
->>> +		btrfs_bio_clear_csum_search_commit_root(bio_ctrl->bbio);
->>> +}
->>> +
->>>    static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
->>>    {
->>>    	struct btrfs_bio *bbio =3D bio_ctrl->bbio;
->>> @@ -123,6 +155,8 @@ static void submit_one_bio(struct btrfs_bio_ctrl *=
-bio_ctrl)
->>>    	/* Caller should ensure the bio has at least some range added */
->>>    	ASSERT(bbio->bio.bi_iter.bi_size);
->>> +	bio_set_csum_search_commit_root(bio_ctrl);
->>> +
->>>    	if (btrfs_op(&bbio->bio) =3D=3D BTRFS_MAP_READ &&
->>>    	    bio_ctrl->compress_type !=3D BTRFS_COMPRESS_NONE)
->>>    		btrfs_submit_compressed_read(bbio);
->>> @@ -131,6 +165,8 @@ static void submit_one_bio(struct btrfs_bio_ctrl *=
-bio_ctrl)
->>>    	/* The bbio is owned by the end_io handler now */
->>>    	bio_ctrl->bbio =3D NULL;
->>> +	/* Reset the generation for the next bio */
->>> +	bio_ctrl->generation =3D 0;
->>>    }
->>>    /*
->>> @@ -1026,6 +1062,8 @@ static int btrfs_do_readpage(struct folio *folio=
-, struct extent_map **em_cached,
->>>    		if (prev_em_start)
->>>    			*prev_em_start =3D em->start;
->>> +		bio_ctrl->generation =3D max(bio_ctrl->generation, em->generation);
->>> +
->>>    		btrfs_free_extent_map(em);
->>>    		em =3D NULL;
->>> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
->>> index c09fbc257634..b33742aceacb 100644
->>> --- a/fs/btrfs/file-item.c
->>> +++ b/fs/btrfs/file-item.c
->>> @@ -397,6 +397,33 @@ int btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
->>>    		path->skip_locking =3D 1;
->>>    	}
->>> +	/*
->>> +	 * If we are searching for a csum of an extent from a past
->>> +	 * transaction, we can search in the commit root and reduce
->>> +	 * lock contention on the csum tree root node's extent buffer.
->>> +	 *
->>> +	 * This is important because that lock is an rwswem which gets
->>> +	 * pretty heavy write load, unlike the commit_root_sem.
->>> +	 *
->>> +	 * Due to how rwsem is implemented, there is a possible
->>> +	 * priority inversion where the readers holding the lock don't
->>> +	 * get scheduled (say they're in a cgroup stuck in heavy reclaim)
->>> +	 * which then blocks writers, including transaction commit. By
->>> +	 * using a semaphore with fewer writers (only a commit switching
->>> +	 * the roots), we make this issue less likely.
->>> +	 *
->>> +	 * Note that we don't rely on btrfs_search_slot to lock the
->>> +	 * commit root csum. We call search_slot multiple times, which would
->>> +	 * create a potential race where a commit comes in between searches
->>> +	 * while we are not holding the commit_root_sem, and we get csums
->>> +	 * from across transactions.
->>> +	 */
->>> +	if (btrfs_bio_csum_search_commit_root(bbio)) {
->>> +		path->search_commit_root =3D 1;
->>> +		path->skip_locking =3D 1;
->>> +		down_read(&fs_info->commit_root_sem);
->>> +	}
->>> +
->>>    	while (bio_offset < orig_len) {
->>>    		int count;
->>>    		u64 cur_disk_bytenr =3D orig_disk_bytenr + bio_offset;
->>> @@ -442,6 +469,8 @@ int btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
->>>    		bio_offset +=3D count * sectorsize;
->>>    	}
->>> +	if (btrfs_bio_csum_search_commit_root(bbio))
->>> +		up_read(&fs_info->commit_root_sem);
->>>    	return ret;
->>>    }
+> V2: Use _try_scratch_mkfs_sized;
+>      Use _get_file_block_size instead of _get_block_size;
+>      Add a more detailed comment about why dd is used to fill the fs.
 >=20
+>   tests/generic/211     | 63 +++++++++++++++++++++++++++++++++++++++++++
+>   tests/generic/211.out |  6 +++++
+>   2 files changed, 69 insertions(+)
+>   create mode 100755 tests/generic/211
+>   create mode 100644 tests/generic/211.out
+>=20
+> diff --git a/tests/generic/211 b/tests/generic/211
+> new file mode 100755
+> index 00000000..e87d1e01
+> --- /dev/null
+> +++ b/tests/generic/211
+> @@ -0,0 +1,63 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2025 SUSE Linux Products GmbH.  All Rights Reserved.
+> +#
+> +# FS QA Test 211
+> +#
+> +# Test that overwriting a file with mmap when the filesystem has no mor=
+e space
+> +# available for data allocation works. The motivation here is to check =
+that
+> +# NOCOW mode of a COW filesystem (such as btrfs) works as expected.
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick rw mmap
+> +
+> +. ./common/filter
+> +
+> +_require_scratch
+> +
+> +[ "$FSTYP" =3D "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
+> +	"btrfs: fix -ENOSPC mmap write failure on NOCOW files/extents"
+> +
+> +# Use a 512M fs so that it's fast to fill it with data but not too smal=
+l such
+> +# that on btrfs it results in a fs with mixed block groups - we want to=
+ have
+> +# dedicated block groups for data and metadata, so that after filling a=
+ll the
+> +# data block groups we can do a NOCOW write with mmap (if we have enoug=
+h free
+> +# metadata space available).
+> +fs_size=3D$(_small_fs_size_mb 512)
+> +_try_scratch_mkfs_sized $((fs_size * 1024 * 1024)) >>$seqres.full 2>&1 =
+|| \
+> +	_fail "mkfs failed"
+> +_scratch_mount
+> +
+> +touch $SCRATCH_MNT/foobar
+> +
+> +# Set the file to NOCOW mode on btrfs, which must be done while the fil=
+e is
+> +# empty, otherwise it fails.
+> +if [ $FSTYP =3D=3D "btrfs" ]; then
+> +	_require_chattr C
+> +	$CHATTR_PROG +C $SCRATCH_MNT/foobar
+> +fi
+> +
+> +# Add initial data to the file we will later overwrite with mmap.
+> +$XFS_IO_PROG -c "pwrite -S 0xab 0 1M" $SCRATCH_MNT/foobar | _filter_xfs=
+_io
+> +
+> +# Now fill all the remaining space with data. We use dd because we want=
+ to fill
+> +# only data space in btrfs - creating files with __populate_fill_fs() w=
+ould also
+> +# fill metadata space. We want to exhaust data space on btrfs but still=
+ have
+> +# metadata space available, as metadata is always COWed on btrfs, so th=
+at the
+> +# mmap writes below succeed (metadata space available but no more data =
+space
+> +# available).
+> +blksz=3D$(_get_file_block_size $SCRATCH_MNT)
+> +dd if=3D/dev/zero of=3D$SCRATCH_MNT/filler bs=3D$blksz >>$seqres.full 2=
+>&1
+> +
+> +# Overwrite the file with a mmap write. Should succeed.
+> +$XFS_IO_PROG -c "mmap -w 0 1M"        \
+> +	     -c "mwrite -S 0xcd 0 1M" \
+> +	     -c "munmap"              \
+> +	     $SCRATCH_MNT/foobar
+> +
+> +# Cycle mount and dump the file's content. We expect to see the new dat=
+a.
+> +_scratch_cycle_mount
+> +_hexdump $SCRATCH_MNT/foobar
+> +
+> +# success, all done
+> +_exit 0
+> diff --git a/tests/generic/211.out b/tests/generic/211.out
+> new file mode 100644
+> index 00000000..71cdf0f8
+> --- /dev/null
+> +++ b/tests/generic/211.out
+> @@ -0,0 +1,6 @@
+> +QA output created by 211
+> +wrote 1048576/1048576 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +000000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  >..............=
+..<
+> +*
+> +100000
 
 
