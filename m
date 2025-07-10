@@ -1,108 +1,240 @@
-Return-Path: <linux-btrfs+bounces-15419-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15420-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEEA3AFFFCC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 12:54:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 534A3B000C5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 13:48:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07433587F30
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 10:54:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31AF24E5562
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jul 2025 11:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E3CE2E2F18;
-	Thu, 10 Jul 2025 10:54:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D3A248F78;
+	Thu, 10 Jul 2025 11:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QQf1nX+r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d9ep8oQd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9D11A841A;
-	Thu, 10 Jul 2025 10:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810C9246795;
+	Thu, 10 Jul 2025 11:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752144851; cv=none; b=scUfbvV8pWGgZyGC/9SkcoyQBSwCWMj8od6FEJS7ra1Pr5BHFQfsG2Fju/Zzo7Cc7Mzp8zX9RnBlzfje+E+z/xGAwHk4DB0A0TG0T+oWsak945gG+ZgHa5fo0zlj661Vg4iMIAeZlMjxmhMU2fNq31aQ6neMDNXrc12CWz94sUM=
+	t=1752148089; cv=none; b=PMzlpxqy+8JiKDOQgW1MzyEdh1pzdo8JTSaFRFjflglrTBJMwqjrkcpmUgIzmGnAWeyxLjFftWQ3lvhN1axamJvPXDPeKwTufLbuis/HOtbeBk1Ry6KLfiZoorkS2LDsV/szuYt0BRrnc2nFF+XSziY8glfHGAku+rOn11lHWF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752144851; c=relaxed/simple;
-	bh=uFv47dHfdNnzeZzIZS0n/RnhJQWe/OVZIM3dcQlOs2E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D4jy3CZfSxp9HTFDDwT3rBpLm021MLanFi/0QO6CaR1a+N2j8lXIUJ7A1PpVv1gkxJIMpK/c5N5LKWHYRKCC02zqGh6vF0snQq2nQH1a0yA9lGeC23kp9e7ErDXanBJtY6ddWDzXMVFXRlDiMvCsePfFYKuNQLq+qSpRQUItbF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=QQf1nX+r; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=0yeu9AVJZq7XsJ/NofubcOe4TkI8w75i5jtGUPaKRhY=; b=QQf1nX+rxWvBDzBjXAkHamOoe8
-	T+DYoYnfuomu+IQtuhFaCjlX4pzRCDJMStjBg+QmdisOEVnjMRydP+1AeNWKALESnz3YiaQ3iaqbj
-	GkxBLV+twxmqgmLbwahiwKvasuKNY5fnFaCMlAm5HQXlcqmw5koSOQKjx7r9ozIcUiFiylgl8MtsI
-	KLJI1hf7DF9CJXj2oBE7XjIcuYj6lg2m4IFy/2UQQG1D0YC5inAXVALU1VXLTSfR22PFfSmElixw+
-	1F79n2ltfN2qFTs1stsD4WUD/o5DBl9ZIYv7fzMwcP7R44oj30/DfufQ2V9jwNoGLhx085Uiad+Se
-	Ni53zqPg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uZoun-0000000BXn2-2LbQ;
-	Thu, 10 Jul 2025 10:54:09 +0000
-Date: Thu, 10 Jul 2025 03:54:09 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: "Darrick J. Wong" <djwong@kernel.org>,
-	Qu Wenruo <quwenruo.btrfs@gmx.com>,
-	Dave Chinner <david@fromorbit.com>, Qu Wenruo <wqu@suse.com>,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	viro@zeniv.linux.org.uk, jack@suse.cz, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev,
-	linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
- remove_bdev()
-Message-ID: <aG-b0UiIEX4G2-UC@infradead.org>
-References: <cover.1751589725.git.wqu@suse.com>
- <de25bbdb572c75df38b1002d3779bf19e3ad0ff6.1751589725.git.wqu@suse.com>
- <aGxSHKeyldrR1Q0T@dread.disaster.area>
- <dbd955f7-b9b4-402f-97bf-6b38f0c3237e@gmx.com>
- <20250708004532.GA2672018@frogsfrogsfrogs>
- <20250708-geahndet-rohmaterial-0419fd6a76b3@brauner>
+	s=arc-20240116; t=1752148089; c=relaxed/simple;
+	bh=zh7515rMrL5Xc4b23EmXlbTClvllrsKoqXvNhKbzFnI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OA6LyTZramiBPs2YNuI6aWvhe1BLTjWVBhjwzB0yz6bWIW8VXb7WLPH3s5gHVGQE4eON2gUwCsR8jiRUzopO8OI8LwSTCDAPcCJ74GBDSZICmyl8daJ/5wYVTGFh0SnUHY8BGgD2K3PTkpwPNiDjfaZi8mUjDMvqR4hyVT8THic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d9ep8oQd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B716C4CEF5;
+	Thu, 10 Jul 2025 11:48:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752148089;
+	bh=zh7515rMrL5Xc4b23EmXlbTClvllrsKoqXvNhKbzFnI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=d9ep8oQdBoBk1OccIWIo94+BMmF2jPjdBFMV3XisMRHIfNgBjCCakHkr0yxmv/1js
+	 x8Jzf4EAPSXcg6I7c72yrjHTJdsIPQ5tdOzQJaJQLmbhEEfKDJnqc/5F3OZeTZTfya
+	 wwc1uMkD0XXJxx+6Exg2h515xHnU36s0GCBQH07SVxwZnJDTgL2DfoeCEOKeCCJRFN
+	 DQjpQv4HmVBZ2Orh6sbjlzqaetWxVQGyasENsWEyw+jRzU2d4funXla5hegS2cWhV4
+	 MW/E9+3+ZXNipZKiYt0fImu1zn7RGEaO5nCtadA2vN/FDxA47heKAfrbusd+FDa+/2
+	 zokfdHVCe8t+Q==
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-607cc1a2bd8so1363610a12.2;
+        Thu, 10 Jul 2025 04:48:08 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV0/jdwKMlj4WCc17dGnSxFFtOxx6YJ+BrIB+vPnqwQUsh81XG+w1b0FNjjvKSGI3ZneQSDeh/ZokD/Rg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwlGdnTcipWZCvLmMjc0tRAXTlyMG7VyDdnQd6ecUiHrhv166DJ
+	MRoakC4gECK3NGLJqpYTn3bxsDtNoGg8KpvPHv/GQimnsViRVKHD2haIFZYRb0egeMRYw2bs/hw
+	/xpQ9KAD+lXVCPIZAPvekRd6gSy9dq4M=
+X-Google-Smtp-Source: AGHT+IF4hh4elekWVL13aPi5I9egu6DnkbH+0ObbEP5fZvUvtXVT6AockKqYmY8h0eQmPhT96DNVXcN8Ij9cr86MEAs=
+X-Received: by 2002:a17:907:7249:b0:ade:2e4b:50d1 with SMTP id
+ a640c23a62f3a-ae6e7048e57mr285301566b.29.1752148087565; Thu, 10 Jul 2025
+ 04:48:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250708-geahndet-rohmaterial-0419fd6a76b3@brauner>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <f28ef5098ed18d53df6f94faded1b352bb833527.1752049536.git.fdmanana@suse.com>
+ <20250710072929.dfhksffdogk35ik7@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+In-Reply-To: <20250710072929.dfhksffdogk35ik7@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 10 Jul 2025 12:47:30 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H63UVfZ5xJfh2n0rfB4Y03_hgupvTxn2EWJgrNN+s=BvQ@mail.gmail.com>
+X-Gm-Features: Ac12FXwMybDLYrR3FFwvxxeV4jvkSoM-7DYegfiRe7tou_7b_7rj-rpX0NcdnaE
+Message-ID: <CAL3q7H63UVfZ5xJfh2n0rfB4Y03_hgupvTxn2EWJgrNN+s=BvQ@mail.gmail.com>
+Subject: Re: [PATCH] generic: test overwriting file with mmap on a full filesystem
+To: Zorro Lang <zlang@redhat.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 08, 2025 at 09:55:14AM +0200, Christian Brauner wrote:
-> I think letting filesystems implement their own holder ops should be
-> avoided if we can. Christoph may chime in here.
+On Thu, Jul 10, 2025 at 8:29=E2=80=AFAM Zorro Lang <zlang@redhat.com> wrote=
+:
+>
+> On Wed, Jul 09, 2025 at 09:53:50AM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > Test that overwriting a file with mmap when the filesystem has no more
+> > space available for data allocation works. The motivation here is to ch=
+eck
+> > that NOCOW mode of a COW filesystem (such as btrfs) works as expected.
+> >
+> > This currently fails with btrfs but it's fixed by a kernel patch that h=
+as
+> > the subject:
+> >
+> >    btrfs: fix -ENOSPC mmap write failure on NOCOW files/extents
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >  tests/generic/211     | 58 +++++++++++++++++++++++++++++++++++++++++++
+> >  tests/generic/211.out |  6 +++++
+> >  2 files changed, 64 insertions(+)
+> >  create mode 100755 tests/generic/211
+> >  create mode 100644 tests/generic/211.out
+> >
+> > diff --git a/tests/generic/211 b/tests/generic/211
+> > new file mode 100755
+> > index 00000000..c77508fe
+> > --- /dev/null
+> > +++ b/tests/generic/211
+> > @@ -0,0 +1,58 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (c) 2025 SUSE Linux Products GmbH.  All Rights Reserved.
+> > +#
+> > +# FS QA Test 211
+> > +#
+> > +# Test that overwriting a file with mmap when the filesystem has no mo=
+re space
+> > +# available for data allocation works. The motivation here is to check=
+ that
+> > +# NOCOW mode of a COW filesystem (such as btrfs) works as expected.
+> > +#
+> > +. ./common/preamble
+> > +_begin_fstest auto quick rw mmap
+> > +
+> > +. ./common/filter
+> > +
+> > +_require_scratch
+> > +
+> > +[ "$FSTYP" =3D "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
+> > +     "btrfs: fix -ENOSPC mmap write failure on NOCOW files/extents"
+> > +
+> > +# Use a 512M fs so that it's fast to fill it with data but not too sma=
+ll such
+> > +# that on btrfs it results in a fs with mixed block groups - we want t=
+o have
+> > +# dedicated block groups for data and metadata, so that after filling =
+all the
+> > +# data block groups we can do a NOCOW write with mmap (if we have enou=
+gh free
+> > +# metadata space available).
+> > +fs_size=3D$(_small_fs_size_mb 512)
+> > +_scratch_mkfs_sized $((fs_size * 1024 * 1024)) >>$seqres.full 2>&1 || =
+\
+> > +     _fail "mkfs failed"
+>
+> _scratch_mkfs_sized calls _notrun if it fails:
+>
+>   _scratch_mkfs_sized()
+>   {
+>         _try_scratch_mkfs_sized "$@" || _notrun "_scratch_mkfs_sized fail=
+ed with ($*)"
+>   }
+>
+> So you can let it _notrun:
+> _scratch_mkfs_sized $((fs_size * 1024 * 1024)) >>$seqres.full 2>&1
+>
+> or you'd like to _fail:
+>
+> _try_scratch_mkfs_sized $((fs_size * 1024 * 1024)) >>$seqres.full 2>&1 ||=
+ \
+>          _fail "mkfs failed"
 
-Ccing helps for that..
+The fail makes more sense to me - having the _scratch_mkfs_sized()
+calling _notrun doesn't make sense to me at the moment.
 
 >
-> I have no appettite for
-> exporting stuff like get_bdev_super() unless absolutely necessary. We
-> tried to move all that handling into the VFS to eliminate a slew of
-> deadlocks we detected and fixed. I have no appetite to repeat that
-> cycle.
+> > +_scratch_mount
+> > +
+> > +touch $SCRATCH_MNT/foobar
+> > +
+> > +# Set the file to NOCOW mode on btrfs, which must be done while the fi=
+le is
+> > +# empty, otherwise it fails.
+> > +if [ $FSTYP =3D=3D "btrfs" ]; then
+> > +     _require_chattr C
+> > +     $CHATTR_PROG +C $SCRATCH_MNT/foobar
+> > +fi
+> > +
+> > +# Add initial data to the file we will later overwrite with mmap.
+> > +$XFS_IO_PROG -c "pwrite -S 0xab 0 1M" $SCRATCH_MNT/foobar | _filter_xf=
+s_io
+> > +
+> > +# Now fill all the remaining space with data.
+> > +blksz=3D$(_get_block_size $SCRATCH_MNT)
+> > +dd if=3D/dev/zero of=3D$SCRATCH_MNT/filler bs=3D$blksz >>$seqres.full =
+2>&1
+>
+> As this's a generic test case, I'm wondering if the common/populate:_fill=
+_fs()
+> helps?
 
-Exactly.
+Because the intention is to exhaust data space and leave enough
+metadata space free so that the NOCOW write can be done, as Qu already
+replied before.
+In btrfs we have space divided in two sections (block groups): one for
+data and one for metadata.
+Metadata is always COWed in btrfs by design, data can be NOCOWed
+(chattr +C or prealloc extents for the first write) - as longs as
+there's enough metadata space available (every data write requires
+updating some metadata).
 
-> The shutdown method is implemented only by block-based filesystems and
-> arguably shutdown was always a misnomer because it assumed that the
-> filesystem needs to actually shut down when it is called. IOW, we made
-> it so that it is a call to action but that doesn't have to be the case.
-> Calling it ->remove_bdev() is imo the correct thing because it gives
-> block based filesystem the ability to handle device events how they see
-> fit.
-> 
-> Once we will have non-block based filesystems that need a method to
-> always shut down the filesystem itself we might have to revisit this
-> design anyway but no one had that use-case yet.
+If this is too specific or hard to comprehend, I can move the test
+case into tests/btrfs/ (we have a few similar to this scenario iirc).
+Let me know if I shall move it into tests/btrfs/.
 
-I'm not sure what non-block file systems would need it for except
-maybe for a generic IOC_SHUTDOWN implementation, but that would have
-a different signature anyway as it needs to pass flags that don't
-fit here.  So that would be a separate method.
+Thanks.
+
+>
+> Thanks,
+> Zorro
+>
+> > +
+> > +# Overwrite the file with a mmap write. Should succeed.
+> > +$XFS_IO_PROG -c "mmap -w 0 1M"        \
+> > +          -c "mwrite -S 0xcd 0 1M" \
+> > +          -c "munmap"              \
+> > +          $SCRATCH_MNT/foobar
+> > +
+> > +# Cycle mount and dump the file's content. We expect to see the new da=
+ta.
+> > +_scratch_cycle_mount
+> > +_hexdump $SCRATCH_MNT/foobar
+> > +
+> > +# success, all done
+> > +_exit 0
+> > diff --git a/tests/generic/211.out b/tests/generic/211.out
+> > new file mode 100644
+> > index 00000000..71cdf0f8
+> > --- /dev/null
+> > +++ b/tests/generic/211.out
+> > @@ -0,0 +1,6 @@
+> > +QA output created by 211
+> > +wrote 1048576/1048576 bytes at offset 0
+> > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > +000000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  >.............=
+...<
+> > +*
+> > +100000
+> > --
+> > 2.47.2
+> >
+> >
+>
 
