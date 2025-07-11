@@ -1,288 +1,119 @@
-Return-Path: <linux-btrfs+bounces-15443-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15444-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2054B014C4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jul 2025 09:33:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CEC3B014C9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jul 2025 09:36:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F25F3BE78A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jul 2025 07:33:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9AEC1C21021
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jul 2025 07:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26A41EEA47;
-	Fri, 11 Jul 2025 07:33:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tC2ibe2L"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828CA1EFF93;
+	Fri, 11 Jul 2025 07:35:57 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EB3197A6C;
-	Fri, 11 Jul 2025 07:33:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from hrbeu.edu.cn (mx1.hrbeu.edu.cn [202.118.176.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE0B1DDC15;
+	Fri, 11 Jul 2025 07:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.118.176.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752219229; cv=none; b=MB4MV41HNgOCuOk1cfmp2bBEDAM/OU5y1sm0NWth/hgyl3NTWey5fWgzj+pD900KiH8bq1JoebcL96GRF/DZwYsJQUfrjhVRQjwGA9VvT+vYTUhlRkeVumsoqXILs2oG8orzeKf0JE5G4XsxbQS/0GSTcIV2W8AeDBAkIAOvEas=
+	t=1752219357; cv=none; b=r7II7ARdCmJUCns///5AdGCEzx/tdIKuIo2cZaoybS2V5o4ChBIjiMJxOJDMCzQN4ZHyxwIf/EJvk88NwDpXTTxaHJEXMJ7qdkrY+6JrCrfhxZ2NdHEFnA9BU2b9U26fFuDdj6Lv82EML4tSFUVq5uNZ1F4zSXhYAhGGnozOEJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752219229; c=relaxed/simple;
-	bh=CYtGTAhtNrI42JhrJoEIbRLaYFKoCeDHV58kZkJmLyA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XjH5j5MtyhhAet8EgDGUzw0dE3mHmd/iI7JI/F1GIi6L6ThtgKhAtI2I8x7HRCBkPTUnc9gEPIYyw3Z1spcFANM2KMofaMZalSXKInDml+ToXj3M55lhvdJdv5Dak7VCjAEze3y3abIDvX54ZTpyFaXp4Lp1PinIO2S6d3zDP0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tC2ibe2L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E21EAC4CEF5;
-	Fri, 11 Jul 2025 07:33:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752219228;
-	bh=CYtGTAhtNrI42JhrJoEIbRLaYFKoCeDHV58kZkJmLyA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=tC2ibe2L3unt0MKG5vOS8bmFWl9Dnk7+kldjtFGi1Faoi6K/KtHpIVaKknZvtCewS
-	 4YHPAMIIebdlVCCHwI8nYigj2dbQJ3oWiR8KHwRC73Np+6VaQhD8NlJoa+takTbrBb
-	 NBQZog4Yhi26hkcdreMPNFO0j2uhU2wSU00Vwxx03LazySFFaBxfH0G2my/wG19QlX
-	 5RslAcUsPqhbEi1r2oCxNHiV9RHFYg64lrmGVgHA6+yZP+/cqr2RO8LZLHpNuKwX+9
-	 h1AuQI1MgMh03RcjvyjOy1xTsoV8MQNNO6DeyCsNQ+fbTpcu0jt10+3jStlfgjFOvL
-	 33tPkWIbTyYow==
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-6088d856c6eso3418550a12.0;
-        Fri, 11 Jul 2025 00:33:48 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU6XRap9PHcDgwJrVDtDasV5XtTvtnTmoI/TjwpR09XCikcbIAcGsyBLtK3HEuRVQIF09y8FkvO@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDPlu0WSNgHhBXdxpgT1NCPttgw/OcGLsm5UbtGJ/2eu9tbVfq
-	t1XvgVq8gmXmAMjX2XNLw95tGHy7MSxtlrketrMLJAvXsCQh1b1u55lwQ59zznO5azsC62tBzKN
-	VFw0rhIuXc/korGJvA2AVIiCgrnacMBI=
-X-Google-Smtp-Source: AGHT+IFTZDk3cqpJAeZn38I94qHSwKa01LvL0jXwvVe7rQpWijhuQDNFtSQ/qYJJa4zzewSOymXtnV+AtQYMGbzSs84=
-X-Received: by 2002:a17:906:478a:b0:ae0:ad5c:4185 with SMTP id
- a640c23a62f3a-ae70131bae6mr124581066b.57.1752219227341; Fri, 11 Jul 2025
- 00:33:47 -0700 (PDT)
+	s=arc-20240116; t=1752219357; c=relaxed/simple;
+	bh=Yy1mVXFzQmF0kiCuVhjoriLDCe+jcZk9ADznh1+dB60=;
+	h=Date:From:To:Cc:Subject:Content-Type:MIME-Version:Message-ID; b=EIhGVFssE8OTx+y1DSiTpczq5peCUJWeyKwLx7tNqA23bX2SQMlAfF5E/WT0yZ2EJIGpz+L7iwLiAX+chndCe/w6I1ShOBmTY1vWew6khIVeZOHH7SMB40EA4fHkHZdGODUG1qQpoQTNZcgsukPN31Z1y6h2FD57PWyIu4DFfaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hrbeu.edu.cn; spf=pass smtp.mailfrom=hrbeu.edu.cn; arc=none smtp.client-ip=202.118.176.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hrbeu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hrbeu.edu.cn
+Received: from baishuoran$hrbeu.edu.cn ( [60.223.239.76] ) by
+ ajax-webmail-Front (Coremail) ; Fri, 11 Jul 2025 15:35:34 +0800 (GMT+08:00)
+Date: Fri, 11 Jul 2025 15:35:34 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: =?UTF-8?B?55m954OB5YaJ?= <baishuoran@hrbeu.edu.cn>
+To: "Chris Mason" <clm@fb.com>, "Josef Bacik" <josef@toxicpanda.com>,
+	"David Sterba" <dsterba@suse.com>
+Cc: "Kun Hu" <huk23@m.fudan.edu.cn>, "Jiaji Qin" <jjtan24@m.fudan.edu.cn>,
+	syzkaller@googlegroups.com, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: WARNING in btrfs_remove_chunk
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2024.2-cmXT5 build
+ 20241202(ebbd5d74) Copyright (c) 2002-2025 www.mailtech.cn hrbeu.edu.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250710235146.136358-1-wqu@suse.com>
-In-Reply-To: <20250710235146.136358-1-wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 11 Jul 2025 08:33:10 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4Vb7tLrMBnXcgGJqdrsgqDHzeMj+sj+3=R6zMeHdF7aA@mail.gmail.com>
-X-Gm-Features: Ac12FXwo4RsLbDbw9chVwFTkqmxYhQgrqTATXAJO0hfAVwy7vaHItbMmyH6IHB4
-Message-ID: <CAL3q7H4Vb7tLrMBnXcgGJqdrsgqDHzeMj+sj+3=R6zMeHdF7aA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs/282: use timed writes to make sure scrub has enough
- run time
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <88961a5.13de8.197f869374b.Coremail.baishuoran@hrbeu.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:CbB2ygAnIWjGvnBoybUmAA--.6339W
+X-CM-SenderInfo: pedl2xpxrut0w6kuuvvxohv3gofq/1tbiAQIACmhvj2YGvAAAsd
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW3Jw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-On Fri, Jul 11, 2025 at 12:52=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> [FAILURE]
-> Test case btrfs/282 still fails on some setup:
->
->     output mismatch (see /opt/xfstests/results//btrfs/282.out.bad)
->     --- tests/btrfs/282.out     2025-06-27 22:00:35.000000000 +0200
->     +++ /opt/xfstests/results//btrfs/282.out.bad        2025-07-08 20:40:=
-50.042410321 +0200
->     @@ -1,3 +1,4 @@
->      QA output created by 282
->      wrote 2147483648/2147483648 bytes at offset 0
->      XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->     +scrub speed 2152038400 Bytes/s is not properly throttled, target is =
-1076019200 Bytes/s
->     ...
->     (Run diff -u /opt/xfstests/tests/btrfs/282.out /opt/xfstests/results/=
-/btrfs/282.out.bad  to see the entire diff)
->
-> [CAUSE]
-> Checking the full output, it shows the scrub is running too fast:
->
-> Starting scrub on devid 1
-> scrub done for c45c8821-4e55-4d29-8172-f1bf30b7182c
-> Scrub started:    Tue Jul  8 20:40:47 2025
-> Status:           finished
-> Duration:         0:00:00 <<<
-> Total to scrub:   2.00GiB
-> Rate:             2.00GiB/s
-> Error summary:    no errors found
-> Starting scrub on devid 1
-> scrub done for c45c8821-4e55-4d29-8172-f1bf30b7182c
-> Scrub started:    Tue Jul  8 20:40:48 2025
-> Status:           finished
-> Duration:         0:00:01
-> Total to scrub:   2.00GiB
-> Rate:             2.00GiB/s
-> Error summary:    no errors found
->
-> The original run takes less than 1 seconds, making the scrub rate
-> calculation very unreliable, no wonder the speed limit is not able to
-> properly work.
->
-> [FIX]
-> Instead of using fixed 2GiB file size, let the test create a filler for
-> 4 seconds with direct IO, this would more or less ensure the scrub will
-> take 4 seoncds to run.
-
-seoncds -> seconds
-
->
-> With 4 seconds as run time, the scrub rate can be calculated more or
-> less reliably.
->
-> On my testing VM, the result looks like this:
->
-> Starting scrub on devid 1
-> scrub done for b542bdfb-7be4-44b3-add0-ad3621927e2b
-> Scrub started:    Fri Jul 11 09:13:31 2025
-> Status:           finished
-> Duration:         0:00:04
-> Total to scrub:   2.72GiB
-> Rate:             696.62MiB/s
-> Error summary:    no errors found
-> Starting scrub on devid 1
-> scrub done for b542bdfb-7be4-44b3-add0-ad3621927e2b
-> Scrub started:    Fri Jul 11 09:13:35 2025
-> Status:           finished
-> Duration:         0:00:08
-> Total to scrub:   2.72GiB
-> Rate:             348.31MiB/s
-> Error summary:    no errors found
->
-> However this exposed a new failure mode, that if the storage is too
-> fast, like the original report, that the initial 4 seconds write can
-> fill the fs and exit early.
->
-> In that case we have no other solution but skipping the test case.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  tests/btrfs/282     | 48 ++++++++++++++++++++++++++++++++++++++++-----
->  tests/btrfs/282.out |  3 +--
->  2 files changed, 44 insertions(+), 7 deletions(-)
->
-> diff --git a/tests/btrfs/282 b/tests/btrfs/282
-> index 3b4ad9ea..39d2d8c0 100755
-> --- a/tests/btrfs/282
-> +++ b/tests/btrfs/282
-> @@ -9,13 +9,19 @@
->  . ./common/preamble
->  _begin_fstest auto scrub
->
-> +_cleanup()
-> +{
-> +       [ -n "$mount_pid" ] && kill $mount_pid &> /dev/null
-
-I think you meant $filler_pid and $mount_pid is copy-pasted from some
-other test.
-
-> +       wait
-> +}
-> +
->  . ./common/filter
->
->  _wants_kernel_commit eb3b50536642 \
->         "btrfs: scrub: per-device bandwidth control"
->
-> -# We want at least 5G for the scratch device.
-> -_require_scratch_size $(( 5 * 1024 * 1024))
-> +# We want at least 10G for the scratch device.
-> +_require_scratch_size $(( 10 * 1024 * 1024))
->
->  # Make sure we can create scrub progress data file
->  if [ -e /var/lib/btrfs ]; then
-> @@ -36,9 +42,39 @@ if [ ! -f "${devinfo_dir}/scrub_speed_max" ]; then
->         _notrun "No sysfs interface for scrub speed throttle"
->  fi
->
-> -# Create a 2G file for later scrub workload.
-> -# The 2G size is chosen to fit even DUP on a 5G disk.
-> -$XFS_IO_PROG -f -c "pwrite -i /dev/urandom 0 2G" $SCRATCH_MNT/file | _fi=
-lter_xfs_io
-> +# Create a NOCOW file and do direct IO for 4 seconds to measure the perf=
-ormance.
-> +#
-> +# The only way to reach real disk performance is direct IO without falli=
-ng back
-> +# to buffered IO, thus requiring NOCOW.
-> +touch $SCRATCH_MNT/filler
-> +chattr +C $SCRATCH_MNT/filler
-> +$XFS_IO_PROG -d -c "pwrite -b 128K 0 1E" "$SCRATCH_MNT/filler" >> $seqre=
-s.full 2>&1 &
-> +filler_pid=3D$!
-> +sleep 4
-> +kill $filler_pid
-> +wait
-
-We should now:
-
-unset filler_pid
-
-> +
-> +# Make sure we still have some space left, if we hit ENOSPC, this means =
-the
-> +# storage is too fast and the filler didn't reach full 4 seconds write b=
-efore
-> +# hitting ENOSPC. In that case we have no reliable way to calculate scru=
-b speed
-> +# but skip the run.
-> +_pwrite_byte 0x00 0 1M $SCRATCH_MNT/foobar >> $seqres.full 2>&1
-> +if [ $? -ne 0 ]; then
-> +       _notrun "Storage too fast, unreliable scrub speed"
-> +fi
-> +
-> +# But above NOCOW file has no csum, thus it won't really cause much
-> +# verification workload. Use the filesize of above run to re-create a fi=
-le with data
-> +# checksum.
-> +size=3D$(_get_filesize $SCRATCH_MNT/filler)
-> +rm $SCRATCH_MNT/filler
-> +# Make sure the file is deleted.
-> +sync
-
-I'm confused about the sync - we shouldn't need that to ensure the
-file is deleted.
-Even if extents are pinned by the time we want to write more data,
-the enospc flushing mechanism will commit the transaction and unpin
-extents.
-
-Also since we are using chattr and direct IO, the test should ideally have:
-
-_require_odirect
-_require_chattr C
-
-> +
-> +# Recreate one with COW thus checksum.
-
-checksum -> checksums
-
-The rest looks fine, thanks.
-
-
-> +touch $SCRATCH_MNT/filler
-> +chattr -C $SCRATCH_MNT/filler
-> +$XFS_IO_PROG -c "pwrite -i /dev/urandom 0 $size" $SCRATCH_MNT/filler >> =
-$seqres.full
->
->  # Writeback above data, as scrub only verify the committed data.
->  sync
-> @@ -83,6 +119,8 @@ if [ "$speed" -gt "$(( $target_speed * 11 / 10 ))" -o =
-\
->         echo "scrub speed $speed Bytes/s is not properly throttled, targe=
-t is $target_speed Bytes/s"
->  fi
->
-> +echo "Silence is golden"
-> +
->  # success, all done
->  status=3D0
->  exit
-> diff --git a/tests/btrfs/282.out b/tests/btrfs/282.out
-> index 8d53e7eb..9e837650 100644
-> --- a/tests/btrfs/282.out
-> +++ b/tests/btrfs/282.out
-> @@ -1,3 +1,2 @@
->  QA output created by 282
-> -wrote 2147483648/2147483648 bytes at offset 0
-> -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +Silence is golden
-> --
-> 2.50.0
->
->
+RGVhciBNYWludGFpbmVycywKCldoZW4gdXNpbmcgb3VyIGN1c3RvbWl6ZWQgU3l6a2FsbGVyIHRv
+IGZ1enogdGhlIGxhdGVzdCBMaW51eCBrZXJuZWwsIHRoZSBmb2xsb3dpbmcgY3Jhc2ggKDEyMHRo
+KXdhcyB0cmlnZ2VyZWQuCgoKSEVBRCBjb21taXQ6IDY1MzdjZmIzOTVmMzUyNzgyOTE4ZDhlZTdi
+N2YxMGJhMmNjM2NiZjIKZ2l0IHRyZWU6IHVwc3RyZWFtCk91dHB1dDpodHRwczovL2dpdGh1Yi5j
+b20vcGdoazEzL0tlcm5lbC1CdWcvYmxvYi9tYWluLzA3MDJfNi4xNC9XQVJOSU5HJTIwaW4lMjBi
+dHJmc19yZW1vdmVfY2h1bmsvMTIwcmVwb3J0LnR4dApLZXJuZWwgY29uZmlnOmh0dHBzOi8vZ2l0
+aHViLmNvbS9wZ2hrMTMvS2VybmVsLUJ1Zy9ibG9iL21haW4vMDcwMl82LjE0L2NvbmZpZy50eHQg
+CkMgcmVwcm9kdWNlcjpodHRwczovL2dpdGh1Yi5jb20vcGdoazEzL0tlcm5lbC1CdWcvYmxvYi9t
+YWluLzA3MDJfNi4xNC9XQVJOSU5HJTIwaW4lMjBidHJmc19yZW1vdmVfY2h1bmsvMTIwcmVwcm8u
+YwpTeXpsYW5nIHJlcHJvZHVjZXI6aHR0cHM6Ly9naXRodWIuY29tL3BnaGsxMy9LZXJuZWwtQnVn
+L2Jsb2IvbWFpbi8wNzAyXzYuMTQvV0FSTklORyUyMGluJTIwYnRyZnNfcmVtb3ZlX2NodW5rLzEy
+MHJlcHJvLnR4dAoKT3VyIHJlcHJvZHVjZXIgdXNlcyBtb3VudHMgYSBjb25zdHJ1Y3RlZCBmaWxl
+c3lzdGVtIGltYWdlLgogCiAKVGhlIGVycm9yIG9jY3VycmVkIGluIGxpbmUgMzQyNiBvZiB2b2x1
+bWVzLiBjLCBpbiB0aGUgZXJyb3IgaGFuZGxpbmcgcGF0aCBvZiB0aGUgYnRyZnNfcmVtb3ZlX2No
+dW5rIGZ1bmN0aW9uLiBUaGlzIG1heSBiZSBiZWNhdXNlIGluIHRoZSBwcm9jZXNzIG9mIGNhbGxp
+bmcgYnRyZnNfcmVtb3ZlX2NodW5rIHRvIHJlbW92ZSBjaHVua3MgZHVyaW5nIHRoZSBiYWxhbmNl
+IG9wZXJhdGlvbiwgdGhlIGZpcnN0IGNhbGwgdG8gcmVtb3ZlX2NodW5rX2l0ZW0gZmFpbHMsIHJl
+dHVybnMgLSBFTk9TUEMsIGFuZCB0aGVuIGVudGVycyB0aGUgRU5PU1BDIGVycm9yIHJlY292ZXJ5
+IGxvZ2ljIHRvIHRyeSB0byBhbGxvY2F0ZSBhIG5ldyBzeXN0ZW0gY2h1bmsuIEFuZCB0aGUgc3lz
+dGVtIGNodW5rIHNwYWNlIGlzIGV4aGF1c3RlZCwgYW5kIHRoZSBjcmVhdGlvbiBvZiBhIG5ldyBz
+eXN0ZW0gY2h1bmsgZmFpbHMuCgoKCklmIHlvdSBmaXggdGhpcyBpc3N1ZSwgcGxlYXNlIGFkZCB0
+aGUgZm9sbG93aW5nIHRhZyB0byB0aGUgY29tbWl0OgpSZXBvcnRlZC1ieTogS3VuIEh1IDxodWsy
+M0BtLmZ1ZGFuLmVkdS5jbj4sIEppYWppIFFpbiA8amp0YW4yNEBtLmZ1ZGFuLmVkdS5jbj4sIFNo
+dW9yYW4gQmFpIDxiYWlzaHVvcmFuQGhyYmV1LmVkdS5jbj4KCgoKLS0tLS0tLS0tLS0tWyBjdXQg
+aGVyZSBdLS0tLS0tLS0tLS0tCkJUUkZTOiBUcmFuc2FjdGlvbiBhYm9ydGVkIChlcnJvciAtMjgp
+CldBUk5JTkc6IENQVTogMiBQSUQ6IDE0MDQ4IGF0IGZzL2J0cmZzL3ZvbHVtZXMuYzozNDI2IGJ0
+cmZzX3JlbW92ZV9jaHVuaysweDE2NjcvMHgxYTIwCk1vZHVsZXMgbGlua2VkIGluOgpDUFU6IDIg
+VUlEOiAwIFBJRDogMTQwNDggQ29tbTogc3l6LjEuMTAgTm90IHRhaW50ZWQgNi4xNC4wICMxCkhh
+cmR3YXJlIG5hbWU6IFFFTVUgU3RhbmRhcmQgUEMgKGk0NDBGWCArIFBJSVgsIDE5OTYpLCBCSU9T
+IDEuMTMuMC0xdWJ1bnR1MS4xIDA0LzAxLzIwMTQKUklQOiAwMDEwOmJ0cmZzX3JlbW92ZV9jaHVu
+aysweDE2NjcvMHgxYTIwCkNvZGU6IDgzIGY5IDE5IDc3IDBmIGI4IDAxIDAwIDAwIDAwIDQ4IGQz
+IGUwIGE5IDAxIDAwIDA0IDAyIDc1IDQ5IGU4IGNhIDcxIGU0IGZkIDkwIDQ4IGM3IGM3IDIwIDVh
+IGJhIDhiIDQ0IDg5IGU2IGU4IGNhIDZiIGE0IGZkIDkwIDwwZj4gMGIgOTAgOTAgYmIgMDEgMDAg
+MDAgMDAgZTggYWIgNzEgZTQgZmQgNDggOGIgN2MgMjQgMDggNDEgODkgZDgKUlNQOiAwMDE4OmZm
+ZmZjOTAwMDJkYTc4MzAgRUZMQUdTOiAwMDAxMDI4MgpSQVg6IDAwMDAwMDAwMDAwMDAwMDAgUkJY
+OiAwMDAwMDAwMDAwMDAwMDAwIFJDWDogMDAwMDAwMDAwMDA4MDAwMApSRFg6IGZmZmZjOTAwMDMx
+NjkwMDAgUlNJOiBmZmZmODg4MDIzNGUyNDgwIFJESTogMDAwMDAwMDAwMDAwMDAwMgpSQlA6IGZm
+ZmY4ODgwNDQ3N2NkMDAgUjA4OiBmZmZmZmJmZmYxYzBiOTAxIFIwOTogZmZmZmVkMTAwNTcyNTE4
+MgpSMTA6IGZmZmZlZDEwMDU3MjUxODEgUjExOiBmZmZmODg4MDJiOTI4YzBiIFIxMjogZmZmZmZm
+ZmZmZmZmZmZlNApSMTM6IDAwMDAwMDAwZmZmZmZmZTQgUjE0OiBmZmZmODg4MDc4MzBhYmVjIFIx
+NTogZmZmZjg4ODA3OGM0ODg3OApGUzogIDAwMDA3ZjA5MDk5YWE3MDAoMDAwMCkgR1M6ZmZmZjg4
+ODAyYjkwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwCkNTOiAgMDAxMCBEUzogMDAw
+MCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMKQ1IyOiAwMDAwMDAxYjJkNjEwZmY4IENS
+MzogMDAwMDAwMDA1MzA4MjAwMCBDUjQ6IDAwMDAwMDAwMDA3NTBlZjAKUEtSVTogODAwMDAwMDAK
+Q2FsbCBUcmFjZToKIDxUQVNLPgogYnRyZnNfcmVsb2NhdGVfY2h1bmsrMHgyYmIvMHg0NDAKIGJ0
+cmZzX2JhbGFuY2UrMHgyMDFhLzB4M2Y4MAogYnRyZnNfaW9jdGxfYmFsYW5jZSsweDQzZi8weDZm
+MAogYnRyZnNfaW9jdGwrMHgyYzU3LzB4NjIzMAogX194NjRfc3lzX2lvY3RsKzB4MTllLzB4MjEw
+CiBkb19zeXNjYWxsXzY0KzB4Y2YvMHgyNTAKIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFt
+ZSsweDc3LzB4N2YKUklQOiAwMDMzOjB4N2YwOTA4YmFjYWRkCkNvZGU6IDAyIGI4IGZmIGZmIGZm
+IGZmIGMzIDY2IDBmIDFmIDQ0IDAwIDAwIGYzIDBmIDFlIGZhIDQ4IDg5IGY4IDQ4IDg5IGY3IDQ4
+IDg5IGQ2IDQ4IDg5IGNhIDRkIDg5IGMyIDRkIDg5IGM4IDRjIDhiIDRjIDI0IDA4IDBmIDA1IDw0
+OD4gM2QgMDEgZjAgZmYgZmYgNzMgMDEgYzMgNDggYzcgYzEgYjAgZmYgZmYgZmYgZjcgZDggNjQg
+ODkgMDEgNDgKUlNQOiAwMDJiOjAwMDA3ZjA5MDk5YTliYTggRUZMQUdTOiAwMDAwMDI0NiBPUklH
+X1JBWDogMDAwMDAwMDAwMDAwMDAxMApSQVg6IGZmZmZmZmZmZmZmZmZmZGEgUkJYOiAwMDAwN2Yw
+OTA4ZGE1ZmEwIFJDWDogMDAwMDdmMDkwOGJhY2FkZApSRFg6IDAwMDAwMDAwMjAwMDA0ODAgUlNJ
+OiAwMDAwMDAwMGM0MDA5NDIwIFJESTogMDAwMDAwMDAwMDAwMDAwNApSQlA6IDAwMDA3ZjA5MDhj
+MmFiOGYgUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTogMDAwMDAwMDAwMDAwMDAwMApSMTA6IDAw
+MDAwMDAwMDAwMDAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMjQ2IFIxMjogMDAwMDAwMDAwMDAwMDAw
+MApSMTM6IDAwMDA3ZjA5MDhkYTVmYWMgUjE0OiAwMDAwN2YwOTA4ZGE2MDM4IFIxNTogMDAwMDdm
+MDkwOTlhOWQ0MAogPC9UQVNLPgoKCgoKCgp0aGFua3MsCkt1biBIdQo=
 
