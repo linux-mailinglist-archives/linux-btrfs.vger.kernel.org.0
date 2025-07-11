@@ -1,190 +1,142 @@
-Return-Path: <linux-btrfs+bounces-15469-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15470-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32D26B01EF4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jul 2025 16:20:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86159B02195
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jul 2025 18:21:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B6787A9112
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jul 2025 14:19:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B405B5400DC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jul 2025 16:20:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBA72E541B;
-	Fri, 11 Jul 2025 14:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18C222EF2B2;
+	Fri, 11 Jul 2025 16:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iX1o9G0t";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZczmLcnk";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0Q0gC33a";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zb1CZyGS"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="SlBxUVLJ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="b1HE58N7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD0752E5432
-	for <linux-btrfs@vger.kernel.org>; Fri, 11 Jul 2025 14:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E3FD2EF2B9
+	for <linux-btrfs@vger.kernel.org>; Fri, 11 Jul 2025 16:20:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752243633; cv=none; b=pY3B5ew/A5AzQZp6BEL8d3RTATkWd/OUee+C2GOjhDF1AL9/v0EO+GGMXCOL8aPZFd4Q9hg3MEkaQkuxXJM/lGuFkYdG3ptjKF3JtaG2zMPLjB+ZcNOLXGjvakhhOs5OsvmewdjC6Yyx557b/gQdQfx6UatmIIIzYyDnRHWI4YY=
+	t=1752250811; cv=none; b=P+A2zRe2NboAOKzkVWaIFfnnaiDT3ah348x9Xt11xmpeqllucjoxLgCwnis6pOSgRPzGh21LpYK98eqtYTFikf2G8ThLItUwAjZxg2C8/H0z0G0SM0aRTzenbnutqt3GdSTiSK3dPENxgcWFn0a4P+2UMqmi2m++KmZ8vFLoEI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752243633; c=relaxed/simple;
-	bh=7s+5lhis6FojblF1jV+jgSnHEfFQLJl9si9HXVwN8ho=;
+	s=arc-20240116; t=1752250811; c=relaxed/simple;
+	bh=UqqANR2lk+3NbPZgwISQC55aeDU+5NGsnBtOPWkPRAU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l0eTNLNOOac9Thg9oYEvzJ/i6so6Mrc4rCEXsg+dA9TZHEngSDPbHU4y0aCrZvsZiy81tAI7M20FB+2IKwDa9bV4FluW3A9K3x295IzYkcRaH0LPmqu4RWn+YJeqjZmrY8x4G0AAMSfOmWN/TfVx4Eh6QBpsMsaDGnsXkC6C9Q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iX1o9G0t; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZczmLcnk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0Q0gC33a; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zb1CZyGS; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id ED3021F451;
-	Fri, 11 Jul 2025 14:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752243630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D/iUuBciPB10/GBE/cvyXk+fAHjQFIQzuLxCgcwiNTw=;
-	b=iX1o9G0tQdGrIsFeduAag1UKYp0cCjcMneL5vkrGGsPO92IZ2wxRp3jlmkahOOPG6WWUdv
-	kphrQqTmuCs0hFXOYtVS/MTvH2l2OLesUm41gQ9wmp2cCzNfPFtwMVQvJjSqo+rsQgFnL2
-	AMVwa6gD0pvN07DATLyiZYLUdKljBsQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752243630;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D/iUuBciPB10/GBE/cvyXk+fAHjQFIQzuLxCgcwiNTw=;
-	b=ZczmLcnkQK5dNLlNTg8btwaNoh3cOk1Vp66mW8PYqJOkMEfNWn+8CqQJvQTp6bEmbseXU7
-	uZsBkQaJmbIzZ5CQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752243629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D/iUuBciPB10/GBE/cvyXk+fAHjQFIQzuLxCgcwiNTw=;
-	b=0Q0gC33a1LGOhCbS2e7YuGBLzHB9x14F4WpfW+gopjwadYEbCJBLsXBX1lrlouwrAzrte8
-	Ja2l7L3cX4rIo5fBm9TI3OIj2eDgYJhQcbpHguaCI/kUbudLCh5yRivfoo+5PhBxoWhjQZ
-	cz2QUREuEnRdT0PPcT2EjFDPWJ86WlE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752243629;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D/iUuBciPB10/GBE/cvyXk+fAHjQFIQzuLxCgcwiNTw=;
-	b=zb1CZyGS3J1toAy5quPu7DqexLZJc5vm8joEbFL90hWTmpTZCle3U5zFrK6F+5uIBXY376
-	tOkCVn3qxUstlVCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D9000138A5;
-	Fri, 11 Jul 2025 14:20:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qT+vNK0dcWjEUQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 11 Jul 2025 14:20:29 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 57DE8A099A; Fri, 11 Jul 2025 16:20:24 +0200 (CEST)
-Date: Fri, 11 Jul 2025 16:20:24 +0200
-From: Jan Kara <jack@suse.cz>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>, 
-	Christian Brauner <brauner@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>, 
-	Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, ntfs3@lists.linux.dev, linux-xfs@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH v4 1/6] fs: enhance and rename shutdown() callback to
- remove_bdev()
-Message-ID: <icnwgogkmgui2kzshst23dujkqdghiwpd62giipxyrbdkyf6bo@lf52wyqpnxn2>
-References: <343vlonfhw76mnbjnysejihoxsjyp2kzwvedhjjjml4ccaygbq@72m67s3e2ped>
- <y2rpp6u6pksjrzgxsn5rtcsl2vspffkcbtu6tfzgo7thn7g23p@7quhaixfx5yh>
- <kgolzhhd47x3iqkdrwyzh65ng4mm6cauxdjgiao2otztncyc3f@rskadwaph2l5>
- <5xno4s25lsd2sqq6judn7moorgy2h3konejgassnzlccfa6jsf@ez6ciofy3bwp>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mabv84U+JjsNQZOtY3TRXVNQMvyZY5KrmsQyw7p58g33mvvQtZes2+Z+onK1PeN+oVgWtWItIFdZ6TNyDSZvdIUuHQMKfWRQ7Du21P1x/nMVyy/KG5LAwQ0uPr2mXxFRr/Q06DVSOgsxYELwDgbcKYELNsAaFHNGhCaDIkkkZ3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=SlBxUVLJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=b1HE58N7; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 2711D14001DD;
+	Fri, 11 Jul 2025 12:20:08 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-09.internal (MEProxy); Fri, 11 Jul 2025 12:20:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1752250808;
+	 x=1752337208; bh=ADDXq+nOmYmRH+dYWQOoAG/6AWHSfj4mqZCFySFIrp4=; b=
+	SlBxUVLJVX86Y/MllWPrGFUzXXuijxSoWZHs3Zgb6kdL2CVTmAgR3Aig5vx2RKFY
+	+3wY2PRVZbxGcMVS4XNUWLmUNLyxKy5J3z0MtNEnqVl2mxFNJ5Fgo/p2EXpF/OFM
+	7LPSi7SqUv7W46t6QagT/+bSFd+EbeNPPJj6u0OsbYyyjE+To3pdE1BovGMgmgZu
+	ZRlSN/Av3w5j3AXjuSmNqYCbtzOCovm87PET0n9QsWJ0Mj9wxPU9unxeXnzHOTjA
+	Wp4GrJnpk+guOQQjbJsl/YxeDO3pz1XF6xwe5D0+y6B3yk/DO13TCLZDlOEzjcYg
+	1LsDVslllws4QteZLUbQ7Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1752250808; x=
+	1752337208; bh=ADDXq+nOmYmRH+dYWQOoAG/6AWHSfj4mqZCFySFIrp4=; b=b
+	1HE58N7GGD8lMow6R3y4HGOXwzec4+pBF+eaS0NmUBJa3Jrz/j0a5iuCe2Qz/LQh
+	LJIA34vG3dPbyovbddaAaoKPwwYz42ehcUAUmJxz46dLlgbqxTQiRqWK8AioT/0G
+	0Fg9glWfVwxVMWcXkkxFbf8/SMacCNCza6GVdm7JeUSKRCn9wOkAVXhp3hRDn1Cw
+	oGTE4J6pVjR9JS/hY8OtEWDqAMtxQpMQ/kwq91Y/vwWCmBE5q9yfrOt9eSJeUHbT
+	rcwc+vMYYdrnfqCeabe4CO6xVYvu6XjWZ0jWLldOFJnqOGssH4WRknD4Km3uAJGE
+	YsKMFpkdl6p8h5y8rC80w==
+X-ME-Sender: <xms:tzlxaNovMdSJgfVuHUkEFvpTWYVZS0KnsNpgtm2QPnfjaME1xAbGvA>
+    <xme:tzlxaBJmiDgGXTZ5bd4ONMHUK2SCKmNs5IER8le7xMnSXwiQ-NB4-CcQwRhz81bNa
+    liGuQ57HtuNUmkM-h4>
+X-ME-Received: <xmr:tzlxaKRedYe63kR4RQC2Hav-QXyBZu7q6nxcl-fsqXp5Wt1AsIBfQygetekqrJ1Y7N2IyF2TxlncBXb7k416we7kbvU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdegfeejkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepuehorhhishcu
+    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeejfe
+    ffjedtkeegteekvdevvefhteevheffudduhfdtgefhudelvedthfehuddugfenucffohhm
+    rghinhepkhgvrhhnvghlrdhorhhgpdhgihhthhhusgdrtghomhenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdp
+    nhgspghrtghpthhtohephedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepughsth
+    gvrhgsrgesshhushgvrdgtiidprhgtphhtthhopehquhifvghnrhhuohdrsghtrhhfshes
+    ghhmgidrtghomhdprhgtphhtthhopeifqhhusehsuhhsvgdrtghomhdprhgtphhtthhope
+    hlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    khgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
+X-ME-Proxy: <xmx:tzlxaIv9LJsKr2ZGleMB6s65OtzfSPdyhr4t_CTWkFOMtWtPFmDz2A>
+    <xmx:tzlxaDYeUBovMBmAwf3QhtgirzkbjARnAP3dCeFNXKVx6fCPjaKmiw>
+    <xmx:tzlxaGGietQs-mb198xMW4S3TcKGQmQVvYFLmvWFBsT7xAI_m0h-vg>
+    <xmx:tzlxaPyjSb4V3Qu5lAOniMI0L7IRqMYpCjH8Nfg7eFfMWifKXdEKeQ>
+    <xmx:uDlxaLNCynMI_Vzm9ehyWadNg_d1N_4dShn_2n1W7CqXolYgNRDvpCmQ>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 11 Jul 2025 12:20:06 -0400 (EDT)
+Date: Fri, 11 Jul 2025 09:21:49 -0700
+From: Boris Burkov <boris@bur.io>
+To: David Sterba <dsterba@suse.cz>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+	linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v7] btrfs: try to search for data csums in commit root
+Message-ID: <20250711162149.GA1448937@zen.localdomain>
+References: <112a66d49285e38d7a567aa780d9545baafd3deb.1752101883.git.boris@bur.io>
+ <98154adb-057a-44d7-97a4-9bfd669b9454@suse.com>
+ <20250710152606.GB588947@zen.localdomain>
+ <1dbd43cb-7e1f-455c-8de8-4b91826b800e@gmx.com>
+ <20250711100246.GB22472@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5xno4s25lsd2sqq6judn7moorgy2h3konejgassnzlccfa6jsf@ez6ciofy3bwp>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmx.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,fromorbit.com,kernel.org,gmx.com,suse.com,vger.kernel.org,zeniv.linux.org.uk,lists.sourceforge.net,lists.linux.dev];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250711100246.GB22472@twin.jikos.cz>
 
-On Thu 10-07-25 14:41:18, Kent Overstreet wrote:
-> On Thu, Jul 10, 2025 at 03:10:04PM +0200, Jan Kara wrote:
-> > On Wed 09-07-25 13:49:12, Kent Overstreet wrote:
-> > > On Wed, Jul 09, 2025 at 07:23:07PM +0200, Jan Kara wrote:
-> > > > > It also avoids the problem of ->mark_dead events being generated
-> > > > > from a context that holds filesystem/vfs locks and then deadlocking
-> > > > > waiting for those locks to be released.
-> > > > > 
-> > > > > IOWs, a multi-device filesystem should really be implementing
-> > > > > ->mark_dead itself, and should not be depending on being able to
-> > > > > lock the superblock to take an active reference to it.
-> > > > > 
-> > > > > It should be pretty clear that these are not issues that the generic
-> > > > > filesystem ->mark_dead implementation should be trying to
-> > > > > handle.....
-> > > > 
-> > > > Well, IMO every fs implementation needs to do the bdev -> sb transition and
-> > > > make sb somehow stable. It may be that grabbing s_umount and active sb
-> > > > reference is not what everybody wants but AFAIU btrfs as the second
-> > > > multi-device filesystem would be fine with that and for bcachefs this
-> > > > doesn't work only because they have special superblock instantiation
-> > > > behavior on mount for independent reasons (i.e., not because active ref
-> > > > + s_umount would be problematic for them) if I understand Kent right.
-> > > > So I'm still not fully convinced each multi-device filesystem should be
-> > > > shipping their special method to get from device to stable sb reference.
-> > > 
-> > > Honestly, the sync_filesystem() call seems bogus.
-> > > 
-> > > If the block device is truly dead, what's it going to accomplish?
+On Fri, Jul 11, 2025 at 12:02:46PM +0200, David Sterba wrote:
+> On Fri, Jul 11, 2025 at 06:57:06AM +0930, Qu Wenruo wrote:
 > > 
-> > Notice that fs_bdev_mark_dead() calls sync_filesystem() only in case
-> > 'surprise' argument is false - meaning this is actually a notification
-> > *before* the device is going away. I.e., graceful device hot unplug when
-> > you can access the device to clean up as much as possible.
+> > 
+> > 在 2025/7/11 00:56, Boris Burkov 写道:
+> > > On Thu, Jul 10, 2025 at 04:45:35PM +0930, Qu Wenruo wrote:
+> > [...]
+> > >> If that's the case, I'd prefer to have a dedicated flag for it.
+> > >>
+> > >> In fact there is a 7 bytes hole inside btrfs_bio, and we don't need to
+> > >> bother the extra helpers for this.
+> > > 
+> > > I'm happy either way. Sterba said he preferred to not add fields to the
+> > > btrfs_bio on v2:
+> > > https://lore.kernel.org/linux-btrfs/20241011174603.GA1609@twin.jikos.cz/
+> > > 
+> > > But at that point I didn't even try to find a neat spot in the struct to
+> > > slot it in, and just dumped a bool on the end of the struct.
+> > > 
+> > > For my learning, how are you finding the 7 byte hole? Do you have a tool
+> > > for dumping a particular compiled version of the struct you like? I
+> > > started trying to count up the sizes of stuff in struct btrfs_bio and
+> > > quickly lost steam halfway through the union with nested structs.
+> > 
+> > The tried and true pa_hole tool.
 > 
-> That doesn't seem to be hooked up to anything?
+> It's 'pahole' from https://github.com/acmel/dwarves
 
-__del_gendisk()
-  if (!test_bit(GD_DEAD, &disk->state))
-    blk_report_disk_dead(disk, false);
-
-Is the path which results in "surprise" to be false. I have to admit I
-didn't check deeper into drivers whether this is hooked up properly but
-del_gendisk() is a standard call to tear down a disk so it would seem so
-from the first glance.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Would you like me to redo the flag packed carefully in btrfs_bio or leave it
+like this in the bio.bi_flags?
 
