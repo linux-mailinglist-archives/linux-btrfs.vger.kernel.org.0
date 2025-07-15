@@ -1,90 +1,74 @@
-Return-Path: <linux-btrfs+bounces-15500-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15501-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CA3EB04D20
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jul 2025 02:51:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE67EB0502F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jul 2025 06:17:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCEDA3A5E2E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jul 2025 00:51:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E57C93B25CF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jul 2025 04:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62EB61917FB;
-	Tue, 15 Jul 2025 00:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D97258CF1;
+	Tue, 15 Jul 2025 04:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="tVOWMPJy";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VMmo9Dsv"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="n+TsnSQZ";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="n+TsnSQZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46144F9C1
-	for <linux-btrfs@vger.kernel.org>; Tue, 15 Jul 2025 00:51:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97C62566
+	for <linux-btrfs@vger.kernel.org>; Tue, 15 Jul 2025 04:17:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752540694; cv=none; b=n/FLFuk7/t0mSypzwXD4UIlBElIhMrZ8fHcz3qZZhKNXsuTPFUDPgi1PPmOeni/FL76isO/B1Ckt8+NQm2e+9IQhkonaZNNfUjDAwEmALLh82V/o5bJObn9qdzEEgN2s92Pi348dnTIBfi4MZ3nTnOCR9XWurVaO3Jc0xaW45Qc=
+	t=1752553072; cv=none; b=QpnIjJJ4kS9yRh8w463xPngsfTq4tox/OmSiGg9UqWbNgzcpx9CqFTwb+nWA34e0c/3gLaufCBxtG8ZKJtj17XWLCie2LxwhV9UF8dHeBg/wKZiBS5NKH1hVOqe6QxXHOWeVmbSzX/qVsSTErgyS03wdlrbsALULfOhVxbfy0gU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752540694; c=relaxed/simple;
-	bh=uGdrHwok0mHK2RiNafM3GY0Y1uW+7u4i029Msb8L8Tc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=I1twWhKl3nDKrSNXFLnUvP/mMRmMIC9HiXkciwJ4+wBCDEC0odZmB4TV1xEJvpSiMOB20YhJwhvpK45jBHW4QBiS8lwEL7a+D2EoS7ruY6LQzzetaWXA1btM90mL5C3Si9gEsL4amMtN2nswlP0VeGamcvOsvl3d/8rdp+9qC9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=tVOWMPJy; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VMmo9Dsv; arc=none smtp.client-ip=103.168.172.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 4FF2F1400435;
-	Mon, 14 Jul 2025 20:51:30 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-01.internal (MEProxy); Mon, 14 Jul 2025 20:51:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1752540690; x=1752627090; bh=FyKFu6TZfof26smv64PqY
-	q2XB0wvEJgMO6KrjAHui0E=; b=tVOWMPJyWSTF9ZJ4FQ5UaXIgMFPAlUUOel6Ok
-	jrszTwQOCTk3naoaCXRWNG8wOywlbAoPF9vQrzuu/NlhP1FXu9CO2LsZEtjgo3nX
-	pz6TlSsHCWY+fJGV0xZpHiUBBL5RxGNUx1doF6ZbX03e0E8iSCzRhJlB4f6RP8z5
-	SwFiQnLpeGYfoBpRxovhd+3QZE/KFqIWZHpcL+y2YKa6jZ4b5scULnCFWnP4YSp+
-	NyVJwiEs/NTPUyNxC6nkPgVSIZHrbXUNnGeMEu5fO8lHwK6/GR43YZxJqVnSSpUf
-	ZUprFaSqSJwEZqfFE4FYhCcWwGPP+mATaUXv3ITXU2WBHYrig==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1752540690; x=1752627090; bh=FyKFu6TZfof26smv64PqYq2XB0wvEJgMO6K
-	rjAHui0E=; b=VMmo9Dsvf/kP1KNLvyVflugkqRDbu276OsAbHGiErVWHGgG0mmV
-	ZifkL9dhgNVkmoMj31PvWezjAzNb7/pYVVndfMBtdyZVJqlfjNWcmmsMF0506E3i
-	2FzYlTEt+vhr/58cFyBkGvzgX/zctK1U569QR4vRUNao2ekgekyBDohI4CJKlesC
-	XwtDvTXTuN/DGefvkOJLeHauS88iRE0ZWzf5WisqcpEVqyRgOBzV2NL5oeYz1PPi
-	+kY5zT/7XAeL0DYnMhgJ16RVf2E7v7yNfQLXFbDSoUpH7BPklM3hBdICQXGSfUAC
-	7JNckKTnPMa+Qq+XpoGfCTM/G7Gp0SYh6DQ==
-X-ME-Sender: <xms:EaZ1aBtizei_oC7hhLUajYsydL4AouCoAMcn7LfQ5UxxuNQrF3OXng>
-    <xme:EaZ1aKr9w7SuAEvz4KZTFO6cXRvkOu3bFMiMiF-CS0g5EjzF6J-hKd_64xMn2np_3
-    mcD3HIJWk2lQjqVTOg>
-X-ME-Received: <xmr:EaZ1aGkG7HlTjwrrxgJykWTop7Zvq6JH-7jrBaABNBewk45KoIkRqbCp4NRkKQzDAV5D29EdufX2JU16gBw7YJTPkzo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdehfeegfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertddtne
-    cuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecu
-    ggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekudduteefke
-    fffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
-    rhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmohguvgepsh
-    hmthhpohhuthdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
-X-ME-Proxy: <xmx:EaZ1aGyO09ff-m-gw0R0CoXr620O67CL69MO7sHvvT9yN12yMeYC6Q>
-    <xmx:EaZ1aGmXMIhdunIqBCUtff2-vCBX-xN1LIlG4MpVePLWdyZxq8TToQ>
-    <xmx:EaZ1aHeAGSOMHGxXQ-pl68mmpID1RLY6_DUNnK-esV6ko4u2c7gm6Q>
-    <xmx:EaZ1aEqUzCztOlKY9QWEul9yUUZvEcMJwKc5zyRAGVOgTuEUZWEPdQ>
-    <xmx:EqZ1aHFllGz0Y0vaBRl7o5ee6VIuEDSVo9BTYoZfiYbd5oe8sPgC5iCh>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 14 Jul 2025 20:51:29 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH] btrfs: fix ssd_spread overallocation
-Date: Mon, 14 Jul 2025 17:53:00 -0700
-Message-ID: <22b101fdabce832fc954622fcc0d49793d2070f2.1752540760.git.boris@bur.io>
+	s=arc-20240116; t=1752553072; c=relaxed/simple;
+	bh=DDmjuXiovzl6i2lE+RJ1JaCzos2czKrXggEyYv59KOI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=PRwwLVE+hXdZYovLsYICQ0IYy3VCRg2PxAQJ4HaFmwDgM2uxuWAJd63SzjR9bFxhvh6s9eW15ztERWDSf1+VmGjJfLMaIebm6Df8hr14Yrs6uk9UVoIhQt9XiM65pDwRgNnNT6DH4sDmFQ+khx4XlTzejzNP12eEECN8O+llzaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=n+TsnSQZ; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=n+TsnSQZ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D15302123C
+	for <linux-btrfs@vger.kernel.org>; Tue, 15 Jul 2025 04:17:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1752553067; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gjVEPH0sni9BzUUjgc7J8sO/iaJX6arnHG3DK8n/SpU=;
+	b=n+TsnSQZ5e5x2Ugq7w2SYb354BReaPNcjNo9IIGDnZpT3XGEvJA5QZpvduiCXrhMOkUJ0W
+	GhsuYjeoKb6WRlqwrk2iPmpRcxw8DoyC5wkItMkGw1lx8JnLHzoDrPgs1HWtr6aMOG2rJq
+	IeCuDVgTBh3masRRr1USxaLiN0z1wTk=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1752553067; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gjVEPH0sni9BzUUjgc7J8sO/iaJX6arnHG3DK8n/SpU=;
+	b=n+TsnSQZ5e5x2Ugq7w2SYb354BReaPNcjNo9IIGDnZpT3XGEvJA5QZpvduiCXrhMOkUJ0W
+	GhsuYjeoKb6WRlqwrk2iPmpRcxw8DoyC5wkItMkGw1lx8JnLHzoDrPgs1HWtr6aMOG2rJq
+	IeCuDVgTBh3masRRr1USxaLiN0z1wTk=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0085813306
+	for <linux-btrfs@vger.kernel.org>; Tue, 15 Jul 2025 04:17:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 16IMK2rWdWhaCgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 15 Jul 2025 04:17:46 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: reloc: unconditionally invalidate the page cache for each cluster
+Date: Tue, 15 Jul 2025 13:47:43 +0930
+Message-ID: <82c8337542eee11ad3c8b05b5278f88599ce4496.1752553049.git.wqu@suse.com>
 X-Mailer: git-send-email 2.50.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -93,85 +77,148 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-If the ssd_spread mount option is enabled, then we run the so called
-clustered allocator for data block groups. In practice, this results in
-creating a btrfs_free_cluster which caches a block_group and borrows its
-free extents for allocation.
+Commit 9d9ea1e68a05 ("btrfs: subpage: fix relocation potentially
+overwriting last page data") fixed a bug when relocating data block
+groups for subpage cases.
 
-Since the introduction of allocation size classes, there has been a bug
-in the interaction between that feature and ssd_spread. find_free_extent()
-has a number of nested loops. The loop going over the allocation stages,
-stored in ffe_ctl->loop and managed by find_free_extent_update_loop(),
-the loop over the raid levels, and the loop over all the block_groups in
-a space_info. The size class feature relies on the block_group loop to
-ensure it gets a chance to see a block_group of a given size class.
-However, the clustered allocator uses the cached cluster block_group and
-breaks that loop. Each call to do_allocation() will really just go back
-to the same cached block_group. Normally, this is OK, as the allocation
-either succeeds and we don't want to loop any more or it fails, and we
-clear the cluster and return its space to the block_group.
+However for the incoming large folios for data reloc inode, we can hit
+the same situation where block size is the same as page size, but the
+folio we got is still larger than a block.
 
-But with size classes, the allocation can succeed, then later fail,
-outside of do_allocation() due to size class mismatch. That latter
-failure is not properly handled due to the highly complex multi loop
-logic. The result is a painful loop where we continue to allocate the
-same num_bytes from the cluster in a tight loop until it fails and
-releases the cluster and lets us try a new block_group. But by then, we
-have skipped great swaths of the available block_groups and are likely
-to fail to allocate, looping the outer loop. In pathological cases like
-the reproducer below, the cached block_group is often the very last one,
-in which case we don't perform this tight bg loop but instead rip
-through the ffe stages to LOOP_CHUNK_ALLOC and allocate a chunk, which
-is now the last one, and we enter the tight inner loop until an
-allocation failure. Then allocation succeeds on the final block_group
-and if the next allocation is a size mismatch, the exact same thing
-happens again.
+In that case, the old subpage specific check is no longer reliable.
 
-Triggering this is as easy as mounting with -o ssd_spread and then
-running:
+Here we have to enhance the handling by:
 
-mount -o ssd_spread $dev $mnt
-dd if=/dev/zero of=$mnt/big bs=16M count=1 &>/dev/null
-dd if=/dev/zero of=$mnt/med bs=4M count=1 &>/dev/null
-sync
+- Unconditionally invalidate the page cache for the current cluster
+  We set the @flush to true so that any dirty folios are properly
+  written back first.
 
-if you do the two writes + sync in a loop, you can force btrfs to spin
-an excessive amount on semi-successful clustered allocations, before
-ultimately failing and advancing to the stage where we force a chunk
-allocation. This results in 2G of data allocated per iteration, despite
-only using ~20M of data. By using a small size classed extent, the inner
-loop takes longer and we can spin for longer.
+  And this time instead of dropping the whole page cache, just drop the
+  range covered by the current cluster.
 
-The simplest, shortest term fix to unbreak this is to make the clustered
-allocator size_class aware in the dumbest way, where it fails on size
-class mismatch. This may hinder the operation of the clustered
-allocator, but better hindered than completely broken and terribly
-overallocating.
+  This will bring some minor performance drop, as for a large folio, the
+  heading half will be read twice (read by previous cluster, then
+  invalidated, then read again by the current cluster).
 
-Further re-design improvements are also in the works.
+  However that is required to support large folios, and this gets rid of
+  the kinda tricky manual uptodate flag clearing for each block.
 
-Fixes: 52bb7a2166af ("btrfs: introduce size class to block group allocator")
-Reported-by: Dave Sterba <dsterba@suse.com>
-Signed-off-by: Boris Burkov <boris@bur.io>
+- Remove the special handling of writing back the whole page cache
+  filemap_invalidate_inode() handles the write back already, and since
+  we're invalidating all pages in the range, we no longer need to
+  manually clear the uptodate flags for involved blocks.
+
+  Thus there is no need to manually write back the whole page cache.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent-tree.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/btrfs/relocation.c | 58 ++++++-------------------------------------
+ 1 file changed, 8 insertions(+), 50 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 85833bf216de..ca54fbb0231c 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -3672,7 +3672,8 @@ static int find_free_extent_clustered(struct btrfs_block_group *bg,
- 	if (!cluster_bg)
- 		goto refill_cluster;
- 	if (cluster_bg != bg && (cluster_bg->ro ||
--	    !block_group_bits(cluster_bg, ffe_ctl->flags)))
-+	    !block_group_bits(cluster_bg, ffe_ctl->flags) ||
-+	    ffe_ctl->size_class != cluster_bg->size_class))
- 		goto release_cluster;
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 8a71cffb4dfb..fa93ba40278d 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -2666,66 +2666,24 @@ static noinline_for_stack int prealloc_file_extent_cluster(struct reloc_control
+ 	u64 num_bytes;
+ 	int nr;
+ 	int ret = 0;
+-	u64 i_size = i_size_read(&inode->vfs_inode);
+ 	u64 prealloc_start = cluster->start - offset;
+ 	u64 prealloc_end = cluster->end - offset;
+ 	u64 cur_offset = prealloc_start;
  
- 	offset = btrfs_alloc_from_cluster(cluster_bg, last_ptr,
+ 	/*
+-	 * For subpage case, previous i_size may not be aligned to PAGE_SIZE.
+-	 * This means the range [i_size, PAGE_END + 1) is filled with zeros by
+-	 * btrfs_do_readpage() call of previously relocated file cluster.
++	 * For blocksize < folio size case (either bs < page size or large folios),
++	 * beyond i_size, all blocks are filled with zero.
+ 	 *
+-	 * If the current cluster starts in the above range, btrfs_do_readpage()
++	 * If the current cluster covers above range, btrfs_do_readpage()
+ 	 * will skip the read, and relocate_one_folio() will later writeback
+ 	 * the padding zeros as new data, causing data corruption.
+ 	 *
+-	 * Here we have to manually invalidate the range (i_size, PAGE_END + 1).
++	 * Here we have to invalidate the cache covering our cluster.
+ 	 */
+-	if (!PAGE_ALIGNED(i_size)) {
+-		struct address_space *mapping = inode->vfs_inode.i_mapping;
+-		struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-		const u32 sectorsize = fs_info->sectorsize;
+-		struct folio *folio;
+-
+-		ASSERT(sectorsize < PAGE_SIZE);
+-		ASSERT(IS_ALIGNED(i_size, sectorsize));
+-
+-		/*
+-		 * Subpage can't handle page with DIRTY but without UPTODATE
+-		 * bit as it can lead to the following deadlock:
+-		 *
+-		 * btrfs_read_folio()
+-		 * | Page already *locked*
+-		 * |- btrfs_lock_and_flush_ordered_range()
+-		 *    |- btrfs_start_ordered_extent()
+-		 *       |- extent_write_cache_pages()
+-		 *          |- lock_page()
+-		 *             We try to lock the page we already hold.
+-		 *
+-		 * Here we just writeback the whole data reloc inode, so that
+-		 * we will be ensured to have no dirty range in the page, and
+-		 * are safe to clear the uptodate bits.
+-		 *
+-		 * This shouldn't cause too much overhead, as we need to write
+-		 * the data back anyway.
+-		 */
+-		ret = filemap_write_and_wait(mapping);
+-		if (ret < 0)
+-			return ret;
+-
+-		folio = filemap_lock_folio(mapping, i_size >> PAGE_SHIFT);
+-		/*
+-		 * If page is freed we don't need to do anything then, as we
+-		 * will re-read the whole page anyway.
+-		 */
+-		if (!IS_ERR(folio)) {
+-			btrfs_subpage_clear_uptodate(fs_info, folio, i_size,
+-					round_up(i_size, PAGE_SIZE) - i_size);
+-			folio_unlock(folio);
+-			folio_put(folio);
+-		}
+-	}
++	ret = filemap_invalidate_inode(&inode->vfs_inode, true, prealloc_start,
++				       prealloc_end);
++	if (ret < 0)
++		return ret;
+ 
+ 	BUG_ON(cluster->start != cluster->boundary[0]);
+ 	ret = btrfs_alloc_data_chunk_ondemand(inode,
 -- 
 2.50.0
 
