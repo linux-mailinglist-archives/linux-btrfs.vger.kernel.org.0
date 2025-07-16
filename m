@@ -1,209 +1,190 @@
-Return-Path: <linux-btrfs+bounces-15526-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15527-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FD3FB07343
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jul 2025 12:22:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03DCCB07A69
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jul 2025 17:55:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7CE9160AC7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jul 2025 10:22:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6B141893A51
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jul 2025 15:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A56732F2C56;
-	Wed, 16 Jul 2025 10:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0304C2F3C3E;
+	Wed, 16 Jul 2025 15:55:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="m8+otfWv";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="eVJL1aVB"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="vNJa3wtf";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YhF3VMOv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27EA72F2C7E
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Jul 2025 10:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752661340; cv=fail; b=EP0Ddo/k3ECSheTASket0i0e4HPW8MWAGS/KbtdDQZXsUIPDJ9SQOa9+x7twAOkEEOuxquiVjzVwsUbGigPQFSaYFDUu98jsNKfJ9wwtuSo0vvbsTgQmfJBF/yLVGyneCKPZXLu7KuLERVocRWrR69rM4qDdsRUbaxpfvXFejx8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752661340; c=relaxed/simple;
-	bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=JgMCisK8cSI15Aaf50652FATopj3dAGmshcPQSL/3YP6WD24Dcnco7ds591npGs5H/VbosO4EnYIbF1fQ34uY43e20NQIiLsOzWfMSSkEL2yq2zDGVL4WXkvqC3uJHBDkY3OwT3QDxxtMfIvqPs77oi96D9sgvyjWyIxhdxAwnY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=m8+otfWv; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=eVJL1aVB; arc=fail smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1752661339; x=1784197339;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-  b=m8+otfWvFHNkEchQXnLou10QdWjkNjJcDzzE9ZyfOWj72BSZXcvoQpDw
-   SsbsifAZw4r3VvWtrJIwtG/PrZHFUmBmFJFXV/lncN/fmkn64JTSKwQKs
-   QNnXWqs+Ej7UQAJ/cFG3s7IlENGQ9zsd6AtKY4voxaZw5XEd4amkrCarh
-   l2NoOEkQf26a1JEN22vwJw55VZ7jTfmeDwJV6eRb4MRkv8zQpkf8YZ7lC
-   FfO+fkJI9AZEdK1YE5YOx6659xS5Nbor7b++8aYToJN9A0Wzh+zW5vqWK
-   QAY2s44eIPgUfBp/Y4vpRyA78i/hI9EjI3gjYUbr9E+4+KkFxEdZ87m5+
-   g==;
-X-CSE-ConnectionGUID: tWK3R/MKRB6o8s57QwhiCA==
-X-CSE-MsgGUID: ngmhB3gZR8exZTA9YLUFaQ==
-X-IronPort-AV: E=Sophos;i="6.16,315,1744041600"; 
-   d="scan'208";a="88250944"
-Received: from mail-westcentralusazon11013039.outbound.protection.outlook.com (HELO CY3PR05CU001.outbound.protection.outlook.com) ([40.93.201.39])
-  by ob1.hgst.iphmx.com with ESMTP; 16 Jul 2025 18:22:18 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ZKeI3mFPCi2k9IskE3siq8/P/qAx9ATvLYfhCehy2knsHPDM14loriod6cR8Ckpwgx9IZWQyEGXQmO3GFVd0X5iAPEG079E3p5YIIrxutvU3nZ4WpAdp4W9dTPZGKstCfySoBve5U+B9HGKS8WcnA1+BTAtDvX9KpZHj5qGCwLySJ3ncatkqSGzMU57ts2+WhWIPMgJItT/7dyeqhNT8bbyfmMEJL2DkR0WWK5AeFvYuYRII9pBc1BuCgBGHlXGpNyfWh2oGfpTz+NCGu8sMRErY++5BLM+lRzWRm9Zw1Ch5DtXBUydd4IH6EMTQGvJEkp28NqzReZbyD/tMv8kE/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=ypvIWnPf0J4rCNQKlO8oDEHsKQZ9HTPhSiLaSoIgXxRZgP2gmJk/BHSrsx0IKtRWVoWNay6AUlO6HJk1HeXGTLVVhLM38XB4V1qVU0FZykCeAPbbZk5Zh8HBQlGikp6/rgu5iXO93Zst5PitG7rmGQJqSyNDRB0+FEXJf2mvXQbhqLeK/LW/rJJoiWvvj8s5FZUeKkmYfC4qbyTg2BFSKgv8TvQJWvQeZY/TOHMPXCooyj1RunNRoRCYPWH+jNXlmcDHpPiroDxK+yE7LgEpC1+4MOWA09CY90LmQVOUcDNKmQlNpA9z1NY6fJVQ6f1H229ziqakIf32jVRp4JQfoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=eVJL1aVB9XX0DBLfo8Ihpgl+UHl4ABFYy5OwnRk70qecOvHUQT75/GSfE3VMnnYTe50QBOHqlvCnHJ0WnCZBVAfqU3eqENT05ZLDwwRVA8fr5Ey1zgFrOxlGrE7LJmcxvlYoi3fVCO9bW2G4IEI9qEfNpJb60zp532C8EPXgLM4=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by MW4PR04MB7249.namprd04.prod.outlook.com (2603:10b6:303:78::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8922.32; Wed, 16 Jul
- 2025 10:22:12 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969%4]) with mapi id 15.20.8922.028; Wed, 16 Jul 2025
- 10:22:12 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: Naohiro Aota <Naohiro.Aota@wdc.com>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v3 2/4] btrfs: zoned: fix data relocation block group
- reservation
-Thread-Topic: [PATCH v3 2/4] btrfs: zoned: fix data relocation block group
- reservation
-Thread-Index: AQHb9ie5S7L9mOAMe0iOahRIFPKBxbQ0iquA
-Date: Wed, 16 Jul 2025 10:22:12 +0000
-Message-ID: <cf98aeaf-bebf-4946-a6b2-c1d664730d97@wdc.com>
-References: <cover.1752652539.git.naohiro.aota@wdc.com>
- <7547a992a03414e821fd3093ba7a6d281140e6d0.1752652539.git.naohiro.aota@wdc.com>
-In-Reply-To:
- <7547a992a03414e821fd3093ba7a6d281140e6d0.1752652539.git.naohiro.aota@wdc.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|MW4PR04MB7249:EE_
-x-ms-office365-filtering-correlation-id: 8ebde89d-b99c-44c8-face-08ddc452a0ef
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|366016|19092799006|376014|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?VjQ3UkRoMFhxaG9hMHBKL0JzMFBzQXJHRWxuMHl1MmdlRDhYSEhrRGp5Q1Qv?=
- =?utf-8?B?RWNYSzBNZ1UxS2hxK0tCTjYzVHZ2Z3Qwem5ybGhHNzRNcFgyOUxuc2UzZmtl?=
- =?utf-8?B?K2dmVEhRTnZLYWFJZnEyL1pzbXp0MlF4TW1QbFloelV4WVZpMTVIRHdkQmNU?=
- =?utf-8?B?Z2ZMZ1Y5enVyTnFWUENLTmNSOXFwSlZkNmtvUytUVUpMTXJQdUZ3TitrZ3o2?=
- =?utf-8?B?dmJzR09iZ1FnQmxackJYalQyaWFVc093K290U2Y3dWN1MGx1Tk0rSWVGZDlG?=
- =?utf-8?B?Z0tkSFNVMTRUWE4zZjlvQkJEUmxVMm9mNzJzR0lnWFZ4T2E0QUxMTHlEZGpQ?=
- =?utf-8?B?VjJlMVZzUmQ1Y1J0TkVEL25MYm1idjdlcGh0QlRRODFvVnVqazI5bXUyRGZU?=
- =?utf-8?B?cnRROHdwQWN5NTc5akhseGt2dDU1cFhlaU5KMHVPc0ZjajZhN2FYR1FVVEcz?=
- =?utf-8?B?Q0E3amRTTjRNMlNSTjlYVE5iMHNVanJjR3o3bkhtNktyaUhGZUlzNkN1bmY3?=
- =?utf-8?B?UE85eVc0TnRXelBkdkk1YWZxK1JocWFBa0dlQnBCMGc5REh2SHluT09FU2lH?=
- =?utf-8?B?eElXTlNKaW9ZVGt6TWdSMDZwS3FaSUtKL3lJSndHUVNRY2pRa1FwMWhuby81?=
- =?utf-8?B?K3pmZ2o0NU1yTGVSTlUrLzRsTGRWWkh0MXk1SXM2bjdwZ0o5Q00zd1VVQm51?=
- =?utf-8?B?enB0bGxCT1BFOXQ4cWpkNnVOZzZlTDV1cG5NTXJqZ3N2UkhGc0M0Q2hob1hQ?=
- =?utf-8?B?cEtGeXZUeGdJbVRKNFFSWmpIMk8vMFFqdDdoV1dWVWpWcWtMS3d4dHJpOUth?=
- =?utf-8?B?d3hhUlZtTkhEaytDZ3VHR09jY0kwOHU5TkRvcTNDME51THlvNGZSWVpLUVh2?=
- =?utf-8?B?ME5CdUpZNTZhMnpXTWpmdERKL3hLcVZ1SmpGcmJvNTZnUmVvdEx4bVZQTkxC?=
- =?utf-8?B?bW0xRk1PUW54dHBmc0I5UFNDWW9OMDlYaEZpVFlzT1BNS1ZzMXl5VlJmMzJG?=
- =?utf-8?B?WVFWTXkwNXdDTUZKY3RZenpXSW9jWjdOc0pkVERHa3NZa2xoOW43cVA2aEJL?=
- =?utf-8?B?T3dOR1BrZ2V0UklkZG5Ib1duSWNNTmh3d1lBbFFxSkxpZ1V3SE9BUTZuVktQ?=
- =?utf-8?B?Vm0zZERjeDRIY0ZxUmpSdVpJeTEyRUd6bmdXd2FGQ0hLNFR3S2NYRm1EUVBw?=
- =?utf-8?B?Sm1qZ1ZCVUp6Z0MrNTVxUHlzMExhWlpKVE9TSUcyMVBpNWdrbW04UUE2WDdz?=
- =?utf-8?B?Wi92ZENJYTR2aFFmaTEybVZ1aUtVcDBwZm4vQ1daMkFhbzF4T2VhT1hndFBt?=
- =?utf-8?B?cnNBODZiYWZLekNQYzAzR25DMUZwR0t2cTlQSGw4QTVIVFh5QnpUM3NkYmJ1?=
- =?utf-8?B?enZpTEtCY0F6U0hNa21Ba3YrOTJMN0g0Z0tQTFhGd0FhYVVLSCtWd29kNjRF?=
- =?utf-8?B?eHB3OU5ZSnlQc3NDYnB4RDRCNnprRzE5VEdjSnJ4cXhtWXZtVHV1cHp4STdD?=
- =?utf-8?B?dnRTaWV4aGEvOTRMNHdWeFhyZUxMYUlIK0pSSkFPOXRQMG9kVm51YktQczBC?=
- =?utf-8?B?TUduSU9DU2xISjU5cFR3WHZkTVV4SjA1czlZSThhK3BFSkZ3eEh6aU9XL2Ev?=
- =?utf-8?B?TFZFUXNOZml2dUkxNklnKzl2ZEVDMUMyQ0ZZU21qS2ZoVitvY0tMNGdySTl0?=
- =?utf-8?B?NHZrcHRieVJrSm1lay9ZUm1YVGFIRWZoQUpEeEduV0pjSEM0aXozMGJWMW1i?=
- =?utf-8?B?TmcrbnJtS05wSDIxdUgxckhzRUNDWFN1QzRDbGtodnJQWTJabEFHSWpMYUZV?=
- =?utf-8?B?S3JVc09RTng2UGRkSmN2b2dFM2RDYlh4SkVYT1YweVBZT1UvRVZIeks2Mkk0?=
- =?utf-8?B?aTFYdk9ybHM2SDJJRmh2VG50d3VadUwxaTlpM3dmU0ZMdllTV3NqaXdHcWRt?=
- =?utf-8?B?NlU0eitvQmlPZzh0aXZyUDhmanVjVUZIRXd5UTUyOVk5Q1ZnRU9kMzdrYUJQ?=
- =?utf-8?B?RFN0Rm9Jc0xBPT0=?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(19092799006)(376014)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?TWFBTDB6WS9EdGxSR0VBNFg5YU1aemI0USs4NG5xV1ZxbzkxTmN0Uno1Z2JF?=
- =?utf-8?B?Ylo4Qi9McklFc0FHL3Q0OFc1NVU2RTFHOVVwUlFVYlZqUXN4WFhIcVp2bll0?=
- =?utf-8?B?VTVyVlpJRjIxOHg0RzVjN3ZFMjc4NTh3NWZKUzNnWTBXNkhZd3RrV3V6RGkw?=
- =?utf-8?B?S0svbzBHZWUyVkhyUDgrVThxSmxsTlJNb0UxMGU1MGIySW5BOU45UFUzRjZK?=
- =?utf-8?B?aG5nd2RvTEJXZDdYWDBlZFV1WmJvTUxyOWdENFFHSHYvdlNrbXhjN3NuNnho?=
- =?utf-8?B?Y0orTWtoU3VRRDE3cTJTUjFNQUxjZWhEaTlBTVBWUm8zRGFZOG1QUlY1Uzdw?=
- =?utf-8?B?R3BxZGhGRVhnUUdGeUs3MEdDbklGNjBNR2JXcU1CS29VbFhlR3JRODdEc0x5?=
- =?utf-8?B?aThsc0p4bkxIdnRqVEZxUEQveStPNkIweWdnbnNpVEdBYVk3SVpjeEdaeXNs?=
- =?utf-8?B?R3JNTk53S1lObkI4OGVEdWR1TGRLay9lNHloZTFZdTkyeklieGJkL1ZraXFB?=
- =?utf-8?B?THNrZ0xoY3E1VnRRVHF2bEY2QmJIQ0t3ZHYyRlkwVHFKU2tzQlQ3Y2RFSy8y?=
- =?utf-8?B?QVNyMzcrdzZseUQ0UFhQNGJoa2UzQU1RWGs5SXFHR0tGQkloL2o1cVhBYlcy?=
- =?utf-8?B?RmZ6eG1HNnNFZ0ZwbXc1VGVOazhNdVp2RXAwTXdDK0dUOVZ3NjlZcnlNZndU?=
- =?utf-8?B?ZGtyVFNQZkpIcm1GdGZOWEhBOTBYOStQNk9VREdEUGhLeWcwaEF4Nmo3azZE?=
- =?utf-8?B?aGhlMDQxVWlUNmpzZ2pqNkN3NURuK1cvZVhDRk5zaHFzWmFveDVtQWgzOWs1?=
- =?utf-8?B?N0V0U2lrYlZ2WkdEcUh6TmdVY2taNmdrdFJRWFp1ZGtndkpqSnJQdlVXdWg1?=
- =?utf-8?B?cThuakRrWUp2WmlvVHArbkFIRFk3OHZ4SGlpUzFBcFA0YzNIeitQa09qd29I?=
- =?utf-8?B?YlVseUhmbnl4VXU0NVI2U1hpUHJGTGk3cEJZRnJLVkVrRmZ6Z3BJN1VLeC9F?=
- =?utf-8?B?N1gvTG8rMjB1aUNwbmhFRThDeG9wUTRyMGNWd1dPV2VSazc0NVcrWjV2RXhD?=
- =?utf-8?B?K1ZQbUtFRDB4M0xMQVZ5K0RON09UUjV4S2FUT29RNzRHeFdBdE1HUG9SbGls?=
- =?utf-8?B?c0pTVjNsZUNVOUErUVZ2bFhyRG5ic0IrTnZjRk9VSFc3NDA2YklPV2hlQmRr?=
- =?utf-8?B?M1U5TFVtZ0NhTGpaaDdjWkVIR3pDYVkyRGR4T1dUaGhsZHdIRlVISEdsZnJk?=
- =?utf-8?B?UGdsWjAxbjhhOGMvZTB2ZjREUWljU1Z1dWlHNkxUbzFRc3F6eTNsUjFDUWRj?=
- =?utf-8?B?bld0U25Kb0hxNU1JN1lHQjBSOVpYbkJvNVIzNWdITGdrOTJVUlhGaFpXZzJI?=
- =?utf-8?B?NzRMMUFudFR5N3RVa2dQSk9DdjRueXpqbFM3dFovNUxDY2ZWeHY4ejRQUnJB?=
- =?utf-8?B?S0tiVVpGSWNlb05CcFJuazlVaWcwcVd5VDNzU1Q4SEpCNng3bVAyeVpSMUN2?=
- =?utf-8?B?YzViaVJSK09ZZGw2cGdsS3IzTG55TkxidjZ1QmQ5eUJxY094N3JqcGwzcDdw?=
- =?utf-8?B?d1U3QzBWOFdVQjFKUE9qS2hRbUZKYk9QYUpTSThLYlhvQnh1R2pxNDlldlEz?=
- =?utf-8?B?ZHhiZHNKVjVTTkoxdVFmRnNTdFMyR1hwcEpZbm1NWkhaRlZBcU9jMzlHa3NR?=
- =?utf-8?B?VW15bU95TUlaalE5eDNMcnhhT0FVcENGamxiRFlsYTFkYlpXb1NXSForM0hm?=
- =?utf-8?B?dENxemhrRmV1RjRTQ0JydDN0RTV3cDRnbGhPcEFtMUJOVlhPMFNFRS9pc2Zr?=
- =?utf-8?B?V1JUcnBOakZIT3FPbEdBWFFtK3Y2Sys3VFlpRTNWQmJRejdaQlRaVWd6eWlP?=
- =?utf-8?B?cEV1RThRR3ZJT0tQNUFENzd6L2EwOEpUSDQ5TkdybUNuMTgyYjRGWUFVaWIr?=
- =?utf-8?B?WVdkdjdJU0dILzZKY2dHcTJDWDFTTFdBVGE3dmFwL0pXaUJDblhPcXliUVdh?=
- =?utf-8?B?UTl1RTRhaTdURElOMk1jMHBpNUhXZ09IWUhZSlFkbHMyZnJ4UFIrRzAxUlhZ?=
- =?utf-8?B?ZDNTRlkzMXMzTVpKSU43d3JWNWxlQVFzRzhxanhjNGxJcDlXQU5tTlJUSmE4?=
- =?utf-8?B?SFlPQys4QTg5Y0tvdW9XdWpYRC9LUlBVUm1xVXo2d282MlY2RnA5eFJJTG1I?=
- =?utf-8?B?NGc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <41D96286CAC58641B25FA217BA7F43A6@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245852EBDD9
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Jul 2025 15:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.147
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752681311; cv=none; b=Tg7x/46gmLebINmjCWP/G/5GCUF+x3S0/9SwiCNT7moIsP4hUpXenYu2+UYyrbLnauCOyd3ra/9wbi5HQnL5uqqH1UXNmx2FlbCY63hw6D1wK53WjCmfEPP8Jegz0QpFTpCVSFMdLwy/ERxuojpYwlSEkyYR+we913brxWgrxmY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752681311; c=relaxed/simple;
+	bh=+jq1TQOU0SHSX315dTNtLTPm+Z+7gjztk0AHwce+QOQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cDzmNvHzrPkjtvcR/lsCYiW2VBV0UCb/Db4Rx6y2DtZEpwxryc1d432zuH3Poy2DR2fcA8JqwiU+oAEePlKywZD5kCuiYwotwPnLuWUfC/kwqxTTRJ6d4PO4ghRQlqy+1oBAu5usL34T+/WHDO/preD2bz/CnpbaWPN5P8F1SSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=vNJa3wtf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YhF3VMOv; arc=none smtp.client-ip=202.12.124.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfout.stl.internal (Postfix) with ESMTP id 202A01D00073;
+	Wed, 16 Jul 2025 11:55:08 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Wed, 16 Jul 2025 11:55:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1752681307; x=1752767707; bh=siarlnaF27
+	3S3e7AzJt5dAAmftPETE4JiWgFgvJZOjE=; b=vNJa3wtfgTfrNXlSyJHSktFNgO
+	rhQggDkZV4Erw5IKSPEPIgwDDZv6QmpphHZO9J2mNHyC7zfDsJOJ083wtzc9DtMB
+	CHBn0nRxSIjTAFihn+0wLF0tCjpBSTkStYH22uB/6db5AvnPfqs2j1qI1fuDuv0f
+	9z7aN+CpcpHb004BLol5GVHl84mg35VxJpwmTKPsRctgGHcHqYCQ4rYMyyfYU4ak
+	2AcK953WVnUNmFFOPbU4xH4UHZ1ibThM5zTE2Sk1+R52ClYmJpZL8WZFhBkrv1DL
+	0CCE1efl4vzUUkuOLqC5RYcrmrPyYO+MkGVMC9EnCXzLzn38nnXRed+EVN5A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1752681307; x=1752767707; bh=siarlnaF273S3e7AzJt5dAAmftPETE4JiWg
+	FgvJZOjE=; b=YhF3VMOv0QBfIYHA5IxqQF/B6clGq0aZU/Cw9KyBYV7My2mIa9x
+	U/oGwOeqWRMR5+i3n2tzZ6dXIrdvYoDTPvtLzS0NooVJ69PeVjNKfZs6VtQSdMUs
+	2QibnQrJqOBMFOKyJYbNMbVyjrLyS2H2rUUZPkukNFKWp0Bl4OuV0xkMSihxsTrX
+	OXlE0mhDen7PUbriNDk+8QveKVkr7AhhfD24QU7/8biBHxmmsKoJq9OsT9HdZ9Xq
+	MXLO2yyGv3M72oSI7PPEPFF1xctbNz+Vw/bWKSSrQCja+4p+kSY3suOMGGVCGA79
+	JCvPb5nmvVx+G+RV808KnAq42RR1nzhaCuA==
+X-ME-Sender: <xms:W8t3aAirUIwkxfQjpqkreE06DIiHkRauXyuDI6ZILqhgu7MndmTHxw>
+    <xme:W8t3aMQK4Ac_eJZA64FfPEerNA1QPm3WSGwilB_J4Avyn0xJOQxbElkw-C0L6HmMK
+    pd1liKwtof5xBf6Z6U>
+X-ME-Received: <xmr:W8t3aBgxi3GU6EbjxqAPjmrM_PlSjpoFKv1c6phdmwnzm830XvpC612e2G0bKVFnkBZh49h1wxzBLwRid-hkhq8w54Y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdehkedufecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceu
+    uhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephedthf
+    evgffhtdevgffhlefhgfeuueegtdevudeiheeiheetleeghedvfeegfeegnecuffhomhgr
+    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepfedp
+    mhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepjhhohhgrnhhnvghsrdhthhhumhhshh
+    hirhhnseifuggtrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghr
+    rdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehfsgdrtg
+    homh
+X-ME-Proxy: <xmx:W8t3aM7y4OL9fxJAQHHLvveQpo-FrDvWpX_WHyia6XZfgWWleM07YA>
+    <xmx:W8t3aOD2ZTjd32SrDhI101OAKNDipKJ9QMiQc_McB5D82xh-qW4ZAg>
+    <xmx:W8t3aDZniuPdr8HAwp0zQ27ohGSwM2NxD-s2mJPep-j4FDdKqOCBbw>
+    <xmx:W8t3aJY2n5dPGniYdH0g5En8YMn77gSDCmlJFOWPCuc1NhidB2gmgA>
+    <xmx:W8t3aAetiqtDXHM7dPWJ2KnlAQ9pWBHCiKP_VR7IHoy7LnVmWRMIVSuz>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 16 Jul 2025 11:55:06 -0400 (EDT)
+Date: Wed, 16 Jul 2025 08:56:40 -0700
+From: Boris Burkov <boris@bur.io>
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH] btrfs: make periodic dynamic reclaim the default for data
+Message-ID: <20250716155640.GA2275999@zen.localdomain>
+References: <52b863849f0dd63b3d25a29c8a830a09c748d86b.1752605888.git.boris@bur.io>
+ <df3f4610-cd32-4897-8172-5fe8b6a9b281@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	aeKCfGxoDCEjylSj+5hxW1M+Y9ESynPGuRL5Gl8NokItxznfJ+eZOuK7bnDLMEKhHGHHp6Qq6ecHfwW/kkEuE56XXPiaNhIiPv7xgCoSSXdnT5tn2WM2K2n+FxpEbpLAAk2mLwt6AqChbMl39wWHka67wZFdDQQw91eZmFYdZpXmA/VdJcdDfbibBnkd5fAXLic98eMt87+owlNHHePoY5sMaipuvHn6AQdzo3k++LRAiVseyDvcUsgcH2FUBk4Ajv/ag6yqAW+EuN/1WFPwgv19AI9oBh53CclQyt7P9mt1gzAFGazuA5NhU6Kq8/bRrcSnfBQKKq85LloCY8OWwlF2h5GDDC1vXZmsE4gV/m1FD3r2KOHVcA/zH98ESEbljGeQ7Qd2+dZpfYfv9cjB+ewVNgLZwY1DRzG47hVNKOf81bc9yjQ+3N4s0UHpqRD4f4aRByI3YcUC60JGOwbjvd2lNsjJLVp7JQo0Ex+q+rFDmx1u7+yKnZs1xgau4lC91O3ORkCkto9Nz/MmAmRrwaMK9I8ZZY6xKamhavgdqTo+tQrLmhvOOtHm3WrIgIrCpXw9rlS5Or9OZ2M0bxEngLL565omUF2pz/u7KibA/TCs2sswD4wJuaNfXsxAR7bp
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ebde89d-b99c-44c8-face-08ddc452a0ef
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jul 2025 10:22:12.2684
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lTdm9GG4bLOVJ83UJ/Ew0sWK+UJALXmCE/MSRaQ8qpWId3qoRbYtzRez5VnBh0abyGBM2ZkIbplNUdJS0tJDPC5IVC96iEBQEOsOamvLZsQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR04MB7249
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <df3f4610-cd32-4897-8172-5fe8b6a9b281@wdc.com>
 
-TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
-dW1zaGlybkB3ZGMuY29tPg0K
+On Wed, Jul 16, 2025 at 06:24:05AM +0000, Johannes Thumshirn wrote:
+> On 15.07.25 20:57, Boris Burkov wrote:
+> > The explanation of the feature is linked via the original patches.
+> > But tl;dr: dynamic periodic reclaim for data is a way to get a lot of
+> > extra protection from block group mis-allocation ENOSPC without
+> > incurring a lot of reclaims in the happy, steady state case.
+> > 
+> > We have tested it extensively in production at Meta and are quite
+> > satisfied with its behavior as opposed to an edge triggered
+> > bg_reclaim_threshold set to 25. The latter did well in reducing our
+> > ENOSPCs but at the cost of a LOT of reclaiming. And often excessive
+> > seemingly unbounded reclaiming.
+> > 
+> > With dynamic periodic reclaim, if the system is below 10G unallocated
+> > space, then the cleaner thread will identify the best block groups to
+> > reclaim to get us back to 10G. It will get progressively more aggressive
+> > as unallocated trends towards 0. It will perform no reclaims when
+> > unallocated is above 10G.
+> > 
+> > With its by-design conservative approach to reclaiming and good track
+> > record in datacenter testing, I think it is time to introduce automatic
+> > data block group reclaim to btrfs. This does not conflict with the use
+> > of the tools in btrfs_maintenance. One thing to look out for is that the
+> > bg_reclaim_threshold setting is no longer writeable once the dynamic
+> > threshold is enabled, and instead is a read-only file representing the
+> > current snapshot of the dynamic threshold.
+> > 
+> > To disable either of these features, simply write a 0 to
+> > /sys/fs/btrfs/<uuid>/allocation/data/(dynamic_reclaim|periodic_reclaim)
+> > 
+> > Link: https://lore.kernel.org/linux-btrfs/cover.1718665689.git.boris@bur.io/#t
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> >   fs/btrfs/space-info.c | 6 ++++++
+> >   1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> > index 0481c693ac2e..8005483fbfe2 100644
+> > --- a/fs/btrfs/space-info.c
+> > +++ b/fs/btrfs/space-info.c
+> > @@ -306,6 +306,12 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
+> >   
+> >   		if (ret)
+> >   			return ret;
+> > +	} else {
+> 
+> Why else? If I'm not completely blind I can't see a reason for it.
+> I'm running it without 'else' part through our perf test because it's 
+> stressing reclaim quite a bit. We'll know more in ~7h.
+> 
+> 
+> 
+
+Thank you for running your perf test on it, excited to hear the results!
+
+The reason I didn't propose enabling it for zoned is that I assumed the
+reclaim strategy was too conservative for zoned filesystems. I figured
+you would be reclaiming block_groups more regularly and that the hard
+coded 10G headroom wouldn't work in practice. Also, I'm not sure how the
+flipped threshold works. AFAIK, currently zoned inverts the meaning of
+bg_reclaim_threshold compared to non-zoned so I wonder if will use a
+threshold of 90 at 9 unalloc down to 10 at 1 unalloc for dynamic...
+
+While we're on the topic, what would the ideal auto reclaim for zoned
+look like? Maybe we could track "finished" block_groups and trigger
+reclaim on the smallest ones (perhaps with the full-ness threshold) as
+that number goes up?
+
+Another idea for an extension that I was kicking around that I think
+would make sense for both zoned and non-zoned was to keep the current
+logic for the "we're out of unallocated" side of things but to add a
+slow burn of reclaims metered by reclaim_bytes / reclaim_extents at some
+slow pace. This would try to reasonably keep up with general
+fragmentation in the sub-critical condition without ever doing a large
+amount of reclaim.
+
+> > +		if ((flags & BTRFS_BLOCK_GROUP_DATA) &&
+> > +		    !(flags & BTRFS_BLOCK_GROUP_METADATA)) {
+> > +			space_info->dynamic_reclaim = 1;
+> > +			space_info->periodic_reclaim = 1;
+> > +		}
+> >   	}
+> >   
+> >   	ret = btrfs_sysfs_add_space_info_type(info, space_info);
+> 
 
