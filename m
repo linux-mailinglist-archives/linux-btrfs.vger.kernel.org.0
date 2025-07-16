@@ -1,169 +1,143 @@
-Return-Path: <linux-btrfs+bounces-15533-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15534-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30753B07FB6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jul 2025 23:35:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D36FB080C0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 00:57:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65B414A4CA3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jul 2025 21:35:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D4CA1C2635C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jul 2025 22:57:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686C22EBDFA;
-	Wed, 16 Jul 2025 21:35:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="uRFU8Wkq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MAes9Lpk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54EFA2EE994;
+	Wed, 16 Jul 2025 22:57:22 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
+Received: from sxb1plsmtpa01-04.prod.sxb1.secureserver.net (sxb1plsmtpa01-04.prod.sxb1.secureserver.net [188.121.53.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C95D266F05
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Jul 2025 21:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1021D21421E
+	for <linux-btrfs@vger.kernel.org>; Wed, 16 Jul 2025 22:57:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.121.53.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752701722; cv=none; b=O9JesZu5IUXwYIrDlQ1YCJPOtadN6gp4eL5ZIe+w+vhOr/oujw5iW4+Uff9oAZPizwuyQzMaAnylm0Y/J2qjj7KKufiyblIVEH4RQFSZXObjqStBxCUzNmty/KfjLj35HkOQv+CRITLYnXNGF2KVnWfFHIE3E+WDY6kOuQRWdS0=
+	t=1752706641; cv=none; b=KyyTiKA+Ns9k5/warQVSMRysDXm9RzvsTXLW5ywT1wohVgtO1JFSB+k/fLluJMrFAaXcg2dGndEe41xIQuRhnGKNtJHB1fSReqG0+KuSPf29JZMb4z4C+8fqWvh5VL98kVW5yZcKCX8C/knL0aiQ8r/ZTyez6tPmzwNTKnnjKdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752701722; c=relaxed/simple;
-	bh=NHQAf/ATWtamSJ1z93IPxQFkfsOQXVt1W01Y3U2Ewb8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=EuKgGqzeitjv4o+mApjctdUAFJGhUJQcsG/ZACIfo4N3E6duZPhCXYN8wsCW3tVysUs7jxKse2R7OfXgIVByiCZSrHdLsVA99tRNnXLEdTuTl7CwJwGsq+W1uSXRoRehFd67W+2zMhycaPN0RLVpPrzHmvZoHtlFvlOfm+P6PdY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=uRFU8Wkq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MAes9Lpk; arc=none smtp.client-ip=103.168.172.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfout.phl.internal (Postfix) with ESMTP id 3EF2AEC01F2;
-	Wed, 16 Jul 2025 17:35:18 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-01.internal (MEProxy); Wed, 16 Jul 2025 17:35:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1752701718; x=1752788118; bh=ZlbddsCWyfjSX6TTS5k3/
-	DIJhqdKFYTKpqCOijjYGzM=; b=uRFU8WkqCSaRAi1j1TjJ1bnU+tZbrzhqKnvz5
-	k22v9vdArZdYvDx654OntPD21aa1x1Z028MTc1LAmBKv34YV4KF/0Dx5PsaOSzr5
-	a4jRS60nmFxCUhNE1MB9plh2Q/tdJ5nNPp4SHC4kTgs6bdyY7nDwgxwODcCHPDSV
-	BBKM2cGR2cEmiRKXqzpI+p1hbfGdmMaRzK/GD/s2LZjFzyPlrmBTrhndjO8MSq6p
-	XU4FxwrlRQf51c8wl6nrrBnOsmBSwlH8Y7TThahJVZ2Pk6dzZq3+veepNnKIERhf
-	WJzwnI0Fc9Q26RI7g0w0pkKVaDy18c1tyzdJaSVjayJpf1Fxw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1752701718; x=1752788118; bh=ZlbddsCWyfjSX6TTS5k3/DIJhqdKFYTKpqC
-	OijjYGzM=; b=MAes9Lpk0v+NBObEEJK+fir3f/GGtlQNXhbwQUZgZMYvShTiDRy
-	dcpxIelkNsvzitpMSyjAVxUTECtWY5VA0qG5xuZLq/DrfwxyJErQqRDAWce7tSP7
-	cmA8Ga3Kct3LHPQNSnpXyfKOlsmCtQo1hTLzm4wshMqRNfdiMDuQQaRagWbbqblB
-	0vhRWuXbV+a/0ztUvAAJ9yPp6NSVjeJX9VRiRnw347eznzB+8yKBfRDrU7dYjpAp
-	s++jxPZQzKIikkvmEnbFvVrzSLNoD021O3tZIZTiIuK5F90xAObzIo+qHrMO0Qeb
-	u3p0rhoQgIZh+Sy6PdddHrpij5Ixu5WA0dQ==
-X-ME-Sender: <xms:FRt4aHhRONkmE9fHwVuyEO-dpVPxnLAUfTFAPr1-iWWNwfkkhQIxWA>
-    <xme:FRt4aEN2FXUWuiitX_FguRjWvnLZNkL4kge8TYwrIfkq38xz8DBkwwshuFHv588Im
-    41k62CViDFIEevwoHE>
-X-ME-Received: <xmr:FRt4aI7VAWrLOel0VrF4QbOnFeFbrW4dZAoz7e5MWioyCEIOLoiGvClZR8rBoRCka0FLq7T5Fdxn4OGj0LaWFXQ4_mk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdehkeekudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertddtne
-    cuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecu
-    ggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekudduteefke
-    fffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
-    rhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmohguvgepsh
-    hmthhpohhuthdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
-X-ME-Proxy: <xmx:FRt4aC3_U7WKEItjpZPsPwVXjPMDFrXnMdh9AFZ2zaDe--XOo769IQ>
-    <xmx:FRt4aJb_GY3hogfG5cn-h4cd6N3XoIWyoecaI2IPEErZ0vKTiCtkOQ>
-    <xmx:FRt4aKBJj_3jgb6CtxZ2mIWRFX2Mc15ppYaf8NC3qIW_Y-mkgDMNVA>
-    <xmx:FRt4aL8QegOMc7YlgEI5lI9wLHasVGoUzT2jJAwURjCtMDQAjDkw4g>
-    <xmx:Fht4aB5o_hWCuRNCqYFx2IZxDHOlcPdPpSS3RdwCkmhf0Il4K1kJVwIY>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 16 Jul 2025 17:35:17 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH] btrfs: use find_free_extent_check_size_class() in clustered check
-Date: Wed, 16 Jul 2025 14:36:50 -0700
-Message-ID: <c6624547086a52fd70e6ab651372f35a05ee7b65.1752701770.git.boris@bur.io>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1752706641; c=relaxed/simple;
+	bh=NMP9084JD75v2eU5pfqTbg/2XaSNjwAG/rAMydJ3TiA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=O74zkUkF3XyYvXu95XqjP0cMrvVb0JAPOPldwY1Wazka6pjPDu2Sfac6VgT5xdPIW2T9IgE/bNRO7nDixLPSDssyToljNI+6R5MM21RPxzqaQ+2vxPytnK8Ic3lo++UH43b3DOXlwA5JXUzflOFpT7Jj4+ftNf8PU5WmFObemqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk; spf=pass smtp.mailfrom=squashfs.org.uk; arc=none smtp.client-ip=188.121.53.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squashfs.org.uk
+Received: from [192.168.178.95] ([82.69.79.175])
+	by :SMTPAUTH: with ESMTPSA
+	id cAlKuoVr96J4FcAlNu4Dmt; Wed, 16 Jul 2025 15:38:10 -0700
+X-CMAE-Analysis: v=2.4 cv=TYmWtQQh c=1 sm=1 tr=0 ts=687829d2
+ a=84ok6UeoqCVsigPHarzEiQ==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
+ a=IkcTkHD0fZMA:10 a=Z9je9KOXq8erZ9ix0VAA:9 a=QEXdDO2ut3YA:10
+X-SECURESERVER-ACCT: phillip@squashfs.org.uk
+Message-ID: <f4b9faf9-8efd-4396-b080-e712025825ab@squashfs.org.uk>
+Date: Wed, 16 Jul 2025 23:37:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: Compressed files & the page cache
+To: Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+ linux-btrfs@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
+ Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+ linux-erofs@lists.ozlabs.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-f2fs-devel@lists.sourceforge.net, Jan Kara <jack@suse.cz>,
+ linux-fsdevel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Howells <dhowells@redhat.com>, netfs@lists.linux.dev,
+ Paulo Alcantara <pc@manguebit.org>,
+ Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+ ntfs3@lists.linux.dev, Steve French <sfrench@samba.org>,
+ linux-cifs@vger.kernel.org
+References: <aHa8ylTh0DGEQklt@casper.infradead.org>
+Content-Language: en-US
+From: Phillip Lougher <phillip@squashfs.org.uk>
+In-Reply-To: <aHa8ylTh0DGEQklt@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfF7PhqfDTvf0GLbE+ZqPgfM1AhwOJlHSpsMzx6XOcDZuT9YqsTaq8QVlGaLYbZSCACkmupuX6+moDnsLw8z6oXo/oW+NBiLgU6y5TBJWXg6tV88e5Euj
+ 1giZ2fZsoopVdzm/v4Tlp3z0KvSwDUxO6m0SnvjOtH9zvReYNZLA2FNMM+DrFEJFaiIkCvRrmoBmbv4h3OnUHX5sclo1/Wezm+BEj6dLaDXAyuKVHku8Kvy6
+ 3A9SkS3ZtrCtIQcuDoAamTotabkyq8u+NbETcu+wgZcHz79D2Cqa4hBUqSAxUGPLdjqjvKdz0Y+w0IVDS3aE1LUKcnIDytVIxDas6bwTbJD2/Yz7PsjwtKtl
+ JoRL1DOXscuVOLxBvw+0xQnpDotzu0Vo1GrTRn1rfHJKD4Exmb3wOCyCD+h2AYMKaGBCjBVgXvf5G6DK3/s3MVbkLRjH09uolqpyyQAsKggrC2Moa3qwKWia
+ tBwCIdLZWPpQOFc2HOlLjv7vmcMVwr97TODyoKXcYSBdRG5Aj19H80t7Vc1kPbVELOFd5EDHNfQ8ATDugkZBq2J/V21dERsOluc2pak7RNmbJyOzrPcIwalB
+ Nf6fEekDRHicDoV2q2tew6sPotWewTjdjMw9iwbRhZpamiZqsp/XI9f5XhZcOQoUdsCy/ey/U995vHBeMMo6H0yRk9BNVCMpINAVKCtQmjIv7xNp+Ioo2Sxs
+ gPnTBcUD++qhM8KfplNiTcJXoQ96eTIssdBe+BMWUXv1qhpWQ9GKojXGcX8mKMvEG7sKSgFMNrc3J5Xm28GieZWCzy/+ZDv2I7VwecP2j5T1w/WLBfHEUgk5
+ gufg4AqEMh/tWtnL4rvSfpFcA6zbEUbuBjvPEzIYLlyjogb7n+266BU1vQZO72XCtgIJOh/KDHsuteA4LS7mxuWjWepHBR+R1mjV5Mwu
 
-Metadata block groups will not set their size class, while the ffe_ctl
-will just go off the size of the request (nodesize), so this will mess
-up the proper function of the clustered allocator for metadata.
 
-Fix it by using the appropriate helper that is aware of data vs.
-metadata
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/extent-tree.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+On 15/07/2025 21:40, Matthew Wilcox wrote:
+> I've started looking at how the page cache can help filesystems handle
+> compressed data better.  Feedback would be appreciated!  I'll probably
+> say a few things which are obvious to anyone who knows how compressed
+> files work, but I'm trying to be explicit about my assumptions.
+> 
+> First, I believe that all filesystems work by compressing fixed-size
+> plaintext into variable-sized compressed blocks.  This would be a good
+> point to stop reading and tell me about counterexamples.
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index ca54fbb0231c..c93d91235dc5 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -3651,6 +3651,21 @@ btrfs_release_block_group(struct btrfs_block_group *cache,
- 	btrfs_put_block_group(cache);
- }
- 
-+static bool find_free_extent_check_size_class(struct find_free_extent_ctl *ffe_ctl,
-+					      struct btrfs_block_group *bg)
-+{
-+	if (ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED)
-+		return true;
-+	if (!btrfs_block_group_should_use_size_class(bg))
-+		return true;
-+	if (ffe_ctl->loop >= LOOP_WRONG_SIZE_CLASS)
-+		return true;
-+	if (ffe_ctl->loop >= LOOP_UNSET_SIZE_CLASS &&
-+	    bg->size_class == BTRFS_BG_SZ_NONE)
-+		return true;
-+	return ffe_ctl->size_class == bg->size_class;
-+}
-+
- /*
-  * Helper function for find_free_extent().
-  *
-@@ -3673,7 +3688,7 @@ static int find_free_extent_clustered(struct btrfs_block_group *bg,
- 		goto refill_cluster;
- 	if (cluster_bg != bg && (cluster_bg->ro ||
- 	    !block_group_bits(cluster_bg, ffe_ctl->flags) ||
--	    ffe_ctl->size_class != cluster_bg->size_class))
-+	    !find_free_extent_check_size_class(ffe_ctl, cluster_bg)))
- 		goto release_cluster;
- 
- 	offset = btrfs_alloc_from_cluster(cluster_bg, last_ptr,
-@@ -4230,21 +4245,6 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
- 	return -ENOSPC;
- }
- 
--static bool find_free_extent_check_size_class(struct find_free_extent_ctl *ffe_ctl,
--					      struct btrfs_block_group *bg)
--{
--	if (ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED)
--		return true;
--	if (!btrfs_block_group_should_use_size_class(bg))
--		return true;
--	if (ffe_ctl->loop >= LOOP_WRONG_SIZE_CLASS)
--		return true;
--	if (ffe_ctl->loop >= LOOP_UNSET_SIZE_CLASS &&
--	    bg->size_class == BTRFS_BG_SZ_NONE)
--		return true;
--	return ffe_ctl->size_class == bg->size_class;
--}
--
- static int prepare_allocation_clustered(struct btrfs_fs_info *fs_info,
- 					struct find_free_extent_ctl *ffe_ctl,
- 					struct btrfs_space_info *space_info,
--- 
-2.50.1
+For Squashfs Yes.
 
+> 
+>>From what I've been reading in all your filesystems is that you want to
+> allocate extra pages in the page cache in order to store the excess data
+> retrieved along with the page that you're actually trying to read.  That's
+> because compressing in larger chunks leads to better compression.
+> 
+
+Yes.
+
+> There's some discrepancy between filesystems whether you need scratch
+> space for decompression.  Some filesystems read the compressed data into
+> the pagecache and decompress in-place, while other filesystems read the
+> compressed data into scratch pages and decompress into the page cache.
+> 
+
+Squashfs uses scratch pages.
+
+> There also seems to be some discrepancy between filesystems whether the
+> decompression involves vmap() of all the memory allocated or whether the
+> decompression routines can handle doing kmap_local() on individual pages.
+> 
+
+Squashfs does both, and this depends on whether the decompression
+algorithm implementation in the kernel is multi-shot or single-shot.
+
+The zlib/xz/zstd decompressors are multi-shot, in that you can call them
+multiply, giving them an extra input or output buffer when it runs out.
+This means you can get them to output into a 4K page at a time, without
+requiring the pages to be contiguous.  kmap_local() can be called on each
+page before passing it to the decompressor.
+
+The lzo/lz4 decompressors are single-shot, they expect to be called once,
+with a single contiguous input buffer containing the data to be
+decompressed, and a single contiguous output buffer large enough to hold
+all the uncompressed data.
+
+> So, my proposal is that filesystems tell the page cache that their minimum
+> folio size is the compression block size.  That seems to be around 64k,
+> so not an unreasonable minimum allocation size.  That removes all the
+> extra code in filesystems to allocate extra memory in the page cache.
+> It means we don't attempt to track dirtiness at a sub-folio granularity
+> (there's no point, we have to write back the entire compressed bock
+> at once).  We also get a single virtually contiguous block ... if you're
+> willing to ditch HIGHMEM support.  Or there's a proposal to introduce a
+> vmap_file() which would give us a virtually contiguous chunk of memory
+> (and could be trivially turned into a noop for the case of trying to
+> vmap a single large folio).
+> 
+
+The compression block size in Squashfs can be 4K to 1M in size.
+
+Phillip
 
