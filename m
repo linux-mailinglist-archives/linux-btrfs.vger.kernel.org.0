@@ -1,136 +1,115 @@
-Return-Path: <linux-btrfs+bounces-15535-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15536-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DDB1B08213
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 03:08:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8926BB0831D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 04:50:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E7241893400
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 01:08:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA54C4A658F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 02:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D451A8F84;
-	Thu, 17 Jul 2025 01:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 973E41E5B88;
+	Thu, 17 Jul 2025 02:49:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="jz6XkYHH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dxj0Av8D"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.9])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85BD2AE96;
-	Thu, 17 Jul 2025 01:08:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.9
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA23910A1E;
+	Thu, 17 Jul 2025 02:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752714490; cv=none; b=ncaNPPYCx3cOeXjQPyyW6SC9fUHY3BE5RAjmICUu7O0LRJvOXDJ5pwRw8dt2MuXOPQRu5CfJk6zZ31OtleP3B4yOCCjGjn3NyqIUcNelMbt+Jd3ZxHuGRUXK4Avn9I07v5mIC0u5v7T25mz8wpbgzvAqxUp+uAKatMTtyRSJQBo=
+	t=1752720591; cv=none; b=iDECtfJzvI7iSrGw+4IJfxLBkKA5CzQjRvJlHK6eAKkNb+OMz/IgGrFzwKSBwS1gA6kMHdyu0rYuJ5FJoVBFMXXSsrGcERb/n6Ewr1iZUbrHs3rWIabzY2nZzl/NrP9Zd4QIHiQk2eYWQ8DpuMSEmemL0fbWDfjucvt745yZwhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752714490; c=relaxed/simple;
-	bh=9xZryO4rFVnSGnDvYSmx+6RTpRmgc4J9MPSC/kaqtZM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HGPvTGz79oBMqG3F6rfSzy6FHVMPscUKBr9mq5H1k8j38jEeM+7MYZTSZBL8GG8AKYQNsTWHjC3Fk/efVyU9VbiThxqcX1YAmesb9IafjfO11BhYdxyWY4ujxgNTxLYQ/+Gzrt7DFffvki73xwfor/5IBtyRwxcL6DoiFDVE1Qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=jz6XkYHH; arc=none smtp.client-ip=220.197.31.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=EI
-	JgRbo2yBEeYOe56FQ8t29uLldSsA6Cw8nKiYtCDc8=; b=jz6XkYHHjOmUNGKAG8
-	7zHJBqjQXWUhQMLTDbg8FNOvmse7PPf0qd3RKFzMwx+JQAzX7qb7lfhMl1oceFhG
-	mZ7e/kTlAWcimrvizDTPt+1IpmD3mXC2jrhIei67mlLI9wrFG/fO1X7lbE1DqhuP
-	M5O7aAVyT0SiYT1bn6IUAqBD0=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wDnL_QZTHhoBW1MAQ--.5971S2;
-	Thu, 17 Jul 2025 09:04:39 +0800 (CST)
-From: Nanzhe Zhao <nzzhao@126.com>
-To: nzzhao.sigma@gmail.com
-Cc: almaz.alexandrovich@paragon-software.com,
-	clm@fb.com,
-	dhowells@redhat.com,
-	dsterba@suse.com,
-	dwmw2@infradead.org,
-	jack@suse.cz,
-	jaegeuk@kernel.org,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org,
-	linux-cifs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-f2fs-devel@lists.sourceforge.net,
+	s=arc-20240116; t=1752720591; c=relaxed/simple;
+	bh=+3M7g91K1wbKWaHCHWCVlTkf6dVFqoCHka6+sKX8uc0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lLnJIQ5PMD19fz0H99uyTsQbvNpKqDF6SPfki1+oq0LC4e42axUzVxmu7rm9S249rSKaeAuNVFhNZFdNWYPrAzl7hy7HZ53OAlFDryvA3WQR5BSdTVLn1W3fxxjxVszTNpUq14/k80xYY0qH1x/HvqFVqJY6iAIDiMQsByhP7Jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dxj0Av8D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E1B0C4CEE7;
+	Thu, 17 Jul 2025 02:49:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752720591;
+	bh=+3M7g91K1wbKWaHCHWCVlTkf6dVFqoCHka6+sKX8uc0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Dxj0Av8D5AZtIisXh2L9yJig4uXBQuxbS9ixY/JMlxvl70bIPu8iWlVqGEzCoOgUi
+	 +5jU7iXSPRY863B1eVwqkKI4XyGU8N1oiPiSPYP3NlYWjMsCzjY3/zNUSeI4PfvJj0
+	 n7GfspSMnUer51mMfjRjFN8s+TltBz1xAqzFf/4SamHGdauI6kCAc8//1mfU95Af06
+	 zzmzEaGEDSNSTgcJHuXYUJGBMCRzfTCgpsxnK/GcWE+60f/gZxYXyl9b+IaN0vufU4
+	 oIMmh0U1QCuDEp6Cvy24xlk5jGum/YFcnprJ1x7H5mudjZboZP0UCU72iFYOMe7L+u
+	 czU/b0esZtW6Q==
+Date: Wed, 16 Jul 2025 19:49:03 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Phillip Lougher <phillip@squashfs.org.uk>
+Cc: Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+	linux-erofs@lists.ozlabs.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+	linux-f2fs-devel@lists.sourceforge.net, Jan Kara <jack@suse.cz>,
 	linux-fsdevel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	netfs@lists.linux.dev,
-	nico@fluxnic.net,
-	ntfs3@lists.linux.dev,
-	pc@manguebit.org,
-	phillip@squashfs.org.uk,
-	richard@nod.at,
-	sfrench@samba.org,
-	willy@infradead.org,
-	xiang@kernel.org
-Subject: Re: [f2fs-dev] Compressed files & the page cache
-Date: Thu, 17 Jul 2025 09:04:14 +0800
-Message-ID: <20250717010414.1595-1-nzzhao@126.com>
-X-Mailer: git-send-email 2.42.0.windows.2
-In-Reply-To: <CAMLCH1HCPByhWGQjix6040fZuZhjkj19k=4pqmNzPDtGeZ0Q6A@mail.gmail.com>
-References: <CAMLCH1HCPByhWGQjix6040fZuZhjkj19k=4pqmNzPDtGeZ0Q6A@mail.gmail.com>
+	David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+	David Howells <dhowells@redhat.com>, netfs@lists.linux.dev,
+	Paulo Alcantara <pc@manguebit.org>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	ntfs3@lists.linux.dev, Steve French <sfrench@samba.org>,
+	linux-cifs@vger.kernel.org
+Subject: Re: Compressed files & the page cache
+Message-ID: <20250717024903.GA1288@sol>
+References: <aHa8ylTh0DGEQklt@casper.infradead.org>
+ <f4b9faf9-8efd-4396-b080-e712025825ab@squashfs.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDnL_QZTHhoBW1MAQ--.5971S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCrykZr1DGr4rXrWxurWxJFb_yoW5XFWkpF
-	W5KF1rKr4kXr4xAw47Aa12gFyF93s5JF47J34fKFWqy3W5J3sa9r1Dtas0vFWDGr93Xa1q
-	vr4q934093s0vFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UpwZcUUUUU=
-X-CM-SenderInfo: xq22xtbr6rjloofrz/1tbiZBKNz2h4PiLMHQAAsp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4b9faf9-8efd-4396-b080-e712025825ab@squashfs.org.uk>
 
-Dear Mr.Matthew and other fs developers:
-I'm very sorry.My gmail maybe be blocked for reasons I don't know.I have to change
-my email domain.
-> So, my proposal is that filesystems tell the page cache that their minimu=
-m
-> folio size is the compression block size.  That seems to be around 64k,
-> so not an unreasonable minimum allocation size.
-Excuse me,but could you please clarify the meaning of "compression block si=
-ze"?
-If you mean the minimum buffer window size that a filesystem requires
-to perform one whole compress write/decompress read io(also we can
-call it the granularity),which,in f2fs context we can interpret as the
-cluster size.Then that means for compress files,we could not fallback
-to 0 order folio in memory pressure case when setting folio's minmium
-order to "compression block size"?
+On Wed, Jul 16, 2025 at 11:37:28PM +0100, Phillip Lougher wrote:
+> > There also seems to be some discrepancy between filesystems whether the
+> > decompression involves vmap() of all the memory allocated or whether the
+> > decompression routines can handle doing kmap_local() on individual pages.
+> > 
+> 
+> Squashfs does both, and this depends on whether the decompression
+> algorithm implementation in the kernel is multi-shot or single-shot.
+> 
+> The zlib/xz/zstd decompressors are multi-shot, in that you can call them
+> multiply, giving them an extra input or output buffer when it runs out.
+> This means you can get them to output into a 4K page at a time, without
+> requiring the pages to be contiguous.  kmap_local() can be called on each
+> page before passing it to the decompressor.
 
-If that is the case,then when f2fs' cluster size was configured,the
-minium order was determined(and may beyond 64KiB.Depending on how we
-set the cluster size).If the cluster size was set to a large number,we
-will encounter much more risk when in memory pressure case.
+While those compression libraries do provide streaming APIs, it's sort
+of an illusion.  They still need the uncompressed data in a virtually
+contiguous buffer for the LZ77 match finding and copying to work.  So,
+internally they copy the uncompressed data into a virtually contiguous
+buffer.  I suspect that vmap() (or vm_map_ram() which is what f2fs uses)
+is actually more efficient than these streaming APIs, since it avoids
+the internal copy.  But it would need to be measured.
 
-Well,as for the 64Kib minimum granularity,because Android now switchs
-page size to 16Kib so for current f2fs compress implementation the
-minimum possible granularity indeed just exactly equals 64Kib.But I do
-hold a opinion that may not be a very good point for f2fs. Because
-just as I know,there are lots of small random write on Android.So
-instead of having a minimum granularity in 64Kib,I appreciate future
-f2fs's compression's implementation should support smaller cluster
-size for compression. As far as I know,storage engineers from vivo is
-experimenting a dynamic cluster compression implementation.It can
-adjust the cluster size within a file adaptively.(Maybe larger in some
-part and smaller in other part)
-They didn't publish the code now.But this design maybe more suitable
-for cooperating with folios for its vary-order feature.
+> > So, my proposal is that filesystems tell the page cache that their minimum
+> > folio size is the compression block size.  That seems to be around 64k,
+> > so not an unreasonable minimum allocation size.  That removes all the
+> > extra code in filesystems to allocate extra memory in the page cache.
+> > It means we don't attempt to track dirtiness at a sub-folio granularity
+> > (there's no point, we have to write back the entire compressed bock
+> > at once).  We also get a single virtually contiguous block ... if you're
+> > willing to ditch HIGHMEM support.  Or there's a proposal to introduce a
+> > vmap_file() which would give us a virtually contiguous chunk of memory
+> > (and could be trivially turned into a noop for the case of trying to
+> > vmap a single large folio).
 
->  It means we don't attempt to track dirtiness at a sub-folio granularity
->
-> (there's no point, we have to write back the entire compressed bock
-> at once).
-That DO has point for f2fs.Because we cannot control the order of
-folio that readahead gave us if we don't set maximum order.A large folio can cross 
-multi clusters in f2fs as I have mentioned.
-Since f2fs has no buffered head or a concept of subpage as we have discussed previously,
-It must rely on iomap_folio_state or a similar per folio struct to distinguish which
-cluster range of this folio is dirty.
-And it must distinguish a partialy dirted cluster to avoid compress write.
-Besides,l do think larger folio can cross multi compressed extent in
-btrfs too if I didn't misunderstand.May I ask how do btrfs deal with
-the possible write amplification?
+... but of course, if we could get a virtually contiguous buffer
+"for free" (at least in the !HIGHMEM case) as in the above proposal,
+that would clearly be the best option.
 
+- Eric
 
