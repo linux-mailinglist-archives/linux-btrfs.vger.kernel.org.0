@@ -1,143 +1,136 @@
-Return-Path: <linux-btrfs+bounces-15534-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15535-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D36FB080C0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 00:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DDB1B08213
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 03:08:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D4CA1C2635C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jul 2025 22:57:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E7241893400
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 01:08:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54EFA2EE994;
-	Wed, 16 Jul 2025 22:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D451A8F84;
+	Thu, 17 Jul 2025 01:08:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="jz6XkYHH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from sxb1plsmtpa01-04.prod.sxb1.secureserver.net (sxb1plsmtpa01-04.prod.sxb1.secureserver.net [188.121.53.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1021D21421E
-	for <linux-btrfs@vger.kernel.org>; Wed, 16 Jul 2025 22:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.121.53.34
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85BD2AE96;
+	Thu, 17 Jul 2025 01:08:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752706641; cv=none; b=KyyTiKA+Ns9k5/warQVSMRysDXm9RzvsTXLW5ywT1wohVgtO1JFSB+k/fLluJMrFAaXcg2dGndEe41xIQuRhnGKNtJHB1fSReqG0+KuSPf29JZMb4z4C+8fqWvh5VL98kVW5yZcKCX8C/knL0aiQ8r/ZTyez6tPmzwNTKnnjKdc=
+	t=1752714490; cv=none; b=ncaNPPYCx3cOeXjQPyyW6SC9fUHY3BE5RAjmICUu7O0LRJvOXDJ5pwRw8dt2MuXOPQRu5CfJk6zZ31OtleP3B4yOCCjGjn3NyqIUcNelMbt+Jd3ZxHuGRUXK4Avn9I07v5mIC0u5v7T25mz8wpbgzvAqxUp+uAKatMTtyRSJQBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752706641; c=relaxed/simple;
-	bh=NMP9084JD75v2eU5pfqTbg/2XaSNjwAG/rAMydJ3TiA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=O74zkUkF3XyYvXu95XqjP0cMrvVb0JAPOPldwY1Wazka6pjPDu2Sfac6VgT5xdPIW2T9IgE/bNRO7nDixLPSDssyToljNI+6R5MM21RPxzqaQ+2vxPytnK8Ic3lo++UH43b3DOXlwA5JXUzflOFpT7Jj4+ftNf8PU5WmFObemqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk; spf=pass smtp.mailfrom=squashfs.org.uk; arc=none smtp.client-ip=188.121.53.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squashfs.org.uk
-Received: from [192.168.178.95] ([82.69.79.175])
-	by :SMTPAUTH: with ESMTPSA
-	id cAlKuoVr96J4FcAlNu4Dmt; Wed, 16 Jul 2025 15:38:10 -0700
-X-CMAE-Analysis: v=2.4 cv=TYmWtQQh c=1 sm=1 tr=0 ts=687829d2
- a=84ok6UeoqCVsigPHarzEiQ==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
- a=IkcTkHD0fZMA:10 a=Z9je9KOXq8erZ9ix0VAA:9 a=QEXdDO2ut3YA:10
-X-SECURESERVER-ACCT: phillip@squashfs.org.uk
-Message-ID: <f4b9faf9-8efd-4396-b080-e712025825ab@squashfs.org.uk>
-Date: Wed, 16 Jul 2025 23:37:28 +0100
+	s=arc-20240116; t=1752714490; c=relaxed/simple;
+	bh=9xZryO4rFVnSGnDvYSmx+6RTpRmgc4J9MPSC/kaqtZM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=HGPvTGz79oBMqG3F6rfSzy6FHVMPscUKBr9mq5H1k8j38jEeM+7MYZTSZBL8GG8AKYQNsTWHjC3Fk/efVyU9VbiThxqcX1YAmesb9IafjfO11BhYdxyWY4ujxgNTxLYQ/+Gzrt7DFffvki73xwfor/5IBtyRwxcL6DoiFDVE1Qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=jz6XkYHH; arc=none smtp.client-ip=220.197.31.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=EI
+	JgRbo2yBEeYOe56FQ8t29uLldSsA6Cw8nKiYtCDc8=; b=jz6XkYHHjOmUNGKAG8
+	7zHJBqjQXWUhQMLTDbg8FNOvmse7PPf0qd3RKFzMwx+JQAzX7qb7lfhMl1oceFhG
+	mZ7e/kTlAWcimrvizDTPt+1IpmD3mXC2jrhIei67mlLI9wrFG/fO1X7lbE1DqhuP
+	M5O7aAVyT0SiYT1bn6IUAqBD0=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wDnL_QZTHhoBW1MAQ--.5971S2;
+	Thu, 17 Jul 2025 09:04:39 +0800 (CST)
+From: Nanzhe Zhao <nzzhao@126.com>
+To: nzzhao.sigma@gmail.com
+Cc: almaz.alexandrovich@paragon-software.com,
+	clm@fb.com,
+	dhowells@redhat.com,
+	dsterba@suse.com,
+	dwmw2@infradead.org,
+	jack@suse.cz,
+	jaegeuk@kernel.org,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org,
+	linux-cifs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	netfs@lists.linux.dev,
+	nico@fluxnic.net,
+	ntfs3@lists.linux.dev,
+	pc@manguebit.org,
+	phillip@squashfs.org.uk,
+	richard@nod.at,
+	sfrench@samba.org,
+	willy@infradead.org,
+	xiang@kernel.org
+Subject: Re: [f2fs-dev] Compressed files & the page cache
+Date: Thu, 17 Jul 2025 09:04:14 +0800
+Message-ID: <20250717010414.1595-1-nzzhao@126.com>
+X-Mailer: git-send-email 2.42.0.windows.2
+In-Reply-To: <CAMLCH1HCPByhWGQjix6040fZuZhjkj19k=4pqmNzPDtGeZ0Q6A@mail.gmail.com>
+References: <CAMLCH1HCPByhWGQjix6040fZuZhjkj19k=4pqmNzPDtGeZ0Q6A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Compressed files & the page cache
-To: Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
- Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
- linux-erofs@lists.ozlabs.org, Jaegeuk Kim <jaegeuk@kernel.org>,
- linux-f2fs-devel@lists.sourceforge.net, Jan Kara <jack@suse.cz>,
- linux-fsdevel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Howells <dhowells@redhat.com>, netfs@lists.linux.dev,
- Paulo Alcantara <pc@manguebit.org>,
- Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
- ntfs3@lists.linux.dev, Steve French <sfrench@samba.org>,
- linux-cifs@vger.kernel.org
-References: <aHa8ylTh0DGEQklt@casper.infradead.org>
-Content-Language: en-US
-From: Phillip Lougher <phillip@squashfs.org.uk>
-In-Reply-To: <aHa8ylTh0DGEQklt@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfF7PhqfDTvf0GLbE+ZqPgfM1AhwOJlHSpsMzx6XOcDZuT9YqsTaq8QVlGaLYbZSCACkmupuX6+moDnsLw8z6oXo/oW+NBiLgU6y5TBJWXg6tV88e5Euj
- 1giZ2fZsoopVdzm/v4Tlp3z0KvSwDUxO6m0SnvjOtH9zvReYNZLA2FNMM+DrFEJFaiIkCvRrmoBmbv4h3OnUHX5sclo1/Wezm+BEj6dLaDXAyuKVHku8Kvy6
- 3A9SkS3ZtrCtIQcuDoAamTotabkyq8u+NbETcu+wgZcHz79D2Cqa4hBUqSAxUGPLdjqjvKdz0Y+w0IVDS3aE1LUKcnIDytVIxDas6bwTbJD2/Yz7PsjwtKtl
- JoRL1DOXscuVOLxBvw+0xQnpDotzu0Vo1GrTRn1rfHJKD4Exmb3wOCyCD+h2AYMKaGBCjBVgXvf5G6DK3/s3MVbkLRjH09uolqpyyQAsKggrC2Moa3qwKWia
- tBwCIdLZWPpQOFc2HOlLjv7vmcMVwr97TODyoKXcYSBdRG5Aj19H80t7Vc1kPbVELOFd5EDHNfQ8ATDugkZBq2J/V21dERsOluc2pak7RNmbJyOzrPcIwalB
- Nf6fEekDRHicDoV2q2tew6sPotWewTjdjMw9iwbRhZpamiZqsp/XI9f5XhZcOQoUdsCy/ey/U995vHBeMMo6H0yRk9BNVCMpINAVKCtQmjIv7xNp+Ioo2Sxs
- gPnTBcUD++qhM8KfplNiTcJXoQ96eTIssdBe+BMWUXv1qhpWQ9GKojXGcX8mKMvEG7sKSgFMNrc3J5Xm28GieZWCzy/+ZDv2I7VwecP2j5T1w/WLBfHEUgk5
- gufg4AqEMh/tWtnL4rvSfpFcA6zbEUbuBjvPEzIYLlyjogb7n+266BU1vQZO72XCtgIJOh/KDHsuteA4LS7mxuWjWepHBR+R1mjV5Mwu
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDnL_QZTHhoBW1MAQ--.5971S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCrykZr1DGr4rXrWxurWxJFb_yoW5XFWkpF
+	W5KF1rKr4kXr4xAw47Aa12gFyF93s5JF47J34fKFWqy3W5J3sa9r1Dtas0vFWDGr93Xa1q
+	vr4q934093s0vFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UpwZcUUUUU=
+X-CM-SenderInfo: xq22xtbr6rjloofrz/1tbiZBKNz2h4PiLMHQAAsp
 
-
-
-On 15/07/2025 21:40, Matthew Wilcox wrote:
-> I've started looking at how the page cache can help filesystems handle
-> compressed data better.  Feedback would be appreciated!  I'll probably
-> say a few things which are obvious to anyone who knows how compressed
-> files work, but I'm trying to be explicit about my assumptions.
-> 
-> First, I believe that all filesystems work by compressing fixed-size
-> plaintext into variable-sized compressed blocks.  This would be a good
-> point to stop reading and tell me about counterexamples.
-
-For Squashfs Yes.
-
-> 
->>From what I've been reading in all your filesystems is that you want to
-> allocate extra pages in the page cache in order to store the excess data
-> retrieved along with the page that you're actually trying to read.  That's
-> because compressing in larger chunks leads to better compression.
-> 
-
-Yes.
-
-> There's some discrepancy between filesystems whether you need scratch
-> space for decompression.  Some filesystems read the compressed data into
-> the pagecache and decompress in-place, while other filesystems read the
-> compressed data into scratch pages and decompress into the page cache.
-> 
-
-Squashfs uses scratch pages.
-
-> There also seems to be some discrepancy between filesystems whether the
-> decompression involves vmap() of all the memory allocated or whether the
-> decompression routines can handle doing kmap_local() on individual pages.
-> 
-
-Squashfs does both, and this depends on whether the decompression
-algorithm implementation in the kernel is multi-shot or single-shot.
-
-The zlib/xz/zstd decompressors are multi-shot, in that you can call them
-multiply, giving them an extra input or output buffer when it runs out.
-This means you can get them to output into a 4K page at a time, without
-requiring the pages to be contiguous.  kmap_local() can be called on each
-page before passing it to the decompressor.
-
-The lzo/lz4 decompressors are single-shot, they expect to be called once,
-with a single contiguous input buffer containing the data to be
-decompressed, and a single contiguous output buffer large enough to hold
-all the uncompressed data.
-
-> So, my proposal is that filesystems tell the page cache that their minimum
+Dear Mr.Matthew and other fs developers:
+I'm very sorry.My gmail maybe be blocked for reasons I don't know.I have to change
+my email domain.
+> So, my proposal is that filesystems tell the page cache that their minimu=
+m
 > folio size is the compression block size.  That seems to be around 64k,
-> so not an unreasonable minimum allocation size.  That removes all the
-> extra code in filesystems to allocate extra memory in the page cache.
-> It means we don't attempt to track dirtiness at a sub-folio granularity
+> so not an unreasonable minimum allocation size.
+Excuse me,but could you please clarify the meaning of "compression block si=
+ze"?
+If you mean the minimum buffer window size that a filesystem requires
+to perform one whole compress write/decompress read io(also we can
+call it the granularity),which,in f2fs context we can interpret as the
+cluster size.Then that means for compress files,we could not fallback
+to 0 order folio in memory pressure case when setting folio's minmium
+order to "compression block size"?
+
+If that is the case,then when f2fs' cluster size was configured,the
+minium order was determined(and may beyond 64KiB.Depending on how we
+set the cluster size).If the cluster size was set to a large number,we
+will encounter much more risk when in memory pressure case.
+
+Well,as for the 64Kib minimum granularity,because Android now switchs
+page size to 16Kib so for current f2fs compress implementation the
+minimum possible granularity indeed just exactly equals 64Kib.But I do
+hold a opinion that may not be a very good point for f2fs. Because
+just as I know,there are lots of small random write on Android.So
+instead of having a minimum granularity in 64Kib,I appreciate future
+f2fs's compression's implementation should support smaller cluster
+size for compression. As far as I know,storage engineers from vivo is
+experimenting a dynamic cluster compression implementation.It can
+adjust the cluster size within a file adaptively.(Maybe larger in some
+part and smaller in other part)
+They didn't publish the code now.But this design maybe more suitable
+for cooperating with folios for its vary-order feature.
+
+>  It means we don't attempt to track dirtiness at a sub-folio granularity
+>
 > (there's no point, we have to write back the entire compressed bock
-> at once).  We also get a single virtually contiguous block ... if you're
-> willing to ditch HIGHMEM support.  Or there's a proposal to introduce a
-> vmap_file() which would give us a virtually contiguous chunk of memory
-> (and could be trivially turned into a noop for the case of trying to
-> vmap a single large folio).
-> 
+> at once).
+That DO has point for f2fs.Because we cannot control the order of
+folio that readahead gave us if we don't set maximum order.A large folio can cross 
+multi clusters in f2fs as I have mentioned.
+Since f2fs has no buffered head or a concept of subpage as we have discussed previously,
+It must rely on iomap_folio_state or a similar per folio struct to distinguish which
+cluster range of this folio is dirty.
+And it must distinguish a partialy dirted cluster to avoid compress write.
+Besides,l do think larger folio can cross multi compressed extent in
+btrfs too if I didn't misunderstand.May I ask how do btrfs deal with
+the possible write amplification?
 
-The compression block size in Squashfs can be 4K to 1M in size.
-
-Phillip
 
