@@ -1,124 +1,149 @@
-Return-Path: <linux-btrfs+bounces-15542-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15543-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51CE3B0939F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 19:52:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 604F0B09568
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 22:04:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8934E4A512D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 17:52:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B840E176CD5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 20:04:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81EB22FE321;
-	Thu, 17 Jul 2025 17:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D44224AEB;
+	Thu, 17 Jul 2025 20:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="H82ymsIo";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="l/PCU8W1"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="X/RnAtaM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D6FF287254
-	for <linux-btrfs@vger.kernel.org>; Thu, 17 Jul 2025 17:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D60E122370A
+	for <linux-btrfs@vger.kernel.org>; Thu, 17 Jul 2025 20:04:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752774745; cv=none; b=MCobJH2PMVTWJO6VFT6OW6rrGSb4dEgEliILXCUmN6q11XvaruGIsuG801UBVY+kHI+axenKeUcdNmBv+nU07hvY1l2sqt3t6r/OKHg0eK3OWrBFMkW/IsgHxuJqrj4V0XKJuJqQNzoDhJx6IVv9LYSn80Ld1jJq2qGEPUoEN5w=
+	t=1752782685; cv=none; b=P/hvS/hibvenrKzh9eUuBBOTNH5xyB9vDNqkmZNJtV/qhz77ZPdZsW1gDNvjIzH5KZtzOpnXn+N1aXcvTDJPnHi8LRND1qtHoc/xMu0/uD+YlikOGyzG+/37OaChTJEEOnN8xrcYrXEXuB8nrw3od785y5NQ9kJmQMYwjiGdcbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752774745; c=relaxed/simple;
-	bh=LFu94VUuPD+Tii4IT9weCFCFFF5KWRSFOUdOcJv5pgQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iFRJLPKOO/8qjqJ4uAj+pN2msCNpcyT0H6Me3jTjAcADJnDSqR0P7gIh3gomdmzWacT3J/rAeitFSPOR+FoPzqD4pNis06QXFp9StUOOT/bb0ofQScjJHDjzVZqmu+l5rAttxVzVL87Ho30JmYLA195zlhAwuKeN1MTPkbUBixQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=H82ymsIo; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=l/PCU8W1; arc=none smtp.client-ip=202.12.124.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfout.stl.internal (Postfix) with ESMTP id 50D6B1D0015C;
-	Thu, 17 Jul 2025 13:52:22 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Thu, 17 Jul 2025 13:52:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1752774742; x=1752861142; bh=RJmruXm1EC
-	v2BGEQdQfDjd61jIuSUvEYwTfEqClf8J8=; b=H82ymsIofO3SLnZOc0tkpLL7N1
-	Fv2oYu+epm4uIe7Vdq1bznkb3bL1I+LuaVBaWr+GPUXLSIUo3q0TQFD+qa0GyGew
-	qRAYCQjuYl665ym30D7IWBV0M8QR1Ls05S6vyehq7XrgCJ7gKfPVJ0qETByPkN+P
-	ycttTZfeA0wan3BGoSnhVJn8ugIobWimWuAChGM3v83RZwTlPZceoSalVFun+gzv
-	NwY19vEwYjt7WBC4eQhcpk1D1azoREf9OwVo1JUl7Yb1ay0RqFkUGRWuAVLYg/vw
-	QZxWnZr6hz9P+a6HLBCqHx8biFuxNLzZksVEcfyOAKaKOEt1hvuYtY39jtIw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1752774742; x=1752861142; bh=RJmruXm1ECv2BGEQdQfDjd61jIuSUvEYwTf
-	EqClf8J8=; b=l/PCU8W1pDSrPiFMqOM3UHVoNkisfyH54zc8H5jYprgebB4kpAM
-	rxfFpi1K+aW/NPAHRlf3kr6YoeJGKzI7iTFOnm3z05HexMpeXtp2SxEvUyaBt1uy
-	SJ/K8gWinTw6ilo42EOWei0ZYBN2gfpNzNLCeULZD/B0tOqLRXO9jXP/PBfvQRp6
-	zRkFaGBOmhS09IQ/ZfCAHCA/w1ltRu76Hf0Jm4b87Jwa/kbJkj5boWbQ2gm4m58N
-	l119l7bSxsJJSc3ot31LGZpNOExxFZImTvKnMiaAPvQJnFqMiWxcIJuu3t89Sw0v
-	VWkUa4LwRL4Zze2vv2M4prORxatU283hZxg==
-X-ME-Sender: <xms:VTh5aKvaQULpnUBMXhwzpOWhaE1F6B5vrRz7PEhVFH0Z_xIiD3ls2Q>
-    <xme:VTh5aPqybHQY0p3oKlrcZPCdlbQSZwS6Nnq2gMkRxpyAUdw6hkDv85eb_p6NLxOio
-    UaKLzxBbxIDVov3aEg>
-X-ME-Received: <xmr:VTh5aHkZZy3WQ2S_HL6dpcc6XZEAYY_1UPBR-NuDUx-CGiooRmfSN--s80J_glMaozEu83sqzXFvjN4eWML4PR1m_hY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdeiuddvfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkfhggtggujgesthdtredttd
-    dtvdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
-    qeenucggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiie
-    dugfeugfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepvddpmhhoug
-    gvpehsmhhtphhouhhtpdhrtghpthhtohepfhgumhgrnhgrnhgrsehkvghrnhgvlhdrohhr
-    ghdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorh
-    hg
-X-ME-Proxy: <xmx:VTh5aDwMG0nyq95Qk_PsmPoEC1zotSo-ZrDr-A3Xe5fRQ--k4_9r4Q>
-    <xmx:VTh5aPkIaloPfDGX2bRBcQOa8s2o0ue2n6Ac3H0uJlF2SUqin0S_iA>
-    <xmx:VTh5aMc6VtKqJO0VI4SdNaEve70Wjc841lU6w5ijQGE23jS2lypUAA>
-    <xmx:VTh5aFrIy3owK2dFqWgamPsaNB0PcD32SZKBkyB0DKj9sA6l4mDyxA>
-    <xmx:Vjh5aFxr5O-rz6JKrhDd3NMKnrME0AIh4U-KOolO3iUU2jEod4WQbjwz>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 17 Jul 2025 13:52:21 -0400 (EDT)
-Date: Thu, 17 Jul 2025 10:53:53 -0700
-From: Boris Burkov <boris@bur.io>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] btrfs: log replay bug fixes and cleanup
-Message-ID: <20250717175320.GA3096524@zen.localdomain>
-References: <cover.1752265165.git.fdmanana@suse.com>
- <cover.1752266047.git.fdmanana@suse.com>
+	s=arc-20240116; t=1752782685; c=relaxed/simple;
+	bh=U/+v7KLWnVxoUKhIBBslHybhE/t5sUE6Pg10SYhDzK4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LT3pCxwzTpcq4DiL/CMjU6Jh3iAmcR3u/kATs4963Up2Sb5w+oSYoWcZtTKt0R1tvUzV/Z0kU1KfVx+aj/iJ/R7CJWF+tsuDHyPH0e7o3RmUrq9YG1CqE0DUcVGilgEQB6Vr7CMJoLsPsu4lgWlv5uwmYqfHCa6otbfv7mze64s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=X/RnAtaM; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b31c9132688so70504a12.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Jul 2025 13:04:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1752782683; x=1753387483; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3/v0WT+7vq9SCfoMg2Yag6ZEXMrfYo0BDeUgpiKJwjw=;
+        b=X/RnAtaMalF0WoNywXqWuMCKNDVBr5wz/XH7cZ3kn1ZoHkxK41QbmfBML9phnPCbbY
+         jkMiQYiMrAX4EBHgF8+i9YX4rKzZtz6swxrPBOBW9EZDPE5OH5c/oAX33IdS1zUqnSFd
+         8hcf77p2eZ8I3Zs8RikJMWPLU4zLGbowu4NdS/ZK53MzJXj/SYcBtT6bgz7nk2hR4xfX
+         So39mTbNFkb/4+QgXjgGlh4m9FJnZmbcdPCw8S1M5yTXwnBqyaMh6N+gKa+C4f/2nwD0
+         0waZ3sseO6QbGjWDLzxcoWAE0FZyTpUdRFTFUMcvtaXR3oFsVU4wDqOJx8IxL95DsyxJ
+         0RMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752782683; x=1753387483;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3/v0WT+7vq9SCfoMg2Yag6ZEXMrfYo0BDeUgpiKJwjw=;
+        b=KoL1T24Sdmalo/ouScf5HIGdh43AdLKwtpez2sPHe2LYJl5Fkz/D1kZXOMvVwKj0OW
+         dUP9mSWD9LELMvxOOGxwz2jFlB7uEiw3pIjaNBP1pSq2hHfVsY4qZK/pvdZeXjCRPJKY
+         EKmmS6ob1Rv44ldfTYHnvp6vlMJTU/iDUKwHt9H4rj9BGii1emEmM9CZyK4aODJgm2kC
+         jgYOh5y0pQExAwMXRBkpM1ouX2TTp6mR+TfWF9/NGLNkBVtEkO8mMKCcxBSQYwcxeaAE
+         0UY1LRcpdZ3PO+9DD/snFPloFuJOT5F/S4UoVQcGNS/XdOHKitOOYucU18OHPv301PBh
+         5pLA==
+X-Forwarded-Encrypted: i=1; AJvYcCVFO1GeItk+7oEFPJup8Bpe/Ug3DAoge8cIM4U9QFbbjVRyHHrwn/TqrdQSG22KJeGJkj+JupEluIeWYg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWTTq3POhA6yulk53b4/YEc/IWyxNKoloWEmnxAF8kTK4o72VD
+	Tav6ycEv01k4zcaQKrKhl3oaD0tBli5lQiDH5OIQkSJiLj/nq4QtJx8kizKhr30c4HuQNNOkl5u
+	Vl9grq2FacmNG/MnmO8RLi0/tSQIAddgDZXh+SWiLdw==
+X-Gm-Gg: ASbGncuogbr7NurarMJ08CkzFCmypjMPkpc+kDeXVk1BC7WdKrn5PqYYTOoDbTpjTw4
+	H+oMU16Pr2IiVrizOpxjzUzI+HQPi+iTU5dNZzbG0FaMdT6S70Dola2d9azdHW4bm7ZlxnQ9Zil
+	a8e4jl0q6sLUKY01gYWQ6biVp+4DMpvJi0+ifEZSQmvRSeNtC4TCgXkZxS4DTYHYolF/87FxaS2
+	8sGjNP4
+X-Google-Smtp-Source: AGHT+IEhtJhj93AM6HYFT5RBg05Ilw6taTJ3/mXZBlGWr1wjpnrg+tZXlSuFBThy/hFSUe1C/9a92iYVg1S6R9eX2Uk=
+X-Received: by 2002:a17:90b:3d09:b0:311:fde5:c4ae with SMTP id
+ 98e67ed59e1d1-31c9e776737mr4663891a91.6.1752782682862; Thu, 17 Jul 2025
+ 13:04:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1752266047.git.fdmanana@suse.com>
+References: <20250708202212.2851548-1-csander@purestorage.com>
+In-Reply-To: <20250708202212.2851548-1-csander@purestorage.com>
+From: Caleb Sander Mateos <csander@purestorage.com>
+Date: Thu, 17 Jul 2025 16:04:31 -0400
+X-Gm-Features: Ac12FXz4umVHFmIzVUIOYyEMbfS69u7WsqSmgyR0PovCc2BoXLdELiz-nczSAh8
+Message-ID: <CADUfDZr6d_EV6sek0K1ULpg2T862PsnnFT08PhoX9WjHGBA=0w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] io_uring/btrfs: remove struct io_uring_cmd_data
+To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+	Jens Axboe <axboe@kernel.dk>
+Cc: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org, 
+	io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 11, 2025 at 09:36:37PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> A couple bug fixes for log replay and a cleanup.
-> 
-> V2: Updated patch 2/3 to avoid a NULL pointer deref on directory.
+Hi Jens,
+Are you satisfied with the updated version of this series? Let me know
+if there's anything else you'd like to see.
 
-Looks good, thanks.
-Reviewed-by: Boris Burkov <boris@bur.io>
+Thanks,
+Caleb
 
-> 
-> Filipe Manana (3):
->   btrfs: don't ignore inode missing when replaying log tree
->   btrfs: don't skip remaining extrefs if dir not found during log replay
->   btrfs: use saner variable type and name to indicate extrefs at add_inode_ref()
-> 
->  fs/btrfs/tree-log.c | 37 ++++++++++++++++++++++++++++---------
->  1 file changed, 28 insertions(+), 9 deletions(-)
-> 
-> -- 
-> 2.47.2
-> 
+On Tue, Jul 8, 2025 at 4:22=E2=80=AFPM Caleb Sander Mateos
+<csander@purestorage.com> wrote:
+>
+> btrfs's ->uring_cmd() implementations are the only ones using io_uring_cm=
+d_data
+> to store data that lasts for the lifetime of the uring_cmd. But all uring=
+_cmds
+> have to pay the memory and CPU cost of initializing this field and freein=
+g the
+> pointer if necessary when the uring_cmd ends. There is already a pdu fiel=
+d in
+> struct io_uring_cmd that ->uring_cmd() implementations can use for storag=
+e. The
+> only benefit of op_data seems to be that io_uring initializes it, so
+> ->uring_cmd() can read it to tell if there was a previous call to ->uring=
+_cmd().
+>
+> Introduce a flag IORING_URING_CMD_REISSUE that ->uring_cmd() implementati=
+ons can
+> use to tell if this is the first call to ->uring_cmd() or a reissue of th=
+e
+> uring_cmd. Switch btrfs to use the pdu storage for its btrfs_uring_encode=
+d_data.
+> If IORING_URING_CMD_REISSUE is unset, allocate a new btrfs_uring_encoded_=
+data.
+> If it's set, use the existing one in op_data. Free the btrfs_uring_encode=
+d_data
+> in the btrfs layer instead of relying on io_uring to free op_data. Finall=
+y,
+> remove io_uring_cmd_data since it's now unused.
+>
+> Caleb Sander Mateos (4):
+>   btrfs/ioctl: don't skip accounting in early ENOTTY return
+>   io_uring/cmd: introduce IORING_URING_CMD_REISSUE flag
+>   btrfs/ioctl: store btrfs_uring_encoded_data in io_btrfs_cmd
+>   io_uring/cmd: remove struct io_uring_cmd_data
+>
+>  fs/btrfs/ioctl.c             | 41 +++++++++++++++++++++++++-----------
+>  include/linux/io_uring/cmd.h | 11 ++--------
+>  io_uring/uring_cmd.c         | 18 ++++++----------
+>  io_uring/uring_cmd.h         |  1 -
+>  4 files changed, 37 insertions(+), 34 deletions(-)
+>
+> v2:
+> - Don't branch twice on -EAGAIN in io_uring_cmd() (Jens)
+> - Rebase on for-6.17/io_uring
+>
+> --
+> 2.45.2
+>
 
