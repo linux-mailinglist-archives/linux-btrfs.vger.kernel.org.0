@@ -1,149 +1,170 @@
-Return-Path: <linux-btrfs+bounces-15543-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15544-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 604F0B09568
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 22:04:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2197EB09874
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 01:45:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B840E176CD5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 20:04:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A30C84A22EA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jul 2025 23:44:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D44224AEB;
-	Thu, 17 Jul 2025 20:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A089258CF8;
+	Thu, 17 Jul 2025 23:45:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="X/RnAtaM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M/RbZYV/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-yw1-f194.google.com (mail-yw1-f194.google.com [209.85.128.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D60E122370A
-	for <linux-btrfs@vger.kernel.org>; Thu, 17 Jul 2025 20:04:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543AB235072
+	for <linux-btrfs@vger.kernel.org>; Thu, 17 Jul 2025 23:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752782685; cv=none; b=P/hvS/hibvenrKzh9eUuBBOTNH5xyB9vDNqkmZNJtV/qhz77ZPdZsW1gDNvjIzH5KZtzOpnXn+N1aXcvTDJPnHi8LRND1qtHoc/xMu0/uD+YlikOGyzG+/37OaChTJEEOnN8xrcYrXEXuB8nrw3od785y5NQ9kJmQMYwjiGdcbo=
+	t=1752795903; cv=none; b=lxiZE1SW4A0YE1pjuwrYRoSo5uiJbLTwt5ODTndrmFL0e9Rzs7r6kaHfjy5xsM2WtY27byhYT+qzeSrDnprGSBFudYEFiEubkFlvOJHJot70Il5EW74JsWed46zNGik4cha7is2h0US1QFbYxLQmpB8+ijoryYnAc3l3kJb/vRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752782685; c=relaxed/simple;
-	bh=U/+v7KLWnVxoUKhIBBslHybhE/t5sUE6Pg10SYhDzK4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LT3pCxwzTpcq4DiL/CMjU6Jh3iAmcR3u/kATs4963Up2Sb5w+oSYoWcZtTKt0R1tvUzV/Z0kU1KfVx+aj/iJ/R7CJWF+tsuDHyPH0e7o3RmUrq9YG1CqE0DUcVGilgEQB6Vr7CMJoLsPsu4lgWlv5uwmYqfHCa6otbfv7mze64s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=X/RnAtaM; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b31c9132688so70504a12.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Jul 2025 13:04:43 -0700 (PDT)
+	s=arc-20240116; t=1752795903; c=relaxed/simple;
+	bh=Qk8wBX8DO4PmCKwQn9l0ZZoJ9qrUFdkEC/fVFHt0u/0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=WizuFCKUkDitxkX5yuQd7G1zRU35ilcUoJWQYexWpucnF+S17rgDwaICwJecEjDqqW4SqKcOIqAA6Ty+YDqMuL/Nfhey1W8dvEscZq7HW64O+onRJYd+f17kpas1TdlNb1ZmKSlZokTCsTUiYXNFgncSyrdd4P1x0rTqBiXL6vY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M/RbZYV/; arc=none smtp.client-ip=209.85.128.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f194.google.com with SMTP id 00721157ae682-7184015180fso17701947b3.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Jul 2025 16:45:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1752782683; x=1753387483; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3/v0WT+7vq9SCfoMg2Yag6ZEXMrfYo0BDeUgpiKJwjw=;
-        b=X/RnAtaMalF0WoNywXqWuMCKNDVBr5wz/XH7cZ3kn1ZoHkxK41QbmfBML9phnPCbbY
-         jkMiQYiMrAX4EBHgF8+i9YX4rKzZtz6swxrPBOBW9EZDPE5OH5c/oAX33IdS1zUqnSFd
-         8hcf77p2eZ8I3Zs8RikJMWPLU4zLGbowu4NdS/ZK53MzJXj/SYcBtT6bgz7nk2hR4xfX
-         So39mTbNFkb/4+QgXjgGlh4m9FJnZmbcdPCw8S1M5yTXwnBqyaMh6N+gKa+C4f/2nwD0
-         0waZ3sseO6QbGjWDLzxcoWAE0FZyTpUdRFTFUMcvtaXR3oFsVU4wDqOJx8IxL95DsyxJ
-         0RMA==
+        d=gmail.com; s=20230601; t=1752795901; x=1753400701; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Sn/XKtLZ1/gHuCLdzwxi5LoQz0WZX1tb5nz6C4/sBg=;
+        b=M/RbZYV/rym6rtM/rrjhjNZQ5EVaa1S8xtRxIm5e7oPheqW/s4Ov14nEyIxOgq0NP4
+         T32TeKXDKa88R1Zq6w+UXvRTNzWGCvTrF9ClPjXWTxNTMSaxbV9YMOAy0H48iSkNfskl
+         T6TS2vufgvWQmFml1pCuom1gmCE2NImNah2DXYntBu4bNdA/Y0JQb6M+UcP/XblpyYjU
+         u6lMI4mFI1WhQs5WQ/gu28hBXhWqPSvRpi3oSHwdJ+sFoeyrMsyHT5LPAFW2fHQ4d4oo
+         yCiyzB2Vk250IbF11c6kEvnDfCk6iiiRr/vBShHZlHZuXfBbVEewJFW1/8zo0z5tzbzc
+         DMwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752782683; x=1753387483;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3/v0WT+7vq9SCfoMg2Yag6ZEXMrfYo0BDeUgpiKJwjw=;
-        b=KoL1T24Sdmalo/ouScf5HIGdh43AdLKwtpez2sPHe2LYJl5Fkz/D1kZXOMvVwKj0OW
-         dUP9mSWD9LELMvxOOGxwz2jFlB7uEiw3pIjaNBP1pSq2hHfVsY4qZK/pvdZeXjCRPJKY
-         EKmmS6ob1Rv44ldfTYHnvp6vlMJTU/iDUKwHt9H4rj9BGii1emEmM9CZyK4aODJgm2kC
-         jgYOh5y0pQExAwMXRBkpM1ouX2TTp6mR+TfWF9/NGLNkBVtEkO8mMKCcxBSQYwcxeaAE
-         0UY1LRcpdZ3PO+9DD/snFPloFuJOT5F/S4UoVQcGNS/XdOHKitOOYucU18OHPv301PBh
-         5pLA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFO1GeItk+7oEFPJup8Bpe/Ug3DAoge8cIM4U9QFbbjVRyHHrwn/TqrdQSG22KJeGJkj+JupEluIeWYg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWTTq3POhA6yulk53b4/YEc/IWyxNKoloWEmnxAF8kTK4o72VD
-	Tav6ycEv01k4zcaQKrKhl3oaD0tBli5lQiDH5OIQkSJiLj/nq4QtJx8kizKhr30c4HuQNNOkl5u
-	Vl9grq2FacmNG/MnmO8RLi0/tSQIAddgDZXh+SWiLdw==
-X-Gm-Gg: ASbGncuogbr7NurarMJ08CkzFCmypjMPkpc+kDeXVk1BC7WdKrn5PqYYTOoDbTpjTw4
-	H+oMU16Pr2IiVrizOpxjzUzI+HQPi+iTU5dNZzbG0FaMdT6S70Dola2d9azdHW4bm7ZlxnQ9Zil
-	a8e4jl0q6sLUKY01gYWQ6biVp+4DMpvJi0+ifEZSQmvRSeNtC4TCgXkZxS4DTYHYolF/87FxaS2
-	8sGjNP4
-X-Google-Smtp-Source: AGHT+IEhtJhj93AM6HYFT5RBg05Ilw6taTJ3/mXZBlGWr1wjpnrg+tZXlSuFBThy/hFSUe1C/9a92iYVg1S6R9eX2Uk=
-X-Received: by 2002:a17:90b:3d09:b0:311:fde5:c4ae with SMTP id
- 98e67ed59e1d1-31c9e776737mr4663891a91.6.1752782682862; Thu, 17 Jul 2025
- 13:04:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752795901; x=1753400701;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Sn/XKtLZ1/gHuCLdzwxi5LoQz0WZX1tb5nz6C4/sBg=;
+        b=BTkc2pgW0l/IkZRuHlnt/Q+NTbeJNQDysgL4+rG6iKmQwQ1KrdxdAYq9DJnbdPAam6
+         5b+T+Md06pkradUz0F+c9k40Tj2gHNrrFH4nP03m+3hMWhEIDDM4AwZM0am7JZL6ZJ41
+         550ol8n+c0no6zYUQ098c+W9tb5tAQVr8sUwfq9GZ8WGy1RpS1mIEPjUvHLfntpf6HKb
+         iYud4h2rrlkSsUT6bdJQkVQpM24BT0Vb3GI3E0RESg2QkZM0tcmSkMaGdGPkzN7FHGFt
+         wZNjeh3UJ23OuX+kwCZ+b/DV5+r4A33R7/iUh5H9NXiLw6r/8yzzx+sJ3hcoeJmneTM7
+         FS/w==
+X-Gm-Message-State: AOJu0YzbhK7ehd+RGjny/bxZlV92pA02i3XtaCaV/rqj2rYQGhd2dyyX
+	zqLS+gn/v7GvnRFjCp5PGRYnu8rN4aWLwzMd4+GaDLpuIs+z/nFSKjiLaTc2H34v
+X-Gm-Gg: ASbGnctXNvQeqfW0XiSeEtKMDYB36E5qs6AIAkq45IPT+MSaRDy1Zbamrf755fW11Ho
+	vz8P0bOgBcyPWwdtZt14z31QfgU8VfdJWLdN2KLwNeJvV0X4nDSvfNebJOSStJXFVe81ZMTa/3t
+	sO95uqU4UGdJhq+EJXmbQRa2K0/51ngMVELamPSK7LFaKIv78Yxdw1o+2DSsbx5/WoG8nE440IV
+	HD0H55+XbQmDIAqppy+g9gR5zaT8nDdINCjf7QT8FiisTh8+mudqdbp2Nh9g0MA5kjuuMwi5HGi
+	rJ1fMCvBBmrP61g5Sb/Z8TbUX1YXaZG27Uo3vWUf0w8c4uVQ4rVjEjlIW6ad8/MKsmRNDscwtzF
+	6k/ktX026npRaFo5XwQ==
+X-Google-Smtp-Source: AGHT+IFlfcKgFAs87ugRxZDmo+hTWM0bmcl1+b3g0T98K3fbvcSxAWhDD7IkodvesA6y6dwYRkaKXw==
+X-Received: by 2002:a05:690c:6f0b:b0:717:c1dc:455b with SMTP id 00721157ae682-71837518962mr119394967b3.31.1752795900870;
+        Thu, 17 Jul 2025 16:45:00 -0700 (PDT)
+Received: from localhost ([2a03:2880:25ff:50::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-7195330617bsm666597b3.78.2025.07.17.16.45.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jul 2025 16:45:00 -0700 (PDT)
+From: Leo Martins <loemra.dev@gmail.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH] btrfs: fix subpage deadlock
+Date: Thu, 17 Jul 2025 16:44:57 -0700
+Message-ID: <52e3db9d6f775370d963eb5179e3cbfa1ace5e04.1752795616.git.loemra.dev@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250708202212.2851548-1-csander@purestorage.com>
-In-Reply-To: <20250708202212.2851548-1-csander@purestorage.com>
-From: Caleb Sander Mateos <csander@purestorage.com>
-Date: Thu, 17 Jul 2025 16:04:31 -0400
-X-Gm-Features: Ac12FXz4umVHFmIzVUIOYyEMbfS69u7WsqSmgyR0PovCc2BoXLdELiz-nczSAh8
-Message-ID: <CADUfDZr6d_EV6sek0K1ULpg2T862PsnnFT08PhoX9WjHGBA=0w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] io_uring/btrfs: remove struct io_uring_cmd_data
-To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	Jens Axboe <axboe@kernel.dk>
-Cc: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org, 
-	io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Jens,
-Are you satisfied with the updated version of this series? Let me know
-if there's anything else you'd like to see.
+There is a deadlock happening in `try_release_subpage_extent_buffer`
+because the irq-safe xarray spin lock `fs_info->buffer_tree` is being
+acquired before the irq-unsafe `eb->refs_lock`.
 
-Thanks,
-Caleb
+This leads to the potential race:
 
-On Tue, Jul 8, 2025 at 4:22=E2=80=AFPM Caleb Sander Mateos
-<csander@purestorage.com> wrote:
->
-> btrfs's ->uring_cmd() implementations are the only ones using io_uring_cm=
-d_data
-> to store data that lasts for the lifetime of the uring_cmd. But all uring=
-_cmds
-> have to pay the memory and CPU cost of initializing this field and freein=
-g the
-> pointer if necessary when the uring_cmd ends. There is already a pdu fiel=
-d in
-> struct io_uring_cmd that ->uring_cmd() implementations can use for storag=
-e. The
-> only benefit of op_data seems to be that io_uring initializes it, so
-> ->uring_cmd() can read it to tell if there was a previous call to ->uring=
-_cmd().
->
-> Introduce a flag IORING_URING_CMD_REISSUE that ->uring_cmd() implementati=
-ons can
-> use to tell if this is the first call to ->uring_cmd() or a reissue of th=
-e
-> uring_cmd. Switch btrfs to use the pdu storage for its btrfs_uring_encode=
-d_data.
-> If IORING_URING_CMD_REISSUE is unset, allocate a new btrfs_uring_encoded_=
-data.
-> If it's set, use the existing one in op_data. Free the btrfs_uring_encode=
-d_data
-> in the btrfs layer instead of relying on io_uring to free op_data. Finall=
-y,
-> remove io_uring_cmd_data since it's now unused.
->
-> Caleb Sander Mateos (4):
->   btrfs/ioctl: don't skip accounting in early ENOTTY return
->   io_uring/cmd: introduce IORING_URING_CMD_REISSUE flag
->   btrfs/ioctl: store btrfs_uring_encoded_data in io_btrfs_cmd
->   io_uring/cmd: remove struct io_uring_cmd_data
->
->  fs/btrfs/ioctl.c             | 41 +++++++++++++++++++++++++-----------
->  include/linux/io_uring/cmd.h | 11 ++--------
->  io_uring/uring_cmd.c         | 18 ++++++----------
->  io_uring/uring_cmd.h         |  1 -
->  4 files changed, 37 insertions(+), 34 deletions(-)
->
-> v2:
-> - Don't branch twice on -EAGAIN in io_uring_cmd() (Jens)
-> - Rebase on for-6.17/io_uring
->
-> --
-> 2.45.2
->
+```
+// T1					// T2
+xa_lock_irq(&fs_info->buffer_tree)
+					spin_lock(&eb->refs_lock)
+					// interrupt
+					xa_lock_irq(&fs_info->buffer_tree)
+spin_lock(&eb->refs_lock)
+```
+
+https://www.kernel.org/doc/Documentation/locking/lockdep-design.rst#:~:text=Multi%2Dlock%20dependency%20rules%3A
+
+I believe that in this case a spin lock is not needed and we can get
+away with `rcu_read_lock`. There is already some precedence for this
+with `find_extent_buffer_nolock`, which loads an extent buffer from
+the xarray with only `rcu_read_lock`.
+
+Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+---
+ fs/btrfs/extent_io.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 6192e1f58860..060e509cfb18 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
++#include <linux/rcupdate.h>
+ #include <linux/bitops.h>
+ #include <linux/slab.h>
+ #include <linux/bio.h>
+@@ -4332,15 +4333,18 @@ static int try_release_subpage_extent_buffer(struct folio *folio)
+ 	unsigned long end = index + (PAGE_SIZE >> fs_info->nodesize_bits) - 1;
+ 	int ret;
+ 
+-	xa_lock_irq(&fs_info->buffer_tree);
++	rcu_read_lock();
+ 	xa_for_each_range(&fs_info->buffer_tree, index, eb, start, end) {
+ 		/*
+ 		 * The same as try_release_extent_buffer(), to ensure the eb
+ 		 * won't disappear out from under us.
+ 		 */
+ 		spin_lock(&eb->refs_lock);
++		rcu_read_unlock();
++
+ 		if (refcount_read(&eb->refs) != 1 || extent_buffer_under_io(eb)) {
+ 			spin_unlock(&eb->refs_lock);
++			rcu_read_lock();
+ 			continue;
+ 		}
+ 
+@@ -4359,11 +4363,10 @@ static int try_release_subpage_extent_buffer(struct folio *folio)
+ 		 * check the folio private at the end.  And
+ 		 * release_extent_buffer() will release the refs_lock.
+ 		 */
+-		xa_unlock_irq(&fs_info->buffer_tree);
+ 		release_extent_buffer(eb);
+-		xa_lock_irq(&fs_info->buffer_tree);
++		rcu_read_lock();
+ 	}
+-	xa_unlock_irq(&fs_info->buffer_tree);
++	rcu_read_unlock();
+ 
+ 	/*
+ 	 * Finally to check if we have cleared folio private, as if we have
+@@ -4376,7 +4379,6 @@ static int try_release_subpage_extent_buffer(struct folio *folio)
+ 		ret = 0;
+ 	spin_unlock(&folio->mapping->i_private_lock);
+ 	return ret;
+-
+ }
+ 
+ int try_release_extent_buffer(struct folio *folio)
+-- 
+2.47.1
+
 
