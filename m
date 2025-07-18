@@ -1,202 +1,123 @@
-Return-Path: <linux-btrfs+bounces-15554-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15556-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55BB0B0AA20
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 20:27:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21663B0AA31
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 20:36:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5B6B1AA4CE8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 18:27:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8463AAA74AF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 18:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846712E8896;
-	Fri, 18 Jul 2025 18:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9F22E7BC4;
+	Fri, 18 Jul 2025 18:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gLwXiIU/"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="oUK3fxHj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB2602E888A
-	for <linux-btrfs@vger.kernel.org>; Fri, 18 Jul 2025 18:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80EF8148850
+	for <linux-btrfs@vger.kernel.org>; Fri, 18 Jul 2025 18:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752863202; cv=none; b=Nq4NlOM7nGWk1LnqgpBRaqYRnam8piU8f1qgpVvBrBB57LpffD0cXnRcjuIRs/+5bRS3mm1E1Pffk0foclHt9yf0EYEu0PXAYiVIipD4OCHZkxFpeFwZwGEqgfBpSJGed+9GbT4QscEArdSpUXkM3DGV0Vn0vEuiG4e7acvHmDw=
+	t=1752863773; cv=none; b=o3nZ9OZGGvKOT8CBSwU1HXFQ0vPKO72PGXBzk/O9xwJBEkF2fVvzRIokML9BsOeEc5jX1J12rdOq1q+oQ2BdjPGcCTjAHXKj/PZkyD/aCby1sv4hWqCxWfqz/LrCm4QALF4y8kU3xCZMenhBcbJCdLQfQ+LEylhg7HMLofZOfak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752863202; c=relaxed/simple;
-	bh=co6heSo+0SJ5pClxVhTPq5QKrhUeaehIIEQie2VZAmY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oABlJJ1VN926Zp4gSwCfn5YU08hTBYp3S25z2PpjeT0ItxC8Ag4dnfkvA47tBe25vwbLP+/ezLJWbgsA5mrl3aYTAxOtxiSIaESwcppNPppDBaobqcq+MpuwLsTvnfJpB8G27Sgj35rbQe1zhgSC4IW75XACPoChkt/loJ5QJRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gLwXiIU/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69BFAC4CEEB
-	for <linux-btrfs@vger.kernel.org>; Fri, 18 Jul 2025 18:26:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752863202;
-	bh=co6heSo+0SJ5pClxVhTPq5QKrhUeaehIIEQie2VZAmY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=gLwXiIU/TKyujbjIYG+HN2bCilefzPWzgusOLJJM8WXTOTLIxmYlM0vpVy5QF4mBY
-	 9JKn+071nJJy20ItXXVfXN8gDCci8YzXvd+zLkqQ9JRfEM7sKylsjxZ8/OettqpW7L
-	 ZuQFdBQD/J1pNeDwaakdJk81jOzGQBTGm7EqSA4WKmKxKYWtSrLyRrV6YkdPKSRFqF
-	 IhjWc7XhXFK9hOWOC68eWguNgyctE0aSxjwQHgSK+C7vsvDifrb3DsDqHDEa1ccL4I
-	 LHTgSxVbSLUDU8QUuoZNUaIlX40umDPUh+wnvAfr6N2V+dTp+MWnDpfUojuc/g6I5o
-	 YIKZqgbazbJFQ==
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-606b58241c9so3757621a12.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jul 2025 11:26:42 -0700 (PDT)
-X-Gm-Message-State: AOJu0YykzVdEoCmpnV6wD7MQtDgOSgLtkXPtj9Rce8f/nVBAihAC2EDJ
-	UuYYIpUbvNn6y1rHqCAkksvfvAxVxfKtxxk7KUQ/1FWbAgcqY9Fe2I/jVDp1OtHHFy0AH5b7Nc0
-	lNPEALuWK5zKT7i5Xd2G3uVrYK7WfDz8=
-X-Google-Smtp-Source: AGHT+IHBzSUtU6W5hVAAR7vG9/CbjwloDJTsh+ZbdCBEGrlOxT2c5zwaC4W8wQsxDabQVkXWfJ/vIkFMjWQB3gW0ngg=
-X-Received: by 2002:a17:906:3454:b0:ae3:24c:6a21 with SMTP id
- a640c23a62f3a-ae9cde54306mr928299666b.26.1752863200958; Fri, 18 Jul 2025
- 11:26:40 -0700 (PDT)
+	s=arc-20240116; t=1752863773; c=relaxed/simple;
+	bh=5qlQ+761hn6OrnIDwaSrOkWt9c8/47BkXB3UXwRLQss=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G5SIdIZCKjo26PBNCELFI6AJx0ZkT+1m0BhhKOUIK2WygfavRlP5aKg1yw8F55OKgVR0+R+Bo3m0oKwn3OYO/ZOQiO7+rDaf9UfjcnAFl7nhjg427OCoXRL2Vy16YYO8qCfWvVdHpLWCA7fu8lACZvtRloGI4leoMctvzXyYsB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=oUK3fxHj; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b390136ed88so1652466a12.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jul 2025 11:36:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1752863770; x=1753468570; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7YHZSIH4QXyQQjmvIqyrjSbplelhoOzEiXOXvbUIHNY=;
+        b=oUK3fxHjQrvNljhNQYlMGlMMbdSzoi0ax3lVkfmRynN9oXzvbwYfsc70R4z/4MJowO
+         JC4lXcIu5NMSmmiosi7y4hiEguGlxoQTSn85CuMp0MUtG2Kb8lgcEEvTGxXVzpLSTtbw
+         2obSk6KPuB8Rl12vbo+hu59JlxZbSpZnaxkwzBzdq+JXkNQ7iF6tS5vosuWBjDduf5xB
+         95X8YKpvwhbr7S4rZD9OxTopoPu4/MuL86tlcs41v5KxgPHaCaag1GM8HeODko46NWhF
+         f1WsOC22pGhwwQEZPCIT0uB91WXVA6emw9brkaqG7w8wBg8A0QotfLmINl61CrctcmCx
+         wEUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752863770; x=1753468570;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7YHZSIH4QXyQQjmvIqyrjSbplelhoOzEiXOXvbUIHNY=;
+        b=Pz4mNymaHYL0ywWHJlcAHtqMY/ZKwJurBGc+X9DKaPB8P2NR1kLzx1krV58NIEZro6
+         Xld4sPrKduWvmpinZ07xWskVr3IfRe2p6yjMCWcXS9Tw3xysrKIep43TN3WgSetCJtgx
+         ZI3XamguLGaMVMQQVHvH0sJdI4RZH0G/HyM7Yts4vbzsZ0dngQ8q867Zy7qCd8Tw9nZf
+         BjdG83/Qyxz/yrz1Fp3D6IkhxpbhCsQ6+1dfUp+zra1jMo6XXJHITWcqnD9eanE8yXWd
+         c/7gtxv0/v1IMH/mwGBiNmFLxcRYSDN8jcik07sFtK+DDBSpEuEwtHAaFYagcFrLBe3R
+         0HgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVd3mC+U1oK6QikK5BPqOLeLh/Cz3VaC+222JzoNkHU5TLp0mJT7XeTTsLVauqjWiiLOuoHzUicBTWlIw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyc1X/bCqJLS0VA1cKKkZw5PV7pt2WfdXd48PPrvt0wag7ALlUa
+	RNta/jZRaf/8QHmhUIaok6bh/iP7o+Kvpko7Jo1Fa6sKNWJipIg5ZQrTsFMHn5Glc8c=
+X-Gm-Gg: ASbGnctKFGNZSRc7pXDNIPy19JlaaKXOCLKlcvENNZwEn4U0Oi24/Xah6v1uIUtk+hZ
+	Le1GabEKAZ4lolPgH8erqdLJHiYQnIP16O+NHfab3XpII4UL2xRyl/bqCy+2MYz+pwdSKukCwHb
+	yuY00bRpyXDehUtnpqzvQyWuaI/fQ8HAmjk1SAXoC9SiqhS6zvbJQBa9O6Gk8ox07VwqXozc4Kt
+	HkLwJ5YEjgMYplNZT+KTsPX6860Wke5KsnXVXDicmjH3ZEfsHeEHn/166FvF4D/7cDcp4JvahiF
+	wOWlSQzsLiEcSPR8RpLr42T54wCD07Py7PCZWRMcNlvZSAglOJpPJZ7/XMnjQMftp4l/p25xmoI
+	pxO7GqRka72bYh0uUFdi1NqXiWkpj7IQzmq7cNw3wjtGMpSoEL88XhoT02sF8upk76CE=
+X-Google-Smtp-Source: AGHT+IHNjCZ1lF5IxEcSK7Q336xvA2JqN/FhLb91/xqIHcN1SLy4r5JEGGmXyt2l3qmS+/4JJPp6Gw==
+X-Received: by 2002:a17:90a:d88c:b0:312:25dd:1c86 with SMTP id 98e67ed59e1d1-31cc25c5ab0mr6395789a91.18.1752863769794;
+        Fri, 18 Jul 2025 11:36:09 -0700 (PDT)
+Received: from [172.20.8.9] (syn-071-095-160-189.biz.spectrum.com. [71.95.160.189])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31cc3e5b404sm1687820a91.12.2025.07.18.11.36.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jul 2025 11:36:08 -0700 (PDT)
+Message-ID: <72eeb282-2e9a-4c06-ac5c-54f226a8500d@kernel.dk>
+Date: Fri, 18 Jul 2025 12:36:07 -0600
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <227dfa8b9395cd21c186fe4122582bdbeff8d2a2.1752841473.git.fdmanana@suse.com>
- <20250718181624.GA4060971@zen.localdomain>
-In-Reply-To: <20250718181624.GA4060971@zen.localdomain>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 18 Jul 2025 19:26:04 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4AMZe=GTkxQ-QC9+ub5X8ER7zMHUbEwjMeCPVcnBcSUw@mail.gmail.com>
-X-Gm-Features: Ac12FXw-NVMyKeatzJWIZihT25VvDb-yKet_VOXO7Qg94Cgw0QE_eNpeGK8Fn-c
-Message-ID: <CAL3q7H4AMZe=GTkxQ-QC9+ub5X8ER7zMHUbEwjMeCPVcnBcSUw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: send: use fallocate for hole punching with send
- stream v2
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/4] io_uring/btrfs: remove struct io_uring_cmd_data
+To: dsterba@suse.cz
+Cc: Caleb Sander Mateos <csander@purestorage.com>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+ Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org,
+ io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250708202212.2851548-1-csander@purestorage.com>
+ <CADUfDZr6d_EV6sek0K1ULpg2T862PsnnFT08PhoX9WjHGBA=0w@mail.gmail.com>
+ <bb01752a-0a36-4e30-bf26-273c9017ffc0@kernel.dk>
+ <20250718172648.GA6704@suse.cz>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20250718172648.GA6704@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jul 18, 2025 at 7:15=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> On Fri, Jul 18, 2025 at 01:28:46PM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > Currently holes are sent as writes full of zeroes, which results in
-> > unnecessarily using disk space at the receiving end and increasing the
-> > stream size.
-> >
-> > In some cases we avoid sending writes of zeroes, like during a full
-> > send operation where we just skip writes for holes.
-> >
-> > But for some cases we fill previous holes with writes of zeroes too, li=
-ke
-> > in this scenario:
-> >
-> > 1) We have a file with a hole in the range [2M, 3M), we snapshot the
-> >    subvolume and do a full send. The range [2M, 3M) stays as a hole at
-> >    the receiver since we skip sending write commands full of zeroes;
-> >
-> > 2) We punch a hole for the range [3M, 4M) in our file, so that now it
-> >    has a 2M hole in the range [2M, 4M), and snapshot the subvolume.
-> >    Now if we do an incremental send, we will send write commands full
-> >    of zeroes for the range [2M, 4M), removing the hole for [2M, 3M) at
-> >    the receiver.
-> >
-> > We could improve cases such as this last one by doing additional
-> > comparisons of file extent items (or their absence) between the parent
-> > and send snapshots, but that's a lot of code to add plus additional CPU
-> > and IO costs.
-> >
-> > Since the send stream v2 already has a fallocate command and btrfs-prog=
-s
-> > implements a callback to execute fallocate since the send stream v2
-> > support was added to it, update the kernel to use fallocate for punchin=
-g
-> > holes for V2+ streams.
-> >
-> > Test coverage is provided by btrfs/284 which is a version of btrfs/007
-> > that exercises send stream v2 instead of v1, using fsstress with random
-> > operations and fssum to verify file contents.
-> >
-> > Link: https://github.com/kdave/btrfs-progs/issues/1001
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
->
-> Reviewed-by: Boris Burkov <boris@bur.io>
->
-> > ---
-> >  fs/btrfs/send.c | 33 +++++++++++++++++++++++++++++++++
-> >  1 file changed, 33 insertions(+)
-> >
-> > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> > index 09822e766e41..7664025a5af4 100644
-> > --- a/fs/btrfs/send.c
-> > +++ b/fs/btrfs/send.c
-> > @@ -4,6 +4,7 @@
-> >   */
-> >
-> >  #include <linux/bsearch.h>
-> > +#include <linux/falloc.h>
-> >  #include <linux/fs.h>
-> >  #include <linux/file.h>
-> >  #include <linux/sort.h>
-> > @@ -5405,6 +5406,30 @@ static int send_update_extent(struct send_ctx *s=
-ctx,
-> >       return ret;
-> >  }
-> >
-> > +static int send_fallocate(struct send_ctx *sctx, u32 mode, u64 offset,=
- u64 len)
-> > +{
-> > +     struct fs_path *path;
-> > +     int ret;
-> > +
-> > +     path =3D get_cur_inode_path(sctx);
-> > +     if (IS_ERR(path))
-> > +             return PTR_ERR(path);
-> > +
-> > +     ret =3D begin_cmd(sctx, BTRFS_SEND_C_FALLOCATE);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, path);
-> > +     TLV_PUT_U32(sctx, BTRFS_SEND_A_FALLOCATE_MODE, mode);
-> > +     TLV_PUT_U64(sctx, BTRFS_SEND_A_FILE_OFFSET, offset);
-> > +     TLV_PUT_U64(sctx, BTRFS_SEND_A_SIZE, len);
-> > +
-> > +     ret =3D send_cmd(sctx);
-> > +
-> > +tlv_put_failure:
-> > +     return ret;
-> > +}
-> > +
-> >  static int send_hole(struct send_ctx *sctx, u64 end)
-> >  {
-> >       struct fs_path *p =3D NULL;
-> > @@ -5412,6 +5437,14 @@ static int send_hole(struct send_ctx *sctx, u64 =
-end)
-> >       u64 offset =3D sctx->cur_inode_last_extent;
-> >       int ret =3D 0;
-> >
-> > +     /*
-> > +      * Starting with send stream v2 we have fallocate and can use it =
-to
-> > +      * punch holes instead of sending writes full of zeroes.
-> > +      */
-> > +     if (proto_cmd_ok(sctx, BTRFS_SEND_C_FALLOCATE))
-> > +             return send_fallocate(sctx, FALLOC_FL_PUNCH_HOLE | FALLOC=
-_FL_KEEP_SIZE,
-> > +                                   offset, end - offset);
-> > +
-> >       /*
-> >        * A hole that starts at EOF or beyond it. Since we do not yet su=
-pport
-> >        * fallocate (for extent preallocation and hole punching), sendin=
-g a
->
-> I think this comment is out of date, now that we support fallocate :)
+On 7/18/25 11:26 AM, David Sterba wrote:
+> On Fri, Jul 18, 2025 at 10:58:07AM -0600, Jens Axboe wrote:
+>> On 7/17/25 2:04 PM, Caleb Sander Mateos wrote:
+>>> Hi Jens,
+>>> Are you satisfied with the updated version of this series? Let me know
+>>> if there's anything else you'd like to see.
+>>
+>> I'm fine with it, was hoping some of the CC'ed btrfs folks would ack or
+>> review the btrfs bits. OOO until late sunday, if I hear nothing else by
+>> then, I'll just tentatively stage it in a separate branch for 6.17.
+> 
+> I've taken the first patch to btrfs' for-next but if you want to add it
+> to your queue then git will deal with that too. For the btrfs changes
+> 
+> Acked-by: David Sterba <dsterba@suse.com>
 
-It's still true for v1 streams. The new code above makes us return
-before this point in case we have a v2+ stream, that's why I left it.
+Thanks! I guess that works fine, it can go in separately. I've queued
+up the rest.
 
-Thanks.
+-- 
+Jens Axboe
 
->
-> > --
-> > 2.47.2
-> >
 
