@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-15559-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15560-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 105A4B0ABB1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 23:37:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52BFFB0ABB3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 23:40:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC2AB1C82779
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 21:38:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 017693A575B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 21:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 399B322156F;
-	Fri, 18 Jul 2025 21:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08A5321D5B3;
+	Fri, 18 Jul 2025 21:40:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="G9dy4gtc"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="i7yPYIIU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5590C21CC68
-	for <linux-btrfs@vger.kernel.org>; Fri, 18 Jul 2025 21:36:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BCA6FB9
+	for <linux-btrfs@vger.kernel.org>; Fri, 18 Jul 2025 21:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752874614; cv=none; b=M/Ve0Ne/KepxyR9A++ingbq8UhPaTqn+tCiS77qVDxN9cmKj8YWs5cZIHonsfdKwO3zhmGJhA77d/RV9VVTzBAfp0h5Zn8i0mbDjes5RZZdZgkplpKzq5HOP5LaEzUOsA2tCclxUMqboi4DWV2cBUpRW7nRzLdf6B9aNgEn5ej4=
+	t=1752874821; cv=none; b=TFC7mRnQ1dfYoHkNwk73qyPzvxtmFNPJ8SMPoXgSd/oqKHFeZTUq2nmx+vk5Y+8gKRNbDOyCmrOl0kz+yILLcpgEIxAkxGaSEnFD9GrZ/4NoYCze0OwZyyf3Li8E/MP13OPbbcwKlmcI1eymfx8tYbiGoAZGZC1RlF3DKFPZh/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752874614; c=relaxed/simple;
-	bh=eTVI5FGU0c0e5yUlr/3nhqLHgcBCC+iPZieL2IxFVxk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dA8d5EmdRIQUBf6X7xg5Q3r3UGNxZbSS/1EVPu9gMkt080luufj2sRBUBekpiR0WoRAuRPZmlQttShfUU/v1LvvSqVo+P6AFSsJuxa3rnOcWjvQC1A4w59RL6Qw8IVODG5e/E9j2CFrfKWN0fWgC8VMeBPBv0AWkqmXistBzyRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=G9dy4gtc; arc=none smtp.client-ip=212.227.17.21
+	s=arc-20240116; t=1752874821; c=relaxed/simple;
+	bh=7sTPKWxmWERK7WcTSVKcXxfedlkNKY/ZGLA8wClWqW0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=jeYbes0z8SB7Lj/HhyNBde51Ri8WlzuIRNK5plqL8+dD69NUGpWKiUNxyGlcW0vXowX794xmkKrN8Q+NiXkVirjQALkbv0TrJFkBZYKvLje2fTC4GFNFI9+XbBZGrEgjB6mABX/r+sEPNv9sqYCzQxF1tregIjYhW97OlIwQmb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=i7yPYIIU; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1752874609; x=1753479409; i=quwenruo.btrfs@gmx.com;
-	bh=1kN1GHk2dhwB+hvTGWTAnA1jY1ifvk7cMj0p3AVjXfQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1752874812; x=1753479612; i=quwenruo.btrfs@gmx.com;
+	bh=UJgwGN47rWiM98x4L/dyhNEGrzIikaVY1ekXZ//MDII=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=G9dy4gtco4hHWa9OqQFUB45cgjJ16ETRnqin90zj3V4Ifm05PgFCdnvveQNp8jfI
-	 lw6+7HlCzxjJ/U6K2wJAyqfWrh70VhZMNH5mRoQFi4h2pQkfvuqXGtxuNg9je5Qbk
-	 SnV+bC4P2CMIDPxng9Ne5wBmJnFuoBfOX5IhmMFVIRdRNcGQsDn6m9mJdrlys+zXF
-	 QE1ZBjc+Jd/4NxrfHBTVPD2Op3EEUkv1of5zTuzXYthUEmFAmgX9x/ozRG1u9Gza0
-	 7+OBCuPkcwJA44Pi5dZuiAUBZ6+hw2e/kIjiM9NyeLvf3fg6IT9Y+ODmSPK2GQ3ad
-	 idxTBqkXnE3nXIOgZw==
+	b=i7yPYIIU904JsEI56nArUpgXdjZ+0sZnyRP90QMwLRl5QNHZo4X/AxH4eqIMxRL1
+	 rIantaMdcSISPqjvTAIAQybjB8+fPUGKkFHKm305NfvSgbORPzvE7CFVP41Iy/y8v
+	 RsxYBQYcdIan+TYyhnkp3rRTair31cFQfQPWpf8DzzU2Fqz5HTZHy2dKxcBEsl6qB
+	 sYILC2ck3xEeQbKHG4U42Se8QMG8BjSNwyPuBuxqNq6B/Rtk9MsnvjbLrfO4NZmww
+	 NSAr7qmTLGLah4gQwWwJyTEJOu1GRCoWrvQclUkFmjSx8X1y7PliIGoKce7AbwZYr
+	 zB08mhSgLRKge7sV4g==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeCpb-1vClLL346R-00gQSR; Fri, 18
- Jul 2025 23:36:49 +0200
-Message-ID: <0ae559d6-ba95-489c-96fc-feca35a83f9a@gmx.com>
-Date: Sat, 19 Jul 2025 07:06:45 +0930
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1Obb-1uj5qi35GF-016qMD; Fri, 18
+ Jul 2025 23:40:12 +0200
+Message-ID: <5cce84b4-a754-42d4-9644-27c5e593dcdb@gmx.com>
+Date: Sat, 19 Jul 2025 07:10:09 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix subpage deadlock
-To: Boris Burkov <boris@bur.io>, Leo Martins <loemra.dev@gmail.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <52e3db9d6f775370d963eb5179e3cbfa1ace5e04.1752795616.git.loemra.dev@gmail.com>
- <4b717bb0-d421-43e1-b722-1bf56a611df5@gmx.com>
- <rk53fmeujogdqpwxh5zhrr4p62bd7io2pvxyuxn3w7eo57ygd6@nfb4wxhrorgw>
- <20250718183706.GA4097590@zen.localdomain>
+Subject: Re: [PATCH] btrfs: unfold transaction aborts when writing dirty block
+ groups
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <2289bf86333cbe87cd607891d8021abff43187a5.1752859064.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,316 +88,107 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20250718183706.GA4097590@zen.localdomain>
+In-Reply-To: <2289bf86333cbe87cd607891d8021abff43187a5.1752859064.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:trJY4U8z24llwIlVEOV6XMCIfqVwnV1ctZpvv9gzLVqUbXh+Def
- tEXVF3OFIryLXsj0+1ZJiYZK+RyveCv5Ze2Rdzv4TDqwPXtUNci5mfbWNpKhpkqgARKiKde
- qasTgTD5BkR2e6bXNO4A66hYRSLNTg51PLh2aJ+o585+njIl59GVUecb71x9afGR21RPgqu
- rrtSyenQQf2hnYwmuR5aA==
+X-Provags-ID: V03:K1:TAGIxA/NYvBcYth0wPpA9DugepvvSnvcvGWd1LqyXKYkyVGLS8E
+ s7rqDxa4RkYrNzSpjfIxNarU436mUbOA5DaNBbYnpevYINBQM5CJFCH90eN5kTv/x9a5Jjm
+ KvhqrfHZfulYc2amlXGHECxHnkMfCEIpB2G0jVZQ+iXRy107TmdzUsjOsTOqf/o5vIW68dg
+ BxSfE0FizRvJ4zY8RCo/Q==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:gwfzjLv8KPs=;kE+kGXOsdzIeHgRyzc3WGwxvc0X
- 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
- kgYvbUoWRAd6/E=
+UI-OutboundReport: notjunk:1;M01:P0:P14ipcb3j8A=;XKN5tt/Xqp8cBZymR71ivy/YQCv
+ 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
 
 
 
-=E5=9C=A8 2025/7/19 04:07, Boris Burkov =E5=86=99=E9=81=93:
-> On Fri, Jul 18, 2025 at 10:40:28AM -0700, Leo Martins wrote:
->> On Fri 18 Jul 10:18, Qu Wenruo wrote:
->>>
->>>
->>> =E5=9C=A8 2025/7/18 09:14, Leo Martins =E5=86=99=E9=81=93:
->>>> There is a deadlock happening in `try_release_subpage_extent_buffer`
->>>> because the irq-safe xarray spin lock `fs_info->buffer_tree` is being
->>>> acquired before the irq-unsafe `eb->refs_lock`.
->>>>
->>>> This leads to the potential race:
->>>>
->>>> ```
->>>> // T1					// T2
->>>> xa_lock_irq(&fs_info->buffer_tree)
->>>> 					spin_lock(&eb->refs_lock)
->>>> 					// interrupt
->>>> 					xa_lock_irq(&fs_info->buffer_tree)
->>>> spin_lock(&eb->refs_lock)
->>>> ```
->>>>
->>>
->>> If it's a lockdep warning, mind to provide the full calltrace?
->>>
->>
->>             =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>             WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected
->>             6.16.0-0_fbk701_debug_rc0_123_g4c06e63b9203 #1 Tainted: G  =
-          E    N
->>             -----------------------------------------------------
->>             kswapd0/66 [HC0[0]:SC0[0]:HE0:SE1] is trying to acquire:
->>             ffff000011ffd600 (&eb->refs_lock){+.+.}-{3:3}, at: try_rele=
-ase_extent_buffer+0x18c/0x560
->>            =20
->> and this task is already holding:
->>             ffff0000c1d91b88 (&buffer_xa_class){-.-.}-{3:3}, at: try_re=
-lease_extent_buffer+0x13c/0x560
->>             which would create a new lock dependency:
->>              (&buffer_xa_class){-.-.}-{3:3} -> (&eb->refs_lock){+.+.}-{=
-3:3}
->>            =20
->> but this new dependency connects a HARDIRQ-irq-safe lock:
->>              (&buffer_xa_class){-.-.}-{3:3}
->>            =20
->> ... which became HARDIRQ-irq-safe at:
->>               lock_acquire+0x178/0x358
->>               _raw_spin_lock_irqsave+0x60/0x88
->>               buffer_tree_clear_mark+0xc4/0x160
->>               end_bbio_meta_write+0x238/0x398
->>               btrfs_bio_end_io+0x1f8/0x330
->>               btrfs_orig_write_end_io+0x1c4/0x2c0
->>               bio_endio+0x63c/0x678
->>               blk_update_request+0x1c4/0xa00
->>               blk_mq_end_request+0x54/0x88
->>               virtblk_request_done+0x124/0x1d0
->>               blk_mq_complete_request+0x84/0xa0
->>               virtblk_done+0x130/0x238
->>               vring_interrupt+0x130/0x288
->>               __handle_irq_event_percpu+0x1e8/0x708
->>               handle_irq_event+0x98/0x1b0
->>               handle_fasteoi_irq+0x264/0x7c0
->>               generic_handle_domain_irq+0xa4/0x108
->>               gic_handle_irq+0x7c/0x1a0
->>               do_interrupt_handler+0xe4/0x148
->>               el1_interrupt+0x30/0x50
->>               el1h_64_irq_handler+0x14/0x20
->>               el1h_64_irq+0x6c/0x70
->>               _raw_spin_unlock_irq+0x38/0x70
->>               __run_timer_base+0xdc/0x5e0
->>               run_timer_softirq+0xa0/0x138
->>               handle_softirqs.llvm.13542289750107964195+0x32c/0xbd0
->>               ____do_softirq.llvm.17674514681856217165+0x18/0x28
->>               call_on_irq_stack+0x24/0x30
->>               __irq_exit_rcu+0x164/0x430
->>               irq_exit_rcu+0x18/0x88
->>               el1_interrupt+0x34/0x50
->>               el1h_64_irq_handler+0x14/0x20
->>               el1h_64_irq+0x6c/0x70
->>               arch_local_irq_enable+0x4/0x8
->>               do_idle+0x1a0/0x3b8
->>               cpu_startup_entry+0x60/0x80
->>               rest_init+0x204/0x228
->>               start_kernel+0x394/0x3f0
->>               __primary_switched+0x8c/0x8958
->>            =20
->> to a HARDIRQ-irq-unsafe lock:
->>              (&eb->refs_lock){+.+.}-{3:3}
->>            =20
->> ... which became HARDIRQ-irq-unsafe at:
->>             ...
->>               lock_acquire+0x178/0x358
->>               _raw_spin_lock+0x4c/0x68
->>               free_extent_buffer_stale+0x2c/0x170
->>               btrfs_read_sys_array+0x1b0/0x338
->>               open_ctree+0xeb0/0x1df8
->>               btrfs_get_tree+0xb60/0x1110
->>               vfs_get_tree+0x8c/0x250
->>               fc_mount+0x20/0x98
->>               btrfs_get_tree+0x4a4/0x1110
->>               vfs_get_tree+0x8c/0x250
->>               do_new_mount+0x1e0/0x6c0
->>               path_mount+0x4ec/0xa58
->>               __arm64_sys_mount+0x370/0x490
->>               invoke_syscall+0x6c/0x208
->>               el0_svc_common+0x14c/0x1b8
->>               do_el0_svc+0x4c/0x60
->>               el0_svc+0x4c/0x160
->>               el0t_64_sync_handler+0x70/0x100
->>               el0t_64_sync+0x168/0x170
->>            =20
->> other info that might help us debug this:
->>              Possible interrupt unsafe locking scenario:
->>                    CPU0                    CPU1
->>                    ----                    ----
->>               lock(&eb->refs_lock);
->>                                            local_irq_disable();
->>                                            lock(&buffer_xa_class);
->>                                            lock(&eb->refs_lock);
->>               <Interrupt>
->>                 lock(&buffer_xa_class);
->>            =20
->>   *** DEADLOCK ***
->>             2 locks held by kswapd0/66:
->>              #0: ffff800085506e40 (fs_reclaim){+.+.}-{0:0}, at: balance=
-_pgdat+0xe8/0xe50
->>              #1: ffff0000c1d91b88 (&buffer_xa_class){-.-.}-{3:3}, at: t=
-ry_release_extent_buffer+0x13c/0x560
->>            =20
-[...]
-
-Thanks a lot for the call trace.
-
-Please add the above part into the commit message for the next update.
-(The dependency part is too length and can be skipped)
-
->>
->>> I'm wondering at which exact interruption path that we will try to acq=
-uire
->>> the buffer_tree xa lock.
->>>
->>> Since the read path is always happening inside a workqueue, it won't c=
-ause
->>> xa_lock_irq() under interruption context.
->>>
->>> For the write path it's possible through end_bbio_meta_write() ->
->>> buffer_tree_clear_mark().
->>>
->>> But remember if there is an extent buffer under writeback, the whole f=
-olio
->>> will have writeback flag, thus the btree_release_folio() won't even tr=
-y to
->>> release the folio.
->>>
->>
->> Interesting, that makes sense. So this deadlock is impossible to hit?
-
-No, just as Boris explained, it's still possible. I just want to be sure=
-=20
-that I'm not missing anything critical.
-
-And it turns out that indeed there is a small window here.
-
->> What do you think about this patch? Should I pivot and try and figure
->> out how to express to lockdep that this deadlock is impossible?
-
-I think we still need to address the lockdep wanring.
-
->>
+=E5=9C=A8 2025/7/19 02:50, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >=20
-> I just looked at that codepath and I don't think that the writeback flag
-> is actually protecting us.
+> We have a single transaction abort call that can be due to an error from
+> one of two calls to update_block_group_item(). Unfold the transaction
+> abort calls so that if they happen we know which update_block_group_item=
+()
+> call failed.
 >=20
-> the relevant code in end_bbio_meta_write() running in irq context is:
->=20
-> 	bio_for_each_folio_all(fi, &bbio->bio) {
-> 		btrfs_meta_folio_clear_writeback(fi.folio, eb);
-> 	}
->=20
-> 	buffer_tree_clear_mark(eb, PAGECACHE_TAG_WRITEBACK);
->=20
-> So we will clear writeback on the folio then take the xarray spinlock.
-> So I believe the following interleaving is possible in practice, not
-> just in lockdep land:
->=20
->     T1 (random eb->refs user)                                 T2 (releas=
-e folio)
->=20
->          spin_lock(&eb->refs_lock);
->          // interrupt
->          end_bbio_meta_write()
->            btrfs_meta_folio_clear_writeback()
->                                                          btree_release_f=
-olio()
->                                                            folio_test_wr=
-iteback() //false
->                                                            try_release_e=
-xtent_buffer()
->                                                              try_release=
-_subpage_extent_buffer()
->                                                                xa_lock_i=
-rq(&fs_info->buffer_tree)
->                                                                spin_lock=
-(&eb->refs_lock); // blocked; held by T1
->            buffer_tree_clear_mark()
->              xas_lock_irqsave() // blocked; held by T2
->=20
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Thanks a lot, this is indeed a window that can lead to the problem.
-
->=20
-> And even if I missed something in that analysis and the writeback flag
-> does save us, is there a way we can tell lockdep that this is in fact a
-> safe locking relationship? "Theoretically", it's wrong, even if some
-> other synchronization saves us..
-
-I don't think it's theoretical only, since the lockdep is a runtime=20
-detection tool, if there is something really preventing it from=20
-happening, then it should not report this call site at all.
-
-[...]
->>>> @@ -4332,15 +4333,18 @@ static int try_release_subpage_extent_buffer(=
-struct folio *folio)
->>>>    	unsigned long end =3D index + (PAGE_SIZE >> fs_info->nodesize_bit=
-s) - 1;
->>>>    	int ret;
->>>> -	xa_lock_irq(&fs_info->buffer_tree);
->>>> +	rcu_read_lock();
-
-According to the docs, xa_for_each_range() is already taking and=20
-releasing RCU lock by itself, thus the extra RCU lock may not be=20
-necessary at all.
-
-Maybe you can try with the xa_lock_irq() removed for this call site?
-
-
-Another thing is, since the problem is only possible as metadata write=20
-endio is happening in an IRQ context, the other solution is to delay the=
-=20
-metadata endio to happen in a workqueue.
-
-By that we can even replace the usage of xa_lock_irq() with regular=20
-xa_lock(), but that may be a little huge change, thus such change should=
-=20
-be only the last-resort method.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+
+> ---
+>   fs/btrfs/block-group.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 47c6d040176c..9bf282d2453c 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -3644,9 +3644,11 @@ int btrfs_write_dirty_block_groups(struct btrfs_t=
+rans_handle *trans)
+>   				wait_event(cur_trans->writer_wait,
+>   				   atomic_read(&cur_trans->num_writers) =3D=3D 1);
+>   				ret =3D update_block_group_item(trans, path, cache);
+> -			}
+> -			if (ret)
+> +				if (ret)
+> +					btrfs_abort_transaction(trans, ret);
+> +			} else if (ret) {
+>   				btrfs_abort_transaction(trans, ret);
+> +			}
+>   		}
+>  =20
+>   		/* If its not on the io list, we need to put the block group */
+
 
