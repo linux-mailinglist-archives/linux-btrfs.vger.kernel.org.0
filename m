@@ -1,576 +1,345 @@
-Return-Path: <linux-btrfs+bounces-15555-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15558-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21732B0AA2C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 20:35:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E3B5B0AA75
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 20:57:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF744AA660A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 18:35:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB15D7AC070
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 18:56:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0822E7F13;
-	Fri, 18 Jul 2025 18:35:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDA42E7F1E;
+	Fri, 18 Jul 2025 18:57:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="WQ6KMftf";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lNxXqIt7"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="LRXvvSqE";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mP+8aU17"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAACE148850
-	for <linux-btrfs@vger.kernel.org>; Fri, 18 Jul 2025 18:35:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91F2317A305
+	for <linux-btrfs@vger.kernel.org>; Fri, 18 Jul 2025 18:57:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752863740; cv=none; b=oxPY3WIV7t+9kTOouWNFaFJK5xgMludVEyofJbDm1HAOU3Du+8wNMSLnIxfMdg5v5jjdcgeV0RXNavWcYnHiQusrK4yI4D7MVOMV4zR/8GqH7neqZKqw5GeRzMrREeLUbJ8z/60tp754XrZbyMgp2k6TrUdpXpwQsYyX67xy1KY=
+	t=1752865039; cv=none; b=T95BVGcXLmbU/0zixfzfefy6oBK0Mlc8DxFbCdRoMCN5htUaocaI7kfjes3Ea1XVR2WQELpTnreLY+IkSDZd5yYitJaqOfIU2efGkpqQyAQa/GNtKOFAo4RyWcg8aQQd28/MJ0KoCJ/Eye+tqB9fap27sHApxfoKffRVCDchduQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752863740; c=relaxed/simple;
-	bh=7+PusT3KnHPM7ekoscwekU/cfoPF0BIK/gbInIaJAkY=;
+	s=arc-20240116; t=1752865039; c=relaxed/simple;
+	bh=HOL5sQpep2JIwdhldcqLHzHn1WYnFzhwrLrMYIIvub8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QMqJZ7spRTZ8rXyxxlyal3b/bXLN4pZLGYqWjQVb6wmh2DDaCiRiK/57zsySH7ueo6BecYa6NDWiHesU67Pu8HM0Vyl6Ke8db+Rx8VHY28vN3RoJqpCAGMOP3XzNOOeaUhuiENsYTC2IBUnEAesfxjqgvvPEqMaZ8wiKQVdfaC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=WQ6KMftf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lNxXqIt7; arc=none smtp.client-ip=202.12.124.147
+	 Content-Type:Content-Disposition:In-Reply-To; b=F5O6dZ7KJ4XSYybuMZKloGmj5ud8Q92SENK+u3bM8bZFrywF4nXKnOGBQ0IWD1FaWer++YFtTRrByMDPAeu8jZRc9SKnEdjAG08c5XQg/IWQWqVzKLcW/DLhtNGb04mqkCGBvFMI9RHYf5afM9RYq6e7yzwhu2orjXVvIf7Cs/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=LRXvvSqE; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=mP+8aU17; arc=none smtp.client-ip=202.12.124.147
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfout.stl.internal (Postfix) with ESMTP id 008CA1D000B9;
-	Fri, 18 Jul 2025 14:35:36 -0400 (EDT)
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfout.stl.internal (Postfix) with ESMTP id 902FA1D000C4;
+	Fri, 18 Jul 2025 14:57:16 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-03.internal (MEProxy); Fri, 18 Jul 2025 14:35:37 -0400
+  by phl-compute-04.internal (MEProxy); Fri, 18 Jul 2025 14:57:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1752863736;
-	 x=1752950136; bh=cKbLzH7C5BFIr/TOLt3zjfhTVZSxVffMYdt+dNVBAqg=; b=
-	WQ6KMftf7D5FrSofBpeldkzCcZTU0sXdfv24edhM5oOa+uHn2AnZmFVvxi8cQjrj
-	zPl+fh5ArN68XKhFI2IzPZhWQqEPfzfb5S5oCQ2hkfthCYUDgzVAJL10MBes9Fuh
-	N5+Ocm6iRYiVtFb77UFFsxpev+qeOQ532szHIeTb9BgZr07fgX9QunquhZEGtTWs
-	DkPAIR4QH/0FcCe/5iz/00mRT340vvApdKWemkyXXScSzLqacI5IswK09YMfTg2V
-	oIgBhL/wZdubG6zmBAoJIDlCFF1UaZrwZ0ionpCYBqhcbWvMcSZkdBao2Qc6yt5P
-	RGt9V8zTSzEkpNiGLsoa3g==
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1752865036; x=1752951436; bh=itK9G4V/3b
+	Ew5KjMCR0nEul4U9u8XxodZYQsbgH8vD8=; b=LRXvvSqEviKHW9KwSKuy4nI71d
+	rEr1gTBGJXln5ma8ckdXSnqizS/ZOFLTfL7aZBtI+tkNpeWxYgjBY92WLfZ8sclD
+	bHGJobRwWA7V3AtKeVmcVzwLJF85pG05R8VuduwfTyseiWOKetybGxw8NTxJ2abx
+	hzmtmfwUfyTp9FN2b2BsNMi8nK1mdXboVWNbO21ppiBvSIuU/pb+sNRSwvENFXT0
+	CuIk/LSyeychsuirhavdLgPq0TG6Tp4DiPTRe4pU/Vod0OPjpw2Ksq2oyt1LX8vq
+	S3meV+0ZngCemEa2JSj5gN8aLyYeu9Y2oBCooiYYnT0InqcoNTgXsbqe9aPg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1752863736; x=
-	1752950136; bh=cKbLzH7C5BFIr/TOLt3zjfhTVZSxVffMYdt+dNVBAqg=; b=l
-	NxXqIt71pgeicU/W6Y1HexqVRBYYoHLMw5DEv7lGVf7UTBSD+PrrKUj/MEG7Wop/
-	jCYRhad7iDB9SPCcf2zFzhxso8881XkwbebVbBHzvVIyda9uD8+jWh2/aIERKs+t
-	5ZWY3rh6Gvmke6Pd9XyhXDa4NZ+qjR8hyt2i7vPLtnXC2mJ51Ttmtov/58c2i5It
-	WiB35G/ol6a8W+N4g8GQtysR9n6DgjGoLu9Odx3IuHrMoiqB0ynx2W/rpACcl57j
-	Nty8aS8eeK5JvLis/nn5/8g+rnJ73EaMO3o+ERwoHWikGY8mdrzpNQWd5phtiSqX
-	dbpi2hItdlNvF1GDtDfhg==
-X-ME-Sender: <xms:-JN6aEvJIm69sICyduZYSq3tkZ1Xq2xiCpnyGEfgl5UFNtepx0uT4Q>
-    <xme:-JN6aMAkty5W0LepK-7EiQCdf0I0eGv2e1cyZKKZUQbEtWU15Siqh08rfF8e1Xu2V
-    YjpSQhvmev9yE4cj4o>
-X-ME-Received: <xmr:-JN6aMUzH6nl0CC-dnDusewCH00eXun2_jdH_EM3d_EfuMHx_EDEXSm_N8NjdrU-6sXmAfhUAVgJDmz-pTiIhpKBLZU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdeigedvtdcutefuodetggdotefrod
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1752865036; x=1752951436; bh=itK9G4V/3bEw5KjMCR0nEul4U9u8XxodZYQ
+	sbgH8vD8=; b=mP+8aU17DTuowtE6Btuxczd6l+cX1Ua+55H402YSdDHZ1yKOrDs
+	IlU6IWpSmn8SAY70ZlWUFl9Mhf6/Tj8TpZ47jVawUfB/jc3ffrcWmwLp1OZu+iRc
+	LpU0IKJfS92lDNUYbBNFtQOLtqeDDofUXNl0eo/OLtwXtsYZRglSDW/CsSTIvUaU
+	gJZq/xwmp2Qo+vXx7AHqqpilkCfdlB4K6dJicvLMGXJwKTkrvmvyM0SCZgRLJTML
+	3aZfO0leh73vLvI0XQ1HJVMTF2pnrmgEicSgPfeSRl7VmaOeR3RD77Nn1AX2LPWQ
+	cEzyA25PnBDMJH2ZzqwsbgVSVjDGwOAVo2Q==
+X-ME-Sender: <xms:C5l6aCK9uoub-3R-V27gWqk7PS_SgLBAijL5KDjrlq-RXD-32tZebw>
+    <xme:C5l6aHvvCgftkYc9c1TDTamorMs537q7c_Sl68I3CoUMsD0rItq2Z4wp-AJ6T_UvZ
+    CvH0ujxrP5CPxm1x3U>
+X-ME-Received: <xmr:C5l6aJLn49DGRCYFKrZC0WDFWsDzOGBinDcoQRjkpnIA36urgA_8EYAurbjOVSNt_3AWuDjfeQTDLWX_DCHACLM4lkM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdeigedvfecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertd
-    dttdejnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhephefhudehgfekhedufedvtefgteelueeigfefhfefge
-    ejkeefhefhgfekjefhvdehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
-    hrrdhiohdpnhgspghrtghpthhtohepgedpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
-    oheplhhovghmrhgrrdguvghvsehgmhgrihhlrdgtohhmpdhrtghpthhtohepqhhufigvnh
-    hruhhordgsthhrfhhssehgmhigrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhf
-    shesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqthgvrg
-    hmsehfsgdrtghomh
-X-ME-Proxy: <xmx:-JN6aKA-qUfSu0daUKphIAE_CDa2O4HeH4I-U0_P4qiyRDQXn7v_-g>
-    <xmx:-JN6aP-3aVtxtWlUrUKWzofQ6xUaRZ19gRz4iYJ6w_Jurd5_EIatYQ>
-    <xmx:-JN6aBGFUTCCOH-HVDLOfGWEqdCmLqXoobWqibBVrSoPVKcq6m9_Pg>
-    <xmx:-JN6aNPUG1UTU6a_enp6-jCF1LoCkKKaoCmVg9sxLah8YGSX88_AZg>
-    <xmx:-JN6aPqCsdoASmNTC-5X_0Pm7hxYlFd0hIYJHvjHH5t-fC1jhOIC8W_2>
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceu
+    uhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepkedvke
+    ffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
+    drihhopdhnsggprhgtphhtthhopeejpdhmohguvgepshhmthhpohhuthdprhgtphhtthho
+    pehpthhrudeffeejsegtrggthhihohhsrdhorhhgpdhrtghpthhtoheplhhishhtshestg
+    holhhorhhrvghmvgguihgvshdrtghomhdprhgtphhtthhopehquhifvghnrhhuohdrsght
+    rhhfshesghhmgidrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrh
+    drkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrvhgvsehjihhkohhsrdgtiidprhgt
+    phhtthhopehgrhgvghhkhheslhhinhhugihfohhunhgurghtihhonhdrohhrghdprhgtph
+    htthhopegunhgrihhmsegtrggthhihohhsrdhorhhg
+X-ME-Proxy: <xmx:C5l6aI-ZYxGsLarhzRdqwdGeTsiJwIaCVQo-V3eL_NAe9h9a1pp2VQ>
+    <xmx:C5l6aKw7gMfh12m0B__K2QN4TGmbFdRF02LXXsWIUMR1QCgRhHQw9A>
+    <xmx:C5l6aN5LoMWsH1PqF-Cy0EK_wKv9QJ9r-d5dRc7_nQguWTHq34Qk3Q>
+    <xmx:C5l6aJ-8eiy5hSW1PXZyI9KfSU5V5ZlkHyBd5xTFbD0LVcQVn8jhog>
+    <xmx:DJl6aDQ9f5Ii5U_alTlS5jw9CRfHjQx_W_2XxCc77_tWk9XmzG8dy839>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 18 Jul 2025 14:35:36 -0400 (EDT)
-Date: Fri, 18 Jul 2025 11:37:06 -0700
+ 18 Jul 2025 14:57:15 -0400 (EDT)
+Date: Fri, 18 Jul 2025 11:58:45 -0700
 From: Boris Burkov <boris@bur.io>
-To: Leo Martins <loemra.dev@gmail.com>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: fix subpage deadlock
-Message-ID: <20250718183706.GA4097590@zen.localdomain>
-References: <52e3db9d6f775370d963eb5179e3cbfa1ace5e04.1752795616.git.loemra.dev@gmail.com>
- <4b717bb0-d421-43e1-b722-1bf56a611df5@gmx.com>
- <rk53fmeujogdqpwxh5zhrr4p62bd7io2pvxyuxn3w7eo57ygd6@nfb4wxhrorgw>
+To: Peter Jung <ptr1337@cachyos.org>
+Cc: Chris Murphy <lists@colorremedies.com>,
+	Qu Wenruo <quwenruo.btrfs@gmx.com>,
+	Btrfs BTRFS <linux-btrfs@vger.kernel.org>, dave@jikos.cz,
+	Greg KH <gregkh@linuxfoundation.org>, dnaim@cachyos.org
+Subject: Re: Increased reports since 6.15.3 of corruption within the log tree
+Message-ID: <20250718185845.GA4107167@zen.localdomain>
+References: <fce139db-4458-4788-bb97-c29acf6cb1df@cachyos.org>
+ <a6f03aff-c9fc-4e7f-b1fb-42d6a4cd770a@gmx.com>
+ <f6d53293-3d55-4ccd-a213-c877dc22935a@cachyos.org>
+ <d0863ae6-5c0f-46ff-8cea-b5b3d1c43005@app.fastmail.com>
+ <bb83ecb0-e302-4c01-93d5-1321ba737f71@cachyos.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <rk53fmeujogdqpwxh5zhrr4p62bd7io2pvxyuxn3w7eo57ygd6@nfb4wxhrorgw>
+In-Reply-To: <bb83ecb0-e302-4c01-93d5-1321ba737f71@cachyos.org>
 
-On Fri, Jul 18, 2025 at 10:40:28AM -0700, Leo Martins wrote:
-> On Fri 18 Jul 10:18, Qu Wenruo wrote:
-> > 
-> > 
-> > 在 2025/7/18 09:14, Leo Martins 写道:
-> > > There is a deadlock happening in `try_release_subpage_extent_buffer`
-> > > because the irq-safe xarray spin lock `fs_info->buffer_tree` is being
-> > > acquired before the irq-unsafe `eb->refs_lock`.
-> > > 
-> > > This leads to the potential race:
-> > > 
-> > > ```
-> > > // T1					// T2
-> > > xa_lock_irq(&fs_info->buffer_tree)
-> > > 					spin_lock(&eb->refs_lock)
-> > > 					// interrupt
-> > > 					xa_lock_irq(&fs_info->buffer_tree)
-> > > spin_lock(&eb->refs_lock)
-> > > ```
-> > > 
-> > 
-> > If it's a lockdep warning, mind to provide the full calltrace?
-> >
+On Thu, Jul 17, 2025 at 06:51:40PM +0200, Peter Jung wrote:
+> Hi all,
 > 
->            =====================================================
->            WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected
->            6.16.0-0_fbk701_debug_rc0_123_g4c06e63b9203 #1 Tainted: G            E    N 
->            -----------------------------------------------------
->            kswapd0/66 [HC0[0]:SC0[0]:HE0:SE1] is trying to acquire:
->            ffff000011ffd600 (&eb->refs_lock){+.+.}-{3:3}, at: try_release_extent_buffer+0x18c/0x560
->            
-> and this task is already holding:
->            ffff0000c1d91b88 (&buffer_xa_class){-.-.}-{3:3}, at: try_release_extent_buffer+0x13c/0x560
->            which would create a new lock dependency:
->             (&buffer_xa_class){-.-.}-{3:3} -> (&eb->refs_lock){+.+.}-{3:3}
->            
-> but this new dependency connects a HARDIRQ-irq-safe lock:
->             (&buffer_xa_class){-.-.}-{3:3}
->            
-> ... which became HARDIRQ-irq-safe at:
->              lock_acquire+0x178/0x358
->              _raw_spin_lock_irqsave+0x60/0x88
->              buffer_tree_clear_mark+0xc4/0x160
->              end_bbio_meta_write+0x238/0x398
->              btrfs_bio_end_io+0x1f8/0x330
->              btrfs_orig_write_end_io+0x1c4/0x2c0
->              bio_endio+0x63c/0x678
->              blk_update_request+0x1c4/0xa00
->              blk_mq_end_request+0x54/0x88
->              virtblk_request_done+0x124/0x1d0
->              blk_mq_complete_request+0x84/0xa0
->              virtblk_done+0x130/0x238
->              vring_interrupt+0x130/0x288
->              __handle_irq_event_percpu+0x1e8/0x708
->              handle_irq_event+0x98/0x1b0
->              handle_fasteoi_irq+0x264/0x7c0
->              generic_handle_domain_irq+0xa4/0x108
->              gic_handle_irq+0x7c/0x1a0
->              do_interrupt_handler+0xe4/0x148
->              el1_interrupt+0x30/0x50
->              el1h_64_irq_handler+0x14/0x20
->              el1h_64_irq+0x6c/0x70
->              _raw_spin_unlock_irq+0x38/0x70
->              __run_timer_base+0xdc/0x5e0
->              run_timer_softirq+0xa0/0x138
->              handle_softirqs.llvm.13542289750107964195+0x32c/0xbd0
->              ____do_softirq.llvm.17674514681856217165+0x18/0x28
->              call_on_irq_stack+0x24/0x30
->              __irq_exit_rcu+0x164/0x430
->              irq_exit_rcu+0x18/0x88
->              el1_interrupt+0x34/0x50
->              el1h_64_irq_handler+0x14/0x20
->              el1h_64_irq+0x6c/0x70
->              arch_local_irq_enable+0x4/0x8
->              do_idle+0x1a0/0x3b8
->              cpu_startup_entry+0x60/0x80
->              rest_init+0x204/0x228
->              start_kernel+0x394/0x3f0
->              __primary_switched+0x8c/0x8958
->            
-> to a HARDIRQ-irq-unsafe lock:
->             (&eb->refs_lock){+.+.}-{3:3}
->            
-> ... which became HARDIRQ-irq-unsafe at:
->            ...
->              lock_acquire+0x178/0x358
->              _raw_spin_lock+0x4c/0x68
->              free_extent_buffer_stale+0x2c/0x170
->              btrfs_read_sys_array+0x1b0/0x338
->              open_ctree+0xeb0/0x1df8
->              btrfs_get_tree+0xb60/0x1110
->              vfs_get_tree+0x8c/0x250
->              fc_mount+0x20/0x98
->              btrfs_get_tree+0x4a4/0x1110
->              vfs_get_tree+0x8c/0x250
->              do_new_mount+0x1e0/0x6c0
->              path_mount+0x4ec/0xa58
->              __arm64_sys_mount+0x370/0x490
->              invoke_syscall+0x6c/0x208
->              el0_svc_common+0x14c/0x1b8
->              do_el0_svc+0x4c/0x60
->              el0_svc+0x4c/0x160
->              el0t_64_sync_handler+0x70/0x100
->              el0t_64_sync+0x168/0x170
->            
-> other info that might help us debug this:
->             Possible interrupt unsafe locking scenario:
->                   CPU0                    CPU1
->                   ----                    ----
->              lock(&eb->refs_lock);
->                                           local_irq_disable();
->                                           lock(&buffer_xa_class);
->                                           lock(&eb->refs_lock);
->              <Interrupt>
->                lock(&buffer_xa_class);
->            
->  *** DEADLOCK ***
->            2 locks held by kswapd0/66:
->             #0: ffff800085506e40 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0xe8/0xe50
->             #1: ffff0000c1d91b88 (&buffer_xa_class){-.-.}-{3:3}, at: try_release_extent_buffer+0x13c/0x560
->            
-> the dependencies between HARDIRQ-irq-safe lock and the holding lock:
->            -> (&buffer_xa_class){-.-.}-{3:3} ops: 8759 {
->               IN-HARDIRQ-W at:
->                                lock_acquire+0x178/0x358
->                                _raw_spin_lock_irqsave+0x60/0x88
->                                buffer_tree_clear_mark+0xc4/0x160
->                                end_bbio_meta_write+0x238/0x398
->                                btrfs_bio_end_io+0x1f8/0x330
->                                btrfs_orig_write_end_io+0x1c4/0x2c0
->                                bio_endio+0x63c/0x678
->                                blk_update_request+0x1c4/0xa00
->                                blk_mq_end_request+0x54/0x88
->                                virtblk_request_done+0x124/0x1d0
->                                blk_mq_complete_request+0x84/0xa0
->                                virtblk_done+0x130/0x238
->                                vring_interrupt+0x130/0x288
->                                __handle_irq_event_percpu+0x1e8/0x708
->                                handle_irq_event+0x98/0x1b0
->                                handle_fasteoi_irq+0x264/0x7c0
->                                generic_handle_domain_irq+0xa4/0x108
->                                gic_handle_irq+0x7c/0x1a0
->                                do_interrupt_handler+0xe4/0x148
->                                el1_interrupt+0x30/0x50
->                                el1h_64_irq_handler+0x14/0x20
->                                el1h_64_irq+0x6c/0x70
->                                _raw_spin_unlock_irq+0x38/0x70
->                                __run_timer_base+0xdc/0x5e0
->                                run_timer_softirq+0xa0/0x138
->                                handle_softirqs.llvm.13542289750107964195+0x32c/0xbd0
->                                ____do_softirq.llvm.17674514681856217165+0x18/0x28
->                                call_on_irq_stack+0x24/0x30
->                                __irq_exit_rcu+0x164/0x430
->                                irq_exit_rcu+0x18/0x88
->                                el1_interrupt+0x34/0x50
->                                el1h_64_irq_handler+0x14/0x20
->                                el1h_64_irq+0x6c/0x70
->                                arch_local_irq_enable+0x4/0x8
->                                do_idle+0x1a0/0x3b8
->                                cpu_startup_entry+0x60/0x80
->                                rest_init+0x204/0x228
->                                start_kernel+0x394/0x3f0
->                                __primary_switched+0x8c/0x8958
->               IN-SOFTIRQ-W at:
->                                lock_acquire+0x178/0x358
->                                _raw_spin_lock_irqsave+0x60/0x88
->                                buffer_tree_clear_mark+0xc4/0x160
->                                end_bbio_meta_write+0x238/0x398
->                                btrfs_bio_end_io+0x1f8/0x330
->                                btrfs_orig_write_end_io+0x1c4/0x2c0
->                                bio_endio+0x63c/0x678
->                                blk_update_request+0x1c4/0xa00
->                                blk_mq_end_request+0x54/0x88
->                                virtblk_request_done+0x124/0x1d0
->                                blk_mq_complete_request+0x84/0xa0
->                                virtblk_done+0x130/0x238
->                                vring_interrupt+0x130/0x288
->                                __handle_irq_event_percpu+0x1e8/0x708
->                                handle_irq_event+0x98/0x1b0
->                                handle_fasteoi_irq+0x264/0x7c0
->                                generic_handle_domain_irq+0xa4/0x108
->                                gic_handle_irq+0x7c/0x1a0
->                                do_interrupt_handler+0xe4/0x148
->                                el1_interrupt+0x30/0x50
->                                el1h_64_irq_handler+0x14/0x20
->                                el1h_64_irq+0x6c/0x70
->                                _raw_spin_unlock_irq+0x38/0x70
->                                __run_timer_base+0xdc/0x5e0
->                                run_timer_softirq+0xa0/0x138
->                                handle_softirqs.llvm.13542289750107964195+0x32c/0xbd0
->                                ____do_softirq.llvm.17674514681856217165+0x18/0x28
->                                call_on_irq_stack+0x24/0x30
->                                __irq_exit_rcu+0x164/0x430
->                                irq_exit_rcu+0x18/0x88
->                                el1_interrupt+0x34/0x50
->                                el1h_64_irq_handler+0x14/0x20
->                                el1h_64_irq+0x6c/0x70
->                                arch_local_irq_enable+0x4/0x8
->                                do_idle+0x1a0/0x3b8
->                                cpu_startup_entry+0x60/0x80
->                                rest_init+0x204/0x228
->                                start_kernel+0x394/0x3f0
->                                __primary_switched+0x8c/0x8958
->               INITIAL USE at:
->                               lock_acquire+0x178/0x358
->                               _raw_spin_lock_irq+0x5c/0x78
->                               release_extent_buffer+0x170/0x2a8
->                               free_extent_buffer_stale+0xf4/0x170
->                               btrfs_read_sys_array+0x1b0/0x338
->                               open_ctree+0xeb0/0x1df8
->                               btrfs_get_tree+0xb60/0x1110
->                               vfs_get_tree+0x8c/0x250
->                               fc_mount+0x20/0x98
->                               btrfs_get_tree+0x4a4/0x1110
->                               vfs_get_tree+0x8c/0x250
->                               do_new_mount+0x1e0/0x6c0
->                               path_mount+0x4ec/0xa58
->                               __arm64_sys_mount+0x370/0x490
->                               invoke_syscall+0x6c/0x208
->                               el0_svc_common+0x14c/0x1b8
->                               do_el0_svc+0x4c/0x60
->                               el0_svc+0x4c/0x160
->                               el0t_64_sync_handler+0x70/0x100
->                               el0t_64_sync+0x168/0x170
->             }
->             ... key      at: [<ffff80008fd9b820>] buffer_xa_class+0x0/0x20
->            
-> the dependencies between the lock to be acquired
->             and HARDIRQ-irq-unsafe lock:
->            -> (&eb->refs_lock){+.+.}-{3:3} ops: 226471 {
->               HARDIRQ-ON-W at:
->                                lock_acquire+0x178/0x358
->                                _raw_spin_lock+0x4c/0x68
->                                free_extent_buffer_stale+0x2c/0x170
->                                btrfs_read_sys_array+0x1b0/0x338
->                                open_ctree+0xeb0/0x1df8
->                                btrfs_get_tree+0xb60/0x1110
->                                vfs_get_tree+0x8c/0x250
->                                fc_mount+0x20/0x98
->                                btrfs_get_tree+0x4a4/0x1110
->                                vfs_get_tree+0x8c/0x250
->                                do_new_mount+0x1e0/0x6c0
->                                path_mount+0x4ec/0xa58
->                                __arm64_sys_mount+0x370/0x490
->                                invoke_syscall+0x6c/0x208
->                                el0_svc_common+0x14c/0x1b8
->                                do_el0_svc+0x4c/0x60
->                                el0_svc+0x4c/0x160
->                                el0t_64_sync_handler+0x70/0x100
->                                el0t_64_sync+0x168/0x170
->               SOFTIRQ-ON-W at:
->                                lock_acquire+0x178/0x358
->                                _raw_spin_lock+0x4c/0x68
->                                free_extent_buffer_stale+0x2c/0x170
->                                btrfs_read_sys_array+0x1b0/0x338
->                                open_ctree+0xeb0/0x1df8
->                                btrfs_get_tree+0xb60/0x1110
->                                vfs_get_tree+0x8c/0x250
->                                fc_mount+0x20/0x98
->                                btrfs_get_tree+0x4a4/0x1110
->                                vfs_get_tree+0x8c/0x250
->                                do_new_mount+0x1e0/0x6c0
->                                path_mount+0x4ec/0xa58
->                                __arm64_sys_mount+0x370/0x490
->                                invoke_syscall+0x6c/0x208
->                                el0_svc_common+0x14c/0x1b8
->                                do_el0_svc+0x4c/0x60
->                                el0_svc+0x4c/0x160
->                                el0t_64_sync_handler+0x70/0x100
->                                el0t_64_sync+0x168/0x170
->               INITIAL USE at:
->                               lock_acquire+0x178/0x358
->                               _raw_spin_lock+0x4c/0x68
->                               free_extent_buffer_stale+0x2c/0x170
->                               btrfs_read_sys_array+0x1b0/0x338
->                               open_ctree+0xeb0/0x1df8
->                               btrfs_get_tree+0xb60/0x1110
->                               vfs_get_tree+0x8c/0x250
->                               fc_mount+0x20/0x98
->                               btrfs_get_tree+0x4a4/0x1110
->                               vfs_get_tree+0x8c/0x250
->                               do_new_mount+0x1e0/0x6c0
->                               path_mount+0x4ec/0xa58
->                               __arm64_sys_mount+0x370/0x490
->                               invoke_syscall+0x6c/0x208
->                               el0_svc_common+0x14c/0x1b8
->                               do_el0_svc+0x4c/0x60
->                               el0_svc+0x4c/0x160
->                               el0t_64_sync_handler+0x70/0x100
->                               el0t_64_sync+0x168/0x170
->             }
->             ... key      at: [<ffff80008fda1490>] __alloc_extent_buffer.__key.170+0x0/0x10
->             ... acquired at:
->               _raw_spin_lock+0x4c/0x68
->               try_release_extent_buffer+0x18c/0x560
->               btree_release_folio+0x80/0xc0
->               filemap_release_folio+0x12c/0x1d0
->               shrink_folio_list+0x17ec/0x3140
->               shrink_lruvec+0xc94/0x1a88
->               shrink_node+0xc80/0x1c78
->               balance_pgdat+0x81c/0xe50
->               kswapd+0x1ac/0xbc0
->               kthread+0x3fc/0x530
->               ret_from_fork+0x10/0x20
->            
->            
-> stack backtrace:
->            CPU: 3 UID: 0 PID: 66 Comm: kswapd0 Tainted: G            E    N  6.16.0-0_fbk701_debug_rc0_123_g4c06e63b9203 #1 PREEMPT(undef) 
->            Tainted: [E]=UNSIGNED_MODULE, [N]=TEST
->            Hardware name: QEMU QEMU Virtual Machine, BIOS edk2-20241117-3.el9 11/17/2024
->            Call trace:
->             show_stack+0x1c/0x30 (C)
->             dump_stack_lvl+0x38/0xb0
->             dump_stack+0x14/0x1c
->             __lock_acquire+0x35bc/0x3690
->             lock_acquire+0x178/0x358
->             _raw_spin_lock+0x4c/0x68
->             try_release_extent_buffer+0x18c/0x560
->             btree_release_folio+0x80/0xc0
->             filemap_release_folio+0x12c/0x1d0
->             shrink_folio_list+0x17ec/0x3140
->             shrink_lruvec+0xc94/0x1a88
->             shrink_node+0xc80/0x1c78
->             balance_pgdat+0x81c/0xe50
->             kswapd+0x1ac/0xbc0
->             kthread+0x3fc/0x530
->             ret_from_fork+0x10/0x20
->            virtio_net virtio8 eth0: renamed from enp0s10 (while UP)
->            cppc_cpufreq: module verification failed: signature and/or required key missing - tainting kernel
->            input: Power Button as /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0C0C:00/input/input0
->            ACPI: button: Power Button [PWRB]
->            hrtimer: interrupt took 2020913 ns
+> Here you can find the trace of dmesg, after the log tree is corrupted. This
+> has been taken on an Live ISO, which should reflect the same dmesg as in the
+> emergency shell, when trying to mount the disk.
+
+Thank you very much for collecting this.
+
 > 
-> > I'm wondering at which exact interruption path that we will try to acquire
-> > the buffer_tree xa lock.
-> > 
-> > Since the read path is always happening inside a workqueue, it won't cause
-> > xa_lock_irq() under interruption context.
-> > 
-> > For the write path it's possible through end_bbio_meta_write() ->
-> > buffer_tree_clear_mark().
-> > 
-> > But remember if there is an extent buffer under writeback, the whole folio
-> > will have writeback flag, thus the btree_release_folio() won't even try to
-> > release the folio.
-> > 
-> 
-> Interesting, that makes sense. So this deadlock is impossible to hit?
-> What do you think about this patch? Should I pivot and try and figure
-> out how to express to lockdep that this deadlock is impossible?
-> 
+> ```
+> [  205.774875] BTRFS: device fsid b09a027e-a61d-424f-858f-2e02be61b342 devid
+> 1 transid 159947 /dev/nvme0n1p2 (259:2) scanned by mount (2499)
+> [  205.775120] BTRFS info (device nvme0n1p2): first mount of filesystem
+> b09a027e-a61d-424f-858f-2e02be61b342
+> [  205.775142] BTRFS info (device nvme0n1p2): using crc32c (crc32c-intel)
+> checksum algorithm
+> [  205.775150] BTRFS info (device nvme0n1p2): using free-space-tree
+> [  205.792525] BTRFS info (device nvme0n1p2): start tree-log replay
+> [  205.875103] BTRFS: error (device nvme0n1p2) in btrfs_replay_log:2104:
+> errno=-5 IO failure (Failed to recover log tree)
 
-I just looked at that codepath and I don't think that the writeback flag
-is actually protecting us.
+What we can draw from this is that we are seeing an EIO somewhere in
+btrfs_replay_log()
 
-the relevant code in end_bbio_meta_write() running in irq context is:
+> [  205.876751] ------------[ cut here ]------------
+> [  205.876753] WARNING: CPU: 4 PID: 2499 at fs/btrfs/block-rsv.c:456
+> btrfs_release_global_block_rsv+0xa9/0xe0 [btrfs]
 
-	bio_for_each_folio_all(fi, &bbio->bio) {
-		btrfs_meta_folio_clear_writeback(fi.folio, eb);
-	}
+Then after that function fails, we go to the cleanup of the mount
+operation and also hit a WARNING in btrfs_free_block_groups(). It could
+be related. It's a little weird since that call fully empties the
+block_rsv with a -1 release before the WARN checks, so it suggests some
+race where someone else uses the block_rsv mid release.
 
-	buffer_tree_clear_mark(eb, PAGECACHE_TAG_WRITEBACK);
+I don't have a strong intuition for whether this is important or not,
+but best case it is a hint of what's happening on the system, it doesn't
+have strong relevance to the proximal causes of the log tree replay EIO.
 
-So we will clear writeback on the folio then take the xarray spinlock.
-So I believe the following interleaving is possible in practice, not
-just in lockdep land:
+> [  205.876813] Modules linked in: ccm snd_seq_dummy snd_hrtimer snd_seq
+> snd_seq_device qrtr snd_soc_dmic snd_soc_acp6x_mach snd_acp6x_pdm_dma
+> snd_sof_amd_acp70 snd_sof_amd_acp63 snd_sof_amd_vangogh
+> snd_sof_amd_rembrandt snd_sof_amd_renoir snd_sof_amd_acp snd_sof_pci
+> snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_pci_ps snd_soc_acpi_amd_match
+> soundwire_amd soundwire_generic_allocation snd_amd_sdw_acpi soundwire_bus
+> snd_soc_sdca snd_soc_core ac97_bus snd_pcm_dmaengine snd_compress amd_atl
+> intel_rapl_msr intel_rapl_common kvm_amd hid_sensor_custom
+> snd_hda_codec_realtek snd_rpl_pci_acp6x snd_hda_scodec_component kvm
+> uvcvideo snd_hda_codec_generic snd_acp_pci snd_hda_codec_hdmi
+> snd_acp_legacy_common iwlmvm crct10dif_pclmul snd_hda_intel snd_intel_dspcfg
+> snd_intel_sdw_acpi snd_hda_codec snd_hda_core snd_pci_acp6x polyval_clmulni
+> uvc snd_hwdep videobuf2_vmalloc videobuf2_memops videobuf2_v4l2
+> videobuf2_common videodev mc polyval_generic nvidia_drm(OE) hid_multitouch
+> btusb spd5118 hid_sensor_hub snd_pcm mac80211
+> [  205.876885]  ghash_clmulni_intel snd_timer libarc4 btbcm
+> nvidia_modeset(OE) snd_pci_acp5x btintel snd_rn_pci_acp3x sha1_ssse3 ptp snd
+> snd_acp_config btrtl joydev pps_core mousedev wacom iwlwifi rapl i2c_piix4
+> soundcore ideapad_laptop snd_soc_acpi i2c_hid_acpi ucsi_acpi btmtk cfg80211
+> nvidia(OE) platform_profile typec_ucsi bluetooth typec sparse_keymap roles
+> wmi_bmof nvidia_wmi_ec_backlight k10temp rfkill amd_pmc snd_pci_acp3x ccp
+> i2c_hid mac_hid acpi_tad i2c_smbus zfs(OE) spl(OE) pkcs8_key_parser ntsync
+> i2c_dev nfnetlink lz4 zram 842_decompress 842_compress lz4hc_compress
+> lz4_compress ip_tables x_tables overlay squashfs loop isofs cdrom dm_mod
+> hid_logitech_hidpp hid_logitech_dj amdgpu nouveau btrfs mxm_wmi drm_gpuvm
+> drm_buddy raid6_pq drm_exec amdxcp crc32_pclmul xor gpu_sched uas
+> drm_suballoc_helper sha512_ssse3 libcrc32c crc32c_generic crc32c_intel
+> usb_storage hid_generic serio_raw sha256_ssse3 drm_ttm_helper sdhci_pci
+> atkbd aesni_intel ttm cqhci libps2 gf128mul vivaldi_fmap sdhci_uhs2
+> crypto_simd i2c_algo_bit nvme
+> [  205.876991]  cryptd sdhci drm_display_helper usbhid nvme_core i8042
+> mmc_core video cec crc16 nvme_auth serio wmi
+> [  205.877008] CPU: 4 UID: 0 PID: 2499 Comm: mount Tainted: G OE
+> 6.13.0-2-cachyos #1 b109e82a9bce3931c5e96e558e71463b86410157
+> [  205.877013] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+> [  205.877015] Hardware name: LENOVO 82SN/LNVNB161216, BIOS J4CN44WW
+> 01/03/2025
+> [  205.877017] RIP: 0010:btrfs_release_global_block_rsv+0xa9/0xe0 [btrfs]
+> [  205.877059] Code: 01 00 00 00 74 b1 0f 0b 48 83 bb 40 01 00 00 00 74 af
+> 0f 0b 48 83 bb 48 01 00 00 00 74 ad 0f 0b 48 83 bb 70 01 00 00 00 74 ab <0f>
+> 0b 48 83 bb 78 01 00 00 00 74 a9 0f 0b 48 83 bb a8 01 00 00 00
+> [  205.877062] RSP: 0018:ffffb1dccf0b3930 EFLAGS: 00010286
+> [  205.877065] RAX: 000000000aa74000 RBX: ffff9d1309b3e000 RCX:
+> 0000000000000000
+> [  205.877067] RDX: 0000000000000001 RSI: ffff9d11968a8000 RDI:
+> ffff9d11968a8008
+> [  205.877069] RBP: ffff9d1309b3e000 R08: 0000000000200018 R09:
+> 0000000000000000
+> [  205.877071] R10: ffffffff00000000 R11: ffff9d11a3b70d28 R12:
+> 0000000000000000
+> [  205.877073] R13: ffff9d1309b3e090 R14: dead000000000122 R15:
+> ffff9d1309b3e098
+> [  205.877075] FS:  00007f78c965bb80(0000) GS:ffff9d146fe00000(0000)
+> knlGS:0000000000000000
+> [  205.877077] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  205.877079] CR2: 000077ed0d308068 CR3: 0000000105c44000 CR4:
+> 0000000000f50ef0
+> [  205.877081] PKRU: 55555554
+> [  205.877083] Call Trace:
+> [  205.877085]  <TASK>
+> [  205.877087]  ? __warn+0xd5/0x1d0
+> [  205.877093]  ? btrfs_release_global_block_rsv+0xa9/0xe0 [btrfs
+> d6619631500fe860881f162577f2f551d395ff24]
+> [  205.877131]  ? report_bug+0x144/0x1f0
+> [  205.877137]  ? handle_bug+0x6a/0x90
+> [  205.877141]  ? exc_invalid_op+0x1a/0x50
+> [  205.877144]  ? asm_exc_invalid_op+0x1a/0x20
+> [  205.877151]  ? btrfs_release_global_block_rsv+0xa9/0xe0 [btrfs
+> d6619631500fe860881f162577f2f551d395ff24]
+> [  205.877187]  btrfs_free_block_groups+0x3a6/0x490 [btrfs
+> d6619631500fe860881f162577f2f551d395ff24]
+> [  205.877223]  open_ctree+0x825/0x1030 [btrfs
+> d6619631500fe860881f162577f2f551d395ff24]
+> [  205.877261]  btrfs_get_tree+0x58e/0x740 [btrfs
+> d6619631500fe860881f162577f2f551d395ff24]
+> [  205.877297]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877300]  ? __kmalloc_node_track_caller_noprof+0x1aa/0x2a0
+> [  205.877304]  ? vfs_dup_fs_context+0x2d/0x1b0
+> [  205.877309]  vfs_get_tree+0x2b/0xd0
+> [  205.877313]  fc_mount+0x12/0x40
+> [  205.877317]  btrfs_get_tree+0x234/0x740 [btrfs
+> d6619631500fe860881f162577f2f551d395ff24]
+> [  205.877354]  vfs_get_tree+0x2b/0xd0
+> [  205.877358]  __se_sys_fsconfig+0x50a/0x5c0
+> [  205.877363]  do_syscall_64+0x85/0x11e
+> [  205.877366]  ? mntput_no_expire.llvm.15307020400983096988+0x4d/0x220
+> [  205.877372]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877375]  ? syscall_exit_work+0xca/0x150
+> [  205.877378]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877380]  ? syscall_exit_to_user_mode+0x38/0x9f
+> [  205.877384]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877386]  ? do_syscall_64+0x91/0x11e
+> [  205.877389]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877391]  ? syscall_exit_work+0xca/0x150
+> [  205.877393]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877396]  ? syscall_exit_to_user_mode+0x38/0x9f
+> [  205.877399]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877402]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877404]  ? syscall_exit_work+0xca/0x150
+> [  205.877406]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877409]  ? syscall_exit_to_user_mode+0x38/0x9f
+> [  205.877412]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877414]  ? do_syscall_64+0x91/0x11e
+> [  205.877417]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877419]  ? do_syscall_64+0x91/0x11e
+> [  205.877422]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877424]  ? __fs_parse+0x54/0x1d0
+> [  205.877428]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877430]  ? btrfs_parse_param+0x54/0x8e0 [btrfs
+> d6619631500fe860881f162577f2f551d395ff24]
+> [  205.877467]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877470]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877472]  ? syscall_exit_work+0xca/0x150
+> [  205.877475]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877477]  ? syscall_exit_to_user_mode+0x38/0x9f
+> [  205.877480]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877483]  ? do_syscall_64+0x91/0x11e
+> [  205.877486]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877488]  ? syscall_exit_to_user_mode+0x38/0x9f
+> [  205.877491]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877493]  ? do_syscall_64+0x91/0x11e
+> [  205.877496]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877498]  ? syscall_exit_to_user_mode+0x38/0x9f
+> [  205.877510]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877513]  ? do_syscall_64+0x91/0x11e
+> [  205.877515]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877517]  ? syscall_exit_to_user_mode+0x38/0x9f
+> [  205.877521]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877523]  ? do_syscall_64+0x91/0x11e
+> [  205.877526]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877528]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [  205.877531]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> [  205.877534] RIP: 0033:0x7f78c97b02fe
+> [  205.877561] Code: 73 01 c3 48 8b 0d 12 ca 0c 00 f7 d8 64 89 01 48 83 c8
+> ff c3 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 49 89 ca b8 af 01 00 00 0f 05 <48>
+> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e2 c9 0c 00 f7 d8 64 89 01 48
+> [  205.877564] RSP: 002b:00007fff681e2018 EFLAGS: 00000246 ORIG_RAX:
+> 00000000000001af
+> [  205.877569] RAX: ffffffffffffffda RBX: 0000643d093634f0 RCX:
+> 00007f78c97b02fe
+> [  205.877571] RDX: 0000000000000000 RSI: 0000000000000006 RDI:
+> 0000000000000003
+> [  205.877572] RBP: 00007fff681e2050 R08: 0000000000000000 R09:
+> 00007f78c987db20
+> [  205.877574] R10: 0000000000000000 R11: 0000000000000246 R12:
+> 00007f78c98d4aa0
+> [  205.877576] R13: 0000000000000000 R14: 0000643d093650a0 R15:
+> 00007f78c98cbf9b
+> [  205.877581]  </TASK>
+> [  205.877582] ---[ end trace 0000000000000000 ]---
+> [  205.877701] BTRFS error (device nvme0n1p2 state E): open_ctree failed
+> ```
 
-   T1 (random eb->refs user)                                 T2 (release folio)
+And there is no other helpful information here, unfortunately. The BZ
+Chris linked above is essentially the same, as far as I can tell.
 
-        spin_lock(&eb->refs_lock);
-        // interrupt
-        end_bbio_meta_write()
-          btrfs_meta_folio_clear_writeback()
-                                                        btree_release_folio()
-                                                          folio_test_writeback() //false
-                                                          try_release_extent_buffer()
-                                                            try_release_subpage_extent_buffer()
-                                                              xa_lock_irq(&fs_info->buffer_tree)
-                                                              spin_lock(&eb->refs_lock); // blocked; held by T1
-          buffer_tree_clear_mark()
-            xas_lock_irqsave() // blocked; held by T2
+So that still leaves us with very little to go off of. Would any of the
+following be possible with one of the people experiencing the issue:
 
+run offline commands like btrfs check, btrfs filesystem dump-tree, etc..
+on the broken fs from a live CD? We might need to hack the btrfs cli to
+keep trying after seeing some basic corruption, but I am happy to
+provide the patched btrfs-progs if necessary.
 
-And even if I missed something in that analysis and the writeback flag
-does save us, is there a way we can tell lockdep that this is in fact a
-safe locking relationship? "Theoretically", it's wrong, even if some
-other synchronization saves us..
+or
+
+run some bpf tracing (preferably using bpftrace) during the failing
+mount? I can think about / provide my best guess of a useful script if
+so.
+
+Regarding versions this is happening on: you have strong evidence it is
+happening on 6.15.3 but not 6.15.2? It could still be a coincidence,
+where we are triggering some ancient latent bug, but I will also
+inspect the patches you linked more carefully if so.
 
 Thanks,
 Boris
 
-> > 
-> > > https://www.kernel.org/doc/Documentation/locking/lockdep-design.rst#:~:text=Multi%2Dlock%20dependency%20rules%3A
-> > > 
-> > > I believe that in this case a spin lock is not needed and we can get
-> > > away with `rcu_read_lock`. There is already some precedence for this
-> > > with `find_extent_buffer_nolock`, which loads an extent buffer from
-> > > the xarray with only `rcu_read_lock`.
-> > > 
-> > > Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-> > > ---
-> > >   fs/btrfs/extent_io.c | 12 +++++++-----
-> > >   1 file changed, 7 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > > index 6192e1f58860..060e509cfb18 100644
-> > > --- a/fs/btrfs/extent_io.c
-> > > +++ b/fs/btrfs/extent_io.c
-> > > @@ -1,5 +1,6 @@
-> > >   // SPDX-License-Identifier: GPL-2.0
-> > > +#include <linux/rcupdate.h>
-> > 
-> > We already have other rcu_read_lock() usage inside the same file, no need to
-> > manually include the header.
 > 
-> Sounds good.
 > 
-> Thanks,
-> Leo
 > 
+> On 7/8/25 05:01, Chris Murphy wrote:
 > > 
-> > Thanks,
-> > Qu
-> >
-> > >   #include <linux/bitops.h>
-> > >   #include <linux/slab.h>
-> > >   #include <linux/bio.h>
-> > > @@ -4332,15 +4333,18 @@ static int try_release_subpage_extent_buffer(struct folio *folio)
-> > >   	unsigned long end = index + (PAGE_SIZE >> fs_info->nodesize_bits) - 1;
-> > >   	int ret;
-> > > -	xa_lock_irq(&fs_info->buffer_tree);
-> > > +	rcu_read_lock();
-> > >   	xa_for_each_range(&fs_info->buffer_tree, index, eb, start, end) {
-> > >   		/*
-> > >   		 * The same as try_release_extent_buffer(), to ensure the eb
-> > >   		 * won't disappear out from under us.
-> > >   		 */
-> > >   		spin_lock(&eb->refs_lock);
-> > > +		rcu_read_unlock();
-> > > +
-> > >   		if (refcount_read(&eb->refs) != 1 || extent_buffer_under_io(eb)) {
-> > >   			spin_unlock(&eb->refs_lock);
-> > > +			rcu_read_lock();
-> > >   			continue;
-> > >   		}
-> > > @@ -4359,11 +4363,10 @@ static int try_release_subpage_extent_buffer(struct folio *folio)
-> > >   		 * check the folio private at the end.  And
-> > >   		 * release_extent_buffer() will release the refs_lock.
-> > >   		 */
-> > > -		xa_unlock_irq(&fs_info->buffer_tree);
-> > >   		release_extent_buffer(eb);
-> > > -		xa_lock_irq(&fs_info->buffer_tree);
-> > > +		rcu_read_lock();
-> > >   	}
-> > > -	xa_unlock_irq(&fs_info->buffer_tree);
-> > > +	rcu_read_unlock();
-> > >   	/*
-> > >   	 * Finally to check if we have cleared folio private, as if we have
-> > > @@ -4376,7 +4379,6 @@ static int try_release_subpage_extent_buffer(struct folio *folio)
-> > >   		ret = 0;
-> > >   	spin_unlock(&folio->mapping->i_private_lock);
-> > >   	return ret;
-> > > -
-> > >   }
-> > >   int try_release_extent_buffer(struct folio *folio)
+> > On Mon, Jul 7, 2025, at 7:12 AM, Peter Jung wrote:
 > > 
+> > > Thanks for your answer - but how it would work saving the logs in the
+> > > emergency shell, specially if the root partitions can not be mounted?
+> > You can mount a USB stick or even the EFI system partition to `/sysroot` and then copy the logs there.
 > > 
+> > Also for Qu et al, we have a couple reports in Fedora of log tree replay issues with 6.15 series too. I've requested dmesg, but at least one of the users already followed advice to zero the log tree. Hopefully we get one to report dmesg soon.
+> > 
+> > -- Chris Murphy
+> > 
+> 
 
