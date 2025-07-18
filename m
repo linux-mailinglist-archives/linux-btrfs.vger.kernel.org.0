@@ -1,90 +1,152 @@
-Return-Path: <linux-btrfs+bounces-15549-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15550-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9820B0A949
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 19:20:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0257BB0A970
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 19:27:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7465CA42ECF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 17:19:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C3E25A6C4D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jul 2025 17:27:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C506F2DCF4A;
-	Fri, 18 Jul 2025 17:20:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0C72E7F00;
+	Fri, 18 Jul 2025 17:26:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KwB2xd/t"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZiVaWKET";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bG9w9uKn";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BzV3xg3S";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="H6WsJs2U"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172F61C7017
-	for <linux-btrfs@vger.kernel.org>; Fri, 18 Jul 2025 17:20:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F272E7188
+	for <linux-btrfs@vger.kernel.org>; Fri, 18 Jul 2025 17:26:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752859212; cv=none; b=SXIkPKwq8v0rvH7+NJLfH2hiZFtGzImqMNp8T+TI42NP54/dCUBpylwPiaMUyia2JOHDRSQsmjS9s1xQCMiZa3iU5DdtVa2NWfxj3y2GFMiopkytM+5Db/YNbCP5zRVtiSBlvRIMfRtiRUdmfPpn+IVqenXUGQ/2NBrjN4fuBGA=
+	t=1752859614; cv=none; b=hrqFnQIFggdFQl9C4CbzouOQl/ypJrg/PTCxpW2jvEywXI33F1y2NHBt9SMTB/iw4UunNkfLsKfZ74Dakz5Qn+MYEHHnoaRqHWbiLXzcgMZdaXLS3pb1NJsu+0Dl2ii0xFKpLtcPdQxRe5Xi3VCvm4vr5oTAyaFIoUYTSq6g1k4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752859212; c=relaxed/simple;
-	bh=heGoyTA0CH53726W/tLvZ68j8DmKXm64pxmwF6zS/1Q=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=bP7d5Rr6tCoSpcVRhMSiVFBbW8BtGHSSxXZEhwtkDC0n0wDEjAHlkJUimK/fqX/m098QdRu49IqR8MzRY2dhW3AcyLVAKfqqO833YghwrWpIL6niM2UCiTpkZUIfQD/rU+UniQNwaZZxCTwp1Qn5+7eVCzqwpcTq/2Ag6af/AnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KwB2xd/t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24983C4CEEB
-	for <linux-btrfs@vger.kernel.org>; Fri, 18 Jul 2025 17:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752859211;
-	bh=heGoyTA0CH53726W/tLvZ68j8DmKXm64pxmwF6zS/1Q=;
-	h=From:To:Subject:Date:From;
-	b=KwB2xd/tN781jfXnhAdW4QOUo2JvcmNjbP8U4686t4oqXCCC+mh/CGIAzXGjtkfTX
-	 bdIbdLL84t0VfgyiOpxYa//hJxc8NXJOM7qgRMLAvbkeS0gXCBuUvl+4FRxD579hjk
-	 bkSEqUbdJQrrOQ+FaqDSA1J8gvSMkS+/LkIhAnoHGzEjJNP6izP+wHC4e6bEkOZOy6
-	 oaDx5Yb8wkPPyGoe/jn5E2l0Zq58Ccmpsps15tDyvsqZpw/9q5cSdQD3NsBpQAPuzZ
-	 e2RA1nRsiNVz8/Uyu9caCQjjQOe/t2OCyBzCYW90mwoHZmh4MBwnCf2ZPwnYy5F7Kz
-	 11lGJGsfAOCgg==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: unfold transaction aborts when writing dirty block groups
-Date: Fri, 18 Jul 2025 18:20:08 +0100
-Message-ID: <2289bf86333cbe87cd607891d8021abff43187a5.1752859064.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
+	s=arc-20240116; t=1752859614; c=relaxed/simple;
+	bh=hE8vJO+kjcT7VrvWxjAz/+xfMBAO56zr+5czrMYvgJQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AQputpSQHgIpnR80G4lPtyQivm6Zby2+eoCnzyaioABsfa1doTh3FP93nXbkK6RsPcMG96XH5k1u+18ixQIioBR/Plwk4wLdpHl5voCaE0wcNskvLRjDCnBRzFJBOFN3cbCXU79A8EhWVZ73DwmtFXnw8b4kY3/RVr/+5TQ4lAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZiVaWKET; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bG9w9uKn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BzV3xg3S; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=H6WsJs2U; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E1C7C1F390;
+	Fri, 18 Jul 2025 17:26:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752859610;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zlgtbzk13L3Idr2RClrMQx901TWYJ6RTF5c/w6eJUus=;
+	b=ZiVaWKETHDi5dYiPDiIEHqIzIuWdVQfe2OVrKkcS9IfhCtJqBd5yqAmLFM18zTwGHHkhgR
+	yAsVkPfG9yaG3o1UJ//8UDgYoZtkVtr04oIxcxuva+Qh1NS23pxhTGUkFPO75NzLxyDkZ/
+	vToOZASbbo+a8cr2tz2m1od8g2NH3mM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752859610;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zlgtbzk13L3Idr2RClrMQx901TWYJ6RTF5c/w6eJUus=;
+	b=bG9w9uKnTq0cInykWKl5+RISv9x7urki8NdJZTI3wSYigfxZDU0wTPgLUFwTEN9bVxA5bZ
+	oGnqM/H+cHydZhCg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752859609;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zlgtbzk13L3Idr2RClrMQx901TWYJ6RTF5c/w6eJUus=;
+	b=BzV3xg3S7Lry5XT2rbQge9/HPuPBt0Yt2gNMm6u1I0Oo3DawK0KdZF/vOYFOASNwTOfxac
+	htggMaBDLCnN3p925PL7PbKW4FH+sDEVjHuQi6o2rt60N2eaCulzvifHiKRf7HsJ26T00k
+	qe1cL7N2bI50Tvaty+JOsQdT+ovpmt0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752859609;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zlgtbzk13L3Idr2RClrMQx901TWYJ6RTF5c/w6eJUus=;
+	b=H6WsJs2UUapQa0pQz1fL5XoRu1p8gqXtLtuCLQdD3i7nIw/nEqwQ0/+R+X0MrNQJkFDuvU
+	/0nq1S/jiPGcouDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C5B6C138D2;
+	Fri, 18 Jul 2025 17:26:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5tQcMNmDemjlYgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 18 Jul 2025 17:26:49 +0000
+Date: Fri, 18 Jul 2025 19:26:48 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Caleb Sander Mateos <csander@purestorage.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] io_uring/btrfs: remove struct io_uring_cmd_data
+Message-ID: <20250718172648.GA6704@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20250708202212.2851548-1-csander@purestorage.com>
+ <CADUfDZr6d_EV6sek0K1ULpg2T862PsnnFT08PhoX9WjHGBA=0w@mail.gmail.com>
+ <bb01752a-0a36-4e30-bf26-273c9017ffc0@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bb01752a-0a36-4e30-bf26-273c9017ffc0@kernel.dk>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, Jul 18, 2025 at 10:58:07AM -0600, Jens Axboe wrote:
+> On 7/17/25 2:04 PM, Caleb Sander Mateos wrote:
+> > Hi Jens,
+> > Are you satisfied with the updated version of this series? Let me know
+> > if there's anything else you'd like to see.
+> 
+> I'm fine with it, was hoping some of the CC'ed btrfs folks would ack or
+> review the btrfs bits. OOO until late sunday, if I hear nothing else by
+> then, I'll just tentatively stage it in a separate branch for 6.17.
 
-We have a single transaction abort call that can be due to an error from
-one of two calls to update_block_group_item(). Unfold the transaction
-abort calls so that if they happen we know which update_block_group_item()
-call failed.
+I've taken the first patch to btrfs' for-next but if you want to add it
+to your queue then git will deal with that too. For the btrfs changes
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/block-group.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 47c6d040176c..9bf282d2453c 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -3644,9 +3644,11 @@ int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans)
- 				wait_event(cur_trans->writer_wait,
- 				   atomic_read(&cur_trans->num_writers) == 1);
- 				ret = update_block_group_item(trans, path, cache);
--			}
--			if (ret)
-+				if (ret)
-+					btrfs_abort_transaction(trans, ret);
-+			} else if (ret) {
- 				btrfs_abort_transaction(trans, ret);
-+			}
- 		}
- 
- 		/* If its not on the io list, we need to put the block group */
--- 
-2.47.2
-
+Acked-by: David Sterba <dsterba@suse.com>
 
