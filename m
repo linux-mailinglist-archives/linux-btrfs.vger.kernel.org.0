@@ -1,149 +1,217 @@
-Return-Path: <linux-btrfs+bounces-15615-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15616-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3565B0CBE6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 22:35:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A31EB0CD68
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jul 2025 01:00:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87B321885DF3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 20:35:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2855F546033
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 23:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEB1122F164;
-	Mon, 21 Jul 2025 20:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01539245000;
+	Mon, 21 Jul 2025 22:59:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="nsovVsT1";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lL8VImce"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="C24SWwzp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 429B6238D56
-	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 20:35:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75049224227
+	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 22:59:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753130106; cv=none; b=SvXMEm1L9vUKWaIa09VafF0CZhUf+NO68oc6dF6uaAxofMXKkYcajn2NEwxhxJTuxG8mqDZYLSy2tFQSW9jySzk08TouvuAb6SQHfj7Ky+RXGjyR1pFJPfXDWo0GRtfP6XLCN3fkTSiyp/2m+oNeU6WQfJFcf5hl/XUTtufgG6A=
+	t=1753138791; cv=none; b=HJn0UJJAMbfh2MEWk4VWdNcqtCyOOdW+e/elannBK/g6lHPadkqEMgRFBUT6DlzU0Hgko+uN6c3CqB8/s2aM6fNRofhcKVc89wjBcf1DsU4/HoWcXT9rGaNOwD4ujlW5Og+Xo04xnmIbjuhLNiplI9RutvrwZ620nCRE1++I1Tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753130106; c=relaxed/simple;
-	bh=tIEEqtmFRWNM9smZjdgZT3rXL8252UC3XRYxpKTKM2o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gs2qcDHTLsHSEITpW997mPhRz/TaRrasyL7sqKUuYUJwOoNt7VTBjOz6xkPhH/D5yGPzfZTqxFNanuHIO6a/AaAnWWHoyWDts7+zrqLy37h79xfSVtzHQwXavZ8mE9qC+sI4mB/hXt0hwN2/qvz/spYasw5BgXeCeHVfXtSzPYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=nsovVsT1; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lL8VImce; arc=none smtp.client-ip=103.168.172.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfout.phl.internal (Postfix) with ESMTP id 4BBC1EC0281;
-	Mon, 21 Jul 2025 16:35:04 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Mon, 21 Jul 2025 16:35:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1753130104; x=1753216504; bh=ri9xtESwT/
-	clV73D1Aot87ntahJG3OLLDs/EAfw0NLA=; b=nsovVsT1tb6ni0Cf54+Cll4Ljc
-	GojUdhJaA6w3hjjo7NQ2x0ZcfX/ArlHixgVsBrj+NKQHFSSG/Mr8kZY5hWKAvQCn
-	h8KTu8+I8p2saGUq8+Fuc3DjjDKwgw1AR2l5mPvjtukCPRvGAwaqWDty4RaH3fTz
-	sRxyQa2xrzuSFo0dtGvyFrZPqecTQyA0zfJnA9XnrAj3CWLv8jBEhP8sIus1moeT
-	5a5w+wJ1AJjESQWW9ryoNUo5KxCM+9lyQqI2CZ3s16UUOsULboayGy6NWtXjGkDl
-	Phq9a0s2LsjzjoBe7uG+rNu0Ftrh+nMHM3WWh9LJmPWLrnZkWh7DVYCsXhZA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1753130104; x=1753216504; bh=ri9xtESwT/clV73D1Aot87ntahJG3OLLDs/
-	EAfw0NLA=; b=lL8VImceFRNcTOvrtsY6Ctbm082mzDn+3xE1hqoArW4swwA+0b9
-	7Gm0zScjcn0HIm3/tL22O1b1UnNMs9osbQ3aTerpLGo5zu7e2lsUj+X+GWz7/4lg
-	xin+cKKUX6evIM03vru2L4IT+f6baBaqDqXJuHU3omVb0uQYgPJGVHxA7x6CcxUp
-	ImWHfmZwc8Aqcjfh91AjPgpOdaNpxMAy37o92qqmrcTYfmpdeRBVpKWmfk81u9XS
-	FBLQveF1Tk981m6ta9jcl+LFWnRwTfuwfNX7LKy4rBA/R1g8lda5MgbjSTJn9Qb/
-	PDIdi0yWeY8sGji3xRkYzgqF4TlwW9c19fg==
-X-ME-Sender: <xms:eKR-aGMZMwDwr1pdRp43csJFFJpM59Laq8tmA_docN64E4zpF41auw>
-    <xme:eKR-aFK3HXQ22LDt6Bh5fcFfp4Ua_IQmtjroQnO5m5gZEJYAZuGWiz3OrBBLU5XIH
-    ZRD37Kro7dlsWUHxLI>
-X-ME-Received: <xmr:eKR-aPECzWaPnbQtYAfooOON4Z6NUsDmnqiGUD6mDVK1x9XBsQn805ldVk3zpLcQaKg79ID8q2SuskJsYcpIta_Dpfg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdejfedthecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceu
-    uhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepkedvke
-    ffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
-    drihhopdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthho
-    peifqhhusehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvgh
-    gvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:eKR-aFRE4ZPJj5YybMwkQJ_GzpD7vS7bb7XnIFcvMdbYK93MD7FvTA>
-    <xmx:eKR-aDF7Vc2-7K0gA7rgUKa8hywvAJKKvPvT-5GDQxnA2h6tBjnqPg>
-    <xmx:eKR-aJ8s1CTNFfw3cafVjpagSMamHvHPhX57dNd6ppgi6N3_RUxo5A>
-    <xmx:eKR-aFLR0wTuMEdJUq2kObgyZzW2b5097m3kaiZWHpUr-_z1hKnWBg>
-    <xmx:eKR-aBcN3Ccuj_eQMbb77Mm12xcxq4d25_5rQvd3D1TAmo54RlzIEO0I>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 21 Jul 2025 16:35:03 -0400 (EDT)
-Date: Mon, 21 Jul 2025 13:36:28 -0700
-From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] btrfs: fix the wrong parameter for
- btrfs_cleanup_ordered_extents()
-Message-ID: <20250721203628.GD2071341@zen.localdomain>
-References: <cover.1752992367.git.wqu@suse.com>
- <15717a81b5c75c91a129bdb4b81671a4fe2c5e8c.1752992367.git.wqu@suse.com>
+	s=arc-20240116; t=1753138791; c=relaxed/simple;
+	bh=pgHUWwCgjePkVQA7L9yLFM1ny2ZRidr7RBqRw1q5D1s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HARpqfNtOXiGPEEKFkpGEM1Gnm8Xa2DE6OTtf6KZ6AFOKEPL9Ir0r1zoyTIU8iJxt8r9sDqQ+IExVUFvuI3OZwytUOrhQb/kyAg/wcO3oZUksOdI8tAebf1hdWOJqxMsiZvQvjDiaPkU183ETQK1zd+vPLesGZbxW0nhnSs1DXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=C24SWwzp; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3a4fb9c2436so2788158f8f.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 15:59:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1753138787; x=1753743587; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=urVoydnbmtQnbBKfPBE7JxXo+3/UEj8DRykdiSmX/Mc=;
+        b=C24SWwzpXXy8qhyIyhMz02gOtE7xSDP5vMIkpBUL7F3SMUzWVnt06Jvq5Oi6zRSnoF
+         VzIQVlPVD09pGCZKTcMFiETeIdSrWRcdjwOLrOI328VjqKogkRgbUCUklOK49Z95db/w
+         JBJdju2GVNIgdaVImfZDkPLLDSuIZMMf48lZpOm0oRLKlPbkSaJGsBRI8+0M6Jg0aGre
+         3mDNxyCPV0IWaDvGIG5sh8J3neAjUi5xOKX7Z57cCcwaQMdNPWkZdGEYuiqQIxQ92bMN
+         IjdeAMDPUufn9E/m+dEy1q4d3ZRC7WBum12kAjOrLijkNz++g4Jx3V6BYsNxlcLL5yip
+         037g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753138787; x=1753743587;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=urVoydnbmtQnbBKfPBE7JxXo+3/UEj8DRykdiSmX/Mc=;
+        b=r//F6SfOCSg0ts1BDD40p55fnSLsq7khqw+RKpgos793lCmP3Il7qPNt2wznxl7Opz
+         df85enQhs/aQN5VIPdfQrwqyx3ff6ilzS3foPfgj8VBG4nSubJIkF9Uz5xcTIT+dsstu
+         HGS9wVthqQYtsBDudmqpXEaSCi7ukntYayexZPmQbYTeymFikNkegn3qqGx8ZN8vluTV
+         4CVyXf5TtrVIYnWfcS9kPreFDZejERBemM980/bGsUXDUjxhHWDk5AUmO05jhah+waTO
+         +3b6BLfJbZHaVUR0sT3vvtqf/aZXzoJ6k4qRYRNL26DWFytVxAHylbzwCTMCDq4dm4ag
+         zmmw==
+X-Gm-Message-State: AOJu0Yyeh60He5v+zH9Uo5GfBBt6Ogxets1OluIQjqt8Ex6yH3CLm8Tm
+	hzPQ4Iad91ljAsBLvxM462/FUAegB+LnREiruOzHrlKAY3PTEEIHoRg1ZpEjP9tYwky1rprMD2D
+	9Xndw
+X-Gm-Gg: ASbGncuwy9+oAzlpyYRZgnwD+ic2qbipalW+2FSfVGeFvedVisf7U/cdZyOOcxG++vd
+	0PtBGXnyL+6O4y7AErsw0rWB7+PpVrbpy5E1cIGZSiorrtWMQmFJXshDYjGLOUCmu63ucKCQqSx
+	LTDRh7bBbozWP3cLiCbP3jvG4tsa0XWnarxaeJYaMP5hTwewOfpEl0npIG5IwK4QPgJTAJ/bS9D
+	IJCmgweO47GP8qvJt2fxKFWY8Qsaz83HGldwr3W5b1wSTjkx+cSc3Jg7Z9B8Xr18aK3Ey2hJjMq
+	rHq9QsB+8qe6N+QuTPhVOyhboFB8/VGObxuKvYqw1oHMs4RU7twTuvYhGM9HtPqIHAYaj3UE9Id
+	tfyapX3yWgr9O16mQr3MBHncDtXn1gx7e1lHekfDdrWBij2lMeg==
+X-Google-Smtp-Source: AGHT+IF1Oiby6ZO+fBaUvLyHt9yd3SgVwKfnlKZEcY4Ov26Wlp8fOYn+AviqZ9i9ElCQ3luhxiOSEw==
+X-Received: by 2002:a05:6000:2f81:b0:3a4:f90c:31e3 with SMTP id ffacd0b85a97d-3b61b217fe2mr10903269f8f.31.1753138786444;
+        Mon, 21 Jul 2025 15:59:46 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23e3b6ef8e6sm63431725ad.212.2025.07.21.15.59.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jul 2025 15:59:45 -0700 (PDT)
+Message-ID: <8bb945f3-4c7f-4ea1-bde7-a0722e6f820f@suse.com>
+Date: Tue, 22 Jul 2025 08:29:42 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <15717a81b5c75c91a129bdb4b81671a4fe2c5e8c.1752992367.git.wqu@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] btrfs: replace double boolean parameters of
+ cow_file_range()
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1752992367.git.wqu@suse.com>
+ <3480a38763369c46ca8bbe79a8e4a5b87d20197a.1752992367.git.wqu@suse.com>
+ <20250721202928.GB2071341@zen.localdomain>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20250721202928.GB2071341@zen.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, Jul 20, 2025 at 03:59:11PM +0930, Qu Wenruo wrote:
-> Inside nocow_one_range(), if the checksum cloning for data reloc inode
-> failed, we call btrfs_cleanup_ordered_extents() to cleanup the just
-> allocated ordered extents.
-> 
-> But unlike extent_clear_unlock_delalloc(),
-> btrfs_cleanup_ordered_extents() requires a length, not an inclusive end
-> bytenr.
-> 
-> This can be problematic, as the @end is normally way larger than @len.
-> 
-> This means btrfs_cleanup_ordered_extents() can be called on folios
-> out of the correct range, and if the out-of-range folio is under
-> writeback, we can incorrectly clear the ordered flag of the folio, and
-> trigger the DEBUG_WARN() inside btrfs_writepage_cow_fixup().
-> 
-> Fix the wrong parameter with correct length instead.
-> 
-> Fixes: 94f6c5c17e52 ("btrfs: move ordered extent cleanup to where they are allocated")
 
-Oops, missed that last time :)
 
-Thanks for the fix,
-Reviewed-by: Boris Burkov <boris@bur.io>
+在 2025/7/22 05:59, Boris Burkov 写道:
+> On Sun, Jul 20, 2025 at 03:59:09PM +0930, Qu Wenruo wrote:
+>> The function cow_file_range() has two boolean parameters, which is never
+>> a good thing for eyes.
+>>
+>> Replace it with a single @flags parameter, with two flags:
+>>
+>> - COW_FILE_RANGE_NO_INLINE
+>> - COW_FILE_RANGE_KEEP_LOCKED
+>>
+>> And since we're here, also update the comments of cow_file_range() to
+>> replace the old "page" usage with "folio".
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> 
+> Had a nit, but looks good overall. I think the flag approach is nice.
+> Reviewed-by: Boris Burkov <boris@bur.io>
+> 
+>> ---
+>>   fs/btrfs/inode.c | 32 +++++++++++++++++---------------
+>>   1 file changed, 17 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index b77dd22b8cdb..fc47e234b729 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -72,6 +72,9 @@
+>>   #include "raid-stripe-tree.h"
+>>   #include "fiemap.h"
+>>   
+>> +#define COW_FILE_RANGE_KEEP_LOCKED	(1UL << 0)
+>> +#define COW_FILE_RANGE_NO_INLINE	(1UL << 1)
+>> +
+>>   struct btrfs_iget_args {
+>>   	u64 ino;
+>>   	struct btrfs_root *root;
+>> @@ -1243,18 +1246,18 @@ u64 btrfs_get_extent_allocation_hint(struct btrfs_inode *inode, u64 start,
+>>    * locked_folio is the folio that writepage had locked already.  We use
+>>    * it to make sure we don't do extra locks or unlocks.
+>>    *
+>> - * When this function fails, it unlocks all pages except @locked_folio.
+>> + * When this function fails, it unlocks all folios except @locked_folio.
+>>    *
+>>    * When this function successfully creates an inline extent, it returns 1 and
+>> - * unlocks all pages including locked_folio and starts I/O on them.
+>> - * (In reality inline extents are limited to a single page, so locked_folio is
+>> - * the only page handled anyway).
+>> + * unlocks all folios including locked_folio and starts I/O on them.
+>> + * (In reality inline extents are limited to a single block, so locked_folio is
+>> + * the only folio handled anyway).
+>>    *
+>> - * When this function succeed and creates a normal extent, the page locking
+>> + * When this function succeed and creates a normal extent, the folio locking
+>>    * status depends on the passed in flags:
+>>    *
+>> - * - If @keep_locked is set, all pages are kept locked.
+>> - * - Else all pages except for @locked_folio are unlocked.
+>> + * - If COW_FILE_RANGE_KEEP_LOCKED flag is set, all folios are kept locked.
+>> + * - Else all folios except for @locked_folio are unlocked.
+>>    *
+>>    * When a failure happens in the second or later iteration of the
+>>    * while-loop, the ordered extents created in previous iterations are cleaned up.
+>> @@ -1262,7 +1265,7 @@ u64 btrfs_get_extent_allocation_hint(struct btrfs_inode *inode, u64 start,
+>>   static noinline int cow_file_range(struct btrfs_inode *inode,
+>>   				   struct folio *locked_folio, u64 start,
+>>   				   u64 end, u64 *done_offset,
+>> -				   bool keep_locked, bool no_inline)
+>> +				   unsigned long flags)
+>>   {
+>>   	struct btrfs_root *root = inode->root;
+>>   	struct btrfs_fs_info *fs_info = root->fs_info;
+>> @@ -1290,7 +1293,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+>>   
+>>   	inode_should_defrag(inode, start, end, num_bytes, SZ_64K);
+>>   
+>> -	if (!no_inline) {
+>> +	if (!(flags & COW_FILE_RANGE_NO_INLINE)) {
+> 
+> I get that you are keeping the existing semantics, but if you are
+> bothering to refactor it, I think it would be nice to also get rid of
+> the double negative here. COW_FILE_RANGE_ALLOW_INLINE or TRY_INLINE
+> maybe?
 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 5259bb8ec430..6d9a8d8bea4c 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -2018,7 +2018,7 @@ static int nocow_one_range(struct btrfs_inode *inode, struct folio *locked_folio
->  	 * cleaered by the caller.
->  	 */
->  	if (ret < 0)
-> -		btrfs_cleanup_ordered_extents(inode, file_pos, end);
-> +		btrfs_cleanup_ordered_extents(inode, file_pos, len);
->  	return ret;
->  }
->  
-> -- 
-> 2.50.0
-> 
+I have considered this, but for the current 3 call sites, one doesn't 
+want inline, two want inline, thus INLINE is the more common pattern.
+
+Thus I kept the existing scheme, to keep the minority call sites to use 
+extra flags.
+
+Thanks,
+Qu
+
 
