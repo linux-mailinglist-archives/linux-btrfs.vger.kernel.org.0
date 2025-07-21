@@ -1,51 +1,54 @@
-Return-Path: <linux-btrfs+bounces-15596-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15597-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27C49B0C961
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 19:17:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4C5BB0C960
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 19:17:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8606A3AA714
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 17:16:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07AC51C213A2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 17:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F482D1914;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB11F2E266E;
 	Mon, 21 Jul 2025 17:16:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qjFr3ydq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rk/bFF1T"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C2702E1C56
-	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 17:16:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 312802E1C7E
+	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 17:16:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753118204; cv=none; b=TC9uzPMpAJHyl9i3ZzuTtseD+sM0AyfTY0ckGDYy58YRlxxPqfiQef+1aFEqJr/oxbpq0d0Iel3dPPFLoaFIjR10hnForlGpr/Z7pfmtuk5GFkPTXKx+vIqg+ldbMDz72WPGMNKW8VifGU+YJ933bciCynX34lpiYLlx71xnrg0=
+	t=1753118205; cv=none; b=A8W8PS+ts6i7wFVyQaXY6HuNBeSivHzMAHGb00PeYXwVQKcixlfxEVXcTFVRBRO42cMh2q82bIbEYCp4ze+TVSJ7mB3P+fr/y5ZwsJyQHg4Bbic9la88HYlndDUlhUCmwqxl4qVOvMFQhMw7lijSaRVNF1Ng18V8zR9XTqy5DkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753118204; c=relaxed/simple;
-	bh=bzD6yQzVTApXn5vqzg2l3nkRjTJa49PoNMaZ4+djs6g=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=BXyyTRYqz2szefCD2cx2W+FY/2XxA0qt88n+XntBwPjSaxwLsRfBciJfmJ8IQ0QckkDN85SVoKT3hZrczQXGMM3nt2gmuHE7PDan8X4Bifik78ewtTWu+gqWomIFfkJ9F3sqdpxdv8eDkeu7P9ImXgG6Js6CtQxQy06FbP25AzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qjFr3ydq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63569C4CEF7
-	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 17:16:43 +0000 (UTC)
+	s=arc-20240116; t=1753118205; c=relaxed/simple;
+	bh=dF6pm9H2WBIjjzQBBwNRppMTv8MzBalWpWaFKzf5zUM=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=SVWnPkwn0jM9rojSL2qyn9Pnwq63LQ1STLuaJqzy1HJqvmecKsneKQPgofBuj6kYSJ48YekK7n8UshKQeGK2NJKShmtZqGgC0m0M7bj+skRkvR4EI1Y5Wg/fvKN+bgwzy0HlbYuqV3PjDgFDjHz6hNh6KuKN7ZrXoW91C28KKME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rk/bFF1T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E331C4CEF6
+	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 17:16:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753118203;
-	bh=bzD6yQzVTApXn5vqzg2l3nkRjTJa49PoNMaZ4+djs6g=;
-	h=From:To:Subject:Date:From;
-	b=qjFr3ydqTO+rHQ6Y3yTjJ50FeTrvGhyqRN/RGdD+dXP2+lx+F3AgLhQD+skKF2FQ0
-	 e2xjRmIGlJm0GTfop0bmfPmE8VfjICvi0hGmnUXHNhdtgORJQjU6zvGVWn+bMGSVUH
-	 FpHcVTckjS5f/UsnZF5CW6jdYDdI9SER1AJRzmHuSsP3DBTQFm9UoIXuap+CEZaXK4
-	 mXV9pqDmDzjB4+rAqRxXoW0IwD/Uv4n6e2ci3zRGgST+iHHst9il7K1gu4lAgu7Wsx
-	 MwjOHP3vV8UP+FpwEgBi9Fpitr1J14+zVxTqwYcwXO4Ls47I8V6kyRM6lTq/ggHzIF
-	 5CAZZMBl2URvw==
+	s=k20201202; t=1753118204;
+	bh=dF6pm9H2WBIjjzQBBwNRppMTv8MzBalWpWaFKzf5zUM=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=rk/bFF1TqQRIRNBqB6zRAdEcWx7pfAyUcJ3vgTKR04oXxAC+kH7gZ+u6f6/ZO1+/M
+	 OeeK4sXNvDFKiMedluKYcvZbAEV+PjjpA1dw2EtWX/CNoFYOSnzzk5P9W2DCph9VWy
+	 klV4zb4SRi1J826SxDbTib1vQ1T1XB4jmRQhjKL7JktZLXP5EZbigHSzv/Hauc802b
+	 k5PhVxcSRTNigpdAylC7uVhEYaqdPfTuOocolYVfL7qp5yDtgobMPOm+9iFveQeNh2
+	 tE7w36FQhg6Zvsl/ZB8WnPrjhZeEqFxESglW44kCMyU8aqWSvwdoWaeaP7zAWASf62
+	 N34LEVAsPb7Fw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 00/10] btrfs: improve error reporting for log tree replay
-Date: Mon, 21 Jul 2025 18:16:27 +0100
-Message-ID: <cover.1753117707.git.fdmanana@suse.com>
+Subject: [PATCH 01/10] btrfs: error on missing block group when unaccounting log tree extent buffers
+Date: Mon, 21 Jul 2025 18:16:28 +0100
+Message-ID: <12cbb2e324d08c343ba0344a317af7b55e4c39aa.1753117707.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
+In-Reply-To: <cover.1753117707.git.fdmanana@suse.com>
+References: <cover.1753117707.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -56,35 +59,71 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Most errors that happen during log replay or destroying a log tree are hard
-to figure out where they come from, since typically deep in the call chain
-of log tree walking we return errors and propagate them up to the caller of
-the main log tree walk function, which then aborts the transaction or turns
-the filesystem into error state (btrfs_handle_fs_error()). This means any
-stack trace and message provided by a transaction abort or turning fs into
-error state, doesn't provide information where exactly in the deep call
-chain the error comes from.
+Currently we only log an error message if we can't find the block group
+for a log tree extent buffer when unaccounting it (while freeing a log
+tree). A missing block group means something is seriously wrong and we
+end up leaking space from the metadata space info. So return -ENOENT in
+case we don't find the block group.
 
-These changes mostly make transacton aborts and btrfs_handle_fs_error()
-calls where errors happen, so that we get much more useful information
-which sometimes is enough to understand issues. The rest are just some
-cleanups.
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/tree-log.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
-Filipe Manana (10):
-  btrfs: error on missing block group when unaccounting log tree extent buffers
-  btrfs: abort transaction on specific error places when walking log tree
-  btrfs: abort transaction in the process_one_buffer() log tree walk callback
-  btrfs: use local variable for the transaction handle in replay_one_buffer()
-  btrfs: return real error from read_alloc_one_name() in drop_one_dir_item()
-  btrfs: abort transaction where errors happen during log tree replay
-  btrfs: exit early when replaying hole file extent item from a log tree
-  btrfs: process inline extent earlier in replay_one_extent()
-  btrfs: use local key variable to pass arguments in replay_one_extent()
-  btrfs: collapse unaccount_log_buffer() into clean_log_buffer()
-
- fs/btrfs/tree-log.c | 659 +++++++++++++++++++++++++++-----------------
- 1 file changed, 401 insertions(+), 258 deletions(-)
-
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 8ad6005257b8..45f2e13f5018 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -2593,14 +2593,14 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
+ /*
+  * Correctly adjust the reserved bytes occupied by a log tree extent buffer
+  */
+-static void unaccount_log_buffer(struct btrfs_fs_info *fs_info, u64 start)
++static int unaccount_log_buffer(struct btrfs_fs_info *fs_info, u64 start)
+ {
+ 	struct btrfs_block_group *cache;
+ 
+ 	cache = btrfs_lookup_block_group(fs_info, start);
+ 	if (!cache) {
+ 		btrfs_err(fs_info, "unable to find block group for %llu", start);
+-		return;
++		return -ENOENT;
+ 	}
+ 
+ 	spin_lock(&cache->space_info->lock);
+@@ -2611,27 +2611,22 @@ static void unaccount_log_buffer(struct btrfs_fs_info *fs_info, u64 start)
+ 	spin_unlock(&cache->space_info->lock);
+ 
+ 	btrfs_put_block_group(cache);
++
++	return 0;
+ }
+ 
+ static int clean_log_buffer(struct btrfs_trans_handle *trans,
+ 			    struct extent_buffer *eb)
+ {
+-	int ret;
+-
+ 	btrfs_tree_lock(eb);
+ 	btrfs_clear_buffer_dirty(trans, eb);
+ 	wait_on_extent_buffer_writeback(eb);
+ 	btrfs_tree_unlock(eb);
+ 
+-	if (trans) {
+-		ret = btrfs_pin_reserved_extent(trans, eb);
+-		if (ret)
+-			return ret;
+-	} else {
+-		unaccount_log_buffer(eb->fs_info, eb->start);
+-	}
++	if (trans)
++		return btrfs_pin_reserved_extent(trans, eb);
+ 
+-	return 0;
++	return unaccount_log_buffer(eb->fs_info, eb->start);
+ }
+ 
+ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
 -- 
 2.47.2
 
