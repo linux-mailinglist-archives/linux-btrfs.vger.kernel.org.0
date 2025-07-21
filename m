@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-15598-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15599-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F0CDB0C966
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 19:18:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC0FDB0C964
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 19:17:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC3CC3A9DA5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 17:17:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CBCB1C20FE9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 17:17:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D96172E2F0C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D95A82E2F0B;
 	Mon, 21 Jul 2025 17:16:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YrniWpJU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ERh45TW3"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262922E0922
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 263502E2EEB
 	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 17:16:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753118207; cv=none; b=Y/VgFeCZ6Ov0SFRivIYB+s/zc4EGY6SXR8tf5Pftf9uanmhkIml0TaFb1WGvwcod24oP27Vk3/vjIj9LTE8ouRtvqIErNxzNPgFXdxDntFAo2AiyFaTfNtbfTd7WxQzc7vJ+3qfe/iJamDzC0zNvibeWEdCjGbuSq2smnGRSAN4=
+	t=1753118207; cv=none; b=nIvhUL478SN2wjKFwU0N9Go5/ZMhb12HEmTN8SGH/XT5lzt5zGH7X3Z9vvPfIR0DuVGVA4z5ySU6ZWCHb3PM0RA1dDxKTg+eqULsi2RZO5RCsLGGngIPovaR9QR9NioqAMPsVXNhmycDC5QPL5pVIFrnqpR5rvBtIeEKV9DsCjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1753118207; c=relaxed/simple;
-	bh=u8PeDPkaXzEg6j4F50yqtHsv1NLFiKaE/5OWg98n2yg=;
+	bh=u4xburbAP8EZ7j1B7YroY0J4yDhxUWpTG5l/QF4Iets=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nnq4czJ41pWPNMrNNl7W1+ntXbn2KxNh8koTSwl7Ed3vDgVAcaBbKo7QUQmhBM3ZzPXN9oEznxzKgjfluohfNoou4CnxaexP5lIubZI1eju6swfu3igLOhrTWzeT22LUpw/bPiw5hEswHx303QrS3tfK7ZjnUtbvsk7KF05x3G8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YrniWpJU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58D61C4CEF6
-	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 17:16:45 +0000 (UTC)
+	 MIME-Version; b=WkEjxRdkwlSepzJAdICjagFS1LR0ZRE8iupYtd8CyZS/iz/rTtwcwb5e8hcAUbt9kxLRkpcur7gaAfl3ehWm15C76AEf4Ja2ZKV7dbBcAa2/utm7fGbjEHJy+9zitm8HgQpi7l35x6wMl4S+cCLsp0ZgzGLxkjwYg1NU66ZDSP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ERh45TW3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 538D5C4CEF4
+	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 17:16:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753118205;
-	bh=u8PeDPkaXzEg6j4F50yqtHsv1NLFiKaE/5OWg98n2yg=;
+	s=k20201202; t=1753118206;
+	bh=u4xburbAP8EZ7j1B7YroY0J4yDhxUWpTG5l/QF4Iets=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=YrniWpJUK5KAn5n8vAxFI+6OsS88CnCQGvtUotW1T/TbIvAuI23sIM2Tp+HiyOp9o
-	 zwgWyI5LoeUrKJRw+Q54bMGVuLmQyUFyWqq8g841oRnO7mLWbNcmIA+qeIUXlPYGYM
-	 zP4A5ccE3YFgDyOGb6mX4FlqWw9Kpq9Mn1/ESBGvJntA7D2hQoBTTxF6mwqxhjpl84
-	 U2+18PJCsl3YAyekbfnXDCc6Ezq8v1gNXbL2ejNFjQa1FC0ABFOAdDGq2p4/rSSsKy
-	 ISiRCHBJYPYGhpm0rO2MFjOkrOUrWAn38jPQe2hSO+ukXUppmJVJ8Xxo0BS8Zipppw
-	 e5GMSMQxHLujg==
+	b=ERh45TW369tG511ZroLYNW8vsif7AjiSbm9Dp8ZgaD+zaLhiU4fr+N7K/jtymtwXx
+	 DO8DYMolpk+UWhzGQqfjdu8Lml+AXlwBTOVSdVu+pSe491M88AUvXBZ3b08ntLc5HA
+	 +qigmmTM/EG6i5ulANE/SdWMooiWpYPO9hlPwBhxjcOfX0v7onYpabWxazdgeIEuMi
+	 3fEPd8UfjFr/PIx5CFHCJmPGYujqbd5/aLZmuilv/n7BiZT5Xr536WsbGmbJ1V/jmi
+	 ADeK7AFkxztdwRJ/mBT56oaOUcpOAN4TcCqyzGalcAJNM30NzkI3gQYyZSMvII1Bak
+	 0JlFzyYqtDrWQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 02/10] btrfs: abort transaction on specific error places when walking log tree
-Date: Mon, 21 Jul 2025 18:16:29 +0100
-Message-ID: <2c9bf3d5128a66e99f36c72d5f19f80f07a6d9ed.1753117707.git.fdmanana@suse.com>
+Subject: [PATCH 03/10] btrfs: abort transaction in the process_one_buffer() log tree walk callback
+Date: Mon, 21 Jul 2025 18:16:30 +0100
+Message-ID: <ab5ae695f70c564ba09d166dfe5b61146f7fd9c1.1753117707.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1753117707.git.fdmanana@suse.com>
 References: <cover.1753117707.git.fdmanana@suse.com>
@@ -59,100 +59,71 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We do several things while walking a log tree (for replaying and for
-freeing a log tree) like reading extent buffers and cleaning them up,
-but we don't immediately abort the transaction, or turn the fs into an
-error state, when one of these things fails. Instead we the transaction
-abort or turn the fs into error state in the caller of the entry point
-function that walks a log tree - walk_log_tree() - which means we don't
-get to know exactly where an error came from.
-
-Improve on this by doing a transaction abort / turn fs into error state
-after each such failure so that when it happens we have a better
-understanding where the failure comes from. This deliberately leaves
-the transaction abort / turn fs into error state in the callers of
-walk_log_tree() as to ensure we don't get into an inconsitent state in
-case we forget to do it deeper in call chain. It also deliberately does
-not do it after errors from the calls to the callback defined in
-struct walk_control::process_func(), as we will do it later on another
-patch.
+In the process_one_buffer() log tree walk callback we return errors to the
+log tree walk caller and then the caller aborts the transaction, if we
+have one, or turns the fs into error state if we don't have one. While
+this reduces code it makes it harder to figure out where exactly an error
+came from. So add the transaction aborts after every failure inside the
+process_one_buffer() callback, so that it helps figuring out why failures
+happen.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 33 ++++++++++++++++++++++++++++-----
- 1 file changed, 28 insertions(+), 5 deletions(-)
+ fs/btrfs/tree-log.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 45f2e13f5018..b5b1f38c03a6 100644
+index b5b1f38c03a6..5e0c4c0595a7 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -2618,15 +2618,24 @@ static int unaccount_log_buffer(struct btrfs_fs_info *fs_info, u64 start)
- static int clean_log_buffer(struct btrfs_trans_handle *trans,
- 			    struct extent_buffer *eb)
+@@ -348,6 +348,7 @@ static int process_one_buffer(struct btrfs_root *log,
+ 			      struct extent_buffer *eb,
+ 			      struct walk_control *wc, u64 gen, int level)
  {
-+	int ret;
-+
- 	btrfs_tree_lock(eb);
- 	btrfs_clear_buffer_dirty(trans, eb);
- 	wait_on_extent_buffer_writeback(eb);
- 	btrfs_tree_unlock(eb);
++	struct btrfs_trans_handle *trans = wc->trans;
+ 	struct btrfs_fs_info *fs_info = log->fs_info;
+ 	int ret = 0;
  
--	if (trans)
--		return btrfs_pin_reserved_extent(trans, eb);
-+	if (trans) {
-+		ret = btrfs_pin_reserved_extent(trans, eb);
-+		if (ret)
-+			btrfs_abort_transaction(trans, ret);
-+		return ret;
-+	}
+@@ -362,18 +363,35 @@ static int process_one_buffer(struct btrfs_root *log,
+ 		};
  
--	return unaccount_log_buffer(eb->fs_info, eb->start);
-+	ret = unaccount_log_buffer(eb->fs_info, eb->start);
-+	if (ret)
-+		btrfs_handle_fs_error(eb->fs_info, ret, NULL);
-+	return ret;
- }
- 
- static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
-@@ -2662,8 +2671,14 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
- 		next = btrfs_find_create_tree_block(fs_info, bytenr,
- 						    btrfs_header_owner(cur),
- 						    *level - 1);
--		if (IS_ERR(next))
--			return PTR_ERR(next);
-+		if (IS_ERR(next)) {
-+			ret = PTR_ERR(next);
-+			if (trans)
-+				btrfs_abort_transaction(trans, ret);
-+			else
-+				btrfs_handle_fs_error(fs_info, ret, NULL);
-+			return ret;
-+		}
- 
- 		if (*level == 1) {
- 			ret = wc->process_func(root, next, wc, ptr_gen,
-@@ -2678,6 +2693,10 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
- 				ret = btrfs_read_extent_buffer(next, &check);
- 				if (ret) {
- 					free_extent_buffer(next);
-+					if (trans)
-+						btrfs_abort_transaction(trans, ret);
-+					else
-+						btrfs_handle_fs_error(fs_info, ret, NULL);
- 					return ret;
- 				}
- 
-@@ -2693,6 +2712,10 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
- 		ret = btrfs_read_extent_buffer(next, &check);
- 		if (ret) {
- 			free_extent_buffer(next);
+ 		ret = btrfs_read_extent_buffer(eb, &check);
+-		if (ret)
++		if (ret) {
 +			if (trans)
 +				btrfs_abort_transaction(trans, ret);
 +			else
 +				btrfs_handle_fs_error(fs_info, ret, NULL);
  			return ret;
- 		}
++		}
+ 	}
  
+ 	if (wc->pin) {
+-		ret = btrfs_pin_extent_for_log_replay(wc->trans, eb);
+-		if (ret)
++		ret = btrfs_pin_extent_for_log_replay(trans, eb);
++		if (ret) {
++			if (trans)
++				btrfs_abort_transaction(trans, ret);
++			else
++				btrfs_handle_fs_error(fs_info, ret, NULL);
+ 			return ret;
++		}
+ 
+ 		if (btrfs_buffer_uptodate(eb, gen, 0) &&
+-		    btrfs_header_level(eb) == 0)
++		    btrfs_header_level(eb) == 0) {
+ 			ret = btrfs_exclude_logged_extents(eb);
++			if (ret) {
++				if (trans)
++					btrfs_abort_transaction(trans, ret);
++				else
++					btrfs_handle_fs_error(fs_info, ret, NULL);
++			}
++		}
+ 	}
+ 	return ret;
+ }
 -- 
 2.47.2
 
