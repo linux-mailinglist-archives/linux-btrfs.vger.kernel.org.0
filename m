@@ -1,122 +1,101 @@
-Return-Path: <linux-btrfs+bounces-15580-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15581-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B793B0BB44
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 05:14:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D412B0BD26
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 09:02:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4B9417575F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 03:14:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36072189C734
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 07:02:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90D11F4165;
-	Mon, 21 Jul 2025 03:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="WIlMh/K4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38CF3280017;
+	Mon, 21 Jul 2025 07:02:30 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C61F11E0DEA;
-	Mon, 21 Jul 2025 03:14:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E5EF218ADC
+	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 07:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753067659; cv=none; b=H2cgxKbHqh7C6JaOSHdysJ1er/5xnnMWDzw9mJ0gBWBQ0NLSwpU5kZezwE2wsUcKrlm4WVcHRRKJQPyNQdrxWZSGzBJB79rm/KvG93i/Kpk5khno0CcUKYj1nLitl1Hif5fmIhqZ+G0tGCZ38O23+FRTHJd162bNQ9LISfuQru4=
+	t=1753081349; cv=none; b=bsqMQ8Z82srAV1JMpi5VxeVKBSGTDrkcj5lK8pNCPCCbOVFRcfXQmOTlTX9tfPmK7VFE2yMwN2WUU5K/krafeSrA4MIZ/r+tEU8r8cHSFhxIIsE1meAAq2c21AegirptveIG8teUFqPv1V7QoP4cKuVrfEUepkLzMzrC69e7QEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753067659; c=relaxed/simple;
-	bh=KcIuPHoEk9AuwbE4824NkZYgCzpBO0ssry4Gl0Uvdlg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nvKwJkVNSpNb5D90CdxVUlHDBaIhPc97RUK6mVP/sBqnGlXojqUzutS+sXz4NpR8Y2WnUU2P3EXbKQ1xO2fSPvmpNqN3w5RKDGT991sqmfrLE9Hwa68ezZIGan9GkJz/PC7hozfKuQ7ytKZCXBgU8NznT2Wk96vOeDv6clROKtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=WIlMh/K4; arc=none smtp.client-ip=115.124.30.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1753067649; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=lCr7ru8zjyenyzhIwOzkZiA0apFYT5PO1pQKlR1f6Gw=;
-	b=WIlMh/K4n+3t+sVE+jy0ALadodWkNQy8OAtmzfR8Ss184gs6ZnsxY/onLFH5kIM24BWM72cX42JJXu0BAYGEHTd8VYqwiU2L7aYgGUIPxQELw3gF/Af3hhrM17g/bOlFjxODPJ54TDKEnKM9KyugPesZxcb70OLews/+Bce16nw=
-Received: from 30.221.132.193(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0WjIdN4u_1753067645 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 21 Jul 2025 11:14:06 +0800
-Message-ID: <7ea73f49-df4b-4f88-8b23-c917b4a9bd8a@linux.alibaba.com>
-Date: Mon, 21 Jul 2025 11:14:02 +0800
+	s=arc-20240116; t=1753081349; c=relaxed/simple;
+	bh=+hYbxDxQ8S2a5rBvseHrJmanYCjxponaE2X4VqGHozk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AvNhr/MWnyDJeAttiflPnj/zOZcpz8QIPpTKme+u1LlwkF7kTozFJN+5Ca6UOaqC6N1+2Cc3tjRyj2IEIdgboKE7qrDs/rf/4femRFvBA8rOSDino8eKyOUnPj3+kaH9aj7HP8i7WmNpDxFrocNbcjE6j/Eu0SzzXRNUGszLjK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a6d1369d4eso2278708f8f.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 00:02:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753081346; x=1753686146;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hh8koKResCAXedMAJmWLlZbi6qGM+dmDWstt6uVVwGY=;
+        b=AgpO/RgGNBGps/JG2Mn+ulT1KoFfDIPvJLljb1QmXCjQ+0cKyfhNehYqptKvmPVAO5
+         QXX2LNd5GOV1x10pGR2zYsvdxYEGkZjnJev6EDJdhz/6Lk5/NON5dRW1/tslktanmSJN
+         OCpseXoHq8wyeH298sKjZedBM518+EJUPm+rwlXq+MqLEgGFIfdK2fxQpVz0OX9/qwDZ
+         4VO5fYSw8Z2YqirtLohFWQNMUIyTqoefD96Qx9kFdhRhm4KQyCRvfEQpd2MW2/MhE50y
+         GFFEo8tgkX6fm5jEIhfiDAqzlVbkmIV+yPUtk3XlxQ4iPwJapwA82IGzPO+MBMWhcd+6
+         s4mw==
+X-Gm-Message-State: AOJu0Ywq/fbPDg3b2wgrBNC5mUTYg0UuoyjbVGZtTv7fxRfkTjNdE/Vj
+	xP1JVu9iFJ3HGsv07PmAbP4pkbVVnbl2wSljmRSCMRO9dadbBsF9sTxvpJ8n/Td/
+X-Gm-Gg: ASbGnctDeXQzwTIgVGXHFc2LPQUISjG3vLEW57oY99+ymDyUPnZySfmUcrM3m4eisgo
+	LMUnvyIOXcOWTRjKPUQveygzHcm0Bv4TR4y/ZaRy0T9qiqBtLyRXo0kqDrNT61C4lFTMt6rRxUp
+	Uw5uEBkJwxzO6ykpjbxaR9hkiY+0Q8Ey1jR8YPhFAzvi78iuWrX/ls317JBkrx8EqnCUcfjNnhf
+	dAettvshlfiNtDXo5PkrWDUt1XlXZ06tepozz+cPNY1X7aQhiIhwQ+qXFUiC0bnykN4/K07YQX7
+	cS5Hx0sULDZuXxIZ6pBfYNP38l60NrzETTpAhlLFJ+CSCUnpxPBe+023SyWmbZtI5r1a5PY3RA4
+	/sALYlfY26L02EsknbIjddg7BsGwsIRqqh8wMDeOPn6m+cRxxJVNTci/5hXWzohfuGXdnY+U8VR
+	QiK2QsPNd0rw==
+X-Google-Smtp-Source: AGHT+IHa+eZCMOOZ5i5YsADZLGDMQrLr0Tm/R+LJnqG2ukgUr/p7/jtDWZiTxHja6AHlaskmNysc0A==
+X-Received: by 2002:a5d:64e8:0:b0:3a0:7d27:f076 with SMTP id ffacd0b85a97d-3b60dd651d2mr14571401f8f.2.1753081346219;
+        Mon, 21 Jul 2025 00:02:26 -0700 (PDT)
+Received: from mayhem.fritz.box (p200300f6f71c45003fa4d1e815666221.dip0.t-ipconnect.de. [2003:f6:f71c:4500:3fa4:d1e8:1566:6221])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b61ca4d73esm9327128f8f.66.2025.07.21.00.02.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jul 2025 00:02:25 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: linux-btrfs@vger.kernel.org
+Cc: Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 0/2] btrfs: zoned: two small style improvements for zone finishing
+Date: Mon, 21 Jul 2025 09:02:14 +0200
+Message-ID: <20250721070216.701986-1-jth@kernel.org>
+X-Mailer: git-send-email 2.50.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Compressed files & the page cache
-To: Barry Song <21cnbao@gmail.com>
-Cc: Matthew Wilcox <willy@infradead.org>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
- Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
- linux-erofs@lists.ozlabs.org, Jaegeuk Kim <jaegeuk@kernel.org>,
- linux-f2fs-devel@lists.sourceforge.net, Jan Kara <jack@suse.cz>,
- linux-fsdevel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Howells <dhowells@redhat.com>, netfs@lists.linux.dev,
- Paulo Alcantara <pc@manguebit.org>,
- Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
- ntfs3@lists.linux.dev, Steve French <sfrench@samba.org>,
- linux-cifs@vger.kernel.org, Phillip Lougher <phillip@squashfs.org.uk>,
- Hailong Liu <hailong.liu@oppo.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>
-References: <aHa8ylTh0DGEQklt@casper.infradead.org>
- <e5165052-ead3-47f4-88f6-84eb23dc34df@linux.alibaba.com>
- <b61c4b7f-4bb1-4551-91ba-a0e0ffd19e75@linux.alibaba.com>
- <CAGsJ_4xJjwsvMpeBV-QZFoSznqhiNSFtJu9k6da_T-T-a6VwNw@mail.gmail.com>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <CAGsJ_4xJjwsvMpeBV-QZFoSznqhiNSFtJu9k6da_T-T-a6VwNw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi Barry,
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-On 2025/7/21 09:02, Barry Song wrote:
-> On Wed, Jul 16, 2025 at 8:28 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
->>
+Two small improvements for zone finish calls. The frist one changes
+btrfs_zone_finish_endio_workfn() to directly call do_zone_finish(), as most of
+the work done in btrfs_zone_finish_endio() is not needed in this context.
 
-...
+The second one adds error propagation to btrfs_zone_finish_endio() so it's
+caller btrfs_finish_one_ordered() can do error handling (in case the chunk map
+block group lookup failes for some reason).
 
->>
->> ... high-order folios can cause side effects on embedded devices
->> like routers and IoT devices, which still have MiBs of memory (and I
->> believe this won't change due to their use cases) but they also use
->> Linux kernel for quite long time.  In short, I don't think enabling
->> large folios for those devices is very useful, let alone limiting
->> the minimum folio order for them (It would make the filesystem not
->> suitable any more for those users.  At least that is what I never
->> want to do).  And I believe this is different from the current LBS
->> support to match hardware characteristics or LBS atomic write
->> requirement.
-> 
-> Given the difficulty of allocating large folios, it's always a good
-> idea to have order-0 as a fallback. While I agree with your point,
-> I have a slightly different perspective — enabling large folios for
-> those devices might be beneficial, but the maximum order should
-> remain small. I'm referring to "small" large folios.
+Johannes Thumshirn (2):
+  btrfs: directly call do_zone_finish() from
+    btrfs_zone_finish_endio_workfn()
+  btrfs: zoned: return error from btrfs_zone_finish_endio()
 
-Yeah, agreed. Having a way to limit the maximum order for those small
-devices (rather than disabling it completely) would be helpful.  At
-least "small" large folios could still provide benefits when memory
-pressure is light.
+ fs/btrfs/inode.c |  8 +++++---
+ fs/btrfs/zoned.c | 13 +++++++++----
+ fs/btrfs/zoned.h |  9 ++++++---
+ 3 files changed, 20 insertions(+), 10 deletions(-)
 
-Thanks,
-Gao Xiang
-
-> 
-> Still, even with those, allocation can be difficult — especially
-> since so many other allocations (which aren't large folios) can cause
-> fragmentation. So having order-0 as a fallback remains important.
-> 
-> It seems we're missing a mechanism to enable "small" large folios
-> for files. For anon large folios, we do have sysfs knobs—though they
-> don’t seem to be universally appreciated. :-)
-> 
-> Thanks
-> Barry
+-- 
+2.50.0
 
 
