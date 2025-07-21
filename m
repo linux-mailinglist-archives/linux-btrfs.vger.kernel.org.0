@@ -1,72 +1,72 @@
-Return-Path: <linux-btrfs+bounces-15582-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15583-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7AEBB0BD27
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 09:02:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45358B0BD28
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 09:02:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FB8217A953
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 07:02:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2DC8189BFC2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 07:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0AD280CFB;
-	Mon, 21 Jul 2025 07:02:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526D8281378;
+	Mon, 21 Jul 2025 07:02:32 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5395927E07F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3698227FD7F
 	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 07:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753081350; cv=none; b=NBfaIKt6114VzXF3s9NH5MVawEBr2ZWpdXHmX0FB7SaCLOy2apqCTmIU6nGBRhbPbWK7gC3WQL15eYSuEXzoqwqNWuhOIIEos5c7D8w041Ugj6VDEtsbiH7QytQCvu0TdAPH1gb+0u2HEpSebmeBS27zyKb7l19bjyvC/tk+ji8=
+	t=1753081351; cv=none; b=A2zySyKSQnST8gIKWWnP7Ae6htO8UBXCTlYaZoZpoWqzWQTTjnw/is5TOy09/02qN3bMC2IPmpiHjwkxl2eCB5N7fbPhtAxyCGNXJ/BMqlhewJ+pOEMHk+Af4ZseUyG2BNrSoqegJaYL7avBxS5TXks3VP6HBbrR6UqvP2j3ej0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753081350; c=relaxed/simple;
-	bh=AYFKA3uvP5QzhMRhbDBY8wjFJUgjsXPdvlZQlFAl0Uc=;
+	s=arc-20240116; t=1753081351; c=relaxed/simple;
+	bh=PSocjnQ2yzeuEJRFr75r1vlTShHC889IOsZHE1rYL+0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QbBy2Q5dJGlLb3/dH7LYMd9uf+HgD08CzZHUw4LQWaZw1hQlpEq3KEaGk0qIxOvDm8/92Y2JCGRiLB1CDePYmkteCioR/NWnVuiG0L7+nc2XKyCLvSzvRrCYd6HIWlaWK4nNBYeVvZtQOAVYs21K8B3E28/zHxw0uhIuaNwGq4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.52
+	 MIME-Version; b=D0LSkn2z3dLTVMwPAY390LEz/YCd3XO5n1wOrYUpUsHr5wy2hbmhHyXZdkTFAMmwKBa4UIPEXD7gvE7qatk3SvujywXFHVRDtIHmTuz3kJ/y1hXwDDtGWGt2CfLrRKKkAVm6FwusqU5p1mtVBgL9MWrAU5LNLGVCjV3+P8LKs5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3b5e6bfb427so2225484f8f.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 00:02:28 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a575a988f9so2278577f8f.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 00:02:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753081347; x=1753686147;
+        d=1e100.net; s=20230601; t=1753081348; x=1753686148;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DmEWK2nS68ep+7oZETJCVMEUnrN4HyYfXYVZR+t0xpI=;
-        b=lm1PyGWjx3HFwKelBsV4P1gyKoPeQjLBwkqMStPV3Ob4Y6svw9xKQX94jU0AkDbg2h
-         CVECyzoV1+veRMYhm87RGTQmpBO796KRtdO0KYCnf6Bq7+f7nV+y1VE+lP7GRRtSRxZV
-         pBubS+A1dAtqLmulvTEWBW4LfziVQtGl8m7rc2ZnBxLhLc9NyYvxirisfqvRA2xTWQ1l
-         5uClxqNBRrpJfQdqZcA8KlNZzmNq8l4+g21+MdkBbzksoz1nAhQkELSMeLAMXUx0im5Q
-         luZjoVTVBRdTqvCEFtDEDlEyztvntPMSn2Hqah1Oyt2MUlwmy2oZwqZK78Dhapga4Yo4
-         +AiA==
-X-Gm-Message-State: AOJu0YwLbBNkH+2DzuXoPkeHdu9tCyremqx/HA/tT23BILEmuM/sqpvv
-	4nITzgzlhsPDpuNlENx/aN/ZjHxy/SrGomvJ6dIMLP1vJ0eMij5clyWeHZDDvn6z
-X-Gm-Gg: ASbGncs0z5UBR+3PxcT1xv14g6+OG168vxUl0gvXCKHdvosaa4M8+ZVO9793HsaAUxC
-	Q6GV1yoCDIg9v8H8F7r5FZUBFMPA5BWW7hqLiAWCWRtwfOZ7zvJP9n4TMhZnzJF7HVYcm4EEFZ8
-	0iQg6zM/zriOJC/j5EpMw1HXBXJ8rKT5QLmi+dK00XTD0aB+74SUCy9KxqD1UZnpv+X1ucUgspy
-	a0jKMw6PW+5QgUasXtsbyDELCR3jj1DvHlLpTPW6I2yaY3PriXrA9DD1KV4nXghXpZzyyR24qz2
-	HqmO0NmucppfYqByl8TUxRKOyR5WLy23yGcGdEcvwZFXNORh2zhrT/0YTblw3fH+2oqVySgQLta
-	EjkzssC3gFbxV0mx+kEMee9jn2cC9cDyqtFNBubDqKNYiktRweIiBF6gVime1KyIQ43Ic7u5lVs
-	GUHf2XhdrkDw==
-X-Google-Smtp-Source: AGHT+IGefp4FlvY7cWdnuZ6Hx6wgmzqfSOoaiphd/XygJg2uhbYvOhcPQyA7zyjODlDmVSUOp8hZKQ==
-X-Received: by 2002:a05:6000:652:b0:3b5:dc07:50a4 with SMTP id ffacd0b85a97d-3b61b0ec0f1mr8084086f8f.2.1753081347234;
-        Mon, 21 Jul 2025 00:02:27 -0700 (PDT)
+        bh=xixjdcCQ8sKgLkDmT5gyFwF5Xi883Lrl6z955FwEeGs=;
+        b=WWgMR61MhNsTTBurFbN4tvvePMTZDa8wtgqGOT/w7N3M2rtjRWELYpAc+iJgaHhwwg
+         W8TwPDlUX/kBwD1atbv4XAC5RQjywDcFyGQC+JqTvEdbXRiaX23CcfhQ8ZKNaAqS2CSl
+         ICyOFISXVibnHH9NAJHFVjAE9hmYddhTmI1J6q59juk82aKAKCE5IoAGZfm8jI4UMQG/
+         JMoAvvdmzjFT56oQKvJ/JPlhK2hdox10MFbylLDG0mi5INu/QqMZJpBx6LvLVzYkDxYm
+         YBnmNW/dqk8QooonbyvEcM6HBULzMHITYQggMPLSTDGYjHBQQtXW/js4pJBquYSvDZwe
+         tY+Q==
+X-Gm-Message-State: AOJu0Yz4y+LbGTvyk5f03Y+LRl8QMjv9kmyDbjLkcuhr9K5MR4Tuxqxt
+	p7Lcogtk5xIE6ygimS2UIcbr5JftQZJqMjjT0AHpRr0rSRXuyl0LFlbQBP8i52as
+X-Gm-Gg: ASbGncv3FNvoK0XC36PKkEm7t0O4Z7FbalDVg+KEncunXlWHNvR5RBYpbFOabQUYQy3
+	Bj7hpCIuCCC3+IS/jF4rBJya5B5xZUPo9wzR2OK2qrid3Sj4HDmPrKHtNUgTvbizKJ+0mcYxehI
+	jVCdsluQaTudM3yi4NJBnGhHypgg5dMPZmp+xNkR5rylE2fOyoSS8UZlOya8yhuKBl4CU2KS3Bn
+	/r3oxyi9wbrQ1LHIUvq3gW1T2ksbWJ6dPAKYLijEGLhnPkipbwCRF/XzN+u7TUUNqkuEtLuQVnD
+	H9al0sGpGEhi9xb2gHjR4wPPJYXKT7k9pl7zUzSm72Isv79C5GXDOX7saGQhYHZTYXl8X/5lpsX
+	NMmGwBUEAq55QxN5v+Z7PZ5/dfmdpKJyOFm8QLxCrabCoztQyv+HNYazvUE+KzdADEC6marTwRD
+	4G5BTsc27qgg==
+X-Google-Smtp-Source: AGHT+IEapjjMq8dRdWiDhQznwthJx2AmSlu5Me/Yc/seeeFox9ZXtPr5fSvYHaQZeITHuhOY39QB6Q==
+X-Received: by 2002:a05:6000:220d:b0:3b6:de9:8079 with SMTP id ffacd0b85a97d-3b61abe204emr9020452f8f.0.1753081348275;
+        Mon, 21 Jul 2025 00:02:28 -0700 (PDT)
 Received: from mayhem.fritz.box (p200300f6f71c45003fa4d1e815666221.dip0.t-ipconnect.de. [2003:f6:f71c:4500:3fa4:d1e8:1566:6221])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b61ca4d73esm9327128f8f.66.2025.07.21.00.02.26
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b61ca4d73esm9327128f8f.66.2025.07.21.00.02.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jul 2025 00:02:26 -0700 (PDT)
+        Mon, 21 Jul 2025 00:02:27 -0700 (PDT)
 From: Johannes Thumshirn <jth@kernel.org>
 To: linux-btrfs@vger.kernel.org
 Cc: Josef Bacik <josef@toxicpanda.com>,
 	David Sterba <dsterba@suse.com>,
 	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 1/2] btrfs: directly call do_zone_finish() from btrfs_zone_finish_endio_workfn()
-Date: Mon, 21 Jul 2025 09:02:15 +0200
-Message-ID: <20250721070216.701986-2-jth@kernel.org>
+Subject: [PATCH 2/2] btrfs: zoned: return error from btrfs_zone_finish_endio()
+Date: Mon, 21 Jul 2025 09:02:16 +0200
+Message-ID: <20250721070216.701986-3-jth@kernel.org>
 X-Mailer: git-send-email 2.50.0
 In-Reply-To: <20250721070216.701986-1-jth@kernel.org>
 References: <20250721070216.701986-1-jth@kernel.org>
@@ -80,36 +80,107 @@ Content-Transfer-Encoding: 8bit
 
 From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-When btrfs_zone_finish_endio_workfn() is calling btrfs_zone_finish_endio()
-it already has a pointer to the block group. Furthermore
-btrfs_zone_finish_endio() does additional checks if the block group can be
-finished or not.
+Now that btrfs_zone_finish_endio_workfn() is directly calling
+do_zone_finish() the only caller of btrfs_zone_finish_endio() is
+btrfs_finish_one_ordered().
 
-But in the context of btrfs_zone_finish_endio_workfn() only the actual
-call to do_zone_finish() is of interest, as the skipping condition when
-there is still room to allocate from the block group cannot be checked.
+btrfs_finish_one_ordered() already has error handling in-place so
+btrfs_zone_finish_endio() can return an error if the block group lookup
+fails.
 
-Directly call do_zone_finish() on the block group.
+Also as btrfs_zone_finish_endio() already checks for zoned filesystems and
+returns early, there's no need to do this in the caller. For developer
+builds leave the ASSERT() in place to check for a block-group lookup
+failure.
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/zoned.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/btrfs/inode.c |  8 +++++---
+ fs/btrfs/zoned.c | 10 +++++++---
+ fs/btrfs/zoned.h |  9 ++++++---
+ 3 files changed, 18 insertions(+), 9 deletions(-)
 
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 7ed340cac33f..bfddbbd46366 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3102,9 +3102,11 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+ 		goto out;
+ 	}
+ 
+-	if (btrfs_is_zoned(fs_info))
+-		btrfs_zone_finish_endio(fs_info, ordered_extent->disk_bytenr,
+-					ordered_extent->disk_num_bytes);
++	ret = btrfs_zone_finish_endio(fs_info, ordered_extent->disk_bytenr,
++				      ordered_extent->disk_num_bytes);
++	if (ret) {
++		goto out;
++	}
+ 
+ 	if (test_bit(BTRFS_ORDERED_TRUNCATED, &ordered_extent->flags)) {
+ 		truncated = true;
 diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 245e813ecd78..4444a667c71e 100644
+index 4444a667c71e..b1320b12e0e4 100644
 --- a/fs/btrfs/zoned.c
 +++ b/fs/btrfs/zoned.c
-@@ -2466,7 +2466,8 @@ static void btrfs_zone_finish_endio_workfn(struct work_struct *work)
- 
- 	wait_on_extent_buffer_writeback(bg->last_eb);
- 	free_extent_buffer(bg->last_eb);
--	btrfs_zone_finish_endio(bg->fs_info, bg->start, bg->length);
-+	bg->last_eb = NULL;
-+	do_zone_finish(bg, true);
- 	btrfs_put_block_group(bg);
+@@ -2431,16 +2431,19 @@ bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices, u64 flags)
+ 	return ret;
  }
  
+-void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical, u64 length)
++int btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical, u64 length)
+ {
+ 	struct btrfs_block_group *block_group;
+ 	u64 min_alloc_bytes;
+ 
+ 	if (!btrfs_is_zoned(fs_info))
+-		return;
++		return 0;
+ 
+ 	block_group = btrfs_lookup_block_group(fs_info, logical);
+-	ASSERT(block_group);
++	if (!block_group) {
++		ASSERT(block_group);
++		return -EIO;
++	}
+ 
+ 	/* No MIXED_BG on zoned btrfs. */
+ 	if (block_group->flags & BTRFS_BLOCK_GROUP_DATA)
+@@ -2457,6 +2460,7 @@ void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical, u64 len
+ 
+ out:
+ 	btrfs_put_block_group(block_group);
++	return 0;
+ }
+ 
+ static void btrfs_zone_finish_endio_workfn(struct work_struct *work)
+diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
+index 6e11533b8e14..17c5656580dd 100644
+--- a/fs/btrfs/zoned.h
++++ b/fs/btrfs/zoned.h
+@@ -83,7 +83,7 @@ int btrfs_sync_zone_write_pointer(struct btrfs_device *tgt_dev, u64 logical,
+ bool btrfs_zone_activate(struct btrfs_block_group *block_group);
+ int btrfs_zone_finish(struct btrfs_block_group *block_group);
+ bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices, u64 flags);
+-void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical,
++int btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical,
+ 			     u64 length);
+ void btrfs_schedule_zone_finish_bg(struct btrfs_block_group *bg,
+ 				   struct extent_buffer *eb);
+@@ -234,8 +234,11 @@ static inline bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices,
+ 	return true;
+ }
+ 
+-static inline void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info,
+-					   u64 logical, u64 length) { }
++static inline int btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info,
++					   u64 logical, u64 length)
++{
++	return 0;
++}
+ 
+ static inline void btrfs_schedule_zone_finish_bg(struct btrfs_block_group *bg,
+ 						 struct extent_buffer *eb) { }
 -- 
 2.50.0
 
