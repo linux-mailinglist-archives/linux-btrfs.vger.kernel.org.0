@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-15600-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15601-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90A5CB0C96A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 19:18:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBFA9B0C962
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 19:17:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E0053AA7B9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 17:17:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DA7D7AE70C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jul 2025 17:16:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53AC2E2666;
-	Mon, 21 Jul 2025 17:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D88C2E336E;
+	Mon, 21 Jul 2025 17:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rAbGix63"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dptOIxJJ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB6DB2D9EF2
-	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 17:16:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57192E2EEB
+	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 17:16:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753118208; cv=none; b=GunXmDzdd6paU3VfcyEh9vkxc22K42B+l3ATshtoj0uxP7RCgX6GbHgeaTGlh6qmoYPLFxnflqFNPlNxwSqNaU6SrFQi5ZEVTs9TWdpx/meFGXHAflm1qd0GKdQ3tEAl0vZi1M9dzA+9QBq4cGyYEcmqgY0vRxfCs9DnlUEy5xM=
+	t=1753118209; cv=none; b=Vr7q9cY9IlTxNaWQtzmjK/u7ObXiKLqPCR31trMxEiAUm9uEFxXCMyLxorKbOXMFXbp/4rOVDQvCGZFiPmBR97r/nYRAfTmWyP45CshbBKX/8H8xkld7JaoPK04zA9w8rbV0OPWY+gYBetGNtAsSNRZOiuGBYFtk5S4jPqF5Oqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753118208; c=relaxed/simple;
-	bh=WNVvGga14quuQ309r8e7WkcjEtH6xzb1APeMT3Ib1A0=;
+	s=arc-20240116; t=1753118209; c=relaxed/simple;
+	bh=6uU+XB1V5qCKj64ExKqMg48SfuCE7Tv9DSstMlggtnI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kpqU/vcPVH1kW73x8aYwUiaDDAWWCQLVEWhHb6ff4sOo9udM5iyJ180fr2F9mY25mGG77dNrqWcxI2v0OGAFg9oL4r8ESzuVABW1ZxA5mATtJlk5ANfjJnVwn3fMMpxLTHBKuE1HelO9HDksQJCJcs2xPVRzT0RMvznXITtNEeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rAbGix63; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DFC9C4CEF4
-	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 17:16:47 +0000 (UTC)
+	 MIME-Version; b=D/y57cYaNLPlqXbnTB7C1nF0VeXupy3JfzoJZXQNAIZflYWizJuosQ5WqO5XKS8H/1lhYBAOkYQ1sdVX8C+oauWNLN8zFM/n7KJvSzKru5IRy2A0sff27X7kLgqbps30BEUU1NQ2ybQ75o9ZbQLNchcEU3o/173qtqUCOOe2FA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dptOIxJJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48EB2C4CEF4
+	for <linux-btrfs@vger.kernel.org>; Mon, 21 Jul 2025 17:16:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753118207;
-	bh=WNVvGga14quuQ309r8e7WkcjEtH6xzb1APeMT3Ib1A0=;
+	s=k20201202; t=1753118208;
+	bh=6uU+XB1V5qCKj64ExKqMg48SfuCE7Tv9DSstMlggtnI=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=rAbGix63b5HgZ18w6mDeKLtk/8uILU5/MCqoWoTuwxTR2Mxz3UfKlX3GNZBZSOZ0W
-	 HnF+6/4QC9toQcCK1vA/Oen7ixkE0/Wah4eHLS9t5wK+PuYascPT6GRX4Xy6wbTgni
-	 oHtmia1w2yfmM28Mmqr3E5gvSdR2MZxBUkFc+pnSGTnfOpPdAKERPKV8qaNE7+hEgZ
-	 MQahuy1gHJg9h0kDTyaIkU+e3QyCyMjoezPMvGrPgzup9yaortu3Z+aOFV4wy9SpRY
-	 m2oTV6giOVH7AKZlNyTIiOfP4hgL4CI//awFdgjq38EtzLsYJQ11VUBsTLla4WfOjn
-	 4ZbwQ2T2OPoIA==
+	b=dptOIxJJE2rJqU//6ZlVssarthXdW5IR/MqDS/WuNHmp7u0G0oayDj+SnY02aAr8Y
+	 9+o/twKnrFSlm46amG+SdHuzSFnFhV8BSw5pMgxRAofDu9oEak12lIoF/ScN2fMFTn
+	 Pl2VneCvzJsHa2Q5fEvln74ONAR+p2eR75gUSG2fPDceT5a+PUkd2dq/70Z2Cb48Mz
+	 jmL2mSFhpJFr4C8ws71FQjrIAtNM77L3N0dNPZSMpU5E8/evIM0/6AjUbObKClA+sD
+	 K0sR2DSMIUwSgtNusmGJn/1dhCN5JSIPsJnNhpDGXsa9tATEGWJ6idB4SaHeSYUr34
+	 E22/9sXneD4yw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 04/10] btrfs: use local variable for the transaction handle in replay_one_buffer()
-Date: Mon, 21 Jul 2025 18:16:31 +0100
-Message-ID: <bd9e5e7a0d4eb661d11a0179de9ce48a4c9e24df.1753117707.git.fdmanana@suse.com>
+Subject: [PATCH 05/10] btrfs: return real error from read_alloc_one_name() in drop_one_dir_item()
+Date: Mon, 21 Jul 2025 18:16:32 +0100
+Message-ID: <68e5879ad29e41fb9456021acbce94af29ee21d5.1753117707.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1753117707.git.fdmanana@suse.com>
 References: <cover.1753117707.git.fdmanana@suse.com>
@@ -59,109 +59,29 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Instead of keep dereferencing the walk_control structure to extract the
-transaction handle whenever is needed, do it once by storing it in a local
-variable and then use the variable everywhere. This reduces code verbosity
-and eliminates the need for some split lines.
+If read_alloc_one_name() we explicitly return -ENOMEM and currently that
+is fine since it's the only error read_alloc_one_name() can return for
+now. However this is fragile and not future proof, so return instead what
+read_alloc_one_name() returned.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 29 +++++++++++------------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+ fs/btrfs/tree-log.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 5e0c4c0595a7..0fff6716a7ed 100644
+index 0fff6716a7ed..1c6210786a87 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -2464,6 +2464,7 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
- 	};
- 	struct btrfs_path *path;
- 	struct btrfs_root *root = wc->replay_dest;
-+	struct btrfs_trans_handle *trans = wc->trans;
- 	struct btrfs_key key;
- 	int i;
- 	int ret;
-@@ -2507,19 +2508,17 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
- 			} else {
- 				wc->ignore_cur_inode = false;
- 			}
--			ret = replay_xattr_deletes(wc->trans, root, log,
--						   path, key.objectid);
-+			ret = replay_xattr_deletes(trans, root, log, path, key.objectid);
- 			if (ret)
- 				break;
- 			mode = btrfs_inode_mode(eb, inode_item);
- 			if (S_ISDIR(mode)) {
--				ret = replay_dir_deletes(wc->trans, root, log, path,
-+				ret = replay_dir_deletes(trans, root, log, path,
- 							 key.objectid, false);
- 				if (ret)
- 					break;
- 			}
--			ret = overwrite_item(wc->trans, root, path,
--					     eb, i, &key);
-+			ret = overwrite_item(trans, root, path, eb, i, &key);
- 			if (ret)
- 				break;
+@@ -950,7 +950,7 @@ static noinline int drop_one_dir_item(struct btrfs_trans_handle *trans,
+ 	btrfs_dir_item_key_to_cpu(leaf, di, &location);
+ 	ret = read_alloc_one_name(leaf, di + 1, btrfs_dir_name_len(leaf, di), &name);
+ 	if (ret)
+-		return -ENOMEM;
++		return ret;
  
-@@ -2546,21 +2545,19 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
- 				drop_args.start = from;
- 				drop_args.end = (u64)-1;
- 				drop_args.drop_cache = true;
--				ret = btrfs_drop_extents(wc->trans, root, inode,
--							 &drop_args);
-+				ret = btrfs_drop_extents(trans, root, inode,  &drop_args);
- 				if (!ret) {
- 					inode_sub_bytes(&inode->vfs_inode,
- 							drop_args.bytes_found);
- 					/* Update the inode's nbytes. */
--					ret = btrfs_update_inode(wc->trans, inode);
-+					ret = btrfs_update_inode(trans, inode);
- 				}
- 				iput(&inode->vfs_inode);
- 				if (ret)
- 					break;
- 			}
+ 	btrfs_release_path(path);
  
--			ret = link_to_fixup_dir(wc->trans, root,
--						path, key.objectid);
-+			ret = link_to_fixup_dir(trans, root, path, key.objectid);
- 			if (ret)
- 				break;
- 		}
-@@ -2570,8 +2567,7 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
- 
- 		if (key.type == BTRFS_DIR_INDEX_KEY &&
- 		    wc->stage == LOG_WALK_REPLAY_DIR_INDEX) {
--			ret = replay_one_dir_item(wc->trans, root, path,
--						  eb, i, &key);
-+			ret = replay_one_dir_item(trans, root, path, eb, i, &key);
- 			if (ret)
- 				break;
- 		}
-@@ -2581,19 +2577,16 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
- 
- 		/* these keys are simply copied */
- 		if (key.type == BTRFS_XATTR_ITEM_KEY) {
--			ret = overwrite_item(wc->trans, root, path,
--					     eb, i, &key);
-+			ret = overwrite_item(trans, root, path, eb, i, &key);
- 			if (ret)
- 				break;
- 		} else if (key.type == BTRFS_INODE_REF_KEY ||
- 			   key.type == BTRFS_INODE_EXTREF_KEY) {
--			ret = add_inode_ref(wc->trans, root, log, path,
--					    eb, i, &key);
-+			ret = add_inode_ref(trans, root, log, path, eb, i, &key);
- 			if (ret)
- 				break;
- 		} else if (key.type == BTRFS_EXTENT_DATA_KEY) {
--			ret = replay_one_extent(wc->trans, root, path,
--						eb, i, &key);
-+			ret = replay_one_extent(trans, root, path, eb, i, &key);
- 			if (ret)
- 				break;
- 		}
 -- 
 2.47.2
 
