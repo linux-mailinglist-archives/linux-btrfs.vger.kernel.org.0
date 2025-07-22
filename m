@@ -1,187 +1,117 @@
-Return-Path: <linux-btrfs+bounces-15625-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15626-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABD9DB0D61A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jul 2025 11:39:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24132B0D639
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jul 2025 11:44:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CAB06C3705
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jul 2025 09:39:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D25A1C2693E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jul 2025 09:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B51B2DECC5;
-	Tue, 22 Jul 2025 09:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1012DEA82;
+	Tue, 22 Jul 2025 09:44:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dDMUqmMI"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5EC2D8DDF
-	for <linux-btrfs@vger.kernel.org>; Tue, 22 Jul 2025 09:39:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53324223702
+	for <linux-btrfs@vger.kernel.org>; Tue, 22 Jul 2025 09:44:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753177168; cv=none; b=JR9+VV4OhXeassWsOEZOCesX5DZies5mGKuwfJXk1/o1vwfRjC3kpGRfn1AMkGiOjeYrr5yVGHblJUxBWE3+Oo1mTfRJFhueaRpz0YM7B3DkZiWGAWw/miVRbXTQUs61pq5Zz3rFLTHY9s66jarmqMVCq4lRXLLlJfs/QqXEJkg=
+	t=1753177489; cv=none; b=DPfNI7RqAtQwybL1lW2ZsBAZSliYFFNdeqh7YD3rAPx8MKG1KkB9//GzxwgGIbVqILP+ydSH6u2T5oQSHpABFNALVhCeNN65/EtEiP9N5WanUB7vrjQPEyj7IiMSetNgyaI8s47Dl/iOfiCczPfR831XDDUs7XYa9W5KRUZJW4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753177168; c=relaxed/simple;
-	bh=15bTGv2d0YpEsDCSVy+MLhaQTSQqdZNVR+5eUhW/kAA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZtYBs9hTiBEWYegYNqfoYmgoOhiG0By2hYWcv4W9aMFmAWYqXGGpS6jz1KBN2Ug5yu1Kz1V229xEL4uMQSWScjKvXwBRwI6RNi9EiOfD7HV+kr3SlgbrS3nIBMXjhxTDVupFHj8yvS7YZb104xLiGrgo0DlXUPNYPBQ+VHa7fSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3a536ecbf6fso3051971f8f.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Jul 2025 02:39:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753177165; x=1753781965;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VWEfn6+1hdFE1mCFZ1T1gP1dH1SKN2Ob9duQLOBH0tg=;
-        b=u/VSgqpwkmraWiLJ/rGejdvp85JncneN1HQXXAfqdH79hN32xiQzAwbHO5JxlEaxAT
-         aD6PL0bPA0u7gV0hsYMv0mbTdllovYt9kIzW7OnXP0MjFnVUvBA/PeDJjR9vDfxhKk1R
-         uKZnKQQ1OftPcLWjFLzWecFNng9KkR176NBCo9bWfJmov13laYu3vxGiQ5u2tZK+zOqb
-         ikGfZtq5ydvnXB2WoNb87HkvqFOXQu6WRSsFN2buIiBKLgr0bt5F3TWJ/B4WG/OPrgq5
-         Bq+R0f96Fsc5G7QHaFrAv5BZ+lAdIrHTjyFRw1efaudF9LII1tavuu/ATKEQejauNNMm
-         ifgA==
-X-Gm-Message-State: AOJu0Yx2QFsyL8xMQkYdqxh6bwxiWaHYcU9C/enKIFaGs94ujpHxA+Ch
-	JhLDPgyS9K24cAbykiF32wBhYkpeRxmSYUhgnRAikuJQcUmSOUT9sAH4KFSqS/IA
-X-Gm-Gg: ASbGncuqj9Jh9n5zmCw6lxi6neTO/aIPi8lUtj0SB+o77r/jCUsHREngxp3PmQITSFO
-	XDLi+CEhzT5ydGGXadsz0K43hXs6oJxUbZZEepby+qTOFZLO+qhHBdQ4AwEzHDtRSGzIMv0fhyA
-	0vl20/+h2r3CFBA7qdc6O6rRJJh9vrP5GXqDVf+Ik3rBBxbf2dZnXQwbQYwcF5rTC2VKKkXRh3T
-	n7rriy3MLrxRwqfrY0VeZnVnqVXeyNEWjO/pksSLJIk05SNm6Gl44nvsN21qYjNBgiYXiSLMw5p
-	liWk8EQSq1R0+2R6JIwIMHmGEyZz69wLaZt7hoP892Vnwo/TddyK8GwSYuitoX0pMEc4UaCgoYH
-	JLSS3LK0ag0YyLqamehSM5vidVqTZM/deWfWipmOxlVdTq4y5ndee41RUfY31bYgc+vbFk+oPg1
-	zXMA9lfbyp3w==
-X-Google-Smtp-Source: AGHT+IH0nNynJlp0HUnRnG0b7mjGA0MPr9HODPS/TIApYKFMvT0oe46Nf0QiBsxviYrVLBP+IIy17w==
-X-Received: by 2002:a05:6000:200c:b0:3a5:52b2:fa65 with SMTP id ffacd0b85a97d-3b613e601bdmr15646964f8f.5.1753177164984;
-        Tue, 22 Jul 2025 02:39:24 -0700 (PDT)
-Received: from mayhem.fritz.box (p200300f6f71c45003fa4d1e815666221.dip0.t-ipconnect.de. [2003:f6:f71c:4500:3fa4:d1e8:1566:6221])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4563b5c7e8bsm123225895e9.14.2025.07.22.02.39.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jul 2025 02:39:24 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-To: linux-btrfs@vger.kernel.org
-Cc: David Sterba <dsterba@suse.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Filipe Manana <fdmanana@suse.com>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 2/2] btrfs: zoned: return error from btrfs_zone_finish_endio()
-Date: Tue, 22 Jul 2025 11:39:15 +0200
-Message-ID: <20250722093915.13214-3-jth@kernel.org>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250722093915.13214-1-jth@kernel.org>
-References: <20250722093915.13214-1-jth@kernel.org>
+	s=arc-20240116; t=1753177489; c=relaxed/simple;
+	bh=jkK1s3YJSis+DpyVXP71DLpX0lBeZncm6EnHG5pheqc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qk25OARrQSpNnlStz18D4m8tfuE04AsF01XCNYosv0cszC0Iea3dh+QKepkLKSwmzuFE5t8nAMJNA7PJpjxGmY+SDQtmb/0wAVyERxTXSbg60/tQM+nmSbbWM+dmgOKE/2mpfYhGwbEd7cNWRQLNl6RSn+rM7bIq1Ls/KUc9zxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dDMUqmMI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BC1FC4CEEB;
+	Tue, 22 Jul 2025 09:44:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753177489;
+	bh=jkK1s3YJSis+DpyVXP71DLpX0lBeZncm6EnHG5pheqc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dDMUqmMIyI+zfA7lFAj4fjLjZLpq29u511ykG7FGF1iA7tz9gMp2EXAbr8JiQt/Q5
+	 AQD1SXvIh24BulBbDYMJin//0rmrTjZOO4QYldVMMf0TSsaYXetKr3EVQcLfu6XRAb
+	 aX2SuDXwQT7qZmscA5L+uZvxs70dDWaGk6Lfr5FQsVRb8+rgXTQ+Vyj2JNAlQdgAEX
+	 nFclvL/GekqpF0AZmAfeVkTNs/4ByfyrHqYeC45ojxRjMxxHoNGbgcUX6Qar8nWwa3
+	 ALkrpyrQIS7c5rf1wivljiQaX5wBt/0+6GAu9Th6iJinapDToeWahJzS9iR0thSihN
+	 +2sWVTHvqrNaA==
+Message-ID: <a663efc8-dd3c-4880-a477-f0462980e51c@kernel.org>
+Date: Tue, 22 Jul 2025 18:42:22 +0900
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] btrfs: directly call do_zone_finish() from
+ btrfs_zone_finish_endio_workfn()
+To: Johannes Thumshirn <jth@kernel.org>, linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>, Filipe Manana <fdmanana@suse.com>,
+ Naohiro Aota <naohiro.aota@wdc.com>, Josef Bacik <josef@toxicpanda.com>,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20250722093915.13214-1-jth@kernel.org>
+ <20250722093915.13214-2-jth@kernel.org>
+From: Damien Le Moal <dlemoal@kernel.org>
+Content-Language: en-US
+Organization: Western Digital Research
+In-Reply-To: <20250722093915.13214-2-jth@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On 7/22/25 6:39 PM, Johannes Thumshirn wrote:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> 
+> When btrfs_zone_finish_endio_workfn() is calling btrfs_zone_finish_endio()
+> it already has a pointer to the block group. Furthermore
+> btrfs_zone_finish_endio() does additional checks if the block group can be
+> finished or not.
+> 
+> But in the context of btrfs_zone_finish_endio_workfn() only the actual
+> call to do_zone_finish() is of interest, as the skipping condition when
+> there is still room to allocate from the block group cannot be checked.
+> 
+> Directly call do_zone_finish() on the block group.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/zoned.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 245e813ecd78..5a234f31c8da 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -2461,12 +2461,14 @@ void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical, u64 len
+>  
+>  static void btrfs_zone_finish_endio_workfn(struct work_struct *work)
+>  {
+> +	int ret;
+>  	struct btrfs_block_group *bg =
+>  		container_of(work, struct btrfs_block_group, zone_finish_work);
+>  
+>  	wait_on_extent_buffer_writeback(bg->last_eb);
+>  	free_extent_buffer(bg->last_eb);
+> -	btrfs_zone_finish_endio(bg->fs_info, bg->start, bg->length);
+> +	ret = do_zone_finish(bg, true);
+> +	ASSERT(!ret);
 
-Now that btrfs_zone_finish_endio_workfn() is directly calling
-do_zone_finish() the only caller of btrfs_zone_finish_endio() is
-btrfs_finish_one_ordered().
+Why the assert ? Zone finish command may fail if for instance there is a
+PHY/link issue. I would rather have something clean here like goig to read-only
+rather than this assert == ignoring the error if not in debug mode. No ?
 
-btrfs_finish_one_ordered() already has error handling in-place so
-btrfs_zone_finish_endio() can return an error if the block group lookup
-fails.
+>  	btrfs_put_block_group(bg);
+>  }
+>  
 
-Also as btrfs_zone_finish_endio() already checks for zoned filesystems and
-returns early, there's no need to do this in the caller. For developer
-builds leave the ASSERT() in place to check for a block-group lookup
-failure.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/inode.c | 7 ++++---
- fs/btrfs/zoned.c | 8 +++++---
- fs/btrfs/zoned.h | 9 ++++++---
- 3 files changed, 15 insertions(+), 9 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6d9a8d8bea4c..793b1d520e8d 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3109,9 +3109,10 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- 		goto out;
- 	}
- 
--	if (btrfs_is_zoned(fs_info))
--		btrfs_zone_finish_endio(fs_info, ordered_extent->disk_bytenr,
--					ordered_extent->disk_num_bytes);
-+	ret = btrfs_zone_finish_endio(fs_info, ordered_extent->disk_bytenr,
-+				      ordered_extent->disk_num_bytes);
-+	if (ret)
-+		goto out;
- 
- 	if (test_bit(BTRFS_ORDERED_TRUNCATED, &ordered_extent->flags)) {
- 		truncated = true;
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 5a234f31c8da..0e61e49b8ce9 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -2431,16 +2431,17 @@ bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices, u64 flags)
- 	return ret;
- }
- 
--void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical, u64 length)
-+int btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical, u64 length)
- {
- 	struct btrfs_block_group *block_group;
- 	u64 min_alloc_bytes;
- 
- 	if (!btrfs_is_zoned(fs_info))
--		return;
-+		return 0;
- 
- 	block_group = btrfs_lookup_block_group(fs_info, logical);
--	ASSERT(block_group);
-+	if (WARN_ON_ONCE(!block_group))
-+		return -ENOENT;
- 
- 	/* No MIXED_BG on zoned btrfs. */
- 	if (block_group->flags & BTRFS_BLOCK_GROUP_DATA)
-@@ -2457,6 +2458,7 @@ void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical, u64 len
- 
- out:
- 	btrfs_put_block_group(block_group);
-+	return 0;
- }
- 
- static void btrfs_zone_finish_endio_workfn(struct work_struct *work)
-diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index 6e11533b8e14..17c5656580dd 100644
---- a/fs/btrfs/zoned.h
-+++ b/fs/btrfs/zoned.h
-@@ -83,7 +83,7 @@ int btrfs_sync_zone_write_pointer(struct btrfs_device *tgt_dev, u64 logical,
- bool btrfs_zone_activate(struct btrfs_block_group *block_group);
- int btrfs_zone_finish(struct btrfs_block_group *block_group);
- bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices, u64 flags);
--void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical,
-+int btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info, u64 logical,
- 			     u64 length);
- void btrfs_schedule_zone_finish_bg(struct btrfs_block_group *bg,
- 				   struct extent_buffer *eb);
-@@ -234,8 +234,11 @@ static inline bool btrfs_can_activate_zone(struct btrfs_fs_devices *fs_devices,
- 	return true;
- }
- 
--static inline void btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info,
--					   u64 logical, u64 length) { }
-+static inline int btrfs_zone_finish_endio(struct btrfs_fs_info *fs_info,
-+					   u64 logical, u64 length)
-+{
-+	return 0;
-+}
- 
- static inline void btrfs_schedule_zone_finish_bg(struct btrfs_block_group *bg,
- 						 struct extent_buffer *eb) { }
 -- 
-2.50.1
-
+Damien Le Moal
+Western Digital Research
 
