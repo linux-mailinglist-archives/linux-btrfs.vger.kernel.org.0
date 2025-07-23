@@ -1,91 +1,109 @@
-Return-Path: <linux-btrfs+bounces-15639-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15640-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874A3B0E841
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jul 2025 03:45:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1BB9B0EA2B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jul 2025 07:48:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F8867A5D8B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jul 2025 01:43:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D80A96C52C9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jul 2025 05:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0C31991DD;
-	Wed, 23 Jul 2025 01:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB406248897;
+	Wed, 23 Jul 2025 05:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ofyKsrDS"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YES4dGLh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F32B82C60
-	for <linux-btrfs@vger.kernel.org>; Wed, 23 Jul 2025 01:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67648248191;
+	Wed, 23 Jul 2025 05:48:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753235098; cv=none; b=chofo1H0qaywDNxYEFuR6nJQVbMbZ6ydlagx7czfBh5ZtxHIjBOuBl7yL4b9L4LCM/t8K6KAcJ7eL35g9ak/LWAkFVsX6nBDVWp94CBL2XSGCGG16wL0RDvncSQb+LQr/8zH+jqvjzqiWNgNd+w0ozfCkkInAX7Rb02Duo09Jao=
+	t=1753249718; cv=none; b=NhfC/B4HuvTlH5W9poCHHNLDKaFNGyFTAq7PRvSxDWEylwGy2NuYH0a98LEReSM7kw+lKTkXK9neapQL6X4+DJjBwMT+VWU7AxOgrMsGRhvIVoRnGjr9SU4PGgpoFIt2u3eTZlTwOjXbGcVUft05qw0ZZWK/HLysqn1ZpUpebD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753235098; c=relaxed/simple;
-	bh=S/yXsu1PO6ofCcMnGaIWpYy3HsQ+nPAOV4ewjPhKU+c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c7aZjmww2iQr7n69g0LInuAFVmPJEPuM7z28mIMKtq425xefJc10F2LkUKrTzZqeFSU0HpeuwydAUSzAyAuK4rzQbw3yc1W4PxG/5UZu9CbbHTeG1erfbG5hijhDvfAMwCjzAZce1h6jBKVujF45P4oUSdKhZRL0TaA0xZlWws4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ofyKsrDS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5B41C4CEEB;
-	Wed, 23 Jul 2025 01:44:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753235098;
-	bh=S/yXsu1PO6ofCcMnGaIWpYy3HsQ+nPAOV4ewjPhKU+c=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ofyKsrDSvVBBbHPYGuOxL15STCzai/mRt0iTcnoNYL18P4yNqYSfnrpFcl9mX88/p
-	 tR7mF4gjitNGtCbC6NOZkGh4YA54mbn7TOx4GwIwrOYjpGMB2E8D6mFcLPFQg+0PQ9
-	 R50/68bb7Oe2ns7T4nnTucgO2ufQG7aJZdQOY7q/F1HHiFsXdR6oN0O1XdmYo3GEK6
-	 VCnNo/pAeXRdBduIw5tpE2OtbvlUHHQc0aa/FOP/vwQiVIFdeAbsfvIx3dui0cxyD5
-	 WGWtG4zKduLn8URz30qrQp7APaEmp5g4NiU3KXYIRkH50Nq3nqDc8uWG/deDIEUBUm
-	 sX1LN2U9y8Xyw==
-Message-ID: <9d39486f-62f5-4a72-9996-02ef6a3f1ae8@kernel.org>
-Date: Wed, 23 Jul 2025 10:42:29 +0900
+	s=arc-20240116; t=1753249718; c=relaxed/simple;
+	bh=GCCdN+4xXs5pyJ3ICNKfeKo0nGQua79dkNsvR4PDyHw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zm9bmJ+o3DeX7cfPqTs/b3Tp2JUjh/t89gduI/fzky/gbKCftFbUdqn5mKI1nJz1fZMj8D+Ct1xVg6lYLw91c/jsMaKIpeMvDdQBrhPh06ibgLX5+E5f2Ug0VCdcEB2lT0eO2M4Ql0WTBf7vSE2p4d3pMyUnN7RnTF+Xmtq91U0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=YES4dGLh; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=5KeNhxScBa51TRCYXf2rX8zFv3I4AcNdg+aKuejBzKQ=; b=YES4dGLhJYdD+tlHhjvdv6jMwd
+	/pFBS1ErLEaH62R328Lsb8lfSdwGsWQbsH6mDgHsE7CtAkMdUphb5u1jqLidMAZO/47yn/8fPcPZW
+	U70Xq14DMYgvIQoVQq102WhdapmQwtIr/yD2DUPj6S+nIOo3NpdoBRBIK/1Ltjml40ofF7x9tLgdM
+	rD4xidfYUQU0dSWWZY+nUjZxwfQNdR8SVb+jgEdsB8PjwsHgW0lAEY/tiGBkvsp87QJ5HlAd/F8+Z
+	TnHrXNy7O8CDhUOvyAqXNKSar7csgXtTFTLvsjtxWoYmnbppZGBo0ZhdyzWj6RCxHFNKJpXLtwBrR
+	5VujQKig==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ueSLD-000000044yA-3CZJ;
+	Wed, 23 Jul 2025 05:48:35 +0000
+Date: Tue, 22 Jul 2025 22:48:35 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>, fstests@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+	linux-xfs@vger.kernel.org, johannes.thumshirn@wdc.com,
+	naohiro.aota@wdc.com
+Subject: Re: [PATCH v2] generic: test overwriting file with mmap on a full
+ filesystem
+Message-ID: <aIB3s2z84mjGGAQM@infradead.org>
+References: <f28ef5098ed18d53df6f94faded1b352bb833527.1752049536.git.fdmanana@suse.com>
+ <681c9dcaca0bf16a694d8f56449618001cf20df6.1752166696.git.fdmanana@suse.com>
+ <aH81_3bxZZrG4R2b@infradead.org>
+ <CAL3q7H4_Pc8F6QA4qY420MZzpF8gyEXsr8Dg83UksSBG2mmWCw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] btrfs: zoned: return error from
- btrfs_zone_finish_endio()
-To: Johannes Thumshirn <jth@kernel.org>, linux-btrfs@vger.kernel.org
-Cc: David Sterba <dsterba@suse.com>, Filipe Manana <fdmanana@suse.com>,
- Naohiro Aota <naohiro.aota@wdc.com>, Josef Bacik <josef@toxicpanda.com>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <20250722113912.16484-1-jth@kernel.org>
- <20250722113912.16484-3-jth@kernel.org>
-From: Damien Le Moal <dlemoal@kernel.org>
-Content-Language: en-US
-Organization: Western Digital Research
-In-Reply-To: <20250722113912.16484-3-jth@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H4_Pc8F6QA4qY420MZzpF8gyEXsr8Dg83UksSBG2mmWCw@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On 7/22/25 8:39 PM, Johannes Thumshirn wrote:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Tue, Jul 22, 2025 at 11:27:35AM +0100, Filipe Manana wrote:
+> > Can you please rework the patch to see that setting the nocow flag
+> > works first and only try with that or something like that?
 > 
-> Now that btrfs_zone_finish_endio_workfn() is directly calling
-> do_zone_finish() the only caller of btrfs_zone_finish_endio() is
-> btrfs_finish_one_ordered().
-> 
-> btrfs_finish_one_ordered() already has error handling in-place so
-> btrfs_zone_finish_endio() can return an error if the block group lookup
-> fails.
-> 
-> Also as btrfs_zone_finish_endio() already checks for zoned filesystems and
-> returns early, there's no need to do this in the caller.
-> 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Reworking it is late as it's already in for-next, but we can add a
+> patch to skip it on zoned xfs:
 
-Looks OK.
+It though I explained it before, but let me try again.
 
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+This is not about zoned xfs, zoned xfs is just the canary in the coal
+mine.
 
--- 
-Damien Le Moal
-Western Digital Research
+The test fundamentally assumes file systems can overwrite without
+space allocations.  And then noticed that this isn't true with a weird
+btrfs hack.
+
+It needs to be reworked to only run when that is known to be true.
+
+> 
+> 1) The quickest way would be to add to the test:
+> _require_non_zoned_device $SCRATCH_DEV
+
+That test is not relevant here.  While zoned device require out of place
+updates, they are also common for many other cases.
+
+> 2) Or add a "_require_nocow_data_writes" helper to check we can write
+> in place and skip the test if not, as you suggest, as it's more
+> generic in case there are other filesystems or configurations where
+> data writes are always COWed.
+
+That's the only thing that works.  Only run on file systems that are
+known to do in-place updates, or in the odd btrfs case can be forced to
+even if they don't normally do it.
+
+To be honest the hardcoded btrfs hack should have been a big red flag,
+those almost always means the test is fishy.
+
 
