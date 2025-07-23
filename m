@@ -1,180 +1,439 @@
-Return-Path: <linux-btrfs+bounces-15647-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15648-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18401B0F655
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jul 2025 17:01:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 423D1B0F98B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jul 2025 19:46:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2230168FED
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jul 2025 14:58:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 786A63A13AA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jul 2025 17:44:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C5262F85C7;
-	Wed, 23 Jul 2025 14:49:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E78E5221729;
+	Wed, 23 Jul 2025 17:44:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mfkmP10r"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="duqPXX6V"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f195.google.com (mail-yw1-f195.google.com [209.85.128.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC7F2F49FC;
-	Wed, 23 Jul 2025 14:49:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D6C220F37
+	for <linux-btrfs@vger.kernel.org>; Wed, 23 Jul 2025 17:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753282160; cv=none; b=pnJ9Z36MCOu+ZbbEu3xqXACGyrWJbB3LEmuha6KIWHm57VDb83wvH2JtFrMtoVwLZVRuGuZXQa9gTwhOo1QNLb8sdYM2hwgbMih/lK/NFDt3uMe6bA0ZfLTgBK9MCZOqIKek64qqntJ6EB73SFeIBFga3c7xUNbFG8CwrCUswyY=
+	t=1753292685; cv=none; b=R7Np66JCcr1Kvc1JuQuSWKJvQ/fMjNF0wbZ27+ZJUWDwR5x73A/F2QXGKtCod+OgWJMHnIfMrK1c0C8YBxiNpUl9UX00H+FsL/uPdxg6FD/UHP1R+0JXAg9/t/tTW+WysF4S/XhMr53zeqpqYUEn8R4dNscoe+kWhF/UZvDkg4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753282160; c=relaxed/simple;
-	bh=uJNb0J1C5TY2VvN8jY4X8ugBBiIqaVX1ecgp4EbJ9r8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EUowdDB4BfexeatRRm5Pnv/7t4Lx/FPTtl0GhB2lNQzRH4kfTIz2E6kfmANwxAIHy2ZO2arIhxSIXeJCPFYxW3d1uB0HxgyXaOxrCiY1FRfqZdqYNjPk37a/zxdsM4kVUbxp+XUjCpWvQjn9kSE5uP5D+4YzuxkbSVuV37EB1qU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mfkmP10r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 673F6C2BD04;
-	Wed, 23 Jul 2025 14:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753282158;
-	bh=uJNb0J1C5TY2VvN8jY4X8ugBBiIqaVX1ecgp4EbJ9r8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mfkmP10rDSe+Z9fIhKInnrDo/oHC/3N/n0JgDyzGs8QZcz85TbmbQn978sAS0Yzzl
-	 ebFEYezr4JwBxAJJbkh3NeEiGAMd8nOG7/7Xt6EsC/95yhPDrc3Li077mcWmEYOaj5
-	 Pn8NfCAGZ/CvgP42/8xsOoCysAnv2suYvyT4ASs3QwC+ClFff242KfjbYhdwtReMjT
-	 9n/BhzWO3fpHjpFJfyhS0vwDa3z/njwH3EcU0aZN9fG9dbTcIA4QgIGp9aovurrjmD
-	 Yrw8uRKSrQVTV7aCJqFzsIinnRf7OYtB1PMii48n4IyT4IBzQmLW4Ahe1DvN2vFr8S
-	 F3Fi/b4ZN3/yg==
-Date: Wed, 23 Jul 2025 07:49:17 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] generic/211: verify if the filesystem being tested
- supports in place writes
-Message-ID: <20250723144917.GL2672039@frogsfrogsfrogs>
-References: <7ba7d315e60388593ccef0353cff58c4b5795615.1753272216.git.fdmanana@suse.com>
+	s=arc-20240116; t=1753292685; c=relaxed/simple;
+	bh=7DP4PGv88H+yTSJfF06w8PlCONkymZ9eJY1qYlJw2xg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=I58iPQmlSLMMLD6WJiSu+Nnnjpbjw7dZev09xPtiTVJhKEJHo9AP/ofcVCM3rCUJWL6EARvX1Y0OTIh/Rr9bt/N3k0Q3GopLQuDHCisydZoWchwbwV33dosO6ri7zKtY9UdYepCqR0tYjr4/TiTCdtNrvZ//WJeUMZNbmVu33HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=duqPXX6V; arc=none smtp.client-ip=209.85.128.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f195.google.com with SMTP id 00721157ae682-7184015180fso1954717b3.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Jul 2025 10:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753292682; x=1753897482; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zfdCbVTTdUUyubjZc7MkaLtbOv4AlQ+JaEBiH+49uqM=;
+        b=duqPXX6VkBUUMaBTPI5ImbZ8KEVB/ij86XHhmVN51MoxKQzY1LTjprmgRqGPkMYMlV
+         HtmpT/mu0JgXkRRZfbImuodSfilct178I1/ULKv2vDwBT7+e+K5/QXSW/4YhsA2I5Zwq
+         vRVpsxbPTK6s96pactNRpN6fLK91KqNGlvrqcobJX6H+KcUuYodagp9ki7mUtgrZmSSZ
+         wj8xSBRm0T+FhFE7iQVW/TJU+jKIWPjzwY2U6iTb27s5bNhNZ1aggAU3hF1VbcwSE/Fd
+         M8RHf5GToWhA7+75/aJaySYj4tvg5NfPzRdQMnPyEiywBMkENqQCBKWiZSidHFIQUOA7
+         T8/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753292682; x=1753897482;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zfdCbVTTdUUyubjZc7MkaLtbOv4AlQ+JaEBiH+49uqM=;
+        b=FFCziv3wd/b1Cl31SWM54eHhB/yASnWUESEHN0FTba4jHM58rJeX8iRQ++ZON4upbr
+         js1Y948tz3/NjmfSUi0MfXWGlP7015zTVxTVHYCVIPXW2j+1fC9v8Tx5yPc+GMQMBkzZ
+         UcxEKGanRSIT9hE1MfVNUNpMWJRKHjiVirlJhAmSN8gK9LFmfd26AvR3ojtJscoAMTXX
+         a8IzANgOaWJVUOtR7Wv/8qwAEDI7Zb7bEOx2ndpvsD+lEXtdS+ao1zvEDgQwD7YeUwAZ
+         GsFUp8N1d1mvTck/QQrkKZ+BOjriC9oN8HHJ2BrqlACYHaQ4RLeEWt6CjmqJbNwTIzk6
+         QP0g==
+X-Forwarded-Encrypted: i=1; AJvYcCVwz6TujUbLIbJQpkXlbrhoay1YUmsYEZ+dfKpO5TACPA6k1LAA/sXB8CExs+Wu1Tu9N23pl8HBU0dR7w==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx0LKOczZEP2vJkBQk1uggOJEnqVBODkot+5zcAByOTOTn9tHwZ
+	1yRk55eyqXwnpv8d/595FjiBD8XjzBRQ87aeBIySS4d7hTOj8/z+zydo
+X-Gm-Gg: ASbGncs9ZPJHuC/4/R711qiU8Yje2MLS3zBDouy1t9RFPirlK9t70RFUhZGrNjibVUl
+	YT+a/Szbv9cbN9FO9CKsp0KGbLsF9Je4+jyRcfyUhPHJsx5AF2Q+z39BmEiNI9RU7SXkekeWd69
+	SYgksVEIewrP/Mps0+kywcmNu7wdBH2W9e8Uww8uz9DBlohvh+EcHNsVfOZ3+nPDlcsMHu04nAD
+	p06aTmRnagNZNSNYJRlpXNm58GdqBoK0CxLyjHHj6KKDGGHaxbZtdKuWsUEG0umaKsJeCAPXQDt
+	ukxgL0L5QSVgGrjDvsk7CHz6n7DPMBgjHT18twRBAFJ0syI1wnnGJqjf1HSm0C3j3V4IId0FtTD
+	88pvLn3Nkno5kbbEPmA==
+X-Google-Smtp-Source: AGHT+IFTqU8GvyDe9ZH68RZOrz0/u3aSZih9hYhCi/d7hNotKq4NIfHl9KoJEKUF+1/1onoaz9teNA==
+X-Received: by 2002:a05:690c:296:b0:717:c1dc:455b with SMTP id 00721157ae682-719b4226be0mr53700007b3.31.1753292681698;
+        Wed, 23 Jul 2025 10:44:41 -0700 (PDT)
+Received: from localhost ([2a03:2880:25ff:55::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-7195310b045sm30869137b3.3.2025.07.23.10.44.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jul 2025 10:44:41 -0700 (PDT)
+From: Leo Martins <loemra.dev@gmail.com>
+To: David Sterba <dsterba@suse.cz>
+Cc: Filipe Manana <fdmanana@kernel.org>,
+	linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com,
+	jlayton@kernel.org
+Subject: Re: [PATCH] btrfs: implement ref_tracker for delayed_nodes
+Date: Wed, 23 Jul 2025 10:44:26 -0700
+Message-ID: <20250723174434.3484810-1-loemra.dev@gmail.com>
+X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20250711103853.GC22472@twin.jikos.cz>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ba7d315e60388593ccef0353cff58c4b5795615.1753272216.git.fdmanana@suse.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 23, 2025 at 01:04:06PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> The test currently assumes the filesystem can do in place writes (no
-> Copy-On-Write, no allocation of new extents) when overwriting a file.
-> While that is the case for most filesystems in most configurations, there
-> are exceptions such as zoned xfs where overwriting results in allocating
-> new extents for the new data.
-> 
-> So make the test check that in place writes are supported and skip the
-> test if they are not supported.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+On Fri, 11 Jul 2025 12:38:53 +0200 David Sterba <dsterba@suse.cz> wrote:
 
-This is a smarter sollution than the fugly hack that I came up with:
+> On Thu, Jul 10, 2025 at 12:54:34PM +0100, Filipe Manana wrote:
+> > > @@ -63,10 +109,18 @@ struct btrfs_delayed_node {
+> > >         struct rb_root_cached del_root;
+> > >         struct mutex mutex;
+> > >         struct btrfs_inode_item inode_item;
+> > > +
+> > >         refcount_t refs;
+> > > -       int count;
+> > > +       /* Used to track all references to this delayed node. */
+> > > +       btrfs_delayed_node_ref_tracker_dir ref_dir;
+> > > +       /* Used to track delayed node reference stored in node list. */
+> > > +       btrfs_delayed_node_ref_tracker node_list_tracker;
+> > > +       /* Used to track delayed node reference stored in inode cache. */
+> > > +       btrfs_delayed_node_ref_tracker inode_cache_tracker;
+> > > +
+> > >         u64 index_cnt;
+> > >         unsigned long flags;
+> > > +       int count;
+> > 
+> > Why are you moving the count field?
+> > This increases the size of the struct even without the new config
+> > option enabled and as a result we get less objects per page.
+> > You are essentially reverting this commit:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a20725e1e7014642fc8ba4c7dd2c4ef6d4ec56a9
+> > 
+> > Without any explanation about why.
 
-# Don't run on mounted filesystems that only support out of place writes
-if [ "$FSTYP" = "xfs" ]; then
-	_require_no_xfs_always_cow
-	_require_xfs_scratch_non_zoned
-fi
+Good catch, did not realize that moving the count field increased
+struct size.
 
-Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
-
---D
-
-> ---
->  common/rc         | 59 +++++++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/211 |  1 +
->  2 files changed, 60 insertions(+)
+> > 
+> > I'm also not a big fan of the typedefs and would prefer to have
+> > struct ref_tracker used directly in the structure surrounded by an
+> > #ifdef block.
 > 
-> diff --git a/common/rc b/common/rc
-> index 96578d15..52aade10 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -5873,6 +5873,65 @@ _require_program() {
->  	_have_program "$1" || _notrun "$tag required"
->  }
->  
-> +# Test that a filesystem can do writes to a file in place (without allocating
-> +# new extents, without Copy-On-Write semantics).
-> +_require_inplace_writes()
-> +{
-> +	_require_xfs_io_command "fiemap"
-> +
-> +	local target=$1
-> +	local test_file="${target}/test_inplace_writes"
-> +	local fiemap_before
-> +	local fiemap_after
-> +
-> +	if [ -z "$target" ]; then
-> +		_fail "Usage: _require_inplace_writes <filesystem path>"
-> +	fi
-> +
-> +	rm -f "$test_file"
-> +	touch "$test_file"
-> +
-> +	# Set the file to NOCOW mode on btrfs, which must be done while the file
-> +	# is empty, otherwise it fails.
-> +	if [ "$FSTYP" == "btrfs" ]; then
-> +		_require_chattr C
-> +		$CHATTR_PROG +C "$test_file"
-> +	fi
-> +
-> +	$XFS_IO_PROG -f -c "pwrite 0 128K" -c "fsync" "$test_file" &> /dev/null
-> +	if [ $? -ne 0 ]; then
-> +		rm -f "$test_file"
-> +		_fail "_require_inplace_writes failed to write to test file"
-> +	fi
-> +
-> +	# Grab fiemap output before overwriting.
-> +	fiemap_before=$($XFS_IO_PROG -c "fiemap" "$test_file")
-> +	if [ $? -ne 0 ]; then
-> +		rm -f "$test_file"
-> +		_fail "_require_inplace_writes first fiemap call failed"
-> +	fi
-> +
-> +	$XFS_IO_PROG -c "pwrite 0 128K" -c "fsync" "$test_file" &> /dev/null
-> +	if [ $? -ne 0 ]; then
-> +		rm -f "$test_file"
-> +		_fail "_require_inplace_writes failed to overwrite test file"
-> +	fi
-> +
-> +	fiemap_after=$($XFS_IO_PROG -c "fiemap" "$test_file")
-> +	if [ $? -ne 0 ]; then
-> +		rm -f "$test_file"
-> +		_fail "_require_inplace_writes second fiemap call failed"
-> +	fi
-> +
-> +	rm -f "$test_file"
-> +
-> +	# If the filesystem supports inplace writes, then the extent mapping is
-> +	# the same before and after overwriting.
-> +	if [ "${fiemap_after}" != "${fiemap_before}" ]; then
-> +		_notrun "inplace writes not supported"
-> +	fi
-> +}
-> +
->  ################################################################################
->  # make sure this script returns success
->  /bin/true
-> diff --git a/tests/generic/211 b/tests/generic/211
-> index e87d1e01..ed426db2 100755
-> --- a/tests/generic/211
-> +++ b/tests/generic/211
-> @@ -27,6 +27,7 @@ fs_size=$(_small_fs_size_mb 512)
->  _try_scratch_mkfs_sized $((fs_size * 1024 * 1024)) >>$seqres.full 2>&1 || \
->  	_fail "mkfs failed"
->  _scratch_mount
-> +_require_inplace_writes "${SCRATCH_MNT}"
->  
->  touch $SCRATCH_MNT/foobar
->  
-> -- 
-> 2.47.2
+> Agreed, we use typedefs only for function callbacks, for variable types
+> not anymore.
+
+When I try and not use typedefs I end up using more conditional compilation
+which I think hinders readability. Here's a snippet of my best attempt, let
+me know if you see any improvements.
+
+```C
+struct btrfs_delayed_node {
+	...
+#ifdef CONFIG_BTRFS_DEBUG
+	struct ref_tracker_dir ref_dir;
+	struct ref_tracker *node_list_tracker;
+	struct ref_tracker *inode_cache_tracker;
+#endif
+	...
+}
+
+#ifdef
+static inline void
+btrfs_release_delayed_node(struct btrfs_delayed_node *node,
+			   struct ref_tracker **tracker)
+{
+	__btrfs_release_delayed_node(node, 0, tracker);
+}
+
+void btrfs_remove_delayed_node(struct btrfs_inode *inode)
+{
+	struct btrfs_delayed_node *delayed_node;
+
+	delayed_node = READ_ONCE(inode->delayed_node);
+	if (!delayed_node)
+		return;
+
+	inode->delayed_node = NULL;
+#ifdef CONFIG_BTRFS_DEBUG
+	btrfs_release_delayed_node(delayed_node,
+				   &delayed_node->inode_cache_tracker);
+#else
+	btrfs_release_delayed_node(delayed_node, NULL);
+#endif
+}
+```
+
+With this approach I end up needing to add conditional compilation
+anywhere I use node_list_tracker or inode_cache_tracker. This isn't
+too big of an issue since their usage is relatively limited.
+However, I believe this would be an appropriate place for typedefs.
+
+Alternatively, I could have two versions of btrfs_release_delayed_node
+one that takes a struct ref_tracker ** and one that takes a struct {}.
+However, this would mean doing the same for all the functions that
+take a tracker, btrfs_get_delayed_node, btrfs_get_or_create_delayed_node,
+... But, I feel like that is the same as manually unwinding the typedef.
+
+Any guidance would be greatly appreciated! Also curious about the aversion
+to typedefs outside of function callbacks?
+
 > 
+> > I also don't like adding a new Kconfig option just for this... How
+> > much slower would a build with CONFIG_BTRFS_DEBUG=y be?
+> > 
+> > If that's really a lot slower, then perhaps a more generic config
+> > option name in case we add similar tracking to other data structures
+> > one day.
+
+I gathered some data here using fsperf and got some mixed results, most
+tests performed slightly worse, and some got much worse
+(dbench60, emptyfiles500k). I think it would be acceptible to keep in
+CONFIG_BTRFS_DEBUG, but I think it could definitely benefit from
+its own option, CONFIG_BTRFS_REF_TRACKER.
+
 > 
+> Right, we want to keep the config options at minimum and for debugging
+> features it should be fine under BTRFS_DEBUG. If this needs to be
+> configured for performance reasons then it can be a mount option, same
+> as we have ref-verify or fragment already.
+
+If we wanted to allow turning ref_tracker on via mount option we would
+not be able to compile out the ref_tracker objects in delayed_node which
+would cause a change in size from 304 bytes to 400 bytes.
+
+baseline represents CONFIG_BTRFS_DEBUG=y without ref_tracker
+current represents CONFIG_BTRFS_DEBUG=y with ref_tracker
+** means 2*stdev worse
+```
+[root@localhost fsperf]# ./fsperf -p "baseline" -n 5
+...
+<enable ref_tracker>
+[root@localhost fsperf]# ./fsperf -p "tracker" -n 5
+...
+[root@localhost fsperf]# ./fsperf-compare "baseline" "tracker"
+['btrfs']
+btrfs test results
+bufferedappenddatasync results
+      metric           baseline      current       stdev            diff
+==============================================================================
+avg_commit_ms               1.91          1.85         0.13    -3.23%
+bg_count                    4.60          4.40         0.55    -4.35%
+commits                       20         21.20         2.12     6.00%
+dev_read_iops          262187.60     262190.40         8.32     0.00%
+dev_read_kbytes          1020.80          1040        42.93     1.88%
+dev_write_iops        3129696.80       3126160      2909.20    -0.11%
+dev_write_kbytes        43783448   43726868.80     46497.53    -0.13%
+elapsed                   301.60        300.60         9.29    -0.33%
+end_state_mount_ns      46733159      44610208   3503084.15    -4.54%
+end_state_umount_ns     2.77e+09      2.58e+09     2.17e+08    -6.65%
+max_commit_ms               2.80          2.40         0.84   -14.29%
+sys_cpu                    61.80         61.69         0.54    -0.17%
+write_bw_bytes           3572197    3584941.20    106296.35     0.36%
+write_clat_ns_mean      29694.09      29299.92      4510.28    -1.33%
+write_clat_ns_p50       28262.40      27955.20      4380.52    -1.09%
+write_clat_ns_p99       48793.60      48281.60      7226.28    -1.05%
+write_io_kbytes          1048576       1048576            0     0.00%
+write_iops                872.12        875.23        25.95     0.36%
+write_lat_ns_max       764860.40        634311    354679.35   -17.07%
+write_lat_ns_mean       29981.52      29539.17      4518.22    -1.48%
+write_lat_ns_min        21404.80      21060.40       315.78    -1.61%
+
+bufferedrandwrite16g results
+      metric           baseline       current       stdev            diff
+===============================================================================
+avg_commit_ms              794.59        773.06        27.11    -2.71%
+commits                     83.20         79.80         2.05    -4.09%
+dev_read_iops              658.60        521.20       335.31   -20.86%
+dev_read_kbytes           9478.40       7334.40      5341.58   -22.62%
+dev_write_iops         5801247.80    5721033.20     53643.07    -1.38%
+dev_write_kbytes      44303422.40   43038694.40    853851.59    -2.85%
+elapsed                       360           347        21.94    -3.61%
+end_state_mount_ns    58480927.20   59131105.80    873330.39     1.11%
+end_state_umount_ns      9.10e+09      8.71e+09     3.41e+08    -4.33%
+max_commit_ms                1624       1630.60        53.77     0.41%
+sys_cpu                     35.52         35.88         1.25     1.00%
+write_bw_bytes        47983181.20      49673467   2727170.05     3.52%
+write_clat_ns_mean       83559.03      80805.49      5123.88    -3.30%
+write_clat_ns_p50        27622.40      27417.60       879.39    -0.74%
+write_clat_ns_p99       152166.40     171417.60      9864.47    12.65%
+write_io_kbytes          16777216      16777216            0     0.00%
+write_iops               11714.64      12127.31       665.81     3.52%
+write_lat_ns_max         2.93e+09      2.21e+09     1.41e+09   -24.81%
+write_lat_ns_mean        83674.85      80915.46      5128.53    -3.30%
+write_lat_ns_min         16718.40      16552.40       455.01    -0.99%
+
+dbench60 results
+      metric           baseline     current       stdev            diff
+=============================================================================
+avg_commit_ms               31.72      33.63          1.24     6.04%
+bg_count                        4          4             0     0.00%
+close                        4.32       6.06          0.54    40.36%**
+commits                        24         24             0     0.00%
+deltree                    526.48     610.32         31.73    15.92%**
+dev_read_iops            75597.20      65111       1808.47   -13.87%**
+dev_read_kbytes              1040       1040             0     0.00%
+dev_write_iops         1545476.80    1347859      52326.80   -12.79%**
+dev_write_kbytes      18026305.60   15533764     691195.60   -13.83%**
+end_state_mount_ns    48171843.60   45794087    2671959.83    -4.94%
+end_state_umount_ns      1.85e+09   1.85e+09   41447992.49    -0.14%
+find                        29.76      41.82          2.56    40.52%**
+flush                      122.33     111.94         19.45    -8.49%
+lockx                        0.95       1.21          0.45    27.55%
+max_commit_ms               38.40      45.40          2.30    18.23%**
+mkdir                        0.08       0.18          0.04   129.35%**
+ntcreatex                   35.41      48.84          3.60    37.95%**
+qfileinfo                    3.52       3.31          1.12    -6.11%
+qfsinfo                      4.25       4.46          0.33     4.95%
+qpathinfo                   25.30      32.56          3.72    28.68%
+readx                        7.56       7.97          1.92     5.49%
+rename                      50.33      50.86         12.36     1.06%
+sfileinfo                    9.17       8.60          1.67    -6.22%
+throughput                 315.59     282.74         10.32   -10.41%**
+unlink                      44.87      54.50          6.19    21.44%
+unlockx                      0.75       2.19          0.37   191.39%**
+writex                      98.36      92.78         17.51    -5.68%
+
+dio4kbs16threads results
+      metric           baseline       current        stdev            diff
+================================================================================
+avg_commit_ms             2339.20       1071.20        975.30   -54.21%
+bg_count                       20            20             0     0.00%
+commits                         1             1             0     0.00%
+dev_read_iops                  48            48             0     0.00%
+dev_read_kbytes              1040          1040             0     0.00%
+dev_write_iops         1105312.80       1070254      11754.77    -3.17%**
+dev_write_kbytes       4919395.20    4815462.40      57354.39    -2.11%
+elapsed                        61            61             0     0.00%
+end_state_mount_ns    50869016.60   50826535.40    1496475.65    -0.08%
+end_state_umount_ns      3.02e+09      2.99e+09   43691601.05    -0.97%
+frag_pct_max                98.38         98.43          0.55     0.05%
+frag_pct_mean               51.91         51.61          0.27    -0.59%
+frag_pct_min                 5.45          4.79          0.29   -12.12%
+frag_pct_p50                51.91         51.61          0.27    -0.59%
+frag_pct_p95                98.38         98.43          0.55     0.05%
+frag_pct_p99                98.38         98.43          0.55     0.05%
+fragmented_bg_count             2             2             0     0.00%
+max_commit_ms             2339.20       1071.20        975.30   -54.21%
+sys_cpu                     18.11         17.24          0.06    -4.78%
+write_bw_bytes           72547808   69915896.40     851270.12    -3.63%**
+write_clat_ns_mean      900096.95     933821.96      10417.71     3.75%**
+write_clat_ns_p50       400179.20     394444.80       4486.94    -1.43%
+write_clat_ns_p99      2657484.80       2867200      37361.27     7.89%**
+write_io_kbytes        4255195.20    4102859.20      48123.74    -3.58%**
+write_iops               17711.87      17069.31        207.83    -3.63%**
+write_lat_ns_max         9.19e+08      9.59e+08      1.02e+08     4.37%
+write_lat_ns_mean       900449.84     934178.51      10411.01     3.75%**
+write_lat_ns_min        148662.20     149014.40       3485.37     0.24%
+
+diorandread results
+      metric           baseline       current        stdev            diff
+================================================================================
+avg_commit_ms                5.31          5.49          0.08     3.35%**
+bg_count                       18            18             0     0.00%
+commits                        18            18             0     0.00%
+dev_read_iops          2755803.60    2722414.60      23232.33    -1.21%
+dev_read_kbytes       11022186.40   10888630.40      92929.32    -1.21%
+dev_write_iops           41688.20      42010.80        312.31     0.77%
+dev_write_kbytes         16897548      16897548             0     0.00%
+elapsed                        61            61             0     0.00%
+end_state_mount_ns    47309004.80   49367506.20    1371322.67     4.35%
+end_state_umount_ns      1.07e+09      1.07e+09    6066020.04    -0.10%
+max_commit_ms                6.60          6.60          0.55     0.00%
+read_bw_bytes            1.88e+08      1.86e+08    1587441.01    -1.21%
+read_clat_ns_mean       345830.30     350152.25       2831.51     1.25%
+read_clat_ns_p50        327270.40     331366.40       2243.47     1.25%
+read_clat_ns_p99        647987.20     656179.20       9340.32     1.26%
+read_io_bytes            1.13e+10      1.11e+10   95159625.71    -1.21%
+read_io_kbytes        11022186.40   10888630.40      92929.32    -1.21%
+read_iops                45924.71      45368.09        387.56    -1.21%
+read_lat_ns_max           4530461   13372441.20    2563283.41   195.17%**
+read_lat_ns_mean        346044.45     350359.97       2846.68     1.25%
+read_lat_ns_min         138696.20        134640       4341.30    -2.92%
+sys_cpu                     24.22         24.16          0.21    -0.23%
+
+emptyfiles500k results
+      metric           baseline       current        stdev           diff
+===============================================================================
+avg_commit_ms               26.60         24.20          5.13   -9.02%
+bg_count                        3             3             0    0.00%
+commits                         1             1             0    0.00%
+dev_read_iops                  48            48             0    0.00%
+dev_read_kbytes              1040          1040             0    0.00%
+dev_write_iops             842.80           842         15.27   -0.09%
+dev_write_kbytes         13460.80         13448        244.33   -0.10%
+elapsed                     42.20         42.20          0.84    0.00%
+end_state_mount_ns    48019710.20   47157285.80    2091327.38   -1.80%
+end_state_umount_ns      1.46e+09      1.46e+09   26640049.48    0.04%
+max_commit_ms               26.60         24.20          5.13   -9.02%
+sys_cpu                      5.47          7.76          0.18   41.97%**
+write_bw_bytes         3077613.60    3073469.80      66469.32   -0.13%
+write_clat_ns_mean       67202.18      98477.96       1091.86   46.54%**
+write_clat_ns_p50        63027.20      93900.80       1061.71   48.98%**
+write_clat_ns_p99       135270.40     169779.20       4165.81   25.51%**
+write_io_kbytes            125000        125000             0    0.00%
+write_iops                 751.37        750.36         16.23   -0.13%
+
+randwrite2xram results
+      metric           baseline       current       stdev           diff
+==============================================================================
+avg_commit_ms              872.44        847.24        13.74   -2.89%
+commits                        60         71.40         4.85   19.00%**
+dev_read_iops              630.40       1092.60       240.86   73.32%
+dev_read_kbytes           9414.40      16627.20      3800.10   76.61%
+dev_write_iops         5119929.40    5187028.80    123210.86    1.31%
+dev_write_kbytes      37392001.60   39529271.20   1840547.09    5.72%
+elapsed                    312.80        312.20         0.84   -0.19%
+end_state_mount_ns    58923162.40   58027381.60   2021748.73   -1.52%
+end_state_umount_ns      1.06e+10      1.07e+10     5.74e+08    0.87%
+max_commit_ms             1608.60       1549.20       116.36   -3.69%
+sys_cpu                      9.83          9.63         0.10   -2.02%
+write_bw_bytes        48972662.80   47887587.20    400536.11   -2.22%**
+write_clat_ns_mean      331763.74     339356.86      2837.07    2.29%**
+write_clat_ns_p50        29721.60      30028.80       642.55    1.03%
+write_clat_ns_p99       297164.80        329728     34486.16   10.96%
+write_io_kbytes       14378941.60   14054288.80    129599.67   -2.26%**
+write_iops               11956.22      11691.31        97.79   -2.22%**
+write_lat_ns_max         2.24e+09      2.23e+09     1.17e+08   -0.41%
+write_lat_ns_mean       331873.49     339472.07      2838.23    2.29%**
+write_lat_ns_min         18096.40      17637.40       772.99   -2.54%
+
+smallfiles100k results
+      metric           baseline       current        stdev           diff
+===============================================================================
+avg_commit_ms               71.00         76.99          3.72    8.44%
+bg_count                       19            19             0    0.00%
+commits                     12.40         12.60          1.52    1.61%
+dev_read_iops                 111        111.80          9.82    0.72%
+dev_read_kbytes           1865.60       1875.20        166.89    0.51%
+dev_write_iops         2183867.80    2183585.60      12589.22   -0.01%
+dev_write_kbytes      21161021.60   21168306.40      71548.04    0.03%
+elapsed                    390.40        391.40         47.79    0.26%
+end_state_mount_ns    42532681.60   42288602.40    1686619.50   -0.57%
+end_state_umount_ns      7.44e+09      8.06e+09      4.25e+08    8.30%
+max_commit_ms              132.20           135          9.83    2.12%
+sys_cpu                     39.03         39.36          4.34    0.86%
+write_bw_bytes           5.46e+08      5.45e+08   58484454.42   -0.16%
+write_clat_ns_mean       12794.53      12769.69       3097.83   -0.19%
+write_clat_ns_p50        11315.20         11264       3334.89   -0.45%
+write_clat_ns_p99        27545.60      27494.40       5067.25   -0.19%
+write_io_kbytes          2.04e+08      2.04e+08             0    0.00%
+write_iops              133271.81     133057.37      14278.43   -0.16%
+write_lat_ns_max         34433966   34705517.60    4302608.84    0.79%
+write_lat_ns_mean        12881.08      12859.97       3106.37   -0.16%
+write_lat_ns_min             5946       5814.40        204.95   -2.21%
+```
+
+Sent using hkml (https://github.com/sjp38/hackermail)
 
