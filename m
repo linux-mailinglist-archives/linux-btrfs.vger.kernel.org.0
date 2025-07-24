@@ -1,130 +1,639 @@
-Return-Path: <linux-btrfs+bounces-15655-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15656-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2AA0B10184
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Jul 2025 09:18:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 359E7B10963
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Jul 2025 13:40:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DC4E7B9695
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Jul 2025 07:16:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AF54166174
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Jul 2025 11:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE11223DCF;
-	Thu, 24 Jul 2025 07:17:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C49F6283C83;
+	Thu, 24 Jul 2025 11:40:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="uLj9TrND"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WDqPy7Vk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 845FE1F3FF8;
-	Thu, 24 Jul 2025 07:17:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1742023D291
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Jul 2025 11:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753341462; cv=none; b=GtaymQufqsrrntsWOPrtEHL0XFi58weTfnBV13EqJeQguWIZ0zXxQL/IweikV4NE5dYLy4Pk8BDbIeixlBZY2HaeLIa4bCR2YAkcgd6h9Il8fUB805AxZv020J7tkaM4hp0mJUx5aleWzJla2w2YxX6jkWJJkNpV3lPZ3JtZQMg=
+	t=1753357236; cv=none; b=IdH/tKn+WK1xQbnQjz3Vn7/FBmjIHdiK9cj3ggc2e8U+jrnI3KdAm1ds/kf3xpVp9YWuQCcTDGGVest05wmCXBsPffXJ8r4+0DtegUPTYQOpu/pCMj3Ic2GCCII0A99tabA691GhQ760fC54DuB/NvoZ1YeG2ZJMw7o1y+7HJzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753341462; c=relaxed/simple;
-	bh=DUDL7NEgwkzzl5dMtsHYd9jnSBtXxB9d9jWolYBO4co=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L27xbH9+3LY30kMdjPT8KJMmkJ+yq8KR/xHLhLZizzFDbX3sfISvVyhJ/3apkjlpDPc2SKaCXzFBVXfx3eD8dQUxo+/UJYubso7cHjQNNHL20XhLLgfoV8vvIcCGS96zlH4NiZtAgluAjboG2SevBVdsq8a27wUmsjv6sxsSbRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=uLj9TrND; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=/JC9UrKxywzmx4oRz+Vl7bZIXmhiSvJvj2A9nXL991M=; b=uLj9TrNDWROymCmPOxbtxRcE2r
-	ul+evR9F1odZOuVhK5ziNk+ZEQEvmjbmap1qF9HtrMUzJAFMfZFjZA+i5+NFzV9QhKDm0IQjXnbcN
-	Ulbg2Tt3wBCfZ/hjH4BlThvUX1zOb6QvB6s8L3fW9t1d5nrkDxxnBH3A5B91Em7LCy9GVY07U6+Tw
-	DDSKDj6A+rDbsWi5Z0JltNQudCbyXoonT1KYi+JsO1th0EUzKks4zuDX/5qvj741keXoszXWAY10o
-	1dNJQh6vlI8EMXrXNfbvxmDPBEkX2OX9QrUuxXVGN8gXn4neCdRrQrDAcCDD8pGkoeUZBF7u/4mcA
-	JxtI9kwg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ueqCx-00000006gG4-3SQE;
-	Thu, 24 Jul 2025 07:17:39 +0000
-Date: Thu, 24 Jul 2025 00:17:39 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] generic/211: verify if the filesystem being tested
- supports in place writes
-Message-ID: <aIHeE0a5SdFoCqaP@infradead.org>
-References: <7ba7d315e60388593ccef0353cff58c4b5795615.1753272216.git.fdmanana@suse.com>
+	s=arc-20240116; t=1753357236; c=relaxed/simple;
+	bh=mltdrQhffFE6hL5PQu1K+kLZdKiKp0QDC3nM3tj6vW4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LYQ/d0pU+rEFQ4eN8SAWeMIZoi/2at6OWA+Ht4yshHVZaPZea6mKi35tObcoPB/22nyvUxUDmbuOqptzREU4spzOVOOSLIhEOg+7yAR0aTsDC//odz/lROAUGGq+8dXlDoMT9s5H582E3nPU/IHkKZnQxQ5SDPwrYmWIvukC70A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WDqPy7Vk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75FA3C4CEEF
+	for <linux-btrfs@vger.kernel.org>; Thu, 24 Jul 2025 11:40:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753357235;
+	bh=mltdrQhffFE6hL5PQu1K+kLZdKiKp0QDC3nM3tj6vW4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=WDqPy7Vk+PXoaH+XM7RlSS5WbVrzkgM5Wc5ii82NL/uPPeAOYumtniXPisPbWr2fb
+	 tvJcPzyrgb2xWJ17c6hPPXDUCpRaXBgkty68wn17QOT8AF7j9KmCA7umX0kCDAznuE
+	 Db0wxIvWn8gza9uuR0sMX+2clRm/KYH5OKmQcE3+umkDUnxI/3O0DjHGErPWJKCSfs
+	 7xsCyiRNl81tDtz2igRcfGvdu8VcOQAjD3ZUFQnxi5gWWi5Kkl8ZHP34xQ8gRkBBWw
+	 EsvvtRvHHBQGzkE7BSoQWVjdyVV1potIfLfJLI2R9aTykZAOWHwq5+Fe5NBWo+4U51
+	 GkBO1X7te9l8g==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-aec46b50f33so141372966b.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Jul 2025 04:40:35 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwpiN1JP7sGeo78hY3tzK360Ri6qdMnk/AVXuZ0TEVhv+IG2MFJ
+	vYR1evPSVBeaqrERi99Vj7gISRarhXE7P7JWAbNXXq5TEFVybtpAQgktZjZ78qulFHSfk5Wy2QU
+	7kagGt5aSn+Is28n3PBvg+fb8nq4CE+A=
+X-Google-Smtp-Source: AGHT+IEIiwPPKCJ+JEIDLN5e6xbhAMX9+BkG9KiEWwqKFW34dup4wj62mmsuN2lk6ApSdVAVK3pSFOc1sXeR3YDXfho=
+X-Received: by 2002:a17:907:60d1:b0:ad8:9a86:cf52 with SMTP id
+ a640c23a62f3a-af2f66c1e43mr689228566b.11.1753357233778; Thu, 24 Jul 2025
+ 04:40:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ba7d315e60388593ccef0353cff58c4b5795615.1753272216.git.fdmanana@suse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <598ecc75-eb80-41b3-83c2-f2317fbb9864@gmail.com> <c9a94a06-4e1c-431c-bfc2-74371493eb8a@gmail.com>
+In-Reply-To: <c9a94a06-4e1c-431c-bfc2-74371493eb8a@gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 24 Jul 2025 12:39:56 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6-29RqfT1M17BH8_q-aYV1kSQuqZJE6syoq=85cmXz+Q@mail.gmail.com>
+X-Gm-Features: Ac12FXwMK4WdOebl65p_s-tU8O0Sx6DeA0kTU9GdmAAYORNLhogFDniGLLA7sF4
+Message-ID: <CAL3q7H6-29RqfT1M17BH8_q-aYV1kSQuqZJE6syoq=85cmXz+Q@mail.gmail.com>
+Subject: Re: Null deref during attempted replay of corrupt TREE_LOG in newer kernel
+To: Russell Haley <yumpusamongus@gmail.com>
+Cc: linux-btrfs@vger.kernel.org, fdmanana@suse.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 23, 2025 at 01:04:06PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> The test currently assumes the filesystem can do in place writes (no
-> Copy-On-Write, no allocation of new extents) when overwriting a file.
-> While that is the case for most filesystems in most configurations, there
-> are exceptions such as zoned xfs where overwriting results in allocating
-> new extents for the new data.
-> 
-> So make the test check that in place writes are supported and skip the
-> test if they are not supported.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  common/rc         | 59 +++++++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/211 |  1 +
->  2 files changed, 60 insertions(+)
-> 
-> diff --git a/common/rc b/common/rc
-> index 96578d15..52aade10 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -5873,6 +5873,65 @@ _require_program() {
->  	_have_program "$1" || _notrun "$tag required"
->  }
->  
-> +# Test that a filesystem can do writes to a file in place (without allocating
-> +# new extents, without Copy-On-Write semantics).
-> +_require_inplace_writes()
-> +{
-> +	_require_xfs_io_command "fiemap"
-> +
-> +	local target=$1
-> +	local test_file="${target}/test_inplace_writes"
-> +	local fiemap_before
-> +	local fiemap_after
-> +
-> +	if [ -z "$target" ]; then
-> +		_fail "Usage: _require_inplace_writes <filesystem path>"
-> +	fi
-> +
-> +	rm -f "$test_file"
-> +	touch "$test_file"
-> +
-> +	# Set the file to NOCOW mode on btrfs, which must be done while the file
-> +	# is empty, otherwise it fails.
-> +	if [ "$FSTYP" == "btrfs" ]; then
-> +		_require_chattr C
-> +		$CHATTR_PROG +C "$test_file"
-> +	fi
+On Thu, Jul 24, 2025 at 3:15=E2=80=AFAM Russell Haley <yumpusamongus@gmail.=
+com> wrote:
+>
+> Gentle ping.
+>
+> @Filipe You've recently submitted a cleanup of the log replay code, so I
+> assume you're familiar with it. Is there anything Funny Lookin' in the
+> path that handles a corrupt TREE_LOG? Would've changed sometime between
+> 6.14.9 and 6.15.4.
 
-Can you factor this into a _force_inplace helper instead of spreading
-file systems specific in random helpers (I know we have a few of those,
-but we need to get rid of that to make things maintainable..)
+No need to ping, I'm well aware of the issue, it has been reported by
+other people in the mailing list, IRC, bugzillas, etc.
+I've been looking into the issue, but haven't found yet the cause.
 
-> +	# If the filesystem supports inplace writes, then the extent mapping is
-> +	# the same before and after overwriting.
-> +	if [ "${fiemap_after}" != "${fiemap_before}" ]; then
-> +		_notrun "inplace writes not supported"
+Thanks.
 
-I think in-place would be the more usual spelling instead of inplace.
-
-Otherwise this looks great, thanks!
+>
+> Thanks,
+>
+> Russell
+>
+> On 7/13/25 12:02 PM, Russell Haley wrote:
+> > Howdy,
+> >
+> > After a power outage, my computer booted into emergency mode, apparentl=
+y
+> > due to a corrupt log tree on the root SSD (WD Blue, WDC
+> > WDS500G2B0C-00PXH0). Symptoms basically identical to [1], and I was
+> > eventually able to fix it the same way, with btrfs rescue zero-log.
+> >
+> > *However*, troubleshooting was complicated by the fact that, on kernel
+> > 6.15.4, attempting to mount the corrupt FS even once OOPSed the kernel
+> > and locked the device, making it impossible to run btrfs commands
+> > against it or try different mount options.  This would've been a
+> > showstopper if I didn't have Fedora's backup kernels to try and see tha=
+t
+> > the dmesg error was different. That led me to boot into a live USB with
+> > kernel 6.14.0, from which I was able to investigate.  I then booted int=
+o
+> > backup kernel 6.14.9 (the newest non-problematic) and zeroed the log.
+> >
+> > Facts:
+> >
+> > 1. Kernel 6.15.4 has the null deref.
+> >
+> > 2. Kernel 6.14.9 does not.
+> >
+> > 3. mount -o ro,rescue=3Dnologreplay succeeds on kernel 6.14.0 (from liv=
+e
+> > USB) and 6.15.4 (newer live USB). On 6.15.4, it succeeds if it is the
+> > first mount command run.
+> >
+> > Here's all the evidence I collected before zeroing the log so I could
+> > have a working PC again. It's the log from the bad kernel, one good
+> > kernel, and btrfs inspect-internal dump-super and dump-tree of the
+> > corrupted disk
+> >
+> > Log from kernel 6.15.4:
+> >
+> >> Jul 13 04:25:26 localhost-live kernel: BTRFS: device label fedora_hogw=
+arts devid 1 transid 456817 /dev/mapper/hogwarts-root (252:1) scanned by mo=
+unt (4794)
+> >> Jul 13 04:25:26 localhost-live kernel: BTRFS info (device dm-1): first=
+ mount of filesystem a6999502-9362-4fa7-b7b4-28095790217d
+> >> Jul 13 04:25:26 localhost-live kernel: BTRFS info (device dm-1): using=
+ crc32c (crc32c-x86_64) checksum algorithm
+> >> Jul 13 04:25:26 localhost-live kernel: BTRFS info (device dm-1): using=
+ free-space-tree
+> >> Jul 13 04:25:26 localhost-live kernel: BTRFS info (device dm-1): bdev =
+/dev/mapper/hogwarts-root errs: wr 0, rd 0, flush 0, corrupt 9, gen 0
+> >> Jul 13 04:25:26 localhost-live kernel: BTRFS info (device dm-1): start=
+ tree-log replay
+> >> Jul 13 04:25:26 localhost-live kernel: BUG: kernel NULL pointer derefe=
+rence, address: 0000000000000219
+> >> Jul 13 04:25:26 localhost-live kernel: #PF: supervisor read access in =
+kernel mode
+> >> Jul 13 04:25:26 localhost-live kernel: #PF: error_code(0x0000) - not-p=
+resent page
+> >> Jul 13 04:25:26 localhost-live kernel: PGD 0 P4D 0
+> >> Jul 13 04:25:26 localhost-live kernel: Oops: Oops: 0000 [#1] SMP PTI
+> >> Jul 13 04:25:26 localhost-live kernel: CPU: 0 UID: 0 PID: 4794 Comm: m=
+ount Not tainted 6.15.4-200.fc42.x86_64 #1 PREEMPT(lazy)
+> >> Jul 13 04:25:26 localhost-live kernel: Hardware name: To Be Filled By =
+O.E.M. To Be Filled By O.E.M./Z87 Extreme4, BIOS P3.50 03/11/2018
+> >> Jul 13 04:25:26 localhost-live kernel: RIP: 0010:iput+0x20/0x230
+> >> Jul 13 04:25:26 localhost-live kernel: Code: 90 90 90 90 90 90 90 90 9=
+0 90 f3 0f 1e fa 0f 1f 44 00 00 48 85 ff 0f 84 86 01 00 00 41 54 55 48 8d a=
+f 50 01 00 00 53 48 89 fb <f6> 87 91 00 00 00 01 74 3a e9 68 01 00 00 8b 53=
+ 48 8b 83 90 00 00
+> >> Jul 13 04:25:26 localhost-live kernel: RSP: 0018:ffffd43c0b893740 EFLA=
+GS: 00010206
+> >> Jul 13 04:25:26 localhost-live kernel: RAX: 0000000000000000 RBX: 0000=
+000000000188 RCX: 000000000092a000
+> >> Jul 13 04:25:26 localhost-live kernel: RDX: 0000000000000000 RSI: ffff=
+ffff93bcea60 RDI: 0000000000000188
+> >> Jul 13 04:25:26 localhost-live kernel: RBP: 00000000000002d8 R08: 0000=
+000000000000 R09: ffffffff90db25b6
+> >> Jul 13 04:25:26 localhost-live kernel: R10: ffff8c4aa9480000 R11: ffff=
+f60205a52000 R12: ffffd43c0b8938bf
+> >> Jul 13 04:25:26 localhost-live kernel: R13: 0000000000000000 R14: ffff=
+8c4aa9476690 R15: 00000000fffffffb
+> >> Jul 13 04:25:26 localhost-live kernel: FS:  00007f1b5f3f9840(0000) GS:=
+ffff8c4fc3a71000(0000) knlGS:0000000000000000
+> >> Jul 13 04:25:26 localhost-live kernel: CS:  0010 DS: 0000 ES: 0000 CR0=
+: 0000000080050033
+> >> Jul 13 04:25:26 localhost-live kernel: CR2: 0000000000000219 CR3: 0000=
+00016abc8003 CR4: 00000000001726f0
+> >> Jul 13 04:25:26 localhost-live kernel: Call Trace:
+> >> Jul 13 04:25:26 localhost-live kernel:  <TASK>
+> >> Jul 13 04:25:26 localhost-live kernel:  replay_one_extent+0xba/0x740
+> >> Jul 13 04:25:26 localhost-live kernel:  ? release_extent_buffer+0xb5/0=
+xd0
+> >> Jul 13 04:25:26 localhost-live kernel:  ? copy_extent_buffer+0x126/0x1=
+60
+> >> Jul 13 04:25:26 localhost-live kernel:  ? btrfs_release_path+0x2b/0x1b=
+0
+> >> Jul 13 04:25:26 localhost-live kernel:  replay_one_buffer+0x2ee/0x500
+> >> Jul 13 04:25:26 localhost-live kernel:  ? alloc_extent_buffer+0x97/0x5=
+00
+> >> Jul 13 04:25:26 localhost-live kernel:  ? read_extent_buffer+0x102/0x1=
+40
+> >> Jul 13 04:25:26 localhost-live kernel:  walk_down_log_tree+0x1d8/0x4c0
+> >> Jul 13 04:25:26 localhost-live kernel:  ? kmem_cache_alloc_noprof+0x14=
+1/0x410
+> >> Jul 13 04:25:26 localhost-live kernel:  walk_log_tree+0xe6/0x280
+> >> Jul 13 04:25:26 localhost-live kernel:  btrfs_recover_log_trees+0x1cc/=
+0x5a0
+> >> Jul 13 04:25:26 localhost-live kernel:  ? __pfx_replay_one_buffer+0x10=
+/0x10
+> >> Jul 13 04:25:26 localhost-live kernel:  open_ctree+0x912/0xb98
+> >> Jul 13 04:25:26 localhost-live kernel:  btrfs_get_tree_super.cold+0xb/=
+0xbf
+> >> Jul 13 04:25:26 localhost-live kernel:  vfs_get_tree+0x29/0xd0
+> >> Jul 13 04:25:26 localhost-live kernel:  fc_mount+0x12/0x40
+> >> Jul 13 04:25:26 localhost-live kernel:  btrfs_get_tree_subvol+0x10d/0x=
+210
+> >> Jul 13 04:25:26 localhost-live kernel:  vfs_get_tree+0x29/0xd0
+> >> Jul 13 04:25:26 localhost-live kernel:  vfs_cmd_create+0x57/0xd0
+> >> Jul 13 04:25:26 localhost-live kernel:  __do_sys_fsconfig+0x4b1/0x640
+> >> Jul 13 04:25:26 localhost-live kernel:  do_syscall_64+0x7b/0x160
+> >> Jul 13 04:25:26 localhost-live kernel:  ? __check_object_size.part.0+0=
+x59/0xc0
+> >> Jul 13 04:25:26 localhost-live kernel:  ? _copy_from_user+0x27/0x60
+> >> Jul 13 04:25:26 localhost-live kernel:  ? lookup_constant+0x35/0x50
+> >> Jul 13 04:25:26 localhost-live kernel:  ? vfs_parse_fs_param+0x30/0x10=
+0
+> >> Jul 13 04:25:26 localhost-live kernel:  ? __do_sys_fsconfig+0x354/0x64=
+0
+> >> Jul 13 04:25:26 localhost-live kernel:  ? syscall_exit_to_user_mode+0x=
+10/0x210
+> >> Jul 13 04:25:26 localhost-live kernel:  ? do_syscall_64+0x87/0x160
+> >> Jul 13 04:25:26 localhost-live kernel:  ? syscall_exit_to_user_mode+0x=
+10/0x210
+> >> Jul 13 04:25:26 localhost-live kernel:  ? do_syscall_64+0x87/0x160
+> >> Jul 13 04:25:26 localhost-live kernel:  ? __do_sys_newfstatat+0x4b/0x8=
+0
+> >> Jul 13 04:25:26 localhost-live kernel:  ? syscall_exit_to_user_mode+0x=
+10/0x210
+> >> Jul 13 04:25:26 localhost-live kernel:  ? do_syscall_64+0x87/0x160
+> >> Jul 13 04:25:26 localhost-live kernel:  ? syscall_exit_to_user_mode+0x=
+10/0x210
+> >> Jul 13 04:25:26 localhost-live kernel:  ? do_syscall_64+0x87/0x160
+> >> Jul 13 04:25:26 localhost-live kernel:  ? do_syscall_64+0x87/0x160
+> >> Jul 13 04:25:26 localhost-live kernel:  ? do_syscall_64+0x87/0x160
+> >> Jul 13 04:25:26 localhost-live kernel:  ? exc_page_fault+0x7e/0x1a0
+> >> Jul 13 04:25:26 localhost-live kernel:  entry_SYSCALL_64_after_hwframe=
++0x76/0x7e
+> >> Jul 13 04:25:26 localhost-live kernel: RIP: 0033:0x7f1b5f5d7abe
+> >> Jul 13 04:25:26 localhost-live kernel: Code: 73 01 c3 48 8b 0d 4a 33 0=
+f 00 f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 49 8=
+9 ca b8 af 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 1a 33 0f 00=
+ f7 d8 64 89 01 48
+> >> Jul 13 04:25:26 localhost-live kernel: RSP: 002b:00007ffe53604898 EFLA=
+GS: 00000246 ORIG_RAX: 00000000000001af
+> >> Jul 13 04:25:26 localhost-live kernel: RAX: ffffffffffffffda RBX: 0000=
+556b3a8eb560 RCX: 00007f1b5f5d7abe
+> >> Jul 13 04:25:26 localhost-live kernel: RDX: 0000000000000000 RSI: 0000=
+000000000006 RDI: 0000000000000003
+> >> Jul 13 04:25:26 localhost-live kernel: RBP: 00007ffe536049e0 R08: 0000=
+000000000000 R09: 0000000000000003
+> >> Jul 13 04:25:26 localhost-live kernel: R10: 0000000000000000 R11: 0000=
+000000000246 R12: 0000000000000000
+> >> Jul 13 04:25:26 localhost-live kernel: R13: 0000556b3a8eba00 R14: 0000=
+7f1b5f754b00 R15: 0000556b3a8ed498
+> >> Jul 13 04:25:26 localhost-live kernel:  </TASK>
+> >> Jul 13 04:25:26 localhost-live kernel: Modules linked in: f2fs dm_cryp=
+t uinput rfcomm snd_seq_dummy snd_hrtimer nf_conntrack_netbios_ns nf_conntr=
+ack_broadcast nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_ine=
+t nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_c=
+onntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables qrtr snd_hda_codec_realtek=
+ snd_hda_codec_generic snd_hda_codec_hdmi bnep snd_hda_scodec_component snd=
+_hda_intel snd_intel_dspcfg snd_intel_sdw_acpi btusb snd_hda_codec btrtl bt=
+intel intel_rapl_msr snd_hda_core btbcm uvcvideo intel_rapl_common snd_usb_=
+audio btmtk snd_usbmidi_lib snd_ump snd_rawmidi x86_pkg_temp_thermal snd_hw=
+dep intel_powerclamp bluetooth snd_seq uvc videobuf2_vmalloc coretemp video=
+buf2_memops videobuf2_v4l2 kvm_intel snd_seq_device videobuf2_common snd_pc=
+m videodev mei_hdcp mei_pxp iTCO_wdt intel_pmc_bxt at24 snd_timer mei_me iT=
+CO_vendor_support kvm snd mei mc i2c_i801 joydev i2c_smbus pcspkr lpc_ich r=
+fkill apple_mfi_fastcharge irqbypass rapl intel_cstate intel_uncore soundco=
+re nfnetlink
+> >> Jul 13 04:25:26 localhost-live kernel:  zram lz4hc_compress lz4_compre=
+ss overlay erofs netfs hid_logitech_hidpp isofs amdgpu hid_logitech_dj i915=
+ mxm_wmi amdxcp polyval_clmulni gpu_sched polyval_generic drm_panel_backlig=
+ht_quirks ghash_clmulni_intel drm_ttm_helper drm_buddy sha512_ssse3 ttm drm=
+_exec sha256_ssse3 i2c_algo_bit uas drm_suballoc_helper sha1_ssse3 hid_appl=
+e usb_storage drm_display_helper e1000e nvme cec nvme_tcp nvme_fabrics nvme=
+_core video wmi nvme_keyring nvme_auth sunrpc be2iscsi bnx2i cnic uio cxgb4=
+i cxgb4 tls cxgb3i cxgb3 mdio libcxgbi libcxgb qla4xxx iscsi_boot_sysfs isc=
+si_tcp libiscsi_tcp libiscsi scsi_transport_iscsi loop fuse i2c_dev
+> >> Jul 13 04:25:26 localhost-live kernel: CR2: 0000000000000219
+> >> Jul 13 04:25:26 localhost-live kernel: ---[ end trace 0000000000000000=
+ ]---
+> >> Jul 13 04:25:26 localhost-live kernel: RIP: 0010:iput+0x20/0x230
+> >> Jul 13 04:25:26 localhost-live kernel: Code: 90 90 90 90 90 90 90 90 9=
+0 90 f3 0f 1e fa 0f 1f 44 00 00 48 85 ff 0f 84 86 01 00 00 41 54 55 48 8d a=
+f 50 01 00 00 53 48 89 fb <f6> 87 91 00 00 00 01 74 3a e9 68 01 00 00 8b 53=
+ 48 8b 83 90 00 00
+> >> Jul 13 04:25:26 localhost-live kernel: RSP: 0018:ffffd43c0b893740 EFLA=
+GS: 00010206
+> >> Jul 13 04:25:26 localhost-live kernel: RAX: 0000000000000000 RBX: 0000=
+000000000188 RCX: 000000000092a000
+> >> Jul 13 04:25:26 localhost-live kernel: RDX: 0000000000000000 RSI: ffff=
+ffff93bcea60 RDI: 0000000000000188
+> >> Jul 13 04:25:26 localhost-live kernel: RBP: 00000000000002d8 R08: 0000=
+000000000000 R09: ffffffff90db25b6
+> >> Jul 13 04:25:26 localhost-live kernel: R10: ffff8c4aa9480000 R11: ffff=
+f60205a52000 R12: ffffd43c0b8938bf
+> >> Jul 13 04:25:26 localhost-live kernel: R13: 0000000000000000 R14: ffff=
+8c4aa9476690 R15: 00000000fffffffb
+> >> Jul 13 04:25:26 localhost-live kernel: FS:  00007f1b5f3f9840(0000) GS:=
+ffff8c4fc3a71000(0000) knlGS:0000000000000000
+> >> Jul 13 04:25:26 localhost-live kernel: CS:  0010 DS: 0000 ES: 0000 CR0=
+: 0000000080050033
+> >> Jul 13 04:25:26 localhost-live kernel: CR2: 0000000000000219 CR3: 0000=
+00016abc8003 CR4: 00000000001726f0
+> >
+> > Log from kernel 6.14.0:
+> >
+> >> Jul 13 04:02:25 localhost-live kernel: BTRFS: device label fedora_hogw=
+arts devid 1 transid 456817 /dev/mapper/hogwarts-root (252:1) scanned by mo=
+unt (4785)
+> >> Jul 13 04:02:25 localhost-live kernel: BTRFS info (device dm-1): first=
+ mount of filesystem a6999502-9362-4fa7-b7b4-28095790217d
+> >> Jul 13 04:02:25 localhost-live kernel: BTRFS info (device dm-1): using=
+ crc32c (crc32c-x86_64) checksum algorithm
+> >> Jul 13 04:02:25 localhost-live kernel: BTRFS info (device dm-1): using=
+ free-space-tree
+> >> Jul 13 04:02:25 localhost-live kernel: BTRFS info (device dm-1): bdev =
+/dev/mapper/hogwarts-root errs: wr 0, rd 0, flush 0, corrupt 9, gen 0
+> >> Jul 13 04:02:25 localhost-live kernel: BTRFS info (device dm-1): start=
+ tree-log replay
+> >> Jul 13 04:02:26 localhost-live kernel: BTRFS: error (device dm-1) in b=
+trfs_replay_log:2104: errno=3D-5 IO failure (Failed to recover log tree)
+> >> Jul 13 04:02:26 localhost-live kernel: ------------[ cut here ]-------=
+-----
+> >> Jul 13 04:02:26 localhost-live kernel: WARNING: CPU: 0 PID: 4785 at fs=
+/btrfs/block-rsv.c:452 btrfs_release_global_block_rsv+0xb0/0xd0
+> >> Jul 13 04:02:26 localhost-live kernel: Modules linked in: dm_crypt uin=
+put rfcomm snd_seq_dummy snd_hrtimer nf_conntrack_netbios_ns nf_conntrack_b=
+roadcast nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_=
+reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntr=
+ack nf_defrag_ipv6 nf_defrag_ipv4 ip_set nf_tables intel_rapl_msr intel_rap=
+l_common x86_pkg_temp_thermal intel_powerclamp qrtr coretemp kvm_intel snd_=
+hda_codec_realtek snd_hda_codec_generic bnep snd_hda_codec_hdmi kvm snd_usb=
+_audio btusb snd_hda_scodec_component snd_hda_intel btrtl btintel snd_intel=
+_dspcfg snd_intel_sdw_acpi btbcm snd_hda_codec btmtk bluetooth uvcvideo snd=
+_hda_core snd_usbmidi_lib snd_ump snd_rawmidi snd_hwdep snd_seq uvc videobu=
+f2_vmalloc videobuf2_memops videobuf2_v4l2 snd_seq_device videobuf2_common =
+snd_pcm videodev mei_hdcp mei_pxp iTCO_wdt at24 snd_timer mei_me intel_pmc_=
+bxt iTCO_vendor_support mei snd rapl intel_cstate intel_uncore mc i2c_i801 =
+lpc_ich rfkill i2c_smbus pcspkr soundcore apple_mfi_fastcharge joydev nfnet=
+link zram
+> >> Jul 13 04:02:26 localhost-live kernel:  lz4hc_compress lz4_compress ov=
+erlay erofs netfs isofs hid_logitech_hidpp uas hid_logitech_dj usb_storage =
+hid_apple amdgpu i915 amdxcp gpu_sched drm_panel_backlight_quirks drm_buddy=
+ drm_ttm_helper mxm_wmi ttm polyval_clmulni drm_exec polyval_generic ghash_=
+clmulni_intel i2c_algo_bit drm_suballoc_helper sha512_ssse3 sha256_ssse3 dr=
+m_display_helper sha1_ssse3 nvme e1000e nvme_tcp cec nvme_fabrics video nvm=
+e_keyring wmi nvme_core nvme_auth sunrpc be2iscsi bnx2i cnic uio cxgb4i cxg=
+b4 tls cxgb3i cxgb3 mdio libcxgbi libcxgb qla4xxx iscsi_boot_sysfs iscsi_tc=
+p libiscsi_tcp libiscsi scsi_transport_iscsi loop fuse i2c_dev
+> >> Jul 13 04:02:26 localhost-live kernel: CPU: 0 UID: 0 PID: 4785 Comm: m=
+ount Not tainted 6.14.0-63.fc42.x86_64 #1
+> >> Jul 13 04:02:26 localhost-live kernel: Hardware name: To Be Filled By =
+O.E.M. To Be Filled By O.E.M./Z87 Extreme4, BIOS P3.50 03/11/2018
+> >> Jul 13 04:02:26 localhost-live kernel: RIP: 0010:btrfs_release_global_=
+block_rsv+0xb0/0xd0
+> >> Jul 13 04:02:26 localhost-live kernel: Code: 01 00 00 00 74 aa 0f 0b 4=
+8 83 bb 40 01 00 00 00 74 a8 0f 0b 48 83 bb 48 01 00 00 00 74 a6 0f 0b 48 8=
+3 bb 70 01 00 00 00 74 a4 <0f> 0b 48 83 bb 78 01 00 00 00 74 a2 0f 0b 48 83=
+ bb a8 01 00 00 00
+> >> Jul 13 04:02:26 localhost-live kernel: RSP: 0018:ffffb1918a49bc38 EFLA=
+GS: 00010286
+> >> Jul 13 04:02:26 localhost-live kernel: RAX: 0000000020000000 RBX: ffff=
+9271822e3000 RCX: 0000000000000000
+> >> Jul 13 04:02:26 localhost-live kernel: RDX: 0000000020000000 RSI: ffff=
+92723e622c00 RDI: ffff92723e622c08
+> >> Jul 13 04:02:26 localhost-live kernel: RBP: ffff927555127000 R08: ffff=
+927555127000 R09: 0000000000100000
+> >> Jul 13 04:02:26 localhost-live kernel: R10: ffff9271c30575c8 R11: 0000=
+000000000036 R12: ffff9271822e3090
+> >> Jul 13 04:02:26 localhost-live kernel: R13: ffff9271822e36c8 R14: 0000=
+000000000000 R15: dead000000000100
+> >> Jul 13 04:02:26 localhost-live kernel: FS:  00007f67bbcda840(0000) GS:=
+ffff927697600000(0000) knlGS:0000000000000000
+> >> Jul 13 04:02:26 localhost-live kernel: CS:  0010 DS: 0000 ES: 0000 CR0=
+: 0000000080050033
+> >> Jul 13 04:02:26 localhost-live kernel: CR2: 00007fc484069000 CR3: 0000=
+000175292002 CR4: 00000000001726f0
+> >> Jul 13 04:02:26 localhost-live kernel: Call Trace:
+> >> Jul 13 04:02:26 localhost-live kernel:  <TASK>
+> >> Jul 13 04:02:26 localhost-live kernel:  ? show_trace_log_lvl+0x1d3/0x3=
+00
+> >> Jul 13 04:02:26 localhost-live kernel:  ? show_trace_log_lvl+0x1d3/0x3=
+00
+> >> Jul 13 04:02:26 localhost-live kernel:  ? show_trace_log_lvl+0x1d3/0x3=
+00
+> >> Jul 13 04:02:26 localhost-live kernel:  ? btrfs_free_block_groups+0x34=
+a/0x420
+> >> Jul 13 04:02:26 localhost-live kernel:  ? btrfs_release_global_block_r=
+sv+0xb0/0xd0
+> >> Jul 13 04:02:26 localhost-live kernel:  ? __warn.cold+0x93/0xfa
+> >> Jul 13 04:02:26 localhost-live kernel:  ? btrfs_release_global_block_r=
+sv+0xb0/0xd0
+> >> Jul 13 04:02:26 localhost-live kernel:  ? report_bug+0x103/0x150
+> >> Jul 13 04:02:26 localhost-live kernel:  ? handle_bug+0x58/0x90
+> >> Jul 13 04:02:26 localhost-live kernel:  ? exc_invalid_op+0x17/0x70
+> >> Jul 13 04:02:26 localhost-live kernel:  ? asm_exc_invalid_op+0x1a/0x20
+> >> Jul 13 04:02:26 localhost-live kernel:  ? btrfs_release_global_block_r=
+sv+0xb0/0xd0
+> >> Jul 13 04:02:26 localhost-live kernel:  ? btrfs_release_global_block_r=
+sv+0x22/0xd0
+> >> Jul 13 04:02:26 localhost-live kernel:  btrfs_free_block_groups+0x34a/=
+0x420
+> >> Jul 13 04:02:26 localhost-live kernel:  open_ctree+0xb40/0xbce
+> >> Jul 13 04:02:26 localhost-live kernel:  btrfs_get_tree_super.cold+0xb/=
+0xbb
+> >> Jul 13 04:02:26 localhost-live kernel:  vfs_get_tree+0x29/0xd0
+> >> Jul 13 04:02:26 localhost-live kernel:  fc_mount+0x12/0x40
+> >> Jul 13 04:02:26 localhost-live kernel:  btrfs_get_tree_subvol+0x10d/0x=
+210
+> >> Jul 13 04:02:26 localhost-live kernel:  vfs_get_tree+0x29/0xd0
+> >> Jul 13 04:02:26 localhost-live kernel:  vfs_cmd_create+0x59/0xe0
+> >> Jul 13 04:02:26 localhost-live kernel:  __do_sys_fsconfig+0x511/0x6f0
+> >> Jul 13 04:02:26 localhost-live kernel:  do_syscall_64+0x7f/0x170
+> >> Jul 13 04:02:26 localhost-live kernel:  ? syscall_exit_to_user_mode+0x=
+10/0x210
+> >> Jul 13 04:02:26 localhost-live kernel:  ? do_syscall_64+0x8c/0x170
+> >> Jul 13 04:02:26 localhost-live kernel:  ? do_readlinkat+0x12e/0x180
+> >> Jul 13 04:02:26 localhost-live kernel:  ? syscall_exit_to_user_mode+0x=
+10/0x210
+> >> Jul 13 04:02:26 localhost-live kernel:  ? do_syscall_64+0x8c/0x170
+> >> Jul 13 04:02:26 localhost-live kernel:  ? do_syscall_64+0x8c/0x170
+> >> Jul 13 04:02:26 localhost-live kernel:  ? exc_page_fault+0x7e/0x1a0
+> >> Jul 13 04:02:26 localhost-live kernel:  entry_SYSCALL_64_after_hwframe=
++0x76/0x7e
+> >> Jul 13 04:02:26 localhost-live kernel: RIP: 0033:0x7f67bbeb9abe
+> >> Jul 13 04:02:26 localhost-live kernel: Code: 73 01 c3 48 8b 0d 4a 33 0=
+f 00 f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 49 8=
+9 ca b8 af 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 1a 33 0f 00=
+ f7 d8 64 89 01 48
+> >> Jul 13 04:02:26 localhost-live kernel: RSP: 002b:00007ffd51c98aa8 EFLA=
+GS: 00000246 ORIG_RAX: 00000000000001af
+> >> Jul 13 04:02:26 localhost-live kernel: RAX: ffffffffffffffda RBX: 0000=
+55ecc1aaa560 RCX: 00007f67bbeb9abe
+> >> Jul 13 04:02:26 localhost-live kernel: RDX: 0000000000000000 RSI: 0000=
+000000000006 RDI: 0000000000000003
+> >> Jul 13 04:02:26 localhost-live kernel: RBP: 00007ffd51c98bf0 R08: 0000=
+000000000000 R09: 0000000000000003
+> >> Jul 13 04:02:26 localhost-live kernel: R10: 0000000000000000 R11: 0000=
+000000000246 R12: 0000000000000000
+> >> Jul 13 04:02:26 localhost-live kernel: R13: 000055ecc1aaaa00 R14: 0000=
+7f67bc036b00 R15: 000055ecc1aac498
+> >> Jul 13 04:02:26 localhost-live kernel:  </TASK>
+> >> Jul 13 04:02:26 localhost-live kernel: ---[ end trace 0000000000000000=
+ ]---
+> >> Jul 13 04:02:26 localhost-live kernel: BTRFS error (device dm-1 state =
+E): open_ctree failed: -5
+> >>
+> >
+> > Superblock dump collected with btrfs-tools 6.15 on live USB:
+> >
+> >>  btrfs inspect-internal dump-super --full /dev/mapper/hogwarts-root
+> >> superblock: bytenr=3D65536, device=3D/dev/mapper/hogwarts-root
+> >> ---------------------------------------------------------
+> >> csum_type               0 (crc32c)
+> >> csum_size               4
+> >> csum                    0x3e3b7bc2 [match]
+> >> bytenr                  65536
+> >> flags                   0x1
+> >>                         ( WRITTEN )
+> >> magic                   _BHRfS_M [match]
+> >> fsid                    a6999502-9362-4fa7-b7b4-28095790217d
+> >> metadata_uuid           00000000-0000-0000-0000-000000000000
+> >> label                   fedora_hogwarts
+> >> generation              456817
+> >> root                    202624811008
+> >> sys_array_size          97
+> >> chunk_root_generation   433110
+> >> root_level              0
+> >> chunk_root              368550690816
+> >> chunk_root_level        1
+> >> log_root                202650910720
+> >> log_root_transid (deprecated)   0
+> >> log_root_level          0
+> >> total_bytes             498382929920
+> >> bytes_used              227109515264
+> >> sectorsize              4096
+> >> nodesize                16384
+> >> leafsize (deprecated)   16384
+> >> stripesize              4096
+> >> root_dir                6
+> >> num_devices             1
+> >> compat_flags            0x0
+> >> compat_ro_flags         0x3
+> >>                         ( FREE_SPACE_TREE |
+> >>                           FREE_SPACE_TREE_VALID )
+> >> incompat_flags          0x171
+> >>                         ( MIXED_BACKREF |
+> >>                           COMPRESS_ZSTD |
+> >>                           BIG_METADATA |
+> >>                           EXTENDED_IREF |
+> >>                           SKINNY_METADATA )
+> >> cache_generation        0
+> >> uuid_tree_generation    456817
+> >> dev_item.uuid           0721004b-8c3e-4ae7-bb3b-4b2bb5d313f7
+> >> dev_item.fsid           a6999502-9362-4fa7-b7b4-28095790217d [match]
+> >> dev_item.type           0
+> >> dev_item.total_bytes    498382929920
+> >> dev_item.bytes_used     253453402112
+> >> dev_item.io_align       4096
+> >> dev_item.io_width       4096
+> >> dev_item.sector_size    4096
+> >> dev_item.devid          1
+> >> dev_item.dev_group      0
+> >> dev_item.seek_speed     0
+> >> dev_item.bandwidth      0
+> >> dev_item.generation     0
+> >> sys_chunk_array[2048]:
+> >>         item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 368550346752)
+> >>                 length 33554432 owner 2 stripe_len 65536 type SYSTEM|s=
+ingle
+> >>                 io_align 65536 io_width 65536 sector_size 4096
+> >>                 num_stripes 1 sub_stripes 1
+> >>                         stripe 0 devid 1 offset 79512469504
+> >>                         dev_uuid 0721004b-8c3e-4ae7-bb3b-4b2bb5d313f7
+> >> backup_roots[4]:
+> >>         backup 0:
+> >>                 backup_tree_root:       202624811008    gen: 456817   =
+  level: 0
+> >>                 backup_chunk_root:      368550690816    gen: 433110   =
+  level: 1
+> >>                 backup_extent_root:     202621485056    gen: 456817   =
+  level: 2
+> >>                 backup_fs_root:         29755916288     gen: 36186    =
+  level: 0
+> >>                 backup_dev_root:        1283227648      gen: 453657   =
+  level: 1
+> >>                 csum_root:      202621796352    gen: 456817     level:=
+ 2
+> >>                 backup_total_bytes:     498382929920
+> >>                 backup_bytes_used:      227109515264
+> >>                 backup_num_devices:     1
+> >>
+> >>         backup 1:
+> >>                 backup_tree_root:       202407755776    gen: 456814   =
+  level: 0
+> >>                 backup_chunk_root:      368550690816    gen: 433110   =
+  level: 1
+> >>                 backup_extent_root:     202402742272    gen: 456814   =
+  level: 2
+> >>                 backup_fs_root:         29755916288     gen: 36186    =
+  level: 0
+> >>                 backup_dev_root:        1283227648      gen: 453657   =
+  level: 1
+> >>                 csum_root:      202403151872    gen: 456814     level:=
+ 2
+> >>                 backup_total_bytes:     498382929920
+> >>                 backup_bytes_used:      227106684928
+> >>                 backup_num_devices:     1
+> >>
+> >>         backup 2:
+> >>                 backup_tree_root:       202472538112    gen: 456815   =
+  level: 0
+> >>                 backup_chunk_root:      368550690816    gen: 433110   =
+  level: 1
+> >>                 backup_extent_root:     202447388672    gen: 456815   =
+  level: 2
+> >>                 backup_fs_root:         29755916288     gen: 36186    =
+  level: 0
+> >>                 backup_dev_root:        1283227648      gen: 453657   =
+  level: 1
+> >>                 csum_root:      202378985472    gen: 456815     level:=
+ 2
+> >>                 backup_total_bytes:     498382929920
+> >>                 backup_bytes_used:      227107676160
+> >>                 backup_num_devices:     1
+> >>
+> >>         backup 3:
+> >>                 backup_tree_root:       202539106304    gen: 456816   =
+  level: 0
+> >>                 backup_chunk_root:      368550690816    gen: 433110   =
+  level: 1
+> >>                 backup_extent_root:     202537730048    gen: 456816   =
+  level: 2
+> >>                 backup_fs_root:         29755916288     gen: 36186    =
+  level: 0
+> >>                 backup_dev_root:        1283227648      gen: 453657   =
+  level: 1
+> >>                 csum_root:      202537861120    gen: 456816     level:=
+ 2
+> >>                 backup_total_bytes:     498382929920
+> >>                 backup_bytes_used:      227108405248
+> >>                 backup_num_devices:     1
+> >
+> > Corrupt tree log dump collected with btrfs-tools 6.15 on live USB:
+> >
+> >> # btrfs inspect-internal dump-tree -t TREE_LOG /dev/mapper/hogwarts-ro=
+ot
+> >> btrfs-progs v6.15
+> >> log root tree
+> >> leaf 202650910720 items 2 free space 15355 generation 456818 owner TRE=
+E_LOG
+> >> leaf 202650910720 flags 0x1(WRITTEN) backref revision 1
+> >> fs uuid a6999502-9362-4fa7-b7b4-28095790217d
+> >> chunk uuid 710679da-fb76-4a51-9c84-8600a6e58c43
+> >>         item 0 key (TREE_LOG ROOT_ITEM 256) itemoff 15844 itemsize 439
+> >>                 generation 456818 root_dirid 0 bytenr 202645028864 byt=
+e_limit 0 bytes_used 0
+> >>                 last_snapshot 0 flags 0x0(none) refs 0
+> >>                 drop_progress key (0 UNKNOWN.0 0) drop_level 0
+> >>                 level 0 generation_v2 456818
+> >>                 uuid 00000000-0000-0000-0000-000000000000
+> >>                 parent_uuid 00000000-0000-0000-0000-000000000000
+> >>                 received_uuid 00000000-0000-0000-0000-000000000000
+> >>                 ctransid 0 otransid 0 stransid 0 rtransid 0
+> >>                 ctime 0.0 (1970-01-01 00:00:00)
+> >>                 otime 0.0 (1970-01-01 00:00:00)
+> >>                 stime 0.0 (1970-01-01 00:00:00)
+> >>                 rtime 0.0 (1970-01-01 00:00:00)
+> >>         item 1 key (TREE_LOG ROOT_ITEM 258) itemoff 15405 itemsize 439
+> >>                 generation 456818 root_dirid 0 bytenr 202650877952 byt=
+e_limit 0 bytes_used 65536
+> >>                 last_snapshot 0 flags 0x0(none) refs 0
+> >>                 drop_progress key (0 UNKNOWN.0 0) drop_level 0
+> >>                 level 1 generation_v2 456818
+> >>                 uuid 00000000-0000-0000-0000-000000000000
+> >>                 parent_uuid 00000000-0000-0000-0000-000000000000
+> >>                 received_uuid 00000000-0000-0000-0000-000000000000
+> >>                 ctransid 0 otransid 0 stransid 0 rtransid 0
+> >>                 ctime 0.0 (1970-01-01 00:00:00)
+> >>                 otime 0.0 (1970-01-01 00:00:00)
+> >>                 stime 0.0 (1970-01-01 00:00:00)
+> >>                 rtime 0.0 (1970-01-01 00:00:00)
+> >
+> > If I'm interpreting correctly, the corrupt tree log is zeroed, so that
+> > kind of gestures in the direction of what the log replay code might be
+> > mishandling.
+> >  [1]
+> > https://discussion.fedoraproject.org/t/btrfs-error-emergency-mode-enter=
+ed-every-time-i-boot/141179
+> >
+> > Thanks,
+> >
+> > Russell
+>
+>
 
