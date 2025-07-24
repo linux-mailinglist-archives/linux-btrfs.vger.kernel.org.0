@@ -1,89 +1,58 @@
-Return-Path: <linux-btrfs+bounces-15654-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15655-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66689B1011D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Jul 2025 08:51:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2AA0B10184
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Jul 2025 09:18:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFB667A040C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Jul 2025 06:50:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DC4E7B9695
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Jul 2025 07:16:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20550221F34;
-	Thu, 24 Jul 2025 06:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE11223DCF;
+	Thu, 24 Jul 2025 07:17:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FKwmLF9D"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="uLj9TrND"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC6E20F088
-	for <linux-btrfs@vger.kernel.org>; Thu, 24 Jul 2025 06:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 845FE1F3FF8;
+	Thu, 24 Jul 2025 07:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753339886; cv=none; b=GcAkaQxZqgiHS9JQW28B4awJGoQI4hlS+qlrEqdrjBAdfso+PWBcwcZl3hiuOsFK3oCqbvyd+McM3TSUCLmzjT1IfcXOEQcZvf2sTzQv/+T3xr5mdNKbLtuCCR3CW7wbyboOyYftXaN3IswfmOuZX5MpiN3OMHWd+A3Deg+smJ4=
+	t=1753341462; cv=none; b=GtaymQufqsrrntsWOPrtEHL0XFi58weTfnBV13EqJeQguWIZ0zXxQL/IweikV4NE5dYLy4Pk8BDbIeixlBZY2HaeLIa4bCR2YAkcgd6h9Il8fUB805AxZv020J7tkaM4hp0mJUx5aleWzJla2w2YxX6jkWJJkNpV3lPZ3JtZQMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753339886; c=relaxed/simple;
-	bh=u7igWpV2K8o0bXckOlzDXy4r02xhUU+hw42wj0USXrM=;
+	s=arc-20240116; t=1753341462; c=relaxed/simple;
+	bh=DUDL7NEgwkzzl5dMtsHYd9jnSBtXxB9d9jWolYBO4co=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eokIduQEJtGyRLmw7LWvc5wxgiT0Hdp3oFgJV/ayo/ytpaf68yMCZ9G0bZb9R8zcoZ00IWX4YuGls0U9hsbkeIlAwQMK4lipam/hzERZelkx0AFxXplr9bauMcJA/LI9joUXH4lyoBRotHLliF9gHj16ZTcmYvD8VISxbqqH2p8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FKwmLF9D; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3a54700a463so392367f8f.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Jul 2025 23:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753339883; x=1753944683; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HmwaqJ0idIWWPFaVblV/PRv/PAdctTYaz+oXsBak7KA=;
-        b=FKwmLF9Dkup5uwY+gICnQz1LLUlKsqziFbjXLbDVZtq7I9n8Y/uRLEGgi5uZlJ/Agc
-         HyOn3D5OtGErOq7+mXks8S7arVzgFVFFm/8ifnDFr1i+Z9t22Fi8lb2A0y0zJoIo87ri
-         Y9GsKDtfYvlbYEqXLOgXNfwEfdrK9f86h2WdEoi+diImYIgib3FJH4so+SkDVPm9qYbz
-         6xM53e2mrmA4etXC9rEHsRut7MJeWb5zhz4fO2c2/APGwL7aaUp5fNIOl5oVBHqE8Eoh
-         ScC5VPJOp2QdrIez1tdNDs3MqU/7p+H5iSMm78rSX5M5bgpBIT5XAOQe3jyJnz595N51
-         r/sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753339883; x=1753944683;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HmwaqJ0idIWWPFaVblV/PRv/PAdctTYaz+oXsBak7KA=;
-        b=QReyDC2KBMfao2hmpwaSXiilG0c10uECqK8aTgVALFVcmjgmRkqfr2++VOBmk5zelO
-         DBDaJ9DBCVfVceP4GOKstNkosubIt9dlkiKaipFkBqGx6fb8woOL2v7txSqiiNQOP5dn
-         IOXATdjkE+dLUs7Y49i8iX6oOTkGe+Ru47ah42APSBdUsDVbt3LdkPkJeiO+6sAQ7wVD
-         EUXtdGFnkwlF34kkKoIRRdhsekhex+zdk3to8auvW60bhtbWo1AM5XdkbFpRxVia/mTO
-         16AmG8fYicPiYivaq1hMTWkrm9a9pTXy9QPh2DIYY5YxCupZn8Z+UcmfiuhZ+vPj/JJF
-         CYUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX51RbMulijQescI+mR4rFURH+G4gwJefYN5rhNgmwF1G3vR/JdMHYYMvTs+Hs6DbUlyAeMsGE3W1TX3Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWwgT4RQd7pBbSN994Ce5Y0xWrtS6c1q7iC/npf8VCFOe716DK
-	NrOXJBPWjyY6VkTO3ssmd11ejcRABYaXFR2OffbHxNlZQWLuBwrSC4+A
-X-Gm-Gg: ASbGncsJnuYR+5i9GqLhQZVGoeR/1igh8axUFfTfAiUtr2rktDbXuFnT7c/EpgJNh/M
-	a0FTqzPelyst1UJcxeAS19+cvtg4bM+TmEWUswATPPxblZ0iAdcFaZ1xb3obsxPDkI22IsqUma0
-	sIeQAWBzHEF1/Fv1wzBXIga0D6/HPXUsXZt1P6UqCf6N2K/CFbw5+f5K+Ua5fKQgSBJy3hHKTiL
-	O1EW7KC9xCXsVNrAE1ztkuVpP1dm8gSwp/C5E9OWejaOduPAL/kdLSYi91aO0GZOY39cYLaH5Tf
-	k5ipVUo/JESwojV2R4kT8MQ0A145yA+d/HM/12ZCU8GBTr4i/G6YEv1dtVxGO2COBs5dy2JtlZj
-	93V3wtcmx7pc8QXmtIggClUjtPrl+rN6cnsCTERke6/qDMwEAn0LwE9rd125qXTy9FTY9hdzwRA
-	==
-X-Google-Smtp-Source: AGHT+IFIO1kzZ1ykLgEz1gTC8/2bIF5rYMScWipWJJLSvkwaXYyDCnj5EHQLZcia2PleOm9+N3yq9A==
-X-Received: by 2002:a5d:68c7:0:b0:3a4:f7e7:3630 with SMTP id ffacd0b85a97d-3b771359b9dmr449545f8f.15.1753339882734;
-        Wed, 23 Jul 2025 23:51:22 -0700 (PDT)
-Received: from nuc (p200300f6f705f800fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f705:f800:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b76fc60595sm1169590f8f.4.2025.07.23.23.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jul 2025 23:51:22 -0700 (PDT)
-Date: Thu, 24 Jul 2025 08:51:19 +0200
-From: Johannes Thumshirn <morbidrsa@gmail.com>
-To: Damien Le Moal <dlemoal@kernel.org>
-Cc: Johannes Thumshirn <jth@kernel.org>, linux-btrfs@vger.kernel.org,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH] btrfs: zoned: skip ZONE FINISH of conventional zones
-Message-ID: <aIHX5yG1tE4JCMPx@nuc>
-References: <20250723133810.48179-1-jth@kernel.org>
- <3786245c-60d5-4567-a505-3c05ba8610f6@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=L27xbH9+3LY30kMdjPT8KJMmkJ+yq8KR/xHLhLZizzFDbX3sfISvVyhJ/3apkjlpDPc2SKaCXzFBVXfx3eD8dQUxo+/UJYubso7cHjQNNHL20XhLLgfoV8vvIcCGS96zlH4NiZtAgluAjboG2SevBVdsq8a27wUmsjv6sxsSbRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=uLj9TrND; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=/JC9UrKxywzmx4oRz+Vl7bZIXmhiSvJvj2A9nXL991M=; b=uLj9TrNDWROymCmPOxbtxRcE2r
+	ul+evR9F1odZOuVhK5ziNk+ZEQEvmjbmap1qF9HtrMUzJAFMfZFjZA+i5+NFzV9QhKDm0IQjXnbcN
+	Ulbg2Tt3wBCfZ/hjH4BlThvUX1zOb6QvB6s8L3fW9t1d5nrkDxxnBH3A5B91Em7LCy9GVY07U6+Tw
+	DDSKDj6A+rDbsWi5Z0JltNQudCbyXoonT1KYi+JsO1th0EUzKks4zuDX/5qvj741keXoszXWAY10o
+	1dNJQh6vlI8EMXrXNfbvxmDPBEkX2OX9QrUuxXVGN8gXn4neCdRrQrDAcCDD8pGkoeUZBF7u/4mcA
+	JxtI9kwg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ueqCx-00000006gG4-3SQE;
+	Thu, 24 Jul 2025 07:17:39 +0000
+Date: Thu, 24 Jul 2025 00:17:39 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: fdmanana@kernel.org
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] generic/211: verify if the filesystem being tested
+ supports in place writes
+Message-ID: <aIHeE0a5SdFoCqaP@infradead.org>
+References: <7ba7d315e60388593ccef0353cff58c4b5795615.1753272216.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -92,41 +61,70 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3786245c-60d5-4567-a505-3c05ba8610f6@kernel.org>
+In-Reply-To: <7ba7d315e60388593ccef0353cff58c4b5795615.1753272216.git.fdmanana@suse.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Thu, Jul 24, 2025 at 08:56:43AM +0900, Damien Le Moal wrote:
-> > +	if (!device->bdev)
-> > +		return 0;
-> > +
-> > +	if (zinfo->max_active_zones == 0)
-> > +		return 0;
+On Wed, Jul 23, 2025 at 01:04:06PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Should these 2 returns be replaced with a "goto out;"...
+> The test currently assumes the filesystem can do in place writes (no
+> Copy-On-Write, no allocation of new extents) when overwriting a file.
+> While that is the case for most filesystems in most configurations, there
+> are exceptions such as zoned xfs where overwriting results in allocating
+> new extents for the new data.
 > 
-> > +
-> > +	if (btrfs_dev_is_sequential(device, physical)) {
-> > +		unsigned int nofs_flags;
-> > +
-> > +		nofs_flags = memalloc_nofs_save();
-> > +		ret = blkdev_zone_mgmt(device->bdev, REQ_OP_ZONE_FINISH,
-> > +				       physical >> SECTOR_SHIFT,
-> > +				       zinfo->zone_size >> SECTOR_SHIFT);
-> > +		memalloc_nofs_restore(nofs_flags);
-> > +
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> > +
+> So make the test check that in place writes are supported and skip the
+> test if they are not supported.
 > 
-> With "out:" label here ?
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  common/rc         | 59 +++++++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/211 |  1 +
+>  2 files changed, 60 insertions(+)
 > 
-> That was not done before, but I wonder if that is needed.
-> 
-> > +	if (!(block_group->flags & BTRFS_BLOCK_GROUP_DATA))
-> > +		zinfo->reserved_active_zones++;
-> > +	btrfs_dev_clear_active_zone(device, physical);
+> diff --git a/common/rc b/common/rc
+> index 96578d15..52aade10 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -5873,6 +5873,65 @@ _require_program() {
+>  	_have_program "$1" || _notrun "$tag required"
+>  }
+>  
+> +# Test that a filesystem can do writes to a file in place (without allocating
+> +# new extents, without Copy-On-Write semantics).
+> +_require_inplace_writes()
+> +{
+> +	_require_xfs_io_command "fiemap"
+> +
+> +	local target=$1
+> +	local test_file="${target}/test_inplace_writes"
+> +	local fiemap_before
+> +	local fiemap_after
+> +
+> +	if [ -z "$target" ]; then
+> +		_fail "Usage: _require_inplace_writes <filesystem path>"
+> +	fi
+> +
+> +	rm -f "$test_file"
+> +	touch "$test_file"
+> +
+> +	# Set the file to NOCOW mode on btrfs, which must be done while the file
+> +	# is empty, otherwise it fails.
+> +	if [ "$FSTYP" == "btrfs" ]; then
+> +		_require_chattr C
+> +		$CHATTR_PROG +C "$test_file"
+> +	fi
 
-I don't think so. If device->bdev == NULL it means the device is missing and
-we can't do anything with it. If zone_info->max_active_zones == 0, it means we
-don't do active zone tracking on that device.
+Can you factor this into a _force_inplace helper instead of spreading
+file systems specific in random helpers (I know we have a few of those,
+but we need to get rid of that to make things maintainable..)
+
+> +	# If the filesystem supports inplace writes, then the extent mapping is
+> +	# the same before and after overwriting.
+> +	if [ "${fiemap_after}" != "${fiemap_before}" ]; then
+> +		_notrun "inplace writes not supported"
+
+I think in-place would be the more usual spelling instead of inplace.
+
+Otherwise this looks great, thanks!
 
