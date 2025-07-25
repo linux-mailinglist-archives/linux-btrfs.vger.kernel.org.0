@@ -1,68 +1,68 @@
-Return-Path: <linux-btrfs+bounces-15674-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15675-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7155EB1238C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Jul 2025 20:08:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA836B1238D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Jul 2025 20:09:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BC36AA6960
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Jul 2025 18:08:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00339542601
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Jul 2025 18:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2C1B28AAE9;
-	Fri, 25 Jul 2025 18:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A36A28AAE9;
+	Fri, 25 Jul 2025 18:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="hr+D3cOv";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iITNTglw"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="h6xRiT0J";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HheNiHj1"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fhigh-b2-smtp.messagingengine.com (fhigh-b2-smtp.messagingengine.com [202.12.124.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4973548CFC
-	for <linux-btrfs@vger.kernel.org>; Fri, 25 Jul 2025 18:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1174348CFC
+	for <linux-btrfs@vger.kernel.org>; Fri, 25 Jul 2025 18:09:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753466920; cv=none; b=lX4S2bBFO3GBTYyfo77a9kt1aMsV8sHMzZBzVxaOLCPVbTfBw7wT5Tj5osIMoFD2u5hl0y0FXYBfrhrPpbx3tHUWsw8Gk7Zcchj+T1ZbyO2GKwe4j0XHiNqpcI1RHJLZHoVa+592IkGTd8cwUcP4IkN8vNHDZoWPVhFQ2zI8b5Y=
+	t=1753466956; cv=none; b=QYYlRtACWT6TyQzq/98s9mysXpIS61UF1j6jGfrWngvV9gsa3gI/e7iHBwhH1ESzSI9WL0UyseiZo19chNzDXubjuQjqbSQGQ1W78+9zKOtFO6fc2C9zyXACC90UMLAzqiJESVz8yCFlPpORV3zOZeBzAYYplItGuUlTYvQwKes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753466920; c=relaxed/simple;
-	bh=8rY1mlHiWeYSRSQBZCtzEmhYJqMa4zEODpaY6H0xnyU=;
+	s=arc-20240116; t=1753466956; c=relaxed/simple;
+	bh=zO8o08RdmlOdYdJpIHTHIfe5S2EFwFcKhJdSMT6CAmk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nL3dtH6C6/h9AltRcJf1Zpg3BusDeLjEAQ62JNkPfsjjUcY4YI+KXN2jh3KLbtZ3TlxhZlGMt8TmMDl8efMQdDLaXS6J1ZLlwMJiWK3pwx24V0vDY9r+t+fsh7k7tLa8KEmMLBNWw/3kZJWSH8S9HXrge4YcQQJL8m+vE+k1bpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=hr+D3cOv; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iITNTglw; arc=none smtp.client-ip=202.12.124.153
+	 Content-Type:Content-Disposition:In-Reply-To; b=IsURCksTuIZt0NBUr7W9lV/ONJSOtlosAjzuw3EiEhqBGgn+FHqVRIKgSxleqMowdagYxnDTKFqOwcsqkkSnzUfYeV7klDqwRowW3wUwr6oWycUMun7w9Z2cdENcOefzmtHdnjVtZiTyX7TWZonfOMATcV0jvmLeyUf8HHsGfog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=h6xRiT0J; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=HheNiHj1; arc=none smtp.client-ip=202.12.124.153
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id F3F307A0AE8;
-	Fri, 25 Jul 2025 14:08:33 -0400 (EDT)
+Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 284637A0BBB;
+	Fri, 25 Jul 2025 14:09:13 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-07.internal (MEProxy); Fri, 25 Jul 2025 14:08:34 -0400
+  by phl-compute-06.internal (MEProxy); Fri, 25 Jul 2025 14:09:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1753466913; x=1753553313; bh=02uxrzw2EZ
-	x5CHme6g54ChVhX6Qr2QNlVLOAReVa0BE=; b=hr+D3cOvEzzKoINgzETN6STzMN
-	pqfMcepfj92SfWeli+jPPG/vIdRM98BN74eZwtvnsDl9M3r+NheXyEVx5ACjX4Ek
-	hOVtC7OlLeggnnHYNcgmYAo19CXr5kKbw8IG5hfpFswKPFrPrei9ADxD9fHPcGBU
-	8xYguOqAlS7XdZLP3obmnpNNbJEFgMvDhpqrnlJAe5DUlEUG6J9Co7xfC4VCqyRw
-	V6J4f65FWlMTKDIol67qL3zeV20TV/Wxfq7pUTGjq9bub+KjjPuP+52PIGtPbgs8
-	NeLOZmT4gwKFP9dWz8C4aLWr7PbMfoo79dUbxA2Kd+i+xfGCbriupysXxxVg==
+	:subject:to:to; s=fm3; t=1753466953; x=1753553353; bh=lrWTp3B1cT
+	8bpBsuHYDbtU/t5hL+JQRU6PU7FZ/d6KY=; b=h6xRiT0JQwL3pw9HMWT4CZpBwg
+	kr4JtpFHJWcLE6dPZcG+aEljUuz+ywOeqGWEXArYkxY2Lt2aUt17uVYXJr83C3Zp
+	lER0SrUHw8tMq0+kMhmZaMSGJ+DhXY9BW/+Y6rzLq+LauNK3uW7hXlL6xVr7jGNE
+	kHR9E/37REpytFtrb1syhcVq4WamCa93jpVrGU3atm09VfwNL9veZoXgXcJTQUfw
+	bt69rK1iNrsoDMWynBXlaKKN4kIBnOAemrCKD8AEpphyHYE53HJEe3YIk2Bjne1m
+	SaPo2wmeARsO+hqjb9TToYn862ZKgCs/C/jLDKF1qVqb3qGcJoeT4AcoPlTQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1753466913; x=1753553313; bh=02uxrzw2EZx5CHme6g54ChVhX6Qr2QNlVLO
-	AReVa0BE=; b=iITNTglwohruE+VH+B5By/7H+6/SM7mN9WVxydxKzC1yktXm4/j
-	KYkl9qs3BKW9NsWt5GHBGqE6pM97uYtXy/az4rJmdKzLbsDI4S+d8BBi4z93eIhn
-	Eu87yo0d67j2mCO3wJKzsoyRdva4LLQ24+LkKTRibdgSxt3gC7ENtmpkky8sAZdB
-	fN5n6zyECpOCsQPWDK7IFA0jVLVF/V89b2iItyDALxeVuecXdTVLAvIKNTvJiXPd
-	K2+Ko0hxZrbHXwoCGfKeWyXZCGgts7zkOkyRC6owp5SRqxyRnr8FYkVkyCTGguFM
-	8hinw2MwCOFSMBFD6RbgB6+3bHVVhLHXSsg==
-X-ME-Sender: <xms:IciDaIJHMCzinJsYOWvsK-yfjY2EZ52oZW8zjqD1HZpulgvyaUj-NQ>
-    <xme:IciDaIU07gx1JTsZDAkTnv4EA5x2MY_MxHqT2RSCppnMQSaK2ntuXa1EP699RDGLA
-    DSG_q_6Ij3Y4Alz-MQ>
-X-ME-Received: <xmr:IciDaKgjEm3p0CxXziuUYr1D7_1LaZ_tEirtwqAa3mmbMsauev4vQF62DOfEahA-qKLtlxs_zPItMdCELmcYvOqwHAY>
+	1753466953; x=1753553353; bh=lrWTp3B1cT8bpBsuHYDbtU/t5hL+JQRU6PU
+	7FZ/d6KY=; b=HheNiHj13Ig9e5fQ+5BakYoLKkBrna1eoVyVKDgl5xSGw/blZmJ
+	XnytYmSm0NsvZny3svWbWxbANDM+hi9jPnkCaqRmZ0WA8eCFI7qOstWTCP9hfaZK
+	5GU47PdH6USkyL4AqN15MxunTjJJznuFxgdcx7e2CWkg7cPkxRTVJUuufQVlWhVX
+	dE/n1GrhtRdHYfTGM+ng3RclUqHnqyGkmLxrKaRwMR1E7WM0olp8Np3Xn6XmEALW
+	uL0kZ/HIPTRzGQJEs8CA9GPWOuaSfXssUmAsE2T6pgqrymYJGzEe2t8/i3ztsgBO
+	0E9dZI8Lt751geu98BEHZ9cqrwMCVUgsJ8g==
+X-ME-Sender: <xms:SMiDaOyEcUFQrT0aMXNr2SPFPWqvu8MmEo05y1wZEXvuGE487m5Itw>
+    <xme:SMiDaKeWmkAOtI7iIEmD0BTsOnb42fe1MtGzyFIf8akSX6AFCDwK4uxQve_Lji91Y
+    xp8cQ0TEaRenHl0fR8>
+X-ME-Received: <xmr:SMiDaCJ4-kBzEfOl8_2Bs0dGlLH0GTfqUm8NFF4FZ1r68_KGAGo9h2DN2621ZZGfxnWIWYGyv8IXBKWKk2ZhuuWd4uE>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdekgedvudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
     ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
@@ -73,23 +73,22 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdekgedvudcutefuodetgg
     drihhopdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthho
     peifqhhusehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvgh
     gvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:IciDaD-caDU2dsK24dZPRk3XAy-tF8V0AQNvC4g5rYjisJyN-1-xAA>
-    <xmx:IciDaEAMlwPd-Bj25fWt3EYR-NqFcMsUuTP_4j0hZ95F5Sm3UVCBng>
-    <xmx:IciDaAJq5uLwOqwXwWW3529Ltf3gx3vpsrehIg3CVLsUReAOtLOt2A>
-    <xmx:IciDaHnmAseOeMSHMmOduQo-kb3WFF4vL9xce619aLCxFi9pLLzQwg>
-    <xmx:IciDaG5BL3XwV5P0Ci4fUHoaKX8beBi7VQJbRoGgdOyGSB8HiW-peuzY>
+X-ME-Proxy: <xmx:SMiDaDEwstc5R_Uen8Uaph-X4-8GeHzi3TbSsIgqEGfwAIlqWLdAAw>
+    <xmx:SMiDaEp27naiFNemSZi2WYfAqzQJUfrx70B93qApVIqnr-Tqo8Uo8Q>
+    <xmx:SMiDaESMm_W3PjySpR2nvKmDjDupHkqgDj8bO3yW6q0RVTrcBeN8kA>
+    <xmx:SMiDaJPIwUvYU87IVCjYlG-xOEKs4gWwegU9c1qQonLSqGe-A_cKaA>
+    <xmx:SciDaKjNARMpwPXzy2MLKRYsKNk2X8pONmBQA6rk8YvlEQQmALVZqmhg>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 25 Jul 2025 14:08:33 -0400 (EDT)
-Date: Fri, 25 Jul 2025 11:09:50 -0700
+ 25 Jul 2025 14:09:12 -0400 (EDT)
+Date: Fri, 25 Jul 2025 11:10:30 -0700
 From: Boris Burkov <boris@bur.io>
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/3] btrfs-progs: check/original: detect missing orphan
- items correctly
-Message-ID: <20250725180950.GA1649496@zen.localdomain>
+Subject: Re: [PATCH 0/3] btrfs-progs: check: add detection for missing root
+ orphan items
+Message-ID: <20250725181030.GB1649496@zen.localdomain>
 References: <cover.1753414100.git.wqu@suse.com>
- <24cda813cf05892afb67f62f5c68cd28b478ec09.1753414100.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -98,111 +97,50 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <24cda813cf05892afb67f62f5c68cd28b478ec09.1753414100.git.wqu@suse.com>
+In-Reply-To: <cover.1753414100.git.wqu@suse.com>
 
-On Fri, Jul 25, 2025 at 01:10:41PM +0930, Qu Wenruo wrote:
-> [BUG]
-> If we have a filesystem with a subvolume that has 0 refs but without an
-> orphan item, btrfs check won't report any error on it.
+On Fri, Jul 25, 2025 at 01:10:40PM +0930, Qu Wenruo wrote:
+> There is an internal bug report that some half-dropped subvolume makes
+> balance to fail.
 > 
->   $ btrfs ins dump-tree -t root /dev/test/scratch1
->   btrfs-progs v6.15
->   root tree
->   node 5242880 level 1 items 2 free space 119 generation 11 owner ROOT_TREE
->   node 5242880 flags 0x1(WRITTEN) backref revision 1
->   fs uuid ff32309e-4e90-4402-b1ef-0a1f9f28bfff
->   chunk uuid 6c373b6d-c866-4c8c-81fa-608bf5ef25e3
->   	key (EXTENT_TREE ROOT_ITEM 0) block 5267456 gen 11
->   	key (ROOT_TREE_DIR DIR_ITEM 2378154706) block 5246976 gen 11
->   leaf 5267456 items 6 free space 2339 generation 11 owner ROOT_TREE
->   leaf 5267456 flags 0x1(WRITTEN) backref revision 1
->   fs uuid ff32309e-4e90-4402-b1ef-0a1f9f28bfff
->   	[...]
->   leaf 5246976 items 6 free space 1613 generation 11 owner ROOT_TREE
->   leaf 5246976 flags 0x1(WRITTEN) backref revision 1
->   checksum stored 47620783
->   checksum calced 47620783
->   fs uuid ff32309e-4e90-4402-b1ef-0a1f9f28bfff
->   chunk uuid 6c373b6d-c866-4c8c-81fa-608bf5ef25e3
->   	[...]
->   	item 4 key (256 ROOT_ITEM 0) itemoff 2202 itemsize 439
->   		generation 9 root_dirid 256 bytenr 5898240 byte_limit 0 bytes_used 581632
->   		last_snapshot 0 flags 0x1000000000000(none) refs 0 <<<
->   		drop_progress key (0 UNKNOWN.0 0) drop_level 0
->   		level 2 generation_v2 9
->   	item 5 key (DATA_RELOC_TREE ROOT_ITEM 0) itemoff 1763 itemsize 439
->   		generation 5 root_dirid 256 bytenr 5287936 byte_limit 0 bytes_used 4096
->   		last_snapshot 0 flags 0x0(none) refs 1
->   		drop_progress key (0 UNKNOWN.0 0) drop_level 0
->   		level 0 generation_v2 5
->   	^^^ No orphan item for subvolume 256.
+> It turns out that, the involved subvolume doesn't have an orphan item,
+> this means the half-dropped subvolume is never going to be cleaned up.
 > 
-> Then "btrfs check" will not report anything wrong with it:
+> Then at balance time, a reloc tree is created for that half-dropped
+> subvolume, and since balance doesn't expect to get a half-dropped
+> subvolume, it doesn't check the drop_process_key and increased ref on
+> already dropped nodes.
 > 
->   Opening filesystem to check...
->   Checking filesystem on /dev/test/scratch1
->   UUID: ff32309e-4e90-4402-b1ef-0a1f9f28bfff
->   [1/8] checking log skipped (none written)
->   [2/8] checking root items
->   [3/8] checking extents
->   [4/8] checking free space tree
->   [5/8] checking fs roots
->   [6/8] checking only csums items (without verifying data)
->   [7/8] checking root refs
->   [8/8] checking quota groups skipped (not enabled on this FS)
->   found 638976 bytes used, no error found <<<
->   total csum bytes: 0
->   total tree bytes: 638976
->   total fs tree bytes: 589824
->   total extent tree bytes: 16384
->   btree space waste bytes: 289501
->   file data blocks allocated: 0
->    referenced 0
+> The problem for progs is that, neither original mode nor lowmem detects
+> this kind of problem.
 > 
-> [CAUSE]
-> Although we have check_orphan_item() call inside check_root_refs(), it
-> relies the root record to have its 'found_root_item' member set.
-> Otherwise it will not report this as an error.
+> Original mode has a bad logic which prevents us from calling the proper
+> orphan item check.
+> Lowmem mode doesn't even take orphan item into consideration.
 > 
-> But that 'found_root_item' is always set to 0, if the subvolume has zero
-> ref, this means any subvolume with 0 refs will not have its orphan item
-> checked.
-> 
-> [FIX]
-> Set root_record::found_root_item to 1 inside check_fs_root().
-> 
-> As check_fs_root() is called after we found a root item, we should set
-> root_record::found_root_item to indicate this fact, and allows proper
-> orphan item check to be done.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  check/main.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/check/main.c b/check/main.c
-> index b78eb59d0c50..1536c1bbbccd 100644
-> --- a/check/main.c
-> +++ b/check/main.c
-> @@ -3728,8 +3728,7 @@ static int check_fs_root(struct btrfs_root *root,
->  	if (root->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID) {
->  		rec = get_root_rec(root_cache, root->root_key.objectid);
->  		BUG_ON(IS_ERR(rec));
-> -		if (btrfs_root_refs(root_item) > 0)
-> -			rec->found_root_item = 1;
-> +		rec->found_root_item = 1;
+> This series will add the detection part for btrfs-check, for both
+> original and lowmem mode, with a hand crafted image for test.
 
-This change feels like an improvement to me, but it does seem to
-implicitly reduce the fidelity of the root ref checking. Like if the
-root refs was 0 but a ref existed, then we would suddenly miss that,
-where before it was an error. I think it would be best to check that
-refs is correct (i.e., store the found refs and add up the refs we see
-and make sure they match), separate from the "found_root_item" logic.
+I left one idea on the check/original patch, but the series looks good
+overall to me, thanks for the fix.
 
->  	}
->  
->  	memset(&root_node, 0, sizeof(root_node));
-> -- 
+Reviewed-by: Boris Burkov <boris@bur.io>
+
+> 
+> Qu Wenruo (3):
+>   btrfs-progs: check/original: detect missing orphan items correctly
+>   btrfs-progs: check/lowmem: detect missing orphan items correctly
+>   btrfs-progs: fsck-tests: a new test case for missing root orphan item
+> 
+>  check/main.c                                    |   3 +--
+>  check/mode-lowmem.c                             |  11 +++++++++++
+>  .../066-missing-root-orphan-item/default.img.xz | Bin 0 -> 13468 bytes
+>  .../066-missing-root-orphan-item/test.sh        |  14 ++++++++++++++
+>  4 files changed, 26 insertions(+), 2 deletions(-)
+>  create mode 100644 tests/fsck-tests/066-missing-root-orphan-item/default.img.xz
+>  create mode 100755 tests/fsck-tests/066-missing-root-orphan-item/test.sh
+> 
+> --
 > 2.50.0
 > 
 
