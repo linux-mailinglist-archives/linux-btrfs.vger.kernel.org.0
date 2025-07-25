@@ -1,176 +1,208 @@
-Return-Path: <linux-btrfs+bounces-15673-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15674-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA7EBB12103
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Jul 2025 17:37:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7155EB1238C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Jul 2025 20:08:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 844921CC4149
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Jul 2025 15:37:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BC36AA6960
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Jul 2025 18:08:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964A02EE5F1;
-	Fri, 25 Jul 2025 15:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2C1B28AAE9;
+	Fri, 25 Jul 2025 18:08:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="nSQjP3VB"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="hr+D3cOv";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iITNTglw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b2-smtp.messagingengine.com (fhigh-b2-smtp.messagingengine.com [202.12.124.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F83C5475E
-	for <linux-btrfs@vger.kernel.org>; Fri, 25 Jul 2025 15:37:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4973548CFC
+	for <linux-btrfs@vger.kernel.org>; Fri, 25 Jul 2025 18:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753457853; cv=none; b=nv5l87XVpmXeP2OKj2G0L2jwGbV/vhPtjiz68hRMP6yOapKfN+4ISffg0potQDIw0TeeHD0yaAu5qzsGGvvux08tmBVb4I+NCTx83D/y07vIDxrhWu0qEekya/9GbVxKfq6Hf/L0YkmnmKNBiFTYxaGTrLZuGry+dyGMCBRfhtE=
+	t=1753466920; cv=none; b=lX4S2bBFO3GBTYyfo77a9kt1aMsV8sHMzZBzVxaOLCPVbTfBw7wT5Tj5osIMoFD2u5hl0y0FXYBfrhrPpbx3tHUWsw8Gk7Zcchj+T1ZbyO2GKwe4j0XHiNqpcI1RHJLZHoVa+592IkGTd8cwUcP4IkN8vNHDZoWPVhFQ2zI8b5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753457853; c=relaxed/simple;
-	bh=uKPepaKUL6EURbIiCP1vo3zvxEUTCB5v7p5uxSAObSM=;
-	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ecfb2bNCS+4BJqPSRCGO/GgpbKfFaVpJIajgUO6GCljG37ilKTRkBE18fkSFcB3XpkCGkwDmEsztvH+wYOKVkp32EMoImInmGfSEs/HDooZnEGtT0pfnyUiN8aLQT1YZt8uyN6gg8rIiMCZ9mvspH4dexLiKGhuypzCgDJd9R9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=nSQjP3VB; arc=none smtp.client-ip=217.169.27.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
-Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
-	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
-	by mail.burntcomma.com (Postfix) with ESMTPS id 2475D29F96D;
-	Fri, 25 Jul 2025 16:37:17 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1753457837;
-	bh=eZX9v6a7KRwCYdLjTlbDv2SA8WgN4SoDmm6VQI+awyA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=nSQjP3VBdVg6d6DFg9R3dujn4ZnH3ZjAtIWVr+n/LV9rba9USC/wvJcq8xTng4ky2
-	 B2zJy/xJDXZvTtJykbnR/TqWB+qhBCTkOZlmasTSYXoWNn/cUHL+32QyIQscUlhptR
-	 rqmtFZbETLp55REG5xvo/BGXcYG44Z9dBFnUEVS4=
-Message-ID: <ca31ad8f-3bf7-4efa-80d9-93a8a115cba5@harmstone.com>
-Date: Fri, 25 Jul 2025 16:37:16 +0100
+	s=arc-20240116; t=1753466920; c=relaxed/simple;
+	bh=8rY1mlHiWeYSRSQBZCtzEmhYJqMa4zEODpaY6H0xnyU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nL3dtH6C6/h9AltRcJf1Zpg3BusDeLjEAQ62JNkPfsjjUcY4YI+KXN2jh3KLbtZ3TlxhZlGMt8TmMDl8efMQdDLaXS6J1ZLlwMJiWK3pwx24V0vDY9r+t+fsh7k7tLa8KEmMLBNWw/3kZJWSH8S9HXrge4YcQQJL8m+vE+k1bpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=hr+D3cOv; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iITNTglw; arc=none smtp.client-ip=202.12.124.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id F3F307A0AE8;
+	Fri, 25 Jul 2025 14:08:33 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-07.internal (MEProxy); Fri, 25 Jul 2025 14:08:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1753466913; x=1753553313; bh=02uxrzw2EZ
+	x5CHme6g54ChVhX6Qr2QNlVLOAReVa0BE=; b=hr+D3cOvEzzKoINgzETN6STzMN
+	pqfMcepfj92SfWeli+jPPG/vIdRM98BN74eZwtvnsDl9M3r+NheXyEVx5ACjX4Ek
+	hOVtC7OlLeggnnHYNcgmYAo19CXr5kKbw8IG5hfpFswKPFrPrei9ADxD9fHPcGBU
+	8xYguOqAlS7XdZLP3obmnpNNbJEFgMvDhpqrnlJAe5DUlEUG6J9Co7xfC4VCqyRw
+	V6J4f65FWlMTKDIol67qL3zeV20TV/Wxfq7pUTGjq9bub+KjjPuP+52PIGtPbgs8
+	NeLOZmT4gwKFP9dWz8C4aLWr7PbMfoo79dUbxA2Kd+i+xfGCbriupysXxxVg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1753466913; x=1753553313; bh=02uxrzw2EZx5CHme6g54ChVhX6Qr2QNlVLO
+	AReVa0BE=; b=iITNTglwohruE+VH+B5By/7H+6/SM7mN9WVxydxKzC1yktXm4/j
+	KYkl9qs3BKW9NsWt5GHBGqE6pM97uYtXy/az4rJmdKzLbsDI4S+d8BBi4z93eIhn
+	Eu87yo0d67j2mCO3wJKzsoyRdva4LLQ24+LkKTRibdgSxt3gC7ENtmpkky8sAZdB
+	fN5n6zyECpOCsQPWDK7IFA0jVLVF/V89b2iItyDALxeVuecXdTVLAvIKNTvJiXPd
+	K2+Ko0hxZrbHXwoCGfKeWyXZCGgts7zkOkyRC6owp5SRqxyRnr8FYkVkyCTGguFM
+	8hinw2MwCOFSMBFD6RbgB6+3bHVVhLHXSsg==
+X-ME-Sender: <xms:IciDaIJHMCzinJsYOWvsK-yfjY2EZ52oZW8zjqD1HZpulgvyaUj-NQ>
+    <xme:IciDaIU07gx1JTsZDAkTnv4EA5x2MY_MxHqT2RSCppnMQSaK2ntuXa1EP699RDGLA
+    DSG_q_6Ij3Y4Alz-MQ>
+X-ME-Received: <xmr:IciDaKgjEm3p0CxXziuUYr1D7_1LaZ_tEirtwqAa3mmbMsauev4vQF62DOfEahA-qKLtlxs_zPItMdCELmcYvOqwHAY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdekgedvudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhsuceu
+    uhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepkedvke
+    ffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
+    drihhopdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthho
+    peifqhhusehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvgh
+    gvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:IciDaD-caDU2dsK24dZPRk3XAy-tF8V0AQNvC4g5rYjisJyN-1-xAA>
+    <xmx:IciDaEAMlwPd-Bj25fWt3EYR-NqFcMsUuTP_4j0hZ95F5Sm3UVCBng>
+    <xmx:IciDaAJq5uLwOqwXwWW3529Ltf3gx3vpsrehIg3CVLsUReAOtLOt2A>
+    <xmx:IciDaHnmAseOeMSHMmOduQo-kb3WFF4vL9xce619aLCxFi9pLLzQwg>
+    <xmx:IciDaG5BL3XwV5P0Ci4fUHoaKX8beBi7VQJbRoGgdOyGSB8HiW-peuzY>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 25 Jul 2025 14:08:33 -0400 (EDT)
+Date: Fri, 25 Jul 2025 11:09:50 -0700
+From: Boris Burkov <boris@bur.io>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] btrfs-progs: check/original: detect missing orphan
+ items correctly
+Message-ID: <20250725180950.GA1649496@zen.localdomain>
+References: <cover.1753414100.git.wqu@suse.com>
+ <24cda813cf05892afb67f62f5c68cd28b478ec09.1753414100.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: Increased reports since 6.15.3 of corruption within the log tree
-To: Russell Haley <yumpusamongus@gmail.com>,
- Qu Wenruo <quwenruo.btrfs@gmx.com>, Peter Jung <ptr1337@cachyos.org>,
- linux-btrfs@vger.kernel.org, dave@jikos.cz,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Boris Burkov <boris@bur.io>
-Cc: dnaim@cachyos.org
-References: <fce139db-4458-4788-bb97-c29acf6cb1df@cachyos.org>
- <a6f03aff-c9fc-4e7f-b1fb-42d6a4cd770a@gmx.com>
- <23b4beab-e33e-4a3b-93d6-8ebeb2a881b9@gmail.com>
-Content-Language: en-US
-From: Mark Harmstone <mark@harmstone.com>
-Autocrypt: addr=mark@harmstone.com; keydata=
- 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
-In-Reply-To: <23b4beab-e33e-4a3b-93d6-8ebeb2a881b9@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24cda813cf05892afb67f62f5c68cd28b478ec09.1753414100.git.wqu@suse.com>
 
- From that dump:
+On Fri, Jul 25, 2025 at 01:10:41PM +0930, Qu Wenruo wrote:
+> [BUG]
+> If we have a filesystem with a subvolume that has 0 refs but without an
+> orphan item, btrfs check won't report any error on it.
+> 
+>   $ btrfs ins dump-tree -t root /dev/test/scratch1
+>   btrfs-progs v6.15
+>   root tree
+>   node 5242880 level 1 items 2 free space 119 generation 11 owner ROOT_TREE
+>   node 5242880 flags 0x1(WRITTEN) backref revision 1
+>   fs uuid ff32309e-4e90-4402-b1ef-0a1f9f28bfff
+>   chunk uuid 6c373b6d-c866-4c8c-81fa-608bf5ef25e3
+>   	key (EXTENT_TREE ROOT_ITEM 0) block 5267456 gen 11
+>   	key (ROOT_TREE_DIR DIR_ITEM 2378154706) block 5246976 gen 11
+>   leaf 5267456 items 6 free space 2339 generation 11 owner ROOT_TREE
+>   leaf 5267456 flags 0x1(WRITTEN) backref revision 1
+>   fs uuid ff32309e-4e90-4402-b1ef-0a1f9f28bfff
+>   	[...]
+>   leaf 5246976 items 6 free space 1613 generation 11 owner ROOT_TREE
+>   leaf 5246976 flags 0x1(WRITTEN) backref revision 1
+>   checksum stored 47620783
+>   checksum calced 47620783
+>   fs uuid ff32309e-4e90-4402-b1ef-0a1f9f28bfff
+>   chunk uuid 6c373b6d-c866-4c8c-81fa-608bf5ef25e3
+>   	[...]
+>   	item 4 key (256 ROOT_ITEM 0) itemoff 2202 itemsize 439
+>   		generation 9 root_dirid 256 bytenr 5898240 byte_limit 0 bytes_used 581632
+>   		last_snapshot 0 flags 0x1000000000000(none) refs 0 <<<
+>   		drop_progress key (0 UNKNOWN.0 0) drop_level 0
+>   		level 2 generation_v2 9
+>   	item 5 key (DATA_RELOC_TREE ROOT_ITEM 0) itemoff 1763 itemsize 439
+>   		generation 5 root_dirid 256 bytenr 5287936 byte_limit 0 bytes_used 4096
+>   		last_snapshot 0 flags 0x0(none) refs 1
+>   		drop_progress key (0 UNKNOWN.0 0) drop_level 0
+>   		level 0 generation_v2 5
+>   	^^^ No orphan item for subvolume 256.
+> 
+> Then "btrfs check" will not report anything wrong with it:
+> 
+>   Opening filesystem to check...
+>   Checking filesystem on /dev/test/scratch1
+>   UUID: ff32309e-4e90-4402-b1ef-0a1f9f28bfff
+>   [1/8] checking log skipped (none written)
+>   [2/8] checking root items
+>   [3/8] checking extents
+>   [4/8] checking free space tree
+>   [5/8] checking fs roots
+>   [6/8] checking only csums items (without verifying data)
+>   [7/8] checking root refs
+>   [8/8] checking quota groups skipped (not enabled on this FS)
+>   found 638976 bytes used, no error found <<<
+>   total csum bytes: 0
+>   total tree bytes: 638976
+>   total fs tree bytes: 589824
+>   total extent tree bytes: 16384
+>   btree space waste bytes: 289501
+>   file data blocks allocated: 0
+>    referenced 0
+> 
+> [CAUSE]
+> Although we have check_orphan_item() call inside check_root_refs(), it
+> relies the root record to have its 'found_root_item' member set.
+> Otherwise it will not report this as an error.
+> 
+> But that 'found_root_item' is always set to 0, if the subvolume has zero
+> ref, this means any subvolume with 0 refs will not have its orphan item
+> checked.
+> 
+> [FIX]
+> Set root_record::found_root_item to 1 inside check_fs_root().
+> 
+> As check_fs_root() is called after we found a root item, we should set
+> root_record::found_root_item to indicate this fact, and allows proper
+> orphan item check to be done.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  check/main.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/check/main.c b/check/main.c
+> index b78eb59d0c50..1536c1bbbccd 100644
+> --- a/check/main.c
+> +++ b/check/main.c
+> @@ -3728,8 +3728,7 @@ static int check_fs_root(struct btrfs_root *root,
+>  	if (root->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID) {
+>  		rec = get_root_rec(root_cache, root->root_key.objectid);
+>  		BUG_ON(IS_ERR(rec));
+> -		if (btrfs_root_refs(root_item) > 0)
+> -			rec->found_root_item = 1;
+> +		rec->found_root_item = 1;
 
- >         item 0 key (TREE_LOG ROOT_ITEM 256) itemoff 15844 itemsize 439
- >                 generation 456818 root_dirid 0 bytenr 202645028864 byte_limit 0 bytes_used 0
-...
- >         item 1 key (TREE_LOG ROOT_ITEM 258) itemoff 15405 itemsize 439
- >                 generation 456818 root_dirid 0 bytenr 202650877952 byte_limit 0 bytes_used 65536
+This change feels like an improvement to me, but it does seem to
+implicitly reduce the fidelity of the root ref checking. Like if the
+root refs was 0 but a ref existed, then we would suddenly miss that,
+where before it was an error. I think it would be best to check that
+refs is correct (i.e., store the found refs and add up the refs we see
+and make sure they match), separate from the "found_root_item" logic.
 
-"bytes_used 0" for the first one looks suspect to me. Maybe the problem is
-that if you're doing fsync I/O to multiple subvolumes, the leaves are potentially
-getting put in the wrong tree?
-
-On 24/07/2025 3.24 am, Russell Haley wrote:
-> On 7/7/25 6:00 AM, Qu Wenruo wrote:
->>
->>
->> 在 2025/7/7 20:16, Peter Jung 写道:
->>> Hi all,
->>>
->>> There has been increased reports of users reporting that they could
->>> not boot into their system anymore - sometimes after a needed force
->>> shutdown, but also according the users after a normal shutdown/reboot
->>> process.
->>>
->>> The filesystem can be accessible again, after running following
->>> command in the chroot:
->>>
->>> ```
->>> sudo btrfs rescue zero-log /dev/sdX
->>> ```
->>>
->>> There is no way to reproduce this constantly.
->>>
->>> Following commits did land in 6.15.3:
->>>
->>> btrfs: exit after state insertion failure at btrfs_convert_extent_bit()
->>> btrfs: exit after state split error at set_extent_bit()
->>> btrfs: fix fsync of files with no hard links not persisting deletion
->>> btrfs: fix invalid data space release when truncating block in NOCOW mode
->>> btrfs: fix wrong start offset for delalloc space release during mmap
->>> write
->>> btrfs: scrub: fix a wrong error type when metadata bytenr mismatches
->>> btrfs: scrub: update device stats when an error is detected
->>>
->>> Some reports:
->>> https://discussion.fedoraproject.org/t/fedora-kde-no-longer-booting-
->>> likely-filesystem-btrfs-corruption/157232/10
->>> https://www.reddit.com/r/cachyos/comments/1lmzmm4/
->>> failed_to_mount_on_real_rooted/
->>> https://www.reddit.com/r/cachyos/comments/1llin1n/
->>> error_failed_to_mount_uuid_on_real_root_cant_boot/
->>> https://www.reddit.com/r/cachyos/comments/1llrpcb/
->>> unable_to_boot_os_you_are_in_emergency_mode/
->>> https://www.reddit.com/r/cachyos/comments/1lr5nro/my_cachyos_is_down/
->>
->> Unfortunately none of those comment is helpful.
->>
->> They do not provide the dmesg of the mount failure, and that's the most
->> important info.
->>
->> If you got any new reports, please ask for the dmesg of inside the
->> emergency shell.
+>  	}
+>  
+>  	memset(&root_node, 0, sizeof(root_node));
+> -- 
+> 2.50.0
 > 
-> I think this is likely the same problem I ran into[1], and I collected
-> dmesg and a dump of TREE_LOG in the bad state.
-> 
-> [1]
-> https://lore.kernel.org/linux-btrfs/598ecc75-eb80-41b3-83c2-f2317fbb9864@gmail.com/
-> 
-> Thanks,
-> 
-> Russell
-> 
-> 
-
 
