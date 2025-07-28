@@ -1,330 +1,259 @@
-Return-Path: <linux-btrfs+bounces-15706-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15707-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8EDDB136B0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jul 2025 10:32:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E621B137A4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jul 2025 11:39:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 626D13BD029
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jul 2025 08:30:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED6FD17882A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jul 2025 09:39:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFFF24DCEF;
-	Mon, 28 Jul 2025 08:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8461225785;
+	Mon, 28 Jul 2025 09:39:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OpPll5KY";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OpPll5KY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNSRLfQp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34181248F57
-	for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 08:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B5E170825
+	for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 09:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753691322; cv=none; b=DU7+hcVNw7S/kfxm0sVIdMTb+1m4cu749nf1ZRnc2/XqD9d0WGzckLto4l7WjN3lDLryWJmXiEJVTUYjPdBgkYL60NN60zm0IOECq6eYFyYtr4+0SpQ7vvbVc0fVrxT/YGYg1npV57077kokB6n+VE3L3TQT0e4S8DO+/kMhQjw=
+	t=1753695557; cv=none; b=Wp5HL4KKSUABjJ5BMYENQyuSdpin5kdTGAIafdkPQz0CDtrHvmmnrNDhjomSYpIKm0Sk0xYuimwTJZG8sGe8hv9HC5bty3WUIHshXYo0M27wNCOTyYV5vT0dDjHJRqX+PqtllV90dyCJduT75QQ3OQVsn6jpYl1PBAZIQkSGh4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753691322; c=relaxed/simple;
-	bh=mjoB+Ovn2n8grfIzFyF9U8sXU4IypJjudgXMtqEGN6U=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cPoWPdVT8SrWB4XwfyK1xroM06tuAKsta1QQny0T5xX/2D6YBlEN6e3e7TAgDfIKp2d7lzx+yNVBre6wv+SIIE+eX6T0MnMR0ukEXfcsT72hx4UZ73zH/meDzdupXvaWgcheEnI44mb8NuBC2szwMQv9ULFxBTxl0roiBv8qed8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OpPll5KY; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OpPll5KY; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1885E1F788
-	for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 08:28:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1753691301; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UwSWqssh1AcXtVbLQYk75lIBpac37omDa2jz/zUykRY=;
-	b=OpPll5KYHGRldlUBGxiqwXEAbXAEfIfK5YVm5qIWAH/YOKO64FTG8+akUdMRkIh02F1DHs
-	5+9JMHVzNlqEkfejnKyiZNjeGMBYjUQpAycmdk1rCxmvB4IQXsNg63VRlyW/3hcJzkSfM3
-	K90uhOEW2UrdO65XFqCm+8ZHlTtPN8c=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=OpPll5KY
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1753691301; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UwSWqssh1AcXtVbLQYk75lIBpac37omDa2jz/zUykRY=;
-	b=OpPll5KYHGRldlUBGxiqwXEAbXAEfIfK5YVm5qIWAH/YOKO64FTG8+akUdMRkIh02F1DHs
-	5+9JMHVzNlqEkfejnKyiZNjeGMBYjUQpAycmdk1rCxmvB4IQXsNg63VRlyW/3hcJzkSfM3
-	K90uhOEW2UrdO65XFqCm+8ZHlTtPN8c=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 564D7138A5
-	for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 08:28:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kIaSBqQ0h2g0GwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 08:28:20 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 4/4] btrfs: keep folios locked inside run_delalloc_nocow()
-Date: Mon, 28 Jul 2025 17:57:57 +0930
-Message-ID: <a5a3c2f37bbe0b32ffaa8a15a85515ab9f173a28.1753687685.git.wqu@suse.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <cover.1753687685.git.wqu@suse.com>
-References: <cover.1753687685.git.wqu@suse.com>
+	s=arc-20240116; t=1753695557; c=relaxed/simple;
+	bh=DLnYpiGiWBmFHsOMYWwNL/ix50o1NCdWq4lAov9EzYI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Rx6vab42I3DZ/uSy2BH8zG0I8IDTXRAu/Og2Wh7aVMVn1nqjiRKkAJyhO9vOdMw8+SF+sg4iUksbBabKH7gS5ivUIXmgyGlhp9X49TYOHdk23EP48/1dTJcsml+BUnt+1nFckuF2paBD26w+Z8p4F0ASI/WFrkl8qfmCz2yn4O4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jNSRLfQp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAAF9C4CEF7
+	for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 09:39:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753695556;
+	bh=DLnYpiGiWBmFHsOMYWwNL/ix50o1NCdWq4lAov9EzYI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=jNSRLfQp968H8fJFvvLhqQnq9IXdI9Ua49o1pKq58INCodwcZd/i0+EiMp0jdPwDR
+	 WjJHcAsYFvejFB/FhS6ON3Zbdw4vgb3ovSxrS6hr9EWD+8RdFqyhM5uTeI5qKwVCU7
+	 QoG77a8TmXI/KjsFQ9K7m7dlSgwiq81aiS59W3tZiUUdRLkP9NFJjFrk4hKjor6uXF
+	 Wz3N35vHWthS9CZQT1uGl/9JV75ooeUcfyA9RtUWGQgQSagezivn4mi5QNQG+/wfuw
+	 O5s1RIFdCltuSoAX6f4EoFlFNnLEO8mQZu+CFJEFA71qnRscYZ6ZBSU43+RTo8dwcB
+	 veK5OS0GUMx2A==
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-61543f03958so809410a12.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 02:39:16 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxWCtl02eIqJWDRFT/fLqnGlhwxUjOH3godQIGQ5q7m9TLm+vnt
+	ow+LFmnysYIlwS1yuWs/TP/l2/uMepYgjJPk88bCDzGypldrTBnBjjCYIw0Ni03Pmy8Tx+M8GMa
+	YgNR3xpAAruFlmPMRMMSk7kuXFgQf1Qk=
+X-Google-Smtp-Source: AGHT+IGZS0yTSUWjA+Csg1ziZpjwI1jiwgK/LhZww6VMCFyGW+fPggnwQKII5hlYKfx9/N2SR/eZ+Mu71/zdKcNgJoY=
+X-Received: by 2002:a17:907:7254:b0:ae0:b33d:2a4a with SMTP id
+ a640c23a62f3a-af61e051379mr1052866966b.35.1753695555158; Mon, 28 Jul 2025
+ 02:39:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 1885E1F788
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_EQ_ENVFROM(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Score: -3.01
+References: <bbc7c6af95f7628d4d0a517358e7e9c2e421ccc5.1753441296.git.wqu@suse.com>
+ <CAL3q7H5yk9PWo3JD-fLM5UZ=2E8CNrW6hJ+8OB4bFiYfKjBMVA@mail.gmail.com> <a765c0a9-f223-4a10-8ddb-80bb0ebff42e@suse.com>
+In-Reply-To: <a765c0a9-f223-4a10-8ddb-80bb0ebff42e@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 28 Jul 2025 10:38:38 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6fQQiYhMq_PnhT+GwuUW_OX_p+yvC9FOmy06OKWnoMFA@mail.gmail.com>
+X-Gm-Features: Ac12FXyfWw4Nmwled0HalFq4lJKQApIHfAu8KWXKnyewaERnIUq4zKix-Nh34ag
+Message-ID: <CAL3q7H6fQQiYhMq_PnhT+GwuUW_OX_p+yvC9FOmy06OKWnoMFA@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: do not allow relocation of partially dropped subvolumes
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[BUG]
-There is a very low chance that DEBUG_WARN() inside
-btrfs_writepage_cow_fixup() can be triggered when
-CONFIG_BTRFS_EXPERIMENTAL is enabled.
+On Fri, Jul 25, 2025 at 10:06=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2025/7/25 20:39, Filipe Manana =E5=86=99=E9=81=93:
+> > On Fri, Jul 25, 2025 at 12:05=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote=
+:
+> >>
+> >> [BUG]
+> >> There is an internal report that balance triggered transaction abort,
+> >> with the following call trace:
+> >>
+> >>    item 85 key (594509824 169 0) itemoff 12599 itemsize 33
+> >>            extent refs 1 gen 197740 flags 2
+> >>            ref#0: tree block backref root 7
+> >>    item 86 key (594558976 169 0) itemoff 12566 itemsize 33
+> >>            extent refs 1 gen 197522 flags 2
+> >>            ref#0: tree block backref root 7
+> >>   ...
+> >>   BTRFS error (device loop0): extent item not found for insert, bytenr=
+ 594526208 num_bytes 16384 parent 449921024 root_objectid 934 owner 1 offse=
+t 0
+> >>   BTRFS error (device loop0): failed to run delayed ref for logical 59=
+4526208 num_bytes 16384 type 182 action 1 ref_mod 1: -117
+> >>   ------------[ cut here ]------------
+> >>   BTRFS: Transaction aborted (error -117)
+> >>   WARNING: CPU: 1 PID: 6963 at ../fs/btrfs/extent-tree.c:2168 btrfs_ru=
+n_delayed_refs+0xfa/0x110 [btrfs]
+> >>
+> >> And btrfs check doesn't report anything wrong related to the extent
+> >> tree.
+> >>
+> >> [CAUSE]
+> >> The cause is a little complex, firstly the extent tree indeed doesn't
+> >> have the backref for 594526208.
+> >>
+> >> The extent tree only have the following two backrefs around that byten=
+r
+> >> on-disk:
+> >>
+> >>          item 65 key (594509824 METADATA_ITEM 0) itemoff 13880 itemsiz=
+e 33
+> >>                  refs 1 gen 197740 flags TREE_BLOCK
+> >>                  tree block skinny level 0
+> >>                  (176 0x7) tree block backref root CSUM_TREE
+> >>          item 66 key (594558976 METADATA_ITEM 0) itemoff 13847 itemsiz=
+e 33
+> >>                  refs 1 gen 197522 flags TREE_BLOCK
+> >>                  tree block skinny level 0
+> >>                  (176 0x7) tree block backref root CSUM_TREE
+> >>
+> >> But the such missing backref item is not an corruption on disk, as the
+> >> offending delayed ref belongs to subvolume 934, and that subvolume is
+> >> being dropped:
+> >>
+> >>          item 0 key (934 ROOT_ITEM 198229) itemoff 15844 itemsize 439
+> >>                  generation 198229 root_dirid 256 bytenr 10741039104 b=
+yte_limit 0 bytes_used 345571328
+> >>                  last_snapshot 198229 flags 0x1000000000001(RDONLY) re=
+fs 0
+> >>                  drop_progress key (206324 EXTENT_DATA 2711650304) dro=
+p_level 2
+> >>                  level 2 generation_v2 198229
+> >>
+> >> And that offending tree block 594526208 is inside the dropped range of
+> >> that subvolume.
+> >> That explains why there is no backref item for that bytenr and why btr=
+fs
+> >> check is not reporting anything wrong.
+> >>
+> >> But this also shows another problem, as btrfs will do all the orphan
+> >> subvolume cleanup at a read-write mount.
+> >>
+> >> So half-dropped subvolume should not exist after an RW mount, and
+> >> balance itself is also exclusive to subvolume cleanup, meaning we
+> >> shouldn't hit a subvolume half-dropped during relocation.
+> >>
+> >> The root cause is, there is no orphan item for this subvolume.
+> >> In fact there are 5 subvolumes around 2021 that have the same problem.
+> >>
+> >> It looks like the original report has some older kernels running, and
+> >> caused those zombie subvolumes.
+> >>
+> >> Thankfully upstream commit 8d488a8c7ba2 ("btrfs: fix subvolume/snapsho=
+t
+> >> deletion not triggered on mount") has long fixed the bug.
+> >>
+> >> [ENHANCEMENT]
+> >> For repairing such old fs, btrfs-progs will be enhanced.
+> >>
+> >> Considering how delayed the problem will show up (at run delayed ref
+> >> time) and at that time we have to abort transaction already, it is too
+> >> late.
+> >>
+> >> Instead here we reject any half-dropped subvolume for reloc tree at th=
+e
+> >> earliest time, preventing confusion and extra time wasted on debugging
+> >> similar bugs.
+> >>
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >> ---
+> >> Changelog:
+> >> v2:
+> >> - Update the subject to reflect the change better
+> >> - Fix a memory leak when the check is triggered
+> >> - Make the error message less confusing
+> >>    All thanks to Filipe.
+> >> ---
+> >>   fs/btrfs/relocation.c | 19 +++++++++++++++++++
+> >>   1 file changed, 19 insertions(+)
+> >>
+> >> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> >> index 60dd3971c3ae..c33c591b23f2 100644
+> >> --- a/fs/btrfs/relocation.c
+> >> +++ b/fs/btrfs/relocation.c
+> >> @@ -602,6 +602,25 @@ static struct btrfs_root *create_reloc_root(struc=
+t btrfs_trans_handle *trans,
+> >>          if (btrfs_root_id(root) =3D=3D objectid) {
+> >>                  u64 commit_root_gen;
+> >>
+> >> +               /*
+> >> +                * Relocation will wait for cleaner thread, and any ha=
+lf-dropped
+> >> +                * subvolume will be fully cleaned up at mount time.
+> >> +                * So here we shouldn't hit a subvolume with non-zero =
+drop_progress.
+> >> +                *
+> >> +                * If this isn't the case, error out since it can make=
+ us attempt to
+> >> +                * drop references for extents that were already dropp=
+ed before.
+> >> +                */
+> >> +               if (unlikely(btrfs_disk_key_objectid(&root->root_item.=
+drop_progress))) {
+> >> +                       struct btrfs_key cpu_key;
+> >> +
+> >> +                       btrfs_disk_key_to_cpu(&cpu_key, &root->root_it=
+em.drop_progress);
+> >> +                       btrfs_err(fs_info,
+> >> +       "can not relocate partially dropped subvolume %llu, drop progr=
+ess key (%llu %u %llu)",
+> >> +                                 objectid, cpu_key.objectid, cpu_key.=
+type, cpu_key.offset);
+> >> +                       ret =3D -EUCLEAN;
+> >> +                       goto fail;
+> >> +               }
+> >
+> > Sorry I forgot to point this out before, but why isn't this placed
+> > outside the if statement?
+> > I.e., before the "if (btrfs_root_id(root) =3D=3D objectid)"
+>
+> For the root_id !=3D objectid case, it's btrfs_reloc_post_snapshot() for =
+a
+> reloc tree.
+>
+> In that case won't the reloc tree being merged thus got a non-zero drop
+> progress and trigger a false alert here?
 
-This only happens after run_delalloc_nocow() failed.
+Yes, that should be right.
 
-Unfortunately I haven't hit it for a while thus no real world dmesg for
-now.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-[CAUSE]
-There is a race window where after run_delalloc_nocow() failed, error
-handling can race with writeback thread.
+Thanks.
 
-Before we hit run_delalloc_nocow(), there is an inode with the following
-dirty pages: (4K page size, 4K block size, no large folio)
-
-  0         4K          8K          12K          16K
-  |/////////|///////////|///////////|////////////|
-
-The inode also have NODATACOW flag, and the above dirty range will go
-through different extents during run_delalloc_range():
-
-  0         4K          8K          12K          16K
-  |  NOCOW  |    COW    |    COW    |   NOCOW    |
-
-The race happen like this:
-
-    writeback thread A            |        writeback thread B
-----------------------------------+--------------------------------------
-Writeback for folio 0             |
-run_delalloc_nocow()              |
-|- nocow_one_range()              |
-|  For range [0, 4K), ret = 0     |
-|                                 |
-|- fallback_to_cow()              |
-|  For range [4K, 8K), ret = 0    |
-|  Folio 4K *UNLOCKED*            |
-|                                 | Writeback for folio 4K
-|- fallback_to_cow()              | extent_writepage()
-|  For range [8K, 12K), failure   | |- writepage_delalloc()
-|				  | |
-|- btrfs_cleanup_ordered_extents()| |
-   |- btrfs_folio_clear_ordered() | |
-   |  Folio 0 still locked, safe  | |
-   |                              | |  Ordered extent already allocated.
-   |                              | |  Nothing to do.
-   |                              | |- extent_writepage_io()
-   |                              |    |- btrfs_writepage_cow_fixup()
-   |- btrfs_folio_clear_ordered() |    |
-      Folio 4K hold by thread B,  |    |
-      UNSAFE!                     |    |- btrfs_test_ordered()
-                                  |    |  Cleared by thread A,
-				  |    |
-                                  |    |- DEBUG_WARN();
-
-This is only possible after run_delalloc_nocow() failure, as
-cow_file_range() will keep all folios and io tree range locked, until
-everything is finished or after error handling.
-
-The root cause is we allow fallback_to_cow() and nocow_one_range() to
-unlock the folios after a successful run, so that during error handling
-we're no longer safe to use btrfs_cleanup_ordered_extents() as the
-folios are already unlocked.
-
-[FIX]
-- Make fallback_to_cow() and nocow_one_range() to keep folios locked
-  after a successful run
-
-  For fallback_to_cow() we can pass COW_FILE_RANGE_KEEP_LOCKED flag
-  into cow_file_range().
-
-  For nocow_one_range() we have to remove the PAGE_UNLOCK flag from
-  extent_clear_unlock_delalloc().
-
-- Unlock folios if everything is fine in run_delalloc_nocow()
-
-- Use extent_clear_unlock_delalloc() to handle range [@start,
-  @cur_offset) inside run_delalloc_nocow()
-  Since folios are still locked, we do not need
-  cleanup_dirty_folios() to do the cleanup.
-
-  extent_clear_unlock_delalloc() with "PAGE_START_WRIBACK |
-  PAGE_END_WRITEBACK" will clear the dirty flags.
-
-- Remove cleanup_dirty_folios()
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c | 73 +++++++++++++++---------------------------------
- 1 file changed, 22 insertions(+), 51 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 1466f4356826..902a1d03d20e 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1772,9 +1772,15 @@ static int fallback_to_cow(struct btrfs_inode *inode,
- 	 * Don't try to create inline extents, as a mix of inline extent that
- 	 * is written out and unlocked directly and a normal NOCOW extent
- 	 * doesn't work.
-+	 *
-+	 * And here we do not unlock the folio after a successful run.
-+	 * The folios will be unlocked after everything is finished, or by error handling.
-+	 *
-+	 * This is to ensure error handling won't need to clear dirty/ordered flags without
-+	 * a locked folio, which can race with writeback.
- 	 */
- 	ret = cow_file_range(inode, locked_folio, start, end, NULL,
--			     COW_FILE_RANGE_NO_INLINE);
-+			     COW_FILE_RANGE_NO_INLINE | COW_FILE_RANGE_KEEP_LOCKED);
- 	ASSERT(ret != 1);
- 	return ret;
- }
-@@ -1917,53 +1923,6 @@ static int can_nocow_file_extent(struct btrfs_path *path,
- 	return ret < 0 ? ret : can_nocow;
- }
- 
--/*
-- * Cleanup the dirty folios which will never be submitted due to error.
-- *
-- * When running a delalloc range, we may need to split the ranges (due to
-- * fragmentation or NOCOW). If we hit an error in the later part, we will error
-- * out and previously successfully executed range will never be submitted, thus
-- * we have to cleanup those folios by clearing their dirty flag, starting and
-- * finishing the writeback.
-- */
--static void cleanup_dirty_folios(struct btrfs_inode *inode,
--				 struct folio *locked_folio,
--				 u64 start, u64 end, int error)
--{
--	struct btrfs_fs_info *fs_info = inode->root->fs_info;
--	struct address_space *mapping = inode->vfs_inode.i_mapping;
--	pgoff_t start_index = start >> PAGE_SHIFT;
--	pgoff_t end_index = end >> PAGE_SHIFT;
--	u32 len;
--
--	ASSERT(end + 1 - start < U32_MAX);
--	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
--	       IS_ALIGNED(end + 1, fs_info->sectorsize));
--	len = end + 1 - start;
--
--	/*
--	 * Handle the locked folio first.
--	 * The btrfs_folio_clamp_*() helpers can handle range out of the folio case.
--	 */
--	btrfs_folio_clamp_finish_io(fs_info, locked_folio, start, len);
--
--	for (pgoff_t index = start_index; index <= end_index; index++) {
--		struct folio *folio;
--
--		/* Already handled at the beginning. */
--		if (index == locked_folio->index)
--			continue;
--		folio = __filemap_get_folio(mapping, index, FGP_LOCK, GFP_NOFS);
--		/* Cache already dropped, no need to do any cleanup. */
--		if (IS_ERR(folio))
--			continue;
--		btrfs_folio_clamp_finish_io(fs_info, locked_folio, start, len);
--		folio_unlock(folio);
--		folio_put(folio);
--	}
--	mapping_set_error(mapping, error);
--}
--
- static int nocow_one_range(struct btrfs_inode *inode, struct folio *locked_folio,
- 			   struct extent_state **cached,
- 			   struct can_nocow_file_extent_args *nocow_args,
-@@ -2013,7 +1972,7 @@ static int nocow_one_range(struct btrfs_inode *inode, struct folio *locked_folio
- 	extent_clear_unlock_delalloc(inode, file_pos, end, locked_folio, cached,
- 				     EXTENT_LOCKED | EXTENT_DELALLOC |
- 				     EXTENT_CLEAR_DATA_RESV,
--				     PAGE_UNLOCK | PAGE_SET_ORDERED);
-+				     PAGE_SET_ORDERED);
- 	return ret;
- error:
- 	btrfs_cleanup_ordered_extents(inode, file_pos, len);
-@@ -2247,6 +2206,14 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 		cow_start = (u64)-1;
- 	}
- 
-+	/*
-+	 * Everything is finished without an error, can unlock the folios now.
-+	 *
-+	 * No need to touch the io tree range nor set folio ordered flag, as
-+	 * fallback_to_cow() and nocow_one_range() have already handled them.
-+	 */
-+	extent_clear_unlock_delalloc(inode, start, end, locked_folio, NULL, 0, PAGE_UNLOCK);
-+
- 	btrfs_free_path(path);
- 	return 0;
- 
-@@ -2305,9 +2272,13 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 	}
- 
- 	if (oe_cleanup_len) {
-+		const u64 oe_cleanup_end = oe_cleanup_start + oe_cleanup_len - 1;
- 		btrfs_cleanup_ordered_extents(inode, oe_cleanup_start, oe_cleanup_len);
--		cleanup_dirty_folios(inode, locked_folio, oe_cleanup_start,
--				     oe_cleanup_start + oe_cleanup_len - 1, ret);
-+		extent_clear_unlock_delalloc(inode, oe_cleanup_start, oe_cleanup_end,
-+					     locked_folio, NULL,
-+					     EXTENT_LOCKED | EXTENT_DELALLOC,
-+					     PAGE_UNLOCK | PAGE_START_WRITEBACK |
-+					     PAGE_END_WRITEBACK);
- 	}
- 
- 	if (untouched_len) {
--- 
-2.50.1
-
+>
+> Thanks,
+> Qu
+>
+> > and even
+> > before allocating the root_item?
+> >
+> > I don't see a reason why not.
+>
+> >
+> > Thanks.
+> >
+> >> +
+> >>                  /* called by btrfs_init_reloc_root */
+> >>                  ret =3D btrfs_copy_root(trans, root, root->commit_roo=
+t, &eb,
+> >>                                        BTRFS_TREE_RELOC_OBJECTID);
+> >> --
+> >> 2.50.1
+> >>
+> >>
+>
 
