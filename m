@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-15704-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15705-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B0AFB136AF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jul 2025 10:32:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A3D6B136AE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jul 2025 10:32:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0CF718823A1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jul 2025 08:31:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A50BA3A7551
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jul 2025 08:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DFFA24728E;
-	Mon, 28 Jul 2025 08:28:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E751F24BC09;
+	Mon, 28 Jul 2025 08:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jvkUlJpk";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jvkUlJpk"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rVgSn/ce";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rVgSn/ce"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 403DA238D53
-	for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 08:28:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31BC4248F4A
+	for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 08:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753691308; cv=none; b=PrJaD+mS/dce31Y/zJiGvYRJnIoLutd6jY9ygBHybKQAdZQ0Vjicn7unq4CJgXLpvsK2am/0wsZGfPi+odwU44x7V4y64/ExQPhVBs0vjL4T6CO/m0LrkaoI7e0kE72dlBjYSTilTt5TGuWjwY7zQR43/dDGzUXiOz7ss8iK3Ew=
+	t=1753691315; cv=none; b=CXcxevqDHr0VfduLH6EKVeFte/cBkSwZcgrj5ZIs6fHCSN01uhchdGcbqYeWji+gcVcw/rgPnhhe7kAFcPDxVEc8cMExqFQgFqV17VUOMVzQMwt4VQfB3nvtDoHA/RJa8N9jgDf7Dh/KQkAftiwDJEcejQQuMSOqD1InTiP4Q34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753691308; c=relaxed/simple;
-	bh=koZlGXXU/ul4RbnRznb5skMghf4Pgl63dNKWZNd6QPc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TfS+XdONEBUfVx6DxGyH/nVMUKAhzRmdByCdz+BXKhOP6gTMAEKgUvdwUCf4QT7Wpsc8EVDOgNjct1h8eLNiYJBVqoKH4og0hX3h0SB0ToMuxeV8+Y+5uS+JksN6a0VSk5IdlyHAIKnzQopVDzKn7VZhQc3wb21b5CGeIPhBXo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jvkUlJpk; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jvkUlJpk; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1753691315; c=relaxed/simple;
+	bh=/latIwWFYkWV7JGDRTtJAHh7qg8ucJgR7sJa4nuv9D4=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=FKWD6MhGXN7SyqLkGlninvy89o1avJiXWEQOzoBDiayljciATPgbVadmv+kWDM7asbdcMQo94exMYPgfYWhPg4v7SuubqoTcsfq6HewfPinXFi+IX12IKuQHFWTmqOd3atBR0OuKU2utlWWmapnu+zisUdrGQObBrUB5cMH3El4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rVgSn/ce; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rVgSn/ce; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id ADF1A1F750;
-	Mon, 28 Jul 2025 08:28:18 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D842C1F76B
+	for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 08:28:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1753691298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1753691299; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=prdzglihtBNXRXwQwPmBIcBD4940RwXMHKoD69rFKZw=;
-	b=jvkUlJpk4ghQwNLcCe8RlrqKYQolRKh6Vl7gE01GdSP0zgUQFyfXvaTHPprUwN/RxHVM/G
-	ql8QKBOoqEiOtZRsHqc4eqa9dEtCAbWebgF7JjWnpalwjHKf/4e+3rvMl4zU9T4pEyGnMP
-	9MA32AiAxwNuMurmlZhLXdeKzTzo684=
+	bh=UE0/jmGd3PcEbQVbSXWte9zq1gITjy+NbpGcr0m72zY=;
+	b=rVgSn/cetWgBQOkMXHR4p43kBes7Kf9PzmTrm/eM0rdcFuiB+XCQShBXtf5ykVvpESP3Ln
+	2eeHn3zTbjyXqIfwf6wPixvw/Sv8cHd70Mz0n+70OmI0RH0Wspgc5kBjd6VFetQ9nDkwgK
+	0gddC3AZVMQQo62jL0Yt4sdbC1AR2po=
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=jvkUlJpk
+	dkim=pass header.d=suse.com header.s=susede1 header.b="rVgSn/ce"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1753691298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1753691299; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=prdzglihtBNXRXwQwPmBIcBD4940RwXMHKoD69rFKZw=;
-	b=jvkUlJpk4ghQwNLcCe8RlrqKYQolRKh6Vl7gE01GdSP0zgUQFyfXvaTHPprUwN/RxHVM/G
-	ql8QKBOoqEiOtZRsHqc4eqa9dEtCAbWebgF7JjWnpalwjHKf/4e+3rvMl4zU9T4pEyGnMP
-	9MA32AiAxwNuMurmlZhLXdeKzTzo684=
+	bh=UE0/jmGd3PcEbQVbSXWte9zq1gITjy+NbpGcr0m72zY=;
+	b=rVgSn/cetWgBQOkMXHR4p43kBes7Kf9PzmTrm/eM0rdcFuiB+XCQShBXtf5ykVvpESP3Ln
+	2eeHn3zTbjyXqIfwf6wPixvw/Sv8cHd70Mz0n+70OmI0RH0Wspgc5kBjd6VFetQ9nDkwgK
+	0gddC3AZVMQQo62jL0Yt4sdbC1AR2po=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A50BD138A5;
-	Mon, 28 Jul 2025 08:28:17 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 21487138A5
+	for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 08:28:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gCHRGaE0h2g0GwAAD6G6ig
-	(envelope-from <wqu@suse.com>); Mon, 28 Jul 2025 08:28:17 +0000
+	id 2EE9NaI0h2g0GwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 08:28:18 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: Boris Burkov <boris@bur.io>
-Subject: [PATCH v2 2/4] btrfs: enhance error messages for delalloc range failure
-Date: Mon, 28 Jul 2025 17:57:55 +0930
-Message-ID: <36044f63477d9cfcc5cdb047e80a3388b4892061.1753687685.git.wqu@suse.com>
+Subject: [PATCH v2 3/4] btrfs: make nocow_one_range() to do cleanup on error
+Date: Mon, 28 Jul 2025 17:57:56 +0930
+Message-ID: <8eae4df410ba03f4efb047b086f70342a5fd270f.1753687685.git.wqu@suse.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <cover.1753687685.git.wqu@suse.com>
 References: <cover.1753687685.git.wqu@suse.com>
@@ -84,11 +84,6 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: ADF1A1F750
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
@@ -98,129 +93,177 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	ARC_NA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCPT_COUNT_TWO(0.00)[2];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	RCVD_COUNT_TWO(0.00)[2];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+]
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_NONE(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: D842C1F76B
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Spam-Score: -3.01
 
-When running emulated write error tests like generic/475, we can hit
-error messages like this:
+Currently if we hit an error inside nocow_one_range(), we do not clear
+the page dirty, and let the caller to handle it.
 
- BTRFS error (device dm-12 state EA): run_delalloc_nocow failed, root=596 inode=264 start=1605632 len=73728: -5
- BTRFS error (device dm-12 state EA): failed to run delalloc range, root=596 ino=264 folio=1605632 submit_bitmap=0-7 start=1605632 len=73728: -5
+This is very different compared to fallback_to_cow(), when that function
+failed, everything will be cleaned up by cow_file_range().
 
-Which is normally buried by direct IO error messages.
+Enhance the situation by:
 
-However above error messages are not enough to determine which is the
-real range that caused the error.
-Considering we can have multiple different extents in one delalloc
-range (e.g. some COW extents along with some NOCOW extents), just
-outputting the error at the end of run_delalloc_nocow() is not enough.
+- Use a common error handling for nocow_one_range()
+  If we failed anything, use the same btrfs_cleanup_ordered_extents()
+  and extent_clear_unlock_delalloc().
 
-To enhance the error messages:
+  btrfs_cleanup_ordered_extents() is safe even if we haven't created new
+  ordered extent, in that case there should be no OE and that function
+  will do nothing.
 
-- Remove the rate limit on the existing error messages
-  In the generic/475 example, most error messages are from direct IO,
-  not really from the delalloc range.
-  Considering how useful the delalloc range error messages are, we don't
-  want they to be rate limited.
+  The same applies to extent_clear_unlock_delalloc(), and since we're
+  passing PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK, it
+  will also clear folio dirty flag during error handling.
 
-- Add extra @cur_offset output for cow_file_range()
-- Add extra variable output for run_delalloc_nocow()
-  This is especially important for run_delalloc_nocow(), as there
-  are extra error paths where we can hit error without into
-  nocow_one_range() nor fallback_to_cow().
+- Avoid touching the failed range of nocow_one_range()
+  As the failed range will be cleaned up and unlocked by that function.
 
-- Add an error message for nocow_one_range()
-  That's the missing part.
-  For fallback_to_cow(), we have error message from cow_file_range()
-  already.
+  Here we introduce a new variable @nocow_end to record the failed range,
+  so that we can skip it during the error handling of run_delalloc_nocow().
 
-- Constify the @len and @end local variables for nocow_one_range()
-  This makes it much easier to make sure @len and @end are not modified
-  at runtime.
-
-Reviewed-by: Boris Burkov <boris@bur.io>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/inode.c | 29 ++++++++++++++++++-----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+ fs/btrfs/inode.c | 59 +++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 38 insertions(+), 21 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index c7e2205c466f..e3063a001791 100644
+index e3063a001791..1466f4356826 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -1534,10 +1534,11 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		btrfs_qgroup_free_data(inode, NULL, start + cur_alloc_size,
- 				       end - start - cur_alloc_size + 1, NULL);
+@@ -1982,8 +1982,8 @@ static int nocow_one_range(struct btrfs_inode *inode, struct folio *locked_folio
+ 		em = btrfs_create_io_em(inode, file_pos, &nocow_args->file_extent,
+ 					BTRFS_ORDERED_PREALLOC);
+ 		if (IS_ERR(em)) {
+-			btrfs_unlock_extent(&inode->io_tree, file_pos, end, cached);
+-			return PTR_ERR(em);
++			ret = PTR_ERR(em);
++			goto error;
+ 		}
+ 		btrfs_free_extent_map(em);
  	}
--	btrfs_err_rl(fs_info,
--		     "%s failed, root=%llu inode=%llu start=%llu len=%llu: %d",
--		     __func__, btrfs_root_id(inode->root),
--		     btrfs_ino(inode), orig_start, end + 1 - orig_start, ret);
-+	btrfs_err(fs_info,
-+		  "%s failed, root=%llu inode=%llu start=%llu len=%llu cur_offset=%llu cur_alloc_size=%llu: %d",
-+		  __func__, btrfs_root_id(inode->root),
-+		  btrfs_ino(inode), orig_start, end + 1 - orig_start,
-+		  start, cur_alloc_size, ret);
- 	return ret;
- }
- 
-@@ -1969,8 +1970,8 @@ static int nocow_one_range(struct btrfs_inode *inode, struct folio *locked_folio
- 			   u64 file_pos, bool is_prealloc)
- {
- 	struct btrfs_ordered_extent *ordered;
--	u64 len = nocow_args->file_extent.num_bytes;
--	u64 end = file_pos + len - 1;
-+	const u64 len = nocow_args->file_extent.num_bytes;
-+	const u64 end = file_pos + len - 1;
- 	int ret = 0;
- 
- 	btrfs_lock_extent(&inode->io_tree, file_pos, end, cached);
-@@ -2017,8 +2018,13 @@ static int nocow_one_range(struct btrfs_inode *inode, struct folio *locked_folio
- 	 * We do not clear the folio Dirty flags because they are set and
- 	 * cleaered by the caller.
- 	 */
--	if (ret < 0)
-+	if (ret < 0) {
- 		btrfs_cleanup_ordered_extents(inode, file_pos, len);
-+		btrfs_err(inode->root->fs_info,
-+			  "%s failed, root=%lld inode=%llu start=%llu len=%llu: %d",
-+			  __func__, btrfs_root_id(inode->root), btrfs_ino(inode),
-+			  file_pos, len, ret);
-+	}
- 	return ret;
- }
- 
-@@ -2306,10 +2312,11 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 		btrfs_qgroup_free_data(inode, NULL, untouched_start, untouched_len, NULL);
+@@ -1995,8 +1995,8 @@ static int nocow_one_range(struct btrfs_inode *inode, struct folio *locked_folio
+ 	if (IS_ERR(ordered)) {
+ 		if (is_prealloc)
+ 			btrfs_drop_extent_map_range(inode, file_pos, end, false);
+-		btrfs_unlock_extent(&inode->io_tree, file_pos, end, cached);
+-		return PTR_ERR(ordered);
++		ret = PTR_ERR(ordered);
++		goto error;
  	}
- 	btrfs_free_path(path);
--	btrfs_err_rl(fs_info,
--		     "%s failed, root=%llu inode=%llu start=%llu len=%llu: %d",
--		     __func__, btrfs_root_id(inode->root),
--		     btrfs_ino(inode), start, end + 1 - start, ret);
-+	btrfs_err(fs_info,
-+"%s failed, root=%llu inode=%llu start=%llu len=%llu cur_offset=%llu oe_cleanup=%llu oe_cleanup_len=%llu untouched_start=%llu untouched_len=%llu: %d",
+ 
+ 	if (btrfs_is_data_reloc_root(inode->root))
+@@ -2008,23 +2008,24 @@ static int nocow_one_range(struct btrfs_inode *inode, struct folio *locked_folio
+ 		ret = btrfs_reloc_clone_csums(ordered);
+ 	btrfs_put_ordered_extent(ordered);
+ 
++	if (ret < 0)
++		goto error;
+ 	extent_clear_unlock_delalloc(inode, file_pos, end, locked_folio, cached,
+ 				     EXTENT_LOCKED | EXTENT_DELALLOC |
+ 				     EXTENT_CLEAR_DATA_RESV,
+ 				     PAGE_UNLOCK | PAGE_SET_ORDERED);
+-	/*
+-	 * On error, we need to cleanup the ordered extents we created.
+-	 *
+-	 * We do not clear the folio Dirty flags because they are set and
+-	 * cleaered by the caller.
+-	 */
+-	if (ret < 0) {
+-		btrfs_cleanup_ordered_extents(inode, file_pos, len);
+-		btrfs_err(inode->root->fs_info,
+-			  "%s failed, root=%lld inode=%llu start=%llu len=%llu: %d",
+-			  __func__, btrfs_root_id(inode->root), btrfs_ino(inode),
+-			  file_pos, len, ret);
+-	}
++	return ret;
++error:
++	btrfs_cleanup_ordered_extents(inode, file_pos, len);
++	extent_clear_unlock_delalloc(inode, file_pos, end, locked_folio, cached,
++				     EXTENT_LOCKED | EXTENT_DELALLOC |
++				     EXTENT_CLEAR_DATA_RESV,
++				     PAGE_UNLOCK | PAGE_START_WRITEBACK |
++				     PAGE_END_WRITEBACK);
++	btrfs_err(inode->root->fs_info,
++		  "%s failed, root=%lld inode=%llu start=%llu len=%llu: %d",
 +		  __func__, btrfs_root_id(inode->root), btrfs_ino(inode),
-+		  start, end + 1 - start, cur_offset, oe_cleanup_start, oe_cleanup_len,
-+		  untouched_start, untouched_len, ret);
++		  file_pos, len, ret);
  	return ret;
  }
  
+@@ -2046,8 +2047,12 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 	/*
+ 	 * If not 0, represents the inclusive end of the last fallback_to_cow()
+ 	 * range. Only for error handling.
++	 *
++	 * The same for nocow_end, it's to avoid double cleaning up the range
++	 * already cleaned by nocow_one_range().
+ 	 */
+ 	u64 cow_end = 0;
++	u64 nocow_end = 0;
+ 	u64 cur_offset = start;
+ 	int ret;
+ 	bool check_prev = true;
+@@ -2222,8 +2227,10 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 				      &nocow_args, cur_offset,
+ 				      extent_type == BTRFS_FILE_EXTENT_PREALLOC);
+ 		btrfs_dec_nocow_writers(nocow_bg);
+-		if (ret < 0)
++		if (ret < 0) {
++			nocow_end = cur_offset + nocow_args.file_extent.num_bytes - 1;
+ 			goto error;
++		}
+ 		cur_offset = extent_end;
+ 	}
+ 	btrfs_release_path(path);
+@@ -2250,12 +2257,22 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 		 *    start           cur_offset               end
+ 		 *    |   OE cleanup  |       Untouched        |
+ 		 *
+-		 * We finished a fallback_to_cow() or nocow_one_range() call, but
+-		 * failed to check the next range.
++		 * We finished a fallback_to_cow() or nocow_one_range() call,
++		 * but failed to check the next range.
++		 *
++		 * or
++		 *    start           cur_offset   nocow_end   end
++		 *    |   OE cleanup  |   Skip     | Untouched |
++		 *
++		 * nocow_one_range() failed, the range [cur_offset, nocow_end] is
++		 * alread cleaned up.
+ 		 */
+ 		oe_cleanup_start = start;
+ 		oe_cleanup_len = cur_offset - start;
+-		untouched_start = cur_offset;
++		if (nocow_end)
++			untouched_start = nocow_end + 1;
++		else
++			untouched_start = cur_offset;
+ 		untouched_len = end + 1 - untouched_start;
+ 	} else if (cow_start != (u64)-1 && cow_end == 0) {
+ 		/*
 -- 
 2.50.1
 
