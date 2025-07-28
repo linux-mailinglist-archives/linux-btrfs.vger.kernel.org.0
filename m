@@ -1,157 +1,158 @@
-Return-Path: <linux-btrfs+bounces-15698-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15699-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7758FB13242
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jul 2025 00:36:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01E5BB132E5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jul 2025 04:07:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB8CF3B4A6F
-	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Jul 2025 22:36:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28D091757FC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jul 2025 02:07:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECEE24C676;
-	Sun, 27 Jul 2025 22:36:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7D61DE2AD;
+	Mon, 28 Jul 2025 02:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Stld28ov"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b3yU8bar"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1EE51C6FF6
-	for <linux-btrfs@vger.kernel.org>; Sun, 27 Jul 2025 22:36:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569931DB125
+	for <linux-btrfs@vger.kernel.org>; Mon, 28 Jul 2025 02:07:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753655790; cv=none; b=k24gMwoj0BeVPOB3766uAEUiFbFaYieTMEz7tTokYqEk4oSfNX2sSy+/cAMKJaifDHnaelCLWoPSSFqd2LKvhemQ61f5vdeLbP1UUXQ3gq9skZ7Lm/2ToDewTCEfUvGCoeqCPBY796ynMM+NZFxNZgkcAK70CX8G3nL+Fldwe1Y=
+	t=1753668450; cv=none; b=PectAo5rDydRz8hBcKlVDokmgHta5xwYI0hNuTx/pC2h4C8A3VfnzHGKGPuhhgbwxiBiH+jpsioToodvb/TozqAtydXueEqSkD5OG5XgluGQTflfs+CZiYJ3wE1n4N4nFAVekh79TXcj0OebMW7F9rTXt6sn6+hXm2exz88RUaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753655790; c=relaxed/simple;
-	bh=9bmpwMAdMG4T9c0dc7YE2uGpgDLWdEgM5l2YCyWTzyk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=n6l2FIGwWqVreB4JrqUAY7Eexeq/7o+1KQgSJ2dq4w7whVGohfzyxnhzuSSM9M3l29VfMbj9eBzhNjc3NZDksC95vIvrmqeCJ7Tnl+1SATYms0uuADKew5QpQ6YalWsaEqWUb0rY89CaFpa0foeshR0TiEXUFqKlG6SfuisSLDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Stld28ov; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3b7886bee77so365437f8f.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 27 Jul 2025 15:36:27 -0700 (PDT)
+	s=arc-20240116; t=1753668450; c=relaxed/simple;
+	bh=9kghIzkq6u3VJSK5Z1b1lMmbqF4uB86q50dPs8GtYH4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NaXBLt7j7X2Y5XStHZj6TC6ClWrCw42TnvGTu3ChyjIZu0eTQ/iw4q6vFqvJheKk9ifXgtVYhS6c142DTyn1sPoJiKzDDoImKlMoIU+nuiWMFzB52RXXZLVR/2fh1nvt5ryFK3CxGAbZHYsF24P4269dCvJNCWFGJhyGPRO4yTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b3yU8bar; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2403ca0313aso1901635ad.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 27 Jul 2025 19:07:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1753655786; x=1754260586; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lvl+Ratj+gir8baKf4t4gPDpPBVdfnD/vtP96pA0cPw=;
-        b=Stld28ovC00lgc4z3UzXQPC33eHGYef+oo+Zk+4i6W4KRN3fc4XxtxH/vRrJT3rvmR
-         0qvoSJyJx9kC27A6L/RdXqruuuC5k6pd/mJh8e1nbYWkTCduksVsWOb61ahfopGMu9Lj
-         HYdPdGYtT7cU7qOSNsz71BmwBN0qrOTYR9DcExr8hiN2x4i8Ov1JNqP+5mVE5yLW3UOS
-         ThM3rn/gElBuLODurgqAry2JyMvr9j8FqzvX3CA7XJXXNv/99QQfOboTCWO2RByt+UeI
-         zNQczv0MxwTBCJRoK9X6y/hY3e9FzFm6UdYmlZ6Wvyd2IgPOGhbXUOVMkpdf4SRbsLBD
-         MmUw==
+        d=gmail.com; s=20230601; t=1753668448; x=1754273248; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zlrrqQpErghdgAEdnSIhwLH/XNGpvO5D9hEozXHXvQw=;
+        b=b3yU8barArBY4HsJ0OpIXg/HONTePNYSqXUGHgcc5EwdKfDJuEU0Sbc/cHl/VoxvQd
+         eI4iuEgyh+96uTGnNDNVVChkw/jJkxYEFcWyhFYDL7Kp09imbqETTCriroUZ4XHGx91e
+         3bVtbT2tlb0ku+EAoD/3ljEN3FuZZytpUB1JpR7fB6l9BcN8LFO4fJY30yVMpikN0NHJ
+         ntWz5Pyl2fHoq059W2ZY/YhQG7JP7zkm2XjPpJlNVdWLDRd+SqIfV350G6jbTCmllcVo
+         6A0Hi58wRlxQgoi9vStYEMQbOvobVIXxYyCfTL/g+AL+pxdoVqvCLgEFu+3Y7XAn8rFF
+         X2gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753655786; x=1754260586;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1753668448; x=1754273248;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Lvl+Ratj+gir8baKf4t4gPDpPBVdfnD/vtP96pA0cPw=;
-        b=qYifK3wSAKnOZnqHYF7XBaMGQgpBJrEXkwy4DQ9yC+dfaDc8pgEbx/r1sO7O6orh4j
-         J+pbuoa7pjNktw7Q6iSb31sTlKB9XEL5WesZ38bG6KfzorVR998fsi5/3UvlNAn+p13j
-         baDZaXmFlhOb+atZvu+t76QzzraXBubgPda/Vf1mGJIx83P4MvmzgJavrTRFriYr2cxW
-         SQI2MZD4xqGhTaH8AZbEsr9Cd0ac4hq76wsu1A1ftYFjxQOZAX+HQM+tdXScFGjKUpfM
-         YGaeCYIAbLcBDkEQXVmjUjbGmLXR14o0jJCQAV8wnUyBZR+kwx6LlGNBNha5OTtqFAAv
-         buKg==
-X-Forwarded-Encrypted: i=1; AJvYcCXCU3C5FBT3eX1DKcRmaAbP3nT7YURCQfKUVFBTdhiTwgnyCV872iRuLiq2YHnV4fTuRR3knUWfpUKy7Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzW7MHr1ghge0wnIa1u97z7Ah03EtwNCYu38aP3eN/XqzxLAl0c
-	xcl9Vc+KacuviEpCrEPxXuF/uNfj1NLEGx2oKJGK7gvuXKPYuBCyP8CxvNunt4x9fIY=
-X-Gm-Gg: ASbGnctke1NC9L7gl+JOEpXJSHzo4L5/xMR9qk/pIum5ovrGQR+bD36fOBG347lT2FG
-	LoDGbXtfJmLhXY09EeppG452t8HtX5VgunJznnhHVEE8rw0G5uhrr9t1prE+bOt8td4HteQCbB8
-	Pr2WwEOAe7aLGIjv1Ebg5/JYhLNsusdKIiATodeg1h51GD3aosvc1sjTE5Q1pI3tnjJrVfPYH6M
-	MGj7DyhIYPXprGez4bP3kCo0DhVYobjqsfM+QVhd7bTf+WOidaZzEBziB71ovDbd1V3UOjQf9m2
-	hrxCQ72YajaMMGctXfKCDPjTjR7VUMnKHdOKSkYqhNtQ2a81Y8QQquttjstxz0qSckI2fIi6ocj
-	+/GwO36yTaOPmrus19H43JJ11HiCzALI1FAA/EmdiEVakKMr5Ig==
-X-Google-Smtp-Source: AGHT+IEVH198dXCrmmv5K7sG0A34jvL10HCTacAWR/iz4S8ZK8uYsi7xyN+VO12l9dEGorCSVma0vQ==
-X-Received: by 2002:a5d:584e:0:b0:3b6:17c0:f094 with SMTP id ffacd0b85a97d-3b7765ec9c3mr6561374f8f.14.1753655785790;
-        Sun, 27 Jul 2025 15:36:25 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23fc5aac459sm36238415ad.105.2025.07.27.15.36.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Jul 2025 15:36:25 -0700 (PDT)
-Message-ID: <d738f9b1-2717-4524-b5de-3c5636351b44@suse.com>
-Date: Mon, 28 Jul 2025 08:06:21 +0930
+        bh=zlrrqQpErghdgAEdnSIhwLH/XNGpvO5D9hEozXHXvQw=;
+        b=MUiWDDk7ohYIK3lZIb55V4SS24y8MUZYzMRS8QmyhYSXmFiiAoD8x9jwxYLC9AA6vY
+         qosR7NLRh5iFQ7emb3WykRtzS0KHdm86w6HAqVZk3YdAmml5kBjOnH7V6DVCHQjfObW7
+         pnTGZ6H+Zj842/mraYfhPB1pL3NVLSTiOfF//+d5MIiHHgsCer3GuL2yKj/OrTco9vDR
+         d7P1aJQPewe7qBPN7KGsanRqcs6dMlvnbzWdmorsw2zcQHf2cBWNttnidi1jEomLQLAB
+         bZUfRiFHcHU9r/5nErSFuv9O2fjd8W1gSMPS2/dWUOH2mRxNqOwlLD29v2Y+q2oo5AN4
+         ZEcg==
+X-Forwarded-Encrypted: i=1; AJvYcCVHK0Ly6nPVQSWddzzUhfCCpZlx0rI0DuHGLKe/6pi57B6utW3RMUqeKaOqoOA4AT3uLFPYHxuWD+CcQw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzP5BjeqnW3AdP0eFih7MJgvg51rmWkwDQQNWm7fk8J1NYuRJVF
+	KuzQsF9GIB89fO5DARSnbwODf6cNchK26+R8rJaFooeczAAgNLG1XRfG
+X-Gm-Gg: ASbGncuPwo+roETCV4MrTaDqP8f6siB+IjrXAlae7wRk34a2Daq+By+F5J5BKTDME30
+	WwnA3wRSzuPKzNxDqeXZnyeDh6eb3dhSBi0u5jLc3lD2GFovd7A49lwxTr2p7SKYPEuBmNkRrOA
+	bSlKGhlbaWNEoXdfrUQksXDE/59NNxnXXTyzjbM0so4cfinqHvrIiW2PcNaeytdAH/VvLgkAZWA
+	2Wq16Kr/DAezCjtxtF70ftt42gF7kheDxLwB/38Ifj0AAUBo2KsrP7BdQwvO9GejpRV6nGRAKKb
+	834meFgor/F69JgR6X4hJ5gxKCWxGbdfUjA7RNr7EZEOZNnlmQ5AdeV/XD2MYL1a0elNHt97abr
+	v2WXgTLSeoAn9Mc3M395+arS4BLWwgYI7bRbf0Qq6u664TvJkx4ZLGxSB4qfdFw==
+X-Google-Smtp-Source: AGHT+IHi03G7/CO8+aG0EHAtV4hbhNg/2bQ1eifxn4ZjLU/4D5aIBlOV4uIshfK7WJnbqv2YUEMjLg==
+X-Received: by 2002:a17:902:fc47:b0:234:ed31:fca7 with SMTP id d9443c01a7336-23fb311ca96mr138147435ad.48.1753668448430;
+        Sun, 27 Jul 2025 19:07:28 -0700 (PDT)
+Received: from fedora (120-51-71-230.tokyo.ap.gmo-isp.jp. [120.51.71.230])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2403e60b76fsm1707715ad.144.2025.07.27.19.07.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Jul 2025 19:07:28 -0700 (PDT)
+From: sawara04.o@gmail.com
+To: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	johannes.thumshirn@wdc.com,
+	brauner@kernel.org
+Cc: Kyoji Ogasawara <sawara04.o@gmail.com>,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: restore mount option info messages during mount
+Date: Mon, 28 Jul 2025 11:07:18 +0900
+Message-ID: <20250728020719.37318-1-sawara04.o@gmail.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: cannot read default subvolume id?
-To: Ulli Horlacher <framstag@rus.uni-stuttgart.de>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20250727174618.GD842273@tik.uni-stuttgart.de>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250727174618.GD842273@tik.uni-stuttgart.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+From: Kyoji Ogasawara <sawara04.o@gmail.com>
 
+After the fsconfig migration, mount option info messages are no longer
+displayed during mount operations because btrfs_emit_options() is only
+called during remount, not during initial mount.
 
-在 2025/7/28 03:16, Ulli Horlacher 写道:
-> 
-> Why is there a "cannot read default subvolume id"?
-> 
-> tux@quak:~: btrfs sub create xx
-> Create subvolume './xx'
-> 
-> tux@quak:~: btrfs sub del xx
-> WARNING: cannot read default subvolume id: Operation not permitted
+Fix this by calling btrfs_emit_options() in btrfs_fill_super() after
+open_ctree() succeeds. Additionally, prevent log duplication by ensuring
+btrfs_check_options() handles validation with warn-level and err-level
+messages, while btrfs_emit_options() provides info-level messages.
 
-It's a warning, not an error. And you can see on the next line, the 
-deletion happened without any problem.
+Fixes: eddb1a433f26 ("btrfs: add reconfigure callback for fs_context")
+Signed-off-by: Kyoji Ogasawara <sawara04.o@gmail.com>
+---
+ fs/btrfs/super.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-You're running as a non-root user, meanwhile default subvolume id search 
-is done using tree search ioctl, which require root privilege.
-
-Thanks,
-Qu
-
-> Delete subvolume 292 (no-commit): '/home/tux/xx'
-> 
-> tux@quak:~: df -H .
-> Filesystem                   Size  Used Avail Use% Mounted on
-> /dev/mapper/nvme0n1p5_crypt  2,0T   64G  1,9T   4% /home
-> 
-> tux@quak:~: mount | grep /home
-> /dev/mapper/nvme0n1p5_crypt on /home type btrfs (rw,relatime,ssd,discard=async,space_cache=v2,user_subvol_rm_allowed,subvolid=257,subvol=/@home)
-> 
-> tux@quak:~: btrfs version
-> btrfs-progs v6.6.3
-> 
-> tux@quak:~: uname -a
-> Linux quak 6.14.0-24-generic #24~24.04.3-Ubuntu SMP PREEMPT_DYNAMIC Mon Jul  7 16:39:17 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
-> 
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index a0c65adce1ab..de4e01abc599 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -88,6 +88,9 @@ struct btrfs_fs_context {
+ 	refcount_t refs;
+ };
+ 
++static void btrfs_emit_options(struct btrfs_fs_info *info,
++			       struct btrfs_fs_context *old);
++
+ enum {
+ 	Opt_acl,
+ 	Opt_clear_cache,
+@@ -689,12 +692,9 @@ bool btrfs_check_options(const struct btrfs_fs_info *info,
+ 
+ 	if (!test_bit(BTRFS_FS_STATE_REMOUNTING, &info->fs_state)) {
+ 		if (btrfs_raw_test_opt(*mount_opt, SPACE_CACHE)) {
+-			btrfs_info(info, "disk space caching is enabled");
+ 			btrfs_warn(info,
+ "space cache v1 is being deprecated and will be removed in a future release, please use -o space_cache=v2");
+ 		}
+-		if (btrfs_raw_test_opt(*mount_opt, FREE_SPACE_TREE))
+-			btrfs_info(info, "using free-space-tree");
+ 	}
+ 
+ 	return ret;
+@@ -971,6 +971,8 @@ static int btrfs_fill_super(struct super_block *sb,
+ 		return err;
+ 	}
+ 
++	btrfs_emit_options(fs_info, NULL);
++
+ 	inode = btrfs_iget(BTRFS_FIRST_FREE_OBJECTID, fs_info->fs_root);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+@@ -1428,7 +1430,6 @@ static void btrfs_emit_options(struct btrfs_fs_info *info,
+ {
+ 	btrfs_info_if_set(info, old, NODATASUM, "setting nodatasum");
+ 	btrfs_info_if_set(info, old, DEGRADED, "allowing degraded mounts");
+-	btrfs_info_if_set(info, old, NODATASUM, "setting nodatasum");
+ 	btrfs_info_if_set(info, old, SSD, "enabling ssd optimizations");
+ 	btrfs_info_if_set(info, old, SSD_SPREAD, "using spread ssd allocation scheme");
+ 	btrfs_info_if_set(info, old, NOBARRIER, "turning off barriers");
+-- 
+2.50.1
 
 
