@@ -1,77 +1,77 @@
-Return-Path: <linux-btrfs+bounces-15726-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15727-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 192B1B14822
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jul 2025 08:23:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69113B14823
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jul 2025 08:24:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AF361AA06A9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jul 2025 06:24:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CB6F17D07D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jul 2025 06:24:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8FE824A043;
-	Tue, 29 Jul 2025 06:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC2224A043;
+	Tue, 29 Jul 2025 06:23:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P7LPYyWu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TYuEU8b5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0912AD2C;
-	Tue, 29 Jul 2025 06:23:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A892AD2C;
+	Tue, 29 Jul 2025 06:23:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753770223; cv=none; b=kX9Lhyf1UdP6up62mfZtl1X2wH5NZusXJwIXZJZkj73RBg21affNMiv20PHVW+skDBHVIcSZd8QmJpxtyWx5sL33uxUSbfQXtBdqDG8h5r0Cy9WutqT5yHWSlMgsvDLbCc51K66dCnfFHt5g8jUd1jlwqFi/fQXICdLL6Fvu0Lw=
+	t=1753770233; cv=none; b=sZyHS+YaIiRIr4cN5hGmiGBxFP0bCBdtGDVel1SCMmC4E0kxTOzNYK4B2RQXdwqvXZa7JIjw8Jrw35JaRHs0zPPaQ1HNmiZPT5VAxO87T5JmuYR9hACy84zjwpsQDGMFIQ0vCapQVEuEJvjU+tFeknwDdSooy+9+UBy4AmRrCFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753770223; c=relaxed/simple;
-	bh=uv+R/oNQb6sLjijvZz8Xesc8OYfS7U4Rq/odZ4a+Sog=;
+	s=arc-20240116; t=1753770233; c=relaxed/simple;
+	bh=P+zeyk0bPDBL+sVr99P4aLe0VwhMDkEv4uptorMhdus=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lAyVfz2izhs+6UXe/nDHC2C6LIE7bpFbEbwL2z9YE4m+iz+vCWA92pQyF88yDgrkYqQxpvKeCap4q60h6I37E9lYDhTIqm37FlEvBM3uVHI6iQGvwH0C0Q7W814AHPALHt4hIaq4faMbVncv12rFqeKNE0Fd3ueu8jpuCn50Wi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P7LPYyWu; arc=none smtp.client-ip=209.85.215.169
+	 MIME-Version; b=gQPQEKvbvhpb72+Lka8nssbD+rUfm7fK8Qg0y44mHZYj0TbqGIJVAN3d5IN6W3NhmikgDl9pHB7Jda7KLePjDOOZyENxJLFOBsKzanNnxm3H/a8Zz5SJV0hvnmJoKx287ifJfA41OaUnJohiLzfaB1U3h7TOrnGjSBY03WYUWvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TYuEU8b5; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b26f7d2c1f1so6465367a12.0;
-        Mon, 28 Jul 2025 23:23:41 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2405c0c431cso9417505ad.1;
+        Mon, 28 Jul 2025 23:23:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753770220; x=1754375020; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753770231; x=1754375031; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OIS2B8UYAMprwm/k/baAnaP16jYG6InQg+bghxrlVC4=;
-        b=P7LPYyWu+IHYFRBPt9dMsr/XqIwTxoaIUQdOoTbwaMSho3a2tZs0BzIn3GIGsdNHHH
-         HBHUdudyGQ2ERtY+YAW10RFx2RI7z9XjnnTbrK+P7F9f7W1weTnlUOnbBlEGW9mios5a
-         NGZ3llEsUB9v6BERS5sLCpvKCoB+QYFtBynAqreUQl4ufFcw4Yfpdgx3MhKMH0EsoJLr
-         YjfF0MxP/Q6Iyy0/v7fE/lz7gE7gekpBhE3GDlqwpUCNmGBzyqrmSfKH1SQxIHxjPLcN
-         FDo0s/sCEIjXKpdbT2Zd07/CEhbSav/RLc9dEaEV9Epyc5AKeMw8wJx7lo2mHw/ri+Gq
-         d4yQ==
+        bh=csZne8ty6kG9OG7UpMHq7rhZFpjrWvXM+J1EH2b9WN0=;
+        b=TYuEU8b5vdoFTBuWKs9eqY+1vxFPmy5crFRjwKeqP0u+Bn35VP9w4ly4gcJv6SBgpG
+         cKM5Kbpov1rnacYxxI9LyjsfjZ42+uP9Oro3M2nLi4moPkLWe7xxN1YQSD/NLE3qReLY
+         PLz4L66jP4pD3RZAbHwfx15m24J3c6j6b4/rL2bOPLE1Txh9LXqAaB6YphbZn2yHc0Ec
+         rJUEerXeaIprcdqq4xsnhvoJqpiLbQIHluBArE9GyQh3KVlTdmR0g8CcbnKeffNNDyVe
+         Tn18XBpwMipYAPgvivUiprZr4pWU5LBYWCG/8YYCdreQrrQkzgSJwM1qkDFqhP2Qaf4j
+         DwJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753770220; x=1754375020;
+        d=1e100.net; s=20230601; t=1753770231; x=1754375031;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OIS2B8UYAMprwm/k/baAnaP16jYG6InQg+bghxrlVC4=;
-        b=CyMwSF3zjjbXFVdXdBxh6o0RYBn5auWDoylkMaTPZup06e/YC3QMBPhgcfm2dynnrP
-         fAM+bwu0216PK+ruth1esfOK3E2m5/PF/1MIdTQmg7GGvH4ng0Q5pQjAiQiQXNmrtW7g
-         teRPpuvKkmokVFy/slIl14liiItOudUetoXgbaPXUsfxmVkKa8z4McRzoRzqbv9Epyin
-         8E9ZKQfeXWTjcD/3mfUn4jZEP44LmGCbFjiL2NZyEeZVGmSJ178sRw8TNo0N1bdFv7wP
-         YjXkefTeBNc/uadAONIHhG68G+ymzBQxok9nqaQI9DcaQKU/aDNGrSiUWhOn5IGpOJ2K
-         +3bQ==
-X-Gm-Message-State: AOJu0YyVaQrl+m2mg1FO9uaBTPMUAimMS2zh1YqBHPI9PinDfBKd5CEh
-	dFunORNzXAq1+Jv2UudDga4xadl56PVMmXb1HyG9Eh/i53MwZXQQa38R0pmYhA==
-X-Gm-Gg: ASbGnctKJ61GcyM6wZAg5pajJAEHXavfPNZjMzlsGjnYknUpkMsrGUeUi+zrEFDJgnq
-	wHm3GFcsdNZF7vwhBAzVdnPXtNNcZ0sDjE04WlaSrV4zhQ4gjyDGCHPfcGpM8uOVeKFsGfiJQcK
-	ybNbH0qX86/W87dN+1PQJUSoiWytIXmsDia4WWNiZdqW4jMOZFiBpOvt0P1rbSBKcXGjSt2zYkU
-	X+jPMGzxk0BYU/QH0fmYHnZbB7zR4i2hxs5h0vuBTa/yUt+QgiU2IChtUdqU3kGTthGJX2I8CLZ
-	a133SamedMivP/4n+SUxLlKVY25OFtfco1FGUTWnIqq3CFb6ERWZ4/wA0fQy11murwtCsKu9vV8
-	lhLeEwNO7A9hfmMRcoTcZERU=
-X-Google-Smtp-Source: AGHT+IGSrDmXcsNyuPs6c5DwcUx9vL1uYdNsbdyLYRk4dYunzpLk54GbaB3FTUv914cfuVXfkCXdwg==
-X-Received: by 2002:a17:902:f114:b0:23f:df69:af50 with SMTP id d9443c01a7336-23fdf69b14bmr103033285ad.34.1753770220586;
-        Mon, 28 Jul 2025 23:23:40 -0700 (PDT)
+        bh=csZne8ty6kG9OG7UpMHq7rhZFpjrWvXM+J1EH2b9WN0=;
+        b=laWaZ3FblLdmjwpb4/X6f1nWVG6p0nfvAgpSxLQ2PueUTHmxExrasdXpytNzYDr/Th
+         Y/o5q2Pki07SrKSHc6PGPSAKAOwgecJXWAkLa8DI82jS+EWTGth4j5OmUsCnPbQ8zNrP
+         YLYdwOmAI7ZNWTwBv/2wXnyMIF8kjrijxkry4jD682GmunWNzm3efKV4H8oqsw8zMKCK
+         ziCI895wucy3cASaT9q7Z+5jNESTCSh2HA0aaoZyz9Jt69iGXhoe9StvBskAae2sOUVG
+         CW3y6N70S59IxKA8yD1fCM5tycuV1JAy9i4Z79cPbM0+zW/bdLuzB04ZTPguXDMPRX27
+         Wgew==
+X-Gm-Message-State: AOJu0YxXt7gvtBapkJvRQ/MIhuRZii0AUfPyogzFJDuAmK9671m2LcO5
+	Q7OriBne4quYK/f3jTi/DXihbIcJ+BvJ+Tm1ys4z3KY8padxs0ITWkel+2ByAw==
+X-Gm-Gg: ASbGncsQ9wCmsFUVCncOSKCOQur31xleG4h/nKbRLdbXUP9A9L/LhHl7E2laQVPqP5U
+	1bd71N97DsAIWXCrBe4zSulUxB7eklMypd3GElBfnhDYdSuy4gLv4ntW1NhdsMgLam6J1QYfWH9
+	aAXJox6zIwnHtbagEkTYgxyYl05V/tr7QqQSuDWgUFOhr9NfQZPkQWw0WhdiaZPLJNIFj8z0XbI
+	ZaloxUO59m0Sman5Vw+ODRLBAQhU+8RaxIHnPtsfmWGDjeTrpZ4JLNT3zZ4/9gL49xp7xEFSiZm
+	HbrjufK7oHKXVX9VAULFt2yGQnWC+zse1fk/3X+4yn6nrD5jpb56JZEMvhaf8XDssPRy+ZVlss8
+	JOtV7EqFpTC2OkOAiV5f4otE=
+X-Google-Smtp-Source: AGHT+IHN4Q7/NuJieURTfQ/WYPxuGepHlVQ4dk2BH2oQDxf/qyfm3yqme1N3hiGCdZjqwjl1gjs5EA==
+X-Received: by 2002:a17:902:db03:b0:240:a05:5b79 with SMTP id d9443c01a7336-2400a055d69mr104861725ad.44.1753770230724;
+        Mon, 28 Jul 2025 23:23:50 -0700 (PDT)
 Received: from citest-1.. ([129.41.58.6])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23fc1adcd24sm65941195ad.167.2025.07.28.23.23.37
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23fc1adcd24sm65941195ad.167.2025.07.28.23.23.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jul 2025 23:23:40 -0700 (PDT)
+        Mon, 28 Jul 2025 23:23:50 -0700 (PDT)
 From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
@@ -81,9 +81,9 @@ Cc: linux-btrfs@vger.kernel.org,
 	zlang@kernel.org,
 	fdmanana@kernel.org,
 	nirjhar.roy.lists@gmail.com
-Subject: [PATCH 2/7] common/btrfs: Add a helper function to get the nodesize
-Date: Tue, 29 Jul 2025 06:21:45 +0000
-Message-Id: <971f876c5b78e5d1eeb71a0e61903c1427358fa7.1753769382.git.nirjhar.roy.lists@gmail.com>
+Subject: [PATCH 3/7] btrfs/137: Make this compatible with all block sizes
+Date: Tue, 29 Jul 2025 06:21:46 +0000
+Message-Id: <991278fd7cf9ea0d5eed18843e3fb96b5c4a3cac.1753769382.git.nirjhar.roy.lists@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1753769382.git.nirjhar.roy.lists@gmail.com>
 References: <cover.1753769382.git.nirjhar.roy.lists@gmail.com>
@@ -95,34 +95,282 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce a helper function to get the nodesize of the btrfs
-filesystem.
+For large blocksizes like 64k on powerpc with 64k pagesize
+it failed simply because this test was written with 4k
+block size in mind.
+The first few lines of the error logs are as follows:
 
+     d3dc847171f9081bd75d7a2d3b53d322  SCRATCH_MNT/snap2/bar
+
+     File snap1/foo fiemap results in the original filesystem:
+    -0: [0..7]: data
+    +0: [0..127]: data
+
+     File snap1/bar fiemap results in the original filesystem:
+    ...
+
+Fix this by making the test choose offsets based on
+the blocksize. Also, now that the file hashes and
+the extent/block numbers will change depending on the
+blocksize, calculate the hashes and the block mappings,
+store them in temporary files and then calculate their diff
+between the new and the original filesystem.
+This allows us to remove all the block mapping and hashes
+from the .out file.
+
+Reported-by: Disha Goel <disgoel@linux.ibm.com>
 Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
 ---
- common/btrfs | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ tests/btrfs/137     | 135 +++++++++++++++++++++++++++++---------------
+ tests/btrfs/137.out |  59 ++-----------------
+ 2 files changed, 94 insertions(+), 100 deletions(-)
 
-diff --git a/common/btrfs b/common/btrfs
-index 6a1095ff..2922eb8e 100644
---- a/common/btrfs
-+++ b/common/btrfs
-@@ -18,6 +18,15 @@ _btrfs_get_subvolid()
- 	$BTRFS_UTIL_PROG subvolume list $mnt | grep -E "\s$name$" | $AWK_PROG '{ print $2 }'
- }
+diff --git a/tests/btrfs/137 b/tests/btrfs/137
+index 7710dc18..61e983cb 100755
+--- a/tests/btrfs/137
++++ b/tests/btrfs/137
+@@ -27,53 +27,74 @@ _require_xfs_io_command "fiemap"
+ send_files_dir=$TEST_DIR/btrfs-test-$seq
  
-+# returns the node size of the filesystem.
-+# usage _get_btrfs_node_size <device_name>
-+_get_btrfs_node_size()
-+{
-+        local dev=$1
-+        $BTRFS_UTIL_PROG inspect-internal dump-super -f "$dev"\
-+                 | awk '/nodesize/ { print $2 }'
-+}
+ rm -fr $send_files_dir
+-mkdir $send_files_dir
++mkdir $send_files_dir $tmp
+ 
+ _scratch_mkfs >>$seqres.full 2>&1
+ _scratch_mount
+ 
++blksz=`_get_block_size $SCRATCH_MNT`
++echo "block size = $blksz" >> $seqres.full
 +
- # _require_btrfs_command <command> [<subcommand>|<option>]
- # We check for btrfs and (optionally) features of the btrfs command
- # This function support both subfunction like "inspect-internal dump-tree" and
+ # Create the first test file.
+-$XFS_IO_PROG -f -c "pwrite -S 0xaa 0 4K" $SCRATCH_MNT/foo | _filter_xfs_io
++$XFS_IO_PROG -f -c "pwrite -S 0xaa -b $blksz 0 $blksz" $SCRATCH_MNT/foo | _filter_xfs_io | \
++	_filter_xfs_io_size_offset 0 $blksz
+ 
+ # Create a second test file with a 1Mb hole.
+ $XFS_IO_PROG -f \
+-     -c "pwrite -S 0xaa 0 4K" \
+-     -c "pwrite -S 0xbb 1028K 4K" \
+-     $SCRATCH_MNT/bar | _filter_xfs_io
++ 	-c "pwrite -S 0xaa -b $blksz 0 $blksz" \
++ 	-c "pwrite -S 0xbb -b $blksz $(( 1024 * 1024 + blksz )) $blksz" \
++ 	$SCRATCH_MNT/bar | _filter_xfs_io | \
++	_filter_xfs_io_size_offset "$(( 1024 * 1024 + blksz ))" $blksz | \
++ 	_filter_xfs_io_size_offset 0 $blksz
+ 
+ $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
+ 	$SCRATCH_MNT/snap1 >/dev/null
+ 
+ # Now add one new extent to our first test file, increasing its size and leaving
+ # a 1Mb hole between the first extent and this new extent.
+-$XFS_IO_PROG -c "pwrite -S 0xbb 1028K 4K" $SCRATCH_MNT/foo | _filter_xfs_io
++$XFS_IO_PROG -c "pwrite -S 0xbb -b $blksz $(( 1024 * 1024 + blksz )) $blksz" $SCRATCH_MNT/foo \
++	| _filter_xfs_io | _filter_xfs_io_size_offset "$(( 1024 * 1024 + blksz ))" $blksz
+ 
+ # Now overwrite the last extent of our second test file.
+-$XFS_IO_PROG -c "pwrite -S 0xcc 1028K 4K" $SCRATCH_MNT/bar | _filter_xfs_io
++$XFS_IO_PROG -c "pwrite -S 0xcc -b $blksz $(( 1024 * 1024 + blksz )) $blksz" $SCRATCH_MNT/bar \
++	| _filter_xfs_io | _filter_xfs_io_size_offset "$(( 1024 * 1024 + blksz ))" $blksz
+ 
+ $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
+ 		 $SCRATCH_MNT/snap2 >/dev/null
+ 
+-echo
+-echo "File digests in the original filesystem:"
+-md5sum $SCRATCH_MNT/snap1/foo | _filter_scratch
+-md5sum $SCRATCH_MNT/snap1/bar | _filter_scratch
+-md5sum $SCRATCH_MNT/snap2/foo | _filter_scratch
+-md5sum $SCRATCH_MNT/snap2/bar | _filter_scratch
+-
+-echo
+-echo "File snap1/foo fiemap results in the original filesystem:"
+-$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap1/foo | _filter_fiemap
+-echo
+-echo "File snap1/bar fiemap results in the original filesystem:"
+-$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap1/bar | _filter_fiemap
+-echo
+-echo "File snap2/foo fiemap results in the original filesystem:"
+-$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap2/foo | _filter_fiemap
+-echo
+-echo "File snap2/bar fiemap results in the original filesystem:"
+-$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap2/bar | _filter_fiemap
+-echo
++echo >> $seqres.full
++
++echo "File digests in the original filesystem:" >> $seqres.full
++md5sum $SCRATCH_MNT/snap1/foo | _filter_scratch >> $tmp/snap1_foo.original.hash
++cat $tmp/snap1_foo.original.hash >> $seqres.full
++md5sum $SCRATCH_MNT/snap1/bar | _filter_scratch > $tmp/snap1_bar.original.hash
++cat $tmp/snap1_bar.original.hash >> $seqres.full
++md5sum $SCRATCH_MNT/snap2/foo | _filter_scratch >> $tmp/snap2_foo.original.hash
++cat $tmp/snap2_foo.original.hash >> $seqres.full
++md5sum $SCRATCH_MNT/snap2/bar | _filter_scratch > $tmp/snap2_bar.original.hash
++cat $tmp/snap2_bar.original.hash >> $seqres.full
++
++echo >> $seqres.full
++
++echo "File snap1/foo fiemap results in the original filesystem:" >> $seqres.full
++$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap1/foo | _filter_fiemap > $tmp/snap1_foo.original.map
++cat $tmp/snap1_foo.original.map >> $seqres.full
++echo >> $seqres.full
++
++echo "File snap1/bar fiemap results in the original filesystem:" >> $seqres.full
++$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap1/bar | _filter_fiemap > $tmp/snap1_bar.original.map
++cat $tmp/snap1_bar.original.map >> $seqres.full
++echo >> $seqres.full
++
++echo "File snap2/foo fiemap results in the original filesystem:" >> $seqres.full
++$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap2/foo | _filter_fiemap > $tmp/snap2_foo.original.map
++cat $tmp/snap2_foo.original.map >> $seqres.full
++echo >> $seqres.full
++
++echo "File snap2/bar fiemap results in the original filesystem:" >> $seqres.full
++$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap2/bar | _filter_fiemap > $tmp/snap2_bar.original.map
++cat $tmp/snap2_bar.original.map >> $seqres.full
++echo >> $seqres.full
+ 
+ # Create the send streams to apply later on a new filesystem.
+ $BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRATCH_MNT/snap1 2>&1 \
+@@ -90,25 +111,47 @@ _scratch_mount
+ $BTRFS_UTIL_PROG receive -f $send_files_dir/1.snap $SCRATCH_MNT >/dev/null
+ $BTRFS_UTIL_PROG receive -f $send_files_dir/2.snap $SCRATCH_MNT >/dev/null
+ 
+-echo
+-echo "File digests in the new filesystem:"
+-md5sum $SCRATCH_MNT/snap1/foo | _filter_scratch
+-md5sum $SCRATCH_MNT/snap1/bar | _filter_scratch
+-md5sum $SCRATCH_MNT/snap2/foo | _filter_scratch
+-md5sum $SCRATCH_MNT/snap2/bar | _filter_scratch
+-
+-echo
+-echo "File snap1/foo fiemap results in the new filesystem:"
+-$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap1/foo | _filter_fiemap
+-echo
+-echo "File snap1/bar fiemap results in the new filesystem:"
+-$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap1/bar | _filter_fiemap
+-echo
+-echo "File snap2/foo fiemap results in the new filesystem:"
+-$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap2/foo | _filter_fiemap
+-echo
+-echo "File snap2/bar fiemap results in the new filesystem:"
+-$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap2/bar | _filter_fiemap
++echo >> $seqres.full
++echo "File digests in the new filesystem:" >> $seqres.full
++md5sum $SCRATCH_MNT/snap1/foo | _filter_scratch > $tmp/snap1_foo.new.hash
++cat $tmp/snap1_foo.new.hash >> $seqres.full
++md5sum $SCRATCH_MNT/snap1/bar | _filter_scratch > $tmp/snap1_bar.new.hash
++cat $tmp/snap1_bar.new.hash >> $seqres.full
++md5sum $SCRATCH_MNT/snap2/foo | _filter_scratch > $tmp/snap2_foo.new.hash
++cat $tmp/snap2_foo.new.hash >> $seqres.full
++md5sum $SCRATCH_MNT/snap2/bar | _filter_scratch > $tmp/snap2_bar.new.hash
++cat $tmp/snap2_bar.new.hash >> $seqres.full
++
++diff $tmp/snap1_foo.new.hash $tmp/snap1_foo.original.hash
++diff $tmp/snap1_bar.new.hash $tmp/snap1_bar.original.hash
++diff $tmp/snap2_foo.new.hash $tmp/snap2_foo.original.hash
++diff $tmp/snap2_bar.new.hash $tmp/snap2_bar.original.hash
++
++echo >> $seqres.full
++
++echo "File snap1/foo fiemap results in the new filesystem:" >> $seqres.full
++$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap1/foo | _filter_fiemap > $tmp/snap1_foo.new.map
++cat $tmp/snap1_foo.new.map >> $seqres.full
++echo >> $seqres.full
++
++echo "File snap1/bar fiemap results in the new filesystem:" >> $seqres.full
++$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap1/bar | _filter_fiemap > $tmp/snap1_bar.new.map
++cat $tmp/snap1_bar.new.map >> $seqres.full
++echo >> $seqres.full
++
++echo "File snap2/foo fiemap results in the new filesystem:" >> $seqres.full
++$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap2/foo | _filter_fiemap > $tmp/snap2_foo.new.map
++cat $tmp/snap2_foo.new.map >> $seqres.full
++echo >> $seqres.full
++
++echo "File snap2/bar fiemap results in the new filesystem:" >> $seqres.full
++$XFS_IO_PROG -r -c "fiemap -v" $SCRATCH_MNT/snap2/bar | _filter_fiemap > $tmp/snap2_bar.new.map
++cat $tmp/snap2_bar.new.map >> $seqres.full
++
++diff $tmp/snap1_foo.new.map $tmp/snap1_foo.original.map
++diff $tmp/snap1_bar.new.map $tmp/snap1_bar.original.map
++diff $tmp/snap2_foo.new.map $tmp/snap2_foo.original.map
++diff $tmp/snap2_bar.new.map $tmp/snap2_bar.original.map
+ 
+ status=0
+ exit
+diff --git a/tests/btrfs/137.out b/tests/btrfs/137.out
+index 8554399f..ea9f426c 100644
+--- a/tests/btrfs/137.out
++++ b/tests/btrfs/137.out
+@@ -1,63 +1,14 @@
+ QA output created by 137
+-wrote 4096/4096 bytes at offset 0
++wrote SIZE/SIZE bytes at offset OFFSET
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-wrote 4096/4096 bytes at offset 0
++wrote SIZE/SIZE bytes at offset OFFSET
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-wrote 4096/4096 bytes at offset 1052672
++wrote SIZE/SIZE bytes at offset OFFSET
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-wrote 4096/4096 bytes at offset 1052672
++wrote SIZE/SIZE bytes at offset OFFSET
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-wrote 4096/4096 bytes at offset 1052672
++wrote SIZE/SIZE bytes at offset OFFSET
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-
+-File digests in the original filesystem:
+-3e4309c7cc81f23d45e260a8f13ca860  SCRATCH_MNT/snap1/foo
+-f3934f0cf164e2efa1bab71f2f164990  SCRATCH_MNT/snap1/bar
+-f3934f0cf164e2efa1bab71f2f164990  SCRATCH_MNT/snap2/foo
+-d3dc847171f9081bd75d7a2d3b53d322  SCRATCH_MNT/snap2/bar
+-
+-File snap1/foo fiemap results in the original filesystem:
+-0: [0..7]: data
+-
+-File snap1/bar fiemap results in the original filesystem:
+-0: [0..7]: data
+-1: [8..2055]: hole
+-2: [2056..2063]: data
+-
+-File snap2/foo fiemap results in the original filesystem:
+-0: [0..7]: data
+-1: [8..2055]: hole
+-2: [2056..2063]: data
+-
+-File snap2/bar fiemap results in the original filesystem:
+-0: [0..7]: data
+-1: [8..2055]: hole
+-2: [2056..2063]: data
+-
+ At subvol SCRATCH_MNT/snap1
+ At subvol SCRATCH_MNT/snap2
+ At subvol snap1
+-
+-File digests in the new filesystem:
+-3e4309c7cc81f23d45e260a8f13ca860  SCRATCH_MNT/snap1/foo
+-f3934f0cf164e2efa1bab71f2f164990  SCRATCH_MNT/snap1/bar
+-f3934f0cf164e2efa1bab71f2f164990  SCRATCH_MNT/snap2/foo
+-d3dc847171f9081bd75d7a2d3b53d322  SCRATCH_MNT/snap2/bar
+-
+-File snap1/foo fiemap results in the new filesystem:
+-0: [0..7]: data
+-
+-File snap1/bar fiemap results in the new filesystem:
+-0: [0..7]: data
+-1: [8..2055]: hole
+-2: [2056..2063]: data
+-
+-File snap2/foo fiemap results in the new filesystem:
+-0: [0..7]: data
+-1: [8..2055]: hole
+-2: [2056..2063]: data
+-
+-File snap2/bar fiemap results in the new filesystem:
+-0: [0..7]: data
+-1: [8..2055]: hole
+-2: [2056..2063]: data
 -- 
 2.34.1
 
