@@ -1,73 +1,132 @@
-Return-Path: <linux-btrfs+bounces-15735-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15736-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F556B1495A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jul 2025 09:46:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26A00B14B49
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jul 2025 11:32:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAAFB3A3783
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jul 2025 07:46:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0AFA7A92C9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jul 2025 09:30:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3E4266B72;
-	Tue, 29 Jul 2025 07:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3C5E2877C9;
+	Tue, 29 Jul 2025 09:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rinE9vv6"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MB4Zcbz4";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MB4Zcbz4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8612D263F4A;
-	Tue, 29 Jul 2025 07:46:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D910213E66
+	for <linux-btrfs@vger.kernel.org>; Tue, 29 Jul 2025 09:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753775203; cv=none; b=fjK8E+rC5xoroz8PCX8b2+A+JxNuXy0y6MGy08KElEW4Jq4+qXihCf26stZ2Ylw9khONJijh9zCkioZlr8M2c5igDP9NdOod77OIld+y8rmZ2z2947AU2tuwKzCd7evvUGgfgOi0Z0S0UVjgiiV/f3UZIDwxbGOmoLcqQHZC8+o=
+	t=1753781529; cv=none; b=SZhdgPOPLqeYxlLSW9q0NCb+lxCpV2bZmcvHJpa8JUFzSrcp7O3Cbb4TKb3pLaLYus/ORxxbTkILcR8fh244EZtTnjqlQJG0azs0+ECr9rSWnsM2kb5cGKuWGLvUU4s26azFFWkba31lv65aGUPu/j5rWkEqez+fJgbgrPqPeAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753775203; c=relaxed/simple;
-	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kYbu6Cm7tow6tUOpqV8KwIj1FIVXrQfnApy+0K+wL0OgVSld2CHef5EUrOS8Sgpf0RSxD1/cNYBSFclWN8UOWxenCHEP0hqBVrf1Lu9sJGA6d1+7pWeHjxRfBKCsg5R5hciT/ibThmCaS1UQbm7Beg9ayOLp9XeFdeXOW+Fslt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=rinE9vv6; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=rinE9vv6jMIYGVe97zFJtk9TV6
-	LYO5sTUqYo4FDhYDWATzAfZcNfoIGPm3IRj1U0uY/aOVZIiTQyRRew9NyhQEZL6SWgz99v/Hm0zAH
-	BB4/BQB9+ItKHaoTF3xkn0YZShMPscDwTXlbWvy8Svxmsr91ROQUHeGhxIJc55QFvkf578vvHQD67
-	X7PjaV0eEPmqcNgxhV4ihgc3V6SSdAagxRZLS9al1g92zkDUTxHcZGCjwkIA/r4YgM+MC70r2z+jQ
-	8uZhw69TapGIrUADeS3kP4ZMvGtK7GkOwP46YyyqSr14LepR3PPw2iJPZ1TNFCd/Dw9oOfBWlMks7
-	aOo8uUng==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ugf2o-0000000GAIJ-0oFk;
-	Tue, 29 Jul 2025 07:46:42 +0000
-Date: Tue, 29 Jul 2025 00:46:42 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>,
-	"Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH v2] generic/211: verify if the filesystem being tested
- supports in place writes
-Message-ID: <aIh8Yq1HV2jJAWwG@infradead.org>
-References: <7ba7d315e60388593ccef0353cff58c4b5795615.1753272216.git.fdmanana@suse.com>
- <16f6bbbb4422cdb2b5ff0b29dc5d7d45ebff5dcf.1753358594.git.fdmanana@suse.com>
+	s=arc-20240116; t=1753781529; c=relaxed/simple;
+	bh=+P64Rs3XNEPpce65G5LkOP5WOE51kLB+xlFwQZsb/Ck=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=hFPvH+UqddUb5nPNXasMKyrCkN+EMfboHOuz2jQYKiLZ22Dr5gd+zcBVC7+fRuFtQ+C877SLqKb2rQtc9QC4AO5d1B9WR4r0EemaqokTjCl4AhmPSQZGVLaZFlvtcMeLuYcHaw5BYWuXzTKnuyQdJ/rZ424bc0FLW+K8JCzWhM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MB4Zcbz4; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MB4Zcbz4; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 24E4221A3D
+	for <linux-btrfs@vger.kernel.org>; Tue, 29 Jul 2025 09:32:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1753781525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=02QkjTm4d6PQ/6p1xOAPaXAnTcil/cUN8yLuklcrHL0=;
+	b=MB4Zcbz4E2ZxPgcdu2wsIJHjwnDZigcQF5iVPDIPiQu4Zli++rsbH5G3/8NAcs0x/G8Ih8
+	UlOjMd4m7gsoUSeILC8jvaoRIaCL4AB8yydAbu0dIjl5539DQVEFvWTXkd9IyXivC5+iB5
+	G/oiNwZgaajFKCrTkiAMSXzKYWhW7fo=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1753781525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=02QkjTm4d6PQ/6p1xOAPaXAnTcil/cUN8yLuklcrHL0=;
+	b=MB4Zcbz4E2ZxPgcdu2wsIJHjwnDZigcQF5iVPDIPiQu4Zli++rsbH5G3/8NAcs0x/G8Ih8
+	UlOjMd4m7gsoUSeILC8jvaoRIaCL4AB8yydAbu0dIjl5539DQVEFvWTXkd9IyXivC5+iB5
+	G/oiNwZgaajFKCrTkiAMSXzKYWhW7fo=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 61BB813876
+	for <linux-btrfs@vger.kernel.org>; Tue, 29 Jul 2025 09:32:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id V5NBCRSViGgxUQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 29 Jul 2025 09:32:04 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs: follow regular writeback error handling by clearing block dirty and start/end writeback
+Date: Tue, 29 Jul 2025 19:01:44 +0930
+Message-ID: <cover.1753781242.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16f6bbbb4422cdb2b5ff0b29dc5d7d45ebff5dcf.1753358594.git.fdmanana@suse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-Looks good:
+Recently I'm working on various error handling fixes during
+run_delalloc_range(), but sometimes I also hit generic/475 kernel
+warnings where no failure from run_delalloc_range().
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+It turns out that extent_writepage_io() is not following the common
+writeback error handling pattern, and leave failed blocks dirty.
+
+This can lead to writeback of those failed blocks again, and the next
+time we will hit various possible problems, but the most common one will
+be the DEBUG_WARN() from btrfs_writepage_cow_fixup(), exactly the bug
+I'm hunting.
+
+So this series fixes the two error handling paths which still leaves the
+blocks dirty (even intentionally, and of course that's caused by
+myself), to clear the dirty flag and start/finish writeback for involved
+block(s).
+
+Qu Wenruo (2):
+  btrfs: clear block dirty if submit_one_sector() failed
+  btrfs: clear block dirty if btrfs_writepage_cow_fixup() failed
+
+ fs/btrfs/extent_io.c | 28 ++++++++++++++++++++++------
+ 1 file changed, 22 insertions(+), 6 deletions(-)
+
+-- 
+2.50.1
 
 
