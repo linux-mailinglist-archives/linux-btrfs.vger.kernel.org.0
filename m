@@ -1,77 +1,77 @@
-Return-Path: <linux-btrfs+bounces-15729-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15730-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6053AB14825
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jul 2025 08:24:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48639B14826
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jul 2025 08:24:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 980A616BD88
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jul 2025 06:24:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AAFC3A6B4A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jul 2025 06:24:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 121E5256C9C;
-	Tue, 29 Jul 2025 06:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9171256C9C;
+	Tue, 29 Jul 2025 06:24:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XvvPmoNz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UNqtvx4A"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FA5B262BE;
-	Tue, 29 Jul 2025 06:24:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B12D2262BE;
+	Tue, 29 Jul 2025 06:24:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753770271; cv=none; b=ndNsJuvaQwuHvVhcjiANajGymv/xf6BoB2zTtSwEOx0lpy38tnc2UryqQrTppmXc4B0k16DjI102r2A7coPeKweGH38VXnymDSnURQ1cIdGR7x25bFMb9tgj4CFKaRjkoLxXNWspTXVznCpx1lE6b8XkuunB9HSZbhrxi8gMqYo=
+	t=1753770284; cv=none; b=Y2AtJB1EilMwuzpMYAH7506Tkvz6mS2qv4v4SitWq165YFRFFPgPg8yNYHyp6Ak/atmwPNydr1I15ofrfuzmkyN3Q/L8nZo9MgqZAFiHHA8w4o3G7KZv7/K2bfGQFYzmUoqmBgvZcQv77mzLvcuqMxaBuhSRPp8l1BPhRQ0WTis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753770271; c=relaxed/simple;
-	bh=eg2i1UfbRCqPMPnWgTSiSvcg4IswBDkBAJroilJEzlU=;
+	s=arc-20240116; t=1753770284; c=relaxed/simple;
+	bh=KN+SnO3WTYus7dR9WGYhHvpWx/YWLdHtfePtur0u/j4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=r0a41P9igsDoaA08XpNmsukEUvQbta3WGChk9AsuhT5xPaArGpYJRy2RgRiyhUDRfXNP+EnOnJs1HaaHJN7pQkqNc7hsT9aEyIwg8U7DrnzPK8dAvNrJ9Gi7b+Er1xR+LNFgagUdYFBeB2j4O0iNLhDsrw3/jsaLr4bTrrdCot0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XvvPmoNz; arc=none smtp.client-ip=209.85.215.169
+	 MIME-Version; b=UZPNWURx6aJXMQDGkQTUOnzpjXG8CTSPHx3bBHNB0ybF8naDdwRwvnXO4+Q88aiG0//b04mK1Jdc6Yyc2HktuO6JZftmqgXr6G8zWaX6iuZLCy5Tnh7VAg0oqVnE2dfeA7DGA5KGFeDgon4T5kPdPL4vWC91wmPaBb1FnFmg+KY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UNqtvx4A; arc=none smtp.client-ip=209.85.215.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b34a6d0c9a3so6540837a12.3;
-        Mon, 28 Jul 2025 23:24:29 -0700 (PDT)
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b3226307787so4426864a12.1;
+        Mon, 28 Jul 2025 23:24:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753770269; x=1754375069; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753770281; x=1754375081; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=R8si36GnOZYo85SCiSVV88XYOQ+Dh8rCNIs2VAozTJ8=;
-        b=XvvPmoNzp4xnCDvV5ab4HYG413QZNIORez/9WmSoFzTzz8tT5bUw0T7y4qSwWxq1gD
-         ThwCQAm37KfmAAxfeX+ubQnOYtgnAl/9PMba/7rK24+2rfhyOZaGBaydKfrlkFU2XZC/
-         pqsLRVnpwAkbdyvn1MVuaG1LXXMrnhco9SgwF6/ejI+w1u0bVEH8/a+DeSYcO0EiHpZ/
-         YB980tZmOJluFdw/aCkZE1W960ppKIhhdD1EVJoO9yvRa27dmv+woNQJq3kh0JVzF0RY
-         OFMVR+bkiz5iyT3B/u8UA8xO8munY7DVDsH6HrIWvWfe1/RyBQyQ3Q3XB60xH7bytM0H
-         0qVA==
+        bh=sSXab2Bv7Yq7N37ynIGKMl6pX8UVqfin196gyD3sRI0=;
+        b=UNqtvx4AEVYIHZcSlv1gIQxZImWH1nSWs+izty2vaq0v1HxigYTY+uRY9iRHcG1+bd
+         F8/GxVJwCMIkYjwFnEKre1hmRwGdYmvnTVF1NnnOGTeLQNSPdofeT/sdk9KLLEuuSsgv
+         erYx8fdo/Vw0sHOSby+ex4dRJoSlI49abZwbnVSMYEC3nMp3hDykQCzB1m2LQwWz36dM
+         Zpv7Bo8X35/zZsisahDYC3NpUbADdhrTGhnT/Euyw//DNa3cooV+4kUJBpsIcIDH2Em2
+         XXUscxnLoRXAXSjlPiqHujSN0KmaFPfN27cuoGl7laKxkrSRtP0Ptiwk0DkNvFoVvNZa
+         ssjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753770269; x=1754375069;
+        d=1e100.net; s=20230601; t=1753770281; x=1754375081;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=R8si36GnOZYo85SCiSVV88XYOQ+Dh8rCNIs2VAozTJ8=;
-        b=eWrt1F6o5CJ7TgsRHJPLFEMM8MAn6ygZi5VtWsfU4SgBrr7T8GjZ/vielJzjZnENuB
-         HR7viEZ2kW+NuBTX7d3WiRNm8xbL9TIK5OaH2BysxU8TCGpjZ1A+gqDDls2xczlAhuK5
-         dNZmf0vuKVgHdYO9pV04+tGkwtOBKvpyFY3Ajyb4s+Oq7DS6VzlLvv8Mc89twBuv9eeT
-         /AMPGwH1sb4xoj5LsDGh3ljzYMoyWWcW1ZgoeG/JQEsPBcaXJDYM0iGIjkI3DOibKX72
-         lOyvTBNJKgNqcokDpDLSsmsxX+z7D1k4sPqULYcVxZtWvWIVJeqavtgZAeJgR50+JV6r
-         kZDw==
-X-Gm-Message-State: AOJu0YydMK8ESHyjKQGHiOW8C+GfZ8eoWELZlVqa+Xt2k0WkfFxeGhC6
-	TzN5N7t/BNvO+yfqTHRwhXTgodaKNjmt7LyFtw0f3eqjNsezSmmiqA/0vK52sQ==
-X-Gm-Gg: ASbGncu+5FtiE1LiM1KasSe3AKWVpX8sEZbiC7VTUD0cXoSYHw0Jn6RSGYPIPKmhnwD
-	Yx9+QVyiX9mr+1VAUVhU27ZIyGVEp1HeIsz00BSN7W4o47dS5uFyC14M7Rlx2fmCXLpYbwl6KPj
-	kkBUDsHc2rqfKnzehB2+7eb0rD39FWX6Jr3KERaenbdRd/m+SYLpOq9kgHrdppbv+x+S/9/q66Z
-	DCvaHjd2OQBor037mN+UYSBMpx2Rk9NypCu3HAZLM8lR+MZvk0vs+MotnsqzUf8xJlJkat/7Hfl
-	EeD2K2r5fOGTU5JDo5yJpf81C905v2SzcsQ80RF9b14wAmnmUA7RtmGBHlelKm2OiYbDVArYUVZ
-	pQ0rbEKZOR3VDxTs4enLXYOnfk5HuF0c5gQ==
-X-Google-Smtp-Source: AGHT+IFFNalAqIFbFd209oLWnmCYU8MVflWHva/goNQG9v+JbwjofbUOIdchk2tyYUNuO4djHkHKFA==
-X-Received: by 2002:a17:902:f690:b0:234:d679:72e9 with SMTP id d9443c01a7336-23fb2ffcf90mr222259285ad.12.1753770268951;
-        Mon, 28 Jul 2025 23:24:28 -0700 (PDT)
+        bh=sSXab2Bv7Yq7N37ynIGKMl6pX8UVqfin196gyD3sRI0=;
+        b=orfnKkATJZWo8I+KtZw1N6yU5xIwXxl6H1pxNCUJ7NwlowhIYJE0LLrCaINDiWObkM
+         ZwIs+yN7ZCRlccOypDENxkFCk3zT3gk4EWXDDmJC1dMJ4dnJ27mOdWJeGFVWIJC8dSGb
+         TDtudK40iK28rN70Q+oAThGlMLA69d1lfwXNBDOFZyN+P6HWEkhjOUyDYNaLeoqEr2cS
+         UZcMyExd0Xm316IWq8mEoZG+pLXmfzUImaoKnXuYyyI5lhNHsyDglsFOu1ol4U9vdFvs
+         wFW+ho2HGs6c8snZ6rOiJjuLJ6jHwZUmEvw5HGgs+eVgrj0RiNnwitfL7n1T9DGpkLWE
+         Mojg==
+X-Gm-Message-State: AOJu0YxTNusEwHzJsMal/ZZuSaB0vx34t8yz3MVQMp5sLpor8pTxWQYF
+	jYheRErsDjkbi+pG6xqcL9WyMpDhsmZx7ff3FGp2MGUBYI0gLBKJ62RNkX3dzA==
+X-Gm-Gg: ASbGncvIsQe4WEwNSK9H5e5rSLHAtWcB9JBaVpxEY27p6nmxf1cZUvBc5txMFXmIxiQ
+	FF4z4MWrIHeN6b4leP0iVC9ck5TN/6c9zWiYEp3g+TO+sR8OphwVulsJIjwOl1Du5vOz02rpxFq
+	3A+w2oE9T0MObhsKeO1P7DNTNCZ3molWV1Ec/ihKVJHNA/538bDqpWd0i5KgXOck+RNDhdJ7uEU
+	ADrIJMhotBso5qO0RVBpf4sZyDAEuoK8Dqdg0fue9ZWfJLWvpAqxFcpcvFCKYWijHQxNCxqdwEe
+	0Vb3QZuuHL9qdxf1fAvtqNzSRx3d6lRHbbfluGcWrAuCCfB7ErIGdTaHHromOdXpVaWoIrfq2e2
+	Jcd/ucY2GUZOekZ8ZtA9eQgE=
+X-Google-Smtp-Source: AGHT+IFi+S4DrDZEjb7ZHW7vQloaoWT09MLhIMwp9M/nYeM0NvSCy2HteOy2nEuMdvdtMxsueiiSeg==
+X-Received: by 2002:a17:902:d50a:b0:234:f182:a735 with SMTP id d9443c01a7336-23fb315a963mr208673575ad.34.1753770281434;
+        Mon, 28 Jul 2025 23:24:41 -0700 (PDT)
 Received: from citest-1.. ([129.41.58.6])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23fc1adcd24sm65941195ad.167.2025.07.28.23.24.26
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23fc1adcd24sm65941195ad.167.2025.07.28.23.24.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jul 2025 23:24:28 -0700 (PDT)
+        Mon, 28 Jul 2025 23:24:41 -0700 (PDT)
 From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
@@ -81,9 +81,9 @@ Cc: linux-btrfs@vger.kernel.org,
 	zlang@kernel.org,
 	fdmanana@kernel.org,
 	nirjhar.roy.lists@gmail.com
-Subject: [PATCH 5/7] generic/563: Increase the write tolerance to 6% for larger nodesize
-Date: Tue, 29 Jul 2025 06:21:48 +0000
-Message-Id: <f48538de3ce4a98a2128f48aa0f005f51eb552ee.1753769382.git.nirjhar.roy.lists@gmail.com>
+Subject: [PATCH 6/7] btrfs/301: Make this test compatible with all block sizes.
+Date: Tue, 29 Jul 2025 06:21:49 +0000
+Message-Id: <a8233808db2ee1d7c5fe7ee8710388bb0cb8f787.1753769382.git.nirjhar.roy.lists@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1753769382.git.nirjhar.roy.lists@gmail.com>
 References: <cover.1753769382.git.nirjhar.roy.lists@gmail.com>
@@ -95,57 +95,55 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When tested with blocksize/nodesize 64K on powerpc
-with 64k  pagesize on btrfs, then the test fails
-with the folllowing error:
-     QA output created by 563
-     read/write
-     read is in range
-    -write is in range
-    +write has value of 8855552
-    +write is NOT in range 7969177.6 .. 8808038.4
-     write -> read/write
-    ...
-The slight increase in the amount of bytes that
-are written is because of the increase in the
-the nodesize(metadata) and hence it exceeds the tolerance limit slightly.
-Fix this by increasing the write tolerance limit from 5% from 6%
-for 64k blocksize btrfs.
+With large block sizes like 64k on powerpc with 64k pagesize
+the test failed with the following logs:
+
+     QA output created by 301
+     basic accounting
+    +subvol 256 mismatched usage 33947648 vs 4587520 \
+         (expected data 4194304 expected meta 393216 diff 29360128)
+    +subvol 256 mismatched usage 168165376 vs 138805248 \
+	(expected data 138412032 expected meta 393216 diff 29360128)
+    +subvol 256 mismatched usage 33947648 vs 4587520 \
+	(expected data 4194304 expected meta 393216 diff 29360128)
+    +subvol 256 mismatched usage 33947648 vs 4587520 \
+	(expected data 4194304 expected meta 393216 diff 29360128)
+     fallocate: Disk quota exceeded
+(Please note that the above ouptut had to be modified a bit since
+the number of characters in each line was much greater than the
+72 characters.)
+
+The test creates nr_fill files each of size 8k i.e, 2x4k(stored in fill_sz).
+Now with 64k blocksize, 8k sized files occupy more than expected
+sizes (i.e, 8k) due to internal fragmentation since 1 file
+will occupy at least 1 block. Fix this by scaling the file size (fill_sz)
+with the blocksize.
 
 Reported-by: Disha Goel <disgoel@linux.ibm.com>
 Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
 ---
- tests/generic/563 | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ tests/btrfs/301 | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/tests/generic/563 b/tests/generic/563
-index 89a71aa4..efcac1ec 100755
---- a/tests/generic/563
-+++ b/tests/generic/563
-@@ -119,7 +119,22 @@ $XFS_IO_PROG -c "pread 0 $iosize" -c "pwrite -b $blksize 0 $iosize" -c fsync \
- 	$SCRATCH_MNT/file >> $seqres.full 2>&1
- switch_cg $cgdir
- $XFS_IO_PROG -c fsync $SCRATCH_MNT/file
--check_cg $cgdir/$seq-cg $iosize $iosize 5% 5%
-+blksz=`_get_block_size $SCRATCH_MNT`
+diff --git a/tests/btrfs/301 b/tests/btrfs/301
+index 6b59749d..7547ff0e 100755
+--- a/tests/btrfs/301
++++ b/tests/btrfs/301
+@@ -23,7 +23,13 @@ subv=$SCRATCH_MNT/subv
+ nested=$SCRATCH_MNT/subv/nested
+ snap=$SCRATCH_MNT/snap
+ nr_fill=512
+-fill_sz=$((8 * 1024))
 +
-+# On higher node sizes on btrfs, we observed slightly more 
-+# writes, due to increased metadata sizes.
-+# Hence have a higher write tolerance for btrfs and when
-+# node size is greater than 4k.
-+if [[ "$FSTYP" == "btrfs" ]]; then
-+	nodesz=$(_get_btrfs_node_size "$SCRATCH_DEV")
-+	if [[ "$nodesz" -gt 4096 ]]; then
-+		check_cg $cgdir/$seq-cg $iosize $iosize 5% 6%
-+	else
-+		check_cg $cgdir/$seq-cg $iosize $iosize 5% 5%
-+	fi
-+else
-+	check_cg $cgdir/$seq-cg $iosize $iosize 5% 5%
-+fi
- 
- # Write from one cgroup then read and write from a second. Writes are charged to
- # the first group and nothing to the second.
++_scratch_mkfs >> $seqres.full
++_scratch_mount
++blksz=`_get_block_size $SCRATCH_MNT`
++_scratch_unmount
++fill_sz=$(( 2 * blksz ))
++
+ total_fill=$(($nr_fill * $fill_sz))
+ nodesize=$($BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV | \
+ 					grep nodesize | $AWK_PROG '{print $2}')
 -- 
 2.34.1
 
