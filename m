@@ -1,50 +1,52 @@
-Return-Path: <linux-btrfs+bounces-15761-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15762-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F197B166CF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 21:20:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB8ACB166D4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 21:21:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F303585DAC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 19:20:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EA605861E6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 19:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 346C215A8;
-	Wed, 30 Jul 2025 19:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98DAA2E1744;
+	Wed, 30 Jul 2025 19:21:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NQj3StdS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="biZw80S9"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB9B2E092E
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 19:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D408B2BCFB;
+	Wed, 30 Jul 2025 19:21:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753903244; cv=none; b=JHiStANdg8iYU3IrkzJfvIZqZwTLYLqEVg/hq/6ShGjw9EUw46H/2SVtrf7tpLny61Dc3ZT18021uogRSQf7JM5HRK59tnBXbIWQ0j0SGdlWQj5QHINg3RkMkUM7PpELHeC7q8HjI2C9Hu8Dwh83JdTf68wulMsJzYC6F4OqYV0=
+	t=1753903307; cv=none; b=cTw1L9w5oPi7dGrNeanZ+cWEKkY406MzsruAuiRBWKEjglaDm5uiTd6ID3yBl/2SBqjMHs4KRvGKC9VFHJ6E6K8vnOCBNl5t8ch7XGQKrMGChJTeZquWw/lsFzjSzk8eK+l1gIlwCbZi7GOFlr73MRhg2vjhMJGcGIhf+tfZU+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753903244; c=relaxed/simple;
-	bh=mGn7Coa8bktcj5jKbffLI/mX9Z1odWd8F6IIPv2sJto=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=lCoe2o0YJdc/Dg/4lU7voyoE7iD0Zr70vTTWLrOyy4xIN0zGPZGH3AoTtFFagcbId0QOmr2FDuejZKxSjW/t/xZbjKvWQhQTzVfX8tHSRM/O2+8RQ98QQyra7mrsZgOQ3oRgHnjEUi8P6w1a80sYMJYWZGagpvQYGrGu1JqgWGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NQj3StdS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76845C4CEE3
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 19:20:43 +0000 (UTC)
+	s=arc-20240116; t=1753903307; c=relaxed/simple;
+	bh=LUytNnNoqkW0bz7uMHDai1bink9SfNHQfZgLgc49mM8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sAVQO+JhomjGdScgmMTKtk4+9NI+3tUICN/ZgH/KhgtFQkhaaD8xQDnYwpNCwux/rY9+C9JWu8NVftZcaeXGPM6QHvzPg6lc4/DiT+NMrxNGesccY9BVgWvlqRCU9KVOiXSl65Mp2vPl1br1bp+cVerz8eulEqilqcMdM4mAvh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=biZw80S9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59360C4CEE3;
+	Wed, 30 Jul 2025 19:21:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753903244;
-	bh=mGn7Coa8bktcj5jKbffLI/mX9Z1odWd8F6IIPv2sJto=;
-	h=From:To:Subject:Date:From;
-	b=NQj3StdS1Lbt/UF9rxKKDupCszEpQWLtz1KAUkqDgV5HRYrFivmTV5RY7n0rIqNum
-	 UDm9jCnpH1snZNnmhl/9bMv4Q2cLBjncW4rES1uW9V+B221ICwZ0GDxpYO4YHfhCDL
-	 nWPlp4RsdOfhWOiKRh/GxJd1TLJ8MOPknJsnvtPjIBR2o2vGJAPd7e1im8a+bZjun0
-	 /FFx87rMfsUFs/KaeEu+5GOz7Ixp8qnxs6CcDoj5UPz+In318VsCxMjX4Dpb1zzZjm
-	 Cy6JhmM4VE4lBmQ0HLrM6fVgW6xChI2eqE+oVT1b9+FX7pEAR6Ttl6EUGPEcfVC5QA
-	 /ZZWpSB0/WZmA==
+	s=k20201202; t=1753903307;
+	bh=LUytNnNoqkW0bz7uMHDai1bink9SfNHQfZgLgc49mM8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=biZw80S9WIsR3GghkU8vGXmmnJKOqsbuaqBGf5yNL2rSjONQ1sTm/3PHldOkq5hWs
+	 F7F5unanWuhShxibLp0zbuC0Z5bCL6i6pXjROV5rh8UsEY20dVStuHbdLlFL8DM9sf
+	 v3l9WLfBll6LtsDrgFry7j31dvqCnP1yOCiPIa1YTX9ho6PDio/zoq153dxF5Rc0Nw
+	 kRBGGZdg1TvP4I1jr8wSUJ4mOhlOadQ88exNE8QvnHmOcU6JJQYQvmRGwBfIK/u5Xk
+	 meUKyUUnWkmp/R5yBkueV11K++RtyQCuu5X2GKitb5iCfk6LwA7meIHeLP/A/leHFh
+	 aQGScBE0xd1Pw==
 From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix log tree replay failure due to file with 0 links and extents
-Date: Wed, 30 Jul 2025 20:20:40 +0100
-Message-ID: <5c89804b07e3681c3a9bc50bf1d63d9ce77d7020.1753902432.git.fdmanana@suse.com>
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] generic: test fsync of file with 0 links and extents
+Date: Wed, 30 Jul 2025 20:21:41 +0100
+Message-ID: <ab95518f5483a2e23e0f3cdf1bc67258c0e71918.1753902704.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -56,129 +58,179 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-If we log a new inode (not persisted in a past transaction) that has 0
-links and extents, then log another inode with an higher inode number, we
-end up with failing to replay the log tree with -EINVAL. The steps for
-this are:
+Create two files, the first one with some data, and then fsync both
+files. The first file is fsynced after removing its hardlink. After a
+power failure we expect the fs to be mountable and for only the second
+file to be present.
 
-1) create new file A
-2) write some data to file A
-3) open an fd on file A
-4) unlink file A
-5) fsync file A using the previously open fd
-6) create file B (has higher inode number than file A)
-7) fsync file B
-8) power fail before current transaction commits
+This exercises an issue found in btrfs and fixed by the following patch:
 
-Now when attempting to mount the fs, the log replay will fail with
--ENOENT at replay_one_extent() when attempting to replay the first
-extent of file A. The failure comes when trying to open the inode for
-file A in the subvolume tree, since it doesn't exist.
+  btrfs: fix log tree replay failure due to file with 0 links and extents
 
-Before commit 5f61b961599a ("btrfs: fix inode lookup error handling
-during log replay"), the returned error was -EIO instead of -ENOENT,
-since we converted any errors when attempting to read an inode during
-log replay to -EIO.
-
-The reason for this is that the log replay procedure fails to ignore
-the current inode when we are at the stage LOG_WALK_REPLAY_ALL, our
-current inode has 0 links and last inode we processed in the previous
-stage has a non 0 link count. In other words, the issue is that at
-replay_one_extent() we only update wc->ignore_cur_inode if the current
-replay stage is LOG_WALK_REPLAY_INODES.
-
-Fix this by updating wc->ignore_cur_inode whenever we find an inode item
-regardless of the current replay stage. This is a simple solution and easy
-to backport, but later we can do other alternatives like avoid logging
-extents or inode items other than the inode item for inodes with a link
-count of 0.
-
-The problem with the wc->ignore_cur_inode logic has been around since
-commit f2d72f42d5fa ("Btrfs: fix warning when replaying log after fsync
-of a tmpfile") but it only became frequent to hit since the more recent
-commit 5e85262e542d ("btrfs: fix fsync of files with no hard links not
-persisting deletion"), because we stopped skipping inodes with a link
-count of 0 when logging, while before the problem would only be triggered
-if trying to replay a log tree created with an older kernel which has a
-logged inode with 0 links.
-
-A test case for fstests will be submitted soon.
-
-Reported-by: Peter Jung <ptr1337@cachyos.org>
-Link: https://lore.kernel.org/linux-btrfs/fce139db-4458-4788-bb97-c29acf6cb1df@cachyos.org/
-Reported-by: burneddi <burneddi@protonmail.com>
-Link: https://lore.kernel.org/linux-btrfs/lh4W-Lwc0Mbk-QvBhhQyZxf6VbM3E8VtIvU3fPIQgweP_Q1n7wtlUZQc33sYlCKYd-o6rryJQfhHaNAOWWRKxpAXhM8NZPojzsJPyHMf2qY=@protonmail.com/#t
-Reported-by: Russell Haley <yumpusamongus@gmail.com>
-Link: https://lore.kernel.org/linux-btrfs/598ecc75-eb80-41b3-83c2-f2317fbb9864@gmail.com/
-Fixes: f2d72f42d5fa ("Btrfs: fix warning when replaying log after fsync of a tmpfile")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 42 ++++++++++++++++++++++++++++--------------
- 1 file changed, 28 insertions(+), 14 deletions(-)
+ .gitignore            |  1 +
+ src/Makefile          |  2 +-
+ src/unlink-fsync.c    | 45 ++++++++++++++++++++++++++++++++
+ tests/generic/771     | 60 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/771.out |  4 +++
+ 5 files changed, 111 insertions(+), 1 deletion(-)
+ create mode 100644 src/unlink-fsync.c
+ create mode 100755 tests/generic/771
+ create mode 100644 tests/generic/771.out
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 8c6d1eb84d0e..09ddb2ee4df4 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -2602,23 +2602,30 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
+diff --git a/.gitignore b/.gitignore
+index 58dc2a63..6948fd60 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -210,6 +210,7 @@ tags
+ /src/fiemap-fault
+ /src/min_dio_alignment
+ /src/dio-writeback-race
++/src/unlink-fsync
  
- 	nritems = btrfs_header_nritems(eb);
- 	for (i = 0; i < nritems; i++) {
--		btrfs_item_key_to_cpu(eb, &key, i);
-+		struct btrfs_inode_item *inode_item;
+ # Symlinked files
+ /tests/generic/035.out
+diff --git a/src/Makefile b/src/Makefile
+index 2cc1fb40..7080e348 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -21,7 +21,7 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
+ 	t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale \
+ 	t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault rewinddir-test \
+ 	readdir-while-renames dio-append-buf-fault dio-write-fsync-same-fd \
+-	dio-writeback-race
++	dio-writeback-race unlink-fsync
  
--		/* inode keys are done during the first stage */
--		if (key.type == BTRFS_INODE_ITEM_KEY &&
--		    wc->stage == LOG_WALK_REPLAY_INODES) {
--			struct btrfs_inode_item *inode_item;
--			u32 mode;
-+		btrfs_item_key_to_cpu(eb, &key, i);
- 
--			inode_item = btrfs_item_ptr(eb, i,
--					    struct btrfs_inode_item);
-+		if (key.type == BTRFS_INODE_ITEM_KEY) {
-+			inode_item = btrfs_item_ptr(eb, i, struct btrfs_inode_item);
- 			/*
--			 * If we have a tmpfile (O_TMPFILE) that got fsync'ed
--			 * and never got linked before the fsync, skip it, as
--			 * replaying it is pointless since it would be deleted
--			 * later. We skip logging tmpfiles, but it's always
--			 * possible we are replaying a log created with a kernel
--			 * that used to log tmpfiles.
-+			 * An inode with no links is either:
-+			 *
-+			 * 1) A tmpfile (O_TMPFILE) that got fsync'ed and never
-+			 *    got linked before the fsync, skip it, as replaying
-+			 *    it is pointless since it would be deleted later.
-+			 *    We skip logging tmpfiles, but it's always possible
-+			 *    we are replaying a log created with a kernel that
-+			 *    used to log tmpfiles;
-+			 *
-+			 * 2) A non-tmpfile which got its last link deleted
-+			 *    while holding an open fd on it and later got
-+			 *    fsynced through that fd. We always log the
-+			 *    parent inodes when inode->last_unlink_trans is
-+			 *    set to the current transaction, so ignore all the
-+			 *    inode items for this inode. We will delete the
-+			 *    inode when processing the parent directory with
-+			 *    replay_dir_deletes().
- 			 */
- 			if (btrfs_inode_nlink(eb, inode_item) == 0) {
- 				wc->ignore_cur_inode = true;
-@@ -2626,6 +2633,13 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
- 			} else {
- 				wc->ignore_cur_inode = false;
- 			}
-+		}
+ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
+ 	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
+diff --git a/src/unlink-fsync.c b/src/unlink-fsync.c
+new file mode 100644
+index 00000000..ce008c6b
+--- /dev/null
++++ b/src/unlink-fsync.c
+@@ -0,0 +1,45 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2025 SUSE Linux Products GmbH.  All Rights Reserved.
++ */
 +
-+		/* Inode keys are done during the first stage. */
-+		if (key.type == BTRFS_INODE_ITEM_KEY &&
-+		    wc->stage == LOG_WALK_REPLAY_INODES) {
-+			u32 mode;
++/*
++ * Utility to open an existing file, unlink it while holding an open fd on it
++ * and then fsync the file before closing the fd.
++ */
 +
- 			ret = replay_xattr_deletes(trans, root, log, path, key.objectid);
- 			if (ret)
- 				break;
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <fcntl.h>
++
++int main(int argc, char *argv[])
++{
++	int fd;
++	int ret;
++
++	if (argc != 2) {
++		fprintf(stderr, "Use: %s <file path>\n", argv[0]);
++		return 1;
++	}
++
++	fd = open(argv[1], O_WRONLY, 0666);
++	if (fd == -1) {
++		perror("failed to open file");
++		exit(1);
++	}
++
++	ret = unlink(argv[1]);
++	if (ret == -1) {
++		perror("unlink failed");
++		exit(2);
++	}
++
++	ret = fsync(fd);
++	if (ret == -1) {
++		perror("fsync failed");
++		exit(3);
++	}
++
++	return 0;
++}
+diff --git a/tests/generic/771 b/tests/generic/771
+new file mode 100755
+index 00000000..ad30cc0a
+--- /dev/null
++++ b/tests/generic/771
+@@ -0,0 +1,60 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2025 SUSE Linux Products GmbH.  All Rights Reserved.
++#
++# FS QA Test 771
++#
++# Create two files, the first one with some data, and then fsync both files.
++# The first file is fsynced after removing its hardlink. After a power failure
++# we expect the fs to be mountable and for only the second file to be present.
++#
++. ./common/preamble
++_begin_fstest auto quick log
++
++_cleanup()
++{
++	_cleanup_flakey
++	cd /
++	rm -r -f $tmp.*
++}
++
++. ./common/filter
++. ./common/dmflakey
++
++_require_scratch
++_require_test_program unlink-fsync
++_require_dm_target flakey
++
++[ "$FSTYP" = "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
++	"btrfs: fix log tree replay failure due to file with 0 links and extents"
++
++_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
++_require_metadata_journaling $SCRATCH_DEV
++_init_flakey
++_mount_flakey
++
++# Create our first test file with some data.
++mkdir $SCRATCH_MNT/testdir
++$XFS_IO_PROG -f -c "pwrite 0K 64K" $SCRATCH_MNT/testdir/foo | _filter_xfs_io
++
++# fsync our first test file after unlinking it - we keep an fd open for the
++# file, unlink it and then fsync the file using that fd, so that we log/journal
++# a file with 0 hard links.
++$here/src/unlink-fsync $SCRATCH_MNT/testdir/foo
++
++# Create another test file and fsync it.
++touch $SCRATCH_MNT/testdir/bar
++$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir/bar
++
++# Simulate a power failure and replay the log/journal.
++# On btrfs we had a bug where the replay procedure failed, causing the fs mount
++# to fail, because the first test file has extents and the second one, which has
++# an higher inode number, has a non-zero (1) link count - the replay code got
++# confused and thought the extents belonged to the second file and then it
++# failed when trying to open a non-existing inode to replay the extents.
++_flakey_drop_and_remount
++
++# File foo should not exist and file bar should exist.
++ls -1 $SCRATCH_MNT/testdir
++
++_exit 0
+diff --git a/tests/generic/771.out b/tests/generic/771.out
+new file mode 100644
+index 00000000..e40d7091
+--- /dev/null
++++ b/tests/generic/771.out
+@@ -0,0 +1,4 @@
++QA output created by 771
++wrote 65536/65536 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++bar
 -- 
 2.47.2
 
