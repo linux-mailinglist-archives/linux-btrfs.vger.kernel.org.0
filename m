@@ -1,142 +1,183 @@
-Return-Path: <linux-btrfs+bounces-15749-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15750-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4932DB1597F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 09:20:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2755B15E0E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 12:21:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 925743B3562
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 07:19:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06E9C16D440
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 10:21:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5319A2882A2;
-	Wed, 30 Jul 2025 07:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139AF28751E;
+	Wed, 30 Jul 2025 10:21:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CU5tISHG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ST9l7g0I"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4397B2877E4;
-	Wed, 30 Jul 2025 07:20:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5723227FB3A;
+	Wed, 30 Jul 2025 10:21:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753860013; cv=none; b=EpJ4Crx8pE/StbAJkoLwD1CtgebpLIRcwf4zU2ss5lvkJ4Q4HHIlZFoKfVTyXmCcLdItq31Me21oOG6PpKkOrR7QqcmGlBFqPWEgYdX8zZAjr4rdaJAUVxgicQ+bpqdqGCB4TWAwEKAEa6Fnay7yESn4WLEdPRrKfuiUkRDU8qs=
+	t=1753870871; cv=none; b=QHM8R/c5lZs6KxQZm2ssHmL/g4GeAYSEry563SDLCBpjnriMOhiwJQ16nL4D4ctLsAYJ7wbenhSVM4tBtyKcYpdNR4BQjXX0OLY5IABlkOe3UU5YYMJ1B6upzEbmCygEOEmSXG/G6XVHnsmOqbG0PqBk5+HKUGkCCbdC+t4bssY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753860013; c=relaxed/simple;
-	bh=ywPwGpX8S93nPEh/tVktj8kW14asfztZBW5f4l5jpME=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aruZ20JD2WYCX8vWkIEAKJGX/hsCRF6EYng+KQ/jw0x1QHPsk5SgvvWt06UBLmCgT2gNdYpYwsQuKZFOjfCVsFOEeGTo2LzwUm2Ol3jJGzMeYP0uOeFrmfUgb4CTq7m8YZQWHIXM3hsR0fBLCkxCGsukwrY3JchnuKerB5kTu1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CU5tISHG; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-74b52bf417cso4365752b3a.0;
-        Wed, 30 Jul 2025 00:20:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753860011; x=1754464811; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ywPwGpX8S93nPEh/tVktj8kW14asfztZBW5f4l5jpME=;
-        b=CU5tISHGKtKiDw7ItX6nos8Q1ydF9zMbJ8SLbW32pzyGgtkmaTSf66pntBC2xYz7w6
-         xgItTQW9vrIs28S1DIe3j7MCg8hWfJ+kKaqm8Tozph6mWcMhai516oQ6YrHYg3f6Rs+L
-         lJ2RBe2Dz5J2ivKajq/IFUztPpeaYYdL97JdKSHpl95slCDMpw7OcQ1K8u/kMBgxYJO6
-         bnC8jrZLDehS/vcUvVP+hKmxK6HqzK/AAWjb/jI3+EPPzCR2hXXgq5FGfHNCoHJgeeSd
-         x5i1LEdlRwGBo7XpxqOGi8FBv8efduNwokd6s2+IaIb5JKUoLxDSgNKRVJ2PN/VrkM4E
-         A58w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753860011; x=1754464811;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ywPwGpX8S93nPEh/tVktj8kW14asfztZBW5f4l5jpME=;
-        b=f1ik/7Ja7Nw+f+ULLzEEBA8g/2JWT+S963Faa2Qcj4GLTzIUqUoT8Fs47zvOpHkRLp
-         wVeoTcKwq/gfAhbEgzZ79A2PYbRyR8MH+Wm/a6GS6mvU8ZMUjzTx+J3CJ3nhttgwgVuB
-         OkI/5MenGa5eC0Jv84xw7dEqQ7bgd6oQGFQo8bWSpZ22acvXDaaEiKg6iPJkYkbeWsPZ
-         98MNIahEErtAyEem+nJIvSOC3oU8xUSXFZDkj6+pNpcoqirVQHXqkIJ2Y0zXT3GIIs72
-         QIuIng+YC72m2uCVGsLiJQ2JtGmgUaX3w/SGJh5G5Zq0F5qVyZ6zCIEAF3wXtHfOCgDf
-         HBOg==
-X-Forwarded-Encrypted: i=1; AJvYcCW0bdOON0zO2eVD8Am/QIEmOUMyHJojGFnEEsbhF8OUzkxYIDuJTqPhxIEU4uVZgUabW+WVoVdEsNzjqQ==@vger.kernel.org, AJvYcCXgd4HmcQhp3m6FwyBwCCI5AgBrXXFyg19fN7DqWqxaRWSFCMakzlzl4xyGHrzJhBqSqf5DmTMXKLAfucgJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUeFBkwRvkppRJl6LCnsF0ZgxLoneezqlnvvf2AEafGRTrwGAQ
-	E3nupnr7Knw92uTXTvGC4HsmOoDr1oDs4R/7fAPJM9sp4cEhi3dbUUBi
-X-Gm-Gg: ASbGnctCptip/xk3Cyp4cAYsVK/eVcCnZFYirlMis4bsp2q/0Jn3YCZYVmihOpe6kbO
-	p3o9l567J5oeqZiu4FJ9EhSj05LWZxYC2WmDkAwNRKxhi7oLmo8CiRuC3waJIWiD+mRJ63W/eWF
-	LirANWxpvS7C2rWXs2RWgy122z8elpWNIRMRMsptU5kEltB+9fpJY57Mh3HHCrcfzk4yD/xvTQN
-	MnlXoYtKO0mXw1HgkKn3/XJrHaNkBuwMRKFXPyIne8lYdjxqKfGw+OTlp8jWbU4avSlkLV9QsgB
-	98rjJq8ulSqsPphk7EvtnhGKyfj2iMmVKdf9Omb93KgOSUyF16zGC0Uve+tnzdfAsP+CwBt+YXV
-	HB6NOd7wg8fTsoUSqFAnETGKK509eIRb5SQffYJUeG21fh24qQneMrz/U1l8cjajwFK/p01k=
-X-Google-Smtp-Source: AGHT+IFcNnjwvExhsIeF5I3LafIEvP3GZShYVeaXHoTjj9f6fGtfAxDsrnBJM0DVax5aM6JOEkoO3g==
-X-Received: by 2002:a05:6a00:1150:b0:748:e5a0:aa77 with SMTP id d2e1a72fcca58-76ab2938394mr3537167b3a.13.1753860010583;
-        Wed, 30 Jul 2025 00:20:10 -0700 (PDT)
-Received: from mail.free-proletariat.dpdns.org ([182.215.2.141])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7640b4c8516sm9750392b3a.106.2025.07.30.00.20.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jul 2025 00:20:10 -0700 (PDT)
-From: kmpfqgdwxucqz9@gmail.com
-X-Google-Original-From: admin@mail.free-proletariat.dpdns.org
-Received: from kernelkraze-550XDA.. (_gateway [192.168.219.1])
-	by mail.free-proletariat.dpdns.org (Postfix) with ESMTPSA id 0124A4C003F;
-	Wed, 30 Jul 2025 16:20:06 +0900 (KST)
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-	David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	KernelKraze <admin@mail.free-proletariat.dpdns.org>
-Subject: Re: [PATCH 1/1] btrfs: add integer overflow protection to flush_dir_items_batch allocation - WITHDRAWN
-Date: Wed, 30 Jul 2025 16:20:06 +0900
-Message-ID: <20250730072006.154135-1-admin@mail.free-proletariat.dpdns.org>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <7d3afcb3-c5b6-4510-8d11-505c1538c786@gmx.com>
-References: <20250730044348.133387-1-admin@mail.free-proletariat.dpdns.org> <20250730044348.133387-2-admin@mail.free-proletariat.dpdns.org> <7d3afcb3-c5b6-4510-8d11-505c1538c786@gmx.com>
+	s=arc-20240116; t=1753870871; c=relaxed/simple;
+	bh=5WLYtURJ7+E0ew+T9lWSwh94yasN9NmznSsFTfS59qk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iDtkRAW0OZVeI1JAvd6frhxtOevxitP59Cd6ClrBs10R2dzrNYoKDWGj2DR3ZMye9O2klVd2aBsda05qz0rZ6yxV2cqzold5XmQh5zOECBoEU2aBLKBzuy3B+2gk+RCXngcLFkqzTQvHycFwaIpKDSxgfW4RW7RUC93sQO/nOZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ST9l7g0I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9D7AC4CEF9;
+	Wed, 30 Jul 2025 10:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753870870;
+	bh=5WLYtURJ7+E0ew+T9lWSwh94yasN9NmznSsFTfS59qk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ST9l7g0I3tja8PGCrnYWnKJOxAQP/FNGxVNW8hsobFUZM8PizS5vTQAcFanjZXi6u
+	 ikrl+x0m+4HrPRrGJNVa7x6+50RM4YG65NiGNM1nbmb7y9bNcdV2JvSRmyHXhBXH+x
+	 w3oQHc8xQHj/74KkXNBSl40tXa+BvxkuffK+APGLVQSWUvbuyHcLXQnL1VLeSVWhyp
+	 HOzkI+JfypBNzV9ry0p6XnRiwxq4fjzchPwmjPpY3VOuWZPVI2peq7N2IUGCnsT+nY
+	 u5Cka8Ayaqok44f+Gd4wx46wZN4ExMh1CNfI1r7EAd4mPXZ4aVeQgDn0jteQ/xXk5N
+	 eQMmci0E/xv8A==
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-615622ed70fso3952032a12.3;
+        Wed, 30 Jul 2025 03:21:10 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWUQVnCPqgms3rmzW1zIuGRAJC2dxeUCiZ34LeNsWWd+eDhQmh26rMtd60Dtg/1JONB8nISzHXoqmu9BQ==@vger.kernel.org, AJvYcCX6052hH0YrRb2np/b8lII8+If5mpGxhWIBBPudruBPtTR4dSho/wPkjfdTpiPfVSbK+FQpkWNVsPocmrmG@vger.kernel.org
+X-Gm-Message-State: AOJu0YxnQD8T0JApzBQ5xRt7IbXEV4yV8LSmSO2YgZbR1WKH/BUuglHy
+	0iT4C9FVhcQbY7227iFZP/j1xHiuu8+xU9aFNO5A0vK4UOwrr33dIEfJfRKLZEl4daO5vWUdIa8
+	nHwa9amJu2H5USGtzpq8t/bcPc0vyUzw=
+X-Google-Smtp-Source: AGHT+IEh7f5DjE3aZhiOGW/lQcmghui9D0DDQFpGNh+U61oQCozkuYfrYz6pTFYYCMK+9hRA2lB5Gurv4f1FwTqWAm8=
+X-Received: by 2002:a17:907:6d0b:b0:ae0:bee7:ad7c with SMTP id
+ a640c23a62f3a-af8fd9d1c8amr343180066b.46.1753870869385; Wed, 30 Jul 2025
+ 03:21:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250730044348.133387-1-admin@mail.free-proletariat.dpdns.org> <20250730044348.133387-2-admin@mail.free-proletariat.dpdns.org>
+In-Reply-To: <20250730044348.133387-2-admin@mail.free-proletariat.dpdns.org>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 30 Jul 2025 11:20:31 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5=cLEO3Cvty38bT1j5E6R0jJMuOWn+u9CkV6s58UhErQ@mail.gmail.com>
+X-Gm-Features: Ac12FXwD5kbbyuVduKgNiVB9bs8iC3lK0MT0xcXjROhMKTQPD1IC2LDmI_8alyk
+Message-ID: <CAL3q7H5=cLEO3Cvty38bT1j5E6R0jJMuOWn+u9CkV6s58UhErQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] btrfs: add integer overflow protection to
+ flush_dir_items_batch allocation
+To: kmpfqgdwxucqz9@gmail.com
+Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	KernelKraze <admin@mail.free-proletariat.dpdns.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-From: KernelKraze <admin@mail.free-proletariat.dpdns.org>
+On Wed, Jul 30, 2025 at 5:48=E2=80=AFAM <kmpfqgdwxucqz9@gmail.com> wrote:
+>
+> From: KernelKraze <admin@mail.free-proletariat.dpdns.org>
+>
+> The flush_dir_items_batch() function performs memory allocation using
+> count * sizeof(u32) + count * sizeof(struct btrfs_key) without proper
+> integer overflow checking. When count is large enough, this multiplicatio=
+n
+> can overflow, resulting in an allocation smaller than expected, leading t=
+o
+> buffer overflows during subsequent array access.
+>
+> In extreme cases with very large directory item counts, this could
+> theoretically lead to undersized memory allocation, though such scenarios
+> are unlikely in normal filesystem usage.
+>
+> Fix this by:
+> 1. Adding a reasonable upper limit (195) to the batch size, consistent
+>    with the limit used in log_delayed_insertion_items()
+> 2. Using check_mul_overflow() and check_add_overflow() to detect integer
+>    overflows before performing the allocation
+> 3. Returning -EOVERFLOW when overflow is detected
+> 4. Adding appropriate warning and error messages for debugging
+>
+> This ensures that memory allocations are always sized correctly and
+> prevents potential issues from integer overflow conditions, improving
+> overall code robustness.
+>
+> Signed-off-by: KernelKraze <admin@mail.free-proletariat.dpdns.org>
+> ---
+>  fs/btrfs/tree-log.c | 27 ++++++++++++++++++++++++---
+>  1 file changed, 24 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 9f05d454b9df..19b443314db0 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -3655,14 +3655,35 @@ static int flush_dir_items_batch(struct btrfs_tra=
+ns_handle *trans,
+>         } else {
+>                 struct btrfs_key *ins_keys;
+>                 u32 *ins_sizes;
+> +               size_t keys_size, sizes_size, total_size;
+>
+> -               ins_data =3D kmalloc(count * sizeof(u32) +
+> -                                  count * sizeof(struct btrfs_key), GFP_=
+NOFS);
+> +               /*
+> +                * Prevent integer overflow when calculating allocation s=
+ize.
+> +                * We use the same reasonable limit as log_delayed_insert=
+ion_items()
+> +                * to prevent excessive memory allocation and potential D=
+oS.
+> +                */
+> +               if (count > 195) {
+> +                       btrfs_warn(inode->root->fs_info,
+> +                                  "dir items batch size %d exceeds safe =
+limit, truncating",
+> +                                  count);
+> +                       count =3D 195;
+> +               }
 
-Hi Qu,
+Adding to what was already mentioned by others....
+This is so wrong that I'm not even sure where to begin.
 
-Thank you for the detailed technical review and correction. You are absolut=
-ely right, and I'm withdrawing this patch.
+But here truncating to 195 (or whatever value) is incredibly wrong
+from a correctness point of view...
+This means you are discarding beyond that limit, making us not log
+index items that should be logged.
 
-On 7/30/25 4:36 PM, Qu Wenruo wrote:
-> Just as Johannes said, explain this number.
-> And the magic number 195 won't cause any overflow anyway.
-> [...]
-> Finally, have you checked the only caller of flush_dir_items_batch()?
+The 195 you saw in the other place is fine, because we split things in
+batches up to that size and insert everything, but here we would just
+skip anything beyond the limit.
 
-You've identified several fundamental issues with my patch:
+Anyway there's no way we can have an overflow here in the first place....
 
-1. **Misunderstanding of the caller context**: I failed to properly analyze=
- that process_dir_items_leaf() iterates through leaf node items, where batc=
-h_size naturally corresponds to the number of directory entries in a leaf.
 
-2. **Inappropriate limit**: The 195 limit would indeed cause false alerts o=
-n valid large directories, especially with 16K nodesize supporting 200+ dir=
-ectory items as you correctly calculated.
-
-3. **Unnecessary complexity**: The integer overflow protection is not neede=
-d in this context where the count is bounded by filesystem structure limits=
-, not user input.
-
-4. **Architecture insensitivity**: I didn't consider systems with different=
- page sizes where the 4K limit makes no sense.
-
-I clearly should have done more thorough analysis of the btrfs architecture=
- and actual usage patterns before proposing this change. Your feedback is i=
-nvaluable for understanding how directory logging actually works in btrfs.
-
-**This patch is hereby WITHDRAWN.**
-
-Thank you for taking the time to provide such detailed technical education.=
- I'll study the btrfs codebase more thoroughly before future contributions.
-
-Best regards,
-KernelKraze
+> +
+> +               /* Check for overflow in size calculations */
+> +               if (check_mul_overflow(count, sizeof(u32), &sizes_size) |=
+|
+> +                   check_mul_overflow(count, sizeof(struct btrfs_key), &=
+keys_size) ||
+> +                   check_add_overflow(sizes_size, keys_size, &total_size=
+)) {
+> +                       btrfs_err(inode->root->fs_info,
+> +                                 "integer overflow in batch allocation s=
+ize calculation");
+> +                       return -EOVERFLOW;
+> +               }
+> +
+> +               ins_data =3D kmalloc(total_size, GFP_NOFS);
+>                 if (!ins_data)
+>                         return -ENOMEM;
+>
+>                 ins_sizes =3D (u32 *)ins_data;
+> -               ins_keys =3D (struct btrfs_key *)(ins_data + count * size=
+of(u32));
+> +               ins_keys =3D (struct btrfs_key *)(ins_data + sizes_size);
+>                 batch.keys =3D ins_keys;
+>                 batch.data_sizes =3D ins_sizes;
+>                 batch.total_data_size =3D 0;
+> --
+> 2.48.1
+>
+>
 
