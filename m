@@ -1,82 +1,82 @@
-Return-Path: <linux-btrfs+bounces-15769-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15770-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44F86B168FC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Jul 2025 00:25:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1941FB16902
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Jul 2025 00:26:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F8A95A41F5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 22:25:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EF0A172737
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 22:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4850F2264AB;
-	Wed, 30 Jul 2025 22:25:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4654022A804;
+	Wed, 30 Jul 2025 22:26:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FrAewYA2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kIEgPr+6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94EE920297C
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 22:25:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41BF224B04
+	for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 22:26:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753914325; cv=none; b=aa9BU63i622COUJmKQASNSSd2ya0aOjxh4mDLKmPZSHD5SzkE0vX9NI4zPbdDmppYLWNazXBNJoxhDIWQB4DIiyWLEulUxdkQq67V+574ilNxenvKRXJjBYqVSJqQoF/IqgWPFvCyYgjyO+UtNWmbeV77BWfkX6nuFGQVkofE3Y=
+	t=1753914395; cv=none; b=Qg6W8kw6w+CnrSuVInZsr7ADOIFuh5jNwbuWbQIUekl70FIXNpUuDxyk/0cOl1UKD5+FaBT9tZy9h/se66+g4F3Lmqw4KosCwIU5HC5JeVUipTrTloDEr6np1fcQtB5sCRYdmcVQchzfUykowg4zN0b4pkYeS5f/nhj/ohiJFYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753914325; c=relaxed/simple;
+	s=arc-20240116; t=1753914395; c=relaxed/simple;
 	bh=0xfPpHBLXifIjDp46HVDb8EDO7xy0WY+3ETbPy4VaZs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GNNOwBKAI9p54h4wxzC0CfO4lD7hBn1poLBVrspJ8LR7KNGd7yMR9JIrtr1GQ64myCWZepVWvxFCR1tdwB1ePzBfDxmPKtd/EEthDwExA1sOMptaYNumRK8e/Gm+z1O6PANJvdLBWTC66n83BfErITY3K6w/Hf5UyNtAnE/Qga4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FrAewYA2; arc=none smtp.client-ip=209.85.128.46
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ra/o7pjhIzcg+w1KtoQD0BXbGox2yTs5UhOyf9ZxJRD4+YZvZG/B/xC1UA3jLzOw08ZR1VFjrA7wy2vCJe1Kr3zb1sq0ty2bvBEUd6OJW5Uf9bnqJoWSwY5pQe7oJUcOZ6zTbFd2K45gq1R7OsoWQR2Ld/jC3N4Q/xtb/CnLZ2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kIEgPr+6; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-45555e3317aso1170875e9.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 15:25:23 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3b786421e36so155500f8f.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 15:26:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753914322; x=1754519122; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753914392; x=1754519192; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
         bh=wq7SvCyN3FUBkP5CA9WPQXNbvvMLHYp7hQ33Eblqja8=;
-        b=FrAewYA2KHJOSyVYF1aUfVw+BRNqxo/NltzzmWmeYK+KQaSxocykOPqu9mdc5OhlCI
-         NMU1A3lwfZlEoSL7sOKCc4U+fa5ukwW0Z4sONwLcAY45KMbdHVRlGQVpASC7B4hejEXL
-         GpDdj3wLc8wuBxLyYHomyEws8lDnkUBtDdiY3wO3ucZPQ6YeIx6HoGnutcCSCMhlaX8D
-         wPrEnELw8VLnO+ERgC6R3lVxYedsRwkYO2l+lw6Zp36D/TKvCD65nEAIQ5nd+T7y853T
-         VNHwJIwZRB4oCOX3nd/w51uUZzbHLcC1pY+qFWAPGze7e3hmdQ/iqM8yIbNHk0vFqZkP
-         lgag==
+        b=kIEgPr+60NDElWvg5Yuh12YSVQOExnI8gORf7LZRSCALyF36UjVtihQkNh2IR41ST9
+         QKtoxTyo4j8qDMBB+5c4vq1CFXWHon/8PgEVeOXZtGep4SmhHEy1dXxkFEg7jaP845J4
+         ScCLxg+54BerQRl0IZw4vE4jzS9G7xC5UXEaTG+OUjAS1D8riIE6v/95jiNitbMPLMtU
+         cJbwXGuGKGtIlN/LcYC7iJmWs3pFYaRWAmdhJccWWAvWhlElX6dG7UfQd7UjjkoQexkR
+         admnrOIG8LKOwJHfCDGU1BlMdeNWuYy/5XWmF8GT4kccFWTqATNJupvSJyq03FYyDT7/
+         4YgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753914322; x=1754519122;
+        d=1e100.net; s=20230601; t=1753914392; x=1754519192;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
         bh=wq7SvCyN3FUBkP5CA9WPQXNbvvMLHYp7hQ33Eblqja8=;
-        b=qhyVvd2CE+bB7giwEDAP9I2xWg0weNh/BFG2w3TncRdR4yV/zvYh9eUlLietfiTXkg
-         t3D1l2wB1FDRXCozz6w1xJNkP1NZSHsqtRHX+f5wHgTO3e2YMPdQ6hvT9PJWU9+R4nbO
-         6Gsf+it5rKUKH+AqQvbO6IhAl6/2u2GCZVcXQtzWvOAi9SVF2uz5tN+VWa2TloV6WmwV
-         B/UID/zFoxW26DgUOGh+rtAAFKNMvinmHKx+WhMGSmarCAVItbhv2Z7vL+vT79KIZCg5
-         864ZqsjP3u2AD2zXCb9Q6lXuFw2MzkOJUYuTKGlmp40OLxIw6j4F0qQWBr1tyiwfdfRy
-         pP2g==
-X-Gm-Message-State: AOJu0Yzx8pv+bMj6899CGGbBimxDbppD5sLXDXwmLVbuO3E6ryt+TIlN
-	Oc0xBAvEwKwPgcdxjd9iBNg9ojXtTQNuwFq4iYfd8La5GwCFeatOvdxV
-X-Gm-Gg: ASbGncuAXp/QtFDoNZFQ0BBQgCcg74WIlguGQQC/x2ptZkQC+oCFCVgryzFBrq1ljTc
-	pFvXCy2NxeDdbmVWC/B2SCvnJyrvNlZ0ubPEnrV4ePoy4FwmYADCHfGS+hRQUO8xD/h6xYHc17c
-	FBUaYARQz73rPfr6uw5QpIPt9WK59X2XrNjbFqCiaHVRLYUecSTr1HGcVipJEEWeImaStHhBLBw
-	lreNnk9x9fGh6WUfHQMr2NLq1RvIZH9zw/pehYmRHcmqslJdxigsKEdKtFXlbLssirndCrCx8E4
-	tPLfaOD9SfXIvwpoUNpsedSWsnPGayCZaAiZD7CjAxO7SdjPVqAln6VUE+rgaXU3pt85iBoUPHw
-	xswkhdFiYMp9N6kcvpqo=
-X-Google-Smtp-Source: AGHT+IEnLbB77qEkLBn0T54Nr40F91Z0FeSjGgT+aoF3rN+ChQ7dup6my+MjqIrTHF19NyGLoSHaEg==
-X-Received: by 2002:a05:600c:45c6:b0:455:f6cd:8703 with SMTP id 5b1f17b1804b1-45892be1c1amr52854205e9.31.1753914321603;
-        Wed, 30 Jul 2025 15:25:21 -0700 (PDT)
+        b=EdaVLlQZAU1ZXNBCDPur2TMHesCFSQmzRoMBTiUrjnZ+RH8ZziyshmHsG9gncEuabV
+         HiQyVAuDQNYfoani9TKcvTKIG/aACx4Fp81Mlx0G8V539zmlfaqYG6W74SJznTcTdGWo
+         BKrdItHkVPLrg15hsWRYuAlSp8Vjie+4gxb1hfx7CzIFeeXkTUoxjc065g485+JAUjBB
+         R466CK3Drh30BxfWyXWvPG8JdBS7Y0uc9y/HDU0H87t0wz05Mqfm6JEpLKey/5haJD9t
+         Su85zy/pqmWRkeO1JnTeJXV/fezgXAbpVSbX5Eyr0xGUcMQ6T5rDsv8CN4+oB3Z+FvpK
+         Ck8w==
+X-Gm-Message-State: AOJu0YxBYbWywhlRI5dIYEP4JDHnKeC9TjCY4Ox4SY1Zfy+U8eiIdXJJ
+	34am5HYBRaCgsXQQQJgotJJ5CcJS86POBJdQpmlvaztQibP6wEe4q+O8ZDE9oQao
+X-Gm-Gg: ASbGncvsgD+T4VGpWnko5jeRGh0dbdddr6GcF8S8DB+/+99r3fxsLtNZjZIuOonRh6y
+	QyoWJB2GOUGicS1BpSzEXkW/8MbPyiRXe41ew8HXyTxa0i29TWPFM84ttLvS60ReUjB29kR7ZWd
+	LsxlWz8z2+NExLAn9OGrukekGIlC5DCxSm/8cF3FU6M4VqEtcK/G4GMEdaTbK5OUOhOgTK1WSnO
+	rMKspeUeeS9UwthgjQ7ZPNzpu/90fr4G8OV4ouk0HaN8e0JIEmIxwbSrp9BUFflkDuRJ2cpGFgM
+	1+li9H/peGvr8mhM2Heqbrhvv3zgOI3p22mZ6M9BfQQ6FCEKR3P4/Lx2y41O8ohAkmMKCJA0kJy
+	UbLOfuVkmKaCWSo3doNk=
+X-Google-Smtp-Source: AGHT+IH2PTvgEe/CCEJC4DeZ0dbRIcqSRg23KTc26Dm4Y+xs5LeC8q0FYWlBZH2s84vbwKaiW4VjWw==
+X-Received: by 2002:adf:a1d6:0:b0:3b7:9589:1fe6 with SMTP id ffacd0b85a97d-3b79589211fmr2310454f8f.38.1753914392174;
+        Wed, 30 Jul 2025 15:26:32 -0700 (PDT)
 Received: from archlinux ([84.232.135.153])
-        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-3b79c3ac158sm301234f8f.4.2025.07.30.15.25.20
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-3b79c4533f1sm276363f8f.42.2025.07.30.15.26.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jul 2025 15:25:21 -0700 (PDT)
+        Wed, 30 Jul 2025 15:26:31 -0700 (PDT)
 From: Zoltan Racz <racz.zoli@gmail.com>
 To: dsterba@suse.cz
 Cc: linux-btrfs@vger.kernel.org,
 	Zoltan Racz <racz.zoli@gmail.com>
-Subject: [PATCH] Fixing invalid device size output when "btrfs device usage /" is called as normal user
-Date: Thu, 31 Jul 2025 01:25:18 +0300
-Message-ID: <20250730222518.25882-1-racz.zoli@gmail.com>
+Subject: [PATCH] btrfs-progs: Fixing invalid device size output when "btrfs device usage /" is called as normal user
+Date: Thu, 31 Jul 2025 01:26:29 +0300
+Message-ID: <20250730222629.25902-1-racz.zoli@gmail.com>
 X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
