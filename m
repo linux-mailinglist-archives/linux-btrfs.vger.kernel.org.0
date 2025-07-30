@@ -1,248 +1,214 @@
-Return-Path: <linux-btrfs+bounces-15767-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15768-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68BC4B168AC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 23:59:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DACCBB168DC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Jul 2025 00:08:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C3033A38BC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 21:58:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 353947B5922
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 22:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81290225760;
-	Wed, 30 Jul 2025 21:59:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAECD22A7E5;
+	Wed, 30 Jul 2025 22:07:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W1z4XW+Y"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WMSJ3olL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F922206B5
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 21:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA7219C556
+	for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 22:07:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753912745; cv=none; b=rSP00DuLMpH/B7kS2/ulGVCFGNmLj4HSATUhn2JJbu15HXYGxyxf+CHYxTJpaGKC8KvkM/q4/bJ04kah1MbCkRZ75F7Y+/T5xINBWFvDlufKWQyWz/nkM65wgo/C89nuDBC53z+zDdtQ6srEGPPfEXB5OdLSN+b5nps/2RFtiZI=
+	t=1753913278; cv=none; b=eaPZ0vsCswaaxLxUWyG8za/0IAXPwcVJAeI6nykpxKiZUwcWAE4fu/VoSypVUbrz9vYUz//p+NdXmzItIDVJvB+KWIbMAw4++Yb2oCAcZjn6IN7pjXNG4dpv0PLpdiG4gUHc+HcwnlNpvuwFpzkuF2KGqAw1OgxIPm7tlZx00dA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753912745; c=relaxed/simple;
-	bh=ZKld/HcrGQz4GsE6rPEQnr6qyp8N6IH0Zwc6JaclicA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dlWOtEZ3UR4LMWZOMJvx2F3IqAhrmnf3uS3WZ2kpAsU4Upp1AUAFfvu+p+8JTU7ACkMj7uPDLyzXu3AjeFuH5vgNg9gGMELtGE6JYBDfWVtSXbNgR+6ee73YW+9S0ksMmO4ixzjXmmK1kSPxsqVYMxhWxOuxuQlBJdRVS0gFEVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W1z4XW+Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E76DC4CEE3
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 21:59:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753912745;
-	bh=ZKld/HcrGQz4GsE6rPEQnr6qyp8N6IH0Zwc6JaclicA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=W1z4XW+YBaWkiIPW5p9Q+0V0Tj+pAHj7fGswXVFrRuoMLsczdlof7+Mu1AJD6iwGT
-	 7kMT4pJq9gT0zhWYPMDuoUWpXKVrKP4EsNRRFgRfBc597uNFR5nA+yQpyTPMjyOfxL
-	 HAL65LyU0iBnaErfbUtQbMPkaa9XWZyQ8NV3X3MNfdKkjr7dGYOxAE/oaEw9kpj86k
-	 6D0BAdcoGRcT4ZRL40lj17SAqS/tCLCQD3VGkYaFJbAE2Ojnp1IN8foVzNDlMYjWC6
-	 0pnJY9ET2MyvqBjtJ2KbA2ez9jglVlgIatYc6KRvy8SW5jJUh/RYMG74LujTMubVFj
-	 fbOKGxClF9ifg==
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-615aa7de35bso148783a12.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 14:59:05 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw8Uzu+IfIOmsfG/Lnf6XCnAKpJrV42OvtVYHr7mgeJdROoRoZX
-	M1RWX/YeFwCCbfsUNjDUGJpZSaICT0oobFysY+rhjemQeL/DepZYB4FJCn6jzGgf5HkvAKmQVr4
-	n2QYHWvqZ9bpwroPGsu0pm7eYj5fqRu4=
-X-Google-Smtp-Source: AGHT+IEgSPqUNC/4BPZvMle7xopsioZKyetn8KXI/0j+au1vfmpmmBFtwNlY0MBUa2L5rVN5WIyDosXUJqK3WHkelFg=
-X-Received: by 2002:a17:907:1c93:b0:ad1:e4e9:6b4f with SMTP id
- a640c23a62f3a-af8fd9bbd53mr635584366b.36.1753912743801; Wed, 30 Jul 2025
- 14:59:03 -0700 (PDT)
+	s=arc-20240116; t=1753913278; c=relaxed/simple;
+	bh=dkTHMRb1ZYI2/fDmnwHEewynmzsWQsJDJ5+wykz3plI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Sam0mCMAFU9qGt3ndfWlMoAxv+0JOuj+J2PjpT3Z7fBDzLTvoh2Zs3esyXgo4xqijwxO3o23imIV4KuJ3DM723RoSKvB4//OsZRQGEfrtBVLMdWt2n+coZ3NyBiEX8agLHTtHCm/XeZcTBrroQ14HBeu7vP6yd7n1u5MohHe7so=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WMSJ3olL; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3b78310b296so158374f8f.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 15:07:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1753913273; x=1754518073; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=QpLl1Rvl9xOCuFCtx7+evaPMIc7e54haH87I+l2o8pw=;
+        b=WMSJ3olL2Bk4Qcs+VWITSEhK7MLFhErH8MeOO1J4QLBYuGjUZWsLuL5wpA3sAudNpb
+         fvrdPUGHd2ZTsbusUpGsZD4VvdbJqTAwwMxribMuiQ8JCHqmoM7lhvVm5p8Lx9B6Bfh1
+         lU4ETA4O/pc1YgG86l0GyL1BAP31qCiUTXndVDlIsdKsv3r6tzZuG/EPqU7L3Mg/f0oc
+         /5JvyZg4n8H4+0jtH9ImNfkDPx/kpDw3zdVhF0Ll6r0pNoEpjYN3lZl0dWnv3xKCwi5T
+         7IX0UFTFbx95cQWao8l1TZ2RsR1c1plQOXX4HiAMlHBA05ixxt1kki0Bdh0JH2Qz2p4F
+         kU5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753913273; x=1754518073;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QpLl1Rvl9xOCuFCtx7+evaPMIc7e54haH87I+l2o8pw=;
+        b=tpjGP9pCCQ4dEwyPIVrjsaHGVxVex5qVnj2kC4UE02Dw5zuil8vwn7bzztqMLKPVYY
+         dFqrM+w5QjnXcKvvoMJf9P3jqlv+bLau8+N1oar0xilmosSeFFCV/tRTjgP4x2qzwHAj
+         zgfC8xi6FYbs5aVrgP3Ya6q34oclADYWYOVET6NHetaaYRM5EF0kmnBlKwaOrHqpMtsF
+         2LhijeKnohWt/mxR/VUkxvCW329LB8xZw2BgM08XUa9CBnsViRWT99Iu13W6U6xyNEov
+         Tq55qCNEhov0XZfa8QR9dE0AQaFQSEb2mH5xGr8ntSEitPWrNnHorZ0xy4BQkG/eCIL/
+         2xBQ==
+X-Gm-Message-State: AOJu0Yw6zxnNdThz3pS/1C3htJ3kf5mVnIT7RQh9HFCcWDCrSOu5Gvst
+	5MXpZQUSTUJRbf9PBCiXAIuYLpfZSVXhC3VWaNja4zDj6SB/cbgm70AlahxJIyjhZgY=
+X-Gm-Gg: ASbGncuhbBJRpU0UcgIgq1BVKB3N4WuZii9l6nrk9sqcWUKk2Vi7u32gGz8jYQKt+qp
+	wYdLgOwS+frK27rwhLEWMGD81i435+02NGBaIIBMiCeabRlBVX2qLsJS5oyGBWSU01PTcGZsGaR
+	lH4UuokeKnt+iXtfKrxfPKRTwLWIQiB6Qo5UjNYnp4p/XEVrXmxQt1y2cDuWFZulWDkThtV5xvK
+	PqyWfZ0NLtHyphUD47UaZbAA49pBqDQ+q/tMYAXUJFto7rY52bRKKZcN/iE6PaxEAgXlbxHFX9K
+	yE1NvrSVTm6upAD81zdeKMXMrFbHXjl3qNFvaw+vZXM58RTzvy09CjEDgo5Ln2Q1Bm7SJ1nJ0Mh
+	doEmZ4e3JpW9dWj9FdRQUrYB48xcmRRIs01uIxWSsTl107GTWteb6gB28gRNt
+X-Google-Smtp-Source: AGHT+IGxqhsA8ZYPHy2vibgQDje9tAo3v9w6LXH7G6f1o2mVcFyQ6ODcRL5r4RNthNuSvlgxb9/+WA==
+X-Received: by 2002:a05:6000:1787:b0:3b7:82a3:fdf7 with SMTP id ffacd0b85a97d-3b79501e5c3mr3952491f8f.36.1753913273182;
+        Wed, 30 Jul 2025 15:07:53 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b422b77ecc4sm53253a12.4.2025.07.30.15.07.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Jul 2025 15:07:52 -0700 (PDT)
+Message-ID: <fd555c60-a492-44b2-a47d-b17f239e3a2c@suse.com>
+Date: Thu, 31 Jul 2025 07:37:47 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <5c89804b07e3681c3a9bc50bf1d63d9ce77d7020.1753902432.git.fdmanana@suse.com>
- <20250730201752.GA909565@zen.localdomain>
-In-Reply-To: <20250730201752.GA909565@zen.localdomain>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 30 Jul 2025 22:58:25 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4T2n4q1JsJsmQYE0t+p3YWFwtifBBJ9KKkE=iC4MaVLQ@mail.gmail.com>
-X-Gm-Features: Ac12FXxgqp-58AvDmS4Bcz6VHjAzOZtL8LoRg8eKyDgBTqdeAX5rG8iWW-Sx7_8
-Message-ID: <CAL3q7H4T2n4q1JsJsmQYE0t+p3YWFwtifBBJ9KKkE=iC4MaVLQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix log tree replay failure due to file with 0
- links and extents
-To: Boris Burkov <boris@bur.io>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: replace manual next item search with
+ btrfs_get_next_valid_item()
+To: Sun YangKai <sunk67188@gmail.com>
 Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jul 30, 2025 at 9:16=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> On Wed, Jul 30, 2025 at 08:20:40PM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > If we log a new inode (not persisted in a past transaction) that has 0
-> > links and extents, then log another inode with an higher inode number, =
-we
-> > end up with failing to replay the log tree with -EINVAL. The steps for
-> > this are:
-> >
-> > 1) create new file A
-> > 2) write some data to file A
-> > 3) open an fd on file A
-> > 4) unlink file A
-> > 5) fsync file A using the previously open fd
-> > 6) create file B (has higher inode number than file A)
-> > 7) fsync file B
-> > 8) power fail before current transaction commits
-> >
-> > Now when attempting to mount the fs, the log replay will fail with
-> > -ENOENT at replay_one_extent() when attempting to replay the first
-> > extent of file A. The failure comes when trying to open the inode for
-> > file A in the subvolume tree, since it doesn't exist.
-> >
-> > Before commit 5f61b961599a ("btrfs: fix inode lookup error handling
-> > during log replay"), the returned error was -EIO instead of -ENOENT,
-> > since we converted any errors when attempting to read an inode during
-> > log replay to -EIO.
-> >
-> > The reason for this is that the log replay procedure fails to ignore
-> > the current inode when we are at the stage LOG_WALK_REPLAY_ALL, our
-> > current inode has 0 links and last inode we processed in the previous
-> > stage has a non 0 link count. In other words, the issue is that at
-> > replay_one_extent() we only update wc->ignore_cur_inode if the current
-> > replay stage is LOG_WALK_REPLAY_INODES.
-> >
-> > Fix this by updating wc->ignore_cur_inode whenever we find an inode ite=
-m
-> > regardless of the current replay stage. This is a simple solution and e=
-asy
-> > to backport, but later we can do other alternatives like avoid logging
-> > extents or inode items other than the inode item for inodes with a link
-> > count of 0.
-> >
-> > The problem with the wc->ignore_cur_inode logic has been around since
-> > commit f2d72f42d5fa ("Btrfs: fix warning when replaying log after fsync
-> > of a tmpfile") but it only became frequent to hit since the more recent
-> > commit 5e85262e542d ("btrfs: fix fsync of files with no hard links not
-> > persisting deletion"), because we stopped skipping inodes with a link
-> > count of 0 when logging, while before the problem would only be trigger=
-ed
-> > if trying to replay a log tree created with an older kernel which has a
-> > logged inode with 0 links.
-> >
-> > A test case for fstests will be submitted soon.
->
-> Great catch and explanation.
->
-> While studying the ignore_cur_inode and stage logic a bit more carefully
-> I noticed that ignore_cur_inodes has a comment where it is defined in
-> struct walk_control that says it needs to be set only in the
-> LOG_WALK_REPLAY_INODES stage, which is no longer true.
-
-I'll update that before pushing to for-next, thanks.
+References: <20250730145327.22373-1-sunk67188@gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20250730145327.22373-1-sunk67188@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
->
-> Reviewed-by: Boris Burkov <boris@bur.io>
->
-> >
-> > Reported-by: Peter Jung <ptr1337@cachyos.org>
-> > Link: https://lore.kernel.org/linux-btrfs/fce139db-4458-4788-bb97-c29ac=
-f6cb1df@cachyos.org/
-> > Reported-by: burneddi <burneddi@protonmail.com>
-> > Link: https://lore.kernel.org/linux-btrfs/lh4W-Lwc0Mbk-QvBhhQyZxf6VbM3E=
-8VtIvU3fPIQgweP_Q1n7wtlUZQc33sYlCKYd-o6rryJQfhHaNAOWWRKxpAXhM8NZPojzsJPyHMf=
-2qY=3D@protonmail.com/#t
-> > Reported-by: Russell Haley <yumpusamongus@gmail.com>
-> > Link: https://lore.kernel.org/linux-btrfs/598ecc75-eb80-41b3-83c2-f2317=
-fbb9864@gmail.com/
-> > Fixes: f2d72f42d5fa ("Btrfs: fix warning when replaying log after fsync=
- of a tmpfile")
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> >  fs/btrfs/tree-log.c | 42 ++++++++++++++++++++++++++++--------------
-> >  1 file changed, 28 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> > index 8c6d1eb84d0e..09ddb2ee4df4 100644
-> > --- a/fs/btrfs/tree-log.c
-> > +++ b/fs/btrfs/tree-log.c
-> > @@ -2602,23 +2602,30 @@ static int replay_one_buffer(struct btrfs_root =
-*log, struct extent_buffer *eb,
-> >
-> >       nritems =3D btrfs_header_nritems(eb);
-> >       for (i =3D 0; i < nritems; i++) {
-> > -             btrfs_item_key_to_cpu(eb, &key, i);
-> > +             struct btrfs_inode_item *inode_item;
-> >
-> > -             /* inode keys are done during the first stage */
-> > -             if (key.type =3D=3D BTRFS_INODE_ITEM_KEY &&
-> > -                 wc->stage =3D=3D LOG_WALK_REPLAY_INODES) {
-> > -                     struct btrfs_inode_item *inode_item;
-> > -                     u32 mode;
-> > +             btrfs_item_key_to_cpu(eb, &key, i);
-> >
-> > -                     inode_item =3D btrfs_item_ptr(eb, i,
-> > -                                         struct btrfs_inode_item);
-> > +             if (key.type =3D=3D BTRFS_INODE_ITEM_KEY) {
-> > +                     inode_item =3D btrfs_item_ptr(eb, i, struct btrfs=
-_inode_item);
-> >                       /*
-> > -                      * If we have a tmpfile (O_TMPFILE) that got fsyn=
-c'ed
-> > -                      * and never got linked before the fsync, skip it=
-, as
-> > -                      * replaying it is pointless since it would be de=
-leted
-> > -                      * later. We skip logging tmpfiles, but it's alwa=
-ys
-> > -                      * possible we are replaying a log created with a=
- kernel
-> > -                      * that used to log tmpfiles.
-> > +                      * An inode with no links is either:
-> > +                      *
-> > +                      * 1) A tmpfile (O_TMPFILE) that got fsync'ed and=
- never
-> > +                      *    got linked before the fsync, skip it, as re=
-playing
-> > +                      *    it is pointless since it would be deleted l=
-ater.
-> > +                      *    We skip logging tmpfiles, but it's always p=
-ossible
-> > +                      *    we are replaying a log created with a kerne=
-l that
-> > +                      *    used to log tmpfiles;
-> > +                      *
-> > +                      * 2) A non-tmpfile which got its last link delet=
-ed
-> > +                      *    while holding an open fd on it and later go=
-t
-> > +                      *    fsynced through that fd. We always log the
-> > +                      *    parent inodes when inode->last_unlink_trans=
- is
-> > +                      *    set to the current transaction, so ignore a=
-ll the
-> > +                      *    inode items for this inode. We will delete =
-the
-> > +                      *    inode when processing the parent directory =
-with
-> > +                      *    replay_dir_deletes().
-> >                        */
-> >                       if (btrfs_inode_nlink(eb, inode_item) =3D=3D 0) {
-> >                               wc->ignore_cur_inode =3D true;
-> > @@ -2626,6 +2633,13 @@ static int replay_one_buffer(struct btrfs_root *=
-log, struct extent_buffer *eb,
-> >                       } else {
-> >                               wc->ignore_cur_inode =3D false;
-> >                       }
-> > +             }
-> > +
-> > +             /* Inode keys are done during the first stage. */
-> > +             if (key.type =3D=3D BTRFS_INODE_ITEM_KEY &&
-> > +                 wc->stage =3D=3D LOG_WALK_REPLAY_INODES) {
-> > +                     u32 mode;
-> > +
-> >                       ret =3D replay_xattr_deletes(trans, root, log, pa=
-th, key.objectid);
-> >                       if (ret)
-> >                               break;
-> > --
-> > 2.47.2
-> >
+
+在 2025/7/31 00:23, Sun YangKai 写道:
+> The function btrfs_get_next_valid_item() was introduced in
+> commit 62142be363ae9("btrfs: introduce btrfs_for_each_slot iterator macro")
+> and has never been used in other places other than
+> the btrfs_for_each_slot macro.
+
+That's because the function name is not that straight-forward.
+
+The name btrfs_get_"next"_valid_item() implies it would move to the next 
+slot, but it's not the case.
+
+Thus this can lead to quite some confusion and we're not that excited to 
+use it.
+
+One example inlined below:
+
+[...]
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index fa7a929a0461..70e73cbf6b16 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1723,18 +1723,13 @@ static int find_free_dev_extent(struct btrfs_device *device, u64 num_bytes,
+>   		goto out;
+>   
+>   	while (search_start < search_end) {
+> +		ret = btrfs_get_next_valid_item(root, &key, path);
+> +		if (ret < 0)
+> +			goto out;
+> +		if (ret > 0)
+> +			break;
+
+Here just by the name, it looks like it will move to the next slot thus 
+can be problematic (as it will skip the current slot).
+
+But it's not the case, as if the current slot is not beyond the current 
+leaf, we just return with the current item key stored into @key.
+
+
+Another thing is, we may not need to bother the @key, or the caller will 
+manually check the item key anyway. Compared to the confusing name, this 
+is just a minor problem though.
+
+But still it modifies the @key, which may or may not be what we want.
+
+
+That's why we are not excited to use the new helper.
+
+Thanks,
+Qu
+
+>   		l = path->nodes[0];
+>   		slot = path->slots[0];
+> -		if (slot >= btrfs_header_nritems(l)) {
+> -			ret = btrfs_next_leaf(root, path);
+> -			if (ret == 0)
+> -				continue;
+> -			if (ret < 0)
+> -				goto out;
+> -
+> -			break;
+> -		}
+> -		btrfs_item_key_to_cpu(l, &key, slot);
+>   
+>   		if (key.objectid < device->devid)
+>   			goto next;
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 245e813ecd78..8fe5b7e362c0 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -306,14 +306,13 @@ static int calculate_emulated_zone_size(struct btrfs_fs_info *fs_info)
+>   	if (ret < 0)
+>   		return ret;
+>   
+> -	if (path->slots[0] >= btrfs_header_nritems(path->nodes[0])) {
+> -		ret = btrfs_next_leaf(root, path);
+> -		if (ret < 0)
+> -			return ret;
+> -		/* No dev extents at all? Not good */
+> -		if (ret > 0)
+> -			return -EUCLEAN;
+> -	}
+> +	ret = btrfs_get_next_valid_item(root, &key, path);
+> +	if (ret < 0)
+> +		return ret;
+> +	/* No dev extents at all? Not good */
+> +	if (ret > 0)
+> +		return -EUCLEAN;
+> +
+>   
+>   	leaf = path->nodes[0];
+>   	dext = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_dev_extent);
+
 
