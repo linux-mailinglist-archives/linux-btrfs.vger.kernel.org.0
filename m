@@ -1,231 +1,179 @@
-Return-Path: <linux-btrfs+bounces-15756-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15757-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6EEDB1659F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 19:37:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEAEEB1660B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 20:10:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0609C4E3D44
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 17:37:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E04205856AB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jul 2025 18:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AED82E0407;
-	Wed, 30 Jul 2025 17:37:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 409302E172D;
+	Wed, 30 Jul 2025 18:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="d8Q9NhH4";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Fx50JZKz"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="RzOi2//0";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lTciy9UP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-b4-smtp.messagingengine.com (fhigh-b4-smtp.messagingengine.com [202.12.124.155])
+Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DC33248881
-	for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 17:37:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60412E11B8
+	for <linux-btrfs@vger.kernel.org>; Wed, 30 Jul 2025 18:06:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753897070; cv=none; b=sqB4rCeA3YLe1dGIxgDW2vZVomlf18L5gAZjuiqJM5FGs3UlkGsNj7MB2LvxuPi7dYhkZwko4+1VoPQDLzF1dEJKLhHl0DTj+x7iN6JlgBdY9y0xrouRE5sL0/67q1aZ81BksXrc2svS3p+oLURNZiXDFNPWv4R0/735pzm6D5w=
+	t=1753898770; cv=none; b=VORYy3pA8kBfxMlhJJou28SCdtiw22Mg5yI2l/NfIcoRrfqYoILneL8ddo+fQy5wfxJvt4yLik9ZEszK1efxBQXbxxQvkG+1/flxwR9v/esctyXLXGMozHjiHrquqQ7j97ZhunnLlewHyCnv8G42NC/mIyMWe8aP/qdmrwtpgNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753897070; c=relaxed/simple;
-	bh=JN5E98p+i/9bPnRz2EqQwceunz48FG3Q7XSHTrByK8Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D3AHBBw6d7CquvT9QugKopUiko0T1D8O3azmrLZlFiweJvChu6YJ7+BHwYB1YEoQX+H2oFMpm2WoqS/Lt+0kjrz1eVgqbS5vA2RDMarC8V5EYjBbFVi11HQVv2KOHZrktNjHHu48xJSN89l2b+TD22bYB97riXuD+8ds7LX+Lho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=d8Q9NhH4; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Fx50JZKz; arc=none smtp.client-ip=202.12.124.155
+	s=arc-20240116; t=1753898770; c=relaxed/simple;
+	bh=6bpB9ppT0Q8AiudsK2mXx+sYhl9EKJdVZCEqiHHMaWk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LHlal4C8ewUduVbP2f0FZ6XkRfBgDLaZw7bCYthNbYtzdOed/go8uc4Cpcfe5Ma0W9LT626bf86VS5BsZRHIW2eeo9BKUau+k0VO+AEl5YkITgW6VdsnHkgBkq5cUhHTKGsIR2gSB4pdvAgK6Zp4wrE2ioQQoSpe4GZ5Xe3w8X8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=RzOi2//0; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lTciy9UP; arc=none smtp.client-ip=103.168.172.148
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 403637A011A;
-	Wed, 30 Jul 2025 13:37:47 -0400 (EDT)
+Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
+	by mailfout.phl.internal (Postfix) with ESMTP id C6328EC222C;
+	Wed, 30 Jul 2025 14:06:05 -0400 (EDT)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Wed, 30 Jul 2025 13:37:47 -0400
+  by phl-compute-12.internal (MEProxy); Wed, 30 Jul 2025 14:06:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1753897067; x=1753983467; bh=9qnqcmCj5o
-	HrjshiPwYD25WIi1zTYBoIlxLJJKsmEuk=; b=d8Q9NhH49XZu5Ynx6vqN461Szg
-	No+8/lvzpgSZOPxNdQKN6RSMxq4+b7616vHO/l108rWXLhq05x6sRGlhq3lHZDdv
-	2wnQu6jx7K0O4FmdR8HTRV7shhuoLpPu5D0d+61v8XL/91ogKWteHfd6Im16SQIK
-	zcrnRuO4IyYx8BOTBrytvim728pMBGfva9Y3irOOTCs8f+j6EosllmqSfNevWRhM
-	GaTXAavrE7akiOYiF70sn4m6bYY/u7cn1WNB9C7nIvtApuI9egMIl4P+54z3wQQd
-	DOJKAwTfCIlZslqz+i4g4AbayNf9uwZ7SqVS9TdDtN+zrBNIGXkSXkFSlVRQ==
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1753898765; x=1753985165; bh=vPVxW42+/sW0N2QbAcSfr
+	IpxL2FddYKkImk6A0Xtqk8=; b=RzOi2//0zbpTMuvQDyeqRI65CAiWoJlv0JSmo
+	gdPSU0NidsapIy59dWJq/7g/rfP7nFDMUt5+S4vzkTCFPijg0ZU1TK70L11oTCxU
+	v8vSj+lLJmpQ2mZdOhrhIuvePlgb0/GjHceNcDCsPyOfVVGL6bWos3wOidD+J7UL
+	DqnS6rO5sIIWwh/6SHT2+7uzqwAgwdP/wV/M/trdCSOFEXTmoDeYtJ7R9j9sLqeP
+	CNT45bojXrdMRa4UJG48q5UDDuoPSdYKbCMZvAmRGoAg5ixTMYmc6/KgFF2cPLFm
+	vD9XdCv/ohMQFJ2BsI/i6TNHOFPIXGaBg3+8H2IZory1ONYnA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1753897067; x=1753983467; bh=9qnqcmCj5oHrjshiPwYD25WIi1zTYBoIlxL
-	JJKsmEuk=; b=Fx50JZKz4nsaaJDDaCzJ14jolOWImNCw4AoVE8UqGMvXzJ8o7l1
-	1zxmGycpjhAPqvAKPNStUeT/o5q93u+09n0rE1C4H53AKMrX07wgFNMRyUTNPMLR
-	vkFbNZwAYr0KnEFq0btRlE6kr+RYSeHgNgZn27MO81DkMcUUZQYZkJ/FuvlAprKw
-	fiWkDAHxP55fgU0c0GOUG1zkrRdKylId1Zm7ps5GblaP5cis1UxjKy8eVAdNfI7p
-	83ej6EVxG+3xqghOp6OwGvjy63FiV+Rwo+3Jb4Vk0/WDs4r31tRYEvhjuZIhjBRL
-	bWo3ZSnSjz45kfAsHGD2Lhv3veNRvi/9VmQ==
-X-ME-Sender: <xms:aliKaPkK_d-ZsYn15cunejSpfW1xQ1GFupU53KFre34xux6IsrpvJQ>
-    <xme:aliKaAyr_-muCvV5x2PubhdwWcKLpgyVVYoDoExjLIduB_zVMjsHoJG-y_ajkhGSl
-    jA3ajvAWEadh6c-N90>
-X-ME-Received: <xmr:aliKaNMZX1Zih3WJkvWrbgVQ2U-cf1Geks5S1iG-NWcMQD3cLB1sdDc4LiFdOUUFdYQS9f-Q1VTG2tnI7TSJ7af7VBc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdelkeehhecutefuodetggdotefrod
+	1753898765; x=1753985165; bh=vPVxW42+/sW0N2QbAcSfrIpxL2FddYKkImk
+	6A0Xtqk8=; b=lTciy9UPi31NaBmIeRR588MHXYfef7tJx3GLPVcMZLtZlLVI67v
+	spCMkbhnDiU4lS2DcjW8k1Xetm/sEwcKHIsfm0jA912d6+e9BKPmWV3LVVcs1i+A
+	7dnFkF80mfZhsyQe53Vu6Aj1jzotF1IEJSFH6PqCdvmmHr7kTlJ/pJJGSAQcbdhW
+	d4VxZom9+UTCCLw1nwb6nxJM6ZPzyhgx6qA8nGyPQEyCkxbi7tR5d7DhfxX5u8H0
+	5Zc7YZf2BDyzxtirm9GzbpRyORijoNXNBDoHhFsFYI7g4zgIz54cjAh9C4MEGOMT
+	sL7imDCffDHtH93xRd/PUre4gMiW8+auVEQ==
+X-ME-Sender: <xms:DV-KaHfQSYlQB5E_ZNjSaBKlU9q0F-Jso-_8f303IOMOAgN2KhahOw>
+    <xme:DV-KaAe16ll21LNHfI5pni9YPbtoSwM0Q5Z4_fl2v59kZoqSRHcR8pOKSOtJPM_Zh
+    PAmIZJVVMoqR5AnJog>
+X-ME-Received: <xmr:DV-KaJ_h0QTkB85qKpWfA4iUDRWoixDRoW_4h0ptKvpL0tqRslswuZkNAYTl_6nU1GK3wKBlZdJqra0oZsnO8f23R0k>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdelkeeitdcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkfhggtggujgesthdtredttd
-    dtvdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
-    qeenucggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiie
-    dugfeugfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepvddpmhhoug
-    gvpehsmhhtphhouhhtpdhrtghpthhtohepfhgumhgrnhgrnhgrsehkvghrnhgvlhdrohhr
-    ghdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorh
-    hg
-X-ME-Proxy: <xmx:aliKaER8zZ1555-nvXb683A-3MVYh9oiD97yWdmZKCq4ijI2gY9KZw>
-    <xmx:aliKaLazZzCAYG05rxZqyGbrDmHPIlWYgL4KuzBUXDdZ3UCLlyE1PA>
-    <xmx:aliKaB0AN_kz3r15BFQVnynDhEW0sI_keXFiRyppG3NFkpV2EjM0xQ>
-    <xmx:aliKaLUiv_vNEGhu6UhYR2o7h-nuZHXzrRtyhzNViraxq7gpST-zlA>
-    <xmx:a1iKaC5sfLxIPx-Ppk_jGjHMO-X1ybFbOrsV6ivraL56WvotYahtbVK->
+    ihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtredttd
+    enucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeen
+    ucggtffrrghtthgvrhhnpeduudfhvedvudfggfeggfekgefgvdeijefggeekvdduteekhe
+    fhvdffueegveefudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepfedpmhhouggvpe
+    hsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghr
+    nhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehfsgdrtghomhdprh
+    gtphhtthhopeifqhhusehsuhhsvgdrtghomh
+X-ME-Proxy: <xmx:DV-KaElmB-mND2CRCpwlyBPB4HuD3Ze1bLteO81cZysuQwnqCKfn_g>
+    <xmx:DV-KaD-k6YH2WM9R2jQETc0_fI-mOOxKwuGFT4OjjiFXlxwLEL_kLw>
+    <xmx:DV-KaKmS8rPmt7BYSQ8gEJIEw6H0zmg7MBSNRC9MvNxoGFzJwvSB8A>
+    <xmx:DV-KaI0IB7OKyYOjyPdN497GVZwJWXr6maUqG4d1Gn963JbLYATpSw>
+    <xmx:DV-KaOh4rPyV2DBssmSY7mcVITFgq_LpNUk-YX_Y-ti61Mx74zNYhUZy>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 30 Jul 2025 13:37:46 -0400 (EDT)
-Date: Wed, 30 Jul 2025 10:38:55 -0700
+ 30 Jul 2025 14:06:05 -0400 (EDT)
 From: Boris Burkov <boris@bur.io>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix race between logging inode and checking if it
- was logged before
-Message-ID: <20250730173855.GB2742973@zen.localdomain>
-References: <7585d15c0e9c163d5cdf32307014a4e792e62541.1753807163.git.fdmanana@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Cc: wqu@suse.com
+Subject: [PATCH] btrfs: fix iteration bug in __qgroup_excl_accounting()
+Date: Wed, 30 Jul 2025 11:07:14 -0700
+Message-ID: <3cc7e1d9f60efebe0b19f96eb4526dc195be4b2a.1753898804.git.boris@bur.io>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7585d15c0e9c163d5cdf32307014a4e792e62541.1753807163.git.fdmanana@suse.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jul 29, 2025 at 06:02:05PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> There's a race between checking if an inode was logged before and logging
-> an inode that can cause us to mark an inode as not logged just after it
-> was logged by a concurrent task:
-> 
-> 1) We have inode X which was not logged before neither in the current
->    transaction not in past transaction since the inode was loaded into
->    memory, so it's ->logged_trans value is 0;
-> 
-> 2) We are at transaction N;
-> 
-> 3) Task A calls inode_logged() against inode X, sees that ->logged_trans
->    is 0 and there is a log tree and so it proceeds to search in the log
->    tree for an inode item for inode X. It doesn't see any, but before
->    it sets ->logged_trans to N - 1...
-> 
-> 3) Task B calls btrfs_log_inode() against inode X, logs the inode and
->    sets ->logged_trans to N;
-> 
-> 4) Task A now sets ->logged_trans to N - 1;
-> 
-> 5) At this point anyone calling inode_logged() gets 0 (inode not logged)
->    since ->logged_trans is greater than 0 and less than N, but our inode
->    was really logged. As a consequence operations like rename, unlink and
->    link that happen afterwards in the current transaction end up not
->    updating the log when they should.
-> 
-> The same type of race happens in case our inode is a directory when we
-> update the inode's ->last_dir_index_offset field at inode_logged() to
-> (u64)-1, and in that case such a race could make directory logging skip
-> logging new entries at process_dir_items_leaf(), since any new dir entry
-> has an index less than (u64).
-> 
-> Fix this by ensuring inode_logged() is always called while holding the
-> inode's log_mutex.
+__qgroup_excl_accounting() uses the qgroup iterator machinery to
+update the account of one qgroups usage for all its parent hierarchy,
+when we either add or remove a relation and have only exclusive usage.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+However, there is a small bug there: we loop with an extra iteration
+temporary qgroup called `cur` but never actually refer to that in the
+body of the loop. As a result, we redundantly account the same usage to
+the first qgroup in the list.
 
-The fix and explanation of the inode_logged() vs btrfs_log_inode() logic
-as it pertains to setting logged_trans make sense to me.
+This can be reproduced in the following way:
 
-I do have one question, though, if you don't mind:
+mkfs.btrfs -f -O squota <dev>
+mount <dev> <mnt>
+btrfs subvol create <mnt>/sv
+dd if=/dev/zero of=<mnt>/sv/f bs=1M count=1
+sync
+btrfs qgroup create 1/100 <mnt>
+btrfs qgroup create 2/200 <mnt>
+btrfs qgroup assign 1/100 2/200 <mnt>
+btrfs qgroup assign 0/256 1/100 <mnt>
+btrfs qgroup show <mnt>
 
-How come higher level inode locking doesn't protect us? What paths down
-into inode_logged() and btrfs_log_inode() can run concurrently on the
-same inode? Intuitively, I would expect that anything which calls
-btrfs_log_inode() would need to write lock the inode and anything that
-calls inode_logged() would at least read lock it? Poking around the code
-myself as well, but figured I would ask..
+and the broken result is (note the 2MiB on 1/100 and 0Mib on 2/100):
+  Qgroupid    Referenced    Exclusive   Path
+  --------    ----------    ---------   ----
+  0/5           16.00KiB     16.00KiB   <toplevel>
+  0/256          1.02MiB      1.02MiB   sv
+  Qgroupid    Referenced    Exclusive   Path
+  --------    ----------    ---------   ----
+  0/5           16.00KiB     16.00KiB   <toplevel>
+  0/256          1.02MiB      1.02MiB   sv
+  1/100          2.03MiB      2.03MiB   2/100<1 member qgroup>
+  2/100            0.00B        0.00B   <0 member qgroups>
 
-Thanks,
-Boris
+with this fix, which simply re-uses `qgroup` as the iteration variable,
+we see the expected result:
+  Qgroupid    Referenced    Exclusive   Path
+  --------    ----------    ---------   ----
+  0/5           16.00KiB     16.00KiB   <toplevel>
+  0/256          1.02MiB      1.02MiB   sv
+  Qgroupid    Referenced    Exclusive   Path
+  --------    ----------    ---------   ----
+  0/5           16.00KiB     16.00KiB   <toplevel>
+  0/256          1.02MiB      1.02MiB   sv
+  1/100          1.02MiB      1.02MiB   2/100<1 member qgroup>
+  2/100          1.02MiB      1.02MiB   <0 member qgroups>
 
-> 
-> Fixes: 0f8ce49821de ("btrfs: avoid inode logging during rename and link when possible")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  fs/btrfs/tree-log.c | 34 ++++++++++++++++++++++++++++++----
->  1 file changed, 30 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 43a96fb27bce..8c6d1eb84d0e 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -3485,14 +3485,27 @@ int btrfs_free_log_root_tree(struct btrfs_trans_handle *trans,
->   * Returns 1 if the inode was logged before in the transaction, 0 if it was not,
->   * and < 0 on error.
->   */
-> -static int inode_logged(const struct btrfs_trans_handle *trans,
-> -			struct btrfs_inode *inode,
-> -			struct btrfs_path *path_in)
-> +static int inode_logged_locked(const struct btrfs_trans_handle *trans,
-> +			       struct btrfs_inode *inode,
-> +			       struct btrfs_path *path_in)
->  {
->  	struct btrfs_path *path = path_in;
->  	struct btrfs_key key;
->  	int ret;
->  
-> +	/*
-> +	 * The log_mutex must be taken to prevent races with concurrent logging
-> +	 * as we may see the inode not logged when we are called but it gets
-> +	 * logged right after we did not find it in the log tree and we end up
-> +	 * setting inode->logged_trans to a value less than trans->transid after
-> +	 * the concurrent logging task has set it to trans->transid. As a
-> +	 * consequence, subsequent rename, unlink and link operations may end up
-> +	 * not logging new names and removing old names from the log.
-> +	 * The same type of race also happens if out inode is a directory when
-> +	 * we update inode->last_dir_index_offset below.
-> +	 */
-> +	lockdep_assert_held(&inode->log_mutex);
-> +
->  	if (inode->logged_trans == trans->transid)
->  		return 1;
->  
-> @@ -3594,6 +3607,19 @@ static int inode_logged(const struct btrfs_trans_handle *trans,
->  	return 1;
->  }
->  
-> +static inline int inode_logged(const struct btrfs_trans_handle *trans,
-> +			       struct btrfs_inode *inode,
-> +			       struct btrfs_path *path)
-> +{
-> +	int ret;
-> +
-> +	mutex_lock(&inode->log_mutex);
-> +	ret = inode_logged_locked(trans, inode, path);
-> +	mutex_unlock(&inode->log_mutex);
-> +
-> +	return ret;
-> +}
-> +
->  /*
->   * Delete a directory entry from the log if it exists.
->   *
-> @@ -6678,7 +6704,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
->  	 * inode_logged(), because after that we have the need to figure out if
->  	 * the inode was previously logged in this transaction.
->  	 */
-> -	ret = inode_logged(trans, inode, path);
-> +	ret = inode_logged_locked(trans, inode, path);
->  	if (ret < 0)
->  		goto out_unlock;
->  	ctx->logged_before = (ret == 1);
-> -- 
-> 2.47.2
-> 
+The existing fstests did not exercise two layer inheritance so this bug
+was missed. I intend to add that testing there, as well.
+
+Fixes: a0bdc04b0732 ("btrfs: qgroup: use qgroup_iterator in __qgroup_excl_accounting()")
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ fs/btrfs/qgroup.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 1a5972178b3a..ccaa9a3cf1ce 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -1453,7 +1453,6 @@ static int __qgroup_excl_accounting(struct btrfs_fs_info *fs_info, u64 ref_root,
+ 				    struct btrfs_qgroup *src, int sign)
+ {
+ 	struct btrfs_qgroup *qgroup;
+-	struct btrfs_qgroup *cur;
+ 	LIST_HEAD(qgroup_list);
+ 	u64 num_bytes = src->excl;
+ 	int ret = 0;
+@@ -1463,7 +1462,7 @@ static int __qgroup_excl_accounting(struct btrfs_fs_info *fs_info, u64 ref_root,
+ 		goto out;
+ 
+ 	qgroup_iterator_add(&qgroup_list, qgroup);
+-	list_for_each_entry(cur, &qgroup_list, iterator) {
++	list_for_each_entry(qgroup, &qgroup_list, iterator) {
+ 		struct btrfs_qgroup_list *glist;
+ 
+ 		qgroup->rfer += sign * num_bytes;
+-- 
+2.50.1
+
 
