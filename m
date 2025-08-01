@@ -1,482 +1,257 @@
-Return-Path: <linux-btrfs+bounces-15792-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15793-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FD45B187DB
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Aug 2025 21:46:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 788D5B188EC
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Aug 2025 23:48:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC40A1C21B19
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Aug 2025 19:46:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5CD05A0A72
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Aug 2025 21:48:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ADBC1FC0F0;
-	Fri,  1 Aug 2025 19:46:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720EF220F2B;
+	Fri,  1 Aug 2025 21:48:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c3JratLn"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="boVu1spM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0D31E492D
-	for <linux-btrfs@vger.kernel.org>; Fri,  1 Aug 2025 19:46:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C5C2135C5
+	for <linux-btrfs@vger.kernel.org>; Fri,  1 Aug 2025 21:48:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754077592; cv=none; b=F3lXqG5UtVqr9+R7omwwu7MPIahIly2YjL4NsQPOLMh9Mucu58g1PNuG19odYEAbgt5dJgADMyFXTMmDkhb9qql4Qq7Vye3EIbYDAUMb/Bot1WXDAXNlgwb6FyTAuwtxE4NyfFTrIgaquozCj1veR9QMNkMjXdtTlWUYTWs4hvg=
+	t=1754084894; cv=none; b=Oufq2Cffyl20rrwF0HwTpbdOqXxipivOKt/MVVM/lKu6cdq/Hxqi+JdyMjWw8rsUsrVAf6FRtWe7Rxxu2KPbRvkapDzp3MP1jVcT16D8PPJ+tIJYWiSbzlomy8I+YtLxVTKauXNI5BU0/YVe8LYkh+vCLj/BL0QgFPKzs7HLsNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754077592; c=relaxed/simple;
-	bh=P9k9I6hRUJAqh1B5lJO1rJTw+YXNpz90u4yGpPRaNzE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i5wFlCKDSibfE0tHuSpnr6L/1WQzrRDqKjlrnxOt4EGg1Qr0ZAOtjmrWJYeI14rXIyv4XmSrGUlibKjunV4mQystag7tB3a3vH6hvLW7qxy6NSYe9vVjfUnUDOBsvBBUaZId0hbYIHMEZgPipfNQgVcmPEJTmwn56qkLJdEAbV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=c3JratLn; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1754077589;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zBJk/wWP7q2brYyNhM8DMILvR2WABsM5sIWd7OhCrcc=;
-	b=c3JratLnZduT/rj2KF8izqBHJNvDDDIZLpT0dat7RB/C68gKg9vRPIfrUUh/extgeCCGEO
-	Uf0YjaLQbfVLAL5hXva7kCXIEw236H2LxyT8q+jygU1P54EccM+pJOOCrq/rCRQVpnmlKt
-	FLiHfsGxCI4IbzRPCIe1XvzwRbezQmQ=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-590-WI3GgIHgMFeTgfJXxKZT-w-1; Fri, 01 Aug 2025 15:46:27 -0400
-X-MC-Unique: WI3GgIHgMFeTgfJXxKZT-w-1
-X-Mimecast-MFC-AGG-ID: WI3GgIHgMFeTgfJXxKZT-w_1754077587
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-31f3b65ce07so3555755a91.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 01 Aug 2025 12:46:27 -0700 (PDT)
+	s=arc-20240116; t=1754084894; c=relaxed/simple;
+	bh=2nYU1lkP3rdwvxv7duZEWvr237Q7jYErtWE5+DzE6ys=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=hjyYR0bAhSgYLb3vD6G2dskG0sQZRFEhctlNoGAjwsKPxIqGSIjpRxcA2cz25H6v4nrUGzlhy6QAVzVHwWm83ggigQU5nRIZK7bab9KxswWZEdbGLsFAcDBCtkNoUWYVzmaEugu0WSfign2fw6ONnpRuPonE0G/EarfxDxX5NHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=boVu1spM; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-458b49c98a7so3440195e9.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Aug 2025 14:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1754084890; x=1754689690; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=fI91IK0Uee+l0l0RWTtUg4WuMooWIVkt0N1mcrqEpF0=;
+        b=boVu1spM8aZjuoy3DX2oVYh+Oal/aUnAVq+GSHIEuM880u07jG25ErqybIo2+LkAOV
+         mO3NrOfxO+swqDN9GU0oZS7tBNUNRlgv+EXwguouV4cqs56HKCi1p5BPMWtAZ3AWmJjV
+         sMNsxWjwFnQeK8li/ypBk9rUIFH0Zh0lxP4TTPO3gmqkJPOmfLk3j8clCc81Pi2PZCk8
+         7E13RkzfLmWDz1aHMijLSaCawsSsUsE9UX8DEbPmLOWpHqm/FgPwW8ZCU2lBrBqhKcuT
+         +Y4MBK+uVMrisgj4MBMZuif+qSyteI2+1iTMi9BiYYIPvztyBNZmpvQKYBHYxd7sG12Z
+         YvMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754077587; x=1754682387;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zBJk/wWP7q2brYyNhM8DMILvR2WABsM5sIWd7OhCrcc=;
-        b=rp3lU9EjwMpHBc98fccTgwNRo9+bo7QpZERh3Gie03KlMvbJ3TcqWCPNV1PuQtKg0r
-         Bncb2U5xbRaRIIFaRvu/b2Shgq/QSETRlULEam8jMM6MaRKpyy3BZIhvp97h7EHVMgI1
-         OkxwSWf9uElSZ5Z53tROHDYfOUiIfpHe2mK9uCCmREY/gGdp9Aqz3V5pD4gKZzA9b8re
-         OlkGBaLZKh5X1MfDar2qHlp47R12NtOZzxZqx5oBe7IXTJ3LU4dDlLLwM/ez3GFaGCVw
-         6ihOdrjKqfxFBfJ6m8Ryy89Hn5tDVvm3BmolysxeRK0UbN07rJMeonglqvmpuYsy5SjN
-         iGlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWH74VFt5BibxbcWmsinY2xJ0epwUlyucbO5xryz/t+fl/8bJ1lGcERLXWyiqgEeBZVhlI2ZpTNUtreUQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxqB3Vc46qkzfsMNIK1TsAgQVfPVdCNdcJGFcSkpFrP/0A2/ahN
-	GK+D4wyuHae0Yu+bGHwO3PRXu6RH+I4UaLvm0rDfJAWD7qBemWlUKu0GFodtWgw4w73mdOeX8t9
-	rVcBg1uNOoQMBJ5qdi5QH5gh2IZ3bclwgeRvbp/OhAsNMrucS5lC5ji52MqiomV6D
-X-Gm-Gg: ASbGncvxuoONyJVe+yY5JuJ2EWH7leqo+4vQlvC4aZcH882UmcX/2YbkaCOm3RNz81l
-	zb580mQEtX7X2GHd1ObblaFRdFKnqmF7UQ7Cj8raeq7QAkVCHOTrRvSq68egboUI704nii0eZLM
-	WIbR5xlN+CO+MT7Ogj9RalanNYZB9XxU8A0JZ8wym4rtKnY1tOr84FytKr3kmILMa+ewSmGAmnW
-	uhVeqL5vcmXiY1/cgC+eCMe46f/6TIavCx3VAYJ/5aLPaSmXFffucIygwXPYjTr+j4AvXPF6IWF
-	GOu+8uF8vsgh66IK9H1s/7IbQrQuhqbcK1NYo1+3D1jnqoQc3gSBJSzNXRhkeKnh+y1A/27Eoyc
-	kG5Ka
-X-Received: by 2002:a17:90b:5806:b0:311:c970:c9c0 with SMTP id 98e67ed59e1d1-3211628f2f5mr1070408a91.22.1754077586345;
-        Fri, 01 Aug 2025 12:46:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGUoRGdH2fPQdyvCmIwOnZHhF964o5NqAusm60nOlUnIfb4no5WQI2iIqnj4BQatyglrLoWGA==
-X-Received: by 2002:a17:90b:5806:b0:311:c970:c9c0 with SMTP id 98e67ed59e1d1-3211628f2f5mr1070374a91.22.1754077585713;
-        Fri, 01 Aug 2025 12:46:25 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3207eca6feasm5393190a91.21.2025.08.01.12.46.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Aug 2025 12:46:25 -0700 (PDT)
-Date: Sat, 2 Aug 2025 03:46:21 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] generic: test fsync of file with 0 links and extents
-Message-ID: <20250801194621.7cy2stxo767pva2z@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <ab95518f5483a2e23e0f3cdf1bc67258c0e71918.1753902704.git.fdmanana@suse.com>
+        d=1e100.net; s=20230601; t=1754084890; x=1754689690;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fI91IK0Uee+l0l0RWTtUg4WuMooWIVkt0N1mcrqEpF0=;
+        b=K5i+t7X3LfRAuOoB8MRfL+yNUFT52EYKJLddUcpsV5lD8gzKNHdhhrqZJKUHuMz9jj
+         8TP/imwV9GIsiTiQaMKB1sgeufCmpnperJ97ZKVuJ7ylcN2km8i2VWTfzxb5suLF4FW2
+         mh2LwK3YYqcWJw2j4PVSBIiPEVnda6JM/+glVcCdITBZ0eYGk+8lg6lVNmtY3Gn4ei7x
+         Wk1zuC9Tdqe3Nxg6jZWkM3MOXw5pAk1ZXw5+CbYjUxY1IxwSmkgZvWX5luDwOP2DT6ic
+         J5it/fXi2/78fm6GPsVdQcJ7Dw6yMs8MFgqG4kzKIQY3hHboUC/8X7ziPgWgfEQLtQuR
+         LoqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWMG4NK5cthxI+Wr0BlyAjPDBrTBSbzXEhxT6Z/QogXHmaNjKgq3qTlVhmjGixniPmw+S97fTGmYUqvjA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyJYgoZzZbC101sTWw1WX7EaUVs4/I86/gqtKI5gT3xTFHvV5bD
+	/2ObkpYEMFeTRKEtMmO4EloR6ulh5hpCyNlfXDBNNBvJquKOCB3CqDbMCQVhEdyTNwM=
+X-Gm-Gg: ASbGncs5CLOh5M/x4s7CMwRAMHnC7bR8zqSNL6De5gnXgk7OAoVSyR80yxU5QmWIgTc
+	m3Fn5h2tbxBuYZqMBeK2z2my8FILOo49ycQ2ZGTyU2LKvkMxzIBQ7EiBCrv5ChnVIET6Nig+Sao
+	eVENRakWQHafcJzfBd8ap58+tLnne4adGa/InXBCkRe/XyPbKcyohZpUmkM1IowUsviXYU8pyhZ
+	XGhxOX1qKV4jFtvLOqoM1A5A0/2n6mLHBRGkDu2PR25sJ+AQn4aeaMDvYRjPTuzDuE1WI3ztycC
+	h+XT//SgDnuLh9ZSB0/tUD45Fi06N2FvRdhP/8aunF6ywQXiG87KXNYMv/Z9FKjAr7TTs3qI/2D
+	rE+KGNR3Wb/RAhKQaLj4zXQOLXKSIlWjjptvcc3srjv+ka8/BhA==
+X-Google-Smtp-Source: AGHT+IGcxPd6ttW5Fwu5Shapyv7KzTnHMlxiyiHlTA8E6mP0eDANxculcsx2qawer8ysoo6aDZPWhw==
+X-Received: by 2002:a5d:5f87:0:b0:3b7:8473:31bd with SMTP id ffacd0b85a97d-3b8d9409097mr975786f8f.0.1754084890278;
+        Fri, 01 Aug 2025 14:48:10 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31f63da6141sm8315065a91.1.2025.08.01.14.48.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Aug 2025 14:48:09 -0700 (PDT)
+Message-ID: <45b62d6f-40fb-41c0-9c1a-e97b341930e3@suse.com>
+Date: Sat, 2 Aug 2025 07:18:04 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <ab95518f5483a2e23e0f3cdf1bc67258c0e71918.1753902704.git.fdmanana@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_lookup_extent_info (2)
+To: syzbot <syzbot+c035bce0effd1de39e05@syzkaller.appspotmail.com>,
+ clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ syzkaller-bugs@googlegroups.com
+References: <688d0dde.050a0220.f0410.0130.GAE@google.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <688d0dde.050a0220.f0410.0130.GAE@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 30, 2025 at 08:21:41PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
->=20
-> Create two files, the first one with some data, and then fsync both
-> files. The first file is fsynced after removing its hardlink. After a
-> power failure we expect the fs to be mountable and for only the second
-> file to be present.
->=20
-> This exercises an issue found in btrfs and fixed by the following patch:
->=20
->   btrfs: fix log tree replay failure due to file with 0 links and extents
->=20
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
+
+在 2025/8/2 04:26, syzbot 写道:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    038d61fd6422 Linux 6.16
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17bd14a2580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=831eea247244ce8c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c035bce0effd1de39e05
+> compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Downloadable assets:
+> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-038d61fd.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/45453fb53a5d/vmlinux-038d61fd.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/4094774b8a7e/bzImage-038d61fd.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c035bce0effd1de39e05@syzkaller.appspotmail.com
+
+The real problem happens before that:
+
+[   76.684845][ T5354] FAULT_INJECTION: forcing a failure.
+[   76.684845][ T5354] name failslab, interval 1, probability 0, space 
+0, times 1
+[   76.699734][ T5354] CPU: 0 UID: 0 PID: 5354 Comm: syz.0.0 Not tainted 
+6.16.0-syzkaller #0 PREEMPT(full)
+[   76.699754][ T5354] Hardware name: QEMU Standard PC (Q35 + ICH9, 
+2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+[   76.699761][ T5354] Call Trace:
+[   76.699766][ T5354]  <TASK>
+[   76.699772][ T5354]  dump_stack_lvl+0x189/0x250
+[   76.699851][ T5354]  ? __pfx____ratelimit+0x10/0x10
+[   76.699894][ T5354]  ? __pfx_dump_stack_lvl+0x10/0x10
+[   76.699908][ T5354]  ? __pfx__printk+0x10/0x10
+[   76.699927][ T5354]  ? __pfx___might_resched+0x10/0x10
+[   76.699940][ T5354]  ? fs_reclaim_acquire+0x7d/0x100
+[   76.699992][ T5354]  should_fail_ex+0x414/0x560
+[   76.700013][ T5354]  should_failslab+0xa8/0x100
+[   76.700030][ T5354]  kmem_cache_alloc_noprof+0x73/0x3c0
+[   76.700043][ T5354]  ? __btrfs_inc_extent_ref+0x1e0/0x710
+[   76.700063][ T5354]  __btrfs_inc_extent_ref+0x1e0/0x710
+[   76.700085][ T5354]  ? __pfx___btrfs_inc_extent_ref+0x10/0x10
+[   76.700113][ T5354]  __btrfs_run_delayed_refs+0xea2/0x3a50
+
+An ENOMEM is injected to a critical path. And we handled it gracefully, 
+not crashing the kernel.
+
+But this also means the extent tree is not properly updated (thus can be 
+considered as a corrupted extent tree)>
+> BTRFS info (device loop0): balance: start -d -m
+> BTRFS info (device loop0): relocating block group 6881280 flags data|metadata
+> BTRFS info (device loop0): relocating block group 5242880 flags data|metadata
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 5337 at fs/btrfs/extent-tree.c:209 btrfs_lookup_extent_info+0xcc6/0xd80 fs/btrfs/extent-tree.c:209
+
+The warning is very likely to be caused by the previous error injection.
+
+I'd say, if you're injecting errors, please allow us to give a warning 
+or two.
+
+Thanks,
+Qu
+
+> Modules linked in:
+> CPU: 0 UID: 0 PID: 5337 Comm: syz.0.0 Not tainted 6.16.0-syzkaller #0 PREEMPT(full)
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+> RIP: 0010:btrfs_lookup_extent_info+0xcc6/0xd80 fs/btrfs/extent-tree.c:209
+> Code: 8b ff ff ff 48 8b 7c 24 50 48 c7 c6 31 97 ae 8d ba a9 00 00 00 b9 8b ff ff ff e8 c5 85 6a fd e9 16 fe ff ff e8 0b ee 00 fe 90 <0f> 0b 90 e9 6d fd ff ff e8 dd 44 b0 07 89 d9 80 e1 07 38 c1 0f 8c
+> RSP: 0018:ffffc9000ddfeea0 EFLAGS: 00010293
+> RAX: ffffffff83bf4305 RBX: ffff8880363d43b0 RCX: ffff8880118c0000
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: ffffc9000ddff000 R08: ffff8880363d43b3 R09: 1ffff11006c7a876
+> R10: dffffc0000000000 R11: ffffed1006c7a877 R12: dffffc0000000000
+> R13: ffff88805325c6d4 R14: 0000000000000000 R15: ffffc9000ddff0c0
+> FS:  00007fe87d3d46c0(0000) GS:ffff88808d218000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000200000453000 CR3: 0000000011d7e000 CR4: 0000000000352ef0
+> Call Trace:
+>   <TASK>
+>   update_ref_for_cow+0x998/0x1210 fs/btrfs/ctree.c:373
+>   btrfs_force_cow_block+0x9d4/0x1e10 fs/btrfs/ctree.c:527
+>   btrfs_cow_block+0x40a/0x830 fs/btrfs/ctree.c:688
+>   do_relocation+0xd64/0x1610 fs/btrfs/relocation.c:2275
+>   relocate_tree_block fs/btrfs/relocation.c:2528 [inline]
+>   relocate_tree_blocks+0x118b/0x1e90 fs/btrfs/relocation.c:2635
+>   relocate_block_group+0x760/0xd90 fs/btrfs/relocation.c:3607
+>   btrfs_relocate_block_group+0x966/0xde0 fs/btrfs/relocation.c:4008
+>   btrfs_relocate_chunk+0x12a/0x3b0 fs/btrfs/volumes.c:3437
+>   __btrfs_balance+0x1870/0x21d0 fs/btrfs/volumes.c:4212
+>   btrfs_balance+0xc94/0x11d0 fs/btrfs/volumes.c:4589
+>   btrfs_ioctl_balance+0x3d3/0x610 fs/btrfs/ioctl.c:3583
+>   vfs_ioctl fs/ioctl.c:51 [inline]
+>   __do_sys_ioctl fs/ioctl.c:907 [inline]
+>   __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:893
+>   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>   do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+>   entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7fe880f8e9a9
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007fe87d3d4038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 00007fe8811b6080 RCX: 00007fe880f8e9a9
+> RDX: 0000200000000180 RSI: 00000000c4009420 RDI: 0000000000000005
+> RBP: 00007fe881010d69 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 0000000000000001 R14: 00007fe8811b6080 R15: 00007ffc53dc1948
+>   </TASK>
+> 
+> 
 > ---
-
-This test case looks good to me. And looks like I triggered the btrfs bug
-(kernel crash) [1] with this case. If it's the expected test result, then
-
-Reviewed-by: Zorro Lang <zlang@redhat.com>
-
-
-[1]
-[2375125.078932] run fstests generic/771 at 2025-08-02 03:26:24
-[2375125.442949] BTRFS: device fsid 9a850dcc-f313-4c8b-96c0-bb82000e8b68 de=
-vid 1 transid 8 /dev/mapper/flakey-test.771 (252:7) scanned by mount (12778=
-3)
-[2375125.456810] BTRFS info (device dm-7): first mount of filesystem 9a850d=
-cc-f313-4c8b-96c0-bb82000e8b68
-[2375125.466137] BTRFS info (device dm-7): using crc32c (crc32c-x86_64) che=
-cksum algorithm
-[2375125.474158] BTRFS info (device dm-7): using free-space-tree
-[2375125.482034] BTRFS info (device dm-7): checking UUID tree
-[2375125.531795] BTRFS info (device dm-7): last unmount of filesystem 9a850=
-dcc-f313-4c8b-96c0-bb82000e8b68
-[2375125.578357] BTRFS: device fsid 9a850dcc-f313-4c8b-96c0-bb82000e8b68 de=
-vid 1 transid 8 /dev/mapper/flakey-test.771 (252:7) scanned by mount (12782=
-7)
-[2375125.592066] BTRFS info (device dm-7): first mount of filesystem 9a850d=
-cc-f313-4c8b-96c0-bb82000e8b68
-[2375125.601381] BTRFS info (device dm-7): using crc32c (crc32c-x86_64) che=
-cksum algorithm
-[2375125.609391] BTRFS info (device dm-7): using free-space-tree
-[2375125.617546] BTRFS info (device dm-7): start tree-log replay
-[2375125.623731] BUG: kernel NULL pointer dereference, address: 00000000000=
-00219
-[2375125.630868] #PF: supervisor read access in kernel mode
-[2375125.636179] #PF: error_code(0x0000) - not-present page
-[2375125.641491] PGD 11315c067 P4D 0=20
-[2375125.644898] Oops: Oops: 0000 [#1] SMP NOPTI
-[2375125.649259] CPU: 18 UID: 0 PID: 127827 Comm: mount Tainted: G S       =
-          ------  ---  6.16.0-0.rc1.250613g27605c8c0f69.21.fc43.x86_64 #1 P=
-REEMPT(lazy)=20
-[2375125.663583] Tainted: [S]=3DCPU_OUT_OF_SPEC
-[2375125.667682] Hardware name: Dell Inc. PowerEdge R750/0PJ80M, BIOS 1.5.4=
- 12/17/2021
-[2375125.675337] RIP: 0010:iput+0x20/0x230
-[2375125.679174] Code: 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 0=
-0 00 48 85 ff 0f 84 86 01 00 00 41 54 55 48 8d af 50 01 00 00 53 48 89 fb <=
-f6> 87 91 00 00 00 01 74 3a e9 68 01 00 00 8b 53 48 8b 83 90 00 00
-[2375125.698093] RSP: 0018:ff2f85c0e8abb7c0 EFLAGS: 00010206
-[2375125.703494] RAX: 0000000000000000 RBX: 0000000000000188 RCX: 000000000=
-00b6012
-[2375125.710799] RDX: 0000000000000000 RSI: ffffffff95fc5070 RDI: 000000000=
-0000188
-[2375125.718107] RBP: 00000000000002d8 R08: 0000000000000000 R09: ffffffff9=
-31aabd6
-[2375125.725411] R10: ff153ec034a8f5b0 R11: ffbf667744d2a3c0 R12: ff2f85c0e=
-8abb93f
-[2375125.732719] R13: 0000000000000000 R14: ff153ec0ff155770 R15: 00000000f=
-ffffffb
-[2375125.740025] FS:  00007f0bec606840(0000) GS:ff153ecfa8cff000(0000) knlG=
-S:0000000000000000
-[2375125.748284] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[2375125.754201] CR2: 0000000000000219 CR3: 00000002076a7006 CR4: 000000000=
-0773ef0
-[2375125.761510] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000=
-0000000
-[2375125.768814] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000000=
-0000400
-[2375125.776121] PKRU: 55555554
-[2375125.779008] Call Trace:
-[2375125.781631]  <TASK>
-[2375125.783911]  replay_one_extent+0xba/0x740
-[2375125.788098]  ? copy_extent_buffer+0x126/0x160
-[2375125.792629]  ? btrfs_release_path+0x2b/0x1b0
-[2375125.797075]  ? read_extent_buffer+0x102/0x140
-[2375125.801609]  replay_one_buffer+0x2ee/0x500
-[2375125.805883]  ? find_extent_buffer+0xab/0x110
-[2375125.810326]  walk_up_log_tree+0xe8/0x320
-[2375125.814429]  ? btrfs_root_node+0x2d/0x50
-[2375125.818526]  ? walk_log_tree+0x2e/0x280
-[2375125.822538]  walk_log_tree+0xc6/0x280
-[2375125.826378]  btrfs_recover_log_trees+0x1cc/0x5a0
-[2375125.831171]  ? __pfx_replay_one_buffer+0x10/0x10
-[2375125.835964]  open_ctree+0x916/0xb9c
-[2375125.839630]  btrfs_get_tree_super.cold+0xb/0xbf
-[2375125.844336]  vfs_get_tree+0x26/0xd0
-[2375125.848003]  fc_mount+0x12/0x50
-[2375125.851320]  btrfs_get_tree_subvol+0x10d/0x210
-[2375125.855941]  vfs_get_tree+0x26/0xd0
-[2375125.859606]  vfs_cmd_create+0x57/0xd0
-[2375125.863446]  __do_sys_fsconfig+0x4b6/0x650
-[2375125.867718]  do_syscall_64+0x82/0x2c0
-[2375125.871558]  ? __do_sys_getgid+0x27/0x30
-[2375125.875657]  ? do_syscall_64+0x82/0x2c0
-[2375125.879669]  ? __do_sys_newfstatat+0x4a/0x80
-[2375125.884117]  ? from_kgid_munged+0x17/0x30
-[2375125.888301]  ? __do_sys_getegid+0x27/0x30
-[2375125.892487]  ? do_syscall_64+0x82/0x2c0
-[2375125.896499]  ? do_syscall_64+0x82/0x2c0
-[2375125.900511]  ? do_syscall_64+0x82/0x2c0
-[2375125.904525]  ? __x64_sys_statx+0x9a/0xe0
-[2375125.908626]  ? do_syscall_64+0x82/0x2c0
-[2375125.912639]  ? clear_bhb_loop+0x50/0xa0
-[2375125.916649]  ? clear_bhb_loop+0x50/0xa0
-[2375125.920664]  ? clear_bhb_loop+0x50/0xa0
-[2375125.924676]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[2375125.929902] RIP: 0033:0x7f0bec7e548e
-[2375125.933673] Code: 73 01 c3 48 8b 0d 72 19 0f 00 f7 d8 64 89 01 48 83 c=
-8 ff c3 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 49 89 ca b8 af 01 00 00 0f 05 <=
-48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 42 19 0f 00 f7 d8 64 89 01 48
-[2375125.952591] RSP: 002b:00007fff5b55e518 EFLAGS: 00000246 ORIG_RAX: 0000=
-0000000001af
-[2375125.960329] RAX: ffffffffffffffda RBX: 00005593c5cb8420 RCX: 00007f0be=
-c7e548e
-[2375125.967637] RDX: 0000000000000000 RSI: 0000000000000006 RDI: 000000000=
-0000003
-[2375125.974943] RBP: 00007fff5b55e660 R08: 0000000000000000 R09: 000000000=
-0000048
-[2375125.982249] R10: 0000000000000000 R11: 0000000000000246 R12: 000000000=
-0000000
-[2375125.989554] R13: 00005593c5cb96f0 R14: 00007f0bec960b00 R15: 00005593c=
-5cb97b8
-[2375125.996860]  </TASK>
-[2375125.999224] Modules linked in: dm_flakey xfs joydev rfkill nft_fib_ine=
-t nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_rejec=
-t_ipv6 nft_reject nft_ct nft_chain_nat nf_nat mlx5_ib nf_conntrack nf_defra=
-g_ipv6 nf_defrag_ipv4 ib_uverbs macsec ib_core mlx5_fwctl nf_tables intel_r=
-apl_msr intel_rapl_common intel_uncore_frequency intel_uncore_frequency_com=
-mon i10nm_edac skx_edac_common nfit libnvdimm x86_pkg_temp_thermal intel_po=
-werclamp coretemp kvm_intel mlx5_core kvm spi_nor dax_hmem cxl_acpi iTCO_wd=
-t irqbypass ipmi_ssif cxl_port mtd intel_pmc_bxt rapl mlxfw iTCO_vendor_sup=
-port cxl_core isst_if_mmio intel_cstate isst_if_mbox_pci psample mei_me int=
-el_th_gth platform_profile dell_smbios fwctl tls i2c_i801 intel_th_pci spi_=
-intel_pci tg3 mei einj dcdbas dell_wmi_descriptor wmi_bmof intel_uncore acp=
-i_power_meter isst_if_common pci_hyperv_intf i2c_smbus spi_intel intel_th i=
-ntel_pch_thermal intel_vsec ipmi_si acpi_ipmi ipmi_devintf ipmi_msghandler =
-fuse loop nfnetlink zram lz4hc_compress lz4_compress
-[2375125.999290]  polyval_clmulni ghash_clmulni_intel mgag200 sha512_ssse3 =
-sha1_ssse3 megaraid_sas i2c_algo_bit wmi
-[2375126.098659] CR2: 0000000000000219
-[2375126.102153] ---[ end trace 0000000000000000 ]---
-[2375126.342787] RIP: 0010:iput+0x20/0x230
-[2375126.346628] Code: 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 0=
-0 00 48 85 ff 0f 84 86 01 00 00 41 54 55 48 8d af 50 01 00 00 53 48 89 fb <=
-f6> 87 91 00 00 00 01 74 3a e9 68 01 00 00 8b 53 48 8b 83 90 00 00
-[2375126.365548] RSP: 0018:ff2f85c0e8abb7c0 EFLAGS: 00010206
-[2375126.370949] RAX: 0000000000000000 RBX: 0000000000000188 RCX: 000000000=
-00b6012
-[2375126.378253] RDX: 0000000000000000 RSI: ffffffff95fc5070 RDI: 000000000=
-0000188
-[2375126.385560] RBP: 00000000000002d8 R08: 0000000000000000 R09: ffffffff9=
-31aabd6
-[2375126.392865] R10: ff153ec034a8f5b0 R11: ffbf667744d2a3c0 R12: ff2f85c0e=
-8abb93f
-[2375126.400171] R13: 0000000000000000 R14: ff153ec0ff155770 R15: 00000000f=
-ffffffb
-[2375126.407478] FS:  00007f0bec606840(0000) GS:ff153ecfa8cff000(0000) knlG=
-S:0000000000000000
-[2375126.415737] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[2375126.421657] CR2: 0000000000000219 CR3: 00000002076a7006 CR4: 000000000=
-0773ef0
-[2375126.428961] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000=
-0000000
-[2375126.436268] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000000=
-0000400
-[2375126.443574] PKRU: 55555554
-[2375126.446461] note: mount[127827] exited with irqs disabled
-[2375866.234285] sysrq: Show Blocked State
-[2375866.245781] task:btrfs-transacti state:D stack:0     pid:127842 tgid:1=
-27842 ppid:2      task_flags:0x208040 flags:0x00004000
-[2375866.257188] Call Trace:
-[2375866.259830]  <TASK>
-[2375866.262130]  __schedule+0x2f9/0x7b0
-[2375866.265821]  schedule+0x27/0x80
-[2375866.269154]  btrfs_commit_transaction+0x912/0xd30
-[2375866.274058]  ? start_transaction+0x228/0x840
-[2375866.278516]  ? __pfx_autoremove_wake_function+0x10/0x10
-[2375866.283935]  transaction_kthread+0x157/0x1c0
-[2375866.288395]  ? __pfx_transaction_kthread+0x10/0x10
-[2375866.293378]  kthread+0xfc/0x240
-[2375866.296713]  ? __pfx_kthread+0x10/0x10
-[2375866.300653]  ret_from_fork+0x14f/0x180
-[2375866.304590]  ? __pfx_kthread+0x10/0x10
-[2375866.308526]  ret_from_fork_asm+0x1a/0x30
-=2E..
-
-
->  .gitignore            |  1 +
->  src/Makefile          |  2 +-
->  src/unlink-fsync.c    | 45 ++++++++++++++++++++++++++++++++
->  tests/generic/771     | 60 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/771.out |  4 +++
->  5 files changed, 111 insertions(+), 1 deletion(-)
->  create mode 100644 src/unlink-fsync.c
->  create mode 100755 tests/generic/771
->  create mode 100644 tests/generic/771.out
->=20
-> diff --git a/.gitignore b/.gitignore
-> index 58dc2a63..6948fd60 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -210,6 +210,7 @@ tags
->  /src/fiemap-fault
->  /src/min_dio_alignment
->  /src/dio-writeback-race
-> +/src/unlink-fsync
-> =20
->  # Symlinked files
->  /tests/generic/035.out
-> diff --git a/src/Makefile b/src/Makefile
-> index 2cc1fb40..7080e348 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -21,7 +21,7 @@ TARGETS =3D dirstress fill fill2 getpagesize holes lsta=
-t64 \
->  	t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale \
->  	t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault rewinddir-tes=
-t \
->  	readdir-while-renames dio-append-buf-fault dio-write-fsync-same-fd \
-> -	dio-writeback-race
-> +	dio-writeback-race unlink-fsync
-> =20
->  LINUX_TARGETS =3D xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_r=
-eader \
->  	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-> diff --git a/src/unlink-fsync.c b/src/unlink-fsync.c
-> new file mode 100644
-> index 00000000..ce008c6b
-> --- /dev/null
-> +++ b/src/unlink-fsync.c
-> @@ -0,0 +1,45 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2025 SUSE Linux Products GmbH.  All Rights Reserved.
-> + */
-> +
-> +/*
-> + * Utility to open an existing file, unlink it while holding an open fd =
-on it
-> + * and then fsync the file before closing the fd.
-> + */
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int fd;
-> +	int ret;
-> +
-> +	if (argc !=3D 2) {
-> +		fprintf(stderr, "Use: %s <file path>\n", argv[0]);
-> +		return 1;
-> +	}
-> +
-> +	fd =3D open(argv[1], O_WRONLY, 0666);
-> +	if (fd =3D=3D -1) {
-> +		perror("failed to open file");
-> +		exit(1);
-> +	}
-> +
-> +	ret =3D unlink(argv[1]);
-> +	if (ret =3D=3D -1) {
-> +		perror("unlink failed");
-> +		exit(2);
-> +	}
-> +
-> +	ret =3D fsync(fd);
-> +	if (ret =3D=3D -1) {
-> +		perror("fsync failed");
-> +		exit(3);
-> +	}
-> +
-> +	return 0;
-> +}
-> diff --git a/tests/generic/771 b/tests/generic/771
-> new file mode 100755
-> index 00000000..ad30cc0a
-> --- /dev/null
-> +++ b/tests/generic/771
-> @@ -0,0 +1,60 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2025 SUSE Linux Products GmbH.  All Rights Reserved.
-> +#
-> +# FS QA Test 771
-> +#
-> +# Create two files, the first one with some data, and then fsync both fi=
-les.
-> +# The first file is fsynced after removing its hardlink. After a power f=
-ailure
-> +# we expect the fs to be mountable and for only the second file to be pr=
-esent.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick log
-> +
-> +_cleanup()
-> +{
-> +	_cleanup_flakey
-> +	cd /
-> +	rm -r -f $tmp.*
-> +}
-> +
-> +. ./common/filter
-> +. ./common/dmflakey
-> +
-> +_require_scratch
-> +_require_test_program unlink-fsync
-> +_require_dm_target flakey
-> +
-> +[ "$FSTYP" =3D "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
-> +	"btrfs: fix log tree replay failure due to file with 0 links and extent=
-s"
-> +
-> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
-> +_require_metadata_journaling $SCRATCH_DEV
-> +_init_flakey
-> +_mount_flakey
-> +
-> +# Create our first test file with some data.
-> +mkdir $SCRATCH_MNT/testdir
-> +$XFS_IO_PROG -f -c "pwrite 0K 64K" $SCRATCH_MNT/testdir/foo | _filter_xf=
-s_io
-> +
-> +# fsync our first test file after unlinking it - we keep an fd open for =
-the
-> +# file, unlink it and then fsync the file using that fd, so that we log/=
-journal
-> +# a file with 0 hard links.
-> +$here/src/unlink-fsync $SCRATCH_MNT/testdir/foo
-> +
-> +# Create another test file and fsync it.
-> +touch $SCRATCH_MNT/testdir/bar
-> +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir/bar
-> +
-> +# Simulate a power failure and replay the log/journal.
-> +# On btrfs we had a bug where the replay procedure failed, causing the f=
-s mount
-> +# to fail, because the first test file has extents and the second one, w=
-hich has
-> +# an higher inode number, has a non-zero (1) link count - the replay cod=
-e got
-> +# confused and thought the extents belonged to the second file and then =
-it
-> +# failed when trying to open a non-existing inode to replay the extents.
-> +_flakey_drop_and_remount
-> +
-> +# File foo should not exist and file bar should exist.
-> +ls -1 $SCRATCH_MNT/testdir
-> +
-> +_exit 0
-> diff --git a/tests/generic/771.out b/tests/generic/771.out
-> new file mode 100644
-> index 00000000..e40d7091
-> --- /dev/null
-> +++ b/tests/generic/771.out
-> @@ -0,0 +1,4 @@
-> +QA output created by 771
-> +wrote 65536/65536 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +bar
-> --=20
-> 2.47.2
->=20
->=20
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
+> 
 
 
