@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-15802-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15803-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CA40B18AF5
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Aug 2025 08:56:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABC92B18AF6
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Aug 2025 08:56:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA6DB1AA3FEC
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Aug 2025 06:57:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2463A1AA3F2C
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Aug 2025 06:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962F31DEFE6;
-	Sat,  2 Aug 2025 06:56:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 145D71DF26A;
+	Sat,  2 Aug 2025 06:56:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lHVBtTRP";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lHVBtTRP"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mqsDaokX";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mqsDaokX"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E3E2E36E8
-	for <linux-btrfs@vger.kernel.org>; Sat,  2 Aug 2025 06:56:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA7C21DD543
+	for <linux-btrfs@vger.kernel.org>; Sat,  2 Aug 2025 06:56:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754117796; cv=none; b=IbXK9tnQwH+o1xSZLt7oSSSr4MFd6kADFEABHJmpT4ptm2SBDDibuaIRZM4EUKLZqU6Osjl4U5TL3FhZEXk6eI2z5lki7Jv9ZO3qbytrWhzAGaj/MJc5b/KzguqHmp6kJ3J+0Q2m/vVc2H8i3ntu0o+ezczJInCOKePYpJuaD7M=
+	t=1754117803; cv=none; b=aP+xnU9T3G/xbhuNkfAnFNj8gPlYYMgcQlBnjquA6Hplzknlbg3107dD+3GvPQOcPqXIAJdu8YXNZft1A87B2/njk6/9XBEIXSQQKrUUcjTn/7OYx19y6nyZg1CtEkMwMW3RyGXPOJhi9cZp95bk/bNFXHH8w4oeCEG0fSuGJ48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754117796; c=relaxed/simple;
-	bh=v8N0qS5g4nIDU87GIAN+BnXR/zmWDtW5DARGGbJKsZU=;
+	s=arc-20240116; t=1754117803; c=relaxed/simple;
+	bh=Z5hE93ZxxNwklyBXXYmw9o+iLai1HkHkcCe6E1UmdQA=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DlEaOHTmGvRF3WQ/Pzjwa3jcNFwahzPOUwbo7h9C+AhUSwH+py42a4kp3aqInEAq2cYaBuKZoO56eHmZknUn+9NXKAEr8i6Rjxq/bMdmydXLGDl3guACwadvnt3abdUjm3WWLn4gbzBQnOlwJFp7x8D5RFqg54GWhq6vBUir4V0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lHVBtTRP; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lHVBtTRP; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=oop5gq/53ilZRBP9fxHfgOy6Xfz7GekmbqiYhhjeKLTBg0cIe3jtJnX9bnS3+jE8zaIW3uC0AwJJxbUnnmXR1MfH0nJeRV39jONFNqOYie2sCSfOBd5QIKY/pYXtHfvEefNN6fboB+wmgcsYwWMRCI/x4Z0030dLlvy+lFuNNVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mqsDaokX; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mqsDaokX; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8A2D21F45B
-	for <linux-btrfs@vger.kernel.org>; Sat,  2 Aug 2025 06:56:15 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C9B571F45E
+	for <linux-btrfs@vger.kernel.org>; Sat,  2 Aug 2025 06:56:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1754117775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1754117776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zJkgOWx+nZxxtA9l6YIfjlLkyqDhzZwh7n6xPMNTD0M=;
-	b=lHVBtTRPimW4h8XbRLqLBesUr91oGBvGY6+SGZXD/ngQG4MOFlsqpArDLGJI3G/wWq2ces
-	fPOd+2u24IkpByf1h3g2XJpw1MdC/wB2+JuFaTGwQzg1iAxauRLmD2Zt5fjPz1UoHkXDpB
-	vAh0KdeRg1ly0ImFDMWGXgRzAzOQ3zU=
+	bh=P6gvt1F6+IMYvoMYQ+3HA3iRSsAJqSOLit1zPvw6QeY=;
+	b=mqsDaokXvYYdhwc02dEE3gD92kaoS6Hz48BGv0rMpPAHC+Qzuo4bSY4nR/7NYmllCeAKWJ
+	rhiEoG+X0UEjs17FBW686KYnXIgH3UcDeAzAEOFO5Fow1+u+HV/DHalmG3mo2QbDxJAvzS
+	2gYKQV59LYFzMH8eQAa+VpSOjaYwdlg=
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=lHVBtTRP
+	dkim=pass header.d=suse.com header.s=susede1 header.b=mqsDaokX
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1754117775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1754117776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zJkgOWx+nZxxtA9l6YIfjlLkyqDhzZwh7n6xPMNTD0M=;
-	b=lHVBtTRPimW4h8XbRLqLBesUr91oGBvGY6+SGZXD/ngQG4MOFlsqpArDLGJI3G/wWq2ces
-	fPOd+2u24IkpByf1h3g2XJpw1MdC/wB2+JuFaTGwQzg1iAxauRLmD2Zt5fjPz1UoHkXDpB
-	vAh0KdeRg1ly0ImFDMWGXgRzAzOQ3zU=
+	bh=P6gvt1F6+IMYvoMYQ+3HA3iRSsAJqSOLit1zPvw6QeY=;
+	b=mqsDaokXvYYdhwc02dEE3gD92kaoS6Hz48BGv0rMpPAHC+Qzuo4bSY4nR/7NYmllCeAKWJ
+	rhiEoG+X0UEjs17FBW686KYnXIgH3UcDeAzAEOFO5Fow1+u+HV/DHalmG3mo2QbDxJAvzS
+	2gYKQV59LYFzMH8eQAa+VpSOjaYwdlg=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BFBC5133D1
-	for <linux-btrfs@vger.kernel.org>; Sat,  2 Aug 2025 06:56:14 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D000133D1
+	for <linux-btrfs@vger.kernel.org>; Sat,  2 Aug 2025 06:56:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wGjQH462jWhhHAAAD6G6ig
+	id ODS0L4+2jWhhHAAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sat, 02 Aug 2025 06:56:14 +0000
+	for <linux-btrfs@vger.kernel.org>; Sat, 02 Aug 2025 06:56:15 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/5] btrfs-progs: remove device_get_partition_size_fd()
-Date: Sat,  2 Aug 2025 16:25:50 +0930
-Message-ID: <d5cc0e8abe2ceb35d8b89aa758713544362ae2ac.1754116463.git.wqu@suse.com>
+Subject: [PATCH 5/5] btrfs-progs: remove device_get_partition_size_sysfs()
+Date: Sat,  2 Aug 2025 16:25:51 +0930
+Message-ID: <7d924138ebae9196c7a6889b29e44e7549bda83d.1754116463.git.wqu@suse.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <cover.1754116463.git.wqu@suse.com>
 References: <cover.1754116463.git.wqu@suse.com>
@@ -84,11 +84,6 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 8A2D21F45B
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
@@ -115,58 +110,102 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: C9B571F45E
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Spam-Score: -3.01
 
-The last user of the helper is removed in commit 585ac14d1af2
-("btrfs-progs: use btrfs_device_size() instead of
-device_get_partition_size_fd()"), and that helper is not generic enough
-to handle regular files.
+The helper is introduced for cases where the unprivileged user failed to
+open the target file.
 
-So let's just remove it.
+The problem is, when such failure happens, it means the distro's file
+mode or ACL is actively preventing unrelated users to access the raw
+device.
+
+E.g. on my distro the default block device mode looks like this:
+
+  brw-rw---- 1 root disk 254, 32 Aug  2 13:35 /dev/vdc
+
+This means if an unprivileged end user is not in the disk group, it
+should access the raw disk.
+
+Using sysfs as a fallback is more like a workaround, and the workaround
+is soon getting out of control.
+
+For example the size is not in byte but in block unit. This is already
+causing problem for issue #979.
+
+Furthermore to grab the correct size in bytes, we have to do all kinds
+of sysfs probing to handle partitions (to get the block size from parent
+node) and dm devices (directly from the current node).
+
+With the recent error handling enhancement, I do not think we should
+even bother using the sysfs fallback, the error message should be enough
+to inform the end user.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- common/device-utils.c | 13 -------------
- common/device-utils.h |  1 -
- 2 files changed, 14 deletions(-)
+ common/device-utils.c | 39 +--------------------------------------
+ 1 file changed, 1 insertion(+), 38 deletions(-)
 
 diff --git a/common/device-utils.c b/common/device-utils.c
-index 2912375a4d21..b52fbf33a539 100644
+index b52fbf33a539..7a0a299ccf83 100644
 --- a/common/device-utils.c
 +++ b/common/device-utils.c
-@@ -333,19 +333,6 @@ int device_get_partition_size_fd_stat(int fd, const struct stat *st, u64 *result
+@@ -333,49 +333,12 @@ int device_get_partition_size_fd_stat(int fd, const struct stat *st, u64 *result
  	return 0;
  }
  
--/*
-- * Read partition size using the low-level ioctl
-- */
--u64 device_get_partition_size_fd(int fd)
+-static int device_get_partition_size_sysfs(const char *dev, u64 *result_ret)
 -{
--	u64 result;
+-	int ret;
+-	char path[PATH_MAX] = {};
+-	char sysfs[PATH_MAX] = {};
+-	char sizebuf[128] = {};
+-	const char *name = NULL;
+-	int sysfd;
+-	unsigned long long size = 0;
 -
--	if (ioctl(fd, BLKGETSIZE64, &result) < 0)
--		return 0;
+-	name = realpath(dev, path);
+-	if (!name)
+-		return -errno;
+-	name = path_basename(path);
 -
--	return result;
+-	ret = path_cat3_out(sysfs, "/sys/class/block", name, "size");
+-	if (ret < 0)
+-		return ret;
+-	sysfd = open(sysfs, O_RDONLY);
+-	if (sysfd < 0)
+-		return -errno;
+-	ret = sysfs_read_file(sysfd, sizebuf, sizeof(sizebuf));
+-	if (ret < 0) {
+-		close(sysfd);
+-		return ret;
+-	}
+-	errno = 0;
+-	size = strtoull(sizebuf, NULL, 10);
+-	if (size == ULLONG_MAX && errno == ERANGE) {
+-		close(sysfd);
+-		return -errno;
+-	}
+-	close(sysfd);
+-	*result_ret = size;
+-	return 0;
 -}
 -
- static int device_get_partition_size_sysfs(const char *dev, u64 *result_ret)
+ int device_get_partition_size(const char *dev, u64 *result_ret)
  {
- 	int ret;
-diff --git a/common/device-utils.h b/common/device-utils.h
-index c55b6944693a..28932aba2859 100644
---- a/common/device-utils.h
-+++ b/common/device-utils.h
-@@ -43,7 +43,6 @@ enum {
- int device_discard_blocks(int fd, u64 start, u64 len);
- int device_zero_blocks(int fd, off_t start, size_t len, const bool direct);
- int device_get_partition_size(const char *dev, u64 *result_ret);
--u64 device_get_partition_size_fd(int fd);
- int device_get_partition_size_fd_stat(int fd, const struct stat *st, u64 *result_ret);
- int device_get_queue_param(const char *file, const char *param, char *buf, size_t len);
- u64 device_get_zone_unusable(int fd, u64 flags);
+ 	int fd = open(dev, O_RDONLY);
+ 
+ 	if (fd < 0)
+-		return device_get_partition_size_sysfs(dev, result_ret);
++		return -errno;
+ 
+ 	if (ioctl(fd, BLKGETSIZE64, result_ret) < 0) {
+ 		int ret = -errno;
 -- 
 2.50.1
 
