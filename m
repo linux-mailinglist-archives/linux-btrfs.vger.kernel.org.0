@@ -1,227 +1,313 @@
-Return-Path: <linux-btrfs+bounces-15816-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15817-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A502B19575
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Aug 2025 23:17:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58777B19588
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Aug 2025 23:18:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06FFF18903BD
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Aug 2025 21:17:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2C2118935ED
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Aug 2025 21:18:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8518A1F561D;
-	Sun,  3 Aug 2025 21:16:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2A32153EA;
+	Sun,  3 Aug 2025 21:18:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="k1pVzd+N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gxWNObGC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 327BA7E792
-	for <linux-btrfs@vger.kernel.org>; Sun,  3 Aug 2025 21:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993251FC0F0;
+	Sun,  3 Aug 2025 21:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754255816; cv=none; b=mV9PYmEQ1YUTmpRWk3M4RjcbGNSM215z27f8dyM/rv64TgSEC+mPv+1OiueDWjRqwcWYkEdpw1r5pmZDxCZn9+U4kSPI9YwtgoQtXUERJmOUFN9Ui3JN0V452TSVBasyavLEZzSDat0sj9M5WwM+i579kWdjEO4B+3QsnDq6bo8=
+	t=1754255882; cv=none; b=H9zL3dexc4zrKbQ44IeF4ObxiqOF2WA3qkt0y1HmMfT36IRoq8MexvQ7UL16huKXa4JixvIf9v/RGdbOLJp56QCs2iJanyi1CLvV4pjEtrzkymnOv8dFYrahN42MUwcpgv1Iej1o19xDTzz80OLcmiA2bML0w3w14mcsz+VP4k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754255816; c=relaxed/simple;
-	bh=gIrv9mD1ZZ3/XmT2VJYhddO3PO+qsBCSQlM9eOsfvag=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=m0PFR9NyDKdDkvBAeudVKKY1M4RGzS+d44D0rEiwWAOxhCF8vzRejp+NdTqnKZ33FH5U8x7lE+vGRsWADUd179Wtddt7vfDu+5Qwtxs77jcmG28fY6ogkbQQd5Uhuq0h6G7tyUQDa8AGgQYlSJdSQY6mnEq2QL5M6i9kuePH3f8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=k1pVzd+N; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1754255809; x=1754860609; i=quwenruo.btrfs@gmx.com;
-	bh=gIrv9mD1ZZ3/XmT2VJYhddO3PO+qsBCSQlM9eOsfvag=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=k1pVzd+NwAsIy4GdTL4RyCPeZEgNLP+wD2G9Bx3h97iewcb4uttfHCcw+FQ6zGeI
-	 fMK5w83tkszVhaZ1J74/bDbBLG/nmSwOY0VuZmFvaJGiAAQbohqDbor6pMEWaxK6A
-	 eMoDdLHLJQIS0sP/oT58aMTrUHvv55yLdwzq91f78iv3O1OZ0LgCI/z84fhinInzw
-	 k/5nyt843DxL85ezzxquRuLglHIXoU3h51lxujKTuRzaOztIrBytZiK9emWLjB70D
-	 It2SZ8YPkE0u3NkKrY5U/vWYqRj+1s6x4clCpOqeoyzwJIkXijJY1uvXLHjQi7mKz
-	 BIsnVNdBhrhsdxK+2w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1Ygt-1uff8V2XRD-007LCB; Sun, 03
- Aug 2025 23:16:49 +0200
-Message-ID: <1f1544c5-6aaa-402c-8899-71e45acacf90@gmx.com>
-Date: Mon, 4 Aug 2025 06:46:44 +0930
+	s=arc-20240116; t=1754255882; c=relaxed/simple;
+	bh=zO1SJIgsdDjXqsBmIcmGPU93WITEO7f49l+qJhB1O8Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=kXb7KrkCw7olwRXcp25X/U9BpaOQ2zFnaCGnTIlL5Dwdrr1q4TzxIlFDa33uS+wZ5h1io7LUTphH026hp+o1NwZi5IY8tCcqFOsZOHq2SiNKrCkmnalu9u+DyUJm6Uqc72xIaSOvq2upKfFJrbQ4/y2uAJOwS6nR6gURB1MPiFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gxWNObGC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 651D1C4CEEB;
+	Sun,  3 Aug 2025 21:18:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754255882;
+	bh=zO1SJIgsdDjXqsBmIcmGPU93WITEO7f49l+qJhB1O8Q=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=gxWNObGCWVYXO8WFt2q0pwAuZypozEdF88diPuA5tN58Rd+FcfxA0eKs997a5QUOV
+	 MGIOanezeoBBu5xAFxcolEFl8+XsviWMzSi/NgOfFPLLINVGPG6gPeGmu2/iHVTY9z
+	 ViNjbTyNUiI46GqUoLJ275UcgvFRgqY7NX5Nk1wRrz1ZFcCPSwPtjI6YS+rDOW0ixa
+	 BRpfTfLd6keSXh+m3G7iuMnYL8QcS/ufwLYqQ6urbB46j06lzHa0POn6pDxcHHpmLT
+	 r6HN7IdZMKoStcrONjziGp66T3aEJDkl7ZZePfaiqawQYQymib30HT5QTGDIQ9C9eb
+	 GuFAAmvmTsFzQ==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Qu Wenruo <wqu@suse.com>,
+	David Sterba <dsterba@suse.com>,
+	Sasha Levin <sashal@kernel.org>,
+	clm@fb.com,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.16 10/35] btrfs: fix -ENOSPC mmap write failure on NOCOW files/extents
+Date: Sun,  3 Aug 2025 17:17:10 -0400
+Message-Id: <20250803211736.3545028-10-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250803211736.3545028-1-sashal@kernel.org>
+References: <20250803211736.3545028-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Should seed device be allowed to be mounted multiple times?
-To: Dave T <davestechshop@gmail.com>, Qu Wenruo <wqu@suse.de>
-Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <aef03da8-853a-4c9f-b77b-30cf050ec1a5@suse.de>
- <CAGdWbB5PUw1gGy9PaOdYn14OfKH8NhO3WOMt_2axg1589t8OJQ@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAGdWbB5PUw1gGy9PaOdYn14OfKH8NhO3WOMt_2axg1589t8OJQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZphhDEcozQ7oMU5PcHek/j2rZ3hteqzMEmswkFSUprsNonPHrGB
- qVGZhLyZNDYIMg+xfWEZPgAEBpdYt4HM+/m71ZVGFgKnZarVXwb3rwj7E9uPaMJERea0yqP
- fUcoExQvwybnXpQbO/ieXKcTAYdOmysc4Pu/4UGGEuyNOxMrW3y8Oh470xIr9kYdAEB/7i7
- QgMb5w3tsDF+QymILZb6A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:6HUqY0M9eVw=;geIrt6h8wvBmTz9zOxXyLqHc3BA
- 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
- zA==
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.16
+Content-Transfer-Encoding: 8bit
+
+From: Filipe Manana <fdmanana@suse.com>
+
+[ Upstream commit 6599716de2d68ab7b3c0429221deca306dbda878 ]
+
+If we attempt a mmap write into a NOCOW file or a prealloc extent when
+there is no more available data space (or unallocated space to allocate a
+new data block group) and we can do a NOCOW write (there are no reflinks
+for the target extent or snapshots), we always fail due to -ENOSPC, unlike
+for the regular buffered write and direct IO paths where we check that we
+can do a NOCOW write in case we can't reserve data space.
+
+Simple reproducer:
+
+  $ cat test.sh
+  #!/bin/bash
+
+  DEV=/dev/sdi
+  MNT=/mnt/sdi
+
+  umount $DEV &> /dev/null
+  mkfs.btrfs -f -b $((512 * 1024 * 1024)) $DEV
+  mount $DEV $MNT
+
+  touch $MNT/foobar
+  # Make it a NOCOW file.
+  chattr +C $MNT/foobar
+
+  # Add initial data to file.
+  xfs_io -c "pwrite -S 0xab 0 1M" $MNT/foobar
+
+  # Fill all the remaining data space and unallocated space with data.
+  dd if=/dev/zero of=$MNT/filler bs=4K &> /dev/null
+
+  # Overwrite the file with a mmap write. Should succeed.
+  xfs_io -c "mmap -w 0 1M"        \
+         -c "mwrite -S 0xcd 0 1M" \
+         -c "munmap"              \
+         $MNT/foobar
+
+  # Unmount, mount again and verify the new data was persisted.
+  umount $MNT
+  mount $DEV $MNT
+
+  od -A d -t x1 $MNT/foobar
+
+  umount $MNT
+
+Running this:
+
+  $ ./test.sh
+  (...)
+  wrote 1048576/1048576 bytes at offset 0
+  1 MiB, 256 ops; 0.0008 sec (1.188 GiB/sec and 311435.5231 ops/sec)
+  ./test.sh: line 24: 234865 Bus error               xfs_io -c "mmap -w 0 1M" -c "mwrite -S 0xcd 0 1M" -c "munmap" $MNT/foobar
+  0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
+  *
+  1048576
+
+Fix this by not failing in case we can't allocate data space and we can
+NOCOW into the target extent - reserving only metadata space in this case.
+
+After this change the test passes:
+
+  $ ./test.sh
+  (...)
+  wrote 1048576/1048576 bytes at offset 0
+  1 MiB, 256 ops; 0.0007 sec (1.262 GiB/sec and 330749.3540 ops/sec)
+  0000000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
+  *
+  1048576
+
+A test case for fstests will be added soon.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+
+LLM Generated explanations, may be completely bogus:
+
+Based on my analysis of this commit, here is my determination:
+
+**Backport Status: YES**
+
+This commit should be backported to stable kernel trees for the
+following reasons:
+
+1. **Fixes a real user-visible bug**: The commit fixes a clear
+   functional regression where mmap writes to NOCOW files fail with
+   -ENOSPC even when they shouldn't. The bug causes legitimate write
+   operations to fail when the filesystem is nearly full, even though
+   NOCOW writes should succeed without requiring new data space
+   allocation.
+
+2. **Contains a simple reproducer**: The commit message includes a clear
+   test case that demonstrates the problem, showing it's a reproducible
+   issue that users can encounter in normal usage scenarios.
+
+3. **Limited scope and risk**: The fix is confined to the
+   `btrfs_page_mkwrite()` function in fs/btrfs/file.c. It doesn't touch
+   multiple subsystems or introduce architectural changes. The
+   modification follows the same pattern already used in buffered write
+   and direct IO paths.
+
+4. **Follows existing patterns**: The fix applies the same NOCOW
+   handling logic that already exists for regular buffered writes and
+   direct IO. It's essentially fixing an inconsistency where mmap writes
+   didn't have the same NOCOW fallback logic.
+
+5. **Clear fix with minimal changes**: The patch adds proper NOCOW
+   checking when data space reservation fails, similar to what's done in
+   other write paths. It uses existing functions like
+   `btrfs_check_nocow_lock()` and `btrfs_check_nocow_unlock()`.
+
+6. **No new features**: This is purely a bug fix that restores expected
+   behavior. It doesn't add any new functionality or APIs.
 
 
+The code changes show a straightforward fix that:
+- Adds `only_release_metadata` flag to track NOCOW write scenarios
+- When data space reservation fails, checks if NOCOW write is possible
+- If NOCOW is possible, only reserves metadata space instead of failing
+- Properly releases resources in error paths based on whether it's a
+  NOCOW operation
 
-=E5=9C=A8 2025/8/4 05:08, Dave T =E5=86=99=E9=81=93:
-> Hi Qu,
->=20
-> First of all, thanks for your work on BTRFS. I also want to thank the
-> entire team. Regarding the device opening restrictions from commit
-> e04bf5d6da76, I wanted to check on potential impacts for btrbk, a
-> commonly used BTRFS backup tool.
->=20
-> btrbk's documentation recommends mounting BTRFS filesystems with
-> "subvolid=3D5" for backup operations (see
-> https://digint.ch/btrbk/doc/readme.html). Many users following this
-> guidance mount the top-level subvolume specifically for btrbk while
-> also having other subvolumes mounted for regular use.
+This is exactly the type of bug fix that stable kernels should receive -
+it fixes a specific functional problem without introducing new risks or
+complexity.
 
-It's completely unrelated.
+ fs/btrfs/file.c | 59 ++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 51 insertions(+), 8 deletions(-)
 
-The "mounted multiple times" is not mounting a subvolume on to different=
-=20
-location.
-
-It's about the same seed device mounted belonging to different filesystems=
-.
-
-E.g. a sprouted fs mounted using the seed device, meanwhile the seed=20
-device itself also mounted somewhere else.
-
-Such seed device usage should not affect most users.
->=20
-> While I believe typical single-filesystem scenarios should be
-> unaffected (multiple subvolume mounts from the same device), I wanted
-> to confirm that common btrbk use cases won't be impacted by the new
-> restrictions. This includes:
->=20
-> Mounting subvolid=3D5 alongside other subvolumes from the same filesyste=
-m
-> Multiple BTRFS filesystems being backed up on the same system
-> Any network backup scenarios where device access patterns might differ
->=20
-> Could you clarify whether btrbk's recommended mounting patterns are
-> compatible with the changes being considered now?
->=20
-> Thanks for considering the broader ecosystem impact. Have a great day!
->=20
-> Dave
->=20
->=20
-> On Sat, Aug 2, 2025 at 3:12=E2=80=AFAM Qu Wenruo <wqu@suse.de> wrote:
->>
->> Hi,
->>
->> There is the test case misc/046 from btrfs-progs, that the same seed
->> device is mounted multiple times while a sprouted fs already being moun=
-ted.
->>
->> However after kernel commit e04bf5d6da76 ("btrfs: restrict writes to
->> opened btrfs devices"), every device can only be opened once.
->>
->> Thus the same read-only seed device can not be mounted multiple times
->> anymore.
->>
->> I'm wondering what is the proper way to handle it.
->>
->> Should we revert the patch and lose the extra protection, or change the
->> docs to drop the "seed multiple filesystems, at the same time" part?
->>
->> Personally speaking, I'd prefer the latter solution for the sake of
->> safety (no one can write our block devices when it's mounted).
->>
->> Thanks,
->> Qu
->>
->=20
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 8ce6f45f45e0..0a468bbfe015 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1842,6 +1842,7 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ 	loff_t size;
+ 	size_t fsize = folio_size(folio);
+ 	int ret;
++	bool only_release_metadata = false;
+ 	u64 reserved_space;
+ 	u64 page_start;
+ 	u64 page_end;
+@@ -1862,10 +1863,34 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ 	 * end up waiting indefinitely to get a lock on the page currently
+ 	 * being processed by btrfs_page_mkwrite() function.
+ 	 */
+-	ret = btrfs_delalloc_reserve_space(BTRFS_I(inode), &data_reserved,
+-					   page_start, reserved_space);
+-	if (ret < 0)
++	ret = btrfs_check_data_free_space(BTRFS_I(inode), &data_reserved,
++					  page_start, reserved_space, false);
++	if (ret < 0) {
++		size_t write_bytes = reserved_space;
++
++		if (btrfs_check_nocow_lock(BTRFS_I(inode), page_start,
++					   &write_bytes, false) <= 0)
++			goto out_noreserve;
++
++		only_release_metadata = true;
++
++		/*
++		 * Can't write the whole range, there may be shared extents or
++		 * holes in the range, bail out with @only_release_metadata set
++		 * to true so that we unlock the nocow lock before returning the
++		 * error.
++		 */
++		if (write_bytes < reserved_space)
++			goto out_noreserve;
++	}
++	ret = btrfs_delalloc_reserve_metadata(BTRFS_I(inode), reserved_space,
++					      reserved_space, false);
++	if (ret < 0) {
++		if (!only_release_metadata)
++			btrfs_free_reserved_data_space(BTRFS_I(inode), data_reserved,
++						       page_start, reserved_space);
+ 		goto out_noreserve;
++	}
+ 
+ 	ret = file_update_time(vmf->vma->vm_file);
+ 	if (ret < 0)
+@@ -1906,10 +1931,16 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ 	if (folio_contains(folio, (size - 1) >> PAGE_SHIFT)) {
+ 		reserved_space = round_up(size - page_start, fs_info->sectorsize);
+ 		if (reserved_space < fsize) {
++			const u64 to_free = fsize - reserved_space;
++
+ 			end = page_start + reserved_space - 1;
+-			btrfs_delalloc_release_space(BTRFS_I(inode),
+-					data_reserved, end + 1,
+-					fsize - reserved_space, true);
++			if (only_release_metadata)
++				btrfs_delalloc_release_metadata(BTRFS_I(inode),
++								to_free, true);
++			else
++				btrfs_delalloc_release_space(BTRFS_I(inode),
++							     data_reserved, end + 1,
++							     to_free, true);
+ 		}
+ 	}
+ 
+@@ -1946,10 +1977,16 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ 
+ 	btrfs_set_inode_last_sub_trans(BTRFS_I(inode));
+ 
++	if (only_release_metadata)
++		btrfs_set_extent_bit(io_tree, page_start, end, EXTENT_NORESERVE,
++				     &cached_state);
++
+ 	btrfs_unlock_extent(io_tree, page_start, page_end, &cached_state);
+ 	up_read(&BTRFS_I(inode)->i_mmap_lock);
+ 
+ 	btrfs_delalloc_release_extents(BTRFS_I(inode), fsize);
++	if (only_release_metadata)
++		btrfs_check_nocow_unlock(BTRFS_I(inode));
+ 	sb_end_pagefault(inode->i_sb);
+ 	extent_changeset_free(data_reserved);
+ 	return VM_FAULT_LOCKED;
+@@ -1959,10 +1996,16 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ 	up_read(&BTRFS_I(inode)->i_mmap_lock);
+ out:
+ 	btrfs_delalloc_release_extents(BTRFS_I(inode), fsize);
+-	btrfs_delalloc_release_space(BTRFS_I(inode), data_reserved, page_start,
+-				     reserved_space, true);
++	if (only_release_metadata)
++		btrfs_delalloc_release_metadata(BTRFS_I(inode), reserved_space, true);
++	else
++		btrfs_delalloc_release_space(BTRFS_I(inode), data_reserved,
++					     page_start, reserved_space, true);
+ 	extent_changeset_free(data_reserved);
+ out_noreserve:
++	if (only_release_metadata)
++		btrfs_check_nocow_unlock(BTRFS_I(inode));
++
+ 	sb_end_pagefault(inode->i_sb);
+ 
+ 	if (ret < 0)
+-- 
+2.39.5
 
 
