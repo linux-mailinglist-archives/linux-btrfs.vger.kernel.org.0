@@ -1,75 +1,82 @@
-Return-Path: <linux-btrfs+bounces-15819-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15821-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FE0CB196DD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Aug 2025 01:53:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA030B196DF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Aug 2025 01:53:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0F2818937F0
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Aug 2025 23:53:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C2273B5705
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Aug 2025 23:53:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF10218AA0;
-	Sun,  3 Aug 2025 23:53:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA54218AA0;
+	Sun,  3 Aug 2025 23:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BqX/nXZ/";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RsV9/qWu"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SElDIMra";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SElDIMra"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBD6586359
-	for <linux-btrfs@vger.kernel.org>; Sun,  3 Aug 2025 23:52:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52F02205513
+	for <linux-btrfs@vger.kernel.org>; Sun,  3 Aug 2025 23:53:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754265181; cv=none; b=CnqER4B82/cBA9e9p48cb1as3P37i5m8rjo/15qIokCGzEKanvJhii8Ae3wMYO/TpkYGEn6pZWKT6pgtJ6mk10GhD+fKuA/FkGR9z4DHraGFIpXHjX1qS5OYoAQPtLwAn17tAs8yDRPz//KmbVUjIvFzxumppjAAZmvS4bdRr/A=
+	t=1754265188; cv=none; b=h/jSBK+uz/0T5XklvJ41OcaCwAyGQPffC57h+6Xi+VEHHFRTOMV7ZiZl7/CIo8C66J3PpwzPWhwEwJmvZKpmX1cdtx6t3exWG5e6hmbp38me6AmQLn50/13Ixh4hwGAlQV1JqJ3213b6/ztNQUkT8h4pvkWXgkbItLGEqFbc1lM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754265181; c=relaxed/simple;
-	bh=ns6EQuCKOYGXqNZgWa+ZgSSV4Au3hJp1Suo1bINJ74A=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=eiTqAcJ+stdFYpUPTW80cW6F2mVnWiZByirmgq5Jo98y/Z9ozT2D8QYKKX1uhvlOFmDREYO1Uk02ilGgRPPmlLFr0P9E+JKKZ+Yhez4hjl+TBhsmU5P+LEmNTOjlltNUsRglIpuC8NCVsbzzSN7c4eQh3iC1XmclCVU03hMABpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BqX/nXZ/; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RsV9/qWu; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1754265188; c=relaxed/simple;
+	bh=Esl8VGxziByoucXns+t62lrnLST7/cC/8hlB3I9uiFY=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=R0z1A9nPjnW+xiC7hvoueb9sylaoYNOCkxk5kqcXlGKJMq83pz+xP1yv1H80oc0iJh2Dq/MidzHGw2myLQ4wQInkgEiGBvky31tEqPsTWbs2UsKkfOuHf0OZavmN+LWhedRQXiWtjFRDSXSskoArkatq6K0wUeBb2r4AncJyvXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SElDIMra; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SElDIMra; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DA3971F387
-	for <linux-btrfs@vger.kernel.org>; Sun,  3 Aug 2025 23:52:56 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 16A441F38C
+	for <linux-btrfs@vger.kernel.org>; Sun,  3 Aug 2025 23:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1754265177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=IPwdbz+xYR+c0xKujLKopnCBV5cHS6HUy9Tubw9B6UQ=;
-	b=BqX/nXZ/miqLC0wQTltGIlIfpO3Lhdu0RJCnjFUNQz6vbVBUB4LTm771MCUweBOVEVG+tF
-	kvsJj/yjvXIxNrZFPQWrRWFVmSxCqRP9L0qxksh/pcZyBObKlAMYLSteLmPKy3iYOWax/w
-	eqKw3bYF7ea37+G0MuOGIg0KpI27mPo=
+	t=1754265178; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=15DXN3ICkZFIIxOjyVnKj1oVGjWOBRwW8oSx5yQN4Xk=;
+	b=SElDIMra99DLRf1x0TwlVX6AWAexwReRXT5kdqX5PA99WLPKwkADhy0pRx+23NiBWCnmyu
+	RDgqo8E/d2+IX2f6FscTgqxz4f2RXxnSVODUCl/jvJ6Oc5CCNwgdZC5t77bSiiF5wk+7XO
+	L5npJD6cVO+vcGBIVCqrpFYe7yzkyhg=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1754265176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=IPwdbz+xYR+c0xKujLKopnCBV5cHS6HUy9Tubw9B6UQ=;
-	b=RsV9/qWun5y/KF1nGvOjW3LaY/vDB1OQV4xR//bJxRB/JeKA37g1335Rva7JHyHAeg2NNU
-	OWKaljDzqJt4B1LUCHcsB6s2LK3N9bDEM7SM98vU93WqGOzhO1EWugQ5c8RkYjzccdagCf
-	4blq0i80byiL/NZSZUwEcxXYC61WA4Q=
+	t=1754265178; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=15DXN3ICkZFIIxOjyVnKj1oVGjWOBRwW8oSx5yQN4Xk=;
+	b=SElDIMra99DLRf1x0TwlVX6AWAexwReRXT5kdqX5PA99WLPKwkADhy0pRx+23NiBWCnmyu
+	RDgqo8E/d2+IX2f6FscTgqxz4f2RXxnSVODUCl/jvJ6Oc5CCNwgdZC5t77bSiiF5wk+7XO
+	L5npJD6cVO+vcGBIVCqrpFYe7yzkyhg=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0CEC713974
-	for <linux-btrfs@vger.kernel.org>; Sun,  3 Aug 2025 23:52:55 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D05213974
+	for <linux-btrfs@vger.kernel.org>; Sun,  3 Aug 2025 23:52:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id RiJaL1f2j2hPZAAAD6G6ig
+	id UJvFA1n2j2hPZAAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sun, 03 Aug 2025 23:52:55 +0000
+	for <linux-btrfs@vger.kernel.org>; Sun, 03 Aug 2025 23:52:57 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/3] btrfs-progs: updates related to seed device and v6.17 kernel
-Date: Mon,  4 Aug 2025 09:22:35 +0930
-Message-ID: <cover.1754265134.git.wqu@suse.com>
+Subject: [PATCH 1/3] btrfs-progs: docs/seed: update a note related to orphan roots cleanup
+Date: Mon,  4 Aug 2025 09:22:36 +0930
+Message-ID: <f5fe490f6c9958886f87c3bf33e82ea885c0e703.1754265134.git.wqu@suse.com>
 X-Mailer: git-send-email 2.50.1
+In-Reply-To: <cover.1754265134.git.wqu@suse.com>
+References: <cover.1754265134.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,6 +84,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
 X-Spamd-Result: default: False [-2.80 / 50.00];
 	BAYES_HAM(-3.00)[99.99%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
@@ -89,7 +97,7 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	RCPT_COUNT_ONE(0.00)[1];
 	ARC_NA(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -99,43 +107,43 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
-X-Spam-Level: 
 X-Spam-Score: -2.80
 
-Kernel commit 40426dd147ff ("btrfs: use the super_block as holder when
-mounting file systems") changed the block device holder so that each
-device of a mounted btrfs can only belong to a single fs.
+There is a note about a bug that mount a fs RO first, then remount it
+RW, will make btrfs to skip the orphan roots cleanup.
 
-This is fine for most users, but for a corner case of seed devices, it
-can be problematic.
+However it's no longer the case after kernel commit 44c0ca211a4d
+("btrfs: lift read-write mount setup from mount and remount"), as that
+commit unify the pre-RW mount checks, and will always do the orphan
+roots cleanup.
 
-As previously we allow the same seed device to be mounted through both
-the seed device and the sprouted fs, as at that time all btrfs devices
-share the same holder.
+Just update the note so that it won't cause any confusion.
 
-But now since each block device can only belong to a single mounted fs,
-it means the seed device can only be mounted through either the seed
-device itself or a sprouted fs, not both at the same time.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ Documentation/ch-seeding-device.rst | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-This series will update the docs to be more explicit about the seed
-device mounting behavior, and updated the test case misc/046 to follow
-the new kernel behavior.
-
-And since we're here, also update a note where newer kernel fix a bug in
-orphan roots cleanup.
-
-
-Qu Wenruo (3):
-  btrfs-progs: docs/seed: update a note related to orphan roots cleanup
-  btrfs-progs: docs/seed: add extra notes for v6.17 and newer kernels
-  btrfs-progs: misc-tests: do not try to mount a block device into
-    different filesystems
-
- Documentation/ch-seeding-device.rst           | 14 +++++++++++++-
- tests/misc-tests/046-seed-multi-mount/test.sh | 17 ++++++++---------
- 2 files changed, 21 insertions(+), 10 deletions(-)
-
---
+diff --git a/Documentation/ch-seeding-device.rst b/Documentation/ch-seeding-device.rst
+index e04dd28d9ff8..8ca55dacd6a5 100644
+--- a/Documentation/ch-seeding-device.rst
++++ b/Documentation/ch-seeding-device.rst
+@@ -26,11 +26,13 @@ filesystem at :file:`/path` ready for use.
+ 
+ .. note::
+ 
+-        There is a known bug with using remount to make the mount writeable:
++        There was a known bug with using remount to make the mount writeable:
+         remount will leave the filesystem in a state where it is unable to
+         clean deleted snapshots, so it will leak space until it is unmounted
+         and mounted properly.
+ 
++	That bug is fixed in v5.11 and newer kernels.
++
+ Furthermore, deleting the seeding device from the filesystem can turn it into
+ a normal filesystem, provided that the writable device can also contain all the
+ data from the seeding device.
+-- 
 2.50.1
 
 
