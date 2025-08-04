@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-15828-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15829-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C676BB19AC4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Aug 2025 06:32:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E4F3B19AC6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Aug 2025 06:35:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81FF73A8B4A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Aug 2025 04:32:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E949E3A9A58
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Aug 2025 04:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875EC1FECB1;
-	Mon,  4 Aug 2025 04:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9141D2135D1;
+	Mon,  4 Aug 2025 04:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="FMtQnn7B"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ManJJHpH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B372113EFE3;
-	Mon,  4 Aug 2025 04:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB85013EFE3;
+	Mon,  4 Aug 2025 04:35:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754281971; cv=none; b=gBs3J/zibFLXnp+qIjhuR8994YeG+EUQEREY8yHFfaUpHdIvBbxJf9Yvi9Oo6pezCx8LuJJwPHwq6uzKhd579bLEZuPVE35gLwqGJMPXclisKdm0pDEU2KF5yh5UMrT4BmEiPxzhtaC/DodPlbl4oVj7rHeDHIrpdcDOTVNM5nw=
+	t=1754282125; cv=none; b=gGHRc7DyBjiytqihOsN2o4szTCx90CAQMtA72kFPkW7s4nMXMUITTbfIe/c9jjjdyqFbhjSY5LqPC59tJEppd2WQd5RSuGYfg9Iw27BR4azOh5FsQMyYEueRn95sylmuS0B0rA9eJ4N87TNF2WRlSgmap1OzX/DOIcy25pEL6X8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754281971; c=relaxed/simple;
-	bh=9O3YYBFzcEYnANEOWK6u0Zut9o2SRh2RyGECT4DgcPY=;
+	s=arc-20240116; t=1754282125; c=relaxed/simple;
+	bh=KMxmqP+SIUPHWDS9L1oeEIxTuclLBo0PQk1Blm1R9J4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FeTKQicF+arwk6GbvFZ5zrpcib5K7T77vpoTveg5Ay/eVl4y6+6J6T66LVB1tOpeim73IcWyrOAQ7aqPJ/+12h9HwZ6VDAWQC9m6nBFul7Nv14hV25rJUeLxAlPiNLHSkJRv4D6Rucnwj4C2NiFyJkwk/Fjm9/WKwWOV45OgVy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=FMtQnn7B; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=J+wDacLHQ1xJYhsyw1c6GrxW5qzZDwuiId81UL9lqoDHTwOxJKqOCho1k0V3ihM/amTswIz7pTDQYE1kbziS0honTkcZaBp1/hYR+4UoMrHm7WrwTQkH7JeWgoTgT+CDdjQ01ZMu6BE2aaAkg83xLzVgHEYKEUWuCHjIY5OsLww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ManJJHpH; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1754281959; x=1754886759; i=quwenruo.btrfs@gmx.com;
-	bh=gE6360aq3IXHIh7m8zAFEIkTPZlHP6LL0ld6qS1VxB0=;
+	s=s31663417; t=1754282113; x=1754886913; i=quwenruo.btrfs@gmx.com;
+	bh=b/UjWLjGBV3a8OQHQtjYCpGMfKoX7xqMz2/swWe2t7s=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=FMtQnn7BAZAbFXPwC0FSgz0DHDsOU48MUsFSXuigr77kLXI0F+oHiIW7OWUn7mEI
-	 QSziavE70Xj5R0RU55BiIe4imrcepCpLyh3QmzB+BmFdrBrxoP4ZvYkHHQXDPTSIj
-	 dW3EODf061k1AhyEaT2CIYgTwOkNbZ3OGvqEqDed++KJPOwOMWwZPa39WI8OVAPMV
-	 r267Yb4yy+8W7d5TCLrTTWZDZwgNeUbzFoSUAPEeQouypC594k6BCoLJfobKye9la
-	 HuEA/AvyIxIgsu2Us+uP6HW3Q8uMHesluAnraF8Q9xOYh6frKYsOOUjnBEKizGU7W
-	 VAr6I7HXMHQguf5Kgg==
+	b=ManJJHpHauWyCxDO6gZsfPQN0z7fV0UlXPALZKtebwQyhfGRyNqm3CK0Pq5gzo5n
+	 E4c6ili6KbK3rUY/wg0McAx6Bbl/6P2+KobYU6WjbYs3vbosG8NDZv8cr9mzqpYjQ
+	 fWoAA9BZMG4mfR5yQ5UUZDC/EoI+v+Q+QBc6iLtEgxv9VzPghpwKILVcckCbeW90C
+	 9iboRfnSG7hj1iCu7R3E+dElA6ERA+DaVSpctSkkrIeCCIoobOB8KotvvhoypCl/T
+	 aU4lEdJXXFfW4UX2bjjl66gXW7VlLu/pteEbiBzatxs3RodeKeQRlc2Jl9rc16YKm
+	 0ESrcKzQwZO7rDLCRQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N49hB-1uaQtC0bLt-017LQO; Mon, 04
- Aug 2025 06:32:39 +0200
-Message-ID: <1b7aa1de-a544-4387-b776-9816a5058f87@gmx.com>
-Date: Mon, 4 Aug 2025 14:02:35 +0930
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MXGr8-1v8eTf0wEo-00UjOt; Mon, 04
+ Aug 2025 06:35:13 +0200
+Message-ID: <18dbfdb1-57cb-425a-bbfb-bac8a658441d@gmx.com>
+Date: Mon, 4 Aug 2025 14:05:09 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,14 +58,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/7] btrfs/301: Make this test compatible with all block
- sizes.
+Subject: Re: [PATCH 7/7] generic/274: Make the test compatible with all
+ blocksizes.
 To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>, fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org, ritesh.list@gmail.com,
  ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org,
  fdmanana@kernel.org
 References: <cover.1753769382.git.nirjhar.roy.lists@gmail.com>
- <a8233808db2ee1d7c5fe7ee8710388bb0cb8f787.1753769382.git.nirjhar.roy.lists@gmail.com>
+ <0a9f6e6d2018c6d505be192031aeb9e656b23bd3.1753769382.git.nirjhar.roy.lists@gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -92,102 +92,92 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <a8233808db2ee1d7c5fe7ee8710388bb0cb8f787.1753769382.git.nirjhar.roy.lists@gmail.com>
+In-Reply-To: <0a9f6e6d2018c6d505be192031aeb9e656b23bd3.1753769382.git.nirjhar.roy.lists@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:btigVA1+nFAk2I6yTuy5yQjCQ9Uqvn5vlbvHymrGqRg5n4dgA2n
- H9wJBQsVjao0AD0xkb1UIFDGu4wFVhs5RDv1V4QD00bi0sTRUw+wRdY1TSRMO9q195pA7BF
- x4eeu2mpJY4tp5RIwYTAHjKcNTPwojJ/Ma+Kcm+XWl6J9//ZFwy7usxwSm6iuMS0W7SNaF+
- D43IHasdsdAIF/nvST1PA==
+X-Provags-ID: V03:K1:Wp7iM9WKaw+GDeynNsTDTSX6vK/CDU5UQE9owB7+KMSLXpkyHNW
+ S36fK5vF6zM5SAgkg1u5dcjKi01TKB/0w5XVH7t3NQXjaz7t0rJAaMHAyN4aWR9goXwDlin
+ 0PItOetUmUi4gYcWCeH6HdCQreCRUBZ38wGqvgK3vbI19N/hO9S+U7zl7c6npj34Gffa4A5
+ IOZIWPZGywVu8mkQqgbUw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:k3Z+D4aLL5k=;JaGC0jVbGUDPZJGR/1DA0Lz29fM
- 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
- 08ouUnuO+GjwtQxeB2VUfDY=
+UI-OutboundReport: notjunk:1;M01:P0:9/e6ZUhFq2o=;t4qGXxalbwAnkg3f6rtquNOqdzC
+ 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
 
 
 
 =E5=9C=A8 2025/7/29 15:51, Nirjhar Roy (IBM) =E5=86=99=E9=81=93:
-> With large block sizes like 64k on powerpc with 64k pagesize
-> the test failed with the following logs:
+> On btrfs with 64k blocksize on powerpc with 64k pagesize
+> it failed with the following error:
 >=20
->       QA output created by 301
->       basic accounting
->      +subvol 256 mismatched usage 33947648 vs 4587520 \
->           (expected data 4194304 expected meta 393216 diff 29360128)
->      +subvol 256 mismatched usage 168165376 vs 138805248 \
-> 	(expected data 138412032 expected meta 393216 diff 29360128)
->      +subvol 256 mismatched usage 33947648 vs 4587520 \
-> 	(expected data 4194304 expected meta 393216 diff 29360128)
->      +subvol 256 mismatched usage 33947648 vs 4587520 \
-> 	(expected data 4194304 expected meta 393216 diff 29360128)
->       fallocate: Disk quota exceeded
-> (Please note that the above ouptut had to be modified a bit since
-> the number of characters in each line was much greater than the
-> 72 characters.)
-
-You don't need to break the line for raw output.
-
+>       ------------------------------
+>       preallocation test
+>       ------------------------------
+>      -done
+>      +failed to write to test file
+>      +(see /home/xfstests-dev/results//btrfs_64k/generic/274.full for de=
+tails)
+>      ...
+> So, this test is written with 4K block size in mind. As we can see,
+> it first creates a file of size 4K and then fallocates 4MB beyond the
+> EOF.
+> Then there are 2 loops - one that fragments at alternate blocks and
+> the other punches holes in the remaining alternate blocks. Hence,
+> the test fails in 64k block size due to incorrect calculations.
 >=20
-> The test creates nr_fill files each of size 8k i.e, 2x4k(stored in fill_=
-sz).
-> Now with 64k blocksize, 8k sized files occupy more than expected
-> sizes (i.e, 8k) due to internal fragmentation since 1 file
-> will occupy at least 1 block. Fix this by scaling the file size (fill_sz=
-)
-> with the blocksize.
+> Fix this test by making the test scale with the block size, that is
+> the offset, filesize and the assumed blocksize matches/scales with
+> the actual blocksize of the underlying filesystem.
 
-You can just replace the fill_sz to 64K so that all block sizes will work.
-
-Just tested with 64K fill_sz, it works for both 4K and 64K block size=20
-with 64K page size.
+Again, just enlarge the block size from 4K to 64K, then all block size=20
+will work.
 
 Thanks,
 Qu
@@ -196,28 +186,73 @@ Qu
 > Reported-by: Disha Goel <disgoel@linux.ibm.com>
 > Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
 > ---
->   tests/btrfs/301 | 8 +++++++-
->   1 file changed, 7 insertions(+), 1 deletion(-)
+>   tests/generic/274 | 21 +++++++++++----------
+>   1 file changed, 11 insertions(+), 10 deletions(-)
 >=20
-> diff --git a/tests/btrfs/301 b/tests/btrfs/301
-> index 6b59749d..7547ff0e 100755
-> --- a/tests/btrfs/301
-> +++ b/tests/btrfs/301
-> @@ -23,7 +23,13 @@ subv=3D$SCRATCH_MNT/subv
->   nested=3D$SCRATCH_MNT/subv/nested
->   snap=3D$SCRATCH_MNT/snap
->   nr_fill=3D512
-> -fill_sz=3D$((8 * 1024))
-> +
-> +_scratch_mkfs >> $seqres.full
-> +_scratch_mount
+> diff --git a/tests/generic/274 b/tests/generic/274
+> index 916c7173..4ea42f30 100755
+> --- a/tests/generic/274
+> +++ b/tests/generic/274
+> @@ -40,30 +40,31 @@ _scratch_unmount 2>/dev/null
+>   _scratch_mkfs_sized $((2 * 1024 * 1024 * 1024)) >>$seqres.full 2>&1
+>   _scratch_mount
+>  =20
+> -# Create a 4k file and Allocate 4M past EOF on that file
+> -$XFS_IO_PROG -f -c "pwrite 0 4k" -c "falloc -k 4k 4m" $SCRATCH_MNT/test=
+ \
+> -	>>$seqres.full 2>&1 || _fail "failed to create test file"
 > +blksz=3D`_get_block_size $SCRATCH_MNT`
-> +_scratch_unmount
-> +fill_sz=3D$(( 2 * blksz ))
-> +
->   total_fill=3D$(($nr_fill * $fill_sz))
->   nodesize=3D$($BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV=
- | \
->   					grep nodesize | $AWK_PROG '{print $2}')
+> +scale=3D$(( blksz / 1024 ))
+> +# Create a blocksize worth file and Allocate a large file past EOF on t=
+hat file
+> +$XFS_IO_PROG -f -c "pwrite -b $blksz 0 $blksz" -c "falloc -k $blksz $((=
+ 1 * 1024 * 1024 * scale ))" \
+> +	$SCRATCH_MNT/test >>$seqres.full 2>&1 || _fail "failed to create test =
+file"
+>  =20
+>   # Fill the rest of the fs completely
+>   # Note, this will show ENOSPC errors in $seqres.full, that's ok.
+>   echo "Fill fs with 1M IOs; ENOSPC expected" >> $seqres.full
+>   dd if=3D/dev/zero of=3D$SCRATCH_MNT/tmp1 bs=3D1M >>$seqres.full 2>&1
+> -echo "Fill fs with 4K IOs; ENOSPC expected" >> $seqres.full
+> -dd if=3D/dev/zero of=3D$SCRATCH_MNT/tmp2 bs=3D4K >>$seqres.full 2>&1
+> +echo "Fill fs with $blksz K IOs; ENOSPC expected" >> $seqres.full
+> +dd if=3D/dev/zero of=3D$SCRATCH_MNT/tmp2 bs=3D$blksz >>$seqres.full 2>&=
+1
+>   _scratch_sync
+>   # Last effort, use O_SYNC
+> -echo "Fill fs with 4K DIOs; ENOSPC expected" >> $seqres.full
+> -dd if=3D/dev/zero of=3D$SCRATCH_MNT/tmp3 bs=3D4K oflag=3Dsync >>$seqres=
+.full 2>&1
+> +echo "Fill fs with $blksz DIOs; ENOSPC expected" >> $seqres.full
+> +dd if=3D/dev/zero of=3D$SCRATCH_MNT/tmp3 bs=3D$blksz oflag=3Dsync >>$se=
+qres.full 2>&1
+>   # Save space usage info
+>   echo "Post-fill space:" >> $seqres.full
+>   df $SCRATCH_MNT >>$seqres.full 2>&1
+> -
+>   # Now attempt a write into all of the preallocated space -
+>   # in a very nasty way, badly fragmenting it and then filling it in.
+>   echo "Fill in prealloc space; fragment at offsets:" >> $seqres.full
+>   for i in `seq 1 2 1023`; do
+>   	echo -n "$i " >> $seqres.full
+> -	dd if=3D/dev/zero of=3D$SCRATCH_MNT/test seek=3D$i bs=3D4K count=3D1 c=
+onv=3Dnotrunc \
+> +	dd if=3D/dev/zero of=3D$SCRATCH_MNT/test seek=3D$i bs=3D$blksz count=
+=3D1 conv=3Dnotrunc \
+>   		>>$seqres.full 2>/dev/null || _fail "failed to write to test file"
+>   done
+>   _scratch_sync
+> @@ -71,7 +72,7 @@ echo >> $seqres.full
+>   echo "Fill in prealloc space; fill holes at offsets:" >> $seqres.full
+>   for i in `seq 2 2 1023`; do
+>   	echo -n "$i " >> $seqres.full
+> -	dd if=3D/dev/zero of=3D$SCRATCH_MNT/test seek=3D$i bs=3D4K count=3D1 c=
+onv=3Dnotrunc \
+> +	dd if=3D/dev/zero of=3D$SCRATCH_MNT/test seek=3D$i bs=3D$blksz count=
+=3D1 conv=3Dnotrunc \
+>   		>>$seqres.full 2>/dev/null || _fail "failed to fill test file"
+>   done
+>   _scratch_sync
 
 
