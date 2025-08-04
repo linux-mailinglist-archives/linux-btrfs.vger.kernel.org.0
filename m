@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-15826-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15827-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CE47B19AB4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Aug 2025 06:20:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3988B19ABC
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Aug 2025 06:28:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB8807A406D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Aug 2025 04:18:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EDD67AB05C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Aug 2025 04:26:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD60E1E7C1B;
-	Mon,  4 Aug 2025 04:19:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7646F1F91C5;
+	Mon,  4 Aug 2025 04:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Sn9o4Rhu"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="sqQ7HeXJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01B517BA9;
-	Mon,  4 Aug 2025 04:19:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F52C17BA1;
+	Mon,  4 Aug 2025 04:28:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754281197; cv=none; b=reSXOe31P6+BaeYNeGnDPGRV8t8BVra+Dev8qBNfBV1Rqiu4gn8vFrLzvRyKe7d+oOOF3qnuhepzV175BH/uXn065R/pHLSwlkfhPTr41QD2hwmVk+mrAiRa/dE5iSbqRD4JOOj0+djZwrEW3sdKlmAhv6Ye8VfOahljp2R9Wpc=
+	t=1754281696; cv=none; b=oMbiZAQRo92TkPm4izmMxnNYvaSRHHTK+4YAuvr9uPjkvZNR2amqLINhYnjXQMszqiy+lJnA6pAavRPcdUWHUvCQ/JCvklb6j8LN8sEv8LiZ1qmibmVgAz3Nunlk7E+bv0DMuYXykjxb8A8F0blcZqZBjhMhVMrNBqMCrHAzgjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754281197; c=relaxed/simple;
-	bh=9naKNlJnCm4NgZE3y9RkEwGdHp/r9sBFkMR1fVzKUo0=;
+	s=arc-20240116; t=1754281696; c=relaxed/simple;
+	bh=4fInMS2aC4kMRyfxTTHHy26veYrgh5wiW4zjf0+j/9E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qZvzR6iITS7pdzW5U94OqcWPkQDXCu2vv0rDJlgqNnG2MhUI885dW7WdBJL7Tq0Wi34NR9QjUFFGrFhwNEEJLNHuWOsRfXTRHPqxn7CMPhyrdpPcqVuh+O1xoEvVd89x/nh/Hn362hC5CysEWMUZizHkLCr3fT0Dldomt2jgqJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Sn9o4Rhu; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=amYZgjMt2032hYCQX/mGPDeqoxWqPHu/PY5hgh911fCpSY5gKWi4kF5FmQFdbUujR9NPqxgeol+BSBkn+ACrF93bzo2+vOt8+2SfYKQRSL9+XAj7lUnJ/iVlrjlFs8ZW1hKYz2HwPz539uRi/KfMmrjF52KQLqQgfOtkazZ1fzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=sqQ7HeXJ; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1754281185; x=1754885985; i=quwenruo.btrfs@gmx.com;
-	bh=StI6DkpbEy9BX3DC2A1su8VtP+qNXWXK0qba1SWL3LI=;
+	s=s31663417; t=1754281685; x=1754886485; i=quwenruo.btrfs@gmx.com;
+	bh=i4W0n453AoeTx1f+sEDwVCW2DYgrWNR2x+S8xYYb/iU=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=Sn9o4RhulBVh4h1tRR2MeBi5taIKpqvl+NZLShuNLbeNU64glIst05IbGbku5eG3
-	 b8FjLR/T4FztqqJl924xGnsqMsggKO2RBt8jSmWS0+Fpj7QsUjmf6glRSmE8WvQ14
-	 Bps+dJ5sryKvsJCMIb3RzssJZSY6iaBEZ7C+itUq30lp4auFpIuTIc1/upISsAUHG
-	 jRfAhic7D3gm9NfiGPewiBYGgKgz5auvw/Jhb2lY0XuIDKluIzqhbpFd46qzl83y4
-	 bn3hsFl7Mk2gsXtwYXdxcn0+bkEwow5lERTCunZpzusQ+hNLmzhyuFQY0VkEA443q
-	 /n2TtHAbnEPEfcdXNg==
+	b=sqQ7HeXJ/J50kCgGr/ld/3P2yM9LnBfcT9wDl8xodAMsl10w/X3sJKRVfmzbVQ5u
+	 0MLFpcItDEJNjXP2lvVK4PSSPhWW6WgSZRifXsNUqJVR+trZ6Ht3ey2LuuhfNsbcf
+	 WtR+TwoAWj2gaww98Teb05FcvtdYE3Qo24VCKRpjSIP5lpDxyjFDsks1PLMViVD+y
+	 ghLaBR4pqPrMtmwYmpCD1FH5OLr+tTh5oNsVNf7loHHN6UqdnV6dlsrxUv/JJA62E
+	 6cLmQYXdU5ED2fE4Nxv052oqHW8WuexjZLTYrX4jbYSj1UKa3liaGG0owm7teoBpW
+	 8c8Usv1suh9WLWHpCQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MRmfi-1vBydx1nqM-00Y2tq; Mon, 04
- Aug 2025 06:19:45 +0200
-Message-ID: <dec1d1f0-896b-4b9f-bc78-a21e2f9aecfc@gmx.com>
-Date: Mon, 4 Aug 2025 13:49:39 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M2f9b-1umujr2dlX-008Rck; Mon, 04
+ Aug 2025 06:28:05 +0200
+Message-ID: <d1b32c8f-6d9b-441b-85c4-3a4b6b91ce15@gmx.com>
+Date: Mon, 4 Aug 2025 13:58:00 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/7] btrfs/200: Make this test scale with the block size
+Subject: Re: [PATCH 5/7] generic/563: Increase the write tolerance to 6% for
+ larger nodesize
 To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>, fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org, ritesh.list@gmail.com,
  ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org,
  fdmanana@kernel.org
 References: <cover.1753769382.git.nirjhar.roy.lists@gmail.com>
- <ec81b0ed49ebfe203d7923f3886776fb74fbaf32.1753769382.git.nirjhar.roy.lists@gmail.com>
+ <f48538de3ce4a98a2128f48aa0f005f51eb552ee.1753769382.git.nirjhar.roy.lists@gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,194 +92,136 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <ec81b0ed49ebfe203d7923f3886776fb74fbaf32.1753769382.git.nirjhar.roy.lists@gmail.com>
+In-Reply-To: <f48538de3ce4a98a2128f48aa0f005f51eb552ee.1753769382.git.nirjhar.roy.lists@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3xedAZ8gWvXCNCacCgUN9gJpyRJLSkijzv3GYDXH1UKAGk9gJl0
- N3GiiPtBe0FryGuw/GT3DaEVgPtAoN87yOomOh+AGmRtaGGqeK+zPyZERqipke4gf/ub/Di
- xUOAIvAQSdyY2GXC402mNdvqKG9Ex/4GVmtUqOAn/uC+3eybbGW8BBil9pLP1z+YoGEy6hR
- RGfol5KvErJSRcDOt184g==
+X-Provags-ID: V03:K1:nryolHMN4Br3g/X6MYQrmxtqoA6v1WKiye+cpFmwONlWmvTNP12
+ uFm4/sms1Krv/MpyjdBT04E0t5rq7PoP9sR/rJ0CGd7oQiTm8cgvBCUoZ3p/Y6P7DVJA13z
+ 4DExZ/t5PIzWm9jp1edcK6an0QKA0YjlAfFDOBccC/A5itSQWIuMswpfh2ln0fash+dxYy+
+ durrm4URpcHFZyVyVoVIQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:oJQUnhf57Y4=;8cmkXnd1RcG+V9sccZI8vhamKCW
- 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
+UI-OutboundReport: notjunk:1;M01:P0:xG6uGAOkPQQ=;R+MfA2Y9fuSK1nxoSwpsQwpcz7n
+ 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
 
 
 
 =E5=9C=A8 2025/7/29 15:51, Nirjhar Roy (IBM) =E5=86=99=E9=81=93:
-> For large block sizes like 64k on powerpc with 64k
-> pagesize it failed because this test was hardcoded
-> to work with 4k blocksize.
-> With blocksize 4k and the existing file lengths,
-> we are getting 2 extents but with 64k page size
-> number of extents is not exceeding 1(due to lower
-> file size).
-> The first few lines of the error message is as follows:
->       At snapshot incr
->       OK
->       OK
->      +File foo does not have 2 shared extents in the base snapshot
->      +/mnt/scratch/base/foo:
->      +   0: [0..255]: 26624..26879
->      +File foo does not have 2 shared extents in the incr snapshot
->      ...
->=20
-> Fix this by scaling the size and offsets to scale with the block
-> size by a factor of (blocksize/4k).
+> When tested with blocksize/nodesize 64K on powerpc
+> with 64k  pagesize on btrfs, then the test fails
+> with the folllowing error:
+>       QA output created by 563
+>       read/write
+>       read is in range
+>      -write is in range
+>      +write has value of 8855552
+>      +write is NOT in range 7969177.6 .. 8808038.4
 
-Although I can reproduce the bug on aarch64 with 64K page size, the=20
-changelog doesn't seem to explain the problem.
-
-The problem is after receive, the file base/foo is a single extent, not=20
-the original reflinked two extent.
-
-And the original fs is indeed have the correct two extents layout.
-
-
-That different extent layout is definitely not explained properly in the=
+I can reproduce the failure, although it's not 100% reliable, and indeed=
 =20
-commit message.
+with one tree block's size removed, it's back into the tolerance range.
 
-Furthermore the test case is already using 64K block size for extents=20
-creation, thus all supported block size should work.
-
-
-So I think the change doesn't really touch the core of the failure.
-
-Thanks,
-Qu
+>       write -> read/write
+>      ...
+> The slight increase in the amount of bytes that
+> are written is because of the increase in the
+> the nodesize(metadata) and hence it exceeds the tolerance limit slightly=
+.
+> Fix this by increasing the write tolerance limit from 5% from 6%
+> for 64k blocksize btrfs.
 >=20
 > Reported-by: Disha Goel <disgoel@linux.ibm.com>
 > Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
 > ---
->   tests/btrfs/200     | 24 ++++++++++++++++--------
->   tests/btrfs/200.out |  8 ++++----
->   2 files changed, 20 insertions(+), 12 deletions(-)
+>   tests/generic/563 | 17 ++++++++++++++++-
+>   1 file changed, 16 insertions(+), 1 deletion(-)
 >=20
-> diff --git a/tests/btrfs/200 b/tests/btrfs/200
-> index e62937a4..fd2c2026 100755
-> --- a/tests/btrfs/200
-> +++ b/tests/btrfs/200
-> @@ -35,18 +35,26 @@ mkdir $send_files_dir
->   _scratch_mkfs >>$seqres.full 2>&1
->   _scratch_mount
->  =20
+> diff --git a/tests/generic/563 b/tests/generic/563
+> index 89a71aa4..efcac1ec 100755
+> --- a/tests/generic/563
+> +++ b/tests/generic/563
+> @@ -119,7 +119,22 @@ $XFS_IO_PROG -c "pread 0 $iosize" -c "pwrite -b $bl=
+ksize 0 $iosize" -c fsync \
+>   	$SCRATCH_MNT/file >> $seqres.full 2>&1
+>   switch_cg $cgdir
+>   $XFS_IO_PROG -c fsync $SCRATCH_MNT/file
+> -check_cg $cgdir/$seq-cg $iosize $iosize 5% 5%
 > +blksz=3D`_get_block_size $SCRATCH_MNT`
-> +echo "block size =3D $blksz" >> $seqres.full
 > +
-> +# Scale the test with any block size starting from 1k
-> +scale=3D$(( blksz / 1024 ))
-> +offset=3D$(( 16 * 1024 * scale ))
-> +size=3D$(( 16 * 1024 * scale ))
-> +
->   # Create our first test file, which has an extent that is shared only =
-with
->   # itself and no other files. We want to verify a full send operation w=
-ill
->   # clone the extent.
-> -$XFS_IO_PROG -f -c "pwrite -S 0xb1 -b 64K 0 64K" $SCRATCH_MNT/foo \
-> -	| _filter_xfs_io
-> -$XFS_IO_PROG -c "reflink $SCRATCH_MNT/foo 0 64K 64K" $SCRATCH_MNT/foo \
-> -	| _filter_xfs_io
-> +$XFS_IO_PROG -f -c "pwrite -S 0xb1 -b $size 0 $size" $SCRATCH_MNT/foo \
-> +	| _filter_xfs_io | _filter_xfs_io_size_offset 0 $size
-> +$XFS_IO_PROG -c "reflink $SCRATCH_MNT/foo 0 $offset $size" $SCRATCH_MNT=
-/foo \
-> +	| _filter_xfs_io | _filter_xfs_io_size_offset $offset $size
+> +# On higher node sizes on btrfs, we observed slightly more
+> +# writes, due to increased metadata sizes.
+> +# Hence have a higher write tolerance for btrfs and when
+> +# node size is greater than 4k.
+> +if [[ "$FSTYP" =3D=3D "btrfs" ]]; then
+> +	nodesz=3D$(_get_btrfs_node_size "$SCRATCH_DEV")
+> +	if [[ "$nodesz" -gt 4096 ]]; then
+> +		check_cg $cgdir/$seq-cg $iosize $iosize 5% 6%
+> +	else
+> +		check_cg $cgdir/$seq-cg $iosize $iosize 5% 5%
+> +	fi
+> +else
+> +	check_cg $cgdir/$seq-cg $iosize $iosize 5% 5%
+> +fi
+
+Instead of the btrfs specific hack, I'd recommend to just enlarge iosize.
+
+Double the iosize will easily make it to cover the tolerance of even=20
+btrfs, but you still need a proper explanation of the change.
+
+Thanks,
+Qu
+
 >  =20
->   # Create out second test file which initially, for the first send oper=
-ation,
->   # only has a single extent that is not shared.
-> -$XFS_IO_PROG -f -c "pwrite -S 0xc7 -b 64K 0 64K" $SCRATCH_MNT/bar \
-> -	| _filter_xfs_io
-> +$XFS_IO_PROG -f -c "pwrite -S 0xc7 -b $size 0 $size" $SCRATCH_MNT/bar \
-> +	| _filter_xfs_io | _filter_xfs_io_size_offset 0 $size
->  =20
->   _btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/base
->  =20
-> @@ -56,8 +64,8 @@ $BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRAT=
-CH_MNT/base 2>&1 \
->   # Now clone the existing extent in file bar to itself at a different o=
-ffset.
->   # We want to verify the incremental send operation below will issue a =
-clone
->   # operation instead of a write operation.
-> -$XFS_IO_PROG -c "reflink $SCRATCH_MNT/bar 0 64K 64K" $SCRATCH_MNT/bar \
-> -	| _filter_xfs_io
-> +$XFS_IO_PROG -c "reflink $SCRATCH_MNT/bar 0 $offset $size" $SCRATCH_MNT=
-/bar \
-> +	| _filter_xfs_io | _filter_xfs_io_size_offset $offset $size
->  =20
->   _btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/incr
->  =20
-> diff --git a/tests/btrfs/200.out b/tests/btrfs/200.out
-> index 306d9b24..4a10e506 100644
-> --- a/tests/btrfs/200.out
-> +++ b/tests/btrfs/200.out
-> @@ -1,12 +1,12 @@
->   QA output created by 200
-> -wrote 65536/65536 bytes at offset 0
-> +wrote SIZE/SIZE bytes at offset OFFSET
->   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> -linked 65536/65536 bytes at offset 65536
-> +linked SIZE/SIZE bytes at offset OFFSET
->   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> -wrote 65536/65536 bytes at offset 0
-> +wrote SIZE/SIZE bytes at offset OFFSET
->   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->   At subvol SCRATCH_MNT/base
-> -linked 65536/65536 bytes at offset 65536
-> +linked SIZE/SIZE bytes at offset OFFSET
->   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->   At subvol SCRATCH_MNT/incr
->   At subvol base
+>   # Write from one cgroup then read and write from a second. Writes are =
+charged to
+>   # the first group and nothing to the second.
 
 
