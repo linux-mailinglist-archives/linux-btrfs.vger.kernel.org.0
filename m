@@ -1,94 +1,95 @@
-Return-Path: <linux-btrfs+bounces-15861-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15862-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFFF4B1BA7E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 20:54:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFF48B1BABE
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 21:11:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13D3B170514
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 18:54:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 889FF1897D94
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 19:11:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B433329A32D;
-	Tue,  5 Aug 2025 18:54:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2791629AAF3;
+	Tue,  5 Aug 2025 19:07:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="HZWauUQ5";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hR58F/5M"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="UqUmaDOc";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cx0n0/r9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
+Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FEE0199939
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 18:54:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E612129A32D
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 19:07:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754420053; cv=none; b=uMqo1mABDApP28VBS/cxddRSMai9qx9OIQnpoiVcXymUSPIFGc3hw6oIawFonexnVV3IRUnwLLpt46V60CIc4wFrrq67gHuztaIRyzP2YkEXtE6F0WrmKUBV/E2bcjbxZjH1X+qmcA86rVayONyHK1ckg9KaGAjUaJd5H8RvsX4=
+	t=1754420863; cv=none; b=SnFrHC8StjQ0PQErVegoFyLrIZTh3L2uqaHXfsjVy2TUlcxt+MnMpqxMD47Ra6DVn+ApGMmOYaXI5TTZEX54Tm57t++QSsUxcKMngdfrlrdZvEBXg8F9kt8lCxAUcA34jTkXDXY+JG1pbZe7H51sFEvNh1C4wBmd0Qcmta7HnuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754420053; c=relaxed/simple;
-	bh=z09TXL5YUVhf1k4WtwlzXUi+2TI4F98f4V8F/e2gluM=;
+	s=arc-20240116; t=1754420863; c=relaxed/simple;
+	bh=7fYuACfiYSSQ4Wy+M3Y9E0QaY/hYjOsjYinmVc0YbJQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BwbWYOnzbzITQIWmpjj/DqtvK8Xp1v53N90+BSX9xCWSbEfa8eWD0jT+Wx8GJvxJpJRO8qg3AR75e2q9pTviyvtIKzTRvV5622p6JhWulvdb6Qf/CUd1ZDSAHgDeleTK+mbK3zfn2Ef2UYEEd33UNSYWjiC2/ZQ6yPALO6UxbTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=HZWauUQ5; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hR58F/5M; arc=none smtp.client-ip=103.168.172.157
+	 Content-Type:Content-Disposition:In-Reply-To; b=rLE8QDuuTOgmCUhOHX9dvHiEf9vyikFoJPlpwre0GXy6jy/iHwGtG3ZRpjhTe5PzXzxpwltU+ZQTo42oWabOPuDDquLI1USpjzHx81OMQHivWyBnKS4Ym+EmJcFnnjtLJycJM7OM4nLs/ChZrlIz+ohssMKNv79WCK694t+Gdb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=UqUmaDOc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cx0n0/r9; arc=none smtp.client-ip=103.168.172.150
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 4DD1B1400059;
-	Tue,  5 Aug 2025 14:54:11 -0400 (EDT)
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfout.phl.internal (Postfix) with ESMTP id 11141EC0213;
+	Tue,  5 Aug 2025 15:07:40 -0400 (EDT)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Tue, 05 Aug 2025 14:54:11 -0400
+  by phl-compute-02.internal (MEProxy); Tue, 05 Aug 2025 15:07:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1754420051; x=1754506451; bh=Mb4ychyOrY
-	dF5X4PWHexFzDEShAQOqeUSbXlPTV0+SE=; b=HZWauUQ5fo/kCkHEiHMxmEUTOg
-	uTRmfloWurMmoFrhp9v0DrXCWv4ebXrt5FLQGyIIXPzsSsAonYliNL7+UWL4ZC9U
-	nCek4qsSIh+sVjPKPrortLz1Ut9pENNjAQNsmvREC9Ki5tkSGmgL4d72oxwXdOG3
-	t2Hr84NazhH2SVYcypgBlQZGIqGcS7ZtRnNk3icXvfHzgMAlcY/GZaO3DkClaIzQ
-	RywRVCkoO7TO4UQsy6jcbyyM5O0ulDMV2egK0KotQELZnCBWTqQW9I2HKF4e3oJt
-	cldoJVByzCB2qBoqv1uWr1SWb2zyY3ByD8vFLw/Z+owIzd1rvijxE3EQKLZg==
+	:subject:to:to; s=fm1; t=1754420860; x=1754507260; bh=/MZ5jDWV0W
+	Bf2RArQdDFx5Sdr00Y56dWEQ0LzBhOikQ=; b=UqUmaDOcSqSo1VH4q19Ev62gzL
+	mKH72XYCt+VGDJRHJwmCR1CEanCOF7B6n+NUTEH5drPCkb2NEdSi0YM2pShJihRS
+	TRF+5z3nbswhKdGzvMRdEKC/nEKzTDAxam/nEcTvby/Z83qSBjvE1OFVWZYZCIkK
+	nly0ALqBNXY+DWUKx3qWr/537PJrP6H/dZfZZ3GwwXPT+BAFbIu7cI/08dQXX7Yl
+	dMF7xTeHj9SZjOns6xnQvkwJ9nJCV0OxyGa5zie30qcHVOuNuzwhpapKllhHGjyN
+	oB+LhAAgnXiAij7FSSCZARvQl96gJuP/N6ERGaXTj4SRrdy7FHsj3iQA3c/Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1754420051; x=1754506451; bh=Mb4ychyOrYdF5X4PWHexFzDEShAQOqeUSbX
-	lPTV0+SE=; b=hR58F/5MP8fzfHEs9Ijq3ON2gIJIzOMVfQa42RBAqvFjixoWv54
-	p+DiVf0HoeVrHRQZC7oA5QY9O5ev2jbLl42BBTPiM8cHmPGCadekyVCuEAterBv7
-	49fVU++F98YYI2RhB+PsgGNLvcwDAj3OuRmykD5243K9LZnFq8yc/X7xvHnpMba8
-	jAdBjtTTneJUVYA2V2TDF77YL+nZJWuJbbYhS2EDraJvHiCX4s0epQmntq6YAqL8
-	kQsFCk0GZr1XTmfvkkk8DttDoZQYSq3P2Y+8J0Uv0LPbUQsVHVPHQ6ID1vDnZSoM
-	W7BDh12pXmTTWmqCb2IlyoRZrB9YF9zz1Qw==
-X-ME-Sender: <xms:U1OSaOzkNWh7dJgLumca6NRaTGwHbsCNeQUyWB8-gV_YSRiw0v_21A>
-    <xme:U1OSaKd2d7B8lSTq3quHRCJ9GKbLj4QkVpGB8JrzU4A7rZK-RsM-dl4hGiHiVF42l
-    UsDcP_4fn3wjeusGGk>
-X-ME-Received: <xmr:U1OSaCLYRdPUwKaYp9iGRTzFxXAw64vA8fKefvLao5iZdO-sVicjGupFqCeS94nI4pbaPT2iBkb8ychF9oWcctfZFiU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduudehleegucetufdoteggodetrf
+	1754420860; x=1754507260; bh=/MZ5jDWV0WBf2RArQdDFx5Sdr00Y56dWEQ0
+	LzBhOikQ=; b=cx0n0/r9ZJq/imicirTOLRDQs24jL9SpfICF111KyhgauhaYj3f
+	Fv574ZZo1Pe9Dsl/ZmDiQ4FOb2Jrb0Ig+uvWKfAcfPOUBuifSvtgkvshhRft+eDW
+	b/hK67Z5olhdr13NIuzTW20gak8sx18fhNKFsDtg+NLypLXPZHxq9Y3imH9YxgKK
+	8so4iStAQjhfNZ7FcbdM3ectuJRSUaLibJTBvYHLd7LsHRfTuw7d7sg16bBO2Dzj
+	kD4RhOmDvFN+8aC04f5cLuGFJzGYgGBY3GeT7F82OadtK1dWLLAfcf5y935zFD30
+	dizQlSElwpZeRHcjBgrJ9oYmgextoWEppoA==
+X-ME-Sender: <xms:e1aSaB4veo11Nh2XJs1uzs1bH6MckAu05_Z7i6uxveDHPu9BRxFPKw>
+    <xme:e1aSaPH5S6tHeHvJ5gpUlXt7nspa5IfWcT49Cl9zRHbIRbAZn_4U5u4mTU8MXBrbi
+    aEpP6F2c9qeJmMkUY0>
+X-ME-Received: <xmr:e1aSaKQ67sHeNhqwy99M55zcT8wppfvV_G04wDLfPNHegJ3YrqtZzKyRbc2MKSxpvmkpuNzszrl23bjUeS5_1RJxufU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduudehleeiucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertd
-    dttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiie
-    eiudfguefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmoh
-    guvgepshhmthhpohhuthdprhgtphhtthhopehfughmrghnrghnrgeskhgvrhhnvghlrdho
-    rhhgpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdroh
-    hrgh
-X-ME-Proxy: <xmx:U1OSaDEQClrFxxr5Bvws96JTZaHBS2jV2ZlU41oUldXR_nZ4-toSEA>
-    <xmx:U1OSaErWmGmH0-r2YfpXE8io-K2QRJD4bSZgW7LqJ8u919n0_yq1zA>
-    <xmx:U1OSaERsZtrDHq9ewJO7yuhP0c3ITviYUyiCxSwJXvtY4ZWoxFlcMQ>
-    <xmx:U1OSaJMoY3vGjk9Ja9-4-lGCXl1sst-PXxX9zHMuvb4e0uUQRiAc3g>
-    <xmx:U1OSaBVcdR71jC5uUH9FFEHnMt0pvV6nSQRxB1lkA8Q5oxCAbgEoJ42J>
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
+    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
+    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
+    ohepfihquhesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvh
+    hgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:e1aSaIvNFMxzvMxJiwD390enYiIxdJW5WZD5cdPKfV5DEQecgVt7Lg>
+    <xmx:e1aSaJxRQjn7VFCxXIQ5fM1j1jysgCtUh7jzz_MvW4QV1FafjH07Cg>
+    <xmx:e1aSaC6a81UvGVCMZeggN-Uor8578oRvGYjg3P6NK1ijzn5OntfLyA>
+    <xmx:e1aSaDXxdy3HunM-CPaZsezn7X70yhQ0KTdogYaNKSTeEstdtAvRLA>
+    <xmx:fFaSaOpSxFWEnMqf3LNzstlDK96k2FYt5Jj0O6r7UXTJu3m9-sSA0ePM>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 5 Aug 2025 14:54:10 -0400 (EDT)
-Date: Tue, 5 Aug 2025 11:55:09 -0700
+ 5 Aug 2025 15:07:39 -0400 (EDT)
+Date: Tue, 5 Aug 2025 12:08:38 -0700
 From: Boris Burkov <boris@bur.io>
-To: fdmanana@kernel.org
+To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: do not set mtime/ctime to current time when
- unlinking for log replay
-Message-ID: <20250805185509.GA4106638@zen.localdomain>
-References: <eb58e42ddc016bff18f179b4ef4507d6fe37e73d.1754304373.git.fdmanana@suse.com>
+Subject: Re: [PATCH 2/5] btrfs-progs: add error handling for
+ device_get_partition_size()
+Message-ID: <20250805190838.GB4106638@zen.localdomain>
+References: <cover.1754116463.git.wqu@suse.com>
+ <525dbf649790b855d109714bf9a82796fe3d7b1e.1754116463.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -97,89 +98,178 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eb58e42ddc016bff18f179b4ef4507d6fe37e73d.1754304373.git.fdmanana@suse.com>
+In-Reply-To: <525dbf649790b855d109714bf9a82796fe3d7b1e.1754116463.git.wqu@suse.com>
 
-On Mon, Aug 04, 2025 at 11:49:41AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Sat, Aug 02, 2025 at 04:25:48PM +0930, Qu Wenruo wrote:
+> The function device_get_partition_size() has all kinds of error paths,
+> but it has no way to return error other than returning 0.
 > 
-> If we are doing an unlink for log replay, we are updating the directory's
-> mtime and ctime to the current time, and this is incorrect since it should
-> stay with the mtime and ctime that were set when the directory was logged.
+> This is not helpful for end users to know what's going wrong.
 > 
-> This is the same as when adding a link to an inode during log replay (with
-> btrfs_add_link()), where we want the mtime and ctime to be the values that
-> were in place when the inode was logged.
-> 
-> This was found with generic/547 using LOAD_FACTOR=20 and TIME_FACTOR=20,
-> where due to large log trees we have longer log replay times and fssum
-> could detect a mismatch of the mtime and ctime of a directory.
-> 
-> Fix this by skipping the mtime and ctime update at __btrfs_unlink_inode()
-> if we are in log replay context (just like btrfs_add_link()).
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Change that function to have a dedicated return value for error
+> handling, and pass a u64 pointer for the result.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+All the callers check ret < 0, rather than ret != 0, so any reason not
+to simply return the positive value in case of no error? Signed
+overflow?
 
+In the kernel, BLK_DEV_MAX_SECTORS is set to LLONG_MAX >> 9, which I
+think means we are probably OK?
+
+> 
+> For most callers they are able to exit gracefully with a proper error
+> message.
+> 
+> But for load_device_info(), we allow a failed size probing to continue
+> without 0 size, just as the old code.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/inode.c | 29 +++++++++++++++++++----------
->  1 file changed, 19 insertions(+), 10 deletions(-)
+>  cmds/filesystem-usage.c |  9 +++++++--
+>  cmds/replace.c          | 14 ++++++++++++--
+>  common/device-utils.c   | 29 +++++++++++++++--------------
+>  common/device-utils.h   |  2 +-
+>  4 files changed, 35 insertions(+), 19 deletions(-)
 > 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index fcbe3e791026..83e242bf42f3 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -4192,6 +4192,23 @@ int btrfs_update_inode_fallback(struct btrfs_trans_handle *trans,
->  	return ret;
->  }
->  
-> +static void update_time_after_link_or_unlink(struct btrfs_inode *dir)
-> +{
-> +	struct timespec64 now;
-> +
-> +	/*
-> +	 * If we are replaying a log tree, we do not want to update the mtime
-> +	 * and ctime of the parent directory with the current time, since the
-> +	 * log replay procedure is responsible for setting them to their correct
-> +	 * values (the ones it had when the fsync was done).
-> +	 */
-> +	if (test_bit(BTRFS_FS_LOG_RECOVERING, &dir->root->fs_info->flags))
-> +		return;
-> +
-> +	now = inode_set_ctime_current(&dir->vfs_inode);
-> +	inode_set_mtime_to_ts(&dir->vfs_inode, now);
-> +}
-> +
->  /*
->   * unlink helper that gets used here in inode.c and in the tree logging
->   * recovery code.  It remove a link in a directory with a given name, and
-> @@ -4292,7 +4309,7 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
->  	inode_inc_iversion(&inode->vfs_inode);
->  	inode_set_ctime_current(&inode->vfs_inode);
->  	inode_inc_iversion(&dir->vfs_inode);
-> - 	inode_set_mtime_to_ts(&dir->vfs_inode, inode_set_ctime_current(&dir->vfs_inode));
-> +	update_time_after_link_or_unlink(dir);
->  
->  	return btrfs_update_inode(trans, dir);
->  }
-> @@ -6686,15 +6703,7 @@ int btrfs_add_link(struct btrfs_trans_handle *trans,
->  	btrfs_i_size_write(parent_inode, parent_inode->vfs_inode.i_size +
->  			   name->len * 2);
->  	inode_inc_iversion(&parent_inode->vfs_inode);
-> -	/*
-> -	 * If we are replaying a log tree, we do not want to update the mtime
-> -	 * and ctime of the parent directory with the current time, since the
-> -	 * log replay procedure is responsible for setting them to their correct
-> -	 * values (the ones it had when the fsync was done).
-> -	 */
-> -	if (!test_bit(BTRFS_FS_LOG_RECOVERING, &root->fs_info->flags))
-> -		inode_set_mtime_to_ts(&parent_inode->vfs_inode,
-> -				      inode_set_ctime_current(&parent_inode->vfs_inode));
-> +	update_time_after_link_or_unlink(parent_inode);
->  
->  	ret = btrfs_update_inode(trans, parent_inode);
+> diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+> index f812af13482e..e367bffc3a01 100644
+> --- a/cmds/filesystem-usage.c
+> +++ b/cmds/filesystem-usage.c
+> @@ -820,8 +820,13 @@ static int load_device_info(int fd, struct array *devinfos)
+>  			strcpy(info->path, "missing");
+>  		} else {
+>  			strcpy(info->path, (char *)dev_info.path);
+> -			info->device_size =
+> -				device_get_partition_size((const char *)dev_info.path);
+> +			ret = device_get_partition_size((const char *)dev_info.path,
+> +							&info->device_size);
+> +			if (ret < 0) {
+> +				errno = -ret;
+> +				warning("failed to get device size for devid %llu: %m", dev_info.devid);
+> +				info->device_size = 0;
+> +			}
+>  		}
+>  		info->size = dev_info.total_bytes;
+>  		ndevs++;
+> diff --git a/cmds/replace.c b/cmds/replace.c
+> index 887c3251a725..d5b0b0e02ce1 100644
+> --- a/cmds/replace.c
+> +++ b/cmds/replace.c
+> @@ -269,7 +269,12 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
+>  		strncpy_null((char *)start_args.start.srcdev_name, srcdev,
+>  			     BTRFS_DEVICE_PATH_NAME_MAX + 1);
+>  		start_args.start.srcdevid = 0;
+> -		srcdev_size = device_get_partition_size(srcdev);
+> +		ret = device_get_partition_size(srcdev, &srcdev_size);
+> +		if (ret < 0) {
+> +			errno = -ret;
+> +			error("failed to get device size for %s: %m", srcdev);
+> +			goto leave_with_error;
+> +		}
+>  	} else {
+>  		error("source device must be a block device or a devid");
+>  		goto leave_with_error;
+> @@ -279,7 +284,12 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
 >  	if (ret)
+>  		goto leave_with_error;
+>  
+> -	dstdev_size = device_get_partition_size(dstdev);
+> +	ret = device_get_partition_size(dstdev, &dstdev_size);
+> +	if (ret < 0) {
+> +		errno = -ret;
+> +		error("failed to get device size for %s: %m", dstdev);
+> +		goto leave_with_error;
+> +	}
+>  	if (srcdev_size > dstdev_size) {
+>  		error("target device smaller than source device (required %llu bytes)",
+>  			srcdev_size);
+> diff --git a/common/device-utils.c b/common/device-utils.c
+> index 783d79555446..6d89d16b029d 100644
+> --- a/common/device-utils.c
+> +++ b/common/device-utils.c
+> @@ -342,7 +342,7 @@ u64 device_get_partition_size_fd(int fd)
+>  	return result;
+>  }
+>  
+> -static u64 device_get_partition_size_sysfs(const char *dev)
+> +static int device_get_partition_size_sysfs(const char *dev, u64 *result_ret)
+>  {
+>  	int ret;
+>  	char path[PATH_MAX] = {};
+> @@ -354,45 +354,46 @@ static u64 device_get_partition_size_sysfs(const char *dev)
+>  
+>  	name = realpath(dev, path);
+>  	if (!name)
+> -		return 0;
+> +		return -errno;
+>  	name = path_basename(path);
+>  
+>  	ret = path_cat3_out(sysfs, "/sys/class/block", name, "size");
+>  	if (ret < 0)
+> -		return 0;
+> +		return ret;
+>  	sysfd = open(sysfs, O_RDONLY);
+>  	if (sysfd < 0)
+> -		return 0;
+> +		return -errno;
+>  	ret = sysfs_read_file(sysfd, sizebuf, sizeof(sizebuf));
+>  	if (ret < 0) {
+>  		close(sysfd);
+> -		return 0;
+> +		return ret;
+>  	}
+>  	errno = 0;
+>  	size = strtoull(sizebuf, NULL, 10);
+>  	if (size == ULLONG_MAX && errno == ERANGE) {
+>  		close(sysfd);
+> -		return 0;
+> +		return -errno;
+>  	}
+>  	close(sysfd);
+> -	return size;
+> +	*result_ret = size;
+> +	return 0;
+>  }
+>  
+> -u64 device_get_partition_size(const char *dev)
+> +int device_get_partition_size(const char *dev, u64 *result_ret)
+>  {
+> -	u64 result;
+>  	int fd = open(dev, O_RDONLY);
+>  
+>  	if (fd < 0)
+> -		return device_get_partition_size_sysfs(dev);
+> +		return device_get_partition_size_sysfs(dev, result_ret);
+> +
+> +	if (ioctl(fd, BLKGETSIZE64, result_ret) < 0) {
+> +		int ret = -errno;
+>  
+> -	if (ioctl(fd, BLKGETSIZE64, &result) < 0) {
+>  		close(fd);
+> -		return 0;
+> +		return ret;
+>  	}
+>  	close(fd);
+> -
+> -	return result;
+> +	return 0;
+>  }
+>  
+>  /*
+> diff --git a/common/device-utils.h b/common/device-utils.h
+> index cef9405f3a9a..bf04eb0f2fdd 100644
+> --- a/common/device-utils.h
+> +++ b/common/device-utils.h
+> @@ -42,7 +42,7 @@ enum {
+>   */
+>  int device_discard_blocks(int fd, u64 start, u64 len);
+>  int device_zero_blocks(int fd, off_t start, size_t len, const bool direct);
+> -u64 device_get_partition_size(const char *dev);
+> +int device_get_partition_size(const char *dev, u64 *result_ret);
+>  u64 device_get_partition_size_fd(int fd);
+>  u64 device_get_partition_size_fd_stat(int fd, const struct stat *st);
+>  int device_get_queue_param(const char *file, const char *param, char *buf, size_t len);
 > -- 
-> 2.47.2
+> 2.50.1
 > 
 
