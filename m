@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-15864-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15865-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6EA7B1BAF9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 21:34:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB590B1BAFB
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 21:35:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 589EB18A7C3A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 19:34:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF8F7184514
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 19:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680B821D5BF;
-	Tue,  5 Aug 2025 19:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E3421A94F;
+	Tue,  5 Aug 2025 19:35:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="hApum/CO";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nCgz0W7W"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="WxzNr3Vr";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VpZcM6nt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
+Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A08F86359
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 19:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C70367
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 19:35:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754422442; cv=none; b=T+zRdNCJDufH7tj6kaM+LTsvFQoHGDWhyjikOXCrZd54VbVvriQfvBZj346P3AvlpVrJSpZUcglOX5iSkW1xT7g88glyiGt4ojOtaL/5wMdqUtg0dbwXxO+KHN1y+VHzQhNOFKqW2hTQYwpaBPyj5o6S9XGsZCNUs3tPL6JyibQ=
+	t=1754422505; cv=none; b=gLJzxA0cE1F/gRX0NjVo7XPBvtkkGawrvplJ214q5GOFriSfnVp4CZXK1C7FUMb4z3iYgNLjVWDtB7zh3maCURqyQMizle0tC2ktVZDKlobqpSW0Y67gT9RsPZDn7cQgzPJNhSmzaTKoQdTtuMINzcprp6lRFgBpqsczLQS7O8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754422442; c=relaxed/simple;
-	bh=lUz+4/GlcZSKq+9WjqgVVzwCqVskIug2GTls0ugsAjY=;
+	s=arc-20240116; t=1754422505; c=relaxed/simple;
+	bh=WuFs19gqdgLGW2syIwOLJHcw3RnJFGm7gnLN1Wsg67o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HfMVqgv4xSb7Z52kezYtqcO/P6ATrP+QyiADs3PmVubkRudTO0H6pbQSbzq7WuI0L89fOfitPTwAbnWLBt4ka48H7iiTYg2W+0KVQ9dSZ+EfFrCVor4vszEHL19HtW3zWMcSyY/EEJQIwfyzcFVyo3l7UtXNW85zUlwUXF6HYfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=hApum/CO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=nCgz0W7W; arc=none smtp.client-ip=103.168.172.157
+	 Content-Type:Content-Disposition:In-Reply-To; b=DzI80pFNq3t5w6vah0BI0/Or8kUor7oacTw+Kszo2MRLsgcoQsvnWZLjT2fQH9fzIx5uKJ88pn6vktY1bT3/3fZldBShxjLCuGMHh+10qZovpkr9foejvay1/NLLqCCiu1cxbIKeQsz0rRwY0wGOQ2r4vticSrdiN3dwgOa6y5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=WxzNr3Vr; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VpZcM6nt; arc=none smtp.client-ip=103.168.172.150
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
 Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id A31931400213;
-	Tue,  5 Aug 2025 15:33:59 -0400 (EDT)
+	by mailfout.phl.internal (Postfix) with ESMTP id E4D4FEC0258;
+	Tue,  5 Aug 2025 15:35:02 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-01.internal (MEProxy); Tue, 05 Aug 2025 15:33:59 -0400
+  by phl-compute-01.internal (MEProxy); Tue, 05 Aug 2025 15:35:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1754422439; x=1754508839; bh=uULMviXzFR
-	0ZqCtyQH6ZTSWmSWLgQDWdEOxEl3iauno=; b=hApum/CO/sB1Z2A8jfATkOp1/a
-	UIdxoZkbKKihUDDYdU/82OnyfrwkG72H1SxNuzvvt5zXGLetIxuuBEVo9+WP7l+w
-	02EpUDsgDVJ1Hu6Ell3k78OhpuswdVCm+YV4iyOu8lLwgrsfXXRaYThqbsdR1d0v
-	VXxKpveqW+peHW/HRWotHNqAtzyzYucWZsjQymteG1291osX7Y5bk4HtSnA5uVh6
-	XV5oK/tvhsAHsOGvOj0PMB4sjH7hh/4mtDJkvh2rp8x1ONH80yOa5pY/5mgaQI2L
-	DW1Kt7yP0Ku9PkSor30dSIyXItaV51A7hQ9bEkfTi0ODSyKt2/5r4geyeQtw==
+	:subject:to:to; s=fm1; t=1754422502; x=1754508902; bh=RWPgtf+KeQ
+	n9Lryu7fLxJ727F8zrUykqi59q/9T7VLk=; b=WxzNr3VrIzjP9joKvhECuNdhPg
+	xhJ9G+KpmDEV72+haP2y1gvhzRNeWI37AHHDdoFaVV7GmVZnUlQJPTCBdFVyDYUd
+	Bn+A2F2/31IIgRbumoDYFIFN7wf0h+/M+e8OB7Wv+eGvckRxIw/brJrL2yESPR7h
+	hxwdXIiSB66Qv/dqKdRnJ11sMJm+AdTSkAxecWC1yGDncCkbZE+mb5KrONFlCo4H
+	oAIGwJ/6w6L2onO9RarTxNmu47iA8E64xQQTvl2d5XPBJGsgnrMvcuc6EARzfG4U
+	WXpW41TBMWB/X/Lwk6tlzWNIP2xfpy8G6/6AsBz7sqA7xIAAZV/CvxIq59tA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1754422439; x=1754508839; bh=uULMviXzFR0ZqCtyQH6ZTSWmSWLgQDWdEOx
-	El3iauno=; b=nCgz0W7Wr07mTN3qC4Z5x7Q+aUBcqRZVMBAuSVCsROsND7NYKDG
-	6IuiRcQueLEPMZQau1UYwm87e1pACLtiMP3EL8YJ+njSfl/oZjYc30PS/8YhgDkW
-	kd3R2w27qomfq8uP0rAOK34s+GtlHJOu8RJXgXUITHfepj2+CPdPBPsyJ+3A7mw9
-	FW/vP2LmjJP4jqN82IgDwNg+0mu/lq5Nc8EZknXImiPNARLLc2ygfXWZNLlU9y8U
-	QhN3ezcWzqnPCq6DqC+RqsdRpi4N2VPr2Zt6YvZg5hlfnDX/Jbrusn4WL++ZqOPF
-	KDuzmvLcRtcYZJ6UQ3/e9zwC98M97Lt/Ncw==
-X-ME-Sender: <xms:p1ySaLyPfv32Zhl5Ait_fwokkVWFgCVVafw88gh1602V1fjcbL1GtQ>
-    <xme:p1ySaDcRn2F2gd6TaIeBV4aG8YvkbPudHQSY-fA7Iin2wvk-CgWuZwhAv9noXkwej
-    _8qrg4ZrwTPIa6meHw>
-X-ME-Received: <xmr:p1ySaHIHwDLSmTX31xpwiD5OGbEipE6iKlWR7E7VqId6t8ZX5krak1RbfQszjQWqSZW2eNjQ6gMeZcxbBvSxhYJJWF4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduudeitddvucetufdoteggodetrf
+	1754422502; x=1754508902; bh=RWPgtf+KeQn9Lryu7fLxJ727F8zrUykqi59
+	q/9T7VLk=; b=VpZcM6ntpL+pRC3PgbTqG+vJSXCUA1jimUmMrEcFTMb6u7uaMmE
+	1CzTaeFnzQhs7ntRxC1U96kEAfab17gQxSgexz45/W5iTfXBAkQbqQGQPKluoFDq
+	V1+pIFCT2CWZOLT/NuQCWDwBcZ1ONJxwhk9RY6ugCWdvhEqpJM/jMYz6ePFsdB+g
+	RE0hh19ExbYpRlLWWiHupjrySWrB7fr0vJCaiXziTXkn8sGK14ix4H00gecKCdSZ
+	63RQ41j+yqzqnyOkPY2b5pEcWtEVaiDUZ/C7SrBgLjMCqJIb/K5uu3y+OHYQPVxS
+	lvcLsavm2RCKIJUQ7ma2TNv1zjg8JT2OcSA==
+X-ME-Sender: <xms:5lySaEHa_hyzLuzUJDginL_8REzp_xxXqpqTdbd8kfBzsmVirMowmQ>
+    <xme:5lySaNhJzhYWclNGI6WEtQyqw7YIkLQnpzqk8e4yzbUfv01ITJTeUS-UPt8YAWi6U
+    qJzahHJOKPe2y7CFFs>
+X-ME-Received: <xmr:5lySaP_JJ5c06WCySaNDmlr4npmAL9Avz4fbBEbtyzrKyyzm_xfd6E7Q7qWwZs19yG2kBe9Ifh00Y5t912cZUYGjzxc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduudeitdefucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
@@ -73,21 +73,22 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduudeitddvucetufdote
     hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
     ohepfihquhesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvh
     hgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:p1ySaEEVUsUuczX0Rrhfk_LH7SNLjPPe9zPvBjIO0XaQ03T8KdZ0gg>
-    <xmx:p1ySaBpej1bCNBLBLvorC_k0bwS79ikTpyOV9HH9AAw6DYT4hBA4IQ>
-    <xmx:p1ySaNQfI9FwW6ghryrb66PdzFkSuflnYyBWxg9o_WWiaK-QY3CxRg>
-    <xmx:p1ySaOP8znvcWvlNa9nfZsPcFyIjphzNtgNsB5WSaRS6sJYqo115fg>
-    <xmx:p1ySaPjqKGeYTfV1AKEJL0BmPSzSY7BlfhAa4VVcoEfs5uXcqYGp80kE>
+X-ME-Proxy: <xmx:5lySaEqZRl4Eny_z2VryePhUty5jQyqU-AbnQFul_VzaJs8Jt24_Rg>
+    <xmx:5lySaO-rl6tgyBfYWRjo7V44T8_F7qM1wMvB11gzWNc_xbkV2ui_cg>
+    <xmx:5lySaIWh9fGhZceD1GfrEJpgPnAfPoaslinWggMPEtUKO2degkZwbw>
+    <xmx:5lySaEA7IaMRJP1G7TSiz8YkVq1ReGOzNhSBbk1Roo4RqgqEKpLmBQ>
+    <xmx:5lySaGW3G29OJuW1DaVnHL7yOdoQDB6Ba71A3Cs7QZhLehoNI6SDz-0c>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 5 Aug 2025 15:33:59 -0400 (EDT)
-Date: Tue, 5 Aug 2025 12:34:58 -0700
+ 5 Aug 2025 15:35:02 -0400 (EDT)
+Date: Tue, 5 Aug 2025 12:36:00 -0700
 From: Boris Burkov <boris@bur.io>
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs-progs: check for device item between super
-Message-ID: <20250805193458.GD4106638@zen.localdomain>
-References: <cover.1754090561.git.wqu@suse.com>
+Subject: Re: [PATCH] btrfs-progs: subvolume: fix a bug that leads to
+ unnecessary error message
+Message-ID: <20250805193600.GE4106638@zen.localdomain>
+References: <f72a754b3e1b4e6b7ef09ed6451166ccbd9103af.1754003430.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -96,71 +97,58 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1754090561.git.wqu@suse.com>
+In-Reply-To: <f72a754b3e1b4e6b7ef09ed6451166ccbd9103af.1754003430.git.wqu@suse.com>
 
-On Sat, Aug 02, 2025 at 09:56:18AM +0930, Qu Wenruo wrote:
-> Mark has submitted a check enhancement for progs to detect the device
-> item mismatch between super blocks and the items inside chunk tree.
+On Fri, Aug 01, 2025 at 08:40:39AM +0930, Qu Wenruo wrote:
+> [BUG]
+> When a btrfs is mounted with "user_subvol_rm_allowed" mount option,
+> unprivileged users are allowed to delete a subvolume using "btrfs
+> subvolume delete" command.
 > 
-> However there is a long existing problem that it will break CI.
+> But in that case, there is always a warning message:
 > 
-> The root cause is that the CI kernel lacks the needed backports, that on
-> a lot cases the kernel can lead to such mismatch and being caught by the
-> newer progs.
+>  $ btrfs subvolume delete /mnt/btrfs/dir1/subv1/
+>  WARNING: cannot read default subvolume id: Operation not permitted
+>  Delete subvolume 257 (no-commit): '/mnt/btrfs/dir1/subv1'
+> 
+> [CAUSE]
+> The warning message is caused by tree search ioctl, which is to
+> determine if we're deleting the default subvolume.
+> This search is just to give a more helpful error message, and even
+> without it deleting the default subvolume will fail anyway.
+> 
+> Thus commit 0e66228959c4 ("btrfs-progs: subvol delete: hide a warning on
+> an unprivileged delete") tries to hide the warning for unprivileged
+> users.
+> 
+> But unfortunately the function geteuid() returns the effective user id,
+> thus we should hide the warning for non-zero uid, not the opposite.
+> 
+> [FIX]
+> Change the condition to output the warning only when the uid is 0.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Can you explain why we are contorting around out of date "continuous"
-integration? Shouldn't we just get the CI on a new kernel?
+Reviewed-by: Boris Burkov <boris@bur.io>
 
+> ---
+>  cmds/subvolume.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> So to merge this long existing fsck enhancement, this series refresh and
-> workaround the problem by:
-
-Thanks for putting in the effort to get the enhancement in, by the way!
-
-> 
-> - Only reports warnings when such mismatch is detected
->   Such mismatch is not a huge deal, as we always trust the device item in
->   chunk tree more than the super block one.
->   So it won't cause data loss or whatever.
-
-That makes sense to me.
-
-> 
->   So even if the CI kernel doesn't have the fix, self test cases won't
->   report them as a failure.
-> 
-> - Workaround fsck/057 to avoid failure
->   Test case fsck/057 is a special case, where we manually check the
->   output for warning messages.
-> 
->   This is originally to detect problems related seed device, but now it
->   will also detect device item mismatch cause by the older CI kernel.
-> 
->   Workaround it by making the keyword more specific to the original
->   problem, not just checking for warnings.
-
-I'm a little skeptical about reducing even the incidental coverage of
-the test except for a good reason.
-
-Thanks,
-Boris
-
-> 
-> With those done, we can finally make CI to accept the new checks even
-> the kernel is not uptodate.
-> 
-> Mark Harmstone (1):
->   btrfs-progs: check that device byte values in superblock match those
->     in chunk root
-> 
-> Qu Wenruo (1):
->   btrfs-progs: fsck-tests: make the warning check more specific for 057
-> 
->  check/main.c                                  | 35 +++++++++++++++++++
->  .../fsck-tests/057-seed-false-alerts/test.sh  |  6 ++--
->  2 files changed, 38 insertions(+), 3 deletions(-)
-> 
-> --
+> diff --git a/cmds/subvolume.c b/cmds/subvolume.c
+> index 08918c1efbb5..3523fc410835 100644
+> --- a/cmds/subvolume.c
+> +++ b/cmds/subvolume.c
+> @@ -498,7 +498,7 @@ again:
+>  	default_subvol_id = 0;
+>  	err = btrfs_util_subvolume_get_default_fd(fd, &default_subvol_id);
+>  	if (err == BTRFS_UTIL_ERROR_SEARCH_FAILED) {
+> -		if (geteuid() != 0)
+> +		if (geteuid() == 0)
+>  			warning("cannot read default subvolume id: %m");
+>  	}
+>  
+> -- 
 > 2.50.1
 > 
 
