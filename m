@@ -1,81 +1,81 @@
-Return-Path: <linux-btrfs+bounces-15867-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15868-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D161B1BC79
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 00:20:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28B64B1BCBE
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 00:42:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEAB36281DA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 22:20:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4732116D851
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 22:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D183A25EF90;
-	Tue,  5 Aug 2025 22:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22543264A92;
+	Tue,  5 Aug 2025 22:42:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZEtR4TZs"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="IY4ExO2p"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00C61C8603
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 22:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB821DF759
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 22:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754432416; cv=none; b=UIjKzhmOzqwfhUQinUFwFtx3VCIWDyvq6z1W8XUtg8DlZ2x274OnhFRzi/hy2qMyXsgF8v14V9Cdqb9c0kEKCqkPidIVtf617jOLnpMbdB7/+/IYHOtIC4nzPsC+Z79DzVmcjCE/lL8lUcheGggXkMijHafqN62XM7RoJwQgtqk=
+	t=1754433720; cv=none; b=J4bYgH4bWUEJnLV+uit/w8rBQXoTfCCrCFUTRIKjp311JB685qa3gc0zgVsQXu+RO64DqOFdRrHp/RzeDRGqP7a3zSopU7G2tZyax+9UenTp8Z4pGtyShDj+SSLClSnt3RWeT1LzeWaaN+QCEZ3vj60AtnO0HF96guXddmjEHq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754432416; c=relaxed/simple;
-	bh=k6eK//qtKyfu0r2cCARtjnz5aEWKrn3eO34pm9z7hg4=;
+	s=arc-20240116; t=1754433720; c=relaxed/simple;
+	bh=ebFKkumr/YpiTGCZeh3Qqn0D90IQJz6xMivtVZcWgM0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YyMT3vJ1Up+gMfj9V6/CIyJ7/v1HMD3GruLKm6pi4kUz+/Qr1NlHRLq9o7EVL/J+Pvvo9aJmBkcKSmoY53CXpufRMw9P75OgdwZ1hwC7GTJqUHuEx92q+T6GcnypWWhzEHaiw4Kr30cw76SKuPfvtYLqtqk6rHytzehtYPk/gjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZEtR4TZs; arc=none smtp.client-ip=209.85.221.50
+	 In-Reply-To:Content-Type; b=CBc8+2dq64HqVBixxfuD3eyXlLMrP5RBI4CavjwdLmyJw84APAun8AEx4+FRW1kevVFOBEu9bRWy6xXRUaMYM1ARo78o/CqdvaJ99fMtLexp+Npb9NMmiu9ZPxcN9an4uLHUrxEWopW9bcWHGTg5PoL4IjB5gEC3UtUv5pN6GAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=IY4ExO2p; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3b794a013bcso5261244f8f.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Aug 2025 15:20:13 -0700 (PDT)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3b79bddd604so4051030f8f.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Aug 2025 15:41:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1754432412; x=1755037212; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1754433716; x=1755038516; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=OiAjHzDCWx5/fnwcdQWM5XW7k9js3aPU7lPasy+MIaE=;
-        b=ZEtR4TZsZbkPJT/nZnjy1uAbRrG7DuH3Mio+Iy8Qtzy85dyTDoC3A5CAKbZObmU0yh
-         6Dyw1/UCeck4y0YA7roStvLOMkRy7RAHA3d/ZrqksZW+NIukUurQsvovvg6ItFgPGG8V
-         rntY4rxGDaR5bvpo18qy6SMvTXM3Z9KLHopgG3oGp9O/ieYbWXEjD97k4CfMgfth+KeZ
-         tNJvX62/ZELUtpgfS/8UyHjdZeBNcP5DNyGQJHe++FAkgdXIjih9dtC5AAmDujjGHMvW
-         UvUdG+fEBNWmva5jbku2cz/1Ffnj8AY0JSJ3LwS5i14lw5q5X4rv+CzBXTw1M1EGjkTi
-         Cr1A==
+        bh=gpSOSPpdw53wn3n0oElrX36hW6LZFoH4es7koAVtl0A=;
+        b=IY4ExO2pwhbnPHJI4yFnyKpdiUEJfCuTvFOwbX1YPl6R9S4R+WvQ4S2T/ii4W6oulC
+         DhF8CIuq5K92uT2+Ie1cRVl0E7SpXdnh1pQP0LAlnXOGWmOGyfAdzwv/6ia8xC45/PL7
+         1kaJUEhmbHpfoR/TNCQ4d/hspdm4DlwXqhjuLIgM8xvPNIjqx8LcEtc0zNC8B+RP9L6P
+         QY/sb/tUkfJptBAgKS0FshSs3I+hlXCfMbc9+rm9QsEAktkIWoefqZizu+VaZaP9Lxyy
+         TV7pkpuV7DUJo29WQ49XIbpVp3SyrgfL9SHFg9h42RPQDYIThKmm5/BgmRuFGMmR/qxr
+         /KWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754432412; x=1755037212;
+        d=1e100.net; s=20230601; t=1754433716; x=1755038516;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OiAjHzDCWx5/fnwcdQWM5XW7k9js3aPU7lPasy+MIaE=;
-        b=FyrlGag2YLwQVNyL5S6teu+CrwIKGtWTDcXzuXwPULmonnL3GL94kGgZi0pdofAi99
-         LBkKtV+FWW4Kaga90bHczzLM0RaQMpn0+3HEpfzBvPlpYK2EqhoT/QXdjKTAms8bS5VC
-         XvqzyyNKKFgFG0rxk5XvjFEynAhygMW0ezl5W1oy2iBrEboxndJoN/gfqpMFyky4fxl+
-         VrDcB7PFYkJ1qR7FnI9lZRWuuvqj549Nm/qnhLfVbzL3GJ41mhZxldTdo3dRZ2XWCC0L
-         WxEhW+5R3cKiP5liAYnH0nE9vTIjJRaWKo/tGjRX7UMyjTrA4BMNlw1zYWt9IOdTIjuB
-         3X1g==
-X-Forwarded-Encrypted: i=1; AJvYcCXZxh9XWtQ96X2Mg7f1D/SwwyDTrzMPHUbsYrYiNmJGnflZYtYWnZkEUYP8Je5eSamBcS2PhSCBN6R/ew==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZGoR0ghijH0DTRX7jpZ3EfNUeS36bM2TVKffljsC9ntgJJUvc
-	7NIKT+FPiqb+zC84rymIZAHkMXBwn+m8u4HKlF8Cl0ra5yOP4HXCMmWGV1PZEv7CU9I=
-X-Gm-Gg: ASbGncvK/wFKTyQHO1bSjjYNcC4PMWi7zJxTk/svXs8mDy92uRz3oK3vb+OHL5Lr/iy
-	U0E0vH5EFd6iz9n9j8aLBvZ3dFzYsJK8AcK/8e2cfnyusw1ifgpcL1NwLQvBGeJp3WNJvEbVhQf
-	f/+jMuuRxqq+xkKlex5Q8goTqlzIdN1tBNV8Ic1UN1JuaeXYrbVZFRFLlc4FaTmDmOjnt8GPhtU
-	urERKjtWwJbKmwDRu+chkAX+CQGl4I1qxKru7LrBw6TdPezblwsVvAY3+Bdhvy8X608x9OFDHfd
-	AjE5t6ADctx+UjzcDqIDUaMRb1CMg1y799bqY4zOaAKC9Ijik0eOn7DZBeGwEGOWT09h6Pvle9D
-	yE/fPMFnqEpHgs5XjK75Lvnb6bL4DtT8E9miLTqZuK0rhWE/2oA==
-X-Google-Smtp-Source: AGHT+IF1yMEsHMExuBAJx/ZFT3wrkOpXFDU7fJaND5zk3EE8jSJwV2lypM5/PjsUQf4gqnK+ukIjmA==
-X-Received: by 2002:a05:6000:2893:b0:3b7:8b1b:a9d5 with SMTP id ffacd0b85a97d-3b8f493d8b1mr146614f8f.51.1754432412122;
-        Tue, 05 Aug 2025 15:20:12 -0700 (PDT)
+        bh=gpSOSPpdw53wn3n0oElrX36hW6LZFoH4es7koAVtl0A=;
+        b=u4IOL1uqWTShR2JCPOaxNub8BgVY1XOZXj8h/lcgmyauJzfBdOvkbMoDKTXuySTdVV
+         7Nx6ddalaL3+E1HeHiLcQNCbCjforjvvGD138DNCSNahEkOliFOiKfKWANo0mJR+PCxc
+         0x8dbP4JVW3j7pK91pL/zPrM0MPPZKn2itxW7A5QFXP0/JPHWz40pAXopdvXf8g3XDFX
+         gP+xdlgYP5vWaaE//DxMSacBy1zPr8nmGLSXEGAo7YJgLpIQDu/JkdNLRi9dEVPcspRG
+         /j4rzDPE33JHNuBXe0dXFM60vIHZz5axkY2TbKa2dyppTsrcOiGZbAObfKlgJVQgPDX0
+         pN0A==
+X-Gm-Message-State: AOJu0Yy4EPDgvGTa1U9LRtWTfzf9jtiq0gc2NJQbH+m1z4JZLQXhES4f
+	TFtwPEtNvhAVtVd72FeCNoVLsHHw7jdM2/owyUnkBfKRTgqz3eYjEh2aNSenwxDvTvk4swTMYfu
+	YrXzC
+X-Gm-Gg: ASbGnctKJqZSZhqlUnpIq1D2gK98S5qGLlFuLUe2EgenryNbKLpLlRscGYge0Qzw/Gp
+	7KI9F2hY58ebkFh+twTvtB+t4gGAhPiRgMZ8rX1I3HHDwnOAhmRRFIExqzsrZ7FEBAMfS8O93jK
+	e3Udxhtx2PlOuNEbNrfzuQENViGGY2kKl58SDo/rKKd09Ca3dOm9+kVaNvnv8pWjJqAAvu1RAuh
+	6CUAvCDO76q7+gcAkdrlHvVkxRZRai2XpMN0PEiFP7GkQ0efaxk0NxAqKoIS74EjLkmgB++O5Z6
+	cHNELedbb2jRrp5K2qzdUkMyLOGZLD51Kc2wDhqyxDMtLW6TTf898IpjN9pqOMpEju/qyOQvrvx
+	eOR6nnmTmoRKQcHAQFGe2ntNpc1UsSDYu9odh+SqjbfUr/NDvAg==
+X-Google-Smtp-Source: AGHT+IGNyGFyfFBq4/PKvwPhsYF/OZLiFTjqadgR5uMIRYx/AGfYPGrooXBBozFm4uVerdC46awgZA==
+X-Received: by 2002:a05:6000:420e:b0:3a4:dc42:a0c3 with SMTP id ffacd0b85a97d-3b8f41ee87cmr495156f8f.56.1754433715785;
+        Tue, 05 Aug 2025 15:41:55 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b422be2b3a5sm11829110a12.46.2025.08.05.15.20.08
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76bccfbce84sm13979940b3a.71.2025.08.05.15.41.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Aug 2025 15:20:11 -0700 (PDT)
-Message-ID: <6a85c9c0-36ac-4a69-a0d5-4bc5846cd5c7@suse.com>
-Date: Wed, 6 Aug 2025 07:50:06 +0930
+        Tue, 05 Aug 2025 15:41:55 -0700 (PDT)
+Message-ID: <2e0e7b8c-22f8-4e17-8c0c-6047ea21c91a@suse.com>
+Date: Wed, 6 Aug 2025 08:11:51 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -83,21 +83,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Should seed device be allowed to be mounted multiple times?
-To: Christian Brauner <brauner@kernel.org>, Anand Jain <anand.jain@oracle.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
- Qu Wenruo <wqu@suse.de>, linux-btrfs <linux-btrfs@vger.kernel.org>,
- David Sterba <dsterba@suse.com>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <aef03da8-853a-4c9f-b77b-30cf050ec1a5@suse.de>
- <4cdf6f5c-41e8-4943-9c8b-794e04aa47c5@suse.de>
- <8daff5f7-c8e8-4e74-a56c-3d161d3bda1f@oracle.com>
- <bddc796f-a0e0-4ab5-ab90-8cd10e20db23@suse.de>
- <184c750a-ce86-4e08-9722-7aa35163c940@oracle.com>
- <bc8ecf02-b1a1-4bc0-80e3-162e334db94a@gmx.com>
- <a3db2131-37a8-469f-a20d-dc83b2b14475@oracle.com>
- <510675a5-7cb2-4838-87e0-9fb0e9f114f0@suse.com>
- <20250805-tragweite-keule-31547b419bc3@brauner>
+Subject: Re: [PATCH 2/5] btrfs-progs: add error handling for
+ device_get_partition_size()
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1754116463.git.wqu@suse.com>
+ <525dbf649790b855d109714bf9a82796fe3d7b1e.1754116463.git.wqu@suse.com>
+ <20250805190838.GB4106638@zen.localdomain>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -124,85 +116,193 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250805-tragweite-keule-31547b419bc3@brauner>
+In-Reply-To: <20250805190838.GB4106638@zen.localdomain>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/8/5 22:13, Christian Brauner 写道:
-> On Tue, Aug 05, 2025 at 10:22:49AM +0930, Qu Wenruo wrote:
+在 2025/8/6 04:38, Boris Burkov 写道:
+> On Sat, Aug 02, 2025 at 04:25:48PM +0930, Qu Wenruo wrote:
+>> The function device_get_partition_size() has all kinds of error paths,
+>> but it has no way to return error other than returning 0.
 >>
+>> This is not helpful for end users to know what's going wrong.
 >>
->> 在 2025/8/5 10:06, Anand Jain 写道:
->>>
->>>
->>>>> Thanks for the comments.
->>>>> Our seed block device use-case doesn’t fall under the kind of risk that
->>>>> BLK_OPEN_RESTRICT_WRITES is meant to guard against—it’s not a typical
->>>>> multi-FS RW setup. Seed devices are readonly, so it might be reasonable
->>>>> to handle this at the block layer—or maybe it’s not feasible.
->>>
->>>
->>>> Read-only doesn't prevent the device from being removed suddenly.
->>>
->>> I don't see how this is related to the BLK_OPEN_RESTRICT_WRITES flag.
->>> Can you clarify?
->>
->> It's not related to that flag, I'm talking about the fs_bdev_mark_dead(),
->> and the remaining 3 callbacks.
->>
->> Those call backs are all depending on the bdev holder to grab a super block.
->>
->> Thus a block device should and can not have multiple super blocks.
+>> Change that function to have a dedicated return value for error
+>> handling, and pass a u64 pointer for the result.
 > 
-> I'm pretty sure you can't just break the seed device sharing use-case
-> without causing a lot of regressions...
-
-It's not that widely affecting, we can still share the same seed device 
-for all different sprout fses, just only one of them can be mounted at 
-the same time.
-
-And even with that limitation, it won't affect most (or any) real world 
-use cases.
-
-Even the most complex case like using seed devices as rootfs, and we 
-want to sprout the rootfs again, just remove the seed device from the 
-current rootfs, then one can mount the seed device again.
-
+> All the callers check ret < 0, rather than ret != 0, so any reason not
+> to simply return the positive value in case of no error? Signed
+> overflow?
 > 
-> If you know what the seed devices are than you can change the code to
-> simply use the btrfs filesystem type as the holder without any holder
-> operations but just for seed devices. Then seed devices can be opened
-> by/shared with any btrfs filesystem.
+> In the kernel, BLK_DEV_MAX_SECTORS is set to LLONG_MAX >> 9, which I
+> think means we are probably OK?
 
-But we will lose all the bdev related events.
+This sounds reasonable, I was under the impression that we need to 
+preserve the full U64_MAX for block devices due to our on-disk format.
 
-We still want to sync/freeze/thaw the real sprouted fs in the end.
-
-> 
-> The only restriction is that you cannot use a device as a seed device
-> that another btrfs filesystem uses as a non-seed device because then it
-> will be fully owned by the other btrfs filesystem. But Josef tells me
-> you can only use it as a seed device anyway.
-> 
-> IOW, if you have a concept of shareable devices between different btrfs
-> filesystems then it's fine to reflect that in the code. If really needed
-> you can later add custom block holder ops for seed devices so you can
-> e.g., iterate through all filesystems that share the device.
-
-Sure it's possible, with a lot of extra code looking up where the seed 
-device belongs, and all the extra bdev event proxy.
-
-
-But I'd say, the seed device specification is not well specified in the 
-very beginning, thus it results a lot of "creative" but not practical 
-use cases.
-
-Yes, this will result some regression, but I'd prefer a more sounding 
-and simpler logic for the whole seed device, with minimal impact to the 
-most common existing use cases.
+But if kernel has extra limits, I'm more than happier to use s64.
 
 Thanks,
 Qu
+
+> 
+>>
+>> For most callers they are able to exit gracefully with a proper error
+>> message.
+>>
+>> But for load_device_info(), we allow a failed size probing to continue
+>> without 0 size, just as the old code.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   cmds/filesystem-usage.c |  9 +++++++--
+>>   cmds/replace.c          | 14 ++++++++++++--
+>>   common/device-utils.c   | 29 +++++++++++++++--------------
+>>   common/device-utils.h   |  2 +-
+>>   4 files changed, 35 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+>> index f812af13482e..e367bffc3a01 100644
+>> --- a/cmds/filesystem-usage.c
+>> +++ b/cmds/filesystem-usage.c
+>> @@ -820,8 +820,13 @@ static int load_device_info(int fd, struct array *devinfos)
+>>   			strcpy(info->path, "missing");
+>>   		} else {
+>>   			strcpy(info->path, (char *)dev_info.path);
+>> -			info->device_size =
+>> -				device_get_partition_size((const char *)dev_info.path);
+>> +			ret = device_get_partition_size((const char *)dev_info.path,
+>> +							&info->device_size);
+>> +			if (ret < 0) {
+>> +				errno = -ret;
+>> +				warning("failed to get device size for devid %llu: %m", dev_info.devid);
+>> +				info->device_size = 0;
+>> +			}
+>>   		}
+>>   		info->size = dev_info.total_bytes;
+>>   		ndevs++;
+>> diff --git a/cmds/replace.c b/cmds/replace.c
+>> index 887c3251a725..d5b0b0e02ce1 100644
+>> --- a/cmds/replace.c
+>> +++ b/cmds/replace.c
+>> @@ -269,7 +269,12 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
+>>   		strncpy_null((char *)start_args.start.srcdev_name, srcdev,
+>>   			     BTRFS_DEVICE_PATH_NAME_MAX + 1);
+>>   		start_args.start.srcdevid = 0;
+>> -		srcdev_size = device_get_partition_size(srcdev);
+>> +		ret = device_get_partition_size(srcdev, &srcdev_size);
+>> +		if (ret < 0) {
+>> +			errno = -ret;
+>> +			error("failed to get device size for %s: %m", srcdev);
+>> +			goto leave_with_error;
+>> +		}
+>>   	} else {
+>>   		error("source device must be a block device or a devid");
+>>   		goto leave_with_error;
+>> @@ -279,7 +284,12 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
+>>   	if (ret)
+>>   		goto leave_with_error;
+>>   
+>> -	dstdev_size = device_get_partition_size(dstdev);
+>> +	ret = device_get_partition_size(dstdev, &dstdev_size);
+>> +	if (ret < 0) {
+>> +		errno = -ret;
+>> +		error("failed to get device size for %s: %m", dstdev);
+>> +		goto leave_with_error;
+>> +	}
+>>   	if (srcdev_size > dstdev_size) {
+>>   		error("target device smaller than source device (required %llu bytes)",
+>>   			srcdev_size);
+>> diff --git a/common/device-utils.c b/common/device-utils.c
+>> index 783d79555446..6d89d16b029d 100644
+>> --- a/common/device-utils.c
+>> +++ b/common/device-utils.c
+>> @@ -342,7 +342,7 @@ u64 device_get_partition_size_fd(int fd)
+>>   	return result;
+>>   }
+>>   
+>> -static u64 device_get_partition_size_sysfs(const char *dev)
+>> +static int device_get_partition_size_sysfs(const char *dev, u64 *result_ret)
+>>   {
+>>   	int ret;
+>>   	char path[PATH_MAX] = {};
+>> @@ -354,45 +354,46 @@ static u64 device_get_partition_size_sysfs(const char *dev)
+>>   
+>>   	name = realpath(dev, path);
+>>   	if (!name)
+>> -		return 0;
+>> +		return -errno;
+>>   	name = path_basename(path);
+>>   
+>>   	ret = path_cat3_out(sysfs, "/sys/class/block", name, "size");
+>>   	if (ret < 0)
+>> -		return 0;
+>> +		return ret;
+>>   	sysfd = open(sysfs, O_RDONLY);
+>>   	if (sysfd < 0)
+>> -		return 0;
+>> +		return -errno;
+>>   	ret = sysfs_read_file(sysfd, sizebuf, sizeof(sizebuf));
+>>   	if (ret < 0) {
+>>   		close(sysfd);
+>> -		return 0;
+>> +		return ret;
+>>   	}
+>>   	errno = 0;
+>>   	size = strtoull(sizebuf, NULL, 10);
+>>   	if (size == ULLONG_MAX && errno == ERANGE) {
+>>   		close(sysfd);
+>> -		return 0;
+>> +		return -errno;
+>>   	}
+>>   	close(sysfd);
+>> -	return size;
+>> +	*result_ret = size;
+>> +	return 0;
+>>   }
+>>   
+>> -u64 device_get_partition_size(const char *dev)
+>> +int device_get_partition_size(const char *dev, u64 *result_ret)
+>>   {
+>> -	u64 result;
+>>   	int fd = open(dev, O_RDONLY);
+>>   
+>>   	if (fd < 0)
+>> -		return device_get_partition_size_sysfs(dev);
+>> +		return device_get_partition_size_sysfs(dev, result_ret);
+>> +
+>> +	if (ioctl(fd, BLKGETSIZE64, result_ret) < 0) {
+>> +		int ret = -errno;
+>>   
+>> -	if (ioctl(fd, BLKGETSIZE64, &result) < 0) {
+>>   		close(fd);
+>> -		return 0;
+>> +		return ret;
+>>   	}
+>>   	close(fd);
+>> -
+>> -	return result;
+>> +	return 0;
+>>   }
+>>   
+>>   /*
+>> diff --git a/common/device-utils.h b/common/device-utils.h
+>> index cef9405f3a9a..bf04eb0f2fdd 100644
+>> --- a/common/device-utils.h
+>> +++ b/common/device-utils.h
+>> @@ -42,7 +42,7 @@ enum {
+>>    */
+>>   int device_discard_blocks(int fd, u64 start, u64 len);
+>>   int device_zero_blocks(int fd, off_t start, size_t len, const bool direct);
+>> -u64 device_get_partition_size(const char *dev);
+>> +int device_get_partition_size(const char *dev, u64 *result_ret);
+>>   u64 device_get_partition_size_fd(int fd);
+>>   u64 device_get_partition_size_fd_stat(int fd, const struct stat *st);
+>>   int device_get_queue_param(const char *file, const char *param, char *buf, size_t len);
+>> -- 
+>> 2.50.1
+>>
+
 
