@@ -1,296 +1,208 @@
-Return-Path: <linux-btrfs+bounces-15866-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15867-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7336CB1BB24
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 21:48:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D161B1BC79
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 00:20:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 911E317EF94
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 19:48:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEAB36281DA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 22:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C4023A58B;
-	Tue,  5 Aug 2025 19:48:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D183A25EF90;
+	Tue,  5 Aug 2025 22:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UWZbTCCC"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZEtR4TZs"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f195.google.com (mail-yb1-f195.google.com [209.85.219.195])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7657D1DFF0
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 19:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00C61C8603
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 22:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754423303; cv=none; b=PcMlB/ef08mVYndF32r2HiCA4AWlgBS6B9VnzTNY7YZAyww1z7CdGmI4DDnf1KECQRufeFigzfx8SCRepNyM+wPsLXi5dO70T5a5KKG1n1YClfYNb120zQOjlMZkWgtbb7ZAmiOiSQokqSS3VFdxowVa070yo3qEeaFyr+EM3Qg=
+	t=1754432416; cv=none; b=UIjKzhmOzqwfhUQinUFwFtx3VCIWDyvq6z1W8XUtg8DlZ2x274OnhFRzi/hy2qMyXsgF8v14V9Cdqb9c0kEKCqkPidIVtf617jOLnpMbdB7/+/IYHOtIC4nzPsC+Z79DzVmcjCE/lL8lUcheGggXkMijHafqN62XM7RoJwQgtqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754423303; c=relaxed/simple;
-	bh=SDrBzXZsHXhCpI8+qAmvzbxrK4kGshT6dHfg6X0EGLg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Fhhc1BNcQcXERyZRQtho61F0dEBylaMMxtC7Vim5atFa2WL0U888DSZu7ThX2t0HeoWaVew9kmZKz6JZEk1Lqvcpv7IXGvOiZs/sfEaYJQCd7+lxi7ymsnZXy40GafXXv4M2PMJ6rcDJDJBJ3+k4O8gmH4rBc6zfNhO7bG4ZlXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UWZbTCCC; arc=none smtp.client-ip=209.85.219.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f195.google.com with SMTP id 3f1490d57ef6-e8fe55d4facso3409197276.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Aug 2025 12:48:21 -0700 (PDT)
+	s=arc-20240116; t=1754432416; c=relaxed/simple;
+	bh=k6eK//qtKyfu0r2cCARtjnz5aEWKrn3eO34pm9z7hg4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YyMT3vJ1Up+gMfj9V6/CIyJ7/v1HMD3GruLKm6pi4kUz+/Qr1NlHRLq9o7EVL/J+Pvvo9aJmBkcKSmoY53CXpufRMw9P75OgdwZ1hwC7GTJqUHuEx92q+T6GcnypWWhzEHaiw4Kr30cw76SKuPfvtYLqtqk6rHytzehtYPk/gjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZEtR4TZs; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3b794a013bcso5261244f8f.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Aug 2025 15:20:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754423300; x=1755028100; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xWmFo5hbseEwdp3MHeRajdD4moxBdf1KYMn9yMa6W7k=;
-        b=UWZbTCCCv7IL7RwuospnyrjjDOdwyE7pJcM+G9AJ7Or+ljgL7pe/tcDW76oKInebr3
-         /x7JK2EDlwdDc054sRiwOBMJ3XWzLn0gjyn9/mE1pQ+uKRECdwURuxlRcCXeFZDnaUyA
-         Mq1IIiEDNDdlCS//d2hPyS0zlUCXP536nK5aQcR6Cd3Ez4MbJLcLc8sjavqprKlmb9p6
-         rgxM1FYh9gjsECTA88Z/bobCKs1rebTkNU/PqzBgBcO9lIL4C+VPeTuguU5r1+R6/hio
-         /boC9/utYZVZugurLdLtc92XxVOpkPfoIeropkNDslXTs8ZayNb/UdVOrTPgsPBndNd+
-         WmZQ==
+        d=suse.com; s=google; t=1754432412; x=1755037212; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=OiAjHzDCWx5/fnwcdQWM5XW7k9js3aPU7lPasy+MIaE=;
+        b=ZEtR4TZsZbkPJT/nZnjy1uAbRrG7DuH3Mio+Iy8Qtzy85dyTDoC3A5CAKbZObmU0yh
+         6Dyw1/UCeck4y0YA7roStvLOMkRy7RAHA3d/ZrqksZW+NIukUurQsvovvg6ItFgPGG8V
+         rntY4rxGDaR5bvpo18qy6SMvTXM3Z9KLHopgG3oGp9O/ieYbWXEjD97k4CfMgfth+KeZ
+         tNJvX62/ZELUtpgfS/8UyHjdZeBNcP5DNyGQJHe++FAkgdXIjih9dtC5AAmDujjGHMvW
+         UvUdG+fEBNWmva5jbku2cz/1Ffnj8AY0JSJ3LwS5i14lw5q5X4rv+CzBXTw1M1EGjkTi
+         Cr1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754423300; x=1755028100;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xWmFo5hbseEwdp3MHeRajdD4moxBdf1KYMn9yMa6W7k=;
-        b=kRbfvchM4O5K/YBvIeE/32bH8mkjlN8sOw39LjBTh9ARiZkA4+Dzf4UoCjiJtv068v
-         Cu6eDcFMSg6xo0/aEWqf+F69yxCQ7qwtcXhxBmeOCsS3VCuF9lo9MG5v7g0qjzGxaick
-         op34sT/x40i7tZctHGItAUf9X9oYwpl77Oj+BzFFqopB6fBjjjinB9eOXJ8EFJBsU+88
-         wueIPSTtZz6jAYkNfGeuu6+2Xfk4Z9B7RVsfjnhnlxiTY1dLpTxjoEuoX+udP9k09TiZ
-         taKvcQExnf7ErFFdzPzhSExNHXyasl3wqvhegM+M8RQ3D/eSZkGyNfneBCjyQQchSOtN
-         YgNw==
-X-Gm-Message-State: AOJu0YydeBZiP4OsXrWFdDVv8K+NY2+T0M8TgbEphC24zTybJWoafknt
-	82KcuQFHkDMCV1bI1nkM20X7Hu44VE6wF4IclEn43pD2sBQ0kMU/W3ao
-X-Gm-Gg: ASbGnctY2SFxSCikdYvNGd1Ss0cB2OLbqlQU5vBkgadUUU8Iw15i2jiNxRQ9AuDfpAp
-	+b8tRML24tuo7zKgCLC52uTBUplr8L6JkyPuxmYDAhXhnmI0/ChN0kT6PwJf3H2ASbcYyN1QiqU
-	6Gsii7V1lEf1GeJmReEGKAvtT9jojkQz0/ZQkoa4DNM9EixaLlPgi64Zf9/p7JTiFAYqqaqWC2W
-	RzfXp8OhZCwJcOyZW06VNViTtqkmkiIZ5pzMOdxJpxXyflRyfax9au/lxHP4T77Yx2+ceisi/Ih
-	jDf3XpdMTdU4rBcTTc5Dt58QsOwI1PUf03gYFQevcU59JaHB59I7rLHoH3+kjc+rjhpHQStsDZv
-	ydjdQbvMfdzcFxXXhRB4fYc/+y20=
-X-Google-Smtp-Source: AGHT+IFPbNwDZhOiA0PkU28YimsLACTCYvOCmh+vO6XuRDswapHopqU9vDHwrIWAlURBgUo1lSX/hg==
-X-Received: by 2002:a05:690c:a0a8:10b0:71a:421e:e4fe with SMTP id 00721157ae682-71bc9815f49mr5065257b3.24.1754423300191;
-        Tue, 05 Aug 2025 12:48:20 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:b::])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-71b5a5985e2sm34651647b3.57.2025.08.05.12.48.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Aug 2025 12:48:19 -0700 (PDT)
-From: Leo Martins <loemra.dev@gmail.com>
-To: David Sterba <dsterba@suse.cz>
-Cc: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: Re: [PATCH v2] btrfs: implement ref_tracker for delayed_nodes
-Date: Tue,  5 Aug 2025 12:48:06 -0700
-Message-ID: <20250805194817.3509450-1-loemra.dev@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20250805151447.GM6704@twin.jikos.cz>
-References: 
+        d=1e100.net; s=20230601; t=1754432412; x=1755037212;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OiAjHzDCWx5/fnwcdQWM5XW7k9js3aPU7lPasy+MIaE=;
+        b=FyrlGag2YLwQVNyL5S6teu+CrwIKGtWTDcXzuXwPULmonnL3GL94kGgZi0pdofAi99
+         LBkKtV+FWW4Kaga90bHczzLM0RaQMpn0+3HEpfzBvPlpYK2EqhoT/QXdjKTAms8bS5VC
+         XvqzyyNKKFgFG0rxk5XvjFEynAhygMW0ezl5W1oy2iBrEboxndJoN/gfqpMFyky4fxl+
+         VrDcB7PFYkJ1qR7FnI9lZRWuuvqj549Nm/qnhLfVbzL3GJ41mhZxldTdo3dRZ2XWCC0L
+         WxEhW+5R3cKiP5liAYnH0nE9vTIjJRaWKo/tGjRX7UMyjTrA4BMNlw1zYWt9IOdTIjuB
+         3X1g==
+X-Forwarded-Encrypted: i=1; AJvYcCXZxh9XWtQ96X2Mg7f1D/SwwyDTrzMPHUbsYrYiNmJGnflZYtYWnZkEUYP8Je5eSamBcS2PhSCBN6R/ew==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwZGoR0ghijH0DTRX7jpZ3EfNUeS36bM2TVKffljsC9ntgJJUvc
+	7NIKT+FPiqb+zC84rymIZAHkMXBwn+m8u4HKlF8Cl0ra5yOP4HXCMmWGV1PZEv7CU9I=
+X-Gm-Gg: ASbGncvK/wFKTyQHO1bSjjYNcC4PMWi7zJxTk/svXs8mDy92uRz3oK3vb+OHL5Lr/iy
+	U0E0vH5EFd6iz9n9j8aLBvZ3dFzYsJK8AcK/8e2cfnyusw1ifgpcL1NwLQvBGeJp3WNJvEbVhQf
+	f/+jMuuRxqq+xkKlex5Q8goTqlzIdN1tBNV8Ic1UN1JuaeXYrbVZFRFLlc4FaTmDmOjnt8GPhtU
+	urERKjtWwJbKmwDRu+chkAX+CQGl4I1qxKru7LrBw6TdPezblwsVvAY3+Bdhvy8X608x9OFDHfd
+	AjE5t6ADctx+UjzcDqIDUaMRb1CMg1y799bqY4zOaAKC9Ijik0eOn7DZBeGwEGOWT09h6Pvle9D
+	yE/fPMFnqEpHgs5XjK75Lvnb6bL4DtT8E9miLTqZuK0rhWE/2oA==
+X-Google-Smtp-Source: AGHT+IF1yMEsHMExuBAJx/ZFT3wrkOpXFDU7fJaND5zk3EE8jSJwV2lypM5/PjsUQf4gqnK+ukIjmA==
+X-Received: by 2002:a05:6000:2893:b0:3b7:8b1b:a9d5 with SMTP id ffacd0b85a97d-3b8f493d8b1mr146614f8f.51.1754432412122;
+        Tue, 05 Aug 2025 15:20:12 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b422be2b3a5sm11829110a12.46.2025.08.05.15.20.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Aug 2025 15:20:11 -0700 (PDT)
+Message-ID: <6a85c9c0-36ac-4a69-a0d5-4bc5846cd5c7@suse.com>
+Date: Wed, 6 Aug 2025 07:50:06 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Should seed device be allowed to be mounted multiple times?
+To: Christian Brauner <brauner@kernel.org>, Anand Jain <anand.jain@oracle.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ Qu Wenruo <wqu@suse.de>, linux-btrfs <linux-btrfs@vger.kernel.org>,
+ David Sterba <dsterba@suse.com>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+References: <aef03da8-853a-4c9f-b77b-30cf050ec1a5@suse.de>
+ <4cdf6f5c-41e8-4943-9c8b-794e04aa47c5@suse.de>
+ <8daff5f7-c8e8-4e74-a56c-3d161d3bda1f@oracle.com>
+ <bddc796f-a0e0-4ab5-ab90-8cd10e20db23@suse.de>
+ <184c750a-ce86-4e08-9722-7aa35163c940@oracle.com>
+ <bc8ecf02-b1a1-4bc0-80e3-162e334db94a@gmx.com>
+ <a3db2131-37a8-469f-a20d-dc83b2b14475@oracle.com>
+ <510675a5-7cb2-4838-87e0-9fb0e9f114f0@suse.com>
+ <20250805-tragweite-keule-31547b419bc3@brauner>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20250805-tragweite-keule-31547b419bc3@brauner>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On Tue, 5 Aug 2025 17:14:47 +0200 David Sterba <dsterba@suse.cz> wrote:
 
-> On Mon, Aug 04, 2025 at 12:00:12PM -0700, Leo Martins wrote:
-> > On Mon, 4 Aug 2025 15:57:50 +0200 David Sterba <dsterba@suse.cz> wrote:
-> > 
-> > > On Tue, Jul 29, 2025 at 12:08:04AM -0700, Leo Martins wrote:
-> > > > This patch adds ref_tracker infrastructure for btrfs_delayed_node.
-> > > > 
-> > > > A ref_tracker object is allocated every time the reference count is
-> > > > increased and freed when the reference count is decreased. The
-> > > > ref_tracker object contains stack_trace information about where the
-> > > > ref count is increased and decreased. The ref_tracker_dir embedded in
-> > > > btrfs_delayed_node keeps track of all current references, and some
-> > > > previous references. This information allows for detection of reference
-> > > > leaks or double frees.
-> > > > 
-> > > > Here is a common example of taking a reference to a delayed_node and
-> > > > freeing it with ref_tracker.
-> > > > 
-> > > > ```C
-> > > > struct ref_tracker *tracker;
-> > > > struct btrfs_delayed_node *node;
-> > > > 
-> > > > node = btrfs_get_delayed_node(inode, tracker);
-> > > > // use delayed_node...
-> > > > btrfs_release_delayed_node(node, tracker);
-> > > > ```
-> > > > 
-> > > > There are two special cases where the delayed_node reference is long
-> > > > term, meaning that the thread that takes the reference and the thread
-> > > > that frees the reference are different. The inode_cache which is the
-> > > > btrfs_delayed_node reference stored in the associated btrfs_inode, and
-> > > > the node_list which is the btrfs_delayed_node reference stored in the
-> > > > btrfs_delayed_root node_list/prepare_list. In these cases the
-> > > > ref_tracker is stored in the delayed_node itself.
-> > > > 
-> > > > This patch introduces some new wrappers (btrfs_delayed_node_ref_tracker_*)
-> > > > to ensure that when BTRFS_DEBUG is disabled everything gets compiled out.
-> > > > 
-> > > > Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-> > > 
-> > > I'm still missing why we need to add this whole infrastructure, there
-> > > weren't any recent bugs in delayed inode tracking. I understand what the
-> > > ref tracker does but it's still increasing structure size and adds a
-> > > perf hit that is acceptable for debugging kernels but still.
-> > 
-> > Our leading btrfs crash is a soft lockup related to delayed_nodes.
+
+在 2025/8/5 22:13, Christian Brauner 写道:
+> On Tue, Aug 05, 2025 at 10:22:49AM +0930, Qu Wenruo wrote:
+>>
+>>
+>> 在 2025/8/5 10:06, Anand Jain 写道:
+>>>
+>>>
+>>>>> Thanks for the comments.
+>>>>> Our seed block device use-case doesn’t fall under the kind of risk that
+>>>>> BLK_OPEN_RESTRICT_WRITES is meant to guard against—it’s not a typical
+>>>>> multi-FS RW setup. Seed devices are readonly, so it might be reasonable
+>>>>> to handle this at the block layer—or maybe it’s not feasible.
+>>>
+>>>
+>>>> Read-only doesn't prevent the device from being removed suddenly.
+>>>
+>>> I don't see how this is related to the BLK_OPEN_RESTRICT_WRITES flag.
+>>> Can you clarify?
+>>
+>> It's not related to that flag, I'm talking about the fs_bdev_mark_dead(),
+>> and the remaining 3 callbacks.
+>>
+>> Those call backs are all depending on the bdev holder to grab a super block.
+>>
+>> Thus a block device should and can not have multiple super blocks.
 > 
-> Adding infrastructure for real problems makes sense, this is a good
-> justification and should be mentioned in the patch. On which version do
-> you observe it?
+> I'm pretty sure you can't just break the seed device sharing use-case
+> without causing a lot of regressions...
 
-We have significant number of hosts running 6.9, 6.11, and 6.13. This soft
-lockup happens on 6.11 and 6.13, but not 6.9. Also, it appears to be more
-common on 6.11 happening at twice the rate of 6.13.
+It's not that widely affecting, we can still share the same seed device 
+for all different sprout fses, just only one of them can be mounted at 
+the same time.
+
+And even with that limitation, it won't affect most (or any) real world 
+use cases.
+
+Even the most complex case like using seed devices as rootfs, and we 
+want to sprout the rootfs again, just remove the seed device from the 
+current rootfs, then one can mount the seed device again.
 
 > 
-> > [21017.354271] [     C96] Call Trace:
-> > [21017.354273] [     C96]  <IRQ>
-> > [21017.354278] [     C96]  ? rcu_dump_cpu_stacks+0xa1/0xe0
-> > [21017.354282] [     C96]  ? print_cpu_stall+0x113/0x200
-> > [21017.354284] [     C96]  ? rcu_sched_clock_irq+0x633/0x730
-> > [21017.354287] [     C96]  ? update_process_times+0x66/0xa0
-> > [21017.354288] [     C96]  ? dma_map_page_attrs+0x250/0x250
-> > [21017.354289] [     C96]  ? tick_nohz_handler+0x84/0x1d0
-> > [21017.354291] [     C96]  ? hrtimer_interrupt+0x1a1/0x5b0
-> > [21017.354293] [     C96]  ? __sysvec_apic_timer_interrupt+0x44/0xe0
-> > [21017.354295] [     C96]  ? sysvec_apic_timer_interrupt+0x6b/0x80
-> > [21017.354296] [     C96]  </IRQ>
-> > [21017.354297] [     C96]  <TASK>
-> > [21017.354297] [     C96]  ? asm_sysvec_apic_timer_interrupt+0x16/0x20
-> > [21017.354302] [     C96]  ? xa_find+0xa/0xb0
-> > [21017.354305] [     C96]  btrfs_kill_all_delayed_nodes+0x6b/0x150
-> > [21017.354307] [     C96]  ? __switch_to+0x133/0x530
-> > [21017.354308] [     C96]  ? schedule+0xff4/0x1380
-> > [21017.354310] [     C96]  btrfs_clean_one_deleted_snapshot+0x70/0xe0
-> > [21017.354313] [     C96]  cleaner_kthread+0x83/0x120
-> > [21017.354315] [     C96]  ? exportfs_encode_inode_fh+0x60/0x60
-> > [21017.354317] [     C96]  kthread+0xae/0xe0
-> > [21017.354319] [     C96]  ? __efi_queue_work+0x130/0x130
-> > [21017.354320] [     C96]  ret_from_fork+0x2f/0x40
-> > [21017.354322] [     C96]  ? __efi_queue_work+0x130/0x130
-> > [21017.354323] [     C96]  ret_from_fork_asm+0x11/0x20
-> > [21017.354326] [     C96]  </TASK>
-> > [21042.628340] [     C96] watchdog: BUG: soft lockup - CPU#96 stuck for 45s! [btrfs-cleaner:1438]
-> > 
-> > btrfs_kill_all_delayed_nodes is getting stuck in an infinite loop because
-> > the root->delayed_nodes xarray has a delayed_node that never gets erased.
-> > Inspecting the crash dump reveals that the delayed_node has a reference count
-> > of one, indicating there is a reference leak.
-> > 
-> > I believe this bug was introduced or at least magnified somewhere between
-> > 6.9 and 6.11.
-> 
-> That's likely to be related to the xarray conversion in 6.8.
+> If you know what the seed devices are than you can change the code to
+> simply use the btrfs filesystem type as the holder without any holder
+> operations but just for seed devices. Then seed devices can be opened
+> by/shared with any btrfs filesystem.
 
-I took a look at this, but couldn't find any obvious bugs.
+But we will lose all the bdev related events.
+
+We still want to sync/freeze/thaw the real sprouted fs in the end.
 
 > 
-> > Let me know if you want anymore details about the crash.
-> > 
-> > > 
-> > > We have the ref-verify code and mount option, from what I've heard it
-> > > was used sporadically when touching related code. We can let the ref
-> > > tracking work like that too, not turned on by default ie. requiring a
-> > > mount option.
-> > 
-> > The only issue with a mount option is that we would not be able to conditionally
-> > compile ref_tracker_dir and ref_tracker pointers in struct btrfs_delayed_node,
-> > permanently increasing the size of the struct from 304 bytes to 400 bytes.
+> The only restriction is that you cannot use a device as a seed device
+> that another btrfs filesystem uses as a non-seed device because then it
+> will be fully owned by the other btrfs filesystem. But Josef tells me
+> you can only use it as a seed device anyway.
 > 
-> That's not a small difference though for delayed inodes it may be still
-> within the acceptable range. Turnin on debugging features for other
-> subsystems also bloats structures, lockdep makes from 4B spinlock
-> something like 70B, also indirectly hidden in other embedded structures.
-> 
-> > Alternatively, there could be a delayed_node ref_tracker helper struct that we
-> > could store a pointer to.
-> 
-> This might make more sense for the first implementation.
+> IOW, if you have a concept of shareable devices between different btrfs
+> filesystems then it's fine to reflect that in the code. If really needed
+> you can later add custom block holder ops for seed devices so you can
+> e.g., iterate through all filesystems that share the device.
 
-Got it, will give this a shot for v3.
+Sure it's possible, with a lot of extra code looking up where the seed 
+device belongs, and all the extra bdev event proxy.
 
-> 
-> > > In case you'd want to enhance more structures with ref tracker the mount
-> > > option can enable them selectively.
-> > > 
-> > > > @@ -106,6 +113,13 @@ static struct btrfs_delayed_node *btrfs_get_delayed_node(
-> > > >  		 */
-> > > >  		if (refcount_inc_not_zero(&node->refs)) {
-> > > >  			refcount_inc(&node->refs);
-> > > > +#ifdef CONFIG_BTRFS_DEBUG
-> > > > +			inode_cache_tracker = &node->inode_cache_tracker;
-> > > > +#endif
-> > > 
-> > > We try to avoid #ifdefs if it's a repeating pattern, this should be
-> > > abstracted away in a helper.
-> > 
-> > Sounds good.
-> > 
-> > For the record, there would be no need for it if we used the typedef
-> > approach :-). There is a good example of how the original
-> > author of ref_tracker implemented it in include/net/net_trackers.h.
-> 
-> We also try to stick to consistent coding style and patterns even if
-> there's something possibly better. Dealing with various preferences in
-> a big code base becomes quite distracting over time.
 
-Makes sense.
+But I'd say, the seed device specification is not well specified in the 
+very beginning, thus it results a lot of "creative" but not practical 
+use cases.
 
-> 
-> Could the typedef be replaced by a struct that's abstracting the
-> conditional type? Something like
-> 
-> struct delayed_inode_tracker {
-> #ifdef ...
-> 	struct ref_tracker tracker;
-> #else
-> 	struct {} tracker;
-> #endif
-> };
-> 
-> Visually it's basically the same what I see in the net_tracker.h and we
-> won't have to argue about the typedefs.
+Yes, this will result some regression, but I'd prefer a more sounding 
+and simpler logic for the whole seed device, with minimal impact to the 
+most common existing use cases.
 
-Yeah, this is great!
-
-> 
-> > > > +			btrfs_delayed_node_ref_tracker_alloc(node, tracker,
-> > > > +							     GFP_ATOMIC);
-> > > > +			btrfs_delayed_node_ref_tracker_alloc(
-> > > > +				node, inode_cache_tracker, GFP_ATOMIC);
-> > > >  			btrfs_inode->delayed_node = node;
-> > > >  		} else {
-> > > >  			node = NULL;
-> > > > @@ -125,17 +139,19 @@ static struct btrfs_delayed_node *btrfs_get_delayed_node(
-> > > >   *
-> > > >   * Return the delayed node, or error pointer on failure.
-> > > >   */
-> > > > -static struct btrfs_delayed_node *btrfs_get_or_create_delayed_node(
-> > > > -		struct btrfs_inode *btrfs_inode)
-> > > > +static struct btrfs_delayed_node *
-> > > > +btrfs_get_or_create_delayed_node(struct btrfs_inode *btrfs_inode,
-> > > > +				 struct ref_tracker **tracker)
-> > > 
-> > > And another pattern, please don't change the style of the function
-> > > definition line, the return value is on the same line as name, if
-> > > parameters don't fit under reasonable column limit like 90 chars then
-> > > it's on the next line. Most of the code has been fixed so you can just
-> > > extend it.
-> > 
-> > Got it, I was just using the default kernel .clang-format.
-> > Is there a btrfs specific .clang-format I could use?
-> 
-> Though there's "default kernel" .clang-format, many subsystems have
-> their own style.  I think Boris mentioned an adjusted .clang-format for
-> btrfs, but we have hand tuned code I'm not sure can be expressed in the
-> config. The best we can do is to let if format things that have
-> basically no exceptions and not touch the rest.
-
-Understood.
-
-Sent using hkml (https://github.com/sjp38/hackermail)
+Thanks,
+Qu
 
