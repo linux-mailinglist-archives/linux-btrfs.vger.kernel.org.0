@@ -1,131 +1,158 @@
-Return-Path: <linux-btrfs+bounces-15847-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15848-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D050B1ACFA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 05:57:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A653FB1B15B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 11:42:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADF3F3B6DBB
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 03:57:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F12AC7A6B88
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 09:40:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D5E11F5838;
-	Tue,  5 Aug 2025 03:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF09F261581;
+	Tue,  5 Aug 2025 09:41:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G6d9ghle"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Sw7Jqllq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com [209.85.214.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A81B1F473A
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 03:57:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87FFF25F99B;
+	Tue,  5 Aug 2025 09:41:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754366261; cv=none; b=QhP9crdg8n6QBp/Y15QM4h96AU4lGwWM1j1RpLdQshn35M6/8u7VhzGUq1LKzRIzK70AzSz+3kwYwAzrWhxvmAAMtS0FIZYdwnJ7oDMt6PPcwVQEHPBDeuQpVU5exM3giR6T1HthAGZ7DgzkRdIgvf4+6yatz5owCRnU2es0vsQ=
+	t=1754386918; cv=none; b=KjYDfCYm2CtKhI/io/GwpappvM2aeZiU3c6cOQP931/P7PxpmVjnFNQvsnZz77+sWtceLlwHP5DFUosShhm/WWBnXbl1AYhfWNqo+4HxT1av1m7RVulgR8t2m0uIlm4zo4GdmA9zo5CICNP6F/bweyOM7Go40gqJiVeA2R2F63I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754366261; c=relaxed/simple;
-	bh=qV/EHRNvvR/18CZfl/AL8DFiGLakYlwhy5bqT3hJKVo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LEZwYuzuGf0PD3FMPtxkFYyGdVK34qZeJdGtaKijpH9QxE/eyZvnT3LxCj5M6O8ydyMRxJlf2NtSv6fj6Cxf7lZJVEEzw2ni3y0PAV2HGAG/cbKe9tx17CN7Knf0m7l+WroMYsQFdSrmYJ2TVTwozb5v6H138lPp/DWCy+hnxFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G6d9ghle; arc=none smtp.client-ip=209.85.214.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f194.google.com with SMTP id d9443c01a7336-24050da1b9eso6147945ad.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 04 Aug 2025 20:57:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754366260; x=1754971060; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KFLvRZFTcc/W18g6o4BdqpOJT2NlWkj2kjvAGk6etic=;
-        b=G6d9ghlerUyiXVg60cP5y5yNDrQOap2qKOsIsx/XTI+SaZ82k9NpnPjwDbIpgBvtp5
-         OHnruQQnefQvuC3eIhacGHy8TiT5Q7gKa2IEBXpcejEsYTZxnIE/P3gSOlsBqktZONLU
-         gNFSbWzWYEFyC4UUxHSvpFC2U8HyV2MrzykKXhKH/VFE4UZh9oRf3/81wQ8DIkSZP3IT
-         DDicfV8/jRiMcM7FBBv3UE+sGU6lG+FMpasC/8GZp8THC1mNcwo4YbGzdAhr33J5q8o5
-         1kSgSeSHcYtemAfawLm832PKi8s4HwYwb1lJWG18PVeQQCPT1yPU2IMj9HJuddUQU0GC
-         Tm0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754366260; x=1754971060;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KFLvRZFTcc/W18g6o4BdqpOJT2NlWkj2kjvAGk6etic=;
-        b=MgaoVlzHnJKaXgSEyHfejmfnZoMuAFl6fAlGin4tDfd69ctKXekfFbMzlQCvCluxVb
-         16dpNjYSsh8Ak6kPkEi4PqVy5OvuHNx9XlJXclSrI+tJvosTNPXd8wkLV/U+Zgh4lclr
-         k64BGiH62yD9G4QfD3UCvEZWOV+Fre0jw/W1zIWrDWA4fGu4fHVgN8zqcEFhyLsxZL2Y
-         4uNZReaG3Yozv8hNd4nbDOsCppQEmcja/NA9te6Enca/Wa+qkt33/sG/9uvbiPd//REk
-         TcE8gumIU10QdDy1zHxEe2jH0xST9qGjDuf5BzXClx+3TlXCmYZANRmbETvVP45xueN3
-         by/g==
-X-Gm-Message-State: AOJu0Yz9oWfmlvvd3mSkWqi2poFRlqXXWQTQAYgXUuzPQjpEhY6PVRTE
-	l73dGbourcBc19dCrqe6klnUUb15xSPqGwQ85ymkeR2OtKWFQCRDHroJBQBK9Jl5Kzw=
-X-Gm-Gg: ASbGncvUeA/bjEkS/HFMZF55NXMeKJaL54ETJTNTXetCoBbH870+PDY9JN72r5DYNJt
-	uDbvBbD/+U3udbXzKS93LDRoyVRyWpfNaTgz+I9bpqrnBNnCuT0FesrZVkNvKLHtlDf8uA4l7f9
-	OQ8KBSXmwgpcVrkjDJw4unc/mgY82d06nXr99JRLxMfToLTELHqAlZuWTktOQzhBlzha8eDa357
-	oB6+kUcJYoqf2i62qW79YU9nid30SdGaNgF4pP/9aSXDO+hMZIhOMhEnsxBChrdWtHHsIKGuSu7
-	vpWfSb69y6xzNeSh5KOgKizwLMAiz4uJeq4Rtn4f1aLAFE0HQkUiZTuv6GGdeSHg3XQ00sGz74h
-	Dd5T6CeqnAwvvtGoRCohyEfq+pDzQ
-X-Google-Smtp-Source: AGHT+IHREn9OAdKD3kGnZ4qFjAIVlsJDyqboLhucL/JRYs+h+aiXIHv/ATU+K08k+Am2ZM9rhMveyw==
-X-Received: by 2002:a17:902:e743:b0:240:71db:fd0 with SMTP id d9443c01a7336-24246fcb42emr67470315ad.8.1754366259545;
-        Mon, 04 Aug 2025 20:57:39 -0700 (PDT)
-Received: from SaltyKitkat ([154.3.38.40])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241d1ef6c28sm121361455ad.14.2025.08.04.20.57.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Aug 2025 20:57:39 -0700 (PDT)
-From: Sun YangKai <sunk67188@gmail.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Sun YangKai <sunk67188@gmail.com>
-Subject: [PATCH] btrfs: fix node balancing condition in balance_level()
-Date: Tue,  5 Aug 2025 11:57:04 +0800
-Message-ID: <20250805035718.16313-1-sunk67188@gmail.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1754386918; c=relaxed/simple;
+	bh=HAODYPF2rBhKemulCuoz/ctOy4RvHAOg5oksFUxstMQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q6sFFbzdyQ8szUKvDF/oQBfwrf9LVKJX/ubWZI3qXohfyBnV4YBoDxiQ/PUF+iFq3cNRRhEA82mpv7OXNO8q9ZxtgtGXaCv2fqYAYTVh42Duxo12Xl8GdK74QS37z6B0M9snTU8t9Js04uhu/u1yEpRq3404UucKzccqFky/BkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Sw7Jqllq; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5759b4DJ029114;
+	Tue, 5 Aug 2025 09:41:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=fNoiiw
+	Wi08cK8p4mDoTlMP+o89qoOBFT3QPIgZXmUfA=; b=Sw7JqllqU1ibmbq6jbUAPf
+	QQwXXoBQSJixNrU3oL2yZdYKReehejgg5AspbBTLYErNC5KYrFfC/rkVSPW3UiW3
+	rC5MOJ3QonlFHQEy/dIHQJOGp8OEJ8I1N0ldDrEKXX47benv2XvqjtEpPZt4WWfc
+	9Tnqaf6P8jSJwFE8koTMI1FLXnYaX8k9JtHzVhNGwt6XWozq7BYAoWRWbvP7p+Xi
+	JswcYGIPPH8AriXm058BXVeeGEdcN/LCc2bAJxfLzj00Em5qB1EwQogqXRZhfWb+
+	2L3LLINi8LOpVBbY+jCilQnsZa8/aqsVMOMUXdqOFVV7aMMPsg76Ge+j2dkfTT3A
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 489ab3nm21-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Aug 2025 09:41:53 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5759asX8018125;
+	Tue, 5 Aug 2025 09:41:52 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 489ab3nm20-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Aug 2025 09:41:52 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5755neq7004567;
+	Tue, 5 Aug 2025 09:41:51 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 489yq2hjwk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Aug 2025 09:41:51 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5759foRP56623482
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 5 Aug 2025 09:41:50 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id F0DEF2004B;
+	Tue,  5 Aug 2025 09:41:49 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1494120043;
+	Tue,  5 Aug 2025 09:41:48 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.109.219.158])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue,  5 Aug 2025 09:41:47 +0000 (GMT)
+Date: Tue, 5 Aug 2025 15:11:45 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ritesh.list@gmail.com, djwong@kernel.org,
+        zlang@kernel.org, fdmanana@kernel.org
+Subject: Re: [PATCH 3/7] btrfs/137: Make this compatible with all block sizes
+Message-ID: <aJHR2fsx8ltPUuh5@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <cover.1753769382.git.nirjhar.roy.lists@gmail.com>
+ <991278fd7cf9ea0d5eed18843e3fb96b5c4a3cac.1753769382.git.nirjhar.roy.lists@gmail.com>
+ <c1feb41e-608b-4578-b7f7-bf9dd0801836@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <c1feb41e-608b-4578-b7f7-bf9dd0801836@gmx.com>
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=Z+jsHGRA c=1 sm=1 tr=0 ts=6891d1e1 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=Ww7aUnnIYBbqKrYQ4FgA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: Kdnk-EGRROhbORvFkMmPRRGIuqTTp4r4
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA1MDA2OCBTYWx0ZWRfX6jdL7bxDNDYA
+ 8lO32YS67vFpmugJ/IX6SOgbe8B39pEE+3Ik7uhEF8TOgxbaC8EtcUdDFitC1EZsUp5ni5QDpZV
+ VZ5jc8z0BHzlr8EZepe292Y5Ha37sfQoB00z37J6Xv3P18wjduE8H2djWJ0Vxq+vAnCpjYJnwk/
+ EkhhlXorIO8DlfkBUV45O4n6pzX45YdLMc5mpVCidqeMez8TcgUCHHFgHpFVoi/I1ovwUIGuOf6
+ BVZc9eFizm3zcloPGbohr3/zzHeQWqLY7+YmaKVkIbTT7NtF/CUn8XTFiiIjdpz/jJVSTbO5kn7
+ VkztCyUe86FkBSMWp6PM6o5yO+AWa0kEQ4uzwdnAWIxataMYho7HcGHEI/POkbiuVu0yVBXIIpa
+ WuYtIV2VVl6A6ZhXccv3rHiWweKOY8Aw3Er4zift2C454pXy+4cFi8GpUjb+Dl/wlq4DcEUp
+X-Proofpoint-GUID: _O_O4Z8pdmJ-IWHRCjDROMECnVOMmwWz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-08-05_02,2025-08-04_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ lowpriorityscore=0 spamscore=0 malwarescore=0 clxscore=1011 suspectscore=0
+ priorityscore=1501 mlxlogscore=999 adultscore=0 phishscore=0 mlxscore=0
+ bulkscore=0 impostorscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2508050068
 
-Commit cfbb9308463f ("Btrfs: balance btree more often") intended to
-trigger node balancing when node utilization drops below 50% (capacity/2)
-by modifying the condition in setup_nodes_for_search(). However, an
-undetected early return condition in balance_level() prevented this
-behavior from taking effect.
+On Mon, Aug 04, 2025 at 01:28:24PM +0930, Qu Wenruo wrote:
+> 
+> 
+> 在 2025/7/29 15:51, Nirjhar Roy (IBM) 写道:
+> > For large blocksizes like 64k on powerpc with 64k pagesize
+> > it failed simply because this test was written with 4k
+> > block size in mind.
+> > The first few lines of the error logs are as follows:
+> > 
+> >       d3dc847171f9081bd75d7a2d3b53d322  SCRATCH_MNT/snap2/bar
+> > 
+> >       File snap1/foo fiemap results in the original filesystem:
+> >      -0: [0..7]: data
+> >      +0: [0..127]: data
+> > 
+> >       File snap1/bar fiemap results in the original filesystem:
+> >      ...
+> > 
+> > Fix this by making the test choose offsets based on
+> > the blocksize.
+> 
+> I'm wondering, why not just use a fixed 64K block size?
 
-The early return condition:
-    if (btrfs_header_nritems(mid) > BTRFS_NODEPTRS_PER_BLOCK(fs_info) / 4)
-        return 0;
+Hi Qu,
 
-caused balance_level() to abort when nodes were still more than 25% full,
-effectively maintaining the original 25% threshold. This unintended
-behavior persisted for over a decade. Since setup_nodes_for_search() is
-the sole caller of balance_level(), remove the obsolete early return
-condition to:
+It will definitely be simpler to just use 64k io size but I feel it
+might be better to not hard code it for future proofing the tests. I
+know right now we don't have bs > ps in btrfs but maybe we get it in the
+future and we might start seeing funky block sizes > 64k.
 
-1. Align with the original intent of commit cfbb9308463f ("Btrfs: balance btree more often")
-2. Allow proper node balancing at the 50% utilization threshold
-3. Improve btree performance by more frequent node compaction
+Same goes for not hardcoding block mappings in the golden output. 
 
-Fixes: cfbb9308463f ("Btrfs: balance btree more often")
-Signed-off-by: Sun YangKai <sunk67188@gmail.com>
----
- fs/btrfs/ctree.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index acd85e317564..8cc52c8b38f3 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -939,9 +939,6 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
- 		}
- 		return 0;
- 	}
--	if (btrfs_header_nritems(mid) >
--	    BTRFS_NODEPTRS_PER_BLOCK(fs_info) / 4)
--		return 0;
- 
- 	if (pslot) {
- 		left = btrfs_read_node_slot(parent, pslot - 1);
--- 
-2.50.1
+Regards,
+ojaswin
 
 
