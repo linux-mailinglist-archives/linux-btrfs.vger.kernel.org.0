@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-15863-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15864-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 800CEB1BAC7
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 21:15:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6EA7B1BAF9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 21:34:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 267723A54A8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 19:15:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 589EB18A7C3A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 19:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE2F2750E7;
-	Tue,  5 Aug 2025 19:15:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680B821D5BF;
+	Tue,  5 Aug 2025 19:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="NUlwPq4c";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JQt71QcS"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="hApum/CO";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nCgz0W7W"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF58291C12
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 19:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A08F86359
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 19:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754421302; cv=none; b=iy7RDhLkOi7f1qHA4MXPnJjEZF0sNcj6eDeCSN0+/65RYJVSkUZSk7JY0xlI1vCaprQBy2P+jYdfrQbndT5JXcEJxyka5I2mbRE6hnEZzX6Zn7ufV6HW4XK7K6JmFkDfLWKvH61ciJZC9m+wlfa/CsU6/dh5bD6Ttk2fQXrdD2M=
+	t=1754422442; cv=none; b=T+zRdNCJDufH7tj6kaM+LTsvFQoHGDWhyjikOXCrZd54VbVvriQfvBZj346P3AvlpVrJSpZUcglOX5iSkW1xT7g88glyiGt4ojOtaL/5wMdqUtg0dbwXxO+KHN1y+VHzQhNOFKqW2hTQYwpaBPyj5o6S9XGsZCNUs3tPL6JyibQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754421302; c=relaxed/simple;
-	bh=FvKY8+2M1ak4xukbWUtvW/lWxt6NCyc+rLY9LzuuH/M=;
+	s=arc-20240116; t=1754422442; c=relaxed/simple;
+	bh=lUz+4/GlcZSKq+9WjqgVVzwCqVskIug2GTls0ugsAjY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GOgXSOqIVTj3N8XONGdcU0ampiwElTo+mYJwWwmrsYPxSI3RdujtidGUCgFb2DgHjpIw536cDpmALkMswMQGiyq/CByqywtztHha2t8Xq56gv+d8Fogbf49t/jO0PQY927K1MM1ERVFsUryG7OXvnI0AnK4s9xMitfeJH4/Ld8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=NUlwPq4c; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JQt71QcS; arc=none smtp.client-ip=103.168.172.157
+	 Content-Type:Content-Disposition:In-Reply-To; b=HfMVqgv4xSb7Z52kezYtqcO/P6ATrP+QyiADs3PmVubkRudTO0H6pbQSbzq7WuI0L89fOfitPTwAbnWLBt4ka48H7iiTYg2W+0KVQ9dSZ+EfFrCVor4vszEHL19HtW3zWMcSyY/EEJQIwfyzcFVyo3l7UtXNW85zUlwUXF6HYfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=hApum/CO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=nCgz0W7W; arc=none smtp.client-ip=103.168.172.157
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 3ABA4140020E;
-	Tue,  5 Aug 2025 15:15:00 -0400 (EDT)
+Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id A31931400213;
+	Tue,  5 Aug 2025 15:33:59 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-10.internal (MEProxy); Tue, 05 Aug 2025 15:15:00 -0400
+  by phl-compute-01.internal (MEProxy); Tue, 05 Aug 2025 15:33:59 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1754421300; x=1754507700; bh=PqSiM43ppm
-	6HzxQX4P69e9ihS39xbjG7qYk1Y/Kkd4I=; b=NUlwPq4cTMDlTqlHT+4+IW3QrL
-	MU7JXSJ5Mp43pCAiC9PT+0PhrzPJPE3n8+CuO5vyU+nclN3iJV7P1F91SWcqEogV
-	TbeGfTznieQKCrwMol7E2y5f9pHFMXW2xSDtLjZ2EWDMIj8O72tGHbhVK2pL8STa
-	epDJqdZUAAfR6xRmao9ZmFLSp3tV7LvNnjLAF6JQ4u/cwHftirad3DSuhSoPIBn2
-	9YCRc86zKJItfGIOPL/SY2nGljU8wOGDOnaeVN1nGSHRmP5zoOCRyWggHmHU2nmb
-	8/W6qE7zQJBq1rcuakiC5U5CgmIa2H/8hx5J5YqnnsVVAvLXdTdn9n9v/XbQ==
+	:subject:to:to; s=fm1; t=1754422439; x=1754508839; bh=uULMviXzFR
+	0ZqCtyQH6ZTSWmSWLgQDWdEOxEl3iauno=; b=hApum/CO/sB1Z2A8jfATkOp1/a
+	UIdxoZkbKKihUDDYdU/82OnyfrwkG72H1SxNuzvvt5zXGLetIxuuBEVo9+WP7l+w
+	02EpUDsgDVJ1Hu6Ell3k78OhpuswdVCm+YV4iyOu8lLwgrsfXXRaYThqbsdR1d0v
+	VXxKpveqW+peHW/HRWotHNqAtzyzYucWZsjQymteG1291osX7Y5bk4HtSnA5uVh6
+	XV5oK/tvhsAHsOGvOj0PMB4sjH7hh/4mtDJkvh2rp8x1ONH80yOa5pY/5mgaQI2L
+	DW1Kt7yP0Ku9PkSor30dSIyXItaV51A7hQ9bEkfTi0ODSyKt2/5r4geyeQtw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1754421300; x=1754507700; bh=PqSiM43ppm6HzxQX4P69e9ihS39xbjG7qYk
-	1Y/Kkd4I=; b=JQt71QcSjRwpxp4d1ZqfIstG+c9J/iMj1igdLXBBGOoKYT/N8Ah
-	ASc4wx1eS6aqU4WdZRvBxkJVx9IHauAPJeEnA4Kiqu3SlkY7esLTp49UUIFhDZS9
-	j5Gi+pe4kmnFFY1i68g81cgyhE8MpOA7bbCFo9MSwy+Jr3TEVhTlBWpGphTD1H00
-	oVyldDEQDClulu/bSUxq6pSKHQ3R7Iw+hQ/txwGDJD7KPqN5M60eTPo0X0bZCysq
-	gUtxHPfWOsfLN7DCC2UisWrajKDTdGm7VYI2LIqW410sjqbwP9oHDe/92JWFeN1K
-	nKVlf3e7s0loeSCZ3CQHXvX5ngXSOHsk8Pg==
-X-ME-Sender: <xms:NFiSaHsNlcA1JM2FadDgsTG60wN0SlegqyQnun-oCjxTKmw20ev9Rw>
-    <xme:NFiSaIo1QDWAwfbmNX1rDaThY9bqsK6S9LgXkLqbWew1sN3O6eq8wBOCKl6AKoEPw
-    hHJj6_QDgSuMH_JVZY>
-X-ME-Received: <xmr:NFiSaMkQg4utyytDvg8M2kOZGAlTCo2ShqlJQ6YyLxK3ATHpzCZBXE3ZGyt4EpanZy7rsXNajr5tMsCh34eEPziAjNU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduudehleekucetufdoteggodetrf
+	1754422439; x=1754508839; bh=uULMviXzFR0ZqCtyQH6ZTSWmSWLgQDWdEOx
+	El3iauno=; b=nCgz0W7Wr07mTN3qC4Z5x7Q+aUBcqRZVMBAuSVCsROsND7NYKDG
+	6IuiRcQueLEPMZQau1UYwm87e1pACLtiMP3EL8YJ+njSfl/oZjYc30PS/8YhgDkW
+	kd3R2w27qomfq8uP0rAOK34s+GtlHJOu8RJXgXUITHfepj2+CPdPBPsyJ+3A7mw9
+	FW/vP2LmjJP4jqN82IgDwNg+0mu/lq5Nc8EZknXImiPNARLLc2ygfXWZNLlU9y8U
+	QhN3ezcWzqnPCq6DqC+RqsdRpi4N2VPr2Zt6YvZg5hlfnDX/Jbrusn4WL++ZqOPF
+	KDuzmvLcRtcYZJ6UQ3/e9zwC98M97Lt/Ncw==
+X-ME-Sender: <xms:p1ySaLyPfv32Zhl5Ait_fwokkVWFgCVVafw88gh1602V1fjcbL1GtQ>
+    <xme:p1ySaDcRn2F2gd6TaIeBV4aG8YvkbPudHQSY-fA7Iin2wvk-CgWuZwhAv9noXkwej
+    _8qrg4ZrwTPIa6meHw>
+X-ME-Received: <xmr:p1ySaHIHwDLSmTX31xpwiD5OGbEipE6iKlWR7E7VqId6t8ZX5krak1RbfQszjQWqSZW2eNjQ6gMeZcxbBvSxhYJJWF4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduudeitddvucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
@@ -73,22 +73,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduudehleekucetufdote
     hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
     ohepfihquhesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvh
     hgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:NFiSaEw59dhQRbBvxglSAvmBvw7qxlZSZ_rd1bkL_0emPLYzx-Ui7w>
-    <xmx:NFiSaMmYiwmjqRFm3iM02JehO56aAXydCTKKOQB9ETOZz-_nJby03g>
-    <xmx:NFiSaFdWlX5ODtflEiE6hdDS0ap_-M-meTaKnriyhQ6Ws_JyBYfXEA>
-    <xmx:NFiSaKrkLc0SMUAERWfg1aOHIAzVu7xmlmChdtknimvoZvOIqy7hsA>
-    <xmx:NFiSaO_jImS025xFROGK2KhBwcqvVaVZTAGF6XPYUKUpiKqU1ZGIGauX>
+X-ME-Proxy: <xmx:p1ySaEEVUsUuczX0Rrhfk_LH7SNLjPPe9zPvBjIO0XaQ03T8KdZ0gg>
+    <xmx:p1ySaBpej1bCNBLBLvorC_k0bwS79ikTpyOV9HH9AAw6DYT4hBA4IQ>
+    <xmx:p1ySaNQfI9FwW6ghryrb66PdzFkSuflnYyBWxg9o_WWiaK-QY3CxRg>
+    <xmx:p1ySaOP8znvcWvlNa9nfZsPcFyIjphzNtgNsB5WSaRS6sJYqo115fg>
+    <xmx:p1ySaPjqKGeYTfV1AKEJL0BmPSzSY7BlfhAa4VVcoEfs5uXcqYGp80kE>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 5 Aug 2025 15:14:59 -0400 (EDT)
-Date: Tue, 5 Aug 2025 12:15:58 -0700
+ 5 Aug 2025 15:33:59 -0400 (EDT)
+Date: Tue, 5 Aug 2025 12:34:58 -0700
 From: Boris Burkov <boris@bur.io>
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 5/5] btrfs-progs: remove device_get_partition_size_sysfs()
-Message-ID: <20250805191558.GC4106638@zen.localdomain>
-References: <cover.1754116463.git.wqu@suse.com>
- <7d924138ebae9196c7a6889b29e44e7549bda83d.1754116463.git.wqu@suse.com>
+Subject: Re: [PATCH 0/2] btrfs-progs: check for device item between super
+Message-ID: <20250805193458.GD4106638@zen.localdomain>
+References: <cover.1754090561.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -97,111 +96,71 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7d924138ebae9196c7a6889b29e44e7549bda83d.1754116463.git.wqu@suse.com>
+In-Reply-To: <cover.1754090561.git.wqu@suse.com>
 
-On Sat, Aug 02, 2025 at 04:25:51PM +0930, Qu Wenruo wrote:
-> The helper is introduced for cases where the unprivileged user failed to
-> open the target file.
+On Sat, Aug 02, 2025 at 09:56:18AM +0930, Qu Wenruo wrote:
+> Mark has submitted a check enhancement for progs to detect the device
+> item mismatch between super blocks and the items inside chunk tree.
 > 
-> The problem is, when such failure happens, it means the distro's file
-> mode or ACL is actively preventing unrelated users to access the raw
-> device.
+> However there is a long existing problem that it will break CI.
 > 
-> E.g. on my distro the default block device mode looks like this:
-> 
->   brw-rw---- 1 root disk 254, 32 Aug  2 13:35 /dev/vdc
-> 
-> This means if an unprivileged end user is not in the disk group, it
-> should access the raw disk.
-> 
-> Using sysfs as a fallback is more like a workaround, and the workaround
-> is soon getting out of control.
-> 
-> For example the size is not in byte but in block unit. This is already
-> causing problem for issue #979.
+> The root cause is that the CI kernel lacks the needed backports, that on
+> a lot cases the kernel can lead to such mismatch and being caught by the
+> newer progs.
 
-shifting by sector size doesn't seem like a crazy thing for us to simply
-fix.
+Can you explain why we are contorting around out of date "continuous"
+integration? Shouldn't we just get the CI on a new kernel?
 
 > 
-> Furthermore to grab the correct size in bytes, we have to do all kinds
-> of sysfs probing to handle partitions (to get the block size from parent
-> node) and dm devices (directly from the current node).
+> So to merge this long existing fsck enhancement, this series refresh and
+> workaround the problem by:
 
-I don't quite understand this justification, is this another fix we
-would have to make or is it what we are already doing?
+Thanks for putting in the effort to get the enhancement in, by the way!
 
 > 
-> With the recent error handling enhancement, I do not think we should
-> even bother using the sysfs fallback, the error message should be enough
-> to inform the end user.
+> - Only reports warnings when such mismatch is detected
+>   Such mismatch is not a huge deal, as we always trust the device item in
+>   chunk tree more than the super block one.
+>   So it won't cause data loss or whatever.
 
-I think that given we have users reporting being confused by size being
-off by a factor of 512, it makes more sense to make them happy by just
-shifting rather than throwing the whole thing out.
+That makes sense to me.
 
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  common/device-utils.c | 39 +--------------------------------------
->  1 file changed, 1 insertion(+), 38 deletions(-)
+>   So even if the CI kernel doesn't have the fix, self test cases won't
+>   report them as a failure.
 > 
-> diff --git a/common/device-utils.c b/common/device-utils.c
-> index b52fbf33a539..7a0a299ccf83 100644
-> --- a/common/device-utils.c
-> +++ b/common/device-utils.c
-> @@ -333,49 +333,12 @@ int device_get_partition_size_fd_stat(int fd, const struct stat *st, u64 *result
->  	return 0;
->  }
->  
-> -static int device_get_partition_size_sysfs(const char *dev, u64 *result_ret)
-> -{
-> -	int ret;
-> -	char path[PATH_MAX] = {};
-> -	char sysfs[PATH_MAX] = {};
-> -	char sizebuf[128] = {};
-> -	const char *name = NULL;
-> -	int sysfd;
-> -	unsigned long long size = 0;
-> -
-> -	name = realpath(dev, path);
-> -	if (!name)
-> -		return -errno;
-> -	name = path_basename(path);
-> -
-> -	ret = path_cat3_out(sysfs, "/sys/class/block", name, "size");
-> -	if (ret < 0)
-> -		return ret;
-> -	sysfd = open(sysfs, O_RDONLY);
-> -	if (sysfd < 0)
-> -		return -errno;
-> -	ret = sysfs_read_file(sysfd, sizebuf, sizeof(sizebuf));
-> -	if (ret < 0) {
-> -		close(sysfd);
-> -		return ret;
-> -	}
-> -	errno = 0;
-> -	size = strtoull(sizebuf, NULL, 10);
-> -	if (size == ULLONG_MAX && errno == ERANGE) {
-> -		close(sysfd);
-> -		return -errno;
-> -	}
-> -	close(sysfd);
-> -	*result_ret = size;
-> -	return 0;
-> -}
-> -
->  int device_get_partition_size(const char *dev, u64 *result_ret)
->  {
->  	int fd = open(dev, O_RDONLY);
->  
->  	if (fd < 0)
-> -		return device_get_partition_size_sysfs(dev, result_ret);
-> +		return -errno;
->  
->  	if (ioctl(fd, BLKGETSIZE64, result_ret) < 0) {
->  		int ret = -errno;
-> -- 
+> - Workaround fsck/057 to avoid failure
+>   Test case fsck/057 is a special case, where we manually check the
+>   output for warning messages.
+> 
+>   This is originally to detect problems related seed device, but now it
+>   will also detect device item mismatch cause by the older CI kernel.
+> 
+>   Workaround it by making the keyword more specific to the original
+>   problem, not just checking for warnings.
+
+I'm a little skeptical about reducing even the incidental coverage of
+the test except for a good reason.
+
+Thanks,
+Boris
+
+> 
+> With those done, we can finally make CI to accept the new checks even
+> the kernel is not uptodate.
+> 
+> Mark Harmstone (1):
+>   btrfs-progs: check that device byte values in superblock match those
+>     in chunk root
+> 
+> Qu Wenruo (1):
+>   btrfs-progs: fsck-tests: make the warning check more specific for 057
+> 
+>  check/main.c                                  | 35 +++++++++++++++++++
+>  .../fsck-tests/057-seed-false-alerts/test.sh  |  6 ++--
+>  2 files changed, 38 insertions(+), 3 deletions(-)
+> 
+> --
 > 2.50.1
 > 
 
