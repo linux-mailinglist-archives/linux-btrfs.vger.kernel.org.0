@@ -1,98 +1,99 @@
-Return-Path: <linux-btrfs+bounces-15871-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15872-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80AB3B1BD1F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 01:26:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 037FAB1BD63
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 01:33:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB9F018A8159
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 23:26:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75F123B025A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Aug 2025 23:32:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A6652BE054;
-	Tue,  5 Aug 2025 23:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7660B26056C;
+	Tue,  5 Aug 2025 23:32:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="hxzFYBZd";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WaM1At4H"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="HUz3iBpm";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oD/ZaA2j"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
+Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044FC29C347
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 23:25:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B2D323372C
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Aug 2025 23:32:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754436362; cv=none; b=jv5soDlD0XFEyBpyKt/tE48cxBfVVSn0QW6ZHYTsaAWfYitBjIzhTmT7r5utvhwFtTHRB3otMaM/iOER2sidkksf3/A/Dh7JWFEguBH+5OMh2xEFe36PjK4CcJHxMypdlGV68RzgVFDF404/W746l9UuOQJ3xeED8cb4EaTr7c4=
+	t=1754436748; cv=none; b=NkrUpSdhAd8O1esMtyM8dj9bo4H5SrB4v93GJ7fs43Lp0Oton9ikPCvmDFGvzQ8RusfwJYQjpKX1bQjbAGpIzZZJyIhiNwNkEF7U8q+BuYKAnWPr3GC42OHbZFlpyAuj7mWONdGNhxsPsqOPzAp1nYMLiF+CQTafKh/XZIhqN3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754436362; c=relaxed/simple;
-	bh=nOxg2V+b5yFc6FNnjOx5J6jytyVKIRrVvnJ8Uj6iTXA=;
+	s=arc-20240116; t=1754436748; c=relaxed/simple;
+	bh=nzJ85CcXqg3miJ7bwxl30iuLlVwATFxzGhsIQi3CWHM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=esRmbX295XiUL0mKm36R9uanrBW2JaeRKrIW27+QHmZUed3EHd69kSmcRLm60gDC405Dwgn6QRI3EjOEc5gYdyHw0uu4MxzIExJQO9apCf4z0ccD/09ayH4cKO850w2ErQ5iyRe0ztgmsuUFJsX1DYtMhJJyeAhCUo6VHKTY6vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=hxzFYBZd; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WaM1At4H; arc=none smtp.client-ip=103.168.172.152
+	 Content-Type:Content-Disposition:In-Reply-To; b=rlg+q2JbpGDZAF6GIlzkPbOXmyRh0mKuGuHSXDJ/p8hopZBrsdLYCUSeTUyzsyH+1ZNgYzXEVIUkUwtm2wH6z17LnygNCPS3iCoMLkwzz+pFg0P7VT8kY6JgPi8dYMENlMVKhgTjwX0rRYgrZFFWLT3uQ+A+By9JKNhx8aVopLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=HUz3iBpm; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oD/ZaA2j; arc=none smtp.client-ip=103.168.172.144
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id D87561400162;
-	Tue,  5 Aug 2025 19:25:58 -0400 (EDT)
+Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
+	by mailfout.phl.internal (Postfix) with ESMTP id A2B07EC0166;
+	Tue,  5 Aug 2025 19:32:25 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-01.internal (MEProxy); Tue, 05 Aug 2025 19:25:58 -0400
+  by phl-compute-10.internal (MEProxy); Tue, 05 Aug 2025 19:32:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-transfer-encoding:content-type:content-type:date:date
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1754436358;
-	 x=1754522758; bh=fJDaAn8wKKf8hVBfN3tcAYUDE0Q99EQgM1pvegv1mbk=; b=
-	hxzFYBZdH/Av0YOxCqsd0s+BHtNnfM7EaDOmy/F/X5K06eHdjFl3pqs55PBTHnrx
-	PHrsyV2Mtv+XRvwLHbQM+k1JnkGWiangwVvt8+zyFSd0RHs0aqs3cvXv+e/liKDB
-	FWcQj2aog1YkvSQWKa2Oi694l/JktPpdYmiqbvLuHe1Hgi8sfRa1VpO1uWbsxIWI
-	R/RyxyjZuy4mxq7ZfOFrE/rHzmEkF8FJfvTI0WmBNFXoojoINxduzN5ofxTv/4wJ
-	xmbB6Hw7yjhsxGVSEpn2BiYP93pMA88lMEGTwu5rLhnxuXJPfRKk5WdQ5ChYcFvp
-	HyuE4kObwYMYZhNVz4MOFg==
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1754436745;
+	 x=1754523145; bh=tj4lDMqLaAj9Eh0E6xRdxYa0agLMQuRzlVcSOo7YEcE=; b=
+	HUz3iBpmOnqexXFuy9MnsvKF+Rta7bfczYrxm3dQRLLqkikfpY6pCqdPSQkyjH/m
+	9aJmmRi99SI5l7Yz4NUl1CaR66ebpOtB0P7WT2EFaPkrHo3j+u0AmIqmm90Xqz3P
+	dt0Dv5jEsEjP5ZhLSWIUZw3LndauiRQPiVB32Y8fGuEs+jsPymsXIyT4thoWMJGM
+	Y2KrkDEoUR6EJHWxkmywQBMGfGWfEtv8uLRdEVkQvtUe/+u++qxCB2brIjfEv9+J
+	yvIUVWrLuao305KeG8fzHWC8ImC44kbvcqlSgQEEwI7MvdFO5Yksk6EPQOPavjI4
+	Zrl8QPOtY/3fNaVIjAYn7Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1754436358; x=
-	1754522758; bh=fJDaAn8wKKf8hVBfN3tcAYUDE0Q99EQgM1pvegv1mbk=; b=W
-	aM1At4HQNJNoG++aLCJ7nVQEDGk5k78Dc9naYm82TMly3eSzqvX3jTJ243EdRk2C
-	xzbciUCdIK9aGuWNErgrpUnH8tW3Aw17EyzISpov9mPSrj5d9wfLV1Cv5xV8EcHD
-	qnUAK0bCQ0lVQOHferLyhu+Au3x+aHbL2wWYv8dIfMKsaJvvzmgbMShsgmcnoqnm
-	mcgqYAZpFV6h7e7dVPSEQONKFNK2oxhiqAuRY5obc4332jKsP4mDNuAdjHqQ9/4/
-	3oFqtKdcUDYbo+MucVhQqzldT9ZQGJ7/MRHDu4arfVi6W1OKW6XMgmaLQ9kO/48E
-	2L+vxKW3pm5Mru58EYVgA==
-X-ME-Sender: <xms:BpOSaHBoN2x5auEiHKhNS7hoB2rrZr3zSL1tzc1zyvqeZgi_3O68gg>
-    <xme:BpOSaAwgKnfTE47izrA6h_SMIN8s00GGgdSPOUqGSqVi9OUhR4EmuSrzQnCMyx3U_
-    7aboHwZ5VMOgDSb30A>
-X-ME-Received: <xmr:BpOSaMDwlHFgMvr0Cof3eLL17p0Y1Uml7hWZTpDAvoeyKCnYJMq1vLF9vBbKGvvzO0LKHGWgpCWahearutSTaqiOr7U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduudeigeelucetufdoteggodetrf
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1754436745; x=
+	1754523145; bh=tj4lDMqLaAj9Eh0E6xRdxYa0agLMQuRzlVcSOo7YEcE=; b=o
+	D/ZaA2jeBzK1s8vTVwrR8uo4Q3kQs+W4X6i3tdYE/CowTLmBESGL5JC1xSD3Q+LP
+	Ec8z+YImjQPXmA0YXzum+MSsGycG+pVBIRt+YWEO+umP/dTmH1pvRjyeYLjaByRR
+	b3+FFQzYAGW7bAb3Fq2Oss6U7Wj0znnK2+8PWglzTbH31nTW1f6OYj4dM71eGoSp
+	+wSFOFFfo3fqj0ohK2TIOZPT0z8/GWTq3hZyNvFyIJAjiMcGJxZCVNpY87iuDixZ
+	3F2it+hJLZeqlirlqqZYzF4tzzOaEMGI8DGBNBa/+nNvWkU+a7uwYcFKMxUqOHHA
+	Dc/zH63HQVIdZhYFrJA/Q==
+X-ME-Sender: <xms:iZSSaFfjK0QvV4Fym6xvuctQn3e-qk0a2jm6_i-HpEfR3A-jTxXe0g>
+    <xme:iZSSaDbsbK9Un96rulfmlJcIQuxJq4_mT2xTULKQo1tbb7IXwnBLaWAtPnIXfwkUP
+    mrfHiVyxFCxaDwDMCM>
+X-ME-Received: <xmr:iZSSaAVgO0sHinQOSQvpL7vYwRgja-A_1SAOmYS5uTmXtBBH335eFholD7Hop9xdplW2Y9SDVR8QDJTdtR3w1S6huIM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduudeihedtucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhrihhs
     uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepud
     elhfdthfetuddvtefhfedtiedtteehvddtkedvledtvdevgedtuedutdeitdeinecuvehl
     uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
-    hurhdrihhopdhnsggprhgtphhtthhopeefpdhmohguvgepshhmthhpohhuthdprhgtphht
-    thhopehquhifvghnrhhuohdrsghtrhhfshesghhmgidrtghomhdprhgtphhtthhopeifqh
-    husehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdr
-    khgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:BpOSaFZ9GAjrnnMHVgcO1TlSFfpVFRQFBuhBflqlgwGzq-0S_0su5w>
-    <xmx:BpOSaMgi4pwWl70bh-uUqKEC6WY9Ip5u49xnF-39tde6GpeCSkWeuQ>
-    <xmx:BpOSaP6Iu-Uh4TrjmgyYTva5Hw6jHi6O1fCKt5tqh4dlVYjz48DHxA>
-    <xmx:BpOSaL5IRD81lZ4EulNz1RxMVBLuWq8981Ycf44tTXulFSvz_nMEhQ>
-    <xmx:BpOSaKHWO6Q0y1dMMkSj0-2Sf_qVTkGXAnzlXUUAuNF47eM2TJQDJvFI>
+    hurhdrihhopdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphht
+    thhopeifqhhusehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhsse
+    hvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:iZSSaNjd7iQkAcp4eW80avuUSMy9TN_cEvz_BJQ-LRiImLiDcRtYFg>
+    <xmx:iZSSaGVwvMW0ji9C91UAifmUI_KcL1Jl1ATfVUsaV1SUnnEgpRTiFw>
+    <xmx:iZSSaMNL54yeQwDoVA6vXFvGKdbyLVuCFkFe3zTOm9uXJ5XwFz5oWQ>
+    <xmx:iZSSaKZrInCe5esdvcFPWjqC1hKIKN0yhn-laWteQJil3PSjHoKQ4g>
+    <xmx:iZSSaKuFC5tHUkmIxd3DmlCg6OWn75E5Fbn_M9vYISVErqHT8Kc77Rgi>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 5 Aug 2025 19:25:58 -0400 (EDT)
-Date: Tue, 5 Aug 2025 16:26:56 -0700
+ 5 Aug 2025 19:32:25 -0400 (EDT)
+Date: Tue, 5 Aug 2025 16:33:23 -0700
 From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs-progs: check for device item between super
-Message-ID: <20250805232656.GA966775@zen.localdomain>
-References: <cover.1754090561.git.wqu@suse.com>
- <20250805193458.GD4106638@zen.localdomain>
- <4656f4eb-3189-4283-97e8-5d56a0946763@gmx.com>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/5] btrfs-progs: add error handling for
+ device_get_partition_size()
+Message-ID: <20250805233323.GB966775@zen.localdomain>
+References: <cover.1754116463.git.wqu@suse.com>
+ <525dbf649790b855d109714bf9a82796fe3d7b1e.1754116463.git.wqu@suse.com>
+ <20250805190838.GB4106638@zen.localdomain>
+ <2e0e7b8c-22f8-4e17-8c0c-6047ea21c91a@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -102,126 +103,193 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4656f4eb-3189-4283-97e8-5d56a0946763@gmx.com>
+In-Reply-To: <2e0e7b8c-22f8-4e17-8c0c-6047ea21c91a@suse.com>
 
-On Wed, Aug 06, 2025 at 08:23:33AM +0930, Qu Wenruo wrote:
+On Wed, Aug 06, 2025 at 08:11:51AM +0930, Qu Wenruo wrote:
 > 
 > 
-> 在 2025/8/6 05:04, Boris Burkov 写道:
-> > On Sat, Aug 02, 2025 at 09:56:18AM +0930, Qu Wenruo wrote:
-> > > Mark has submitted a check enhancement for progs to detect the device
-> > > item mismatch between super blocks and the items inside chunk tree.
+> 在 2025/8/6 04:38, Boris Burkov 写道:
+> > On Sat, Aug 02, 2025 at 04:25:48PM +0930, Qu Wenruo wrote:
+> > > The function device_get_partition_size() has all kinds of error paths,
+> > > but it has no way to return error other than returning 0.
 > > > 
-> > > However there is a long existing problem that it will break CI.
+> > > This is not helpful for end users to know what's going wrong.
 > > > 
-> > > The root cause is that the CI kernel lacks the needed backports, that on
-> > > a lot cases the kernel can lead to such mismatch and being caught by the
-> > > newer progs.
+> > > Change that function to have a dedicated return value for error
+> > > handling, and pass a u64 pointer for the result.
 > > 
-> > Can you explain why we are contorting around out of date "continuous"
-> > integration? Shouldn't we just get the CI on a new kernel?
+> > All the callers check ret < 0, rather than ret != 0, so any reason not
+> > to simply return the positive value in case of no error? Signed
+> > overflow?
+> > 
+> > In the kernel, BLK_DEV_MAX_SECTORS is set to LLONG_MAX >> 9, which I
+> > think means we are probably OK?
 > 
-> Because the distro used in github CI (ubuntu LTS?) doesn't have a proper way
-> to install the latest upstream kernel.
+> This sounds reasonable, I was under the impression that we need to preserve
+> the full U64_MAX for block devices due to our on-disk format.
 > 
-> Thus it means a lot of btrfs-progs self tests are out of our control.
-> 
-> I have a crazy idea that we include some read-write fuse implementation into
-> btrfs-progs, and use that fuse implement to replace kernel btrfs, but that
-> will be a super huge project.
-> 
-> Thus we have to workaround the problem for now, and I believe the github CI
-> is still a great tool.
-> 
+> But if kernel has extra limits, I'm more than happier to use s64.
 
-Sounds, good, thanks for explanation.
+I looked into it a bit more. BLKGETSIZE64 is implemented as:
 
-You can add
-Reviewed-by: Boris Burkov <boris@bur.io>
-to the series.
+put_u64(argp, bdev_nr_bytes(bdev));
 
-> > 
-> > > 
-> > > So to merge this long existing fsck enhancement, this series refresh and
-> > > workaround the problem by:
-> > 
-> > Thanks for putting in the effort to get the enhancement in, by the way!
-> > 
-> > > 
-> > > - Only reports warnings when such mismatch is detected
-> > >    Such mismatch is not a huge deal, as we always trust the device item in
-> > >    chunk tree more than the super block one.
-> > >    So it won't cause data loss or whatever.
-> > 
-> > That makes sense to me.
-> > 
-> > > 
-> > >    So even if the CI kernel doesn't have the fix, self test cases won't
-> > >    report them as a failure.
-> > > 
-> > > - Workaround fsck/057 to avoid failure
-> > >    Test case fsck/057 is a special case, where we manually check the
-> > >    output for warning messages.
-> > > 
-> > >    This is originally to detect problems related seed device, but now it
-> > >    will also detect device item mismatch cause by the older CI kernel.
-> > > 
-> > >    Workaround it by making the keyword more specific to the original
-> > >    problem, not just checking for warnings.
-> > 
-> > I'm a little skeptical about reducing even the incidental coverage of
-> > the test except for a good reason.
-> 
-> Yep, that's the biggest problem, and I do not have any better solution.
-> 
-> We either:
-> 
-> - Find a way to use upstream kernel for github CI
->   But it will still cause check errors for newer progs on older
->   kernels.
-> 
->   And I failed to find a way for that.
-> 
-> 
-> - Further reduce the severity of the dev item mismatch
->   That's possible and workaround the fsck/057 by not outputting
->   "WARNING:" at all.
-> 
->   But that also further reduce the need of dev item check in the first
->   place.
-> 
-> - Workaround fsck/057
->   The way I choose.
-> 
-> 
-> - Use fuse from btrfs-progs instead of kernel
->   The ultimate but the most time consuming solution.
+and bdev_nr_bytes() returns loff_t which is a signed long long. So I do
+think it should be safe. Not to mention that needing the MSB of a 64 bit
+integer to express a disk size is not happening in anyone's lifetime.
+
 > 
 > Thanks,
 > Qu
 > 
 > > 
-> > Thanks,
-> > Boris
-> > 
 > > > 
-> > > With those done, we can finally make CI to accept the new checks even
-> > > the kernel is not uptodate.
+> > > For most callers they are able to exit gracefully with a proper error
+> > > message.
 > > > 
-> > > Mark Harmstone (1):
-> > >    btrfs-progs: check that device byte values in superblock match those
-> > >      in chunk root
+> > > But for load_device_info(), we allow a failed size probing to continue
+> > > without 0 size, just as the old code.
 > > > 
-> > > Qu Wenruo (1):
-> > >    btrfs-progs: fsck-tests: make the warning check more specific for 057
+> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > > ---
+> > >   cmds/filesystem-usage.c |  9 +++++++--
+> > >   cmds/replace.c          | 14 ++++++++++++--
+> > >   common/device-utils.c   | 29 +++++++++++++++--------------
+> > >   common/device-utils.h   |  2 +-
+> > >   4 files changed, 35 insertions(+), 19 deletions(-)
 > > > 
-> > >   check/main.c                                  | 35 +++++++++++++++++++
-> > >   .../fsck-tests/057-seed-false-alerts/test.sh  |  6 ++--
-> > >   2 files changed, 38 insertions(+), 3 deletions(-)
-> > > 
-> > > --
+> > > diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+> > > index f812af13482e..e367bffc3a01 100644
+> > > --- a/cmds/filesystem-usage.c
+> > > +++ b/cmds/filesystem-usage.c
+> > > @@ -820,8 +820,13 @@ static int load_device_info(int fd, struct array *devinfos)
+> > >   			strcpy(info->path, "missing");
+> > >   		} else {
+> > >   			strcpy(info->path, (char *)dev_info.path);
+> > > -			info->device_size =
+> > > -				device_get_partition_size((const char *)dev_info.path);
+> > > +			ret = device_get_partition_size((const char *)dev_info.path,
+> > > +							&info->device_size);
+> > > +			if (ret < 0) {
+> > > +				errno = -ret;
+> > > +				warning("failed to get device size for devid %llu: %m", dev_info.devid);
+> > > +				info->device_size = 0;
+> > > +			}
+> > >   		}
+> > >   		info->size = dev_info.total_bytes;
+> > >   		ndevs++;
+> > > diff --git a/cmds/replace.c b/cmds/replace.c
+> > > index 887c3251a725..d5b0b0e02ce1 100644
+> > > --- a/cmds/replace.c
+> > > +++ b/cmds/replace.c
+> > > @@ -269,7 +269,12 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
+> > >   		strncpy_null((char *)start_args.start.srcdev_name, srcdev,
+> > >   			     BTRFS_DEVICE_PATH_NAME_MAX + 1);
+> > >   		start_args.start.srcdevid = 0;
+> > > -		srcdev_size = device_get_partition_size(srcdev);
+> > > +		ret = device_get_partition_size(srcdev, &srcdev_size);
+> > > +		if (ret < 0) {
+> > > +			errno = -ret;
+> > > +			error("failed to get device size for %s: %m", srcdev);
+> > > +			goto leave_with_error;
+> > > +		}
+> > >   	} else {
+> > >   		error("source device must be a block device or a devid");
+> > >   		goto leave_with_error;
+> > > @@ -279,7 +284,12 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
+> > >   	if (ret)
+> > >   		goto leave_with_error;
+> > > -	dstdev_size = device_get_partition_size(dstdev);
+> > > +	ret = device_get_partition_size(dstdev, &dstdev_size);
+> > > +	if (ret < 0) {
+> > > +		errno = -ret;
+> > > +		error("failed to get device size for %s: %m", dstdev);
+> > > +		goto leave_with_error;
+> > > +	}
+> > >   	if (srcdev_size > dstdev_size) {
+> > >   		error("target device smaller than source device (required %llu bytes)",
+> > >   			srcdev_size);
+> > > diff --git a/common/device-utils.c b/common/device-utils.c
+> > > index 783d79555446..6d89d16b029d 100644
+> > > --- a/common/device-utils.c
+> > > +++ b/common/device-utils.c
+> > > @@ -342,7 +342,7 @@ u64 device_get_partition_size_fd(int fd)
+> > >   	return result;
+> > >   }
+> > > -static u64 device_get_partition_size_sysfs(const char *dev)
+> > > +static int device_get_partition_size_sysfs(const char *dev, u64 *result_ret)
+> > >   {
+> > >   	int ret;
+> > >   	char path[PATH_MAX] = {};
+> > > @@ -354,45 +354,46 @@ static u64 device_get_partition_size_sysfs(const char *dev)
+> > >   	name = realpath(dev, path);
+> > >   	if (!name)
+> > > -		return 0;
+> > > +		return -errno;
+> > >   	name = path_basename(path);
+> > >   	ret = path_cat3_out(sysfs, "/sys/class/block", name, "size");
+> > >   	if (ret < 0)
+> > > -		return 0;
+> > > +		return ret;
+> > >   	sysfd = open(sysfs, O_RDONLY);
+> > >   	if (sysfd < 0)
+> > > -		return 0;
+> > > +		return -errno;
+> > >   	ret = sysfs_read_file(sysfd, sizebuf, sizeof(sizebuf));
+> > >   	if (ret < 0) {
+> > >   		close(sysfd);
+> > > -		return 0;
+> > > +		return ret;
+> > >   	}
+> > >   	errno = 0;
+> > >   	size = strtoull(sizebuf, NULL, 10);
+> > >   	if (size == ULLONG_MAX && errno == ERANGE) {
+> > >   		close(sysfd);
+> > > -		return 0;
+> > > +		return -errno;
+> > >   	}
+> > >   	close(sysfd);
+> > > -	return size;
+> > > +	*result_ret = size;
+> > > +	return 0;
+> > >   }
+> > > -u64 device_get_partition_size(const char *dev)
+> > > +int device_get_partition_size(const char *dev, u64 *result_ret)
+> > >   {
+> > > -	u64 result;
+> > >   	int fd = open(dev, O_RDONLY);
+> > >   	if (fd < 0)
+> > > -		return device_get_partition_size_sysfs(dev);
+> > > +		return device_get_partition_size_sysfs(dev, result_ret);
+> > > +
+> > > +	if (ioctl(fd, BLKGETSIZE64, result_ret) < 0) {
+> > > +		int ret = -errno;
+> > > -	if (ioctl(fd, BLKGETSIZE64, &result) < 0) {
+> > >   		close(fd);
+> > > -		return 0;
+> > > +		return ret;
+> > >   	}
+> > >   	close(fd);
+> > > -
+> > > -	return result;
+> > > +	return 0;
+> > >   }
+> > >   /*
+> > > diff --git a/common/device-utils.h b/common/device-utils.h
+> > > index cef9405f3a9a..bf04eb0f2fdd 100644
+> > > --- a/common/device-utils.h
+> > > +++ b/common/device-utils.h
+> > > @@ -42,7 +42,7 @@ enum {
+> > >    */
+> > >   int device_discard_blocks(int fd, u64 start, u64 len);
+> > >   int device_zero_blocks(int fd, off_t start, size_t len, const bool direct);
+> > > -u64 device_get_partition_size(const char *dev);
+> > > +int device_get_partition_size(const char *dev, u64 *result_ret);
+> > >   u64 device_get_partition_size_fd(int fd);
+> > >   u64 device_get_partition_size_fd_stat(int fd, const struct stat *st);
+> > >   int device_get_queue_param(const char *file, const char *param, char *buf, size_t len);
+> > > -- 
 > > > 2.50.1
 > > > 
-> > 
 > 
 
