@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-15894-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15895-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFE12B1C4A5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 13:11:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5815B1C4A6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 13:11:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89C683B740D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 11:11:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7EC118A783C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 11:12:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 704B428B4E7;
-	Wed,  6 Aug 2025 11:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59E5028B509;
+	Wed,  6 Aug 2025 11:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aGvoDO+3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CT+K7vBN"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA0328A72E
-	for <linux-btrfs@vger.kernel.org>; Wed,  6 Aug 2025 11:11:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A496628B4EF
+	for <linux-btrfs@vger.kernel.org>; Wed,  6 Aug 2025 11:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754478699; cv=none; b=A6i41XLt6lD27HljSauPfFDBLZ8MGUBNcbnp69D1wyUn1iy325dTS2UCLeYLqVWeEOwOzfnPFaGWtTzpPfeaf/wbYTIn16nb5yb0TyS9Q6pJNrCAouzttAYDrmWtD612UhKfOZ1s7mBH2OaitSpNjKj09Fv/K6t+Zm+eAuth67U=
+	t=1754478700; cv=none; b=Ihx2Rip3m01uHZ1U5bWxXTttbizSiuNAVRl2H6xP/RJboWrc9xF9f5GLTwBSarU19ypNHrS7gWzcx9lu3aYTHD6vRaQJjr7SOCRXjN5ztkGPh/yL5KKkiA+We+0PGX8sNEwR5BcuIaxfCB7vyv37HwRajbKyNmIaZBI2ATIdey0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754478699; c=relaxed/simple;
-	bh=53O3IbNuhiDd5jMAVuV0pr+TJ0jTVOEBhvXj96lQGQk=;
+	s=arc-20240116; t=1754478700; c=relaxed/simple;
+	bh=9QvwMiYaa4OxL71ekWKPsDxO8tGjXORp1sx13BmMBsU=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R7H/swIeR+ZPhDCDR9Ch0vfdrRwirWdIhQ15uVKAfgh7iu7dxD32RBsVfn0Ngunx4hMSxyjRW1mUd0IZEMksOM1OV2hA4tESJBmm5r5oZSqkizSH3JCzuYIe2kstmbJRRUdK+SEwFRZyvf8Tp1eUM9blcqXJ/qmt7gukiBCgXM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aGvoDO+3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB018C4CEE7
-	for <linux-btrfs@vger.kernel.org>; Wed,  6 Aug 2025 11:11:38 +0000 (UTC)
+	 MIME-Version; b=XV0wBMcHSxQe5KHCQM4sXvzGyGhxnA7APJ12EUGQjyIOHP969HtYh88EWDBqjOkycvcUsw08Bhl7GXAZAs8T/IV112DWyr44mZZYWXrwjo8ejSTq0VcJLa5Nt/NQWiqHV+uKacOPE9kUNZS7iupbsa+/Ts88L/NTMEAQJDhWpE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CT+K7vBN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1BEAC4CEF6
+	for <linux-btrfs@vger.kernel.org>; Wed,  6 Aug 2025 11:11:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754478699;
-	bh=53O3IbNuhiDd5jMAVuV0pr+TJ0jTVOEBhvXj96lQGQk=;
+	s=k20201202; t=1754478700;
+	bh=9QvwMiYaa4OxL71ekWKPsDxO8tGjXORp1sx13BmMBsU=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=aGvoDO+3a6+80JORG+WMWqrcCs4qLV6sCPjwIqajO/bMLJkze7AaiXseWTnjjVjJN
-	 EUhK2kLJSlEt7QfP6XPldMo9hV9aj/G3wI7z2TzSKW4HnYamcZPFkUhLXhKbAqg82u
-	 /dSblgHq2QOG8o7FAG3h0r9uLJ+Q4MadRxI7FzX1PDVbn7IJj6fVrCIOc/vmqREUsv
-	 ZHvGO+CRhF6sMYIzRAc3e8IhWOzQEt2nuxK7tVI/hnLHfxin8o5CGAbxileuONCf63
-	 IP2nYWL5Lsfk86PzdtAeCkQRGQEpH6xAvqqBnlOjTO0vouOuhzG+toClms9XZ0Ee+Z
-	 R6bRCtRkwjswA==
+	b=CT+K7vBNLyJgc5oJwX6/v9Jf8aymuhcQKne21eGMfV+YeJ/1o3KZ9wK4GLbj6aZLR
+	 5dzvqJ41pdiYuS7u7ImHy8Q6IVasjC0v/Bdf9RFKRZ9NeD4aBtN56MRdnhhD5jyTgj
+	 PaE932PUhLhOHUwbOGVsWHjt6LsMpDi8188p4Y8+Jr8n6VBA1QHsoOu35op6k0UiLL
+	 tGQ5J5IMeS2+ZkPvhVT0fU2Ei710bG8L4kOE8Tq5Ad1nY0ZhF4uxZKa04AfKi+2azw
+	 QUoNcKx0qPO58tT6E42U/T7nTY31SHCVzZnPa9xflmwOikqhyQNfg7U7XYkyOgsO9m
+	 4SojKH41AnjyA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] btrfs: fix race between setting last_dir_index_offset and inode logging
-Date: Wed,  6 Aug 2025 12:11:31 +0100
-Message-ID: <08078ef730a0423eb6788d4db5a71de66924df77.1754432806.git.fdmanana@suse.com>
+Subject: [PATCH 3/3] btrfs: avoid load/store tearing races when checking if an inode was logged
+Date: Wed,  6 Aug 2025 12:11:32 +0100
+Message-ID: <963ec3b60aa3b6fa9b7192bc198cbee060d33ecf.1754432806.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1754432805.git.fdmanana@suse.com>
 References: <cover.1754432805.git.fdmanana@suse.com>
@@ -59,122 +59,75 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At inode_logged() if we find that the inode was not logged before we
-update its ->last_dir_index_offset to (u64)-1 with the goal that the
-next directory log operation will see the (u64)-1 and then figure out
-it must check what was the index of the last logged dir index key and
-update ->last_dir_index_offset to that key's offset (this is done in
-update_last_dir_index_offset()).
+At inode_logged() we do a couple lockless checks for ->logged_trans, and
+these are generally safe except the second one in case we get a load or
+store tearing due to a concurrent call updating ->logged_trans (either at
+btrfs_log_inode() or later at inode_logged()).
 
-This however has a possibility for a time window where a race can happen
-and lead to directory logging skipping dir index keys that should be
-logged. The race happens like this:
+In the first case it's safe to compare to the current transaction ID since
+once ->logged_trans is set the current transaction, we never set it to a
+lower value.
 
-1) Task A calls inode_logged(), sees ->logged_trans as 0 and then checks
-   that the inode item was logged before, but before it sets the inode's
-   ->last_dir_index_offset to (u64)-1...
+In the second case, where we check if it's greater than zero, we are prone
+to load/store tearing races, since we can have a concurrent task updating
+to the current transaction ID with store tearing for example, instead of
+updating with a single 64 bits write, to update with two 32 bits writes or
+four 16 bits writes. In that case the reading side at inode_logged() could
+see a positive value that does not match the current transaction and then
+return a false negative.
 
-2) Task B is at btrfs_log_inode() which calls inode_logged() early, and
-   that has set ->last_dir_index_offset to (u64)-1;
-
-3) Task B then enters log_directory_changes() which calls
-   update_last_dir_index_offset(). There it sees ->last_dir_index_offset
-   is (u64)-1 and that the inode was logged before (ctx->logged_before is
-   true), and so it searches for the last logged dir index key in the log
-   tree and it finds that it has an offset (index) value of N, so it sets
-   ->last_dir_index_offset to N, so that we can skip index keys that are
-   less than or equal to N (later at process_dir_items_leaf());
-
-4) Task A now sets ->last_dir_index_offset to (u64)-1, undoing the update
-   that task B just did;
-
-5) Task B will now skip every index key when it enters
-   process_dir_items_leaf(), since ->last_dir_index_offset is (u64)-1.
-
-Fix this by making inode_logged() not touch ->last_dir_index_offset and
-initializing it to 0 when an inode is loaded (at btrfs_alloc_inode()) and
-then having update_last_dir_index_offset() treat a value of 0 as meaning
-we must check the log tree and update with the index of the last logged
-index key. This is fine since the minimum possible value for
-->last_dir_index_offset is 1 (BTRFS_DIR_START_INDEX - 1 = 2 - 1 = 1).
-This also simplifies the management of ->last_dir_index_offset and now
-all accesses to it are done under the inode's log_mutex.
+Fix this by doing the second check while holding the inode's spinlock, add
+some comments about it too. Also add the data_race() annotation to the
+first check to avoid any reports from KCSAN (or similar tools) and comment
+about it.
 
 Fixes: 0f8ce49821de ("btrfs: avoid inode logging during rename and link when possible")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/btrfs_inode.h |  2 +-
- fs/btrfs/inode.c       |  1 +
- fs/btrfs/tree-log.c    | 17 ++---------------
- 3 files changed, 4 insertions(+), 16 deletions(-)
+ fs/btrfs/tree-log.c | 25 +++++++++++++++++++++----
+ 1 file changed, 21 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index b99fb0273292..0387b9f43a52 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -248,7 +248,7 @@ struct btrfs_inode {
- 		u64 new_delalloc_bytes;
- 		/*
- 		 * The offset of the last dir index key that was logged.
--		 * This is used only for directories.
-+		 * This is used only for directories. Protected by 'log_mutex'.
- 		 */
- 		u64 last_dir_index_offset;
- 	};
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 83e242bf42f3..096044eeb0ba 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7832,6 +7832,7 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
- 	ei->last_sub_trans = 0;
- 	ei->logged_trans = 0;
- 	ei->delalloc_bytes = 0;
-+	/* new_delalloc_bytes and last_dir_index_offset are in a union. */
- 	ei->new_delalloc_bytes = 0;
- 	ei->defrag_bytes = 0;
- 	ei->disk_i_size = 0;
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 3d8090bc4b4e..9e12447f3e0e 100644
+index 9e12447f3e0e..654d6912eb46 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -3615,19 +3615,6 @@ static int inode_logged(const struct btrfs_trans_handle *trans,
- 	inode->logged_trans = trans->transid;
- 	spin_unlock(&inode->lock);
+@@ -3531,15 +3531,32 @@ static int inode_logged(const struct btrfs_trans_handle *trans,
+ 	struct btrfs_key key;
+ 	int ret;
  
--	/*
--	 * If it's a directory, then we must set last_dir_index_offset to the
--	 * maximum possible value, so that the next attempt to log the inode does
--	 * not skip checking if dir index keys found in modified subvolume tree
--	 * leaves have been logged before, otherwise it would result in attempts
--	 * to insert duplicate dir index keys in the log tree. This must be done
--	 * because last_dir_index_offset is an in-memory only field, not persisted
--	 * in the inode item or any other on-disk structure, so its value is lost
--	 * once the inode is evicted.
--	 */
--	if (S_ISDIR(inode->vfs_inode.i_mode))
--		inode->last_dir_index_offset = (u64)-1;
--
- 	return 1;
- }
+-	if (inode->logged_trans == trans->transid)
++	/*
++	 * Quick lockless call, since once ->logged_trans is set to the current
++	 * transaction, we never set it to a lower value anywhere else.
++	 */
++	if (data_race(inode->logged_trans) == trans->transid)
+ 		return 1;
  
-@@ -4218,7 +4205,7 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 
- /*
-  * If the inode was logged before and it was evicted, then its
-- * last_dir_index_offset is (u64)-1, so we don't the value of the last index
-+ * last_dir_index_offset is 0, so we don't know the value of the last index
-  * key offset. If that's the case, search for it and update the inode. This
-  * is to avoid lookups in the log tree every time we try to insert a dir index
-  * key from a leaf changed in the current transaction, and to allow us to always
-@@ -4234,7 +4221,7 @@ static int update_last_dir_index_offset(struct btrfs_inode *inode,
- 
- 	lockdep_assert_held(&inode->log_mutex);
- 
--	if (inode->last_dir_index_offset != (u64)-1)
-+	if (inode->last_dir_index_offset != 0)
+ 	/*
+-	 * If logged_trans is not 0, then we know the inode logged was not logged
+-	 * in this transaction, so we can return false right away.
++	 * If logged_trans is not 0 and not trans->transid, then we know the
++	 * inode was not logged in this transaction, so we can return false
++	 * right away. We take the lock to avoid a race caused by load/store
++	 * tearing with a concurrent btrfs_log_inode() call or a concurrent task
++	 * in this function further below - an update to trans->transid can be
++	 * teared into two 32 bits updates for example, in which case we could
++	 * see a positive value that is not trans->transid and assume the inode
++	 * was not logged when it was.
+ 	 */
+-	if (inode->logged_trans > 0)
++	spin_lock(&inode->lock);
++	if (inode->logged_trans == trans->transid) {
++		spin_unlock(&inode->lock);
++		return 1;
++	} else if (inode->logged_trans > 0) {
++		spin_unlock(&inode->lock);
  		return 0;
++	}
++	spin_unlock(&inode->lock);
  
- 	if (!ctx->logged_before) {
+ 	/*
+ 	 * If no log tree was created for this root in this transaction, then
 -- 
 2.47.2
 
