@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-15881-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15883-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7590CB1BFB1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 06:49:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3870AB1BFB4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 06:50:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A23147A6C70
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 04:48:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 521761825E7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Aug 2025 04:49:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D3E1F462D;
-	Wed,  6 Aug 2025 04:49:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CF81F5434;
+	Wed,  6 Aug 2025 04:49:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JKAws+5E";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JKAws+5E"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TteN19Ve";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TteN19Ve"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A69461DB54C
-	for <linux-btrfs@vger.kernel.org>; Wed,  6 Aug 2025 04:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC5951E5B82
+	for <linux-btrfs@vger.kernel.org>; Wed,  6 Aug 2025 04:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754455765; cv=none; b=PV/EecETgMt/hQZyIcrV27hISOmoxRdtv/gmeInGV645I9aUwqrdEY8fIdtStPPCEC2uYNZ/dTHnl2rymz1pkPuRKBMhlLhsHv52ZWN9iESzzOnluK/kIxSEp7KYQoycQuE/ceLek4w8KHIq9b9iSNqIduIVvu7/ukFKOqCvULc=
+	t=1754455772; cv=none; b=Gt3jAM2zv57ZkTVUoXCbCfEpMIaP5NFOyXHyGUsVmkdeJIQyyMEi+Cfj9eqmO5EFU2WErRjrKaVSroW689n98edgC3w8BA1cta/Wy5RkATRD3H+9t35SPQCOMlyRrFLDTB8Ll/DlLxAXvnNeD3CDV/GO3RKGG7TZD9TbsrvsKqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754455765; c=relaxed/simple;
-	bh=RQuVly+c9XoAgI5H5/+f4T72F7BhaMQyq3eG+yHSuzw=;
+	s=arc-20240116; t=1754455772; c=relaxed/simple;
+	bh=Zk2Fl5SsZACNxJxIVovh1ri68c9SJiCGT/L65cdXy+Q=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DHupyWoIaLMv3JlSO8w+l/FRrzUD/DYc03df/sAw9mAHDHEIOmrCvFrpXxN6kdbLdj1U/BDZu3SsIPBK0D2S9aRTjBcYHVOwJjWQTo1D/nFwCnhXHdMTt1mVeSFiWlIdZArFyfmiiROOjdDLaku9szn0fFX+AJ136phF6oUCuak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JKAws+5E; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JKAws+5E; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=MHUimDNymSKBrNfb1slef47WMlGliwQADr05BwmMHFm+LHj+ZfPjMTqcH4RDmNuULxfgSEdBf2w9mb4pDtTZwBHA0/Owso0Yq9LxCs2x38LUOCVXYASVm4eOHp9AuzSSinvR39DmP9/FCTMek8G78/lkF4GTP0YI67RVQuYvLMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TteN19Ve; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TteN19Ve; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6B60021275
-	for <linux-btrfs@vger.kernel.org>; Wed,  6 Aug 2025 04:49:17 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A071C1F394
+	for <linux-btrfs@vger.kernel.org>; Wed,  6 Aug 2025 04:49:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1754455757; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1754455758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=oL5bEd0ohcsp47OmskJfao+76Ef2Ol86I8MQWr+0xPE=;
-	b=JKAws+5ELCXl7aOabknqryWmmfcZ9zwKnnuToZuA9UhS55qnKDFiw+sGC6idR7H6DhDqMA
-	kFyxubxBgQSTZTK6uZCqG1fUQ+N76cgj4XtfIhf/bsfI3WDm65Gg0IHBXX8Z3EmCXZeODa
-	a07WS0t7kj5TRm1zHcdpRA2JpikRp6A=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=JKAws+5E
+	bh=pi38SMR1rQjW8DCZJVOWVp21LsZhsDGrIAYWOZQy9i8=;
+	b=TteN19Ve5cvxujcP4m87X+jvG2U+b64nLiRuhHAKX8czyyloUJbdw4hxTfbCNjs6UJaRpK
+	fmrXRAcVFkWEoYpU7YaWBH8oEvgLj3ZDXEMsRwrwKVQpnCGsFzyTKVrGzQvZd+HMujVbah
+	fB/lg5xTSdpaRgXwJoegqRhHraayT4k=
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1754455757; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1754455758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=oL5bEd0ohcsp47OmskJfao+76Ef2Ol86I8MQWr+0xPE=;
-	b=JKAws+5ELCXl7aOabknqryWmmfcZ9zwKnnuToZuA9UhS55qnKDFiw+sGC6idR7H6DhDqMA
-	kFyxubxBgQSTZTK6uZCqG1fUQ+N76cgj4XtfIhf/bsfI3WDm65Gg0IHBXX8Z3EmCXZeODa
-	a07WS0t7kj5TRm1zHcdpRA2JpikRp6A=
+	bh=pi38SMR1rQjW8DCZJVOWVp21LsZhsDGrIAYWOZQy9i8=;
+	b=TteN19Ve5cvxujcP4m87X+jvG2U+b64nLiRuhHAKX8czyyloUJbdw4hxTfbCNjs6UJaRpK
+	fmrXRAcVFkWEoYpU7YaWBH8oEvgLj3ZDXEMsRwrwKVQpnCGsFzyTKVrGzQvZd+HMujVbah
+	fB/lg5xTSdpaRgXwJoegqRhHraayT4k=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A8A4A13AA8
-	for <linux-btrfs@vger.kernel.org>; Wed,  6 Aug 2025 04:49:16 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DDE9213AA8
+	for <linux-btrfs@vger.kernel.org>; Wed,  6 Aug 2025 04:49:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GJmsGszekmjFRwAAD6G6ig
+	id GDysJ83ekmjFRwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 06 Aug 2025 04:49:16 +0000
+	for <linux-btrfs@vger.kernel.org>; Wed, 06 Aug 2025 04:49:17 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/6] btrfs-progs: remove device_get_partition_size_fd()
-Date: Wed,  6 Aug 2025 14:18:52 +0930
-Message-ID: <85b30aea3031129419ec507afdaf0f0912477487.1754455239.git.wqu@suse.com>
+Subject: [PATCH v2 4/6] btrfs-progs: remove is_vol_small() helper
+Date: Wed,  6 Aug 2025 14:18:53 +0930
+Message-ID: <29c59b6efc1722769b73eb938dd04655fbeff4db.1754455239.git.wqu@suse.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <cover.1754455239.git.wqu@suse.com>
 References: <cover.1754455239.git.wqu@suse.com>
@@ -84,85 +84,94 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.com:+]
+	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 6B60021275
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+X-Spam-Score: -2.80
 
-The last user of the helper is removed in commit 585ac14d1af2
-("btrfs-progs: use btrfs_device_size() instead of
-device_get_partition_size_fd()"), and that helper is not generic enough
-to handle regular files.
+The last user of the helper is removed in commit c11e36a29e84
+("Btrfs-progs: Do not force mixed block group creation unless '-M'
+option is specified").
 
-So let's just remove it.
+So there is no one using this helper, and we can safely remove it.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- common/device-utils.c | 13 -------------
- common/device-utils.h |  1 -
- 2 files changed, 14 deletions(-)
+ mkfs/common.c | 29 -----------------------------
+ mkfs/common.h |  1 -
+ 2 files changed, 30 deletions(-)
 
-diff --git a/common/device-utils.c b/common/device-utils.c
-index bca392568d1b..b32bd2cec1f1 100644
---- a/common/device-utils.c
-+++ b/common/device-utils.c
-@@ -329,19 +329,6 @@ u64 device_get_partition_size_fd_stat(int fd, const struct stat *st)
- 	return 0;
+diff --git a/mkfs/common.c b/mkfs/common.c
+index d7a1dc5867eb..c5f73de81194 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -1167,35 +1167,6 @@ bool test_status_for_mkfs(const char *file, bool force_overwrite)
+ 	return false;
  }
  
--/*
-- * Read partition size using the low-level ioctl
-- */
--u64 device_get_partition_size_fd(int fd)
+-int is_vol_small(const char *file)
 -{
--	u64 result;
+-	int fd = -1;
+-	int e;
+-	struct stat st;
+-	u64 size;
 -
--	if (ioctl(fd, BLKGETSIZE64, &result) < 0)
+-	fd = open(file, O_RDONLY);
+-	if (fd < 0)
+-		return -errno;
+-	if (fstat(fd, &st) < 0) {
+-		e = -errno;
+-		close(fd);
+-		return e;
+-	}
+-	size = device_get_partition_size_fd_stat(fd, &st);
+-	if (size == 0) {
+-		close(fd);
+-		return -1;
+-	}
+-	if (size < BTRFS_MKFS_SMALL_VOLUME_SIZE) {
+-		close(fd);
+-		return 1;
+-	} else {
+-		close(fd);
 -		return 0;
--
--	return result;
+-	}
 -}
 -
- static u64 device_get_partition_size_sysfs(const char *dev)
+ int test_minimum_size(const char *file, u64 min_dev_size)
  {
- 	int ret;
-diff --git a/common/device-utils.h b/common/device-utils.h
-index cef9405f3a9a..82e6ba547585 100644
---- a/common/device-utils.h
-+++ b/common/device-utils.h
-@@ -43,7 +43,6 @@ enum {
- int device_discard_blocks(int fd, u64 start, u64 len);
- int device_zero_blocks(int fd, off_t start, size_t len, const bool direct);
- u64 device_get_partition_size(const char *dev);
--u64 device_get_partition_size_fd(int fd);
- u64 device_get_partition_size_fd_stat(int fd, const struct stat *st);
- int device_get_queue_param(const char *file, const char *param, char *buf, size_t len);
- u64 device_get_zone_unusable(int fd, u64 flags);
+ 	int fd;
+diff --git a/mkfs/common.h b/mkfs/common.h
+index c600c16622fa..d08a5fd87203 100644
+--- a/mkfs/common.h
++++ b/mkfs/common.h
+@@ -106,7 +106,6 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg);
+ u64 btrfs_min_dev_size(u32 nodesize, bool mixed, u64 zone_size, u64 meta_profile,
+ 		       u64 data_profile);
+ int test_minimum_size(const char *file, u64 min_dev_size);
+-int is_vol_small(const char *file);
+ int test_num_disk_vs_raid(u64 metadata_profile, u64 data_profile,
+ 	u64 dev_cnt, int mixed, int ssd);
+ bool test_status_for_mkfs(const char *file, bool force_overwrite);
 -- 
 2.50.1
 
