@@ -1,105 +1,96 @@
-Return-Path: <linux-btrfs+bounces-15938-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15939-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA015B1EC39
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 17:38:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBCF5B1ED03
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 18:28:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C172A173AE5
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 15:37:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E805D18C80B5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 16:28:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA44C283C93;
-	Fri,  8 Aug 2025 15:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17550287278;
+	Fri,  8 Aug 2025 16:28:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xK2xbWRs";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZESQOkjn";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xK2xbWRs";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZESQOkjn"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="pQYB8GlA";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Rk7+6wev"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8659322FF39
-	for <linux-btrfs@vger.kernel.org>; Fri,  8 Aug 2025 15:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3366B7404E
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Aug 2025 16:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754667461; cv=none; b=bGy9hst7BN5gy9Qqfl0RyW8MPgfDiteTsxclxtDto2miRrG8Ipfct8OiC2W2lNRTAoof1qvC/PkI8OwRkpjM3r5mrEZnwEHTKtBKUpxONjQ4l4c5KzmHICSXyMEhUsN3bkufHWHzSoivxzzmab7e+F4vjWWJsgcDw3DHNb8BT00=
+	t=1754670486; cv=none; b=H1lnRD+Mhst0Pzwk68CZrr7P8Aa9H/sRATUPsl8sbMz+1GKy8nDQ7V4yG+2SCiCXqRBzywbYL5NHPN2YE1azIZUjrRyJWiqf1qP9MT2E+okebr+S4GPfE6KtvLuN5Czs2NjLFyszqEWjXczlmpA9BKx655ioelLo3VImrhgujjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754667461; c=relaxed/simple;
-	bh=BRUF0BCAbwsbDV/Nbi3e64rOs7/fvNoKzFa9Y4kfuVo=;
+	s=arc-20240116; t=1754670486; c=relaxed/simple;
+	bh=BcymXVGhX1vG1CjrPlCeq6lerwYhsSrOJ3ekcR0c3FA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=puPHKv7DpaeBVtTAnMfCzUSKaCgpkbSlIarEK6JzWMZwb4Dj0yveyV7NDcgL770pniL7FI/85WASKv+VOObYeisqyxB9fIcEfldRBuRsOo6PYLvntPFlosEtEznTg1mEaeddQnFwK4DTxivIS5hF/pD++DgNJ2aUmEJGTWUc0cY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xK2xbWRs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZESQOkjn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xK2xbWRs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZESQOkjn; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7549633E11;
-	Fri,  8 Aug 2025 15:37:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1754667457;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SAJa6K6CuvKO3X/mn5Xm6hIwWsKDvO96c3nKdziol+M=;
-	b=xK2xbWRsMzRzlZQZrh5gAHkGHlPUbAuIO512F1MRGDx3PMu1UGKrCMv3QRhf6Vse+pjRps
-	+KQ/IhXgqVNJ6/z6euKoEf1TdUEbBpcFGMjjgIYZzIDkf1I5xjit6Q9hK9TEv9azwCFOkZ
-	U9F1JFQVSYMh4/YAX7+A4oWIDfYm0DU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1754667457;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SAJa6K6CuvKO3X/mn5Xm6hIwWsKDvO96c3nKdziol+M=;
-	b=ZESQOkjnP37dRUHQzArf9S5yO/QydHP6rzQVLru93jcvuUNzGccG97gHV4Q/qvdXt2xqVf
-	n/dP6tF3VF3OJwAQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xK2xbWRs;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZESQOkjn
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1754667457;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SAJa6K6CuvKO3X/mn5Xm6hIwWsKDvO96c3nKdziol+M=;
-	b=xK2xbWRsMzRzlZQZrh5gAHkGHlPUbAuIO512F1MRGDx3PMu1UGKrCMv3QRhf6Vse+pjRps
-	+KQ/IhXgqVNJ6/z6euKoEf1TdUEbBpcFGMjjgIYZzIDkf1I5xjit6Q9hK9TEv9azwCFOkZ
-	U9F1JFQVSYMh4/YAX7+A4oWIDfYm0DU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1754667457;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SAJa6K6CuvKO3X/mn5Xm6hIwWsKDvO96c3nKdziol+M=;
-	b=ZESQOkjnP37dRUHQzArf9S5yO/QydHP6rzQVLru93jcvuUNzGccG97gHV4Q/qvdXt2xqVf
-	n/dP6tF3VF3OJwAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5FC171392A;
-	Fri,  8 Aug 2025 15:37:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NAIvF8EZlmiKRgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 08 Aug 2025 15:37:37 +0000
-Date: Fri, 8 Aug 2025 17:37:36 +0200
-From: David Sterba <dsterba@suse.cz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mRzMOtYcmfCmy//HLrYbHOZIzEeto1Vuxhkdq2Xro3MeRSByvvzgWSShKc9+5E8V+ty8AEZaNYINu8WQgFx4K5HljWWoovlwAuKqqCeRekLLVVXlN4n3jdx+ZMO5ydnk7jWPRfn5R/ySPNArhBi+2rnOhSqe8R8lxJ3Mzg7/DmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=pQYB8GlA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Rk7+6wev; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-12.internal (phl-compute-12.internal [10.202.2.52])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 4D60B1400088;
+	Fri,  8 Aug 2025 12:28:03 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-12.internal (MEProxy); Fri, 08 Aug 2025 12:28:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1754670483;
+	 x=1754756883; bh=AKbb3PKHvw2aHIvcUFjPJ/pUV1tc01A/0FgGxxM8+cI=; b=
+	pQYB8GlARRXpPzGrPilI4gXmrPQ79a2CafmZN8URLRum08dKaqJeMuyNICOtR4Y+
+	uz3/8kBngaY2DbHMw86+7aM791k5sGja8JL4E18VRR+YZjOuV7Jl7hFQTmbBaYZr
+	n/gw4/C/Qwgyxh0eU9SntMyUhZ/EhGDfruXVhI5//P0wN/vgiUv0mZEI/9NW8yTJ
+	2KcZThGoSLsnBAmrKapcYRBC0fNGQTn3ly9PP6+nPlIarUYLnG93FlnGV6BZ0maM
+	3rwUwcePYHQAIUSDL00dFMGhuPSD6NBRsZHYKzlVmbMTx0ho+xw+QVYq2x8Yzrhg
+	I6bjNrRAZtdF03vNJ1hZBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1754670483; x=
+	1754756883; bh=AKbb3PKHvw2aHIvcUFjPJ/pUV1tc01A/0FgGxxM8+cI=; b=R
+	k7+6wevSr7VVmWaxReIvhIgGBZ0dcO9T+yb+q1U8rj/pu4M9SmU+lMhAzk4butIH
+	k1JHpNl/dOu0j23gIqAtUiQBtakKF0RmarrLP/xx1XNI7FWzpybwrcE2bgd12mQk
+	ox4s1hSG5qpzd1xjb3TDBsA17yW9ICC3S+TsIFjHPq7jBUcb+kxnGFAQeMdvKGsy
+	R919IN4U4kDeY+2PXVvLCDKKFWETL+AY9pqObXvEPGCUgwBAGc72xyQup+X3DOme
+	K9od4vvmv5AN3Xo4yBWpkJySCbw1uvg56Ktn7N+ERCpgNWsHP/RRQ1TRyH7R9VwV
+	fUDCA+CwmIzPA3ZlBhByQ==
+X-ME-Sender: <xms:kiWWaE2n4HRmAvH8suXOQ-zhKih75WsHRx0A5oGER2PiHDoRgTgk_A>
+    <xme:kiWWaCVycM-ej5kpYW1V7UNLTUi3DvtDtqidL9QWd3IRTynCpJ-1jjOmDiFutAkqc
+    AYQhOFWNhwdQP3L5Do>
+X-ME-Received: <xmr:kiWWaGVbVJJzeqcyi1TGYH4Izw4xJ9kWSdgfQLKiLHgZ1CHX5i8yhPQWHA23_6LtATTz2Pq359dC-aGELe6xpHazowE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduvdegvdelucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepud
+    elhfdthfetuddvtefhfedtiedtteehvddtkedvledtvdevgedtuedutdeitdeinecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
+    hurhdrihhopdhnsggprhgtphhtthhopeefpdhmohguvgepshhmthhpohhuthdprhgtphht
+    thhopeifqhhusehsuhhsvgdrtghomhdprhgtphhtthhopegrnhgrnhgurdhjrghinhesoh
+    hrrggtlhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhk
+    vghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:kiWWaJcjhVlJ5o6IL1GWv-DAJRyI-yWkXcbpt4ylYg4gVmJm-JWD8A>
+    <xmx:kiWWaHVSb4ectikGGMswn8p2jG-3PM49R5sErtJswZuS6qgycZZFxg>
+    <xmx:kiWWaKdDKpZprVjBq0M8ru_2Ef8lJUp3qT0EVYVOgiHQruw89pbEYw>
+    <xmx:kiWWaLOY6XtaBSoOBRTsO0N00iwqJTxuRLS4pYJGGimsX4-CB2ifkQ>
+    <xmx:kyWWaPbwEhIXBEo8i72SAGfZneuf_cERI15Ul4VGtNFMpCj6huXPQv0X>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 8 Aug 2025 12:28:02 -0400 (EDT)
+Date: Fri, 8 Aug 2025 09:28:55 -0700
+From: Boris Burkov <boris@bur.io>
 To: Qu Wenruo <wqu@suse.com>
-Cc: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
-	Boris Burkov <boris@bur.io>
+Cc: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH v2 5/6] btrfs-progs: add error handling for
  device_get_partition_size()
-Message-ID: <20250808153736.GV6704@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
+Message-ID: <20250808162855.GA2410255@zen.localdomain>
 References: <cover.1754455239.git.wqu@suse.com>
  <aaefe04f784bc601f355d13b3b0ecbde1aa44dee.1754455239.git.wqu@suse.com>
  <4c815239-7b65-4460-a27f-4b48b7244c71@oracle.com>
@@ -115,69 +106,39 @@ Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <c709e1b3-f57a-4c34-bf28-d00694c01cc8@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 7549633E11
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCPT_COUNT_THREE(0.00)[4];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[twin.jikos.cz:mid,suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Score: -4.21
 
 On Fri, Aug 08, 2025 at 07:01:47PM +0930, Qu Wenruo wrote:
 > 
 > 
 > 在 2025/8/8 18:56, Anand Jain 写道:
 > > On 8/8/25 15:23, Anand Jain wrote:
-> >> On 6/8/25 12:48, Qu Wenruo wrote:
-> >>> The function device_get_partition_size() has all kinds of error paths,
-> >>> but it has no way to return error other than returning 0.
-> >>>
-> >>> This is not helpful for end users to know what's going wrong.
-> >>>
-> >>
-> >>
-> >>> Change that function to return s64, as even the kernel won't return a
-> >>> block size larger than LLONG_MAX.
-> >>> Thus we're safe to use the minus range of s64 to indicate an error.
-> >>
+> > > On 6/8/25 12:48, Qu Wenruo wrote:
+> > > > The function device_get_partition_size() has all kinds of error paths,
+> > > > but it has no way to return error other than returning 0.
+> > > > 
+> > > > This is not helpful for end users to know what's going wrong.
+> > > > 
+> > > 
+> > > 
+> > > > Change that function to return s64, as even the kernel won't return a
+> > > > block size larger than LLONG_MAX.
+> > > > Thus we're safe to use the minus range of s64 to indicate an error.
+> > > 
 > > 
-> >> Returning s64 is almost unused in btrfs-progs; Either PTR_ERR() or
-> >> int return + arg parameter * u64; Rest looks good.
+> > > Returning s64 is almost unused in btrfs-progs; Either PTR_ERR() or
+> > > int return + arg parameter * u64; Rest looks good.
 > > 
 > > correction: almost unused -> mostly avoided
 > 
 > @Boris, mind me to revert back to the old int + u64 *ret solution?
+> 
 
-Please convert it to int return and *u64 for the parameter.
+Yes, that's fine, sorry to send you on a yak shaving quest.
 
-> Despite the fact that s64 is seldomly used in progs, I also feel a 
-> little uneasy with the s64->u64 (all the extra ASSERT() I added) or the 
-> s64->int error code conversion.
-
-Yeah, size related things should stick to u64, differences use s64.
+> Despite the fact that s64 is seldomly used in progs, I also feel a little
+> uneasy with the s64->u64 (all the extra ASSERT() I added) or the s64->int
+> error code conversion.
+> 
+> Thanks,
+> Qu
 
