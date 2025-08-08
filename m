@@ -1,153 +1,210 @@
-Return-Path: <linux-btrfs+bounces-15934-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15936-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D830B1EA1B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 16:15:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56B18B1EB1A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 17:05:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76F6518C01B9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 14:15:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A955A1AA6FD7
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 15:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 577C327EFE9;
-	Fri,  8 Aug 2025 14:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF5A7281358;
+	Fri,  8 Aug 2025 14:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ul4RDosv"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cmDrA1oI";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="J25Pyme3";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="w0ElO0p6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fLrxo+nR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4A727E05F;
-	Fri,  8 Aug 2025 14:15:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB59281370
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Aug 2025 14:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754662501; cv=none; b=TIhz3YWb0rj7EuHqWDDP3tX+exbWrpBE5BX8v3xgudU2eR4v1pOot7iXll2qHUuq5sjp0TaH3KNLy5hRYHXmo2jk/C5sezQhT7k8QlRMQUeSpZ27gCju1xDIjptV4Ya31/08PTWleZt8QNPJdsck+v0fLFIYRGAXr+0UMbrS/2A=
+	t=1754665009; cv=none; b=ox3Edg8pTqike2ui7Eka1EmMYceSn22R2EvB1ZOKtgemZb17DUTYfh6r6Avlss7m+rs6GbE0H1iClkEm4NA+42Xo/qgHrqGEtkslpzYMwGJ927mV3F1yLAN1xx7CHy1CtVBe2dS06vWf/Yukch99YF/wjPCXQbSVioSoSFmME+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754662501; c=relaxed/simple;
-	bh=HKIkgDzMLDwzvzKcSbUoDlFcm9sGFZMnObzsmCeGRbk=;
+	s=arc-20240116; t=1754665009; c=relaxed/simple;
+	bh=kyU9SysSDd2tFKAsHTxZZriy94Nz962Fl7cSdYF71cA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZlT4fTAwL6H7AgzjxXNbzsEXVguQX5lnl6GEy4rUVB1QTedi8kV+TpArLczJzc5cNDv49lU6NaOfvGP7nLmWa3TKO+gg604KDBXoO6fyrynWQt0AcVWbcnkCtZ9kMcg+xA/o35UfkdEbt0nJ4u5yjXYbc6W34BNBPukhH93HBhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ul4RDosv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22B1DC4CEED;
-	Fri,  8 Aug 2025 14:14:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754662500;
-	bh=HKIkgDzMLDwzvzKcSbUoDlFcm9sGFZMnObzsmCeGRbk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ul4RDosvdyO3wvUFC9dpG5zZP+OhqJpvY6w4eDfUSuYA2AQLSHCJlkKZCkOY2LLjP
-	 Qtkd4Vee/lax31JRFeEYVYLYAylGeMvoEM45Bvn1W6/hoyuXNUB2/UR4QvXrDaIDLW
-	 s6+0+Kp9hpeneR2Ru2Xa7EmtJH4PHg33ncPjZNQy9oz4BM/qLDzYXYnp4i6QBASt6z
-	 nsGc/7PSDMwEbjKZqKUqlhHJ1GgNYEiX+fP05VZAubvlVEe0BrW3LoGJKPPO6DOOtq
-	 kLdTiZtv3XGb8h8qDBmd6m2xFNPU8KcOyrz6kF/6PTiyiNTm7Y5zOmKdVfj+0gOslK
-	 FaXmVQPl4LrDQ==
-Date: Fri, 8 Aug 2025 16:14:55 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Qu Wenruo <wqu@suse.com>
-Cc: Anand Jain <anand.jain@oracle.com>, Josef Bacik <josef@toxicpanda.com>, 
-	Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.de>, 
-	linux-btrfs <linux-btrfs@vger.kernel.org>, David Sterba <dsterba@suse.com>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: Should seed device be allowed to be mounted multiple times?
-Message-ID: <20250808-liest-allumfassend-2fb553ad1fb3@brauner>
-References: <aef03da8-853a-4c9f-b77b-30cf050ec1a5@suse.de>
- <4cdf6f5c-41e8-4943-9c8b-794e04aa47c5@suse.de>
- <8daff5f7-c8e8-4e74-a56c-3d161d3bda1f@oracle.com>
- <bddc796f-a0e0-4ab5-ab90-8cd10e20db23@suse.de>
- <184c750a-ce86-4e08-9722-7aa35163c940@oracle.com>
- <bc8ecf02-b1a1-4bc0-80e3-162e334db94a@gmx.com>
- <a3db2131-37a8-469f-a20d-dc83b2b14475@oracle.com>
- <510675a5-7cb2-4838-87e0-9fb0e9f114f0@suse.com>
- <20250805-tragweite-keule-31547b419bc3@brauner>
- <6a85c9c0-36ac-4a69-a0d5-4bc5846cd5c7@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=huFH6wiDV+GR334S20rHSZGN8UQZRVsnPDqj1F7lZdO+3ORlbA3cIrvnH4psKekjdnO0OMmJ+uHFkADf+F6cW3zXAcRablCMvwr0cA2iM9zobPp9FfFSMyRTa+eTP6egGJZmBkGNhRd2DdhkrcJ/GHnOdro3lhJeufoikPI2TP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cmDrA1oI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=J25Pyme3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=w0ElO0p6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fLrxo+nR; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DA4B233E45;
+	Fri,  8 Aug 2025 14:56:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1754665006;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YzYAvvmg9htnsGcdinZLhXOuN1sNJjo2iTfhIWgJtvY=;
+	b=cmDrA1oIHoT9H7toez8nrotNUmsSyYp+HU7UxkKuTqxrx1mi7v/iNiC8M5GHOb0q1UbP0i
+	NL3MjRCRp2S4uDNPtaPY1fKVsltNSa00Jmm83L7UOf2qPnWGAW92yEoZsRcCbbCCCCeG2+
+	4MSAEK9usDyZyh42yMVS40t9+spBl/w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1754665006;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YzYAvvmg9htnsGcdinZLhXOuN1sNJjo2iTfhIWgJtvY=;
+	b=J25Pyme3/tMCVu1uNqLRtn7iDAGzW+XWHtQVadJNvS++c4nL+D32xaTb9vdnImrbpBIu82
+	XzKyG5ILna+o3BAA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1754665005;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YzYAvvmg9htnsGcdinZLhXOuN1sNJjo2iTfhIWgJtvY=;
+	b=w0ElO0p6n/OU0Y1Py+ca3ZP8tN5m6iptO01CyMPJvNd9E4tEtlf+6k+NQR2ZoGo/tFxXkD
+	8j5OJunN5YYzOa8B4P8SlGWimkLv5vY4lmwjWF9au0vv+XXbj/tUmCONvwK4MsPJ9qF9/H
+	H5/KEc4BvcykYDG3HMIM4w33KQXzXbk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1754665005;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YzYAvvmg9htnsGcdinZLhXOuN1sNJjo2iTfhIWgJtvY=;
+	b=fLrxo+nRxiCADgmHyHaadC8/aO0FYM8rxV2md3iDVfYvYVOzLIdx5aEV/K/1jwDawtJTbx
+	WUy5/QFROKC3WcAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B4D7113A7E;
+	Fri,  8 Aug 2025 14:56:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id rqHdKy0QlmjnOwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 08 Aug 2025 14:56:45 +0000
+Date: Fri, 8 Aug 2025 16:56:40 +0200
+From: David Sterba <dsterba@suse.cz>
+To: sawara04.o@gmail.com
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+	johannes.thumshirn@wdc.com, brauner@kernel.org,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: restore mount option info messages during mount
+Message-ID: <20250808145640.GT6704@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250728020719.37318-1-sawara04.o@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6a85c9c0-36ac-4a69-a0d5-4bc5846cd5c7@suse.com>
+In-Reply-To: <20250728020719.37318-1-sawara04.o@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-2.50 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -2.50
 
-On Wed, Aug 06, 2025 at 07:50:06AM +0930, Qu Wenruo wrote:
+On Mon, Jul 28, 2025 at 11:07:18AM +0900, sawara04.o@gmail.com wrote:
+> From: Kyoji Ogasawara <sawara04.o@gmail.com>
 > 
+> After the fsconfig migration, mount option info messages are no longer
+> displayed during mount operations because btrfs_emit_options() is only
+> called during remount, not during initial mount.
 > 
-> 在 2025/8/5 22:13, Christian Brauner 写道:
-> > On Tue, Aug 05, 2025 at 10:22:49AM +0930, Qu Wenruo wrote:
-> > > 
-> > > 
-> > > 在 2025/8/5 10:06, Anand Jain 写道:
-> > > > 
-> > > > 
-> > > > > > Thanks for the comments.
-> > > > > > Our seed block device use-case doesn’t fall under the kind of risk that
-> > > > > > BLK_OPEN_RESTRICT_WRITES is meant to guard against—it’s not a typical
-> > > > > > multi-FS RW setup. Seed devices are readonly, so it might be reasonable
-> > > > > > to handle this at the block layer—or maybe it’s not feasible.
-> > > > 
-> > > > 
-> > > > > Read-only doesn't prevent the device from being removed suddenly.
-> > > > 
-> > > > I don't see how this is related to the BLK_OPEN_RESTRICT_WRITES flag.
-> > > > Can you clarify?
-> > > 
-> > > It's not related to that flag, I'm talking about the fs_bdev_mark_dead(),
-> > > and the remaining 3 callbacks.
-> > > 
-> > > Those call backs are all depending on the bdev holder to grab a super block.
-> > > 
-> > > Thus a block device should and can not have multiple super blocks.
-> > 
-> > I'm pretty sure you can't just break the seed device sharing use-case
-> > without causing a lot of regressions...
+> Fix this by calling btrfs_emit_options() in btrfs_fill_super() after
+> open_ctree() succeeds. Additionally, prevent log duplication by ensuring
+> btrfs_check_options() handles validation with warn-level and err-level
+> messages, while btrfs_emit_options() provides info-level messages.
 > 
-> It's not that widely affecting, we can still share the same seed device for
-> all different sprout fses, just only one of them can be mounted at the same
-> time.
-> 
-> And even with that limitation, it won't affect most (or any) real world use
-> cases.
-> 
-> Even the most complex case like using seed devices as rootfs, and we want to
-> sprout the rootfs again, just remove the seed device from the current
-> rootfs, then one can mount the seed device again.
-> 
-> > 
-> > If you know what the seed devices are than you can change the code to
-> > simply use the btrfs filesystem type as the holder without any holder
-> > operations but just for seed devices. Then seed devices can be opened
-> > by/shared with any btrfs filesystem.
-> 
-> But we will lose all the bdev related events.
-> 
-> We still want to sync/freeze/thaw the real sprouted fs in the end.
-> 
-> > 
-> > The only restriction is that you cannot use a device as a seed device
-> > that another btrfs filesystem uses as a non-seed device because then it
-> > will be fully owned by the other btrfs filesystem. But Josef tells me
-> > you can only use it as a seed device anyway.
-> > 
-> > IOW, if you have a concept of shareable devices between different btrfs
-> > filesystems then it's fine to reflect that in the code. If really needed
-> > you can later add custom block holder ops for seed devices so you can
-> > e.g., iterate through all filesystems that share the device.
-> 
-> Sure it's possible, with a lot of extra code looking up where the seed
-> device belongs, and all the extra bdev event proxy.
-> 
-> 
-> But I'd say, the seed device specification is not well specified in the very
-> beginning, thus it results a lot of "creative" but not practical use cases.
-> 
-> Yes, this will result some regression, but I'd prefer a more sounding and
-> simpler logic for the whole seed device, with minimal impact to the most
-> common existing use cases.
+> Fixes: eddb1a433f26 ("btrfs: add reconfigure callback for fs_context")
+> Signed-off-by: Kyoji Ogasawara <sawara04.o@gmail.com>
 
-Ok, I'm not in a position to argue this effectively. If you think you an
-reasonably get away with this regression so be it. But if this ends up
-in a total revert of the conversion even though we'd have alternative
-solution I'm not going to be happy...
+You're right, the options are not printed.
+
+> ---
+>  fs/btrfs/super.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index a0c65adce1ab..de4e01abc599 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -88,6 +88,9 @@ struct btrfs_fs_context {
+>  	refcount_t refs;
+>  };
+>  
+> +static void btrfs_emit_options(struct btrfs_fs_info *info,
+> +			       struct btrfs_fs_context *old);
+> +
+>  enum {
+>  	Opt_acl,
+>  	Opt_clear_cache,
+> @@ -689,12 +692,9 @@ bool btrfs_check_options(const struct btrfs_fs_info *info,
+>  
+>  	if (!test_bit(BTRFS_FS_STATE_REMOUNTING, &info->fs_state)) {
+>  		if (btrfs_raw_test_opt(*mount_opt, SPACE_CACHE)) {
+> -			btrfs_info(info, "disk space caching is enabled");
+>  			btrfs_warn(info,
+>  "space cache v1 is being deprecated and will be removed in a future release, please use -o space_cache=v2");
+>  		}
+> -		if (btrfs_raw_test_opt(*mount_opt, FREE_SPACE_TREE))
+> -			btrfs_info(info, "using free-space-tree");
+>  	}
+>  
+>  	return ret;
+> @@ -971,6 +971,8 @@ static int btrfs_fill_super(struct super_block *sb,
+>  		return err;
+>  	}
+>  
+> +	btrfs_emit_options(fs_info, NULL);
+> +
+>  	inode = btrfs_iget(BTRFS_FIRST_FREE_OBJECTID, fs_info->fs_root);
+>  	if (IS_ERR(inode)) {
+>  		err = PTR_ERR(inode);
+> @@ -1428,7 +1430,6 @@ static void btrfs_emit_options(struct btrfs_fs_info *info,
+>  {
+>  	btrfs_info_if_set(info, old, NODATASUM, "setting nodatasum");
+>  	btrfs_info_if_set(info, old, DEGRADED, "allowing degraded mounts");
+> -	btrfs_info_if_set(info, old, NODATASUM, "setting nodatasum");
+
+Shouldn't this rather be NODATACOW? The logic around the option is the
+same as for NODATASUM, but for some reason NODATACOW is under
+btrfs_info_if_unset() call.
+
+>  	btrfs_info_if_set(info, old, SSD, "enabling ssd optimizations");
+>  	btrfs_info_if_set(info, old, SSD_SPREAD, "using spread ssd allocation scheme");
+>  	btrfs_info_if_set(info, old, NOBARRIER, "turning off barriers");
+> -- 
+> 2.50.1
+> 
 
