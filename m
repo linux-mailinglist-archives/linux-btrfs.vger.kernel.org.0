@@ -1,100 +1,100 @@
-Return-Path: <linux-btrfs+bounces-15924-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15925-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D52CFB1E362
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 09:33:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64B38B1E382
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 09:36:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9F8A17169B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 07:32:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6CCFA018DA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 07:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D59B24166F;
-	Fri,  8 Aug 2025 07:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7312E274642;
+	Fri,  8 Aug 2025 07:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ApYJ09fP";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="UyepfPr2"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="hAPnUufa";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="sN+UcB3Q"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C845421CFFD
-	for <linux-btrfs@vger.kernel.org>; Fri,  8 Aug 2025 07:23:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFD62741D0
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Aug 2025 07:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754637821; cv=fail; b=EvyAZq5mQENIir5EkpPEvZ6pntiOBHHeKx5oPbmoXuAutyfNJFO8FLUQJd9au+dVh+DmHWlgYTy+HGl7MD7cfUDzlF9yB7MRYgW2I2MJVf2P4TTQtHIU7Ex/kRQ8qllozzKrn7omCdL8AAXI7SHQWwtSSgdqAHMzOZHrOQX1zQM=
+	t=1754638041; cv=fail; b=UT4a40rb/lfhHYRdmaWG0Q2qirvBpVl9Za0d2MldD3A+X8FBwtYW/ZQUDxupvbh9hjqtoVsWC2HD/Bg31XXqez9PsJPQqNHUaaK79IedH8kCzLMgjWB6bioL5BbVi+PbW6mH1pseev/DdUaBY9K1nHmT5DpgoBU1HhUFQa1YlGo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754637821; c=relaxed/simple;
-	bh=2iVafwBpewqujaBRFXQ1SkPhRzY6yVza8RsqUuTjFx0=;
+	s=arc-20240116; t=1754638041; c=relaxed/simple;
+	bh=yINnHyxHA2maTAb/3OV06kMRHeDR4H9+jl0PAUFfcYQ=;
 	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=GZHeE2Vc0tUGfSXAdLJmoAqr3uSDLVz5SUyw5e5zd8pHLqD1Ad4CCEcG/qlnTKqkysPvwpA0ROhEGrOH/AKs+uMTevFAewyw51wnC84g0l/9JWf3bzLW9prOIU2YHu8ctRGyDUf09v/ytuSzjEWyEglI0SjybwO3FdORBhFEVLE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ApYJ09fP; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=UyepfPr2; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Type:MIME-Version; b=sKxzyQyO7saPjseVtHG8iGBcB+t/uAcnuC25EsDQ01vY+oRZHaxOhW0hKAQ6n2CjTd5cTJ05sc5IP/PM2FAuNIDGIiE8qLljncZWsv1BOHhY3eV7Hcz3eYiwGe45xKaU6EWrlMzXlD3LiV7efxyST1w5g457Meq7I7whHEpDEUg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=hAPnUufa; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=sN+UcB3Q; arc=fail smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5786YMna027871;
-	Fri, 8 Aug 2025 07:23:36 GMT
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5786Yhuf027993;
+	Fri, 8 Aug 2025 07:27:18 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
 	content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=WITypLybhQwJkjWiXVextokaC2d+Sq9bwHZ4DTKLkaQ=; b=
-	ApYJ09fPwKnSl52VWmttTlHwbuzn9fcGn7j0FNWnJcaNkGYsVb1TQ1ptUeX23BiI
-	T2OjUzGSY4Ukr6C4B02D5t+fM3lXnWRHq0Vej98Xc9ylcLprqatQAav926aXwXR3
-	qr3qHYYce50qIncgHVIQcfXfi3+VYUbZi2Q7limA5sUgPc4uETeztBiqDn7xNxhT
-	wWbn5w0Kqi70QXmYVu2cNP41W8Kt8Ff21TGmtbzqQMUfdKLW/YxEfcU+qazF8RP6
-	s0Msqopiw3X2q/ROzeiwp4A/uKNKIIMljVnogT7hzbyfJO2x8gYKVF7EZJaLQqlz
-	lKUC9hn65yByBQexmRW+5A==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48bpvgwmpx-1
+	corp-2025-04-25; bh=FkPFteilSmYzveOUAAHNWTzdpva1jkCaTaKFJGTIDlI=; b=
+	hAPnUufauOY/EiddakUBgVU6qQiIFGMI9T7iuQGSNaAi7VbhnOWHQRdRiElgldCT
+	lUA/kHxJd9SiHy8/DaoKRIN849XC1SlD/1kw2FzZ2uFewnTKOgp7rVlJWoayN6KX
+	Gd3Xjb0On8qRAo+gukTIMLvxcVDMH6B2uwq6HndciBI+EN/jUZlHwaph5/1MNuLz
+	6wZr6rz2XzzYwfgJ60sfWbsdXQWYodJiscnLAcSSsk33gCuikisB3yIU0HQs5bsA
+	jZXacHNSNr4Wv4iBZhXOIsuOxnUxAOtCCvKXDjooW0TSt6ORFj8O5d6weRsS0vEL
+	wigpzdo0RBBrIG1fsRrjFg==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48bpvd5skh-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 08 Aug 2025 07:23:36 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5786jD9S005682;
-	Fri, 8 Aug 2025 07:23:35 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12on2075.outbound.protection.outlook.com [40.107.244.75])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 48bpx0f0dd-1
+	Fri, 08 Aug 2025 07:27:17 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5787PEKv009700;
+	Fri, 8 Aug 2025 07:27:16 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12on2082.outbound.protection.outlook.com [40.107.243.82])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 48bpwpdnmf-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 08 Aug 2025 07:23:35 +0000
+	Fri, 08 Aug 2025 07:27:16 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=wzQCx85g3QJmlTcQgE4gRYS9BBWDVC3rUzntXQyMNH11lNSDBAP3Fkhy3Sc5RlwIKZ8sAqUImvVYYJSiuTZgPQO0R+H1uTNsjSHY1w8XdXxNBZ7hmPTBxtXYeOclE+tg9GDureW7a06pcZ1H6xxrh6MdbfVQDB5t7ILhDDsBEXl4YczmS+3jWnbDsJuj2GhzAr4seVGkbD5Qk81JawC9P2xk0dQX7yekK7vNbCnP7OCXpOW/NDMUCap9NM1O5tjZs5r3mEqY2Ooauxa4/oAWVQ9Rb9WRNZe6CkLbvlyDhEiqQ35BBJyqTPjgTbRXbsUMTqMCqN3z6ADShtDy9zAV1A==
+ b=Tdt4YmPg3hd5XpAoDc6MbAirZ/tCEAgKJPCJzL9usTSiEky30kIst5Zt3KDE2MD3bS4tgBFMLI21edzPxvmVadX1Bqk3h4TTqx5ihWSpzsTCQlApl1C2zfc56l1jgtrFXOrFgQr5Ud/ZMbqWOr791JgHz6KvoqS+2RMbmVT3E2hETyiIlPeiCGUK3cSReLNTImmhAplnQVKRugH7RNvSsA5YE9lVzovEn6GjlcNs6Snt7LYvLyIdTX0IdSi+DsqWqH5oELJ2AwUKsh49fyck1F5GGGYQuAD7NRI2dYOvTI2JuK2TjW7qAs1e5mcKAgSLzF7fQgXj4cIbL5RtqGBLkg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WITypLybhQwJkjWiXVextokaC2d+Sq9bwHZ4DTKLkaQ=;
- b=Hh5PybW5gZUYlcgHVShuJMc2NCWB5CKmpQCpnvKO6yMCAu9ZuEggWMY2ExRq58x4C/dsf1mwJjr6tSgyv2iwDWA73nUJQmd038NH1c8nov2bPx7bXd9zmxd4Mu8g22hoCZQLHqApw1BnXcnrxhmqzRpIaP1A1q4xANiRLJTdqudx1yGmHT1oKJr7aQEjSGWq7fflWORD7H+b7Xtq5/a32HDCPYJOnlV3oUH6zYhQCZhB+p5NffqAsbZSOCp84OiXFvcGqsDfqPvpWUHCJLFpmBA+jtM/o8h7CuuBmjWBBl6q2qsAmJEP3ICwen1anMNCp9JdCN5ejWukm/qiZ9jjXw==
+ bh=FkPFteilSmYzveOUAAHNWTzdpva1jkCaTaKFJGTIDlI=;
+ b=yGPDs9snDU8w0a4v5VimnSEO81+3M0+UdhGvf+/fdJLS0nOSW7k9VU21sBYhnkZtwEDm5hMFNH18MhkemyM094PXq9GwwzTM06HeGBr2syUIUVmV0GX90ofj2d/oZ7APcioyKZMsF9t/GjjJPRTanQabOKuSRmmL6QuOlsTUBWQi5r1vpD2diz83uzWvM3YOStC9i+VuNBAdgCGHD5kHEASmQ5pF01JlJAAo48pl1jjxL+P123xghqF7grQUVJgEj6wFa8MzpqBrAvfeJm4S1Z7xtCIlcbTOGmU0NSHLuVXOgiWiWQCUB5d8rACn0siPOwYhAm560HRj8MhJTMz0EQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WITypLybhQwJkjWiXVextokaC2d+Sq9bwHZ4DTKLkaQ=;
- b=UyepfPr2pMLyjokk89jF5+wblqOSXWDRUfz0IK9eoDd9kAjU98IPf2K7iXvyDDufvQqyL2owaAjI6Nb9hCcVhISBjXK6gWOZPNXfHN2nDe+foJ1OJ9rrLe8WxCfFqZe9H6Ek9iI6RFdeDRZwBzy/EyxevhM15BXhgxvYwKbqjqc=
+ bh=FkPFteilSmYzveOUAAHNWTzdpva1jkCaTaKFJGTIDlI=;
+ b=sN+UcB3QivVv0UhUh7M2Xz75Ck9RChZH/d55fSZmewhRn8d3AsaYF6hCfYqiGOLq1Iu1cl7mDF7YPWrbRvOHpyYilWW4evnbSnFxP2OekYnSlgwbhvGCfek0qd0EFT5F0U+W//ZUcIF+7LyRQk24UHeceyG/SzDUnCTQSbDeQiw=
 Received: from IA1PR10MB6075.namprd10.prod.outlook.com (2603:10b6:208:3ad::18)
  by SA2PR10MB4683.namprd10.prod.outlook.com (2603:10b6:806:112::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.18; Fri, 8 Aug
- 2025 07:23:32 +0000
+ 2025 07:27:13 +0000
 Received: from IA1PR10MB6075.namprd10.prod.outlook.com
  ([fe80::565:8dcf:2d10:bedf]) by IA1PR10MB6075.namprd10.prod.outlook.com
  ([fe80::565:8dcf:2d10:bedf%6]) with mapi id 15.20.9009.013; Fri, 8 Aug 2025
- 07:23:30 +0000
-Message-ID: <4c815239-7b65-4460-a27f-4b48b7244c71@oracle.com>
-Date: Fri, 8 Aug 2025 12:53:25 +0530
+ 07:27:13 +0000
+Message-ID: <ae4a109f-e533-4a9c-863e-7286508f489b@oracle.com>
+Date: Fri, 8 Aug 2025 12:57:07 +0530
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/6] btrfs-progs: add error handling for
- device_get_partition_size()
+Subject: Re: [PATCH v2 6/6] btrfs-progs: add error handling for
+ device_get_partition_size_fd_stat()
 Content-Language: en-GB
 To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1754455239.git.wqu@suse.com>
- <aaefe04f784bc601f355d13b3b0ecbde1aa44dee.1754455239.git.wqu@suse.com>
+ <529ae91e63a07645b0d9f2d769c785de92e1fc23.1754455239.git.wqu@suse.com>
 From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <aaefe04f784bc601f355d13b3b0ecbde1aa44dee.1754455239.git.wqu@suse.com>
+In-Reply-To: <529ae91e63a07645b0d9f2d769c785de92e1fc23.1754455239.git.wqu@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MA0P287CA0007.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:d9::18) To IA1PR10MB6075.namprd10.prod.outlook.com
+X-ClientProxiedBy: MA1PR01CA0184.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:d::13) To IA1PR10MB6075.namprd10.prod.outlook.com
  (2603:10b6:208:3ad::18)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -104,301 +104,436 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: IA1PR10MB6075:EE_|SA2PR10MB4683:EE_
-X-MS-Office365-Filtering-Correlation-Id: d17a23ae-6fba-4e5d-b48c-08ddd64c79c5
+X-MS-Office365-Filtering-Correlation-Id: 9317f579-fe99-4787-2064-08ddd64cfe99
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|366016|376014|1800799024|10070799003|7053199007;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?RHhoaGhOSzdPVmxJUUtKMTBQeUl1Y1FRTUh5cjlhSnJTMURzOHEzRWdDUUFT?=
- =?utf-8?B?UGZ4blVhLzNwZ2Mra0trK0VxdkljbWNRUUdoWjN5U2lyMUJ6L010SXVkU3hX?=
- =?utf-8?B?eGplL3R4NGxTVVN3Yk4wYlRndUJ6ODIrWER6a0FLd0k5YzNvelJ2Ni9PbDgv?=
- =?utf-8?B?K0h4YUNHOXFEOFRNcnVESHJoSEhpNHB5OVkya0dmS29wREZRclB6MklRQWxR?=
- =?utf-8?B?dUVYZ2lvRHFwY1dNRDc4Tk00RzlBdEduMFN2WXd6RE81M1RFM3dZTlRXVzdE?=
- =?utf-8?B?ak1POXB0V0czSzZaS2w5bkQwMkJIUURWWEdIckZZSFBWdDRKZ2JhalQrcnRS?=
- =?utf-8?B?VWsvS2FjKzI1OGNxRUpqSFlyR3FEY05FWUx2NjhnUDNNZlBwSEh0NFBSbHNY?=
- =?utf-8?B?d0ZNL050enhyeEdtNkFoZHdkblVRQkVBYXg5NWwvUXZxTXBTc1BHR0YyMmpk?=
- =?utf-8?B?anFmU1pDWUhSWWlSK3lidzExNUNuZDBuTlorTzlmOXp0WlQ5WlVwVEtqNUJK?=
- =?utf-8?B?NUhSdTdZaTJQNDBHd2tCZkVZSjRMdzBTRWVGcDBvVHg1TmRoTUROaWoyM3FN?=
- =?utf-8?B?eFc1WGVTNEJpT3VETm1kcjVOQmRaY3F3aGFMT3VQNWhVbzJNbEdVNGZVY1cw?=
- =?utf-8?B?M3lKQnMwS1o1V0E3c0tBSHMxS1pvMGo0SFpyeWdxR1R6SG9kcVlKdE5WV0Vl?=
- =?utf-8?B?YjYvdkRGazBlZU1CNndVY3dsSm5yb2Z2dGcwR0ZoWG9jT1RZdS94eUphZWlh?=
- =?utf-8?B?QUpsMlVUdGNtdEMrQmpGbW9qeXcvaU9rb3dNY1lvdFh0K201ZVN0T0xrNnZD?=
- =?utf-8?B?c2JlYlVwR0dKTVF0RGg1cXBKRW9DbHlzMXQ1ajh1b09DQkNzdFdtckNNTDZJ?=
- =?utf-8?B?YloyR3U4ZWZ6UFFMOEVHRWdRVnFWNHpLRkRTb1dRQWU5Wk96cS9UeW1xOUV1?=
- =?utf-8?B?NlVFSXJPMjVLT1l5bzdSOEFkTDZEUWk5SG9qQ3NMZGtzVDI2dmtmZkQ5VVhL?=
- =?utf-8?B?SjY2Y0Rhd3JpU0djaTFKUE1YRE5sSzhSZU1hSGlnUG9RU2I4eXZYc05UeStx?=
- =?utf-8?B?VHEyVnBobDk5RExZZTJjM2czamYySTRlKzFCRkJ0dy9lNFlJRVJoNFcyUWJi?=
- =?utf-8?B?dmhYOTVlclRyOVZFandsUjVoTzJzWXVOL0Q0Zk81UjN3NVNXTTZwNVpWd3Z6?=
- =?utf-8?B?dE5XOGtnR2w1cHIzSVhiWE5mM0JDNVpBQVBWWWNIdWs3U2dTaVFjMTlKemJn?=
- =?utf-8?B?TDlKTko3U01Oa3N6YUVicWtzN0diMG5xWU9vcEpra0NtWWRNZE9IWldDZUsy?=
- =?utf-8?B?dUtndFE5RkRzNGRYU2Z3d3J4NmkzTmlIQkpOVHJhRG8rRzhYTmkyS1lXSjVR?=
- =?utf-8?B?Y0hBbjVxOWhYOHhsa016ZVIyMHMzZ3k4Vkw0TDJuUVR4ZjRmNVNFbFVCbVRZ?=
- =?utf-8?B?VGdCaGEwcWxVVWY2cC9JR044ZS9vS2F0WDJIYjVvTktXY0J1cGRaTFJUSkFv?=
- =?utf-8?B?bER0OVNLNWJoVWIzdS9CT0FtcE5GVndZVlpWM1RjSjNiQ0k5K3dkeU1Mc241?=
- =?utf-8?B?bnd4VHM0cDlxY2J6V0ZkbjVvRU83L2NNcFBYVExWa2NNcnRSdklZbmtFSDJa?=
- =?utf-8?B?Tit6QlV3RE5uQUtlTTZvTTRaZ3o3ejVRZ3FkRjFSZGZTNnRpVExaMXpjc1o1?=
- =?utf-8?B?RWRXUU1BMlk5U3l0Y21WNzI2Zm9kWHZiQ0puL0Y4U0RKc3pCN3dmTkswcnBu?=
- =?utf-8?B?bnd0R2dPWGRUblB2YzFLbkxodk5jczQ2T0dTblFrUVJQT3lWZnpmVFp4UWNL?=
- =?utf-8?B?NjBjWXlVNG1Jd0o5NjdNc0psYlAvb0NOU2tYbGtoUzRrQVBUREpTS1dIemlh?=
- =?utf-8?B?QWVUc21LbGdVdWVvaVI2NFFEZ1ZXeXdoQ2w5UTFFdUUxVTJ0ZHFhM1JRazlF?=
- =?utf-8?Q?pafVG0uEWfg=3D?=
+	=?utf-8?B?RmM2MUovcFVQMkdvMDYzL2dxcWM0TnlGdWlsOS9iR1E5Yy9PTjJvNUFJTXJG?=
+ =?utf-8?B?YWlBRjRCaVRVbzNMZk9jakdlT1hJSTFaMlJmNUhaeU94MFlhMFVTWTAxeTVF?=
+ =?utf-8?B?bzBGL3BpellROEF3eGM0cEdkS1VNbS9oUDdBMTVYVitTTmFJUzc0UnlCMmtM?=
+ =?utf-8?B?NXhHWFFBcWRKclhPbFgyRm5pSmgyL1JLNlRuT1FBRHAzRWNwWXFmZ1orcFA0?=
+ =?utf-8?B?d3B1cHpHNmhQODlyNytzdklMaVhqZExQOGVqS2p5N0FlM09vc2M2bDc3a1RE?=
+ =?utf-8?B?VWlYMGU5N3BuTTQxYVJWUWdVZVVOZXczcDB6YmhSWUprWHNNemplQ2NtNFA5?=
+ =?utf-8?B?VmZtV1JHMEM0Zk5HM1EvY0lCU3h6WFJLNXBWSFBZbTVneXN1NUY5WFg1Rjdl?=
+ =?utf-8?B?TmV3ZnE3ckhnY0FLajZMZmh6N3hXRjgxTTdZMzFOdWZrYWw1Ui85eU1ORWpP?=
+ =?utf-8?B?bU1Ca2Q3aEpuVzB6VzBPaTFZTk5laWRrR1IwbDhYeHBUWEVlUzFDREU1cHVL?=
+ =?utf-8?B?NFRtc1d6WFdRcjE1ZFlCR2Z2Qms2TXFpUmdrZXNYRVZDSUpTUzd5WU4rMlZQ?=
+ =?utf-8?B?UExya0tFTHFLL2RNaXk4bENzYkgxMWxzOU1HbFFZRlZsRGhOa21sNVRXVTZx?=
+ =?utf-8?B?dVFiZ2FBc2h2Q09BM040aTlnMzBNS2gxaHhwWjh2QnFUU2xYSjZvclZSY013?=
+ =?utf-8?B?RGszQmpIb3ZoV3hnS2RPOHlKYjNjYXBvR1R4Y2RQdFBtRmNNemhIUUZGZW02?=
+ =?utf-8?B?aGtGakwzWWhlcmdnQ01UV3JRcE9NaDNYb3dic2dBMVV2L2dOeFU1SFF6dGRq?=
+ =?utf-8?B?ZUptMUNHNGcvWXphR0c3ZjFJUk5qcnl5bDFGZXFxZy9ZZFVpNzJtVU8xQzJz?=
+ =?utf-8?B?RnZHc0FtcE02N0pGRW8xQ1VxYU8vZW9KNSt5UE9mMFUraFY0bFRnVUpnY2lG?=
+ =?utf-8?B?dkY2NDc5ekErWnlnbVYzMmdpZVFNMjVSVTczNUo4NmYxWjF3eWNObHNiSVlx?=
+ =?utf-8?B?czdxc2FnbEdYK0xiZ2M1bHFza0dzK1M0ZnhRWGNSWjBBZ3JrdW1qblpGQjVy?=
+ =?utf-8?B?WnBRMG95SVErcEZjTXQ0TUlQblNRUlNTVzkwamNmVVBNbnBoNmNDR3FteWE3?=
+ =?utf-8?B?aXhUYU1xaXJ4VHJOM2U2TWphbFlxR0daRHVFU2xkUlpGd3BDeUEwMGsvREdB?=
+ =?utf-8?B?R1ZxNmFRMHU1eE91aEU2UThqK2dKeW04R1NUZFZXMjlVYzc5ZDZWRjVrd0Vw?=
+ =?utf-8?B?MkFIWWwxZTl0Yy8yZHBiNHZxQWJ5TXg3YXpncUVEWHp1d09JcDdaWW0xd3FV?=
+ =?utf-8?B?czZkaXljWkQ5RURJRDlQbFVpQkN2N2MwTnRFMEdWZHhIZyt6T25QWWRPWGFj?=
+ =?utf-8?B?Rm9IVHRHb0RENDVvdENuMzRmOC8ydTVRSG1ZWGdYMVpsZUt5a1pXRU9WaENS?=
+ =?utf-8?B?SXFSWmVZR09ueDYvQ1BnSFdRektadWdNM2RXeUsvb213S25GS2xJNC9JZ1ND?=
+ =?utf-8?B?QnlReTUzQTNSQ21vUUJDNXd6bFRjWk1PWlRqNk9ZYkxCTUU1L2Fnc1hyNHpo?=
+ =?utf-8?B?U0tLaFdSWE84ZTlxOGdvZVhNTFV3cXJIRWhnSHFpSUdVVFFXYnVTQkZKYURi?=
+ =?utf-8?B?Y2grMERncUFocVFtNXFTQmtuYlFuU2hiVmtXMGp4dnVoKzlsZ2crSjRONXdV?=
+ =?utf-8?B?QTJwSFZaM3dLNEZhS0cybEVDZyszc2Y5REZlem5JS1lFM1loTXpYRUxnc0Qw?=
+ =?utf-8?B?M3VOLy9vRWVTNGhZS2crUFBUcTc2UjhsMHBLWGUxaWxBMkFiOThXMFhCUlFa?=
+ =?utf-8?B?RE80R3grV2FkVGpEWGtiNTRGeEowMGd4TlM5V1JDM09TNVNIcEJvb1VPNUlu?=
+ =?utf-8?B?T1JsZnI3aE1qVGIwYWJnWTV6Z0pGYWVOYkZaN1M5N1FaTmhJSnAvaFVNb25E?=
+ =?utf-8?Q?eQFfBwnJboM=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR10MB6075.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(10070799003)(7053199007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cUNzRWk2OGQydlRjUWZHQncwSHdCVmVZT0dhUmFmM3lvLzIvTjJEQmFOWmkw?=
- =?utf-8?B?YWplazRkT0RpSDdqQ3Z6YUR6S0lqdmd5L3dxT1dpWkFieXFkSmlIZ0h3dWtI?=
- =?utf-8?B?NngxUFlJUnl1d2JjcVMyMmI0dkN2dEVYa1plTkszS3BaaFlsTzJRSTkwZUkw?=
- =?utf-8?B?Rm81WGIrR0dNcFErT0lLdlAwd1V4dUN2Z0tsbHMrSllyU25RNXBCUU1kOVY1?=
- =?utf-8?B?WHRZQ2xuZDJUNVFURzhPUjJBRWs3a0tVaGlhUnJlWkcvRW1UK1JSSjhFV2s1?=
- =?utf-8?B?TkFHMWJkd2JTVjJVMzVqcVk3QVRzbDFVN01la3k1MUJnbGZJSTFtSjBtNXhT?=
- =?utf-8?B?SzFtUDV4ZjNxWjB3WHlrSUhwajI0NXlPVUJQZnZyRlIwaFE1TEZWak9uKzlK?=
- =?utf-8?B?bjFRenpsamJROU5CM2hkUGpZNWhya3NtMXowQXRCcE1iazdkRjlIQUgwZGhT?=
- =?utf-8?B?ZWVBWDJDb3IzZVBoWXNxSGlMbDlOMERzRjc0S05oWmlwUndZQ3BBbnpYNnpy?=
- =?utf-8?B?aTZ6OTRhT2tvNWEvK0pVTW16Z2F3T1MvTzlJZ2ZHUDNlS2VEd1E1QXM5Y2Vn?=
- =?utf-8?B?VTBuS1RKUkptd2VndzUyZ21UaXR6YWR0eTdtSGEyL0tUeGxET005QzlMcnk5?=
- =?utf-8?B?dlVUUEZjWndOekNMYmM0Y292dzF0aEtHeDlQaHBoYUNiTHVXUDc0c2p1T3RD?=
- =?utf-8?B?dCtXVndsY2V6TWVJcDlPdlFXZHlOSkVWcVU5YlFsZDBhRTBwZ2FjNjJXQTVS?=
- =?utf-8?B?S3NqdXlnTVFXdnozQ00rdTIwTjZHNUE1dmtYeFNNWWZSL0FHMFUyb0VwN1g4?=
- =?utf-8?B?VzY5TkFmYVVlN1hPdllZbklaWFA0ZUF4SHBaUjZQbkQ4YlR3Lzd2OUZEYWhB?=
- =?utf-8?B?SGNHU1pMa2VQV2ZKRmIya21yT3U3b2NBQW9wTjZ5OUF2dEtsSHJqbCt5cEJy?=
- =?utf-8?B?RGlwODJTVllHeWt3SUlhVjlxTnhqcjBISHQvc0d3T2FpdWtTRjVRelRWbTd5?=
- =?utf-8?B?YmpvNVNKV1lIb1BwOHlZTUJwTXVneG5RQ1FFY2FZeDMzZTM4QUg4QWoxS0tZ?=
- =?utf-8?B?SmllL2lIRHJvTTVieWEzZzFGc1dJc3haaGwxVmJPQUR0UzlacVVJdkJybG1P?=
- =?utf-8?B?RXE2MmpBdExuS3hYWTh1eHVseTFqVDFURlJ4eHhRaXlWMmg5bjB6MXE0NHZM?=
- =?utf-8?B?d0VhcEd2cXRWMXoyMjhVUUhWbVEzeThnL0twLzlrMStIUkttS0lXN0FOM0t1?=
- =?utf-8?B?Sk5yd0l5ZTIwVlVxYVUreThnQkhSdC9RQ2xxbCt5OXQzVzJTZFU3N1JDQSsz?=
- =?utf-8?B?VU5ZaWlnaS9UcFJrSzNLUEN5QlY4dzJlSWFyUjhhQlIyTEdjZ0FzS25KTGF0?=
- =?utf-8?B?aVFNckloTEhOeDI5bkZzVlhuNG0wWEgrUDA5aFBHMlAwc1lZbTdSUE5zUThU?=
- =?utf-8?B?M1d2MlNGU3o2K3NLdUl0a3FDRk5oc0RkNTY3Q1BWS3hCTlh3NXY4UENEYkxH?=
- =?utf-8?B?MHYxenl3bTd0OWVmMXNyc2tONUdOYXZTWHBSTmoyZmdJc2sva3hvS2RFL05l?=
- =?utf-8?B?WnJ4dWVxU0h3RFZydzA5eGwrSFpBd0k1YnFRdHRmbkl6cUlMQlRObmhadVVQ?=
- =?utf-8?B?enhYTTRKWForNmFTbW4xeStwOEZ1WElNWFlRbExCK1REbDNwRGpMMlgrZHpS?=
- =?utf-8?B?cHlvM0JjeTR6cmJTb3NhSkpKbkJ1eU5PNW9uVXU5SUpXaEhuKzQxbEk5bG5T?=
- =?utf-8?B?VHZKV3B1cDlSbGhWY2RvalJrd3JKQUcwQ1RRYkpYd3dybXRBSmFqUVFEaWNB?=
- =?utf-8?B?blIyTHdkVWxRY3ZGZ09CR1E5MTV3c29UdEtWNzkzeWRJWEZyYUJscjVOeGc4?=
- =?utf-8?B?d0RKQUZnSVdRSDg3NHYrVngvYXllUUhVcnNZS08yYXZzT2RibXhTdjVBaWpi?=
- =?utf-8?B?Nkg4enQ2Y0NKM2x2Q1dEZFQzTWJSVnY1Qm9iTlNtbTQ3TjAvdjczaXh2bHJr?=
- =?utf-8?B?Q2RpS2drQlpLQlVTRDdRc2VFd0ZDZTR6bWVCbVRKeS9DV251NHlmZXJUaXpV?=
- =?utf-8?B?ZHN1M1VRdHpLMTFjQ0VMY1pxcVptMTcrcXU0bEVUaDh3UGVtQVk1TDBiTE1H?=
- =?utf-8?B?eFZvZFJlSytJeEQzNTFtaHY5cEdJSDZoU3dLbWMxK2hzRVVici9SNGdTQ3ha?=
- =?utf-8?Q?NpXNAmfyN5MbyrcmqKHGXoe+ybIb6Plxq2r9rryL4Ofi?=
+	=?utf-8?B?K2NNcndVOFRmcUlwcyt4SExNc2dUVW54T2JySDZOcEJjWTA4UEZVM1VKZER3?=
+ =?utf-8?B?MGg2MEJSZURzT25EOU9xelRZM255d3F5eUViSWlCL1pZZ3MxMEZ6UmhZYVB0?=
+ =?utf-8?B?eEpXM2pKVWNicHVZY0pNV2FDWnkwTzRYV0V4MmY5QWEvdENsVlJCZGtLclJy?=
+ =?utf-8?B?VkovY0UvN0wwZ0xYT1RpTWdlM1pDVm9Sdnd2U2tGSVMxRVI1QnNRWUhBR3lT?=
+ =?utf-8?B?WFpkbStJblNVTlI4SXNWcEg2OXRLaTZIY0dZbUNKZTJqK2tCY2Y4ZlRDcWZi?=
+ =?utf-8?B?SHJXbnpUQkNSem4yUm5vUTFodGp3a2pqSTdCNVpOYk83K0thQTloZ0NhREpF?=
+ =?utf-8?B?bG9qWlZSRWIzNGpLekFaZWZvMXpxL2ZaVUJIdm1GWGo2UnFvOFRoWGkvLzI0?=
+ =?utf-8?B?RGVHNmZBT3p1QXJYVnpoajRtRFlLcTlYU3RIUGlTTk1DZjJzN3JXbEQrclpq?=
+ =?utf-8?B?cTZPbVRtZ01SNU5iR2U0cCtmVnZ0SFc5aFZ4MGdaVHVxQVVEaGVvQVNPMEF5?=
+ =?utf-8?B?b056RVhIYzFWaXphRzRjVGhzZmxsMDFLRFhSK0NwRjlUMGRUMnhFT1FFcFRE?=
+ =?utf-8?B?UjI5amtHcmxuRHdmKzloVm9wUEVwcUdRbTRLVTgrV3BmdFFJY2lERzYwWm9h?=
+ =?utf-8?B?Y0REOGIwRGFyaHE4dkRKNis5SkRKVzRoUHQ2dVlVNDZ3WXl3dVBxaFQ4aHhI?=
+ =?utf-8?B?dHhvSklJSEE5WTRBck1EMVpzc21iOHVDYy9Sc3F6bS8yRGRqUVNpbnBMbzBL?=
+ =?utf-8?B?czNkV2paR3dmdXhMS2xDMG5PUXhWMktKMUZyTEpjZllTN3l4RHMreTFIa1Zq?=
+ =?utf-8?B?USt5SVlUUEtFTEJ6cTY0T2lFaUM4VFd0MEFZbHVWL3dZZDVDNEJqVkEvUURG?=
+ =?utf-8?B?eUZFRDBFM1BSS2pyVWxUbWJST2wxUGYxeW5SSVpWeG96YU1oU3hia1ZPanND?=
+ =?utf-8?B?Tm02R1ludW1KdXVjQXk4RG1rRVJuY3RvUE9yT2VEV0h3b1BPL2IwRFRvQTcx?=
+ =?utf-8?B?WVVWRXo1Q1Zuc3gyRWowcngvQzFQUkl2UVBGRkxSQ2VwL1BZNzRGUDNwcDJ6?=
+ =?utf-8?B?MWdqcGdXSXlpTWlsbHpFcDFXdDhEbEJsQWtlbGNmQTdwSzBPR1JJck1oVUlW?=
+ =?utf-8?B?aWdRT1NUeDRsSm9qeWZFRFFSd3NnVjZkWGFmRmFkbmd5b2Z5ZHp2VzdwSmcz?=
+ =?utf-8?B?c3RLUjRWQTVEbzYwL0x3UER4UjVBaUhGZ2hvUkNRM3loVEhKS2tFT3M5aWpW?=
+ =?utf-8?B?NGc2WW11cDFEK2NsbGFjQy9Fbm03NGI3R00zUlVBa0dXZ09QTDhidmxiWDhL?=
+ =?utf-8?B?TmkxeVlMOS90R0doVFhTeXlLTmxrbitYODRtL0MvV1hrU3NzUTVsTXIzY2NZ?=
+ =?utf-8?B?Q29RUnUvb0FZT2xxVnhuREozTk5wN2wzazUzUHA2K0dBNWlxdlJYTnhHREt0?=
+ =?utf-8?B?cmF1MWdITkRXbUUxQk9jK2llam4rTFVYYW9DV0QrUWl5NEswd3kwVm5QVG5P?=
+ =?utf-8?B?RFFRQkc2dmVBVlgvWGhmNXljZjhQdGRtSzJLSTFocFBlRVlOUk9zcG9Md1c5?=
+ =?utf-8?B?ZEg0YlNvN0xhYzNweEVFemJvemNoWEw3ZUdwUHY2WW1LRnBmdHJDaUFybVZT?=
+ =?utf-8?B?UXVZVnQxNW5oRUZDK2NUR2ZCbVlvTjYxenB3Nm1kOWE2U0FJVnJtbG93QUZ5?=
+ =?utf-8?B?NmtoeTM3OGxTMHJPdGN6NEE3WlV1U20yWDdGWEYwZmQvaEhWK0xNZGkzckFq?=
+ =?utf-8?B?SSs1TmVRZGVEbDdRSC9tMHFjS0ZKM1VvaXVZbGkzWFZJZ1dqSWRPUm1pSi9Z?=
+ =?utf-8?B?U0V4ZUJRcHZ1OWdRNzBrajhaMHpjNWtGbHM0MTIwMHpmZGJMYTBkWSt6ZENE?=
+ =?utf-8?B?UXRUa2lqNHZxMjRSZ0pYMitTWVJxd2ZJTkZQaHVVZzlQbjUvajkwRkpkamMw?=
+ =?utf-8?B?Qm5HWEpLamFjWHpsbHM0SEVCK2pveDRMdGxnaXN2aDJqelN0ZE9PTW54VmxN?=
+ =?utf-8?B?S1VYRHlPalNJNHNDYm0xOHJ6VTNjMFBDdmFLeDdKYUM4dUFOYk5CbXdMQXA1?=
+ =?utf-8?B?NEx5SG9VMllsTnBQUGRmeEdLRnpmRENvd3VGQnNJRVhHdlE4VSsvUWRlRXor?=
+ =?utf-8?B?dVlkWnZoeW1qNHBhU3VMaTZ4K0NXajNNTldyQWRtKzRqMzNjRjVZdWdvSWhs?=
+ =?utf-8?Q?zkBw4LoFM4NvzYtwilR8gf+k/jLAOdQUZBz8yLOmGm6h?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	0cttbNRVCB4P1zvnfUzD48dYNG0egtemKew43ZK3xTpvLl7Fkisq6yfYg0h6njSDLqIi9kmoyVh534Ub5SWVhgEJqBXn40mZKgazhLhuH42pMUPPoxQRPxbDohjMN9Rx5paYRHX2kr+oJRSR5J/IwAa2q0id2+a068oelXj2zypMvfuMWe45zpfgrH1MNBMjhTnAm0/uT6t1mPfGpMw2zvllCr7gUv7EpvI4bb9YthVkcCWgqTstE+A8eLV+v8nbDUhoZ4UXBNuAYJyI1CDNFuLrCI0uuHnsZ0BGNsOEn7heKbAEEDRUGVK8bWZzZ+7BUY5IL+IAHwo5CupJ+JmBQXUpnMxewBLQDxJ3CSt41f85OKIOk5AQKE3G3dI0NOzuOAQUat409gt0FoXA6A20QiYN7LOGwM3W2ozjTv99cwYYKfIp9/LiKV2RcMRjA3e+W/yR5IUVw9uBn1sRzYAFcxPkqTKsYnTIOSpKHU3UgoaxOR7Q25gBfshwEOfK3sFZCRhl1KjR9wo5ByZ24XAiy4HiI3KrsmSZEdV1VvyzbVQL2kMaeqz5EoCF9/kZRwwDvaGIrx3/zB33pDbQpTKjYionaMmwHwe7/mC4Ld+O3WU=
+	pHpKkEWH5+SLITCkyQtiwR1CmrbpnGAVXEXXX8LW49P3CtbOtuzswJvmJBXD8YY6jFR7tW5/mATuU3hK3joRN26eQVNRBFtesJ1HJ3Wq1CBm+2pI+SboXz2tIjAeFKglXwy6omOYK3Za7AazHI03GyKsGWd/F8U3avD4fAwOd76MYUpbgfh5wIVrjkDGc/42DFweQLtXlxTal4eeXS4MozIPZFWV0gpqU2TYSxo+kopLuyix01/JuKm59sRgc4sl7+/4C6Dc+30aLwVsjzEhVxaa5IFhATpuNxnNr5gdiZJ2VF7E5U2wY7K7k9TL05hpnWi9E3/oBBIiqWRDEHNyk2HUeQSGYvqN1OW7Ig7GkgXWSCw9PzveiOBnzLcPFXltZiMDDWT0x+4IYhXALztQMhv+i7J3appzX0vz7gJi97Wrf1V3oLbvcxT5Wl8341wdJFEki1aZaNYv4qcMfEMUIgSE8XcI5D3Gtnm9pZp297WyqACBPhutGR1qh2doIaEituMkLqoFX0Zgbg6nvBVUpWfde76DCK/i0+G7RxS+TcWU/oQXedyr4o8b5ytk4JNNripdPnYzKielre5OPzPkZrISxoqiFyRfkZU0lPTkN/I=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d17a23ae-6fba-4e5d-b48c-08ddd64c79c5
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9317f579-fe99-4787-2064-08ddd64cfe99
 X-MS-Exchange-CrossTenant-AuthSource: IA1PR10MB6075.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2025 07:23:30.6933
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2025 07:27:13.7780
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3jcj5ul3OGGza1GJNZaLrXt84bXJ+cW9Da6A97o+RFyU94rzdfDm01guQH8EjfAMr9J71zj3BS+Kbm6GM1JuRQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: eMy5zc1cuod8kYmf+EzcLZEPLVwOGMk8Zz7MN6V63FOVBHMWmhboMYHK3CcA6UNKBjcjGFj0GLYpWxZWPfSx2A==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4683
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-08-08_01,2025-08-06_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- spamscore=0 adultscore=0 phishscore=0 bulkscore=0 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2507300000 definitions=main-2508080060
-X-Authority-Analysis: v=2.4 cv=WMp/XmsR c=1 sm=1 tr=0 ts=6895a5f8 b=1 cx=c_pps
- a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 mlxscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2507300000
+ definitions=main-2508080060
+X-Authority-Analysis: v=2.4 cv=fYaty1QF c=1 sm=1 tr=0 ts=6895a6d5 cx=c_pps
+ a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17
  a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
  a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
  a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=2OwXVqhp2XgA:10 a=GoEa3M9JfhUA:10 a=iox4zFpeAAAA:8 a=juPDNM__xKMhu4EsSY8A:9
- a=QEXdDO2ut3YA:10 a=WzC6qhA0u3u7Ye7llzcV:22 cc=ntf awl=host:12069
-X-Proofpoint-GUID: u_MZ0JZfJyrYJH5KOBHsaBq7cXqvSfFL
-X-Proofpoint-ORIG-GUID: u_MZ0JZfJyrYJH5KOBHsaBq7cXqvSfFL
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA4MDA1OSBTYWx0ZWRfX1EtqQVd/BGTV
- HrqwZv2cEAixowAz56fa7RcOFe8xcZrf/JfWOAbwXtRolAoFVmrbIjfl0VuxYXS2LWjo61lwjGr
- NGMlBTff5FgoSiJCl0cJVpV4dnlbI/a2kKv2QWqoMzc2UpkIsjJWi51GLWDEY2ZaZAl3rdV/anA
- pDc0ipPX0crqLvrG506DbSL9lNqda+J9J2uQwEv/yWFyo0bPil69C2eteudwsz9VvAfsffOqakP
- clNuUa+4iM/sh/ZRixUYwvE+z/xlaOzle8Z+39KqHwekBGi3yUKdGi6BeaJvTdrx01xQ+3LGYfN
- /xA1uC5ogbe44UAy3FOJN+7zPL30USgSP+iO7n/hWlQBJaGiSvWSJsXX8arYeyV4O3Ai4QfAGX3
- POwuXF8MykjCsjF6YMARLEkSgR7zeWxMxD/goiuObFq5/EcJdJEzVmOXkEVBqwMR+3c13o4k
+ a=2OwXVqhp2XgA:10 a=GoEa3M9JfhUA:10 a=iox4zFpeAAAA:8 a=Djns9Asslk8m5wIFYC8A:9
+ a=QEXdDO2ut3YA:10 a=WzC6qhA0u3u7Ye7llzcV:22
+X-Proofpoint-ORIG-GUID: wDbWBOJ_9G2LIfvNd0KC46ayZ3iG1vZa
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA4MDA2MCBTYWx0ZWRfX2e8/lFwzsTye
+ AorXop4ocGJCrlMuZwGno6nZWmFY27wLB/sZ5X2FjqK3dyHxkUFQ02D2md3OPvjtaBoY4XSRrnq
+ 8ieileogB5VrdbBjlJCskRE9LYUCN1QWTDk4CsXPOoXdrMBuoLrtelnA4XuRSjS6gFNKX4NwLr3
+ QCfpUblOQRfM2qWxBv6wqmUB8C2pIEnc4HGMcE9mN9l/AaOdoWiS/oNktPYV2sxzgqCyxI79eJW
+ 9loV4VK8ar8vQDvs6fWGPaMfDWtSxG67VA9ZxzrR+6WkpxLsm8JP3OkvmFb8uoV3vlgpNhzu+Oe
+ 4/MhDc1KI1R5coItuLgn6yobY978O5KrksSnZyh5IiWWOsWmUHtivTT59QmNgX2lf6GVftEIK5m
+ hTRHn0PIwGVvlQMywupCE9lVYSWzqAHga/IUq9w0C5Oo76EFvBaHRw8W7O63WddNq9VDh0lN
+X-Proofpoint-GUID: wDbWBOJ_9G2LIfvNd0KC46ayZ3iG1vZa
 
 On 6/8/25 12:48, Qu Wenruo wrote:
-> The function device_get_partition_size() has all kinds of error paths,
-> but it has no way to return error other than returning 0.
+> The function device_get_partition_size_fd_state() has two different
+> error paths:
 > 
+> - The target file is not a regular nor block file
+>    This should be the common one.
+> 
+> - ioctl failed
+>    This should be very rare.
+> 
+> But it has no way to return error other than returning 0.
 > This is not helpful for end users to know what's going wrong.
 > 
 
 
-> Change that function to return s64, as even the kernel won't return a
-> block size larger than LLONG_MAX.
-> Thus we're safe to use the minus range of s64 to indicate an error.
+> Change that function to return s64, and since block device size should
+> be no larger than LLONG_MAX, it's safe to use the minus range to
+> indicate errors.
 
-Returning s64 is almost unused in btrfs-progs; Either PTR_ERR() or
-int return + arg parameter * u64; Rest looks good.
+As commented in the patch 5/6 also, signed64 as return is avoided in 
+btrfs-progs.
 
 Thanks, Anand
 
-> The only exception is load_device_info() which will only give a warning
-> and continue.
+
+> And since we're here, also enhance the error handling of the callers to
+> do an explicit error message.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->   cmds/filesystem-usage.c | 13 +++++++++++--
->   cmds/replace.c          | 14 ++++++++++++--
->   common/device-utils.c   | 34 ++++++++++++++++------------------
+>   check/main.c            |  8 +++++++-
+>   check/mode-lowmem.c     |  9 ++++++++-
+>   common/device-utils.c   | 27 ++++++++++++++++-----------
 >   common/device-utils.h   |  2 +-
->   4 files changed, 40 insertions(+), 23 deletions(-)
+>   kernel-shared/volumes.c | 11 ++++++++---
+>   kernel-shared/zoned.c   | 18 +++++++++++++-----
+>   mkfs/common.c           | 10 ++++++----
+>   mkfs/main.c             | 14 ++++++++++----
+>   8 files changed, 69 insertions(+), 30 deletions(-)
 > 
-> diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
-> index f812af13482e..755f540ac0bf 100644
-> --- a/cmds/filesystem-usage.c
-> +++ b/cmds/filesystem-usage.c
-> @@ -819,9 +819,18 @@ static int load_device_info(int fd, struct array *devinfos)
->   		if (!dev_info.path[0]) {
->   			strcpy(info->path, "missing");
->   		} else {
-> +			s64 dev_size;
-> +
->   			strcpy(info->path, (char *)dev_info.path);
-> -			info->device_size =
-> -				device_get_partition_size((const char *)dev_info.path);
-> +			dev_size = device_get_partition_size((const char *)dev_info.path);
-> +			if (dev_size < 0) {
-> +				errno = -dev_size;
-> +				warning("failed to get device size for %s: %m",
-> +					dev_info.path);
-> +				info->device_size = 0;
-> +			} else {
-> +				info->device_size = dev_size;
-> +			}
+> diff --git a/check/main.c b/check/main.c
+> index 84b6de597072..f0ca78bb2e19 100644
+> --- a/check/main.c
+> +++ b/check/main.c
+> @@ -5438,7 +5438,7 @@ static int process_device_item(struct rb_root *dev_cache,
+>   	device = btrfs_find_device_by_devid(gfs_info->fs_devices, rec->devid, 0);
+>   	if (device && device->fd >= 0) {
+>   		struct stat st;
+> -		u64 block_dev_size;
+> +		s64 block_dev_size;
+>   
+>   		ret = fstat(device->fd, &st);
+>   		if (ret < 0) {
+> @@ -5448,6 +5448,12 @@ static int process_device_item(struct rb_root *dev_cache,
+>   			goto skip;
 >   		}
->   		info->size = dev_info.total_bytes;
->   		ndevs++;
-> diff --git a/cmds/replace.c b/cmds/replace.c
-> index 887c3251a725..bb8f81979389 100644
-> --- a/cmds/replace.c
-> +++ b/cmds/replace.c
-> @@ -136,8 +136,8 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
->   	bool force_using_targetdev = false;
->   	u64 dstdev_block_count;
->   	bool do_not_background = false;
-> -	u64 srcdev_size;
-> -	u64 dstdev_size;
-> +	s64 srcdev_size;
-> +	s64 dstdev_size;
->   	bool enqueue = false;
->   	bool discard = true;
->   
-> @@ -270,6 +270,11 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
->   			     BTRFS_DEVICE_PATH_NAME_MAX + 1);
->   		start_args.start.srcdevid = 0;
->   		srcdev_size = device_get_partition_size(srcdev);
-> +		if (srcdev_size < 0) {
-> +			errno = -srcdev_size;
-> +			error("failed to get device size for %s: %m", srcdev);
-> +			goto leave_with_error;
+>   		block_dev_size = device_get_partition_size_fd_stat(device->fd, &st);
+> +		if (block_dev_size < 0) {
+> +			errno = -block_dev_size;
+> +			warning("failed to get device size for %s, skipping size check: %m",
+> +				device->name);
+> +			goto skip;
 > +		}
->   	} else {
->   		error("source device must be a block device or a devid");
->   		goto leave_with_error;
-> @@ -280,6 +285,11 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
->   		goto leave_with_error;
->   
->   	dstdev_size = device_get_partition_size(dstdev);
-> +	if (dstdev_size < 0) {
-> +		errno = -dstdev_size;
-> +		error("failed to get device size for %s: %m", dstdev);
-> +		goto leave_with_error;
+>   		if (block_dev_size < rec->total_byte) {
+>   			error(
+>   "block device size is smaller than total_bytes in device item, has %llu expect >= %llu",
+> diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+> index e05bb0da1709..8d1b4c3f3f2d 100644
+> --- a/check/mode-lowmem.c
+> +++ b/check/mode-lowmem.c
+> @@ -4716,7 +4716,7 @@ static int check_dev_item(struct extent_buffer *eb, int slot,
+>   	struct btrfs_dev_extent *ptr;
+>   	struct btrfs_device *dev;
+>   	struct stat st;
+> -	u64 block_dev_size;
+> +	s64 block_dev_size;
+>   	u64 total_bytes;
+>   	u64 dev_id;
+>   	u64 used;
+> @@ -4823,6 +4823,13 @@ next:
+>   		return 0;
+>   	}
+>   	block_dev_size = device_get_partition_size_fd_stat(dev->fd, &st);
+> +	if (block_dev_size < 0) {
+> +		errno = -block_dev_size;
+> +		warning(
+> +	"failed to get device size for %s, skipping its block device size check: %m",
+> +			dev->name);
+> +		return 0;
 > +	}
->   	if (srcdev_size > dstdev_size) {
->   		error("target device smaller than source device (required %llu bytes)",
->   			srcdev_size);
+>   	if (block_dev_size < total_bytes) {
+>   		error(
+>   "block device size is smaller than total_bytes in device item, has %llu expect >= %llu",
 > diff --git a/common/device-utils.c b/common/device-utils.c
-> index b32bd2cec1f1..8b545d171b18 100644
+> index 8b545d171b18..b4daf7605fff 100644
 > --- a/common/device-utils.c
 > +++ b/common/device-utils.c
-> @@ -329,7 +329,7 @@ u64 device_get_partition_size_fd_stat(int fd, const struct stat *st)
+> @@ -226,7 +226,7 @@ int btrfs_prepare_device(int fd, const char *file, u64 *byte_count_ret,
+>   			 u64 max_byte_count, unsigned opflags)
+>   {
+>   	struct btrfs_zoned_device_info *zinfo = NULL;
+> -	u64 byte_count;
+> +	s64 byte_count;
+>   	struct stat st;
+>   	int i, ret;
+>   
+> @@ -237,12 +237,13 @@ int btrfs_prepare_device(int fd, const char *file, u64 *byte_count_ret,
+>   	}
+>   
+>   	byte_count = device_get_partition_size_fd_stat(fd, &st);
+> -	if (byte_count == 0) {
+> -		error("unable to determine size of %s", file);
+> +	if (byte_count < 0) {
+> +		errno = -byte_count;
+> +		error("unable to determine size of %s: %m", file);
+>   		return 1;
+>   	}
+>   	if (max_byte_count)
+> -		byte_count = min(byte_count, max_byte_count);
+> +		byte_count = min_t(u64, byte_count, max_byte_count);
+>   
+>   	if (opflags & PREP_DEVICE_ZONED) {
+>   		ret = btrfs_get_zone_info(fd, file, &zinfo);
+> @@ -315,18 +316,22 @@ err:
+>   	return 1;
+>   }
+>   
+> -u64 device_get_partition_size_fd_stat(int fd, const struct stat *st)
+> +s64 device_get_partition_size_fd_stat(int fd, const struct stat *st)
+>   {
+>   	u64 size;
+>   
+> -	if (S_ISREG(st->st_mode))
+> +	if (S_ISREG(st->st_mode)) {
+> +		if (st->st_size > LLONG_MAX)
+> +			return -ERANGE;
+>   		return st->st_size;
+> +	}
+>   	if (!S_ISBLK(st->st_mode))
+> -		return 0;
+> -	if (ioctl(fd, BLKGETSIZE64, &size) >= 0)
+> -		return size;
+> -
+> -	return 0;
+> +		return -EINVAL;
+> +	if (ioctl(fd, BLKGETSIZE64, &size) < 0)
+> +		return -errno;
+> +	if (size > LLONG_MAX)
+> +		return -ERANGE;
+> +	return size;
+>   }
+>   
+>   static s64 device_get_partition_size_sysfs(const char *dev)
+> diff --git a/common/device-utils.h b/common/device-utils.h
+> index 2ada057adcd3..666dc3196e2f 100644
+> --- a/common/device-utils.h
+> +++ b/common/device-utils.h
+> @@ -43,7 +43,7 @@ enum {
+>   int device_discard_blocks(int fd, u64 start, u64 len);
+>   int device_zero_blocks(int fd, off_t start, size_t len, const bool direct);
+>   s64 device_get_partition_size(const char *dev);
+> -u64 device_get_partition_size_fd_stat(int fd, const struct stat *st);
+> +s64 device_get_partition_size_fd_stat(int fd, const struct stat *st);
+>   int device_get_queue_param(const char *file, const char *param, char *buf, size_t len);
+>   u64 device_get_zone_unusable(int fd, u64 flags);
+>   u64 device_get_zone_size(int fd, const char *name);
+> diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
+> index be01bdb4d3f6..fccff07ba761 100644
+> --- a/kernel-shared/volumes.c
+> +++ b/kernel-shared/volumes.c
+> @@ -3081,7 +3081,7 @@ static int btrfs_fix_block_device_size(struct btrfs_fs_info *fs_info,
+>   				       struct btrfs_device *device)
+>   {
+>   	struct stat st;
+> -	u64 block_dev_size;
+> +	s64 block_dev_size;
+>   	int ret;
+>   
+>   	if (device->fd < 0 || !device->writeable) {
+> @@ -3096,8 +3096,13 @@ static int btrfs_fix_block_device_size(struct btrfs_fs_info *fs_info,
+>   		return -errno;
+>   	}
+>   
+> -	block_dev_size = round_down(device_get_partition_size_fd_stat(device->fd, &st),
+> -				    fs_info->sectorsize);
+> +	block_dev_size = device_get_partition_size_fd_stat(device->fd, &st);
+> +	if (block_dev_size < 0) {
+> +		errno = -block_dev_size;
+> +		error("failed to get device size for %s: %m", device->name);
+> +		return -errno;
+> +	}
+> +	block_dev_size = round_down(block_dev_size, fs_info->sectorsize);
+>   
+>   	/*
+>   	 * Total_bytes in device item is no larger than the device block size,
+> diff --git a/kernel-shared/zoned.c b/kernel-shared/zoned.c
+> index d96311af70b2..1036dbd153ad 100644
+> --- a/kernel-shared/zoned.c
+> +++ b/kernel-shared/zoned.c
+> @@ -166,7 +166,8 @@ static int emulate_report_zones(const char *file, int fd, u64 pos,
+>   {
+>   	const sector_t zone_sectors = emulated_zone_size >> SECTOR_SHIFT;
+>   	struct stat st;
+> -	sector_t bdev_size;
+> +	s64 bdev_size;
+> +	sector_t bdev_nr_sectors;
+>   	unsigned int i;
+>   	int ret;
+>   
+> @@ -176,7 +177,13 @@ static int emulate_report_zones(const char *file, int fd, u64 pos,
+>   		return -EIO;
+>   	}
+>   
+> -	bdev_size = device_get_partition_size_fd_stat(fd, &st) >> SECTOR_SHIFT;
+> +	bdev_size = device_get_partition_size_fd_stat(fd, &st);
+> +	if (bdev_size < 0) {
+> +		errno = -bdev_size;
+> +		error("failed to get device size for %s: %m", file);
+> +		return bdev_size;
+> +	}
+> +	bdev_nr_sectors = bdev_size >> SECTOR_SHIFT;
+>   
+>   	pos >>= SECTOR_SHIFT;
+>   	for (i = 0; i < nr_zones; i++) {
+> @@ -187,7 +194,7 @@ static int emulate_report_zones(const char *file, int fd, u64 pos,
+>   		zones[i].type = BLK_ZONE_TYPE_CONVENTIONAL;
+>   		zones[i].cond = BLK_ZONE_COND_NOT_WP;
+>   
+> -		if (zones[i].wp >= bdev_size) {
+> +		if (zones[i].wp >= bdev_nr_sectors) {
+>   			i++;
+>   			break;
+>   		}
+> @@ -289,7 +296,7 @@ int btrfs_reset_dev_zone(int fd, struct blk_zone *zone)
+>   static int report_zones(int fd, const char *file,
+>   			struct btrfs_zoned_device_info *zinfo)
+>   {
+> -	u64 device_size;
+> +	s64 device_size;
+>   	u64 zone_bytes = zone_size(file);
+>   	size_t rep_size;
+>   	u64 sector = 0;
+> @@ -326,7 +333,8 @@ static int report_zones(int fd, const char *file,
+>   	}
+>   
+>   	device_size = device_get_partition_size_fd_stat(fd, &st);
+> -	if (device_size == 0) {
+> +	if (device_size < 0) {
+> +		errno = -device_size;
+>   		error("zoned: failed to read size of %s: %m", file);
+>   		exit(1);
+>   	}
+> diff --git a/mkfs/common.c b/mkfs/common.c
+> index c5f73de81194..12a9a0bd8176 100644
+> --- a/mkfs/common.c
+> +++ b/mkfs/common.c
+> @@ -1171,6 +1171,7 @@ int test_minimum_size(const char *file, u64 min_dev_size)
+>   {
+>   	int fd;
+>   	struct stat statbuf;
+> +	s64 size;
+>   
+>   	fd = open(file, O_RDONLY);
+>   	if (fd < 0)
+> @@ -1179,11 +1180,12 @@ int test_minimum_size(const char *file, u64 min_dev_size)
+>   		close(fd);
+>   		return -errno;
+>   	}
+> -	if (device_get_partition_size_fd_stat(fd, &statbuf) < min_dev_size) {
+> -		close(fd);
+> -		return 1;
+> -	}
+> +	size = device_get_partition_size_fd_stat(fd, &statbuf);
+>   	close(fd);
+> +	if (size < 0)
+> +		return size;
+> +	if (size < min_dev_size)
+> +		return 1;
 >   	return 0;
 >   }
 >   
-> -static u64 device_get_partition_size_sysfs(const char *dev)
-> +static s64 device_get_partition_size_sysfs(const char *dev)
->   {
->   	int ret;
->   	char path[PATH_MAX] = {};
-> @@ -341,33 +341,30 @@ static u64 device_get_partition_size_sysfs(const char *dev)
->   
->   	name = realpath(dev, path);
->   	if (!name)
-> -		return 0;
-> +		return -errno;
->   	name = path_basename(path);
->   
->   	ret = path_cat3_out(sysfs, "/sys/class/block", name, "size");
->   	if (ret < 0)
-> -		return 0;
-> +		return ret;
->   	sysfd = open(sysfs, O_RDONLY);
->   	if (sysfd < 0)
-> -		return 0;
-> +		return -errno;
->   	ret = sysfs_read_file(sysfd, sizebuf, sizeof(sizebuf));
-> -	if (ret < 0) {
-> -		close(sysfd);
-> -		return 0;
-> -	}
-> +	close(sysfd);
-> +	if (ret < 0)
-> +		return ret;
->   	errno = 0;
->   	size = strtoull(sizebuf, NULL, 10);
-> -	if (size == ULLONG_MAX && errno == ERANGE) {
-> -		close(sysfd);
-> -		return 0;
-> -	}
-> -	close(sysfd);
-> -
-> -	/* <device>/size value is in sector (512B) unit. */
-> +	if (size == ULLONG_MAX && errno == ERANGE)
-> +		return -ERANGE;
-> +	/* Extra overflow check. */
-> +	if (size > LLONG_MAX >> SECTOR_SHIFT)
-> +		return -ERANGE;
->   	return size << SECTOR_SHIFT;
->   }
->   
-> -u64 device_get_partition_size(const char *dev)
-> +s64 device_get_partition_size(const char *dev)
->   {
->   	u64 result;
->   	int fd = open(dev, O_RDONLY);
-> @@ -377,10 +374,11 @@ u64 device_get_partition_size(const char *dev)
->   
->   	if (ioctl(fd, BLKGETSIZE64, &result) < 0) {
->   		close(fd);
-> -		return 0;
-> +		return -errno;
->   	}
->   	close(fd);
-> -
-> +	if (result > LLONG_MAX)
-> +		return -ERANGE;
->   	return result;
->   }
->   
-> diff --git a/common/device-utils.h b/common/device-utils.h
-> index 82e6ba547585..2ada057adcd3 100644
-> --- a/common/device-utils.h
-> +++ b/common/device-utils.h
-> @@ -42,7 +42,7 @@ enum {
->    */
->   int device_discard_blocks(int fd, u64 start, u64 len);
->   int device_zero_blocks(int fd, off_t start, size_t len, const bool direct);
-> -u64 device_get_partition_size(const char *dev);
-> +s64 device_get_partition_size(const char *dev);
->   u64 device_get_partition_size_fd_stat(int fd, const struct stat *st);
->   int device_get_queue_param(const char *file, const char *param, char *buf, size_t len);
->   u64 device_get_zone_unusable(int fd, u64 flags);
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index c3529044a836..166a4fc0fd32 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -1254,7 +1254,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   	bool metadata_profile_set = false;
+>   	u64 data_profile = 0;
+>   	bool data_profile_set = false;
+> -	u64 byte_count = 0;
+> +	s64 byte_count = 0;
+>   	u64 dev_byte_count = 0;
+>   	bool mixed = false;
+>   	char *label = NULL;
+> @@ -1818,9 +1818,15 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   		 * Block_count not specified, use file/device size first.
+>   		 * Or we will always use source_dir_size calculated for mkfs.
+>   		 */
+> -		if (!byte_count)
+> -			byte_count = round_down(device_get_partition_size_fd_stat(fd, &statbuf),
+> -						sectorsize);
+> +		if (!byte_count) {
+> +			byte_count = device_get_partition_size_fd_stat(fd, &statbuf);
+> +			if (byte_count < 0) {
+> +				errno = -byte_count;
+> +				error("failed to get device size for %s: %m", file);
+> +				goto error;
+> +			}
+> +			byte_count = round_down(byte_count, sectorsize);
+> +		}
+>   		source_dir_size = btrfs_mkfs_size_dir(source_dir, sectorsize,
+>   				min_dev_size, metadata_profile, data_profile);
+>   		UASSERT(IS_ALIGNED(source_dir_size, sectorsize));
 
 
