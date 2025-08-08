@@ -1,539 +1,302 @@
-Return-Path: <linux-btrfs+bounces-15925-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15926-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64B38B1E382
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 09:36:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFB86B1E3E1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 09:52:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6CCFA018DA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 07:35:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D793B177D95
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Aug 2025 07:52:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7312E274642;
-	Fri,  8 Aug 2025 07:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 301BD253F07;
+	Fri,  8 Aug 2025 07:52:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="hAPnUufa";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="sN+UcB3Q"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="DXOma/yn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFD62741D0
-	for <linux-btrfs@vger.kernel.org>; Fri,  8 Aug 2025 07:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754638041; cv=fail; b=UT4a40rb/lfhHYRdmaWG0Q2qirvBpVl9Za0d2MldD3A+X8FBwtYW/ZQUDxupvbh9hjqtoVsWC2HD/Bg31XXqez9PsJPQqNHUaaK79IedH8kCzLMgjWB6bioL5BbVi+PbW6mH1pseev/DdUaBY9K1nHmT5DpgoBU1HhUFQa1YlGo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754638041; c=relaxed/simple;
-	bh=yINnHyxHA2maTAb/3OV06kMRHeDR4H9+jl0PAUFfcYQ=;
-	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=sKxzyQyO7saPjseVtHG8iGBcB+t/uAcnuC25EsDQ01vY+oRZHaxOhW0hKAQ6n2CjTd5cTJ05sc5IP/PM2FAuNIDGIiE8qLljncZWsv1BOHhY3eV7Hcz3eYiwGe45xKaU6EWrlMzXlD3LiV7efxyST1w5g457Meq7I7whHEpDEUg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=hAPnUufa; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=sN+UcB3Q; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5786Yhuf027993;
-	Fri, 8 Aug 2025 07:27:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=FkPFteilSmYzveOUAAHNWTzdpva1jkCaTaKFJGTIDlI=; b=
-	hAPnUufauOY/EiddakUBgVU6qQiIFGMI9T7iuQGSNaAi7VbhnOWHQRdRiElgldCT
-	lUA/kHxJd9SiHy8/DaoKRIN849XC1SlD/1kw2FzZ2uFewnTKOgp7rVlJWoayN6KX
-	Gd3Xjb0On8qRAo+gukTIMLvxcVDMH6B2uwq6HndciBI+EN/jUZlHwaph5/1MNuLz
-	6wZr6rz2XzzYwfgJ60sfWbsdXQWYodJiscnLAcSSsk33gCuikisB3yIU0HQs5bsA
-	jZXacHNSNr4Wv4iBZhXOIsuOxnUxAOtCCvKXDjooW0TSt6ORFj8O5d6weRsS0vEL
-	wigpzdo0RBBrIG1fsRrjFg==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48bpvd5skh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 08 Aug 2025 07:27:17 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5787PEKv009700;
-	Fri, 8 Aug 2025 07:27:16 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12on2082.outbound.protection.outlook.com [40.107.243.82])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 48bpwpdnmf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 08 Aug 2025 07:27:16 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Tdt4YmPg3hd5XpAoDc6MbAirZ/tCEAgKJPCJzL9usTSiEky30kIst5Zt3KDE2MD3bS4tgBFMLI21edzPxvmVadX1Bqk3h4TTqx5ihWSpzsTCQlApl1C2zfc56l1jgtrFXOrFgQr5Ud/ZMbqWOr791JgHz6KvoqS+2RMbmVT3E2hETyiIlPeiCGUK3cSReLNTImmhAplnQVKRugH7RNvSsA5YE9lVzovEn6GjlcNs6Snt7LYvLyIdTX0IdSi+DsqWqH5oELJ2AwUKsh49fyck1F5GGGYQuAD7NRI2dYOvTI2JuK2TjW7qAs1e5mcKAgSLzF7fQgXj4cIbL5RtqGBLkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FkPFteilSmYzveOUAAHNWTzdpva1jkCaTaKFJGTIDlI=;
- b=yGPDs9snDU8w0a4v5VimnSEO81+3M0+UdhGvf+/fdJLS0nOSW7k9VU21sBYhnkZtwEDm5hMFNH18MhkemyM094PXq9GwwzTM06HeGBr2syUIUVmV0GX90ofj2d/oZ7APcioyKZMsF9t/GjjJPRTanQabOKuSRmmL6QuOlsTUBWQi5r1vpD2diz83uzWvM3YOStC9i+VuNBAdgCGHD5kHEASmQ5pF01JlJAAo48pl1jjxL+P123xghqF7grQUVJgEj6wFa8MzpqBrAvfeJm4S1Z7xtCIlcbTOGmU0NSHLuVXOgiWiWQCUB5d8rACn0siPOwYhAm560HRj8MhJTMz0EQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FkPFteilSmYzveOUAAHNWTzdpva1jkCaTaKFJGTIDlI=;
- b=sN+UcB3QivVv0UhUh7M2Xz75Ck9RChZH/d55fSZmewhRn8d3AsaYF6hCfYqiGOLq1Iu1cl7mDF7YPWrbRvOHpyYilWW4evnbSnFxP2OekYnSlgwbhvGCfek0qd0EFT5F0U+W//ZUcIF+7LyRQk24UHeceyG/SzDUnCTQSbDeQiw=
-Received: from IA1PR10MB6075.namprd10.prod.outlook.com (2603:10b6:208:3ad::18)
- by SA2PR10MB4683.namprd10.prod.outlook.com (2603:10b6:806:112::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.18; Fri, 8 Aug
- 2025 07:27:13 +0000
-Received: from IA1PR10MB6075.namprd10.prod.outlook.com
- ([fe80::565:8dcf:2d10:bedf]) by IA1PR10MB6075.namprd10.prod.outlook.com
- ([fe80::565:8dcf:2d10:bedf%6]) with mapi id 15.20.9009.013; Fri, 8 Aug 2025
- 07:27:13 +0000
-Message-ID: <ae4a109f-e533-4a9c-863e-7286508f489b@oracle.com>
-Date: Fri, 8 Aug 2025 12:57:07 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/6] btrfs-progs: add error handling for
- device_get_partition_size_fd_stat()
-Content-Language: en-GB
-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1754455239.git.wqu@suse.com>
- <529ae91e63a07645b0d9f2d769c785de92e1fc23.1754455239.git.wqu@suse.com>
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <529ae91e63a07645b0d9f2d769c785de92e1fc23.1754455239.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MA1PR01CA0184.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:d::13) To IA1PR10MB6075.namprd10.prod.outlook.com
- (2603:10b6:208:3ad::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA58B23B615;
+	Fri,  8 Aug 2025 07:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1754639563; cv=none; b=H4HbZpYmBDNoB30YW2NYJmOesl+8kXlZ0k44z8bqTJ+CfzD4aCzN9qr5dL/NAMdC8KolxkvAWFMoIDx9fhK8S1ED6qIZYwCX3FsJSKRli73PadTm32NPon9o08zLmXX0E4prE8z6HDJLWwTdF/ob+/iPYJ/m+nSlxp/86jukfBE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1754639563; c=relaxed/simple;
+	bh=Uv7uGrVKUrQl082IaPTDRUowNnVBhilnVBIK2Oe2KPI=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=TlGz/Ns7f8fWrkowpmjMQ4baUjcCXYfnc7f0oF2u4Yw+fsP8hZoTEo1fl7kPL7GDiYnNCnRaVHfdHS2FSLDxJWgUXBOvFEpzChWgMzNNk9EmBrBw3rgNhEH791tWmxahcO0n1Ua7Ics8o8jQJJL8VY+JsHBCz7X9s3al4rcY/gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=DXOma/yn; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1754639555; x=1755244355; i=quwenruo.btrfs@gmx.com;
+	bh=1zUvgIQCuWZ2zoJ6wePNNerNLqhd+V4gd1tlx0MJLHs=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=DXOma/ynv68JX3TFxzRLkjTkuQ7A5kszRNXYqzYExDQs3EjKWb4ItipwekFNQImE
+	 p2dZbrNEF8hKy4Q3VPxQ/jgIFU4ejeLSLg7ZTSBbngJ9+kd9xeQFyWJHHIUM+jhVh
+	 Bs7S4o++OOksGzBlRWh6MqEXeVxwZogX2IyumUIwnhb5/wTuuDjDlBjx8qGn5GnOa
+	 rWdRapEdlfY90O6Zd2uhET5f9+fMagefQDVQVbt59UiG5lGV89WWIS0zN79syNvex
+	 R+A0Ot1havtwVGlF4TuslmS4f86qgFbdadbJ9BRMH92FqFhUcLTpw7IytzMHi2Edd
+	 CG1zhHEFehahP2J/wQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWzjt-1v8Fsw14cz-00OCCa; Fri, 08
+ Aug 2025 09:52:35 +0200
+Message-ID: <9b650a52-9672-4604-a765-bb6be55d1e4a@gmx.com>
+Date: Fri, 8 Aug 2025 17:22:32 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR10MB6075:EE_|SA2PR10MB4683:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9317f579-fe99-4787-2064-08ddd64cfe99
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|376014|1800799024|10070799003|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?RmM2MUovcFVQMkdvMDYzL2dxcWM0TnlGdWlsOS9iR1E5Yy9PTjJvNUFJTXJG?=
- =?utf-8?B?YWlBRjRCaVRVbzNMZk9jakdlT1hJSTFaMlJmNUhaeU94MFlhMFVTWTAxeTVF?=
- =?utf-8?B?bzBGL3BpellROEF3eGM0cEdkS1VNbS9oUDdBMTVYVitTTmFJUzc0UnlCMmtM?=
- =?utf-8?B?NXhHWFFBcWRKclhPbFgyRm5pSmgyL1JLNlRuT1FBRHAzRWNwWXFmZ1orcFA0?=
- =?utf-8?B?d3B1cHpHNmhQODlyNytzdklMaVhqZExQOGVqS2p5N0FlM09vc2M2bDc3a1RE?=
- =?utf-8?B?VWlYMGU5N3BuTTQxYVJWUWdVZVVOZXczcDB6YmhSWUprWHNNemplQ2NtNFA5?=
- =?utf-8?B?VmZtV1JHMEM0Zk5HM1EvY0lCU3h6WFJLNXBWSFBZbTVneXN1NUY5WFg1Rjdl?=
- =?utf-8?B?TmV3ZnE3ckhnY0FLajZMZmh6N3hXRjgxTTdZMzFOdWZrYWw1Ui85eU1ORWpP?=
- =?utf-8?B?bU1Ca2Q3aEpuVzB6VzBPaTFZTk5laWRrR1IwbDhYeHBUWEVlUzFDREU1cHVL?=
- =?utf-8?B?NFRtc1d6WFdRcjE1ZFlCR2Z2Qms2TXFpUmdrZXNYRVZDSUpTUzd5WU4rMlZQ?=
- =?utf-8?B?UExya0tFTHFLL2RNaXk4bENzYkgxMWxzOU1HbFFZRlZsRGhOa21sNVRXVTZx?=
- =?utf-8?B?dVFiZ2FBc2h2Q09BM040aTlnMzBNS2gxaHhwWjh2QnFUU2xYSjZvclZSY013?=
- =?utf-8?B?RGszQmpIb3ZoV3hnS2RPOHlKYjNjYXBvR1R4Y2RQdFBtRmNNemhIUUZGZW02?=
- =?utf-8?B?aGtGakwzWWhlcmdnQ01UV3JRcE9NaDNYb3dic2dBMVV2L2dOeFU1SFF6dGRq?=
- =?utf-8?B?ZUptMUNHNGcvWXphR0c3ZjFJUk5qcnl5bDFGZXFxZy9ZZFVpNzJtVU8xQzJz?=
- =?utf-8?B?RnZHc0FtcE02N0pGRW8xQ1VxYU8vZW9KNSt5UE9mMFUraFY0bFRnVUpnY2lG?=
- =?utf-8?B?dkY2NDc5ekErWnlnbVYzMmdpZVFNMjVSVTczNUo4NmYxWjF3eWNObHNiSVlx?=
- =?utf-8?B?czdxc2FnbEdYK0xiZ2M1bHFza0dzK1M0ZnhRWGNSWjBBZ3JrdW1qblpGQjVy?=
- =?utf-8?B?WnBRMG95SVErcEZjTXQ0TUlQblNRUlNTVzkwamNmVVBNbnBoNmNDR3FteWE3?=
- =?utf-8?B?aXhUYU1xaXJ4VHJOM2U2TWphbFlxR0daRHVFU2xkUlpGd3BDeUEwMGsvREdB?=
- =?utf-8?B?R1ZxNmFRMHU1eE91aEU2UThqK2dKeW04R1NUZFZXMjlVYzc5ZDZWRjVrd0Vw?=
- =?utf-8?B?MkFIWWwxZTl0Yy8yZHBiNHZxQWJ5TXg3YXpncUVEWHp1d09JcDdaWW0xd3FV?=
- =?utf-8?B?czZkaXljWkQ5RURJRDlQbFVpQkN2N2MwTnRFMEdWZHhIZyt6T25QWWRPWGFj?=
- =?utf-8?B?Rm9IVHRHb0RENDVvdENuMzRmOC8ydTVRSG1ZWGdYMVpsZUt5a1pXRU9WaENS?=
- =?utf-8?B?SXFSWmVZR09ueDYvQ1BnSFdRektadWdNM2RXeUsvb213S25GS2xJNC9JZ1ND?=
- =?utf-8?B?QnlReTUzQTNSQ21vUUJDNXd6bFRjWk1PWlRqNk9ZYkxCTUU1L2Fnc1hyNHpo?=
- =?utf-8?B?U0tLaFdSWE84ZTlxOGdvZVhNTFV3cXJIRWhnSHFpSUdVVFFXYnVTQkZKYURi?=
- =?utf-8?B?Y2grMERncUFocVFtNXFTQmtuYlFuU2hiVmtXMGp4dnVoKzlsZ2crSjRONXdV?=
- =?utf-8?B?QTJwSFZaM3dLNEZhS0cybEVDZyszc2Y5REZlem5JS1lFM1loTXpYRUxnc0Qw?=
- =?utf-8?B?M3VOLy9vRWVTNGhZS2crUFBUcTc2UjhsMHBLWGUxaWxBMkFiOThXMFhCUlFa?=
- =?utf-8?B?RE80R3grV2FkVGpEWGtiNTRGeEowMGd4TlM5V1JDM09TNVNIcEJvb1VPNUlu?=
- =?utf-8?B?T1JsZnI3aE1qVGIwYWJnWTV6Z0pGYWVOYkZaN1M5N1FaTmhJSnAvaFVNb25E?=
- =?utf-8?Q?eQFfBwnJboM=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR10MB6075.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(10070799003)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?K2NNcndVOFRmcUlwcyt4SExNc2dUVW54T2JySDZOcEJjWTA4UEZVM1VKZER3?=
- =?utf-8?B?MGg2MEJSZURzT25EOU9xelRZM255d3F5eUViSWlCL1pZZ3MxMEZ6UmhZYVB0?=
- =?utf-8?B?eEpXM2pKVWNicHVZY0pNV2FDWnkwTzRYV0V4MmY5QWEvdENsVlJCZGtLclJy?=
- =?utf-8?B?VkovY0UvN0wwZ0xYT1RpTWdlM1pDVm9Sdnd2U2tGSVMxRVI1QnNRWUhBR3lT?=
- =?utf-8?B?WFpkbStJblNVTlI4SXNWcEg2OXRLaTZIY0dZbUNKZTJqK2tCY2Y4ZlRDcWZi?=
- =?utf-8?B?SHJXbnpUQkNSem4yUm5vUTFodGp3a2pqSTdCNVpOYk83K0thQTloZ0NhREpF?=
- =?utf-8?B?bG9qWlZSRWIzNGpLekFaZWZvMXpxL2ZaVUJIdm1GWGo2UnFvOFRoWGkvLzI0?=
- =?utf-8?B?RGVHNmZBT3p1QXJYVnpoajRtRFlLcTlYU3RIUGlTTk1DZjJzN3JXbEQrclpq?=
- =?utf-8?B?cTZPbVRtZ01SNU5iR2U0cCtmVnZ0SFc5aFZ4MGdaVHVxQVVEaGVvQVNPMEF5?=
- =?utf-8?B?b056RVhIYzFWaXphRzRjVGhzZmxsMDFLRFhSK0NwRjlUMGRUMnhFT1FFcFRE?=
- =?utf-8?B?UjI5amtHcmxuRHdmKzloVm9wUEVwcUdRbTRLVTgrV3BmdFFJY2lERzYwWm9h?=
- =?utf-8?B?Y0REOGIwRGFyaHE4dkRKNis5SkRKVzRoUHQ2dVlVNDZ3WXl3dVBxaFQ4aHhI?=
- =?utf-8?B?dHhvSklJSEE5WTRBck1EMVpzc21iOHVDYy9Sc3F6bS8yRGRqUVNpbnBMbzBL?=
- =?utf-8?B?czNkV2paR3dmdXhMS2xDMG5PUXhWMktKMUZyTEpjZllTN3l4RHMreTFIa1Zq?=
- =?utf-8?B?USt5SVlUUEtFTEJ6cTY0T2lFaUM4VFd0MEFZbHVWL3dZZDVDNEJqVkEvUURG?=
- =?utf-8?B?eUZFRDBFM1BSS2pyVWxUbWJST2wxUGYxeW5SSVpWeG96YU1oU3hia1ZPanND?=
- =?utf-8?B?Tm02R1ludW1KdXVjQXk4RG1rRVJuY3RvUE9yT2VEV0h3b1BPL2IwRFRvQTcx?=
- =?utf-8?B?WVVWRXo1Q1Zuc3gyRWowcngvQzFQUkl2UVBGRkxSQ2VwL1BZNzRGUDNwcDJ6?=
- =?utf-8?B?MWdqcGdXSXlpTWlsbHpFcDFXdDhEbEJsQWtlbGNmQTdwSzBPR1JJck1oVUlW?=
- =?utf-8?B?aWdRT1NUeDRsSm9qeWZFRFFSd3NnVjZkWGFmRmFkbmd5b2Z5ZHp2VzdwSmcz?=
- =?utf-8?B?c3RLUjRWQTVEbzYwL0x3UER4UjVBaUhGZ2hvUkNRM3loVEhKS2tFT3M5aWpW?=
- =?utf-8?B?NGc2WW11cDFEK2NsbGFjQy9Fbm03NGI3R00zUlVBa0dXZ09QTDhidmxiWDhL?=
- =?utf-8?B?TmkxeVlMOS90R0doVFhTeXlLTmxrbitYODRtL0MvV1hrU3NzUTVsTXIzY2NZ?=
- =?utf-8?B?Q29RUnUvb0FZT2xxVnhuREozTk5wN2wzazUzUHA2K0dBNWlxdlJYTnhHREt0?=
- =?utf-8?B?cmF1MWdITkRXbUUxQk9jK2llam4rTFVYYW9DV0QrUWl5NEswd3kwVm5QVG5P?=
- =?utf-8?B?RFFRQkc2dmVBVlgvWGhmNXljZjhQdGRtSzJLSTFocFBlRVlOUk9zcG9Md1c5?=
- =?utf-8?B?ZEg0YlNvN0xhYzNweEVFemJvemNoWEw3ZUdwUHY2WW1LRnBmdHJDaUFybVZT?=
- =?utf-8?B?UXVZVnQxNW5oRUZDK2NUR2ZCbVlvTjYxenB3Nm1kOWE2U0FJVnJtbG93QUZ5?=
- =?utf-8?B?NmtoeTM3OGxTMHJPdGN6NEE3WlV1U20yWDdGWEYwZmQvaEhWK0xNZGkzckFq?=
- =?utf-8?B?SSs1TmVRZGVEbDdRSC9tMHFjS0ZKM1VvaXVZbGkzWFZJZ1dqSWRPUm1pSi9Z?=
- =?utf-8?B?U0V4ZUJRcHZ1OWdRNzBrajhaMHpjNWtGbHM0MTIwMHpmZGJMYTBkWSt6ZENE?=
- =?utf-8?B?UXRUa2lqNHZxMjRSZ0pYMitTWVJxd2ZJTkZQaHVVZzlQbjUvajkwRkpkamMw?=
- =?utf-8?B?Qm5HWEpLamFjWHpsbHM0SEVCK2pveDRMdGxnaXN2aDJqelN0ZE9PTW54VmxN?=
- =?utf-8?B?S1VYRHlPalNJNHNDYm0xOHJ6VTNjMFBDdmFLeDdKYUM4dUFOYk5CbXdMQXA1?=
- =?utf-8?B?NEx5SG9VMllsTnBQUGRmeEdLRnpmRENvd3VGQnNJRVhHdlE4VSsvUWRlRXor?=
- =?utf-8?B?dVlkWnZoeW1qNHBhU3VMaTZ4K0NXajNNTldyQWRtKzRqMzNjRjVZdWdvSWhs?=
- =?utf-8?Q?zkBw4LoFM4NvzYtwilR8gf+k/jLAOdQUZBz8yLOmGm6h?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	pHpKkEWH5+SLITCkyQtiwR1CmrbpnGAVXEXXX8LW49P3CtbOtuzswJvmJBXD8YY6jFR7tW5/mATuU3hK3joRN26eQVNRBFtesJ1HJ3Wq1CBm+2pI+SboXz2tIjAeFKglXwy6omOYK3Za7AazHI03GyKsGWd/F8U3avD4fAwOd76MYUpbgfh5wIVrjkDGc/42DFweQLtXlxTal4eeXS4MozIPZFWV0gpqU2TYSxo+kopLuyix01/JuKm59sRgc4sl7+/4C6Dc+30aLwVsjzEhVxaa5IFhATpuNxnNr5gdiZJ2VF7E5U2wY7K7k9TL05hpnWi9E3/oBBIiqWRDEHNyk2HUeQSGYvqN1OW7Ig7GkgXWSCw9PzveiOBnzLcPFXltZiMDDWT0x+4IYhXALztQMhv+i7J3appzX0vz7gJi97Wrf1V3oLbvcxT5Wl8341wdJFEki1aZaNYv4qcMfEMUIgSE8XcI5D3Gtnm9pZp297WyqACBPhutGR1qh2doIaEituMkLqoFX0Zgbg6nvBVUpWfde76DCK/i0+G7RxS+TcWU/oQXedyr4o8b5ytk4JNNripdPnYzKielre5OPzPkZrISxoqiFyRfkZU0lPTkN/I=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9317f579-fe99-4787-2064-08ddd64cfe99
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR10MB6075.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2025 07:27:13.7780
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eMy5zc1cuod8kYmf+EzcLZEPLVwOGMk8Zz7MN6V63FOVBHMWmhboMYHK3CcA6UNKBjcjGFj0GLYpWxZWPfSx2A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4683
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-08-08_01,2025-08-06_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 mlxscore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2507300000
- definitions=main-2508080060
-X-Authority-Analysis: v=2.4 cv=fYaty1QF c=1 sm=1 tr=0 ts=6895a6d5 cx=c_pps
- a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=2OwXVqhp2XgA:10 a=GoEa3M9JfhUA:10 a=iox4zFpeAAAA:8 a=Djns9Asslk8m5wIFYC8A:9
- a=QEXdDO2ut3YA:10 a=WzC6qhA0u3u7Ye7llzcV:22
-X-Proofpoint-ORIG-GUID: wDbWBOJ_9G2LIfvNd0KC46ayZ3iG1vZa
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA4MDA2MCBTYWx0ZWRfX2e8/lFwzsTye
- AorXop4ocGJCrlMuZwGno6nZWmFY27wLB/sZ5X2FjqK3dyHxkUFQ02D2md3OPvjtaBoY4XSRrnq
- 8ieileogB5VrdbBjlJCskRE9LYUCN1QWTDk4CsXPOoXdrMBuoLrtelnA4XuRSjS6gFNKX4NwLr3
- QCfpUblOQRfM2qWxBv6wqmUB8C2pIEnc4HGMcE9mN9l/AaOdoWiS/oNktPYV2sxzgqCyxI79eJW
- 9loV4VK8ar8vQDvs6fWGPaMfDWtSxG67VA9ZxzrR+6WkpxLsm8JP3OkvmFb8uoV3vlgpNhzu+Oe
- 4/MhDc1KI1R5coItuLgn6yobY978O5KrksSnZyh5IiWWOsWmUHtivTT59QmNgX2lf6GVftEIK5m
- hTRHn0PIwGVvlQMywupCE9lVYSWzqAHga/IUq9w0C5Oo76EFvBaHRw8W7O63WddNq9VDh0lN
-X-Proofpoint-GUID: wDbWBOJ_9G2LIfvNd0KC46ayZ3iG1vZa
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-ext4 <linux-ext4@vger.kernel.org>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Ext4 iomap warning during btrfs/136 (yes, it's from btrfs test cases)
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:jSHIu+pQ44a4AiY029gy9dlPAu+eMrc3PHttTPahTv0jwECeWmB
+ sQANA2ZVyM+BgAK/WMP26Wky2V1rNy0zfMid6T5P+nMXopodYmIDGwNH6l5VZ0pmDtyEnRF
+ B+WtLMKqXsAKhKvW4d1VGKvRsi6mHMZIaX1UK4U0ALdBBIwPYkEPCRKs/PIqS81KFWJmjlx
+ 72GHhbo3mx0BlRg0CCbUA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:M2/HDnLW6mM=;hQj879ff0BsF87s4EkVLTSqL66D
+ 1kq1GyCqoA7o1fqHwFCisv4u6byG/9flIPics1fZ/ovqsAIQKFkrBmAfr2klt72guL4CftAx2
+ 0taCP+i3eDK7JFQ2De8/ZfOIyB1oIhUmFZus/XfdccxmDCSDMAxWcr6hUGdMGAMC8/0cac3HA
+ +vnzoqQUnZVelPThUznwobou5mbQW8z+vQf+0/K3eGdPW5WIa9A1aaP6+57tVpAZ8msvUo6gL
+ W/vNJH/GSMng5t94zkEJ1/dJTPVO82MqyI+Bi9gntzYIGZ7zWROJvUChuw+A4UPuYPI11mvh7
+ MzdL7Oez8Cr3tji9e3gb2YPONFxRR1cyGv3MZefLe/bCcCM/mU1A4a2AFVvaP7WGm9e13bxxZ
+ o2EV0vZz17BMh/4kQvMuyYto7UTuMemNIZ+bpl2+4dVJHAuURLGM4ISAqs2wPHseobRr2y17I
+ W3PmszIsjEBsR17tsGJUP2Tqasqks3UdJHf5r65dn944WDLeH0cbPrVquX86rFm58Y4sv/BL0
+ UcZ7VSKvRPbW2QnwbwnUBu+9LOJfBxRgzLFnKTsfBmV612tnte1H0iajLkfH1LSjESh65t2Cc
+ pwZePhGTVagol7hyU0KR88x6ql/EknELXRwZm+/a7d39YTMxbiVvocYfH0gVd46sb0hpjEZKP
+ mmY2dvziEMLtmD02LFfxYCWyOcg2PIciCTxPhJL8YI1zhfTfeI/EuT5NTegXncIpIuBoP3APV
+ 22Zr/fsDzBSePl68fZWuCZQvJNThiVRcU/XFWhCGYG3kHJ58/64j+PaAbhjhZFkNdjjuwvYgY
+ W3PP0x6qHmSojLJkQGwHL1P1TKQoP15VZioZIlZhEvCsuYqoBAW38/fz5FiG5LgqfHcth1Iw1
+ Nni9/lQWiRgBo76i+WrqjJs+Wqy8I/KJFWvqppjs+2P8oGg/9M6+6gGz/BW2R71RAPDHCIjo5
+ NiPPsb6ZiQMCOI58U9/UKECVuK8xkvYy60yq6ELQ5JURbcC++9Vxu3qqrknhWH8PCp+YS4JEw
+ dQqgPb3MZFmWLZARabXXWEHpO9f+NyU8u2faevfs1oENZ2pMcvrqzahZzdt4N3IfP1/Nw2ogO
+ nHfXA0w75oYwNJAU6uiG50YsDkXduNRodmRyw9isYG41lumy5GYkN7PxaNlTQMG3fL1uok3dX
+ cVcpyAKg4CpA2kP/XfTHIxDKSs4T7XaiFJCeIjhYO4v2Xw3NtnzQeAAZkJg75BhotngS4SF3t
+ RvsDbVNANqnhJ/Xio6jnhuX8Yenec0tr389wYB+Y5yOIzuibXHavAlJiSRuKm0GteGG1A+XQp
+ EWNuAakZc9yeHdq2SwAQZH8u6SEEtuOaC1ajNWB4qDw/F3vXRtqC8XXpQ68lU+p+AouLQOFcl
+ qh9JbwSyD9uxOwRUlDcojOus2Vcne7d+D79lQHIfOz5Y6nrQaUtMkbBl1vjIKliluaHQ5+JXH
+ CHpKEDK3ZuAN9ePMgctdzqAwGLdXuGM6a07rtAv6UUraaMRf6oKCV/n1RNDxEw5J71I8yoPRN
+ c1OoSueLJyqtxlWWJxsVh88Ff6Esv2LYGFFCx18hwESoaxiTamap1CEYhUpokstGD0wiBReCR
+ GU5uT++eK/F/jmmSug7dqf/Jv06RgsRe2jWt/1AGOuLRmOeg14OGu/qvyQnK/Fdogklf/qdfh
+ TRRqGghYUrQfrQa039PzoktVXZ/EHW0KFIGeIZylRRbZ3LXpVQ5mSOEYPEIkTTfsXKmVltvzk
+ 3HnxNX9U5ARLIvolKYah9PyUzs5jVwRvd8mwJT3IWbjbFYs8JGNhkVsrVsV7SrgAjZ2gVov/o
+ mb39h7BwTFgx8IL0JZFmMCa4SsLX0dK2Iq41Twhk8v5zYtuuIgRuRpgWLRL6V2j2BYlG8OHTP
+ aJwcfJWDNPfN8bdPLya6ufL3S14kPvNxmUiblWxvVFcfCq4wwSk66oQgpO4aiShWvhPgsvtuH
+ 7HwHwZ/oEklkltlHNmUxefqKRJZlKIHGbgyVeNyj+mbVsD+f4FuBrPY2jILKbyVjosc+pslU1
+ HnatKW6vOr1d0KcQAMfFa+UFYxpIUCHFFg4maUD9WrbcWAp1REJG/+RAXu35eyTKscaGKJe1W
+ 852RPyhqT2+3h6DnGz77FpieZ/m2DCm+iaB4y4DKQjerENQnE7mr3R+ZRsd6r9w8+mqbbHspA
+ Um1Cuy95k3oJh2A74MQtwqFqUov9lYY2X/Ka9XSktKOw1HKHvFXsbo/jS3lKwgQJabf77Qc1h
+ w5QEyU14OqjYokWrqmriDOK+b8/GmOF7AQzulur9Ydc2v6gXxBnurbN4LiRMqa7obrH1R688E
+ NAIuf0IdWlSU6/TlSar5ZZbUiagVOEINpc59HdFn7hGkR4h4TwQeJXs66iaplMtDkl1zlT5T/
+ pxd0GqeoA6nd0KGhGyJqd0q9eEsKoiFycEvt4VzTYf6w0ObpdeiwnSQzGIAH5ILpYmyl58Fn/
+ Yw0zwOZklRjWbDi3NSqgor6KCjxwPbGLwlUCtU0+fWCmEOl+YUbleMExjOMdPR3OELjmW3pEb
+ IFgYzTi8uVPTOHDi/YB9ZDVStwp/cPSHOEBOzH4h33Fvjfm7Cq0lTsOuqHNMdJ6r/tM+MjI3p
+ mSICPKT2oqSAnyntxQAqdCfGcazIY33lGMJRXht1bfqV9GMo3lwsI4UL3oghgAT55vNDipFCq
+ mqCs/yNJ2xxC2iKDWuarcJoS7Vu0QcGUgFaDQlvBhdbwQDuhHwjj3hNIlPxNQwAhAjCO1mSyv
+ gMiYjjiLySdy8KWD1fYuNHUWtrxhgWnURxYYsAXJizBejK1RDi5Tf38hoHGoxSDI/0LOHt91F
+ laG5pRMNKtjCTocxXsOu9bNmqTZlQ1LX83GBM1KkUrpgMIfTHCarZdIMpz2XtQc1hSWCVF1Al
+ ryMXFUx5+wjyx0/QpdCiRbqRHU1GWN45hcEr8qQa10dFMfd6VALjqK3s7RCN85vZxrJ7IFeW0
+ 6lhcMPdopRlqmDs326yoarseK7ky1sCDWxFBTqLkFFQW+k2nI2w7uhjZzSNZNLDHEAD8XbzKE
+ NB/spSCbTbXdIDY9qBWjX6Ok4fhS6loFV9pREq5DKYZ27nxHGj6k8d+p6s7OZ3aNrIJvYkhKX
+ o/tnk8NoL+Mj63DQFWgEqRlBnGnT0faPJlLa3ba1FPoJvBcDhCb/RJBYGgLEzsNHDWrACzbog
+ ts5z649dBmJrmfh6FVwMQfiowWh9wVgIk8cwRBy+k6VaBVW2oWhVRDacZUOQU1MYvtXtysK1R
+ DHsbmUqffPRq5jvayoXBxMgwObJnG9kXCuIWzh0D7fpMOYrTGBv5QghVcClC+87ld6uylM5Ql
+ KkAkQz1BliFVrxto93u5v9TaKrSlGDcde5KJnvsYCe6c76Fd7sr0dclMUmVTh9Z1T1X4iZunD
+ ZmTNFRQKxn7pOI9LLWWZPBQ5f7LUEAz5B+2ZHeD/R6n4P2iE8INlkf96ggHm72fneZARNuRrn
+ ohM+l0+36Ug==
 
-On 6/8/25 12:48, Qu Wenruo wrote:
-> The function device_get_partition_size_fd_state() has two different
-> error paths:
-> 
-> - The target file is not a regular nor block file
->    This should be the common one.
-> 
-> - ioctl failed
->    This should be very rare.
-> 
-> But it has no way to return error other than returning 0.
-> This is not helpful for end users to know what's going wrong.
-> 
+Hi,
 
+[BACKGROUND]
+Recently I'm testing btrfs with 16KiB block size.
 
-> Change that function to return s64, and since block device size should
-> be no larger than LLONG_MAX, it's safe to use the minus range to
-> indicate errors.
+Currently btrfs is artificially limiting subpage block size to 4K.
+But there is a simple patch to change it to support all block sizes <=3D=
+=20
+page size in my branch:
 
-As commented in the patch 5/6 also, signed64 as return is avoided in 
-btrfs-progs.
+https://github.com/adam900710/linux/tree/larger_bs_support
 
-Thanks, Anand
+[IOMAP WARNING]
+And I'm running into a very weird kernel warning at btrfs/136, with 16K=20
+block size and 64K page size.
 
+The problem is, the problem happens with ext3 (using ext4 modeule) with=20
+16K block size, and no btrfs is involved yet.
 
-> And since we're here, also enhance the error handling of the callers to
-> do an explicit error message.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   check/main.c            |  8 +++++++-
->   check/mode-lowmem.c     |  9 ++++++++-
->   common/device-utils.c   | 27 ++++++++++++++++-----------
->   common/device-utils.h   |  2 +-
->   kernel-shared/volumes.c | 11 ++++++++---
->   kernel-shared/zoned.c   | 18 +++++++++++++-----
->   mkfs/common.c           | 10 ++++++----
->   mkfs/main.c             | 14 ++++++++++----
->   8 files changed, 69 insertions(+), 30 deletions(-)
-> 
-> diff --git a/check/main.c b/check/main.c
-> index 84b6de597072..f0ca78bb2e19 100644
-> --- a/check/main.c
-> +++ b/check/main.c
-> @@ -5438,7 +5438,7 @@ static int process_device_item(struct rb_root *dev_cache,
->   	device = btrfs_find_device_by_devid(gfs_info->fs_devices, rec->devid, 0);
->   	if (device && device->fd >= 0) {
->   		struct stat st;
-> -		u64 block_dev_size;
-> +		s64 block_dev_size;
->   
->   		ret = fstat(device->fd, &st);
->   		if (ret < 0) {
-> @@ -5448,6 +5448,12 @@ static int process_device_item(struct rb_root *dev_cache,
->   			goto skip;
->   		}
->   		block_dev_size = device_get_partition_size_fd_stat(device->fd, &st);
-> +		if (block_dev_size < 0) {
-> +			errno = -block_dev_size;
-> +			warning("failed to get device size for %s, skipping size check: %m",
-> +				device->name);
-> +			goto skip;
-> +		}
->   		if (block_dev_size < rec->total_byte) {
->   			error(
->   "block device size is smaller than total_bytes in device item, has %llu expect >= %llu",
-> diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-> index e05bb0da1709..8d1b4c3f3f2d 100644
-> --- a/check/mode-lowmem.c
-> +++ b/check/mode-lowmem.c
-> @@ -4716,7 +4716,7 @@ static int check_dev_item(struct extent_buffer *eb, int slot,
->   	struct btrfs_dev_extent *ptr;
->   	struct btrfs_device *dev;
->   	struct stat st;
-> -	u64 block_dev_size;
-> +	s64 block_dev_size;
->   	u64 total_bytes;
->   	u64 dev_id;
->   	u64 used;
-> @@ -4823,6 +4823,13 @@ next:
->   		return 0;
->   	}
->   	block_dev_size = device_get_partition_size_fd_stat(dev->fd, &st);
-> +	if (block_dev_size < 0) {
-> +		errno = -block_dev_size;
-> +		warning(
-> +	"failed to get device size for %s, skipping its block device size check: %m",
-> +			dev->name);
-> +		return 0;
-> +	}
->   	if (block_dev_size < total_bytes) {
->   		error(
->   "block device size is smaller than total_bytes in device item, has %llu expect >= %llu",
-> diff --git a/common/device-utils.c b/common/device-utils.c
-> index 8b545d171b18..b4daf7605fff 100644
-> --- a/common/device-utils.c
-> +++ b/common/device-utils.c
-> @@ -226,7 +226,7 @@ int btrfs_prepare_device(int fd, const char *file, u64 *byte_count_ret,
->   			 u64 max_byte_count, unsigned opflags)
->   {
->   	struct btrfs_zoned_device_info *zinfo = NULL;
-> -	u64 byte_count;
-> +	s64 byte_count;
->   	struct stat st;
->   	int i, ret;
->   
-> @@ -237,12 +237,13 @@ int btrfs_prepare_device(int fd, const char *file, u64 *byte_count_ret,
->   	}
->   
->   	byte_count = device_get_partition_size_fd_stat(fd, &st);
-> -	if (byte_count == 0) {
-> -		error("unable to determine size of %s", file);
-> +	if (byte_count < 0) {
-> +		errno = -byte_count;
-> +		error("unable to determine size of %s: %m", file);
->   		return 1;
->   	}
->   	if (max_byte_count)
-> -		byte_count = min(byte_count, max_byte_count);
-> +		byte_count = min_t(u64, byte_count, max_byte_count);
->   
->   	if (opflags & PREP_DEVICE_ZONED) {
->   		ret = btrfs_get_zone_info(fd, file, &zinfo);
-> @@ -315,18 +316,22 @@ err:
->   	return 1;
->   }
->   
-> -u64 device_get_partition_size_fd_stat(int fd, const struct stat *st)
-> +s64 device_get_partition_size_fd_stat(int fd, const struct stat *st)
->   {
->   	u64 size;
->   
-> -	if (S_ISREG(st->st_mode))
-> +	if (S_ISREG(st->st_mode)) {
-> +		if (st->st_size > LLONG_MAX)
-> +			return -ERANGE;
->   		return st->st_size;
-> +	}
->   	if (!S_ISBLK(st->st_mode))
-> -		return 0;
-> -	if (ioctl(fd, BLKGETSIZE64, &size) >= 0)
-> -		return size;
-> -
-> -	return 0;
-> +		return -EINVAL;
-> +	if (ioctl(fd, BLKGETSIZE64, &size) < 0)
-> +		return -errno;
-> +	if (size > LLONG_MAX)
-> +		return -ERANGE;
-> +	return size;
->   }
->   
->   static s64 device_get_partition_size_sysfs(const char *dev)
-> diff --git a/common/device-utils.h b/common/device-utils.h
-> index 2ada057adcd3..666dc3196e2f 100644
-> --- a/common/device-utils.h
-> +++ b/common/device-utils.h
-> @@ -43,7 +43,7 @@ enum {
->   int device_discard_blocks(int fd, u64 start, u64 len);
->   int device_zero_blocks(int fd, off_t start, size_t len, const bool direct);
->   s64 device_get_partition_size(const char *dev);
-> -u64 device_get_partition_size_fd_stat(int fd, const struct stat *st);
-> +s64 device_get_partition_size_fd_stat(int fd, const struct stat *st);
->   int device_get_queue_param(const char *file, const char *param, char *buf, size_t len);
->   u64 device_get_zone_unusable(int fd, u64 flags);
->   u64 device_get_zone_size(int fd, const char *name);
-> diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
-> index be01bdb4d3f6..fccff07ba761 100644
-> --- a/kernel-shared/volumes.c
-> +++ b/kernel-shared/volumes.c
-> @@ -3081,7 +3081,7 @@ static int btrfs_fix_block_device_size(struct btrfs_fs_info *fs_info,
->   				       struct btrfs_device *device)
->   {
->   	struct stat st;
-> -	u64 block_dev_size;
-> +	s64 block_dev_size;
->   	int ret;
->   
->   	if (device->fd < 0 || !device->writeable) {
-> @@ -3096,8 +3096,13 @@ static int btrfs_fix_block_device_size(struct btrfs_fs_info *fs_info,
->   		return -errno;
->   	}
->   
-> -	block_dev_size = round_down(device_get_partition_size_fd_stat(device->fd, &st),
-> -				    fs_info->sectorsize);
-> +	block_dev_size = device_get_partition_size_fd_stat(device->fd, &st);
-> +	if (block_dev_size < 0) {
-> +		errno = -block_dev_size;
-> +		error("failed to get device size for %s: %m", device->name);
-> +		return -errno;
-> +	}
-> +	block_dev_size = round_down(block_dev_size, fs_info->sectorsize);
->   
->   	/*
->   	 * Total_bytes in device item is no larger than the device block size,
-> diff --git a/kernel-shared/zoned.c b/kernel-shared/zoned.c
-> index d96311af70b2..1036dbd153ad 100644
-> --- a/kernel-shared/zoned.c
-> +++ b/kernel-shared/zoned.c
-> @@ -166,7 +166,8 @@ static int emulate_report_zones(const char *file, int fd, u64 pos,
->   {
->   	const sector_t zone_sectors = emulated_zone_size >> SECTOR_SHIFT;
->   	struct stat st;
-> -	sector_t bdev_size;
-> +	s64 bdev_size;
-> +	sector_t bdev_nr_sectors;
->   	unsigned int i;
->   	int ret;
->   
-> @@ -176,7 +177,13 @@ static int emulate_report_zones(const char *file, int fd, u64 pos,
->   		return -EIO;
->   	}
->   
-> -	bdev_size = device_get_partition_size_fd_stat(fd, &st) >> SECTOR_SHIFT;
-> +	bdev_size = device_get_partition_size_fd_stat(fd, &st);
-> +	if (bdev_size < 0) {
-> +		errno = -bdev_size;
-> +		error("failed to get device size for %s: %m", file);
-> +		return bdev_size;
-> +	}
-> +	bdev_nr_sectors = bdev_size >> SECTOR_SHIFT;
->   
->   	pos >>= SECTOR_SHIFT;
->   	for (i = 0; i < nr_zones; i++) {
-> @@ -187,7 +194,7 @@ static int emulate_report_zones(const char *file, int fd, u64 pos,
->   		zones[i].type = BLK_ZONE_TYPE_CONVENTIONAL;
->   		zones[i].cond = BLK_ZONE_COND_NOT_WP;
->   
-> -		if (zones[i].wp >= bdev_size) {
-> +		if (zones[i].wp >= bdev_nr_sectors) {
->   			i++;
->   			break;
->   		}
-> @@ -289,7 +296,7 @@ int btrfs_reset_dev_zone(int fd, struct blk_zone *zone)
->   static int report_zones(int fd, const char *file,
->   			struct btrfs_zoned_device_info *zinfo)
->   {
-> -	u64 device_size;
-> +	s64 device_size;
->   	u64 zone_bytes = zone_size(file);
->   	size_t rep_size;
->   	u64 sector = 0;
-> @@ -326,7 +333,8 @@ static int report_zones(int fd, const char *file,
->   	}
->   
->   	device_size = device_get_partition_size_fd_stat(fd, &st);
-> -	if (device_size == 0) {
-> +	if (device_size < 0) {
-> +		errno = -device_size;
->   		error("zoned: failed to read size of %s: %m", file);
->   		exit(1);
->   	}
-> diff --git a/mkfs/common.c b/mkfs/common.c
-> index c5f73de81194..12a9a0bd8176 100644
-> --- a/mkfs/common.c
-> +++ b/mkfs/common.c
-> @@ -1171,6 +1171,7 @@ int test_minimum_size(const char *file, u64 min_dev_size)
->   {
->   	int fd;
->   	struct stat statbuf;
-> +	s64 size;
->   
->   	fd = open(file, O_RDONLY);
->   	if (fd < 0)
-> @@ -1179,11 +1180,12 @@ int test_minimum_size(const char *file, u64 min_dev_size)
->   		close(fd);
->   		return -errno;
->   	}
-> -	if (device_get_partition_size_fd_stat(fd, &statbuf) < min_dev_size) {
-> -		close(fd);
-> -		return 1;
-> -	}
-> +	size = device_get_partition_size_fd_stat(fd, &statbuf);
->   	close(fd);
-> +	if (size < 0)
-> +		return size;
-> +	if (size < min_dev_size)
-> +		return 1;
->   	return 0;
->   }
->   
-> diff --git a/mkfs/main.c b/mkfs/main.c
-> index c3529044a836..166a4fc0fd32 100644
-> --- a/mkfs/main.c
-> +++ b/mkfs/main.c
-> @@ -1254,7 +1254,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->   	bool metadata_profile_set = false;
->   	u64 data_profile = 0;
->   	bool data_profile_set = false;
-> -	u64 byte_count = 0;
-> +	s64 byte_count = 0;
->   	u64 dev_byte_count = 0;
->   	bool mixed = false;
->   	char *label = NULL;
-> @@ -1818,9 +1818,15 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->   		 * Block_count not specified, use file/device size first.
->   		 * Or we will always use source_dir_size calculated for mkfs.
->   		 */
-> -		if (!byte_count)
-> -			byte_count = round_down(device_get_partition_size_fd_stat(fd, &statbuf),
-> -						sectorsize);
-> +		if (!byte_count) {
-> +			byte_count = device_get_partition_size_fd_stat(fd, &statbuf);
-> +			if (byte_count < 0) {
-> +				errno = -byte_count;
-> +				error("failed to get device size for %s: %m", file);
-> +				goto error;
-> +			}
-> +			byte_count = round_down(byte_count, sectorsize);
-> +		}
->   		source_dir_size = btrfs_mkfs_size_dir(source_dir, sectorsize,
->   				min_dev_size, metadata_profile, data_profile);
->   		UASSERT(IS_ALIGNED(source_dir_size, sectorsize));
+The test case btrfs/136 create an ext3 fs first, using the same block=20
+size of the btrfs on TEST_DEV (so it's 16K).
+Then populate the fs.
 
+The hang happens at the ext3 populating part, with the following kernel=20
+warning:
+
+[  989.664270] run fstests btrfs/136 at 2025-08-08 16:57:37
+[  990.551395] EXT4-fs (dm-3): mounting ext3 file system using the ext4=20
+subsystem
+[  990.554980] EXT4-fs (dm-3): mounted filesystem=20
+d90f4325-e6a6-4787-9da8-150ece277a94 r/w with ordered data mode. Quota=20
+mode: none.
+[  990.581540] ------------[ cut here ]------------
+[  990.581551] WARNING: CPU: 3 PID: 434101 at fs/iomap/iter.c:34=20
+iomap_iter_done+0x148/0x190
+[  990.583497] Modules linked in: dm_flakey nls_ascii nls_cp437 vfat fat=
+=20
+btrfs polyval_ce ghash_ce rtc_efi processor xor xor_neon raid6_pq=20
+zstd_compress fuse loop nfnetlink qemu_fw_cfg ext4 crc16 mbcache jbd2=20
+dm_mod xhci_pci xhci_hcd virtio_net virtio_scsi net_failover failover=20
+virtio_console virtio_balloon virtio_blk virtio_mmio
+[  990.587247] CPU: 3 UID: 0 PID: 434101 Comm: fsstress Not tainted=20
+6.16.0-rc7-custom+ #128 PREEMPT(voluntary)
+[  990.588525] Hardware name: QEMU KVM Virtual Machine, BIOS unknown=20
+2/2/2022
+[  990.589414] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS=20
+BTYPE=3D--)
+[  990.590314] pc : iomap_iter_done+0x148/0x190
+[  990.590874] lr : iomap_iter+0x174/0x230
+[  990.591370] sp : ffff8000880af740
+[  990.591800] x29: ffff8000880af740 x28: ffff0000db8e6840 x27:=20
+0000000000000000
+[  990.592716] x26: 0000000000000000 x25: ffff8000880af830 x24:=20
+0000004000000000
+[  990.593631] x23: 0000000000000002 x22: 000001bfdbfa8000 x21:=20
+ffffa6a41c002e48
+[  990.594549] x20: 0000000000000001 x19: ffff8000880af808 x18:=20
+0000000000000000
+[  990.595464] x17: 0000000000000000 x16: ffffa6a495ee6cd0 x15:=20
+0000000000000000
+[  990.596379] x14: 00000000000003d4 x13: 00000000fa83b2da x12:=20
+0000b236fc95f18c
+[  990.597295] x11: ffffa6a4978b9c08 x10: 0000000000001da0 x9 :=20
+ffffa6a41c1a2a44
+[  990.598210] x8 : ffff8000880af5c8 x7 : 0000000001000000 x6 :=20
+0000000000000000
+[  990.599125] x5 : 0000000000000004 x4 : 000001bfdbfa8000 x3 :=20
+0000000000000000
+[  990.600040] x2 : 0000000000000000 x1 : 0000004004030000 x0 :=20
+0000000000000000
+[  990.600955] Call trace:
+[  990.601273]  iomap_iter_done+0x148/0x190 (P)
+[  990.601829]  iomap_iter+0x174/0x230
+[  990.602280]  iomap_fiemap+0x154/0x1d8
+[  990.602751]  ext4_fiemap+0x110/0x140 [ext4]
+[  990.603350]  do_vfs_ioctl+0x4b8/0xbc0
+[  990.603831]  __arm64_sys_ioctl+0x8c/0x120
+[  990.604346]  invoke_syscall+0x6c/0x100
+[  990.604836]  el0_svc_common.constprop.0+0x48/0xf0
+[  990.605444]  do_el0_svc+0x24/0x38
+[  990.605875]  el0_svc+0x38/0x120
+[  990.606283]  el0t_64_sync_handler+0x10c/0x138
+[  990.606846]  el0t_64_sync+0x198/0x1a0
+[  990.607319] ---[ end trace 0000000000000000 ]---
+[  990.608042] ------------[ cut here ]------------
+[  990.608047] WARNING: CPU: 3 PID: 434101 at fs/iomap/iter.c:35=20
+iomap_iter_done+0x164/0x190
+[  990.610842] Modules linked in: dm_flakey nls_ascii nls_cp437 vfat fat=
+=20
+btrfs polyval_ce ghash_ce rtc_efi processor xor xor_neon raid6_pq=20
+zstd_compress fuse loop nfnetlink qemu_fw_cfg ext4 crc16 mbcache jbd2=20
+dm_mod xhci_pci xhci_hcd virtio_net virtio_scsi net_failover failover=20
+virtio_console virtio_balloon virtio_blk virtio_mmio
+[  990.619189] CPU: 3 UID: 0 PID: 434101 Comm: fsstress Tainted: G=20
+  W           6.16.0-rc7-custom+ #128 PREEMPT(voluntary)
+[  990.620876] Tainted: [W]=3DWARN
+[  990.621458] Hardware name: QEMU KVM Virtual Machine, BIOS unknown=20
+2/2/2022
+[  990.622507] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS=20
+BTYPE=3D--)
+[  990.623911] pc : iomap_iter_done+0x164/0x190
+[  990.624936] lr : iomap_iter+0x174/0x230
+[  990.626747] sp : ffff8000880af740
+[  990.627404] x29: ffff8000880af740 x28: ffff0000db8e6840 x27:=20
+0000000000000000
+[  990.628947] x26: 0000000000000000 x25: ffff8000880af830 x24:=20
+0000004000000000
+[  990.631024] x23: 0000000000000002 x22: 000001bfdbfa8000 x21:=20
+ffffa6a41c002e48
+[  990.632278] x20: 0000000000000001 x19: ffff8000880af808 x18:=20
+0000000000000000
+[  990.634189] x17: 0000000000000000 x16: ffffa6a495ee6cd0 x15:=20
+0000000000000000
+[  990.635608] x14: 00000000000003d4 x13: 00000000fa83b2da x12:=20
+0000b236fc95f18c
+[  990.637854] x11: ffffa6a4978b9c08 x10: 0000000000001da0 x9 :=20
+ffffa6a41c1a2a44
+[  990.639181] x8 : ffff8000880af5c8 x7 : 0000000001000000 x6 :=20
+0000000000000000
+[  990.642370] x5 : 0000000000000004 x4 : 000001bfdbfa8000 x3 :=20
+0000000000000000
+[  990.644505] x2 : 0000004004030000 x1 : 0000004004030000 x0 :=20
+0000004004030000
+[  990.645493] Call trace:
+[  990.645841]  iomap_iter_done+0x164/0x190 (P)
+[  990.646377]  iomap_iter+0x174/0x230
+[  990.647550]  iomap_fiemap+0x154/0x1d8
+[  990.648052]  ext4_fiemap+0x110/0x140 [ext4]
+[  990.649061]  do_vfs_ioctl+0x4b8/0xbc0
+[  990.649704]  __arm64_sys_ioctl+0x8c/0x120
+[  990.652141]  invoke_syscall+0x6c/0x100
+[  990.653001]  el0_svc_common.constprop.0+0x48/0xf0
+[  990.653909]  do_el0_svc+0x24/0x38
+[  990.654332]  el0_svc+0x38/0x120
+[  990.654736]  el0t_64_sync_handler+0x10c/0x138
+[  990.655295]  el0t_64_sync+0x198/0x1a0
+[  990.655761] ---[ end trace 0000000000000000 ]---
+
+Considering it's not yet btrfs, and the call trace is from iomap, I=20
+guess there is something wrong with ext4's ext3 support?
+
+The involved ext4 kernel configs are the following:
+
+# CONFIG_EXT2_FS is not set
+# CONFIG_EXT3_FS is not set
+CONFIG_EXT4_FS=3Dm
+CONFIG_EXT4_USE_FOR_EXT2=3Dy
+CONFIG_EXT4_FS_POSIX_ACL=3Dy
+CONFIG_EXT4_FS_SECURITY=3Dy
+# CONFIG_EXT4_DEBUG is not set
+CONFIG_JBD2=3Dm
+# CONFIG_JBD2_DEBUG is not set
+
+Thanks,
+Qu
 
