@@ -1,124 +1,122 @@
-Return-Path: <linux-btrfs+bounces-15964-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15965-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BE9AB1F970
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Aug 2025 11:04:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 541DFB1F9A6
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Aug 2025 12:32:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DC901898665
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Aug 2025 09:04:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5813B177FC6
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Aug 2025 10:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C55242D60;
-	Sun, 10 Aug 2025 09:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LjfGKeZQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEDC9247281;
+	Sun, 10 Aug 2025 10:32:43 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.lichtvoll.de (lichtvoll.de [37.120.160.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CAF3D81;
-	Sun, 10 Aug 2025 09:04:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597C8198E9B;
+	Sun, 10 Aug 2025 10:32:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.120.160.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754816643; cv=none; b=AZEqqq+OleNWKbpQkIxIJmcZraocZqsHFYZqLvRQqVXElyphSnLhB1ltnuXgCI5Xb7Ef8K/EWplTHrBvQVIfdL36uti0/0SEMxVf65cy8G91PJ8JuPTsqALa1xyzAsh1aB/lRg2mXuMy5Q44eRiBeaCFNhYYBSz0hFZiIHj5aPg=
+	t=1754821963; cv=none; b=m6jPh5leNObINCxga0b9vCbucCtsc/1bEVMlBOs3H/fdpfpjKRVL4zf3Y/P2eOdIGSvAU9bamjjT0kZWfUUm9xFfY8yylV1wS/5F+kO5jg3Qrx9dpWo91ivJi9qBCl6Y5F4NGAAv7sTkMwHjBJw40LpWUVCRTDv9ZCe9g7SB3kI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754816643; c=relaxed/simple;
-	bh=1uk+L/4UCvC2YL4rDydg69JfuP7irpTtoBtvSgNeL/E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CfhI5PqwsyTG9+7zlQuda3zRwg8g7KUQO//oAOKxKF7uWwVPU+EWOfTd2GRX5kVffkDa147RfSIVIouxCtUwy8nZk/wWekKUKVP7uZUrHDvoLmc8tttHY53hmpRQyDXnYKtzumNU2KP1uXojH+GSAgX3FoamRHZGS7jO/Bm0mrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LjfGKeZQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1526CC4CEEB;
-	Sun, 10 Aug 2025 09:04:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754816643;
-	bh=1uk+L/4UCvC2YL4rDydg69JfuP7irpTtoBtvSgNeL/E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LjfGKeZQqiIXfnvbaJEgwYP+/u4ykE3RMP5XuJzst3yu07DMinG6FVd0er4RWR7oT
-	 8rY+yL96FW8wFvnuHh6n/P2s+zyfPAo9USy6Gr5e8LHi9ieo1muby/ThPMT0jC2MJ6
-	 +BlYRh3l88+NlLoHLFQJG3gzW5nF6vc4t6gkOhKIHNw3TiipDPKog5V9JjwNkUWtz3
-	 zCiZEvSodHKopxJzcGudkBciWnHKKucIFIE0/37Uv9R1AJd8/jKkBRWXDhzx62YRFE
-	 ckhJ7XvPfWXPJA+9rnHx/WIF2A1CRYUoHGhVluTekBsgPvo1ZHEvNC53HIiH5g5ol/
-	 j4fq4OzXJw1Ng==
-Date: Sun, 10 Aug 2025 02:03:02 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fscrypt@vger.kernel.org, fsverity@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org
-Subject: Re: [PATCH v5 00/13] Move fscrypt and fsverity info out of struct
- inode
-Message-ID: <20250810090302.GA1274@sol>
-References: <20250810075706.172910-1-ebiggers@kernel.org>
- <20250810-tortur-gerammt-8d9ffd00da19@brauner>
+	s=arc-20240116; t=1754821963; c=relaxed/simple;
+	bh=8D9WEyhPPhhVKH+WCxVVbKm/SDCaoqn/KutdHv9zxqo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YRHeh+m0QyDx19gWe1Yl/wFJpvu3RReAqXlzG+9wqpVt1rqlJd1iAZUXEUxRi6XZmOtOm08JdkoE+AywfSITUeHd4pNIzVzgsnzfRmhekf+UmbgriCMR28n/twfoxxc8FPZNStctwpHmrCyrhQ1EZKf08VAmHmSeKfbAS/nOGvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=37.120.160.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id E7DC912E133;
+	Sun, 10 Aug 2025 10:32:38 +0000 (UTC)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin@lichtvoll.de smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Gerhard Wiesinger <lists@wiesinger.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs changes for 6.17
+Date: Sun, 10 Aug 2025 12:32:38 +0200
+Message-ID: <22799288.EfDdHjke4D@lichtvoll.de>
+In-Reply-To: <e19849f2-4a39-4a09-b19e-cb4f291a2dc2@wiesinger.com>
+References:
+ <22ib5scviwwa7bqeln22w2xm3dlywc4yuactrddhmsntixnghr@wjmmbpxjvipv>
+ <e19849f2-4a39-4a09-b19e-cb4f291a2dc2@wiesinger.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250810-tortur-gerammt-8d9ffd00da19@brauner>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-On Sun, Aug 10, 2025 at 10:47:32AM +0200, Christian Brauner wrote:
-> On Sun, Aug 10, 2025 at 12:56:53AM -0700, Eric Biggers wrote:
-> > This is a cleaned-up implementation of moving the i_crypt_info and
-> > i_verity_info pointers out of 'struct inode' and into the fs-specific
-> > part of the inode, as proposed previously by Christian at
-> > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
-> > 
-> > The high-level concept is still the same: fs/crypto/ and fs/verity/
-> > locate the pointer by adding an offset to the address of struct inode.
-> > The offset is retrieved from fscrypt_operations or fsverity_operations.
-> > 
-> > I've cleaned up a lot of the details, including:
-> > - Grouped changes into patches differently
-> > - Rewrote commit messages and comments to be clearer
-> > - Adjusted code formatting to be consistent with existing code
-> > - Removed unneeded #ifdefs
-> > - Improved choice and location of VFS_WARN_ON_ONCE() statements
-> > - Added missing kerneldoc for ubifs_inode::i_crypt_info
-> > - Moved field initialization to init_once functions when they exist
-> > - Improved ceph offset calculation and removed unneeded static_asserts
-> > - fsverity_get_info() now checks IS_VERITY() instead of v_ops
-> > - fscrypt_put_encryption_info() no longer checks IS_ENCRYPTED(), since I
-> >   no longer think it's actually correct there.
-> > - verity_data_blocks() now keeps doing a raw dereference
-> > - Dropped fscrypt_set_inode_info() 
-> > - Renamed some functions
-> > - Do offset calculation using int, so we don't rely on unsigned overflow
-> > - And more.
-> > 
-> > For v4 and earlier, see
-> > https://lore.kernel.org/r/20250723-work-inode-fscrypt-v4-0-c8e11488a0e6@kernel.org/
-> > 
-> > I'd like to take this series through the fscrypt tree for 6.18.
-> > (fsverity normally has a separate tree, but by choosing just one tree
-> > for this, we'll avoid conflicts in some places.)
-> 
-> Woh woh. First, I had a cleaned up version ready for v6.18 so if you
-> plan on taking over someone's series and resend then maybe ask the
-> author first whether that's ok or not. I haven't seen you do that. You
-> just caused duplicated work for no reason.
+Hi Gerhard, hi.
 
-Ah, sorry about that.  When I started looking at it again yesterday
-there turned out to be way too many cleanups and fixes I wanted to make
-(beyond the comments I gave earlier), and I hadn't seen activity from
-you on it in a while.  So I figured it would be easier to just send a
-series myself.  But I should have asked you first, sorry.
+Gerhard Wiesinger - 10.08.25, 08:20:43 CEST:
+> On 28.07.2025 17:14, Kent Overstreet wrote:
+> > Schedule notes for users:
+> >=20
+> > I've been digging through the bug tracker and polling users to see
+> > what bugs are still outstanding, and - it's not much.
+> >=20
+> > So, the experimental label is coming off in 6.18.
+> >=20
+> > As always, if you do hit a bug, please report it.
+>=20
+> I can now confirm that bcachefs is getting stable and the test cases
+> with intentionally data corruption (simulation of a real world case I
+> had) gets bcachefs back to a consistent state (after 2 runs of: bcachefs
+> fsck -f -y ${DEV}). That's a base requirement for a stable filesystem.
+> Version of bcachefs-tools is git
+> 530e8ade4e6af7d152f4f79bf9f2b9dec6441f2b and kernel is
+> 6.16.0-200.fc42.x86_64.
+>=20
+> See for details, I made data corruption even worser with running the
+> destroy script 5x:
+>=20
+> https://lore.kernel.org/linux-bcachefs/aa613c37-153c-43e4-b68e-9d50744be
+> 7de@wiesinger.com/
+>=20
+> Great work Kent and the other contributors.
+>=20
+> Unfortunately btrfs can't be repaired to a consistent state with the
+> same testcase. I'd like to be that testcase fixed also for BTRFS as a
+> stable filesystem (versions: 6.16.0-200.fc42.x86_64, btrfs-progs v6.15,
+> -EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED
+> CRYPTO=3Dlibgcrypt).
+>=20
+> (I reported that already far in the past on the mailing list, see here:
+> https://lore.kernel.org/linux-btrfs/63f8866f-ceda-4228-b595-e37b016e7b1f
+> @wiesinger.com/).
 
-> And second general infrastructure changes that touch multiple fses and
-> generic fs infrastructure I very much want to go through VFS trees.
-> We'll simply use a shared tree.
+Thanks for this great find and these test results.
 
-So you'd like to discontinue the fscrypt and fsverity trees?  That's
-what they are for: general infrastructure shared by multiple
-filesystems.  Or is this comment just for this series in particular,
-presumably because it touches 'struct inode'?
+On a technical perspective I still think the Linux kernel is a better=20
+kernel with BCacheFS included.
 
-- Eric
+And write this without having had any issues =E2=80=93 except for bad perfo=
+rmance=20
+especially on hard disks, but partly also on flash =E2=80=93 with BTRFS. An=
+d I use=20
+it on a couple laptops, some virtual machines and a lot of external disks.=
+=20
+But not on a multi device setup. I had a BTRFS RAID 1 for a long time.=20
+This also has been stable since kernel 4.6 up to the time I still used it.
+
+So I did not really have much of a need to fsck BTRFS.
+
+Best,
+=2D-=20
+Martin
+
+
 
