@@ -1,111 +1,186 @@
-Return-Path: <linux-btrfs+bounces-15992-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15993-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A02ECB20D12
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 17:08:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05E03B2113A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 18:13:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CE533B0BD8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 15:05:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58186501AF7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 16:03:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EC9E2DEA89;
-	Mon, 11 Aug 2025 15:05:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A802EBDC4;
+	Mon, 11 Aug 2025 15:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WrGck7Fm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775B41E5B73
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Aug 2025 15:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB02E2E2679;
+	Mon, 11 Aug 2025 15:49:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754924727; cv=none; b=o7CiCz447aIXUrLzv16UPQIYu5SPvCiDdNqYR7zkeOjZNK+UndjfvcfJk7zQHOdZubFjFw6RGSw+t24ZB/0Wo3suWzXVHCS9sHMNixf9gBl+2nmiZgjKFZS/hO6kkpYquxyQxznerhJKSX62hUTRfZaExv7Sy75j/6EQ4S1lTU8=
+	t=1754927377; cv=none; b=cTzShH5tNb+SJ3/JIac9f45M6WQtxUUpMZKbNGGsL3rMEssiOc733gripkspi8NLg0+DLKknscUPz25jO9+mh5CZ504UGmlLYs6zjQED794/un9IAJkgbE2KF5XfP+yfqH7i2HJx9ll4ONi6zJs42WDg9SGv7ozrl4BuxAlmSFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754924727; c=relaxed/simple;
-	bh=MI+E8SrEuuYGRN77u2xLt2jZUmrB9KVRDwAc3ec3bGA=;
+	s=arc-20240116; t=1754927377; c=relaxed/simple;
+	bh=RopHifErAZ/r1bKrzCXHi+tqR8Gd+ZBCOXa63JC3HIU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s7X6pATW+eDlf6WBk1UI3ksA9PvkmooPvKUftAgiMGyCR814StCmueESSxr+qmJf0IRubhdHPi2Q+zqIxTVbMz4XnawhwVJXFOXExDdV2UtmZeMJhPGiYqLWGvgYisX/FUZVk/KkSTWuZ9ljd3OuQJuLvY6yoZz62HtZ2PDJsw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B73BD1F443;
-	Mon, 11 Aug 2025 15:05:23 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A7E9C13A7E;
-	Mon, 11 Aug 2025 15:05:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ecuBKLMGmmhZYQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 11 Aug 2025 15:05:23 +0000
-Date: Mon, 11 Aug 2025 17:05:22 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: use blocksize to check if compression is making
- things larger
-Message-ID: <20250811150522.GY6704@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <14db816c702a3567faa0cd5efe2110b6ebfba970.1754871148.git.wqu@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=duTirGKDQyiGBycyeKkvAiDA+PxmGT2Wcz7Ut5cbO5BRV7AqwSjREhyDzi8h2Th/WNpWnMRTGAWRmROQxHlknjGYXwC7WeG+eCtKFriId2xu/fYYq55rycfWt433MTjdjvFQLaEstZCwKXLvCGb00RSNcMBxMyTf3vLZHxVrRZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WrGck7Fm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A2FBC4CEED;
+	Mon, 11 Aug 2025 15:49:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754927376;
+	bh=RopHifErAZ/r1bKrzCXHi+tqR8Gd+ZBCOXa63JC3HIU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WrGck7Fmn0StA1HSyOixhZNPLPo5/WRadk5mDshttUOMgrSNgupbE96hta5DvBVj3
+	 apSkCJOnMOECU6/IGLbkJHX2t7Vvbotqor63J18pfGnwia/s6dXE1SreowaY24sO0q
+	 wQv5qfqtKahV6w8xGiUAV8eURWno82WnSMRDKSAs2RJK/g/q3HIL3VWC2cB98VCGKW
+	 QesWjW+OnVmrp9KDJ2yFVTxfMfuKyTpp+WLHGuakLcpptXpnmJAWXndwyWnOnsF3q+
+	 s8DO7xeTCoaEjnNgQlSddM+52tNVwSnC4BsO8Rmzgvi74GrybIFHuhPemLca0du7Mp
+	 yO0DvfspCWAEQ==
+Date: Mon, 11 Aug 2025 08:49:35 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Zhang Yi <yi.zhang@huaweicloud.com>, Qu Wenruo <wqu@suse.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	linux-ext4 <linux-ext4@vger.kernel.org>,
+	linux-btrfs <linux-btrfs@vger.kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: Ext4 iomap warning during btrfs/136 (yes, it's from btrfs test
+ cases)
+Message-ID: <20250811154935.GD7942@frogsfrogsfrogs>
+References: <9b650a52-9672-4604-a765-bb6be55d1e4a@gmx.com>
+ <4ef2476f-50c3-424d-927d-100e305e1f8e@gmx.com>
+ <20250808121659.GC778805@mit.edu>
+ <035ad34e-fb1e-414f-8d3c-839188cfa387@suse.com>
+ <c2a00db8-ed34-49bb-8c01-572381451af3@huaweicloud.com>
+ <15a4c437-d276-4503-9e30-4d48f5b7a4ff@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <14db816c702a3567faa0cd5efe2110b6ebfba970.1754871148.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: B73BD1F443
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spam-Score: -4.00
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <15a4c437-d276-4503-9e30-4d48f5b7a4ff@gmx.com>
 
-On Mon, Aug 11, 2025 at 09:43:42AM +0930, Qu Wenruo wrote:
-> [BEHAVIOR DIFFERENCE BETWEEN COMPRESSION ALGOS]
-> Currently LZO compression algorithm will check if we're making the
-> compressed data larger after compressing more than 2 blocks.
+On Sun, Aug 10, 2025 at 07:36:48AM +0930, Qu Wenruo wrote:
 > 
-> But zlib and zstd do the same checks after compressing more than 8192
-> bytes.
 > 
-> This is not a big deal, but since we're already supporting larger block
-> size (e.g. 64K block size if page size is also 64K), this check is not
-> suitable for all block sizes.
+> 在 2025/8/9 18:39, Zhang Yi 写道:
+> > On 2025/8/9 6:11, Qu Wenruo wrote:
+> > > 在 2025/8/8 21:46, Theodore Ts'o 写道:
+> > > > On Fri, Aug 08, 2025 at 06:20:56PM +0930, Qu Wenruo wrote:
+> > > > > 
+> > > > > 在 2025/8/8 17:22, Qu Wenruo 写道:
+> > > > > > Hi,
+> > > > > > 
+> > > > > > [BACKGROUND]
+> > > > > > Recently I'm testing btrfs with 16KiB block size.
+> > > > > > 
+> > > > > > Currently btrfs is artificially limiting subpage block size to 4K.
+> > > > > > But there is a simple patch to change it to support all block sizes <=
+> > > > > > page size in my branch:
+> > > > > > 
+> > > > > > https://github.com/adam900710/linux/tree/larger_bs_support
+> > > > > > 
+> > > > > > [IOMAP WARNING]
+> > > > > > And I'm running into a very weird kernel warning at btrfs/136, with 16K
+> > > > > > block size and 64K page size.
+> > > > > > 
+> > > > > > The problem is, the problem happens with ext3 (using ext4 modeule) with
+> > > > > > 16K block size, and no btrfs is involved yet.
+> > > > 
+> > > > 
+> > > > Thanks for the bug report!  This looks like it's an issue with using
+> > > > indirect block-mapped file with a 16k block size.  I tried your
+> > > > reproducer using a 1k block size on an x86_64 system, which is how I
+> > > > test problem caused by the block size < page size.  It didn't
+> > > > reproduce there, so it looks like it really needs a 16k block size.
+> > > > 
+> > > > Can you say something about what system were you running your testing
+> > > > on --- was it an arm64 system, or a powerpc 64 system (the two most
+> > > > common systems with page size > 4k)?  (I assume you're not trying to
+> > > > do this on an Itanic.  :-)   And was the page size 16k or 64k?
+> > > 
+> > > The architecture is aarch64, the host board is Rock5B (cheap and fast enough), the test machine is a VM on that board, with ovmf as the UEFI firmware.
+> > > 
+> > > The kernel is configured to use 64K page size, the *ext3* system is using 16K block size.
+> > > 
+> > > Currently I tried the following combination with 64K page size and ext3, the result looks like the following
+> > > 
+> > > - 2K block size
+> > > - 4K block size
+> > >    All fine
+> > > 
+> > > - 8K block size
+> > > - 16K block size
+> > >    All the same kernel warning and never ending fsstress
+> > > 
+> > > - 32K block size
+> > > - 64K block size
+> > >    All fine
+> > > 
+> > > I am surprised as you that, not all subpage block size are having problems, just 2 of the less common combinations failed.
+> > > 
+> > > And the most common ones (4K, page size) are all fine.
+> > > 
+> > > Finally, if using ext4 not ext3, all combinations above are fine again.
+> > > 
+> > > So I ran out of ideas why only 2 block sizes fail here...
+> > > 
+> > 
+> > This issue is caused by an overflow in the calculation of the hole's
+> > length on the forth-level depth for non-extent inodes. For a file system
+> > with a 4KB block size, the calculation will not overflow. For a 64KB
+> > block size, the queried position will not reach the fourth level, so this
+> > issue only occur on the filesystem with a 8KB and 16KB block size.
+> > 
+> > Hi, Wenruo, could you try the following fix?
+> > 
+> > diff --git a/fs/ext4/indirect.c b/fs/ext4/indirect.c
+> > index 7de327fa7b1c..d45124318200 100644
+> > --- a/fs/ext4/indirect.c
+> > +++ b/fs/ext4/indirect.c
+> > @@ -539,7 +539,7 @@ int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
+> >   	int indirect_blks;
+> >   	int blocks_to_boundary = 0;
+> >   	int depth;
+> > -	int count = 0;
+> > +	u64 count = 0;
+> >   	ext4_fsblk_t first_block = 0;
+> > 
+> >   	trace_ext4_ind_map_blocks_enter(inode, map->m_lblk, map->m_len, flags);
+> > @@ -588,7 +588,7 @@ int ext4_ind_map_blocks(handle_t *handle, struct inode *inode,
+> >   		count++;
+> >   		/* Fill in size of a hole we found */
+> >   		map->m_pblk = 0;
+> > -		map->m_len = min_t(unsigned int, map->m_len, count);
+> > +		map->m_len = umin(map->m_len, count);
+> >   		goto cleanup;
+> >   	}
 > 
-> For example, if our page and block size are both 16KiB, and after the
-> first block compressed using zlib, the resulted compressed data is
-> slightly  larger than 16KiB, we will immediately abort the compression.
+> It indeed solves the problem.
 > 
-> This makes zstd and zlib compression algorithms to behave slightly
-> different from LZO, which only aborts after compressing two blocks.
-> 
-> [ENHANCEMENT]
-> To unify the behavior, only abort the compression after compressing at
-> least two blocks.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Tested-by: Qu Wenruo <wqu@suse.com>
 
-I think it's ok and makes sense to compare to some number of units and
-not an arbitrary number, which likely is 2 * page size.
+Can we get the relevant chunks of this test turned into a tests/ext4/
+fstest so that the ext4 developers have a regression test that doesn't
+require setting up btrfs, please?
+
+--D
+
+> Thanks,
+> Qu
+> 
+> > Thanks,
+> > Yi.
+> > 
+> 
+> 
 
