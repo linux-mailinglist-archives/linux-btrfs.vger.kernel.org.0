@@ -1,443 +1,230 @@
-Return-Path: <linux-btrfs+bounces-15974-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15975-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3625B1FD94
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 04:02:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84BD1B1FE61
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 06:39:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB4131777ED
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 02:02:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3388B3B94E5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 04:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E83D0157A72;
-	Mon, 11 Aug 2025 02:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91656221FAC;
+	Mon, 11 Aug 2025 04:38:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VM9+okkw"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="quURxpET";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="IrS2SXop"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE443D76
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Aug 2025 02:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754877769; cv=none; b=Ua7mSxvEd/vgCeM6XZyujQfVk9QMvrm+nkxZ5phsD9a9j/e9nqP76JmpSNVI5ShQc2vYWWDLzC9lJOG7Q31VE6on4iXqBKctVQixpr0pnhY9VnXYKXrfB/oA9YPgVctMAsPuGEBkIjrVB52doGrsORdwkGCQmwUbrmw9iRQM8F0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754877769; c=relaxed/simple;
-	bh=MduAaE0NmYCrh/O/BdZlS5oPSsGUMmLyqrnwy56WGVc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=GfT6lx3ixL4nimqar1oP8vBEVuQkDlrksk154gBMZB1Syamk9gw74vxWFknIYK7EPbXBJz6zglE1wUF7JXroL5psinupa+h+H7NG35M6QWrghsW82A6ALQ4dt5bmhydgr/ta4gAfiAykDaTvxaHpKhpVE0930SQ9KEhvdCS9HeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VM9+okkw; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-24041a39005so24201235ad.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 10 Aug 2025 19:02:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 386BA2E36EC
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Aug 2025 04:38:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1754887132; cv=fail; b=LgVJDgaboCbpVpUo3Mg0+KlbbfBWDt7PdbNbeQ9UGylKiLLj1j8JFthcfhFb5x81HpSPJYwXrMw7uLFQX6+ie2Tx4qagCqYfhKiqC0/k32Qi+5GbmMM2W4ogDN3yOw8v/AM+g27dFAoMvV8bSjAC1ZMcGaW/QnSm6mYsWnQwop8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1754887132; c=relaxed/simple;
+	bh=jrfderINkW4Fj6jdP/I1oGBW+1JfBK4OsV/TflcW0wY=;
+	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=L9A8DAAS0X+tS4LnrtPohzjf6JI4lYkJqRxAbMmDXufwCj8D+0zJNHeMQxNVSRQ4UZKnmXIEpLFeG0BjYVcV0UEdAe8lgmJlGp0vOtj4KfVTw+zO3EzW9Y6XOlrwcfn9n7kso/CRqchaeFNduO06kQgBIQUiO2MR90MF2rI9e/I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=quURxpET; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=IrS2SXop; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57B3Na9C002072;
+	Mon, 11 Aug 2025 04:38:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=jrfderINkW4Fj6jdP/I1oGBW+1JfBK4OsV/TflcW0wY=; b=
+	quURxpETR3g67XhO78noCVhGQ0Ws6DEtLOnwA2VmSdmkGxxiVrxQXavVfvCY/+MB
+	qLt5Zp1Hjw7OLlExfCBl/M4QPIaQHPa7BRwLZfIaO1OSfUt4k8/3iT8SMCz7BK8a
+	ngom4WpqY/k25ELMgAi2t2RM2+d1b2wHbPB2IDh6XV4Z/OkYg7bhmdH+PPkvHu8f
+	ojW3/d6MzNHk/++zafg7or2qk13IwHeoWydVeeY21uiGobiKpRGutsbTQL+Sjl07
+	QjrRL0+fFymDKrbOx7AGRx0evWje/6tbmkXxXImnCSwWP/c2CzKxbBUFM/3cD+GU
+	lbGjD4/NpCHLwmUos7uAlQ==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48dwxv1nen-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 Aug 2025 04:38:41 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 57B3I8Nl009833;
+	Mon, 11 Aug 2025 04:38:41 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12on2073.outbound.protection.outlook.com [40.107.244.73])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 48dvsee82j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 Aug 2025 04:38:41 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Wo91HZUpoKy7HepL0fPs/Sm9abzsIlMOKKXIRBk3YE3tBvt99tubTpABioS+gHs0RjFZF+0CbXRZ9SUuony/nSd3hU4ZMWzFvtjyRgTqwIATW3/GQXN+XwlTezRO4y/Zb7Ufg1/KhLolRDm1uJSXnNATQiWHeKctZxS9FSGInr61VsZ5Oc/BBjYGJxHOTN3eFnYfRL+0/m+7QYb2qSIeQffSXar+0eGytH++k3rGvJcENRKhOerR5gxLji7o1QxdlvQo6XZeg0kqsq0tzb7xm2krxdridG6gJTY19bwymvfTp/fChjM5dWEU61d6SvHMMr3VkpXeeJIdOBETxZA/kg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jrfderINkW4Fj6jdP/I1oGBW+1JfBK4OsV/TflcW0wY=;
+ b=O4l+UI5f+7HDOtLJrp2MYL14TMMs/pVO+rPt6yc94DRMr7PwpQFwtwARUKcDhCrbMi4ig2uUmUZczeLiYCrEWzrMalhigCfnBMsWhI9mMTRlezYQzQGT/FVRIiKgdVC/jZVXR1Z0QjSVSuVa8OgfDS8qkOpfszEKYmJ18xFKdlk+0HO+EEN3szZjwUhxoKNaeRbQsSeV81u8TpwQWtyDRrZulv+ApUSat03Xfa/1IYtfeQW0bXSo1GajVU8SQ7T2+ukT+v0rvH5RuyyFouGh0EzxVK6+TY3sdlxS60ClBEj74/30VTRiEeMteTRWooBxqbKsaq20BkZ226uVh8nakg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754877766; x=1755482566; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ZVhK8u9w5DcANYmGns3xEFdjqy1eGLqAEJOeJZfIVwc=;
-        b=VM9+okkwwUcFh5+vAS+ieQL+GzYydoB/+GSx1MTQ9Y27rgAZ36IaWBeZ6xXF1OBzd/
-         nD2L5xDvsik6Qrq7qICuwiuE7hdcjamj+rtRlQ+IihN2y21ZoG5Zy4wjdUWSkDLsJVwM
-         nJaQwiaK66+rf8QcyDijDsOjyZQDxjL8KkibdLAe2RSVdJTIyQg9TmPJwuK8w68HXEZc
-         Z8sK/4J8DPQNViubBOTm2Vm03J93iey77631HcbUlBuErK9SFpDevbKR9ltgjR7L/xcH
-         CIk/+knYPMxdITufyfASfSke4rPXSVSkyTyMkEe+3s2oBFh6+j/CYq/v+PyPubMSc5RF
-         yDhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754877766; x=1755482566;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZVhK8u9w5DcANYmGns3xEFdjqy1eGLqAEJOeJZfIVwc=;
-        b=PYfu/FaHjpaI8/kU3/K9U9LkY/fWs+p+d4oG5kFEjB/c01DmIKzMIiywe2bAQxUwJG
-         eYIgp+dkw6+fr9CUZ5GvN8W2WAX96hYPhSBLrF4Yr51u6wxbw0plw98GHav0L9M2Aoou
-         UcbIow2meHFzR987+k4tSJ1eL+IoUU1UCZPAtEYW8oazropaqAIGFqk21IJnfCdb2A7S
-         mRF2G5mLvZMkfwf6XK3xdTFwHZ5uyLSw1bdFaccIo6AArEkQOHiJEznXkYnmEFUYXgrm
-         ModyGtdGFknHxVS5Rw5EXk1HrBAw7LFY6GMoe7IU94GFkxQctOn+F/FnQUgN5fJp+Eef
-         iczw==
-X-Forwarded-Encrypted: i=1; AJvYcCWFcd9bn8xGNAITbNkP/hIP4O3vJ8lxGTTNMnTCOg2i3SdNZjL+sQxPddA6vROqSCmn+1tztZ04+STbkg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxs2iqqQvdB9YnWn2cuZJNRwod/5GUc3qWTPsHc3Hq1uMeGvZa5
-	3KRyh2BEfDN3coI4v9pHNqZc04HYzEWN/+C3zzY/pbro0bUytMZXmxeq
-X-Gm-Gg: ASbGncsAAIWCMAA3vXCTfPwIFloMCk/kriMv/RuIueqUZIJINJ3Bz6l3Fij8mCvINPU
-	v8FC6hdxWVF9XLOuTGUT/zaLcpzwLpeWuEk1c7eJQ2gX4BV7r3IiFVIJ2I368iYguqlwvkmLlxl
-	nTO3QJJ6VNFhpn4oAuJxDKzHtL01pfNbDdWN6RK1MC1QQCondGLKrK9/KZTbzjIQM8yoaT1V2jt
-	m40qFhuLBO5jOKsHDerLbNy/bGDUxyiiYuMWZnd3ZvZ00MOV9ivofPflrMkShndObDkEaQkhJJU
-	GZ9gwCGsWbYD08aCQQRl8ZSQ23vzFCy4bDQYJKptjnjEH/SGv7T4eRSDkED+gBNzZrVMhLDQNPq
-	GXSTubmhzbi49P97SblPTLRhW8qODQDakFTLGJFMlMkRBjWgA9PsZ5WPgiK/c3+EXThxbGPfx1p
-	oSZdscxs26
-X-Google-Smtp-Source: AGHT+IHOTkrj04G4Koe7ijbGlUYD3B+FDbPsV3IZ87REoXtGl5+HNWHH6BIB9FruKek5JzMJKW14mA==
-X-Received: by 2002:a17:902:ec89:b0:22e:4d50:4f58 with SMTP id d9443c01a7336-242c21dce5emr185586155ad.31.1754877766119;
-        Sun, 10 Aug 2025 19:02:46 -0700 (PDT)
-Received: from [192.168.188.28] (210-5-38-62.ip4.superloop.au. [210.5.38.62])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241d1ef5934sm258143915ad.21.2025.08.10.19.02.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Aug 2025 19:02:45 -0700 (PDT)
-Message-ID: <b1a7a056-2d0f-40c0-9899-8ecbfc29dfa5@gmail.com>
-Date: Mon, 11 Aug 2025 12:02:42 +1000
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jrfderINkW4Fj6jdP/I1oGBW+1JfBK4OsV/TflcW0wY=;
+ b=IrS2SXopR53AD95nD33+0C2Vkh9P7joNrkL0TSbkVIcmNh/4cLVa9dbh5M8oI7Q8J2tqIm4hq/QkfDl7qC+YRzEbPDe/ZvbwQ3rohNqnUsJuXLt8/eR4Fp4LCF6lmm00zfTEP3QSiTjb2TC2tVaziH4+fdcm6GnUJujwy3kVrCo=
+Received: from DS0PR10MB6078.namprd10.prod.outlook.com (2603:10b6:8:ca::5) by
+ SA1PR10MB5885.namprd10.prod.outlook.com (2603:10b6:806:234::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.16; Mon, 11 Aug
+ 2025 04:38:17 +0000
+Received: from DS0PR10MB6078.namprd10.prod.outlook.com
+ ([fe80::edc1:7c2:8fe8:a6b]) by DS0PR10MB6078.namprd10.prod.outlook.com
+ ([fe80::edc1:7c2:8fe8:a6b%5]) with mapi id 15.20.9009.018; Mon, 11 Aug 2025
+ 04:38:17 +0000
+Message-ID: <df6ef807-dda9-4683-afce-523a1ec1d0bc@oracle.com>
+Date: Mon, 11 Aug 2025 10:08:12 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: use blocksize to check if compression is making
+ things larger
+To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <14db816c702a3567faa0cd5efe2110b6ebfba970.1754871148.git.wqu@suse.com>
+Content-Language: en-GB
+From: Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <14db816c702a3567faa0cd5efe2110b6ebfba970.1754871148.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA0PR01CA0039.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:81::10) To DS0PR10MB6078.namprd10.prod.outlook.com
+ (2603:10b6:8:ca::5)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: BTRFS RAID 5 array ran out of space, switched to R/O mode with
- errors
-To: "johnh1214@gmail.com" <johnh1214@gmail.com>, linux-btrfs@vger.kernel.org
-References: <99bc3ec8-8251-4530-ab4c-7b427883853e@gmail.com>
- <eeec436c-fa53-4644-aec6-5e4381da34ab@gmail.com>
- <89786d48-cdca-4e53-8646-09860a6f5482@gmail.com>
-Content-Language: en-US
-From: DanglingPointer <danglingpointerexception@gmail.com>
-In-Reply-To: <89786d48-cdca-4e53-8646-09860a6f5482@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR10MB6078:EE_|SA1PR10MB5885:EE_
+X-MS-Office365-Filtering-Correlation-Id: 60aa2af6-b618-4b8c-c5fc-08ddd890e414
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|10070799003;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?MDA1TlVTTkZ4U3BpV2cyWnA0WHB2MjZZcms2UVB1akJiZTIzT3NYUDd0T2FN?=
+ =?utf-8?B?RDRVTW4zZXdCVGVodUd1cUppbExkODY5UXlGRDJvUVZNZjJWSHlpcW9LQjlE?=
+ =?utf-8?B?cWdTUURadmRHdERIZ04vNDM3NkQzSWJYcEZXRitONWU2UHczU3czZTFyeWdT?=
+ =?utf-8?B?QTdGZTcwYmJXN0RQWnlsOUNuaXRueHdnYnQ3elpmKzBxdWorQ2hQcHVPNkpQ?=
+ =?utf-8?B?dm5TYUlta3NUdWh3Z0dYRXBQekdLMVo0aTdNLy9NWFdsS0pDQ1BLcFNLVThC?=
+ =?utf-8?B?TU9Uc25hZGY3N1J1UEdoc0lZeFFPUkg4RENaUlliTUFkbmxiaERUZTlhRHFL?=
+ =?utf-8?B?VnVMbzVQWVhHOGRZSlJyY09XaHYvaklNWHM1bWRndFE4QklUTm1ESEFyV1dZ?=
+ =?utf-8?B?bVpQUUIwZFVQZU5saEJsdVV2Q1IxWHdkNm9KMnBtU1h4MFRISHk1NTVKNm1p?=
+ =?utf-8?B?eHNjeVArWmlQMGQ2Rkk0ZjJwSjd0YkY5Vk1ncEZYdGltd0E4VGdIQkhsSzFK?=
+ =?utf-8?B?SGdMY2xaanJuZlhjMGx5VTlqKzFRMjloL3JFY21aSWExcmVobTVDRnZEUzRZ?=
+ =?utf-8?B?UzcrbjNWbjdKWUJaeGFhS01KWjY4bXA0OG9ONi9xTTRPR0hhbWRlcGV1bE1Q?=
+ =?utf-8?B?Y0NVS3l3cHNqdDc3QXNZRWtobkJIS3dxVW83QmNrZTJjOTV2b2RvMmNaSXJ5?=
+ =?utf-8?B?Z1NBL2I5dFduVXZFMnp2cldKaG5jTERzOG04MXpmMWZwMWpQWS9RQXJ6YnEy?=
+ =?utf-8?B?RkJUZFZ3ajV2ZjJtQmVMUzdNOGhjL2ZaQ0t4RHpoRnJuNjRjd1ZqWklYMGdP?=
+ =?utf-8?B?dlN0QTIzNnhBcGRnek1URDNwYlI3MjBvdGhMcHlJMmFZS0ZEMU50a3FaZzJE?=
+ =?utf-8?B?MFJSaHBIbStpT293YUJ0VHFrN1BlWUpSL1VsQWZlTU82UEp1aFVoWjJOY0ZZ?=
+ =?utf-8?B?MXBYV0NVVjJWbHE2MyttdHpNZ0RQRnZGWm1YTGtsaFFTMlJJT1AxRGVzZEdY?=
+ =?utf-8?B?aEFURVZKbnRleDJxckxrbTNiNG90RGQxMFMvMkl1QmxjQ1VYL2orazZ3bjJw?=
+ =?utf-8?B?bkJpczBuYXQxSmRKQWVlSnAyODc2b0VEM21WYWtKcGVrcVEvVFR1L2s0YW5N?=
+ =?utf-8?B?REE4d29zb1dhSXdVbVNpa0NkTDUwTXkwWEFMN083ODZ4RzF0NEJ0V1F0bm9i?=
+ =?utf-8?B?RUQ2WlREZHlFc0MyR0k1NTYzc0pKOGV0cmp4VFVpdllrVnlPZTU0Y2FzSFJo?=
+ =?utf-8?B?REw5ZEI0bk1TOWdBcWpNUlMvWnY1VTVRdVg4WmNjdDZsY2k5WGtmK3NDRFRG?=
+ =?utf-8?B?dVdiSnoxa1Y5VjN2U2dqZXI4NDRNcTdaR1lFSks1ZnVpcDc4L28zeFBBcGZW?=
+ =?utf-8?B?L2VDdEJuMytOc1kzblVVKy9TWStNT3Y3dkRxNWtQZHczTnZQaWxJUllRRndC?=
+ =?utf-8?B?YUlPOFpwUGttWUd5OFk1QjhSUHY2WlE2UE9qZDErUElSZjU2RDhzbE1xL3Uw?=
+ =?utf-8?B?RklSWGEwWGdJTUdicUpIeHFvUHBaUVAxWWFWY3BPMWlPbWxxNGpkeDVhY0th?=
+ =?utf-8?B?ZEJPUFpRU3Q1SUM2bjd2UDBid2tXLzMxelMrL3hka05mTlJGem00MlZ3b0xQ?=
+ =?utf-8?B?RVZ6VkR4T3FkaXRvMTJyc3VROEhxTG1nU2ZDZitGbFVmbFZETGE2S3pud0NZ?=
+ =?utf-8?B?bEFXWDhpSzBIeUF2TWdQcXBzYkhkcFVqc3J2V2UzeGtpQUhPbHR6NFdPdC9U?=
+ =?utf-8?B?cTV3THl2S29UeWo1MVpmOERNRjBuV2tKcGkxRktOY0EvQjg0K2g5V2lsZGtN?=
+ =?utf-8?B?UTdZb0ZLOEVZU25zcHdING1xZ1g5MlNFc2hVeG9DaXBqOVhZdEd0THlUd1dq?=
+ =?utf-8?B?SFM3TzlIb0ZRRS9BbS91dWJ3MXBMcXZjdU5tRGhXK08xM01wSEFSVzBXUmFl?=
+ =?utf-8?Q?b9y5Uu/eMZw=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB6078.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(10070799003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?eFQ0cjduVWxISXNJUVZya1hsZFFYTWppWk5TVzZhUnJXZm9HcG9jMGxTWDcy?=
+ =?utf-8?B?M1YwT0dBdXVkSWFlbTVVdit2WjR4NGdVai85VWVFNWxaREZPQ2pONTJXNHRs?=
+ =?utf-8?B?aTZadGFld0F6eVc2M2JES2RFR0ZUSWxXNStHYzdOUFgraGpuNzFVc3duU1FM?=
+ =?utf-8?B?d09jZ0duRmRZL1JZUmlYYVZsQXg4bWplS2tiSmRLSnRCd3kzeDZ5RGZmczJD?=
+ =?utf-8?B?dlZKU3YvQ2lyU1FKYlFZdDUraVY5RUc4bFY0bEZJaE5vYUR6WDg4d3Y4UlFq?=
+ =?utf-8?B?WVlnUFZDU2xWbG9OYTRDNXkrcTZ3cWpuUGE0eDdjbW8wZU9DSVV6L21JTmd1?=
+ =?utf-8?B?WUdFdFExbEg1TVhaVE5aQytnbXgwQWNxamZocVlZNVJBSVRrdk5NUVlsNVJR?=
+ =?utf-8?B?T3hyNFM1TXJYTGhTU05LRE5WM2V2eitremgrWFhtNDMzZ0MyRklXWVlNQnFU?=
+ =?utf-8?B?VnJUdjhtSUJPNEFVUFBmZjZYZHBvL3ltbjE1ZkZlU1pMV1h1YUlyTThTYnpa?=
+ =?utf-8?B?Q2RlYUh4MWhrTE1QYldUdGRTWlZ1K25SamNNdkFhV1JmTysxem5adU52NjBW?=
+ =?utf-8?B?WmtmRm9GSXZHNkdadWNicXM5c09NWG1kY3dySzZ4eXpPVGYySGRuVWg4S2dE?=
+ =?utf-8?B?c1JFTDRCVitOY3ZBSDZXb2pUa1p3WEtxR2syWDlvdS84Rjd5SUdWTDZycmJN?=
+ =?utf-8?B?YWcvNTRpOFFudUJOQmJaVXpXRWxCK2h3ZldGSVIvNG5LamxLemJjZzRjRWU0?=
+ =?utf-8?B?TGZSUkI4bk5HYTZnRjhNL1k4YU9QTmFyWVB6Unk5eFdiSURvRnI2Zk1EUTBv?=
+ =?utf-8?B?b3VWTUR4RFdRVDBLdC9BWHZFbkNpalo2eGNDSGdhOGF1SEd0alB0YUZkZTNs?=
+ =?utf-8?B?emNIZmw2NUhzMkQ0dnpqSzNPUFp5anJ0Y0lBckRMM2tWa1BwMFNtcmg0U3pZ?=
+ =?utf-8?B?SDdWL1IwNkNERTdoQUlQNUtXTnB4OEdhV0hzQnpmMGFkbHhFNklDL0xLeGZ5?=
+ =?utf-8?B?YUxGVktqRnVmN1RFYVZMcEZaWXVTOUIyQzA1U2ZpYWhBR0pDVzVFcm8xU05I?=
+ =?utf-8?B?WFZhU3A4d0dISmVoZHRzc014NjBNTVNEVGExSFFaUHVmY3gwaHZjbkNDbldI?=
+ =?utf-8?B?S2lvMmNOWlpYcWVFNlpjTFlUekRmS2EvZVQ5RVlHTWwreG5JZS8wUlk2eHZl?=
+ =?utf-8?B?eXdvVGFSTDN1RzdTeUw1MFFSbnJNRHNvN3FBc3RnWkhSbGxyZjE4OHlvZElZ?=
+ =?utf-8?B?WWZtb2Z1QnRFaGVHckRBb3JqYzVYby84L2xuelV0cjErNHNZa0pmb0FoNW02?=
+ =?utf-8?B?cE41ZE84V2pBUlN4UXlEd3JweEo1QUhnOVdkTEc3TjBtanZISXBZRE96UTht?=
+ =?utf-8?B?bm01dG1rVEdMdCtqcnUyTEFmRXdnUGVKL2Zyc2pJY3pxUGFOMHh6OCtMeS9k?=
+ =?utf-8?B?T1NtdVVTYXN4Yk9ZeGpoOUFTK2FldG10dk5scnVQVk9lWGxWRW5keEhoVFhO?=
+ =?utf-8?B?VjFVSGRXK2RHOHZnZjFZRVl4NWJFZXluMkxhaUY3QlEySnVxVXU2SU51cEtk?=
+ =?utf-8?B?Vy9aTGVvbWNIZ21VY2E2QWxJeWRzRTdYZVBPMHZJcmkzNmdXcG9KMnpTMCtL?=
+ =?utf-8?B?clE1WWdMTC9GVGdMa3pmZUZ2UHBKZlJVNkUxbjNZcXAvSGcxeUVEenBRUlcy?=
+ =?utf-8?B?WFVQd0hwWFR5TFFmTTlVL0hGcCtJSjZRZEFRRE83QURrR2RTWTBVeUR5VURu?=
+ =?utf-8?B?OGxVdktiZTBTMzQvUndiMm5WZG9nMzl0NHcvekRrbDU1SjZQbWt6RzhWRTZq?=
+ =?utf-8?B?cGp3TFdtcmFicXFqZmM3V1NQbWthc2RHYzQ2ZEZ0a01zTkM4TXcvb2dIRHBI?=
+ =?utf-8?B?VkpKMUxNK1NMa3FaY3JFTjBqdDR1M2RzeTZib0RYZVpOOGZJMTJNbEhPQjBi?=
+ =?utf-8?B?TUhyOWg3ZXd3c2MvS2dkOHMydm9DWnVZbzZPQXMvRGZiN3JXOVBERTFhSGxt?=
+ =?utf-8?B?Q2FYSHo2Z0FNYm9IVDJqZ2pGcHZwTnYzdHJHM0JFRk5JVUxZSlpvd1ZBNnBS?=
+ =?utf-8?B?OTlwUFdFTUlaUzZyM2ljSllwT1dCUjFMTTk5MVl2TVlHUEhsNVdwZ1FQTm1L?=
+ =?utf-8?B?UWNvVlgxaWx3Uzc1UGcxRVlwRXl1eVhza0F4WmFiSGxveHExN0FtV0ZtUzdL?=
+ =?utf-8?Q?7YamTBYjZNWCULemtXJFXFb7aXcFX94Lv1LZ6dfXTpqX?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	8JVTESdRo7EMjnztHyIyiTN0f0BBXKV5MYDrdXmz9mxy+69jOcQ5nwJVDjkncSe6ZNpz4OUL58wN8nbmMHcwA8yA4uawxdRJXBWkiglEGjaRR8iWBmbPIlX9G/wPxgyWNR+4IwtKkIo4mO5Xa1I3qkI/no+8XuDjvhkkY5syf8359+Sa204/mlzKkfrJ6B3TS8oZr1PkNmtkBnBnFonZxOgZoQm5w3HWtcyFtn9BrxNJ92s09qLJcLe47heoGFRk4SK5eVrYa8YsZfnZVqLnsX6niy8U5ER7qtWVdMLncgZZE5Acjn3jNNJWnLEOhxNwdfPs46rtL1HYqhGCNXLd3agMgDhQWC8XlfXhn0abiqbHV/QEKnZV7k+Mu787QWvB3o2uK5MeMfDnFoteh1bw75yTx381UNh/DQHQBcoEyU9UuFI+iob+A4qlalim+RRfqr3Hn0Yy6GN5dbR54e+WWSn1OGeT4NxUSdVGcAxLsWo7r/MzHcbB/jlPLtP1C3EaZr4WQ5Gw4xoQI5Dtg+4ziPJ1ohR0h4v2pgZdgjx96NTB3smOhSx6+tvRqmM3AmY+CJ66uH7YrwubJjmzjAjmRmeqsFaGnDS/5hqn7GFdf/E=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60aa2af6-b618-4b8c-c5fc-08ddd890e414
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB6078.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2025 04:38:17.5984
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xU/xzC5fVbayWRzy7c3ivJDve+CKxsvR31dSFGLcBe7CKRtSfegVCRpMaIUuUl+GMaB024E10421ak16W1MZcg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB5885
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-08-10_06,2025-08-06_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ adultscore=0 mlxscore=0 phishscore=0 spamscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2507300000 definitions=main-2508110029
+X-Proofpoint-GUID: TeQfpTBMfD3dSnx0ta6Ty4Gf1GE_Rixt
+X-Proofpoint-ORIG-GUID: TeQfpTBMfD3dSnx0ta6Ty4Gf1GE_Rixt
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODExMDAyOSBTYWx0ZWRfX4xujCBoOyyho
+ UJQiXxAV+WshJXgnFUedVveDPTJbKD9N7aiZaxbmDWnW/gEqV9+Wgtcr55kxfeqw8I+wflErkEV
+ RDqqYuZP3AHEXmCVAgm+LMpd74Ajzz7yC977RQo3ciah8MUafddhjp5D660WC61r2et/M8/4d4F
+ UQZPle6zSvL9k6VXPdCon4vmYCbGLMHEFTV9CH95DnE1yAezZc5MtLuvWitNRDpz788NE+GsjLm
+ GE1v2OJgAJDZLrsGKIrj7Y99CzWzBOZSLLtxF8zNS5HQrYgm03w66oL/rRJy6Z1XaMM2dJ5aKN4
+ GS3ddh6R5Qt6QJLAE9fSZI5ENMfr+mdXORRZyE8Kkmot6QXopTp/Lji0DzUWqVnOsRphWNjVN2o
+ 9FUvfFXXv/zy0jUc3pn+1cKX02LCDb/OuvYFRfMewZgfFkxYgeEaZgNvNVtZRmCMz1uLkunh
+X-Authority-Analysis: v=2.4 cv=KJZaDEFo c=1 sm=1 tr=0 ts=689973d1 b=1 cx=c_pps
+ a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
+ a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=W2J9TUFY3fnUcNkd:21 a=xqWC_Br6kY4A:10
+ a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8
+ a=-bYqSSMGz4WteIM-f0IA:9 a=QEXdDO2ut3YA:10 a=_Xro0x9tv8kA:10 cc=ntf
+ awl=host:12069
 
- > Are you in a similar position with a corrupted RAID 5 array?
-
-No I'm not, but I am close to 75% full on one of my arrays of 30TB. 
-(8TBx3, + 6TB x1) with RAID5 data and RAID1 metadata/system.
-
-I'm not sure when I'll have a window to swap out the 6TB for an 8TB.   
-Just curious on what could go wrong if Murphy's law happens.  And how to 
-recover.
 
 
-On 11/8/25 06:16, johnh1214@gmail.com wrote:
-> I did not get any help from the devs mailing list yet.
->
-> For now, I've left things as-is (auto-mounted in RO degraded mode) and 
-> I'm securing a new NAS server, with sufficient drive space to backup 
-> whatever is still readable and error free, then I'll attempt a 
-> recovery using whatever best practice is advised, which currently is 
-> uncertain. I'll also upgrade the kernel to a more recent version which 
-> may have improved BTRFS recovery tools.
->
-> Are you in a similar position with a corrupted RAID 5 array?
->
-> In my case, it's not a HW failure, all the drives checkout fine, there 
-> are no SMART errors, the SATA cables are secured properly, etc. The 
-> problem was entirely due to running low on drive space, which of 
-> course, should not result in a corruption like I'm experiencing. I had 
-> another BTRFS RAID 5 array that ran out of space before this event, it 
-> had no issue, that's why I wasn't concerned with the low storage space.
->
-> It's possible there was a problem somewhere due to an unclean 
-> shutdown, which became a bigger problem when the drive ran low on 
-> space. My mistake for not running scrubs more regularly.
->
-> I read that a degraded RO mounted array, may cause random read errors, 
-> however the read errors in my case are not random, they are very 
-> specific to certain files.
->
-> The best advice so far, was to copy all the data as is before 
-> performing a recovery. After that, if you can duplicate each drive 
-> exactly, then you can attempt multiple recovery's, however the array 
-> is too big for that much effort, so I have only one shot at it. The 
-> idea is to try mounting in "recovery" mode, if it tries to auto 
-> repair, cancel it, then add extra temporary storage space, because it 
-> was low on data. A balance operation is needed to free up space, but 
-> that seems dangerous given there's corruption, however a scrub may 
-> fail if there's not enough space. The temp storage should be large 
-> enough, very reliable (eg not a plugged in USB), and should have two 
-> partitions for duplicating the metadata.
->
-> One mistake I made, was using RAID 1 for the metadata, when I had 
-> enough drives to use RAID 1C4. Maybe if I had more metadata 
-> redundancy, I'd be able to read everything.
->
-> There are a few possible different steps to take when recovering, as I 
-> said, I'm compiling a list, securing sufficient storage for a full 
-> backup of what's still readable, and trying to determine the best 
-> order of steps to take before giving it a try.
->
-> On 2025-08-10 01:10, DanglingPointer wrote:
->> Did anyone help you Johnh1214?
->>
->> Were you able to recover and get it readable?
->>
->>
->> On 13/7/25 08:02, johnh1214@gmail.com wrote:
->>> It was suggested to me, that I contact the btrfs devs group to 
->>> inform the group of this situation I've encountered.
->>>
->>> Any advice on what I should do to try and recover from the situation 
->>> will be appreciated.
->>>
->>> Fortunately I have a good copy of the most important data backed up, 
->>> however there are a few recent files not yet backed up that I hope 
->>> to recover. A lot of the data was for temporary archival reasons, 
->>> while moving systems around, most of it is no longer required, 
->>> however, I'd like to try and recover from this situation if possible.
->>>
->>> The RAID5 array is 5 x 8TB, using RAID 1 for metatdata. I was told I 
->>> could have instead used RAID1c4 for metatdata, but did not know this 
->>> beforehand.
->>>
->>> I was copying data to the raid array, when btrfs ran out of free 
->>> space, and went into read-only mode. The main issue is not that it's 
->>> gone into read-only mode, it's that I can no longer read most of the 
->>> files on the entire array, despite there being no noticeable issues 
->>> reading the data before the low space problem was encountered. I 
->>> never imagined, that running out of space could cause the entire 
->>> file system to become mostly unreadable.
->>>
->>> I have not yet attempted a recovery, and have left things exactly as 
->>> they are after the error was encountered. The server has not been 
->>> rebooted, and I've commented out the mounting of the array from 
->>> fstab in case there's an unplanned reboot. What I want to do first, 
->>> is copy what I can from the drive "as-is" in read-only mode, before 
->>> I attempt a rescue. I can list all the directories and files OK, 
->>> there's no sign of file system structure corruption, but many of the 
->>> underlying files are either entirely unreadable, or are only partly 
->>> readable, with maybe 20% that are 100% readable.
->>>
->>> The file system reported it was running low on free space, however 
->>> there was enough listed for the data transfer, about 2x more than I 
->>> required. I know that when space is low, btrfs will sometimes run 
->>> out early, despite it claiming there's enough. In the case at hand, 
->>> I think it claimed to have about 150GB free, and I was copying about 
->>> 56GB to it. I should have known better than to bother doing the 
->>> copy, but expected no worse than the copy aborting due to a lack of 
->>> free space. On single drives BTRFS FS, I've run out of space many 
->>> times before without issues.
->>>
->>> After successfully transferring about 50% of the data, the copy 
->>> aborted. There's no space left, and the FS encountered an error, 
->>> switching to read-only mode to prevent further damage.
->>>
->>> Here are the vitals:
->>>
->>> Kernel: 6.1.0-37-amd64
->>>
->>> RAID 5 array is 5 x 8TB, using RAID 1 for metatdata
->>> Note: someone told me I could have used RAID1cx4 for metatdata, is 
->>> that true?
->>>
->>> All 5 Toshiba HDD's appear to be operating normally, and SMART 
->>> reports all 5 drives are 100% healthy.
->>>
->>> btrfs fi show
->>>
->>> Label: 'pl.8000.00'  uuid: 5c3747c7-cc6a-45f2-a1e6-860095d0f7cd
->>>     Total devices 5 FS bytes used 29.02TiB
->>>     devid    1 size 7.28TiB used 7.28TiB path /dev/sdb
->>>     devid    2 size 7.28TiB used 7.28TiB path /dev/sdd
->>>     devid    3 size 7.28TiB used 7.28TiB path /dev/sdc
->>>     devid    4 size 7.28TiB used 7.28TiB path /dev/sde
->>>     devid    5 size 7.28TiB used 7.28TiB path /dev/sda
->>>
->>> Here is a /kern.log dump showing when the problem first appeared. 
->>> The dump indicates the array ran out of space, and was re-mounted 
->>> read-only, however the read-only state appears to be bad, with 
->>> missing "mirrors".
->>>
->>> In the dump below, the line, "2025-07-07T19:30:28.806270-07:00" 
->>> reports the array went into read-only mode.
->>> Afterwards, it's complaining about mirror 1 and 2 wanted, which 
->>> appear to be unavailable.
->>>
->>> /var/log/kern.log
->>> 2025-07-07T19:30:28.806185-07:00 host kernel: [3777897.708336] 
->>> ------------[ cut here ]------------
->>> 2025-07-07T19:30:28.806200-07:00 host kernel: [3777897.708339] 
->>> BTRFS: Transaction aborted (error -28)
->>> 2025-07-07T19:30:28.806200-07:00 host kernel: [3777897.708366] 
->>> WARNING: CPU: 8 PID: 3044847 at fs/btrfs/extent-tree.c:3092 
->>> __btrfs_free_extent.cold+0x661/0xa0b [btrfs]
->>> 2025-07-07T19:30:28.806202-07:00 host kernel: [3777897.708409] 
->>> Modules linked in: xt_MASQUERADE iptable_nat tcp_diag inet_diag 
->>> unix_diag nft_nat nft_masq nft_chain_nat nf_nat nf_conntrack 
->>> nf_defrag_ipv6 nf_defrag_ipv4 vhost_net vho>
->>> 2025-07-07T19:30:28.806204-07:00 host kernel: [3777897.708493] 
->>> drm_kms_helper ahci libahci xhci_pci libata xhci_hcd nvme ixgbe drm 
->>> nvme_core xfrm_algo t10_pi usbcore scsi_mod crc32_pclmul mdio_devres 
->>> igb crc32c_intel i2c_piix4 lib>
->>> 2025-07-07T19:30:28.806205-07:00 host kernel: [3777897.708524] CPU: 
->>> 8 PID: 3044847 Comm: kworker/u64:43 Tainted: G X 6.1.0-37-amd64 #1  
->>> Debian 6.1.140-1
->>> 2025-07-07T19:30:28.806205-07:00 host kernel: [3777897.708528] 
->>> Hardware name: To Be Filled By O.E.M. To Be Filled By 
->>> O.E.M./X570D4U-2L2T, BIOS P1.30 12/04/2020
->>> 2025-07-07T19:30:28.806206-07:00 host kernel: [3777897.708530] 
->>> Workqueue: events_unbound btrfs_async_reclaim_metadata_space [btrfs]
->>> 2025-07-07T19:30:28.806207-07:00 host kernel: [3777897.708565] RIP: 
->>> 0010:__btrfs_free_extent.cold+0x661/0xa0b [btrfs]
->>> 2025-07-07T19:30:28.806208-07:00 host kernel: [3777897.708596] Code: 
->>> 78 50 e8 65 de ff ff eb 8e 8b 7c 24 20 e8 35 ee ff ff 84 c0 0f 84 fb 
->>> 01 00 00 8b 74 24 20 48 c7 c7 b8 94 b3 c0 e8 50 61 38 da <0f> 0b c6 
->>> 44 24 30 01 44 8b 44 24 3>
->>> 2025-07-07T19:30:28.806209-07:00 host kernel: [3777897.708598] RSP: 
->>> 0018:ffff9cbf1df13a80 EFLAGS: 00010286
->>> 2025-07-07T19:30:28.806210-07:00 host kernel: [3777897.708600] RAX: 
->>> 0000000000000000 RBX: 00002f6f91030000 RCX: 0000000000000027
->>> 2025-07-07T19:30:28.806210-07:00 host kernel: [3777897.708602] RDX: 
->>> ffff8b5b8ec203e8 RSI: 0000000000000001 RDI: ffff8b5b8ec203e0
->>> 2025-07-07T19:30:28.806210-07:00 host kernel: [3777897.708604] RBP: 
->>> 0000000000000000 R08: 0000000000000000 R09: ffff9cbf1df138f8
->>> 2025-07-07T19:30:28.806211-07:00 host kernel: [3777897.708605] R10: 
->>> 0000000000000003 R11: ffff8b5c0f25de90 R12: 0000000000000001
->>> 2025-07-07T19:30:28.806211-07:00 host kernel: [3777897.708606] R13: 
->>> 0000000000000000 R14: 000000000000000a R15: ffff8b448dc605b0
->>> 2025-07-07T19:30:28.806212-07:00 host kernel: [3777897.708608] FS: 
->>> 0000000000000000(0000) GS:ffff8b5b8ec00000(0000) knlGS:0000000000000000
->>> 2025-07-07T19:30:28.806212-07:00 host kernel: [3777897.708610] CS: 
->>> 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> 2025-07-07T19:30:28.806213-07:00 host kernel: [3777897.708611] CR2: 
->>> 0000557ac7d0a438 CR3: 00000001ead0c000 CR4: 0000000000350ee0
->>> 2025-07-07T19:30:28.806215-07:00 host kernel: [3777897.708613] Call 
->>> Trace:
->>> 2025-07-07T19:30:28.806215-07:00 host kernel: [3777897.708617] <TASK>
->>> 2025-07-07T19:30:28.806216-07:00 host kernel: [3777897.708621] ? 
->>> __slab_free+0x11/0x2d0
->>> 2025-07-07T19:30:28.806234-07:00 host kernel: [3777897.708629] 
->>> __btrfs_run_delayed_refs+0x2be/0x10b0 [btrfs]
->>> 2025-07-07T19:30:28.806234-07:00 host kernel: [3777897.708660] ? 
->>> btrfs_search_slot+0x8a7/0xc90 [btrfs]
->>> 2025-07-07T19:30:28.806235-07:00 host kernel: [3777897.708688] ? 
->>> srso_return_thunk+0x5/0x10
->>> 2025-07-07T19:30:28.806236-07:00 host kernel: [3777897.708693] ? 
->>> set_extent_buffer_dirty+0x15/0x130 [btrfs]
->>> 2025-07-07T19:30:28.806236-07:00 host kernel: [3777897.708723] ? 
->>> srso_return_thunk+0x5/0x10
->>> 2025-07-07T19:30:28.806236-07:00 host kernel: [3777897.708725] ? 
->>> release_extent_buffer+0x99/0xb0 [btrfs]
->>> 2025-07-07T19:30:28.806237-07:00 host kernel: [3777897.708754] 
->>> btrfs_run_delayed_refs+0x76/0x1a0 [btrfs]
->>> 2025-07-07T19:30:28.806237-07:00 host kernel: [3777897.708783] 
->>> btrfs_start_dirty_block_groups+0x305/0x540 [btrfs]
->>> 2025-07-07T19:30:28.806238-07:00 host kernel: [3777897.708817] 
->>> btrfs_commit_transaction+0xab/0xc50 [btrfs]
->>> 2025-07-07T19:30:28.806238-07:00 host kernel: [3777897.708847] ? 
->>> srso_return_thunk+0x5/0x10
->>> 2025-07-07T19:30:28.806239-07:00 host kernel: [3777897.708849] ? 
->>> start_transaction+0xc3/0x5f0 [btrfs]
->>> 2025-07-07T19:30:28.806254-07:00 host kernel: [3777897.708878] 
->>> flush_space+0xfd/0x5f0 [btrfs]
->>> 2025-07-07T19:30:28.806254-07:00 host kernel: [3777897.708911] 
->>> btrfs_async_reclaim_metadata_space+0x1cc/0x2d0 [btrfs]
->>> 2025-07-07T19:30:28.806255-07:00 host kernel: [3777897.708940] 
->>> process_one_work+0x1c7/0x380
->>> 2025-07-07T19:30:28.806255-07:00 host kernel: [3777897.708946] 
->>> worker_thread+0x4d/0x380
->>> 2025-07-07T19:30:28.806255-07:00 host kernel: [3777897.708949] ? 
->>> rescuer_thread+0x3a0/0x3a0
->>> 2025-07-07T19:30:28.806256-07:00 host kernel: [3777897.708950] 
->>> kthread+0xda/0x100
->>> 2025-07-07T19:30:28.806256-07:00 host kernel: [3777897.708954] ? 
->>> kthread_complete_and_exit+0x20/0x20
->>> 2025-07-07T19:30:28.806257-07:00 host kernel: [3777897.708957] 
->>> ret_from_fork+0x22/0x30
->>> 2025-07-07T19:30:28.806258-07:00 host kernel: [3777897.708964] </TASK>
->>> 2025-07-07T19:30:28.806258-07:00 host kernel: [3777897.708965] ---[ 
->>> end trace 0000000000000000 ]---
->>> 2025-07-07T19:30:28.806261-07:00 host kernel: [3777897.708967] BTRFS 
->>> info (device sdb: state A): dumping space info:
->>> 2025-07-07T19:30:28.806262-07:00 host kernel: [3777897.708970] BTRFS 
->>> info (device sdb: state A): space_info DATA has 60921196544 free, is 
->>> full
->>> 2025-07-07T19:30:28.806262-07:00 host kernel: [3777897.708972] BTRFS 
->>> info (device sdb: state A): space_info total=31937462009856, 
->>> used=31873161326592, pinned=4096, reserved=3377864704, 
->>> may_use=45056, readonly=1572864 zone_unusable=0
->>> 2025-07-07T19:30:28.806263-07:00 host kernel: [3777897.708975] BTRFS 
->>> info (device sdb: state A): space_info METADATA has -2326528 free, 
->>> is full
->>> 2025-07-07T19:30:28.806263-07:00 host kernel: [3777897.708977] BTRFS 
->>> info (device sdb: state A): space_info total=41875931136, 
->>> used=39246086144, pinned=926269440, reserved=47579136, 
->>> may_use=1658191872, readonly=131072 zone_unusable>
->>> 2025-07-07T19:30:28.806266-07:00 host kernel: [3777897.708980] BTRFS 
->>> info (device sdb: state A): space_info SYSTEM has 31686656 free, is 
->>> not full
->>> 2025-07-07T19:30:28.806266-07:00 host kernel: [3777897.708982] BTRFS 
->>> info (device sdb: state A): space_info total=33554432, used=1867776, 
->>> pinned=0, reserved=0, may_use=0, readonly=0 zone_unusable=0
->>> 2025-07-07T19:30:28.806267-07:00 host kernel: [3777897.708985] BTRFS 
->>> info (device sdb: state A): global_block_rsv: size 536870912 reserved 0
->>> 2025-07-07T19:30:28.806268-07:00 host kernel: [3777897.708986] BTRFS 
->>> info (device sdb: state A): trans_block_rsv: size 0 reserved 0
->>> 2025-07-07T19:30:28.806268-07:00 host kernel: [3777897.708988] BTRFS 
->>> info (device sdb: state A): chunk_block_rsv: size 0 reserved 0
->>> 2025-07-07T19:30:28.806269-07:00 host kernel: [3777897.708990] BTRFS 
->>> info (device sdb: state A): delayed_block_rsv: size 262144 reserved 
->>> 262144
->>> 2025-07-07T19:30:28.806269-07:00 host kernel: [3777897.708992] BTRFS 
->>> info (device sdb: state A): delayed_refs_rsv: size 2375024640 
->>> reserved 0
->>> 2025-07-07T19:30:28.806270-07:00 host kernel: [3777897.708994] 
->>> BTRFS: error (device sdb: state A) in __btrfs_free_extent:3092: 
->>> errno=-28 No space left
->>> 2025-07-07T19:30:28.806270-07:00 host kernel: [3777897.709670] BTRFS 
->>> info (device sdb: state EA): forced readonly
->>> 2025-07-07T19:30:28.806271-07:00 host kernel: [3777897.709672] BTRFS 
->>> error (device sdb: state EA): failed to run delayed ref for logical 
->>> 52156220768256 num_bytes 16384 type 176 action 2 ref_mod 1: -28
->>> 2025-07-07T19:30:28.806274-07:00 host kernel: [3777897.710683] 
->>> BTRFS: error (device sdb: state EA) in btrfs_run_delayed_refs:2165: 
->>> errno=-28 No space left
->>> 2025-07-07T19:31:37.922065-07:00 host kernel: [3777966.824892] BTRFS 
->>> warning (device sdb: state EA): Skipping commit of aborted transaction.
->>> 2025-07-07T19:31:37.922082-07:00 host kernel: [3777966.824906] 
->>> BTRFS: error (device sdb: state EA) in btrfs_sync_log:3161: errno=-5 
->>> IO failure
->>> 2025-07-07T20:06:21.662072-07:00 host kernel: [3780050.499696] BTRFS 
->>> error (device sdb: state EA): parent transid verify failed on 
->>> logical 54213629362176 mirror 2 wanted 4093212 found 4093166
->>> 2025-07-07T20:06:21.682076-07:00 host kernel: [3780050.519936] BTRFS 
->>> error (device sdb: state EA): parent transid verify failed on 
->>> logical 54213629362176 mirror 1 wanted 4093212 found 4093166
->>> 2025-07-07T20:06:21.682100-07:00 host kernel: [3780050.522082] BTRFS 
->>> error (device sdb: state EA): parent transid verify failed on 
->>> logical 54213629362176 mirror 2 wanted 4093212 found 4093166
->>> 2025-07-07T20:06:21.686053-07:00 host kernel: [3780050.524439] BTRFS 
->>> error (device sdb: state EA): parent transid verify failed on 
->>> logical 54213629362176 mirror 1 wanted 4093212 found 4093166
->>> 2025-07-07T20:06:21.698380-07:00 host kernel: [3780050.526396] BTRFS 
->>> error (device sdb: state EA): parent transid verify failed on 
->>> logical 54213629362176 mirror 2 wanted 4093212 found 4093166
->>> 2025-07-07T20:06:21.698408-07:00 host kernel: [3780050.531760] BTRFS 
->>> error (device sdb: state EA): parent transid verify failed on 
->>> logical 54213629362176 mirror 1 wanted 4093212 found 4093166
->>> 2025-07-07T20:06:21.702623-07:00 host kernel: [3780050.539105] BTRFS 
->>> error (device sdb: state EA): parent transid verify failed on 
->>> logical 54213629362176 mirror 2 wanted 4093212 found 4093166
->>> 2025-07-07T20:06:21.708871-07:00 host kernel: [3780050.543772] BTRFS 
->>> error (device sdb: state EA): parent transid verify failed on 
->>> logical 54213629362176 mirror 1 wanted 4093212 found 4093166
->>> 2025-07-07T20:06:21.717935-07:00 host kernel: [3780050.549936] BTRFS 
->>> error (device sdb: state EA): parent transid verify failed on 
->>> logical 54213629362176 mirror 2 wanted 4093212 found 4093166
->>> 2025-07-07T20:06:21.726076-07:00 host kernel: [3780050.558423] BTRFS 
->>> error (device sdb: state EA): parent transid verify failed on 
->>> logical 54213629362176 mirror 1 wanted 4093212 found 4093166
->>> 2025-07-07T20:06:31.106118-07:00 host kernel: [3780059.943621] 
->>> verify_parent_transid: 278 callbacks suppressed
->>>
->>> :
->>> NOTE: the parent transit errors, as shown above, repeat forever
->>>
->>> There are also checksum verify errors logged, like the one shown 
->>> below, most of them are mirror 2, with a few mirror 1 logged.
->>>
->>> 2025-07-07T20:29:14.078068-07:00 host kernel: [3781422.870343] BTRFS 
->>> warning (device sdb: state EA): checksum verify failed on logical 
->>> 55129635373056 mirror 2 wanted 0x076ea9a7 found 0xf5e8fb26 level 1
->>>
->>> Are the metadata mirrors, 1 and 2, entirely missing, or are two of 
->>> the 8TB drives involved in the array, no longer available after it 
->>> went into read-only mode?
->>>
->>> I use xfce4 for emergency use on this server, and the file browser 
->>> Thunar, is now showing 4 or the 5 drives as being available for 
->>> mounting, whereas before this situation happened, none of the drives 
->>> were shown as being available.
->>>
->>> This is a very confusing situation. Any assistance on how to proceed 
->>> from here is appreciated.
->>>
->>>
->
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+
+Thx
+
 
