@@ -1,182 +1,443 @@
-Return-Path: <linux-btrfs+bounces-15973-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15974-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C59F0B1FD3B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 02:14:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3625B1FD94
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 04:02:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC42D1895AD9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 00:14:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB4131777ED
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 02:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1D014AA9;
-	Mon, 11 Aug 2025 00:14:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E83D0157A72;
+	Mon, 11 Aug 2025 02:02:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AFANzuLZ";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AFANzuLZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VM9+okkw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E5BEB644
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Aug 2025 00:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE443D76
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Aug 2025 02:02:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754871255; cv=none; b=TqxrmzX+4JYHrUeZdcBtcqSp329edGGPMlNwl04zKEEuvejsFbo2ziUGJ/I7cavXp01UPwDimZrblTT7HMa/kejnDJzFjfmiWB4N23sMuahJL7LKSoeaqKH3hJekM9Tup4oyFNVOl/jAcN8O2RNnd/Lv4y2JKA4+kzoTEnelHZw=
+	t=1754877769; cv=none; b=Ua7mSxvEd/vgCeM6XZyujQfVk9QMvrm+nkxZ5phsD9a9j/e9nqP76JmpSNVI5ShQc2vYWWDLzC9lJOG7Q31VE6on4iXqBKctVQixpr0pnhY9VnXYKXrfB/oA9YPgVctMAsPuGEBkIjrVB52doGrsORdwkGCQmwUbrmw9iRQM8F0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754871255; c=relaxed/simple;
-	bh=r1fUTYJp2dOVsAOZxEyLi9d32JQMdy3Q+++6oFWdLkg=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=S8A81t10fGqETvsVGAKOHP+V3JyukK8gf4SprnvH4E6czmrro/ewwwQ86gVz1N+REV8is9Ceza5cQ2I1Kl+KgMwP8Z4nLFxO+RKHlV1HWCOK6qZ8FGbutSwmgFqURfBzoQ0tGNmj+okXzsNFrXPXLntFFm8pb3XQ7npqPWa8MPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AFANzuLZ; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AFANzuLZ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5201420B1B
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Aug 2025 00:14:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1754871245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=DKPGdNAcvMFVHHSUhyQCn5JJvwGda8jcXpPPFgfVvD8=;
-	b=AFANzuLZpfLdzwK9rheStRfqj2bnHyRtTW+YHNyFtMq/FstvJ+Q6RhY89keeLQuS3u6oSj
-	ACCgbVPV8qC1nmBuFvT+clwEEmCv5H7k/6KgZnP5oLEci3YJ4p2jPUeJOUc1jV5NQUeyZu
-	cpFAh57If1JKIkBM0rhHcaNP0OXw/RY=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1754871245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=DKPGdNAcvMFVHHSUhyQCn5JJvwGda8jcXpPPFgfVvD8=;
-	b=AFANzuLZpfLdzwK9rheStRfqj2bnHyRtTW+YHNyFtMq/FstvJ+Q6RhY89keeLQuS3u6oSj
-	ACCgbVPV8qC1nmBuFvT+clwEEmCv5H7k/6KgZnP5oLEci3YJ4p2jPUeJOUc1jV5NQUeyZu
-	cpFAh57If1JKIkBM0rhHcaNP0OXw/RY=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B957136E4
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Aug 2025 00:14:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id E/InE8w1mWjZbAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Aug 2025 00:14:04 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: use blocksize to check if compression is making things larger
-Date: Mon, 11 Aug 2025 09:43:42 +0930
-Message-ID: <14db816c702a3567faa0cd5efe2110b6ebfba970.1754871148.git.wqu@suse.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1754877769; c=relaxed/simple;
+	bh=MduAaE0NmYCrh/O/BdZlS5oPSsGUMmLyqrnwy56WGVc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=GfT6lx3ixL4nimqar1oP8vBEVuQkDlrksk154gBMZB1Syamk9gw74vxWFknIYK7EPbXBJz6zglE1wUF7JXroL5psinupa+h+H7NG35M6QWrghsW82A6ALQ4dt5bmhydgr/ta4gAfiAykDaTvxaHpKhpVE0930SQ9KEhvdCS9HeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VM9+okkw; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-24041a39005so24201235ad.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Aug 2025 19:02:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754877766; x=1755482566; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ZVhK8u9w5DcANYmGns3xEFdjqy1eGLqAEJOeJZfIVwc=;
+        b=VM9+okkwwUcFh5+vAS+ieQL+GzYydoB/+GSx1MTQ9Y27rgAZ36IaWBeZ6xXF1OBzd/
+         nD2L5xDvsik6Qrq7qICuwiuE7hdcjamj+rtRlQ+IihN2y21ZoG5Zy4wjdUWSkDLsJVwM
+         nJaQwiaK66+rf8QcyDijDsOjyZQDxjL8KkibdLAe2RSVdJTIyQg9TmPJwuK8w68HXEZc
+         Z8sK/4J8DPQNViubBOTm2Vm03J93iey77631HcbUlBuErK9SFpDevbKR9ltgjR7L/xcH
+         CIk/+knYPMxdITufyfASfSke4rPXSVSkyTyMkEe+3s2oBFh6+j/CYq/v+PyPubMSc5RF
+         yDhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754877766; x=1755482566;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZVhK8u9w5DcANYmGns3xEFdjqy1eGLqAEJOeJZfIVwc=;
+        b=PYfu/FaHjpaI8/kU3/K9U9LkY/fWs+p+d4oG5kFEjB/c01DmIKzMIiywe2bAQxUwJG
+         eYIgp+dkw6+fr9CUZ5GvN8W2WAX96hYPhSBLrF4Yr51u6wxbw0plw98GHav0L9M2Aoou
+         UcbIow2meHFzR987+k4tSJ1eL+IoUU1UCZPAtEYW8oazropaqAIGFqk21IJnfCdb2A7S
+         mRF2G5mLvZMkfwf6XK3xdTFwHZ5uyLSw1bdFaccIo6AArEkQOHiJEznXkYnmEFUYXgrm
+         ModyGtdGFknHxVS5Rw5EXk1HrBAw7LFY6GMoe7IU94GFkxQctOn+F/FnQUgN5fJp+Eef
+         iczw==
+X-Forwarded-Encrypted: i=1; AJvYcCWFcd9bn8xGNAITbNkP/hIP4O3vJ8lxGTTNMnTCOg2i3SdNZjL+sQxPddA6vROqSCmn+1tztZ04+STbkg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxs2iqqQvdB9YnWn2cuZJNRwod/5GUc3qWTPsHc3Hq1uMeGvZa5
+	3KRyh2BEfDN3coI4v9pHNqZc04HYzEWN/+C3zzY/pbro0bUytMZXmxeq
+X-Gm-Gg: ASbGncsAAIWCMAA3vXCTfPwIFloMCk/kriMv/RuIueqUZIJINJ3Bz6l3Fij8mCvINPU
+	v8FC6hdxWVF9XLOuTGUT/zaLcpzwLpeWuEk1c7eJQ2gX4BV7r3IiFVIJ2I368iYguqlwvkmLlxl
+	nTO3QJJ6VNFhpn4oAuJxDKzHtL01pfNbDdWN6RK1MC1QQCondGLKrK9/KZTbzjIQM8yoaT1V2jt
+	m40qFhuLBO5jOKsHDerLbNy/bGDUxyiiYuMWZnd3ZvZ00MOV9ivofPflrMkShndObDkEaQkhJJU
+	GZ9gwCGsWbYD08aCQQRl8ZSQ23vzFCy4bDQYJKptjnjEH/SGv7T4eRSDkED+gBNzZrVMhLDQNPq
+	GXSTubmhzbi49P97SblPTLRhW8qODQDakFTLGJFMlMkRBjWgA9PsZ5WPgiK/c3+EXThxbGPfx1p
+	oSZdscxs26
+X-Google-Smtp-Source: AGHT+IHOTkrj04G4Koe7ijbGlUYD3B+FDbPsV3IZ87REoXtGl5+HNWHH6BIB9FruKek5JzMJKW14mA==
+X-Received: by 2002:a17:902:ec89:b0:22e:4d50:4f58 with SMTP id d9443c01a7336-242c21dce5emr185586155ad.31.1754877766119;
+        Sun, 10 Aug 2025 19:02:46 -0700 (PDT)
+Received: from [192.168.188.28] (210-5-38-62.ip4.superloop.au. [210.5.38.62])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241d1ef5934sm258143915ad.21.2025.08.10.19.02.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Aug 2025 19:02:45 -0700 (PDT)
+Message-ID: <b1a7a056-2d0f-40c0-9899-8ecbfc29dfa5@gmail.com>
+Date: Mon, 11 Aug 2025 12:02:42 +1000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: BTRFS RAID 5 array ran out of space, switched to R/O mode with
+ errors
+To: "johnh1214@gmail.com" <johnh1214@gmail.com>, linux-btrfs@vger.kernel.org
+References: <99bc3ec8-8251-4530-ab4c-7b427883853e@gmail.com>
+ <eeec436c-fa53-4644-aec6-5e4381da34ab@gmail.com>
+ <89786d48-cdca-4e53-8646-09860a6f5482@gmail.com>
+Content-Language: en-US
+From: DanglingPointer <danglingpointerexception@gmail.com>
+In-Reply-To: <89786d48-cdca-4e53-8646-09860a6f5482@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -2.80
 
-[BEHAVIOR DIFFERENCE BETWEEN COMPRESSION ALGOS]
-Currently LZO compression algorithm will check if we're making the
-compressed data larger after compressing more than 2 blocks.
+ > Are you in a similar position with a corrupted RAID 5 array?
 
-But zlib and zstd do the same checks after compressing more than 8192
-bytes.
+No I'm not, but I am close to 75% full on one of my arrays of 30TB. 
+(8TBx3, + 6TB x1) with RAID5 data and RAID1 metadata/system.
 
-This is not a big deal, but since we're already supporting larger block
-size (e.g. 64K block size if page size is also 64K), this check is not
-suitable for all block sizes.
+I'm not sure when I'll have a window to swap out the 6TB for an 8TB.   
+Just curious on what could go wrong if Murphy's law happens.  And how to 
+recover.
 
-For example, if our page and block size are both 16KiB, and after the
-first block compressed using zlib, the resulted compressed data is
-slightly  larger than 16KiB, we will immediately abort the compression.
 
-This makes zstd and zlib compression algorithms to behave slightly
-different from LZO, which only aborts after compressing two blocks.
-
-[ENHANCEMENT]
-To unify the behavior, only abort the compression after compressing at
-least two blocks.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-This relies on a previous patch which passes btrfs_inode pointer
-directly into all the *_compress_folios() callbacks:
-https://lore.kernel.org/linux-btrfs/fd12c8b1c7366dc82b04cc702a82703b3e7d3686.1754822695.git.wqu@suse.com/
----
- fs/btrfs/zlib.c | 3 ++-
- fs/btrfs/zstd.c | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
-index 21af68f93a2d..33dc7e7b5c36 100644
---- a/fs/btrfs/zlib.c
-+++ b/fs/btrfs/zlib.c
-@@ -148,6 +148,7 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 	unsigned long len = *total_out;
- 	unsigned long nr_dest_folios = *out_folios;
- 	const unsigned long max_out = nr_dest_folios * PAGE_SIZE;
-+	const u32 blocksize = inode->root->fs_info->sectorsize;
- 	const u64 orig_end = start + len;
- 
- 	*out_folios = 0;
-@@ -234,7 +235,7 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 		}
- 
- 		/* we're making it bigger, give up */
--		if (workspace->strm.total_in > 8192 &&
-+		if (workspace->strm.total_in > blocksize * 2 &&
- 		    workspace->strm.total_in <
- 		    workspace->strm.total_out) {
- 			ret = -E2BIG;
-diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
-index 00159e0e921e..d521187336a5 100644
---- a/fs/btrfs/zstd.c
-+++ b/fs/btrfs/zstd.c
-@@ -400,6 +400,7 @@ int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 	unsigned long len = *total_out;
- 	const unsigned long nr_dest_folios = *out_folios;
- 	const u64 orig_end = start + len;
-+	const u32 blocksize = inode->root->fs_info->sectorsize;
- 	unsigned long max_out = nr_dest_folios * PAGE_SIZE;
- 	unsigned int cur_len;
- 
-@@ -456,7 +457,7 @@ int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 		}
- 
- 		/* Check to see if we are making it bigger */
--		if (tot_in + workspace->in_buf.pos > 8192 &&
-+		if (tot_in + workspace->in_buf.pos > blocksize * 2 &&
- 				tot_in + workspace->in_buf.pos <
- 				tot_out + workspace->out_buf.pos) {
- 			ret = -E2BIG;
--- 
-2.50.1
-
+On 11/8/25 06:16, johnh1214@gmail.com wrote:
+> I did not get any help from the devs mailing list yet.
+>
+> For now, I've left things as-is (auto-mounted in RO degraded mode) and 
+> I'm securing a new NAS server, with sufficient drive space to backup 
+> whatever is still readable and error free, then I'll attempt a 
+> recovery using whatever best practice is advised, which currently is 
+> uncertain. I'll also upgrade the kernel to a more recent version which 
+> may have improved BTRFS recovery tools.
+>
+> Are you in a similar position with a corrupted RAID 5 array?
+>
+> In my case, it's not a HW failure, all the drives checkout fine, there 
+> are no SMART errors, the SATA cables are secured properly, etc. The 
+> problem was entirely due to running low on drive space, which of 
+> course, should not result in a corruption like I'm experiencing. I had 
+> another BTRFS RAID 5 array that ran out of space before this event, it 
+> had no issue, that's why I wasn't concerned with the low storage space.
+>
+> It's possible there was a problem somewhere due to an unclean 
+> shutdown, which became a bigger problem when the drive ran low on 
+> space. My mistake for not running scrubs more regularly.
+>
+> I read that a degraded RO mounted array, may cause random read errors, 
+> however the read errors in my case are not random, they are very 
+> specific to certain files.
+>
+> The best advice so far, was to copy all the data as is before 
+> performing a recovery. After that, if you can duplicate each drive 
+> exactly, then you can attempt multiple recovery's, however the array 
+> is too big for that much effort, so I have only one shot at it. The 
+> idea is to try mounting in "recovery" mode, if it tries to auto 
+> repair, cancel it, then add extra temporary storage space, because it 
+> was low on data. A balance operation is needed to free up space, but 
+> that seems dangerous given there's corruption, however a scrub may 
+> fail if there's not enough space. The temp storage should be large 
+> enough, very reliable (eg not a plugged in USB), and should have two 
+> partitions for duplicating the metadata.
+>
+> One mistake I made, was using RAID 1 for the metadata, when I had 
+> enough drives to use RAID 1C4. Maybe if I had more metadata 
+> redundancy, I'd be able to read everything.
+>
+> There are a few possible different steps to take when recovering, as I 
+> said, I'm compiling a list, securing sufficient storage for a full 
+> backup of what's still readable, and trying to determine the best 
+> order of steps to take before giving it a try.
+>
+> On 2025-08-10 01:10, DanglingPointer wrote:
+>> Did anyone help you Johnh1214?
+>>
+>> Were you able to recover and get it readable?
+>>
+>>
+>> On 13/7/25 08:02, johnh1214@gmail.com wrote:
+>>> It was suggested to me, that I contact the btrfs devs group to 
+>>> inform the group of this situation I've encountered.
+>>>
+>>> Any advice on what I should do to try and recover from the situation 
+>>> will be appreciated.
+>>>
+>>> Fortunately I have a good copy of the most important data backed up, 
+>>> however there are a few recent files not yet backed up that I hope 
+>>> to recover. A lot of the data was for temporary archival reasons, 
+>>> while moving systems around, most of it is no longer required, 
+>>> however, I'd like to try and recover from this situation if possible.
+>>>
+>>> The RAID5 array is 5 x 8TB, using RAID 1 for metatdata. I was told I 
+>>> could have instead used RAID1c4 for metatdata, but did not know this 
+>>> beforehand.
+>>>
+>>> I was copying data to the raid array, when btrfs ran out of free 
+>>> space, and went into read-only mode. The main issue is not that it's 
+>>> gone into read-only mode, it's that I can no longer read most of the 
+>>> files on the entire array, despite there being no noticeable issues 
+>>> reading the data before the low space problem was encountered. I 
+>>> never imagined, that running out of space could cause the entire 
+>>> file system to become mostly unreadable.
+>>>
+>>> I have not yet attempted a recovery, and have left things exactly as 
+>>> they are after the error was encountered. The server has not been 
+>>> rebooted, and I've commented out the mounting of the array from 
+>>> fstab in case there's an unplanned reboot. What I want to do first, 
+>>> is copy what I can from the drive "as-is" in read-only mode, before 
+>>> I attempt a rescue. I can list all the directories and files OK, 
+>>> there's no sign of file system structure corruption, but many of the 
+>>> underlying files are either entirely unreadable, or are only partly 
+>>> readable, with maybe 20% that are 100% readable.
+>>>
+>>> The file system reported it was running low on free space, however 
+>>> there was enough listed for the data transfer, about 2x more than I 
+>>> required. I know that when space is low, btrfs will sometimes run 
+>>> out early, despite it claiming there's enough. In the case at hand, 
+>>> I think it claimed to have about 150GB free, and I was copying about 
+>>> 56GB to it. I should have known better than to bother doing the 
+>>> copy, but expected no worse than the copy aborting due to a lack of 
+>>> free space. On single drives BTRFS FS, I've run out of space many 
+>>> times before without issues.
+>>>
+>>> After successfully transferring about 50% of the data, the copy 
+>>> aborted. There's no space left, and the FS encountered an error, 
+>>> switching to read-only mode to prevent further damage.
+>>>
+>>> Here are the vitals:
+>>>
+>>> Kernel: 6.1.0-37-amd64
+>>>
+>>> RAID 5 array is 5 x 8TB, using RAID 1 for metatdata
+>>> Note: someone told me I could have used RAID1cx4 for metatdata, is 
+>>> that true?
+>>>
+>>> All 5 Toshiba HDD's appear to be operating normally, and SMART 
+>>> reports all 5 drives are 100% healthy.
+>>>
+>>> btrfs fi show
+>>>
+>>> Label: 'pl.8000.00'  uuid: 5c3747c7-cc6a-45f2-a1e6-860095d0f7cd
+>>>     Total devices 5 FS bytes used 29.02TiB
+>>>     devid    1 size 7.28TiB used 7.28TiB path /dev/sdb
+>>>     devid    2 size 7.28TiB used 7.28TiB path /dev/sdd
+>>>     devid    3 size 7.28TiB used 7.28TiB path /dev/sdc
+>>>     devid    4 size 7.28TiB used 7.28TiB path /dev/sde
+>>>     devid    5 size 7.28TiB used 7.28TiB path /dev/sda
+>>>
+>>> Here is a /kern.log dump showing when the problem first appeared. 
+>>> The dump indicates the array ran out of space, and was re-mounted 
+>>> read-only, however the read-only state appears to be bad, with 
+>>> missing "mirrors".
+>>>
+>>> In the dump below, the line, "2025-07-07T19:30:28.806270-07:00" 
+>>> reports the array went into read-only mode.
+>>> Afterwards, it's complaining about mirror 1 and 2 wanted, which 
+>>> appear to be unavailable.
+>>>
+>>> /var/log/kern.log
+>>> 2025-07-07T19:30:28.806185-07:00 host kernel: [3777897.708336] 
+>>> ------------[ cut here ]------------
+>>> 2025-07-07T19:30:28.806200-07:00 host kernel: [3777897.708339] 
+>>> BTRFS: Transaction aborted (error -28)
+>>> 2025-07-07T19:30:28.806200-07:00 host kernel: [3777897.708366] 
+>>> WARNING: CPU: 8 PID: 3044847 at fs/btrfs/extent-tree.c:3092 
+>>> __btrfs_free_extent.cold+0x661/0xa0b [btrfs]
+>>> 2025-07-07T19:30:28.806202-07:00 host kernel: [3777897.708409] 
+>>> Modules linked in: xt_MASQUERADE iptable_nat tcp_diag inet_diag 
+>>> unix_diag nft_nat nft_masq nft_chain_nat nf_nat nf_conntrack 
+>>> nf_defrag_ipv6 nf_defrag_ipv4 vhost_net vho>
+>>> 2025-07-07T19:30:28.806204-07:00 host kernel: [3777897.708493] 
+>>> drm_kms_helper ahci libahci xhci_pci libata xhci_hcd nvme ixgbe drm 
+>>> nvme_core xfrm_algo t10_pi usbcore scsi_mod crc32_pclmul mdio_devres 
+>>> igb crc32c_intel i2c_piix4 lib>
+>>> 2025-07-07T19:30:28.806205-07:00 host kernel: [3777897.708524] CPU: 
+>>> 8 PID: 3044847 Comm: kworker/u64:43 Tainted: G X 6.1.0-37-amd64 #1  
+>>> Debian 6.1.140-1
+>>> 2025-07-07T19:30:28.806205-07:00 host kernel: [3777897.708528] 
+>>> Hardware name: To Be Filled By O.E.M. To Be Filled By 
+>>> O.E.M./X570D4U-2L2T, BIOS P1.30 12/04/2020
+>>> 2025-07-07T19:30:28.806206-07:00 host kernel: [3777897.708530] 
+>>> Workqueue: events_unbound btrfs_async_reclaim_metadata_space [btrfs]
+>>> 2025-07-07T19:30:28.806207-07:00 host kernel: [3777897.708565] RIP: 
+>>> 0010:__btrfs_free_extent.cold+0x661/0xa0b [btrfs]
+>>> 2025-07-07T19:30:28.806208-07:00 host kernel: [3777897.708596] Code: 
+>>> 78 50 e8 65 de ff ff eb 8e 8b 7c 24 20 e8 35 ee ff ff 84 c0 0f 84 fb 
+>>> 01 00 00 8b 74 24 20 48 c7 c7 b8 94 b3 c0 e8 50 61 38 da <0f> 0b c6 
+>>> 44 24 30 01 44 8b 44 24 3>
+>>> 2025-07-07T19:30:28.806209-07:00 host kernel: [3777897.708598] RSP: 
+>>> 0018:ffff9cbf1df13a80 EFLAGS: 00010286
+>>> 2025-07-07T19:30:28.806210-07:00 host kernel: [3777897.708600] RAX: 
+>>> 0000000000000000 RBX: 00002f6f91030000 RCX: 0000000000000027
+>>> 2025-07-07T19:30:28.806210-07:00 host kernel: [3777897.708602] RDX: 
+>>> ffff8b5b8ec203e8 RSI: 0000000000000001 RDI: ffff8b5b8ec203e0
+>>> 2025-07-07T19:30:28.806210-07:00 host kernel: [3777897.708604] RBP: 
+>>> 0000000000000000 R08: 0000000000000000 R09: ffff9cbf1df138f8
+>>> 2025-07-07T19:30:28.806211-07:00 host kernel: [3777897.708605] R10: 
+>>> 0000000000000003 R11: ffff8b5c0f25de90 R12: 0000000000000001
+>>> 2025-07-07T19:30:28.806211-07:00 host kernel: [3777897.708606] R13: 
+>>> 0000000000000000 R14: 000000000000000a R15: ffff8b448dc605b0
+>>> 2025-07-07T19:30:28.806212-07:00 host kernel: [3777897.708608] FS: 
+>>> 0000000000000000(0000) GS:ffff8b5b8ec00000(0000) knlGS:0000000000000000
+>>> 2025-07-07T19:30:28.806212-07:00 host kernel: [3777897.708610] CS: 
+>>> 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> 2025-07-07T19:30:28.806213-07:00 host kernel: [3777897.708611] CR2: 
+>>> 0000557ac7d0a438 CR3: 00000001ead0c000 CR4: 0000000000350ee0
+>>> 2025-07-07T19:30:28.806215-07:00 host kernel: [3777897.708613] Call 
+>>> Trace:
+>>> 2025-07-07T19:30:28.806215-07:00 host kernel: [3777897.708617] <TASK>
+>>> 2025-07-07T19:30:28.806216-07:00 host kernel: [3777897.708621] ? 
+>>> __slab_free+0x11/0x2d0
+>>> 2025-07-07T19:30:28.806234-07:00 host kernel: [3777897.708629] 
+>>> __btrfs_run_delayed_refs+0x2be/0x10b0 [btrfs]
+>>> 2025-07-07T19:30:28.806234-07:00 host kernel: [3777897.708660] ? 
+>>> btrfs_search_slot+0x8a7/0xc90 [btrfs]
+>>> 2025-07-07T19:30:28.806235-07:00 host kernel: [3777897.708688] ? 
+>>> srso_return_thunk+0x5/0x10
+>>> 2025-07-07T19:30:28.806236-07:00 host kernel: [3777897.708693] ? 
+>>> set_extent_buffer_dirty+0x15/0x130 [btrfs]
+>>> 2025-07-07T19:30:28.806236-07:00 host kernel: [3777897.708723] ? 
+>>> srso_return_thunk+0x5/0x10
+>>> 2025-07-07T19:30:28.806236-07:00 host kernel: [3777897.708725] ? 
+>>> release_extent_buffer+0x99/0xb0 [btrfs]
+>>> 2025-07-07T19:30:28.806237-07:00 host kernel: [3777897.708754] 
+>>> btrfs_run_delayed_refs+0x76/0x1a0 [btrfs]
+>>> 2025-07-07T19:30:28.806237-07:00 host kernel: [3777897.708783] 
+>>> btrfs_start_dirty_block_groups+0x305/0x540 [btrfs]
+>>> 2025-07-07T19:30:28.806238-07:00 host kernel: [3777897.708817] 
+>>> btrfs_commit_transaction+0xab/0xc50 [btrfs]
+>>> 2025-07-07T19:30:28.806238-07:00 host kernel: [3777897.708847] ? 
+>>> srso_return_thunk+0x5/0x10
+>>> 2025-07-07T19:30:28.806239-07:00 host kernel: [3777897.708849] ? 
+>>> start_transaction+0xc3/0x5f0 [btrfs]
+>>> 2025-07-07T19:30:28.806254-07:00 host kernel: [3777897.708878] 
+>>> flush_space+0xfd/0x5f0 [btrfs]
+>>> 2025-07-07T19:30:28.806254-07:00 host kernel: [3777897.708911] 
+>>> btrfs_async_reclaim_metadata_space+0x1cc/0x2d0 [btrfs]
+>>> 2025-07-07T19:30:28.806255-07:00 host kernel: [3777897.708940] 
+>>> process_one_work+0x1c7/0x380
+>>> 2025-07-07T19:30:28.806255-07:00 host kernel: [3777897.708946] 
+>>> worker_thread+0x4d/0x380
+>>> 2025-07-07T19:30:28.806255-07:00 host kernel: [3777897.708949] ? 
+>>> rescuer_thread+0x3a0/0x3a0
+>>> 2025-07-07T19:30:28.806256-07:00 host kernel: [3777897.708950] 
+>>> kthread+0xda/0x100
+>>> 2025-07-07T19:30:28.806256-07:00 host kernel: [3777897.708954] ? 
+>>> kthread_complete_and_exit+0x20/0x20
+>>> 2025-07-07T19:30:28.806257-07:00 host kernel: [3777897.708957] 
+>>> ret_from_fork+0x22/0x30
+>>> 2025-07-07T19:30:28.806258-07:00 host kernel: [3777897.708964] </TASK>
+>>> 2025-07-07T19:30:28.806258-07:00 host kernel: [3777897.708965] ---[ 
+>>> end trace 0000000000000000 ]---
+>>> 2025-07-07T19:30:28.806261-07:00 host kernel: [3777897.708967] BTRFS 
+>>> info (device sdb: state A): dumping space info:
+>>> 2025-07-07T19:30:28.806262-07:00 host kernel: [3777897.708970] BTRFS 
+>>> info (device sdb: state A): space_info DATA has 60921196544 free, is 
+>>> full
+>>> 2025-07-07T19:30:28.806262-07:00 host kernel: [3777897.708972] BTRFS 
+>>> info (device sdb: state A): space_info total=31937462009856, 
+>>> used=31873161326592, pinned=4096, reserved=3377864704, 
+>>> may_use=45056, readonly=1572864 zone_unusable=0
+>>> 2025-07-07T19:30:28.806263-07:00 host kernel: [3777897.708975] BTRFS 
+>>> info (device sdb: state A): space_info METADATA has -2326528 free, 
+>>> is full
+>>> 2025-07-07T19:30:28.806263-07:00 host kernel: [3777897.708977] BTRFS 
+>>> info (device sdb: state A): space_info total=41875931136, 
+>>> used=39246086144, pinned=926269440, reserved=47579136, 
+>>> may_use=1658191872, readonly=131072 zone_unusable>
+>>> 2025-07-07T19:30:28.806266-07:00 host kernel: [3777897.708980] BTRFS 
+>>> info (device sdb: state A): space_info SYSTEM has 31686656 free, is 
+>>> not full
+>>> 2025-07-07T19:30:28.806266-07:00 host kernel: [3777897.708982] BTRFS 
+>>> info (device sdb: state A): space_info total=33554432, used=1867776, 
+>>> pinned=0, reserved=0, may_use=0, readonly=0 zone_unusable=0
+>>> 2025-07-07T19:30:28.806267-07:00 host kernel: [3777897.708985] BTRFS 
+>>> info (device sdb: state A): global_block_rsv: size 536870912 reserved 0
+>>> 2025-07-07T19:30:28.806268-07:00 host kernel: [3777897.708986] BTRFS 
+>>> info (device sdb: state A): trans_block_rsv: size 0 reserved 0
+>>> 2025-07-07T19:30:28.806268-07:00 host kernel: [3777897.708988] BTRFS 
+>>> info (device sdb: state A): chunk_block_rsv: size 0 reserved 0
+>>> 2025-07-07T19:30:28.806269-07:00 host kernel: [3777897.708990] BTRFS 
+>>> info (device sdb: state A): delayed_block_rsv: size 262144 reserved 
+>>> 262144
+>>> 2025-07-07T19:30:28.806269-07:00 host kernel: [3777897.708992] BTRFS 
+>>> info (device sdb: state A): delayed_refs_rsv: size 2375024640 
+>>> reserved 0
+>>> 2025-07-07T19:30:28.806270-07:00 host kernel: [3777897.708994] 
+>>> BTRFS: error (device sdb: state A) in __btrfs_free_extent:3092: 
+>>> errno=-28 No space left
+>>> 2025-07-07T19:30:28.806270-07:00 host kernel: [3777897.709670] BTRFS 
+>>> info (device sdb: state EA): forced readonly
+>>> 2025-07-07T19:30:28.806271-07:00 host kernel: [3777897.709672] BTRFS 
+>>> error (device sdb: state EA): failed to run delayed ref for logical 
+>>> 52156220768256 num_bytes 16384 type 176 action 2 ref_mod 1: -28
+>>> 2025-07-07T19:30:28.806274-07:00 host kernel: [3777897.710683] 
+>>> BTRFS: error (device sdb: state EA) in btrfs_run_delayed_refs:2165: 
+>>> errno=-28 No space left
+>>> 2025-07-07T19:31:37.922065-07:00 host kernel: [3777966.824892] BTRFS 
+>>> warning (device sdb: state EA): Skipping commit of aborted transaction.
+>>> 2025-07-07T19:31:37.922082-07:00 host kernel: [3777966.824906] 
+>>> BTRFS: error (device sdb: state EA) in btrfs_sync_log:3161: errno=-5 
+>>> IO failure
+>>> 2025-07-07T20:06:21.662072-07:00 host kernel: [3780050.499696] BTRFS 
+>>> error (device sdb: state EA): parent transid verify failed on 
+>>> logical 54213629362176 mirror 2 wanted 4093212 found 4093166
+>>> 2025-07-07T20:06:21.682076-07:00 host kernel: [3780050.519936] BTRFS 
+>>> error (device sdb: state EA): parent transid verify failed on 
+>>> logical 54213629362176 mirror 1 wanted 4093212 found 4093166
+>>> 2025-07-07T20:06:21.682100-07:00 host kernel: [3780050.522082] BTRFS 
+>>> error (device sdb: state EA): parent transid verify failed on 
+>>> logical 54213629362176 mirror 2 wanted 4093212 found 4093166
+>>> 2025-07-07T20:06:21.686053-07:00 host kernel: [3780050.524439] BTRFS 
+>>> error (device sdb: state EA): parent transid verify failed on 
+>>> logical 54213629362176 mirror 1 wanted 4093212 found 4093166
+>>> 2025-07-07T20:06:21.698380-07:00 host kernel: [3780050.526396] BTRFS 
+>>> error (device sdb: state EA): parent transid verify failed on 
+>>> logical 54213629362176 mirror 2 wanted 4093212 found 4093166
+>>> 2025-07-07T20:06:21.698408-07:00 host kernel: [3780050.531760] BTRFS 
+>>> error (device sdb: state EA): parent transid verify failed on 
+>>> logical 54213629362176 mirror 1 wanted 4093212 found 4093166
+>>> 2025-07-07T20:06:21.702623-07:00 host kernel: [3780050.539105] BTRFS 
+>>> error (device sdb: state EA): parent transid verify failed on 
+>>> logical 54213629362176 mirror 2 wanted 4093212 found 4093166
+>>> 2025-07-07T20:06:21.708871-07:00 host kernel: [3780050.543772] BTRFS 
+>>> error (device sdb: state EA): parent transid verify failed on 
+>>> logical 54213629362176 mirror 1 wanted 4093212 found 4093166
+>>> 2025-07-07T20:06:21.717935-07:00 host kernel: [3780050.549936] BTRFS 
+>>> error (device sdb: state EA): parent transid verify failed on 
+>>> logical 54213629362176 mirror 2 wanted 4093212 found 4093166
+>>> 2025-07-07T20:06:21.726076-07:00 host kernel: [3780050.558423] BTRFS 
+>>> error (device sdb: state EA): parent transid verify failed on 
+>>> logical 54213629362176 mirror 1 wanted 4093212 found 4093166
+>>> 2025-07-07T20:06:31.106118-07:00 host kernel: [3780059.943621] 
+>>> verify_parent_transid: 278 callbacks suppressed
+>>>
+>>> :
+>>> NOTE: the parent transit errors, as shown above, repeat forever
+>>>
+>>> There are also checksum verify errors logged, like the one shown 
+>>> below, most of them are mirror 2, with a few mirror 1 logged.
+>>>
+>>> 2025-07-07T20:29:14.078068-07:00 host kernel: [3781422.870343] BTRFS 
+>>> warning (device sdb: state EA): checksum verify failed on logical 
+>>> 55129635373056 mirror 2 wanted 0x076ea9a7 found 0xf5e8fb26 level 1
+>>>
+>>> Are the metadata mirrors, 1 and 2, entirely missing, or are two of 
+>>> the 8TB drives involved in the array, no longer available after it 
+>>> went into read-only mode?
+>>>
+>>> I use xfce4 for emergency use on this server, and the file browser 
+>>> Thunar, is now showing 4 or the 5 drives as being available for 
+>>> mounting, whereas before this situation happened, none of the drives 
+>>> were shown as being available.
+>>>
+>>> This is a very confusing situation. Any assistance on how to proceed 
+>>> from here is appreciated.
+>>>
+>>>
+>
 
