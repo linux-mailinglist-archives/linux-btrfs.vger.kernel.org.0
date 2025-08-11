@@ -1,165 +1,212 @@
-Return-Path: <linux-btrfs+bounces-15998-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-15999-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A99EB213FE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 20:16:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49200B21428
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 20:24:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A0F91A2230F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 18:16:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48A6F1A214C3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Aug 2025 18:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B613296BAD;
-	Mon, 11 Aug 2025 18:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993612E2827;
+	Mon, 11 Aug 2025 18:18:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uae0afUm"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="KjKLS/Dr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2083.outbound.protection.outlook.com [40.107.244.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AEBC2405E1;
-	Mon, 11 Aug 2025 18:15:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754936121; cv=none; b=LlQWlTO0vlhpY38EfFezuiOLiHCWwGwBXd0/RRrk6jbTY8xJVjt4pbvG4oHeWyAayXmJImCuZ/lzMu5CI0LfMuHpQ4AOcYyvazZebhXcDamNR5IK/I4n7Jw/mCAiqQ9Q2F45ZUN57RT64pbXAmW+Y8pCT6941PcEmzrqisQGZT0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754936121; c=relaxed/simple;
-	bh=i3CFgTgaOVgs6rVHGnHbogoOuom+K3may1STKdsu0mA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sa4EqjQCSdmrcbCnByiRkMs+b8RrdSZqq9gA6JEhijelEd2tvk3e9z751+ukfYM62WfRqv93L+76rViRnE03IJna3GNAC3eCb5xtoZgnn65WgGXE8oxLlmAL0tvOFh3i5ts3OR2wl7h90Zjy3osKklrOvTzM4W5pXd28sKYr0Pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uae0afUm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C93CAC4CEED;
-	Mon, 11 Aug 2025 18:15:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754936121;
-	bh=i3CFgTgaOVgs6rVHGnHbogoOuom+K3may1STKdsu0mA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Uae0afUmNoR8KA75DBNbdfNVvW4DcYug6cz7AdolgVFs9SQ+d0rhY+lM+COc+IIf9
-	 Aq95eCDiCKptC8hUhrCrzyh48PdZM78pq9CummJ54DYD+kDiOJ6/HkHfIech24yVG3
-	 nkNX6ADQWuGLnlWxW35pL48f+w8s3kno8qucUUE9cVpXGR2HUgZEff37o/jkoTAV59
-	 3Qqxtjbvt4PEUE9+1pK4Z8PkALZzSam0GyITEycCamBv0hyk/6YeMQ/ovDoHKIoyP+
-	 7vVcJOwu7joQKHnhFli2ZyBQRKMow0D+TrxlECK66pI9AnbaP2ps+atLTs4ZFueivG
-	 Q9dSR6II4JEQw==
-Date: Mon, 11 Aug 2025 08:15:19 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Qu Wenruo <wqu@suse.com>
-Cc: syzbot <syzbot+ead9101689c4ca30dbe8@syzkaller.appspotmail.com>,
-	anna-maria@linutronix.de, clm@fb.com, dsterba@suse.com,
-	frederic@kernel.org, josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-	jiangshanlai@gmail.com
-Subject: Re: [syzbot] [btrfs?] INFO: task hung in __alloc_workqueue (2)
-Message-ID: <aJozN9LVgaPFX9dX@slm.duckdns.org>
-References: <6899154b.050a0220.51d73.0094.GAE@google.com>
- <e3424457-8786-45dd-a0d9-ecc8bfae0829@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C94D2E0915;
+	Mon, 11 Aug 2025 18:18:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.83
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1754936326; cv=fail; b=kmMHbf0MPmDb2BMV/dTFg6RRjCrzzODL0+C9TVxLQV5xM0n0Z+Y64qZ3OdNtdEPU9lsOPPoaCnpv0+gPpgntl84AHlW3yvALVg8QA4QegIF9erBewxrn74ue/tfLEWYk6myBWXTONPE17VASggCbNY7qCpyxFjOuptkNqzumGlQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1754936326; c=relaxed/simple;
+	bh=pzQkZznXTA2Bd/jIWUpGlZFqGAtlla0XlaLr6dh6+08=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=i61GbCzwze80yQ13E1qV4qfgzq3LuShyeECPsQAJKEampTxee1ofSDExPWsgcgbxhP02xhgP818wrIFT50emCwhFxOUY3byik8zlFqPQMm8cwSqNL/F+2vAqX3R805TXLxBRLNOxw2HwDLCn32KUOsyj4S30+gCWCNR7wfA6jvU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=KjKLS/Dr; arc=fail smtp.client-ip=40.107.244.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=oyZqyrIbVgnBmuu6QHKf202xwvOoNC+8mES8fe7sruP0QN9XngQNvU6cjlY6M1k7anQ0HOr3oWmBWdeNyole58AwoLxhl4BamuG2hb8jHX4WCoEa+md6vNq4ZhbV76LfduWkAti6+X4UyuJGl1UDMBe9PNLB2+K329+6F8DnCMnOYccgFCbTJ5M0zutFvduhiSHOFrULXoYXaXBn9uWg5Ok/R2EbzEE1JcP+qBiaFTEf4fgcNdhU/0KY0sOo26Qo21pdWFIcqpL4OGCPyudpjJ3qBFfTC40HCm0ooybo7q/x8jzqUsWb0fHtMHp/l9zyy3hbiIWo84gU0wO7GPnjPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LbJqTzC1UIzdo+ms9ENliUvYOi6OT6zVj900iav1E+M=;
+ b=nvE9nG6Q/MM+UTI7cIOiLlwPyTe2cYyTouy6aADap3NHYJYQ0rZ0+x07aUZg3430WHAQDtTJ38WdS497bvA/kWgU/2anCMCicTdSZC7UsGZhQTCNRKzTHFemlA5ocK2jhCTbL48ei7X/GYJ4H0zqL0lB9U1LRBLnHfGQUA4MN56Ay9++UJNYJQu4I0uX8+EDG/1LgfIb1NBk0Ic7MbDKf2JXpfuL20ZhHz1iu7jL67cfdCErYRPA5leo8aemEosBGJD08we9djI7SrynCHFecV0rvJZ/2sVvKy7HCMWV2wIs/R1y6IN0VB6jiQqKHMbkVp9SXgzd0yeAAMCWg+Xj/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LbJqTzC1UIzdo+ms9ENliUvYOi6OT6zVj900iav1E+M=;
+ b=KjKLS/DrnG8VrXkMmsMinNsCC0KwOu7YeRiF6aNt0H3nZExV0gapj0ah7F7vJXITGO8mGRc7M6/s4k0/frR/MXlA4woC26jCkO7fMrV9X60qNn8pezxhnCmxXXXsxjTyHM5+WWxS1GqXFzBmiqQNm6l3VBXMaTgO6YPDJzGftRv+8HUg3Lvd4QIWt/SyjLjS7qsjObYrfeyTwL/JUeosrjCNIw7AxLyqS0diOE/xRBOYYwuiiME27W7WvXxHJsIDejql/3Z/wcP3MNea0uwcjhRn39ODjnSLMLKvrPwDP0GgSjvAlXkypCy3KEWFQFQu7fMNbKxC5MfAhcfvGoVzXQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com (2603:10b6:8:252::5) by
+ CH3PR12MB7643.namprd12.prod.outlook.com (2603:10b6:610:152::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.20; Mon, 11 Aug
+ 2025 18:18:42 +0000
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a]) by DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a%6]) with mapi id 15.20.9009.017; Mon, 11 Aug 2025
+ 18:18:42 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linuxppc-dev@lists.ozlabs.org, virtualization@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+ linux-btrfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Jerrin Shaji George <jerrin.shaji-george@broadcom.com>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ =?utf-8?q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Benjamin LaHaise <bcrl@kvack.org>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+ Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>,
+ Dave Kleikamp <shaggy@kernel.org>, Matthew Brost <matthew.brost@intel.com>,
+ Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
+ Byungchul Park <byungchul@sk.com>, Gregory Price <gourry@gourry.net>,
+ Ying Huang <ying.huang@linux.alibaba.com>,
+ Alistair Popple <apopple@nvidia.com>, Minchan Kim <minchan@kernel.org>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCH v1 2/2] treewide: remove MIGRATEPAGE_SUCCESS
+Date: Mon, 11 Aug 2025 14:18:37 -0400
+X-Mailer: MailMate (2.0r6272)
+Message-ID: <E26CCE5E-8198-4919-A38E-DCD2F65F0BEA@nvidia.com>
+In-Reply-To: <20250811143949.1117439-3-david@redhat.com>
+References: <20250811143949.1117439-1-david@redhat.com>
+ <20250811143949.1117439-3-david@redhat.com>
+Content-Type: text/plain
+X-ClientProxiedBy: BN8PR12CA0019.namprd12.prod.outlook.com
+ (2603:10b6:408:60::32) To DS7PR12MB9473.namprd12.prod.outlook.com
+ (2603:10b6:8:252::5)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3424457-8786-45dd-a0d9-ecc8bfae0829@suse.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB9473:EE_|CH3PR12MB7643:EE_
+X-MS-Office365-Filtering-Correlation-Id: 153aec37-4d92-4965-22a1-08ddd903807f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|366016|376014|7416014|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?hbuE9OG6yJs+Pr9CJsUHGDYSZ0ghGt0reM+xyg3nU7XX2gCS1BpP9k+cCJgd?=
+ =?us-ascii?Q?f4mGEulrttudJbM5sJ9Qpl/p1nVKso9XgglB3ReuUuELodoI/S40NjRgaKOV?=
+ =?us-ascii?Q?tq6X/QspHflGOzCfZT3O0Cedhs7DOfvlcIfG6iTVOExe7yoC6iPea0vgtjeG?=
+ =?us-ascii?Q?FpeDmArxHvsElG3zLfzhiu7JxUMRqJPPywbBUuyylYQZFCxmUkBuav4bH4o7?=
+ =?us-ascii?Q?aY9TaUKLtRf9pcfq12K733MqAT8WrACYgqnFp3i6WUSVONlP9H6n3zjgk5qK?=
+ =?us-ascii?Q?LHSqbgn12tJFKMhA+mAa+VdrUfysP1wiKgkR23kQQiCmSSHGadax5KzXbpYx?=
+ =?us-ascii?Q?h0/c8B12bjPVHcjRmECGTTWBXMzgiZWeVM4VDDJrZcIih2/WW+4j26UMxPi0?=
+ =?us-ascii?Q?Kshtr+rrMfIkdjU1PnRVBQUe+m4U2fTznFvL6HJ+T3FfZJX1EgA+q9O+h2dd?=
+ =?us-ascii?Q?vrI5dSmkzpc4nv7+59JxYavp/CfMrQmA5BBvnFbx9ZXij4HeGoWyombF1SgE?=
+ =?us-ascii?Q?pVoV3Elk1WOFkDiqI/KBdcqvCaas3cnEP6QctDkUsc0LkmKOUuNE/k8NBNfJ?=
+ =?us-ascii?Q?pYoabMUCfsY4AsQGqGByxTD83GQciT39C2ABbGQL9i7rXApAP85gRI4NWuer?=
+ =?us-ascii?Q?jALP7cIYWBPSTi58yO5t+8OaAkQ1eIUCc7EKgs56kmrkmsZAHQXPp00qJVZb?=
+ =?us-ascii?Q?CRvz6zBwNzQ1BudbUlOooy2wfrP8QHQQJn2f327QZcb+B1A+vvHx7xg8001+?=
+ =?us-ascii?Q?VnbOvOpeeX/Pb2vd9n2eDOS1o+mn0WzVYwJ5LrunGyEER3MLywqEaIDKOJxc?=
+ =?us-ascii?Q?Ql1sAs9UOWz2PToXcj5TExl7xVP1pPAVBsAujYjjJPoBqO24GFMU5rYKAjkS?=
+ =?us-ascii?Q?HRXbFiBAnIAkHT9m71sYUuNQwY7897PROoHLUVTEi3bF2S43HnQMenxZdIPd?=
+ =?us-ascii?Q?kRkhgHSixbgu8qVU9GdP1GnZqOM95SFEEzCYmN/bEiffk3eztPbV0npk1rfz?=
+ =?us-ascii?Q?9ukbEcLjX7a3XfRU1I7M0l5kiE7A8famOgfU5MwXh3jHowuSWYZqd9L99gl1?=
+ =?us-ascii?Q?OzmbDHXYDxtPvTbEu2ogtPNfgrEgOdz2mLU1B6ZguULEOEwfozhX22exfPSN?=
+ =?us-ascii?Q?DHw4wQfVJkgySfZyzS+qs5IkFH0pTtSx1XgzhHK2kfC+QG6IXqM7OW1Mz+BP?=
+ =?us-ascii?Q?xwTdozBjE96T5a95AGf78RqWQfI4rS7lMPvKVcPWBpq5TJQgLA5K7bwW91Oz?=
+ =?us-ascii?Q?uTMZfKR9FVmr/C8oUAbTL9c1NSva7vlwL/ChLkz1lBY0hPd+20EOSEBJG6vG?=
+ =?us-ascii?Q?M5AaufkDXsqzPdpP6sMvNBcAJJ9JA57fwqSB8defFOZovS3dP96pns9uyPfh?=
+ =?us-ascii?Q?GIAWkBTkx73OtL5Pi+nA6UKHWGHRbu0mckJZsYdKb5vgVjHnY2mQJTNOS8YR?=
+ =?us-ascii?Q?jpdh5u883zE=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9473.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?osXqi+aisRmQzqnwY6QSeMi5yq5mYRyeAkSd634R6f6vRobE8X6D4+fu/2OQ?=
+ =?us-ascii?Q?5O9OEnV5Oo+s5Ep67+O0Z6OjfC0w8kZ2ZS0dRohBPQA8gs7Cn4X2y2tbXJq/?=
+ =?us-ascii?Q?9mGVKug+RV78BYR0IoZxJk9M06DY7GM4H1yh+jT+fJWaK2orb4qG1yGEGkNi?=
+ =?us-ascii?Q?Ma5cQfEq8hx5zt6d19VtZojVii4H5MgjH5+A5sNIE72UZs655Fn2f0dTl2vA?=
+ =?us-ascii?Q?OnLP4K2nPPZAnLivkgAdEJ2xskovSj6KwIh5XJ3wtlF/00CKydCzB4Lh58Zt?=
+ =?us-ascii?Q?lKqoWJC/XT+ldsf+TT4Sle4RxJy3HIrdbaP8rRC6QjilOQcrJwrkicyAdUMg?=
+ =?us-ascii?Q?dpAVYlcf9A9mlx3NI/scXEm5yCkm15AHA1hfOpfdZQN96f1rQ9bBYIWjD2A+?=
+ =?us-ascii?Q?eJeV9nytcJve/KcSyhQLHdVlW3rb2P9P3JyrHwkGKoaRPCt0WAwGQe9v6rI1?=
+ =?us-ascii?Q?aqc90I7qjoXg4RBmf9mi/mPTvoS74dokKYw1/mZ77WXinA+T94qMXqOSpPKs?=
+ =?us-ascii?Q?HHqZdzLAv7Eqk+XLWm+OCP43z4DXDQU+RfGcflJJ5KYedl9uiGtFKvZdBj1z?=
+ =?us-ascii?Q?hHslljVcLvzGClYuz8L3nytngOLR6aCZz0FVG08tGTCGPI1HykA0ll4IP/ir?=
+ =?us-ascii?Q?p2Wxv9YMQ3z78JnoHNmrHEGzZ8hDD/R/upRC0+f0+whJvi5mpCeqYq1VXDnV?=
+ =?us-ascii?Q?Jais0yBXe29dLB4T8oBWmr3U6G9eo8tQFb/PU6LY394oY+YsJvHS0mPqv+Kx?=
+ =?us-ascii?Q?HJFUiu6Mgn+QhcLlLiQMgTw6vhq9BQsW1mGKaU79Xh3zvNlEhyURZ9SOpCiv?=
+ =?us-ascii?Q?QPDard2nm1JHw/axRmWjwbyubMK8tucjTZ7mCIe4MtLEQH0b4J8aLpXtN2dB?=
+ =?us-ascii?Q?vwWyVrw5t8ZPmZexHFkN3z1b9pQ/j03nQHtqKworZfSo4MBECudJABJytvgZ?=
+ =?us-ascii?Q?1/Dc8ubvHV1+N/X+WFjJ+USNPlWbac1FS1qBjptxQlqXr3RXLSuy1l0Y0/NZ?=
+ =?us-ascii?Q?5BsIsfY9Kuip9/AWoPRp9uNiD92OlF1Sb9waqm3bKSMqggNNd6DnM/VnI6+s?=
+ =?us-ascii?Q?cker0P+H8gPwW2eS4tgg2UflWpYJYdhVAmRi44SHyjMZrLdWss96qRpaLCHy?=
+ =?us-ascii?Q?ctB7FxahJIq4WaGAm3EERJEoJ1e1baSou4xzPA/8g92lhLFdqiVqy893mBT4?=
+ =?us-ascii?Q?zap56gLnagD5SSNbyi5pTHX3zfHbm89k3UwHKkwXOtcvNMA0HgU6kHji17P9?=
+ =?us-ascii?Q?tMwhVVgWVpU5XVynJF051A4y1mEUr/+NVC+bUY8YakJshT9eV0p5kR+HKNoD?=
+ =?us-ascii?Q?RAEUS3T/MSlcCiBog7xLqR0J4Q9uL9N8NODzuKVvJD6kKF6/yRMB37e4xd+B?=
+ =?us-ascii?Q?AKIlqMoXNMSOMqg/5gWdtwq4Tzwasl2z7LiJxo1qH2DMP0s+Krcwc56KX2eY?=
+ =?us-ascii?Q?WbP/OrMaaA6eU2g3LMYWa0DbsStOMZFqaoAa3LZeUGiAs6u6K4G/zYvo6uyj?=
+ =?us-ascii?Q?OLOT+SKZ4F+UVHoryxPmvPcyr+IQGrTbK0guEBmYljVpEaRwVJZLV2F3/Uvf?=
+ =?us-ascii?Q?ee4jmtCjwGn1/eZ2hul+nA4WSY+OpN2hh9tupvhL?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 153aec37-4d92-4965-22a1-08ddd903807f
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB9473.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2025 18:18:42.1949
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gyiUSeA7RBxkch5hSEaQBtnTlQ8xSqer34TMHxD406jYXw7SqdC4GRZDfdwS97us
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7643
 
-Hello,
+On 11 Aug 2025, at 10:39, David Hildenbrand wrote:
 
-On Mon, Aug 11, 2025 at 08:02:40AM +0930, Qu Wenruo wrote:
-...
-> > Call Trace:
-> >   <TASK>
-> >   context_switch kernel/sched/core.c:5357 [inline]
-> >   __schedule+0x16f3/0x4c20 kernel/sched/core.c:6961
-> >   __schedule_loop kernel/sched/core.c:7043 [inline]
-> >   schedule+0x165/0x360 kernel/sched/core.c:7058
-> >   schedule_timeout+0x9a/0x270 kernel/time/sleep_timeout.c:75
-> >   do_wait_for_common kernel/sched/completion.c:100 [inline]
-> >   __wait_for_common kernel/sched/completion.c:121 [inline]
-> >   wait_for_common kernel/sched/completion.c:132 [inline]
-> >   wait_for_completion+0x2bf/0x5d0 kernel/sched/completion.c:153
-> >   kthread_flush_worker+0x1c6/0x240 kernel/kthread.c:1563
-> 
-> This is flushing pwq_release_worker during error handling, and I didn't see
-> anything btrfs specific except btrfs is allocating an ordered workqueue
-> which utilizes WQ_UNBOUND flag.
-> 
-> And that WQ_UNBOUND flag is pretty widely used among other filesystems,
-> maybe it's just btrfs have too many workqueues triggering this?
-> 
-> Adding workqueue maintainers.
+> At this point MIGRATEPAGE_SUCCESS is misnamed for all folio users,
+> and now that we remove MIGRATEPAGE_UNMAP, it's really the only "success"
+> return value that the code uses and expects.
+>
+> Let's just get rid of MIGRATEPAGE_SUCCESS completely and just use "0"
+> for success.
+>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/powerpc/platforms/pseries/cmm.c |  2 +-
+>  drivers/misc/vmw_balloon.c           |  4 +--
+>  drivers/virtio/virtio_balloon.c      |  2 +-
+>  fs/aio.c                             |  2 +-
+>  fs/btrfs/inode.c                     |  4 +--
+>  fs/hugetlbfs/inode.c                 |  4 +--
+>  fs/jfs/jfs_metapage.c                |  8 +++---
 
-That flush stall likely is a secondary effect of another failure. The
-kthread worker is already spun up and running and the work function
-pwq_release_workfn() grabs several locks. Maybe someone else is stalling on
-those unless the kthread is somehow not allowed to run? Continued below.
 
-> > Showing all locks held in the system:
-> > 1 lock held by khungtaskd/38:
-> >   #0: ffffffff8d9a8b80 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:331 [inline]
-> >   #0: ffffffff8d9a8b80 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
-> >   #0: ffffffff8d9a8b80 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x2e/0x180 kernel/locking/lockdep.c:6775
-> > 1 lock held by udevd/5207:
-> >   #0: ffff8880358bfa18 (&ep->lock){++++}-{3:3}, at: write_lock_irq include/linux/rwlock_rt.h:104 [inline]
-> >   #0: ffff8880358bfa18 (&ep->lock){++++}-{3:3}, at: ep_poll fs/eventpoll.c:2127 [inline]
-> >   #0: ffff8880358bfa18 (&ep->lock){++++}-{3:3}, at: do_epoll_wait+0x84d/0xbb0 fs/eventpoll.c:2560
-> > 2 locks held by getty/5598:
-> >   #0: ffff88823bfae8a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
-> >   #1: ffffc90003e8b2e0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x444/0x1410 drivers/tty/n_tty.c:2222
-> > 3 locks held by kworker/u8:3/5911:
-> > 3 locks held by kworker/u8:7/5942:
-> > 6 locks held by udevd/6060:
-> > 1 lock held by udevd/6069:
-> > 1 lock held by udevd/6190:
-> > 6 locks held by udevd/6237:
-~~~trimmed~~~
 
-That's a lot of locks to be held, so something's not going right for sure.
+>  include/linux/migrate.h              | 10 +------
+>  mm/migrate.c                         | 40 +++++++++++++---------------
+>  mm/migrate_device.c                  |  2 +-
+>  mm/zsmalloc.c                        |  4 +--
+>  11 files changed, 36 insertions(+), 46 deletions(-)
+>
 
-> > Sending NMI from CPU 1 to CPUs 0:
-> > NMI backtrace for cpu 0
-> > CPU: 0 UID: 0 PID: 5911 Comm: kworker/u8:3 Tainted: G        W           6.16.0-syzkaller-11852-g479058002c32 #0 PREEMPT_{RT,(full)}
-> > Tainted: [W]=WARN
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2025
-> > Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
-> > RIP: 0010:get_timer_this_cpu_base kernel/time/timer.c:939 [inline]
-> > RIP: 0010:__mod_timer+0x81c/0xf60 kernel/time/timer.c:1101
-> > Code: 01 00 00 00 48 8b 5c 24 20 41 0f b6 44 2d 00 84 c0 0f 85 72 06 00 00 8b 2b e8 f0 bb 49 09 41 89 c5 89 c3 bf 08 00 00 00 89 c6 <e8> 0f c1 12 00 41 83 fd 07 44 89 34 24 0f 87 69 06 00 00 e8 4c bc
-> > RSP: 0018:ffffc90004fff680 EFLAGS: 00000082
-> > RAX: 0000000000000000 RBX: 0000000000000000 RCX: f9fab87ca5ec6a00
-> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000008
-> > RBP: 0000000000200000 R08: 0000000000000000 R09: 0000000000000000
-> > R10: dffffc0000000000 R11: fffff520009ffeac R12: ffff8880b8825a80
-> > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000802
-> > FS:  0000000000000000(0000) GS:ffff8881268cd000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007f46b6524000 CR3: 000000003afb2000 CR4: 00000000003526f0
-> > Call Trace:
-> >   <TASK>
-> >   queue_delayed_work_on+0x18b/0x280 kernel/workqueue.c:2559
-> >   queue_delayed_work include/linux/workqueue.h:684 [inline]
-> >   batadv_forw_packet_queue+0x239/0x2a0 net/batman-adv/send.c:691
-> >   batadv_iv_ogm_schedule_buff net/batman-adv/bat_iv_ogm.c:842 [inline]
-> >   batadv_iv_ogm_schedule+0x892/0xf00 net/batman-adv/bat_iv_ogm.c:874
-> >   batadv_iv_send_outstanding_bat_ogm_packet+0x6c6/0x7e0 net/batman-adv/bat_iv_ogm.c:1714
-> >   process_one_work kernel/workqueue.c:3236 [inline]
-> >   process_scheduled_works+0xae1/0x17b0 kernel/workqueue.c:3319
-> >   worker_thread+0x8a0/0xda0 kernel/workqueue.c:3400
-> >   kthread+0x711/0x8a0 kernel/kthread.c:463
-> >   ret_from_fork+0x3f9/0x770 arch/x86/kernel/process.c:148
-> >   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-> >   </TASK>
+For the mm part, LGTM. Reviewed-by: Zi Yan <ziy@nvidia.com>
 
-So, task hung watchdog triggered and making all cpus dump their backtraces
-and it's only one CPU. Is this a two CPU setup in a live lockup? I don't see
-anything apparent and these are time based conditions that can be triggered
-by severely overloading the system too. If you can reproduce the conditions,
-seeing how the system is doing in general and whether the system can unwind
-itself after killing the workload may be useful.
-
-Thanks.
-
--- 
-tejun
+Best Regards,
+Yan, Zi
 
