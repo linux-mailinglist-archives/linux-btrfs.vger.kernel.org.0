@@ -1,76 +1,78 @@
-Return-Path: <linux-btrfs+bounces-16028-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16029-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB4F1B23150
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 20:03:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C672B2314F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 20:03:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93FCA1663EC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 18:01:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F413188D108
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 18:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6EF02FE587;
-	Tue, 12 Aug 2025 18:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D452FF176;
+	Tue, 12 Aug 2025 18:00:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l2Mp7V2O"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J19FDwsq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90F62FA0DF
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Aug 2025 18:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B962FDC24
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Aug 2025 18:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755021623; cv=none; b=hLKaRDMRc+7vVTAhYFWCy2Kpmb+WQ0v0Ro9gjd7CW946oiDIzUN4rbjqkr3xW+dqWeF+afsYfQ7BTLqpy3BemuyirbwbxZHfIk2actmJki8CYGx1R8JlA4M3OTfWXTngK2/NjhcMSRwJWBM8hmg4fZXmvX7k6EOU3K94VJewdPM=
+	t=1755021624; cv=none; b=V1yrKtaxLyHymplP6AmwVFZdUHRnRsREtGrV9dV7ABulq7a0nnaaZdM1uXlBsOGK0CQMgcpNOVXwKL37STVjlTNFuSfi0gdAptVKXQEt1PbB8Wj8RDLTblZZiNvqcuE4Bd6HhgVK2ZLxOEYPB/OBBZkONy6nbjCIVHhxS427teY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755021623; c=relaxed/simple;
-	bh=7OZLnFQ4LoKlgQOFBN6Nost/Aw0ROD+31ME+liinh6U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZPzSLDBYC6pb+AwmDXWpiVfAlOmSS7fM3zfKqssY1NsOFlFhFyo6zQVgVyI3InasVhCpKn8T1LSsXT5qosO+rH8RI6vCKcasjdFbmrF1NNVCm6tqSHMYtEn61gvZCBPLzVCvyHQhfUMAg8ow7iNvnGvEUVNV1P9NiJZxwXnp6wI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l2Mp7V2O; arc=none smtp.client-ip=209.85.210.178
+	s=arc-20240116; t=1755021624; c=relaxed/simple;
+	bh=RKKpAm+KiLWWgFRBCAHqlPefDI7M2d7P2LG3N+Fju1Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=hp8MiDwxX79cRHiB3W7f4Mya29jXZ49Ju5NyiZA7jHqLYXbUJLuFITRWh3psr3bApbc+lugewybGDykvDNL6oKYlZmc6wBbEJLaH8hTRKwVyCssPVASizvDBxY9Inj1Bji4r9eqFkHxOy8fqrxwhSH6XmWozzJ1VlVBQ4QnPRJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J19FDwsq; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-76b6422756fso8093625b3a.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Aug 2025 11:00:20 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-76bd050184bso7421508b3a.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Aug 2025 11:00:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755021620; x=1755626420; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yO9o7QGm7JF/7UBXByDSZY9CAPWBbdc/pvWtsm+T0Us=;
-        b=l2Mp7V2OXYuCZ1uca14AZElnwLyH9gZuDkX8ZaIpZhoF2qBe1rIEW9qvPZL3jMtl/p
-         FJzRb8KfCLJK/ATstCEJ5ADNcdE1b1goHMK93WQ9wIks2n2RhX42B63HjS4t1ExeKQKS
-         clZne2dsVY9RQ4U0exq186ZbOcwknQindv6dkli5UWrYnPc2BvgniL7BbnFLpL6sTvHB
-         tziSMMfPMtjq7BEj4Aqqwc3p4IHus6RG7jAjSmpSnMJ/BLJx+ZlBnok0Gs4yCuzqThqv
-         B5DX4LtcXSNVkK6Q1zua7jPlv7PezJzVUia9Trrl4jhGchS6erCNQ+KYK7ST+8RO26nS
-         XZrg==
+        d=gmail.com; s=20230601; t=1755021622; x=1755626422; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YiiOLTUpB1elCDPzu7nKaeH2MYhUatwyvRaME6ZWrjg=;
+        b=J19FDwsq+Lk/l7dI9CEOA12Cdd+1HNYXEJpgzmkLCOjISF/4zX+kCVw60QfGeCQp+Y
+         YH+nTQDvhZd7HvfG66MMqyfYQNKsex0z5vL9gfGEhzh6oNX0U1CiJNQe9R8iPkZAP5M/
+         iCuc5GwDTHIZoz6D8aR8dw/YXoCDjN/cfGl/U5Vdjv00oOv7CmGP3x43Dg7CrA63t+Xw
+         DZnheGT67A1zCv0sM1x38TmtU4AeeW+jxpuo8lIidWweypI22nE4jNC/anUeMe1WjYFa
+         vq9TqtYonpAlBe/GeaQnmDXGlAUdPm1yTkChky+LnhaivaSsP1w77v5C3GP77THQEG6G
+         Biwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755021620; x=1755626420;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yO9o7QGm7JF/7UBXByDSZY9CAPWBbdc/pvWtsm+T0Us=;
-        b=Skja5pRq6evzcVHUokXXDhq4lJOMTyjFFZg9TG87FU+fWhlmQiXJDIDunW9RLUUxsP
-         kcEia8IBqkL8FW1F0An/8l6OrZhPOdUiwiKlM6SsClmLC/WfY2YcDBUFirHecl32JwTE
-         PgO64yF8YV8VrpjkxKI/4+aHg9skRNNaVQDwk0yUNBauY9h6LLTfdzDSYojapivL9BLI
-         xuqbn00mXJbjtGyGIP2/rEi5rJGr4mwjx67WC1+HjLd3caBv8yPjSUGkPdLBs1Gg7jN6
-         GwOhPe7nhCKM+1YMFlldw4qYhctjRvzLcPjdFYNzAO0SpABKVU9CmfJ+V1nDr7OoBE16
-         Ofrw==
-X-Forwarded-Encrypted: i=1; AJvYcCUDapGxamQVu5GJi5wJrMTsp7JxTaucT+slZaYGfFS+wUu0lvmvco8NJautKQS7YpJ/ojlbznbc6iR5EQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy0ZVdvCU+0Ag8hSkquCT/cTCH1boAkl0dtow5S/wqbakj6Hvgc
-	Cckxz67sCP9WFPijkQ0LuRKYCscDd/8v/c+io6q+hNishg0c15ZHzCXI
-X-Gm-Gg: ASbGncvdvYTem/6Mc3WM8NISQm1MtKoh6E11o0zaLsHm7TTPiLiYccF5Kvg9AtFgkxR
-	DdU1Vh3kaR+TXQZHDGbNTvWFfBsaq4SRVPIuPO3yrK/UWwioNOMgWT3XOUcMpdn7hWTJQ42kcXb
-	qRqlmO924ce4hcdkzyiZoMZQZJmVZ75mC/BHhAZJ+hc1TI5xwJ4Zn36AlWnTsIkCoE/ZWnSqo/v
-	/oSRYhwX7kVr9WiR08y8zdI97hiixMSisSrQK11XfcOawqEeiYJt6UsOwUbPo0Q2jtlVWWddswW
-	Pr1E0QYI5l+905iAXjG4nYavRxtxo+zAlEtKdm22fI3yPMNYW/c0rAfwKHQWBjhUM3VeOcBihYU
-	tXcc3m9/sLdkG0RrxrRhAKxFRmaKqsDoo8XSoWUiW2UPQbyefeMQ=
-X-Google-Smtp-Source: AGHT+IEGuAzO6WwK4itIGH42IgnRgllM24fgJxuXinEDFjgxrX3xTQofiNxhraeRwSU7QNrfuG9qvA==
-X-Received: by 2002:a05:6a00:8c1:b0:748:3385:a4a with SMTP id d2e1a72fcca58-76e20fe6334mr118722b3a.23.1755021619359;
-        Tue, 12 Aug 2025 11:00:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1755021622; x=1755626422;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YiiOLTUpB1elCDPzu7nKaeH2MYhUatwyvRaME6ZWrjg=;
+        b=EgwYjE+YAfEhTndLz9qKQODYaBmC8z7H4QVUhjtSRBvKid8BYo/aXfkuXg0q+oxG12
+         6vgW1b9tsO7spShRfZHF4xx9l8PjMui0tQKN7NVFdOgmzp6Z0+jbcTGuzIQcINItPq76
+         UuvgzbZhIzxUJ+x/PBJ0tzVla2pEqTaZwloZwaIpN3HlXCZJs4H+Du5zQWl4qREsjVBO
+         ungNV4bQdiVHRRgXy1mkfrrFeYTG95IpJiPJSrJ072fETC4GIFW2nUEef9oiswX34UaA
+         1d5NMN9dkX9WrrGkxhOOKw9jcb1CNI92B3YUGRQO26LImqisCKiVGyKyAMIzdUQ+BAxO
+         699w==
+X-Forwarded-Encrypted: i=1; AJvYcCVQnyHaLnzCrg4poUYTOWVzGdIjrKbvoIrwCeE/AFUufFc+NV8ZtF3MmZDrM26gEJxQHg3DPzdfkB7Zow==@vger.kernel.org
+X-Gm-Message-State: AOJu0YybNI0haMyMKFdrlz/CpwNzRTXFxcOXuYqLV9WM+E7hzqdQ/s0U
+	rRXvcbirMbEebmx7MNTFePJ3fKQ9gXMqcEU6t/amfvpuEmQswcTcKFOn
+X-Gm-Gg: ASbGncsnF1dKN1YMyN7jjad1UZnRc+dt5+25Edd1o0ZdHFBQp3ah+V2YV9sWM4prWt2
+	bnuHtESZAuDlxAO06dNkXUDx4R5xAdIQWgbp5neHokN6zLNoQv03EINIHnvgHDrPA235Yd+Gl8I
+	B+67g4skP1ClBibaLq9brA1Tui7Knzs4vWjrRCaFzqrHMDOSjmPr3+ohZ5D7XDtVmX+tFCvCGXE
+	j6JI7VScolhFCIYDaEuM7uKzwIjfu98OFoiZyAjZR7TVccTiWzQMW08Yiylg5h13Uz3G4WAHJp5
+	elclb22M87/lqcNybHrUcC7KTM7J/PLKkVql2lGK/GVzYraMfPDtOdoYvfWOvjdNHYnaHKXGeJz
+	eGE5p1du0dtgFjDrLJy41Xg587m0Zk/QDutz5neK6+YBUgD7gADg=
+X-Google-Smtp-Source: AGHT+IFXmdgGEXrT0eo+kcHh/b0Csq8T2Vzkh0eGlqQylkQdcYdF3Lgduqhh/FW9oxTsEXRlagHU2A==
+X-Received: by 2002:a05:6a00:2ea0:b0:76b:d746:733a with SMTP id d2e1a72fcca58-76e20fb9a47mr135244b3a.21.1755021621649;
+        Tue, 12 Aug 2025 11:00:21 -0700 (PDT)
 Received: from fedora (120-51-71-230.tokyo.ap.gmo-isp.jp. [120.51.71.230])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76c2ea6893csm15793073b3a.104.2025.08.12.11.00.17
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76c2ea6893csm15793073b3a.104.2025.08.12.11.00.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Aug 2025 11:00:18 -0700 (PDT)
+        Tue, 12 Aug 2025 11:00:21 -0700 (PDT)
 From: sawara04.o@gmail.com
 To: clm@fb.com,
 	josef@toxicpanda.com,
@@ -79,10 +81,12 @@ To: clm@fb.com,
 	brauner@kernel.org
 Cc: Kyoji Ogasawara <sawara04.o@gmail.com>,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/2] Fix and unify mount option log messages
-Date: Wed, 13 Aug 2025 03:00:05 +0900
-Message-ID: <20250812180009.1412-1-sawara04.o@gmail.com>
+Subject: [PATCH v2 1/2] btrfs: restore mount option info messages during mount
+Date: Wed, 13 Aug 2025 03:00:06 +0900
+Message-ID: <20250812180009.1412-2-sawara04.o@gmail.com>
 X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20250812180009.1412-1-sawara04.o@gmail.com>
+References: <20250812180009.1412-1-sawara04.o@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -93,26 +97,57 @@ Content-Transfer-Encoding: 8bit
 
 From: Kyoji Ogasawara <sawara04.o@gmail.com>
 
-This patch series fixes and unifies the log messages related to btrfs
-mount options.
+After the fsconfig migration, mount option info messages are no longer
+displayed during mount operations because btrfs_emit_options() is only
+called during remount, not during initial mount.
 
-The first patch addresses a regression where mount option messages were
-no longer displayed during initial mounts after the fsconfig migration.
+Fix this by calling btrfs_emit_options() in btrfs_fill_super() after
+open_ctree() succeeds. Additionally, prevent log duplication by ensuring
+btrfs_check_options() handles validation with warn-level and err-level
+messages, while btrfs_emit_options() provides info-level messages.
 
-The second patch unifies the log messages for NODATACOW and NODATASUM
-options, which were being handled with the same logic but had
-inconsistent and duplicate messages.
+Fixes: eddb1a433f26 ("btrfs: add reconfigure callback for fs_context")
+Signed-off-by: Kyoji Ogasawara <sawara04.o@gmail.com>
+---
+ fs/btrfs/super.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Thanks,
-Kyoji
-
-Kyoji Ogasawara (2):
-  btrfs: restore mount option info messages during mount
-  btrfs: Align log messages and fix duplicates for NODATACOW/NODATASUM
-
- fs/btrfs/super.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index a0c65adce1ab..2677754ec8f7 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -88,6 +88,9 @@ struct btrfs_fs_context {
+ 	refcount_t refs;
+ };
+ 
++static void btrfs_emit_options(struct btrfs_fs_info *info,
++			       struct btrfs_fs_context *old);
++
+ enum {
+ 	Opt_acl,
+ 	Opt_clear_cache,
+@@ -689,12 +692,9 @@ bool btrfs_check_options(const struct btrfs_fs_info *info,
+ 
+ 	if (!test_bit(BTRFS_FS_STATE_REMOUNTING, &info->fs_state)) {
+ 		if (btrfs_raw_test_opt(*mount_opt, SPACE_CACHE)) {
+-			btrfs_info(info, "disk space caching is enabled");
+ 			btrfs_warn(info,
+ "space cache v1 is being deprecated and will be removed in a future release, please use -o space_cache=v2");
+ 		}
+-		if (btrfs_raw_test_opt(*mount_opt, FREE_SPACE_TREE))
+-			btrfs_info(info, "using free-space-tree");
+ 	}
+ 
+ 	return ret;
+@@ -971,6 +971,8 @@ static int btrfs_fill_super(struct super_block *sb,
+ 		return err;
+ 	}
+ 
++	btrfs_emit_options(fs_info, NULL);
++
+ 	inode = btrfs_iget(BTRFS_FIRST_FREE_OBJECTID, fs_info->fs_root);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
 -- 
 2.50.1
 
