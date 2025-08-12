@@ -1,146 +1,145 @@
-Return-Path: <linux-btrfs+bounces-16021-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16022-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DDD5B225F4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 13:36:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70FF6B2264E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 14:06:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ACC7163B78
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 11:36:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A2F11AA5C85
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 12:05:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB15A2ECD1D;
-	Tue, 12 Aug 2025 11:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 460032EE260;
+	Tue, 12 Aug 2025 12:05:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pKfPZAy4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RBZycv8A";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2RVmtOl5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="31yXk9dD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k4iujG1T"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0222E9ED8
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Aug 2025 11:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3090319D07A
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Aug 2025 12:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754998554; cv=none; b=jqfA3RcXqip0ft463/bADKrg4DVItVvLms+zEKcnUm08bI8wBV3mYKRMebXhADvp1nBaLltTdVyP6mHz830ZQNTXRo4inUiEmR8rXkaRZy26xNVUC8DMNK2yj21VRQLQ6+1hVBvBiyLvYonPjPUDGDVDYcBdFB2Z5u+4sgzu0FU=
+	t=1755000312; cv=none; b=hlnBJpqyNZ+jNk8d2XuAFQR3MbOe+jOhkwIhUk0pdz/2jRZjg/CK4XYBfiTAJfE6OH9xKy74Sx2jboxNGsKkBLCjReQdKyjRdXKgK3Fyslh8OFQGu+2qMfmoseny1dQWLPUhsQOGTCKSEQe/s2jo6nNko/5S5cmmpCGQQ7mzduk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754998554; c=relaxed/simple;
-	bh=W27HQXCMx8aHLOhK6yxuceOBWyLMX2rye4q/sLCK2AE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CMt0zhV6XkCIPsuTnfizwz4W+ZW4Ao+SsR2YIe3x+2SuWLxNW0kUkKVYVfMHexPfJWYs9mgQ/jjr0jOQNuMakHaja7r2XmXngAua8waM6Ky5YDaB5bMl5AhfPSk6GenfLMINyrCxuRAaks+RozvJdqCQBGxqqA242qyAbCrFGwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pKfPZAy4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RBZycv8A; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2RVmtOl5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=31yXk9dD; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id F36141F45E;
-	Tue, 12 Aug 2025 11:35:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1754998551;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W27HQXCMx8aHLOhK6yxuceOBWyLMX2rye4q/sLCK2AE=;
-	b=pKfPZAy4ypNLJ3SPJhFYMspRNdVmgMj19c0UEXgCXNeSVlPMdc93A3kGSvSIB4zKyoSKCi
-	DB+Q9SlVEUcyKGWuXgvWQdft7aaLEJdwDyatk3eDP8iwt6pwvfz/EGTWkvO99a7+sfVSaV
-	zfiPWwcyjPHjl0Jf+SYqYe3sAJ2uyiA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1754998551;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W27HQXCMx8aHLOhK6yxuceOBWyLMX2rye4q/sLCK2AE=;
-	b=RBZycv8A8wOoK5NULIeU6M+VYQR3xvE8yFvoPFxL3QyF7u2jw3jnEdIQgTX4dGGuTVrQqA
-	JrduCnO+jJNtFfDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1754998550;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W27HQXCMx8aHLOhK6yxuceOBWyLMX2rye4q/sLCK2AE=;
-	b=2RVmtOl500bIe/gLxhv87EKLm/MD0ZuLsTbTdtcxr6raXnbJscX/nsqr9LKCI0ZKu5xoaE
-	dUfedDnf/L1UVnpPIBGMrh1zmFSwg+tY4/a0q4lOdhMQBArYCF2hOW7IDuIaaaU2tHqNdW
-	nuwx1EmgYtewhzLXd0kKHpTWIGq5VSA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1754998550;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W27HQXCMx8aHLOhK6yxuceOBWyLMX2rye4q/sLCK2AE=;
-	b=31yXk9dD7YT/PJ9WJYeVY4LVDvRmqVOLBdcnd6EtBIrWC1mtdcwHLlPwrOAiZsXhaOLlxa
-	k1EsmHc5xtNWFRBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E10C1136C7;
-	Tue, 12 Aug 2025 11:35:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id U7eCNhYnm2gHHQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 12 Aug 2025 11:35:50 +0000
-Date: Tue, 12 Aug 2025 13:35:41 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Leo Martins <loemra.dev@gmail.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v3 0/3] btrfs: ref_tracker for delayed_nodes
-Message-ID: <20250812113541.GD5507@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1754609966.git.loemra.dev@gmail.com>
+	s=arc-20240116; t=1755000312; c=relaxed/simple;
+	bh=KtNJ/z03HqhgbXBSbxTlr0UHY38Erc6lealCWiOaVOQ=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RrywHVFFuLPZCcSmXRvwUXIpO3PZuhsG/mZ0AkbwxgEVVM6qpcP5II8tHTNgrLtWDjA8vueiAjUg9Z54pytT0HCnVboMr7B+XeiRviLOsMXBQNdkh3E6kvBAF6jy7nj/xPBjfhGRE1+hS4/42wwOnDrLBYGw/NyV8AuqJd0NwWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k4iujG1T; arc=none smtp.client-ip=209.85.210.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-76c1008fd60so357593b3a.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Aug 2025 05:05:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755000310; x=1755605110; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DawMIil5uFYCFXLPBGO/a0KWrw615DSmM5ZKYKQujO8=;
+        b=k4iujG1TOXzfPO+3XomeYxZON5tETgnpE26LkAaFfe4ifPPBl7q4JQelti8+x2Kw3/
+         a3rczASXNR2nyOJC7RA6lBjBkTBdE5svpPWcvHCIbquvoF5aioiu0gVuIpWDi4rua5zk
+         vqgDTk9afMi2CLjnvHsdZfNioL5Cg8gf6xKUsgu3wDeuoAw4AOcuKdO9B+VjEKO79MRN
+         AnDGUfjHHIxl4MK1j+ktU/iMhSme8PySaDRIYx44lPAKsfmOvHoBmtjkkmmUcXE5cjyy
+         Ywg/8u3irY8uBbas4m+pS69d91+IEjJPU0jGzV9KWUco2NeKhGHxkAW54o7Gkz3aEdfi
+         TwCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755000310; x=1755605110;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DawMIil5uFYCFXLPBGO/a0KWrw615DSmM5ZKYKQujO8=;
+        b=uydkLyFh1OesOcHeZWcyv3rKCoRv9xvpnrOwmijvYg2tF3xi21Wb7M354/MROlh2Is
+         GxCDYgQW3qERDhFb3idCuGvIQ+yykSvyKXwBfVtRwGDfcCm/ACnWtv80Xl8DaPlBnQSJ
+         J1H+XXm7VM3YPzqMEqOJgUAq31c6nmqcRLXPSRsEkRN0t6xdvWFLDuWdHXxOsBqk1Okj
+         oZ6XrEz57L2OW6Jg7kUlHAQKr4eM2QTPKqM+cZ4bE7lhuXwPinDABxJSS9o9sA7+Qkyq
+         9QVgKLWeUJuMC+xTsnJKnltoaRd5Qk/s5dXA+DKDk6ok5X6SMrteneRV1UNRtQCd67Va
+         IjpA==
+X-Gm-Message-State: AOJu0YzkoPTUsWB8RiZKdZoNqXcHlUHilbR8tTJl/tLRj8p8U0om6Wkt
+	ie1N53/dr2l/whIlEUNQNq+YQRyldR0kSPvBmAj9xStlSW1o5s55kXBx/K/HrijKe+5Yuw==
+X-Gm-Gg: ASbGncu4JvVySDSrazgTGOxIJ58OgPuCU/FnTPcrWYfUtzntRzJi4PxvIgFeic1pZN2
+	XiII9srrepPMdoPGwnZMXLSSwxpcjGAZWQjrV/IVHBAAxp5j0rBth0NsKx0SL/PPdMfmh+JQjVu
+	8u3vxc2SuxXUFc2mfRfdMion+xzvK8bKUwx9xsf508kadUk0MPhIT6LbSX6oTJlWvqyynbBCQQi
+	/COHPo0qmFhesCX762G3AlXRak0f+iybhZ3HCm+RrD2xwWuCjnP934Bv+cfiFr9Og419KDnhcRu
+	U1Ewrh3xOFRZ7xPVEtAIr/xe1amVeHK9HeXSFPB/ax/S3Heu+Rm2Sb98zp0jy3VQEZQmVG9FhDU
+	xWUANsbOh496gsLZ2ID30LOe/QvwHpgvvz1PEv83b4uQthP15hJ+bwFr91rKxlvuxDA==
+X-Google-Smtp-Source: AGHT+IFSMbT9kUqxJgsjtSsyU6KqRkiaCWXNwzhSZBRpcH3TiYRCagqlwtAYYliGxUWTSNgtAsGOlA==
+X-Received: by 2002:a05:6a00:a0c:b0:769:c482:5de0 with SMTP id d2e1a72fcca58-76e1842a690mr614262b3a.3.1755000310281;
+        Tue, 12 Aug 2025 05:05:10 -0700 (PDT)
+Received: from saltykitkat.localnet ([156.246.92.146])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76bcce8de28sm29048930b3a.39.2025.08.12.05.05.08
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Aug 2025 05:05:09 -0700 (PDT)
+From: Sun YangKai <sunk67188@gmail.com>
+To: linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject:
+ Re: [PATCH v2 0/3] btrfs: search_tree ioctl performance improvements and
+ cleanups
+Date: Tue, 12 Aug 2025 20:05:04 +0800
+Message-ID: <12722055.O9o76ZdvQC@saltykitkat>
+In-Reply-To: <20250726135214.16000-1-sunk67188@gmail.com>
+References:
+ <20250612043311.22955-1-sunk67188@gmail.com>
+ <20250726135214.16000-1-sunk67188@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1754609966.git.loemra.dev@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	TAGGED_RCPT(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -4.00
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-On Thu, Aug 07, 2025 at 04:53:53PM -0700, Leo Martins wrote:
-> The leading btrfs related crash in our fleet is a soft lockup in
-> btrfs_kill_all_delayed_nodes caused by a btrfs_delayed_node leak.
-> This patchset introduces ref_tracker infrastructure to detect this
-> leak. I'm mirroring the way REF_VERIFY is setup with a Kconfig and
-> a mount option.
+> This series optimizes the search_tree ioctl path used by tools like
+> compsize and cleans up related code:
+>=20
+> Patch 1: Narrow loop variable scope
+>=20
+> Patch 2: Early exit for out-of-range keys
+>=20
+>     Replace continue with early exit when keys exceed max_key
+>=20
+>     Provide measurable performance improvements:
+>     Cold cache: 34.61s =E2=86=92 30.40s (about 12% improvement)
+>     Hot cache: 14.19s =E2=86=92 10.57s (about 25% improvement)
+>=20
+> Patch 3: Simplify key range checking
+>=20
+>     Replace key_in_sk() helper with direct comparisons
+>=20
+>     Add ASSERT for min_key validation (safe due to forward search)
+>=20
+>     Maintain equivalent functionality with cleaner implementation
+>=20
+> These changes optimize a critical path for filesystem analysis tools while
+> improving code maintainability. The performance gains are particularly
+> noticeable when scanning large filesystems.
+>=20
+> Thanks,
+> Sun YangKai
+>=20
+> ---
+>=20
+> Changes since v1:
+>=20
+> * Replace the WARN_ON with ASSERT, since the condition is a runtime error.
+>   Suggested by David Sterba.
+>=20
+> ---
+>=20
+> Sun YangKai (3):
+>   btrfs: narrow loop variable scope in copy_to_sk()
+>   btrfs: early exit the searching process in search_tree ioctl
+>   btrfs: replace key_in_sk() with a simple btrfs_key compare
+>=20
+>  fs/btrfs/ioctl.c | 55 +++++++++++++++++-------------------------------
+>  1 file changed, 19 insertions(+), 36 deletions(-)
 
-To avoid copying REF_VERIFY in the future, I'd like to see moved it
-under debug config as well. The runtime cost if disabled is negligible,
-there's one extra memeber in the btrfs_ref structure but that's also
-acceptable.
+Politely ping. Is there anything blocking this?
+
+
+
 
