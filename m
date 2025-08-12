@@ -1,77 +1,82 @@
-Return-Path: <linux-btrfs+bounces-16023-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16024-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 668F1B226B9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 14:26:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDE81B22AB1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 16:36:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68F59507B49
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 12:26:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EE153AFE17
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 14:29:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A0511F099C;
-	Tue, 12 Aug 2025 12:26:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF7E2E8895;
+	Tue, 12 Aug 2025 14:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="l9yJ3zWD";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="l9yJ3zWD"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="VbdZr/97"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9A118A6DF
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Aug 2025 12:26:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF362D46B1
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Aug 2025 14:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755001606; cv=none; b=Wsp6Itv3SfOkXEDK7WSGdm1bOC2FM592sqGGz4o5TqpY89a6FLYSDC8AEKCjnBERIqSEpNXiR3snEuxzsvWDw6Ung+cpyUqeFx2Qj5+unulNX54YMGhciM6gkqGBBhNvfZikL/1LNMgnrr22sPDpGTAoclWuEEOX3VTEDMRTWdo=
+	t=1755008974; cv=none; b=gKWXMv4WUxsYkcCVovnJiYuacfeGCmltTAH+B3hNPpw2cPhZHymfNn9o39By6K+MNgUqdduz49l5tg+OOV4pNS0mUQ1m9t4YSsdzGXIIRqembpiA/mc6RxaH5mtMICz1cz45i9IjKcBgi6eGhmvAc7QoaZLeBH31hu8qimUr0nU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755001606; c=relaxed/simple;
-	bh=xiY3feb0wz5EeV+g5XshHNCyhSV8PSsnwMztbuz7wXA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JLH5RMOSR7okOvFvJZoZBjMuH4VgLjnEjHgTDwhMvwj3A6/0W6uQau4Zeq4XffbljHX2FKBsXHv6qSEyIsBgGf+i7jJFSj5d+ioff88bNxCzUUt3BvUvINvsisDk/W7VsSnW+2Ixz+cV9G1rD53pxCGdfY7oM0+08JZxg5Z4BOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=l9yJ3zWD; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=l9yJ3zWD; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E377021AAB;
-	Tue, 12 Aug 2025 12:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1755001595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=oUHoQJtgTgpCibMe32s5xgdJYqGY6tL9bRq+ICGCErE=;
-	b=l9yJ3zWDyeHByoRkACNVYH8TtOiWgWFUkuvR4+FPdBAPUoJbv9zLV3nCZxY1cE6e2gC/0p
-	0D8FlPViOjf1pgzbDWXySl7xK2UMuyDLKLMjybQGptvZcTrsCKX+EV8+GIpGxYANBePWhA
-	cup8y5q2lW3fZaWHDEIfZgJADzOpfVk=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1755001595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=oUHoQJtgTgpCibMe32s5xgdJYqGY6tL9bRq+ICGCErE=;
-	b=l9yJ3zWDyeHByoRkACNVYH8TtOiWgWFUkuvR4+FPdBAPUoJbv9zLV3nCZxY1cE6e2gC/0p
-	0D8FlPViOjf1pgzbDWXySl7xK2UMuyDLKLMjybQGptvZcTrsCKX+EV8+GIpGxYANBePWhA
-	cup8y5q2lW3fZaWHDEIfZgJADzOpfVk=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DA2931351A;
-	Tue, 12 Aug 2025 12:26:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yvT5NPsym2jSKwAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Tue, 12 Aug 2025 12:26:35 +0000
-From: David Sterba <dsterba@suse.com>
-To: torvalds@linux-foundation.org
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.17-rc2
-Date: Tue, 12 Aug 2025 14:26:32 +0200
-Message-ID: <cover.1755000200.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1755008974; c=relaxed/simple;
+	bh=hdCEU7Mzso1IzaQu4c+7M23NvH+TYeTeC/91CCEpUVk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=kjSDeLPzgiJvZPRUBG0HcsUEQWBmkjnRI060FbSOdzd0Q1i0qVcXsqCCDnXTQwdv0PKtDKbO8U3Wzl2vCdluAve3oNG2v1tjRaDqLlknQjvDTpdSC9fWIU7oszwvEREYLljHI9+FuyqWtDv533N7CsPV/AI3N3hGSQtAG8uy/z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=VbdZr/97; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-718389fb988so55813697b3.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Aug 2025 07:29:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1755008971; x=1755613771; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GIWqSH0Hh43yFso7Zw4LnKg2Q0y9W8XE8TYQL0WCY14=;
+        b=VbdZr/97EEjZullhNa7vALt7VhTySg2Uoks42/oTbrmsxOogw4ztfg18HPtTzpqCVu
+         xO3T5QkZog0kaXqPTfxDYjMRKrfWysqsw3BkoaZjK+8fNIc+N+xsr85OexEEDS26T5uC
+         kCCxvsF7wYjyq3KlHDmZetYMLczXDMJUZYv79JlPnFD+jLD9mqhOXQLwHlIWo5hApIaL
+         sLcvf7O5NwHR2efSLOAsqqF2nUKoV98PoB2+tSg7okMVjy7iIbfYPpOoGr6La92TYHWu
+         cAkzYykoh+mDtpyjhyd9gXLsY9WwEVr48fU+LLelzTbo08P/DfETHckYlbRBdDztnBia
+         51hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755008971; x=1755613771;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GIWqSH0Hh43yFso7Zw4LnKg2Q0y9W8XE8TYQL0WCY14=;
+        b=v+fz8bhwBUADUssINEkDMZw2k89mRnPQb4iB6EyrEbFK1rlap56R95UoRMoKQc6nsd
+         KcLdLQxY8pjZWuJ2scG5qG1alCp0a9bOHn0ZFCI/dxVaYpnCsXvsQ9ZOkUR/qilWhmkC
+         HCAFHY8xG+WXqmkwwplx56rRYWDV+rAuy3UNVZhQ0SZ8HpBgi1pMGG4Ew6514vGXSEze
+         cuRqag7EPgNTpMzrdXPXMhX6B3tRHwOCXyS4DjZLtQmFXAcBc8wdQFmXnb67LBwuk7DI
+         yhXbdZjgezOoxiT1FiranZrreyomglDOupxHs3xULIqtEBUArSaaVmJf4J8nvGyonrhe
+         N5OA==
+X-Gm-Message-State: AOJu0YwSI1x/47AdCrF7J0FxdE15pEzIUgZfklQdBx7Dqd1dRaVL6L/b
+	U3b7QJ6OdrV422vwqjKm+z8aNQRm4vDo1PVwzPMu2J9DvhTsQoUT+gpPnK/W5k2m7qdKX5KdXol
+	lFNXp9tQ=
+X-Gm-Gg: ASbGnctqJF4jYLRVeNdvshQ0GtN2piqhz7E8kcCZHS2ab0PFQzouGRG1Yc9dAmVDfrQ
+	VHeE5eK1K+nkkvgxiCDZmxHjMf2/lrVspKIMow8RxqBDlyv1y/uMl3XEO/zI9o3HnuKlqtPDEdU
+	OzYICVv6YgFpMul2seKAGFaiqReJVLeGrpnBBBfxCg6a7/lq6OXBB4ezXXD7m5XSR0IcBkz3mge
+	GW3q1L6Slgm6RcNU7Sj4sVPxLtFaVkew5kiEbXJUzlqSMBbLoGADA8cN9JKeOR6ngqAvQRqRcBs
+	eCHDS6BZ3oKYLHDO5jZyvyamhPuTKh4z40QTBG7J4iFVbKUglaHp9r/irWWaS2AJrjrH83oONQ1
+	vNQJlMQ==
+X-Google-Smtp-Source: AGHT+IFNVSu/oXXdbgbKfwDY2lPqDHFGBsn6wQjBiJ/eKZoJ4WhLby4pQZONSHZQ8Iv53z7+CmQ3yA==
+X-Received: by 2002:a05:690c:708c:b0:71c:4091:3c96 with SMTP id 00721157ae682-71c42a3db5bmr47185817b3.26.1755008970689;
+        Tue, 12 Aug 2025 07:29:30 -0700 (PDT)
+Received: from localhost ([2603:6081:59f0:8370::176e])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-71b5a5fa3c6sm75785707b3.85.2025.08.12.07.29.29
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Aug 2025 07:29:29 -0700 (PDT)
+From: Josef Bacik <josef@toxicpanda.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: update MAINTAINERS entry
+Date: Tue, 12 Aug 2025 10:29:23 -0400
+Message-ID: <6edc186a32ad2bc18b26932b4b5d87b977a55726.1755008933.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -79,85 +84,35 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
 
-Hi,
+This is an update to reflect reality, not a signal of any seismic
+change. Dave Sterba has been the acting maintainer for almost a decade,
+I've simply been here as a backstop in case he gets hit by a bus. The
+fact is we have a strong and thriving community with any number of more
+active developers that can take on that role if it's necessary. I'm
+exceedingly happy and proud of the work that Dave has done in keeping us
+all in line, and know that if further changes need to be made it'll be
+with the development community we've built throughout the lifetime of
+btrfs.
 
-please pull a few regression fixes and other usual fixes. Thanks.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ MAINTAINERS | 1 -
+ 1 file changed, 1 deletion(-)
 
-- fix bug in qgroups reporting incorrect usage for higher level qgroups
+diff --git a/MAINTAINERS b/MAINTAINERS
+index fe168477caa4..cb0e0a324f56 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5258,7 +5258,6 @@ F:	drivers/gpio/gpio-bt8xx.c
+ 
+ BTRFS FILE SYSTEM
+ M:	Chris Mason <clm@fb.com>
+-M:	Josef Bacik <josef@toxicpanda.com>
+ M:	David Sterba <dsterba@suse.com>
+ L:	linux-btrfs@vger.kernel.org
+ S:	Maintained
+-- 
+2.50.1
 
-- in zoned mode, do not select metadata group as finish target
-
-- convert xarray lock to RCU when trying to release extent buffer to
-  avoid a deadlock
-
-- do not allow relocation on partially dropped subvolumes, which is
-  normally not possible but has been reported on old filesystems
-
-- in tree-log, report errors on missing block group when unaccounting
-  log tree extent buffers
-
-- with large folios, fix range length when processing ordered extents
-
-----------------------------------------------------------------
-The following changes since commit 0a32e4f0025a74c70dcab4478e9b29c22f5ecf2f:
-
-  btrfs: fix log tree replay failure due to file with 0 links and extents (2025-08-06 13:01:38 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.17-rc1-tag
-
-for you to fetch changes up to 7b632596188e1973c6b3ac1c9f8252f735e1039f:
-
-  btrfs: fix iteration bug in __qgroup_excl_accounting() (2025-08-07 17:07:16 +0200)
-
-----------------------------------------------------------------
-Boris Burkov (1):
-      btrfs: fix iteration bug in __qgroup_excl_accounting()
-
-Filipe Manana (1):
-      btrfs: error on missing block group when unaccounting log tree extent buffers
-
-Leo Martins (1):
-      btrfs: fix subpage deadlock in try_release_subpage_extent_buffer()
-
-Naohiro Aota (1):
-      btrfs: zoned: do not select metadata BG as finish target
-
-Qu Wenruo (3):
-      btrfs: make btrfs_cleanup_ordered_extents() support large folios
-      btrfs: fix wrong length parameter for btrfs_cleanup_ordered_extents()
-      btrfs: do not allow relocation of partially dropped subvolumes
-
- fs/btrfs/extent_io.c  | 11 ++++++-----
- fs/btrfs/inode.c      |  8 +++++---
- fs/btrfs/qgroup.c     |  3 +--
- fs/btrfs/relocation.c | 19 +++++++++++++++++++
- fs/btrfs/tree-log.c   | 19 +++++++------------
- fs/btrfs/zoned.c      |  2 +-
- 6 files changed, 39 insertions(+), 23 deletions(-)
 
