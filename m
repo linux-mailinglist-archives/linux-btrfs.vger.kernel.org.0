@@ -1,120 +1,180 @@
-Return-Path: <linux-btrfs+bounces-16006-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16007-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44222B21BEA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 05:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 36605B21E32
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 08:22:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77BEA1A20406
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 03:59:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4915A19045C3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Aug 2025 06:23:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9E32DECD2;
-	Tue, 12 Aug 2025 03:58:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EED9F2E282C;
+	Tue, 12 Aug 2025 06:22:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hihrJ1bu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BkofZ5yy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B4361DF27F
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Aug 2025 03:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5FF62DFA3B;
+	Tue, 12 Aug 2025 06:22:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754971122; cv=none; b=NRx4GRnpJQzwyY+SAB/LNKfTrj4HSLEDr6SxbULoglVRWnxmk3R82bEvufZ5TlLuy/ae9OhYmuqank5vuGSniuDB3jPVi0jRrAmxJmAvUY5UJ5xclIxwLc62jg2prpapDR0zIXuZ24HmuNOylWI5rFxV/UZF8iy6v7zqVnkKsek=
+	t=1754979760; cv=none; b=UUMioDJac0gEERS5KfmF/PCNNgHU8buucT+peenp3+fupSmOYAWbj6pmztacmyYi9jfnv6G3KzSg6gqYWIPwinaaAueRx7uaPDj03lVlij2JX1Ee9ChjrZ4TzFFiCNrFUk+vy04j1VUYSQIU3x8TMTPCpEOK4I2aLAf/H7WdQg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754971122; c=relaxed/simple;
-	bh=QDW6PgcfQGmvnuZamnjvlDuDj/nN6/r+CzeVaCn9PhA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jQY9vzykcSYtKT2dS21j0zz/x1ThmUEnoEfUbvXwZclT+8Yywpd5y0g3wRh/HXeADcwqebKm0xhh0etid8r8k7evT26C73gMBaj59KbLqY+KXLbqi7E9ElxplIFo6VxQ8CS6x0iKavU3/yd1/+ZD/iXGTe+6pgjt991PsVYgjN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hihrJ1bu; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-31f4e49dca0so6106603a91.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Aug 2025 20:58:41 -0700 (PDT)
+	s=arc-20240116; t=1754979760; c=relaxed/simple;
+	bh=zFAGRrwuwWB5HJl+9EwiGvBXdn70IvxXPFhQq2EEYsU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ckJqEGnEbZAQ4J+XNgwTX9pVgHAKEFxEpzr2tzdIcqEgsCaalHn7JJSLT86zulmEN5pLmhZercuMD1ZssH4XdtKa/RtN7mQlqvisc6HL8Md4zAm1ls9D9I1q7GrA/r1lrfyFCcL28JtHRIh2067GJMKhAfrD+ih4npSrUkaGCWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BkofZ5yy; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-242d8dff9deso25088235ad.2;
+        Mon, 11 Aug 2025 23:22:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1754971121; x=1755575921; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UsF4i7owr2w64jophO+zO+eW0GN81ddWs4iypkKqJ00=;
-        b=hihrJ1bu6sELq8z9mjr/kEdkySRitX2ZcqISoR0PTSKkyQSbp0BF4WtJYLR1JKXZCO
-         j83CRm4GSIM3w9rtEMXObIjJkARbBU//RsdBZhHcW3pDcXe+4g6tZr1tqzW3BrA3olCP
-         +24KObsBsiVGVgc6BvpbTO1aSlUMd+mMaYNrQ=
+        d=gmail.com; s=20230601; t=1754979757; x=1755584557; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aG5zr+MTtgDNpu4lXKuxczvNiLElW1aH6m8gqjR8YtU=;
+        b=BkofZ5yyuPd7/JZ9YMAi3UEtJJXNVGagaO6EduWYWyrIhGE3QVKoGdQPT+WdjePxsL
+         8QSeZ2iyjPh/9XMqQATJecFu0ig42ZWPehs4rqedaBJBEU2e0vsfr+TfxMV455zLR5YD
+         vmRsCZ7gPty3MwycoEQaR7QDXA6/fP2tJyOQsXB4NpVpqIYezkzOQ6bQCQQuZA2CGqfp
+         vR586QnJOKD2wLftof3fL2+L5wCH8hpXUsoIKTDbgrXJDlNj+5pw1T2Qj+x1ZNtnIU6n
+         t/ZwpIfczNa94ZxKRkbTqKqpzXPH5Cn8+FyEeJep1rmbo3ZsICWkU0keJNXhLPTrcZAh
+         JzBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754971121; x=1755575921;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UsF4i7owr2w64jophO+zO+eW0GN81ddWs4iypkKqJ00=;
-        b=r6ZZNQWjJCrDrClL8b6u43gQ+r95JzdrFORMyfcez98dvHJ6IkhYurncT4R+o/ZeG7
-         nfvOtyt3lM7m+M3qLNhBcVSOTgpw5mQn3vMhVTbgD6BF3SKyWNeZcEs0E683A2OUHuDV
-         gN+kl3ga6jSEYX7IOqmicCxkeSJ2rFprB40xJsgPdIUxaNAQ6c/84Rz6uOkFCQ5/wfX+
-         2nNrHPK0N6sCpPbqc8mtUkwAsCrw45pxtylzHVwMV1IphHsK/+vnpA7yL2maPbW4JR9L
-         iyYLx9i+uI94QFQqkcWY/KrY+07aLZWkaWgHdFFGzMdQI56Jx+TCEcOVahCxkzAC2nI1
-         ZBiw==
-X-Forwarded-Encrypted: i=1; AJvYcCUZb6RjoebwKS5F9TPvMDZ+QQX8u2AC+r1Pzv1Ohkr5wLm4pjPMhfpDtAX9QxOJQxsED7wyO7ytdJOpQg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyibI2DcZ1nyVb6xrE4ISgDaTQSNQMsHnhnNUbZ85wbPmNvcNmA
-	i/PPqf74/aaa/YTV75c3R6lB7aDz0KtDsWMI31s1idilBArZ4xGMxBPV4HDe5ksCoQ==
-X-Gm-Gg: ASbGncsVACWnhAL8kQZDt9f6kOuPGNabYkNKqhAWRKuM5BpkZrr1MgGyenRd0zwy85N
-	50GsbHP7PkOc872h6kJk+PaUnD+G+FlKFPdZRx64suvQSlhEYUYN9l5sm9eObrSHAf+uQOucGu6
-	mt5k4JwMQ+gvCGZas9apexhTi2XpbUziNpgDJ9YdoYvSMPjFIj/BV6FimzsFtPR1KnUXQb0WRap
-	i6Ie/6hZesITAMOeJ2l/84sos5kOXf/O7P/xwFDbzeXfk9vpeBFREuafWFmv/OvR3On8+bDzNaK
-	IpodqThYInS2feTny5j3v2rHU9BCgLU30LYpvDA+wiendSPbO5t0kTQhV4+0a0aE8OANj1dug8N
-	rVqJg8sYjYVS3scK90dw82VlulPfgobWKCjRb
-X-Google-Smtp-Source: AGHT+IE0YyrVY5Vt8OKrl33IrgQwBQBekiXEdcW95C5mTt17WuM8Sondsrrkn0NdMV5pujBh12Fm4w==
-X-Received: by 2002:a17:90b:2251:b0:31f:1a3e:fe31 with SMTP id 98e67ed59e1d1-321c0a11aa9mr3103600a91.11.1754971120678;
-        Mon, 11 Aug 2025 20:58:40 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:e529:c59e:30f9:11d3])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-321611d846esm16436888a91.8.2025.08.11.20.58.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Aug 2025 20:58:40 -0700 (PDT)
-Date: Tue, 12 Aug 2025 12:58:29 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linuxppc-dev@lists.ozlabs.org, virtualization@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org, 
-	jfs-discussion@lists.sourceforge.net, Andrew Morton <akpm@linux-foundation.org>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Jerrin Shaji George <jerrin.shaji-george@broadcom.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Michael S. Tsirkin" <mst@redhat.com>, 
-	Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
-	Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Benjamin LaHaise <bcrl@kvack.org>, 
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-	David Sterba <dsterba@suse.com>, Muchun Song <muchun.song@linux.dev>, 
-	Oscar Salvador <osalvador@suse.de>, Dave Kleikamp <shaggy@kernel.org>, Zi Yan <ziy@nvidia.com>, 
-	Matthew Brost <matthew.brost@intel.com>, Joshua Hahn <joshua.hahnjy@gmail.com>, 
-	Rakie Kim <rakie.kim@sk.com>, Byungchul Park <byungchul@sk.com>, 
-	Gregory Price <gourry@gourry.net>, Ying Huang <ying.huang@linux.alibaba.com>, 
-	Alistair Popple <apopple@nvidia.com>, Minchan Kim <minchan@kernel.org>, 
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH v1 2/2] treewide: remove MIGRATEPAGE_SUCCESS
-Message-ID: <lky6lmpq5hsflc4rcs2hev5i3gctvbrppysttnzo22r6oiryw4@edfre7sprwk5>
-References: <20250811143949.1117439-1-david@redhat.com>
- <20250811143949.1117439-3-david@redhat.com>
+        d=1e100.net; s=20230601; t=1754979757; x=1755584557;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aG5zr+MTtgDNpu4lXKuxczvNiLElW1aH6m8gqjR8YtU=;
+        b=fzfrQqLVuaiV6GFx15oayIWXIacZYHmf0AFTJeryOnGFbInAODqSVjzeppkR+eAZjj
+         Q8GKSijODKqj7AoyVBZkVmzyCZ58x219bnzgwn2UXV87Xn/jUakDJNKy8zFqsmSb9TWT
+         t7wtegWSTtfNRKe1VjOib9TSD5BXyjgVadfvAH0eXoS54hIilqDcBkrFOiQzLY0u8tHx
+         TwS2fT63MfrdamBDJdEHFAMfBsUa3f0tQhNCFI4uBkqhhrLBMHZAwWtNqRMDCpj0bXFY
+         6lshuwkVOHHnR/jQ8XVFD9Ah0MUQLd6c0XpJJ/CXpYq8pb/120ix4E0quXtVoSGCSrBY
+         yRFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXChWK2NLAvrMRbdJGpBzQoQBLAZk8ynPRWFroBvmumOJvAVtQyxjEZBESh5ak8govXnrYdR+P/@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGuxVnlkd6neM9VMghOdmVA7fipxTk8vxY2igUNGVX1oUNuHJo
+	YgB0j0H/h9I3j+cT5ydr2ysYlZjj5fWJ/I0jZWxHs+Qv9c8scN4hLjVjkzInYA==
+X-Gm-Gg: ASbGnctwMmJIrhMbd4/EhYoqtzAEhrSSYaYdENRMaPEMYeOTuA7g76n24hCYjlkUaph
+	RZGpCoUUNiUZ+Hj+ijy7iXFPkDzEB+7LmfkQsyp9PzEkz/gFja4nsGzPxvkeuogtPimIPc+qn1E
+	mfYx277NK4n54gjmcXImQOmCZAQygzA9/gULqMk9FoJ9CSdzvYOAvTdDt/5OIcpTMoXZX8nVrcR
+	yBntFmts2ouCoNFu8IdLVsw35jgqoGULadc1KaTER/GXt7LjNBVcY96vd4JPk9H/K8sAHxAuteb
+	z9Z3slWkwcKGL+oI7tq0ZJu8m2OfeGQqV/Wh6nxV02HmOL7pxJsRJ0RTbr712gCW6W9Y/YfVllV
+	8vltTPy3sHC9lfARkCf8dFBIqB/828cms
+X-Google-Smtp-Source: AGHT+IEhv/3Obwg8nbzWtzGYWth66QSTLwod1boZkrgeuclBY6e1ov7BO4kx6oGAa+tGDIF217HF/Q==
+X-Received: by 2002:a17:902:f706:b0:237:f76f:ce34 with SMTP id d9443c01a7336-242fc228a6emr31561655ad.15.1754979756941;
+        Mon, 11 Aug 2025 23:22:36 -0700 (PDT)
+Received: from [192.168.0.120] ([49.207.198.59])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241d1ef48fbsm290936605ad.36.2025.08.11.23.22.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Aug 2025 23:22:36 -0700 (PDT)
+Message-ID: <9b8a35b7-0531-480a-a833-3844d048937b@gmail.com>
+Date: Tue, 12 Aug 2025 11:52:32 +0530
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250811143949.1117439-3-david@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/7] btrfs/137: Make this compatible with all block sizes
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, ritesh.list@gmail.com,
+ ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org,
+ fdmanana@kernel.org
+References: <cover.1753769382.git.nirjhar.roy.lists@gmail.com>
+ <991278fd7cf9ea0d5eed18843e3fb96b5c4a3cac.1753769382.git.nirjhar.roy.lists@gmail.com>
+ <c1feb41e-608b-4578-b7f7-bf9dd0801836@gmx.com>
+Content-Language: en-US
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+In-Reply-To: <c1feb41e-608b-4578-b7f7-bf9dd0801836@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On (25/08/11 16:39), David Hildenbrand wrote:
-> At this point MIGRATEPAGE_SUCCESS is misnamed for all folio users,
-> and now that we remove MIGRATEPAGE_UNMAP, it's really the only "success"
-> return value that the code uses and expects.
-> 
-> Let's just get rid of MIGRATEPAGE_SUCCESS completely and just use "0"
-> for success.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-FWIW,
-Acked-by: Sergey Senozhatsky <senozhatsky@chromium.org> [zsmalloc]
+On 8/4/25 09:28, Qu Wenruo wrote:
+>
+>
+> 在 2025/7/29 15:51, Nirjhar Roy (IBM) 写道:
+>> For large blocksizes like 64k on powerpc with 64k pagesize
+>> it failed simply because this test was written with 4k
+>> block size in mind.
+>> The first few lines of the error logs are as follows:
+>>
+>>       d3dc847171f9081bd75d7a2d3b53d322  SCRATCH_MNT/snap2/bar
+>>
+>>       File snap1/foo fiemap results in the original filesystem:
+>>      -0: [0..7]: data
+>>      +0: [0..127]: data
+>>
+>>       File snap1/bar fiemap results in the original filesystem:
+>>      ...
+>>
+>> Fix this by making the test choose offsets based on
+>> the blocksize.
+>
+> I'm wondering, why not just use a fixed 64K block size?
+
+Sorry for delayed response. Yes, if you feel keeping it simple by 
+keeping the values aligned to 64k, I can make the change.
+
+>
+> So that all supported btrfs block sizes can result the same file 
+> contents.
+>
+>> Also, now that the file hashes and
+>> the extent/block numbers will change depending on the
+>> blocksize, calculate the hashes and the block mappings,
+>> store them in temporary files and then calculate their diff
+>> between the new and the original filesystem.
+>> This allows us to remove all the block mapping and hashes
+>> from the .out file.
+>
+> Although I agree we should remove the block mappings from the golden 
+> output, as compression can add extra flags and pollute the golden output.
+>
+> But that can also be done with _require_btrfs_no_compress() helper.
+
+Okay. In that case, I will have the above pre-condition too.
+
+>
+>>
+>> Reported-by: Disha Goel <disgoel@linux.ibm.com>
+>> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+>> ---
+>>   tests/btrfs/137     | 135 +++++++++++++++++++++++++++++---------------
+>>   tests/btrfs/137.out |  59 ++-----------------
+>>   2 files changed, 94 insertions(+), 100 deletions(-)
+>>
+>> diff --git a/tests/btrfs/137 b/tests/btrfs/137
+>> index 7710dc18..61e983cb 100755
+>> --- a/tests/btrfs/137
+>> +++ b/tests/btrfs/137
+>> @@ -27,53 +27,74 @@ _require_xfs_io_command "fiemap"
+>>   send_files_dir=$TEST_DIR/btrfs-test-$seq
+>>     rm -fr $send_files_dir
+>> -mkdir $send_files_dir
+>> +mkdir $send_files_dir $tmp
+>
+> Just a small nitpick, it's more common to use $tmp.<suffix>, that's 
+> why the default _cleanup() template goes with "rm -f $tmp.*"
+
+Noted. Thanks.
+
+--NR
+
+>
+> Thanks,
+> Qu
+>
+-- 
+Nirjhar Roy
+Linux Kernel Developer
+IBM, Bangalore
+
 
