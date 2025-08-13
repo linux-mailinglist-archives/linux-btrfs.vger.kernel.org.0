@@ -1,300 +1,217 @@
-Return-Path: <linux-btrfs+bounces-16065-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16067-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22193B24C34
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Aug 2025 16:42:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEA8EB25233
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Aug 2025 19:42:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A53556211C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Aug 2025 14:38:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 895E1886400
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Aug 2025 17:42:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3557530748D;
-	Wed, 13 Aug 2025 14:35:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D7CE284B37;
+	Wed, 13 Aug 2025 17:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="Ks/GALdK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DNweAgui"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
+Received: from mail-yw1-f194.google.com (mail-yw1-f194.google.com [209.85.128.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB81C302CB8
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Aug 2025 14:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA86EB665
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Aug 2025 17:41:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755095731; cv=none; b=kXQMSKmiFJq9ZzioLnek5Q88iaPQJUR9bl0odx2ELk9X462zzWwCLLG9HAvjfEe7HePEv5c3wxn+/8tjhlgqst4NjrR/o7E1yL5UfUd3YUo9k1gk7UU8FCI4hmRpag+4fafywjvtRfB/mGjB4e6j/AvYYz0nbiBibFR+5R3q/aE=
+	t=1755106915; cv=none; b=W9lV3a8Lui/QkS2EtoYgbzBQ6E26hUnZZTsxn7eJTJhXzMjtdBai9pk1w7ln7yvN+TSrjIROdC5SCLy7MYdwhNG9hnwms1jPhk4SlopEq6LHBi3q/Hzuiyo3SFXKDQif4eiRVVBu4+6TAjcWWNVCcQlqtt8dIFSEh006tfqeokQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755095731; c=relaxed/simple;
-	bh=7S0+89rmkcLw8j1Milq2FOO3xGjrC20nJ5qZMYHI/vQ=;
+	s=arc-20240116; t=1755106915; c=relaxed/simple;
+	bh=GLRgJrUzs+Z8RKqWsfKTU34oO0JHvwsi/J8jVvrnPFk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Mime-Version; b=eGGW7FQvFfbC0TBxBmWTMZiLf4RSGYAPpomQAEQWQwiTJsFsOuhH2PGxhomjO/WKeqIJaUvAEFGpy99+wb3pjg3pjvDhiEuDb1EBRIUyXZEalADRDTI+eL/5Pu1oPmFrnACLYNDqZuCIeNYM1tpAe5dcGMqqg64ZHR7i0PUxoXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=Ks/GALdK; arc=none smtp.client-ip=217.169.27.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
-Received: from localhost.localdomain (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.burntcomma.com (Postfix) with ESMTPSA id A0D252A759F;
-	Wed, 13 Aug 2025 15:35:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1755095713;
-	bh=ovSdMWWLel8g4jy3qGqymYyuMc9kZSOgMyvkZJZn+v4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Ks/GALdKQiiniNR2i/PA6GFo8tEHDjXIa8FPnpAukMNCzYOMLV7ZLSYHYifNGy/k5
-	 vPMbIRsetb9kouz3Bo5EJbifZA62ifbA8HqCRQ/zwSnUHmH7qMGMvQLJ+EsCQ+g7xF
-	 y1cSzqcXCawi3yc6FWyFeAIsb5jWsfFf0BkBPkCQ=
-From: Mark Harmstone <mark@harmstone.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Mark Harmstone <mark@harmstone.com>
-Subject: [PATCH v2 16/16] btrfs: allow balancing remap tree
-Date: Wed, 13 Aug 2025 15:34:58 +0100
-Message-ID: <20250813143509.31073-17-mark@harmstone.com>
-In-Reply-To: <20250813143509.31073-1-mark@harmstone.com>
-References: <20250813143509.31073-1-mark@harmstone.com>
+	 MIME-Version; b=AFXUFJActfFypY/Yy8MbCVdUGtRLS9WnjGQMtDwzHDjiAcLspu5DJ2S/fY/m+rHbPwGrjYNuZXcDt6DdY1xninbN46WR9mKxQ/bQ4OsWdq9zjcpXxBFzKv3nGe2KO4uky7difZkliqsjUIc1MgSQsz76cirjX0INsBfxzlXlcjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DNweAgui; arc=none smtp.client-ip=209.85.128.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f194.google.com with SMTP id 00721157ae682-71d6014810fso1561647b3.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Aug 2025 10:41:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755106913; x=1755711713; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x6YlGqvPTDk/RbH7Yniica7XVYjfM8GkdijpZfApyHs=;
+        b=DNweAguinKYR7KmiOuYLLntv+kYvXwVMdfeb6IL8ALrwCcnmUa76m14cwO6oSTz1dO
+         6qaTW/rLP4UjhTbYvo0dTL92/NNuZruXkVvSoVFmVyBTy/BCc3pdeA5tdQAkq+Yv5uyj
+         sfDbT0uPuyfR16oim/4a3CWMeCTu8NJ+YhPuod7rFHg3wFqzo06X1Bgh3qsS1/1wqQxi
+         klU5wktbloQaOV72uf+fnJjesDvScfgdzNJTPswtRp6vEvPvrBgaEvKNo/Stsb0+M51j
+         3GLgDG9gV+3R6Dgklqo7j6xSse8dxfEpmUFooLawkrQi5YjTrsu6etTUXGNgTFMn386K
+         thVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755106913; x=1755711713;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x6YlGqvPTDk/RbH7Yniica7XVYjfM8GkdijpZfApyHs=;
+        b=ujCB64O9KHP+Ctsin8ecR+BQ9F/CzlGRWQ/elgosqa73esaDqhvZiPB7SHg0fgRz9M
+         iSWZe3Fi9OYZwjY9yRek/bSYoBQ89MY0HLzChMteHGF0QHX1iqK+OrLwjCwPXnZefA4M
+         Y6gV3hOEKED4ywoVyJ4nM82XtzJI1fxQuq/OFoURdaDUqj9L7VL27G7r+VZUmJ2F/YDn
+         UPyP5tnKOCB8IywWsj3lgWn3Nstb2323V9Qb4p5ptuv/kN8fqeGJCEA+RTCXk8eNdiGd
+         ZBX/Oqh2hyeOBBU/t+9xuGZ02eNm1JgxldP6IKwcV04sR7mqFf9f0R+0/zK++PEOifxs
+         XpsA==
+X-Gm-Message-State: AOJu0YzqE7YmDCPHjtvPADZVeY9eqrrZdIYnqi7ksrZiQCP6dgUI18ZV
+	IWtz9tWO5CZEobuEIkbK9zrLE6kGCwfM7xT7bIdnsUM1aoQyw0GpKhtR
+X-Gm-Gg: ASbGnctPlxdnwSp+bxm1Ww99QGChGjmaqlxfrbGqKLUd9LYZIg2vZ+8urj2wMO7PYJp
+	SJNx/vzWGWG/8WHPSSq7bS03LNXjxUqOJAV6nQCuA8sMQbCrJ/xiMm+HBHRxOM1P95+Rd3U0uR8
+	8fbgcQTxKbLyg0VVyApzveLdhrWIOHJsKF7RbWts3V7lKnCfYni5MR1OuUmPOWJxID91+Uj6nu4
+	xAmov4cdKaU17pLgeaBUr1Io4xGH1/S0yxOWPtsikj8ahLfqxy4WIquX7DLU66+6ORYgwSDInrK
+	6hNtTPlTN6WDeeQOyigw8yDyirVeQlm+KwQyra3G5hbAl8GIrYkl62HHAO9oVHCBXGQlXkxaSNp
+	zmlhxgz8Q40ssTc+XuAuipJI8CqPD
+X-Google-Smtp-Source: AGHT+IEGcMiXaJqmiIdcXYXOen7RXqY9qqE1UT7VAxWpgMPCSZ5QXepf5Paos2Bp++lD+iMtjTVTmw==
+X-Received: by 2002:a05:690c:d8d:b0:71c:1673:7bb4 with SMTP id 00721157ae682-71d4e5b40ecmr51285637b3.38.1755106912354;
+        Wed, 13 Aug 2025 10:41:52 -0700 (PDT)
+Received: from localhost ([2a03:2880:25ff:4d::])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e931d56db95sm39594276.19.2025.08.13.10.41.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Aug 2025 10:41:51 -0700 (PDT)
+From: Leo Martins <loemra.dev@gmail.com>
+To: David Sterba <dsterba@suse.cz>
+Cc: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: Re: [PATCH v4 1/3] btrfs: implement ref_tracker for delayed_nodes
+Date: Wed, 13 Aug 2025 10:41:15 -0700
+Message-ID: <20250813174146.1159027-1-loemra.dev@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20250813125052.GC22430@twin.jikos.cz>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Balancing the REMAP chunk, i.e. the chunk in which the remap tree lives,
-is a special case.
+On Wed, 13 Aug 2025 14:50:52 +0200 David Sterba <dsterba@suse.cz> wrote:
 
-We can't use the remap tree itself for this, as then we'd have no way to
-boostrap it on mount. And we can't use the pre-remap tree code for this
-as it relies on walking the extent tree, and we're not creating backrefs
-for REMAP chunks.
+> On Tue, Aug 12, 2025 at 04:04:39PM -0700, Leo Martins wrote:
+> > This patch adds ref_tracker infrastructure for btrfs_delayed_node.
+> > 
+> > It is a response to the largest btrfs related crash in our fleet.
+> > We're seeing softlockups in btrfs_kill_all_delayed_nodes that seem
+> > to be a result of delayed_nodes not being released properly.
+> > 
+> > A ref_tracker object is allocated on reference count increases and
+> > freed on reference count decreases. The ref_tracker object stores
+> > a stack trace of where it is allocated. The ref_tracker_dir object
+> > is embedded in btrfs_delayed_node and keeps track of all current
+> > and some old/freed ref_tracker objects. When a leak is detected
+> > we can print the stack traces for all ref_trackers that have not
+> > yet been freed.
+> > 
+> > Here is a common example of taking a reference to a delayed_node
+> > and freeing it with ref_tracker.
+> > 
+> > ```C
+> > struct btrfs_ref_tracker tracker;
+> > struct btrfs_delayed_node *node;
+> > 
+> > node = btrfs_get_delayed_node(inode, &tracker);
+> > // use delayed_node...
+> > btrfs_release_delayed_node(node, &tracker);
+> > ```
+> > 
+> > There are two special cases where the delayed_node reference is "long
+> > lived", meaning that the thread that takes the reference and the thread
+> > that releases the reference are different. The `inode_cache_tracker`
+> > tracks the delayed_node stored in btrfs_inode. The `node_list_tracker`
+> > tracks the delayed_node stored in the btrfs_delayed_root
+> > node_list/prepare_list. These trackers are embedded in the
+> > btrfs_delayed_node.
+> > 
+> > btrfs_ref_tracker and btrfs_ref_tracker_dir are wrappers that either
+> > compile to the corresponding ref_tracker structs or empty structs
+> > depending on CONFIG_BTRFS_DEBUG. There are also btrfs wrappers for
+> > the ref_tracker API.
+> > 
+> > Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+> 
+> There's some witespace damage that fails when the patch is applied by
+> 'git am', it can be fixed manually but please fix that next time.
 
-So instead, if a balance would relocate any REMAP block groups, mark
-those block groups as readonly and COW every leaf of the remap tree.
+Sorry, totally my fault, did not run checkpatch before sending out.
+Will fix next time.
 
-There's more sophisticated ways of doing this, such as only COWing nodes
-within a block group that's to be relocated, but they're fiddly and with
-lots of edge cases. Plus it's not anticipated that a) the number of
-REMAP chunks is going to be particularly large, or b) that users will
-want to only relocate some of these chunks - the main use case here is
-to unbreak RAID conversion and device removal.
+> 
+> > ---
+> >  fs/btrfs/Kconfig         |   3 +-
+> >  fs/btrfs/delayed-inode.c | 192 ++++++++++++++++++++++++++++-----------
+> >  fs/btrfs/delayed-inode.h |  70 ++++++++++++++
+> >  3 files changed, 209 insertions(+), 56 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+> > index c352f3ae0385..2745de514196 100644
+> > --- a/fs/btrfs/Kconfig
+> > +++ b/fs/btrfs/Kconfig
+> > @@ -61,7 +61,8 @@ config BTRFS_FS_RUN_SANITY_TESTS
+> >  
+> >  config BTRFS_DEBUG
+> >  	bool "Btrfs debugging support"
+> > -	depends on BTRFS_FS
+> > +	depends on BTRFS_FS && STACKTRACE_SUPPORT
+> 
+> How does this work? If STACKTRACE_SUPPORT is not enabled then we can't
+> enable BTRFS_DEBUG?
 
-Signed-off-by: Mark Harmstone <mark@harmstone.com>
----
- fs/btrfs/volumes.c | 161 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 157 insertions(+), 4 deletions(-)
+That's correct, my understanding is that STACKTRACE_SUPPORT is something
+configured by different architectures based on whether or not they
+support stacktraces. Maybe it would be better to do something like
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index e13f16a7a904..dc535ed90ae0 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -4011,8 +4011,11 @@ static bool should_balance_chunk(struct extent_buffer *leaf, struct btrfs_chunk
- 	struct btrfs_balance_args *bargs = NULL;
- 	u64 chunk_type = btrfs_chunk_type(leaf, chunk);
- 
--	if (chunk_type & BTRFS_BLOCK_GROUP_REMAP)
--		return false;
-+	/* treat REMAP chunks as METADATA */
-+	if (chunk_type & BTRFS_BLOCK_GROUP_REMAP) {
-+		chunk_type &= ~BTRFS_BLOCK_GROUP_REMAP;
-+		chunk_type |= BTRFS_BLOCK_GROUP_METADATA;
-+	}
- 
- 	/* type filter */
- 	if (!((chunk_type & BTRFS_BLOCK_GROUP_TYPE_MASK) &
-@@ -4095,6 +4098,113 @@ static bool should_balance_chunk(struct extent_buffer *leaf, struct btrfs_chunk
- 	return true;
- }
- 
-+struct remap_chunk_info {
-+	struct list_head list;
-+	u64 offset;
-+	struct btrfs_block_group *bg;
-+	bool made_ro;
-+};
-+
-+static int cow_remap_tree(struct btrfs_trans_handle *trans,
-+			  struct btrfs_path *path)
-+{
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_key key = { 0 };
-+	int ret;
-+
-+	ret = btrfs_search_slot(trans, fs_info->remap_root, &key, path, 0, 1);
-+	if (ret < 0)
-+		return ret;
-+
-+	while (true) {
-+		ret = btrfs_next_leaf(fs_info->remap_root, path);
-+		if (ret < 0) {
-+			return ret;
-+		} else if (ret > 0) {
-+			ret = 0;
-+			break;
-+		}
-+
-+		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-+
-+		btrfs_release_path(path);
-+
-+		ret = btrfs_search_slot(trans, fs_info->remap_root, &key, path,
-+					0, 1);
-+		if (ret < 0)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int balance_remap_chunks(struct btrfs_fs_info *fs_info,
-+				struct btrfs_path *path,
-+				struct list_head *chunks)
-+{
-+	struct remap_chunk_info *rci, *tmp;
-+	struct btrfs_trans_handle *trans;
-+	int ret;
-+
-+	list_for_each_entry_safe(rci, tmp, chunks, list) {
-+		rci->bg = btrfs_lookup_block_group(fs_info, rci->offset);
-+		if (!rci->bg) {
-+			list_del(&rci->list);
-+			kfree(rci);
-+			continue;
-+		}
-+
-+		ret = btrfs_inc_block_group_ro(rci->bg, false);
-+		if (ret)
-+			goto end;
-+
-+		rci->made_ro = true;
-+	}
-+
-+	if (list_empty(chunks))
-+		return 0;
-+
-+	trans = btrfs_start_transaction(fs_info->remap_root, 0);
-+	if (IS_ERR(trans)) {
-+		ret = PTR_ERR(trans);
-+		goto end;
-+	}
-+
-+	mutex_lock(&fs_info->remap_mutex);
-+
-+	ret = cow_remap_tree(trans, path);
-+
-+	btrfs_release_path(path);
-+
-+	mutex_unlock(&fs_info->remap_mutex);
-+
-+	btrfs_commit_transaction(trans);
-+
-+end:
-+	while (!list_empty(chunks)) {
-+		bool unused;
-+
-+		rci = list_first_entry(chunks, struct remap_chunk_info, list);
-+
-+		spin_lock(&rci->bg->lock);
-+		unused = !btrfs_is_block_group_used(rci->bg);
-+		spin_unlock(&rci->bg->lock);
-+
-+		if (unused)
-+			btrfs_mark_bg_unused(rci->bg);
-+
-+		if (rci->made_ro)
-+			btrfs_dec_block_group_ro(rci->bg);
-+
-+		btrfs_put_block_group(rci->bg);
-+
-+		list_del(&rci->list);
-+		kfree(rci);
-+	}
-+
-+	return ret;
-+}
-+
- static int __btrfs_balance(struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_balance_control *bctl = fs_info->balance_ctl;
-@@ -4117,6 +4227,9 @@ static int __btrfs_balance(struct btrfs_fs_info *fs_info)
- 	u32 count_meta = 0;
- 	u32 count_sys = 0;
- 	int chunk_reserved = 0;
-+	struct remap_chunk_info *rci;
-+	unsigned int num_remap_chunks = 0;
-+	LIST_HEAD(remap_chunks);
- 
- 	path = btrfs_alloc_path();
- 	if (!path) {
-@@ -4215,7 +4328,8 @@ static int __btrfs_balance(struct btrfs_fs_info *fs_info)
- 				count_data++;
- 			else if (chunk_type & BTRFS_BLOCK_GROUP_SYSTEM)
- 				count_sys++;
--			else if (chunk_type & BTRFS_BLOCK_GROUP_METADATA)
-+			else if (chunk_type & (BTRFS_BLOCK_GROUP_METADATA |
-+					       BTRFS_BLOCK_GROUP_REMAP))
- 				count_meta++;
- 
- 			goto loop;
-@@ -4235,6 +4349,30 @@ static int __btrfs_balance(struct btrfs_fs_info *fs_info)
- 			goto loop;
- 		}
- 
-+		/*
-+		 * Balancing REMAP chunks takes place separately - add the
-+		 * details to a list so it can be processed later.
-+		 */
-+		if (chunk_type & BTRFS_BLOCK_GROUP_REMAP) {
-+			mutex_unlock(&fs_info->reclaim_bgs_lock);
-+
-+			rci = kmalloc(sizeof(struct remap_chunk_info),
-+				      GFP_NOFS);
-+			if (!rci) {
-+				ret = -ENOMEM;
-+				goto error;
-+			}
-+
-+			rci->offset = found_key.offset;
-+			rci->bg = NULL;
-+			rci->made_ro = false;
-+			list_add_tail(&rci->list, &remap_chunks);
-+
-+			num_remap_chunks++;
-+
-+			goto loop;
-+		}
-+
- 		if (!chunk_reserved) {
- 			/*
- 			 * We may be relocating the only data chunk we have,
-@@ -4274,11 +4412,26 @@ static int __btrfs_balance(struct btrfs_fs_info *fs_info)
- 		key.offset = found_key.offset - 1;
- 	}
- 
-+	btrfs_release_path(path);
-+
- 	if (counting) {
--		btrfs_release_path(path);
- 		counting = false;
- 		goto again;
- 	}
-+
-+	if (!list_empty(&remap_chunks)) {
-+		ret = balance_remap_chunks(fs_info, path, &remap_chunks);
-+		if (ret == -ENOSPC)
-+			enospc_errors++;
-+
-+		if (!ret) {
-+			btrfs_delete_unused_bgs(fs_info);
-+
-+			spin_lock(&fs_info->balance_lock);
-+			bctl->stat.completed += num_remap_chunks;
-+			spin_unlock(&fs_info->balance_lock);
-+		}
-+	}
- error:
- 	btrfs_free_path(path);
- 	if (enospc_errors) {
--- 
-2.49.1
+select REF_TRACKER if STACKTRACE_SUPPORT
 
+so we can still use DEBUG on architectures that don't support stacktraces,
+though I can't imagine they would be very relevant.
+
+> 
+> > +	select REF_TRACKER
+> >  	help
+> >  	  Enable run-time debugging support for the btrfs filesystem.
+> >  
+> 
+> > @@ -78,6 +95,12 @@ struct btrfs_delayed_node {
+> >  	 * actual number of leaves we end up using. Protected by @mutex.
+> >  	 */
+> >  	u32 index_item_leaves;
+> > +	/* Used to track all references to this delayed node. */
+> > +	struct btrfs_ref_tracker_dir ref_dir;
+> > + 	/* Used to track delayed node reference stored in node list. */
+> > +	struct btrfs_ref_tracker node_list_tracker;
+> > + 	/* Used to track delayed node reference stored in inode cache. */
+> > +	struct btrfs_ref_tracker inode_cache_tracker;
+> 
+> Some of the comments have mixed space and tabs in the initial space.
+
+Sorry, again.
+
+> 
+> >  };
+> >  
+> >  struct btrfs_delayed_item {
+> > @@ -169,4 +192,51 @@ void __cold btrfs_delayed_inode_exit(void);
+> >  /* for debugging */
+> >  void btrfs_assert_delayed_root_empty(struct btrfs_fs_info *fs_info);
+> >  
+> > +#define BTRFS_DELAYED_NODE_REF_TRACKER_QUARANTINE_COUNT 16
+> > +#define BTRFS_DELAYED_NODE_REF_TRACKER_DISPLAY_LIMIT 16
+> > +
+> > +#ifdef CONFIG_BTRFS_DEBUG
+> > +static inline void btrfs_delayed_node_ref_tracker_dir_init(struct btrfs_delayed_node *node)
+> > +{
+> > +	ref_tracker_dir_init(&node->ref_dir.dir, 
+> 
+> Trailing space.
+> 
+> > +			     BTRFS_DELAYED_NODE_REF_TRACKER_QUARANTINE_COUNT,
+> > +			     "delayed_node");
+> > +}
+
+Sent using hkml (https://github.com/sjp38/hackermail)
 
