@@ -1,116 +1,117 @@
-Return-Path: <linux-btrfs+bounces-16080-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16081-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDAABB2796D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Aug 2025 08:50:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A832B27AFB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Aug 2025 10:29:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD9DC7B879A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Aug 2025 06:48:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F26CA22C96
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Aug 2025 08:29:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38BD829B8DD;
-	Fri, 15 Aug 2025 06:50:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7062BE7C8;
+	Fri, 15 Aug 2025 08:29:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NuVF8RN5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LVmIGzFY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC38B2C3769
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Aug 2025 06:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC1429B78D
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Aug 2025 08:29:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755240599; cv=none; b=RXc5v4cdScSQksXBP6jBBxCp06Lglrz9TQeHWfUvhXJaU3KiwlnKh7k4K/GgGCOjEKcE5UU6z+fIi7xMSmMjoKWNaV9AG6BKkPhoaXEPJkRkWKBWMqRgckkZIbGMYjwvehvZxBDvMOCH2Ad9MIuTDbRq2X+WTbDKRSAWEuUSA3A=
+	t=1755246553; cv=none; b=sESHjyEg16G0ZUEnEPBGY/a6SexGrs4M9k/i+A8VuKRl2v1J/sFyp2ba7zb+7HB6c+KDZ5Qsn4Ii3jd1bRIjC6lk5BdYS2FDNfVSzqFAa27OADNveUSScqDuPMpqzXzbEk6VaUPqXE3QLki+rdRmg65QDlehE4/ME4MUkzk6O7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755240599; c=relaxed/simple;
-	bh=GULlBzLEz5aeLic70XuvtfYZSj9a9He9jxiOz8IdemE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Vw8eTapK4JtQhgk5g63Q3Z6ts9FwvfdB/nD1QpmsADXvpwDY6F8r7mKqU/yZqGghgsauJGCLn+orqgF7hOrEq4j/rqkwN7bOu7hYJxhJAfU+/zEXpZy+4ln2b4HmK4HE7NDlohEys3wpSthWbIZXJBUb6p287IbeiifocpWaOts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NuVF8RN5; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-45a1b281d25so6912945e9.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Aug 2025 23:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1755240596; x=1755845396; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=n9VOA8OLHr4c/bdG0T3/mzqJ513g/qzEaREkj3y/WP4=;
-        b=NuVF8RN5QX5xgFXxo9yrCSznzO4uAoVC12o7ErKVVaAItn3KdL70lb3/L5DbhgCOKL
-         M0Df/QJhp3yi4W4i616LjjLNcCVLJVrk5UmZRMiYhM3JnTtb/VS2qLTjuCocCwJvKe0i
-         P19O5YINmrMWDlGsHQg4Oe4vKIwUb2PSJiQTIUCdvn5K0Y1SHSEO09aL3102rLlV63ye
-         RoddxybPJimMlZCis2yKWP06pA45rpkuMHNxYecrs15Yl+qV6+TZMW5Hsxkw35HOQfVT
-         B9rIVN1grVffVv3JtyI5SurcQCt/Jbc6rfJPsLpskxfrds+BZjd4ENHkREYJQ6nWBqFM
-         I7DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755240596; x=1755845396;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n9VOA8OLHr4c/bdG0T3/mzqJ513g/qzEaREkj3y/WP4=;
-        b=rai57/lFlkUAcIlihscyVqC3Z3OuTa1dRvRR5L5ObzuRBzXpyaHYEueInsNHA0I+Mm
-         ve2wqPEY5pAN5rMz7BSAME8T3ibrzH0ICvCRkkbwXVMGmGKjaKmDPCgFwzXWoEiTgUbN
-         7/KwfmajDt7TT9+fSvzijhL8eFRyFgVSZdBPJI+yNPJP1kWtJpbHIo1PchLgR3iPBgce
-         goQdWC5yxJWVuBSQn+5caNmDCOrz9MJrngyll/n+li27R+EQmaBYcUKa8eKfXR5g7Gko
-         yoS8RqQdbCuSVGTC8tHlWBZHm1UVV/6ADgTg+K0/aCSd5Mq5BYUhHUH3AbajgfeY65IL
-         0qyw==
-X-Gm-Message-State: AOJu0YwTwUFhTastBh0c8xZIF1QSc+nwUJMGpwECo4Re3CoNnKl5zTgw
-	yiR56eoIzwpHH62ByiXUL2vykRdWxqUIwASHXiSMC/OOb3RdsniCN0L1xvu7RGx9Yj8=
-X-Gm-Gg: ASbGncvQeodKTW9eUcVyZfT+gSApJCzyEti6F6JvrwTy8nTcz5mbcBukNXt47+kI49l
-	/wzmleWaoiY0ghaVkIekRCfSaRCbWJAAAV7FpkrfFUH6SYqD1dC7d8BapD+0qLq6xleqNiNUAAO
-	PtkHcdWIekvpmbkglxGzO9ksAFkWTtDC3X4jhBA3V0HrK6++6Bk+XVf2+OfxQJ9O1/5B8owcSZD
-	4RWhuuzVm03IOf4cKMsTPxvt52fRh77eac0tFb1wmSlGhLQ89jZs6X4LrxZNhzhmzdvrHL5mPUC
-	qwMgVJEpMtHS7QnrC/Vxhz40mdMtliRBd3nSVwLB331WquFUDKPufyMl1zVDqAUMhk//SN8dGe4
-	2PORY7XZQ+QH+fw6S9AmjtnLOyHqe4cpqN0kXqQuD/fQ=
-X-Google-Smtp-Source: AGHT+IELSrXaYuhLFGTpGAo5aYPIeu31yPhh6djHZJ9yjIneMTnO7f6a9gTH5aqppKokIIuznscAUg==
-X-Received: by 2002:a05:600c:3486:b0:456:201a:99f with SMTP id 5b1f17b1804b1-45a21839af6mr8423315e9.18.1755240596075;
-        Thu, 14 Aug 2025 23:49:56 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45a1b7c18d7sm29387945e9.2.2025.08.14.23.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Aug 2025 23:49:55 -0700 (PDT)
-Date: Fri, 15 Aug 2025 09:49:52 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Filipe Manana <fdmanana@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: [bug report] btrfs: abort transaction in the process_one_buffer()
- log tree walk callback
-Message-ID: <aJ7YkIlcNnv1YKeh@stanley.mountain>
+	s=arc-20240116; t=1755246553; c=relaxed/simple;
+	bh=J5uAyrnh2U3lA7b9hW0jcl/Z0Ad8OiOdt1pfxiSQJd4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oADA8XfTbJfgM2MPr+iM+Q2XPXY2NJiBNMACtof+DkpBwDkZkfpKs6m9E/bCAAFjyVir5g/fVoRjtKzZyGprHJ6Igp394eOrykrVn+Q5MmjlJNE/w78d8+lLmddRZeQtQA9hcTSiNScPNiAjW2z8gmbGEezPgFUVuseuADSQlhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LVmIGzFY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06CEBC4CEF6
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Aug 2025 08:29:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755246553;
+	bh=J5uAyrnh2U3lA7b9hW0jcl/Z0Ad8OiOdt1pfxiSQJd4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=LVmIGzFYYwktRxvAmasEw66e+uH57myZeK41fnJ9cLuuwarcKiH5/9I+CNet0t2IJ
+	 0rCTthF6rIU/O95xo+pHmvGuBqmczn8eM6SHuRtau1ht+eX16UHEW5sbpLqqoIAguT
+	 tuQkiqWHFmy9vnEcJVd/wRVGDmfNtsog0nRAddovldNFjEOUesnYF2FUnpNqY8lL2x
+	 zSMutBjSoBCfDiKOso8jyZOoGYndCg+vo4hzXga8j/nNYIsgqXQuff6J5SmpzxMhmD
+	 zWjqbjsGvZ2TLaoe4jNra1XEPU59Q53+71TGOSkqfArJVDy2CQOEPMtOl6LAJXMoY5
+	 erx1539UKmENg==
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-afcb7a7bad8so235527666b.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Aug 2025 01:29:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX0NGnMBENrC96yT6keYl/rklpgIohhps09BcSS+wl4BGarfSpQPWN97d1LlgjVUCZiuUEyEeB1c53mkw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxD+LF5k8fRS39h41muDHQfOI2CwLtkl+tZItWjseipAqWYSm3Y
+	gYSI1OD6zPdvnpYaqz8ht9WmsFntCD0/u/j/MYLkqcFGsmlGx6E1QzHm2bmRYLiNBVdK+0LY+Z4
+	5MUKn/Th7Nc9drOFeYKvW+P+P+jAufzc=
+X-Google-Smtp-Source: AGHT+IHMZ6O/9MKq6eUgQnMtGryHTnl/mAOoac4l13xUpxFNmVK+Eh1zlBkfBUZ6WzLSi/Gt7o3kGPKNHTba56SbkBg=
+X-Received: by 2002:a17:907:3f25:b0:af9:5ca0:e4fe with SMTP id
+ a640c23a62f3a-afcdc2b9e7amr114286966b.56.1755246551620; Fri, 15 Aug 2025
+ 01:29:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <aJ7YkIlcNnv1YKeh@stanley.mountain>
+In-Reply-To: <aJ7YkIlcNnv1YKeh@stanley.mountain>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 15 Aug 2025 09:28:34 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H60EKQbXUm_cfEY+bsv+SpnYV0uLuVSGNKkgMnHKCkiGg@mail.gmail.com>
+X-Gm-Features: Ac12FXwjozf_nWP8ZQFOc4Emm642j8A6w-ozquRubhfBrU8s0cFNMgSOYi4PJ-E
+Message-ID: <CAL3q7H60EKQbXUm_cfEY+bsv+SpnYV0uLuVSGNKkgMnHKCkiGg@mail.gmail.com>
+Subject: Re: [bug report] btrfs: abort transaction in the process_one_buffer()
+ log tree walk callback
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Filipe Manana <fdmanana@suse.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello Filipe Manana,
+On Fri, Aug 15, 2025 at 7:50=E2=80=AFAM Dan Carpenter <dan.carpenter@linaro=
+.org> wrote:
+>
+> Hello Filipe Manana,
+>
+> This is a semi-automatic email about new static checker warnings.
+>
+> Commit f6f79221b128 ("btrfs: abort transaction in the
+> process_one_buffer() log tree walk callback") from Jul 16, 2025,
+> leads to the following Smatch complaint:
+>
+> fs/btrfs/tree-log.c:377 process_one_buffer() warn: variable dereferenced =
+before check 'trans' (see line 375)
+> fs/btrfs/tree-log.c:388 process_one_buffer() warn: variable dereferenced =
+before check 'trans' (see line 375)
+>
+> fs/btrfs/tree-log.c
+>    374          if (wc->pin) {
+>    375                  ret =3D btrfs_pin_extent_for_log_replay(trans, eb=
+);
+>                                                               ^^^^^
+> The patch adds a dereference
 
-This is a semi-automatic email about new static checker warnings.
+False alarm. This already happened before that patch, we didn't check
+if wc->trans was NULL before calling
+btrfs_pin_extent_for_log_replay(), and that's fine because if wc->pin
+is true then trans is not NULL.
 
-Commit f6f79221b128 ("btrfs: abort transaction in the
-process_one_buffer() log tree walk callback") from Jul 16, 2025,
-leads to the following Smatch complaint:
+Thanks.
 
-fs/btrfs/tree-log.c:377 process_one_buffer() warn: variable dereferenced before check 'trans' (see line 375)
-fs/btrfs/tree-log.c:388 process_one_buffer() warn: variable dereferenced before check 'trans' (see line 375)
-
-fs/btrfs/tree-log.c
-   374		if (wc->pin) {
-   375			ret = btrfs_pin_extent_for_log_replay(trans, eb);
-                                                              ^^^^^
-The patch adds a dereference
-
-   376			if (ret) {
-   377				if (trans)
-                                    ^^^^^
-And also this check which is too late.
-
-   378					btrfs_abort_transaction(trans, ret);
-   379				else
-
-regards,
-dan carpenter
+>
+>    376                  if (ret) {
+>    377                          if (trans)
+>                                     ^^^^^
+> And also this check which is too late.
+>
+>    378                                  btrfs_abort_transaction(trans, re=
+t);
+>    379                          else
+>
+> regards,
+> dan carpenter
+>
 
