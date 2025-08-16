@@ -1,297 +1,271 @@
-Return-Path: <linux-btrfs+bounces-16099-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16100-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF0F4B288FA
-	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Aug 2025 02:01:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69684B288FE
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Aug 2025 02:03:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95A9BB00E3E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Aug 2025 00:01:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CD301D042F6
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Aug 2025 00:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678072A1BF;
-	Sat, 16 Aug 2025 00:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E904A33;
+	Sat, 16 Aug 2025 00:02:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="XjBwsQXP"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="n8ilWKVx";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fv+CngQD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-b5-smtp.messagingengine.com (fout-b5-smtp.messagingengine.com [202.12.124.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1114D1FC8
-	for <linux-btrfs@vger.kernel.org>; Sat, 16 Aug 2025 00:01:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6738038B
+	for <linux-btrfs@vger.kernel.org>; Sat, 16 Aug 2025 00:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755302485; cv=none; b=agSKIUbYanccs8uhaYroC6kVAtAzInXBDYAI4rybkFeRtgCBUxbXwCDOFkC3xcWA47x5WdP5EUMMfMwk1W3p4wVe77LEBceCQKmsOrtU1qubB0l7N4z65ZOSEZrZlcF9wXNkqNF6F3h2MHeURG92vnx4nbtEvP5aIvm/4Z/fKA0=
+	t=1755302554; cv=none; b=TT/bezL9+YGlqqj9bI72aRAG/nFhYJG3ZTKZp14PFPiT1DS8qniWMCikeDrftK869Umg4D8NniVlJTaCIfrMqXBA1XCyVanXLByCckzUyBxupavyReNuPyPe6O2FqvPxVDLYMQ92X8eRE3NTVh3eJhL6EDzOKnW+mcGxT+uYFyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755302485; c=relaxed/simple;
-	bh=VK4S2GlL6JKY5KWyXylHmHgS9MyIikS9VMxqibTl+3Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=tj4J4nRUWXKxsLJkVAGRmAYS8NlqE+wYu6au8ApcAa6z2++3iIF80klLUmD02YZ+VZZarm0YH01h/0Pbj7Kes2w8W7CJKPIJiXWACmERmQK1Q6SEhkc16p08dHjkNyLpgoqCOzv5vha1AYQKUGr/EMqf22OKBJ3WF5VUO/antaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=XjBwsQXP; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3b9e4147690so1460426f8f.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Aug 2025 17:01:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1755302481; x=1755907281; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Hicit36+lK8XyjT71DlQ6OK4pCHqTL5VhRrKiESahE=;
-        b=XjBwsQXPz1JSBVZDl+v1FNCdfMKefB+n2MowwLwyqkVnB7gwB+acjCftMpXL+8Mn7a
-         yWLv92YrFcRmgcJlF9l+cFCsB7xMaqf7FKRlU3OOEBTNYjgeP44L/3n0rAO3c5LHOn8C
-         4kqDKerpl6H5VUfxRfrWxn+WYaX7Y7zxOMU2nN1yr1Gji/0tTSjFpcNVehA6M/q23cLm
-         3J0fSHY0gkzc/DWghwnOA0AsFOOizAY2PVJSKXgwj4B7VFHMdgHqL+ZK7WdXcLzBk8zP
-         nbT55eohaa4LryHno+kDjFbdSNHZnPAsIjiWcjW9/uxkNdeghVhJmV65rDeKbRZL9aT8
-         xZtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755302481; x=1755907281;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1Hicit36+lK8XyjT71DlQ6OK4pCHqTL5VhRrKiESahE=;
-        b=xQqv9gRg7KDcicW4RrNth6NuM3RRKK1y6OUyzoWJmXZT6RKuknHFCb3RU4+ld6Pu9n
-         o3Q91233CTdntoDcTgBt5ltqEf7fz4RKolqJspsX6HYMYT/TE8QETkyGCNfGPrKnLk1L
-         fQzd6SuhduZHlSPlQemyatdEB6Df6x3FyJjd0eufxKyqD9YKLtemn34l8e1eV/QtLW1c
-         HWDroF1+l/eXgTHMH6TBFg2hDcKf7uuk2cokFQCDdTD2DAGEyYsiNwZynz582LPL2hrq
-         ERWzHd5qjazm3fo62jZzs446r859i6oUughk/vDABpxDwttRrsUo/3242eOB7ikgtsFc
-         Bxow==
-X-Forwarded-Encrypted: i=1; AJvYcCUFOpA7sN8+4J1cxx3njB916h2CCSmLOZIPjvvz1SdexfYrx3aePgGWqOZ3LxLWS8hBpjZ025y/juH+xw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUBI+UZvbHnYBaurTmTamKt+h/90FG/72WqFvTtCqk53vaKKuv
-	IqTrEn8CjMB8m8if1/vMQfp/w73BDCHsH/XrlkdjbCI6AkljdGa6a+3500iTw1Lrn+RJfKz3zDo
-	fTRVf
-X-Gm-Gg: ASbGncuM+mW6/aPs/PFazsi5nvGhWNCwufOafIspmq835Bqx4/nVC2k8U3WQZUC5uYV
-	3teBkDn/W1QfRGJCd7mbHNTQ+lCebYrIchCtNAnWSN8zMV+6BH/KnP2BCMfk00AR/ecFBmf9yK4
-	FIlHQaywzlCcyg+p0pGKjKHOLL7dz2Z0Y9esMOvPSPpc5Im7/udtT+tOjfdE9jBBwikGLs7eA8/
-	pllFINfaE1Yo2pCaL7XlBlvWD6PzOIGSyEIdUm8sa1yr4rZtV0v0HFyQ86FukYQJboe4+crESJP
-	cKOM5t8IzgGbeUm0RruSPQ1GN8ACiPzAWuqGv8GlaU29/F++l1/1briMUpSzS06lGi+fTaBW1Lm
-	W2seg5yL7XZmDv6DORqADWipYglYyfDojuBuACf3UHvZWRK6Drg==
-X-Google-Smtp-Source: AGHT+IEyMBzVFaF9qpgMyHQQcgs7WeTsigHfIwlwRqHd1JU2doEXNO3ZQ6E3iLYdvP3LPumKq4Icyg==
-X-Received: by 2002:a05:6000:240b:b0:3b7:54b3:c512 with SMTP id ffacd0b85a97d-3bc6afea9b4mr634173f8f.58.1755302481136;
-        Fri, 15 Aug 2025 17:01:21 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2446d5457a2sm23068095ad.121.2025.08.15.17.01.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Aug 2025 17:01:20 -0700 (PDT)
-Message-ID: <329f94a3-fef9-4d5f-acb1-362a1dd6ec68@suse.com>
-Date: Sat, 16 Aug 2025 09:31:16 +0930
+	s=arc-20240116; t=1755302554; c=relaxed/simple;
+	bh=FR8eK/hwH5YOdNoFgIHaiYyfNZ2d9AN+B0DKIYOLfcw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c2VSZByll0bo20km6f07I9rkHdbYFI+hHFIVhBURK77uXOMLF3xSu8l4J7fLeQHjnmYUT3T+MND8yNfdmawFYc3AZbJ8VUY7EdZgvYt0XK7pxON16rygXlquiJvg4bVMdKLLPQN29rhrgs1YQVb4uPwuvreDyQzeIbkX7ngsHWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=n8ilWKVx; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fv+CngQD; arc=none smtp.client-ip=202.12.124.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-09.internal (phl-compute-09.internal [10.202.2.49])
+	by mailfout.stl.internal (Postfix) with ESMTP id 65B691D0020F;
+	Fri, 15 Aug 2025 20:02:30 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-09.internal (MEProxy); Fri, 15 Aug 2025 20:02:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1755302550; x=1755388950; bh=o3j+8UmivW
+	L7OnccBfgEcAniYIAms+HIhzzhBxbBpOQ=; b=n8ilWKVxEWI7y0LePvi5CPOBzA
+	pv399Ucasyg+3zdvAjUZYABxmDkJqFLOsUW2c1Mcau78+9oTpmrUaoT/wH6gOds/
+	+EuihZ3+rhRNVrszvTs8Mk8Q/mFLn+qaGGh7MEacHBUl+Y2XN2id5v/Ezb5Kb7RI
+	bOAUL+Kco+opgZf5vPkPKLIRTtF8NuDPDSTuE+nUmlo9jtaM+Ta4SdOnCF740Z2K
+	IqVElia+E0VamULt80j3xB5p+0DguR3ztycN78eaHcu9Nc8hreG8nIvCewpSBamy
+	AcIZD3Pjg99XsNznEfPo3Ba+kWXqbFp7xl08AehAUFJs0zu9zA3Nn+k2NqaQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1755302550; x=1755388950; bh=o3j+8UmivWL7OnccBfgEcAniYIAms+HIhzz
+	hBxbBpOQ=; b=fv+CngQDrM5a7Cgf68e/WdcwRfOrYiuqJKAkbFx9FzFN8Xc6wa1
+	r0OaI0UFx/Or3kcHNU224TBWVcU2S2thzLgsU74oH5A9S/Yyfr+j2a4EXG5mPFnL
+	ijcEGPWYKB8yWX8wNdqtxbVzWNbIOwAqFcexnaek7NtsRGevAQWuEnXqU870PzfR
+	YIaRInfqIK9/YQGuqepEy+pCNdM+RGP36yAHEfJgQxCPg/R/TTdST0QFVdA+MRTT
+	Y2Qn6YRflFBCDY8CWCNok1Fo3etXGJscT+cf8qSha7jIJUakiyKejUQtwL1ovhLH
+	+VfdLpzBp1jhcc6bMEn5PyzhOO4/FpF5eiA==
+X-ME-Sender: <xms:lsqfaFmUH5yj1S1nuM-iuPBJXTpmyf86O5ppcw_b8dzpd5jPcIofiw>
+    <xme:lsqfaBAWD_2tiVEZBq-qVPo3pbaBrMA9rcJBYEMGA-zT1-3csWkks-mLK40ZYb2yS
+    olbJ4MqngmU2_P2hOo>
+X-ME-Received: <xmr:lsqfaNcN2asqrccMwasFEPn74PwzbfiuAmihUtclMIJix4gdjPZkHeOzSoGMMpjPdFM5NQYcKyLNNBYYkltxDDTWfSA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddugeehfeehucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
+    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
+    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
+    ohepmhgrrhhksehhrghrmhhsthhonhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsg
+    htrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:lsqfaEKM1EuhJZoPDnk_YJ0X4xgEgTyZQcN_rpS3KvHEnTi0SbOFlg>
+    <xmx:lsqfaIfv8mWhAn9aKk1es0zrmEp8AcBBtp9VCsqijMSFacD9TgZ0og>
+    <xmx:lsqfaD35q2nHVk4fNp_VTE9YMbfRKLvWAIxNI0ChCdjSv7DmEmMI9A>
+    <xmx:lsqfaJjkM9zPGf5-uHeiXNiD9UKZ5akasw7PdLF7eFoKYAmtX5Ph9w>
+    <xmx:lsqfaJp-9TiA6OwAISon0ngwnNSQm6O6RTIBGIhl5H_zkN0xsoDRZ3FN>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 15 Aug 2025 20:02:29 -0400 (EDT)
+Date: Fri, 15 Aug 2025 17:03:10 -0700
+From: Boris Burkov <boris@bur.io>
+To: Mark Harmstone <mark@harmstone.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 03/16] btrfs: allow remapped chunks to have zero
+ stripes
+Message-ID: <20250816000310.GB3042054@zen.localdomain>
+References: <20250813143509.31073-1-mark@harmstone.com>
+ <20250813143509.31073-4-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/16] btrfs: add definitions and constants for
- remap-tree
-To: Mark Harmstone <mark@harmstone.com>, linux-btrfs@vger.kernel.org
-References: <20250813143509.31073-1-mark@harmstone.com>
- <20250813143509.31073-2-mark@harmstone.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250813143509.31073-2-mark@harmstone.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250813143509.31073-4-mark@harmstone.com>
 
-
-
-在 2025/8/14 00:04, Mark Harmstone 写道:
-> Add an incompat flag for the new remap-tree feature, and the constants
-> and definitions needed to support it.
+On Wed, Aug 13, 2025 at 03:34:45PM +0100, Mark Harmstone wrote:
+> When a chunk has been fully remapped, we are going to set its
+> num_stripes to 0, as it will no longer represent a physical location on
+> disk.
+> 
+> Change tree-checker to allow for this, and fix a couple of
+> divide-by-zeroes seen elsewhere.
 > 
 > Signed-off-by: Mark Harmstone <mark@harmstone.com>
 > ---
->   fs/btrfs/accessors.h            |  3 +++
->   fs/btrfs/locking.c              |  1 +
->   fs/btrfs/sysfs.c                |  2 ++
->   fs/btrfs/tree-checker.c         |  6 ++----
->   fs/btrfs/tree-checker.h         |  5 +++++
->   fs/btrfs/volumes.c              |  1 +
->   include/uapi/linux/btrfs.h      |  1 +
->   include/uapi/linux/btrfs_tree.h | 12 ++++++++++++
->   8 files changed, 27 insertions(+), 4 deletions(-)
+>  fs/btrfs/tree-checker.c | 63 ++++++++++++++++++++++++++++-------------
+>  fs/btrfs/volumes.c      |  8 +++++-
+>  2 files changed, 50 insertions(+), 21 deletions(-)
 > 
-> diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-> index 99b3ced12805..95a1ca8c099b 100644
-> --- a/fs/btrfs/accessors.h
-> +++ b/fs/btrfs/accessors.h
-> @@ -1009,6 +1009,9 @@ BTRFS_SETGET_STACK_FUNCS(stack_verity_descriptor_encryption,
->   BTRFS_SETGET_STACK_FUNCS(stack_verity_descriptor_size,
->   			 struct btrfs_verity_descriptor_item, size, 64);
->   
-> +BTRFS_SETGET_FUNCS(remap_address, struct btrfs_remap, address, 64);
-> +BTRFS_SETGET_STACK_FUNCS(stack_remap_address, struct btrfs_remap, address, 64);
-> +
->   /* Cast into the data area of the leaf. */
->   #define btrfs_item_ptr(leaf, slot, type)				\
->   	((type *)(btrfs_item_nr_offset(leaf, 0) + btrfs_item_offset(leaf, slot)))
-> diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-> index a3e6d9616e60..26f810258486 100644
-> --- a/fs/btrfs/locking.c
-> +++ b/fs/btrfs/locking.c
-> @@ -73,6 +73,7 @@ static struct btrfs_lockdep_keyset {
->   	{ .id = BTRFS_FREE_SPACE_TREE_OBJECTID,	DEFINE_NAME("free-space") },
->   	{ .id = BTRFS_BLOCK_GROUP_TREE_OBJECTID, DEFINE_NAME("block-group") },
->   	{ .id = BTRFS_RAID_STRIPE_TREE_OBJECTID, DEFINE_NAME("raid-stripe") },
-> +	{ .id = BTRFS_REMAP_TREE_OBJECTID,      DEFINE_NAME("remap-tree") },
->   	{ .id = 0,				DEFINE_NAME("tree")	},
->   };
->   
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 81f52c1f55ce..857d2772db1c 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -291,6 +291,7 @@ BTRFS_FEAT_ATTR_COMPAT_RO(free_space_tree, FREE_SPACE_TREE);
->   BTRFS_FEAT_ATTR_COMPAT_RO(block_group_tree, BLOCK_GROUP_TREE);
->   BTRFS_FEAT_ATTR_INCOMPAT(raid1c34, RAID1C34);
->   BTRFS_FEAT_ATTR_INCOMPAT(simple_quota, SIMPLE_QUOTA);
-> +BTRFS_FEAT_ATTR_INCOMPAT(remap_tree, REMAP_TREE);
->   #ifdef CONFIG_BLK_DEV_ZONED
->   BTRFS_FEAT_ATTR_INCOMPAT(zoned, ZONED);
->   #endif
-> @@ -325,6 +326,7 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
->   	BTRFS_FEAT_ATTR_PTR(raid1c34),
->   	BTRFS_FEAT_ATTR_PTR(block_group_tree),
->   	BTRFS_FEAT_ATTR_PTR(simple_quota),
-> +	BTRFS_FEAT_ATTR_PTR(remap_tree),
->   #ifdef CONFIG_BLK_DEV_ZONED
->   	BTRFS_FEAT_ATTR_PTR(zoned),
->   #endif
 > diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 0f556f4de3f9..76ec3698f197 100644
+> index ca898b1f12f1..20bfe333ffdd 100644
 > --- a/fs/btrfs/tree-checker.c
 > +++ b/fs/btrfs/tree-checker.c
-> @@ -912,12 +912,10 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_info *fs_info,
->   			  length, btrfs_stripe_nr_to_offset(U32_MAX));
->   		return -EUCLEAN;
->   	}
-> -	if (unlikely(type & ~(BTRFS_BLOCK_GROUP_TYPE_MASK |
-> -			      BTRFS_BLOCK_GROUP_PROFILE_MASK))) {
-> +	if (unlikely(type & ~BTRFS_BLOCK_GROUP_VALID)) {
->   		chunk_err(fs_info, leaf, chunk, logical,
->   			  "unrecognized chunk type: 0x%llx",
-> -			  ~(BTRFS_BLOCK_GROUP_TYPE_MASK |
-> -			    BTRFS_BLOCK_GROUP_PROFILE_MASK) & type);
-> +			  type & ~BTRFS_BLOCK_GROUP_VALID);
->   		return -EUCLEAN;
->   	}
->   
-> diff --git a/fs/btrfs/tree-checker.h b/fs/btrfs/tree-checker.h
-> index eb201f4ec3c7..833e2fd989eb 100644
-> --- a/fs/btrfs/tree-checker.h
-> +++ b/fs/btrfs/tree-checker.h
-> @@ -57,6 +57,11 @@ enum btrfs_tree_block_status {
->   	BTRFS_TREE_BLOCK_WRITTEN_NOT_SET,
->   };
->   
+> @@ -815,6 +815,39 @@ static void chunk_err(const struct btrfs_fs_info *fs_info,
+>  	va_end(args);
+>  }
+>  
+> +static bool valid_stripe_count(u64 profile, u16 num_stripes,
+> +			       u16 sub_stripes)
+> +{
+> +	switch (profile) {
+> +	case BTRFS_BLOCK_GROUP_RAID10:
+> +		return sub_stripes ==
+> +			btrfs_raid_array[BTRFS_RAID_RAID10].sub_stripes;
+> +	case BTRFS_BLOCK_GROUP_RAID1:
+> +		return num_stripes ==
+> +			btrfs_raid_array[BTRFS_RAID_RAID1].devs_min;
+> +	case BTRFS_BLOCK_GROUP_RAID1C3:
+> +		return num_stripes ==
+> +			btrfs_raid_array[BTRFS_RAID_RAID1C3].devs_min;
+> +	case BTRFS_BLOCK_GROUP_RAID1C4:
+> +		return num_stripes ==
+> +			btrfs_raid_array[BTRFS_RAID_RAID1C4].devs_min;
+> +	case BTRFS_BLOCK_GROUP_RAID5:
+> +		return num_stripes >=
+> +			btrfs_raid_array[BTRFS_RAID_RAID5].devs_min;
+> +	case BTRFS_BLOCK_GROUP_RAID6:
+> +		return num_stripes >=
+> +			btrfs_raid_array[BTRFS_RAID_RAID6].devs_min;
+> +	case BTRFS_BLOCK_GROUP_DUP:
+> +		return num_stripes ==
+> +			btrfs_raid_array[BTRFS_RAID_DUP].dev_stripes;
+> +	case 0: /* SINGLE */
+> +		return num_stripes ==
+> +			btrfs_raid_array[BTRFS_RAID_SINGLE].dev_stripes;
+> +	default:
+> +		BUG();
+> +	}
+> +}
 > +
-> +#define BTRFS_BLOCK_GROUP_VALID	(BTRFS_BLOCK_GROUP_TYPE_MASK | \
-> +				 BTRFS_BLOCK_GROUP_PROFILE_MASK | \
-> +				 BTRFS_BLOCK_GROUP_REMAPPED)
-
-So far it looks like the remapped flag is a new bg type.
-Can we just put it into BLOCK_GROUP_TYPE_MASK?
-
-Otherwise looks good to me.
-
-Thanks,
-Qu
-
+>  /*
+>   * The common chunk check which could also work on super block sys chunk array.
+>   *
+> @@ -838,6 +871,7 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_info *fs_info,
+>  	u64 features;
+>  	u32 chunk_sector_size;
+>  	bool mixed = false;
+> +	bool remapped;
+>  	int raid_index;
+>  	int nparity;
+>  	int ncopies;
+> @@ -861,12 +895,14 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_info *fs_info,
+>  	ncopies = btrfs_raid_array[raid_index].ncopies;
+>  	nparity = btrfs_raid_array[raid_index].nparity;
+>  
+> -	if (unlikely(!num_stripes)) {
+> +	remapped = type & BTRFS_BLOCK_GROUP_REMAPPED;
 > +
->   /*
->    * Exported simply for btrfs-progs which wants to have the
->    * btrfs_tree_block_status return codes.
+> +	if (unlikely(!remapped && !num_stripes)) {
+>  		chunk_err(fs_info, leaf, chunk, logical,
+>  			  "invalid chunk num_stripes, have %u", num_stripes);
+>  		return -EUCLEAN;
+>  	}
+> -	if (unlikely(num_stripes < ncopies)) {
+> +	if (unlikely(num_stripes != 0 && num_stripes < ncopies)) {
+
+This relying on the above check for the remapped <=> !num_stripes aspect
+was still kinda confusing. Logically looks good now, though.
+
+>  		chunk_err(fs_info, leaf, chunk, logical,
+>  			  "invalid chunk num_stripes < ncopies, have %u < %d",
+>  			  num_stripes, ncopies);
+> @@ -964,22 +1000,9 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_info *fs_info,
+>  		}
+>  	}
+>  
+> -	if (unlikely((type & BTRFS_BLOCK_GROUP_RAID10 &&
+> -		      sub_stripes != btrfs_raid_array[BTRFS_RAID_RAID10].sub_stripes) ||
+> -		     (type & BTRFS_BLOCK_GROUP_RAID1 &&
+> -		      num_stripes != btrfs_raid_array[BTRFS_RAID_RAID1].devs_min) ||
+> -		     (type & BTRFS_BLOCK_GROUP_RAID1C3 &&
+> -		      num_stripes != btrfs_raid_array[BTRFS_RAID_RAID1C3].devs_min) ||
+> -		     (type & BTRFS_BLOCK_GROUP_RAID1C4 &&
+> -		      num_stripes != btrfs_raid_array[BTRFS_RAID_RAID1C4].devs_min) ||
+> -		     (type & BTRFS_BLOCK_GROUP_RAID5 &&
+> -		      num_stripes < btrfs_raid_array[BTRFS_RAID_RAID5].devs_min) ||
+> -		     (type & BTRFS_BLOCK_GROUP_RAID6 &&
+> -		      num_stripes < btrfs_raid_array[BTRFS_RAID_RAID6].devs_min) ||
+> -		     (type & BTRFS_BLOCK_GROUP_DUP &&
+> -		      num_stripes != btrfs_raid_array[BTRFS_RAID_DUP].dev_stripes) ||
+> -		     ((type & BTRFS_BLOCK_GROUP_PROFILE_MASK) == 0 &&
+> -		      num_stripes != btrfs_raid_array[BTRFS_RAID_SINGLE].dev_stripes))) {
+> +	if (!remapped &&
+> +	    !valid_stripe_count(type & BTRFS_BLOCK_GROUP_PROFILE_MASK,
+> +				num_stripes, sub_stripes)) {
+
+This looks great, thanks.
+
+>  		chunk_err(fs_info, leaf, chunk, logical,
+>  			"invalid num_stripes:sub_stripes %u:%u for profile %llu",
+>  			num_stripes, sub_stripes,
+> @@ -1003,11 +1026,11 @@ static int check_leaf_chunk_item(struct extent_buffer *leaf,
+>  	struct btrfs_fs_info *fs_info = leaf->fs_info;
+>  	int num_stripes;
+>  
+> -	if (unlikely(btrfs_item_size(leaf, slot) < sizeof(struct btrfs_chunk))) {
+> +	if (unlikely(btrfs_item_size(leaf, slot) < offsetof(struct btrfs_chunk, stripe))) {
+>  		chunk_err(fs_info, leaf, chunk, key->offset,
+>  			"invalid chunk item size: have %u expect [%zu, %u)",
+>  			btrfs_item_size(leaf, slot),
+> -			sizeof(struct btrfs_chunk),
+> +			offsetof(struct btrfs_chunk, stripe),
+>  			BTRFS_LEAF_DATA_SIZE(fs_info));
+>  		return -EUCLEAN;
+>  	}
 > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index fa7a929a0461..e067e9cd68a5 100644
+> index f4d1527f265e..c95f83305c82 100644
 > --- a/fs/btrfs/volumes.c
 > +++ b/fs/btrfs/volumes.c
-> @@ -231,6 +231,7 @@ void btrfs_describe_block_groups(u64 bg_flags, char *buf, u32 size_buf)
->   	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_DATA, "data");
->   	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_SYSTEM, "system");
->   	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_METADATA, "metadata");
-> +	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_REMAPPED, "remapped");
->   
->   	DESCRIBE_FLAG(BTRFS_AVAIL_ALLOC_BIT_SINGLE, "single");
->   	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++)
-> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-> index 8e710bbb688e..fba303ed49e6 100644
-> --- a/include/uapi/linux/btrfs.h
-> +++ b/include/uapi/linux/btrfs.h
-> @@ -336,6 +336,7 @@ struct btrfs_ioctl_fs_info_args {
->   #define BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2	(1ULL << 13)
->   #define BTRFS_FEATURE_INCOMPAT_RAID_STRIPE_TREE	(1ULL << 14)
->   #define BTRFS_FEATURE_INCOMPAT_SIMPLE_QUOTA	(1ULL << 16)
-> +#define BTRFS_FEATURE_INCOMPAT_REMAP_TREE	(1ULL << 17)
->   
->   struct btrfs_ioctl_feature_flags {
->   	__u64 compat_flags;
-> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> index fc29d273845d..4439d77a7252 100644
-> --- a/include/uapi/linux/btrfs_tree.h
-> +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -76,6 +76,9 @@
->   /* Tracks RAID stripes in block groups. */
->   #define BTRFS_RAID_STRIPE_TREE_OBJECTID 12ULL
->   
-> +/* Holds details of remapped addresses after relocation. */
-> +#define BTRFS_REMAP_TREE_OBJECTID 13ULL
+> @@ -6145,6 +6145,12 @@ struct btrfs_discard_stripe *btrfs_map_discard(struct btrfs_fs_info *fs_info,
+>  		goto out_free_map;
+>  	}
+>  
+> +	/* avoid divide by zero on fully-remapped chunks */
+> +	if (map->num_stripes == 0) {
+> +		ret = -EOPNOTSUPP;
+> +		goto out_free_map;
+> +	}
 > +
->   /* device stats in the device tree */
->   #define BTRFS_DEV_STATS_OBJECTID 0ULL
->   
-> @@ -282,6 +285,10 @@
->   
->   #define BTRFS_RAID_STRIPE_KEY	230
->   
-> +#define BTRFS_IDENTITY_REMAP_KEY 	234
-> +#define BTRFS_REMAP_KEY		 	235
-> +#define BTRFS_REMAP_BACKREF_KEY	 	236
-> +
->   /*
->    * Records the overall state of the qgroups.
->    * There's only one instance of this key present,
-> @@ -1161,6 +1168,7 @@ struct btrfs_dev_replace_item {
->   #define BTRFS_BLOCK_GROUP_RAID6         (1ULL << 8)
->   #define BTRFS_BLOCK_GROUP_RAID1C3       (1ULL << 9)
->   #define BTRFS_BLOCK_GROUP_RAID1C4       (1ULL << 10)
-> +#define BTRFS_BLOCK_GROUP_REMAPPED      (1ULL << 11)
->   #define BTRFS_BLOCK_GROUP_RESERVED	(BTRFS_AVAIL_ALLOC_BIT_SINGLE | \
->   					 BTRFS_SPACE_INFO_GLOBAL_RSV)
->   
-> @@ -1323,4 +1331,8 @@ struct btrfs_verity_descriptor_item {
->   	__u8 encryption;
->   } __attribute__ ((__packed__));
->   
-> +struct btrfs_remap {
-> +	__le64 address;
-> +} __attribute__ ((__packed__));
-> +
->   #endif /* _BTRFS_CTREE_H_ */
+>  	offset = logical - map->start;
+>  	length = min_t(u64, map->start + map->chunk_len - logical, length);
+>  	*length_ret = length;
+> @@ -6965,7 +6971,7 @@ u64 btrfs_calc_stripe_length(const struct btrfs_chunk_map *map)
+>  {
+>  	const int data_stripes = calc_data_stripes(map->type, map->num_stripes);
+>  
+> -	return div_u64(map->chunk_len, data_stripes);
+> +	return data_stripes ? div_u64(map->chunk_len, data_stripes) : 0;
 
+My point here was more that we are now including 0 in the range of this
+function, where it wasn't before, meaning that callers must properly
+handle it. And it's not a meaningful "stripe length", so it breaks that
+correspondence, so checking explicitly for "remapped-ness" vs. "length
+== 0" feels more robust to me.
+
+I won't die on this hill, just making myself as clear as I can.
+
+>  }
+>  
+>  #if BITS_PER_LONG == 32
+> -- 
+> 2.49.1
+> 
 
