@@ -1,55 +1,55 @@
-Return-Path: <linux-btrfs+bounces-16106-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16107-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C7FEB2895F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Aug 2025 02:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1080B28964
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Aug 2025 02:49:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23C7CAC294E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Aug 2025 00:41:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 632C9AC57D9
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Aug 2025 00:49:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6417F2BD04;
-	Sat, 16 Aug 2025 00:41:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFDC2BAF7;
+	Sat, 16 Aug 2025 00:49:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JdKaLCor"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="scrT/Tl6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B4A9463
-	for <linux-btrfs@vger.kernel.org>; Sat, 16 Aug 2025 00:41:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C986410E9
+	for <linux-btrfs@vger.kernel.org>; Sat, 16 Aug 2025 00:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755304911; cv=none; b=AZpddJnnZBb1+G6N22QeCuO0uNMwxoCz4AXGU3hsxbDUJ79e84IXR1KB1bt+slcPUpT1P7IDqvPzz/69pz4hFTbTb8MrcDnSo9XIDnOEdh+/NE/GAbSm347H8s8AU2Ln5jqJBQxbKOZbYvxLcn13GTYn8PWd9WurqW1Kp3gQ/eo=
+	t=1755305359; cv=none; b=Q17Vd2AbWqF0lB2lVk/D0P/z5OkAdGOsAh7zo2H6zoi32kIZPTc24Zn255Fs7cwTrGm8YPx5DSqwvaoZH2daSDGIKerj8bO0OAygsci0Jj8fo5GhtHhKeGuhgQ5Ssd2OjPKk1vSlmSESib1z96GyuLY1BV9xiwRSW/G0ikxmbJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755304911; c=relaxed/simple;
-	bh=164dp+hH466rh/+Bn0ORvCdXvyTX9ZNsS8/ddMIsi0k=;
+	s=arc-20240116; t=1755305359; c=relaxed/simple;
+	bh=EkL1vGc0AYdOmL9ZD6zyO7LLWvOmMC1sxDETv8jAyGM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eFTwhVTv7NuHWuSIvm5kK8p8zRBGxASMLM4eqNxgkEdnxdyx7SXXfR3p0a8F+IuMh1Tmx8+KhFOsnrCAQ1MMkBCQFDGRk6oFRMlLBWOgMP74R0+v5PeVY7z7Uyyrjea1DyWPwQC3PFYXhuUCsN/ChjboBTi/r00uyts4W91n9Vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JdKaLCor; arc=none smtp.client-ip=91.218.175.189
+	 Content-Type:Content-Disposition:In-Reply-To; b=YbEE1b1eDsGSQj26M4HW9heX9wyT9DY20+Q7/w6itrNCIJ8XxXwU7AOOuN3K97c0wB+za1ZZR0M3Ph1OfkULDU0l7HMGSLw9vjfiugR7ZPYo3CmGzISSvA384O4/G8Zf+xflCUtkRi3HOQfe6JcFLYrIGRnc7qV9/UjVnlsdPyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=scrT/Tl6; arc=none smtp.client-ip=95.215.58.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 15 Aug 2025 17:41:35 -0700
+Date: Fri, 15 Aug 2025 17:48:33 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1755304905;
+	t=1755305353;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ojKgaeOJIavwY5MGBDiYWe4zl4Eo5ALmEoHlqz63x2E=;
-	b=JdKaLCorLvM5TlpNcBpEwEodyIeca3CAyVoSJE/vYjtxN+yP2HQK5KYd6NtD+8t1d5CgRa
-	bRaeHAoiR7oN/VNxLjFUmVBflP6D+JBIuBpQreljuLdaeiaGI7Q8n9F2y3QN87nUyvdNxI
-	wB1SyGP4BFsYJbp3W1+lcpZBb5Q0CAY=
+	bh=12vBt6pvl2+GG2p3H0QKahJtZuQMrZF6zbce7Pu/ysk=;
+	b=scrT/Tl6kq2/8qsHIu672v4EAg2jieacJyrIn2ZS7JZ/+DIn8+Fzc+R/iCY+CPNT2AaLhP
+	8pySf8eWL+30PYXncarpQDaboAq4PG8bxHcibDP2qk2tC3qegkFd2iMq+VDXvu0G+RpSbj
+	MImgIvi4ut8bHDyFCHpLUG5MVYH3ugk=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Boris Burkov <boris@bur.io>
 Cc: linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
 	linux-fsdevel@vger.kernel.org, kernel-team@fb.com, wqu@suse.com, willy@infradead.org
-Subject: Re: [PATCH v2 1/3] mm/filemap: add AS_UNCHARGED
-Message-ID: <363p6uyyrx5gruugrlq5kjxwz5gmw762s3nnem5nydkflwbhxy@jpnk4gxbpquj>
+Subject: Re: [PATCH v2 2/3] mm: add vmstat for cgroup uncharged pages
+Message-ID: <ztt2lhdpzfb3ddvgtqqwzuvdmlz4i5l6ijnwizyky4tv62dncz@taho2tjmqjkc>
 References: <cover.1755300815.git.boris@bur.io>
- <38448707b0dfb7fabae28cbebba3481eec6f2f4e.1755300815.git.boris@bur.io>
+ <a0b3856a4f86bcd684c715469c8a1cb2000bcbe2.1755300815.git.boris@bur.io>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,38 +58,62 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <38448707b0dfb7fabae28cbebba3481eec6f2f4e.1755300815.git.boris@bur.io>
+In-Reply-To: <a0b3856a4f86bcd684c715469c8a1cb2000bcbe2.1755300815.git.boris@bur.io>
 X-Migadu-Flow: FLOW_OUT
 
-On Fri, Aug 15, 2025 at 04:40:31PM -0700, Boris Burkov wrote:
-> Btrfs currently tracks its metadata pages in the page cache, using a
-> fake inode (fs_info->btree_inode) with offsets corresponding to where
-> the metadata is stored in the filesystem's full logical address space.
+On Fri, Aug 15, 2025 at 04:40:32PM -0700, Boris Burkov wrote:
+> Uncharged pages are tricky to track by their essential "uncharged"
+> nature. To maintain good accounting, introduce a vmstat counter tracking
+> all uncharged pages. Since this is only meaningful when cgroups are
+> configured, only expose the counter when CONFIG_MEMCG is set.
 > 
-> A consequence of this is that when btrfs uses filemap_add_folio(), this
-> usage is charged to the cgroup of whichever task happens to be running
-> at the time. These folios don't belong to any particular user cgroup, so
-> I don't think it makes much sense for them to be charged in that way.
-> Some negative consequences as a result:
-> - A task can be holding some important btrfs locks, then need to lookup
->   some metadata and go into reclaim, extending the duration it holds
->   that lock for, and unfairly pushing its own reclaim pain onto other
->   cgroups.
-> - If that cgroup goes into reclaim, it might reclaim these folios a
->   different non-reclaiming cgroup might need soon. This is naturally
->   offset by LRU reclaim, but still.
+> Confirmed that these work as expected at a high level by mounting a
+> btrfs using AS_UNCHARGED for metadata pages, and seeing the counter rise
+> with fs usage then go back to a minimal level after drop_caches and
+> finally down to 0 after unmounting the fs.
 > 
-> A very similar proposal to use the root cgroup was previously made by
-> Qu, where he eventually proposed the idea of setting it per
-> address_space. This makes good sense for the btrfs use case, as the
-> uncharged behavior should apply to all use of the address_space, not
-> select allocations. I.e., if someone adds another filemap_add_folio()
-> call using btrfs's btree_inode, we would almost certainly want the
-> uncharged behavior.
-> 
-> Link: https://lore.kernel.org/linux-mm/b5fef5372ae454a7b6da4f2f75c427aeab6a07d6.1727498749.git.wqu@suse.com/
-> Suggested-by: Qu Wenruo <wqu@suse.com>
+> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
 > Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  include/linux/mmzone.h |  3 +++
+>  mm/filemap.c           | 17 +++++++++++++++++
+>  mm/vmstat.c            |  3 +++
+>  3 files changed, 23 insertions(+)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 0c5da9141983..f6d885c97e99 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -245,6 +245,9 @@ enum node_stat_item {
+>  	NR_HUGETLB,
+>  #endif
+>  	NR_BALLOON_PAGES,
+> +#ifdef CONFIG_MEMCG
+> +	NR_UNCHARGED_FILE_PAGES,
+> +#endif
+>  	NR_VM_NODE_STAT_ITEMS
+>  };
+>  
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 6046e7f27709..cd5af44a838c 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -146,6 +146,19 @@ static void page_cache_delete(struct address_space *mapping,
+>  	mapping->nrpages -= nr;
+>  }
+>  
+> +#ifdef CONFIG_MEMCG
+> +static void filemap_mod_uncharged_vmstat(struct folio *folio, int sign)
+> +{
+> +	long nr = folio_nr_pages(folio) * sign;
+> +
+> +	lruvec_stat_mod_folio(folio, NR_UNCHARGED_FILE_PAGES, nr);
+
+Since we expect to add this metric to memory.stat, I think we should use
+mod_node_page_state() instead here.
+
+With that you can add:
 
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+
 
