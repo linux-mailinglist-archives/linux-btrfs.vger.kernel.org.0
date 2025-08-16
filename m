@@ -1,94 +1,104 @@
-Return-Path: <linux-btrfs+bounces-16111-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16112-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B041B28986
-	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Aug 2025 03:02:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 538EBB28DF0
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Aug 2025 14:53:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F2255E6124
-	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Aug 2025 01:02:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AFCBAE10C2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Aug 2025 12:53:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C45617736;
-	Sat, 16 Aug 2025 01:01:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F2492E3717;
+	Sat, 16 Aug 2025 12:53:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="gW61QZiU";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GcLiWCsj"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wEgxsI7+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3znNidQj";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="j38dKAE8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zmcKAKAs"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b6-smtp.messagingengine.com (fout-b6-smtp.messagingengine.com [202.12.124.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C098BE8
-	for <linux-btrfs@vger.kernel.org>; Sat, 16 Aug 2025 01:01:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875F51E32A2
+	for <linux-btrfs@vger.kernel.org>; Sat, 16 Aug 2025 12:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755306115; cv=none; b=mqtZSCDpp+fML+soM8ByqDCw4vo/D6lhrklP74X+C9RDWYYKPCa05Jclux5KpNvXb/we/heh+ytiOwaCQ7Se6s9MunnFHpZth7u7fN3pBiIk1mhlykj0rjnZKI65szWyc5ygvjwkwotBSHde8rXWKML2nTErGz2dONIeHR+fEu4=
+	t=1755348781; cv=none; b=AxN2g+9uE5/eNbn0OT0GzuUcx2cq/ziqCPgArB9kc3uvy1MOmZ94RNqLjahnWcjL4cdKR2lnMZJu6xUMaunspyoSbr3tf3Azsa6UAgiYjEIU2mRNf1ztsoh/Vi9+vmMbbhW0yPMsezJGyMFOUTafAvEE0gjD4TNZ8RsaZWkOhPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755306115; c=relaxed/simple;
-	bh=MzcEI7C6tn0yd23SPTySjKyDKVKUIW3PzoetCSMaLD8=;
+	s=arc-20240116; t=1755348781; c=relaxed/simple;
+	bh=oqrQyIXfHDbWsnr7ERp3ridM0mBBH0mYY0fVMoljLkU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cpiHDjsjaVZYjuQj4jg+q5mMMMX1FcIf5zP3yIsORA2QrTh6wSw/6e9P+k7jpfJ59OfCZwmMvOPTK6IbMWpsVGSRIm3c9Rf8JHsR4J4Y9GGlRbUcuogafLHi2C1a1hfyYxgkySZ8a4FvWEqh3Knl4PrPeJrSnlk7Hg3uWL9lw9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=gW61QZiU; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GcLiWCsj; arc=none smtp.client-ip=202.12.124.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfout.stl.internal (Postfix) with ESMTP id 3E8241D00223;
-	Fri, 15 Aug 2025 21:01:51 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Fri, 15 Aug 2025 21:01:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1755306111; x=1755392511; bh=Sgic1r/yxs
-	ucd7XUKtmpS/KqlhSVTwbSQqRzEqsMGI8=; b=gW61QZiU8e8Iswqs6Zp7m+V8vs
-	zQFKzSZPV0Y1mNtXu6fclmtgQu+O+KclPd3an9LyZ6MVVbfpdbQx16hI303RjRwT
-	B//jFRWCZeuplzVhRIbIkHkS+sGoPW7ZCGMeIEHrmtBu4nXV2nX+zygro3nnFbSG
-	PNXq8bSGtl+u3w+JhkCYd61OTK83NzzKOT7WN6Rvg9eFpAFD7eP/1tpExHUIYoBo
-	5yelxEpfY4ZhM9iYb6o8ang/IO1DuoZ+rPWjoQ/UE30O0ERfQgr6cSEy48QiIJ7X
-	xcj6HtN4HLrk5zkaNuozcvAxBe3WXUcATZWhGb5JqJoNq1Z0Hi52M8HpbW1A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1755306111; x=1755392511; bh=Sgic1r/yxsucd7XUKtmpS/KqlhSVTwbSQqR
-	zEqsMGI8=; b=GcLiWCsjyMElV4uXTI4gBLvD9a+yp2gLuQTVIDTEsfvUbFzqQAh
-	3+vuEgyIJBHeSxlsEq5ocQmmTVdvJfEQ/MhkE8icf1DB7qtusLXleDQIC2qzKVaC
-	a8fEEfIq4nnwMbtblaRDpmFSfADK1tp4U01IX9SbML7drdywVkt1CB8PfT2ehQs3
-	ZCW7vAZqaTbxJUurdAvKBtUDHvfhU7GB5WqglNW7Nu/kIYJLwwYYQYrgDaW1Rtry
-	LWi0526FU3Le7p7Xpy6/cjE/r8pSyF0EbgxOfJXVoyuttQgx03XQpU/3Gd/Lcbfv
-	kHZNcxCdVXl7P69ea6vMTcZ7VFxqxUiJLyA==
-X-ME-Sender: <xms:ftifaHZjGhWkHdQPOyrSAD_EfKIYeZj55sNAw1JiadaLDineqMAIEA>
-    <xme:ftifaGlTqeoVMwUpersBEd9R4aNr8tuuWudJEDy86eXsyE9jomN2GVv57LvydQwWX
-    MVtBOBo3yURq-VqpMM>
-X-ME-Received: <xmr:ftifaLwiryXQuMwLR_Fxtrk-Ygk-dbYIj-tf4taR4wuOy42GECmqBnlrhiL-VuqPkowt8iNNwodMmTisJtXG5-FW2a4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddugeehgeejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
-    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
-    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
-    ohepmhgrrhhksehhrghrmhhsthhonhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsg
-    htrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:ftifaMMv3VsuUllaiMqwNQLd8Zb0xDi-TS1LEelY54w3SB4WNqOtVQ>
-    <xmx:ftifaHRzcpVJVHDydnW03Dj5z-ZHdmpSyh2BeIVo6BSvOVglVTqAdw>
-    <xmx:ftifaCYT-ldT0auqevwOzAQiS5rsJZrtEmtKLuDF6TVJtWFrWk-z5w>
-    <xmx:ftifaM1CiG_nj3URuj6SrvmexjCgSqkMc0viNzCXaoWrb6ejhn30cA>
-    <xmx:f9ifaE8b5hbw147OpibdFNzfzTeN0zDENQu9gJfkqgFQug1jh6HuPkYH>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 15 Aug 2025 21:01:50 -0400 (EDT)
-Date: Fri, 15 Aug 2025 18:02:31 -0700
-From: Boris Burkov <boris@bur.io>
-To: Mark Harmstone <mark@harmstone.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 16/16] btrfs: allow balancing remap tree
-Message-ID: <20250816010231.GH3042054@zen.localdomain>
-References: <20250813143509.31073-1-mark@harmstone.com>
- <20250813143509.31073-17-mark@harmstone.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FFNspWpRHEyfyBrZlyLc6XEj2euNvk2Mo0m/wbhndLgSgVTmioxP4WE7eswWQKCbaFtL64ThnyevjrPt15cBM6KbDCxOxU07175HX7LyRhg4DUdnOPE08oJ6Tmm6TeHaIFdRrl7/7uSI5uQeiNvYUBr400JU53ZgtKsY8u2FUVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wEgxsI7+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3znNidQj; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=j38dKAE8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zmcKAKAs; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 72F692190C;
+	Sat, 16 Aug 2025 12:52:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1755348777;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eJQEqa9v8718kOSsvxcj/FxmPISevxVZ2InX3UKuGsI=;
+	b=wEgxsI7+X/ARM5bIZDKY41AXLZC9JwWc5lDlxau1D5ACwlczq2KZCfkHTqPsQAfy3+soda
+	y6qwhi2pvb/xrZWeJFh+OIl8XustvcbaK+sKXk+S5X9paWbnu6RtzbDKr0jrcGXNvdCPXi
+	9GvONnhX0FIEgYGhsYTJ3y5c01iBs7g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1755348777;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eJQEqa9v8718kOSsvxcj/FxmPISevxVZ2InX3UKuGsI=;
+	b=3znNidQjZuA+GPzVEcLyrZW/6CD6oD0vEoh3Ll3c0UthAkSKAVxbCA0nmdqEqojqJ50FFd
+	WOJH+I5l2XB9Y2Dg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=j38dKAE8;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=zmcKAKAs
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1755348776;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eJQEqa9v8718kOSsvxcj/FxmPISevxVZ2InX3UKuGsI=;
+	b=j38dKAE8AkEE3MeRt7qE7MME8+XOp+uJATmzeyMUV0T2BhvwJLcIk1vMJvtPsRNCdNn1o2
+	k/4USXIQYr98hqPRbWs3idY4Ey9/vWGUJjiQqLJgSK9UhdwOVZKu2ueIhitdzpZtCqIm9G
+	VXLMksQCwfYmuN9xeorqZl3b4Am+a3Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1755348776;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eJQEqa9v8718kOSsvxcj/FxmPISevxVZ2InX3UKuGsI=;
+	b=zmcKAKAsyB0fV1t1GzL10RhuD+FI4cJ+jz6ge2aHrnQl7vW97jtw92de3kQDwLNd8dBqvN
+	mBev4b0RbhmYfTBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5AA5813432;
+	Sat, 16 Aug 2025 12:52:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id nDenFSh/oGiINgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Sat, 16 Aug 2025 12:52:56 +0000
+Date: Sat, 16 Aug 2025 14:52:51 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	kernel-team@fb.com, wqu@suse.com, willy@infradead.org
+Subject: Re: [PATCH v2 3/3] btrfs: set AS_UNCHARGED on the btree_inode
+Message-ID: <20250816125251.GJ22430@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1755300815.git.boris@bur.io>
+ <786282400115bf7701d7f9c6b00a9549f67e29f7.1755300815.git.boris@bur.io>
+ <mlfxq3ocdmnzvpykzo3zmeebdv5rpohk64aevx3fbwvmj6xitb@ebxlwsd72utx>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -97,257 +107,56 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250813143509.31073-17-mark@harmstone.com>
+In-Reply-To: <mlfxq3ocdmnzvpykzo3zmeebdv5rpohk64aevx3fbwvmj6xitb@ebxlwsd72utx>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 72F692190C
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.21
 
-On Wed, Aug 13, 2025 at 03:34:58PM +0100, Mark Harmstone wrote:
-> Balancing the REMAP chunk, i.e. the chunk in which the remap tree lives,
-> is a special case.
+On Fri, Aug 15, 2025 at 05:50:28PM -0700, Shakeel Butt wrote:
+> On Fri, Aug 15, 2025 at 04:40:33PM -0700, Boris Burkov wrote:
+> > extent_buffers are global and shared so their pages should not belong to
+> > any particular cgroup (currently whichever cgroups happens to allocate
+> > the extent_buffer).
+> > 
+> > Btrfs tree operations should not arbitrarily block on cgroup reclaim or
+> > have the shared extent_buffer pages on a cgroup's reclaim lists.
+> > 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
 > 
-> We can't use the remap tree itself for this, as then we'd have no way to
-> boostrap it on mount. And we can't use the pre-remap tree code for this
-> as it relies on walking the extent tree, and we're not creating backrefs
-> for REMAP chunks.
+> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 > 
-> So instead, if a balance would relocate any REMAP block groups, mark
-> those block groups as readonly and COW every leaf of the remap tree.
-> 
-> There's more sophisticated ways of doing this, such as only COWing nodes
-> within a block group that's to be relocated, but they're fiddly and with
-> lots of edge cases. Plus it's not anticipated that a) the number of
-> REMAP chunks is going to be particularly large, or b) that users will
-> want to only relocate some of these chunks - the main use case here is
-> to unbreak RAID conversion and device removal.
-> 
-> Signed-off-by: Mark Harmstone <mark@harmstone.com>
-> ---
->  fs/btrfs/volumes.c | 161 +++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 157 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index e13f16a7a904..dc535ed90ae0 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -4011,8 +4011,11 @@ static bool should_balance_chunk(struct extent_buffer *leaf, struct btrfs_chunk
->  	struct btrfs_balance_args *bargs = NULL;
->  	u64 chunk_type = btrfs_chunk_type(leaf, chunk);
->  
-> -	if (chunk_type & BTRFS_BLOCK_GROUP_REMAP)
-> -		return false;
-> +	/* treat REMAP chunks as METADATA */
-> +	if (chunk_type & BTRFS_BLOCK_GROUP_REMAP) {
-> +		chunk_type &= ~BTRFS_BLOCK_GROUP_REMAP;
-> +		chunk_type |= BTRFS_BLOCK_GROUP_METADATA;
+> I think mm-tree is better for this series.
 
-why not honor the REMAP chunk type where appropriate?
+Agreed, majority of the changes are in MM code and the btrfs side is not
+something that would affect other testing.
 
-> +	}
->  
->  	/* type filter */
->  	if (!((chunk_type & BTRFS_BLOCK_GROUP_TYPE_MASK) &
-> @@ -4095,6 +4098,113 @@ static bool should_balance_chunk(struct extent_buffer *leaf, struct btrfs_chunk
->  	return true;
->  }
->  
-> +struct remap_chunk_info {
-> +	struct list_head list;
-> +	u64 offset;
-> +	struct btrfs_block_group *bg;
-> +	bool made_ro;
-> +};
-> +
-> +static int cow_remap_tree(struct btrfs_trans_handle *trans,
-> +			  struct btrfs_path *path)
-> +{
-> +	struct btrfs_fs_info *fs_info = trans->fs_info;
-> +	struct btrfs_key key = { 0 };
-> +	int ret;
-> +
-> +	ret = btrfs_search_slot(trans, fs_info->remap_root, &key, path, 0, 1);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	while (true) {
-> +		ret = btrfs_next_leaf(fs_info->remap_root, path);
-> +		if (ret < 0) {
-> +			return ret;
-> +		} else if (ret > 0) {
-> +			ret = 0;
-> +			break;
-> +		}
-> +
-> +		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-> +
-> +		btrfs_release_path(path);
-> +
-> +		ret = btrfs_search_slot(trans, fs_info->remap_root, &key, path,
-> +					0, 1);
-> +		if (ret < 0)
-> +			break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int balance_remap_chunks(struct btrfs_fs_info *fs_info,
-> +				struct btrfs_path *path,
-> +				struct list_head *chunks)
-> +{
-> +	struct remap_chunk_info *rci, *tmp;
-> +	struct btrfs_trans_handle *trans;
-> +	int ret;
-> +
-> +	list_for_each_entry_safe(rci, tmp, chunks, list) {
-> +		rci->bg = btrfs_lookup_block_group(fs_info, rci->offset);
-> +		if (!rci->bg) {
-> +			list_del(&rci->list);
-> +			kfree(rci);
-> +			continue;
-> +		}
-> +
-> +		ret = btrfs_inc_block_group_ro(rci->bg, false);
-
-Just thinking out loud, what happens if we concurrently attempt a
-balance that would need to use the remap tree? Is something structurally
-blocking that at a higher level? Or will it fail? How will that failure
-be handled? Does the answer hold for btrfs-internal background reclaim
-rather than explicit balancing?
-
-> +		if (ret)
-> +			goto end;
-> +
-> +		rci->made_ro = true;
-> +	}
-> +
-> +	if (list_empty(chunks))
-> +		return 0;
-> +
-> +	trans = btrfs_start_transaction(fs_info->remap_root, 0);
-> +	if (IS_ERR(trans)) {
-> +		ret = PTR_ERR(trans);
-> +		goto end;
-> +	}
-> +
-> +	mutex_lock(&fs_info->remap_mutex);
-> +
-> +	ret = cow_remap_tree(trans, path);
-> +
-> +	btrfs_release_path(path);
-> +
-> +	mutex_unlock(&fs_info->remap_mutex);
-> +
-> +	btrfs_commit_transaction(trans);
-> +
-> +end:
-> +	while (!list_empty(chunks)) {
-> +		bool unused;
-> +
-> +		rci = list_first_entry(chunks, struct remap_chunk_info, list);
-> +
-> +		spin_lock(&rci->bg->lock);
-> +		unused = !btrfs_is_block_group_used(rci->bg);
-> +		spin_unlock(&rci->bg->lock);
-> +
-> +		if (unused)
-> +			btrfs_mark_bg_unused(rci->bg);
-> +
-> +		if (rci->made_ro)
-> +			btrfs_dec_block_group_ro(rci->bg);
-> +
-> +		btrfs_put_block_group(rci->bg);
-> +
-> +		list_del(&rci->list);
-> +		kfree(rci);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  static int __btrfs_balance(struct btrfs_fs_info *fs_info)
->  {
->  	struct btrfs_balance_control *bctl = fs_info->balance_ctl;
-> @@ -4117,6 +4227,9 @@ static int __btrfs_balance(struct btrfs_fs_info *fs_info)
->  	u32 count_meta = 0;
->  	u32 count_sys = 0;
->  	int chunk_reserved = 0;
-> +	struct remap_chunk_info *rci;
-> +	unsigned int num_remap_chunks = 0;
-> +	LIST_HEAD(remap_chunks);
->  
->  	path = btrfs_alloc_path();
->  	if (!path) {
-> @@ -4215,7 +4328,8 @@ static int __btrfs_balance(struct btrfs_fs_info *fs_info)
->  				count_data++;
->  			else if (chunk_type & BTRFS_BLOCK_GROUP_SYSTEM)
->  				count_sys++;
-> -			else if (chunk_type & BTRFS_BLOCK_GROUP_METADATA)
-> +			else if (chunk_type & (BTRFS_BLOCK_GROUP_METADATA |
-> +					       BTRFS_BLOCK_GROUP_REMAP))
->  				count_meta++;
->  
->  			goto loop;
-> @@ -4235,6 +4349,30 @@ static int __btrfs_balance(struct btrfs_fs_info *fs_info)
->  			goto loop;
->  		}
->  
-> +		/*
-> +		 * Balancing REMAP chunks takes place separately - add the
-> +		 * details to a list so it can be processed later.
-> +		 */
-> +		if (chunk_type & BTRFS_BLOCK_GROUP_REMAP) {
-> +			mutex_unlock(&fs_info->reclaim_bgs_lock);
-> +
-> +			rci = kmalloc(sizeof(struct remap_chunk_info),
-> +				      GFP_NOFS);
-> +			if (!rci) {
-> +				ret = -ENOMEM;
-> +				goto error;
-> +			}
-> +
-> +			rci->offset = found_key.offset;
-> +			rci->bg = NULL;
-> +			rci->made_ro = false;
-> +			list_add_tail(&rci->list, &remap_chunks);
-> +
-> +			num_remap_chunks++;
-> +
-> +			goto loop;
-> +		}
-> +
->  		if (!chunk_reserved) {
->  			/*
->  			 * We may be relocating the only data chunk we have,
-> @@ -4274,11 +4412,26 @@ static int __btrfs_balance(struct btrfs_fs_info *fs_info)
->  		key.offset = found_key.offset - 1;
->  	}
->  
-> +	btrfs_release_path(path);
-> +
->  	if (counting) {
-> -		btrfs_release_path(path);
->  		counting = false;
->  		goto again;
->  	}
-> +
-> +	if (!list_empty(&remap_chunks)) {
-> +		ret = balance_remap_chunks(fs_info, path, &remap_chunks);
-> +		if (ret == -ENOSPC)
-> +			enospc_errors++;
-> +
-> +		if (!ret) {
-> +			btrfs_delete_unused_bgs(fs_info);
-
-Why is this necessary here?
-
-> +
-> +			spin_lock(&fs_info->balance_lock);
-> +			bctl->stat.completed += num_remap_chunks;
-> +			spin_unlock(&fs_info->balance_lock);
-> +		}
-> +	}
->  error:
->  	btrfs_free_path(path);
->  	if (enospc_errors) {
-> -- 
-> 2.49.1
-> 
+Acked-by: David Sterba <dsterba@suse.com>
 
