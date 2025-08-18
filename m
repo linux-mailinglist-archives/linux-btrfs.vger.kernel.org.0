@@ -1,82 +1,74 @@
-Return-Path: <linux-btrfs+bounces-16118-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16121-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BF54B295D6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 02:32:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62134B29E77
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 11:54:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0681B3B9D7E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 00:32:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5651C16EE3F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 09:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DCE7202987;
-	Mon, 18 Aug 2025 00:32:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jVXsimy5";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jVXsimy5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A730030FF23;
+	Mon, 18 Aug 2025 09:54:07 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C541531771A
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 00:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989EA30F819;
+	Mon, 18 Aug 2025 09:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755477147; cv=none; b=EGlqJslbc3kO5obs8+Ib8etqnq7pb2oHpLFFf3soqjy5C0ZVItYXJOaYSXlTHAdz7mpJ6lNmTdySCpMqo7HhN6vUJRHLlINHHh95gbG+rCqFKhUuXUo0InYDuB/bCxc4xnut64W2I9tHt3t8utpDRKeCgqubZOg1DAYVpdiIe4I=
+	t=1755510847; cv=none; b=ffPC+kfaHDibzdO+Xwr4C1bVIMBhk7bWkN2b/MpCpQVxcKJD6AOq5GPNpLEDHwe+KJvnwIStZuTnjYK0LvdQPAolC6fOhsHI98ax/I5MwsWJXsiktdJnJTMsAmPoyN/XOR9ZpCL+0V2Q4yI3phrjTgDus2GAbPDAEOXjrsF4eg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755477147; c=relaxed/simple;
-	bh=96NqLDNfLKjUPRPjEhe0CHN8U9sLQFZQ8j7MQDgXlOE=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DF7uCIt1DNBb7echgtbEoSXqWh3IVgTQVeIlq+2VbCTnxf+3OKFIFBWdTCnNqUOxmRLbsdT8PLXLGiNluJbjjxn1Sp1jir8xC+UsKa9y5u0vq11DL0tJtML1TkrGxshreskrr1gjhuGFbXaVwFH23oHz1FRXTokOWVAwF01yXBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jVXsimy5; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jVXsimy5; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3CDA41F46E
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 00:32:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1755477132; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pnuvHRhKQKuMkIRvK3I/uVb3oDSl82CGiZAZ0SrZYUI=;
-	b=jVXsimy5BMY4QzWTULEvc81lWEob7hOoehMdvrnOgkdzYtO4ak1PE8CLlbII9FHgyjK5FO
-	Ai9sSFcC97jJWcpuGTcNvYdCqYCcE4owxdsZuYJ4K1+Rbvpxip+onhoer7D8nD+jCBpvIt
-	jMQ0WQfuTYh2B4VyDJjG2NAUb1Qk5UM=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1755477132; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pnuvHRhKQKuMkIRvK3I/uVb3oDSl82CGiZAZ0SrZYUI=;
-	b=jVXsimy5BMY4QzWTULEvc81lWEob7hOoehMdvrnOgkdzYtO4ak1PE8CLlbII9FHgyjK5FO
-	Ai9sSFcC97jJWcpuGTcNvYdCqYCcE4owxdsZuYJ4K1+Rbvpxip+onhoer7D8nD+jCBpvIt
-	jMQ0WQfuTYh2B4VyDJjG2NAUb1Qk5UM=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7885D13686
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 00:32:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id WKfiDot0omhWKgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 00:32:11 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/5] btrfs-progs: doc/mkfs: remove the note about memory usage
-Date: Mon, 18 Aug 2025 10:01:47 +0930
-Message-ID: <c5d36303c357e3782016094e8c223accfcc35e95.1755474438.git.wqu@suse.com>
+	s=arc-20240116; t=1755510847; c=relaxed/simple;
+	bh=4vX9/46N1vvwWSTdgzxSrQioczEs1ddvGvywhiQxUlQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Hl/C5fse+EYnIB3z9YH6XYSzcd81VFIhHAJTwBtrGAD9i4ospDGF8O7+vCrujMJoGZy1ZVYxN12oVGQl2AN9X5yGlUdS0DtsaFjmXtnwfnSsWnFDH4AcH3m/Y9E7KLIH6+/9+G1PchDnDeG6/1bmRqL8W9pSd572o6/9qnIjS5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-45a1b066b5eso18418605e9.1;
+        Mon, 18 Aug 2025 02:54:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755510844; x=1756115644;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tF5FvZUtb65OzIvJARiRQNgRBiOw2l/1Be6YYyZV/io=;
+        b=WEc95sRUEwyhY2CBv6xa/TTDTn6c9TICphe8SC1GnwyeBI1HS2ENgqUBBm2DAOptfD
+         x3HYzvLy3UfeHfu5Hv8WYe+ZwU8pon1Dhv5ru5FhgvYqbmz2OSUX9Eij2fWJ0uYSPvRV
+         sybYm2PTtr0b0mWL8NCUnOvT60XD9+9wWZnmw6uP+p5UYJzBibaAXpBCDncQf9Pgn/he
+         eA1uaKJxdpaNcUaS7Oh6MCUcomNeekU02myR4Vz8W269U7jGom9BTxbQ28tOJlbspWZR
+         GJXi4DRbt4CeS9Ee9gWCOe4dFO/+AUD0qpIgQVQoF6E9YAmFyIiypAS5Dv1ztfV08J9Y
+         3erA==
+X-Forwarded-Encrypted: i=1; AJvYcCUIPjRjjZ4ejR93DSZQL5Cipo4ZdF5jSwZpOmhM6xr6z4elY4Va/e45nYxemrYdXCHtMTqUai5x@vger.kernel.org, AJvYcCW6Wp/tA9XbDNg3d9uLjnmYqlpfGCGrO6EZ5PYYYyyZ61JzVnxrAcXugJlc8GYX0kwqOlRJrjZ5vND+JOk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzfo8O6zvhMWvi4jKpcC7I+Wp/shz5wFw97+Nrb5aWpkhVZxvTo
+	jhLOFkXDpmPxRuD/PKErv+r7cdePrrzScI4TaQ9IsElO2fUGa8UjBDw2D1qpX/Kd
+X-Gm-Gg: ASbGncu5dz+Zi69CTOUl5E0iw30PDir4RjqQNN+/B1AQyCKn5kZ+48RapE1TF8hwbJ9
+	fbOwT4UVUaOkce97GxYd7yDj0pmF4H4we5pr1NXXN6y7G7LzrQAN8+9zJRy6oEj9otfTtcmmpOA
+	K7bFGPuDxra08Rk4e/aEAsiALiOSrnCy6FsJGLyjQhIaGO/1JViGZsPFltLtwMExMDUhgK90FEr
+	J3lUe+lon5JXr55Zp01jKBA8lWbPBOLiycQ66GSNhrQx8w7iGiVC0nIXaqG6KWebO7uzyiczBao
+	bYPMoDGE4sfAZO61ko90O/+wQ/Ck0pW8e3XSCpGRZxf3r41G74psF7rzshQUBQlx7o8QD3D2Ua+
+	eI1qJhsZi8uWSM8/A4Pa3RmIcMogAClLdF7az/WfREZImtUyJ1FBlSLskh/JkuP2H8KwCWlbWyu
+	BpUxb/2g==
+X-Google-Smtp-Source: AGHT+IHvYL+rJrG1ox18RRMQr7TfXE5g/jK4292lFkXRFY05woj8zZ93PwLRSD2Bgkr0ZEZL/mxRLQ==
+X-Received: by 2002:a05:600c:695:b0:458:bbed:a812 with SMTP id 5b1f17b1804b1-45a21ef1329mr67548945e9.17.1755510843611;
+        Mon, 18 Aug 2025 02:54:03 -0700 (PDT)
+Received: from neo.fritz.box (p200300f6f719c7009cd4f1e1fa3886df.dip0.t-ipconnect.de. [2003:f6:f719:c700:9cd4:f1e1:fa38:86df])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a22321985sm124302805e9.17.2025.08.18.02.54.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Aug 2025 02:54:03 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: Zorro Lang <zlang@redhat.com>,
+	fstests@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2] tests: btrfs/237: skip test on devices with conventional zones
+Date: Mon, 18 Aug 2025 11:53:37 +0200
+Message-ID: <20250818095338.66277-1-jth@kernel.org>
 X-Mailer: git-send-email 2.50.1
-In-Reply-To: <cover.1755474438.git.wqu@suse.com>
-References: <cover.1755474438.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,65 +76,54 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
 
-With the recent enhancements to --subvol and --inode-flags options, the
-memory usage for them are just 4K+, and even for the older 8K+ memory
-usage, it's really hard to consider them as heavy memory usage.
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-E.g. even if the end user specified over 1000 entries of
---subvol/--inode-flags, it only takes a little over 8MiB for the older
-code or over 4MiB for the newer code.
+Skip btrfs/237 on devices with conventional zones, as we cannot force data
+allocation on a sequential zone at the moment and conventional zones
+cannot be reset, making the test invalid.
 
-Since we're in the user space and the year is 2025 not 1995, such memory
-usage is far from heavy.
+Furthermore limit the output of get_data_bg() and get_data_bg_physical()
+to the first address.
 
-Just remove the paranoid note from the man page.
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- Documentation/mkfs.btrfs.rst | 5 -----
- 1 file changed, 5 deletions(-)
+Changes in v2:
+- Use 'tail' instead of 'head'
+---
+ tests/btrfs/237 | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/mkfs.btrfs.rst b/Documentation/mkfs.btrfs.rst
-index 82837e429778..940bf3a09b6e 100644
---- a/Documentation/mkfs.btrfs.rst
-+++ b/Documentation/mkfs.btrfs.rst
-@@ -243,11 +243,6 @@ OPTIONS
- 	each subvolume is independent and will not inherit from the parent directory.
- 	(The same as the kernel behavior.)
+diff --git a/tests/btrfs/237 b/tests/btrfs/237
+index 2839f6e4..675f4c42 100755
+--- a/tests/btrfs/237
++++ b/tests/btrfs/237
+@@ -28,7 +28,8 @@ get_data_bg()
+ {
+ 	$BTRFS_UTIL_PROG inspect-internal dump-tree -t CHUNK $SCRATCH_DEV |\
+ 		grep -A 1 "CHUNK_ITEM" | grep -B 1 "type DATA" |\
+-		grep -Eo "CHUNK_ITEM [[:digit:]]+" | cut -d ' ' -f 2
++		grep -Eo "CHUNK_ITEM [[:digit:]]+" | cut -d ' ' -f 2 |\
++		tail -n 1
+ }
  
--        .. note::
--                Both *--inode-flags* and *--subvol* options are memory hungry,
--                will consume at least 8KiB for each option.  Please keep the
--                usage of both options to minimum.
--
- --shrink
-         Shrink the filesystem to its minimal size, only works with *--rootdir* option.
+ get_data_bg_physical()
+@@ -36,9 +37,13 @@ get_data_bg_physical()
+ 	# Assumes SINGLE data profile
+ 	$BTRFS_UTIL_PROG inspect-internal dump-tree -t CHUNK $SCRATCH_DEV |\
+ 		grep -A 4 CHUNK_ITEM | grep -A 3 'type DATA\|SINGLE' |\
+-	        grep -Eo 'offset [[:digit:]]+'| cut -d ' ' -f 2
++	        grep -Eo 'offset [[:digit:]]+'| cut -d ' ' -f 2 |\
++		tail -n 1
+ }
  
++$BLKZONE_PROG report $SCRATCH_DEV | grep -q -e "nw" && \
++	_notrun "test is unreliable on devices with conventional zones"
++
+ sdev="$(_short_dev $SCRATCH_DEV)"
+ zone_size=$(($(cat /sys/block/${sdev}/queue/chunk_sectors) << 9))
+ fssize=$((zone_size * 16))
 -- 
 2.50.1
 
