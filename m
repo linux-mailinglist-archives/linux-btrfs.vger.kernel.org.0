@@ -1,130 +1,284 @@
-Return-Path: <linux-btrfs+bounces-16121-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16122-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62134B29E77
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 11:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E9D10B2A08A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 13:37:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5651C16EE3F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 09:54:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 706E65616F8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 11:31:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A730030FF23;
-	Mon, 18 Aug 2025 09:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3070231CA6B;
+	Mon, 18 Aug 2025 11:28:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DZbrSGHv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989EA30F819;
-	Mon, 18 Aug 2025 09:54:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6CB731AF36
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 11:28:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755510847; cv=none; b=ffPC+kfaHDibzdO+Xwr4C1bVIMBhk7bWkN2b/MpCpQVxcKJD6AOq5GPNpLEDHwe+KJvnwIStZuTnjYK0LvdQPAolC6fOhsHI98ax/I5MwsWJXsiktdJnJTMsAmPoyN/XOR9ZpCL+0V2Q4yI3phrjTgDus2GAbPDAEOXjrsF4eg0=
+	t=1755516512; cv=none; b=kpifZPWGb/fZ67maez2f8t9CqfHDgjLP/eRUGxSrhekZggunF9HBBn6p3+mxuo71u7DSS6vHkR5nNU1dw7Pt3dnu1kYOhd1CSHjc6cYS4sqRLeKSdHbku9b64kI5AUVY2YexcsDIGYi8mYYwHCwI+2PtucPMH4sZ9OBWfIjVEtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755510847; c=relaxed/simple;
-	bh=4vX9/46N1vvwWSTdgzxSrQioczEs1ddvGvywhiQxUlQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Hl/C5fse+EYnIB3z9YH6XYSzcd81VFIhHAJTwBtrGAD9i4ospDGF8O7+vCrujMJoGZy1ZVYxN12oVGQl2AN9X5yGlUdS0DtsaFjmXtnwfnSsWnFDH4AcH3m/Y9E7KLIH6+/9+G1PchDnDeG6/1bmRqL8W9pSd572o6/9qnIjS5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-45a1b066b5eso18418605e9.1;
-        Mon, 18 Aug 2025 02:54:05 -0700 (PDT)
+	s=arc-20240116; t=1755516512; c=relaxed/simple;
+	bh=VY8634xpHXk7cZiYCL2JpatoZSb7xQVGRxlqHFOaah0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DxWMt5IdFCILdPPuVOZID46NxzrJEAYqtulOeRv6I3uFVeikHAUXGI4aEK2ZBi/vRB5gOE7800vqdUFQDxV3Vgyil37E4cioAo/srnaoUrJ3uARI9nWNqSbJ0n8Y15w/nFfzKTF7mWcr0eZF/vRbhKI8SiLMAN9zPgWaQs6RN3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DZbrSGHv; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1755516509;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=J0poHkf7IJxzNGcjiPzQE+7iEkpA1901ZpOaMVbBkbk=;
+	b=DZbrSGHvbR97/x9mJfIqbY1Ki8o5hHHCPVtD1NaKSEuQaRuTleLs9Rekhe0x5mqXrelc1g
+	HodZpoqM2csrRggL09fjqEVTUMihrsM/dU0DSsOwCKYRnd7NV+IPzksrsdE/flV//NzNg1
+	L6LwILdE2KVjnQBHNY1Tubs7A7NJKJ4=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-635-aYkJPXcjNMedlkEEFpfGbw-1; Mon, 18 Aug 2025 07:28:27 -0400
+X-MC-Unique: aYkJPXcjNMedlkEEFpfGbw-1
+X-Mimecast-MFC-AGG-ID: aYkJPXcjNMedlkEEFpfGbw_1755516506
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3b9e4157303so3183950f8f.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 04:28:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755510844; x=1756115644;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1755516506; x=1756121306;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tF5FvZUtb65OzIvJARiRQNgRBiOw2l/1Be6YYyZV/io=;
-        b=WEc95sRUEwyhY2CBv6xa/TTDTn6c9TICphe8SC1GnwyeBI1HS2ENgqUBBm2DAOptfD
-         x3HYzvLy3UfeHfu5Hv8WYe+ZwU8pon1Dhv5ru5FhgvYqbmz2OSUX9Eij2fWJ0uYSPvRV
-         sybYm2PTtr0b0mWL8NCUnOvT60XD9+9wWZnmw6uP+p5UYJzBibaAXpBCDncQf9Pgn/he
-         eA1uaKJxdpaNcUaS7Oh6MCUcomNeekU02myR4Vz8W269U7jGom9BTxbQ28tOJlbspWZR
-         GJXi4DRbt4CeS9Ee9gWCOe4dFO/+AUD0qpIgQVQoF6E9YAmFyIiypAS5Dv1ztfV08J9Y
-         3erA==
-X-Forwarded-Encrypted: i=1; AJvYcCUIPjRjjZ4ejR93DSZQL5Cipo4ZdF5jSwZpOmhM6xr6z4elY4Va/e45nYxemrYdXCHtMTqUai5x@vger.kernel.org, AJvYcCW6Wp/tA9XbDNg3d9uLjnmYqlpfGCGrO6EZ5PYYYyyZ61JzVnxrAcXugJlc8GYX0kwqOlRJrjZ5vND+JOk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzfo8O6zvhMWvi4jKpcC7I+Wp/shz5wFw97+Nrb5aWpkhVZxvTo
-	jhLOFkXDpmPxRuD/PKErv+r7cdePrrzScI4TaQ9IsElO2fUGa8UjBDw2D1qpX/Kd
-X-Gm-Gg: ASbGncu5dz+Zi69CTOUl5E0iw30PDir4RjqQNN+/B1AQyCKn5kZ+48RapE1TF8hwbJ9
-	fbOwT4UVUaOkce97GxYd7yDj0pmF4H4we5pr1NXXN6y7G7LzrQAN8+9zJRy6oEj9otfTtcmmpOA
-	K7bFGPuDxra08Rk4e/aEAsiALiOSrnCy6FsJGLyjQhIaGO/1JViGZsPFltLtwMExMDUhgK90FEr
-	J3lUe+lon5JXr55Zp01jKBA8lWbPBOLiycQ66GSNhrQx8w7iGiVC0nIXaqG6KWebO7uzyiczBao
-	bYPMoDGE4sfAZO61ko90O/+wQ/Ck0pW8e3XSCpGRZxf3r41G74psF7rzshQUBQlx7o8QD3D2Ua+
-	eI1qJhsZi8uWSM8/A4Pa3RmIcMogAClLdF7az/WfREZImtUyJ1FBlSLskh/JkuP2H8KwCWlbWyu
-	BpUxb/2g==
-X-Google-Smtp-Source: AGHT+IHvYL+rJrG1ox18RRMQr7TfXE5g/jK4292lFkXRFY05woj8zZ93PwLRSD2Bgkr0ZEZL/mxRLQ==
-X-Received: by 2002:a05:600c:695:b0:458:bbed:a812 with SMTP id 5b1f17b1804b1-45a21ef1329mr67548945e9.17.1755510843611;
-        Mon, 18 Aug 2025 02:54:03 -0700 (PDT)
-Received: from neo.fritz.box (p200300f6f719c7009cd4f1e1fa3886df.dip0.t-ipconnect.de. [2003:f6:f719:c700:9cd4:f1e1:fa38:86df])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a22321985sm124302805e9.17.2025.08.18.02.54.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Aug 2025 02:54:03 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: Zorro Lang <zlang@redhat.com>,
-	fstests@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2] tests: btrfs/237: skip test on devices with conventional zones
-Date: Mon, 18 Aug 2025 11:53:37 +0200
-Message-ID: <20250818095338.66277-1-jth@kernel.org>
-X-Mailer: git-send-email 2.50.1
+        bh=J0poHkf7IJxzNGcjiPzQE+7iEkpA1901ZpOaMVbBkbk=;
+        b=WSWwFNbylXmxFsyOIZUm6X9wwEHnT+nKhPhRbgH0wZxnt289iwSSUWMCYE4lXU1hk6
+         FIxpPH6q2NlbrD4NcOLkhwH+qxJupZloNablbgnv7AfPep+EHMwvXovgVmOAKJDIQYDS
+         riuSWTjD3GoRuyeLj9HFj14LoyD9JdjpwhWxBUAATBjfDAZK7oEX9AVTEo8SU7nOQb69
+         cUQa8C41493F5EwEGyueJ/ozzrb8XBx28IggcWvXL4ut7J4EMukYxE7lXSKSgRSIsgLz
+         82o27P4zTab09T1iput7kbRdUYoHUtcXaVghwxumBH3xZUfDgDwxi92mFPoW/IzYn8pT
+         8qtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVAYZWzl8xONBilXC7YQHIAzkb9hbGRh2Yj5ZJnWZVGFSYj6dhgQkG0aOS1pjGQSTIy0pCzay6IEqrwDA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQYYLoQbUguWkdx9c1K/RfZgVRVBtvroTyLN6mVERvCbNa36Q+
+	RBp94mVuR2p3LFL/vlEH35rh7jbysncCokTNYA8iPdNHFAqRbQkxntkY3aJjyqWnqiZfnNQtjcf
+	sdxesU3AQc+ihDgPzllo/LXR92Mv4kEhzym7yQm1PYM359Z79H84Klvr99kbWeZbi
+X-Gm-Gg: ASbGnctoc5PVfaphv7H8u2zI3YdJ1nmytCHAahM/j+7PGDQlQlt5NxKV61/45VkoaJ4
+	NGonEA61Euoca8CC6OSkGjRgjUjCz7hE9R0YmvDTv9Ba6gIzsTgKm2w8LvSSthphb369s63KDFP
+	gK7BgbmgFJYV+qOaHCikznvQpg4fDqxNXpeUR/L0rVH3PdqQ96NKWZV+5u9OViJVh0LFvvCAXIG
+	ugOQ/+muRaj9X5XRnDoUKTkKbZlV/60+XpVREuqO9JNu8kudk+Zx/zO9iPBpOC2rFU+XJkyrBmz
+	+lpY20IxsYntYO4VxhYk2AEh8VHf1kTTbcMZm5c6RRZyXnZEBrbubAecBxtc1IkmIBEA3Q==
+X-Received: by 2002:a05:6000:2301:b0:3bb:2fb3:9c7e with SMTP id ffacd0b85a97d-3bb674db9eemr9706785f8f.21.1755516505989;
+        Mon, 18 Aug 2025 04:28:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFoJ2j4tybVSbT2mQ2UN8mZP25LV2c4F54aus7k4qiE296Q/C3YEoCeE99f3tiBsFkHDADQDg==
+X-Received: by 2002:a05:6000:2301:b0:3bb:2fb3:9c7e with SMTP id ffacd0b85a97d-3bb674db9eemr9706715f8f.21.1755516505387;
+        Mon, 18 Aug 2025 04:28:25 -0700 (PDT)
+Received: from [192.168.3.141] (p57a1a246.dip0.t-ipconnect.de. [87.161.162.70])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a22211395sm129258685e9.4.2025.08.18.04.28.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Aug 2025 04:28:24 -0700 (PDT)
+Message-ID: <3bb725f8-28d7-4aa2-b75f-af40d5cab280@redhat.com>
+Date: Mon, 18 Aug 2025 13:28:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/2] mm/migrate: remove MIGRATEPAGE_UNMAP
+To: Lance Yang <lance.yang@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linuxppc-dev@lists.ozlabs.org, virtualization@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+ linux-btrfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Jerrin Shaji George <jerrin.shaji-george@broadcom.com>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
+ <eperezma@redhat.com>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Benjamin LaHaise <bcrl@kvack.org>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+ Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>,
+ Dave Kleikamp <shaggy@kernel.org>, Zi Yan <ziy@nvidia.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
+ Byungchul Park <byungchul@sk.com>, Gregory Price <gourry@gourry.net>,
+ Ying Huang <ying.huang@linux.alibaba.com>,
+ Alistair Popple <apopple@nvidia.com>, Minchan Kim <minchan@kernel.org>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>
+References: <20250811143949.1117439-1-david@redhat.com>
+ <20250811143949.1117439-2-david@redhat.com>
+ <CABzRoyYU2yOuGQskCAG_gzKiQwR6uM9eAYqOOCoQj+Xv=r163A@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <CABzRoyYU2yOuGQskCAG_gzKiQwR6uM9eAYqOOCoQj+Xv=r163A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On 13.08.25 07:05, Lance Yang wrote:
+> On Mon, Aug 11, 2025 at 10:47 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+> [...]
+>> +++ b/mm/migrate.c
+>> @@ -1176,16 +1176,6 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+>>          bool locked = false;
+>>          bool dst_locked = false;
+>>
+>> -       if (folio_ref_count(src) == 1) {
+>> -               /* Folio was freed from under us. So we are done. */
+>> -               folio_clear_active(src);
+>> -               folio_clear_unevictable(src);
+>> -               /* free_pages_prepare() will clear PG_isolated. */
+>> -               list_del(&src->lru);
+>> -               migrate_folio_done(src, reason);
+>> -               return MIGRATEPAGE_SUCCESS;
+>> -       }
+>> -
+>>          dst = get_new_folio(src, private);
+>>          if (!dst)
+>>                  return -ENOMEM;
+>> @@ -1275,7 +1265,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+>>
+>>          if (unlikely(page_has_movable_ops(&src->page))) {
+>>                  __migrate_folio_record(dst, old_page_state, anon_vma);
+>> -               return MIGRATEPAGE_UNMAP;
+>> +               return 0;
+>>          }
+>>
+>>          /*
+>> @@ -1305,7 +1295,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+>>
+>>          if (!folio_mapped(src)) {
+>>                  __migrate_folio_record(dst, old_page_state, anon_vma);
+>> -               return MIGRATEPAGE_UNMAP;
+>> +               return 0;
+>>          }
+>>
+>>   out:
+>> @@ -1848,14 +1838,28 @@ static int migrate_pages_batch(struct list_head *from,
+>>                                  continue;
+>>                          }
+>>
+>> +                       /*
+>> +                        * If we are holding the last folio reference, the folio
+>> +                        * was freed from under us, so just drop our reference.
+>> +                        */
+>> +                       if (likely(!page_has_movable_ops(&folio->page)) &&
+>> +                           folio_ref_count(folio) == 1) {
+>> +                               folio_clear_active(folio);
+>> +                               folio_clear_unevictable(folio);
+>> +                               list_del(&folio->lru);
+>> +                               migrate_folio_done(folio, reason);
+>> +                               stats->nr_succeeded += nr_pages;
+>> +                               stats->nr_thp_succeeded += is_thp;
+>> +                               continue;
+>> +                       }
+>> +
+> 
+> It seems the reason parameter is no longer used within migrate_folio_unmap()
+> after this patch.
+> 
+> Perhaps it could be removed from the function's signature ;)
 
-Skip btrfs/237 on devices with conventional zones, as we cannot force data
-allocation on a sequential zone at the moment and conventional zones
-cannot be reset, making the test invalid.
+Thanks, well spotted, @Andrew can you squash the following?
 
-Furthermore limit the output of get_data_bg() and get_data_bg_physical()
-to the first address.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+ From 40938bb0de20e03250c813d5abc7286aea69d835 Mon Sep 17 00:00:00 2001
+From: David Hildenbrand <david@redhat.com>
+Date: Mon, 18 Aug 2025 13:26:05 +0200
+Subject: [PATCH] fixup: mm/migrate: remove MIGRATEPAGE_UNMAP
 
+No need to pass "reason" to migrate_folio_unmap().
+
+Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
-Changes in v2:
-- Use 'tail' instead of 'head'
----
- tests/btrfs/237 | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+  mm/migrate.c | 5 ++---
+  1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/tests/btrfs/237 b/tests/btrfs/237
-index 2839f6e4..675f4c42 100755
---- a/tests/btrfs/237
-+++ b/tests/btrfs/237
-@@ -28,7 +28,8 @@ get_data_bg()
- {
- 	$BTRFS_UTIL_PROG inspect-internal dump-tree -t CHUNK $SCRATCH_DEV |\
- 		grep -A 1 "CHUNK_ITEM" | grep -B 1 "type DATA" |\
--		grep -Eo "CHUNK_ITEM [[:digit:]]+" | cut -d ' ' -f 2
-+		grep -Eo "CHUNK_ITEM [[:digit:]]+" | cut -d ' ' -f 2 |\
-+		tail -n 1
- }
- 
- get_data_bg_physical()
-@@ -36,9 +37,13 @@ get_data_bg_physical()
- 	# Assumes SINGLE data profile
- 	$BTRFS_UTIL_PROG inspect-internal dump-tree -t CHUNK $SCRATCH_DEV |\
- 		grep -A 4 CHUNK_ITEM | grep -A 3 'type DATA\|SINGLE' |\
--	        grep -Eo 'offset [[:digit:]]+'| cut -d ' ' -f 2
-+	        grep -Eo 'offset [[:digit:]]+'| cut -d ' ' -f 2 |\
-+		tail -n 1
- }
- 
-+$BLKZONE_PROG report $SCRATCH_DEV | grep -q -e "nw" && \
-+	_notrun "test is unreliable on devices with conventional zones"
-+
- sdev="$(_short_dev $SCRATCH_DEV)"
- zone_size=$(($(cat /sys/block/${sdev}/queue/chunk_sectors) << 9))
- fssize=$((zone_size * 16))
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 2db4974178e6a..aabc736eec022 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1166,7 +1166,7 @@ static void migrate_folio_done(struct folio *src,
+  static int migrate_folio_unmap(new_folio_t get_new_folio,
+  		free_folio_t put_new_folio, unsigned long private,
+  		struct folio *src, struct folio **dstp, enum migrate_mode mode,
+-		enum migrate_reason reason, struct list_head *ret)
++		struct list_head *ret)
+  {
+  	struct folio *dst;
+  	int rc = -EAGAIN;
+@@ -1852,8 +1852,7 @@ static int migrate_pages_batch(struct list_head *from,
+  			}
+  
+  			rc = migrate_folio_unmap(get_new_folio, put_new_folio,
+-					private, folio, &dst, mode, reason,
+-					ret_folios);
++					private, folio, &dst, mode, ret_folios);
+  			/*
+  			 * The rules are:
+  			 *	0: folio will be put on unmap_folios list,
 -- 
 2.50.1
+
+
+-- 
+Cheers
+
+David / dhildenb
 
 
