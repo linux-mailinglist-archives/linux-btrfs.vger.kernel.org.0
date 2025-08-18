@@ -1,75 +1,82 @@
-Return-Path: <linux-btrfs+bounces-16115-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16117-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2496DB295D3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 02:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89705B295D5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 02:32:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E2D47ADFB2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 00:30:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 265CC7AE240
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 00:30:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28E5D1A5B8C;
-	Mon, 18 Aug 2025 00:32:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 379EC1E2606;
+	Mon, 18 Aug 2025 00:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HTmLm47L";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HTmLm47L"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lFcQKBRY";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lFcQKBRY"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F7A1E2606
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 00:32:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31BB51F2BAB
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 00:32:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755477136; cv=none; b=Tv0qhYmxu+6c4k3CkW2SrDGNyZzJimerKC5M1i+LqMPYnRNBPj8rPhMpYbaC62UH1gUYTzi2MZSkl8klrKy1Gqq6oyjXiI9MEJo48nAVvXtubLX396ptvSI9mL1pz3H+IwdDixdsY+j77ruar0TvkK8aETX5mGp6YRdTQn0CxGc=
+	t=1755477143; cv=none; b=qffWCtWWON+DngA4b+67GnvsvtYKWGlJUQ1/N4/r7hohOfH5/gVLryvww6naxVQACAQAhVwCxLyY9RvvJTflDfwTYXV61uNCsVlsIHu1Sg+Yt+okojPMDXtelHcsuyPPY1go6XWyem8UlwIPf28I94JBm0AHR87V13uVNZRjFbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755477136; c=relaxed/simple;
-	bh=CCqmFDdI8/hLeCwbAEnyBQuMMFrYMYai7hz51n3Yt3c=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=tWXnMZ0vhBHN5PTy+gVmV9UhZSvEzVOqSioH+QlxsSr34yIsKeKY0XiFGxFaT+BP5TnpjcRsDiwXi9KXIaKpApHmNMyWcXpjBNzh7KwKepbEQVhofRQzyUcX//OolxvljpTquTGL4lx2jfIquW4MyXZz1W9kZCFOzo9+bpntHjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HTmLm47L; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HTmLm47L; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1755477143; c=relaxed/simple;
+	bh=+C8ubo0z42gRfqu7TK0gcZH7mXwdBrpl2a1IqReKCls=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=fLuwifccUPHlflBc4/+Y9BwlXpihUr8u456z8/7/NIe2tDJ5qEbmT5gB/fvlbHKSNzdiDXnfxNEA2iPq/zrnWc79NI2SMtwVk8vGKhIXqMULE3Bida+PHCvC2MqnHzGYZdBg86lUJUrSQ11qhi5qU858V/GqWk6Sze3fCJMNdeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lFcQKBRY; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lFcQKBRY; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1C05A218FA
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 00:32:06 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4FB4E218FB
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 00:32:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1755477126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=lYiNiWusnAeShbzn22kV830TfAHKmM12WwSYd7mNYV4=;
-	b=HTmLm47LImqkQWLPyGo1m1qGgCqLV1AXRDxcZgFnovj8HD/oiLwYYT6pEP7j5fhRqUzxLk
-	TifAotZC1WgI/i9PzpOXugjy8DQgz2IENsyr/6OtT/BcKBsrOqHsNjPSiySAIwJe72qsPE
-	h6vP6pBf74q4eh/DEHyuL1JDnUqfAqg=
+	t=1755477127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yEx9ZNFCArTuBUtv+zwBQbxqy7zF/D05Z/mYcvb6mD4=;
+	b=lFcQKBRYEJRpDUi1lYV3WXZj3L6DEWPh/kotSapszuQgvDJvNEsPFrunqUHqH3F4rOENiE
+	xqBb4ygzrpf008nIZOjuVW/KhYhqNsmU1nZsjFYTpxB/2rP6641ABfCO5ug49JtJ7+i1ky
+	s85e7dC8YR3VIfik/ko4TGa5WgEubaI=
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=HTmLm47L
+	dkim=pass header.d=suse.com header.s=susede1 header.b=lFcQKBRY
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1755477126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=lYiNiWusnAeShbzn22kV830TfAHKmM12WwSYd7mNYV4=;
-	b=HTmLm47LImqkQWLPyGo1m1qGgCqLV1AXRDxcZgFnovj8HD/oiLwYYT6pEP7j5fhRqUzxLk
-	TifAotZC1WgI/i9PzpOXugjy8DQgz2IENsyr/6OtT/BcKBsrOqHsNjPSiySAIwJe72qsPE
-	h6vP6pBf74q4eh/DEHyuL1JDnUqfAqg=
+	t=1755477127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yEx9ZNFCArTuBUtv+zwBQbxqy7zF/D05Z/mYcvb6mD4=;
+	b=lFcQKBRYEJRpDUi1lYV3WXZj3L6DEWPh/kotSapszuQgvDJvNEsPFrunqUHqH3F4rOENiE
+	xqBb4ygzrpf008nIZOjuVW/KhYhqNsmU1nZsjFYTpxB/2rP6641ABfCO5ug49JtJ7+i1ky
+	s85e7dC8YR3VIfik/ko4TGa5WgEubaI=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 53E9B13686
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 00:32:05 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B53213686
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 00:32:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id IBp+BYV0omhWKgAAD6G6ig
+	id ULNhE4Z0omhWKgAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 00:32:05 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 00:32:06 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/5] btrfs-progs: enhance --subvol/--inode-flags options
-Date: Mon, 18 Aug 2025 10:01:42 +0930
-Message-ID: <cover.1755474438.git.wqu@suse.com>
+Subject: [PATCH 1/5] btrfs-progs: mkfs/rootdir: extract subvol validation code into a helper
+Date: Mon, 18 Aug 2025 10:01:43 +0930
+Message-ID: <b17145d6a4910f6d0788017457a910816f0ccf6f.1755474438.git.wqu@suse.com>
 X-Mailer: git-send-email 2.50.1
+In-Reply-To: <cover.1755474438.git.wqu@suse.com>
+References: <cover.1755474438.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,8 +84,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 4FB4E218FB
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
@@ -103,52 +115,163 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:dkim]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 1C05A218FA
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
 X-Spam-Score: -3.01
 
-Currently both --subvol and --inode-flags save the full path into their
-structures, and check each inode against those full path.
+Currently we do the validation of subvolume parameters inside
+mkfs/main.c, but considering all things like structure rootdir_subvol
+are all inside rootdir.[ch], it's better to move the validation part
+into rootdir.[ch].
 
-For long paths it can be time consuming, and this introduces extra
-memory for each structure.
+Extract the validation part into a helper,
+btrfs_mkfs_validate_subvols(), into rootdir.[ch].
 
-This series enhance the handling of those options by:
+Furthermore since we're here, also slightly enhance the duplicated
+subvolume check, so that the runtime is halved.
 
-- Extract the validation part into a dedicated helper inside
-  rootdir.[ch]
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ mkfs/main.c    | 47 +++--------------------------------------------
+ mkfs/rootdir.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ mkfs/rootdir.h |  2 ++
+ 3 files changed, 51 insertions(+), 44 deletions(-)
 
-- Use st_dev/st_ino to replace full_path
-  This reduces runtime and memory usage for the involved structures.
-
-- Remove the memory usage warning note
-  Even with the old 8K per structure memory usage, 1024 options will
-  only 8M memory, that's accetable even for a lot of micro-controllers,
-  not to mention modern desktop/servers.
-
-  I'm a little paranoid at that time, with the memory usage almost
-  halved, we can safely remove that warning note.
-
-Qu Wenruo (5):
-  btrfs-progs: mkfs/rootdir: extract subvol validation code into a
-    helper
-  btrfs-progs: mkfs/rootdir: extract inode flags validation code into a
-    helper
-  btrfs-progs: mkfs/rootdir: enhance subvols detection
-  btrfs-progs: mkfs/rootdir: enhance inode flags detection
-  btrfs-progs: doc/mkfs: remove the note about memory usage
-
- Documentation/mkfs.btrfs.rst |   5 --
- mkfs/main.c                  |  84 ++------------------
- mkfs/rootdir.c               | 147 +++++++++++++++++++++++++++++++----
- mkfs/rootdir.h               |  14 +++-
- 4 files changed, 148 insertions(+), 102 deletions(-)
-
---
+diff --git a/mkfs/main.c b/mkfs/main.c
+index 546cc74735a9..bde897afd029 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -1527,50 +1527,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 		}
+ 	}
+ 
+-	list_for_each_entry(rds, &subvols, list) {
+-		char path[PATH_MAX];
+-		struct rootdir_subvol *rds2;
+-
+-		if (path_cat_out(path, source_dir, rds->dir)) {
+-			error("path invalid: %s", path);
+-			ret = 1;
+-			goto error;
+-		}
+-
+-		if (!realpath(path, rds->full_path)) {
+-			error("could not get canonical path: %s", rds->dir);
+-			ret = 1;
+-			goto error;
+-		}
+-
+-		if (!path_exists(rds->full_path)) {
+-			error("subvolume path does not exist: %s", rds->dir);
+-			ret = 1;
+-			goto error;
+-		}
+-
+-		if (!path_is_dir(rds->full_path)) {
+-			error("subvolume is not a directory: %s", rds->dir);
+-			ret = 1;
+-			goto error;
+-		}
+-
+-		if (!path_is_in_dir(source_dir, rds->full_path)) {
+-			error("subvolume %s is not a child of %s", rds->dir, source_dir);
+-			ret = 1;
+-			goto error;
+-		}
+-
+-		for (rds2 = list_first_entry(&subvols, struct rootdir_subvol, list);
+-		     rds2 != rds;
+-		     rds2 = list_next_entry(rds2, list)) {
+-			if (strcmp(rds2->full_path, rds->full_path) == 0) {
+-				error("subvolume specified more than once: %s", rds->dir);
+-				ret = 1;
+-				goto error;
+-			}
+-		}
+-	}
++	ret = btrfs_mkfs_validate_subvols(source_dir, &subvols);
++	if (ret < 0)
++		goto error;
+ 
+ 	list_for_each_entry(rif, &inode_flags_list, list) {
+ 		char path[PATH_MAX];
+diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
+index 8d626f104701..e9d5c6bed0c4 100644
+--- a/mkfs/rootdir.c
++++ b/mkfs/rootdir.c
+@@ -1077,6 +1077,52 @@ out:
+ }
+ #endif
+ 
++int btrfs_mkfs_validate_subvols(const char *source_dir, struct list_head *subvols)
++{
++	struct rootdir_subvol *rds;
++
++	list_for_each_entry(rds, subvols, list) {
++		char path[PATH_MAX];
++		struct rootdir_subvol *rds2;
++		int ret;
++
++		ret = path_cat_out(path, source_dir, rds->dir);
++		if (ret < 0) {
++			errno = -ret;
++			error("path invalid '%s': %m", path);
++			return ret;
++		}
++		if (!realpath(path, rds->full_path)) {
++			ret = -errno;
++			error("could not get canonical path of '%s': %m", rds->dir);
++			return ret;
++		}
++		ret = path_exists(rds->full_path);
++		if (ret < 0) {
++			error("subvolume path does not exist: %s", rds->dir);
++			return ret;
++		}
++		ret = path_is_dir(rds->full_path);
++		if (ret < 0) {
++			error("subvolume is not a directory: %s", rds->dir);
++			return ret;
++		}
++		list_for_each_entry(rds2, subvols, list) {
++			/*
++			 * Only compare entries before us, So we won't compare
++			 * the same pair twice.
++			 */
++			if (rds2 == rds)
++				break;
++			if (strcmp(rds2->full_path, rds->full_path) == 0) {
++				error("subvolume specified more than once: %s", rds->dir);
++				return -EINVAL;
++			}
++		}
++	}
++	return 0;
++}
++
+ static int add_file_items(struct btrfs_trans_handle *trans,
+ 			  struct btrfs_root *root,
+ 			  struct btrfs_inode_item *btrfs_inode, u64 objectid,
+diff --git a/mkfs/rootdir.h b/mkfs/rootdir.h
+index f8b959f7a7c8..c9761e090984 100644
+--- a/mkfs/rootdir.h
++++ b/mkfs/rootdir.h
+@@ -39,6 +39,7 @@ struct btrfs_root;
+ 
+ struct rootdir_subvol {
+ 	struct list_head list;
++	/* The path inside the source_dir. */
+ 	char dir[PATH_MAX];
+ 	char full_path[PATH_MAX];
+ 	bool is_default;
+@@ -59,6 +60,7 @@ struct rootdir_inode_flags_entry {
+ 	bool nodatasum;
+ };
+ 
++int btrfs_mkfs_validate_subvols(const char *source_dir, struct list_head *subvols);
+ int btrfs_mkfs_fill_dir(struct btrfs_trans_handle *trans, const char *source_dir,
+ 			struct btrfs_root *root, struct list_head *subvols,
+ 			struct list_head *inode_flags_list,
+-- 
 2.50.1
 
 
