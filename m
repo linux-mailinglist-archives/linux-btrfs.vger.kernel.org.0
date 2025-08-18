@@ -1,284 +1,165 @@
-Return-Path: <linux-btrfs+bounces-16122-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16123-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9D10B2A08A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 13:37:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73D0AB2AC23
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 17:09:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 706E65616F8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 11:31:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26173202819
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Aug 2025 15:01:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3070231CA6B;
-	Mon, 18 Aug 2025 11:28:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FC62246BAA;
+	Mon, 18 Aug 2025 15:01:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DZbrSGHv"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EiXe/b39";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kGhDMR1e";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EiXe/b39";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kGhDMR1e"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6CB731AF36
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 11:28:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C908246335
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 15:01:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755516512; cv=none; b=kpifZPWGb/fZ67maez2f8t9CqfHDgjLP/eRUGxSrhekZggunF9HBBn6p3+mxuo71u7DSS6vHkR5nNU1dw7Pt3dnu1kYOhd1CSHjc6cYS4sqRLeKSdHbku9b64kI5AUVY2YexcsDIGYi8mYYwHCwI+2PtucPMH4sZ9OBWfIjVEtw=
+	t=1755529302; cv=none; b=UyMWi4KiVskwsT9P1/h9A/yf96Lz9neJ6XG3izQn4BW4GQukC4B+UJ9UGfXjvpxMbN9TLQG3Fh9VqAVAdVP/MjLDUok7A9N4UTejzss/8JeBRTWl5boBFfSuLQw8f6nIc9tGWz0s7Ur9R0gFMpMzT7120qYE4AHbihjy6J230II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755516512; c=relaxed/simple;
-	bh=VY8634xpHXk7cZiYCL2JpatoZSb7xQVGRxlqHFOaah0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DxWMt5IdFCILdPPuVOZID46NxzrJEAYqtulOeRv6I3uFVeikHAUXGI4aEK2ZBi/vRB5gOE7800vqdUFQDxV3Vgyil37E4cioAo/srnaoUrJ3uARI9nWNqSbJ0n8Y15w/nFfzKTF7mWcr0eZF/vRbhKI8SiLMAN9zPgWaQs6RN3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DZbrSGHv; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1755516509;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=J0poHkf7IJxzNGcjiPzQE+7iEkpA1901ZpOaMVbBkbk=;
-	b=DZbrSGHvbR97/x9mJfIqbY1Ki8o5hHHCPVtD1NaKSEuQaRuTleLs9Rekhe0x5mqXrelc1g
-	HodZpoqM2csrRggL09fjqEVTUMihrsM/dU0DSsOwCKYRnd7NV+IPzksrsdE/flV//NzNg1
-	L6LwILdE2KVjnQBHNY1Tubs7A7NJKJ4=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-635-aYkJPXcjNMedlkEEFpfGbw-1; Mon, 18 Aug 2025 07:28:27 -0400
-X-MC-Unique: aYkJPXcjNMedlkEEFpfGbw-1
-X-Mimecast-MFC-AGG-ID: aYkJPXcjNMedlkEEFpfGbw_1755516506
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3b9e4157303so3183950f8f.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Aug 2025 04:28:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755516506; x=1756121306;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J0poHkf7IJxzNGcjiPzQE+7iEkpA1901ZpOaMVbBkbk=;
-        b=WSWwFNbylXmxFsyOIZUm6X9wwEHnT+nKhPhRbgH0wZxnt289iwSSUWMCYE4lXU1hk6
-         FIxpPH6q2NlbrD4NcOLkhwH+qxJupZloNablbgnv7AfPep+EHMwvXovgVmOAKJDIQYDS
-         riuSWTjD3GoRuyeLj9HFj14LoyD9JdjpwhWxBUAATBjfDAZK7oEX9AVTEo8SU7nOQb69
-         cUQa8C41493F5EwEGyueJ/ozzrb8XBx28IggcWvXL4ut7J4EMukYxE7lXSKSgRSIsgLz
-         82o27P4zTab09T1iput7kbRdUYoHUtcXaVghwxumBH3xZUfDgDwxi92mFPoW/IzYn8pT
-         8qtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVAYZWzl8xONBilXC7YQHIAzkb9hbGRh2Yj5ZJnWZVGFSYj6dhgQkG0aOS1pjGQSTIy0pCzay6IEqrwDA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQYYLoQbUguWkdx9c1K/RfZgVRVBtvroTyLN6mVERvCbNa36Q+
-	RBp94mVuR2p3LFL/vlEH35rh7jbysncCokTNYA8iPdNHFAqRbQkxntkY3aJjyqWnqiZfnNQtjcf
-	sdxesU3AQc+ihDgPzllo/LXR92Mv4kEhzym7yQm1PYM359Z79H84Klvr99kbWeZbi
-X-Gm-Gg: ASbGnctoc5PVfaphv7H8u2zI3YdJ1nmytCHAahM/j+7PGDQlQlt5NxKV61/45VkoaJ4
-	NGonEA61Euoca8CC6OSkGjRgjUjCz7hE9R0YmvDTv9Ba6gIzsTgKm2w8LvSSthphb369s63KDFP
-	gK7BgbmgFJYV+qOaHCikznvQpg4fDqxNXpeUR/L0rVH3PdqQ96NKWZV+5u9OViJVh0LFvvCAXIG
-	ugOQ/+muRaj9X5XRnDoUKTkKbZlV/60+XpVREuqO9JNu8kudk+Zx/zO9iPBpOC2rFU+XJkyrBmz
-	+lpY20IxsYntYO4VxhYk2AEh8VHf1kTTbcMZm5c6RRZyXnZEBrbubAecBxtc1IkmIBEA3Q==
-X-Received: by 2002:a05:6000:2301:b0:3bb:2fb3:9c7e with SMTP id ffacd0b85a97d-3bb674db9eemr9706785f8f.21.1755516505989;
-        Mon, 18 Aug 2025 04:28:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFoJ2j4tybVSbT2mQ2UN8mZP25LV2c4F54aus7k4qiE296Q/C3YEoCeE99f3tiBsFkHDADQDg==
-X-Received: by 2002:a05:6000:2301:b0:3bb:2fb3:9c7e with SMTP id ffacd0b85a97d-3bb674db9eemr9706715f8f.21.1755516505387;
-        Mon, 18 Aug 2025 04:28:25 -0700 (PDT)
-Received: from [192.168.3.141] (p57a1a246.dip0.t-ipconnect.de. [87.161.162.70])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a22211395sm129258685e9.4.2025.08.18.04.28.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Aug 2025 04:28:24 -0700 (PDT)
-Message-ID: <3bb725f8-28d7-4aa2-b75f-af40d5cab280@redhat.com>
-Date: Mon, 18 Aug 2025 13:28:22 +0200
+	s=arc-20240116; t=1755529302; c=relaxed/simple;
+	bh=5dh40nFcGyISE1ZSPfW4FqkhMQWtAf3w8HhrHMdXsR4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L6VrhHKFsZwebG4ZD4Grt74PK585Jq1kH5tsxFlWfezCm/8AliGrosGpOEP88mSRIRhTm/oz4GR5QJ5HnWXK+7CNZPOTnFgDRc8rjwlIyjvSKKaneQ7o3mSMZnlTCGxTHTpyj00Cl8Cl6f0Jo9BEOaQWwP3ap+NliPyzJP0SFvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EiXe/b39; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kGhDMR1e; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EiXe/b39; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kGhDMR1e; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 266951F44E;
+	Mon, 18 Aug 2025 15:01:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1755529299;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wnf6OR1NwOTrhd4F9CYHALttxGqfiC+frEzvlQS8FsU=;
+	b=EiXe/b39IhwGqh63BqkDRwnWieOpqQOGRHIQIraM0RPmYPdzTsUBzMWP/hR4UUZkC7S4NU
+	J6JkwJQcFs9lyMxVAmOooGlVxQFMfGTujABkk5yVbPB7OwccquT6FAscSAHkYBSP+zzcjJ
+	FIhIFIdpXPcDvMsUf699wvm0WHiaVv8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1755529299;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wnf6OR1NwOTrhd4F9CYHALttxGqfiC+frEzvlQS8FsU=;
+	b=kGhDMR1eNFB99+Fq73atzCPlaLZO+za5M4P82MVozJmSh1CGGW26EVeOh6IIcPPxYGHrgP
+	SFJ+mDah6yQxgOAg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1755529299;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wnf6OR1NwOTrhd4F9CYHALttxGqfiC+frEzvlQS8FsU=;
+	b=EiXe/b39IhwGqh63BqkDRwnWieOpqQOGRHIQIraM0RPmYPdzTsUBzMWP/hR4UUZkC7S4NU
+	J6JkwJQcFs9lyMxVAmOooGlVxQFMfGTujABkk5yVbPB7OwccquT6FAscSAHkYBSP+zzcjJ
+	FIhIFIdpXPcDvMsUf699wvm0WHiaVv8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1755529299;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wnf6OR1NwOTrhd4F9CYHALttxGqfiC+frEzvlQS8FsU=;
+	b=kGhDMR1eNFB99+Fq73atzCPlaLZO+za5M4P82MVozJmSh1CGGW26EVeOh6IIcPPxYGHrgP
+	SFJ+mDah6yQxgOAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 16EB113686;
+	Mon, 18 Aug 2025 15:01:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id YA5yBVNAo2gRKQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 18 Aug 2025 15:01:39 +0000
+Date: Mon, 18 Aug 2025 17:01:33 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/5] btrfs-progs: enhance --subvol/--inode-flags options
+Message-ID: <20250818150133.GK22430@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1755474438.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] mm/migrate: remove MIGRATEPAGE_UNMAP
-To: Lance Yang <lance.yang@linux.dev>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linuxppc-dev@lists.ozlabs.org, virtualization@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
- linux-btrfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
- Andrew Morton <akpm@linux-foundation.org>,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Jerrin Shaji George <jerrin.shaji-george@broadcom.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
- <eperezma@redhat.com>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Benjamin LaHaise <bcrl@kvack.org>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>,
- Dave Kleikamp <shaggy@kernel.org>, Zi Yan <ziy@nvidia.com>,
- Matthew Brost <matthew.brost@intel.com>,
- Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
- Byungchul Park <byungchul@sk.com>, Gregory Price <gourry@gourry.net>,
- Ying Huang <ying.huang@linux.alibaba.com>,
- Alistair Popple <apopple@nvidia.com>, Minchan Kim <minchan@kernel.org>,
- Sergey Senozhatsky <senozhatsky@chromium.org>
-References: <20250811143949.1117439-1-david@redhat.com>
- <20250811143949.1117439-2-david@redhat.com>
- <CABzRoyYU2yOuGQskCAG_gzKiQwR6uM9eAYqOOCoQj+Xv=r163A@mail.gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- qIws/H2t
-In-Reply-To: <CABzRoyYU2yOuGQskCAG_gzKiQwR6uM9eAYqOOCoQj+Xv=r163A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1755474438.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
 
-On 13.08.25 07:05, Lance Yang wrote:
-> On Mon, Aug 11, 2025 at 10:47 PM David Hildenbrand <david@redhat.com> wrote:
->>
-> [...]
->> +++ b/mm/migrate.c
->> @@ -1176,16 +1176,6 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
->>          bool locked = false;
->>          bool dst_locked = false;
->>
->> -       if (folio_ref_count(src) == 1) {
->> -               /* Folio was freed from under us. So we are done. */
->> -               folio_clear_active(src);
->> -               folio_clear_unevictable(src);
->> -               /* free_pages_prepare() will clear PG_isolated. */
->> -               list_del(&src->lru);
->> -               migrate_folio_done(src, reason);
->> -               return MIGRATEPAGE_SUCCESS;
->> -       }
->> -
->>          dst = get_new_folio(src, private);
->>          if (!dst)
->>                  return -ENOMEM;
->> @@ -1275,7 +1265,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
->>
->>          if (unlikely(page_has_movable_ops(&src->page))) {
->>                  __migrate_folio_record(dst, old_page_state, anon_vma);
->> -               return MIGRATEPAGE_UNMAP;
->> +               return 0;
->>          }
->>
->>          /*
->> @@ -1305,7 +1295,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
->>
->>          if (!folio_mapped(src)) {
->>                  __migrate_folio_record(dst, old_page_state, anon_vma);
->> -               return MIGRATEPAGE_UNMAP;
->> +               return 0;
->>          }
->>
->>   out:
->> @@ -1848,14 +1838,28 @@ static int migrate_pages_batch(struct list_head *from,
->>                                  continue;
->>                          }
->>
->> +                       /*
->> +                        * If we are holding the last folio reference, the folio
->> +                        * was freed from under us, so just drop our reference.
->> +                        */
->> +                       if (likely(!page_has_movable_ops(&folio->page)) &&
->> +                           folio_ref_count(folio) == 1) {
->> +                               folio_clear_active(folio);
->> +                               folio_clear_unevictable(folio);
->> +                               list_del(&folio->lru);
->> +                               migrate_folio_done(folio, reason);
->> +                               stats->nr_succeeded += nr_pages;
->> +                               stats->nr_thp_succeeded += is_thp;
->> +                               continue;
->> +                       }
->> +
+On Mon, Aug 18, 2025 at 10:01:42AM +0930, Qu Wenruo wrote:
+> Currently both --subvol and --inode-flags save the full path into their
+> structures, and check each inode against those full path.
 > 
-> It seems the reason parameter is no longer used within migrate_folio_unmap()
-> after this patch.
+> For long paths it can be time consuming, and this introduces extra
+> memory for each structure.
 > 
-> Perhaps it could be removed from the function's signature ;)
+> This series enhance the handling of those options by:
+> 
+> - Extract the validation part into a dedicated helper inside
+>   rootdir.[ch]
+> 
+> - Use st_dev/st_ino to replace full_path
+>   This reduces runtime and memory usage for the involved structures.
+> 
+> - Remove the memory usage warning note
+>   Even with the old 8K per structure memory usage, 1024 options will
+>   only 8M memory, that's accetable even for a lot of micro-controllers,
+>   not to mention modern desktop/servers.
+> 
+>   I'm a little paranoid at that time, with the memory usage almost
+>   halved, we can safely remove that warning note.
+> 
+> Qu Wenruo (5):
+>   btrfs-progs: mkfs/rootdir: extract subvol validation code into a
+>     helper
+>   btrfs-progs: mkfs/rootdir: extract inode flags validation code into a
+>     helper
+>   btrfs-progs: mkfs/rootdir: enhance subvols detection
+>   btrfs-progs: mkfs/rootdir: enhance inode flags detection
+>   btrfs-progs: doc/mkfs: remove the note about memory usage
 
-Thanks, well spotted, @Andrew can you squash the following?
-
-
- From 40938bb0de20e03250c813d5abc7286aea69d835 Mon Sep 17 00:00:00 2001
-From: David Hildenbrand <david@redhat.com>
-Date: Mon, 18 Aug 2025 13:26:05 +0200
-Subject: [PATCH] fixup: mm/migrate: remove MIGRATEPAGE_UNMAP
-
-No need to pass "reason" to migrate_folio_unmap().
-
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
-  mm/migrate.c | 5 ++---
-  1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 2db4974178e6a..aabc736eec022 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1166,7 +1166,7 @@ static void migrate_folio_done(struct folio *src,
-  static int migrate_folio_unmap(new_folio_t get_new_folio,
-  		free_folio_t put_new_folio, unsigned long private,
-  		struct folio *src, struct folio **dstp, enum migrate_mode mode,
--		enum migrate_reason reason, struct list_head *ret)
-+		struct list_head *ret)
-  {
-  	struct folio *dst;
-  	int rc = -EAGAIN;
-@@ -1852,8 +1852,7 @@ static int migrate_pages_batch(struct list_head *from,
-  			}
-  
-  			rc = migrate_folio_unmap(get_new_folio, put_new_folio,
--					private, folio, &dst, mode, reason,
--					ret_folios);
-+					private, folio, &dst, mode, ret_folios);
-  			/*
-  			 * The rules are:
-  			 *	0: folio will be put on unmap_folios list,
--- 
-2.50.1
-
-
--- 
-Cheers
-
-David / dhildenb
-
+Looks good thanks, please add it do devel.
 
