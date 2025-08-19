@@ -1,103 +1,152 @@
-Return-Path: <linux-btrfs+bounces-16152-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16153-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4CD3B2B88D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Aug 2025 07:20:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B442CB2B8D0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Aug 2025 07:41:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A695627FF5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Aug 2025 05:20:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F5A77ABCA7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Aug 2025 05:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8D2F30F817;
-	Tue, 19 Aug 2025 05:20:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062E230FF06;
+	Tue, 19 Aug 2025 05:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="XMNHGDun"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HS1rHwni";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HS1rHwni"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E3519F121;
-	Tue, 19 Aug 2025 05:20:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE5923E34C
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Aug 2025 05:41:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755580813; cv=none; b=VTqHXZlLyczwBnwAocWTq4WfI2zgqvkuTWqc+zIm8Sd0COq0iLvYN+gshWN4VyhU3/SBD8rB8Dke+0H85RHfvu/ys1fpsKuUyxb76f4urefumIL9Sz0h/4Ohb3OuH28GbKzLlIn/ZPa4zNqD5rdCulF5pYZmX1LUYalQV48uIws=
+	t=1755582085; cv=none; b=sROkTvkCtUkrnBOU4lkBRWJtrHW6VtQ5KbBrybSdTxpJ/fystA4I+lowNEzHt7G1yl/2K17UgWI2km4P7Mrq4dQ0IAlgYzBVMLuLbhhVWMAg7kEt8D0TXbkT2WS5mV4c802Rk8DGSFd2wCx0ouHT5PVCAx1aHXkVnF7SYY7yUGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755580813; c=relaxed/simple;
-	bh=sxJcUwVN/CsHyd67+5zfW7soLBfQ8ItPLkDXT2omVZ4=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=g3kfUXgzdD8TdKD3lO88jVuvEuzadDQMkvVPhRvYUhSmhWc/2Kr/QmlV5pqOHai/730K/OMiommm9Pztg7LU9dfMEDywB+l/RAT0dc2F5VrcEAYX3tANfCbYlMEleNyzlFNtmVtEjoZ3lkFIBZ7BdHyg4/BXO/E98oA0AC//g9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=XMNHGDun; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECD00C4CEF4;
-	Tue, 19 Aug 2025 05:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1755580810;
-	bh=sxJcUwVN/CsHyd67+5zfW7soLBfQ8ItPLkDXT2omVZ4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=XMNHGDunAL2ROl6ZH05LV6ePww0er0HEGB6KXTCa1LSzaqIHkg2w+DYblTi6A4w64
-	 nM19hkZyotNbVnUHaU4uIMKNwmgobuGOn/yFD+MCyZoQyBbVOSqYrT1Eac5WGaESfX
-	 E/VAseYRw6+B61BDDRGmni0hh5vQKFQa5OLvan1Y=
-Date: Mon, 18 Aug 2025 22:20:09 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
- linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, kernel-team@fb.com,
- shakeel.butt@linux.dev, wqu@suse.com, mhocko@kernel.org,
- muchun.song@linux.dev, roman.gushchin@linux.dev, hannes@cmpxchg.org
-Subject: Re: [PATCH v3 4/4] memcg: remove warning from folio_lruvec
-Message-Id: <20250818222009.7f03b557e6e1b58cb0a100ef@linux-foundation.org>
-In-Reply-To: <aKPkWv77HMOQwyVi@casper.infradead.org>
-References: <cover.1755562487.git.boris@bur.io>
-	<0cf22669a203b8671b6774408bfa4864ba3dbf60.1755562487.git.boris@bur.io>
-	<aKPkWv77HMOQwyVi@casper.infradead.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1755582085; c=relaxed/simple;
+	bh=NAmwHtEq7+2Z53ZiJ+G9zRAdyWjrkXjMPkwx3MoS3oU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=PM1fg+e1wo5hgcwpcIXrrzOA/2T3Z9Ie9TqH5T7zh61prntZ5qLTduXtCVV8xV1/IWAQZ1Jx6w6XUmwYA2+dK/uMgQkGzo+9yyfROHJsxozHgr1X/uvgiK+i5wuWHf8C6UkxKI/nnXCpfIXwC8Vv3BZLMP7SiqUb6yBL3IqGz2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HS1rHwni; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HS1rHwni; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1E8B01F749
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Aug 2025 05:41:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1755582081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=YWiTNxhcQuoY3FtFCyyhdnXW5mEgzn95ZDoECK3meBA=;
+	b=HS1rHwni98eR6jof+OJR8vpuDXK97HUIiWUsNY1CZP92obm4olnC5lJNsft4zTk/OqaOd+
+	8P1sQkcMu4QHmxvnUZvdvwbEIr+4kwKmYoCmwB+p9/eZfta0pZEiEo5Xeq2YlTrqx2/C9T
+	Bsg6er/dWhoHm/SR5bK0S/K4arGcrWU=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1755582081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=YWiTNxhcQuoY3FtFCyyhdnXW5mEgzn95ZDoECK3meBA=;
+	b=HS1rHwni98eR6jof+OJR8vpuDXK97HUIiWUsNY1CZP92obm4olnC5lJNsft4zTk/OqaOd+
+	8P1sQkcMu4QHmxvnUZvdvwbEIr+4kwKmYoCmwB+p9/eZfta0pZEiEo5Xeq2YlTrqx2/C9T
+	Bsg6er/dWhoHm/SR5bK0S/K4arGcrWU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4BCC013686
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Aug 2025 05:41:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id G7yUA4AOpGidBQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Aug 2025 05:41:20 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: docs: update the compatibility about compression
+Date: Tue, 19 Aug 2025 15:11:02 +0930
+Message-ID: <bba7c113042d631cf6a787a261d550291e08c6c4.1755582011.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -2.80
 
-On Tue, 19 Aug 2025 03:41:30 +0100 Matthew Wilcox <willy@infradead.org> wrote:
+There is a github issue that expressed confusion about the
+"Compatibility" section of "ch-compression.rst".
 
-> On Mon, Aug 18, 2025 at 05:36:56PM -0700, Boris Burkov wrote:
-> > Commit a4055888629bc ("mm/memcg: warning on !memcg after readahead page
-> > charged") added the warning in folio_lruvec (older name was
-> > mem_cgroup_page_lruvec) for !memcg when charging of readahead pages were
-> > added to the kernel. Basically lru pages on a memcg enabled system were
-> > always expected to be charged to a memcg.
-> > 
-> > However a recent functionality to allow metadata of btrfs, which is in
-> > page cache, to be uncharged is added to the kernel. We can either change
-> > the condition to only check anon pages or file pages which does not have
-> > AS_UNCHARGED in their mapping. Instead of such complicated check, let's
-> > just remove the warning as it is not really helpful anymore.
-> 
-> This has to go before patch 3 (and I'd put it before patch 1) in order
-> to preserve bisectability..
+The words in the man page is indeed confusing, and some points are no
+longer correct either.
 
-Thanks, I'll move it to [2/4]
+Considering how complex the direct IO and compression thing is, I didn't
+come up with a correct answer until reading the code.
 
-?  That requires changing the tenses in the
-> commit message, but that's perfectly acceptable.
+So update that section to provide a more straightforward result.
 
-I'm not spottig this.  a4055888629bc was added in 2020 and the btrfs
-change is in a preceding series.  I'll describe that by name, so
+Issue: #1015
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ Documentation/ch-compression.rst | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-: Commit a4055888629bc ("mm/memcg: warning on !memcg after readahead page
-: charged") added the warning in folio_lruvec (older name was
-: mem_cgroup_page_lruvec) for !memcg when charging of readahead pages were
-: added to the kernel.  Basically lru pages on a memcg enabled system were
-: always expected to be charged to a memcg.
-: 
-: However a recent functionality to allow metadata of btrfs, which is in
-: page cache, to be uncharged was added to the kernel
-: ("btrfs-set-as_uncharged-on-the-btree_inode.patch").  We can either change
-: the condition to only check anon pages or file pages which does not have
-: AS_UNCHARGED in their mapping.  Instead of such complicated check, let's
-: just remove the warning as it is not really helpful anymore.
+diff --git a/Documentation/ch-compression.rst b/Documentation/ch-compression.rst
+index 9174f97c74b3..eb609c70b530 100644
+--- a/Documentation/ch-compression.rst
++++ b/Documentation/ch-compression.rst
+@@ -167,10 +167,18 @@ pattern detection, byte frequency, Shannon entropy.
+ Compatibility
+ -------------
+ 
+-Compression is done using the COW mechanism so it's incompatible with
+-*nodatacow*. Direct IO read works on compressed files but will fall back to
+-buffered writes and leads to no compression even if force compression is set.
+-Currently *nodatasum* and compression don't work together.
++Compression requires both data checksum and COW, so either *nodatasum* or
++*nodatasum* mount option/inode flag will result no compression.
++
++Direct IO reads on compressed data will always fallback to buffered reads.
++
++Direct IO write behavior depends on the inode flag.
++For inodes with data checksum, direct IO writes always fallback to buffered
++writes, thus can generate compressed data if the mount option/inode flags allows.
++
++For inodes without data checksum, direct IO writes will not populate page cache,
++and since the inode has no data checksum, no compressed data will be generated
++anyway.
+ 
+ The compression algorithms have been added over time so the version
+ compatibility should be also considered, together with other tools that may
+-- 
+2.50.1
 
 
