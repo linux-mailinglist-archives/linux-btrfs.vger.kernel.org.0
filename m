@@ -1,144 +1,103 @@
-Return-Path: <linux-btrfs+bounces-16151-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16152-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51D57B2B840
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Aug 2025 06:06:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4CD3B2B88D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Aug 2025 07:20:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 376AF1961F26
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Aug 2025 04:05:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A695627FF5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Aug 2025 05:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC9730F7F9;
-	Tue, 19 Aug 2025 04:04:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8D2F30F817;
+	Tue, 19 Aug 2025 05:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="S2Ydt9u5";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="l54C6gbX"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="XMNHGDun"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 136E03C33;
-	Tue, 19 Aug 2025 04:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E3519F121;
+	Tue, 19 Aug 2025 05:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755576281; cv=none; b=PUIoENWnnsOOvKUEwsXXsRz4soeEkRxQGZgHAFTWFlqSv7EF1+M1wIF6LjLywph36cpZvcb8KkpZSz4vEQJjKEMyOQ4tDOkAq20Kr49KHlFzCwcszcPSQ+oDzylKrcIcnmQmcwMzhbuR34BzprE8bkPpZNfebdp+uBqpnl2oQLg=
+	t=1755580813; cv=none; b=VTqHXZlLyczwBnwAocWTq4WfI2zgqvkuTWqc+zIm8Sd0COq0iLvYN+gshWN4VyhU3/SBD8rB8Dke+0H85RHfvu/ys1fpsKuUyxb76f4urefumIL9Sz0h/4Ohb3OuH28GbKzLlIn/ZPa4zNqD5rdCulF5pYZmX1LUYalQV48uIws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755576281; c=relaxed/simple;
-	bh=2iBcEDDJnDSku4YlF2mS1mhfVjVWc+y2JxmFkXUSkWk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=otg2Y8ipfcBzxAO0E1rTlte9kUxdZqbAms9V/6+qma3A8bOk23oaQ8rSHVYoSWooTHg7suTIClRo+8gu3g1NKMNt36IPVvMX4wXbMbVhUDUKfrS/X68Z4gziCPN/IhzDUXEci/j5nzgAqXph5JO6hrtHv78yJ1YM8t3gBD3FiAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=S2Ydt9u5; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=l54C6gbX; arc=none smtp.client-ip=103.168.172.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-07.internal (phl-compute-07.internal [10.202.2.47])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 11ED61400751;
-	Tue, 19 Aug 2025 00:04:36 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-07.internal (MEProxy); Tue, 19 Aug 2025 00:04:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1755576276; x=1755662676; bh=uBb3k1TlFI
-	xNXzTe9BSC026CGASpV1bEgyEuK5hRhZg=; b=S2Ydt9u5RChxtmJE621UpDqapK
-	+uCKz5d4XorNZa9/ROJ0AQM6kZ5e+7yxnc3jTRfMVu/Aa9YM6zG31se9CSOd4chX
-	gmjLh5BiUwalYdq1qA3J5ljS4dSnJl91aQ48xc+iIoDbradqkQog/mAfMYMZPl+N
-	bHc7CExDRcNrp8WF+1OGCIKO6I0N1pyg/ZexoRYxoA8jOe60lZDTHgFKRORvwEcV
-	znTmUH67YGYfmmw+CMcQmsY1uHBG9MhDl454HzRQ41eOTrXM5t/Jee2dl0swP6Th
-	YP1OuX6RQM51AzTQK48BRRtB56ypc+I+Lc1Z6Q3GbyDuCnqH52SUVAqlKOkQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1755576276; x=1755662676; bh=uBb3k1TlFIxNXzTe9BSC026CGASpV1bEgyE
-	uK5hRhZg=; b=l54C6gbX/rg6IsXM0nYanVj6nnjKELaA8di9B0jWKtTw5jHbj93
-	tcUkWnHzSRnodnQojodJnQs7kuKQF/3X3SjTcLwzYWnXI2G1kP6p1+XUSzYVm2YM
-	02r1MrrXZ+uIUO3r3rFAytAG4XliTSAeDed5ehoC6gRx6yiSIgEMh9zNkG6eSJLT
-	wgzEKufMQl6tUze5ZsWZj4ArpO5eHzpaPD94qPCxlcv5wfQMTBJzRfSpOCITfQZ+
-	bfPoVBokYXMyLDHFrD99l5WJ8Y+f7Tyg9EWKV4JioYxryHpbopa4WTwnjuhzzxWT
-	VxIrK8bH0wmzzomLKWxKmNoDXxYY0k+W3VA==
-X-ME-Sender: <xms:0_ejaCs74Jt248NrPZl-ZqGKHOVwoNb7FCmzfurS5nsdLQgm_Wb2rw>
-    <xme:0_ejaM9p0O-gwqiUcvRs5Y7ZwrVtNBsgsOQ-iR3z53mJeWLkwfJX3TDj6JTPFfK26
-    nj4bfGaaipDfPk-MKU>
-X-ME-Received: <xmr:0_ejaM3Yn5LfNjpyVsgMomxfcc_Dplhs4sB0sVtlTf9oqUOgCBdHMZx9WNIgrxOja9IxXjmDMj0Fb-XEYTvHpbuhyoA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduheeggeekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertd
-    dttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiie
-    eiudfguefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopeduvddpmh
-    houggvpehsmhhtphhouhhtpdhrtghpthhtohepfihilhhlhiesihhnfhhrrgguvggrugdr
-    ohhrghdprhgtphhtthhopegrkhhpmheslhhinhhugidqfhhouhhnuggrthhiohhnrdhorh
-    hgpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhr
-    ghdprhgtphhtthhopehlihhnuhigqdhmmheskhhvrggtkhdrohhrghdprhgtphhtthhope
-    hlihhnuhigqdhfshguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthht
-    ohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhmpdhrtghpthhtohepshhhrghkvggvlh
-    drsghuthhtsehlihhnuhigrdguvghvpdhrtghpthhtohepfihquhesshhushgvrdgtohhm
-    pdhrtghpthhtohepmhhhohgtkhhosehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:0_ejaBiLbHc1kmaWR6VG6iDDnbFp89Xhn9VuOIMaB7PGJa7scODRog>
-    <xmx:0_ejaMZHubobxkMM7UhNQkk7N9Jt7yjSQsNPUNd5KD_PfSWW_UCi1g>
-    <xmx:0_ejaNWU11K446OLnkczrA1Cx8iaqxipJJV6P_KGubGkHykk6uKa2A>
-    <xmx:0_ejaEFcS0VBPGrjhBIZBLj_9eQx8J22lLA2tDgwF8TscPv6w9fkVQ>
-    <xmx:1PejaJrCoiAD0_6X7YpdrufBMImgf4ul8k-Q9IKluoIwsyR-y378izCc>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 19 Aug 2025 00:04:34 -0400 (EDT)
-Date: Mon, 18 Aug 2025 21:05:10 -0700
-From: Boris Burkov <boris@bur.io>
+	s=arc-20240116; t=1755580813; c=relaxed/simple;
+	bh=sxJcUwVN/CsHyd67+5zfW7soLBfQ8ItPLkDXT2omVZ4=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=g3kfUXgzdD8TdKD3lO88jVuvEuzadDQMkvVPhRvYUhSmhWc/2Kr/QmlV5pqOHai/730K/OMiommm9Pztg7LU9dfMEDywB+l/RAT0dc2F5VrcEAYX3tANfCbYlMEleNyzlFNtmVtEjoZ3lkFIBZ7BdHyg4/BXO/E98oA0AC//g9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=XMNHGDun; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECD00C4CEF4;
+	Tue, 19 Aug 2025 05:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1755580810;
+	bh=sxJcUwVN/CsHyd67+5zfW7soLBfQ8ItPLkDXT2omVZ4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=XMNHGDunAL2ROl6ZH05LV6ePww0er0HEGB6KXTCa1LSzaqIHkg2w+DYblTi6A4w64
+	 nM19hkZyotNbVnUHaU4uIMKNwmgobuGOn/yFD+MCyZoQyBbVOSqYrT1Eac5WGaESfX
+	 E/VAseYRw6+B61BDDRGmni0hh5vQKFQa5OLvan1Y=
+Date: Mon, 18 Aug 2025 22:20:09 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
 To: Matthew Wilcox <willy@infradead.org>
-Cc: akpm@linux-foundation.org, linux-btrfs@vger.kernel.org,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-	kernel-team@fb.com, shakeel.butt@linux.dev, wqu@suse.com,
-	mhocko@kernel.org, muchun.song@linux.dev, roman.gushchin@linux.dev,
-	hannes@cmpxchg.org
-Subject: Re: [PATCH v3 2/4] mm: add vmstat for cgroup uncharged pages
-Message-ID: <20250819040510.GB740459@zen.localdomain>
+Cc: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+ linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, kernel-team@fb.com,
+ shakeel.butt@linux.dev, wqu@suse.com, mhocko@kernel.org,
+ muchun.song@linux.dev, roman.gushchin@linux.dev, hannes@cmpxchg.org
+Subject: Re: [PATCH v3 4/4] memcg: remove warning from folio_lruvec
+Message-Id: <20250818222009.7f03b557e6e1b58cb0a100ef@linux-foundation.org>
+In-Reply-To: <aKPkWv77HMOQwyVi@casper.infradead.org>
 References: <cover.1755562487.git.boris@bur.io>
- <04b3a5c9944d79072d752c85dac1294ca9bee183.1755562487.git.boris@bur.io>
- <aKPmiWAwDPNdNBUA@casper.infradead.org>
+	<0cf22669a203b8671b6774408bfa4864ba3dbf60.1755562487.git.boris@bur.io>
+	<aKPkWv77HMOQwyVi@casper.infradead.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aKPmiWAwDPNdNBUA@casper.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Aug 19, 2025 at 03:50:49AM +0100, Matthew Wilcox wrote:
-> On Mon, Aug 18, 2025 at 05:36:54PM -0700, Boris Burkov wrote:
-> > Uncharged pages are tricky to track by their essential "uncharged"
-> > nature. To maintain good accounting, introduce a vmstat counter tracking
-> > all uncharged pages. Since this is only meaningful when cgroups are
-> > configured, only expose the counter when CONFIG_MEMCG is set.
+On Tue, 19 Aug 2025 03:41:30 +0100 Matthew Wilcox <willy@infradead.org> wrote:
+
+> On Mon, Aug 18, 2025 at 05:36:56PM -0700, Boris Burkov wrote:
+> > Commit a4055888629bc ("mm/memcg: warning on !memcg after readahead page
+> > charged") added the warning in folio_lruvec (older name was
+> > mem_cgroup_page_lruvec) for !memcg when charging of readahead pages were
+> > added to the kernel. Basically lru pages on a memcg enabled system were
+> > always expected to be charged to a memcg.
+> > 
+> > However a recent functionality to allow metadata of btrfs, which is in
+> > page cache, to be uncharged is added to the kernel. We can either change
+> > the condition to only check anon pages or file pages which does not have
+> > AS_UNCHARGED in their mapping. Instead of such complicated check, let's
+> > just remove the warning as it is not really helpful anymore.
 > 
-> I don't understand why this is needed.  Maybe Shakeel had better
-> reasoning that wasn't captured in the commit message.
-> 
-> If they're unaccounted, then you can get a good estimate of them
-> just by subtracting the number of accounted pages from the number of
-> file pages.  Sure there's a small race between the two numbers being
-> updated, so you migth be off by a bit.
+> This has to go before patch 3 (and I'd put it before patch 1) in order
+> to preserve bisectability..
 
-I don't think there is any over the top elaborate reasoning beyond being
-precise and accurate with stats being a good thing.
+Thanks, I'll move it to [2/4]
 
-In my experience, implicit calculations like the one you propose tend to
-lead to metrics that drift into incorrectness. Today's correct
-calculation is tomorrow's wrong one, when the invariants from which it
-was derived shift again. We have seen this in practice before with
-kernel memory usage at Meta.
+?  That requires changing the tenses in the
+> commit message, but that's perfectly acceptable.
 
-I don't think this costs a lot, and it has an easy to understand
-definition. Are you concerned that there is only a single user in btrfs,
-so that doesn't merit defining a new stat?
+I'm not spottig this.  a4055888629bc was added in 2020 and the btrfs
+change is in a preceding series.  I'll describe that by name, so
 
-Sorry to put words in your mouth, just trying to guess what might be
-objectionable about it.
+: Commit a4055888629bc ("mm/memcg: warning on !memcg after readahead page
+: charged") added the warning in folio_lruvec (older name was
+: mem_cgroup_page_lruvec) for !memcg when charging of readahead pages were
+: added to the kernel.  Basically lru pages on a memcg enabled system were
+: always expected to be charged to a memcg.
+: 
+: However a recent functionality to allow metadata of btrfs, which is in
+: page cache, to be uncharged was added to the kernel
+: ("btrfs-set-as_uncharged-on-the-btree_inode.patch").  We can either change
+: the condition to only check anon pages or file pages which does not have
+: AS_UNCHARGED in their mapping.  Instead of such complicated check, let's
+: just remove the warning as it is not really helpful anymore.
 
-Thanks for the reviews, by the way.
 
