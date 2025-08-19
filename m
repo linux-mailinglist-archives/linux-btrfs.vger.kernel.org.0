@@ -1,77 +1,77 @@
-Return-Path: <linux-btrfs+bounces-16157-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16158-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7E48B2C28C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Aug 2025 14:02:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7CD2B2C2A2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Aug 2025 14:05:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A26A7A99C3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Aug 2025 12:00:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2071F3BAE82
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Aug 2025 12:02:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1374832BF3B;
-	Tue, 19 Aug 2025 12:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4AE32C339;
+	Tue, 19 Aug 2025 12:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PCEPU2mE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HQpYsHJQ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD13F1C8603;
-	Tue, 19 Aug 2025 12:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68EA732C33D;
+	Tue, 19 Aug 2025 12:02:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755604937; cv=none; b=EgWKJ03rNTfME2omrdZVHWfmdyYvihTaoOQ4bYU6/Ug0slJMpRA3yCXY3nRHSfJaf9mvnKTR1NgY6SFdZ+wGssb5zcPKnVfGCs5djqAMoBHRNLrO9tkudSA3XvJQQdF+6NRaTrW99f68dMsQWl9zMv/Q5MbMngdTVER0HT/tnUY=
+	t=1755604945; cv=none; b=dpKOGt7efmYsdaAIPUsz6yF+reDk5O8wssDjADz2y/HeXRMbHr0ELAet6lZQsA0CbokYOkpUe+vTVjJ9VRqAvaNMxa6lbfQcqZMuO6eyXotBznJVUWp/HHYs1hI9xVCZkzC0HexDCrGavaptrpMF1dVmjb0GBhOyEg0Q7gPyyLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755604937; c=relaxed/simple;
-	bh=+CTixfK1oDtff6j9WqB85R1UONXK4Zsqrt1GcB4Luo8=;
+	s=arc-20240116; t=1755604945; c=relaxed/simple;
+	bh=na6fPEIXs9/sGeqcja3uFEI352Rn9PcidjlBf6SoK6Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IYK4+KpdwksawnVpoXAOrWOOSSTZ4gMrZClg+XC9RdbBenTiue1GXlhHFP+5LihMdXgXvObWC6oFbEnd95nxAG57LxO0oG6KS/FQlyHCWIgmbUXLf0rTWiQURUAqMSRFrF6sizuSehe6fHtuX+6HXBip0NBhlTEzqzMfDbZM3q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PCEPU2mE; arc=none smtp.client-ip=209.85.210.175
+	 MIME-Version; b=i3R02B/Hm2ZJnHqzzbuv+YwYJqXWNrZIed1AiRrYwptUc+YzcW2CopTCLnD6Kw0Jj0Jo+tJcAOjpK86pJji88N2LZqhKMrQ0bXSeOquH2zPHR0gErsiSjNJwuAbfwOLV9ZyFY3q2qM6sen52KJJynijljv/V3HZn2cNmG+wVqgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HQpYsHJQ; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-76e6cbb9956so1499100b3a.0;
-        Tue, 19 Aug 2025 05:02:15 -0700 (PDT)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-76e6cbb9956so1499230b3a.0;
+        Tue, 19 Aug 2025 05:02:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755604935; x=1756209735; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1755604943; x=1756209743; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zaEe6rnAsb51fI+Ss8wi0smT8V6m5hQEzxjpc6JWrtw=;
-        b=PCEPU2mEJnF/bZtpz1XxHUhS7p6+YOglBlj4EoCblsxPCYLIeIfMXB+nSpXu0Cw5P8
-         9kOwBIM2k9tsS/dIXVPzGY3/mCNiwL+tM4NNL75ejhg5JLAieZFxauMO/T10GfJUkwr5
-         3C3iyIA7TgaYkcmd0cNFxxQwW5WtuWs0gYdlWhOezDrphqMPEIRUygRowWWoiHRKsAn4
-         94s5s9NPjVzsHq+CANb5ETBrINVdBmsZxzoVh+9TFtX4KoW6Y1CR5TWqEqDqs+2zt0Yp
-         4TBYZFczbBQPgh/3BeZPVt5YSNlhaCSEWunjgEuv5TcMggAcyjovlxeKn50n7vTEmaMq
-         VwPw==
+        bh=wRYp+8g1HL98AE48/rhJ/UoPQGve8y3lM261Zv2kpyA=;
+        b=HQpYsHJQrB7AiO4t9gC8b/nncCPiGzmbAIqMt4O2CDA3vDk2o5XcplNnHfVytgTKp2
+         j5wwyXafxjzsxeN7V+8xXtCkdAev9UTDTGFCGA7x7CL0ZXbqxCElksuiYf/+OJiSEosV
+         utJwU6ejl5qW5E5CiM+DfVhlZHDQd4nHfm0oHVTrS82S5eg3FRVU8/13WJwzdTcTc/Ir
+         ghL8wAAisQidNMlH5ftmT32StSjYmVrHG8qebL6rE69OXmOFi8Wgbndv/7Q07DV3wD93
+         lxBBNkZHCDvgnT3yZ4v5mVq2XIOzWCGK5Aj9BheyZxcXkdc0FciAZEBOcE0J+osvOTBJ
+         4lDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755604935; x=1756209735;
+        d=1e100.net; s=20230601; t=1755604943; x=1756209743;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zaEe6rnAsb51fI+Ss8wi0smT8V6m5hQEzxjpc6JWrtw=;
-        b=fsjfwrR9q524FUw/Nnm225ZkSf78hVn5AOONb0K3G5tZWjD8ww/YdT7pO6nor7vcrC
-         gBjsIBKL5HjAjBMTdxV2rKwHEGv8zGUQ9dENV9hR5XJKZVbEDs4wuQrFWwmhNv8jxxOQ
-         xoL0fI9hDxJ/KZJGSq7QHAtiwixr8PkD8Y4nj0EPQ9ZdJj0d7q0X+enIpakl7SHeZGl1
-         zury8iL2YJeUZhD7boRVtRdz8pNFEdHPaud1fpCHE/xkjvJANLiWxgohE1dxEgCaWl+z
-         rPUYiprRGMqDpur31ItaQwbrRH/1sLLJYTr8c6pY0lDAJVtrfSaZq/JzE+aeEPuWGGDx
-         v4eA==
-X-Gm-Message-State: AOJu0YyxF8YThbtWFTq+ataWuHS/7f9i28dKCaj6W0YhhUoYK/LKl7rh
-	4YAnitHFjd2v/aF1YCOTqH2UEWV8l101IEC+CVel53ovNRU1QdUSTw9DGkuUVQxK
-X-Gm-Gg: ASbGncs7BjuI+GxZyDXslW37HdjBkMyDg26UlXGEnSInoGKik1ZsWpvTTz6wWtBVejo
-	KG3urrIxGqnOc/skbX5j1G1qfJBD0kw5Adg3fxkrDaCj3y1+zN3PFrrskFnmfCCyNWiIjIZRck5
-	AQ2Qujh0ZoCWxFhlOlvYUuoVSceqcky9jDzdug361P2fpuMYoG1Ap4Ndvs3YDDYUqxEN3u/r54p
-	R49k62PhKg4twYevJSIQ3KzKzPQaTGiRAyHvVrrsmlKKdLO9ty8rRNuveJlgpl7BdUozM998U6n
-	xMyee0iuWlV9F/gGZga5KK8pUynTVtvmZVUjNffKwjKKDYcP+IB4tFI4Yx8X/yPOISO6slONfmb
-	/G85RVBoZtDTQlLnlJWSMJ9GH9A==
-X-Google-Smtp-Source: AGHT+IHKoOSsK5JBBiTADIIp6HAFz7gsQNwYIqQpCN+/Qw0bgZHIgPL8agczDlGTPmA3608UbnfSFg==
-X-Received: by 2002:a05:6a20:6a08:b0:23f:f88a:c17d with SMTP id adf61e73a8af0-2430d49d18dmr3291997637.42.1755604934566;
-        Tue, 19 Aug 2025 05:02:14 -0700 (PDT)
+        bh=wRYp+8g1HL98AE48/rhJ/UoPQGve8y3lM261Zv2kpyA=;
+        b=uMUf6FkSjGNOAKif7U60aYgXwLNUWBZvRkNYPEZ6oup3hXQimOZspj2OI+jw80DM8T
+         CPmkLL/tDXVxm4fAxyIWKC3RNukWPoYaR6m5TBS4jxloDYTX4AMgLvtLBYeihMOm15vR
+         niPyn3bFpfbARXGSyX/bhwOaWmJadgrW/KVZ4sBIqrkexO5VHCYWERvITG8b1vCENWue
+         mjhR5IGE29mSZyEuy4aNiHlqPOfrUJI8WJHiv50jbbut/9xBDUj9U7DEnKY9Ykf3N3E4
+         OJrdC0UQmnJY2Ky9hhTNX6LoCOcD6cdb2+2UywxiciE5LJqdrSNp6ssR8ZHHzxYmfl1i
+         S40w==
+X-Gm-Message-State: AOJu0Yy7VX6myyRZ3/Y8XM8FuDYW/HwJq8jTSv9nLXGpYCkQt02lFmWD
+	xthjW4Eq3Brk6HXCvXKmHZgjPMh/shEVL4XRcIYGNUz6m0X7DnOpqPWrk70fDeyU
+X-Gm-Gg: ASbGncuU2OCiurt+HhvKVB6pLKEUa2Qed4d7I8kvH2DJlQDbQOyT6q80x1/tYwV9aGb
+	1INh4Cmi7hhfuZfTjBAMacqEDexBzfqo8w/k1qcQslfSmoEz+88Xak6/falP4Exl1zRyHGt0IrA
+	FCavAC87SoDiJAIHaUCEovhpQCCSuzoBoVhRQFh07H1AIFmnK2x5Y7lVbBgpFpK+l+HhBQUkHYb
+	yCW4I/FjcBp4ohGL4ZqFKmh4cX6VBWSkmJKdVStviQfUp9LdBcFjZcSR6ZJPuJT7kY0JCShMmGG
+	iEb1utz4UZqjbvxHsDw7fJyOjqMr4JrzckYw9+3qJG/fQOX+2NRa904X4dLTHy26wYTePtvPEm/
+	xzdH1sDM/JsKBrkuoS+NApqCkPA==
+X-Google-Smtp-Source: AGHT+IEJ8VQbsLVbwMob19b2CSag4LubLdShVAuGWARanYzIoMStNXxuZIwBPVwT+fe1elvBbdSfPA==
+X-Received: by 2002:a05:6a00:2e1d:b0:76b:e1c6:35d6 with SMTP id d2e1a72fcca58-76e80dafe6fmr2828944b3a.0.1755604943045;
+        Tue, 19 Aug 2025 05:02:23 -0700 (PDT)
 Received: from citest-1.. ([49.207.219.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76e7d122ad7sm2331999b3a.36.2025.08.19.05.02.11
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76e7d122ad7sm2331999b3a.36.2025.08.19.05.02.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Aug 2025 05:02:14 -0700 (PDT)
+        Tue, 19 Aug 2025 05:02:22 -0700 (PDT)
 From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
@@ -82,9 +82,9 @@ Cc: linux-btrfs@vger.kernel.org,
 	fdmanana@kernel.org,
 	nirjhar.roy.lists@gmail.com,
 	quwenruo.btrfs@gmx.com
-Subject: [PATCH v2 3/4] btrfs/137: Make this test compatible with all supported block sizes
-Date: Tue, 19 Aug 2025 12:00:35 +0000
-Message-Id: <2d3037bcbb0e5cd51b81bdb8f4fa61397f74dfa6.1755604735.git.nirjhar.roy.lists@gmail.com>
+Subject: [PATCH v2 4/4] generic/563: Increase the iosize to to cover for btrfs
+Date: Tue, 19 Aug 2025 12:00:36 +0000
+Message-Id: <ecdd04bce98bb0d1393289e84cf8913ae10cb222.1755604735.git.nirjhar.roy.lists@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1755604735.git.nirjhar.roy.lists@gmail.com>
 References: <cover.1755604735.git.nirjhar.roy.lists@gmail.com>
@@ -96,171 +96,41 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-For large block sizes like 64k it failed simply because this
-test was written with 4k block size in mind.
-The first few lines of the error logs are as follows:
-
-     d3dc847171f9081bd75d7a2d3b53d322  SCRATCH_MNT/snap2/bar
-
-     File snap1/foo fiemap results in the original filesystem:
-    -0: [0..7]: data
-    +0: [0..127]: data
-
-     File snap1/bar fiemap results in the original filesystem:
+When tested with block size/node size 64K on btrfs, then the test fails
+with the folllowing error:
+     QA output created by 563
+     read/write
+     read is in range
+    -write is in range
+    +write has value of 8855552
+    +write is NOT in range 7969177.6 .. 8808038.4
+     write -> read/write
     ...
-
-Fix this by making the test choose offsets and block size as 64k
-which is aligned with all the underlying supported fs block sizes.
+The slight increase in the amount of bytes that are written is because
+of the increase in the the nodesize(metadata) and hence it exceeds
+the tolerance limit slightly. Fix this by increasing the iosize.
+Increasing the iosize increases the tolerance range and covers the
+tolerance for btrfs higher node sizes.
 
 Reported-by: Disha Goel <disgoel@linux.ibm.com>
 Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
 ---
- tests/btrfs/137     | 11 ++++----
- tests/btrfs/137.out | 66 ++++++++++++++++++++++-----------------------
- 2 files changed, 39 insertions(+), 38 deletions(-)
+ tests/generic/563 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tests/btrfs/137 b/tests/btrfs/137
-index 7710dc18..c1d498bd 100755
---- a/tests/btrfs/137
-+++ b/tests/btrfs/137
-@@ -23,6 +23,7 @@ _cleanup()
- _require_test
- _require_scratch
- _require_xfs_io_command "fiemap"
-+_require_btrfs_no_compress
+diff --git a/tests/generic/563 b/tests/generic/563
+index 89a71aa4..6cb9ddb0 100755
+--- a/tests/generic/563
++++ b/tests/generic/563
+@@ -43,7 +43,7 @@ _require_block_device $SCRATCH_DEV
+ _require_non_zoned_device ${SCRATCH_DEV}
  
- send_files_dir=$TEST_DIR/btrfs-test-$seq
+ cgdir=$CGROUP2_PATH
+-iosize=$((1024 * 1024 * 8))
++iosize=$((1024 * 1024 * 16))
  
-@@ -33,12 +34,12 @@ _scratch_mkfs >>$seqres.full 2>&1
- _scratch_mount
- 
- # Create the first test file.
--$XFS_IO_PROG -f -c "pwrite -S 0xaa 0 4K" $SCRATCH_MNT/foo | _filter_xfs_io
-+$XFS_IO_PROG -f -c "pwrite -S 0xaa -b 64k 0 64K" $SCRATCH_MNT/foo | _filter_xfs_io
- 
- # Create a second test file with a 1Mb hole.
- $XFS_IO_PROG -f \
--     -c "pwrite -S 0xaa 0 4K" \
--     -c "pwrite -S 0xbb 1028K 4K" \
-+     -c "pwrite -S 0xaa -b 64k 0 64K" \
-+     -c "pwrite -S 0xbb -b 64k 1088K 64K" \
-      $SCRATCH_MNT/bar | _filter_xfs_io
- 
- $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
-@@ -46,10 +47,10 @@ $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
- 
- # Now add one new extent to our first test file, increasing its size and leaving
- # a 1Mb hole between the first extent and this new extent.
--$XFS_IO_PROG -c "pwrite -S 0xbb 1028K 4K" $SCRATCH_MNT/foo | _filter_xfs_io
-+$XFS_IO_PROG -c "pwrite -S 0xbb -b 64k 1088K 64K" $SCRATCH_MNT/foo | _filter_xfs_io
- 
- # Now overwrite the last extent of our second test file.
--$XFS_IO_PROG -c "pwrite -S 0xcc 1028K 4K" $SCRATCH_MNT/bar | _filter_xfs_io
-+$XFS_IO_PROG -c "pwrite -S 0xcc -b 64k 1088K 64K" $SCRATCH_MNT/bar | _filter_xfs_io
- 
- $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
- 		 $SCRATCH_MNT/snap2 >/dev/null
-diff --git a/tests/btrfs/137.out b/tests/btrfs/137.out
-index 8554399f..e863dd51 100644
---- a/tests/btrfs/137.out
-+++ b/tests/btrfs/137.out
-@@ -1,63 +1,63 @@
- QA output created by 137
--wrote 4096/4096 bytes at offset 0
-+wrote 65536/65536 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--wrote 4096/4096 bytes at offset 0
-+wrote 65536/65536 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--wrote 4096/4096 bytes at offset 1052672
-+wrote 65536/65536 bytes at offset 1114112
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--wrote 4096/4096 bytes at offset 1052672
-+wrote 65536/65536 bytes at offset 1114112
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--wrote 4096/4096 bytes at offset 1052672
-+wrote 65536/65536 bytes at offset 1114112
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- 
- File digests in the original filesystem:
--3e4309c7cc81f23d45e260a8f13ca860  SCRATCH_MNT/snap1/foo
--f3934f0cf164e2efa1bab71f2f164990  SCRATCH_MNT/snap1/bar
--f3934f0cf164e2efa1bab71f2f164990  SCRATCH_MNT/snap2/foo
--d3dc847171f9081bd75d7a2d3b53d322  SCRATCH_MNT/snap2/bar
-+9802287a6faa01a1fd0e01732b732fca  SCRATCH_MNT/snap1/foo
-+fe93f68ad1d8d5e47feba666ee6d3c47  SCRATCH_MNT/snap1/bar
-+fe93f68ad1d8d5e47feba666ee6d3c47  SCRATCH_MNT/snap2/foo
-+8d06f9b5841190b586a7526d0dd356f3  SCRATCH_MNT/snap2/bar
- 
- File snap1/foo fiemap results in the original filesystem:
--0: [0..7]: data
-+0: [0..127]: data
- 
- File snap1/bar fiemap results in the original filesystem:
--0: [0..7]: data
--1: [8..2055]: hole
--2: [2056..2063]: data
-+0: [0..127]: data
-+1: [128..2175]: hole
-+2: [2176..2303]: data
- 
- File snap2/foo fiemap results in the original filesystem:
--0: [0..7]: data
--1: [8..2055]: hole
--2: [2056..2063]: data
-+0: [0..127]: data
-+1: [128..2175]: hole
-+2: [2176..2303]: data
- 
- File snap2/bar fiemap results in the original filesystem:
--0: [0..7]: data
--1: [8..2055]: hole
--2: [2056..2063]: data
-+0: [0..127]: data
-+1: [128..2175]: hole
-+2: [2176..2303]: data
- 
- At subvol SCRATCH_MNT/snap1
- At subvol SCRATCH_MNT/snap2
- At subvol snap1
- 
- File digests in the new filesystem:
--3e4309c7cc81f23d45e260a8f13ca860  SCRATCH_MNT/snap1/foo
--f3934f0cf164e2efa1bab71f2f164990  SCRATCH_MNT/snap1/bar
--f3934f0cf164e2efa1bab71f2f164990  SCRATCH_MNT/snap2/foo
--d3dc847171f9081bd75d7a2d3b53d322  SCRATCH_MNT/snap2/bar
-+9802287a6faa01a1fd0e01732b732fca  SCRATCH_MNT/snap1/foo
-+fe93f68ad1d8d5e47feba666ee6d3c47  SCRATCH_MNT/snap1/bar
-+fe93f68ad1d8d5e47feba666ee6d3c47  SCRATCH_MNT/snap2/foo
-+8d06f9b5841190b586a7526d0dd356f3  SCRATCH_MNT/snap2/bar
- 
- File snap1/foo fiemap results in the new filesystem:
--0: [0..7]: data
-+0: [0..127]: data
- 
- File snap1/bar fiemap results in the new filesystem:
--0: [0..7]: data
--1: [8..2055]: hole
--2: [2056..2063]: data
-+0: [0..127]: data
-+1: [128..2175]: hole
-+2: [2176..2303]: data
- 
- File snap2/foo fiemap results in the new filesystem:
--0: [0..7]: data
--1: [8..2055]: hole
--2: [2056..2063]: data
-+0: [0..127]: data
-+1: [128..2175]: hole
-+2: [2176..2303]: data
- 
- File snap2/bar fiemap results in the new filesystem:
--0: [0..7]: data
--1: [8..2055]: hole
--2: [2056..2063]: data
-+0: [0..127]: data
-+1: [128..2175]: hole
-+2: [2176..2303]: data
+ # Check cgroup read/write charges against expected values. Allow for some
+ # tolerance as different filesystems seem to account slightly differently.
 -- 
 2.34.1
 
