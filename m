@@ -1,235 +1,136 @@
-Return-Path: <linux-btrfs+bounces-16170-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16171-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BDC0B2D598
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Aug 2025 10:04:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41FBEB2D5E7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Aug 2025 10:17:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 956171B632E1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Aug 2025 08:01:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEF75A03985
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Aug 2025 08:15:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06602D8DCF;
-	Wed, 20 Aug 2025 08:00:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 387C62D8790;
+	Wed, 20 Aug 2025 08:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TCHTwN9e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FosZehap"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985852AE84;
-	Wed, 20 Aug 2025 08:00:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F54C2C11ED;
+	Wed, 20 Aug 2025 08:15:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755676849; cv=none; b=eCaQr9CiVx8ssicchXRXkGzQWMsjHMr3SAHJWSsQGLUpoYXPP/rDp7ohI/OH5fWoQXvQ06oGL6TzNnf4dFkgVcrNbtbHwj3ZiAsqTZnwoYcrelM7PMXRFhXgeb3d8D/FUafHF839rucJNMyBtPV8VIsxkbWymBB/zvEBi2bCiLA=
+	t=1755677731; cv=none; b=tBgfZD1CTNJ5D/oRMJFC90NmZtghxDU/G2pG4n1WjX2hfSYoZ+l8NyUe80Ipfur6IUPM2byXfducG7lyB+QWowfQKiwrhn/iimByXCcd4fCOxMXTarPn+ZZ/mDLfWdTF16fhtJ0BT7OPBykK/MxlFZgcCcMIRRd4ZPz44LuJy5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755676849; c=relaxed/simple;
-	bh=O5nYnIW1RhZMo3UrajK2TFXyvxHyh/iv8zSp+XSEJFo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r6BDnbYxS58DccQcTOaCovhLFfJZvJWoRC1xR8Dd+BdUZ71XIr2bL15EWGJ6z7o1gyfn7QqJMg43jcuF/CNFVnZw9Ctw/ylQ1pqnbEHynE5hjo6e1BaFeMMmT8eTqnrBZW6QoVw7YDy/Tgd3D4bdCrof06HxtVBi/2uqJ+Prh/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TCHTwN9e; arc=none smtp.client-ip=209.85.215.169
+	s=arc-20240116; t=1755677731; c=relaxed/simple;
+	bh=uLiJFhino7uMU63jntXaJR106kZM7Ai2qFFQGfPF60c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jMmykGvJx0pIvxM4EPHtLjcQFixCmpwxoJ0VVwwRyOUgeC3it1nTB46B9fauzGLBYbqj+qi11lmioiB8fgIFfpuR4towmKEyFZYvPVEhbOs/kjWYp+B8eFWIEnCNMhhjjPSL0VApT4H9emb9y7FN+Ys0oeZkzFqjmFuQXVX4Znw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FosZehap; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b471aaa085aso328571a12.0;
-        Wed, 20 Aug 2025 01:00:47 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-24457f5b692so64811695ad.0;
+        Wed, 20 Aug 2025 01:15:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755676847; x=1756281647; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QsqOccgviqOt0oK6lAIrsuf2IAuGX8CrAgQAggNkO5Y=;
-        b=TCHTwN9ek8F/ErrM4Aj2iRZ20oM8nQLVpz2N57DaogUuMiuvN65eg37QUFp05IoA9Q
-         wLdUCZ4u7ch+NO4EJr1lREtHDtCqBZ54fkPo67ohkGpF2IasRmvTDmVXUQPfv+Hj/l/y
-         Cgs8CjXzkn8sE1mRcoOlfeuYpywgBwYCAXUIY5WxtKmUPsTrNZReKue816HnW7kQ7wPg
-         dizE46vAFPt7RQHwwt0y5yn1diN4lKbtjTdaqXbJ+Ld+87CfJJWkDk3ttXGo0C9kqRmO
-         0VXbd2e1d7s+W/x0ywsYWSNzeagD9S2eitwmVcOfdtgljF+E5sh3pPFJ2zAwh8igVGWM
-         pvsg==
+        d=gmail.com; s=20230601; t=1755677729; x=1756282529; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=O8LaDV3bTRGf4guLR53ihmopdxL+cgez5Nxow5DR+Lo=;
+        b=FosZehapO6dDfAZ8r3kF+3uMwEtSU2qirrfgPE0UvjqO+gz6hPt08jmhHkfPsQaHqv
+         6Lw8dszB30j/6B2nk3AmuZrw/yLZhcIerRXe8gyQ/qAhBgdRP0oBpqImDINbIakl5veR
+         CW7NTl0rk5txIIhgluPUSgo0npe0OGsV+sLZNOG5pV1q1ewCrixcwf5M46K7jHUkUZw4
+         0RdLwNbs8ZFBJldobfDbh9v09tzb4t6G7h7XlGZlGBJ0eIxpVXabNuL78xbWCr2P6BL/
+         khrqFSHHPX2CT74v+1+jptHy9ScdKZFhL44pXXseRSgcSxtk7bCiGH8lmj6nqSkXFNjH
+         sReA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755676847; x=1756281647;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QsqOccgviqOt0oK6lAIrsuf2IAuGX8CrAgQAggNkO5Y=;
-        b=kDVQ+uHQFh56+5/mWCd/YJNSzvn3aQhA7NfPnONnpPqCo4Nzxt/3Vl2HrlXb/DMrpF
-         /TAOXmu8FekXgq77yXIUZNXIGTmihlgkM6EKUFH7C/+gERpHkuntJiZn49zYftMjSe1+
-         JqKHQ3fyQwdqctSEdcsEyxAiMyO88LGBzgwZGClq88R4hCvg79PV+AoSm7GL3yutQxgG
-         L4GKAxqF55xKPTcMPa8vqz7pdjnqOFvXkj5o/s5a5Ntb1/1FdSxj96BG2YQ69s56kr/6
-         OS6LRgyNPx/cDDV2alqCarp9TaAumHe6ETbnCv3QBXoBv/+rGOGg248wSxOYSJpm8e0c
-         38Xg==
-X-Forwarded-Encrypted: i=1; AJvYcCWmHZhXmWdi4+S1mqh96xf2DEi9AgMm1uD85o8tmxn7vo1ud84piqeU6FM4qKRywJ5dCxwgVaTH@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7KQmEBf09cqqnukh/iqeugxQ0DQXO1ft19HzxBLHb2J+z5T1Q
-	UwqgG9OghxCq0EpGwwJC62BE5WSWzMEwC0Musalx18rMnUM7D45zSrUj
-X-Gm-Gg: ASbGncuAe22Kl387nM5ualKN6BDKQ/qdpdlgnPsSv0xZcbbLTTaROZiwMEPt3k9Ieya
-	5vqaVfoKNxpohdLfgq9cBaxSAQ3+mIlvh2M0hMJmTNh4oDK6xy20sDWcb0YW8wVNCVPCSGTNx0D
-	nwp3J9iU8f4UeL4jaURnYDV/zFPAsvjwaE3za1MzSU2UaqBRHE7u95flP5rr6RRqmecjSKjRaa0
-	NrgBF2PqB6567fiEWTt5pEIrm9j0jzwpsElR2W31seOww51AV3HQPF4CyzTD7CMxRd1plZfZPN4
-	ml7DzbLnU4fndBjxvQCRxWVzzAIFq9i+F5cLdFrn38BH/Z1KyBW+wCN47V9gu811MYudh/LIhoO
-	a1jy3Kd0AlpjbRdG9mtkZcup5yRKwXv8J
-X-Google-Smtp-Source: AGHT+IEV+8V4SNJ34jId797d6LuX/Ph7INMFL67yXO9MHBjH1zgOeYtHsQ1GmSrdO3Jv2/BfSajsxQ==
-X-Received: by 2002:a17:902:cecb:b0:240:8381:45b9 with SMTP id d9443c01a7336-245ee00fb33mr34241415ad.8.1755676846784;
-        Wed, 20 Aug 2025 01:00:46 -0700 (PDT)
-Received: from [192.168.0.120] ([49.207.219.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-245ed4e9fe7sm18505035ad.112.2025.08.20.01.00.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Aug 2025 01:00:46 -0700 (PDT)
-Message-ID: <8f2d162f-8110-4e13-9f83-45314668e975@gmail.com>
-Date: Wed, 20 Aug 2025 13:30:41 +0530
+        d=1e100.net; s=20230601; t=1755677729; x=1756282529;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O8LaDV3bTRGf4guLR53ihmopdxL+cgez5Nxow5DR+Lo=;
+        b=q6lduCTuznUBK9zrbTm1CCP1IbMTyZCyThUEagKILjL9eB7xfWtKuC0k5a9WrFFzo5
+         aupY0SwTfihiolj5KlwoQCcncd5XP1z2SFDL/zwl8/LBzZjqVxErDQwfzPpYyIsR2uZn
+         Du5GeOM7ljoAHxwl+e/3poygQQBxkinYYWAv8FEeY4B2atuOansU5nUqbobYaowpcjzW
+         KwvK4omfg75lZAaJckGmvbxabEysZKv2l/McjqOU2tfLsAhfg4MR/g/ZpHtYF3d+SFbM
+         R0pPRu0unFq3uXqecnL4KEi/beKerDl9F4GatCfthimuX+uBbxEs3RVd1cdrHm0Ud7AU
+         qUmQ==
+X-Gm-Message-State: AOJu0Yxnss+7f8vnXiLs2WcqaAGfOPh4ND9joW1bBoAUkE3a9EXLqFDl
+	EA27Zryiabq/vIIatY+zZdBydhZSg/d0L1RZKn/KlPVlsZz+afuMXA8oAn0pMA==
+X-Gm-Gg: ASbGnct8Y3FqgJyb7HCXqaIwTA5a4EOPwlutqGTm+Tz8xi7w+FL0KbvoMLtPg+df+Qj
+	88tjmpVTTY/TQlZ/lAtWETAMn/FZWUlJ+GYR577G4Gb1lCOoA0mxtrSnoBjG5kNvU8TwdyZSf5g
+	b2jn0wA0tTmboiS8iRjhhYj6sDfEK3EZeMd5DB/k79dM9signOJg0q3h5ApI/jofGRt+QGRvdhD
+	tfQ2WEH+R6w3LA5Nm3Pmpna13neHFS8OKTqsrsFedxyZw4pmSs+YdeGNrWzzHalv98xv0I1Yb/y
+	rPbniwTn55h4EJiEwbxQGpT7F9duus9V3F0XMINpoK/AFFGnuroKDcjG1fYawz2akc1Uod0b/U2
+	qjhZxpAesCp9VTd4YwFX+FIHeTg==
+X-Google-Smtp-Source: AGHT+IHvtyqNzx1HOK32WqAL3Fj+mCylI6s9iO2O1+D4MlL/x7M3kT2/3+XOvzVPqgYuL0MaThYvqw==
+X-Received: by 2002:a17:902:f550:b0:240:52c8:2556 with SMTP id d9443c01a7336-245ef24a172mr29316475ad.39.1755677728894;
+        Wed, 20 Aug 2025 01:15:28 -0700 (PDT)
+Received: from citest-1.. ([49.207.219.20])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-245ed517beesm18848935ad.134.2025.08.20.01.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Aug 2025 01:15:28 -0700 (PDT)
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com,
+	djwong@kernel.org,
+	zlang@kernel.org,
+	fdmanana@kernel.org,
+	nirjhar.roy.lists@gmail.com,
+	quwenruo.btrfs@gmx.com
+Subject: [PATCH v3 0/4] btrfs: Misc test fixes for large block/node sizes
+Date: Wed, 20 Aug 2025 08:15:03 +0000
+Message-Id: <cover.1755677274.git.nirjhar.roy.lists@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] generic/563: Increase the iosize to to cover for
- btrfs
-Content-Language: en-US
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
- fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org, ritesh.list@gmail.com,
- ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org,
- fdmanana@kernel.org
-References: <cover.1755604735.git.nirjhar.roy.lists@gmail.com>
- <ecdd04bce98bb0d1393289e84cf8913ae10cb222.1755604735.git.nirjhar.roy.lists@gmail.com>
- <26059372-f900-4348-997e-d6c379c685f8@suse.com>
- <0ca943e2-10fb-42b4-b111-d6f619d7b702@gmail.com>
- <fa0dc9e3-2025-49f2-9f20-71190382fce5@gmx.com>
-From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-In-Reply-To: <fa0dc9e3-2025-49f2-9f20-71190382fce5@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+Some of the btrfs and generic tests are written with 4k block/node size in mind.
+This patch fixes some of those tests to be compatible with other block/node sizes too.
+We caught these bugs while running the auto group tests on btrfs with large
+block/node sizes.
 
-On 8/20/25 11:15, Qu Wenruo wrote:
->
->
-> 在 2025/8/20 14:30, Nirjhar Roy (IBM) 写道:
->>
->> On 8/20/25 03:59, Qu Wenruo wrote:
->>>
->>>
->>> 在 2025/8/19 21:30, Nirjhar Roy (IBM) 写道:
->>>> When tested with block size/node size 64K on btrfs, then the test 
->>>> fails
->>>> with the folllowing error:
->>>>       QA output created by 563
->>>>       read/write
->>>>       read is in range
->>>>      -write is in range
->>>>      +write has value of 8855552
->>>>      +write is NOT in range 7969177.6 .. 8808038.4
->>>>       write -> read/write
->>>>      ...
->>>> The slight increase in the amount of bytes that are written is because
->>>> of the increase in the the nodesize(metadata) and hence it exceeds
->>>> the tolerance limit slightly. Fix this by increasing the iosize.
->>>> Increasing the iosize increases the tolerance range and covers the
->>>> tolerance for btrfs higher node sizes.
->>>>
->>>> Reported-by: Disha Goel <disgoel@linux.ibm.com>
->>>> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
->>>
->>> Looks good to me.
->>>
->>> Just want to add some more analyze for the failure case.
->>>
->>> For the test it writes 8M data with 5% tolerance (around 408K) with 
->>> the total writes.
->>>
->>> With 64K block size (and it implies 64K metadata size) for btrfs, it 
->>> mean we can have at most 7 tree blocks of writes plus two super 
->>> blocks updated.
->>>
->>> Considering the default metadata profile is DUP, doubling the 
->>> metadata writes, the real limit is only 3 tree blocks.
->>>
->>> And when doing fsync, btrfs will create at least 2 new tree blocks, 
->>> one for the log tree root, and one for the log tree of the subvolume.
->>>
->>> This is still inside the tolerance, thus the test case can still 
->>> pass for a lot of cases.
->>>
->>> But if a full transaction commit is triggered, btrfs will need to 
->>> create at least 3 new tree blocks for root, extent and subvolume tree.
->>> Depending on the mkfs config, it will increase to 7 tree blocks 
->>> (free space tree, block group tree, csum tree and uuid tree created 
->>> at mount).
->>>
->>> All are exceeding the tolerance limit.
->>>
->>> Doubling the io size will make the tolerance to be 8 tree blocks, 
->>> covering the worst case of 64K metadata sized btrfs, at least for now.
->>
->> Thank you for the detailed analysis. I will add this analysis in the 
->> commit message and address the comment for generic/274[1] and add 
->> your RBs in the next revision.
->>
->> A couple of questions for the above explanation:
->>
->> Doubling the iosize to 16M with 5% tolerance is around 819k. So, with 
->> 64k blocks, it turns out to be 819k/64k = 12. Considering DUP, it 
->> should be approximately 12/2=6 blocks, but you are saying 8. Can you 
->> please explain this part a bit?
->
-> My bad, wrong calculation.
->
-> The original 8M tolerance is only for 6 tree blocks, with DUP it 
-> reduced to 3. Thus a full commit transaction will always fail the 
-> tolerance check.
->
-> Doubled to 16M iosize, the tolerance is exactly what you said, 12 tree 
-> blocks not 16, and with DUP into consideration it's 6.
->
-> With 6 tree blocks tolerance, it's borderline for a full commit 
-> transaction.
->
-> The recent default mkfs config means 5 tree blocks (root, extent, 
-> subvolume, csum and free space), and with incoming new default bgt 
-> free it will be exactly at the boundary, but should still pass for now.
->
-Okay, it makes sense now. Thank you for the detailed explanation.
+[v2] -> v3
+1. Added RBs by Qu Wenruo in btrfs/{301, 137}
+2. Updated the commit message of generic/563 with a more detailed explanation
+   by Qu Wenrou.
+3. Reverted by block size from 64k to 4k while filling the filesystem with dd
+   for test generic/274.
 
---NR
+[v1] -> [v2]:
+1. Removed the patch for btrfs/200 of [v1] - need more analysis on this.
+2. Removed the first 2 patches of [v1] which introduced 2 new helper functions
+3. btrfs/{137,301} and generic/274 - Instead of scaling the test dynamically
+   based on the underlying disk block size, I have hardcoded the pwrite blocksizes
+   and offsets to 64k which is aligned to all underlying fs block sizes <= 64.
+4. For generic/563 - Doubled the iosize instead of btrfs specific hack to cover
+   for btrfs write ranges.
+5. Updated the commit messages
 
-> Thanks,
-> Qu
->
->
->>
->> [1] https://lore.kernel.org/all/0a10a9b0-a55c-4607- 
->> be0b-7f7f01c2d729@suse.com/
->>
->> --NR
->>
->>>
->>> Reviewed-by: Qu Wenruo <wqu@suse.com>
->>>
->>> Thanks,
->>> Qu
->>>
->>>> ---
->>>>   tests/generic/563 | 2 +-
->>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/tests/generic/563 b/tests/generic/563
->>>> index 89a71aa4..6cb9ddb0 100755
->>>> --- a/tests/generic/563
->>>> +++ b/tests/generic/563
->>>> @@ -43,7 +43,7 @@ _require_block_device $SCRATCH_DEV
->>>>   _require_non_zoned_device ${SCRATCH_DEV}
->>>>     cgdir=$CGROUP2_PATH
->>>> -iosize=$((1024 * 1024 * 8))
->>>> +iosize=$((1024 * 1024 * 16))
->>>>     # Check cgroup read/write charges against expected values. 
->>>> Allow for some
->>>>   # tolerance as different filesystems seem to account slightly 
->>>> differently.
->>>
->
--- 
-Nirjhar Roy
-Linux Kernel Developer
-IBM, Bangalore
+[v1] - https://lore.kernel.org/all/cover.1753769382.git.nirjhar.roy.lists@gmail.com/
+[v2] - https://lore.kernel.org/all/cover.1755604735.git.nirjhar.roy.lists@gmail.com/
+
+Nirjhar Roy (IBM) (4):
+  btrfs/301: Make the test compatible with all the supported block sizes
+  generic/274: Make the pwrite block sizes and offsets to 64k
+  btrfs/137: Make this test compatible with all supported block sizes
+  generic/563: Increase the iosize to to cover for btrfs
+
+ tests/btrfs/137     | 11 ++++----
+ tests/btrfs/137.out | 66 ++++++++++++++++++++++-----------------------
+ tests/btrfs/301     |  2 +-
+ tests/generic/274   |  8 +++---
+ tests/generic/563   |  2 +-
+ 5 files changed, 45 insertions(+), 44 deletions(-)
+
+--
+2.34.1
 
 
