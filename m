@@ -1,77 +1,77 @@
-Return-Path: <linux-btrfs+bounces-16173-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16174-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42DC9B2D5E9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Aug 2025 10:17:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA109B2D5EA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Aug 2025 10:17:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A050A02388
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Aug 2025 08:15:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5F20A0259F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Aug 2025 08:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761422D8DC0;
-	Wed, 20 Aug 2025 08:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35B92D8762;
+	Wed, 20 Aug 2025 08:15:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fKp5nRkV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lItI5sDA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC322D6E56;
-	Wed, 20 Aug 2025 08:15:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B6E02D6E56;
+	Wed, 20 Aug 2025 08:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755677737; cv=none; b=YAmkf9xpiMc3ITTV3lN91SznkXKkfnItxwZkYfnFv+j8sjOAEWAwWwE4H4pY5RWeRiAegSV1NO1id0f167GK+aOayoy3HlJMN6030gr+JY4KzIm/Fs+NclC0zuLvEBEo4WwB+Ehy/fJKfbzUpWqT0xN9HBnVW/J/Ynglwd6V308=
+	t=1755677741; cv=none; b=n0Anz/g5Qgagp7I/gtFE3VH4AZVnmBPnSdjVRpkMIXvnped9Gy99Aich1hFaKQ1hokp1RzLVcxBYz7tLu2f8fSvWXSirWMXgX15eWI9H9D+/dZHpo1EVu6btFQiAkp+C2AElneyy3eZ7I4lo5/oYobTRQ8Swil570HoVDf6foA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755677737; c=relaxed/simple;
-	bh=rACd51mNVbkuRkfh2fJO2L8LHU5ZTIVCjqAmTcvKC4g=;
+	s=arc-20240116; t=1755677741; c=relaxed/simple;
+	bh=TfvpQGPgjpvUiflLkUWa+NACrDQlyYyGq3+JabvkssM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ODS4qeMw4GiZp7o742gG+n+102X9hrBZv4/oBYTzk3tHgXZ2mGNeHicpP77TD5tx2mcxqn3ikw+vo9b14dEh6uxO+XAgAREE7Av05jVZECfAELJ2KNrYL84tjriHIHZabF+GxBpmHdyGjaxOb9Pc15eqo9WrqD7jADmtRmPrrE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fKp5nRkV; arc=none smtp.client-ip=209.85.214.177
+	 MIME-Version; b=o98yEyJkOZd+uVc6tcOyc/XvK4Tb//GI9Kf6hhn+22EoME2zhdaDvzOhUyh5gz1RFCHdKklvnKRXkkxV15kcAjEu1ACr6jXSddo8JmW1+gB1aLNrbOWNoHGgNsVfEpuDDbqd3wOyQaOX8eO3fjr73kPc/UodZ0n4Wlxw6OACapg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lItI5sDA; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-245f19a324bso3057165ad.0;
-        Wed, 20 Aug 2025 01:15:36 -0700 (PDT)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-b4761f281a7so755423a12.1;
+        Wed, 20 Aug 2025 01:15:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755677735; x=1756282535; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1755677738; x=1756282538; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=suCvx5ht8ZqvJ37siOzoHvha9vLPfC7ke/o5kq/iu4c=;
-        b=fKp5nRkVMwPip/W6TUAdgCaMdXUxzaFXlkhGPRht7aQZlWOSJ5bBI+8poFG5f7EtEX
-         fO2Cf3n0YfKY4YIZD59x4J9h2R1KOto/tEya73ORkzhGD7QxqzGPhZVIg7epHo+c6IgB
-         MAKYdSX9Vt3jecxx55WOFXO+p/e2Sn5JKG/h631hJfCSFOzdjpIykMRDwag/KCeZ3tdY
-         aWA5TgJ0mjOgxHclwh2NpoW8E2SXHFlNlPNlxwzuz6pVF3WZv+I51/p7lc1/ecH73+dH
-         RqCLgxlUWrilWcgkZLCoIYM/ecRsdaCJhO7uor/vVA8fnUZiYBQy9Z20F6as96XgrwJ5
-         v6iA==
+        bh=vNOnC3XRipxEzRokR5XERnvHc+6b2R72yeP/TsnqwTE=;
+        b=lItI5sDATBw2xmRr+P1O6sQPCy6tSKUa4rz4XJxLifRrkeTA9Ugs2GLUS81IXV2dkm
+         4eMtZpDMxD5IdiZYMM0IP1SokohYNfYLygoAb4F0+P9I6Aj0cv4dQohWzzCjRr3bN1P2
+         Q7C7tbDov3/bIKwyQTsy5IzAWbrECGtz542bxT9Wk9o6o6szqNqGKaTXDMM3iZUO5OEk
+         uXmjNB05Kq0A1XCjfxt8WSF3cpSGFI8bL67sKpVjTo5czANMxAF396Jin4MnMf5+8I09
+         efeGroi4+pIJubdOobqAhwaA6ZbmYMjRWpQuniyGJ/mG8sDFgF6qPvu7lpKeuF2zC+CH
+         2grg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755677735; x=1756282535;
+        d=1e100.net; s=20230601; t=1755677738; x=1756282538;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=suCvx5ht8ZqvJ37siOzoHvha9vLPfC7ke/o5kq/iu4c=;
-        b=H7XHlg/u8W5dpcsecv7fQGdkwXFxAfyA5DKdHcVUMAad1irHBVZyFKHxwtBATygE/K
-         rbiInG7GjqBAbG6G5xxqffqXDAb7fleV2ZHgYVHiq0tq3YeOaL3W4bT6vjXF+Wh/K0q9
-         fJ3Tz4hiBxoDULLOBi7x7QUun3/Gt57nI6m/+XKMgm4JeZq8sozGkdNKqOZQDLZ6104c
-         2NuJqfpwHwLKD3BdX/6kwf7FMqS315GvT/U4WJQl1Av7vT8sj3cHIaMwsuG2ZvYwuPv6
-         ME/DOI46PkQnWOIU9XhUokhroQaQBgx9x4QUXDSC6x3ppKC0gvs1/KgenPVrMdoBPXv9
-         WXVA==
-X-Gm-Message-State: AOJu0YzQm5esyFF+RAw9ff7sWmWxdXmr4JpSJJEF5PbtOxTp4fZApMXZ
-	7viuByzYj7w0+ExUzqfcXRJXWch/4sR/ftzDyD1OmvLDFMb3awEJHSqliVnXmg==
-X-Gm-Gg: ASbGncshgcdnAB0VnnU1zY54xpHoaliaKwK05lNUOUbtXGDnli3QxRmZ3Zh0aZvRhi5
-	Bq53jAqt/BrPd7fWtVDj0ozh+UmQfPSzHw+dcLRtAKnsF47nukpNpwUSjFmLZ0AM2yCa8O+amtW
-	FqKg2W2lShfvhz2aNZyo1MNzoLw61RD8X1QD8Doq6UYLhwgIM/fBlIY5fuM/rQT3EBH1iIn0K+6
-	BcjfHBSbP0BBmzwP1FoYFza3aIOphPR9Hp/lfpagEN1if/yy06/OIMpremPGW/MWnUtH6syxufK
-	FSb4W1y44iniGcr0sN/UXTD6V2yKeH1wIeaRF5D3E5DueJwPduNETSLYE+MCMj04IDAGp8UdInv
-	QxcyxaXji/oGzw08Q6+5CjsfXbQ==
-X-Google-Smtp-Source: AGHT+IEw6qvttmnLf4JzYmEz8HFVDIIW9xUf94/bah262806zHRWc8gNXJq+GE/TS8HqKgRTYiE5kw==
-X-Received: by 2002:a17:902:fc85:b0:23f:f96f:9de7 with SMTP id d9443c01a7336-245ef249cd1mr23718325ad.51.1755677735190;
-        Wed, 20 Aug 2025 01:15:35 -0700 (PDT)
+        bh=vNOnC3XRipxEzRokR5XERnvHc+6b2R72yeP/TsnqwTE=;
+        b=P//Bn/5P5sMKl9nEtPnM0XC0PFEoMILMj2jqRMfg2TxiWNXUZ4Boupm0sRs6riBwzH
+         LJ/uRIdH92fKYnTiCOd6r/1NTQsPFKvHES5nrF4Z4WDRtaRPo3kwRvRM3cPcn0YZoqE1
+         A8HXxzIVkbEpnefs9xFl/MMsNru7Ex3Ib05lZvi5Vq999/sOS4lg0WdZuYxizz5Y/klh
+         urvQwHMRAbwDCzkvG4rttKHalCaxrUKFO/e1gAG65oGKLwu2Ka6LhjnU1Hw+QJA+tMTC
+         zifm2avdJtdqMHl1qTlc4we2jZCvCWxdvM+/3FXES1qFHno5wSAuMMlKuj80QHxL+Jap
+         RqcA==
+X-Gm-Message-State: AOJu0Yz3UBeYd3kIHz6MVacIuQHPZo5Ch2XPbQM007bBbMvxFuMGQoK4
+	fjntnjzWFuqAA5yZBVPu51tk3GqhkljVpvyJsgsYd1VHkzAV6NnICU/IYq9E7Q==
+X-Gm-Gg: ASbGncseK2NJ0Rd6aOmSzPDUtooVvFga8JOTQR0H3kUKJpLlEfvZh5XI7ZPxm1iT7zq
+	0fExBF7RMIxj1Oj8DNj0fSWVh8JyyNcw2EkwV77E6lnRxVZMaSeiEJAxc9wfsRC3Da1+03cIJNK
+	8bYDWTgH0AxKM5IepY3TFTptpWzLRhVo5YNwiO6MaEVp6k0Ai7aP6axkNzP2KrtXU21XfnpV0gU
+	cnwzboyE4q6ptfwxi8ALRMaTSH85IrXJCoGuq7kjoTVOQJIGq4xAngZr75xAJtg4MWQBHKCsJ2q
+	lor/N5ZgHDzFmtaIiRDrkyccqzmOcWzYdt3cK9ZEakn7CfzwVynAoOs3TdzKmGOV5wDn7wxZeK+
+	HoEA9uvmxv9IzwwVVpLtnuxRJQQ==
+X-Google-Smtp-Source: AGHT+IEHg0CajAcHJpKfea4w3Q9ZglHEOzx1o+ARffZTVOdxLWYbCGw9VKs40RpQGSZgzhi8bLJUxg==
+X-Received: by 2002:a17:903:1aac:b0:235:2ac3:51f2 with SMTP id d9443c01a7336-245ef27b007mr24293385ad.45.1755677738360;
+        Wed, 20 Aug 2025 01:15:38 -0700 (PDT)
 Received: from citest-1.. ([49.207.219.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-245ed517beesm18848935ad.134.2025.08.20.01.15.32
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-245ed517beesm18848935ad.134.2025.08.20.01.15.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Aug 2025 01:15:34 -0700 (PDT)
+        Wed, 20 Aug 2025 01:15:37 -0700 (PDT)
 From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
@@ -82,9 +82,9 @@ Cc: linux-btrfs@vger.kernel.org,
 	fdmanana@kernel.org,
 	nirjhar.roy.lists@gmail.com,
 	quwenruo.btrfs@gmx.com
-Subject: [PATCH v3 2/4] generic/274: Make the pwrite block sizes and offsets to 64k
-Date: Wed, 20 Aug 2025 08:15:05 +0000
-Message-Id: <1110f20bb5d26b4bef5596a00d69c3459709ab65.1755677274.git.nirjhar.roy.lists@gmail.com>
+Subject: [PATCH v3 3/4] btrfs/137: Make this test compatible with all supported block sizes
+Date: Wed, 20 Aug 2025 08:15:06 +0000
+Message-Id: <88dcfb6cea422cebc5bbdcd4a0ba912f9c8666fa.1755677274.git.nirjhar.roy.lists@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1755677274.git.nirjhar.roy.lists@gmail.com>
 References: <cover.1755677274.git.nirjhar.roy.lists@gmail.com>
@@ -96,61 +96,172 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This test was written with 4k block size in mind and it fails with
-64k block size when tested with btrfs.
-The test first does pre-allocation, then fills up the
-filesystem. After that it tries to fragment and fill holes at offsets
-of 4k(i.e, 1 fsblock) - which works fine with 4k block size, but with
-64k block size, the test tries to fragment and fill holes within
-1 fsblock(of size 64k). This results in overwrite of 64k fsblocks
-and the write fails. The reason for this failure is that during
-overwrite, there is no more space available for COW.
-Fix this by changing the pwrite block size and offsets to 64k
-so that the test never tries to punch holes or overwrite within 1 fsblock
-and the test becomes compatible with all block sizes.
+For large block sizes like 64k it failed simply because this
+test was written with 4k block size in mind.
+The first few lines of the error logs are as follows:
 
-For non-COW filesystems/files, this test should work even if the
-underlying filesytem block size > 64k.
+     d3dc847171f9081bd75d7a2d3b53d322  SCRATCH_MNT/snap2/bar
 
+     File snap1/foo fiemap results in the original filesystem:
+    -0: [0..7]: data
+    +0: [0..127]: data
+
+     File snap1/bar fiemap results in the original filesystem:
+    ...
+
+Fix this by making the test choose offsets and block size as 64k
+which is aligned with all the underlying supported fs block sizes.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 Reported-by: Disha Goel <disgoel@linux.ibm.com>
 Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
 ---
- tests/generic/274 | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tests/btrfs/137     | 11 ++++----
+ tests/btrfs/137.out | 66 ++++++++++++++++++++++-----------------------
+ 2 files changed, 39 insertions(+), 38 deletions(-)
 
-diff --git a/tests/generic/274 b/tests/generic/274
-index 916c7173..f6c7884e 100755
---- a/tests/generic/274
-+++ b/tests/generic/274
-@@ -40,8 +40,8 @@ _scratch_unmount 2>/dev/null
- _scratch_mkfs_sized $((2 * 1024 * 1024 * 1024)) >>$seqres.full 2>&1
+diff --git a/tests/btrfs/137 b/tests/btrfs/137
+index 7710dc18..c1d498bd 100755
+--- a/tests/btrfs/137
++++ b/tests/btrfs/137
+@@ -23,6 +23,7 @@ _cleanup()
+ _require_test
+ _require_scratch
+ _require_xfs_io_command "fiemap"
++_require_btrfs_no_compress
+ 
+ send_files_dir=$TEST_DIR/btrfs-test-$seq
+ 
+@@ -33,12 +34,12 @@ _scratch_mkfs >>$seqres.full 2>&1
  _scratch_mount
  
--# Create a 4k file and Allocate 4M past EOF on that file
--$XFS_IO_PROG -f -c "pwrite 0 4k" -c "falloc -k 4k 4m" $SCRATCH_MNT/test \
-+# Create a 64k file and Allocate 64M past EOF on that file
-+$XFS_IO_PROG -f -c "pwrite 0 64k" -c "falloc -k 64k 64m" $SCRATCH_MNT/test \
- 	>>$seqres.full 2>&1 || _fail "failed to create test file"
+ # Create the first test file.
+-$XFS_IO_PROG -f -c "pwrite -S 0xaa 0 4K" $SCRATCH_MNT/foo | _filter_xfs_io
++$XFS_IO_PROG -f -c "pwrite -S 0xaa -b 64k 0 64K" $SCRATCH_MNT/foo | _filter_xfs_io
  
- # Fill the rest of the fs completely
-@@ -63,7 +63,7 @@ df $SCRATCH_MNT >>$seqres.full 2>&1
- echo "Fill in prealloc space; fragment at offsets:" >> $seqres.full
- for i in `seq 1 2 1023`; do
- 	echo -n "$i " >> $seqres.full
--	dd if=/dev/zero of=$SCRATCH_MNT/test seek=$i bs=4K count=1 conv=notrunc \
-+	dd if=/dev/zero of=$SCRATCH_MNT/test seek=$i bs=64K count=1 conv=notrunc \
- 		>>$seqres.full 2>/dev/null || _fail "failed to write to test file"
- done
- _scratch_sync
-@@ -71,7 +71,7 @@ echo >> $seqres.full
- echo "Fill in prealloc space; fill holes at offsets:" >> $seqres.full
- for i in `seq 2 2 1023`; do
- 	echo -n "$i " >> $seqres.full
--	dd if=/dev/zero of=$SCRATCH_MNT/test seek=$i bs=4K count=1 conv=notrunc \
-+	dd if=/dev/zero of=$SCRATCH_MNT/test seek=$i bs=64K count=1 conv=notrunc \
- 		>>$seqres.full 2>/dev/null || _fail "failed to fill test file"
- done
- _scratch_sync
+ # Create a second test file with a 1Mb hole.
+ $XFS_IO_PROG -f \
+-     -c "pwrite -S 0xaa 0 4K" \
+-     -c "pwrite -S 0xbb 1028K 4K" \
++     -c "pwrite -S 0xaa -b 64k 0 64K" \
++     -c "pwrite -S 0xbb -b 64k 1088K 64K" \
+      $SCRATCH_MNT/bar | _filter_xfs_io
+ 
+ $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
+@@ -46,10 +47,10 @@ $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
+ 
+ # Now add one new extent to our first test file, increasing its size and leaving
+ # a 1Mb hole between the first extent and this new extent.
+-$XFS_IO_PROG -c "pwrite -S 0xbb 1028K 4K" $SCRATCH_MNT/foo | _filter_xfs_io
++$XFS_IO_PROG -c "pwrite -S 0xbb -b 64k 1088K 64K" $SCRATCH_MNT/foo | _filter_xfs_io
+ 
+ # Now overwrite the last extent of our second test file.
+-$XFS_IO_PROG -c "pwrite -S 0xcc 1028K 4K" $SCRATCH_MNT/bar | _filter_xfs_io
++$XFS_IO_PROG -c "pwrite -S 0xcc -b 64k 1088K 64K" $SCRATCH_MNT/bar | _filter_xfs_io
+ 
+ $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
+ 		 $SCRATCH_MNT/snap2 >/dev/null
+diff --git a/tests/btrfs/137.out b/tests/btrfs/137.out
+index 8554399f..e863dd51 100644
+--- a/tests/btrfs/137.out
++++ b/tests/btrfs/137.out
+@@ -1,63 +1,63 @@
+ QA output created by 137
+-wrote 4096/4096 bytes at offset 0
++wrote 65536/65536 bytes at offset 0
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-wrote 4096/4096 bytes at offset 0
++wrote 65536/65536 bytes at offset 0
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-wrote 4096/4096 bytes at offset 1052672
++wrote 65536/65536 bytes at offset 1114112
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-wrote 4096/4096 bytes at offset 1052672
++wrote 65536/65536 bytes at offset 1114112
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-wrote 4096/4096 bytes at offset 1052672
++wrote 65536/65536 bytes at offset 1114112
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+ 
+ File digests in the original filesystem:
+-3e4309c7cc81f23d45e260a8f13ca860  SCRATCH_MNT/snap1/foo
+-f3934f0cf164e2efa1bab71f2f164990  SCRATCH_MNT/snap1/bar
+-f3934f0cf164e2efa1bab71f2f164990  SCRATCH_MNT/snap2/foo
+-d3dc847171f9081bd75d7a2d3b53d322  SCRATCH_MNT/snap2/bar
++9802287a6faa01a1fd0e01732b732fca  SCRATCH_MNT/snap1/foo
++fe93f68ad1d8d5e47feba666ee6d3c47  SCRATCH_MNT/snap1/bar
++fe93f68ad1d8d5e47feba666ee6d3c47  SCRATCH_MNT/snap2/foo
++8d06f9b5841190b586a7526d0dd356f3  SCRATCH_MNT/snap2/bar
+ 
+ File snap1/foo fiemap results in the original filesystem:
+-0: [0..7]: data
++0: [0..127]: data
+ 
+ File snap1/bar fiemap results in the original filesystem:
+-0: [0..7]: data
+-1: [8..2055]: hole
+-2: [2056..2063]: data
++0: [0..127]: data
++1: [128..2175]: hole
++2: [2176..2303]: data
+ 
+ File snap2/foo fiemap results in the original filesystem:
+-0: [0..7]: data
+-1: [8..2055]: hole
+-2: [2056..2063]: data
++0: [0..127]: data
++1: [128..2175]: hole
++2: [2176..2303]: data
+ 
+ File snap2/bar fiemap results in the original filesystem:
+-0: [0..7]: data
+-1: [8..2055]: hole
+-2: [2056..2063]: data
++0: [0..127]: data
++1: [128..2175]: hole
++2: [2176..2303]: data
+ 
+ At subvol SCRATCH_MNT/snap1
+ At subvol SCRATCH_MNT/snap2
+ At subvol snap1
+ 
+ File digests in the new filesystem:
+-3e4309c7cc81f23d45e260a8f13ca860  SCRATCH_MNT/snap1/foo
+-f3934f0cf164e2efa1bab71f2f164990  SCRATCH_MNT/snap1/bar
+-f3934f0cf164e2efa1bab71f2f164990  SCRATCH_MNT/snap2/foo
+-d3dc847171f9081bd75d7a2d3b53d322  SCRATCH_MNT/snap2/bar
++9802287a6faa01a1fd0e01732b732fca  SCRATCH_MNT/snap1/foo
++fe93f68ad1d8d5e47feba666ee6d3c47  SCRATCH_MNT/snap1/bar
++fe93f68ad1d8d5e47feba666ee6d3c47  SCRATCH_MNT/snap2/foo
++8d06f9b5841190b586a7526d0dd356f3  SCRATCH_MNT/snap2/bar
+ 
+ File snap1/foo fiemap results in the new filesystem:
+-0: [0..7]: data
++0: [0..127]: data
+ 
+ File snap1/bar fiemap results in the new filesystem:
+-0: [0..7]: data
+-1: [8..2055]: hole
+-2: [2056..2063]: data
++0: [0..127]: data
++1: [128..2175]: hole
++2: [2176..2303]: data
+ 
+ File snap2/foo fiemap results in the new filesystem:
+-0: [0..7]: data
+-1: [8..2055]: hole
+-2: [2056..2063]: data
++0: [0..127]: data
++1: [128..2175]: hole
++2: [2176..2303]: data
+ 
+ File snap2/bar fiemap results in the new filesystem:
+-0: [0..7]: data
+-1: [8..2055]: hole
+-2: [2056..2063]: data
++0: [0..127]: data
++1: [128..2175]: hole
++2: [2176..2303]: data
 -- 
 2.34.1
 
