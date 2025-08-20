@@ -1,111 +1,112 @@
-Return-Path: <linux-btrfs+bounces-16177-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16178-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4EE4B2DE83
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Aug 2025 16:00:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65387B2E239
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Aug 2025 18:24:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0A334E7247
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Aug 2025 14:00:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EB1E16D6BD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Aug 2025 16:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90DD3224B00;
-	Wed, 20 Aug 2025 14:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E97327786;
+	Wed, 20 Aug 2025 16:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D21Ad2we"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fRssMe4x"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f66.google.com (mail-pj1-f66.google.com [209.85.216.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E28E222590
-	for <linux-btrfs@vger.kernel.org>; Wed, 20 Aug 2025 14:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E581F2264D5
+	for <linux-btrfs@vger.kernel.org>; Wed, 20 Aug 2025 16:22:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755698408; cv=none; b=qDKkO2H5nklRnFBC0I0Bqp6/StWEAnYODyX8BpyI3K5BN6/L+RouF0UzhlMCw6RkOhJGGT3wcotmkRXS0yg3X+FLDwxvdW6q4ZpR4oJLGnVFdayXavVqKlQ8c7gYBh4lWZld0dYKige6w8DqFs7XFBmtt2Hs4634j3lS9NGVmEw=
+	t=1755706933; cv=none; b=SdSPt3itqm1CxHD6zvJ8iq9d8ZW3l6mM2wEkivB0/bLfleXMnI04btcommDx3LFlBG2LFodFUryAp7NgXVte0iRERe1qBlq4rYWqzHb7RPsy8O3GOBw4ChGJZOEBpc/Dby2SNIWLGfKgwsGH6ra674IGsDijTcuL21Gnvt1QL0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755698408; c=relaxed/simple;
-	bh=CJlKGUkFgeswdLcMZHr9pWMxPLGV18mMsFKLfgajRek=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nsukGcBNmCfsxF7Q1XOw4QF7Hiv3rJeOgRdZohv9RbnGCxQSXU1AZJY9dq4XRvaKNZgnqHcaX5Q76uHwwkuPYlPb37bOUoZ6HeYkmXK2dYwkembEsklruThGqTo5JQ2nUtEg6ZHRnVcpvWoic0ma0siK+2aYNgzWmt9fZ6SbrvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D21Ad2we; arc=none smtp.client-ip=209.85.216.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f66.google.com with SMTP id 98e67ed59e1d1-32326e25000so563327a91.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Aug 2025 07:00:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755698407; x=1756303207; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=l7DRcg5nWe3QJqDF8a0JYtConlHh8J3cE7PSYaP0Chs=;
-        b=D21Ad2weIfcyhHPAY5DGVi7UGHt6DM3RzPj+OPIgKK605K45x6fAWj+0LaH7oEN/3X
-         oacasPQaW4BEhtyBgzpAeqLibS5JcRJkE0MWqQbdGHnBHmzpxwNOJtrQmbW7j71zR0i/
-         zYbV0T8fH5U4wrIxLWdH0frfDigFXQsMOgoWsPS8N0DKXb3oTXA3noEkB2kJzdmKbYps
-         +OQKqwlFtxi5VDA+HCN8LMYfIpIRLy15JEancFMK7f6Pyqf88Nm9vRZrGC19xCFlDWyU
-         +3i2jfYrC4SL+XVECwD6NcnSqMdX+xP4Vdks381sIktAj3HkTk7grifi4XDCYJnKkR+M
-         IMmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755698407; x=1756303207;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=l7DRcg5nWe3QJqDF8a0JYtConlHh8J3cE7PSYaP0Chs=;
-        b=PoXGNjkJyMM0LVKR/zX8p/6d+JSwtlZmQkW/BrxmQuP6WOfdIsIDdSC1mbGlZWpu3u
-         Lz2g3qZBrrwcwDF1BcYrGSSIZjGJh67uVnc9ck9sDgJwMnfevrAFTuAaVKQEhvt5ehAy
-         H81j+lZwZDT6pna3yGQx74bbWl1J48mnl47x3uPPH+dsnDVtzQ8HYDXSTC5gdBG5ll6R
-         BE/Bzv9x568EYIygM0lKpvH8fT0XAC7z63jXQ2yt+hSIuslvnRQ3GM02kgwhPR1Azbh0
-         nyr588EqXdRpsMCV0/1rOU/wxeZHjtHTQKdP2VWFGmy4cYzWM3X5qHDB0dvdp0/3c0H6
-         Jljg==
-X-Gm-Message-State: AOJu0YwJAnipkAj9STC2g6e7Eis7DxpyJAfXZU0cJEP0KeUTaQKhQDLi
-	LCM9lZqvFr1/thTqBFK41OUCWQgptcdH8PszDyzBFISF39mLCCa7pvBlQYdj+rmWx+Vmyw==
-X-Gm-Gg: ASbGnctYhJLnUMSncyRP6U1+UjpFY0fc4edIy9CvQGdjwRyL+lO8ugDQkSodiQCgJsr
-	+dlu66ke9nYPDFtt4HPQSEXwf6uafiPRYqfvSITixt/4i3kD574Gr6NAzyKmwUrG3BP9Sz6kdyz
-	TZ691/0L8qEUaUrj41DThWjUUgeD4Rr5FSVETTJDuk6Zuj78rsldbRnRKdIJFjycvk3ve98UKvY
-	BqUTxjJKn1/Wog0RPcL19/CLqe0wtg+CqYFtddMlWSv525CBp0FL0W6cuMq2mtBx/FTpXeotwh6
-	N6TZkGFWQxjIPryoCYk5AM4+48nVKeCnAuOohrwfEgTEmbVayWX1OIIWO+VpdUPPXQmEBR5WqML
-	EbGexvIYjL/ryedL2a3S37v9AaVkXBN+G6YTRT6PlIHcScfk9+vuWhxFlsmwv99Gb3w==
-X-Google-Smtp-Source: AGHT+IEnukmcJnmSRHX0CC1X4MS06TTZ/sj9whRnJs0mtwtaQdJ+Atqpga/+2cSHkmdCaHERHvAtUw==
-X-Received: by 2002:a17:90b:1e0d:b0:321:c235:38a6 with SMTP id 98e67ed59e1d1-324e143eb4cmr2174437a91.5.1755698406502;
-        Wed, 20 Aug 2025 07:00:06 -0700 (PDT)
-Received: from saltykitkat.localnet ([156.246.92.146])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-324e25177ebsm2476266a91.1.2025.08.20.07.00.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Aug 2025 07:00:06 -0700 (PDT)
-From: Sun YangKai <sunk67188@gmail.com>
-To: linux-btrfs <linux-btrfs@vger.kernel.org>
-Cc: sunk67188@gmail.com
-Subject: Newbie questions about DIR_ITEM and DIR_INDEX design
-Date: Wed, 20 Aug 2025 21:59:58 +0800
-Message-ID: <12726025.O9o76ZdvQC@saltykitkat>
+	s=arc-20240116; t=1755706933; c=relaxed/simple;
+	bh=IsFyELa9QPrqBJgwucGOJ0VEdl9y/5Oh61mhguqB+ic=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k5RG6txnm8Fqy8lVd3A3VXuv+WcpGeuVJAGmJ6s94If7GRScTUeq3KUjVy+DmRsWSU5pXhL2ESs7Wejlt8/l+B9ntp1CmO4nA34aRg6mhjP+gn/lWwKK6ksX4IVs4eaipkAGIWIwAy64/PBpbXBuOnnQX1FTcnqKoIiUpAYI6OE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fRssMe4x; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 20 Aug 2025 09:21:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755706918;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vBLYyaohMUoNQ9X3he/qnSrc95mW/vnc+a+/vaGlBWU=;
+	b=fRssMe4x4fjWLKNWxp9No6Dt3tT/XKMTSIz4exFpUGvwlVWtQ9hM1hkvC54a+RUloUG33v
+	0F2yFukgQwfF1ekGUJ3up1lB8CT6ifF13pr6i/0mgLfGuYbsq0W66fsruIpbmgjtE4Ir6Z
+	fnJoz9vzguWadvcdAyHnRc7Gwiz7Mp0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Boris Burkov <boris@bur.io>, akpm@linux-foundation.org, 
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	kernel-team@fb.com, wqu@suse.com, mhocko@kernel.org, muchun.song@linux.dev, 
+	roman.gushchin@linux.dev, hannes@cmpxchg.org
+Subject: Re: [PATCH v3 2/4] mm: add vmstat for cgroup uncharged pages
+Message-ID: <6xccsmpdtvweriimshfvgz7yzxcdodbxhzfvxraigdqiomkgze@wb2i46neozwu>
+References: <cover.1755562487.git.boris@bur.io>
+ <04b3a5c9944d79072d752c85dac1294ca9bee183.1755562487.git.boris@bur.io>
+ <aKPmiWAwDPNdNBUA@casper.infradead.org>
+ <tw5qydmgv35v63lhqgl7zbjmgwxm2cujqdjq3deicdz2k26ymh@mnxhz43e6jwl>
+ <aKUM49I-4D24MmwZ@casper.infradead.org>
+ <i4hg4g75ywbera643uhtshkj6xrriqi4mi5dg3oga5os3tp6m5@u2dcv2snbiqs>
+ <aKXLXJw7m-TSkZOI@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aKXLXJw7m-TSkZOI@casper.infradead.org>
+X-Migadu-Flow: FLOW_OUT
 
-Hello btrfs developers
+On Wed, Aug 20, 2025 at 02:19:24PM +0100, Matthew Wilcox wrote:
+> On Tue, Aug 19, 2025 at 06:25:36PM -0700, Shakeel Butt wrote:
+> > On Wed, Aug 20, 2025 at 12:46:43AM +0100, Matthew Wilcox wrote:
+> > > OK, but couldn't we make that argument for anything else?  Like slab,
+> > > say.  Why's "file" memory different?
+> > 
+> > Good point and I think it does apply to other memory types too. I would
+> > call "file" memory to be more important as it is one of the largest
+> > consumer of DRAM on, at least, Meta infra. Slab needs a bit more thought.
+> > At the system level (i.e. /proc/meminfo), we account at the page (or
+> > slab) level while for memcg, we account per-object (plus obj_cgroup
+> > pointer).
+> 
+> That was supposed to be a reductio ad absurdum, not an invitation to
+> add more counters.
+> 
+> Look, if this is information you really need, I think you should come
+> up with a better way of collecting it than by adding new counters and
+> new complexity to everything involved in GFP_ACCOUNT activities.
+> 
 
-I am a beginner studying the implementation of btrfs. While examining the 
-structures of DIR_ITEM and DIR_INDEX, I noticed that both store similar 
-content but differ in their offset values. This led me to two questions:
+Please elaborate more on this complexity. To me, particularly for this
+specific case, a dedicated counter seems more cleaner compared to error
+prone and costly alternatives. I am not getting the complexity argument.
 
-1. The offset field in DIR_ITEM is computed as a CRC32 hash of the filename. In 
-practice, is there a risk of hash collisions? If so, how does the current 
-implementation handle such collisions?
+> The unaccounted address_spaces are a very tiny percentage of file
+> memory, at least as far as this patch set goes.
 
-2. The offset field in DIR_INDEX appears to be an auto-incrementing number, 
-possibly indicating the creation order of entries within a directory. Why is 
-this necessary, given that DIR_ITEM already exists?
+From [1], Qu noted "On a real world system, the metadata itself can
+easily go hundreds of GiBs...".
 
-I would greatly appreciate any insights or references to relevant 
-documentation or code snippets to help me understand these design choices.
+This does not seem tiny.
 
-Thank you for your time and guidance.
+> I don't think this
+> patch is justifiable on its face.
 
-Best regards,
-Sun YangKai
+I think I have provided enough justifications. However I don't want to
+force push this until I fully understand your concerns. This will become
+part of API and I don't want a situation where we regret this later.
 
-
+[1] https://lore.kernel.org/linux-mm/08ccb40d-6261-4757-957d-537d295d2cf5@suse.com/
 
