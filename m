@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-16259-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16260-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99D54B308E9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 00:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A03D6B308EB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 00:08:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A959B162B42
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Aug 2025 22:06:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 739056266B5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Aug 2025 22:08:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73352EA73C;
-	Thu, 21 Aug 2025 22:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C8ED2EA73C;
+	Thu, 21 Aug 2025 22:07:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="dWTbjwbH"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="SgOezE8C"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0572A18DB35
-	for <linux-btrfs@vger.kernel.org>; Thu, 21 Aug 2025 22:06:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 376C228466C;
+	Thu, 21 Aug 2025 22:07:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755813964; cv=none; b=mW3kXpWld4WS/zlyN4auTvHk52G6/JaZlYuFSAFX584reefcok6YsHKfMxNsE40u0oFYFfzLDcp8NKfkgFHrzqP9MNqUCebrcB6SictyYwKBVgQXRuMuH7MZ78bmTj26elDdKSwiv7wEMxoX7cBhUQC+1kcAjihC6u5DOAbZf54=
+	t=1755814074; cv=none; b=DpW2yiXAbRrYXLN/HkXC+2oFa1zYCyIBZjpqNaQbXqEpgSgPhnRaq/kFxS4/Q7EUr0Wt06WvVdjr7JccNH5N7W0X+4KkyOQbL+jOWpxbM3bHOTWYRzF91aqulUWSDrHxTMAjwyNseTIaJumETWYW1upIRiSDZNA6BV/gPRAFzk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755813964; c=relaxed/simple;
-	bh=d0BFbq1hNVWI/4Sqgmtuz2v678vvdIfh4BIxu0TlzlE=;
+	s=arc-20240116; t=1755814074; c=relaxed/simple;
+	bh=fxQZ5QB8TdvsKjzcYod4E5PtAEuMrqA+nNUPRt6+GlQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=S6uUi3hKn2w2vS67Zrsl81TwN2FzWDDRgCuC5B3mVXFTlMc78POivaweqdXTITKY4zvNVSDkVTMydRW5HN2UIf/hA+ekkFv/ha3+udTGoaO+SAwm8N1QWsIG77PcJMotoyBNoQgF6NVc1G+hYvN+SrOy7lg6R6pO16YiFTCVbTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=dWTbjwbH; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=QNFznGL6/uaLPeCpvBqojlamH1n1r7ckN6uqPk5i5xgiQHw0XJ2Li+0KRWZfMai5JP5BJJ0v2nJC41Xxj8pg+W8+g5ZbZOWW+pZApOdrd+p+OegJEtEmnK8viNCghlEk9bSDFjWEKBDxbzw3Tf1IfWgaA4e8ZkBBcXrm3aI7fiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=SgOezE8C; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1755813959; x=1756418759; i=quwenruo.btrfs@gmx.com;
-	bh=ilQv/Tr2V5KON/eCAjo1PQ9inyxJYl/FOiP0K2T8kbM=;
+	s=s31663417; t=1755814070; x=1756418870; i=quwenruo.btrfs@gmx.com;
+	bh=nNPh7HqL0CPzruehJM2H6Mq+jsgi3k2R2F1InU5mK2Y=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=dWTbjwbHDNpG9yLYmflQ4zZpFz95BowAv74bX/aPVH5EuN5Ht26u7uS8H+gy//No
-	 C0J7/+uF3+Oi53vpt57+e+REKAjfeFJYxRMFiTlAgYdBJPYkwAt09mGb3iVmCpnQ1
-	 X+2C5SCNzFnI5mnIFbehciTEniai1jU5FLW8Eixf8ogTvHbPWLOiJ68KhIIWe4kuP
-	 q+RYka7mpwehLDguRC/AZcqBmcIDR00z3TpkBnMBBv7di62USaJ9XzhLCBn6pzSHW
-	 3qUmXk83wuSftu4Le/ISfvzAv5OG/nXmRLi03x86NA5R31bKX2jswwykiPifXErtN
-	 fQNBCBPIeN3I8aSc7g==
+	b=SgOezE8ClEbB80EvghCWWidwtvQZ85/TcG4tZwXDCxhEvzgATIJ5ldpR8IurknzL
+	 rM5G3h+G8umaE48D2ga5SpFVDIs7AMjQ/uS1MDtBTMqwGtSdzcK8KVOJdNCLtT1+T
+	 YkqU32q9gDKin/fqilIS9AR3uA3CIVfHWzba4igvCPmHszSodDPehGVttN6bOlhS/
+	 J0ovxS7MOJtjMimITr1DPpBOh5Qeqry17e9azuH0O41ZpS08wJCQlBoLOVlAE9tBT
+	 1HIv8TrcR22hnwFSMe9kB9jEscOMV9/fvdT8ds6Ly349un8fb5P8S+dQm6cZqeJ66
+	 YYa2o2onNdvHOBOjbg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N9Mtg-1uS4PK27zY-00rZ6L; Fri, 22
- Aug 2025 00:05:59 +0200
-Message-ID: <0a4de604-453f-4984-aa19-b6f9f958b6e1@gmx.com>
-Date: Fri, 22 Aug 2025 07:35:54 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MXGvG-1v335n3J5K-00JsAZ; Fri, 22
+ Aug 2025 00:07:50 +0200
+Message-ID: <af8736b1-e85a-4867-a884-194fe8f9abb5@gmx.com>
+Date: Fri, 22 Aug 2025 07:37:46 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,10 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix squota _cmpr stats leak
+Subject: Re: [PATCH] btrfs/301: test nested squota teardown
 To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-References: <052d87d0f70d66e7f50c45e3ec095056ae0cb4f4.1755813444.git.boris@bur.io>
+ fstests@vger.kernel.org, kernel-team@fb.com
+References: <4095ca2ed24f4159650d282ef1aeefa46c028215.1755813480.git.boris@bur.io>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,144 +88,123 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <052d87d0f70d66e7f50c45e3ec095056ae0cb4f4.1755813444.git.boris@bur.io>
+In-Reply-To: <4095ca2ed24f4159650d282ef1aeefa46c028215.1755813480.git.boris@bur.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9aRl7HFq2sKKVGoBNOcH/pfSpC2Z1A4sKwMPwTbcA0AnHe1I0Ka
- OQAjOdxKUfLY556iodH99mkko0ozx1NOZlfVuVtC9N3Mpqdcen6WdkfLvGdnFef12rD7K8q
- 0SXDjzYrfQKaCNZWmdVrm+9fVixJxpT90wqBOgqTet9Jd3B+F6SlAXj+CdKts1+PMKv7DWn
- h/yqMl0qHFRq/Zq8kL9CA==
+X-Provags-ID: V03:K1:C59K8/SIkP1wLVNnDg15C3JdvPDW1cu3tAotQ5Pp6jN6vD/lG51
+ OEKneSl1QYhfukJrmSIQ+jrxCnct7N7oRcxOtSMoH2CZXzvb4ZKWI+EB9XhVTQQ4xefUL0Q
+ orMLPkLQbrwwv4rgHea8rMqzosmjHe4h6lkoUrd5FeOejQSmot+WGFMeARUczZNHXXnsvY+
+ v2e2M08U8RvjBqtgF9RGg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:QBudsMcqos8=;7I7d9aYr/mHRiVLOt38kYX3fD9m
- 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
- NyYjx/X6JIoZ1IZcPqK0Dbr63K3U
+UI-OutboundReport: notjunk:1;M01:P0:Qub6VQk0D8M=;jWxT7S4qW2Qy1jr508VOeVgi6Dq
+ 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
 
 
 
-=E5=9C=A8 2025/8/22 07:28, Boris Burkov =E5=86=99=E9=81=93:
-> The following workload on a squota enabled fs:
->   btrfs subvol create mnt/sv
->   btrfs qgroup create 1/1 mnt
->   btrfs qgroup assign mnt/sv 1/1 mnt
->   btrfs qgroup delete mnt/sv
->   # make the cleaner thread run
->   btrfs filesystem sync mnt; sleep 1; btrfs filesystem sync mnt
->   btrfs qgroup destroy 1/1 mnt
->=20
-> will fail with EBUSY. The reason is that 1/1 does the quick accounting
-> when we assign sv to it, gaining its exclusive usage as excl and
-> excl_cmpr. But then when we delete sv, the decrement happens via
-> record_squota_delta() which does not update excl_cmpr, as squotas does
-> not make any distinction between compressed and normal extents. Thus,
-> we increment excl_cmpr but never decrement it, and are unable to delete
-> 1/1. The two possible fixes are to make squota always mirror excl and
-> excl_cmpr or to make the fast accounting separately track the plain and
-> cmpr numbers. The latter felt cleaner to me so that is what I opted for.
->=20
-> Signed-off-by: Boris Burkov <boris@bur.io>
+=E5=9C=A8 2025/8/22 07:29, Boris Burkov =E5=86=99=E9=81=93:
+> ---
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Since this is adding a new coverage, some commit message would be=20
+appreciated.
+
+Otherwise looks good to me.
 
 Thanks,
 Qu
 
-
-> ---
->   fs/btrfs/qgroup.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
+>   tests/btrfs/301 | 9 +++++++++
+>   1 file changed, 9 insertions(+)
 >=20
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 6352cd29ff89..2d8667cc609a 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -1455,6 +1455,7 @@ static int __qgroup_excl_accounting(struct btrfs_f=
-s_info *fs_info, u64 ref_root,
->   	struct btrfs_qgroup *qgroup;
->   	LIST_HEAD(qgroup_list);
->   	u64 num_bytes =3D src->excl;
-> +	u64 num_bytes_cmpr =3D src->excl_cmpr;
->   	int ret =3D 0;
+> diff --git a/tests/btrfs/301 b/tests/btrfs/301
+> index 7f676001..4c0ba119 100755
+> --- a/tests/btrfs/301
+> +++ b/tests/btrfs/301
+> @@ -21,6 +21,8 @@ _require_no_compress
 >  =20
->   	qgroup =3D find_qgroup_rb(fs_info, ref_root);
-> @@ -1466,11 +1467,12 @@ static int __qgroup_excl_accounting(struct btrfs=
-_fs_info *fs_info, u64 ref_root,
->   		struct btrfs_qgroup_list *glist;
+>   _fixed_by_kernel_commit XXXXXXXXXXXX \
+>   	"btrfs: fix iteration bug in __qgroup_excl_accounting()"
+> +_fixed_by_kernel_commit XXXXXXXXXXXX \
+> +	"btrfs: fix squota _cmpr stats leak"
 >  =20
->   		qgroup->rfer +=3D sign * num_bytes;
-> -		qgroup->rfer_cmpr +=3D sign * num_bytes;
-> +		qgroup->rfer_cmpr +=3D sign * num_bytes_cmpr;
+>   subv=3D$SCRATCH_MNT/subv
+>   nested=3D$SCRATCH_MNT/subv/nested
+> @@ -393,6 +395,13 @@ nested_accounting()
+>   	check_qgroup_usage 2/100 $(($subv_usage + $nested_usage))
+>   	do_enospc_falloc $nested/large_falloc 2G
+>   	do_enospc_write $nested/large 2G
+> +	# ensure we can tear everything down in the nested scenario
+> +	$BTRFS_UTIL_PROG qgroup limit none 1/100 $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG subvolume delete $nested >> $seqres.full
+> +	$BTRFS_UTIL_PROG subvolume delete $subv >> $seqres.full
+> +	trigger_cleaner
+> +	$BTRFS_UTIL_PROG qgroup destroy 1/100 $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG qgroup destroy 2/100 $SCRATCH_MNT
+>   	_scratch_unmount
+>   }
 >  =20
->   		WARN_ON(sign < 0 && qgroup->excl < num_bytes);
-> +		WARN_ON(sign < 0 && qgroup->excl_cmpr < num_bytes_cmpr);
->   		qgroup->excl +=3D sign * num_bytes;
-> -		qgroup->excl_cmpr +=3D sign * num_bytes;
-> +		qgroup->excl_cmpr +=3D sign * num_bytes_cmpr;
->  =20
->   		if (sign > 0)
->   			qgroup_rsv_add_by_qgroup(fs_info, qgroup, src);
 
 
