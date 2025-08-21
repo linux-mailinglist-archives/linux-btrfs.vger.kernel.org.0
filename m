@@ -1,78 +1,79 @@
-Return-Path: <linux-btrfs+bounces-16235-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16236-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A498B306BB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Aug 2025 22:50:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0978CB306D1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Aug 2025 22:50:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7C2DB013DD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Aug 2025 20:45:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B32F1D25032
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Aug 2025 20:45:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2A238F1DB;
-	Thu, 21 Aug 2025 20:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2F03743EC;
+	Thu, 21 Aug 2025 20:21:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="XT3KipCB"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="wiYjKH8d"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009B139094F
-	for <linux-btrfs@vger.kernel.org>; Thu, 21 Aug 2025 20:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DFF5390965
+	for <linux-btrfs@vger.kernel.org>; Thu, 21 Aug 2025 20:21:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755807671; cv=none; b=q5zRzgJ+UzNjNIFwVGg8sLXgyCuW+aqHjRrnBuaFM9CoL4yYTtztsHAAEtk5Dq/YSaujYAMYFT6v2bldrKoG9fjDsj8oP5nSFfxICV1IkPTAhb1vQ7RkPhKA1x48/UAwCjRiT4rJt8alvpYNNw9k0DyolrSBTL22TbBgZXu4Jks=
+	t=1755807672; cv=none; b=tupnUErQ0hfnG4GEeA+tLIq1zXLeE18j1+Keg0oIuJvSkNzfZY6dOcD9CuSghNN3MOw0VtpaNGrM0IcZZ6KPDVr1SBmpn00hi1mztnJETnpW8BalDRg6uk9Dn+oe8d+AIDVZlUcdInjET3IH4Oqd3QiOUpsSdkp3B2iQUQPp2lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755807671; c=relaxed/simple;
-	bh=wctmqEmUpM1KjsZSQp5EFVFe+I/02AT+kFbU82cRaBw=;
+	s=arc-20240116; t=1755807672; c=relaxed/simple;
+	bh=UgBqtpARamUsj1A+LnNOpIJ49vDvjgtBQGImWXuJTMU=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nkPFHFd3PiGV1aY4c35984py4x3F16OLuQZ741UTrx6/Rb13/1/Ron5E3AJ06/V4Ih5dpB6HKWxmqhT0mI7qQSSfLfwUGPdJhLl7hK6VKmFKqBNpm8ap+g1j9FddZG+OxQhmY068+BziiJGidzO+Ip2MqE0j+/3b21n7nVmOcls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=XT3KipCB; arc=none smtp.client-ip=209.85.219.176
+	 MIME-Version; b=AKEQiJx7Uebf4s9qZHRoojMkpeI9oFqtcyAeVrdxKX5w57ChHVVDWfkl5D6aKOmc46+j/AC59ahyZk/iyk/9ivO9LGw8OvoQ0Ax50PGKIkLUz3KktXgc41Cr3xNiCNkguUbMetRxnvVZBuDpiLFZBhNiCRjsrpRY+NneVPEwTZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=wiYjKH8d; arc=none smtp.client-ip=209.85.128.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e94f5dbf726so1328297276.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Aug 2025 13:21:08 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-71d60504bf8so12601377b3.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Aug 2025 13:21:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1755807668; x=1756412468; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1755807669; x=1756412469; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pmjKaUwpj2DkmXlSJQoP2X7HjPrWpM7VXZkID8fwcAw=;
-        b=XT3KipCB2jm6p152EyvrmRuqDRnjVcKIqaBwalMD7j2PyAoVdhlZtb1eZJwVf5A+WO
-         PdAyXmiyjm6CzYXR7EUWG42Rm4JE/qM9YWEF0tXQVbP3kBHV98IKnpHgY+TmBU9VpZnf
-         fwdbfVwt6AX8etvG9yApD/zYDVUlCGdoO7JXxrHNcRUj6j26i+59jzlCWy+Lsm/DphYY
-         x0C3+0JtTbVRjLse7D60UFjkG6k4HGxQjxWzlADS/rfRCtLvh7G/pnQeSZo87xSCuTFo
-         UfmmjmLop4AhyXmKAT7yp7/hGz7TZqxvJzZMEYo5T7t+ZTVRtGLGR1JykPAeJW7gvb4J
-         qXHw==
+        bh=qCzJ83ho866t2cHwyU2sLtn2/A8FHDkq0Lz5CVtgd1c=;
+        b=wiYjKH8d6gRcPg1mLVEw8H4GHLLYVrRTJ/orPIf0OJDCcLac+61g1mLGVSYNEkE+mM
+         QyHD5Lmku2q+hN7oAB/tiCSN+ZwwUAoMwKNNaeCl/1G/7PbA7XUPJg822T9vU7p9UQbB
+         RYBejxwH4oRyCcS5PdaiLJREHn3N2WvgQKWYblfd6hbJ7dHsH1wipFueoVE59wbvlxVH
+         KtYbmVju2tV8dLnIxkHEe026o2FcLJ4MlOV4aS0j1qK9WbAF00le1c6Gs/pMDXS2QAVX
+         oVN/GhpCxypV2mdpmKUffggNVpjRn2QIz8Uanl5/ggmASVP7NhGSFLN99YOGNDmoN6Ks
+         2YUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755807668; x=1756412468;
+        d=1e100.net; s=20230601; t=1755807669; x=1756412469;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pmjKaUwpj2DkmXlSJQoP2X7HjPrWpM7VXZkID8fwcAw=;
-        b=sXJIy08H2E53uauy1kqRTUdA3QH4KVXCqNySEOfmXEo8mmlJT0CTLsQU0O2e0M0kfm
-         ATvHmQnwcigwnCW7nCSfkaQNE3pGp9Wf2OQeqvpI9u6ZhGevOk4tIb3ZM/rEIdwukY2m
-         vZL4bL27JjHa6Nho05t5adhhAeU+A7PRNtwX4hGFH8h7OrmUrMkREjttXVc7qTiB3LDN
-         62LQTKCeQta6DmmrKVSPYRuDMdOiZZ8rWLHsYooF7EFeIIY7So1EfB9LzqQvQuD1JeKI
-         9Os4yofFb109UmYH5wuuXJSj0Hy3rnLz5v8rMt0HVArkPh+PcrnsBjcxHWt1kkPp5Agc
-         jo5w==
-X-Forwarded-Encrypted: i=1; AJvYcCX5BcrJ6JIj49kuh0JnPaoV8IjT7/WQWBeF7E9F4PQAeBOHOPWlDBf+eX60qOXqRRS/ljxQs8DULqu9vA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7QW9KSviX2J146Tl7z8zPKV/PVKuUxapk16GvJoLW4u/Q1Cdt
-	h63aNxmPYd/ctMhof7zQpkRCzNCBZdGbQdfB8K8wE06jsP3tkzqqhNA3npMyr3VbmBs=
-X-Gm-Gg: ASbGnctpit1j28crCgOIsoRrT1vhueW4YT6+RDlcZ3tdJzsjJI0shQtvdsDMSX5kzhj
-	YsDbE6yHmj4T+/TinUJLYiCAFjzA3iR/TQC/g4hzwCymvtTjQyPIubG9i9wc0Z2L+YUB/aGWUmT
-	YiTG/4e11GktfE9EZ6K/eq9xLR1FbqIiy2MHU9VUZbcGZ9ZrbxUXKNseRfVNsfl0X/JE1VMn86e
-	B4H6ixtjAjpTenlA/ImOj1hgalwpg4azduw7GNDVow+ZdPmac3SICL0Wo17lBc7wztOUfI5ExRI
-	eDH7nqoWVg8KkIx5pPbACrACMqxRSh5N/a9E8yCZGSJCSZ+0gGciCxHTya80yWI05wDtmY799ZC
-	VG2PRZTTeKyYEhKeNzCGuBHKXrvq/ZjEUsZJmsoh4t+V5/FD6AyhKCiU2NyY=
-X-Google-Smtp-Source: AGHT+IH/T0dsDptJxPlJ9vX/O/NjsuJx3EIZW8Vubo/2lIk8PPtNqr+h2Z1PZdabpWGsbTrFvzNw7g==
-X-Received: by 2002:a05:6902:6c02:b0:e94:e1e5:377d with SMTP id 3f1490d57ef6-e951c2da511mr1105376276.51.1755807667754;
-        Thu, 21 Aug 2025 13:21:07 -0700 (PDT)
+        bh=qCzJ83ho866t2cHwyU2sLtn2/A8FHDkq0Lz5CVtgd1c=;
+        b=K7CAXdYLmH6gy8ffyJ4OmiatTMOzJ+Jy4sabXiQ+hu07ksQFBHQjFx1sxyhsjiF6H0
+         2MKi561iX76tENsakZZIzJw0nezPt05cbbFH/pScB3XO/vjl6Z1G273GhTvy6ehRxWt9
+         A0NzmMOvqQE1gNlu2qv+BWahh07d7iVp5Dicn2VwgaiTbwLkvY6/PxZUgpYpM60yRxTQ
+         gldlvMzwAJF+68m2aaV2sKrJYIhIvd7ouHWj7rDPbQwR9ORo3ItCeCK9z5l40OQ6jm9J
+         KVM5KdIwUaYCjzTlvUpCzPqmiyUUMMOAP/oUyqCD1KI0R3C0O3I/HiqBblRi/teWjYtE
+         8Yug==
+X-Forwarded-Encrypted: i=1; AJvYcCWqxx+uC4tGy57vpVk1niBnz7AbUis9Q8z6uDjMAb/6k332+wXfldUoROK+TGtYG8aBpjXDAyB/aegueQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBNinbRMVgqQQaYcvipa5KpzD3/WAjMtMUm4q0w6S/EFQoZvuX
+	7vJPzxmsIfAmUPnMEQ2IPqWM65xgfE0HvTPDN+xI3MmfZgRrnSw5kssO6iZQ1ayf/hhM3W2uV+Q
+	4X5VIw4RJ9w==
+X-Gm-Gg: ASbGncuBpWbh/7V9//xPtGu7sqw53XnO995lOaasFYcQbj/Epjy4NKBLsHcGhMCh9rF
+	FHvESZIo8KUUOFlcWWBg7EMpYS3BUB2GFb6XxAKrShk5F2YaASj5t4nUpfTgj622AbEwK7evJSn
+	kDja7q/nbz/FeZTm54AXPDJ9TkvuewTTuL554Ah1x1uiRlnopbGxCUQVqtp7gjKOo9wMTp0b0lB
+	IvA8Nh+9pd3rkRPhVY1Uvqceas86uFK9t8vLejVaQexins0hqMxW49fl7aNd3uTDAJ1ryLHR7tI
+	+Jmnasca+YK7WwXx1ug11lP3lPYmmvI3XUNXwOzahmiOdVO0ahgx5KxjQ0DjCoi294Jlt4OMPpN
+	+XttyBFIjgbmXy3tJbmOd1faSWNGSjkxAXOMjBwA9h8KbUk1VuzZpbi5NZPM=
+X-Google-Smtp-Source: AGHT+IG+qkt/ad2IRsfhbVTT3k6BgF0uMmUd+EuxlrROjkWL0rHslYOzEPK8vyiJHGYW9H2EdUIDZQ==
+X-Received: by 2002:a05:690c:6a05:b0:71a:2d5f:49b4 with SMTP id 00721157ae682-71fdc3d609bmr6895017b3.25.1755807669383;
+        Thu, 21 Aug 2025 13:21:09 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e94e3942c33sm3133839276.28.2025.08.21.13.21.06
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-71e830843e9sm35041497b3.73.2025.08.21.13.21.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Aug 2025 13:21:06 -0700 (PDT)
+        Thu, 21 Aug 2025 13:21:08 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
@@ -81,9 +82,9 @@ To: linux-fsdevel@vger.kernel.org,
 	linux-xfs@vger.kernel.org,
 	brauner@kernel.org,
 	viro@ZenIV.linux.org.uk
-Subject: [PATCH 34/50] ext4: stop checking I_WILL_FREE|IFREEING in ext4_check_map_extents_env
-Date: Thu, 21 Aug 2025 16:18:45 -0400
-Message-ID: <0350442f4267245bb0104506c95c05a1cc42e96b.1755806649.git.josef@toxicpanda.com>
+Subject: [PATCH 35/50] fs: remove I_WILL_FREE|I_FREEING from fs-writeback.c
+Date: Thu, 21 Aug 2025 16:18:46 -0400
+Message-ID: <4ce42c8d0da7647e98a7dc3b704d19b57e60b71d.1755806649.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1755806649.git.josef@toxicpanda.com>
 References: <cover.1755806649.git.josef@toxicpanda.com>
@@ -95,26 +96,174 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead check the refcount to see if the inode is alive.
+Now that we have the reference count to indicate live inodes, we can
+remove all of the uses of I_WILL_FREE and I_FREEING in fs-writeback.c
+and use the appropriate reference count checks.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/ext4/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/fs-writeback.c | 47 ++++++++++++++++++++++++++---------------------
+ 1 file changed, 26 insertions(+), 21 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 5b7a15db4953..7674c1f614b1 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -425,7 +425,7 @@ void ext4_check_map_extents_env(struct inode *inode)
- 	if (!S_ISREG(inode->i_mode) ||
- 	    IS_NOQUOTA(inode) || IS_VERITY(inode) ||
- 	    is_special_ino(inode->i_sb, inode->i_ino) ||
--	    (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) ||
-+	    ((inode->i_state & I_NEW) || !refcount_read(&inode->i_count)) ||
- 	    ext4_test_inode_flag(inode, EXT4_INODE_EA_INODE) ||
- 	    ext4_verity_in_progress(inode))
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 789c4228412c..0ea6d0e86791 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -129,7 +129,7 @@ static bool inode_io_list_move_locked(struct inode *inode,
+ {
+ 	assert_spin_locked(&wb->list_lock);
+ 	assert_spin_locked(&inode->i_lock);
+-	WARN_ON_ONCE(inode->i_state & I_FREEING);
++	WARN_ON_ONCE(!refcount_read(&inode->i_count));
+ 
+ 	if (list_empty(&inode->i_io_list))
+ 		iobj_get(inode);
+@@ -314,7 +314,7 @@ static void inode_cgwb_move_to_attached(struct inode *inode,
+ {
+ 	assert_spin_locked(&wb->list_lock);
+ 	assert_spin_locked(&inode->i_lock);
+-	WARN_ON_ONCE(inode->i_state & I_FREEING);
++	WARN_ON_ONCE(!refcount_read(&inode->i_count));
+ 
+ 	inode->i_state &= ~I_SYNC_QUEUED;
+ 	if (wb != &wb->bdi->wb)
+@@ -415,10 +415,10 @@ static bool inode_do_switch_wbs(struct inode *inode,
+ 	xa_lock_irq(&mapping->i_pages);
+ 
+ 	/*
+-	 * Once I_FREEING or I_WILL_FREE are visible under i_lock, the eviction
+-	 * path owns the inode and we shouldn't modify ->i_io_list.
++	 * Once the refcount is 0, the eviction path owns the inode and we
++	 * shouldn't modify ->i_io_list.
+ 	 */
+-	if (unlikely(inode->i_state & (I_FREEING | I_WILL_FREE)))
++	if (unlikely(!refcount_read(&inode->i_count)))
+ 		goto skip_switch;
+ 
+ 	trace_inode_switch_wbs(inode, old_wb, new_wb);
+@@ -570,13 +570,16 @@ static bool inode_prepare_wbs_switch(struct inode *inode,
+ 	/* while holding I_WB_SWITCH, no one else can update the association */
+ 	spin_lock(&inode->i_lock);
+ 	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
+-	    inode->i_state & (I_WB_SWITCH | I_FREEING | I_WILL_FREE) ||
++	    inode->i_state & I_WB_SWITCH ||
+ 	    inode_to_wb(inode) == new_wb) {
+ 		spin_unlock(&inode->i_lock);
+ 		return false;
+ 	}
++	if (!inode_tryget(inode)) {
++		spin_unlock(&inode->i_lock);
++		return false;
++	}
+ 	inode->i_state |= I_WB_SWITCH;
+-	__iget(inode);
+ 	spin_unlock(&inode->i_lock);
+ 
+ 	return true;
+@@ -1207,7 +1210,7 @@ static void inode_cgwb_move_to_attached(struct inode *inode,
+ {
+ 	assert_spin_locked(&wb->list_lock);
+ 	assert_spin_locked(&inode->i_lock);
+-	WARN_ON_ONCE(inode->i_state & I_FREEING);
++	WARN_ON_ONCE(!refcount_read(&inode->i_count));
+ 
+ 	inode->i_state &= ~I_SYNC_QUEUED;
+ 	inode_delete_from_io_list(inode);
+@@ -1405,7 +1408,7 @@ static void redirty_tail_locked(struct inode *inode, struct bdi_writeback *wb)
+ 	 * tracking. Flush worker will ignore this inode anyway and it will
+ 	 * trigger assertions in inode_io_list_move_locked().
+ 	 */
+-	if (inode->i_state & I_FREEING) {
++	if (!refcount_read(&inode->i_count)) {
+ 		inode_delete_from_io_list(inode);
+ 		wb_io_lists_depopulated(wb);
  		return;
+@@ -1621,7 +1624,7 @@ static void requeue_inode(struct inode *inode, struct bdi_writeback *wb,
+ 			  struct writeback_control *wbc,
+ 			  unsigned long dirtied_before)
+ {
+-	if (inode->i_state & I_FREEING)
++	if (!refcount_read(&inode->i_count))
+ 		return;
+ 
+ 	/*
+@@ -1787,7 +1790,7 @@ __writeback_single_inode(struct inode *inode, struct writeback_control *wbc)
+  * whether it is a data-integrity sync (%WB_SYNC_ALL) or not (%WB_SYNC_NONE).
+  *
+  * To prevent the inode from going away, either the caller must have a reference
+- * to the inode, or the inode must have I_WILL_FREE or I_FREEING set.
++ * to the inode, or the inode must have a zero refcount.
+  */
+ static int writeback_single_inode(struct inode *inode,
+ 				  struct writeback_control *wbc)
+@@ -1797,9 +1800,7 @@ static int writeback_single_inode(struct inode *inode,
+ 
+ 	spin_lock(&inode->i_lock);
+ 	if (!refcount_read(&inode->i_count))
+-		WARN_ON(!(inode->i_state & (I_WILL_FREE|I_FREEING)));
+-	else
+-		WARN_ON(inode->i_state & I_WILL_FREE);
++		WARN_ON(inode->i_state & I_NEW);
+ 
+ 	if (inode->i_state & I_SYNC) {
+ 		/*
+@@ -1837,7 +1838,7 @@ static int writeback_single_inode(struct inode *inode,
+ 	 * If the inode is freeing, its i_io_list shoudn't be updated
+ 	 * as it can be finally deleted at this moment.
+ 	 */
+-	if (!(inode->i_state & I_FREEING)) {
++	if (refcount_read(&inode->i_count)) {
+ 		/*
+ 		 * If the inode is now fully clean, then it can be safely
+ 		 * removed from its writeback list (if any). Otherwise the
+@@ -1957,7 +1958,7 @@ static long writeback_sb_inodes(struct super_block *sb,
+ 		 * kind writeout is handled by the freer.
+ 		 */
+ 		spin_lock(&inode->i_lock);
+-		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
++		if ((inode->i_state & I_NEW) || !refcount_read(&inode->i_count)) {
+ 			redirty_tail_locked(inode, wb);
+ 			spin_unlock(&inode->i_lock);
+ 			continue;
+@@ -2615,7 +2616,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
+ 			if (inode_unhashed(inode))
+ 				goto out_unlock;
+ 		}
+-		if (inode->i_state & I_FREEING)
++		if (!refcount_read(&inode->i_count))
+ 			goto out_unlock;
+ 
+ 		/*
+@@ -2729,13 +2730,17 @@ static void wait_sb_inodes(struct super_block *sb)
+ 		spin_unlock_irq(&sb->s_inode_wblist_lock);
+ 
+ 		spin_lock(&inode->i_lock);
+-		if (inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) {
++		if (inode->i_state & I_NEW) {
++			spin_unlock(&inode->i_lock);
++			spin_lock_irq(&sb->s_inode_wblist_lock);
++			continue;
++		}
++
++		if (!inode_tryget(inode)) {
+ 			spin_unlock(&inode->i_lock);
+-
+ 			spin_lock_irq(&sb->s_inode_wblist_lock);
+ 			continue;
+ 		}
+-		__iget(inode);
+ 
+ 		/*
+ 		 * We could have potentially ended up on the cached LRU list, so
+@@ -2886,7 +2891,7 @@ EXPORT_SYMBOL(sync_inodes_sb);
+  * This function commits an inode to disk immediately if it is dirty. This is
+  * primarily needed by knfsd.
+  *
+- * The caller must either have a ref on the inode or must have set I_WILL_FREE.
++ * The caller must either have a ref on the inode or the inode must have a zero refcount.
+  */
+ int write_inode_now(struct inode *inode, int sync)
+ {
 -- 
 2.49.0
 
