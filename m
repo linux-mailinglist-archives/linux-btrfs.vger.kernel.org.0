@@ -1,87 +1,109 @@
-Return-Path: <linux-btrfs+bounces-16305-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16306-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43AC0B3225E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 20:43:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC92FB32262
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 20:46:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DB2E623A31
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 18:43:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 789146247D4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 18:46:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762A82BF3E2;
-	Fri, 22 Aug 2025 18:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1513D2BF3CF;
+	Fri, 22 Aug 2025 18:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wbinvd.org header.i=@wbinvd.org header.b="bJT6xkOJ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="O1JDsGIz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xvN6Wm/b";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="O1JDsGIz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xvN6Wm/b"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0471277017
-	for <linux-btrfs@vger.kernel.org>; Fri, 22 Aug 2025 18:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C583AC1C
+	for <linux-btrfs@vger.kernel.org>; Fri, 22 Aug 2025 18:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755888173; cv=none; b=Iy5dSFPv0VeLwehNSunQZZd/dQYp1sbX4xwA5CvEBvs7zv07vTLIxhVhpBKYdwvPIfQrkf1x3z0jlaoLF2DUWLFJ//WEYho/IidexCmJAuZV8l9U1Q7ma3uc213baM+ITwVhOYdzQ/nDYLV/MBEnCCOdlrsNdkoK1cWQnhSqd3c=
+	t=1755888357; cv=none; b=X5o989W0jtRKa6gHXW+qV+UXdgyXal+eGp9GAgrSY8+SFA6Oz83+VX/5AeRvUK8Pn0WkhIWhqkEMtfZEOSgBpdaBdbx1sKGwcYxZuw958FeWCgIVCqYqYO7H0O9ZjFqdPeqIrkM4vqCYqro2E1w0MNvYmELIfmxc2mO082coLrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755888173; c=relaxed/simple;
-	bh=HMDU6qnc6XToakMxvLwKRSmVgASNQEzig+IwPzLgNjI=;
+	s=arc-20240116; t=1755888357; c=relaxed/simple;
+	bh=Lhh8/zVJrXTLvvq9G/h02uOlLVNWfyH9IC++2ycq/AE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=As9OP8eRlK40OUmFITJgaXzUJ8LVcpR7UUCySls1fkY7ZR2sNkt+lHjalsDQHosb574ZdQPqWLo1vQKaKSg3Nl8h4/QfS/ju1+sTaHYpkFVNyF8ZWX28Op1oDqJudrL8x4b4JgF3yXOMhg2NsUhY8XJFk7beG9a5AUnjK2yuQUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wbinvd.org; spf=pass smtp.mailfrom=wbinvd.org; dkim=pass (2048-bit key) header.d=wbinvd.org header.i=@wbinvd.org header.b=bJT6xkOJ; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wbinvd.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wbinvd.org
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-24646202152so9386155ad.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Aug 2025 11:42:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=wbinvd.org; s=wbinvd; t=1755888170; x=1756492970; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VRqezcJ9J5RPvnfO+uIE5EjJo7z/UAP8PQZlBAlk17k=;
-        b=bJT6xkOJEjXFEdRV+M8HSmrKE/fXB2oHLgCgcd4NEc4LqV2+bYbPZ+8qERBydfXFuS
-         foV8Ij3jM6CmFkm6HRVy3ZKMVehL3ifxH0flXVkeYrZ6De27I2iA61NoKwY7XIl1UhyV
-         7knwdJnBheOxgSf8Lkw4R8jj31Gei94XUkwzAWHA/Uj6eNmaCRtLHR4bjkQZIPH5sl4O
-         /c31c4HBTD/W9u7PoLRZmqPYVa4KZRadw2tN9hNVoy3pe/TU9ashTdyCWo9StNckOZ6x
-         IlLwzAWyzdehA+GnvF8K9kuTW+stLhghVy/HV+GuYmDatgDzUUkRog3Mpody1YdJER+D
-         wCdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755888170; x=1756492970;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VRqezcJ9J5RPvnfO+uIE5EjJo7z/UAP8PQZlBAlk17k=;
-        b=SfYYVmTgk813LciALl4oUcrNJZpxd/kRzfr4J9T8W0Ojb6p3GyCUQgjUBjn8eNbRJ+
-         Pd4m3p5i34JByjZNuCHlohwol04P5fTPQIojDL/HVSyjDZ841/GluzIl0vK3+gDNcqoA
-         YQKsuua3YeqrGzXa37hwuOM7/R87PCjTuNeT7eHVrVWEe79Bh4+NuSyUomZWoMD5RD92
-         SNFxq+G6vjFp59WZ2yg1WFfdxskFlZ7MeCVCGl0q9f8WgmZj+cVY9+1nNHK4BQAtG6A1
-         H7rDqW5/84WOV8dzhqSCy5HpaSmm5Deb95O/TfZENLQGicrYz9VjCzH06yt0ks8f/hMZ
-         geGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXBfWK8lmCEIdfPw8LtzFB1q95o3+ep2KDcaSZpyHYRysxHubmWQzwU2U14LEv8a7tlN16F4LhFgTpO1g==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxu7EWt2zXt2BIkxvUAbhw/nQZCmLfec6OEnLXwdKQMtr5xheA7
-	ajwnfg9Oad+tuL2jYzpB4paAtgNzoMj9SLpHPRivIbIqR8zzsZ6fvDWWY4FZ5XiaXTA=
-X-Gm-Gg: ASbGncuacw7+Jp+TFeoLvtwZssTP4sVN65UFhKate7m0TvIBtYh5EqATAWp4HHqBZLF
-	YmKQbId3DaLXJO/b8Ydbgv6csiBWgCbNDul0TWxeo5C1pdhY8somzZmyJZeiMQkVtxWSIy/ATMO
-	XkJFTf8Hm4XztTiyQki1YEwNMk2qGXOoMM/9bXH7qrjHsaK5oYv8ET/DK9wn10qpPh9zWjLC0wm
-	SKGWx+pCvrSp8k8zEoaXz2qPUGzc4lCbcZ/e13zcZ8ZzrXVRxHg7PO/7ljqD079nsK40TpFOUOM
-	g8Q75i3zVvpLqxubtwALB/0RJIF918U6VCkuA1HRQH9VSsUrTVTgNtfV22Z41/zmsJeHgGM7zbp
-	l49kZhBYrcFJrOgrKGfoGKJCy
-X-Google-Smtp-Source: AGHT+IHXhgusmCBljx9j0ynCx//dG3+DQIdpERkIhWbIeVVT8KWK7G8ICDAak5hLnXpQf+JKlRArKA==
-X-Received: by 2002:a17:902:dad1:b0:242:befb:b04e with SMTP id d9443c01a7336-2462ee9cbfcmr55698485ad.25.1755888170055;
-        Fri, 22 Aug 2025 11:42:50 -0700 (PDT)
-Received: from mozart.vkv.me ([192.184.167.117])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-324f3908fe3sm2553320a91.1.2025.08.22.11.42.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Aug 2025 11:42:49 -0700 (PDT)
-Date: Fri, 22 Aug 2025 11:42:47 -0700
-From: Calvin Owens <calvin@wbinvd.org>
-To: Sun YangKai <sunk67188@gmail.com>
-Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	neelx@suse.com, quwenruo.btrfs@gmx.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=oQ/zAlgpnp/Z9XNteUvAWsaoBC/nwKwgFMD5+LkWqKGsPZiYhWYW+VCp76aP6HU+40ZXtxRSsvW91kDrlktV3X+xss7oa8QhsyPImJZhh6lLDtqEThXf8R60sGmfeuy2fssQ8C7IWwf9HCr7FyT43AmmoNOr125JTHUd3voWxFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=O1JDsGIz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xvN6Wm/b; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=O1JDsGIz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xvN6Wm/b; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AE9502208A;
+	Fri, 22 Aug 2025 18:45:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1755888353;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ldevIDkCymOAVO+XFNA1UlE63JFsEjpsWCHsZsgugH4=;
+	b=O1JDsGIzxJQ/oSEAkuXIGudSEC7gYs168sQkehKdUt4hJEbQYvsLdNjbeIv1/pDPZedTnA
+	uxhT+2+Tg/c8thN8OyaNtuAx3la9G8uETS2FMMIlIQDwKBQD5ZEI/MkKTB6W6CKckFTXrb
+	w3m70m40tr093qkJpw5ahl0YZbU1wnA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1755888353;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ldevIDkCymOAVO+XFNA1UlE63JFsEjpsWCHsZsgugH4=;
+	b=xvN6Wm/bORHOwuMExp9woeHpsrav+KPsJkQ5yJbRkL7p59CB/db2cMe1uiwTroCJH0/pcO
+	jV62TUCYw+TQRjBw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=O1JDsGIz;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="xvN6Wm/b"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1755888353;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ldevIDkCymOAVO+XFNA1UlE63JFsEjpsWCHsZsgugH4=;
+	b=O1JDsGIzxJQ/oSEAkuXIGudSEC7gYs168sQkehKdUt4hJEbQYvsLdNjbeIv1/pDPZedTnA
+	uxhT+2+Tg/c8thN8OyaNtuAx3la9G8uETS2FMMIlIQDwKBQD5ZEI/MkKTB6W6CKckFTXrb
+	w3m70m40tr093qkJpw5ahl0YZbU1wnA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1755888353;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ldevIDkCymOAVO+XFNA1UlE63JFsEjpsWCHsZsgugH4=;
+	b=xvN6Wm/bORHOwuMExp9woeHpsrav+KPsJkQ5yJbRkL7p59CB/db2cMe1uiwTroCJH0/pcO
+	jV62TUCYw+TQRjBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8ED2513931;
+	Fri, 22 Aug 2025 18:45:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id vptpIuG6qGgwUgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 22 Aug 2025 18:45:53 +0000
+Date: Fri, 22 Aug 2025 20:45:47 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Calvin Owens <calvin@wbinvd.org>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, Daniel Vacek <neelx@suse.com>,
+	David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+	Chris Mason <clm@fb.com>
 Subject: Re: [PATCH] btrfs: Accept and ignore compression level for lzo
-Message-ID: <aKi6J2IkGOytAggj@mozart.vkv.me>
+Message-ID: <20250822184547.GX22430@suse.cz>
+Reply-To: dsterba@suse.cz
 References: <a5e0515b8c558f03ba2a9613c736d65f2b36b5fe.1755848139.git.calvin@wbinvd.org>
- <2022221.PYKUYFuaPT@saltykitkat>
+ <a637a576-f107-4d05-84c8-280b133e925a@gmx.com>
+ <aKg4PcgUCvXblVCY@mozart.vkv.me>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -90,60 +112,71 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2022221.PYKUYFuaPT@saltykitkat>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aKg4PcgUCvXblVCY@mozart.vkv.me>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: AE9502208A
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_CC(0.00)[gmx.com,vger.kernel.org,suse.com,toxicpanda.com,fb.com];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com]
+X-Spam-Score: -4.21
 
-On Friday 08/22 at 18:20 +0800, Sun YangKai wrote:
-> > The compression level is meaningless for lzo, but before commit
-> > 3f093ccb95f30 ("btrfs: harden parsing of compression mount options"),
-> > it was silently ignored if passed.
+On Fri, Aug 22, 2025 at 02:28:29AM -0700, Calvin Owens wrote:
+> On Friday 08/22 at 17:57 +0930, Qu Wenruo wrote:
+> > 在 2025/8/22 17:15, Calvin Owens 写道:
+> > > The compression level is meaningless for lzo, but before commit
+> > > 3f093ccb95f30 ("btrfs: harden parsing of compression mount options"),
+> > > it was silently ignored if passed.
 > > 
-> > After that commit, passing a level with lzo fails to mount:
-> >     BTRFS error: unrecognized compression value lzo:1
-> > 
-> > Restore the old behavior, in case any users were relying on it.
-> > 
-> > Fixes: 3f093ccb95f30 ("btrfs: harden parsing of compression mount options")
-> > Signed-off-by: Calvin Owens <calvin@wbinvd.org>
-> > ---
-> > 
-> >  fs/btrfs/super.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> > index a262b494a89f..7ee35038c7fb 100644
-> > --- a/fs/btrfs/super.c
-> > +++ b/fs/btrfs/super.c
-> > @@ -299,7 +299,7 @@ static int btrfs_parse_compress(struct btrfs_fs_context
-> > *ctx,> 
-> >  		btrfs_set_opt(ctx->mount_opt, COMPRESS);
-> >  		btrfs_clear_opt(ctx->mount_opt, NODATACOW);
-> >  		btrfs_clear_opt(ctx->mount_opt, NODATASUM);
-> > 
-> > -	} else if (btrfs_match_compress_type(string, "lzo", false)) {
-> > +	} else if (btrfs_match_compress_type(string, "lzo", true)) {
-> > 
-> >  		ctx->compress_type = BTRFS_COMPRESS_LZO;
-> >  		ctx->compress_level = 0;
-> >  		btrfs_set_opt(ctx->mount_opt, COMPRESS);
-> > 
-> > --
-> > 2.47.2
+> > Since LZO doesn't support compression level, why providing a level parameter
+> > in the first place?
 > 
-> A possible improvement would be to emit a warning in
-> btrfs_match_compress_type() when @may_have_level is false but a
-> level is still provided. And the warning message can be something like 
-> "Providing a compression level for {compression_type} is not supported, the 
-> level is ignored."
-> 
-> This way:
-> 1. users receive a clearer hint about what happened,
-> 2. existing setups relying on this behavior continue to work,
-> 3. the @may_have_level semantics remain consistent.
+> Interpreting "no level" as "level is always one" doesn't seem that
+> unreasonable to me, especially since it has worked forever.
 
-Thanks Sun, sorry for not acknowledging your suggestion in my last
-response. Repeating what I said there: if it helps get this in, I'm
-happy to do it, but it sounds like Qu is pretty fundamentally opposed
-to keeping the old behavior.
+As it currently works, no level means use the default, which is defined
+for all compression. For LZO it's implicit and 1.
 
+> > I think it's time for those users to properly update their mount options.
 > 
+> It's a user visable regression, and fixing it has zero possible
+> downside. I think you should take my patch :)
+
+I tend to agree this is a usability regression, even if LZO is a bit odd
+with levels, accepting the allowed values should work.
+
+The mount options and level combinations that should work:
+
+- compress=NAME   - use default level for NAME
+- compress=NAME:0 - use default, while accepting the level setting
+- compress=NAME:N - if N is in the allowed range for NAME then take it
+
+The syntax is consistent for all three compressions.
 
