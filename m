@@ -1,88 +1,78 @@
-Return-Path: <linux-btrfs+bounces-16290-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16291-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28A39B319C2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 15:37:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25F41B31A2F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 15:51:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A07F25E30BB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 13:34:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6587A189F5D6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 13:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A66D5302CD8;
-	Fri, 22 Aug 2025 13:31:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3811D3043CF;
+	Fri, 22 Aug 2025 13:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="m4AyDOqZ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NqeO1ozl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D47F302CA9
-	for <linux-btrfs@vger.kernel.org>; Fri, 22 Aug 2025 13:31:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75632303CBD;
+	Fri, 22 Aug 2025 13:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755869516; cv=none; b=irUVg0IFbPocWbgdvNiwVuqc5CijtHOmjNy/EC2rzN8K7Jam5Xl3jflUnoza1lCLS6RF4xQXMxdeZFWj1dESH1m6ms0N75ug34BwtMjz6QTAMfkEIsxapYJp2/GefnOWAVIYZ1aXvkabj+pnGHy6OdFFa50CiIqhTBPyyY3thYE=
+	t=1755870397; cv=none; b=R9zcu7yEjiNVNuIOAB04QNcahizGsbVlOWTl5pLH5kYk/gNSsn7w96oDoDdy99A1AEvlor7ZdhpkibhNyq2rGTr8P1ZaORz7fnNwOjmqianGcIzzuoai9ChwOAOgFJewNsnysp0HWfVQOmiQ7Yq9i736fWAKqf6dI/PAZ7+GXlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755869516; c=relaxed/simple;
-	bh=doC7mMX6Qib2P8llXBZPDzV0rg9Aoj4aCzPhSQRvmpA=;
+	s=arc-20240116; t=1755870397; c=relaxed/simple;
+	bh=J0+pZ+2m0Dv0vL74QouwXOMlr21iON6x4zZIvX0pgZY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ic1KrbiLKtuNsZ6udrxkt8ySBtEdGQ/wbDtDMxQ/4L2jpaPQ9USsJq+uZfngA/WZCsySIZUuT17k6zAYEiWzg7I8C47nk6vjmqtbCq7HHXh9uM+BS2DIKVv2++TcVVNiIBV+fW6gY8idG63W4ZZaEkPXdVCl/0KoYn/B3QxHudc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=m4AyDOqZ; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e9513a4b346so1697517276.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Aug 2025 06:31:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1755869513; x=1756474313; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O1UHIuV1R9kJlTum1IUZl89jWukXHK0SZ9mLRMY0AeM=;
-        b=m4AyDOqZd3/SMkwmzBLgWZHnUR01cCkYdjU/LiqdqJR4S5LGsIkq7eywmJJflfiwlx
-         yRWdYqAKk0Hlh+StZYzw9dTI9TfIcoAyRKRw9nWgANVHQLOrJHkx7vdjhR1JxizyebuB
-         1ZZIn64ahupkbBnekETkD5yAhhc3wNJbs0fEJvtUVSPAsR4l4Wj/VrYyZAFPP+1Qz0fE
-         +irUu1OVMdPT9bRftBnjpEMnmoX0gtm2g4SOBo3bxoSeyVpH85onwoJDYxXTHcP6T64l
-         MByAySXjN4jFB8uO/432cpVLOT/YJtjoD9l+5NRs33uro/DYU27hP2rmt4yGBnW8aerb
-         Krzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755869513; x=1756474313;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O1UHIuV1R9kJlTum1IUZl89jWukXHK0SZ9mLRMY0AeM=;
-        b=qFwlPSpuhI6MBwGvtBoWeamO/qJI6PcGNnsZzGW+noEjAu8lqbRSiE1tleyDLq7WWL
-         mcOWdnvv+SRZQ2ZXEt0urasrG7aepxibO+YTg7BoOHC+VWuJaIorLi38yYD4bZCDitSc
-         OWEiGGe7InixHEnN9N+1XqHhIrMtCnxZ4/H9vuEFrpRDMNeEH3xEzYGHOAhvKsm5Gdwj
-         78cyDZ9a7x3bizgr0s/+sUSIhSLLFchvmQsUwjd/xdwbMzp8YJrNtk+oQL6NIN1MRWZw
-         r0uphxBK8vFpA4cUUotUQhKEyzB51CjVur0tV140S4qVVurwBwOO4bK5QJyKaI3CCVHy
-         R1Pw==
-X-Forwarded-Encrypted: i=1; AJvYcCUH3FQiko4KEVqGeJVDrtWdSk837FSqCcA4gvR2enhRh3C3uavbKYJQFrLKuY6v82uPc20aNNGbhSmI8Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzp/VwtaBKKnC7b49/2krBc0Z92+3wJx8dpXC0BnXrnMDWeLEuA
-	QjFshDC19aGx5c3VwgNU/N5FpJ3BKMpRnEbO5PoIA4bngMvgYaQvJ30+8JU+8YKUs+w=
-X-Gm-Gg: ASbGncuVGsQ/KjEWZoHJkIqhDRlfg2TMaI/pQ1c9qMa4ISGqFSnWuMWn4PmaGndhyAE
-	TKF1McM5RV3npzcwvwnBacpKrgSzRZWmpiaI7hmK0GkvmocM5Hqe8tw4VZEUmSfeGJopOPboyZD
-	tJqofez/D5lAAFNgE1mgmgu1QS+i/9vzefb1Pka4ydSlUfPtCcvfefU6FAowhdFUpto0abYFwDA
-	0oTsb3HW2gyO+Vw+NdzyyCcmQHpz5PQt0iDgvwudn/wza54meTz1SLzTmzQiUfJG5JgMylq9l3C
-	PbKnDF1yMG3lGTUJwPt1NiKBGDjyNtc07nFZz/uGLgxKqTfECEyy+S9rS49ggcBrJrsTxLtoePn
-	4IubOV1CWFJgizdo4ZyxCQ6akFI6i6YIzRx0qr6HhsZkAFgyuikYEgjnYdKE=
-X-Google-Smtp-Source: AGHT+IHOMcdXFoBNlqJp1nvuHeuGm4jjp9gkJ74n4aiOq3a9UsdZVSTvCfFQFaKC6IhpCYd+XHR/sQ==
-X-Received: by 2002:a05:6902:2412:b0:e94:e1e6:d1d with SMTP id 3f1490d57ef6-e951d11229fmr2850101276.25.1755869512847;
-        Fri, 22 Aug 2025 06:31:52 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e94f805c56fsm2505171276.3.2025.08.22.06.31.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Aug 2025 06:31:52 -0700 (PDT)
-Date: Fri, 22 Aug 2025 09:31:51 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 02/50] fs: make the i_state flags an enum
-Message-ID: <20250822133151.GB927384@perftesting>
-References: <cover.1755806649.git.josef@toxicpanda.com>
- <02211105388c53dc68b7f4332f9b5649d5b66b71.1755806649.git.josef@toxicpanda.com>
- <20250822-orcas-bemannten-728c9946b160@brauner>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AIdHAh8hWDhabL9kX6Bv0La4XqHbNI0RtbRD3Flqu5WTkcmlrGPsVhxuX99sKsJgYwxByBoC6UbvkGNl+bFXoUWBid/BKcvj6D6I3e5KSMS6IPb/fNCHig+o78f8MEFmZG8hMKQbfLma2fnxMZtp8QGzQFM/yWfftbEiYIebQ6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NqeO1ozl; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1755870394; x=1787406394;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=J0+pZ+2m0Dv0vL74QouwXOMlr21iON6x4zZIvX0pgZY=;
+  b=NqeO1ozluqGhg3koB5VOIXGtmPtp39Hme+zyoIaoCfYVJ+2c6Pndudym
+   5B9Np3PeZThqkzc1QI7+yOdcdcSlt4BrglflgazySTn6U4wXWJDEYC5eI
+   IX3geefshO9pM3YhmYJiOH8d9zqi2H3QBQSvODqlXgQfNPf4PBJ4HS5ST
+   eY2aEikxpePBQZJGGNvrmgxXvWegQULppBGokKodT061yDg3lphrkBSUD
+   p2T/z/S2ycfX4FGxZLHthxWdi1g2QMNcFcCOrjWJgiY8q/Mkfqd2RD0wi
+   4L4tNZqA2FG2XAH9ftM9kZoFM0SWCWf+Q1HgvTkIqrfyoNE41AI4GWybN
+   w==;
+X-CSE-ConnectionGUID: QnIdLKXvT32OKzJOXi9A4Q==
+X-CSE-MsgGUID: 4Jfs9foVSVCL6IkuHdIylg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11529"; a="58127713"
+X-IronPort-AV: E=Sophos;i="6.17,309,1747724400"; 
+   d="scan'208";a="58127713"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2025 06:46:33 -0700
+X-CSE-ConnectionGUID: ZLmg3LI9Ra+rLL4muaRPrQ==
+X-CSE-MsgGUID: DpwzIgtRQ9iTSF6OFHtLtg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.17,309,1747724400"; 
+   d="scan'208";a="168614614"
+Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
+  by fmviesa006.fm.intel.com with ESMTP; 22 Aug 2025 06:46:30 -0700
+Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1upS68-000LLR-27;
+	Fri, 22 Aug 2025 13:46:28 +0000
+Date: Fri, 22 Aug 2025 21:46:04 +0800
+From: kernel test robot <lkp@intel.com>
+To: Boris Burkov <boris@bur.io>, akpm@linux-foundation.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	kernel-team@fb.com, shakeel.butt@linux.dev, wqu@suse.com,
+	willy@infradead.org, mhocko@kernel.org, muchun.song@linux.dev,
+	roman.gushchin@linux.dev, hannes@cmpxchg.org
+Subject: Re: [PATCH v4 1/3] mm/filemap: add AS_KERNEL_FILE
+Message-ID: <202508222105.tg88NxnV-lkp@intel.com>
+References: <f09c4e2c90351d4cb30a1969f7a863b9238bd291.1755812945.git.boris@bur.io>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -91,190 +81,85 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250822-orcas-bemannten-728c9946b160@brauner>
+In-Reply-To: <f09c4e2c90351d4cb30a1969f7a863b9238bd291.1755812945.git.boris@bur.io>
 
-On Fri, Aug 22, 2025 at 01:08:07PM +0200, Christian Brauner wrote:
-> On Thu, Aug 21, 2025 at 04:18:13PM -0400, Josef Bacik wrote:
-> > Adjusting i_state flags always means updating the values manually. Bring
-> > these forward into the 2020's and make a nice clean macro for defining
-> > the i_state values as an enum, providing __ variants for the cases where
-> > we need the bit position instead of the actual value, and leaving the
-> > actual NAME as the 1U << bit value.
-> > 
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > ---
-> >  include/linux/fs.h | 234 +++++++++++++++++++++++----------------------
-> >  1 file changed, 122 insertions(+), 112 deletions(-)
-> > 
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index 9a1ce67eed33..e741dc453c2c 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -665,6 +665,127 @@ is_uncached_acl(struct posix_acl *acl)
-> >  #define IOP_MGTIME	0x0020
-> >  #define IOP_CACHED_LINK	0x0040
-> >  
-> > +/*
-> > + * Inode state bits.  Protected by inode->i_lock
-> > + *
-> > + * Four bits determine the dirty state of the inode: I_DIRTY_SYNC,
-> > + * I_DIRTY_DATASYNC, I_DIRTY_PAGES, and I_DIRTY_TIME.
-> > + *
-> > + * Four bits define the lifetime of an inode.  Initially, inodes are I_NEW,
-> > + * until that flag is cleared.  I_WILL_FREE, I_FREEING and I_CLEAR are set at
-> > + * various stages of removing an inode.
-> > + *
-> > + * Two bits are used for locking and completion notification, I_NEW and I_SYNC.
-> > + *
-> > + * I_DIRTY_SYNC		Inode is dirty, but doesn't have to be written on
-> > + *			fdatasync() (unless I_DIRTY_DATASYNC is also set).
-> > + *			Timestamp updates are the usual cause.
-> > + * I_DIRTY_DATASYNC	Data-related inode changes pending.  We keep track of
-> > + *			these changes separately from I_DIRTY_SYNC so that we
-> > + *			don't have to write inode on fdatasync() when only
-> > + *			e.g. the timestamps have changed.
-> > + * I_DIRTY_PAGES	Inode has dirty pages.  Inode itself may be clean.
-> > + * I_DIRTY_TIME		The inode itself has dirty timestamps, and the
-> > + *			lazytime mount option is enabled.  We keep track of this
-> > + *			separately from I_DIRTY_SYNC in order to implement
-> > + *			lazytime.  This gets cleared if I_DIRTY_INODE
-> > + *			(I_DIRTY_SYNC and/or I_DIRTY_DATASYNC) gets set. But
-> > + *			I_DIRTY_TIME can still be set if I_DIRTY_SYNC is already
-> > + *			in place because writeback might already be in progress
-> > + *			and we don't want to lose the time update
-> > + * I_NEW		Serves as both a mutex and completion notification.
-> > + *			New inodes set I_NEW.  If two processes both create
-> > + *			the same inode, one of them will release its inode and
-> > + *			wait for I_NEW to be released before returning.
-> > + *			Inodes in I_WILL_FREE, I_FREEING or I_CLEAR state can
-> > + *			also cause waiting on I_NEW, without I_NEW actually
-> > + *			being set.  find_inode() uses this to prevent returning
-> > + *			nearly-dead inodes.
-> > + * I_WILL_FREE		Must be set when calling write_inode_now() if i_count
-> > + *			is zero.  I_FREEING must be set when I_WILL_FREE is
-> > + *			cleared.
-> > + * I_FREEING		Set when inode is about to be freed but still has dirty
-> > + *			pages or buffers attached or the inode itself is still
-> > + *			dirty.
-> > + * I_CLEAR		Added by clear_inode().  In this state the inode is
-> > + *			clean and can be destroyed.  Inode keeps I_FREEING.
-> > + *
-> > + *			Inodes that are I_WILL_FREE, I_FREEING or I_CLEAR are
-> > + *			prohibited for many purposes.  iget() must wait for
-> > + *			the inode to be completely released, then create it
-> > + *			anew.  Other functions will just ignore such inodes,
-> > + *			if appropriate.  I_NEW is used for waiting.
-> > + *
-> > + * I_SYNC		Writeback of inode is running. The bit is set during
-> > + *			data writeback, and cleared with a wakeup on the bit
-> > + *			address once it is done. The bit is also used to pin
-> > + *			the inode in memory for flusher thread.
-> > + *
-> > + * I_REFERENCED		Marks the inode as recently references on the LRU list.
-> > + *
-> > + * I_WB_SWITCH		Cgroup bdi_writeback switching in progress.  Used to
-> > + *			synchronize competing switching instances and to tell
-> > + *			wb stat updates to grab the i_pages lock.  See
-> > + *			inode_switch_wbs_work_fn() for details.
-> > + *
-> > + * I_OVL_INUSE		Used by overlayfs to get exclusive ownership on upper
-> > + *			and work dirs among overlayfs mounts.
-> > + *
-> > + * I_CREATING		New object's inode in the middle of setting up.
-> > + *
-> > + * I_DONTCACHE		Evict inode as soon as it is not used anymore.
-> > + *
-> > + * I_SYNC_QUEUED	Inode is queued in b_io or b_more_io writeback lists.
-> > + *			Used to detect that mark_inode_dirty() should not move
-> > + *			inode between dirty lists.
-> > + *
-> > + * I_PINNING_FSCACHE_WB	Inode is pinning an fscache object for writeback.
-> > + *
-> > + * I_LRU_ISOLATING	Inode is pinned being isolated from LRU without holding
-> > + *			i_count.
-> > + *
-> > + * Q: What is the difference between I_WILL_FREE and I_FREEING?
-> > + *
-> > + * __I_{SYNC,NEW,LRU_ISOLATING} are used to derive unique addresses to wait
-> > + * upon. There's one free address left.
-> > + */
-> > +
-> > +/*
-> > + * As simple macro to define the inode state bits, __NAME will be the bit value
-> > + * (0, 1, 2, ...), and NAME will be the bit mask (1U << __NAME). The __NAME_SEQ
-> > + * is used to reset the sequence number so the next name gets the next bit value
-> > + * in the sequence.
-> > + */
-> > +#define INODE_BIT(name)			\
-> > +	__ ## name,			\
-> > +	name = (1U << __ ## name),	\
-> > +	__ ## name ## _SEQ = __ ## name
-> 
-> I'm not sure if this is the future we want :D
-> I think it's harder to parse than what we have now.
-> 
-> > +
-> > +enum inode_state_bits {
-> > +	INODE_BIT(I_NEW),
-> > +	INODE_BIT(I_SYNC),
-> > +	INODE_BIT(I_LRU_ISOLATING),
-> > +	INODE_BIT(I_DIRTY_SYNC),
-> > +	INODE_BIT(I_DIRTY_DATASYNC),
-> > +	INODE_BIT(I_DIRTY_PAGES),
-> > +	INODE_BIT(I_WILL_FREE),
-> > +	INODE_BIT(I_FREEING),
-> > +	INODE_BIT(I_CLEAR),
-> > +	INODE_BIT(I_REFERENCED),
-> > +	INODE_BIT(I_LINKABLE),
-> > +	INODE_BIT(I_DIRTY_TIME),
-> > +	INODE_BIT(I_WB_SWITCH),
-> > +	INODE_BIT(I_OVL_INUSE),
-> > +	INODE_BIT(I_CREATING),
-> > +	INODE_BIT(I_DONTCACHE),
-> > +	INODE_BIT(I_SYNC_QUEUED),
-> > +	INODE_BIT(I_PINNING_NETFS_WB),
-> > +};
-> 
-> Good idea but I really dislike this macro indirection.
-> Can't we just do the really boring?
-> 
-> enum inode_state_bits {
-> 	__I_BIT_NEW		= 0U
-> 	__I_BIT_SYNC		= 1U
-> 	__I_BIT_LRU_ISOLATING	= 2U
-> }
-> 
-> enum inode_state_flags_t {
-> 	I_NEW			= (1U << __I_BIT_NEW)
-> 	I_SYNC			= (1U << __I_BIT_SYNC)
-> 	I_LRU_ISOLATING		= (1U << __I_BIT_LRU_ISOLATING)
-> 	I_DIRTY_SYNC		= (1U << 3)
-> 	I_DIRTY_DATASYNC	= (1U << 4)
-> 	I_DIRTY_PAGES		= (1U << 5)
-> 	I_WILL_FREE		= (1U << 6)
-> 	I_FREEING		= (1U << 7)
-> 	I_CLEAR			= (1U << 8)
-> 	I_REFERENCED		= (1U << 9)
-> 	I_LINKABLE		= (1U << 10)
-> 	I_DIRTY_TIME		= (1U << 11)
-> 	I_WB_SWITCH		= (1U << 12)
-> 	I_OVL_INUSE		= (1U << 13)
-> 	I_CREATING		= (1U << 14)
-> 	I_DONTCACHE		= (1U << 15)
-> 	I_SYNC_QUEUED		= (1U << 16)
-> 	I_PINNING_NETFS_WB	= (1U << 17)
-> };
-> 
-> Note that inode_state_wait_address() and that only works on four bits so
-> we can't really use higher bits anyway without switching back to a
-> scheme where we have to use unsigned long and waste for bytes for
-> nothing on 64 bit.
-> 
-> With that out of the way,
-> 
-> Reviewed-by: Christian Brauner <brauner@kernel.org>
+Hi Boris,
 
-Yup totally, I'll fix this and add your RB. Thanks!
+kernel test robot noticed the following build errors:
 
-Josef
+[auto build test ERROR on akpm-mm/mm-everything]
+[also build test ERROR on kdave/for-next linus/master v6.17-rc2 next-20250822]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Boris-Burkov/mm-filemap-add-AS_KERNEL_FILE/20250822-055741
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/f09c4e2c90351d4cb30a1969f7a863b9238bd291.1755812945.git.boris%40bur.io
+patch subject: [PATCH v4 1/3] mm/filemap: add AS_KERNEL_FILE
+config: x86_64-buildonly-randconfig-006-20250822 (https://download.01.org/0day-ci/archive/20250822/202508222105.tg88NxnV-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14+deb12u1) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250822/202508222105.tg88NxnV-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202508222105.tg88NxnV-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   mm/filemap.c: In function 'filemap_add_folio':
+>> mm/filemap.c:967:40: error: 'root_mem_cgroup' undeclared (first use in this function); did you mean 'parent_mem_cgroup'?
+     967 |                 tmp = set_active_memcg(root_mem_cgroup);
+         |                                        ^~~~~~~~~~~~~~~
+         |                                        parent_mem_cgroup
+   mm/filemap.c:967:40: note: each undeclared identifier is reported only once for each function it appears in
+
+
+vim +967 mm/filemap.c
+
+   957	
+   958	int filemap_add_folio(struct address_space *mapping, struct folio *folio,
+   959					pgoff_t index, gfp_t gfp)
+   960	{
+   961		void *shadow = NULL;
+   962		int ret;
+   963		struct mem_cgroup *tmp;
+   964		bool kernel_file = test_bit(AS_KERNEL_FILE, &mapping->flags);
+   965	
+   966		if (kernel_file)
+ > 967			tmp = set_active_memcg(root_mem_cgroup);
+   968		ret = mem_cgroup_charge(folio, NULL, gfp);
+   969		if (kernel_file)
+   970			set_active_memcg(tmp);
+   971		if (ret)
+   972			return ret;
+   973	
+   974		__folio_set_locked(folio);
+   975		ret = __filemap_add_folio(mapping, folio, index, gfp, &shadow);
+   976		if (unlikely(ret)) {
+   977			mem_cgroup_uncharge(folio);
+   978			__folio_clear_locked(folio);
+   979		} else {
+   980			/*
+   981			 * The folio might have been evicted from cache only
+   982			 * recently, in which case it should be activated like
+   983			 * any other repeatedly accessed folio.
+   984			 * The exception is folios getting rewritten; evicting other
+   985			 * data from the working set, only to cache data that will
+   986			 * get overwritten with something else, is a waste of memory.
+   987			 */
+   988			WARN_ON_ONCE(folio_test_active(folio));
+   989			if (!(gfp & __GFP_WRITE) && shadow)
+   990				workingset_refault(folio, shadow);
+   991			folio_add_lru(folio);
+   992		}
+   993		return ret;
+   994	}
+   995	EXPORT_SYMBOL_GPL(filemap_add_folio);
+   996	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
