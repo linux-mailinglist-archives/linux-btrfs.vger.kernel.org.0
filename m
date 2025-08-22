@@ -1,270 +1,182 @@
-Return-Path: <linux-btrfs+bounces-16292-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16293-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F21AB31AB1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 16:05:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79B56B31B5D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 16:27:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E4EFB01F7A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 14:00:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4D0D1D40F51
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 14:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C492730BF63;
-	Fri, 22 Aug 2025 13:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A8A30E84D;
+	Fri, 22 Aug 2025 14:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UWqk4RJe"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="X+wvJLB7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E46F3074BE;
-	Fri, 22 Aug 2025 13:57:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CF8301476;
+	Fri, 22 Aug 2025 14:19:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755871062; cv=none; b=ZpJ7odk9odCnT/wmEVEuE8Leq1dxb+nUbEguoF9dIvg/azyTJVfpzL9iuu0Vurv1WlGgQod4HrqvcBisi09a/xiGAHyqYn0GbwTQDp4MjZg8zpiKvRO2hk9AC0qbKnatde41pjedrTwt3UfLNzDvnX8ucCOOGiqfZJgpVIsXt3U=
+	t=1755872351; cv=none; b=jJZLSl8ekCOEdQO1QDsAHBIuGtQ/i99Fjeb77iLsb2eYEXjTcwI60W3v9Htm/9j6Tm2DOUX9VEOMGHzcPRVyMpap/BKze4VJefsCgKX2IUjBvFMjAYmQnc2gsX1PkqZaIvM2Yz1E8C+wiX16F7alc/mFhO1TOIieo0kc7LyejYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755871062; c=relaxed/simple;
-	bh=4Ym9yF5fTrA4dks5oCV9NLu3Hj2LMaWfEQG4rZ8T+N0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QRchxLfXh4MyXu0DT9Eu/xn32GunoXN0hrnqwv1kSQYoQtG3Lufx+lP+QdTfRmasiA0B0fLB9Ne62dRlYYVTMEYCtJNLUSGU8FgUyYspopnQDv7K0pt/cmBhKeHl0Oxrk88n6klmc7T2bFWvNCzme+KBo2XEC482uy5bPTBvaNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UWqk4RJe; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1755871060; x=1787407060;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4Ym9yF5fTrA4dks5oCV9NLu3Hj2LMaWfEQG4rZ8T+N0=;
-  b=UWqk4RJerQyjG4/QSLpROsDfOtokjZySE+74aMAsxG96f4lUiW+BIBOC
-   xf51aOIMIBiOK98Dez0Zs0yFDsQJ/fc3OqYGEZlnCWyIcj96wSWxRT2CU
-   Z85jGdYBX0JJvdovrtikIh4aGZXtt+X7YE0srdvCWG7kPiOcQFx3aAMRr
-   gIdYqFmff0gHzwaxupt87sfvSAxech8OSMHYIZLgsA8dJqFjU6cuJwSuk
-   8OQuMc01UauQUq0WrFUz9QKD4bNxltmmvSTAEmMQK70uBNROFrVTnhD4j
-   y+AWSWUD73Vb/REYisyvBUd9zuqbNp5guhBvD0faYQFtdiYu5WH0H0GOd
-   w==;
-X-CSE-ConnectionGUID: U0g1/v51QWqY6lQkmnrlmg==
-X-CSE-MsgGUID: ILTcE0iHTPmzl69IQksCpg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11529"; a="61821050"
-X-IronPort-AV: E=Sophos;i="6.17,309,1747724400"; 
-   d="scan'208";a="61821050"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2025 06:57:36 -0700
-X-CSE-ConnectionGUID: TtaRggd4R2KFb29mZ5ryGQ==
-X-CSE-MsgGUID: x3SYgpxDRKm+Ctkwy9TM9g==
-X-ExtLoop1: 1
-Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
-  by fmviesa003.fm.intel.com with ESMTP; 22 Aug 2025 06:57:33 -0700
-Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1upSGf-000LMx-1C;
-	Fri, 22 Aug 2025 13:57:24 +0000
-Date: Fri, 22 Aug 2025 21:56:59 +0800
-From: kernel test robot <lkp@intel.com>
-To: Josef Bacik <josef@toxicpanda.com>, linux-fsdevel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-	brauner@kernel.org, viro@zeniv.linux.org.uk
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 20/50] fs: convert i_count to refcount_t
-Message-ID: <202508222128.KZDs9G7n-lkp@intel.com>
-References: <6a12e35a078d765b50bc7ced7030d6cd98065528.1755806649.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1755872351; c=relaxed/simple;
+	bh=WRokWTnxCLPeTqdFMLrlXZcMpdtYNRxgG4shIryou7Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=L8YaWa47e5h2GVokos1tvShD72b2oNYBLvnu0NGgKdv8mqKvPZ7UkVkTWBCZSRkA4+I/DWC/v7qVmRKJkvgZhhv8WiYhiuREGHE/7JLYmTYd5LvqJS1ltShQ7/gFHHVeaImHDCG834vuqUypfzhnh/DGBDnGJZ0kYNbKGD7AsmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=X+wvJLB7; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57MCZ4H7012075;
+	Fri, 22 Aug 2025 14:19:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=ASMVx9
+	rK4O5ZwAnPYsdo/EcOlfjZnXjy6qSOE3tN0p8=; b=X+wvJLB7GQTh+NWWegJkqH
+	5KtnZTQxVtYquXnCenWJbnowdYvhFo4hrwp4URBg2Vg8CsR4OZR95/G2haym/dnL
+	B/rgBCnzy/4lZ5cexZyOSxqcyz8F7rir7TJ5v1rJy4hBIK/ReebjO/tNbcMRyAYM
+	ODA6q+sLdSCXdzz53rD8RkhWILBcVVl3i0If/aZWn5jwYnkQh4t7W4uLzmvVK6NS
+	lZOutTB1aNi7NEeQ49uBLhdMzQ3D4tK/k4F+9mFT+s24j5fjtCuTIAL+BjrGimw8
+	8sU4tQfx6lhgKZCKmDdKtbupwzLwRmRaQThUQLmgkiIS9GlQd69IJpugDlPrrHbw
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48n38vq01v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Aug 2025 14:19:07 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 57ME5AMD010464;
+	Fri, 22 Aug 2025 14:19:06 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48n38vq01u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Aug 2025 14:19:06 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57MBrxxp016047;
+	Fri, 22 Aug 2025 14:19:05 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 48my42dnau-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Aug 2025 14:19:05 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57MEJ3WG46858610
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 22 Aug 2025 14:19:04 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D54AD2004E;
+	Fri, 22 Aug 2025 14:19:03 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id F2D0420040;
+	Fri, 22 Aug 2025 14:19:01 +0000 (GMT)
+Received: from [9.124.211.112] (unknown [9.124.211.112])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 22 Aug 2025 14:19:01 +0000 (GMT)
+Message-ID: <fcc241b7-2323-4375-9ce2-40eada4966f8@linux.ibm.com>
+Date: Fri, 22 Aug 2025 19:49:00 +0530
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6a12e35a078d765b50bc7ced7030d6cd98065528.1755806649.git.josef@toxicpanda.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] btrfs/301: Make the test compatible with all the
+ supported block sizes
+To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>, fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
+        djwong@kernel.org, zlang@kernel.org, fdmanana@kernel.org,
+        quwenruo.btrfs@gmx.com
+References: <cover.1755677274.git.nirjhar.roy.lists@gmail.com>
+ <83e91ed9d2b55bdf6e63f9607267d36e31548f07.1755677274.git.nirjhar.roy.lists@gmail.com>
+Content-Language: en-GB
+From: Disha Goel <disgoel@linux.ibm.com>
+In-Reply-To: <83e91ed9d2b55bdf6e63f9607267d36e31548f07.1755677274.git.nirjhar.roy.lists@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: O4BQDj4XSRS3CY_bv3G_GH_8UYz3LSsU
+X-Authority-Analysis: v=2.4 cv=IrhHsL/g c=1 sm=1 tr=0 ts=68a87c5b cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=7uthoOmeVXD2Lgiy:21 a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=iox4zFpeAAAA:8
+ a=VnNF1IyMAAAA:8 a=pGLkceISAAAA:8 a=koGjpdFuyeTUt37SJvoA:9 a=QEXdDO2ut3YA:10
+ a=WzC6qhA0u3u7Ye7llzcV:22 a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODE5MDIyMiBTYWx0ZWRfX7bckOKCLjgkP
+ xSL24T+L9X6xg0GcYz9MxX7IKD2fk7CCzgLlLif2MfEd6sOOG1/UD3JCbItNOmwMos6uvFh287w
+ QX7TJ8EC+HfiUCWVMwm3T9FLhQOzH51TKR4B+o57Mv3lYCVBseE0OWqTJtz3TLhWpoiqNgH4W1g
+ zJeMVlmQr7ssDTs1UtymDnuRF3GmrekpBKrdyzQT7O0nVDoMaZth3TLsU19OjzlDCsNij2UWpj7
+ pRNbc23roR0O/f7VWifSz7+dPdHIMgQORzf51zNNVI3jIUWJGtKUKJkIFyYeG41hRKDG4UhK24/
+ EbV1NouU757JPgAwx0uxQ6/tRMOPgLNWu0JHqSjHBZIbRUSXkZK8D9CK8UR2AyE4Ov53HagcPVm
+ Rqw39pDpph1ir7WnWRI9itdWslCiDg==
+X-Proofpoint-ORIG-GUID: f0CgAXpT8xlVUlcTNwfyZsDM4Gj0bmvM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-08-22_04,2025-08-20_03,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 malwarescore=0 bulkscore=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 impostorscore=0 adultscore=0 priorityscore=1501
+ clxscore=1011 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2508110000
+ definitions=main-2508190222
 
-Hi Josef,
+On 20/08/25 1:45 pm, Nirjhar Roy (IBM) wrote:
+> With large block sizes like 64k the test failed with the
+> following logs:
+> 
+>       QA output created by 301
+>       basic accounting
+>      +subvol 256 mismatched usage 33947648 vs 4587520 (expected data 4194304 expected meta 393216 diff 29360128)
+>      +subvol 256 mismatched usage 168165376 vs 138805248 (expected data 138412032 expected meta 393216 diff 29360128)
+>      +subvol 256 mismatched usage 33947648 vs 4587520 (expected data 4194304 expected meta 393216 diff 29360128)
+>      +subvol 256 mismatched usage 33947648 vs 4587520 (expected data 4194304 expected meta 393216 diff 29360128)
+>       fallocate: Disk quota exceeded
+> 
+> The test creates nr_fill files each of size 8k. Now with 64k
+> block size, 8k sized files occupy more than the expected sizes (i.e, 8k)
+> due to internal fragmentation, since 1 file will occupy at least 1
+> fsblock. Fix this by making the file size 64k, which is aligned
+> with all the supported block sizes.
+> 
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> Reported-by: Disha Goel <disgoel@linux.ibm.com>
+> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
 
-kernel test robot noticed the following build errors:
+I tested it on Power, and the btrfs/301 test passes with both 4k & 64k 
+block sizes.
 
-[auto build test ERROR on brauner-vfs/vfs.all]
-[also build test ERROR on kdave/for-next trace/for-next xfs-linux/for-next linus/master v6.17-rc2 next-20250822]
-[cannot apply to tytso-ext4/dev]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+SECTION       -- btrfs_64k
+RECREATING    -- btrfs on /dev/loop0
+FSTYP         -- btrfs
+PLATFORM      -- Linux/ppc64le localhost 6.17.0-rc2-00060-g068a56e56fa8 
+#3 SMP Thu Aug 21 17:54:04 IST 2025
+MKFS_OPTIONS  -- -f -s 65536 -n 65536 /dev/loop1
+MOUNT_OPTIONS -- /dev/loop1 /mnt/scratch
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Josef-Bacik/fs-add-an-i_obj_count-refcount-to-the-inode/20250822-045428
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.all
-patch link:    https://lore.kernel.org/r/6a12e35a078d765b50bc7ced7030d6cd98065528.1755806649.git.josef%40toxicpanda.com
-patch subject: [PATCH 20/50] fs: convert i_count to refcount_t
-config: x86_64-randconfig-003-20250822 (https://download.01.org/0day-ci/archive/20250822/202508222128.KZDs9G7n-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250822/202508222128.KZDs9G7n-lkp@intel.com/reproduce)
+btrfs/301 67s ...  111s
+Ran: btrfs/301
+Passed all 1 tests
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202508222128.KZDs9G7n-lkp@intel.com/
+Tested-by: Disha Goel <disgoel@linux.ibm.com>
 
-All errors (new ones prefixed by >>):
+> ---
+>   tests/btrfs/301 | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tests/btrfs/301 b/tests/btrfs/301
+> index 6b59749d..be346f52 100755
+> --- a/tests/btrfs/301
+> +++ b/tests/btrfs/301
+> @@ -23,7 +23,7 @@ subv=$SCRATCH_MNT/subv
+>   nested=$SCRATCH_MNT/subv/nested
+>   snap=$SCRATCH_MNT/snap
+>   nr_fill=512
+> -fill_sz=$((8 * 1024))
+> +fill_sz=$((64 * 1024))
+>   total_fill=$(($nr_fill * $fill_sz))
+>   nodesize=$($BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV | \
+>   					grep nodesize | $AWK_PROG '{print $2}')
 
->> fs/smb/client/inode.c:2782:37: error: no member named 'counter' in 'struct refcount_struct'
-    2782 |                  full_path, inode, inode->i_count.counter,
-         |                                    ~~~~~~~~~~~~~~ ^
-   fs/smb/client/cifs_debug.h:77:36: note: expanded from macro 'cifs_dbg'
-      77 |                 cifs_dbg_func(once, type, fmt, ##__VA_ARGS__);          \
-         |                                                  ^~~~~~~~~~~
-   fs/smb/client/cifs_debug.h:66:23: note: expanded from macro 'cifs_dbg_func'
-      66 |                                       __FILE__, ##__VA_ARGS__);         \
-         |                                                   ^~~~~~~~~~~
-   include/linux/printk.h:693:38: note: expanded from macro 'pr_debug_once'
-     693 |         no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-         |                                             ^~~~~~~~~~~
-   include/linux/printk.h:135:18: note: expanded from macro 'no_printk'
-     135 |                 _printk(fmt, ##__VA_ARGS__);            \
-         |                                ^~~~~~~~~~~
->> fs/smb/client/inode.c:2782:37: error: no member named 'counter' in 'struct refcount_struct'
-    2782 |                  full_path, inode, inode->i_count.counter,
-         |                                    ~~~~~~~~~~~~~~ ^
-   fs/smb/client/cifs_debug.h:77:36: note: expanded from macro 'cifs_dbg'
-      77 |                 cifs_dbg_func(once, type, fmt, ##__VA_ARGS__);          \
-         |                                                  ^~~~~~~~~~~
-   fs/smb/client/cifs_debug.h:68:38: note: expanded from macro 'cifs_dbg_func'
-      68 |                 pr_err_ ## ratefunc("VFS: " fmt, ##__VA_ARGS__);        \
-         |                                                    ^~~~~~~~~~~
-   include/linux/printk.h:670:38: note: expanded from macro 'pr_err_once'
-     670 |         printk_once(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
-         |                                             ^~~~~~~~~~~
-   note: (skipping 2 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/once_lite.h:31:9: note: expanded from macro 'DO_ONCE_LITE_IF'
-      31 |                         func(__VA_ARGS__);                              \
-         |                              ^~~~~~~~~~~
-   include/linux/printk.h:514:60: note: expanded from macro 'printk'
-     514 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
-         |                                                            ^~~~~~~~~~~
-   include/linux/printk.h:486:19: note: expanded from macro 'printk_index_wrap'
-     486 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
-         |                                 ^~~~~~~~~~~
->> fs/smb/client/inode.c:2782:37: error: no member named 'counter' in 'struct refcount_struct'
-    2782 |                  full_path, inode, inode->i_count.counter,
-         |                                    ~~~~~~~~~~~~~~ ^
-   fs/smb/client/cifs_debug.h:77:36: note: expanded from macro 'cifs_dbg'
-      77 |                 cifs_dbg_func(once, type, fmt, ##__VA_ARGS__);          \
-         |                                                  ^~~~~~~~~~~
-   fs/smb/client/cifs_debug.h:70:32: note: expanded from macro 'cifs_dbg_func'
-      70 |                 pr_debug_ ## ratefunc(fmt, ##__VA_ARGS__);              \
-         |                                              ^~~~~~~~~~~
-   include/linux/printk.h:693:38: note: expanded from macro 'pr_debug_once'
-     693 |         no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-         |                                             ^~~~~~~~~~~
-   include/linux/printk.h:135:18: note: expanded from macro 'no_printk'
-     135 |                 _printk(fmt, ##__VA_ARGS__);            \
-         |                                ^~~~~~~~~~~
->> fs/smb/client/inode.c:2782:37: error: no member named 'counter' in 'struct refcount_struct'
-    2782 |                  full_path, inode, inode->i_count.counter,
-         |                                    ~~~~~~~~~~~~~~ ^
-   fs/smb/client/cifs_debug.h:79:43: note: expanded from macro 'cifs_dbg'
-      79 |                 cifs_dbg_func(ratelimited, type, fmt, ##__VA_ARGS__);   \
-         |                                                         ^~~~~~~~~~~
-   fs/smb/client/cifs_debug.h:66:23: note: expanded from macro 'cifs_dbg_func'
-      66 |                                       __FILE__, ##__VA_ARGS__);         \
-         |                                                   ^~~~~~~~~~~
-   include/linux/printk.h:758:38: note: expanded from macro 'pr_debug_ratelimited'
-     758 |         no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-         |                                             ^~~~~~~~~~~
-   include/linux/printk.h:135:18: note: expanded from macro 'no_printk'
-     135 |                 _printk(fmt, ##__VA_ARGS__);            \
-         |                                ^~~~~~~~~~~
->> fs/smb/client/inode.c:2782:37: error: no member named 'counter' in 'struct refcount_struct'
-    2782 |                  full_path, inode, inode->i_count.counter,
-         |                                    ~~~~~~~~~~~~~~ ^
-   fs/smb/client/cifs_debug.h:79:43: note: expanded from macro 'cifs_dbg'
-      79 |                 cifs_dbg_func(ratelimited, type, fmt, ##__VA_ARGS__);   \
-         |                                                         ^~~~~~~~~~~
-   fs/smb/client/cifs_debug.h:68:38: note: expanded from macro 'cifs_dbg_func'
-      68 |                 pr_err_ ## ratefunc("VFS: " fmt, ##__VA_ARGS__);        \
-         |                                                    ^~~~~~~~~~~
-   include/linux/printk.h:722:45: note: expanded from macro 'pr_err_ratelimited'
-     722 |         printk_ratelimited(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
-         |                                                    ^~~~~~~~~~~
-   include/linux/printk.h:708:17: note: expanded from macro 'printk_ratelimited'
-     708 |                 printk(fmt, ##__VA_ARGS__);                             \
-         |                               ^~~~~~~~~~~
-   include/linux/printk.h:514:60: note: expanded from macro 'printk'
-     514 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
-         |                                                            ^~~~~~~~~~~
-   include/linux/printk.h:486:19: note: expanded from macro 'printk_index_wrap'
-     486 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
-         |                                 ^~~~~~~~~~~
->> fs/smb/client/inode.c:2782:37: error: no member named 'counter' in 'struct refcount_struct'
-    2782 |                  full_path, inode, inode->i_count.counter,
-         |                                    ~~~~~~~~~~~~~~ ^
-   fs/smb/client/cifs_debug.h:79:43: note: expanded from macro 'cifs_dbg'
-      79 |                 cifs_dbg_func(ratelimited, type, fmt, ##__VA_ARGS__);   \
-         |                                                         ^~~~~~~~~~~
-   fs/smb/client/cifs_debug.h:70:32: note: expanded from macro 'cifs_dbg_func'
-      70 |                 pr_debug_ ## ratefunc(fmt, ##__VA_ARGS__);              \
-         |                                              ^~~~~~~~~~~
-   include/linux/printk.h:758:38: note: expanded from macro 'pr_debug_ratelimited'
-     758 |         no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-         |                                             ^~~~~~~~~~~
-   include/linux/printk.h:135:18: note: expanded from macro 'no_printk'
-     135 |                 _printk(fmt, ##__VA_ARGS__);            \
-         |                                ^~~~~~~~~~~
-   6 errors generated.
-
-
-vim +2782 fs/smb/client/inode.c
-
-abab095d1fd259 fs/cifs/inode.c       Jeff Layton     2010-02-12  2755  
-6feb9891da4f8b fs/cifs/inode.c       Pavel Shilovsky 2011-04-07  2756  int cifs_revalidate_dentry_attr(struct dentry *dentry)
-df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2757  {
-6d5786a34d98bf fs/cifs/inode.c       Pavel Shilovsky 2012-06-20  2758  	unsigned int xid;
-df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2759  	int rc = 0;
-2b0143b5c986be fs/cifs/inode.c       David Howells   2015-03-17  2760  	struct inode *inode = d_inode(dentry);
-df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2761  	struct super_block *sb = dentry->d_sb;
-f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2762  	const char *full_path;
-f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2763  	void *page;
-fc513fac56e1b6 fs/cifs/inode.c       Ronnie Sahlberg 2020-02-19  2764  	int count = 0;
-df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2765  
-df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2766  	if (inode == NULL)
-df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2767  		return -ENOENT;
-^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2768  
-ed8561fa1d12b4 fs/cifs/inode.c       Ronnie Sahlberg 2021-03-09  2769  	if (!cifs_dentry_needs_reval(dentry))
-6feb9891da4f8b fs/cifs/inode.c       Pavel Shilovsky 2011-04-07  2770  		return rc;
-6feb9891da4f8b fs/cifs/inode.c       Pavel Shilovsky 2011-04-07  2771  
-6d5786a34d98bf fs/cifs/inode.c       Pavel Shilovsky 2012-06-20  2772  	xid = get_xid();
-^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2773  
-f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2774  	page = alloc_dentry_path();
-f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2775  	full_path = build_path_from_dentry(dentry, page);
-f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2776  	if (IS_ERR(full_path)) {
-f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2777  		rc = PTR_ERR(full_path);
-6feb9891da4f8b fs/cifs/inode.c       Pavel Shilovsky 2011-04-07  2778  		goto out;
-^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2779  	}
-^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2780  
-f96637be081141 fs/cifs/inode.c       Joe Perches     2013-05-04  2781  	cifs_dbg(FYI, "Update attributes: %s inode 0x%p count %d dentry: 0x%p d_time %ld jiffies %ld\n",
-f96637be081141 fs/cifs/inode.c       Joe Perches     2013-05-04 @2782  		 full_path, inode, inode->i_count.counter,
-a00be0e31f8df4 fs/cifs/inode.c       Miklos Szeredi  2016-09-16  2783  		 dentry, cifs_get_time(dentry), jiffies);
-^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2784  
-fc513fac56e1b6 fs/cifs/inode.c       Ronnie Sahlberg 2020-02-19  2785  again:
-102466f303ffcd fs/smb/client/inode.c Paulo Alcantara 2023-11-25  2786  	if (cifs_sb_master_tcon(CIFS_SB(sb))->posix_extensions) {
-102466f303ffcd fs/smb/client/inode.c Paulo Alcantara 2023-11-25  2787  		rc = smb311_posix_get_inode_info(&inode, full_path,
-102466f303ffcd fs/smb/client/inode.c Paulo Alcantara 2023-11-25  2788  						 NULL, sb, xid);
-102466f303ffcd fs/smb/client/inode.c Paulo Alcantara 2023-11-25  2789  	} else if (cifs_sb_master_tcon(CIFS_SB(sb))->unix_ext) {
-df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2790  		rc = cifs_get_inode_info_unix(&inode, full_path, sb, xid);
-102466f303ffcd fs/smb/client/inode.c Paulo Alcantara 2023-11-25  2791  	} else {
-df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2792  		rc = cifs_get_inode_info(&inode, full_path, NULL, sb,
-df2cf170c823ba fs/cifs/inode.c       Jeff Layton     2010-02-12  2793  					 xid, NULL);
-102466f303ffcd fs/smb/client/inode.c Paulo Alcantara 2023-11-25  2794  	}
-fc513fac56e1b6 fs/cifs/inode.c       Ronnie Sahlberg 2020-02-19  2795  	if (rc == -EAGAIN && count++ < 10)
-fc513fac56e1b6 fs/cifs/inode.c       Ronnie Sahlberg 2020-02-19  2796  		goto again;
-6feb9891da4f8b fs/cifs/inode.c       Pavel Shilovsky 2011-04-07  2797  out:
-f6a9bc336b600e fs/cifs/inode.c       Al Viro         2021-03-05  2798  	free_dentry_path(page);
-6d5786a34d98bf fs/cifs/inode.c       Pavel Shilovsky 2012-06-20  2799  	free_xid(xid);
-fc513fac56e1b6 fs/cifs/inode.c       Ronnie Sahlberg 2020-02-19  2800  
-^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2801  	return rc;
-^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2802  }
-^1da177e4c3f41 fs/cifs/inode.c       Linus Torvalds  2005-04-16  2803  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
