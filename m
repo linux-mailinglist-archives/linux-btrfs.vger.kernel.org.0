@@ -1,122 +1,115 @@
-Return-Path: <linux-btrfs+bounces-16300-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16301-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8127B31EA4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 17:32:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CB0AB31FB6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 17:56:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A21E189D716
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 15:28:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E8D4BC14BF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 15:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 543952E7BC3;
-	Fri, 22 Aug 2025 15:28:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA381263F4E;
+	Fri, 22 Aug 2025 15:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lKcXE9PV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PXe/TiuK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887981C5D7B;
-	Fri, 22 Aug 2025 15:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE91124679E
+	for <linux-btrfs@vger.kernel.org>; Fri, 22 Aug 2025 15:51:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755876480; cv=none; b=oD1BEMWM1wMa9OLUSzf6CJXDL9KW/Mi4NApt05IgJzEzVEB/PTIGPz1qDDsFIllu+3mVT6JbsxC7WbxnQWclYOGgS2r7coL4CAKBfJj6I3YrCuhMqWIktAecVefkTKEbw9oDuNBsLol+FK5BufWJAohRnW5JLswn/EjK7g1nMb4=
+	t=1755877887; cv=none; b=H5TotvFXD3gik6kKq7Zrs9g+bbD8fIcmBOfYSOScmQvG7LUgrohxebVQ7M/LKYCv//qt2RlZZ0PwfCmNdnbXT1vMrWA35XI6ueEVj+IEeEJ8khW36ezcgEkniLvEzd/I6yrgvPmZOjn34FJ8KmIoAHveGuE4Zk1jCUuSH5pVqX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755876480; c=relaxed/simple;
-	bh=muNdSXseEu/rJMTulvsFLDBQqTzFlcX+DPy3jXqZ7Uc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bHtnO3BCqegsSQDwu7Yd1K1cCDNHm78C5rWSKUnOrgYiXW7V0QoYLoX/pSrYTwaeqM9F9Ma+gSkFn2lF6V1c2Hccb38VTVn7Gq391UyJw4tLiB9z+RmpyheWasrzwYST4uxkua5KZ/lEcu0vaU36eiOXooCJCcFA66c183UQxqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lKcXE9PV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6415AC4CEED;
-	Fri, 22 Aug 2025 15:27:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755876480;
-	bh=muNdSXseEu/rJMTulvsFLDBQqTzFlcX+DPy3jXqZ7Uc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lKcXE9PVGNET2gtGcgqz+g2YJRH4nIhWIjneaBa9U0x/P1cKWlR9GNky6U9FXeDHf
-	 MbkkDBlqfwt52qWAZPQTT1Vz6rzpOrMGBaeqksnQm8YHRKfmTmDpoeztkVL87iLriY
-	 JdDOi8BYdZ/DEu5YHUilhCrnjakcX/5pJ6qgEikPVc6eqNeEyILAw0NA8gpYB5Z+zW
-	 dFmoWyJf9SJHil+J19xnRVXguIe3zBNooDn9I0uJJGq0N0dn7IU2TujOBsqhXtsWyE
-	 fX+ej3rX+H1rThLz4b13rHvEr3d2p484J+ZEn/qhXy05v85mmN0rcNTS4oI2WGzb2f
-	 A/Y4BD0IhboHw==
-Date: Fri, 22 Aug 2025 17:27:56 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 15/50] fs: delete the inode from the LRU list on lookup
-Message-ID: <20250822-werden-hinein-419c34f78154@brauner>
-References: <cover.1755806649.git.josef@toxicpanda.com>
- <d595f459d9574e980628eb43f617cbf4fd1a9137.1755806649.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1755877887; c=relaxed/simple;
+	bh=q3p11HQ60N7YyFe+q1czztsfQ1k/I2umwK4C65cnMFQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:MIME-Version:
+	 Content-Type; b=amOqJ9Rf0KrnNmE+ERu7Y0L4S21NwmXZKGbxnSmJDRPOSTc1/lVcMLffEYDie5imQwB2M9TyP3Qxxkz11DcSsLfDj/5Jg48oKU/P0+sdekQE0f+qJvVLLvDdSlzuN9FQJ5jg0Bo0qwxFxosdmg9e+Baf2j12jVsVciWxizbPcr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PXe/TiuK; arc=none smtp.client-ip=209.85.214.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-24641067be2so1454365ad.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Aug 2025 08:51:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755877885; x=1756482685; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:in-reply-to:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3gNoojvPzZIJ2vFZaANdlwat04C6PqPcOQxKmj1VhNw=;
+        b=PXe/TiuK/9oBa99eKUC9CX208OI4kNn1cZxSqwBIR/iXF3ifennWvvFJUiYB92dWb1
+         QtGknvnMXy/OfwVdRVcEgdeg09O8/kJTlDKPEqc9V/YTfBHwDYi66Oqo216TcMTpohTY
+         n0BrRa8CvZGin4DKqlptA7u895HHFKtf0JR5OAlu7h+VTmpZYXmnlvECvqt5JGrFy0PR
+         jTfg8XG4JoOoE+ZSHf72Lwv+A5QdbP+D0I66+9zb2AQGN52CFNOAiwZYQ5gXPX1H0iYC
+         saEF8UTN8JI4G82cwgNuUiOy/wBqTFmG586PCJ9XXNWmSCkKD+yaBlGSlHRYwzarJejo
+         VaOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755877885; x=1756482685;
+        h=content-transfer-encoding:mime-version:in-reply-to:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3gNoojvPzZIJ2vFZaANdlwat04C6PqPcOQxKmj1VhNw=;
+        b=DO4a8PB/C3fOSzAO2jula3rEpO9LyBhz5yBSyhf9I5PzHYOPkDiN2o5uOPy5SpLJ8C
+         CDvUeUkd8yRcBJ0SePB9p6tVn3Ye1V2dRiqKhujmE7DG3mbvl3+hhxhsFnm7hOzq91Y2
+         CtQKYYdm91TBTGkaPgjk799LR4UphD8DyO8udkEGxtaiA1gqTs0bILhGagyfdgMfc4r7
+         g/vMfLesaKaA2OtByqYmp+lvL7unIRVjgfsE9x86nrtgeqQremMPn7fasKGBfcPMBFOe
+         5TZyqpNx2mugG8PNtcPF4oy6WuCQhs4tbwMNRXiMF0RbPysD21JZy9t5urB6bSET7jPR
+         473w==
+X-Gm-Message-State: AOJu0YwwreSePh1ro3kYrPm/QPEDlTH/M+lR2RX6WlcRRjgWU52A7Y6H
+	+y3TyWmWMN8bkSJuZOHxTS3HOH7xlBTvtTkkx/s7Fk5U8jggANPGuc9Sfb6flTBl4SmpgQ==
+X-Gm-Gg: ASbGncvpLKZPiF86Lr+SNRE3I/Vo1PGGx+NuCSr990ilt5Bvts+VFGjtscP8KXOCqUd
+	cqWEIQytadfhIzH3vSrfS6SOFX5VHbIF2y/8B/rRom5F7HcGAujXlbgsLtSgO8EuwXqyEJFmnPG
+	B1PGmrMYzw39Hw+CZ1VCXeaOcB1vzQaq2P3Nl+gCkhNMQNpgJabR591J0E1J9r1D88UsFGb3WO9
+	cXpszAPkHwcey/4I8Wlju95z9cMoFDLuV8AKIR9rISeswLab0sFxV30k3wcl9g6AqumqTkXbMvc
+	fiuCvgOoCL2iE7SREcp5Kb1JaUSEWG7VrU72HX3Cdp0mVsBbJ98Er/YuSx7eX3MyOlP8fs6aGlW
+	PsG2jh5ybU4lXj++hmA73/SDs/EZmZU7dqAxK0TOZG0EA
+X-Google-Smtp-Source: AGHT+IFP2jnWLl/0fLufg8T6/CV6aknPBBpQd6W7MjGCjm7/UVegF1sog3LJBgRL29OlCjsIi1e7rQ==
+X-Received: by 2002:a17:902:e78f:b0:240:4d65:508f with SMTP id d9443c01a7336-2462ef99564mr24454135ad.6.1755877884777;
+        Fri, 22 Aug 2025 08:51:24 -0700 (PDT)
+Received: from saltykitkat.localnet ([104.28.237.194])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2466877c707sm436345ad.22.2025.08.22.08.51.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Aug 2025 08:51:24 -0700 (PDT)
+From: Sun YangKai <sunk67188@gmail.com>
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/2] btrfs: more trivial BTRFS_PATH_AUTO_FREE conversions
+Date: Fri, 22 Aug 2025 23:51:18 +0800
+Message-ID: <13839041.dW097sEU6C@saltykitkat>
+In-Reply-To: <20250822130123.GV22430@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d595f459d9574e980628eb43f617cbf4fd1a9137.1755806649.git.josef@toxicpanda.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 
-On Thu, Aug 21, 2025 at 04:18:26PM -0400, Josef Bacik wrote:
-> When we move to holding a full reference on the inode when it is on an
-> LRU list we need to have a mechanism to re-run the LRU add logic. The
-> use case for this is btrfs's snapshot delete, we will lookup all the
-> inodes and try to drop them, but if they're on the LRU we will not call
-> ->drop_inode() because their refcount will be elevated, so we won't know
-> that we need to drop the inode.
+> Please split the patch to parts that have the described trivial changes,
+> and then one patch per function in case it's not trivial and needs some
+> adjustments.
 > 
-> Fix this by simply removing the inode from it's respective LRU list when
-> we grab a reference to it in a way that we have active users.  This will
-> ensure that the logic to add the inode to the LRU or drop the inode will
-> be run on the final iput from the user.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/inode.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index adcba0a4d776..72981b890ec6 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -1146,6 +1146,7 @@ static struct inode *find_inode(struct super_block *sb,
->  			return ERR_PTR(-ESTALE);
->  		}
->  		__iget(inode);
-> +		inode_lru_list_del(inode);
->  		spin_unlock(&inode->i_lock);
->  		rcu_read_unlock();
->  		return inode;
-> @@ -1187,6 +1188,7 @@ static struct inode *find_inode_fast(struct super_block *sb,
->  			return ERR_PTR(-ESTALE);
->  		}
->  		__iget(inode);
-> +		inode_lru_list_del(inode);
->  		spin_unlock(&inode->i_lock);
->  		rcu_read_unlock();
->  		return inode;
-> @@ -1653,6 +1655,7 @@ struct inode *igrab(struct inode *inode)
->  	spin_lock(&inode->i_lock);
->  	if (!(inode->i_state & (I_FREEING|I_WILL_FREE))) {
->  		__iget(inode);
-> +		inode_lru_list_del(inode);
->  		spin_unlock(&inode->i_lock);
->  	} else {
->  		spin_unlock(&inode->i_lock);
 
-Interesting, so the previous behavior implies that igrab(),
-find_inode(), find_inode_fast() are called on inodes that are hashed and
-on an LRU. None of them even raise I_REFERENCED.
+After learning more about the auto-free/cleanup mechanism, I realized that its 
+only advantage is to eliminate the need for the goto out; pattern. Therefore, 
+it seems unnecessary to apply this conversion in non-trivial cases.
 
-I would think that this means that there are callers that grab very
-temporary references to inodes that they immediately drop without
-wanting to prevent reclaim.
+Moreover, if the cleanup code contains other logic, it might be better to 
+leave it unchanged even in trivial cases.
 
-Oh, because btrfs subvolume delete is effectively a recursive directory
-removal and that's why that happens? I wonder if there are other users.
-So if this regresses someone it would regress btrfs I guess. :)
+> The freeing followed by other code can be still converted to auto
+> cleaning but there must be an explicit path = NULL after the free.
+
+I'm sorry, I didn't understand. If the freeing is followed by other code, 
+maybe we could just leave them untouched?
+
+Please let me know if I've got anything wrong.
+
+Best regards,
+Sun Yangkai
+
+
+
 
