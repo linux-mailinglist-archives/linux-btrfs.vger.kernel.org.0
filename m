@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-16308-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16309-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BEC2B322A6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 21:13:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5AD7B32304
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 21:40:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0B221D282D0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 19:13:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1F205880FF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 19:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789792C3257;
-	Fri, 22 Aug 2025 19:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F232571B3;
+	Fri, 22 Aug 2025 19:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="CAtoq4Hf";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ABRzYc6o"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="U5PtD+P6";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mvBTC5sx"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F7F22A80D
-	for <linux-btrfs@vger.kernel.org>; Fri, 22 Aug 2025 19:12:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543E815E90
+	for <linux-btrfs@vger.kernel.org>; Fri, 22 Aug 2025 19:40:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755889983; cv=none; b=JsROxY8Y3V9OsbvMRQgFoLo4xrvWMUdKVce6Ni0KaCIn7jbMzzqYTSB0zA1JvLWi9cfsDOKZYXMNJBPNIHj61JnsPV4du/nXbr1rASEfH1NifUn8kgtciK3fGDdTqqDtO57K+sFZ9VlNYjImTJugXcxt52lE5bW3zQHfAKtq0TA=
+	t=1755891645; cv=none; b=HgHOS55xO/4vg5MoE1fyMNA4CzoiZ8njrtGNzFFudCh3b78xc7U//BfeU1sLC6Gdy+ZygCjSgttHzGuW9a/xi3R1bHL5nm1gyumQ4wl+npfIy2NkWDr0ewnpsFiH76Xtfc+73IvRofhitPrBitqrVzYMdxzW/kH9u7YvyXcGEbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755889983; c=relaxed/simple;
-	bh=4iHiBOzBgWJyq94dA6uCyhIpP+fVGRd6GZJvRIVt3PI=;
+	s=arc-20240116; t=1755891645; c=relaxed/simple;
+	bh=KYD4A4Wy/OYN2TuwqBEOEfoBDc/sXVccpofHOYZx99E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m1F6VRtX9AD1zhwq8E0TEMRB29jlvYVOs3o9cpv9OIRFoOcIyRx4J8SHBdPDw1OwjjeXvmN6QfWcE89j/B6ZpHWwdJ+KD7S6xNOjOQROZkcIJy8VUna4Oi0snmhZ/KCcUThk8tz6KapAckq8g1155eBBH0tLkmfGP1My0iA5LoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=CAtoq4Hf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ABRzYc6o; arc=none smtp.client-ip=103.168.172.145
+	 Content-Type:Content-Disposition:In-Reply-To; b=aKQemUYnBABfjwekjeXgTbVRFFQwD+iNlu07u1oMh/EF7aUw6ofq8RJADwqe07rJWX3Rpj73qpyzbnbb6XKYGKkASJsQpxxAgasxxxDnIxs6d6I//c2lH9VqHvEnN+C6LzpjLraa4ZBR6TwSPmhWSLodGgUU+dzoD8tIwTyD0Mw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=U5PtD+P6; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=mvBTC5sx; arc=none smtp.client-ip=103.168.172.145
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfout.phl.internal (Postfix) with ESMTP id A2F11EC008A;
-	Fri, 22 Aug 2025 15:12:58 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Fri, 22 Aug 2025 15:12:58 -0400
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfout.phl.internal (Postfix) with ESMTP id 726C9EC00CA;
+	Fri, 22 Aug 2025 15:40:42 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Fri, 22 Aug 2025 15:40:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1755889978; x=1755976378; bh=nSlESuB+gI
-	3nFOAWkVaAtSPw31zmii7/ixB0SEUUocw=; b=CAtoq4HfPR4OSNEPbmExqGUZv9
-	lJPiU2YKs8TG3Qnv2wfwgpAVepm3qNmajbefDp4eezf79xwWD5Zkaa2PS7aynbIs
-	8llpkRWNq7Uuw1/bBtzcHzybOzXsai7kJ+u5sofF6MPkzxwNxwKAIvZSZn2QINg9
-	TURR2Q6jZ4aQ9hoUSPdn0L/42yaJrxmSROOUR7/yPIwIh6/Ba7M+qcPbG7kgYy51
-	P2Eovfj0Wd9lroYclq71+gPT/i7D/vbByA4Jf1bAxdiMi+NUUuz6NBb898N54AKl
-	RArN8+50aP1/22yeGy1ABwrM1OqFEaiwKdH8UVB/A8dXN8B7Si20nZB3DcXQ==
+	:subject:to:to; s=fm1; t=1755891642; x=1755978042; bh=ZZMSpF+hc0
+	cNA/+4LGT2Eaiym6vAlylJUmjACJXHCw0=; b=U5PtD+P6X5/YLJZ30qAD2tL/UL
+	uv//qMNvHC4T3Wazh+1NWDeW01HvVGulrF0xLPv80ERLxwPQAJSqZ+96WlFVlxhe
+	dQ9fYwCRN83furgRUIm1F5MOjCAtB9AFddxlCr1tLW0fcJYK64xxxWJePsQb9APe
+	V8ofA9aRj8NFHFia9wbyk8jBe8EQOSA93bRrCVYk2n+P574I8T/tmROon9strsPq
+	t3XwUGhSBtjCOz0KXqBdDK2XOSq4DshMBllQfCOI0/j/cjcBlOLvoy18fWxMHWZg
+	pz+LABhfGsF9zPt1gcTPtb+7NNCUfTp+TtPJeHNDQ5TiQm9xGIQFpxEDQ1DA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1755889978; x=1755976378; bh=nSlESuB+gI3nFOAWkVaAtSPw31zmii7/ixB
-	0SEUUocw=; b=ABRzYc6ok7aKSCcpLXr0NSr/uAoB345SzLTz/CVI+Vj25Lv5bJs
-	47ZitF6M+K0oYlQirDTeEbMUH/669Hm3b2uB/rz4yBOF2VFdndI2b8iGZ1Y85xN3
-	SRR0z0MI9BZVjrppbp5U226I2DX66fmQR5k7jtsIbdiWYyfszW+Xd2+6zcZsOOFw
-	K86ldIYtaceRHgXG+Rpp4xmAHIq5d1gFut7aCQxnFAEFmklyURg6tga30ktj+Xjg
-	KVzff+shEmMmG91NaGpXiaAJmAjSZDrzVwUOlonFRymcfoeu4HcU4jips29HV3jI
-	96o05k9Ei1014jXLoCD2ZfRRmSIZ+f8JWHg==
-X-ME-Sender: <xms:OcGoaFZV7aECFf9FifKdi1u0D0boXhrUhjE5s1GpgK78Yrl3Usb0ow>
-    <xme:OcGoaMmPSaDV6kz2eDyHH89ZVw1KoDnkQN-xIjoM8cA5h_NNFynDAdK8AOukFSGwC
-    ukGzbgGUGRnCBG5CIM>
-X-ME-Received: <xmr:OcGoaJwXp1myJ4Y5KsLU2TZsylTqrwOc_qcqBFrGVKrogcJ5W2m0D5tEf967B-DVTnDDImnwkGDGf7nXj8n-jb4bUak>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduieegheejucetufdoteggodetrf
+	1755891642; x=1755978042; bh=ZZMSpF+hc0cNA/+4LGT2Eaiym6vAlylJUmj
+	ACJXHCw0=; b=mvBTC5sx0kf5OJrI/9YH4HqgFvpMcVz63COenku7g3PyKyGY/KJ
+	lM2/ALOObhFImpDqJp3uLAHYCp3QLs8c/J1Hrqo3Gpy6TobWXu2ds0gNMR1cdF9s
+	dpuvrhWNxzaKmImM0sI11MtxpSrM3HCaHK4/uarcAfKs5LmISTitwgCm1NLfdI2k
+	lbOS5FOObHaLAoXPcB/FoLxhEp1r5zMDeAXrE5Pwi15p10sBX95ARZgyYSvfgP17
+	M9aJp2Pdp0pH3IPjZIvmZ6ZbbOi/3SDqh5s/SJ/g5fc7P+ydApN/xY7Qp4de4GzC
+	1efcer3zGIAT9E7fTjr2Ek9VcyPYMrMQt8A==
+X-ME-Sender: <xms:useoaPPqM6Cb9VPIwJjP5KfPkqFQwB1pkvK8fGs9-51jI6ZjVslhiw>
+    <xme:useoaKJRfmHMhUrlOnG1ijagXLGqJerKkpDt9nOm7FKSzIyZa5NUFaVhftaK2lFbo
+    aRp3GdZv86A9YJSQvk>
+X-ME-Received: <xmr:useoaAGXUuXajdAgqw32SuY4ud1GTNxcn5ipHovspbw7Mh43FyIz0Ra5p3KFUTeSJPV_JN8VhYaCZ_Zwc_m8ul57ZHQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduieegieefucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
@@ -73,23 +73,22 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduieegheejucetufdote
     hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
     ohepmhgrrhhksehhrghrmhhsthhonhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsg
     htrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:OcGoaCOz8UC8Bu2XsEiMNx4ME-8hVas_yLrAycKEJkR_MuEn8c0Psg>
-    <xmx:OcGoaFSjtunutrSTo5FeYHVxxqO-WzPsvAJQwiNZoNecbJmfop5IMw>
-    <xmx:OcGoaIa1hd67TPPKdCvqid8Bp-jEl9h4C8vvzobNiLg3F3pNzn1XFQ>
-    <xmx:OcGoaK2lXh1z7UeVibUGMbXy2pNJz2TuXGSgJ_o__EobvegmtVPXfA>
-    <xmx:OsGoaC9uB7mO2K4oQ_vyuB2LYiriNuWWzBBlJW9-CUi9w0rZoBcMSs5h>
+X-ME-Proxy: <xmx:useoaCSvh9Qnr9DmRn-bb-G8L7uwP2S-yoJGMsNlgk0f21bzNZbCvQ>
+    <xmx:useoaMHV56-A6AVPCU6V9ECW1e-IxGhLjHfX-KduLVX9l4-an8h_Ug>
+    <xmx:useoaO8bQndy-D6DuW1YXoF7mJo6zUGyT9wxv6S7m3uRfmg21toujg>
+    <xmx:useoaGKWZODwDn8C9BUUemNvrnC5uMl4UYDvikU4qroVOpwKIPt1xg>
+    <xmx:useoaGTdZB88MRHhQhOHYcBYTgBQhy2BKMEAai2C0omjZfWlp4d3rD-d>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 Aug 2025 15:12:57 -0400 (EDT)
-Date: Fri, 22 Aug 2025 12:14:57 -0700
+ 22 Aug 2025 15:40:41 -0400 (EDT)
+Date: Fri, 22 Aug 2025 12:42:41 -0700
 From: Boris Burkov <boris@bur.io>
 To: Mark Harmstone <mark@harmstone.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 07/16] btrfs: allow mounting filesystems with
- remap-tree incompat flag
-Message-ID: <20250822191457.GA492925@zen.localdomain>
+Subject: Re: [PATCH v2 08/16] btrfs: redirect I/O for remapped block groups
+Message-ID: <20250822194241.GB492925@zen.localdomain>
 References: <20250813143509.31073-1-mark@harmstone.com>
- <20250813143509.31073-8-mark@harmstone.com>
+ <20250813143509.31073-9-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -98,298 +97,186 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250813143509.31073-8-mark@harmstone.com>
+In-Reply-To: <20250813143509.31073-9-mark@harmstone.com>
 
-On Wed, Aug 13, 2025 at 03:34:49PM +0100, Mark Harmstone wrote:
-> If we encounter a filesystem with the remap-tree incompat flag set,
-> valdiate its compatibility with the other flags, and load the remap tree
-> using the values that have been added to the superblock.
+On Wed, Aug 13, 2025 at 03:34:50PM +0100, Mark Harmstone wrote:
+> Change btrfs_map_block() so that if the block group has the REMAPPED
+> flag set, we call btrfs_translate_remap() to obtain a new address.
 > 
-> The remap-tree feature depends on the free space tere, but no-holes and
-> block-group-tree have been made dependencies to reduce the testing
-> matrix. Similarly I'm not aware of any reason why mixed-bg and zoned would be
-> incompatible with remap-tree, but this is blocked for the time being
-> until it can be fully tested.
+> btrfs_translate_remap() searches the remap tree for a range
+> corresponding to the logical address passed to btrfs_map_block(). If it
+> is within an identity remap, this part of the block group hasn't yet
+> been relocated, and so we use the existing address.
+> 
+> If it is within an actual remap, we subtract the start of the remap
+> range and add the address of its destination, contained in the item's
+> payload.
 > 
 > Signed-off-by: Mark Harmstone <mark@harmstone.com>
 > ---
->  fs/btrfs/Kconfig                |  2 +
->  fs/btrfs/accessors.h            |  6 +++
->  fs/btrfs/disk-io.c              | 86 ++++++++++++++++++++++++++++-----
->  fs/btrfs/extent-tree.c          |  2 +
->  fs/btrfs/fs.h                   |  4 +-
->  fs/btrfs/transaction.c          |  7 +++
->  include/uapi/linux/btrfs_tree.h |  5 +-
->  7 files changed, 97 insertions(+), 15 deletions(-)
+>  fs/btrfs/relocation.c | 59 +++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/relocation.h |  2 ++
+>  fs/btrfs/volumes.c    | 31 +++++++++++++++++++++++
+>  3 files changed, 92 insertions(+)
 > 
-> diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-> index ea95c90c8474..598a4af4ce4b 100644
-> --- a/fs/btrfs/Kconfig
-> +++ b/fs/btrfs/Kconfig
-> @@ -116,6 +116,8 @@ config BTRFS_EXPERIMENTAL
->  
->  	  - large folio support
->  
-> +	  - remap-tree - logical address remapping tree
-> +
->  	  If unsure, say N.
->  
->  config BTRFS_FS_REF_VERIFY
-> diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-> index 0dd161ee6863..392eaad75e72 100644
-> --- a/fs/btrfs/accessors.h
-> +++ b/fs/btrfs/accessors.h
-> @@ -882,6 +882,12 @@ BTRFS_SETGET_STACK_FUNCS(super_uuid_tree_generation, struct btrfs_super_block,
->  			 uuid_tree_generation, 64);
->  BTRFS_SETGET_STACK_FUNCS(super_nr_global_roots, struct btrfs_super_block,
->  			 nr_global_roots, 64);
-> +BTRFS_SETGET_STACK_FUNCS(super_remap_root, struct btrfs_super_block,
-> +			 remap_root, 64);
-> +BTRFS_SETGET_STACK_FUNCS(super_remap_root_generation, struct btrfs_super_block,
-> +			 remap_root_generation, 64);
-> +BTRFS_SETGET_STACK_FUNCS(super_remap_root_level, struct btrfs_super_block,
-> +			 remap_root_level, 8);
->  
->  /* struct btrfs_file_extent_item */
->  BTRFS_SETGET_STACK_FUNCS(stack_file_extent_type, struct btrfs_file_extent_item,
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 8e9520119d4f..563aea5e3b1b 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1181,6 +1181,8 @@ static struct btrfs_root *btrfs_get_global_root(struct btrfs_fs_info *fs_info,
->  		return btrfs_grab_root(btrfs_global_root(fs_info, &key));
->  	case BTRFS_RAID_STRIPE_TREE_OBJECTID:
->  		return btrfs_grab_root(fs_info->stripe_root);
-> +	case BTRFS_REMAP_TREE_OBJECTID:
-> +		return btrfs_grab_root(fs_info->remap_root);
->  	default:
->  		return NULL;
->  	}
-> @@ -1271,6 +1273,7 @@ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
->  	btrfs_put_root(fs_info->data_reloc_root);
->  	btrfs_put_root(fs_info->block_group_root);
->  	btrfs_put_root(fs_info->stripe_root);
-> +	btrfs_put_root(fs_info->remap_root);
->  	btrfs_check_leaked_roots(fs_info);
->  	btrfs_extent_buffer_leak_debug_check(fs_info);
->  	kfree(fs_info->super_copy);
-> @@ -1825,6 +1828,7 @@ static void free_root_pointers(struct btrfs_fs_info *info, bool free_chunk_root)
->  	free_root_extent_buffers(info->data_reloc_root);
->  	free_root_extent_buffers(info->block_group_root);
->  	free_root_extent_buffers(info->stripe_root);
-> +	free_root_extent_buffers(info->remap_root);
->  	if (free_chunk_root)
->  		free_root_extent_buffers(info->chunk_root);
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 7256f6748c8f..e1f1da9336e7 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -3884,6 +3884,65 @@ static const char *stage_to_string(enum reloc_stage stage)
+>  	return "unknown";
 >  }
-> @@ -2256,20 +2260,31 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
->  	if (ret)
->  		goto out;
 >  
-> -	/*
-> -	 * This tree can share blocks with some other fs tree during relocation
-> -	 * and we need a proper setup by btrfs_get_fs_root
-> -	 */
-> -	root = btrfs_get_fs_root(tree_root->fs_info,
-> -				 BTRFS_DATA_RELOC_TREE_OBJECTID, true);
-> -	if (IS_ERR(root)) {
-> -		if (!btrfs_test_opt(fs_info, IGNOREBADROOTS)) {
-> -			ret = PTR_ERR(root);
-> -			goto out;
-> -		}
-> -	} else {
-> +	if (btrfs_fs_incompat(fs_info, REMAP_TREE)) {
-> +		/* remap_root already loaded in load_important_roots() */
-> +		root = fs_info->remap_root;
+> +int btrfs_translate_remap(struct btrfs_fs_info *fs_info, u64 *logical,
+> +			  u64 *length, bool nolock)
+> +{
+> +	int ret;
+> +	struct btrfs_key key, found_key;
+> +	struct extent_buffer *leaf;
+> +	struct btrfs_remap *remap;
+> +	BTRFS_PATH_AUTO_FREE(path);
 > +
->  		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
-> -		fs_info->data_reloc_root = root;
+> +	path = btrfs_alloc_path();
+> +	if (!path)
+> +		return -ENOMEM;
 > +
-> +		root->root_key.objectid = BTRFS_REMAP_TREE_OBJECTID;
-> +		root->root_key.type = BTRFS_ROOT_ITEM_KEY;
-> +		root->root_key.offset = 0;
-> +	} else {
+> +	if (nolock) {
+> +		path->search_commit_root = 1;
+> +		path->skip_locking = 1;
+> +	}
 
-It might be a good idea to vomit on finding a reloc tree if the
-REMAP_TREE incompat bit is set. If that would happen elsewhere in tree
-checker, that's great, the idea just struck me while reading this.
+We are calling this without a transaction and in a loop in
+btrfs_submit_bbio:
 
+btrfs_submit_bbio
+  while (blah); btrfs_submit_chunk
+    btrfs_map_block
+      btrfs_translate_remap
+
+So that means in that loop we can have one remap tree in one step of the
+loop and then a transaction can finish and then the next chunk is
+remapped on the next remap tree in the next step.
+
+Is that acceptable? Otherwise you need to hold the commit_root_sem for
+the whole loop. It seems OK because both copies ought to be around while
+we're in the middle of remapping, but let's be sure. I'm also curious
+about the paths that are removing things from the remap tree. I would
+expect live IO that would use that remapping would block them, as it
+is like removing an extent, but also worth considering.
+
+> +
+> +	key.objectid = *logical;
+> +	key.type = (u8)-1;
+> +	key.offset = (u64)-1;
+> +
+> +	ret = btrfs_search_slot(NULL, fs_info->remap_root, &key, path,
+> +				0, 0);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	leaf = path->nodes[0];
+> +
+> +	if (path->slots[0] == 0)
+> +		return -ENOENT;
+> +
+> +	path->slots[0]--;
+> +
+> +	btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+> +
+> +	if (found_key.type != BTRFS_REMAP_KEY &&
+> +	    found_key.type != BTRFS_IDENTITY_REMAP_KEY) {
+> +		return -ENOENT;
+> +	}
+> +
+> +	if (found_key.objectid > *logical ||
+> +	    found_key.objectid + found_key.offset <= *logical) {
+> +		return -ENOENT;
+> +	}
+> +
+> +	if (*logical + *length > found_key.objectid + found_key.offset)
+> +		*length = found_key.objectid + found_key.offset - *logical;
+> +
+> +	if (found_key.type == BTRFS_IDENTITY_REMAP_KEY)
+> +		return 0;
+> +
+> +	remap = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_remap);
+> +
+> +	*logical = *logical - found_key.objectid + btrfs_remap_address(leaf, remap);
+
+nit: I think the readability of this would benefit from some "offset"
+helper variable, but your commit message does make it clear enough.
+
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * function to relocate all extents in a block group.
+>   */
+> diff --git a/fs/btrfs/relocation.h b/fs/btrfs/relocation.h
+> index 5c36b3f84b57..a653c42a25a3 100644
+> --- a/fs/btrfs/relocation.h
+> +++ b/fs/btrfs/relocation.h
+> @@ -31,5 +31,7 @@ int btrfs_should_cancel_balance(const struct btrfs_fs_info *fs_info);
+>  struct btrfs_root *find_reloc_root(struct btrfs_fs_info *fs_info, u64 bytenr);
+>  bool btrfs_should_ignore_reloc_root(const struct btrfs_root *root);
+>  u64 btrfs_get_reloc_bg_bytenr(const struct btrfs_fs_info *fs_info);
+> +int btrfs_translate_remap(struct btrfs_fs_info *fs_info, u64 *logical,
+> +			  u64 *length, bool nolock);
+>  
+>  #endif
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 678e5d4cd780..a2c49cb8bfc6 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -6635,6 +6635,37 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+>  	if (IS_ERR(map))
+>  		return PTR_ERR(map);
+>  
+> +	if (map->type & BTRFS_BLOCK_GROUP_REMAPPED) {
+
+potential optimization (not blocking for this version IMO):
+if you can cache the type on the extent_map (I actually think it ought
+to already be done, essentially, as we know data vs. not data) then you
+don't need to lookup the map at all for a remapped block, and can go
+straight to looking up the remap.
+
+> +		u64 new_logical = logical;
+> +		bool nolock = !(map->type & BTRFS_BLOCK_GROUP_DATA);
+> +
 > +		/*
-> +		 * This tree can share blocks with some other fs tree during
-> +		 * relocation and we need a proper setup by btrfs_get_fs_root
+> +		 * We use search_commit_root in btrfs_translate_remap for
+> +		 * metadata blocks, to avoid lockdep complaining about
+> +		 * recursive locking.
+
+real risk of deadlock or "complaining"?
+
+> +		 * If we get -ENOENT this means this is a BG that has just had
+> +		 * its REMAPPED flag set, and so nothing has yet been actually
+> +		 * remapped.
 > +		 */
-> +		root = btrfs_get_fs_root(tree_root->fs_info,
-> +					 BTRFS_DATA_RELOC_TREE_OBJECTID, true);
-> +		if (IS_ERR(root)) {
-> +			if (!btrfs_test_opt(fs_info, IGNOREBADROOTS)) {
-> +				ret = PTR_ERR(root);
-> +				goto out;
-> +			}
-> +		} else {
-> +			set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
-> +			fs_info->data_reloc_root = root;
-> +		}
->  	}
->  
->  	location.objectid = BTRFS_QUOTA_TREE_OBJECTID;
-> @@ -2509,6 +2524,28 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
->  		ret = -EINVAL;
->  	}
->  
-> +	/* Ditto for remap_tree */
-
-Don't care strongly, but "ditto" is less clear and more prone to
-breaking when other code gets refactored than just writing out what
-you mean (perhaps with a reference to something above).
-
-> +	if (btrfs_fs_incompat(fs_info, REMAP_TREE) &&
-> +	    (!btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID) ||
-> +	     !btrfs_fs_incompat(fs_info, NO_HOLES) ||
-> +	     !btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE))) {
-> +		btrfs_err(fs_info,
-> +"remap-tree feature requires free-space-tree, no-holes, and block-group-tree");
-> +		ret = -EINVAL;
-> +	}
-> +
-> +	if (btrfs_fs_incompat(fs_info, REMAP_TREE) &&
-> +	    btrfs_fs_incompat(fs_info, MIXED_GROUPS)) {
-> +		btrfs_err(fs_info, "remap-tree not supported with mixed-bg");
-> +		ret = -EINVAL;
-> +	}
-> +
-> +	if (btrfs_fs_incompat(fs_info, REMAP_TREE) &&
-> +	    btrfs_fs_incompat(fs_info, ZONED)) {
-> +		btrfs_err(fs_info, "remap-tree not supported with zoned devices");
-> +		ret = -EINVAL;
-> +	}
-> +
->  	/*
->  	 * Hint to catch really bogus numbers, bitflips or so, more exact checks are
->  	 * done later
-> @@ -2667,6 +2704,18 @@ static int load_important_roots(struct btrfs_fs_info *fs_info)
->  		btrfs_warn(fs_info, "couldn't read tree root");
->  		return ret;
->  	}
-> +
-> +	if (btrfs_fs_incompat(fs_info, REMAP_TREE)) {
-> +		bytenr = btrfs_super_remap_root(sb);
-> +		gen = btrfs_super_remap_root_generation(sb);
-> +		level = btrfs_super_remap_root_level(sb);
-> +		ret = load_super_root(fs_info->remap_root, bytenr, gen, level);
-> +		if (ret) {
-> +			btrfs_warn(fs_info, "couldn't read remap root");
+> +		ret = btrfs_translate_remap(fs_info, &new_logical, length,
+> +					    nolock);
+> +		if (ret && (!nolock || ret != -ENOENT))
 > +			return ret;
+> +
+> +		if (ret != -ENOENT && new_logical != logical) {
+> +			btrfs_free_chunk_map(map);
+> +
+> +			map = btrfs_get_chunk_map(fs_info, new_logical,
+> +						  *length);
+> +			if (IS_ERR(map))
+> +				return PTR_ERR(map);
+> +
+> +			logical = new_logical;
 > +		}
+> +
+> +		ret = 0;
 > +	}
 > +
->  	return 0;
->  }
->  
-> @@ -3278,6 +3327,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
->  	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
->  	struct btrfs_root *tree_root;
->  	struct btrfs_root *chunk_root;
-> +	struct btrfs_root *remap_root;
->  	int ret;
->  	int level;
->  
-> @@ -3312,6 +3362,16 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
->  		goto fail_alloc;
->  	}
->  
-> +	if (btrfs_super_incompat_flags(disk_super) & BTRFS_FEATURE_INCOMPAT_REMAP_TREE) {
-> +		remap_root = btrfs_alloc_root(fs_info, BTRFS_REMAP_TREE_OBJECTID,
-> +					      GFP_KERNEL);
-> +		fs_info->remap_root = remap_root;
-> +		if (!remap_root) {
-> +			ret = -ENOMEM;
-> +			goto fail_alloc;
-> +		}
-> +	}
-> +
-
-This feels like it should come after the csum verification stuff in the
-bootstrap process. The csum stuff is from the super so it shouldn't
-depend on remap, but remap is an eb and has csums, so it does "rely" on
-that (obviously it will break anyway, but then why bother doing the
-explicit checking at all)
-
-As the most general statement, I think it putting it as "late as possible"
-is the most self documenting option.
-
->  	btrfs_info(fs_info, "first mount of filesystem %pU", disk_super->fsid);
->  	/*
->  	 * Verify the type first, if that or the checksum value are
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 5e038ae1a93f..c1b96c728fe6 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -2589,6 +2589,8 @@ static u64 get_alloc_profile_by_root(struct btrfs_root *root, int data)
->  		flags = BTRFS_BLOCK_GROUP_DATA;
->  	else if (root == fs_info->chunk_root)
->  		flags = BTRFS_BLOCK_GROUP_SYSTEM;
-> +	else if (root == fs_info->remap_root)
-> +		flags = BTRFS_BLOCK_GROUP_REMAP;
->  	else
->  		flags = BTRFS_BLOCK_GROUP_METADATA;
->  
-> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> index 9ce75843b578..6ea96e76655e 100644
-> --- a/fs/btrfs/fs.h
-> +++ b/fs/btrfs/fs.h
-> @@ -288,7 +288,8 @@ enum {
->  #define BTRFS_FEATURE_INCOMPAT_SUPP		\
->  	(BTRFS_FEATURE_INCOMPAT_SUPP_STABLE |	\
->  	 BTRFS_FEATURE_INCOMPAT_RAID_STRIPE_TREE | \
-> -	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2)
-> +	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2 | \
-> +	 BTRFS_FEATURE_INCOMPAT_REMAP_TREE)
->  
->  #else
->  
-> @@ -438,6 +439,7 @@ struct btrfs_fs_info {
->  	struct btrfs_root *data_reloc_root;
->  	struct btrfs_root *block_group_root;
->  	struct btrfs_root *stripe_root;
-> +	struct btrfs_root *remap_root;
->  
->  	/* The log root tree is a directory of all the other log roots */
->  	struct btrfs_root *log_root_tree;
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index c5c0d9cf1a80..64b9c427af6a 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -1953,6 +1953,13 @@ static void update_super_roots(struct btrfs_fs_info *fs_info)
->  		super->cache_generation = 0;
->  	if (test_bit(BTRFS_FS_UPDATE_UUID_TREE_GEN, &fs_info->flags))
->  		super->uuid_tree_generation = root_item->generation;
-> +
-> +	if (btrfs_fs_incompat(fs_info, REMAP_TREE)) {
-> +		root_item = &fs_info->remap_root->root_item;
-> +		super->remap_root = root_item->bytenr;
-> +		super->remap_root_generation = root_item->generation;
-> +		super->remap_root_level = root_item->level;
-> +	}
->  }
->  
->  int btrfs_transaction_blocked(struct btrfs_fs_info *info)
-> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> index 500e3a7df90b..89bcb80081a6 100644
-> --- a/include/uapi/linux/btrfs_tree.h
-> +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -721,9 +721,12 @@ struct btrfs_super_block {
->  	__u8 metadata_uuid[BTRFS_FSID_SIZE];
->  
->  	__u64 nr_global_roots;
-> +	__le64 remap_root;
-> +	__le64 remap_root_generation;
-> +	__u8 remap_root_level;
->  
->  	/* Future expansion */
-> -	__le64 reserved[27];
-> +	__u8 reserved[199];
->  	__u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
->  	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
->  
+>  	num_copies = btrfs_chunk_map_num_copies(map);
+>  	if (io_geom.mirror_num > num_copies)
+>  		return -EINVAL;
 > -- 
 > 2.49.1
 > 
