@@ -1,214 +1,353 @@
-Return-Path: <linux-btrfs+bounces-16265-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16266-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC269B30A6D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 02:33:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44E40B3100B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 09:15:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FBDFA07D4F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 00:33:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04FDF68566F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 07:14:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F936DCE1;
-	Fri, 22 Aug 2025 00:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4B8393DE4;
+	Fri, 22 Aug 2025 07:14:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="GdyI0fnd"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MNgWOa2t";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MNgWOa2t"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19CA028F4;
-	Fri, 22 Aug 2025 00:32:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F181632C8
+	for <linux-btrfs@vger.kernel.org>; Fri, 22 Aug 2025 07:14:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755822775; cv=none; b=NL1XI3OvnBANCNM6sYbQdZcZuSuVpQ3GpPQG27Ct4esS0lX6mFVqIKHNM6Zez+ybvM+LrTWZemElh4jQ5qXI8vqDtB0TrOEHfSWqrrqKIm+Blx9udS+gXdm34/M27avkjeTbUEz6CTAw5STc+TFIB4P9LVaWvXSKbtaZl21O/LE=
+	t=1755846848; cv=none; b=bVUKjZ+ms+Rznn5fxcAtWsR0n/YYX+e52gMefVxERwcCmtyTidKPbJDo/6J0iHHliopt182M9Uz65uSgWdQEEMDiksZNxLa5a4NWQZsZbLNu0581sMIlFnumojqXgQg+KegrwHzNGcGTd+E12y55MIysDOFNh7zYIvWjhKmZ1rA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755822775; c=relaxed/simple;
-	bh=sFiM0SbUSCE/c0BYix2JiUJiEVX8mAMWD3rDjPvxvJ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=lSeUJKqqgjuRNLsTj8KWO5XPoKCVJr21wNIGapeks/Q2+rn05k5mK9krmJOFH1z12XupHdHLrEmJ/tAJvAR5E+G9h0wvIhZQfSkcWJMSRwsTxIdOkXrCZFjnSK4copsCMGYLXxagU70x2k6Lxo/5Mye7SZJ5WUtre4xvnxtEQhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=GdyI0fnd; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1755822766; x=1756427566; i=quwenruo.btrfs@gmx.com;
-	bh=3lpoY4fou6E9O6ga0GKO6kv0rhaYDEQMkzQq9GSIMz0=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=GdyI0fndRjXs0E46MXbr8D9DOt0Zso31dOE9o/wy9hfexXxMGLbQXIEKkeYS8qRK
-	 BjBII3p+ksSXKeSe/0YBjcSAaiO9JdAB5Q5SxF9SokbnsD2ufDbMsA/iqJbBHPFvW
-	 HYKxjvOFUDszgAt9y7D7/7ukmzqhg74pqSj8VxTzt+B64TbucsjZuQU5rlrLYLBdT
-	 si+gC4B/F63foJ8icJQ+xHiAuRwffJ+/xFZd+GyHlUiP2c1A5C2LT0+5ievSxpIlF
-	 LbSaJknVpRfZenwZkdUc0vTYFrohSCqE61ItUrFLlZ22no9zb6zdUlWJwB3KVUPXT
-	 Hkv8+HKU390JYM9yQQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKKUp-1v7Bpa2YJz-00XOdW; Fri, 22
- Aug 2025 02:32:46 +0200
-Message-ID: <dd02704d-61d2-4ffa-8785-7c8d4fc6457a@gmx.com>
-Date: Fri, 22 Aug 2025 10:02:42 +0930
+	s=arc-20240116; t=1755846848; c=relaxed/simple;
+	bh=zj3uJA9bnMCaAtG/HGKWXZAEAHl9gjhfcKAOom5kyFM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t7deEjsdHVp8dyl+Z+esLdnFnr28rwzQfKxXvMvBSwYJ6681034PI85xRV8urUhsHou3KNwjek1DFJadx5rtnuGQcdbPvLYrPvPHUxq8LmI2wuR0oLxsEYWzPyAEIqaMd6y0lfPONAXwx4cATJkSFHAz0x58dvcawgIA7bqLiVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MNgWOa2t; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MNgWOa2t; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 425D022258;
+	Fri, 22 Aug 2025 07:14:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1755846844; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=98/s6RoSNAtWg2H2Kh1oGZdaT8L5qBifPF/oxKRJE7g=;
+	b=MNgWOa2tcyeaY7WaYy6bMASYT7xz3WMVha51dJnrwf16Cpc9rgyIzsz6Vh/nj8XusxRs+D
+	1KubK19DzdDWfsQ61I08jZlePcqQVg1iG7yyD3dkx40lUGJ5LiL0cAVDP2U+1XzxhlvMWS
+	0sjU5Xi+skwDIHOtM6KrX9wYwBvCC+E=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=MNgWOa2t
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1755846844; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=98/s6RoSNAtWg2H2Kh1oGZdaT8L5qBifPF/oxKRJE7g=;
+	b=MNgWOa2tcyeaY7WaYy6bMASYT7xz3WMVha51dJnrwf16Cpc9rgyIzsz6Vh/nj8XusxRs+D
+	1KubK19DzdDWfsQ61I08jZlePcqQVg1iG7yyD3dkx40lUGJ5LiL0cAVDP2U+1XzxhlvMWS
+	0sjU5Xi+skwDIHOtM6KrX9wYwBvCC+E=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 34454139B7;
+	Fri, 22 Aug 2025 07:14:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Lw9QOboYqGiBBQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 22 Aug 2025 07:14:02 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: stable@vger.kernel.org
+Subject: [PATCH] btrfs: do more strict compressed read merge check
+Date: Fri, 22 Aug 2025 16:43:41 +0930
+Message-ID: <ca8d574888d830061b38c3df3dad5af47dbfefcf.1755846792.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs/301: test nested squota teardown
-To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
- fstests@vger.kernel.org, kernel-team@fb.com
-References: <af8736b1-e85a-4867-a884-194fe8f9abb5@gmx.com>
- <49ed1733eaa2fcc3a9ec3f6cd8544016253d6914.1755819214.git.boris@bur.io>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <49ed1733eaa2fcc3a9ec3f6cd8544016253d6914.1755819214.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LqwHZQeAmTSH5qxmFt0tu8YaCJT0yrmUrE6aDl1QXWZz+WF2kle
- fc9XFQrO8B8ReiOAHQBVHvmFeWX8rFIJVncj2P/v2w5PhuBhjSRp3GbQJdH2NnYjm7A7Ikp
- OHHmZf4nNT+WTyT3CHvC/mS8w78qmlJ3vUH23Yr7URMmERDgUqeXGxIVWoZmY/4W/4sPSo0
- wxWtWyoxpi7CArUWvgjmw==
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:dkim,suse.com:email];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:zIdsfufYINM=;Pyqp2RVxU6Kj0EVCP/s0nI9Q365
- 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
- yym/JjNclkhwfor6KNF9jz7zswyD
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 425D022258
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 
+[BUG]
+When running test case generic/457, there is a chance to hit the
+following error, with 64K page size and 4K btrfs block size, and
+"compress=zstd" mount option:
 
+FSTYP         -- btrfs
+PLATFORM      -- Linux/aarch64 btrfs-aarch64 6.17.0-rc2-custom+ #129 SMP PREEMPT_DYNAMIC Wed Aug 20 18:52:51 ACST 2025
+MKFS_OPTIONS  -- -s 4k /dev/mapper/test-scratch1
+MOUNT_OPTIONS -- -o compress=zstd /dev/mapper/test-scratch1 /mnt/scratch
 
-=E5=9C=A8 2025/8/22 09:05, Boris Burkov =E5=86=99=E9=81=93:
-> Nested squotas with snapshots is the most complicated case, so add some
-> extra checks to it. Specifically, ensure that full tear down of the
-> subvols and parent qgroups works properly.
->=20
-> Signed-off-by: Boris Burkov <boris@bur.io>
+generic/457 2s ... [failed, exit status 1]- output mismatch (see /home/adam/xfstests-dev/results//generic/457.out.bad)
+    --- tests/generic/457.out	2024-04-25 18:13:45.160550980 +0930
+    +++ /home/adam/xfstests-dev/results//generic/457.out.bad	2025-08-22 16:09:41.039352391 +0930
+    @@ -1,2 +1,3 @@
+     QA output created by 457
+    -Silence is golden
+    +testfile6 end md5sum mismatched
+    +(see /home/adam/xfstests-dev/results//generic/457.full for details)
+    ...
+    (Run 'diff -u /home/adam/xfstests-dev/tests/generic/457.out /home/adam/xfstests-dev/results//generic/457.out.bad'  to see the entire diff)
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+The root problem is, after certain fsx operations the file contents
+change just after a mount cycle.
 
-Thanks,
-Qu
+There is a much smaller reproducer based on that test case, which I
+mainly used to debug the bug:
 
-> ---
->   tests/btrfs/301 | 9 +++++++++
->   1 file changed, 9 insertions(+)
->=20
-> diff --git a/tests/btrfs/301 b/tests/btrfs/301
-> index 7f676001..4c0ba119 100755
-> --- a/tests/btrfs/301
-> +++ b/tests/btrfs/301
-> @@ -21,6 +21,8 @@ _require_no_compress
->  =20
->   _fixed_by_kernel_commit XXXXXXXXXXXX \
->   	"btrfs: fix iteration bug in __qgroup_excl_accounting()"
-> +_fixed_by_kernel_commit XXXXXXXXXXXX \
-> +	"btrfs: fix squota _cmpr stats leak"
->  =20
->   subv=3D$SCRATCH_MNT/subv
->   nested=3D$SCRATCH_MNT/subv/nested
-> @@ -393,6 +395,13 @@ nested_accounting()
->   	check_qgroup_usage 2/100 $(($subv_usage + $nested_usage))
->   	do_enospc_falloc $nested/large_falloc 2G
->   	do_enospc_write $nested/large 2G
-> +	# ensure we can tear everything down in the nested scenario
-> +	$BTRFS_UTIL_PROG qgroup limit none 1/100 $SCRATCH_MNT
-> +	$BTRFS_UTIL_PROG subvolume delete $nested >> $seqres.full
-> +	$BTRFS_UTIL_PROG subvolume delete $subv >> $seqres.full
-> +	trigger_cleaner
-> +	$BTRFS_UTIL_PROG qgroup destroy 1/100 $SCRATCH_MNT
-> +	$BTRFS_UTIL_PROG qgroup destroy 2/100 $SCRATCH_MNT
->   	_scratch_unmount
->   }
->  =20
+workload() {
+	mkfs.btrfs -f $dev > /dev/null
+	dmesg -C
+	trace-cmd clear
+	mount -o compress=zstd $dev $mnt
+	xfs_io -f -c "pwrite -S 0xff 0 256K" -c "sync" $mnt/base > /dev/null
+	cp --reflink=always -p -f $mnt/base $mnt/file
+	$fsx -N 4 -d -k -S 3746842 $mnt/file
+	if [ $? -ne 0 ]; then
+		echo "!!! FSX FAILURE !!!"
+		fail
+	fi
+	csum_before=$(_md5_checksum $mnt/file)
+	stop_trace
+	umount $mnt
+	mount $dev $mnt
+	csum_after=$(_md5_checksum $mnt/file)
+	umount $mnt
+	if [ "$csum_before" != "$csum_after" ]; then
+		echo "!!! CSUM MISMATCH !!!"
+		fail
+	fi
+}
+
+This seed value will cause 100% reproducible csum mismatch after a mount
+cycle.
+
+[CAUSE]
+With extra debug trace_printk(), the following sequence can explain the
+root cause:
+
+             fsx-3900290 [002] ..... 161696.160966: btrfs_submit_compressed_read: r/i=5/258 file_off=131072 em start=126976 len=16384
+
+The "r/i" is showing the root id and the ino number.
+In this case, my minimal reproducer is indeed using inode 258 of
+subvolume 5, and that's the inode with changing contents.
+
+The above trace is from the function btrfs_submit_compressed_read(),
+triggered by fsx to read the folio at file offset 128K.
+
+Notice that the extent map, it's at offset 124K, with a length of 16K.
+This means the extent map only covers the first 12K (3 blocks) of the
+folio 128K.
+
+             fsx-3900290 [002] ..... 161696.160969: trace_dump_cb: btrfs_submit_compressed_read, r/i=5/258 file off start=131072 len=65536 bi_size=65536
+
+This is the line I used to dump the basic info of a bbio, which shows the
+bi_size is 64K, aka covering the whole 64K folio at file offset 128K.
+
+But remember, the extent map only covers 3 blocks, definitely not enough
+to cover the whole 64K folio at 128K file offset.
+
+   kworker/u19:1-3748349 [002] ..... 161696.161154: btrfs_decompress_buf2page: r/i=5/258 file_off=131072 copy_len=4096 content=ffff
+   kworker/u19:1-3748349 [002] ..... 161696.161155: btrfs_decompress_buf2page: r/i=5/258 file_off=135168 copy_len=4096 content=ffff
+   kworker/u19:1-3748349 [002] ..... 161696.161156: btrfs_decompress_buf2page: r/i=5/258 file_off=139264 copy_len=4096 content=ffff
+   kworker/u19:1-3748349 [002] ..... 161696.161157: btrfs_decompress_buf2page: r/i=5/258 file_off=143360 copy_len=4096 content=ffff
+
+The above lines show that btrfs_decompress_buf2page() called by zstd
+decompress code is copying the decompressed content into the filemap.
+
+But notice that, the last line is already beyond the extent map range.
+
+Furthermore, there are no more compressed content copy, as the
+compressed bio only has the extent map to cover the first 3 blocks (the
+4th block copy is already incorrect).
+
+   kworker/u19:1-3748349 [002] ..... 161696.161161: trace_dump_cb: r/i=5/258 file_pos=131072 content=ffff
+   kworker/u19:1-3748349 [002] ..... 161696.161161: trace_dump_cb: r/i=5/258 file_pos=135168 content=ffff
+   kworker/u19:1-3748349 [002] ..... 161696.161162: trace_dump_cb: r/i=5/258 file_pos=139264 content=ffff
+   kworker/u19:1-3748349 [002] ..... 161696.161162: trace_dump_cb: r/i=5/258 file_pos=143360 content=ffff
+   kworker/u19:1-3748349 [002] ..... 161696.161162: trace_dump_cb: r/i=5/258 file_pos=147456 content=0000
+
+This is the extra dumpping of the compressed bio, after file offset
+140K (143360), the content is all zero, which is incorrect.
+The zero is there because we didn't copy anything into the folio.
+
+The root cause of the corruption is, we are submitting a compressed read
+for a whole folio, but the extent map we get only covers the first 3
+blocks, meaning the compressed read path is merging reads that shouldn't
+be merged.
+
+The involved file extents are:
+
+        item 19 key (258 EXTENT_DATA 126976) itemoff 15143 itemsize 53
+                generation 9 type 1 (regular)
+                extent data disk byte 13635584 nr 4096
+                extent data offset 110592 nr 16384 ram 131072
+                extent compression 3 (zstd)
+        item 20 key (258 EXTENT_DATA 143360) itemoff 15090 itemsize 53
+                generation 9 type 1 (regular)
+                extent data disk byte 13635584 nr 4096
+                extent data offset 12288 nr 24576 ram 131072
+                extent compression 3 (zstd)
+
+Note that, both extents at 124K and 140K are pointing to the same
+compressed extent, but with different offset.
+
+This means, we reads of range [124K, 140K) and [140K, 165K) should not
+be merged.
+
+But read merge check function, btrfs_bio_is_contig(), is only checking
+the disk_bytenr of two compressed reads, as there are not enough info
+like the involved extent maps to do more comprehensive checks, resulting
+the incorrect compressed read.
+
+Unfortunately this is a long existing bug, way before subpage block size
+support.
+
+But subpage block size support (and experimental large folio support)
+makes it much easier to detect.
+
+If block size equals page size, regular page read will only read one
+block each time, thus no extent map sharing nor merge.
+
+(This means for bs == ps cases, it's still possible to hit the bug with
+readahead, just we don't have test coverage with content verification
+for readahead)
+
+[FIX]
+Save the last hit compressed extent map into btrfs_bio_ctrl, and check
+if the last compressed extent map is completely the same as the current
+one.
+
+If not, force submitting the current bio, so that the read will never be
+merged.
+
+And after submitting a bio, clear btrfs_bio_ctrl::last_compressed_em to
+avoid incorrect detection.
+
+CC: stable@vger.kernel.org
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/extent_io.c | 48 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 0c12fd64a1f3..bc42b88b10ed 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -131,6 +131,13 @@ struct btrfs_bio_ctrl {
+ 	 */
+ 	unsigned long submit_bitmap;
+ 	struct readahead_control *ractl;
++
++	/*
++	 * The extent map of the last hit compressed extent map.
++	 * The current btrfs_bio_is_contig() doesn't have enough info to
++	 * determine if we can really merge compressed read.
++	 */
++	struct extent_map last_compressed_em;
+ };
+ 
+ /*
+@@ -957,6 +964,37 @@ static void btrfs_readahead_expand(struct readahead_control *ractl,
+ 		readahead_expand(ractl, ra_pos, em_end - ra_pos);
+ }
+ 
++static void save_compressed_em(struct btrfs_bio_ctrl *bio_ctrl,
++			       const struct extent_map *em)
++{
++	if (btrfs_extent_map_compression(em) == BTRFS_COMPRESS_NONE)
++		return;
++	memcpy(&bio_ctrl->last_compressed_em, em, sizeof(*em));
++}
++
++static bool is_same_compressed_em(struct btrfs_bio_ctrl *bio_ctrl,
++				  const struct extent_map *em)
++{
++	const struct extent_map *cur_em = &bio_ctrl->last_compressed_em;
++
++	/*
++	 * Only if the em is completely the same as the previous one we cna merge
++	 * the current folio in the read bio.
++	 *
++	 * If such merge happened incorrectly, we will have a bio which is
++	 * larger than the compressed bio, resulting the tailing part not to be
++	 * read out correctly.
++	 */
++	if (em->flags != cur_em->flags ||
++	    em->start != cur_em->start ||
++	    em->len != cur_em->len ||
++	    em->disk_bytenr != cur_em->disk_bytenr ||
++	    em->disk_num_bytes != cur_em->disk_num_bytes ||
++	    em->offset != cur_em->offset)
++		return false;
++	return true;
++}
++
+ /*
+  * basic readpage implementation.  Locked extent state structs are inserted
+  * into the tree that are removed when the IO is done (by the end_io
+@@ -1080,9 +1118,19 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 		    *prev_em_start != em->start)
+ 			force_bio_submit = true;
+ 
++		/*
++		 * We must ensure we only merge compressed read when the current
++		 * extent map matches the previous one exactly.
++		 */
++		if (compress_type != BTRFS_COMPRESS_NONE) {
++			if (!is_same_compressed_em(bio_ctrl, em))
++				force_bio_submit = true;
++		}
++
+ 		if (prev_em_start)
+ 			*prev_em_start = em->start;
+ 
++		save_compressed_em(bio_ctrl, em);
+ 		em_gen = em->generation;
+ 		btrfs_free_extent_map(em);
+ 		em = NULL;
+-- 
+2.50.1
 
 
