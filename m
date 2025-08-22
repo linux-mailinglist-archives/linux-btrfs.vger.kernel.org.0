@@ -1,176 +1,112 @@
-Return-Path: <linux-btrfs+bounces-16297-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16298-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06BFFB31C5C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 16:45:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4720DB31C81
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 16:48:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53BF71CC10B9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 14:38:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C91541BA217B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Aug 2025 14:42:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5754D305E05;
-	Fri, 22 Aug 2025 14:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2595F3128D1;
+	Fri, 22 Aug 2025 14:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GxgHjcQd"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="i8/sQ+5y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126B9301476;
-	Fri, 22 Aug 2025 14:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDF8307481
+	for <linux-btrfs@vger.kernel.org>; Fri, 22 Aug 2025 14:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755873482; cv=none; b=MyY4809ScY7g7fSX88238izXhEE7yrcf7a2l5CcMUcyxLib8H5iM5Or4vNmqH3YaD0Ij1ZHqnhvpgGWkLmhdWsIFcrSBW/aI2ugva4vYX46XOjVMgTUOuSlgyRbuGIWOXPd4JOsRgBE+IL4bX9wr6TNt3THbsysYZ3eeMXB9h3w=
+	t=1755873641; cv=none; b=fiA3vvrd3cLBzj2TiP3BiCsGFKIAq3WvabDyBrTZL0gQcoqCb3jRp6ADEO/sRQrTfAo5wSfHzTVB0koErwslfye1cHYuXUMmrKK27aiNWoB5E1yAEwOC2ERnfHr3AxK46Rem2mYdHSGxvtLUg9qCSwArFMZ/79wmTbehFfjC2mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755873482; c=relaxed/simple;
-	bh=0aQ87Z9YPm7YRzXx/jqudE3hhFx9OOJZrExPAgcEGQE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qU4pVsIzigeno0R28Icac6xoTFw9q9oUAINKzhTQMwk6DB9UfypBkDZ10ti2iaHNrWNvjWlWgy4PyD5pD21Vglxwo7+sxr+yPlOjQTUWebClhJJkeL7CQ9tpLNH5XLlNaD0AgJzbHbe9YzClEs2tPuTMvY9lPh0rYqn0JJAKh98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GxgHjcQd; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57M7rdj8026178;
-	Fri, 22 Aug 2025 14:37:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=5DZl15
-	J8sjFwFeMO7jk4e5fCN/jkYuYnllKgv6wKg3s=; b=GxgHjcQdqIX/V5v1JxJPz/
-	Vp2vOeqmoJJn3QEbzprrb3RoNsKOlgWt7NIThAxf36sMAaxPQNF+ey1CTMDCAiLp
-	heQ/Xs3tyZipeRht/Q/3UauF3w1+PWVvlV1I71Cw4HIAff2R1QF4rN7A51jedUzN
-	kSDKt4hbqg0NvihgMg9yXL+AjN4k0fO1kAVUxH8vdLfRYWpJM6ZP48rogiedP0Em
-	IK4DtqNs5evPjm3subqzQyIAncBL1Y4dIpuOcSrKO5xzThw+MU6mPRsN4RjyQ9Oy
-	BzJ33iBMO8Gqxjeyag8GL3f24lmIj0llbFSmEHfy8Hwd2a0S3VDakfjOijGVlb8w
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48n38vq37k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Aug 2025 14:37:58 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 57MEY0T0028125;
-	Fri, 22 Aug 2025 14:37:58 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48n38vq37g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Aug 2025 14:37:57 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57MC0DTV016013;
-	Fri, 22 Aug 2025 14:37:57 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 48my42dpxu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Aug 2025 14:37:56 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57MEbtb032571930
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 22 Aug 2025 14:37:55 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 48A6820043;
-	Fri, 22 Aug 2025 14:37:55 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5329920040;
-	Fri, 22 Aug 2025 14:37:53 +0000 (GMT)
-Received: from [9.124.211.112] (unknown [9.124.211.112])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 22 Aug 2025 14:37:53 +0000 (GMT)
-Message-ID: <501cb5ba-4890-4f1c-815a-4b15cf7942e8@linux.ibm.com>
-Date: Fri, 22 Aug 2025 20:07:52 +0530
+	s=arc-20240116; t=1755873641; c=relaxed/simple;
+	bh=fEOMn/md0OE1QvUICBnX8O+3a7PgQ6vANjZfZQ8gxr4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TiiiCf9ZTE7ZBnPqdJEV0NzSXXPT1NQ4ClriuhjlmmM9P5gsJxJFVorGXKR43iAMYGANM/PvE6mlH7Ui29zI11VAQkA5bL2LMX6D6jUQxdEBfcZwiUE1SZ2Zuq3N/yzWyXFlwgI49f/15uQgWsOYRGZIxAp+5Yq0FspCSPasAVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=i8/sQ+5y; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-71fd55c0320so8713657b3.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Aug 2025 07:40:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1755873639; x=1756478439; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=v3OogfFXdkMqRNtpkZ1fUtnIz6uf3uzEeX+PeKEs10Q=;
+        b=i8/sQ+5yP0y5waScnpXxaiCGriykOo7dKLZBW/UVl2/Ox8nFmz4CaG8+8oE+MK9DeY
+         v6rOsykQD7lN01mNwtBmg7G4Ge0ZfboOtXzDgQLPCAcT60JPjk5veoMzj/DpCKAwrZGg
+         3wGmi6/rfhzIO+R3z5OPleQwzdZssNDN4nxOYWP1WAqfZotkcVkgYgRHOJ/Qo4DXJ4mj
+         +cRhJWbAKLK73lQB09EE84bAZzw+u2m8HaTwjjmU6dcXhd6rJxCTZGJIjxyhnXCxjs/A
+         ljjbtRaR/oreiI728cIm8TszR1f6Ug5cDYHBUb7RG9O1PUmdyaMLNtf903eMPfTzZJVe
+         NHFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755873639; x=1756478439;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v3OogfFXdkMqRNtpkZ1fUtnIz6uf3uzEeX+PeKEs10Q=;
+        b=teugeBlU4JFOoqWvn7gjREmqbx9XVxGSry+ex/R4BG33U/23+/GJ2zF1xTQ9YEcBAg
+         WZqYeD/Gmigozw5wIFJN6D4DhBWsoBA4OgDWf+GIhS9c3ywUSiZFb5kUn+j9nQZzb1DP
+         Za2TEvfHZBLPb3Gt/BJz+TpATqVtERfh1X34Pf9kEd5kP9/Cc9A7/gZ0PPIWgWlkTnKj
+         8gETEKF1lkFw6x+uvu8M9jrUBZnD/ZTH9zeCO6Ozyz9CeQWi9xkstoahlsCgCJUU2usC
+         wCkHyBXDJsl6Jb/6O0DO4e4FdagucAnRsju9WLZpod9AwK1eIWSd8q4uQMTe49S1DcJ7
+         7uLw==
+X-Forwarded-Encrypted: i=1; AJvYcCUvO66HdxwlNurXDwEl+wCx3mErnBqpvgYDrstpm7i+fbJSY392tWpqz7LYCu0yJwwmIKGvNWqvR4FvWg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw1kqeMMthwH+65gYB75Wy2ArP7eb67Iu6/t/Qxl3lvPkPvfhSu
+	jhixHrXOeMSMGHgO/AGqvT0TTVFNQPyiHuo9dFfEZy6zk5dS09FCWT/dti5Pe+dtrHc=
+X-Gm-Gg: ASbGncslQU3OHWQNlnA0qR2za6vOm9DWrkY6/uZ12BIocsuiOltwX2OU/2ezy23sOEO
+	9CY1XMDn0KWNKJT6q9hFF0gdNE6Bw71+zjqBkG8Cau2lXJuZj4MYwG4jMusV24BBV7TF8RRZ0Xo
+	8799waRy4LwiE/CD4nJ6bRDj1nhdy07CAuCsb+iutzwTp2OnEs+pd+v/hRFc4bXQlwoIHXVlqjf
+	Pvg/KIe8IFG5AMLyc8iRCvUAuRQlnyO28uLAf0b4IiIpJ3BxRaY/1LVmznXPjzUj5tKYbq1Gjdg
+	Rjhqaei3Pq42xA6ajZPVhpH2pzGrBsDz3SUUwNToiJRqudZwHwrIjtJCu0kSz0mq0dOeM/SSJOn
+	9Mz8zk75F1Clt5S493WFy6AefsSRQ/eic7GDDdsjU/0dSugI1Ao/sLI9IjKM=
+X-Google-Smtp-Source: AGHT+IHOy5Mb0Jt/cJA6ywQp6sLORvyAzia/tx+cqSm3UKE5FfWzv+W3sub+zG2wAFxqmQLGUh57tw==
+X-Received: by 2002:a05:690c:6bc6:b0:71c:1754:26d0 with SMTP id 00721157ae682-71fc9c664f6mr55261597b3.6.1755873638329;
+        Fri, 22 Aug 2025 07:40:38 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-71fd92b885fsm6937457b3.10.2025.08.22.07.40.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Aug 2025 07:40:37 -0700 (PDT)
+Date: Fri, 22 Aug 2025 10:40:36 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Sun YangKai <sunk67188@gmail.com>
+Cc: brauner@kernel.org, kernel-team@fb.com, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: Re: [PATCH 02/50] fs: make the i_state flags an enum
+Message-ID: <20250822144036.GC927384@perftesting>
+References: <02211105388c53dc68b7f4332f9b5649d5b66b71.1755806649.git.josef@toxicpanda.com>
+ <3307530.5fSG56mABF@saltykitkat>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] generic/563: Increase the iosize to to cover for
- btrfs
-Content-Language: en-GB
-To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>, fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org, ritesh.list@gmail.com, ojaswin@linux.ibm.com,
-        djwong@kernel.org, zlang@kernel.org, fdmanana@kernel.org,
-        quwenruo.btrfs@gmx.com
-References: <cover.1755677274.git.nirjhar.roy.lists@gmail.com>
- <7e337d30307b293b30c6ad00c1fc222bbeed640c.1755677274.git.nirjhar.roy.lists@gmail.com>
-From: Disha Goel <disgoel@linux.ibm.com>
-In-Reply-To: <7e337d30307b293b30c6ad00c1fc222bbeed640c.1755677274.git.nirjhar.roy.lists@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODE5MDIyMiBTYWx0ZWRfX6B2gZNbafu2e
- GAjM90lZA6fruu2RUq/jpkyR1ir4PgN5FYQtC+Xa3R8gzQTDCY26jJVc8cxYY+SwA9wsz4D3+yT
- Kx6dSBNRmqWo7Vl92S8/ZulEDIFnkaZqlMRKWl0x6iS9gGHhb5JTIWKyUvSS2bp/aBWL0oPESGb
- lIVOtEUj1RBlOui5C6aRmXJWd0wWGnY3XSu5DBpLUKvlviDk2x9CdF74gB7jolJ1k6MYC3T8W36
- fE4JQNSkWdYGY7ZBNzwIPdLR8ArUzkWV7RDK1nBmT4z10cNcBnYQ47LkzlJhiu5vON79G1L/Zod
- ZjvX0iI+wgDSYapKmvwsL1FphhmWSPAB7zVkHOgts44twm8jW0bct02fCIb/whzl0cGTPf2g8vO
- EePZC3DeLwpfNltpv+sZTQ9ozt93NA==
-X-Authority-Analysis: v=2.4 cv=PMlWOfqC c=1 sm=1 tr=0 ts=68a880c6 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=dg36b7u27vu_zB18:21 a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=VwQbUJbxAAAA:8
- a=7YfXLusrAAAA:8 a=iox4zFpeAAAA:8 a=VnNF1IyMAAAA:8 a=pGLkceISAAAA:8
- a=eZ7gknJ-1AbwHKOAYn4A:9 a=QEXdDO2ut3YA:10 a=SLz71HocmBbuEhFRYD3r:22
- a=WzC6qhA0u3u7Ye7llzcV:22 a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-GUID: i7Srgv9yG9Rcgno0M7kbq1kM_E9hTI7T
-X-Proofpoint-ORIG-GUID: uYZZ3Y9Jk21r-J07SJZE_luhWBHM1Lww
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-08-22_04,2025-08-20_03,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 bulkscore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 spamscore=0 phishscore=0 suspectscore=0
- clxscore=1015 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2508110000
- definitions=main-2508190222
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3307530.5fSG56mABF@saltykitkat>
 
-On 20/08/25 1:45 pm, Nirjhar Roy (IBM) wrote:
-> When tested with block size/node size 64K on btrfs, then the test fails
-> with the folllowing error:
->       QA output created by 563
->       read/write
->       read is in range
->      -write is in range
->      +write has value of 8855552
->      +write is NOT in range 7969177.6 .. 8808038.4
->       write -> read/write
->      ...
-> The slight increase in the amount of bytes that are written is because
-> of the increase in the the nodesize(metadata) and hence it exceeds
-> the tolerance limit slightly. Fix this by increasing the iosize.
-> Increasing the iosize increases the tolerance range and covers the
-> tolerance for btrfs higher node sizes.
-> A very detailed explanation is given by Qu Wenruo in [1]
+On Fri, Aug 22, 2025 at 07:18:26PM +0800, Sun YangKai wrote:
+> Hi Josef,
 > 
-> [1] https://lore.kernel.org/all/fa0dc9e3-2025-49f2-9f20-71190382fce5@gmx.com/
+> Sorry for the bothering, and I hope this isn't too far off-topic for the 
+> current patch series discussion.
 > 
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> Reported-by: Disha Goel <disgoel@linux.ibm.com>
-> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-
-The patch looks good. However, the subject line seems incorrect, could 
-you please fix it.
-
-I tested it on Power, and the generic/563 test passes with both 4k & 64k 
-block sizes.
-
-Tested-by: Disha Goel <disgoel@linux.ibm.com>
-
-> ---
->   tests/generic/563 | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> I recently learned about the x-macro trick and was wondering if it might be 
+> suitable for use in this context since we are rewriting this. I'd appreciate 
+> any thoughts or feedback on whether this approach could be applied here.
 > 
-> diff --git a/tests/generic/563 b/tests/generic/563
-> index 89a71aa4..6cb9ddb0 100755
-> --- a/tests/generic/563
-> +++ b/tests/generic/563
-> @@ -43,7 +43,7 @@ _require_block_device $SCRATCH_DEV
->   _require_non_zoned_device ${SCRATCH_DEV}
->   
->   cgdir=$CGROUP2_PATH
-> -iosize=$((1024 * 1024 * 8))
-> +iosize=$((1024 * 1024 * 16))
->   
->   # Check cgroup read/write charges against expected values. Allow for some
->   # tolerance as different filesystems seem to account slightly differently.
+> Thanks in advance for your insights!
 
+That's super useful, thanks for that! Christian wants me to do it a different
+way so I'm going to do that. But I'll definitely keep this in mind for code he
+can't see ;).  Thanks,
+
+Josef
 
