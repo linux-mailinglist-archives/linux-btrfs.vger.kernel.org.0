@@ -1,176 +1,115 @@
-Return-Path: <linux-btrfs+bounces-16340-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16341-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 445DAB33E34
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 13:38:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61581B33E4D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 13:44:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C42E189C156
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 11:39:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA80F3AB691
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 11:44:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C05C52EACF0;
-	Mon, 25 Aug 2025 11:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9681F2EBBAB;
+	Mon, 25 Aug 2025 11:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L0j1eyRG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dd5qbvw/"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 086A11D63C7;
-	Mon, 25 Aug 2025 11:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC030242925;
+	Mon, 25 Aug 2025 11:44:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756121920; cv=none; b=mucE+vII4C2VjBkFW1Blz9wHezf3ysNOSPxUP1AQe8NJkMyLWoBWxtqHY++pKRZ0bMt99V0AH8LHFp++toP3O6WxsGVqA9B+fOPPLbLo4tZk939NydrhrIWOtQZsWpCmXvsJMtfM0IsVsZZ2RLCO/Ij2rT0jSdkVhyFpg6ZwEJU=
+	t=1756122241; cv=none; b=dku6h0QR84YMGfur5i2BbdQ9eCpkUILYk09UpEubZGQ7gead6xwOlmsUTPFT9Bs8J+NDcV2RQ/MrkEqqpEFA/icwYc+pbHn2omAbY2m41etAmjQo64hkKTdTBRKya+y5zQFmJhmvgoUxBzl5fPjV7pWIoUJlrvCNgjAusEusmVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756121920; c=relaxed/simple;
-	bh=6APue8na146l9OnCw5tc6LK/AUe3RQ1uN+CqpFXB2eM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UP/x0BV+y4mp4vZ2qovShFoZW/d7rJ+2gRnTOiHKEXxvKDhGGh5a6yFQF5PfdrtPAWUp6+rIyp6tBDB136V2TwbyQx5E4RojGJHvozb5X50iWkX2FBLwXsSqtcIOlpFgSvAWDDLGpXK0AyoqPyw1F1npTVyo0d6qyAF5eOti9dQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L0j1eyRG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B5ACC116B1;
-	Mon, 25 Aug 2025 11:38:39 +0000 (UTC)
+	s=arc-20240116; t=1756122241; c=relaxed/simple;
+	bh=K5JuuyG1PL1zhALtA/UhfaL0oQSSF6cy2FTrZgdl0oM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UErJzFVKEF/bnmyXsdwI9Cp2ifr/r+lXqGCRWfOTEqyJvYZrd1g/KY5cY6E755gSix2bbAUnhyAQySDHo5CdA4FBRStfmmnr/q71x7z8cpiQEDV8TMIvecUnVauKcOpIGGD6CUEVqgomc3VWDE8IUqESaDxh+pdrfhH2yZi/g0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dd5qbvw/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CE6BC4CEED;
+	Mon, 25 Aug 2025 11:43:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756121919;
-	bh=6APue8na146l9OnCw5tc6LK/AUe3RQ1uN+CqpFXB2eM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=L0j1eyRGjxReVhaPGXPc3OCxrSr43piTBZ94lfJEfW+n0rl/OmdwxZnCZtIDWh7Bt
-	 EZqDb/KAWoFy0CkpYuBwjf569mi9On3BLcjXOpAGeZKXjlYAp5Oh7ICZTXEVEH/8tU
-	 3XEyx9tvJm3yBjH8eYKq+bZTgBZemM+rS1BT//Pi6Mea5FdrAHs2SYntlVYm8NFYGI
-	 QN/pxPAZSV1IgKLfla2chLGmXHPGE1hnC6SYXHTsIj5b6tT8b+rlO0pls9I5bIdGYG
-	 OY/7DraI5VIaGSBy0c/LTYPPNhI2hHsndNW0DFzcV2oiQwTzVT1KVD84/K5vDe+SJs
-	 2M9hRWRMrLRLw==
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-afcb7347e09so729010566b.0;
-        Mon, 25 Aug 2025 04:38:39 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX/VIHdWVhmkAUjyCkHxpl/OPWoFnBKWIOTJsiy77YnPFAgHii4SBwZSmLZXVvDhLUU6hd/Zyg6O4rY97HC@vger.kernel.org, AJvYcCX7ljacjG9I9sFcqcNckAfyEgfzI0iy0c/YHbjcDROhbRh9+6yXZoxaLXfCt2lfagzlqIoyEFH9fY0CJw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YynD6tkmvR5lmASMKI0LuaKoemv1/vBvqrVl4XV8NaeZz1Qui28
-	yP86cK1fwDU0h6WzKNMjTk77LmEfvBEEX7uBNah4I2jw/VjkNKrTga2Pit+bb4i1RCl4vK5Wm+c
-	rmjEfIvawAu6qORHdu496WZqgfsrDHAI=
-X-Google-Smtp-Source: AGHT+IFZYJ+lV282ntDhnG+FAfTcwX4TZPreBFEEYH542R5PWbLp1BZFVxU5Bb3LcYecnnKruIXfxL/jaXx1DuNxS7s=
-X-Received: by 2002:a17:907:3f2a:b0:afc:b13d:ea7a with SMTP id
- a640c23a62f3a-afe2963aca8mr1065036866b.57.1756121918011; Mon, 25 Aug 2025
- 04:38:38 -0700 (PDT)
+	s=k20201202; t=1756122241;
+	bh=K5JuuyG1PL1zhALtA/UhfaL0oQSSF6cy2FTrZgdl0oM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Dd5qbvw/Sa4mJId77pAAA6ahW45Y+62pTmukAA4ZvenHvwX5DoBohivociKbEJ5cJ
+	 3Boa7E3ZqZgv4m46plxz7LBUnFKgQobbT2+b1Gsv8ZOvrHdPKoTYR3aNiV9lgyZmxt
+	 +AtYr63tWw9+tYvd71Fkgy6dlMMunALchramuN0Kd51ZlC6y7dNWh7tLmYXMKPZz0E
+	 sPJQVZVnXc+nI0zjAJKHv/Rdcte76cVdwn8agEGkBoyd0ExhEvp+smakRl5S1r3ju0
+	 dByF/10ywoDD79rNqR7SyxPe1ZMYJdQJe2MDDKdOmZMQkZtXpTijp9zDwwKAx9GRXz
+	 5/WClGSJWdRMQ==
+Date: Mon, 25 Aug 2025 13:43:57 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	viro@zeniv.linux.org.uk
+Subject: Re: [PATCH 27/50] fs: use inode_tryget in evict_inodes
+Message-ID: <20250825-jungautor-aprikosen-9e6622636614@brauner>
+References: <cover.1755806649.git.josef@toxicpanda.com>
+ <7564463eb7f0cb60a84b99f732118774d2ddacaa.1755806649.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2022221.PYKUYFuaPT@saltykitkat> <810d2b19-47ed-4902-bd8d-eb69bacbf0c6@gmx.com>
- <aKiSpTytAOXgHan5@mozart.vkv.me> <e9a4f485-3907-4f1e-8a74-2ffde87f3044@gmx.com>
- <aKj8K8IWkXr_SOk_@mozart.vkv.me> <9cacdafc-98ec-4ad2-99a8-dfb077e4a5fb@gmx.com>
- <aKs2mCRjtv3Ki06Z@mozart.vkv.me> <CAPjX3FeOEg+QhkwKWe+qDH876bp6-t1GFO0sce7a6bmhM7umpw@mail.gmail.com>
- <663c2f5b-3bb1-4a40-b962-11c6d3a7f806@gmx.com>
-In-Reply-To: <663c2f5b-3bb1-4a40-b962-11c6d3a7f806@gmx.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 25 Aug 2025 12:37:59 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4RgwGZwPdof=5NN6hcB7YRevOjA70vG19sRNXNMRMM3w@mail.gmail.com>
-X-Gm-Features: Ac12FXwH3j5pnrD1WiLI-vHL4MJH0eW5jRxhvOdqlx_vIdTC04hwLYGXagFrK5M
-Message-ID: <CAL3q7H4RgwGZwPdof=5NN6hcB7YRevOjA70vG19sRNXNMRMM3w@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Accept and ignore compression level for lzo
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Daniel Vacek <neelx@suse.com>, Calvin Owens <calvin@wbinvd.org>, Sun YangKai <sunk67188@gmail.com>, 
-	clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7564463eb7f0cb60a84b99f732118774d2ddacaa.1755806649.git.josef@toxicpanda.com>
 
-On Mon, Aug 25, 2025 at 10:03=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com>=
- wrote:
->
->
->
-> =E5=9C=A8 2025/8/25 18:21, Daniel Vacek =E5=86=99=E9=81=93:
-> > On Sun, 24 Aug 2025 at 17:58, Calvin Owens <calvin@wbinvd.org> wrote:
-> >> From: Calvin Owens <calvin@wbinvd.org>
-> >> Subject: [PATCH v3] btrfs: Accept and ignore compression level for lzo
-> >>
-> >> The compression level is meaningless for lzo, but before commit
-> >> 3f093ccb95f30 ("btrfs: harden parsing of compression mount options"),
-> >> it was silently ignored if passed.
-> >>
-> >> After that commit, passing a level with lzo fails to mount:
-> >>
-> >>      BTRFS error: unrecognized compression value lzo:1
-> >>
-> >> It seems reasonable for users to expect that lzo would permit a numeri=
-c
-> >> level option, as all the other algos do, even though the kernel's
-> >> implementation of LZO currently only supports a single level. Because =
-it
-> >> has always worked to pass a level, it seems likely to me that users in
-> >> the real world are relying on doing so.
-> >>
-> >> This patch restores the old behavior, giving "lzo:N" the same semantic=
-s
-> >> as all of the other compression algos.
-> >>
-> >> To be clear, silly variants like "lzo:one", "lzo:the_first_option", or
-> >> "lzo:armageddon" also used to work. This isn't meant to suggest that
-> >> any possible mis-interpretation of mount options that once worked must
-> >> continue to work forever. This is an exceptional case where it makes
-> >> sense to preserve compatibility, both because the mis-interpretation i=
-s
-> >> reasonable, and because nothing tangible is sacrificed.
-> >>
-> >> Fixes: 3f093ccb95f30 ("btrfs: harden parsing of compression mount opti=
-ons")
-> >> Signed-off-by: Calvin Owens <calvin@wbinvd.org>
-> >> ---
-> >>   fs/btrfs/super.c | 7 +++++--
-> >>   1 file changed, 5 insertions(+), 2 deletions(-)
-> >
-> > v3 looks good to me. The original hardening was meant to gate complete
-> > nonsense like "compress=3Dlzoutput", etc...
-> >
-> > Reviewed-by: Daniel Vacek <neelx@suse.com>
->
-> Now merged and pushed to for-next branch with the latest reviewed-by tags=
-.
+On Thu, Aug 21, 2025 at 04:18:38PM -0400, Josef Bacik wrote:
+> Instead of checking I_WILL_FREE|I_FREEING we can simply use
+> inode_tryget() to determine if we have a live inode that can be evicted.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/inode.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/inode.c b/fs/inode.c
+> index a14b3a54c4b5..4e1eeb0c3889 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -983,12 +983,16 @@ void evict_inodes(struct super_block *sb)
+>  	spin_lock(&sb->s_inode_list_lock);
+>  	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
+>  		spin_lock(&inode->i_lock);
+> -		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
+> +		if (inode->i_state & I_NEW) {
+> +			spin_unlock(&inode->i_lock);
+> +			continue;
+> +		}
+> +
+> +		if (!inode_tryget(inode)) {
 
-Btw, don't forget a couple things:
+So it reads like if we fail to take a reference count on @inode then
+someone else is already evicting it. I get that.
 
-1) In the subject, after the prefix "btrfs: " the first word should
-not be capitalized;
+But what's confusing to me is that the __iget() call you're removing
+was an increment from zero earlier in your series because evict_inodes()
+was only callable on inodes that had a zero i_count.
 
-2) In the log message (btrfs_warn() call), the first word should also
-not be capitalized.
+Oh, ok, I forgot, you mandate that for an inode to be on an LRU they
+must now hold an i_count reference not just an i_obj_count reference.
 
-These are the styles we follow, so we should be consistent.
+So in the prior scheme i_count was zero and wouldn't go back up from
+zero. In your scheme is i_count guaranteed to be one and after you've
+grabbed another reference and it's gone up to 2 is that the max it can
+reach or is it possible that i_count can be grabbed by others somehow?
 
->
-> Thanks,
-> Qu
-> >
-> > Thank you.
-> >
-> >> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> >> index a262b494a89f..18eb00b3639b 100644
-> >> --- a/fs/btrfs/super.c
-> >> +++ b/fs/btrfs/super.c
-> >> @@ -299,9 +299,12 @@ static int btrfs_parse_compress(struct btrfs_fs_c=
-ontext *ctx,
-> >>                  btrfs_set_opt(ctx->mount_opt, COMPRESS);
-> >>                  btrfs_clear_opt(ctx->mount_opt, NODATACOW);
-> >>                  btrfs_clear_opt(ctx->mount_opt, NODATASUM);
-> >> -       } else if (btrfs_match_compress_type(string, "lzo", false)) {
-> >> +       } else if (btrfs_match_compress_type(string, "lzo", true)) {
-> >>                  ctx->compress_type =3D BTRFS_COMPRESS_LZO;
-> >> -               ctx->compress_level =3D 0;
-> >> +               ctx->compress_level =3D btrfs_compress_str2level(BTRFS=
-_COMPRESS_LZO,
-> >> +                                                              string =
-+ 3);
-> >> +               if (string[3] =3D=3D ':' && string[4])
-> >> +                       btrfs_warn(NULL, "Compression level ignored fo=
-r LZO");
-> >>                  btrfs_set_opt(ctx->mount_opt, COMPRESS);
-> >>                  btrfs_clear_opt(ctx->mount_opt, NODATACOW);
-> >>                  btrfs_clear_opt(ctx->mount_opt, NODATASUM);
-> >> --
-> >> 2.49.1
-> >>
->
->
+>  			spin_unlock(&inode->i_lock);
+>  			continue;
+>  		}
+>  
+> -		__iget(inode);
+>  		inode_lru_list_del(inode);
+>  		list_add(&inode->i_lru, &dispose);
+>  		spin_unlock(&inode->i_lock);
+> -- 
+> 2.49.0
+> 
 
