@@ -1,255 +1,378 @@
-Return-Path: <linux-btrfs+bounces-16332-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16333-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE706B33CD6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 12:32:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEAC2B33CEA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 12:40:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20EE11890514
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 10:31:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88CE83B27E2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 10:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D70B72D8363;
-	Mon, 25 Aug 2025 10:26:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A781E2D7DEE;
+	Mon, 25 Aug 2025 10:40:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="VAsliFca";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="VAsliFca"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P6bTBvGx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AEBE2D46D1
-	for <linux-btrfs@vger.kernel.org>; Mon, 25 Aug 2025 10:26:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D496E29AAF3;
+	Mon, 25 Aug 2025 10:40:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756117610; cv=none; b=qhXf8AsJ9VZl4nfmpGV8Eho8XGxAqAOqi7SrEHz5zyV69kFwgNO/qO2dEqMEr5A+wdJFxzGrkuLl2bAdBNERa0CA7R4IcMO5Fshq0fn05T0VUdtGUk0rAyG7a5DCL2nQ2uPxf/WG5acvU7AkqXOaR2h9g9lK/yqwH4ksgVbDWT0=
+	t=1756118443; cv=none; b=tSMLQUlAGmbLeix7o3em7hHRhN42qd1HmCN0Y+fTV3vP3vxIMjRJGzlxSIDSNXtQUxvX871dOZCcH4RfEhZOU70eluBu9e7XPENSpVUEV5cgjzepRJc8QO5rs39YnEwi7QWZi1p75Pd59cqT0gfmJZpjgpbb5OHFhBuBz0/Fb1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756117610; c=relaxed/simple;
-	bh=tvDjHk+TW17nBIIh36jgoEBmZdIFzXEYROspmr3V1A4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=TqZpwKHtAxenB6rcli/YsIrZwGaTzoRjNGMwliQKAWjcUhxcjpPl1lXQd+pMhFZ5aXPKIas5+SNpmWHTkD3uziZbeFWi65pZ8j10VeDzwM4JlbAt6QMlZvjXOp+UMRcUUCIo/cHP3hHTHkwleX8rwubsnK800SvSjE4mRo3row0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=VAsliFca; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=VAsliFca; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 720E71F794
-	for <linux-btrfs@vger.kernel.org>; Mon, 25 Aug 2025 10:26:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1756117605; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Jzn6UuQxA25nylDQWEMu0UNoOEdK15WrGBAcJeL/gpY=;
-	b=VAsliFcaU+XtuGNbJ1cCedCGZofr4ZRzJHXJfD07awek/Zgn41mWn6Zn+5TTzvNlAldg3P
-	ekCkXuD/F17H6qmdkx3sB90KhqusvOZ2TKZVOmQp5BrvjCc3IYyBdJAKZiQDgckNaP0d9q
-	pDP2KajqF0BNVBOI1Zg+FOt8tR4rwFo=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=VAsliFca
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1756117605; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Jzn6UuQxA25nylDQWEMu0UNoOEdK15WrGBAcJeL/gpY=;
-	b=VAsliFcaU+XtuGNbJ1cCedCGZofr4ZRzJHXJfD07awek/Zgn41mWn6Zn+5TTzvNlAldg3P
-	ekCkXuD/F17H6qmdkx3sB90KhqusvOZ2TKZVOmQp5BrvjCc3IYyBdJAKZiQDgckNaP0d9q
-	pDP2KajqF0BNVBOI1Zg+FOt8tR4rwFo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AF3E913A7B
-	for <linux-btrfs@vger.kernel.org>; Mon, 25 Aug 2025 10:26:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aEdjHGQ6rGivbwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 25 Aug 2025 10:26:44 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: reject invalid compression level
-Date: Mon, 25 Aug 2025 19:56:26 +0930
-Message-ID: <3aa4ab3069efeb71fa0197430e91df74139ebfa3.1756117561.git.wqu@suse.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1756118443; c=relaxed/simple;
+	bh=jD8unm5fFokP8vboFdQvT37W8Gl10f+xmS3ubNRFNcQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qDVgEhsI+QDuRF6IccDvnR+F2x9NhmN73vWSELo+KSrz+DjsSl0LRtovzaBVjqeIpWU5gWrP7CUpCM9z9j5mtXPlTbCgqP2Cru8I2mwCXD47ifonmeLtWTpiTPVMfC8SAO4PHDRXgVGwF+435sVHrkk+X8GQrxJwyieqyITxFko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P6bTBvGx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF8BCC4CEED;
+	Mon, 25 Aug 2025 10:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756118442;
+	bh=jD8unm5fFokP8vboFdQvT37W8Gl10f+xmS3ubNRFNcQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=P6bTBvGx0abIEUekQ6EITDjfQaHcwIBqw7u2oDl7tnhdbHPjFoJe7KVXjh7OYAh8C
+	 gOnFmMaVgYxVUn6warb9iV4Giv2isXmTtLCGC1HKk2awn7zrnOvGgq30qSZPqe+9fJ
+	 zmdMXuosbw2UdcQfhh8tZ23x44rFFda3BO+T8rZJup9xw1ad8JWwojxtep39C0uA/n
+	 IiWAWQaGV/BdSGbHzRZi74N4t4SA+I942Trvsjmo2zKrhMczsWqndPjWdpxmgOA+8o
+	 1ha7QY9A6Ot3L44qXqXMH/EvZ77nfZibjPfFs2CsirZ0WJgW/XnVnJnhobOI6uqN6d
+	 gMnmymif4vvHg==
+Date: Mon, 25 Aug 2025 12:40:38 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	viro@zeniv.linux.org.uk
+Subject: Re: [PATCH 17/50] fs: hold a full ref while the inode is on a LRU
+Message-ID: <20250825-bekommen-nashorn-9971054b7d45@brauner>
+References: <cover.1755806649.git.josef@toxicpanda.com>
+ <113ec167162bbaccc02fa3c3bf1a2c7d3e5a3e82.1755806649.git.josef@toxicpanda.com>
+ <20250825-affekt-ruckartig-e7da04294931@brauner>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:dkim,suse.com:email];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 720E71F794
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250825-affekt-ruckartig-e7da04294931@brauner>
 
-Inspired by recent changes to compression level parsing by Calvin Owens,
-it turns out that we do not do any extra validation for compression
-level, thus allowing things like "compress=lzo:invalid" to be accepted
-without extra warning or whatever.
+On Mon, Aug 25, 2025 at 11:20:07AM +0200, Christian Brauner wrote:
+> On Thu, Aug 21, 2025 at 04:18:28PM -0400, Josef Bacik wrote:
+> > We want to eliminate 0 refcount inodes that can be used. To that end,
+> > make the LRU's hold a full reference on the inode while it is on an LRU
+> > list. From there we can change the eviction code to always just iput the
+> > inode, and the LRU operations will just add or drop a full reference
+> > where appropriate.
+> > 
+> > We also now must take into account unlink, and drop our LRU reference
+> > when we go to an nlink of 0.  We will also avoid adding inodes with a
+> > nlink of 0 as they can be reclaimed immediately.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > ---
+> >  fs/inode.c | 105 +++++++++++++++++++++++++++++------------------------
+> >  1 file changed, 57 insertions(+), 48 deletions(-)
+> > 
+> > diff --git a/fs/inode.c b/fs/inode.c
+> > index 80ad327746a7..de0ec791f9a3 100644
+> > --- a/fs/inode.c
+> > +++ b/fs/inode.c
+> > @@ -434,8 +434,18 @@ void drop_nlink(struct inode *inode)
+> >  {
+> >  	WARN_ON(inode->i_nlink == 0);
+> >  	inode->__i_nlink--;
+> > -	if (!inode->i_nlink)
+> > +	if (!inode->i_nlink) {
+> > +		/*
+> > +		 * LRU's hold a full ref on the inode, but if we've unlinked it
+> > +		 * then we want the inode to be freed when the last user goes,
+> > +		 * so delete the inode from the LRU list.
+> > +		 */
+> > +		spin_lock(&inode->i_lock);
+> > +		inode_lru_list_del(inode);
+> > +		spin_unlock(&inode->i_lock);
+> > +
+> >  		atomic_long_inc(&inode->i_sb->s_remove_count);
+> > +	}
+> 
+> As written this doesn't work because you can have callers that have
+> already acquired inode->i_lock(). For example, afs:
+> 
+>         new_inode = d_inode(new_dentry);
+>         if (new_inode) {
+>                 spin_lock(&new_inode->i_lock);
+>                 if (S_ISDIR(new_inode->i_mode))
+>                         clear_nlink(new_inode);
+>                 else if (new_inode->i_nlink > 0)
+>                         drop_nlink(new_inode);
+>                 spin_unlock(&new_inode->i_lock);
+>         }
 
-Although we accept levels that are beyond the supported algorithm
-ranges, accepting completely invalid levels are beyond sanity.
+I think it should be possible to do LRU list deletion locklessly so you
+don't need to hold i_lock. The plain lru lists can already be walked
+locklessly and removal is also possible without locks.
 
-Fix the too loose checks for compression level, by doing proper error
-handling of kstrtoint(), so that we will reject not only too large
-values (beyond int range) but also completely insane levels like
-"lzo:invalid".
+So we only seem to take i_lock because of i_state. If we can get rid of
+a bunch i_lock grabs for the sake of i_state by just using atomic bit
+operations on i_state I'm willing to sacrifice my hard-won 32bits and
+make i_state an unsigned long again...
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/compression.c | 21 +++++++++++++--------
- fs/btrfs/compression.h |  2 +-
- fs/btrfs/super.c       | 27 +++++++++++++++++++--------
- 3 files changed, 33 insertions(+), 17 deletions(-)
+If I'm right then this would allow us to make lru list removal lockless
+and then you can avoid this problem here in clear_nlink()/drop_nlink().
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 068339e86123..d13a66f7b4ac 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -1652,24 +1652,29 @@ int btrfs_compress_heuristic(struct btrfs_inode *inode, u64 start, u64 end)
- 
- /*
-  * Convert the compression suffix (eg. after "zlib" starting with ":") to
-- * level, unrecognized string will set the default level. Negative level
-- * numbers are allowed.
-+ * level.
-+ *
-+ * If the resulted level exceed the algo's supported levels, it will be clamped.
-+ *
-+ * Return <0 if no valid string can be found.
-+ * Return 0 if everything is fine.
-  */
--int btrfs_compress_str2level(unsigned int type, const char *str)
-+int btrfs_compress_str2level(unsigned int type, const char *str, int *level_ret)
- {
- 	int level = 0;
- 	int ret;
- 
--	if (!type)
-+	if (!type) {
-+		*level_ret = btrfs_compress_set_level(type, level);
- 		return 0;
-+	}
- 
- 	if (str[0] == ':') {
- 		ret = kstrtoint(str + 1, 10, &level);
- 		if (ret)
--			level = 0;
-+			return ret;
- 	}
- 
--	level = btrfs_compress_set_level(type, level);
--
--	return level;
-+	*level_ret = btrfs_compress_set_level(type, level);
-+	return 0;
- }
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 760d4aac74e6..243771ae7d64 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -110,7 +110,7 @@ void btrfs_submit_compressed_write(struct btrfs_ordered_extent *ordered,
- 				   bool writeback);
- void btrfs_submit_compressed_read(struct btrfs_bio *bbio);
- 
--int btrfs_compress_str2level(unsigned int type, const char *str);
-+int btrfs_compress_str2level(unsigned int type, const char *str, int *level_ret);
- 
- struct folio *btrfs_alloc_compr_folio(void);
- void btrfs_free_compr_folio(struct folio *folio);
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index b607c606fcfe..fb1e449ef26a 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -274,6 +274,7 @@ static int btrfs_parse_compress(struct btrfs_fs_context *ctx,
- 				const struct fs_parameter *param, int opt)
- {
- 	const char *string = param->string;
-+	int ret;
- 
- 	/*
- 	 * Provide the same semantics as older kernels that don't use fs
-@@ -292,15 +293,19 @@ static int btrfs_parse_compress(struct btrfs_fs_context *ctx,
- 		btrfs_clear_opt(ctx->mount_opt, NODATASUM);
- 	} else if (btrfs_match_compress_type(string, "zlib", true)) {
- 		ctx->compress_type = BTRFS_COMPRESS_ZLIB;
--		ctx->compress_level = btrfs_compress_str2level(BTRFS_COMPRESS_ZLIB,
--							       string + 4);
-+		ret = btrfs_compress_str2level(BTRFS_COMPRESS_ZLIB, string + 4,
-+					       &ctx->compress_level);
-+		if (ret < 0)
-+			goto error;
- 		btrfs_set_opt(ctx->mount_opt, COMPRESS);
- 		btrfs_clear_opt(ctx->mount_opt, NODATACOW);
- 		btrfs_clear_opt(ctx->mount_opt, NODATASUM);
- 	} else if (btrfs_match_compress_type(string, "lzo", true)) {
- 		ctx->compress_type = BTRFS_COMPRESS_LZO;
--		ctx->compress_level = btrfs_compress_str2level(BTRFS_COMPRESS_LZO,
--							       string + 3);
-+		ret = btrfs_compress_str2level(BTRFS_COMPRESS_LZO, string + 3,
-+					       &ctx->compress_level);
-+		if (ret < 0)
-+			goto error;
- 		if (string[3] == ':' && string[4])
- 			btrfs_warn(NULL, "Compression level ignored for LZO");
- 		btrfs_set_opt(ctx->mount_opt, COMPRESS);
-@@ -308,8 +313,10 @@ static int btrfs_parse_compress(struct btrfs_fs_context *ctx,
- 		btrfs_clear_opt(ctx->mount_opt, NODATASUM);
- 	} else if (btrfs_match_compress_type(string, "zstd", true)) {
- 		ctx->compress_type = BTRFS_COMPRESS_ZSTD;
--		ctx->compress_level = btrfs_compress_str2level(BTRFS_COMPRESS_ZSTD,
--							       string + 4);
-+		ret = btrfs_compress_str2level(BTRFS_COMPRESS_ZSTD, string + 4,
-+					       &ctx->compress_level);
-+		if (ret < 0)
-+			goto error;
- 		btrfs_set_opt(ctx->mount_opt, COMPRESS);
- 		btrfs_clear_opt(ctx->mount_opt, NODATACOW);
- 		btrfs_clear_opt(ctx->mount_opt, NODATASUM);
-@@ -320,10 +327,14 @@ static int btrfs_parse_compress(struct btrfs_fs_context *ctx,
- 		btrfs_clear_opt(ctx->mount_opt, COMPRESS);
- 		btrfs_clear_opt(ctx->mount_opt, FORCE_COMPRESS);
- 	} else {
--		btrfs_err(NULL, "unrecognized compression value %s", string);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto error;
- 	}
- 	return 0;
-+error:
-+	btrfs_err(NULL, "failed to parse compression option '%s': %d", string, ret);
-+	return ret;
-+
- }
- 
- static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
--- 
-2.50.1
+Let me know if that's not working or you have other ideas.
 
+> 
+> >  }
+> >  EXPORT_SYMBOL(drop_nlink);
+> >  
+> > @@ -451,6 +461,12 @@ void clear_nlink(struct inode *inode)
+> >  {
+> >  	if (inode->i_nlink) {
+> >  		inode->__i_nlink = 0;
+> > +
+> > +		/* See comment in drop_nlink(). */
+> > +		spin_lock(&inode->i_lock);
+> > +		inode_lru_list_del(inode);
+> > +		spin_unlock(&inode->i_lock);
+> > +
+> >  		atomic_long_inc(&inode->i_sb->s_remove_count);
+> >  	}
+> >  }
+> > @@ -555,6 +571,8 @@ static void inode_add_cached_lru(struct inode *inode)
+> >  
+> >  	if (inode->i_state & I_CACHED_LRU)
+> >  		return;
+> > +	if (inode->__i_nlink == 0)
+> > +		return;
+> >  	if (!list_empty(&inode->i_lru))
+> >  		return;
+> >  
+> > @@ -562,7 +580,7 @@ static void inode_add_cached_lru(struct inode *inode)
+> >  	spin_lock(&inode->i_sb->s_cached_inodes_lock);
+> >  	list_add(&inode->i_lru, &inode->i_sb->s_cached_inodes);
+> >  	spin_unlock(&inode->i_sb->s_cached_inodes_lock);
+> > -	iobj_get(inode);
+> > +	__iget(inode);
+> >  }
+> >  
+> >  static bool __inode_del_cached_lru(struct inode *inode)
+> > @@ -582,7 +600,7 @@ static bool __inode_del_cached_lru(struct inode *inode)
+> >  static bool inode_del_cached_lru(struct inode *inode)
+> >  {
+> >  	if (__inode_del_cached_lru(inode)) {
+> > -		iobj_put(inode);
+> > +		iput(inode);
+> >  		return true;
+> >  	}
+> >  	return false;
+> > @@ -598,6 +616,8 @@ static void __inode_add_lru(struct inode *inode, bool rotate)
+> >  		return;
+> >  	if (atomic_read(&inode->i_count))
+> >  		return;
+> > +	if (inode->__i_nlink == 0)
+> > +		return;
+> >  	if (!(inode->i_sb->s_flags & SB_ACTIVE))
+> >  		return;
+> >  	if (inode_needs_cached(inode)) {
+> > @@ -609,7 +629,7 @@ static void __inode_add_lru(struct inode *inode, bool rotate)
+> >  	if (list_lru_add_obj(&inode->i_sb->s_inode_lru, &inode->i_lru)) {
+> >  		inode->i_state |= I_LRU;
+> >  		if (need_ref)
+> > -			iobj_get(inode);
+> > +			__iget(inode);
+> >  		this_cpu_inc(nr_unused);
+> >  	} else if (rotate) {
+> >  		inode->i_state |= I_REFERENCED;
+> > @@ -655,7 +675,7 @@ void inode_lru_list_del(struct inode *inode)
+> >  
+> >  	if (list_lru_del_obj(&inode->i_sb->s_inode_lru, &inode->i_lru)) {
+> >  		inode->i_state &= ~I_LRU;
+> > -		iobj_put(inode);
+> > +		iput(inode);
+> >  		this_cpu_dec(nr_unused);
+> >  	}
+> >  }
+> > @@ -926,6 +946,7 @@ static void evict(struct inode *inode)
+> >  	BUG_ON(inode->i_state != (I_FREEING | I_CLEAR));
+> >  }
+> >  
+> > +static void iput_evict(struct inode *inode);
+> >  /*
+> >   * dispose_list - dispose of the contents of a local list
+> >   * @head: the head of the list to free
+> > @@ -933,20 +954,14 @@ static void evict(struct inode *inode)
+> >   * Dispose-list gets a local list with local inodes in it, so it doesn't
+> >   * need to worry about list corruption and SMP locks.
+> >   */
+> > -static void dispose_list(struct list_head *head, bool for_lru)
+> > +static void dispose_list(struct list_head *head)
+> >  {
+> >  	while (!list_empty(head)) {
+> >  		struct inode *inode;
+> >  
+> >  		inode = list_first_entry(head, struct inode, i_lru);
+> >  		list_del_init(&inode->i_lru);
+> > -
+> > -		if (for_lru) {
+> > -			evict(inode);
+> > -			iobj_put(inode);
+> > -		} else {
+> > -			iput(inode);
+> > -		}
+> > +		iput_evict(inode);
+> >  		cond_resched();
+> >  	}
+> >  }
+> > @@ -987,13 +1002,13 @@ void evict_inodes(struct super_block *sb)
+> >  		if (need_resched()) {
+> >  			spin_unlock(&sb->s_inode_list_lock);
+> >  			cond_resched();
+> > -			dispose_list(&dispose, false);
+> > +			dispose_list(&dispose);
+> >  			goto again;
+> >  		}
+> >  	}
+> >  	spin_unlock(&sb->s_inode_list_lock);
+> >  
+> > -	dispose_list(&dispose, false);
+> > +	dispose_list(&dispose);
+> >  }
+> >  EXPORT_SYMBOL_GPL(evict_inodes);
+> >  
+> > @@ -1031,22 +1046,7 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
+> >  	if (inode_needs_cached(inode)) {
+> >  		list_lru_isolate(lru, &inode->i_lru);
+> >  		inode_add_cached_lru(inode);
+> > -		iobj_put(inode);
+> > -		spin_unlock(&inode->i_lock);
+> > -		this_cpu_dec(nr_unused);
+> > -		return LRU_REMOVED;
+> > -	}
+> > -
+> > -	/*
+> > -	 * Inodes can get referenced, redirtied, or repopulated while
+> > -	 * they're already on the LRU, and this can make them
+> > -	 * unreclaimable for a while. Remove them lazily here; iput,
+> > -	 * sync, or the last page cache deletion will requeue them.
+> > -	 */
+> > -	if (atomic_read(&inode->i_count) ||
+> > -	    (inode->i_state & ~I_REFERENCED)) {
+> > -		list_lru_isolate(lru, &inode->i_lru);
+> > -		inode->i_state &= ~I_LRU;
+> > +		iput(inode);
+> >  		spin_unlock(&inode->i_lock);
+> >  		this_cpu_dec(nr_unused);
+> >  		return LRU_REMOVED;
+> > @@ -1082,7 +1082,6 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
+> >  	}
+> >  
+> >  	WARN_ON(inode->i_state & I_NEW);
+> > -	inode->i_state |= I_FREEING;
+> >  	inode->i_state &= ~I_LRU;
+> >  	list_lru_isolate_move(lru, &inode->i_lru, freeable);
+> >  	spin_unlock(&inode->i_lock);
+> > @@ -1104,7 +1103,7 @@ long prune_icache_sb(struct super_block *sb, struct shrink_control *sc)
+> >  
+> >  	freed = list_lru_shrink_walk(&sb->s_inode_lru, sc,
+> >  				     inode_lru_isolate, &freeable);
+> > -	dispose_list(&freeable, true);
+> > +	dispose_list(&freeable);
+> >  	return freed;
+> >  }
+> >  
+> > @@ -1967,7 +1966,7 @@ EXPORT_SYMBOL(generic_delete_inode);
+> >   * in cache if fs is alive, sync and evict if fs is
+> >   * shutting down.
+> >   */
+> > -static void iput_final(struct inode *inode)
+> > +static void iput_final(struct inode *inode, bool skip_lru)
+> >  {
+> >  	struct super_block *sb = inode->i_sb;
+> >  	const struct super_operations *op = inode->i_sb->s_op;
+> > @@ -1981,7 +1980,7 @@ static void iput_final(struct inode *inode)
+> >  	else
+> >  		drop = generic_drop_inode(inode);
+> >  
+> > -	if (!drop &&
+> > +	if (!drop && !skip_lru &&
+> >  	    !(inode->i_state & I_DONTCACHE) &&
+> >  	    (sb->s_flags & SB_ACTIVE)) {
+> >  		__inode_add_lru(inode, true);
+> > @@ -1989,6 +1988,8 @@ static void iput_final(struct inode *inode)
+> >  		return;
+> >  	}
+> >  
+> > +	WARN_ON(!list_empty(&inode->i_lru));
+> > +
+> >  	state = inode->i_state;
+> >  	if (!drop) {
+> >  		WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
+> > @@ -2003,23 +2004,12 @@ static void iput_final(struct inode *inode)
+> >  	}
+> >  
+> >  	WRITE_ONCE(inode->i_state, state | I_FREEING);
+> > -	if (!list_empty(&inode->i_lru))
+> > -		inode_lru_list_del(inode);
+> >  	spin_unlock(&inode->i_lock);
+> >  
+> >  	evict(inode);
+> >  }
+> >  
+> > -/**
+> > - *	iput	- put an inode
+> > - *	@inode: inode to put
+> > - *
+> > - *	Puts an inode, dropping its usage count. If the inode use count hits
+> > - *	zero, the inode is then freed and may also be destroyed.
+> > - *
+> > - *	Consequently, iput() can sleep.
+> > - */
+> > -void iput(struct inode *inode)
+> > +static void __iput(struct inode *inode, bool skip_lru)
+> >  {
+> >  	if (!inode)
+> >  		return;
+> > @@ -2037,12 +2027,31 @@ void iput(struct inode *inode)
+> >  
+> >  	spin_lock(&inode->i_lock);
+> >  	if (atomic_dec_and_test(&inode->i_count))
+> > -		iput_final(inode);
+> > +		iput_final(inode, skip_lru);
+> >  	else
+> >  		spin_unlock(&inode->i_lock);
+> >  
+> >  	iobj_put(inode);
+> >  }
+> > +
+> > +static void iput_evict(struct inode *inode)
+> > +{
+> > +	__iput(inode, true);
+> > +}
+> > +
+> > +/**
+> > + *	iput	- put an inode
+> > + *	@inode: inode to put
+> > + *
+> > + *	Puts an inode, dropping its usage count. If the inode use count hits
+> > + *	zero, the inode is then freed and may also be destroyed.
+> > + *
+> > + *	Consequently, iput() can sleep.
+> > + */
+> > +void iput(struct inode *inode)
+> > +{
+> > +	__iput(inode, false);
+> > +}
+> >  EXPORT_SYMBOL(iput);
+> >  
+> >  /**
+> > -- 
+> > 2.49.0
+> > 
 
