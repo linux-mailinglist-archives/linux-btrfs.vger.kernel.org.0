@@ -1,239 +1,160 @@
-Return-Path: <linux-btrfs+bounces-16346-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16347-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA432B33F18
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 14:15:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F381B345DE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 17:34:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EE1B16353D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 12:15:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C1A32A2288
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 15:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B54C31FDA94;
-	Mon, 25 Aug 2025 12:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F012FC863;
+	Mon, 25 Aug 2025 15:34:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lBajd0R8"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0GX9eRwR";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KEpQ/bqV";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yIcKzf32";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WFxEa2FN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C964327780C;
-	Mon, 25 Aug 2025 12:15:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03030235354
+	for <linux-btrfs@vger.kernel.org>; Mon, 25 Aug 2025 15:34:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756124116; cv=none; b=FKzUi69nIre67QVH1e/5NkEKa4mdgsFLwvMttjY1hqQwGKm5MHMqLeaZnMgzl18QmD0mKTgtnlwClp1siRsNXSMCkardxgAA8Zp/JTGKPgjTOFk7kKDtirTwxUnCzimygPgtlMvU/rxNZG5lcQm0Fun9QdZ2829fMPk+MEh827A=
+	t=1756136077; cv=none; b=OiMhUFGJspuqkyxhvNnNh1xUKxvbUSLLF6kbGTtYLCuSMANOhJpcWdv3t2I7S+Ff5x45h4n3EhKv/rS3v4e/MHm04rkpJv1/gAxPGnJRix5cWSguZrzhJ90YFphTDQWfxMnXRHx3XI0tJvbHjrbJFgy8GrCIgrCwbUiOV4hDXUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756124116; c=relaxed/simple;
-	bh=U4QdAVzcoPl3yGc12zC0FvoLJYOhc0k6UX3CH+eLHNU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MXpLxx3nUx58GSZUs+nalTcBe6ULBLg/9vi5trfYSOtdThQnMAUPqnn349alj5nQDgqyZMPkQPbDdwktlwrz4S6zFpfNnlfhoD4xhn6M11Bd/hHiO6fMuhjoeXs97dRG7OizTgky5te+XTBHg1yYq4H2WtwPbouTeHtrd/X0Mh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lBajd0R8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADCCAC4CEED;
-	Mon, 25 Aug 2025 12:15:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756124116;
-	bh=U4QdAVzcoPl3yGc12zC0FvoLJYOhc0k6UX3CH+eLHNU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lBajd0R8KkE3ylCqbZpPpjoqqP/748NCTfsLHuKYZZoHPwuh1bBqeqUypUijoE9Y1
-	 6iv2WLJFCA+Rfb3oMoOS7DCvE6l7Eo4SYG/xFi4zZb7nRoD8PHgurdKleTNFHJFxeW
-	 pLQT0R48p9tXSv7y42RCyHh8JD8a7dASazLameCuTssPxL1O08YNMc0uxJQ8RbSE6R
-	 Wa4RHcq4OgWR4lJADkH78j3uql1XDG2oQJBT6OkWUUdgN/pRO1jHTJC7gY6A2ukhYw
-	 BCBDJtAsfIpAS1H0vUjiPBkzmDmV0XC1hHRy5NJH8ZAfUzYn6EzyvnP1QK3pQ84KTL
-	 qhwjE36g7zAvA==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Anand Jain <anand.jain@oracle.com>,
-	David Sterba <dsterba@suse.com>,
-	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.16-6.12] btrfs: zoned: skip ZONE FINISH of conventional zones
-Date: Mon, 25 Aug 2025 08:14:56 -0400
-Message-ID: <20250825121505.2983941-7-sashal@kernel.org>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250825121505.2983941-1-sashal@kernel.org>
-References: <20250825121505.2983941-1-sashal@kernel.org>
+	s=arc-20240116; t=1756136077; c=relaxed/simple;
+	bh=hAP5+9edG2A50km1f45PRX117OaerF8qTxFC60S3UAg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CHL0JPUXI08hKFf4p3Wbkk5ZOXYx1BflcmJOMzYaP1+uxDFJ2//8k07Mr+daFonG0QoF9ZirEpV6+GF6iaKoDtssAp0ROzcnR5GEmXATyK1uA5LFauTcTmaqGrXluqncdnlfweCERYDyorXWOD+69pfInFVEEtQ6uv8sb0D7Dm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0GX9eRwR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KEpQ/bqV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yIcKzf32; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WFxEa2FN; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E731F1F787;
+	Mon, 25 Aug 2025 15:34:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756136074;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cWAyh0KbB3uRAQxNAEBmJI57GjXwM76wUMfM0X2Y6Lc=;
+	b=0GX9eRwRhWoCmt7hDl4jyx8xQRQ82hFqxESCuAkYHvlVeZint2OuFJnEaj1OTrDLCof/WB
+	PeGRW9dcbmUa5fm7s6dN1d18f9r0nizhGPid3vQP3tMjqapYihh6FRvqiZ/eklaDq1LidN
+	ji6HpWauKPMHEqcfVAlCtrHLE5h/wG0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756136074;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cWAyh0KbB3uRAQxNAEBmJI57GjXwM76wUMfM0X2Y6Lc=;
+	b=KEpQ/bqVHpvsJMN7UBXYgvKgv39sV2RsHeTXFpyLzdEDiaVMl4IbHJRhJnVGbe+hmUDK3D
+	lKGo8JXOiPbfB4Cw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yIcKzf32;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=WFxEa2FN
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756136073;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cWAyh0KbB3uRAQxNAEBmJI57GjXwM76wUMfM0X2Y6Lc=;
+	b=yIcKzf32wkU+rn3KKmPT40WsbXabT9Qt++iBZtOkxCBS4JiCCfz9oGSsT4ZZ1QAG+TcVbB
+	YZd9WDDgcLuouP1YmN+oNQLOT8l+OxxcG6gHPk1L08Zg5EfXJlq07jX5/01oe3eeGaAauO
+	bsDAdqgr4ivSy07MjdgY08Q09wWbQoo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756136073;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cWAyh0KbB3uRAQxNAEBmJI57GjXwM76wUMfM0X2Y6Lc=;
+	b=WFxEa2FNIvnHKGpuMY5SgeqRbrfAnNLFw9PjjG3em2+lUt95R/A3CVVt3VRXxkOx4Eohyf
+	2EpA7jqc2GUwvCBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DD69D1368F;
+	Mon, 25 Aug 2025 15:34:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id xA7hNYmCrGiSSAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 25 Aug 2025 15:34:33 +0000
+Date: Mon, 25 Aug 2025 17:34:32 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: update MAINTAINERS entry
+Message-ID: <20250825153432.GA29826@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <6edc186a32ad2bc18b26932b4b5d87b977a55726.1755008933.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.16.3
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6edc186a32ad2bc18b26932b4b5d87b977a55726.1755008933.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto,suse.cz:dkim]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: E731F1F787
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.21
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Tue, Aug 12, 2025 at 10:29:23AM -0400, Josef Bacik wrote:
+> This is an update to reflect reality, not a signal of any seismic
+> change. Dave Sterba has been the acting maintainer for almost a decade,
+> I've simply been here as a backstop in case he gets hit by a bus. The
+> fact is we have a strong and thriving community with any number of more
+> active developers that can take on that role if it's necessary. I'm
+> exceedingly happy and proud of the work that Dave has done in keeping us
+> all in line, and know that if further changes need to be made it'll be
+> with the development community we've built throughout the lifetime of
+> btrfs.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit f0ba0e7172a222ea6043b61ecd86723c46d7bcf2 ]
+Would you like to send this yourself? It's a non-code change and you can
+use the pull request powers once more.
 
-Don't call ZONE FINISH for conventional zones as this will result in I/O
-errors. Instead check if the zone that needs finishing is a conventional
-zone and if yes skip it.
-
-Also factor out the actual handling of finishing a single zone into a
-helper function, as do_zone_finish() is growing ever bigger and the
-indentations levels are getting higher.
-
-Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-LLM Generated explanations, may be completely bogus:
-
-**Backport Status: YES**
-
-This commit should be backported to stable kernel trees for the
-following reasons:
-
-## Bug Fix Analysis
-
-1. **Critical Bug Fix**: The commit fixes a concrete bug where calling
-   `REQ_OP_ZONE_FINISH` on conventional zones results in I/O errors.
-   This is a real runtime error that affects users of btrfs on zoned
-   storage devices that have conventional zones mixed with sequential
-   zones.
-
-2. **Small and Contained Change**: The fix is relatively small and well-
-   contained:
-   - Adds a new helper function `call_zone_finish()` that encapsulates
-     the zone finishing logic
-   - Most importantly, adds the critical check: `if
-     (btrfs_dev_is_sequential(device, physical))` before issuing the
-     `REQ_OP_ZONE_FINISH` operation
-   - The refactoring merely moves existing code into the helper function
-     without changing the logic
-
-3. **Clear Root Cause**: The bug occurs because the original code
-   unconditionally calls `blkdev_zone_mgmt()` with `REQ_OP_ZONE_FINISH`
-   on all zones, but this operation is invalid for conventional zones
-   (non-sequential zones). The fix properly checks if a zone is
-   sequential before attempting to finish it.
-
-4. **No New Features**: This commit doesn't introduce any new
-   functionality - it's purely a bug fix that prevents I/O errors.
-
-5. **Minimal Risk**: The change has minimal risk of regression:
-   - The check for sequential zones is straightforward
-   - The refactoring doesn't change the existing logic flow
-   - The fix has been reviewed by multiple developers familiar with the
-     zoned code
-
-6. **Affects Real Users**: This bug affects users running btrfs on SMR
-   (Shingled Magnetic Recording) drives or ZNS (Zoned Namespace) SSDs
-   that have a mix of conventional and sequential zones, which is a
-   common configuration.
-
-## Code Analysis
-
-The key fix in `call_zone_finish()` at line 2262:
-```c
-if (btrfs_dev_is_sequential(device, physical)) {
-    // Only call zone finish for sequential zones
-    ret = blkdev_zone_mgmt(device->bdev, REQ_OP_ZONE_FINISH, ...);
-}
-```
-
-This prevents the invalid operation on conventional zones while
-maintaining the correct behavior for sequential zones. The subsequent
-operations (updating reserved_active_zones and clearing active zone) are
-still performed regardless of zone type, which is the correct behavior.
-
-The commit follows stable kernel rules perfectly: it's a clear bug fix,
-has minimal changes, doesn't introduce new features, and addresses a
-real user-facing issue that causes I/O errors.
-
- fs/btrfs/zoned.c | 55 ++++++++++++++++++++++++++++++------------------
- 1 file changed, 35 insertions(+), 20 deletions(-)
-
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 5439d8374716..950e72dc537c 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -2246,6 +2246,40 @@ static void wait_eb_writebacks(struct btrfs_block_group *block_group)
- 	rcu_read_unlock();
- }
- 
-+static int call_zone_finish(struct btrfs_block_group *block_group,
-+			    struct btrfs_io_stripe *stripe)
-+{
-+	struct btrfs_device *device = stripe->dev;
-+	const u64 physical = stripe->physical;
-+	struct btrfs_zoned_device_info *zinfo = device->zone_info;
-+	int ret;
-+
-+	if (!device->bdev)
-+		return 0;
-+
-+	if (zinfo->max_active_zones == 0)
-+		return 0;
-+
-+	if (btrfs_dev_is_sequential(device, physical)) {
-+		unsigned int nofs_flags;
-+
-+		nofs_flags = memalloc_nofs_save();
-+		ret = blkdev_zone_mgmt(device->bdev, REQ_OP_ZONE_FINISH,
-+				       physical >> SECTOR_SHIFT,
-+				       zinfo->zone_size >> SECTOR_SHIFT);
-+		memalloc_nofs_restore(nofs_flags);
-+
-+		if (ret)
-+			return ret;
-+	}
-+
-+	if (!(block_group->flags & BTRFS_BLOCK_GROUP_DATA))
-+		zinfo->reserved_active_zones++;
-+	btrfs_dev_clear_active_zone(device, physical);
-+
-+	return 0;
-+}
-+
- static int do_zone_finish(struct btrfs_block_group *block_group, bool fully_written)
- {
- 	struct btrfs_fs_info *fs_info = block_group->fs_info;
-@@ -2330,31 +2364,12 @@ static int do_zone_finish(struct btrfs_block_group *block_group, bool fully_writ
- 	down_read(&dev_replace->rwsem);
- 	map = block_group->physical_map;
- 	for (i = 0; i < map->num_stripes; i++) {
--		struct btrfs_device *device = map->stripes[i].dev;
--		const u64 physical = map->stripes[i].physical;
--		struct btrfs_zoned_device_info *zinfo = device->zone_info;
--		unsigned int nofs_flags;
--
--		if (!device->bdev)
--			continue;
--
--		if (zinfo->max_active_zones == 0)
--			continue;
--
--		nofs_flags = memalloc_nofs_save();
--		ret = blkdev_zone_mgmt(device->bdev, REQ_OP_ZONE_FINISH,
--				       physical >> SECTOR_SHIFT,
--				       zinfo->zone_size >> SECTOR_SHIFT);
--		memalloc_nofs_restore(nofs_flags);
- 
-+		ret = call_zone_finish(block_group, &map->stripes[i]);
- 		if (ret) {
- 			up_read(&dev_replace->rwsem);
- 			return ret;
- 		}
--
--		if (!(block_group->flags & BTRFS_BLOCK_GROUP_DATA))
--			zinfo->reserved_active_zones++;
--		btrfs_dev_clear_active_zone(device, physical);
- 	}
- 	up_read(&dev_replace->rwsem);
- 
--- 
-2.50.1
-
+Acked-by: David Sterba <dsterba@suse.com>
 
