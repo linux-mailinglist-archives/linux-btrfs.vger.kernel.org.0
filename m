@@ -1,81 +1,79 @@
-Return-Path: <linux-btrfs+bounces-16316-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16317-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABA1CB332E1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Aug 2025 23:41:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0087AB33519
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 06:35:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEB8F1B253B0
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Aug 2025 21:41:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F0FC3A1D89
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Aug 2025 04:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8FE244681;
-	Sun, 24 Aug 2025 21:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6BE72550D8;
+	Mon, 25 Aug 2025 04:34:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Ai9G4TaT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mO4wuJ8Y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B448923A995
-	for <linux-btrfs@vger.kernel.org>; Sun, 24 Aug 2025 21:41:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96AC22101AE;
+	Mon, 25 Aug 2025 04:34:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756071669; cv=none; b=pTQMDyO6e67viW4EA2khZpubVvtTY4iY0hrGkXE0LeUHkyK9+Wm8zWHBVsKZf6OuNA27quea8vOmF/yvP6TzYyQt6LRYw36a2nFn9jaPfE3J3dT2xIOVpTcS0fSZesOXgxlBuWTQP85syOKKlb7cc0MXCvVqSK+Y6anCTPWqU2o=
+	t=1756096490; cv=none; b=rTWcysVA0K8UdExKdompdYq7PWWGKL+3StSWGmNTasbncs4o9hWhNF4c3DfkwoEtpluLXD1EaofHCeGmVk5pPyNcSq8l4vz9N4JIMEYkJeeP1VXC0M5qNyRHB25el4KkDTdOp62tw3HqcjqSkOPczz+VwVd90vNG+h4hyzhv69U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756071669; c=relaxed/simple;
-	bh=k7rV/e03Lony7Uei6rOIUN2FSEOu206Imyr4MKnVf2w=;
+	s=arc-20240116; t=1756096490; c=relaxed/simple;
+	bh=zTsPFKELVvKnjI6HgvtPLF1eDW8CfYdReP5o5so51PI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ilfR/Uxi7kcnnSRT4k/Wt4iCcw9UMOkz2cudcf1CGUNugzqpyoTNp3X9RP68EsBz8lxp7MVo9suMEKra8T4vNvkvH0anVryrMQOw7PwoDeV93XLga7upysisaFZX2ZGCvm3LRzDtG+6VHdkauY+fjoIZfgwK94bTWLeVve/dIS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Ai9G4TaT; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3c46686d1e6so2262928f8f.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 24 Aug 2025 14:41:06 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=PQgCR89Qaxbv43RbDSsq/3+d8XyqhaXdWMaYGmJL7p0PDMDmccvpiQ3WA46tqnEsruVXg0RozxrysjsqSnhQzH5wi2B0P38JNm5TR4rGwqHJGRtYUK1RIlg/HNZXb7zVyKCnK9naoYA0M6b4u5C8I3lO7ri0Gfaa1BnX4oa9nGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mO4wuJ8Y; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-32326e67c95so4326949a91.3;
+        Sun, 24 Aug 2025 21:34:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1756071665; x=1756676465; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=fYd06LbXp2FRlpwpsbVMjBRnrPXQz3hanPHKIS6jTro=;
-        b=Ai9G4TaT+maDWXLzqzyIoFOWhr+1iZe9diah82VoZX5UEMJgY7LPSOjUtVjGLTOMyH
-         VhYkvcIiH5J8n8CwExiVQIt98m0FogIbuOr+WhEb4aGqEU9RwArQ2Wg8IcPw9TCeznjp
-         MUAyQT0Nn5hPp32Av9HAdQY4s+JXgjYqN4B/CdkdX3usoYaAw5BKERE+lE8bKOiIy9cg
-         15LLNuz1a4YLyMZLRoE88b8s6yZmekPmldSCN+2Gf4ZpiVxt/Hpmtw0LW5KbV6UN/C81
-         qD5zZw0p7ntNCGJe6junApDTi99IOZ7kTxfzmMHI7G8rBtst1E98xLTIMuG27+kQNZvX
-         HfKg==
+        d=gmail.com; s=20230601; t=1756096487; x=1756701287; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KBHkA7YjOiPDA/Rr3r3DIHpfIB6xpgImsae3wOrKln0=;
+        b=mO4wuJ8YqkYTDdGDfmshBqNLmnVfNY7S8Y+k20Rmy5yCsr3NFjMiiL0WmvWl4FOY2i
+         MYzhCP4KNBxaxYET0bHbAHqR1rUc2JKOI1sWlou34Z2vRE080js/+hJV5M8S53q3ipZa
+         1DoltypurEdzrFcJPaEYQXJDDVHMWhf+6nFsLc0ict21N8kC6lzwVs6Ky5GGgW3cKWIg
+         sALtQYBrB7ckNaa83qk9LSno/FjVzKQ8CzJrJwNfMVqUIKPEVMzpLUj1tD62fmzrypxo
+         EuvEJF+dEOxQ7hp9xg75bEF9vT7K5dVvMAIxsGqRTlDGn68k8//MTftZbCoT2lAvAb4q
+         VQbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756071665; x=1756676465;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fYd06LbXp2FRlpwpsbVMjBRnrPXQz3hanPHKIS6jTro=;
-        b=hPzYcFoT2yFuvWU0AUOViWfCo9hRZBgy74uVTPvvs5BFikAYGeVJWwLzP1JPcvbfRl
-         1UMnGALLCs+8BGQuW2jIQvVmf71Pd2ffMeF3fTdOhfZPb7i/CqGSDdweTlK9KlQGAGSR
-         IcHMq/Bcv35g/AeWKakYAN1lAjsGJOMY/lch5f4HpyAS/n/M4RqtSm8XTRGma+RM30T2
-         XaH36EKCtrmFX8+iQaLY3ByGzmAlCTHGCQTbMdUgyL3Ylx/B9hE3n7o1HHvYHK0Wrz0f
-         jvEkwVvcTFn0FEQ5BtEtdwCYWI2VAW/TWDbpFPJ9tJlEC6KIb/aJE3OYglfIhSiRTH48
-         BbQg==
-X-Forwarded-Encrypted: i=1; AJvYcCWL45NbEGEWzxww23gb24jkSkguto24W7sc+rBM6o7mrUO4tVzoLtrZrm0MAETEjqGv77x4zDGHpbe9pQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz4s9rG98vnzkYW0Mi2TOqLAvJqPCjtxEFCBAjUQk141sgthdGr
-	P3CB6kTIvEdwkNa3YG8tPo+z9MvIZ2S0dlUVAHDhHmI3PNStLSNBgOvNM+eyg9d3Yhg=
-X-Gm-Gg: ASbGncupD6cMxFzSwWmamLkGvdN9wfXbPj+QFk5M4McJyFtdxtH32dHTPosxWdzRYF8
-	67ADdmElBxwKFDjNdbIgnGY4L0LkecxB0Ozud10aoogl0+GKvIhjyj4zS87p+kA7air0mPJ7u2P
-	SNtSadaP647KYkajZxUJIfEMo61PXgYrs/PdXZNKbnMqEYl5h6SuM58ldgBnDmaN5bPrfiWq/vs
-	O4o0KmjyiASwwpa9GUnQ2P9WwMzm/vuD5djb8zo+JCvhbouAOCXfywhfrrFuiHnWKQDwMNwlYJS
-	tKAwklIk3v3/wDcEfkNi9uF+mBnOVbTYBoGdTZYZT5wYdDqv6jYBCxSIxGE9wSA4aIF/n1q0h4+
-	MFanGd8sHd3PAtdrgUkuAR0GRUUndhC3tIg+B6LlqLx4easF76kM=
-X-Google-Smtp-Source: AGHT+IEeMmJiluk3pS4DXG0dP7BS3MPPCo90S8ZCiieAjVxeh349XrIx83k4rAc08WG0zYvIox/sZA==
-X-Received: by 2002:a05:6000:3105:b0:3b4:9721:2b32 with SMTP id ffacd0b85a97d-3c5da83c440mr7597451f8f.10.1756071664925;
-        Sun, 24 Aug 2025 14:41:04 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7703ffb47c4sm5534448b3a.4.2025.08.24.14.41.01
+        d=1e100.net; s=20230601; t=1756096487; x=1756701287;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KBHkA7YjOiPDA/Rr3r3DIHpfIB6xpgImsae3wOrKln0=;
+        b=izl94CoHnMNET8wd3PEnlEau66/awvFoerX4OQtxxbLXbHE5lSko9ODitatHSKJF0+
+         KBbUke3w70uNFQpUK8ExIpcj8pB0ZyCw6BDDAKW/mVs6z9sbDXtYDVVAyjuSVJeKJjF4
+         ZfXTKfa5T6fMAQxWt7mDeCJAkLPO1Vlj7KeA8w/60HCU6FryXDbCM+SfZP2xbbm4Ao68
+         rAHA5upKJJc3YHD9TL9sh6A0tFs+C6vswbKebdYMaI1iQ/p+mBkgwfAthiSnOn8Dy5bc
+         sL2nY5VZlhcIhvkpjOqFPSgh3uHUq1+nqeShJg6eCutZPrNnNKNIrB6N5swy0LUxuXr4
+         kfFQ==
+X-Gm-Message-State: AOJu0YwY+hP2ZoiIXnSwwANyw0CjqotR7Z3tkKGBftYjBkh5Fr9Ij1Db
+	bg2XlCSRi9GbJOPCxZ8GaSzHGNTs+ZQ8pMhPjDeO7YJfd4eZ0ObrLxnCuDqflA==
+X-Gm-Gg: ASbGnculda5PBf7YXysQCzrSpsHx6EXTPHzlLtgsAcAxW6Fbre1L5TfzQEopE0fbo0t
+	fOTK7dOJcZe7rGXQ13Ka5PBItFrcKoSUQlG7EORu0Nfk+roKuLBLsYXk/nUXDGsP/jeiWd6cnxR
+	x4hMAMk83Hik+QmJ8EgNVukKOfpStPvg9aToJ0rRK+vW+ktUz5SmlOou6b1a1vAvzjYFwJ579x/
+	WQQdmiSuhgXheMnqr4PxwpV6K/kwV7XdsDZ4CQxE9PSNzme3Jw02wxn3PQdhn6YPCIiwtTXr3iV
+	6BZBmU9MHU1gpD05sF9wNpQ5vsmQ3X6iN7jtxB5W5Ipw1y6FjRB7Y1xn6VjU/LbGVUIUH6rAX7k
+	Ju37SJ726n++YQ3maL/hyxUE5ZAIiGwGBryeoUSopykm2ho1PkapMhg==
+X-Google-Smtp-Source: AGHT+IGeeGmH05uqQvqOLkqBDV8JT8rNlVHKFDCP+sqn1YIchMzqik/I7L6F1VZRl78R3GrhaMGKCA==
+X-Received: by 2002:a17:90b:51c6:b0:324:24d:3207 with SMTP id 98e67ed59e1d1-32515eabb6dmr15163582a91.17.1756096487280;
+        Sun, 24 Aug 2025 21:34:47 -0700 (PDT)
+Received: from [192.168.0.120] ([49.207.214.73])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3254e71ff03sm5707483a91.16.2025.08.24.21.34.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Aug 2025 14:41:04 -0700 (PDT)
-Message-ID: <9ada7f0f-2b46-4e7d-812d-666af3b5c023@suse.com>
-Date: Mon, 25 Aug 2025 07:10:58 +0930
+        Sun, 24 Aug 2025 21:34:46 -0700 (PDT)
+Message-ID: <ca7656e2-0b8b-42e4-8dee-c2da44cc0f11@gmail.com>
+Date: Mon, 25 Aug 2025 10:04:39 +0530
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -83,234 +81,92 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: Accept and ignore compression level for lzo
-To: Calvin Owens <calvin@wbinvd.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Sun YangKai <sunk67188@gmail.com>, clm@fb.com, dsterba@suse.com,
- josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, neelx@suse.com
-References: <2022221.PYKUYFuaPT@saltykitkat>
- <810d2b19-47ed-4902-bd8d-eb69bacbf0c6@gmx.com>
- <aKiSpTytAOXgHan5@mozart.vkv.me>
- <e9a4f485-3907-4f1e-8a74-2ffde87f3044@gmx.com>
- <aKj8K8IWkXr_SOk_@mozart.vkv.me>
- <9cacdafc-98ec-4ad2-99a8-dfb077e4a5fb@gmx.com>
- <aKs2mCRjtv3Ki06Z@mozart.vkv.me>
+Subject: Re: [PATCH v3 2/4] generic/274: Make the pwrite block sizes and
+ offsets to 64k
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, ritesh.list@gmail.com,
+ ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org,
+ fdmanana@kernel.org, quwenruo.btrfs@gmx.com
+References: <cover.1755677274.git.nirjhar.roy.lists@gmail.com>
+ <1110f20bb5d26b4bef5596a00d69c3459709ab65.1755677274.git.nirjhar.roy.lists@gmail.com>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <aKs2mCRjtv3Ki06Z@mozart.vkv.me>
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+In-Reply-To: <1110f20bb5d26b4bef5596a00d69c3459709ab65.1755677274.git.nirjhar.roy.lists@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
 
+On 8/20/25 13:45, Nirjhar Roy (IBM) wrote:
+> This test was written with 4k block size in mind and it fails with
+> 64k block size when tested with btrfs.
+> The test first does pre-allocation, then fills up the
+> filesystem. After that it tries to fragment and fill holes at offsets
+> of 4k(i.e, 1 fsblock) - which works fine with 4k block size, but with
+> 64k block size, the test tries to fragment and fill holes within
+> 1 fsblock(of size 64k). This results in overwrite of 64k fsblocks
+> and the write fails. The reason for this failure is that during
+> overwrite, there is no more space available for COW.
+> Fix this by changing the pwrite block size and offsets to 64k
+> so that the test never tries to punch holes or overwrite within 1 fsblock
+> and the test becomes compatible with all block sizes.
+>
+> For non-COW filesystems/files, this test should work even if the
+> underlying filesytem block size > 64k.
 
-在 2025/8/25 01:28, Calvin Owens 写道:
-> On Saturday 08/23 at 09:09 +0930, Qu Wenruo wrote:
->> 在 2025/8/23 08:54, Calvin Owens 写道:
->>> On Saturday 08/23 at 07:14 +0930, Qu Wenruo wrote:
->>>> 在 2025/8/23 01:24, Calvin Owens 写道:
->>>>> On Friday 08/22 at 19:53 +0930, Qu Wenruo wrote:
->>>>>> 在 2025/8/22 19:50, Sun YangKai 写道:
->>>>>>>> The compression level is meaningless for lzo, but before commit
->>>>>>>> 3f093ccb95f30 ("btrfs: harden parsing of compression mount options"),
->>>>>>>> it was silently ignored if passed.
->>>>>>>>
->>>>>>>> After that commit, passing a level with lzo fails to mount:
->>>>>>>>         BTRFS error: unrecognized compression value lzo:1
->>>>>>>>
->>>>>>>> Restore the old behavior, in case any users were relying on it.
->>>>>>>>
->>>>>>>> Fixes: 3f093ccb95f30 ("btrfs: harden parsing of compression mount options")
->>>>>>>> Signed-off-by: Calvin Owens <calvin@wbinvd.org>
->>>>>>>> ---
->>>>>>>>
->>>>>>>>      fs/btrfs/super.c | 2 +-
->>>>>>>>      1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
->>>>>>>> index a262b494a89f..7ee35038c7fb 100644
->>>>>>>> --- a/fs/btrfs/super.c
->>>>>>>> +++ b/fs/btrfs/super.c
->>>>>>>> @@ -299,7 +299,7 @@ static int btrfs_parse_compress(struct btrfs_fs_context
->>>>>>>> *ctx,>
->>>>>>>>      		btrfs_set_opt(ctx->mount_opt, COMPRESS);
->>>>>>>>      		btrfs_clear_opt(ctx->mount_opt, NODATACOW);
->>>>>>>>      		btrfs_clear_opt(ctx->mount_opt, NODATASUM);
->>>>>>>>
->>>>>>>> -	} else if (btrfs_match_compress_type(string, "lzo", false)) {
->>>>>>>> +	} else if (btrfs_match_compress_type(string, "lzo", true)) {
->>>>>>>>
->>>>>>>>      		ctx->compress_type = BTRFS_COMPRESS_LZO;
->>>>>>>>      		ctx->compress_level = 0;
->>>>>>>>      		btrfs_set_opt(ctx->mount_opt, COMPRESS);
->>>>>>>>
->>>>>>>> --
->>>>>>>> 2.47.2
->>>>>>>
->>>>>>> A possible improvement would be to emit a warning in
->>>>>>> btrfs_match_compress_type() when @may_have_level is false but a
->>>>>>> level is still provided. And the warning message can be something like
->>>>>>> "Providing a compression level for {compression_type} is not supported, the
->>>>>>> level is ignored."
->>>>>>>
->>>>>>> This way:
->>>>>>> 1. users receive a clearer hint about what happened,
->>>>>>
->>>>>> I'm fine with the extra warning, but I do not believe those kind of users
->>>>>> who provides incorrect mount option will really read the dmesg.
->>>>>>
->>>>>>> 2. existing setups relying on this behavior continue to work,
->>>>>>
->>>>>> Or let them fix the damn incorrect mount option.
->>>>>
->>>>> You're acting like I'm asking for "compress=lzo:iamafancyboy" to keep
->>>>> working here. I think what I proposed is a lot more reasonable than
->>>>> that, I'm *really* surprised you feel so strongly about this.
->>>>
->>>> Because there are too many things in btrfs that are being abused when it was
->>>> never supposed to work.
->>>>
->>>> You are not aware about how damaging those damn legacies are.
->>>>
->>>> Thus I strongly opposite anything that is only to keep things working when
->>>> it is not supposed to be in the first place.
->>>>
->>>> I'm already so tired of fixing things we should have not implemented a
->>>> decade ago, and those things are still popping here and there.
->>>>
->>>> If you feel offended, then I'm sorry but I just don't want bad examples
->>>> anymore, even it means regression.
->>>
->>> I'm not offended Qu. I empathize with your point of view, I apologize if
->>> I came across as dismissive earlier.
->>>
->>> I think trivial regression fixes like this can actually save you pain in
->>> the long term, when they're caught as quickly as this one was. I think
->>> this will prevent a steady trickle of user complaints over the next five
->>> years from happening.
->>>
->>> I can't speak for anybody else, but I'm *always* willing to do extra
->>> work to deal with breaking changes if the end result is that things are
->>> better or simpler. This just seems to me like a case where nothing
->>> tangible is gained by breaking compatibility, and nothing is lost by
->>> keeping it.
->>>
->>> I'm absolutely not arguing that the mount options should be backwards
->>> compatible with any possible abuse, this is a specific exception. Would
->>> clarifying that in the commit message help? I understand if you're
->>> concerned about the "precedent".
->>
->> Then I'm fine with a such patch, but still prefer a warning (not WARN(),
->> just much simpler btrfs_warn()) line to be shown when a level is provided
->> for lzo.
->>
->> Furthermore, since we already have something like btrfs_lzo_compress
->> indicating the supported level, setting to the proper default value would be
->> better. (Already done by btrfs_compress_set_level() call in your v2 patch).
-> 
-> Thanks Qu. v3 below.
-> 
-> There was an off-by-one in my v2, len("lzo") is three, doh.
-> 
->> BTW, since you mentioned something like "compress=lzo:asdf",
->> btrfs_compress_set_level() just ignores any kstrtoint() error, allowing
->> things like "compress=zstd:invalid" to pass the option parsing.
->>
->> I can definitely send out something to enhance that check, but just want to
->> be sure, would you opposite such extra sanity checks?
-> 
-> I have no objection to that at all, IMHO that's a good thing to do.
-> 
-> Is it worth adding a testcase somewhere for the compression options? I'm
-> happy to do that too, but I'm not sure what the right place for it is.
+Hi Qu,
 
-It can be added to fstests.
+Do you have any other feedback for this? I have reverted the block size 
+to 4k during fs filling as suggested in [1]
 
-> 
-> Thanks,
-> Calvin
-> 
-> -----8<-----
-> From: Calvin Owens <calvin@wbinvd.org>
-> Subject: [PATCH v3] btrfs: Accept and ignore compression level for lzo
-> 
-> The compression level is meaningless for lzo, but before commit
-> 3f093ccb95f30 ("btrfs: harden parsing of compression mount options"),
-> it was silently ignored if passed.
-> 
-> After that commit, passing a level with lzo fails to mount:
-> 
->      BTRFS error: unrecognized compression value lzo:1
-> 
-> It seems reasonable for users to expect that lzo would permit a numeric
-> level option, as all the other algos do, even though the kernel's
-> implementation of LZO currently only supports a single level. Because it
-> has always worked to pass a level, it seems likely to me that users in
-> the real world are relying on doing so.
-> 
-> This patch restores the old behavior, giving "lzo:N" the same semantics
-> as all of the other compression algos.
-> 
-> To be clear, silly variants like "lzo:one", "lzo:the_first_option", or
-> "lzo:armageddon" also used to work. This isn't meant to suggest that
-> any possible mis-interpretation of mount options that once worked must
-> continue to work forever. This is an exceptional case where it makes
-> sense to preserve compatibility, both because the mis-interpretation is
-> reasonable, and because nothing tangible is sacrificed.
-> 
-> Fixes: 3f093ccb95f30 ("btrfs: harden parsing of compression mount options")
-> Signed-off-by: Calvin Owens <calvin@wbinvd.org>
+[1] 
+https://lore.kernel.org/all/0a10a9b0-a55c-4607-be0b-7f7f01c2d729@suse.com/
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+--NR
 
-Thanks,
-Qu
-
+>
+> Reported-by: Disha Goel <disgoel@linux.ibm.com>
+> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
 > ---
->   fs/btrfs/super.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index a262b494a89f..18eb00b3639b 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -299,9 +299,12 @@ static int btrfs_parse_compress(struct btrfs_fs_context *ctx,
->   		btrfs_set_opt(ctx->mount_opt, COMPRESS);
->   		btrfs_clear_opt(ctx->mount_opt, NODATACOW);
->   		btrfs_clear_opt(ctx->mount_opt, NODATASUM);
-> -	} else if (btrfs_match_compress_type(string, "lzo", false)) {
-> +	} else if (btrfs_match_compress_type(string, "lzo", true)) {
->   		ctx->compress_type = BTRFS_COMPRESS_LZO;
-> -		ctx->compress_level = 0;
-> +		ctx->compress_level = btrfs_compress_str2level(BTRFS_COMPRESS_LZO,
-> +							       string + 3);
-> +		if (string[3] == ':' && string[4])
-> +			btrfs_warn(NULL, "Compression level ignored for LZO");
->   		btrfs_set_opt(ctx->mount_opt, COMPRESS);
->   		btrfs_clear_opt(ctx->mount_opt, NODATACOW);
->   		btrfs_clear_opt(ctx->mount_opt, NODATASUM);
+>   tests/generic/274 | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/tests/generic/274 b/tests/generic/274
+> index 916c7173..f6c7884e 100755
+> --- a/tests/generic/274
+> +++ b/tests/generic/274
+> @@ -40,8 +40,8 @@ _scratch_unmount 2>/dev/null
+>   _scratch_mkfs_sized $((2 * 1024 * 1024 * 1024)) >>$seqres.full 2>&1
+>   _scratch_mount
+>   
+> -# Create a 4k file and Allocate 4M past EOF on that file
+> -$XFS_IO_PROG -f -c "pwrite 0 4k" -c "falloc -k 4k 4m" $SCRATCH_MNT/test \
+> +# Create a 64k file and Allocate 64M past EOF on that file
+> +$XFS_IO_PROG -f -c "pwrite 0 64k" -c "falloc -k 64k 64m" $SCRATCH_MNT/test \
+>   	>>$seqres.full 2>&1 || _fail "failed to create test file"
+>   
+>   # Fill the rest of the fs completely
+> @@ -63,7 +63,7 @@ df $SCRATCH_MNT >>$seqres.full 2>&1
+>   echo "Fill in prealloc space; fragment at offsets:" >> $seqres.full
+>   for i in `seq 1 2 1023`; do
+>   	echo -n "$i " >> $seqres.full
+> -	dd if=/dev/zero of=$SCRATCH_MNT/test seek=$i bs=4K count=1 conv=notrunc \
+> +	dd if=/dev/zero of=$SCRATCH_MNT/test seek=$i bs=64K count=1 conv=notrunc \
+>   		>>$seqres.full 2>/dev/null || _fail "failed to write to test file"
+>   done
+>   _scratch_sync
+> @@ -71,7 +71,7 @@ echo >> $seqres.full
+>   echo "Fill in prealloc space; fill holes at offsets:" >> $seqres.full
+>   for i in `seq 2 2 1023`; do
+>   	echo -n "$i " >> $seqres.full
+> -	dd if=/dev/zero of=$SCRATCH_MNT/test seek=$i bs=4K count=1 conv=notrunc \
+> +	dd if=/dev/zero of=$SCRATCH_MNT/test seek=$i bs=64K count=1 conv=notrunc \
+>   		>>$seqres.full 2>/dev/null || _fail "failed to fill test file"
+>   done
+>   _scratch_sync
+
+-- 
+Nirjhar Roy
+Linux Kernel Developer
+IBM, Bangalore
 
 
