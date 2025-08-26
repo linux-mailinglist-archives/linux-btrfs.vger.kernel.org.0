@@ -1,114 +1,186 @@
-Return-Path: <linux-btrfs+bounces-16357-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16358-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7883B3550C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 09:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BC12B358DF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 11:28:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31793177A8E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 07:13:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 155B9171A42
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 09:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55EE42F6597;
-	Tue, 26 Aug 2025 07:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66EFC310784;
+	Tue, 26 Aug 2025 09:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ea4ru5og"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6863C2F6170
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 07:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E9629ACDB;
+	Tue, 26 Aug 2025 09:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756192415; cv=none; b=g6uoKRvJteOdt2tMAH+k29Zwb8rC46HQJXw4emtpBHXbzosq27XJyGPsN/9zurXNqk3QUR2muLRXoT6AAI0oPDpsoR8ip68z5E5xUS3/Toz8k5r3Z46Hyuu3OIlUgZ1SCyb3PMV9z0KdsVj9KZK4cc4U0i8500iHETaJ/sUzUZE=
+	t=1756200490; cv=none; b=CGnAXMuGSvqkDhAm+crEvXiVhqMqnoC1PyfjgEauSr4ajbX3p7qAhaCAvkjcjUK+PguLDfeyEXTq4RJoCdT2tKTTCYCCdNn5ak0LxETW2i2z4cNJN/ezlVO7pLk+qq5x5UP4WzI/Ts8L76hpmRTzR3TDePvicLHQVLl0TvfDiT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756192415; c=relaxed/simple;
-	bh=ztmg8NvkeECnbDbIaWKbTAmg7kuu7PJy9Zp6iC3CaIM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=P3d3KTxwZGsyzMUKC9QYRQ4wqW7227I4flZb0FOeGtbQP2l9rypFz3dK2mpBA/IzekskBnbxp0W0GOK8DOK/rJrP5JNqDmuUbczmoXm/wvi4RZTdfAwyH9sEmZqQX4Rl0vuPEQJljLTMcZlFd+fEiNoMXmNoMXXiywx6W0bgHc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3ee05b9a323so14982205ab.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 00:13:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756192413; x=1756797213;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BGecIXFYhnQ2n6KxVp+NizCLs7j3DYDA1Kg0vFKuV0o=;
-        b=SgjgrApBbjLIk90lj9C9GM7JyZDdTkSgX2BEK638yeFx+oJ/m7gn6svHoc8baWvhAg
-         0/UunxUqL/zxx2HnvEAUJfRVo/oseo1l8leOqh8kzQ3h48ZQrb57MeXIETX9UsflF7sN
-         velJEaft11lQ+q0bhsyloZZVJijWjHagCYI5w4Z7MxDV8/5d02+nz4kSC4Wa7kEXA+XB
-         Hr3PVzx5+IqbsSRNJUgRHLFVvlykhdhMD7GOdoPjSw+MKM1bo4t3yZdQhxAVgl9S9+Qw
-         exX5/dhN1732AJrNGKPUjGxRlKd770dai4cFyoQkQn5fusibT7jrjJFpm0VkkSwGS2fn
-         HIJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXH3SHky96vr7yRJxUte9zXjg0L61eXKJ32VnK3nskBjKnPmHiNSbpqIlSRfv6+vG63rT52kxrr5pOx1A==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz1SLrbd8lomgWduxD41ZTOGUmwTtbrPE9YgtjmVojHoFeoaasD
-	bh/yAgiECKgVcCYGBkOaX3qzJAGaNtS94MtW8sFce/KREmbSjbojMUOzNcQet41OTDlkSx18xzf
-	IlLMcwaVtqvO09+EEDiiNzlDWtjXpBDb1EBsupomPOkJo4Js0n441MqMMRCw=
-X-Google-Smtp-Source: AGHT+IFFv/ZlXTHe873XhXQC5IZFfNTguk+KAkxQHNL4r1vgGYlw5QhVcScv99RFyH2d0onoX5zpI4/w0ej7wd2M1i6ehtHhVMWc
+	s=arc-20240116; t=1756200490; c=relaxed/simple;
+	bh=O3iN0jD6PenlzfLPlOGEZZfLRHixSQ3x5jl4pZxP18E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g6HoQyjqCo7tUyu52rbOiPvKm6tpwryH2qEq03EkOlYf4i6MY5W3zv5YXmykFoVHxwWEP43R9aWQhyczHn3wlwFwrqrGivP4bmwjFUGm1RXwWDVo7XPREpBsNBuUsmweUdjBn3CcAwY5Be+skKcttnuzV201FY5iKhK48ekOF5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ea4ru5og; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F39CC4CEF1;
+	Tue, 26 Aug 2025 09:28:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756200489;
+	bh=O3iN0jD6PenlzfLPlOGEZZfLRHixSQ3x5jl4pZxP18E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ea4ru5ogSJey9drBsOFOIkw+HwL0/JBeiPxEVKQ1jwG+HvvBhS/erYaM2Apw/mPgL
+	 wh+1mKaQt56/fmi6l90Kq+ZKvc2lldJrxktURZwIpYs7bh3WU7a1zVYFaiya4VBhCY
+	 ii8DoXbArqhxH/bjoEL7BE2SdKoBxTf4TbzilQx9kkGDkWLq+IjeMsbEOUOWOz2mlc
+	 7wmEDBj23AdZKV6jjdDXOTiBfzCkuvVQWaCAyduVNQGFlWsBa/Pwr0AHZ02b29D12T
+	 F6uZ+17nu6AA+Ql9sX0uTd7WjteHNpno9pLVPECeyBaXfwNBe+APx10ZARgm8b5FjD
+	 ukv6+7OqKHpaQ==
+Date: Tue, 26 Aug 2025 11:28:05 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	viro@zeniv.linux.org.uk
+Subject: Re: [PATCH 18/50] fs: disallow 0 reference count inodes
+Message-ID: <20250826-benimm-muster-781f3fa24fe8@brauner>
+References: <cover.1755806649.git.josef@toxicpanda.com>
+ <6f4fb1baddecbdab4231c6094bbb05a98bbb7365.1755806649.git.josef@toxicpanda.com>
+ <20250825-person-knapp-e802daccfe5b@brauner>
+ <20250825192610.GA1310133@perftesting>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:470f:b0:3ec:98b9:ebd with SMTP id
- e9e14a558f8ab-3ef087645camr5440855ab.5.1756192413518; Tue, 26 Aug 2025
- 00:13:33 -0700 (PDT)
-Date: Tue, 26 Aug 2025 00:13:33 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68ad5e9d.050a0220.37038e.00ae.GAE@google.com>
-Subject: [syzbot] Monthly btrfs report (Aug 2025)
-From: syzbot <syzbot+list33243a939288f65f949f@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250825192610.GA1310133@perftesting>
 
-Hello btrfs maintainers/developers,
+On Mon, Aug 25, 2025 at 03:26:10PM -0400, Josef Bacik wrote:
+> On Mon, Aug 25, 2025 at 12:54:01PM +0200, Christian Brauner wrote:
+> > On Thu, Aug 21, 2025 at 04:18:29PM -0400, Josef Bacik wrote:
+> > > Now that we take a full reference for inodes on the LRU, move the logic
+> > > to add the inode to the LRU to before we drop our last reference. This
+> > > allows us to ensure that if the inode has a reference count it can be
+> > > used, and we no longer hold onto inodes that have a 0 reference count.
+> > > 
+> > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > > ---
+> > >  fs/inode.c | 53 +++++++++++++++++++++++++++++++++--------------------
+> > >  1 file changed, 33 insertions(+), 20 deletions(-)
+> > > 
+> > > diff --git a/fs/inode.c b/fs/inode.c
+> > > index de0ec791f9a3..b4145ddbaf8e 100644
+> > > --- a/fs/inode.c
+> > > +++ b/fs/inode.c
+> > > @@ -614,7 +614,7 @@ static void __inode_add_lru(struct inode *inode, bool rotate)
+> > >  
+> > >  	if (inode->i_state & (I_FREEING | I_WILL_FREE))
+> > >  		return;
+> > > -	if (atomic_read(&inode->i_count))
+> > > +	if (atomic_read(&inode->i_count) != 1)
+> > >  		return;
+> > >  	if (inode->__i_nlink == 0)
+> > >  		return;
+> > > @@ -1966,28 +1966,11 @@ EXPORT_SYMBOL(generic_delete_inode);
+> > >   * in cache if fs is alive, sync and evict if fs is
+> > >   * shutting down.
+> > >   */
+> > > -static void iput_final(struct inode *inode, bool skip_lru)
+> > > +static void iput_final(struct inode *inode, bool drop)
+> > >  {
+> > > -	struct super_block *sb = inode->i_sb;
+> > > -	const struct super_operations *op = inode->i_sb->s_op;
+> > >  	unsigned long state;
+> > > -	int drop;
+> > >  
+> > >  	WARN_ON(inode->i_state & I_NEW);
+> > > -
+> > > -	if (op->drop_inode)
+> > > -		drop = op->drop_inode(inode);
+> > > -	else
+> > > -		drop = generic_drop_inode(inode);
+> > > -
+> > > -	if (!drop && !skip_lru &&
+> > > -	    !(inode->i_state & I_DONTCACHE) &&
+> > > -	    (sb->s_flags & SB_ACTIVE)) {
+> > > -		__inode_add_lru(inode, true);
+> > > -		spin_unlock(&inode->i_lock);
+> > > -		return;
+> > > -	}
+> > > -
+> > >  	WARN_ON(!list_empty(&inode->i_lru));
+> > >  
+> > >  	state = inode->i_state;
+> > > @@ -2009,8 +1992,29 @@ static void iput_final(struct inode *inode, bool skip_lru)
+> > >  	evict(inode);
+> > >  }
+> > >  
+> > > +static bool maybe_add_lru(struct inode *inode, bool skip_lru)
+> > > +{
+> > > +	const struct super_operations *op = inode->i_sb->s_op;
+> > > +	struct super_block *sb = inode->i_sb;
+> > > +	bool drop = false;
+> > > +
+> > > +	if (op->drop_inode)
+> > > +		drop = op->drop_inode(inode);
+> > > +	else
+> > > +		drop = generic_drop_inode(inode);
+> > > +
+> > > +	if (!drop && !skip_lru &&
+> > > +	    !(inode->i_state & I_DONTCACHE) &&
+> > > +	    (sb->s_flags & SB_ACTIVE))
+> > > +		__inode_add_lru(inode, true);
+> > > +
+> > > +	return drop;
+> > > +}
+> > 
+> > Can we rewrite this as:
+> > 
+> > static bool maybe_add_lru(struct inode *inode, bool skip_lru)
+> > {
+> > 	const struct super_operations *op = inode->i_sb->s_op;
+> > 	const struct super_block *sb = inode->i_sb;
+> > 	bool drop = false;
+> > 
+> > 	if (op->drop_inode)
+> > 		drop = op->drop_inode(inode);
+> > 	else
+> > 		drop = generic_drop_inode(inode);
+> > 
+> > 	if (drop)
+> > 		return drop;
+> > 
+> > 	if (skip_lru)
+> > 		return drop;
+> > 
+> > 	if (inode->i_state & I_DONTCACHE)
+> > 		return drop;
+> > 
+> > 	if (!(sb->s_flags & SB_ACTIVE))
+> > 		return drop;
+> > 
+> > 	__inode_add_lru(inode, true);
+> > 	return drop;
+> > }
+> > 
+> > so it's a lot easier to follow. I really dislike munging conditions
+> > together with a bunch of ands and negations mixed in.
+> > 
+> > And btw for both I_DONTCACHE and !SB_ACTIVE it seems that returning
+> > anything other than false from op->drop_inode() would be a bug probably
+> > a technicality but I find it pretty odd.
+> 
+> Not necsessarily, maybe we had some delayed iput (*cough* btrfs *cough*) that
+> didn't run until umount time and now we have true coming from ->drop_inode()
+> with SB_ACTIVE turned off.  That would be completely valid.  Thanks,
 
-This is a 31-day syzbot report for the btrfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/btrfs
-
-During the period, 3 new issues were detected and 0 were fixed.
-In total, 37 issues are still open and 102 have already been fixed.
-
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  6554    Yes   kernel BUG in close_ctree
-                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
-<2>  4619    Yes   WARNING in btrfs_space_info_update_bytes_may_use
-                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
-<3>  1803    Yes   BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (7)
-                   https://syzkaller.appspot.com/bug?extid=74f79df25c37437e4d5a
-<4>  1023    Yes   WARNING in btrfs_commit_transaction (2)
-                   https://syzkaller.appspot.com/bug?extid=dafbca0e20fbc5946925
-<5>  1008    Yes   WARNING in btrfs_create_pending_block_groups (2)
-                   https://syzkaller.appspot.com/bug?extid=b0643a1387dac0572b27
-<6>  612     Yes   WARNING in btrfs_chunk_alloc
-                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
-<7>  610     Yes   general protection fault in btrfs_root_node
-                   https://syzkaller.appspot.com/bug?extid=9c3e0cdfbfe351b0bc0e
-<8>  467     Yes   WARNING in cleanup_transaction
-                   https://syzkaller.appspot.com/bug?extid=021d10c4d4edc87daa03
-<9>  376     Yes   WARNING in btrfs_remove_chunk
-                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
-<10> 163     Yes   WARNING in btrfs_put_block_group
-                   https://syzkaller.appspot.com/bug?extid=e38c6fff39c0d7d6f121
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Ah, right, thanks! Yeah, that's seems legit.
 
