@@ -1,239 +1,144 @@
-Return-Path: <linux-btrfs+bounces-16423-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16424-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E70DB3738D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 22:01:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6FF8B373CA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 22:25:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BED6362C9B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 20:01:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51CD5680C83
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 20:25:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA3A72633;
-	Tue, 26 Aug 2025 20:01:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364422C08CA;
+	Tue, 26 Aug 2025 20:25:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="fZo2vgOt"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="dmeKdsRA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 417784C97
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 20:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62DED22083
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 20:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756238510; cv=none; b=bPBajM/aFHxyVH5NpYxRy6jAA1Ot4Tip+C3AE89x18FHcF0pUftrQ/1MEBdn1ewWI+nMQFcmVEQLUiL/WgkV7LuyRXLvN1Uq4IJHlG3LjcnVIxqVPFt+ZQuSytJ6O/zGa+xRCBLB19NLTW+sKB4Q5Cq3JtMoY5y/ZU7ECVhHvH4=
+	t=1756239913; cv=none; b=itvMYUEmVcxnKH0rcF/XqyMcNS1wGslKzpNT5dfQEjewWb68kB1iaSoaRT1MYhseDVxCYAcVx35ySca6WcA2hgPIMX6J/s9KOEzcQsNtWuBWuGDAzMqtSEIcYPCBZ+W0iL/9CgU6Lh9GRwXF8+k+UiR9yVJ8i9GK3eHkwPjzgCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756238510; c=relaxed/simple;
-	bh=9I3NjcktR3Wlvm1F8kHRMSUDmB7mvWaFT+25/Sbj8IU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dxKnJ9z/Cyv4IRKjHymySXgOqsR9kgwD/TGvn7/L4rheqaiLY0bao27dVYy1gYbcR26YGi17jrW0Zqj3+MHdd3szlbauUg210pxOyjlMGYqovNo51Uq2b9/gFfGbPQ+4wzq0vEGhFF97f3QA/4JkBKs9svQtwzzKL7mCxdqxL8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=fZo2vgOt; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b4717384710so798203a12.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 13:01:49 -0700 (PDT)
+	s=arc-20240116; t=1756239913; c=relaxed/simple;
+	bh=cMsVwJsEIt27jbh7LEYta5w8OlO5LgzPcW6GCACf1f4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JC7ZZxuyfAUROVfNliL6Nj+VNH3y4EMTiFKz1Zx9eDuX+Uc3IAF/qVKyXa89SC01ZQRPs28Hya2kN4+bTLPTNR7C+asKc0K4O8N8MMpGN95jErG1/Lq90sxrX4lWcItVQ1+fFxxHFCAvKANW0nMln7QOsdovH5nXjH1Foa5k8WU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=dmeKdsRA; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-71d601859f5so46856537b3.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 13:25:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1756238508; x=1756843308; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pCiH4CxV43c6JcLFty9ttM3wgWFNS57HcmAs5AKZCkI=;
-        b=fZo2vgOt+rZ5c1t4Ci45EiGnfTBXaeurPO0B3xxZQdyx8Oqu7LoKcJUcwNMMsi5IIR
-         Cwd6PoYxQrLL79Tf7U8iBp31xkRj3Kybno0SS8t0dr4bS3o6vBVTXELRzjbcLovN0tdH
-         0Mh9SIJh6PynIumPfzF0WZ2cnWtYX23uiwmbi2jA4kZo5UWUGNW5WUbdgY+GCNz85otg
-         WBOEj2sVhsU/Rx61bLW42qac+oHzpcvJu+U8Lz4Ug3bXmBxBCkonlWFEe+L5rXaLH+5M
-         Kf9wfqeSkxaYSnjVT8lde4NbuFz9q3Xqq6zvJnD1OFqGpgHhTCExc5eQc0E1pNsqMdS/
-         s63A==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756239909; x=1756844709; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hnUAbt5lSfMgTkci+pnj894VO3wJZbRmjRdQcE7tdI8=;
+        b=dmeKdsRASE/OhThoMH+RcMPvkNdzvIkZ44A8pVzI0qZCnfDBct7csSB1/PZdMZXkQ3
+         LrgXdDGkzcinIzt0/DVswRYFrq5/bTkOeR/jmdN2KmI1ptfKTG2aFq2GnNIzbzQZQ0yy
+         U06/+Hq5MNUItpMOw72IU6/DJ0FdNwRuGKva0+kWtSCDpC8wIX2WUNeFhF9Ii94X43gl
+         7YyFGDNxn0o3PAjvxq3Yg87EZ+SPwGSQFcJlX0qfGe8/Z7yaiclpmrWvRWw7eNtyEn+L
+         IYia1L69UyTUi8iOo2WUu7wRr0c1m1sM2U6nAzZGUZFdp6ryTnswyObDxUhijwQP12Tz
+         dFag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756238508; x=1756843308;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pCiH4CxV43c6JcLFty9ttM3wgWFNS57HcmAs5AKZCkI=;
-        b=kq8vfGPRf+XXHe7uwbouK5ohjeHn8HB7o0Gtpr3APen1+Kd/B7W6sqxTCrVvCZE4hO
-         5+rsO/A1O5BpwaJzn3Hl7RHSKR7ej7yXuaIHvjuiCVELZfFBBicmGXYu932JjOnemjEe
-         qoOMSAHmTsDCTOD1RHJmPAN8GR+QgRHPtXZmoIk2jq2KeTwl+mDTNcLkGUIsaf2WLWas
-         5Y8RskRiDB0uCExN4KGamHHcabcr9ED+wyUknLqJFbZGrHLQ2b9MkiQ0Mvkq6DxVxhhv
-         1mHN+2qoFsBp0O97rRhojlpl2XzK7knCfd14U16gU6i8UcrgW1x7uqqBKESJpVoboit8
-         0QBQ==
-X-Gm-Message-State: AOJu0YxIanOEJFo7JKq2UBm0aDzLzeeqntDTaHGT4ctVYnbDMxxpBL2o
-	4kIo9a90LLkzcCqc03Hx66tdMDRNnumTJ7N3oYkSMlgT/f48hg/6bk2Nmf9gELU/Ha5XX2ZtNoh
-	60h/EfJo=
-X-Gm-Gg: ASbGnctMRFWEOUhxzWIGJ4bP6Wy8SCyxbUudOBvYZb9kvOS1runk0KCNXOW/dUe+wxQ
-	e2ChgzW08MePKD5kIsyyXqTSoT+z/PiHqKkcF6P7n3lzVsxieKFkdWlGfVasn34ZxH9sDAjivI9
-	92VZqWthZ5geO2Y5EQFZuXHz+Y00zpODRBqq6ZjyhqhR0OiyP5nKTO/tO0EIgdZN4Rq7QRHtA/7
-	/yymZLPdyBQLie48jCx3+GxliMxhypGBv0Lne+VCBjS98tDKYF4cRC3Vex20Mknt/DshJFdcC6S
-	Mi08SS89XCdKLDCI2e9CARHNRxgU90BXINJX/e+A6wS8nPMcBrBzaJR6gPAICkhtptAIVDIf1ko
-	PnDAR0iOjgITLmF/Fsg==
-X-Google-Smtp-Source: AGHT+IHNeAJ6mrY59F1/9DYcTveqjGunKP0l+2bh7RVWVXK+evKqeuHQMCpfTUiITdDXJJKtCe3pDg==
-X-Received: by 2002:a17:902:d48b:b0:246:5253:6dfc with SMTP id d9443c01a7336-24652537015mr111812565ad.7.1756238508269;
-        Tue, 26 Aug 2025 13:01:48 -0700 (PDT)
-Received: from telecaster.tfbnw.net ([2620:10d:c090:400::5:f494])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-246688801bdsm103468825ad.123.2025.08.26.13.01.46
+        d=1e100.net; s=20230601; t=1756239909; x=1756844709;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hnUAbt5lSfMgTkci+pnj894VO3wJZbRmjRdQcE7tdI8=;
+        b=epqGUj9X1bHLbOkj3+VmnU4meEhv9IN5Fkr+3foho1nXXGUQGmR9BZGHu4ibgs5nda
+         ugr3s5Gmhr00P6EMMU/vyD0ZwRUDZ46LShE7mi6wqZXHQGU+veX+VI1OTuRqFreGNIQ/
+         uNWmQ/YeIWVldF9liFQY6dYBdtMtzYr/P3DbwRQj6Se0F5OWXHTz+lEjY71SqP9XBh5n
+         BbCuKw5MVxgHYDM6kapQckSjvqf6fq/5w8wKE2cr+0b9SARx9V5yx3SYXX2iH8iWGuGL
+         FcGV8eDLrY+P2u+E/MapEsI2KjrgKycTgY2/dt0GVeSubdAacU86fQN9szpz9jSOp6qC
+         sZGw==
+X-Gm-Message-State: AOJu0YzCvfEO83XyHPGFvO/l6KuK+gAA0J8AFhtKPVetG8dcZE5Rt46e
+	I+ieLxdTGIfl1MxtUhxGWsh3mHzyoyJqHsUaBaoTPMRKf1sWB05dgP6Kp2iXFuzPROA=
+X-Gm-Gg: ASbGncvnDWPnOJYDxsYeGB9dbkdnFyE3b4pmxupWGZQI86oKcn0BQKX+C6QJ0WIwH8r
+	3EOYGkZd5L0ujEuQjF1Jirc/vygfCH6NLsYUKoZ1xiq2sil7z89LMAucF6Zc5u9ue4mhVX4JKH5
+	LIUMRL/lxjE/JmrzzZX0F+vSkbLMCZS+c3KetlCDcS56E/ReeCWYr0S+ZsS3Mqkks+2Qkrf+OGG
+	vhilzuR8PHQlap2CLD0zYlOcqHorF5LXYYrLkj4JcM3NRSBFQ7gxnP+Y4juklrbA3YjWf9LzghY
+	6krYuNGoDwP/jiNHmMOjVzBJXN0j8rs1eXnThfgj4re46nupTjquMDWDncLT8+lVksCTq2veRC5
+	xbPJLzGx702SB49v23s0TCiO/KUcfVBi+Pb77gKRzHD/HKoCTtXg86czl20LiTJCwPF9Uig==
+X-Google-Smtp-Source: AGHT+IHBdHCzb2iYv1648mBqjozZqfOvl5BFnFXpX9wvIvsBl/6i4tQYyWcQaSt66vNVkDObDhYAJw==
+X-Received: by 2002:a05:690c:e1a:b0:71e:7336:9c94 with SMTP id 00721157ae682-71fdc536707mr183645187b3.32.1756239909293;
+        Tue, 26 Aug 2025 13:25:09 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-71ff18ee79esm26619637b3.73.2025.08.26.13.25.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 13:01:47 -0700 (PDT)
-From: Omar Sandoval <osandov@osandov.com>
-To: linux-btrfs@vger.kernel.org
-Cc: kernel-team@fb.com,
+        Tue, 26 Aug 2025 13:25:08 -0700 (PDT)
+Date: Tue, 26 Aug 2025 16:25:07 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Omar Sandoval <osandov@osandov.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
 	Filipe Manana <fdmanana@suse.com>,
-	Leo Martins <loemra.dev@gmail.com>,
-	Boris Burkov <boris@bur.io>
-Subject: [PATCH] btrfs: fix subvolume deletion lockup caused by inodes xarray race
-Date: Tue, 26 Aug 2025 13:01:38 -0700
-Message-ID: <f7e05205fd33d9e510ec1295e0cc8cfdf395cb89.1756237895.git.osandov@osandov.com>
-X-Mailer: git-send-email 2.51.0
+	Leo Martins <loemra.dev@gmail.com>, Boris Burkov <boris@bur.io>
+Subject: Re: [PATCH] btrfs: fix subvolume deletion lockup caused by inodes
+ xarray race
+Message-ID: <20250826202507.GA2119633@perftesting>
+References: <f7e05205fd33d9e510ec1295e0cc8cfdf395cb89.1756237895.git.osandov@osandov.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f7e05205fd33d9e510ec1295e0cc8cfdf395cb89.1756237895.git.osandov@osandov.com>
 
-From: Omar Sandoval <osandov@fb.com>
+On Tue, Aug 26, 2025 at 01:01:38PM -0700, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> There is a race condition between inode eviction and inode caching that
+> can cause a live struct btrfs_inode to be missing from the root->inodes
+> xarray. Specifically, there is a window during evict() between the inode
+> being unhashed and deleted from the xarray. If btrfs_iget() is called
+> for the same inode in that window, it will be recreated and inserted
+> into the xarray, but then eviction will delete the new entry, leaving
+> nothing in the xarray:
+> 
+> Thread 1                          Thread 2
+> ---------------------------------------------------------------
+> evict()
+>   remove_inode_hash()
+>                                   btrfs_iget_path()
+>                                     btrfs_iget_locked()
+>                                     btrfs_read_locked_inode()
+>                                       btrfs_add_inode_to_root()
+>   destroy_inode()
+>     btrfs_destroy_inode()
+>       btrfs_del_inode_from_root()
+>         __xa_erase
+> 
+> In turn, this can cause issues for subvolume deletion. Specifically, if
+> an inode is in this lost state, and all other inodes are evicted, then
+> btrfs_del_inode_from_root() will call btrfs_add_dead_root() prematurely.
+> If the lost inode has a delayed_node attached to it, then when
+> btrfs_clean_one_deleted_snapshot() calls btrfs_kill_all_delayed_nodes(),
+> it will loop forever because the delayed_nodes xarray will never become
+> empty (unless memory pressure forces the inode out). We saw this
+> manifest as soft lockups in production.
+> 
+> Fix it by only deleting the xarray entry if it matches the given inode
+> (using __xa_cmpxchg()).
+> 
+> Fixes: 310b2f5d5a94 ("btrfs: use an xarray to track open inodes in a root")
+> Cc: stable@vger.kernel.org # 6.11+
+> Co-authored-by: Leo Martins <loemra.dev@gmail.com>
+> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 
-There is a race condition between inode eviction and inode caching that
-can cause a live struct btrfs_inode to be missing from the root->inodes
-xarray. Specifically, there is a window during evict() between the inode
-being unhashed and deleted from the xarray. If btrfs_iget() is called
-for the same inode in that window, it will be recreated and inserted
-into the xarray, but then eviction will delete the new entry, leaving
-nothing in the xarray:
+Heh, I was just noticing weirdness here as I started converting inodes over to
+using an xarray instead of a hash.  Nice catch,
 
-Thread 1                          Thread 2
----------------------------------------------------------------
-evict()
-  remove_inode_hash()
-                                  btrfs_iget_path()
-                                    btrfs_iget_locked()
-                                    btrfs_read_locked_inode()
-                                      btrfs_add_inode_to_root()
-  destroy_inode()
-    btrfs_destroy_inode()
-      btrfs_del_inode_from_root()
-        __xa_erase
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-In turn, this can cause issues for subvolume deletion. Specifically, if
-an inode is in this lost state, and all other inodes are evicted, then
-btrfs_del_inode_from_root() will call btrfs_add_dead_root() prematurely.
-If the lost inode has a delayed_node attached to it, then when
-btrfs_clean_one_deleted_snapshot() calls btrfs_kill_all_delayed_nodes(),
-it will loop forever because the delayed_nodes xarray will never become
-empty (unless memory pressure forces the inode out). We saw this
-manifest as soft lockups in production.
+Thanks,
 
-Fix it by only deleting the xarray entry if it matches the given inode
-(using __xa_cmpxchg()).
-
-Fixes: 310b2f5d5a94 ("btrfs: use an xarray to track open inodes in a root")
-Cc: stable@vger.kernel.org # 6.11+
-Co-authored-by: Leo Martins <loemra.dev@gmail.com>
-Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-Signed-off-by: Omar Sandoval <osandov@fb.com>
----
-Based on for-next. This reproduces the soft lockup on a kernel with
-CONFIG_PREEMPT_NONE=y:
-
-	#!/bin/bash
-
-	set -e
-
-	dev=/dev/vdb
-
-	mkfs.btrfs -f "$dev"
-	tmp="$(mktemp -d)"
-	trap 'umount "$dev"; rm -rf "$tmp"' EXIT
-	mnt="$tmp/mnt"
-	mkdir "$mnt"
-	mount "$dev" "$mnt"
-	cleaner_pid="$(pgrep -n btrfs-cleaner)"
-
-	subvol="$mnt/subvol"
-
-	while true; do
-		echo -n .
-
-		btrfs -q subvolume create "$subvol"
-
-		# Stat hard links of the same inode repeatedly.
-		touch "$subvol/file"
-		for ((i = 0; i < 4; i++)); do
-			mkdir "$subvol/dir$i"
-			ln "$subvol/file" "$subvol/dir$i/file"
-			while [ -f "$subvol/dir$i/file" ]; do
-				:
-			done &
-		done
-
-		# Drop dentry and inode caches. Along with the parallel
-		# stats, this may trigger the race when the inode is
-		# recached.
-		echo 2 > /proc/sys/vm/drop_caches
-
-		# Hold a reference on the inode (but not any of its
-		# dentries) by creating an inotify watch.
-		inotifywatch -e unmount "$subvol/file" > "$tmp/log" 2>&1 &
-		inotifypid=$!
-		tail -f "$tmp/log" | grep -q "Finished establishing watches"
-
-		# Hold a reference on another file.
-		exec 3> "$subvol/dummy"
-
-		btrfs -q subvolume delete "$subvol"
-
-		echo 2 > /proc/sys/vm/drop_caches
-
-		# After deleting the subvolume and dropping caches, only
-		# the lost inode and the dummy file should be cached,
-		# and only the dummy file is in the inodes xarray.
-
-		# Closing the dummy file will mark the subvolume as dead
-		# even though the lost inode is still cached.
-		exec 3>&-
-
-		# Remounting kicks the cleaner thread.
-		mount -o remount,rw "$mnt"
-		# Loop until the cleaner thread stops running. If we
-		# reproduced the race, it will never stop. Otherwise, we
-		# will clean up and try again.
-		while true; do
-			if ! grep 'State:\s*R' "/proc/$cleaner_pid/status"; then
-				kill "$inotifypid"
-				mount -o remount,rw "$mnt"
-			fi
-			if ! btrfs subvolume list -d "$mnt" | grep -q .; then
-				break
-			fi
-			sleep 1
-		done
-	done
-
- fs/btrfs/inode.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index f91c62146982..3cd9b505bd25 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -5697,7 +5697,17 @@ static void btrfs_del_inode_from_root(struct btrfs_inode *inode)
- 	bool empty = false;
- 
- 	xa_lock(&root->inodes);
--	entry = __xa_erase(&root->inodes, btrfs_ino(inode));
-+	/*
-+	 * This btrfs_inode is being freed and has already been unhashed at this
-+	 * point. It's possible that another btrfs_inode has already been
-+	 * allocated for the same inode and inserted itself into the root, so
-+	 * don't delete it in that case.
-+	 *
-+	 * Note that this shouldn't need to allocate memory, so the gfp flags
-+	 * don't really matter.
-+	 */
-+	entry = __xa_cmpxchg(&root->inodes, btrfs_ino(inode), inode, NULL,
-+			     GFP_ATOMIC);
- 	if (entry == inode)
- 		empty = xa_empty(&root->inodes);
- 	xa_unlock(&root->inodes);
--- 
-2.51.0
-
+Josef
 
