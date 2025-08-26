@@ -1,78 +1,79 @@
-Return-Path: <linux-btrfs+bounces-16369-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16370-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F95AB36E09
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 17:41:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3020B36E0C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 17:42:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1417B7C4F06
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 15:41:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAD0036840C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 15:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39CC13451A0;
-	Tue, 26 Aug 2025 15:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4180233472E;
+	Tue, 26 Aug 2025 15:40:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="E/gwhz2V"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="rhBrX+W6"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A083C2C3248
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 15:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EC2309DA0
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 15:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756222855; cv=none; b=YDO96eb4UQ6QtMQlvWTwPewRH4eFhb+y0xEe93+suoS9fzFZD1ng/EL4w8M2mzzQfdNJHx38zElDziXMzsLPujxW0ERAr40tbWEh6qSA/5JKAZrW48bYtx/Db7Pt82uJPcgD4Z62vFZikPg7mYYRiFva8sl1yjv3yQsb2JuzKw0=
+	t=1756222857; cv=none; b=dFwwFuLvgKiqe2Mfr0rC+xkEzxKZDliN6L5e728cEV3lumRJw7lbIruhRlLigBzCYOiALIXcONsevO1CFjsaryeMZ57XHGDq4Fc8r06CstjdqqB8jd9UlKBdu7IPsUpCqUvKWHSm7Q7ZZnjGBh3CP/QxtkLH0CEqEbuh0DJF9Oc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756222855; c=relaxed/simple;
-	bh=iGOPmPDgb2mTrOdILoInsFEcB8BLS23F5HpFj/iWWC4=;
+	s=arc-20240116; t=1756222857; c=relaxed/simple;
+	bh=824s3eeNyPtqfPMcWFvG6qpWsh9sKBrHSzpVhkI4CHA=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I8giiNOtqVin1x2ckqCpXhubaW7uWZx98OzqX4W0ADnhL0Oi/fSrxlJGaDNRK3enEEZgaPu9CqzP2HpF7d+O10E9wRMGLcLxUewYxm/jd2lbiJ3jBMemMhIIG7j9Rb0TjPZZPn4JJ1yZnHzt8DBpISYQwQbRMm+FWzDka3sUOdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=E/gwhz2V; arc=none smtp.client-ip=209.85.219.176
+	 MIME-Version; b=AeIApOlPBIDChkN4wdRWoJ6coVWA28easLLEutk5AlRmktACZOA/0fjLBEBL1DKDphT4y1AvIAFBysBW7Y/gO+b4hxwy3xzrozw+bhhb8zr/8yHe/17GcYLQ8HXM8od6zSSO6hLxq6zr7h0pd9aUs33RW/yXdlB8Tz5u7DthEw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=rhBrX+W6; arc=none smtp.client-ip=209.85.219.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e95380515bbso14488276.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 08:40:52 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e96e1c82b01so466678276.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 08:40:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756222851; x=1756827651; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756222852; x=1756827652; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=MHeFfKZas9nRMHvdk2OtCU7GKGPwQ5zSLc3+eFr0EUo=;
-        b=E/gwhz2V6DVdsP2hun257hYfibgWTaWLwuRZkaRBid8QhnEO39I67sbe20AWfgeAbA
-         +6BQSFewSLe59YsOCSsfD0Bw99wy36urpib8aEwgbOC+RYWvtphNmDKvMWgrfLvzQqf7
-         pcB/+HDqze9hdnnTg5ZKVYfxvNBiWrga93bp61plyJjrvmf33Oh03ch6Uu4jcuuLvNha
-         K5VdJNu0iaM7+WmRp3I3Q+w+5neh3LLUeyStqCvfzRrbDGqtMTyEo3tKgunFGFe1dChH
-         TPVKusNn82MRh3UizXM1H0eaaOND9+FJGgWbmcoBre4gA/STdvj4OSQyCBfH3MUR9FtZ
-         A0yQ==
+        bh=FOHH5GxgumXNSgv4ws5caQ9qUmUz2v1LLekhwJWPqgQ=;
+        b=rhBrX+W6C4K3I41wVrVmf+OKGbkRdx93AtalnWNvKaLxZXReAQ4OrZpiKdSStqEkPR
+         kZzZH4pwl4rN4JkwMqPfs6N5OqC3f/10yGV9GoOw0SVJDabs+Fl9IbFl6TEllQTShOI5
+         LNER1Bs+N1CbpV0HBKxX1OGmQUJc7YnsemktnS39ZrZ0+PtCeawlx2fIbOezIF+zUV3N
+         J8oe22situQdTmTiobPiNW3U6i+GzrutZjm1AgCJwRqVBPEYqEKTCTNyfGvbDDcPgKlO
+         zAv8wphWs2apXQnkyzwkl7EWE+6yyR6S+AJyPqlzs5K9Fmi2qUUXJnBvtTpKVnLeuNwy
+         iATQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756222851; x=1756827651;
+        d=1e100.net; s=20230601; t=1756222852; x=1756827652;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MHeFfKZas9nRMHvdk2OtCU7GKGPwQ5zSLc3+eFr0EUo=;
-        b=kZ2elMrVx+ZPd5S4Fvn3pUP3HuinoRu6TUOIpNvnF4wJNtZeo8cPzyyNbvwIh/rUW2
-         JixiUMm8YkPqpT8YFYzYCa/uzI7S1ffrgmpUSELQHKHDHVYrSA39HY8Dh780lvTLEx3W
-         ODeoOw6HK3flH8sOEFWXk+5Xo8lr2fn1lSPrSc9ltW5A7v6SACtbJIDIW1LdYeJXDUpa
-         XYUKO+RFarMy3JpMRbCSRc7Eo7gWRMf083OqXtCEJM0eDEkEUxTqrMb5tSLq1X29OJg9
-         vhnNCR3GoxLvkrg8W8j5mw+hObtC4T6fCQRjYpLLkqC67h+YSQ5KdCpeGqJys3GPj0yW
-         TKIg==
-X-Forwarded-Encrypted: i=1; AJvYcCU/hi/yXJy1vRLR4U+2hgxZMWWDOdqQua61rugQHmm4N8HLpzmwtcYRtOqeYxUkBC/F9RMFptUx4ONfpA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKBkSUXMYgGuB2Tkes57sM57RUSkbr6Ty6fz1TGeHPw/nOl00V
-	bL8BsOmTeUryGjUI3C56krDivNc8bvXBrxsjV3jIeOj+DQDqU6XlQqLI9DaHsUlAyOE=
-X-Gm-Gg: ASbGncuty0MZrw8ywpZXcPBDVLOWfQAL8JrFB2sLgGaJr/n8gr+yIDz1gPZSHh7UYed
-	axSHsg0cVfecF/h5ej/8BzIvkZnsZCwRy44RCbLZQ2oQb+56quiNLGEnF3+INXhWNAP8TXPK0rs
-	aHv0flNev1s1eI29VawU4QA6rxWKo4Zv9lwiYvPKvJf9Pn9I4S0hj5SLbRTy7K6W5FvjNyGFmOR
-	/0yLpUdvRpjZGpiZu/r34BmFAsEUv34oQvxUp1FzYebi1yjJqRpGBpmfO9njQYGx7l5S8FVeOTu
-	aPNsSWEGn0Jp8/sIP7YANPH7Jg1/gX0n67apueMtok/lLL3o/HRfWRkkjpjoExxfkll4dZqq9+x
-	ZP9x+DFY730tiB+ZxLY9BOlkjzKMvXCxlgsTdoEqSgfnnFqgt/xStIWsDhTwNqQLDT8yRCg==
-X-Google-Smtp-Source: AGHT+IHbt9utYUFnm1dwkd7+o8dc/UvBZifk8XYav5VgwrlhQqhjicgfzTJlktKYiICmcSDfgPFLgw==
-X-Received: by 2002:a05:6902:150a:b0:e90:526a:ac44 with SMTP id 3f1490d57ef6-e96e47927c9mr1893656276.21.1756222850984;
-        Tue, 26 Aug 2025 08:40:50 -0700 (PDT)
+        bh=FOHH5GxgumXNSgv4ws5caQ9qUmUz2v1LLekhwJWPqgQ=;
+        b=gjb3XjAe8PotJ3sMpLTYZGPmq4t/TYLBPiQEOuvRHf2ZifX39mzU/Vyut5AJbhbzR5
+         p3/U7w1+uMWtfKI/F4zcuvzntxZ564ZZJ+2UT0eUdnCHECnA9KI9K0LaQJEoji+ZH63k
+         lit2QkY1sszEufxWUaAOfk7ENizsgbNmtjHvXmk1jshGwnm1nRLx7AT/PUyR45sNxVk3
+         gGmmbJi7cUcW5x1WawNOVyWNamyEv6lU06nXxAep/SQwDeSJz8mM/EIMPofOwjR2RoZV
+         H/UeBSN1D4zIPr+YaCkal7DEy5wV21M9OiufYOJtiHm340nEzw9FrGxpkjpiT1eviEYx
+         hgqw==
+X-Forwarded-Encrypted: i=1; AJvYcCXPHhxZ+uvggHdn2qCRmAa48AT4yzcqOaLemOh+l7bVNYoTL3t/5N5fBzoKqF+3+o6Wqgtx1dbCPkqQpQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz1e8Dk9Jsa3Qux0Z7UWHy3ESqGrf7BOBN9Nlc6qvLI7lj73LOq
+	/adylWO9PTbleXqTK7YK0nfGvAQ0YSiQO0kvUwmhFLzBWQQhq5YUvgd+WLyeVn4RBSY=
+X-Gm-Gg: ASbGncuMzNjjtp3ZX5rVbwIVu56Ubl+qf9M7EK7D440Fp1RLCy7AtTm4pc9bjToi7Ra
+	/hSXo3eDuVYVsrMdTwYC9DrMIM+XlwPB1qs4/3T1JkkEIqq0fBzWVpvssoB1hHtUUf4e5Curod0
+	qTEErDbUNZB8826ZPgi9po9yVGNpwR0GwFQyBzksfCmgSbrBK6igrIk2dfwTPLUjDzz1XUU98Uf
+	mkz+aI8NEuwEASLn4679qE5MqZOWw+b1OnssIIOg0nhPzPhbZQLhjsHyMVmEnTzqomZQDchsVR6
+	rzbdif1qQAtVLd8EW5kf8VUYwpZnYh6VSeE0snuaxcJwyk6W+0VQlvAZ6LcB1jrrPFtbX2crrvk
+	zfGlqYSrb9HC6e4G8sLmDkeQmDjMWCYyJBBNODXc4s+rAVrUliI5Br88p7Rk0dHjJdOHqkCcRNf
+	N093hs
+X-Google-Smtp-Source: AGHT+IHCkFxTVHekKtVIMKKoKBA/v/EmSAFjwci1Wt4iPVt6NciQDsFy301ND2wdcONLCbcSXMgElg==
+X-Received: by 2002:a05:6902:2b03:b0:e95:1945:8672 with SMTP id 3f1490d57ef6-e951c2ce819mr17137482276.10.1756222852464;
+        Tue, 26 Aug 2025 08:40:52 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e96e7caa0c4sm281894276.37.2025.08.26.08.40.50
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e952c37715dsm3292356276.36.2025.08.26.08.40.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 08:40:50 -0700 (PDT)
+        Tue, 26 Aug 2025 08:40:51 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
@@ -82,9 +83,9 @@ To: linux-fsdevel@vger.kernel.org,
 	brauner@kernel.org,
 	viro@ZenIV.linux.org.uk,
 	amir73il@gmail.com
-Subject: [PATCH v2 02/54] fs: add an icount_read helper
-Date: Tue, 26 Aug 2025 11:39:02 -0400
-Message-ID: <9bc62a84c6b9d6337781203f60837bd98fbc4a96.1756222464.git.josef@toxicpanda.com>
+Subject: [PATCH v2 03/54] fs: rework iput logic
+Date: Tue, 26 Aug 2025 11:39:03 -0400
+Message-ID: <be208b89bdb650202e712ce2bcfc407ac7044c7a.1756222464.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1756222464.git.josef@toxicpanda.com>
 References: <cover.1756222464.git.josef@toxicpanda.com>
@@ -96,276 +97,57 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead of doing direct access to ->i_count, add a helper to handle
-this. This will make it easier to convert i_count to a refcount later.
+Currently, if we are the last iput, and we have the I_DIRTY_TIME bit
+set, we will grab a reference on the inode again and then mark it dirty
+and then redo the put.  This is to make sure we delay the time update
+for as long as possible.
+
+We can rework this logic to simply dec i_count if it is not 1, and if it
+is do the time update while still holding the i_count reference.
+
+Then we can replace the atomic_dec_and_lock with locking the ->i_lock
+and doing atomic_dec_and_test, since we did the atomic_add_unless above.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- arch/powerpc/platforms/cell/spufs/file.c | 2 +-
- fs/btrfs/inode.c                         | 2 +-
- fs/ceph/mds_client.c                     | 2 +-
- fs/ext4/ialloc.c                         | 4 ++--
- fs/fs-writeback.c                        | 2 +-
- fs/hpfs/inode.c                          | 2 +-
- fs/inode.c                               | 8 ++++----
- fs/nfs/inode.c                           | 4 ++--
- fs/notify/fsnotify.c                     | 2 +-
- fs/smb/client/inode.c                    | 2 +-
- fs/ubifs/super.c                         | 2 +-
- fs/xfs/xfs_inode.c                       | 2 +-
- fs/xfs/xfs_trace.h                       | 2 +-
- include/linux/fs.h                       | 5 +++++
- include/trace/events/filelock.h          | 2 +-
- security/landlock/fs.c                   | 2 +-
- 16 files changed, 25 insertions(+), 20 deletions(-)
+ fs/inode.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/arch/powerpc/platforms/cell/spufs/file.c b/arch/powerpc/platforms/cell/spufs/file.c
-index d5a2c77bc908..ce839783c0df 100644
---- a/arch/powerpc/platforms/cell/spufs/file.c
-+++ b/arch/powerpc/platforms/cell/spufs/file.c
-@@ -1430,7 +1430,7 @@ static int spufs_mfc_open(struct inode *inode, struct file *file)
- 	if (ctx->owner != current->mm)
- 		return -EINVAL;
- 
--	if (atomic_read(&inode->i_count) != 1)
-+	if (icount_read(inode) != 1)
- 		return -EBUSY;
- 
- 	mutex_lock(&ctx->mapping_lock);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 784bd48b4da9..ac00554e8479 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4557,7 +4557,7 @@ static void btrfs_prune_dentries(struct btrfs_root *root)
- 
- 	inode = btrfs_find_first_inode(root, min_ino);
- 	while (inode) {
--		if (atomic_read(&inode->vfs_inode.i_count) > 1)
-+		if (icount_read(&inode->vfs_inode) > 1)
- 			d_prune_aliases(&inode->vfs_inode);
- 
- 		min_ino = btrfs_ino(inode) + 1;
-diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-index 0f497c39ff82..62dba710504d 100644
---- a/fs/ceph/mds_client.c
-+++ b/fs/ceph/mds_client.c
-@@ -2221,7 +2221,7 @@ static int trim_caps_cb(struct inode *inode, int mds, void *arg)
- 			int count;
- 			dput(dentry);
- 			d_prune_aliases(inode);
--			count = atomic_read(&inode->i_count);
-+			count = icount_read(inode);
- 			if (count == 1)
- 				(*remaining)--;
- 			doutc(cl, "%p %llx.%llx cap %p pruned, count now %d\n",
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index df4051613b29..ba4fd9aba1c1 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -252,10 +252,10 @@ void ext4_free_inode(handle_t *handle, struct inode *inode)
- 		       "nonexistent device\n", __func__, __LINE__);
- 		return;
- 	}
--	if (atomic_read(&inode->i_count) > 1) {
-+	if (icount_read(inode) > 1) {
- 		ext4_msg(sb, KERN_ERR, "%s:%d: inode #%lu: count=%d",
- 			 __func__, __LINE__, inode->i_ino,
--			 atomic_read(&inode->i_count));
-+			 icount_read(inode));
- 		return;
- 	}
- 	if (inode->i_nlink) {
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index a6cc3d305b84..b6768ef3daa6 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -1767,7 +1767,7 @@ static int writeback_single_inode(struct inode *inode,
- 	int ret = 0;
- 
- 	spin_lock(&inode->i_lock);
--	if (!atomic_read(&inode->i_count))
-+	if (!icount_read(inode))
- 		WARN_ON(!(inode->i_state & (I_WILL_FREE|I_FREEING)));
- 	else
- 		WARN_ON(inode->i_state & I_WILL_FREE);
-diff --git a/fs/hpfs/inode.c b/fs/hpfs/inode.c
-index a59e8fa630db..34008442ee26 100644
---- a/fs/hpfs/inode.c
-+++ b/fs/hpfs/inode.c
-@@ -184,7 +184,7 @@ void hpfs_write_inode(struct inode *i)
- 	struct hpfs_inode_info *hpfs_inode = hpfs_i(i);
- 	struct inode *parent;
- 	if (i->i_ino == hpfs_sb(i->i_sb)->sb_root) return;
--	if (hpfs_inode->i_rddir_off && !atomic_read(&i->i_count)) {
-+	if (hpfs_inode->i_rddir_off && !icount_read(i)) {
- 		if (*hpfs_inode->i_rddir_off)
- 			pr_err("write_inode: some position still there\n");
- 		kfree(hpfs_inode->i_rddir_off);
 diff --git a/fs/inode.c b/fs/inode.c
-index cc0f717a140d..a3673e1ed157 100644
+index a3673e1ed157..13e80b434323 100644
 --- a/fs/inode.c
 +++ b/fs/inode.c
-@@ -534,7 +534,7 @@ static void __inode_add_lru(struct inode *inode, bool rotate)
- {
- 	if (inode->i_state & (I_DIRTY_ALL | I_SYNC | I_FREEING | I_WILL_FREE))
+@@ -1911,16 +1911,21 @@ void iput(struct inode *inode)
+ 	if (!inode)
  		return;
--	if (atomic_read(&inode->i_count))
-+	if (icount_read(inode))
- 		return;
- 	if (!(inode->i_sb->s_flags & SB_ACTIVE))
- 		return;
-@@ -871,11 +871,11 @@ void evict_inodes(struct super_block *sb)
- again:
- 	spin_lock(&sb->s_inode_list_lock);
- 	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
--		if (atomic_read(&inode->i_count))
-+		if (icount_read(inode))
- 			continue;
- 
- 		spin_lock(&inode->i_lock);
--		if (atomic_read(&inode->i_count)) {
-+		if (icount_read(inode)) {
- 			spin_unlock(&inode->i_lock);
- 			continue;
- 		}
-@@ -937,7 +937,7 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
- 	 * unreclaimable for a while. Remove them lazily here; iput,
- 	 * sync, or the last page cache deletion will requeue them.
- 	 */
--	if (atomic_read(&inode->i_count) ||
-+	if (icount_read(inode) ||
- 	    (inode->i_state & ~I_REFERENCED) ||
- 	    !mapping_shrinkable(&inode->i_data)) {
- 		list_lru_isolate(lru, &inode->i_lru);
-diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
-index 338ef77ae423..b52805951856 100644
---- a/fs/nfs/inode.c
-+++ b/fs/nfs/inode.c
-@@ -608,7 +608,7 @@ nfs_fhget(struct super_block *sb, struct nfs_fh *fh, struct nfs_fattr *fattr)
- 		inode->i_sb->s_id,
- 		(unsigned long long)NFS_FILEID(inode),
- 		nfs_display_fhandle_hash(fh),
--		atomic_read(&inode->i_count));
-+		icount_read(inode));
- 
- out:
- 	return inode;
-@@ -2229,7 +2229,7 @@ static int nfs_update_inode(struct inode *inode, struct nfs_fattr *fattr)
- 	dfprintk(VFS, "NFS: %s(%s/%lu fh_crc=0x%08x ct=%d info=0x%llx)\n",
- 			__func__, inode->i_sb->s_id, inode->i_ino,
- 			nfs_display_fhandle_hash(NFS_FH(inode)),
--			atomic_read(&inode->i_count), fattr->valid);
-+			icount_read(inode), fattr->valid);
- 
- 	if (!(fattr->valid & NFS_ATTR_FATTR_FILEID)) {
- 		/* Only a mounted-on-fileid? Just exit */
-diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
-index 079b868552c2..46bfc543f946 100644
---- a/fs/notify/fsnotify.c
-+++ b/fs/notify/fsnotify.c
-@@ -66,7 +66,7 @@ static void fsnotify_unmount_inodes(struct super_block *sb)
- 		 * removed all zero refcount inodes, in any case.  Test to
- 		 * be sure.
- 		 */
--		if (!atomic_read(&inode->i_count)) {
-+		if (!icount_read(inode)) {
- 			spin_unlock(&inode->i_lock);
- 			continue;
- 		}
-diff --git a/fs/smb/client/inode.c b/fs/smb/client/inode.c
-index fe453a4b3dc8..515b82540840 100644
---- a/fs/smb/client/inode.c
-+++ b/fs/smb/client/inode.c
-@@ -2779,7 +2779,7 @@ int cifs_revalidate_dentry_attr(struct dentry *dentry)
- 	}
- 
- 	cifs_dbg(FYI, "Update attributes: %s inode 0x%p count %d dentry: 0x%p d_time %ld jiffies %ld\n",
--		 full_path, inode, inode->i_count.counter,
-+		 full_path, inode, icount_read(inode),
- 		 dentry, cifs_get_time(dentry), jiffies);
- 
- again:
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index f3e3b2068608..a0269ba96e3d 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -358,7 +358,7 @@ static void ubifs_evict_inode(struct inode *inode)
- 		goto out;
- 
- 	dbg_gen("inode %lu, mode %#x", inode->i_ino, (int)inode->i_mode);
--	ubifs_assert(c, !atomic_read(&inode->i_count));
-+	ubifs_assert(c, !icount_read(inode));
- 
- 	truncate_inode_pages_final(&inode->i_data);
- 
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index 9c39251961a3..df8eab11dc48 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -1035,7 +1035,7 @@ xfs_itruncate_extents_flags(
- 	int			error = 0;
- 
- 	xfs_assert_ilocked(ip, XFS_ILOCK_EXCL);
--	if (atomic_read(&VFS_I(ip)->i_count))
-+	if (icount_read(VFS_I(ip)))
- 		xfs_assert_ilocked(ip, XFS_IOLOCK_EXCL);
- 	ASSERT(new_size <= XFS_ISIZE(ip));
- 	ASSERT(tp->t_flags & XFS_TRANS_PERM_LOG_RES);
-diff --git a/fs/xfs/xfs_trace.h b/fs/xfs/xfs_trace.h
-index ac344e42846c..79b8641880ab 100644
---- a/fs/xfs/xfs_trace.h
-+++ b/fs/xfs/xfs_trace.h
-@@ -1152,7 +1152,7 @@ DECLARE_EVENT_CLASS(xfs_iref_class,
- 	TP_fast_assign(
- 		__entry->dev = VFS_I(ip)->i_sb->s_dev;
- 		__entry->ino = ip->i_ino;
--		__entry->count = atomic_read(&VFS_I(ip)->i_count);
-+		__entry->count = icount_read(VFS_I(ip));
- 		__entry->pincount = atomic_read(&ip->i_pincount);
- 		__entry->iflags = ip->i_flags;
- 		__entry->caller_ip = caller_ip;
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 3dbaf1ca1828..56041d3387fe 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3372,6 +3372,11 @@ static inline void __iget(struct inode *inode)
- 	atomic_inc(&inode->i_count);
- }
- 
-+static inline int icount_read(const struct inode *inode)
-+{
-+	return atomic_read(&inode->i_count);
-+}
+ 	BUG_ON(inode->i_state & I_CLEAR);
+-retry:
+-	if (atomic_dec_and_lock(&inode->i_count, &inode->i_lock)) {
+-		if (inode->i_nlink && (inode->i_state & I_DIRTY_TIME)) {
+-			atomic_inc(&inode->i_count);
+-			spin_unlock(&inode->i_lock);
+-			trace_writeback_lazytime_iput(inode);
+-			mark_inode_dirty_sync(inode);
+-			goto retry;
+-		}
 +
- extern void iget_failed(struct inode *);
- extern void clear_inode(struct inode *);
- extern void __destroy_inode(struct inode *);
-diff --git a/include/trace/events/filelock.h b/include/trace/events/filelock.h
-index b8d1e00a7982..fdd36b1daa25 100644
---- a/include/trace/events/filelock.h
-+++ b/include/trace/events/filelock.h
-@@ -189,7 +189,7 @@ TRACE_EVENT(generic_add_lease,
- 		__entry->i_ino = inode->i_ino;
- 		__entry->wcount = atomic_read(&inode->i_writecount);
- 		__entry->rcount = atomic_read(&inode->i_readcount);
--		__entry->icount = atomic_read(&inode->i_count);
-+		__entry->icount = icount_read(inode);
- 		__entry->owner = fl->c.flc_owner;
- 		__entry->flags = fl->c.flc_flags;
- 		__entry->type = fl->c.flc_type;
-diff --git a/security/landlock/fs.c b/security/landlock/fs.c
-index c04f8879ad03..0bade2c5aa1d 100644
---- a/security/landlock/fs.c
-+++ b/security/landlock/fs.c
-@@ -1281,7 +1281,7 @@ static void hook_sb_delete(struct super_block *const sb)
- 		struct landlock_object *object;
- 
- 		/* Only handles referenced inodes. */
--		if (!atomic_read(&inode->i_count))
-+		if (!icount_read(inode))
- 			continue;
- 
- 		/*
++	if (atomic_add_unless(&inode->i_count, -1, 1))
++		return;
++
++	if (inode->i_nlink && (inode->i_state & I_DIRTY_TIME)) {
++		trace_writeback_lazytime_iput(inode);
++		mark_inode_dirty_sync(inode);
++	}
++
++	spin_lock(&inode->i_lock);
++	if (atomic_dec_and_test(&inode->i_count)) {
++		/* iput_final() drops i_lock */
+ 		iput_final(inode);
++	} else {
++		spin_unlock(&inode->i_lock);
+ 	}
+ }
+ EXPORT_SYMBOL(iput);
 -- 
 2.49.0
 
