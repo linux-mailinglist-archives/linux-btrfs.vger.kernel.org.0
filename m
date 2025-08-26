@@ -1,219 +1,362 @@
-Return-Path: <linux-btrfs+bounces-16359-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16360-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A312B3599F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 11:57:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 584A6B359A3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 11:58:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3C877C2577
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 09:57:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CAE72A27C0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 09:58:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAF433472E;
-	Tue, 26 Aug 2025 09:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E863218C9;
+	Tue, 26 Aug 2025 09:56:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DcxYIypl"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AfdVQYNM";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AfdVQYNM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75DED30F55C;
-	Tue, 26 Aug 2025 09:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528213126DB
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 09:56:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756202177; cv=none; b=i1z/IH+fhg8NkhkFKoOafNFnSWZgOOUDrdZbS6lB7I1NVw7lJbEd5CFQzbUN2JzPn8cP0oAGa8W/FKv6CBEs9dPO7es3f5RToRuIQBzvR+ndauvlmQXKWctIsCF+rE0SjwNEkVFc60N9cP8RzPaLoK4PMUd61FpsmQVGam0FWaY=
+	t=1756202212; cv=none; b=hM/PXawBaeThpnJhh8kWkJrluyNbzvS6kzow1kI1TaA3xdG3ko7qLxgJ+jbKDzSfYWi5wAtkIg813/NYEhnBDa9+MpdOIUrX9oJWGiq7v7kPO2N1Uh2Xt0V38gV4GeO76zUAAvFvw1i6I89w5inPETRn51kr0e+ArlE3nD4nJN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756202177; c=relaxed/simple;
-	bh=KGaJkW3lP2CWrkdfdlNMd901qIT4K9GAJ6o2kkTaLaU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TmqUaw/UjH1YzYOMjS3aGjKvuRm/9p9OgCQQa9/JGA/9bjS8uxRxrDLFCEp/TJjfDao6kmP8IPF3MhUjy04WWLWG7/9e28UfgVF/n7ja0IRtarTV8tsZZrR2XURhPf9hRasPtgC1r2CmZ78tvsMPfmPO9BnjBjUmlsI1GJYE2h4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DcxYIypl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6225DC4CEF1;
-	Tue, 26 Aug 2025 09:56:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756202177;
-	bh=KGaJkW3lP2CWrkdfdlNMd901qIT4K9GAJ6o2kkTaLaU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DcxYIyplCLql8vhyaK2snbC0wt94mw/fE1fjxaP3rZ8hHCpzsBzZirIWMlf0bVqg0
-	 lRIPlqQdj7nfg1gOJdF50R0d/SF9Zls90nJ5IfKbYf0z2s1Gz0IIqeC4sQvExEABYu
-	 u+msZ1NMabBw3Tp8+eVCq6svA4Vs6Q1pLBPV+iMp6/XTKxoV4k4Kzf/PfHtoL+C4X/
-	 pULvFT/iJqWPfQQBvH+iDMk5CrHqssKYCsuZ8cjnj88R43MMfNXFdBWSzvh4KYKgOI
-	 LI42jyTOxUSVaTPJERoPTScaNZkJ2rtrl2h6md7YyYrOfIZ6Z9fK9HJ1K6IPhadK9W
-	 +O7KQNDvDACSw==
-Date: Tue, 26 Aug 2025 11:56:12 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 16/50] fs: change evict_inodes to use iput instead of
- evict directly
-Message-ID: <20250826-begnadet-vorarbeit-901ad1e2bfa0@brauner>
-References: <cover.1755806649.git.josef@toxicpanda.com>
- <1198cd4cd35c5875fbf95dc3dca68650bb176bb1.1755806649.git.josef@toxicpanda.com>
- <20250825-entbinden-kehle-2e1f8b67b190@brauner>
- <20250825193502.GB1310133@perftesting>
+	s=arc-20240116; t=1756202212; c=relaxed/simple;
+	bh=02NqAMAaSutU9KVGBKRA2KGY49FqccMxwaA83EWHPqw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WVGzK+3EuJja8yx5KL42xuEcGYgixzE/vkb1M3lP2SGjXq3If7lEnOHX+vPpc00ziMcVM2CKLdj/U9lF6C/odIEvcf5vZZQKNv2hbNl2N5WXnoMcnEXzktRqrNAQ9h0nDlQGSbwxF0W82srIdfSOygz/2ouH5E0hJzAnQRLEQsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AfdVQYNM; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AfdVQYNM; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 91A7B1F787;
+	Tue, 26 Aug 2025 09:56:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1756202207; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=6OjCwIwTkP+bbcKpTQAaqEsSVOsQYYhubmtwj8g2KrM=;
+	b=AfdVQYNM+Ctar9A9/JHLdU2CXEkBV2oHmy2Y2xQqbI4PSwkq8Ibm+boKVbZk85XQ7x1nzi
+	QcQVS31WccEoJCYNabPPgpcnSwK/4TMARkPbUMD//lq86lRuXA3Yldb3tttONlSAHFPJPd
+	OqZuqvML2EidlekxfgWgMs6xMg7rHBY=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1756202207; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=6OjCwIwTkP+bbcKpTQAaqEsSVOsQYYhubmtwj8g2KrM=;
+	b=AfdVQYNM+Ctar9A9/JHLdU2CXEkBV2oHmy2Y2xQqbI4PSwkq8Ibm+boKVbZk85XQ7x1nzi
+	QcQVS31WccEoJCYNabPPgpcnSwK/4TMARkPbUMD//lq86lRuXA3Yldb3tttONlSAHFPJPd
+	OqZuqvML2EidlekxfgWgMs6xMg7rHBY=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9353F13479;
+	Tue, 26 Aug 2025 09:56:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id QQaEFd6ErWhtagAAD6G6ig
+	(envelope-from <wqu@suse.com>); Tue, 26 Aug 2025 09:56:46 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: stable@vger.kernel.org
+Subject: [PATCH v3] btrfs: do more strict compressed read merge check
+Date: Tue, 26 Aug 2025 19:26:28 +0930
+Message-ID: <635dc58dd4c7ae44264e488bb9b2ef7bd9dd5e21.1756201932.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250825193502.GB1310133@perftesting>
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	URIBL_BLOCKED(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -2.80
 
-On Mon, Aug 25, 2025 at 03:35:02PM -0400, Josef Bacik wrote:
-> On Mon, Aug 25, 2025 at 11:07:55AM +0200, Christian Brauner wrote:
-> > On Thu, Aug 21, 2025 at 04:18:27PM -0400, Josef Bacik wrote:
-> > > At evict_inodes() time, we no longer have SB_ACTIVE set, so we can
-> > > easily go through the normal iput path to clear any inodes. Update
-> > 
-> > I'm a bit lost why SB_ACTIVE is used here as a justification to call
-> > iput(). I think it's because iput_final() would somehow add it back to
-> > the LRU if SB_ACTIVE was still set and the filesystem somehow would
-> > indicate it wouldn't want to drop the inode.
-> > 
-> > I'm confused where that would even happen. IOW, which filesystem would
-> > indicate "don't drop the inode" even though it's about to vanish. But
-> > anyway, that's probably not important because...
-> > 
-> > > dispose_list() to check how we need to free the inode, and then grab a
-> > > full reference to the inode while we're looping through the remaining
-> > > inodes, and simply iput them at the end.
-> > > 
-> > > Since we're just calling iput we don't really care about the i_count on
-> > > the inode at the current time.  Remove the i_count checks and just call
-> > > iput on every inode we find.
-> > > 
-> > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > > ---
-> > >  fs/inode.c | 26 +++++++++++---------------
-> > >  1 file changed, 11 insertions(+), 15 deletions(-)
-> > > 
-> > > diff --git a/fs/inode.c b/fs/inode.c
-> > > index 72981b890ec6..80ad327746a7 100644
-> > > --- a/fs/inode.c
-> > > +++ b/fs/inode.c
-> > > @@ -933,7 +933,7 @@ static void evict(struct inode *inode)
-> > >   * Dispose-list gets a local list with local inodes in it, so it doesn't
-> > >   * need to worry about list corruption and SMP locks.
-> > >   */
-> > > -static void dispose_list(struct list_head *head)
-> > > +static void dispose_list(struct list_head *head, bool for_lru)
-> > >  {
-> > >  	while (!list_empty(head)) {
-> > >  		struct inode *inode;
-> > > @@ -941,8 +941,12 @@ static void dispose_list(struct list_head *head)
-> > >  		inode = list_first_entry(head, struct inode, i_lru);
-> > >  		list_del_init(&inode->i_lru);
-> > >  
-> > > -		evict(inode);
-> > > -		iobj_put(inode);
-> > > +		if (for_lru) {
-> > > +			evict(inode);
-> > > +			iobj_put(inode);
-> > > +		} else {
-> > > +			iput(inode);
-> > > +		}
-> > 
-> > ... Afaict, if we end up in dispose_list() we came from one of two
-> > locations:
-> > 
-> > (1) prune_icache_sb()
-> >     In which case inode_lru_isolate() will have only returned inodes
-> >     that prior to your changes would have inode->i_count zero.
-> > 
-> > (2) evict_inodes()
-> >     Similar story, this only hits inodes with inode->i_count zero.
-> > 
-> > With your change you're adding an increment from zero for (2) via
-> > __iget() so that you always end up with a full refcount, and that is
-> > backing your changes to dispose_list() later.
-> > 
-> > I don't see the same done for (1) though and so your later call to
-> > iput() drops the reference below zero? It's accidently benign because
-> > iiuc atomic_dec_and_test() will simply tell you that reference count
-> > didn't go to zero and so iput() will back off. But still this should be
-> > fixed if I'm right.
-> 
-> Because (1) at this point doesn't have a full reference, it only has an
-> i_obj_count reference. The next patch converts this, and removes this bit. I did
-> it this way to clearly mark the change in behavior.
+[BUG]
+With 64K page size (aarch64 with 64K page size config) and 4K btrfs
+block size, the following workload can easily lead to a corrupted read:
 
-Ah, right, I forgot to take the the boolean argument into account.
-You're passing that as true in (1). Sure and then sorry about the noise.
+        mkfs.btrfs -f -s 4k $dev > /dev/null
+        mount -o compress=zstd $dev $mnt
+        xfs_io -f -c "pwrite -S 0xff 0 64k" -c sync $mnt/base > /dev/null
+	echo "correct result:"
+        od -Ax -x $mnt/base
+        xfs_io -f -c "reflink $mnt/base 32k 0 32k" \
+		  -c "reflink $mnt/base 0 32k 32k" \
+		  -c "pwrite -S 0xff 60k 4k" $mnt/new > /dev/null
+	echo "incorrect result:"
+        od -Ax -x $mnt/new
+        umount $mnt
 
-> prune_icache_sb() will call dispose_list(&list, true), which will do the
-> evict(inode) and iobj_put(inode). This is correct because the inodes on the list
-> from prune_icache_sb() will have an i_count == and have I_WILL_FREE set, so it
-> will never have it's i_count increased to 1.
-> 
-> The change here is to change evict_inodes() to simply call iput(), as it calls
-> dispose_list(&list, false). We will increase the i_count to 1 from zero via
-> __iget(), which at this point in the series is completely correct behavior. Then
-> we will call iput() which will drop the i_count back to zero, and then call
-> iput_final, and since SB_ACTIVE is not set, it will call evict(inode) and clean
-> everything up properly.
-> 
-> > 
-> > The conversion to iput() is introducing a lot of subtlety in the middle
-> > of the series. If I'm right then the iput() is a always a nop because in
-> > all cases it was an increment from zero. But it isn't really a nop
-> > because we still do stuff like call ->drop_inode() again. Maybe it's
-> > fine because no filesystem would have issues with this but I wouldn't
-> > count on it and also it feels rather unclean to do it this way.
-> 
-> So I'm definitely introducing another call to ->drop_inode() here, but
-> ->drop_inode() has always been a "do we want to keep this inode on the LRU"
-> call, calling it again doesn't really change anything.
+This shows the following result:
 
-Right, the first time the inode reference count drops to zero we call
-iput_final() and then ->drop_inode() which tells us to put it on the
-LRU. And we leave it otherwise in tact. This is the part I forgot.
+  correct result:
+  000000 ffff ffff ffff ffff ffff ffff ffff ffff
+  *
+  010000
+  incorrect result:
+  000000 ffff ffff ffff ffff ffff ffff ffff ffff
+  *
+  008000 0000 0000 0000 0000 0000 0000 0000 0000
+  *
+  00f000 ffff ffff ffff ffff ffff ffff ffff ffff
+  *
+  010000
 
-Once you add it to the LRU you'll have incremented i_obj_count either
-when you added it to the cached LRU and moving it from there to the
-"actual" LRU or you'll take a new one.
+Notice the zero in the range [0x8000, 0xf000), which is incorrect.
 
-And then dispose_list() for (1) will just need to put the i_obj_count.
-Thanks!
+[CAUSE]
+With extra trace printk, it shows the following events during od:
+(some unrelated info removed like CPU and context)
 
-> That being said it is a subtle functional change. I put it here specifically
-> because it is a functional change. If it bites us in the ass in some unforseen
-> way we'll be able to bisect it down to here and then we can all laugh at Josef
-> because he missed something.
+ od-3457   btrfs_do_readpage: enter r/i=5/258 folio=0(65536) prev_em_start=0000000000000000
 
-Yeah, it's good. It's just very confusing because for a brief time we
-have to understand two reference counts that are first coupled almost
-1:1 and then slowly decoupled which makes this particularly nasty...
+The "r/i" is indicating the root and inode number. In our case the file
+"new" is using ino 258 from fs tree (root 5).
 
-> > So, under the assumption, that after the increment from zero you did, we
-> > really only have a blatant zombie inode on our hands and we only need to
-> > get rid of the i_count we took make that explicit and do:
-> > 
-> > 	if (for_lru) {
-> > 		evict(inode);
-> > 		iobj_put(inode);
-> > 	} else {
-> > 		/* This inode was always incremented from zero.
-> > 		 * Get rid of that reference without doing anything else.
-> > 		 */
-> > 		WARN_ON_ONCE(!atomic_dec_and_test(&inode->i_count));
-> > 	}
-> 
-> We still need the evict() to actually free the inode.  We're just getting there
-> via iput_final() now instead of directly calling evict().
+Here notice the @prev_em_start pointer is NULL. This means the
+btrfs_do_readpage() is called from btrfs_read_folio(), not from
+btrfs_readahead().
 
-Right, thanks!
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=0 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=4096 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=8192 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=12288 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=16384 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=20480 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=24576 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=28672 got em start=0 len=32768
 
-> 
-> > 
-> > Btw, for the iobj_put() above, I assume that we're not guaranteed that
-> > i_obj_count == 1?
-> 
-> Right, it's purely dropping the LRU list i_obj_count reference.  Thanks,
+These above 32K blocks will be read from the the first half of the
+compressed data extent.
 
-Thanks for the comments!
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=32768 got em start=32768 len=32768
+
+Note here there is no btrfs_submit_compressed_read() call. Which is
+incorrect now.
+As both extent maps at 0 and 32K are pointing to the same compressed
+data, their offset are different thus can not be merged into the same
+read.
+
+So this means the compressed data read merge check is doing something
+wrong.
+
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=36864 got em start=32768 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=40960 got em start=32768 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=45056 got em start=32768 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=49152 got em start=32768 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=53248 got em start=32768 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=57344 got em start=32768 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=61440 skip uptodate
+ od-3457   btrfs_submit_compressed_read: cb orig_bio: file off=0 len=61440
+
+The function btrfs_submit_compressed_read() is only called at the end of
+folio read. The compressed bio will only have a extent map of range [0,
+32K), but the original bio passed in are for the whole 64K folio.
+
+This will cause the decompression part to only fill the first 32K,
+leaving the rest untouched (aka, filled with zero).
+
+This incorrect compressed read merge leads to the above data corruption.
+
+There are similar problems happened in the past, commit 808f80b46790
+("Btrfs: update fix for read corruption of compressed and shared
+extents") is doing pretty much the same fix for readahead.
+
+But that's back to 2015, where btrfs still only supports bs (block size)
+== ps (page size) cases.
+This means btrfs_do_readpage() only needs to handle a folio which
+contains exactly one block.
+
+Only btrfs_readahead() can lead to a read covering multiple blocks.
+Thus only btrfs_readahead() passes a non-NULL @prev_em_start pointer.
+
+With the v5.15 btrfs introduced bs < ps support. This breaks the above
+assumption that a folio can only contain one block.
+
+Now btrfs_read_folio() can also read multiple blocks in one go.
+But btrfs_read_folio() doesn't pass a @prev_em_start pointer, thus the
+existing bio force submission check will never be triggered.
+
+In theory, this can also happen for btrfs with large folios, but since
+large folio is still experimental, we don't need to bother it, thus only
+bs < ps support is affected for now.
+
+[FIX]
+Instead of passing @prev_em_start to do the proper compressed extent
+check, introduce one new member, btrfs_bio_ctrl::last_em_start, so that
+the existing bio force submission logic will always be triggered.
+
+CC: stable@vger.kernel.org #5.15+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v3:
+- Use a single btrfs_bio_ctrl::last_em_start
+  Since the existing prev_em_start is using U64_MAX as the initial value
+  to indicate no em hit yet, we can use the same logic, which saves
+  another 8 bytes from btrfs_bio_ctrl.
+
+- Update the reproducer
+  Previously I failed to reproduce using a minimal workload.
+  As regular read from od/md5sum always trigger readahead thus not
+  hitting the @prev_em_start == NULL path.
+
+  Will send out a fstest case for it using the minimal reproducer.
+  But it will still need a 16K/64K page sized system to reproduce.
+
+  Fix the problem by doing an block aligned write into the folio, so
+  that the folio will be partially dirty and not go through the
+  readahead path.
+
+- Update the analyze
+  This includes the trace events of the minimal reproducer, and
+  mentioning of previous similar fixes and why they do not work for
+  subpage cases.
+
+- Update the CC tag
+  Since it's only affecting bs < ps cases (for non-experimental builds),
+  only need to fix kernels with subpage btrfs supports.
+
+v2:
+- Only save extent_map::start/len to save memory for btrfs_bio_ctrl
+  It's using on-stack memory which is very limited inside the kernel.
+
+- Remove the commit message mentioning of clearing last saved em
+  Since we're using em::start/len, there is no need to clear them.
+  Either we hit the same em::start/len, meaning hitting the same extent
+  map, or we hit a different em, which will have a different start/len.
+---
+ fs/btrfs/extent_io.c | 40 ++++++++++++++++++++++++++++++----------
+ 1 file changed, 30 insertions(+), 10 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 0c12fd64a1f3..b219dbaaedc8 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -131,6 +131,24 @@ struct btrfs_bio_ctrl {
+ 	 */
+ 	unsigned long submit_bitmap;
+ 	struct readahead_control *ractl;
++
++	/*
++	 * The start file offset of the last hit extent map.
++	 *
++	 * This is for proper compressed read merge.
++	 * U64_MAX means no extent map hit yet.
++	 *
++	 * The current btrfs_bio_is_contig() only uses disk_bytenr as
++	 * the condition to check if the read can be merged with previous
++	 * bio, which is not correct. E.g. two file extents pointing to the
++	 * same extent but with different offset.
++	 *
++	 * So here we need to do extra check to only merge reads that are
++	 * covered by the same extent map.
++	 * Just extent_map::start will be enough, as they are unique
++	 * inside the same inode.
++	 */
++	u64 last_em_start;
+ };
+ 
+ /*
+@@ -965,7 +983,7 @@ static void btrfs_readahead_expand(struct readahead_control *ractl,
+  * return 0 on success, otherwise return error
+  */
+ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+-		      struct btrfs_bio_ctrl *bio_ctrl, u64 *prev_em_start)
++			     struct btrfs_bio_ctrl *bio_ctrl)
+ {
+ 	struct inode *inode = folio->mapping->host;
+ 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
+@@ -1076,12 +1094,11 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 		 * non-optimal behavior (submitting 2 bios for the same extent).
+ 		 */
+ 		if (compress_type != BTRFS_COMPRESS_NONE &&
+-		    prev_em_start && *prev_em_start != (u64)-1 &&
+-		    *prev_em_start != em->start)
++		    bio_ctrl->last_em_start != U64_MAX &&
++		    bio_ctrl->last_em_start != em->start)
+ 			force_bio_submit = true;
+ 
+-		if (prev_em_start)
+-			*prev_em_start = em->start;
++		bio_ctrl->last_em_start = em->start;
+ 
+ 		em_gen = em->generation;
+ 		btrfs_free_extent_map(em);
+@@ -1296,12 +1313,15 @@ int btrfs_read_folio(struct file *file, struct folio *folio)
+ 	const u64 start = folio_pos(folio);
+ 	const u64 end = start + folio_size(folio) - 1;
+ 	struct extent_state *cached_state = NULL;
+-	struct btrfs_bio_ctrl bio_ctrl = { .opf = REQ_OP_READ };
++	struct btrfs_bio_ctrl bio_ctrl = {
++		.opf = REQ_OP_READ,
++		.last_em_start = U64_MAX,
++	};
+ 	struct extent_map *em_cached = NULL;
+ 	int ret;
+ 
+ 	lock_extents_for_read(inode, start, end, &cached_state);
+-	ret = btrfs_do_readpage(folio, &em_cached, &bio_ctrl, NULL);
++	ret = btrfs_do_readpage(folio, &em_cached, &bio_ctrl);
+ 	btrfs_unlock_extent(&inode->io_tree, start, end, &cached_state);
+ 
+ 	btrfs_free_extent_map(em_cached);
+@@ -2641,7 +2661,8 @@ void btrfs_readahead(struct readahead_control *rac)
+ {
+ 	struct btrfs_bio_ctrl bio_ctrl = {
+ 		.opf = REQ_OP_READ | REQ_RAHEAD,
+-		.ractl = rac
++		.ractl = rac,
++		.last_em_start = U64_MAX,
+ 	};
+ 	struct folio *folio;
+ 	struct btrfs_inode *inode = BTRFS_I(rac->mapping->host);
+@@ -2649,12 +2670,11 @@ void btrfs_readahead(struct readahead_control *rac)
+ 	const u64 end = start + readahead_length(rac) - 1;
+ 	struct extent_state *cached_state = NULL;
+ 	struct extent_map *em_cached = NULL;
+-	u64 prev_em_start = (u64)-1;
+ 
+ 	lock_extents_for_read(inode, start, end, &cached_state);
+ 
+ 	while ((folio = readahead_folio(rac)) != NULL)
+-		btrfs_do_readpage(folio, &em_cached, &bio_ctrl, &prev_em_start);
++		btrfs_do_readpage(folio, &em_cached, &bio_ctrl);
+ 
+ 	btrfs_unlock_extent(&inode->io_tree, start, end, &cached_state);
+ 
+-- 
+2.50.1
+
 
