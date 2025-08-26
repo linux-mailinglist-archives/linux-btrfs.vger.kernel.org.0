@@ -1,152 +1,375 @@
-Return-Path: <linux-btrfs+bounces-16425-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16426-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01EAFB3744D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 23:19:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25D1AB37484
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 23:47:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3777201924
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 21:19:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 176031B23561
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 21:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8092F6588;
-	Tue, 26 Aug 2025 21:19:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B36F1B6D08;
+	Tue, 26 Aug 2025 21:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="alloVifj"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZSF7jSaH";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZSF7jSaH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 544E428851E
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 21:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E921C5D4B
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 21:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756243190; cv=none; b=EYINi1l5AByhZ2rjSibo0ULGlL80ZvRsWn54/PdbQrpAVMwmxeYid/saH3ySLRT7k8VOGceWMPS4VoN/p7JT9sy4xpZVUzOrJh1Kw2jixI37vZGA7DwB4Pw440cQPBqZIQxSww+i9DJnXDMqNpo9SRN+hmVn7KqKHbzCva/+EHc=
+	t=1756244838; cv=none; b=eujf723jt/jgJuGh6gtqrBW9ZHLaedCb3jQQ6UCmo+z55FD1SkkaPVIC3BaSmATNBw9Ub1u+EfkfyOgW88vuAvmML9YkhNBtY8MWISlmxPF3k+XIGBgebaMoWuMraONglPyTM5zb4SIA00LRD8o0Dt9N+Q7F4PpUGU1aS+G4W7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756243190; c=relaxed/simple;
-	bh=IYbT5i1Mef7siPe0pv4BD6XfSdO8znPLCDv3IR1Wt08=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iyqMXKcpLxTNBMUgakR+xaiO1PnjIaUcwuDQYJgbaZ6cWOo5kOVte1U8oUjad1j/eM4erxx6FKA8Y2JcMusvFQPNz4nlxMiHwhCeFh19znDvUTktagrdo7/sYdu63XxfFoJZJ/Vb0seGrfUTMrVE8Czb7gaMcBujaxItB51ENzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=alloVifj; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-b49c729577dso884853a12.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 14:19:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1756243188; x=1756847988; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OE5Jb64nFSwS1p4ae/38JIYTRfUbO1Ezm8h79l/jSEw=;
-        b=alloVifj8oZWZCvh6mlANBFCyOLTMlW1gMJ2XWBHzKU6QjnlZ6zyOOhpgONYc22PlB
-         eCEaeJLsqhomriwTz9azZG1p+eXFvUKYwtn7q6/cLWrT9cgE+ZyALoMGNEXyhG3KbTbf
-         6i4vcChReh+UY2kUyySattATWfHY+faTLRiveEgCgUaa+N5vRG9/2EbjaEHTOb75ChQB
-         rcro4hJ4kN4Q2ZpYjorEtntFhmawCk5v5G85TODl69BzPpPnffU1DG7rnq9u14w/iyAD
-         ClJRGe3z9Hv0vX7ovXxO5+X3bxShxdyAOgekbUPTmrCqgw3LHitfUEki69AAbrvM/iSF
-         35lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756243188; x=1756847988;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OE5Jb64nFSwS1p4ae/38JIYTRfUbO1Ezm8h79l/jSEw=;
-        b=CP56qT/uddN7c/iNhkz7W01PgJlJBZurcOIbBSMfSbL6MYboUCBOhrfBmU56noqgj8
-         l6YfZKMPnelZeG2vOWUl82bSVMkX1SsPdQuD99FcoqNmbnPvvRN/EEerqsWCJyV6p0I7
-         oEDvv+5GeeVe9q3a0NiffGFabIkDtwxgROz56JYyXd6Wq1gy0GqGuxW2cDdYIxyhWhmw
-         SHIZUgS2opolnHiBbRLc8ZxU+/KoEteL1pRrz12I5Gka7treceMU1PwN/Xha1+4aeLQ1
-         P7oLFvq3hJNa0+u9mulvuxE/OpMgzxF1L+ETEhd4Bbrc2XPHI6mR/W/YfeuNPlW03rK4
-         8qyg==
-X-Gm-Message-State: AOJu0Yzpv4BTVHkDEhQ5ilQw4xzfczp4Cw7XCkZblq4vxMnFXbrTp53P
-	OLBeD/3L6DRy7jhRykBOP630CgcDafgDIDxGFK8dFpr2/ragnqBz8FMYtN2XaRujh8E=
-X-Gm-Gg: ASbGnctoWRUJ0bJajaCMGAB06Kj+ZK3WF/lxrU77BVmRQSoSVBTYTis3Rlm/qEvDUwa
-	y6hGUNd9+KTwOkzXHyRQ+nTpHKGBwx2pKQSRc/CInxBOxnQac1X0mRE82ws4aejz4YTW9OzTIXW
-	CA4VVip5I1lRzgNNF7ZkAgORecOcLSerbYigUZznrSool7LQPjN2IHEZB0+wrS4NBwfsHBlRhBp
-	H9ifwd3J38yJUCQyWZmen2FhSV9MGtgKC5MLxZnc4y4iy7rvwkKHgfIpYBOUylIqZnRvlOTPTDq
-	T6BljN5K61k2NIwkLrDmexVPLoPhcaeZD5tNHFN/uLnFnyY+9+Pp8PNJbyaaB266d7qxuhSPREd
-	Hr34vzX1iy0srEk8lHT31wvi5ow==
-X-Google-Smtp-Source: AGHT+IG7gu31VAeXFC278oX+WKQcasCFMqzoXaR8Iv4HqPVlPSUc6qR8LGzhTPWie4sJbHiVxzkLKg==
-X-Received: by 2002:a05:6a20:1582:b0:243:99c8:c0d2 with SMTP id adf61e73a8af0-24399c8c605mr703427637.2.1756243188562;
-        Tue, 26 Aug 2025 14:19:48 -0700 (PDT)
-Received: from telecaster ([2620:10d:c090:400::5:f494])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b49cb8ca240sm9936869a12.25.2025.08.26.14.19.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 14:19:47 -0700 (PDT)
-Date: Tue, 26 Aug 2025 14:19:46 -0700
-From: Omar Sandoval <osandov@osandov.com>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+	s=arc-20240116; t=1756244838; c=relaxed/simple;
+	bh=TR7KNRv0/mgRpnuWU7/o2M9PSBC4OxhhSBHRjHQB824=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fUGmrUwmtnkVPBE17KWJUImGfLyptNmfZWnL3NNyp+wADw1MzX+khMU9pTGuhlBJdmV8irB+XecxApUepbW073PD3Dm0VWxywh215g7CHwVOeYkgNa/+isG1bIYooDlTPqC//lShafuGqCj2W2uFEnaRYV4DH1fVZdBrk/pCDCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZSF7jSaH; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZSF7jSaH; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0DF2A1FF6B;
+	Tue, 26 Aug 2025 21:47:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1756244834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=B9VvWyF0vtgVvazvLa2o4RKbkWUNgyRfCB9FZSKFYUQ=;
+	b=ZSF7jSaHI3F6eBY+br+5r/8+ZaVqaLxFPbvWdkVeVqVOQeOXn2j2ysUvkw0LGt55OXUi3v
+	MlzNI7j0vdFcJHbQLByRnxoGwr/KXOSIJo680nabVqQeksomUwfQpVMegVm5aZjzwihQ2s
+	dl+PSRL/6UnlUwWEM07irAdewWtiKNM=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1756244834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=B9VvWyF0vtgVvazvLa2o4RKbkWUNgyRfCB9FZSKFYUQ=;
+	b=ZSF7jSaHI3F6eBY+br+5r/8+ZaVqaLxFPbvWdkVeVqVOQeOXn2j2ysUvkw0LGt55OXUi3v
+	MlzNI7j0vdFcJHbQLByRnxoGwr/KXOSIJo680nabVqQeksomUwfQpVMegVm5aZjzwihQ2s
+	dl+PSRL/6UnlUwWEM07irAdewWtiKNM=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8BFAA13479;
+	Tue, 26 Aug 2025 21:47:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id IuStE2ArrmhqTAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Tue, 26 Aug 2025 21:47:12 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: stable@vger.kernel.org,
 	Filipe Manana <fdmanana@suse.com>,
-	Leo Martins <loemra.dev@gmail.com>, Boris Burkov <boris@bur.io>
-Subject: Re: [PATCH] btrfs: fix subvolume deletion lockup caused by inodes
- xarray race
-Message-ID: <aK4k8qNb1OdOLk0L@telecaster>
-References: <f7e05205fd33d9e510ec1295e0cc8cfdf395cb89.1756237895.git.osandov@osandov.com>
- <20250826202507.GA2119633@perftesting>
+	David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: fix corruption reading compressed range when block size is smaller than page size
+Date: Wed, 27 Aug 2025 07:16:54 +0930
+Message-ID: <d0e634e6d88e8ba7c34f318e09a50cca77c19f96.1756244730.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250826202507.GA2119633@perftesting>
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -2.80
 
-On Tue, Aug 26, 2025 at 04:25:07PM -0400, Josef Bacik wrote:
-> On Tue, Aug 26, 2025 at 01:01:38PM -0700, Omar Sandoval wrote:
-> > From: Omar Sandoval <osandov@fb.com>
-> > 
-> > There is a race condition between inode eviction and inode caching that
-> > can cause a live struct btrfs_inode to be missing from the root->inodes
-> > xarray. Specifically, there is a window during evict() between the inode
-> > being unhashed and deleted from the xarray. If btrfs_iget() is called
-> > for the same inode in that window, it will be recreated and inserted
-> > into the xarray, but then eviction will delete the new entry, leaving
-> > nothing in the xarray:
-> > 
-> > Thread 1                          Thread 2
-> > ---------------------------------------------------------------
-> > evict()
-> >   remove_inode_hash()
-> >                                   btrfs_iget_path()
-> >                                     btrfs_iget_locked()
-> >                                     btrfs_read_locked_inode()
-> >                                       btrfs_add_inode_to_root()
-> >   destroy_inode()
-> >     btrfs_destroy_inode()
-> >       btrfs_del_inode_from_root()
-> >         __xa_erase
-> > 
-> > In turn, this can cause issues for subvolume deletion. Specifically, if
-> > an inode is in this lost state, and all other inodes are evicted, then
-> > btrfs_del_inode_from_root() will call btrfs_add_dead_root() prematurely.
-> > If the lost inode has a delayed_node attached to it, then when
-> > btrfs_clean_one_deleted_snapshot() calls btrfs_kill_all_delayed_nodes(),
-> > it will loop forever because the delayed_nodes xarray will never become
-> > empty (unless memory pressure forces the inode out). We saw this
-> > manifest as soft lockups in production.
-> > 
-> > Fix it by only deleting the xarray entry if it matches the given inode
-> > (using __xa_cmpxchg()).
-> > 
-> > Fixes: 310b2f5d5a94 ("btrfs: use an xarray to track open inodes in a root")
-> > Cc: stable@vger.kernel.org # 6.11+
-> > Co-authored-by: Leo Martins <loemra.dev@gmail.com>
-> > Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-> > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> 
-> Heh, I was just noticing weirdness here as I started converting inodes over to
-> using an xarray instead of a hash.
+[BUG]
+With 64K page size (aarch64 with 64K page size config) and 4K btrfs
+block size, the following workload can easily lead to a corrupted read:
 
-Yeah, and there's still some weirdness in btrfs_del_inode_from_root()
-with dropping the xa_lock just to check btrfs_root_refs(). I think
-that's just left over from f72ff01df9cf ("btrfs: do not call
-synchronize_srcu() in inode_tree_del"). Either I or Leo can send a
-followup cleanup for that.
+        mkfs.btrfs -f -s 4k $dev > /dev/null
+        mount -o compress $dev $mnt
+        xfs_io -f -c "pwrite -S 0xff 0 64k" $mnt/base > /dev/null
+	echo "correct result:"
+        od -Ad -t x1 $mnt/base
+        xfs_io -f -c "reflink $mnt/base 32k 0 32k" \
+		  -c "reflink $mnt/base 0 32k 32k" \
+		  -c "pwrite -S 0xff 60k 4k" $mnt/new > /dev/null
+	echo "incorrect result:"
+        od -Ad -t x1 $mnt/new
+        umount $mnt
 
-> Nice catch,
-> 
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+This shows the following result:
 
-Thanks!
+correct result:
+0000000 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+*
+0065536
+incorrect result:
+0000000 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+*
+0032768 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+*
+0061440 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+*
+0065536
+
+Notice the zero in the range [32K, 60K), which is incorrect.
+
+[CAUSE]
+With extra trace printk, it shows the following events during od:
+(some unrelated info removed like CPU and context)
+
+ od-3457   btrfs_do_readpage: enter r/i=5/258 folio=0(65536) prev_em_start=0000000000000000
+
+The "r/i" is indicating the root and inode number. In our case the file
+"new" is using ino 258 from fs tree (root 5).
+
+Here notice the @prev_em_start pointer is NULL. This means the
+btrfs_do_readpage() is called from btrfs_read_folio(), not from
+btrfs_readahead().
+
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=0 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=4096 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=8192 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=12288 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=16384 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=20480 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=24576 got em start=0 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=28672 got em start=0 len=32768
+
+These above 32K blocks will be read from the first half of the
+compressed data extent.
+
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=32768 got em start=32768 len=32768
+
+Note here there is no btrfs_submit_compressed_read() call. Which is
+incorrect now.
+Although both extent maps at 0 and 32K are pointing to the same compressed
+data, their offsets are different thus can not be merged into the same
+read.
+
+So this means the compressed data read merge check is doing something
+wrong.
+
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=36864 got em start=32768 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=40960 got em start=32768 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=45056 got em start=32768 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=49152 got em start=32768 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=53248 got em start=32768 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=57344 got em start=32768 len=32768
+ od-3457   btrfs_do_readpage: r/i=5/258 folio=0(65536) cur=61440 skip uptodate
+ od-3457   btrfs_submit_compressed_read: cb orig_bio: file off=0 len=61440
+
+The function btrfs_submit_compressed_read() is only called at the end of
+folio read. The compressed bio will only have an extent map of range [0,
+32K), but the original bio passed in is for the whole 64K folio.
+
+This will cause the decompression part to only fill the first 32K,
+leaving the rest untouched (aka, filled with zero).
+
+This incorrect compressed read merge leads to the above data corruption.
+
+There were similar problems that happened in the past, commit 808f80b46790
+("Btrfs: update fix for read corruption of compressed and shared
+extents") is doing pretty much the same fix for readahead.
+
+But that's back to 2015, where btrfs still only supports bs (block size)
+== ps (page size) cases.
+This means btrfs_do_readpage() only needs to handle a folio which
+contains exactly one block.
+
+Only btrfs_readahead() can lead to a read covering multiple blocks.
+Thus only btrfs_readahead() passes a non-NULL @prev_em_start pointer.
+
+With v5.15 kernel btrfs introduced bs < ps support. This breaks the above
+assumption that a folio can only contain one block.
+
+Now btrfs_read_folio() can also read multiple blocks in one go.
+But btrfs_read_folio() doesn't pass a @prev_em_start pointer, thus the
+existing bio force submission check will never be triggered.
+
+In theory, this can also happen for btrfs with large folios, but since
+large folio is still experimental, we don't need to bother it, thus only
+bs < ps support is affected for now.
+
+[FIX]
+Instead of passing @prev_em_start to do the proper compressed extent
+check, introduce one new member, btrfs_bio_ctrl::last_em_start, so that
+the existing bio force submission logic will always be triggered.
+
+CC: stable@vger.kernel.org # 5.15+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+Changelog:
+v4:
+- Minor grammar fixes
+- Update the subject to reflect the bug better
+
+  This is the merged version inside for-next branch.
+  However for people who are not following our development branch but
+  still want to verify the incoming fstests test case, we need this fix
+  to be publicly avaiable. Newer minor changes will only be done inside
+  the development branch.
+
+v3:
+- Use a single btrfs_bio_ctrl::last_em_start
+  Since the existing prev_em_start is using U64_MAX as the initial value
+  to indicate no em hit yet, we can use the same logic, which saves
+  another 8 bytes from btrfs_bio_ctrl.
+
+- Update the reproducer
+  Previously I failed to reproduce using a minimal workload.
+  As regular read from od/md5sum always trigger readahead thus not
+  hitting the @prev_em_start == NULL path.
+
+  Will send out a fstest case for it using the minimal reproducer.
+  But it will still need a 16K/64K page sized system to reproduce.
+
+  Fix the problem by doing an block aligned write into the folio, so
+  that the folio will be partially dirty and not go through the
+  readahead path.
+
+- Update the analyze
+  This includes the trace events of the minimal reproducer, and
+  mentioning of previous similar fixes and why they do not work for
+  subpage cases.
+
+- Update the CC tag
+  Since it's only affecting bs < ps cases (for non-experimental builds),
+  only need to fix kernels with subpage btrfs supports.
+
+v2:
+- Only save extent_map::start/len to save memory for btrfs_bio_ctrl
+  It's using on-stack memory which is very limited inside the kernel.
+
+- Remove the commit message mentioning of clearing last saved em
+  Since we're using em::start/len, there is no need to clear them.
+  Either we hit the same em::start/len, meaning hitting the same extent
+  map, or we hit a different em, which will have a different start/len.
+---
+ fs/btrfs/extent_io.c | 40 ++++++++++++++++++++++++++++++----------
+ 1 file changed, 30 insertions(+), 10 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 426a6791a0b2..ca7174fa0240 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -131,6 +131,24 @@ struct btrfs_bio_ctrl {
+ 	 */
+ 	unsigned long submit_bitmap;
+ 	struct readahead_control *ractl;
++
++	/*
++	 * The start offset of the last used extent map by a read operation.
++	 *
++	 * This is for proper compressed read merge.
++	 * U64_MAX means we are starting the read and have made no progress yet.
++	 *
++	 * The current btrfs_bio_is_contig() only uses disk_bytenr as
++	 * the condition to check if the read can be merged with previous
++	 * bio, which is not correct. E.g. two file extents pointing to the
++	 * same extent but with different offset.
++	 *
++	 * So here we need to do extra checks to only merge reads that are
++	 * covered by the same extent map.
++	 * Just extent_map::start will be enough, as they are unique
++	 * inside the same inode.
++	 */
++	u64 last_em_start;
+ };
+ 
+ /*
+@@ -965,7 +983,7 @@ static void btrfs_readahead_expand(struct readahead_control *ractl,
+  * return 0 on success, otherwise return error
+  */
+ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+-		      struct btrfs_bio_ctrl *bio_ctrl, u64 *prev_em_start)
++			     struct btrfs_bio_ctrl *bio_ctrl)
+ {
+ 	struct inode *inode = folio->mapping->host;
+ 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
+@@ -1076,12 +1094,11 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 		 * non-optimal behavior (submitting 2 bios for the same extent).
+ 		 */
+ 		if (compress_type != BTRFS_COMPRESS_NONE &&
+-		    prev_em_start && *prev_em_start != (u64)-1 &&
+-		    *prev_em_start != em->start)
++		    bio_ctrl->last_em_start != U64_MAX &&
++		    bio_ctrl->last_em_start != em->start)
+ 			force_bio_submit = true;
+ 
+-		if (prev_em_start)
+-			*prev_em_start = em->start;
++		bio_ctrl->last_em_start = em->start;
+ 
+ 		em_gen = em->generation;
+ 		btrfs_free_extent_map(em);
+@@ -1296,12 +1313,15 @@ int btrfs_read_folio(struct file *file, struct folio *folio)
+ 	const u64 start = folio_pos(folio);
+ 	const u64 end = start + folio_size(folio) - 1;
+ 	struct extent_state *cached_state = NULL;
+-	struct btrfs_bio_ctrl bio_ctrl = { .opf = REQ_OP_READ };
++	struct btrfs_bio_ctrl bio_ctrl = {
++		.opf = REQ_OP_READ,
++		.last_em_start = U64_MAX,
++	};
+ 	struct extent_map *em_cached = NULL;
+ 	int ret;
+ 
+ 	lock_extents_for_read(inode, start, end, &cached_state);
+-	ret = btrfs_do_readpage(folio, &em_cached, &bio_ctrl, NULL);
++	ret = btrfs_do_readpage(folio, &em_cached, &bio_ctrl);
+ 	btrfs_unlock_extent(&inode->io_tree, start, end, &cached_state);
+ 
+ 	btrfs_free_extent_map(em_cached);
+@@ -2641,7 +2661,8 @@ void btrfs_readahead(struct readahead_control *rac)
+ {
+ 	struct btrfs_bio_ctrl bio_ctrl = {
+ 		.opf = REQ_OP_READ | REQ_RAHEAD,
+-		.ractl = rac
++		.ractl = rac,
++		.last_em_start = U64_MAX,
+ 	};
+ 	struct folio *folio;
+ 	struct btrfs_inode *inode = BTRFS_I(rac->mapping->host);
+@@ -2649,12 +2670,11 @@ void btrfs_readahead(struct readahead_control *rac)
+ 	const u64 end = start + readahead_length(rac) - 1;
+ 	struct extent_state *cached_state = NULL;
+ 	struct extent_map *em_cached = NULL;
+-	u64 prev_em_start = (u64)-1;
+ 
+ 	lock_extents_for_read(inode, start, end, &cached_state);
+ 
+ 	while ((folio = readahead_folio(rac)) != NULL)
+-		btrfs_do_readpage(folio, &em_cached, &bio_ctrl, &prev_em_start);
++		btrfs_do_readpage(folio, &em_cached, &bio_ctrl);
+ 
+ 	btrfs_unlock_extent(&inode->io_tree, start, end, &cached_state);
+ 
+-- 
+2.50.1
+
 
