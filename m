@@ -1,135 +1,156 @@
-Return-Path: <linux-btrfs+bounces-16365-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16366-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4FB7B35F19
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 14:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90EF8B36238
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 15:16:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FD4C3BA766
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 12:29:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 487DE8A4B09
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 13:11:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02FA03375D9;
-	Tue, 26 Aug 2025 12:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D322327A455;
+	Tue, 26 Aug 2025 13:11:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="csSTlu0V"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ukpuwkX3";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5bD7Uo/p";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ukpuwkX3";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5bD7Uo/p"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9460532143D
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 12:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656D54C6D
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 13:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756211354; cv=none; b=MJ5dPZx/Zm3h3W/2I/1qdztU11JJeKTXffV7Vknb1cSnen9dBEIUEJ6aZA7vCod+0mBUdwnZ0tnw9EgLVju3gZaxWmkdTQu0Ng2aaUAg+DBdejZJp1gXRW/BIiGqSNbjgayQcCYf3hY1mHpYfYVoiDtttzFMwHxPjydQYVyXj7g=
+	t=1756213887; cv=none; b=iVMHwhmTzbi4+R+fptYzj3/Cbi5cStUDIjKgUcRhKAhE/AjymbdwzMzaKQj3C+crVCl553Jvg2YeSviaXJ1FsR0zeHp66UwKXoz/Nq9APArT0qr61nIhj01bngfzVin97K5e6QgVCem6Ry8u2M+aCE2f3ncL9Pvwjiy43cqV5UA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756211354; c=relaxed/simple;
-	bh=078pPOc4+Mrq2GiBTcZLDoZe5iF+QRu+RYWcOLy3N5M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=spRH/+iF6yypt+PoeNjh7W0+PT6gw8sN92w5ZpHsO+SNnFIIh9wHpQ7+hiOQwOktCAxI7hxzccvss3hlT68i/Rt+2IIzNreRp+/nInlkcSzRgvQ2fytaDYs0FVIMbaj5Pgh/v4+1Qg4GWYSAhFcLOaRl8hNsrRHBh2Dn1Nh9uTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=csSTlu0V; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756211351;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=QDSuqgH2PK79DxalD4iHZQ97YhSiJJlN/fNRNiH/3wE=;
-	b=csSTlu0Vnr9I+ch1THOwn7QZzTqV1OPRO6tdUfoCBHA5axlnpulhlbWkqvOcmk3dQ+iVtR
-	XX5k50SHZ0z3WyTdzI+miwfimIefUWh5UqnlYvd6ScYM4vc3XmJRWvnD39iG3fo+pTYS8k
-	7pO79TTO/H3RMzhL3zex7t9d0jyYxFQ=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-88-JQ6FyERaNyGsJV7TJqDF_w-1; Tue, 26 Aug 2025 08:29:09 -0400
-X-MC-Unique: JQ6FyERaNyGsJV7TJqDF_w-1
-X-Mimecast-MFC-AGG-ID: JQ6FyERaNyGsJV7TJqDF_w_1756211349
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-70d9a65c355so89805326d6.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 05:29:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756211349; x=1756816149;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QDSuqgH2PK79DxalD4iHZQ97YhSiJJlN/fNRNiH/3wE=;
-        b=DDYHNsaJscktZAIP0iYvkkdE9uzjuwYle/32LToRXJZXjsxaIwdSIxuY3GhXTta5c/
-         UYzEMXb5K2cnQ8V+VHl0IAfkthAozaiVlZ7sgA+SvC1gID/nwksjbz46mMW0eqMK0Bcb
-         A9wcrEPDjrSlB+EqZrML9WltsKFFhMXuAubcFa7dsHuH0r3CPynY5r0EEe/G43AGYIUq
-         rJ7ad+EfiuR6cN4pmHKqyFjYxGkQZwdkUxVK31K7bdz7dx+R6M7apLPXMAQque//NBQn
-         xeStD170ryKmB8RJbcrdaFkzwIqLsrRh/bcGgPWPzgfR4pNQe2USszNTPEWukG6iBOdS
-         tVnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVFrTa6hO9Q+hwtAKxdYamKLqONDFkwwfn9Qlk4wUHl3uLgG4BMlZcUk0RJPJ4fCcOpbjtAwZH34Y+0kw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyvdrGUkYOENOqRkRjBZIQODQ9ScwpoMmoVp2IrcaauUVgCFoeT
-	TYVXqUDA3ZpAAF/v0IevsbiHBker6goCa2vfuVYxxL7XDAwA5xfpynntVXx+Bf6jFstXddGAvKy
-	Q4NMCcNo9eF0Z8Cx0IeIuiEsQihk6PFUYSHNB3Lc1CuXkSIgKZcAA/naOLs8ZpBhM
-X-Gm-Gg: ASbGncvVp80F0YEPjjJ3ArWnzcL5eaAPyWJ4gt5hlHkXdzoHeyPlbJiMMt0La77kU4h
-	nm6XJ9+nvbS3AKaZYls/ACIUO+Od41eNtE64Bt8f52hpkCRxYJoclHIAFr9Adj3LQD+di4kiKuF
-	H7999p14aO2SgKHAvvLSK7/LrkUHUvWFLbC+OjIeSocye7n8BDXAzirxnqwyxp/LBCEan7ytq34
-	g1ZhGmtwX1QM2u6EpPAlkcQK7ixxoGquqPPbn4J4R/nfMzeTuEL3rzr+fdKw69c0C+U+G3lEkjb
-	VksaGjrVKFOm5K7eS2a37od9rzkGjJLeq0OGxiQ2U3W6ST1L6DvYI4hkZT425BgYJ9T1JQPp8v6
-	9C1BmkFJvtg==
-X-Received: by 2002:a05:6214:e4c:b0:70b:ca78:4f52 with SMTP id 6a1803df08f44-70dd59c1084mr12463036d6.14.1756211348872;
-        Tue, 26 Aug 2025 05:29:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHohgBlgoi98YMsIeHajcZi5xUzGFlQJCfrBIsLeUqR6BIOUm9qjIn9QZofOTgx7sTd3jOHZg==
-X-Received: by 2002:a05:6214:e4c:b0:70b:ca78:4f52 with SMTP id 6a1803df08f44-70dd59c1084mr12462676d6.14.1756211348313;
-        Tue, 26 Aug 2025 05:29:08 -0700 (PDT)
-Received: from lbulwahn-thinkpadx1carbongen9.rmtde.csb ([2a02:810d:7e01:ef00:b52:2ad9:f357:f709])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-70da72b04a6sm63527046d6.52.2025.08.26.05.29.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 05:29:07 -0700 (PDT)
-From: Lukas Bulwahn <lbulwahn@redhat.com>
-X-Google-Original-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
-To: Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	Leo Martins <loemra.dev@gmail.com>,
-	linux-btrfs@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
+	s=arc-20240116; t=1756213887; c=relaxed/simple;
+	bh=BAqP7X7PNCuyXBku8FqJkCVu6dEKYvlnXUqpclgUVzo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BPi0Q6sIhs3/9xOj7UQWvhIjU01PntacEaMHbkEAdy+vFEgL2uLFR3CVkhQPshsr+xgM75Vs/tHGSA+mzE4YJ7DHV+jQEO+aMMu0DZKU/PlbhZHccU/t7K/8qQXMEJ8KSrzH+JSVY6pc/hnbRQW7U/MMByokKDzdf5qpV3ko4P8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ukpuwkX3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5bD7Uo/p; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ukpuwkX3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5bD7Uo/p; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 96256211FC;
+	Tue, 26 Aug 2025 13:11:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756213883;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VsK5/Tv+Gky5jivXNK3PJEjWTeh9Qjc7fIj2RjAjYQU=;
+	b=ukpuwkX3EEpFSc/ovhJvNmEwYvWX03k1rfdozog6HXO95N4z0ICnos5tqDhwimE1NOir67
+	GGfvGaimM+uIWy3otPLbhfd4O6mCs1XjMTo0XoKOXp7M12Bqw9OINPzC+GDWZEqmn4UsHp
+	jeqjX/ZcZap47MnAIfiRZtz0Emgrako=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756213883;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VsK5/Tv+Gky5jivXNK3PJEjWTeh9Qjc7fIj2RjAjYQU=;
+	b=5bD7Uo/pG/h8L1+2NHC1Pn+MdObxoB0tqvPIFVWLSpwEyMwPVgJkvdfBNFzN4gOl8QIprt
+	1EVaMN/SMDZ7eeDA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756213883;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VsK5/Tv+Gky5jivXNK3PJEjWTeh9Qjc7fIj2RjAjYQU=;
+	b=ukpuwkX3EEpFSc/ovhJvNmEwYvWX03k1rfdozog6HXO95N4z0ICnos5tqDhwimE1NOir67
+	GGfvGaimM+uIWy3otPLbhfd4O6mCs1XjMTo0XoKOXp7M12Bqw9OINPzC+GDWZEqmn4UsHp
+	jeqjX/ZcZap47MnAIfiRZtz0Emgrako=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756213883;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VsK5/Tv+Gky5jivXNK3PJEjWTeh9Qjc7fIj2RjAjYQU=;
+	b=5bD7Uo/pG/h8L1+2NHC1Pn+MdObxoB0tqvPIFVWLSpwEyMwPVgJkvdfBNFzN4gOl8QIprt
+	1EVaMN/SMDZ7eeDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7BFDF13A31;
+	Tue, 26 Aug 2025 13:11:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id HZQeHnuyrWgaLAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 26 Aug 2025 13:11:23 +0000
+Date: Tue, 26 Aug 2025 15:11:21 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Lukas Bulwahn <lbulwahn@redhat.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, Leo Martins <loemra.dev@gmail.com>,
+	linux-btrfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Lukas Bulwahn <lukas.bulwahn@redhat.com>
-Subject: [PATCH] btrfs: move ref-verify of btrfs_init_data_ref under CONFIG_BTRFS_DEBUG
-Date: Tue, 26 Aug 2025 14:29:01 +0200
-Message-ID: <20250826122901.49526-1-lukas.bulwahn@redhat.com>
-X-Mailer: git-send-email 2.50.1
+Subject: Re: [PATCH] btrfs: move ref-verify of btrfs_init_data_ref under
+ CONFIG_BTRFS_DEBUG
+Message-ID: <20250826131121.GB29826@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250826122901.49526-1-lukas.bulwahn@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250826122901.49526-1-lukas.bulwahn@redhat.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-2.50 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TAGGED_RCPT(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[fb.com,toxicpanda.com,suse.com,gmail.com,vger.kernel.org,redhat.com];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -2.50
 
-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+On Tue, Aug 26, 2025 at 02:29:01PM +0200, Lukas Bulwahn wrote:
+> From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+> 
+> Commit dc9025c1a4d8 ("btrfs: move ref-verify under CONFIG_BTRFS_DEBUG")
+> removes config BTRFS_FS_REF_VERIFY and adds its functionality under config
+> BTRFS_DEBUG. This change misses a reference to BTRFS_FS_REF_VERIFY in the
+> btrfs_init_data_ref() function, though.
+> 
+> Replace this reference to BTRFS_FS_REF_VERIFY in the btrfs_init_data_ref()
+> with BTRFS_DEBUG.
+> 
+> Fixes: dc9025c1a4d8 ("btrfs: move ref-verify under CONFIG_BTRFS_DEBUG")
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
 
-Commit dc9025c1a4d8 ("btrfs: move ref-verify under CONFIG_BTRFS_DEBUG")
-removes config BTRFS_FS_REF_VERIFY and adds its functionality under config
-BTRFS_DEBUG. This change misses a reference to BTRFS_FS_REF_VERIFY in the
-btrfs_init_data_ref() function, though.
-
-Replace this reference to BTRFS_FS_REF_VERIFY in the btrfs_init_data_ref()
-with BTRFS_DEBUG.
-
-Fixes: dc9025c1a4d8 ("btrfs: move ref-verify under CONFIG_BTRFS_DEBUG")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
----
- fs/btrfs/delayed-ref.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index f91062fc1b0b..6170803d8a1b 100644
---- a/fs/btrfs/delayed-ref.c
-+++ b/fs/btrfs/delayed-ref.c
-@@ -969,7 +969,7 @@ void btrfs_init_tree_ref(struct btrfs_ref *generic_ref, int level, u64 mod_root,
- void btrfs_init_data_ref(struct btrfs_ref *generic_ref, u64 ino, u64 offset,
- 			 u64 mod_root, bool skip_qgroup)
- {
--#ifdef CONFIG_BTRFS_FS_REF_VERIFY
-+#ifdef CONFIG_BTRFS_DEBUG
- 	/* If @real_root not set, use @root as fallback */
- 	generic_ref->real_root = mod_root ?: generic_ref->ref_root;
- #endif
--- 
-2.50.1
-
+Thanks, folded to the patch because it's in the development queue.
 
