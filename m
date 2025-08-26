@@ -1,79 +1,78 @@
-Return-Path: <linux-btrfs+bounces-16418-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16420-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CF84B36F00
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 17:56:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCBF6B36EF3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 17:55:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7BBF9852C6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 15:50:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 763F1364A9A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 15:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C45B137429A;
-	Tue, 26 Aug 2025 15:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E6837C109;
+	Tue, 26 Aug 2025 15:42:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="e3wuX2Ra"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="uEB6qwMO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A78374265
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 15:42:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07C4037C0E7
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 15:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756222927; cv=none; b=XDpmqAun1joE4cotLjYujZKZ/6GQVlSn7ME9eQY/5HB701jEN4oyIqYl8lS5uAAYMxgOPB+ddzF/40c+LFoyVdIXk7L7lHc/hCJMiSah/NA6sAzCVqeaacncjMNsONRPYo4oW5gMfIi8Wxqzvj03XWw332iBigEgxJ/xOsu77kY=
+	t=1756222929; cv=none; b=B5Fm0E9VLn75HqkHR1a23h/enb3SmuM557fXyzvq4AxtI2xrWJaZFLd3eTittzWNr3ZUzkeonLc9bSObnKZNJppuBnC/M4X6rE1pt/Jqriu5hJMiXeQj9JVU7lAdNojqWx/ANDltKmSEEC0gHKbShm24A1EPmvZ1M4NKC2caP8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756222927; c=relaxed/simple;
-	bh=dz7pz3D1x9bJz+zoasRoMryJ/WdU8PGe074O2/u02vw=;
+	s=arc-20240116; t=1756222929; c=relaxed/simple;
+	bh=rv5340q/KuN23EdeWFKic/wpgKRZ8sQ4bHsbBfl8dQg=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MrMGNbvw7yhrCTXJNdVm65YLLRwan1vrwZJ8Ne/vKp876MBy8iluhSSRjY0NkgOl2Np2S6qxK1AfeKM6iuzDuHk6w5eNhb/RiSyp2in6t10uANrmoNOgVQ2t7SpqvhgnRIhF4ZjNc0oG/BmAlFZtMigprlI1Ke2IaOMlvLfaGN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=e3wuX2Ra; arc=none smtp.client-ip=209.85.128.179
+	 MIME-Version; b=bNWu9csRNvmLwHyoifWMThcN98CnhR8PJVckwcx+itiAZuf6amfTh/MUIcS+/RcjzR5++WsrrZu1C6QRNR65QAPaHI5lR42iCODEZiQLeoWEaDEcvyX1ae6KJ8BlLE3+cxL7nGmZrwZHj20n+gNkUlwPwnUGxhnvH+GQ8VyFur4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=uEB6qwMO; arc=none smtp.client-ip=209.85.128.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-71e6f84b77eso46763607b3.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 08:42:06 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-71d60150590so42821907b3.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 08:42:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756222925; x=1756827725; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756222927; x=1756827727; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=j69fEwdH/cEI/jfu7NSecLK4sdDP53FUdyNXftrEBYE=;
-        b=e3wuX2RaS/MXYBX8vLiRu5P5U9Hz2i1uEqqtB04whMarZ27hoSjm/Fgyg6tRySZMO+
-         2sGV2VPm2z9txOcNAPE0zIWsjfTb3sa8VYXsQ2Vmw/hcBqkz63FZnSTli2O6jmNfUTj1
-         NQ3Oq1aXfgBOycmw8j+ZHRpqXulquQVYt99Z/fpdPd8iST/J0MfiqD0freN+eVhntQhs
-         bGvUuhCZheDAa5JIFEYxxF8jPa6CqRoAel6nenCGQ1VnO3QncZYYk4At/gTKKLwt9j99
-         CwFKwjHOeleVkeqiY7g7/cHvCdHGownkRCOwutw4KoJr6+Jt/OfrF5w3wGI3TAth2HmZ
-         lZTA==
+        bh=/OxiAeJNWcBsPq9sQg5cm2vq7jTlfXU7OwhPV7MWLho=;
+        b=uEB6qwMOoiEaf4moXTGIxHwzf4w5d6C9v3b0/dHzt76pW7Be9B8BH+zX3JcVMZ2W8F
+         SzB3sDkTMKDpR+s3c1M2TiwQw4/z7kAoywFtjD0rMGzzQoCBldi6Lhf/J8G5iKK4m02E
+         KxH2AwcJ+IUSvCjnj/Eufs/z/23yZuIA6cvcHiwZ2YNe8UP3MV2+DxBTA79McpEWU/B/
+         OmGPDna+c8SN+KLPgmCsXsbH+lWMCHyWBaFBRKbVa36qgOL1Y+Zvvze7LehK886SOuKR
+         chnkFzmGjNEyVPZAuMGY8mEU0+2ua4kAAIHvTiT2upz1yBNrOuFZbC+cuyz7gPp6Kz4u
+         zkIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756222925; x=1756827725;
+        d=1e100.net; s=20230601; t=1756222927; x=1756827727;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=j69fEwdH/cEI/jfu7NSecLK4sdDP53FUdyNXftrEBYE=;
-        b=D15yaHyW/Lu2FOtiL63SREqQQg/URdFiz8s8m5DC/vCvKPK7fSDYAke/O0ZeEhTK0o
-         Y1VejpjN8cjogG9N+fT+1cPMT9pRSVIf26qYrVCkY0ny2HRiWPYptNz5xBloqCBxHxLn
-         tDGvpmOua8y3WoT25DwQ5fbm49V/LKFRJ+gHYs2gFRopNMhW0cKTc1qORCaCxi3Icsam
-         erbQECYYq9YM9tKmtTZHh6tLHsbnz62uWpeJnQ2gsyLqENKMx1vmUvvLrVOKqio9chTR
-         Pg/98+/ejT3JSfutchPK6ZCIPMkKdPynreEBa9DH9/B84j9y/avCEFum/krJOLoyFcf+
-         vaPA==
-X-Forwarded-Encrypted: i=1; AJvYcCXc2dolKWfwQz3N9/QSrooft8OqqAHt4tLKZ1PBOaZjJGoxyVxquoclbPhezaq/fZ2aobBg6KyFnvNA7Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwXl7PR0/ZM/kQIwugdx2pOaXYGygVBQiBNJ2JLeTgGB6TRdgD9
-	rj1YUdSvCRIhK5mz/PbSgaEvIk1qjYOcPSPwr9xomlGhzPSRdik4ljYgKgyVeHg5ZrmeNBz7aN4
-	S/5Zc
-X-Gm-Gg: ASbGncsuwJnS4t2N6w/elPJZMl+HplzpcVXxwWmwcGMG9tt2yGQvtrJHSf9fuXVsh9U
-	b/9QUNZgmh19v3XVOBQWuuU5tHeMCfe4j3sffo3gMz842El3imRO6sYtAxMZCrGV68RwbloK8Mt
-	UEq7EZvvmYxzx0S9j23BqDx2bTn9VXAxtcPm+SHc9sRVtHGHEqoZDg0KlIF/kKj2N0VZmHhyvqI
-	UDQcmx6EoMDbx1z3ul8aB4tFDeNLXmBrKLw1AIEtXIL8Pct3K3e7UiRUB+8h5ZsubIYgDzD73Fo
-	wFj/k9bOw+hEMo7gEA9bIiXiRcs6rACuczsYmCLIt3r28WqCx7MB6F4TpCHkHcd6e1GcC+bX6Uz
-	g1cqn4QhjaEnuFzQZzNs/k3ZJZj/mU2SXYFOWtUYdsEtP/CJF8PWGh+M546Y=
-X-Google-Smtp-Source: AGHT+IGz1x+Q8VhYjUBX1dmi9LUurfOGbDwxfAEfBgQpfJFWyv9xn5pt9VOMnyDNVg5KM8Zj05CrGg==
-X-Received: by 2002:a05:690c:3507:b0:70e:18c0:dabd with SMTP id 00721157ae682-71fdc0dca0fmr200544897b3.0.1756222924991;
-        Tue, 26 Aug 2025 08:42:04 -0700 (PDT)
+        bh=/OxiAeJNWcBsPq9sQg5cm2vq7jTlfXU7OwhPV7MWLho=;
+        b=ekh6sLYIKF76uacxOQiIsN5TnZYiqeh5wav+hFSXkVVa21akaO64qkFbN3ttMvd5JK
+         GIjnTLpifUgAQYJwKufL5nbOBvtKsIdUVcCOJwvam5nUXncFl5pQSd60/Gfadp8ir4Ss
+         DlS5PgsscrfynUCaNijf/xcRlMdl8PIkYavNp7imdmE+nmEJ3vjZAT9eQ8WvgaWafL4t
+         mXWoSd000CTmf7aOMpHGyygQawZ0QAp7WXlIXbunWs7XA+XMVZSw778lJkTdnI0HV7ql
+         HUxL8xrqehLx36+AXFtE3u9CwLuaG2R4H8EMrhbbUEY2J1utXUJVqzPkjeJsAWcitcka
+         hsKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXsNjQSnPqZUi4iVpwvj10Dyefr2QvmQ11Jx8+ov54y8x7PAxpWjlHKSvsJge7OTBO0R85BZ1UNyrDvcw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYyxDUvcK9E6PMx4Elp/5dH8jpi2Sg1THFSwt7TppJx+QIbayz
+	dv77j+Rf9et/bcmycxINotl4vYpy0zSYG5jQpYrwEUy/H1LDIob404N/bMJLPfWflHs=
+X-Gm-Gg: ASbGncsmGGEM0N5mGYS6XuT45zcn+dICy/WVksQnM5F+GS6/U6UpR9/rAMi1qdO3l5X
+	wB88JHrGEAHc7Q4x/G4pw0OKdxhyRtaFF7isJKT9qGCza8P3GQkUt43r+dRcRdQT6s9SQwRGEmc
+	8hw08MHCFja/iIOTBMh1eYIj5Of59QK1uyi9EYb7HzoRu28XEGoq1ZMkgcrY0vpnpeNgQDaCnCe
+	3XAyDHqUPCpOz1O1NwEk5yNkhOFVo7TisI7fpYf+XdavdC29SUTovzpDSBauihwj7M4Lok3EiF7
+	cxzAezq8Mk5H32lh/e6f16H3nwQKGFJzmjReTohxQ/rjkY7VFz8Oke4MYt6WN2z9NZuLKG17d9s
+	wrVi9ZClczDe6yvAclTr3zUFntJj2uA+UFvm18tfRW4G2/F0UGAEO8COB72P5qV9+LYcUYw==
+X-Google-Smtp-Source: AGHT+IFm8jrSmVJUD4m4cBbWsHVbb0tlfxSSSfxl1vpCVzQtcknu2bxRQqSFpPYTNF5kQR73/85h2w==
+X-Received: by 2002:a05:690c:4a12:b0:721:24f7:4c54 with SMTP id 00721157ae682-72124f74e06mr44158917b3.51.1756222926465;
+        Tue, 26 Aug 2025 08:42:06 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-71ff18b3794sm25081317b3.63.2025.08.26.08.42.04
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-71ff1751204sm25411367b3.30.2025.08.26.08.42.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 08:42:04 -0700 (PDT)
+        Tue, 26 Aug 2025 08:42:05 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
@@ -83,9 +82,9 @@ To: linux-fsdevel@vger.kernel.org,
 	brauner@kernel.org,
 	viro@ZenIV.linux.org.uk,
 	amir73il@gmail.com
-Subject: [PATCH v2 52/54] fs: remove I_REFERENCED
-Date: Tue, 26 Aug 2025 11:39:52 -0400
-Message-ID: <6e9872dad14133dd05f1142da46d86e456815208.1756222465.git.josef@toxicpanda.com>
+Subject: [PATCH v2 53/54] fs: remove I_LRU_ISOLATING flag
+Date: Tue, 26 Aug 2025 11:39:53 -0400
+Message-ID: <3b1965d56a463604b5a0a003d32fe6983bc297ba.1756222465.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1756222464.git.josef@toxicpanda.com>
 References: <cover.1756222464.git.josef@toxicpanda.com>
@@ -97,160 +96,176 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Because we have referenced inodes on the LRU we've had to change the
-behavior to make sure we remove the inode from the LRU when we reference
-it.
+If the inode is on the LRU it has a full reference and thus no longer
+needs to be pinned while it is being isolated.
 
-We do this to account for the fact that we may end up with an inode on
-the LRU list, and then unlink the inode. We want the last iput() in the
-unlink() to actually evict the inode ideally, so we don't want it to
-stick around on the LRU and be evicted that way.
-
-With that behavior change we no longer need I_REFERENCED, as we're
-always removing the inode from the LRU list on a subsequent access if
-it's on the LRU.
+Remove the I_LRU_ISOLATING flag and associated helper functions
+(inode_pin_lru_isolating, inode_unpin_lru_isolating, and
+inode_wait_for_lru_isolating) as they are no longer needed.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/inode.c                       | 36 +++++++-------------------------
- include/linux/fs.h               | 22 +++++++++----------
+ fs/inode.c                       | 46 --------------------------------
+ include/linux/fs.h               | 39 ++++++++++++---------------
  include/trace/events/writeback.h |  1 -
- 3 files changed, 17 insertions(+), 42 deletions(-)
+ 3 files changed, 17 insertions(+), 69 deletions(-)
 
 diff --git a/fs/inode.c b/fs/inode.c
-index 8f61761ca021..4f77db7aca75 100644
+index 4f77db7aca75..77f009edd5df 100644
 --- a/fs/inode.c
 +++ b/fs/inode.c
-@@ -591,7 +591,12 @@ static bool inode_del_cached_lru(struct inode *inode)
- 	return false;
- }
- 
--static void __inode_add_lru(struct inode *inode, bool rotate)
-+/*
-+ * Add inode to LRU if needed (inode is unused and clean).
-+ *
-+ * Needs inode->i_lock held.
-+ */
-+void inode_add_lru(struct inode *inode)
- {
- 	bool need_ref = true;
- 
-@@ -614,8 +619,6 @@ static void __inode_add_lru(struct inode *inode, bool rotate)
- 		if (need_ref)
- 			__iget(inode);
- 		this_cpu_inc(nr_unused);
--	} else if (rotate) {
--		inode->i_state |= I_REFERENCED;
+@@ -656,49 +656,6 @@ void inode_lru_list_del(struct inode *inode)
  	}
  }
  
-@@ -630,16 +633,6 @@ struct wait_queue_head *inode_bit_waitqueue(struct wait_bit_queue_entry *wqe,
- }
- EXPORT_SYMBOL(inode_bit_waitqueue);
- 
--/*
-- * Add inode to LRU if needed (inode is unused and clean).
-- *
-- * Needs inode->i_lock held.
-- */
--void inode_add_lru(struct inode *inode)
+-static void inode_pin_lru_isolating(struct inode *inode)
 -{
--	__inode_add_lru(inode, false);
+-	lockdep_assert_held(&inode->i_lock);
+-	WARN_ON(inode->i_state & I_LRU_ISOLATING);
+-	inode->i_state |= I_LRU_ISOLATING;
 -}
 -
- /*
-  * Caller must be holding it's own i_count reference on this inode in order to
-  * prevent this being the final iput.
-@@ -1001,14 +994,6 @@ EXPORT_SYMBOL_GPL(evict_inodes);
+-static void inode_unpin_lru_isolating(struct inode *inode)
+-{
+-	spin_lock(&inode->i_lock);
+-	WARN_ON(!(inode->i_state & I_LRU_ISOLATING));
+-	inode->i_state &= ~I_LRU_ISOLATING;
+-	/* Called with inode->i_lock which ensures memory ordering. */
+-	inode_wake_up_bit(inode, __I_LRU_ISOLATING);
+-	spin_unlock(&inode->i_lock);
+-}
+-
+-static void inode_wait_for_lru_isolating(struct inode *inode)
+-{
+-	struct wait_bit_queue_entry wqe;
+-	struct wait_queue_head *wq_head;
+-
+-	lockdep_assert_held(&inode->i_lock);
+-	if (!(inode->i_state & I_LRU_ISOLATING))
+-		return;
+-
+-	wq_head = inode_bit_waitqueue(&wqe, inode, __I_LRU_ISOLATING);
+-	for (;;) {
+-		prepare_to_wait_event(wq_head, &wqe.wq_entry, TASK_UNINTERRUPTIBLE);
+-		/*
+-		 * Checking I_LRU_ISOLATING with inode->i_lock guarantees
+-		 * memory ordering.
+-		 */
+-		if (!(inode->i_state & I_LRU_ISOLATING))
+-			break;
+-		spin_unlock(&inode->i_lock);
+-		schedule();
+-		spin_lock(&inode->i_lock);
+-	}
+-	finish_wait(wq_head, &wqe.wq_entry);
+-	WARN_ON(inode->i_state & I_LRU_ISOLATING);
+-}
+-
+ /**
+  * inode_sb_list_add - add inode to the superblock list of inodes
+  * @inode: inode to add
+@@ -885,7 +842,6 @@ static void evict(struct inode *inode)
+ 	inode_sb_list_del(inode);
  
- /*
-  * Isolate the inode from the LRU in preparation for freeing it.
-- *
-- * If the inode has the I_REFERENCED flag set, then it means that it has been
-- * used recently - the flag is set in iput_final(). When we encounter such an
-- * inode, clear the flag and move it to the back of the LRU so it gets another
-- * pass through the LRU before it gets reclaimed. This is necessary because of
-- * the fact we are doing lazy LRU updates to minimise lock contention so the
-- * LRU does not have strict ordering. Hence we don't want to reclaim inodes
-- * with this flag set because they are the inodes that are out of order.
-  */
- static enum lru_status inode_lru_isolate(struct list_head *item,
- 		struct list_lru_one *lru, void *arg)
-@@ -1039,13 +1024,6 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
- 		return LRU_REMOVED;
+ 	spin_lock(&inode->i_lock);
+-	inode_wait_for_lru_isolating(inode);
+ 
+ 	/*
+ 	 * Wait for flusher thread to be done with the inode so that filesystem
+@@ -1030,7 +986,6 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
+ 	 * be under pressure before the cache inside the highmem zone.
+ 	 */
+ 	if (inode_has_buffers(inode) || !mapping_empty(&inode->i_data)) {
+-		inode_pin_lru_isolating(inode);
+ 		spin_unlock(&inode->i_lock);
+ 		spin_unlock(&lru->lock);
+ 		if (remove_inode_buffers(inode)) {
+@@ -1042,7 +997,6 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
+ 				__count_vm_events(PGINODESTEAL, reap);
+ 			mm_account_reclaimed_pages(reap);
+ 		}
+-		inode_unpin_lru_isolating(inode);
+ 		return LRU_RETRY;
  	}
  
--	/* Recently referenced inodes get one more pass */
--	if (inode->i_state & I_REFERENCED) {
--		inode->i_state &= ~I_REFERENCED;
--		spin_unlock(&inode->i_lock);
--		return LRU_ROTATE;
--	}
--
- 	/*
- 	 * On highmem systems, mapping_shrinkable() permits dropping
- 	 * page cache in order to free up struct inodes: lowmem might
-@@ -1995,7 +1973,7 @@ static bool maybe_add_lru(struct inode *inode, bool skip_lru)
- 	if (!(sb->s_flags & SB_ACTIVE))
- 		return drop;
- 
--	__inode_add_lru(inode, true);
-+	inode_add_lru(inode);
- 	return drop;
- }
- 
 diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 2a7e7fc96431..39cde53c1b3b 100644
+index 39cde53c1b3b..61113026efd5 100644
 --- a/include/linux/fs.h
 +++ b/include/linux/fs.h
-@@ -715,7 +715,6 @@ is_uncached_acl(struct posix_acl *acl)
-  *			address once it is done. The bit is also used to pin
-  *			the inode in memory for flusher thread.
+@@ -734,9 +734,6 @@ is_uncached_acl(struct posix_acl *acl)
   *
-- * I_REFERENCED		Marks the inode as recently references on the LRU list.
+  * I_PINNING_FSCACHE_WB	Inode is pinning an fscache object for writeback.
   *
-  * I_WB_SWITCH		Cgroup bdi_writeback switching in progress.  Used to
-  *			synchronize competing switching instances and to tell
-@@ -764,17 +763,16 @@ enum inode_state_flags_t {
- 	I_DIRTY_DATASYNC	= (1U << 4),
- 	I_DIRTY_PAGES		= (1U << 5),
- 	I_CLEAR			= (1U << 6),
--	I_REFERENCED		= (1U << 7),
--	I_LINKABLE		= (1U << 8),
--	I_DIRTY_TIME		= (1U << 9),
--	I_WB_SWITCH		= (1U << 10),
--	I_OVL_INUSE		= (1U << 11),
--	I_CREATING		= (1U << 12),
--	I_DONTCACHE		= (1U << 13),
--	I_SYNC_QUEUED		= (1U << 14),
--	I_PINNING_NETFS_WB	= (1U << 15),
--	I_LRU			= (1U << 16),
--	I_CACHED_LRU		= (1U << 17)
-+	I_LINKABLE		= (1U << 7),
-+	I_DIRTY_TIME		= (1U << 8),
-+	I_WB_SWITCH		= (1U << 9),
-+	I_OVL_INUSE		= (1U << 10),
-+	I_CREATING		= (1U << 11),
-+	I_DONTCACHE		= (1U << 12),
-+	I_SYNC_QUEUED		= (1U << 13),
-+	I_PINNING_NETFS_WB	= (1U << 14),
-+	I_LRU			= (1U << 15),
-+	I_CACHED_LRU		= (1U << 16)
+- * I_LRU_ISOLATING	Inode is pinned being isolated from LRU without holding
+- *			i_count.
+- *
+  * I_LRU		Inode is on the LRU list and has an associated LRU
+  *			reference count. Used to distinguish inodes where
+  *			->i_lru is on the LRU and those that are using ->i_lru
+@@ -745,34 +742,32 @@ is_uncached_acl(struct posix_acl *acl)
+  * I_CACHED_LRU		Inode is cached because it is dirty or isn't shrinkable,
+  *			and thus is on the s_cached_inode_lru list.
+  *
+- * __I_{SYNC,NEW,LRU_ISOLATING} are used to derive unique addresses to wait
+- * upon. There's one free address left.
++ * __I_{SYNC,NEW} are used to derive unique addresses to wait upon. There are
++ * two free address left.
+  */
+ 
+ enum inode_state_bits {
+ 	__I_NEW			= 0U,
+-	__I_SYNC		= 1U,
+-	__I_LRU_ISOLATING	= 2U
++	__I_SYNC		= 1U
+ };
+ 
+ enum inode_state_flags_t {
+ 	I_NEW			= (1U << __I_NEW),
+ 	I_SYNC			= (1U << __I_SYNC),
+-	I_LRU_ISOLATING         = (1U << __I_LRU_ISOLATING),
+-	I_DIRTY_SYNC		= (1U << 3),
+-	I_DIRTY_DATASYNC	= (1U << 4),
+-	I_DIRTY_PAGES		= (1U << 5),
+-	I_CLEAR			= (1U << 6),
+-	I_LINKABLE		= (1U << 7),
+-	I_DIRTY_TIME		= (1U << 8),
+-	I_WB_SWITCH		= (1U << 9),
+-	I_OVL_INUSE		= (1U << 10),
+-	I_CREATING		= (1U << 11),
+-	I_DONTCACHE		= (1U << 12),
+-	I_SYNC_QUEUED		= (1U << 13),
+-	I_PINNING_NETFS_WB	= (1U << 14),
+-	I_LRU			= (1U << 15),
+-	I_CACHED_LRU		= (1U << 16)
++	I_DIRTY_SYNC		= (1U << 2),
++	I_DIRTY_DATASYNC	= (1U << 3),
++	I_DIRTY_PAGES		= (1U << 4),
++	I_CLEAR			= (1U << 5),
++	I_LINKABLE		= (1U << 6),
++	I_DIRTY_TIME		= (1U << 7),
++	I_WB_SWITCH		= (1U << 8),
++	I_OVL_INUSE		= (1U << 9),
++	I_CREATING		= (1U << 10),
++	I_DONTCACHE		= (1U << 11),
++	I_SYNC_QUEUED		= (1U << 12),
++	I_PINNING_NETFS_WB	= (1U << 13),
++	I_LRU			= (1U << 14),
++	I_CACHED_LRU		= (1U << 15)
  };
  
  #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
 diff --git a/include/trace/events/writeback.h b/include/trace/events/writeback.h
-index 58ee61f3d91d..b419b8060dda 100644
+index b419b8060dda..a5b73d25eda6 100644
 --- a/include/trace/events/writeback.h
 +++ b/include/trace/events/writeback.h
-@@ -18,7 +18,6 @@
- 		{I_CLEAR,		"I_CLEAR"},		\
- 		{I_SYNC,		"I_SYNC"},		\
- 		{I_DIRTY_TIME,		"I_DIRTY_TIME"},	\
--		{I_REFERENCED,		"I_REFERENCED"},	\
- 		{I_LINKABLE,		"I_LINKABLE"},		\
- 		{I_WB_SWITCH,		"I_WB_SWITCH"},		\
- 		{I_OVL_INUSE,		"I_OVL_INUSE"},		\
+@@ -25,7 +25,6 @@
+ 		{I_DONTCACHE,		"I_DONTCACHE"},		\
+ 		{I_SYNC_QUEUED,		"I_SYNC_QUEUED"},	\
+ 		{I_PINNING_NETFS_WB,	"I_PINNING_NETFS_WB"},	\
+-		{I_LRU_ISOLATING,	"I_LRU_ISOLATING"},	\
+ 		{I_LRU,			"I_LRU"},		\
+ 		{I_CACHED_LRU,		"I_CACHED_LRU"}		\
+ 	)
 -- 
 2.49.0
 
