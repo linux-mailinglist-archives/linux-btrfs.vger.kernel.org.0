@@ -1,208 +1,170 @@
-Return-Path: <linux-btrfs+bounces-16421-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16422-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB458B36F05
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 17:56:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BE27B370C2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 18:56:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D87B985799
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 15:50:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3865C1619F6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 16:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF9EE37C0E7;
-	Tue, 26 Aug 2025 15:42:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBFE32D641A;
+	Tue, 26 Aug 2025 16:56:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="EZAtJaM0"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QqIAF69D";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iv0WVkh8";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QqIAF69D";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iv0WVkh8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA7D37C10F
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 15:42:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D9B2D5C92
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 16:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756222932; cv=none; b=oyNtPeGu4emxOfiTF04j2zWajC5WZ02ylXzB79kEZVgUNV1vhvQv/ZtvgvlvGDILWFMxwQMPMAXPzAIzwsO/7xj5DzNPs/I4Yekm0P1ebK1sYdqnajcc/u7HVQHhDEvGGTaDyERS6Ykm6iOXNbQPrS2o/gJ2lMOy9/8d1v0zBNE=
+	t=1756227384; cv=none; b=Dn6xzIvHoGYjRbTsgjFusMe/v1NjJYWBityIqgAL8zrPBk+HW7Jl1eyGjCoLZh8a0BXch/KpHf1Ky29g1uwVcspyffgTMYMfgMfCZPF8v/9rjfI2UWAxaDYqjUc/LfguwdqEVPFkXs7RFIrpY3Ff3J7GjUg88KII21smDCL+O0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756222932; c=relaxed/simple;
-	bh=6+l4qqO7cPjS+OcdqU60eH6nGjpyL/NFHbenLfxcpMY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U+N9NI4CJs8XrzFeCAnSaJSGwQ6/29y3ZivsDJZMq+6TaFiUN0S/F59AQLkggY2UNIFiFJNtdvLTcfLhtX3OSWTarmVRx+NjAzYzGbidRXAaFT7ZKlinnMYinmOyjS9NubhlC6g+RIoCwnkweAkHaTLPrg/BQjYcWR1mqRFLGfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=EZAtJaM0; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-7200a651345so22684947b3.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 08:42:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756222929; x=1756827729; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0oFgVZN8uruNsS+lAxR5fVz/AF6jQJFAd4yIk2Hgzw4=;
-        b=EZAtJaM0WU0112f52XWnP7zGLYOWofIaG0vGqwFFxLypbdDqpgdOWGYbruEPU4RRcR
-         Lw9ZkwwixxrI+XV8lz1J65wF+1W0MwLlArCD+0hROjw01orB5erApny7CXWs0m9g1Q04
-         rmEKQmr0aJTIn6laJJjM/7ex+JTZvkAuAIqGnPcSq7H7e+P48iVT3CuCptzAeUg8ZFEU
-         xWQ2qVqPTZbdqt2iGbu0PWdpCD15QU2A5uljuHF+bymeKGLxbCuGw1eeu+Zs++HCGCTC
-         RsUR6olvcgk7jBLd+mGzMuRtThjd/m8ZtIY5emx3IbQw92P5Nn+E217RZx0l7oZuVemn
-         fRgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756222929; x=1756827729;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0oFgVZN8uruNsS+lAxR5fVz/AF6jQJFAd4yIk2Hgzw4=;
-        b=Bl1OA2FcT81Qlk55Y8hsPCAWGzxy49xm8zPSOwNJl/pobmv0vT5EZ2jQXKJEAB6xZb
-         Jz54aiz54cdJGE09dmc5YLB9HVp7PNyEz3kYO9EaDMR2hmbkymQ0+IZdx+ZgAQODj6C2
-         4rezbb9ijoqmo4qJT45D7+Y8JbPWnpK3j0nP+WGTCf+yqCmRV4+8Tx974Qc4I1jsmZLA
-         TU9XfCrFS0ZCr8EFFnGMF1oc7XIpvEd1EVzrelNge9Sx/q+pNhs8ZWTSMW05n2v6zNDA
-         8qcG+v8wiZlYrLAn4KJ3dPpmdgHTWjA1o+wA9fIgmfBH3iU9GlBHzvz3c+nbY5wWkuRA
-         Q+ww==
-X-Forwarded-Encrypted: i=1; AJvYcCVRzOIlvXKFZ/+05trayl0heL8jnMAkYWld+Qr5yeHqx2cdwO5lWpRMXYDQCsbbIURHfbvtuC0HJVb9gg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQrA1cnBL/iHMG+h2TPTbJQdR95fkdPlKaO59FXkgjfZ7JLW5y
-	EGGSAISb/fvZea+EeVBI4P+C3fvZVBDrM/3BXw3OFyyT8fQK0X5PqClO06FlHalgKB23g9Vfv/g
-	YJcOl
-X-Gm-Gg: ASbGncuUaP6P4rVe3ldcuUcqjOzej3NVZpALG2vjYblSuGEnH7I9t074rehyNUS3ysc
-	dDXgH1LFPJ9G4RKJ8sx4nW5Pk8cTPT2bOj5jZIQX4isQM5jhPfriI12HY8zJpScW0xhLshWHXSY
-	5xcy/FRUJgOwTgCpnphQvlZEDT8cxLsmgQl/1Uimpvs6A2O0tOPsAuEIKPldeh5/lXTE1YqRkyW
-	3RIdgGLewWeIQUELpURg15cXxMZK4h1W69v+uiV8BbFfZFH65sI+lZkSESSEtMo1FHzNP6GO4WA
-	gjutC9gQVHsT3v+DwSdnCsUqLlJVSK2lVjFJ2Xl+xdj1nIL1xknbTiDPbMRdqLM+69CdHsUy4Di
-	b9QRODivf2av9hnXJpe/jVVAmxSJ+h5kDnCliFHhPakNB1L4aXcXTTuiVGec=
-X-Google-Smtp-Source: AGHT+IEGI2CYZy0ro+Ws/t4KuqvF6KWocw57Sgl44gXc88AHnPC59XkIz9DsxCd0U7oWiB0OUjD3qw==
-X-Received: by 2002:a05:690c:62c8:b0:721:2390:e9ae with SMTP id 00721157ae682-72132cd6c2emr21525677b3.26.1756222928448;
-        Tue, 26 Aug 2025 08:42:08 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-71ff18b3691sm25145037b3.60.2025.08.26.08.42.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 08:42:07 -0700 (PDT)
-From: Josef Bacik <josef@toxicpanda.com>
-To: linux-fsdevel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com,
-	linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	brauner@kernel.org,
-	viro@ZenIV.linux.org.uk,
-	amir73il@gmail.com
-Subject: [PATCH v2 54/54] fs: add documentation explaining the reference count rules for inodes
-Date: Tue, 26 Aug 2025 11:39:54 -0400
-Message-ID: <577f42a4b73d91d537f46e50649d9f6d82206ed7.1756222465.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1756222464.git.josef@toxicpanda.com>
-References: <cover.1756222464.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1756227384; c=relaxed/simple;
+	bh=j07oEU1Q18QMeDsOw7YGhgaN/Uijeh7VWpUfaQDX34c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TLDrRRAoJXjSKl/GMcKCzi6XrvXfZG+WN05ifJEoy4E17Kz2mh56gWzGsetfYA7E8/QzbfCnZnkvh9253K05I/oBCl5PGSpHGydHpFfLJ3Lqv4inA+2vWKGABUds+i6Zfb7Xi8d3YOe9OUk3cYMM9clRhkx/VYXiRpSlOloVstE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QqIAF69D; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iv0WVkh8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QqIAF69D; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iv0WVkh8; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 67D311F78D;
+	Tue, 26 Aug 2025 16:56:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756227380;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ynlTDJkeJP/TOaGt3T7xc/yX6oA6n0j1vtTUtbvFAso=;
+	b=QqIAF69DzSJn7PAzDyRJ5PklOTOUA+yZT2+uYvaR7qbU0uYz8Fb4sb+vrPgOqAvGYPLTED
+	FHOlXoBbDLrCKXizuy4J7pss7OJ/XavlmRDoQIYBt6smEUx5FE3LCWiuSU/hg2cTC9lv3O
+	zAzf0xp80Ctg9620S51gE3RDJ+iWcjI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756227380;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ynlTDJkeJP/TOaGt3T7xc/yX6oA6n0j1vtTUtbvFAso=;
+	b=iv0WVkh8g58Dtpx+76Ac5zMc73umlDdBxnSVHzx+uRXwZGRRf82xlBggR+VzYm3Yt1HZ6K
+	zVAf4arfmQd4JeBQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756227380;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ynlTDJkeJP/TOaGt3T7xc/yX6oA6n0j1vtTUtbvFAso=;
+	b=QqIAF69DzSJn7PAzDyRJ5PklOTOUA+yZT2+uYvaR7qbU0uYz8Fb4sb+vrPgOqAvGYPLTED
+	FHOlXoBbDLrCKXizuy4J7pss7OJ/XavlmRDoQIYBt6smEUx5FE3LCWiuSU/hg2cTC9lv3O
+	zAzf0xp80Ctg9620S51gE3RDJ+iWcjI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756227380;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ynlTDJkeJP/TOaGt3T7xc/yX6oA6n0j1vtTUtbvFAso=;
+	b=iv0WVkh8g58Dtpx+76Ac5zMc73umlDdBxnSVHzx+uRXwZGRRf82xlBggR+VzYm3Yt1HZ6K
+	zVAf4arfmQd4JeBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D22113A31;
+	Tue, 26 Aug 2025 16:56:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id m7YNEjTnrWgOeQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 26 Aug 2025 16:56:20 +0000
+Date: Tue, 26 Aug 2025 18:56:19 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Sun YangKai <sunk67188@gmail.com>
+Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/2] btrfs: more trivial BTRFS_PATH_AUTO_FREE conversions
+Message-ID: <20250826165619.GC29826@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250822130123.GV22430@twin.jikos.cz>
+ <13839041.dW097sEU6C@saltykitkat>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <13839041.dW097sEU6C@saltykitkat>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -4.00
 
-Now that we've made these changes to the inode, document the reference
-count rules in the vfs documentation.
+On Fri, Aug 22, 2025 at 11:51:18PM +0800, Sun YangKai wrote:
+> > Please split the patch to parts that have the described trivial changes,
+> > and then one patch per function in case it's not trivial and needs some
+> > adjustments.
+> 
+> After learning more about the auto-free/cleanup mechanism, I realized that its 
+> only advantage is to eliminate the need for the goto out; pattern. Therefore, 
+> it seems unnecessary to apply this conversion in non-trivial cases.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- Documentation/filesystems/vfs.rst | 86 +++++++++++++++++++++++++++++++
- 1 file changed, 86 insertions(+)
+I wouldn't say it's the only advantage, the code readability is also
+improved. The path is an auxiliary object and if the freeing is handled
+automatically then it reduces the cognitive load and the error cleanup
+paths.
 
-diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
-index 229eb90c96f2..e285cf0499ab 100644
---- a/Documentation/filesystems/vfs.rst
-+++ b/Documentation/filesystems/vfs.rst
-@@ -457,6 +457,92 @@ The Inode Object
- 
- An inode object represents an object within the filesystem.
- 
-+Reference counting rules
-+------------------------
-+
-+The inode is reference counted in two distinct ways, an i_obj_count refcount and
-+an i_count refcount. These control two different lifetimes of the inode. The
-+i_obj_count is the simplest, think of it as a reference count on the object
-+itself. When the i_obj_count reaches zero, the inode is freed.  Inode freeing
-+happens in the RCU context, so the inode is not freed immediately, but rather
-+after a grace period.
-+
-+The i_count reference is the indicator that the inode is "alive". That is to
-+say, it is available for use by all the ways that a user can access the inode.
-+Once this count reaches zero, we begin the process of evicting the inode. This
-+is where the final truncate of an unlinked inode will normally occur.  Once
-+i_count has reached 0, only the final iput() is allowed to do things like
-+writeback, truncate, etc. All users that want to do these style of operation
-+must use igrab() or, in very rare and specific circumstances, use
-+inode_tryget().
-+
-+Every access to an inode must include one of these two references. Generally
-+i_obj_count is reserved for internal VFS references, the s_inode_list for
-+example. All file systems should use igrab()/lookup() to get a live reference on
-+the inode, with very few exceptions.
-+
-+LRU rules
-+---------
-+
-+This is tightly coupled with the reference counting rules above. If the inode is
-+being held on an LRU it must be holding both an i_count and an i_obj_count
-+reference. This is because we need the inode to be "live" while it is on the LRU
-+so it can be accessed again in the future.
-+
-+This is different how we traditionally operated. Traditionally we put 0 refcount
-+objects on the LRU, and then when eviction happened we would remove the inode
-+from the LRU if it had a non-zero refcount, or evict it if it had a zero
-+refcount.
-+
-+Now the rules are much simpler. The LRU has a live reference on the inode. That
-+means that eviction simply has to remove the LRU and call iput_evict(), which
-+will make sure the inode is not re-added to the LRU when putting the reference.
-+If there are other active references to the inode, then when those references
-+are dropped the inode will be added back to the LRU.
-+
-+We have two uses for i_lru, one is for the normal inactive inode LRU, and the
-+other is for pinned inodes that are pinned because they are dirty or because
-+they have pagecache attached to them.
-+
-+The dirty case is easy to reason about. If the inode is dirty we cannot reclaim
-+it until it has been written back. The inode gets added to super block's cached
-+inode list when it is dirty, and removed when it is clean.
-+
-+The pagecache case is a little more complex. The VM wants to pin inodes into
-+memory as long as they have pagecache. This is because the pagecache has much
-+better reclaim logic, it accounts for thrashing and refaulting, so it needs to
-+be the ultimate arbiter of when an inode can be reclaimed. The inode remains on
-+the cached list as long as it has pagecache to account for this. When pages are
-+removed from the inode the VM calls inode_add_lru() to see if the inode still
-+needs to be on the cached list or on the inactive LRU.
-+
-+Holding a live reference on the inode has one drawback. We must remove the inode
-+from the LRU in more cases that previously, which can increase contention on the
-+LRU. In practice this won't be a problem, because we only put the inode on the
-+LRU that doesn't have a dentry associated with it. When we grab a live reference
-+to an inode we must delete it from the LRU in order to make sure that any unlink
-+operation results in the inode being removed on the final iput().
-+
-+Consider the case where we've removed the last dentry from an inode and the
-+inode is added to the LRU list. We then lookup the inode to do an unlink. The
-+final iput in the unlink path will just reduce the i_count to 1, and the inode
-+will not be truly removed until eviction or unmount.  To avoid this we have two
-+choices, make sure we delete the inode from the LRU at
-+drop_nlink()/clear_nlink() time, or make sure we delete the inode from the LRU
-+when we grab a live reference to it. We cannot do the drop at
-+drop_nlink()/clear_nlink() time because we could be holding the i_lock.
-+Additionally there are awkward things like BTRFS subvolume delete that do not
-+use the nlink of the subvolume as the indicator that it needs to be removed, and
-+so we would have to audit all of the possible unlink paths to make sure we
-+properly deleted the inode from the LRU. Instead, to provide a more robust
-+system, we remove an inode from the LRU at igrab() time. Internally where we're
-+already holding the i_lock and use inode_tryget() we will delete the inode from
-+the LRU at this point.
-+
-+The other case is in the unlink path itself. If there was a truncate at all we
-+could have ended up on the cached list, so we already have an elevated i_count.
-+Removing the inode from the LRU explicitly at this stage is necessary to make
-+sure the inode is freed as soon as possible.
- 
- struct inode_operations
- -----------------------
--- 
-2.49.0
+> Moreover, if the cleanup code contains other logic, it might be better to 
+> leave it unchanged even in trivial cases.
 
+Depends on what we want. So far we've started with the path auto
+cleaning but there are more possibilities like using the raw __free
+cleanup with kfree. If this is combined and leads to simpler exit and
+cleanup blocks I think it's worth. In the trivial cases it's clear it
+does not interfere with the rest of the code and does not complicate any
+logic there.
+
+> > The freeing followed by other code can be still converted to auto
+> > cleaning but there must be an explicit path = NULL after the free.
+> 
+> I'm sorry, I didn't understand. If the freeing is followed by other code, 
+> maybe we could just leave them untouched?
+
+Maybe yes, this is up to consideration on a per site basis, I've seen
+examples where conversion to auto path cleaning would not hurt.
+
+Let me know if you want to continue with this because I think you don't
+seem to see the value in the conversions (which is fine of course).
 
