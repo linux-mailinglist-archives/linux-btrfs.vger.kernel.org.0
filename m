@@ -1,75 +1,78 @@
-Return-Path: <linux-btrfs+bounces-16367-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16368-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 402F3B36E00
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 17:41:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61172B36E06
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 17:41:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DDDB366885
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 15:41:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C01E8683322
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 15:41:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB37432143C;
-	Tue, 26 Aug 2025 15:40:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5640341658;
+	Tue, 26 Aug 2025 15:40:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="woRvo9Ht"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="YiATo+JU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D662C3242
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 15:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A0E42AA5
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 15:40:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756222852; cv=none; b=SEHlvdrqYH5wKUB0KarqbDYxOHrg8+7OIzA4Hih4f9W8DH3q7Y+elMRG4LDJmAKcGFh6ZItau/k3btU2AVxouPfV50G9HqPlQleYL4l1cg6oTWeZn08hn1xwtrYrSW6gPT8vo9UcJeQICuKhERRn3JBY1oXCFuL95mF/AXjgFx8=
+	t=1756222854; cv=none; b=Im799aF0C44Nofmo5N6o75cTVAnuXLqIZlRC+5o2oLyti4nN4nI+juuUGYkb6lrai0jAfPgVrd561gHBhlSdKZUL2gwR159mk94tyQD/rB3zHL7lS4k2hxhP3B09XTaEBEEVSIfE4liXltSsBl5qjvw/+y1YWi49jpRgJSNjG6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756222852; c=relaxed/simple;
-	bh=vHDpIlmRrKEsMC6hQOsoWSBV+q9fFoSkGH387M5hfEY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=O27wStZKRGiDQR+kaOQGHmWwzSKljyEEt7cQ+RBmvWiOcv+wRngNDca82mtJ5F5AkjSSSLsGuQcB2dQkVH9kMRwuFOzw7sKuBmJzI8X26zhhHzGLbH/N6sbJuptdceWBhgcTEizlw9Q/l414iV6huUbpRqAlln9+3n6cazhPntk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=woRvo9Ht; arc=none smtp.client-ip=209.85.219.169
+	s=arc-20240116; t=1756222854; c=relaxed/simple;
+	bh=rhD29TyBwq8h5qo5u2gy7an6xEg51+mBGdnf4yae6Ck=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=sPX6u/EbqLPddHL1i277CrmtRKnr9oLBu+pugNqT0tWoG7OM2z0Y5s1vmQ4HGb2amWCHe+PZEY3N9J7dwe0oNb1BkOCWAJdQgX0hh6awdBlKij3KPAGhfeSQ+Eh6HfFZxH0U89FsLRSm/P8DNAeJkOhL0c/or0zvy4gltkdliJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=YiATo+JU; arc=none smtp.client-ip=209.85.128.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-e96c48e7101so2022268276.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 08:40:49 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-71d603b62adso50205597b3.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Aug 2025 08:40:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756222848; x=1756827648; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zMreGU+s+wwVcoeAi06UGUjf1LeI/F4g5bJZVVKKmnA=;
-        b=woRvo9Hta4jWW23pzuqj6hwVnLgsOyq1rHHaQkUZH08Ut5DbbE6Qn5x6iQxTH39QY/
-         9YaEPW2OHGLJvmPIlMMcLvhXgBsa60tLgE1cCDd3qVV+5RGldlPow8bmFOv1rIZ5GLv0
-         6455ghKwSoeCvFXOXMs1Yh3b0TRdu2BAkTDO8qWdoIYAgIyQIunRMR4rCQ4HHMvgO2Jf
-         rssPou0viPGu85ntiECJyquRgrzc1J2J42QQYGEsX7UIwu7tauO2LbT3vcrxsLgsw7K7
-         /JrZFzb4Di+EpeTqf22ygpXp1VQeNskoBhcAALyXbRY1/HCBipKVNthHg7oyqVf464X8
-         10og==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1756222850; x=1756827650; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sDlvag/bPvz3/QR0n8WmjEY1g52KVkFo1GIvqXUN9Rw=;
+        b=YiATo+JUfytMdwA5XJ1U10h1LZSNW/azQhDqlKV0CNKaRGehvSGH8FVygauYcrQ19a
+         m3SgAQG7rp/KY5lD3vtAbTqMv2D7BbQOFbPUUGUGqemY3f/BoAGfULPrzGXwrYFQaf5r
+         rhRx2qTRj4+j2gRyqjhtwU3koxXqMnE8D/I2jgANz3ZRFpGj/0sDS65B2QSVUReSX9Ij
+         vs76oczoPqWpcgsHWRilF75lS9KU7Q0ZlaU1njjg42OZ0HpkY6hsE4rhWuS2YBLD99Yo
+         BvEgME3T1GR/KlF4+Q8B2uYq8sWK+LuUQMt/bWzL7CfzmF0ku6qalkak6SYEMBi+gU23
+         67FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756222848; x=1756827648;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zMreGU+s+wwVcoeAi06UGUjf1LeI/F4g5bJZVVKKmnA=;
-        b=ghiIdAsGXmj5+TDUdSHFNcGJoJT15F2yJSUjx+9TgaSFlbKylL4PpkSx+Uuqfxe5SX
-         aCF25TAApFVBYmvtlatJu/nRjEoMd9zB6PkR9fyeOgrLtX3B+mSgG5FtEjwXDldQvtkF
-         oL+X7bqXnC1h83KJBrFs36/G4K/pH9mh4odPj0GA43igazvtUoF91IrRuxhmIw1+ZUbi
-         qQfYkMTe4A9Nk6Pwu+Ap9s5qVoX65pJERpiTaK0bI7e6ZxIZb5L+RemhqMaKEJyALbM4
-         S2PSkT3UnS4s1c6YtE0Zb7HSw3u46uGo84YXaQDqx2Ah9bG0wrpTPsOS7Y9O36zXyoR5
-         Wx2g==
-X-Forwarded-Encrypted: i=1; AJvYcCW62BATKXPTrWoehCD7YD+CpoU8uZ8qoFql/stfdgkhfbnUzPoxSW9/D3SXHJPQJe5TpvbXFr2s5RhtkQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwlUmgbzS+JCIN5vnlxDY2iYK/It+bktAx5WP5+GaWbUhlSlaw5
-	/T7ZgEkEs0owGZ5xGal1O31P3HBGijqFM6C6ujJALeJyBjtTJzkGb9Q3AXu9RwjxGbI=
-X-Gm-Gg: ASbGncsaEuyZte05TLXSKOi6VA7MX+9WQLtbfOjV5m5re1dLp3EV4jAkQJE8QgIxjCK
-	sh4Vv7IoOGY/spAszPZyvZcDIYeh2rxOwQT3bGkdvhgCXK3xRZN10Ht5g/cgtrR8Otk1kYYtqYV
-	/KaTCmJCzo8NHmOfCvZEOcuVX4+y8Lqe9Cx3xTYJQo6bMcvy2FBgka49AQVee7MMiD0+l+yhz1r
-	LwUuXBzvFatDmqd8eqIPAi5LtN9zb4RCVR4mC3lHAgXfULFcDE+zpmEXyYvUFzr9MmxjNUS2drx
-	phlqZ7EVvOwyHCYYW+ccXKMyKfxOU42IFHIJjYezUsAt22yALK0rvXMJGO6CZU+IMsrrML2VeqZ
-	CryYDTGSQreN260gDphfeBYUTEHiUpHIPeRioOQItyHBeIuHMRla3YfUyKYVrS25MZlpPhQ==
-X-Google-Smtp-Source: AGHT+IGsVYuqRBvkdR7S92vGQPz2qGvqEOwVMV0wcO4JgtzB3RgwhEaAV+Oq4KYFgPRLTlJZcz4v2A==
-X-Received: by 2002:a05:6902:188e:b0:e95:3ada:4d2 with SMTP id 3f1490d57ef6-e953ada05acmr11464034276.47.1756222845145;
-        Tue, 26 Aug 2025 08:40:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1756222850; x=1756827650;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sDlvag/bPvz3/QR0n8WmjEY1g52KVkFo1GIvqXUN9Rw=;
+        b=dp+cp9MycWiy0KJYwH548mUQ6pfTi9EfkhgCQqQeUKZCJRH2rHikaMgJcroIMqkWwr
+         qlusOI6CQSWtCEp9x8YWVOfONtO8APNUIZoqWkJ/ZLRvU4n+MnW/iU3+eP90FQu68Xhk
+         Cg0TDmKd+G16igXf07Y/eMsrse9+6wWLa6xdy8Ubjukswm2O/y+85lQogzJLJ2hTPbVE
+         yzXO/zAIcVaaL6JDozjlQ+MPIktRzkfRJBw8CNnaoVqODRESolaps/2d1HT9kN1VDvtL
+         9fxLCDP7SX/kVjuTzluJifa0ZyCW4ZnEoed53X4CpVuTwYVB0OChdUUb72/zydWbjvr7
+         745A==
+X-Forwarded-Encrypted: i=1; AJvYcCW3cB5GA54GgQ2GBUrlNpCDQTzwow0kl/c+Bsr7wcBCppNDOrfngoAOokxes92ZLyI6yB294gd46MbLGg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQzVMLFbULQ04mi7gEsfL4fGzrCcjJnY6Xv2myM6EP9drCzg3D
+	haRfhz0zhZt4CnmzOPw+7MCNYN4k5hq4a0KGwQVMX2AbdzZaH3bdrgM5LggpLxyQ/AY=
+X-Gm-Gg: ASbGncvQv2GqvFCgl1KPrP9c+wsmBFnmw3JiFulb3u6Nm6+A1em3B/DjanqU/BGO16V
+	msJUV1Mb4kZyVpBmOV71wt5jj3dbvcR9aQo/QTBQtB/ljZyxSnLt5OUqEfroXJPjl2K5bnYdcsI
+	dYe9Ljz1SkWuDOJOPZj+abGImg5GKBzAzcQU9yL+twpah2DekYonxDIT2D+dlzE96u+/mkypKNf
+	k63CQDtmPziObd5xuI1fjWfXe3NC3hG+K3KG8AOvNYm3zvTq6TB1P56PWplozGuDiiUHdPl2SLR
+	doNK4L1FOJTqCaH4ZO8z87woBjla2L+kqxHblP692E1GBe3BeV1QKrvFZzdc9vDJvptNwTIv4Fk
+	Ldqlq8Rfn+an2BoDUhg22QwlH0Prf1U9PI02eoqxa6FXNCqzGthrlrxKA/5U=
+X-Google-Smtp-Source: AGHT+IH6rdzr5te8aZJDcRA9VKu/Q+xG9a1l6FFd6fjOKS/W/rnmjxFWmlWnyD1bFZbkl+J1artcuQ==
+X-Received: by 2002:a05:690c:7344:b0:71f:b944:1053 with SMTP id 00721157ae682-71fdc56bd1fmr188007007b3.54.1756222849495;
+        Tue, 26 Aug 2025 08:40:49 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e96ea63fab0sm169411276.8.2025.08.26.08.40.44
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-7211b2d1d4esm9733057b3.52.2025.08.26.08.40.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 08:40:44 -0700 (PDT)
+        Tue, 26 Aug 2025 08:40:48 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
@@ -79,10 +82,12 @@ To: linux-fsdevel@vger.kernel.org,
 	brauner@kernel.org,
 	viro@ZenIV.linux.org.uk,
 	amir73il@gmail.com
-Subject: [PATCH v2 00/54] fs: rework inode reference counting
-Date: Tue, 26 Aug 2025 11:39:00 -0400
-Message-ID: <cover.1756222464.git.josef@toxicpanda.com>
+Subject: [PATCH v2 01/54] fs: make the i_state flags an enum
+Date: Tue, 26 Aug 2025 11:39:01 -0400
+Message-ID: <0da9348da6ece0dce12fccec07b1dd2b8e4cfdab.1756222464.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <cover.1756222464.git.josef@toxicpanda.com>
+References: <cover.1756222464.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -91,182 +96,272 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-v1: https://lore.kernel.org/linux-fsdevel/cover.1755806649.git.josef@toxicpanda.com/
+Adjusting i_state flags always means updating the values manually. Bring
+these forward into the 2020's and make a nice clean macro for defining
+the i_state values as an enum, providing __ variants for the cases where
+we need the bit position instead of the actual value, and leaving the
+actual NAME as the 1U << bit value.
 
-v1->v2:
-- Fixed all the things that Christian pointed out.
-- Re-ordered some of the patches to the front in case Christian wants to take
-  those first.
-- Added a new patch for reading the current i_count and propagated that
-  everywhere.
-- Fixed the cifs build breakage.
-- Removed I_REFERENCED since it's no longer needed.
-- Remove I_LRU_ISOLATING since it's no longer needed.
-- Reworked the drop_nlink/clear_nlink part to simply remove the inode from the
-  LRU in the unlink path, and made this its own patch to make the behavior
-  change clear.
-- NOTE: I'm re-running fstests on this now, there was a slight issue with
-  removing the drop_nlink/clear_nlink patch and so I had to add the unlink/rmdir
-  patch to resolve it. I assume everything will be fine but just an FYI.
-- NOTE #2: I reordered stuff, and I did a rebase and rebuild at every step, but
-  I noticed this morning I still missed an odd rebase artifact, so by all means
-  validate I didn't make any silly mistakes on the in-between patches.
+Reviewed-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ include/linux/fs.h | 229 +++++++++++++++++++++++----------------------
+ 1 file changed, 117 insertions(+), 112 deletions(-)
 
---- Original email ---
-
-Hello,
-
-This series is the first part of a larger body of work geared towards solving a
-variety of scalability issues in the VFS.
-
-We have historically had a variety of foot-guns related to inode freeing.  We
-have I_WILL_FREE and I_FREEING flags that indicated when the inode was in the
-different stages of being reclaimed.  This lead to confusion, and bugs in cases
-where one was checked but the other wasn't.  Additionally, it's frankly
-confusing to have both of these flags and to deal with them in practice.
-
-However, this exists because we have an odd behavior with inodes, we allow them
-to have a 0 reference count and still be usable. This again is a pretty unfun
-footgun, because generally speaking we want reference counts to be meaningful.
-
-The problem with the way we reference inodes is the final iput(). The majority
-of file systems do their final truncate of a unlinked inode in their
-->evict_inode() callback, which happens when the inode is actually being
-evicted. This can be a long process for large inodes, and thus isn't safe to
-happen in a variety of contexts. Btrfs, for example, has an entire delayed iput
-infrastructure to make sure that we do not do the final iput() in a dangerous
-context. We cannot expand the use of this reference count to all the places the
-inode is used, because there are cases where we would need to iput() in an IRQ
-context  (end folio writeback) or other unsafe context, which is not allowed.
-
-To that end, resolve this by introducing a new i_obj_count reference count. This
-will be used to control when we can actually free the inode. We then can use
-this reference count in all the places where we may reference the inode. This
-removes another huge footgun, having ways to access the inode itself without
-having an actual reference to it. The writeback code is one of the main places
-where we see this. Inodes end up on all sorts of lists here without a proper
-reference count. This allows us to protect the inode from being freed by giving
-this an other code mechanisms to protect their access to the inode.
-
-With this we can separate the concept of the inode being usable, and the inode
-being freed.  The next part of the patch series is to stop allowing for inodes
-to have an i_count of 0 and still be viable.  This comes with some warts. The
-biggest wart is now if we choose to cache inodes in the LRU list we have to
-remove the inode from the LRU list if we access it once it's on the LRU list.
-This will result in more contention on the lru list lock, but in practice we
-rarely have inodes that do not have a dentry, and if we do that inode is not
-long for this world.
-
-With not allowing inodes to hit a refcount of 0, we can take advantage of that
-common pattern of using refcount_inc_not_zero() in all of the lockless places
-where we do inode lookup in cache.  From there we can change all the users who
-check I_WILL_FREE or I_FREEING to simply check the i_count. If it is 0 then they
-aren't allowed to do their work, othrwise they can proceed as normal.
-
-With all of that in place we can finally remove these two flags.
-
-This is a large series, but it is mostly mechanical. I've kept the patches very
-small, to make it easy to review and logic about each change. I have run this
-through fstests for btrfs and ext4, xfs is currently going. I wanted to get this
-out for review to make sure this big design changes are reasonable to everybody.
-
-The series is based on vfs/vfs.all branch, which is based on 6.9-rc1. Thanks,
-
-Josef
-
-Josef Bacik (54):
-  fs: make the i_state flags an enum
-  fs: add an icount_read helper
-  fs: rework iput logic
-  fs: add an i_obj_count refcount to the inode
-  fs: hold an i_obj_count reference in wait_sb_inodes
-  fs: hold an i_obj_count reference for the i_wb_list
-  fs: hold an i_obj_count reference for the i_io_list
-  fs: hold an i_obj_count reference in writeback_sb_inodes
-  fs: hold an i_obj_count reference while on the hashtable
-  fs: hold an i_obj_count reference while on the LRU list
-  fs: hold an i_obj_count reference while on the sb inode list
-  fs: stop accessing ->i_count directly in f2fs and gfs2
-  fs: hold an i_obj_count when we have an i_count reference
-  fs: add an I_LRU flag to the inode
-  fs: maintain a list of pinned inodes
-  fs: delete the inode from the LRU list on lookup
-  fs: remove the inode from the LRU list on unlink/rmdir
-  fs: change evict_inodes to use iput instead of evict directly
-  fs: hold a full ref while the inode is on a LRU
-  fs: disallow 0 reference count inodes
-  fs: make evict_inodes add to the dispose list under the i_lock
-  fs: convert i_count to refcount_t
-  fs: use refcount_inc_not_zero in igrab
-  fs: use inode_tryget in find_inode*
-  fs: update find_inode_*rcu to check the i_count count
-  fs: use igrab in insert_inode_locked
-  fs: remove I_WILL_FREE|I_FREEING check from __inode_add_lru
-  fs: remove I_WILL_FREE|I_FREEING check in inode_pin_lru_isolating
-  fs: use inode_tryget in evict_inodes
-  fs: change evict_dentries_for_decrypted_inodes to use refcount
-  block: use igrab in sync_bdevs
-  bcachefs: use the refcount instead of I_WILL_FREE|I_FREEING
-  btrfs: don't check I_WILL_FREE|I_FREEING
-  fs: use igrab in drop_pagecache_sb
-  fs: stop checking I_FREEING in d_find_alias_rcu
-  ext4: stop checking I_WILL_FREE|IFREEING in ext4_check_map_extents_env
-  fs: remove I_WILL_FREE|I_FREEING from fs-writeback.c
-  gfs2: remove I_WILL_FREE|I_FREEING usage
-  fs: remove I_WILL_FREE|I_FREEING check from dquot.c
-  notify: remove I_WILL_FREE|I_FREEING checks in fsnotify_unmount_inodes
-  xfs: remove I_FREEING check
-  landlock: remove I_FREEING|I_WILL_FREE check
-  fs: change inode_is_dirtytime_only to use refcount
-  btrfs: remove references to I_FREEING
-  ext4: remove reference to I_FREEING in inode.c
-  ext4: remove reference to I_FREEING in orphan.c
-  pnfs: use i_count refcount to determine if the inode is going away
-  fs: remove some spurious I_FREEING references in inode.c
-  xfs: remove reference to I_FREEING|I_WILL_FREE
-  ocfs2: do not set I_WILL_FREE
-  fs: remove I_FREEING|I_WILL_FREE
-  fs: remove I_REFERENCED
-  fs: remove I_LRU_ISOLATING flag
-  fs: add documentation explaining the reference count rules for inodes
-
- Documentation/filesystems/vfs.rst        |  86 +++++
- arch/powerpc/platforms/cell/spufs/file.c |   2 +-
- block/bdev.c                             |   8 +-
- fs/bcachefs/fs.c                         |   3 +-
- fs/btrfs/inode.c                         |  11 +-
- fs/ceph/mds_client.c                     |   2 +-
- fs/crypto/keyring.c                      |   7 +-
- fs/dcache.c                              |   4 +-
- fs/drop_caches.c                         |  11 +-
- fs/ext4/ialloc.c                         |   4 +-
- fs/ext4/inode.c                          |   8 +-
- fs/ext4/orphan.c                         |   6 +-
- fs/f2fs/super.c                          |   4 +-
- fs/fs-writeback.c                        | 105 ++++--
- fs/gfs2/ops_fstype.c                     |  17 +-
- fs/hpfs/inode.c                          |   2 +-
- fs/inode.c                               | 422 ++++++++++++++---------
- fs/internal.h                            |   1 +
- fs/namei.c                               |  30 +-
- fs/nfs/inode.c                           |   4 +-
- fs/nfs/pnfs.c                            |   2 +-
- fs/notify/fsnotify.c                     |  26 +-
- fs/ocfs2/inode.c                         |   4 -
- fs/quota/dquot.c                         |   6 +-
- fs/smb/client/inode.c                    |   2 +-
- fs/super.c                               |   3 +
- fs/ubifs/super.c                         |   2 +-
- fs/xfs/scrub/common.c                    |   3 +-
- fs/xfs/xfs_bmap_util.c                   |   2 +-
- fs/xfs/xfs_inode.c                       |   2 +-
- fs/xfs/xfs_trace.h                       |   2 +-
- include/linux/fs.h                       | 285 ++++++++-------
- include/trace/events/filelock.h          |   2 +-
- include/trace/events/writeback.h         |   6 +-
- security/landlock/fs.c                   |  22 +-
- 35 files changed, 684 insertions(+), 422 deletions(-)
-
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index a346422f5066..3dbaf1ca1828 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -665,6 +665,122 @@ is_uncached_acl(struct posix_acl *acl)
+ #define IOP_MGTIME	0x0020
+ #define IOP_CACHED_LINK	0x0040
+ 
++/*
++ * Inode state bits.  Protected by inode->i_lock
++ *
++ * Four bits determine the dirty state of the inode: I_DIRTY_SYNC,
++ * I_DIRTY_DATASYNC, I_DIRTY_PAGES, and I_DIRTY_TIME.
++ *
++ * Four bits define the lifetime of an inode.  Initially, inodes are I_NEW,
++ * until that flag is cleared.  I_WILL_FREE, I_FREEING and I_CLEAR are set at
++ * various stages of removing an inode.
++ *
++ * Two bits are used for locking and completion notification, I_NEW and I_SYNC.
++ *
++ * I_DIRTY_SYNC		Inode is dirty, but doesn't have to be written on
++ *			fdatasync() (unless I_DIRTY_DATASYNC is also set).
++ *			Timestamp updates are the usual cause.
++ * I_DIRTY_DATASYNC	Data-related inode changes pending.  We keep track of
++ *			these changes separately from I_DIRTY_SYNC so that we
++ *			don't have to write inode on fdatasync() when only
++ *			e.g. the timestamps have changed.
++ * I_DIRTY_PAGES	Inode has dirty pages.  Inode itself may be clean.
++ * I_DIRTY_TIME		The inode itself has dirty timestamps, and the
++ *			lazytime mount option is enabled.  We keep track of this
++ *			separately from I_DIRTY_SYNC in order to implement
++ *			lazytime.  This gets cleared if I_DIRTY_INODE
++ *			(I_DIRTY_SYNC and/or I_DIRTY_DATASYNC) gets set. But
++ *			I_DIRTY_TIME can still be set if I_DIRTY_SYNC is already
++ *			in place because writeback might already be in progress
++ *			and we don't want to lose the time update
++ * I_NEW		Serves as both a mutex and completion notification.
++ *			New inodes set I_NEW.  If two processes both create
++ *			the same inode, one of them will release its inode and
++ *			wait for I_NEW to be released before returning.
++ *			Inodes in I_WILL_FREE, I_FREEING or I_CLEAR state can
++ *			also cause waiting on I_NEW, without I_NEW actually
++ *			being set.  find_inode() uses this to prevent returning
++ *			nearly-dead inodes.
++ * I_WILL_FREE		Must be set when calling write_inode_now() if i_count
++ *			is zero.  I_FREEING must be set when I_WILL_FREE is
++ *			cleared.
++ * I_FREEING		Set when inode is about to be freed but still has dirty
++ *			pages or buffers attached or the inode itself is still
++ *			dirty.
++ * I_CLEAR		Added by clear_inode().  In this state the inode is
++ *			clean and can be destroyed.  Inode keeps I_FREEING.
++ *
++ *			Inodes that are I_WILL_FREE, I_FREEING or I_CLEAR are
++ *			prohibited for many purposes.  iget() must wait for
++ *			the inode to be completely released, then create it
++ *			anew.  Other functions will just ignore such inodes,
++ *			if appropriate.  I_NEW is used for waiting.
++ *
++ * I_SYNC		Writeback of inode is running. The bit is set during
++ *			data writeback, and cleared with a wakeup on the bit
++ *			address once it is done. The bit is also used to pin
++ *			the inode in memory for flusher thread.
++ *
++ * I_REFERENCED		Marks the inode as recently references on the LRU list.
++ *
++ * I_WB_SWITCH		Cgroup bdi_writeback switching in progress.  Used to
++ *			synchronize competing switching instances and to tell
++ *			wb stat updates to grab the i_pages lock.  See
++ *			inode_switch_wbs_work_fn() for details.
++ *
++ * I_OVL_INUSE		Used by overlayfs to get exclusive ownership on upper
++ *			and work dirs among overlayfs mounts.
++ *
++ * I_CREATING		New object's inode in the middle of setting up.
++ *
++ * I_DONTCACHE		Evict inode as soon as it is not used anymore.
++ *
++ * I_SYNC_QUEUED	Inode is queued in b_io or b_more_io writeback lists.
++ *			Used to detect that mark_inode_dirty() should not move
++ *			inode between dirty lists.
++ *
++ * I_PINNING_FSCACHE_WB	Inode is pinning an fscache object for writeback.
++ *
++ * I_LRU_ISOLATING	Inode is pinned being isolated from LRU without holding
++ *			i_count.
++ *
++ * Q: What is the difference between I_WILL_FREE and I_FREEING?
++ *
++ * __I_{SYNC,NEW,LRU_ISOLATING} are used to derive unique addresses to wait
++ * upon. There's one free address left.
++ */
++
++enum inode_state_bits {
++	__I_NEW			= 0U,
++	__I_SYNC		= 1U,
++	__I_LRU_ISOLATING	= 2U
++};
++
++enum inode_state_flags_t {
++	I_NEW			= (1U << __I_NEW),
++	I_SYNC			= (1U << __I_SYNC),
++	I_LRU_ISOLATING         = (1U << __I_LRU_ISOLATING),
++	I_DIRTY_SYNC		= (1U << 3),
++	I_DIRTY_DATASYNC	= (1U << 4),
++	I_DIRTY_PAGES		= (1U << 5),
++	I_WILL_FREE		= (1U << 6),
++	I_FREEING		= (1U << 7),
++	I_CLEAR			= (1U << 8),
++	I_REFERENCED		= (1U << 9),
++	I_LINKABLE		= (1U << 10),
++	I_DIRTY_TIME		= (1U << 11),
++	I_WB_SWITCH		= (1U << 12),
++	I_OVL_INUSE		= (1U << 13),
++	I_CREATING		= (1U << 14),
++	I_DONTCACHE		= (1U << 15),
++	I_SYNC_QUEUED		= (1U << 16),
++	I_PINNING_NETFS_WB	= (1U << 17)
++};
++
++#define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
++#define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
++#define I_DIRTY_ALL (I_DIRTY | I_DIRTY_TIME)
++
+ /*
+  * Keep mostly read-only and often accessed (especially for
+  * the RCU path lookup and 'stat' data) fields at the beginning
+@@ -723,7 +839,7 @@ struct inode {
+ #endif
+ 
+ 	/* Misc */
+-	u32			i_state;
++	enum inode_state_flags_t	i_state;
+ 	/* 32-bit hole */
+ 	struct rw_semaphore	i_rwsem;
+ 
+@@ -2483,117 +2599,6 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+ 	};
+ }
+ 
+-/*
+- * Inode state bits.  Protected by inode->i_lock
+- *
+- * Four bits determine the dirty state of the inode: I_DIRTY_SYNC,
+- * I_DIRTY_DATASYNC, I_DIRTY_PAGES, and I_DIRTY_TIME.
+- *
+- * Four bits define the lifetime of an inode.  Initially, inodes are I_NEW,
+- * until that flag is cleared.  I_WILL_FREE, I_FREEING and I_CLEAR are set at
+- * various stages of removing an inode.
+- *
+- * Two bits are used for locking and completion notification, I_NEW and I_SYNC.
+- *
+- * I_DIRTY_SYNC		Inode is dirty, but doesn't have to be written on
+- *			fdatasync() (unless I_DIRTY_DATASYNC is also set).
+- *			Timestamp updates are the usual cause.
+- * I_DIRTY_DATASYNC	Data-related inode changes pending.  We keep track of
+- *			these changes separately from I_DIRTY_SYNC so that we
+- *			don't have to write inode on fdatasync() when only
+- *			e.g. the timestamps have changed.
+- * I_DIRTY_PAGES	Inode has dirty pages.  Inode itself may be clean.
+- * I_DIRTY_TIME		The inode itself has dirty timestamps, and the
+- *			lazytime mount option is enabled.  We keep track of this
+- *			separately from I_DIRTY_SYNC in order to implement
+- *			lazytime.  This gets cleared if I_DIRTY_INODE
+- *			(I_DIRTY_SYNC and/or I_DIRTY_DATASYNC) gets set. But
+- *			I_DIRTY_TIME can still be set if I_DIRTY_SYNC is already
+- *			in place because writeback might already be in progress
+- *			and we don't want to lose the time update
+- * I_NEW		Serves as both a mutex and completion notification.
+- *			New inodes set I_NEW.  If two processes both create
+- *			the same inode, one of them will release its inode and
+- *			wait for I_NEW to be released before returning.
+- *			Inodes in I_WILL_FREE, I_FREEING or I_CLEAR state can
+- *			also cause waiting on I_NEW, without I_NEW actually
+- *			being set.  find_inode() uses this to prevent returning
+- *			nearly-dead inodes.
+- * I_WILL_FREE		Must be set when calling write_inode_now() if i_count
+- *			is zero.  I_FREEING must be set when I_WILL_FREE is
+- *			cleared.
+- * I_FREEING		Set when inode is about to be freed but still has dirty
+- *			pages or buffers attached or the inode itself is still
+- *			dirty.
+- * I_CLEAR		Added by clear_inode().  In this state the inode is
+- *			clean and can be destroyed.  Inode keeps I_FREEING.
+- *
+- *			Inodes that are I_WILL_FREE, I_FREEING or I_CLEAR are
+- *			prohibited for many purposes.  iget() must wait for
+- *			the inode to be completely released, then create it
+- *			anew.  Other functions will just ignore such inodes,
+- *			if appropriate.  I_NEW is used for waiting.
+- *
+- * I_SYNC		Writeback of inode is running. The bit is set during
+- *			data writeback, and cleared with a wakeup on the bit
+- *			address once it is done. The bit is also used to pin
+- *			the inode in memory for flusher thread.
+- *
+- * I_REFERENCED		Marks the inode as recently references on the LRU list.
+- *
+- * I_WB_SWITCH		Cgroup bdi_writeback switching in progress.  Used to
+- *			synchronize competing switching instances and to tell
+- *			wb stat updates to grab the i_pages lock.  See
+- *			inode_switch_wbs_work_fn() for details.
+- *
+- * I_OVL_INUSE		Used by overlayfs to get exclusive ownership on upper
+- *			and work dirs among overlayfs mounts.
+- *
+- * I_CREATING		New object's inode in the middle of setting up.
+- *
+- * I_DONTCACHE		Evict inode as soon as it is not used anymore.
+- *
+- * I_SYNC_QUEUED	Inode is queued in b_io or b_more_io writeback lists.
+- *			Used to detect that mark_inode_dirty() should not move
+- * 			inode between dirty lists.
+- *
+- * I_PINNING_FSCACHE_WB	Inode is pinning an fscache object for writeback.
+- *
+- * I_LRU_ISOLATING	Inode is pinned being isolated from LRU without holding
+- *			i_count.
+- *
+- * Q: What is the difference between I_WILL_FREE and I_FREEING?
+- *
+- * __I_{SYNC,NEW,LRU_ISOLATING} are used to derive unique addresses to wait
+- * upon. There's one free address left.
+- */
+-#define __I_NEW			0
+-#define I_NEW			(1 << __I_NEW)
+-#define __I_SYNC		1
+-#define I_SYNC			(1 << __I_SYNC)
+-#define __I_LRU_ISOLATING	2
+-#define I_LRU_ISOLATING		(1 << __I_LRU_ISOLATING)
+-
+-#define I_DIRTY_SYNC		(1 << 3)
+-#define I_DIRTY_DATASYNC	(1 << 4)
+-#define I_DIRTY_PAGES		(1 << 5)
+-#define I_WILL_FREE		(1 << 6)
+-#define I_FREEING		(1 << 7)
+-#define I_CLEAR			(1 << 8)
+-#define I_REFERENCED		(1 << 9)
+-#define I_LINKABLE		(1 << 10)
+-#define I_DIRTY_TIME		(1 << 11)
+-#define I_WB_SWITCH		(1 << 12)
+-#define I_OVL_INUSE		(1 << 13)
+-#define I_CREATING		(1 << 14)
+-#define I_DONTCACHE		(1 << 15)
+-#define I_SYNC_QUEUED		(1 << 16)
+-#define I_PINNING_NETFS_WB	(1 << 17)
+-
+-#define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
+-#define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
+-#define I_DIRTY_ALL (I_DIRTY | I_DIRTY_TIME)
+-
+ extern void __mark_inode_dirty(struct inode *, int);
+ static inline void mark_inode_dirty(struct inode *inode)
+ {
 -- 
 2.49.0
 
