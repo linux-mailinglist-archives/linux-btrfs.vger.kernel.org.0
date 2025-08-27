@@ -1,145 +1,193 @@
-Return-Path: <linux-btrfs+bounces-16468-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16469-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA5F0B38BEA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Aug 2025 00:01:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D64FDB38CB2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Aug 2025 00:08:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC1D61C22C42
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 22:02:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19F71161527
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 22:08:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241C7212548;
-	Wed, 27 Aug 2025 22:01:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 147F3312815;
+	Wed, 27 Aug 2025 22:05:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="U/fGG2Uw"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="azLv6Jki"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4241E0DE3
-	for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 22:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8F2305E19
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 22:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756332105; cv=none; b=PZ/eAdSyCGDWu809qvCW9kSEkjQi/OIAB/hHbnolBuxCvbm4QaOolnG+mk9wgCS1dPZZhZKDOkkGV0J+wfhZx00c3Y2TArX8UWfYKe7euRbW3vrkgsm+dOl2nW/FPEz5vMYFFu1u+rDwU76qrHarl6+MGdeFnm72E62eEXCXbeg=
+	t=1756332335; cv=none; b=CPrQRYsH4s5fMlPt6CCdvhMClAJCIoObWULf+Diq/jcwM56izxwo/NFvGYRH4dNswiIlPP71C/vgFNznwQZ0kcfJ9ZTGTV/prKW4GnfuKbXPBofjldbEG21dQs9nIy+FGRKzIf1273lN+dghKP2flPL/l/S18JqHqmCJF0NyIWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756332105; c=relaxed/simple;
-	bh=gUSbciWGHJSH/JpDm7HHHqG5lHwQEqGuzdo99M+555I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KevPHLBTDuvAAk3Hur8G6P5meLy2+1QwZ4MHngICFbLk7bwq1QH5AjzJk8MRaZlMAxcQ4h/F/bZS3R4ye9hB2eQ2/yu548QodcR4hpbJ/6mHq5FO1YWwPlKv3QipbmNmwjTSGWfofWpIxhnTHBF/HoGPHdsfxvVDkUt1Ft9jiXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=U/fGG2Uw; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-76e4fc419a9so403615b3a.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 15:01:43 -0700 (PDT)
+	s=arc-20240116; t=1756332335; c=relaxed/simple;
+	bh=egcsJ2C+6TMCFKyNNMu5ZyINOAuzbKXVPyPooWLRvVo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=O91qgPYTq+qlKLj/qVogv8RSOWjcscsowSN3xqUCJcdLkAjUOXTVEVUqdMVYeHmXIqwyd8Euqp/C8zOLzt5yOTEKNFinJzBlI4jNL2ig4ydQyTPmjrSNM5a0wjZIX+NhQWRKuFvzB+qaiIC9yM1TE5U0UVYGRs6tAbzwQ0d7HcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=azLv6Jki; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3c51f0158d8so267559f8f.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 15:05:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1756332103; x=1756936903; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aRXemL1WOR90JqvB5azJ40zCxySpJVvRo7r3rLc3Ivg=;
-        b=U/fGG2UwBpYBMYO3JRPSzPxBQQLKLr0DdLM7TTnaccbvJWfi7CQx2CN4svzQUN6pSz
-         PAt7Y3wNatSwMR9gIUGTV+Yj9A5hPkOfb02yfajOYXdQDKs7YuEbSBcSHUDFvlJe3obg
-         YMb/exqXhqfkcOaZ+/nj4dqNeVAnpZdArm1ohnNy63uEt35s8yVVhRpYFQjobY/CvRa1
-         mYc1IsscPeojFxMjdD0HqtwoOBt+/BGg3176fiMm/krAuuvrxCtcD4Y1fMCcjGOk073W
-         6ymLH3YXMxuWTY6ZS7vI5GxYKiiMKAEwTQ5krrCGvZUlX4syMK1VkitNEEB1xC+vWzOA
-         +4/g==
+        d=suse.com; s=google; t=1756332330; x=1756937130; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=66dl+vG7e+9njjYnXsJN+/Q3gT/VeY1rNagrbWTE+QE=;
+        b=azLv6JkitKAHfBZiCDyG4DEXoGOHbwLvHNt8l0AozshLxlNnx4xgx7xLEMAseSgGNi
+         Xfty8rBPUvmMl6N/MCtcEL8I/c0Io2V0za4gLoLjn0njNsmDqWM5hvR5W2S/hPmr5yIT
+         OPm38N5aor2DiqpRPb8bQBkuh458+g4sI0z75J73ZXfk8B20rAzwoCcM1g4PEisavBCB
+         J5hp0PJ57AwdxjInYQ0VECtCUo43bqPs1YOJlwnTPIs0VekQ6hNs1INTUJkaLzvud/cH
+         d9fBSzhaDnpVN6FHwBH53WeMGqDlekDq4/KXvFp08G3Ckm5Qdw4eZGyUrTSarr1zdpLZ
+         2BEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756332103; x=1756936903;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aRXemL1WOR90JqvB5azJ40zCxySpJVvRo7r3rLc3Ivg=;
-        b=WMRlFNC+lVzw9F5pq6bdVa6T1uC0+XY4HIYH4gkS4TdXE7uSolb51HCYYOp0geWHYl
-         aXu0zchnL2sC30tU8rP0wro73D3NakKIzY5+YulZyt3PDZEu3LCPt1gBwiR5eHjKuQO9
-         AwRmVbB7SfUhKF2vWOvP4GZft0schO940JIZ97bkNBZKHSrbcdMPd3VTPi54Skcc6FDG
-         /XCueK2bAooiFF/PagBXzEq40jPMCn+W3dEkibCfrk1qhGmtuapa6WPa+rtXCYz3SfIe
-         tJ/cULVErBdFkUhOO4G/AoxTZ+KYBswJm9LHfdT7LJgfKlg1qYH+uDoBMSQX7lho4WJG
-         uw1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW6Fb6ooPdx2rBESoD0QfepXZgqsgjazPnREGhvYWwj2ol6EmLO4zuZpV/t8s+L19yxFgo28ai9jTPUVg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWkW3pvhoSswM4KFULgcrjijJubFBSDnPRCnmaQ8tkUqOF7+g0
-	QyJ+BPS/IeCvar3ZIKnC+z4RFm9DMqu20W5sj3gI0O+8yp+7wPWVmMNf+sAIg8cKCBw=
-X-Gm-Gg: ASbGncsVZSzkpxmd0GgYLwP5xTZ61GEM/8ESrUVJlEgyYu9VR8MV1FNDpZKS5N5aQkl
-	DsrUb+ibfaY0yoNprbYWmSXS7rA1Skg9kcxI02nfo5O6xrRwpCtNpykliqlpFGNfhYreznQYDSv
-	A9cIJusbaJNT0kBUOzddjm7TSysFMn7IgV3EBHtU3gvFfJPuroimROt9rKimWdNRS0dEJBASNIH
-	LhFsgHmPpez6hYJ+suAqRJHyNnFXy0rhaPaNDeLnYOdjEbBtXkdn/350z2dLKQmqRjTcDlRAH+2
-	Lo6/92TFAdllpH5PSk3+Sn7HH1dBp+7XqtN10era0f4WG0RLuumhvHkL9sL1EcYKoQEXw6iacZ5
-	OVY7IYA8ABX84EgL+0misasXZ4nEu2063IJUjdNmOqH89Gr2A0zoCRQJbOZ1fBh6AdhX2kA1LLX
-	6aHbQer9mJ
-X-Google-Smtp-Source: AGHT+IEYVXzII1GgnlGLrms99adMC1KeEXXIyK7Szr2EAW6KvmLtHFK4fjFkfyUzwGUkKHyjR/4qEA==
-X-Received: by 2002:a17:902:fd45:b0:244:214f:13a0 with SMTP id d9443c01a7336-2462efae428mr176577485ad.52.1756332103113;
-        Wed, 27 Aug 2025 15:01:43 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-91-142.pa.nsw.optusnet.com.au. [49.180.91.142])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-248c34589e5sm11007985ad.9.2025.08.27.15.01.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Aug 2025 15:01:42 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.98.2)
-	(envelope-from <david@fromorbit.com>)
-	id 1urOD5-0000000BvoF-2OcE;
-	Thu, 28 Aug 2025 08:01:39 +1000
-Date: Thu, 28 Aug 2025 08:01:39 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Josef Bacik <josef@toxicpanda.com>, linux-fsdevel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-	viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 17/54] fs: remove the inode from the LRU list on
- unlink/rmdir
-Message-ID: <aK-AQ6Xzkmz7zQ6X@dread.disaster.area>
-References: <cover.1756222464.git.josef@toxicpanda.com>
- <3552943716349efa4ff107bb590ac6b980183735.1756222465.git.josef@toxicpanda.com>
- <20250827-bratkartoffeln-weltschmerz-fc60227f43e7@brauner>
+        d=1e100.net; s=20230601; t=1756332330; x=1756937130;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=66dl+vG7e+9njjYnXsJN+/Q3gT/VeY1rNagrbWTE+QE=;
+        b=pnyKVUiiT/DDbdrd7V8FAXOzqK5x7V4YP2eCXhfbWV6JTCAGEztnIjEHVOH3VY+6cG
+         qlsHgpjAw7RoxzLwl58ZrMxHckOxhTrfKQQdLr7OGBKiuzJ9X1HZHbw1XqwV6+NdJdp/
+         NELeXJRX1Dj4DIj16VcsoKDuhfmCHHI8eKExeBNnxlWY0G0qwI/D64gBu47fbONGXdf0
+         1TJa1y7kwKu7tbKKqu5qkmpYDjFPkuVcfjrEFAynBPQk1utLd58QLTIsuDlYybl7EeaE
+         LbJ5SiTm1ZoOLQuukU53RbH6OtWQFI5jUp382VeCRi3Jc1kheD92d2rNdeALqUl+bmy+
+         24bg==
+X-Forwarded-Encrypted: i=1; AJvYcCV5uGfbY8cz9mBOvl/YpZFamBCfBkVXJthIn3RO7wUjMorYK/2yeQm2laFWtO+iqrC0HCqwB3o6KjdNKg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz8AuMWQstTSZ8HkPewXEIVzacN3B2WUPNRWrU7J87FK+zJq4PF
+	P5sNYfwJlKTf+VA4JrCme9YVYb1j1rBSyr1UfUFVgngQjYYW0Xu2kBQHZzws8fdubAk=
+X-Gm-Gg: ASbGncuP7qNv0h3jJgslV71EUH1wpE17msn+CrTMR8DHmx/UvXqnx+aFuu5I6rpIeSl
+	xtYlR6U2AQx6y0eRLD2K+1ABb7SGjhGFR8GWczoYGOCDQ8OIk7j3OhEY3UyotrlTDukqHbmaut9
+	Y3Eiu6tNA5yR73ihqUn2yEfO2H87ymrUnD27t5AIF4V+LeVut5C7f3aptcH7jirT/MSArdH/CVJ
+	cGQAN2U6UVX14zqXZ+8+k3asQgNz4FBlzeX/BylPPyyS1bGgQE9AV5qBC8Dh7TG5CzGf3ZmlWmB
+	g/w7HZLDaf5V54gkmNqo+YhhXqYVbgxkXXPukRza9RgOzGvhAZ4Yqu3Kwl7QOrS/dN+8fmFu5Tu
+	tHSihhCkxQoOE6dHKbv5RVUZylAUlX5c4GsjhJDMXW4NB5vqWzX8=
+X-Google-Smtp-Source: AGHT+IFLVKCeq5P9NUxEWkxHijKdw0B+zg4a1aIa3M2i7AlDmJZ3JzhFneBEwT8/zElE69vjgD7FVg==
+X-Received: by 2002:a5d:64ce:0:b0:3b7:7377:84c5 with SMTP id ffacd0b85a97d-3c5d7cb4888mr13750122f8f.0.1756332330168;
+        Wed, 27 Aug 2025 15:05:30 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7720f609b0csm1617654b3a.22.2025.08.27.15.05.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Aug 2025 15:05:29 -0700 (PDT)
+Message-ID: <29f97f46-acdf-412e-8f05-6a131dcf6d3d@suse.com>
+Date: Thu, 28 Aug 2025 07:35:25 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250827-bratkartoffeln-weltschmerz-fc60227f43e7@brauner>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: don't allow adding block device with 0 bytes
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Mark Harmstone <mark@harmstone.com>,
+ linux-btrfs@vger.kernel.org
+References: <20250827103725.19637-1-mark@harmstone.com>
+ <e37b9714-b079-4304-8067-9120d0f16637@gmx.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <e37b9714-b079-4304-8067-9120d0f16637@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Aug 27, 2025 at 02:32:49PM +0200, Christian Brauner wrote:
-> On Tue, Aug 26, 2025 at 11:39:17AM -0400, Josef Bacik wrote:
-> > We can end up with an inode on the LRU list or the cached list, then at
-> > some point in the future go to unlink that inode and then still have an
-> > elevated i_count reference for that inode because it is on one of these
-> > lists.
-> > 
-> > The more common case is the cached list. We open a file, write to it,
-> > truncate some of it which triggers the inode_add_lru code in the
-> > pagecache, adding it to the cached LRU.  Then we unlink this inode, and
-> > it exists until writeback or reclaim kicks in and removes the inode.
-> > 
-> > To handle this case, delete the inode from the LRU list when it is
-> > unlinked, so we have the best case scenario for immediately freeing the
-> > inode.
-> > 
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > ---
+
+
+在 2025/8/27 20:14, Qu Wenruo 写道:
 > 
-> I'm not too fond of this particular change I think it's really misplaced
-> and the correct place is indeed drop_nlink() and clear_nlink().
+> 
+> 在 2025/8/27 20:07, Mark Harmstone 写道:
+>> Commit 15ae0410 in btrfs-progs inadvertently changed it so that if the
+>> BLKGETSIZE64 ioctl on a block device returned a size of 0, this was no
+>> longer seen as an error condition.
+> 
+> My bad, that commit changed the handling of zero sized device, 
+> previously the caller who checks the returned size now only checks if 
+> the ioctl/stat works.
+> 
+> Feel free to send out a progs fix.
+>>
+>> Unfortunately this is how disconnected NBD devices behave, meaning that
+>> with btrfs-progs 6.16 it's now possible to add a device you can't
+>> remove:
+>>
+>> ~ # btrfs device add /dev/nbd0 /root/temp
+>> ~ # btrfs device remove /dev/nbd0 /root/temp
+>> ERROR: error removing device '/dev/nbd0': Invalid argument
+>>
+>> This check should always have been done kernel-side anyway, so add a
+>> check in btrfs_init_new_device() that the new device doesn't have a size
+>> of 0.
+>>
+>> Signed-off-by: Mark Harmstone <mark@harmstone.com>
+> 
+> The extra kernel checks looks good to me.
+> 
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-I don't really like putting it in drop_nlink because that then puts
-the inode LRU in the middle of filesystem transactions when lots of
-different filesystem locks are held.
+In fact this reminds me to try other extreme situations.
 
-IF the LRU operations are in the VFS, then we know exactly what
-locks are held when it is performed (current behaviour). However,
-when done from the filesystem transaction context running
-drop_nlink, we'll have different sets of locks and/or execution
-contexts held for each different fs type.
+Like adding a 64K sized device.
 
-> I'm pretty sure that the number of callers that hold i_lock around
-> drop_nlink() and clear_nlink() is relatively small.
+The result is, the fs will never be able to be mounted again, as we 
+saved the cursed device which can not have the primary super block written.
 
-I think the calling context problem is wider than the obvious issue
-with i_lock....
+Since we're here, can we enlarge the bdev size to <= 
+BTRFS_DEVICE_RANGE_RESERVED?
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks,
+Qu
+> 
+> Thanks,
+> Qu
+> 
+>> ---
+>>   fs/btrfs/volumes.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 63b65f70a2b3..0757a546ff5c 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -2726,6 +2726,11 @@ int btrfs_init_new_device(struct btrfs_fs_info 
+>> *fs_info, const char *device_path
+>>           goto error;
+>>       }
+>> +    if (bdev_nr_bytes(file_bdev(bdev_file)) == 0) {
+>> +        ret = -EINVAL;
+>> +        goto error;
+>> +    }
+>> +
+>>       if (fs_devices->seeding) {
+>>           seeding_dev = true;
+>>           down_write(&sb->s_umount);
+> 
+
 
