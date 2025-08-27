@@ -1,261 +1,160 @@
-Return-Path: <linux-btrfs+bounces-16430-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16431-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAC1BB3774F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 03:44:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26CFDB37CBF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 10:04:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCAEA7A9C1A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 01:42:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C99F03B943A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 08:04:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E98D1FDA9E;
-	Wed, 27 Aug 2025 01:43:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NTTs4yl5";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NTTs4yl5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E22321F3B;
+	Wed, 27 Aug 2025 08:03:51 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F7B81CD208
-	for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 01:43:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38C631CA54
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 08:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756258994; cv=none; b=YNf1FHMSxIGkDtEvQH5GlfNwayMgFQP0zb7JA7wW5cjYhWzCHVZVh2W0vq/5wxatlRyoxcR5qhcl7nNqxlIsP6gnb4xioizbsOVzK3Lf1stZlofr8GHqPYSI66dNxsMHHvqWXSliGu63EZpM9UHuFXZMYv8baSBl4VKKVTgE4/E=
+	t=1756281831; cv=none; b=h55VK/n1PK5eHcqLaIcTqQ0jNWjGFQNjcBFF9Ln8u7MhzrCVrNBdRmxJlbWF2AWr8GpWNxVbY5e6XstV5deX+08+unkzYP3U+bqakqguYDwRVYiVAKqdZX0CvUf5weAWPwRM+SC9/lM0kiC6TzrX7BgcdxL0vRobuGeMqn5vNC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756258994; c=relaxed/simple;
-	bh=blR0XwbWwwo6hqakEJhG/NjWjQfNhd0hrTFFLKzPVFI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=aANxgImHgqNS13xds3PU+bk0BMvR8tDIn5/7M9uh1L6oPSk75rJ8T1m1fVXbuWwVXzCIDRd/eLhXChEWisSYaVcq8YDbvHvubh2mpM2/g/O9Zx1mz/23Sseq25dXu/CqMptjOymrJui/BZBLyiwocHS5b3DSltbjSZ/VcAf7aZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NTTs4yl5; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NTTs4yl5; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 315B61F393;
-	Wed, 27 Aug 2025 01:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1756258989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=L3LANSiJH+KYmLc5PcRnzYW8HOCpfOPtBAmDiptnpDM=;
-	b=NTTs4yl5fxSFpr3XHVQNJj6zPl6Ey0AhnWtMO7VTQFEeoQ57xQew1jCwphR/HIJPRvAXcI
-	VCGFGSGpcJt4WB0JBYuLZUHYzB2zS7hZcGmzHqUB4rvll2CB8chNJMrbf5EQ3exjiiDBFr
-	UcUPbjEMhDIzFhJ9J4523AUmoptu4PE=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=NTTs4yl5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1756258989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=L3LANSiJH+KYmLc5PcRnzYW8HOCpfOPtBAmDiptnpDM=;
-	b=NTTs4yl5fxSFpr3XHVQNJj6zPl6Ey0AhnWtMO7VTQFEeoQ57xQew1jCwphR/HIJPRvAXcI
-	VCGFGSGpcJt4WB0JBYuLZUHYzB2zS7hZcGmzHqUB4rvll2CB8chNJMrbf5EQ3exjiiDBFr
-	UcUPbjEMhDIzFhJ9J4523AUmoptu4PE=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3363E13867;
-	Wed, 27 Aug 2025 01:43:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id SneeOatirmhtDAAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 27 Aug 2025 01:43:07 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: [PATCH v3] fstests: btrfs: add a new test case to verify compressed read
-Date: Wed, 27 Aug 2025 11:12:50 +0930
-Message-ID: <20250827014250.170552-1-wqu@suse.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1756281831; c=relaxed/simple;
+	bh=GKFP0cKg8X36DYXTs4AnKInFPQYLUC25oeO1ip+uIVo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=pyFoUIrPfwfbMSpY6NjkKd4Ct6HUjY9cABmK/YQ76Yi3lL6NYvJV/dpuGdxRS+syLY2P9/nMR1ueZdoPVqs1w1D36+4UCVpTMa9Q05LHiKlzuFO5jGzO7SmfQT8umC6WPCSQHHrNkTeCL+ZESLtRLEEX+l+x9YUNRFOMDLzFm5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3ef026c145fso18775955ab.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 01:03:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756281829; x=1756886629;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xXVGAuQnn9XzlKQXqXAG7puergh7qbhhO9p5PMqXgkw=;
+        b=fc6Ug05MZSXc1BR7xp5dL3zOcinpOzBHtzM+TjTmQkyqTiOTqnNZI8rKzxy+HhPJ0T
+         QvJK3aAlTOrTG2C3OO9FSK8dwl79ADY0DdVKFTWPKvC/Z2jXOmATXZKqAsXFOGROTe/S
+         ZfqwW+aUoLrG+Uil5r9OM4ch5+oVvLpcyc+oHzF/JL61+BtuhxYRG8Om5+HeGrvYSaMs
+         Kcnk9x9x0dD1bSiNPln8siVXr2/eCskgS2M66X7SQ8C2q+05cOCRPwCfw4QGH4fPDQr5
+         1IQsZOXuJEQlRSrtqxliLLVPTDlPXo1c0LfGg+RkdTOZatC1ddi8N0MXrElD6uSeTvE3
+         +NAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVJGDhSlO4JPiRWphFg9D7e8sXeRnD3kzPrcdfyxucuyR7Yoi6BBfeC/+UQ78J0mnrAkOqDNQMnQnsh7Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzBYVk/kTS7+SihOjlCxFjmbTuqE6ykWdi+TjBnvehxGsAn0fPA
+	giix1T7OoaPtTHOBMv0lnVWYzKFfiySVBotH8PV207hbgmnsuPVdQ19q1KgV9uDQHJC7pI2DSLm
+	73480ZXs5AOMph/1tHHaq5ebytbOvLzESW+h0LxVYzJ0lBKcwZVVzElww3cE=
+X-Google-Smtp-Source: AGHT+IHgGgCW/4gHUt8t/levoYYyVNCC5/Uo1Faz0rZusbCMW0pjQ6aBYk5jawEFHvtzIMDbLkK5lYOmXgLbgGbFV0yzSJsjx3T1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 315B61F393
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Score: -3.01
+X-Received: by 2002:a05:6e02:4813:b0:3ea:114c:83a6 with SMTP id
+ e9e14a558f8ab-3ea114c860fmr227055435ab.1.1756281828839; Wed, 27 Aug 2025
+ 01:03:48 -0700 (PDT)
+Date: Wed, 27 Aug 2025 01:03:48 -0700
+In-Reply-To: <cover.1756222464.git.josef@toxicpanda.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68aebbe4.a70a0220.3cafd4.0011.GAE@google.com>
+Subject: [syzbot ci] Re: fs: rework inode reference counting
+From: syzbot ci <syzbot+ci0d448b9d8cb534fd@syzkaller.appspotmail.com>
+To: amir73il@gmail.com, brauner@kernel.org, josef@toxicpanda.com, 
+	kernel-team@fb.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	viro@zeniv.linux.org.uk
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-The new test case is a regression test related to the block size < page
-size handling of compressed read.
+syzbot ci has tested the following series
 
-The test case will only be triggered with 64K page size and 4K btrfs
-block size.
-I'm using aarch64 with 64K page size to trigger the regression.
+[v2] fs: rework inode reference counting
+https://lore.kernel.org/all/cover.1756222464.git.josef@toxicpanda.com
+* [PATCH v2 01/54] fs: make the i_state flags an enum
+* [PATCH v2 02/54] fs: add an icount_read helper
+* [PATCH v2 03/54] fs: rework iput logic
+* [PATCH v2 04/54] fs: add an i_obj_count refcount to the inode
+* [PATCH v2 05/54] fs: hold an i_obj_count reference in wait_sb_inodes
+* [PATCH v2 06/54] fs: hold an i_obj_count reference for the i_wb_list
+* [PATCH v2 07/54] fs: hold an i_obj_count reference for the i_io_list
+* [PATCH v2 08/54] fs: hold an i_obj_count reference in writeback_sb_inodes
+* [PATCH v2 09/54] fs: hold an i_obj_count reference while on the hashtable
+* [PATCH v2 10/54] fs: hold an i_obj_count reference while on the LRU list
+* [PATCH v2 11/54] fs: hold an i_obj_count reference while on the sb inode list
+* [PATCH v2 12/54] fs: stop accessing ->i_count directly in f2fs and gfs2
+* [PATCH v2 13/54] fs: hold an i_obj_count when we have an i_count reference
+* [PATCH v2 14/54] fs: add an I_LRU flag to the inode
+* [PATCH v2 15/54] fs: maintain a list of pinned inodes
+* [PATCH v2 16/54] fs: delete the inode from the LRU list on lookup
+* [PATCH v2 17/54] fs: remove the inode from the LRU list on unlink/rmdir
+* [PATCH v2 18/54] fs: change evict_inodes to use iput instead of evict directly
+* [PATCH v2 19/54] fs: hold a full ref while the inode is on a LRU
+* [PATCH v2 20/54] fs: disallow 0 reference count inodes
+* [PATCH v2 21/54] fs: make evict_inodes add to the dispose list under the i_lock
+* [PATCH v2 22/54] fs: convert i_count to refcount_t
+* [PATCH v2 23/54] fs: use refcount_inc_not_zero in igrab
+* [PATCH v2 24/54] fs: use inode_tryget in find_inode*
+* [PATCH v2 25/54] fs: update find_inode_*rcu to check the i_count count
+* [PATCH v2 26/54] fs: use igrab in insert_inode_locked
+* [PATCH v2 27/54] fs: remove I_WILL_FREE|I_FREEING check from __inode_add_lru
+* [PATCH v2 28/54] fs: remove I_WILL_FREE|I_FREEING check in inode_pin_lru_isolating
+* [PATCH v2 29/54] fs: use inode_tryget in evict_inodes
+* [PATCH v2 30/54] fs: change evict_dentries_for_decrypted_inodes to use refcount
+* [PATCH v2 31/54] block: use igrab in sync_bdevs
+* [PATCH v2 32/54] bcachefs: use the refcount instead of I_WILL_FREE|I_FREEING
+* [PATCH v2 33/54] btrfs: don't check I_WILL_FREE|I_FREEING
+* [PATCH v2 34/54] fs: use igrab in drop_pagecache_sb
+* [PATCH v2 35/54] fs: stop checking I_FREEING in d_find_alias_rcu
+* [PATCH v2 36/54] ext4: stop checking I_WILL_FREE|IFREEING in ext4_check_map_extents_env
+* [PATCH v2 37/54] fs: remove I_WILL_FREE|I_FREEING from fs-writeback.c
+* [PATCH v2 38/54] gfs2: remove I_WILL_FREE|I_FREEING usage
+* [PATCH v2 39/54] fs: remove I_WILL_FREE|I_FREEING check from dquot.c
+* [PATCH v2 40/54] notify: remove I_WILL_FREE|I_FREEING checks in fsnotify_unmount_inodes
+* [PATCH v2 41/54] xfs: remove I_FREEING check
+* [PATCH v2 42/54] landlock: remove I_FREEING|I_WILL_FREE check
+* [PATCH v2 43/54] fs: change inode_is_dirtytime_only to use refcount
+* [PATCH v2 44/54] btrfs: remove references to I_FREEING
+* [PATCH v2 45/54] ext4: remove reference to I_FREEING in inode.c
+* [PATCH v2 46/54] ext4: remove reference to I_FREEING in orphan.c
+* [PATCH v2 47/54] pnfs: use i_count refcount to determine if the inode is going away
+* [PATCH v2 48/54] fs: remove some spurious I_FREEING references in inode.c
+* [PATCH v2 49/54] xfs: remove reference to I_FREEING|I_WILL_FREE
+* [PATCH v2 50/54] ocfs2: do not set I_WILL_FREE
+* [PATCH v2 51/54] fs: remove I_FREEING|I_WILL_FREE
+* [PATCH v2 52/54] fs: remove I_REFERENCED
+* [PATCH v2 53/54] fs: remove I_LRU_ISOLATING flag
+* [PATCH v2 54/54] fs: add documentation explaining the reference count rules for inodes
 
-The test case will create the following file layout:
+and found the following issue:
+kernel build error
 
-  base:
-  [0, 64K): Single compressed data extent at bytenr X.
+Full report is available here:
+https://ci.syzbot.org/series/ccd4eafa-7a13-48d6-93b6-f40c03262bea
 
-  new:
-  [0, 32K): Reflinked from base [32K, 64K)
-  [32K, 60K): Reflinked from base [0, 28K)
-  [60K, 64K): New 4K write
+***
 
-  The range [0, 32K) and [32K, 64K) are pointing to the same compressed
-  data.
+kernel build error
 
-  The last 4K write is a special workaround. It is a block aligned
-  write, thus it will create the folio but without reading out the
-  remaing part.
+tree:      torvalds
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux
+base:      fab1beda7597fac1cecc01707d55eadb6bbe773c
+arch:      amd64
+compiler:  Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+config:    https://ci.syzbot.org/builds/162c03ae-2d30-4085-ab1e-a2dd1c8403eb/config
 
-  This is to avoid readahead path, which has the proper fix.
-  We want single folio read without readahead.
+fs/bcachefs/fs.c:350:20: error: incompatible pointer types passing 'struct bch_inode_info *' to parameter of type 'const struct inode *' [-Werror,-Wincompatible-pointer-types]
 
-Then output the file "new" just after the last 4K write, then cycle
-mount and output the content again.
+***
 
-For patched kernel, or with 4K page sized system, the test will pass,
-the resulted content will not change during mount cycles.
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
 
-For unpatched kernel and with 64K page size, the test will fail, the
-content after the write will be incorrect (the range [32K, 60K) will be
-zero), but after a mount cycle the content is correct again.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changelog:
-v3:
-- Fix the golden output which is generated by an unpatched kernel
-
-v2:
-- Remove the unnecessary sync inherited from the kernel fix
-- Use _hexdump instead of open-coded od dumps
-- Use the correct 'clone' group instead of 'reflink'
-- Minor grammar fixes
-  All thanks to Filipe.
----
- tests/btrfs/337     | 55 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/337.out | 23 +++++++++++++++++++
- 2 files changed, 78 insertions(+)
- create mode 100755 tests/btrfs/337
- create mode 100644 tests/btrfs/337.out
-
-diff --git a/tests/btrfs/337 b/tests/btrfs/337
-new file mode 100755
-index 00000000..9c409e4d
---- /dev/null
-+++ b/tests/btrfs/337
-@@ -0,0 +1,55 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2025 SUSE Linux Products GmbH.  All Rights Reserved.
-+#
-+# FS QA Test 337
-+#
-+# Test compressed read with shared extents, especially for bs < ps cases.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick compress clone
-+
-+_fixed_by_kernel_commit xxxxxxxxxxxx \
-+	"btrfs: fix corruption reading compressed range when block size is smaller than page size"
-+
-+. ./common/filter
-+. ./common/reflink
-+
-+_require_btrfs_support_sectorsize 4096
-+_require_scratch_reflink
-+
-+# The layout used in the test case is all 4K based, and can only be reproduced
-+# with page size larger than 4K.
-+_scratch_mkfs -s 4k >> $seqres.full
-+_scratch_mount "-o compress"
-+
-+# Create the reflink source, which must be a compressed extent.
-+$XFS_IO_PROG -f -c "pwrite -S 0x0f 0 32K" \
-+		-c "pwrite -S 0xf0 32K 32K" \
-+		$SCRATCH_MNT/base >> $seqres.full
-+echo "Reflink source:"
-+_hexdump $SCRATCH_MNT/base
-+
-+# Create the reflink dest, which reverses the order of the two 32K ranges.
-+#
-+# And do a further aligned write into the last block.
-+# This write is to make sure the folio exists in filemap, so that we won't go
-+# through the readahead path (which has the proper handling) for the folio.
-+$XFS_IO_PROG -f -c "reflink $SCRATCH_MNT/base 32K 0 32K" \
-+		-c "reflink $SCRATCH_MNT/base 0 32K 32K" \
-+		-c "pwrite 60K 4K" $SCRATCH_MNT/new >> $seqres.full
-+
-+# This will result an incorrect output for unpatched kernel.
-+# The range [32K, 60K) will be zero due to incorrectly merged compressed read.
-+echo "Before mount cycle:"
-+_hexdump $SCRATCH_MNT/new
-+
-+_scratch_cycle_mount
-+
-+# This will go through readahead path, which has the proper handling, thus give
-+# the correct content.
-+echo "After mount cycle:"
-+_hexdump $SCRATCH_MNT/new
-+
-+status=0
-+_exit 0
-diff --git a/tests/btrfs/337.out b/tests/btrfs/337.out
-new file mode 100644
-index 00000000..cecbbbcf
---- /dev/null
-+++ b/tests/btrfs/337.out
-@@ -0,0 +1,23 @@
-+QA output created by 337
-+Reflink source:
-+000000 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f  >................<
-+*
-+008000 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0  >................<
-+*
-+010000
-+Before mount cycle:
-+000000 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0  >................<
-+*
-+008000 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f  >................<
-+*
-+00f000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  >................<
-+*
-+010000
-+After mount cycle:
-+000000 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0  >................<
-+*
-+008000 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f  >................<
-+*
-+00f000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  >................<
-+*
-+010000
--- 
-2.49.0
-
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
