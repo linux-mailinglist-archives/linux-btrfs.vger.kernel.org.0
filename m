@@ -1,305 +1,284 @@
-Return-Path: <linux-btrfs+bounces-16442-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16443-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEE3FB3846E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 16:08:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4EF2B384C5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 16:19:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC2C71B658F4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 14:08:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 677A0680B60
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 14:19:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCA7C35A290;
-	Wed, 27 Aug 2025 14:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271DC3570C5;
+	Wed, 27 Aug 2025 14:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="JIJYyx9x"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GKQbhntY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9750350D41
-	for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 14:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965622820C6;
+	Wed, 27 Aug 2025 14:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756303702; cv=none; b=u9k8dDruneDDUQBQa/8azktALX0ijv7S3hDvF00q2UvSmXk9Qf5gU8WLDjw4c1itOfx9aZy6NWhbbqHaMDh3MG4EYNOCxxgi72eGPQ6HMgEHw8QDXUsiA0PfaeEVuYz7XftoeTNKLUDWzkh75OpPbyW5JLQtIUBUed/idu1hTHw=
+	t=1756304346; cv=none; b=cFfvYCpieXgmqZdAO5xHZvOngfuUOKNbsgeTnACFWm7vyDo++z9KJzeW6qteY+WWldUlPFbshUmjrTpHhHZKW/Bs72085opnX+I2sGaf5SGNiSQumxC4mUqWGpYH3n3Le03IKkDGp2f5t28OgsGF5GgPt4U/XlkA06AW3WIlXlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756303702; c=relaxed/simple;
-	bh=NCkEVLLCAh6KIkKdudm7E3AqCD0Q0I1JQVmXHPhHOFg=;
-	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qW+Ph5I3aAavO6EkEx92+QVHaY335v7Aj/+/vkIc+zooyrhaecz/c30eTSrvdkbeLtUPEFNqcLnkRRTFh7x1aMoeu1tg1sj+dyCkUUaLj8w4GEC2uACD3D40wv0/j1hsUD0POigoS2W+2sDUWqPNJLsUiczYNrBszCv2tRkiNpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=JIJYyx9x; arc=none smtp.client-ip=217.169.27.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
-Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
-	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
-	by mail.burntcomma.com (Postfix) with ESMTPS id 98A4D2AE209;
-	Wed, 27 Aug 2025 15:08:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1756303693;
-	bh=cEXJC/TOf0xpMj8jOAGkNiOrYe6TUbAYFmUq2IONXjw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=JIJYyx9xacezZXwQI9jT3hdsjimTpy/W/NOOkpQ7++966ZNN3gLuYrIQuQ8wyPQzT
-	 WeAq7fQqVuYkIeKjrTt314uz7tlG/ZVaC7qJdUCfj1DQvn+dHMK+uNCESyuKWYBJ9S
-	 Vvmg0PPxuiGAMjPkk4h94G97NBVEQoBF0VqJaMj8=
-Message-ID: <a8949df0-adad-48b6-a27b-6cf6c3e38f9f@harmstone.com>
-Date: Wed, 27 Aug 2025 15:08:13 +0100
+	s=arc-20240116; t=1756304346; c=relaxed/simple;
+	bh=PW1ZKXH0rYhUpslBdMf+J7nnkIKBzWdKO+KYXBhA7to=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bBvipZ1oXnfJAdANR8znlkzzfJYODSud/iixAg1ym9iWVyr26gsh4bpCqEHORFzS1FXHVDxbVLCxM/2C4dh3eqByNL5ssz6BiO53b9y+NPcgfLUj8HpDNMVDxo3Yoq/0wH/TY8n5UK/DknXld8Vg2QuSbJXo60SnO89FAntbL3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GKQbhntY; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45a1b0bd237so52060035e9.2;
+        Wed, 27 Aug 2025 07:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756304343; x=1756909143; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Eq9YmfRM9uuzsM4UJKn72gQyBjMQ1eflfSGbvXdA420=;
+        b=GKQbhntYOkzYpEfiNpJYQPv+RBH/YVJEq/ZE07hMstMQL9XBUDblV3Bo+O3+HpqYxz
+         lON0bJHu/3phrqNwsIVgDpOlxEVaQjprgtI1zy4IfGXUWM7xQuwOVVdlwQA/T3DKS6gl
+         UUbAiQMRzFbaL59oeAlutzV9rp0lrApP+3DLeV/7QQSB37wtopMXj7gExRjKRq6TcFYC
+         Y4b3ktJwRpNrK4QbWjiS3JfXGwxr1uqbseiV01roMjwoFAz+JV3yKohh75vJCJBQQbql
+         i13UCPdPlAQTTLzRcDwPsTWttDQYsX2VM6WjvMu9Iw8IXg0uqec9VxXearf/lBjoN/l2
+         9RBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756304343; x=1756909143;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Eq9YmfRM9uuzsM4UJKn72gQyBjMQ1eflfSGbvXdA420=;
+        b=ZS4ywF/NtGffkA2BJOGzPle5pK7K9FGN6Vk4lHzc2/V1mUDOZVppkXG4oNTRFsDc+E
+         eUk0FZRT+orlx704/TuUcNLdVrWKO3Lrb+CWPzd0XQ4aoikbCLuJnKB0lL4BBfi61JPN
+         oGFrf8/d8HAQY/eGjenHh+gzlMzx3J57+EHlFaFcN7btkmabdq4kcyQTn+hbOSQHGCRK
+         E6qKCMRSI+qdge1sc3QZkyMIcciIlcoP1/DlzJF8zd+Gby39bslXHD9sJJaAYUdo6Ols
+         IYtEFDL1MJLm/d1L3Ue3r0RVnfSK7rKpcvU//RXOD5CILOMRSYVArWifpcGjDGAPWV9r
+         j9JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWulQNSWDayweMySfX68mVTgjQ9+MXEfSOrpPqqM+qUer0eNvipvwAqrfCs57GsRc5YggAa5CyhxQS9gA==@vger.kernel.org, AJvYcCXOTZo58XMEQ1+c1C+e6aBzxqAauYnrAUCBfBYQFFD0pTKy8weO3kaxp6Es0fQYGtAL3m2hBt039GI8aw==@vger.kernel.org, AJvYcCXi4waCixC824Xsr2ZhU4PdrulHo9cCyoW1u4uTX805sKZoxZTZl4YM3uU8ZuTXeOrHHTK+CdzGg6U3@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBLWLkci7QjzJylp1LZPN8SeFSswB69HzJ+ohmPUmsO/86pr+8
+	gHkc4ltVgPSlHYKqCJRrly2QPn3UsQ7NfUaJR3ozYx9a/+fSzgpr3DMs
+X-Gm-Gg: ASbGncugNeu8swvxCgMrOLKOS1niBIy+oJ0lfMnfKPU0M1GxZH1PGdw++pNjQaZtkmk
+	nS8lANauHpqjLZOTLsktzwztKpOfcrDgQW1csjHZEQDDUrFz1QBFpQqgOk3uCN/RKKTp13/8s6r
+	gzoj5FevRUB1DbLfg8YpY7wLJrP/hXljWiep2E+hLgcq/ujOqB+4bDeAGheu3p8/aFTUVHblJTu
+	GvKqTem2Dkc2ezyaGACKZU9IG6Q6RkcPnd1PUm8LIFm15PyVnu/HSpls5dV/i0mXVKNa/pMhRzK
+	TjaEAtv3R69lHrtVvDSWNbL8j2+0K8SSc9ICeITU+3KLQjE+j69afwmgh0osK26P4B3eaeePLNK
+	MvS2UqeibNccAl2dHjenVT20M56JtBnmLaLk=
+X-Google-Smtp-Source: AGHT+IE0gR/fkJ/N4kuE1Yrp9oBmyGnJ0IW4DftNNxQs2eJrjJm/YsAo/Vm1wbR+G1zI5NRJoKdH3g==
+X-Received: by 2002:a05:600c:4fcd:b0:45b:47e1:f5fe with SMTP id 5b1f17b1804b1-45b517db94dmr142000005e9.34.1756304342701;
+        Wed, 27 Aug 2025 07:19:02 -0700 (PDT)
+Received: from f (cst-prg-2-200.cust.vodafone.cz. [46.135.2.200])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45b6f2eb7c5sm34801285e9.23.2025.08.27.07.19.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Aug 2025 07:19:02 -0700 (PDT)
+Date: Wed, 27 Aug 2025 16:18:55 +0200
+From: Mateusz Guzik <mjguzik@gmail.com>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	brauner@kernel.org, viro@zeniv.linux.org.uk, amir73il@gmail.com
+Subject: Re: [PATCH v2 03/54] fs: rework iput logic
+Message-ID: <n6z2jkdgmgm2xfxc7y3a2a7psnkeboziffkt6bjoggrff4dlxe@vpsyl3ky6w6v>
+References: <cover.1756222464.git.josef@toxicpanda.com>
+ <be208b89bdb650202e712ce2bcfc407ac7044c7a.1756222464.git.josef@toxicpanda.com>
+ <rrgn345nemz5xeatbrsggnybqech74ogub47d6au45mrmgch4d@jqzorhulkvre>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH v2 08/16] btrfs: redirect I/O for remapped block groups
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org
-References: <20250813143509.31073-1-mark@harmstone.com>
- <20250813143509.31073-9-mark@harmstone.com>
- <20250822194241.GB492925@zen.localdomain>
-Content-Language: en-US
-From: Mark Harmstone <mark@harmstone.com>
-Autocrypt: addr=mark@harmstone.com; keydata=
- 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
-In-Reply-To: <20250822194241.GB492925@zen.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <rrgn345nemz5xeatbrsggnybqech74ogub47d6au45mrmgch4d@jqzorhulkvre>
 
-On 22/08/2025 8.42 pm, Boris Burkov wrote:
-> On Wed, Aug 13, 2025 at 03:34:50PM +0100, Mark Harmstone wrote:
->> Change btrfs_map_block() so that if the block group has the REMAPPED
->> flag set, we call btrfs_translate_remap() to obtain a new address.
->>
->> btrfs_translate_remap() searches the remap tree for a range
->> corresponding to the logical address passed to btrfs_map_block(). If it
->> is within an identity remap, this part of the block group hasn't yet
->> been relocated, and so we use the existing address.
->>
->> If it is within an actual remap, we subtract the start of the remap
->> range and add the address of its destination, contained in the item's
->> payload.
->>
->> Signed-off-by: Mark Harmstone <mark@harmstone.com>
->> ---
->>   fs/btrfs/relocation.c | 59 +++++++++++++++++++++++++++++++++++++++++++
->>   fs/btrfs/relocation.h |  2 ++
->>   fs/btrfs/volumes.c    | 31 +++++++++++++++++++++++
->>   3 files changed, 92 insertions(+)
->>
->> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
->> index 7256f6748c8f..e1f1da9336e7 100644
->> --- a/fs/btrfs/relocation.c
->> +++ b/fs/btrfs/relocation.c
->> @@ -3884,6 +3884,65 @@ static const char *stage_to_string(enum reloc_stage stage)
->>   	return "unknown";
->>   }
->>   
->> +int btrfs_translate_remap(struct btrfs_fs_info *fs_info, u64 *logical,
->> +			  u64 *length, bool nolock)
->> +{
->> +	int ret;
->> +	struct btrfs_key key, found_key;
->> +	struct extent_buffer *leaf;
->> +	struct btrfs_remap *remap;
->> +	BTRFS_PATH_AUTO_FREE(path);
->> +
->> +	path = btrfs_alloc_path();
->> +	if (!path)
->> +		return -ENOMEM;
->> +
->> +	if (nolock) {
->> +		path->search_commit_root = 1;
->> +		path->skip_locking = 1;
->> +	}
+On Wed, Aug 27, 2025 at 02:58:51PM +0200, Mateusz Guzik wrote:
+> On Tue, Aug 26, 2025 at 11:39:03AM -0400, Josef Bacik wrote:
+> > Currently, if we are the last iput, and we have the I_DIRTY_TIME bit
+> > set, we will grab a reference on the inode again and then mark it dirty
+> > and then redo the put.  This is to make sure we delay the time update
+> > for as long as possible.
+> > 
+> > We can rework this logic to simply dec i_count if it is not 1, and if it
+> > is do the time update while still holding the i_count reference.
+> > 
+> > Then we can replace the atomic_dec_and_lock with locking the ->i_lock
+> > and doing atomic_dec_and_test, since we did the atomic_add_unless above.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > ---
+> >  fs/inode.c | 23 ++++++++++++++---------
+> >  1 file changed, 14 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/fs/inode.c b/fs/inode.c
+> > index a3673e1ed157..13e80b434323 100644
+> > --- a/fs/inode.c
+> > +++ b/fs/inode.c
+> > @@ -1911,16 +1911,21 @@ void iput(struct inode *inode)
+> >  	if (!inode)
+> >  		return;
+> >  	BUG_ON(inode->i_state & I_CLEAR);
+> > -retry:
+> > -	if (atomic_dec_and_lock(&inode->i_count, &inode->i_lock)) {
+> > -		if (inode->i_nlink && (inode->i_state & I_DIRTY_TIME)) {
+> > -			atomic_inc(&inode->i_count);
+> > -			spin_unlock(&inode->i_lock);
+> > -			trace_writeback_lazytime_iput(inode);
+> > -			mark_inode_dirty_sync(inode);
+> > -			goto retry;
+> > -		}
+> > +
+> > +	if (atomic_add_unless(&inode->i_count, -1, 1))
+> > +		return;
+> > +
+> > +	if (inode->i_nlink && (inode->i_state & I_DIRTY_TIME)) {
+> > +		trace_writeback_lazytime_iput(inode);
+> > +		mark_inode_dirty_sync(inode);
+> > +	}
+> > +
+> > +	spin_lock(&inode->i_lock);
+> > +	if (atomic_dec_and_test(&inode->i_count)) {
+> > +		/* iput_final() drops i_lock */
+> >  		iput_final(inode);
+> > +	} else {
+> > +		spin_unlock(&inode->i_lock);
+> >  	}
+> >  }
+> >  EXPORT_SYMBOL(iput);
+> > -- 
+> > 2.49.0
+> > 
 > 
-> We are calling this without a transaction and in a loop in
-> btrfs_submit_bbio:
+> This changes semantics though.
 > 
-> btrfs_submit_bbio
->    while (blah); btrfs_submit_chunk
->      btrfs_map_block
->        btrfs_translate_remap
+> In the stock kernel the I_DIRTY_TIME business is guaranteed to be sorted
+> out before the call to iput_final().
 > 
-> So that means in that loop we can have one remap tree in one step of the
-> loop and then a transaction can finish and then the next chunk is
-> remapped on the next remap tree in the next step.
+> In principle the flag may reappear after mark_inode_dirty_sync() returns
+> and before the retried atomic_dec_and_lock succeeds, in which case it
+> will get cleared again.
 > 
-> Is that acceptable? Otherwise you need to hold the commit_root_sem for
-> the whole loop. It seems OK because both copies ought to be around while
-> we're in the middle of remapping, but let's be sure. I'm also curious
-> about the paths that are removing things from the remap tree. I would
-> expect live IO that would use that remapping would block them, as it
-> is like removing an extent, but also worth considering.
-
-Yes, this should be fine, as both copies will be valid. The only problem is
-there's a race with DIO, which we know about.
-
-The current discard code delays all discards until the last identity remap
-has gone, rather than discarding as we go along, so there shouldn't be an
-issue with reading data that's just been discarded.
-
+> With your change the flag is only handled once and should it reappear
+> before you take the ->i_lock, it will stay there.
 > 
->> +
->> +	key.objectid = *logical;
->> +	key.type = (u8)-1;
->> +	key.offset = (u64)-1;
->> +
->> +	ret = btrfs_search_slot(NULL, fs_info->remap_root, &key, path,
->> +				0, 0);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	leaf = path->nodes[0];
->> +
->> +	if (path->slots[0] == 0)
->> +		return -ENOENT;
->> +
->> +	path->slots[0]--;
->> +
->> +	btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
->> +
->> +	if (found_key.type != BTRFS_REMAP_KEY &&
->> +	    found_key.type != BTRFS_IDENTITY_REMAP_KEY) {
->> +		return -ENOENT;
->> +	}
->> +
->> +	if (found_key.objectid > *logical ||
->> +	    found_key.objectid + found_key.offset <= *logical) {
->> +		return -ENOENT;
->> +	}
->> +
->> +	if (*logical + *length > found_key.objectid + found_key.offset)
->> +		*length = found_key.objectid + found_key.offset - *logical;
->> +
->> +	if (found_key.type == BTRFS_IDENTITY_REMAP_KEY)
->> +		return 0;
->> +
->> +	remap = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_remap);
->> +
->> +	*logical = *logical - found_key.objectid + btrfs_remap_address(leaf, remap);
+> I agree the stock handling is pretty crap though.
 > 
-> nit: I think the readability of this would benefit from some "offset"
-> helper variable, but your commit message does make it clear enough.
-
-Rearranging it to...
-
-*logical += btrfs_remap_address(leaf, remap) - found_key.objectid;
-
-...looks a lot less ugly.
-
+> Your change should test the flag again after taking the spin lock but
+> before messing with the refcount and if need be unlock + retry.
 > 
->> +
->> +	return 0;
->> +}
->> +
->>   /*
->>    * function to relocate all extents in a block group.
->>    */
->> diff --git a/fs/btrfs/relocation.h b/fs/btrfs/relocation.h
->> index 5c36b3f84b57..a653c42a25a3 100644
->> --- a/fs/btrfs/relocation.h
->> +++ b/fs/btrfs/relocation.h
->> @@ -31,5 +31,7 @@ int btrfs_should_cancel_balance(const struct btrfs_fs_info *fs_info);
->>   struct btrfs_root *find_reloc_root(struct btrfs_fs_info *fs_info, u64 bytenr);
->>   bool btrfs_should_ignore_reloc_root(const struct btrfs_root *root);
->>   u64 btrfs_get_reloc_bg_bytenr(const struct btrfs_fs_info *fs_info);
->> +int btrfs_translate_remap(struct btrfs_fs_info *fs_info, u64 *logical,
->> +			  u64 *length, bool nolock);
->>   
->>   #endif
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 678e5d4cd780..a2c49cb8bfc6 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -6635,6 +6635,37 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
->>   	if (IS_ERR(map))
->>   		return PTR_ERR(map);
->>   
->> +	if (map->type & BTRFS_BLOCK_GROUP_REMAPPED) {
+> I would not hurt to assert in iput_final that the spin lock held and
+> that this flag is not set.
 > 
-> potential optimization (not blocking for this version IMO):
-> if you can cache the type on the extent_map (I actually think it ought
-> to already be done, essentially, as we know data vs. not data) then you
-> don't need to lookup the map at all for a remapped block, and can go
-> straight to looking up the remap.
+> Here is my diff to your diff to illustrate + a cosmetic change, not even
+> compile-tested:
 > 
->> +		u64 new_logical = logical;
->> +		bool nolock = !(map->type & BTRFS_BLOCK_GROUP_DATA);
->> +
->> +		/*
->> +		 * We use search_commit_root in btrfs_translate_remap for
->> +		 * metadata blocks, to avoid lockdep complaining about
->> +		 * recursive locking.
-> 
-> real risk of deadlock or "complaining"?
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 421e248b690f..a9ae0c790b5d 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -1911,7 +1911,7 @@ void iput(struct inode *inode)
+>  	if (!inode)
+>  		return;
+>  	BUG_ON(inode->i_state & I_CLEAR);
+> -
+> +retry:
+>  	if (atomic_add_unless(&inode->i_count, -1, 1))
+>  		return;
+>  
+> @@ -1921,12 +1921,19 @@ void iput(struct inode *inode)
+>  	}
+>  
+>  	spin_lock(&inode->i_lock);
+> +
+> +	if (inode->i_count == 1 && inode->i_nlink && (inode->i_state & I_DIRTY_TIME)) {
+> +		spin_unlock(&inode->i_lock);
+> +		goto retry;
+> +	}
+> +
+>  	if (atomic_dec_and_test(&inode->i_count)) {
+> -		/* iput_final() drops i_lock */
+> -		iput_final(inode);
+> -	} else {
+>  		spin_unlock(&inode->i_lock);
+> +		return;
+>  	}
+> +
+> +	/* iput_final() drops i_lock */
+> +	iput_final(inode);
+>  }
+>  EXPORT_SYMBOL(iput);
+>  
 
-Complaining. Reading any tree other than the chunk tree can result in a
-read of the remap tree, but reading the remap tree won't read any other
-tree.
+Sorry for spam, but the more I look at this the more fucky the entire
+ordeal appears to me.
 
-I added a btrfs_lockdep_keyset for the remap-tree as a result of another
-issue, which I think might well have fixed this too. But search_commit_root
-is a desirable optimization regardless, which is why I've kept it in.
+Before I get to the crux, as a side note I did a quick check if atomics
+for i_count make any sense to begin with and I think they do, here is a
+sample output from a friend tracing the ref value on iput:
 
-> 
->> +		 * If we get -ENOENT this means this is a BG that has just had
->> +		 * its REMAPPED flag set, and so nothing has yet been actually
->> +		 * remapped.
->> +		 */
->> +		ret = btrfs_translate_remap(fs_info, &new_logical, length,
->> +					    nolock);
->> +		if (ret && (!nolock || ret != -ENOENT))
->> +			return ret;
->> +
->> +		if (ret != -ENOENT && new_logical != logical) {
->> +			btrfs_free_chunk_map(map);
->> +
->> +			map = btrfs_get_chunk_map(fs_info, new_logical,
->> +						  *length);
->> +			if (IS_ERR(map))
->> +				return PTR_ERR(map);
->> +
->> +			logical = new_logical;
->> +		}
->> +
->> +		ret = 0;
->> +	}
->> +
->>   	num_copies = btrfs_chunk_map_num_copies(map);
->>   	if (io_geom.mirror_num > num_copies)
->>   		return -EINVAL;
->> -- 
->> 2.49.1
->>
+bpftrace -e 'kprobe:iput /arg0 != 0/ { @[((struct inode *)arg0)->i_count.counter] = count(); }'
 
+@[5]: 66
+@[4]: 4625
+@[3]: 11086
+@[2]: 30937
+@[1]: 151785
+
+... so plenty of non-last refs after all.
+
+I completely agree the mandatory ref trip to handle I_DIRTY_TIME is lame
+and needs to be addressed.
+
+But I'm uneasy about maintaining the invariant that iput_final() does
+not see the flag if i_nlink != 0 and my proposal as pasted is dodgy af
+on this front.
+
+While here some nits:
+1. it makes sense to try mere atomics just in case someone else messed
+with the count between handling of the dirty flag and taking the spin lock
+2. according to my quick test with bpftrace the I_DIRTY_TIME flag is
+seen way less frequently than i_nlink != 0, so it makes sense to swap
+the order in which they are checked. Interested parties can try it out
+with:
+bpftrace -e 'kprobe:iput /arg0 != 0/ { @[((struct inode *)arg0)->i_nlink != 0, ((struct inode *)arg0)->i_state & (1 << 11)] = count(); }'
+3. touch up the iput_final() unlock comment
+
+All that said, how about something like the thing below as the final
+routine building off of your change. I can't submit a proper patch and
+can't even compile-test. I don't need any credit should this get
+grabbed.
+
+void iput(struct inode *inode)
+{
+        if (!inode)
+                return;
+        BUG_ON(inode->i_state & I_CLEAR);
+retry:
+        if (atomic_add_unless(&inode->i_count, -1, 1))
+                return;
+
+        if ((inode->i_state & I_DIRTY_TIME) && inode->i_nlink) {
+                trace_writeback_lazytime_iput(inode);
+                mark_inode_dirty_sync(inode);
+                goto retry;
+        }
+
+        spin_lock(&inode->i_lock);
+        if ((inode->i_state & I_DIRTY_TIME) && inode->i_nlink) {
+                spin_unlock(&inode->i_lock);
+                goto retry;
+        }
+
+        if (!atomic_dec_and_test(&inode->i_count)) {
+                spin_unlock(&inode->i_lock);
+                return;
+        }
+
+        /*
+         * iput_final() drops ->i_lock, we can't assert on it as the inode may
+         * be deallocated by the time it returns
+         */
+        iput_final(inode);
+}
 
