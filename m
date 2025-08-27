@@ -1,193 +1,416 @@
-Return-Path: <linux-btrfs+bounces-16469-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16470-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D64FDB38CB2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Aug 2025 00:08:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58C0DB38E99
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Aug 2025 00:43:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19F71161527
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 22:08:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52B651C222B3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 22:44:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 147F3312815;
-	Wed, 27 Aug 2025 22:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD133101A9;
+	Wed, 27 Aug 2025 22:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="azLv6Jki"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vod2eeVa"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8F2305E19
-	for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 22:05:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274B330F819
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 22:43:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756332335; cv=none; b=CPrQRYsH4s5fMlPt6CCdvhMClAJCIoObWULf+Diq/jcwM56izxwo/NFvGYRH4dNswiIlPP71C/vgFNznwQZ0kcfJ9ZTGTV/prKW4GnfuKbXPBofjldbEG21dQs9nIy+FGRKzIf1273lN+dghKP2flPL/l/S18JqHqmCJF0NyIWs=
+	t=1756334606; cv=none; b=h3aIdfY3PASv2dZYKAYkIXJHYQ8QHXo5/M12G7JbaRWtmdYhi0dNnaYTG6hEmRD3EwwRf/TiAZFbI5JokCpdKx4jfLVawr/Mp3nLP021+aV2LQuIZNUP22irE31aEDSPLgGG45TSBbFEPrFqtUnBLnoVEPC4JU8NtgL7FB8Jt/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756332335; c=relaxed/simple;
-	bh=egcsJ2C+6TMCFKyNNMu5ZyINOAuzbKXVPyPooWLRvVo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=O91qgPYTq+qlKLj/qVogv8RSOWjcscsowSN3xqUCJcdLkAjUOXTVEVUqdMVYeHmXIqwyd8Euqp/C8zOLzt5yOTEKNFinJzBlI4jNL2ig4ydQyTPmjrSNM5a0wjZIX+NhQWRKuFvzB+qaiIC9yM1TE5U0UVYGRs6tAbzwQ0d7HcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=azLv6Jki; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3c51f0158d8so267559f8f.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 15:05:31 -0700 (PDT)
+	s=arc-20240116; t=1756334606; c=relaxed/simple;
+	bh=UV40lWEU1CK8wkwXXYA9M+vhaPbr7DhrqOxUAeNCRJo=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=e+YeBC07tG3qUOjwQcsYpKbw64qbP7F2v5wCfR9uBouA+THjZ1gatu3GbMBco3URfQalcmgr8chq/yvX9UHLUwB3fr3+eO4sNH0lY+C14p77x/bgihe82veo0pFUzQU5ITA/9Os/7ShIP2W3XAt6jJGMbF/ZI2aa0wvvuc56Djw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vod2eeVa; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-3235e45b815so350563a91.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 15:43:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1756332330; x=1756937130; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=66dl+vG7e+9njjYnXsJN+/Q3gT/VeY1rNagrbWTE+QE=;
-        b=azLv6JkitKAHfBZiCDyG4DEXoGOHbwLvHNt8l0AozshLxlNnx4xgx7xLEMAseSgGNi
-         Xfty8rBPUvmMl6N/MCtcEL8I/c0Io2V0za4gLoLjn0njNsmDqWM5hvR5W2S/hPmr5yIT
-         OPm38N5aor2DiqpRPb8bQBkuh458+g4sI0z75J73ZXfk8B20rAzwoCcM1g4PEisavBCB
-         J5hp0PJ57AwdxjInYQ0VECtCUo43bqPs1YOJlwnTPIs0VekQ6hNs1INTUJkaLzvud/cH
-         d9fBSzhaDnpVN6FHwBH53WeMGqDlekDq4/KXvFp08G3Ckm5Qdw4eZGyUrTSarr1zdpLZ
-         2BEg==
+        d=google.com; s=20230601; t=1756334602; x=1756939402; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LKcxlPw0uQjBkw7eQMnE+gmOL2ekj9P4WG4v5yuEZSw=;
+        b=vod2eeVaG9wM5K3kMJQUXDUIs0qUQmbSpjatH1C0VQtHAZNudlYjdOSs4Mz3L+Wsr0
+         Xf8NkhtoHLdlMbHtLhepBZgxwsIzZCgToO6bYPJlE+M2X75B5pdPdZpqRjNHvlP/Kwju
+         CPEWmXknSGiP7munSagw5dkuKQM+bpqBAiPbx0sIi5aB2cUsdrbunHwqBQSTIDRiKbP+
+         1ftpgfg9xI1258b1WKxVHLiPL9Lf6jZIGIzZnQxvt9qpdQaaV/NwHkaTrjYVcC2DvB/6
+         oUsFg5x9cJv8FQcWAXTmA9bsCLDd5etuqmFhEDkdsS/UbG3V70dTig0MIYladc63PzsY
+         iVEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756332330; x=1756937130;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=66dl+vG7e+9njjYnXsJN+/Q3gT/VeY1rNagrbWTE+QE=;
-        b=pnyKVUiiT/DDbdrd7V8FAXOzqK5x7V4YP2eCXhfbWV6JTCAGEztnIjEHVOH3VY+6cG
-         qlsHgpjAw7RoxzLwl58ZrMxHckOxhTrfKQQdLr7OGBKiuzJ9X1HZHbw1XqwV6+NdJdp/
-         NELeXJRX1Dj4DIj16VcsoKDuhfmCHHI8eKExeBNnxlWY0G0qwI/D64gBu47fbONGXdf0
-         1TJa1y7kwKu7tbKKqu5qkmpYDjFPkuVcfjrEFAynBPQk1utLd58QLTIsuDlYybl7EeaE
-         LbJ5SiTm1ZoOLQuukU53RbH6OtWQFI5jUp382VeCRi3Jc1kheD92d2rNdeALqUl+bmy+
-         24bg==
-X-Forwarded-Encrypted: i=1; AJvYcCV5uGfbY8cz9mBOvl/YpZFamBCfBkVXJthIn3RO7wUjMorYK/2yeQm2laFWtO+iqrC0HCqwB3o6KjdNKg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8AuMWQstTSZ8HkPewXEIVzacN3B2WUPNRWrU7J87FK+zJq4PF
-	P5sNYfwJlKTf+VA4JrCme9YVYb1j1rBSyr1UfUFVgngQjYYW0Xu2kBQHZzws8fdubAk=
-X-Gm-Gg: ASbGncuP7qNv0h3jJgslV71EUH1wpE17msn+CrTMR8DHmx/UvXqnx+aFuu5I6rpIeSl
-	xtYlR6U2AQx6y0eRLD2K+1ABb7SGjhGFR8GWczoYGOCDQ8OIk7j3OhEY3UyotrlTDukqHbmaut9
-	Y3Eiu6tNA5yR73ihqUn2yEfO2H87ymrUnD27t5AIF4V+LeVut5C7f3aptcH7jirT/MSArdH/CVJ
-	cGQAN2U6UVX14zqXZ+8+k3asQgNz4FBlzeX/BylPPyyS1bGgQE9AV5qBC8Dh7TG5CzGf3ZmlWmB
-	g/w7HZLDaf5V54gkmNqo+YhhXqYVbgxkXXPukRza9RgOzGvhAZ4Yqu3Kwl7QOrS/dN+8fmFu5Tu
-	tHSihhCkxQoOE6dHKbv5RVUZylAUlX5c4GsjhJDMXW4NB5vqWzX8=
-X-Google-Smtp-Source: AGHT+IFLVKCeq5P9NUxEWkxHijKdw0B+zg4a1aIa3M2i7AlDmJZ3JzhFneBEwT8/zElE69vjgD7FVg==
-X-Received: by 2002:a5d:64ce:0:b0:3b7:7377:84c5 with SMTP id ffacd0b85a97d-3c5d7cb4888mr13750122f8f.0.1756332330168;
-        Wed, 27 Aug 2025 15:05:30 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7720f609b0csm1617654b3a.22.2025.08.27.15.05.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Aug 2025 15:05:29 -0700 (PDT)
-Message-ID: <29f97f46-acdf-412e-8f05-6a131dcf6d3d@suse.com>
-Date: Thu, 28 Aug 2025 07:35:25 +0930
+        d=1e100.net; s=20230601; t=1756334602; x=1756939402;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LKcxlPw0uQjBkw7eQMnE+gmOL2ekj9P4WG4v5yuEZSw=;
+        b=pZo6CQz+pvLiNiWCxyxBWKmP+9pMWmvy6zBmMBQPH+stPMDkBuq4dWAg4AAeTh8h41
+         UJRFdkTKqwAjs3RLHFtVSNKmwDmFAHGNF6UpGSgn3zI5AOJzf2hAdOFTKS5rqJSyVGr5
+         d6mu0tMbhlQ1e5Pfazrj7f87gtjJLHfMrVen2uiOjaVv6w/WwvDS3mD1/hpRWefVInF1
+         JZo7MhYdd+lXNaHXEl0Ro05ejNlZWpCMql+xndMSxmaD7RqaoSXfpfjxYSyUA+r+mKq7
+         ZddJQUvQHeXj+X+7194bcCZZajP4N/iKTdelvrY1owQku6zBGa+I455V1bYr2bjiX7et
+         Ahmw==
+X-Forwarded-Encrypted: i=1; AJvYcCUxpukAp+YgqgRmWXkCDmfy600IxqdvmPmuq+KvDfqZymUyvh+u55rtp60xEMmf9Wg8msy3/19eIiVW9g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwmSwSw4k1sF+D1kuKYaM9ybgpoKlYd6h8a7yk0VBoMGQWiezEq
+	TslYgBPj35mZDyrNkP8b3AatJqHlpwTGmJx0bu3lwJWFKSco1N2iO3UhrFkeQuGbyaf45cuLVg8
+	ZqO0j6KAaak091RQeBYW9KjFiew==
+X-Google-Smtp-Source: AGHT+IGNhCki+zRNFnf7AupQOwuzR8TBEtFWXAfIyU7yRpBo61MiAC41fjzXQhOiSXx1TrtlLAFGHZ8M3ImJd0zqNQ==
+X-Received: from pjl11.prod.google.com ([2002:a17:90b:2f8b:b0:325:7fbe:1c64])
+ (user=ackerleytng job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90a:da8c:b0:327:7c8e:8725 with SMTP id 98e67ed59e1d1-3277c8eb5a6mr3670514a91.10.1756334602319;
+ Wed, 27 Aug 2025 15:43:22 -0700 (PDT)
+Date: Wed, 27 Aug 2025 15:43:20 -0700
+In-Reply-To: <20250827175247.83322-7-shivankg@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: don't allow adding block device with 0 bytes
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Mark Harmstone <mark@harmstone.com>,
- linux-btrfs@vger.kernel.org
-References: <20250827103725.19637-1-mark@harmstone.com>
- <e37b9714-b079-4304-8067-9120d0f16637@gmx.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <e37b9714-b079-4304-8067-9120d0f16637@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20250827175247.83322-2-shivankg@amd.com> <20250827175247.83322-7-shivankg@amd.com>
+Message-ID: <diqztt1sbd2v.fsf@google.com>
+Subject: Re: [PATCH kvm-next V11 4/7] KVM: guest_memfd: Use guest mem inodes
+ instead of anonymous inodes
+From: Ackerley Tng <ackerleytng@google.com>
+To: Shivank Garg <shivankg@amd.com>, willy@infradead.org, akpm@linux-foundation.org, 
+	david@redhat.com, pbonzini@redhat.com, shuah@kernel.org, seanjc@google.com, 
+	vbabka@suse.cz
+Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com, 
+	xiang@kernel.org, chao@kernel.org, jaegeuk@kernel.org, clm@fb.com, 
+	josef@toxicpanda.com, kent.overstreet@linux.dev, zbestahu@gmail.com, 
+	jefflexu@linux.alibaba.com, dhavale@google.com, lihongbo22@huawei.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org, 
+	surenb@google.com, mhocko@suse.com, ziy@nvidia.com, matthew.brost@intel.com, 
+	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com, 
+	gourry@gourry.net, ying.huang@linux.alibaba.com, apopple@nvidia.com, 
+	tabba@google.com, shivankg@amd.com, paul@paul-moore.com, jmorris@namei.org, 
+	serge@hallyn.com, pvorel@suse.cz, bfoster@redhat.com, vannapurve@google.com, 
+	chao.gao@intel.com, bharata@amd.com, nikunj@amd.com, michael.day@amd.com, 
+	shdhiman@amd.com, yan.y.zhao@intel.com, Neeraj.Upadhyay@amd.com, 
+	thomas.lendacky@amd.com, michael.roth@amd.com, aik@amd.com, jgg@nvidia.com, 
+	kalyazin@amazon.com, peterx@redhat.com, jack@suse.cz, hch@infradead.org, 
+	cgzones@googlemail.com, ira.weiny@intel.com, rientjes@google.com, 
+	roypat@amazon.co.uk, chao.p.peng@intel.com, amit@infradead.org, 
+	ddutile@redhat.com, dan.j.williams@intel.com, ashish.kalra@amd.com, 
+	gshan@redhat.com, jgowans@amazon.com, pankaj.gupta@amd.com, papaluri@amd.com, 
+	yuzhao@google.com, suzuki.poulose@arm.com, quic_eberman@quicinc.com, 
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-coco@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
+Shivank Garg <shivankg@amd.com> writes:
 
-
-在 2025/8/27 20:14, Qu Wenruo 写道:
 > 
-> 
-> 在 2025/8/27 20:07, Mark Harmstone 写道:
->> Commit 15ae0410 in btrfs-progs inadvertently changed it so that if the
->> BLKGETSIZE64 ioctl on a block device returned a size of 0, this was no
->> longer seen as an error condition.
-> 
-> My bad, that commit changed the handling of zero sized device, 
-> previously the caller who checks the returned size now only checks if 
-> the ioctl/stat works.
-> 
-> Feel free to send out a progs fix.
->>
->> Unfortunately this is how disconnected NBD devices behave, meaning that
->> with btrfs-progs 6.16 it's now possible to add a device you can't
->> remove:
->>
->> ~ # btrfs device add /dev/nbd0 /root/temp
->> ~ # btrfs device remove /dev/nbd0 /root/temp
->> ERROR: error removing device '/dev/nbd0': Invalid argument
->>
->> This check should always have been done kernel-side anyway, so add a
->> check in btrfs_init_new_device() that the new device doesn't have a size
->> of 0.
->>
->> Signed-off-by: Mark Harmstone <mark@harmstone.com>
-> 
-> The extra kernel checks looks good to me.
-> 
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-In fact this reminds me to try other extreme situations.
-
-Like adding a 64K sized device.
-
-The result is, the fs will never be able to be mounted again, as we 
-saved the cursed device which can not have the primary super block written.
-
-Since we're here, can we enlarge the bdev size to <= 
-BTRFS_DEVICE_RANGE_RESERVED?
-
-Thanks,
-Qu
-> 
-> Thanks,
-> Qu
-> 
->> ---
->>   fs/btrfs/volumes.c | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 63b65f70a2b3..0757a546ff5c 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -2726,6 +2726,11 @@ int btrfs_init_new_device(struct btrfs_fs_info 
->> *fs_info, const char *device_path
->>           goto error;
->>       }
->> +    if (bdev_nr_bytes(file_bdev(bdev_file)) == 0) {
->> +        ret = -EINVAL;
->> +        goto error;
->> +    }
->> +
->>       if (fs_devices->seeding) {
->>           seeding_dev = true;
->>           down_write(&sb->s_umount);
+> [...snip...]
 > 
 
+I meant to send this to you before this version went out but you were
+too quick!
+
+Here's a new version, Fuad and I reviewed this again internally. The
+changes are:
+
++ Sort linux/pseudo_fs.h after linux/pagemap.h (alphabetical)
++ Don't set MNT_NOEXEC on the mount, since SB_I_NOEXEC was already set
+  on the superblock
++ Rename kvm_gmem_inode_make_secure_inode() to kvm_gmem_inode_create()
+    + Emphasizes that there is a creation in this function
+    + Remove "secure" from the function name to remove confusion that
+      there may be a "non-secure" version
++ In kvm_gmem_inode_create_getfile()'s error path, return ERR_PTR(err)
+  directly instead of having a goto
+
+
+From ada9814b216eac129ed44dffd3acf76fce2cc08a Mon Sep 17 00:00:00 2001
+From: Ackerley Tng <ackerleytng@google.com>
+Date: Sun, 13 Jul 2025 17:43:35 +0000
+Subject: [PATCH] KVM: guest_memfd: Use guest mem inodes instead of anonymous
+ inodes
+
+guest_memfd's inode represents memory the guest_memfd is
+providing. guest_memfd's file represents a struct kvm's view of that
+memory.
+
+Using a custom inode allows customization of the inode teardown
+process via callbacks. For example, ->evict_inode() allows
+customization of the truncation process on file close, and
+->destroy_inode() and ->free_inode() allow customization of the inode
+freeing process.
+
+Customizing the truncation process allows flexibility in management of
+guest_memfd memory and customization of the inode freeing process
+allows proper cleanup of memory metadata stored on the inode.
+
+Memory metadata is more appropriately stored on the inode (as opposed
+to the file), since the metadata is for the memory and is not unique
+to a specific binding and struct kvm.
+
+Co-developed-by: Fuad Tabba <tabba@google.com>
+Signed-off-by: Fuad Tabba <tabba@google.com>
+Signed-off-by: Shivank Garg <shivankg@amd.com>
+Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+---
+ include/uapi/linux/magic.h |   1 +
+ virt/kvm/guest_memfd.c     | 126 ++++++++++++++++++++++++++++++-------
+ virt/kvm/kvm_main.c        |   7 ++-
+ virt/kvm/kvm_mm.h          |   9 +--
+ 4 files changed, 116 insertions(+), 27 deletions(-)
+
+diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
+index bb575f3ab45e5..638ca21b7a909 100644
+--- a/include/uapi/linux/magic.h
++++ b/include/uapi/linux/magic.h
+@@ -103,5 +103,6 @@
+ #define DEVMEM_MAGIC		0x454d444d	/* "DMEM" */
+ #define SECRETMEM_MAGIC		0x5345434d	/* "SECM" */
+ #define PID_FS_MAGIC		0x50494446	/* "PIDF" */
++#define GUEST_MEMFD_MAGIC	0x474d454d	/* "GMEM" */
+
+ #endif /* __LINUX_MAGIC_H__ */
+diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
+index 08a6bc7d25b60..234e51fd69ff6 100644
+--- a/virt/kvm/guest_memfd.c
++++ b/virt/kvm/guest_memfd.c
+@@ -1,12 +1,16 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <linux/anon_inodes.h>
+ #include <linux/backing-dev.h>
+ #include <linux/falloc.h>
++#include <linux/fs.h>
+ #include <linux/kvm_host.h>
+ #include <linux/pagemap.h>
+-#include <linux/anon_inodes.h>
++#include <linux/pseudo_fs.h>
+
+ #include "kvm_mm.h"
+
++static struct vfsmount *kvm_gmem_mnt;
++
+ struct kvm_gmem {
+ 	struct kvm *kvm;
+ 	struct xarray bindings;
+@@ -385,9 +389,44 @@ static struct file_operations kvm_gmem_fops = {
+ 	.fallocate	= kvm_gmem_fallocate,
+ };
+
+-void kvm_gmem_init(struct module *module)
++static int kvm_gmem_init_fs_context(struct fs_context *fc)
++{
++	if (!init_pseudo(fc, GUEST_MEMFD_MAGIC))
++		return -ENOMEM;
++
++	fc->s_iflags |= SB_I_NOEXEC;
++	fc->s_iflags |= SB_I_NODEV;
++
++	return 0;
++}
++
++static struct file_system_type kvm_gmem_fs = {
++	.name		 = "guest_memfd",
++	.init_fs_context = kvm_gmem_init_fs_context,
++	.kill_sb	 = kill_anon_super,
++};
++
++static int kvm_gmem_init_mount(void)
++{
++	kvm_gmem_mnt = kern_mount(&kvm_gmem_fs);
++
++	if (IS_ERR(kvm_gmem_mnt))
++		return PTR_ERR(kvm_gmem_mnt);
++
++	return 0;
++}
++
++int kvm_gmem_init(struct module *module)
+ {
+ 	kvm_gmem_fops.owner = module;
++
++	return kvm_gmem_init_mount();
++}
++
++void kvm_gmem_exit(void)
++{
++	kern_unmount(kvm_gmem_mnt);
++	kvm_gmem_mnt = NULL;
+ }
+
+ static int kvm_gmem_migrate_folio(struct address_space *mapping,
+@@ -463,11 +502,70 @@ bool __weak kvm_arch_supports_gmem_mmap(struct kvm *kvm)
+ 	return true;
+ }
+
++static struct inode *kvm_gmem_inode_create(const char *name, loff_t size,
++					   u64 flags)
++{
++	struct inode *inode;
++
++	inode = anon_inode_make_secure_inode(kvm_gmem_mnt->mnt_sb, name, NULL);
++	if (IS_ERR(inode))
++		return inode;
++
++	inode->i_private = (void *)(unsigned long)flags;
++	inode->i_op = &kvm_gmem_iops;
++	inode->i_mapping->a_ops = &kvm_gmem_aops;
++	inode->i_mode |= S_IFREG;
++	inode->i_size = size;
++	mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
++	mapping_set_inaccessible(inode->i_mapping);
++	/* Unmovable mappings are supposed to be marked unevictable as well. */
++	WARN_ON_ONCE(!mapping_unevictable(inode->i_mapping));
++
++	return inode;
++}
++
++static struct file *kvm_gmem_inode_create_getfile(void *priv, loff_t size,
++						  u64 flags)
++{
++	static const char *name = "[kvm-gmem]";
++	struct inode *inode;
++	struct file *file;
++	int err;
++
++	err = -ENOENT;
++	/* __fput() will take care of fops_put(). */
++	if (!fops_get(&kvm_gmem_fops))
++		goto err;
++
++	inode = kvm_gmem_inode_create(name, size, flags);
++	if (IS_ERR(inode)) {
++		err = PTR_ERR(inode);
++		goto err_fops_put;
++	}
++
++	file = alloc_file_pseudo(inode, kvm_gmem_mnt, name, O_RDWR,
++				 &kvm_gmem_fops);
++	if (IS_ERR(file)) {
++		err = PTR_ERR(file);
++		goto err_put_inode;
++	}
++
++	file->f_flags |= O_LARGEFILE;
++	file->private_data = priv;
++
++	return file;
++
++err_put_inode:
++	iput(inode);
++err_fops_put:
++	fops_put(&kvm_gmem_fops);
++err:
++	return ERR_PTR(err);
++}
++
+ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags)
+ {
+-	const char *anon_name = "[kvm-gmem]";
+ 	struct kvm_gmem *gmem;
+-	struct inode *inode;
+ 	struct file *file;
+ 	int fd, err;
+
+@@ -481,32 +579,16 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags)
+ 		goto err_fd;
+ 	}
+
+-	file = anon_inode_create_getfile(anon_name, &kvm_gmem_fops, gmem,
+-					 O_RDWR, NULL);
++	file = kvm_gmem_inode_create_getfile(gmem, size, flags);
+ 	if (IS_ERR(file)) {
+ 		err = PTR_ERR(file);
+ 		goto err_gmem;
+ 	}
+
+-	file->f_flags |= O_LARGEFILE;
+-
+-	inode = file->f_inode;
+-	WARN_ON(file->f_mapping != inode->i_mapping);
+-
+-	inode->i_private = (void *)(unsigned long)flags;
+-	inode->i_op = &kvm_gmem_iops;
+-	inode->i_mapping->a_ops = &kvm_gmem_aops;
+-	inode->i_mode |= S_IFREG;
+-	inode->i_size = size;
+-	mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
+-	mapping_set_inaccessible(inode->i_mapping);
+-	/* Unmovable mappings are supposed to be marked unevictable as well. */
+-	WARN_ON_ONCE(!mapping_unevictable(inode->i_mapping));
+-
+ 	kvm_get_kvm(kvm);
+ 	gmem->kvm = kvm;
+ 	xa_init(&gmem->bindings);
+-	list_add(&gmem->entry, &inode->i_mapping->i_private_list);
++	list_add(&gmem->entry, &file_inode(file)->i_mapping->i_private_list);
+
+ 	fd_install(fd, file);
+ 	return fd;
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 18f29ef935437..301d48d6e00d0 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -6489,7 +6489,9 @@ int kvm_init(unsigned vcpu_size, unsigned vcpu_align, struct module *module)
+ 	if (WARN_ON_ONCE(r))
+ 		goto err_vfio;
+
+-	kvm_gmem_init(module);
++	r = kvm_gmem_init(module);
++	if (r)
++		goto err_gmem;
+
+ 	r = kvm_init_virtualization();
+ 	if (r)
+@@ -6510,6 +6512,8 @@ int kvm_init(unsigned vcpu_size, unsigned vcpu_align, struct module *module)
+ err_register:
+ 	kvm_uninit_virtualization();
+ err_virt:
++	kvm_gmem_exit();
++err_gmem:
+ 	kvm_vfio_ops_exit();
+ err_vfio:
+ 	kvm_async_pf_deinit();
+@@ -6541,6 +6545,7 @@ void kvm_exit(void)
+ 	for_each_possible_cpu(cpu)
+ 		free_cpumask_var(per_cpu(cpu_kick_mask, cpu));
+ 	kmem_cache_destroy(kvm_vcpu_cache);
++	kvm_gmem_exit();
+ 	kvm_vfio_ops_exit();
+ 	kvm_async_pf_deinit();
+ 	kvm_irqfd_exit();
+diff --git a/virt/kvm/kvm_mm.h b/virt/kvm/kvm_mm.h
+index 31defb08ccbab..9fcc5d5b7f8d0 100644
+--- a/virt/kvm/kvm_mm.h
++++ b/virt/kvm/kvm_mm.h
+@@ -68,17 +68,18 @@ static inline void gfn_to_pfn_cache_invalidate_start(struct kvm *kvm,
+ #endif /* HAVE_KVM_PFNCACHE */
+
+ #ifdef CONFIG_KVM_GUEST_MEMFD
+-void kvm_gmem_init(struct module *module);
++int kvm_gmem_init(struct module *module);
++void kvm_gmem_exit(void);
+ int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args);
+ int kvm_gmem_bind(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 		  unsigned int fd, loff_t offset);
+ void kvm_gmem_unbind(struct kvm_memory_slot *slot);
+ #else
+-static inline void kvm_gmem_init(struct module *module)
++static inline int kvm_gmem_init(struct module *module)
+ {
+-
++	return 0;
+ }
+-
++static inline void kvm_gmem_exit(void) {};
+ static inline int kvm_gmem_bind(struct kvm *kvm,
+ 					 struct kvm_memory_slot *slot,
+ 					 unsigned int fd, loff_t offset)
+--
+2.51.0.268.g9569e192d0-goog
 
