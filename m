@@ -1,160 +1,240 @@
-Return-Path: <linux-btrfs+bounces-16431-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16432-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26CFDB37CBF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 10:04:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AC73B37E14
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 10:46:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C99F03B943A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 08:04:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 573DB1B61628
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 08:47:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E22321F3B;
-	Wed, 27 Aug 2025 08:03:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E562F60DF;
+	Wed, 27 Aug 2025 08:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I2WoqCGu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38C631CA54
-	for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 08:03:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15F91F7586
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 08:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756281831; cv=none; b=h55VK/n1PK5eHcqLaIcTqQ0jNWjGFQNjcBFF9Ln8u7MhzrCVrNBdRmxJlbWF2AWr8GpWNxVbY5e6XstV5deX+08+unkzYP3U+bqakqguYDwRVYiVAKqdZX0CvUf5weAWPwRM+SC9/lM0kiC6TzrX7BgcdxL0vRobuGeMqn5vNC4=
+	t=1756284393; cv=none; b=i0+6n6rsJyz+5FbNtRV0DbLkSDhE/lDvHV/9TRpShZAzJ7C4frejOpWIjMGikb5OKccLqvXh1c68BNCTikhJKfxk4cECa6NBgroPOGsz3o0w12gIOqXdACHx3XWQv6c7D7mU3BSkSuxNCRchEgQT0zJuUyy2sdocPzym283ri1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756281831; c=relaxed/simple;
-	bh=GKFP0cKg8X36DYXTs4AnKInFPQYLUC25oeO1ip+uIVo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=pyFoUIrPfwfbMSpY6NjkKd4Ct6HUjY9cABmK/YQ76Yi3lL6NYvJV/dpuGdxRS+syLY2P9/nMR1ueZdoPVqs1w1D36+4UCVpTMa9Q05LHiKlzuFO5jGzO7SmfQT8umC6WPCSQHHrNkTeCL+ZESLtRLEEX+l+x9YUNRFOMDLzFm5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3ef026c145fso18775955ab.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 01:03:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756281829; x=1756886629;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xXVGAuQnn9XzlKQXqXAG7puergh7qbhhO9p5PMqXgkw=;
-        b=fc6Ug05MZSXc1BR7xp5dL3zOcinpOzBHtzM+TjTmQkyqTiOTqnNZI8rKzxy+HhPJ0T
-         QvJK3aAlTOrTG2C3OO9FSK8dwl79ADY0DdVKFTWPKvC/Z2jXOmATXZKqAsXFOGROTe/S
-         ZfqwW+aUoLrG+Uil5r9OM4ch5+oVvLpcyc+oHzF/JL61+BtuhxYRG8Om5+HeGrvYSaMs
-         Kcnk9x9x0dD1bSiNPln8siVXr2/eCskgS2M66X7SQ8C2q+05cOCRPwCfw4QGH4fPDQr5
-         1IQsZOXuJEQlRSrtqxliLLVPTDlPXo1c0LfGg+RkdTOZatC1ddi8N0MXrElD6uSeTvE3
-         +NAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJGDhSlO4JPiRWphFg9D7e8sXeRnD3kzPrcdfyxucuyR7Yoi6BBfeC/+UQ78J0mnrAkOqDNQMnQnsh7Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBYVk/kTS7+SihOjlCxFjmbTuqE6ykWdi+TjBnvehxGsAn0fPA
-	giix1T7OoaPtTHOBMv0lnVWYzKFfiySVBotH8PV207hbgmnsuPVdQ19q1KgV9uDQHJC7pI2DSLm
-	73480ZXs5AOMph/1tHHaq5ebytbOvLzESW+h0LxVYzJ0lBKcwZVVzElww3cE=
-X-Google-Smtp-Source: AGHT+IHgGgCW/4gHUt8t/levoYYyVNCC5/Uo1Faz0rZusbCMW0pjQ6aBYk5jawEFHvtzIMDbLkK5lYOmXgLbgGbFV0yzSJsjx3T1
+	s=arc-20240116; t=1756284393; c=relaxed/simple;
+	bh=SdS2bkznW+ttQQvbVukkC4JVEuG+/1DeBBq9ad4+zEE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PVY1gFnxZgpRPKr/HrBSB2zQwJHbqAb34SnM8LcHyj4oq3PJyZwPflOHz9CO3iz4fpMZ1iCYRQ0gHRDmNmS8prA66Qa3f2yI/Zell0/xy2rUlsLLZxoyyeR/ZTv76otkO8iq77/ZESCGx16gKYzI2aH2F/p5XC6Z2lkES/X10T8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I2WoqCGu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6576CC4AF09
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 08:46:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756284393;
+	bh=SdS2bkznW+ttQQvbVukkC4JVEuG+/1DeBBq9ad4+zEE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=I2WoqCGuTP7ew+RW36uSJJERr9P0EFsaAM08YGlDACWRLmatBMYJuml0PVn3DWFGO
+	 hPrl4HeJCh41pEKB3jrLu86xvBdsSf0t42bhc6Fw8q9Sb389ZUuI5ohf3ZRnBNJVXL
+	 7ZjiW3w/YmeQMS1iGKCPWLW27+FIJeJy3ZeWfCWsCrIl36KhcQ8fctWiXXXIlmTVUN
+	 +AC9uslIfg0c5/aYHuAPMwk2Ju5eML7w6zJGMWczcdPRXHtzWQcAcVUGtmmpuhyszy
+	 Dg+2iJA4b6ClK9U5xkyaXpD8bSPUOVRGJTK/UFM1uBu11LKsagi3651hYhVpb1Xkoa
+	 PWoiYg5PssroA==
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-afec56519c4so46474366b.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 01:46:33 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxeVcz+JrEysjQBjhTQZABcYlJyNo+8h76mn4pcqTE6FfRr8sXs
+	cXf5fww76OMBIk9DDY0StwiFKJGlF7tPuObxju6OuUMXXGHxu6DrWaS1bhoxY3A4QxN7uKS7Ob6
+	i8lEij0FJRuXPZl3kEHSCzGFhRIeYKtU=
+X-Google-Smtp-Source: AGHT+IHWorFAXHRLNyJZXzpcezjkhUXYWaxrdWYO1GH734dCJ/95unwubwISwnPAHaiWULb6yGobfFKxojIe+BRVhEs=
+X-Received: by 2002:a17:907:940a:b0:ae8:4776:fbb1 with SMTP id
+ a640c23a62f3a-afe28fd3a7dmr1981941466b.11.1756284391894; Wed, 27 Aug 2025
+ 01:46:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:4813:b0:3ea:114c:83a6 with SMTP id
- e9e14a558f8ab-3ea114c860fmr227055435ab.1.1756281828839; Wed, 27 Aug 2025
- 01:03:48 -0700 (PDT)
-Date: Wed, 27 Aug 2025 01:03:48 -0700
-In-Reply-To: <cover.1756222464.git.josef@toxicpanda.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68aebbe4.a70a0220.3cafd4.0011.GAE@google.com>
-Subject: [syzbot ci] Re: fs: rework inode reference counting
-From: syzbot ci <syzbot+ci0d448b9d8cb534fd@syzkaller.appspotmail.com>
-To: amir73il@gmail.com, brauner@kernel.org, josef@toxicpanda.com, 
-	kernel-team@fb.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	viro@zeniv.linux.org.uk
-Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+References: <f7e05205fd33d9e510ec1295e0cc8cfdf395cb89.1756237895.git.osandov@osandov.com>
+In-Reply-To: <f7e05205fd33d9e510ec1295e0cc8cfdf395cb89.1756237895.git.osandov@osandov.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 27 Aug 2025 09:45:55 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H48SkgXFEikNX0Kuh722b0CRduKW5a9rQgT9afs3Am1SA@mail.gmail.com>
+X-Gm-Features: Ac12FXx5b9EIu1PS_mSHcbksVkA-9uEqbO5OmpzV3XFbcLLD2njWCbvRcmTKONQ
+Message-ID: <CAL3q7H48SkgXFEikNX0Kuh722b0CRduKW5a9rQgT9afs3Am1SA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix subvolume deletion lockup caused by inodes
+ xarray race
+To: Omar Sandoval <osandov@osandov.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, 
+	Filipe Manana <fdmanana@suse.com>, Leo Martins <loemra.dev@gmail.com>, Boris Burkov <boris@bur.io>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot ci has tested the following series
+On Tue, Aug 26, 2025 at 9:01=E2=80=AFPM Omar Sandoval <osandov@osandov.com>=
+ wrote:
+>
+> From: Omar Sandoval <osandov@fb.com>
+>
+> There is a race condition between inode eviction and inode caching that
+> can cause a live struct btrfs_inode to be missing from the root->inodes
+> xarray. Specifically, there is a window during evict() between the inode
+> being unhashed and deleted from the xarray. If btrfs_iget() is called
+> for the same inode in that window, it will be recreated and inserted
+> into the xarray, but then eviction will delete the new entry, leaving
+> nothing in the xarray:
+>
+> Thread 1                          Thread 2
+> ---------------------------------------------------------------
+> evict()
+>   remove_inode_hash()
+>                                   btrfs_iget_path()
+>                                     btrfs_iget_locked()
+>                                     btrfs_read_locked_inode()
+>                                       btrfs_add_inode_to_root()
+>   destroy_inode()
+>     btrfs_destroy_inode()
+>       btrfs_del_inode_from_root()
+>         __xa_erase
+>
+> In turn, this can cause issues for subvolume deletion. Specifically, if
+> an inode is in this lost state, and all other inodes are evicted, then
+> btrfs_del_inode_from_root() will call btrfs_add_dead_root() prematurely.
+> If the lost inode has a delayed_node attached to it, then when
+> btrfs_clean_one_deleted_snapshot() calls btrfs_kill_all_delayed_nodes(),
+> it will loop forever because the delayed_nodes xarray will never become
+> empty (unless memory pressure forces the inode out). We saw this
+> manifest as soft lockups in production.
+>
+> Fix it by only deleting the xarray entry if it matches the given inode
+> (using __xa_cmpxchg()).
+>
+> Fixes: 310b2f5d5a94 ("btrfs: use an xarray to track open inodes in a root=
+")
+> Cc: stable@vger.kernel.org # 6.11+
+> Co-authored-by: Leo Martins <loemra.dev@gmail.com>
+> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 
-[v2] fs: rework inode reference counting
-https://lore.kernel.org/all/cover.1756222464.git.josef@toxicpanda.com
-* [PATCH v2 01/54] fs: make the i_state flags an enum
-* [PATCH v2 02/54] fs: add an icount_read helper
-* [PATCH v2 03/54] fs: rework iput logic
-* [PATCH v2 04/54] fs: add an i_obj_count refcount to the inode
-* [PATCH v2 05/54] fs: hold an i_obj_count reference in wait_sb_inodes
-* [PATCH v2 06/54] fs: hold an i_obj_count reference for the i_wb_list
-* [PATCH v2 07/54] fs: hold an i_obj_count reference for the i_io_list
-* [PATCH v2 08/54] fs: hold an i_obj_count reference in writeback_sb_inodes
-* [PATCH v2 09/54] fs: hold an i_obj_count reference while on the hashtable
-* [PATCH v2 10/54] fs: hold an i_obj_count reference while on the LRU list
-* [PATCH v2 11/54] fs: hold an i_obj_count reference while on the sb inode list
-* [PATCH v2 12/54] fs: stop accessing ->i_count directly in f2fs and gfs2
-* [PATCH v2 13/54] fs: hold an i_obj_count when we have an i_count reference
-* [PATCH v2 14/54] fs: add an I_LRU flag to the inode
-* [PATCH v2 15/54] fs: maintain a list of pinned inodes
-* [PATCH v2 16/54] fs: delete the inode from the LRU list on lookup
-* [PATCH v2 17/54] fs: remove the inode from the LRU list on unlink/rmdir
-* [PATCH v2 18/54] fs: change evict_inodes to use iput instead of evict directly
-* [PATCH v2 19/54] fs: hold a full ref while the inode is on a LRU
-* [PATCH v2 20/54] fs: disallow 0 reference count inodes
-* [PATCH v2 21/54] fs: make evict_inodes add to the dispose list under the i_lock
-* [PATCH v2 22/54] fs: convert i_count to refcount_t
-* [PATCH v2 23/54] fs: use refcount_inc_not_zero in igrab
-* [PATCH v2 24/54] fs: use inode_tryget in find_inode*
-* [PATCH v2 25/54] fs: update find_inode_*rcu to check the i_count count
-* [PATCH v2 26/54] fs: use igrab in insert_inode_locked
-* [PATCH v2 27/54] fs: remove I_WILL_FREE|I_FREEING check from __inode_add_lru
-* [PATCH v2 28/54] fs: remove I_WILL_FREE|I_FREEING check in inode_pin_lru_isolating
-* [PATCH v2 29/54] fs: use inode_tryget in evict_inodes
-* [PATCH v2 30/54] fs: change evict_dentries_for_decrypted_inodes to use refcount
-* [PATCH v2 31/54] block: use igrab in sync_bdevs
-* [PATCH v2 32/54] bcachefs: use the refcount instead of I_WILL_FREE|I_FREEING
-* [PATCH v2 33/54] btrfs: don't check I_WILL_FREE|I_FREEING
-* [PATCH v2 34/54] fs: use igrab in drop_pagecache_sb
-* [PATCH v2 35/54] fs: stop checking I_FREEING in d_find_alias_rcu
-* [PATCH v2 36/54] ext4: stop checking I_WILL_FREE|IFREEING in ext4_check_map_extents_env
-* [PATCH v2 37/54] fs: remove I_WILL_FREE|I_FREEING from fs-writeback.c
-* [PATCH v2 38/54] gfs2: remove I_WILL_FREE|I_FREEING usage
-* [PATCH v2 39/54] fs: remove I_WILL_FREE|I_FREEING check from dquot.c
-* [PATCH v2 40/54] notify: remove I_WILL_FREE|I_FREEING checks in fsnotify_unmount_inodes
-* [PATCH v2 41/54] xfs: remove I_FREEING check
-* [PATCH v2 42/54] landlock: remove I_FREEING|I_WILL_FREE check
-* [PATCH v2 43/54] fs: change inode_is_dirtytime_only to use refcount
-* [PATCH v2 44/54] btrfs: remove references to I_FREEING
-* [PATCH v2 45/54] ext4: remove reference to I_FREEING in inode.c
-* [PATCH v2 46/54] ext4: remove reference to I_FREEING in orphan.c
-* [PATCH v2 47/54] pnfs: use i_count refcount to determine if the inode is going away
-* [PATCH v2 48/54] fs: remove some spurious I_FREEING references in inode.c
-* [PATCH v2 49/54] xfs: remove reference to I_FREEING|I_WILL_FREE
-* [PATCH v2 50/54] ocfs2: do not set I_WILL_FREE
-* [PATCH v2 51/54] fs: remove I_FREEING|I_WILL_FREE
-* [PATCH v2 52/54] fs: remove I_REFERENCED
-* [PATCH v2 53/54] fs: remove I_LRU_ISOLATING flag
-* [PATCH v2 54/54] fs: add documentation explaining the reference count rules for inodes
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-and found the following issue:
-kernel build error
+Looks good, thanks.
 
-Full report is available here:
-https://ci.syzbot.org/series/ccd4eafa-7a13-48d6-93b6-f40c03262bea
-
-***
-
-kernel build error
-
-tree:      torvalds
-URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux
-base:      fab1beda7597fac1cecc01707d55eadb6bbe773c
-arch:      amd64
-compiler:  Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
-config:    https://ci.syzbot.org/builds/162c03ae-2d30-4085-ab1e-a2dd1c8403eb/config
-
-fs/bcachefs/fs.c:350:20: error: incompatible pointer types passing 'struct bch_inode_info *' to parameter of type 'const struct inode *' [-Werror,-Wincompatible-pointer-types]
-
-***
-
-If these findings have caused you to resend the series or submit a
-separate fix, please add the following tag to your commit message:
-  Tested-by: syzbot@syzkaller.appspotmail.com
-
----
-This report is generated by a bot. It may contain errors.
-syzbot ci engineers can be reached at syzkaller@googlegroups.com.
+> ---
+> Based on for-next. This reproduces the soft lockup on a kernel with
+> CONFIG_PREEMPT_NONE=3Dy:
+>
+>         #!/bin/bash
+>
+>         set -e
+>
+>         dev=3D/dev/vdb
+>
+>         mkfs.btrfs -f "$dev"
+>         tmp=3D"$(mktemp -d)"
+>         trap 'umount "$dev"; rm -rf "$tmp"' EXIT
+>         mnt=3D"$tmp/mnt"
+>         mkdir "$mnt"
+>         mount "$dev" "$mnt"
+>         cleaner_pid=3D"$(pgrep -n btrfs-cleaner)"
+>
+>         subvol=3D"$mnt/subvol"
+>
+>         while true; do
+>                 echo -n .
+>
+>                 btrfs -q subvolume create "$subvol"
+>
+>                 # Stat hard links of the same inode repeatedly.
+>                 touch "$subvol/file"
+>                 for ((i =3D 0; i < 4; i++)); do
+>                         mkdir "$subvol/dir$i"
+>                         ln "$subvol/file" "$subvol/dir$i/file"
+>                         while [ -f "$subvol/dir$i/file" ]; do
+>                                 :
+>                         done &
+>                 done
+>
+>                 # Drop dentry and inode caches. Along with the parallel
+>                 # stats, this may trigger the race when the inode is
+>                 # recached.
+>                 echo 2 > /proc/sys/vm/drop_caches
+>
+>                 # Hold a reference on the inode (but not any of its
+>                 # dentries) by creating an inotify watch.
+>                 inotifywatch -e unmount "$subvol/file" > "$tmp/log" 2>&1 =
+&
+>                 inotifypid=3D$!
+>                 tail -f "$tmp/log" | grep -q "Finished establishing watch=
+es"
+>
+>                 # Hold a reference on another file.
+>                 exec 3> "$subvol/dummy"
+>
+>                 btrfs -q subvolume delete "$subvol"
+>
+>                 echo 2 > /proc/sys/vm/drop_caches
+>
+>                 # After deleting the subvolume and dropping caches, only
+>                 # the lost inode and the dummy file should be cached,
+>                 # and only the dummy file is in the inodes xarray.
+>
+>                 # Closing the dummy file will mark the subvolume as dead
+>                 # even though the lost inode is still cached.
+>                 exec 3>&-
+>
+>                 # Remounting kicks the cleaner thread.
+>                 mount -o remount,rw "$mnt"
+>                 # Loop until the cleaner thread stops running. If we
+>                 # reproduced the race, it will never stop. Otherwise, we
+>                 # will clean up and try again.
+>                 while true; do
+>                         if ! grep 'State:\s*R' "/proc/$cleaner_pid/status=
+"; then
+>                                 kill "$inotifypid"
+>                                 mount -o remount,rw "$mnt"
+>                         fi
+>                         if ! btrfs subvolume list -d "$mnt" | grep -q .; =
+then
+>                                 break
+>                         fi
+>                         sleep 1
+>                 done
+>         done
+>
+>  fs/btrfs/inode.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index f91c62146982..3cd9b505bd25 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -5697,7 +5697,17 @@ static void btrfs_del_inode_from_root(struct btrfs=
+_inode *inode)
+>         bool empty =3D false;
+>
+>         xa_lock(&root->inodes);
+> -       entry =3D __xa_erase(&root->inodes, btrfs_ino(inode));
+> +       /*
+> +        * This btrfs_inode is being freed and has already been unhashed =
+at this
+> +        * point. It's possible that another btrfs_inode has already been
+> +        * allocated for the same inode and inserted itself into the root=
+, so
+> +        * don't delete it in that case.
+> +        *
+> +        * Note that this shouldn't need to allocate memory, so the gfp f=
+lags
+> +        * don't really matter.
+> +        */
+> +       entry =3D __xa_cmpxchg(&root->inodes, btrfs_ino(inode), inode, NU=
+LL,
+> +                            GFP_ATOMIC);
+>         if (entry =3D=3D inode)
+>                 empty =3D xa_empty(&root->inodes);
+>         xa_unlock(&root->inodes);
+> --
+> 2.51.0
+>
+>
 
