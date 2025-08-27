@@ -1,148 +1,261 @@
-Return-Path: <linux-btrfs+bounces-16429-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16430-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1C0DB374D6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 00:19:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAC1BB3774F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 03:44:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87BE37C8535
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Aug 2025 22:19:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCAEA7A9C1A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 01:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32370298CAB;
-	Tue, 26 Aug 2025 22:18:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E98D1FDA9E;
+	Wed, 27 Aug 2025 01:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mbgDHg/J"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NTTs4yl5";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NTTs4yl5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD6F30CDB4;
-	Tue, 26 Aug 2025 22:18:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F7B81CD208
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 01:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756246729; cv=none; b=eWT4KFvsZCfeOPTnURYI7pBBKUt9sqJDIdPi9HqQJDvDStLvD0KNvBwf+k2850L7AMUEq8WSf/8DZsG5Vb+qyC9ZPT+F4JeU69B7ylg9DlvjK/hB6xtQ52UwztEIJnVxe5ala1z0tmmvqM+e4ARhDjymxiJ0OAOFIFZ9IhykLrg=
+	t=1756258994; cv=none; b=YNf1FHMSxIGkDtEvQH5GlfNwayMgFQP0zb7JA7wW5cjYhWzCHVZVh2W0vq/5wxatlRyoxcR5qhcl7nNqxlIsP6gnb4xioizbsOVzK3Lf1stZlofr8GHqPYSI66dNxsMHHvqWXSliGu63EZpM9UHuFXZMYv8baSBl4VKKVTgE4/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756246729; c=relaxed/simple;
-	bh=AetuBWMmw/6t54AG8a5ZO87tiIPQPeRZ0PeQFTc29PI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TOrgXApZOQ2bYU1PgOWpVsu9hlZguEV6PHPbljapJMj0e91zIlgjS2DK+OsXUhjefhMZssznT8gvTKJONPTUNargj0Ki94bVa9mXGFZqk7qxxBTXhudueBiRbuPjSHiTB8bQzClK9HycwPrEoGH+5zh4cTchktjv40IkS6038PA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mbgDHg/J; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-45b627ea5f3so11867325e9.1;
-        Tue, 26 Aug 2025 15:18:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756246726; x=1756851526; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CsTzztZtiJ8L2utrdxff2Xitwgqo/0WZra/kFXABXtE=;
-        b=mbgDHg/JJif3uchVxFvyZH9/tyawVSPR6l0k4G1OGt/39gb8JUPE1cJHGjXTs98jmf
-         qT8tLzbM/GfINVn1ds5utdxs6RIg/8RrZoeQNOdiNIWUVaUXATEESY0Ot8Yo8WfmeR2x
-         7qUqIxqQj4cawjLtqSdC8wVnnEgBpFQ5Px49iZkC70Hamr8BsZ4wDtjIY9DwPIdfnUZb
-         bIALlYlZqUM89CNLLu2w5UU1l/jAH697UM/nJXT7SbpbeBa2OgtmrByVJMRhnPYr/Hev
-         iG6UHPzKU0sw8bueEf6mtnYdq2r6uhMICBZS+DLKpr0VJXcDy9sVekPVISz2VXHzXDl3
-         06UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756246726; x=1756851526;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CsTzztZtiJ8L2utrdxff2Xitwgqo/0WZra/kFXABXtE=;
-        b=MJtFzBGG4FE8R0kQBpXbXb++j2l+4OxCNXmSRQJMnkqwV8cArNBHkNrtVSQswu5t06
-         09dwzK/2Z7Vwvtq2qzDO/0fmrgsh+7YJnssJAtnW0Y8YPyPYtJ3Au9ctgouBjOIeR7uM
-         1ph7sdvjWhGq/Cl17DmK0i5F7iZFKa2yhljn6eqQuOwsaWP8qdHZnAUbi+pBHulxdzXN
-         hOet0IZJBmiWetTdNcxHglYdhlLQ0r9nbvajuyfopj/OcjhLuuBqAfpLxRLK73V+0SFf
-         vLqvi7ZZuKhB2auEG9/ZJh/kaJyEYZI7u3r/BhXGoSZpQTB/DkuO1K7YcXvtxUNTNGw2
-         PgZA==
-X-Forwarded-Encrypted: i=1; AJvYcCUdM9373w2CvAwAa3fG22jmon7q1vleGjstBuHsrlzkxPNaizovufPmtj75uTAFH9d/vzg/kmjPrfV4Yw==@vger.kernel.org, AJvYcCXUKFd2lGiarZhdrs6HVRSD8ESJDWvURtsyrlA52Bz6izdiJCvPScm189CMKGRYpQdERWDu/3Zj7Ma8IA==@vger.kernel.org, AJvYcCXg8CIN8SMGPMP8pXqtIQWhsJQaw0TigYCpaZXGDO3E0C8tIlsdDCImjXBMkG2ibBbEuvbOuoIWZ2iP@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTvozb6ml9v2m8ShoWClQoML31lqfgCbmd2mxl/vo57GIeCD1n
-	HyC/knnO4Bj7+werLebhVpLP/KMB4mjlxJiwqQU7sQ/N61gD1HHwozGj
-X-Gm-Gg: ASbGncseGidjUF778jzxSpLc5PgoFJY/UYjjC4AIAe65kTkXLC9ACDmYNbBAoCNwDxk
-	GP0CeA/jj3wfnQnre+ciMyGjk6/adYspYoODQ3gOR+nEaV7uERy+052fzH5GP7m3zL6faQRPTFS
-	Wq1iXkXheBJtrVeBmDoQLqOdR/4CEwP+k9yMqL6BI+L7fNUbGcqSvbUEJwQIss9wvvpjwbDmWnw
-	i5rITa5RCrGZ6t1mqBzHOPLqD+4TMl7ljMWkXzX2iy8HXeZEEh24FVWHIHEUPSYHarVyRmfHMAQ
-	WRehFPXUNOrhI3JtXHm/Vjddur4aaT8EZWslC/3LeSwiOOdS8Qm9VxQcg6iYBJ9edek6FjhjbuH
-	21+HeErn/+9DOHZLHBAMPfFfvED4/4ChzflJmgex3Ai5vzA==
-X-Google-Smtp-Source: AGHT+IENqGosWcuvpxyVpKc6QXcStLwWv0NFWtOjGkUDy/TTF3j9/YRV/+SwtDwSZAadW6RD9hyMcw==
-X-Received: by 2002:a05:600c:1d07:b0:459:d9a2:e952 with SMTP id 5b1f17b1804b1-45b5179f2f9mr114473495e9.1.1756246725999;
-        Tue, 26 Aug 2025 15:18:45 -0700 (PDT)
-Received: from f (cst-prg-2-200.cust.vodafone.cz. [46.135.2.200])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3cca0dd7014sm306476f8f.13.2025.08.26.15.18.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 15:18:45 -0700 (PDT)
-Date: Wed, 27 Aug 2025 00:18:37 +0200
-From: Mateusz Guzik <mjguzik@gmail.com>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	brauner@kernel.org, viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 02/54] fs: add an icount_read helper
-Message-ID: <xvjqgfecmhgb4ngzmjveo7w5iib2qnh2te4x7hmpr7cjtul6mq@utgtnbfuxhco>
-References: <cover.1756222464.git.josef@toxicpanda.com>
- <9bc62a84c6b9d6337781203f60837bd98fbc4a96.1756222464.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1756258994; c=relaxed/simple;
+	bh=blR0XwbWwwo6hqakEJhG/NjWjQfNhd0hrTFFLKzPVFI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=aANxgImHgqNS13xds3PU+bk0BMvR8tDIn5/7M9uh1L6oPSk75rJ8T1m1fVXbuWwVXzCIDRd/eLhXChEWisSYaVcq8YDbvHvubh2mpM2/g/O9Zx1mz/23Sseq25dXu/CqMptjOymrJui/BZBLyiwocHS5b3DSltbjSZ/VcAf7aZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NTTs4yl5; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NTTs4yl5; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 315B61F393;
+	Wed, 27 Aug 2025 01:43:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1756258989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=L3LANSiJH+KYmLc5PcRnzYW8HOCpfOPtBAmDiptnpDM=;
+	b=NTTs4yl5fxSFpr3XHVQNJj6zPl6Ey0AhnWtMO7VTQFEeoQ57xQew1jCwphR/HIJPRvAXcI
+	VCGFGSGpcJt4WB0JBYuLZUHYzB2zS7hZcGmzHqUB4rvll2CB8chNJMrbf5EQ3exjiiDBFr
+	UcUPbjEMhDIzFhJ9J4523AUmoptu4PE=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=NTTs4yl5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1756258989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=L3LANSiJH+KYmLc5PcRnzYW8HOCpfOPtBAmDiptnpDM=;
+	b=NTTs4yl5fxSFpr3XHVQNJj6zPl6Ey0AhnWtMO7VTQFEeoQ57xQew1jCwphR/HIJPRvAXcI
+	VCGFGSGpcJt4WB0JBYuLZUHYzB2zS7hZcGmzHqUB4rvll2CB8chNJMrbf5EQ3exjiiDBFr
+	UcUPbjEMhDIzFhJ9J4523AUmoptu4PE=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3363E13867;
+	Wed, 27 Aug 2025 01:43:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id SneeOatirmhtDAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 27 Aug 2025 01:43:07 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: [PATCH v3] fstests: btrfs: add a new test case to verify compressed read
+Date: Wed, 27 Aug 2025 11:12:50 +0930
+Message-ID: <20250827014250.170552-1-wqu@suse.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9bc62a84c6b9d6337781203f60837bd98fbc4a96.1756222464.git.josef@toxicpanda.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 315B61F393
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Score: -3.01
 
-On Tue, Aug 26, 2025 at 11:39:02AM -0400, Josef Bacik wrote:
-> Instead of doing direct access to ->i_count, add a helper to handle
-> this. This will make it easier to convert i_count to a refcount later.
-> 
-> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
-> index 079b868552c2..46bfc543f946 100644
-> --- a/fs/notify/fsnotify.c
-> +++ b/fs/notify/fsnotify.c
-> @@ -66,7 +66,7 @@ static void fsnotify_unmount_inodes(struct super_block *sb)
->  		 * removed all zero refcount inodes, in any case.  Test to
->  		 * be sure.
->  		 */
-> -		if (!atomic_read(&inode->i_count)) {
-> +		if (!icount_read(inode)) {
->  			spin_unlock(&inode->i_lock);
->  			continue;
->  		}
-[snip]
-> +static inline int icount_read(const struct inode *inode)
-> +{
-> +	return atomic_read(&inode->i_count);
-> +}
-> +
->  extern void iget_failed(struct inode *);
->  extern void clear_inode(struct inode *);
->  extern void __destroy_inode(struct inode *);
+The new test case is a regression test related to the block size < page
+size handling of compressed read.
 
-The placement issue I mentioned in another e-mail aside, I would
-recommend further error-proofing this.
+The test case will only be triggered with 64K page size and 4K btrfs
+block size.
+I'm using aarch64 with 64K page size to trigger the regression.
 
-Above I quoted an example user which treats i_count == 0 as special.
+The test case will create the following file layout:
 
-While moving this into helpers is definitely a step in the right
-direction, I think having consumer open-code this check is avoidably
-error-prone.
+  base:
+  [0, 64K): Single compressed data extent at bytenr X.
 
-Notably, as is there is nothing to indicate whether the consumer expects
-the value to remain stable or is perhaps doing a quick check for other
-reasons.
+  new:
+  [0, 32K): Reflinked from base [32K, 64K)
+  [32K, 60K): Reflinked from base [0, 28K)
+  [60K, 64K): New 4K write
 
-As such, specific naming aside, I would create 2 variants:
-1. icount_read_unstable() -- the value can change from under you
-arbitrarily. I don't there are any consumers for this sucker atm.
-2. icount_read() -- the caller expects the transition 0<->1 is
-guaranteed to not take place, notably if the value is found to be 0, it
-stay at 0. to that end the caller is expected to hold the inode spinlock
-*and* the fact that the lock is held is asserted on with lockdep.
+  The range [0, 32K) and [32K, 64K) are pointing to the same compressed
+  data.
 
-All that aside, I think open-coding "is the inode unused" with an
-explicit count check is bad form -- a dedicated helper for that would
-also be nice.
+  The last 4K write is a special workaround. It is a block aligned
+  write, thus it will create the folio but without reading out the
+  remaing part.
 
-My 3 CZK.
+  This is to avoid readahead path, which has the proper fix.
+  We want single folio read without readahead.
+
+Then output the file "new" just after the last 4K write, then cycle
+mount and output the content again.
+
+For patched kernel, or with 4K page sized system, the test will pass,
+the resulted content will not change during mount cycles.
+
+For unpatched kernel and with 64K page size, the test will fail, the
+content after the write will be incorrect (the range [32K, 60K) will be
+zero), but after a mount cycle the content is correct again.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v3:
+- Fix the golden output which is generated by an unpatched kernel
+
+v2:
+- Remove the unnecessary sync inherited from the kernel fix
+- Use _hexdump instead of open-coded od dumps
+- Use the correct 'clone' group instead of 'reflink'
+- Minor grammar fixes
+  All thanks to Filipe.
+---
+ tests/btrfs/337     | 55 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/337.out | 23 +++++++++++++++++++
+ 2 files changed, 78 insertions(+)
+ create mode 100755 tests/btrfs/337
+ create mode 100644 tests/btrfs/337.out
+
+diff --git a/tests/btrfs/337 b/tests/btrfs/337
+new file mode 100755
+index 00000000..9c409e4d
+--- /dev/null
++++ b/tests/btrfs/337
+@@ -0,0 +1,55 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2025 SUSE Linux Products GmbH.  All Rights Reserved.
++#
++# FS QA Test 337
++#
++# Test compressed read with shared extents, especially for bs < ps cases.
++#
++. ./common/preamble
++_begin_fstest auto quick compress clone
++
++_fixed_by_kernel_commit xxxxxxxxxxxx \
++	"btrfs: fix corruption reading compressed range when block size is smaller than page size"
++
++. ./common/filter
++. ./common/reflink
++
++_require_btrfs_support_sectorsize 4096
++_require_scratch_reflink
++
++# The layout used in the test case is all 4K based, and can only be reproduced
++# with page size larger than 4K.
++_scratch_mkfs -s 4k >> $seqres.full
++_scratch_mount "-o compress"
++
++# Create the reflink source, which must be a compressed extent.
++$XFS_IO_PROG -f -c "pwrite -S 0x0f 0 32K" \
++		-c "pwrite -S 0xf0 32K 32K" \
++		$SCRATCH_MNT/base >> $seqres.full
++echo "Reflink source:"
++_hexdump $SCRATCH_MNT/base
++
++# Create the reflink dest, which reverses the order of the two 32K ranges.
++#
++# And do a further aligned write into the last block.
++# This write is to make sure the folio exists in filemap, so that we won't go
++# through the readahead path (which has the proper handling) for the folio.
++$XFS_IO_PROG -f -c "reflink $SCRATCH_MNT/base 32K 0 32K" \
++		-c "reflink $SCRATCH_MNT/base 0 32K 32K" \
++		-c "pwrite 60K 4K" $SCRATCH_MNT/new >> $seqres.full
++
++# This will result an incorrect output for unpatched kernel.
++# The range [32K, 60K) will be zero due to incorrectly merged compressed read.
++echo "Before mount cycle:"
++_hexdump $SCRATCH_MNT/new
++
++_scratch_cycle_mount
++
++# This will go through readahead path, which has the proper handling, thus give
++# the correct content.
++echo "After mount cycle:"
++_hexdump $SCRATCH_MNT/new
++
++status=0
++_exit 0
+diff --git a/tests/btrfs/337.out b/tests/btrfs/337.out
+new file mode 100644
+index 00000000..cecbbbcf
+--- /dev/null
++++ b/tests/btrfs/337.out
+@@ -0,0 +1,23 @@
++QA output created by 337
++Reflink source:
++000000 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f  >................<
++*
++008000 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0  >................<
++*
++010000
++Before mount cycle:
++000000 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0  >................<
++*
++008000 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f  >................<
++*
++00f000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  >................<
++*
++010000
++After mount cycle:
++000000 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0  >................<
++*
++008000 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f  >................<
++*
++00f000 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd  >................<
++*
++010000
+-- 
+2.49.0
+
 
