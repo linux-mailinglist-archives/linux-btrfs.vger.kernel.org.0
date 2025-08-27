@@ -1,383 +1,162 @@
-Return-Path: <linux-btrfs+bounces-16446-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16447-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 164C0B38661
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 17:21:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 708C6B386BE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 17:36:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDE7A1889C2A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 15:20:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32882365B8C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Aug 2025 15:36:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64749278158;
-	Wed, 27 Aug 2025 15:20:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1D722D0606;
+	Wed, 27 Aug 2025 15:36:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F6mzwijs"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="jB1zSPVh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C65714F9FB;
-	Wed, 27 Aug 2025 15:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 654EE14E2F2
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Aug 2025 15:35:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756308021; cv=none; b=XbAFC8u3TVUjlbn7fWq1TAN3j/fohupLjy7MryGY7RbnnLX9EUi2yBikL4II6sJl3kLq6WUdcBsS2GT6ZzEPq9Q9C9YFYP1jus3zI55zifvhmthU6Xa7MeQdPwKumxCH/oDUXu8932i3HGC6KUvhwYhAV1l2LSNickRDRx1ggKI=
+	t=1756308964; cv=none; b=U2jCCqtqVd2vOZFnjovwVdhCjx94erCSWIVVfCPrmvDJBxbQqx1Op3p7MN8rTPuoGM4dfCizjkQxb1QdBOd7v0rVWqFLOsA5O+WiIUIZfM1X1DRtWqLpDnzslxzacPJ/p3L42uwIqWRBNxBpG3bsf3I1JngpTljv6pYuEQCIe3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756308021; c=relaxed/simple;
-	bh=GGFt6/wGlPxNziywradlN7pKUfouYuWxrh24IitpqNI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rHZPsshYglRjkGnlhOsk9H0WAV9/v2vJtBpWj/6YUStKqiybFTKQjAtkD8wuv17tRHoP9B6BwpmZJaBNF7266orpWrdVs9gyKUipgm49uXauSjgI9f0d5srvzrPWUkZnrKzly6PdwdDfjW8sbhpG9Y3grZ0Ik3Ama3zRpgS1/xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F6mzwijs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 389EBC4CEEB;
-	Wed, 27 Aug 2025 15:20:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756308021;
-	bh=GGFt6/wGlPxNziywradlN7pKUfouYuWxrh24IitpqNI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F6mzwijsKE/Qn46f11FPR1Ls0t5P8w9IXy9eJSYjoMhZHCf8y6dEH5yDZcfeUnVoD
-	 VJszSRHAYXmqiZhLW3yWGZOgKBCqzO5tpBfsdxSgSf9LsHzfpuMmvRDM0I5z7db4J8
-	 xXo32SEofp63yX0pUo+HrqDU9dV2dhw/OPnJV1z5CB6RXwgwloCWZGBB6aCdf1WEIE
-	 ZCeIzvkTGXnGu1v7/u5wNynJCU/iPQFjnVJveg5msDOK33U7o1cCPYikzzcWaCgHMH
-	 LDspKkm16U3j7KE5J5zz3LDqDb2M6UBpEVpINrKFEEzhaTBSl3VsDt+1daW8tWkFHF
-	 gJ/gjly8e9bqw==
-Date: Wed, 27 Aug 2025 17:20:17 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 15/54] fs: maintain a list of pinned inodes
-Message-ID: <20250827-gelandet-heizt-1f250f77bfc8@brauner>
-References: <cover.1756222464.git.josef@toxicpanda.com>
- <35dc849a851470e2a31375ecdfdf70424844c871.1756222465.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1756308964; c=relaxed/simple;
+	bh=GUiTPugs/9ym8ko92OB3DdPpoIblFIPYG4gMQB8MW7c=;
+	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cub9QlYMWnRoONBGu/dB0NLNErmBTFwSFpfoEV5+pKw/WHa2k6brCCyJFs3yzBykUH9pBW1lmrbDW1fPprMk6luFg4oqEb8Oh4B4bI1VqFkrn2RGoCWlhqma3YteI4gZOGQdDGaDeLuJie15yD5qw3sng56n6n1GDFfqpawjyb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=jB1zSPVh; arc=none smtp.client-ip=217.169.27.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
+Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
+	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
+	by mail.burntcomma.com (Postfix) with ESMTPS id 8E6572AE287;
+	Wed, 27 Aug 2025 16:35:56 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
+	s=mail; t=1756308956;
+	bh=DaEgoipmK3t0lfyGiGHvch7WYqM3DiVYXdh1XFZaVAE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=jB1zSPVhfBJbvdXOhX2nhop6Fr3/vMAlrnlAHBOjxGKhBvRV8ybwBxxUHvuHsac5/
+	 RMkbT06mxCq5/bvelHTIzsqPFhIWUjTQ/uv6sL4Lzdw0uUh/r8T05Mp15VtIERyY2V
+	 qJlaAEj9vTNgKNImwnmFX23fsDrmKblKwCGp12SI=
+Message-ID: <b6df2e8e-121c-482f-92ec-b8abf74b8e03@harmstone.com>
+Date: Wed, 27 Aug 2025 16:35:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <35dc849a851470e2a31375ecdfdf70424844c871.1756222465.git.josef@toxicpanda.com>
+Mime-Version: 1.0
+Subject: Re: [PATCH v2 09/16] btrfs: release BG lock before calling
+ btrfs_link_bg_list()
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+References: <20250813143509.31073-1-mark@harmstone.com>
+ <20250813143509.31073-10-mark@harmstone.com>
+ <20250816003233.GF3042054@zen.localdomain>
+Content-Language: en-US
+From: Mark Harmstone <mark@harmstone.com>
+Autocrypt: addr=mark@harmstone.com; keydata=
+ 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
+In-Reply-To: <20250816003233.GF3042054@zen.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Aug 26, 2025 at 11:39:15AM -0400, Josef Bacik wrote:
-> Currently we have relied on dirty inodes and inodes with cache on them
-> to simply be left hanging around on the system outside of an LRU. The
-> only way to make sure these inodes are eventually reclaimed is because
-> dirty writeback will grab a reference on the inode and then iput it when
-> it's done, potentially getting it on the LRU. For the cached case the
-> page cache deletion path will call inode_add_lru when the inode no
-> longer has cached pages in order to make sure the inode object can be
-> freed eventually.  In the unmount case we walk all inodes and free them
-> so this all works out fine.
+On 16/08/2025 1.32 am, Boris Burkov wrote:
+> On Wed, Aug 13, 2025 at 03:34:51PM +0100, Mark Harmstone wrote:
+>> Release block_group->lock before calling btrfs_link_bg_list() in
+>> btrfs_delete_unused_bgs(), as this was causing lockdep issues.
+>>
+>> This lock isn't held in any other place that we call btrfs_link_bg_list(), as
+>> the block group lists are manipulated while holding fs_info->unused_bgs_lock.
+>>
 > 
-> But we want to eliminate 0 i_count objects as a concept, so we need a
-> mechanism to hold a reference on these pinned inodes. To that end, add a
-> list to the super block that contains any inodes that are cached for one
-> reason or another.
-> 
-> When we call inode_add_lru(), if the inode falls into one of these
-> categories, we will add it to the cached inode list and hold an
-> i_obj_count reference.  If the inode does not fall into one of these
-> categories it will be moved to the normal LRU, which is already holds an
-> i_obj_count reference.
-> 
-> The dirty case we will delete it from the LRU if it is on one, and then
-> the iput after the writeout will make sure it's placed onto the correct
-> list at that point.
-> 
-> The page cache case will migrate it when it calls inode_add_lru() when
-> deleting pages from the page cache.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
+> Please include the offending lockdep output you are fixing.
 
-Ok, I'm trying to wrap my head around the justification for this new
-list. Currently we have inodes with a zero reference counts that aren't
-on any LRU. They just appear on sb->i_sb_list and are e.g., dealt with
-during umount (sync_filesystem() followed by evict_inodes()).
+I didn't include it as lockdep was triggering on the second (correct) instance,
+while the problem was on the first (incorrect) instance, and thought it would
+confuse matters. And I stupidly didn't take a copy, and now I can't reproduce
+it.
 
-So they're either dealt with by writeback or by the page cache and are
-eventually put on the regular LRU or the filesystem shuts down before
-that happens.
+The issue is that in btrfs_discard_punt_unused_bgs_list() in "btrfs: remove
+remapped block groups from the free-space tree", we're holding unused_bgs_lock
+then looping through the list grabbing the individual block group list. In
+btrfs_delete_unused_bgs() we're grabbing unused_bgs_lock while unnecessarily
+holding the block group lock.
 
-They're easy to handle and recognize because their inode->i_count is
-zero.
 
-Now you make the LRUs hold a full reference so it can be grabbed from
-the LRU again avoiding the zombie resurrection from zero. So to
-recognize inodes that are pinned internally due to being dirty or having
-pagecache pages attached to it you need to track them in a new list
-otherwise you can't really differentiate them and when to move them onto
-the LRU after writeback and pagecache is done with them.
+> Is this a generic fix unrelated to your other changes? I think a
+> separate patch from the series is clearer in that case. And it would
+> need a Fixes: tag (probably my patch that added btrfs_link_bg_list, haha)
 
->  fs/fs-writeback.c                |   8 +++
->  fs/inode.c                       | 102 +++++++++++++++++++++++++++++--
->  fs/internal.h                    |   1 +
->  fs/super.c                       |   3 +
->  include/linux/fs.h               |  13 +++-
->  include/trace/events/writeback.h |   3 +-
->  6 files changed, 122 insertions(+), 8 deletions(-)
+It looks like it's actually f4a9f219411f318ae60d6ff7f129082a75686c6c,
+"btrfs: do not delete unused block group if it may be used soon".
+
 > 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index b83d556d7ffe..dbcb317e7113 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -2736,6 +2736,14 @@ static void wait_sb_inodes(struct super_block *sb)
->  			continue;
->  		}
->  		__iget(inode);
-> +
-> +		/*
-> +		 * We could have potentially ended up on the cached LRU list, so
-> +		 * remove ourselves from this list now that we have a reference,
-> +		 * the iput will handle placing it back on the appropriate LRU
-> +		 * list if necessary.
-> +		 */
-> +		inode_lru_list_del(inode);
->  		spin_unlock(&inode->i_lock);
->  		rcu_read_unlock();
->  
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 15ff3a0ff7ee..4d39f260901f 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -319,6 +319,23 @@ void free_inode_nonrcu(struct inode *inode)
->  }
->  EXPORT_SYMBOL(free_inode_nonrcu);
->  
-> +/*
-> + * Some inodes need to stay pinned in memory because they are dirty or there are
-> + * cached pages that the VM wants to keep around to avoid thrashing. This does
-> + * the appropriate checks to see if we want to sheild this inode from periodic
-> + * reclaim. Must be called with ->i_lock held.
-> + */
-> +static bool inode_needs_cached(struct inode *inode)
-> +{
-> +	lockdep_assert_held(&inode->i_lock);
-> +
-> +	if (inode->i_state & (I_DIRTY_ALL | I_SYNC))
-> +		return true;
-> +	if (!mapping_shrinkable(&inode->i_data))
-> +		return true;
-> +	return false;
-> +}
-> +
->  static void i_callback(struct rcu_head *head)
->  {
->  	struct inode *inode = container_of(head, struct inode, i_rcu);
-> @@ -532,20 +549,67 @@ void ihold(struct inode *inode)
->  }
->  EXPORT_SYMBOL(ihold);
->  
-> +static void inode_add_cached_lru(struct inode *inode)
-> +{
-> +	lockdep_assert_held(&inode->i_lock);
-> +
-> +	if (inode->i_state & I_CACHED_LRU)
-> +		return;
-> +	if (!list_empty(&inode->i_lru))
-> +		return;
-> +
-> +	inode->i_state |= I_CACHED_LRU;
-> +	iobj_get(inode);
-> +	spin_lock(&inode->i_sb->s_cached_inodes_lock);
-> +	list_add(&inode->i_lru, &inode->i_sb->s_cached_inodes);
-> +	spin_unlock(&inode->i_sb->s_cached_inodes_lock);
-> +}
-> +
-> +static bool __inode_del_cached_lru(struct inode *inode)
-> +{
-> +	lockdep_assert_held(&inode->i_lock);
-> +
-> +	if (!(inode->i_state & I_CACHED_LRU))
-> +		return false;
-> +
-> +	inode->i_state &= ~I_CACHED_LRU;
-> +	spin_lock(&inode->i_sb->s_cached_inodes_lock);
-> +	list_del_init(&inode->i_lru);
-> +	spin_unlock(&inode->i_sb->s_cached_inodes_lock);
-> +	return true;
-> +}
-> +
-> +static bool inode_del_cached_lru(struct inode *inode)
-> +{
-> +	if (__inode_del_cached_lru(inode)) {
-> +		iobj_put(inode);
-> +		return true;
-> +	}
-> +	return false;
-> +}
-> +
->  static void __inode_add_lru(struct inode *inode, bool rotate)
->  {
-> -	if (inode->i_state & (I_DIRTY_ALL | I_SYNC | I_FREEING | I_WILL_FREE))
-> +	bool need_ref = true;
-> +
-> +	lockdep_assert_held(&inode->i_lock);
-> +
-> +	if (inode->i_state & (I_FREEING | I_WILL_FREE))
->  		return;
->  	if (icount_read(inode))
->  		return;
->  	if (!(inode->i_sb->s_flags & SB_ACTIVE))
->  		return;
-> -	if (!mapping_shrinkable(&inode->i_data))
-> +	if (inode_needs_cached(inode)) {
-> +		inode_add_cached_lru(inode);
->  		return;
-> +	}
->  
-> +	need_ref = __inode_del_cached_lru(inode) == false;
->  	if (list_lru_add_obj(&inode->i_sb->s_inode_lru, &inode->i_lru)) {
-> -		iobj_get(inode);
->  		inode->i_state |= I_LRU;
-> +		if (need_ref)
-> +			iobj_get(inode);
->  		this_cpu_inc(nr_unused);
->  	} else if (rotate) {
->  		inode->i_state |= I_REFERENCED;
-> @@ -573,8 +637,19 @@ void inode_add_lru(struct inode *inode)
->  	__inode_add_lru(inode, false);
->  }
->  
-> -static void inode_lru_list_del(struct inode *inode)
-> +/*
-> + * Caller must be holding it's own i_count reference on this inode in order to
-> + * prevent this being the final iput.
-> + *
-> + * Needs inode->i_lock held.
-> + */
-> +void inode_lru_list_del(struct inode *inode)
->  {
-> +	lockdep_assert_held(&inode->i_lock);
-> +
-> +	if (inode_del_cached_lru(inode))
-> +		return;
-> +
->  	if (!(inode->i_state & I_LRU))
->  		return;
->  
-> @@ -950,6 +1025,22 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
->  	if (!spin_trylock(&inode->i_lock))
->  		return LRU_SKIP;
->  
-> +	/*
-> +	 * This inode is either dirty or has page cache we want to keep around,
-> +	 * so move it to the cached list.
-> +	 *
-> +	 * We drop the extra i_obj_count reference we grab when adding it to the
-> +	 * cached lru.
-> +	 */
-> +	if (inode_needs_cached(inode)) {
-> +		list_lru_isolate(lru, &inode->i_lru);
-> +		inode_add_cached_lru(inode);
-> +		iobj_put(inode);
-> +		spin_unlock(&inode->i_lock);
-> +		this_cpu_dec(nr_unused);
-> +		return LRU_REMOVED;
-> +	}
-> +
->  	/*
->  	 * Inodes can get referenced, redirtied, or repopulated while
->  	 * they're already on the LRU, and this can make them
-> @@ -957,8 +1048,7 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
->  	 * sync, or the last page cache deletion will requeue them.
->  	 */
->  	if (icount_read(inode) ||
-> -	    (inode->i_state & ~I_REFERENCED) ||
-> -	    !mapping_shrinkable(&inode->i_data)) {
-> +	    (inode->i_state & ~I_REFERENCED)) {
->  		list_lru_isolate(lru, &inode->i_lru);
->  		inode->i_state &= ~I_LRU;
->  		spin_unlock(&inode->i_lock);
-> diff --git a/fs/internal.h b/fs/internal.h
-> index 38e8aab27bbd..17ecee7056d5 100644
-> --- a/fs/internal.h
-> +++ b/fs/internal.h
-> @@ -207,6 +207,7 @@ extern long prune_icache_sb(struct super_block *sb, struct shrink_control *sc);
->  int dentry_needs_remove_privs(struct mnt_idmap *, struct dentry *dentry);
->  bool in_group_or_capable(struct mnt_idmap *idmap,
->  			 const struct inode *inode, vfsgid_t vfsgid);
-> +void inode_lru_list_del(struct inode *inode);
->  
->  /*
->   * fs-writeback.c
-> diff --git a/fs/super.c b/fs/super.c
-> index a038848e8d1f..bf3e6d9055af 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -364,6 +364,8 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
->  	spin_lock_init(&s->s_inode_list_lock);
->  	INIT_LIST_HEAD(&s->s_inodes_wb);
->  	spin_lock_init(&s->s_inode_wblist_lock);
-> +	INIT_LIST_HEAD(&s->s_cached_inodes);
-> +	spin_lock_init(&s->s_cached_inodes_lock);
->  
->  	s->s_count = 1;
->  	atomic_set(&s->s_active, 1);
-> @@ -409,6 +411,7 @@ static void __put_super(struct super_block *s)
->  		WARN_ON(s->s_dentry_lru.node);
->  		WARN_ON(s->s_inode_lru.node);
->  		WARN_ON(!list_empty(&s->s_mounts));
-> +		WARN_ON(!list_empty(&s->s_cached_inodes));
->  		call_rcu(&s->rcu, destroy_super_rcu);
->  	}
->  }
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index e12c09b9fcaf..999ffea2aac1 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -749,6 +749,9 @@ is_uncached_acl(struct posix_acl *acl)
->   *			->i_lru is on the LRU and those that are using ->i_lru
->   *			for some other means.
->   *
-> + * I_CACHED_LRU		Inode is cached because it is dirty or isn't shrinkable,
-> + *			and thus is on the s_cached_inode_lru list.
-> + *
->   * Q: What is the difference between I_WILL_FREE and I_FREEING?
->   *
->   * __I_{SYNC,NEW,LRU_ISOLATING} are used to derive unique addresses to wait
-> @@ -780,7 +783,8 @@ enum inode_state_flags_t {
->  	I_DONTCACHE		= (1U << 15),
->  	I_SYNC_QUEUED		= (1U << 16),
->  	I_PINNING_NETFS_WB	= (1U << 17),
-> -	I_LRU			= (1U << 18)
-> +	I_LRU			= (1U << 18),
-> +	I_CACHED_LRU		= (1U << 19)
->  };
->  
->  #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
-> @@ -1579,6 +1583,13 @@ struct super_block {
->  
->  	spinlock_t		s_inode_wblist_lock;
->  	struct list_head	s_inodes_wb;	/* writeback inodes */
-> +
-> +	/*
-> +	 * Cached inodes, any inodes that their reference is held by another
-> +	 * mechanism, such as dirty inodes or unshrinkable inodes.
-> +	 */
-> +	spinlock_t		s_cached_inodes_lock;
-> +	struct list_head	s_cached_inodes;
->  } __randomize_layout;
->  
->  static inline struct user_namespace *i_user_ns(const struct inode *inode)
-> diff --git a/include/trace/events/writeback.h b/include/trace/events/writeback.h
-> index 486f85aca84d..6949329c744a 100644
-> --- a/include/trace/events/writeback.h
-> +++ b/include/trace/events/writeback.h
-> @@ -29,7 +29,8 @@
->  		{I_SYNC_QUEUED,		"I_SYNC_QUEUED"},	\
->  		{I_PINNING_NETFS_WB,	"I_PINNING_NETFS_WB"},	\
->  		{I_LRU_ISOLATING,	"I_LRU_ISOLATING"},	\
-> -		{I_LRU,			"I_LRU"}		\
-> +		{I_LRU,			"I_LRU"},		\
-> +		{I_CACHED_LRU,		"I_CACHED_LRU"}		\
->  	)
->  
->  /* enums need to be exported to user space */
-> -- 
-> 2.49.0
+> Thanks.
 > 
+>> Signed-off-by: Mark Harmstone <mark@harmstone.com>
+>> ---
+>>   fs/btrfs/block-group.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>> index bed9c58b6cbc..8c28f829547e 100644
+>> --- a/fs/btrfs/block-group.c
+>> +++ b/fs/btrfs/block-group.c
+>> @@ -1620,6 +1620,8 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+>>   		if ((space_info->total_bytes - block_group->length < used &&
+>>   		     block_group->zone_unusable < block_group->length) ||
+>>   		    has_unwritten_metadata(block_group)) {
+>> +			spin_unlock(&block_group->lock);
+>> +
+>>   			/*
+>>   			 * Add a reference for the list, compensate for the ref
+>>   			 * drop under the "next" label for the
+>> @@ -1628,7 +1630,6 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+>>   			btrfs_link_bg_list(block_group, &retry_list);
+>>   
+>>   			trace_btrfs_skip_unused_block_group(block_group);
+>> -			spin_unlock(&block_group->lock);
+>>   			spin_unlock(&space_info->lock);
+>>   			up_write(&space_info->groups_sem);
+>>   			goto next;
+>> -- 
+>> 2.49.1
+>>
+
 
