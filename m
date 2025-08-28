@@ -1,137 +1,170 @@
-Return-Path: <linux-btrfs+bounces-16479-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16480-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DC58B396CF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Aug 2025 10:24:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14794B39794
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Aug 2025 10:57:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F7237A4853
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Aug 2025 08:22:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22DE41888A1B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Aug 2025 08:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8867A2DECA1;
-	Thu, 28 Aug 2025 08:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF692EA163;
+	Thu, 28 Aug 2025 08:57:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E+agvb9x"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="AVf5fT0Z"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE7B849C;
-	Thu, 28 Aug 2025 08:24:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99CD91C01
+	for <linux-btrfs@vger.kernel.org>; Thu, 28 Aug 2025 08:57:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756369448; cv=none; b=kepfNMqSbvlE+JiVXnFkG8jMV85Q4zXCotixFJlZ1uK3mrtn9zS17LxJ6Wl4NcrkNcBW37oubjohNLWpWDeb8mL4wKtnybx0/kILZgjtj4PR1MJUHD8c1k+vFbhyC1I8m4ifOMi/mH4qGnIbFYnwRN/DXbUWq4U1PJw+5Qa0Zo0=
+	t=1756371464; cv=none; b=a1XXpOLepBwjXRRyMuqcGxFAqY6t8ewHM5LP5K3W4yuF2ID89LaWtwJAzMeV6/ZtFarCKELmX8mxVvZPkw51JpwXpo/uGBdBUMJ2FI8263IsyF3/LaeIGVehoyEW6VvJaz5twl6gCRXnRZQlFLVNiiRSunCwvgHath5AIznYhOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756369448; c=relaxed/simple;
-	bh=RwBgH5v8YJpYJqLz1ozvOeDtoOvRSy9/swn9P5xY8rA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TE4Qc9D8QWLgI24Jc7G+uSk2vbB495iGAABuIXTiS6+W/G5GFalLxOb3feH5SS7uV2NXbvGOlnACYujRLvhNLMslMxPRT0aW0MZk6QlIPlQnYeoUVHpX7Hn22P6sJTipss290INPjWAdV5rZMUXAU7jf0HCE5E3m/NT1xHXDpbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E+agvb9x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A975C4CEEB;
-	Thu, 28 Aug 2025 08:24:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756369448;
-	bh=RwBgH5v8YJpYJqLz1ozvOeDtoOvRSy9/swn9P5xY8rA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=E+agvb9xMMS/KKbuwl4cTD/dWT1EFAzP6plhYf24nKmZds2z75NT+ZFe6gsczanFR
-	 j2ny30OJGiybUrPBrZj2jGDvw8Iwu2Pz4j9sVrUavQJID0ddJlsPMVBfTvyimayPSV
-	 kxmRFpmGvs4b8R/BXx26GrpXT2T1SbnzAuRfjO8Ygk+BhJkaSoZWtzVSnHH+KY1PBC
-	 O+EDQTDWoqID5DXtyqCFcHCeEcHaC/e+5Dns/Ob0A+mbred93Iyucu6IOD+tP1/bv9
-	 Z1AGJQrf9yBJweJ3IN3b1y4mkedBDrAK1Wyz4mbgNu0tKSEfdbQ/Q0nB2uNBWd0n3L
-	 PQ4F+oSTwhuUA==
-Date: Thu, 28 Aug 2025 10:24:03 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	kernel-team@fb.com, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 15/54] fs: maintain a list of pinned inodes
-Message-ID: <20250828-chorkonzert-forschen-0203eae65f7f@brauner>
-References: <cover.1756222464.git.josef@toxicpanda.com>
- <35dc849a851470e2a31375ecdfdf70424844c871.1756222465.git.josef@toxicpanda.com>
- <20250827-gelandet-heizt-1f250f77bfc8@brauner>
- <20250827160756.GA2272053@perftesting>
+	s=arc-20240116; t=1756371464; c=relaxed/simple;
+	bh=i0jDLyB+HBzyH8Wv+zfzBSUY43j4rVum9WRs+wLqujs=;
+	h=Message-ID:Date:Mime-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=cQ7CRdemHI/dlaKyL7qVXCAUkgpfKxHscR9xPColTUdlfLFNry8PrV6sZkb+Kb4b3Y2rh7mzmpw5XRU3RPo4o6cqulU9GMZoA3pIleSvRdwQxvSV5e6uy0aB09sqKSfqdcW8b6EOKzIb9gm3x+60Ld9gUjZpowBatTT7G5yHnrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=AVf5fT0Z; arc=none smtp.client-ip=217.169.27.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
+Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
+	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
+	by mail.burntcomma.com (Postfix) with ESMTPS id A07912AE7AD;
+	Thu, 28 Aug 2025 09:57:36 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
+	s=mail; t=1756371456;
+	bh=7asSvmrb3g+JruDUJK4h2PdPJ92OT8sNIgMbCizXH2w=;
+	h=Date:Subject:To:References:From:In-Reply-To;
+	b=AVf5fT0ZOXxfX6lM9sE89quuphx+JR+Se3Bwze/e5qTqWPq8N2t9TmNpFmSu2LADR
+	 jEq3OLvL44qwrQFMOiMvqON9kvoiFWwxeEWz08PHjIUtuTgu7oEX+4cAn97KVXA7go
+	 JGlrkYG9SBAd1kFESEcgJ7Wh+5JMvRPGvDD05Iyo=
+Message-ID: <f39f365f-39dc-44fb-b0aa-f8cf87c9b71d@harmstone.com>
+Date: Thu, 28 Aug 2025 09:57:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250827160756.GA2272053@perftesting>
+Mime-Version: 1.0
+Subject: Re: [PATCH] btrfs: don't allow adding block device with 0 bytes
+To: Qu Wenruo <wqu@suse.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ linux-btrfs@vger.kernel.org
+References: <20250827103725.19637-1-mark@harmstone.com>
+ <e37b9714-b079-4304-8067-9120d0f16637@gmx.com>
+ <29f97f46-acdf-412e-8f05-6a131dcf6d3d@suse.com>
+Content-Language: en-US
+From: Mark Harmstone <mark@harmstone.com>
+Autocrypt: addr=mark@harmstone.com; keydata=
+ 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
+In-Reply-To: <29f97f46-acdf-412e-8f05-6a131dcf6d3d@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Aug 27, 2025 at 12:07:56PM -0400, Josef Bacik wrote:
-> On Wed, Aug 27, 2025 at 05:20:17PM +0200, Christian Brauner wrote:
-> > On Tue, Aug 26, 2025 at 11:39:15AM -0400, Josef Bacik wrote:
-> > > Currently we have relied on dirty inodes and inodes with cache on them
-> > > to simply be left hanging around on the system outside of an LRU. The
-> > > only way to make sure these inodes are eventually reclaimed is because
-> > > dirty writeback will grab a reference on the inode and then iput it when
-> > > it's done, potentially getting it on the LRU. For the cached case the
-> > > page cache deletion path will call inode_add_lru when the inode no
-> > > longer has cached pages in order to make sure the inode object can be
-> > > freed eventually.  In the unmount case we walk all inodes and free them
-> > > so this all works out fine.
-> > > 
-> > > But we want to eliminate 0 i_count objects as a concept, so we need a
-> > > mechanism to hold a reference on these pinned inodes. To that end, add a
-> > > list to the super block that contains any inodes that are cached for one
-> > > reason or another.
-> > > 
-> > > When we call inode_add_lru(), if the inode falls into one of these
-> > > categories, we will add it to the cached inode list and hold an
-> > > i_obj_count reference.  If the inode does not fall into one of these
-> > > categories it will be moved to the normal LRU, which is already holds an
-> > > i_obj_count reference.
-> > > 
-> > > The dirty case we will delete it from the LRU if it is on one, and then
-> > > the iput after the writeout will make sure it's placed onto the correct
-> > > list at that point.
-> > > 
-> > > The page cache case will migrate it when it calls inode_add_lru() when
-> > > deleting pages from the page cache.
-> > > 
-> > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > > ---
-> > 
-> > Ok, I'm trying to wrap my head around the justification for this new
-> > list. Currently we have inodes with a zero reference counts that aren't
-> > on any LRU. They just appear on sb->i_sb_list and are e.g., dealt with
-> > during umount (sync_filesystem() followed by evict_inodes()).
-> > 
-> > So they're either dealt with by writeback or by the page cache and are
-> > eventually put on the regular LRU or the filesystem shuts down before
-> > that happens.
-> > 
-> > They're easy to handle and recognize because their inode->i_count is
-> > zero.
-> > 
-> > Now you make the LRUs hold a full reference so it can be grabbed from
-> > the LRU again avoiding the zombie resurrection from zero. So to
-> > recognize inodes that are pinned internally due to being dirty or having
-> > pagecache pages attached to it you need to track them in a new list
-> > otherwise you can't really differentiate them and when to move them onto
-> > the LRU after writeback and pagecache is done with them.
-> > 
+On 27/08/2025 11.05 pm, Qu Wenruo wrote:
 > 
-> Exactly. We need to put them somewhere so we can account for their reference.
 > 
-> We could technically just use a flag and not have a list for this, and just use
-> the flag to indicate that the inode is pinned and the flag has a full reference
-> associated with it.
+> 在 2025/8/27 20:14, Qu Wenruo 写道:
+>>
+>>
+>> 在 2025/8/27 20:07, Mark Harmstone 写道:
+>>> Commit 15ae0410 in btrfs-progs inadvertently changed it so that if the
+>>> BLKGETSIZE64 ioctl on a block device returned a size of 0, this was no
+>>> longer seen as an error condition.
+>>
+>> My bad, that commit changed the handling of zero sized device, previously the caller who checks the returned size now only checks if the ioctl/stat works.
+>>
+>> Feel free to send out a progs fix.
+>>>
+>>> Unfortunately this is how disconnected NBD devices behave, meaning that
+>>> with btrfs-progs 6.16 it's now possible to add a device you can't
+>>> remove:
+>>>
+>>> ~ # btrfs device add /dev/nbd0 /root/temp
+>>> ~ # btrfs device remove /dev/nbd0 /root/temp
+>>> ERROR: error removing device '/dev/nbd0': Invalid argument
+>>>
+>>> This check should always have been done kernel-side anyway, so add a
+>>> check in btrfs_init_new_device() that the new device doesn't have a size
+>>> of 0.
+>>>
+>>> Signed-off-by: Mark Harmstone <mark@harmstone.com>
+>>
+>> The extra kernel checks looks good to me.
+>>
+>> Reviewed-by: Qu Wenruo <wqu@suse.com>
 > 
-> I did it this way because if I had a nickel for every time I needed to figure
-> out where a zombie inode was and had to do the most grotesque drgn magic to find
-> it, I'd have like 15 cents, which isn't a lot but weird that it's happened 3
-> times. Having a list makes it easier from a debugging perspective.
+> In fact this reminds me to try other extreme situations.
 > 
-> But again, we have ->s_inodes, and I can just scan that list and look for
-> I_LRU_CACHED. We'd still need to hold a full reference for that, but it would
-> eliminate the need for another list if that's more preferable?  Thanks,
+> Like adding a 64K sized device.
+> 
+> The result is, the fs will never be able to be mounted again, as we saved the cursed device which can not have the primary super block written.
+> 
+> Since we're here, can we enlarge the bdev size to <= BTRFS_DEVICE_RANGE_RESERVED?
 
-I don't mind the additional list and the sb struct is not very size
-sensitive anyway.
+Makes sense to me. I'll send another patch.
+
+> 
+> Thanks,
+> Qu
+>>
+>> Thanks,
+>> Qu
+>>
+>>> ---
+>>>   fs/btrfs/volumes.c | 5 +++++
+>>>   1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>>> index 63b65f70a2b3..0757a546ff5c 100644
+>>> --- a/fs/btrfs/volumes.c
+>>> +++ b/fs/btrfs/volumes.c
+>>> @@ -2726,6 +2726,11 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>>>           goto error;
+>>>       }
+>>> +    if (bdev_nr_bytes(file_bdev(bdev_file)) == 0) {
+>>> +        ret = -EINVAL;
+>>> +        goto error;
+>>> +    }
+>>> +
+>>>       if (fs_devices->seeding) {
+>>>           seeding_dev = true;
+>>>           down_write(&sb->s_umount);
+>>
+> 
+
 
