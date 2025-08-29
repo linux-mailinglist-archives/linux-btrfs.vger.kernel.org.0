@@ -1,171 +1,158 @@
-Return-Path: <linux-btrfs+bounces-16521-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16522-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79D1FB3B148
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Aug 2025 05:03:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 148D0B3B192
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Aug 2025 05:31:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34BE0563E21
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Aug 2025 03:03:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BD461BA3A14
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Aug 2025 03:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69683211A28;
-	Fri, 29 Aug 2025 03:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8855718C03F;
+	Fri, 29 Aug 2025 03:31:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kn57ksdx";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kn57ksdx"
+	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="kNGtpbl2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E52D1DFD8F
-	for <linux-btrfs@vger.kernel.org>; Fri, 29 Aug 2025 03:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0383417E0
+	for <linux-btrfs@vger.kernel.org>; Fri, 29 Aug 2025 03:31:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756436577; cv=none; b=ao6Wt/D436NMQYdg/x0Je9RykfO9CpmY5ptgVCLD3ayAUWx4ZZNjWYtUbr8jDU3otVDeXlAqOvH6zbTZM0pedN97DZ+pt58T8Z4Ie1iGpvqmJenioQPW3MqUN1TI5o0xdnrEEY3lVX7k2ETi6RpMFUZc4rbcmduT4VZ7VWRVtHk=
+	t=1756438279; cv=none; b=MoLPM3ALf2m7F12Fr0VmCl5hx8DU+SotHiVDsyuMSBgfZhdcZ/G/YUdvr8koallKWYsGd5b6K8Xfcn9Kw2sqxB2/oFLqtsnLLpU2wjHIMhqMCPFBmvJXjbkL+Bh4W6eXuaCJYk2qUovJ+BRQXBUYJKEbbfaVwGzFAAFTHGEajh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756436577; c=relaxed/simple;
-	bh=Y8gVFdvsCZ35iiwZT6pVMnawxsWS6Oi5Ms2j552Mu0o=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=LS7I+lRF5sqmgP/0hB6+/o2l6zo28DH7ouQX2aWfVSKOnBpGZiBR1l9kuvIGKffzzCKFe98gsoqO6SxRUIsfy+RUUFtJWX8rhyelXBlFq3AcrKj2BvgK8TohEPFD8wlcuLjQKAbCa+eSHSawc3G1XOZtu79R7jHPiQZSj2v8GKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kn57ksdx; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kn57ksdx; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 58C1233AD5
-	for <linux-btrfs@vger.kernel.org>; Fri, 29 Aug 2025 03:02:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1756436573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=pFgofpc/7433L0XgWfoFkK7dN+xPGj5SevU0Gwd+ZXs=;
-	b=kn57ksdxe74hKCyvj+rZUKPpEUtcZe62v4FCaEyLLVWYGwAl61ngOwQRtOUt2SsBux5Wyc
-	6KGl5NqF7wRj/ymp1WUPwDSp7NcjbtFT2frE2Z6qwiXUlKjv8pKlZH5iW/TQT6pQ+CbP2G
-	LUbpwMUATOzoW8hRfK+K69JIR26zXRc=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=kn57ksdx
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1756436573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=pFgofpc/7433L0XgWfoFkK7dN+xPGj5SevU0Gwd+ZXs=;
-	b=kn57ksdxe74hKCyvj+rZUKPpEUtcZe62v4FCaEyLLVWYGwAl61ngOwQRtOUt2SsBux5Wyc
-	6KGl5NqF7wRj/ymp1WUPwDSp7NcjbtFT2frE2Z6qwiXUlKjv8pKlZH5iW/TQT6pQ+CbP2G
-	LUbpwMUATOzoW8hRfK+K69JIR26zXRc=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9038313326
-	for <linux-btrfs@vger.kernel.org>; Fri, 29 Aug 2025 03:02:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id w0A6FFwYsWhFIgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 29 Aug 2025 03:02:52 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix lzo compression level output
-Date: Fri, 29 Aug 2025 12:32:34 +0930
-Message-ID: <9182b66aba2db19b939fdd3ceaafb07217210c1a.1756436553.git.wqu@suse.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1756438279; c=relaxed/simple;
+	bh=kPe9OV7qNekg2+SCEDXOmwMiuUdGNXFHeQjynKdWfdk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EpDNUbrM9MnO6cvNdgVzFPZclWfWU98nCC8fsi4EJHysJzd14U2UIqpmlv6dtWVQ5LOAwV6tnEwz4vfpUdV1Ej8HBJXe/4bg/2xjQyVplm5ryLRDRdSRv5GedRmatJMK4isWq+fSJnMU+F2lOwMQ4Etg/deGw/iIEuPjqfGYYoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=kNGtpbl2; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-24498e93b8fso2136555ad.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Aug 2025 20:31:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1756438276; x=1757043076; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DmhM55GdvggsaOBaKin/IaT2LlT+f5EHEnNi8hN3u+Y=;
+        b=kNGtpbl2bO5Tnx9cgEcx8WXKICS6ukl7oIb5UUVFo5Yz9CWylv/fSQ13kN5qgU1lq+
+         RCTNR7s494zAwUn3jigFTvhwlNVbiU9p1XVCae0ajep+aDbhMg7vMFRpwarIFy2TDBIy
+         FNAJYBgHTqIgsYHS672PqIqaMvzdpTiv/zKVRRaO2YYwS9Iy3eBKaKz2h6gdM9HOfSbj
+         Q545+AuB8mU1WFbAp7FnHegidYPyGaqyqhPiuoQp6M0xs1AFJc7wpV6qBlIDsOF3n6Ut
+         Id4oIlTFAa7CgmPrj5Dt2bLJ+70zuAcxWjnCkQj7kmT6K+8tNKyjZMYTWk0yN6l17Zbz
+         Imvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756438276; x=1757043076;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DmhM55GdvggsaOBaKin/IaT2LlT+f5EHEnNi8hN3u+Y=;
+        b=stGGPWmRappG3J9tLSTS3qjFQKyodWeK/oMstwtUNSLB8NcqO/lnULzM1rr8bBX6Dz
+         3TFELNlK5nC4GGlu9Zp5Z4oH1i5NyqpfPTyIoJuxlfqzBlNAqOFYxTRaaP0LEY+43YwF
+         aIvUekto3M//U/AyQuAbsgCoQQsWtgnV7nFakrtWTAT+PfyjQAemCp1uAV9TD/NPp9Xm
+         /mjvjdOZBAVCtmm2Y8/DGteCBe36qfa5q2hGn2aJpmSrXuCHplLLlxBpucwt53HRhdeV
+         HMne0J394XRySx+j5OfwSD7n7US81bILMn5ImWZ8/Je7d3upgCZPpY32qDa9Th5t3Lmo
+         gHwQ==
+X-Gm-Message-State: AOJu0YxajJaVIxcII54DpQ9adIXZagq3oclG78T7u5bA98Tt+ugLAqdC
+	LM7jZmvI+2hV0V+/EUWJkBqVKWyLWfNtU513bvncieu2cmi2vJuu9j4dLSYVblVH7fI=
+X-Gm-Gg: ASbGncvnz4poqo4kPVD3QVa5WiItAkt6f7J+GBBSeiRJLuD03p0WMOhDSDGNtOVAcgT
+	KyH5ueu9+KOTA03S+UQ3jgzTe/43fF+Iz74pQEqlHSD2F8lV0l8kRKefYYwoO36M0WX1DXhLUH9
+	Of6R/S+TcFgK+LQ80Gw3W3FWTfMClGiVW4CUEmz/5jrVQVEHO8TEA3JpbcwRD67QDq9fl7ngfo0
+	6ZYzM1PoQ8ePTHSCyKQbOPrTsN49yIwiqrfXgi9RVJov6gSxXJ5Z16LND+TRlekW5ThMky7ZDOE
+	5GT7U3fzSVOMe3dNwudd/uSgp/q0b/fCb9OUSu7sflo3nbl9ejIfmGeaOymli38QGwRwYCvyBZA
+	tmhlPo8m40374
+X-Google-Smtp-Source: AGHT+IEAY8oxvX+lDy4ovYs54L++2UZtGGdQZu/hHFlxt2EW2MJB3N5L5jMrIkFiw/ardSMA6iHSPA==
+X-Received: by 2002:a05:6a20:72a4:b0:243:aa41:647b with SMTP id adf61e73a8af0-243c2de0545mr804898637.0.1756438276171;
+        Thu, 28 Aug 2025 20:31:16 -0700 (PDT)
+Received: from telecaster ([2620:10d:c090:400::5:5a])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4cd0e1c0besm832444a12.24.2025.08.28.20.31.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Aug 2025 20:31:15 -0700 (PDT)
+Date: Thu, 28 Aug 2025 20:31:13 -0700
+From: Omar Sandoval <osandov@osandov.com>
+To: David Sterba <dsterba@suse.cz>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+	Filipe Manana <fdmanana@suse.com>,
+	Leo Martins <loemra.dev@gmail.com>, Boris Burkov <boris@bur.io>
+Subject: Re: [PATCH] btrfs: fix subvolume deletion lockup caused by inodes
+ xarray race
+Message-ID: <aLEfAc75VnQ5pcwu@telecaster>
+References: <f7e05205fd33d9e510ec1295e0cc8cfdf395cb89.1756237895.git.osandov@osandov.com>
+ <20250828232346.GD29826@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 58C1233AD5
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250828232346.GD29826@twin.jikos.cz>
 
-[BUG]
-Since commit "btrfs: accept and ignore compression level for lzo", we
-will always set the lzo compress level to the default one.
+On Fri, Aug 29, 2025 at 01:23:46AM +0200, David Sterba wrote:
+> On Tue, Aug 26, 2025 at 01:01:38PM -0700, Omar Sandoval wrote:
+> > From: Omar Sandoval <osandov@fb.com>
+> > 
+> > There is a race condition between inode eviction and inode caching that
+> > can cause a live struct btrfs_inode to be missing from the root->inodes
+> > xarray. Specifically, there is a window during evict() between the inode
+> > being unhashed and deleted from the xarray. If btrfs_iget() is called
+> > for the same inode in that window, it will be recreated and inserted
+> > into the xarray, but then eviction will delete the new entry, leaving
+> > nothing in the xarray:
+> > 
+> > Thread 1                          Thread 2
+> > ---------------------------------------------------------------
+> > evict()
+> >   remove_inode_hash()
+> >                                   btrfs_iget_path()
+> >                                     btrfs_iget_locked()
+> >                                     btrfs_read_locked_inode()
+> >                                       btrfs_add_inode_to_root()
+> >   destroy_inode()
+> >     btrfs_destroy_inode()
+> >       btrfs_del_inode_from_root()
+> >         __xa_erase
+> > 
+> > In turn, this can cause issues for subvolume deletion. Specifically, if
+> > an inode is in this lost state, and all other inodes are evicted, then
+> > btrfs_del_inode_from_root() will call btrfs_add_dead_root() prematurely.
+> > If the lost inode has a delayed_node attached to it, then when
+> > btrfs_clean_one_deleted_snapshot() calls btrfs_kill_all_delayed_nodes(),
+> > it will loop forever because the delayed_nodes xarray will never become
+> > empty (unless memory pressure forces the inode out). We saw this
+> > manifest as soft lockups in production.
+> > 
+> > Fix it by only deleting the xarray entry if it matches the given inode
+> > (using __xa_cmpxchg()).
+> > 
+> > Fixes: 310b2f5d5a94 ("btrfs: use an xarray to track open inodes in a root")
+> 
+> Is this correct Fixes commit? The xarray conversion was done in two
+> steps, first the rbtree to xarray and then the locking got changed in
+> e2844cce75c9e6 ("btrfs: remove inode_lock from struct btrfs_root and use
+> xarray locks").
 
-This makes test case btrfs/220 fail with the following messages:
+Yes, this is the correct Fixes commit. inode_lock didn't synchronize
+with the VFS's inode hash at all, so it didn't help with this. The
+reason it was okay with the rbtree was that each struct btrfs_inode had
+its own rb_node, so deleting one wouldn't affect any others with the
+same ino.
 
- FSTYP         -- btrfs
- PLATFORM      -- Linux/x86_64 btrfs-vm 6.17.0-rc3-custom+ #281 SMP PREEMPT_DYNAMIC Thu Aug 28 11:15:21 ACST 2025
- MKFS_OPTIONS  -- /dev/mapper/test-scratch1
- MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
+> The root->inode_lock is an outer lock, and with rbtree it worked.  The
+> new code relies on xa_lock, which could be released by xarray internally
+> or elsewhere we need the atomic operations. Like in this case it's the
+> __xa_cmpxchg which I find quite unobvious regarding the xarray API and
+> who knows where something like it could be still missing. The simplicity
+> of root->inode_lock feels a bit safer.
 
- btrfs/220 5s ... - output mismatch (see /home/adam/xfstests/results//btrfs/220.out.bad)
-     --- tests/btrfs/220.out	2022-05-11 11:25:30.749999997 +0930
-     +++ /home/adam/xfstests/results//btrfs/220.out.bad	2025-08-29 12:26:54.215307784 +0930
-     @@ -1,2 +1,8 @@
-      QA output created by 220
-     +Unexepcted mount options, checking for 'compress=lzo,relatime,space_cache=v2,ssd,subvol=/,subvolid=5' in 'rw,relatime,compress=lzo:1,ssd,space_cache=v2,subvolid=5,subvol=/' using 'compress=lzo'
-     +Unexepcted mount options, checking for 'compress=lzo,relatime,space_cache=v2,ssd,subvol=/,subvolid=5' in 'rw,relatime,compress=lzo:1,ssd,space_cache=v2,subvolid=5,subvol=/' using 'compress=lzo'
-     +Unexepcted mount options, checking for 'compress=lzo,relatime,space_cache=v2,ssd,subvol=/,subvolid=5' in 'rw,relatime,compress=lzo:1,ssd,space_cache=v2,subvolid=5,subvol=/' using 'compress=lzo'
-     +Unexepcted mount options, checking for 'compress-force=lzo,relatime,space_cache=v2,ssd,subvol=/,subvolid=5' in 'rw,relatime,compress-force=lzo:1,ssd,space_cache=v2,subvolid=5,subvol=/' using 'compress-force=lzo'
-     +Unexepcted mount options, checking for 'compress-force=lzo,relatime,space_cache=v2,ssd,subvol=/,subvolid=5' in 'rw,relatime,compress-force=lzo:1,ssd,space_cache=v2,subvolid=5,subvol=/' using 'compress-force=lzo'
-     +Unexepcted mount options, checking for 'compress-force=lzo,relatime,space_cache=v2,ssd,subvol=/,subvolid=5' in 'rw,relatime,compress-force=lzo:1,ssd,space_cache=v2,subvolid=5,subvol=/' using 'compress-force=lzo'
-     ...
-     (Run 'diff -u /home/adam/xfstests/tests/btrfs/220.out /home/adam/xfstests/results//btrfs/220.out.bad'  to see the entire diff)
+The documentation of __xa_cmpxchg() says:
 
-[CAUSE]
-That commit changes lzo parsing use btrfs_compress_str2level() all time.
-This means even lzo doesn't support compress level, we will still set
-the default level, which is 1 for lzo.
+ * Context: Any context.  Expects xa_lock to be held on entry.  May
+ * release and reacquire xa_lock if @gfp flags permit.
 
-And btrfs_show_options() will use compress_level for every compression
-algorithm, causing the mount option output change thus the test case
-failure.
-
-[FIX]
-Just change btrfs_show_options() to skip the compress level for lzo.
-
-Please fold this one into the original commit.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index b607c606fcfe..25df563abc6c 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1081,7 +1081,7 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- 			seq_printf(seq, ",compress-force=%s", compress_type);
- 		else
- 			seq_printf(seq, ",compress=%s", compress_type);
--		if (info->compress_level)
-+		if (info->compress_level && info->compress_type != BTRFS_COMPRESS_LZO)
- 			seq_printf(seq, ":%d", info->compress_level);
- 	}
- 	if (btrfs_test_opt(info, NOSSD))
--- 
-2.50.1
-
+And GFP_ATOMIC does not permit that.
 
