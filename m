@@ -1,89 +1,105 @@
-Return-Path: <linux-btrfs+bounces-16525-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16526-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA820B3BCAE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Aug 2025 15:43:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFA37B3BD6B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Aug 2025 16:23:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 841984E4D03
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Aug 2025 13:43:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 886537B77A2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Aug 2025 14:21:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E571A31DD92;
-	Fri, 29 Aug 2025 13:42:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595BF320398;
+	Fri, 29 Aug 2025 14:23:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b="gfeb6AW0"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uedqGsrX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yEEx/HCw";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uedqGsrX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yEEx/HCw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C88E31B13D
-	for <linux-btrfs@vger.kernel.org>; Fri, 29 Aug 2025 13:42:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AFD9320388
+	for <linux-btrfs@vger.kernel.org>; Fri, 29 Aug 2025 14:23:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756474979; cv=none; b=ea0j0NtjROliA6kL3QWIVb47D3P2nANO2TNlqQDAdK1W5aiBSFfVDmwxU18i7sigLgknGS2FF7Ci/mqemFMN4JhHGPbBsl2STzCmrsrfwt/cax4pH8stP/XysrAJXe4iqz9KxE3vMU6k6BT+0/FThQMNzp/H4RuSa6jXZgo4WEg=
+	t=1756477399; cv=none; b=KxEo24FynAwNbazoHWz/Q4pYcVmyvNE2WE6WGP3SU+tp/F2dHpvXsmJ95H/XsvN+7Wlhrj5E0TKEPCPmFZ4sH4uLtG3oU/V0uQVBPLoQ1saHrnmD3V8T8Bz2fBM3FmQG6mNWM6B3jLTKaNDg1pJwgVGyGXzf0aPH6CJNrPr88/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756474979; c=relaxed/simple;
-	bh=0O0KEp6LUq0tLczixqImv1+NNldRbKSoplwU7+oN4lE=;
+	s=arc-20240116; t=1756477399; c=relaxed/simple;
+	bh=rVjDOx+bAbVwqYj5OIvERXsPW/bcL3SXcqngZ43CR+E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TVFzcSlYKF928h/jomh+UJ91A4UnKk0oB81QLpSduZ+qYLIFcodPA4gbhLeIzj6tIDspGYhVl5kXucE1knz2KYr/eI61EMLSUXA1+OmK1BsvxlNvHbTd8KXTD6nSMCbJQoKbASNOEcpGut73U5/wfFxGd5oizZt/0mLia4QVN50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=pass smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b=gfeb6AW0; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-71d60504788so16816107b3.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Aug 2025 06:42:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda.com; s=google; t=1756474976; x=1757079776; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=S1ZiXJTOBuHCxbeXNBMGUUNCiAlSqlghqRoS7x15138=;
-        b=gfeb6AW036UOIjjvJENhjdblhE0CyM05HuYyOjdvmjjI3ZwTMVWjihPMYr5EwAT71Z
-         saLxQ7fPCpfjrY7P89DXzJkPLJGuILDA5rD5dQ59IR98URC4YnX1yLu1o6DW7ZfXfv4N
-         nhpfxxdvhwO3N4GzGBYPwoiE+gwxWVE/BK00l63I9rTLGATabgduH3e2g2CJTJcd+BZY
-         6/g+Ox9OmXqxW6+0fWqdc09ulXNjZoFGP96JtsIHjmM0uhvuB0+/pxvbBKXma50Hez1c
-         +3E34tmUOiKQoJCpsFKldhFee9308KLFMoYylYeRuVv0Cz5Khmnupoc6T5tVGE8YwC6e
-         f68Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756474976; x=1757079776;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S1ZiXJTOBuHCxbeXNBMGUUNCiAlSqlghqRoS7x15138=;
-        b=a9CG6q5L4HfsAVhdLyRC0XNlRkgQ5XXEdxNoyc3ZjiDzN96CJDTw6rVKZNu2ktpSJt
-         klc8txm0QDxA+2/yBx4K1prKJ+dCG4bfaZTtM4DnUoDsKb8Mg/UbQhOUUWyyTMkDZ1wd
-         6UsQv5VV7utmFq96lEvctDPBxd3iqI2ekCMl7vPmYqt9Zb8E1jR6bdAg6mU/8fEVaNN9
-         u3x9v77847MDj6upRZxSqDne1ltNtdwyz5ry39/JG7xT81oq4ZLpvMl5Bg9I/1LZ114T
-         EIRYeK7SPjlBFmrPN1qf4Ps2tz5OFjQvUqGl9iGFzIA8skw6ojGGb3mH9vwcddNpiGez
-         gRcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXC4cyQmXc9d2E3k3U1qbg7hT/zYj+VjBcUNV4WvWQivzc1DcaJbdctZoHRp+62cTW4bII1oeyGi8v4UA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx1MPHmFi76MkQqIRQCJlRDbxUZZxrOE7XLV0lm/U5H/VK0jNO9
-	NVEAzO4UAeyRAdMafcaF0mpiVwms75PLu/fdgNLRh/TZMSgLDJxTAw34ox82qZTaX7M=
-X-Gm-Gg: ASbGnctmk2CUnU6x3XKQMbf3xYlZY4JNf67EapxrpdcBy4XFktd6l71zqb3/4CTcssT
-	y5E2umEC4EimYcpLdAnt7sqkyx3NKy+mFSaoTRGZGj9MtKozkSAUoyIGa/5UnU//CO2XU3mXvHw
-	pkZdn0Pn6oMVpMfgFxARp5m3QcobuANkM54iybQtIUYKEhsAv9+dR3SZXacewqsqutxKIDZiDLD
-	KAlzYeK1Y1a9FIL48+sYQpiCY1KLiqLk6clIdRVmKQJggv+JQXCrH8SNAa8Y/iAuozuguOIcvyO
-	62f9olw5FeKh13rZo0uza/21bTA9Tnku9lQyF4gMejF5+h6RRU1mYjoH9QM9vPvZga2dlo62Yqb
-	SuNF7QdNJevyRHZTn9sSArbOCj5edhnJc9bKzz7ktH5W57vbJ9M/SxG7SS9A=
-X-Google-Smtp-Source: AGHT+IE+0aV7Dv2MSdHR6RCJccYKyOmtC1rNyOnGAOEj3zcV8iBnEfJHHdNigJI6ejsuus/zawV3rQ==
-X-Received: by 2002:a05:690c:387:b0:71b:f56a:d123 with SMTP id 00721157ae682-71fdc2d0229mr238186837b3.6.1756474976424;
-        Fri, 29 Aug 2025 06:42:56 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-721c630ed7csm6982237b3.2.2025.08.29.06.42.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Aug 2025 06:42:55 -0700 (PDT)
-Date: Fri, 29 Aug 2025 09:42:54 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, brauner@kernel.org,
-	viro@zeniv.linux.org.uk, amir73il@gmail.com
-Subject: Re: [PATCH v2 23/54] fs: use refcount_inc_not_zero in igrab
-Message-ID: <20250829134254.GA2854962@perftesting>
-References: <cover.1756222464.git.josef@toxicpanda.com>
- <d40a41e428c07f88ea011fbf191bd8efac94c523.1756222465.git.josef@toxicpanda.com>
- <20250828220806.GA2077538@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kLslVuB+ug/xWzGhM3JXdtWsKxLyHdNCOMc9EAiCOP+tQky6ihwJDk5NY5x0ni8GLx3QXVVi2GHaHa70YyZyAyNUg2Qde0fn0+1OA+3Zq/RRsL6ihFk7brKHPXF7A+WTostqLeRXlKCFON9tOO2d6ObUl5ypchU1MfU0mcDV0K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uedqGsrX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yEEx/HCw; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uedqGsrX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yEEx/HCw; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 27380225FF;
+	Fri, 29 Aug 2025 14:23:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756477396;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nTeI0W2thrMnJ8XZO2hw97yFU+IPnNrDxNwS3aAOU3c=;
+	b=uedqGsrXlZRNXfLtELnSIhFqM0g21XGXAmySiBUhhGUdIJI/86C6zUDNID6CFV5LcYqhSY
+	4C2uwN4BIJFBkfa2szeLlAvNltUDyG2ln0L8kxSzILZPrcHLwXr6xRsISvj496kpPwChg/
+	qdsz597ND35SnQ0Ar/eT15bxmvovmcI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756477396;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nTeI0W2thrMnJ8XZO2hw97yFU+IPnNrDxNwS3aAOU3c=;
+	b=yEEx/HCwjCB9OJQyQ1EkNPA0wUIGq+scaslFngAd+HiD9dLHTDePefXjwF43V2nX+Fyc/g
+	0H3Urmg4a259+yBA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=uedqGsrX;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="yEEx/HCw"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756477396;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nTeI0W2thrMnJ8XZO2hw97yFU+IPnNrDxNwS3aAOU3c=;
+	b=uedqGsrXlZRNXfLtELnSIhFqM0g21XGXAmySiBUhhGUdIJI/86C6zUDNID6CFV5LcYqhSY
+	4C2uwN4BIJFBkfa2szeLlAvNltUDyG2ln0L8kxSzILZPrcHLwXr6xRsISvj496kpPwChg/
+	qdsz597ND35SnQ0Ar/eT15bxmvovmcI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756477396;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nTeI0W2thrMnJ8XZO2hw97yFU+IPnNrDxNwS3aAOU3c=;
+	b=yEEx/HCwjCB9OJQyQ1EkNPA0wUIGq+scaslFngAd+HiD9dLHTDePefXjwF43V2nX+Fyc/g
+	0H3Urmg4a259+yBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D32E13A3E;
+	Fri, 29 Aug 2025 14:23:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id yrUIA9S3sWheEgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 29 Aug 2025 14:23:16 +0000
+Date: Fri, 29 Aug 2025 16:23:14 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Omar Sandoval <osandov@osandov.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+	Filipe Manana <fdmanana@suse.com>,
+	Leo Martins <loemra.dev@gmail.com>, Boris Burkov <boris@bur.io>
+Subject: Re: [PATCH] btrfs: fix subvolume deletion lockup caused by inodes
+ xarray race
+Message-ID: <20250829142314.GK29826@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <f7e05205fd33d9e510ec1295e0cc8cfdf395cb89.1756237895.git.osandov@osandov.com>
+ <20250828232346.GD29826@twin.jikos.cz>
+ <aLEfAc75VnQ5pcwu@telecaster>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -92,52 +108,67 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250828220806.GA2077538@google.com>
+In-Reply-To: <aLEfAc75VnQ5pcwu@telecaster>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-2.71 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_DN_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_ALL(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,fb.com,suse.com,gmail.com,bur.io];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim,suse.cz:replyto];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 27380225FF
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -2.71
 
-On Thu, Aug 28, 2025 at 10:08:06PM +0000, Eric Biggers wrote:
-> On Tue, Aug 26, 2025 at 11:39:23AM -0400, Josef Bacik wrote:
-> > +static inline struct inode *inode_tryget(struct inode *inode)
-> > +{
-> > +	/*
-> > +	 * We are using inode_tryget() because we're interested in getting a
-> > +	 * live reference to the inode, which is ->i_count. Normally we would
-> > +	 * grab i_obj_count first, as it is the higher priority reference.
-> > +	 * However we're only interested in making sure we have a live inode,
-> > +	 * and we know that if we get a reference for i_count then we can safely
-> > +	 * acquire i_obj_count because we always drop i_obj_count after dropping
-> > +	 * an i_count reference.
-> > +	 *
-> > +	 * This is meant to be used either in a place where we have an existing
-> > +	 * i_obj_count reference on the inode, or under rcu_read_lock() so we
-> > +	 * know we're safe in accessing this inode still.
-> > +	 */
-> > +	VFS_WARN_ON_ONCE(!iobj_count_read(inode) && !rcu_read_lock_held());
-> > +
-> > +	if (refcount_inc_not_zero(&inode->i_count)) {
-> > +		iobj_get(inode);
-> > +		return inode;
-> > +	}
-> > +
-> > +	/*
-> > +	 * If we failed to increment the reference count, then the
-> > +	 * inode is being freed or has been freed.  We return NULL
-> > +	 * in this case.
-> > +	 */
-> > +	return NULL;
+On Thu, Aug 28, 2025 at 08:31:13PM -0700, Omar Sandoval wrote:
+> On Fri, Aug 29, 2025 at 01:23:46AM +0200, David Sterba wrote:
+> > On Tue, Aug 26, 2025 at 01:01:38PM -0700, Omar Sandoval wrote:
+> > > Fix it by only deleting the xarray entry if it matches the given inode
+> > > (using __xa_cmpxchg()).
+> > > 
+> > > Fixes: 310b2f5d5a94 ("btrfs: use an xarray to track open inodes in a root")
+> > 
+> > Is this correct Fixes commit? The xarray conversion was done in two
+> > steps, first the rbtree to xarray and then the locking got changed in
+> > e2844cce75c9e6 ("btrfs: remove inode_lock from struct btrfs_root and use
+> > xarray locks").
 > 
-> Is there a reason to take one i_obj_count reference per i_count
-> reference, instead of a single i_obj_count reference associated with
-> i_count being nonzero?  With a single reference owned by i_count != 0,
-> it wouldn't be necessary to touch i_obj_count when i_count is changed,
-> except when i_count reaches zero.  That would be more efficient.
-> 
-> BTW, fscrypt_master_key::mk_active_refs and
-> fscrypt_master_key::mk_struct_refs use that solution.  For
-> mk_active_refs != 0, one reference in mk_struct_refs is held.
-> 
+> Yes, this is the correct Fixes commit. inode_lock didn't synchronize
+> with the VFS's inode hash at all, so it didn't help with this. The
+> reason it was okay with the rbtree was that each struct btrfs_inode had
+> its own rb_node, so deleting one wouldn't affect any others with the
+> same ino.
 
-That certainly could be done as well, hell I do that pattern for the writeback
-lists and such. I'll discuss with Christian and see what he thinks. Thanks,
-
-Josef
+I see, thanks.
 
