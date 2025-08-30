@@ -1,150 +1,131 @@
-Return-Path: <linux-btrfs+bounces-16540-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16541-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4826FB3CF82
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Aug 2025 23:19:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCE41B3CFEF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 31 Aug 2025 00:42:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 034BA7C37E4
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Aug 2025 21:19:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80908206767
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Aug 2025 22:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F03F256C83;
-	Sat, 30 Aug 2025 21:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3DB261595;
+	Sat, 30 Aug 2025 22:42:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R7FmdX3V";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Mm2Z6vry";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R7FmdX3V";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Mm2Z6vry"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="KpROckMz";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="n/4eTGpW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943F423ABA9
-	for <linux-btrfs@vger.kernel.org>; Sat, 30 Aug 2025 21:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF47B25A355
+	for <linux-btrfs@vger.kernel.org>; Sat, 30 Aug 2025 22:42:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756588761; cv=none; b=RggClk2ceY58/O7icEox53lxE+xQrYfV1YG6VIGw1jebfhtiyM2AQ3Gw3LGiMjaSQndwzqX+8k2enOFL0iJMcrh440wV18YsBrraDAGK+dsTvHuS0qXTqYp3SM+IzhSF1ymM/3q7qzddYxmsX+TmfnkV7KBR3OEIB8juIS0prGI=
+	t=1756593731; cv=none; b=cesQdJGc5ERL91LEuHN7jLG1gSXF7Unnv78Kvd0JGVivtXHJUYunB8G7ajENMz0HgZtFYxR0o1iRbAmefb93XN4/k4wWX9VElTjjEPVx/NQGI9Z+cj6rS7GB61BV/IPqCxF1P+YEapM8BnYKvnHrQ3D4ZpqF3yf8leETQxjbfVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756588761; c=relaxed/simple;
-	bh=df0C6adBbnynJraSVkkvXftoQh5xKgshXgN0hTl2zAA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aA3pzIzvVYCJERcRnFeIBatqXobNzWI5kxR7Gyd0Z2xYTVHkJxw9rn4TlzeI8N50mcUDABeAEyWNFeaOs8WkgjlMS3rJDfCKkrS0HGFY9nvFM57LTcQVmsS31fS0TTnDWfZRTr3HWh2c2xnbGuILOZS4azLbHDj8TqdylKed15M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=R7FmdX3V; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Mm2Z6vry; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=R7FmdX3V; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Mm2Z6vry; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B59F921D6E;
-	Sat, 30 Aug 2025 21:19:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756588751;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=df0C6adBbnynJraSVkkvXftoQh5xKgshXgN0hTl2zAA=;
-	b=R7FmdX3VT5YMGCLji8/jpk7pHu2fvotbevGLEI5r/aL+kSaxwLI8oIk7vZd87QegkgP2u5
-	kGrBd2mY4GM1cjRCQh/hO6MQfx6XvoD0onJY4YFV7/Xi7PWpmIsu3NnbHliQ1M/GaNxqfH
-	dUtwvssz+87a+mcaQ9SpHesWX1ld6XY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756588751;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=df0C6adBbnynJraSVkkvXftoQh5xKgshXgN0hTl2zAA=;
-	b=Mm2Z6vryHVznrsKBgzWKpvEvMtzg5WH4u11SoLLDlEXaFezClo1iXc/ZvOGSEEd+dhfVcr
-	MZj39HKNozOFIvDQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=R7FmdX3V;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Mm2Z6vry
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756588751;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=df0C6adBbnynJraSVkkvXftoQh5xKgshXgN0hTl2zAA=;
-	b=R7FmdX3VT5YMGCLji8/jpk7pHu2fvotbevGLEI5r/aL+kSaxwLI8oIk7vZd87QegkgP2u5
-	kGrBd2mY4GM1cjRCQh/hO6MQfx6XvoD0onJY4YFV7/Xi7PWpmIsu3NnbHliQ1M/GaNxqfH
-	dUtwvssz+87a+mcaQ9SpHesWX1ld6XY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756588751;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=df0C6adBbnynJraSVkkvXftoQh5xKgshXgN0hTl2zAA=;
-	b=Mm2Z6vryHVznrsKBgzWKpvEvMtzg5WH4u11SoLLDlEXaFezClo1iXc/ZvOGSEEd+dhfVcr
-	MZj39HKNozOFIvDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9C44113890;
-	Sat, 30 Aug 2025 21:19:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id JHamJc9qs2hAXQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Sat, 30 Aug 2025 21:19:11 +0000
-Date: Sat, 30 Aug 2025 23:19:06 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Sun YangKai <sunk67188@gmail.com>
-Cc: linux-btrfs@vger.kernel.org, dsterba@suse.cz,
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] btrfs: fix kernel test bot warnings
-Message-ID: <20250830211906.GC5333@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20250830144100.3606-1-sunk67188@gmail.com>
+	s=arc-20240116; t=1756593731; c=relaxed/simple;
+	bh=sNMJbOV7L8Pw5L4dpGmYim8XElfgoITGKOYJLlpqzGE=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=ONLO8PpupBqIq6t6/v6KVGLoI3wz8RvyExLLq4eIiQKBu+AYBlsgbsFb+gySlJxjC4AcagQ68rIT983I8eWTTZagYzOi4FSTcSQj0fSUbZPvZBUd5BmdVjQKoKuOA86YxZDj4lbub0ofCehgF083EQ+ieM23JBJH7+9gjZ7F9bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=KpROckMz; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=n/4eTGpW; arc=none smtp.client-ip=103.168.172.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfout.phl.internal (Postfix) with ESMTP id C2FEFEC01C2;
+	Sat, 30 Aug 2025 18:42:07 -0400 (EDT)
+Received: from phl-imap-01 ([10.202.2.91])
+  by phl-compute-04.internal (MEProxy); Sat, 30 Aug 2025 18:42:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to; s=fm1; t=1756593727; x=1756680127; bh=j5ZGPB+qEVQ4lLJwvJMKv
+	ypelhVdLDngdKDPQsIKeTA=; b=KpROckMzRwomtTHXlVVEZZ+ES8XjezvWB+6GD
+	GCfhOD/SfZPquWIhLlofisDnBUZRYTNEpri7+EwwHD4h507/6rJSFVMWuO7+mZOB
+	0j2KaAK12PbVE2rmsLhp1RziZETnzpvEJJPgD/VogXT+gvXGqtpRi+7zx7K9Bp9K
+	WF7nepYftqbK2GdPUWIUGH4D6Ix/zzFEb8bronDxwxSf6zyqX5hin5Pr99EW6ZEp
+	l5mEA6PZKcjIrhpp2nCihq3oE/8LOeTWAaPwI7dya+OVuJBZ89SfiUxjf/eDK73S
+	2oQQGCG2eO4QkXRnk/sAMYKtxhFntzUpXoeubrANUFh3of72A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm1; t=1756593727; x=1756680127; bh=j
+	5ZGPB+qEVQ4lLJwvJMKvypelhVdLDngdKDPQsIKeTA=; b=n/4eTGpWqPpnuxdxb
+	8RUxgTMuHpkAzByawHTJJvvfiwHDYS+XRZqzG+bdWwo4vpgT7u15+mc91S4Z+q1T
+	Zu6ebbZrZCNJc37kLP2Di5ojDc66O9BpbEYQLbVxK9Ti2HIeubAtiiykSHhiYSpK
+	T2sZyvIY6+toXBhlbostxQwOUgDQ4zS6s81iYnBn642n0PkngFsjTim1aTaWN6C7
+	3+QbdXyM8V3wrbV2h1n5johbEGTqm8VZOokcT49Z/tCvG0Pvoj7Vv8GS0z5qdgpT
+	wu6fLEPKpm3A5yP2BJ+Jx8G4JUvMUTlRuY1U/6DU3CF7qEx2XU2qMbupkTKvZLbQ
+	CHBXg==
+X-ME-Sender: <xms:P36zaG8iTzeXMH53hePPTVtbUMKEdwlj2M1zeZ20r0dgCf03_nOpOg>
+    <xme:P36zaGt_6-0YjudWqCIdAy_5UgqDFOYuHghs7viJS8IbocU1Y72p9_5x3SUKrOr2c
+    Kuw96XK8r1Vq9wJ3JA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddukeejieduucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvffkjghfufgtgfesthhqredtredtjeenucfhrhhomhepfdevhhhrihhs
+    ucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomheqne
+    cuggftrfgrthhtvghrnhepkeeiueejkeffhfevvdefgeefffelffelgfejieevteevleff
+    ueeuvdfghfdujefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomhdpnhgspghrtghp
+    thhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghnugihsehsthhruh
+    hgghhlvghrshdrnhgvthdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdr
+    khgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:P36zaHABFo8eyLx2Jttc6YVhz5J3lhWwbQABGZtqKK8MeRQn3HnJJg>
+    <xmx:P36zaGe6rw7G-7QfbnkZ__-UTKySm2C21n1QInY7lEEbJylp0i69Zw>
+    <xmx:P36zaEjT1ugItlbF3_a8UBz2D6MwhDxyflK1kR7gQ0XaSsl073lAGw>
+    <xmx:P36zaGpYPze9nRUgVwj_P2RVorVqP3bRLZzsoBpaI5jm3fVoCK3ciA>
+    <xmx:P36zaJyw0XqruGypnv0VnwxAVtDHzYffUNJxKI0IeB4cd_-MzS1mNN8->
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 6CE0E18C0066; Sat, 30 Aug 2025 18:42:07 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250830144100.3606-1-sunk67188@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: B59F921D6E
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_THREE(0.00)[4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -4.21
+X-ThreadId: AlSwDfZadHnw
+Date: Sat, 30 Aug 2025 18:41:47 -0400
+From: "Chris Murphy" <lists@colorremedies.com>
+To: "Andy Smith" <andy@strugglers.net>,
+ "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Message-Id: <b8ca27ee-3a4a-433d-ab25-8d9bee4bdddf@app.fastmail.com>
+In-Reply-To: <aLIRfvDUohR/2mnv@mail.bitfolk.com>
+References: <aLIRfvDUohR/2mnv@mail.bitfolk.com>
+Subject: Re: Mysterious disappearing corruption and how to diagnose
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Aug 30, 2025 at 10:40:40PM +0800, Sun YangKai wrote:
-> Fixes: 2d6338c69725 ("btrfs: more trivial BTRFS_PATH_AUTO_FREE conversions")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202508301747.dZexfo9v-lkp@intel.com/
-> Signed-off-by: Sun YangKai <sunk67188@gmail.com>
 
-Fixes folded in, thanks.
+
+On Fri, Aug 29, 2025, at 4:45 PM, Andy Smith wrote:
+
+> The shuffling of devices that I had to do can only be temporary, so I
+> need to decide what I am going to do. The smaller device I had intended
+> to remove (but now had to add back in for capacity reasons) is 1.7T and
+> is currently /dev/sdg. I could "btrfs replace /dev/sdg /dev/sdh =E2=80=
+=A6" and
+> assuming no errors seen do a scrub, but if errors were seen I'd want to
+> remove sdh again quickly. replace then wouldn't be an option since sdg
+> is smaller than sdh. "btrfs remove sdh =E2=80=A6" takes a really long =
+time.
+
+I haven't checked in a while, but I think  `replace` does not do a file =
+system resize following completion. The dev_item.total_bytes remains the=
+ same, regardless of block device size. If that's still true, then don't=
+ resize it following replace for the time being.
+
+Or alternatively if it is or must be resized, you can shrink it first. N=
+ow you can use `btrfs replace` instead of `btrfs device remove`. This pa=
+rtial shrink is significantly less than the one implied by device remove.
+
+
+--=20
+Chris Murphy
 
