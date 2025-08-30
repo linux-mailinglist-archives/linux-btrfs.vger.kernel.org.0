@@ -1,135 +1,302 @@
-Return-Path: <linux-btrfs+bounces-16538-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16539-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 845B4B3CB76
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Aug 2025 16:41:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6873EB3CC66
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Aug 2025 17:55:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15E5CA001E6
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Aug 2025 14:41:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 595873A8787
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Aug 2025 15:55:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02CFD248F6F;
-	Sat, 30 Aug 2025 14:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA12263C7F;
+	Sat, 30 Aug 2025 15:54:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a0wUXnC6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kZxJv6Fg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC6021FF38
-	for <linux-btrfs@vger.kernel.org>; Sat, 30 Aug 2025 14:41:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ADE722A817;
+	Sat, 30 Aug 2025 15:54:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756564910; cv=none; b=tvdZ3Zd2DNNpzhfUkFTjkLl2Mttrw1rkYQfMZTCOJ0vUaQntXRu/7ivYS7sR4bHm28NU8Q1H7JZA4/IZUqPobvrdqI/ZxBeKG5rkF28unI3QYbWKrMS+WXOqR9w7NpOtghShwM1WFGotYux9o3YFE0DxZV5h4BX1ZhbGO4pXuBU=
+	t=1756569291; cv=none; b=Gr8ibDSP4j3rnP/5riWwfMClhPfMkGDrq/zSRs4Ih76Cgyhs21LZzBEYRxwBJPC6bqI4vP8lDYmSm9vz5jqfShe0+duFAWj8AsK9PkWAx8dR6M9MldcvgYYDVakBKSzauPBp2kuCEZAqBsnISlji4BoXd4ZA3vF37vJ2ZQZS3v8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756564910; c=relaxed/simple;
-	bh=EzGuRb88N6cBwcQVyX9bQ49rLbfMCciNx9qEQrVG22Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z2R2M0SIF36H2i+jY2CiLRDT35T7Xuo6t9WWO4W9lJNYbmn0Ib35E9aT3ruvQxQOuVxv09m8Lhpf4GBgKmxSaoeKxHjWIrM0bAMkqujc2xpb1BcLE2XYdzxCEW5fZ+9Sqiu56k70aSEllyLBn0Q0ah4aQo89E9JrZRFcK2fmXuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a0wUXnC6; arc=none smtp.client-ip=209.85.214.193
+	s=arc-20240116; t=1756569291; c=relaxed/simple;
+	bh=GVVHVXs4UCPiQnVcR2u/7qQBtlpWdwz3nn6Jlfw7yCw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nVx87DDYmyJM8Vx2cfA8jkGlhRQ6HSxbeM0bLdbLp7PcNLd8cH9zVQlwWsDmXOgfP8akU270qTU72Z9G3D8TZ7WpYDCIokaa6uct1dCZu39PrtDttQfmimOSljpJNU5zxke8vwHKr2aHr+znMxGkuP4VJ3bWpG40CTkfh4GpWQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kZxJv6Fg; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-2489b6b6cbdso4710735ad.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 30 Aug 2025 07:41:48 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aff0775410eso211014566b.0;
+        Sat, 30 Aug 2025 08:54:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756564908; x=1757169708; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lBL6oZ01Hx/JAUrvxZIg6a0UU/9uaLQ7s18BLvqU+D0=;
-        b=a0wUXnC6A8WNEDhwhW3Mc0CM6/kEQEELoS/uon8PrIJx8qNq7T7awu/Y8ESbUxAZMb
-         8mqUj7BT+aeiztFsJs15ly0BnUZWhw+AzUqYdYIIyOkuUnTTBE/CIEqF9ZpN+ltjmwQg
-         UK+RVwho9ZGUqp0zp4GdaFrdsuRRt2SKp5ANIkZIraM4h+xUj1qsPQOqNOBQoVTit7e5
-         FUaoWpUN8aJAM/aEd7toaH9bdy72Udhm7ciiG2muFtx+dAprEH8ZLxHMwZlIY4Ig1+iz
-         GDMvEWL843ZaSLsts7VUTsCCmy4FciJtEpyRtjSjiatvF5I2HNqfD8aSujiXr1i5/a3A
-         Q+Ug==
+        d=gmail.com; s=20230601; t=1756569288; x=1757174088; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JKnJgrbmUOh2oDMSjOOuFdf8pubpSvEuvnnxtiEFkJg=;
+        b=kZxJv6FgYfp20p56z282eMsD5h5aFhsexDEwKvBCx5Td18ScqSqiY5CvPPlAFUKYP2
+         jbXqTpw/pqQ0vDDLmDsKGeiLmtgJBTpdmLkn0t0a8FUAETVmPZX+v5ct9OAwkipIe4qQ
+         InRnmaXNXHiyK3Yo9+51jzvwmf5QiqkctV2zN4m4hIhPJCZ/EQ+0aqP+KfJYbFhgYizV
+         1p9OAjrjtsp6EfVq8wPGybelEeZhZiqL4ZNycT31KFAzgcaYvXcmLyCM5pmFCtzqMucA
+         Kxkyhi7rxzImb9Xu/b5YNuxQbMRUTz/Jvl7+Hf3BPKMNXwlhqeEhHEFKYIwmNNHusIGp
+         14jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756564908; x=1757169708;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lBL6oZ01Hx/JAUrvxZIg6a0UU/9uaLQ7s18BLvqU+D0=;
-        b=LA8XXiqkVLeQPa+PaL4gCxXLb5n47OniiT1ImUJoHqQ8kgpupG1UfePPJOUf3kph1M
-         665caxs8CmCZoJjgTBsY1/hWEkkBAT1VGOgWde5FpL7m0IbMLePwNIlAjqxzxcyO03iP
-         qGjxHRJZ5N3MkQmXRrvcVf88YiPHMWLXxucvl6V2h6QlkDH06umTNtcviILf7aHMTZpX
-         aBf+aZkGjsqTvlHQMfmzVtkAHRK4pu+qeg+to+Wu04LaDTvanVJbphGdBKU2kNbneRoL
-         xETESOXy6FlwsKCsz25/vhbd73qPGB+fH9dt0RHUSApvt9pnljx5Hy2hYM0X7VrWGOrp
-         yGig==
-X-Gm-Message-State: AOJu0Ywe5+84NbL8r8prFiZhXjLwhS677QNaxtW70mjLEZ2Y9qaerQp9
-	ZCaxaSeTJqWLIl0TfTTtoc0zf3GfF1m0yryW6+3wdGUp/EA5tWQ6EllIM8oR2tWODBVJEg==
-X-Gm-Gg: ASbGnct0sHO9WIRQ4+JgwxJu/NmQEdIQgjTmCULvw8xM+SvuovjycvZrPGACTfhd3Qo
-	U7W477M1XVP0Q/Uo7zUww2fLJhUl41Ven9ckAwBzOc6vrZs1du5T4J6uyO+AXEhSOboOBEB/SqS
-	OqX4m3T8MRGXFV4UyXZj2oHVnrdfCxxEDNaVFoeoowpVoyZOW9+QzW0Ns1J9evBTQNFzCby3srU
-	/v2CMPLrjBGjGaywCscOcqf+zkNsmsP1mFkDODefas6rPketZ3mtPLN3a/oDKoJSGiaFFEV63de
-	/C1DnFGqafP7hLgVxUVyZgcaEyeXwGpUUzvicJs7PLElJqtBrlsQcK2Q8tEIECotIFZwRj37WxO
-	y+jpaGcgVJp2PmDjnSdOQWNz3eRqCrhb2C+Y76n3J
-X-Google-Smtp-Source: AGHT+IEp6N5JX3dlZP5uobam+sqCJE+jG4xSZvkAvxRWuSHtUb0DkcnB4aXA1dHNkiuiT9ri4aSWOQ==
-X-Received: by 2002:a17:902:f545:b0:246:f090:6d91 with SMTP id d9443c01a7336-2491f27ac2fmr41381465ad.11.1756564908148;
-        Sat, 30 Aug 2025 07:41:48 -0700 (PDT)
-Received: from SaltyKitkat ([116.80.76.55])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24903705b9dsm54609355ad.7.2025.08.30.07.41.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Aug 2025 07:41:47 -0700 (PDT)
-From: Sun YangKai <sunk67188@gmail.com>
-To: linux-btrfs@vger.kernel.org
-Cc: dsterba@suse.cz,
-	Sun YangKai <sunk67188@gmail.com>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH] btrfs: fix kernel test bot warnings
-Date: Sat, 30 Aug 2025 22:40:40 +0800
-Message-ID: <20250830144100.3606-1-sunk67188@gmail.com>
-X-Mailer: git-send-email 2.50.1
+        d=1e100.net; s=20230601; t=1756569288; x=1757174088;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JKnJgrbmUOh2oDMSjOOuFdf8pubpSvEuvnnxtiEFkJg=;
+        b=mwG6ZBr9HiqAyLeciW+CYl7UE4bIYMbNb44kmyKew0ntbDgTfw3q7IXo8JRTuQKmLd
+         eUz1klYy4CrpKfRFeTSB7vOoNcjo4fjoCQBCkHOKcjM3VSr1uXryA43Lf2nQgUO9o8wV
+         Ua5TbvjFN8mj9+VedMK+Jhyjc6Kc+OmGTTWMkUFueDBt635a49zBqJsoJqa3DEwQFpke
+         ZqRhQTNzL6wJ2ij1r4cz+yPT7fI7qMfFU12H6QrgaPkgn9LvJqc8UoSw/Mubyb1KOzw2
+         V4TMl+IE8z3ioABDiCPIQisqAYFg61nUMT7FWd/MTPo3roPaEVtyYGYemFORkhO1pHi/
+         c25w==
+X-Forwarded-Encrypted: i=1; AJvYcCV2oZrw8/SueE4U7LYXpW3PK9vbJyOcNnezrTH5b8WJi4nmi5L3PNGYuxFMfPnohreHoQqI5e56GIRu8g==@vger.kernel.org, AJvYcCVi22YkWU9zmd7GLTBHxo+NPs5Dh3MdJubGEDKotCVIBFmqDhOIin6BnXg5DLOk5KnMTUO+81tOil91C9SL@vger.kernel.org, AJvYcCWUYClshOFhaHExST5SZ/vWImAQJpNnNWwa+SlEuoII0R0U8xnY6tbCQcZQ+jriiKe1xNkM3VOoedCpxA==@vger.kernel.org, AJvYcCXkOXcUYQUNOUjhWJ464HArW/f9VjyNaROp/ICRlNQwEHNeYtjynMqQhcAL0UnxjD824mJ0z9yrUv+t@vger.kernel.org, AJvYcCXov/6DBJ40RMwTVOX/eaua8OOPamK5qMn3HFUercKxPMdSFD6ygpnTEsYNSPB2I/ilXpCChjHQTCJh3TVxcg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqFYRJEVPc3AoojHPL6tRf418w6fu4otXG409XuZTx1+DZAMrA
+	j6SFTDnTZX7ZwYyFf/l2jckSJwumIdsAjGFv3UaRHc67P1jltMHAS+7w0fBIs8kjJL3vlW95D7C
+	6Wttjb1tl4J7pi/brJBJx8HaCgnl8RYw=
+X-Gm-Gg: ASbGncuQGHuJEMxurp4dJi+cSPET4Po4L3GomjNwy2xdAuPrMHPshHqEJwqs6enM22E
+	x/5HuIzNV/rrhtJwbhmPG6sIi43llMOqnApEh9D/uNJmNHpQbVkecFLPiE/rglTdO0zyMnWea73
+	nztSlc0f4lD5XtvckG5k8G3EvO3eE0R1tUECY0ZKhXBPswRBJaDm6zCriiEai8GZ3Ra5oEBt+SB
+	7EUjffpLaySSpRnNw==
+X-Google-Smtp-Source: AGHT+IElC6UnQKbYiLEokii4c0QnJGyNmpiKRwOAH3fYC7dsMe19ke8+l5PIvp3HUmB7xvmH/nqLeMEzovT7pA11oF8=
+X-Received: by 2002:a17:907:60cb:b0:afe:834e:ac6c with SMTP id
+ a640c23a62f3a-b00f67e0f14mr269568466b.7.1756569287634; Sat, 30 Aug 2025
+ 08:54:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250827-kraut-anekdote-35789fddbb0b@brauner> <20250827162410.4110657-1-mjguzik@gmail.com>
+In-Reply-To: <20250827162410.4110657-1-mjguzik@gmail.com>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Sat, 30 Aug 2025 17:54:35 +0200
+X-Gm-Features: Ac12FXxw_rI44Vo3uX6aJ6E7RnW-AezM7w6oV9lBe-qseTZJvVTh6oLpdGUdJuE
+Message-ID: <CAGudoHE5UmqcbZD1apLsc7G=YmUsDQ=-i=ZQHSD=4qAtsYa3yA@mail.gmail.com>
+Subject: Re: [PATCH] fs: revamp iput()
+To: brauner@kernel.org
+Cc: viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, josef@toxicpanda.com, kernel-team@fb.com, 
+	amir73il@gmail.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-xfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 2d6338c69725 ("btrfs: more trivial BTRFS_PATH_AUTO_FREE conversions")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202508301747.dZexfo9v-lkp@intel.com/
-Signed-off-by: Sun YangKai <sunk67188@gmail.com>
----
- fs/btrfs/scrub.c | 2 +-
- fs/btrfs/send.c  | 2 --
- 2 files changed, 1 insertion(+), 3 deletions(-)
+I'm writing a long response to this series, in the meantime I noticed
+this bit landed in
+https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=3Dvfs=
+-6.18.inode.refcount.preliminaries&id=3D3cba19f6a00675fbc2af0987dfc90e216e6=
+cfb74
+but with some whitespace issues in comments -- they are indented with
+spaces instead of tabs after the opening line.
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index d8c36cbf423d..9159e3a8af17 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -612,7 +612,7 @@ static void scrub_print_common_warning(const char *errstr, struct btrfs_device *
- 	ret = extent_from_logical(fs_info, swarn.logical, path, &found_key,
- 				  &flags);
- 	if (ret < 0)
--		return ret;
-+		return;
- 
- 	swarn.extent_item_size = found_key.offset;
- 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 6811eeb96490..69cf124674d7 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -1771,7 +1771,6 @@ static int gen_unique_name(struct send_ctx *sctx,
- 			   u64 ino, u64 gen,
- 			   struct fs_path *dest)
+I verified the mail I sent does not have it, so I'm guessing this was
+copy-pasted?
+
+Tabing them by hand does the trick, below is my copy-paste as proof,
+please indent by hand in your editor ;)
+
+diff --git a/fs/inode.c b/fs/inode.c
+index 2db680a37235..fe4868e2a954 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1915,10 +1915,10 @@ void iput(struct inode *inode)
+        lockdep_assert_not_held(&inode->i_lock);
+        VFS_BUG_ON_INODE(inode->i_state & I_CLEAR, inode);
+        /*
+-        * Note this assert is technically racy as if the count is bogusly
+-        * equal to one, then two CPUs racing to further drop it can both
+-        * conclude it's fine.
+-        */
++        * Note this assert is technically racy as if the count is bogusly
++        * equal to one, then two CPUs racing to further drop it can both
++        * conclude it's fine.
++        */
+        VFS_BUG_ON_INODE(atomic_read(&inode->i_count) < 1, inode);
+
+        if (atomic_add_unless(&inode->i_count, -1, 1))
+@@ -1942,9 +1942,9 @@ void iput(struct inode *inode)
+        }
+
+        /*
+-        * iput_final() drops ->i_lock, we can't assert on it as the inode =
+may
+-        * be deallocated by the time the call returns.
+-        */
++        * iput_final() drops ->i_lock, we can't assert on it as the inode =
+may
++        * be deallocated by the time the call returns.
++        */
+        iput_final(inode);
+ }
+ EXPORT_SYMBOL(iput);
+
+While here, vim told me about spaces instead of tabs in 2 more spots
+in the file. Again to show the lines:
+
+diff --git a/fs/inode.c b/fs/inode.c
+index 2db680a37235..833de5457a06 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -550,11 +550,11 @@ static void __inode_add_lru(struct inode *inode,
+bool rotate)
+ struct wait_queue_head *inode_bit_waitqueue(struct wait_bit_queue_entry *w=
+qe,
+                                            struct inode *inode, u32 bit)
  {
--	int ret = 0;
- 	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_dir_item *di;
- 	char tmp[64];
-@@ -1806,7 +1805,6 @@ static int gen_unique_name(struct send_ctx *sctx,
- 
- 		if (!sctx->parent_root) {
- 			/* unique */
--			ret = 0;
- 			break;
- 		}
- 
--- 
-2.50.1
+-        void *bit_address;
++       void *bit_address;
 
+-        bit_address =3D inode_state_wait_address(inode, bit);
+-        init_wait_var_entry(wqe, bit_address, 0);
+-        return __var_waitqueue(bit_address);
++       bit_address =3D inode_state_wait_address(inode, bit);
++       init_wait_var_entry(wqe, bit_address, 0);
++       return __var_waitqueue(bit_address);
+ }
+ EXPORT_SYMBOL(inode_bit_waitqueue);
+@@ -2938,7 +2938,7 @@ EXPORT_SYMBOL(mode_strip_sgid);
+  */
+ void dump_inode(struct inode *inode, const char *reason)
+ {
+-       pr_warn("%s encountered for inode %px", reason, inode);
++       pr_warn("%s encountered for inode %px", reason, inode);
+ }
+
+ EXPORT_SYMBOL(dump_inode);
+
+Christian, I think it would be the most expedient if you just made
+changes on your own with whatever commit message you see fit. No need
+to mention I brought this up. If you insist I can send a patch.
+
+On Wed, Aug 27, 2025 at 6:24=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> w=
+rote:
+>
+> The material change is I_DIRTY_TIME handling without a spurious ref
+> acquire/release cycle.
+>
+> While here a bunch of smaller changes:
+> 1. predict there is an inode -- bpftrace suggests one is passed vast
+>    majority of the time
+> 2. convert BUG_ON into VFS_BUG_ON_INODE
+> 3. assert on ->i_count
+> 4. assert ->i_lock is not held
+> 5. flip the order of I_DIRTY_TIME and nlink count checks as the former
+>    is less likely to be true
+>
+> I verified atomic_read(&inode->i_count) does not show up in asm if
+> debug is disabled.
+>
+> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+> ---
+>
+> The routine kept annoying me, so here is a further revised variant.
+>
+> I verified this compiles, but I still cannot runtime test. I'm sorry for
+> that.  My signed-off is conditional on a good samaritan making sure it
+> works :)
+>
+> diff compared to the thing I sent "informally":
+> - if (unlikely(!inode))
+> - asserts
+> - slightly reworded iput_final commentary
+> - unlikely() on the second I_DIRTY_TIME check
+>
+> Given the revamp I think it makes sense to attribute the change to me,
+> hence a "proper" mail.
+>
+> The thing surviving from the submission by Josef is:
+> +       if (atomic_add_unless(&inode->i_count, -1, 1))
+> +               return;
+>
+> And of course he is the one who brought up the spurious refcount trip in
+> the first place.
+>
+> I'm happy with Reported-by, Co-developed-by or whatever other credit
+> as you guys see fit.
+>
+> That aside I think it would be nice if NULL inodes passed to iput
+> became illegal, but that's a different story for another day.
+>
+>  fs/inode.c | 46 +++++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 35 insertions(+), 11 deletions(-)
+>
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 01ebdc40021e..01a554e11279 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -1908,20 +1908,44 @@ static void iput_final(struct inode *inode)
+>   */
+>  void iput(struct inode *inode)
+>  {
+> -       if (!inode)
+> +       if (unlikely(!inode))
+>                 return;
+> -       BUG_ON(inode->i_state & I_CLEAR);
+> +
+>  retry:
+> -       if (atomic_dec_and_lock(&inode->i_count, &inode->i_lock)) {
+> -               if (inode->i_nlink && (inode->i_state & I_DIRTY_TIME)) {
+> -                       atomic_inc(&inode->i_count);
+> -                       spin_unlock(&inode->i_lock);
+> -                       trace_writeback_lazytime_iput(inode);
+> -                       mark_inode_dirty_sync(inode);
+> -                       goto retry;
+> -               }
+> -               iput_final(inode);
+> +       lockdep_assert_not_held(&inode->i_lock);
+> +       VFS_BUG_ON_INODE(inode->i_state & I_CLEAR, inode);
+> +       /*
+> +        * Note this assert is technically racy as if the count is bogusl=
+y
+> +        * equal to one, then two CPUs racing to further drop it can both
+> +        * conclude it's fine.
+> +        */
+> +       VFS_BUG_ON_INODE(atomic_read(&inode->i_count) < 1, inode);
+> +
+> +       if (atomic_add_unless(&inode->i_count, -1, 1))
+> +               return;
+> +
+> +       if ((inode->i_state & I_DIRTY_TIME) && inode->i_nlink) {
+> +               trace_writeback_lazytime_iput(inode);
+> +               mark_inode_dirty_sync(inode);
+> +               goto retry;
+>         }
+> +
+> +       spin_lock(&inode->i_lock);
+> +       if (unlikely((inode->i_state & I_DIRTY_TIME) && inode->i_nlink)) =
+{
+> +               spin_unlock(&inode->i_lock);
+> +               goto retry;
+> +       }
+> +
+> +       if (!atomic_dec_and_test(&inode->i_count)) {
+> +               spin_unlock(&inode->i_lock);
+> +               return;
+> +       }
+> +
+> +       /*
+> +        * iput_final() drops ->i_lock, we can't assert on it as the inod=
+e may
+> +        * be deallocated by the time the call returns.
+> +        */
+> +       iput_final(inode);
+>  }
+>  EXPORT_SYMBOL(iput);
+>
+> --
+> 2.43.0
+>
+
+
+--=20
+Mateusz Guzik <mjguzik gmail.com>
 
