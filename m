@@ -1,90 +1,103 @@
-Return-Path: <linux-btrfs+bounces-16564-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16565-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC06BB3E81D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 17:02:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9F17B3EDA9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 20:11:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69EAD1A8069E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 15:02:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C46E1B2011A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 18:11:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52787341651;
-	Mon,  1 Sep 2025 15:02:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uooPNlsJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF79E324B29;
+	Mon,  1 Sep 2025 18:11:02 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA6830E839
-	for <linux-btrfs@vger.kernel.org>; Mon,  1 Sep 2025 15:02:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B663233E1
+	for <linux-btrfs@vger.kernel.org>; Mon,  1 Sep 2025 18:11:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756738943; cv=none; b=DdNC+UpPHSmRH00lUpxTR6bR4a8zpNAhPFEQu66Mmqkha5ousmgbkBYsv5QEp/g+0GXGsdVmVuzP9WdHS8fbjyN6pcN+DaGvbbQsWC1oIhQdeoOH7fOuNvgO6ETt/gyDaiXOBa5xZvgJtt8bYgcRHFYPruflzZiO4ivwMCgCJbA=
+	t=1756750262; cv=none; b=KI92zjxuakvISlUoFCy3TFCrGTFjmoQa5Cui3RZ4ohyDKpZqYqg3RiddW8Aun1/Achmpza3rd96GW98j4iiGOBQzskjQ4gPfh00V74tCiRCxAmQlraRW3bpaA97KnN5KQZ8E42beelAWXBA3FkVcyoCVFOTRjUg3iezdhtt7SGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756738943; c=relaxed/simple;
-	bh=U4OXJtvN8vRCBlMT6T7EqGLYf4Ogc0t2cuxAXm+kGdY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BYYciUc8AICjBMs5Mq/DlfQuG0Rw+cO9VuZaV2SJiorrN9JzVCdeYpHSwT3O7Qo3coedb3TCfNdjY8FKJv6mv0imDev0CJ49M72AKbBB1dHGB82t/x8fSWxm6CaXbJjhcdsX54FnuyHQ2ne5xJ4Wz/+ontJoOvvJ/1wTM3f7Pt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uooPNlsJ; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756738938;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=nivWg6+wmlPawo9eOsWBpM889Z0+ZVfC6Vlz9wpOjtQ=;
-	b=uooPNlsJRrVzcR2fbvTqXWWslvEJ4OLz9v29ZDCbtJw2pvhviQUi9/ENd9Sv8agGAHBhLq
-	P6rOnrB7tSeg5rewGwvtGbQyHB0rafMTUqKhVAwGMKp/QFLKzLWrzPszDJXIjodDWr3cFC
-	I97e2b2gab25NLgTZSqC51+NU+X2pzg=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>
-Cc: Thorsten Blum <thorsten.blum@linux.dev>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: scrub: replace max_t()/min_t() with clamp_t() in scrub_throttle_dev_io()
-Date: Mon,  1 Sep 2025 17:01:44 +0200
-Message-ID: <20250901150144.227149-2-thorsten.blum@linux.dev>
+	s=arc-20240116; t=1756750262; c=relaxed/simple;
+	bh=4HLv4bz2KV2gDTadScFI5S25hrhMr8s9VC3XJRfuwq8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CROUTYHuTL1KTT7pXPuvRillqnHUQqA+9tmTlBU4twoqtTkf8v9+sMZRzf3JbzNw8tXQ9uZDES+hVx+E/npkWiqDBLWYzIiycCKTSt/CM4ND4y4gESvYHIJ9kgCY7B3eZkd0qhgN3xVLwID6s03Wmo2jY9lOEwOyX7W2QALeNZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id F172D211BA;
+	Mon,  1 Sep 2025 18:10:58 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E15D7136ED;
+	Mon,  1 Sep 2025 18:10:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Xcd5NrLhtWjtEwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 01 Sep 2025 18:10:58 +0000
+Date: Mon, 1 Sep 2025 20:10:57 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/4] btrfs: cache max and min order inside btrfs_fs_info
+Message-ID: <20250901181057.GD5333@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1756703958.git.wqu@suse.com>
+ <d1a3793b551f0a6ccaf8907cc5aa06d8f5b3d5c2.1756703958.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d1a3793b551f0a6ccaf8907cc5aa06d8f5b3d5c2.1756703958.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: F172D211BA
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
 
-Replace max_t() followed by min_t() with a single clamp_t(). Manually
-casting 'bwlimit / (16 * 1024 * 1024)' to u32 is also redundant when
-using max_t(u32,,) or clamp_t(u32,,) and can be removed.
+On Mon, Sep 01, 2025 at 02:54:04PM +0930, Qu Wenruo wrote:
+> Inside btrfs_fs_info we cache several bits shift like sectorsize_bits.
+> 
+> Apply this to max and min folio orders so that every time mapping order
+> needs to be applied we can skip the calculation.
+> 
+> Furthermore all those sectorsize/nodesize shifts, along with the new
+> min/max folio orders have a very limited value range by their natures.
+> 
+> E.g. blocksize bits can be at most ilog2(64K) which is 16, and for 4K
+> page size and 64K block size (bs > ps) the minimal folio order is only
+> 4.
+> Neither those number can even exceed U8_MAX, thus there is no need to
+> use u32 for those bits.
+> 
+> Use u8 for those members to save memory.
 
-No functional changes intended.
-
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
----
- fs/btrfs/scrub.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 6776e6ab8d10..ebfde24c0e42 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -1369,8 +1369,7 @@ static void scrub_throttle_dev_io(struct scrub_ctx *sctx, struct btrfs_device *d
- 	 * Slice is divided into intervals when the IO is submitted, adjust by
- 	 * bwlimit and maximum of 64 intervals.
- 	 */
--	div = max_t(u32, 1, (u32)(bwlimit / (16 * 1024 * 1024)));
--	div = min_t(u32, 64, div);
-+	div = clamp_t(u32, bwlimit / (16 * 1024 * 1024), 1, 64);
- 
- 	/* Start new epoch, set deadline */
- 	now = ktime_get();
--- 
-2.51.0
-
+The reason for u32 is that it generates a bit better assembly code, we
+don't have to save each byte in fs_info so please keep it u32.
 
