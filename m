@@ -1,56 +1,81 @@
-Return-Path: <linux-btrfs+bounces-16545-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16547-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8D15B3D806
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 06:00:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6EC2B3D83D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 06:28:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B68418960E4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 04:00:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6489B3A6C62
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 04:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8854421C17D;
-	Mon,  1 Sep 2025 03:59:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A0C22425B;
+	Mon,  1 Sep 2025 04:28:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="GUTgCGk2"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="OJZ+H+uw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D04153BE9;
-	Mon,  1 Sep 2025 03:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29131C6FE5
+	for <linux-btrfs@vger.kernel.org>; Mon,  1 Sep 2025 04:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756699191; cv=none; b=ryqW5Fa2YawupcycoEQQFiTRAec+I7JCBHj6FnL25mStkS+a8GNcscAvnOXBSSYrjaiLNyAcdUOS7415pOmMt1ct64566ywuM8JirzNKmkrlMYznBfv7Fo1DQDncf0hKtEEIcm9dHngRjaDmX7nzJlzv9PE8xjjwSwysbB7YrGQ=
+	t=1756700922; cv=none; b=dF+8bv7cdORHPkYtrDFr2zuJnpfiSCdfA2KuWzZNLaeB+XqHf28aWVKktLI4z482EQuSdWLMa2lfuHUTewVnxbQDH/emgCAhoU/L1ie7TzLYvaT8eBMTi2CcgEfhPQqFdiuaukCh260cxrDsd1bu7KlVEM7KFdYr0AM4uYDEdsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756699191; c=relaxed/simple;
-	bh=EkJ9fGsyfck66TR4y8BR5h4E2eqiXcOaXu0XRgkdkSU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=AZ5PbsAhABbO4L6nX5IbAIMjIhzh4V32oTP1Ve0CJxXaEAQ+y/gS+d25J5JnJp2UGt18VTtk/kXiqj4KQVAlS9xQ0ysFUPe2MiZ/8DxB83t4PrxOBaCDxVJepyuvpDrV5rwzWsLi1h7oPurN+Aj/jSv23piPR2LDk1QcYezA5S8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=GUTgCGk2; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1756699185; x=1757303985; i=quwenruo.btrfs@gmx.com;
-	bh=FgzqdPjeEsnbzYFgcWySlkS61dC13rcrGJNrAoQqxRU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=GUTgCGk2HJujLT7o4c71aOjgUrY0z0ohhTC+YxMayegN9PQoC3Q/sS+en346GeKV
-	 Qph2Ptkk0Ae5zxVJad5FL+CcRjO9PG7RIDmx6sk4bEXxrvg3mBVMlFpQUbXPkBxF/
-	 C/k/bEGDPl9LFcA4TNqvT+gu2CdvV+AmiJ5XLIsrB5T78dSbAni2ELzv4dCHnVRTc
-	 rAMCseHSYLzuOlBbjCqLCBDBz8E+bNNqOIPSidqY3nJnvOmYNOjLWko4LuSdIXbwq
-	 jV262Q08pNMZKxFsvGXD8i9RlovW4Z0roHw+QL0QqhoDvZ1KQMM8RroikYBOarO2Z
-	 AEilQZNyXFaSq/ebQQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MSKu0-1v41X61bei-00IHFK; Mon, 01
- Sep 2025 05:59:44 +0200
-Message-ID: <469e3880-c9b2-4ad3-94d3-2afeaf6d03ad@gmx.com>
-Date: Mon, 1 Sep 2025 13:29:41 +0930
+	s=arc-20240116; t=1756700922; c=relaxed/simple;
+	bh=x4IhaQ+jaRo88D7Vt6ChT9GPEQHZkkMOY3vkMke57vQ=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=e86hKfGBwVL8W7/aZpS9cSeGzQE1umJPcHjCkcECB1dmB1xKuv63QKNuAe5zg+BaB+Iv/KuKjPnLCPtPlmzNIXSh9cQLq6KLp51go8RDhY5aMMUhe0DD9qRXdQQkkYyKx445JnPY4eqWpsvOjRr4VR9Zm78yWPkVVZWG+PB3yCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=OJZ+H+uw; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3ce47d1f1f8so2600594f8f.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 31 Aug 2025 21:28:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1756700918; x=1757305718; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=b5P5sdzs2XnJhbz6Eihyj7biLpg1KCfZLGVb+oAgonI=;
+        b=OJZ+H+uwMhLz2EoKLwD/CAKWAkGrKWx+lZegen6LDnk1edkzJiQ/6mYxZH6/8WntyW
+         XhnX2JM5OsDywkU+8HaD5ynBkFZT6UAUtMawAlq1s2iX5AQYF7gShwQPC7aqfLJqKApF
+         JqGUQoP28lAeF/W0DKKmNsETFsYj3Jjj70/YSq/uZq0pbbvanR/7Zjznqxgq8YihlUZe
+         W0kOIf7EsAVRnPDt1o1OB2EzzT9c4FMkPJSjPGJOLoBTdkMdAOauemTd29tMW8PltGi3
+         CK63OD754Jy0mayyOhUY8mUyvAobkC6q5S1pS9xKXr6wcknk9jUkM6tfwkSZIm0lwAQz
+         3UNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756700918; x=1757305718;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b5P5sdzs2XnJhbz6Eihyj7biLpg1KCfZLGVb+oAgonI=;
+        b=O44HS1y2POjyR8Et2JXi1IraNRA55Od7E388bW6j8tIFiNEVavxu6SzspEIZYxVo+6
+         baYjfZlXlDlJIt8CY0kUe9xBCDbbCoAGXpekKJFJtkx3CECKJuZEp9MpT2vktPxzYnDA
+         Y0OLQUFWllXrOzoKQy59d/sOt9DTn0nAQKwbXYBm9hYmC17809OCQQHY4nSaeurrSyCO
+         2g1/ACXdvRemsYTzsJ90XMsm7F4CPCfYOseLEeAgl57MX/A/+qSia7v1XsY6ZLyGvsaP
+         AvTdvAEI+WJz6JgK74ZG9lqs+vqQXnt5MSpb/lx4tDNnosDZSaYYxhy/deEl5nHlGsCc
+         P3wQ==
+X-Gm-Message-State: AOJu0YyOf3xzUgyw03Yl/XbaKbSB9hPJjottaNSdJuoSssL0rBCqSzD7
+	ecaxhhSfXPkj3Jhi4ZxQZvgvcvvQgauGDQ8D0MQgQSVHPMm9JzXQldll+oZMyO5SzhYobnrwcC4
+	uq9LP
+X-Gm-Gg: ASbGncukB6vbGClhBcIIBduxJoASbAGfecCfwz3bEXIBNWiK4UvXnsPHY5NwpzJzELG
+	YmKTM3bPF5VhioFJIazD+BXCH1eUMhp0diAH4SnpBRfW/WoGOaPC9FmfO6ZCAi2WKB7JM+Xs43Q
+	b5R677E+C9wQsGZhIVJdUVe6xIIom7nuA4ub4/ewMRuCXjtSWbu3C9oymJs7KsrmYsj/qrwSlF4
+	m5TGFGT10P4G4Y7VwQtSskZZNf92zb/unvvFEx1jj1tBr/Q+tbi8i7gAViEHwCClPptJP8q3796
+	6OlALaWtGPkhYFMfkZNcCI/6gsoWyD+gJL84n4J2dzV1uifVOYqh3Iz6WwnMkak9OhmmTuJAMvm
+	Zkb5LF5vfEH/l/vxXVwuRdCVkItxRe3bBL2F9vokOBMTsFaYCcHA=
+X-Google-Smtp-Source: AGHT+IGD57oZTxLL0n/XLgH0UP+rzT0XB1dOe1/1k1PJFajwn/8mJdXJkghIxU+CrXxSHQDO24ItbQ==
+X-Received: by 2002:a05:6000:268a:b0:3d4:2f8c:1d37 with SMTP id ffacd0b85a97d-3d42f8c2014mr4012405f8f.26.1756700918175;
+        Sun, 31 Aug 2025 21:28:38 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2490373eb17sm89846995ad.54.2025.08.31.21.28.36
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Aug 2025 21:28:37 -0700 (PDT)
+Message-ID: <ab36aaed-6336-4195-a082-a69276a19edc@suse.com>
+Date: Mon, 1 Sep 2025 13:58:34 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,163 +83,259 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: generic/563 failure caused by losetup no longer handles block
- device anymore
-To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
- "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <db593e62-1d57-4d11-84b0-18d0f49cf0e4@gmx.com>
- <fc1e2106-2974-474a-aa5c-89178383f4be@dorminy.me>
+Subject: Re: [PATCH RFC v3] btrfs: extract the compressed folio padding into a
+ helper
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+References: <81ac4ae4bab2538df93f045ac1094d3568ff8e9e.1755754005.git.wqu@suse.com>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <fc1e2106-2974-474a-aa5c-89178383f4be@dorminy.me>
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <81ac4ae4bab2538df93f045ac1094d3568ff8e9e.1755754005.git.wqu@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tXeQKDecccIE5UaAqlhyu1QY3ugUwmP+fIZCzl0nT4/P95ag5cu
- 15Jf75pgCqC7dVnPdnS72nCuURldNyojauly7HP8Wbia4T45D5D6Th+NtyEJVimr+6xwZw4
- qTD+/W5lGsuFGyKtepDN2yZ/Yp9ZCQawgAUdcoQZHScTqQgoSU1jR+9/1UT0BKl+VKHew78
- bDlk/u7vvwxBqyplUZRBQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:8yWIwI8YS3Y=;CamuvrRhSuV5U6qOPXLkq/0pIiy
- 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
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A8 2025/9/1 13:24, Sweet Tea Dorminy =E5=86=99=E9=81=93:
->=20
->=20
-> On 8/31/25 8:07 PM, Qu Wenruo wrote:
->> Hi,
->>
->> Recently generic/563 is failing on btrfs and ext4, and it turns out=20
->> the losetup inside _create_loop_device_like_bdev() is not properly=20
->> creating a valid loopback device if a block device file is passed in:
->>
->> E.g:
->>
->> # lsblk=C2=A0 /dev/test/scratch1
->> NAME=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 MAJ:MIN RM S=
-IZE RO TYPE MOUNTPOINTS
->> test-scratch1 253:2=C2=A0=C2=A0=C2=A0 0=C2=A0 10G=C2=A0 0 lvm
->>
->> # losetup -f --show /dev/test/scratch1
->> /dev/loop0
->>
->> # lsblk /dev/loop0
->> NAME=C2=A0 MAJ:MIN RM SIZE RO TYPE MOUNTPOINTS
->> loop0=C2=A0=C2=A0 7:0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0 0B=C2=A0 0 loop
->>
->> Thus all filesystems, not only btrfs is affected.
->> This looks like a regression in loopback device size handling.
->>
->>
->> What should we as the next step? Waiting for loopback fix or start=20
->> using files inside TEST_MNT as a workaround?
->>
-> This looks like it might be the same thing that Lennart references here:
-> https://lore.kernel.org/linux-block/1182267c-=20
-> d291-47bc-8e5f-2e11aa93421b@kernel.dk/
->=20
-> Which should be fixed in -rc4 according to that email.
->=20
-> Hope this helps;
+在 2025/8/21 15:00, Qu Wenruo 写道:
+> Currently after btrfs_compress_folios(), we zero the tail folio at
+> compress_file_range() after the btrfs_compress_folios() call.
+> 
+> However there are several problems with the incoming block size > page
+> size support:
+> 
+> - We may need extra padding folios for the compressed data
+>    Or we will submit a write smaller than the block size.
+> 
+> - The current folio tail zeroing is not covering extra padding folios
+> 
+> Solve this problem by introducing a dedicated helper,
+> pad_compressed_folios(), which will:
+> 
+> - Do extra basic sanity checks
+>    Focusing on the @out_folios and @total_out values.
+> 
+> - Zero the tailing folio
+>    Now we don't need to tail zeroing inside compress_file_range()
+>    anymore.
+> 
+> - Add extra padding zero folios
+>    So that for bs > ps cases, the compressed data will always be bs
+>    aligned.
+> 
+>    This also implies we won't allocate dedicated large folios for
+>    compressed data.
 
-Thanks a lot.  With that fix applied, now the test passes again.
+Unfortunately this is not going to work with bs > ps enabled.
+
+There are two problems:
+
+- btrfs_csum_one_bio()
+   It needs to iterate through each block.
+   For uncompressed writes, it's pretty easy as each block is backed by
+   large folios thus we only need to switch to multi-page bvec code then
+   we can handle each block as usual.
+
+   But if using the current method, the compressed data is always in page
+   size, meaning a block can cross different pages (thus different bvec).
+
+   I have a working prototype to handle it, but it kills all the
+   simpleness using block by block iteration.
+
+- btrfs_check_read_bio()
+   Again it will work flawlessly for uncompressed read. But a completely
+   different story for compressed read.
+
+   It's the same problem, a compressed block can go across several
+   different and physically discontiguous pages.
+   Requiring quite some changes to the whole data checksum verification
+   code.
+
+So I'm afraid we have to apply the same minimal folio order for all 
+folios, no matter if it's compressed or not.
 
 Thanks,
 Qu
 
->=20
-> Sweet Tea
+> 
+> Finally since we're here, update the stale comments about
+> btrfs_compress_folios().
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> RFC v2->RFC v3:
+> - Fix a failure related to inline compressed data (btrfs/246 failure)
+>    The check on whether the resulted compressed data should not happen
+>    until we're sure no inlined extent is going to be created.
+> 
+> RFC v1->RFC v2:
+> - Fix a check causes more strict condition for subpage cases
+>    Instead comparing the resulted compressed folios number, compare the
+>    resulted blocks number instead.
+>    For 64K page sized system with 4K block size, it will result any
+>    compressed data larger than 64K to be rejected.
+>    Even if the compression caused a pretty good result, e.g. 128K ->68K.
+> 
+> - Remove an unused local variable
+> 
+> Reason for RFC:
+> 
+> Although this seems to be a preparation patch for bs > ps support, this
+> one will determine the path we go for compressed folios.
+> 
+> There are 2 methods I can come up with:
+> 
+> - Allocate dedicated large folios following min_order for compressed
+>    folios
+>    This is the more common method, used by filemap and will be the method
+>    for page cache.
+> 
+>    The problem is, we will no longer share the compr_pool across all
+>    btrfs filesystems, and the dedicated per-fs pool will have a much
+>    harder time to fill its pool when memory is fragmented or
+>    under-pressure.
+> 
+>    The benefit is obvious, we will have the insurance that every folio
+>    will contain at least one block for bs > ps cases.
+> 
+> - Allocate page sized folios but add extra padding folios for compressed
+>    folios
+>    The method I take in this patchset.
+> 
+>    The benefit is we can still use the shared compr folios pool, meaning
+>    a better latency filling the pool.
+> 
+>    The problem is we must manually pad the compressed folios.
+>    Thankfully the compressed folios are not filemap ones, we don't need
+>    to bother about the folio flags at all.
+> 
+>    Another problem is, we will have different handling for filemap and
+>    compressed folios.
+>    Filemap folios will have the min_order insurance, but not for
+>    compressed folios.
+>    I believe the inconsistency is still manageable, at least for now.
+> 
+> Thus I leave this one as RFC, any feedback will be appreciated.
+> ---
+>   fs/btrfs/compression.c | 42 +++++++++++++++++++++++++++++++++++++++++-
+>   fs/btrfs/inode.c       |  9 ---------
+>   2 files changed, 41 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 3291d1ff2722..9cd9182684f3 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -1024,6 +1024,43 @@ int btrfs_compress_filemap_get_folio(struct address_space *mapping, u64 start,
+>   	return 0;
+>   }
+>   
+> +/*
+> + * Fill the range between (total_out, round_up(total_out, blocksize)) with zero.
+> + *
+> + * If bs > ps, also allocate extra folios to ensure the compressed folios are aligned
+> + * to block size.
+> + */
+> +static int pad_compressed_folios(struct btrfs_fs_info *fs_info, struct folio **folios,
+> +				 unsigned long orig_len,  unsigned long *out_folios,
+> +				 unsigned long *total_out)
+> +{
+> +	const unsigned long aligned_len = round_up(*total_out, fs_info->sectorsize);
+> +	const unsigned long aligned_nr_folios = aligned_len >> PAGE_SHIFT;
+> +
+> +	ASSERT(aligned_nr_folios <= BTRFS_MAX_COMPRESSED_PAGES);
+> +	ASSERT(*out_folios == DIV_ROUND_UP_POW2(*total_out, PAGE_SIZE),
+> +	       "out_folios=%lu total_out=%lu", *out_folios, *total_out);
+> +
+> +	/* Zero the tailing part of the compressed folio. */
+> +	if (!IS_ALIGNED(*total_out, PAGE_SIZE))
+> +		folio_zero_range(folios[*total_out >> PAGE_SHIFT], offset_in_page(*total_out),
+> +				PAGE_SIZE - offset_in_page(*total_out));
+> +
+> +	/* Padding the compressed folios to blocksize. */
+> +	for (unsigned long cur = *out_folios; cur < aligned_nr_folios; cur++) {
+> +		struct folio *folio;
+> +
+> +		ASSERT(folios[cur] == NULL);
+> +		folio = btrfs_alloc_compr_folio();
+> +		if (!folio)
+> +			return -ENOMEM;
+> +		folios[cur] = folio;
+> +		folio_zero_range(folio, 0, PAGE_SIZE);
+> +		(*out_folios)++;
+> +	}
+> +	return 0;
+> +}
+> +
+>   /*
+>    * Given an address space and start and length, compress the bytes into @pages
+>    * that are allocated on demand.
+> @@ -1033,7 +1070,7 @@ int btrfs_compress_filemap_get_folio(struct address_space *mapping, u64 start,
+>    * - compression algo are 0-3
+>    * - the level are bits 4-7
+>    *
+> - * @out_pages is an in/out parameter, holds maximum number of pages to allocate
+> + * @out_folios is an in/out parameter, holds maximum number of pages to allocate
+>    * and returns number of actually allocated pages
+>    *
+>    * @total_in is used to return the number of bytes actually read.  It
+> @@ -1060,6 +1097,9 @@ int btrfs_compress_folios(unsigned int type, int level, struct btrfs_inode *inod
+>   	/* The total read-in bytes should be no larger than the input. */
+>   	ASSERT(*total_in <= orig_len);
+>   	put_workspace(fs_info, type, workspace);
+> +	if (ret < 0)
+> +		return ret;
+> +	ret = pad_compressed_folios(fs_info, folios, orig_len, out_folios, total_out);
+>   	return ret;
+>   }
+>   
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 0161e1aee96f..b04f48af721a 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -864,7 +864,6 @@ static void compress_file_range(struct btrfs_work *work)
+>   	unsigned long nr_folios;
+>   	unsigned long total_compressed = 0;
+>   	unsigned long total_in = 0;
+> -	unsigned int poff;
+>   	int i;
+>   	int compress_type = fs_info->compress_type;
+>   	int compress_level = fs_info->compress_level;
+> @@ -964,14 +963,6 @@ static void compress_file_range(struct btrfs_work *work)
+>   	if (ret)
+>   		goto mark_incompressible;
+>   
+> -	/*
+> -	 * Zero the tail end of the last page, as we might be sending it down
+> -	 * to disk.
+> -	 */
+> -	poff = offset_in_page(total_compressed);
+> -	if (poff)
+> -		folio_zero_range(folios[nr_folios - 1], poff, PAGE_SIZE - poff);
+> -
+>   	/*
+>   	 * Try to create an inline extent.
+>   	 *
 
 
