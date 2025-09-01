@@ -1,134 +1,159 @@
-Return-Path: <linux-btrfs+bounces-16556-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16557-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8123FB3DB8B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 09:55:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BBD7B3DC58
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 10:29:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3205E17BE8F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 07:55:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F26C37A1673
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 08:27:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 091D22ED84C;
-	Mon,  1 Sep 2025 07:55:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C53F02F39A3;
+	Mon,  1 Sep 2025 08:28:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eOem4fm6"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fpb1GfAn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024C02080C0
-	for <linux-btrfs@vger.kernel.org>; Mon,  1 Sep 2025 07:54:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBCAB259C9C
+	for <linux-btrfs@vger.kernel.org>; Mon,  1 Sep 2025 08:28:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756713299; cv=none; b=S6VAkIf1yXo5C33dkBWZYJ07vYOi6SHlhHYCNCugMTQUIz206fKOncfUoL5PAEYvQ1Q2tnuRrOC9uw0rbDQepZKCFF2N4ZdBLX0IG7jbhdLsxNJEmKqCvf/FcdPHqf1j/AfpoeyN+sZAwHMIKog/6JnyQ9ApQLt6yMZdpMxST+w=
+	t=1756715338; cv=none; b=orozHzwinanlJJR5QAsgoj7uxE1CPlkAGBXmbqjq2Z/oM3U14zOYIedCuyPhTK96DaHxxF859dHRAyD9curEiCOAOj9i1bWHlaC+w9s/EjBVjixZvzKMCWIr82Cuou+QH+e2kxwg8oF4PhSeCx4JMxO5GqlMH8d4egaQOEaI39Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756713299; c=relaxed/simple;
-	bh=QQ2m52eMA2T/rb6eWLQ0Jv5yZGRboSqgJ7dS6xaqD7w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:MIME-Version:
-	 Content-Type; b=tvmO1WHREf5Cxq4+8wsqJU83W8n/IO8Qm8Lf1+Watc3voeQbLWPbjJkeOoFyMUYoW5Tnv2d/it3MFc/vB/QY41DZLUxdvsgItzUYB36nCqzqLuy5j/7wr7zK2AydyiWc3gDiqyuhdvYtkTZtZaLJoGZeNF8AFvsKB70G/YUF8gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eOem4fm6; arc=none smtp.client-ip=209.85.210.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-76e2e8d14a5so174815b3a.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 01 Sep 2025 00:54:57 -0700 (PDT)
+	s=arc-20240116; t=1756715338; c=relaxed/simple;
+	bh=r7jUTa/qP2c35jWmfPD/5JaT3ao8SZPp8Z19wK2Gwxg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bG2FykKlqL6ljx7tglHGQbzjNvhT+IZUHWysIUvLWWjBrJPGaib3V6WEITNWMdHkaO0RKkZ5D/3Q7GQyAIh0iBZ7D77VE4OgBCT2oQi/OBtLpp7nE9JLOQBo9hq/N66mGj0Xe9lZZfQXUCoYfLZaGDuCoZRHhYvOm/o37xVboW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fpb1GfAn; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3d1bf79d6afso1247993f8f.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 01 Sep 2025 01:28:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756713297; x=1757318097; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:in-reply-to:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gc1yeYerXnpStiB629ef++lGWKxb0D28veXkiYo3Ugw=;
-        b=eOem4fm6cSAASWuPssBDCPJuKnJWegCrRHKHu5a7OD3+WhR2Ly9ML98OiLzpxjGcVr
-         4m3kZ4KDj4+dOvHzfcS9KBZDZuZc2nLvxPiSUZqHR81i5IXasaCoCqE+C+cjrBs8ISIp
-         zcwZpbBZn0i21iCTWrKB6YMWumYoyATKkKudBYIwuVyIHdD2QlxsAR2GIeCZp0p/j1c4
-         A6wIxZQdvHnjnPZMNQeyi+ZyGsDOM3e7ENVh/dpxNxRFxoscABadusrHTa/LywD3jhhT
-         jjGYqAa3A9zDDWhY4I8RO/UQBy5fuZnxEBZ9Q6f7LVqjnm0fxiUi4z0pKvuypPkL1w4S
-         QS9g==
+        d=suse.com; s=google; t=1756715334; x=1757320134; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=cCmsMFt6Dzmp2yYk1YbAPQ6XtbvsG71RTflB9X+IyG8=;
+        b=fpb1GfAnKvejd+nqLaOWuh06HmYE93hvw1acpyIXINxXunJYro249ufEDPtJql7JyR
+         MOyf4kO8VG+hJiDyRHiJ3PHFxSAvx785pDvcIY3iLU6HYBSopVUIWjp6og4bHMDz1e77
+         ebpGxQSoCMbt8OjRj6BkKb3hMMziHynnvtIaK1EGWX79PcH/N9vUAlN8V9ff1WHEqNDG
+         V+GJ4X50XLIdZ+cJDqrk6MEn8jpBdQzuIzFkFgoQ9S1KDgd+Z8l+mx62SyenRY7kKQXk
+         WelF7zuIMCswfhEaJKOPGL3s1VP6ZxzLmLgzpckvJ9seH9TvjN3yWsDJBhNYqOZFR9tp
+         Zc1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756713297; x=1757318097;
-        h=content-transfer-encoding:mime-version:in-reply-to:message-id:date
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1756715334; x=1757320134;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Gc1yeYerXnpStiB629ef++lGWKxb0D28veXkiYo3Ugw=;
-        b=U4gSaOk7yAThFy0WvttKEOUs1BReNjY8Nf3VWgMbF4X6ZEytbZLL/LIAZNG4kBx/H5
-         IYm66T3HbmVHUpzG5O2K1CnwMIoepeGSR67CRTwp8YaHoZvi4XevRtnqr9Yr0dxgo+TF
-         P4rXVYZv8Z7grlE5Gm11zy7xGCW9WTc712YkuEpqz2y0TzTTrtdf99BpAY7REAtwj0Y7
-         WWoAdXr5w4QluIZpz6rAOWVWVEDWhM6rYcTMeKb6Ey9m/BZ8DbFe/vQepll1yP88VTBe
-         nw7kCTf478Doj3YKnmCEDjYew1pF2ygrnm5TNGVNY2AYxfxwJ0iFaEPo1zuduidgmUuh
-         dFgg==
-X-Forwarded-Encrypted: i=1; AJvYcCX8/7m7IX6xZr5na+zV1sqpdnVOqPohllNB0uwcOyRhNBJJTVUj8xnHBNT6ke6o/P7xQgNQLTMEYDVpBg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUSxE1KFLc2ZMYucTeN9NiJGj6tF5oseYL/4qreebbiGYv11ay
-	ekxSQhCD7u2Fbsx042QI+iMeQOn3fN3Hu9U1eMsmf3BP+4uOVNqZjZJr
-X-Gm-Gg: ASbGncvIp4Sx2yJ4useupQWNL6H6SMT2W7mY3P5v1+e9LreRWn8DrFo+j8PhjRokrzh
-	Xecig6t5F6bwJxi4411YCdlFLbr/yuvkzk4mHvU5FN/JGbywTi4faL44P7nj7wtIOT0fS5OuWAy
-	fQAbEh++2muYlAE4s2ejSo4z8TjIJoLQnlYvAZEHZmTH4+vj6QhTiBKgqJZqaQlwhcl3hY1zbjo
-	lRM2bQnWctyn1ZmRxSa7Q1REsu6/3DtjgAw7EbGkKO4D/bx8iRWRxUEpPRDT+MMcu5yWJdhUz5e
-	vqigD26l+6Q9P9NCuTnsk5QXxMl4taMHebj8IQWAroRxrhhCG+uUDBA530yO6mQjYsQ/gr2gELr
-	4crdYvADBpf1CXz4OQ4lK5zur64UDKgxJxhTmauVfzENm
-X-Google-Smtp-Source: AGHT+IF3axmA9B0S3fZbfEMHEjDfyMiPTrkQSz+DzEWHUHSXD+Dm4NU4XmNApiy/S15853H0CXUz7w==
-X-Received: by 2002:a05:6a00:844:b0:772:2a74:f532 with SMTP id d2e1a72fcca58-7723295c62amr5348983b3a.5.1756713297094;
-        Mon, 01 Sep 2025 00:54:57 -0700 (PDT)
-Received: from saltykitkat.localnet ([154.31.112.144])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7722a4e1ca7sm9766886b3a.71.2025.09.01.00.54.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Sep 2025 00:54:56 -0700 (PDT)
-From: Sun YangKai <sunk67188@gmail.com>
-To: quwenruo.btrfs@gmx.com
-Cc: sunk67188@gmail.com, dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3] btrfs: more trivial BTRFS_PATH_AUTO_FREE conversions
-Date: Mon, 01 Sep 2025 15:54:50 +0800
-Message-ID: <2386271.ElGaqSPkdT@saltykitkat>
-In-Reply-To: <5923969.DvuYhMxLoT@saltykitkat>
+        bh=cCmsMFt6Dzmp2yYk1YbAPQ6XtbvsG71RTflB9X+IyG8=;
+        b=XmXflD6iTrnSMDlpPd75vtFhezry30J953vrdmnj/pr4N9k20tAt/m3UKhjIEn1lrA
+         szwZn/SV6r16UGZ7OYEzAJrlL/zDlMXAOUBBdIf1SOuV2GjiYH5fCdPW51Sc6FwSOzo8
+         vvXLRGamTlHtwR74czYtuGIi16J0aTSY7U2QEu1P0jOH7PyCf4+mIRKKayE5G9PnR2V0
+         N/Na4KQsQGaiw76fDOah3LtHy4ZRq1B6SiI87EKw+A646zwc1CVCa5TW9182Hrac9k98
+         5P6alASrjDMreYz668/+pOxlr/WAQLxGeUJ/Pm/tT2ysz98BJNNl1cENIIyT/FSrssK/
+         MvxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVqvYIWRu4XKbICPZuauhQuv1cJIpExyig1BjjgRQPYqEnFuxm0PytR1pBU9lV243RAlyhWMnNcQ8r6sg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYdx7kGVgHnsDlng2UkbRusL+XLrBUcTML6K1FzjZJK4hLOSRD
+	I2FHQuJYZHSeQ09cSmLHhsojr3PWe9NChTcxqag/IEEiOzSV5Wih+RjkXebJS3a8+Hf0Caa9MDw
+	LC2ZT
+X-Gm-Gg: ASbGncstQhC6MeeTQe49COYoEFdI5F38FjJurOs7UcTnuFWKdh10ucyDi2aFM5I79mj
+	xQ9jd7N8jSVpw0eoTW4sCjLVdurkhQ63XX+L6FI7EoWiQC/SYakqRXb7umlqUt5nTo8FZUHiep8
+	8GkUd5Xlq4mrOXtOsY1jtl2EIC6APpT5Mouu+5IgH4Iy0jlw7xpIIBkW6c/VAOjuDELDKeo4sdw
+	JuzZaZVeN8qWWYsTNEXdFvLlOXUCer9O2PpeVSYSvOB79/kEifgTBaksQmy2L5GygCNBeGconyv
+	zaL6B/sKBDJAEuMwEVB4Lqu48sC814m0MQAGwYNKdhJ42Rni8s0JPSDRDGbZ3M53GYN1/HmRpZ5
+	DcRK6Gaf5nYdvCiKKiacQipT2x90lL/7AY0YkHFJr2m0zTH3NvRnCvrBWKgu70w==
+X-Google-Smtp-Source: AGHT+IEA+XgfshFBiNgLqWsPodLRieqxfienv4joPrIJ8xuWT5eDmuZ2G8zywz14mGEUA9N0IxqwAw==
+X-Received: by 2002:a05:6000:23c4:b0:3cd:14be:6937 with SMTP id ffacd0b85a97d-3d1dfa19a58mr3686811f8f.36.1756715334081;
+        Mon, 01 Sep 2025 01:28:54 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-327daeec547sm10510811a91.28.2025.09.01.01.28.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Sep 2025 01:28:53 -0700 (PDT)
+Message-ID: <7e86289e-aeef-4ecc-999d-ac79778863b4@suse.com>
+Date: Mon, 1 Sep 2025 17:58:49 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs-progs: mkfs: recow strip tree as well
+To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+Cc: Johannes.Thumshirn@wdc.com
+References: <20250901073826.2776351-1-naohiro.aota@wdc.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20250901073826.2776351-1-naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-> My bad.
+
+
+在 2025/9/1 17:08, Naohiro Aota 写道:
+> We need to recow the stripe tree as well. If not, we leave the tree node in
+> the temporally SINGLE profile block group, and we cannot remove that SINGLE
+> metadata block group.
 > 
-> I mistakenly removed some cleanup code without converting it to use
-> BTRFS_PATH_AUTO_FREE. Thanks a lot for catching this.
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-Given the number of code lines, it's difficult to identify exactly what was 
-missing, so I wrote a Python script to help verify the patch. Hopefully, we 
-haven't missed anything this time.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Here are the missing parts:
+Can we add a test case inside btrfs-progs? IIRC regular mkfs with DUP 
+metadata and rst should be enough to trigger it.
 
-diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
-index c7f7c55b7c28..d1f5f6c42ef3 100644
---- a/fs/btrfs/root-tree.c
-+++ b/fs/btrfs/root-tree.c
-@@ -130,7 +130,7 @@ int btrfs_update_root(struct btrfs_trans_handle *trans, 
-struct btrfs_root
-                      *item)
- {
-        struct btrfs_fs_info *fs_info = root->fs_info;
--       struct btrfs_path *path;
-+       BTRFS_PATH_AUTO_FREE(path);
-        struct extent_buffer *l;
-        int ret;
-        int slot;
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index b32e2f2e5436..06d45890df85 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -1717,7 +1717,7 @@ static noinline int fixup_inode_link_count(struct 
-btrfs_trans_handle *trans,
-                                           struct btrfs_inode *inode)
- {
-        struct btrfs_root *root = inode->root;
--       struct btrfs_path *path;
-+       BTRFS_PATH_AUTO_FREE(path);
-        int ret;
-        u64 nlink = 0;
-        const u64 ino = btrfs_ino(inode);
+Thanks,
+Qu
 
-
-
+> ---
+>   mkfs/main.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index f0d2e42421e6..34a4ee4fd6db 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -337,6 +337,11 @@ static int recow_roots(struct btrfs_trans_handle *trans,
+>   		if (ret)
+>   			return ret;
+>           }
+> +	if (btrfs_fs_incompat(info, RAID_STRIPE_TREE)) {
+> +		ret = __recow_root(trans, info->stripe_root);
+> +		if (ret)
+> +			return ret;
+> +	}
+>   	ret = recow_global_roots(trans);
+>   	if (ret)
+>   		return ret;
 
 
