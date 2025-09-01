@@ -1,133 +1,90 @@
-Return-Path: <linux-btrfs+bounces-16563-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16564-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7B40B3E79E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 16:47:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC06BB3E81D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 17:02:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00BEA3AF5D4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 14:46:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69EAD1A8069E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Sep 2025 15:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6A93451D5;
-	Mon,  1 Sep 2025 14:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52787341651;
+	Mon,  1 Sep 2025 15:02:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a9x/hsH4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uooPNlsJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B713451C8
-	for <linux-btrfs@vger.kernel.org>; Mon,  1 Sep 2025 14:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA6830E839
+	for <linux-btrfs@vger.kernel.org>; Mon,  1 Sep 2025 15:02:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756737899; cv=none; b=LIr412RBKqOcm1BNWIMvIWj6y9ZcWzorSspr/WQcslpEoZ5j5fifCvPOT0SF83LZ3Vbcv/U2F6aWlZW6xOfC00G1707UECrY/N4U/hFVkJmLz7MJXy7aaicei5IoZPEe6BURlk+5twm4ucUntpOwWlelyJC9qbU6wTHIw/Og9uM=
+	t=1756738943; cv=none; b=DdNC+UpPHSmRH00lUpxTR6bR4a8zpNAhPFEQu66Mmqkha5ousmgbkBYsv5QEp/g+0GXGsdVmVuzP9WdHS8fbjyN6pcN+DaGvbbQsWC1oIhQdeoOH7fOuNvgO6ETt/gyDaiXOBa5xZvgJtt8bYgcRHFYPruflzZiO4ivwMCgCJbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756737899; c=relaxed/simple;
-	bh=i0HCcLdvLrLyZgDYkj/sk4Ygbcf47ahXIa+UucXEUxs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AIz6jDPPMod2uNQ1ALAc1BlRw1cw8wM7g1Lc7gCWqk4YWSOWnfSa610M4W2NZLuKBTiz4eiTgLocHUBsL2sOdNbO/d+GSg2gKLdef7b483FzQ6xy+UnCr8adFueig1sdaYLSICZGnDXife2UFEyj5R71Zt+t0eaJ3fvU/nmfLHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a9x/hsH4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66BCFC4CEF0
-	for <linux-btrfs@vger.kernel.org>; Mon,  1 Sep 2025 14:44:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756737898;
-	bh=i0HCcLdvLrLyZgDYkj/sk4Ygbcf47ahXIa+UucXEUxs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=a9x/hsH44GjaoDqgTo4WbHtM90FYaqKrwDnRrgZ6GBzmqUffGPvU+mNeGIv7lOoNS
-	 zJmz23F2JcG/Z8AMI5+Y2WdvpnC4KiUztk+3EPcBqZyz95hUIYTiOJs+PepiHlC5dM
-	 PqI//0THfOMMCDsVQTDsosaLRUoPS/tMTB0FME3TB954gqJGGqNdXZefCDZzMO9+Qm
-	 sUs+f0q5XD9yvnjxkUXbwmdwW2LklKhOc1BWtwNw4YBdfxXQicL2N0TC4Xt49UDP4x
-	 u1ZJy5GxMy/cxQ+I+yDhsqk6jZVeptSx7GmF+bJuhboS/XICUSN0p6C7p3/XU1rFhO
-	 oz9jX0C3iDCvA==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b04163fe08dso254471966b.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 01 Sep 2025 07:44:58 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVvZXMEK3TA9Y8/p+rOv25Bh7fSJdOc3WE6IkNSoPADwi4HjNJjxn0O5181SGDE1eBa9rr3MWQpdjy+Fg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyFborACOHoIcEc7b9nTIwNmI5hRJXVJyWTetY0gKODPZZtmg7M
-	TELNGiQiBcpzeTu+U44yDn83pHqj+nCfPHFmStuyh/FhGTwCNKOE4qMcbjeLypcaFUpyL+ioBab
-	examKFZOF8efILLFuEFZHhI0cgob8LS4=
-X-Google-Smtp-Source: AGHT+IFqqIQROTiQdNrH6eBi/0E6bhLoBhWvgb4dirMQNEgXMfecq++zQq8xWJ3xjKZ6+nzGgAeeUD4iHudJ3RFsfH0=
-X-Received: by 2002:a17:907:5c1:b0:afe:d2e1:9018 with SMTP id
- a640c23a62f3a-b01d8c86721mr834031866b.25.1756737896974; Mon, 01 Sep 2025
- 07:44:56 -0700 (PDT)
+	s=arc-20240116; t=1756738943; c=relaxed/simple;
+	bh=U4OXJtvN8vRCBlMT6T7EqGLYf4Ogc0t2cuxAXm+kGdY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BYYciUc8AICjBMs5Mq/DlfQuG0Rw+cO9VuZaV2SJiorrN9JzVCdeYpHSwT3O7Qo3coedb3TCfNdjY8FKJv6mv0imDev0CJ49M72AKbBB1dHGB82t/x8fSWxm6CaXbJjhcdsX54FnuyHQ2ne5xJ4Wz/+ontJoOvvJ/1wTM3f7Pt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uooPNlsJ; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756738938;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=nivWg6+wmlPawo9eOsWBpM889Z0+ZVfC6Vlz9wpOjtQ=;
+	b=uooPNlsJRrVzcR2fbvTqXWWslvEJ4OLz9v29ZDCbtJw2pvhviQUi9/ENd9Sv8agGAHBhLq
+	P6rOnrB7tSeg5rewGwvtGbQyHB0rafMTUqKhVAwGMKp/QFLKzLWrzPszDJXIjodDWr3cFC
+	I97e2b2gab25NLgTZSqC51+NU+X2pzg=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: scrub: replace max_t()/min_t() with clamp_t() in scrub_throttle_dev_io()
+Date: Mon,  1 Sep 2025 17:01:44 +0200
+Message-ID: <20250901150144.227149-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <5923969.DvuYhMxLoT@saltykitkat> <2386271.ElGaqSPkdT@saltykitkat>
-In-Reply-To: <2386271.ElGaqSPkdT@saltykitkat>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 1 Sep 2025 15:44:20 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4-2xpzaWGNsAcrY9xY=DwH96X05ENTaUMDwZt4YcObiQ@mail.gmail.com>
-X-Gm-Features: Ac12FXylVoa1qBOgW8HWbgWkTSKt5gkGXoatR09pq6l2Y5gO6o44sHWqtyk3h_Y
-Message-ID: <CAL3q7H4-2xpzaWGNsAcrY9xY=DwH96X05ENTaUMDwZt4YcObiQ@mail.gmail.com>
-Subject: Re: [PATCH v3] btrfs: more trivial BTRFS_PATH_AUTO_FREE conversions
-To: Sun YangKai <sunk67188@gmail.com>
-Cc: quwenruo.btrfs@gmx.com, dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Sep 1, 2025 at 8:55=E2=80=AFAM Sun YangKai <sunk67188@gmail.com> wr=
-ote:
->
-> > My bad.
-> >
-> > I mistakenly removed some cleanup code without converting it to use
-> > BTRFS_PATH_AUTO_FREE. Thanks a lot for catching this.
->
-> Given the number of code lines, it's difficult to identify exactly what w=
-as
-> missing, so I wrote a Python script to help verify the patch. Hopefully, =
-we
-> haven't missed anything this time.
+Replace max_t() followed by min_t() with a single clamp_t(). Manually
+casting 'bwlimit / (16 * 1024 * 1024)' to u32 is also redundant when
+using max_t(u32,,) or clamp_t(u32,,) and can be removed.
 
-Suggestion: test your patches with fstests - it would have avoided
-this problem as well as the previous one with the send change reported
-by the test robot [1].
+No functional changes intended.
 
-Thanks.
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+ fs/btrfs/scrub.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-[1] https://lore.kernel.org/linux-btrfs/202508291655.c99c34a4-lkp@intel.com=
-/
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 6776e6ab8d10..ebfde24c0e42 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -1369,8 +1369,7 @@ static void scrub_throttle_dev_io(struct scrub_ctx *sctx, struct btrfs_device *d
+ 	 * Slice is divided into intervals when the IO is submitted, adjust by
+ 	 * bwlimit and maximum of 64 intervals.
+ 	 */
+-	div = max_t(u32, 1, (u32)(bwlimit / (16 * 1024 * 1024)));
+-	div = min_t(u32, 64, div);
++	div = clamp_t(u32, bwlimit / (16 * 1024 * 1024), 1, 64);
+ 
+ 	/* Start new epoch, set deadline */
+ 	now = ktime_get();
+-- 
+2.51.0
 
->
-> Here are the missing parts:
->
-> diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
-> index c7f7c55b7c28..d1f5f6c42ef3 100644
-> --- a/fs/btrfs/root-tree.c
-> +++ b/fs/btrfs/root-tree.c
-> @@ -130,7 +130,7 @@ int btrfs_update_root(struct btrfs_trans_handle *tran=
-s,
-> struct btrfs_root
->                       *item)
->  {
->         struct btrfs_fs_info *fs_info =3D root->fs_info;
-> -       struct btrfs_path *path;
-> +       BTRFS_PATH_AUTO_FREE(path);
->         struct extent_buffer *l;
->         int ret;
->         int slot;
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index b32e2f2e5436..06d45890df85 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -1717,7 +1717,7 @@ static noinline int fixup_inode_link_count(struct
-> btrfs_trans_handle *trans,
->                                            struct btrfs_inode *inode)
->  {
->         struct btrfs_root *root =3D inode->root;
-> -       struct btrfs_path *path;
-> +       BTRFS_PATH_AUTO_FREE(path);
->         int ret;
->         u64 nlink =3D 0;
->         const u64 ino =3D btrfs_ino(inode);
->
->
->
->
->
 
