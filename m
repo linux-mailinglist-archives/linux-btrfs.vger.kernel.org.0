@@ -1,82 +1,82 @@
-Return-Path: <linux-btrfs+bounces-16582-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16583-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E047B3F9E8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 11:12:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6058B3F9FE
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 11:16:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D7741A823D6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 09:12:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B22A3BC33B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 09:16:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1612EAD0B;
-	Tue,  2 Sep 2025 09:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A88226CF1;
+	Tue,  2 Sep 2025 09:16:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cRWadraE"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="g1axaa0a"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76FF92E9EC2
-	for <linux-btrfs@vger.kernel.org>; Tue,  2 Sep 2025 09:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D34C81FC7C5
+	for <linux-btrfs@vger.kernel.org>; Tue,  2 Sep 2025 09:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756804293; cv=none; b=QtcGIAupo9focAxU/1Hm0N4ntZxXcMvGbvV6yeo7EBx5fxG6NYzMP+02nKSs1QHXLWNFmNPymoIo4Ytr9zxBEziDpvOJu5cmI1mqcEZmtXi+88hAxRqambSCHWkvISvvNnH34IBFHD1saDySuItrKy8HlDfeYGhbP3PXATzutyE=
+	t=1756804562; cv=none; b=tA9aUzeTZgt6LDQcVEul/BnZxwrV0Bv3i2Z/9DYZb0vClua2F4tiTysxGvyi3RyUh9ISrQw8oE2rgW4hP5wuxkQqlt6jxyhQDrJEyaX0BVygxs81wAygQ0RsSAT+zusHmuxdi/Vs4fMAC8JJjnqC6rKPWQ7ykPG7TbwVrMMl55k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756804293; c=relaxed/simple;
-	bh=dJMPQ/btDwhLkRjTOS2+EK+QU2eHSCuZvXsBDjhySxk=;
+	s=arc-20240116; t=1756804562; c=relaxed/simple;
+	bh=Hh4sPL8pK+hEGfK/jSzYqQiqIql0WN6Tqa+Lwn6S4Cc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Jm46Uq4pcmV6AOXj2zZQHhoW9cVfki8hFzaaSA63eObEUQpRMAipjWNIENG97NiHZP+GQkesgnHQKSfMH6elLdx2tf+3nSBNTnw45GFDSLcuYIzKlVJ2/NueLi3nPCTL4dFrOUauKDg9KOv1Z3+df1F7dZCEQ1LnHkxAN+uEwWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cRWadraE; arc=none smtp.client-ip=209.85.128.52
+	 In-Reply-To:Content-Type; b=JpBZdrK1IQCZrIe4Se1D8nE5Ym7VbKTrnE58JQiN2fWEh/OHMOoNamZkjrCGFObNQ70LedJL77kz9zPsO82Fi79ERdOshe8GpGWlMYRMXl9edgBXcGZI9SnnwYwz4lyn6Z3KPqtrUwaqeQVNzQwiEJg6eIevk6xzf2pZ1ibQ6t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=g1axaa0a; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-45b8e28b3c5so10202995e9.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 Sep 2025 02:11:31 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3d2564399a5so946450f8f.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 02 Sep 2025 02:16:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1756804290; x=1757409090; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1756804559; x=1757409359; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=iTITLUVwW4pLkIR4XfdabjVC7S9fKoKTHa/gB4o2Y/0=;
-        b=cRWadraEfiq88XaFpIZvMsWnmJLsQUzbEk4dnAoApvtT6DRzSaETvDc0u9neyNgHSF
-         jzKC+YuXwyJ1VOGDT+yTw9OC84G6LZV6Pfy9upNp8QawobW9i9Pwa2o1LBUaN53/jg1A
-         RZvpu0yoRWGur99UiJBP7digb/F444dUXmT9ZtEpc6qiOQFwq7mDjhDxm1tsjJKbwxHY
-         4jULhBDmB8szkLeFrl5nm9geML0PoRtpMZVhSnLFzGn3hW/tJ2T/pdyUBXPHBgoMAb6h
-         6ThCCx1mn5o9qd5SVjU5aosdqPBaA2nDyXEShmCn0tEn7wi5X5eClxcXeHrW4OZmcPEG
-         kJGQ==
+        bh=Az4CqKPm3/N2yeOurfxgmPPW3TRV7OPlwm34iC5nAcw=;
+        b=g1axaa0aWJGFI2w7XWZsTReA7IYhmHiCZ0WOomsMci27Vx84tL5Z1C2nJM10TbTkRI
+         zUt5GqUPAHF/yHr/L+Ja8242jklLimt48tFGn/jUGO4wm0j0smESW9l8xhd1syurEiTg
+         KzrblQ36YoIdzzsaHDr1hhZbZl6pOcvSapf53y/LmX8saAkHyHdd4uqmocKEorzUxTP9
+         20fkXvaaEbYR1X/5SBxhtVI42HACn0Ze5jHztJjymaSHBpfkLANjY4hqCf2ZaYDnN6F2
+         55o9rgKa3U30u9+Oeziz8BF7p6gWrW+pG8hdbAwWmDKTPbrQRcBBw6YrGXy6sC2fV4xK
+         FMng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756804290; x=1757409090;
+        d=1e100.net; s=20230601; t=1756804559; x=1757409359;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iTITLUVwW4pLkIR4XfdabjVC7S9fKoKTHa/gB4o2Y/0=;
-        b=LO1ltukR0BKYNlpmVkr1Kci8aZdnLhcWoBWTlMGRWci4oKNKIxEAV3pJ9oQpAtXzbC
-         tWcCGMfVpY1UdAoyZBWgXJxydPoajvHZKThjWd1HweILy00pQPp9UOSt9lKxegvY3qk5
-         li3E1NUDLdZGRFD/+7+cW+ngBn0Ba5AtgMOTPwLPgUKNQPleDBdxpczI7OQTAOKomyQ9
-         77aCSAWnK2OUi93HL3MknV63avnmLi6eQRMv3YOvZRevBLckEpGAQOeV7vT76X4qGhis
-         Cy2XbtsQSANeiPlaE5kqWhSQ/EUUqEsu0BxNhgfCo8wuyuFsDAIosECRpiqyCa6D7HeT
-         FVug==
-X-Forwarded-Encrypted: i=1; AJvYcCVL9iuLQIxrQJ2Qa3Vkf/gimTC4BEyxunS1gV8zjuv/5MPT3dKnpgfcgilPXAvdGbWpjuMEYlvXC5HMUg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhJDW8SyLszPANh2al2FtcEMuiaT17IQ0l94WLlZHOpPOgPCa2
-	/YEuCTjNzHJzBZICtAmlorMDE3EXawf1WSPnBSqvdYtTECsjGWIaMWa5nOi+ro76Wk5p63UO3bY
-	j7UEJ
-X-Gm-Gg: ASbGncsXtm3XvcNLFrV7Hz+9dnCod3qDALTjE7HcNKeB6/w3KonbINDwWopN/M64DEN
-	D96cMA7e1f/DdXqgKjInh2Omckpf0KB1gToO+TB0+9fG6V3IpqXKaZ/vRNVa0JgSRd1UEIjnFVP
-	8HskEXviNdCaxRJBB5oFkwmLJPsVgGD7fR9D+g5yQiM7WCBQleQ8vilSuDTRbGvrqsEa/44AvzJ
-	4HPoUrD7Pqr4T8FXOlmhZa5eqo14eKzi08PRf0ohJG81Ne6kYmj0OpxK3DG64UHkLtIxny7iqo4
-	EvAreBRGwSLjgIb7pwbRlPDaOEa8s4Xw5DuNIrjy1Bg0MLrGrODx4RmR1nSLul1vaieO3TOWllR
-	LJ0+ueig9X21kDoO8ac5zVYO3oXp0mmzE850G5sJcFImNiSu5okN5MBC4jQWXwg==
-X-Google-Smtp-Source: AGHT+IHcYnLA+pv6hvDKa1Nh+PKMk+Ttw51ndm9oof6GqEHb65u+kibcdq3GYLY45+rqK48D6FL9Cg==
-X-Received: by 2002:a05:6000:2407:b0:3d8:3560:59f4 with SMTP id ffacd0b85a97d-3d835605e2dmr2886725f8f.15.1756804289565;
-        Tue, 02 Sep 2025 02:11:29 -0700 (PDT)
+        bh=Az4CqKPm3/N2yeOurfxgmPPW3TRV7OPlwm34iC5nAcw=;
+        b=SwDGIs8mm6Roojcy8sJDjFRXUF/l8Zw8EcBb3YkRNI/eqw6veK3l3/Bw6yIP/Twtup
+         FcBhUhHrV0VJec4fMSqMuduRopMBXQhfVt4R5ou900oLZUioNWcbB2apyd8s3LUO3am8
+         FrzIoYXpR+rG59MQUTIlqCFJ7MqzrTMsKwrtv6ZiYHTT79A6sr7o8lZ18dh85AgvdfQP
+         XtUBKx47iBQzAnu3QNDq1huJj8dafTI5zfhtHrEdWTRsjBy1Uq9toab7HNIcXJj4xELk
+         IY7hHoi3MDyi6g6MTvZA98J7c8OMVb2uwW64diB0ZuSeYYfN5/oTzNW8XadsVFhbnk87
+         UpWw==
+X-Forwarded-Encrypted: i=1; AJvYcCW5ZrM6wCMdVIMNVB65ar1UaGMtQ095anJZge/xEB/9yuR7MBwYQndelO6tyLMRnjzZlknnMZVzODytAQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIEPc+EC8c5SGgxtw2oSgz4rbEY4SInEVLbC9vzyc28gvSWKw+
+	97DqWauhXNj+Gye/QU/7V+0vPTvvWtNEI4890bCBdhgHtXhYia3kyuFtdvMcA7Wcy4Z87ybnz9z
+	BgCks
+X-Gm-Gg: ASbGncvOn7iaTAR1wyHptAUp1cATRQkWpfYaf5eu+obOHvMDI1d8VnC0VUAdLSlU1KB
+	2TDKfiTypToW9c6tMBj/Rhz9zowpF06570abZYjaAs5Qfaa7krkVBxQAql2rBVepMx7sQmb3xBI
+	FTYGX5cdNn1vyJ28iR7GbnYNjq/S7viFDqUrVSntxmhoFKuQT9eTcTT/0YAeYG9t0JsPGlancZ7
+	SF2lAn5T57f8v9dACb+FZCHur8Z/GxVcRTeRK88wzJqYMZYFHSt5fwqTZdXRU4R1iVpqUWc34qe
+	PAkQybFWYEG3yzrEbvn3RwGjZ/NzB61hdvSnF8Uzwm3xedVzof9ZXNDYKKOrv5Qv6u9GJuszfmR
+	WYcbSblu7RGMIEG0oZafDv802J0LhqUurHZBrDJCYXdEHOjsKu1VrOmLVwTANz4pv3s8Sb97h
+X-Google-Smtp-Source: AGHT+IHi6yzkJXs04l2eXD5LxoR/Nj0s81gd/JcvL+olLtFG0JRinwD/cOvCI92FmBvmZbzClnNrTA==
+X-Received: by 2002:a05:6000:2c07:b0:3da:bc9a:fa88 with SMTP id ffacd0b85a97d-3dabc9aff8bmr857021f8f.15.1756804559013;
+        Tue, 02 Sep 2025 02:15:59 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2490f755ebdsm122336465ad.26.2025.09.02.02.11.27
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77241f08a73sm9080982b3a.29.2025.09.02.02.15.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Sep 2025 02:11:29 -0700 (PDT)
-Message-ID: <ace116f9-3395-4d40-a8a0-d22ad6756191@suse.com>
-Date: Tue, 2 Sep 2025 18:41:25 +0930
+        Tue, 02 Sep 2025 02:15:58 -0700 (PDT)
+Message-ID: <99046aa7-0737-4131-8790-2112d33a384f@suse.com>
+Date: Tue, 2 Sep 2025 18:45:55 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,11 +84,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] btrfs-progs: tests: check nullb index for the error
- case
+Subject: Re: [PATCH 2/3] btrfs-progs: tests: add {,cond_}wait_for_nullbdevs
 To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
 References: <20250902042920.4039355-1-naohiro.aota@wdc.com>
- <20250902042920.4039355-2-naohiro.aota@wdc.com>
+ <20250902042920.4039355-3-naohiro.aota@wdc.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -115,48 +114,54 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250902042920.4039355-2-naohiro.aota@wdc.com>
+In-Reply-To: <20250902042920.4039355-3-naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
 在 2025/9/2 13:59, Naohiro Aota 写道:
-> "_find_free_index" can return "ERROR: ...". Check the return value for the
-> case and fail the test.
+> It is a nullb version of {,cond_}wait_for_loopdevs. It waits for all the
+> nullb devices are ready to use.
 > 
 > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 > ---
->   tests/nullb | 3 +++
->   1 file changed, 3 insertions(+)
+>   tests/common | 14 ++++++++++++++
+>   1 file changed, 14 insertions(+)
 > 
-> diff --git a/tests/nullb b/tests/nullb
-> index 457ae0d8354a..bfc5640c4470 100755
-> --- a/tests/nullb
-> +++ b/tests/nullb
-> @@ -146,6 +146,9 @@ fi
->   if [ "$CMD" = 'create' ]; then
->   	_check_setup
->   	index=$(_find_free_index)
-> +	if [[ "$index" = ERROR* ]]; then
-> +		_error "$index"
+> diff --git a/tests/common b/tests/common
+> index 2c90acb90cfc..1df37c390bf6 100644
+> --- a/tests/common
+> +++ b/tests/common
+> @@ -984,6 +984,20 @@ cleanup_nullbdevs()
+>   		name=$(basename "$dev")
+>   		run_check $SUDO_HELPER "$nullb" rm "$name"
+>   	done
+> +	unset nullb_devs
+> +}
+> +
+> +wait_for_nullbdevs()
+> +{
+> +	for dev in ${nullb_devs[@]}; do
+> +		run_mayfail $SUDO_HELPER "$TOP/btrfs" device ready "$dev"
+> +	done
+> +}
+> +
+> +cond_wait_for_nullbdevs() {
+> +	if [ -n "${nullb_devs[1]}" ]; then
+> +		wait_for_nullbdevs
 > +	fi
 
-I think the bigger problem is that:
+I guess we don't need cond_wait_for_nummbdevs()?
 
-- _error() output into stdout instead of stderr
-
-- the "exit 1" doesn't help in this case
-   It will only kill the child bash, not the calling one.
-
-So I'd prefer to make _error() to output the warning to stderr, so that 
-index will be empty on error.
+As if nullb_devs array is not defined/empty, the for loop inside 
+wait_for_nullbdevs() will do nothing anyway.
 
 Thanks,
 Qu
 
->   	name="nullb$index"
->   	# size in MB
->   	size=$(_parse_device_size "$@")
+>   }
+>   
+>   init_env()
 
 
