@@ -1,104 +1,141 @@
-Return-Path: <linux-btrfs+bounces-16596-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16597-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C268EB40AF6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 18:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A047B40D4A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 20:44:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D3F74E22E5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 16:48:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6B5E3AE491
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 18:44:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DABEF338F4F;
-	Tue,  2 Sep 2025 16:48:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D157F34DCE7;
+	Tue,  2 Sep 2025 18:44:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="EoFaclLf"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="tjGU4e1h";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="tjGU4e1h"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E02431AF24
-	for <linux-btrfs@vger.kernel.org>; Tue,  2 Sep 2025 16:48:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4A3EADC
+	for <linux-btrfs@vger.kernel.org>; Tue,  2 Sep 2025 18:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756831725; cv=none; b=m0/3DddcMJFTI8nkiMlfW26S754ys23RQFfWAlvES0qdYLWNQKmNVGC9EOfxLXG4pw47JLxmdEgUHBPUy2tK41sr+43JouDWOCJuOye7P8cxEyE14Qp9A9WAb09i3Q2lIowPCKt8XOnl17uEQld5mAhVaGING54myf2pGQUhqfI=
+	t=1756838681; cv=none; b=FBz4yNK7ABPD+GkwTVq7lahSIuyoVt6+OzcpYbxUjoscWlhNmtc17/90TCwb7r/MJCql/z9BOK4ZwFJDr+M9OZDzFukcMnASGq3E1VRXvBEHw4KVHbuuyC2IdDJfkaogPnZvPWwSVwLLTHMNljmq9INdfhxD1NtAZIKohRA5JwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756831725; c=relaxed/simple;
-	bh=69dcZwO17cLA6EgoAUe5VYDABRbY7UrrT3nqvJ+Z/lA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ite1mfnX3Oqimw1m6m5NV1hEvC8q94EacNpT3EaMKVB6O4vQMi/viOnskJm47W5laeGlU7VShfkN+GozYp98vkCtyljwpg+nzCGntTLAWwfhYenA6k68EsU28T1+b/sEIZSH+4cLDlZx6aZpdA6T2+M8uEWLZgtWMkivjFXyMHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=EoFaclLf; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-82-217.bstnma.fios.verizon.net [173.48.82.217])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 582GmWYr029864
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Sep 2025 12:48:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1756831714; bh=TAAfaCs8utlzc2OUMwuLfN9TPE1SG2Y1TpCqENYMIGM=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=EoFaclLfQ7Az1EbjsAWulUTEsGywZW92UMkr7cnQZ/gcPAQNJIAD/lKk+8+zW5ii2
-	 QvnzMaAKuhfXjx4DmP/Du4DEACMnvcM+GFzv4qsHB6Ebrgp+D+XL6b6pITtzYnCghq
-	 k/dRfex+J8V6v23BKUFXRceZ71xzHpgMbK854qL5nlVUdctnSE0Q5kuDRpaw5+nfSL
-	 619xXjzh1ovOx14qXikrGUVdBorLAY93S7cMyTh4Bb3en9J2JGkeJwraNk/iOF6dGQ
-	 WqUSG/hIBdMAVgEYu0VIfSxEBrSkBItw0XSjEgZmOMGoLHvMPVad0+8xObinyADzIG
-	 Eu4tl85p0QvcQ==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id C6E462E00D6; Tue, 02 Sep 2025 12:48:32 -0400 (EDT)
-Date: Tue, 2 Sep 2025 12:48:32 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>, linux-xfs@vger.kernel.org
-Subject: Re: Golden output mismatch from generic/228, fs independent
-Message-ID: <20250902164832.GA2598713@mit.edu>
-References: <60b73970-9cb6-49b1-ad5f-51ab02ef2c98@gmx.com>
- <20250902120932.GA2564374@mit.edu>
+	s=arc-20240116; t=1756838681; c=relaxed/simple;
+	bh=c0KvMlpRTrDWt2PKfU9beKq1pJgi0axvCL0PTCpgJfM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=APeKE1OgvqMpuqyjr404Cdo1Xja8DB9CA4Rhs/JGtn0wVTiz8g7/X6KgJIAyCuyJDDipKma+uvZ/7fRq7NdtcDjuoXHWr8XxZElVgvqaujAuBArdGWsGG+iauJ9wYY7B7ywdx1I8cwEdlZDTPn/AicI3L3mPNuzbcYi6NyPSRKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=tjGU4e1h; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=tjGU4e1h; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 237F02118B;
+	Tue,  2 Sep 2025 18:44:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1756838676; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Spzwe8DfNddPyKOgzEGQ0l/Q2dY4bv3Op5peq02VFN8=;
+	b=tjGU4e1hw6CKKCfRYEK7sxvUWNX2Sx+XosnM9oNx2RrGsvzRwMQgrNNnZFiEzMp3T97dd9
+	STfacMu5NyrITLgbidjBy0fGR4JYQlSf48FrvwZtpmrhVMNXAMCLQiuRclMy0Vtp9O3p83
+	Uz7z+qW1tz1zK3yZyWdid/ery5nibK8=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1756838676; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Spzwe8DfNddPyKOgzEGQ0l/Q2dY4bv3Op5peq02VFN8=;
+	b=tjGU4e1hw6CKKCfRYEK7sxvUWNX2Sx+XosnM9oNx2RrGsvzRwMQgrNNnZFiEzMp3T97dd9
+	STfacMu5NyrITLgbidjBy0fGR4JYQlSf48FrvwZtpmrhVMNXAMCLQiuRclMy0Vtp9O3p83
+	Uz7z+qW1tz1zK3yZyWdid/ery5nibK8=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1D4A813888;
+	Tue,  2 Sep 2025 18:44:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jLAjBxQ7t2g3agAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Tue, 02 Sep 2025 18:44:36 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.17-rc5
+Date: Tue,  2 Sep 2025 20:44:31 +0200
+Message-ID: <cover.1756838388.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250902120932.GA2564374@mit.edu>
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -2.80
 
-On Tue, Sep 02, 2025 at 08:09:32AM -0400, Theodore Ts'o wrote:
-> I haven't updated my arm64 image in a bit (this was from dated July 20th).
-> I can try doing an arm64 rebuild and see if a newer version still
-> works on arm64, but here's a data point....
+Hi,
 
-And here's an update with the latest xfstests for-next branch, and
-6.16 xfsprogs, etc.  Still no problems for me....
+please pull a few inode logging fixes in tree-log. Thanks.
 
-						- Ted
+- fix a few races related to inode link count
 
-KERNEL:    kernel       6.17.0-rc3-xfstests #1 SMP Tue Sep  2 07:57:28 EDT 2025 aarch64
-CMDLINE:   --arm64 -c ext4/4k generic/228
-CPUS:      2
-MEM:       1977.09
+- fix inode leak on failure to add link to inode
 
-ext4/4k: 1 tests, 5 seconds
-  generic/228  Pass     2s
-Totals: 1 tests, 0 skipped, 0 failures, 0 errors, 2s
+- move transaction aborts closer to where they happen
 
-FSTESTVER: blktests     8ac6c4f (Sun, 31 Aug 2025 18:34:41 +0900)
-FSTESTVER: fio          fio-3.40 (Tue, 20 May 2025 12:23:01 -0600)
-FSTESTVER: fsverity     v1.6-2-gee7d74d (Mon, 17 Feb 2025 11:41:58 -0800)
-FSTESTVER: ima-evm-utils        v1.5 (Mon, 6 Mar 2023 07:40:07 -0500)
-FSTESTVER: libaio       libaio-0.3.108-82-gb8eadc9 (Thu, 2 Jun 2022 13:33:11 +0200)
-FSTESTVER: ltp          20250530-178-g9691c4b2b (Mon, 1 Sep 2025 12:01:57 +0200)
-FSTESTVER: quota                v4.05-77-g22ff3d9 (Tue, 2 Sep 2025 08:12:02 -0400)
-FSTESTVER: util-linux   v2.41.1 (Tue, 24 Jun 2025 09:55:28 +0200)
-FSTESTVER: xfsprogs     v6.16.0 (Tue, 26 Aug 2025 20:27:25 +0200)
-FSTESTVER: xfstests     v2025.08.17-10-g057be3ead-dirty (Mon, 25 Aug 2025 11:59:43 -0400)
-FSTESTVER: xfstests-bld gce-xfstests-202504292206-22-ge10dc029-dirty (Mon, 25 Aug 2025 12:33:01 -0400)
-FSTESTVER: zz_build-distro      trixie
-FSTESTCFG: ext4/4k
-FSTESTSET: generic/228
-FSTESTOPT: aex
+----------------------------------------------------------------
+The following changes since commit 74857fdc5dd2cdcdeb6e99bdf26976fd9299d2bb:
+
+  btrfs: fix printing of mount info messages for NODATACOW/NODATASUM (2025-08-13 14:08:58 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.17-rc4-tag
+
+for you to fetch changes up to 986bf6ed44dff7fbae7b43a0882757ee7f5ba21b:
+
+  btrfs: avoid load/store tearing races when checking if an inode was logged (2025-08-22 00:58:55 +0200)
+
+----------------------------------------------------------------
+Filipe Manana (6):
+      btrfs: abort transaction on failure to add link to inode
+      btrfs: fix inode leak on failure to add link to inode
+      btrfs: simplify error handling logic for btrfs_link()
+      btrfs: fix race between logging inode and checking if it was logged before
+      btrfs: fix race between setting last_dir_index_offset and inode logging
+      btrfs: avoid load/store tearing races when checking if an inode was logged
+
+ fs/btrfs/btrfs_inode.h |  2 +-
+ fs/btrfs/inode.c       | 50 ++++++++++++++++----------------
+ fs/btrfs/tree-log.c    | 78 ++++++++++++++++++++++++++++++++++----------------
+ 3 files changed, 79 insertions(+), 51 deletions(-)
 
