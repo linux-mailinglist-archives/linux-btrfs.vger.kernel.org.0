@@ -1,34 +1,34 @@
-Return-Path: <linux-btrfs+bounces-16594-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16595-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8F26B4084F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 17:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4735B408D3
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 17:22:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E55B188B4AD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 14:59:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DA5A188F968
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 15:22:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605FE2E2EEE;
-	Tue,  2 Sep 2025 14:58:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09388319864;
+	Tue,  2 Sep 2025 15:22:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="Er+aIXSO"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="kp/Dh5KT"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail.burntcomma.com (unknown [62.3.69.246])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872E3208CA
-	for <linux-btrfs@vger.kernel.org>; Tue,  2 Sep 2025 14:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E515320A0A
+	for <linux-btrfs@vger.kernel.org>; Tue,  2 Sep 2025 15:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.3.69.246
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756825121; cv=none; b=RJBs7cEzOWBtDP0xgJ+rNfcDT0RHwAk62Vw8o7m7Xy1jqRoGEH+eZ6RovQih5ObuMEU/76H8u3pzieIuhyOtQguNwqVh6G0CXD82o9g5SXLH3q2jMNtpT2UQPGRvX5z+L3j/bVUSh4qFfVE1x1KzaCQ9iIp3wyhslIghqA3dIhE=
+	t=1756826521; cv=none; b=d4/IWI0YIYt5QMuWBoflXIbD1Hs1vrgPWVTF7LkK6lSlV6dgefJ8it7FMEj1gYfrbD5QHYvFJ6oYIS9sj586DJqoUZWfN9Q+dl35SQbRwzW8mF5Fs/zh4Pnb4eaFH57H3TfMU/r/7+gQk0VQR7mmShhdSzTsg6MTyxvEhUvEMWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756825121; c=relaxed/simple;
-	bh=O7WUQuNYbhDnBG1DWyD2odoz9fe/U0bgE+8A+bW7KIk=;
+	s=arc-20240116; t=1756826521; c=relaxed/simple;
+	bh=ztXfG9LXAVSHgPXqZpEgVxgv5XQQyXNJWPogVsX7jBw=;
 	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pbnj9MgegukEQhoE8gl3gu1azdNDcn5bwjsbCLwU0JCJqG1C97bq10cw9MyNLWnkx4/EwPdAn/jHy9xd8BIx006JlRzYiIjkY5ngrvsvuhkCWu+U65RqoHOu1dZDlcop2vvz3jdbL6pXa+zLYbaUN+r2eAtwqDrVMP1Eux+DO3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=fail smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=Er+aIXSO; arc=none smtp.client-ip=62.3.69.246
+	 In-Reply-To:Content-Type; b=im48gx5e30DgKaNDwkbMC9D3bryGpXpavW07NHWg0w+NQhjOOFmy8ZgvfJNNQRQxg5LRS9RUmBSeKvS7Z/KiJZhcVFKE9hHRHJlECSf7uEPZZHMDG1cDHnrcKZy5qEK5ZyRIuZX4Pg1gesra7No04GSVa5l4oz5+UAfehNrZCvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=fail smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=kp/Dh5KT; arc=none smtp.client-ip=62.3.69.246
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=harmstone.com
 Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
@@ -36,17 +36,17 @@ Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
 	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
 	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
-	by mail.burntcomma.com (Postfix) with ESMTPS id 85A302B1199;
-	Tue,  2 Sep 2025 15:58:35 +0100 (BST)
+	by mail.burntcomma.com (Postfix) with ESMTPS id 95CC02B11D3;
+	Tue,  2 Sep 2025 16:21:56 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1756825115;
-	bh=MVOeUHwoRsonod+gMbD+S6FiBNj8vbVAEjLBcUzvKh8=;
+	s=mail; t=1756826516;
+	bh=1/KEGTbt8R5Y4KjfxKD8PIQdoix5H3kjOkoFVufYndY=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=Er+aIXSOKeMKF/hVepiRK/yn12EY/Y0Zpj0oMAYZ2VC1NgxqcJIjyiNmXb7KHDpNM
-	 EByUNxr1B7L9Na0JOPBOsnbQS0B5RDHkuNEqedDyXlruO0PiRHv29H6vCcvKcNa/KO
-	 XLjVVaXLpZCuP/XnHFJh1receuidMN8dC0R7RwKo=
-Message-ID: <7ad4eb43-40e9-403d-87c9-5ee7e0a2805f@harmstone.com>
-Date: Tue, 2 Sep 2025 15:58:35 +0100
+	b=kp/Dh5KTMJfh6mT5wAXJtWCBYPDGsYt/EACxqK2D/VIJ3BWWlb07mynlMReGMyH3m
+	 3XiM0ktBmtGrgf4iPGq+sjWH1y9JEUtL1amjmH18Ndmr3tg+5O476CANL9yqXdE/SV
+	 M+rlMKeQL3XHhzRyre/XCSpW8fIHNIZvrPkDTK0E=
+Message-ID: <1629f7a0-a2d8-400a-827d-eae9280de3cb@harmstone.com>
+Date: Tue, 2 Sep 2025 16:21:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -136,7 +136,17 @@ On 16/08/2025 2.02 am, Boris Burkov wrote:
 >> +		chunk_type |= BTRFS_BLOCK_GROUP_METADATA;
 > 
 > why not honor the REMAP chunk type where appropriate?
-> 
+
+This would imply adding a new flag to btrfs balance start, and a new
+version of the ioctl, and I'm not sure it's worth it. Happy to argue
+the toss though.
+
+Doing btrfs balance start -m already implies -s, so it's not much of
+a stretch for to cover REMAP as well.
+
+Possibly it would make more sense for REMAP to be SYSTEM for balancing
+purposes rather than METADATA.
+
 >> +	}
 >>   
 >>   	/* type filter */
@@ -208,13 +218,7 @@ On 16/08/2025 2.02 am, Boris Burkov wrote:
 > blocking that at a higher level? Or will it fail? How will that failure
 > be handled? Does the answer hold for btrfs-internal background reclaim
 > rather than explicit balancing?
-
-We take fs_info->remap_mutex whenever we do anything involving the remap
-tree.
-As I think I've said in another message, this is safe but perhaps not the
-best choice long-term. I suspect something like a per-BG rwsem is the way
-to go eventually, as a later optimization.
-
+> 
 >> +		if (ret)
 >> +			goto end;
 >> +
