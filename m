@@ -1,241 +1,101 @@
-Return-Path: <linux-btrfs+bounces-16587-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16589-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66604B3FC7D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 12:30:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B3B3B3FCE1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 12:42:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF64A18933EB
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 10:31:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 765B13AC4DC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Sep 2025 10:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B82BB2820B9;
-	Tue,  2 Sep 2025 10:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D6D2EF643;
+	Tue,  2 Sep 2025 10:41:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="PhkrA6Ly"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="jDPXcYAD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.burntcomma.com (unknown [62.3.69.246])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C81172625;
-	Tue,  2 Sep 2025 10:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F6B12F363A
+	for <linux-btrfs@vger.kernel.org>; Tue,  2 Sep 2025 10:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.3.69.246
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756809041; cv=none; b=RFBUhA1AtqDh93ugUD3oCqfcVjRh7WSdn6G+rmClgyuPKPO7wwjANWXpH3QtXOs1ifUwYwi3Cdf2t4x54UDA/ENc07VAkIaFUe11NM/CtSzmesZ0QvJHFyE/BcCABvMWtxhElJTcXoIRGKPdMl0Hs9TUPpov+MwKqEtLm4qWcVA=
+	t=1756809666; cv=none; b=mWN/Ujd/WTkJRUQ8f3pzYk3TqE514ispIQwoElIOtIpo5e6Qo509JH1j/YQsTETfA4YsTCx21w468utitRMJtPuQHtXhx3y3+L0I6+99NYGHwGSLgkPAzaeZMYcaTb5SdXgvSTzh6kaFBO0BTukndzoM062L0Or09HysR4hEIc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756809041; c=relaxed/simple;
-	bh=QBXwT9EuZK9rICmax8vUmET5WkiJ4EuYts3gPXONU2w=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=OAC5Wv2Fh63ktq4XWRnxt7tMZT5J77ee8aIHjechQ118hp1koMdeQ5rXhzi1Gs3aJ5cFaaYCrsqUJoM/w+OQggJHgbqoBY+KVuo5lHyoSdwrhI+MxbVgdh9CSsWdr2PDYHhSCSP+BoO46GCyWx4FWswHDx8QyGAIzSfHfJvNsK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=PhkrA6Ly; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1756809036; x=1757413836; i=quwenruo.btrfs@gmx.com;
-	bh=BwnWX5MuJc5P9tHFSJzTDEPcW3c4t6/PUWhVDZfZnjQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
-	 Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=PhkrA6LyRQpw8vtP1CLVnkkKvYf0tysJY99Rt9ZxCE1jg0AydDDBFY+iifW2Gi0j
-	 xhJ3WXCOTXT+3Du2pXIOMUQXukdWHcK54OC8BlZnievViJwFbnMSVThuNkWP+y8A/
-	 oExsJnAvWDR2n4YNy3DeApJGSyGoiodYEKTapAkep2TwOR3HMJXCEwMUX3ll0Auxo
-	 doLqvTe5Vfc/lSz+ALK6dGKbCqpF8I+bEhLmhFSu9TfzkrTPHoGg4MOAEsY7VTlRV
-	 7T/8V4xkui1A8oJ8cUZHtTvnXAyooSSUH3TyFqTQR4qINZt8Y0E1shcsmm5MC9N1Z
-	 Xw8QlG40EH9VrJQ4dQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6Udt-1urUTS3KOH-008Usj; Tue, 02
- Sep 2025 12:30:36 +0200
-Message-ID: <60b73970-9cb6-49b1-ad5f-51ab02ef2c98@gmx.com>
-Date: Tue, 2 Sep 2025 20:00:32 +0930
+	s=arc-20240116; t=1756809666; c=relaxed/simple;
+	bh=EwhIxgPHKKwQJWF9as8lZ/9D+CBLP+wKp4uu/DNs490=;
+	h=From:To:Cc:Subject:Date:Message-ID:Mime-Version; b=mDSLCO6Mec/JYtOUumGVSMty+kwsPpuKCEUqYEl0PK7SNKT33jAzz4i2FhA5un+9tsNi8T2QkZAO2vT3QLLOpHSKNOZJlZ9oG3BezeYvOH48o+mF+s7BHIVGiBb4+A1qXsALfqMI2jJqlLDdgmC2DHpXtaK9KiGegOd8TgGoPcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=fail smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=jDPXcYAD; arc=none smtp.client-ip=62.3.69.246
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=harmstone.com
+Received: from localhost.localdomain (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.burntcomma.com (Postfix) with ESMTPSA id 76BFB2B0FA8;
+	Tue,  2 Sep 2025 11:34:23 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
+	s=mail; t=1756809263;
+	bh=74wM9m13BWc88sNmI5obLpAo4Xl8/w7swe1oi67aTiM=;
+	h=From:To:Cc:Subject:Date;
+	b=jDPXcYADWFqeEwJAuMkF7+r9rlr2zjayaXrYEXz07x1VU9HVw2eOaU5r5v/VtVlnX
+	 KQ3+hxquC6gu0zv4NwtO3cepVb/Ayib8HETd+tRmD6PFt/lWYmhoOlw0y7Co8+369U
+	 SUjuOUIlskSQfdwVpgW0C9l+JuzM6uZeEEo1lPyc=
+From: Mark Harmstone <mark@harmstone.com>
+To: linux-btrfs@vger.kernel.org,
+	wqu@suse.com
+Cc: Mark Harmstone <mark@harmstone.com>
+Subject: [PATCH v2] btrfs: don't allow adding block device of less than 1 MB
+Date: Tue,  2 Sep 2025 11:34:10 +0100
+Message-ID: <20250902103421.19479-1-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
- linux-btrfs <linux-btrfs@vger.kernel.org>, linux-xfs@vger.kernel.org
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Golden output mismatch from generic/228, fs independent
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Ufe7Ceejp3tHQvUj9zs5JxvhAkwQa0LOSBzefEUhMxPjuoVdvd4
- lOLryGb7vQKBf+z6d/tWCJcUMgZAwWSnS62563Y7u52DJgV5eipt9YyIbCPcDAa/rleZqS8
- ovJ6prSrm8xSSAkE9oLehMp/vKr6x0U0YmBD7rhVm/UXEzEuT6nmDm+Mk1FaV9v/qYkof1q
- BhbQHU8a2pXyx/NNK2sXw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:zl+HYcA6KY8=;wZGxOpaAO1dFO9lzuQqw/738/H7
- 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
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Commit 15ae0410 in btrfs-progs inadvertently changed it so that if the
+BLKGETSIZE64 ioctl on a block device returned a size of 0, this was no
+longer seen as an error condition.
 
-Recently I updated my arm64 VM, and now several test cases are failing=20
-due to golden output mismatch.
+Unfortunately this is how disconnected NBD devices behave, meaning that
+with btrfs-progs 6.16 it's now possible to add a device you can't
+remove:
 
-This time it's fs independent, and I haven't yet updated fstests itself,=
-=20
-so it looks like some updates in my environment is breaking the test.
+~ # btrfs device add /dev/nbd0 /root/temp
+~ # btrfs device remove /dev/nbd0 /root/temp
+ERROR: error removing device '/dev/nbd0': Invalid argument
 
-E.g, generic/228 on ext4 (the same on btrfs)
+This check should always have been done kernel-side anyway, so add a
+check in btrfs_init_new_device() that the new device doesn't have a size
+less than BTRFS_DEVICE_RANGE_RESERVED (i.e. 1 MB).
 
-FSTYP         -- ext4
-PLATFORM      -- Linux/aarch64 btrfs-aarch64 6.17.0-rc3-custom+ #132 SMP=
-=20
-PREEMPT_DYNAMIC Mon Sep  1 08:38:46 ACST 2025
-MKFS_OPTIONS  -- -F /dev/mapper/test-scratch1
-MOUNT_OPTIONS -- -o acl,user_xattr /dev/mapper/test-scratch1 /mnt/scratch
+Signed-off-by: Mark Harmstone <mark@harmstone.com>
+---
+ fs/btrfs/volumes.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-generic/228 0s ... - output mismatch (see=20
-/home/adam/xfstests-dev/results//generic/228.out.bad)
-     --- tests/generic/228.out	2024-04-25 18:13:45.126552201 +0930
-     +++ /home/adam/xfstests-dev/results//generic/228.out.bad	2025-09-02=
-=20
-19:51:22.806635177 +0930
-     @@ -1,6 +1,6 @@
-      QA output created by 228
-      File size limit is now set to 100 MB.
-      Let us try to preallocate 101 MB. This should fail.
-     -File size limit exceeded
-     +File size limit exceeded   $XFS_IO_PROG -f -c 'falloc 0 101m'=20
-$TEST_DIR/ouch
-      Let us now try to preallocate 50 MB. This should succeed.
-      Test over.
-     ...
-     (Run 'diff -u /home/adam/xfstests-dev/tests/generic/228.out=20
-/home/adam/xfstests-dev/results//generic/228.out.bad'  to see the entire=
-=20
-diff)
-Ran: generic/228
-Failures: generic/228
-Failed 1 of 1 tests
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 63b65f70a2b3..77a371f92ec0 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -2726,6 +2726,11 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+ 		goto error;
+ 	}
+ 
++	if (bdev_nr_bytes(file_bdev(bdev_file)) <= BTRFS_DEVICE_RANGE_RESERVED) {
++		ret = -EINVAL;
++		goto error;
++	}
++
+ 	if (fs_devices->seeding) {
+ 		seeding_dev = true;
+ 		down_write(&sb->s_umount);
+-- 
+2.49.1
 
-Or generic/733 on btrfs:
-
-generic/733 7s ... - output mismatch (see=20
-/home/adam/xfstests-dev/results//generic/733.out.bad)
-     --- tests/generic/733.out	2024-04-25 18:13:45.203549435 +0930
-     +++ /home/adam/xfstests-dev/results//generic/733.out.bad	2025-09-02=
-=20
-19:59:07.858861039 +0930
-     @@ -2,5 +2,5 @@
-      Format and mount
-      Create a many-block file
-      Reflink the big file
-     -Terminated
-     +Terminated                 $here/src/t_reflink_read_race=20
-"$testdir/file1" "$testdir/file2" "$testdir/outcome" &>> $seqres.full
-      test completed successfully
-     ...
-     (Run 'diff -u /home/adam/xfstests-dev/tests/generic/733.out=20
-/home/adam/xfstests-dev/results//generic/733.out.bad'  to see the entire=
-=20
-diff)
-
-HINT: You _MAY_ be missing kernel fix:
-       5d6f0e9890ed btrfs: stop locking the source extent range during=20
-reflink
-
-
-I didn't know why, but the when those commands failed, the full script=20
-line triggering it is also shown.
-
-I checked my log, bash/xfsprogs and a lot of other packages are all=20
-updated, and unfortunately my distro doesn't provide older packages for=20
-me to bisect...
-
-Thanks,
-Qu
 
