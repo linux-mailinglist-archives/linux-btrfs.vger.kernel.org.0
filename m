@@ -1,229 +1,260 @@
-Return-Path: <linux-btrfs+bounces-16611-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16612-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B8CBB4175E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Sep 2025 09:57:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E09D3B418B1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Sep 2025 10:36:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50476169D12
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Sep 2025 07:56:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B180A5E3265
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Sep 2025 08:36:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F002E2EE5;
-	Wed,  3 Sep 2025 07:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7DA52EBB83;
+	Wed,  3 Sep 2025 08:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="JXkO4Sup";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="XJ+faJTT"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZuBxxlQX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19172E2DD0
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Sep 2025 07:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.141
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756886179; cv=fail; b=e7K/Eem5LVeNkLjglBQC5kYnM36qPn8cupaz9bmLwAto3vcJGdxZbSPVQL6h5gJbEs3R5Wp+LEyMUPG2GoyLHEcUUfhnz/57zZaatBRBDSEz8BBEoBgKmXpQbR6TnU3Wu5TIoF1P5WBH9kIGkXdsuTtLlYldqokT9Yii1a1FRco=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756886179; c=relaxed/simple;
-	bh=ha4A8j8vCK7RRZBtQ4/nEq5ij0WsH25svcCT3qSp8ic=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=rSo3xJVoMh1/yvnhtKmGMDTzSkt5ZvmTUrDOFRPalxwtnFFOAeyTl4TJgdf7pBv74KojaVxD0UsxQsWkmXmH/OTlxCPu+zAhAUe1s/CW9M6058qMCTZgtQ+bO16clpOaEtU2WVoDZhucyCAV1avFcJ1Td/qS6L+9A2ysqRdsvGI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=JXkO4Sup; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=XJ+faJTT; arc=fail smtp.client-ip=216.71.153.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1756886177; x=1788422177;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=ha4A8j8vCK7RRZBtQ4/nEq5ij0WsH25svcCT3qSp8ic=;
-  b=JXkO4Sup3YJhU2z7Ssd+7PjCeINZ4/yqwiBxbGuC9loi8/d3WSG46E3X
-   OoNhRmprwOn3845cgK8VQPwxVxHgumtOqJN6FanegQacmf5H3nVkYUQua
-   HO5MqpFspp/gOmw+00VYu8JNkN14gKIYV5LyqzdpPvRqMMEN54sVRGznK
-   7hFluMbCBohzILxnX2vn8QXY4qjL3GqJPYjaCW++/C60VXG3gxQooh9xy
-   7KdBhgYLvlaRs/fqrgI1mAuSx4dQtThQX58iuFGofKWrxaRGv8fHZuei7
-   T7G81c2I3ABp7EzBwHOX+/jBg8Jlvp3w9lBbcqcSN5zH3xGQDAKEyo5Q4
-   g==;
-X-CSE-ConnectionGUID: YX3zkXUgSHGluKF8yoDu6A==
-X-CSE-MsgGUID: PaEaqr1cTI6seWRtEufG2Q==
-X-IronPort-AV: E=Sophos;i="6.18,233,1751212800"; 
-   d="scan'208";a="107546143"
-Received: from mail-bn7nam10on2085.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([40.107.92.85])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Sep 2025 15:56:08 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=VoMU3zMKeYpSXejPoX+p7YxZvfZzvhvzGSX7n+dg5feOqh2MYC1uFTCDYRXODPdmNpxzo6ctLJ6y++ZgEen5ondbCqd5DAPi/+age0oIHtiWjbnzLei02bw/gu5Xycb3azkHh3Z5NN9fkEAo9c8YvrLjUW0T8zTpy44Sl9GnFRSLAwUrZ8oO8fuESu+Cik7y09V9THF0Al7lk6E8903i9ab7XP/LJmbtZyU+IWvh0Y32GyM7asGHNY6lW3bEWK839tJ7/NLW2mYnE59r74NpGG5gFwqfxHclNtfFlnCdET2xsOCAHyw6B9QBnqEhGnAtRWUHwpKDZ8UoDDReqxcT8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ha4A8j8vCK7RRZBtQ4/nEq5ij0WsH25svcCT3qSp8ic=;
- b=opW5neo2VRGFj9U15udhigJqXFC0S+WY44NKwsVFkaOa93stEEypeWhWyQ5RkcwmiKVpXAwN2B0YsdUEpOvWdRoG2wPWNUXRBp0e7l7ZcS7t36p2Pu8aOUhpHXT3hm+g2OVvwG/GG+VQNi26/SGwTYjvgyVrkFLiisRgGVniAQqdQfgkeyFp2kyKbyF3nbSeUPUGUo30ctK8Q4cJgVtUvhhFYaTGSNHIlvIESxEc+J5gwmAPhs5RulUy/mOIcD7NQLkA/DLqcFd1c3s9oVjGiKiyNewe6v56hSe7XAz2y9MMn/j1PLo7rpu3JTjIX5dj5V45Er8ls70EVoGJpPR7rA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ha4A8j8vCK7RRZBtQ4/nEq5ij0WsH25svcCT3qSp8ic=;
- b=XJ+faJTTbVSXqkEVieaK+3zxg8vql0A3ThiU/SiC6qOs14smKlhxUmJqJ+2tHrrGctvRcLjjc/sseJArRoB8d4XUVbbSukKZ3EggcB8pOJdLKQhr11FJv1yool79yygfVSPjwjxkVvOG+TPINK3hM+j0hJMsn7If55YHzaZMbFg=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by SA2PR04MB7723.namprd04.prod.outlook.com (2603:10b6:806:137::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.17; Wed, 3 Sep
- 2025 07:56:04 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::5266:472:a4e5:a9c2]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::5266:472:a4e5:a9c2%4]) with mapi id 15.20.9073.026; Wed, 3 Sep 2025
- 07:56:04 +0000
-From: Naohiro Aota <Naohiro.Aota@wdc.com>
-To: WenRuo Qu <wqu@suse.com>, Naohiro Aota <Naohiro.Aota@wdc.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 1/3] btrfs-progs: tests: check nullb index for the error
- case
-Thread-Topic: [PATCH 1/3] btrfs-progs: tests: check nullb index for the error
- case
-Thread-Index: AQHcG8JKa1uj/jnueEG8gxFVNCMkyrR/m5iAgAF9R4A=
-Date: Wed, 3 Sep 2025 07:56:04 +0000
-Message-ID: <DCJ061KCN8B0.34ZV9AZNH7SF5@wdc.com>
-References: <20250902042920.4039355-1-naohiro.aota@wdc.com>
- <20250902042920.4039355-2-naohiro.aota@wdc.com>
- <ace116f9-3395-4d40-a8a0-d22ad6756191@suse.com>
-In-Reply-To: <ace116f9-3395-4d40-a8a0-d22ad6756191@suse.com>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-mailer: aerc 0.20.1
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|SA2PR04MB7723:EE_
-x-ms-office365-filtering-correlation-id: 1a6fd907-7f2a-4456-c2ac-08ddeabf5526
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|366016|19092799006|1800799024|376014|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?bjBYUmNKS3ZTa1hJSlJsYURLcnFyVDA4bXNURWo1UjhsNUVFSjhESDNoL25V?=
- =?utf-8?B?dnA5b0JhalQvdE84MER4NnpvUjl6VDZTemYyb0s1Mjc0bVA5ZDI1dDhDMlVm?=
- =?utf-8?B?VEdRcXEzNXAyYURnRWJGN0o3WjhXM20rc0lpRzBncjRKazFuT2grZTJsdVQ4?=
- =?utf-8?B?dHRvM2d4NGhHenljRTA1RUNKa3hBZ2xsSVQwd2tWUzJsZ3dDREpjMi8xNWVJ?=
- =?utf-8?B?VmtQN2xNMXpXK1l2YTNHVXhibktpcnNaUTU0VWc4cTdWQk1TVCt1c1NkblJ6?=
- =?utf-8?B?NmVpb2dpMGNQdUF3NlVCMWtVL05wNW54cDJieWwzd3pqUmhhMGtsYnRmRGtp?=
- =?utf-8?B?MGdqSHpXbXNWa3pRekRwcFkrMUhuQ2QrTTFFSFdDUkVyYjNNcndHUDN1SWJP?=
- =?utf-8?B?UkF0ckw3OTFKRkNOelo4WWIzY21rNXBQamFGNDdRdnZPaWg4eHJlK09BOE5a?=
- =?utf-8?B?c01oWWhwKzB6dlhrRmllVkdpM0swUERQRUV6MFB1aHYrODZWV0FOenFuNnZo?=
- =?utf-8?B?Wi84STg4Ky9oNS9maUNyeDVKTjFSd0ZKaGZ4dE92dnVuQ0o2UVg5MEJJVHhD?=
- =?utf-8?B?NjYvcjFSY1N5ZHpsRnpQbm15VnFBcTBpb2lxZm1JaUV1TkVhUG4zL3REcHgy?=
- =?utf-8?B?Y2tINGRmNW56cU1IRVJqVGo3bUwxREFtbXBtNzZJUWlla2dRVzBKdWRwTlg0?=
- =?utf-8?B?U3dRNnJIWGdSUE8wcUJJaENacnhGY1pCYW1BM3hWeGIxeTFwc09JV1dxSy9Q?=
- =?utf-8?B?dTJQbjlqdjB6cGdkSXZvWGRoRG9ac0o0ZzNsUjFwVFhOTEwxUzZFaVVkNndm?=
- =?utf-8?B?eUdmZDU3ZnBtTFExS1hCTnhvSHhicDFEY1Awc1RsQlpJUEtnUmcvWXgwUlBk?=
- =?utf-8?B?Z1hrNHdOaHhCaHk5VDlwUlhZajJlWkcyYjZGa0xWSUJPaHQxVnpYcXpSNmNv?=
- =?utf-8?B?cU42a3FLV1R5aW84eVVJM2liVkFuZE03TCtkVnU5bmxnTzVTMDFPc1hNV3l6?=
- =?utf-8?B?TkthblRuZDhuK0VxVEtwTm5wMTNqM1NuMkZYdTBQU3Vzd1FZZHFiUGZudU9v?=
- =?utf-8?B?YnZTV0FYU0diK2VZdFhvWU83YTVkbmYwQWJja3hmbStnQnhXZ1BHYm92bndt?=
- =?utf-8?B?UURwTVhBdzh0dU1FVzNLQWozMmprSXdYUUNFSnk2WXk1V2M4ajAwSmNqVEJU?=
- =?utf-8?B?S3ZibGVsMEZGejQrRUpBMmJyZm1EaWlHNWlNV3UxdDBFTTZYTVZlVGRIZm9Z?=
- =?utf-8?B?R2R6ZDlQR1gyMGZsWWhoZzM1ejllM1RUUUJ2OUpQQ1pqRWtwZWVKT3poUTFy?=
- =?utf-8?B?NWhIekdVaVM0UmlPcE0zTGtGdVNnUit4bWhQYnJCd0g3UWplSEQyVllZY1lw?=
- =?utf-8?B?Z2IwOVY4VXh0b0ZXRHV4SkhzTXFBY21ya3E5VEY5VGFpTVJkVC9ZdG1QbFVS?=
- =?utf-8?B?aERwRW96ODArUmtia0R6aHZZWlF1TXhvQ2hoWTJzRlB6WnJsUnVGNVJDMGJK?=
- =?utf-8?B?Z09SQS93UFlVM1FPbzJEQW83bloyWTByZisvWWRXS29yaXZzUU5OYlhRcUFh?=
- =?utf-8?B?azZ6L1ZrOW5sK2g0WndUR3NhN0JDQ3Z6L3dJL3ZFZTBFaHU0OTEvNkJ6RFJn?=
- =?utf-8?B?ckxOUUdPb0M5QzhiSnJZUWY2bHJWV1FaSDNTa1dJendLT0c2SnJ1ZWJZVkYw?=
- =?utf-8?B?aldRWitWMFRPSUg0NGVZemtCbkg4ZEpkMzAxSldYNVhrQVJKY3MvaGwzNDJG?=
- =?utf-8?B?aS94MDRZb25PUmVIOG1MRTZHL1JlMkNhYkxjdDBBbzM2cjExbTdQVFVZdU42?=
- =?utf-8?B?NWtHZ3BMYnNSVnR3dmFFQldQWXZDK2JtOW9SOGJlN2dqazR2OTNQRVpXSTFP?=
- =?utf-8?B?U1dnMGJnTnpubWlhekdIS2krbjlDUmxndzczY2FkeXdOUngxMk8vRGZmTzZS?=
- =?utf-8?B?RmpsZ213N3F5b3ZOclIvUjdGaUdtb09NU1dZNk5jVXN1bnNOSGhYcVd2SldP?=
- =?utf-8?Q?krHoN6A6cx7MOqbVXkR7dK2P/t1Ns0=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(19092799006)(1800799024)(376014)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?OER2c3ByT2lIeTQvUUJHTkhyMDYxZ3R5NTVYVTJYM2F0M3VxUmxld3ZwcVlG?=
- =?utf-8?B?NVNvZUM0NFNDcEhiRnY2Y0lLUllER3JjODN4cUpPZEFqWmVJdjF6ZFM2cllv?=
- =?utf-8?B?ZEFsSitRbTdyRmQzZWxON2sxVHlwQ1g2UndNZ3dSeEg0Y29RU3hPd3JoZEEw?=
- =?utf-8?B?UkhPMVBUZGtUNW1USVZXcXBwYkFFVkJ4eDhQTXFVMFlMcGt4S2l3Unh0QStH?=
- =?utf-8?B?QVNNRTFXcXZmYy93OHFETlNHRTEvbDFCNzFUbWUwcmRTbFVNYnZZM0szbGw3?=
- =?utf-8?B?R1lvajBSV0d0N0FaazlCUWl0dEJDRnUxaEhYUmd5QUtuK0pMUzVPdW1nS1pq?=
- =?utf-8?B?QzlzL2JlUkRTZ3Q3LzFpTXlVMzdBRWVnRW5lTHltSXpISHlGYTZMR3Z6WnFj?=
- =?utf-8?B?YlNtQ0t6WG5ZcThuUFB1ODY0MUR6YngzMHJ4SHlEdkRwMkQvS2F0RWJ2WDdi?=
- =?utf-8?B?OVJic3BVMzRMazNHSjNPU1pUWDFyQmZWNEpyb3FvNkh3dmFaMHRWK1RzU29F?=
- =?utf-8?B?NmNZOVF6R0MzQlFMWWx4cytZTFJHbGdUNFVmQ25HWnN4d1pjN3BIb1BjMzJN?=
- =?utf-8?B?azlDbHM4UCtac3U4aWlBR3FTME93YkU3QnZ5SEVLL0g4bkJ5UUY2TStNcDQv?=
- =?utf-8?B?Skh3aE4xSkpwK0YzYzNGc2tVUW5FWlo0T2U2WnFFMWVsSHNlQnJYcjE1TFBn?=
- =?utf-8?B?UVFBMXFydGtDaTQvNWxxS3RneGRSaUVFMmszamJsQlhNdEZsNFBlNis2NUdM?=
- =?utf-8?B?NHJBVUFFT1J1M01PKyt0dlM1VDBwWW56MWdSVGU3ZlJoOTVqeEJuemZvanBu?=
- =?utf-8?B?blFMYjN5MUZBeGtqaGZxTEM4WWxHTWxGeTlMVTYxWjNMT1AyTGdBOFExcVhT?=
- =?utf-8?B?Z3gxWkZ0RUcvWGs4T2J2RTRESGF6UTExM0NvNWtwREZtc2J2L1orVG1rd0ZS?=
- =?utf-8?B?dXFreDZJTE9jSGU2anloU0Y3S1NzZ2V4eDB6NmQ1TlpBa2VwdFZzaG1Idm5R?=
- =?utf-8?B?RGZmdVByTEw3U01SbGhJNVFJY0VIb0lVbmNISGZQUitOWnRhWkZzUk0wZVRk?=
- =?utf-8?B?TjV3REFyVWRpaFArRE1HRGxGN1JNZ2pyYW1CQ0RwREhDbHpYTG4vSUFCRDNx?=
- =?utf-8?B?c0lNZ3llcVNkWGtQNmcyelovNGJGYm81dUdCU1ZQcFp4eElsYy9DUjdNVytt?=
- =?utf-8?B?REhmcElHeFFnUnJtOXgzNFdWVlEwVU5CYWZYZ0dzd0k4YnBYZ21XVGhSZlAy?=
- =?utf-8?B?MnFhS1hBY29MQjg4cndjcTEyMzVweUhuRlVZL1hVUmpJZ3owNFdaZjZveEpL?=
- =?utf-8?B?Q2hhTW1KTWNySy9QaGtsUzVlTG12LzF6aGx5bVY3RDVoT011VFYwak14czds?=
- =?utf-8?B?Ry9obDVwZllHdXN2ay8xZ1FIMTF1OXBoR0J6SnkzNzZ2d3FVYmpNTXpxOHFG?=
- =?utf-8?B?RzF2YVhRWTJabHRGbENuZWxvaTFVbEY4NTVyZm1FK0JVSWQxaWtlZzJtcGNZ?=
- =?utf-8?B?VFdJZC9zZi9oMTJ2SkQ1YW5nV2Vra21JYnp4V0JnVWhLd3ZSUXc1UHlSUWZV?=
- =?utf-8?B?bWFhZUVCcXgzZnBHRWsvQnJQMU1OOWNOSFVWTXdCZS9abVZ2ZnBGMUNWc3pz?=
- =?utf-8?B?SUpJUU5ZdVBkYmVPYkhkd0JSSXh2OG9zOXZVbHcrQWVJSVVQTURIZFZocDBx?=
- =?utf-8?B?L0FOOUxXZUVFTlQ0KzVYY3ZuNTB6cHBTNStsVVA3WjRsazZCa3UvMjU4b29H?=
- =?utf-8?B?ZGptUUZDckhsa0NPbXowQVRCem1QcW5EZk10a0pNWElRTXpYN0xncXZFelFw?=
- =?utf-8?B?S1VBMnpyT0lDV05PdzhMQXlhVStvcDA1YkVkaGlMcFE4Q010K2ZWVFdyWHpZ?=
- =?utf-8?B?cHJhQmNRTDZQdEg0U1NRd2FrNVV5UUtjUjRWK2hIWjVJWG96emlqbks2MDlX?=
- =?utf-8?B?ZXYrWXpvNDBYbTRjY1lyQmhNVVBxQnUrdWJqeXhXMjh3Yjc5YSt5MUhVeXFw?=
- =?utf-8?B?UjV1V1ZabjByRXpOZm1pSTI2eC9CcUhZWUN0MlhUN3hRdEt2NVE4NjluemJs?=
- =?utf-8?B?L2g0VTJ6VFp3eHdGMDYwVlk5WmgrM0xZR0NnMXV1Z0QzUlg0NFpuSVdhcGdB?=
- =?utf-8?B?ZXF6LzVwOUR5N3Z2S1J4TUxyNjR0Zjh0QVRhUnVCZXhVT0R0dG1zMjFNSEhC?=
- =?utf-8?B?VHc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0E79C0C9BD09F648AE027D34DAB2E3B3@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 420FF2E1C64
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Sep 2025 08:36:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756888585; cv=none; b=fuu3IuWduu4AxIW7ydA73XUZDD7MhepQkqB3AMLn9S7nX9VWFrayMX/cp9z8khqAFAJ3b9J38XD78da6Dc0X0YniEKpOWr0W8D67Ecr4rrJIbIdhEBGIZkuU0PDgF3V5g9YkqE/3MZR2VAQKmJpi/d3bUoAbEe+jAvy7q2nlXB8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756888585; c=relaxed/simple;
+	bh=olxkUNFwK0Tag6o4j7p6P9GWmZAFPKdlUvs7dlGbxUU=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=iwC9onrhE4Xdafev873pSdPDouIMfoQhq/m7VF9bm/GzmMJhjYa3uqXKG7SqTNV5EhRGI6RhsiaV21FbtqTxjaV0oTJ/Z3KEOW4geL6MIp0fiSeOchHWv6TihCZhPkTAhVkGgkmIHJBmZlRIUyXL29hI3tWpH0M8DegBxYn2aEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZuBxxlQX; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1756888582;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=ATJnjvon6PGHuf6owIZ/V8GyLUWmctCBG5gDKklYycE=;
+	b=ZuBxxlQXNBfHU6AVvZZ5/lezu5pQtLaG8rNQasJjnFwGoZctytipQDaTP0DCyOu5qOHcTF
+	zvJgbRqSuakddW7TZhh1OSdMupGPMUncJDD4B1JIjdnFsHgsVliZpxkUIyP+fFt3/EnL47
+	bYvrg/z3l3aMkCGasw0RI69UDJBFdj0=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-582-bsGLgTtOPFSR5As6b4pUOA-1; Wed, 03 Sep 2025 04:36:18 -0400
+X-MC-Unique: bsGLgTtOPFSR5As6b4pUOA-1
+X-Mimecast-MFC-AGG-ID: bsGLgTtOPFSR5As6b4pUOA_1756888577
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-337e64e34c9so11777841fa.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Sep 2025 01:36:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756888577; x=1757493377;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ATJnjvon6PGHuf6owIZ/V8GyLUWmctCBG5gDKklYycE=;
+        b=h3mC+rCKWfV0Wx8iA8u7lDFfrAMqo2TweReBT7bjR/Bb5ObZX8SQ6aFjnkC4Rnj94I
+         4zZ7dN9qgwPtoNM9uuiMDMsIhw2tk9ihHk7AzIPqB+bMFkPli1emUt5mx2LxOGFIdi/m
+         +Q/Fx2GlrpTbscAkpT/wXQ1KW/36m8mXm/cpRe6+UwMumSg4vLlNrBuWW7OKwgczes5C
+         l5VyL4FRtJYT1ibAKbFPiqqlJBKFdnXnD0hQeKcVv6msiam0DREv96ZguJJNq9T00Q12
+         TUkVR9CzD2awRL63mcm4Flfz5lw0n4JAixtjfePyJEt8bD1Ild/XXffRzhHI8+fgJkr5
+         gGMg==
+X-Forwarded-Encrypted: i=1; AJvYcCWbefg8JXs/r8Jq+1XL7RUPdUHiAt6s2lC7IZMfsNu4mLGSSMSm1LUEZG1HyfzhOxZvfednc3jx3NAqzw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWLDMnf9Ku1FZUmc3o/LGdKg7VvOdUy8ZD9qcIntTI7QdRdHBe
+	ZrD03RxH+IrmaPhZ75VXLq5GYdu64xBgH52Kav4lnpl0cs+aON+2gvRsJEgb5Q0nKwkfGX5ea54
+	I7JX8OYZEX7RBTMl/gbDx27Xc9Kl7JW5cd8aN3DfmXA23cHL4SbZ7dJT9Sx3mttV9mQxaHrnIjX
+	ihIelHjAXxXRvsosLVgUcZ+Oy2hUKI7Jax4MxLtRg=
+X-Gm-Gg: ASbGncsfKUTlkN/dXFhe6xrJysj0RmNpEu5TUDQ41NLi/tAjyyQsFSQU4O/5sM9aVU8
+	Ky/t/keSnY86TyoqUk3wJg75elgoRecKAqArFZUAzprpVBhsC0Vw4eARMapNAafwKztIC/QGfdC
+	wYEGvqmdnYaJvweEY3/FFYlw==
+X-Received: by 2002:a05:651c:41d1:b0:336:bbff:2739 with SMTP id 38308e7fff4ca-336caafe852mr43766091fa.27.1756888577143;
+        Wed, 03 Sep 2025 01:36:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFiH6oJawsKiaV2emBtiCryq7VxvYGkKuppaAF88afZzAOgAqdZC7ekdUHgogv4bl+cw6YY3CT+cp1n9V/U4qk=
+X-Received: by 2002:a05:651c:41d1:b0:336:bbff:2739 with SMTP id
+ 38308e7fff4ca-336caafe852mr43765921fa.27.1756888576663; Wed, 03 Sep 2025
+ 01:36:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	OH2hsgpCl51DDLAWxlr2c1gTJR2kbn4hCVBAdHnLoIu5Xk/JvVqG0AKx8KTBmIzsVkQeuaXS2/YCkmxub5eI3Z7HhDYkmYeV4x2Ei9EANd6uataHgSR+458SgJny4a1MURNHi74j1JdRaTP/y6CN8ky4qDtk3mihi8fqT6omurKD7++NKGyDL1RgBz1e0oVO+ywEXG9hQ+wmDzOVI9ypWcnuCE7O85kf0nZbicgueZQvRoP884170eSTXpefYDxPZ3FW9tcM1K+VeAT2VYVK6/l/vJdGogY8OB+fvFdPCijro430Y4QBxluggrIKLtOS+Zq1VBAJH5GOfn+Sru+cUUCwMLK0X+/+D6YL7r1dqnpAzepdxKOLKSAwaEvzR5IlGcT9f31Gg5ULPpgT8rkBMzurn9h9MRoSMTuZ5gheP2wg06t3yVBw+bwkSmiSDOeggGTKXeLnyuM1uzRQk89BySpu0cAQSweaWs9ge4HONtOWIHwRA7cJwoR/WJRhRTi64uBbobaNkwXai1NhMAJ6xKDcbudxbLy3XENtZcblEdIFOEdCgP0tUq9jkus27FBxlWA20VlkWj5RsS2+UTn7kGE3lmpvow60on8el6dr8++Qb9PYrk4hZz49RSBAE88s
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a6fd907-7f2a-4456-c2ac-08ddeabf5526
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Sep 2025 07:56:04.4440
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +Sl/AhLHt/1+cT0NAt5PFt+xSzoqbbVw5ZVPMg3FQt28bIjg+eiEjIsgMCRk83UWNerTwqjcY/b3P1ux4xxcVw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR04MB7723
+From: Yi Zhang <yi.zhang@redhat.com>
+Date: Wed, 3 Sep 2025 16:36:04 +0800
+X-Gm-Features: Ac12FXzrYUwte2yTaoqyfew2-kR5ijplB6Zqzb8AbHJYfj3dgzlxAx1SOZrhtFQ
+Message-ID: <CAHj4cs8-cS2E+-xQ-d2Bj6vMJZ+CwT_cbdWBTju4BV35LsvEYw@mail.gmail.com>
+Subject: [bug report]kernel BUG at fs/btrfs/zoned.c:2587! triggered by
+ blktests zbd/009
+To: linux-block <linux-block@vger.kernel.org>, linux-btrfs@vger.kernel.org
+Cc: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
 
-T24gVHVlIFNlcCAyLCAyMDI1IGF0IDY6MTEgUE0gSlNULCBRdSBXZW5ydW8gd3JvdGU6DQo+DQo+
-DQo+IOWcqCAyMDI1LzkvMiAxMzo1OSwgTmFvaGlybyBBb3RhIOWGmemBkzoNCj4+ICJfZmluZF9m
-cmVlX2luZGV4IiBjYW4gcmV0dXJuICJFUlJPUjogLi4uIi4gQ2hlY2sgdGhlIHJldHVybiB2YWx1
-ZSBmb3IgdGhlDQo+PiBjYXNlIGFuZCBmYWlsIHRoZSB0ZXN0Lg0KPj4gDQo+PiBTaWduZWQtb2Zm
-LWJ5OiBOYW9oaXJvIEFvdGEgPG5hb2hpcm8uYW90YUB3ZGMuY29tPg0KPj4gLS0tDQo+PiAgIHRl
-c3RzL251bGxiIHwgMyArKysNCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQ0K
-Pj4gDQo+PiBkaWZmIC0tZ2l0IGEvdGVzdHMvbnVsbGIgYi90ZXN0cy9udWxsYg0KPj4gaW5kZXgg
-NDU3YWUwZDgzNTRhLi5iZmM1NjQwYzQ0NzAgMTAwNzU1DQo+PiAtLS0gYS90ZXN0cy9udWxsYg0K
-Pj4gKysrIGIvdGVzdHMvbnVsbGINCj4+IEBAIC0xNDYsNiArMTQ2LDkgQEAgZmkNCj4+ICAgaWYg
-WyAiJENNRCIgPSAnY3JlYXRlJyBdOyB0aGVuDQo+PiAgIAlfY2hlY2tfc2V0dXANCj4+ICAgCWlu
-ZGV4PSQoX2ZpbmRfZnJlZV9pbmRleCkNCj4+ICsJaWYgW1sgIiRpbmRleCIgPSBFUlJPUiogXV07
-IHRoZW4NCj4+ICsJCV9lcnJvciAiJGluZGV4Ig0KPj4gKwlmaQ0KPg0KPiBJIHRoaW5rIHRoZSBi
-aWdnZXIgcHJvYmxlbSBpcyB0aGF0Og0KPg0KPiAtIF9lcnJvcigpIG91dHB1dCBpbnRvIHN0ZG91
-dCBpbnN0ZWFkIG9mIHN0ZGVycg0KPg0KPiAtIHRoZSAiZXhpdCAxIiBkb2Vzbid0IGhlbHAgaW4g
-dGhpcyBjYXNlDQo+ICAgIEl0IHdpbGwgb25seSBraWxsIHRoZSBjaGlsZCBiYXNoLCBub3QgdGhl
-IGNhbGxpbmcgb25lLg0KPg0KPiBTbyBJJ2QgcHJlZmVyIHRvIG1ha2UgX2Vycm9yKCkgdG8gb3V0
-cHV0IHRoZSB3YXJuaW5nIHRvIHN0ZGVyciwgc28gdGhhdCANCj4gaW5kZXggd2lsbCBiZSBlbXB0
-eSBvbiBlcnJvci4NCg0KQWgsIHllcy4gSXQncyBzYWZlciB0byBkbyBzby4gSSdsbCByZXZpc2Ug
-dGhlIHBhdGNoLg0KDQo+DQo+IFRoYW5rcywNCj4gUXUNCj4NCj4+ICAgCW5hbWU9Im51bGxiJGlu
-ZGV4Ig0KPj4gICAJIyBzaXplIGluIE1CDQo+PiAgIAlzaXplPSQoX3BhcnNlX2RldmljZV9zaXpl
-ICIkQCIpDQo=
+Hello
+The kernel BUG was triggered by blktests zbd/009 on v6.17-rc3, please
+help check it and let me know if you need any infor/test for it,
+thanks.
+
+# ./check zbd/009
+zbd/009 (test gap zone support with BTRFS)                   [failed]
+    runtime  1.777s  ...  5.890s
+    --- tests/zbd/009.out 2025-09-02 20:08:01.638628999 -0400
+    +++ /root/blktests/results/nodev/zbd/009.out.bad 2025-09-03
+04:18:32.360095891 -0400
+    @@ -1,2 +1,4 @@
+     Running zbd/009
+    -Test complete
+    +tests/zbd/009: line 42:  1461 Segmentation fault         mount -t
+btrfs "${dev}" "${mount_dir}"
+    +modprobe: FATAL: Module scsi_debug is in use.
+    +Test failed
+modprobe: FATAL: Module scsi_debug is in use.
+
+[  317.501900] run blktests zbd/009 at 2025-09-03 04:33:43
+[  317.661628] sd 13:0:0:0: [sdn] Synchronizing SCSI cache
+[  318.464792] scsi_debug:sdebug_driver_probe: scsi_debug: trim
+poll_queues to 0. poll_q/nr_hw = (0/1)
+[  318.474936] scsi host13: scsi_debug: version 0191 [20210520]
+                 dev_size_mb=1024, opts=0x0, submit_queues=1, statistics=0
+[  318.502019] scsi 13:0:0:0: Direct-Access-ZBC Linux    scsi_debug
+   0191 PQ: 0 ANSI: 7
+[  318.514301] scsi 13:0:0:0: Power-on or device reset occurred
+[  318.526186] sd 13:0:0:0: Attached scsi generic sg13 type 20
+[  318.527006] sd 13:0:0:0: [sdn] Host-managed zoned block device
+[  318.543292] sd 13:0:0:0: [sdn] 262144 4096-byte logical blocks:
+(1.07 GB/1.00 GiB)
+[  318.552614] sd 13:0:0:0: [sdn] Write Protect is off
+[  318.558137] sd 13:0:0:0: [sdn] Mode Sense: 5b 00 10 08
+[  318.558555] sd 13:0:0:0: [sdn] Write cache: enabled, read cache:
+enabled, supports DPO and FUA
+[  318.568950] sd 13:0:0:0: [sdn] permanent stream count = 5
+[  318.576121] sd 13:0:0:0: [sdn] Preferred minimum I/O size 4096 bytes
+[  318.583446] sd 13:0:0:0: [sdn] Optimal transfer size 4194304 bytes
+[  318.593500] sd 13:0:0:0: [sdn] 256 zones of 1024 logical blocks
+[  318.651787] sd 13:0:0:0: [sdn] Attached SCSI disk
+[  319.736198] BTRFS: device fsid 2c2dcb97-3f07-481c-ad31-dce6d400c303
+devid 1 transid 8 /dev/sdn (8:208) scanned by mount (1370)
+[  319.755053] BTRFS info (device sdn): first mount of filesystem
+2c2dcb97-3f07-481c-ad31-dce6d400c303
+[  319.765257] BTRFS info (device sdn): using crc32c (crc32c-lib)
+checksum algorithm
+[  319.795471] BTRFS info (device sdn): host-managed zoned block
+device /dev/sdn, 256 zones of 4194304 bytes
+[  319.806542] BTRFS info (device sdn): zoned mode enabled with zone
+size 4194304
+[  319.819821] assertion failed: bg->zone_unusable == 0 :: 0, in
+fs/btrfs/zoned.c:2587
+[  319.828449] ------------[ cut here ]------------
+[  319.833618] kernel BUG at fs/btrfs/zoned.c:2587!
+[  319.838793] Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
+[  319.844829] CPU: 3 UID: 0 PID: 1370 Comm: mount Tainted: G        W
+         ------  ---
+6.17.0-0.rc3.250826gfab1beda7597.32.fc44.x86_64+debug #1 PREEMPT(lazy)
+[  319.860948] Tainted: [W]=WARN
+[  319.864259] Hardware name: Dell Inc. PowerEdge R730/0WCJNT, BIOS
+2.19.0 12/12/2023
+[  319.872704] RIP: 0010:btrfs_zoned_reserve_data_reloc_bg.cold+0xb2/0xb4
+[  319.880014] Code: ab e8 7e ab f7 ff 0f 0b 41 b8 1b 0a 00 00 48 c7
+c1 80 9f 59 ab 31 d2 48 c7 c6 20 b8 59 ab 48 c7 c7 20 a0 59 ab e8 5a
+ab f7 ff <0f> 0b 41 b8 5f 0a 00 00 48 c7 c1 80 9f 59 ab 31 d2 48 c7 c6
+00 b9
+[  319.900977] RSP: 0018:ffffc9000c21f930 EFLAGS: 00010282
+[  319.906816] RAX: 0000000000000047 RBX: ffff8888d1a54000 RCX: 0000000000000000
+[  319.914783] RDX: 0000000000000047 RSI: 1ffffffff629cc84 RDI: fffff52001843f18
+[  319.922742] RBP: ffff888121b7c000 R08: ffffffffa802cbb5 R09: fffff52001843edc
+[  319.930709] R10: 0000000000000003 R11: 0000000000000001 R12: 0000000000000000
+[  319.938666] R13: 0000000000000001 R14: ffff888121b7c128 R15: ffff88810f379800
+[  319.946625] FS:  00007fbd89e98840(0000) GS:ffff8890af8e8000(0000)
+knlGS:0000000000000000
+[  319.955661] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  319.962077] CR2: 0000559e0ad4b540 CR3: 00000008e14ce003 CR4: 00000000003726f0
+[  319.970046] Call Trace:
+[  319.972767]  <TASK>
+[  319.975102]  ? create_space_info+0x155/0x390
+[  319.979880]  open_ctree+0x1874/0x2203
+[  319.983977]  btrfs_fill_super.cold+0x2c/0x16d
+[  319.988850]  btrfs_get_tree_super+0x936/0xd60
+[  319.993725]  btrfs_get_tree_subvol+0x230/0x5f0
+[  319.998692]  vfs_get_tree+0x8b/0x2f0
+[  320.002690]  ? capable+0x58/0xc0
+[  320.006299]  vfs_cmd_create+0xbd/0x280
+[  320.010490]  __do_sys_fsconfig+0x659/0xa40
+[  320.015066]  ? __pfx___do_sys_fsconfig+0x10/0x10
+[  320.020223]  ? rcu_is_watching+0x15/0xe0
+[  320.024608]  ? __pfx___mutex_lock+0x10/0x10
+[  320.029282]  ? fscontext_read+0x24e/0x2a0
+[  320.033761]  ? file_has_perm+0x25b/0x320
+[  320.038149]  ? __pfx___mutex_unlock_slowpath+0x10/0x10
+[  320.043892]  do_syscall_64+0x98/0x3c0
+[  320.047991]  ? fscontext_read+0x24e/0x2a0
+[  320.052468]  ? rw_verify_area+0x6f/0x5f0
+[  320.056855]  ? vfs_read+0x171/0xb20
+[  320.060753]  ? vfs_fstatat+0x75/0xa0
+[  320.064752]  ? __pfx_vfs_read+0x10/0x10
+[  320.069038]  ? vfs_fstatat+0x75/0xa0
+[  320.073032]  ? __pfx_map_id_range_up+0x10/0x10
+[  320.078002]  ? __do_sys_newfstatat+0x83/0xe0
+[  320.082773]  ? __pfx___do_sys_newfstatat+0x10/0x10
+[  320.088128]  ? from_kgid_munged+0x8c/0x120
+[  320.092707]  ? ksys_read+0xff/0x200
+[  320.096606]  ? __pfx_ksys_read+0x10/0x10
+[  320.100987]  ? trace_hardirqs_on_prepare+0x1d/0x30
+[  320.106342]  ? do_syscall_64+0x161/0x3c0
+[  320.110725]  ? trace_irq_enable.constprop.0+0xc0/0x100
+[  320.116465]  ? rcu_is_watching+0x15/0xe0
+[  320.120847]  ? trace_irq_enable.constprop.0+0xc0/0x100
+[  320.126587]  ? trace_hardirqs_on_prepare+0x1d/0x30
+[  320.131938]  ? do_syscall_64+0x161/0x3c0
+[  320.136322]  ? trace_hardirqs_on_prepare+0x1d/0x30
+[  320.141674]  ? do_syscall_64+0x161/0x3c0
+[  320.146055]  ? rcu_is_watching+0x15/0xe0
+[  320.150438]  ? trace_irq_enable.constprop.0+0xc0/0x100
+[  320.156178]  ? trace_hardirqs_on_prepare+0x1d/0x30
+[  320.161529]  ? do_syscall_64+0x161/0x3c0
+[  320.165912]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[  320.171556] RIP: 0033:0x7fbd8a0782ce
+[  320.175566] Code: 73 01 c3 48 8b 0d 32 3b 0f 00 f7 d8 64 89 01 48
+83 c8 ff c3 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 49 89 ca b8 af 01 00
+00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 02 3b 0f 00 f7 d8 64 89
+01 48
+[  320.196527] RSP: 002b:00007ffee3b47c88 EFLAGS: 00000246 ORIG_RAX:
+00000000000001af
+[  320.204984] RAX: ffffffffffffffda RBX: 0000557b66ff26f0 RCX: 00007fbd8a0782ce
+[  320.212951] RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000003
+[  320.220917] RBP: 00007ffee3b47dd0 R08: 0000000000000000 R09: 0000000000000000
+[  320.228876] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+[  320.236843] R13: 0000557b66ff3860 R14: 00007fbd8a1f9a60 R15: 0000557b66ff3928
+[  320.244817]  </TASK>
+[  320.247257] Modules linked in: scsi_debug null_blk platform_profile
+dell_wmi dell_smbios dell_wmi_descriptor sparse_keymap iTCO_wdt rfkill
+intel_rapl_msr video intel_pmc_bxt iTCO_vendor_support
+intel_rapl_common dcdbas intel_uncore_frequency
+intel_uncore_frequency_common sb_edac x86_pkg_temp_thermal
+intel_powerclamp coretemp kvm_intel kvm irqbypass rapl intel_cstate
+intel_uncore bnx2x mxm_wmi i40e mei_me mei mdio libie bna lpc_ich
+libie_adminq ipmi_ssif ipmi_si acpi_power_meter acpi_ipmi ipmi_devintf
+ipmi_msghandler fuse loop nfnetlink zram lz4hc_compress lz4_compress
+nvme mgag200 polyval_clmulni nvme_core i2c_algo_bit
+ghash_clmulni_intel nvme_keyring bfa nvme_auth megaraid_sas
+scsi_transport_fc wmi i2c_dev [last unloaded: scsi_debug]
+[  320.320131] ---[ end trace 0000000000000000 ]---
+[  320.389848] RIP: 0010:btrfs_zoned_reserve_data_reloc_bg.cold+0xb2/0xb4
+[  320.397161] Code: ab e8 7e ab f7 ff 0f 0b 41 b8 1b 0a 00 00 48 c7
+c1 80 9f 59 ab 31 d2 48 c7 c6 20 b8 59 ab 48 c7 c7 20 a0 59 ab e8 5a
+ab f7 ff <0f> 0b 41 b8 5f 0a 00 00 48 c7 c1 80 9f 59 ab 31 d2 48 c7 c6
+00 b9
+[  320.418138] RSP: 0018:ffffc9000c21f930 EFLAGS: 00010282
+[  320.423987] RAX: 0000000000000047 RBX: ffff8888d1a54000 RCX: 0000000000000000
+[  320.431967] RDX: 0000000000000047 RSI: 1ffffffff629cc84 RDI: fffff52001843f18
+[  320.439947] RBP: ffff888121b7c000 R08: ffffffffa802cbb5 R09: fffff52001843edc
+[  320.447924] R10: 0000000000000003 R11: 0000000000000001 R12: 0000000000000000
+[  320.455903] R13: 0000000000000001 R14: ffff888121b7c128 R15: ffff88810f379800
+[  320.463881] FS:  00007fbd89e98840(0000) GS:ffff8890af8e8000(0000)
+knlGS:0000000000000000
+[  320.472926] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  320.479353] CR2: 0000559e0ad4b540 CR3: 00000008e14ce003 CR4: 00000000003726f0
+[  320.487333] note: mount[1370] exited with preempt_count 1
+
+
+-- 
+Best Regards,
+  Yi Zhang
+
 
