@@ -1,289 +1,272 @@
-Return-Path: <linux-btrfs+bounces-16614-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16615-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 152D7B41907
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Sep 2025 10:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48F84B41C0F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Sep 2025 12:42:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 854761B28063
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Sep 2025 08:48:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3B1A1B26C3C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Sep 2025 10:42:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7D52E8B69;
-	Wed,  3 Sep 2025 08:48:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C4A2F28E0;
+	Wed,  3 Sep 2025 10:41:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="V47aNZD6"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="pzip6hBK";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="JiIBSnmO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4312A1F948
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Sep 2025 08:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756889290; cv=none; b=rY7y36Fnnuzvu1DMpFMgEIrEEqEEE9Vrn92GJLg3uHGbkG1iujAK4IShJn3T0nAxVgRICMWXOYQDCKZx7XbeKmwnELwYzasdb/1dLsuX05/uirVBQNP1aZDKeeBMY6K79FFd6USMYWPMR8mvJJA6an0PdKnORQUodfXEmGXp6qo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756889290; c=relaxed/simple;
-	bh=G/HQAICVyosrIp4ApXauWvFtOuVnGI7B86rhG1fg2Xo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=si/iaoTE8ebvZEFV82QzBJqQFmdAencqxaPmVaUEnfgmE7e/wAaufBSyQjSbLFQIHShxTYlzUPfeQeJGlta0B/sIPyYaWJv/AVzi3oEfdEDNoPL4+thgKuvOkhJnP1fKByYgCBVjJbc/qW4fQMqI/p72Ppt+V/tOawaWmzcJOyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=V47aNZD6; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3d2564399a5so1422486f8f.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Sep 2025 01:48:08 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A332E2F1FD1;
+	Wed,  3 Sep 2025 10:41:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.143.124
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756896118; cv=fail; b=bWjs8DfnDkjcEQQsq6THy3LX6FvHEj5K1k6UBLMlTqzYC2P8sCIYA2erKq0rSuT51qzEqJ4vQl77LVoU7eTf71Yo/JaDzmFARIySbYuSHQbKVfDBCDTk3EeKf3xxMI3tXRKL3+LdWtzaEmsZAf6UJokKHgIdTI0eLnOnqAFxs8k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756896118; c=relaxed/simple;
+	bh=4Cyja+OcO9pLTqRD1PO7eQseD4Ovf+233DhTU+zdxbk=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=nNoaDMKtu3YfWCXqwEanOiwhcQKJlQtJVzdEiA6bW9lu541EOzDxvSIvmpN5Xyq5DOsx2N6w1qED0dfdlLie6tyqvCz2LnV4bECS0D7Mv3SH7Kj8kXa8bo2wf9EWXrKmgV3xYkB1H67VdErbBw34vY9a+RDKrXk54XfsLSV7/gQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=pzip6hBK; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=JiIBSnmO; arc=fail smtp.client-ip=68.232.143.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1756896116; x=1788432116;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=4Cyja+OcO9pLTqRD1PO7eQseD4Ovf+233DhTU+zdxbk=;
+  b=pzip6hBKQGZMNjiGhE9A8QvMA3ouVtptpkZk/D1pbRRtfAjnHfl708Pu
+   EwwYxB5leo6Lf1J3sZx2rgRxpBhS/ztYOOhWtbRVL3uRIgTZNsupxK9Ht
+   6u0hffLuUJZezmDeFuA0zRRhIPndrDQk9iUpkNSp90P41zuVDPb5OowC5
+   CEG+fYAyxPx4o8Nz/4YHDoNC4Pnf+rDY39YWX8aVPsoQN+q9aVT4G1zA4
+   tD6t/4pNAR0lvTHLkS6F6XFCclV62srHIEvEYMdd9F7aKl5fmxS4ekhc9
+   myQMhRUoHqHTQa1yDlhPhnFgV1/1KoSIMh4njGyxaVw8/FihmmbtEaXdd
+   Q==;
+X-CSE-ConnectionGUID: jnupn4d0TrChJZT6BPZQxg==
+X-CSE-MsgGUID: toRCsz79RDmKEAMKqe2hyA==
+X-IronPort-AV: E=Sophos;i="6.18,233,1751212800"; 
+   d="scan'208";a="111717967"
+Received: from mail-dm6nam11on2066.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([40.107.223.66])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Sep 2025 18:40:47 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=MMYlcOmM8lv19zTTH/crb/JwnoyZY7fcel0sCBpsvUofmPOjS2iDozl6CGIC/44izLe6Fz/F2oaMrezHZNr4EP2M3XeyNWQbmMRjLtMXOsTe25vDdNQhVVzyGiCXU+4onisIKrBahLiStP2DOh9k3wLnuVK0W54FeAvz4vbwUrZk8fx06H3OzTekyfaUem5MTV910zitAfF4k250dNgYVHt2DkpGWwtTmqwupgkT6VUWE0mryp5tQ7ARtzcOWXASDfTf6qr6WGwp0WzpElk3ZTjdcN/1qpkS09IODl1XpTvZ8cQff5cjEEMucBQtlVAgdrxpOzptDEyBvFr4yr5Hxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4Cyja+OcO9pLTqRD1PO7eQseD4Ovf+233DhTU+zdxbk=;
+ b=kg/sMBBJmYRTMeJKNQJHV33byII0z3c80LNSx8634WUCLW1ZZ1MNIphML1pEPlaHmvD9FxYrx0frhZvweyUe6DOt1fq2vM6FD5+26gAVWSWQZXjiGZ11Aa4/ZLbk+bx5Az7gzkgzeZ2OT3dVHNV8LMCvt92wShqtv5sphVZ5dcDvxBQMqLH18BuYCFjSboOKIkrk+XUFfFA7QYcW4XeV10c3W5yrby6YSYVWpNsqY2yguxPl6zmosltN7TOjJvxU/XxEAaBPRNyOWpelPDePg92bCunlxYWfgB7rfq7GNg0EAetj3YuqCumEpEyFiS5tLfbJHvg3bHMeXzNLD1737Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1756889287; x=1757494087; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=7+dFhyhyqJr75WwSaOHE7BII74yZAHk+nCpXZ3qcIN8=;
-        b=V47aNZD6+myt7DbmGWumvxzyD+cLIcqxll0B65u4OQjbimxzstF2xnFKAeVIhgIhQB
-         d2YFdES5eVT9+MXuZXqsU59EvYDJXfamY3CMUzo4xFtaYAQWz+HX/urF+HBeQAZqhuCx
-         4wVnsOIB9Ah32PisqILE+KmpeM3bS5mqR/pXUO7loShsTKTnJRjJpGeELRZ8oCpgY00h
-         +RpBwYYc3H5xQAuV/DYdcuqDnoObkpZfzkEtf5sdDPLlqrqjylSuEf8pFSKsmeKEABVc
-         1QiuSfS/4UlLesV7q4HXWwhPHfa9z7DOf43kEZYzxrIZk+zd5z0dOGAtEsBcuyCiHtSk
-         HDWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756889287; x=1757494087;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7+dFhyhyqJr75WwSaOHE7BII74yZAHk+nCpXZ3qcIN8=;
-        b=SeDFfk4Wn5yr8uxPSG1ay9+8Ymk1WAILb5sfl+ZCfGXtQMWpE23StuUcZdRoDmcT7F
-         8/FutanDOAFXi9KBLzubHSjw38cLPuQRvpNn5zb/0G7pDSa7cOuuB+wt8rl/vnrD9EEh
-         BdG+fx8NY7/poK4xvIY4j9hY9xCPfW/vMcci5h7OWwaE1i2N4ekna5kS7D71DhK6TVMj
-         YCH4WVJoXTC+dNbpJPbgITucaIY2xRGzRpEHVlO4uSI8LEN163E6IFAPY1a578t9i6TM
-         waLHwWlO40fBgxS6qqYPifTqRaYQH8yV0i6Qyu6EAlm7JWCaiADebfB84BRgxlQYF8Wm
-         1K+A==
-X-Forwarded-Encrypted: i=1; AJvYcCUTGkRsv4vBcGiq796CfDGy2kPg/6KvxZgG2ADVqcOo/c66TqwAIvvlJgfOs02aZFuMxz24nDkve9nVcQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywn5yeriu5si1dIziVURpwIReoez+zEOWdHs47a2SeE+WMMrHLO
-	80JxzQZ0dTPKYCL877FxdzWzqfw3iYb0URdpcD9xfXYziG06327fFVsr6SUoXRq9BxIYLqDsQVs
-	+UTv3
-X-Gm-Gg: ASbGncv4Qwu+WazSSMyXfCgemgm/6/pdppUkCRXxWhipUvPqdPfuw15Cohhq99tMtrf
-	8N4WXIT04a+qCMvymo6OjLlLeZb+pwdTrAmFn4NOhqPx/V+OgpvClgYeiv5sgp7vxnWS8HfKmKo
-	wh1uwAmcufGTlA/xNEvkpbS8O7naPxbWBX9eETo7MNwlIz4TSkl+8CFVSvP+niZNloDL7mTG7K5
-	PQkTCWTGegKXLxAqvu5xz33KB9si5IpdL8wLodss+RZ8quzr1w3JwmZZuq1dxWaaIf/UMhpGShK
-	l+L0VgLUtaQWygoID0Vi3B5GyveeRJugbRwlgd4wfb23ltH9F9zL8Cza/ZeZrw71v/WcJl0+PF3
-	eAwes1R5+5HH+H1rfdki0+OfuNechUBE3ZqCDiABpbkoziWrmi9Y7ozOpY+YjBQ==
-X-Google-Smtp-Source: AGHT+IHbXlAmsIr5mQsBVFTxh9EzMGiTHl5fiPrZ9WFCdZ67HAZOog5Phq9OBFDDnIrmcC3cSLTumg==
-X-Received: by 2002:a05:6000:288b:b0:3cd:2328:898b with SMTP id ffacd0b85a97d-3d1e05b5c25mr10817288f8f.47.1756889286519;
-        Wed, 03 Sep 2025 01:48:06 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-249067de9f1sm153203545ad.151.2025.09.03.01.48.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Sep 2025 01:48:06 -0700 (PDT)
-Message-ID: <9d6db7e9-318f-4242-9883-9eee8ee20f5e@suse.com>
-Date: Wed, 3 Sep 2025 18:18:01 +0930
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4Cyja+OcO9pLTqRD1PO7eQseD4Ovf+233DhTU+zdxbk=;
+ b=JiIBSnmOVixpu8a0m9KMX85M0yzvejB7EVomBSZvC7SWQOUugxggCGeNd2Yr1of24J9KJLW8ahhIHLsBf9lQJezzGEr/XTNt4rl1QY9/7y67rIG9DF3UmPnF7nZcRZhP8ngF8HVdoPyuqVFXHoOZaeWb2b0nyYsKQoXe6VDal+o=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by SJ0PR04MB7582.namprd04.prod.outlook.com (2603:10b6:a03:32a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.27; Wed, 3 Sep
+ 2025 10:40:46 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969%5]) with mapi id 15.20.9073.026; Wed, 3 Sep 2025
+ 10:40:46 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: Yi Zhang <yi.zhang@redhat.com>, linux-block <linux-block@vger.kernel.org>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+CC: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>, Naohiro Aota
+	<Naohiro.Aota@wdc.com>
+Subject: Re: [bug report]kernel BUG at fs/btrfs/zoned.c:2587! triggered by
+ blktests zbd/009
+Thread-Topic: [bug report]kernel BUG at fs/btrfs/zoned.c:2587! triggered by
+ blktests zbd/009
+Thread-Index: AQHcHK3gZWTSYLE8sECaqNpoDaltkrSBRQyA
+Date: Wed, 3 Sep 2025 10:40:46 +0000
+Message-ID: <44be7089-cd6c-40db-95c7-b31497afd5a0@wdc.com>
+References:
+ <CAHj4cs8-cS2E+-xQ-d2Bj6vMJZ+CwT_cbdWBTju4BV35LsvEYw@mail.gmail.com>
+In-Reply-To:
+ <CAHj4cs8-cS2E+-xQ-d2Bj6vMJZ+CwT_cbdWBTju4BV35LsvEYw@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|SJ0PR04MB7582:EE_
+x-ms-office365-filtering-correlation-id: fc39e1b4-2de7-4c93-6174-08ddead65721
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|19092799006|1800799024|376014|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?T2NRRkFDZ1ZFbHlHam5DcW92WmtEK1lXSURKMEd1L09hN2hvRTVZaUsxMWRz?=
+ =?utf-8?B?djV3ODRsOWROaHhzNW5rTnJKbGtlTVJDcHkxSldTWTgwSTRGVU42QndhcTh6?=
+ =?utf-8?B?YXJrUWg1SlBKZlE2ZGJzQjNxS1hoTlR0V2NwbjR5TVlKZlQrN2xmZ1FXUFpN?=
+ =?utf-8?B?VDVidmhmMWxBK1UxdXlOeHVyOURPbGRicUVpT2NZZXhuUlRNay9yWms3QTBR?=
+ =?utf-8?B?N1FBVHpURk9EWURrbmtYaFhhdkNBSFVWNWc1dVJ3TzRNUmtkbExSOUtZY1Av?=
+ =?utf-8?B?RVJ0SE02UHo2WDQ3eCtjOWg5Mnk5REttMTdWRzRFMy9PZVVUV3VMalp2Qkgr?=
+ =?utf-8?B?TDNTK1lGT0lSSHZ3VDJUUkl1Q21RZDVuOVYxTXVMVlNNWEVXRmcydjJ3ZFVt?=
+ =?utf-8?B?MnYvMUNoUkFOcmNHS0ljRmw3OVVsL2FWSGJzeldhejVqenArOWVlQm9ISWxq?=
+ =?utf-8?B?WnFGdDNJdnMxSmw5VTBHRmQrU0Q2dWU4WmswUkUzemR4YTQvM01vblVzY1Z0?=
+ =?utf-8?B?S2R2WklIcnhYUmNNT2d6c21CYm0rbTJETGNrcXg4eXE2ZlFXOVFiOG5MOS85?=
+ =?utf-8?B?Y2xEaUZmSXhBUzlCcmNhODlKYmFScHBDbFNSZDdraVVkSFRicjNpckF1MnNU?=
+ =?utf-8?B?Z2NSMDNiV0tXNmk1VHRvZVpaa0prYzh3OE9BZ2wvNWtSK1EyTERlTWprTzdt?=
+ =?utf-8?B?OGtwTnJhZDR1cThjZFl4MXdLNVkrWkxPTFp2SERjY2xKUEs2M21qbndJemRj?=
+ =?utf-8?B?Vk9pQUlpeG5ibmhSa3pqSmdWRk5KTjF5Q3YrUWRoR0VoNzFiOW9JQ2ZnWWlr?=
+ =?utf-8?B?VUR3cWRIV2h5alVKMnQxeUVPckkzNlRQb3Z3YjRiMVVoeUlaSk1yOUdvWDNP?=
+ =?utf-8?B?b2E5VmwwYmlJdnZPaUdWNFVBY0hkbnU0OEpBNkpkRk10cWVLdUFubVBSZ210?=
+ =?utf-8?B?U0xTUGlvWktHaGNjNmxTK1J1Z1gzMzlxNnJtN2JPdGR0MmwrNjMwVno3dTN2?=
+ =?utf-8?B?T05rRXZ3bTVpNGR4OGI0U0lERTBDUHJzajMwbDNhTmdDQ2tqM1V6Zit2dG9K?=
+ =?utf-8?B?VzVmYmNFZDJKcXBrSnpIN001UnQrbThvWTZaZEovbkd2Q3FaOTU5RzQwMkR4?=
+ =?utf-8?B?MHdQN2JtM3FoNDlmZllvYlpCNTRVZlpIclhFK2QvZGZtVzZaTHh2UGNHZlky?=
+ =?utf-8?B?TlRNaEZrTDQrcEVPQnRDVWhUVlhiRTNyS1ZSbzN1WXBxanBRbk5jTXZuZHNZ?=
+ =?utf-8?B?NFpmYm1qOTlZZjk1US8yaHJoRVRleVdkMDA1N1F5ZGcyZWltditZSXhmK01Z?=
+ =?utf-8?B?T0JEcXVkNGkxK25pck1XUFR5dTNCM0tnRWVSbTBBWFBWN3p1aUV1cnZ6OHdI?=
+ =?utf-8?B?Q2xqc3VQWk5jWFJoNFZQSWUzUXNlaWxoYW4xYlpIa01GdHF2dW5zQ05lS3M4?=
+ =?utf-8?B?RDhBbml6aVVFd2d2YVR5djI5b1FOQzE4NXJ1RDVXNDlDNG9kWDBjbFJmT0h2?=
+ =?utf-8?B?R2lGby9uUW0vYmk0ZFRvR2Vibi94Sno5NHE5Y2VZd2t0dkN5MG1MdXlhRE9q?=
+ =?utf-8?B?OVMydEtTc0hnVlQrd0FsNzBlMGV2bVlMOHNkQmc5WWlmVnlVYzFXZTB1bnk0?=
+ =?utf-8?B?THdaS01GTkFJT1BhN0hyckZ6YmFwMnZzV2pxcm5yL1BSQU5JMmdWeGJacEtj?=
+ =?utf-8?B?TERhZVpWbFlFazgxQzkrMXhNcG1mdWhDZElIWXNhLzBEM0Q3clZRYVZSaytH?=
+ =?utf-8?B?ZG1DbldLVWh0aU1kajN5dXdHbklkSWJXZkJwUFhPYUd3dFJuSTAyM2hSM0xW?=
+ =?utf-8?B?Vit3dXNqNjBFQXZSTzVUVlNnc0dXaEs3dlNNa3I3MVRvTHFTVXNidjNLNWhP?=
+ =?utf-8?B?TXJETGlsTnd6OWhDVCsxZG00bjV6Z0JYYStnU3Q0MW1idTlTVEpKYm05VzJs?=
+ =?utf-8?B?UUpUME9MRG42OVkrdHJ3SU1ISENMSGNZUTA3NFJCRjV4SlhvZG1rY0JXWTVw?=
+ =?utf-8?B?bDNqbDJHOXlBPT0=?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(19092799006)(1800799024)(376014)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?TE83eW1rY3NHNHcyRTZXbnJabENWQjdEY29mSDd1bmJDaURIRGt2bmFPMFN4?=
+ =?utf-8?B?cWh4S0R0QkQxZmVWbElqc2NjMlFQd0Vxak8vODJHU1Z6dVRKejJzN0hZZmov?=
+ =?utf-8?B?MzBYamhCN3NtcUVKNEJnNEcwYTMyNmRSaHRCSWRSakRSZFczNms3ZEpXeWpj?=
+ =?utf-8?B?OVYzbTVFMTV1bndZdlNYUGtUQXNHWXRjcGtmMFpaNmJJcC9zckVXN1BLamJE?=
+ =?utf-8?B?UXBpeFpmdkM0dXkyTklrTnNoK3doMWxWc25DVXlCbUlQMUxkMGlzbDV1SWxp?=
+ =?utf-8?B?WkZJeTRCdmNET3VFQXRYY3ZYMzB4Qis1QWdUY2hUcGhiUW1UZ3R2TE02S1da?=
+ =?utf-8?B?L2xVZTBLL2xoY2N2dEwrbEtCRllsZ1FoclVEbTVCOW9jS1RLR1FZL0lJb1Ji?=
+ =?utf-8?B?ZHVHSW1WR0ZwWnZSeFVQc3NUWWx2Ty9IaHVvaGttZ0gwN3g1UTh5TVVJWHBM?=
+ =?utf-8?B?c1FEY1NnZndVay96dktxdGdIUjlSZjBSdklFSER4UDFRMUFpeVVwV2ZZNU0w?=
+ =?utf-8?B?V1kxM3d6UjNOVGNFYlVoRHo1QW5SN00rYWNKSWpkWXdqSDFrT1ovc0pGajlj?=
+ =?utf-8?B?ajd2cWdIUUFtVGpuS3Z4Qm5qaXJUS1RnL0RuS0RaT21NekJFMWVLWkRjVU9V?=
+ =?utf-8?B?VWFWVE4vZmJML1N1bzlVaE14QUladk1YUmRYbDFhR1lJb01FbzFwQWpVWk5h?=
+ =?utf-8?B?VE5aUVhFZE42L2FIZm9YNXRsU1JISVlXaHZaYitNTEtuU1RMd0o1WXJZMDB1?=
+ =?utf-8?B?OWVwMWw1S2dia01Oa1VpZUoxVUREMU5WY0FqUkwrZ3pEZzQ1NkFGZG1zTXFv?=
+ =?utf-8?B?dFRjbnN4NStjR01CcGJlUlZvaFE0bjgzRnh4U0F3cUZKZzhEK0tWQ0t6bUtM?=
+ =?utf-8?B?NGdYUm84WDJsSzcrM3BSamxQVFQ1OW9JN3JiWENjdENoMFJieHVYUjlUdTdW?=
+ =?utf-8?B?RFQxT0J6Y3VEU2Mxc2FLcVJNZjQ1L05ka3Zwd2hHVVZVQ092Tkt3ZHp5ZFlX?=
+ =?utf-8?B?TXNWQlcySzhKWWxTM2QydEp3QlliSUhMb2l4aGpLUmNVbXZMY0NjTk1HeTQ5?=
+ =?utf-8?B?YWZHRnlMYzhlL29VdVFkNjVaQWZFRUg1RG1XSDE5Q0tGZGIyalRRM1U4NjBV?=
+ =?utf-8?B?MXEwc0hYTXNOUzVHOFoyNGdNWmpwa2RoUnZLb05zamFLTFh2WDV4NnNHMGdF?=
+ =?utf-8?B?Q1g4SGttUmVYamF5RzBSS3RPQVMyY2NDR3k4ZFFaalNpZlhUWHlrSkdsaFhR?=
+ =?utf-8?B?VjJpOXN6dE1aa3lSZUZhbUxtT0ZQSHlFbzlMZ0tMdys3MDNXM1E3a3RGQk90?=
+ =?utf-8?B?V3JOeWxEMUtlVlJISzRaWmVUdUdLaDBZL05UaFlmN1A2QlExTTU4aUZDTit2?=
+ =?utf-8?B?UHBzaytlYlJhaEwwSnF5bytaQ29zbWhteEo4NGlxSnhkR3pXTEpBcmhhTkQz?=
+ =?utf-8?B?dHdWNkphWThuK0tKWmZhOVhXb1lJT0JsR0xTcE9McEN2U3JvWXlrU1VJMUFE?=
+ =?utf-8?B?THBYZzh0cGZiZDJOYnlWMmNuSU9hVVFnZzlPaGM4dXVvVVpvUWEvZDB0bXln?=
+ =?utf-8?B?ZWRGRUlPa3FReDFEaFJZdm9idVR6eVh3M3d0RE9GZFBGaXg1cDJYbXZDbHFO?=
+ =?utf-8?B?c285amMvZ0txa0c2ZUtTSVJXa0RvaGZDb2M3U3FlT0g0ZGNKd0x2Kyt2THBz?=
+ =?utf-8?B?YjNwQlNhOEs3RXVlYVhHS1RYYS8zbk1YN2xSOVlFTFhOajQ2dDRhRWh1eTFI?=
+ =?utf-8?B?bWZwZXk0Q3lMK3ljd1ordFc1RSsydElMR2Q5T0tMZldPRXh3RDQ5NTY3bStL?=
+ =?utf-8?B?ck95Z2hyU1hMMFVYUEJ1ZHBONmlTNFhQVTNtdFNBVlJCK3BIMGdmMkFXQ2hE?=
+ =?utf-8?B?UnhsVnZIeWIrSXh3QzFkb1czVDRHZS8vN3ZSaFgxbWp5WmdlMUF5bDcwV0Iw?=
+ =?utf-8?B?dFBhL1JhYnZORzJSWm43bklPRGlBRUdZNWJXTTR1TVY0V3JDenVWQWozM015?=
+ =?utf-8?B?eUJoN21vWTFwNmpOdFBKNTFyMUJrODl5Y2FnUHFQenEvR3lZZ0VKUmJ2UEhn?=
+ =?utf-8?B?TGU5UTh3c0VVR3YyaHNwa0F1ZEhCbzRUZzVIZ0pFZWx1ZjFvUnYxbko3TGl5?=
+ =?utf-8?B?ZlJ0c0tlak1DUXArb29lem9jTkNRNXp4dURpY3R1WDFCOVNXVDJ0ck9RdHlt?=
+ =?utf-8?B?MkE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <27AC7C8C199C124C8F31ABD39A87F8F5@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [linus:master] [btrfs] bddf57a707:
- stress-ng.sync-file.ops_per_sec 44.2% regression
-To: kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
- David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <202509031643.303d114c-lkp@intel.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <202509031643.303d114c-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	JHm+JdGekFqas8judXPCyp6VDtmZjKHe8Xyh02t9ufAk+ouQPBQSbVE2RLv1vL4NXo6p+IBUjJ6kq7N9oYqpIhj15KNbcUFNBh/KlRfCGrRm5pk2oMWI5+kzhVCuZe+nZ77+vE5NhRM/a7jBPg0WvVq0Gmhkgj3TcjfjgsNpIEu+yMv6WC1nJC7s4yITQUqwPr8ytsXEmY9D9s4nFVbP0/YhgFFMoVjydFcFGozzWfKScS6oXkZ4x1aSzhX6Es/JpDVcvtFGqu4Ya63IE2oy2oEM7VZ0mswtTRYk2dJAEj2o8Y011NODz6W0x5i5VGYfg3RlxNek5/slsR1zfmLPhCkgELP2u4EDkH49KiMC9hakzgHSlACz0tE/9W+PydlhVvVnHQqH5p71TGINpaljnxwkwOxGIDN8s3Ba6WnlPa3+Ut4rYgJ8k/JfJhkhEznL/gdOxr7jUHOADQpVuttWvkLuue6b6UfPECgscewOequZxxxFAi+EkiOI4HpSmrtmDZiPOzmMhQdI1JUuYtXRnWJSR7Hnsh9gu4a2a27pDkYQMjP2rMJhcVA1Nfp+KnTZapLEQO5INiufGiquu7TpXP35qLNmEraTsnRToD0AbvpUlefoBfeEv9fkFJx/aUSs
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc39e1b4-2de7-4c93-6174-08ddead65721
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Sep 2025 10:40:46.1831
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CtoF7eHdvdmmGODbBA1ldWXe9QBNZYydIGdt6YcMuuBD9ZJKOFUOKLWukRmoVz6JMD+MNYEWq1edS/mzDIKCyqN5JdhnutzkpbEZqp1lW8w=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7582
 
-
-
-在 2025/9/3 18:14, kernel test robot 写道:
-> 
-> Hello,
-> 
-> kernel test robot noticed a 44.2% regression of stress-ng.sync-file.ops_per_sec on:
-> 
-> 
-> commit: bddf57a70781ef8821d415200bdbcb71f443993a ("btrfs: delay btrfs_open_devices() until super block is created")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> [still regression on      linus/master fb679c832b6497f19fffb8274c419783909c0912]
-> [still regression on linux-next/master 3cace99d63192a7250461b058279a42d91075d0c]
-> 
-> testcase: stress-ng
-> config: x86_64-rhel-9.4
-> compiler: gcc-12
-> test machine: 64 threads 2 sockets Intel(R) Xeon(R) Gold 6346 CPU @ 3.10GHz (Ice Lake) with 256G memory
-> parameters:
-> 
-> 	nr_threads: 100%
-> 	disk: 1HDD
-> 	testtime: 60s
-> 	fs: btrfs
-> 	test: sync-file
-> 	cpufreq_governor: performance
-> 
-> 
-> 
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202509031643.303d114c-lkp@intel.com
-> 
-> 
-> Details are as below:
-> -------------------------------------------------------------------------------------------------->
-> 
-> 
-> The kernel config and materials to reproduce are available at:
-> https://download.01.org/0day-ci/archive/20250903/202509031643.303d114c-lkp@intel.com
-> 
-> =========================================================================================
-> compiler/cpufreq_governor/disk/fs/kconfig/nr_threads/rootfs/tbox_group/test/testcase/testtime:
->    gcc-12/performance/1HDD/btrfs/x86_64-rhel-9.4/100%/debian-12-x86_64-20240206.cgz/lkp-icl-2sp8/sync-file/stress-ng/60s
-> 
-> commit:
->    de339cbfb4 ("btrfs: call bdev_fput() to reclaim the blk_holder immediately")
->    bddf57a707 ("btrfs: delay btrfs_open_devices() until super block is created")
-
-This doesn't sound sane to me.
-
-The two commits are only affecting btrfs mounting/unmounting, I can not 
-make any sense on why they would affect performance.
-
-Or does stress-ng doing a lot of mounting/unmounting?
-
-Thanks,
-Qu
-
-> 
-> de339cbfb4027957 bddf57a70781ef8821d415200bd
-> ---------------- ---------------------------
->           %stddev     %change         %stddev
->               \          |                \
->     1885182 ±  2%     -35.0%    1226241        cpuidle..usage
->        1.35 ±  3%     +26.8%       1.71 ± 31%  iostat.cpu.iowait
->      114330           -10.0%     102922        meminfo.Shmem
->       17680 ±  2%     -39.7%      10656 ±  2%  vmstat.system.cs
->       32084 ±  3%     -33.6%      21290 ±  2%  vmstat.system.in
->        0.08 ±  2%      -0.0        0.05 ±  2%  mpstat.cpu.all.irq%
->        0.03 ±  6%      -0.0        0.02 ±  5%  mpstat.cpu.all.soft%
->        0.66 ±  3%      -0.2        0.45 ±  2%  mpstat.cpu.all.sys%
->      311692 ±  9%     -17.9%     255869 ± 12%  numa-numastat.node0.numa_hit
->      304181 ±  8%     -24.2%     230456 ± 20%  numa-numastat.node1.local_node
->      331109 ±  6%     -19.3%     267048 ± 11%  numa-numastat.node1.numa_hit
->      311531 ±  9%     -17.9%     255766 ± 13%  numa-vmstat.node0.numa_hit
->      330584 ±  6%     -19.3%     266623 ± 10%  numa-vmstat.node1.numa_hit
->      303656 ±  8%     -24.2%     230030 ± 20%  numa-vmstat.node1.numa_local
->       59.00 ± 13%     -41.5%      34.50 ± 10%  perf-c2c.DRAM.local
->        1139 ±  4%     -46.1%     613.67 ±  5%  perf-c2c.DRAM.remote
->        1254 ±  5%     -45.3%     686.50 ±  2%  perf-c2c.HITM.local
->      681.33 ±  3%     -45.8%     369.50 ±  6%  perf-c2c.HITM.remote
->        1.33 ± 41%     -93.8%       0.08 ±223%  sched_debug.cfs_rq:/.runnable_avg.min
->        1.33 ± 41%     -93.8%       0.08 ±223%  sched_debug.cfs_rq:/.util_avg.min
->       10502           -34.4%       6886        sched_debug.cpu.nr_switches.avg
->        8094 ±  2%     -41.8%       4710 ±  2%  sched_debug.cpu.nr_switches.min
->       21146 ±  2%     -44.2%      11809        stress-ng.sync-file.ops
->      352.20 ±  2%     -44.2%     196.65        stress-ng.sync-file.ops_per_sec
->       34.00 ±  2%     -43.6%      19.17        stress-ng.time.percent_of_cpu_this_job_got
->       20.20 ±  2%     -43.6%      11.38        stress-ng.time.system_time
->      513054 ±  2%     -45.5%     279629        stress-ng.time.voluntary_context_switches
->       28437           -10.3%      25522        proc-vmstat.nr_shmem
->       25303            -1.0%      25040        proc-vmstat.nr_slab_reclaimable
->      644388           -18.6%     524319        proc-vmstat.numa_hit
->      578153           -20.8%     458095        proc-vmstat.numa_local
->      682807           -18.2%     558809        proc-vmstat.pgalloc_normal
->      675599           -18.3%     551960 ±  2%  proc-vmstat.pgfree
->        1.61            -5.0%       1.53        perf-stat.i.MPKI
->   6.692e+08 ±  3%      -8.2%  6.144e+08 ±  6%  perf-stat.i.branch-instructions
->       23.54            -2.2       21.29        perf-stat.i.cache-miss-rate%
->     2665211 ±  3%     -27.0%    1946091 ±  4%  perf-stat.i.cache-misses
->    12037045 ±  3%     -18.2%    9840696 ±  3%  perf-stat.i.cache-references
->       18418 ±  3%     -40.1%      11025        perf-stat.i.context-switches
->        2.13            -5.4%       2.01        perf-stat.i.cpi
->   3.964e+09 ±  3%     -19.8%  3.177e+09 ±  4%  perf-stat.i.cpu-cycles
->      181.54 ±  3%     -23.8%     138.31 ±  4%  perf-stat.i.cpu-migrations
->        1472            +7.4%       1581        perf-stat.i.cycles-between-cache-misses
->   3.216e+09 ±  3%      -7.6%  2.972e+09 ±  6%  perf-stat.i.instructions
->        0.65            +8.4%       0.71 ±  2%  perf-stat.i.ipc
->        0.83           -20.9%       0.66 ±  2%  perf-stat.overall.MPKI
->        4.24            +0.3        4.58 ±  2%  perf-stat.overall.branch-miss-rate%
->       22.13            -2.4       19.76        perf-stat.overall.cache-miss-rate%
->        1.23           -13.1%       1.07 ±  2%  perf-stat.overall.cpi
->        1488            +9.8%       1634        perf-stat.overall.cycles-between-cache-misses
->        0.81           +15.1%       0.93 ±  2%  perf-stat.overall.ipc
->   6.587e+08 ±  3%      -8.2%  6.047e+08 ±  6%  perf-stat.ps.branch-instructions
->     2623092 ±  3%     -27.0%    1915109 ±  4%  perf-stat.ps.cache-misses
->    11851537 ±  3%     -18.3%    9688099 ±  3%  perf-stat.ps.cache-references
->       18125 ±  3%     -40.2%      10847        perf-stat.ps.context-switches
->   3.903e+09 ±  3%     -19.8%  3.129e+09 ±  4%  perf-stat.ps.cpu-cycles
->      178.73 ±  3%     -23.8%     136.12 ±  4%  perf-stat.ps.cpu-migrations
->   3.166e+09 ±  3%      -7.6%  2.925e+09 ±  6%  perf-stat.ps.instructions
->   2.004e+11            -9.3%  1.818e+11 ±  5%  perf-stat.total.instructions
->        0.00 ±223%   +4160.0%       0.04 ± 35%  perf-sched.sch_delay.avg.ms.schedule_preempt_disabled.__mutex_lock.constprop.0.btrfs_create_pending_block_groups
->        0.01          -100.0%       0.00        perf-sched.sch_delay.avg.ms.schedule_timeout.btrfs_sync_log.btrfs_sync_file.do_fsync
->        0.01 ± 15%    +246.8%       0.03 ± 96%  perf-sched.sch_delay.max.ms.__cond_resched.__wait_for_common.barrier_all_devices.write_all_supers.btrfs_sync_log
->        0.00 ±223%   +4180.0%       0.04 ± 35%  perf-sched.sch_delay.max.ms.schedule_preempt_disabled.__mutex_lock.constprop.0.btrfs_create_pending_block_groups
->        0.02 ± 98%    -100.0%       0.00        perf-sched.sch_delay.max.ms.schedule_timeout.btrfs_sync_log.btrfs_sync_file.do_fsync
->        0.16 ±106%     -77.8%       0.04 ± 39%  perf-sched.sch_delay.max.ms.wait_log_commit.btrfs_sync_log.btrfs_sync_file.do_fsync
->       27.42 ±  3%     +53.9%      42.21 ±  4%  perf-sched.total_wait_and_delay.average.ms
->       40831 ±  3%     -36.6%      25906 ±  4%  perf-sched.total_wait_and_delay.count.ms
->       27.41 ±  3%     +54.0%      42.21 ±  4%  perf-sched.total_wait_time.average.ms
->      229.23 ±  2%     +51.7%     347.78 ± 15%  perf-sched.wait_and_delay.avg.ms.irq_thread.kthread.ret_from_fork.ret_from_fork_asm
->       12.64 ±  3%     +56.9%      19.84 ±  3%  perf-sched.wait_and_delay.avg.ms.schedule_preempt_disabled.rwsem_down_read_slowpath.down_read.btrfs_tree_read_lock_nested
->        2.33 ± 11%     +63.7%       3.81 ± 18%  perf-sched.wait_and_delay.avg.ms.schedule_preempt_disabled.rwsem_down_write_slowpath.down_write.btrfs_tree_lock_nested
->        6.94 ±  2%     +29.6%       9.00 ± 11%  perf-sched.wait_and_delay.avg.ms.schedule_timeout.rcu_gp_fqs_loop.rcu_gp_kthread.kthread
->        0.31 ±  5%    +421.7%       1.64 ± 25%  perf-sched.wait_and_delay.avg.ms.wait_log_commit.btrfs_sync_log.btrfs_sync_file.do_fsync
->       18.67 ±  5%     -35.7%      12.00 ± 16%  perf-sched.wait_and_delay.count.irq_thread.kthread.ret_from_fork.ret_from_fork_asm
->       22342 ±  4%     -40.1%      13375 ±  4%  perf-sched.wait_and_delay.count.schedule_preempt_disabled.rwsem_down_read_slowpath.down_read.btrfs_tree_read_lock_nested
->        9405 ±  4%     -40.8%       5564 ±  4%  perf-sched.wait_and_delay.count.schedule_preempt_disabled.rwsem_down_write_slowpath.down_write.btrfs_tree_lock_nested
->      666.83 ±  2%     -22.5%     516.50 ± 10%  perf-sched.wait_and_delay.count.schedule_timeout.rcu_gp_fqs_loop.rcu_gp_kthread.kthread
->        4582 ±  4%     -37.4%       2866 ±  5%  perf-sched.wait_and_delay.count.wait_log_commit.btrfs_sync_log.btrfs_sync_file.do_fsync
->        5.34 ± 21%    +756.6%      45.72 ±  4%  perf-sched.wait_time.avg.ms.io_schedule.bit_wait_io.__wait_on_bit.out_of_line_wait_on_bit
->       22.83 ±  2%     +15.9%      26.46 ±  8%  perf-sched.wait_time.avg.ms.io_schedule.folio_wait_bit_common.write_all_supers.btrfs_sync_log
->      229.23 ±  2%     +51.6%     347.59 ± 15%  perf-sched.wait_time.avg.ms.irq_thread.kthread.ret_from_fork.ret_from_fork_asm
->       12.63 ±  3%     +57.1%      19.83 ±  3%  perf-sched.wait_time.avg.ms.schedule_preempt_disabled.rwsem_down_read_slowpath.down_read.btrfs_tree_read_lock_nested
->        2.32 ± 12%     +64.0%       3.81 ± 18%  perf-sched.wait_time.avg.ms.schedule_preempt_disabled.rwsem_down_write_slowpath.down_write.btrfs_tree_lock_nested
->        8.58 ±  9%    -100.0%       0.00        perf-sched.wait_time.avg.ms.schedule_timeout.btrfs_sync_log.btrfs_sync_file.do_fsync
->        6.94 ±  2%     +29.6%       8.99 ± 11%  perf-sched.wait_time.avg.ms.schedule_timeout.rcu_gp_fqs_loop.rcu_gp_kthread.kthread
->        0.31 ±  5%    +427.4%       1.63 ± 25%  perf-sched.wait_time.avg.ms.wait_log_commit.btrfs_sync_log.btrfs_sync_file.do_fsync
->      101.57 ± 20%     +56.6%     159.06 ± 22%  perf-sched.wait_time.max.ms.io_schedule.bit_wait_io.__wait_on_bit.out_of_line_wait_on_bit
->      116.41 ± 27%    -100.0%       0.00        perf-sched.wait_time.max.ms.schedule_timeout.btrfs_sync_log.btrfs_sync_file.do_fsync
-> 
-> 
-> 
-> 
-> Disclaimer:
-> Results have been estimated based on internal Intel analysis and are provided
-> for informational purposes only. Any difference in system hardware or software
-> design or configuration may affect actual performance.
-> 
-> 
-
+T24gOS8zLzI1IDEwOjM2IEFNLCBZaSBaaGFuZyB3cm90ZToNCj4gVGhlIGtlcm5lbCBCVUcgd2Fz
+IHRyaWdnZXJlZCBieSBibGt0ZXN0cyB6YmQvMDA5IG9uIHY2LjE3LXJjMywgcGxlYXNlDQo+IGhl
+bHAgY2hlY2sgaXQgYW5kIGxldCBtZSBrbm93IGlmIHlvdSBuZWVkIGFueSBpbmZvci90ZXN0IGZv
+ciBpdCwNCj4gdGhhbmtzLg0KWy4uLl0NCj4gWyAgMzE5LjgxOTgyMV0gYXNzZXJ0aW9uIGZhaWxl
+ZDogYmctPnpvbmVfdW51c2FibGUgPT0gMCA6OiAwLCBpbg0KPiBmcy9idHJmcy96b25lZC5jOjI1
+ODcNCj4gWyAgMzE5LjgyODQ0OV0gLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0t
+DQo+IFsgIDMxOS44MzM2MThdIGtlcm5lbCBCVUcgYXQgZnMvYnRyZnMvem9uZWQuYzoyNTg3IQ0K
+PiBbICAzMTkuODM4NzkzXSBPb3BzOiBpbnZhbGlkIG9wY29kZTogMDAwMCBbIzFdIFNNUCBLQVNB
+TiBQVEkNCj4gWyAgMzE5Ljg0NDgyOV0gQ1BVOiAzIFVJRDogMCBQSUQ6IDEzNzAgQ29tbTogbW91
+bnQgVGFpbnRlZDogRyAgICAgICAgVw0KPiAgICAgICAgICAgLS0tLS0tICAtLS0NCj4gNi4xNy4w
+LTAucmMzLjI1MDgyNmdmYWIxYmVkYTc1OTcuMzIuZmM0NC54ODZfNjQrZGVidWcgIzEgUFJFRU1Q
+VChsYXp5KQ0KPiBbICAzMTkuODYwOTQ4XSBUYWludGVkOiBbV109V0FSTg0KPiBbICAzMTkuODY0
+MjU5XSBIYXJkd2FyZSBuYW1lOiBEZWxsIEluYy4gUG93ZXJFZGdlIFI3MzAvMFdDSk5ULCBCSU9T
+DQo+IDIuMTkuMCAxMi8xMi8yMDIzDQo+IFsgIDMxOS44NzI3MDRdIFJJUDogMDAxMDpidHJmc196
+b25lZF9yZXNlcnZlX2RhdGFfcmVsb2NfYmcuY29sZCsweGIyLzB4YjQNCj4gWyAgMzE5Ljg4MDAx
+NF0gQ29kZTogYWIgZTggN2UgYWIgZjcgZmYgMGYgMGIgNDEgYjggMWIgMGEgMDAgMDAgNDggYzcN
+Cj4gYzEgODAgOWYgNTkgYWIgMzEgZDIgNDggYzcgYzYgMjAgYjggNTkgYWIgNDggYzcgYzcgMjAg
+YTAgNTkgYWIgZTggNWENCj4gYWIgZjcgZmYgPDBmPiAwYiA0MSBiOCA1ZiAwYSAwMCAwMCA0OCBj
+NyBjMSA4MCA5ZiA1OSBhYiAzMSBkMiA0OCBjNyBjNg0KPiAwMCBiOQ0KPiBbICAzMTkuOTAwOTc3
+XSBSU1A6IDAwMTg6ZmZmZmM5MDAwYzIxZjkzMCBFRkxBR1M6IDAwMDEwMjgyDQo+IFsgIDMxOS45
+MDY4MTZdIFJBWDogMDAwMDAwMDAwMDAwMDA0NyBSQlg6IGZmZmY4ODg4ZDFhNTQwMDAgUkNYOiAw
+MDAwMDAwMDAwMDAwMDAwDQo+IFsgIDMxOS45MTQ3ODNdIFJEWDogMDAwMDAwMDAwMDAwMDA0NyBS
+U0k6IDFmZmZmZmZmZjYyOWNjODQgUkRJOiBmZmZmZjUyMDAxODQzZjE4DQo+IFsgIDMxOS45MjI3
+NDJdIFJCUDogZmZmZjg4ODEyMWI3YzAwMCBSMDg6IGZmZmZmZmZmYTgwMmNiYjUgUjA5OiBmZmZm
+ZjUyMDAxODQzZWRjDQo+IFsgIDMxOS45MzA3MDldIFIxMDogMDAwMDAwMDAwMDAwMDAwMyBSMTE6
+IDAwMDAwMDAwMDAwMDAwMDEgUjEyOiAwMDAwMDAwMDAwMDAwMDAwDQo+IFsgIDMxOS45Mzg2NjZd
+IFIxMzogMDAwMDAwMDAwMDAwMDAwMSBSMTQ6IGZmZmY4ODgxMjFiN2MxMjggUjE1OiBmZmZmODg4
+MTBmMzc5ODAwDQo+IFsgIDMxOS45NDY2MjVdIEZTOiAgMDAwMDdmYmQ4OWU5ODg0MCgwMDAwKSBH
+UzpmZmZmODg5MGFmOGU4MDAwKDAwMDApDQo+IGtubEdTOjAwMDAwMDAwMDAwMDAwMDANCj4gWyAg
+MzE5Ljk1NTY2MV0gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1
+MDAzMw0KPiBbICAzMTkuOTYyMDc3XSBDUjI6IDAwMDA1NTllMGFkNGI1NDAgQ1IzOiAwMDAwMDAw
+OGUxNGNlMDAzIENSNDogMDAwMDAwMDAwMDM3MjZmMA0KPiBbICAzMTkuOTcwMDQ2XSBDYWxsIFRy
+YWNlOg0KPiBbICAzMTkuOTcyNzY3XSAgPFRBU0s+DQo+IFsgIDMxOS45NzUxMDJdICA/IGNyZWF0
+ZV9zcGFjZV9pbmZvKzB4MTU1LzB4MzkwDQo+IFsgIDMxOS45Nzk4ODBdICBvcGVuX2N0cmVlKzB4
+MTg3NC8weDIyMDMNCj4gWyAgMzE5Ljk4Mzk3N10gIGJ0cmZzX2ZpbGxfc3VwZXIuY29sZCsweDJj
+LzB4MTZkDQo+IFsgIDMxOS45ODg4NTBdICBidHJmc19nZXRfdHJlZV9zdXBlcisweDkzNi8weGQ2
+MA0KPiBbICAzMTkuOTkzNzI1XSAgYnRyZnNfZ2V0X3RyZWVfc3Vidm9sKzB4MjMwLzB4NWYwDQo+
+DQoNCk9LIHRoZSBwcm9ibGVtIGlzLCB3ZSdyZSBBU1NFUlRpbmcgaWYgem9uZV91bnVzYWJsZSBp
+cyAwIGFuZCB0aGF0IA0Kb2J2aW91c2x5IGZhaWxzLCBiZWNhdXNlIHpiZC8wMDkgY29uZmlndXJl
+cyBzY3NpX2RlYnVnIHdpdGggYSB6b25lX3NpemUgDQpvZiA0TUIgYW5kIGEgem9uZV9jYXBhY2l0
+eSBvZiAzTUIuIFRoaXMgYXV0b21hdGljYWxseSBsZWFkcyB0byBhbiANCmFzc2VydGlvbiBmYWls
+dXJlIGFzIGJnLT56b25lX3VudXNhYmxlIGlzIDFNQi4NCg0KVGhlIHRlc3QgaW4gdGhlcmUgaXMg
+dG8gY2hlY2sgaWYgd2UgaGF2ZSBhbiBlbXB0eSBibG9jay1ncm91cC4NCkBOYW9oaXJvIHdoYXQg
+ZG8geW91IHRoaW5rIG9mIHRoZSBmb2xsb3dpbmc6DQoNCmRpZmYgLS1naXQgYS9mcy9idHJmcy96
+b25lZC5jIGIvZnMvYnRyZnMvem9uZWQuYw0KaW5kZXggNmU2NmVjNDkxMTgxLi5mODk3ZjkxNGI3
+OGUgMTAwNjQ0DQotLS0gYS9mcy9idHJmcy96b25lZC5jDQorKysgYi9mcy9idHJmcy96b25lZC5j
+DQpAQCAtMjU5MCw3ICsyNTkwLDggQEAgdm9pZCBidHJmc196b25lZF9yZXNlcnZlX2RhdGFfcmVs
+b2NfYmcoc3RydWN0IA0KYnRyZnNfZnNfaW5mbyAqZnNfaW5mbykNCiDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNwYWNlX2luZm8tPmRpc2tfdG90YWwgLT0g
+YmctPmxlbmd0aCAqIGZhY3RvcjsNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIC8qIFRoZXJlIGlzIG5vIGFsbG9jYXRpb24gZXZlciBoYXBwZW5lZC4gKi8N
+CiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEFTU0VSVChi
+Zy0+dXNlZCA9PSAwKTsNCi3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBBU1NFUlQoYmctPnpvbmVfdW51c2FibGUgPT0gMCk7DQorwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQVNTRVJUKGJnLT56b25lX3VudXNhYmxlID09IDAg
+fHwNCivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIGJnLT5sZW5ndGggLSBiZy0+em9uZV91bnVzYWJsZSA9PSANCmJnLT56b25lX2NhcGFj
+aXR5KTsNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8q
+IE5vIHN1cGVyIGJsb2NrIGluIGEgYmxvY2sgZ3JvdXAgb24gdGhlIHpvbmVkIA0Kc2V0dXAuICov
+DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBBU1NFUlQo
+YmctPmJ5dGVzX3N1cGVyID09IDApOw0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgc3Bpbl91bmxvY2soJnNwYWNlX2luZm8tPmxvY2spOw0KDQo=
 
