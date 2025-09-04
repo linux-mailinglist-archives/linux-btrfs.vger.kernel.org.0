@@ -1,187 +1,117 @@
-Return-Path: <linux-btrfs+bounces-16620-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16621-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79CDAB43553
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Sep 2025 10:17:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07BADB43C61
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Sep 2025 15:02:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E42318905C7
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Sep 2025 08:16:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0520A1BC077C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Sep 2025 13:01:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A51C2BF3CC;
-	Thu,  4 Sep 2025 08:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3443F2FF649;
+	Thu,  4 Sep 2025 13:00:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rrrDuuf9";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="IMOMCm2w"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="pavqM5uI"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D922BEC27
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Sep 2025 08:14:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7DDA2FF64F
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Sep 2025 13:00:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756973699; cv=none; b=vEkr/iIw5/sGS0TMSkkUQ08bLUMfjh6j+dynxe/Bor+v+W8qjBnoNjPDPmAVjSgf/gGYe4/JbeZGDeZWLGSu+ZM9o/ASrQAAUqyhiRBnXtyzFIPn+BuXegCBqGZj4NagOhjMD/o3kEMeG/J/yz3bFt8Uzsl9XaOv4ahBqozYjeI=
+	t=1756990858; cv=none; b=tuEXDl6DciFiRbosiETYIrE0OPMO4AxjNqurLKg5ua6mOxdIU286MUHd6LnxUTh27+5ig80jnJByNkpaYX/nwQlcavWTTNWOCfumGmU1AoMs24cpFzuDgh7XZ91+FRTuh1VKnGShl3gwxjyU+t/td+oJCXJKYZV0lcnU7vQzU7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756973699; c=relaxed/simple;
-	bh=tephdfM28IiNbU3KFWqaW7voER/RpNZVRY3snJmdzyk=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=YwJF+TBO1HYgl8GbIFDbqBssohinjZO3XxD/NsCzreAHkaEwEQukHvoAufsJe7SrMlQB8JyV4Q4Fz7s2xUehKDWGF4CUC9YHLuX1EGK5UAUtpvAR9TtkeEIaJlhz9vjgcB4pbfzMqeS1LDeIgzTkOOji+1NIRafN/xwggxr4Jso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rrrDuuf9; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=IMOMCm2w; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EE0A033C91;
-	Thu,  4 Sep 2025 08:14:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1756973696; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=NyaY6tqfHh4HoEfnNdUIofOQ+iE3G2OM/91t6XBhNU0=;
-	b=rrrDuuf9w8NUmcNOpbMqkv9pnIOJFl7VV151IQsV6MywSMNwiRAe94NLHkRKz6hiClQpA2
-	8mlL+O5w7x3ktmQkAwvUkGCd475Nkzy8lyJPentrJWxqlS/9j1qVjWYxgtRrLYf9AyL6ON
-	2J/EK3My31uIKV8KHUhDmuPDLNKb56I=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1756973695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=NyaY6tqfHh4HoEfnNdUIofOQ+iE3G2OM/91t6XBhNU0=;
-	b=IMOMCm2wnxCuEi06bAkHt0Dol//8SRZgOfkBiDRlSoS0jtD9mfXmoA7fKnxNQlygzs9Zh8
-	QUfjd9l1CdLnPbTylppp0fCD6lFU4nxIvLQPFmnAzzzlKhmhniHWiKd+K861LydMI81Zz+
-	uYkasAMHEfPHTuvXH2Kg0V0cq3yRFSs=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EED4413675;
-	Thu,  4 Sep 2025 08:14:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id q1q/K35KuWgbeQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Thu, 04 Sep 2025 08:14:54 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: [PATCH] fstests: generic/733: avoid output difference due to bash's version
-Date: Thu,  4 Sep 2025 17:44:29 +0930
-Message-ID: <20250904081429.114716-1-wqu@suse.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1756990858; c=relaxed/simple;
+	bh=Tmgaw4i0Yd4nWUFJu9joP03HPkAuLpfqflf1bi5GjyA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vB03RhE/ZJ9gfb6xlVsXx0o9zQhrSz23ZleBJfqVtbseK99M1hnGbYsOAfDpdfDzIECkvl2KIIZwEMwHJH27vRmBPhCuDPRcELbzsPsC/QfotO6bh1/WPDdVmUkoiqQiKa1UCChyOr7c5nC9JikWylZ1CFRghO9z9wGhmOJBpVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=pavqM5uI; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-82-200.bstnma.fios.verizon.net [173.48.82.200])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 584D0lug019785
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 4 Sep 2025 09:00:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1756990849; bh=uR/MGN8yFgfE1t/K21wdgS0m0nWB6QMulCRtGqp8wMw=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=pavqM5uIeO+Kd24WXUyCs0emWw1bn9YJsGsq8iO22XNEjfWaQwvJOAJORbDCYqX/P
+	 qssZWjlZ1TrNGBT8l8K/ay0758IfcvsNaiQGyKvJwIfLczRaEueeCSZibnCdbO3Jbh
+	 UQW+C8KDe6TlZTtorZH3NWC+0GB26zR1xYjycWEp9ESGO3E2ltL1qaAN1d4R11esGE
+	 JIi/NMK5Wrf2R1Y1Frl3v1pIT+cERL+03xEpFi1KP9o4ohNIM9JoxK85Tk7VpHIF8A
+	 u5DjvaZ0GHTDnTxESXyj6A5nSMVN8gzN4kWF+JdXRYDZoC+sJ1NvVm4Z7SoFS7K98f
+	 izlp6PnetPRww==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 88C5E2E00D6; Thu, 04 Sep 2025 09:00:47 -0400 (EDT)
+Date: Thu, 4 Sep 2025 09:00:47 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: Re: [PATCH v2] fstests: generic/228: do not rely on the bash core
+ dump output
+Message-ID: <20250904130047.GB3267668@mit.edu>
+References: <20250904061944.105518-1-wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -2.80
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250904061944.105518-1-wqu@suse.com>
 
-[FALSE ALERT]
-When running generic/733 with bash 5.3.3 (any thing newer than 5.3.0
-will reproduce the bug), the test case will fail like the following:
+On Thu, Sep 04, 2025 at 03:49:44PM +0930, Qu Wenruo wrote:
+> [BUG]
+> With bash 5.3.x, the test case generic/228 will always fail with the
+> following golden output mismatch:
+> 
+> FSTYP         -- btrfs
+> PLATFORM      -- Linux/x86_64 btrfs-vm 6.17.0-rc3-custom+ #281 SMP PREEMPT_DYNAMIC Thu Aug 28 11:15:21 ACST 2025
+> MKFS_OPTIONS  -- /dev/mapper/test-scratch1
+> MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
+> 
+> generic/228 1s ... - output mismatch (see /home/adam/xfstests/results//generic/228.out.bad)
+>     --- tests/generic/228.out	2025-09-04 15:15:08.965000000 +0930
+>     +++ /home/adam/xfstests/results//generic/228.out.bad	2025-09-04 15:16:05.627457599 +0930
+>     @@ -1,6 +1,6 @@
+>      QA output created by 228
+>      File size limit is now set to 100 MB.
+>      Let us try to preallocate 101 MB. This should fail.
+>     -File size limit exceeded
+>     +File size limit exceeded   $XFS_IO_PROG -f -c 'falloc 0 101m' $TEST_DIR/ouch
+>      Let us now try to preallocate 50 MB. This should succeed.
+>      Test over.
+>     ...
+>     (Run 'diff -u /home/adam/xfstests/tests/generic/228.out /home/adam/xfstests/results//generic/228.out.bad'  to see the entire diff)
+> Ran: generic/228
+> Failures: generic/228
+> Failed 1 of 1 tests
+> 
+> [CAUSE]
+> The "File size limit exceeded" line is never from xfs_io, but the
+> coredump from bash itself.
+> 
+> And with latest 5.3.x bash, it added extra dump during such core dump
+> handling (even if we have explicitly skipped the coredump).
+> 
+> [FIX]
+> Instead of relying on bash to do the coredump, which is unreliable
+> between different bash versions as I have shown above, ignore the
+> SIGXFSZ signal so that xfs_io will do the error output, which is more
+> reliable than bash.
+> 
+> And since we do not need to bother the coredump behavior, remove all the
+> cleanup and preparation for coredump.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-generic/733 19s ... - output mismatch (see /home/adam/xfstests/results//generic/733.out.bad)
-    --- tests/generic/733.out	2025-09-04 17:30:08.568000000 +0930
-    +++ /home/adam/xfstests/results//generic/733.out.bad	2025-09-04 17:30:32.898475103 +0930
-    @@ -2,5 +2,5 @@
-     Format and mount
-     Create a many-block file
-     Reflink the big file
-    -Terminated
-    +Terminated                 $here/src/t_reflink_read_race "$testdir/file1" "$testdir/file2" "$testdir/outcome" &>> $seqres.full
-     test completed successfully
-    ...
-    (Run 'diff -u /home/adam/xfstests/tests/generic/733.out /home/adam/xfstests/results//generic/733.out.bad'  to see the entire diff)
+Makes sense, thanks for testing against the latest bash!
 
-[CAUSE]
-The failure is fs independent, but bash version dependent.
-
-In bash v5.3.x, the job control will output the command which triggered
-the job control (from termination to core dump etc).
-
-The "Terminated" message is not from the program, but from bash's job
-control, thus redirection won't hide that message.
-
-[FIX]
-Instead of relying on the job control behavior from bash, run the
-t_reflink_read_race tool in background, and wait for it to finish.
-
-Background bash will be non-interactive, thus no job control and no
-"Terminated" message.
-
-Thankfully this particular test case does extra checks on the outcome
-file to determine if the program is properly terminated, thus we are
-safe to delete the "Terminated" line from the golden output.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/generic/733     | 15 ++++++++++++++-
- tests/generic/733.out |  1 -
- 2 files changed, 14 insertions(+), 2 deletions(-)
-
-diff --git a/tests/generic/733 b/tests/generic/733
-index aa7ad994..b8321abc 100755
---- a/tests/generic/733
-+++ b/tests/generic/733
-@@ -70,8 +70,21 @@ done
- echo "fnr=$fnr" >> $seqres.full
- 
- echo "Reflink the big file"
-+# Workaround the default job control by running it at background.
-+#
-+# Job control of bash v5.3.x will output the command which triggered the job
-+# control (terminated, core dump etc).
-+# And since it's handled by bash itself, redirection won't work for the job
-+# control message.
-+#
-+# Running the command in background will disable the job control thus
-+# there will be no extra message like "Terminated".
-+#
-+# We will check the outcome file to determine if the program is properly
-+# terminated, thus no need to bother the job control message.
- $here/src/t_reflink_read_race "$testdir/file1" "$testdir/file2" \
--	"$testdir/outcome" &>> $seqres.full
-+	"$testdir/outcome" &>> $seqres.full &
-+wait
- 
- if [ ! -e "$testdir/outcome" ]; then
- 	echo "Could not set up program"
-diff --git a/tests/generic/733.out b/tests/generic/733.out
-index d4f5a7c7..2383cc8d 100644
---- a/tests/generic/733.out
-+++ b/tests/generic/733.out
-@@ -2,5 +2,4 @@ QA output created by 733
- Format and mount
- Create a many-block file
- Reflink the big file
--Terminated
- test completed successfully
--- 
-2.51.0
-
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 
