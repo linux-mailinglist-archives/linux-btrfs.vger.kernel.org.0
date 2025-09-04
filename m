@@ -1,117 +1,204 @@
-Return-Path: <linux-btrfs+bounces-16621-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16622-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07BADB43C61
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Sep 2025 15:02:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11E0FB43F34
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Sep 2025 16:40:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0520A1BC077C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Sep 2025 13:01:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3146C7C190A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Sep 2025 14:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3443F2FF649;
-	Thu,  4 Sep 2025 13:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8546E312821;
+	Thu,  4 Sep 2025 14:34:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="pavqM5uI"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="t41CnZ+6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="78jNdZHE";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x7HUkFsQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="R1k+xSkn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7DDA2FF64F
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Sep 2025 13:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C87A880B
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Sep 2025 14:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756990858; cv=none; b=tuEXDl6DciFiRbosiETYIrE0OPMO4AxjNqurLKg5ua6mOxdIU286MUHd6LnxUTh27+5ig80jnJByNkpaYX/nwQlcavWTTNWOCfumGmU1AoMs24cpFzuDgh7XZ91+FRTuh1VKnGShl3gwxjyU+t/td+oJCXJKYZV0lcnU7vQzU7M=
+	t=1756996464; cv=none; b=FWCay+nCMVI60edbt8KZcIlA0eAeUuUDR7xpWCPNiTAMfmgrwL6n65CKT4Wgnq0lv1RvmyQ9SAF9SSt4FuJfTbSIDDCCdQclOuTTjGHq9PoVkzpabqq7H0dAXhtw5Rn2nx5DUX4I3m2bEsGjpwCAk3dRZcWh+pIfx6m7/3O9bP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756990858; c=relaxed/simple;
-	bh=Tmgaw4i0Yd4nWUFJu9joP03HPkAuLpfqflf1bi5GjyA=;
+	s=arc-20240116; t=1756996464; c=relaxed/simple;
+	bh=KDrZGvUE/GIDfecxMJAVXTSqPDgoWbCvYdazZbdNuwk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vB03RhE/ZJ9gfb6xlVsXx0o9zQhrSz23ZleBJfqVtbseK99M1hnGbYsOAfDpdfDzIECkvl2KIIZwEMwHJH27vRmBPhCuDPRcELbzsPsC/QfotO6bh1/WPDdVmUkoiqQiKa1UCChyOr7c5nC9JikWylZ1CFRghO9z9wGhmOJBpVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=pavqM5uI; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-82-200.bstnma.fios.verizon.net [173.48.82.200])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 584D0lug019785
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 4 Sep 2025 09:00:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1756990849; bh=uR/MGN8yFgfE1t/K21wdgS0m0nWB6QMulCRtGqp8wMw=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=pavqM5uIeO+Kd24WXUyCs0emWw1bn9YJsGsq8iO22XNEjfWaQwvJOAJORbDCYqX/P
-	 qssZWjlZ1TrNGBT8l8K/ay0758IfcvsNaiQGyKvJwIfLczRaEueeCSZibnCdbO3Jbh
-	 UQW+C8KDe6TlZTtorZH3NWC+0GB26zR1xYjycWEp9ESGO3E2ltL1qaAN1d4R11esGE
-	 JIi/NMK5Wrf2R1Y1Frl3v1pIT+cERL+03xEpFi1KP9o4ohNIM9JoxK85Tk7VpHIF8A
-	 u5DjvaZ0GHTDnTxESXyj6A5nSMVN8gzN4kWF+JdXRYDZoC+sJ1NvVm4Z7SoFS7K98f
-	 izlp6PnetPRww==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 88C5E2E00D6; Thu, 04 Sep 2025 09:00:47 -0400 (EDT)
-Date: Thu, 4 Sep 2025 09:00:47 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=h+KhZeVuUdmEZwYJbczlYd8wCfnUgeJ+BdnyBn66b8HlE2nkJ/dH8CVgsiIyCEFLSwuNp7yIQrb1sxFtDjo7tinT+4tHB2kvQV5S7CFXtJfrp49JnkW441HfwdXOhDuBxvTuiaULD8mQWzhh5LEqdNe2AM7LZGCjco3d0hQhvrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=t41CnZ+6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=78jNdZHE; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x7HUkFsQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=R1k+xSkn; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F274C5FFDE;
+	Thu,  4 Sep 2025 14:34:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756996461;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y3NT6nzfup9RZ4zWSDLmIPu1HkVzpUlHaAUVTuWje9o=;
+	b=t41CnZ+69vYsx4xJ+BNFrQ1qYCrPifDCTnf9gneosjAcDvsVNmO4HzyZZNlaoHAiEpx32Q
+	w35ivhyp0Potgkt6Da1ySS8h5oKWaMU5Ld2gt+UEwkIW7tB/isv7wO8evzP1zQFqPbFKZ9
+	X23A4FL5JhrRHkraZz00iLTqTuUawLs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756996461;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y3NT6nzfup9RZ4zWSDLmIPu1HkVzpUlHaAUVTuWje9o=;
+	b=78jNdZHExAPFTEUV48ILa35KbSAQ7h6n4YQ65UgSOcbtisK+VQv5F5MBYDH+4jReAcEr4R
+	ETHtKUGbTzz1eMBA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756996460;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y3NT6nzfup9RZ4zWSDLmIPu1HkVzpUlHaAUVTuWje9o=;
+	b=x7HUkFsQnSv0TwegdJSUvtZ0DllXit5MI/9hh35nfPzFIcM5ldBL4FUHlw/74onmST9T9t
+	XqwIBUs41z5ASgmFqr3vPtCUVoRiKmwPixEuh9gzJnSf3H69r/fL3oLT6ZCE1MhKWAdZ8F
+	06n9SAW1rsI7baCILxbOBbxAQBXLUFU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756996460;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y3NT6nzfup9RZ4zWSDLmIPu1HkVzpUlHaAUVTuWje9o=;
+	b=R1k+xSkn3DSxI203wW9hPUpGzS66R0NtPny7w5nvqJTjvo9g5abKNjLG6kBkW5z7C2jyzz
+	cDRGIJYPWFUGk+AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D946A13675;
+	Thu,  4 Sep 2025 14:34:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id o2TeNGyjuWj6egAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 04 Sep 2025 14:34:20 +0000
+Date: Thu, 4 Sep 2025 16:34:15 +0200
+From: David Sterba <dsterba@suse.cz>
 To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH v2] fstests: generic/228: do not rely on the bash core
- dump output
-Message-ID: <20250904130047.GB3267668@mit.edu>
-References: <20250904061944.105518-1-wqu@suse.com>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org,
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [linus:master] [btrfs] bddf57a707:
+ stress-ng.sync-file.ops_per_sec 44.2% regression
+Message-ID: <20250904143415.GL5333@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <202509031643.303d114c-lkp@intel.com>
+ <9d6db7e9-318f-4242-9883-9eee8ee20f5e@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250904061944.105518-1-wqu@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9d6db7e9-318f-4242-9883-9eee8ee20f5e@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:mid,01.org:url];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
 
-On Thu, Sep 04, 2025 at 03:49:44PM +0930, Qu Wenruo wrote:
-> [BUG]
-> With bash 5.3.x, the test case generic/228 will always fail with the
-> following golden output mismatch:
+On Wed, Sep 03, 2025 at 06:18:01PM +0930, Qu Wenruo wrote:
+> 在 2025/9/3 18:14, kernel test robot 写道:
+> > 
+> > Hello,
+> > 
+> > kernel test robot noticed a 44.2% regression of stress-ng.sync-file.ops_per_sec on:
+> > 
+> > 
+> > commit: bddf57a70781ef8821d415200bdbcb71f443993a ("btrfs: delay btrfs_open_devices() until super block is created")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > 
+> > [still regression on      linus/master fb679c832b6497f19fffb8274c419783909c0912]
+> > [still regression on linux-next/master 3cace99d63192a7250461b058279a42d91075d0c]
+> > 
+> > testcase: stress-ng
+> > config: x86_64-rhel-9.4
+> > compiler: gcc-12
+> > test machine: 64 threads 2 sockets Intel(R) Xeon(R) Gold 6346 CPU @ 3.10GHz (Ice Lake) with 256G memory
+> > parameters:
+> > 
+> > 	nr_threads: 100%
+> > 	disk: 1HDD
+> > 	testtime: 60s
+> > 	fs: btrfs
+> > 	test: sync-file
+> > 	cpufreq_governor: performance
+> > 
+> > 
+> > 
+> > 
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <oliver.sang@intel.com>
+> > | Closes: https://lore.kernel.org/oe-lkp/202509031643.303d114c-lkp@intel.com
+> > 
+> > 
+> > Details are as below:
+> > -------------------------------------------------------------------------------------------------->
+> > 
+> > 
+> > The kernel config and materials to reproduce are available at:
+> > https://download.01.org/0day-ci/archive/20250903/202509031643.303d114c-lkp@intel.com
+> > 
+> > =========================================================================================
+> > compiler/cpufreq_governor/disk/fs/kconfig/nr_threads/rootfs/tbox_group/test/testcase/testtime:
+> >    gcc-12/performance/1HDD/btrfs/x86_64-rhel-9.4/100%/debian-12-x86_64-20240206.cgz/lkp-icl-2sp8/sync-file/stress-ng/60s
+> > 
+> > commit:
+> >    de339cbfb4 ("btrfs: call bdev_fput() to reclaim the blk_holder immediately")
+> >    bddf57a707 ("btrfs: delay btrfs_open_devices() until super block is created")
 > 
-> FSTYP         -- btrfs
-> PLATFORM      -- Linux/x86_64 btrfs-vm 6.17.0-rc3-custom+ #281 SMP PREEMPT_DYNAMIC Thu Aug 28 11:15:21 ACST 2025
-> MKFS_OPTIONS  -- /dev/mapper/test-scratch1
-> MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
+> This doesn't sound sane to me.
 > 
-> generic/228 1s ... - output mismatch (see /home/adam/xfstests/results//generic/228.out.bad)
->     --- tests/generic/228.out	2025-09-04 15:15:08.965000000 +0930
->     +++ /home/adam/xfstests/results//generic/228.out.bad	2025-09-04 15:16:05.627457599 +0930
->     @@ -1,6 +1,6 @@
->      QA output created by 228
->      File size limit is now set to 100 MB.
->      Let us try to preallocate 101 MB. This should fail.
->     -File size limit exceeded
->     +File size limit exceeded   $XFS_IO_PROG -f -c 'falloc 0 101m' $TEST_DIR/ouch
->      Let us now try to preallocate 50 MB. This should succeed.
->      Test over.
->     ...
->     (Run 'diff -u /home/adam/xfstests/tests/generic/228.out /home/adam/xfstests/results//generic/228.out.bad'  to see the entire diff)
-> Ran: generic/228
-> Failures: generic/228
-> Failed 1 of 1 tests
+> The two commits are only affecting btrfs mounting/unmounting, I can not 
+> make any sense on why they would affect performance.
 > 
-> [CAUSE]
-> The "File size limit exceeded" line is never from xfs_io, but the
-> coredump from bash itself.
-> 
-> And with latest 5.3.x bash, it added extra dump during such core dump
-> handling (even if we have explicitly skipped the coredump).
-> 
-> [FIX]
-> Instead of relying on bash to do the coredump, which is unreliable
-> between different bash versions as I have shown above, ignore the
-> SIGXFSZ signal so that xfs_io will do the error output, which is more
-> reliable than bash.
-> 
-> And since we do not need to bother the coredump behavior, remove all the
-> cleanup and preparation for coredump.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Or does stress-ng doing a lot of mounting/unmounting?
 
-Makes sense, thanks for testing against the latest bash!
-
-Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+Yeah, unless there's some indirect way how mount affects the tests the
+numbers do not match the identified patches. The difference is roughly
+consistent in all the stats to be about 40% less so it's like it's doing
+half of the work. Delayed device opening does not explain that.
 
