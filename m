@@ -1,101 +1,101 @@
-Return-Path: <linux-btrfs+bounces-16678-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16679-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83FEBB45FC9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Sep 2025 19:13:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E687B46034
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Sep 2025 19:33:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9801E3BA703
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Sep 2025 17:13:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75D77A60E71
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Sep 2025 17:33:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B810D31327C;
-	Fri,  5 Sep 2025 17:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D7B34F482;
+	Fri,  5 Sep 2025 17:33:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jBPTd06B";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZCgelulG";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jBPTd06B";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZCgelulG"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HiWMCiPh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ynefy9NU";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HiWMCiPh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ynefy9NU"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6406F15853B
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Sep 2025 17:13:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0559D306B1C
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Sep 2025 17:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757092403; cv=none; b=tIF8WldNESVu+TMonSd/M6WTXi6EuMpNP7XALAwl1Zgbqsys0RuMmZOR2S02e5Ia6NPyeOgXQj6zI1We1rAxa/2y9qB7JXIDLb1/cVqiuhyGYaLdgQfZKtv98Ai+/IBOeCqYj6SaCX1RRU4lWKhuZYSlimRLSb2w0eg9WhyIzi8=
+	t=1757093604; cv=none; b=jIPw7GrAfGIFO/yGlENU+P+KqVit7zblAuGc3xf773S+I7x+LzJVU6IYBXxcTUQ3EYXRJSs6DLCgHRhSxgleCWGWg5ZGiXg+MHAX5ZoW7tPJbSzSJpBAaUjBJJTZPtNaseh5VGlFxVso7l4E9cEJ3rqMScQ0HSGUxnKh7i1+o5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757092403; c=relaxed/simple;
-	bh=kBokPeiie2wsNoBfgAPpAXujRwgOMyxLYbwBSsz+dM8=;
+	s=arc-20240116; t=1757093604; c=relaxed/simple;
+	bh=vGAwwWs8lcW13LYr7V+w6gP7qD8LXv/bLpc+xsg53c4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N9S3EwglmoUiJrUNb1shAne8Tl/JqTEpX8iIpik8M94j8Eu9WdEc2n6RsDUb/Nc73Ysxj0PyJiQm0RmQLxMAhNCPDOW02SSr0sircbooVkNxFijVxND/YZyvWB/yi6EX+qaFU4XHN6obv1FFFAAk8yB4jNq0q1cbzdjhsChxjmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jBPTd06B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZCgelulG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jBPTd06B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZCgelulG; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZTdSPNlroOaZs9RC/tMjwrgxOS7upNe1M4ODPrcU3yEmPnbWziaH7kz8PfJWYlN+/PCq0QcoYABtSyJJ9pDykbt/Cjli1DqN+8ymx6G3ZEpErgwjiQPkngU5WUxjgbt5VdUjfrk25K1P8jK17g48f06WX+8zJUmAn5WR5TBhZBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HiWMCiPh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ynefy9NU; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HiWMCiPh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ynefy9NU; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 083F6774DE;
-	Fri,  5 Sep 2025 17:13:19 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6F9705CACD;
+	Fri,  5 Sep 2025 17:33:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1757092399;
+	t=1757093600;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=u1GLYSc77ZAnp1H3DGUq8HlzZvLX+pr2Bz1d99YyVGw=;
-	b=jBPTd06Bh1kj8XtY2/28K7C9Sr22U+EKKXVNWTQAavc1VEVUmg4rpNs66tpBmothlTHWFt
-	TLk1NCHmYFnW4z7z+c53j1Kg3uwo1Bdq/sXWsIvaR/9HReceUR0XIlpPVYa+LxPYXDiiyA
-	iXQzoGzbPmzehi2hq98xbxfpgpkTY0g=
+	bh=zjaTPK3734zpWDtyywYbI5KbTqckZMAwyyDVDcQpsOA=;
+	b=HiWMCiPhJPRSr9bS+PmRn7tenxk64FQ7g/LrToSlylLhFiwDv21TTZ9JVvjUN1n5zRxAbv
+	vftCl7OP7H6WzMXWp6rKhq1pTO8TynRfJLerDBODiys9cPrYfqlQuW5S6QremZEPTxMu+z
+	FGERiUBh3T0Bo26EhGKPRaNpIEg+PEc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1757092399;
+	s=susede2_ed25519; t=1757093600;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=u1GLYSc77ZAnp1H3DGUq8HlzZvLX+pr2Bz1d99YyVGw=;
-	b=ZCgelulGfNsPUBlcXqLSj5Klg9ZswCICtsu5WYqfrzf+zEUKRUODEIsNpsMmxpif/Mhvea
-	N4Me3BOP39JcP+CQ==
+	bh=zjaTPK3734zpWDtyywYbI5KbTqckZMAwyyDVDcQpsOA=;
+	b=ynefy9NUJ2BQX9UNHvWR1NQNjNjWqydk1pb+Ek38F+FglzunPgpX4BmaRwiZFCIVh3aT6L
+	5DKZdcMUnXPBTXBA==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=jBPTd06B;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZCgelulG
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1757092399;
+	t=1757093600;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=u1GLYSc77ZAnp1H3DGUq8HlzZvLX+pr2Bz1d99YyVGw=;
-	b=jBPTd06Bh1kj8XtY2/28K7C9Sr22U+EKKXVNWTQAavc1VEVUmg4rpNs66tpBmothlTHWFt
-	TLk1NCHmYFnW4z7z+c53j1Kg3uwo1Bdq/sXWsIvaR/9HReceUR0XIlpPVYa+LxPYXDiiyA
-	iXQzoGzbPmzehi2hq98xbxfpgpkTY0g=
+	bh=zjaTPK3734zpWDtyywYbI5KbTqckZMAwyyDVDcQpsOA=;
+	b=HiWMCiPhJPRSr9bS+PmRn7tenxk64FQ7g/LrToSlylLhFiwDv21TTZ9JVvjUN1n5zRxAbv
+	vftCl7OP7H6WzMXWp6rKhq1pTO8TynRfJLerDBODiys9cPrYfqlQuW5S6QremZEPTxMu+z
+	FGERiUBh3T0Bo26EhGKPRaNpIEg+PEc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1757092399;
+	s=susede2_ed25519; t=1757093600;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=u1GLYSc77ZAnp1H3DGUq8HlzZvLX+pr2Bz1d99YyVGw=;
-	b=ZCgelulGfNsPUBlcXqLSj5Klg9ZswCICtsu5WYqfrzf+zEUKRUODEIsNpsMmxpif/Mhvea
-	N4Me3BOP39JcP+CQ==
+	bh=zjaTPK3734zpWDtyywYbI5KbTqckZMAwyyDVDcQpsOA=;
+	b=ynefy9NUJ2BQX9UNHvWR1NQNjNjWqydk1pb+Ek38F+FglzunPgpX4BmaRwiZFCIVh3aT6L
+	5DKZdcMUnXPBTXBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DFDB413306;
-	Fri,  5 Sep 2025 17:13:18 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 587FC13306;
+	Fri,  5 Sep 2025 17:33:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id /o41Ni4au2gMNwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 05 Sep 2025 17:13:18 +0000
-Date: Fri, 5 Sep 2025 19:13:13 +0200
+	id fd5rFeAeu2hcPAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 05 Sep 2025 17:33:20 +0000
+Date: Fri, 5 Sep 2025 19:33:19 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Xichao Zhao <zhao.xichao@vivo.com>
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove redundant condition checks
-Message-ID: <20250905171313.GO5333@twin.jikos.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] btrfs: introduce btrfs_bio_for_each_block_all()
+ helper
+Message-ID: <20250905173319.GP5333@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20250905080103.382846-1-zhao.xichao@vivo.com>
+References: <cover.1756803640.git.wqu@suse.com>
+ <85543e15b7440b4d7b8f88d1e5384a0b2dafa693.1756803640.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -104,63 +104,112 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250905080103.382846-1-zhao.xichao@vivo.com>
+In-Reply-To: <85543e15b7440b4d7b8f88d1e5384a0b2dafa693.1756803640.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 083F6774DE
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.997];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	ARC_NA(0.00)[];
 	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
 	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -4.21
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -4.00
 
-On Fri, Sep 05, 2025 at 04:01:03PM +0800, Xichao Zhao wrote:
-> Remove redundant condition checks and replace else if with else.
+On Tue, Sep 02, 2025 at 06:32:15PM +0930, Qu Wenruo wrote:
+> Currently if we want to iterate all blocks inside a bio, we do something
+> like this:
 > 
-> Signed-off-by: Xichao Zhao <zhao.xichao@vivo.com>
+> 	bio_for_each_segment_all(bvec, bio, iter_all) {
+> 		for (off = 0; off < bvec->bv_len; off += sectorsize) {
+> 			/* Iterate blocks using bv + off */
+> 		}
+> 	}
+> 
+> That's fine for now, but it will not handle future bs > ps, as
+> bio_for_each_segment_all() is a single-page iterator, it will always
+> return a bvec that's no larger than a page.
+> 
+> But for bs > ps cases, we need a full folio (which covers at least one
+> block) so that we can work on the block.
+> 
+> To address this problem and handle future bs > ps cases better:
+> 
+> - Introduce a helper btrfs_bio_for_each_block_all()
+>   This helper will create a local bvec_iter, which has the size of the
+>   target bio. Then grab the current physical address of the current
+>   location, then advance the iterator by block size.
+> 
+> - Use btrfs_bio_for_each_block_all() to replace existing call sites
+>   Including:
+> 
+>   * set_bio_pages_uptodate() in raid56
+>   * verify_bio_data_sectors() in raid56
+> 
+>   Both will result much easier to read code.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/inode-item.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  fs/btrfs/misc.h   | 24 +++++++++++++++++++++++
+>  fs/btrfs/raid56.c | 49 +++++++++++++++++++----------------------------
+>  2 files changed, 44 insertions(+), 29 deletions(-)
 > 
-> diff --git a/fs/btrfs/inode-item.c b/fs/btrfs/inode-item.c
-> index f06cf701ae5a..3d0631bf7389 100644
-> --- a/fs/btrfs/inode-item.c
-> +++ b/fs/btrfs/inode-item.c
-> @@ -531,7 +531,7 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
->  			if (extent_type != BTRFS_FILE_EXTENT_INLINE)
->  				item_end +=
->  				    btrfs_file_extent_num_bytes(leaf, fi);
-> -			else if (extent_type == BTRFS_FILE_EXTENT_INLINE)
-> +			else
-
-I'd rather explicitly check for the values and add a separate fallback
-statement that will catch unexpected values and propagates the errors.
-As you did it we'd assume that everything "else" has to be
-BTRFS_FILE_EXTENT_INLINE which may not be true in case of error.
-
->  				item_end += btrfs_file_extent_ram_bytes(leaf, fi);
+> diff --git a/fs/btrfs/misc.h b/fs/btrfs/misc.h
+> index f210f808311f..2352ab56dbb3 100644
+> --- a/fs/btrfs/misc.h
+> +++ b/fs/btrfs/misc.h
+> @@ -45,6 +45,30 @@ static inline phys_addr_t bio_iter_phys(struct bio *bio, struct bvec_iter *iter)
+>  	     (paddr = bio_iter_phys((bio), (iter)), 1);			\
+>  	     bio_advance_iter_single((bio), (iter), (blocksize)))
 >  
->  			btrfs_trace_truncate(control->inode, leaf, fi,
+> +/* Helper to initialize a bvec_iter to the size of the specified bio. */
+
+Please drop 'Helper to ...'
+
+> +static inline struct bvec_iter init_bvec_iter_for_bio(struct bio *bio)
+> +{
+> +	struct bio_vec *bvec;
+> +	u32 bio_size = 0;
+> +	int i;
+> +
+> +	bio_for_each_bvec_all(bvec, bio, i)
+> +		bio_size += bvec->bv_len;
+> +
+> +	return (struct bvec_iter) {
+> +		.bi_sector = 0,
+> +		.bi_size = bio_size,
+> +		.bi_idx = 0,
+> +		.bi_bvec_done = 0,
+> +	};
+
+We don't use this kind of initializers, usually the structure is passed
+as parameter, but I can see how it makes it convenient in the for()
+initialization. The parameter way would work but would also look strange
+so I think it's acceptable.
+
+> +}
+> +
+> +#define btrfs_bio_for_each_block_all(paddr, bio, blocksize)		\
+> +	for (struct bvec_iter iter = init_bvec_iter_for_bio(bio);	\
+> +	     (iter).bi_size &&						\
+> +	     (paddr = bio_iter_phys((bio), &(iter)), 1);		\
+> +	     bio_advance_iter_single((bio), &(iter), (blocksize)))
+> +
+>  static inline void cond_wake_up(struct wait_queue_head *wq)
+>  {
+>  	/*
 
