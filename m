@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-16646-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16647-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEB2EB45D84
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Sep 2025 18:11:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02BACB45D87
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Sep 2025 18:11:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E773FA463B2
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Sep 2025 16:10:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4F651C807FB
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Sep 2025 16:11:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D9D302170;
-	Fri,  5 Sep 2025 16:10:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1A51306B33;
+	Fri,  5 Sep 2025 16:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BjfOq63+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BQAnBJ/i"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E5F30214B
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Sep 2025 16:10:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BF5A306B03
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Sep 2025 16:10:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757088638; cv=none; b=o7T2i909wAeUQUYVEn6PgoN4ZsbQLLpBSmWpASN6G+6yXPGQN7JDCCVU8+BjKcqt9pqd4JtsKdw8JqD6n4TWglxode3XHFoxGwAwQGq9sIQM26t+FJ9cEWOE2MvH9aD8GTrCJaZc2ZnlHT4sdqMd9DKNLRcdPpbEh9RDHVPZj9M=
+	t=1757088639; cv=none; b=pJemWGFz/vzLveC1Anj/6dbqvY2imVljUk2ube2VN3dgsbwKmfQ6IbA12+LZNdovI/reUlcwVPFjb0hEa8cbqaqrV2XQJyxUf0x4QMVxuVayrEnt/uwQytCo3vtLboUiHsa+Xq1UvNL3PLlGPBhNPkZpXWTJgAm50oy8QhKolho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757088638; c=relaxed/simple;
-	bh=fQ17IIOqfSCiBsodRHrAiDRFBrXvsjMfQXupfSM0mW4=;
+	s=arc-20240116; t=1757088639; c=relaxed/simple;
+	bh=BQgm3dGaBMtHQxePhPTmfj+OVHNni8ljkJlBrzyNEvU=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Y0fmZeta5sn8826meBQuXzV0amJoFtGSRoGzr/zodxCt1PTI1VFIFf8xfLb4YkWn7thYARWmp8BCl74bz8NV9w3RPT4b6/0oi+BR94+tpyDHP+zbC6rv2Ot/v1hVeVCmmGRuJXuBkkaZDeCpRWttftWdXqiGBe/FGqj/arLzjLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BjfOq63+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38AF5C4CEF9
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Sep 2025 16:10:37 +0000 (UTC)
+	 MIME-Version; b=t8C3jVPINcd1OqcTwUbzmxVjUCPGl/WyksBNXTu0VPZvKGK39aYAfla4VaqfvF9ttBRzzKd9TalCk/4LjCWp/wMy2udbQ1zwfF198TKoCVflF1wJs6u6x2bT1GmTVZQzmil5KV8IAR2M/G+qnNNE4t7AH+mmT4jYIsPD/aF/twU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BQAnBJ/i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E62CC4CEF1
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Sep 2025 16:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757088637;
-	bh=fQ17IIOqfSCiBsodRHrAiDRFBrXvsjMfQXupfSM0mW4=;
+	s=k20201202; t=1757088638;
+	bh=BQgm3dGaBMtHQxePhPTmfj+OVHNni8ljkJlBrzyNEvU=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=BjfOq63+Xgq8dTRW+mhsKwSzxK2HGvsD9TXCbSJFJ0nF+B1ytmck5O+n39yqZKqdZ
-	 cVmmm0h1m1LGs+rXFCc+1dbvJj0cCslauwF4hn1bDxrPqy8kCMO9YVgWHJ0kamGaha
-	 gQg8FrF0vdKGa0Y0ISHtLCD9n30CtLszmTlE/pxlzVsWn5kta0MMzkgSN7IAmqM5LH
-	 YqBU/iLclggWI6flNaYiR6d9mn6WtsqMeJoNzXXrGOLy1YZnbq0HRGqooJSE++IveJ
-	 nneiXLZ2KY3u5YHIEZeqhab868p51GAp7J0SC7EcHUCni6RGL4Z9+6AoiUYFX0sZ2I
-	 ab5/KRB0Z12Gw==
+	b=BQAnBJ/i+D8Z0rxB+OablLf9RxfEusAFTF2CI5B/odR936pwSc9QRXONaoS9Mk/0c
+	 vVw4XyfOTYM5LfO8WOTN4gq81FGYAanRhDrHoxQ+gS73xykPE7l5P/c9MilHgtEe9J
+	 /w3niZ2/wmZifryCVkDcjIOTIfXa0oJW0XUaCEH/RxBJhAbfgRgS9TPBEFweMvvLbn
+	 el5slJmLLmMatw5u5l78jFIGtjB9UwCHQZhdkCI7wZK1s0QKufhPbPTAqObAHpvF95
+	 HMbKp86Sp0qE83517gnE3InlXUCH8cHQrio79wa81ikS/upZZom3EEslLKN4xwgN7T
+	 8dgUHxXla/Vag==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 02/33] btrfs: use booleans in walk control structure for log replay
-Date: Fri,  5 Sep 2025 17:09:50 +0100
-Message-ID: <aa926d007ef4d2b46609948ad24ce7bcaa1d16c1.1757075118.git.fdmanana@suse.com>
+Subject: [PATCH 03/33] btrfs: rename replay_dest member of struct walk_control to root
+Date: Fri,  5 Sep 2025 17:09:51 +0100
+Message-ID: <7dce3a895db2f05a3be1dd232559c403974a0bc9.1757075118.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1757075118.git.fdmanana@suse.com>
 References: <cover.1757075118.git.fdmanana@suse.com>
@@ -59,76 +59,96 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The 'free' and 'pin' member of struct walk_control, used during log replay
-and when freeing a log tree, are defined as integers but in practice are
-used as booleans. Change their type to bool and while at it update their
-comments to be more detailed and comply with the preferred comment style
-(first word in a sentence is capitalized, sentences end with punctuation
-and the comment opening (/*) is on a line of its own).
+Everywhere else we refer to a subvolume root we are replaying to simply
+as 'root', so rename from 'replay_dest' to 'root' for consistency and
+having a more meaningful and shorter name. While at it also update the
+comment to be more detailed and comply to preferred style (first word in
+a sentence is capitalized and sentence ends with punctuation).
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ fs/btrfs/tree-log.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 861f96ef28cf..c5c5fc05eabb 100644
+index c5c5fc05eabb..c0cc94efbcaa 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -306,15 +306,20 @@ void btrfs_end_log_trans(struct btrfs_root *root)
-  * are state fields used for that specific part
-  */
- struct walk_control {
--	/* should we free the extent on disk when done?  This is used
--	 * at transaction commit time while freeing a log tree
-+	/*
-+	 * Signal that we are freeing the metadata extents of a log tree.
-+	 * This is used at transaction commit time while freeing a log tree.
+@@ -330,8 +330,11 @@ struct walk_control {
  	 */
--	int free;
-+	bool free;
+ 	bool ignore_cur_inode;
  
--	/* pin only walk, we record which extents on disk belong to the
--	 * log trees
+-	/* the root we are currently replaying */
+-	struct btrfs_root *replay_dest;
 +	/*
-+	 * Signal that we are pinning the metadata extents of a log tree and the
-+	 * data extents its leaves point to (if using mixed block groups).
-+	 * This happens in the first stage of log replay to ensure that during
-+	 * replay, while we are modifying subvolume trees, we don't overwrite
-+	 * the metadata extents of log trees.
- 	 */
--	int pin;
-+	bool pin;
++	 * The root we are currently replaying to. This is NULL for the replay
++	 * stage LOG_WALK_PIN_ONLY.
++	 */
++	struct btrfs_root *root;
  
- 	/* what stage of the replay code we're currently in */
- 	int stage;
-@@ -3415,7 +3420,7 @@ static void free_log_tree(struct btrfs_trans_handle *trans,
- {
- 	int ret;
- 	struct walk_control wc = {
--		.free = 1,
-+		.free = true,
- 		.process_func = process_one_buffer
+ 	/* the trans handle for the current replay */
+ 	struct btrfs_trans_handle *trans;
+@@ -2575,7 +2578,7 @@ static int replay_one_buffer(struct btrfs_root *log, struct extent_buffer *eb,
+ 		.level = level
  	};
+ 	struct btrfs_path *path;
+-	struct btrfs_root *root = wc->replay_dest;
++	struct btrfs_root *root = wc->root;
+ 	struct btrfs_trans_handle *trans = wc->trans;
+ 	struct btrfs_key key;
+ 	int i;
+@@ -7479,11 +7482,10 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 			goto error;
+ 		}
  
-@@ -7433,7 +7438,7 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
- 	}
+-		wc.replay_dest = btrfs_get_fs_root(fs_info, found_key.offset,
+-						   true);
+-		if (IS_ERR(wc.replay_dest)) {
+-			ret = PTR_ERR(wc.replay_dest);
+-			wc.replay_dest = NULL;
++		wc.root = btrfs_get_fs_root(fs_info, found_key.offset, true);
++		if (IS_ERR(wc.root)) {
++			ret = PTR_ERR(wc.root);
++			wc.root = NULL;
+ 			if (ret != -ENOENT) {
+ 				btrfs_put_root(log);
+ 				btrfs_abort_transaction(trans, ret);
+@@ -7510,8 +7512,8 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 			goto next;
+ 		}
  
- 	wc.trans = trans;
--	wc.pin = 1;
-+	wc.pin = true;
+-		wc.replay_dest->log_root = log;
+-		ret = btrfs_record_root_in_trans(trans, wc.replay_dest);
++		wc.root->log_root = log;
++		ret = btrfs_record_root_in_trans(trans, wc.root);
+ 		if (ret) {
+ 			btrfs_abort_transaction(trans, ret);
+ 			goto next;
+@@ -7524,9 +7526,9 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 		}
  
- 	ret = walk_log_tree(trans, log_root_tree, &wc);
- 	if (ret) {
-@@ -7557,7 +7562,7 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 		if (wc.stage == LOG_WALK_REPLAY_ALL) {
+-			struct btrfs_root *root = wc.replay_dest;
++			struct btrfs_root *root = wc.root;
  
- 	/* step one is to pin it all, step two is to replay just inodes */
- 	if (wc.pin) {
--		wc.pin = 0;
-+		wc.pin = false;
- 		wc.process_func = replay_one_buffer;
- 		wc.stage = LOG_WALK_REPLAY_INODES;
- 		goto again;
+-			ret = fixup_inode_link_counts(trans, wc.replay_dest, path);
++			ret = fixup_inode_link_counts(trans, root, path);
+ 			if (ret) {
+ 				btrfs_abort_transaction(trans, ret);
+ 				goto next;
+@@ -7546,9 +7548,9 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 			}
+ 		}
+ next:
+-		if (wc.replay_dest) {
+-			wc.replay_dest->log_root = NULL;
+-			btrfs_put_root(wc.replay_dest);
++		if (wc.root) {
++			wc.root->log_root = NULL;
++			btrfs_put_root(wc.root);
+ 		}
+ 		btrfs_put_root(log);
+ 
 -- 
 2.47.2
 
