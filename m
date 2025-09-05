@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-16661-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16662-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F238DB45D9C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Sep 2025 18:12:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C52B7B45D96
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Sep 2025 18:12:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D73C7B13A9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Sep 2025 16:10:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99D421C80009
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Sep 2025 16:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A00F2D23BC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80D130B539;
 	Fri,  5 Sep 2025 16:10:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bYZWqhRo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pavEkqUK"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2E730B523
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Sep 2025 16:10:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D9830B531
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Sep 2025 16:10:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757088654; cv=none; b=MP4mhoQ1pe9SwJEqJki1a6m0ejbZqWtA6/vkvzqICkE3hJIBcrCDQEVn3sabFrpcPXpBnHDyy2Dbf+CJXDEHckwmN8IwrdpWhVUQiCafhhGJZAnWKmg0uuBos/gBMNQjycqeVneKdRdAQXftA27mWnifEtHhsBx4FkXxX1YgVSg=
+	t=1757088655; cv=none; b=hWamNRAsWiSqDMqZCoeTmDHm154tsd31JpGEydFLdxwtMFjkP4sNANBPJgyQqtDsEpU0pmHJar4bZt0FqKEPKkIN3XnIjMVroG6tYVN1+ov5TGzMtBJcBSiDk5KyQCZZ64i8FqxG06bxUYPDhq8Sznv6vi4tdMTRaIwxuSyl6Wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757088654; c=relaxed/simple;
-	bh=2Z7YIyny6CHmL3eUxvNXZQdElcEv6jg7WVi2RkQ40YE=;
+	s=arc-20240116; t=1757088655; c=relaxed/simple;
+	bh=ewkK3mvW1brfo6cjqRiYVtBhT1xQrntREYxD5Abz4IE=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DOT/AOxrjUDRPYIXfvuw0+o+ygrjptyfUBDuI1sHK85Pq5Pj86FSWaMIcNAMRX+a2dVOrcEULzQpvG8CkZYu+QhX5p5lGKRBtcvSYxE0Xn7/DIQkzx/lRb/C3RrvDxWcGixl8rrRLyBDIN278Xgrvj5yKFkVr74gnjkdjwzQI7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bYZWqhRo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F0EAC4CEF4
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Sep 2025 16:10:53 +0000 (UTC)
+	 MIME-Version; b=qXJgg0wlIGSU10nlQ7Feirkylxy3ZDcsndbsyR/HXe4Q0j2Rqed59uW4M2bMAF/vSQUug8JMJvNqR6m9To8v+UvyoLgez7A3bV9cdW9YH2qgRTilGs+/cEFauFpPQdtnljBN8PvnR9yrbnVdFUZFM41N4LI/XCtHB+1AEm428xI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pavEkqUK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 941CAC4CEF7
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Sep 2025 16:10:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757088654;
-	bh=2Z7YIyny6CHmL3eUxvNXZQdElcEv6jg7WVi2RkQ40YE=;
+	s=k20201202; t=1757088655;
+	bh=ewkK3mvW1brfo6cjqRiYVtBhT1xQrntREYxD5Abz4IE=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=bYZWqhRodSuUZnOuSFeUEMgHTfSm4fej9BF6zH399bm+R9DHmh/FHQfYx/M/DaQ0H
-	 WiNkw95ecd5ds6IWrzyTQPzFO/FMngQFmTgvAOi/EYRJdB7RKuYfj5aA8S6or+3hLt
-	 eQLTjmxnqNFwYnnPduZvb4eAkwau0bvfVEBqOTauGtvoid/RBrO8z9jQyMNB2Ga2JF
-	 Xkw3Ha0BlmHCiGokTJQYFTSDdBgbFpiw1jwurg7wkPndxDAiSfzoxqRZDqnSB6Ua9d
-	 NImb/HyWEzIDhULicOwULHj/fS+q2D9Co3F9O5M8Buvvhgl0EPMpnIn/eMqYPeOevI
-	 oPcfmYaFSyMiQ==
+	b=pavEkqUKeU0qeRz2PZKcfmQqNe3hz53YTwirfZHa27suW66aO2OiMa+zatvEeXDOq
+	 IIut0zNfUyFhBlSWIT1DqCCtHlq2MLhyjLXrFwKez8NmrAJxjJhT4SQEAf1ld7Z5MZ
+	 PiH9UMrN71J8jdx9gYnmKuKbErOYRxe6TLEEN3aY+srfPpvXW6Xre3rAO0z/ntYLeS
+	 lsudvkpbC3B8JLiUxPGX4r5pQu/qXaf9lEofbLMst2bDeZCUOx8D0Assp0aCykwqoi
+	 JYSjcoP2/6IwsE8nCcoOYLkoPKuTkj4YkB++J23hD7174izIJnbvWzXc/aLN2lvfza
+	 3W2BBwdd1JaEQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 17/33] btrfs: pass walk_control structure to drop_one_dir_item() and helpers
-Date: Fri,  5 Sep 2025 17:10:05 +0100
-Message-ID: <62467d966c4ba21f6fbd88ccb1a591e8d8ce575d.1757075118.git.fdmanana@suse.com>
+Subject: [PATCH 18/33] btrfs: pass walk_control structure to replay_one_extent()
+Date: Fri,  5 Sep 2025 17:10:06 +0100
+Message-ID: <5c0b2c62e173b2b9919c5afeb16fe6176ddf170b.1757075118.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1757075118.git.fdmanana@suse.com>
 References: <cover.1757075118.git.fdmanana@suse.com>
@@ -59,203 +59,73 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Instead of passing the transaction as an argument to drop_one_dir_item()
-and its helpers (link_to_fixup_dir() and unlink_inode_for_log_replay()),
-pass the walk_control structure as we can access the transaction from it
-and the subvolume root. This is going to be needed by an incoming change
-that improves error reporting for log replay and also reduces the number
-of arguments passed to link_to_fixup_dir().
+Instead of passing the transaction and subvolume root as arguments to
+overwrite_item(), pass the walk_control structure as we can grab them
+from the structure. This reduces the number of arguments passed and it's
+going to be needed by an incoming change that improves error reporting
+for log replay.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 44 +++++++++++++++++++++++---------------------
- 1 file changed, 23 insertions(+), 21 deletions(-)
+ fs/btrfs/tree-log.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index c4c2fbf291a1..01a0f7cbcd4b 100644
+index 01a0f7cbcd4b..2060f0d99f6e 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -156,8 +156,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 			   struct btrfs_inode *inode,
- 			   int inode_only,
- 			   struct btrfs_log_ctx *ctx);
--static int link_to_fixup_dir(struct btrfs_trans_handle *trans,
--			     struct btrfs_root *root,
-+static int link_to_fixup_dir(struct walk_control *wc,
- 			     struct btrfs_path *path, u64 objectid);
- static noinline int replay_dir_deletes(struct walk_control *wc,
- 				       struct btrfs_path *path,
-@@ -927,11 +926,12 @@ static noinline int replay_one_extent(struct walk_control *wc,
- 	return ret;
- }
- 
--static int unlink_inode_for_log_replay(struct btrfs_trans_handle *trans,
-+static int unlink_inode_for_log_replay(struct walk_control *wc,
- 				       struct btrfs_inode *dir,
- 				       struct btrfs_inode *inode,
- 				       const struct fscrypt_str *name)
- {
-+	struct btrfs_trans_handle *trans = wc->trans;
- 	int ret;
- 
- 	ret = btrfs_unlink_inode(trans, dir, inode, name);
-@@ -959,11 +959,12 @@ static int unlink_inode_for_log_replay(struct btrfs_trans_handle *trans,
-  * This is a helper function to do the unlink of a specific directory
-  * item
+@@ -410,12 +410,13 @@ static int process_one_buffer(struct extent_buffer *eb,
+  *
+  * If the key isn't in the destination yet, a new item is inserted.
   */
--static noinline int drop_one_dir_item(struct btrfs_trans_handle *trans,
-+static noinline int drop_one_dir_item(struct walk_control *wc,
- 				      struct btrfs_path *path,
- 				      struct btrfs_inode *dir,
- 				      struct btrfs_dir_item *di)
- {
-+	struct btrfs_trans_handle *trans = wc->trans;
- 	struct btrfs_root *root = dir->root;
- 	struct btrfs_inode *inode;
- 	struct fscrypt_str name;
-@@ -990,11 +991,11 @@ static noinline int drop_one_dir_item(struct btrfs_trans_handle *trans,
- 		goto out;
- 	}
- 
--	ret = link_to_fixup_dir(trans, root, path, location.objectid);
-+	ret = link_to_fixup_dir(wc, path, location.objectid);
- 	if (ret)
- 		goto out;
- 
--	ret = unlink_inode_for_log_replay(trans, dir, inode, &name);
-+	ret = unlink_inode_for_log_replay(wc, dir, inode, &name);
- out:
- 	kfree(name.name);
- 	if (inode)
-@@ -1135,7 +1136,7 @@ static int unlink_refs_not_in_log(struct walk_control *wc,
- 		inc_nlink(&inode->vfs_inode);
- 		btrfs_release_path(path);
- 
--		ret = unlink_inode_for_log_replay(trans, dir, inode, &victim_name);
-+		ret = unlink_inode_for_log_replay(wc, dir, inode, &victim_name);
- 		kfree(victim_name.name);
- 		if (ret)
- 			return ret;
-@@ -1207,7 +1208,7 @@ static int unlink_extrefs_not_in_log(struct walk_control *wc,
- 		inc_nlink(&inode->vfs_inode);
- 		btrfs_release_path(path);
- 
--		ret = unlink_inode_for_log_replay(trans, victim_parent, inode,
-+		ret = unlink_inode_for_log_replay(wc, victim_parent, inode,
- 						  &victim_name);
- 		iput(&victim_parent->vfs_inode);
- 		kfree(victim_name.name);
-@@ -1281,7 +1282,7 @@ static inline int __add_inode_ref(struct walk_control *wc,
- 		btrfs_abort_transaction(trans, ret);
- 		return ret;
- 	} else if (di) {
--		ret = drop_one_dir_item(trans, path, dir, di);
-+		ret = drop_one_dir_item(wc, path, dir, di);
- 		if (ret)
- 			return ret;
- 	}
-@@ -1292,7 +1293,7 @@ static inline int __add_inode_ref(struct walk_control *wc,
- 	if (IS_ERR(di)) {
- 		return PTR_ERR(di);
- 	} else if (di) {
--		ret = drop_one_dir_item(trans, path, dir, di);
-+		ret = drop_one_dir_item(wc, path, dir, di);
- 		if (ret)
- 			return ret;
- 	}
-@@ -1415,7 +1416,7 @@ static int unlink_old_inode_refs(struct walk_control *wc,
- 				btrfs_abort_transaction(trans, ret);
- 				goto out;
- 			}
--			ret = unlink_inode_for_log_replay(trans, dir, inode, &name);
-+			ret = unlink_inode_for_log_replay(wc, dir, inode, &name);
- 			kfree(name.name);
- 			iput(&dir->vfs_inode);
- 			if (ret)
-@@ -1842,11 +1843,12 @@ static noinline int fixup_inode_link_counts(struct walk_control *wc,
-  * count when replay is done.  The link count is incremented here
-  * so the inode won't go away until we check it
-  */
--static noinline int link_to_fixup_dir(struct btrfs_trans_handle *trans,
--				      struct btrfs_root *root,
-+static noinline int link_to_fixup_dir(struct walk_control *wc,
- 				      struct btrfs_path *path,
- 				      u64 objectid)
+-static int overwrite_item(struct btrfs_trans_handle *trans,
+-			  struct btrfs_root *root,
++static int overwrite_item(struct walk_control *wc,
+ 			  struct btrfs_path *path,
+ 			  struct extent_buffer *eb, int slot,
+ 			  struct btrfs_key *key)
  {
 +	struct btrfs_trans_handle *trans = wc->trans;
 +	struct btrfs_root *root = wc->root;
- 	struct btrfs_key key;
- 	int ret = 0;
- 	struct btrfs_inode *inode;
-@@ -1917,7 +1919,7 @@ static noinline int insert_one_name(struct btrfs_trans_handle *trans,
- 	return ret;
- }
+ 	int ret;
+ 	u32 item_size;
+ 	u64 saved_i_size = 0;
+@@ -739,7 +740,7 @@ static noinline int replay_one_extent(struct walk_control *wc,
  
--static int delete_conflicting_dir_entry(struct btrfs_trans_handle *trans,
-+static int delete_conflicting_dir_entry(struct walk_control *wc,
- 					struct btrfs_inode *dir,
- 					struct btrfs_path *path,
- 					struct btrfs_dir_item *dst_di,
-@@ -1942,7 +1944,7 @@ static int delete_conflicting_dir_entry(struct btrfs_trans_handle *trans,
- 	if (!exists)
- 		return 0;
- 
--	return drop_one_dir_item(trans, path, dir, dst_di);
-+	return drop_one_dir_item(wc, path, dir, dst_di);
- }
- 
- /*
-@@ -2014,7 +2016,7 @@ static noinline int replay_one_name(struct walk_control *wc,
- 		btrfs_abort_transaction(trans, ret);
- 		goto out;
- 	} else if (dir_dst_di) {
--		ret = delete_conflicting_dir_entry(trans, dir, path, dir_dst_di,
-+		ret = delete_conflicting_dir_entry(wc, dir, path, dir_dst_di,
- 						   &log_key, log_flags, exists);
- 		if (ret < 0) {
- 			btrfs_abort_transaction(trans, ret);
-@@ -2033,7 +2035,7 @@ static noinline int replay_one_name(struct walk_control *wc,
- 		btrfs_abort_transaction(trans, ret);
- 		goto out;
- 	} else if (index_dst_di) {
--		ret = delete_conflicting_dir_entry(trans, dir, path, index_dst_di,
-+		ret = delete_conflicting_dir_entry(wc, dir, path, index_dst_di,
- 						   &log_key, log_flags, exists);
- 		if (ret < 0) {
- 			btrfs_abort_transaction(trans, ret);
-@@ -2161,7 +2163,7 @@ static noinline int replay_one_dir_item(struct walk_control *wc,
- 		}
- 
- 		btrfs_dir_item_key_to_cpu(eb, di, &di_key);
--		ret = link_to_fixup_dir(wc->trans, wc->root, fixup_path, di_key.objectid);
-+		ret = link_to_fixup_dir(wc, fixup_path, di_key.objectid);
- 		btrfs_free_path(fixup_path);
- 	}
- 
-@@ -2317,12 +2319,12 @@ static noinline int check_item_in_log(struct walk_control *wc,
- 		goto out;
- 	}
- 
--	ret = link_to_fixup_dir(trans, root, path, location.objectid);
-+	ret = link_to_fixup_dir(wc, path, location.objectid);
- 	if (ret)
+ 	if (found_type == BTRFS_FILE_EXTENT_INLINE) {
+ 		/* inline extents are easy, we just overwrite them */
+-		ret = overwrite_item(trans, root, path, eb, slot, key);
++		ret = overwrite_item(wc, path, eb, slot, key);
+ 		if (ret)
+ 			goto out;
+ 		goto update_inode;
+@@ -1607,7 +1608,7 @@ static noinline int add_inode_ref(struct walk_control *wc,
  		goto out;
  
- 	inc_nlink(&inode->vfs_inode);
--	ret = unlink_inode_for_log_replay(trans, dir, inode, &name);
-+	ret = unlink_inode_for_log_replay(wc, dir, inode, &name);
- 	/*
- 	 * Unlike dir item keys, dir index keys can only have one name (entry) in
- 	 * them, as there are no key collisions since each key has a unique offset
-@@ -2699,7 +2701,7 @@ static int replay_one_buffer(struct extent_buffer *eb,
+ 	/* finally write the back reference in the inode */
+-	ret = overwrite_item(trans, root, path, eb, slot, key);
++	ret = overwrite_item(wc, path, eb, slot, key);
+ out:
+ 	btrfs_release_path(path);
+ 	kfree(name.name);
+@@ -2657,7 +2658,7 @@ static int replay_one_buffer(struct extent_buffer *eb,
+ 				if (ret)
  					break;
  			}
- 
--			ret = link_to_fixup_dir(trans, root, path, key.objectid);
-+			ret = link_to_fixup_dir(wc, path, key.objectid);
+-			ret = overwrite_item(trans, root, path, eb, i, &key);
++			ret = overwrite_item(wc, path, eb, i, &key);
  			if (ret)
  				break;
- 		}
+ 
+@@ -2721,7 +2722,7 @@ static int replay_one_buffer(struct extent_buffer *eb,
+ 
+ 		/* these keys are simply copied */
+ 		if (key.type == BTRFS_XATTR_ITEM_KEY) {
+-			ret = overwrite_item(trans, root, path, eb, i, &key);
++			ret = overwrite_item(wc, path, eb, i, &key);
+ 			if (ret)
+ 				break;
+ 		} else if (key.type == BTRFS_INODE_REF_KEY ||
 -- 
 2.47.2
 
