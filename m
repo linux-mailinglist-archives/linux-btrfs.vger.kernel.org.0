@@ -1,151 +1,136 @@
-Return-Path: <linux-btrfs+bounces-16688-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16689-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FEDEB46A41
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Sep 2025 10:48:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C25AB46B05
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Sep 2025 13:25:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2069F5A80C8
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Sep 2025 08:48:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B9BE1B230F6
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Sep 2025 11:25:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED2E027EFEE;
-	Sat,  6 Sep 2025 08:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F2727510B;
+	Sat,  6 Sep 2025 11:25:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dPabKMgU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RgiDmqmX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F12AA272E7E
-	for <linux-btrfs@vger.kernel.org>; Sat,  6 Sep 2025 08:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7FC325A326;
+	Sat,  6 Sep 2025 11:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757148478; cv=none; b=aFuIzSQ90Y8xrpKvgkwUk0hggVOwnn4SD86rrydR7eWuKMNQ1ppYJxjLamiViH7mJFsYAWN7ASRHOSk/jfnjBGZwPw9OJOcI5ywR/TH7fNCMNhJCE7thiEcokatSWDlZqp2MApqpvYokm+ojz2jy2Vvv9cgrgw/6GqBKGCEm1OI=
+	t=1757157903; cv=none; b=WMWYvYPGf6W6WwDimFEtt47wnosPGWgub1nv1pBGUkKhXUJJsEyMOeoHBeY2/3HoaVaCCeAdOco3gCctf7+GqRFtDGN8PSdhSwBP+NBrHkyMGkNLCZEcQRK6x6TIfWjocXCOdAVFPPsEqjryChDDm8/COczBXz28i9ZPqAAwZ9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757148478; c=relaxed/simple;
-	bh=XZJIxTYo2I/xml7SLc3QqGOyLZi/SvpSBe8pbJDuscw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ov3b1CecTe3zLoqk1qmjuySCqi22Y8JgYn6h13nxVJ4AcG2IryTq+SuLtYtuDzBlBg/A1ndrfimwi7bjNqx6Ggiz4TUFLTjW6HwkNXSl7Q7iES9UqlD5BwQ29sw9relSPEGiEsp5aqo2A99xxyWplAS7pf82earE78CKxIDiPk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dPabKMgU; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3e537dc30f7so346855f8f.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 06 Sep 2025 01:47:55 -0700 (PDT)
+	s=arc-20240116; t=1757157903; c=relaxed/simple;
+	bh=ct/jNV3YJ6fvjezU8Fzw6M5BNMVQuB9YpzbFHkRJbLg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BpOBscvGG9ADuZnhyLKvKiXGcGjwUZZyiI+EadhVmcQ79bzcBnwbCotDedGwO1NvF033TYrSqB0jJQIeUi9/ELUIyes17qBthu03tPkwDEGNhvxmlOM7fWLTbKWhVR1tktVGiMMUfu1YSeFzRCJKNd/yVszmPOjcreweujWnDk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RgiDmqmX; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-45b79ec2fbeso19861105e9.3;
+        Sat, 06 Sep 2025 04:25:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1757148474; x=1757753274; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=kDxjwgrFaFhmtg7Z1dCHlL8LEMVDaDb+6rjBaA3CT1Q=;
-        b=dPabKMgUYih6kk3ZNr+Uz9O4fNBhztPg1QIFHYIirkXEdqqEv9O7BpRtKGbARFJe1F
-         tabCz75iTH6GJmNM3gGzHPsl6YvfdNZjJR7TbHGdaOgt8QlpUMxNgU/0rTPe0CI7dgGV
-         e/JKs6Xkb9bIsfNCyQFlAbYF4ElW96rhovcZLoL1WXBosJfWg3DZfafehuyesUGEOjgG
-         k5PuprBSNs3kEYpbRo44n2hMRYQZOSIO+/TVqcza3pNkRY5HFQvA+RARxC937tX8Ik8L
-         OBigsdxOU6vXPLr2I8irh83pqh96znOBSZmWgRLRkpJ0Ts5oUWypSYzFLL7kO9Sb1GOM
-         iVxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757148474; x=1757753274;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1757157900; x=1757762700; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kDxjwgrFaFhmtg7Z1dCHlL8LEMVDaDb+6rjBaA3CT1Q=;
-        b=A7YBsGA25fllkT7EPY43cNeS2O2eS61dKdKo7b4sLgM3vjZ0XxsvQ6XdiL7spKXVUB
-         toSL8pcnvAFbzMpBK239mF7Dd/t4Yrz8Vh8DweErowXBtLxbSoh8zEcj7FJ6GC2YX9m+
-         9QbHBggxCw9ELMQEnrxt1KR7OoBF2+hTQPPVtNpcN1jRPn6dwYATFdopL2QfFQuvWSvb
-         leyjuM1XRKW1FFuZhVzyRYuRbwU204Af30s0iR2Yb4i31/NTdKXyJKuTM21tnwJ/R30g
-         1GnT8wn9b0DQqYOWFVBB9BYDIrtbEgw6bR+lf23/FASNZ8TiLDpdw/hPZo+s0UC7hOXW
-         Qctw==
-X-Gm-Message-State: AOJu0YzFMRF1vSOdBRaLa4k5d84fYMdTfiyMQgYpc5NsxW4NXeTFBZNe
-	zLcoLReCr1JL+yM7vU8gzbE5ng40+QY4DVBGbvrcaavHbHoefStmhgyQJfNx83WYOGw=
-X-Gm-Gg: ASbGncuxuBH81v5Tzwa3DVM2UHBMG3KeSuMogwDYzdEx7vu+Cc0QCJUIvFUGjbVfk/g
-	bVgeBEvuKdW8xgG42HSLtwd1yTXHnUme/DXsKy0RhisqIGJouBcZnfFacKKqaMzpbxb2xDzkJe7
-	txDywnYcIXHhB2lleG81j0ewibtRM8cB2eS+EkQa9iuTIw0rQvf30sFsWy1bzEKRIavqlkQlNA/
-	oel8rLIVXLFmSpvQAiKILWzyd7dbOP95euFB2Td2Waqz3KCTT+oO0XvC/eJWUMxblMN79yUfaIW
-	wxvRqu6mnsPTxPMf0R0NTr9z0D/MK5SeHgWt9G8I4rTnxlwker1UMticpM4AV1Zc9LbsCRmlADB
-	VrPVHwkjFcuqThJt+wkj6kBdj5tA1OFKd/aUiGeyzErjiNRTgXBpG/z/S9rDAi6W0iMceywIg
-X-Google-Smtp-Source: AGHT+IHvauodpG9ROkgICuhRN4Vzh/VmLvUAQX7FW9Be6VpNi5OoGMBmawN40GbxZg8o4Lvbe4pwZQ==
-X-Received: by 2002:a5d:5d82:0:b0:3df:a0f4:abc1 with SMTP id ffacd0b85a97d-3e6438373acmr964607f8f.29.1757148474094;
-        Sat, 06 Sep 2025 01:47:54 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4f2c990296sm16769191a12.39.2025.09.06.01.47.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Sep 2025 01:47:53 -0700 (PDT)
-Message-ID: <589e4ad2-b853-4f87-a813-e7e800e9d9fb@suse.com>
-Date: Sat, 6 Sep 2025 18:17:48 +0930
+        bh=gBOanA6zalGLYYyu9YMahK79U0EvwFc1g3mic7A2XsE=;
+        b=RgiDmqmXLa8FNDPMfXknAcGXchwWe3Qki7YVFJhQ5BkxXPtEbmKjJU6E7f2sdxU3cP
+         tQui810PnIpvCr0l4L4dGtrpvLAm9lFqX6n0vIdqwsWiR2n1fm0bFh79oN3x7iqhWSs0
+         6YdZwTLHSGa4UvCIZTZv/VO4xbXKfxNl32eg7LaF7KSa2mGPgDma+67JbDbviVPbHu4B
+         am2IPezd6SoP+8iBzGpHVI51UNkDVH9WrGnveHIyxqcdzesBVYxrwRvGWsSpKiHtN9eA
+         e5wBswpSfMaXhrYznOpZcfR1BdZ/qsc6ew36mprrs7VZA6LrSVt5Dt0xovkKfjOBFLS4
+         5CiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757157900; x=1757762700;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gBOanA6zalGLYYyu9YMahK79U0EvwFc1g3mic7A2XsE=;
+        b=eZ/+mbpc0oJRUhdnM0IQ892XuW/0S6o2L9h7a1Fq78i0kqHkX2zd0ACSPKRTsGgEU7
+         Fcf/d6st//zTSt2ssr/Bhofd/GfnorO8CdPeTEsjAgR8ipeCvSdog1uOfCyBIrgIrG5o
+         dQxmA1HyrSsOH6kxjBdXmnUkL0JZuudlpVrrDXG5v+Vwg8nhI+55cbtnGhNH3qGsyuGG
+         axcuedmU48/+iLbCdkDg+ul8xSq5hOxMP1wKiyx2Kx9HpNSBMxRXQZ9fJ7edhdWVOcsE
+         BPlqyp54R3ZBKa4IuYrgFvzPiSQCkUsYKK80bu2oXzjFcHz3csFdhG9Li5mTQRDQZkKl
+         /Rcw==
+X-Forwarded-Encrypted: i=1; AJvYcCU5W94bRWkUBW5BGiE6kKfFrfRvhKm5TjGIwIUzgVyF3oiNQxBDfRwCuBnWMTIztuUayqrIyxaRomxftg==@vger.kernel.org, AJvYcCXYa/QeuY4D+7EbeGCIaxL+vbZlxefRBlxfcatHQEKzu2GHdGihCCRv4tJGL36tYQ7vTD1rPnjlmh51shxz@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyeg1Ih2XwiXkIozCLjq7hmGwBgRWeXr5bGK42pIxxZfDek6OwN
+	Jv+8JGWbhiFWtOXND4hx+FcdLvf3ubQYE00szLzP6GSZdWOUajkm5rg6tPKNJg==
+X-Gm-Gg: ASbGncvJqv/CxOpKMfINOwkHTiyUh5hNmk4ZTW1FHwdKiCrQhwD4Ttd+J1ZPVGnY6gM
+	nUUrIZ+nygdukASTkJRkxZkC5Ktqsg8RVKOaYvHFsmNF43KVmcMyAC3YrWSyGBja5GewK4GKTC9
+	y8RTOp6Skju3DgSbsZeCm4Xe1VNEjcyGbUzB1xVym350YRha62g26UloQeQiR5ZpcFS40l4pFOq
+	jZtWMyhBHnacpSRwMaix7tJbRG2q13U765/CagNSBzBA87bwjn7+eHnASK2VsCQgKdwx/xFLK3K
+	0Uath65NXNB2X531hjItJ1zND+NXohntTTZgKB1XTSVGWCv4rJKSf+24OvPPyc6lfLQ+6a6chYo
+	loCIY4RtrTJCCoIO2pZQDTIcLl8/meENGvcRqdeSOcBtTZwFp49AwnqlKMWUeyxoRnxRRrfV9v1
+	c=
+X-Google-Smtp-Source: AGHT+IEqq/gP7GihJJE1vvhH8bWCtf+vjl7jrPTkrkQWlh2B1MBEzuH1ShRPD8Quxer/3nx3fqFFNw==
+X-Received: by 2002:a05:600c:1d07:b0:45b:9c93:d236 with SMTP id 5b1f17b1804b1-45ddded246cmr15000855e9.27.1757157899968;
+        Sat, 06 Sep 2025 04:24:59 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45dda597641sm25599355e9.11.2025.09.06.04.24.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Sep 2025 04:24:59 -0700 (PDT)
+Date: Sat, 6 Sep 2025 12:24:58 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David
+ Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: scrub: replace max_t()/min_t() with clamp_t() in
+ scrub_throttle_dev_io()
+Message-ID: <20250906122458.75dfc8f0@pumpkin>
+In-Reply-To: <20250901150144.227149-2-thorsten.blum@linux.dev>
+References: <20250901150144.227149-2-thorsten.blum@linux.dev>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/5] btrfs: cache max and min order inside
- btrfs_fs_info
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1756803640.git.wqu@suse.com>
- <f81aa24950cbf8329f846d8b42f23710c07a95b7.1756803640.git.wqu@suse.com>
- <20250905173638.GQ5333@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20250905173638.GQ5333@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Mon,  1 Sep 2025 17:01:44 +0200
+Thorsten Blum <thorsten.blum@linux.dev> wrote:
 
-
-在 2025/9/6 03:06, David Sterba 写道:
-> On Tue, Sep 02, 2025 at 06:32:16PM +0930, Qu Wenruo wrote:
->> Inside btrfs_fs_info we cache several bits shift like sectorsize_bits.
->>
->> Apply this to max and min folio orders so that every time mapping order
->> needs to be applied we can skip the calculation.
+> Replace max_t() followed by min_t() with a single clamp_t(). Manually
+> casting 'bwlimit / (16 * 1024 * 1024)' to u32 is also redundant when
+> using max_t(u32,,) or clamp_t(u32,,) and can be removed.
 > 
-> I've checked where and how many times is btrfs_set_inode_mapping_order()
-> called and it's basically once per newly accessed inode. Caching the
-> values in fs_info may not make much sense compared to the other cached
-> members for the shifts.
+> No functional changes intended.
+> 
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> ---
+>  fs/btrfs/scrub.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index 6776e6ab8d10..ebfde24c0e42 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -1369,8 +1369,7 @@ static void scrub_throttle_dev_io(struct scrub_ctx *sctx, struct btrfs_device *d
+>  	 * Slice is divided into intervals when the IO is submitted, adjust by
+>  	 * bwlimit and maximum of 64 intervals.
+>  	 */
+> -	div = max_t(u32, 1, (u32)(bwlimit / (16 * 1024 * 1024)));
+> -	div = min_t(u32, 64, div);
+> +	div = clamp_t(u32, bwlimit / (16 * 1024 * 1024), 1, 64);
 
-For now you're right. But the following code will need to access that 
-min_order in the very soon:
+That probably ought to have a nack... although it isn't different.
+bwlimit is 64bit, if very big dividing by 16M will still be over 32 bits.
+and significant bits will be lost.
 
-- Compression
-   For compressed folios.
+Just use clamp() without all the extra (bug introducing) (u32) casts.
 
-- RAID56
-- Scrub
-   To match the min order so that the btrfs_bio_for_each_block*() will
-   work correctly.
+	David
 
-So it may not be that obvious for now, but will make more sense soon.
+>  
+>  	/* Start new epoch, set deadline */
+>  	now = ktime_get();
 
-Thanks,
-Qu
 
