@@ -1,80 +1,80 @@
-Return-Path: <linux-btrfs+bounces-16687-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16688-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 503F4B46952
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Sep 2025 07:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FEDEB46A41
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Sep 2025 10:48:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0739C5C3A36
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Sep 2025 05:40:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2069F5A80C8
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Sep 2025 08:48:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8151C261B65;
-	Sat,  6 Sep 2025 05:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED2E027EFEE;
+	Sat,  6 Sep 2025 08:47:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UDAR2wGN"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dPabKMgU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B4279F2
-	for <linux-btrfs@vger.kernel.org>; Sat,  6 Sep 2025 05:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F12AA272E7E
+	for <linux-btrfs@vger.kernel.org>; Sat,  6 Sep 2025 08:47:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757137226; cv=none; b=cQtELpi5XNeL0KIrkdxoAKjIEQvgJ/LzJ9S0hKyYHhtPpiYilU0iExbaEcaZDSotwEtWtOUwcXIlh8chxwO0VjHWBY29pWg8aajj5se5vArPQtoAA7iaRvtesR1rX0bud4ysz4IAYX/In2MGCYXmr2rGNZf24eJhihnoZqjqg+Y=
+	t=1757148478; cv=none; b=aFuIzSQ90Y8xrpKvgkwUk0hggVOwnn4SD86rrydR7eWuKMNQ1ppYJxjLamiViH7mJFsYAWN7ASRHOSk/jfnjBGZwPw9OJOcI5ywR/TH7fNCMNhJCE7thiEcokatSWDlZqp2MApqpvYokm+ojz2jy2Vvv9cgrgw/6GqBKGCEm1OI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757137226; c=relaxed/simple;
-	bh=467p1oleKYXCUUzDcpZstDlD0xl4/8twxO0RF517rcU=;
+	s=arc-20240116; t=1757148478; c=relaxed/simple;
+	bh=XZJIxTYo2I/xml7SLc3QqGOyLZi/SvpSBe8pbJDuscw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iOyKctj/ry4gAYXDHGlN3PzREe/Vj+hryBPfYSC4oHbzv9/aD+7E80EEhAM8RdYoaalP4Q6ehMy5qg6fTO4JLyLq334lE6i3vUHqlyE7gcbP4+PsnbIxk7HZWdoSrB02LJQh3oScDLmp8GTa6mCTimyZHNDH8aCM5YxBs3oW/Hs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UDAR2wGN; arc=none smtp.client-ip=209.85.221.52
+	 In-Reply-To:Content-Type; b=Ov3b1CecTe3zLoqk1qmjuySCqi22Y8JgYn6h13nxVJ4AcG2IryTq+SuLtYtuDzBlBg/A1ndrfimwi7bjNqx6Ggiz4TUFLTjW6HwkNXSl7Q7iES9UqlD5BwQ29sw9relSPEGiEsp5aqo2A99xxyWplAS7pf82earE78CKxIDiPk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dPabKMgU; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3df726ecff3so1243981f8f.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Sep 2025 22:40:23 -0700 (PDT)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3e537dc30f7so346855f8f.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 06 Sep 2025 01:47:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1757137222; x=1757742022; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1757148474; x=1757753274; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=zfST+Y5MbaCxqySMCMrEvJt6lTVpLizNR3Gj9ztmCqk=;
-        b=UDAR2wGNaPO/78qhRFU0qtyKBUqBtm8scfEOxeDX8b9b/IJlgNIKjM4KnAB3ohHYR1
-         DqnEi4cRwuxHmbWISW68ixhpq90nnaD12bFsvfGKdYUxhfIlD9+T8WZoRZcwek/ogt6e
-         dOkUjHSRnWY9MS/C/6PIf7w6fAGBz6rhcu43zj87Pa4lomAivQjv8/PQdpbjv2qTRa6i
-         wFuseQFrlX+aHjGeMip2fDTXwtpu9vBn3yOWbxfe5//weoB3MAouY7RudkC85SwZBPuN
-         0tlkBKyozKwcODQoMmkt4Z5ATBFP681/UMRC7XHWFQO1C+Pbri8DCUmPTRgrNNpC0Gx2
-         4eyg==
+        bh=kDxjwgrFaFhmtg7Z1dCHlL8LEMVDaDb+6rjBaA3CT1Q=;
+        b=dPabKMgUYih6kk3ZNr+Uz9O4fNBhztPg1QIFHYIirkXEdqqEv9O7BpRtKGbARFJe1F
+         tabCz75iTH6GJmNM3gGzHPsl6YvfdNZjJR7TbHGdaOgt8QlpUMxNgU/0rTPe0CI7dgGV
+         e/JKs6Xkb9bIsfNCyQFlAbYF4ElW96rhovcZLoL1WXBosJfWg3DZfafehuyesUGEOjgG
+         k5PuprBSNs3kEYpbRo44n2hMRYQZOSIO+/TVqcza3pNkRY5HFQvA+RARxC937tX8Ik8L
+         OBigsdxOU6vXPLr2I8irh83pqh96znOBSZmWgRLRkpJ0Ts5oUWypSYzFLL7kO9Sb1GOM
+         iVxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757137222; x=1757742022;
+        d=1e100.net; s=20230601; t=1757148474; x=1757753274;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zfST+Y5MbaCxqySMCMrEvJt6lTVpLizNR3Gj9ztmCqk=;
-        b=Uyrs6OKfBVzlNjbbSeja3WWrFz9drqXeTif4IFMZursLe8fxFeuL4C4XPuD0bxuxlX
-         VGkLLK28mazDCv7Iau6+Mni09zEJF2d31tB1ssAj8/Pjt2MQztJWr9fr08Ul0X8WVtSh
-         5gSlCz8FihwkNuCQvgUHOhXbm8CDki/3x5u3pipUNMhnATs9Nl/zYo5Q4X4S0ARPdtbK
-         DYJW/W6jYwjz5D4Vv29gJT7hj/+vP13UV7naXLFUu8EykzPmGBOGh5hn/mTGS9SznFxA
-         RUcGJaR5nIDOz7aXLc1ggFbl5zhr4wRhCM3zmoIzsL4iXE1KWPSPraPLg8GNgbXM7X4d
-         cEfw==
-X-Gm-Message-State: AOJu0YyueQ8nE/Qu7leO2ExhKwDr0MaWniQvGOe2g9i6uszuU1b1hKSW
-	O1azCrC52HNijMFeYuJmbLGtAbx8FZiyVu0pJ6sAUXtyBJXaQdYxrV6h6XByrsy5mAE=
-X-Gm-Gg: ASbGncu2bvRYTs88EC5c0DgslX3a2ueOBWUK9pL9hAaAz2FZvLdqPvYXtlTlwtPrvnm
-	KKau+aWHLn6tLqH0T6LR9Yq9G8fIVsPVMVHcaq/tmw8MHQykbrhSH7/bKIo7HxqoXO8BoVHjm+x
-	OUPUX4WWP5WeZ27Qx/Y7w03lb0a9I7F6cbVMpwdvB1VoNwUQHaPB3BEV8VB4taLIuyJaX+OekHi
-	/4TGWQOwJlgxJ8gol5OY4eyXgUHyOINKNW6MBMYuXNv5Cz6IbrCjnqJQMuaLboDzqKny69ndl+P
-	qGAlDasr441jwRvva1i5xY10lgFFVygp+cwMZjVjIdb3trRaQ+HEOCANT60vdgUUH1t2aUm+kUu
-	xPeZfgxMLKOt1mBpQHhx7xzx/h8b9yTqHiQtAZ9/S4kDJ1NvlwM2pMpHt+4pVXQ==
-X-Google-Smtp-Source: AGHT+IFUdOwcf/+1M2i2qLc+RGz/+Rtoi8Mz+5FHK7Q9on6s+nsT3mZS8usFTR3g4C3HZqgx0P5WTQ==
-X-Received: by 2002:adf:b317:0:b0:3db:dd47:b5e4 with SMTP id ffacd0b85a97d-3e63736f940mr374711f8f.2.1757137222065;
-        Fri, 05 Sep 2025 22:40:22 -0700 (PDT)
+        bh=kDxjwgrFaFhmtg7Z1dCHlL8LEMVDaDb+6rjBaA3CT1Q=;
+        b=A7YBsGA25fllkT7EPY43cNeS2O2eS61dKdKo7b4sLgM3vjZ0XxsvQ6XdiL7spKXVUB
+         toSL8pcnvAFbzMpBK239mF7Dd/t4Yrz8Vh8DweErowXBtLxbSoh8zEcj7FJ6GC2YX9m+
+         9QbHBggxCw9ELMQEnrxt1KR7OoBF2+hTQPPVtNpcN1jRPn6dwYATFdopL2QfFQuvWSvb
+         leyjuM1XRKW1FFuZhVzyRYuRbwU204Af30s0iR2Yb4i31/NTdKXyJKuTM21tnwJ/R30g
+         1GnT8wn9b0DQqYOWFVBB9BYDIrtbEgw6bR+lf23/FASNZ8TiLDpdw/hPZo+s0UC7hOXW
+         Qctw==
+X-Gm-Message-State: AOJu0YzFMRF1vSOdBRaLa4k5d84fYMdTfiyMQgYpc5NsxW4NXeTFBZNe
+	zLcoLReCr1JL+yM7vU8gzbE5ng40+QY4DVBGbvrcaavHbHoefStmhgyQJfNx83WYOGw=
+X-Gm-Gg: ASbGncuxuBH81v5Tzwa3DVM2UHBMG3KeSuMogwDYzdEx7vu+Cc0QCJUIvFUGjbVfk/g
+	bVgeBEvuKdW8xgG42HSLtwd1yTXHnUme/DXsKy0RhisqIGJouBcZnfFacKKqaMzpbxb2xDzkJe7
+	txDywnYcIXHhB2lleG81j0ewibtRM8cB2eS+EkQa9iuTIw0rQvf30sFsWy1bzEKRIavqlkQlNA/
+	oel8rLIVXLFmSpvQAiKILWzyd7dbOP95euFB2Td2Waqz3KCTT+oO0XvC/eJWUMxblMN79yUfaIW
+	wxvRqu6mnsPTxPMf0R0NTr9z0D/MK5SeHgWt9G8I4rTnxlwker1UMticpM4AV1Zc9LbsCRmlADB
+	VrPVHwkjFcuqThJt+wkj6kBdj5tA1OFKd/aUiGeyzErjiNRTgXBpG/z/S9rDAi6W0iMceywIg
+X-Google-Smtp-Source: AGHT+IHvauodpG9ROkgICuhRN4Vzh/VmLvUAQX7FW9Be6VpNi5OoGMBmawN40GbxZg8o4Lvbe4pwZQ==
+X-Received: by 2002:a5d:5d82:0:b0:3df:a0f4:abc1 with SMTP id ffacd0b85a97d-3e6438373acmr964607f8f.29.1757148474094;
+        Sat, 06 Sep 2025 01:47:54 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24ce9dd9373sm41557155ad.85.2025.09.05.22.40.19
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4f2c990296sm16769191a12.39.2025.09.06.01.47.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Sep 2025 22:40:21 -0700 (PDT)
-Message-ID: <198b7846-539c-44cf-b746-c70fe2befa69@suse.com>
-Date: Sat, 6 Sep 2025 15:10:17 +0930
+        Sat, 06 Sep 2025 01:47:53 -0700 (PDT)
+Message-ID: <589e4ad2-b853-4f87-a813-e7e800e9d9fb@suse.com>
+Date: Sat, 6 Sep 2025 18:17:48 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,14 +82,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Btrfs RAID 1 mounting as R/O
-To: jonas.timothy@proton.me, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <AIOTMBnTsDta9eYa_I7KA67VAQyTti6AqXpfU6gIaBiXR__2E-kX5UJxT1f_96-n1g9zcmsUAHhxdFaihRr1FHDlXIKKOO9NWGpXnq3nzaY=@proton.me>
- <ac473f81-506a-4f7b-b182-a3a53db2f6c9@suse.com>
- <h5sKXFIVsnBPX0i1K8jnrgzAQu2oE-NMORKYVaNPyp-FnKaQN032HGmejwSQl8KIbtpMj-37pFT3KDrbn_xmrdzqNVzjzIw-9YU6s8DW0mA=@proton.me>
- <595fb33e-a3e8-46cc-80ff-e50c2a70bffd@gmx.com>
- <xrsGddBl1hq0FSjKaqFM8275iii6WNju5hyl2wU8I9J7f2q3C11Dhsqgn-ANIXJRP-NMf4jioFdthalcpZn7YjKb0KAE7YBYxiGSA6g41Z4=@proton.me>
+Subject: Re: [PATCH v2 5/5] btrfs: cache max and min order inside
+ btrfs_fs_info
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1756803640.git.wqu@suse.com>
+ <f81aa24950cbf8329f846d8b42f23710c07a95b7.1756803640.git.wqu@suse.com>
+ <20250905173638.GQ5333@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -116,181 +115,37 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <xrsGddBl1hq0FSjKaqFM8275iii6WNju5hyl2wU8I9J7f2q3C11Dhsqgn-ANIXJRP-NMf4jioFdthalcpZn7YjKb0KAE7YBYxiGSA6g41Z4=@proton.me>
+In-Reply-To: <20250905173638.GQ5333@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/9/6 13:28, jonas.timothy@proton.me 写道:
-> 
-> 
-> 
-> 
-> 
-> Sent with Proton Mail secure email.
-> 
-> On Friday, September 5th, 2025 at 6:12 PM, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> 
+在 2025/9/6 03:06, David Sterba 写道:
+> On Tue, Sep 02, 2025 at 06:32:16PM +0930, Qu Wenruo wrote:
+>> Inside btrfs_fs_info we cache several bits shift like sectorsize_bits.
 >>
->> 在 2025/9/5 19:34, jonas.timothy@proton.me 写道:
->> [...]
->>
->>> Hi Qu,
->>>
->>> I currently have 2 profiles because I have 2 sets of disks:
->>>
->>> $ sudo btrfs filesystem df /mnt/disks/disk-12TB
->>> Data, RAID1: total=5.28TiB, used=5.16TiB
->>> System, RAID1: total=64.00MiB, used=800.00KiB
->>> Metadata, RAID1: total=7.00GiB, used=6.18GiB
->>> GlobalReserve, single: total=512.00MiB, used=0.00B
->>
->>
->> So this means this fs is more or less corrupted, recommended to salvage
->> the data first, then either re-format the fs or try `btrfs check --repair` (which may not always repair the fs).
->>
->>> $ sudo btrfs filesystem df /mnt/disks/disk-20TB
->>> Data, single: total=6.79TiB, used=6.75TiB
->>> Data, RAID1: total=6.74TiB, used=6.71TiB
->>> System, RAID1: total=32.00MiB, used=1.84MiB
->>> Metadata, RAID1: total=14.00GiB, used=13.85GiB
->>> GlobalReserve, single: total=512.00MiB, used=0.00B
->>> WARNING: Multiple block group profiles detected, see 'man btrfs(5)'
->>> WARNING: Data: single, raid1
->>>
->>> the one that went R/O is the 12TB pair, but the 20TB currently is having trouble finishing setting up RAID 1.
->>
->>
->> `btrfs fi usage` output please for the 20T fs.
->>
->> My guess is, you're mixing different sized disks in that 20T array.
->> And you're using RAID1 with 2 disks, the usage won't balance that well
->> among just 2 disks.
+>> Apply this to max and min folio orders so that every time mapping order
+>> needs to be applied we can skip the calculation.
 > 
-> I'm attaching both of them.  I don't know if I should've done this differently, but I originally "muscled" it through when both were just stopping on their own by removing the file they mentioned can't be fixed by cutting it out of the drive, then placing it back in the drive.
-> 
-> $ sudo btrfs filesystem usage /mnt/disks/disk-20TB
-> Overall:
->      Device size:                  36.38TiB
->      Device allocated:             20.30TiB
->      Device unallocated:           16.08TiB
->      Device missing:                  0.00B
->      Device slack:                    0.00B
->      Used:                         20.20TiB
->      Free (estimated):             10.80TiB      (min: 8.10TiB)
->      Free (statfs, df):             4.68TiB
->      Data ratio:                       1.50
->      Metadata ratio:                   2.00
->      Global reserve:              512.00MiB      (used: 0.00B)
->      Multiple profiles:                 yes      (data)
-> 
-> Data,single: Size:6.79TiB, Used:6.75TiB (99.51%)
->     /dev/sdc1       6.79TiB
-> 
-> Data,RAID1: Size:6.74TiB, Used:6.71TiB (99.53%)
->     /dev/sdc1       6.74TiB
->     /dev/sdd1       6.74TiB
-> 
-> Metadata,RAID1: Size:14.00GiB, Used:13.85GiB (98.95%)
->     /dev/sdc1      14.00GiB
->     /dev/sdd1      14.00GiB
-> 
-> System,RAID1: Size:32.00MiB, Used:1.84MiB (5.76%)
->     /dev/sdc1      32.00MiB
->     /dev/sdd1      32.00MiB
-> 
-> Unallocated:
->     /dev/sdc1       4.65TiB
->     /dev/sdd1      11.43TiB
+> I've checked where and how many times is btrfs_set_inode_mapping_order()
+> called and it's basically once per newly accessed inode. Caching the
+> values in fs_info may not make much sense compared to the other cached
+> members for the shifts.
 
-Your 20TiB system indeed have some unbalanced data.
+For now you're right. But the following code will need to access that 
+min_order in the very soon:
 
-But it should be mostly fine, as your single DATA is less than 7TiB on 
-sdc1, with that combined with the unused 4.6TiB on sdc, you should be 
-able to migrate the single to RAID1.
+- Compression
+   For compressed folios.
 
-What is preventing you from converting the single to RAID1 using 
-something like:
+- RAID56
+- Scrub
+   To match the min order so that the btrfs_bio_for_each_block*() will
+   work correctly.
 
-# btrfs balance start -dprofile=SINGLE,convert=raid1 <mnt>
+So it may not be that obvious for now, but will make more sense soon.
 
 Thanks,
 Qu
-> 
-> 
-> $ sudo btrfs filesystem usage /mnt/disks/disk-12TB
-> Overall:
->      Device size:                  21.56TiB
->      Device allocated:             10.58TiB
->      Device unallocated:           10.98TiB
->      Device missing:                  0.00B
->      Device slack:                276.00GiB
->      Used:                         10.34TiB
->      Free (estimated):              5.61TiB      (min: 5.61TiB)
->      Free (statfs, df):             5.47TiB
->      Data ratio:                       2.00
->      Metadata ratio:                   2.00
->      Global reserve:              512.00MiB      (used: 0.00B)
->      Multiple profiles:                  no
-> 
-> Data,RAID1: Size:5.28TiB, Used:5.17TiB (97.77%)
->     /dev/sdb1       5.28TiB
->     /dev/sda1       5.28TiB
-> 
-> Metadata,RAID1: Size:7.00GiB, Used:6.18GiB (88.36%)
->     /dev/sdb1       7.00GiB
->     /dev/sda1       7.00GiB
-> 
-> System,RAID1: Size:64.00MiB, Used:800.00KiB (1.22%)
->     /dev/sdb1      64.00MiB
->     /dev/sda1      64.00MiB
-> 
-> Unallocated:
->     /dev/sdb1       5.35TiB
->     /dev/sda1       5.62TiB
-> 
-> 
->>
->>> Would I have to redo this if COW is broken?
->>
->>
->> Mostly yes.
-> 
-> Bummer :-(
->>
->> Thanks,
->> Qu
->>
->>> P.S. resending because I accidentally used regular "reply". Sorry.
->>>
->>> It also just finished scrubbing my 12TB RAID 1 array, and it aborted :-(
->>>
->>> Sep 05 06:45:42 skarletsky kernel: BTRFS error (device sdb1): parent transid verify failed on logical 54114557984768 mirror 1 wanted 1250553 found 1250557
->>> Sep 05 06:45:42 skarletsky kernel: BTRFS error (device sdb1): parent transid verify failed on logical 54114557984768 mirror 2 wanted 1250553 found 1250557
->>>
->>> $ sudo btrfs filesystem df /mnt/disks/disk-12TB
->>> Data, RAID1: total=5.28TiB, used=5.16TiB
->>> System, RAID1: total=64.00MiB, used=800.00KiB
->>> Metadata, RAID1: total=7.00GiB, used=6.18GiB
->>> GlobalReserve, single: total=512.00MiB, used=0.00B
->>>
->>> $ sudo btrfs scrub status /dev/sda1
->>> UUID: 8641eeeb-ddf0-47af-8ed0-254327dcc050
->>> Scrub resumed: Fri Sep 5 03:16:31 2025
->>> Status: aborted
->>> Duration: 5:33:42
->>> Total to scrub: 10.34TiB
->>> Rate: 182.62MiB/s
->>> Error summary: no errors found
->>>
->>> $ sudo btrfs scrub status /dev/sdb1
->>> UUID: 8641eeeb-ddf0-47af-8ed0-254327dcc050
->>> Scrub resumed: Fri Sep 5 03:16:31 2025
->>> Status: aborted
->>> Duration: 6:05:48
->>> Total to scrub: 10.34TiB
->>> Rate: 200.25MiB/s
->>> Error summary: no errors found
-
 
