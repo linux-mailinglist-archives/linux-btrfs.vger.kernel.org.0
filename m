@@ -1,262 +1,194 @@
-Return-Path: <linux-btrfs+bounces-16692-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16693-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7599DB47AF2
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Sep 2025 13:25:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9491EB48110
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 00:41:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2757B17E14E
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Sep 2025 11:25:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E9B9189C348
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Sep 2025 22:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45EEB261B60;
-	Sun,  7 Sep 2025 11:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6982264B2;
+	Sun,  7 Sep 2025 22:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xVk2BKv+"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Aju54ZaQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B07F25FA3B
-	for <linux-btrfs@vger.kernel.org>; Sun,  7 Sep 2025 11:25:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B52121578F
+	for <linux-btrfs@vger.kernel.org>; Sun,  7 Sep 2025 22:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757244327; cv=none; b=IUqdnXgt2diiBlZ1+MlF0ac9dAxCOfkDBLIyRpkHtfsKxOjOy1SXLrrvfxV/Z5NVrbbiDYoBK62AXmzOVYNVLBqcLFwiG6Co7A7P+xORka3OLb6/aqnZoeVbwXZjapc1yDByl81T/ZY0eJ0tByGDL1imSanBerumGOTGjG/94Ho=
+	t=1757284889; cv=none; b=oRAHHHKittcmvbKGCZSVy86CkxnG7Hfh4Xu9ukt6lJBpIQTszNxMY6PnttSmnTvMjVfA7VSEHJbJDHDbG/p1Sid+RQm4VbnXxp71KXCpxU26Wu3x0Y/W5pcukBUz9Fc64DpdzYqG+AxcrtoXND/hB5FOkCSe74ca+yZZJ4A1oXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757244327; c=relaxed/simple;
-	bh=fRy/1QBXVJl34spbLCzK3r5SskGfBF0ojBe6pJKK/oo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=NL2CaZ+hjv9Vs1GIWhe+0iLDn4ywYloKk71br1wLNr8GQsuKyI2u0s2vjqRLBeZBymbGgmCuWa5Uv+q/U7DSUCfMeCBWo8GrpsOZtN8GxgQYEHJMKjyl7TFVrsheTUUYQB0rlphKyUfvBLPFgyb3cyc/HFOr0fyh6urRLeMvYAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xVk2BKv+; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-45cb659e858so24241075e9.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 07 Sep 2025 04:25:25 -0700 (PDT)
+	s=arc-20240116; t=1757284889; c=relaxed/simple;
+	bh=n/drI+cMGG5bVmm44g/BahrwI+Nm6w8YZD3H3dpNylQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qAxGp4iS/7rZva1ArYGIFKY24XnBFKm4lFAVmHMg6iYpJ3YaK8rGabJ+d64OcBnJjHy+Vh9MouX5fo979JOXWUA6Up0c9Cp3/9FKRLlt0T1MwoVklQtoOt1R6moP6EQWOUdBdGAsgHlHNEhTdwYt3tXDzbbsaSEOjSp62yh9wTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Aju54ZaQ; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3dad6252eacso1624826f8f.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 07 Sep 2025 15:41:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1757244323; x=1757849123; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XSPKDjoB+/14LTyGjnG7vKOzHvRtv5uQ+TOYEsbAAgg=;
-        b=xVk2BKv+pEynMih6uoKilULTuHe6VzwE2yL9U26N0Z5PK9bnQEy3j080jDxZpuJa1j
-         cVA44OeFAbd7q1ZWcqHruTHDYLoMnKfSzlywJP++f25Zf+OLA8fyT8JtFV9VTrp0/1f7
-         Dbg7fBtkU1b+uNOaTcv1ev5o9vwE30dEhdiNmWPqyF5temGOXBEskK0pya7VVqlTsKal
-         uDkbhHgaxJSiTPSz0+ElhOK74Moa7GVhxUn5LwG5lTqdO6ckywoTs10Xjufs7uK4J5In
-         Hw1ekAUYOJY7FpGw/oGpXzXh6nB9LnCwEl/4uF13Mda79+wiHjudUTa2rHL+5G80mk3E
-         aCzQ==
+        d=suse.com; s=google; t=1757284886; x=1757889686; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=hVFLpSueAmA1ouTf41WNMAKcdmyhZBwcWTTBzR0VaHU=;
+        b=Aju54ZaQIBL+sURemAu/1oP+QBv7otcdKyEh3UqDDXh2ugbLLsqt5sOmL/sUCLbyq9
+         zOC+nua85/AF+sChOERMapDXQ1RUjVj1b2nN4gCa3V5VxwFPax3JN5d5iUxAdY0JaCYq
+         JnOLpRhQRSoD/kpoxaXBqVQUUOzxgy+lFZAJdD/djeQKZdP1qOPWxrgOdddEwedJygaM
+         L2lCMB1wc1SNJaBblG3oRj2HUo0jBuFnVAm6BfZbI0ebtXWo+3yT/8l8AhmX2fcSEQoq
+         QSfhMsMGikz/DsY0c3bdQuz1tTo1RoBk35o91OI1mz1kM8KlR/7DB+BiZOx2DWcLpoOi
+         mJqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757244323; x=1757849123;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XSPKDjoB+/14LTyGjnG7vKOzHvRtv5uQ+TOYEsbAAgg=;
-        b=FyjAuXE8u3jUBNWm7Gx/jrjO1FfP53zrM1YeQA4OOAJKfVQSp9aX42/CmtzAWZApml
-         93EfGW9HGXmbv6ZQ9290DQ3c8XKCoh3CoXWLOgZgFEKpFNBC8pLL54C4fZseAB9ZdtfS
-         uV7sjuSYDJGzzFVbosCij2qGwuW2QYD5kz7kFjbgNszUkMB8sacSb9Syztams4UAQStE
-         Jx7VmhANHMr0d9ZIH6SbM6Udi57Gi3anoeFHxNuSmWFytIcsGlZ02VUz7zMBZwZJmby1
-         cgJ81A5SqokevM4DQk5/yLKn5iMkeAkXMYHlkJAtLU5Bwsv+h4J9/FMf9ZALts34NVwp
-         8FiA==
-X-Forwarded-Encrypted: i=1; AJvYcCVow+TMAZ1xDaw9sjlphHdGbw73hLrQA0tZAu8PBYYR1Mff4jAe/Wrhu+z/4rQQU1DiyR/Khl5Y9Jhh2A==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxyBtpFBsGCO85gMyRWH6z/Cg2zb6SXFU+gQOaHq4cKCBzL9Ie6
-	67ZP7VJMWh/9UcFF5CpxcYt068qc3WDatve5qYX/yortuqZ4lCDNdBYWBUAOC/TXg8k=
-X-Gm-Gg: ASbGncsA6b0baORjiQJlZ1ZEJzkWluMaIGVJ8JJesd3WGanrZ1lTF7ONbN59hFGKxLr
-	1klM8oPnAps0yCA7WyO+ZhdC3/EYByvG31bD4pa7VT46CT8MyU4XlSLInFp0XfdlI1HAef/2IT+
-	UPPunUHRMsreiANDZ40Gv0Un4y7nfV/gx0WyqWJVFrkrv4u5MwX0Vkx02GO5SzOB/NzrlTDPlfX
-	Vm/SwrBAiiWAGqjo5UzHDBg3YJF0GMG32oGv636tuyxunGhqLQlPLFgkqb5yPXD1J405BOb2Tos
-	DoRm73Ii8rw4AUn6lTAns9FdDr8q/LMEuvbS+0SOv91Z6KHoPkEZTkvJosB/WfrxVhRqW3hzykT
-	ssm1vd79yTQF5C7Gvx+HCL/3UtNXBPhRg/R05Yg7D020NEPxz
-X-Google-Smtp-Source: AGHT+IFhX3bc4HM9TfjGZWp4sNETa8SI98RSfUn4Pac/zDEO850YPWeDn5f+/GLzMsYJA3HtsueRIg==
-X-Received: by 2002:a5d:5d02:0:b0:3c8:c89d:6b5b with SMTP id ffacd0b85a97d-3e643e0ad4amr3473293f8f.48.1757244323439;
-        Sun, 07 Sep 2025 04:25:23 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45de24ab648sm33087065e9.5.2025.09.07.04.25.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Sep 2025 04:25:22 -0700 (PDT)
-Date: Sun, 7 Sep 2025 14:25:19 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, fdmanana@kernel.org,
-	linux-btrfs@vger.kernel.org
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 33/33] btrfs: dump detailed info and specific messages on
- log replay failures
-Message-ID: <202509070931.zy8HHIta-lkp@intel.com>
+        d=1e100.net; s=20230601; t=1757284886; x=1757889686;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hVFLpSueAmA1ouTf41WNMAKcdmyhZBwcWTTBzR0VaHU=;
+        b=EqZfbJ5VepHfmekuDMbX/IINBID5XDC4ohFYQ9/7LwZQK8m1rHZuG/3syMinng9wiP
+         S8ufBm9WIweoOUtuUw3EEtnZoN0xEZOM6Pw4OJMYzwHVmdT9ugjWwXNrqgBz7CGS/Hsp
+         1C6XIcEAUQao5FJWjbxtzBFn/z/eAqaYkKwHBi816fkXoOKsdEn+n+5eXwp3OwrMJaY8
+         aPpA4e8MhhoPh7MryKXOBhQoGu0FHcINkK6xndiHCBRJJg9TBeLHGpbF3Ul3GVGJIPxX
+         zji5gk+s5foXN1DP8H4podvmLnHep0b10lZp7Vw7qLktUQZXy/RPMtCeNoCuDIQmuW7C
+         efgg==
+X-Forwarded-Encrypted: i=1; AJvYcCXaHxCylRhh0oWAIWvbEnFTM8UgEfGUEo888s/LE6lOua73ISKwTaZBxPQhTdkBA/b3yiRwC89ZY4srlg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwEq78qUgqrZHRwGr8cLujCLtSuZYY5+w1o2JkBozx92ZDSOtP8
+	6DKBGkX5F6bu3AwzvH7fXwQH0YfJ5jV7re71sLWhr3DOo7JoVrxWG2jBjXp2sp8bgho=
+X-Gm-Gg: ASbGncuLX+2e5WCTW8weWLHTj/yL47ieg7XUkxMncvQjA8SfoBhbXN3zdlpwnZvgL9M
+	NMlA1ZyeIKvg/w/zF0VOb6IPZ2bl6U0w5SVPmLlaJsgbmOhSlmSUk6l8QdA7bX0K909S9VS9GZD
+	I8HMcKPd1cn3wglrLX0CG0y5LDtzpi1YwoHI8JvfaMzogCHbvF1ZVBauat1OsHTBkCcNM8uxRtN
+	s4SoElSDH3lER8g/DVCQ+efOLrfHmZbI/PZDdYUvvTS4Vb3lnC3GplamO0Me/3K9UTjNEuIT/1X
+	ic+Z7Zr38UJrL1gzxMPniTqh4wZLj9i75O1EHbhio6p5DuSEBiYfBCbmNTR3dymNuZbUikdSeDz
+	ygsVa4k/ZkhuOZZaeJ8sp9a+PXGWNxpUyNQm+ytB18zVpBQiHwNLwDoXjZ6kg+Q==
+X-Google-Smtp-Source: AGHT+IEOYfTqBSNVTYIQ9V/rlEDtEfAdMgW8uO9tKr+yaEnvOkmsOpyDzVo2RX0gxi1NXzpCePC35Q==
+X-Received: by 2002:a05:6000:2285:b0:3e7:4334:2afe with SMTP id ffacd0b85a97d-3e743342e6cmr2920789f8f.5.1757284885808;
+        Sun, 07 Sep 2025 15:41:25 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24c9304b790sm125165205ad.67.2025.09.07.15.41.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Sep 2025 15:41:25 -0700 (PDT)
+Message-ID: <7981ee42-fc55-4125-a662-60fb18b454c8@suse.com>
+Date: Mon, 8 Sep 2025 08:11:19 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f0623e4f3a69cd61238551c1e5b44fc31077db16.1757075118.git.fdmanana@suse.com>
-
-Hi,
-
-kernel test robot noticed the following build warnings:
-
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/fdmanana-kernel-org/btrfs-fix-invalid-extref-key-setup-when-replaying-dentry/20250906-001715
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/f0623e4f3a69cd61238551c1e5b44fc31077db16.1757075118.git.fdmanana%40suse.com
-patch subject: [PATCH 33/33] btrfs: dump detailed info and specific messages on log replay failures
-config: i386-randconfig-141-20250906 (https://download.01.org/0day-ci/archive/20250907/202509070931.zy8HHIta-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202509070931.zy8HHIta-lkp@intel.com/
-
-New smatch warnings:
-fs/btrfs/tree-log.c:2591 replay_xattr_deletes() warn: passing freed memory 'name' (line 2588)
-
-Old smatch warnings:
-fs/btrfs/tree-log.c:2601 replay_xattr_deletes() warn: passing freed memory 'name' (line 2588)
-fs/btrfs/tree-log.c:2614 replay_xattr_deletes() warn: passing freed memory 'name' (line 2611)
-
-vim +/name +2591 fs/btrfs/tree-log.c
-
-51abc774a9b1d4 Filipe Manana 2025-09-05  2517  static int replay_xattr_deletes(struct walk_control *wc)
-4f764e5153616f Filipe Manana 2015-02-23  2518  {
-b75ff3e7b377e8 Filipe Manana 2025-09-05  2519  	struct btrfs_trans_handle *trans = wc->trans;
-b75ff3e7b377e8 Filipe Manana 2025-09-05  2520  	struct btrfs_root *root = wc->root;
-b75ff3e7b377e8 Filipe Manana 2025-09-05  2521  	struct btrfs_root *log = wc->log;
-4f764e5153616f Filipe Manana 2015-02-23  2522  	struct btrfs_key search_key;
-4f764e5153616f Filipe Manana 2015-02-23  2523  	struct btrfs_path *log_path;
-b048ef711534b2 Filipe Manana 2025-09-05  2524  	const u64 ino = wc->log_key.objectid;
-4f764e5153616f Filipe Manana 2015-02-23  2525  	int nritems;
-4f764e5153616f Filipe Manana 2015-02-23  2526  	int ret;
-4f764e5153616f Filipe Manana 2015-02-23  2527  
-4f764e5153616f Filipe Manana 2015-02-23  2528  	log_path = btrfs_alloc_path();
-fa7c5927bfe412 Filipe Manana 2025-07-18  2529  	if (!log_path) {
-c2bd309cef030f Filipe Manana 2025-09-05  2530  		btrfs_abort_log_replay(wc, -ENOMEM, "failed to allocate path");
-4f764e5153616f Filipe Manana 2015-02-23  2531  		return -ENOMEM;
-fa7c5927bfe412 Filipe Manana 2025-07-18  2532  	}
-4f764e5153616f Filipe Manana 2015-02-23  2533  
-4f764e5153616f Filipe Manana 2015-02-23  2534  	search_key.objectid = ino;
-4f764e5153616f Filipe Manana 2015-02-23  2535  	search_key.type = BTRFS_XATTR_ITEM_KEY;
-4f764e5153616f Filipe Manana 2015-02-23  2536  	search_key.offset = 0;
-4f764e5153616f Filipe Manana 2015-02-23  2537  again:
-51abc774a9b1d4 Filipe Manana 2025-09-05  2538  	ret = btrfs_search_slot(NULL, root, &search_key, wc->subvol_path, 0, 0);
-fa7c5927bfe412 Filipe Manana 2025-07-18  2539  	if (ret < 0) {
-c2bd309cef030f Filipe Manana 2025-09-05  2540  		btrfs_abort_log_replay(wc, ret,
-c2bd309cef030f Filipe Manana 2025-09-05  2541  			       "failed to search xattrs for inode %llu root %llu",
-c2bd309cef030f Filipe Manana 2025-09-05  2542  				       ino, btrfs_root_id(root));
-4f764e5153616f Filipe Manana 2015-02-23  2543  		goto out;
-fa7c5927bfe412 Filipe Manana 2025-07-18  2544  	}
-4f764e5153616f Filipe Manana 2015-02-23  2545  process_leaf:
-51abc774a9b1d4 Filipe Manana 2025-09-05  2546  	nritems = btrfs_header_nritems(wc->subvol_path->nodes[0]);
-51abc774a9b1d4 Filipe Manana 2025-09-05  2547  	for (int i = wc->subvol_path->slots[0]; i < nritems; i++) {
-4f764e5153616f Filipe Manana 2015-02-23  2548  		struct btrfs_key key;
-4f764e5153616f Filipe Manana 2015-02-23  2549  		struct btrfs_dir_item *di;
-4f764e5153616f Filipe Manana 2015-02-23  2550  		struct btrfs_dir_item *log_di;
-4f764e5153616f Filipe Manana 2015-02-23  2551  		u32 total_size;
-4f764e5153616f Filipe Manana 2015-02-23  2552  		u32 cur;
-4f764e5153616f Filipe Manana 2015-02-23  2553  
-51abc774a9b1d4 Filipe Manana 2025-09-05  2554  		btrfs_item_key_to_cpu(wc->subvol_path->nodes[0], &key, i);
-4f764e5153616f Filipe Manana 2015-02-23  2555  		if (key.objectid != ino || key.type != BTRFS_XATTR_ITEM_KEY) {
-4f764e5153616f Filipe Manana 2015-02-23  2556  			ret = 0;
-4f764e5153616f Filipe Manana 2015-02-23  2557  			goto out;
-4f764e5153616f Filipe Manana 2015-02-23  2558  		}
-4f764e5153616f Filipe Manana 2015-02-23  2559  
-51abc774a9b1d4 Filipe Manana 2025-09-05  2560  		di = btrfs_item_ptr(wc->subvol_path->nodes[0], i, struct btrfs_dir_item);
-51abc774a9b1d4 Filipe Manana 2025-09-05  2561  		total_size = btrfs_item_size(wc->subvol_path->nodes[0], i);
-4f764e5153616f Filipe Manana 2015-02-23  2562  		cur = 0;
-4f764e5153616f Filipe Manana 2015-02-23  2563  		while (cur < total_size) {
-51abc774a9b1d4 Filipe Manana 2025-09-05  2564  			u16 name_len = btrfs_dir_name_len(wc->subvol_path->nodes[0], di);
-51abc774a9b1d4 Filipe Manana 2025-09-05  2565  			u16 data_len = btrfs_dir_data_len(wc->subvol_path->nodes[0], di);
-4f764e5153616f Filipe Manana 2015-02-23  2566  			u32 this_len = sizeof(*di) + name_len + data_len;
-4f764e5153616f Filipe Manana 2015-02-23  2567  			char *name;
-4f764e5153616f Filipe Manana 2015-02-23  2568  
-4f764e5153616f Filipe Manana 2015-02-23  2569  			name = kmalloc(name_len, GFP_NOFS);
-4f764e5153616f Filipe Manana 2015-02-23  2570  			if (!name) {
-4f764e5153616f Filipe Manana 2015-02-23  2571  				ret = -ENOMEM;
-c2bd309cef030f Filipe Manana 2025-09-05  2572  				btrfs_abort_log_replay(wc, ret,
-c2bd309cef030f Filipe Manana 2025-09-05  2573  				       "failed to allocate memory for name of length %u",
-c2bd309cef030f Filipe Manana 2025-09-05  2574  						       name_len);
-4f764e5153616f Filipe Manana 2015-02-23  2575  				goto out;
-4f764e5153616f Filipe Manana 2015-02-23  2576  			}
-51abc774a9b1d4 Filipe Manana 2025-09-05  2577  			read_extent_buffer(wc->subvol_path->nodes[0], name,
-4f764e5153616f Filipe Manana 2015-02-23  2578  					   (unsigned long)(di + 1), name_len);
-4f764e5153616f Filipe Manana 2015-02-23  2579  
-4f764e5153616f Filipe Manana 2015-02-23  2580  			log_di = btrfs_lookup_xattr(NULL, log, log_path, ino,
-4f764e5153616f Filipe Manana 2015-02-23  2581  						    name, name_len, 0);
-4f764e5153616f Filipe Manana 2015-02-23  2582  			btrfs_release_path(log_path);
-4f764e5153616f Filipe Manana 2015-02-23  2583  			if (!log_di) {
-4f764e5153616f Filipe Manana 2015-02-23  2584  				/* Doesn't exist in log tree, so delete it. */
-51abc774a9b1d4 Filipe Manana 2025-09-05  2585  				btrfs_release_path(wc->subvol_path);
-51abc774a9b1d4 Filipe Manana 2025-09-05  2586  				di = btrfs_lookup_xattr(trans, root, wc->subvol_path, ino,
-4f764e5153616f Filipe Manana 2015-02-23  2587  							name, name_len, -1);
-4f764e5153616f Filipe Manana 2015-02-23 @2588  				kfree(name);
-                                                                              ^^^^
-
-kfree()
-
-4f764e5153616f Filipe Manana 2015-02-23  2589  				if (IS_ERR(di)) {
-4f764e5153616f Filipe Manana 2015-02-23  2590  					ret = PTR_ERR(di);
-c2bd309cef030f Filipe Manana 2025-09-05 @2591  					btrfs_abort_log_replay(wc, ret,
-c2bd309cef030f Filipe Manana 2025-09-05  2592  		       "failed to lookup xattr with name %.*s for inode %llu root %llu",
-c2bd309cef030f Filipe Manana 2025-09-05  2593  							       name_len, name, ino,
-                                                                                                                 ^^^^
-Use after free
-
-c2bd309cef030f Filipe Manana 2025-09-05  2594  							       btrfs_root_id(root));
-4f764e5153616f Filipe Manana 2015-02-23  2595  					goto out;
-4f764e5153616f Filipe Manana 2015-02-23  2596  				}
-4f764e5153616f Filipe Manana 2015-02-23  2597  				ASSERT(di);
-4f764e5153616f Filipe Manana 2015-02-23  2598  				ret = btrfs_delete_one_dir_name(trans, root,
-51abc774a9b1d4 Filipe Manana 2025-09-05  2599  								wc->subvol_path, di);
-fa7c5927bfe412 Filipe Manana 2025-07-18  2600  				if (ret) {
-c2bd309cef030f Filipe Manana 2025-09-05  2601  					btrfs_abort_log_replay(wc, ret,
-c2bd309cef030f Filipe Manana 2025-09-05  2602  		       "failed to delete xattr with name %.*s for inode %llu root %llu",
-c2bd309cef030f Filipe Manana 2025-09-05  2603  							       name_len, name, ino,
-                                                                                                                 ^^^^
-First print the name, then free it.
-
-c2bd309cef030f Filipe Manana 2025-09-05  2604  							       btrfs_root_id(root));
-4f764e5153616f Filipe Manana 2015-02-23  2605  					goto out;
-fa7c5927bfe412 Filipe Manana 2025-07-18  2606  				}
-51abc774a9b1d4 Filipe Manana 2025-09-05  2607  				btrfs_release_path(wc->subvol_path);
-4f764e5153616f Filipe Manana 2015-02-23  2608  				search_key = key;
-4f764e5153616f Filipe Manana 2015-02-23  2609  				goto again;
-4f764e5153616f Filipe Manana 2015-02-23  2610  			}
-4f764e5153616f Filipe Manana 2015-02-23  2611  			kfree(name);
-                                                                      ^^^^^
-4f764e5153616f Filipe Manana 2015-02-23  2612  			if (IS_ERR(log_di)) {
-4f764e5153616f Filipe Manana 2015-02-23  2613  				ret = PTR_ERR(log_di);
-c2bd309cef030f Filipe Manana 2025-09-05  2614  				btrfs_abort_log_replay(wc, ret,
-c2bd309cef030f Filipe Manana 2025-09-05  2615  	"failed to lookup xattr in log tree with name %.*s for inode %llu root %llu",
-c2bd309cef030f Filipe Manana 2025-09-05  2616  						       name_len, name, ino,
-                                                                                                         ^^^^
-same.
+User-Agent: Mozilla Thunderbird
+Subject: Re: regression, btrfs mount failure when multiple rescue mount
+ options used
+To: Chris Murphy <lists@colorremedies.com>,
+ Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc: brauner@kernel.org, dsterba@suse.com, terrelln@fb.com,
+ Linux Devel <linux-fsdevel@vger.kernel.org>
+References: <e2179aaa-871f-4478-b72c-45f1410dff87@app.fastmail.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <e2179aaa-871f-4478-b72c-45f1410dff87@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-c2bd309cef030f Filipe Manana 2025-09-05  2617  						       btrfs_root_id(root));
-4f764e5153616f Filipe Manana 2015-02-23  2618  				goto out;
-4f764e5153616f Filipe Manana 2015-02-23  2619  			}
-4f764e5153616f Filipe Manana 2015-02-23  2620  			cur += this_len;
-4f764e5153616f Filipe Manana 2015-02-23  2621  			di = (struct btrfs_dir_item *)((char *)di + this_len);
-4f764e5153616f Filipe Manana 2015-02-23  2622  		}
-4f764e5153616f Filipe Manana 2015-02-23  2623  	}
-51abc774a9b1d4 Filipe Manana 2025-09-05  2624  	ret = btrfs_next_leaf(root, wc->subvol_path);
-4f764e5153616f Filipe Manana 2015-02-23  2625  	if (ret > 0)
-4f764e5153616f Filipe Manana 2015-02-23  2626  		ret = 0;
-4f764e5153616f Filipe Manana 2015-02-23  2627  	else if (ret == 0)
-4f764e5153616f Filipe Manana 2015-02-23  2628  		goto process_leaf;
-fa7c5927bfe412 Filipe Manana 2025-07-18  2629  	else
-c2bd309cef030f Filipe Manana 2025-09-05  2630  		btrfs_abort_log_replay(wc, ret,
-c2bd309cef030f Filipe Manana 2025-09-05  2631  			       "failed to get next leaf in subvolume root %llu",
-c2bd309cef030f Filipe Manana 2025-09-05  2632  				       btrfs_root_id(root));
-4f764e5153616f Filipe Manana 2015-02-23  2633  out:
-4f764e5153616f Filipe Manana 2015-02-23  2634  	btrfs_free_path(log_path);
-51abc774a9b1d4 Filipe Manana 2025-09-05  2635  	btrfs_release_path(wc->subvol_path);
-4f764e5153616f Filipe Manana 2015-02-23  2636  	return ret;
-4f764e5153616f Filipe Manana 2015-02-23  2637  }
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+在 2025/9/7 09:31, Chris Murphy 写道:
+> kernel with mount failures:
+> 6.17.0-0.rc4.36.fc43.x86_64
+> 6.16.4-200.fc42.x86_64
+> 6.15.11-200.fc42.x86_64
+> 
+> 
+> # mount -o ro,rescue=usebackuproot,nologreplay,ibadroots /dev/loop0 /mnt
+> mount: /mnt: fsconfig system call failed: btrfs: Unknown parameter 'nologreplay'.
+>         dmesg(1) may have more information after failed mount system call.
+> # mount -o ro,rescue=usebackuproot /dev/loop0 /mnt
+> # umount /mnt
+> # mount -o ro,rescue=usebackuproot,ibadroots /dev/loop0 /mnt
+> # mount: /mnt: fsconfig system call failed: btrfs: Unknown parameter 'ibadroots'.
+>         dmesg(1) may have more information after failed mount system call.
+> # mount -o ro,rescue=ibadroots /dev/loop0 /mnt
+> #
+> 
+> There are no kernel messages for the failures.
+> 
+> Looks like single rescue options work, but multiple rescue options separated by comma fail.
+
+It looks like there is no longer combined "rescue=" since 6.8, where we 
+switched to the new fsconfig mount method.
+
+And even before that, the separator for "rescue=" command group is ':', 
+not ',' as that conflicts with the default separator.
+
+There is no support for using ',' inside "rescue=" from the very beginning.
+
+Thanks,
+Qu
+
+> 
+> Any rescue option after the first comma, results in an fsconfig complaint.  Since it looks like fsconfig migration fallout, I'll cc some additional folks, and fs-devel.
+> 
+> ---
+> 
+> I get different results with kernel 6.14.11-300.fc42.x86_64 but I think some of the bugs are fixed in later kernels hence the different behavior. And in any case it's EOL so I won't test any further back than this kernel.
+> 
+> # mount -o ro,rescue=usebackuproot,nologreplay,ibadroots /dev/loop0 /mnt
+> mount: /mnt: fsconfig system call failed: btrfs: Unknown parameter 'ibadroots'.
+>         dmesg(1) may have more information after failed mount system call.
+> 
+> Notice the complaint is about ibadroots, not nologreplay. And there is a kernel message this time.
+> 
+> Sep 06 19:44:38 fnuc.local kernel: BTRFS warning: 'nologreplay' is deprecated, use 'rescue=nologreplay' instead
+> 
+> 
+> But there's more. All of these commands result in mount succeeded, but kernel messages don't indicate they were used.
+> 
+> # mount -o ro,rescue=ibadroots /dev/loop0 /mnt
+> # umount /mnt
+> # mount -o ro,rescue=usebackuproot /dev/loop0 /mnt
+> # umount /mnt
+> # mount -o ro,rescue=nologreplay /dev/loop0 /mnt
+> 
+> This one has yet another different  outcome, I don't know why.
+> 
+> # mount -o ro,rescue=idatacsum /dev/loop0 /mnt
+> mount: /mnt: fsconfig system call failed: btrfs: Bad value for 'rescue'.
+>         dmesg(1) may have more information after failed mount system call.
+> 
+> 
+> 
+> --
+> Chris Murphy
+> 
 
 
