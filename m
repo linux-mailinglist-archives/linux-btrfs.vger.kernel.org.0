@@ -1,136 +1,157 @@
-Return-Path: <linux-btrfs+bounces-16689-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16690-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C25AB46B05
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Sep 2025 13:25:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47F8EB47859
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Sep 2025 02:02:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B9BE1B230F6
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Sep 2025 11:25:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 570DA20021B
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Sep 2025 00:02:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F2727510B;
-	Sat,  6 Sep 2025 11:25:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1313510F1;
+	Sun,  7 Sep 2025 00:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RgiDmqmX"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="ANf1U2hM";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hT3F9hVP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7FC325A326;
-	Sat,  6 Sep 2025 11:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0901928E7;
+	Sun,  7 Sep 2025 00:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757157903; cv=none; b=WMWYvYPGf6W6WwDimFEtt47wnosPGWgub1nv1pBGUkKhXUJJsEyMOeoHBeY2/3HoaVaCCeAdOco3gCctf7+GqRFtDGN8PSdhSwBP+NBrHkyMGkNLCZEcQRK6x6TIfWjocXCOdAVFPPsEqjryChDDm8/COczBXz28i9ZPqAAwZ9w=
+	t=1757203361; cv=none; b=GXs9bxiqr6FnQ+MKJx/SCjHXr04T2qn+dZoKPwikQiArV9Uh+JmMHpKSZMongCelqwgGJ/4NvZNrs53bqY33rg4l600fSPNBysR8Q17LuDBjHlI6mk9W6FHH2uHDDJhIdUGfZe9bMy0J2o0J6ePIve5C60B0weji6J1T1w2RZaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757157903; c=relaxed/simple;
-	bh=ct/jNV3YJ6fvjezU8Fzw6M5BNMVQuB9YpzbFHkRJbLg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BpOBscvGG9ADuZnhyLKvKiXGcGjwUZZyiI+EadhVmcQ79bzcBnwbCotDedGwO1NvF033TYrSqB0jJQIeUi9/ELUIyes17qBthu03tPkwDEGNhvxmlOM7fWLTbKWhVR1tktVGiMMUfu1YSeFzRCJKNd/yVszmPOjcreweujWnDk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RgiDmqmX; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-45b79ec2fbeso19861105e9.3;
-        Sat, 06 Sep 2025 04:25:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757157900; x=1757762700; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gBOanA6zalGLYYyu9YMahK79U0EvwFc1g3mic7A2XsE=;
-        b=RgiDmqmXLa8FNDPMfXknAcGXchwWe3Qki7YVFJhQ5BkxXPtEbmKjJU6E7f2sdxU3cP
-         tQui810PnIpvCr0l4L4dGtrpvLAm9lFqX6n0vIdqwsWiR2n1fm0bFh79oN3x7iqhWSs0
-         6YdZwTLHSGa4UvCIZTZv/VO4xbXKfxNl32eg7LaF7KSa2mGPgDma+67JbDbviVPbHu4B
-         am2IPezd6SoP+8iBzGpHVI51UNkDVH9WrGnveHIyxqcdzesBVYxrwRvGWsSpKiHtN9eA
-         e5wBswpSfMaXhrYznOpZcfR1BdZ/qsc6ew36mprrs7VZA6LrSVt5Dt0xovkKfjOBFLS4
-         5CiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757157900; x=1757762700;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gBOanA6zalGLYYyu9YMahK79U0EvwFc1g3mic7A2XsE=;
-        b=eZ/+mbpc0oJRUhdnM0IQ892XuW/0S6o2L9h7a1Fq78i0kqHkX2zd0ACSPKRTsGgEU7
-         Fcf/d6st//zTSt2ssr/Bhofd/GfnorO8CdPeTEsjAgR8ipeCvSdog1uOfCyBIrgIrG5o
-         dQxmA1HyrSsOH6kxjBdXmnUkL0JZuudlpVrrDXG5v+Vwg8nhI+55cbtnGhNH3qGsyuGG
-         axcuedmU48/+iLbCdkDg+ul8xSq5hOxMP1wKiyx2Kx9HpNSBMxRXQZ9fJ7edhdWVOcsE
-         BPlqyp54R3ZBKa4IuYrgFvzPiSQCkUsYKK80bu2oXzjFcHz3csFdhG9Li5mTQRDQZkKl
-         /Rcw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5W94bRWkUBW5BGiE6kKfFrfRvhKm5TjGIwIUzgVyF3oiNQxBDfRwCuBnWMTIztuUayqrIyxaRomxftg==@vger.kernel.org, AJvYcCXYa/QeuY4D+7EbeGCIaxL+vbZlxefRBlxfcatHQEKzu2GHdGihCCRv4tJGL36tYQ7vTD1rPnjlmh51shxz@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyeg1Ih2XwiXkIozCLjq7hmGwBgRWeXr5bGK42pIxxZfDek6OwN
-	Jv+8JGWbhiFWtOXND4hx+FcdLvf3ubQYE00szLzP6GSZdWOUajkm5rg6tPKNJg==
-X-Gm-Gg: ASbGncvJqv/CxOpKMfINOwkHTiyUh5hNmk4ZTW1FHwdKiCrQhwD4Ttd+J1ZPVGnY6gM
-	nUUrIZ+nygdukASTkJRkxZkC5Ktqsg8RVKOaYvHFsmNF43KVmcMyAC3YrWSyGBja5GewK4GKTC9
-	y8RTOp6Skju3DgSbsZeCm4Xe1VNEjcyGbUzB1xVym350YRha62g26UloQeQiR5ZpcFS40l4pFOq
-	jZtWMyhBHnacpSRwMaix7tJbRG2q13U765/CagNSBzBA87bwjn7+eHnASK2VsCQgKdwx/xFLK3K
-	0Uath65NXNB2X531hjItJ1zND+NXohntTTZgKB1XTSVGWCv4rJKSf+24OvPPyc6lfLQ+6a6chYo
-	loCIY4RtrTJCCoIO2pZQDTIcLl8/meENGvcRqdeSOcBtTZwFp49AwnqlKMWUeyxoRnxRRrfV9v1
-	c=
-X-Google-Smtp-Source: AGHT+IEqq/gP7GihJJE1vvhH8bWCtf+vjl7jrPTkrkQWlh2B1MBEzuH1ShRPD8Quxer/3nx3fqFFNw==
-X-Received: by 2002:a05:600c:1d07:b0:45b:9c93:d236 with SMTP id 5b1f17b1804b1-45ddded246cmr15000855e9.27.1757157899968;
-        Sat, 06 Sep 2025 04:24:59 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45dda597641sm25599355e9.11.2025.09.06.04.24.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Sep 2025 04:24:59 -0700 (PDT)
-Date: Sat, 6 Sep 2025 12:24:58 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David
- Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: scrub: replace max_t()/min_t() with clamp_t() in
- scrub_throttle_dev_io()
-Message-ID: <20250906122458.75dfc8f0@pumpkin>
-In-Reply-To: <20250901150144.227149-2-thorsten.blum@linux.dev>
-References: <20250901150144.227149-2-thorsten.blum@linux.dev>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1757203361; c=relaxed/simple;
+	bh=m2C39utGeSIjhO+u/pw1ybkJdZRkx3DlFtqGTKKJB7Y=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:Subject:Content-Type; b=jTfAoaK+Ci44drvB83/aScYIk3hD4Ms+u7IVuMmgCGT+twitbgj4R749lSmISWaVC/5ZhuDa3h8IhIQ1aSYDoN9BzWfZdaUQ2Uz1HU2G3n2m+aIrygtDuChGLiJjZblWFHhqbJBq20KDyxGF6XZm12Jke7XV9+XXeNiID/YTFDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=ANf1U2hM; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hT3F9hVP; arc=none smtp.client-ip=103.168.172.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 0C3E61400045;
+	Sat,  6 Sep 2025 20:02:38 -0400 (EDT)
+Received: from phl-imap-01 ([10.202.2.91])
+  by phl-compute-04.internal (MEProxy); Sat, 06 Sep 2025 20:02:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to; s=fm1;
+	 t=1757203358; x=1757289758; bh=FtuRzLCULGUQ93vPFbWETTnax8WUYLwb
+	sIz9czNrpHU=; b=ANf1U2hMEpk8LsR/5iWUt+cvKr1oBPh8G9lkAqk26OWHgg+V
+	YTYuIA3of0GafTgJraWX1P8mdv9p/QhMP8ENljMpf6YLvhdruCVbj9AsgnvYHUJK
+	w0X28wGOJUOs8xgaHxlbz8U1aNdNfYdiyk3oAq+sCA41J1Rag2+4Lo722osem8Zp
+	101qVCb17hSBNYgfEz29kHMI+13DPY6e0UULiQwxNMpKlHFRa+3k2zYh/h+pNEK4
+	y6q2WHY+3Ke5BA3tUB1PQZo3XTSi7OzbJ9yKWssv/w6nLiY41LNKmX1VOxsoNKNP
+	vo8hk4D+dmwCpanCgQK/k1cB9twg02C78t3KzA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1757203358; x=1757289758; bh=FtuRzLCULGUQ93vPFbWETTnax8WU
+	YLwbsIz9czNrpHU=; b=hT3F9hVPsoJto7EgcpgbYCLDhPYvqDAQ0S3LzrzZvx7N
+	P6XRjMWo3Z9IsQyuqvFI++1or+50utHeCMAws0wUuLvQiWEPO0FLj3MYIXNofwjP
+	6SScrood1z8Ue9hkTv29PQR3dzsJuVzxf+zdCl6qNGZRAaBg/eef/MWI+BFLPsGe
+	GbyRAvVxebMxne17PjK6IIfAiiV49Q56bfqkLnLlY1f1EQATvk9Mde8y0/qHl86n
+	Zgp5fl9TfDqZMB6e5Y5F4qvl3slBBN69fFhAOT3MAMpUlDbeU1iWZmFRZnwxGWOw
+	VVjS4tNkBc+MgUmSraLoaxdGyOZJcUP6rKyy3OGkQA==
+X-ME-Sender: <xms:ncu8aAd5E7a3wjT-ZJOhy9ERgSM-MpeiB-639yM9SmbQtXBiHdX50A>
+    <xme:ncu8aCPucPEJoqHpgBZs0WlNQo7PwGrUnUHRQMQAHbnvQc4sMeBVtNu6p8Zv9DTW4
+    cqOakF9gG4e-nzrtdI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddufeduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvvefkufgtgfesthejredtredttdenucfhrhhomhepfdevhhhrihhsucfo
+    uhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomheqnecugg
+    ftrfgrthhtvghrnhepgfehjeejledvgeefgfettedtjeeuieeujeevudefjeevtedvfffg
+    vedulefftddtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomhdpnhgspghrtghpthht
+    ohephedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepthgvrhhrvghllhhnsehfsg
+    drtghomhdprhgtphhtthhopegsrhgruhhnvghrsehkvghrnhgvlhdrohhrghdprhgtphht
+    thhopegushhtvghrsggrsehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsth
+    hrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqfhhs
+    uggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:ncu8aABBL86b95KRx-sjbZ7OV4CFJBXvzG6k6dm6JyTKygHCMhjbJQ>
+    <xmx:ncu8aAf1vYCylz1VLxU1BFxh21pmiglM43GD5n2p7MAEbvJLlKxnkg>
+    <xmx:ncu8aF7f6mb2XxgM1ZUCnS4vYBv2EbX_D7gLL8E4JChq0Ovmx4xY6g>
+    <xmx:ncu8aLXpGo5Lg1gqGEqvutZ_MZIY5eZWrQ49M4A7F3su_nFEKO8AGw>
+    <xmx:nsu8aKRJ_1tK-DbOw7lqImqYU0QdTiq9GhJ0159vOxHMkNUIeBEE5eJ4>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 8717418C0068; Sat,  6 Sep 2025 20:02:37 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Date: Sat, 06 Sep 2025 20:01:59 -0400
+From: "Chris Murphy" <lists@colorremedies.com>
+To: "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Cc: brauner@kernel.org, dsterba@suse.com, terrelln@fb.com,
+ "Linux Devel" <linux-fsdevel@vger.kernel.org>
+Message-Id: <e2179aaa-871f-4478-b72c-45f1410dff87@app.fastmail.com>
+Subject: regression, btrfs mount failure when multiple rescue mount options used
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On Mon,  1 Sep 2025 17:01:44 +0200
-Thorsten Blum <thorsten.blum@linux.dev> wrote:
+kernel with mount failures:
+6.17.0-0.rc4.36.fc43.x86_64
+6.16.4-200.fc42.x86_64
+6.15.11-200.fc42.x86_64
 
-> Replace max_t() followed by min_t() with a single clamp_t(). Manually
-> casting 'bwlimit / (16 * 1024 * 1024)' to u32 is also redundant when
-> using max_t(u32,,) or clamp_t(u32,,) and can be removed.
-> 
-> No functional changes intended.
-> 
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> ---
->  fs/btrfs/scrub.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 6776e6ab8d10..ebfde24c0e42 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -1369,8 +1369,7 @@ static void scrub_throttle_dev_io(struct scrub_ctx *sctx, struct btrfs_device *d
->  	 * Slice is divided into intervals when the IO is submitted, adjust by
->  	 * bwlimit and maximum of 64 intervals.
->  	 */
-> -	div = max_t(u32, 1, (u32)(bwlimit / (16 * 1024 * 1024)));
-> -	div = min_t(u32, 64, div);
-> +	div = clamp_t(u32, bwlimit / (16 * 1024 * 1024), 1, 64);
 
-That probably ought to have a nack... although it isn't different.
-bwlimit is 64bit, if very big dividing by 16M will still be over 32 bits.
-and significant bits will be lost.
+# mount -o ro,rescue=usebackuproot,nologreplay,ibadroots /dev/loop0 /mnt
+mount: /mnt: fsconfig system call failed: btrfs: Unknown parameter 'nologreplay'.
+       dmesg(1) may have more information after failed mount system call.
+# mount -o ro,rescue=usebackuproot /dev/loop0 /mnt
+# umount /mnt
+# mount -o ro,rescue=usebackuproot,ibadroots /dev/loop0 /mnt
+# mount: /mnt: fsconfig system call failed: btrfs: Unknown parameter 'ibadroots'.
+       dmesg(1) may have more information after failed mount system call.
+# mount -o ro,rescue=ibadroots /dev/loop0 /mnt
+#
 
-Just use clamp() without all the extra (bug introducing) (u32) casts.
+There are no kernel messages for the failures.
 
-	David
+Looks like single rescue options work, but multiple rescue options separated by comma fail.
 
->  
->  	/* Start new epoch, set deadline */
->  	now = ktime_get();
+Any rescue option after the first comma, results in an fsconfig complaint.  Since it looks like fsconfig migration fallout, I'll cc some additional folks, and fs-devel.
 
+---
+
+I get different results with kernel 6.14.11-300.fc42.x86_64 but I think some of the bugs are fixed in later kernels hence the different behavior. And in any case it's EOL so I won't test any further back than this kernel.
+
+# mount -o ro,rescue=usebackuproot,nologreplay,ibadroots /dev/loop0 /mnt
+mount: /mnt: fsconfig system call failed: btrfs: Unknown parameter 'ibadroots'. 
+       dmesg(1) may have more information after failed mount system call.
+
+Notice the complaint is about ibadroots, not nologreplay. And there is a kernel message this time.
+
+Sep 06 19:44:38 fnuc.local kernel: BTRFS warning: 'nologreplay' is deprecated, use 'rescue=nologreplay' instead
+
+
+But there's more. All of these commands result in mount succeeded, but kernel messages don't indicate they were used.
+
+# mount -o ro,rescue=ibadroots /dev/loop0 /mnt
+# umount /mnt
+# mount -o ro,rescue=usebackuproot /dev/loop0 /mnt
+# umount /mnt
+# mount -o ro,rescue=nologreplay /dev/loop0 /mnt
+
+This one has yet another different  outcome, I don't know why.
+
+# mount -o ro,rescue=idatacsum /dev/loop0 /mnt
+mount: /mnt: fsconfig system call failed: btrfs: Bad value for 'rescue'.
+       dmesg(1) may have more information after failed mount system call.
+
+
+
+--
+Chris Murphy
 
