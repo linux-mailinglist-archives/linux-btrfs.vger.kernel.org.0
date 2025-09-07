@@ -1,194 +1,203 @@
-Return-Path: <linux-btrfs+bounces-16693-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16694-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9491EB48110
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 00:41:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58EBBB48159
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 01:32:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E9B9189C348
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Sep 2025 22:42:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D4EC7A8582
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Sep 2025 23:31:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6982264B2;
-	Sun,  7 Sep 2025 22:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Aju54ZaQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110531EE7B9;
+	Sun,  7 Sep 2025 23:32:48 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B52121578F
-	for <linux-btrfs@vger.kernel.org>; Sun,  7 Sep 2025 22:41:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC42182B7;
+	Sun,  7 Sep 2025 23:32:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757284889; cv=none; b=oRAHHHKittcmvbKGCZSVy86CkxnG7Hfh4Xu9ukt6lJBpIQTszNxMY6PnttSmnTvMjVfA7VSEHJbJDHDbG/p1Sid+RQm4VbnXxp71KXCpxU26Wu3x0Y/W5pcukBUz9Fc64DpdzYqG+AxcrtoXND/hB5FOkCSe74ca+yZZJ4A1oXM=
+	t=1757287967; cv=none; b=Xh3T0/Xk9dQUPA6/mRvIfkC7bOrBagE7N582elj6esg40KCcWLufn0IsYi8rYIjBF4hSx7lpAyiWwevgwJcm1Bzl8o9nMUKFsCGCcDs7icg+oD8JNTIxJsnY6r8m1Y9xnr+cE+XsHK0qNOyj3VQLbi8VRkm9ICeW2qlWl8paT0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757284889; c=relaxed/simple;
-	bh=n/drI+cMGG5bVmm44g/BahrwI+Nm6w8YZD3H3dpNylQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qAxGp4iS/7rZva1ArYGIFKY24XnBFKm4lFAVmHMg6iYpJ3YaK8rGabJ+d64OcBnJjHy+Vh9MouX5fo979JOXWUA6Up0c9Cp3/9FKRLlt0T1MwoVklQtoOt1R6moP6EQWOUdBdGAsgHlHNEhTdwYt3tXDzbbsaSEOjSp62yh9wTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Aju54ZaQ; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3dad6252eacso1624826f8f.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 07 Sep 2025 15:41:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1757284886; x=1757889686; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=hVFLpSueAmA1ouTf41WNMAKcdmyhZBwcWTTBzR0VaHU=;
-        b=Aju54ZaQIBL+sURemAu/1oP+QBv7otcdKyEh3UqDDXh2ugbLLsqt5sOmL/sUCLbyq9
-         zOC+nua85/AF+sChOERMapDXQ1RUjVj1b2nN4gCa3V5VxwFPax3JN5d5iUxAdY0JaCYq
-         JnOLpRhQRSoD/kpoxaXBqVQUUOzxgy+lFZAJdD/djeQKZdP1qOPWxrgOdddEwedJygaM
-         L2lCMB1wc1SNJaBblG3oRj2HUo0jBuFnVAm6BfZbI0ebtXWo+3yT/8l8AhmX2fcSEQoq
-         QSfhMsMGikz/DsY0c3bdQuz1tTo1RoBk35o91OI1mz1kM8KlR/7DB+BiZOx2DWcLpoOi
-         mJqw==
+	s=arc-20240116; t=1757287967; c=relaxed/simple;
+	bh=8Q51Pi1YMf2o7qtRi+WMwzn7RU9lfIFXDb2l23Cg46M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AIAOCCXEETCTbaNXUXPNFWLSgdqDV17ioOlwDSf+SR9+Kk5W/twmnSuI4qSnUWnKTh/wFDs6jFiEB83XH7ykLz7b93aYx66qj4yucPCLTq5cJMtoa3s7o4P120FI/3ZLOXUbW1iVux5aq9wBAdI5H8Ak9VGUHIXdEkfCisplejA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-621b8b0893bso3816845a12.2;
+        Sun, 07 Sep 2025 16:32:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757284886; x=1757889686;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hVFLpSueAmA1ouTf41WNMAKcdmyhZBwcWTTBzR0VaHU=;
-        b=EqZfbJ5VepHfmekuDMbX/IINBID5XDC4ohFYQ9/7LwZQK8m1rHZuG/3syMinng9wiP
-         S8ufBm9WIweoOUtuUw3EEtnZoN0xEZOM6Pw4OJMYzwHVmdT9ugjWwXNrqgBz7CGS/Hsp
-         1C6XIcEAUQao5FJWjbxtzBFn/z/eAqaYkKwHBi816fkXoOKsdEn+n+5eXwp3OwrMJaY8
-         aPpA4e8MhhoPh7MryKXOBhQoGu0FHcINkK6xndiHCBRJJg9TBeLHGpbF3Ul3GVGJIPxX
-         zji5gk+s5foXN1DP8H4podvmLnHep0b10lZp7Vw7qLktUQZXy/RPMtCeNoCuDIQmuW7C
-         efgg==
-X-Forwarded-Encrypted: i=1; AJvYcCXaHxCylRhh0oWAIWvbEnFTM8UgEfGUEo888s/LE6lOua73ISKwTaZBxPQhTdkBA/b3yiRwC89ZY4srlg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwEq78qUgqrZHRwGr8cLujCLtSuZYY5+w1o2JkBozx92ZDSOtP8
-	6DKBGkX5F6bu3AwzvH7fXwQH0YfJ5jV7re71sLWhr3DOo7JoVrxWG2jBjXp2sp8bgho=
-X-Gm-Gg: ASbGncuLX+2e5WCTW8weWLHTj/yL47ieg7XUkxMncvQjA8SfoBhbXN3zdlpwnZvgL9M
-	NMlA1ZyeIKvg/w/zF0VOb6IPZ2bl6U0w5SVPmLlaJsgbmOhSlmSUk6l8QdA7bX0K909S9VS9GZD
-	I8HMcKPd1cn3wglrLX0CG0y5LDtzpi1YwoHI8JvfaMzogCHbvF1ZVBauat1OsHTBkCcNM8uxRtN
-	s4SoElSDH3lER8g/DVCQ+efOLrfHmZbI/PZDdYUvvTS4Vb3lnC3GplamO0Me/3K9UTjNEuIT/1X
-	ic+Z7Zr38UJrL1gzxMPniTqh4wZLj9i75O1EHbhio6p5DuSEBiYfBCbmNTR3dymNuZbUikdSeDz
-	ygsVa4k/ZkhuOZZaeJ8sp9a+PXGWNxpUyNQm+ytB18zVpBQiHwNLwDoXjZ6kg+Q==
-X-Google-Smtp-Source: AGHT+IEOYfTqBSNVTYIQ9V/rlEDtEfAdMgW8uO9tKr+yaEnvOkmsOpyDzVo2RX0gxi1NXzpCePC35Q==
-X-Received: by 2002:a05:6000:2285:b0:3e7:4334:2afe with SMTP id ffacd0b85a97d-3e743342e6cmr2920789f8f.5.1757284885808;
-        Sun, 07 Sep 2025 15:41:25 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24c9304b790sm125165205ad.67.2025.09.07.15.41.22
+        d=1e100.net; s=20230601; t=1757287964; x=1757892764;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PSOYWEdNdMsjQK2SDIrPCn0RXg6huyCIb9JmTGv+MCE=;
+        b=PH1W65UogFyFc4jDJrhISrclOVT88ZQltcfbpR3yrggwDKWNXDx7C9/ywYRSV5p/ef
+         oY2ZexnfakyKIoG/iKlyErJ0sB3JUA6Djo8oKOgJ2gcJJ2EZZh2+qnz4+hUkqm1Iptxd
+         Jv6vh3LiubVmlHuo8lqzaFK4lsxklBoWyFmdstLbDxBdq1R6N9BqSTDVEBOOmA6KiMCj
+         +0w0NPdwoI885MQCfPn+plE0qEA9ftBdKSqPr74Fk7YXqKqNMXYPuAeHDWQDWgcHyw+Q
+         IjhS/+jiG0Bl+yqS9N07sre/gvpQkkWdQEkK57jG180PyGYqRY7ByOc06e+TJaKArOgL
+         0rQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUxN8lcS6xsOyhw9itj7T83LFzfK7RtSC4/Vrn+BJOUs2SufI2ssIDSHbIaTpC9MEz2jAIZQdeY@vger.kernel.org
+X-Gm-Message-State: AOJu0YwELYvhwDo4zCilA99BYaiIE+xd1sXdI7qJbkWy4mE4w4S38a3W
+	ozUnsXOwrWzrC+hAQ2T2Xnvwc4Yy2cqkIVAv/0bAMp5QumE5P2lSCjrgKnfylfj303g=
+X-Gm-Gg: ASbGncsMrQuG6BMvx4ma/Fo6pwOYSzuL3ZXX9h070CpRcAv50sVEkrieesDadIcELTY
+	aR34kYIAi2x5yoYlHS0H33+ldCvOxdhlnX2TLoAZLvDUVGlm0MqTbulrwhPFllWJK6NypU3GY5d
+	au9zsMHVio2Dkqh55T4QfCDu9c4y4kOe+irOs/EV9NT/X5QQHs4rrkbuFAglsT2aI86Guj8WH4E
+	PwYnQ1FFJdCi9ZO3vtgR+cTkVLomEwAokm6QWR1yNA04K8ZHvPFVKQ1W9D6wUB3aeFDfvPW5RA0
+	UPfEzIg/A7U2qNoglzeyzL9kSeTx8f6bmUOqqd4FB+UWWoGhdGeVWU/FDKdQkK/tXrE6M0e//DN
+	sSk0/aOSjZiqaKmX2j6hxLkYHo88AExaa2sWQFF3IMfThbWyN5FwkiG9UtWzktZjDisNTzqnGNG
+	nc40kPYxdH
+X-Google-Smtp-Source: AGHT+IGkya/ek/Udb2RxDT7P4x12XsG4rCCyRmRtiHBSm9fUBy7Aaibp65MZglWMFKYgeRENBu2yow==
+X-Received: by 2002:a05:6402:5110:b0:627:5841:7ae1 with SMTP id 4fb4d7f45d1cf-62758417d89mr3175791a12.21.1757287963654;
+        Sun, 07 Sep 2025 16:32:43 -0700 (PDT)
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-62637893a93sm3221654a12.46.2025.09.07.16.32.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Sep 2025 15:41:25 -0700 (PDT)
-Message-ID: <7981ee42-fc55-4125-a662-60fb18b454c8@suse.com>
-Date: Mon, 8 Sep 2025 08:11:19 +0930
+        Sun, 07 Sep 2025 16:32:43 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-628f29d68ecso216935a12.3;
+        Sun, 07 Sep 2025 16:32:43 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWdM+gje/6KaQbzLaZehDxrT1hDJ2Dl+6p/SGK46VltKShgUYY8Nrn3T7Srqpw6oVycM6s/ogw5@vger.kernel.org
+X-Received: by 2002:a17:907:94d1:b0:afe:8a40:49bb with SMTP id
+ a640c23a62f3a-b04b140a542mr563049866b.22.1757287963141; Sun, 07 Sep 2025
+ 16:32:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: regression, btrfs mount failure when multiple rescue mount
- options used
-To: Chris Murphy <lists@colorremedies.com>,
- Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc: brauner@kernel.org, dsterba@suse.com, terrelln@fb.com,
- Linux Devel <linux-fsdevel@vger.kernel.org>
-References: <e2179aaa-871f-4478-b72c-45f1410dff87@app.fastmail.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <e2179aaa-871f-4478-b72c-45f1410dff87@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20250904214415.10628-1-wqu@suse.com>
+In-Reply-To: <20250904214415.10628-1-wqu@suse.com>
+From: Neal Gompa <neal@gompa.dev>
+Date: Mon, 8 Sep 2025 01:32:06 +0200
+X-Gmail-Original-Message-ID: <CAEg-Je96ywspV9v9UiiHCq6w=oiVKUGnwUq+dgnXbLcZOW=LsQ@mail.gmail.com>
+X-Gm-Features: Ac12FXzkGdKELup4O7vqS44YdwcElFmts4ygjkASQlrXdnWB50BiNxx-a2jwZhg
+Message-ID: <CAEg-Je96ywspV9v9UiiHCq6w=oiVKUGnwUq+dgnXbLcZOW=LsQ@mail.gmail.com>
+Subject: Re: [PATCH v2] fstests: generic/733: avoid output difference due to
+ bash's version
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-在 2025/9/7 09:31, Chris Murphy 写道:
-> kernel with mount failures:
-> 6.17.0-0.rc4.36.fc43.x86_64
-> 6.16.4-200.fc42.x86_64
-> 6.15.11-200.fc42.x86_64
-> 
-> 
-> # mount -o ro,rescue=usebackuproot,nologreplay,ibadroots /dev/loop0 /mnt
-> mount: /mnt: fsconfig system call failed: btrfs: Unknown parameter 'nologreplay'.
->         dmesg(1) may have more information after failed mount system call.
-> # mount -o ro,rescue=usebackuproot /dev/loop0 /mnt
-> # umount /mnt
-> # mount -o ro,rescue=usebackuproot,ibadroots /dev/loop0 /mnt
-> # mount: /mnt: fsconfig system call failed: btrfs: Unknown parameter 'ibadroots'.
->         dmesg(1) may have more information after failed mount system call.
-> # mount -o ro,rescue=ibadroots /dev/loop0 /mnt
-> #
-> 
-> There are no kernel messages for the failures.
-> 
-> Looks like single rescue options work, but multiple rescue options separated by comma fail.
-
-It looks like there is no longer combined "rescue=" since 6.8, where we 
-switched to the new fsconfig mount method.
-
-And even before that, the separator for "rescue=" command group is ':', 
-not ',' as that conflicts with the default separator.
-
-There is no support for using ',' inside "rescue=" from the very beginning.
-
-Thanks,
-Qu
-
-> 
-> Any rescue option after the first comma, results in an fsconfig complaint.  Since it looks like fsconfig migration fallout, I'll cc some additional folks, and fs-devel.
-> 
+On Thu, Sep 4, 2025 at 11:44=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [FALSE ALERT]
+> When running generic/733 with bash 5.3.3 (any thing newer than 5.3.0
+> will reproduce the bug), the test case will fail like the following:
+>
+> generic/733 19s ... - output mismatch (see /home/adam/xfstests/results//g=
+eneric/733.out.bad)
+>     --- tests/generic/733.out   2025-09-04 17:30:08.568000000 +0930
+>     +++ /home/adam/xfstests/results//generic/733.out.bad        2025-09-0=
+4 17:30:32.898475103 +0930
+>     @@ -2,5 +2,5 @@
+>      Format and mount
+>      Create a many-block file
+>      Reflink the big file
+>     -Terminated
+>     +Terminated                 $here/src/t_reflink_read_race "$testdir/f=
+ile1" "$testdir/file2" "$testdir/outcome" &>> $seqres.full
+>      test completed successfully
+>     ...
+>     (Run 'diff -u /home/adam/xfstests/tests/generic/733.out /home/adam/xf=
+stests/results//generic/733.out.bad'  to see the entire diff)
+>
+> [CAUSE]
+> The failure is fs independent, but bash version dependent.
+>
+> In bash v5.3.x, the job control will output the command which triggered
+> the job control (from termination to core dump etc).
+>
+> The "Terminated" message is not from the program, but from bash's job
+> control, thus redirection won't hide that message.
+>
+> [FIX]
+> Run the command in a command group, which will be executed in a
+> subshell.
+>
+> By this we can redirect the output of the subshell, including the job
+> control message, thus hide the different output pattern caused by
+> different bash versions.
+>
+> Thankfully this particular test case does extra checks on the outcome
+> file to determine if the program is properly terminated, thus we are
+> safe to move the "Terminated" line from the golden output to
+> seqres.full.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
-> 
-> I get different results with kernel 6.14.11-300.fc42.x86_64 but I think some of the bugs are fixed in later kernels hence the different behavior. And in any case it's EOL so I won't test any further back than this kernel.
-> 
-> # mount -o ro,rescue=usebackuproot,nologreplay,ibadroots /dev/loop0 /mnt
-> mount: /mnt: fsconfig system call failed: btrfs: Unknown parameter 'ibadroots'.
->         dmesg(1) may have more information after failed mount system call.
-> 
-> Notice the complaint is about ibadroots, not nologreplay. And there is a kernel message this time.
-> 
-> Sep 06 19:44:38 fnuc.local kernel: BTRFS warning: 'nologreplay' is deprecated, use 'rescue=nologreplay' instead
-> 
-> 
-> But there's more. All of these commands result in mount succeeded, but kernel messages don't indicate they were used.
-> 
-> # mount -o ro,rescue=ibadroots /dev/loop0 /mnt
-> # umount /mnt
-> # mount -o ro,rescue=usebackuproot /dev/loop0 /mnt
-> # umount /mnt
-> # mount -o ro,rescue=nologreplay /dev/loop0 /mnt
-> 
-> This one has yet another different  outcome, I don't know why.
-> 
-> # mount -o ro,rescue=idatacsum /dev/loop0 /mnt
-> mount: /mnt: fsconfig system call failed: btrfs: Bad value for 'rescue'.
->         dmesg(1) may have more information after failed mount system call.
-> 
-> 
-> 
+> v2:
+> - Use command grouping instead of background execution
+>   Background execution requires extra cleanup to wait for the background
+>   program.
+>   Meanwhile command grouping will run in a subshell thus we can redirect
+>   everything including the job control message.
+>
+>   Thanks Darrick for pointing this solution out.
+> ---
+>  tests/generic/733     | 17 +++++++++++++++--
+>  tests/generic/733.out |  1 -
+>  2 files changed, 15 insertions(+), 3 deletions(-)
+>
+> diff --git a/tests/generic/733 b/tests/generic/733
+> index aa7ad994..21347d51 100755
+> --- a/tests/generic/733
+> +++ b/tests/generic/733
+> @@ -70,8 +70,21 @@ done
+>  echo "fnr=3D$fnr" >> $seqres.full
+>
+>  echo "Reflink the big file"
+> -$here/src/t_reflink_read_race "$testdir/file1" "$testdir/file2" \
+> -       "$testdir/outcome" &>> $seqres.full
+> +# Workaround the default job control by command grouping so that we can =
+redirect
+> +# the job control message of the subshell.
+> +#
+> +# Job control of bash v5.3.x will output the command which triggered the=
+ job
+> +# control (terminated, core dump etc).
+> +# And since it's handled by bash itself, redirection of the program won'=
+t work
+> +# for the job control message.
+> +#
+> +# Running the command in a command group will make the program run in a =
+subshell
+> +# so that we can direct the job control message of the subshell.
+> +#
+> +# We will check the outcome file to determine if the program is properly
+> +# terminated, thus no need to bother the job control message.
+> +{ $here/src/t_reflink_read_race "$testdir/file1" "$testdir/file2" \
+> +       "$testdir/outcome" ; } &>> $seqres.full
+>
+>  if [ ! -e "$testdir/outcome" ]; then
+>         echo "Could not set up program"
+> diff --git a/tests/generic/733.out b/tests/generic/733.out
+> index d4f5a7c7..2383cc8d 100644
+> --- a/tests/generic/733.out
+> +++ b/tests/generic/733.out
+> @@ -2,5 +2,4 @@ QA output created by 733
+>  Format and mount
+>  Create a many-block file
+>  Reflink the big file
+> -Terminated
+>  test completed successfully
 > --
-> Chris Murphy
-> 
+> 2.51.0
+>
 
+LGTM.
+
+Reviewed-by: Neal Gompa <neal@gompa.dev>
+
+
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
