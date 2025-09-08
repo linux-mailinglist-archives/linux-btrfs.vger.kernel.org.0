@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-16706-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16707-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32936B48920
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 11:54:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DFBCB48921
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 11:54:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AC031898A45
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 09:54:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A56C1189BBA2
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 09:54:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E727C2F83AF;
-	Mon,  8 Sep 2025 09:53:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5BDE2F83C3;
+	Mon,  8 Sep 2025 09:53:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JxentyJA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jC5VqTMB"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 387822F7ADF
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B0D2F83B7
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757325221; cv=none; b=VsWs71bfh/zLZXheezq9Fz1iVTZEm46Cz/s/asWxhSTo8vb5IQwoki1tcS/Tugsv5r0OkoLwMirjJrqWatRhtkBUmz1swQgQQiPqxPk2Yxs8wy840JgtIEczCWiCqDdrsIYx+WDhWbQiZ1GL7Rknzs8faMQWdYpuNVC09d0ga7Y=
+	t=1757325222; cv=none; b=Mh52Znn7+kGobm3qp8C3N5CsTTLG3JqmLCZ+kc/Ed2tkzhyql3JHBJCIXzpdb8MjQQ040NEF0RIoaFZ4cNfgC/vdLuCSb/0nARm+cZTBbzUA8eufvEOcP0Ykx9PFnuDoC5M7MaquwJm2GVLMo8UqWFFkRvatZYN3Eyd4EfxYz+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757325221; c=relaxed/simple;
-	bh=tgCFvxOs5sIyKlTzcgGElZUS2Aw7xRhSgRBvFabc47c=;
+	s=arc-20240116; t=1757325222; c=relaxed/simple;
+	bh=4xxrQWf593XOTxYj3rfQlOtkZWgy9ifieezTBvowdWM=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Cq2Ldn7v6yjH34DpH0eDbUvzKa5cFOvSZK9Im5n5o6iZ8BS26kkajapEEBbE2YOgyUWf3pMD+frr5WzNIP2bNwdHo5YylALUUopdWCyBr4rMsrh345CZTA4q/8WZgiOhapYTqekt7OYgjEdixB7m/fXiYxKEO2fmwRzzo8PKykg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JxentyJA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90B69C4CEF1
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:40 +0000 (UTC)
+	 MIME-Version; b=m+55b3wfzy7Vl5Cg4Rn1J3GtxdUczYwFi5Cvkz5lFC5CmuasheYDCXC3m4c6DGvUBU/+IwdHZTDxmdwOxfGwyY4S8Gq/P3q5mq3zcu32UKJ6PDlzD7oI9oQZE12OWeXb4xjecyslIOYzJD3EQDYE6DY6sUgOwgb1lsj2dWzl410=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jC5VqTMB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84AFEC4CEF8
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757325221;
-	bh=tgCFvxOs5sIyKlTzcgGElZUS2Aw7xRhSgRBvFabc47c=;
+	s=k20201202; t=1757325222;
+	bh=4xxrQWf593XOTxYj3rfQlOtkZWgy9ifieezTBvowdWM=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=JxentyJAHspOA+EdAhqO9MK06Bc5hY2CWk9ZDI9Yjy3lavkt1AcGB3ihSesabWrCk
-	 4YwCvz6lQdyi4Yr2pMQxvrgGlOJIeFonKV/nlA019/GbQae2GEPq5r03Gl3zDtsI5s
-	 z9qqhakwuJk84OR90TV9JixU5KFvdWgL4XA77VrOsRpNVFP1nYRxSLIMjtezWOCXL2
-	 otrWFySDEi6gbrznFA7sjlV00dZfkwMVxpLdL3vajohiN4ve3OW7yiXpby4GAw55lQ
-	 mX79qgssjZSzJk1vCtFlUqmH3FeJJi6pBu+/gpnZF+UxIs9WickcP8A8GCIoDFVrWf
-	 1+vZneHk4yJ5w==
+	b=jC5VqTMBiwvFprAC8Ao83MdsWc8WcJAh3OAtnJLHNlnyeIxmMZYK13QR2NjG6XCdJ
+	 EUDG3LwBBozhamk7IYe6QfkdGAE4SoVByLeTJOsLfObNgLcuE2GeISKwW+Lkh+Jwsl
+	 PtR9EQ5Hp/X4PXbWhs+PxRchQ4wnz1FyvcfJ955lKc6qsxM1fkSwaz0i3Y8C5bEJFz
+	 kYcyCJvw9S1DOz6/JxoQg5tinmo98zHQD2pLcgg9hH1zHsO1uUxjyPqb4kcRv0dqCv
+	 VUeGiM5FD7dkXEYmqTwuU0X59oaE2tGZdHBeLtqdTKxWAfXR2GfC/ECTQwWE4sYueS
+	 NGWI7ly7H71tA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 11/33] btrfs: move up the definition of struct walk_control
-Date: Mon,  8 Sep 2025 10:53:05 +0100
-Message-ID: <75dec121d5822b09463959682142b4f720416b6b.1757271913.git.fdmanana@suse.com>
+Subject: [PATCH v2 12/33] btrfs: pass walk_control structure to replay_dir_deletes()
+Date: Mon,  8 Sep 2025 10:53:06 +0100
+Message-ID: <6c85664cf3460d9c56ea48d1debca9f09cf0e5e2.1757271913.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1757271913.git.fdmanana@suse.com>
 References: <cover.1757271913.git.fdmanana@suse.com>
@@ -59,141 +59,120 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-In upcoming changes we need to pass struct walk_control as an argument to
-replay_dir_deletes() and link_to_fixup_dir() so we need to move its
-definition above the prototypes of those functions. So move it up right
-below the enum that defines log replay stages and before any functions and
-function prototypes are declared. Also fixup the comments while moving it
-so that they comply with the preferred code style (capitalize the first
-word in a sentence, end sentences with punctuation, makes lines wider and
-closer to the 80 characters limit).
+Instead of passing the transaction, subvolume root and log tree as
+arguments to replay_dir_deletes(), pass the walk_control structure as
+we can grab all of those from the structure. This reduces the number of
+arguments passed and it's going to be needed by an incoming change that
+improves error reporting for log replay. This also requires changing
+fixup_inode_link_counts() and fixup_inode_link_count() to take that
+structure as an argument since fixup_inode_link_count() makes a call
+to replay_dir_deletes().
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 103 ++++++++++++++++++++++----------------------
- 1 file changed, 51 insertions(+), 52 deletions(-)
+ fs/btrfs/tree-log.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index cd4c5ae3e0a3..2780f0e1db01 100644
+index 2780f0e1db01..460dc51e8c82 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -101,6 +101,57 @@ enum {
- 	LOG_WALK_REPLAY_ALL,
- };
+@@ -159,9 +159,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ static int link_to_fixup_dir(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_root *root,
+ 			     struct btrfs_path *path, u64 objectid);
+-static noinline int replay_dir_deletes(struct btrfs_trans_handle *trans,
+-				       struct btrfs_root *root,
+-				       struct btrfs_root *log,
++static noinline int replay_dir_deletes(struct walk_control *wc,
+ 				       struct btrfs_path *path,
+ 				       u64 dirid, bool del_all);
+ static void wait_log_commit(struct btrfs_root *root, int transid);
+@@ -1727,9 +1725,10 @@ static int count_inode_refs(struct btrfs_inode *inode, struct btrfs_path *path)
+  * number of back refs found.  If it goes down to zero, the iput
+  * will free the inode.
+  */
+-static noinline int fixup_inode_link_count(struct btrfs_trans_handle *trans,
++static noinline int fixup_inode_link_count(struct walk_control *wc,
+ 					   struct btrfs_inode *inode)
+ {
++	struct btrfs_trans_handle *trans = wc->trans;
+ 	struct btrfs_root *root = inode->root;
+ 	struct btrfs_path *path;
+ 	int ret;
+@@ -1765,7 +1764,7 @@ static noinline int fixup_inode_link_count(struct btrfs_trans_handle *trans,
  
-+/*
-+ * The walk control struct is used to pass state down the chain when processing
-+ * the log tree. The stage field tells us which part of the log tree processing
-+ * we are currently doing.
-+ */
-+struct walk_control {
-+	/*
-+	 * Signal that we are freeing the metadata extents of a log tree.
-+	 * This is used at transaction commit time while freeing a log tree.
-+	 */
-+	bool free;
-+
-+	/*
-+	 * Signal that we are pinning the metadata extents of a log tree and the
-+	 * data extents its leaves point to (if using mixed block groups).
-+	 * This happens in the first stage of log replay to ensure that during
-+	 * replay, while we are modifying subvolume trees, we don't overwrite
-+	 * the metadata extents of log trees.
-+	 */
-+	bool pin;
-+
-+	/* What stage of the replay code we're currently in. */
-+	int stage;
-+
-+	/*
-+	 * Ignore any items from the inode currently being processed. Needs
-+	 * to be set every time we find a BTRFS_INODE_ITEM_KEY.
-+	 */
-+	bool ignore_cur_inode;
-+
-+	/*
-+	 * The root we are currently replaying to. This is NULL for the replay
-+	 * stage LOG_WALK_PIN_ONLY.
-+	 */
-+	struct btrfs_root *root;
-+
-+	/* The log tree we are currently processing (not NULL for any stage). */
-+	struct btrfs_root *log;
-+
-+	/* The transaction handle used for replaying all log trees. */
-+	struct btrfs_trans_handle *trans;
-+
-+	/*
-+	 * The function that gets used to process blocks we find in the tree.
-+	 * Note the extent_buffer might not be up to date when it is passed in,
-+	 * and it must be checked or read if you need the data inside it.
-+	 */
-+	int (*process_func)(struct extent_buffer *eb,
-+			    struct walk_control *wc, u64 gen, int level);
-+};
-+
- static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 			   struct btrfs_inode *inode,
- 			   int inode_only,
-@@ -299,58 +350,6 @@ void btrfs_end_log_trans(struct btrfs_root *root)
- 	}
+ 	if (inode->vfs_inode.i_nlink == 0) {
+ 		if (S_ISDIR(inode->vfs_inode.i_mode)) {
+-			ret = replay_dir_deletes(trans, root, NULL, path, ino, true);
++			ret = replay_dir_deletes(wc, path, ino, true);
+ 			if (ret)
+ 				goto out;
+ 		}
+@@ -1779,8 +1778,7 @@ static noinline int fixup_inode_link_count(struct btrfs_trans_handle *trans,
+ 	return ret;
  }
  
--/*
-- * the walk control struct is used to pass state down the chain when
-- * processing the log tree.  The stage field tells us which part
-- * of the log tree processing we are currently doing.  The others
-- * are state fields used for that specific part
-- */
--struct walk_control {
--	/*
--	 * Signal that we are freeing the metadata extents of a log tree.
--	 * This is used at transaction commit time while freeing a log tree.
--	 */
--	bool free;
--
--	/*
--	 * Signal that we are pinning the metadata extents of a log tree and the
--	 * data extents its leaves point to (if using mixed block groups).
--	 * This happens in the first stage of log replay to ensure that during
--	 * replay, while we are modifying subvolume trees, we don't overwrite
--	 * the metadata extents of log trees.
--	 */
--	bool pin;
--
--	/* what stage of the replay code we're currently in */
--	int stage;
--
--	/*
--	 * Ignore any items from the inode currently being processed. Needs
--	 * to be set every time we find a BTRFS_INODE_ITEM_KEY.
--	 */
--	bool ignore_cur_inode;
--
--	/*
--	 * The root we are currently replaying to. This is NULL for the replay
--	 * stage LOG_WALK_PIN_ONLY.
--	 */
--	struct btrfs_root *root;
--
--	/* The log tree we are currently processing (not NULL for any stage). */
--	struct btrfs_root *log;
--
--	/* the trans handle for the current replay */
--	struct btrfs_trans_handle *trans;
--
--	/* the function that gets used to process blocks we find in the
--	 * tree.  Note the extent_buffer might not be up to date when it is
--	 * passed in, and it must be checked or read if you need the data
--	 * inside it
--	 */
--	int (*process_func)(struct extent_buffer *eb,
--			    struct walk_control *wc, u64 gen, int level);
--};
--
- /*
-  * process_func used to pin down extents, write them or wait on them
+-static noinline int fixup_inode_link_counts(struct btrfs_trans_handle *trans,
+-					    struct btrfs_root *root,
++static noinline int fixup_inode_link_counts(struct walk_control *wc,
+ 					    struct btrfs_path *path)
+ {
+ 	int ret;
+@@ -1790,6 +1788,8 @@ static noinline int fixup_inode_link_counts(struct btrfs_trans_handle *trans,
+ 	key.type = BTRFS_ORPHAN_ITEM_KEY;
+ 	key.offset = (u64)-1;
+ 	while (1) {
++		struct btrfs_trans_handle *trans = wc->trans;
++		struct btrfs_root *root = wc->root;
+ 		struct btrfs_inode *inode;
+ 
+ 		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+@@ -1819,7 +1819,7 @@ static noinline int fixup_inode_link_counts(struct btrfs_trans_handle *trans,
+ 			break;
+ 		}
+ 
+-		ret = fixup_inode_link_count(trans, inode);
++		ret = fixup_inode_link_count(wc, inode);
+ 		iput(&inode->vfs_inode);
+ 		if (ret)
+ 			break;
+@@ -2455,12 +2455,13 @@ static int replay_xattr_deletes(struct walk_control *wc,
+  * Anything we don't find in the log is unlinked and removed from the
+  * directory.
   */
+-static noinline int replay_dir_deletes(struct btrfs_trans_handle *trans,
+-				       struct btrfs_root *root,
+-				       struct btrfs_root *log,
++static noinline int replay_dir_deletes(struct walk_control *wc,
+ 				       struct btrfs_path *path,
+ 				       u64 dirid, bool del_all)
+ {
++	struct btrfs_trans_handle *trans = wc->trans;
++	struct btrfs_root *root = wc->root;
++	struct btrfs_root *log = (del_all ? NULL : wc->log);
+ 	u64 range_start;
+ 	u64 range_end;
+ 	int ret = 0;
+@@ -2650,8 +2651,7 @@ static int replay_one_buffer(struct extent_buffer *eb,
+ 				break;
+ 			mode = btrfs_inode_mode(eb, inode_item);
+ 			if (S_ISDIR(mode)) {
+-				ret = replay_dir_deletes(trans, root, log, path,
+-							 key.objectid, false);
++				ret = replay_dir_deletes(wc, path, key.objectid, false);
+ 				if (ret)
+ 					break;
+ 			}
+@@ -7530,7 +7530,7 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 		if (wc.stage == LOG_WALK_REPLAY_ALL) {
+ 			struct btrfs_root *root = wc.root;
+ 
+-			ret = fixup_inode_link_counts(trans, root, path);
++			ret = fixup_inode_link_counts(&wc, path);
+ 			if (ret) {
+ 				btrfs_abort_transaction(trans, ret);
+ 				goto next;
 -- 
 2.47.2
 
