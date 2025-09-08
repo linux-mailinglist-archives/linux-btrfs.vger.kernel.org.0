@@ -1,50 +1,50 @@
-Return-Path: <linux-btrfs+bounces-16729-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16730-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50F22B48CCF
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 14:05:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD16EB48CD1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 14:05:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 008FA7A6AEB
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 12:03:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F76C16E566
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 12:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81CD2F7AA1;
-	Mon,  8 Sep 2025 12:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9152F7AA1;
+	Mon,  8 Sep 2025 12:05:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ONlEEDyu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SijdIUhI"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27DAD22D4F1
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 12:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532E5A55
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 12:05:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757333112; cv=none; b=ovQw7Czzg2EWYSx2sIyLY+zBhsYmEaAN1hOT15Cli3rqijv/oomLFS/3Gr0fIaha2RBK/cGaUgnZAYKrsNicCx5O1A84hciSFGc7PkWYy7OBYwT9Jjbd+whkpkxoIwO+dBoBNZKafQa0Tmv0fUEl9weCm41JCFPIZ8gS5cgayiQ=
+	t=1757333152; cv=none; b=Lw4jl2LYM966EZ2ye8FJKBU0LeflUNaojAKjgwDZu0jsL2+4TS0h1f1OFcd3+hDwqhb5EQ8pHNr1uFD4xW0QfvfVTkUi11k/LJ5amAa9kI7nTZx1E+UK5oqUHrHKPaM83Igixxm5N/cGwIn+xxKz69ZYASdS3STnMlpa5y9Soic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757333112; c=relaxed/simple;
-	bh=1eHBdzsQIKDQCMW9xOYOw2WSVwqCFkNpgrYnwKZHTaU=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Kwr/DUqVHZVuOCAzWNkPZ8f+QLfcb5CQYYWs2bKdd1U3comkVVUmE3LcHFLr9QGaSPfWm6b3C5J+jkOlf93lUjVbfppf1KgK2ljfdflroATaSMokIQNgnPzy+j+Z6UNxtkfsjf0kc91geDrbWv8UrkB+7v2mC9iXA0gVPCMgEvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ONlEEDyu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30A94C4CEF9
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 12:05:11 +0000 (UTC)
+	s=arc-20240116; t=1757333152; c=relaxed/simple;
+	bh=Vv2Pg+65iwChF73/b1a8seUvTKpFup93EZzQgluZ+YM=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=eX3soLSVl9YTZf+iyjPxgPXthzKi5F7PRePBvNM8POdpJcb64oJNfwYx+txNAhwAigOI2cP9ZA/uKgTdUrqmzu53OBgA1krYzWZDaRZ7Iwrr06twhO+JFsWR5pP+q24tYWsr+XyLn/ujyntewlS9YIQp19Q42TXjo1txagohNo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SijdIUhI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F059C4CEF1
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 12:05:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757333111;
-	bh=1eHBdzsQIKDQCMW9xOYOw2WSVwqCFkNpgrYnwKZHTaU=;
+	s=k20201202; t=1757333151;
+	bh=Vv2Pg+65iwChF73/b1a8seUvTKpFup93EZzQgluZ+YM=;
 	h=From:To:Subject:Date:From;
-	b=ONlEEDyuahfdJ52PmX0k/WiWoN/YOxPM7PAR61zwbjcSK+lTqlThJKc1fsbEAXhF5
-	 bAqEhZJUpX8JMfd2ePVXVIc2DlcOvpksDaQ4my2TMMj24APWN5bf4OrJnrSMo5GpOd
-	 JYpIwP092KHYGMMqUOTyvNzIpX8nrb7Z/kknPa4kFp+gpIMfJEX/QtbxDhCh8t3skv
-	 gNYest3h5hdmQYPzVATyRppY96zCsyxOtn2KjgHu5l0rMQPI2+8jM1lN6wW86XsCCX
-	 0GTHge1L2bHUYTv5tNDT9cpmowpusyFfVV/LByebVaI9vzEhPh707jZde5eoc6sgeh
-	 fE466tYO4AQ+g==
+	b=SijdIUhInm9cpkZDlepLKkFShnKFAu5s3d0grKNns2bqlBxEiuvZEn+uXUeyC1CGu
+	 CwLPCK94/t6xw3BV0KqU2W/xdTBOHEKmjIV1jbP0m+pxVRjepN0bPecpzvfqQekQp5
+	 IwS07Mn/ooEzrKxlO9QVXNXM5kq16mhf/6dG8Ui6IGAVYMUWCiet7s25agk0qFlajs
+	 dSpzEqmhYTHRtgkvGbpYl3H7cAbYOCeI3O9Zpq48e1IwPCDZd3BU2p7h6vQQ15TSNc
+	 hpUHEYLFVKbWc/nEfjwJc0XTycH+IB5MV7o8BZToNUa7qTmBQLkaeq/N4rjzvdEBoZ
+	 CkFJDnHYsuKPA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: send: index backref cache by node number instead of by sector number
-Date: Mon,  8 Sep 2025 13:05:08 +0100
-Message-ID: <38a42e9d2d1ebd8f94f9f68385095854bc05a086.1757332226.git.fdmanana@suse.com>
+Subject: [PATCH] btrfs: annotate block group access with data_race() when sorting for reclaim
+Date: Mon,  8 Sep 2025 13:05:49 +0100
+Message-ID: <456b17e9620d5118fcca2674b365e0770b1d1fc1.1757332833.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -56,43 +56,43 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We now have a nodesize_bits member in fs_info so we can index an extent
-buffer in the backref cache by node number instead of by sector number.
-While this allows for a denser index space with the possibility of using
-less maple tree nodes, in practice it's unlikely to hit such benefits
-since we currently limit the maximum number of keys in the cache to 128,
-so unless all extent buffers are contiguous we are unlikely to see a
-memory usage reduction in the backing maple tree due to less nodes.
-Nevertheless it doesn't cost anything to index by node number and it's
-more logical.
+When sorting the block group list for reclaim we are using a block group's
+used bytes counter without taking the block group's spinlock, so we can
+race with a concurrent task updating it (at btrfs_update_block_group()),
+which makes tools like KCSAN unhappy and report a race.
+
+Since the sorting is not strictly needed from a functional perspective
+and such races should rarely cause any ordering changes (only load/store
+tearing could cause them), not to mention that after the sorting the
+ordering may no longer be accurate due to concurrent allocations and
+deallocations of extents in a block group, annotate the accesses to the
+used counter with data_race() to silence KCSAN and similar tools.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/block-group.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index c5771df3a2c7..32653fc44a75 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -1388,7 +1388,7 @@ static bool lookup_backref_cache(u64 leaf_bytenr, void *ctx,
- 	struct backref_ctx *bctx = ctx;
- 	struct send_ctx *sctx = bctx->sctx;
- 	struct btrfs_fs_info *fs_info = sctx->send_root->fs_info;
--	const u64 key = leaf_bytenr >> fs_info->sectorsize_bits;
-+	const u64 key = leaf_bytenr >> fs_info->nodesize_bits;
- 	struct btrfs_lru_cache_entry *raw_entry;
- 	struct backref_cache_entry *entry;
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 239cbb01f83f..548483a84466 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1795,7 +1795,14 @@ static int reclaim_bgs_cmp(void *unused, const struct list_head *a,
+ 	bg1 = list_entry(a, struct btrfs_block_group, bg_list);
+ 	bg2 = list_entry(b, struct btrfs_block_group, bg_list);
  
-@@ -1443,7 +1443,7 @@ static void store_backref_cache(u64 leaf_bytenr, const struct ulist *root_ids,
- 	if (!new_entry)
- 		return;
+-	return bg1->used > bg2->used;
++	/*
++	 * Some other task may be updating the ->used field concurrently, but it
++	 * is not serious if we get a stale value or load/store tearing issues,
++	 * as sorting the list of block groups to reclaim is not critical and an
++	 * occasional imperfect order is ok. So silence KCSAN and avoid the
++	 * overhead of locking or any other synchronization.
++	 */
++	return data_race(bg1->used > bg2->used);
+ }
  
--	new_entry->entry.key = leaf_bytenr >> fs_info->sectorsize_bits;
-+	new_entry->entry.key = leaf_bytenr >> fs_info->nodesize_bits;
- 	new_entry->entry.gen = 0;
- 	new_entry->num_roots = 0;
- 	ULIST_ITER_INIT(&uiter);
+ static inline bool btrfs_should_reclaim(const struct btrfs_fs_info *fs_info)
 -- 
 2.47.2
 
