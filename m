@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-16704-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16705-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DF72B4891C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 11:54:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A660B4891E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 11:54:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 036ED1741EF
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 09:54:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90E75189CF69
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 09:54:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4577A2F7AAF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBED82EFD8A;
 	Mon,  8 Sep 2025 09:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c+2YfRCZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NT6BQ6nS"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887502F657F
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC592F7AAD
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757325219; cv=none; b=DF5EznIjzAPUMuVIl07B/duVGA/a0IrjCu4xr47goG4pPF7r5aritOsLPZb5iRZC291ubmmgj1Q9a9KwPBiIKVE0TCa+8ZTjS05aZcFU6nAjFHgdF92QKZ1tz7J4AlauKp6v5jTj1htH6fGPBRGneWAijb5grFTfxkFZD4koosI=
+	t=1757325220; cv=none; b=AfYT7ikGr3buW/rMDSyaHlUutVYFzGT+9thz7x8GTpuZqINtpUqpwV/JF65eOjr/ewr5wV9fw2LPtyuuZG4RsD0tkMeJurx9vpZUAy6roSk4rEindLAJj5g5JZt4DDuqzpC4BbDKck2hJH3W7X8xWmEmsCmGnRli3KOYLlCjIc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757325219; c=relaxed/simple;
-	bh=LK9Apy8r1lbNeId6cYnEYEcEdKz0SWncXf78dYQunQY=;
+	s=arc-20240116; t=1757325220; c=relaxed/simple;
+	bh=NQj4S89jaLmyhBjoxaaJOHrlb+Zb3GHOyPLpjkEFSxQ=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fR5KqDUsXnGBbYLpdeNacKUlU/jhfJCF8Zl4XqdETksOvK79L8LVmz59ii0Jo3fh8ueGnQpEM/PHkVSzYdzSygrAOyhSdXodNW3fZZFqrPafD9kqmMx5CeZGq7kP7iyvNmHiJSFHbxE7thU9pE+zuzzm6YFH1jFZ+YxATM3lRec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c+2YfRCZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9ECBC4CEF8
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:38 +0000 (UTC)
+	 MIME-Version; b=A9tdCLeq/JHqdI0xHIWCUJ3s0nyqEK9F437w0Piy2loR5Dkgo9kU+m6A/zBnpW055Xh2JJVGnCslmtQiAgbrnI7LGCd1FoWVzzyfUKbvzdxzn3mgoJZC5j8Kie9pTmHQGbRb6eyu4aaTiP51Zx30hi9rHChyswJeU1u3k9QwnXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NT6BQ6nS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9592AC4CEF1
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757325219;
-	bh=LK9Apy8r1lbNeId6cYnEYEcEdKz0SWncXf78dYQunQY=;
+	s=k20201202; t=1757325220;
+	bh=NQj4S89jaLmyhBjoxaaJOHrlb+Zb3GHOyPLpjkEFSxQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=c+2YfRCZKMuHMz6i7qzUO/bAAe5GGCSCPU77BjAGjIS2gHt0pTvE2eP0vwRg9evh+
-	 A4FPSdfTDdscg0RWa2TfJUyvzfHCkti2g37hTTnBXMTDtmwvS77NgF+vBOT//KHGC/
-	 PLpqcOU/HIEx9/otua4CikDJhZ3MihvUGuQ5Jyqr5yssHIYRIKf8l/9HJp2WauJR5C
-	 pv4jsUSeWjAbWR3gMdEVUFbh2M/yTcqdFk9KjQRxzHdlr4BBIqFvA/IkS0mhpyEDwf
-	 MUIakGM4HbvFaMeBZ9ea7o849zqQS0QSCh6S5Uwz3p+5B6CCnWXR0yOIMtxBR3BhBu
-	 xvPEqdFeXPoQQ==
+	b=NT6BQ6nSd2civv3mKege170oKbIlgt/I39EGHGFk6VITsFdH/svCRJk1Hp1veseST
+	 z2ObfbHskfe5l0LBv1yp1e3ogZFfazUXlJ3BA6oVp7gHHNBxW4Z3bQIG3DwETS0rbG
+	 VGi0gfx+dtoMA+OjWAHP4oEOTI9UEDqTB8gO66hnCYx4252JaL94vuWH/NbV0454cK
+	 cK4guOgMQCmyK8muTzNzQUe7Fi1D5fKArLwMoGUFSSyMuDsR41T80XWnp73V1EHo/n
+	 nrfciPCyndEPoFktFsACvzn896UExfgqUZRswzJq6/lE9F16BhAlLv6O8hovc9pYry
+	 KzVETFKGgXu4w==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 09/33] btrfs: always drop log root tree reference in btrfs_replay_log()
-Date: Mon,  8 Sep 2025 10:53:03 +0100
-Message-ID: <e93740b6b73fe149827e6706683424b8e3d160ef.1757271913.git.fdmanana@suse.com>
+Subject: [PATCH v2 10/33] btrfs: pass walk_control structure to replay_xattr_deletes()
+Date: Mon,  8 Sep 2025 10:53:04 +0100
+Message-ID: <592339eb87bdef9db3f8e87abbdbe0475d4c329f.1757271913.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1757271913.git.fdmanana@suse.com>
 References: <cover.1757271913.git.fdmanana@suse.com>
@@ -59,54 +59,49 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Currently we have this odd behaviour:
-
-1) At btrfs_replay_log() we drop the reference of the log root tree if
-   the call to btrfs_recover_log_trees() failed;
-
-2) But if the call to btrfs_recover_log_trees() did not fail, we don't
-   drop the reference in btrfs_replay_log() - we expect that
-   btrfs_recover_log_trees() does it in case it returns success.
-
-Let's simplify this and make btrfs_replay_log() always drop the reference
-on the log root tree, not only this simplifies code as it's what makes
-sense since it's btrfs_replay_log() who grabbed the reference in the first
-place.
+Instead of passing the transaction, subvolume root and log tree as
+arguments to replay_xattr_deletes(), pass the walk_control structure as
+we can grab all of those from the structure. This reduces the number of
+arguments passed and it's going to be needed by an incoming change that
+improves error reporting for log replay.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/disk-io.c  | 2 +-
- fs/btrfs/tree-log.c | 1 -
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ fs/btrfs/tree-log.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 7b06bbc40898..8dbb6a12ec24 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2088,10 +2088,10 @@ static int btrfs_replay_log(struct btrfs_fs_info *fs_info,
- 
- 	/* returns with log_tree_root freed on success */
- 	ret = btrfs_recover_log_trees(log_tree_root);
-+	btrfs_put_root(log_tree_root);
- 	if (ret) {
- 		btrfs_handle_fs_error(fs_info, ret,
- 				      "Failed to recover log tree");
--		btrfs_put_root(log_tree_root);
- 		return ret;
- 	}
- 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index ab2f6bab096b..4d34aee0cafa 100644
+index 4d34aee0cafa..cd4c5ae3e0a3 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -7586,7 +7586,6 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
- 		return ret;
+@@ -2336,12 +2336,13 @@ static noinline int check_item_in_log(struct btrfs_trans_handle *trans,
+ 	return ret;
+ }
  
- 	clear_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags);
--	btrfs_put_root(log_root_tree);
+-static int replay_xattr_deletes(struct btrfs_trans_handle *trans,
+-			      struct btrfs_root *root,
+-			      struct btrfs_root *log,
+-			      struct btrfs_path *path,
+-			      const u64 ino)
++static int replay_xattr_deletes(struct walk_control *wc,
++				struct btrfs_path *path,
++				const u64 ino)
+ {
++	struct btrfs_trans_handle *trans = wc->trans;
++	struct btrfs_root *root = wc->root;
++	struct btrfs_root *log = wc->log;
+ 	struct btrfs_key search_key;
+ 	struct btrfs_path *log_path;
+ 	int i;
+@@ -2645,7 +2646,7 @@ static int replay_one_buffer(struct extent_buffer *eb,
+ 		    wc->stage == LOG_WALK_REPLAY_INODES) {
+ 			u32 mode;
  
- 	return 0;
- error:
+-			ret = replay_xattr_deletes(trans, root, log, path, key.objectid);
++			ret = replay_xattr_deletes(wc, path, key.objectid);
+ 			if (ret)
+ 				break;
+ 			mode = btrfs_inode_mode(eb, inode_item);
 -- 
 2.47.2
 
