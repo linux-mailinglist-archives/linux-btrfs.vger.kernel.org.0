@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-16720-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16721-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5240B48933
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 11:56:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B1D7B4892D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 11:55:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB3597A9C90
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 09:53:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16F4E17446A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 09:55:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 030562FC893;
-	Mon,  8 Sep 2025 09:53:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D3A52FCC1A;
+	Mon,  8 Sep 2025 09:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CumfBwWE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X7r/SahT"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470662FC025
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C9E2FCBE1
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757325234; cv=none; b=Zyvra9Qlx9c7bSguSHhTObYciS/ipfYxQjIYR+EtPW4DglXhEZ9keAAaru7Mqnhbeq6O3eohCzxkgqjzjrPCJgVzuoC1SpRvW3aqGHxOfCnFrjWpbgbLOCAOtYbsXOsPlw8QcBQ5NGfcY/ksIwT5XRWyr4mdm1nOZ3jbRds3e1c=
+	t=1757325235; cv=none; b=sEf4TjXXCqaU0AxSCHTrFOz+kKApCT+kLaNy9aQ3Aan38iMV6uOEPL2Ho2FOlSqM26Lbq6E/k3cx7q5F7lDgOX6bcOr2kWhznYyTXHyC0m50lqNhBJcLziTA2mosfEMYDJBMa1LO2Iwbef2cUCemtqg/brHJfKV+YkZixWH9PYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757325234; c=relaxed/simple;
-	bh=HT3X/DitzgDCdtjzQErmHJjrkNJGn/qUHuNGLS7EJN8=;
+	s=arc-20240116; t=1757325235; c=relaxed/simple;
+	bh=tnYCp+jRLMPNsndbM/JcbUGZozD0jPRW0HhKEJL7f98=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oaRoEnB9+H3oXiaT2UIdx+jp/9mHacMTtJyTTgHpMDICP2UG3x0qnGP+Ry+2KaexJiajx1eYuGCq1/jg35N6q+e3G+14qtmvnr3/6lXQ6/+3B3nt6UkfD0hN+03jW45SpJa1J4Fp6VQ0OS/PuPgzZdfZijIWTbfIciyD5PBkSPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CumfBwWE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6838C4CEF9
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:53 +0000 (UTC)
+	 MIME-Version; b=LH09LrDPWAzNt4Arpa9r1Zcx6JPcLOKSvVdTkmA1GjR7MIf/OPQtn3C6Qq8B+eQJwVODVNpMNhhkE1HOieOCet4AdCSeUSP7EKQGuYkqcjWo4mBmxHwOtBlz5mx4jdLiIKMZLYknAgE/BISS/XqCy3XLBTqLvpFwV8KuLDD5ARU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X7r/SahT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91F63C4CEF8
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757325234;
-	bh=HT3X/DitzgDCdtjzQErmHJjrkNJGn/qUHuNGLS7EJN8=;
+	s=k20201202; t=1757325235;
+	bh=tnYCp+jRLMPNsndbM/JcbUGZozD0jPRW0HhKEJL7f98=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=CumfBwWEVH+eOUc3vIkeRrpAnYHOxR3/Zi63X9fWswoojUbQvDXGMqK2bDB/uAeRs
-	 K8oUftot5saxl8dN8FMXDKaii5+zsaV3Wt54rhgGE2Xkz92+af9v8InuFQ9i8YO1m3
-	 NJhtj3Tc4hItyCXvpIcH1KpWHiAXkDG3mYpbd5NNI/UYMvHsN0UvaCAni3Y+JVUh/t
-	 GwoyZmx+UUR/YXchcfbYIb893qRS239hWLGoHnzPJDljKY96kZmkaIv1qMXejaYQaF
-	 qDsNR5nKpkQEwJ5YZ/Fp7OG4wsYx5dW4K0xf1k805a7pYq32Pc0XzD5rJjosp+r3u5
-	 LXDmL2tIyNrtQ==
+	b=X7r/SahTTMcMUChHYq3O2i22aNiChFLFO9tKUK2gY68A1DHY+JDounUzLRqhKpW8F
+	 F+v8soHQOqmh7FytrC9N6SQGLz38wZppYTUOzkw/jWcgDbkkqP5SydiFCVLHDfuoGC
+	 9sKrW/d3cCpVb3IQ01r9jZywAUOxm4G2jrec8Rt2afJeElqShPOGtmt+EPnKmAM6eI
+	 n9YA1Umbvx4KBduYVI+pAh/HBppqWLysrdxh7sD3JIGwJ7MTb0jUun7UzZjCDkB4c7
+	 D9c+682V67dXx5lQMinoiWIer1ZcIulQCDh2RGdSDqIqiOtHl8vDHDpQZ7S1GiWqQz
+	 Yj0Im6V/63DHQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 25/33] btrfs: avoid unnecessary path allocation when replaying a dir item
-Date: Mon,  8 Sep 2025 10:53:19 +0100
-Message-ID: <c7c3a8eb373ab6b35c537ba399ea153ca388d3db.1757271913.git.fdmanana@suse.com>
+Subject: [PATCH v2 26/33] btrfs: remove redundant path release when processing dentry during log replay
+Date: Mon,  8 Sep 2025 10:53:20 +0100
+Message-ID: <fc8841712e23318acf2ac910a9d62011f6795a4c.1757271913.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1757271913.git.fdmanana@suse.com>
 References: <cover.1757271913.git.fdmanana@suse.com>
@@ -59,39 +59,27 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-There's no need to allocate 'fixup_path' at replay_one_dir_item(), as the
-path passed as an argument is unused by the time link_to_fixup_dir() is
-called (replay_one_name() releases the path before it returns).
+At replay_one_one() we have a redundant btrfs_release_path() just before
+calling insert_one_name(), as some lines above we have already released
+the path with another btrfs_release_path() call. So remove it.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ fs/btrfs/tree-log.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index a912ccdf1485..de1f1c024dc0 100644
+index de1f1c024dc0..65b8858e82d1 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -2147,18 +2147,10 @@ static noinline int replay_one_dir_item(struct walk_control *wc,
- 	 * dentries that can never be deleted.
- 	 */
- 	if (ret == 1 && btrfs_dir_ftype(wc->log_leaf, di) != BTRFS_FT_DIR) {
--		struct btrfs_path *fixup_path;
- 		struct btrfs_key di_key;
- 
--		fixup_path = btrfs_alloc_path();
--		if (!fixup_path) {
--			btrfs_abort_transaction(wc->trans, -ENOMEM);
--			return -ENOMEM;
--		}
--
- 		btrfs_dir_item_key_to_cpu(wc->log_leaf, di, &di_key);
--		ret = link_to_fixup_dir(wc, fixup_path, di_key.objectid);
--		btrfs_free_path(fixup_path);
-+		ret = link_to_fixup_dir(wc, path, di_key.objectid);
+@@ -2079,7 +2079,6 @@ static noinline int replay_one_name(struct walk_control *wc,
+ 		update_size = false;
+ 		goto out;
  	}
- 
- 	return ret;
+-	btrfs_release_path(path);
+ 	ret = insert_one_name(trans, root, wc->log_key.objectid, wc->log_key.offset,
+ 			      &name, &log_key);
+ 	if (ret && ret != -ENOENT && ret != -EEXIST) {
 -- 
 2.47.2
 
