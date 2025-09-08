@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-16713-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16714-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36C39B48927
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 11:55:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A29D8B48935
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 11:56:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD1CF3A67DD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 09:54:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 358187A8830
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Sep 2025 09:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB362FAC08;
-	Mon,  8 Sep 2025 09:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B4DC2FB08E;
+	Mon,  8 Sep 2025 09:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oAjI1hyz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U6yJcIlW"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3DF22F9C39
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 912EE2FAC0A
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757325227; cv=none; b=tXLB4sFlabFmGCl9G6+N0MdTdzdUpTQuhi7a8xZ6wOeRTvHZoEIcr6gauRBRtoNevHLqAFGSsvlpn15m1O9i9YgioehgX47tP7jxhqYPN6awLGXaOiubdKcWib/f9BbvVvaRhIjBjqxDEUSL6yN8ZIDHjyBVmd6Ac63brsto30w=
+	t=1757325228; cv=none; b=dtaTwe8EkpteUNIqwQiCEFAiQjU6RrU0gMPASTetWtbT70pPyY/JW3D2fqSuZUDVm4UAJJFOskb+5oQnSpMwg9z0CUTsRlSbYXE710afNdSdm8lCtslDwtSAILAZW5b2/Ux6adgDsX4Aad2GSrSDhLWfzQHR/RY9hK/6uNDw1ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757325227; c=relaxed/simple;
-	bh=ewkK3mvW1brfo6cjqRiYVtBhT1xQrntREYxD5Abz4IE=;
+	s=arc-20240116; t=1757325228; c=relaxed/simple;
+	bh=sYpvCKrKoxGNpjk258JD7pDCRDxYRfo/svgu1+OJIm8=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ObaH1ntuBMP4fAeYqrdWETzp6QbF59d34t6CcB9p0Q6QUvzqZTENkJnu/KNuokUlnYP0L3MykUQtWo2HkXrbV33j75MoxvXiZ6cQkz/pulasjSqUf0SmdEeMXoThRE+QzgO31dbYQG9KMcIo+zPhkL4J1iD1hSlnY7PvH3054VU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oAjI1hyz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11E4CC4CEF1
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:46 +0000 (UTC)
+	 MIME-Version; b=Znbz2u6kg2Z1VILnd7Mp1JukYE2hRcynztxNC1r5KDuK+MDusULMTeUEEUNTs5ezDEOZloy371uayRmfOoPbkjYKrODCTa6qgOo/02wKZXocp2jN4aGUo8t0RtBF8cSfWxd7VNxtLrZ9bGarFz83rnf9n1+4We+pHQ259jkGsCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U6yJcIlW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F16E0C4CEF8
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Sep 2025 09:53:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757325227;
-	bh=ewkK3mvW1brfo6cjqRiYVtBhT1xQrntREYxD5Abz4IE=;
+	s=k20201202; t=1757325228;
+	bh=sYpvCKrKoxGNpjk258JD7pDCRDxYRfo/svgu1+OJIm8=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=oAjI1hyzo/p0eNAFu65ut66uYi5H4FvMHTtVoVXU8rpleRtmYvpOOJP8HLwt5FxMV
-	 RzmRuVfSGwrppXO8PX0RTUa0e1rAot/gvFOpHSSWR/t7XC8QII8Xas7Ab0tZD4y1il
-	 6a9GEnB4iQDmNeqoQbwNZuLDL55SITCSRvSMn76OGDXd9LWg9TKVN/KDehOnzvzKSu
-	 zWA6fTx3UGOi7If2fFJAWufBlQhlsLojtx8ZkX3LRqID5NNEFe+xPCWvqfquo8opX2
-	 53RP1TxFveqv+AxJf9v1ppm0EVlPYMx46WTouGf9O57yiMcN7h3WDYPjDwJhFVVRxe
-	 bf8IJkouab5cg==
+	b=U6yJcIlWrcRPxO/gHe+TUdbnVErTWJ1u9MKoSNndsLrNJcep3qhAtAv76kCVhQvl9
+	 7IDoHT31k+Wm3s1ge0q3et14dzt4hr3ZoJ4PZiHParVEybqS27SRAjTg/qUEmDx9c/
+	 6v/BhIyB7K13csU/X0E5iL1y9HYpcTcdocgVi4ZTnJCpvY+FyxPbbe/8dHeh+DMCSD
+	 //p1YE0LWb/XIEyN2ESJD2/e9x3FNQ1p+ynERWZvFxiP2di/48YCXSdH1aGJRRLbkR
+	 eD/laHB4ZN7tXebVON3Ci84RzGUimtHm5s63IPPc4xQ2akK00aRAN9A6cPhglDDZsw
+	 ipfxXqJ5Js+MQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 18/33] btrfs: pass walk_control structure to overwrite_item()
-Date: Mon,  8 Sep 2025 10:53:12 +0100
-Message-ID: <2285bb3352d3d56c7036fb64527cea7ef0d5ddd8.1757271913.git.fdmanana@suse.com>
+Subject: [PATCH v2 19/33] btrfs: use level argument in log tree walk callback process_one_buffer()
+Date: Mon,  8 Sep 2025 10:53:13 +0100
+Message-ID: <c04ab99dc1a2365db6942c41d496ffcdeacc6949.1757271913.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1757271913.git.fdmanana@suse.com>
 References: <cover.1757271913.git.fdmanana@suse.com>
@@ -59,73 +59,29 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Instead of passing the transaction and subvolume root as arguments to
-overwrite_item(), pass the walk_control structure as we can grab them
-from the structure. This reduces the number of arguments passed and it's
-going to be needed by an incoming change that improves error reporting
-for log replay.
+We already have the extent buffer's level in an argument, there's no need
+to call btrfs_header_level(). So use the level argument and make the code
+shorter.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ fs/btrfs/tree-log.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 01a0f7cbcd4b..2060f0d99f6e 100644
+index 2060f0d99f6e..166ceb003a1e 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -410,12 +410,13 @@ static int process_one_buffer(struct extent_buffer *eb,
-  *
-  * If the key isn't in the destination yet, a new item is inserted.
-  */
--static int overwrite_item(struct btrfs_trans_handle *trans,
--			  struct btrfs_root *root,
-+static int overwrite_item(struct walk_control *wc,
- 			  struct btrfs_path *path,
- 			  struct extent_buffer *eb, int slot,
- 			  struct btrfs_key *key)
- {
-+	struct btrfs_trans_handle *trans = wc->trans;
-+	struct btrfs_root *root = wc->root;
- 	int ret;
- 	u32 item_size;
- 	u64 saved_i_size = 0;
-@@ -739,7 +740,7 @@ static noinline int replay_one_extent(struct walk_control *wc,
+@@ -386,8 +386,7 @@ static int process_one_buffer(struct extent_buffer *eb,
+ 			return ret;
+ 		}
  
- 	if (found_type == BTRFS_FILE_EXTENT_INLINE) {
- 		/* inline extents are easy, we just overwrite them */
--		ret = overwrite_item(trans, root, path, eb, slot, key);
-+		ret = overwrite_item(wc, path, eb, slot, key);
- 		if (ret)
- 			goto out;
- 		goto update_inode;
-@@ -1607,7 +1608,7 @@ static noinline int add_inode_ref(struct walk_control *wc,
- 		goto out;
- 
- 	/* finally write the back reference in the inode */
--	ret = overwrite_item(trans, root, path, eb, slot, key);
-+	ret = overwrite_item(wc, path, eb, slot, key);
- out:
- 	btrfs_release_path(path);
- 	kfree(name.name);
-@@ -2657,7 +2658,7 @@ static int replay_one_buffer(struct extent_buffer *eb,
- 				if (ret)
- 					break;
- 			}
--			ret = overwrite_item(trans, root, path, eb, i, &key);
-+			ret = overwrite_item(wc, path, eb, i, &key);
+-		if (btrfs_buffer_uptodate(eb, gen, false) &&
+-		    btrfs_header_level(eb) == 0) {
++		if (btrfs_buffer_uptodate(eb, gen, false) && level == 0) {
+ 			ret = btrfs_exclude_logged_extents(eb);
  			if (ret)
- 				break;
- 
-@@ -2721,7 +2722,7 @@ static int replay_one_buffer(struct extent_buffer *eb,
- 
- 		/* these keys are simply copied */
- 		if (key.type == BTRFS_XATTR_ITEM_KEY) {
--			ret = overwrite_item(trans, root, path, eb, i, &key);
-+			ret = overwrite_item(wc, path, eb, i, &key);
- 			if (ret)
- 				break;
- 		} else if (key.type == BTRFS_INODE_REF_KEY ||
+ 				btrfs_abort_transaction(trans, ret);
 -- 
 2.47.2
 
