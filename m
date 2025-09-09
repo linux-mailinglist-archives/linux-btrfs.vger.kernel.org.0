@@ -1,146 +1,177 @@
-Return-Path: <linux-btrfs+bounces-16760-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16761-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 250B0B5056F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Sep 2025 20:36:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64E63B508FB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 00:45:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A92537B8004
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Sep 2025 18:33:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C268D1C23E6D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Sep 2025 22:46:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FFFE301037;
-	Tue,  9 Sep 2025 18:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DADC4271A7B;
+	Tue,  9 Sep 2025 22:45:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CS+ikj6C"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oqMLEUZu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="v5PVoV0y";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oqMLEUZu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="v5PVoV0y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD5B3002C4;
-	Tue,  9 Sep 2025 18:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DE701E3DD7
+	for <linux-btrfs@vger.kernel.org>; Tue,  9 Sep 2025 22:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757442763; cv=none; b=umHV73Ara3SoLSBhkGR5gzJvog88dGxLOom6NE83MbkOrZyENRNQDoP15AF82knZcCMHFMnsrwCBbLx0tzXN/0lfMuUi5U/hXZIHGTcZFxfM92VudAjuCv3g1v2FZLTvB44p6Lq1TJQyHsBaJXkUeYAdcOTlBLmKnkQFTw91MrE=
+	t=1757457927; cv=none; b=gnFLkQh8ptqIw6ErNwNCdCgREYEYffkBdlxVNlFnYwjXa/u5zrQThAnNXa3cWyu8MrgR1S3+RUzIBqWuPdlYT7/j+vmij2XezBh0fpk7jVD+u0XCcweL+kGbGvrHdrH6VMqaxKDbjbfcebqWv9eiBYww/M4mCc3GtX0DvdOiif4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757442763; c=relaxed/simple;
-	bh=GW2x3BiMlxtdXONsUQUaEy/dHtbMsT4sWtlNzRaafO4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n5UV1l6T1Y1oVNau2WoxfVBT/JCYtzvlo8vYkh7htHsjBpr+oTVQ/olfJ8IKijWXFshTvdJpA6wq5t1nexnqpRVgVN6+cMvcWoAxzMI/3UjRIwq38h6YdCOVuOTGhJkXPxdBxE1aK0l1ud1GJ0M6cg3ibyUU/t/xqjQ0SVvJazo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CS+ikj6C; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-6188b5ad4f0so8474119a12.0;
-        Tue, 09 Sep 2025 11:32:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757442760; x=1758047560; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yIGs9FBrVN4ysExlh34AjdYI0YF46w+oZSmAFf3lNX4=;
-        b=CS+ikj6CoktTENcKDyOs4cIG3k7BeNGQRuCdZQ2dRTEZtuVxC3K4oqUkJ0LNWNqhWH
-         +3INlXxuqLLdLe0li8Ed/XRwv8yxjioDmPxzk5vPHBT9lfZ140r9jRaNpRvoBwl1tw9S
-         W9S0b92vtYTbPwqwEfADIEkOZIbcdDTSW+1FM81zw9VUa0cUMRPMAuXBomwM1ZJHIeJW
-         QzT6vj8H+6OP1C7tXSM4LrplfqyRAkmc/UkWb31is25zODzTTCRbaEUhhl47QYbE53x/
-         qV4trjzklcNN3qsbjXbl3zArm+M+reqYViC01q9uSpd1Crj+dx/UC1GtF0CJw/TbdUyS
-         9CSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757442760; x=1758047560;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yIGs9FBrVN4ysExlh34AjdYI0YF46w+oZSmAFf3lNX4=;
-        b=TaLe76O8PHSNPE8vtQ+ZkNweCdJFmM0XusNtZ1lc+gbBiEbtOaXF9we3Ypdu9eN1XD
-         YYGXOrgguoiMkUHSOpxDJ7/RT+vTqAnXnbYdevluLDAG66VXOYukaMODAqdyjQdFj/ij
-         IgvkRF9+DsvR0oUFyM1nfM0vcUhvCXIUTqhPTqsASMs0LbCito4Wh2iVECAiA70pXwnk
-         KHUDj9QWQAvozjxlVio09WgkiNbsSnOK/2kPApC2BfjP205+DGaT7xv4WPsoArd9G0cm
-         Pg9UTC+dDN38G7FBgyHzouIjrVHTPnGh5dA8CGScfEMw+j0fGvCK5k7ud5iNVKjm95qt
-         zMTw==
-X-Forwarded-Encrypted: i=1; AJvYcCV0LUEGC17ZtvutdgNwXrb+UQoAlUU6jR0JhJR/6eWjUSBXpENkMGBJo97rxf5jRKHHVyP307rs2Buw+A==@vger.kernel.org, AJvYcCWKPPjNeyCwrwKv80V3xOBd69K+fXREUO+jNpqpLXaFxaQpv0NBPRZ9iLgWnbxcooffgRdYW/I6jI14ug==@vger.kernel.org, AJvYcCWbMbBG/ZKy/L3g0GUnnW01e0a7XC6Cp8Fea5LmBZMrONHcphq5faA9uuM1DJpt3x02eQRyngWs0Z0oG1yT@vger.kernel.org, AJvYcCWqpN0QFo1XxElEtdb74wAgCJWhsrLs2SFm1hqnuoMWQStOKKoeUaKpcTeDmNPVl3JrxA/U9Z0IQtTD@vger.kernel.org, AJvYcCXwKFZXTIrkhM/bT2ymo+taCIzBgUit67/3UWvQzrGrxmRV+sUDvSNPvUcHknoI0UvtaQQhy6kDiKeOOifqDw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwMaBBvfLkAZbdh77CjUGOHHMgEy2j8deULa7leTISVMXjxABio
-	LJOceoJzLZkiNJuv0QLqBszZN7wXgdoY7pLizaRdmvpQ+iowcZDHwyaQunI2rmG3DZmllP9hJ2V
-	RBK8K3V85UDFiOZpsg+97yrKeDYmGYd8=
-X-Gm-Gg: ASbGnctnHaLkk48SeGedWY1AzeV56ol9l4z/Gptvq+7bTZuiHA1h+RZcq0V/dF6j6L+
-	y9wPeOwPVcc6HI6nvELN8CPkeVMrnzIqFJVw5+n5eSi66RDYxczMzzr9iiYFC9GhCqU9dK+VtBP
-	rLYspnyalcIjLhGqD1146grQPPdsP2IaLG+zrFuRfXCNt6NftNhqiLVHfId0pEH0Lgs8gS2p8VX
-	dQbuw1BDbTLtD+IIw==
-X-Google-Smtp-Source: AGHT+IGIpYLmFMQhXwhapf2seoXIPbxx2/CNzBSDsmPVTyytD6TFl/TeK/249z9Axk5K8USmmiSQ3V6JXdtG0O8zPdM=
-X-Received: by 2002:a05:6402:3589:b0:62c:62e1:8ff4 with SMTP id
- 4fb4d7f45d1cf-62c62e1986amr2372712a12.23.1757442760027; Tue, 09 Sep 2025
- 11:32:40 -0700 (PDT)
+	s=arc-20240116; t=1757457927; c=relaxed/simple;
+	bh=2BzAX80FoSqqH7pexJgxDzbGJcjxbytEsAj+JMYLYZs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kHtTueQFw7zp+J543CBcInhUjAllg/2C6m9ig7wIrB+DOmn2T3Cnzx/AcflGf9cejfQbyKP76z7WXEaXnWKtNq4C+cFD4qsylO8OY7dF2TPiVSYZirPVA0uM/NcU8zTcsLrDBfddBsNR+MGt2z5kKWt8CMhz7u+qCAJCaxgKs1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oqMLEUZu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=v5PVoV0y; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oqMLEUZu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=v5PVoV0y; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3030320E7A;
+	Tue,  9 Sep 2025 22:45:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1757457922;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SYMj1WDm8ZbNy8YqcRFPqkKLH0gfMOTBQZc9Nfwem8k=;
+	b=oqMLEUZuQj0JJT7fm0Fkd0N68X3ZYuFMUw6Wp2ZZa4rnvK2GhM8my9clnqTTWnzaC6nFGr
+	qG47Z8/b+aw+M/MCUpMAvRJG6TnpfDnAqB4d56PjppbxNPkntiIdqHUvSpwFeGFdnflzJP
+	ZsBW/8aKJOwFtNoSOMX54htcFYF/0ug=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1757457922;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SYMj1WDm8ZbNy8YqcRFPqkKLH0gfMOTBQZc9Nfwem8k=;
+	b=v5PVoV0yTLX7Oh6Fh5s1brhZeBs1LawJqVY7Wg65lsQnJ1ewuFSYxscm2xb65J4OV+lvpb
+	BkvyDbKgI2nD6XDA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1757457922;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SYMj1WDm8ZbNy8YqcRFPqkKLH0gfMOTBQZc9Nfwem8k=;
+	b=oqMLEUZuQj0JJT7fm0Fkd0N68X3ZYuFMUw6Wp2ZZa4rnvK2GhM8my9clnqTTWnzaC6nFGr
+	qG47Z8/b+aw+M/MCUpMAvRJG6TnpfDnAqB4d56PjppbxNPkntiIdqHUvSpwFeGFdnflzJP
+	ZsBW/8aKJOwFtNoSOMX54htcFYF/0ug=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1757457922;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SYMj1WDm8ZbNy8YqcRFPqkKLH0gfMOTBQZc9Nfwem8k=;
+	b=v5PVoV0yTLX7Oh6Fh5s1brhZeBs1LawJqVY7Wg65lsQnJ1ewuFSYxscm2xb65J4OV+lvpb
+	BkvyDbKgI2nD6XDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B4121388C;
+	Tue,  9 Sep 2025 22:45:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 4DtKAgKuwGhYBAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 09 Sep 2025 22:45:22 +0000
+Date: Wed, 10 Sep 2025 00:45:20 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Anderson Nascimento <anderson@allelesecurity.com>
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Avoid potential out-of-bounds in btrfs_encode_fh()
+Message-ID: <20250909224520.GC5333@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <0cc81bcf-b830-4ec3-8d5e-67afbc2e7c47@allelesecurity.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250909091344.1299099-1-mjguzik@gmail.com> <20250909091344.1299099-10-mjguzik@gmail.com>
-In-Reply-To: <20250909091344.1299099-10-mjguzik@gmail.com>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Tue, 9 Sep 2025 20:32:27 +0200
-X-Gm-Features: AS18NWBEChkhzDf6oUf2_3PrIR6nRSPRVkR8w4kTgZptP8cMl4B5_HTLHZwMBuQ
-Message-ID: <CAGudoHG59Q=hQg3cQpPamCj2x8NuNZ7qhTMcOamWTkYDJB4PZw@mail.gmail.com>
-Subject: Re: [PATCH v2 09/10] fs: set I_FREEING instead of I_WILL_FREE in
- iput_final() prior to writeback
-To: brauner@kernel.org
-Cc: viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, josef@toxicpanda.com, kernel-team@fb.com, 
-	amir73il@gmail.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, ocfs2-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0cc81bcf-b830-4ec3-8d5e-67afbc2e7c47@allelesecurity.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
 
-On Tue, Sep 9, 2025 at 11:14=E2=80=AFAM Mateusz Guzik <mjguzik@gmail.com> w=
-rote:
->
-> This is in preparation for I_WILL_FREE flag removal.
->
-> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
-> ---
->  fs/inode.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 20f36d54348c..9c695339ec3e 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -1880,18 +1880,17 @@ static void iput_final(struct inode *inode)
->                 return;
->         }
->
-> +       inode_state_add(inode, I_FREEING);
-> +
->         if (!drop) {
-> -               inode_state_add(inode, I_WILL_FREE);
->                 spin_unlock(&inode->i_lock);
->
->                 write_inode_now(inode, 1);
->
->                 spin_lock(&inode->i_lock);
-> -               inode_state_del(inode, I_WILL_FREE);
->                 WARN_ON(inode_state_read(inode) & I_NEW);
->         }
->
-> -       inode_state_add(inode, I_FREEING);
->         if (!list_empty(&inode->i_lru))
->                 inode_lru_list_del(inode);
->         spin_unlock(&inode->i_lock);
-> --
-> 2.43.0
->
+On Mon, Sep 08, 2025 at 09:49:02AM -0300, Anderson Nascimento wrote:
+> Hello all,
+> 
+> The function btrfs_encode_fh() does not properly account for the three 
+> cases it handles.
+> 
+> Before writing to the file handle (fh), the function only returns to the 
+> user BTRFS_FID_SIZE_NON_CONNECTABLE (5 dwords, 20 bytes) or 
+> BTRFS_FID_SIZE_CONNECTABLE (8 dwords, 32 bytes).
+> 
+> However, when a parent exists and the root ID of the parent and the 
+> inode are different, the function writes BTRFS_FID_SIZE_CONNECTABLE_ROOT 
+> (10 dwords, 40 bytes).
+> 
+> If *max_len is not large enough, this write goes out of bounds because 
+> BTRFS_FID_SIZE_CONNECTABLE_ROOT is greater than 
+> BTRFS_FID_SIZE_CONNECTABLE originally returned.
+> 
+> This results in an 8-byte out-of-bounds write at 
+> fid->parent_root_objectid = parent_root_id.
+> 
+> A previous attempt to fix this issue was made but was lost.
+> 
+> https://lore.kernel.org/all/4CADAEEC020000780001B32C@vpn.id2.novell.com/
+> 
+> Although this issue does not seem to be easily triggerable, it is a 
+> potential memory corruption bug that should be fixed. This patch 
+> resolves the issue by ensuring the function returns the appropriate size 
+> for all three cases and validates that *max_len is large enough before 
+> writing any data.
+> 
+> Tested on v6.17-rc4.
+> 
+> Fixes: be6e8dc0ba84 ("NFS support for btrfs - v3")
+> Signed-off-by: Anderson Nascimento <anderson@allelesecurity.com>
 
-With a closer look I think this is buggy. write_inode_now() makes
-assumptions that I_FREEING implies removal from the io list, but does
-not assert on it.
-
-So I'm going to post an updated patch which moves this write down
-evict() after removal from the io list, and only issue the write
-conditionally based on the drop parameter.
-
-On top of that write_inode_now() is going to make a bunch of asserts
-about the inode being clean after the write if I_FREEING is set.
-
---=20
-Mateusz Guzik <mjguzik gmail.com>
+Thanks for finding the problem and the fix. It's 17 years old though the
+other patch was sent about 2 years after btrfs merge to linux kernel.
+I'll add it to for-next, with the minor whitespace issues fixed.
 
