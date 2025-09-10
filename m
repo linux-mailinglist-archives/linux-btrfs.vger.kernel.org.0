@@ -1,278 +1,158 @@
-Return-Path: <linux-btrfs+bounces-16774-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16776-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F23AB50D10
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 07:18:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9465EB50D16
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 07:22:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C1E93BCCFE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 05:18:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D6401B2767B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 05:22:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3E02773DC;
-	Wed, 10 Sep 2025 05:18:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2063272E66;
+	Wed, 10 Sep 2025 05:22:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="a9RPnj/Z";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="a9RPnj/Z"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="FB8nuZ+P"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28CB260578
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 05:18:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C2F31D39F
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 05:22:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757481518; cv=none; b=XJA/ZMBKVPTaq3ik0kbSCi2EBAnowpR3OFjLUOsmqHunEeM2Iqatp1zzgopVKDcF24Zu2c1NcETq9DVj1r/04yleOlbxfDvRhENHybYXDxT/zcIxFOmWD4ck4dKP/jo8E6nBU+n+hHXU4kjm6eQI4l+oGvy3NQrl21+GXwlYOTs=
+	t=1757481748; cv=none; b=Byv89eUjaEJqiJPXH5D93lEy+U/xnfIoZKIWHkylpFytZbXh2pUBh57WIMoSq9czKuMEmXlB/meTfZdQe0tySbzBzgsHnP+ydb5pvsCD/ICGrmn6rahAYdeyuojIg77Ud3pZduqXW6z+nJMleYVyCvO7oHomVxE68aBO81E9PlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757481518; c=relaxed/simple;
-	bh=x1bHkGXNSBmpBwTrqMYOjkhi+aL1AoUaNUcerqwoDnA=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X1PfbHo/gJDDHi1cBIUhLAs7jpgaf1RRIcrLArKbihYOQyuRrMPjFbEjlfpr9hB0VlBu09r3jPDUW7vhEDXoVsS7ng+vaiBLlqrdDLzC4Rw4ab+CCV6ESZyKpEvPsVTjzYgIcslfN4rJZO6SpVImp63wGu10L6032W0M5U5OkSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=a9RPnj/Z; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=a9RPnj/Z; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1757481748; c=relaxed/simple;
+	bh=XlGcg+EG57n+WF6l0CTb+diyunU8Lsn4DqtSb0bb7XE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=uScQdq92P+byVdnGwl5W64th17CC7AblGPlB9SfX+8gmvqfF8EtsN4iSgnXf/Mkf+rAWS45k5qCJEvltP3Yo/jjfetotDpWQUgkgV8TXVB03bjNKW3NLHMT+AgIIMobuwUCcUzxaTHaoQEMwkg5uZ2NBuLwU5yvl+NF9CArA8vA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=FB8nuZ+P; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 38AA22009F
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 05:18:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1757481510; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=os078w1PNeVWOygqgfQ5xClH/5VAeIfctxp+GmoXng8=;
-	b=a9RPnj/ZNpvgh9pls/U2pXCfSwsdLm4MQw8eGAgDAGxgrHDmKeIhY9Jb4xitE6+SMMRoV9
-	IN6exHUhWSmYEkPXgJfnCVywixuOVXAANxZrZK3aOkJYXhICcWvuoCH4912nwdt7VNqcs0
-	UJtM0XYbG/e2Gvjhi67uwgALbfLbU68=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="a9RPnj/Z"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1757481510; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=os078w1PNeVWOygqgfQ5xClH/5VAeIfctxp+GmoXng8=;
-	b=a9RPnj/ZNpvgh9pls/U2pXCfSwsdLm4MQw8eGAgDAGxgrHDmKeIhY9Jb4xitE6+SMMRoV9
-	IN6exHUhWSmYEkPXgJfnCVywixuOVXAANxZrZK3aOkJYXhICcWvuoCH4912nwdt7VNqcs0
-	UJtM0XYbG/e2Gvjhi67uwgALbfLbU68=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6EE1E13301
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 05:18:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wCr/CyUKwWjvdAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 05:18:29 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 4/4] btrfs: prepare zlib to support bs > ps cases
-Date: Wed, 10 Sep 2025 14:48:06 +0930
-Message-ID: <de560860b34cb93829110000912f483ccc624f61.1757481354.git.wqu@suse.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <cover.1757481354.git.wqu@suse.com>
-References: <cover.1757481354.git.wqu@suse.com>
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3e537dc30f7so2314392f8f.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 09 Sep 2025 22:22:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1757481745; x=1758086545; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=qJn/oFsRrXfAStUR1SwGFKMUmem55dEjn6Z85CMzkXU=;
+        b=FB8nuZ+PBSKVyEgzTddwiGDMnTQ3syVS4VcEZxaP4ePMxLaHSy2m0Rvj2EtG4mvCBk
+         DVHMZlTj5nk1kO4v4cJjWDexbnUAI90PElelh09Q/LEQxlfgv2kqW0U6z0Si8jo6T/Pe
+         Xt4ZpnZGynp7oU9M2PxuJJTA6Y2PPgJD4y0HHllWpMjXRsFk1oXB9eDbuU+/gCDWyv4m
+         xMrg8Pc5SMwaH2c20jN6w0PxyfdQV9yFC7voD8fKb0MRbUHB4+xuumYPzMoPJIRnnSvN
+         cPqcE/Q6fYlFrMIcmGDTkhm0HciYWyBmeWpyRpBWsYhnJbD/Xf4ctcKOP7//OkvsyQgj
+         ePdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757481745; x=1758086545;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qJn/oFsRrXfAStUR1SwGFKMUmem55dEjn6Z85CMzkXU=;
+        b=X1YQXvTnQRWlmamOf6X1dTvHMMniel/qIz5W2NpUuJD+5tm/UY6/0OuJAe3B/f1B3d
+         t5QqWo1AuFqRD8eEX7njMj/p8cvL3XDSfN+PkeNnJ+poTh2wr+uuslwYN2pl5+FP/4UO
+         YdX5fXQ++kMPW3nGFT5g9U0ShFXv2xxeQ1nxl7VsBaA1Av4I2dV2p8UugZJ7A1yQWht8
+         LEtBsNyhMv8qk2ZPhtu5gee5Ewgil2V4AOkzCSsTUyiC6EgMKASYMQDYw9sekJ9cyE7y
+         gzIcK4nX5s1VxGMMz/oWoIgLDKQwJjCr6aFvSRhLBHcY/s3cqU0xCZK4Sn4NimeIgmiQ
+         MeAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW1c0eCHi2MVFQ7gPXRoHXmosmbmBvVf0xAqUOxpYm/dHA9uZP77M3KoSiEbfbaNdzLAmj74Kv7Hu+Utw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzyBXQoRwctFBhah55JFl/tKE47+IN0iU5s+KbAG057I3JwZFGw
+	FfWFxvD+PP/k4lA3dYw+3u7oOHU3cDv99EYqqoysF7w23Ojg47BlxZ0hwBNPH6tux6I=
+X-Gm-Gg: ASbGncudzJJncze1ns1xtyz1qYgVRy/thxKK/Xa1HTWYrBAynRnscAFNanrHAkdnTBz
+	nho0AgXxe0VS20HR6YfOD4NSYLRLkamHMgcrDxhBFcd2gOdaGGXBT0SENqOwM1yVVfhOFjCf80g
+	IsSlKHK86ycrA9LfQldvCMEqRi8AC2HpbYB4wFflKxsMisU5EIAx4e7knKOk5OYdPUmUuj03YJ9
+	cMOK5EPR8itopEUU+lH3KvSYG+tnhUHeysO1I5FFAHj8+eMvbH02TTA0yn/yA/9GAS0NU85D0el
+	fONXkYKpI+mfMdM6tkxYkB6krozGkO02mNivpFNrNNkGm2JQr9KuvKvawWn+kFx3LlQdCgIYJE5
+	QyuizfAzZOVRlWL7BEtCzcYp8iEfsPsEhwayGdquF0oPr7f5aaoMIeyegBiFwqg==
+X-Google-Smtp-Source: AGHT+IG0X2FGkcO4R53Tfj+l/pyZ56E7TSVQm7ef9aqRkz3RKNKEIctmWGApG3+aLsKMrlsyy/v3Pg==
+X-Received: by 2002:a05:6000:230c:b0:3e3:3d84:9761 with SMTP id ffacd0b85a97d-3e62c284c68mr10724474f8f.0.1757481744945;
+        Tue, 09 Sep 2025 22:22:24 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-775f77a6a6esm762184b3a.94.2025.09.09.22.22.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Sep 2025 22:22:24 -0700 (PDT)
+Message-ID: <595f3fb8-6fbc-4e22-8eea-0e6248be73bc@suse.com>
+Date: Wed, 10 Sep 2025 14:52:20 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] btrfs-progs: tests: output error/warn message to
+ stderr
+To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+References: <20250910050412.2138579-1-naohiro.aota@wdc.com>
+ <20250910050412.2138579-2-naohiro.aota@wdc.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20250910050412.2138579-2-naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 38AA22009F
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email]
-X-Spam-Score: -3.01
 
-This involves converting the following functions to use correct folio
-sizes/shifts:
 
-- zlib_compress_folios()
-- zlib_decompress_bio()
 
-There is a special handling for s390 hardware acceleration.
-With bs > ps cases, we can go with 16K block size on s390 (which uses
-fixed 4K page size).
-In that case we do not need to do the buffer copy as our folio is large
-enough for hardware acceleration.
+在 2025/9/10 14:34, Naohiro Aota 写道:
+> Outputting these messages to stdout can compromise the functions' output.
+> Instead, output them to stderr to keep the results clean.
+> 
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-So extract the s390 specific and folio size check into a helper,
-need_special_buffer().
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/zlib.c | 47 ++++++++++++++++++++++++++++++++---------------
- 1 file changed, 32 insertions(+), 15 deletions(-)
+Thanks,
+Qu
 
-diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
-index ccf77a0fa96c..889af188a924 100644
---- a/fs/btrfs/zlib.c
-+++ b/fs/btrfs/zlib.c
-@@ -53,6 +53,22 @@ void zlib_free_workspace(struct list_head *ws)
- 	kfree(workspace);
- }
- 
-+/*
-+ * For s390 hardware acceleration, the buffer size should be at least
-+ * ZLIB_DFLTCC_BUF_SIZE to achieve the best performance.
-+ *
-+ * But if bs > ps we can have large enough folios that meets the s390 hardware
-+ * handling.
-+ */
-+static bool need_special_buffer(struct btrfs_fs_info *fs_info)
-+{
-+	if (!zlib_deflate_dfltcc_enabled())
-+		return false;
-+	if (btrfs_min_folio_size(fs_info) >= ZLIB_DFLTCC_BUF_SIZE)
-+		return false;
-+	return true;
-+}
-+
- struct list_head *zlib_alloc_workspace(struct btrfs_fs_info *fs_info, unsigned int level)
- {
- 	const u32 blocksize = fs_info->sectorsize;
-@@ -68,11 +84,7 @@ struct list_head *zlib_alloc_workspace(struct btrfs_fs_info *fs_info, unsigned i
- 	workspace->strm.workspace = kvzalloc(workspacesize, GFP_KERNEL | __GFP_NOWARN);
- 	workspace->level = level;
- 	workspace->buf = NULL;
--	/*
--	 * In case of s390 zlib hardware support, allocate lager workspace
--	 * buffer. If allocator fails, fall back to a single page buffer.
--	 */
--	if (zlib_deflate_dfltcc_enabled()) {
-+	if (need_special_buffer(fs_info)) {
- 		workspace->buf = kmalloc(ZLIB_DFLTCC_BUF_SIZE,
- 					 __GFP_NOMEMALLOC | __GFP_NORETRY |
- 					 __GFP_NOWARN | GFP_NOIO);
-@@ -139,6 +151,8 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct workspace *workspace = list_entry(ws, struct workspace, list);
- 	struct address_space *mapping = inode->vfs_inode.i_mapping;
-+	const u32 min_folio_shift = PAGE_SHIFT + fs_info->block_min_order;
-+	const u32 min_folio_size = btrfs_min_folio_size(fs_info);
- 	int ret;
- 	char *data_in = NULL;
- 	char *cfolio_out;
-@@ -147,7 +161,7 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 	struct folio *out_folio = NULL;
- 	unsigned long len = *total_out;
- 	unsigned long nr_dest_folios = *out_folios;
--	const unsigned long max_out = nr_dest_folios * PAGE_SIZE;
-+	const unsigned long max_out = nr_dest_folios << min_folio_shift;
- 	const u32 blocksize = fs_info->sectorsize;
- 	const u64 orig_end = start + len;
- 
-@@ -179,7 +193,7 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 	workspace->strm.next_in = workspace->buf;
- 	workspace->strm.avail_in = 0;
- 	workspace->strm.next_out = cfolio_out;
--	workspace->strm.avail_out = PAGE_SIZE;
-+	workspace->strm.avail_out = min_folio_size;
- 
- 	while (workspace->strm.total_in < len) {
- 		/*
-@@ -191,10 +205,11 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 			unsigned int copy_length = min(bytes_left, workspace->buf_size);
- 
- 			/*
--			 * This can only happen when hardware zlib compression is
--			 * enabled.
-+			 * For s390 hardware accelerated zlib, and our folio is smaller
-+			 * than the copy_length, we need to fill the buffer so that
-+			 * we can take full advantage of hardware acceleration.
- 			 */
--			if (copy_length > PAGE_SIZE) {
-+			if (need_special_buffer(fs_info)) {
- 				ret = copy_data_into_buffer(mapping, workspace,
- 							    start, copy_length);
- 				if (ret < 0)
-@@ -258,7 +273,7 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 			cfolio_out = folio_address(out_folio);
- 			folios[nr_folios] = out_folio;
- 			nr_folios++;
--			workspace->strm.avail_out = PAGE_SIZE;
-+			workspace->strm.avail_out = min_folio_size;
- 			workspace->strm.next_out = cfolio_out;
- 		}
- 		/* we're all done */
-@@ -294,7 +309,7 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 			cfolio_out = folio_address(out_folio);
- 			folios[nr_folios] = out_folio;
- 			nr_folios++;
--			workspace->strm.avail_out = PAGE_SIZE;
-+			workspace->strm.avail_out = min_folio_size;
- 			workspace->strm.next_out = cfolio_out;
- 		}
- 	}
-@@ -320,20 +335,22 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 
- int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- {
-+	struct btrfs_fs_info *fs_info = cb_to_fs_info(cb);
- 	struct workspace *workspace = list_entry(ws, struct workspace, list);
-+	const u32 min_folio_size = btrfs_min_folio_size(fs_info);
- 	int ret = 0, ret2;
- 	int wbits = MAX_WBITS;
- 	char *data_in;
- 	size_t total_out = 0;
- 	unsigned long folio_in_index = 0;
- 	size_t srclen = cb->compressed_len;
--	unsigned long total_folios_in = DIV_ROUND_UP(srclen, PAGE_SIZE);
-+	unsigned long total_folios_in = DIV_ROUND_UP(srclen, min_folio_size);
- 	unsigned long buf_start;
- 	struct folio **folios_in = cb->compressed_folios;
- 
- 	data_in = kmap_local_folio(folios_in[folio_in_index], 0);
- 	workspace->strm.next_in = data_in;
--	workspace->strm.avail_in = min_t(size_t, srclen, PAGE_SIZE);
-+	workspace->strm.avail_in = min_t(size_t, srclen, min_folio_size);
- 	workspace->strm.total_in = 0;
- 
- 	workspace->strm.total_out = 0;
-@@ -394,7 +411,7 @@ int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 			data_in = kmap_local_folio(folios_in[folio_in_index], 0);
- 			workspace->strm.next_in = data_in;
- 			tmp = srclen - workspace->strm.total_in;
--			workspace->strm.avail_in = min(tmp, PAGE_SIZE);
-+			workspace->strm.avail_in = min(tmp, min_folio_size);
- 		}
- 	}
- 	if (unlikely(ret != Z_STREAM_END)) {
--- 
-2.50.1
+> ---
+>   tests/nullb | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tests/nullb b/tests/nullb
+> index 457ae0d8354a..f3cdf9c19e16 100755
+> --- a/tests/nullb
+> +++ b/tests/nullb
+> @@ -34,12 +34,12 @@ SYSFS='/sys/kernel/config/nullb'
+>   # setup
+>   
+>   function _error() {
+> -	echo "ERROR: $@"
+> +	echo "ERROR: $@" 1>&2
+>   	exit 1
+>   }
+>   
+>   function _warn() {
+> -	echo "WARNING: $@"
+> +	echo "WARNING: $@" 1>&2
+>   }
+>   
+>   function _msg() {
 
 
