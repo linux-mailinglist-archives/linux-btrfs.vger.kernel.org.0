@@ -1,72 +1,75 @@
-Return-Path: <linux-btrfs+bounces-16770-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16771-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6CCEB50CFD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 07:04:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C753B50D12
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 07:18:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F4D71884836
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 05:05:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 153767A1BFF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 05:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887A02BE7A1;
-	Wed, 10 Sep 2025 05:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D96E26F28A;
+	Wed, 10 Sep 2025 05:18:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="X2JXd0gA"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Xman+vuK";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Xman+vuK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E07A26E158
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 05:04:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D1A31D39F
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 05:18:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757480678; cv=none; b=VMf3CXQa4QVQdhYPgGxfB35TwDCTucK+lRLYmqwAnkhD7pYyt/Fw3vIMYFz82iIzQS5F0CdINuVxALFudkhrZ7wNPDe4s2Z2pP19zWDngxR1zW+cgk98TVFbHKwRFSeNtfEPHm5T/cPk+M7ICF+eMNBWryD9O9k/0r4mHH2jOKM=
+	t=1757481509; cv=none; b=ilOekbKoAWI+bq0UFtpIhuaqQP2C3MlL/+BFzRcFwA4RV6ZyA/LzEFxb+LgOeXzK+4D37M1dX+kTpK0788A1JgEW5mSJN2TWq91/jzR+R9Mv6XEZeBGeaowIQs7r/jU92lobUTBsxVp4GVAAREAC2aFr2z15ltScc7mUcUVnjBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757480678; c=relaxed/simple;
-	bh=26UEBhEEckA4g8mK15oJe37zfCgSucg4E/C1JPtLAts=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U2cUTvT2oTeNm9LIdiaTvtnyDHJfJGiYb6YNOpfl1PcQc49xbmMSGfRMxtHn+lVwrF5nApBXYbdFkSwFJs4D+CVxZr4DzGdt2LF4XFgTtA3Bas4iHPsBsnp1LJ1+1ykRSxXq/YzZyPmqoZzt3Lnv/ux8hA1YIpVH/PQ53WPIGAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=X2JXd0gA; arc=none smtp.client-ip=216.71.153.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1757480676; x=1789016676;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=26UEBhEEckA4g8mK15oJe37zfCgSucg4E/C1JPtLAts=;
-  b=X2JXd0gA8Meg4TrdRgHdzK/nv5sSzq4rnqDaiGdRsq4PbX4Zljsu6lA4
-   +4kEN9pA6icoe/Y4w+76eoDwD47haE2WaJdN4sQz8ATV86QhYHi5hR2GT
-   tH+hMY3Lg0iC6cUfICcrStZeniFOEhp3pYBBqiRhEXC5Z/1a+dg7J6I8g
-   l5O18WsnBQl9GV02WfzgpPTSy77EX76/+DUG41NLyEi7Bjn15j12VtK2d
-   X0q6hiMGuGf5zQtMLAHl39ZAH7839LX51jgOonUMFnzih5dbO1dW47eUq
-   ADC/yo+lnEIK50eJen3R4pwgjvDciwC0xo8yRgx4IyyQde6tg9TxvjJTI
-   g==;
-X-CSE-ConnectionGUID: ZcmdYKwYQHelx2h3W/UaTA==
-X-CSE-MsgGUID: EZAi6/PtQmSoDg0HF6cd0w==
-X-IronPort-AV: E=Sophos;i="6.18,253,1751212800"; 
-   d="scan'208";a="114170377"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Sep 2025 13:04:36 +0800
-IronPort-SDR: 68c106e4_C/kjmL0oMhW+Q1qddo+DwhbLGNN0Ouh6gKtLiEbCi8k19vT
- j2OWOR7CKI0BGAcQJIZvHmatpEevlmAWWKv+znQ==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Sep 2025 22:04:37 -0700
-WDCIronportException: Internal
-Received: from wdap-vuijzzqtlv.ad.shared (HELO naota-xeon) ([10.224.173.18])
-  by uls-op-cesaip01.wdc.com with ESMTP; 09 Sep 2025 22:04:35 -0700
-From: Naohiro Aota <naohiro.aota@wdc.com>
+	s=arc-20240116; t=1757481509; c=relaxed/simple;
+	bh=jK3pdbRslsRrovf25k9U6X07XilgVPjhjhHfqqr8MCo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=PbpKEkkZjGmlJsZrsOKjDaR5a+sR16iIQJQPh/KGFKw1X8Dg/F9kI6QHYQX/Ip9ZGnvwTD24Ch4WT1IpzSd7avLH0hCphvAXfr+BM0zraeVGnXwI+EtScSKTskDkdVhJfloiMa+WzbTzzQVYPUO+yXzuYbOg6i8Ln06gADCHr80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Xman+vuK; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Xman+vuK; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2BF71336D2
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 05:18:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1757481505; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=rsWOMWUDUehMMRyDR5eqJfT3r858SXaLUudUIyHJ3M8=;
+	b=Xman+vuK8YNH6fTQ/dnPXFtBewOtGNWoxLfeFnpGRWTAptnpN7DFaPUkSILOIHKzMbg02f
+	6QASkgbOepeo4y2+W8G9Kygz/dTP7shKoXrUqzPqWCLM1h5de4WzvNDEV0K7IF22pM0v52
+	9ZGnYEr6Kf7Byq8MEeMD80Q1govsVGg=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=Xman+vuK
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1757481505; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=rsWOMWUDUehMMRyDR5eqJfT3r858SXaLUudUIyHJ3M8=;
+	b=Xman+vuK8YNH6fTQ/dnPXFtBewOtGNWoxLfeFnpGRWTAptnpN7DFaPUkSILOIHKzMbg02f
+	6QASkgbOepeo4y2+W8G9Kygz/dTP7shKoXrUqzPqWCLM1h5de4WzvNDEV0K7IF22pM0v52
+	9ZGnYEr6Kf7Byq8MEeMD80Q1govsVGg=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5F6DF13301
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 05:18:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /PjzByAKwWjvdAAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 05:18:24 +0000
+From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>,
-	Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v2 4/4] btrfs-progs: tests: add new mkfs test for zoned device
-Date: Wed, 10 Sep 2025 14:04:12 +0900
-Message-ID: <20250910050412.2138579-5-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250910050412.2138579-1-naohiro.aota@wdc.com>
-References: <20250910050412.2138579-1-naohiro.aota@wdc.com>
+Subject: [PATCH v2 0/4] btrfs: prepare compression for bs > ps support
+Date: Wed, 10 Sep 2025 14:48:02 +0930
+Message-ID: <cover.1757481354.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -74,122 +77,125 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:dkim]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 2BF71336D2
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 
-This new test is based on mkfs-tests/001-basic-profiles, and it goes
-through the profiles to mkfs and do some basic checks.
+[CHANGELOG]
+v2:
+- Fix a missing callsite inside btrfs_compress_file_range() which only
+  zeros the range inside the first page
+  The folio_zero_range() of the last compressed folio should cover the
+  full folio, not only the first page.
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
----
- tests/mkfs-tests/039-zoned-profiles/test.sh | 98 +++++++++++++++++++++
- 1 file changed, 98 insertions(+)
- create mode 100755 tests/mkfs-tests/039-zoned-profiles/test.sh
+This is the compression part support for bs > ps cases.
 
-diff --git a/tests/mkfs-tests/039-zoned-profiles/test.sh b/tests/mkfs-tests/039-zoned-profiles/test.sh
-new file mode 100755
-index 000000000000..2592eb6f9a93
---- /dev/null
-+++ b/tests/mkfs-tests/039-zoned-profiles/test.sh
-@@ -0,0 +1,98 @@
-+#!/bin/bash
-+# test various blockgroup profile combinations, use nullb devices as block
-+# devices. This test is based on mkfs-tests/001-basic-profiles.
-+
-+source "$TEST_TOP/common" || exit
-+
-+check_prereq mkfs.btrfs
-+check_prereq btrfs
-+check_global_prereq blkzone
-+
-+setup_root_helper
-+# Create one 128M device with 4M zones, 32 of them
-+setup_nullbdevs 4 128 4
-+prepare_nullbdevs
-+dev1=${nullb_devs[1]}
-+
-+test_get_info()
-+{
-+	local tmp_out
-+
-+	tmp_out=$(_mktemp mkfs-get-info)
-+	run_check $SUDO_HELPER "$TOP/btrfs" inspect-internal dump-super "$dev1"
-+	run_check $SUDO_HELPER "$TOP/btrfs" check "$dev1"
-+
-+	# Work around for kernel bug that will treat SINGLE and single
-+	# device RAID0 as the same.
-+	# Thus kernel may create new SINGLE chunks, causing extra warning
-+	# when testing single device RAID0.
-+	wait_for_nullbdevs
-+	run_check $SUDO_HELPER mount -o ro "$dev1" "$TEST_MNT"
-+	run_check_stdout "$TOP/btrfs" filesystem df "$TEST_MNT" > "$tmp_out"
-+	if grep -q "Multiple block group profiles detected" "$tmp_out"; then
-+		rm -- "$tmp_out"
-+		_fail "temporary chunks are not properly cleaned up"
-+	fi
-+	rm -- "$tmp_out"
-+	run_check $SUDO_HELPER "$TOP/btrfs" filesystem usage "$TEST_MNT"
-+	run_check $SUDO_HELPER "$TOP/btrfs" device usage "$TEST_MNT"
-+	run_check $SUDO_HELPER umount "$TEST_MNT"
-+}
-+
-+test_do_mkfs()
-+{
-+	run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f "$@"
-+	if run_check_stdout $SUDO_HELPER "$TOP/btrfs" check "$dev1" | grep -iq warning; then
-+		_fail "warnings found in check output"
-+	fi
-+}
-+
-+test_mkfs_single()
-+{
-+	test_do_mkfs "$@" "$dev1"
-+	test_get_info
-+}
-+test_mkfs_multi()
-+{
-+	test_do_mkfs "$@" "${nullb_devs[@]}"
-+	test_get_info
-+}
-+
-+test_mkfs_single
-+test_mkfs_single  -d  single  -m  single
-+test_mkfs_single  -d  single  -m  dup
-+
-+test_mkfs_multi
-+test_mkfs_multi   -d  single  -m  single
-+
-+if _test_config "EXPERIMENTAL" && [ -f "/sys/fs/btrfs/features/raid_stripe_tree" ]; then
-+	test_mkfs_single  -d  dup     -m  single
-+	test_mkfs_single  -d  dup     -m  dup
-+
-+	test_mkfs_multi   -d  raid0   -m  raid0
-+	test_mkfs_multi   -d  raid1   -m  raid1
-+	test_mkfs_multi   -d  raid10  -m  raid10
-+	# RAID5/6 are not yet supported.
-+	# test_mkfs_multi   -d  raid5   -m  raid5
-+	# test_mkfs_multi   -d  raid6   -m  raid6
-+	test_mkfs_multi   -d  dup     -m  dup
-+
-+	if [ -f "/sys/fs/btrfs/features/raid1c34" ]; then
-+		test_mkfs_multi   -d  raid1c3 -m  raid1c3
-+		test_mkfs_multi   -d  raid1c4 -m  raid1c4
-+	else
-+		_log "skip mount test, missing support for raid1c34"
-+		test_do_mkfs -d raid1c3 -m raid1c3 "${nullb_devs[@]}"
-+		test_do_mkfs -d raid1c4 -m raid1c4 "${nullb_devs[@]}"
-+	fi
-+
-+	# Non-standard profile/device combinations
-+
-+	# Single device raid0, two device raid10 (simple mount works on older kernels too)
-+	test_do_mkfs -d raid0 -m raid0 "$dev1"
-+	test_get_info
-+	test_do_mkfs -d raid10 -m raid10 "${nullb_devs[1]}" "${nullb_devs[2]}"
-+	test_get_info
-+fi
-+
-+cleanup_nullbdevs
+The main trick involved is the handling of compr folios, the main
+changes are:
+
+- Compressed folios now need to follow the minimal order
+  This is the requirement for the recently added btrfs_for_each_block*()
+  helpers, and this keeps our code from handling sub-block sized ranges.
+
+- No cached compression folios for bs > ps cases
+  Those folios are large and are not sharable between other fses, and
+  most of btrfs will use 4K (until storage with 16K block size got
+  popular).
+
+- Extra rejection of HIGHMEM systems with bs > ps support
+  Unfortunately HIGHMEM large folios need us to map them page by page,
+  this breaks our principle of no sub-block handling.
+
+  Considering HIGHMEM is always a pain in the backend and is already
+  planned for deprecation, it's best for everyone to just reject bs > ps
+  btrfses on HIGHMEM systems.
+
+Please still keep in mind that, raid56, scrub, encoded write are not yet
+supporting bs > ps cases.
+
+For now I have only done basic read/write/balance/offline data check
+tests on bs > ps cases with all 4 compression algorithms (none, lzo, zlib,
+zstd), so far so good.
+
+If some one wants to play with the incomplete bs > ps cases, the
+following simple diff will enable the work:
+
+ --- a/fs/btrfs/fs.c
+ +++ b/fs/btrfs/fs.c
+ @@ -96,8 +96,7 @@ bool __attribute_const__ btrfs_supported_blocksize(u32 blocksize)
+          */
+         if (IS_ENABLED(CONFIG_HIGHMEM) && blocksize > PAGE_SIZE)
+                 return false;
+ -       if (blocksize <= PAGE_SIZE)
+ -               return true;
+ +       return true;
+  #endif
+         return false;
+  }
+
+The remaining features and their road maps are:
+
+- Encoded writes
+  This should be the most simple part.
+
+- RAID56
+  Needs to convert the page usage into folio one first.
+
+- Scrub
+  This relies on some RAID56 interfaces for parity handling.
+  Otherwise pretty like RAID56, we need to convert the page usage to
+  folios first.
+
+Qu Wenruo (4):
+  btrfs: prepare compression folio alloc/free for bs > ps cases
+  btrfs: prepare zstd to support bs > ps cases
+  btrfs: prepare lzo to support bs > ps cases
+  btrfs: prepare zlib to support bs > ps cases
+
+ fs/btrfs/compression.c | 38 +++++++++++++++++++-------
+ fs/btrfs/compression.h |  2 +-
+ fs/btrfs/extent_io.c   |  7 +++--
+ fs/btrfs/extent_io.h   |  3 ++-
+ fs/btrfs/fs.c          | 17 ++++++++++++
+ fs/btrfs/fs.h          |  6 +++++
+ fs/btrfs/inode.c       | 16 ++++++-----
+ fs/btrfs/lzo.c         | 59 ++++++++++++++++++++++-------------------
+ fs/btrfs/zlib.c        | 60 +++++++++++++++++++++++++++---------------
+ fs/btrfs/zstd.c        | 44 +++++++++++++++++--------------
+ 10 files changed, 163 insertions(+), 89 deletions(-)
+
 -- 
-2.51.0
+2.50.1
 
 
