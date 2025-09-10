@@ -1,125 +1,169 @@
-Return-Path: <linux-btrfs+bounces-16779-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16780-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EDE3B514C9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 13:06:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A5B2B51EA1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 19:10:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AEA35461D7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 11:06:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51934565100
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Sep 2025 17:10:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6348F316911;
-	Wed, 10 Sep 2025 11:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 515CC2D5406;
+	Wed, 10 Sep 2025 17:10:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zg6Y1PKS"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="SIuhCsYN";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="B1AOKWQ2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b1-smtp.messagingengine.com (fhigh-b1-smtp.messagingengine.com [202.12.124.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE97316900
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 11:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB45526B777
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 17:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757502346; cv=none; b=HNh1CiD8Od5HSECtn1pZI/Q6pugk1nDVV38x6LzTuPbB6CWlfwWalGt+9Wi8rleJtbijx9ZEljyAe0QICEkDiSyA6T6dokHHDepLJriWCd/P0DlDXpb/4n1DsYq7+t+15euCNFhJ2mUenaIy0ytXk8SnJGVUEjvkvg4FCkEf5AY=
+	t=1757524208; cv=none; b=I5LbG+1Yb/LB4E6yjALIcCAJouIcCoUGlFPZdL6158/Q5ZhuxtQVO/8zzBdv9R/9sk/hEoJn5RVkYpe9YGK4Oz1z5z9XakVAWHZTsfMnnpkILhihL/Ib/huN7I5iZlTvAwWHIfDnXaIqa010Zi2nD8+xlCGbQVtUzb3o83Twwew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757502346; c=relaxed/simple;
-	bh=C2K6xS8dfCic18xOR7emY5dQiu050CnoW0V9JBlscsU=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=PwYlLFHKymQxMJB7LR1pl2Gx2XkG/3PIBog5AzBZ7hnlBKUnHr/157A5A6Wy27sUn4N46Iy5OtEY8Lpp32jZ1l8gBOp7prBLQ9LzRpp8uxckziGN1U2nSji4cXiDXW77e854bhU+O5YPPJQqiOeGJ3igQnMvz065Q8FFHpZBERE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zg6Y1PKS; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-45dde353b47so19979795e9.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Sep 2025 04:05:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757502343; x=1758107143; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :to:from:subject:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C2K6xS8dfCic18xOR7emY5dQiu050CnoW0V9JBlscsU=;
-        b=Zg6Y1PKSMUtws1sVNqHJBZBQxcFOpu26QbROXwKiqdceb1KgGZFXIPZJnugpGq1vGU
-         6yzR9J6DW7+Xz5kQDZdt5HEwFGffSgpjUee79Y71v49rY+8BS1ckikR1z2xHe4jTeewa
-         T/h7MOYUzEtYhWc31lWQglVtJKBdC30qJmDZ4lvgD6x/W2FdY8ay9iGSp5GrO5srBTgB
-         MeEqWyWF1RZDVBOHwPAtD06yp9oC5bE4RnW2RinCjZ9JDNF8KFQ8C6n5a5YSi8JlSYZG
-         /sT0B/hSridqKiVqAbYQI8W5LlcYSHrzg5bdOfsqdvakLLDCGiK4GgsA4OhogZQJERcX
-         kYZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757502343; x=1758107143;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C2K6xS8dfCic18xOR7emY5dQiu050CnoW0V9JBlscsU=;
-        b=jdVsY1oCNFhJYwSxVpkW5Jaf8W4+hrNG2Z6hJPbQsjQ4ceXO9zztLcGd0EDjYCGLho
-         /w60eEQ0wtavD6uJpasMi9RT4uWjbRweujdMlTFtAgMLw6NMnLgecFm+eLRJZPsKMyI/
-         hXZf91GTbl/g71xFNulQkw1GueU+WxXMWyIxbEv26+A00M2x7VY0kmKqFP8MUjMWmsyY
-         UxfoV5eAPoVT8Jcl1gqIW1EBYIE8IJ4oWn3bBajBV6ADFKyujkFu67170cGiMBo5Cz55
-         15TuHh6lwP6KevOVuOHmWlh+VC7+/DaOiMVJJtLRexWtPHAHJLctfSPJtRlfTLRqOAJs
-         IUQA==
-X-Gm-Message-State: AOJu0YzZBEzMvB7A3/4dRVNRj7CtTr14cp/1gVMV0qrXEaVeKaoPzZOS
-	3FSk6FI5Cn7Ntv7Lyvz/WOz1EYOkauWIbCMiEEDbG81Pdq0/qeGoiQomARU+uMw=
-X-Gm-Gg: ASbGncu65AVCTs1/7fbPJ/I3wIYLkdaSdfA1s7QzM7YGESubp1CXLAqKbcyRn5SajXb
-	x+WzIC1MkKil404PWxmo2/tyNA4OxKvjPY3ya67rex5iy/9kzKQk121JhYb/1AnaUoFGSQHRP9z
-	nGntLDt7v1pKZB1J/+ioIrwV7f7D1P39Aukt+eoQsB/r47I2BpnoqZNeqQkEZyyaXRJta4aGsm2
-	imk59KhRvktA+PwwjVtkGFfoBDKfcfUVnGYN0dLraOQSQjrAzgvrojhkScXBfQIwYy3BDLv5gHK
-	e0+YfaPbL429QImk8yVLR2XihYYX5ZAjC8IjxBkB+823XJuL5hWsVb1hotneQTUIOWNhoHtYxO5
-	cr1Fz4qdy7FmxNIho1spPCu36Lgk5mE23d4FviQNHNsKkDhTUcDSCoQOeTVpTW7EyM6NFCg==
-X-Google-Smtp-Source: AGHT+IGMt6EaiPAheg73zcURqJjLOoFd9zzzlE6T/M33iI9RlFcYN0J6h3nYF3Nh6vn09kEDrPleug==
-X-Received: by 2002:a05:600c:c177:b0:45b:71ac:b45a with SMTP id 5b1f17b1804b1-45ddde92f00mr144521005e9.11.1757502343286;
-        Wed, 10 Sep 2025 04:05:43 -0700 (PDT)
-Received: from [192.168.2.5] (ppp046176100065.access.hol.gr. [46.176.100.65])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3e75223898csm6800092f8f.39.2025.09.10.04.05.42
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Sep 2025 04:05:42 -0700 (PDT)
-Message-ID: <c7807695-6e0c-4c97-ba1c-447c6d117a4a@gmail.com>
-Date: Wed, 10 Sep 2025 06:04:03 -0500
+	s=arc-20240116; t=1757524208; c=relaxed/simple;
+	bh=DTAbpSosoj4FeyDT0h2yzYqerCniwJ47C1i2vVWsf54=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=MdIinA2dB1Z7XxJeFXbG85PZlmOBGTRvu8MWeaTakrIYnxpivrK/JbqWfzqiYmPK7Ts+C4ajrwyePGJxm9z0u0Wl208IIpNa8dNDMIiVSpDrS6gMrrBQPwJG6OK4E5SLIvuBLLu0ANh1TlvCDVS2QpKjcCczM6bj4vmYyIvkoIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=SIuhCsYN; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=B1AOKWQ2; arc=none smtp.client-ip=202.12.124.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 10B9B7A00CE;
+	Wed, 10 Sep 2025 13:10:05 -0400 (EDT)
+Received: from phl-imap-01 ([10.202.2.91])
+  by phl-compute-04.internal (MEProxy); Wed, 10 Sep 2025 13:10:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to; s=fm2; t=1757524204; x=1757610604; bh=N0yAP3M/lesQTsdmk++h3
+	M7W5L8yPgWZK9HHCKX838A=; b=SIuhCsYN0GmS9Xno9rg7t/0l817wAViKxQQnA
+	ZuX9OMIKdNDzxTL41+zcwMDAndjb74PcavvlHM4hmZxTn7N9grTV1w+Yi/Kv9Zw0
+	4M6JSo/nPJtw05EHISav0QW6G8vBRr+/hdED8xvCQG4+o5zvVplsn3WP5GXZt4bL
+	GvDV1jGYlUgcNCvEdryNMLg+2RFW5oxBUxweHpRxi2fWkYglYLmqf4pGaklNdtYo
+	bXWuzNog8GLAqeOzlUFnH+1y2htdUMKwWaK9yWcAFXgYmtCKIBlLCvlfl2TW2Rd6
+	47sunsMvJS5U/SUjOcflx6cpeq5gTMVmKF8SlSax7qcOuA7+A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm1; t=1757524204; x=1757610604; bh=N
+	0yAP3M/lesQTsdmk++h3M7W5L8yPgWZK9HHCKX838A=; b=B1AOKWQ2EuWBjvZLq
+	Hys5Aj2uQX50si4npM7eodiqJOZnRx9PIqgKoLXgVLwIsYKB3KYy/K80rRptMCpp
+	V6Pvni71R8b3xgm4vvU2eVoiTLJYk9FbfFkwzoV4H792ebOoJR6HtCB79eaUqjBD
+	T+6Vv3hLca/Z43frowQBimeLC+w/ScPm+SmhWUx4x+T3/7UJbhkn6VSS2r448Tbs
+	gwjVIQ38J7Xj17EactHS9T7gk2kxNUZ0JSB5gBDYrrAaXLarWtSkTpm26m0Vhz8p
+	I4iCLODnc/JetdxZY0Mb/eY6hzMnvnD7RhC4d3T/VGG5TMit5pEi3oDduZQWShEK
+	rfpWg==
+X-ME-Sender: <xms:7LDBaLF8Vs-gd-2eFG8_6PyPqTymg8ozrO8U35CyM_BOKJtpsL_eJg>
+    <xme:7LDBaIU5_LT4gUyaqopQTXzFyWwwNTGad0M6nYvCAkIvdYOee0PMtpWzaYWZ9UJ1D
+    9c6gfpHlZI3YOs8kY8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvfeekhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvkfgjfhfutgfgsehtqhertdertdejnecuhfhrohhmpedfvehhrhhishcu
+    ofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeekieeujeekfffhvedvfeegfefflefflefgjeeiveetveelffeu
+    uedvgffhudejhfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmpdhnsggprhgtphht
+    thhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegvshhtrghtihhsthhitg
+    hsvghusehgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhg
+    vghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:7LDBaDJwkN3Gc9gYyo1ZkHRz9o-hz7GYZPwVtovZabniA5465iG43Q>
+    <xmx:7LDBaAEvK8-_RlyueyCdgoW3TpH2mxZ50viPSB3m1q8fkR_Tht10jg>
+    <xmx:7LDBaNrUIdKEbb-Xr5PW06s5b7rzQYokbrfhhmpqCJjxP_R5QvU_dg>
+    <xmx:7LDBaJQvMP5iXW_jO6FYIDfTVaaPjXiJC1srM7SbhQtnXyDaczYpUw>
+    <xmx:7LDBaBDvl36hBzAa6hX6SM1-uGg05ggBP8gqiW1lXDcATUInk-iuVd-d>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 8BEC918C0067; Wed, 10 Sep 2025 13:10:04 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: improvements and safety on btrfs repairs
-From: Elias Tsolis <estatisticseu@gmail.com>
-To: linux-btrfs@vger.kernel.org
-References: <CAN7+exx=v9mkCGiA5xyrLP8DbCsZb39SDa4XcXx0nxfYtLxa5w@mail.gmail.com>
-Content-Language: en-US
-In-Reply-To: <CAN7+exx=v9mkCGiA5xyrLP8DbCsZb39SDa4XcXx0nxfYtLxa5w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+X-ThreadId: AvixsGG62GN-
+Date: Wed, 10 Sep 2025 13:09:44 -0400
+From: "Chris Murphy" <lists@colorremedies.com>
+To: "Elias Tsolis" <estatisticseu@gmail.com>,
+ "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Message-Id: <3c8f8235-688d-473f-bdf0-f39f19c37118@app.fastmail.com>
+In-Reply-To: <c7807695-6e0c-4c97-ba1c-447c6d117a4a@gmail.com>
+References: 
+ <CAN7+exx=v9mkCGiA5xyrLP8DbCsZb39SDa4XcXx0nxfYtLxa5w@mail.gmail.com>
+ <c7807695-6e0c-4c97-ba1c-447c6d117a4a@gmail.com>
+Subject: Re: improvements and safety on btrfs repairs
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-U29ycnkgaWYgeW91IGhhdmUgcmVjZWl2ZWQgbXVsdGlwbGUgZW1haWxzLiBOZXdiaWUgaGVy
-ZS4NCj4gSGkgQnRyZnMgZGV2ZWxvcGVycywNCj4gSeKAmWQgbGlrZSB0byBwcm9wb3NlIGEg
-bmV3IHRvb2wgZm9yIG9mZmxpbmUsIG5vbi1kZXN0cnVjdGl2ZSBtZXRhZGF0YSByZXBhaXIu
-DQo+DQo+IFByb2JsZW06DQo+IEN1cnJlbnRseSwgYnRyZnMgY2hlY2sgLS1yZXBhaXIgbW9k
-aWZpZXMgbWV0YWRhdGEgaW4gcGxhY2UsIHdoaWNoIGNhbg0KPiBpcnJldmVyc2libHkgZGVz
-dHJveSBkYXRhIGlmIHJlcGFpcnMgYXJlIGluY29ycmVjdC4gVGhlcmUgaXMgbm8gbmF0aXZl
-DQo+IHdheSB0byBzaW11bGF0ZSByZXBhaXJzIHNhZmVseS4NCj4NCj4gUHJvcG9zZWQgc29s
-dXRpb246DQo+IEV4dHJhY3QgYWxsIG1ldGFkYXRhIChyb290IHRyZWUsIGlub2RlIHRyZWUs
-IGV4dGVudCB0cmVlKSB0byBtZW1vcnkgb3INCj4gYSBzZXBhcmF0ZSBmaWxlL2ltYWdlIC0g
-T05MWSBUSEUgTUVUQURBVEEuDQo+IFBlcmZvcm0gcmVwYWlycyBvZmZsaW5lLCByZWNhbGN1
-bGF0aW5nIGNoZWNrc3VtcyBhbmQgcmVidWlsZGluZyB0cmVlcw0KPiBpbiBtZW1vcnkgb3Ig
-aW4gdGhlIHNhdmVkIHNlcGFyYXRlIG1ldGFkYXRhIGZpbGUuDQo+IFByb3ZpZGUgYSBzaW11
-bGF0ZWQgbW91bnQgZm9yIHZlcmlmaWNhdGlvbiBiZWZvcmUgY29tbWl0dGluZyB0byB0aGUN
-Cj4gYWN0dWFsIGZpbGVzeXN0ZW0uDQo+IE9ubHkgYWZ0ZXIgdmFsaWRhdGlvbiwgY29tbWl0
-IHRoZSByZXBhaXJlZCBtZXRhZGF0YSBzYWZlbHkgdG8gZGlzay4NCj4NCj4gQmVuZWZpdHM6
-DQo+IFplcm8gcmlzayB0byBvcmlnaW5hbCBkYXRhIHVudGlsIHJlcGFpciBpcyB2ZXJpZmll
-ZC4NCj4gU2FmZXIgcmVjb3Zlcnkgd29ya2Zsb3cgZm9yIGRhbWFnZWQgZmlsZXN5c3RlbXMu
-DQo+IEVhc2llciB0ZXN0aW5nIGFuZCB2YWxpZGF0aW9uIGZvciBwcm9mZXNzaW9uYWxzLg0K
-Pg0KPiBUaGlzIGFwcHJvYWNoIHdvdWxkIGJyaW5nIEJ0cmZzIHJlY292ZXJ5IGNsb3NlciB0
-byBhIHNhZmUsDQo+IGVudGVycHJpc2UtZ3JhZGUgd29ya2Zsb3cgc2ltaWxhciB0byBaRlMg
-b2ZmbGluZSByZXBhaXIuDQo+DQo+IHByYWN0aWNhbCBleGFtcGxlOg0KPiBidHJmcyBzeXN0
-ZW0gZXhpc3RzIGluIC9kZXYvc2RhDQo+IGNwIGJ0cmZzX21ldGFkYXRhIChvZiAvZGV2L3Nk
-YSkgdG8gL21udC9mb2xkZXJBL2J0cmZzX21ldGFkYXRhLmluZm8NCj4gcmVwYWlyIGJ0cmZz
-X21ldGFkYXRhIG9mIC9tbnQvZm9sZGVyQS9idHJmc19tZXRhZGF0YS5pbmZvID4NCj4gL21u
-dC9mb2xkZXJBL2J0cmZzX21ldGFkYXRhLnJlcGFpcmVkDQo+IG1vdW50ICAvZGV2L3NkYSB3
-aXRoIGJ0cmZzX21ldGFkYXRhLnJlcGFpcmVkIGluIHJlYWQtb25seSBtb2RlLg0KPiBVU0VS
-IGNoZWNrIGRhdGEgaWYgdGhleSBsb29rcyBsaWtlLCB0aGVuDQo+IGNwIGJ0cmZzX21ldGFk
-YXRhLnJlcGFpcmVkIHRvIC9kZXYvc2RhKHVubW91bnRlZCkNCj4NCj4NCj4gYXBwcmVjaWF0
-ZWQgYWRkb24gLSBhIHRvb2wgZm9yIGFnZ3Jlc3NpdmVseSByZWFkaW5nIGJhZCBzZWN0b3Jz
-IG9mDQo+IGRhdGEgaW4gb3JkZXIgdG8gcmVzdG9yZSBkYXRhLg0KPg0KPiBUaGFua3MgZm9y
-IGNvbnNpZGVyaW5nLA0KPiBFbGlhcw0K
+
+
+On Wed, Sep 10, 2025, at 7:04 AM, Elias Tsolis wrote:
+> Sorry if you have received multiple emails. Newbie here.
+>> Hi Btrfs developers,
+>> I=E2=80=99d like to propose a new tool for offline, non-destructive m=
+etadata repair.
+
+Is that true? I thought repair uses COW for any tree repair via rebuildi=
+ng, and the only overwrite is the final superblock writes committing it,=
+ but still with potential for fallback?=20
+
+For sure such COW repair would be limited by free space in existing meta=
+data block groups if there's no unallocated space.
+
+Maybe leverage seed/sprout features. The repair mode would treat the blo=
+ck device(s) undergoing repair as virtual seeds (read only),  redirectin=
+g writes that modify the file system to another block device. Even a zra=
+m device.
+
+The user could then mount the repaired block device. Making the changes =
+persistent would still require sufficient free space to replicate the ch=
+unks back to the seed, to preserve COW.
+
+
+>>
+>> Proposed solution:
+>> Extract all metadata (root tree, inode tree, extent tree) to memory or
+>> a separate file/image - ONLY THE METADATA.
+>> Perform repairs offline, recalculating checksums and rebuilding trees
+>> in memory or in the saved separate metadata file.
+>> Provide a simulated mount for verification before committing to the
+>> actual filesystem.
+>> Only after validation, commit the repaired metadata safely to disk.
+
+Something like btrfs-image. And repair that image. Similar to the above,=
+ effectively you have separate metadata and data block devices.=20
+
+I guess the main issue is that Btrfs offline repair is complex, takes a =
+long time, and has an uncertain outcome. The lack of fixed locations for=
+ metadata means far fewer assumptions can be made during repair.
+
+I'm sorta in favor of making the cost of backup, reformat, restore less =
+than repair.  Further enhancing btrfs to be more defensive while online =
+(e.g. write and read time tree checkers) to fail safely, thereby making =
+ro,rescue more reliable.
+
+Nevertheless, there are limits what a file system can do when devices do=
+n't consistently preserve write order expectations.
+
+>> appreciated addon - a tool for aggressively reading bad sectors of
+>> data in order to restore data.
+
+Pretty much once flash drives are on the death path, they return garbage=
+ or zeros.=20
+
+The repair effort has diminishing returns. The reality is folks also nee=
+d to backup their important data anyway because there are plenty of scen=
+arios that cannot be repaired.
+
+--=20
+Chris Murphy
 
