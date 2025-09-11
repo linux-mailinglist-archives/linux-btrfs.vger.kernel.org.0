@@ -1,180 +1,169 @@
-Return-Path: <linux-btrfs+bounces-16792-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16793-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA099B52F96
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Sep 2025 13:12:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98006B52FF1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Sep 2025 13:18:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D0753B417D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Sep 2025 11:12:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B81EB60DB1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Sep 2025 11:14:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374D9311C2E;
-	Thu, 11 Sep 2025 11:08:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223663115BD;
+	Thu, 11 Sep 2025 11:12:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HDzxP1wc"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="D5UtMAOK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A8B32D130A
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Sep 2025 11:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA72630C347
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Sep 2025 11:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757588909; cv=none; b=W4fY5SJR7xMvDDRyzy+TUAy1bVjxb7deXn6QWHBeSIrWBVbsvlaSbISCjiyqrnbgAVn/GxdWIsERuS2t7LXJ+Tdt4xvpuLwsbn2KcfOQUNWKCyJOv3aeiO3DEO3MCuLvz5Sbb85YDbHBmLyQaleo8Zg/La+t0WL15Af63z5GCTU=
+	t=1757589142; cv=none; b=sCrksr40qHZEX9TbPd1bs0WG+SjDHwax9IEXTAb/cTqQc+YSby6CpDT5CMfemZRKREbYO55Dh/hqiS3ECy2oOyLq3i3NCiBY7A8xR+JNLVT+IL1gRj00eLsgoqhl8iHB0omxmtCR6mxL3ZHjOJEMdmrZrw+v5K0Nf0pQyInzTSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757588909; c=relaxed/simple;
-	bh=ldmh2IMK4pXg13e69lNeRykbPIzhJTO5SVa5K6DdSwg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=syltvPKXaVlwxAwIYzDaBPISK/jUIaqPGQ3zOqq/u1MFJ+nTg0phE9OI/2DPYahpkDIzRRhykJRZUn2heQKtzgAPKf5D32bkvVRJVcptNzArjJ23hXfBUGLgpppk06PqyF4Rk3EzOs2q9c6r1+Rl0Xfz8jYy8vPWu80MVFKnhH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HDzxP1wc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02D55C4AF09
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Sep 2025 11:08:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757588908;
-	bh=ldmh2IMK4pXg13e69lNeRykbPIzhJTO5SVa5K6DdSwg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=HDzxP1wcmKfFsRV6Fa4OkD80UgVTOGssH5gzxkMCF+7d3hGP7xUj/d1nROJxeUSOS
-	 agvVKItxjI27SFxDdiEI/7OCpdPG7/tXkw0464jSk9r05NSV8q674SKKwPCeKy0e4N
-	 V5FB4IdnZqhNGDG6UQHVjkgGNxkRiLyZWz8o4XZsq9T7LVnXKe+qSNptVexJi38Zad
-	 Iu7LFbKSlx/tyVpy/cA7EOv/kTycKzAXdoxn78711z/ZCOwdn9NQ5ntwDSj9LQia2g
-	 LJRJW45ueN3LAGwv71yz2R2+iqdtLITd3Zsk0o8pWXiaNbBEEpZ6wA6hvRsuf3+82C
-	 sOS1YkL/BGq6A==
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b04770a25f2so76230266b.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Sep 2025 04:08:27 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWmo8icVR+UhJPLlNkvR+SPqPU4IBdL+ESS4s/yHDqQruW9wcEzK/2yx/nMa8qNpfDaKgL41kT6YlbDCg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyWff6ZYv5nR6OhS1vaq7zxFpnUKL4uAha6mpQIXpqPIqub6BiM
-	og1mf573vp2FswrXRxTpvvfkc28oQqFc0KwpygXJ2pEf98l0Vo53nXaTlz3CMM9lfJSVHdwYemj
-	qQ63E7Zv3Qsca7XxipacQEbPFGUIeAP4=
-X-Google-Smtp-Source: AGHT+IFqncuvahE3O5ZmegrDX3PxLQnxt9KjDd4wJXBF5NkYI2cdCKl1LMgEpXta9zrUISrx6dzxpUwBx9WgVIZvu1A=
-X-Received: by 2002:a17:906:fe46:b0:b04:1a1c:cb5f with SMTP id
- a640c23a62f3a-b04b155a027mr2081286866b.33.1757588906525; Thu, 11 Sep 2025
- 04:08:26 -0700 (PDT)
+	s=arc-20240116; t=1757589142; c=relaxed/simple;
+	bh=/iK14FyQiWLM6ioXmn9hp4DT2g/xtwe6DPRxbflkqv8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=GU/ptmPxzwJch2IMg9rYG3AuGtN2qAQgPuMwYYOGuya9D30ZOO6L70Rj5tpieKHhw2mdVQ3qFdkaC+HySta4jvq9L/lk0vNm9GUfEqZfg9AtMSJVK+QnkxToXUmahkwNX24ZfDkkHSP2BFwhmBlrrOhOPLbO5zZ7UwZEBVmZc8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=D5UtMAOK; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3e46fac8421so587445f8f.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Sep 2025 04:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1757589137; x=1758193937; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=wFaJSxPX0DPNCVXymeYOsGldSZ1f+qC3fyfNHrF1DwA=;
+        b=D5UtMAOKEwVuILba+UHdPXNqANZGbdZ+1nC8vVxNuGIkqD3Z11XT6PPwVWY8ajH8rN
+         VgiIQ+ugEMt0fcUla3vEFtVOJ0N1pJk++/mLPeV1wBvguTt06DPsvc6XsYaHcFvGDuZS
+         bFQ1ATZS+PxvH/OHVn7JfgCodWO9siPsHoK0T0hlBWD4mxt2oeIMqSwDJjdjJaX1+V6g
+         C3h6daNP7HSLuEjJWAEcYezEetDUNQ8WhkTez1Pb2cr2Na57v6Tz4H2VyRjUobwN1IQv
+         NZzeydfsk0ogFo5yn5RA9+/jOMwAT+dn6ZuYpuPR+7enY1QTXq79DtxtWDSn4qRjNxqM
+         BhoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757589137; x=1758193937;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wFaJSxPX0DPNCVXymeYOsGldSZ1f+qC3fyfNHrF1DwA=;
+        b=HBiHncqMBIDoH07hOXA6ohL+lIHHpbdEUlBQUUdIQk9MGw+I8Pf7IBUwqTS1QirsEZ
+         8BA3N8YLoCyBpJO0fbCik/aBUhY3HnxWU16R9oYSPATbIVs02NN9rfiRI7Q+oqbL04Gv
+         K/vxQDztjzCIk23ACl7kqSjIpdfXEwNwjf4hxTMj3Moq5Ypzd05gxJ3eK/WWiCYpfwXo
+         pIK96x8w96fSJRH0Tm9pnBdjHkye2YTfYKjPubapkdwxTIcwS38eq7/yAPsYNl/Mrq9R
+         iPa3OJCTLujHnXZLTFrLQPtl5bIleugHp9jJzHcN5Y8GRbeuKHGVOfWkVIPmvY2SzQ9T
+         j/uw==
+X-Forwarded-Encrypted: i=1; AJvYcCULYa3AiHUhuHlrwuDOQAYmeILH+Odqqa56HgxBKFcsO0HXryIOZnZSVb1Q0G7HFn8tbk4iGg0JEqc+gA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGj6Ryp3kC9q1DBrgh38EYU+yItu0DXkED3YKoNBFT8zticm+5
+	usMw+GP8wNBd1o7cY1cROO0iggY9JTi63b0Iv06F/Mr5XMwkGmBKWyYGJ+fun14mKTQ=
+X-Gm-Gg: ASbGnct96yHI2HirrMOKgSN8A8ltRy/qTNxmcXbu4kDF1feXfAZspURtFO6H53O8vyr
+	20qtPVrg5rBn4F1GCRs/WkZpJrTatmcGhQA27oZIGVExD6QHgTB/j2bDQFJaH26s4+i1Xo9zwUr
+	r0+P7PLFCRChlZTpYHYFkt1aDnpu0aaOsCVW+Tb9FTyNZ0KxggMj4VbiPvQ5lrGya9Bz/8+3po/
+	Uvh4j/mXgIFBOHIkeDsqQhqAlsE67ZJOECj3wHwNb98OCm7LN9J2UhH+4GcNRWgMmbb/jrCDS4y
+	sm9TLVaH2q+Kbq7kVOw/kxpcniq1VQ+WX0emskvbb5pFlxVgZlRvKnVip2pttbt7qNCTmGy5kNk
+	ypG8jzusSuMyJpIP9RCRwrr06QzOAUAcFlo06/Rr+2nY8kh/07wQ=
+X-Google-Smtp-Source: AGHT+IH3F2d7SB8U1NMpt0/7LCb5gRk+eYhT3v25+77NUNP71oxzVH6Te5NB4Tq+Y1jw7J0SRmgI7w==
+X-Received: by 2002:a05:6000:1a8c:b0:3d1:bb77:911d with SMTP id ffacd0b85a97d-3e64cd57d4fmr15768218f8f.58.1757589137091;
+        Thu, 11 Sep 2025 04:12:17 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25c37293ee5sm15988985ad.36.2025.09.11.04.12.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Sep 2025 04:12:16 -0700 (PDT)
+Message-ID: <4e254b82-b4de-4b16-a469-9c58c805938f@suse.com>
+Date: Thu, 11 Sep 2025 20:42:12 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250911060629.1885670-1-austinchang@synology.com>
-In-Reply-To: <20250911060629.1885670-1-austinchang@synology.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 11 Sep 2025 12:07:49 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7-sDMfYUzNP4HkTCUdrNSo14JkhkkHWL2DuCCasHFLRw@mail.gmail.com>
-X-Gm-Features: Ac12FXxxT8yRgKjaAweVPk3_9Pw-El-TC41atkpv5iUX9EkYUM1TYau_pIksZ18
-Message-ID: <CAL3q7H7-sDMfYUzNP4HkTCUdrNSo14JkhkkHWL2DuCCasHFLRw@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: init file_extent_tree after i_mode has been set
-To: austinchang <austinchang@synology.com>
-Cc: dsterba@suse.com, linux-btrfs@vger.kernel.org, robbieko@synology.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: annotate block group access with data_race() when
+ sorting for reclaim
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <456b17e9620d5118fcca2674b365e0770b1d1fc1.1757332833.git.fdmanana@suse.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <456b17e9620d5118fcca2674b365e0770b1d1fc1.1757332833.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 11, 2025 at 7:07=E2=80=AFAM austinchang <austinchang@synology.c=
-om> wrote:
->
-> btrfs_init_file_extent_tree() uses S_ISREG() to determine if the file is
-> a regular file. In the beginning of btrfs_read_locked_inode(), the i_mode
-> hasn't been read from inode item, then file_extent_tree won't be used at
-> all in volumes without NO_HOLES.
->
-> Fix this by calling btrfs_init_file_extent_tree() after i_mode is
-> initialized in btrfs_read_locked_inode().
->
-> Signed-off-by: austinchang <austinchang@synology.com>
+
+
+在 2025/9/8 21:35, fdmanana@kernel.org 写道:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When sorting the block group list for reclaim we are using a block group's
+> used bytes counter without taking the block group's spinlock, so we can
+> race with a concurrent task updating it (at btrfs_update_block_group()),
+> which makes tools like KCSAN unhappy and report a race.
+> 
+> Since the sorting is not strictly needed from a functional perspective
+> and such races should rarely cause any ordering changes (only load/store
+> tearing could cause them), not to mention that after the sorting the
+> ordering may no longer be accurate due to concurrent allocations and
+> deallocations of extents in a block group, annotate the accesses to the
+> used counter with data_race() to silence KCSAN and similar tools.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+
 > ---
-> Changelog:
-> v2: move the call to btrfs_init_file_extent_tree() under cache_index
-> label so that inodes from both delayed and regular inode read path
-> get file_extent_tree initialized.
-> ---
->  fs/btrfs/delayed-inode.c |  2 --
->  fs/btrfs/inode.c         | 12 ++++++------
->  2 files changed, 6 insertions(+), 8 deletions(-)
->
-> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> index 0f8d8e275..d953f7af7 100644
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -1864,8 +1864,6 @@ int btrfs_fill_inode(struct btrfs_inode *inode, u32=
- *rdev)
->         i_uid_write(vfs_inode, btrfs_stack_inode_uid(inode_item));
->         i_gid_write(vfs_inode, btrfs_stack_inode_gid(inode_item));
->         btrfs_i_size_write(inode, btrfs_stack_inode_size(inode_item));
-> -       btrfs_inode_set_file_extent_range(inode, 0,
-> -                       round_up(i_size_read(vfs_inode), fs_info->sectors=
-ize));
->         vfs_inode->i_mode =3D btrfs_stack_inode_mode(inode_item);
->         set_nlink(vfs_inode, btrfs_stack_inode_nlink(inode_item));
->         inode_set_bytes(vfs_inode, btrfs_stack_inode_nbytes(inode_item));
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 9e4aec733..652c409ee 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -3885,10 +3885,6 @@ static int btrfs_read_locked_inode(struct btrfs_in=
-ode *inode, struct btrfs_path
->         bool filled =3D false;
->         int first_xattr_slot;
->
-> -       ret =3D btrfs_init_file_extent_tree(inode);
-> -       if (ret)
-> -               goto out;
-> -
->         ret =3D btrfs_fill_inode(inode, &rdev);
->         if (!ret)
->                 filled =3D true;
-> @@ -3919,9 +3915,8 @@ static int btrfs_read_locked_inode(struct btrfs_ino=
-de *inode, struct btrfs_path
->         set_nlink(vfs_inode, btrfs_inode_nlink(leaf, inode_item));
->         i_uid_write(vfs_inode, btrfs_inode_uid(leaf, inode_item));
->         i_gid_write(vfs_inode, btrfs_inode_gid(leaf, inode_item));
-> +
+>   fs/btrfs/block-group.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 239cbb01f83f..548483a84466 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1795,7 +1795,14 @@ static int reclaim_bgs_cmp(void *unused, const struct list_head *a,
+>   	bg1 = list_entry(a, struct btrfs_block_group, bg_list);
+>   	bg2 = list_entry(b, struct btrfs_block_group, bg_list);
+>   
+> -	return bg1->used > bg2->used;
+> +	/*
+> +	 * Some other task may be updating the ->used field concurrently, but it
+> +	 * is not serious if we get a stale value or load/store tearing issues,
+> +	 * as sorting the list of block groups to reclaim is not critical and an
+> +	 * occasional imperfect order is ok. So silence KCSAN and avoid the
+> +	 * overhead of locking or any other synchronization.
+> +	 */
+> +	return data_race(bg1->used > bg2->used);
+>   }
+>   
+>   static inline bool btrfs_should_reclaim(const struct btrfs_fs_info *fs_info)
 
-Stray and unrelated new line.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-I've removed this new line and added back the Fixes tag in the for-next bra=
-nch.
-
-Thanks.
-
-
->         btrfs_i_size_write(inode, btrfs_inode_size(leaf, inode_item));
-> -       btrfs_inode_set_file_extent_range(inode, 0,
-> -                       round_up(i_size_read(vfs_inode), fs_info->sectors=
-ize));
->
->         inode_set_atime(vfs_inode, btrfs_timespec_sec(leaf, &inode_item->=
-atime),
->                         btrfs_timespec_nsec(leaf, &inode_item->atime));
-> @@ -3953,6 +3948,11 @@ static int btrfs_read_locked_inode(struct btrfs_in=
-ode *inode, struct btrfs_path
->         btrfs_set_inode_mapping_order(inode);
->
->  cache_index:
-> +       ret =3D btrfs_init_file_extent_tree(inode);
-> +       if (ret)
-> +               goto out;
-> +       btrfs_inode_set_file_extent_range(inode, 0,
-> +                       round_up(i_size_read(vfs_inode), fs_info->sectors=
-ize));
->         /*
->          * If we were modified in the current generation and evicted from=
- memory
->          * and then re-read we need to do a full sync since we don't have=
- any
-> --
-> 2.34.1
->
->
-> Disclaimer: The contents of this e-mail message and any attachments are c=
-onfidential and are intended solely for addressee. The information may also=
- be legally privileged. This transmission is sent in trust, for the sole pu=
-rpose of delivery to the intended recipient. If you have received this tran=
-smission in error, any use, reproduction or dissemination of this transmiss=
-ion is strictly prohibited. If you are not the intended recipient, please i=
-mmediately notify the sender by reply e-mail or phone and delete this messa=
-ge and its attachments, if any.
->
 
