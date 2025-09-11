@@ -1,98 +1,77 @@
-Return-Path: <linux-btrfs+bounces-16785-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16787-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2A4FB527E9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Sep 2025 06:57:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F17C1B5282C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Sep 2025 07:38:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 665616878FB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Sep 2025 04:57:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A400B467F72
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Sep 2025 05:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B205425BF18;
-	Thu, 11 Sep 2025 04:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4612472B0;
+	Thu, 11 Sep 2025 05:38:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KqkSoDUy"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="u0aBR+qo";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RrdhvjXv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A0F2417C6;
-	Thu, 11 Sep 2025 04:56:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF7B238C04
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Sep 2025 05:38:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757566581; cv=none; b=TWfYp4MBfutPmC99HsVFiQJLV+sMc3wvgZYgUKphG0QUuXJFbxFo3BJ5oc+2pE+kWsZUz6r+xiXzDBUX4m/6+y0/JYwkQ4E5loOgZAy+I3lUrgaUmDKY2Vq1uFAZQsbOOHcHY17qSwqydPARkh6/gsvOkxwM8YCRRQwQwDlRknU=
+	t=1757569089; cv=none; b=ga9nhiilqCVINmsIfFqRU8NIFmO9Y9sqgNf78XDD7izbFzDYqyaS3Od8Z9sFJrTqhKOWDf+XfgImdP7Wk7LLd+cPS/qo3h3uaOvOA/CLiXmq/NNYjR/kVulx3g8D18c56LeY3yGzmDDgiA9FcYL1PqbAPz5OesuchKN9vBBlyN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757566581; c=relaxed/simple;
-	bh=+OpnHav0x6JMfHFpFQpCzutgMoUi/ESeVF79sx8hjFc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q7SybOL+jm++AZePX+H01ad7dAKAAHIE1Vd5vD8hSxiNp0gTP2d2bIVWYQxCNo+BP++E9B4dua/QEbZ0PFFOrqCLFimSOxwyA1CTADeZiqexRidbgPkpXGuHb1y6ii1MxqmgFy/ldiEZJda9GpcOpOCUiggHJPnFIqjXJz0xdu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KqkSoDUy; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3e751508f21so188227f8f.0;
-        Wed, 10 Sep 2025 21:56:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757566579; x=1758171379; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5YLHicn9dTH5/070mxiYCI0YLNhb1ob9gFIcwBqIMYE=;
-        b=KqkSoDUyP9bVyU/6Zzvq1vQ243yvpp7pRKKz+3WNnadi7XlWQcY4tDJJACow/IFEHZ
-         zSEURQk3sUQLnn+O6Z8EE6gCnGDzJU312Wn85YlowPMJvigFGSVCZr0AZV/YNfiB51ZD
-         KSeFZFTMdebJaYbvbRY+EijNWoB5TWYt57XqO+ZsxLX1qVg4Zefzxi7Bx7FwTV3sFogQ
-         jFwWAcfYnlHEHkHL5vIa930De0ds4ByhBEzE5WUM3OvqosWxZ8lLd4/q7NwdKvAGlEIY
-         9Bz4gvnKX/lPMm3r9eGMiLrk9yYVKUv83zvuZ1t5RH2iRrmYgl0qpj/mx0DKaZd010/j
-         i/TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757566579; x=1758171379;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5YLHicn9dTH5/070mxiYCI0YLNhb1ob9gFIcwBqIMYE=;
-        b=agXIyWtcNighWHv7okyPiTfFhlyYXYhcquZqCdDye28XDnuQaH4lzoFehBLWJSV8zn
-         zhwHJ9puEqcvSgaNuGH8cFBqRkpPfRf+K33IWL5Fs3Uk5Qgf7SlDHjVEPkn379ltelPi
-         3m9mnoCtBs5kAlQ8CTVtVZvnqP0AO9i8YrJ/eu0LRElkULJozaq8PIYKb8fqJd7x/w1J
-         Uf5kQNSrWDgiLeo8eoVtJLlh1rPdbsUGF77sfMls3b9zrVaKZ6pBfqUlNSQXfy9Cpd6z
-         IZWPEr1eN4G1JtQri7SGbBbu06pAwqDxUe8cxk967zfAaP7DN/T/dLLQF4wVCEIF7a+8
-         AMXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVi3C63hwQO6udS/D7927K6lD1BGkKNE5xmYGZ5iDJxdzNzp0Qkl1mi2fnOwc26ptYTROZ88T+6oDTG@vger.kernel.org, AJvYcCVigElzJKPS1En7S8jEtYuP7riA/u71ZA1xtWPyKEDLhYkj4oEd7L6j1MkklU32+tAcCHe+jpGpHwJOIcv9@vger.kernel.org, AJvYcCWkDl/uKRTYkInubxRzk/omCEBC2kbx8Zw0nAYmjdhvJzWIXlte1hrOzpVYcmWv9V5rhfUxwG576DQ70lxb5w==@vger.kernel.org, AJvYcCXEKwcIMvG7Q7s6lDqQMon7CkMQl3E6gwTKQm6Yt3oIdP7DbKRSzRe7bSj+/nzAwch7N69OnPcKIOVyLw==@vger.kernel.org, AJvYcCXfRTOGCw6iY3W6W3bVG2yTfZsCSWiuq0I79Ytmq4tKL54dYa/AELUULS+L2l8htZPx0A7nRenakPErTQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5s5+lzN3jX/OnOuaVwmZkoqJPKXW9qserltdPwUKYEL3XYqyZ
-	MxtRKTRG4u1Ac8gSckYChn91NwKLoMYLrIAXlX5aR+9OCoFdfYYHBYkR
-X-Gm-Gg: ASbGncvTVSPn5A4muvTPtU8UhmAIAExh77ArTQRifeKOnCtlWK8ql5BX4lN73kaAyVW
-	4J0mli4GQPUOWBKnF86ye70akwudCP5rFx4Qso8BgtIn1wnaVt28rN5p3B/aFY/8bN0v4UHDfBQ
-	uImGhaFrPXjlWApxfUKLf39UP48aadAtQivuzPF01005BF8xOgZ/wRAzI3yjvgMZQeijx5zRX92
-	9cuGJggIGIwCL/ms3XLZdCVQAu/2ydqwQ7h2B4mQN7XA5jtR+HLTBhC+sOeyxxa2cmXRBf52S+g
-	bweoolh+ZzRfKhhPH4DoJgwqLTW5JlyLHOKqpVwIVdcUBE6Oe22sJZ3kqpBRGvEDq5xIGQ41ovJ
-	R4tsghfd4Eq8Zk+JHypwWRKhCJjws7gQOGBk0hXoa3PKyQ1tWSoEraqwWXu/PAw==
-X-Google-Smtp-Source: AGHT+IH43UmBU64jK+xL3m62yMA10v9nozy9RFWM7cuwJpC5B1nBbx9LsGq+u1ZXEjc4PtCQBy4Z3Q==
-X-Received: by 2002:a05:6000:178e:b0:3ce:a06e:f24e with SMTP id ffacd0b85a97d-3e64c87e0a1mr12521762f8f.52.1757566578594;
-        Wed, 10 Sep 2025 21:56:18 -0700 (PDT)
-Received: from f.. (cst-prg-67-222.cust.vodafone.cz. [46.135.67.222])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3e7607e9e6asm889419f8f.62.2025.09.10.21.56.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Sep 2025 21:56:17 -0700 (PDT)
-From: Mateusz Guzik <mjguzik@gmail.com>
-To: brauner@kernel.org
-Cc: viro@zeniv.linux.org.uk,
-	jack@suse.cz,
-	linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	josef@toxicpanda.com,
-	kernel-team@fb.com,
-	amir73il@gmail.com,
+	s=arc-20240116; t=1757569089; c=relaxed/simple;
+	bh=6EPgqrptUY7/bjRCLLyVLU30q+TjsMiYsBN8nnapNiE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=htpNLKsQ9SVO1okyUDCrMFFcI9frorkIEwfZQFT6ymfCXFOXg5NTxPGg50eFo0MpTQiVIV5x53TR+EejikJGyqOAAAMWpFJtYbRZIPePYNhdXOXE5L8KXIlHdQjd/qjJOmlajDbxBAbw5F6T3Jag+87MrPRe2lV+yvRYIL+kl1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=u0aBR+qo; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RrdhvjXv; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4FE1538AB3;
+	Thu, 11 Sep 2025 05:38:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1757569084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8gMgISr+SkPeVPyaKXbnF0rlHGMHN1R4BL10DmtpUzI=;
+	b=u0aBR+qoOecCH6XSY7aCEtXwbZrGvieBnppeH1jenL1q3uoUUBPvQeM/jgXACAFh/ZhivZ
+	n5waudRZPKEVoMAxtfCWbq3n7w9FpYJ+79EOQKwjOs0l/kYuG/YCOHEDiLBMTK1sJAGMEO
+	omMBP8sjnuJJK4XdUJVmamFyLaPX6MY=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1757569083; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8gMgISr+SkPeVPyaKXbnF0rlHGMHN1R4BL10DmtpUzI=;
+	b=RrdhvjXvdxqyy2iwPJ+QAuNQ6bu5cEu7vC1yu1NSx+oXppSdjceg++2YZZHTjwdrtHmih2
+	NdymXN1lSTIhNtQoYL5zX8zxgifErxEY/s/BccEwi/pYFATqw72kuhYyCFyEZCw37mFmN0
+	Of6iUkdO+PNc2zRy78HwNXj/V7GFuuw=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4715F13301;
+	Thu, 11 Sep 2025 05:38:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id hTYUETtgwmicPAAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Thu, 11 Sep 2025 05:38:03 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
 	linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	ocfs2-devel@lists.linux.dev,
-	Mateusz Guzik <mjguzik@gmail.com>
-Subject: [PATCH v3 4/4] type switch
-Date: Thu, 11 Sep 2025 06:55:57 +0200
-Message-ID: <20250911045557.1552002-5-mjguzik@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250911045557.1552002-1-mjguzik@gmail.com>
-References: <20250911045557.1552002-1-mjguzik@gmail.com>
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.17-rc6
+Date: Thu, 11 Sep 2025 07:37:37 +0200
+Message-ID: <cover.1757568026.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -100,88 +79,86 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -2.80
 
----
- include/linux/fs.h | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+Hi,
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index ed482e5d14a6..fd8e68352fbd 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -782,6 +782,10 @@ enum inode_state_flags_enum {
- #define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
- #define I_DIRTY_ALL (I_DIRTY | I_DIRTY_TIME)
- 
-+struct inode_state_flags {
-+	enum inode_state_flags_enum __state;
-+};
-+
- /*
-  * Keep mostly read-only and often accessed (especially for
-  * the RCU path lookup and 'stat' data) fields at the beginning
-@@ -840,7 +844,7 @@ struct inode {
- #endif
- 
- 	/* Misc */
--	enum inode_state_flags_enum i_state;
-+	struct inode_state_flags i_state;
- 	/* 32-bit hole */
- 	struct rw_semaphore	i_rwsem;
- 
-@@ -908,44 +912,44 @@ struct inode {
- static inline enum inode_state_flags_enum inode_state_read(struct inode *inode)
- {
- 	lockdep_assert_held(&inode->i_lock);
--	return inode->i_state;
-+	return inode->i_state.__state;
- }
- 
- static inline enum inode_state_flags_enum inode_state_read_unstable(struct inode *inode)
- {
--	return READ_ONCE(inode->i_state);
-+	return READ_ONCE(inode->i_state.__state);
- }
- 
- static inline void inode_state_add(struct inode *inode,
- 				   enum inode_state_flags_enum newflags)
- {
- 	lockdep_assert_held(&inode->i_lock);
--	WRITE_ONCE(inode->i_state, inode->i_state | newflags);
-+	WRITE_ONCE(inode->i_state.__state, inode->i_state.__state | newflags);
- }
- 
- static inline void inode_state_add_unchecked(struct inode *inode,
- 					     enum inode_state_flags_enum newflags)
- {
--	WRITE_ONCE(inode->i_state, inode->i_state | newflags);
-+	WRITE_ONCE(inode->i_state.__state, inode->i_state.__state | newflags);
- }
- 
- static inline void inode_state_del(struct inode *inode,
- 				   enum inode_state_flags_enum rmflags)
- {
- 	lockdep_assert_held(&inode->i_lock);
--	WRITE_ONCE(inode->i_state, inode->i_state & ~rmflags);
-+	WRITE_ONCE(inode->i_state.__state, inode->i_state.__state & ~rmflags);
- }
- 
- static inline void inode_state_del_unchecked(struct inode *inode,
- 					     enum inode_state_flags_enum rmflags)
- {
--	WRITE_ONCE(inode->i_state, inode->i_state & ~rmflags);
-+	WRITE_ONCE(inode->i_state.__state, inode->i_state.__state & ~rmflags);
- }
- 
- static inline void inode_state_set_unchecked(struct inode *inode,
- 					     enum inode_state_flags_enum newflags)
- {
--	WRITE_ONCE(inode->i_state, newflags);
-+	WRITE_ONCE(inode->i_state.__state, newflags);
- }
- 
- static inline void inode_set_cached_link(struct inode *inode, char *link, int linklen)
--- 
-2.43.0
+please pull a few more fixes for btrfs. Thanks.
 
+- fix delayed inode tracking in xarray, eviction can race with insertion
+  and leave behind a disconnected inode
+
+- on systems with large page (64K) and small block size (4K) fix
+  compression read that can return partially filled folio
+
+- slightly relax compression option format for backward compatibility,
+  allow to specify level for LZO although there's only one
+
+- fix simple quota accounting of compressed extents
+
+- validate minimum device size in 'device add'
+
+- update maintainers' entry
+
+----------------------------------------------------------------
+The following changes since commit 986bf6ed44dff7fbae7b43a0882757ee7f5ba21b:
+
+  btrfs: avoid load/store tearing races when checking if an inode was logged (2025-08-22 00:58:55 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.17-rc5-tag
+
+for you to fetch changes up to 3d1267475b94b3df7a61e4ea6788c7c5d9e473c4:
+
+  btrfs: don't allow adding block device of less than 1 MB (2025-09-05 19:52:10 +0200)
+
+----------------------------------------------------------------
+Boris Burkov (1):
+      btrfs: fix squota compressed stats leak
+
+Calvin Owens (1):
+      btrfs: accept and ignore compression level for lzo
+
+Josef Bacik (1):
+      MAINTAINERS: update btrfs entry
+
+Mark Harmstone (1):
+      btrfs: don't allow adding block device of less than 1 MB
+
+Omar Sandoval (1):
+      btrfs: fix subvolume deletion lockup caused by inodes xarray race
+
+Qu Wenruo (1):
+      btrfs: fix corruption reading compressed range when block size is smaller than page size
+
+ MAINTAINERS          |  1 -
+ fs/btrfs/extent_io.c | 40 ++++++++++++++++++++++++++++++----------
+ fs/btrfs/inode.c     | 12 +++++++++++-
+ fs/btrfs/qgroup.c    |  6 ++++--
+ fs/btrfs/super.c     |  9 ++++++---
+ fs/btrfs/volumes.c   |  5 +++++
+ 6 files changed, 56 insertions(+), 17 deletions(-)
 
