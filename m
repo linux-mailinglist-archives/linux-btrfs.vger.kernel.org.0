@@ -1,79 +1,134 @@
-Return-Path: <linux-btrfs+bounces-16796-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16797-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49944B5385A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Sep 2025 17:55:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53BA9B54156
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Sep 2025 06:00:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F0B01CC3981
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Sep 2025 15:54:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 023D4162DE6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Sep 2025 04:00:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79AE23568F8;
-	Thu, 11 Sep 2025 15:53:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C040821D3F8;
+	Fri, 12 Sep 2025 04:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OXrWVyw+"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Q966Yese";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Q966Yese"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B65B631C582;
-	Thu, 11 Sep 2025 15:53:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F370D2DC77F
+	for <linux-btrfs@vger.kernel.org>; Fri, 12 Sep 2025 04:00:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757606025; cv=none; b=rvLTI3chhn375oPPOioD1hbJtpyAdShXIkOrTmzqNBqWB46zcskUtQXL/pC7m71HaaOp5CZrJZYJHq0V91tNDpusBojjaQXVcSNWTfb7IFqx7YMEY8qy08e3PGStPoNPFAWl8OncPdDUflBoSuGnJXacEUD1UwXQXsP4WV6s+oc=
+	t=1757649609; cv=none; b=WMF9RnF/hXZk+1j+CVyqszgqy2nxKaaDKp6NvnseudN1YCALFE8NmB19iLI/Fqgv+eKCUnnm2CbdaOvsmT0zSnhyQJ6oHKgzjpKT6iSbRKWg6yrGKqDjpTcvPqLEdx0B6j4KbKWCrxRDiCcien4BY/CphiyxI4l301h3YsRSTVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757606025; c=relaxed/simple;
-	bh=v41HEK8ypzXvdPKVEmkZqHW1zdoV0iERque660/aFZs=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=UwWWfOdVHlp1ffKI8w60aCJQI1VSJyoiK4ApuniD+IxpwDKPP6NOMidaZHHMKaeGQGDVViVSdlZsz++qTrw+f5GVFJ1lOhvI2fHPLreJnP2H9tfQGHDLdWbiamI2drXgTB7J1uJq72kEQcOIi4YWiO557OB5d9j54xltW2chp1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OXrWVyw+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F9ADC4CEF5;
-	Thu, 11 Sep 2025 15:53:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757606025;
-	bh=v41HEK8ypzXvdPKVEmkZqHW1zdoV0iERque660/aFZs=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=OXrWVyw+xn66wpJmWJClg8/Q4osIKjpDmQVYNq4Y7AMAFn4Z7TEPn9xqyt0XF+WqJ
-	 cuJlG+L2zqS1D7rniRRkKHCEguSoGxiVIxLHgZGVXBXF7cNZB1LqbBSBMmN/XkFn66
-	 CsZJvSFZz0EQgP4DUAZmstUZCm/012wyFWyLmXkVE4Esityn2EmcylGTXlUqLi+eto
-	 2drXoLpeAIOMt3p72c1H/mLmdPQTGpMppSU67FRP4AqVVRBpFh8TUwca5UJKJOYl1+
-	 URp/wdfIa+hDQHupvGGy2YuwUxkNEzsCQsBGAmmRDSeHfDPqTWQ94Sc/vK7TOtUq0Q
-	 UgbR7zHf1aXrw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 720C4383BF69;
-	Thu, 11 Sep 2025 15:53:49 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.17-rc6
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1757568026.git.dsterba@suse.com>
-References: <cover.1757568026.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1757568026.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.17-rc5-tag
-X-PR-Tracked-Commit-Id: 3d1267475b94b3df7a61e4ea6788c7c5d9e473c4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b10c31b70bf00ba4688c4b364691640a92b7f4bf
-Message-Id: <175760602791.2231751.7350671412246257172.pr-tracker-bot@kernel.org>
-Date: Thu, 11 Sep 2025 15:53:47 +0000
-To: David Sterba <dsterba@suse.com>
-Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1757649609; c=relaxed/simple;
+	bh=14tGS1hhX72ZTGq4ZXfHkBqvbws4nOycK5iKThVTF1s=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=XykgwFrYKLjOu4kJhN9YRzqduOHQzIiUoVf3xr0FOwFgpGmVVfXWIOoQfI04nQ3dt+FZ+MtdAoktE8PAwsI9JSRIybVfGs9F4HSOUf0DOKVPFG9++RL4K3WlrSD2yr5fNYzc8hPOryKaLg/a9RutfsSTeho0CSmpFc0quSmUEj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Q966Yese; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Q966Yese; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A03FC20B40
+	for <linux-btrfs@vger.kernel.org>; Fri, 12 Sep 2025 04:00:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1757649602; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=aSEex+zrToZ8fTivhmCOQ7h57zX++obBeWY073Nqi/E=;
+	b=Q966Yese5lq05H3VodHW8ByM7BCtblZ4Vy+DbYQnu5zCAcx2kkx14D2ck1WhudgTNGsP3l
+	eJc3nZArZZpDctVw0YExpdpqFyNhPu+NVilmxUABKvF2nSTuuDyCC07OQDodv6ALI4gZD4
+	uROaHAKnvebF8Av+ttlWje1/9HTmMg0=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1757649602; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=aSEex+zrToZ8fTivhmCOQ7h57zX++obBeWY073Nqi/E=;
+	b=Q966Yese5lq05H3VodHW8ByM7BCtblZ4Vy+DbYQnu5zCAcx2kkx14D2ck1WhudgTNGsP3l
+	eJc3nZArZZpDctVw0YExpdpqFyNhPu+NVilmxUABKvF2nSTuuDyCC07OQDodv6ALI4gZD4
+	uROaHAKnvebF8Av+ttlWje1/9HTmMg0=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DB52D13647
+	for <linux-btrfs@vger.kernel.org>; Fri, 12 Sep 2025 04:00:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /cbwJsGaw2hWXQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Fri, 12 Sep 2025 04:00:01 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs: prepare raid56 and scrub to support bs > ps cases
+Date: Fri, 12 Sep 2025 13:29:38 +0930
+Message-ID: <cover.1757649253.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-The pull request you sent on Thu, 11 Sep 2025 07:37:37 +0200:
+After the previous compression bs > ps preparation, this series focus on
+raid56 and scrub.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.17-rc5-tag
+Both raid56 and scrub are using a page array storing their stripes.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b10c31b70bf00ba4688c4b364691640a92b7f4bf
+Thankfully both are already using physical memory addresses for checksum
+calculation, thus there are no internal code to do the checksum
+handling.
 
-Thank you!
+Just convert the involved arraies (and some RAID56 internal page related
+members) to folio arraies will handle most thing properly.
+
+Now the remaining code is mostly encoded write, which shares some
+infrastructure with send, which makes the conversion more complex than I
+thought.
+
+Qu Wenruo (2):
+  btrfs: prepare raid56 to support bs > ps cases
+  btrfs: prepare scrub to support bs > ps cases
+
+ fs/btrfs/misc.h   |   5 ++
+ fs/btrfs/raid56.c | 180 +++++++++++++++++++++++-----------------------
+ fs/btrfs/raid56.h |  26 ++++---
+ fs/btrfs/scrub.c  |  51 +++++++------
+ 4 files changed, 142 insertions(+), 120 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.50.1
+
 
