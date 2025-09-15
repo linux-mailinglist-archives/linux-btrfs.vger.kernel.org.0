@@ -1,220 +1,187 @@
-Return-Path: <linux-btrfs+bounces-16811-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16812-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9BB5B570AB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 08:53:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AAC1B570DD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 09:08:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1115F3B6A2A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 06:53:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10EB23B7275
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 07:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35C42C028E;
-	Mon, 15 Sep 2025 06:53:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02F8F2D23A8;
+	Mon, 15 Sep 2025 07:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="OSJrx71L"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fZoPm04x";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fZoPm04x"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 363AB2C0292
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 06:53:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A794A2D1907
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 07:07:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757919230; cv=none; b=oy60O3VZhI1TZO5sRm85JRpsBXHE9rc1dfeO2iaeu5AVVx+pTLPXL2yHNWeCLmUFCnq7lVc1wl3B03BZrPW/4jHwSinUAG0MwVogFW1x261RHckH0YqmHXiLUPAbH19rmkfIOC5EnuzMoNghvuzmaqCy2vBPzHH76rIcD8HCxEs=
+	t=1757920082; cv=none; b=gbzmcjfVJQ/0Y6w/HuNj7RDfD+NLQkWH9MufVlJUnvGX53ld+IKiygBDd3RFVYMLFOPfHpFZ4q/Xxu2GtlFwpRA1dB4tmm0qwDBMHGaTNgXYunGOEa0o2euRkCMxAJVHNd1OgLdL4E9Tiz/rVJjYzR/3FSUVrmubeFOQUwwAeq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757919230; c=relaxed/simple;
-	bh=f4s/6jqWLBsvkwV9XkPsk9Ak93YUa7YpcwmSAqPJ/ac=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=m3sE8ts22p9qO+lU3vAGyCS87Id/wNe6Bu7vPgrSc+d6U4Tx3Bys5uKTWDpMInDvDEJ0zyj0jbfTbRxD+IBS1FgmGqzikz3ZIv5qDwZgpEB44PSkKCjFTPFGfK2fFex+cw9sfCT7e8PIFbEuhDcjG/7kaKdCvqv4MsfrkZEYHp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=OSJrx71L; arc=none smtp.client-ip=209.85.221.54
+	s=arc-20240116; t=1757920082; c=relaxed/simple;
+	bh=900d0dgWoM98QKISuskXJWd15dtgPucL7vFw3lHpYPQ=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=opsGHXFB8PjtHkWys3Q4hKIfDo1eS1uELOmDu65BLL5V41W6k8AimOMGP0366uYn+RiNebPGDPdWmavwFVjtP6WQii2Q0Lej8jr8nTS2hIUae307RWODIpZI2HmMoPU2Fh83CU/Kt1AggRLUlBhfeQ6yfVqTJcc/SAsrVvUzgvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fZoPm04x; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fZoPm04x; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3eb08d8d9e7so273031f8f.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 14 Sep 2025 23:53:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1757919225; x=1758524025; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kt+0bn89xYkR9u6hv3SgxCCuB5TnrLHBR0iySPOdd6E=;
-        b=OSJrx71Lax+R6W3JzVKmQRBO8pBfunLKcReUZZWqhxd8dK40KTrvBbDsK8fNzJWdFb
-         VxgU28iaIBF5m6hNNdXYb1mbm5o828SeHw4M27/q/333eKJ7eY9mnUhmRocjnNnatTRK
-         DhmtjVlKCzbXUrHGh6IT9IHugU5haBF0FlW3BapgfL72l55GWicdlop0UphKwWnt3Twe
-         0T/tlmDe6MDNVpMirmIU2+iPjoF6sqW5k3Nkh9KwpLMX1cu2uf4xfT3uFPSds5DfgqXE
-         vzbUntFFQJ5lGv/HS8l/bHFqHEm5DPtraoupca0qKyWgbq5EvIdvOOcIXtJgZr52aRzb
-         TFiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757919225; x=1758524025;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kt+0bn89xYkR9u6hv3SgxCCuB5TnrLHBR0iySPOdd6E=;
-        b=XvPJyWYy7l+1d2jOpyWmedqp626lyeHVN3Av+Yty6txbqe7BONbZkndr/OKGkSXR2A
-         Op5O2r4IjBqZ62+BepwPGdk21spyrHT04mezuU/CeuRjty9YxGIxZsEsAW1qQm9/2555
-         L22t7lnE0KJ/0l9RWxP/v2A39wkz5l4CBvhHlbf2uItzJSomrTtTB3Djry7iqjtSwYQP
-         AmIXBtGAvDZ5e+nIMttzqkjmBw2aQWxcuqtMCbILo6dMbb6Vo5cNOrIIxLkNrtC+cgyg
-         KDTtxGGKwaEdlgq/b6m4k+9ol978ICbs9VodK3NSXIZlOEdr+nwV5nEl6NPauJ0jphCi
-         nGLQ==
-X-Gm-Message-State: AOJu0Ywz2YR11yqEQCZZ1FjGX/nxCohGv6WPUAh68qW0rgRcFtruktuf
-	aeBbpfNdWu6BzUNil3tKgN0ogbQNqTzfndhXicvEhl30elREUzXkLQ3W+ybY8RMlth4afvXA8+F
-	NI8Xc
-X-Gm-Gg: ASbGncvdK5T3CCIFn+47EarvcE+/1P5EhEdIpawEkjGdrARywiGEvzOVCCfDtBnwxNO
-	iJnXo3kRIYP2xAkQQM6MZ3xXcUFiC6qv5wVNX373p28nMW8jLmfanhIk/sLlzKKwmLJt7OXlDV2
-	xUSKXl5wk8aTq4b5WxgQbAjD4JykMG3/QII2a8yfPP2gyDxbPW3flHGwejfc15OmzWoyTvh+RvF
-	04S1gd/qYl7YrsaQXY7+t2GV0CdU3d1R3jpDHIcls18ynTncYlqnyCj6lZ85Ut+ZpnjG3izwgQ6
-	mFrDMxZ8RTWGFdgdiI5YJNE2jToufPe6Uj6Xj4EowEILpo0RhUkOGwvfrvzhOlSlZtBYvqB8oey
-	2zddTBsXMqpqZUeLVgHwKV7YXox+faQNOGoCKrOwhbEGEmJos88N89sQpVEUs2Q==
-X-Google-Smtp-Source: AGHT+IGuzCF0lgz3bWyqIpzHTfY2REQr8jlR51d0dsV/+fefKOFCUiiDKovfzQ/sxAVOURVpvNQN+g==
-X-Received: by 2002:a05:6000:2f81:b0:3e5:5261:9fae with SMTP id ffacd0b85a97d-3e75e0fd387mr15523543f8f.12.1757919225377;
-        Sun, 14 Sep 2025 23:53:45 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25c3b307225sm118331615ad.145.2025.09.14.23.53.43
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Sep 2025 23:53:44 -0700 (PDT)
-Message-ID: <0998dcff-c3f5-47b3-abe2-b16b818fbd7b@suse.com>
-Date: Mon, 15 Sep 2025 16:23:41 +0930
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BF508336FA;
+	Mon, 15 Sep 2025 07:07:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1757920077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=kGNremU5v22XDXa3cl4bxNtHj1V0yhztpMjpWPvRlaA=;
+	b=fZoPm04xBSL7JdfclS/FF82cX9bDYhu5rf3wT48TmT1OIEJGLe8d61ZDWiPB+zsu5ET9ju
+	1ZlIr8fKZRrW79Tr2KeJDx4wryR3zmVvFIhQZKoJLurMuioBifM6DFYGORZ6ruwKznesNd
+	69WAJ4S0KrJpfVuOPVK9baXLCA31rN4=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=fZoPm04x
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1757920077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=kGNremU5v22XDXa3cl4bxNtHj1V0yhztpMjpWPvRlaA=;
+	b=fZoPm04xBSL7JdfclS/FF82cX9bDYhu5rf3wT48TmT1OIEJGLe8d61ZDWiPB+zsu5ET9ju
+	1ZlIr8fKZRrW79Tr2KeJDx4wryR3zmVvFIhQZKoJLurMuioBifM6DFYGORZ6ruwKznesNd
+	69WAJ4S0KrJpfVuOPVK9baXLCA31rN4=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C27291372E;
+	Mon, 15 Sep 2025 07:07:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id gJ75IEy7x2h8TAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Mon, 15 Sep 2025 07:07:56 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: [PATCH] btrfs/012: skip the test if ext4 doesn't support the block size
+Date: Mon, 15 Sep 2025 16:37:39 +0930
+Message-ID: <b498ac80e6a7f3b10c08a33da450c36abbeffcd8.1757920030.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/4] btrfs: prepare compression for bs > ps support
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-References: <cover.1757481354.git.wqu@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <cover.1757481354.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: BF508336FA
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 
+[FALSE ALERT]
+When testing btrfs bs > ps support, the test case btrfs/012 fails like
+the following:
 
+ FSTYP         -- btrfs
+ PLATFORM      -- Linux/x86_64 btrfs-vm 6.17.0-rc4-custom+ #285 SMP PREEMPT_DYNAMIC Mon Sep 15 14:40:01 ACST 2025
+ MKFS_OPTIONS  -- -s 8k /dev/mapper/test-scratch1
+ MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
 
-在 2025/9/10 14:48, Qu Wenruo 写道:
-> [CHANGELOG]
-> v2:
-> - Fix a missing callsite inside btrfs_compress_file_range() which only
->    zeros the range inside the first page
->    The folio_zero_range() of the last compressed folio should cover the
->    full folio, not only the first page.
+ btrfs/012       [failed, exit status 1]- output mismatch (see /home/adam/xfstests/results//btrfs/012.out.bad)
+     --- tests/btrfs/012.out	2024-07-17 16:27:18.790000343 +0930
+     +++ /home/adam/xfstests/results//btrfs/012.out.bad	2025-09-15 16:32:55.185922173 +0930
+     @@ -1,7 +1,11 @@
+      QA output created by 012
+     +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
+     +       dmesg(1) may have more information after failed mount system call.
+     +mkdir: cannot create directory '/mnt/scratch/stressdir': File exists
+     +umount: /mnt/scratch: not mounted.
+      Checking converted btrfs against the original one:
+     -OK
+     ...
+     (Run 'diff -u /home/adam/xfstests/tests/btrfs/012.out /home/adam/xfstests/results//btrfs/012.out.bad'  to see the entire diff)
+ Ran: btrfs/012
+ Failures: btrfs/012
+ Failed 1 of 1 tests
 
-And there is a missing call site in btrfs_decompress() which uses 
-ASSERT() to check against PAGE_SIZE, not folio size and can crash 
-btrfs/056 during tests.
+Please note that, this is based on an under-development local branch,
+which is enabling bs > ps support for btrfs, with around 10 patches
+beyodn the current development branch.
 
-(Yep, I'm already testing bs > ps with fstests now, and it can reach 
-btrfs/056 except a weird crash in btrfs/004 that I'm still debugging)
+No mainline kernel can mount a btrfs with 8K block size with 4K page
+size yet.
 
-Will update the series when no more compression bugs exposed by default 
-fstests runs.
+[CAUSE]
+Currently ext4 doesn't support block size larger than page size, thus
+at mkfs time it will output the following warning:
 
-Thanks,
-Qu
+ Warning: blocksize 8192 not usable on most systems.
+ mke2fs 1.47.3 (8-Jul-2025)
+ Warning: 8192-byte blocks too big for system (max 4096), forced to continue
 
-> 
-> This is the compression part support for bs > ps cases.
-> 
-> The main trick involved is the handling of compr folios, the main
-> changes are:
-> 
-> - Compressed folios now need to follow the minimal order
->    This is the requirement for the recently added btrfs_for_each_block*()
->    helpers, and this keeps our code from handling sub-block sized ranges.
-> 
-> - No cached compression folios for bs > ps cases
->    Those folios are large and are not sharable between other fses, and
->    most of btrfs will use 4K (until storage with 16K block size got
->    popular).
-> 
-> - Extra rejection of HIGHMEM systems with bs > ps support
->    Unfortunately HIGHMEM large folios need us to map them page by page,
->    this breaks our principle of no sub-block handling.
-> 
->    Considering HIGHMEM is always a pain in the backend and is already
->    planned for deprecation, it's best for everyone to just reject bs > ps
->    btrfses on HIGHMEM systems.
-> 
-> Please still keep in mind that, raid56, scrub, encoded write are not yet
-> supporting bs > ps cases.
-> 
-> For now I have only done basic read/write/balance/offline data check
-> tests on bs > ps cases with all 4 compression algorithms (none, lzo, zlib,
-> zstd), so far so good.
-> 
-> If some one wants to play with the incomplete bs > ps cases, the
-> following simple diff will enable the work:
-> 
->   --- a/fs/btrfs/fs.c
->   +++ b/fs/btrfs/fs.c
->   @@ -96,8 +96,7 @@ bool __attribute_const__ btrfs_supported_blocksize(u32 blocksize)
->            */
->           if (IS_ENABLED(CONFIG_HIGHMEM) && blocksize > PAGE_SIZE)
->                   return false;
->   -       if (blocksize <= PAGE_SIZE)
->   -               return true;
->   +       return true;
->    #endif
->           return false;
->    }
-> 
-> The remaining features and their road maps are:
-> 
-> - Encoded writes
->    This should be the most simple part.
-> 
-> - RAID56
->    Needs to convert the page usage into folio one first.
-> 
-> - Scrub
->    This relies on some RAID56 interfaces for parity handling.
->    Otherwise pretty like RAID56, we need to convert the page usage to
->    folios first.
-> 
-> Qu Wenruo (4):
->    btrfs: prepare compression folio alloc/free for bs > ps cases
->    btrfs: prepare zstd to support bs > ps cases
->    btrfs: prepare lzo to support bs > ps cases
->    btrfs: prepare zlib to support bs > ps cases
-> 
->   fs/btrfs/compression.c | 38 +++++++++++++++++++-------
->   fs/btrfs/compression.h |  2 +-
->   fs/btrfs/extent_io.c   |  7 +++--
->   fs/btrfs/extent_io.h   |  3 ++-
->   fs/btrfs/fs.c          | 17 ++++++++++++
->   fs/btrfs/fs.h          |  6 +++++
->   fs/btrfs/inode.c       | 16 ++++++-----
->   fs/btrfs/lzo.c         | 59 ++++++++++++++++++++++-------------------
->   fs/btrfs/zlib.c        | 60 +++++++++++++++++++++++++++---------------
->   fs/btrfs/zstd.c        | 44 +++++++++++++++++--------------
->   10 files changed, 163 insertions(+), 89 deletions(-)
-> 
+Furthermore at ext4 mount time it will fail with the following dmesg:
+
+ EXT4-fs (loop0): bad block size 8192
+
+[FIX]
+Check if the mount of the newly created ext4 succeeded.
+If not, since the only extra parameter for ext4 is the block size, we
+know it's some block size ext4 not yet supported, and skip the test
+case.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tests/btrfs/012 | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/tests/btrfs/012 b/tests/btrfs/012
+index f41d7e4eb864..5d41f2e77210 100755
+--- a/tests/btrfs/012
++++ b/tests/btrfs/012
+@@ -43,6 +43,13 @@ $MKFS_EXT4_PROG -F -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
+ # Manual mount so we don't use -t btrfs or selinux context
+ mount -t ext4 $SCRATCH_DEV $SCRATCH_MNT
+ 
++# Btrfs and ext4 may have different supported block size.
++# If above mount fails it normally means the blocksize is causing problem,
++# and we should skip the test.
++if [ $? -ne 0 ]; then
++	_notrun "block size $BLOCK_SIZE is not supported by ext4"
++fi
++
+ echo "populating the initial ext fs:" >> $seqres.full
+ mkdir "$SCRATCH_MNT/$BASENAME"
+ _run_fsstress -w -d "$SCRATCH_MNT/$BASENAME" -n 20 -p 500
+-- 
+2.50.1
 
 
