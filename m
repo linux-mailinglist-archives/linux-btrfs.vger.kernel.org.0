@@ -1,188 +1,98 @@
-Return-Path: <linux-btrfs+bounces-16841-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16842-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA835B587FD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Sep 2025 01:04:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11C05B58800
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Sep 2025 01:05:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 679E72075E5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 23:04:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52A0D188B443
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 23:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD4C2C0F87;
-	Mon, 15 Sep 2025 23:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DAE82D47F1;
+	Mon, 15 Sep 2025 23:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="htUh9oVX";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="htUh9oVX"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="L2YDztaP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7997F18DF9D
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 23:04:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2898618DF9D;
+	Mon, 15 Sep 2025 23:05:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757977468; cv=none; b=b7RgG82Ng55J+pjt9mN8WMFk+jarTtdR5rUlU6jFCGmq6iKJBD00iUx0Bm5K7q9N2M/R2cJ1j4/JiqqBdNGYU0qYD+baDVswNKLSUo+OMFgR4ZCD986KqxIzlJ+NZZ+9I8BGRuHHzt/6ISt3rmBdkJaXrc/GTclX4c+037bpYQE=
+	t=1757977523; cv=none; b=ZHun6Uk9Cnm0woZEn2ai2HeCwO6RmSl8anK8LccTizblcxjMktWwPsH3IxlMX+PgHfVGQ3nUeWx3EjlBBzRb4RvDLUw34DJIrXSZo6xmlBWnVqVKdPVNCdc61dttNrUa7WY3qM4wYUrxiOZw/kBYc1KQyvoxUhHCa0wdg3Pjx8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757977468; c=relaxed/simple;
-	bh=xbPAjtAK2XA1xkpg8/9/wi9FTXhMvfsG+znT+e86HBM=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=dERMOhz1JHiBaeoD2Fw6HtaHeNRrWU8n8Fw3CgA+0lbW7bOLDaU+LlPNsvVqa1zMer1vlO6xTKyMJPT+zKOivLV1TkwnIrRLe5w8SjlzFbSjLOYGJKSB4+dfocB8cqK+Zj/cSMs2DwPX2QmbWeOo/ugtLnTT/PljeBUFS8RrKkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=htUh9oVX; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=htUh9oVX; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5048E2235C
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 23:04:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1757977464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=tCngDwR6hPLjdtqUQaiTSGDNFfTOHoOfx7Ery0aUAmY=;
-	b=htUh9oVXHmmlSlGX78xTW10OpM+uzSuXgZcZYpGz11pc9uygFaeRa19BfiHJuoe12IdU5k
-	u1FoGsa6tFqWBARcPmrY00Q04c8BUN9RTFjJZpw1dA3Z36lPKdscD+JoRRL1TUlNqJaeLr
-	jaVfz38mscdzoNF15PVq1lIk5w881l0=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=htUh9oVX
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1757977464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=tCngDwR6hPLjdtqUQaiTSGDNFfTOHoOfx7Ery0aUAmY=;
-	b=htUh9oVXHmmlSlGX78xTW10OpM+uzSuXgZcZYpGz11pc9uygFaeRa19BfiHJuoe12IdU5k
-	u1FoGsa6tFqWBARcPmrY00Q04c8BUN9RTFjJZpw1dA3Z36lPKdscD+JoRRL1TUlNqJaeLr
-	jaVfz38mscdzoNF15PVq1lIk5w881l0=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8779E1368D
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 23:04:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9HX0EXebyGhSAQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 23:04:23 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: tree-checker: add inode extref checks
-Date: Tue, 16 Sep 2025 08:34:05 +0930
-Message-ID: <bce5bcbbb1f0bb0b6b10700714ef7169f7d57082.1757977422.git.wqu@suse.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1757977523; c=relaxed/simple;
+	bh=kfTpDcHkGyTFz8CCeqVfzTin2htQ1hc2Z8IdMy7NaAE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jSZy+U35Fkd4Fw3qI1w/WfM/C6iar9hUrHmSCdknhrPzA7vYSg4E8pbPhi8REsXOv3VNXFvvKe96Vnh2ib7SQ0IQ1Mj4vbYcBgF3FqEKZNRy1ra4l5ZVpVweP79dIszHXosBDfl7HVyP9qtY3X7xmp93Jk3rxP1gbQPttPOeJHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=L2YDztaP; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=kFoXd94mYDwzR27iBBzfzAZSuVL+D/rJNjURhWoqhaM=; b=L2YDztaPmKfoJgppdbukM6e4UQ
+	PB18/TYsJEduUdrlhYyofd12tFAy4ZmCUt27CKhopQvnMwMxoHay0bqm+znfEhKJOlUWO86+D97Tu
+	0oEwcwz/vURZ8eLgnK3R1XUkwh6hLhdBawHh5F8ImAodClbPYV/fQj7L5iSAgYtRJ0RrvkRLLdlgf
+	yrxSK+OUjhTBrGuk7892523Yb2Ybtto0mzXRs5KthU6uQu5S+fvHnkHJE4RSmDMKB/AtvtKfekS+F
+	zz4IzYfhlv/OVzEQbJ4OPsUS72HV7jrAFyaLGchRYe6+qqqNPdRBajqR9GXWHgr7aCIdv1su6W8o3
+	nC34DL5g==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uyIG4-00000008mBP-2h2g;
+	Mon, 15 Sep 2025 23:05:16 +0000
+Date: Tue, 16 Sep 2025 00:05:16 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	linux-btrfs <linux-btrfs@vger.kernel.org>, linux-mm@kvack.org,
+	mcgrof@kernel.org, p.raghav@samsung.com
+Subject: Re: Any way to ensure minimal folio size and alignment for iomap
+ based direct IO?
+Message-ID: <aMibrFB8_21GQWUD@casper.infradead.org>
+References: <9598a140-aa45-4d73-9cd2-0c7ca6e4020a@gmx.com>
+ <aMgOtdmxNoYB7_Ye@casper.infradead.org>
+ <2h2azgruselzle2roez7umdh5lghtm7kkfxib26pxzsjhmcdja@x3wjdx2r6jeu>
+ <fc7da57f-5b11-4056-857c-bb16a4a20bb5@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 5048E2235C
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fc7da57f-5b11-4056-857c-bb16a4a20bb5@gmx.com>
 
-Like inode refs, inode extrefs have a variable length name, which means
-we have to do a proper check to make sure no header nor name can exceed
-the item limits.
+On Tue, Sep 16, 2025 at 07:16:48AM +0930, Qu Wenruo wrote:
+> > Is it very difficult to add multi-shot checksum calls for a data block
+> > in btrfs? Does it break certain reliability guarantees?
+> 
+> I'd say it's not impossible, but still not an easy thing to do.
+> 
+> E.g. at data read time we need to verify the checksum. Currently we're able
+> to do the checksum for one block in one go, then advance the bio iter.
+> 
+> But with multi-shot one, we have to update the shash several times before we
+> can determine if the result is correct.
+> 
+> There is even compression algorithm which can not support multi-shot
+> interface, lzo.
+> 
+> Thankfully compression is only possible for buffered IO, so it's not
+> involved in this case.
 
-The check itself is very similar to check_inode_ref(), just a different
-structure (btrfs_inode_extref vs btrfs_inode_ref).
+Would it be acceptable to vmap() the pages and do the checksum on the
+virtual address?
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/tree-checker.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+> However then the problem is why the read iov_iter passes the alignment
+> check, but we still get the bio not meeting the large folio requirement?
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index c2aac08055fb..ca30b15ea452 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -183,6 +183,7 @@ static bool check_prev_ino(struct extent_buffer *leaf,
- 	/* Only these key->types needs to be checked */
- 	ASSERT(key->type == BTRFS_XATTR_ITEM_KEY ||
- 	       key->type == BTRFS_INODE_REF_KEY ||
-+	       key->type == BTRFS_INODE_EXTREF_KEY ||
- 	       key->type == BTRFS_DIR_INDEX_KEY ||
- 	       key->type == BTRFS_DIR_ITEM_KEY ||
- 	       key->type == BTRFS_EXTENT_DATA_KEY);
-@@ -1782,6 +1783,39 @@ static int check_inode_ref(struct extent_buffer *leaf,
- 	return 0;
- }
- 
-+static int check_inode_extref(struct extent_buffer *leaf,
-+			      struct btrfs_key *key, struct btrfs_key *prev_key,
-+			      int slot)
-+{
-+	unsigned long ptr = btrfs_item_ptr_offset(leaf, slot);
-+	unsigned long end = ptr + btrfs_item_size(leaf, slot);
-+
-+	if (unlikely(!check_prev_ino(leaf, key, slot, prev_key)))
-+		return -EUCLEAN;
-+
-+	while (ptr < end) {
-+		struct btrfs_inode_extref *extref = (struct btrfs_inode_extref *)ptr;
-+		u16 namelen;
-+
-+		if (unlikely(ptr + sizeof(*extref)) > end) {
-+			inode_ref_err(leaf, slot,
-+			"inode extref overflow, ptr %lu end %lu inode_extref size %zu",
-+				      ptr, end, sizeof(*extref));
-+			return -EUCLEAN;
-+		}
-+
-+		namelen = btrfs_inode_extref_name_len(leaf, extref);
-+		if (unlikely(ptr + sizeof(*extref) + namelen > end)) {
-+			inode_ref_err(leaf, slot,
-+				"inode extref overflow, ptr %lu end %lu namelen %u",
-+				ptr, end, namelen);
-+			return -EUCLEAN;
-+		}
-+		ptr += sizeof(*extref) + namelen;
-+	}
-+	return 0;
-+}
-+
- static int check_raid_stripe_extent(const struct extent_buffer *leaf,
- 				    const struct btrfs_key *key, int slot)
- {
-@@ -1893,6 +1927,9 @@ static enum btrfs_tree_block_status check_leaf_item(struct extent_buffer *leaf,
- 	case BTRFS_INODE_REF_KEY:
- 		ret = check_inode_ref(leaf, key, prev_key, slot);
- 		break;
-+	case BTRFS_INODE_EXTREF_KEY:
-+		ret = check_inode_extref(leaf, key, prev_key, slot);
-+		break;
- 	case BTRFS_BLOCK_GROUP_ITEM_KEY:
- 		ret = check_block_group_item(leaf, key, slot);
- 		break;
--- 
-2.50.1
+The virtual address _is_ aligned.  It's just not backed with large
+folios, for whatever reason.
 
 
