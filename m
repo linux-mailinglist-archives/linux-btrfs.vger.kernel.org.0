@@ -1,212 +1,292 @@
-Return-Path: <linux-btrfs+bounces-16816-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16817-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52589B576B2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 12:39:26 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3406AB57974
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 13:55:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54BEA1A23598
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 10:39:33 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E7DC24E1DEF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 11:55:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EBB52FD7DF;
-	Mon, 15 Sep 2025 10:38:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0133F303A38;
+	Mon, 15 Sep 2025 11:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iyBAlOao";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iyBAlOao"
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="nczyssyY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpbgjp3.qq.com (smtpbgjp3.qq.com [54.92.39.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911642FD7CC
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 10:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CFD13019DF
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 11:55:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.92.39.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757932731; cv=none; b=dw/sIl6Jd6j7wCpV7u1eGg2Vj0PW6opWDmbS5nh7NIo4pi03QEREuZpd9V6xPb8zQ306vkXouc6DbDuO6V/959xYBVcYuJA0IYv/aNtV/a/MUIFbG6EnVkLwIdT7wRD3I8GO9qTDsafRbP1qIN/KUCRaak3qggxyQ20keQ0k5p0=
+	t=1757937327; cv=none; b=AYsFVL2imHV2/MAB5umwn4ANn0874jEqpDmcHrkn9iisPFFGyLX2IduyGSTZY0m71U4w6y+ZjlT0Rtkp0xtVnSHxSHyX9gBERugFQu1bu0zIXjZb4O/ADP3C2HOpQVy5/3sevzVein2eC5HnBxX711iU42boLPFXQzopSvR+u68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757932731; c=relaxed/simple;
-	bh=cni6Mc0/HZYteY8uqh7T5oDKyDZi/Ge8I/dthMkji4w=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=G+D7mTcjKfrBbblPuveEBHft9WcAHA/FMFT4XQ8SV2lo7SqRJJewbzKD42pyJFWmo0n6VyHO8R+GmwHS67E2wlDrmcD+r5u9frn+1BlZgX1VA6N7v2NTUKTiioPxroRRzUMdBWSMbnsohXx54K6Y0LCn79hmkdsWXqLz2ToVC90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iyBAlOao; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iyBAlOao; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7FA191F8B0
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 10:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1757932727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=dFtCzVovxb985LFcZXUQRfEC/kA8kpOGTXigPJlLmMg=;
-	b=iyBAlOaon4eelu6VIUWWCJGwIixl1xuwcC16jNz48obo+POJRtJwIruVOLR+ZrD8aGPZdW
-	iUY4RBa68L6ggOJyR/7ZMM99y7XIHglAm6I4a4VDGXUS0zdI9S83Nrsd6e90qV9VBvTCbH
-	t3Vn/VjxGKYSpqazug6SYA8iZz5IF6Y=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=iyBAlOao
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1757932727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=dFtCzVovxb985LFcZXUQRfEC/kA8kpOGTXigPJlLmMg=;
-	b=iyBAlOaon4eelu6VIUWWCJGwIixl1xuwcC16jNz48obo+POJRtJwIruVOLR+ZrD8aGPZdW
-	iUY4RBa68L6ggOJyR/7ZMM99y7XIHglAm6I4a4VDGXUS0zdI9S83Nrsd6e90qV9VBvTCbH
-	t3Vn/VjxGKYSpqazug6SYA8iZz5IF6Y=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B95E21368D
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 10:38:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id JFVkHrbsx2hrFAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 10:38:46 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix symbolic link reading when bs > ps
-Date: Mon, 15 Sep 2025 20:08:21 +0930
-Message-ID: <5d269e81618e78eae3a087e22d0799257957e3ba.1757932673.git.wqu@suse.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1757937327; c=relaxed/simple;
+	bh=611BY1f04qwZmOGRK+4sDqICi6jF3EcwiKCj9LkyKfc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=a+PmX1Gw992v7Ox5HVaHb0oBC9nexSZbBMetvOMQbO7d+kemCUiM+tenQBRjlz7s7EyUQpcKzWj1f5YP9ixfmrNGlAB0ALQg4VdJdO1riGWtd60RH5B1kdo6GuUKFJoq8ZdyFpML5ZfFQz8dru0UFLDxi60GweJjFDHv75XhPMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=nczyssyY; arc=none smtp.client-ip=54.92.39.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1757937307;
+	bh=611BY1f04qwZmOGRK+4sDqICi6jF3EcwiKCj9LkyKfc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=nczyssyY+4V5PUiM4NRr+V8kg1YY4EGhbUzfU/1loS9TfUHACYQvDP7ABUMWfLarx
+	 5zbVLwxlHlbVfl6HW4RiZQzc68nH0Qh65GVH/o1w49pLMoGvGlN06CA8+O5WUD2QP1
+	 Q7Z51Q8IB6qp3Ba/Lm5gkCDgeFIQqNqm2HfaW3rI=
+X-QQ-mid: zesmtpip3t1757937303t7a5c112d
+X-QQ-Originating-IP: 4oAXkojGtCrB0rj+ELkw9t09ujAZkKNSREG6IE41T/o=
+Received: from [IPV6:2408:8215:5910:8ca0:5a6d: ( [localhost])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Mon, 15 Sep 2025 19:55:02 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 17976645415751230927
+Message-ID: <BD8FA84236613557+a3110e3e-3931-4ff7-a7ac-7347b9808642@bupt.moe>
+Date: Mon, 15 Sep 2025 19:55:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 7FA191F8B0
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_EQ_ENVFROM(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Score: -3.01
+User-Agent: Mozilla Thunderbird
+Subject: Re: performance issue when using zoned.
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <tencent_694B88D85481319043E0CE14@qq.com>
+ <873c88ef-ee65-4e27-bc5e-156cf9e79aa9@gmx.com>
+Content-Language: en-US
+From: Yuwei Han <hrx@bupt.moe>
+In-Reply-To: <873c88ef-ee65-4e27-bc5e-156cf9e79aa9@gmx.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------TGYk687arZBSD21nHQ6OsnBG"
+X-QQ-SENDSIZE: 520
+Feedback-ID: zesmtpip:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-QQ-XMAILINFO: NojR6Ao/DkEDfDLhUn+BdQD6zmLdQTPRJ6axWO6tr/T9Z0fTMI5jcawp
+	3zZpqTdtTu9Xdb60w5+do53ZCJyx3b0+z1WEX5seYftDXz0qKy16jfXaC0wn/0Aa9n2QyrR
+	ivM4a/okfaFjvQVCKVG0KrQTD6gNEeosqAQRi8ctjRLHuXIZTz15oICob9jc+5V/n3qT9uL
+	M3TZ4P2cv+vn5x+XTmExMnUwsNKcZ0zLEomHid8dudeChDJHQEGB1LyjgencF29BXwu4/Kc
+	2a6s9e2eyTfe7kVLczA78b1KJMjKxz8hX9gXnUdp9luLE5Bha2NQHSTYm+rH8Q2/6YMvfPe
+	BKZBI5I/18TktoJG/0N4XhtbS3XcGmmCcjgW85DL3x+N16eaqDy/Z+HgJoZPmiMOhg+8MLe
+	9yjyTAnT5ZoBclEP7CuvGMhStLFmvaAUgVk48AsIFYQkyocFx+i8mUqWa+yiOffhCExdwK7
+	7pTBqEcTbF+bCLb/19s7L/fqL83bCREyJY+M57fY/oSHM2FB0xHzmqH9mN7nhkjTSd5I5cS
+	+bt9h3Vm74GNz8PrF3wTW8ncfYMtOvu/7dDCQ8gFg47lM7tPt37YF/q0z7OC2KI9sQI4LI/
+	0IHk1cR/bauB1O50AHvIGobmQbvYJQqmy2hst8NKeE0hGHsGTgQ/0lW1dAo9lxY0XBRyO66
+	YhGz77jO/QxrxOIlrz3Yp2xRE8ntmFpk7AUNHl3nlQwEkPgNlE/wknTqw01ufLFnc1SRL/V
+	EW9/p10iVK32zXujiPrRCUGysL/2SMMugfzVqFoNsXK/hwd537IeqnOWdiqs2c3vz+jCFhV
+	Ikp5jBvvJ8937FruFi4i/XoahUDEnShoKDqvJ8PT1CrM2FcjskesVWhKvrrcMeSpyymzk8G
+	K030JXAK6zRhAH8A40F9tvXYwLzcvGlVv9/IEyH7Pq9YyX7UxZ3TwS/a32qJx5zZLgjdQsr
+	4Rz++469rJJunkd/2gN3n8dXSrcqrLJtTxdBDyof1qICtRuPvBSqx1dsR
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+X-QQ-RECHKSPAM: 0
 
-[BUG DURING BS > PS TEST]
-When running the following script on a btrfs whose block size is larger
-than page size, e.g. 8K block size and 4K page size, it will trigger a
-kernel BUG:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------TGYk687arZBSD21nHQ6OsnBG
+Content-Type: multipart/mixed; boundary="------------dnNcL1nAceys1iP0qrT0wtlJ";
+ protected-headers="v1"
+From: Yuwei Han <hrx@bupt.moe>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <a3110e3e-3931-4ff7-a7ac-7347b9808642@bupt.moe>
+Subject: Re: performance issue when using zoned.
+References: <tencent_694B88D85481319043E0CE14@qq.com>
+ <873c88ef-ee65-4e27-bc5e-156cf9e79aa9@gmx.com>
+In-Reply-To: <873c88ef-ee65-4e27-bc5e-156cf9e79aa9@gmx.com>
+Autocrypt-Gossip: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
 
- # mkfs.btrfs -s 8k $dev
- # mount $dev $mnt
- # mkdir $mnt/dir
- # ln -s dir $mnt/link
- # ls $mnt/link
+--------------dnNcL1nAceys1iP0qrT0wtlJ
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-The call trace looks like this:
+DQoNCuWcqCAyMDI1LzkvMTQgMTg6NDEsIFF1IFdlbnJ1byDlhpnpgZM6DQo+IA0KPiANCj4g
+5ZyoIDIwMjUvOS8xNCAxOTo1MywgSEFOIFl1d2VpIOWGmemBkzoNCj4+IEhpLA0KPj4gSSBh
+bSBleHBlcmllbmNpbmcgcGVyZm9ybWFuY2UgaXNzdWUgd2hlbiBjb3B5aW5nIGJpZyBmaWxl
+cyB0byB6b25lZCANCj4+IGJ0cmZzIHZvbHVtZS4NCj4+IFdoZW4gdXNpbmcgY3AgLXIgZm9y
+IGNvcHkgZmlsZXMsIGl0IGFjaGlldmVkIGFib3V0IH4zNU1CL3Mgc3BlZWQuDQo+PiBJIHdv
+bmRlciBpcyB0aGVyZSBhbnkgdG9vbHMgb3IgdGVjaG5pcXVlcyBJIGNhbiB1c2UgdG8gcGVy
+ZiBidHJmcy4NCj4+DQo+PiBUaGVyZSBpcyBteSBidHJmcyB2b2x1bWU6DQo+PiBPdmVyYWxs
+Og0KPj4gwqDCoMKgwqAgRGV2aWNlIHNpemU6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCAxMi43M1RpQg0KPj4gwqDCoMKgwqAgRGV2aWNlIGFsbG9jYXRlZDrCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgMTEuMTFUaUINCj4+IMKgwqDCoMKgIERldmljZSB1bmFsbG9j
+YXRlZDrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDEuNjJUaUINCj4gDQo+IFRoZSBmcyBpcyBo
+ZWF2aWx5IHV0aWxpemVkLCB0aHVzIG15IGd1ZXNzIGlzIGF1dG8tcmVjbGFpbSBpcyBiYWxh
+bmNpbmcgDQo+IHRoZSBjaHVua3MgYXQgYmFja2dyb3VuZCBhbG1vc3QgYWxsIHRoZSB0aW1l
+Lg0KPiANCj4gSSBndWVzcyB5b3UncmUgbm90IHJ1bm5pbmcgdGhlIGxhdGVzdCB2Ni4xNy1y
+YyBrZXJuZWxzIHlldCwgdGh1cyBpZiANCj4gdGhlcmUgaXMgc29tZSBhdXRvLXJlY2xhaW0g
+aGFwcGVuaW5nLCBkbWVzZyBzaG91bGQgYmUgZmxvb2RlZCB3aXRoIA0KPiBtZXNzYWdlcyBy
+ZWxvY2F0aW5nIGJsb2NrIGdyb3Vwcy4NCj4gDQo+IE1pbmQgdG8gc2hhcmUgdGhlIGRtZXNn
+IGFuZCBrZXJuZWwgdmVyc2lvbiBmb3IgdGhpcz8NCg0KS2VybmVsIHZlcnNpb24gaXMgTGlu
+dXggbmluZXNoZWVwIDYuMTYuNC1hcmNoMS0xDQpZZXMgdGhlcmUgaXMgYSBsb3QgcmVjbGFp
+bWluZyBjaHVuayBhbmQgcmVsb2NhdGluZyBibG9jayBncm91cC4gSSB3b3VsZCANCnBhc3Rl
+IHNvbWUgZXhhbXBsZS4NCltTdW4gU2VwIDE0IDEzOjU5OjM0IDIwMjVdIEJUUkZTIGluZm8g
+KGRldmljZSBzZGQpOiByZWNsYWltaW5nIGNodW5rIA0KMTMxNDI1OTk5MjU3NjAgd2l0aCA3
+MyUgdXNlZCAwJSByZXNlcnZlZCAyNiUgdW51c2FibGUNCltTdW4gU2VwIDE0IDEzOjU5OjM0
+IDIwMjVdIEJUUkZTIGluZm8gKGRldmljZSBzZGQpOiByZWxvY2F0aW5nIGJsb2NrIA0KZ3Jv
+dXAgMTMxNDI1OTk5MjU3NjAgZmxhZ3MgbWV0YWRhdGF8ZHVwDQpbU3VuIFNlcCAxNCAxMzo1
+OTo0OCAyMDI1XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RkKTogZm91bmQgMTIwODcgZXh0ZW50
+cywgDQpzdGFnZTogbW92ZSBkYXRhIGV4dGVudHMNCltTdW4gU2VwIDE0IDEzOjU5OjUyIDIw
+MjVdIEJUUkZTIGluZm8gKGRldmljZSBzZGQpOiByZWNsYWltaW5nIGNodW5rIA0KMTMxNTI4
+MDA0NzMwODggd2l0aCA3MiUgdXNlZCAwJSByZXNlcnZlZCAyNyUgdW51c2FibGUNCltTdW4g
+U2VwIDE0IDEzOjU5OjUyIDIwMjVdIEJUUkZTIGluZm8gKGRldmljZSBzZGQpOiByZWxvY2F0
+aW5nIGJsb2NrIA0KZ3JvdXAgMTMxNTI4MDA0NzMwODggZmxhZ3MgbWV0YWRhdGF8ZHVwDQpb
+U3VuIFNlcCAxNCAxNDowMDowNyAyMDI1XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RkKTogZm91
+bmQgMTE4NTMgZXh0ZW50cywgDQpzdGFnZTogbW92ZSBkYXRhIGV4dGVudHMNCltTdW4gU2Vw
+IDE0IDE0OjAwOjExIDIwMjVdIEJUUkZTIGluZm8gKGRldmljZSBzZGQpOiByZWNsYWltaW5n
+IGNodW5rIA0KMTMxNDMxMzY3OTY2NzIgd2l0aCA3MiUgdXNlZCAwJSByZXNlcnZlZCAyNyUg
+dW51c2FibGUNCltTdW4gU2VwIDE0IDE0OjAwOjExIDIwMjVdIEJUUkZTIGluZm8gKGRldmlj
+ZSBzZGQpOiByZWxvY2F0aW5nIGJsb2NrIA0KZ3JvdXAgMTMxNDMxMzY3OTY2NzIgZmxhZ3Mg
+bWV0YWRhdGF8ZHVwDQpbU3VuIFNlcCAxNCAxNDowMDoyMyAyMDI1XSBCVFJGUyBpbmZvIChk
+ZXZpY2Ugc2RkKTogZm91bmQgMTE5NTUgZXh0ZW50cywgDQpzdGFnZTogbW92ZSBkYXRhIGV4
+dGVudHMNCltTdW4gU2VwIDE0IDE0OjAwOjI3IDIwMjVdIEJUUkZTIGluZm8gKGRldmljZSBz
+ZGQpOiByZWNsYWltaW5nIGNodW5rIA0KMTMxNzEwNTQwODQwOTYgd2l0aCA2NCUgdXNlZCAw
+JSByZXNlcnZlZCAzNSUgdW51c2FibGUNCltTdW4gU2VwIDE0IDE0OjAwOjI3IDIwMjVdIEJU
+UkZTIGluZm8gKGRldmljZSBzZGQpOiByZWxvY2F0aW5nIGJsb2NrIA0KZ3JvdXAgMTMxNzEw
+NTQwODQwOTYgZmxhZ3MgbWV0YWRhdGF8ZHVwDQpbU3VuIFNlcCAxNCAxNDowMDozNiAyMDI1
+XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RkKTogZm91bmQgMTA2MzUgZXh0ZW50cywgDQpzdGFn
+ZTogbW92ZSBkYXRhIGV4dGVudHMNCltTdW4gU2VwIDE0IDE0OjAwOjQzIDIwMjVdIEJUUkZT
+IGluZm8gKGRldmljZSBzZGQpOiByZWNsYWltaW5nIGNodW5rIA0KMTMxNzEzMjI1MTk1NTIg
+d2l0aCA1NCUgdXNlZCAwJSByZXNlcnZlZCA0NSUgdW51c2FibGUNCltTdW4gU2VwIDE0IDE0
+OjAwOjQzIDIwMjVdIEJUUkZTIGluZm8gKGRldmljZSBzZGQpOiByZWxvY2F0aW5nIGJsb2Nr
+IA0KZ3JvdXAgMTMxNzEzMjI1MTk1NTIgZmxhZ3MgbWV0YWRhdGF8ZHVwDQpbU3VuIFNlcCAx
+NCAxNDowMDo1MSAyMDI1XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RkKTogZm91bmQgODk3MCBl
+eHRlbnRzLCANCnN0YWdlOiBtb3ZlIGRhdGEgZXh0ZW50cw0KW1N1biBTZXAgMTQgMTQ6MDA6
+NTUgMjAyNV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkZCk6IHJlY2xhaW1pbmcgY2h1bmsgDQox
+MzE3MTU5MDk1NTAwOCB3aXRoIDQ0JSB1c2VkIDAlIHJlc2VydmVkIDU1JSB1bnVzYWJsZQ0K
+W1N1biBTZXAgMTQgMTQ6MDA6NTUgMjAyNV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkZCk6IHJl
+bG9jYXRpbmcgYmxvY2sgDQpncm91cCAxMzE3MTU5MDk1NTAwOCBmbGFncyBtZXRhZGF0YXxk
+dXANCltTdW4gU2VwIDE0IDE0OjAxOjAzIDIwMjVdIEJUUkZTIGluZm8gKGRldmljZSBzZGQp
+OiBmb3VuZCA3MzEyIGV4dGVudHMsIA0Kc3RhZ2U6IG1vdmUgZGF0YSBleHRlbnRzDQpbU3Vu
+IFNlcCAxNCAxNDoxMjozOSAyMDI1XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RjKTogcmVjbGFp
+bWluZyBjaHVuayANCjEyMjM4Nzc3NzQ1NDA4IHdpdGggMiUgdXNlZCAwJSByZXNlcnZlZCA5
+NyUgdW51c2FibGUNCltTdW4gU2VwIDE0IDE0OjEyOjM5IDIwMjVdIEJUUkZTIGluZm8gKGRl
+dmljZSBzZGMpOiByZWxvY2F0aW5nIGJsb2NrIA0KZ3JvdXAgMTIyMzg3Nzc3NDU0MDggZmxh
+Z3MgZGF0YQ0KW1N1biBTZXAgMTQgMTQ6MTI6MzkgMjAyNV0gQlRSRlMgaW5mbyAoZGV2aWNl
+IHNkYyk6IGZvdW5kIDExIGV4dGVudHMsIA0Kc3RhZ2U6IG1vdmUgZGF0YSBleHRlbnRzDQpb
+U3VuIFNlcCAxNCAxNDoxMjozOSAyMDI1XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RjKTogZm91
+bmQgMTEgZXh0ZW50cywgDQpzdGFnZTogdXBkYXRlIGRhdGEgcG9pbnRlcnMNCg0KPj4gwqDC
+oMKgwqAgRGV2aWNlIG1pc3Npbmc6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCAwLjAwQg0KPj4gwqDCoMKgwqAgRGV2aWNlIHNsYWNrOsKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIDAuMDBCDQo+PiDCoMKgwqDCoCBEZXZpY2Ugem9uZSB1bnVz
+YWJsZTrCoMKgwqDCoMKgwqDCoMKgwqAgOS45NkdpQg0KPj4gwqDCoMKgwqAgRGV2aWNlIHpv
+bmUgc2l6ZTrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDI1Ni4wME1pQg0KPj4gwqDCoMKgwqAg
+VXNlZDrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+MTEuMDhUaUINCj4+IMKgwqDCoMKgIEZyZWUgKGVzdGltYXRlZCk6wqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgMS42M1RpQsKgwqDCoMKgwqAgKG1pbjogODQxLjQ0R2lCKQ0KPj4gwqDC
+oMKgwqAgRnJlZSAoc3RhdGZzLCBkZik6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDEuNjNU
+aUINCj4+IMKgwqDCoMKgIERhdGEgcmF0aW86wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgMS4wMA0KPj4gwqDCoMKgwqAgTWV0YWRhdGEgcmF0aW86wqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDIuMDANCj4+IMKgwqDCoMKgIEds
+b2JhbCByZXNlcnZlOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDUxMi4wME1pQsKgwqDC
+oMKgwqAgKHVzZWQ6IDE2LjAwS2lCKQ0KPj4gwqDCoMKgwqAgTXVsdGlwbGUgcHJvZmlsZXM6
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBubw0KPiANCj4gQW5kIG9mIGNv
+dXJzZSwgdGhlIEhERCBtb2RlbHMgYW5kIGV4dHJhIHpvbmVkIHJlbGF0ZWQgaW5mby4NCkhE
+RCBpcyBIQzYyMCAoSFNINzIxNDE0QUxONk0wKSB3aGljaCBoYXZlIDUyNCBjb252ZW50aW9u
+YWwgem9uZXMgYW5kIA0KNTE2MzIgc2VxdWVudGlhbC13cml0ZS1yZXF1aXJlZCB6b25lLiBU
+aGUgem9uZSBzaXplIGlzIDI1Nk1pQi4+DQo+IFRoYW5rcywNCj4gUXUNCj4gDQo+Pg0KPj4g
+RGF0YSxzaW5nbGU6IFNpemU6MTEuMDdUaUIsIFVzZWQ6MTEuMDZUaUIgKDk5Ljg5JSkNCj4+
+IMKgwqDCoCAvZGV2L3NkY8KgwqDCoMKgwqDCoCAxMS4wN1RpQg0KPj4NCj4+IE1ldGFkYXRh
+LERVUDogU2l6ZToyMy4wMEdpQiwgVXNlZDoxMy4zMUdpQiAoNTcuODclKQ0KPj4gwqDCoMKg
+IC9kZXYvc2RjwqDCoMKgwqDCoMKgIDQ2LjUwR2lCDQo+Pg0KPj4gU3lzdGVtLERVUDogU2l6
+ZToyNTYuMDBNaUIsIFVzZWQ6NC42Mk1pQiAoMS44MSUpDQo+PiDCoMKgwqAgL2Rldi9zZGPC
+oMKgwqDCoMKgIDUxMi4wME1pQg0KPj4NCj4+IFVuYWxsb2NhdGVkOg0KPj4gwqDCoMKgIC9k
+ZXYvc2RjwqDCoMKgwqDCoMKgwqAgMS42MlRpQg0KPj4NCj4+IFRlc3RpbmcgcmVzdWx0IHdp
+dGggc2FtZSBtb2RlbCBvbiBzYW1lIG1hY2hpbmUgKG5vdCBzYW1lIGRldmljZSBzaW5jZSAN
+Cj4+IEkgYW0gdXNpbmcgaXQpLg0KPj4NCj4+ICMgZmlvIC0tbmFtZT16YmMgLS1maWxlbmFt
+ZT0vZGV2L3NkYSAtLWRpcmVjdD0xIC0tem9uZW1vZGU9emJkIC0tIA0KPj4gb2Zmc2V0PTk4
+NjcxNTA0OTE2NDggLS1zaXplPTE2RyAtLWlvZW5naW5lPWxpYmFpbyAtLWlvZGVwdGg9MSAt
+LSANCj4+IHJ3PXdyaXRlIC0tYnM9MjU2aw0KPj4gemJjOiAoZz0wKTogcnc9d3JpdGUsIGJz
+PShSKSAyNTZLaUItMjU2S2lCLCAoVykgMjU2S2lCLTI1NktpQiwgKFQpIA0KPj4gMjU2S2lC
+LTI1NktpQiwgaW9lbmdpbmU9bGliYWlvLCBpb2RlcHRoPTENCj4+IGZpby0zLjM5DQo+PiBT
+dGFydGluZyAxIHByb2Nlc3MNCj4+IEpvYnM6IDEgKGY9MCk6IFtmKDEpXVsxMDAuMCVdW3c9
+MTYxTWlCL3NdW3c9NjQ0IElPUFNdW2V0YSAwMG06MDBzXQ0KPj4gemJjOiAoZ3JvdXBpZD0w
+LCBqb2JzPTEpOiBlcnI9IDA6IHBpZD01OTIzNDogU3VuIFNlcCAxNCAxNjozNDo0OSAyMDI1
+DQo+PiDCoMKgIHdyaXRlOiBJT1BTPTY1NiwgQlc9MTY0TWlCL3MgKDE3Mk1CL3MpKDE2LjBH
+aUIvOTk4Mzdtc2VjKTsgMjQgem9uZSANCj4+IHJlc2V0cw0KPj4gwqDCoMKgwqAgc2xhdCAo
+dXNlYyk6IG1pbj0xMCwgbWF4PTEyNywgYXZnPTM4LjAzLCBzdGRldj0xOC40OA0KPj4gwqDC
+oMKgwqAgY2xhdCAodXNlYyk6IG1pbj00NjUsIG1heD01OTcwMCwgYXZnPTE0NzIuODAsIHN0
+ZGV2PTIxMzIuNjYNCj4+IMKgwqDCoMKgwqAgbGF0ICh1c2VjKTogbWluPTUyNSwgbWF4PTU5
+NzM3LCBhdmc9MTUxMC44Mywgc3RkZXY9MjEzMi40MQ0KPj4gwqDCoMKgwqAgY2xhdCBwZXJj
+ZW50aWxlcyAodXNlYyk6DQo+PiDCoMKgwqDCoMKgIHzCoCAxLjAwdGg9W8KgIDUxMF0swqAg
+NS4wMHRoPVvCoCA1MTVdLCAxMC4wMHRoPVvCoCA1MTldLCANCj4+IDIwLjAwdGg9WyAxMjM3
+XSwNCj4+IMKgwqDCoMKgwqAgfCAzMC4wMHRoPVsgMTI4N10sIDQwLjAwdGg9WyAxMzM2XSwg
+NTAuMDB0aD1bIDEzNTJdLCANCj4+IDYwLjAwdGg9WyAxMzg1XSwNCj4+IMKgwqDCoMKgwqAg
+fCA3MC4wMHRoPVsgMTQxOF0sIDgwLjAwdGg9WyAxNTAwXSwgOTAuMDB0aD1bIDE4NjBdLCAN
+Cj4+IDk1LjAwdGg9WyAxOTA5XSwNCj4+IMKgwqDCoMKgwqAgfCA5OS4wMHRoPVsgMjExNF0s
+IDk5LjUwdGg9WzI0NzczXSwgOTkuOTB0aD1bMjc2NTddLCANCj4+IDk5Ljk1dGg9WzI3NjU3
+XSwNCj4+IMKgwqDCoMKgwqAgfCA5OS45OXRoPVszMDU0MF0NCj4+IMKgwqDCoCBidyAowqAg
+S2lCL3MpOiBtaW49MTQyMzM2LCBtYXg9MTg3MzkyLCBwZXI9MTAwLjAwJSwgYXZnPTE2ODE1
+Mi45MywgDQo+PiBzdGRldj05Mzg3LjQ2LCBzYW1wbGVzPTE5OQ0KPj4gwqDCoMKgIGlvcHPC
+oMKgwqDCoMKgwqDCoCA6IG1pbj3CoCA1NTYsIG1heD3CoCA3MzIsIGF2Zz02NTYuODQsIHN0
+ZGV2PTM2LjY3LCANCj4+IHNhbXBsZXM9MTk5DQo+PiDCoMKgIGxhdCAodXNlYynCoMKgIDog
+NTAwPTAuMDIlLCA3NTA9MTcuODUlLCAxMDAwPTAuMjQlDQo+PiDCoMKgIGxhdCAobXNlYynC
+oMKgIDogMj03OS4zNiUsIDQ9MS42MyUsIDEwPTAuMTUlLCAyMD0wLjAyJSwgNTA9MC43MyUN
+Cj4+IMKgwqAgbGF0IChtc2VjKcKgwqAgOiAxMDA9MC4wMSUNCj4+IMKgwqAgY3B1wqDCoMKg
+wqDCoMKgwqDCoMKgIDogdXNyPTAuMzElLCBzeXM9Mi42OSUsIGN0eD02NTYyMCwgbWFqZj0w
+LCBtaW5mPTEzDQo+PiDCoMKgIElPIGRlcHRoc8KgwqDCoCA6IDE9MTAwLjAlLCAyPTAuMCUs
+IDQ9MC4wJSwgOD0wLjAlLCAxNj0wLjAlLCAzMj0wLjAlLCANCj4+ID49NjQ9MC4wJQ0KPj4g
+wqDCoMKgwqDCoCBzdWJtaXTCoMKgwqAgOiAwPTAuMCUsIDQ9MTAwLjAlLCA4PTAuMCUsIDE2
+PTAuMCUsIDMyPTAuMCUsIDY0PTAuMCUsIA0KPj4gPj02ND0wLjAlDQo+PiDCoMKgwqDCoMKg
+IGNvbXBsZXRlwqAgOiAwPTAuMCUsIDQ9MTAwLjAlLCA4PTAuMCUsIDE2PTAuMCUsIDMyPTAu
+MCUsIDY0PTAuMCUsIA0KPj4gPj02ND0wLjAlDQo+PiDCoMKgwqDCoMKgIGlzc3VlZCByd3Rz
+OiB0b3RhbD0wLDY1NTM2LDAsMCBzaG9ydD0wLDAsMCwwIGRyb3BwZWQ9MCwwLDAsMA0KPj4g
+wqDCoMKgwqDCoCBsYXRlbmN5wqDCoCA6IHRhcmdldD0wLCB3aW5kb3c9MCwgcGVyY2VudGls
+ZT0xMDAuMDAlLCBkZXB0aD0xDQo+Pg0KPj4gUnVuIHN0YXR1cyBncm91cCAwIChhbGwgam9i
+cyk6DQo+PiDCoMKgIFdSSVRFOiBidz0xNjRNaUIvcyAoMTcyTUIvcyksIDE2NE1pQi9zLTE2
+NE1pQi9zICgxNzJNQi9zLTE3Mk1CL3MpLCANCj4+IGlvPTE2LjBHaUIgKDE3LjJHQiksIHJ1
+bj05OTgzNy05OTgzN21zZWMNCj4+DQo+PiBEaXNrIHN0YXRzIChyZWFkL3dyaXRlKToNCj4+
+IMKgwqAgc2RhOiBpb3M9MC82NTQwNSwgc2VjdG9ycz0wLzMzNDc1MDcyLCBtZXJnZT0wLzAs
+IHRpY2tzPTAvOTgwNjksIA0KPj4gaW5fcXVldWU9OTgwNzAsIHV0aWw9OTguMzIlDQo+Pg0K
+Pj4gZGQgcmVzdWx0LiBUaGUgZXJyb3IgaXMgYmVjYXVzZSBJIGZvcmdvdCB0byByZXNldCB6
+b25lcyBpbnRlbmRlZCB0byBiZSANCj4+IHdyaXR0ZW4uDQo+Pg0KPj4gZGQgaWY9L2Rldi96
+ZXJvIG9mPS9kZXYvc2RhIHNlZWs9Mzc2NDAxOTIgYnM9MjU2ayBvZmxhZz1zeW5jDQo+PiBk
+ZDogZXJyb3Igd3JpdGluZyAnL2Rldi9zZGEnOiBJbnB1dC9vdXRwdXQgZXJyb3INCj4+IDMw
+NzIxKzAgcmVjb3JkcyBpbg0KPj4gMzA3MjArMCByZWNvcmRzIG91dA0KPj4gODA1MzA2MzY4
+MCBieXRlcyAoOC4xIEdCLCA3LjUgR2lCKSBjb3BpZWQsIDMwMi45MTQgcywgMjYuNiBNQi9z
+DQo+IA0KPiANCkkgd2lsbCB0cnkgdjYuMTctcmMga2VybmVsIHNvb24uDQo=
 
- BTRFS warning (device dm-2): support for block size 8192 with page size 4096 is experimental, some features may be missing
- BTRFS info (device dm-2): checking UUID tree
- BTRFS info (device dm-2): enabling ssd optimizations
- BTRFS info (device dm-2): enabling free space tree
- NOTICE: Automounting of tracing to debugfs is deprecated and will be removed in 2030
- ------------[ cut here ]------------
- kernel BUG at /home/adam/linux/include/linux/highmem.h:275!
- Oops: invalid opcode: 0000 [#1] SMP
- CPU: 8 UID: 0 PID: 667 Comm: ls Tainted: G           OE       6.17.0-rc4-custom+ #283 PREEMPT(full)
- Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 02/02/2022
- RIP: 0010:zero_user_segments.constprop.0+0xdc/0xe0 [btrfs]
- Call Trace:
-  <TASK>
-  btrfs_get_extent.cold+0x85/0x101 [btrfs 7453c70c03e631c8d8bfdd4264fa62d3e238da6f]
-  btrfs_do_readpage+0x244/0x750 [btrfs 7453c70c03e631c8d8bfdd4264fa62d3e238da6f]
-  btrfs_read_folio+0x9c/0x100 [btrfs 7453c70c03e631c8d8bfdd4264fa62d3e238da6f]
-  filemap_read_folio+0x37/0xe0
-  do_read_cache_folio+0x94/0x3e0
-  __page_get_link.isra.0+0x20/0x90
-  page_get_link+0x16/0x40
-  step_into+0x69b/0x830
-  path_lookupat+0xa7/0x170
-  filename_lookup+0xf7/0x200
-  ? set_ptes.isra.0+0x36/0x70
-  vfs_statx+0x7a/0x160
-  do_statx+0x63/0xa0
-  __x64_sys_statx+0x90/0xe0
-  do_syscall_64+0x82/0xae0
-  entry_SYSCALL_64_after_hwframe+0x4b/0x53
-  </TASK>
+--------------dnNcL1nAceys1iP0qrT0wtlJ--
 
-Please note bs > ps support is still under development and the
-enablement patch is not even in btrfs development branch.
+--------------TGYk687arZBSD21nHQ6OsnBG
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-[CAUSE]
-Btrfs reuses its data folio read path to handle symbolic links, as the
-symbolic link target is stored as an inline data extent.
+-----BEGIN PGP SIGNATURE-----
 
-But for newly created inodes, btrfs only set the minimal order if the
-target inode is a regular file.
+wnsEABYIACMWIQQ3xl0cveqzft47u2GTyL/FEVGAGAUCaMf+lQUDAAAAAAAKCRCTyL/FEVGAGI89
+AQC+FGvIzQ2LBV8DTobR0yMqe3ifUUwRcYjpWHBUhfpD1QEA5ny41rfCs3dbsJZKtZkCswYH7Osr
+FPJtnhN2+Kb4OQg=
+=XnUm
+-----END PGP SIGNATURE-----
 
-Thus for above newly created symbolic link, it doesn't properly respect
-the minimal folio order, and triggered the above crash.
-
-[FIX]
-Call btrfs_set_inode_mapping_order() unconditionally inside
-btrfs_create_new_inode().
-
-For symbolic links this will fix the crash as now the folio will meet
-the minimal order.
-
-For regular files this brings no change.
-
-For directory/bdev/char and all the other types of inodes, they won't
-go through the data read path, thus no effect either.
-
-Fixes: cc38d178ff33 ("btrfs: enable large data folio support under CONFIG_BTRFS_EXPERIMENTAL")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6b52ab164f45..601a20396171 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6506,6 +6506,7 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
- 	if (!args->subvol)
- 		btrfs_inherit_iflags(BTRFS_I(inode), BTRFS_I(dir));
- 
-+	btrfs_set_inode_mapping_order(BTRFS_I(inode));
- 	if (S_ISREG(inode->i_mode)) {
- 		if (btrfs_test_opt(fs_info, NODATASUM))
- 			BTRFS_I(inode)->flags |= BTRFS_INODE_NODATASUM;
-@@ -6513,7 +6514,6 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
- 			BTRFS_I(inode)->flags |= BTRFS_INODE_NODATACOW |
- 				BTRFS_INODE_NODATASUM;
- 		btrfs_update_inode_mapping_flags(BTRFS_I(inode));
--		btrfs_set_inode_mapping_order(BTRFS_I(inode));
- 	}
- 
- 	ret = btrfs_insert_inode_locked(inode);
--- 
-2.50.1
-
+--------------TGYk687arZBSD21nHQ6OsnBG--
 
