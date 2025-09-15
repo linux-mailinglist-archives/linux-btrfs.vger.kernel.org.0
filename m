@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-16830-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16831-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B170BB58246
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 18:38:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08448B58245
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 18:38:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAB992A1E6C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 16:37:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EB114C1834
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Sep 2025 16:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170602857F2;
-	Mon, 15 Sep 2025 16:37:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C43E285C91;
+	Mon, 15 Sep 2025 16:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M2X3Isc8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u5MVURYk"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B122836A3
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 16:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E72627B336
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 16:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757954242; cv=none; b=s99zlFuxP3Uao6LpDmDZfiqLIMH7PKTsBnymMbJnzlpX6CYbf9MfBtyqwAjpDgENxAvJ5ebdJiLuaMX7OOtMnctMV0wZqml3MYHsLm3bdLxtp6Rhvd5wPlB8mDpmHeLe+WgkakqrSHpjkxeECdtb1DqXDyUUPnG29Xgjo9TTPns=
+	t=1757954243; cv=none; b=g+imbciiNWCBax9+5WnK9uK61qLMznl5SV7mQNBS5zt1GRV7TZ+qSHW1SAo4VkRT/FfIfe/rxQ+S0ZR4i2jwzyg6CgqzQq/fETiJgTuR4lyjGtTGDp0ILOQm1h9TcBx21hJilJ5EpGLsPSrQr12X/6My+u03CvlCVVE7wLKb284=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757954242; c=relaxed/simple;
-	bh=+YCean5I4QtSX61A/gIux2YwzGHb7MDQ8n2F0EWDn6E=;
+	s=arc-20240116; t=1757954243; c=relaxed/simple;
+	bh=Wpy3lCkGlQMP7NYU5Almqe240zX0mgX1BmXBVmRgGd4=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fv2jLW8b90EwTXCpJV0hsO6PIVsJjHPbmz3GhzaEihCe6vGTdjvqJNbI81MeZY44NX2eSbRw+1IFhiqWj0yyHtPR7+PqlTJUWzRyra1eWNeSZQTbXiJVIzIX7/PVzFEYMl6nNgCyKvLdgEbRNMyjWllH9M1hkyIdMi07VuUkOwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M2X3Isc8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0000C4CEF1
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 16:37:21 +0000 (UTC)
+	 MIME-Version; b=t5RDHRP/j9Dr0AKtMbgo7u0eL/If4hmGMXmuoegCif3rUZ1Cu0wYlHCzJHIYriJAGcgToPGuWKsBxaGOXiCpW2Ng5Gq8CI+VHFBN5g89iUkAiiG0pgjukPZ9zM6mSh5tq55PIaj8PCYjfPrsSndVQ9vnkYSAOzZAoaoKE1SEeqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u5MVURYk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FF16C4CEF7
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Sep 2025 16:37:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757954242;
-	bh=+YCean5I4QtSX61A/gIux2YwzGHb7MDQ8n2F0EWDn6E=;
+	s=k20201202; t=1757954243;
+	bh=Wpy3lCkGlQMP7NYU5Almqe240zX0mgX1BmXBVmRgGd4=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=M2X3Isc8lRRJyZlKBPGtjSZxdJRmL9DnIy0M1+CPUI6CaOh1Q7iz+sSZFnHJt3gJp
-	 gAhq+2djyJSleayISZofxxWPm8lky6vWJu11yRiglZcnTytoqUXWiHdbpfYboWBbWA
-	 w5CzTGdaVajfuDrMxgD+v0IM8NaN6YMmS7a+/YBjuuNsNKaJH99AbZBWB/ZDahokSZ
-	 Lpx5VBE2K7etRNppqcMjAkAmcO7ew7TfsZDPh+NjlGZws862w6dj1yYDbH3SHEq0My
-	 U10thGk9eMbbOFIkeCcfYUGEk2w8Zo3IQqXOixQTbSJAR/fJp8fuVvY4l5cuPgb/b0
-	 9E6aSkiX+Z1qw==
+	b=u5MVURYkMYF43gEIBYZeJkJRtEZ4pVSfkoAivirDrnyorqa+/XajKUw+35hD6/Few
+	 76zCp2L9DHX/0HOS4Fvhs2Thff3yuHHQ1hzpWe54F0/G9W/gVeifUSTqp6HhaxAGS9
+	 2UgWmXzYeKFAMYw+4eAlmZ1zxxPssUAo3u0dK0XKxiPiOTgIi9Vcmoc9fWOgtS5cWQ
+	 NGGKeaCVdTWbbJjMC72V5NRgHQlBrUWPk572nxV+pO1WaGdBZEzE/irrWW4lJIgxJq
+	 Avuejuv+/mBOqPJ5lbsIFM4aHDz7k97KMCY0qQ8mxN2cp8mpfTAyJtp4OenzPkT/Jb
+	 6+zbQCVvciLmQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 05/11] btrfs: print-tree: print information about inode extref items
-Date: Mon, 15 Sep 2025 17:37:07 +0100
-Message-ID: <3e2fc2ad71bd5a4e4d2d488a23253382a8f8e90a.1757952682.git.fdmanana@suse.com>
+Subject: [PATCH 06/11] btrfs: print-tree: print information about dir log items
+Date: Mon, 15 Sep 2025 17:37:08 +0100
+Message-ID: <86e5ba78dd310a8980330b455e2d68cd2eef11bb.1757952682.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1757952682.git.fdmanana@suse.com>
 References: <cover.1757952682.git.fdmanana@suse.com>
@@ -59,62 +59,45 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Currently we ignore inode extref items, we just print their key, item
-offset in the leaf and their size, no information about their content
-like the index number, parent inode, name length and name.
-
-Improve on this by printing the index, parent and name length in the same
-format as btrfs-progs. Note that we don't print the name, as that would
-require some processing and escaping like we do in btrfs-progs, and that
-could expose sensitive information for some users in case they share their
-dmesg/syslog and it contains a leaf dump. So for now leave names out.
+We currently don't print information about dir log items (other than the
+key, item offset and item size), which is useful to look at when debugging
+problems with a log tree. So print their specific information (currently
+they only have an end index number) in a format similar to btrfs-progs.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/print-tree.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ fs/btrfs/print-tree.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-index 7a7156257d59..0a2a6e82a3bf 100644
+index 0a2a6e82a3bf..a66aced1d29c 100644
 --- a/fs/btrfs/print-tree.c
 +++ b/fs/btrfs/print-tree.c
-@@ -297,6 +297,26 @@ static void print_inode_ref_item(const struct extent_buffer *eb, int i)
+@@ -317,6 +317,14 @@ static void print_inode_extref_item(const struct extent_buffer *eb, int i)
  	}
  }
  
-+static void print_inode_extref_item(const struct extent_buffer *eb, int i)
++static void print_dir_log_index_item(const struct extent_buffer *eb, int i)
 +{
-+	const u32 size = btrfs_item_size(eb, i);
-+	struct btrfs_inode_extref *extref;
-+	u32 cur = 0;
++	struct btrfs_dir_log_item *dlog;
 +
-+	extref = btrfs_item_ptr(eb, i, struct btrfs_inode_extref);
-+	while (cur < size) {
-+		const u64 index = btrfs_inode_extref_index(eb, extref);
-+		const u32 name_len = btrfs_inode_extref_name_len(eb, extref);
-+		const u64 parent = btrfs_inode_extref_parent(eb, extref);
-+		const u32 len = sizeof(*extref) + name_len;
-+
-+		pr_info("\t\tindex %llu parent %llu name_len %u\n",
-+			index, parent, name_len);
-+		extref = (struct btrfs_inode_extref *)((char *)extref + len);
-+		cur += len;
-+	}
++	dlog = btrfs_item_ptr(eb, i, struct btrfs_dir_log_item);
++	pr_info("\t\tdir log end %llu\n", btrfs_dir_log_end(eb, dlog));
 +}
 +
  void btrfs_print_leaf(const struct extent_buffer *l)
  {
  	struct btrfs_fs_info *fs_info;
-@@ -334,6 +354,9 @@ void btrfs_print_leaf(const struct extent_buffer *l)
- 		case BTRFS_INODE_REF_KEY:
- 			print_inode_ref_item(l, i);
- 			break;
-+		case BTRFS_INODE_EXTREF_KEY:
-+			print_inode_extref_item(l, i);
-+			break;
- 		case BTRFS_DIR_ITEM_KEY:
- 		case BTRFS_DIR_INDEX_KEY:
+@@ -362,6 +370,9 @@ void btrfs_print_leaf(const struct extent_buffer *l)
  		case BTRFS_XATTR_ITEM_KEY:
+ 			print_dir_item(l, i);
+ 			break;
++		case BTRFS_DIR_LOG_INDEX_KEY:
++			print_dir_log_index_item(l, i);
++			break;
+ 		case BTRFS_ROOT_ITEM_KEY:
+ 			ri = btrfs_item_ptr(l, i, struct btrfs_root_item);
+ 			pr_info("\t\troot data bytenr %llu refs %u\n",
 -- 
 2.47.2
 
