@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-16883-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16884-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D391CB7E07E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Sep 2025 14:40:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81E4EB7E1D5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Sep 2025 14:42:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E871582AA4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Sep 2025 07:53:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C65DB46170C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Sep 2025 07:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8CE23AE9A;
-	Wed, 17 Sep 2025 07:52:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA83305959;
+	Wed, 17 Sep 2025 07:52:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OtROpEI3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mocm+Vpd"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6F33054FF
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 07:52:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B60D3054FF
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 07:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758095569; cv=none; b=EXS7H1xfOXw+oStl/YP8z2vaPSlbY7/AlkgpPbESEtEynvqVgnUVAy4hYDrK7d/ddvZS+PXFfYV4oJReLSH7T/sSfzHQDoMMAxcRkhF3pGMClyAVgApY9lwO/Ju2YGNmR9kLeBaatxpnxj6QxbK+knjtaLrCQYZaXvf5GCw5uXY=
+	t=1758095571; cv=none; b=bb5DXu9GxPNLFH1ewCQDTN8/7aiS+N4fvBPEXZjpq0wrKqgP6FEQAs9M9qUh0cAebBNNt0pkJHSMAoBNYPmluZZGOseDokdTS+6XK10ZpAdAgXy6kTyTyxxWYCBfL9LUlwJDicY/MbdbRKrYMghMLFKMOkTxI+pclcvDvrm06ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758095569; c=relaxed/simple;
-	bh=a0vpaluK+CQ4GX+A91a7WOLZeYb2jE/8ZZoaC5h+36M=;
+	s=arc-20240116; t=1758095571; c=relaxed/simple;
+	bh=6cL53NxSFgu6CiCclcjkra/W/nJGYYdT2hJQqkZ7cQA=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sXdtUjdWyvXl2Z8qPkqgGxamWhU8IxYMCXLTVIAXmDRZbhusoyvMdgx/YwZZw1IkOa2lPcrQmaR42sLIdiM9CjKroZ6bAtst9EytsUd0t/YfNaGKVneNj6+0XZi6qX0S7iRjR1NBcWis8P+zUW7h5K5n6KQOWKo8ZyVOSh5jKfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OtROpEI3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 173FBC4CEF5
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 07:52:48 +0000 (UTC)
+	 MIME-Version; b=oqWT/PfcecsUOy7RKkxR6n4JS1unlruwCBorJvOU/6c0lmMhxwoU+hhQICtEkgZH9VaJZtXR9I7hE5wI3kqWkfXY3cnKVLyJas94TH/nPXlZ+iCTuZSyvx4qTJx8Yxmrs3+dvCoAaKAu43N1PCTkSYTcqN9+xBpVNGCvYwC10pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mocm+Vpd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04FBFC4CEF5
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 07:52:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758095569;
-	bh=a0vpaluK+CQ4GX+A91a7WOLZeYb2jE/8ZZoaC5h+36M=;
+	s=k20201202; t=1758095570;
+	bh=6cL53NxSFgu6CiCclcjkra/W/nJGYYdT2hJQqkZ7cQA=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=OtROpEI3LtttAwj0HhAETq9SQPgNO8/52JfzxVXB1zyCtGOWe/nU00YuI86lALXTj
-	 mtSk/iWR0L5Ci5aHjBBP9JqnCJinVOQMsGIMrZJFtolrntbgv9YCPu9/XTexpNvkIN
-	 GWNzMa1IViLK3lCIH+Ab6eoJ+FOspobpbFoGOAbyAjOYzKUW12t3ZeZcAGgnO/6hER
-	 ZT6Ee4rH44RZ6QGE+ahe/0qI9RS36hQE/4zDQiW/zjCCfAer/vgNPAjZNtmrZHbzzk
-	 WlpvbJ8HfUKk3Tc2xuLenBlrKCiAu32vhaHsS2x+7/jkuNJG4CgD8sPXfV4T+BbGEj
-	 16Et1s5koQzJA==
+	b=Mocm+VpdQ4pOw3z9wiNiQLaxhKsZWAxlCf3iSVj8i7QTT35ORjpjaTvG6H/qNhb4b
+	 zaQs3umeGy8TgrLpl1JKSYvN+jgBvv+Em4H0F8enhTFSigF3CFV8/dGRHjxJPdMH/y
+	 2vPdiVuRfINKUKyZn22gM2433fyNZxP8h8cF/eW+oSBkTfbww8N8V3fj0K9v838QMx
+	 tfWNNdUUnDKiOcL8JXy6cmDny33lr7i/7ckUz6CyuXNYAj43SC6qpRlPQOkmOBNZz+
+	 kqKm+7RSXCAZqqV/fPNg0VMMH82COaLsSX1FEmnngGbCF0cGk11qaHQjJYU8wKdgNh
+	 kDoyeOl6Lu7Kg==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/5] btrfs: mark as unlikely not uptodate extent buffer checks when navigating btrees
-Date: Wed, 17 Sep 2025 08:52:41 +0100
-Message-ID: <f7486f5ced7df5ec5a7d9e088fbe3f6a9260e02d.1758095164.git.fdmanana@suse.com>
+Subject: [PATCH 5/5] btrfs: mark leaf space and overflow checks as unlikely on insert and extension
+Date: Wed, 17 Sep 2025 08:52:42 +0100
+Message-ID: <4debbb91f2cddbd07a4ff06bdd7662cd9668b1d2.1758095164.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1758095164.git.fdmanana@suse.com>
 References: <cover.1758095164.git.fdmanana@suse.com>
@@ -59,55 +59,82 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We expect that after attempting to read an extent buffer we had no errors
-therefore the extent buffer is up to date, so mark the checks for a not up
-to date extent buffer as unlikely and allow the compiler to pontentially
-generate better code.
+We have several sanity checks when inserting or extending items in a btree
+that verify we didn't overflow the leaf or access a slot beyond the last
+one. These are cases that are never expected to be hit so mark them as
+unlikely, allowing the compiler to potentially generate better code.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/ctree.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 6f9465d4ce54..f6d2a4a4b9eb 100644
+index f6d2a4a4b9eb..dc185322362b 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -844,7 +844,7 @@ struct extent_buffer *btrfs_read_node_slot(struct extent_buffer *parent,
- 			     &check);
- 	if (IS_ERR(eb))
- 		return eb;
--	if (!extent_buffer_uptodate(eb)) {
-+	if (unlikely(!extent_buffer_uptodate(eb))) {
- 		free_extent_buffer(eb);
- 		return ERR_PTR(-EIO);
- 	}
-@@ -1571,7 +1571,7 @@ read_block_for_search(struct btrfs_root *root, struct btrfs_path *p,
- 	 * and give up so that our caller doesn't loop forever
- 	 * on our EAGAINs.
- 	 */
--	if (!extent_buffer_uptodate(tmp)) {
-+	if (unlikely(!extent_buffer_uptodate(tmp))) {
- 		ret = -EIO;
- 		goto out;
- 	}
-@@ -1752,7 +1752,7 @@ static struct extent_buffer *btrfs_search_slot_get_root(struct btrfs_root *root,
- 	 * The root may have failed to write out at some point, and thus is no
- 	 * longer valid, return an error in this case.
- 	 */
--	if (!extent_buffer_uptodate(b)) {
-+	if (unlikely(!extent_buffer_uptodate(b))) {
- 		if (root_lock)
- 			btrfs_tree_unlock_rw(b, root_lock);
- 		free_extent_buffer(b);
-@@ -2260,7 +2260,7 @@ int btrfs_search_old_slot(struct btrfs_root *root, const struct btrfs_key *key,
+@@ -3086,7 +3086,7 @@ int btrfs_leaf_free_space(const struct extent_buffer *leaf)
+ 	int ret;
  
- again:
- 	b = btrfs_get_old_root(root, time_seq);
--	if (!b) {
-+	if (unlikely(!b)) {
- 		ret = -EIO;
- 		goto done;
+ 	ret = BTRFS_LEAF_DATA_SIZE(fs_info) - leaf_space_used(leaf, 0, nritems);
+-	if (ret < 0) {
++	if (unlikely(ret < 0)) {
+ 		btrfs_crit(fs_info,
+ 			   "leaf free space ret %d, leaf data size %lu, used %d nritems %d",
+ 			   ret,
+@@ -4075,7 +4075,7 @@ void btrfs_truncate_item(struct btrfs_trans_handle *trans,
+ 	btrfs_set_item_size(leaf, slot, new_size);
+ 	btrfs_mark_buffer_dirty(trans, leaf);
+ 
+-	if (btrfs_leaf_free_space(leaf) < 0) {
++	if (unlikely(btrfs_leaf_free_space(leaf) < 0)) {
+ 		btrfs_print_leaf(leaf);
+ 		BUG();
+ 	}
+@@ -4108,7 +4108,7 @@ void btrfs_extend_item(struct btrfs_trans_handle *trans,
+ 	old_data = btrfs_item_data_end(leaf, slot);
+ 
+ 	BUG_ON(slot < 0);
+-	if (slot >= nritems) {
++	if (unlikely(slot >= nritems)) {
+ 		btrfs_print_leaf(leaf);
+ 		btrfs_crit(leaf->fs_info, "slot %d too large, nritems %d",
+ 			   slot, nritems);
+@@ -4135,7 +4135,7 @@ void btrfs_extend_item(struct btrfs_trans_handle *trans,
+ 	btrfs_set_item_size(leaf, slot, old_size + data_size);
+ 	btrfs_mark_buffer_dirty(trans, leaf);
+ 
+-	if (btrfs_leaf_free_space(leaf) < 0) {
++	if (unlikely(btrfs_leaf_free_space(leaf) < 0)) {
+ 		btrfs_print_leaf(leaf);
+ 		BUG();
+ 	}
+@@ -4183,7 +4183,7 @@ static void setup_items_for_insert(struct btrfs_trans_handle *trans,
+ 	data_end = leaf_data_end(leaf);
+ 	total_size = batch->total_data_size + (batch->nr * sizeof(struct btrfs_item));
+ 
+-	if (btrfs_leaf_free_space(leaf) < total_size) {
++	if (unlikely(btrfs_leaf_free_space(leaf) < total_size)) {
+ 		btrfs_print_leaf(leaf);
+ 		btrfs_crit(fs_info, "not enough freespace need %u have %d",
+ 			   total_size, btrfs_leaf_free_space(leaf));
+@@ -4193,7 +4193,7 @@ static void setup_items_for_insert(struct btrfs_trans_handle *trans,
+ 	if (slot != nritems) {
+ 		unsigned int old_data = btrfs_item_data_end(leaf, slot);
+ 
+-		if (old_data < data_end) {
++		if (unlikely(old_data < data_end)) {
+ 			btrfs_print_leaf(leaf);
+ 			btrfs_crit(fs_info,
+ 		"item at slot %d with data offset %u beyond data end of leaf %u",
+@@ -4232,7 +4232,7 @@ static void setup_items_for_insert(struct btrfs_trans_handle *trans,
+ 	btrfs_set_header_nritems(leaf, nritems + batch->nr);
+ 	btrfs_mark_buffer_dirty(trans, leaf);
+ 
+-	if (btrfs_leaf_free_space(leaf) < 0) {
++	if (unlikely(btrfs_leaf_free_space(leaf) < 0)) {
+ 		btrfs_print_leaf(leaf);
+ 		BUG();
  	}
 -- 
 2.47.2
