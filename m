@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-16900-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16902-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2B9CB822F0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 00:46:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD7C4B822F3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 00:47:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 692A1627961
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Sep 2025 22:46:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 496C51B28035
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Sep 2025 22:47:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9659E30FF25;
-	Wed, 17 Sep 2025 22:46:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5633231063C;
+	Wed, 17 Sep 2025 22:46:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kLyYB8EU";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kLyYB8EU"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bezBRJPi";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GgfkBqWD"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC5F9242D6E
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1C4230B500
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758149208; cv=none; b=Ewq27ksvefIKdidmEDVFm7jevPIeP82Rn4u8NhwPXGozNzreWxeuB+aMNQx50tt20gAcpBjwhuMi0KdyBukvuY5do0vQyf5Te9osXuL1NZUHR0sN0LAa9CQQwawwZMLpDN5TnAg//+eYX5kUKy1O8xP+JL/w0aoAlwVl9EI6AY0=
+	t=1758149215; cv=none; b=Ct2CUIOMpUdd7uzGc1poS9Lhb56jyXCa5o1Qv6vOz/xd4vy8l+D+Oc41ePNZbG3hUsJTdTc2mgUKWOfq397TLyDiVhxov7EKjkQ+VFpPUm6rUgz+3ao1a8Ou039wIEpG6KH1KYasxcxFtF6CNLXsrImHA9xEHSLobd0Bu+1ite8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758149208; c=relaxed/simple;
-	bh=ycmfGpzC3egHqNKTlRNTiF30+rqZMj4s1Qm1kUh9/OI=;
+	s=arc-20240116; t=1758149215; c=relaxed/simple;
+	bh=h4Evn4+NtqC9q+lFTB2s9hYgALCwx6dVgrjIX8nrIcg=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tETAKXEk8Dfqq4eTloeqFSXIImkPx0Z64sDz30FMNzIS9nbcUpUpDaisRUr+GUtI5Oe/mA/PeoPyNKeZq/fUncwmUm1YwiDej0PwRhabpQfpfvAbZeA5f/oEXx6dlLJUd981h/B83ry6fLqxBIVQrf4B2NbcX54A4JA+pnHSgO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kLyYB8EU; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kLyYB8EU; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=TealLCyurWJX5Dp9+2FT91NODCVqpsIjQD4Fac7TzgMw5XJYd2fhjZjYLG03m8CbQDgrSSpEPWRL+0PsVlfif21GCxpLZ8tGxKht0eGLF4v1UagY7c6kuxuw/NCKgP+HtQ26PAZpC8PQlWO561AWRnYwdoH+wpRKzPAKptKbwXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bezBRJPi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GgfkBqWD; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A4DD55D1C9
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:38 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D0E065D1CB
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1758149198; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1758149200; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=q892c4cA5W70L/sGUZ+hYCCgNPlX6M9MLuyBzM4uNww=;
-	b=kLyYB8EU6nhHUfZzofHRvVAlVq1di0uE6L8ZlcB4oR5e03ri9rYsVY3aG0Iu8Ad9l1EPd2
-	gOYXnZGYxSgFSL4UGqwr3QZWtPtOGqtR8B9RfyQ21QZASY1V9LbDShKdNsBO8MSZMdr6F3
-	qnyX9HA0w6cwzUOv21ey2u32Mn/d4a8=
+	bh=boH//wmXvqm6a1/wfn/Qksg2vYkHqNXs465TpiSN43Y=;
+	b=bezBRJPiciYwaQRrHWMn1L5IjXAEs20KZlLGqlQhJMG6jaxsTwL3dEIqhZ5vQMVisnX6X/
+	6LmL54Nu7TsulcFH8pzyLCCyof/njcASJFoiRpdfNsqI/O3bBj4IaDnAQ91xgE7L9nBBRB
+	2V7mfxyTi+4L2zAM30dnQw2gttTXZwo=
 Authentication-Results: smtp-out2.suse.de;
-	none
+	dkim=pass header.d=suse.com header.s=susede1 header.b=GgfkBqWD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1758149198; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1758149199; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=q892c4cA5W70L/sGUZ+hYCCgNPlX6M9MLuyBzM4uNww=;
-	b=kLyYB8EU6nhHUfZzofHRvVAlVq1di0uE6L8ZlcB4oR5e03ri9rYsVY3aG0Iu8Ad9l1EPd2
-	gOYXnZGYxSgFSL4UGqwr3QZWtPtOGqtR8B9RfyQ21QZASY1V9LbDShKdNsBO8MSZMdr6F3
-	qnyX9HA0w6cwzUOv21ey2u32Mn/d4a8=
+	bh=boH//wmXvqm6a1/wfn/Qksg2vYkHqNXs465TpiSN43Y=;
+	b=GgfkBqWDXm8cMamXrPRqefoopwXtlPqmSt792r3kUKVIwumLNQ4b1Weh2avF7UFwFdLjbP
+	iALeyti5yu1kA602IkxyZg/YXkzuYSqkp6qRJUxedr9nhKxbY76iFvunfsd6snY5ziRCe2
+	qy5B0jKN6cdysJySao46ZNI60HYoCUI=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E6CDF1368D
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:37 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1FC781368D
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id CMw9Kk06y2j/HQAAD6G6ig
+	id IPpGNU46y2j/HQAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:37 +0000
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:38 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 2/8] btrfs: prepare zstd to support bs > ps cases
-Date: Thu, 18 Sep 2025 08:16:07 +0930
-Message-ID: <6f27947f19da250e40b9469c120bfeead4a9d710.1758147788.git.wqu@suse.com>
+Subject: [PATCH RFC 3/8] btrfs: prepare lzo to support bs > ps cases
+Date: Thu, 18 Sep 2025 08:16:08 +0930
+Message-ID: <469716be3f2b1a316aa8074f522dca2031797a7d.1758147788.git.wqu@suse.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <cover.1758147788.git.wqu@suse.com>
 References: <cover.1758147788.git.wqu@suse.com>
@@ -85,187 +85,193 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: D0E065D1CB
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
+	MX_GOOD(-0.01)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_TRACE(0.00)[suse.com:+];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
 	TO_DN_NONE(0.00)[];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email]
+X-Spam-Score: -3.01
 
-This involves converting the following functions to use proper folio
+This involves converting the following functions to use correct folio
 sizes/shifts:
 
-- zstd_compress_folios()
-- zstd_decompress_bio()
+- copy_compress_data_to_page()
+- lzo_compress_folios()
+- lzo_decompress_bio()
 
-The function zstd_decompress() is already using block size correctly
-without using page size, thus it needs no modification.
+Just like zstd, lzo has some extra incorrect usage of kmap_local_folio()
+that the offset is always 0.
 
-And since zstd compression is calling kmap_local_folio(), the existing
-code can not handle large folios with HIGHMEM, as kmap_local_folio()
-requires us to handle one page range each time.
-
-I do not really think it's worthy to spend time on some feature that
-will be deprecated eventually.
-So here just add an extra explicit rejection for bs > ps with HIGHMEM
-feature enabled kernels.
+This will not handle HIGHMEM large folios correct, but those cases are
+already rejected explicitly so it should not cause problems when bs > ps
+support is enabled.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/fs.c   | 17 +++++++++++++++++
- fs/btrfs/zstd.c | 29 ++++++++++++++++-------------
- 2 files changed, 33 insertions(+), 13 deletions(-)
+ fs/btrfs/lzo.c | 41 ++++++++++++++++++++++-------------------
+ 1 file changed, 22 insertions(+), 19 deletions(-)
 
-diff --git a/fs/btrfs/fs.c b/fs/btrfs/fs.c
-index 014fb8b12f96..35084b4e498b 100644
---- a/fs/btrfs/fs.c
-+++ b/fs/btrfs/fs.c
-@@ -79,6 +79,23 @@ bool __attribute_const__ btrfs_supported_blocksize(u32 blocksize)
- 	if (blocksize == PAGE_SIZE || blocksize == SZ_4K || blocksize == BTRFS_MIN_BLOCKSIZE)
- 		return true;
- #ifdef CONFIG_BTRFS_EXPERIMENTAL
-+	/*
-+	 * For bs > ps support it's done by specifying a minimal folio order
-+	 * for filemap, thus implying large data folios.
-+	 * For HIGHMEM systems, we can not always access the content of a (large)
-+	 * folio in one go, but go through them page by page.
-+	 *
-+	 * A lot of features doesn't implement a proper PAGE sized loop for large
-+	 * folios, this includes:
-+	 * - compression
-+	 * - verity
-+	 * - encoded write
-+	 *
-+	 * Considering HIGHMEM is such a pain in the backend and it's going
-+	 * to be deprecated eventually, just reject HIGHMEM && bs > ps cases.
-+	 */
-+	if (IS_ENABLED(CONFIG_HIGHMEM) && blocksize > PAGE_SIZE)
-+		return false;
- 	if (blocksize <= PAGE_SIZE)
- 		return true;
- #endif
-diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
-index 28e2e99a2463..2f1593ddef4a 100644
---- a/fs/btrfs/zstd.c
-+++ b/fs/btrfs/zstd.c
-@@ -414,7 +414,8 @@ int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 	const unsigned long nr_dest_folios = *out_folios;
- 	const u64 orig_end = start + len;
- 	const u32 blocksize = fs_info->sectorsize;
--	unsigned long max_out = nr_dest_folios * PAGE_SIZE;
-+	const u32 min_folio_size = btrfs_min_folio_size(fs_info);
-+	unsigned long max_out = nr_dest_folios * min_folio_size;
- 	unsigned int cur_len;
+diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
+index c5a25fd872bd..bc0890f3c2bb 100644
+--- a/fs/btrfs/lzo.c
++++ b/fs/btrfs/lzo.c
+@@ -140,12 +140,13 @@ static int copy_compressed_data_to_page(struct btrfs_fs_info *fs_info,
+ 					u32 *cur_out)
+ {
+ 	const u32 sectorsize = fs_info->sectorsize;
++	const u32 min_folio_shift = PAGE_SHIFT + fs_info->block_min_order;
+ 	u32 sector_bytes_left;
+ 	u32 orig_out;
+ 	struct folio *cur_folio;
+ 	char *kaddr;
  
- 	workspace->params = zstd_get_btrfs_parameters(workspace->req_level, len);
-@@ -452,7 +453,7 @@ int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 	folios[nr_folios++] = out_folio;
- 	workspace->out_buf.dst = folio_address(out_folio);
- 	workspace->out_buf.pos = 0;
--	workspace->out_buf.size = min_t(size_t, max_out, PAGE_SIZE);
-+	workspace->out_buf.size = min_t(size_t, max_out, min_folio_size);
+-	if ((*cur_out / PAGE_SIZE) >= max_nr_folio)
++	if ((*cur_out >> min_folio_shift) >= max_nr_folio)
+ 		return -E2BIG;
  
- 	while (1) {
- 		size_t ret2;
-@@ -486,8 +487,8 @@ int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+ 	/*
+@@ -154,18 +155,17 @@ static int copy_compressed_data_to_page(struct btrfs_fs_info *fs_info,
+ 	 */
+ 	ASSERT((*cur_out / sectorsize) == (*cur_out + LZO_LEN - 1) / sectorsize);
  
- 		/* Check if we need more output space */
- 		if (workspace->out_buf.pos == workspace->out_buf.size) {
--			tot_out += PAGE_SIZE;
--			max_out -= PAGE_SIZE;
-+			tot_out += min_folio_size;
-+			max_out -= min_folio_size;
- 			if (nr_folios == nr_dest_folios) {
- 				ret = -E2BIG;
- 				goto out;
-@@ -501,7 +502,7 @@ int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 			workspace->out_buf.dst = folio_address(out_folio);
- 			workspace->out_buf.pos = 0;
- 			workspace->out_buf.size = min_t(size_t, max_out,
--							PAGE_SIZE);
-+							min_folio_size);
- 		}
- 
- 		/* We've reached the end of the input */
-@@ -551,8 +552,8 @@ int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 			goto out;
- 		}
- 
--		tot_out += PAGE_SIZE;
--		max_out -= PAGE_SIZE;
-+		tot_out += min_folio_size;
-+		max_out -= min_folio_size;
- 		if (nr_folios == nr_dest_folios) {
- 			ret = -E2BIG;
- 			goto out;
-@@ -565,7 +566,7 @@ int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 		folios[nr_folios++] = out_folio;
- 		workspace->out_buf.dst = folio_address(out_folio);
- 		workspace->out_buf.pos = 0;
--		workspace->out_buf.size = min_t(size_t, max_out, PAGE_SIZE);
-+		workspace->out_buf.size = min_t(size_t, max_out, min_folio_size);
+-	cur_folio = out_folios[*cur_out / PAGE_SIZE];
++	cur_folio = out_folios[*cur_out >> min_folio_shift];
+ 	/* Allocate a new page */
+ 	if (!cur_folio) {
+ 		cur_folio = btrfs_alloc_compr_folio(fs_info);
+ 		if (!cur_folio)
+ 			return -ENOMEM;
+-		out_folios[*cur_out / PAGE_SIZE] = cur_folio;
++		out_folios[*cur_out >> min_folio_shift] = cur_folio;
  	}
  
- 	if (tot_out >= tot_in) {
-@@ -587,14 +588,16 @@ int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+-	kaddr = kmap_local_folio(cur_folio, 0);
+-	write_compress_length(kaddr + offset_in_page(*cur_out),
+-			      compressed_size);
++	kaddr = kmap_local_folio(cur_folio, offset_in_folio(cur_folio, *cur_out));
++	write_compress_length(kaddr, compressed_size);
+ 	*cur_out += LZO_LEN;
  
- int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
+ 	orig_out = *cur_out;
+@@ -177,20 +177,20 @@ static int copy_compressed_data_to_page(struct btrfs_fs_info *fs_info,
+ 
+ 		kunmap_local(kaddr);
+ 
+-		if ((*cur_out / PAGE_SIZE) >= max_nr_folio)
++		if ((*cur_out >> min_folio_shift) >= max_nr_folio)
+ 			return -E2BIG;
+ 
+-		cur_folio = out_folios[*cur_out / PAGE_SIZE];
++		cur_folio = out_folios[*cur_out >> min_folio_shift];
+ 		/* Allocate a new page */
+ 		if (!cur_folio) {
+ 			cur_folio = btrfs_alloc_compr_folio(fs_info);
+ 			if (!cur_folio)
+ 				return -ENOMEM;
+-			out_folios[*cur_out / PAGE_SIZE] = cur_folio;
++			out_folios[*cur_out >> min_folio_shift] = cur_folio;
+ 		}
+ 		kaddr = kmap_local_folio(cur_folio, 0);
+ 
+-		memcpy(kaddr + offset_in_page(*cur_out),
++		memcpy(kaddr + offset_in_folio(cur_folio, *cur_out),
+ 		       compressed_data + *cur_out - orig_out, copy_len);
+ 
+ 		*cur_out += copy_len;
+@@ -221,6 +221,7 @@ int lzo_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct workspace *workspace = list_entry(ws, struct workspace, list);
+ 	const u32 sectorsize = fs_info->sectorsize;
++	const u32 min_folio_size = btrfs_min_folio_size(fs_info);
+ 	struct address_space *mapping = inode->vfs_inode.i_mapping;
+ 	struct folio *folio_in = NULL;
+ 	char *sizes_ptr;
+@@ -287,8 +288,8 @@ int lzo_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+ 			goto out;
+ 		}
+ 
+-		/* Check if we have reached page boundary */
+-		if (PAGE_ALIGNED(cur_in)) {
++		/* Check if we have reached folio boundary */
++		if (IS_ALIGNED(cur_in, min_folio_size)) {
+ 			folio_put(folio_in);
+ 			folio_in = NULL;
+ 		}
+@@ -305,7 +306,7 @@ int lzo_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+ out:
+ 	if (folio_in)
+ 		folio_put(folio_in);
+-	*out_folios = DIV_ROUND_UP(cur_out, PAGE_SIZE);
++	*out_folios = DIV_ROUND_UP(cur_out, min_folio_size);
+ 	return ret;
+ }
+ 
+@@ -317,15 +318,16 @@ int lzo_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+ static void copy_compressed_segment(struct compressed_bio *cb,
+ 				    char *dest, u32 len, u32 *cur_in)
  {
 +	struct btrfs_fs_info *fs_info = cb_to_fs_info(cb);
++	const u32 min_folio_shift = PAGE_SHIFT + fs_info->block_min_order;
+ 	u32 orig_in = *cur_in;
+ 
+ 	while (*cur_in < orig_in + len) {
+-		struct folio *cur_folio;
+-		u32 copy_len = min_t(u32, PAGE_SIZE - offset_in_page(*cur_in),
+-					  orig_in + len - *cur_in);
++		struct folio *cur_folio = cb->compressed_folios[*cur_in >> min_folio_shift];
++		u32 copy_len = min_t(u32, orig_in + len - *cur_in,
++				     folio_size(cur_folio) - offset_in_folio(cur_folio, *cur_in));
+ 
+ 		ASSERT(copy_len);
+-		cur_folio = cb->compressed_folios[*cur_in / PAGE_SIZE];
+ 
+ 		memcpy_from_folio(dest + *cur_in - orig_in, cur_folio,
+ 				  offset_in_folio(cur_folio, *cur_in), copy_len);
+@@ -339,6 +341,7 @@ int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
  	struct workspace *workspace = list_entry(ws, struct workspace, list);
- 	struct folio **folios_in = cb->compressed_folios;
- 	size_t srclen = cb->compressed_len;
- 	zstd_dstream *stream;
- 	int ret = 0;
--	const u32 blocksize = cb_to_fs_info(cb)->sectorsize;
-+	const u32 blocksize = fs_info->sectorsize;
-+	const unsigned int min_folio_size = btrfs_min_folio_size(fs_info);
- 	unsigned long folio_in_index = 0;
--	unsigned long total_folios_in = DIV_ROUND_UP(srclen, PAGE_SIZE);
-+	unsigned long total_folios_in = DIV_ROUND_UP(srclen, min_folio_size);
- 	unsigned long buf_start;
- 	unsigned long total_out = 0;
+ 	const struct btrfs_fs_info *fs_info = cb->bbio.inode->root->fs_info;
+ 	const u32 sectorsize = fs_info->sectorsize;
++	const u32 min_folio_shift = PAGE_SHIFT + fs_info->block_min_order;
+ 	char *kaddr;
+ 	int ret;
+ 	/* Compressed data length, can be unaligned */
+@@ -385,10 +388,10 @@ int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
+ 		 */
+ 		ASSERT(cur_in / sectorsize ==
+ 		       (cur_in + LZO_LEN - 1) / sectorsize);
+-		cur_folio = cb->compressed_folios[cur_in / PAGE_SIZE];
++		cur_folio = cb->compressed_folios[cur_in >> min_folio_shift];
+ 		ASSERT(cur_folio);
+ 		kaddr = kmap_local_folio(cur_folio, 0);
+-		seg_len = read_compress_length(kaddr + offset_in_page(cur_in));
++		seg_len = read_compress_length(kaddr + offset_in_folio(cur_folio, cur_in));
+ 		kunmap_local(kaddr);
+ 		cur_in += LZO_LEN;
  
-@@ -612,7 +615,7 @@ int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 
- 	workspace->in_buf.src = kmap_local_folio(folios_in[folio_in_index], 0);
- 	workspace->in_buf.pos = 0;
--	workspace->in_buf.size = min_t(size_t, srclen, PAGE_SIZE);
-+	workspace->in_buf.size = min_t(size_t, srclen, min_folio_size);
- 
- 	workspace->out_buf.dst = workspace->buf;
- 	workspace->out_buf.pos = 0;
-@@ -657,11 +660,11 @@ int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 				ret = -EIO;
- 				goto done;
- 			}
--			srclen -= PAGE_SIZE;
-+			srclen -= min_folio_size;
- 			workspace->in_buf.src =
- 				kmap_local_folio(folios_in[folio_in_index], 0);
- 			workspace->in_buf.pos = 0;
--			workspace->in_buf.size = min_t(size_t, srclen, PAGE_SIZE);
-+			workspace->in_buf.size = min_t(size_t, srclen, min_folio_size);
- 		}
- 	}
- 	ret = 0;
 -- 
 2.50.1
 
