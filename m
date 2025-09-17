@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-16904-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16901-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB06B82301
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 00:47:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6236B822F1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 00:47:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39C956264D8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Sep 2025 22:47:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 869BE1B27E28
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Sep 2025 22:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2561630B500;
-	Wed, 17 Sep 2025 22:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E462A30E0C5;
+	Wed, 17 Sep 2025 22:46:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Hlqcz80E";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Hlqcz80E"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iqAknz8M";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iqAknz8M"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1F4C2E5404
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:47:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B7F61FCE
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758149230; cv=none; b=f3hLqkSzubE4mQ3lw4cClhI37OXubIJCGxUO2lDzUU5zZV9cFZSEDQqaEZb2/okDAY+DuRHJso4xWt8um4n6CccgQ+108afy5usrVwr3kDtFQYOuM/IBO+tu2lkSaID9MJD6qiU/+1sUSUKYeMRFeVP3Wm50C8YF7JfK+SiRwR8=
+	t=1758149214; cv=none; b=hhWju1woXu89iYEW4pAoPBgrwSKbj6C9kAt6IKlkR6+KYXugwCs5mUqTPL2ZrgXKwlJ/hGxbrsT9kmj5wOEyGHx8CkgcCvSEzfjXJK9Wu3yHAUC0lZZ2YCV6VJxWrPGaZ4nxmsh0Bs0TcX4PpPhOtawTitKKVRjObknMHryiT5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758149230; c=relaxed/simple;
-	bh=cni6Mc0/HZYteY8uqh7T5oDKyDZi/Ge8I/dthMkji4w=;
+	s=arc-20240116; t=1758149214; c=relaxed/simple;
+	bh=Oq3iMi6/JCMEL+JsxqJddpd01mPy1mjTbUgGJEoP5Sk=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Y+YjIwdvoQdJ5TcHXN6W5x3VYz2HnSn3Kzq1BJSefwEVL8LCOoZQIGoB6LozqGjVDIjy7OiGGtqySTJc0Q5dZDVavuHnxlh14/R/il/pw5HpWWFdxjnpZMRRvCjG0YDCGosY8WZzVBTzjDK4Y3KhXQGot7MwUuan0p4kKdHdHFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Hlqcz80E; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Hlqcz80E; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=LHh8EuabtJrhBe55O65jToOHgr7f2mNHdZ6+ZQfKSn17kEQcTLE0mktGh6tKdchaJJeGXh/77uQIzZdhTCiAHyL3tSRn69aUuNoy0MM2wh8yMVwWBZ1T/dDc4kSghO51qssQQEygfdk8mJ7YvkzKte3YMii3ZkFiLLfrtBGgUeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iqAknz8M; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iqAknz8M; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 66D4E5D1CF
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:43 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 934F935031
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1758149203; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1758149204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dFtCzVovxb985LFcZXUQRfEC/kA8kpOGTXigPJlLmMg=;
-	b=Hlqcz80E4yImfE95FF6I4sCtR2/JvtoL1tFlaKPPujN3fxhkxiFAPgAwsLZoz0+2VEblcm
-	nE1IjH0eWbJerevMeQ5rhc9Y1ooMeqSzn79AGeKmm1AebW3PKCv0zWnsd/mZ00+n5t8iF2
-	MbWriH0wRqtQs/VAbZOt+qt8ksTECb4=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=Hlqcz80E
+	bh=5smTf8QxquUNmVU6Z06bfG6PkzgcdeOWHbOBoMDy56M=;
+	b=iqAknz8MBZOtHqhSP4FoOHUBkF93VxG11Gy+AU53NyoPUcQAtdTWrslJ5UxVag55CA4+Bg
+	i/Ff+WcV8dvMwjQTy8Z6k/tCDgreygisrkr8D7uu9WXiP8PN30HyLwBsIo49Osja0ayyqf
+	ugz2hEkEvbTj4WRvb17HedfFKcDbcm0=
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1758149203; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1758149204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dFtCzVovxb985LFcZXUQRfEC/kA8kpOGTXigPJlLmMg=;
-	b=Hlqcz80E4yImfE95FF6I4sCtR2/JvtoL1tFlaKPPujN3fxhkxiFAPgAwsLZoz0+2VEblcm
-	nE1IjH0eWbJerevMeQ5rhc9Y1ooMeqSzn79AGeKmm1AebW3PKCv0zWnsd/mZ00+n5t8iF2
-	MbWriH0wRqtQs/VAbZOt+qt8ksTECb4=
+	bh=5smTf8QxquUNmVU6Z06bfG6PkzgcdeOWHbOBoMDy56M=;
+	b=iqAknz8MBZOtHqhSP4FoOHUBkF93VxG11Gy+AU53NyoPUcQAtdTWrslJ5UxVag55CA4+Bg
+	i/Ff+WcV8dvMwjQTy8Z6k/tCDgreygisrkr8D7uu9WXiP8PN30HyLwBsIo49Osja0ayyqf
+	ugz2hEkEvbTj4WRvb17HedfFKcDbcm0=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A7D991368D
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:42 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D547F1368D
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0O/eGlI6y2j/HQAAD6G6ig
+	id WHDzJVM6y2j/HQAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:42 +0000
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 22:46:43 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 6/8] btrfs: fix symbolic link reading when bs > ps
-Date: Thu, 18 Sep 2025 08:16:11 +0930
-Message-ID: <0ef9c680933493f1c53a2f5f0651b5c43b1e01df.1758147788.git.wqu@suse.com>
+Subject: [PATCH RFC 7/8] btrfs: add extra ASSERT()s to catch unaligned bios
+Date: Thu, 18 Sep 2025 08:16:12 +0930
+Message-ID: <f80bdfcba07bedf90ef88270e800257bfd1b4feb.1758147788.git.wqu@suse.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <cover.1758147788.git.wqu@suse.com>
 References: <cover.1758147788.git.wqu@suse.com>
@@ -84,134 +84,102 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	RCPT_COUNT_ONE(0.00)[1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+]
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 66D4E5D1CF
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+X-Spam-Score: -2.80
 
-[BUG DURING BS > PS TEST]
-When running the following script on a btrfs whose block size is larger
-than page size, e.g. 8K block size and 4K page size, it will trigger a
-kernel BUG:
+Btrfs uses btrfs_bio to handle read/write of logical address, for the
+incoming bs > ps support, btrfs has extra requirements:
 
- # mkfs.btrfs -s 8k $dev
- # mount $dev $mnt
- # mkdir $mnt/dir
- # ln -s dir $mnt/link
- # ls $mnt/link
+- One folio must contain at least one fs block
+- No fs block can cross folio boundaries
 
-The call trace looks like this:
+This requirement is not hard to maintain, thanks to the address space's
+minimal folio order.
 
- BTRFS warning (device dm-2): support for block size 8192 with page size 4096 is experimental, some features may be missing
- BTRFS info (device dm-2): checking UUID tree
- BTRFS info (device dm-2): enabling ssd optimizations
- BTRFS info (device dm-2): enabling free space tree
- NOTICE: Automounting of tracing to debugfs is deprecated and will be removed in 2030
- ------------[ cut here ]------------
- kernel BUG at /home/adam/linux/include/linux/highmem.h:275!
- Oops: invalid opcode: 0000 [#1] SMP
- CPU: 8 UID: 0 PID: 667 Comm: ls Tainted: G           OE       6.17.0-rc4-custom+ #283 PREEMPT(full)
- Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 02/02/2022
- RIP: 0010:zero_user_segments.constprop.0+0xdc/0xe0 [btrfs]
- Call Trace:
-  <TASK>
-  btrfs_get_extent.cold+0x85/0x101 [btrfs 7453c70c03e631c8d8bfdd4264fa62d3e238da6f]
-  btrfs_do_readpage+0x244/0x750 [btrfs 7453c70c03e631c8d8bfdd4264fa62d3e238da6f]
-  btrfs_read_folio+0x9c/0x100 [btrfs 7453c70c03e631c8d8bfdd4264fa62d3e238da6f]
-  filemap_read_folio+0x37/0xe0
-  do_read_cache_folio+0x94/0x3e0
-  __page_get_link.isra.0+0x20/0x90
-  page_get_link+0x16/0x40
-  step_into+0x69b/0x830
-  path_lookupat+0xa7/0x170
-  filename_lookup+0xf7/0x200
-  ? set_ptes.isra.0+0x36/0x70
-  vfs_statx+0x7a/0x160
-  do_statx+0x63/0xa0
-  __x64_sys_statx+0x90/0xe0
-  do_syscall_64+0x82/0xae0
-  entry_SYSCALL_64_after_hwframe+0x4b/0x53
-  </TASK>
+But not all btrfs bios are generated through address space, e.g.
+compression and scrub.
 
-Please note bs > ps support is still under development and the
-enablement patch is not even in btrfs development branch.
+To catch possible unaligned bios, introduce a helper,
+assert_bbio_alginment(), for each btrfs_bio in btrfs_submit_bbio().
 
-[CAUSE]
-Btrfs reuses its data folio read path to handle symbolic links, as the
-symbolic link target is stored as an inline data extent.
+This will check the following things:
 
-But for newly created inodes, btrfs only set the minimal order if the
-target inode is a regular file.
+- bv_offset is aligned to block size
+- bv_len is aligned to block size
 
-Thus for above newly created symbolic link, it doesn't properly respect
-the minimal folio order, and triggered the above crash.
+With a btrfs bio passing above checks, unless it's empty it will ensure
+the requirements for bs > ps support.
 
-[FIX]
-Call btrfs_set_inode_mapping_order() unconditionally inside
-btrfs_create_new_inode().
-
-For symbolic links this will fix the crash as now the folio will meet
-the minimal order.
-
-For regular files this brings no change.
-
-For directory/bdev/char and all the other types of inodes, they won't
-go through the data read path, thus no effect either.
-
-Fixes: cc38d178ff33 ("btrfs: enable large data folio support under CONFIG_BTRFS_EXPERIMENTAL")
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/bio.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6b52ab164f45..601a20396171 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6506,6 +6506,7 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
- 	if (!args->subvol)
- 		btrfs_inherit_iflags(BTRFS_I(inode), BTRFS_I(dir));
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 909b208f9ef3..db2deaa4aad4 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -779,11 +779,38 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 	return true;
+ }
  
-+	btrfs_set_inode_mapping_order(BTRFS_I(inode));
- 	if (S_ISREG(inode->i_mode)) {
- 		if (btrfs_test_opt(fs_info, NODATASUM))
- 			BTRFS_I(inode)->flags |= BTRFS_INODE_NODATASUM;
-@@ -6513,7 +6514,6 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
- 			BTRFS_I(inode)->flags |= BTRFS_INODE_NODATACOW |
- 				BTRFS_INODE_NODATASUM;
- 		btrfs_update_inode_mapping_flags(BTRFS_I(inode));
--		btrfs_set_inode_mapping_order(BTRFS_I(inode));
- 	}
++static void assert_bbio_alignment(struct btrfs_bio *bbio)
++{
++#ifdef CONFIG_BTRFS_ASSERT
++	struct btrfs_fs_info *fs_info = bbio->fs_info;
++	struct bio_vec bvec;
++	struct bvec_iter iter;
++	const u32 blocksize = fs_info->sectorsize;
++
++	/* Metadata has no extra bs > ps alignment requirement. */
++	if (!is_data_bbio(bbio))
++		return;
++
++	bio_for_each_bvec(bvec, &bbio->bio, iter)
++		ASSERT(IS_ALIGNED(bvec.bv_offset, blocksize) &&
++		       IS_ALIGNED(bvec.bv_len, blocksize),
++		"root=%llu inode=%llu logical=%llu length=%u index=%u bv_offset=%u bv_len=%u",
++		btrfs_root_id(bbio->inode->root),
++		btrfs_ino(bbio->inode),
++		bbio->bio.bi_iter.bi_sector << SECTOR_SHIFT,
++		bbio->bio.bi_iter.bi_size, iter.bi_idx,
++		bvec.bv_offset,
++		bvec.bv_len);
++#endif
++}
++
+ void btrfs_submit_bbio(struct btrfs_bio *bbio, int mirror_num)
+ {
+ 	/* If bbio->inode is not populated, its file_offset must be 0. */
+ 	ASSERT(bbio->inode || bbio->file_offset == 0);
  
- 	ret = btrfs_insert_inode_locked(inode);
++	assert_bbio_alignment(bbio);
++
+ 	while (!btrfs_submit_chunk(bbio, mirror_num))
+ 		;
+ }
 -- 
 2.50.1
 
