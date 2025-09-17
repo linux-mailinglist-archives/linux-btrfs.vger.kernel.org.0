@@ -1,154 +1,175 @@
-Return-Path: <linux-btrfs+bounces-16887-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16888-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A63AB7D271
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Sep 2025 14:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4539EB80B3C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Sep 2025 17:46:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52F0F3BF7A3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Sep 2025 09:52:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 078D652783C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Sep 2025 15:46:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F57346A0D;
-	Wed, 17 Sep 2025 09:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF60F314D24;
+	Wed, 17 Sep 2025 15:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b="sW/61vUw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E/qxYTyq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx.swemel.ru (mx.swemel.ru [95.143.211.150])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588B0274676;
-	Wed, 17 Sep 2025 09:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.143.211.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2753C314D15
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 15:42:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758102724; cv=none; b=kJiImC8Vy8LCLDW26mAqVLNCN3zTXDfpOA+MyA8tgxfSOvXLi1RjWqu+Ur8AtSfCygUFM32JERFivw+upq9cbw/akqo402sIuTEEJTKACGpkftb2CpOYHAtooM5/Kt5IU69lwefkBQXLgB2rcXwOD9DC/J2olBnW/a+NrBcpCEk=
+	t=1758123742; cv=none; b=GDB6GSp6Ys4Az5hAswD4BbXIhw3cXnqxoDSZ55OnhAP+0frVBKRU6TXq73ZGJ7MOP0QCcrUS0NaAlswypIIYtIkpuCdMbhrNRAV2sKjs2sbpRESAXzDbz9o7u9ZMgqXs/tT+4LgqYK0qE3nhBHTbo8DlGJJ6smkb8f5SVZPbnY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758102724; c=relaxed/simple;
-	bh=CqkSmY22reWJwLvbv91mw4eVE3WvCe5UpKSTu3Dy0/0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mAod6OCyedqkTl1j5kMxTTuSkbIXhvVr5DKJAFhqRtURFfKZWjFgJKM0IdLb84Qt18ZEL8qkXmuUfwIE5X8cm/QR+ckAAt7a5/yiQLbbrggHKOU8VR7UsjNwaaKtLdMnRvFKnrp+LgfPS7aqfUV0ki2Y54VjZ2dkkltfjH6LzUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru; spf=pass smtp.mailfrom=swemel.ru; dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b=sW/61vUw; arc=none smtp.client-ip=95.143.211.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=swemel.ru
-From: Denis Arefev <arefev@swemel.ru>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=swemel.ru; s=mail;
-	t=1758102308;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=7I+wQC6r4aGT6IUipkDw6NXltnUcu+fPOmWjt4D3DIA=;
-	b=sW/61vUwNpqq9vz6wmonAvMZxUq5uaM/YLhwd+vH4PWhU/3VTkH7gh6B3IVr39hxNDeE9P
-	MZ+tMHd4icypTwQUZl1psfs7h3ukDuNAOt+xF1iii8/nOHnSSJaodtrpSTPDQKq0r0yYnd
-	vo7fvQq/NmD6+AVvbyo1SFWYbGxdlBs=
-To: stable@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 5.10] btrfs: free exchange changeset on failures
-Date: Wed, 17 Sep 2025 12:45:06 +0300
-Message-ID: <20250917094507.18690-1-arefev@swemel.ru>
+	s=arc-20240116; t=1758123742; c=relaxed/simple;
+	bh=AfmoQIEBkUMfDodnI9YLP228cWyjWe1vTqyKEapVVQ8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F6dV8ZEsLzfqvC4E6DbrnLL0Ssl6btLBaPnC2Q5Wypl9OWYMvHJMfBSb8kD8zUk7xvG/x7PH02NhIdZJ6VNveKvon9vas2nnjXZxlFk5MBF8ymbwVxB1gw0AKjqSQ6TLUhw8+CKDi4aG++F9edAivxY+X4eTjzFOBiN92Yxsmj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E/qxYTyq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A76CFC4CEE7
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 15:42:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758123741;
+	bh=AfmoQIEBkUMfDodnI9YLP228cWyjWe1vTqyKEapVVQ8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=E/qxYTyq9F34vVgbVO6cpvsKfeyJFE0xW5/LfhspBF6qN7YMIAtFix1uD5ggNW6XM
+	 uHyuwKDB205bQhUoUzF8MMC8WJ0DATKotaCVw4kb4VVOauwqsM+6Ka2nWPIQf1bhFd
+	 lBRHP52Ghhf+zGegRnwzC4NopQ5cK/rvB5Q8uL/oX9KRIQvJc62eEqtEVu8vuCN6Rn
+	 iiz95FSpA7Axi1BW5y44c9dtzzVYdo7Cr1fRT4JoT+G4svikQjUpR/NXhOdTCglKoc
+	 4qBTM6QRvguOI2bFTpMn28K15xl3REkWhfxoCXD1DWIYLEas4FRN7sjYsKV62Abzwh
+	 MImQYaotyJqtQ==
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-62f2b27a751so5558699a12.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Sep 2025 08:42:21 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxL+qdMCwKzDNslAEwnLwpI6IEVI0ZZo3yiuCfUUsxSv7d1iD31
+	H2Nap0fnA4wRaBHuXIFmy4bGdwxP8u89ooh27bMVqtuevhIoU/j61RmiE6MIRZNDVj55OtI7bvt
+	KTJ8ZKv/2iTErf8jlTFCLxfIyxe1oF3c=
+X-Google-Smtp-Source: AGHT+IGtJ7TnH6Y0u3ZPLQilbf3vELhCRenlom2XkwwJoQjO+AFhCxqsem2zw7EWCX8sC27n2DokJviF+qbkD9q3l04=
+X-Received: by 2002:a17:907:c0a:b0:b04:74d1:a561 with SMTP id
+ a640c23a62f3a-b1bb6239b15mr392383466b.25.1758123740215; Wed, 17 Sep 2025
+ 08:42:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250910175007.23176-1-dsterba@suse.com>
+In-Reply-To: <20250910175007.23176-1-dsterba@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 17 Sep 2025 16:41:43 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4vXmz4pGXayq98XZqPbFh6H6Z4=eaM-gFX7fsRLnFfEQ@mail.gmail.com>
+X-Gm-Features: AS18NWDumFLaal85sT6gB01QjdrN7S8z-Bdvmsa7r2a4uzjHghkvHz1ZTifi_0Y
+Message-ID: <CAL3q7H4vXmz4pGXayq98XZqPbFh6H6Z4=eaM-gFX7fsRLnFfEQ@mail.gmail.com>
+Subject: Re: Btrfs progs release 6.16.1
+To: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, Mark Harmstone <maharmstone@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Wed, Sep 10, 2025 at 7:15=E2=80=AFPM David Sterba <dsterba@suse.com> wro=
+te:
+>
+> Hi,
+>
+> btrfs-progs version 6.16.1 have been released. This is a minor feature up=
+date
+> (mkfs.btrfs) and bugfix release.
+>
+> Changelog:
+>
+> * mkfs:
+>    * add option --reflink, when used with --rootdir clone file extents in=
+stead
+>      of copying (requires source and target image on the same filesystem)
+>    * improved tracking of inodes and subvolumes for option --inode-flags
+>    * fix initializing raid-stripe-tree
+>    * extend what is trimmed/discarded during initialization (temporary ch=
+unks,
+>      free space)
+> * check: detect duplicate file names in directory items
+> * inspect tree-stats: accept string names for option -t
+> * receive: allow to dump stream from different user
+> * other:
+>    * updated documentation
+>    * new and updated tests
 
-commit da5e817d9d75422eaaa05490d0b9a5e328fc1a51 upstream.
+With this btrfs-progs release, running 'btrfs check' fails on a
+filesystem created by an older mkfs.btrfs.
 
-Fstests runs on my VMs have show several kmemleak reports like the following.
+For example, create an empty fs with 6.14:
 
-  unreferenced object 0xffff88811ae59080 (size 64):
-    comm "xfs_io", pid 12124, jiffies 4294987392 (age 6.368s)
-    hex dump (first 32 bytes):
-      00 c0 1c 00 00 00 00 00 ff cf 1c 00 00 00 00 00  ................
-      90 97 e5 1a 81 88 ff ff 90 97 e5 1a 81 88 ff ff  ................
-    backtrace:
-      [<00000000ac0176d2>] ulist_add_merge+0x60/0x150 [btrfs]
-      [<0000000076e9f312>] set_state_bits+0x86/0xc0 [btrfs]
-      [<0000000014fe73d6>] set_extent_bit+0x270/0x690 [btrfs]
-      [<000000004f675208>] set_record_extent_bits+0x19/0x20 [btrfs]
-      [<00000000b96137b1>] qgroup_reserve_data+0x274/0x310 [btrfs]
-      [<0000000057e9dcbb>] btrfs_check_data_free_space+0x5c/0xa0 [btrfs]
-      [<0000000019c4511d>] btrfs_delalloc_reserve_space+0x1b/0xa0 [btrfs]
-      [<000000006d37e007>] btrfs_dio_iomap_begin+0x415/0x970 [btrfs]
-      [<00000000fb8a74b8>] iomap_iter+0x161/0x1e0
-      [<0000000071dff6ff>] __iomap_dio_rw+0x1df/0x700
-      [<000000002567ba53>] iomap_dio_rw+0x5/0x20
-      [<0000000072e555f8>] btrfs_file_write_iter+0x290/0x530 [btrfs]
-      [<000000005eb3d845>] new_sync_write+0x106/0x180
-      [<000000003fb505bf>] vfs_write+0x24d/0x2f0
-      [<000000009bb57d37>] __x64_sys_pwrite64+0x69/0xa0
-      [<000000003eba3fdf>] do_syscall_64+0x43/0x90
+$ mkfs.btrfs -f /dev/sdc
+btrfs-progs v6.14
+See https://btrfs.readthedocs.io for more information.
 
-In case brtfs_qgroup_reserve_data() or btrfs_delalloc_reserve_metadata()
-fail the allocated extent_changeset will not be freed.
+Performing full device TRIM /dev/sdc (100.00GiB) ...
+NOTE: several default settings have changed in version 5.15, please make su=
+re
+      this does not affect your deployments:
+      - DUP for metadata (-m dup)
+      - enabled no-holes (-O no-holes)
+      - enabled free-space-tree (-R free-space-tree)
 
-So in btrfs_check_data_free_space() and btrfs_delalloc_reserve_space()
-free the allocated extent_changeset to get rid of the allocated memory.
+Label:              (null)
+UUID:               86a7103b-88eb-4a6a-b542-05523067d6f9
+Node size:          16384
+Sector size:        4096 (CPU page size: 4096)
+Filesystem size:    100.00GiB
+Block group profiles:
+  Data:             single            8.00MiB
+  Metadata:         DUP               1.00GiB
+  System:           DUP               8.00MiB
+SSD detected:       no
+Zoned device:       no
+Features:           extref, skinny-metadata, no-holes, free-space-tree
+Checksum:           crc32c
+Number of devices:  1
+Devices:
+   ID        SIZE  PATH
+    1   100.00GiB  /dev/sdc
 
-The issue currently only happens in the direct IO write path, but only
-after 65b3c08606e5 ("btrfs: fix ENOSPC failure when attempting direct IO
-write into NOCOW range"), and also at defrag_one_locked_target(). Every
-other place is always calling extent_changeset_free() even if its call
-to btrfs_delalloc_reserve_space() or btrfs_check_data_free_space() has
-failed.
+Now run 'btrfs check' from this release and it fails:
 
-CC: stable@vger.kernel.org # 5.15+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Denis Arefev <arefev@swemel.ru>                                    
----
-Backport fix for CVE-2021-47508
-Link: https://nvd.nist.gov/vuln/detail/cve-2021-47508
----
- fs/btrfs/delalloc-space.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+$ btrfs check /dev/sdc
+Opening filesystem to check...
+Checking filesystem on /dev/sdc
+UUID: 86a7103b-88eb-4a6a-b542-05523067d6f9
+[1/8] checking log skipped (none written)
+[2/8] checking root items
+[3/8] checking extents
+[4/8] checking free space tree
+We have a space info key for a block group that doesn't exist
+[5/8] checking fs roots
+[6/8] checking only csums items (without verifying data)
+[7/8] checking root refs
+[8/8] checking quota groups skipped (not enabled on this FS)
+found 147456 bytes used, error(s) found
+total csum bytes: 0
+total tree bytes: 147456
+total fs tree bytes: 32768
+total extent tree bytes: 16384
+btree space waste bytes: 140530
+file data blocks allocated: 0
+ referenced 0
 
-diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
-index 45b2a5ecd63a..cd12226c3220 100644
---- a/fs/btrfs/delalloc-space.c
-+++ b/fs/btrfs/delalloc-space.c
-@@ -143,10 +143,13 @@ int btrfs_check_data_free_space(struct btrfs_inode *inode,
- 
- 	/* Use new btrfs_qgroup_reserve_data to reserve precious data space. */
- 	ret = btrfs_qgroup_reserve_data(inode, reserved, start, len);
--	if (ret < 0)
-+	if (ret < 0) {
- 		btrfs_free_reserved_data_space_noquota(fs_info, len);
--	else
-+		extent_changeset_free(*reserved);
-+		*reserved = NULL;
-+	} else {
- 		ret = 0;
-+	}
- 	return ret;
- }
- 
-@@ -446,8 +449,11 @@ int btrfs_delalloc_reserve_space(struct btrfs_inode *inode,
- 	if (ret < 0)
- 		return ret;
- 	ret = btrfs_delalloc_reserve_metadata(inode, len);
--	if (ret < 0)
-+	if (ret < 0) {
- 		btrfs_free_reserved_data_space(inode, *reserved, start, len);
-+		extent_changeset_free(*reserved);
-+		*reserved = NULL;
-+	}
- 	return ret;
- }
- 
--- 
-2.43.0
+A bisection points to:
 
+commit e2cf6a03796b73d446b086022c0dfcf6a6552928
+Author: Mark Harmstone <maharmstone@fb.com>
+Date:   Fri Jul 18 15:26:27 2025 +0100
+
+    btrfs-progs: use btrfs_lookup_block_group() in check_free_space_tree()
+
+
+
+
+>
+> Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-prog=
+s/
+> Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+> Release: https://github.com/kdave/btrfs-progs/releases/tag/v6.16.1
+>
 
