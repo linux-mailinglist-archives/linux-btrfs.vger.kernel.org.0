@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-16918-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16919-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00215B84126
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 12:27:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C57D3B841F5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 12:34:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EF881C206E5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 10:26:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 087257ACBE3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 10:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E8FA28750B;
-	Thu, 18 Sep 2025 10:26:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C882E5B19;
+	Thu, 18 Sep 2025 10:32:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kC6NBIuU";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kC6NBIuU"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="pW9Musbv";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="pW9Musbv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BBD228137A
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Sep 2025 10:26:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D032E1F03
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Sep 2025 10:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758191174; cv=none; b=DOJjNDR/Dgr5QSIwPiF7PTPtIAaW+INhs1nkfrzkdNYxTQNE6Vm8yXcbVcpaIUr1TPHblx1FNT1+Dcw4oW8Pf71+SL8tj3tJIgjatz0qLzHJ0FMfQ45B7Hmiro5I+WXmIF/aY9cB4OFRcz7cNhn1C26Zu3eqkuZOCG4AwZs/OeM=
+	t=1758191574; cv=none; b=uz3slc1PXk+ThVSo4qRTkIYwCw6Dsrq6zOpH91jUn0LWsIVCBznBHxXnaQbj2cKx5XrG4dg07jZMCWzVNAd138Bg4l0533phSTGu8hLWvFm7f7sFQksIoxGDZ45Z7u/iwBYbHZYzyetjPMwKUhfjK4suFd1cwraTftKGgtERuj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758191174; c=relaxed/simple;
-	bh=rXzqghaTXiYADJRlBLzXjUS/5zhcbMBacEPijPaH8iI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=VP8GfGmCeRRFmAu1ncW+ev1id6C2luLaqc8UqA4cG88asSQUQb32acNRhCEwDhTOE68m/cYJBgvKiZ3jP9SLpgDh4SoDWOzaF5KsbAAVej+SkPyVfFI+sDKJuuQvaG2J7CaCp6uX8Rk0vmX+lkSvapyX123nqH4Tj0bCIZwS2zc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kC6NBIuU; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kC6NBIuU; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1758191574; c=relaxed/simple;
+	bh=kX8t7uvBUcmAS0p2fCmycLmHr50WHYRwBtymn7wuDKA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=RVcSEWgaGw7y6IfSwEvfZkjGqo4yjNJJ1LDKRJLATnLPvHNkOhzPLLOpwzmVpVvDt5H5WW6IFtFrq9THxrSqcJsm9X/6Ir14jkQjT4yixzNShtEcNOhbRI33/X7jXjyTZnPibZAEXWbIo9YioEg0ej8s4lPJhfcaZ+ZjwsGvdsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=pW9Musbv; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=pW9Musbv; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8C85C1F7E7;
-	Thu, 18 Sep 2025 10:26:10 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5566333864;
+	Thu, 18 Sep 2025 10:32:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1758191170; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1758191569; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=V9JilDSROWCa0Ad+zriWk+vF5KBYMhtAM9yT+1A/PD0=;
-	b=kC6NBIuUX7YEwbz3gw+KsINHolZ1+MCt0e+2hUGi1I5/B09muqe2V/z9qFfqJMH/yOmUuV
-	ad2k8kql2UQWauV/AHnNrRUqKAKxe0CqwZEgJqRBPYp8cklUd05BiWFq1TraYVWGVaJj5V
-	6x4ihCy2T182H4x5J9SsrIuOSNgUh4k=
-Authentication-Results: smtp-out2.suse.de;
-	none
+	bh=6gFwhABI7Rpc/1PTUTu9+GLBvZdl+23FmBmMPlYecVs=;
+	b=pW9MusbvvsnKmXZM/qieQoOxfGtaZNcT8DxxQ3cRm4R54SmQCX1SSUQCoa/tGAlAkcE52f
+	w1VSiFOrCKhX4ccV6ZzwOSQzgjBlm+K3CbJr6E4tSWEOvOUe+CY8x1mckIeePVG+0JFffO
+	nzcLF2howVTYG2Ktl2diRjK9iecUeaU=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=pW9Musbv
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1758191170; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1758191569; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=V9JilDSROWCa0Ad+zriWk+vF5KBYMhtAM9yT+1A/PD0=;
-	b=kC6NBIuUX7YEwbz3gw+KsINHolZ1+MCt0e+2hUGi1I5/B09muqe2V/z9qFfqJMH/yOmUuV
-	ad2k8kql2UQWauV/AHnNrRUqKAKxe0CqwZEgJqRBPYp8cklUd05BiWFq1TraYVWGVaJj5V
-	6x4ihCy2T182H4x5J9SsrIuOSNgUh4k=
+	bh=6gFwhABI7Rpc/1PTUTu9+GLBvZdl+23FmBmMPlYecVs=;
+	b=pW9MusbvvsnKmXZM/qieQoOxfGtaZNcT8DxxQ3cRm4R54SmQCX1SSUQCoa/tGAlAkcE52f
+	w1VSiFOrCKhX4ccV6ZzwOSQzgjBlm+K3CbJr6E4tSWEOvOUe+CY8x1mckIeePVG+0JFffO
+	nzcLF2howVTYG2Ktl2diRjK9iecUeaU=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 935D013A51;
-	Thu, 18 Sep 2025 10:26:09 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 55C5C13A39;
+	Thu, 18 Sep 2025 10:32:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1OjKFUHey2h2bQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Thu, 18 Sep 2025 10:26:09 +0000
+	id N9RKBtDfy2iebwAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 18 Sep 2025 10:32:48 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org,
 	fstests@vger.kernel.org
-Subject: [PATCH] btrfs: reject fs block size larger than 4K
-Date: Thu, 18 Sep 2025 19:55:47 +0930
-Message-ID: <20250918102547.98295-1-wqu@suse.com>
+Subject: [PATCH v2] btrfs: reject fs block size larger than 4K
+Date: Thu, 18 Sep 2025 20:02:26 +0930
+Message-ID: <20250918103226.99091-1-wqu@suse.com>
 X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -77,29 +77,39 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 5566333864
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	RCPT_COUNT_TWO(0.00)[2];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_NONE(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
 	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -2.80
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_NONE(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -3.01
 
 [BUG]
 When running the experimental block size > page support, the test case
@@ -137,26 +147,39 @@ mount of the scratch device, to verify the block size.
 
 If the block size is larger than 4k, skip the test case.
 
+And since we're here, remove the out-of-date page size check, as btrfs
+has subpage block size support for a while.
+Instead use a more accurate supported sector size check.
+
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- tests/btrfs/192 | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+Changelog:
+v2:
+- Add the commit message on why we can remove the page size check
+
+- Use _scratch_btrfs_sectorsize() so we do not need to mount/unmount
+  scratch device
+
+- Add the missing _require_btrfs_support_sectorsize call
+---
+ tests/btrfs/192 | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/tests/btrfs/192 b/tests/btrfs/192
-index 0a8ab2c1..2d3e3f2d 100755
+index 0a8ab2c1..a9a43cfe 100755
 --- a/tests/btrfs/192
 +++ b/tests/btrfs/192
-@@ -34,9 +34,15 @@ _require_log_writes
+@@ -33,10 +33,15 @@ _require_btrfs_mkfs_feature "no-holes"
+ _require_log_writes
  _require_scratch
  _require_attrs
++_require_btrfs_support_sectorsize 4096
  
 -# We require a 4K nodesize to ensure the test isn't too slow
 -if [ $(_get_page_size) -ne 4096 ]; then
 -	_notrun "This test doesn't support non-4K page size yet"
 +_scratch_mkfs > /dev/null
-+_scratch_mount
-+blksz=$(_get_block_size $SCRATCH_MNT)
-+_scratch_unmount
++blksz=$(_scratch_btrfs_sectorsize $SCRATCH_MNT)
 +
 +# We need 4K nodesize, and if block size is larger than that mkfs will
 +# fail. So reject any block size larger than 4K.
