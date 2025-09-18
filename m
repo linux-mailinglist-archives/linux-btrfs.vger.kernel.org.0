@@ -1,75 +1,82 @@
-Return-Path: <linux-btrfs+bounces-16940-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16942-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D2BEB873DB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Sep 2025 00:34:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11741B873E1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Sep 2025 00:34:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 598537B983B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 22:32:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C06835641D5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 22:34:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4BFC2F3632;
-	Thu, 18 Sep 2025 22:34:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47B0A2F3632;
+	Thu, 18 Sep 2025 22:34:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WhDvvAJc";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WhDvvAJc"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZxFjoGAr";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZxFjoGAr"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16EC12C326F
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Sep 2025 22:34:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995122D7DD3
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Sep 2025 22:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758234850; cv=none; b=IM2FhUY59S+r7VlUS8dJbt8xsMXFO/nqN+UZbx1NXZ0EUz3w4RR+pb9LqqxfscJqjJWz3vZ8ZMDR+1YrbwmGfkuKZ9qejKPOyIc9MxRj8F22J5z/mRYZ8aoKmknzK1JcGBaQ/widIem8XfFrj1ncYQM6j/XXjZjBchDGSESN1Jk=
+	t=1758234856; cv=none; b=dOqmLRopyD4nutiGwLqHldnl3OmHOKuyScpqC7b+S9JE7bgZcxwxfGtxrF6JosvnqF4ITCyZynu35qHg7ySCozLuZeO3OK6+cEQQNHnwMHG5jdOrQ1j4benfbF//MabvBcJbt2kLUHHkzsQY+BTbbE+V4tnBfUGFLhAxqs46CGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758234850; c=relaxed/simple;
-	bh=LeLYXqiwr8N+wojp+rmA9QZVtDyMuXrGv2PIYjBW1MA=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Uz9hEO4iUXDE40HqHnMg85z+dup3IOj1Al/wHIDXcLiDJFVnVH0VuI8iQ3wTLlzolH0BeJKW2GKqqzH1DHS0KA4VM/4jD/pLMpFZGkjCLAy7417FIZrTR0PcCQLxsfU5xlaneFJ9epuYfIax+YLFfiE93lllAYq0mLYdJcUxxHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WhDvvAJc; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WhDvvAJc; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1758234856; c=relaxed/simple;
+	bh=+VRc+PXiVcZtWssiHv9Si6LAtL/v9Q+LMtLwW67DI5g=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=sWFMON2NVNNSto16aXFe65h14+/q1n93K5Mn68YAWm4264mog2Z3AKgPK2DDEYNFDiuU9YmNlIntnT4NoCwfHUUOb/Zm+bwLSjIoprU0+m4ej49qLgnXlijo21ruSd1lhTBWipz9VTzI//kWwS8Tko/Oiu9xLzQHoDmfYvJ9NQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZxFjoGAr; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZxFjoGAr; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 295F91F388;
-	Thu, 18 Sep 2025 22:34:06 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A5AF31F38A;
+	Thu, 18 Sep 2025 22:34:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1758234846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=uNpbFswOtYcxJ34TXk5ElK+xleinprdU9DiAThCdBWQ=;
-	b=WhDvvAJckZy6mIjpKlr9hkHoLXdhKIBtyxsTpqKXcuZ5El1qOQTlJTDNeEaiGM0QLrRkfy
-	dqHYezaRTOzcd2CXUzLNVR3JhShEm5FPP57VINJjaaAPv/GaFo46ztdZVyH9s3KzFRwNSO
-	D5TWz7aJhuofcIS6wzNwwlMgKKEhOP8=
+	t=1758234847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=olqhF6sZOV3bfIQt4DsyoEFZk8gKKlynwxc7naHjumA=;
+	b=ZxFjoGAr28e/Wf9b2tkul+PRyM1P8ax2Zv3vUPi7N0A/hDYU4frfbheM6h2Vn3nvYaZvDG
+	xW+iptcCnOTGQsUWv5Xo8HK2RO2XXequ1u0UAuuTCt0to0kosDWgT8asXHsuwobvNPT+/f
+	wDp1wsqPJX9RUqyiYmNATsrq6MKKzlI=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1758234846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=uNpbFswOtYcxJ34TXk5ElK+xleinprdU9DiAThCdBWQ=;
-	b=WhDvvAJckZy6mIjpKlr9hkHoLXdhKIBtyxsTpqKXcuZ5El1qOQTlJTDNeEaiGM0QLrRkfy
-	dqHYezaRTOzcd2CXUzLNVR3JhShEm5FPP57VINJjaaAPv/GaFo46ztdZVyH9s3KzFRwNSO
-	D5TWz7aJhuofcIS6wzNwwlMgKKEhOP8=
+	t=1758234847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=olqhF6sZOV3bfIQt4DsyoEFZk8gKKlynwxc7naHjumA=;
+	b=ZxFjoGAr28e/Wf9b2tkul+PRyM1P8ax2Zv3vUPi7N0A/hDYU4frfbheM6h2Vn3nvYaZvDG
+	xW+iptcCnOTGQsUWv5Xo8HK2RO2XXequ1u0UAuuTCt0to0kosDWgT8asXHsuwobvNPT+/f
+	wDp1wsqPJX9RUqyiYmNATsrq6MKKzlI=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1E0B813A39;
-	Thu, 18 Sep 2025 22:34:04 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D06013A39;
+	Thu, 18 Sep 2025 22:34:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id vM5NM9yIzGh5WgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Thu, 18 Sep 2025 22:34:04 +0000
+	id IBpPF96IzGh5WgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 18 Sep 2025 22:34:06 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org,
 	fstests@vger.kernel.org
-Subject: [PATCH 0/3] btrfs: fix false alerts when running with 8K block size and 4K page size
-Date: Fri, 19 Sep 2025 08:03:44 +0930
-Message-ID: <20250918223347.10390-1-wqu@suse.com>
+Subject: [PATCH 1/3] btrfs/012 btrfs/136: skip the test if ext* doesn't support the block size
+Date: Fri, 19 Sep 2025 08:03:45 +0930
+Message-ID: <20250918223347.10390-2-wqu@suse.com>
 X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20250918223347.10390-1-wqu@suse.com>
+References: <20250918223347.10390-1-wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,6 +84,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
 X-Spamd-Result: default: False [-2.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
@@ -89,7 +97,7 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	ARC_NA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -98,81 +106,98 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	TO_DN_NONE(0.00)[];
 	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
-X-Spam-Level: 
 X-Spam-Score: -2.80
 
-I am developing the bs > ps support for btrfs, and now it can pass most
-btrfs and generic runs.
+[FALSE ALERT]
+When testing btrfs bs > ps support, the test cases btrfs/012 and
+btrfs/136 fail like the following:
 
-Some failures are due to the limitaions of the current bs > ps,
-including:
+ FSTYP         -- btrfs
+ PLATFORM      -- Linux/x86_64 btrfs-vm 6.17.0-rc4-custom+ #285 SMP PREEMPT_DYNAMIC Mon Sep 15 14:40:01 ACST 2025
+ MKFS_OPTIONS  -- -s 8k /dev/mapper/test-scratch1
+ MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
 
-- btrfs/023
-  No RAID56 support, and the test case doesn't respect
-  BTRFS_PROFILE_CONFIGS
+ btrfs/012       [failed, exit status 1]- output mismatch (see /home/adam/xfstests/results//btrfs/012.out.bad)
+     --- tests/btrfs/012.out	2024-07-17 16:27:18.790000343 +0930
+     +++ /home/adam/xfstests/results//btrfs/012.out.bad	2025-09-15 16:32:55.185922173 +0930
+     @@ -1,7 +1,11 @@
+      QA output created by 012
+     +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
+     +       dmesg(1) may have more information after failed mount system call.
+     +mkdir: cannot create directory '/mnt/scratch/stressdir': File exists
+     +umount: /mnt/scratch: not mounted.
+      Checking converted btrfs against the original one:
+     -OK
+     ...
+     (Run 'diff -u /home/adam/xfstests/tests/btrfs/012.out /home/adam/xfstests/results//btrfs/012.out.bad'  to see the entire diff)
 
-- btrfs/131
-  No v1 cache support just like subpage bs support.
-  No big deal, as v1 cache is already marked deprecated.
-  When the full deprecation comes, the test case needs some update.
+ btrfs/136 3s ... - output mismatch (see /home/adam/xfstests/results//btrfs/136.out.bad)
+     --- tests/btrfs/136.out	2022-05-11 11:25:30.743333331 +0930
+     +++ /home/adam/xfstests/results//btrfs/136.out.bad	2025-09-19 07:00:00.395280850 +0930
+     @@ -1,2 +1,10 @@
+      QA output created by 136
+     +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
+     +       dmesg(1) may have more information after failed mount system call.
+     +umount: /mnt/scratch: not mounted.
+     +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
+     +       dmesg(1) may have more information after failed mount system call.
+     +umount: /mnt/scratch: not mounted.
+     ...
+     (Run 'diff -u /home/adam/xfstests/tests/btrfs/136.out /home/adam/xfstests/results//btrfs/136.out.bad'  to see the entire diff)
 
-- btrfs/226
-  No Direct IO support.
+[CAUSE]
+Currently ext* doesn't support block size larger than page size, thus
+at mkfs time it will output the following warning:
 
-- btrfs/267
-  No Direct IO support thus the read falls back to buffered one.
-  The fallback may change the pid thus some mirror is not properly read
-  from disk and no read repair.
+ Warning: blocksize 8192 not usable on most systems.
+ mke2fs 1.47.3 (8-Jul-2025)
+ Warning: 8192-byte blocks too big for system (max 4096), forced to continue
 
-- btrfs/281
-  No encoded send support
+Furthermore at ext* mount time it will fail with the following dmesg:
 
-However there are some btrfs failures that are false alerts:
+ EXT4-fs (loop0): bad block size 8192
 
-- btrfs/012
-- btrfs/136
-  Those are btrfs-convert tests, however ext* doesn't support bs > ps
-  cases yet.
+[FIX]
+Check if the mount of the newly created ext* succeeded.
 
-  Fix them by skip the run if the initial ext* mount failed.
+If not, since the only extra parameter for mkfs is the block size, we
+know it's some block size ext* not yet supported, and skip the test
+case.
 
-- btrfs/192
-  This one requires 4K nodesize, which implies 4K block size, and
-  conflicts with user specified non-4K block size.
-
-- btrfs/30[456]
-  Those test cases have strict 4K block size requirement but still
-  follows the user specified block size during mkfs.
-
-  Fix btrfs/192 and btrfs/30[456] by explicitly specify 4K block size
-  during mkfs.
-
-There is also a minor comment mismatch in btrfs/267:
-
-- btrfs/267 is verifying direct read repair but comments says buffered
-  Instead it's btrfs/266 verifying the buffered behavior.
-  So it's purely a comment mismatch.
-
-  Fix it by explicitly mentioning buffered/direct IO for btrfs/26[67].
-
-
-Qu Wenruo (3):
-  btrfs/012 btrfs/136: skip the test if ext* doesn't support the block
-    size
-  btrfs/192 btrfs/30[456]: explicitly specify block size to avoid false
-    alerts
-  btrfs/26[67]: update the stale comments
-
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
  tests/btrfs/012 | 3 +++
  tests/btrfs/136 | 3 +++
- tests/btrfs/192 | 8 ++------
- tests/btrfs/266 | 4 ++--
- tests/btrfs/267 | 2 +-
- tests/btrfs/304 | 5 ++---
- tests/btrfs/305 | 5 ++---
- tests/btrfs/306 | 5 ++---
- 8 files changed, 17 insertions(+), 18 deletions(-)
+ 2 files changed, 6 insertions(+)
 
+diff --git a/tests/btrfs/012 b/tests/btrfs/012
+index f41d7e4e..665831b9 100755
+--- a/tests/btrfs/012
++++ b/tests/btrfs/012
+@@ -42,6 +42,9 @@ $MKFS_EXT4_PROG -F -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
+ 	_notrun "Could not create ext4 filesystem"
+ # Manual mount so we don't use -t btrfs or selinux context
+ mount -t ext4 $SCRATCH_DEV $SCRATCH_MNT
++if [ $? -ne 0 ]; then
++	_notrun "block size $BLOCK_SIZE is not supported by ext4"
++fi
+ 
+ echo "populating the initial ext fs:" >> $seqres.full
+ mkdir "$SCRATCH_MNT/$BASENAME"
+diff --git a/tests/btrfs/136 b/tests/btrfs/136
+index 65bbcf51..6b4b52e4 100755
+--- a/tests/btrfs/136
++++ b/tests/btrfs/136
+@@ -45,6 +45,9 @@ $MKFS_EXT4_PROG -F -t ext3 -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
+ 
+ # mount and populate non-extent file
+ mount -t ext3 $SCRATCH_DEV $SCRATCH_MNT
++if [ $? -ne 0 ]; then
++	_notrun "block size $BLOCK_SIZE is not supported by ext3"
++fi
+ populate_data "$SCRATCH_MNT/ext3_ext4_data/ext3"
+ _scratch_unmount
+ 
 -- 
 2.51.0
 
