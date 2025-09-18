@@ -1,146 +1,148 @@
-Return-Path: <linux-btrfs+bounces-16934-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-16935-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A713B84BC9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 15:05:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6031EB85701
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 17:05:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 134EB1BC4E0B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 13:05:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD91A1665B2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Sep 2025 15:05:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6D63081CD;
-	Thu, 18 Sep 2025 13:05:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCCA1DB92A;
+	Thu, 18 Sep 2025 15:04:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="bZeDPfWV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b+Jcrtxa"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBF830749E
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Sep 2025 13:05:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7532D19DF4F
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Sep 2025 15:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758200724; cv=none; b=DoyWA90nhnF1+e07a5wBXSY5CYdXgs3mV/Gh63hRLAw2numQN+nTLN33xBhA7buOUgBDHHaCQFPH82Zj+zZajI1wsU3GfaiixspORJIqhBotDDcozZ0A0qFx5MmA2p0rLnqCPkiL+ZZRkoZHT4ze9mKRCI+1dBLrw82ZS+RD5Lc=
+	t=1758207868; cv=none; b=a3tP/VpGjlGAA7wTaHPh+FIpNAaqlRZSaqHKdrQUrrsl1AaaptDM8GlJVJkbeFOc81eBTmCQ9/R1coX8DhDfS5liwHYFe2gLcT8OoZTGTh/tJoqVhyDT1OsSWkAqq3t3rRR0sKxlkv28eEDQABI3ChK+RKUV7zf4Vx0OzYyDskc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758200724; c=relaxed/simple;
-	bh=DE+L1du/6W8JBeY8qRhWTNPocI4xV/dMgM5pSMGGdA4=;
-	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XlRB/ac9oWtipjypBnNOtu9Tp6nkLrJ4XQljTn99fjuhXGvGJg2o3DACM6/OS9YhrXsXPnWn0tEhpvIpQEQkn7FDRcW14FssmLc/1jJcMLa6+BreAASebC17Zg+wMM9xBXFTDvyD+o90m5erbXlbA6uFbYhmDdb4TxBmb0amWsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=bZeDPfWV; arc=none smtp.client-ip=217.169.27.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
-Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
-	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
-	by mail.burntcomma.com (Postfix) with ESMTPS id CED6E2B9744;
-	Thu, 18 Sep 2025 14:05:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1758200713;
-	bh=Emj8Hy3E0bRJpcyOU9fg3el+bfRNUXgz1IhmmZOPHqo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=bZeDPfWVtGSDdU7sVOKzAcMHgISjcXjTi0VH5U8SOaLQrhfsnptknCzrRjRE8SBdp
-	 Au7hV7yJ5jx8CyN5zXCEQyYPu6Io45hJbRDi8Gm9QH6bejvi1wmRilzNe015cHJ92S
-	 4HU9XAA3zu5xTIeo0F3HsGs1QrlCosuvXQmOjTBY=
-Message-ID: <eaf33285-5d77-4b7e-851a-61e40e61d3ae@harmstone.com>
-Date: Thu, 18 Sep 2025 14:05:13 +0100
+	s=arc-20240116; t=1758207868; c=relaxed/simple;
+	bh=2eqqhZC/BedUhhv27l744v2P5xFkujyC7R/je5Rn/x0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HodPiMcDrq3GUDQKRzb1jF9x7qRjJszmWGtOpF/7XtXYNn0BJ0MjudKQaOpFCXsip/8+uEfbNTLrvRuhTNxR7apnE7Bb5899u/00MYFtsfAAdohMSA/QtBd4bNpt2mvLmKZdc3zqjmDHU32Ryw3IEzCJaNPZFFGb4wNhXBHC4xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b+Jcrtxa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32ECAC4CEF7
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Sep 2025 15:04:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758207868;
+	bh=2eqqhZC/BedUhhv27l744v2P5xFkujyC7R/je5Rn/x0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=b+JcrtxacfXp50KLnfXMj/iSuGqPnbgi+E6aVBjaFljIHQVa9jPV7CDMheTwNBBEY
+	 RTuSHsrSBj91HI/VAAXbDe8deTuDui2mA9mNu7tQ0e0+fh9jD02tScILAa+iou1AsI
+	 amHgdFaTFvRcyt56wSULFEYa1IcYz6SDUGw8DbzqPuM319Q41oEWifD2IqKw7oYKe5
+	 PHNp2yv016kgfbD796bw0sOmi0X+A8MkW5+PRGfrsaGQZnN/KV53av+y+C+Gi2IMOy
+	 kgjWs2jcrotXT+Wnw64YBvkFrn7KGNgSwCG68/ikcVbzT5C3qIkQFtVRVZ7Zv1SxxP
+	 TgLTA3Ak5DW+w==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b0e7bc49263so187055266b.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Sep 2025 08:04:28 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yyr0MC7KucgcbEde/6kUYtLoioCM204EJ1JClvrA0nfA9Rr71fB
+	QFaW4mkMrvBaP7Y+UGeCz2GU6EqRMcO6iUfW39LSSap9wvpRVQhdvrciWU7jIGDcj8knv9viiUS
+	eul4k4zcJ/1Z79Qy4W5KUrbJ//luvN2Q=
+X-Google-Smtp-Source: AGHT+IGB2VokxbXE80LkkQGu29u21bxV7/M6KzFXWDDAr36v+jK2en2v0VsJuYjc7xe231frhjDIzwiSkhly4Lhy4Og=
+X-Received: by 2002:a17:907:d64a:b0:b0c:1701:bfa1 with SMTP id
+ a640c23a62f3a-b1bbb54adfemr662202766b.27.1758207866673; Thu, 18 Sep 2025
+ 08:04:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: Btrfs progs release 6.16.1
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: dsterba@suse.cz, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org
-References: <20250910175007.23176-1-dsterba@suse.com>
- <CAL3q7H4vXmz4pGXayq98XZqPbFh6H6Z4=eaM-gFX7fsRLnFfEQ@mail.gmail.com>
- <20250918003344.GH5333@suse.cz>
- <26c2e470-6277-4957-8b8b-b12a2e567daa@harmstone.com>
- <CAL3q7H4WX5XddPyQ2+0a8yQaCW757+V8VVVO6byscY9ch+LzQw@mail.gmail.com>
-Content-Language: en-US
-From: Mark Harmstone <mark@harmstone.com>
-Autocrypt: addr=mark@harmstone.com; keydata=
- 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
-In-Reply-To: <CAL3q7H4WX5XddPyQ2+0a8yQaCW757+V8VVVO6byscY9ch+LzQw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <cover.1758130856.git.dsterba@suse.com>
+In-Reply-To: <cover.1758130856.git.dsterba@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 18 Sep 2025 16:03:49 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6iGyeCzY4GZ62d3p7MPhKoW95K-Cu+H4fmaoX9EH6VnA@mail.gmail.com>
+X-Gm-Features: AS18NWAush41XcrK57f41onlUk8KjpCiHBOz5ue54lq5YQsU5GHCWtKmQNvN-3Q
+Message-ID: <CAL3q7H6iGyeCzY4GZ62d3p7MPhKoW95K-Cu+H4fmaoX9EH6VnA@mail.gmail.com>
+Subject: Re: [PATCH 0/3 RFC] Unlikely annotations for EIO/EUCLEAN/abort branches
+To: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 18/09/2025 1.17 pm, Filipe Manana wrote:
-> On Thu, Sep 18, 2025 at 6:10 AM Mark Harmstone <mark@harmstone.com> wrote:
->>
->> On 18/09/2025 1.33 am, David Sterba wrote:
->>> On Wed, Sep 17, 2025 at 04:41:43PM +0100, Filipe Manana wrote:
->>>> With this btrfs-progs release, running 'btrfs check' fails on a
->>>> filesystem created by an older mkfs.btrfs.
->>>
->>>> A bisection points to:
->>>>
->>>> commit e2cf6a03796b73d446b086022c0dfcf6a6552928
->>>> Author: Mark Harmstone <maharmstone@fb.com>
->>>> Date:   Fri Jul 18 15:26:27 2025 +0100
->>>>
->>>>       btrfs-progs: use btrfs_lookup_block_group() in check_free_space_tree()
->>>
->>> Thanks for the report, I'll do a release with this patch reverted unless
->>> there's an updated fix.
->>
->> The patch is correct: older versions of mkfs were creating spurious
->> free-space entries. btrfs-check was supposed to diagnose this but there
->> was a bug that meant it only triggered for entries at the end of the tree.
-> 
-> Sure, but now we have btrfs check failing for every fs created up to
-> btrfs-progs v16.0 since we have the free space tree feature.
-> That makes scripts fail since btrfs check returns a non-zero status
-> now for such fs.
-> Do we have any code to remove those unnecessary and harmless free space entries?
-> 
-> This will confuse and potentially scare some users, besides breaking
-> scripts that verify the result from btrfs check exit status.
+On Wed, Sep 17, 2025 at 6:54=E2=80=AFPM David Sterba <dsterba@suse.com> wro=
+te:
+>
+> Hi,
+>
+> manually add unlikely annotations to the branches that lead to critical
+> but rare errors. This is RFC as this has a big conflict surface.
+> However this would be a one-time action, possibly done now before 6.18
+> freeze.
+>
+> The base is current for-next (without series [1]):
+>
+>    text    data     bss     dec     hex filename
+> 1650172  136289   15560 1802021  1b7f25 pre/btrfs.ko
+> 1650934  136289   15560 1802783  1b821f post/btrfs.ko
+> DELTA: +762
+>
+> There are differences in the generated assembly so the compiler does not
+> detect the error branches as unlikely by itself (sometimes it does due
+> to __cold function annotations).
+>
+> I've used my prototype branch from some time ago so some of the
+> annotations could be still missing, this is more about getting the idea
+> of the scope.
 
-To be clear, this patch does address an actual issue: it caused me problems
-while developing btrfs-discard-check. Leo independently ran into it last year
-too.
+Just glancing and it seems good to me.
+It would be nice to add a changelog to the patches, despite being trivial.
 
-btrfs rescue clear-space-cache will get rid of the error, though it's
-obviously a little heavy-handed. I don't know if btrfs check --repair fixes
-the FST.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Maybe the thing to do is to add a compat_flag to say that the FST doesn't
-contain spurious entries, and to clean these up and set the flag on mount
-if it's not there - what do you think? Like we have for
-BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID already, though compat rather
-than compat_ro because the kernel won't create these entries itself.
+>
+> [1] https://lore.kernel.org/linux-btrfs/cover.1758095164.git.fdmanana@sus=
+e.com/
+>
+> David Sterba (3):
+>   btrfs: add unlikely annotations to branches leading to EUCLEAN
+>   btrfs: add unlikely annotations to branches leading to EIO
+>   btrfs: add unlikely annotations to branches leading to transaction
+>     abort
+>
+>  fs/btrfs/backref.c          | 24 ++++++-------
+>  fs/btrfs/bio.c              |  4 +--
+>  fs/btrfs/block-group.c      | 24 ++++++-------
+>  fs/btrfs/ctree.c            | 66 +++++++++++++++++------------------
+>  fs/btrfs/defrag.c           |  2 +-
+>  fs/btrfs/delayed-inode.c    |  2 +-
+>  fs/btrfs/dev-replace.c      | 10 +++---
+>  fs/btrfs/disk-io.c          | 48 +++++++++++++-------------
+>  fs/btrfs/export.c           |  2 +-
+>  fs/btrfs/extent-tree.c      | 68 ++++++++++++++++++-------------------
+>  fs/btrfs/extent_io.c        |  2 +-
+>  fs/btrfs/extent_map.c       |  2 +-
+>  fs/btrfs/file-item.c        |  2 +-
+>  fs/btrfs/file.c             | 45 ++++++++++++------------
+>  fs/btrfs/free-space-cache.c |  2 +-
+>  fs/btrfs/free-space-tree.c  | 24 ++++++-------
+>  fs/btrfs/inode.c            | 58 +++++++++++++++----------------
+>  fs/btrfs/ioctl.c            |  6 ++--
+>  fs/btrfs/lzo.c              |  6 ++--
+>  fs/btrfs/qgroup.c           | 18 +++++-----
+>  fs/btrfs/raid56.c           | 14 ++++----
+>  fs/btrfs/relocation.c       | 14 ++++----
+>  fs/btrfs/root-tree.c        |  6 ++--
+>  fs/btrfs/scrub.c            | 18 +++++-----
+>  fs/btrfs/send.c             | 12 +++----
+>  fs/btrfs/super.c            |  6 ++--
+>  fs/btrfs/verity.c           |  4 +--
+>  fs/btrfs/volumes.c          | 30 ++++++++--------
+>  fs/btrfs/zoned.c            | 50 +++++++++++++--------------
+>  fs/btrfs/zstd.c             |  2 +-
+>  30 files changed, 284 insertions(+), 287 deletions(-)
+>
+> --
+> 2.51.0
+>
+>
 
