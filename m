@@ -1,82 +1,81 @@
-Return-Path: <linux-btrfs+bounces-17004-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17005-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCFC3B8B737
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Sep 2025 00:11:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF48EB8B74D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Sep 2025 00:12:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98BF87B3512
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Sep 2025 22:10:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B8C11C242D3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Sep 2025 22:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E20C2D6E4E;
-	Fri, 19 Sep 2025 22:11:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17142C21D8;
+	Fri, 19 Sep 2025 22:12:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="aivyJl/9"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cKY5AFy6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526DB2D5C89
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Sep 2025 22:11:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF8021ABC9
+	for <linux-btrfs@vger.kernel.org>; Fri, 19 Sep 2025 22:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758319875; cv=none; b=uouLs9GUt9xoHcI/dgXWEk6BDb8O6qFhkAizjzFPrWn6DI8wm21lD6uBWic9W3gcnFAw+br3A45NqBztOUAIuAdRe+OC53glgdXsYf/XesmSwFyGZHzyjepn57+LRUDaivoa+EwTKHmn3hEFD7g0eTuSvBoNAR+3Do09VNZDB4w=
+	t=1758319939; cv=none; b=mKoDzytoEd7Il41y/aYMFKrv45TUiacoOIhr/KAYgebexNzveGrUGoPQ3wKHNmBTaUvVNSgJgRp6+DE8xwAugFdDdfMvVrWLnxE4ygosADvudefN8Gl6xwtABZgAeYXySBx+rkIGHsxnuhCGk5ZbHngmqqHRpukROZANgTv+dxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758319875; c=relaxed/simple;
-	bh=c4/KXuw1YBYKVq3gR2RvdtX6J102qBJ6B3/SBaifStE=;
+	s=arc-20240116; t=1758319939; c=relaxed/simple;
+	bh=veAYRP09EvaKP6A/CvG7H7IU+hm1AItisjodvCirVjo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=NtPSQleG6Z1o6z7GCtIb3baWil/TeQahT/81qCjHjQkMkTzWq0ZXQ+jGQPtbv8F18WHbZs2I6cgOpjqrArSMTUcUPsilWPbem950ZS9YwGLWs5fuIADuQ/T+vbOKJ80ahLaTZ04fIl4doRIXm5UYmQcJkQZinDwMHCnZNM7rZTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=aivyJl/9; arc=none smtp.client-ip=209.85.221.44
+	 In-Reply-To:Content-Type; b=pdh+JEaCozawNRngoJtEKAYUvwcy8D30o0dUCZ/QPtSiQtT6/DGVU/CCP31lKs4EvgGgjnhgVLClPXQ0rpMwXGWqvOLErWn6tPDfRvUrTJgMpEU9aZF5kvyTWGRHfLJd4CZfYFnThLviidRoyCrK/f0owC5qKgKyUCCqc84ZN+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cKY5AFy6; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3b9edf4cf6cso1957822f8f.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Sep 2025 15:11:12 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3f0ae439bc3so536704f8f.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Sep 2025 15:12:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1758319871; x=1758924671; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1758319933; x=1758924733; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=yyUmXBXAtauW1Z1+x2iFaOwMFxkR7mG71hmVPt72Qkk=;
-        b=aivyJl/9VGwJlzNhIhpbCFLIWO9PJdom1ybAAWrHd2Cm4UktXL88yT9xll4b9N+qng
-         FEw8e0tZJcebh5pk9WYKX6sCNe4pSwVyocE/25vAi26qZApc7G+ddJZcxVh/OUvbYkhu
-         Yjk4E73OktNV/PrZiRksi8u79hL2oEZHD/3hgo4f5BG1yKM/3kGVfM7HySrnKc26XwJJ
-         S7D0O/obWqsF1GsT18cKnXFoEGeUwxxtTzBaY6ELqno0ejQpt01842R9ZWZlAdqGj+hW
-         2pkOjjjBbdlLWAFVw68U8UEjuQ2NmZWjeQqHyf3tQLXmiERjCNlfWII/RpRTIypGhT5L
-         GmXg==
+        bh=DRNQV+EaQ2YliUjZ1UJL4Y3Ft6I795sLVw0nsgXhhL4=;
+        b=cKY5AFy6yA7dQUpOa523GurHDpxlI9tu2Q9anusZd+xDW6x2lPtR1ICQ+LU5WW0SOO
+         v1DwXV8hqEDfwS63bp9W49xi0KtVmf/YIHsJSahbGis9/0n5DCS83pJDWRblVv2V5B3S
+         +q6jJ+n5b4HuD3DMVMwDUSXKd1/dG7fwNs/73foK6dhTB8PUxOr8kadr0zfdMxNvrrPs
+         mccqZE6A57f3dsAPZTeJXnIU1A/Un1XsyozXyxjtI3HDzZ2dVtgp4ayFcQdbvkZpoDz2
+         gU3aDAbKGSJy0CIuBYNm/22GCHn4bSx4hXl0Hqi2hNkLuwqRkKSYvdGHH6IxNCTnfi2x
+         RCRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758319871; x=1758924671;
+        d=1e100.net; s=20230601; t=1758319933; x=1758924733;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yyUmXBXAtauW1Z1+x2iFaOwMFxkR7mG71hmVPt72Qkk=;
-        b=neFuk4XybEFlIa0gmcYCuO/tBs6famPpJClRKZWwO3p3noFYKog1o+iZ2flj30NdHr
-         bRMfKcHMMnwzAg18vZjW7kz/Uo/8zIFm9cEgvZarRSwN9HxlmVCXNOJxoEI+SlqGT8rl
-         YQP9+pwivLNivfalwsSAEIHeHqmsL7VBe5v5ykFZaxRzDeu2Iv6ssQa3J94v6mMjzLQj
-         gbboUP79HKJ6zSsVX36dkuZfTeAyLIHehNRNTx/HF2zs3atCWzUkyDkV4ODG2CrhV0vy
-         5OsFseZyT8mLUqgKr4IogpInX8T6QYifCI6mzyJoxVYYF9pdgzxTdkRSXHRAjX1VZUM7
-         edjA==
-X-Forwarded-Encrypted: i=1; AJvYcCUdjN6VvD78Q1TXAlwAHPANp9oHXlRgW2NtC8pEczmpEBDUiWn9HMsNs5nwOQ/nMrJ6Z/42sip0etLxlA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxxYUu1DxubOF8RUJ3PYr5jWFKWRxV24gvMnjM9LzmLE+ked4pb
-	z8DaNd6dAsQVwgSeqR8eIqd/SYbAY8f5VSRISSXG3KTWG9qMG3w5QaViSCti/qR8XSDcJo6XJ3I
-	4vzzq
-X-Gm-Gg: ASbGnctWlWz6zl2d0FDrppRa/7zN4bk0rTALOmDPNcHRtcI0wrQlyGjBUwDKbHGECFP
-	kbobCiq4VbCTjhRsDiP/atyl9I/ijW6CDMP7STeDktxieJcd2LZE/Y0U81G4TKa883XaGKnX8EM
-	pj7I/DYRjWpQnPhYx2Lirh7wNQUwzjIW/MoNbLadD/EmhAO/5bBw23n1+B7uRUdfo8sFmIZ2Zyo
-	/iJOV3lMc5Vm7imfcAbtM4W9fX7xYTDGmoEM/NZSY3gQm1AzS88blINUNFdZKMG4360hCyp5gQ9
-	wBXHtC9kudnoCsb/ShnQtfMYNsS1p/VX+pzfJSaGg9ZclAFCT6y2g/CF78UuwwiH6/tFAdAfOxG
-	+q088Iqp8lkIhE0Izy3rNPKkyaRo5UYrwC4D5V0F0rW12yhVjW8Y=
-X-Google-Smtp-Source: AGHT+IGMXErdY7AHMe89BPs/AavA0dAyw7jtWurC2kSTkvdKvjKrRe6cILCdFTAZJVflh8jmmi7tWw==
-X-Received: by 2002:a05:6000:268a:b0:3e1:219e:a74a with SMTP id ffacd0b85a97d-3ee7db4c3b4mr4404248f8f.21.1758319871449;
-        Fri, 19 Sep 2025 15:11:11 -0700 (PDT)
+        bh=DRNQV+EaQ2YliUjZ1UJL4Y3Ft6I795sLVw0nsgXhhL4=;
+        b=A4wuoerjoICDkroAcIYazaO/f9DQBtHMsABrVSn7bBb5vgMHBRevdzn36dBGY0e6md
+         6GtZPWn8ygvsD6/RI4DUGYaibO0bUJyGfOadHPHATnpPihTEgmqrhYTf8NRsSTufdM/R
+         X3fqh76GrjCKoIipPNvzMm8LmKoH/W54V36iueNndM89Ph0pd61ovG/D14rToBXLJhLL
+         Mja55acGPqBQmRpSzA9xhivodJam2BpIE5H9gMpfI5XWH5bmyT64I0IYVMlrJTROu1lY
+         V0U/JQnmhxv+GS+R6qd3ZjQ6+KIoKEWBdEUAYtFai2k8RkEag63wSj3Ik+uDwUbfJVUT
+         OigA==
+X-Forwarded-Encrypted: i=1; AJvYcCV/m+DSKp5qPJfC1mLNV43azB6QHcPwQP17kZ4viZXBwD+5qxlAeeLrqAYVRRRYFEKl0P28s0eBKbWRUw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwV7HiEwHnZM7xnzB+fEIcLK8HwXTBxs+8xP26XHZCk5u8o59KJ
+	Aw/EOwHEyownyYxpdx3/R2xgi6HMhNVqn27+w1azKTpX2YoCAluZDe7PmyerpsY1PnU=
+X-Gm-Gg: ASbGncuLbAUH/pNWHCk8/hmMn3FqY6GOR1jGSblcObrbeqyFG+sfN5HQ5fxwVT5/CCE
+	3T1iU+OOKiEi2NU6IYdt9u0/vr+MYstWwzinsi6MADkOpoTtA5hDqZQjw97PKQY7OF+7NhGBc72
+	NTAGPoZZdvu/MhX4LRYhm4hojsl3oQOdB3ru6BilivWq4mynhg5tilg4sdu4GMlEgyoFrWAR2h+
+	A8Xz/IvA2kPbnKPqyFBsEp/Fd7un7GDRZ721aEZ8iXcRhEodZIffqY5Zvn94tLWxAxdBtVFzrDM
+	HMNma92DurL/S1+T+ZHpTRtHVdAG9ae7iFzLet1xlKUf+r5bFTSTEHaoS8MWHrZGtoBzctpiGjQ
+	RyDO9yiTTomWd6pwPutgQXXZMcDKCm5KCaO1tPlNMVQKQ3vzgQNc=
+X-Google-Smtp-Source: AGHT+IEfAkHVShe9CPNkRZGQbs+1MjglumA6TomckplQ/ftAv4zh1ZkAZVKnMOTEnyD4faDMTqk0Wg==
+X-Received: by 2002:a05:6000:2307:b0:3df:c5e3:55f8 with SMTP id ffacd0b85a97d-3ee872332abmr3632617f8f.54.1758319933208;
+        Fri, 19 Sep 2025 15:12:13 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2698016ca44sm63498915ad.37.2025.09.19.15.11.09
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-26e2046788dsm13313285ad.72.2025.09.19.15.12.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Sep 2025 15:11:10 -0700 (PDT)
-Message-ID: <00e37a1b-9944-41fe-b3b4-a9bfc2b39ed1@suse.com>
-Date: Sat, 20 Sep 2025 07:41:07 +0930
+        Fri, 19 Sep 2025 15:12:12 -0700 (PDT)
+Message-ID: <a30d07f6-0aa8-416f-9430-70826a76b489@suse.com>
+Date: Sat, 20 Sep 2025 07:42:09 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,10 +83,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: make the rule checking more readable for
- should_cow_block()
+Subject: Re: [PATCH] btrfs: annotate btrfs_is_testing() as unlikely and make
+ it return bool
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <430201af947578096cabe79fc4a1eaea731e8ef4.1758272660.git.fdmanana@suse.com>
+References: <eebf22439d2422d36703ab3bc7191f382605b8a4.1758272653.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -114,38 +113,38 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <430201af947578096cabe79fc4a1eaea731e8ef4.1758272660.git.fdmanana@suse.com>
+In-Reply-To: <eebf22439d2422d36703ab3bc7191f382605b8a4.1758272653.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/9/19 19:41, fdmanana@kernel.org 写道:
+在 2025/9/19 19:42, fdmanana@kernel.org 写道:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> It's quite hard and unreadable the way the rule checks are organized in
-> should_cow_block(). We have a single if statement that returns 0 (false)
-> and it checks several conditions, with one them being a negated compound
-> condition which is particularly hard to reason immediately.
+> We can annotate btrfs_is_testing() as unlikely since that's the most
+> expected scenario and it's desirable for the compiler to optimize for
+> the case we are not running the self tests. So add the annotation to
+> btrfs_is_testing() and while at it also make it return bool instead of
+> int.
 > 
-> Improve on this by using multiple if statements, each checking a single
-> condition and returning immediately. Also change the return type from an
-> integer to a boolean, since all we need is to return true or false.
+> Also make two of the existing callers use btrfs_is_testing() directly
+> instead of storing its result in a local variable.
 > 
-> At least on x86_64 with Debian's gcc 14.2.0-19, this also reduces the
-> object code size by 64 bytes.
+> On x86_64 with Debian's gcc 14.2.0-19 this resulted in a very tiny object
+> code reduction.
 > 
 > Before this change:
 > 
->     $ size fs/btrfs/btrfs.ko
->        text	   data	    bss	    dec	    hex	filename
->     1913327	 161567	  15592	2090486	 1fe5f6	fs/btrfs/btrfs.ko
+>    $ size fs/btrfs/btrfs.ko
+>       text	   data	    bss	    dec	    hex	filename
+>    1913263	 161567	  15592	2090422	 1fe5b6	fs/btrfs/btrfs.ko
 > 
 > After this change:
 > 
->     $ size fs/btrfs/btrfs.ko
->        text	   data	    bss	    dec	    hex	filename
->     1913263	 161567	  15592	2090422	 1fe5b6	fs/btrfs/btrfs.ko
+>    $ size fs/btrfs/btrfs.ko
+>       text	   data	    bss	    dec	    hex	filename
+>    1913257	 161567	  15592	2090416	 1fe5b0	fs/btrfs/btrfs.ko
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -153,66 +152,99 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+
 > ---
->   fs/btrfs/ctree.c | 37 +++++++++++++++++++++++--------------
->   1 file changed, 23 insertions(+), 14 deletions(-)
+>   fs/btrfs/delayed-ref.c | 7 +++----
+>   fs/btrfs/disk-io.c     | 3 +--
+>   fs/btrfs/fs.h          | 8 ++++----
+>   3 files changed, 8 insertions(+), 10 deletions(-)
 > 
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index dc185322362b..13dc44e90762 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -613,15 +613,12 @@ int btrfs_force_cow_block(struct btrfs_trans_handle *trans,
->   	return ret;
+> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+> index 6170803d8a1b..481802efaa14 100644
+> --- a/fs/btrfs/delayed-ref.c
+> +++ b/fs/btrfs/delayed-ref.c
+> @@ -1251,7 +1251,6 @@ void btrfs_destroy_delayed_refs(struct btrfs_transaction *trans)
+>   {
+>   	struct btrfs_delayed_ref_root *delayed_refs = &trans->delayed_refs;
+>   	struct btrfs_fs_info *fs_info = trans->fs_info;
+> -	bool testing = btrfs_is_testing(fs_info);
+>   
+>   	spin_lock(&delayed_refs->lock);
+>   	while (true) {
+> @@ -1281,7 +1280,7 @@ void btrfs_destroy_delayed_refs(struct btrfs_transaction *trans)
+>   		spin_unlock(&delayed_refs->lock);
+>   		mutex_unlock(&head->mutex);
+>   
+> -		if (!testing && pin_bytes) {
+> +		if (!btrfs_is_testing(fs_info) && pin_bytes) {
+>   			struct btrfs_block_group *bg;
+>   
+>   			bg = btrfs_lookup_block_group(fs_info, head->bytenr);
+> @@ -1312,14 +1311,14 @@ void btrfs_destroy_delayed_refs(struct btrfs_transaction *trans)
+>   			btrfs_error_unpin_extent_range(fs_info, head->bytenr,
+>   				head->bytenr + head->num_bytes - 1);
+>   		}
+> -		if (!testing)
+> +		if (!btrfs_is_testing(fs_info))
+>   			btrfs_cleanup_ref_head_accounting(fs_info, delayed_refs, head);
+>   		btrfs_put_delayed_ref_head(head);
+>   		cond_resched();
+>   		spin_lock(&delayed_refs->lock);
+>   	}
+>   
+> -	if (!testing)
+> +	if (!btrfs_is_testing(fs_info))
+>   		btrfs_qgroup_destroy_extent_records(trans);
+>   
+>   	spin_unlock(&delayed_refs->lock);
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index a9e82e062bd5..5c57f523f449 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -639,7 +639,6 @@ static struct btrfs_root *btrfs_alloc_root(struct btrfs_fs_info *fs_info,
+>   					   u64 objectid, gfp_t flags)
+>   {
+>   	struct btrfs_root *root;
+> -	bool dummy = btrfs_is_testing(fs_info);
+>   
+>   	root = kzalloc(sizeof(*root), flags);
+>   	if (!root)
+> @@ -696,7 +695,7 @@ static struct btrfs_root *btrfs_alloc_root(struct btrfs_fs_info *fs_info,
+>   	root->log_transid_committed = -1;
+>   	btrfs_set_root_last_log_commit(root, 0);
+>   	root->anon_dev = 0;
+> -	if (!dummy) {
+> +	if (!btrfs_is_testing(fs_info)) {
+>   		btrfs_extent_io_tree_init(fs_info, &root->dirty_log_pages,
+>   					  IO_TREE_ROOT_DIRTY_LOG_PAGES);
+>   		btrfs_extent_io_tree_init(fs_info, &root->log_csum_range,
+> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+> index ba63a40b2bde..26b91edf239e 100644
+> --- a/fs/btrfs/fs.h
+> +++ b/fs/btrfs/fs.h
+> @@ -1126,9 +1126,9 @@ static inline void btrfs_wake_unfinished_drop(struct btrfs_fs_info *fs_info)
+>   
+>   #define EXPORT_FOR_TESTS
+>   
+> -static inline int btrfs_is_testing(const struct btrfs_fs_info *fs_info)
+> +static inline bool btrfs_is_testing(const struct btrfs_fs_info *fs_info)
+>   {
+> -	return test_bit(BTRFS_FS_STATE_DUMMY_FS_INFO, &fs_info->fs_state);
+> +	return unlikely(test_bit(BTRFS_FS_STATE_DUMMY_FS_INFO, &fs_info->fs_state));
 >   }
 >   
-> -static inline int should_cow_block(const struct btrfs_trans_handle *trans,
-> -				   const struct btrfs_root *root,
-> -				   const struct extent_buffer *buf)
-> +static inline bool should_cow_block(const struct btrfs_trans_handle *trans,
-> +				    const struct btrfs_root *root,
-> +				    const struct extent_buffer *buf)
->   {
->   	if (btrfs_is_testing(root->fs_info))
-> -		return 0;
-> -
-> -	/* Ensure we can see the FORCE_COW bit */
-> -	smp_mb__before_atomic();
-> +		return false;
+>   void btrfs_test_destroy_inode(struct inode *inode);
+> @@ -1137,9 +1137,9 @@ void btrfs_test_destroy_inode(struct inode *inode);
 >   
->   	/*
->   	 * We do not need to cow a block if
-> @@ -634,13 +631,25 @@ static inline int should_cow_block(const struct btrfs_trans_handle *trans,
->   	 *    after we've finished copying src root, we must COW the shared
->   	 *    block to ensure the metadata consistency.
->   	 */
-> -	if (btrfs_header_generation(buf) == trans->transid &&
-> -	    !btrfs_header_flag(buf, BTRFS_HEADER_FLAG_WRITTEN) &&
-> -	    !(btrfs_root_id(root) != BTRFS_TREE_RELOC_OBJECTID &&
-> -	      btrfs_header_flag(buf, BTRFS_HEADER_FLAG_RELOC)) &&
-> -	    !test_bit(BTRFS_ROOT_FORCE_COW, &root->state))
-> -		return 0;
-> -	return 1;
-> +
-> +	if (btrfs_header_generation(buf) != trans->transid)
-> +		return true;
-> +
-> +	if (btrfs_header_flag(buf, BTRFS_HEADER_FLAG_WRITTEN))
-> +		return true;
-> +
-> +	/* Ensure we can see the FORCE_COW bit. */
-> +	smp_mb__before_atomic();
-> +	if (test_bit(BTRFS_ROOT_FORCE_COW, &root->state))
-> +		return true;
-> +
-> +	if (btrfs_root_id(root) == BTRFS_TREE_RELOC_OBJECTID)
-> +		return false;
-> +
-> +	if (btrfs_header_flag(buf, BTRFS_HEADER_FLAG_RELOC))
-> +		return true;
-> +
+>   #define EXPORT_FOR_TESTS static
+>   
+> -static inline int btrfs_is_testing(const struct btrfs_fs_info *fs_info)
+> +static inline bool btrfs_is_testing(const struct btrfs_fs_info *fs_info)
+>   {
+> -	return 0;
 > +	return false;
 >   }
+>   #endif
 >   
->   /*
 
 
