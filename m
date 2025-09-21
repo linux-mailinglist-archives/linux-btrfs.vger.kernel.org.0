@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-17018-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17020-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42972B8E904
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 00:41:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2FA0B8E90D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 00:42:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 017C04E14DF
-	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Sep 2025 22:41:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EE2716AEE8
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Sep 2025 22:41:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99CFD2C21E7;
-	Sun, 21 Sep 2025 22:41:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C30E2226863;
+	Sun, 21 Sep 2025 22:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UUTYaCGp";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UUTYaCGp"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="K/w0Ne1s";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="K/w0Ne1s"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF98424BBE4
-	for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 22:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12BBF25485A
+	for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 22:41:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758494486; cv=none; b=KwBgGuQWB3OKoZ1Ueg1HpvCsWQejLkgp9pvsrMsErkiGlHwvezjTLIJxLYAc3SAKXfW3d5bg2eczUXg7IW5llLG/abNyCxHcGMxzNjvuuBzVAL9OJofSuDGPhwIVCLqx5e5SGViB3/bH1l5f198gbpC5VxoF6Cn5BgqJkERaBXg=
+	t=1758494495; cv=none; b=O4ahtwLcPjM+9AQeD9JBHdCksLS1Mhwv24tn7KYBYtHPVWus94QA1ZZxSup2dx90XD6ZqzbBF9f0j5fNK1IeIJhe5qyr5wDN22DNk0Q1Xaov2WOJR24GRZqGck5RmfVe2TJWS8ZAgQ/RzYdeIOis0lQBk+ilxjSRVyNzQgIhNlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758494486; c=relaxed/simple;
-	bh=FCm8MY4B1zDZSBw0AQMYXqjJYx9jSc4wTcda1TXgJR8=;
+	s=arc-20240116; t=1758494495; c=relaxed/simple;
+	bh=cni6Mc0/HZYteY8uqh7T5oDKyDZi/Ge8I/dthMkji4w=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u5cyNX+yVd6eNWHt0haR8IaNLbVV3NvMw2ITGlWzwxP4/6KEHRAr5HixjaywWW53cDUI5WifXGG7yVSa0lK1VPLTQQiBTY95rhKd2Zfc85Bb4PXn3tEqLWr5OeXnHLeHLpdQdo00M7DD0n71WqQ27eT36jkbcENXohDk7duk1bw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UUTYaCGp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UUTYaCGp; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=nzkGnk//aNv1gtC6iu0Woegdz2KdKlRvZ3h0sDQhzNsucmSvscWi2ZeiqgcDyQObDzjOvf4Vu96AmznSfPWlRaN4NHXgz2LvTlNqSF95dF2tVJ05sKXNsNuVns/M7hu1Ukm7FhZ7J6XOP5ehVhv3YQPFNDA/c6Lb/aTXws8z5I4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=K/w0Ne1s; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=K/w0Ne1s; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 57FC01F78F
-	for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 22:41:17 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 85B661F8A3
+	for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 22:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1758494477; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1758494478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0wgEx9qOMyB7KcBMMXg1uOUy3kq5lmfrsp5Qu9oWWaI=;
-	b=UUTYaCGpUhwIVCvqgZHdmenmUaF6Ox1tMM05NTZK6N6+OwRxkiBu7rDOtbgjk/tINyI+I6
-	YK/rj0T/Q61PfYezL7SSnRC/7CeUOWINQu3d1vSLgVBg3DSAb8Qz2vHa0rQgKJvdWczjzQ
-	FolnHwDP2TvA5hdtnB0prQAw/49R5DQ=
+	bh=dFtCzVovxb985LFcZXUQRfEC/kA8kpOGTXigPJlLmMg=;
+	b=K/w0Ne1s6/HGPs4B3dKP26wvOf6iAx5WntmZYgxIcKlaw38chO52Md+Ph0/NIhr55rIf3R
+	IM9tVRKnGSLY9q0chWnUdClK18eVvZuZg0OuEGkbcr4E0XeOxDNIwKKE5y+q660OB6qnqN
+	uggk1gjbuplJpQ0ylTpYTVnbbMznNM4=
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=UUTYaCGp
+	dkim=pass header.d=suse.com header.s=susede1 header.b="K/w0Ne1s"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1758494477; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1758494478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0wgEx9qOMyB7KcBMMXg1uOUy3kq5lmfrsp5Qu9oWWaI=;
-	b=UUTYaCGpUhwIVCvqgZHdmenmUaF6Ox1tMM05NTZK6N6+OwRxkiBu7rDOtbgjk/tINyI+I6
-	YK/rj0T/Q61PfYezL7SSnRC/7CeUOWINQu3d1vSLgVBg3DSAb8Qz2vHa0rQgKJvdWczjzQ
-	FolnHwDP2TvA5hdtnB0prQAw/49R5DQ=
+	bh=dFtCzVovxb985LFcZXUQRfEC/kA8kpOGTXigPJlLmMg=;
+	b=K/w0Ne1s6/HGPs4B3dKP26wvOf6iAx5WntmZYgxIcKlaw38chO52Md+Ph0/NIhr55rIf3R
+	IM9tVRKnGSLY9q0chWnUdClK18eVvZuZg0OuEGkbcr4E0XeOxDNIwKKE5y+q660OB6qnqN
+	uggk1gjbuplJpQ0ylTpYTVnbbMznNM4=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9889113ACD
-	for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 22:41:16 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C6CF913ACD
+	for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 22:41:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4BQhFwx/0GisdwAAD6G6ig
+	id +OZiIg1/0GisdwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 22:41:16 +0000
+	for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 22:41:17 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 6/9] btrfs: prepare scrub to support bs > ps cases
-Date: Mon, 22 Sep 2025 08:10:48 +0930
-Message-ID: <c4d94d8c8fc229b6750d75c1f0029e4e10f753f9.1758494327.git.wqu@suse.com>
+Subject: [PATCH v2 7/9] btrfs: fix symbolic link reading when bs > ps
+Date: Mon, 22 Sep 2025 08:10:49 +0930
+Message-ID: <701755ea5993081e69369f9c6ddf21c70d6aa83c.1758494327.git.wqu@suse.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <cover.1758494326.git.wqu@suse.com>
 References: <cover.1758494326.git.wqu@suse.com>
@@ -84,6 +84,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 85B661F8A3
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
@@ -98,8 +103,8 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCPT_COUNT_ONE(0.00)[1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:dkim,suse.com:email];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -109,254 +114,104 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 57FC01F78F
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
 X-Spam-Score: -3.01
 
-This involves:
+[BUG DURING BS > PS TEST]
+When running the following script on a btrfs whose block size is larger
+than page size, e.g. 8K block size and 4K page size, it will trigger a
+kernel BUG:
 
-- Migrate scrub_stripe::pages[] to folios[]
+ # mkfs.btrfs -s 8k $dev
+ # mount $dev $mnt
+ # mkdir $mnt/dir
+ # ln -s dir $mnt/link
+ # ls $mnt/link
 
-- Use btrfs_alloc_folio_array() and folio_put() to alloc above array.
+The call trace looks like this:
 
-- Migrate scrub_stripe_get_kaddr() and scrub_stripe_get_paddr() to use
-  folio interfaces
+ BTRFS warning (device dm-2): support for block size 8192 with page size 4096 is experimental, some features may be missing
+ BTRFS info (device dm-2): checking UUID tree
+ BTRFS info (device dm-2): enabling ssd optimizations
+ BTRFS info (device dm-2): enabling free space tree
+ NOTICE: Automounting of tracing to debugfs is deprecated and will be removed in 2030
+ ------------[ cut here ]------------
+ kernel BUG at /home/adam/linux/include/linux/highmem.h:275!
+ Oops: invalid opcode: 0000 [#1] SMP
+ CPU: 8 UID: 0 PID: 667 Comm: ls Tainted: G           OE       6.17.0-rc4-custom+ #283 PREEMPT(full)
+ Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 02/02/2022
+ RIP: 0010:zero_user_segments.constprop.0+0xdc/0xe0 [btrfs]
+ Call Trace:
+  <TASK>
+  btrfs_get_extent.cold+0x85/0x101 [btrfs 7453c70c03e631c8d8bfdd4264fa62d3e238da6f]
+  btrfs_do_readpage+0x244/0x750 [btrfs 7453c70c03e631c8d8bfdd4264fa62d3e238da6f]
+  btrfs_read_folio+0x9c/0x100 [btrfs 7453c70c03e631c8d8bfdd4264fa62d3e238da6f]
+  filemap_read_folio+0x37/0xe0
+  do_read_cache_folio+0x94/0x3e0
+  __page_get_link.isra.0+0x20/0x90
+  page_get_link+0x16/0x40
+  step_into+0x69b/0x830
+  path_lookupat+0xa7/0x170
+  filename_lookup+0xf7/0x200
+  ? set_ptes.isra.0+0x36/0x70
+  vfs_statx+0x7a/0x160
+  do_statx+0x63/0xa0
+  __x64_sys_statx+0x90/0xe0
+  do_syscall_64+0x82/0xae0
+  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+  </TASK>
 
-- Migrate raid56_parity_cache_data_pages() to
-  raid56_parity_cache_data_folios()
-  Since scrub is the only caller still using pages.
+Please note bs > ps support is still under development and the
+enablement patch is not even in btrfs development branch.
 
-  This helper will copy the folio array contents into rbio::stripe_pages,
-  with sector uptodate flags updated.
+[CAUSE]
+Btrfs reuses its data folio read path to handle symbolic links, as the
+symbolic link target is stored as an inline data extent.
 
-  And a new ASSERT() to make sure bs > ps cases will not hit this path.
+But for newly created inodes, btrfs only set the minimal order if the
+target inode is a regular file.
 
-Since most scrub code is based on kaddr/paddr, the migration itself is
-pretty straightforward.
+Thus for above newly created symbolic link, it doesn't properly respect
+the minimal folio order, and triggered the above crash.
 
-And since we're here, also move the loop to set the
-stripe_sectors[].uptodate out of the copy loop.
-As we always mark all the sectors as update for the data stripe, it's
-easier to do in one go, other than doing it inside the copy loop.
+[FIX]
+Call btrfs_set_inode_mapping_order() unconditionally inside
+btrfs_create_new_inode().
 
+For symbolic links this will fix the crash as now the folio will meet
+the minimal order.
+
+For regular files this brings no change.
+
+For directory/bdev/char and all the other types of inodes, they won't
+go through the data read path, thus no effect either.
+
+Fixes: cc38d178ff33 ("btrfs: enable large data folio support under CONFIG_BTRFS_EXPERIMENTAL")
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/raid56.c | 42 +++++++++++++++++++++++++-------------
- fs/btrfs/raid56.h |  4 ++--
- fs/btrfs/scrub.c  | 51 +++++++++++++++++++++++++++--------------------
- 3 files changed, 59 insertions(+), 38 deletions(-)
+ fs/btrfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 2b4f577dcf39..c90612f6cc1b 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -2844,19 +2844,22 @@ void raid56_parity_submit_scrub_rbio(struct btrfs_raid_bio *rbio)
-  * This is for scrub call sites where we already have correct data contents.
-  * This allows us to avoid reading data stripes again.
-  *
-- * Unfortunately here we have to do page copy, other than reusing the pages.
-+ * Unfortunately here we have to do folio copy, other than reusing the pages.
-  * This is due to the fact rbio has its own page management for its cache.
-  */
--void raid56_parity_cache_data_pages(struct btrfs_raid_bio *rbio,
--				    struct page **data_pages, u64 data_logical)
-+void raid56_parity_cache_data_folios(struct btrfs_raid_bio *rbio,
-+				     struct folio **data_folios, u64 data_logical)
- {
-+	struct btrfs_fs_info *fs_info = rbio->bioc->fs_info;
- 	const u64 offset_in_full_stripe = data_logical -
- 					  rbio->bioc->full_stripe_logical;
--	const int page_index = offset_in_full_stripe >> PAGE_SHIFT;
--	const u32 sectorsize = rbio->bioc->fs_info->sectorsize;
--	const u32 sectors_per_page = PAGE_SIZE / sectorsize;
-+	unsigned int findex = 0;
-+	unsigned int foffset = 0;
- 	int ret;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 6b52ab164f45..601a20396171 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -6506,6 +6506,7 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
+ 	if (!args->subvol)
+ 		btrfs_inherit_iflags(BTRFS_I(inode), BTRFS_I(dir));
  
-+	/* We shouldn't hit RAID56 for bs > ps cases for now. */
-+	ASSERT(fs_info->sectorsize <= PAGE_SIZE);
-+
- 	/*
- 	 * If we hit ENOMEM temporarily, but later at
- 	 * raid56_parity_submit_scrub_rbio() time it succeeded, we just do
-@@ -2873,14 +2876,25 @@ void raid56_parity_cache_data_pages(struct btrfs_raid_bio *rbio,
- 	ASSERT(IS_ALIGNED(offset_in_full_stripe, BTRFS_STRIPE_LEN));
- 	ASSERT(offset_in_full_stripe < (rbio->nr_data << BTRFS_STRIPE_LEN_SHIFT));
- 
--	for (int page_nr = 0; page_nr < (BTRFS_STRIPE_LEN >> PAGE_SHIFT); page_nr++) {
--		struct page *dst = rbio->stripe_pages[page_nr + page_index];
--		struct page *src = data_pages[page_nr];
-+	for (unsigned int cur_off = offset_in_full_stripe;
-+	     cur_off < offset_in_full_stripe + BTRFS_STRIPE_LEN;
-+	     cur_off += PAGE_SIZE) {
-+		const unsigned int pindex = cur_off >> PAGE_SHIFT;
-+		void *kaddr;
- 
--		memcpy_page(dst, 0, src, 0, PAGE_SIZE);
--		for (int sector_nr = sectors_per_page * page_index;
--		     sector_nr < sectors_per_page * (page_index + 1);
--		     sector_nr++)
--			rbio->stripe_sectors[sector_nr].uptodate = true;
-+		kaddr = kmap_local_page(rbio->stripe_pages[pindex]);
-+		memcpy_from_folio(kaddr, data_folios[findex], foffset, PAGE_SIZE);
-+		kunmap_local(kaddr);
-+
-+		foffset += PAGE_SIZE;
-+		ASSERT(foffset <= folio_size(data_folios[findex]));
-+		if (foffset == folio_size(data_folios[findex])) {
-+			findex++;
-+			foffset = 0;
-+		}
- 	}
-+	for (unsigned int sector_nr = offset_in_full_stripe >> fs_info->sectorsize_bits;
-+	     sector_nr < (offset_in_full_stripe + BTRFS_STRIPE_LEN) >> fs_info->sectorsize_bits;
-+	     sector_nr++)
-+		rbio->stripe_sectors[sector_nr].uptodate = true;
- }
-diff --git a/fs/btrfs/raid56.h b/fs/btrfs/raid56.h
-index 0d7b4c2fb6ae..84c4d1d29c7a 100644
---- a/fs/btrfs/raid56.h
-+++ b/fs/btrfs/raid56.h
-@@ -201,8 +201,8 @@ struct btrfs_raid_bio *raid56_parity_alloc_scrub_rbio(struct bio *bio,
- 				unsigned long *dbitmap, int stripe_nsectors);
- void raid56_parity_submit_scrub_rbio(struct btrfs_raid_bio *rbio);
- 
--void raid56_parity_cache_data_pages(struct btrfs_raid_bio *rbio,
--				    struct page **data_pages, u64 data_logical);
-+void raid56_parity_cache_data_folios(struct btrfs_raid_bio *rbio,
-+				     struct folio **data_folios, u64 data_logical);
- 
- int btrfs_alloc_stripe_hash_table(struct btrfs_fs_info *info);
- void btrfs_free_stripe_hash_table(struct btrfs_fs_info *info);
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 979d33d8c193..bf50556f186e 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -130,7 +130,7 @@ enum {
- 	scrub_bitmap_nr_last,
- };
- 
--#define SCRUB_STRIPE_PAGES		(BTRFS_STRIPE_LEN / PAGE_SIZE)
-+#define SCRUB_STRIPE_MAX_FOLIOS		(BTRFS_STRIPE_LEN / PAGE_SIZE)
- 
- /*
-  * Represent one contiguous range with a length of BTRFS_STRIPE_LEN.
-@@ -139,7 +139,7 @@ struct scrub_stripe {
- 	struct scrub_ctx *sctx;
- 	struct btrfs_block_group *bg;
- 
--	struct page *pages[SCRUB_STRIPE_PAGES];
-+	struct folio *folios[SCRUB_STRIPE_MAX_FOLIOS];
- 	struct scrub_sector_verification *sectors;
- 
- 	struct btrfs_device *dev;
-@@ -339,10 +339,10 @@ static void release_scrub_stripe(struct scrub_stripe *stripe)
- 	if (!stripe)
- 		return;
- 
--	for (int i = 0; i < SCRUB_STRIPE_PAGES; i++) {
--		if (stripe->pages[i])
--			__free_page(stripe->pages[i]);
--		stripe->pages[i] = NULL;
-+	for (int i = 0; i < SCRUB_STRIPE_MAX_FOLIOS; i++) {
-+		if (stripe->folios[i])
-+			folio_put(stripe->folios[i]);
-+		stripe->folios[i] = NULL;
- 	}
- 	kfree(stripe->sectors);
- 	kfree(stripe->csums);
-@@ -355,6 +355,7 @@ static void release_scrub_stripe(struct scrub_stripe *stripe)
- static int init_scrub_stripe(struct btrfs_fs_info *fs_info,
- 			     struct scrub_stripe *stripe)
- {
-+	const u32 min_folio_shift = PAGE_SHIFT + fs_info->block_min_order;
- 	int ret;
- 
- 	memset(stripe, 0, sizeof(*stripe));
-@@ -367,7 +368,9 @@ static int init_scrub_stripe(struct btrfs_fs_info *fs_info,
- 	atomic_set(&stripe->pending_io, 0);
- 	spin_lock_init(&stripe->write_error_lock);
- 
--	ret = btrfs_alloc_page_array(SCRUB_STRIPE_PAGES, stripe->pages, false);
-+	ASSERT(BTRFS_STRIPE_LEN >> min_folio_shift <= SCRUB_STRIPE_MAX_FOLIOS);
-+	ret = btrfs_alloc_folio_array(BTRFS_STRIPE_LEN >> min_folio_shift,
-+				      fs_info->block_min_order, stripe->folios);
- 	if (ret < 0)
- 		goto error;
- 
-@@ -687,27 +690,30 @@ static int fill_writer_pointer_gap(struct scrub_ctx *sctx, u64 physical)
- 
- static void *scrub_stripe_get_kaddr(struct scrub_stripe *stripe, int sector_nr)
- {
--	u32 offset = (sector_nr << stripe->bg->fs_info->sectorsize_bits);
--	const struct page *page = stripe->pages[offset >> PAGE_SHIFT];
-+	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
-+	const u32 min_folio_shift = PAGE_SHIFT + fs_info->block_min_order;
-+	u32 offset = (sector_nr << fs_info->sectorsize_bits);
-+	const struct folio *folio = stripe->folios[offset >> min_folio_shift];
- 
--	/* stripe->pages[] is allocated by us and no highmem is allowed. */
--	ASSERT(page);
--	ASSERT(!PageHighMem(page));
--	return page_address(page) + offset_in_page(offset);
-+	/* stripe->folios[] is allocated by us and no highmem is allowed. */
-+	ASSERT(folio);
-+	ASSERT(!folio_test_partial_kmap(folio));
-+	return folio_address(folio) + offset_in_folio(folio, offset);
- }
- 
- static phys_addr_t scrub_stripe_get_paddr(struct scrub_stripe *stripe, int sector_nr)
- {
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
-+	const u32 min_folio_shift = PAGE_SHIFT + fs_info->block_min_order;
- 	u32 offset = (sector_nr << fs_info->sectorsize_bits);
--	const struct page *page = stripe->pages[offset >> PAGE_SHIFT];
-+	const struct folio *folio = stripe->folios[offset >> min_folio_shift];
- 
--	/* stripe->pages[] is allocated by us and no highmem is allowed. */
--	ASSERT(page);
--	ASSERT(!PageHighMem(page));
--	/* And the range must be contained inside the page. */
--	ASSERT(offset_in_page(offset) + fs_info->sectorsize <= PAGE_SIZE);
--	return page_to_phys(page) + offset_in_page(offset);
-+	/* stripe->folios[] is allocated by us and no highmem is allowed. */
-+	ASSERT(folio);
-+	ASSERT(!folio_test_partial_kmap(folio));
-+	/* And the range must be contained inside the folio. */
-+	ASSERT(offset_in_folio(folio, offset) + fs_info->sectorsize <= folio_size(folio));
-+	return page_to_phys(folio_page(folio, 0)) + offset_in_folio(folio, offset);
- }
- 
- static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
-@@ -1872,6 +1878,7 @@ static void scrub_submit_initial_read(struct scrub_ctx *sctx,
- {
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
- 	struct btrfs_bio *bbio;
-+	const u32 min_folio_shift = PAGE_SHIFT + fs_info->block_min_order;
- 	unsigned int nr_sectors = stripe_length(stripe) >> fs_info->sectorsize_bits;
- 	int mirror = stripe->mirror_num;
- 
-@@ -1884,7 +1891,7 @@ static void scrub_submit_initial_read(struct scrub_ctx *sctx,
- 		return;
++	btrfs_set_inode_mapping_order(BTRFS_I(inode));
+ 	if (S_ISREG(inode->i_mode)) {
+ 		if (btrfs_test_opt(fs_info, NODATASUM))
+ 			BTRFS_I(inode)->flags |= BTRFS_INODE_NODATASUM;
+@@ -6513,7 +6514,6 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
+ 			BTRFS_I(inode)->flags |= BTRFS_INODE_NODATACOW |
+ 				BTRFS_INODE_NODATASUM;
+ 		btrfs_update_inode_mapping_flags(BTRFS_I(inode));
+-		btrfs_set_inode_mapping_order(BTRFS_I(inode));
  	}
  
--	bbio = btrfs_bio_alloc(SCRUB_STRIPE_PAGES, REQ_OP_READ, fs_info,
-+	bbio = btrfs_bio_alloc(BTRFS_STRIPE_LEN >> min_folio_shift, REQ_OP_READ, fs_info,
- 			       scrub_read_endio, stripe);
- 
- 	bbio->bio.bi_iter.bi_sector = stripe->logical >> SECTOR_SHIFT;
-@@ -2215,7 +2222,7 @@ static int scrub_raid56_parity_stripe(struct scrub_ctx *sctx,
- 	for (int i = 0; i < data_stripes; i++) {
- 		stripe = &sctx->raid56_data_stripes[i];
- 
--		raid56_parity_cache_data_pages(rbio, stripe->pages,
-+		raid56_parity_cache_data_folios(rbio, stripe->folios,
- 				full_stripe_start + (i << BTRFS_STRIPE_LEN_SHIFT));
- 	}
- 	raid56_parity_submit_scrub_rbio(rbio);
+ 	ret = btrfs_insert_inode_locked(inode);
 -- 
 2.50.1
 
