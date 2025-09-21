@@ -1,317 +1,152 @@
-Return-Path: <linux-btrfs+bounces-17008-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17009-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EABDB8C56E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Sep 2025 12:22:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 975A0B8D4CD
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Sep 2025 06:36:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C19F117C105
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Sep 2025 10:21:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3007F442DA6
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Sep 2025 04:36:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146992F7ABD;
-	Sat, 20 Sep 2025 10:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F6E26CE3C;
+	Sun, 21 Sep 2025 04:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R/7euhNL"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EGnAuNTR";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Mk5N1zBy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58C0D2C11C0
-	for <linux-btrfs@vger.kernel.org>; Sat, 20 Sep 2025 10:21:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B03168BD
+	for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 04:35:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758363690; cv=none; b=W3QdJcFSO2XuZIJS3tn18YINZ0o/zKXBSOiufpBtnH5xnzz4hMdUYRLTqZteW2VpCuk8YJWMuEHnjMwyYufJnjN8a/SFLmv7mviGBZzsz4tsBJ7pZ/SWRfgpVud2QrADk2BDdYkKnwdsyn6t/yHyjdknuWIvDy1MGEabaj3qCn0=
+	t=1758429357; cv=none; b=ioFsBuSBGMJwL0qJpaXeCDxPK/NI8I2qWLIjc7L3ETvl8pvLFtxKIOyayjVZph4TROZn165ILbEPZRAVsm0j0xJ48ArZFToOk+fIhOJDIhcC2EJM8DCqVe2uGLPbeLIJwbFcRD0yDpc3yiBZQst1XbrgsARJPAjY4+Tj4U3EwoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758363690; c=relaxed/simple;
-	bh=NeUWLUvwC6kW9VyfKYx42FFXe0IA1wZCOhU/BXYAKwI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eXdYkhOf3YmGH4qBFgAR/Twy2tnF+CzcxujJgIlIVDpxqRaWCWfDUntnCNZZBl+pGTwwigol+OnPfrCAaJvodjCCFVUc8t9Cfy5VcC8MJoP28tO5wqnk1j4DVIeh46Nc5Js3cQKgZMiKHojmHXpwa8EQzdC3JcsyfGrbDH2mYQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R/7euhNL; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-45f2313dd86so25142195e9.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 20 Sep 2025 03:21:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758363686; x=1758968486; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P0vYXtUQVOuP2mhoWd4ropfz+61/nK8dVG+VKmZf9qg=;
-        b=R/7euhNLFeNlzmaUZ+Phoi0Q88Um1/yPfSkGC3G2sFF8md/oqJcr43+2FV+9UmZ2Dk
-         SUnKvAzbGiMrGaYgJR97ThDsbv3pKQfcEILZgylruuHbwAgK1ibJB3U9tn1aPxbYXcK1
-         MyRhovHH6tj9EMTzJqrblnvCmVfWpPYmKtlRwrM4k2sJZEX5nejonCqSjRQvEZ+qH5zA
-         DZ8wgDnOm8GaSljL3BUhgkod1l54KOPFjRhr/NVlywP8mhfKqtfasB/gPB/yUR4l9gOU
-         cdSyKg0V831oaRBDwypFkfc9dJHAFm8Nx1QoZlRSq09uBR4nwN02T4sdmyv+CMFSoURH
-         KYog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758363686; x=1758968486;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P0vYXtUQVOuP2mhoWd4ropfz+61/nK8dVG+VKmZf9qg=;
-        b=vzgUgft8qSzQathYimRbeBrAjs2A8HbXd+6dUXKHrdDgWoDzgfbY4xeUzlHbTawtvv
-         GfbfXgTfsZ7PcGcHsLi3weXIVle4B4iBRbiZ0yEvL4kb3zRSShOaXcokOzooVGnbs1pS
-         asDPBB+1x8wmZUsVo9zTg/QGS4duIzYOHs3t01/VMOaWi1p+4+gYUZWNmdu7vcokSEi7
-         3LeqPPMonAqM90jKe7L+tnDqMSr1MO2SNLakTLDHPc3ldcT+tV6nwMRBwa80KejUkbLM
-         jnhE9s4tke9qK4IDB/DJjUdVmuswS3NCShcoIngVyYWV1h43P07Es/9gLMvotjYPcJGe
-         sfwA==
-X-Forwarded-Encrypted: i=1; AJvYcCUVhOJgxxNrMzH1l0FT9dwesGWg//xDHt5NoZN9Q8bBhRrH9MZaDRK6LOwq0ngqDjCgdHuG3nThP4Osrg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzoVNp7p4DMwzwoXRi44mXiIoQwaNat7NvQVFCLxUV3dhyNNq3Q
-	FmXcmWPa2bTyWBiupX3NK+KJ7ROtHtpbTwjIQ910TuNwsYkLsigdSjcf
-X-Gm-Gg: ASbGncvGWlxKwITTvyb/V5dMC4i5BU+94Hs+z9oYyvsCDA2SIl+WXGbXVW633iC97sV
-	r55A+mtYdBjDqFeMFAU5MLYcfp+7EInjW2LJpnpD/kAsAp6fObXYeUuuLxOYD6LdB2wh2AzVUk3
-	kxcYHRO0QWlMjt7Engjyko6M+mjJ1KmMmKYzpApkIJYbU7ITiywprMul+lpytL+dhANWQofe7UP
-	M8QYfHWkqI+LIJij3TxVD0fROHIUnxvnmdxXS4fuEbhxFuIUuJTGLiHQClgcXQSeXojCWPAQL2C
-	XKuDReEI2Np/ioKf2PGa4Tmtz/RQG62mD3N+ALU6YZGFPvdJnOykUQ2M6WZVSZTac5WgmDrOj5Q
-	kX8jga+biQqvjCFDYH7Wd6Gwd1WVTEXxthExC0THK8sjgwOL52XfXdIC22RM+
-X-Google-Smtp-Source: AGHT+IFiz+7GSgFF/mIUUp0ndfipkNQ39jr+2XK+PXUAveDTslyL1Wu67txaLfdop4/qCEdAg/m1vQ==
-X-Received: by 2002:a05:600c:c8f:b0:45f:2919:5e6c with SMTP id 5b1f17b1804b1-467e6f37d8dmr76782405e9.16.1758363685327;
-        Sat, 20 Sep 2025 03:21:25 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3f0e28c83d6sm5624389f8f.56.2025.09.20.03.21.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Sep 2025 03:21:25 -0700 (PDT)
-Date: Sat, 20 Sep 2025 11:21:22 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc: linux@armlinux.org.uk, jdike@addtoit.com,
- anton.ivanov@cambridgegreys.com, dave.hansen@linux.intel.com,
- peterz@infradead.org, tglx@linutronix.de, x86@kernel.org, hpa@zytor.com,
- tony.luck@intel.com, qiuxu.zhuo@intel.com, mchehab@kernel.org,
- james.morse@arm.com, rric@kernel.org, harry.wentland@amd.com,
- sunpeng.li@amd.com, alexander.deucher@amd.com, airlied@linux.ie,
- daniel@ffwll.ch, evan.quan@amd.com, james.qian.wang@arm.com,
- liviu.dudau@arm.com, mihail.atanassov@arm.com, brian.starkey@arm.com,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- robdclark@gmail.com, sean@poorly.run, dmitry.torokhov@gmail.com,
- agk@redhat.com, snitzer@redhat.com, dm-devel@redhat.com, rajur@chelsio.com,
- davem@davemloft.net, kuba@kernel.org, peppe.cavallaro@st.com,
- alexandre.torgue@st.com, joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
- malattia@linux.it, hdegoede@redhat.com, mgross@linux.intel.com,
- intel-linux-scu@intel.com, artur.paszkiewicz@intel.com, jejb@linux.ibm.com,
- martin.petersen@oracle.com, sakari.ailus@linux.intel.com,
- gregkh@linuxfoundation.org, dushistov@mail.ru, luc.vanoostenryck@gmail.com,
- rostedt@goodmis.org, pmladek@suse.com, sergey.senozhatsky@gmail.com,
- andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
- akpm@linux-foundation.org, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
- pablo@netfilter.org, kadlec@netfilter.org, jmaloy@redhat.com,
- ying.xue@windriver.com, willy@infradead.org, sashal@kernel.org,
- ruanjinjie@huawei.com, David.Laight@ACULAB.COM, herve.codina@bootlin.com,
- Jason@zx2c4.com, bvanassche@acm.org, keescook@chromium.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-um@lists.infradead.org, linux-edac@vger.kernel.org,
- amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
- linux-hwmon@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, netdev@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- platform-driver-x86@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-staging@lists.linux.dev, linux-btrfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-sparse@vger.kernel.org,
- linux-mm@kvack.org, netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org, tipc-discussion@lists.sourceforge.net,
- stable@vger.kernel.org, jonnyc@amazon.com
-Subject: Re: [PATCH 00/27 5.10.y] Backport minmax.h updates from v6.17-rc6
-Message-ID: <20250920111904.6d9ecb17@pumpkin>
-In-Reply-To: <184ce83f-0063-43a0-a1c8-da23c5d03cf7@amd.com>
-References: <20250919101727.16152-1-farbere@amazon.com>
-	<184ce83f-0063-43a0-a1c8-da23c5d03cf7@amd.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1758429357; c=relaxed/simple;
+	bh=oIv6wHSn7V4JmAvenZPPZzrglZXw6GvbZrpVrijhDEI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DkLQdtr6mqyyrUENmLUYZKagI3LHx38iSN7fRPrNIwtHFuUfWWZgaa6V8iS9ST8PA6TNoQcxadvvmsx2dT4uMdEjiapDyfuZXecaoeCfwL/9yWC5rXS1GPZwmtTPO8l8SYnoh2OZb9gGerTNGqvK23AF8H0GjYBEa/eTeRjcv8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EGnAuNTR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Mk5N1zBy; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EA2F5225D8;
+	Sun, 21 Sep 2025 04:35:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1758429353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=aYHpIMISwtaRLh3AGTe+kmBdS1A6+gfnLqQ7xihAbkE=;
+	b=EGnAuNTRrtxowsujvCyH/JeEXkjN83mYnlzOSsT02M/K6uyPYcLCQgzaxFi801E2hsIMQg
+	YK3bfEMie8IS6dLkmWvhfnl6OFMA5+LdkfRrZ15tTvkqmo09ULKJckrGwbvZebdl5abwD0
+	xdGLBbedvQBSrxiTjVBR6i4vw3MmuyQ=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=Mk5N1zBy
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1758429352; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=aYHpIMISwtaRLh3AGTe+kmBdS1A6+gfnLqQ7xihAbkE=;
+	b=Mk5N1zBy/MXrUIVTXUYBfDy8hSnpHZtaiFsjrA4XExBvzs5vu4aTTPVaQ5kP4YpG0i1l6p
+	f+GyRrOJ82NPyRD6BtpDf4GbZ3lC9StlAOPYI7vrEdvDgjJ5n6RflqjPLuAzopearH3P/Q
+	RyT2mBgeLY4uiBZVrTw2tk0iCy4mJUM=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DE5B913A78;
+	Sun, 21 Sep 2025 04:35:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 1W79NaiAz2g9cQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Sun, 21 Sep 2025 04:35:52 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.17-rc7, part 2
+Date: Sun, 21 Sep 2025 06:35:41 +0200
+Message-ID: <cover.1758428886.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:dkim];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: EA2F5225D8
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 
-On Fri, 19 Sep 2025 14:11:37 +0200
-Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
+Hi,
 
-> On 19.09.25 12:17, Eliav Farber wrote:
-> > This series includes a total of 27 patches, to align minmax.h of
-> > v5.15.y with v6.17-rc6.
-> >=20
-> > The set consists of 24 commits that directly update minmax.h:
-> > 1) 92d23c6e9415 ("overflow, tracing: Define the is_signed_type() macro
-> >    once")
-> > 2) 5efcecd9a3b1 ("minmax: sanity check constant bounds when clamping")
-> > 3) 2122e2a4efc2 ("minmax: clamp more efficiently by avoiding extra
-> >    comparison")
-> > 4) f9bff0e31881 ("minmax: add in_range() macro")
-> > 5) c952c748c7a9 ("minmax: Introduce {min,max}_array()")
-> > 6) 5e57418a2031 ("minmax: deduplicate __unconst_integer_typeof()")
-> > 7) f6e9d38f8eb0 ("minmax: fix header inclusions")
-> > 8) d03eba99f5bf ("minmax: allow min()/max()/clamp() if the arguments
-> >    have the same signedness.")
-> > 9) f4b84b2ff851 ("minmax: fix indentation of __cmp_once() and
-> >    __clamp_once()")
-> > 10) 4ead534fba42 ("minmax: allow comparisons of 'int' against 'unsigned
-> >     char/short'")
-> > 11) 867046cc7027 ("minmax: relax check to allow comparison between
-> >     unsigned arguments and signed constants")
-> > 12) 3a7e02c040b1 ("minmax: avoid overly complicated constant
-> >     expressions in VM code")
-> > 14) 017fa3e89187 ("minmax: simplify and clarify min_t()/max_t()
-> >     implementation")
-> > 15) 1a251f52cfdc ("minmax: make generic MIN() and MAX() macros
-> >     available everywhere")
-> > 18) dc1c8034e31b ("minmax: simplify min()/max()/clamp()
-> >     implementation")
-> > 19) 22f546873149 ("minmax: improve macro expansion and type
-> >     checking")
-> > 20) 21b136cc63d2 ("minmax: fix up min3() and max3() too")
-> > 21) 71ee9b16251e ("minmax.h: add whitespace around operators and after
-> >     commas")
-> > 22) 10666e992048 ("minmax.h: update some comments")
-> > 23) b280bb27a9f7 ("minmax.h: reduce the #define expansion of min(),
-> >     max() and clamp()")
-> > 24) a5743f32baec ("minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi
-> >     test in clamp()")
-> > 25) c3939872ee4a ("minmax.h: move all the clamp() definitions after the
-> >     min/max() ones")
-> > 26) 495bba17cdf9 ("minmax.h: simplify the variants of clamp()")
-> > 27) 2b97aaf74ed5 ("minmax.h: remove some #defines that are only
-> >     expanded once")
-> >=20
-> > 2 prerequisite commits that adjust users of MIN and MAX macros (to
-> > prevent compilation issues):
-> > 13) 4477b39c32fd ("minmax: add a few more MIN_T/MAX_T users")
-> > 17) cb04e8b1d2f2 ("minmax: don't use max() in situations that want a C
-> >     constant expression")
-> >=20
-> > 1 additional commit introduced to resolve a build failures during the
-> > backport:
-> > 16) lib: zstd: drop local MIN/MAX macros in favor of generic ones
-> >=20
-> > The primary motivation is to bring in commit (8).
-> > In mainline, this change allows min()/max()/clamp() to accept mixed
-> > argument types when both share the same signedness.
-> > Backported patches to v5.10.y that use such forms trigger compiler
-> > warnings, which in turn cause build failures when -Werror is enabled.
-> >=20
-> > Originaly I aligned 5.10.y to 5.15.y, but David Laight commented that I
-> > need to pick up the later changes (from Linus) as well.
-> >=20
-> > Andy Shevchenko (2):
-> >   minmax: deduplicate __unconst_integer_typeof()
-> >   minmax: fix header inclusions
-> >=20
-> > Bart Van Assche (1):
-> >   overflow, tracing: Define the is_signed_type() macro once
-> >=20
-> > David Laight (11):
-> >   minmax: allow min()/max()/clamp() if the arguments have the same
-> >     signedness.
-> >   minmax: fix indentation of __cmp_once() and __clamp_once()
-> >   minmax: allow comparisons of 'int' against 'unsigned char/short'
-> >   minmax: relax check to allow comparison between unsigned arguments and
-> >     signed constants
-> >   minmax.h: add whitespace around operators and after commas
-> >   minmax.h: update some comments
-> >   minmax.h: reduce the #define expansion of min(), max() and clamp()
-> >   minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi test in clamp()
-> >   minmax.h: move all the clamp() definitions after the min/max() ones
-> >   minmax.h: simplify the variants of clamp()
-> >   minmax.h: remove some #defines that are only expanded once
-> >=20
-> > Eliav Farber (1):
-> >   lib: zstd: drop local MIN/MAX macros in favor of generic ones
-> >=20
-> > Herve Codina (1):
-> >   minmax: Introduce {min,max}_array()
-> >=20
-> > Jason A. Donenfeld (2):
-> >   minmax: sanity check constant bounds when clamping
-> >   minmax: clamp more efficiently by avoiding extra comparison
-> >=20
-> > Linus Torvalds (8):
-> >   minmax: avoid overly complicated constant expressions in VM code
-> >   minmax: add a few more MIN_T/MAX_T users
-> >   minmax: simplify and clarify min_t()/max_t() implementation
-> >   minmax: make generic MIN() and MAX() macros available everywhere
-> >   minmax: don't use max() in situations that want a C constant
-> >     expression
-> >   minmax: simplify min()/max()/clamp() implementation
-> >   minmax: improve macro expansion and type checking
-> >   minmax: fix up min3() and max3() too
-> >=20
-> > Matthew Wilcox (Oracle) (1):
-> >   minmax: add in_range() macro
-> >=20
-> >  arch/arm/mm/pageattr.c                        |   6 +-
-> >  arch/um/drivers/mconsole_user.c               |   2 +
-> >  arch/x86/mm/pgtable.c                         |   2 +- =20
->=20
-> >  drivers/edac/sb_edac.c                        |   4 +-
-> >  drivers/edac/skx_common.h                     |   1 -
-> >  .../drm/amd/display/modules/hdcp/hdcp_ddc.c   |   2 +
-> >  .../drm/amd/pm/powerplay/hwmgr/ppevvmath.h    |  14 +-
-> >  .../drm/arm/display/include/malidp_utils.h    |   2 +-
-> >  .../display/komeda/komeda_pipeline_state.c    |  24 +-
-> >  drivers/gpu/drm/drm_color_mgmt.c              |   2 +-
-> >  drivers/gpu/drm/msm/adreno/a6xx_gmu.c         |   6 -
-> >  drivers/gpu/drm/radeon/evergreen_cs.c         |   2 +
-> >  drivers/hwmon/adt7475.c                       |  24 +-
-> >  drivers/input/touchscreen/cyttsp4_core.c      |   2 +-
-> >  drivers/md/dm-integrity.c                     |   2 +-
-> >  drivers/media/dvb-frontends/stv0367_priv.h    |   3 +
-> >  .../net/ethernet/chelsio/cxgb3/cxgb3_main.c   |  18 +-
-> >  .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
-> >  drivers/net/fjes/fjes_main.c                  |   4 +-
-> >  drivers/nfc/pn544/i2c.c                       |   2 -
-> >  drivers/platform/x86/sony-laptop.c            |   1 -
-> >  drivers/scsi/isci/init.c                      |   6 +- =20
->=20
-> I do see the value to backport the infrastructure, but why are driver spe=
-cific changes backported as well?
+please pull a few short fixes for btrfs. Thanks.
 
-They will be about removing local definitions of MIN() and MAX() freeing
-them up for simple implementations (usable as constant initialisers) and th=
-en
-using them in places where the compound statements in min() and max() can't
-be used.
+- in tree-checker, fix wrong size of check for inode ref item
 
-Linus did all those changes - so he didn't have to wait for the maintainers
-to apply the changes (etc).
+- in ref-verify, handle combination of mount options that allow
+  partially damaged extent tree (reported by syzbot)
 
-	David
-=20
->=20
-> I mean the changes are most likely correct but also not valuable in anywa=
-y as bug fix.
->=20
-> Regards,
-> Christian.
->=20
-> >  .../pci/hive_isp_css_include/math_support.h   |   5 -
-> >  fs/btrfs/misc.h                               |   2 -
-> >  fs/btrfs/tree-checker.c                       |   2 +-
-> >  fs/ext2/balloc.c                              |   2 -
-> >  fs/ext4/ext4.h                                |   2 -
-> >  fs/ufs/util.h                                 |   6 -
-> >  include/linux/compiler.h                      |  15 +
-> >  include/linux/minmax.h                        | 267 ++++++++++++++----
-> >  include/linux/overflow.h                      |   1 -
-> >  include/linux/trace_events.h                  |   2 -
-> >  kernel/trace/preemptirq_delay_test.c          |   2 -
-> >  lib/btree.c                                   |   1 -
-> >  lib/decompress_unlzma.c                       |   2 +
-> >  lib/logic_pio.c                               |   3 -
-> >  lib/vsprintf.c                                |   2 +-
-> >  lib/zstd/zstd_internal.h                      |   2 -
-> >  mm/zsmalloc.c                                 |   1 -
-> >  net/ipv4/proc.c                               |   2 +-
-> >  net/ipv6/proc.c                               |   2 +-
-> >  net/netfilter/nf_nat_core.c                   |   6 +-
-> >  net/tipc/core.h                               |   2 +-
-> >  net/tipc/link.c                               |  10 +-
-> >  44 files changed, 306 insertions(+), 164 deletions(-)
-> >  =20
->=20
->=20
+- additional validation of compression mount option to catch invalid
+  string as level
 
+----------------------------------------------------------------
+The following changes since commit 80eb65ccf6f72dc37b972583fe71cd8a50ff7e51:
+
+  btrfs: annotate block group access with data_race() when sorting for reclaim (2025-09-15 05:25:43 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.17-rc6-tag
+
+for you to fetch changes up to b98b208300573f4ab29507f81194a6030b208444:
+
+  btrfs: reject invalid compression level (2025-09-18 13:18:49 +0200)
+
+----------------------------------------------------------------
+David Sterba (1):
+      btrfs: ref-verify: handle damaged extent root tree
+
+Qu Wenruo (2):
+      btrfs: tree-checker: fix the incorrect inode ref size check
+      btrfs: reject invalid compression level
+
+ fs/btrfs/compression.c  | 22 +++++++++++++---------
+ fs/btrfs/compression.h  |  2 +-
+ fs/btrfs/ref-verify.c   |  9 ++++++++-
+ fs/btrfs/super.c        | 27 +++++++++++++++++++--------
+ fs/btrfs/tree-checker.c |  4 ++--
+ 5 files changed, 43 insertions(+), 21 deletions(-)
 
