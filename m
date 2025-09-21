@@ -1,166 +1,127 @@
-Return-Path: <linux-btrfs+bounces-17011-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17012-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63757B8E1F4
-	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Sep 2025 19:29:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ED7FB8E315
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Sep 2025 20:26:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FCCD440222
-	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Sep 2025 17:29:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF52B3BBE9B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Sep 2025 18:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE45274666;
-	Sun, 21 Sep 2025 17:28:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D711D254B19;
+	Sun, 21 Sep 2025 18:25:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="oNji14LK"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="UlhjmFlv";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="aspLz1bd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62AB918EB0;
-	Sun, 21 Sep 2025 17:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC9124729C
+	for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 18:25:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758475727; cv=none; b=sOJy37ZvvJF/rleRS3I9lBsWgsAGi53Q3oecgGwlPpWKNDLb5yHMuzKhG/TjnU7nrN6PDBmu96r/NQmb/MCI1BaDmdKaaN1K2VGoeapNHb0Nhj92zm2Ybtoe32gaVf9U9Ynse7RykB0RwTEDQKQ+x0tNivJ6qVIuHb4Hir4mlsc=
+	t=1758479158; cv=none; b=K2HUGvq5x7ToiG7BasOAUjPwgZ7CifR7tCFGJErKhK7dCPV35aZve1CYZPZ1/wlbylg2f5J4kg1Z1bNxXUDVrGscQBGPAnoUnkDoYD1d12z0WKBNsOnegCLXeYaC5WVEvr2fA3dJ29SfTYwN5svhamOIltjXcIyE34mfTE1XRCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758475727; c=relaxed/simple;
-	bh=OhAKhAi+AnzI3Qc3qjl3chOvflGQ1Z6G7nQKCQgIA6k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JuPr5dIW1ixZuyWe44ZzOdSr41wfxfYgGXFy7a7pxwkDbkKRnRPNgsnZ0o4s8njNs/JgwyQiuLityq6PZVdZVBpcf9DMX1bw9BJr6PThPXIjlJcYu3m+6BryRzjSPCuFGL9MI2ZqDmdbwG97mDa9bsddGcdpuCbPDxCOgxre/mM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=oNji14LK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22692C4CEE7;
-	Sun, 21 Sep 2025 17:28:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1758475727;
-	bh=OhAKhAi+AnzI3Qc3qjl3chOvflGQ1Z6G7nQKCQgIA6k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oNji14LKsaN74d6/6VxXQLAaEWqiMK1odhhlWG54PmdesR086HbzOQPsvLp4l8W8h
-	 erd/geKCs7blyB1imhKlNfDZtIHl2vwbNw8z3TSYAfWxPI4STRspwkbfLQuyq+0pRc
-	 wfxpVS7OtRaNl868jtRKMkgfZDW20Ck1f7t2BQsw=
-Date: Sun, 21 Sep 2025 19:28:44 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Eliav Farber <farbere@amazon.com>
-Cc: linux@armlinux.org.uk, jdike@addtoit.com, richard@nod.at,
-	anton.ivanov@cambridgegreys.com, dave.hansen@linux.intel.com,
-	luto@kernel.org, peterz@infradead.org, tglx@linutronix.de,
-	mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-	tony.luck@intel.com, qiuxu.zhuo@intel.com, mchehab@kernel.org,
-	james.morse@arm.com, rric@kernel.org, harry.wentland@amd.com,
-	sunpeng.li@amd.com, alexander.deucher@amd.com,
-	christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-	evan.quan@amd.com, james.qian.wang@arm.com, liviu.dudau@arm.com,
-	mihail.atanassov@arm.com, brian.starkey@arm.com,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, robdclark@gmail.com, sean@poorly.run,
-	jdelvare@suse.com, linux@roeck-us.net, fery@cypress.com,
-	dmitry.torokhov@gmail.com, agk@redhat.com, snitzer@redhat.com,
-	dm-devel@redhat.com, rajur@chelsio.com, davem@davemloft.net,
-	kuba@kernel.org, peppe.cavallaro@st.com, alexandre.torgue@st.com,
-	joabreu@synopsys.com, mcoquelin.stm32@gmail.com, malattia@linux.it,
-	hdegoede@redhat.com, mgross@linux.intel.com,
-	intel-linux-scu@intel.com, artur.paszkiewicz@intel.com,
-	jejb@linux.ibm.com, martin.petersen@oracle.com,
-	sakari.ailus@linux.intel.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, jack@suse.com, tytso@mit.edu,
-	adilger.kernel@dilger.ca, dushistov@mail.ru,
-	luc.vanoostenryck@gmail.com, rostedt@goodmis.org, pmladek@suse.com,
-	sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-	linux@rasmusvillemoes.dk, minchan@kernel.org, ngupta@vflare.org,
-	akpm@linux-foundation.org, kuznet@ms2.inr.ac.ru,
-	yoshfuji@linux-ipv6.org, pablo@netfilter.org, kadlec@netfilter.org,
-	fw@strlen.de, jmaloy@redhat.com, ying.xue@windriver.com,
-	willy@infradead.org, sashal@kernel.org, ruanjinjie@huawei.com,
-	David.Laight@aculab.com, herve.codina@bootlin.com, Jason@zx2c4.com,
-	bvanassche@acm.org, keescook@chromium.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org, linux-edac@vger.kernel.org,
-	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-	linux-hwmon@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	platform-driver-x86@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-staging@lists.linux.dev, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-sparse@vger.kernel.org,
-	linux-mm@kvack.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, tipc-discussion@lists.sourceforge.net,
-	stable@vger.kernel.org, jonnyc@amazon.com
-Subject: Re: [PATCH 00/27 5.10.y] Backport minmax.h updates from v6.17-rc6
-Message-ID: <2025092136-unelected-skirt-d91d@gregkh>
-References: <20250919101727.16152-1-farbere@amazon.com>
+	s=arc-20240116; t=1758479158; c=relaxed/simple;
+	bh=SC7Tv9z1EYzOJdRLhRb1092MC5ZNma1VIl6soztBpEQ=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=acjRrnYD+BSZJU75SsE2gdThseEHEX+coxXfmaaPzVKbRwwdhFBmhYqG3FGQskOPEdx2DXF20iSpUvseS9htVbe/y2Plp2xhGyE2gSFLeURi5GtcyQmMjQT6SyO/Fc8mkzI3mHyfM00a2Due2BtagSfwg5GGSeu5j5joq8+x72c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=UlhjmFlv; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=aspLz1bd; arc=none smtp.client-ip=103.168.172.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id A803E14000D2;
+	Sun, 21 Sep 2025 14:25:55 -0400 (EDT)
+Received: from phl-imap-01 ([10.202.2.91])
+  by phl-compute-04.internal (MEProxy); Sun, 21 Sep 2025 14:25:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1758479155; x=1758565555; bh=Kflys6N5wV
+	T7aTb+z9X1FOd3MRX1+8Cdvf3EnX7Pbco=; b=UlhjmFlvuvSWCRMEshKt820d5Y
+	0POVdYiW6RMB87JOWknANjGv0E1CYvwXzBig1S525PAxryWWKmAtylWGEP3WarbW
+	csYWQxbnwL/lSh1ClnX/KjFu/qwNJ7XloykYk1VdVvYRWudJZkafY2PXgMwPhhyu
+	C30F597yv3Xoe/3RjEr4lkeJ9dblGtVHBjVFwujVLW9arYY0t5a26xYQNuK5jEye
+	uiH920AFAf8usrOxKQiorXtWSluOivd8U4yaD0iEO8tRiIh6GUZcOVnk5Lk4677m
+	7CTx39Uvz5adYT3Dntz0hA9XtllQO9NVMcnwwC5FOkaI/3Cvp7NtqHuU9J/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1758479155; x=
+	1758565555; bh=Kflys6N5wVT7aTb+z9X1FOd3MRX1+8Cdvf3EnX7Pbco=; b=a
+	spLz1bdPWRRa/6UTdQXV9UDSe71Fn49y8/BC/mzrsjzE0f6C2UgaKYW7lk2DYTiR
+	3kL7VYIrVEK4ney8yAA4umMm+NgSVXpqfAAZ30FC6zZwLgCKg4ir/4sNQfy8HRMd
+	WL7xWziZeggLPr4leImn/67yvyWowW66dGhdnRtWoCTQoXlVjpRiN+W9LC/h2EK+
+	ikrD03OSlrAzGJyFG3mbnmNdSoBNtia1Jm5pUTrT2CAXArsze6Y44Pek2BV52LeR
+	lQhhHCxocys9Jf7x/vB0sNmRTrlEwLSzObaiwWToQRSlaXX941xbX/ootajk8QZl
+	AabV+TmxM1Gfl3ULcnamA==
+X-ME-Sender: <xms:MkPQaFqLZtZiXv29YGztc8zGuaufZzX0Zsxxc4PYXHS6k1xEgR0I5g>
+    <xme:MkPQaHpNyjWNFyexvpRFhLD4mptZfBUhTlvwxQlXoLu7NaTdWfTj9b84yhbF6-qh5
+    nwKj2eFPOOxbDRgpSI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdehheeikecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdevhhhrihhs
+    ucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomheqne
+    cuggftrfgrthhtvghrnhephfeuvdekteduhefgtefhvedtfeeigfffheevhfevuefffedv
+    tdegiefflefflefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomhdpnhgspghrtghp
+    thhtohephedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepmhgrrhhksehhrghrmh
+    hsthhonhgvrdgtohhmpdhrtghpthhtohepfhgumhgrnhgrnhgrsehkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopegushhtvghrsggrsehsuhhsvgdrtghomhdprhgtphhtthhopegush
+    htvghrsggrsehsuhhsvgdrtgiipdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhg
+    vghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:MkPQaMogNBJL3VM_LBjlYckgTiw2vbDEGPaACGoKSUzS4s5rBxsyXQ>
+    <xmx:M0PQaPwu9TC3xi1YCLETqs9e-sV7mZJ1PC4_G7OayypH2wozHLDTrw>
+    <xmx:M0PQaAPD5_yzy-m0EKlEXGAeDKXLHvDfTtfFh6qjLwSC9i_mZydBKg>
+    <xmx:M0PQaE4C4J5ECJW-PNyKegOFD3ulvMCC-w-pUH1_0QWMAjV-ZZHKAg>
+    <xmx:M0PQaOajMWAR6uVPDGu0pHY8E66X6Xd_aMWMKIxkwyWH8S9IbUMgXq1B>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id DE91718C0067; Sun, 21 Sep 2025 14:25:54 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250919101727.16152-1-farbere@amazon.com>
+X-ThreadId: AaEh5dAqTB3N
+Date: Sun, 21 Sep 2025 14:25:34 -0400
+From: "Chris Murphy" <lists@colorremedies.com>
+To: "Mark Harmstone" <mark@harmstone.com>,
+ "Filipe Manana" <fdmanana@kernel.org>
+Cc: "David Sterba" <dsterba@suse.cz>, "David Sterba" <dsterba@suse.com>,
+ "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Message-Id: <a529e1bd-49c2-4463-90fe-847dd2c128f7@app.fastmail.com>
+In-Reply-To: <eaf33285-5d77-4b7e-851a-61e40e61d3ae@harmstone.com>
+References: <20250910175007.23176-1-dsterba@suse.com>
+ <CAL3q7H4vXmz4pGXayq98XZqPbFh6H6Z4=eaM-gFX7fsRLnFfEQ@mail.gmail.com>
+ <20250918003344.GH5333@suse.cz>
+ <26c2e470-6277-4957-8b8b-b12a2e567daa@harmstone.com>
+ <CAL3q7H4WX5XddPyQ2+0a8yQaCW757+V8VVVO6byscY9ch+LzQw@mail.gmail.com>
+ <eaf33285-5d77-4b7e-851a-61e40e61d3ae@harmstone.com>
+Subject: Re: Btrfs progs release 6.16.1
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-On Fri, Sep 19, 2025 at 10:17:00AM +0000, Eliav Farber wrote:
-> This series includes a total of 27 patches, to align minmax.h of
-> v5.15.y with v6.17-rc6.
-> 
-> The set consists of 24 commits that directly update minmax.h:
-> 1) 92d23c6e9415 ("overflow, tracing: Define the is_signed_type() macro
->    once")
+I resolved it with a single command: 
+mount -o clear_cache,space-cache=v2 /dev/dm-1 /mnt
 
-But this isn't in 5.15.y, so how is this syncing things up?
+clear_cache alone doesn't resolve it because a subsequent mount creates a v1 cache by default (kernel 6.17.0-0.rc6.49.fc43.x86_64)
 
-I'm all for this, but I got confused here, at the first commit :)
+My question is if it makes sense for the kernel to be capable of, by default, fixing problems like this? Future feature?
 
-> 2) 5efcecd9a3b1 ("minmax: sanity check constant bounds when clamping")
+For now though, the `btrfs check` message lacks an indication of the (un)seriousness of the problem, or what the user should do about it. Maybe this message could be prefaced with INFO: ? to suggest it's just an informational level concern? 
 
+The problem with the message and documentation is users are being advised to ask a btrfs developer or expert what to do about this message. So I kinda expect there will be messages on this list from users asking about it.
 
-
-> 3) 2122e2a4efc2 ("minmax: clamp more efficiently by avoiding extra
->    comparison")
-> 4) f9bff0e31881 ("minmax: add in_range() macro")
-> 5) c952c748c7a9 ("minmax: Introduce {min,max}_array()")
-> 6) 5e57418a2031 ("minmax: deduplicate __unconst_integer_typeof()")
-> 7) f6e9d38f8eb0 ("minmax: fix header inclusions")
-> 8) d03eba99f5bf ("minmax: allow min()/max()/clamp() if the arguments
->    have the same signedness.")
-> 9) f4b84b2ff851 ("minmax: fix indentation of __cmp_once() and
->    __clamp_once()")
-> 10) 4ead534fba42 ("minmax: allow comparisons of 'int' against 'unsigned
->     char/short'")
-> 11) 867046cc7027 ("minmax: relax check to allow comparison between
->     unsigned arguments and signed constants")
-> 12) 3a7e02c040b1 ("minmax: avoid overly complicated constant
->     expressions in VM code")
-> 14) 017fa3e89187 ("minmax: simplify and clarify min_t()/max_t()
->     implementation")
-> 15) 1a251f52cfdc ("minmax: make generic MIN() and MAX() macros
->     available everywhere")
-> 18) dc1c8034e31b ("minmax: simplify min()/max()/clamp()
->     implementation")
-> 19) 22f546873149 ("minmax: improve macro expansion and type
->     checking")
-> 20) 21b136cc63d2 ("minmax: fix up min3() and max3() too")
-> 21) 71ee9b16251e ("minmax.h: add whitespace around operators and after
->     commas")
-> 22) 10666e992048 ("minmax.h: update some comments")
-> 23) b280bb27a9f7 ("minmax.h: reduce the #define expansion of min(),
->     max() and clamp()")
-> 24) a5743f32baec ("minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi
->     test in clamp()")
-> 25) c3939872ee4a ("minmax.h: move all the clamp() definitions after the
->     min/max() ones")
-> 26) 495bba17cdf9 ("minmax.h: simplify the variants of clamp()")
-> 27) 2b97aaf74ed5 ("minmax.h: remove some #defines that are only
->     expanded once")
-
-Some of these are also only in newer kernels, which, as you know, is
-generally a bad thing (i.e. I can't take patches only for older
-kernels.)
-
-I want these changes, as they are great, but can you perhaps provide
-patch series for newer kernels first so that I can then take these?
-
-thanks,
-
-greg k-h
+---
+Chris Murphy
 
