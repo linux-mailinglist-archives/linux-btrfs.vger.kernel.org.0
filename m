@@ -1,100 +1,107 @@
-Return-Path: <linux-btrfs+bounces-17051-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17052-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F87CB8FCF3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 11:43:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51A56B8FF0D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 12:10:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93A4018A1E1A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 09:43:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23CB07AFD34
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 10:09:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9CA2877F1;
-	Mon, 22 Sep 2025 09:43:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12AE2F5306;
+	Mon, 22 Sep 2025 10:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b="Y8QEU4Gj"
+	dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b="D5ZgbcxK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mxex1.tik.uni-stuttgart.de (mxex1.tik.uni-stuttgart.de [129.69.192.20])
+Received: from mx2.mythic-beasts.com (mx2.mythic-beasts.com [46.235.227.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF2C287519
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Sep 2025 09:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.69.192.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D8AE27F749
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Sep 2025 10:10:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758534191; cv=none; b=gKprDgXP8HLF1ZprzgY86qe+UoVS0xk8lBCW3pbNLCqKP0BwhKpVkaR90q1mvi2vY0jz9SM6/AqAXc7PYH1OMyeAdW3vh9VxYdewgebpyS2r6vxWKIaIwD1qaDfSyFdS7fnXojwh4aMdFLJCk7cqcTxjAO1irTbSBom31w6CFgg=
+	t=1758535849; cv=none; b=tlfOaLQS/Xx9uhGpLYW4akNrpiiRf+U3lDi6A6dZIL4kvQJ7+yjhD+i58ipejv4p9JPq8FdJe2Ew1Q7yIRRgwUoGsw7e5hOAtcp2VUkdiFyV3y+KEVkOuWpQqRq0ptADJK6C2Vj4/5MO5yE3uVPq2OASKm0Hh9yEuyfQZwH4IPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758534191; c=relaxed/simple;
-	bh=5CTjdGIjfbdJSNf2MBVEG96uVHSqFg8n3fJ8NQPcQk0=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tj0jLGPKZOu5Fj7Anent/xCvlrF/hdAXqYaOx3Pfl9fqtgihBoZmphhWegGn8op+zVABwM3rUqWIaT+DE9SQq+wWnFI2JBgBx4HUwB+lVmPWypiTxrDSO+9JMxyer47PKPvp6o7eFkPMq1EkLI3SHJi6PZT/9GBvGPfv/W+B50o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de; spf=pass smtp.mailfrom=rus.uni-stuttgart.de; dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b=Y8QEU4Gj; arc=none smtp.client-ip=129.69.192.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rus.uni-stuttgart.de
-Received: from localhost (localhost [127.0.0.1])
-	by mxex1.tik.uni-stuttgart.de (Postfix) with ESMTP id 4203C60EAB
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Sep 2025 11:43:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=uni-stuttgart.de;
-	 h=x-mailer:user-agent:in-reply-to:content-disposition
-	:content-type:content-type:mime-version:references:message-id
-	:subject:subject:from:from:date:date; s=dkim; i=
-	@rus.uni-stuttgart.de; t=1758534184; x=1760272985; bh=5CTjdGIjfb
-	dJSNf2MBVEG96uVHSqFg8n3fJ8NQPcQk0=; b=Y8QEU4Gjjcc8lY9smvyMWFdyH9
-	ZIkHP0WjqFbS2hU9rz0rHOBf4ppsRO4q21I9QAokkQLzKYr5cZBkiyQqn3ait1xY
-	gBtToGFIcD+E1LIRvTxwNjcOH9W9j1iL0qNgXcqrL2XNA/kzIdRcNFnREneS4EwT
-	oKwO9ajqExr605UhzK0POs9Dvh17UzzKyPh/kaWF7EqIBOJjOJqjRRsOYYDFIt9j
-	1AqAQbwgtjD/yZWV0zbd4dY+ANyW2U4u9QBxu5GagdQ1pbgMpzlno269pByz/gVz
-	OGqmCHulMsVk7YOWkdtsgzrDhxDxcGED+Ph8OgZbuJ/W0LXnxq5NbbRPXVbA==
-X-Virus-Scanned: USTUTT mailrelay AV services at mxex1.tik.uni-stuttgart.de
-Received: from mxex1.tik.uni-stuttgart.de ([127.0.0.1])
- by localhost (mxex1.tik.uni-stuttgart.de [127.0.0.1]) (amavis, port 10031)
- with ESMTP id UDRXleTIyPeT for <linux-btrfs@vger.kernel.org>;
- Mon, 22 Sep 2025 11:43:04 +0200 (CEST)
-Received: from authenticated client
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxex1.tik.uni-stuttgart.de (Postfix) with ESMTPSA
-Date: Mon, 22 Sep 2025 11:43:04 +0200
-From: Ulli Horlacher <framstag@rus.uni-stuttgart.de>
-To: linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: btrfs RAID5 or btrfs on md RAID5?
-Message-ID: <20250922094304.GB2634184@tik.uni-stuttgart.de>
-Mail-Followup-To: linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20250922070956.GA2624931@tik.uni-stuttgart.de>
- <d3a5e463-d00e-4428-ad7b-35f87f9a6550@gmx.com>
+	s=arc-20240116; t=1758535849; c=relaxed/simple;
+	bh=UQgWsPZlvMW4O9iELiUm4yOYmh1rujSulQMFSgYk2ik=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=nqqCuXsfZm2V319dMDy58984OJs180Rr82UYKShJluCd6z7ZwoN448JSKrowvmE3rTuCuK6HQe8DPP9Jt8r+E7gswI8FwDAHKaUztuzb6SfDzRTuQ6UR36I8YwWFDgNt3gSW6y05h5yTMoNgvaS1kL561E6C4ZQhH896QapcR2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cobb.uk.net; spf=pass smtp.mailfrom=cobb.uk.net; dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b=D5ZgbcxK; arc=none smtp.client-ip=46.235.227.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cobb.uk.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cobb.uk.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cobb.uk.net
+	; s=mythic-beasts-k1; h=Subject:From:To:Date;
+	bh=yCjL6gUW3Cym0YG0z2kD8fB7HUjg/5CWVlD+Ium8YIM=; b=D5ZgbcxKyVNhdtXo1Xdm+dAKn5
+	sS+HiWjLcKG80eDjp9adnyWGQJhv9/xQpLT873lUKG69u1Y/61nqrmqpCajdN3cCXP7AqmrqRmyLk
+	AZI7MiMvsVxtSZx4lHp5PsGyA8nnoEUkMw41QFlbNMaHVHZwkzowOY8ASQCAhV8I4AH5wCS2ft8oH
+	AgF/C3uZTwmIali1UldQ514YPA1DzwYFB4mBa+Fj7jouAHNQKAAN2D6O2uB3ufLbCHtCQPob4og+L
+	jGRU7Rl278w0VtHiH6THIf64LdDQl8+/72z4lFW5PSduyuweAnuW+mryhlnCumWiprMGLp6+vJ9/G
+	fODUAfug==;
+Received: by mailhub-hex-d.mythic-beasts.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <g.btrfs@cobb.uk.net>)
+	id 1v0dKR-009aCh-06
+	for linux-btrfs@vger.kernel.org;
+	Mon, 22 Sep 2025 10:59:27 +0100
+Message-ID: <cc6caa76-3b79-49cc-8757-5a6992d69d27@cobb.uk.net>
+Date: Mon, 22 Sep 2025 10:59:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d3a5e463-d00e-4428-ad7b-35f87f9a6550@gmx.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Mailer: smtpsend-20240729
+User-Agent: Mozilla Thunderbird
+To: linux-btrfs@vger.kernel.org
+From: Graham Cobb <g.btrfs@cobb.uk.net>
+Content-Language: en-US
+Subject: Improve progress logging for long resize?
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-BlackCat-Spam-Score: 9
 
-On Mon 2025-09-22 (17:11), Qu Wenruo wrote:
+I am currently trying to shrink a btrfs device to create a bit of space 
+for something else. It is a big disk (about 20TB device) and I want to 
+shrink it by about 1%. I know it will take a long time.
 
-> Btrfs RAID56 has no journal to protect against write hole. But has the
-> ability to properly detect and rebuild corrupted data using data checksum.
+However, I think the progress reporting could be usefully improved. Here 
+is the logging to date:
 
-As I wrote before, I could use btrfs RAID1 (only) for the / filesystem (64
-GB), the other partitions without any RAID level, just simple btrfs
-filesytems. No md RAID volumes at all.
+Sep 19 16:35:59 black kernel: BTRFS info (device dm-6): resize device 
+/dev/mapper/cryptsnap22tb--vg-backupsnapshot (devid 6) from 
+21650951110656 to 21474836480000
 
-btrfs RAID1 is not prone to write holes, but is able to rebuild corrupted
-data using data checksum?
+Sep 19 16:37:36 black kernel: BTRFS info (device dm-6): resizing devid 6
 
-Then this is could be the most robust solution for me.
-In case of a disk failure I have to recover from backup.
+Sep 19 16:37:49 black kernel: BTRFS info (device dm-6): relocating block 
+group 72119527407616 flags metadata|raid1
 
--- 
-Ullrich Horlacher              Server und Virtualisierung
-Rechenzentrum TIK
-Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
-Allmandring 30a                Tel:    ++49-711-68565868
-70569 Stuttgart (Germany)      WWW:    https://www.tik.uni-stuttgart.de/
-REF:<d3a5e463-d00e-4428-ad7b-35f87f9a6550@gmx.com>
+Sep 22 04:23:28 black kernel: BTRFS info (device dm-6): found 54384 
+extents, stage: move data extents
+
+Sep 22 04:25:57 black kernel: BTRFS info (device dm-6): relocating block 
+group 72118453665792 flags metadata|raid1
+
+ From the log, I can see that I started the operation on 19 Sept at 
+16:36 and at 16:37 it found the first block to move. That's fine.
+
+Two and a half days later I get the next message - telling me the first 
+block group has been moved! (Actually - is it telling me that? That 
+message isn't very clear - but that is a different issue).
+
+I'm not complaining about how long it takes - this is an old, slow 
+system, I am using LVM and encryption, etc. However, it would have been 
+comforting to get an occasional progress message in the log.
+
+Would it be possible to log very long operations such as these every 
+hour (say, or some other interval - 4 hours?)? Ideally reporting some 
+progress (number of extents found so far, or something) - or at least 
+giving some confidence the operation hasn't stuck due to some I/O 
+failure or on-disk corruption. If this was part of restoring some system 
+after a failure it would be nice to get a feel of how slowly it is going.
+
+Thoughts?
+
+Graham
 
