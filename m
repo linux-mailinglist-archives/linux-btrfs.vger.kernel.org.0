@@ -1,107 +1,145 @@
-Return-Path: <linux-btrfs+bounces-17052-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17053-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51A56B8FF0D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 12:10:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5C34B8FF97
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 12:21:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23CB07AFD34
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 10:09:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E7923BF6DA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 10:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12AE2F5306;
-	Mon, 22 Sep 2025 10:10:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE0E2877D5;
+	Mon, 22 Sep 2025 10:21:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b="D5ZgbcxK"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TSpjbS0J";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iNj8xbol";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TSpjbS0J";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iNj8xbol"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx2.mythic-beasts.com (mx2.mythic-beasts.com [46.235.227.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D8AE27F749
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Sep 2025 10:10:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E863B3EA8D
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Sep 2025 10:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758535849; cv=none; b=tlfOaLQS/Xx9uhGpLYW4akNrpiiRf+U3lDi6A6dZIL4kvQJ7+yjhD+i58ipejv4p9JPq8FdJe2Ew1Q7yIRRgwUoGsw7e5hOAtcp2VUkdiFyV3y+KEVkOuWpQqRq0ptADJK6C2Vj4/5MO5yE3uVPq2OASKm0Hh9yEuyfQZwH4IPk=
+	t=1758536489; cv=none; b=KXjDa3npea/gBR0gfBtuFw2nQZtwZXZgatbPUxsy6QmTmZScV1mIq9UinqTCOvBQHSPrJ/gYnAF3elAL5WWU6bc6F4a/DN+5/3Idp1JNY8pqdBEo3dmB7VEtpYbNqyz39C76zmndVjjDKPidINi8nAvxbBHaSe0e/ib0IymB/Ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758535849; c=relaxed/simple;
-	bh=UQgWsPZlvMW4O9iELiUm4yOYmh1rujSulQMFSgYk2ik=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=nqqCuXsfZm2V319dMDy58984OJs180Rr82UYKShJluCd6z7ZwoN448JSKrowvmE3rTuCuK6HQe8DPP9Jt8r+E7gswI8FwDAHKaUztuzb6SfDzRTuQ6UR36I8YwWFDgNt3gSW6y05h5yTMoNgvaS1kL561E6C4ZQhH896QapcR2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cobb.uk.net; spf=pass smtp.mailfrom=cobb.uk.net; dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b=D5ZgbcxK; arc=none smtp.client-ip=46.235.227.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cobb.uk.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cobb.uk.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cobb.uk.net
-	; s=mythic-beasts-k1; h=Subject:From:To:Date;
-	bh=yCjL6gUW3Cym0YG0z2kD8fB7HUjg/5CWVlD+Ium8YIM=; b=D5ZgbcxKyVNhdtXo1Xdm+dAKn5
-	sS+HiWjLcKG80eDjp9adnyWGQJhv9/xQpLT873lUKG69u1Y/61nqrmqpCajdN3cCXP7AqmrqRmyLk
-	AZI7MiMvsVxtSZx4lHp5PsGyA8nnoEUkMw41QFlbNMaHVHZwkzowOY8ASQCAhV8I4AH5wCS2ft8oH
-	AgF/C3uZTwmIali1UldQ514YPA1DzwYFB4mBa+Fj7jouAHNQKAAN2D6O2uB3ufLbCHtCQPob4og+L
-	jGRU7Rl278w0VtHiH6THIf64LdDQl8+/72z4lFW5PSduyuweAnuW+mryhlnCumWiprMGLp6+vJ9/G
-	fODUAfug==;
-Received: by mailhub-hex-d.mythic-beasts.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <g.btrfs@cobb.uk.net>)
-	id 1v0dKR-009aCh-06
-	for linux-btrfs@vger.kernel.org;
-	Mon, 22 Sep 2025 10:59:27 +0100
-Message-ID: <cc6caa76-3b79-49cc-8757-5a6992d69d27@cobb.uk.net>
-Date: Mon, 22 Sep 2025 10:59:23 +0100
+	s=arc-20240116; t=1758536489; c=relaxed/simple;
+	bh=UVu32OlRoaIz0pOSGXoPsiuuuF00jqNY7+DGWHAoeTA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=at0f2fiQIlzOjzjvlOGkcqv50PvgunAF/PwVEXyEEmHNwjqEJi24dyzxxEdziGDPlZVgdWzLEEGOtI+ZgajgkwgQVgtt5HYismJG1BaF9lsGXqRlbl2ShiUkSYQ8UIJoKpw5UfMuIIrhHSCvzts7beaDQruoel9GTuC8aqNxM64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TSpjbS0J; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iNj8xbol; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TSpjbS0J; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iNj8xbol; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3B68E2258A;
+	Mon, 22 Sep 2025 10:21:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758536486;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V+L2NsH5f+qct2ris/ncnb0gjiDQuXUCZWpl93Xs6Bg=;
+	b=TSpjbS0JVPxyVtThWtU4vVu/+9VgcR7JDeV39sN6SGVqHSF9mMsT91fAdNyrQPsNU2r5TJ
+	dLqmLKB3iKaqnfqNUPW7i3wKkwzg0T49097rK/xsSuZry9InuAYFXxlWfLMZcCiJrOzMrJ
+	Llzg4H7BUK17y+p+rrsFQnrlb/S3kCQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758536486;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V+L2NsH5f+qct2ris/ncnb0gjiDQuXUCZWpl93Xs6Bg=;
+	b=iNj8xbolF1lpZRiJlGqGbFlMJBYuLem1tgrDjtXXKS9A7mKBW2xpgotasiR7oK0VcEgXet
+	Zc78qKZAcuOrlrCQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758536486;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V+L2NsH5f+qct2ris/ncnb0gjiDQuXUCZWpl93Xs6Bg=;
+	b=TSpjbS0JVPxyVtThWtU4vVu/+9VgcR7JDeV39sN6SGVqHSF9mMsT91fAdNyrQPsNU2r5TJ
+	dLqmLKB3iKaqnfqNUPW7i3wKkwzg0T49097rK/xsSuZry9InuAYFXxlWfLMZcCiJrOzMrJ
+	Llzg4H7BUK17y+p+rrsFQnrlb/S3kCQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758536486;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V+L2NsH5f+qct2ris/ncnb0gjiDQuXUCZWpl93Xs6Bg=;
+	b=iNj8xbolF1lpZRiJlGqGbFlMJBYuLem1tgrDjtXXKS9A7mKBW2xpgotasiR7oK0VcEgXet
+	Zc78qKZAcuOrlrCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2E7EF13A63;
+	Mon, 22 Sep 2025 10:21:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id sCsvCyYj0WjnOgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 22 Sep 2025 10:21:26 +0000
+Date: Mon, 22 Sep 2025 12:21:25 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 9/9] btrfs: enable experimental bs > ps support
+Message-ID: <20250922102124.GK5333@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1758494326.git.wqu@suse.com>
+ <018a9a3216ac9a4d79562105ea10727cec23e8ed.1758494327.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-btrfs@vger.kernel.org
-From: Graham Cobb <g.btrfs@cobb.uk.net>
-Content-Language: en-US
-Subject: Improve progress logging for long resize?
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-BlackCat-Spam-Score: 9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <018a9a3216ac9a4d79562105ea10727cec23e8ed.1758494327.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -4.00
 
-I am currently trying to shrink a btrfs device to create a bit of space 
-for something else. It is a big disk (about 20TB device) and I want to 
-shrink it by about 1%. I know it will take a long time.
+On Mon, Sep 22, 2025 at 08:10:51AM +0930, Qu Wenruo wrote:
+> +	if (fs_info->sectorsize > PAGE_SIZE) {
+> +		ret = -ENOTTY;
 
-However, I think the progress reporting could be usefully improved. Here 
-is the logging to date:
+I did a minor fixup of the error code to -EOPNOTSUPP, which means the
+ioctl exists but a particular mode or option combination is not
+supported. The -ENOTTY is for the case wher the ioctl does not exist at
+all, and for completeness -EINVAL is for a valid mode but invalid
+parameters.
 
-Sep 19 16:35:59 black kernel: BTRFS info (device dm-6): resize device 
-/dev/mapper/cryptsnap22tb--vg-backupsnapshot (devid 6) from 
-21650951110656 to 21474836480000
-
-Sep 19 16:37:36 black kernel: BTRFS info (device dm-6): resizing devid 6
-
-Sep 19 16:37:49 black kernel: BTRFS info (device dm-6): relocating block 
-group 72119527407616 flags metadata|raid1
-
-Sep 22 04:23:28 black kernel: BTRFS info (device dm-6): found 54384 
-extents, stage: move data extents
-
-Sep 22 04:25:57 black kernel: BTRFS info (device dm-6): relocating block 
-group 72118453665792 flags metadata|raid1
-
- From the log, I can see that I started the operation on 19 Sept at 
-16:36 and at 16:37 it found the first block to move. That's fine.
-
-Two and a half days later I get the next message - telling me the first 
-block group has been moved! (Actually - is it telling me that? That 
-message isn't very clear - but that is a different issue).
-
-I'm not complaining about how long it takes - this is an old, slow 
-system, I am using LVM and encryption, etc. However, it would have been 
-comforting to get an occasional progress message in the log.
-
-Would it be possible to log very long operations such as these every 
-hour (say, or some other interval - 4 hours?)? Ideally reporting some 
-progress (number of extents found so far, or something) - or at least 
-giving some confidence the operation hasn't stuck due to some I/O 
-failure or on-disk corruption. If this was part of restoring some system 
-after a failure it would be nice to get a feel of how slowly it is going.
-
-Thoughts?
-
-Graham
+> +		goto out_acct;
+> +	}
 
