@@ -1,81 +1,79 @@
-Return-Path: <linux-btrfs+bounces-17026-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17028-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0BD0B8E91F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 00:46:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 659E8B8E9DB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 02:07:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A41D04E1866
-	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Sep 2025 22:46:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B1923BEA08
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 00:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E4F255F24;
-	Sun, 21 Sep 2025 22:46:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBED1944F;
+	Mon, 22 Sep 2025 00:07:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="eJN3w039"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kUp49l7H"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD17E2868B
-	for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 22:46:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A664C83
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Sep 2025 00:07:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758494773; cv=none; b=KfuIIrX3K2eNmgO2TUtpFIMfTlznrMr1NfFNATbap84GoXvVaoiY3WDFy05prUWB4wK73YUt31etvc/Rt+A1KtyZHQlfx2rmc6QBZq/mbhzQ1W/yGw9Ekz4bWbH0KzEr7bouzcfdvfmMlqHXN+GZE5lcIZ8zR0ykQrpjvL2T9+I=
+	t=1758499639; cv=none; b=fkP2L/MzUs5H/A32Ta1YfBB1vbZy6APmxu9AYmCJG03yem877ozYsC7nBqV4D9VPYNsSPwCCox2yi7WPnDl+NdKRitx+U4XjkVdnuh6fxB9ZhPQjiwVjvqcc2K8N0avYzIKxM99TzIGvwkdN0FNkOFaJgGJEfvwTxK84XC/92x8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758494773; c=relaxed/simple;
-	bh=myoAn27Kiu7+Z7Ku0EpbMDLTmOtMdUe+0AgAHuAtynk=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=aATs83cCypwhJZ5ZVbFwTBGmxbfcV7lg12hVwKx33IRNNvuwmqQFgigJK81vIJNa+b9op8DXDujFhX/8mC9RiC1az7hCbqwy0q3txxHS8M91Gi6iyzQgD0qUt4TMhtZr9WXA1Wk6qHGXyb8SxiK0lcts+tJWoryvQKna33Jf8oE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=eJN3w039; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3f0ae439bc3so1214521f8f.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 15:46:10 -0700 (PDT)
+	s=arc-20240116; t=1758499639; c=relaxed/simple;
+	bh=J+1QqbwW5Hf6tJN4yS4Ln2UA4wepRC8zRcfRzwrjxdY=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=X7Afk8BeFweIND5+AOkyZ6M8fI6XXNe95DAX6lwuSaJiyH98z7G5XY7oqi8nA/tA3FJQFrZ/FZxnFw7HMg1IDP5C1n6mAdTZnGq55LbUBuO71tMT3Br4YngAErh+Ww+f1/dfEQs0vCJaU4OfgyAlQ2l0YBsi5Ps+O+zVrP5VlsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kUp49l7H; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-72ce9790aceso25884877b3.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 17:07:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1758494769; x=1759099569; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=fbm/f/f8NJbTwBN3NsUAHLQGjR4O4fldJJR4PWdJj2w=;
-        b=eJN3w039vYFaFq1XD98tccdH/CmC52dt5rsMzTzrAO9FvzW0B2psXN3JQlUhzvrGJ8
-         MDCOQTgZ8k2VUnbVQn/XpYAa950USjO7gt/wfHmeFQkdftvzY5W5kVhHoXjhAKFx4gcY
-         gpCmP8ILp4IiRllwRn0QwYn9P7TQatB7bz4MMvUM8LeUSNfyCvkXO4DnBMG5kuwwzShS
-         D0GI/tjspmxAqvE/UQ5gLa6jCkw/nzSsCw5NHjfuHLfTV5Bw4fre+m+fSuXeq8EUp/F+
-         9PSm8jzUsvoBM7s2Dcj9fxVigSzwLLCB3Swk+hosGjjoEBj8V3dMtMUev2qmBuA9T++s
-         E0BA==
+        d=gmail.com; s=20230601; t=1758499636; x=1759104436; darn=vger.kernel.org;
+        h=autocrypt:subject:from:to:content-language:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=DKg9PlvGFLFb1lXo8w7zb85QDnakD9iQSwAqdXTGJU0=;
+        b=kUp49l7HvpUXK55+x7foMzDqC5dRQWdAOeoA288u5anvYIdH0WgTC+4RGpmaBjhqca
+         Bb1kqZ1r0ohl9eEP9nkk+6U+uxO7BX5HbcgYuJeqNul/+X+zbiHMb9YdphX7RxMOmAv0
+         aalae7UkNJlsQ/oLHchb4xocVMHNKYJy+eREhW7rwtXn7u06uUXi0exUZcvb/pCpVqGL
+         uwqJ8vRa+HVCkvFZbaoW03N6bT2uPm0DpGqz6d3RRq2gx2uGIBCioFaU/TGTRpxLLW3t
+         tEGEIPZKw9tGN+uHtr7p4vcWQnxkJ4Zar384QB5+0z7FF22VRNF54lTW7ZYYChWkh7zu
+         I7Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758494769; x=1759099569;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fbm/f/f8NJbTwBN3NsUAHLQGjR4O4fldJJR4PWdJj2w=;
-        b=Dr26qKHxoi1tOS8Kh2rV6E3Y8vJ/Prxz3SeClJfAFTqWpeIMqJDY/822m7BfwuOiPV
-         m9GKIz3tm1/I6CN6PBHPv4Pfin3ySGlWlpaKLdomXzBkFZuardzFutnpPo08ERRYbFKK
-         4iZp6LrrrW0voN+zZLiai9zAHpiR5n7o9CVmE8gSPrj4xdj+oGW3hydaeYwz53NUwHDi
-         nk2o3i7QoLqvjYIaJPvPSCCz5jq0CjELRGI98CP0HYWivQS48QOpH6BBjbyXvFrrmkHI
-         rlMbXCc5qc+iSMrdzl62er+F5pjLku0yJh9JlpEeAKq1uXES9oJNuBVoxH55mDSU11B3
-         ijdA==
-X-Gm-Message-State: AOJu0YyzwzPdxuLBJTx4bx3OvOgrIrOttg0KZqOSU7UOkxunKYPcHEYm
-	AXZrkRrBwGxLjztVBHE8gd6EeRbrB2JUMDJ6v7XIMpK2ppuCovaMMOIwio9lTmnpBCWRlPgyFSW
-	8YAFe
-X-Gm-Gg: ASbGncv8hdV7BLGQL1fmp5YdoaqNvzTYiqcC/hjejwiyKxUmrlB9x08tskR40Z/wJEr
-	k5DKEM02oJpZ6EDBSPBsQjhrzZmMg4F8dvrAvRtmgxN8oPW1yBFk5Utq79QpfDkjMsWi9l5ZBFw
-	q3+uRodPFEEGFkxoDpavxVGv/p260ebxt8md7kTIjfw/+BxKx18q7ZkKhi0+Z84ZWmcLQlqrVH0
-	ty8/iiRnO1DnXNesc/EkmKqa8VVkavgl/TZUsrNMhOY+wV3xpy7EHRA4puNNlDt1ZNDL6IrEnJ0
-	YLSpBzGnrdZGe1XGceLGXBKvYC/5+B8EmcsAZRWqzc6TARzT2r3Is9+RuJwH+KDN0Ox+K7qa2cG
-	o8y1RE2vMk8yChT119+khZhSAkSuhtq5ojqvnOPCVVya24okoHEgFrVj9Dd2UJA==
-X-Google-Smtp-Source: AGHT+IErIHGCQKyXmGsglEEDpU2V4PsZYFHbVJ7pqsVEv4bAocIXpUCCwvHo7+STQGVGeYBDGj0uBA==
-X-Received: by 2002:a05:6000:2d12:b0:3fd:2dee:4e3d with SMTP id ffacd0b85a97d-3fd2dee5bb0mr1237569f8f.46.1758494769004;
-        Sun, 21 Sep 2025 15:46:09 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b54ff3fdb22sm10359741a12.25.2025.09.21.15.46.07
+        d=1e100.net; s=20230601; t=1758499636; x=1759104436;
+        h=autocrypt:subject:from:to:content-language:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DKg9PlvGFLFb1lXo8w7zb85QDnakD9iQSwAqdXTGJU0=;
+        b=Ux2D/699Tos77uuKlvdk0e8ufalPgMz0RQuDMNg5rto/Q1bwDNcnldPlv1worYCLlm
+         qeBfND54NV6l0KYFHRKBaR9+p7p6/qFSs3VpfeaGl+QjHVvJAolH25D9GTU3moa6Fdmv
+         kkLsyRuORtIP1xFzWZ/i81VdPwsMRrs5GqAjOp52bxYcVtNmwUd2xNUi48QDlLLp6Cba
+         x2kDrsOEGI/T6W3oNe4nNY5XlCx3tKnsDn6gZ7zSMrywo6ZNQlyrj492S2yVejFeRwM/
+         KjicHtWP0S6LKtDmcbKRA4tw+/cxr3Cl+plzKxqW6MI7ij06IgVGBWz18m4aQF+BM6wV
+         251A==
+X-Gm-Message-State: AOJu0YwxMpVjtcMjHMtjEMkt+sXe8xX4cPInOMrT4gP2QYC87qYyKXUL
+	bfeybX2IAYo1YBhbdWNF5glii8b5CuO9Gi2CTJw9yyEVZc6dSY1S9rgaGiI2sA==
+X-Gm-Gg: ASbGncsWrLtS2F9zGxc14zGKXCZP0+BrW6fczmKpOgD3JpN97bL7aIMR67hXTOaxaai
+	7vTwirKa3dKrSTFMiZrksJQnSrcZTLH87Apai9G42t6gh929oms1ZT+KK2H5DjD43iqHbDsTDtb
+	6Ed5RQtFvKOTGWYYQw687WvzDhuRrE4WSVCEMLY4K1gjrH8gXidGYMtGYaMOaorTAqTPpCpaXjC
+	yZcH5r24oyD5QiaMYwzKFVjimmBLqbHmurW+yLjTJZBt22/EvyZnh5suNZzlFPH/zD7ivSno8Au
+	cqX3gYOsZI6mbuIy2HtiIz+iZQ0dv5SlccfxVfHF0Z+4DRC7+Tl+4p0FNOJ91nrjgnGZXb/nDts
+	H72xg+L4zI8qK+hKE1cYvwqAAqUxhinXvy8zShZJmhH0FxG2YXYUKO3WNEHWjkqnPsxmndp1c9o
+	SngYESiXstpYWIQLpAy6RFJg+H+v9rOb52guE=
+X-Google-Smtp-Source: AGHT+IEbVHbWBptPq50H3lPxeb7f46XULYefNCEgK3ZDDA/weEkuWB5a9KNC059jbn8tSGH07E7QGw==
+X-Received: by 2002:a05:690c:920f:b0:74a:d96e:d4c4 with SMTP id 00721157ae682-74ad96ed83amr30373047b3.34.1758499636291;
+        Sun, 21 Sep 2025 17:07:16 -0700 (PDT)
+Received: from [10.138.34.110] (h96-60-249-169.cncrtn.broadband.dynamic.tds.net. [96.60.249.169])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-744864ea8ddsm15430127b3.63.2025.09.21.17.07.15
+        for <linux-btrfs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Sep 2025 15:46:08 -0700 (PDT)
-Message-ID: <f4350295-ae02-4284-bafd-4e3cf0579021@suse.com>
-Date: Mon, 22 Sep 2025 08:16:05 +0930
+        Sun, 21 Sep 2025 17:07:15 -0700 (PDT)
+Message-ID: <a697548b-cc40-4275-9da1-3b29351654f0@gmail.com>
+Date: Sun, 21 Sep 2025 20:07:10 -0400
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -83,252 +81,234 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/9] btrfs: fix the incorrect @max_bytes value for
- find_lock_delalloc_range()
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org
-References: <cover.1758494326.git.wqu@suse.com>
- <8e713e74d2a2515727f5438e9f86f68ad2f4cceb.1758494327.git.wqu@suse.com>
 Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <8e713e74d2a2515727f5438e9f86f68ad2f4cceb.1758494327.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: linux-btrfs@vger.kernel.org
+From: Demi Marie Obenour <demiobenour@gmail.com>
+Subject: Can the output of FIEMAP on BTRFS be used to check if a file and its
+ reflink copy might have diverged?
+Autocrypt: addr=demiobenour@gmail.com; keydata=
+ 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
+ +MYSfkEjBz0E8CLOcAw7JIwAaeBT
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------IgsqjoM1qbWGxAOlEImvo4BK"
 
-By somehow, the cover letter is not sent correctly, so here comes the 
-cover letter:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------IgsqjoM1qbWGxAOlEImvo4BK
+Content-Type: multipart/mixed; boundary="------------Yzm9nJIQ7A7bVqxd5MMTr4GF";
+ protected-headers="v1"
+From: Demi Marie Obenour <demiobenour@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Message-ID: <a697548b-cc40-4275-9da1-3b29351654f0@gmail.com>
+Subject: Can the output of FIEMAP on BTRFS be used to check if a file and its
+ reflink copy might have diverged?
 
-[CHANGELOG]
-v2:
-- Add a new patch to fix the incorrect @max_bytes of
-   find_lock_delalloc_range()
-   This in fact also fixes a very rare corner case where bs < ps support
-   is also affected.
+--------------Yzm9nJIQ7A7bVqxd5MMTr4GF
+Content-Type: multipart/mixed; boundary="------------Ks4JVj5EZaYXWGekndZmn4G5"
 
-   This allows us to re-enable extra large folios (folio > bs) for
-   bs > ps cases.
+--------------Ks4JVj5EZaYXWGekndZmn4G5
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-RFC->v1
-- Disable extra large folios for bs > ps mounts
-   Such extra large folios are larger than a block.
+Wyng Backup (https://codeberg.org/tasket/wyng-backup) relies on FIEMAP
+to determine which parts of a file have not changed since it was last
+backed up.  Specifically, the output of filefrag -v is passed to sort and=
 
-   Still debugging, but disabling it makes 8K block size runs survive the
-   full fs tests, with some minor failures due to the limitations.
+then to uniq, and differences between the outputs for the file and
+the previous version (a reflink copy) determine what gets backed up.
 
-   This may be something affecting regular large folios (folio > bs,
-   but bs <= ps).
+Is this safe under BTRFS, or can it result in data loss due to data
+not being backed up that should be?  In other words, can it result
+in data being considered unchanged when it really is?
+--=20
+Sincerely,
+Demi Marie Obenour (she/her/hers)
 
-This series enables the initial bs > ps support, with several
-limitations:
+--------------Ks4JVj5EZaYXWGekndZmn4G5
+Content-Type: application/pgp-keys; name="OpenPGP_0xB288B55FFF9C22C1.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB288B55FFF9C22C1.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-- No direct IO support
-   All direct IOs fall back to buffered ones.
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-- No RAID56 support
-   Any fs with RAID56 feature will be rejected at mount time.
+xsFNBFp+A0oBEADffj6anl9/BHhUSxGTICeVl2tob7hPDdhHNgPR4C8xlYt5q49y
+B+l2nipdaq+4Gk6FZfqC825TKl7eRpUjMriwle4r3R0ydSIGcy4M6eb0IcxmuPYf
+bWpr/si88QKgyGSVZ7GeNW1UnzTdhYHuFlk8dBSmB1fzhEYEk0RcJqg4AKoq6/3/
+UorR+FaSuVwT7rqzGrTlscnTDlPWgRzrQ3jssesI7sZLm82E3pJSgaUoCdCOlL7M
+MPCJwI8JpPlBedRpe9tfVyfu3euTPLPxwcV3L/cfWPGSL4PofBtB8NUU6QwYiQ9H
+zx4xOyn67zW73/G0Q2vPPRst8LBDqlxLjbtx/WLR6h3nBc3eyuZ+q62HS1pJ5EvU
+T1vjyJ1ySrqtUXWQ4XlZyoEFUfpJxJoN0A9HCxmHGVckzTRl5FMWo8TCniHynNXs
+BtDQbabt7aNEOaAJdE7to0AH3T/Bvwzcp0ZJtBk0EM6YeMLtotUut7h2Bkg1b//r
+6bTBswMBXVJ5H44Qf0+eKeUg7whSC9qpYOzzrm7+0r9F5u3qF8ZTx55TJc2g656C
+9a1P1MYVysLvkLvS4H+crmxA/i08Tc1h+x9RRvqba4lSzZ6/Tmt60DPM5Sc4R0nS
+m9BBff0Nm0bSNRS8InXdO1Aq3362QKX2NOwcL5YaStwODNyZUqF7izjK4QARAQAB
+zTxEZW1pIE9iZW5vdXIgKElUTCBFbWFpbCBLZXkpIDxhdGhlbmFAaW52aXNpYmxl
+dGhpbmdzbGFiLmNvbT7CwY4EEwEIADgWIQR2h02fEza6IlkHHHGyiLVf/5wiwQUC
+X6YJvQIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRCyiLVf/5wiwWRhD/0Y
+R+YYC5Kduv/2LBgQJIygMsFiRHbR4+tWXuTFqgrxxFSlMktZ6gQrQCWe38WnOXkB
+oY6n/5lSJdfnuGd2UagZ/9dkaGMUkqt+5WshLFly4BnP7pSsWReKgMP7etRTwn3S
+zk1OwFx2lzY1EnnconPLfPBc6rWG2moA6l0WX+3WNR1B1ndqpl2hPSjT2jUCBWDV
+rGOUSX7r5f1WgtBeNYnEXPBCUUM51pFGESmfHIXQrqFDA7nBNiIVFDJTmQzuEqIy
+Jl67pKNgooij5mKzRhFKHfjLRAH4mmWZlB9UjDStAfFBAoDFHwd1HL5VQCNQdqEc
+/9lZDApqWuCPadZN+pGouqLysesIYsNxUhJ7dtWOWHl0vs7/3qkWmWun/2uOJMQh
+ra2u8nA9g91FbOobWqjrDd6x3ZJoGQf4zLqjmn/P514gb697788e573WN/MpQ5XI
+Fl7aM2d6/GJiq6LC9T2gSUW4rbPBiqOCeiUx7Kd/sVm41p9TOA7fEG4bYddCfDsN
+xaQJH6VRK3NOuBUGeL+iQEVF5Xs6Yp+U+jwvv2M5Lel3EqAYo5xXTx4ls0xaxDCu
+fudcAh8CMMqx3fguSb7Mi31WlnZpk0fDuWQVNKyDP7lYpwc4nCCGNKCj622ZSocH
+AcQmX28L8pJdLYacv9pU3jPy4fHcQYvmTavTqowGnM08RGVtaSBNYXJpZSBPYmVu
+b3VyIChsb3ZlciBvZiBjb2RpbmcpIDxkZW1pb2Jlbm91ckBnbWFpbC5jb20+wsF4
+BBMBAgAiBQJafgNKAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRCyiLVf
+/5wiwYa/EACv8a2+MMou9cSCNoZBQaU+fTmyzft9hUE+0d5W2UY1RY3OsjFIzm9R
+/4SVccfsqOYLEo+S0vQMIIIqFEq3FCpXXwPzyimotps05VA8U3Bd7yseojFygOgK
+sAMOAee2RCaDDOnoJue01dfZMzzHPO/TVdp3OvnpWipfv5G1Xg96rwbhMLE3tg6N
+xwAHa31Bv4/Xq8CJOoIWvx6fcmZQpz01/lSvsYn0KrfEbTKkuUf0vM9JrCTCP2oz
+VNN5BYzqaq2M4r+jmSyeXLim922VOWqGkUEQ85BSEemqrRS06IU6NtEMsF8EWt/b
+hWjk/9GDKTcnpdJHTrMxTspExBiNrvpI2t+YPU5B/dJJAUxvmhFrbSIbdB8umBZs
+I3AMYrEmpAbh5x7jEjoskUC7uN3o9vpg1oCLS2ePDLtAtyBtbHnkA4xGD7ar8mem
+xpH9lY/i+sC6CyyIUWcUDnnagKyJP0m9ks0GLsTeOCA0bft2XA6rD6aaCnMUsndT
+ctrab42CV5XypjmC4U1rPJ8JQJUh1/3P48/8sMH+3krxpJ06KNWNFaUbaMTGiltZ
+7x9DngklSYrX0T+2G4kVXNmjaljwkoLahwLla2gUWwBSyofXdqyhQdwZsp01KXNQ
+UCyT/Pg+aDcm/E7OMV3d4lf7g/CSxiX2GSEe6BlhSz+Lmd7ZJ3g32M1ARGVtaSBN
+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
+EtJuZYM5blWncBOJCoWMnBEcTEo/viU3GgcVRw=3D=3D
+=3Dx94R
+-----END PGP PUBLIC KEY BLOCK-----
 
-- No encoded read/write/send
-   Encoded send will fallback to the regular send (reading from page
-   cache).
-   Encoded read/write utilized by send/receive will fallback to regular
-   ones.
+--------------Ks4JVj5EZaYXWGekndZmn4G5--
 
-Above limits are introduced by the fact that, we require large folios to
-cover at least one fs block, so that no block can cross large folio
-boundaries.
+--------------Yzm9nJIQ7A7bVqxd5MMTr4GF--
 
-This simplifies our checksum and RAID56 handling.
+--------------IgsqjoM1qbWGxAOlEImvo4BK
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-The problem is, user space programs can only ensure their memory is
-properly aligned in virtual addresses, but have no control on the
-backing folios. Thus they can got a contiguous memory but is backed
-by incontiguous pages.
+-----BEGIN PGP SIGNATURE-----
 
-In that case, it will break the "no block can cross large folio
-boundaries" assumption, and will need a very complex mechanism to handle
-checksum, especially for RAID56.
+iQIzBAEBCgAdFiEEopQtqVJW1aeuo9/sszaHOrMp8lMFAmjQky8ACgkQszaHOrMp
+8lMLag/+LH9i3Nt3A+c8+ArM0CDH60t15Sf7rdnYylq/jHZE5G2nrPS3mjc7KWtB
+iMf8xORSm0aPAolSbRWptCMzpuvUtln5vQBebC8HEvUy8/ZcX9H8gjVpFMZ7EX6a
+m5k/Usb5fPrfTQCbI6TBNIR02VAIQJ5DxlTyKo4s0wxN78wTMFfalAQQMxnsg3y4
+dmiOQ6M6UkzWwKdCz+sUeQh0uWkTELekDtlHEtx8zBOcq8bhOm+2WUQsGf7b/mID
+MuNmh+fHsgJtl5a69JoEisirt08Osr2T/ICQ95rStfPHmYByD8MQW+k3hEwyj+Ke
+0pYN1W6+frmoWVy8Wxvrdpb46QVyLVmA8rMz3g2oNvKWXWa4uSmw7uYCivzvHw6J
+nrL5Sz9V/bKGowmXiF4og1zRJHXOe5gtEKoq1HhS6i2mlGZYiZVFbKe1C+ipPd6Z
+kCpXSndXAEKxn71eYI+6rngLbUQBZAvFq3tlsQZmzjjdNUFBG2kXnxMiYLr+MdNv
+tUJRGCud6LGaiRTEsHB8lY15SJQtuuanPDD+qo7YynYEh+1EEuh6EMDRWQGnALgZ
+UJF5X1PVZO2HW2ByCZbDaUOF6apc3jyBbpexnJhVGrncBNqQi0EZd5Fm5CAMcHb7
+oCQLn+3B5nEvgxOIodYRDrRWn78iVzd9JO/fj/e79vTa0aPJYAY=
+=GVxK
+-----END PGP SIGNATURE-----
 
-The same applies to encoded send, which uses vmallocated memory.
-
-In the long run, we will need to support all those complex mechanism.
-
-[FUTURE ROADMAP]
-Currently bs > ps support is only to allow extra compatibility, e.g.
-allowing x86_64 to mount a btrfs which is originally created on ppc64
-(64K page size, 64K block size).
-
-But this should also open a new door for btrfs RAID56 write hole
-problems in the future, by enforcing a larger block size and fixed
-power-of-2 data stripes, so that every write can fill a full stripe,
-just like RAIDZ.
-
-E.g. with 8K block size, all data writes are now in 8K sizes, and will
-always be a full stripe write for a 3 disks RAID5 with a stripe length
-of 4K.
-
-This RAIDZ like solution will allow a much simpler RAID56 (no more RMW
-any more), at the cost of a larger block size (more write-amplification,
-higher memory usage etc).
-
-
-
-在 2025/9/22 08:10, Qu Wenruo 写道:
-> [BUG]
-> With my local branch to enable bs > ps support for btrfs, sometimes I
-> hit the following ASSERT() inside submit_one_sector():
-> 
-> 	ASSERT(block_start != EXTENT_MAP_HOLE);
-> 
-> Please note that it's not yet possible to hit this ASSERT() in the wild
-> yet, as it requires btrfs bs > ps support, which is not even in the
-> development branch.
-> 
-> But on the other hand, there is also a very low chance to hit above
-> ASSERT() with bs < ps cases, so this is an existing bug affect not only
-> the incoming bs > ps support but also the existing bs < ps support.
-> 
-> [CAUSE]
-> Firstly that ASSERT() means we're trying to submit a dirty block but
-> without a real extent map nor ordered extent map backing it.
-> 
-> Furthermore with extra debugging, the folio triggering such ASSERT() is
-> always larger than the fs block size in my bs > ps case.
-> (8K block size, 4K page size)
-> 
-> After some more debugging, the ASSERT() is trigger by the following
-> sequence:
-> 
->   extent_writepage()
->   |  We got a 32K folio (4 fs blocks) at file offset 0, and the fs block
->   |  size is 8K, page size is 4K.
->   |  And there is another 8K folio at file offset 32K, which is also
->   |  dirty.
->   |  So the filemap layout looks like the following:
->   |
->   |  "||" is the filio boundary in the filemap.
->   |  "//| is the dirty range.
->   |
->   |  0        8K       16K        24K         32K       40K
->   |  |////////|        |//////////////////////||////////|
->   |
->   |- writepage_delalloc()
->   |  |- find_lock_delalloc_range() for [0, 8K)
->   |  |  Now range [0, 8K) is properly locked.
->   |  |
->   |  |- find_lock_delalloc_range() for [16K, 40K)
->   |  |  |- btrfs_find_delalloc_range() returned range [0, 8K)
->   |  |  |- lock_delalloc_folios() succeeded.
->   |  |  |
->   |  |  |  The filemap range [32K, 40K) got dropped from filemap.
->   |  |  |
->   |  |  |- lock_delalloc_folios() failed with -EAGAIN.
->   |  |  |  As it failed to lock the folio at [32K, 40K).
->   |  |  |
->   |  |  |- loops = 1;
->   |  |  |- max_bytes = PAGE_SIZE;
->   |  |  |- goto again;
->   |  |  |  This will re-do the lookup for dirty delalloc ranges.
->   |  |  |
->   |  |  |- btrfs_find_delalloc_range() called with @max_bytes == 4K
->   |  |  |  This is smaller than block size, so
->   |  |  |  btrfs_find_delalloc_range() is unable to return any range.
->   |  |  \- return false;
->   |  |
->   |  \- Now only range [0, 8K) has an OE for it, but for dirty range
->   |     [16K, 32K) it's dirty without an OE.
->   |     This breaks the assumption that writepage_delalloc() will find
->   |     and lock all dirty ranges inside the folio.
->   |
->   |- extent_writepage_io()
->      |- submit_one_sector() for [0, 8K)
->      |  Succeeded
->      |
->      |- submit_one_sector() for [16K, 24K)
->         Triggering the ASSERT(), as there is no OE, and the original
->         extent map is a hole.
-> 
-> Please note that, this also exposed the same problem for bs < ps
-> support. E.g. with 64K page size and 4K block size.
-> 
-> If we failed to lock a folio, and falls back into the "loops = 1;"
-> branch, we will re-do the search using 64K as max_bytes.
-> Which may fail again to lock the next folio, and exit early without
-> handling all dirty blocks inside the folio.
-> 
-> [FIX]
-> Instead of using the fixed size PAGE_SIZE as @max_bytes, use
-> @sectorsize, so that we are ensured to find and lock any remaining
-> blocks inside the folio.
-> 
-> And since we're here, add an extra ASSERT() to
-> before calling btrfs_find_delalloc_range() to make sure the @max_bytes is
-> at least no smaller than a block to avoid false negative.
-> 
-> Cc: stable@vger.kernel.org #5.15+
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   fs/btrfs/extent_io.c | 14 +++++++++++---
->   1 file changed, 11 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index ca7174fa0240..2fd82055a779 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -393,6 +393,13 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
->   	/* step one, find a bunch of delalloc bytes starting at start */
->   	delalloc_start = *start;
->   	delalloc_end = 0;
-> +
-> +	/*
-> +	 * If @max_bytes is smaller than a block, btrfs_find_delalloc_range() can
-> +	 * return early without handling any dirty ranges.
-> +	 */
-> +	ASSERT(max_bytes >= fs_info->sectorsize);
-> +
->   	found = btrfs_find_delalloc_range(tree, &delalloc_start, &delalloc_end,
->   					  max_bytes, &cached_state);
->   	if (!found || delalloc_end <= *start || delalloc_start > orig_end) {
-> @@ -423,13 +430,14 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
->   				   delalloc_end);
->   	ASSERT(!ret || ret == -EAGAIN);
->   	if (ret == -EAGAIN) {
-> -		/* some of the folios are gone, lets avoid looping by
-> -		 * shortening the size of the delalloc range we're searching
-> +		/*
-> +		 * Some of the folios are gone, lets avoid looping by
-> +		 * shortening the size of the delalloc range we're searching.
->   		 */
->   		btrfs_free_extent_state(cached_state);
->   		cached_state = NULL;
->   		if (!loops) {
-> -			max_bytes = PAGE_SIZE;
-> +			max_bytes = fs_info->sectorsize;
->   			loops = 1;
->   			goto again;
->   		} else {
-
+--------------IgsqjoM1qbWGxAOlEImvo4BK--
 
