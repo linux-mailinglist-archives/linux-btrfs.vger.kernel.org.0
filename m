@@ -1,314 +1,352 @@
-Return-Path: <linux-btrfs+bounces-17028-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17029-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 659E8B8E9DB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 02:07:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AD06B8E9E4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 02:15:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B1923BEA08
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 00:07:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDEBF189490D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 00:15:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBED1944F;
-	Mon, 22 Sep 2025 00:07:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BAE13596D;
+	Mon, 22 Sep 2025 00:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kUp49l7H"
+	dkim=pass (2048-bit key) header.d=fandingo-org.20230601.gappssmtp.com header.i=@fandingo-org.20230601.gappssmtp.com header.b="cq4St2XU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A664C83
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Sep 2025 00:07:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584C51BC2A
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Sep 2025 00:15:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758499639; cv=none; b=fkP2L/MzUs5H/A32Ta1YfBB1vbZy6APmxu9AYmCJG03yem877ozYsC7nBqV4D9VPYNsSPwCCox2yi7WPnDl+NdKRitx+U4XjkVdnuh6fxB9ZhPQjiwVjvqcc2K8N0avYzIKxM99TzIGvwkdN0FNkOFaJgGJEfvwTxK84XC/92x8=
+	t=1758500108; cv=none; b=fxtiYL3aNihaJbSpcgZmR9igfI7nSficdReLCJpiTFKJUcBqm+pDmwHQ1xqqigqSYt1oqG1zwH2GXVnzdw1u1uTN5gU0EfWy/lON+TIebl2rzDw46rK5ffoLAk7gKCtdCCfqEZjA6Md8qN8MBLxOoDCy7fxMoy62WUZ5nEyGfKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758499639; c=relaxed/simple;
-	bh=J+1QqbwW5Hf6tJN4yS4Ln2UA4wepRC8zRcfRzwrjxdY=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=X7Afk8BeFweIND5+AOkyZ6M8fI6XXNe95DAX6lwuSaJiyH98z7G5XY7oqi8nA/tA3FJQFrZ/FZxnFw7HMg1IDP5C1n6mAdTZnGq55LbUBuO71tMT3Br4YngAErh+Ww+f1/dfEQs0vCJaU4OfgyAlQ2l0YBsi5Ps+O+zVrP5VlsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kUp49l7H; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-72ce9790aceso25884877b3.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 17:07:17 -0700 (PDT)
+	s=arc-20240116; t=1758500108; c=relaxed/simple;
+	bh=te4xAFDjvY/fsMmLKPGrh+9epZh0OMW/FqqPt2IZfJY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WBmhy/qxZdKP9/dNt40SUFKJWEOPoDivgqsk9fj0NQ0AuU1NdrovAsWTzMQjWFHQwaJX/ue6W4yZxqNGpmNqA5GHXIYT5YYY2/nPIul0ZwsH3CwOqZEi/h0WQW/m5CkDK74Is88nUZNbNIidUwXT/3YAEKeVPmZ2cfaS5tp+orA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fandingo.org; spf=none smtp.mailfrom=fandingo.org; dkim=pass (2048-bit key) header.d=fandingo-org.20230601.gappssmtp.com header.i=@fandingo-org.20230601.gappssmtp.com header.b=cq4St2XU; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fandingo.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=fandingo.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-6318855a83fso2191364a12.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 17:15:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758499636; x=1759104436; darn=vger.kernel.org;
-        h=autocrypt:subject:from:to:content-language:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=DKg9PlvGFLFb1lXo8w7zb85QDnakD9iQSwAqdXTGJU0=;
-        b=kUp49l7HvpUXK55+x7foMzDqC5dRQWdAOeoA288u5anvYIdH0WgTC+4RGpmaBjhqca
-         Bb1kqZ1r0ohl9eEP9nkk+6U+uxO7BX5HbcgYuJeqNul/+X+zbiHMb9YdphX7RxMOmAv0
-         aalae7UkNJlsQ/oLHchb4xocVMHNKYJy+eREhW7rwtXn7u06uUXi0exUZcvb/pCpVqGL
-         uwqJ8vRa+HVCkvFZbaoW03N6bT2uPm0DpGqz6d3RRq2gx2uGIBCioFaU/TGTRpxLLW3t
-         tEGEIPZKw9tGN+uHtr7p4vcWQnxkJ4Zar384QB5+0z7FF22VRNF54lTW7ZYYChWkh7zu
-         I7Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758499636; x=1759104436;
-        h=autocrypt:subject:from:to:content-language:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=fandingo-org.20230601.gappssmtp.com; s=20230601; t=1758500105; x=1759104905; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DKg9PlvGFLFb1lXo8w7zb85QDnakD9iQSwAqdXTGJU0=;
-        b=Ux2D/699Tos77uuKlvdk0e8ufalPgMz0RQuDMNg5rto/Q1bwDNcnldPlv1worYCLlm
-         qeBfND54NV6l0KYFHRKBaR9+p7p6/qFSs3VpfeaGl+QjHVvJAolH25D9GTU3moa6Fdmv
-         kkLsyRuORtIP1xFzWZ/i81VdPwsMRrs5GqAjOp52bxYcVtNmwUd2xNUi48QDlLLp6Cba
-         x2kDrsOEGI/T6W3oNe4nNY5XlCx3tKnsDn6gZ7zSMrywo6ZNQlyrj492S2yVejFeRwM/
-         KjicHtWP0S6LKtDmcbKRA4tw+/cxr3Cl+plzKxqW6MI7ij06IgVGBWz18m4aQF+BM6wV
-         251A==
-X-Gm-Message-State: AOJu0YwxMpVjtcMjHMtjEMkt+sXe8xX4cPInOMrT4gP2QYC87qYyKXUL
-	bfeybX2IAYo1YBhbdWNF5glii8b5CuO9Gi2CTJw9yyEVZc6dSY1S9rgaGiI2sA==
-X-Gm-Gg: ASbGncsWrLtS2F9zGxc14zGKXCZP0+BrW6fczmKpOgD3JpN97bL7aIMR67hXTOaxaai
-	7vTwirKa3dKrSTFMiZrksJQnSrcZTLH87Apai9G42t6gh929oms1ZT+KK2H5DjD43iqHbDsTDtb
-	6Ed5RQtFvKOTGWYYQw687WvzDhuRrE4WSVCEMLY4K1gjrH8gXidGYMtGYaMOaorTAqTPpCpaXjC
-	yZcH5r24oyD5QiaMYwzKFVjimmBLqbHmurW+yLjTJZBt22/EvyZnh5suNZzlFPH/zD7ivSno8Au
-	cqX3gYOsZI6mbuIy2HtiIz+iZQ0dv5SlccfxVfHF0Z+4DRC7+Tl+4p0FNOJ91nrjgnGZXb/nDts
-	H72xg+L4zI8qK+hKE1cYvwqAAqUxhinXvy8zShZJmhH0FxG2YXYUKO3WNEHWjkqnPsxmndp1c9o
-	SngYESiXstpYWIQLpAy6RFJg+H+v9rOb52guE=
-X-Google-Smtp-Source: AGHT+IEbVHbWBptPq50H3lPxeb7f46XULYefNCEgK3ZDDA/weEkuWB5a9KNC059jbn8tSGH07E7QGw==
-X-Received: by 2002:a05:690c:920f:b0:74a:d96e:d4c4 with SMTP id 00721157ae682-74ad96ed83amr30373047b3.34.1758499636291;
-        Sun, 21 Sep 2025 17:07:16 -0700 (PDT)
-Received: from [10.138.34.110] (h96-60-249-169.cncrtn.broadband.dynamic.tds.net. [96.60.249.169])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-744864ea8ddsm15430127b3.63.2025.09.21.17.07.15
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Sep 2025 17:07:15 -0700 (PDT)
-Message-ID: <a697548b-cc40-4275-9da1-3b29351654f0@gmail.com>
-Date: Sun, 21 Sep 2025 20:07:10 -0400
+        bh=RgegE6zmwPDGoGxNdw/jNNo9B8yUrWpCcObWZ9H+2Uw=;
+        b=cq4St2XUgvfCNgrQ/2ykxocNDtwJtVMEaxTPAJ0atDnj5mRfwCLFATUh+icCIpjtSe
+         ffJUOBDleYdklMzdVIgzLVpmMTFwgC35nMZnWoJJUZghUj/8NTM3yDVbwSAskKu7hOIn
+         X+rgW83xf9f2UluRE0SxLqGNvqOThSkqj9zBGban48OPwrr3fOTy7r5UtXyeTiZjSx73
+         RncgTamKA0FR2ppoKxzc0aDS66Qmi87I2/HoX3sWFLq4/SXHCa8LPJDWZiBI9wqLsL1k
+         UBvaymnIs6ijNOK4shECkn/PJPMNV0Lr89OqdoAGfQJcdmCcFr12QIjmQRuhyyXi+cp9
+         XQxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758500105; x=1759104905;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RgegE6zmwPDGoGxNdw/jNNo9B8yUrWpCcObWZ9H+2Uw=;
+        b=j7yEUCQ1RHfbGRtmZjhzy6HMcYHU/kMIHSEA0CItpTMBz7GfqcPbxJlj839+uPkoG/
+         1b24CY+lZi43r0LBupopgi3TpBjgvEZPOEvMPMv6JHGtbxwp3fcr27RlVURffSEAGY1x
+         ZwCC8Y/QrGoBXpHtqPXzzOMYl/ZI+XXttCniQMFTkmEIx3fA7l93Got8vbiFUNu1aaF7
+         NSw0dmA3UcUJCosFQuktVXhtPPsODJXMXVqB4ZlXiBKAliuECtH7oSZQ+0YjmAn1MzP0
+         mNSnS5kQy4h8l3kut2INDT93tXz0H+ByFHKUxcoB9MFyHTDk5N+GOMtDh68MQRaI/oad
+         tIfA==
+X-Gm-Message-State: AOJu0Yya2jmOX47rRBDwxZsxGdsO66EFjc8fa6zjLlGCB8qLhpZPLw6z
+	bOWrQuV+MzStUgfN4PMYEs1mOzr9yP0nuIJ2uIM5bAqIftw4ooEy5INESGz/21fpfUQApNKCDgb
+	JiMaP9yiiNFciDFcFwEai13u6WZOw91bRv5hjbN3/VGfF7onlyRBiwm0=
+X-Gm-Gg: ASbGncshHMYzxuTsk8fnXYoaNI/wsb/Jhr/7POLMTwynvsT+w51ieny7Zf3H7oOBVY/
+	CGgS6/VqtSzO5JgYAIDub5lzqaeSNS2DnrXYtNkzMz66t2GnPrzJlKR3KCXd34D63YUIEeDI9++
+	vJ4QIPqXz/Ln4AiYGFUy9v+ftcE1VC/87VP/KS+ZiAXckVQuMNBZPNO+EsqcaEopztYfCfaPF5c
+	qpamTKUn4mPDN7ZgTqWGlBEbw0TjrFYo4UI5wVh
+X-Google-Smtp-Source: AGHT+IGbwlJoABEOHKTbnRhIynkFQR/C169nzgjWZeUm3t4a4YYkjiNh9vqzEFVqzv34febfPHmxpvDOMnxAJTFl+q4=
+X-Received: by 2002:a17:907:7b8c:b0:b04:3d7b:ad43 with SMTP id
+ a640c23a62f3a-b24f3a76137mr1300753766b.40.1758500104439; Sun, 21 Sep 2025
+ 17:15:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-btrfs@vger.kernel.org
-From: Demi Marie Obenour <demiobenour@gmail.com>
-Subject: Can the output of FIEMAP on BTRFS be used to check if a file and its
- reflink copy might have diverged?
-Autocrypt: addr=demiobenour@gmail.com; keydata=
- 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
- +MYSfkEjBz0E8CLOcAw7JIwAaeBT
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------IgsqjoM1qbWGxAOlEImvo4BK"
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------IgsqjoM1qbWGxAOlEImvo4BK
-Content-Type: multipart/mixed; boundary="------------Yzm9nJIQ7A7bVqxd5MMTr4GF";
- protected-headers="v1"
-From: Demi Marie Obenour <demiobenour@gmail.com>
-To: linux-btrfs@vger.kernel.org
-Message-ID: <a697548b-cc40-4275-9da1-3b29351654f0@gmail.com>
-Subject: Can the output of FIEMAP on BTRFS be used to check if a file and its
- reflink copy might have diverged?
-
---------------Yzm9nJIQ7A7bVqxd5MMTr4GF
-Content-Type: multipart/mixed; boundary="------------Ks4JVj5EZaYXWGekndZmn4G5"
-
---------------Ks4JVj5EZaYXWGekndZmn4G5
-Content-Type: text/plain; charset=UTF-8
+References: <CAKZK7uzqNj1336MijN2De-R9+rdjw_Zm6=b-Q1jCCDQb5+fmXw@mail.gmail.com>
+ <27b4ca8f-de3a-4b9f-b90d-c6260ba81f9c@suse.com>
+In-Reply-To: <27b4ca8f-de3a-4b9f-b90d-c6260ba81f9c@suse.com>
+From: Justin Brown <Justin.Brown@fandingo.org>
+Date: Sun, 21 Sep 2025 19:14:52 -0500
+X-Gm-Features: AS18NWBwWtHMurSYmcudu1o8AeiRt2bFZIDPTty9uLLiNjth2ZOLAJ9E4x3sfWQ
+Message-ID: <CAKZK7uxiRmDxk-1goC4yj7QZPSmL-=GAoAuF=OdekbSNVrG8fg@mail.gmail.com>
+Subject: Re: [Support] failed to read chunk root / open_ctree failed: -5
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Wyng Backup (https://codeberg.org/tasket/wyng-backup) relies on FIEMAP
-to determine which parts of a file have not changed since it was last
-backed up.  Specifically, the output of filefrag -v is passed to sort and=
+Hi Qu,
 
-then to uniq, and differences between the outputs for the file and
-the previous version (a reflink copy) determine what gets backed up.
+I tried the command you suggested, but I'm not really sure what bytenr
+is in this context. Is that the block number or block number * sector
+size (i.e. 4096)? And when you say "verify which works best," what am
+I looking for?
 
-Is this safe under BTRFS, or can it result in data loss due to data
-not being backed up that should be?  In other words, can it result
-in data being considered unchanged when it really is?
---=20
-Sincerely,
-Demi Marie Obenour (she/her/hers)
+I uploaded the full output to pastebin
+(https://pastebin.com/LN2bHDGV), but here's an excerpt
 
---------------Ks4JVj5EZaYXWGekndZmn4G5
-Content-Type: application/pgp-keys; name="OpenPGP_0xB288B55FFF9C22C1.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB288B55FFF9C22C1.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+[fandingo:~] $ sudo btrfs-find-root -o 3 /dev/mapper/cm
+parent transid verify failed on 27656192 wanted 4945 found 2607
+parent transid verify failed on 27656192 wanted 4945 found 2607
+WARNING: cannot read chunk root, continue anyway
+Superblock thinks the generation is 4945
+Superblock thinks the level is 1
+Well block 22233088(gen: 4451 level: 1) seems good, but
+generation/level doesn't match, want gen: 4945 level: 1
+Well block 22183936(gen: 3195 level: 1) seems good, but
+generation/level doesn't match, want gen: 4945 level: 1
+Well block 29425664(gen: 3178 level: 1) seems good, but
+generation/level doesn't match, want gen: 4945 level: 1
+Well block 29376512(gen: 3178 level: 1) seems good, but
+generation/level doesn't match, want gen: 4945 level: 1
+Well block 22167552(gen: 2608 level: 0) seems good, but
+generation/level doesn't match, want gen: 4945 level: 1
+Well block 22020096(gen: 2608 level: 0) seems good, but
+generation/level doesn't match, want gen: 4945 level: 1
+Well block 27656192(gen: 2607 level: 0) seems good, but
+generation/level doesn't match, want gen: 4945 level: 1
+Well block 22102016(gen: 2582 level: 1) seems good, but
+generation/level doesn't match, want gen: 4945 level: 1
+Well block 22052864(gen: 2582 level: 1) seems good, but
+generation/level doesn't match, want gen: 4945 level: 1
+Well block 27557888(gen: 2335 level: 1) seems good, but
+generation/level doesn't match, want gen: 4945 level: 1
+Well block 27508736(gen: 2320 level: 1) seems good, but
+generation/level doesn't match, want gen: 4945 level: 1
+Well block 25329664(gen: 1363 level: 1) seems good, but
+generation/level doesn't match, want gen: 4945 level: 1
+[...]
+Well block 24002560(gen: 69 level: 1) seems good, but generation/level
+doesn't match, want gen: 4945 level: 1
+Well block 23953408(gen: 68 level: 1) seems good, but generation/level
+doesn't match, want gen: 4945 level: 1
+Well block 23904256(gen: 67 level: 1) seems good, but generation/level
+doesn't match, want gen: 4945 level: 1
+Well block 23887872(gen: 66 level: 0) seems good, but generation/level
+doesn't match, want gen: 4945 level: 1
+Well block 23871488(gen: 66 level: 0) seems good, but generation/level
+doesn't match, want gen: 4945 level: 1
 
-xsFNBFp+A0oBEADffj6anl9/BHhUSxGTICeVl2tob7hPDdhHNgPR4C8xlYt5q49y
-B+l2nipdaq+4Gk6FZfqC825TKl7eRpUjMriwle4r3R0ydSIGcy4M6eb0IcxmuPYf
-bWpr/si88QKgyGSVZ7GeNW1UnzTdhYHuFlk8dBSmB1fzhEYEk0RcJqg4AKoq6/3/
-UorR+FaSuVwT7rqzGrTlscnTDlPWgRzrQ3jssesI7sZLm82E3pJSgaUoCdCOlL7M
-MPCJwI8JpPlBedRpe9tfVyfu3euTPLPxwcV3L/cfWPGSL4PofBtB8NUU6QwYiQ9H
-zx4xOyn67zW73/G0Q2vPPRst8LBDqlxLjbtx/WLR6h3nBc3eyuZ+q62HS1pJ5EvU
-T1vjyJ1ySrqtUXWQ4XlZyoEFUfpJxJoN0A9HCxmHGVckzTRl5FMWo8TCniHynNXs
-BtDQbabt7aNEOaAJdE7to0AH3T/Bvwzcp0ZJtBk0EM6YeMLtotUut7h2Bkg1b//r
-6bTBswMBXVJ5H44Qf0+eKeUg7whSC9qpYOzzrm7+0r9F5u3qF8ZTx55TJc2g656C
-9a1P1MYVysLvkLvS4H+crmxA/i08Tc1h+x9RRvqba4lSzZ6/Tmt60DPM5Sc4R0nS
-m9BBff0Nm0bSNRS8InXdO1Aq3362QKX2NOwcL5YaStwODNyZUqF7izjK4QARAQAB
-zTxEZW1pIE9iZW5vdXIgKElUTCBFbWFpbCBLZXkpIDxhdGhlbmFAaW52aXNpYmxl
-dGhpbmdzbGFiLmNvbT7CwY4EEwEIADgWIQR2h02fEza6IlkHHHGyiLVf/5wiwQUC
-X6YJvQIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRCyiLVf/5wiwWRhD/0Y
-R+YYC5Kduv/2LBgQJIygMsFiRHbR4+tWXuTFqgrxxFSlMktZ6gQrQCWe38WnOXkB
-oY6n/5lSJdfnuGd2UagZ/9dkaGMUkqt+5WshLFly4BnP7pSsWReKgMP7etRTwn3S
-zk1OwFx2lzY1EnnconPLfPBc6rWG2moA6l0WX+3WNR1B1ndqpl2hPSjT2jUCBWDV
-rGOUSX7r5f1WgtBeNYnEXPBCUUM51pFGESmfHIXQrqFDA7nBNiIVFDJTmQzuEqIy
-Jl67pKNgooij5mKzRhFKHfjLRAH4mmWZlB9UjDStAfFBAoDFHwd1HL5VQCNQdqEc
-/9lZDApqWuCPadZN+pGouqLysesIYsNxUhJ7dtWOWHl0vs7/3qkWmWun/2uOJMQh
-ra2u8nA9g91FbOobWqjrDd6x3ZJoGQf4zLqjmn/P514gb697788e573WN/MpQ5XI
-Fl7aM2d6/GJiq6LC9T2gSUW4rbPBiqOCeiUx7Kd/sVm41p9TOA7fEG4bYddCfDsN
-xaQJH6VRK3NOuBUGeL+iQEVF5Xs6Yp+U+jwvv2M5Lel3EqAYo5xXTx4ls0xaxDCu
-fudcAh8CMMqx3fguSb7Mi31WlnZpk0fDuWQVNKyDP7lYpwc4nCCGNKCj622ZSocH
-AcQmX28L8pJdLYacv9pU3jPy4fHcQYvmTavTqowGnM08RGVtaSBNYXJpZSBPYmVu
-b3VyIChsb3ZlciBvZiBjb2RpbmcpIDxkZW1pb2Jlbm91ckBnbWFpbC5jb20+wsF4
-BBMBAgAiBQJafgNKAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRCyiLVf
-/5wiwYa/EACv8a2+MMou9cSCNoZBQaU+fTmyzft9hUE+0d5W2UY1RY3OsjFIzm9R
-/4SVccfsqOYLEo+S0vQMIIIqFEq3FCpXXwPzyimotps05VA8U3Bd7yseojFygOgK
-sAMOAee2RCaDDOnoJue01dfZMzzHPO/TVdp3OvnpWipfv5G1Xg96rwbhMLE3tg6N
-xwAHa31Bv4/Xq8CJOoIWvx6fcmZQpz01/lSvsYn0KrfEbTKkuUf0vM9JrCTCP2oz
-VNN5BYzqaq2M4r+jmSyeXLim922VOWqGkUEQ85BSEemqrRS06IU6NtEMsF8EWt/b
-hWjk/9GDKTcnpdJHTrMxTspExBiNrvpI2t+YPU5B/dJJAUxvmhFrbSIbdB8umBZs
-I3AMYrEmpAbh5x7jEjoskUC7uN3o9vpg1oCLS2ePDLtAtyBtbHnkA4xGD7ar8mem
-xpH9lY/i+sC6CyyIUWcUDnnagKyJP0m9ks0GLsTeOCA0bft2XA6rD6aaCnMUsndT
-ctrab42CV5XypjmC4U1rPJ8JQJUh1/3P48/8sMH+3krxpJ06KNWNFaUbaMTGiltZ
-7x9DngklSYrX0T+2G4kVXNmjaljwkoLahwLla2gUWwBSyofXdqyhQdwZsp01KXNQ
-UCyT/Pg+aDcm/E7OMV3d4lf7g/CSxiX2GSEe6BlhSz+Lmd7ZJ3g32M1ARGVtaSBN
-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
-EtJuZYM5blWncBOJCoWMnBEcTEo/viU3GgcVRw=3D=3D
-=3Dx94R
------END PGP PUBLIC KEY BLOCK-----
 
---------------Ks4JVj5EZaYXWGekndZmn4G5--
+Thanks,
+fandingo
 
---------------Yzm9nJIQ7A7bVqxd5MMTr4GF--
-
---------------IgsqjoM1qbWGxAOlEImvo4BK
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEopQtqVJW1aeuo9/sszaHOrMp8lMFAmjQky8ACgkQszaHOrMp
-8lMLag/+LH9i3Nt3A+c8+ArM0CDH60t15Sf7rdnYylq/jHZE5G2nrPS3mjc7KWtB
-iMf8xORSm0aPAolSbRWptCMzpuvUtln5vQBebC8HEvUy8/ZcX9H8gjVpFMZ7EX6a
-m5k/Usb5fPrfTQCbI6TBNIR02VAIQJ5DxlTyKo4s0wxN78wTMFfalAQQMxnsg3y4
-dmiOQ6M6UkzWwKdCz+sUeQh0uWkTELekDtlHEtx8zBOcq8bhOm+2WUQsGf7b/mID
-MuNmh+fHsgJtl5a69JoEisirt08Osr2T/ICQ95rStfPHmYByD8MQW+k3hEwyj+Ke
-0pYN1W6+frmoWVy8Wxvrdpb46QVyLVmA8rMz3g2oNvKWXWa4uSmw7uYCivzvHw6J
-nrL5Sz9V/bKGowmXiF4og1zRJHXOe5gtEKoq1HhS6i2mlGZYiZVFbKe1C+ipPd6Z
-kCpXSndXAEKxn71eYI+6rngLbUQBZAvFq3tlsQZmzjjdNUFBG2kXnxMiYLr+MdNv
-tUJRGCud6LGaiRTEsHB8lY15SJQtuuanPDD+qo7YynYEh+1EEuh6EMDRWQGnALgZ
-UJF5X1PVZO2HW2ByCZbDaUOF6apc3jyBbpexnJhVGrncBNqQi0EZd5Fm5CAMcHb7
-oCQLn+3B5nEvgxOIodYRDrRWn78iVzd9JO/fj/e79vTa0aPJYAY=
-=GVxK
------END PGP SIGNATURE-----
-
---------------IgsqjoM1qbWGxAOlEImvo4BK--
+On Sun, Sep 21, 2025 at 5:37=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2025/9/22 06:45, Justin Brown =E5=86=99=E9=81=93:
+> > Hi,
+> >
+> > I had a pretty bad power outage that fried my server. I pulled a Btrfs
+> > HDD (1 drive, -d single, -m dup), and I'm trying to recover it. The
+> > HDD works fine -- the LUKS volume unlocks, and I can dd read from it,
+> > but the fs seems to be in bad shape. I've spent a few hours
+> > researching, but a lot of the information out there is really low
+> > quality. I've tried to stay away from the really dangerous stuff so
+> > far, but I did try some of the more benign troubleshooting.
+> >
+> > Kernel: 6.16.5-arch1-1
+> > btrfs-progs v6.16
+> >
+> > [fandingo:~] $ lsblk -o name,size,label,fstype,model /dev/sdc
+> > NAME  SIZE LABEL       FSTYPE      MODEL
+> > sdc   7.3T crypt_media crypto_LUKS ST8000VN004-2M2101
+> > =E2=94=94=E2=94=80cm  7.3T media       btrfs
+> >
+> > [fandingo:~] $ sudo btrfs fi showLabel: 'media'  uuid:
+> > e2dc4c13-e687-4829-8c24-fa822d9ba04a
+> >         Total devices 1 FS bytes used 6.10TiB
+> >         devid    1 size 7.28TiB used 6.24TiB path /dev/mapper/cm
+> >
+> >
+> > [fandingo:~] $ sudo mount -o ro /dev/mapper/cm /var/media/
+> > mount: /var/media: can't read superblock on /dev/mapper/cm.
+> >        dmesg(1) may have more information after failed mount system cal=
+l.
+> > [fandingo:~] 32 $ sudo dmesg
+> > [ 7546.813999] BTRFS: device label media devid 1 transid 4956
+> > /dev/mapper/cm (253:5) scanned by mount (6934)
+> > [ 7546.814345] BTRFS info (device dm-5): first mount of filesystem
+> > e2dc4c13-e687-4829-8c24-fa822d9ba04a
+> > [ 7546.814354] BTRFS info (device dm-5): using crc32c (crc32c-x86)
+> > checksum algorithm
+> > [ 7546.814743] BTRFS error (device dm-5): level verify failed on
+> > logical 27656192 mirror 1 wanted 1 found 0
+> > [ 7546.814831] BTRFS error (device dm-5): level verify failed on
+> > logical 27656192 mirror 2 wanted 1 found 0
+> > [ 7546.814837] BTRFS error (device dm-5): failed to read chunk root
+> > [ 7546.814933] BTRFS error (device dm-5): open_ctree failed: -5
+> >
+> >
+> > I've tried a few recovery options, tending towards the more safe side.
+> >
+> > ~$: sudo mount -o ro,rescue=3Dusebackuproot /dev/mapper/cm /var/media
+> > Same error and dmesg
+>
+> This means the corruption in not in the last transaction, but may be one
+> generations earlier.
+>
+> This also indicates that some metadata write is lost, which is a huge
+> problem.
+> Not sure if LUKS or the HDD is involved in this case.
+> >
+> > =3D=3D=3D=3D=3D=3D
+> >
+> > [fandingo:~] 3s $ sudo btrfs-find-root /dev/mapper/cm
+>
+> Find root should help in this case, but not the default option.
+>
+> You need "-o 3" option to tell the program to find chunk root.
+>
+> Then use the bytenr it reported to pass into "btrfs check --chunk-root
+> <bytenr>" to verify which works the best.
+>
+> Thanks,
+> Qu
+>
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > WARNING: cannot read chunk root, continue anyway
+> > Superblock thinks the generation is 4956
+> > Superblock thinks the level is 0
+> >
+> > =3D=3D=3D=3D=3D=3D
+> >
+> > [fandingo:~] 30s $ sudo btrfs rescue zero-log /dev/mapper/cm
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > ERROR: cannot read chunk root
+> > ERROR: could not open ctree
+> >
+> > =3D=3D=3D=3D=3D=3D
+> >
+> > [fandingo:~] 1 $ sudo btrfs rescue super-recover /dev/mapper/cm
+> > All supers are valid, no need to recover
+> >
+> > =3D=3D=3D=3D=3D=3D
+> >
+> > [fandingo:~] 4s $ sudo btrfs restore /dev/mapper/cm /var/media/
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > Ignoring transid failure
+> > ERROR: root [3 0] level 0 does not match 1
+> >
+> > ERROR: cannot read chunk root
+> > Could not open root, trying backup super
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > Ignoring transid failure
+> > ERROR: root [3 0] level 0 does not match 1
+> >
+> > ERROR: cannot read chunk root
+> > Could not open root, trying backup super
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > Ignoring transid failure
+> > ERROR: root [3 0] level 0 does not match 1
+> >
+> > ERROR: cannot read chunk root
+> > Could not open root, trying backup super
+> >
+> > =3D=3D=3D=3D=3D=3D=3D
+> >
+> > [fandingo:~] 13s $ sudo btrfs inspect-internal dump-tree /dev/mapper/cm
+> > btrfs-progs v6.16.1
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > parent transid verify failed on 27656192 wanted 4945 found 2607
+> > ERROR: cannot read chunk root
+> > ERROR: unable to open /dev/mapper/cm
+> >
+> > Same error for `btrfs inspect-internal tree-stats`.
+> >
+> > =3D=3D=3D=3D=3D=3D=3D
+> >
+> > [fandingo:~] 4s $ sudo btrfs inspect-internal dump-super /dev/mapper/cm
+> > superblock: bytenr=3D65536, device=3D/dev/mapper/cm
+> > ---------------------------------------------------------
+> > csum_type               0 (crc32c)
+> > csum_size               4
+> > csum                    0x05e1f6bc [match]
+> > bytenr                  65536
+> > flags                   0x1
+> >                         ( WRITTEN )
+> > magic                   _BHRfS_M [match]
+> > fsid                    e2dc4c13-e687-4829-8c24-fa822d9ba04a
+> > metadata_uuid           00000000-0000-0000-0000-000000000000
+> > label                   media
+> > generation              4956
+> > root                    998506496
+> > sys_array_size          129
+> > chunk_root_generation   4945
+> > root_level              0
+> > chunk_root              27656192
+> > chunk_root_level        1
+> > log_root                0
+> > log_root_transid (deprecated)   0
+> > log_root_level          0
+> > total_bytes             8001546444800
+> > bytes_used              6708315303936
+> > sectorsize              4096
+> > nodesize                16384
+> > leafsize (deprecated)   16384
+> > stripesize              4096
+> > root_dir                6
+> > num_devices             1
+> > compat_flags            0x0
+> > compat_ro_flags         0x3
+> >                         ( FREE_SPACE_TREE |
+> >                           FREE_SPACE_TREE_VALID )
+> > incompat_flags          0x361
+> >                         ( MIXED_BACKREF |
+> >                           BIG_METADATA |
+> >                           EXTENDED_IREF |
+> >                           SKINNY_METADATA |
+> >                           NO_HOLES )
+> > cache_generation        0
+> > uuid_tree_generation    4956
+> > dev_item.uuid           529d3f9a-52be-4af5-a8e8-7bf6108c65e7
+> > dev_item.fsid           e2dc4c13-e687-4829-8c24-fa822d9ba04a [match]
+> > dev_item.type           0
+> > dev_item.total_bytes    8001546444800
+> > dev_item.bytes_used     6856940453888
+> > dev_item.io_align       4096
+> > dev_item.io_width       4096
+> > dev_item.sector_size    4096
+> > dev_item.devid          1
+> > dev_item.dev_group      0
+> > dev_item.seek_speed     0
+> > dev_item.bandwidth      0
+> > dev_item.generation     0
+> >
+> >
+> >
+> >
+> >
+> > This HDD is used for occasional archival, and it probably didn't see
+> > any data writes in the week prior to the power surge. If I could get
+> > access to any of the data, even old version (eg. that 2607 transid or
+> > whatever the proper terminology is), would be very useful. Any
+> > suggestions on what to do from here?
+> >
+> > Thanks,
+> > fandingo
+> >
+>
 
