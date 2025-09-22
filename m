@@ -1,65 +1,67 @@
-Return-Path: <linux-btrfs+bounces-17085-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17086-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73A27B91300
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 14:47:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84AC5B913D1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 14:52:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68374189F74F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 12:48:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D13D4254FE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 12:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A86307AE1;
-	Mon, 22 Sep 2025 12:47:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFAA93093C7;
+	Mon, 22 Sep 2025 12:51:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="kKc01khb"
+	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="haXU5Doe"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout-y-209.mailbox.org (mout-y-209.mailbox.org [91.198.250.237])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF32617A2FB;
-	Mon, 22 Sep 2025 12:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55BAC2AD20;
+	Mon, 22 Sep 2025 12:51:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.198.250.237
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758545253; cv=none; b=Ce+YWYAlUgVa2m9sC/TDn5OEtTsufEmHfGdNqjJAY0U7BSiEKWY8MJVXE6NOyKmoW4ntef9pWX8ndaIFDn/36OM0DkwG/mejS12DnY5BPmqzHX7IKF8qWxanyUpb+jzArbElEWypC7n2R6BQ/8GYEqV4iZxOXqNrWwA1ZB4SulM=
+	t=1758545486; cv=none; b=kQN1RSEDqNDulGeFrMs91NGvQLZrPSvY58Zm/hz0pNJrqZYdWxPt20AaBAVZ8CzWoyn/5wP/I8WLZCrmW5ey7XiSupPFEcgY2jnNK/jDPBETOZe8MS5v0qtpHitFP6XD1Cd8gc8yjS7gSEmwtHCjwxS1H7jt6LHHb5fxb/itdiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758545253; c=relaxed/simple;
-	bh=woqjYdr6fYQ/tq8XxibmlyTyVlBuByAOdKiPLXjTrtU=;
+	s=arc-20240116; t=1758545486; c=relaxed/simple;
+	bh=Iz9UZgNJKyNMc2OfTRs4Qobm5C+M7qBf/0bvJog+Lzw=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=k/qw1py6Tvm0PrKWkakNWWviwpkJDcD4arZw47IC5TWYRuzG0/eYlJd0Mdvu/y98R2JxFdvTw2Sdc1R52+7lOaLBaKYeEeWHIoRU6R9K6igWcXj9a16SDrcb9q5ApuMJ0giWxIeSaRkF1MzppCgX8mbRlF/plt+s/mkr61yLcBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=kKc01khb; arc=none smtp.client-ip=91.198.250.237
+	 MIME-Version:Content-Type; b=ncHNaJ4erqGE6no84xpezethEn4I8nKIeQgNyQqJ1ftT+4S25TTZZ3Az+0gEBX6YmSQCk7MUZ8RrcP9rS1HZfP0SNX30qpJrptw2U2Yo4GMf0mwzTqUHei8RiSLtJxs/QdGKi92WRLUJIgLkhHTj6e9NhMLWxNmYRQ1rZZTpibE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=haXU5Doe; arc=none smtp.client-ip=91.198.250.237
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-y-209.mailbox.org (Postfix) with ESMTPS id 4cVjYd1j2wz9yXX;
-	Mon, 22 Sep 2025 14:47:17 +0200 (CEST)
+	by mout-y-209.mailbox.org (Postfix) with ESMTPS id 4cVjfG4wzczB0P9;
+	Mon, 22 Sep 2025 14:51:18 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
-	t=1758545237;
+	t=1758545478;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=woqjYdr6fYQ/tq8XxibmlyTyVlBuByAOdKiPLXjTrtU=;
-	b=kKc01khbIUo4IyTASFpsTzwS2a0hqdnJQ1I4eD7VW9+1/0IpIq0k22/CTIjntgf7GiwiQX
-	6mH6HXb35vRzGtH6/s9jz49amQ2USEMmmzjwzg1QST5d2fCR+cFB3c9viwtoPJhdR5SO1b
-	onH0taTuBtjwHFvYreTHsUFSu2TOCU+MdPIEMr6e8r7mWk4RS0AWIjEIKZ13pKMGOE3w4Q
-	JPxTBlIRbPqlCUopIG1qT3uAwX+RpQ2N7DNIGUAqS6NWTRDnum19IRalNToe+LryCLZoJF
-	HTkzPt1gNAvFT6RbyloDZzqLuWjWCBc12kV7TRP0P4sofru6likGiHBIJNNWgQ==
+	bh=K1dXOwMIZsJBnAC+87S37o9PpbrQcwWEFVTNEZoIX7k=;
+	b=haXU5DoeQf/+m2Ut2EbLBHUxXxp5xKCvXqkaEHHNFfTrXDURHrifykdfUAKOTT7Y8vJpcP
+	dZhz3Ctc95tZt3c9j0MM8KfFgMCawE7S2vMpJdyh1jiXzpcm6CEOGkEhERx44dfHn+zxkF
+	qiiIG/YD8AFxKuqbz9yRNc4LLsq7BJhzrUATxyHA6YRcH6eonLw7F/J6yGuzsXYlKnxGpq
+	yKxzkeOSwy9GI6B2qqYgqRVYmv0X3lS5gTYI9KV1f2vKd4VrodeHPWLkuCMqbtVJo2B4RG
+	JF9GgJ62o5tYfhmPRH8dlJ0qQUuEn+VXityJArbFLMG6rvtXv3Xm8qDJpdMYrg==
+Authentication-Results: outgoing_mbo_mout;
+	dkim=none;
+	spf=softfail (outgoing_mbo_mout: 2001:67c:2050:b231:465::1 is neither permitted nor denied by domain of mssola@mssola.com) smtp.mailfrom=mssola@mssola.com
 From: =?utf-8?Q?Miquel_Sabat=C3=A9_Sol=C3=A0?= <mssola@mssola.com>
 To: David Sterba <dsterba@suse.cz>
 Cc: linux-btrfs@vger.kernel.org,  clm@fb.com,  dsterba@suse.com,
   linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] btrfs: Prevent open-coded arithmetic in kmalloc
-In-Reply-To: <20250922102850.GL5333@twin.jikos.cz> (David Sterba's message of
-	"Mon, 22 Sep 2025 12:28:50 +0200")
+Subject: Re: [PATCH 0/2] btrfs: Prevent open-coded arithmetic on kmalloc
+In-Reply-To: <20250922103442.GM5333@twin.jikos.cz> (David Sterba's message of
+	"Mon, 22 Sep 2025 12:34:42 +0200")
 References: <20250919145816.959845-1-mssola@mssola.com>
-	<20250919145816.959845-2-mssola@mssola.com>
-	<20250922102850.GL5333@twin.jikos.cz>
-Date: Mon, 22 Sep 2025 14:47:13 +0200
-Message-ID: <87h5wu4pta.fsf@>
+	<20250922103442.GM5333@twin.jikos.cz>
+Date: Mon, 22 Sep 2025 14:51:15 +0200
+Message-ID: <87bjn24pmk.fsf@>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -68,6 +70,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; boundary="=-=-=";
 	micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Rspamd-Queue-Id: 4cVjfG4wzczB0P9
 
 --=-=-=
 Content-Type: text/plain; charset=utf-8
@@ -75,30 +78,37 @@ Content-Transfer-Encoding: quoted-printable
 
 Hello,
 
-David Sterba @ 2025-09-22 12:28 +02:
+David Sterba @ 2025-09-22 12:34 +02:
 
-> On Fri, Sep 19, 2025 at 04:58:15PM +0200, Miquel Sabat=C3=A9 Sol=C3=A0 wr=
+> On Fri, Sep 19, 2025 at 04:58:14PM +0200, Miquel Sabat=C3=A9 Sol=C3=A0 wr=
 ote:
->> As pointed out in the documentation, calling 'kmalloc' with open-coded
->> arithmetic can lead to unfortunate overflows and this particular way of
->> using it has been deprecated. Instead, it's preferred to use
->> 'kmalloc_array' in cases where it might apply so an overflow check is
->> performed.
+>> The second patch is a small cleanup after fixing up my first patch, in
+>> which I realized that the __free(kfree) attribute would come in handy in=
+ a
+>> couple of particularly large functions with multiple exit points. This
+>> second patch is probably more of a cosmetic thing, and it's not an
+>> exhaustive exercise by any means. All of this to say that even if I feel
+>> like it should be included, I don't mind if it has to be dropped.
 >
-> So this is an API cleanup and it makes sense to use the checked
-> multiplication but it should be also said that this is not fixing any
-> overflow because in all cases the multipliers are bounded small numbers
-> derived from number of items in leaves/nodes.
-
-Yes, it's just an API cleanup and I don't think it fixes any current bug
-in the code base. So no need to CC stable or anything like that.
-
+> Yes there are many candidates for the __free() cleanup annotation and
+> we'll want to fix them all systematically. We already have the automatic
+> cleaning for struct btrfs_path (BTRFS_PATH_AUTO_FREE). For the
+> kfree/kvfree I'd like to something similar:
 >
->> Signed-off-by: Miquel Sabat=C3=A9 Sol=C3=A0 <mssola@mssola.com>
+> #define AUTO_KFREE(name)       *name __free(kfree) =3D NULL
+> #define AUTO_KVFREE(name)      *name __free(kvfree) =3D NULL
 >
-> Reviewed-by: David Sterba <dsterba@suse.com>
+> This wraps the name and initializes it to NULL so it's not accidentally
+> forgotten.
 
-Thanks for the review!
+Makes sense! I can take a look at this if nobody else is working on it,
+even if I think it should go into a new patch series.
+
+Hence, if it sounds good to you, we can merge this patch as it is right
+now, and in parallel I work on this proposed AUTO_KFREE and AUTO_KVFREE
+macros in a new patch series (which will take more time to prepare).
+
+Thanks,
 Miquel
 
 --=-=-=
@@ -106,20 +116,20 @@ Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQJiBAEBCgBMFiEEG6U8esk9yirP39qXlr6Mb9idZWUFAmjRRVEbFIAAAAAABAAO
+iQJiBAEBCgBMFiEEG6U8esk9yirP39qXlr6Mb9idZWUFAmjRRkMbFIAAAAAABAAO
 bWFudTIsMi41KzEuMTEsMiwyEhxtc3NvbGFAbXNzb2xhLmNvbQAKCRCWvoxv2J1l
-ZYfqEACKq6YPm10/IKgn3T2JtNX9lsveTTusqpmw4z2J+jvcrGF6au/58Zz3NmTE
-pIJrx3/RtGy697Di1rXigIE/35YXdoGlCt/AHMcLa5MOEkC8Tl2k0EVkaTd3LpnF
-BHp0Q/tEWGLuN1bT2Cq3nDTZnZAhekw45mIsT18saDDqHNZibe15VXIgGvS/g2zv
-ZbpQwtVO3/E7ELTnNBcrw52urbHjHz1MPMiX/g0dfbo27USkgqcTqbJldHycdjQR
-GG9ueZoHDpxY3Ymck2fSQ/1BwbIBugFJSyLQQH5WQPfGd9fPx0dRwR6l2+Q8CwIT
-x7p/zYmAdmAsnw5gHwPWO5L+cf/bt/uN/R448KztIBkILOX8IFkobEM/wtEKP17u
-+liAXPa5OvwEOmnnjZBfOFJ7NWaebCJ/2Q4KODwtxnZZU7ecxwqu3dtb3zoIMI/B
-CeITXKzcRHCbsjPJz0r6xdmDRL4tRJUfHB9JcMKw22D+DjXl6H8BFgzSilFGHVQF
-o9nBZWXNFvh9UJ7/DUvEQ9qCNin7y1ddVeA+ok7gZOG008WmwzjvGKnVlc/r2wuL
-SCBHK4MBMVQcU3f7SQVMcKZqlwjMFwu1U2g20xunD8IJahrIIPCEnncOxkECXX2Q
-y41tUbBWPa+8Ex1gje91/bWojsBOOeogxjagB/90HJMr5Kk5uw==
-=R7Ll
+ZdXmD/9aKfcwkUP8/3YhELwG+Pj6gfzY/EsKaTaYhLErAZ08HxPpyAgpf/qxVsuj
+TrtwICvOqVE2DYnrdooyTn9qYYr9iLBbkKiGf+YdN6mCMKxpxhw8oKpmpWTsZjUo
+tStFuaDUU6/PPwL/x1QcOS4nJLrUT+HMGx0bhNgoP06qOH/VefoBxNPzF7bjNpRK
+A81JCCvx0kdvSYh4Wc6qkuN9puba42Fp6Jzqn4eaJkjyyAV8TED8SbPl1lH1wEl5
+WdXuNdzk0rebNwulILFBOiOPWAEZ6zGSfi1Nh/K3+YqLQ4gCN5b1fZpRWLWer8lU
+tL4yJpdTr8B1agNJEycJ0AhkRwC+i19V6UGIkeJQxgeeqyYS+pBJDWRT1mtbzVn4
+Uo0l3CRNRZmTTZFrp6Cka8Qju0jwFej577uIn22l11zsYh5+9goFRnzPO+Hjucba
+DwfcVwKP5r8VE+pduDmo/dyz7FikPlwka4XWkxqmimaggk6C39RdeuzTL/d2BUan
+ObsoID5MDMK2xWd2O7IwqEAj8Dm19SdwzHVDJ1l5ACXAEtNEPdNoXlUh9Wd2GTm2
+7mfiRPshZ3LFuB6yjWM6I3Z9JlnCaO5aO6N269gl8DRwpBPrpLLklzLrV2om7k7W
+QXQrqcaSoCUGG22EMZErCuh6FINkZSkzieEvmZ+LIHR5mRM8pw==
+=ogjZ
 -----END PGP SIGNATURE-----
 --=-=-=--
 
