@@ -1,240 +1,499 @@
-Return-Path: <linux-btrfs+bounces-17032-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17033-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74922B8EA24
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 02:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 01038B8EA72
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 03:07:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82AAA1896347
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 00:51:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D11BD189A6A3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Sep 2025 01:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1208472629;
-	Mon, 22 Sep 2025 00:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C12F1459F7;
+	Mon, 22 Sep 2025 01:07:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="UZeOKCtr"
+	dkim=pass (2048-bit key) header.d=fandingo-org.20230601.gappssmtp.com header.i=@fandingo-org.20230601.gappssmtp.com header.b="OBjlRkIt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D5522CCDB
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Sep 2025 00:50:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EEB212CD8B
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Sep 2025 01:07:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758502242; cv=none; b=Atk4u//yliYHx46ZQTCB/gV7vYPUeca3q+RpRxXI8VbVBGK8jZ8Qi644Cmk/MDtSjkOO2anwAkq0M7wQXxM6rI+huBUMcrcFLJEetqPYyAzjnG4rFF+iuoM/cZ+UbnNUT/r+10T8jpbnRjJjGkvKxh8t6672RQgcKswCFRo21dg=
+	t=1758503248; cv=none; b=CMlvOzKTCezi1yIQIw9XDYo6rVVq3nkK17ZLzP5fAndUCHFu9Bax0YmjoRbBshYyqHqZa+IpWeCNhKAqCeWqUWudjv9tIAjMARwPyPoloAdlWwu4OgV+r3VqYa/HH1VaD9Q4kdQBLll522gVhcy/k3nxhTAC3BB7gB5rvn3suo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758502242; c=relaxed/simple;
-	bh=M+mPjEFVF08XiK2lMN1Tf5AO28zXDllcAejv8DQlJKY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KQ9yrKuXLG/treMWMzlisfSn5y9gg45Erknlbd6eIGefSkTCH5kWAURsKlJZEAg1gKrpofm7rJPh0l3bgpcXqY7tfG7RSVxqsjrMGaDW0SL4J8YQCtNS7NMrLJCdd/LDmcgvDj6SS/VLzOK2Uz/Zwi1481mxn4xgxloLcdz/B2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=UZeOKCtr; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1758502238; x=1759107038; i=quwenruo.btrfs@gmx.com;
-	bh=tt/FpWDVZ1vR8933SRVbG6xhva0H7sNpHMvj5wq0iS0=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=UZeOKCtry2UEnevb8NQwB4DykHemIhq6O+ltqKbIDU0TjThiFqwGVL5DDyy1cYOe
-	 9nKNj0PI7kCAeByv1YYWwQ6Cat4XlkTGpmZoALz9XwvjtA4FRkxPias3AZjwUSejq
-	 DYDYpk6D5NTvrFNtfl0SjOHqKM8BCXfvA2zXWXvlE6NoMg76GhpCMEv5y+dGyIfj+
-	 VHF1CL8zWDP38joAiiHa2AL7m9Fw7VUKs69MLAeF5+fx0qjd6mgKpXDElk6f8cp1D
-	 b3W4minQcP8RfojHWElN9RGKxKzMyM4AdaHydmE694QprBsQjGvTDV8sCmLVdmvFf
-	 9df5a2LqxNcKlULLLA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MkYXm-1udpjP2X0w-00el7E; Mon, 22
- Sep 2025 02:50:38 +0200
-Message-ID: <62a97fb7-75e3-4832-b97c-90763b287a5c@gmx.com>
-Date: Mon, 22 Sep 2025 10:20:35 +0930
+	s=arc-20240116; t=1758503248; c=relaxed/simple;
+	bh=WaMY8piM7+nmQ4wWfm76bx1afnGfa+lqev9JM2rqKNg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Bg/PCltxsSXjUPsZxomi7phF4vRy1trWspu57f/8C+pvFT0sbWDChcK+TdhhiuA7/XTsz6etniWJg1uwVW645hoa1DHEOsuY6+2opigNrhbrC6YphJSxzrLUF4thlR5/jpt3ez/NJ3AhXwxXNlK+1ND3br2pCvOcoYEXdG/inTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fandingo.org; spf=none smtp.mailfrom=fandingo.org; dkim=pass (2048-bit key) header.d=fandingo-org.20230601.gappssmtp.com header.i=@fandingo-org.20230601.gappssmtp.com header.b=OBjlRkIt; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fandingo.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=fandingo.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-b0787fa12e2so540993766b.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 21 Sep 2025 18:07:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fandingo-org.20230601.gappssmtp.com; s=20230601; t=1758503244; x=1759108044; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9oaEkehQFclxGNPJL9s9OXMNSTqyc/P+yjOMW0TDxg0=;
+        b=OBjlRkIt4nMKL2YozEraVlYduAVHzon2LPEoQVWpKMpAqabbcPqhlF4bfFTbWLF/1q
+         3NjtMJn3jSLjftfkfRCg1CGv+yT1Zdr+ikILCpgXEwfYya41nd4YsCalQSZrSvigxWBB
+         IB8AzP8kGydeAKF7pkVwOTftrGIwu92WbZ32emZc7pjHDUDHUIRPizQ6qoGOnKGrORYc
+         aEci0YnaN16jSdm3Ywftt759Y8bWKKEDuJEFQzZvHBbPQXmTZ7v4zgBum8JF6MjsFLzR
+         9yZppGADEbhhIE1IrBr1sg7ayARJaQqyK+bZWU4rGtTqrACPwfXYwD2q91NIn9wb9mNy
+         CaSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758503244; x=1759108044;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9oaEkehQFclxGNPJL9s9OXMNSTqyc/P+yjOMW0TDxg0=;
+        b=fmWboC6TDa+HWlxTFezjhtpC46N+hkAKhJFFJpiSMdwVecjMJbDJgM5WaNSLcPmDSZ
+         UIxZFVmp/kiotM9PGfK8f8DFEwUnUx83WW4TmKL96p9V/DxyCc1zAvZxd97W2x8CAsRk
+         NzkMZnZtYplGla0r9BOl2QAf8+S9Ti/5u4GpzEgsf3b6tLk14jQ2ZnAVRH4nfb5u1/EI
+         +CCZSoecyXUjpH1paDn61cCffmQNGYSTxp4gVU2WdwnUK8lttLsJ9x6ghkFl1ccDj0KZ
+         rGKtgEhGjnOsKitm0TmKKsdMD1W3CNDiZhbnKCYN1hjRn3lywINrGHAMhZG40Uf9DauL
+         qRYA==
+X-Forwarded-Encrypted: i=1; AJvYcCXJoQaey0B4u8vynaMzUjZDXLAQ80QfAbAorXhzqzet5pvugJezLTHDLrwl2RhVnI/rx6SuoE/f4KSzOg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxIJ1725HXutNR2mlngNMiHVFKYNOQfx3I0gYldqK+IOKoLHdHw
+	F7ucBiZDErlaJSqmeW3C/36ATfIpKFX2reZ0NFvKe1VFuMxjQx/GR95gTojRIJUcvwVUgbws8mg
+	swMyUezO19FI6mbUoj4QZ/PnFkX/CTDGUv1RsZvWZKw==
+X-Gm-Gg: ASbGncunrJs+Zf+NzWaVJ7fWoUfcbnn1UdL1deDIleLodB/oKNF9Z2jM5RyuCPBj10O
+	tL8WRQ6jUVryxVzw+DJV9ntkv2uL53QoPE4KuriiPpmBs4D0cFU/MGATz7oZpxGQa/XXGYkMpFi
+	awPO3vy+5fuLt1LQUtiLkZ89oAVo91RWtQRfzgJsq14pJCpQoe9TR4lPHagXgOSg5YgSQeSQHE0
+	pAdWHNRSwGLXJJ7to2Qc6fqvQWIBgq0OW3LZeXNJkfGdck5QKQ=
+X-Google-Smtp-Source: AGHT+IGrFvZiOLBZdCd5lxj5dH02I2B2LwGZKcVc3TQ5IR6mSZlgn5wtKNu06lRXMoTo2AYTxph9PgDy6pmRq6zFLJk=
+X-Received: by 2002:a17:906:dc93:b0:b0c:5929:4cff with SMTP id
+ a640c23a62f3a-b24f052bad5mr1127055266b.26.1758503244210; Sun, 21 Sep 2025
+ 18:07:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Can the output of FIEMAP on BTRFS be used to check if a file and
- its reflink copy might have diverged?
-To: Demi Marie Obenour <demiobenour@gmail.com>, linux-btrfs@vger.kernel.org
-References: <a697548b-cc40-4275-9da1-3b29351654f0@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <a697548b-cc40-4275-9da1-3b29351654f0@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <CAKZK7uzqNj1336MijN2De-R9+rdjw_Zm6=b-Q1jCCDQb5+fmXw@mail.gmail.com>
+ <27b4ca8f-de3a-4b9f-b90d-c6260ba81f9c@suse.com> <CAKZK7uxiRmDxk-1goC4yj7QZPSmL-=GAoAuF=OdekbSNVrG8fg@mail.gmail.com>
+ <23d859bc-19f9-4cf5-9405-03792dbf2e7a@gmx.com> <293aab80-89e4-44fe-b588-977ab24dbf51@app.fastmail.com>
+In-Reply-To: <293aab80-89e4-44fe-b588-977ab24dbf51@app.fastmail.com>
+From: Justin Brown <Justin.Brown@fandingo.org>
+Date: Sun, 21 Sep 2025 20:07:13 -0500
+X-Gm-Features: AS18NWCBhVW04cjp8_eHRoAn0jEwfcJ3xN0Q_DDF6MuSAHFfBPlNmwm1febGUiQ
+Message-ID: <CAKZK7ux=z2OT2psm8C06RTM+D4CweQe8dQZxEZ4SNeOwhhfA0g@mail.gmail.com>
+Subject: Re: [Support] failed to read chunk root / open_ctree failed: -5
+To: Chris Murphy <lists@colorremedies.com>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu WenRuo <wqu@suse.com>, 
+	Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6SZD+H7azU+X3HqvKm+/O+XeNZvJyxJiUcdWgU+7UDEbaROJOvp
- 59zqF/JWIhZf0VtDBurwdrm1ealTl8LgD+IPq1A2wNa53g9WpIKfH7A7fXT7WGmWubdEMOb
- Lvdoz1qHlSKZALD77PxBi04bfccDbipGbplhy0n42KCwipkc+/M3IKkaJOEVG3iJCcjJ/aF
- +nk/qtD64wQPtUy4tYPkg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:6MV+TlJcN1w=;X54uU8kScdgfpBpbnbm1wTq6t06
- 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
+
+Hi Qu,
+
+Thanks for the response. I ran a readonly check against all the
+bytenrs, but it doesn't look great:
+
+[fandingo:~] $ for i in $(sudo  btrfs-find-root -o 3 /dev/mapper/cm |
+grep '^Well' | sed 's/^Well block \([0-9]\+\).*$/\1/g' | sort -n); do
+           echo "######### $i #########" | tee -a /tmp/btrfs-check.txt ;
+           sudo btrfs check --readonly --chunk-root $i /dev/mapper/cm
+2>&1 | tee -a /tmp/btrfs-check.txt;
+done
+
+Full output at https://pastebin.com/aWKsc9AH
+
+There are a lot of repeated errors, which I guess should be expected,
+and a lot of the same numbers repeated. Decent amount of errors that
+look like this:
+
+ERROR: root [3 0] level 0 does not match 1
+ERROR: cannot read chunk root
+ERROR: cannot open file system
+Opening filesystem to check...
+
+and lots of these, sometimes with different numbers as the bytenr decreases=
+.
+
+######### 22052864 #########
+parent transid verify failed on 29442048 wanted 2185 found 3178
+parent transid verify failed on 29442048 wanted 2185 found 3178
+parent transid verify failed on 29442048 wanted 2185 found 3178
+Ignoring transid failure
+parent transid verify failed on 1004077056 wanted 4945 found 4933
+parent transid verify failed on 1004077056 wanted 4945 found 4933
+parent transid verify failed on 1004077056 wanted 4945 found 4933
+Ignoring transid failure
+parent transid verify failed on 1004093440 wanted 4945 found 4941
+parent transid verify failed on 1004093440 wanted 4945 found 4941
+parent transid verify failed on 1004093440 wanted 4945 found 4941
+Ignoring transid failure
+ERROR: child eb corrupted: parent bytenr=3D998031360 item=3D130 parent
+level=3D1 child bytenr=3D1004093440 child level=3D2
+ERROR: failed to read block groups: Input/output error
+ERROR: cannot open file system
+Opening filesystem to check...
 
 
 
-=E5=9C=A8 2025/9/22 09:37, Demi Marie Obenour =E5=86=99=E9=81=93:
-> Wyng Backup (https://codeberg.org/tasket/wyng-backup) relies on FIEMAP
-> to determine which parts of a file have not changed since it was last
-> backed up.  Specifically, the output of filefrag -v is passed to sort an=
-d
-> then to uniq, and differences between the outputs for the file and
-> the previous version (a reflink copy) determine what gets backed up.
->=20
-> Is this safe under BTRFS,
-
-No. There are several factors affecting this, some are minor some are not:
-
-- Inlined extents
-   The returned bytenr is unreliable in that case.
-   Although the fiemap flags should indicate that, with 'inline' flag
-   set.
-
-- Balance
-   Btrfs can balance the data extents, which will result the change of
-   the fiemap.
-
-   E.g.
-   ## Before balance
-   # md5sum  /mnt/btrfs/foobar
-   27c9068d1b51da575a53ad34c57ca5cc  /mnt/btrfs/foobar
-   # filefrag -v /mnt/btrfs/foobar
-   Filesystem type is: 9123683e
-   File size of /mnt/btrfs/foobar is 65536 (8 blocks of 8192 bytes)
-    ext:     logical_offset:        physical_offset: length:   expected:=
-=20
-flags:
-      0:        0..       7:       1664..      1671:      8:=20
-last,eof
-   /mnt/btrfs/foobar: 1 extent found
-
-   ## Do data balance
-   # btrfs balance start -d /mnt/btrfs/
-   Done, had to relocate 1 out of 3 chunks
-
-   ## After data balannce
-   # filefrag -v /mnt/btrfs/foobar
-   Filesystem type is: 9123683e
-   File size of /mnt/btrfs/foobar is 65536 (8 blocks of 8192 bytes)
-     ext:     logical_offset:        physical_offset: length:=20
-expected: flags:
-      0:        0..       7:      36480..     36487:      8:=20
-last,eof
-   /mnt/btrfs/foobar: 1 extent found
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
-- NODATACOW cases.
-   In that case new data is written into the same location, without any
-   extra new data extents. This completely breaks the assumption.
+Chris,
 
-- Dirty data that is not yet written into the disk
-   In that case fiemap won't show those data but only the ones that are
-   on the disk.
+Here's the output of the backup roots. I have no clue what to make of
+this information, though.
 
-> or can it result in data loss due to data
-> not being backed up that should be?  In other words, can it result
-> in data being considered unchanged when it really is?
+superblock: bytenr=3D65536, device=3D/dev/mapper/cm
+---------------------------------------------------------
+csum_type        0 (crc32c)
+csum_size        4
+csum            0x05e1f6bc [match]
+bytenr            65536
+flags            0x1
+            ( WRITTEN )
+magic            _BHRfS_M [match]
+fsid            e2dc4c13-e687-4829-8c24-fa822d9ba04a
+metadata_uuid        00000000-0000-0000-0000-000000000000
+label            media
+generation        4956
+root            998506496
+sys_array_size        129
+chunk_root_generation    4945
+root_level        0
+chunk_root        27656192
+chunk_root_level    1
+log_root        0
+log_root_transid (deprecated)    0
+log_root_level        0
+total_bytes        8001546444800
+bytes_used        6708315303936
+sectorsize        4096
+nodesize        16384
+leafsize (deprecated)    16384
+stripesize        4096
+root_dir        6
+num_devices        1
+compat_flags        0x0
+compat_ro_flags        0x3
+            ( FREE_SPACE_TREE |
+              FREE_SPACE_TREE_VALID )
+incompat_flags        0x361
+            ( MIXED_BACKREF |
+              BIG_METADATA |
+              EXTENDED_IREF |
+              SKINNY_METADATA |
+              NO_HOLES )
+cache_generation    0
+uuid_tree_generation    4956
+dev_item.uuid        529d3f9a-52be-4af5-a8e8-7bf6108c65e7
+dev_item.fsid        e2dc4c13-e687-4829-8c24-fa822d9ba04a [match]
+dev_item.type        0
+dev_item.total_bytes    8001546444800
+dev_item.bytes_used    6856940453888
+dev_item.io_align    4096
+dev_item.io_width    4096
+dev_item.sector_size    4096
+dev_item.devid        1
+dev_item.dev_group    0
+dev_item.seek_speed    0
+dev_item.bandwidth    0
+dev_item.generation    0
+sys_chunk_array[2048]:
+    item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
+        length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
+        io_align 65536 io_width 65536 sector_size 4096
+        num_stripes 2 sub_stripes 1
+            stripe 0 devid 1 offset 22020096
+            dev_uuid 529d3f9a-52be-4af5-a8e8-7bf6108c65e7
+            stripe 1 devid 1 offset 30408704
+            dev_uuid 529d3f9a-52be-4af5-a8e8-7bf6108c65e7
+backup_roots[4]:
+    backup 0:
+        backup_tree_root:    1022836736    gen: 4953    level: 0
+        backup_chunk_root:    27656192    gen: 4945    level: 1
+        backup_extent_root:    1003782144    gen: 4953    level: 2
+        backup_fs_root:        1006288896    gen: 4950    level: 0
+        backup_dev_root:    1055571968    gen: 4945    level: 1
+        csum_root:    1003618304    gen: 4953    level: 3
+        backup_total_bytes:    8001546444800
+        backup_bytes_used:    6708289445888
+        backup_num_devices:    1
 
-Dirty data and NODATACOW will result data being considered unchanged=20
-using fiemap only.
+    backup 1:
+        backup_tree_root:    1005043712    gen: 4954    level: 0
+        backup_chunk_root:    27656192    gen: 4945    level: 1
+        backup_extent_root:    997343232    gen: 4954    level: 2
+        backup_fs_root:        1006288896    gen: 4950    level: 0
+        backup_dev_root:    1055571968    gen: 4945    level: 1
+        csum_root:    1005486080    gen: 4955    level: 3
+        backup_total_bytes:    8001546444800
+        backup_bytes_used:    6708293525504
+        backup_num_devices:    1
 
-And balance will make the unchanged data to be considered changed.
+    backup 2:
+        backup_tree_root:    1011204096    gen: 4955    level: 0
+        backup_chunk_root:    27656192    gen: 4945    level: 1
+        backup_extent_root:    602931200    gen: 4955    level: 2
+        backup_fs_root:        1023918080    gen: 4955    level: 0
+        backup_dev_root:    1055571968    gen: 4945    level: 1
+        csum_root:    1005486080    gen: 4955    level: 3
+        backup_total_bytes:    8001546444800
+        backup_bytes_used:    6708307161088
+        backup_num_devices:    1
 
-So overall, fiemap based solution on btrfs is unreliable.
+    backup 3:
+        backup_tree_root:    998506496    gen: 4956    level: 0
+        backup_chunk_root:    27656192    gen: 4945    level: 1
+        backup_extent_root:    1027489792    gen: 4956    level: 2
+        backup_fs_root:        1023918080    gen: 4955    level: 0
+        backup_dev_root:    1055571968    gen: 4945    level: 1
+        csum_root:    1025638400    gen: 4956    level: 3
+        backup_total_bytes:    8001546444800
+        backup_bytes_used:    6708315303936
+        backup_num_devices:    1
 
-Thanks,
-Qu
+
+superblock: bytenr=3D67108864, device=3D/dev/mapper/cm
+---------------------------------------------------------
+csum_type        0 (crc32c)
+csum_size        4
+csum            0xa580de72 [match]
+bytenr            67108864
+flags            0x1
+            ( WRITTEN )
+magic            _BHRfS_M [match]
+fsid            e2dc4c13-e687-4829-8c24-fa822d9ba04a
+metadata_uuid        00000000-0000-0000-0000-000000000000
+label            media
+generation        4956
+root            998506496
+sys_array_size        129
+chunk_root_generation    4945
+root_level        0
+chunk_root        27656192
+chunk_root_level    1
+log_root        0
+log_root_transid (deprecated)    0
+log_root_level        0
+total_bytes        8001546444800
+bytes_used        6708315303936
+sectorsize        4096
+nodesize        16384
+leafsize (deprecated)    16384
+stripesize        4096
+root_dir        6
+num_devices        1
+compat_flags        0x0
+compat_ro_flags        0x3
+            ( FREE_SPACE_TREE |
+              FREE_SPACE_TREE_VALID )
+incompat_flags        0x361
+            ( MIXED_BACKREF |
+              BIG_METADATA |
+              EXTENDED_IREF |
+              SKINNY_METADATA |
+              NO_HOLES )
+cache_generation    0
+uuid_tree_generation    4956
+dev_item.uuid        529d3f9a-52be-4af5-a8e8-7bf6108c65e7
+dev_item.fsid        e2dc4c13-e687-4829-8c24-fa822d9ba04a [match]
+dev_item.type        0
+dev_item.total_bytes    8001546444800
+dev_item.bytes_used    6856940453888
+dev_item.io_align    4096
+dev_item.io_width    4096
+dev_item.sector_size    4096
+dev_item.devid        1
+dev_item.dev_group    0
+dev_item.seek_speed    0
+dev_item.bandwidth    0
+dev_item.generation    0
+sys_chunk_array[2048]:
+    item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
+        length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
+        io_align 65536 io_width 65536 sector_size 4096
+        num_stripes 2 sub_stripes 1
+            stripe 0 devid 1 offset 22020096
+            dev_uuid 529d3f9a-52be-4af5-a8e8-7bf6108c65e7
+            stripe 1 devid 1 offset 30408704
+            dev_uuid 529d3f9a-52be-4af5-a8e8-7bf6108c65e7
+backup_roots[4]:
+    backup 0:
+        backup_tree_root:    1022836736    gen: 4953    level: 0
+        backup_chunk_root:    27656192    gen: 4945    level: 1
+        backup_extent_root:    1003782144    gen: 4953    level: 2
+        backup_fs_root:        1006288896    gen: 4950    level: 0
+        backup_dev_root:    1055571968    gen: 4945    level: 1
+        csum_root:    1003618304    gen: 4953    level: 3
+        backup_total_bytes:    8001546444800
+        backup_bytes_used:    6708289445888
+        backup_num_devices:    1
+
+    backup 1:
+        backup_tree_root:    1005043712    gen: 4954    level: 0
+        backup_chunk_root:    27656192    gen: 4945    level: 1
+        backup_extent_root:    997343232    gen: 4954    level: 2
+        backup_fs_root:        1006288896    gen: 4950    level: 0
+        backup_dev_root:    1055571968    gen: 4945    level: 1
+        csum_root:    1005486080    gen: 4955    level: 3
+        backup_total_bytes:    8001546444800
+        backup_bytes_used:    6708293525504
+        backup_num_devices:    1
+
+    backup 2:
+        backup_tree_root:    1011204096    gen: 4955    level: 0
+        backup_chunk_root:    27656192    gen: 4945    level: 1
+        backup_extent_root:    602931200    gen: 4955    level: 2
+        backup_fs_root:        1023918080    gen: 4955    level: 0
+        backup_dev_root:    1055571968    gen: 4945    level: 1
+        csum_root:    1005486080    gen: 4955    level: 3
+        backup_total_bytes:    8001546444800
+        backup_bytes_used:    6708307161088
+        backup_num_devices:    1
+
+    backup 3:
+        backup_tree_root:    998506496    gen: 4956    level: 0
+        backup_chunk_root:    27656192    gen: 4945    level: 1
+        backup_extent_root:    1027489792    gen: 4956    level: 2
+        backup_fs_root:        1023918080    gen: 4955    level: 0
+        backup_dev_root:    1055571968    gen: 4945    level: 1
+        csum_root:    1025638400    gen: 4956    level: 3
+        backup_total_bytes:    8001546444800
+        backup_bytes_used:    6708315303936
+        backup_num_devices:    1
+
+
+superblock: bytenr=3D274877906944, device=3D/dev/mapper/cm
+---------------------------------------------------------
+csum_type        0 (crc32c)
+csum_size        4
+csum            0x58078843 [match]
+bytenr            274877906944
+flags            0x1
+            ( WRITTEN )
+magic            _BHRfS_M [match]
+fsid            e2dc4c13-e687-4829-8c24-fa822d9ba04a
+metadata_uuid        00000000-0000-0000-0000-000000000000
+label            media
+generation        4956
+root            998506496
+sys_array_size        129
+chunk_root_generation    4945
+root_level        0
+chunk_root        27656192
+chunk_root_level    1
+log_root        0
+log_root_transid (deprecated)    0
+log_root_level        0
+total_bytes        8001546444800
+bytes_used        6708315303936
+sectorsize        4096
+nodesize        16384
+leafsize (deprecated)    16384
+stripesize        4096
+root_dir        6
+num_devices        1
+compat_flags        0x0
+compat_ro_flags        0x3
+            ( FREE_SPACE_TREE |
+              FREE_SPACE_TREE_VALID )
+incompat_flags        0x361
+            ( MIXED_BACKREF |
+              BIG_METADATA |
+              EXTENDED_IREF |
+              SKINNY_METADATA |
+              NO_HOLES )
+cache_generation    0
+uuid_tree_generation    4956
+dev_item.uuid        529d3f9a-52be-4af5-a8e8-7bf6108c65e7
+dev_item.fsid        e2dc4c13-e687-4829-8c24-fa822d9ba04a [match]
+dev_item.type        0
+dev_item.total_bytes    8001546444800
+dev_item.bytes_used    6856940453888
+dev_item.io_align    4096
+dev_item.io_width    4096
+dev_item.sector_size    4096
+dev_item.devid        1
+dev_item.dev_group    0
+dev_item.seek_speed    0
+dev_item.bandwidth    0
+dev_item.generation    0
+sys_chunk_array[2048]:
+    item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
+        length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
+        io_align 65536 io_width 65536 sector_size 4096
+        num_stripes 2 sub_stripes 1
+            stripe 0 devid 1 offset 22020096
+            dev_uuid 529d3f9a-52be-4af5-a8e8-7bf6108c65e7
+            stripe 1 devid 1 offset 30408704
+            dev_uuid 529d3f9a-52be-4af5-a8e8-7bf6108c65e7
+backup_roots[4]:
+    backup 0:
+        backup_tree_root:    1022836736    gen: 4953    level: 0
+        backup_chunk_root:    27656192    gen: 4945    level: 1
+        backup_extent_root:    1003782144    gen: 4953    level: 2
+        backup_fs_root:        1006288896    gen: 4950    level: 0
+        backup_dev_root:    1055571968    gen: 4945    level: 1
+        csum_root:    1003618304    gen: 4953    level: 3
+        backup_total_bytes:    8001546444800
+        backup_bytes_used:    6708289445888
+        backup_num_devices:    1
+
+    backup 1:
+        backup_tree_root:    1005043712    gen: 4954    level: 0
+        backup_chunk_root:    27656192    gen: 4945    level: 1
+        backup_extent_root:    997343232    gen: 4954    level: 2
+        backup_fs_root:        1006288896    gen: 4950    level: 0
+        backup_dev_root:    1055571968    gen: 4945    level: 1
+        csum_root:    1005486080    gen: 4955    level: 3
+        backup_total_bytes:    8001546444800
+        backup_bytes_used:    6708293525504
+        backup_num_devices:    1
+
+    backup 2:
+        backup_tree_root:    1011204096    gen: 4955    level: 0
+        backup_chunk_root:    27656192    gen: 4945    level: 1
+        backup_extent_root:    602931200    gen: 4955    level: 2
+        backup_fs_root:        1023918080    gen: 4955    level: 0
+        backup_dev_root:    1055571968    gen: 4945    level: 1
+        csum_root:    1005486080    gen: 4955    level: 3
+        backup_total_bytes:    8001546444800
+        backup_bytes_used:    6708307161088
+        backup_num_devices:    1
+
+    backup 3:
+        backup_tree_root:    998506496    gen: 4956    level: 0
+        backup_chunk_root:    27656192    gen: 4945    level: 1
+        backup_extent_root:    1027489792    gen: 4956    level: 2
+        backup_fs_root:        1023918080    gen: 4955    level: 0
+        backup_dev_root:    1055571968    gen: 4945    level: 1
+        csum_root:    1025638400    gen: 4956    level: 3
+        backup_total_bytes:    8001546444800
+        backup_bytes_used:    6708315303936
+        backup_num_devices:    1
+
+
+
+Thanks for both of your help,
+fandingo
+
+
+On Sun, Sep 21, 2025 at 7:31=E2=80=AFPM Chris Murphy <lists@colorremedies.c=
+om> wrote:
+>
+> It might be worth looking at all supers and backup roots.
+>
+> btrfs insp dump-s -fa /dev/sdXY
+>
+> The supers should be all the same on HDD. The backup roots might be more =
+reliable for attempting repair compared to SSD where I've seen recent (but =
+zero ref) trees already overwritten by btrfs. That doesn't appear to be the=
+ case here, seems like newer trees weren't yet committed to stable media wh=
+ich is ... not good.
+>
+> ---
+> Chris Murphy
 
