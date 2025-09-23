@@ -1,101 +1,93 @@
-Return-Path: <linux-btrfs+bounces-17121-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17122-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A617B95993
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 13:17:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 200A8B95FC2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 15:17:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D67D445F71
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 11:17:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7A9B7A9F04
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 13:15:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6CA3218CD;
-	Tue, 23 Sep 2025 11:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054F83277A9;
+	Tue, 23 Sep 2025 13:17:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vCAyZfiF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pdRGFNqs";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vCAyZfiF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pdRGFNqs"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="yGwEv5jd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B69A31D73B
-	for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 11:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65353323F78
+	for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 13:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758626226; cv=none; b=dMHXJC49DdQIUNRL+qY2Dvxm2xF0ds2Msf3dwcOAddCe+dNo7yWCtUF25P0N3wb2hHP+9+AH4ipWSimy8YDBbMHjRcBYBxxFsZzH9s4EfzHWQTmBkYof0mefqGwPp8938lKcR2uokT9c4mrIy5YPXfKii7UBcXB6hEJbn9Zo5wI=
+	t=1758633427; cv=none; b=VZnn7gM2ZMFVyMKaT0imUtN7DXdlFpXrjk7sLuIAQzErLFF25P3uts8H6XP+XtTPmwF+OSBQ5cpNahSMEu+BQ7vCEcoZuXzy77P5cVcIHbjxt7SqXpdKwG7mfNwk13nJd/XcywpwLMRQ4t2d+4YnP+86Q5bM/iwrJQR54bYMTKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758626226; c=relaxed/simple;
-	bh=zhhqZ83dce0MR01fXWXPs8Ou8y5BhNyOlncGG1KZhSs=;
+	s=arc-20240116; t=1758633427; c=relaxed/simple;
+	bh=MjdyuQrqVvsTBegSnd3yU00JR+DMJq7p6mLUJWTlZdU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dq2ls5G3A4Iumelhra+JWvvryOfNNm9V4rRT6hc0DAiGnBq/jL6D2GkSzY9dN5hiGsEPF1RHkkt42NGZwM+eoEhaHP/p+XYRwDuiNWUkrrZrLnAfcKyRmpimCWd1oUj/yO8pNo5izYkQ6/Zv1eGksBw3APNbvm0pCbsyNffYvZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vCAyZfiF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pdRGFNqs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vCAyZfiF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pdRGFNqs; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 659FD1F795;
-	Tue, 23 Sep 2025 11:17:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1758626222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Aj6XB5cLlYFGBMoCl3L4Eyrz0r1NoVev57mbCf3LkRU=;
-	b=vCAyZfiFHvOhW40ItlyGOFTW76xeijcAnO2VK2e9LM7XQaTqEQcrTrYGfSl1qnGuXkIiCD
-	dGj/bqSYmW2VVsyUazzsBeMlBP98W7du0yYTePAwN+uEGQOgIdEkY0nwd2vV96H5g6jfCF
-	fodRy0NpT0eR2qRDf/oNgjzoXNE9ntg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1758626222;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Aj6XB5cLlYFGBMoCl3L4Eyrz0r1NoVev57mbCf3LkRU=;
-	b=pdRGFNqsL0tnq/fPbd9rih75BlPn2dAJaEE+CpCm5ldl3lvJTLaOkFoZWVoX89xfkqfSaH
-	u/WrYphjGLjbVRAQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1758626222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Aj6XB5cLlYFGBMoCl3L4Eyrz0r1NoVev57mbCf3LkRU=;
-	b=vCAyZfiFHvOhW40ItlyGOFTW76xeijcAnO2VK2e9LM7XQaTqEQcrTrYGfSl1qnGuXkIiCD
-	dGj/bqSYmW2VVsyUazzsBeMlBP98W7du0yYTePAwN+uEGQOgIdEkY0nwd2vV96H5g6jfCF
-	fodRy0NpT0eR2qRDf/oNgjzoXNE9ntg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1758626222;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Aj6XB5cLlYFGBMoCl3L4Eyrz0r1NoVev57mbCf3LkRU=;
-	b=pdRGFNqsL0tnq/fPbd9rih75BlPn2dAJaEE+CpCm5ldl3lvJTLaOkFoZWVoX89xfkqfSaH
-	u/WrYphjGLjbVRAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 51D561388C;
-	Tue, 23 Sep 2025 11:17:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qIv0E66B0mgvfgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 23 Sep 2025 11:17:02 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0FE3AA09AF; Tue, 23 Sep 2025 13:16:58 +0200 (CEST)
-Date: Tue, 23 Sep 2025 13:16:58 +0200
-From: Jan Kara <jack@suse.cz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WcX86kEUGY8n+DqS9bzY4soDm4zBERuTCWZGcAQ09uy4aBqVqFE+QEAc/EaDbyWz35tJGcQEF0BtCEsx8l9v3gMddXhxsakYUTucwUlAA4n9Ip7/3oDK99m+4sl/RQQtamhuohwI3kVx8DBZ86jZSQ12P5UGD17oVABr6x76P2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=yGwEv5jd; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b55115148b4so3573888a12.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 06:17:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1758633424; x=1759238224; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DGZ8DWqCix+BtHtElOYwM96MkEfMXUBhKMzH5BSjHrU=;
+        b=yGwEv5jdMt4Rgfi0m0bN3rxya9s2FAbia8xtqcTwhc19IK5r4PXmdK+C7UWreg1NfH
+         4sk+1SJaFqWoZk8UMTPHgcndklOJpzScvLF5bjkG6gqoUSKB2k3ZVGlgvwgMKVkiX9tQ
+         HMMHDCD3TrzFuqxXTV9HAJcgYYX2He2h5yQzLxkZURdzd28u2rXo3M/TKNd/GoKCTF5R
+         SSJHzKnVcZ1kR/S8ehZjuwzeAqAlS4edQgRc1y0V8xkXIINs5b4r82gsRo8F8hz5liGg
+         WFWMrwFtm4OO2twE/EkvNGL9ESDPBnyP6iVe3AlnhcR6cmuUPbA6c7z1EUU5XrhnwxMP
+         WISA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758633424; x=1759238224;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DGZ8DWqCix+BtHtElOYwM96MkEfMXUBhKMzH5BSjHrU=;
+        b=MXuuv06nCa2GKxw/bIvM6buXKzA8Uo3o6OXoA9Jva8an1NHVTl5I3W/83vpoDioFDP
+         TzrlvfZf3aT53SYyTeaJvFNOetkt4yhjr5JMDcANPyBBgzppTFL3w6OBVDCq9F1suykF
+         yuIcYahtnJmRjGpxDKEPtVVE16OqeVDhLCQ8Gq2v0Y7uWzsoyPVG2EPuZVxpDTqc9yTW
+         paqKdFTpOznB+vBd26CyU5wYUaBpgxM55Uo0flxzDJ5E6MyP9ZHscgyxVWM+wJWai9QC
+         SmDxl+7VsekBzTTYH+jcoawkRvSnOMex/PxFKM+2yzjVQ41yxHNujPoefLYlMhQ4IZw0
+         R9Dg==
+X-Forwarded-Encrypted: i=1; AJvYcCXOyrOYspRUXQOIa8xzzra54AboQ0dN6ID20A5RVw70IkWvQi5CvptUSXRvFykhjUsRiETsDc7r2lRSUQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdSfsbs/1O6GyxCjBwgIvQGZ4TKv6Pg2A+urIho6y/P2OY2shx
+	8TUr258p1cwAuZtVWJv+aAVq3sUqroRf6h0LK9q/+t9p5KQglWZqz6L8ylYHqTtGdhA=
+X-Gm-Gg: ASbGnctWsHGuUzEvj4MQkqJN8e0JXaCWAPT5GoElyl2y6ooXL+Q5UlpC4DiOwuBOwp4
+	YN3fwQaiwFMRMJ09UhFyWR/7aaG1ZlDbK+RKQoKQ5S6E1QYMJtLGT+VOZmG8iy7Eg4Kv+OONsvz
+	9bDJx2I6DmBco3qgkqcWV1wYNdusxazFJj+W5B+aCuHA10jRUtvPq3mgp21/YYjyBZW8xlbZ57x
+	2hLK265wNE7UY9o4DicWx530apQnL3k67UZgjVw1uLGSkQKEF9qOgRKn56GUm4IxPzhFwvAYqcB
+	pmIlXWvbWM1KMbndEeLSR0VJzJD6bnU3vCHRdFCwu82XISNjCCZQ6GiNwprd9urgvonVRqA4RLw
+	1XM0RQGfdW1xjiIKEeuAlJmZUp+KMMBSBpi3aXOj37s/EGv2HZ+CNtpFVF0xyeh59xo4UUI/Acq
+	xpKe4GuCj+
+X-Google-Smtp-Source: AGHT+IEK7PfWxNFc7fb1bUErPP+++ZIWocUE2B9M31SxyszIkGAjugG30aXgLbzSTbCpFRJZYYXACg==
+X-Received: by 2002:a17:90b:17cc:b0:32b:9750:10e4 with SMTP id 98e67ed59e1d1-332a95e0514mr2945365a91.27.1758633423462;
+        Tue, 23 Sep 2025 06:17:03 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-91-142.pa.nsw.optusnet.com.au. [49.180.91.142])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b551705bd02sm12047994a12.41.2025.09.23.06.17.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Sep 2025 06:17:02 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.98.2)
+	(envelope-from <david@fromorbit.com>)
+	id 1v12t9-00000005h4t-0IOy;
+	Tue, 23 Sep 2025 23:16:59 +1000
+Date: Tue, 23 Sep 2025 23:16:59 +1000
+From: Dave Chinner <david@fromorbit.com>
 To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, josef@toxicpanda.com, 
-	kernel-team@fb.com, amir73il@gmail.com, linux-btrfs@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
+Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	josef@toxicpanda.com, kernel-team@fb.com, amir73il@gmail.com,
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org,
 	linux-unionfs@vger.kernel.org
 Subject: Re: [PATCH v6 0/4] hide ->i_state behind accessors
-Message-ID: <bh5kbxlwoavjgliq2m2fco2ahg2ub25ldl4keojewzfadpocv7@3wdcjneve3iw>
+Message-ID: <aNKdy1vYsWoMvU3c@dread.disaster.area>
 References: <20250923104710.2973493-1-mjguzik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -106,34 +98,8 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20250923104710.2973493-1-mjguzik@gmail.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,suse.cz,vger.kernel.org,toxicpanda.com,fb.com,gmail.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
 
-On Tue 23-09-25 12:47:06, Mateusz Guzik wrote:
+On Tue, Sep 23, 2025 at 12:47:06PM +0200, Mateusz Guzik wrote:
 > First commit message quoted verbatim with rationable + API:
 > 
 > [quote]
@@ -159,148 +125,15 @@ On Tue 23-09-25 12:47:06, Mateusz Guzik wrote:
 > 
 > Given this, I decided to not submit any per-fs patches. Instead, the
 > conversion is done in 2 parts: coccinelle and whatever which was missed.
-
-This looks good to me now. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
 > 
 > Generated against:
 > https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=vfs-6.18.inode.refcount.preliminaries
-> 
-> v6:
-> - rename routines:
-> set -> assign; add -> set; del -> clear
-> - update commentary in patch 3 replacing smp_store/load with smp_wmb/rmb
-> 
-> v5:
-> - drop lockdep for the time being
-> 
-> v4:
-> https://lore.kernel.org/linux-fsdevel/CAGudoHFViBUZ4TPNuLWC7qyK0v8LRwxbpZd9Mx3rHdh5GW9CrQ@mail.gmail.com/T/#m866b3b5740691de9b4008184a9a3f922dfa8e439
-> 
-> 
-> Mateusz Guzik (4):
->   fs: provide accessors for ->i_state
->   Convert the kernel to use ->i_state accessors
->   Manual conversion of ->i_state uses
->   fs: make plain ->i_state access fail to compile
-> 
->  Documentation/filesystems/porting.rst |   2 +-
->  block/bdev.c                          |   4 +-
->  drivers/dax/super.c                   |   2 +-
->  fs/9p/vfs_inode.c                     |   2 +-
->  fs/9p/vfs_inode_dotl.c                |   2 +-
->  fs/affs/inode.c                       |   2 +-
->  fs/afs/dynroot.c                      |   6 +-
->  fs/afs/inode.c                        |   6 +-
->  fs/bcachefs/fs.c                      |   8 +-
->  fs/befs/linuxvfs.c                    |   2 +-
->  fs/bfs/inode.c                        |   2 +-
->  fs/btrfs/inode.c                      |  10 +--
->  fs/buffer.c                           |   4 +-
->  fs/ceph/cache.c                       |   2 +-
->  fs/ceph/crypto.c                      |   4 +-
->  fs/ceph/file.c                        |   4 +-
->  fs/ceph/inode.c                       |  28 +++---
->  fs/coda/cnode.c                       |   4 +-
->  fs/cramfs/inode.c                     |   2 +-
->  fs/crypto/keyring.c                   |   2 +-
->  fs/crypto/keysetup.c                  |   2 +-
->  fs/dcache.c                           |   8 +-
->  fs/drop_caches.c                      |   2 +-
->  fs/ecryptfs/inode.c                   |   6 +-
->  fs/efs/inode.c                        |   2 +-
->  fs/erofs/inode.c                      |   2 +-
->  fs/ext2/inode.c                       |   2 +-
->  fs/ext4/inode.c                       |  10 +--
->  fs/ext4/orphan.c                      |   4 +-
->  fs/f2fs/data.c                        |   2 +-
->  fs/f2fs/inode.c                       |   2 +-
->  fs/f2fs/namei.c                       |   4 +-
->  fs/f2fs/super.c                       |   2 +-
->  fs/freevxfs/vxfs_inode.c              |   2 +-
->  fs/fs-writeback.c                     | 123 +++++++++++++-------------
->  fs/fuse/inode.c                       |   4 +-
->  fs/gfs2/file.c                        |   2 +-
->  fs/gfs2/glops.c                       |   2 +-
->  fs/gfs2/inode.c                       |   4 +-
->  fs/gfs2/ops_fstype.c                  |   2 +-
->  fs/hfs/btree.c                        |   2 +-
->  fs/hfs/inode.c                        |   2 +-
->  fs/hfsplus/super.c                    |   2 +-
->  fs/hostfs/hostfs_kern.c               |   2 +-
->  fs/hpfs/dir.c                         |   2 +-
->  fs/hpfs/inode.c                       |   2 +-
->  fs/inode.c                            | 100 ++++++++++-----------
->  fs/isofs/inode.c                      |   2 +-
->  fs/jffs2/fs.c                         |   4 +-
->  fs/jfs/file.c                         |   4 +-
->  fs/jfs/inode.c                        |   2 +-
->  fs/jfs/jfs_txnmgr.c                   |   2 +-
->  fs/kernfs/inode.c                     |   2 +-
->  fs/libfs.c                            |   6 +-
->  fs/minix/inode.c                      |   2 +-
->  fs/namei.c                            |   8 +-
->  fs/netfs/misc.c                       |   8 +-
->  fs/netfs/read_single.c                |   6 +-
->  fs/nfs/inode.c                        |   2 +-
->  fs/nfs/pnfs.c                         |   2 +-
->  fs/nfsd/vfs.c                         |   2 +-
->  fs/nilfs2/cpfile.c                    |   2 +-
->  fs/nilfs2/dat.c                       |   2 +-
->  fs/nilfs2/ifile.c                     |   2 +-
->  fs/nilfs2/inode.c                     |  10 +--
->  fs/nilfs2/sufile.c                    |   2 +-
->  fs/notify/fsnotify.c                  |   2 +-
->  fs/ntfs3/inode.c                      |   2 +-
->  fs/ocfs2/dlmglue.c                    |   2 +-
->  fs/ocfs2/inode.c                      |  10 +--
->  fs/omfs/inode.c                       |   2 +-
->  fs/openpromfs/inode.c                 |   2 +-
->  fs/orangefs/inode.c                   |   2 +-
->  fs/orangefs/orangefs-utils.c          |   6 +-
->  fs/overlayfs/dir.c                    |   2 +-
->  fs/overlayfs/inode.c                  |   6 +-
->  fs/overlayfs/util.c                   |  10 +--
->  fs/pipe.c                             |   2 +-
->  fs/qnx4/inode.c                       |   2 +-
->  fs/qnx6/inode.c                       |   2 +-
->  fs/quota/dquot.c                      |   2 +-
->  fs/romfs/super.c                      |   2 +-
->  fs/smb/client/cifsfs.c                |   2 +-
->  fs/smb/client/inode.c                 |  14 +--
->  fs/squashfs/inode.c                   |   2 +-
->  fs/sync.c                             |   2 +-
->  fs/ubifs/file.c                       |   2 +-
->  fs/ubifs/super.c                      |   2 +-
->  fs/udf/inode.c                        |   2 +-
->  fs/ufs/inode.c                        |   2 +-
->  fs/xfs/scrub/common.c                 |   2 +-
->  fs/xfs/scrub/inode_repair.c           |   2 +-
->  fs/xfs/scrub/parent.c                 |   2 +-
->  fs/xfs/xfs_bmap_util.c                |   2 +-
->  fs/xfs/xfs_health.c                   |   4 +-
->  fs/xfs/xfs_icache.c                   |   6 +-
->  fs/xfs/xfs_inode.c                    |   6 +-
->  fs/xfs/xfs_inode_item.c               |   4 +-
->  fs/xfs/xfs_iops.c                     |   2 +-
->  fs/xfs/xfs_reflink.h                  |   2 +-
->  fs/zonefs/super.c                     |   4 +-
->  include/linux/backing-dev.h           |   7 +-
->  include/linux/fs.h                    |  42 ++++++++-
->  include/linux/writeback.h             |   4 +-
->  include/trace/events/writeback.h      |   8 +-
->  mm/backing-dev.c                      |   2 +-
->  security/landlock/fs.c                |   2 +-
->  107 files changed, 345 insertions(+), 307 deletions(-)
-> 
-> -- 
-> 2.43.0
-> 
+
+Much simpler and nicer than the earlier versions. Looks good.
+
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Dave Chinner
+david@fromorbit.com
 
