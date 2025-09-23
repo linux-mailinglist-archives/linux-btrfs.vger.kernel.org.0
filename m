@@ -1,139 +1,142 @@
-Return-Path: <linux-btrfs+bounces-17122-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17123-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 200A8B95FC2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 15:17:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66F1EB96561
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 16:41:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7A9B7A9F04
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 13:15:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A65561896AAC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 14:38:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054F83277A9;
-	Tue, 23 Sep 2025 13:17:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FB20253944;
+	Tue, 23 Sep 2025 14:37:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="yGwEv5jd"
+	dkim=pass (1024-bit key) header.d=allelesecurity.com header.i=@allelesecurity.com header.b="nXdsyQpC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65353323F78
-	for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 13:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C749F231856
+	for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 14:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758633427; cv=none; b=VZnn7gM2ZMFVyMKaT0imUtN7DXdlFpXrjk7sLuIAQzErLFF25P3uts8H6XP+XtTPmwF+OSBQ5cpNahSMEu+BQ7vCEcoZuXzy77P5cVcIHbjxt7SqXpdKwG7mfNwk13nJd/XcywpwLMRQ4t2d+4YnP+86Q5bM/iwrJQR54bYMTKI=
+	t=1758638269; cv=none; b=r+f0RwpVMSvnxc5Mmwhutls6CjRWG2ief0ytKNelSHI2ajuB5HPhT1b/GcXNJ0ml5k9Xi7ypCbB7IVIiispl9rqc1GYqilG4iFelpyO9vrPU+z9dbr0VhEX5ZxcCGVI5qwxQPfaQ6JCokHAN2hfD6hZg4b2ZmduUP4ehxpCkD8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758633427; c=relaxed/simple;
-	bh=MjdyuQrqVvsTBegSnd3yU00JR+DMJq7p6mLUJWTlZdU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WcX86kEUGY8n+DqS9bzY4soDm4zBERuTCWZGcAQ09uy4aBqVqFE+QEAc/EaDbyWz35tJGcQEF0BtCEsx8l9v3gMddXhxsakYUTucwUlAA4n9Ip7/3oDK99m+4sl/RQQtamhuohwI3kVx8DBZ86jZSQ12P5UGD17oVABr6x76P2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=yGwEv5jd; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b55115148b4so3573888a12.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 06:17:04 -0700 (PDT)
+	s=arc-20240116; t=1758638269; c=relaxed/simple;
+	bh=XFPC/BK7RrrbM/6ArKKBKgxpv7IIcB0qBa3VYnTD4CY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NCfM0JYux/fp/9lI2WmZPuL7xwttejZVhLdOeT/zRPawgiuXz1hD+yRtYa7/OzQx1BexKHJZ93lTS1JxabvTrC1+4UDhA16fQgghLgPO3RyLiSfsLXuqF0TvlgJOieM+O8/c5UiQW7cpTMSQlFyIn+nMmTfG9rQFdbERgjTQMhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=allelesecurity.com; spf=pass smtp.mailfrom=allelesecurity.com; dkim=pass (1024-bit key) header.d=allelesecurity.com header.i=@allelesecurity.com header.b=nXdsyQpC; arc=none smtp.client-ip=209.85.221.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=allelesecurity.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=allelesecurity.com
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-54bbe260539so787935e0c.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 07:37:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1758633424; x=1759238224; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DGZ8DWqCix+BtHtElOYwM96MkEfMXUBhKMzH5BSjHrU=;
-        b=yGwEv5jdMt4Rgfi0m0bN3rxya9s2FAbia8xtqcTwhc19IK5r4PXmdK+C7UWreg1NfH
-         4sk+1SJaFqWoZk8UMTPHgcndklOJpzScvLF5bjkG6gqoUSKB2k3ZVGlgvwgMKVkiX9tQ
-         HMMHDCD3TrzFuqxXTV9HAJcgYYX2He2h5yQzLxkZURdzd28u2rXo3M/TKNd/GoKCTF5R
-         SSJHzKnVcZ1kR/S8ehZjuwzeAqAlS4edQgRc1y0V8xkXIINs5b4r82gsRo8F8hz5liGg
-         WFWMrwFtm4OO2twE/EkvNGL9ESDPBnyP6iVe3AlnhcR6cmuUPbA6c7z1EUU5XrhnwxMP
-         WISA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758633424; x=1759238224;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=allelesecurity.com; s=google; t=1758638267; x=1759243067; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DGZ8DWqCix+BtHtElOYwM96MkEfMXUBhKMzH5BSjHrU=;
-        b=MXuuv06nCa2GKxw/bIvM6buXKzA8Uo3o6OXoA9Jva8an1NHVTl5I3W/83vpoDioFDP
-         TzrlvfZf3aT53SYyTeaJvFNOetkt4yhjr5JMDcANPyBBgzppTFL3w6OBVDCq9F1suykF
-         yuIcYahtnJmRjGpxDKEPtVVE16OqeVDhLCQ8Gq2v0Y7uWzsoyPVG2EPuZVxpDTqc9yTW
-         paqKdFTpOznB+vBd26CyU5wYUaBpgxM55Uo0flxzDJ5E6MyP9ZHscgyxVWM+wJWai9QC
-         SmDxl+7VsekBzTTYH+jcoawkRvSnOMex/PxFKM+2yzjVQ41yxHNujPoefLYlMhQ4IZw0
-         R9Dg==
-X-Forwarded-Encrypted: i=1; AJvYcCXOyrOYspRUXQOIa8xzzra54AboQ0dN6ID20A5RVw70IkWvQi5CvptUSXRvFykhjUsRiETsDc7r2lRSUQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxdSfsbs/1O6GyxCjBwgIvQGZ4TKv6Pg2A+urIho6y/P2OY2shx
-	8TUr258p1cwAuZtVWJv+aAVq3sUqroRf6h0LK9q/+t9p5KQglWZqz6L8ylYHqTtGdhA=
-X-Gm-Gg: ASbGnctWsHGuUzEvj4MQkqJN8e0JXaCWAPT5GoElyl2y6ooXL+Q5UlpC4DiOwuBOwp4
-	YN3fwQaiwFMRMJ09UhFyWR/7aaG1ZlDbK+RKQoKQ5S6E1QYMJtLGT+VOZmG8iy7Eg4Kv+OONsvz
-	9bDJx2I6DmBco3qgkqcWV1wYNdusxazFJj+W5B+aCuHA10jRUtvPq3mgp21/YYjyBZW8xlbZ57x
-	2hLK265wNE7UY9o4DicWx530apQnL3k67UZgjVw1uLGSkQKEF9qOgRKn56GUm4IxPzhFwvAYqcB
-	pmIlXWvbWM1KMbndEeLSR0VJzJD6bnU3vCHRdFCwu82XISNjCCZQ6GiNwprd9urgvonVRqA4RLw
-	1XM0RQGfdW1xjiIKEeuAlJmZUp+KMMBSBpi3aXOj37s/EGv2HZ+CNtpFVF0xyeh59xo4UUI/Acq
-	xpKe4GuCj+
-X-Google-Smtp-Source: AGHT+IEK7PfWxNFc7fb1bUErPP+++ZIWocUE2B9M31SxyszIkGAjugG30aXgLbzSTbCpFRJZYYXACg==
-X-Received: by 2002:a17:90b:17cc:b0:32b:9750:10e4 with SMTP id 98e67ed59e1d1-332a95e0514mr2945365a91.27.1758633423462;
-        Tue, 23 Sep 2025 06:17:03 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-91-142.pa.nsw.optusnet.com.au. [49.180.91.142])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b551705bd02sm12047994a12.41.2025.09.23.06.17.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Sep 2025 06:17:02 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.98.2)
-	(envelope-from <david@fromorbit.com>)
-	id 1v12t9-00000005h4t-0IOy;
-	Tue, 23 Sep 2025 23:16:59 +1000
-Date: Tue, 23 Sep 2025 23:16:59 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	josef@toxicpanda.com, kernel-team@fb.com, amir73il@gmail.com,
-	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v6 0/4] hide ->i_state behind accessors
-Message-ID: <aNKdy1vYsWoMvU3c@dread.disaster.area>
-References: <20250923104710.2973493-1-mjguzik@gmail.com>
+        bh=XFPC/BK7RrrbM/6ArKKBKgxpv7IIcB0qBa3VYnTD4CY=;
+        b=nXdsyQpCs1ACf4OnM0hGdcuKe5V1AESGA5I4pqUEREnvxDIiZoacM1ZTSSJJ/x7fi6
+         OTwWSCC77phVngDOmnnA1knHitzAvOWHqpigivrLGEvCMHtUNricvh1rlynoIOal485t
+         nuQp5ujOTd6Qa3J+LRrjgCYHbKnSP4Y9WjCoA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758638267; x=1759243067;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XFPC/BK7RrrbM/6ArKKBKgxpv7IIcB0qBa3VYnTD4CY=;
+        b=PrX6Q4Q+u3HC2otjZESTMhCwbR8pmOTtNOUFHg+sCqU+Yiz2tO50mgsFsEaOgRNCH0
+         YmdJkmL2s7GkIEGRsglWNuF1NO12zmICNYuZgavqu0SMUV/fPRLDEy9FAORjdMkXlsEq
+         rGVfictPIi5PCCkwmuYXYI0zRr9BTm3YiAowKWzGjF8SGtNS1TrC5/s7dtx70+SkBf3I
+         iLQo46UhI1vfBfF3IbT8GADQvimA0TfkuH2YXRuJKj1CkHKPDLigKnnNdVfHrEA5MbeG
+         nSxhxNyrVuvCU0IupZJ5CFkaSnl2fA2bLm+zGf+i1B5nqVxa1KFSwLi56EwUnp4g3ZX1
+         OJtA==
+X-Forwarded-Encrypted: i=1; AJvYcCXlQUEe710uGNDmcs7VC5K036oaxtzf2a+v02VGr5FVNXP3KqiW+hAIMz+Enel23B2+iQ2R6Z5blWeHHg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzD3IYJr49v109pouFwdmRqH/UJps7Hu+FXgUsjkxfE/jYI6UkZ
+	RqeCmXrjECp8EYnqlTr831it0rfq+zV7v+io9Vi6/c6k1yEoTxNSioQh4lnct/uhDZmM5JE7zJ3
+	C3EfneeOY1uWR5d721f1hEgFm9tczKLKVO9EnybvF3Q==
+X-Gm-Gg: ASbGncuWFhcli9bMsMHF3Z0EtifR+oeWVx4JHab48MHx5JcbDUQnDuuJxKuxO/d+zVR
+	MHnr5S9gFDgxb1CXf46QNNu4w3S2hIkMSvz4VAAI1CqqGF3VwOcCDJng5WmDuU29ssc0SteRK4h
+	QUFpKgWlwCi0hPeGd56NXFvbPuZ5kMb6dVUPVNzwjptivBsj8WhgEwwBocK/oLuwRiWM0e6kE+W
+	dnGopUT
+X-Google-Smtp-Source: AGHT+IHij9lx2AnOHFGmNnUlWqEm6JnPegqIqPjiG5wTqefBFsPSYxSPRwyIlCxZT2X/ycZ/7rUsB6W77nORwXnLY1U=
+X-Received: by 2002:a05:6122:c94:b0:53c:6d68:1cdc with SMTP id
+ 71dfb90a1353d-54bcb1f583bmr769314e0c.14.1758638265119; Tue, 23 Sep 2025
+ 07:37:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250923104710.2973493-1-mjguzik@gmail.com>
+References: <0cc81bcf-b830-4ec3-8d5e-67afbc2e7c47@allelesecurity.com> <20250909224520.GC5333@twin.jikos.cz>
+In-Reply-To: <20250909224520.GC5333@twin.jikos.cz>
+From: Anderson Nascimento <anderson@allelesecurity.com>
+Date: Tue, 23 Sep 2025 11:37:33 -0300
+X-Gm-Features: AS18NWBQI2eUBLSAsWj5VWRzlh2lPky9Jor81XegLJB6VSW2SVpeKxySTYz4Ff0
+Message-ID: <CAPhRvkzgR+8L93VF8XtZDG9P_q7O0+BSBxnHtesLY5oj6uhwmg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: Avoid potential out-of-bounds in btrfs_encode_fh()
+To: dsterba@suse.cz
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 23, 2025 at 12:47:06PM +0200, Mateusz Guzik wrote:
-> First commit message quoted verbatim with rationable + API:
-> 
-> [quote]
-> Open-coded accesses prevent asserting they are done correctly. One
-> obvious aspect is locking, but significantly more can checked. For
-> example it can be detected when the code is clearing flags which are
-> already missing, or is setting flags when it is illegal (e.g., I_FREEING
-> when ->i_count > 0).
-> 
-> Given the late stage of the release cycle this patchset only aims to
-> hide access, it does not provide any of the checks.
-> 
-> Consumers can be trivially converted. Suppose flags I_A and I_B are to
-> be handled, then:
-> 
-> state = inode->i_state          => state = inode_state_read(inode)
-> inode->i_state |= (I_A | I_B)   => inode_state_set(inode, I_A | I_B)
-> inode->i_state &= ~(I_A | I_B)  => inode_state_clear(inode, I_A | I_B)
-> inode->i_state = I_A | I_B      => inode_state_assign(inode, I_A | I_B)
-> [/quote]
-> 
-> Right now this is one big NOP, except for READ_ONCE/WRITE_ONCE for every access.
-> 
-> Given this, I decided to not submit any per-fs patches. Instead, the
-> conversion is done in 2 parts: coccinelle and whatever which was missed.
-> 
-> Generated against:
-> https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=vfs-6.18.inode.refcount.preliminaries
+On Tue, Sep 9, 2025 at 7:45=E2=80=AFPM David Sterba <dsterba@suse.cz> wrote=
+:
+>
+> On Mon, Sep 08, 2025 at 09:49:02AM -0300, Anderson Nascimento wrote:
+> > Hello all,
+> >
+> > The function btrfs_encode_fh() does not properly account for the three
+> > cases it handles.
+> >
+> > Before writing to the file handle (fh), the function only returns to th=
+e
+> > user BTRFS_FID_SIZE_NON_CONNECTABLE (5 dwords, 20 bytes) or
+> > BTRFS_FID_SIZE_CONNECTABLE (8 dwords, 32 bytes).
+> >
+> > However, when a parent exists and the root ID of the parent and the
+> > inode are different, the function writes BTRFS_FID_SIZE_CONNECTABLE_ROO=
+T
+> > (10 dwords, 40 bytes).
+> >
+> > If *max_len is not large enough, this write goes out of bounds because
+> > BTRFS_FID_SIZE_CONNECTABLE_ROOT is greater than
+> > BTRFS_FID_SIZE_CONNECTABLE originally returned.
+> >
+> > This results in an 8-byte out-of-bounds write at
+> > fid->parent_root_objectid =3D parent_root_id.
+> >
+> > A previous attempt to fix this issue was made but was lost.
+> >
+> > https://lore.kernel.org/all/4CADAEEC020000780001B32C@vpn.id2.novell.com=
+/
+> >
+> > Although this issue does not seem to be easily triggerable, it is a
+> > potential memory corruption bug that should be fixed. This patch
+> > resolves the issue by ensuring the function returns the appropriate siz=
+e
+> > for all three cases and validates that *max_len is large enough before
+> > writing any data.
+> >
+> > Tested on v6.17-rc4.
+> >
+> > Fixes: be6e8dc0ba84 ("NFS support for btrfs - v3")
+> > Signed-off-by: Anderson Nascimento <anderson@allelesecurity.com>
+>
+> Thanks for finding the problem and the fix. It's 17 years old though the
+> other patch was sent about 2 years after btrfs merge to linux kernel.
+> I'll add it to for-next, with the minor whitespace issues fixed.
 
-Much simpler and nicer than the earlier versions. Looks good.
+David, has it been queued somewhere? I don't see it in any of your branches=
+.
 
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
-
--- 
-Dave Chinner
-david@fromorbit.com
+--=20
+Anderson Nascimento
+Allele Security Intelligence
+https://www.allelesecurity.com
 
