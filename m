@@ -1,299 +1,182 @@
-Return-Path: <linux-btrfs+bounces-17128-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17129-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72365B96D8F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 18:36:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFCC0B974D1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 21:10:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68C2F7ADCE6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 16:35:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03A403BA5EF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 19:10:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844EE32857A;
-	Tue, 23 Sep 2025 16:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828382FFDF2;
+	Tue, 23 Sep 2025 19:10:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d/cvnaBn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zg5S0Ubd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C542E7F39
-	for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 16:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246691DF72C
+	for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 19:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758645392; cv=none; b=DIx6fTejQcTW2WVHOWSyKFPdomW8iMZEPIvjznQR1IKFftoeWfNw6+5NGuI4PTwC6sXX0xdpZ6Y7V/p6Y1g3cbHXRKyOlGWsdIbvHVs1HguFOtYa2RNpxZ4RPM2F7jI++6h36GHZGyK4XcWSRz8rGvWoOcZqZNdo5D0xekacpto=
+	t=1758654622; cv=none; b=uGnkP1dNAKnFHLs0JLTtAcvl3W4hPg28N2NpyO1bpg5P/cpn2WMrGO1VvlgVEqNGCcO/0virRJo5ZJin2SdXiHWDSffzOfaAenoIx3dyDO+jpmOJHDr8vINEGMcd54U3KgDxD1MBCh+MKu0+LDhHkmv3FkQL2MPzES+69XsEgcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758645392; c=relaxed/simple;
-	bh=5145aHlkDlsui3ozzBSxnSp3cqV3kHFoHD7jXa18Lds=;
+	s=arc-20240116; t=1758654622; c=relaxed/simple;
+	bh=Xr8+bWU+Duas4bitAzb/RBMEuCQT00tqH/Cws2XdN+c=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J02YQE8WrNJ8ucZKLSwsai7DqyJtVr9l6sbw/ByJ8bOVZc3ZUFhJnincn76l17gLqXCVxh9fNvQeupDILapNUPI7c5Hq73bwn5a1e1PeQroEXpoxnrXEJ7EGvrJgQpaZRbjb+ZltLvo3KDgWWseDVJGu0OiTkt9Rn7wirBu93vE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d/cvnaBn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65EC5C4CEF5
-	for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 16:36:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758645391;
-	bh=5145aHlkDlsui3ozzBSxnSp3cqV3kHFoHD7jXa18Lds=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=d/cvnaBn1jiu5Ag021Ay1kNEbsy2kB3mRx4V4B8v6MP+rM3zq4Ja/Hey26hEKf+5a
-	 cJvMdUHhZuC5i6AQWIDDvCxMA5L++vPJBysXBuvHUk/8Ssmnq2W9c+qWYkpdxMeieI
-	 djeR8Fz2jJYTauoJKQL/4+31X21LSkEX4ySdqGpVwb6/EbaVb/9SXUjwvzJdprGPGP
-	 Y8Qaeo1rTeqqDzYgZwj3miCsWY5EGaOLhmaM+c0FuVZP3wXrS+HOtxnAn59qeAu9Ul
-	 zHdKNhczZLnoJC9qId7tjNhvpDGWH4FwXpItLmQxgBzDQmHJblj6AMCbtwyWZ5x6YF
-	 Y/dBzI2VRzwyw==
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-631787faf35so6034363a12.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 09:36:31 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw+DnKrriqyYzflRoToCdKtM3XzNpF8/LjJOTaYkSJ4zAKyS5pf
-	ijLBRPwh1Jn1vrEkh0NySaURTquvfLUVEmnMP10xD8uXi0VxGKUJdeWYHmFB9rP8z5fjaDzQ7XW
-	kok+IcCF1xRSNY0F8F2eYXdT5rL156Fk=
-X-Google-Smtp-Source: AGHT+IGbSOMjgfimgxVjYR/rMHYo7IdsClj6vTihdwv1/DxnFMIBJ7qrGaj80b1BaJN1hm2D7uNrXNJeUsXWWnIgIto=
-X-Received: by 2002:a17:907:8691:b0:b2d:b5d3:9630 with SMTP id
- a640c23a62f3a-b302a84d4b6mr321556166b.48.1758645389959; Tue, 23 Sep 2025
- 09:36:29 -0700 (PDT)
+	 To:Cc:Content-Type; b=I2MGtaQp9p+diJZ1YVp832dx1sf036ivpNJZ+SrYr6TsmTFQGdOhD4eTEUydJjczPyzu307H1J55HNm8+piOAaKbRLeHFSr00BU2EVJSz4qtEXbe3f4ZW5A7gtup0TfSLxye9BSVJ6zpymqmQ0fxI8G484a+X0rQM7t6dwD0fsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zg5S0Ubd; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b0787fdb137so930644166b.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 12:10:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758654619; x=1759259419; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dq+dpZNwIXPGXVbCbYMdwwVVhlAWTk+cdrsBeDygXIM=;
+        b=Zg5S0UbdYhH5vHg8fgLbigCClFigNjWR8FRxsT5oqfdKDgmGAgGvsTkUSQ1KmebcJQ
+         4zl/34loKjEu2S4JI7K8cF3ZOZBUvpln//V6KHkpOzhXTFUEjshCTn2trGY278XgOl1/
+         u5hmFddoehfuuOxelZDW6W6vSYHWYlmvp7yxoSUxSbfd8QLtza1d2WyaZxZh67Pd8K+C
+         YYLITzfKHGiopouz4ZOrY7so4+JK9ERRO6Rx0/8/PLxO7hQV/v55EqdXznaScA8j06ZF
+         v7G+yH4WGBwmNjr9cO61SbLb3YZdDVvm9Dl8CDoGma5tep6eAw6rm0BnQ59y71DeVCEQ
+         Rp1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758654619; x=1759259419;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dq+dpZNwIXPGXVbCbYMdwwVVhlAWTk+cdrsBeDygXIM=;
+        b=V1wTZ5uULwVXDc6zZU0tIHCJ66ur/nuJ6S8vIwW0vCiTTb8kgYW95z5qZAGPd7ACX2
+         Z316FHCLwACneI3hWCUHPG00B5YUSlkx+SWPKw36vfKA1Bqa/fkOYg3gL0Twoo7TxvPS
+         iyhQdbcJ9NwhH9CF4n7XLuYnVnS7jRPzIt39SjksiDWIyeWAoKDcTXPtRTM5+uwScK+S
+         5avDWLOw68xqsCHY6i4o9+VsRCLjuJPmiVMAa2um6HqZkRvRHgIG/7l9S6WxTE4b8fQA
+         nrBa/Cu6WldX1AMwDITmOvJgtajbBCYLQSs+RmSq0OKt5NAKwtFcJB0eBwrQf5xUtcun
+         jApA==
+X-Forwarded-Encrypted: i=1; AJvYcCWhepjxbFCGdp051OGIkiw0r/DcGl5F4Zt3qGDA6xnBHwgFtVg57ghW1XJLB7Ay1Ubh93SxzoKPk54IWQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxsb7jM3obXCMTGZsFwPLo5aIuXKq1IK4uLROZ+pG8iU7fL9QI5
+	CwbkuaQVpb5juBwc7L/MgyzskgzhJWPf9mBAlGxIg4TSdtkNhvNQId6a0UJYcLNT7fzB4XQJJI+
+	1a8fu878mmHaMzmXKrT873y8p1EZ0qWE=
+X-Gm-Gg: ASbGncsd5URbpedsDEFDgqQYDq1aXgEGRtZhVS2fmm9zebexkPcD1bVXJtCneNsD+Og
+	5oMSqSrRbBDYBjlWUOasNGgxwLSsTvOwX8/VMapGBr1tDkLvepLYLuSqaJwKM26jxA8s/JTL492
+	vZTLAl0KN8knQGkmy+d49eSsVDXDae1B3/XyTz0S2shk1tDRoy5a4C51LeLyAYNxYl2RAvT9eHg
+	68+6mGoZtD7rZ1ctN1u60UHKdzyaUuZtfeMs2L2VVGQlVI=
+X-Google-Smtp-Source: AGHT+IHPPpup4V/mLQq4Qqdp6P3+7XVPglvKEYYqrFstcsb6l5CDUqni/FbbpGQZyx7f63KPXdoOtY1nJqVz3scmqRU=
+X-Received: by 2002:a17:907:72cb:b0:b07:c5b1:b129 with SMTP id
+ a640c23a62f3a-b30263b9618mr314935266b.1.1758654619261; Tue, 23 Sep 2025
+ 12:10:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250923155523.31617-1-mark@harmstone.com> <20250923155523.31617-2-mark@harmstone.com>
-In-Reply-To: <20250923155523.31617-2-mark@harmstone.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 23 Sep 2025 17:35:53 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4Y0A9MgnhtH=0_6372k9NmCU-X9rw_Ng4=1ydjTa477g@mail.gmail.com>
-X-Gm-Features: AS18NWBm-2IX0RGfIg5cM0AIC27UkL7DQxIgzlsSoOge7X-lUepss0HUAtoGR10
-Message-ID: <CAL3q7H4Y0A9MgnhtH=0_6372k9NmCU-X9rw_Ng4=1ydjTa477g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] btrfs: clear spurious free-space entries
-To: Mark Harmstone <mark@harmstone.com>
-Cc: linux-btrfs@vger.kernel.org
+References: <175865066509.3489281.5792211607743744274.reportbug@ruoska> <aNLr-GKpufof8HME@eldamar.lan>
+In-Reply-To: <aNLr-GKpufof8HME@eldamar.lan>
+From: james young <pronoiac@gmail.com>
+Date: Tue, 23 Sep 2025 14:10:06 -0500
+X-Gm-Features: AS18NWCdvJnuW2Ht6BCK71x7n6qRIzTnmHAlHDT6VdiEXdVFz9w43nfVE-xVQM0
+Message-ID: <CABaPp_jAFwsobgdk38Qhigqn+Tgb1UQK9RDJF3sCFT1_KH3SQg@mail.gmail.com>
+Subject: Re: Bug#1116067: linux-image-6.1.0-32-amd64: btrfs compression
+ quietly stopped around 60TB in
+To: Salvatore Bonaccorso <carnil@debian.org>
+Cc: 1116067@bugs.debian.org, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 23, 2025 at 4:55=E2=80=AFPM Mark Harmstone <mark@harmstone.com>=
- wrote:
+I hit an issue with btrfs compression; I reported it to Debian, which
+I was using, and they suggested that I take it upstream.
+
+Thanks, Salvatore. My apologies to everyone if I misunderstood.
+
+-James
+
+On Tue, Sep 23, 2025 at 1:50=E2=80=AFPM Salvatore Bonaccorso <carnil@debian=
+.org> wrote:
 >
-> Version 6.16.1 of btrfs-progs fixes a broken btrfs check test for
-> spurious entries in the free-space tree, those that don't belong to any
-> block group. Unfortunately mkfs.btrfs had been generating these, meaning
-> that these filesystems will now fail btrfs check.
+> Control: tags -1 + moreinfo
 >
-> Add a compat flag BTRFS_FEATURE_COMPAT_NO_SPURIOUS_FREE_SPACE, and if on
-> mount we find this isn't set, clean any spurious entries from the
-> beginning of the free-space tree.
+> Hi James,
 >
-> Signed-off-by: Mark Harmstone <mark@harmstone.com>
-> ---
->  fs/btrfs/disk-io.c         |  10 ++++
->  fs/btrfs/free-space-tree.c | 115 +++++++++++++++++++++++++++++++++++++
->  fs/btrfs/free-space-tree.h |   1 +
->  include/uapi/linux/btrfs.h |   2 +
->  4 files changed, 128 insertions(+)
+> On Tue, Sep 23, 2025 at 08:04:25PM +0200, James Young wrote:
+> > Package: src:linux
+> > Version: 6.1.129-1
+> > Severity: normal
+> > X-Debbugs-Cc: pronoiac@gmail.com
+> >
+> > Dear Maintainer,
+> >
+> >
+> > * What led up to the situation?
+> > We made empty files in a loop, in parallel, under CPU and I/O load.
+> > We had an outer Btrfs image file with compression, which contained a Bt=
+rfs image file, which contained billions of empty files.
+> > We wrote around 100TB to the inner image file.
+> > Around 60TB in, compression quietly shut off.
+> > We ran out of space; both mounts presented i/o errors.
+> >
+> > * What exactly did you do (or not do) that was effective (or ineffectiv=
+e)?
+> >   * I unmounted the inner and outer images.
+> >   I didn't take note of memory usage before this point.
+> >   * dump debug info for the outer image - `btrfs inspect-internal dump-=
+tree --dfs ...`
+> >   * We started a btrfsck. (twice, actually; breadth-first hit memory li=
+mits, I think)
+> > After that, I learned about `btrfs check`, but didn't interrupt the btr=
+fsck, due to Sunk Cost Fallacy.
+> > The btrfsck is still running. It's of extremely dubious value now.
+> > * check the kernel logs
+> >   * I grepped for btrfs, the mount points, compress, and zstd. I didn=
+=E2=80=99t find a smoking gun in the right timeframe.
+> >
+> > not done yet:
+> > * mount the outer image
+> > * rebooted
+> > * tried a newer kernel. we're currently on kernel 6.1.129; we could go =
+to newer 6.1 or 6.12 kernels
+> > * redo live file system compression, with e.g. `btrfs filesystem defrag=
+ -czstd`
+> > * fstrim the outer image
+> >
+> > goals:
+> > * work out what happened.
+> > How can we help?
+> > * help avoid it happening again, to others
+> > * salvage what we can
+> >
+> > I've run `bugreport` as a non-privileged user. Let me know if root acce=
+ss would give a fuller picture.
 >
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 21c2a19d690f..224369c450e4 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -3077,6 +3077,16 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info =
-*fs_info)
->                 }
->         }
+> I believe the best thing you could do here is to contact actually
+> upstream people directly. get_maintainers and the MAINTAINERS file
+> has:
 >
-> +       if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
-> +           !btrfs_fs_compat(fs_info, NO_SPURIOUS_FREE_SPACE)) {
-> +               ret =3D btrfs_remove_spurious_free_space(fs_info);
-> +               if (ret) {
-> +                       btrfs_warn(fs_info,
-> +                                  "failed to remove spurious free space:=
- %d",
-> +                                  ret);
-
-There's no need to split the line, we tolerate more than 80 characters
-nowadays up to a reasonable limit, say close to 90.
-
-> +               }
-> +       }
-> +
->         /*
->          * btrfs_find_orphan_roots() is responsible for finding all the d=
-ead
->          * roots (with 0 refs), flag them with BTRFS_ROOT_DEAD_TREE and l=
-oad
-> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-> index dad0b492a663..5980710cf6b5 100644
-> --- a/fs/btrfs/free-space-tree.c
-> +++ b/fs/btrfs/free-space-tree.c
-> @@ -1722,3 +1722,118 @@ int btrfs_load_free_space_tree(struct btrfs_cachi=
-ng_control *caching_ctl)
->         else
->                 return load_free_space_extents(caching_ctl, path, extent_=
-count);
->  }
-> +
-> +/*
-> + * Earlier versions of mkfs.btrfs created spurious entries at the beginn=
-ing of
-> + * the free-space tree, before the start of any block group.
-> + * If the compat flag NO_SPURIOUS_FREE_SPACE is not set, clean these up =
-and
-> + * set the flag so we know we don't have to check again.
-> + */
-> +int btrfs_remove_spurious_free_space(struct btrfs_fs_info *fs_info)
-> +{
-> +       struct btrfs_root *fst;
-> +       struct btrfs_trans_handle *trans;
-> +       struct btrfs_key key;
-> +       struct extent_buffer *leaf;
-> +       struct btrfs_block_group *bg;
-> +       u64 bg_start;
-> +       BTRFS_PATH_AUTO_FREE(path);
-> +       int ret, ret2;
-> +       unsigned int entries_to_remove =3D 0;
-> +
-> +       struct btrfs_key root_key =3D {
-
-Please don't leave a new line between variable declarations.
-Also some of these variables are only used inside the loop, like
-'leaf' and 'bg_start', so they should be declared inside that block.
-
-> +               .objectid =3D BTRFS_FREE_SPACE_TREE_OBJECTID,
-> +               .type =3D BTRFS_ROOT_ITEM_KEY,
-> +               .offset =3D 0,
-> +       };
-> +
-> +       path =3D btrfs_alloc_path();
-> +       if (!path)
-> +               return -ENOMEM;
-> +
-> +       fst =3D btrfs_grab_root(btrfs_global_root(fs_info, &root_key));
-> +       if (!fst)
-> +               return -EINVAL;
-
-Not sure if -EINVAL is the best error here, or even if we should error out.
-
-> +
-> +       trans =3D btrfs_start_transaction(fst, 0);
-> +       if (IS_ERR(trans)) {
-> +               ret =3D PTR_ERR(trans);
-> +               goto end;
-> +       }
-> +
-> +       key.objectid =3D 0;
-> +       key.type =3D 0;
-> +       key.offset =3D 0;
-> +
-> +       ret =3D btrfs_search_slot(trans, fst, &key, path, 0, 0);
-> +       if (ret < 0)
-> +               goto end_trans;
-> +
-> +       while (true) {
-> +               leaf =3D path->nodes[0];
-> +               if (path->slots[0] >=3D btrfs_header_nritems(leaf)) {
-> +                       ret =3D btrfs_next_leaf(fst, path);
-> +                       if (ret < 0)
-> +                               goto end_trans;
-> +                       if (ret > 0)
-> +                               break;
-> +                       leaf =3D path->nodes[0];
-> +               }
-> +
-> +               btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-> +
-> +               bg =3D btrfs_lookup_first_block_group(fs_info, key.object=
-id);
-> +               if (!bg)
-> +                       break;
-> +
-> +               bg_start =3D bg->start;
-> +
-> +               btrfs_put_block_group(bg);
-> +
-> +               if (key.objectid >=3D bg_start)
-> +                       break;
-> +
-> +               entries_to_remove++;
-> +
-> +               path->slots[0]++;
-> +       }
-> +
-> +       if (entries_to_remove =3D=3D 0) {
-> +               ret =3D 0;
-> +               goto end_trans;
-> +       }
-> +
-> +       btrfs_release_path(path);
-> +
-> +       key.objectid =3D 0;
-> +       key.type =3D 0;
-> +       key.offset =3D 0;
-> +
-> +       ret =3D btrfs_search_slot(trans, fst, &key, path, -1, 1);
-> +       if (ret < 0)
-> +               goto end_trans;
-> +
-> +       ret =3D btrfs_del_items(trans, fst, path, 0, entries_to_remove);
-
-So this all works fine if all items to delete are in a single leaf.
-If they aren't, what happens?
-
-btrfs_del_items() is prepared to process a single leaf, and if the
-number of items to delete is greater than the number of items in the
-leaf, we get some underflows in some operations there, like when we do
-"nritems - nr", etc.
-
-> +       if (ret)
-> +               btrfs_abort_transaction(trans, ret);
-> +
-> +end_trans:
-> +       btrfs_release_path(path);
-> +
-> +       if (!ret)
-> +               btrfs_set_fs_compat(fs_info, NO_SPURIOUS_FREE_SPACE);
-> +
-> +       ret2 =3D btrfs_commit_transaction(trans);
-> +       if (!ret)
-> +               ret =3D ret2;
-> +
-> +       if (!ret && entries_to_remove > 0) {
-> +               btrfs_info(fs_info, "removed %u spurious free-space entri=
-es",
-> +                          entries_to_remove);
-
-This can also stay in a single line.
-
-> +       }
-> +
-> +end:
-> +       btrfs_put_root(fst);
-> +
-> +       return ret;
-> +}
-> diff --git a/fs/btrfs/free-space-tree.h b/fs/btrfs/free-space-tree.h
-> index 3d9a5d4477fc..b501c41acf3b 100644
-> --- a/fs/btrfs/free-space-tree.h
-> +++ b/fs/btrfs/free-space-tree.h
-> @@ -35,6 +35,7 @@ int btrfs_add_to_free_space_tree(struct btrfs_trans_han=
-dle *trans,
->                                  u64 start, u64 size);
->  int btrfs_remove_from_free_space_tree(struct btrfs_trans_handle *trans,
->                                       u64 start, u64 size);
-> +int btrfs_remove_spurious_free_space(struct btrfs_fs_info *fs_info);
+> BTRFS FILE SYSTEM
+> M:      Chris Mason <clm@fb.com>
+> M:      Josef Bacik <josef@toxicpanda.com>
+> M:      David Sterba <dsterba@suse.com>
+> L:      linux-btrfs@vger.kernel.org
+> S:      Maintained
+> W:      https://btrfs.readthedocs.io
+> Q:      https://patchwork.kernel.org/project/linux-btrfs/list/
+> C:      irc://irc.libera.chat/btrfs
+> T:      git git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
+> F:      Documentation/filesystems/btrfs.rst
+> F:      fs/btrfs/
+> F:      include/linux/btrfs*
+> F:      include/trace/events/btrfs.h
+> F:      include/uapi/linux/btrfs*
 >
->  #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
->  struct btrfs_free_space_info *
-> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-> index 8e710bbb688e..6219e2b8e334 100644
-> --- a/include/uapi/linux/btrfs.h
-> +++ b/include/uapi/linux/btrfs.h
-> @@ -337,6 +337,8 @@ struct btrfs_ioctl_fs_info_args {
->  #define BTRFS_FEATURE_INCOMPAT_RAID_STRIPE_TREE        (1ULL << 14)
->  #define BTRFS_FEATURE_INCOMPAT_SIMPLE_QUOTA    (1ULL << 16)
+> So I would suggest you to contact above maintainers including the
+> list.
 >
-> +#define BTRFS_FEATURE_COMPAT_NO_SPURIOUS_FREE_SPACE    (1ULL << 0)
-> +
->  struct btrfs_ioctl_feature_flags {
->         __u64 compat_flags;
->         __u64 compat_ro_flags;
-> --
-> 2.49.1
+> Please keep this downstream bugreport as well in the recipients list.
 >
+> Regards,
+> Salvatore
 
