@@ -1,142 +1,198 @@
-Return-Path: <linux-btrfs+bounces-17123-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17124-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F1EB96561
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 16:41:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 943F7B96813
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 17:11:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A65561896AAC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 14:38:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5033F3AF445
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 15:11:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FB20253944;
-	Tue, 23 Sep 2025 14:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CBDB25A34B;
+	Tue, 23 Sep 2025 15:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=allelesecurity.com header.i=@allelesecurity.com header.b="nXdsyQpC"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uMobtR8Q";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Mw929ZXc";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LcBKNvMb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="r6VSamP0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C749F231856
-	for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 14:37:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E1D1DF247
+	for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 15:11:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758638269; cv=none; b=r+f0RwpVMSvnxc5Mmwhutls6CjRWG2ief0ytKNelSHI2ajuB5HPhT1b/GcXNJ0ml5k9Xi7ypCbB7IVIiispl9rqc1GYqilG4iFelpyO9vrPU+z9dbr0VhEX5ZxcCGVI5qwxQPfaQ6JCokHAN2hfD6hZg4b2ZmduUP4ehxpCkD8A=
+	t=1758640287; cv=none; b=Kgrq0KNWeXJiqY/rTHrrloOQL3l/2XaRs6/rzQGdxpeqDP0I/HVShoxOH2EXkgOkrd+SO22DAdcR2OY9sL74AsEuqWI+4NyI7tKeqcoVkYvCyQBVA54KSSfIiKJBa/rCYzXz9E148Nhju33EQqQWw5d8RIn6vCNHEoU811z9FPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758638269; c=relaxed/simple;
-	bh=XFPC/BK7RrrbM/6ArKKBKgxpv7IIcB0qBa3VYnTD4CY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NCfM0JYux/fp/9lI2WmZPuL7xwttejZVhLdOeT/zRPawgiuXz1hD+yRtYa7/OzQx1BexKHJZ93lTS1JxabvTrC1+4UDhA16fQgghLgPO3RyLiSfsLXuqF0TvlgJOieM+O8/c5UiQW7cpTMSQlFyIn+nMmTfG9rQFdbERgjTQMhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=allelesecurity.com; spf=pass smtp.mailfrom=allelesecurity.com; dkim=pass (1024-bit key) header.d=allelesecurity.com header.i=@allelesecurity.com header.b=nXdsyQpC; arc=none smtp.client-ip=209.85.221.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=allelesecurity.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=allelesecurity.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-54bbe260539so787935e0c.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 07:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=allelesecurity.com; s=google; t=1758638267; x=1759243067; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XFPC/BK7RrrbM/6ArKKBKgxpv7IIcB0qBa3VYnTD4CY=;
-        b=nXdsyQpCs1ACf4OnM0hGdcuKe5V1AESGA5I4pqUEREnvxDIiZoacM1ZTSSJJ/x7fi6
-         OTwWSCC77phVngDOmnnA1knHitzAvOWHqpigivrLGEvCMHtUNricvh1rlynoIOal485t
-         nuQp5ujOTd6Qa3J+LRrjgCYHbKnSP4Y9WjCoA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758638267; x=1759243067;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XFPC/BK7RrrbM/6ArKKBKgxpv7IIcB0qBa3VYnTD4CY=;
-        b=PrX6Q4Q+u3HC2otjZESTMhCwbR8pmOTtNOUFHg+sCqU+Yiz2tO50mgsFsEaOgRNCH0
-         YmdJkmL2s7GkIEGRsglWNuF1NO12zmICNYuZgavqu0SMUV/fPRLDEy9FAORjdMkXlsEq
-         rGVfictPIi5PCCkwmuYXYI0zRr9BTm3YiAowKWzGjF8SGtNS1TrC5/s7dtx70+SkBf3I
-         iLQo46UhI1vfBfF3IbT8GADQvimA0TfkuH2YXRuJKj1CkHKPDLigKnnNdVfHrEA5MbeG
-         nSxhxNyrVuvCU0IupZJ5CFkaSnl2fA2bLm+zGf+i1B5nqVxa1KFSwLi56EwUnp4g3ZX1
-         OJtA==
-X-Forwarded-Encrypted: i=1; AJvYcCXlQUEe710uGNDmcs7VC5K036oaxtzf2a+v02VGr5FVNXP3KqiW+hAIMz+Enel23B2+iQ2R6Z5blWeHHg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzD3IYJr49v109pouFwdmRqH/UJps7Hu+FXgUsjkxfE/jYI6UkZ
-	RqeCmXrjECp8EYnqlTr831it0rfq+zV7v+io9Vi6/c6k1yEoTxNSioQh4lnct/uhDZmM5JE7zJ3
-	C3EfneeOY1uWR5d721f1hEgFm9tczKLKVO9EnybvF3Q==
-X-Gm-Gg: ASbGncuWFhcli9bMsMHF3Z0EtifR+oeWVx4JHab48MHx5JcbDUQnDuuJxKuxO/d+zVR
-	MHnr5S9gFDgxb1CXf46QNNu4w3S2hIkMSvz4VAAI1CqqGF3VwOcCDJng5WmDuU29ssc0SteRK4h
-	QUFpKgWlwCi0hPeGd56NXFvbPuZ5kMb6dVUPVNzwjptivBsj8WhgEwwBocK/oLuwRiWM0e6kE+W
-	dnGopUT
-X-Google-Smtp-Source: AGHT+IHij9lx2AnOHFGmNnUlWqEm6JnPegqIqPjiG5wTqefBFsPSYxSPRwyIlCxZT2X/ycZ/7rUsB6W77nORwXnLY1U=
-X-Received: by 2002:a05:6122:c94:b0:53c:6d68:1cdc with SMTP id
- 71dfb90a1353d-54bcb1f583bmr769314e0c.14.1758638265119; Tue, 23 Sep 2025
- 07:37:45 -0700 (PDT)
+	s=arc-20240116; t=1758640287; c=relaxed/simple;
+	bh=FqTm9ijMihQ2cHizL2sNRBwYDj65Jmx0pu+PyBjJud0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TDN5OEyP2ZIEdHyuXhydFhb6TbgIC8VMuK3IBQIRqjeRnYWV/LUOr8vo4TxQf7WC/D2q9d5o5YD8nA7jkDY2iYp5kPTG2+Q1PZD8l/MEFUUFepK2Ddh126CJY478t4n9GJS7KbqK/2lfqwM1iGRM3qe3+jhXJvH5O6GuIroDhw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uMobtR8Q; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Mw929ZXc; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LcBKNvMb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=r6VSamP0; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6A79D1F7F4;
+	Tue, 23 Sep 2025 15:11:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758640282;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HJHHRf4MuSIQGOe6K0pQM6YIFkwwoLqIkpozt+2N/eU=;
+	b=uMobtR8Q8a19d3vokSLraQgWR1v7VQfBRglSkoUk1GZilUJnz1Dr6lmaOi4WdRFHIxHgol
+	1rgJSy/ZWQjfzyEbaLNG7BC5jWIN3kghlBSSBYgXyKCorJBYdoAvj76NhXNKIU/CXZAayJ
+	wAQq+PUFcG5ZPUbCSjHfHtSZrB7ZA/Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758640282;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HJHHRf4MuSIQGOe6K0pQM6YIFkwwoLqIkpozt+2N/eU=;
+	b=Mw929ZXcVpXH8BIlCRLT7YbXV+r3k5R3UBVCgZ3/gAY5V9X/UXu2RqGytqM8tgQKnrWQO5
+	weLR7Ex/IOLkMnDg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LcBKNvMb;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=r6VSamP0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758640281;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HJHHRf4MuSIQGOe6K0pQM6YIFkwwoLqIkpozt+2N/eU=;
+	b=LcBKNvMbIWgvb3YRn59zMOtbKPoznkPRlooWPaiJxs7tYDe2MZfbQx8JeUBy6nhDYfjfAe
+	uUYZp2AY8Zwr4OXzrAH3LPeNVp4rRSKoEQWB8/yuZ3XR3zgto1T53bNIEKYlZ4i+SDroUO
+	VaJBBSxW0aGdy5ONajwa8qVUI9BaUWM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758640281;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HJHHRf4MuSIQGOe6K0pQM6YIFkwwoLqIkpozt+2N/eU=;
+	b=r6VSamP0ReORI8YRetE+LSm/cIVYVCU2NGKYoNkp4JUycZer9jBZMzhizvQkKT9s9ohKxr
+	79fWw1L7JP0KO2Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4DFFB1388C;
+	Tue, 23 Sep 2025 15:11:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jP7YEpm40mgUVAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 23 Sep 2025 15:11:21 +0000
+Date: Tue, 23 Sep 2025 17:11:11 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Anderson Nascimento <anderson@allelesecurity.com>
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Avoid potential out-of-bounds in btrfs_encode_fh()
+Message-ID: <20250923151110.GV5333@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <0cc81bcf-b830-4ec3-8d5e-67afbc2e7c47@allelesecurity.com>
+ <20250909224520.GC5333@twin.jikos.cz>
+ <CAPhRvkzgR+8L93VF8XtZDG9P_q7O0+BSBxnHtesLY5oj6uhwmg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0cc81bcf-b830-4ec3-8d5e-67afbc2e7c47@allelesecurity.com> <20250909224520.GC5333@twin.jikos.cz>
-In-Reply-To: <20250909224520.GC5333@twin.jikos.cz>
-From: Anderson Nascimento <anderson@allelesecurity.com>
-Date: Tue, 23 Sep 2025 11:37:33 -0300
-X-Gm-Features: AS18NWBQI2eUBLSAsWj5VWRzlh2lPky9Jor81XegLJB6VSW2SVpeKxySTYz4Ff0
-Message-ID: <CAPhRvkzgR+8L93VF8XtZDG9P_q7O0+BSBxnHtesLY5oj6uhwmg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Avoid potential out-of-bounds in btrfs_encode_fh()
-To: dsterba@suse.cz
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhRvkzgR+8L93VF8XtZDG9P_q7O0+BSBxnHtesLY5oj6uhwmg@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 6A79D1F7F4
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MID_RHS_MATCH_FROM(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email,suse.cz:replyto,allelesecurity.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -4.21
 
-On Tue, Sep 9, 2025 at 7:45=E2=80=AFPM David Sterba <dsterba@suse.cz> wrote=
-:
->
-> On Mon, Sep 08, 2025 at 09:49:02AM -0300, Anderson Nascimento wrote:
-> > Hello all,
+On Tue, Sep 23, 2025 at 11:37:33AM -0300, Anderson Nascimento wrote:
+> On Tue, Sep 9, 2025 at 7:45 PM David Sterba <dsterba@suse.cz> wrote:
 > >
-> > The function btrfs_encode_fh() does not properly account for the three
-> > cases it handles.
+> > On Mon, Sep 08, 2025 at 09:49:02AM -0300, Anderson Nascimento wrote:
+> > > Hello all,
+> > >
+> > > The function btrfs_encode_fh() does not properly account for the three
+> > > cases it handles.
+> > >
+> > > Before writing to the file handle (fh), the function only returns to the
+> > > user BTRFS_FID_SIZE_NON_CONNECTABLE (5 dwords, 20 bytes) or
+> > > BTRFS_FID_SIZE_CONNECTABLE (8 dwords, 32 bytes).
+> > >
+> > > However, when a parent exists and the root ID of the parent and the
+> > > inode are different, the function writes BTRFS_FID_SIZE_CONNECTABLE_ROOT
+> > > (10 dwords, 40 bytes).
+> > >
+> > > If *max_len is not large enough, this write goes out of bounds because
+> > > BTRFS_FID_SIZE_CONNECTABLE_ROOT is greater than
+> > > BTRFS_FID_SIZE_CONNECTABLE originally returned.
+> > >
+> > > This results in an 8-byte out-of-bounds write at
+> > > fid->parent_root_objectid = parent_root_id.
+> > >
+> > > A previous attempt to fix this issue was made but was lost.
+> > >
+> > > https://lore.kernel.org/all/4CADAEEC020000780001B32C@vpn.id2.novell.com/
+> > >
+> > > Although this issue does not seem to be easily triggerable, it is a
+> > > potential memory corruption bug that should be fixed. This patch
+> > > resolves the issue by ensuring the function returns the appropriate size
+> > > for all three cases and validates that *max_len is large enough before
+> > > writing any data.
+> > >
+> > > Tested on v6.17-rc4.
+> > >
+> > > Fixes: be6e8dc0ba84 ("NFS support for btrfs - v3")
+> > > Signed-off-by: Anderson Nascimento <anderson@allelesecurity.com>
 > >
-> > Before writing to the file handle (fh), the function only returns to th=
-e
-> > user BTRFS_FID_SIZE_NON_CONNECTABLE (5 dwords, 20 bytes) or
-> > BTRFS_FID_SIZE_CONNECTABLE (8 dwords, 32 bytes).
-> >
-> > However, when a parent exists and the root ID of the parent and the
-> > inode are different, the function writes BTRFS_FID_SIZE_CONNECTABLE_ROO=
-T
-> > (10 dwords, 40 bytes).
-> >
-> > If *max_len is not large enough, this write goes out of bounds because
-> > BTRFS_FID_SIZE_CONNECTABLE_ROOT is greater than
-> > BTRFS_FID_SIZE_CONNECTABLE originally returned.
-> >
-> > This results in an 8-byte out-of-bounds write at
-> > fid->parent_root_objectid =3D parent_root_id.
-> >
-> > A previous attempt to fix this issue was made but was lost.
-> >
-> > https://lore.kernel.org/all/4CADAEEC020000780001B32C@vpn.id2.novell.com=
-/
-> >
-> > Although this issue does not seem to be easily triggerable, it is a
-> > potential memory corruption bug that should be fixed. This patch
-> > resolves the issue by ensuring the function returns the appropriate siz=
-e
-> > for all three cases and validates that *max_len is large enough before
-> > writing any data.
-> >
-> > Tested on v6.17-rc4.
-> >
-> > Fixes: be6e8dc0ba84 ("NFS support for btrfs - v3")
-> > Signed-off-by: Anderson Nascimento <anderson@allelesecurity.com>
->
-> Thanks for finding the problem and the fix. It's 17 years old though the
-> other patch was sent about 2 years after btrfs merge to linux kernel.
-> I'll add it to for-next, with the minor whitespace issues fixed.
+> > Thanks for finding the problem and the fix. It's 17 years old though the
+> > other patch was sent about 2 years after btrfs merge to linux kernel.
+> > I'll add it to for-next, with the minor whitespace issues fixed.
+> 
+> David, has it been queued somewhere? I don't see it in any of your branches.
 
-David, has it been queued somewhere? I don't see it in any of your branches=
-.
-
---=20
-Anderson Nascimento
-Allele Security Intelligence
-https://www.allelesecurity.com
+That's strange, I thought I'd applied it the same day but the patch is
+nowhere to be found. I'll add it to for-next again, sorry.
 
