@@ -1,134 +1,260 @@
-Return-Path: <linux-btrfs+bounces-17115-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17116-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DC6DB95125
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 10:52:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA06AB957D1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 12:47:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ECCB1903701
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 08:52:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AA2D3ADF53
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Sep 2025 10:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAF8F31D362;
-	Tue, 23 Sep 2025 08:52:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18AC320CCC;
+	Tue, 23 Sep 2025 10:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W3Hy0Nl+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TBo+ivWt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B03A4A0C
-	for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 08:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E03313D48
+	for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 10:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758617543; cv=none; b=MFEDjkJdhb+cTyPKvegGWZLfEOGbc5zkE1kh1JCpyFQ+Dl9CeUSZ7fIVgo/ICmD3Z4GwKVB1P8A0m7r+jetofbSOQaxbR80SyKkPXrBE3mO0DJQdQ9T9TuOl5LedABUmPMf1cCSYldqLvmpH5dSfhDYxAxrTPhA3HTMIvz80QR4=
+	t=1758624447; cv=none; b=MacvAaftifOsQ5qT/xUG8zSJm6WxjjtmSJ9rwCIfjyM4TnPAeHpYQAZnI16KnHuvLtRZAHpOQrsiJgqJ8Y5CLbUcnGoj3OW0a+O/d03hkp6bRMvgpUJGe5ZNXASl0ppJWstYeRLS2IiKa0UE7GUL1ZfXYIB41sg111/NKt7+dPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758617543; c=relaxed/simple;
-	bh=qLe9dVM58MyzNnB136YatYk+IFroPuB9CJJShiFa4Ws=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iSJl8rHtBjORAe3rCXlBEKJ/fNZbyzp0d84MdlSzhvR+eAq5UxZl5KE2x1ZYB2veEa528BePE4+lbfZFsUaRIScxFDdgZ/Fo4VPkKY+ZaZbI5jV55N24Rr1vSQ/lW/7Y4qZeKzluSvA3LH+8HpnxBEghAnMxxP4uF0950ngc9PE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=W3Hy0Nl+; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3ee12332f3dso5392565f8f.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 01:52:20 -0700 (PDT)
+	s=arc-20240116; t=1758624447; c=relaxed/simple;
+	bh=y/G4XbLsOtwbe7wZLOUdsUIV02Do/ytAsS2jVq680LY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SVzHOiNgFdTwMzrWpV7cQ3Q0W6gN/mREsfGmrB/EcRCfAZsaMkoexsd1dHLZBSNydOs1IECVLD7hK8qs1+SRLczRY+UrU1+hgZMCVIZz3IoYyGZRZ6+ehMPtahVYiAygLwGBcjZ0EHozpjpMu4TzgWjv699hMinlEJbxXhdPuLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TBo+ivWt; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-46b303f755aso25865275e9.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Sep 2025 03:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1758617539; x=1759222339; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=N2l21j2sqVc6rfybicY874C+OlttyYtxVjGIkev4Hmc=;
-        b=W3Hy0Nl+1HUkFavlYufhwa95o2PtYvK7AaXhE0A/b6KNA6YWwGb0M/g3xmyj2zBYsv
-         anTfb0tq6bQ7jc5xKMfNIcYZc6OSe/EfaOVHMHyOVvXO/oYUBciNoIDfaTcVsp3mp3cK
-         kyveBb99i9J/ipdO6WCK6//LkEQZ+5o+GmoLILbNzvH+BkYSMmX8iOImLZpaYyID1R7r
-         itFMJH+UA2P7hZY8oEjL08GHl43qGim/tKwAfV1bHflkFrcyCDiAk8a3VgZvpwsCZOp+
-         S2AB6uK065iT2FJMHrwRj+9w3cNKax3mt8/zSf2uHXVcokv5Mgv0iuOuf0gVscgPXAAH
-         +s5A==
+        d=gmail.com; s=20230601; t=1758624442; x=1759229242; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NQ/yJT0cXoTi93BkEkS2U1cj1fcL5N5BV/EnPhmld9E=;
+        b=TBo+ivWtKLw2hvE4/ADdLULoCxdkqBngZ17HuFzdjLfw12wejEHkhAMxEp3Ee+g4r/
+         QkY+gyF49Zdjshfp2GkfrTXeAkGqlPQPAwE5XnEKSBlx7KePFyhqCq5xtq2poZu3WhTU
+         tosNaDOevVyDAjGj57CGR/WNm4sSmAc1pvRLpDxuXhPArh3IRdKSfwacAoyRWbOsMVEL
+         +35zAFhSYquvoPUN4+OUJngaR3cg/BGoGVAU9OQF/nMXU6B0pjoZeTUj1l7jRA9Li5nm
+         cslIYloBZQl8e+x/dmZ4oq3JQBz6BExLlD7Qx/73qgdd+i3Wit9F0JWCDrQ/QGaSftPX
+         bGAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758617539; x=1759222339;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N2l21j2sqVc6rfybicY874C+OlttyYtxVjGIkev4Hmc=;
-        b=tDjUHqOrQoFy4iUgqT/4kjePaSQjFuV8l2h1Tu1K2XTss6uemrgM3I0C9eAKk0Yhv9
-         dHH7L1FEg4BKjk7zsZ4J+ErNyaKQ8JmwSoTvo68PLJv9uHqregbLye23TdkVTD14fX4K
-         qA+q9nZ8XUTDSxXIQXZh26yrcl3LYUWaqwTJ0I6hspIhInCX0UImxAKb5q2qAJpyz2Rp
-         038CrwboG6t/+dpLcOOMZ11N8EmRwchIGPZo/EQ/uGe7d0CzAQLmiBCCSDmkhFOycTHf
-         p0/fBUsXwrLIlk3+qPKX5RDW1P/bCrobNnja1Ni1m/mjqugDM1WlKOn/lxUrbZYx8B2g
-         ZtSw==
-X-Gm-Message-State: AOJu0YxknFRx+MNscukb/gcEMHO3J+HQ7JeGyV23ca9wnHu1Nt4VGUZN
-	9Ylk5xc2n3PyRdJzNsRZWSuNuf53y2pcA6T4xV3K5d50K/OPTnzLGyxjNzBzI35UrfU=
-X-Gm-Gg: ASbGncucPVU2guPGLPKgLMCh9tDtMHYePaOVsc7D/u2h7wlLKchp2HfMcIi5Xj1OOTE
-	nHWZFiQYRF5OctQkzrnUVksBNudsm0V5+Hh3+CTWXXlJVbAIV7zZoEW75jqlAMzNwMXm8xKD3LJ
-	CAEcjK+A5mli1Q/nY6O4CqvVQ55BDhX0Sf0SpNuhbiw6GKC4vRKZDGWyyP640pZFfayeXZSpGes
-	5gRRVW0mXAuyScG49fBlhxwwjJZ3Xr77in9E6/uP1h4RwCMqjkamN669xwwbFadQmt5OBD5lng4
-	APekBu/abmbQy7EAiCh6w3vqpwv5C1kkp5AbOXdB5tie3KBkyTzf3eg6zC52aA2YRNlHVjzRdrz
-	o+R7ZaheZ90qdkt5vd9Qdh8eGnEAW
-X-Google-Smtp-Source: AGHT+IGiGfVhyGn+NA2nrbn0igxAWo0a2+xvvzVsV3Xcy8zmRrfNcB+J3rx9qgFYgReE7bp7joUcXQ==
-X-Received: by 2002:a05:6000:612:b0:3ea:e0fd:28ea with SMTP id ffacd0b85a97d-405ca95a386mr1463562f8f.39.1758617539392;
-        Tue, 23 Sep 2025 01:52:19 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-464f0aac439sm267020975e9.5.2025.09.23.01.52.18
+        d=1e100.net; s=20230601; t=1758624442; x=1759229242;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NQ/yJT0cXoTi93BkEkS2U1cj1fcL5N5BV/EnPhmld9E=;
+        b=oU4rkU4zDAYfzE/j94Cxf/yPtKYYxeENULZms/XzkYe/CSGxV5/G3OpSEtxFzxITmM
+         3kIeWAj3C28brqOutSKe77Jdm8qFqQNPqbdW2J854O87nmeFYWmzvml4Zfa3orCv7MCu
+         tbD+x07OFlndnJmkYGIjuj92848HNu/JXIhR9WecYlOAa+52jn0me0y9Kx4UOnp7MTVX
+         Gs7aOtLUFJphD8l8pS/L9Y4q4HkfUUkX5XtC56LrsSM+gAycRzJHhWkIFVKLQQWGmTRc
+         hBO+S4gdW5FMye+ZQqbfbKJhA1Znb0P20vSG3TgBLRFErZ63eI7aer8eaBYr5YcixO6h
+         zV+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVfJ9Zq0nwAsdkXRDR9p9xZnwX0XeKc8F/+G6Skf48elOywAOqiZgPg98xUa/97rtGjlBlhlreMM8tKXA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxSVFKpuIOvnb2zkfrAXDoKg08ypoW41ORbzbAiL21tT4wkJz2W
+	JqPlY779BjUiSI5mkNwP5ApCWGecstsYQ0RRuZDs6qxj7UYEQJPJVU1xw+LbuCYO
+X-Gm-Gg: ASbGncsF3zoKreihpnwSXJwsrKAWTrfTu5KHIftnsXijEnSHK2K0gmCMv7sj4+QilCs
+	vQJjH2euebJaAb5RjBd2YNQy314RxCROC8RGBYRT1tPKb5eMhaHFfnLjDhh3qttyKUCYltjl/DE
+	gK4QMY03l5uvvgvoNdlCWvnPfELMpZvR2bu4Oh3ZW5OewPNhFbGrDnu1rFMLIjabmKVo69wL0iM
+	PTkQRf5x3x5dZ78PnhoTWVfLFZKf+b26vql1u8kmqp2sGF2IE2M+XUS4Z1N+tse4gG9Ezw4giTc
+	GbI6bEA1iGoiIQC0irjPBoi2ukUKxi72ZiM54+poVlGsBAWqfwQMUUK/p/3MlFCAT5MJgXZ7gBW
+	3XvinxANj2L6yIINtYAJ0MTsxTPBLrRDsxo9Cf1n1cRCfTFY3LGzYIBWitsOl/WKv/5nb0A==
+X-Google-Smtp-Source: AGHT+IGft/P7UVkw9hjNEMIp8gNGN2bfm7hLyZ+3GJgcSiUgUNJfZvWbxjLWOrPgRhiQYwqyWsexaA==
+X-Received: by 2002:a05:600c:3baa:b0:46e:1f92:49aa with SMTP id 5b1f17b1804b1-46e1f924cd6mr18699845e9.15.1758624442124;
+        Tue, 23 Sep 2025 03:47:22 -0700 (PDT)
+Received: from f.. (cst-prg-21-74.cust.vodafone.cz. [46.135.21.74])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e23adce1bsm9710525e9.24.2025.09.23.03.47.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Sep 2025 01:52:19 -0700 (PDT)
-Date: Tue, 23 Sep 2025 11:52:15 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org,
-	syzbot+9c3e0cdfbfe351b0bc0e@syzkaller.appspotmail.com
-Subject: Re: [PATCH] btrfs: ref-verify: handle damaged extent root tree
-Message-ID: <aNJfvxj0anEnk9Dm@stanley.mountain>
-References: <20250915063747.39796-1-dsterba@suse.com>
+        Tue, 23 Sep 2025 03:47:21 -0700 (PDT)
+From: Mateusz Guzik <mjguzik@gmail.com>
+To: brauner@kernel.org
+Cc: viro@zeniv.linux.org.uk,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	josef@toxicpanda.com,
+	kernel-team@fb.com,
+	amir73il@gmail.com,
+	linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	ceph-devel@vger.kernel.org,
+	linux-unionfs@vger.kernel.org,
+	Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH v6 0/4] hide ->i_state behind accessors
+Date: Tue, 23 Sep 2025 12:47:06 +0200
+Message-ID: <20250923104710.2973493-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250915063747.39796-1-dsterba@suse.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Sep 15, 2025 at 08:37:47AM +0200, David Sterba wrote:
-> Syzbot hits a problem with enabled ref-verify, ignorebadroots and a
-> fuzzed/damaged extent tree. There's no fallback option like in other
-> places that can deal with it so disable the whole ref-verify as it is
-> just a debugging feature.
-> 
-> Reported-by: syzbot+9c3e0cdfbfe351b0bc0e@syzkaller.appspotmail.com
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->  fs/btrfs/ref-verify.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
-> index 3871c3a6c743b5..9f1858b42c0e21 100644
-> --- a/fs/btrfs/ref-verify.c
-> +++ b/fs/btrfs/ref-verify.c
-> @@ -980,11 +980,18 @@ int btrfs_build_ref_tree(struct btrfs_fs_info *fs_info)
->  	if (!btrfs_test_opt(fs_info, REF_VERIFY))
->  		return 0;
->  
-> +	extent_root = btrfs_extent_root(fs_info, 0);
-> +	/* If the extent tree is damaged we cannot ignore it (IGNOREBADROOTS). */
-> +	if (IS_ERR(extent_root)) {
-> +		btrfs_warn(fs_info, "ref-verify: extent tree not available, disabling");
-> +		btrfs_clear_opt(fs_info->mount_opt, REF_VERIFY);
-> +		return 0;
-> +	}
+First commit message quoted verbatim with rationable + API:
+
+[quote]
+Open-coded accesses prevent asserting they are done correctly. One
+obvious aspect is locking, but significantly more can checked. For
+example it can be detected when the code is clearing flags which are
+already missing, or is setting flags when it is illegal (e.g., I_FREEING
+when ->i_count > 0).
+
+Given the late stage of the release cycle this patchset only aims to
+hide access, it does not provide any of the checks.
+
+Consumers can be trivially converted. Suppose flags I_A and I_B are to
+be handled, then:
+
+state = inode->i_state          => state = inode_state_read(inode)
+inode->i_state |= (I_A | I_B)   => inode_state_set(inode, I_A | I_B)
+inode->i_state &= ~(I_A | I_B)  => inode_state_clear(inode, I_A | I_B)
+inode->i_state = I_A | I_B      => inode_state_assign(inode, I_A | I_B)
+[/quote]
+
+Right now this is one big NOP, except for READ_ONCE/WRITE_ONCE for every access.
+
+Given this, I decided to not submit any per-fs patches. Instead, the
+conversion is done in 2 parts: coccinelle and whatever which was missed.
+
+Generated against:
+https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=vfs-6.18.inode.refcount.preliminaries
+
+v6:
+- rename routines:
+set -> assign; add -> set; del -> clear
+- update commentary in patch 3 replacing smp_store/load with smp_wmb/rmb
+
+v5:
+- drop lockdep for the time being
+
+v4:
+https://lore.kernel.org/linux-fsdevel/CAGudoHFViBUZ4TPNuLWC7qyK0v8LRwxbpZd9Mx3rHdh5GW9CrQ@mail.gmail.com/T/#m866b3b5740691de9b4008184a9a3f922dfa8e439
 
 
-I saw that someone tested a patch for this bug but it doesn't show the
-patch itself...
+Mateusz Guzik (4):
+  fs: provide accessors for ->i_state
+  Convert the kernel to use ->i_state accessors
+  Manual conversion of ->i_state uses
+  fs: make plain ->i_state access fail to compile
 
-https://lore.kernel.org/all/0000000000004417f5062141fe65@google.com/
+ Documentation/filesystems/porting.rst |   2 +-
+ block/bdev.c                          |   4 +-
+ drivers/dax/super.c                   |   2 +-
+ fs/9p/vfs_inode.c                     |   2 +-
+ fs/9p/vfs_inode_dotl.c                |   2 +-
+ fs/affs/inode.c                       |   2 +-
+ fs/afs/dynroot.c                      |   6 +-
+ fs/afs/inode.c                        |   6 +-
+ fs/bcachefs/fs.c                      |   8 +-
+ fs/befs/linuxvfs.c                    |   2 +-
+ fs/bfs/inode.c                        |   2 +-
+ fs/btrfs/inode.c                      |  10 +--
+ fs/buffer.c                           |   4 +-
+ fs/ceph/cache.c                       |   2 +-
+ fs/ceph/crypto.c                      |   4 +-
+ fs/ceph/file.c                        |   4 +-
+ fs/ceph/inode.c                       |  28 +++---
+ fs/coda/cnode.c                       |   4 +-
+ fs/cramfs/inode.c                     |   2 +-
+ fs/crypto/keyring.c                   |   2 +-
+ fs/crypto/keysetup.c                  |   2 +-
+ fs/dcache.c                           |   8 +-
+ fs/drop_caches.c                      |   2 +-
+ fs/ecryptfs/inode.c                   |   6 +-
+ fs/efs/inode.c                        |   2 +-
+ fs/erofs/inode.c                      |   2 +-
+ fs/ext2/inode.c                       |   2 +-
+ fs/ext4/inode.c                       |  10 +--
+ fs/ext4/orphan.c                      |   4 +-
+ fs/f2fs/data.c                        |   2 +-
+ fs/f2fs/inode.c                       |   2 +-
+ fs/f2fs/namei.c                       |   4 +-
+ fs/f2fs/super.c                       |   2 +-
+ fs/freevxfs/vxfs_inode.c              |   2 +-
+ fs/fs-writeback.c                     | 123 +++++++++++++-------------
+ fs/fuse/inode.c                       |   4 +-
+ fs/gfs2/file.c                        |   2 +-
+ fs/gfs2/glops.c                       |   2 +-
+ fs/gfs2/inode.c                       |   4 +-
+ fs/gfs2/ops_fstype.c                  |   2 +-
+ fs/hfs/btree.c                        |   2 +-
+ fs/hfs/inode.c                        |   2 +-
+ fs/hfsplus/super.c                    |   2 +-
+ fs/hostfs/hostfs_kern.c               |   2 +-
+ fs/hpfs/dir.c                         |   2 +-
+ fs/hpfs/inode.c                       |   2 +-
+ fs/inode.c                            | 100 ++++++++++-----------
+ fs/isofs/inode.c                      |   2 +-
+ fs/jffs2/fs.c                         |   4 +-
+ fs/jfs/file.c                         |   4 +-
+ fs/jfs/inode.c                        |   2 +-
+ fs/jfs/jfs_txnmgr.c                   |   2 +-
+ fs/kernfs/inode.c                     |   2 +-
+ fs/libfs.c                            |   6 +-
+ fs/minix/inode.c                      |   2 +-
+ fs/namei.c                            |   8 +-
+ fs/netfs/misc.c                       |   8 +-
+ fs/netfs/read_single.c                |   6 +-
+ fs/nfs/inode.c                        |   2 +-
+ fs/nfs/pnfs.c                         |   2 +-
+ fs/nfsd/vfs.c                         |   2 +-
+ fs/nilfs2/cpfile.c                    |   2 +-
+ fs/nilfs2/dat.c                       |   2 +-
+ fs/nilfs2/ifile.c                     |   2 +-
+ fs/nilfs2/inode.c                     |  10 +--
+ fs/nilfs2/sufile.c                    |   2 +-
+ fs/notify/fsnotify.c                  |   2 +-
+ fs/ntfs3/inode.c                      |   2 +-
+ fs/ocfs2/dlmglue.c                    |   2 +-
+ fs/ocfs2/inode.c                      |  10 +--
+ fs/omfs/inode.c                       |   2 +-
+ fs/openpromfs/inode.c                 |   2 +-
+ fs/orangefs/inode.c                   |   2 +-
+ fs/orangefs/orangefs-utils.c          |   6 +-
+ fs/overlayfs/dir.c                    |   2 +-
+ fs/overlayfs/inode.c                  |   6 +-
+ fs/overlayfs/util.c                   |  10 +--
+ fs/pipe.c                             |   2 +-
+ fs/qnx4/inode.c                       |   2 +-
+ fs/qnx6/inode.c                       |   2 +-
+ fs/quota/dquot.c                      |   2 +-
+ fs/romfs/super.c                      |   2 +-
+ fs/smb/client/cifsfs.c                |   2 +-
+ fs/smb/client/inode.c                 |  14 +--
+ fs/squashfs/inode.c                   |   2 +-
+ fs/sync.c                             |   2 +-
+ fs/ubifs/file.c                       |   2 +-
+ fs/ubifs/super.c                      |   2 +-
+ fs/udf/inode.c                        |   2 +-
+ fs/ufs/inode.c                        |   2 +-
+ fs/xfs/scrub/common.c                 |   2 +-
+ fs/xfs/scrub/inode_repair.c           |   2 +-
+ fs/xfs/scrub/parent.c                 |   2 +-
+ fs/xfs/xfs_bmap_util.c                |   2 +-
+ fs/xfs/xfs_health.c                   |   4 +-
+ fs/xfs/xfs_icache.c                   |   6 +-
+ fs/xfs/xfs_inode.c                    |   6 +-
+ fs/xfs/xfs_inode_item.c               |   4 +-
+ fs/xfs/xfs_iops.c                     |   2 +-
+ fs/xfs/xfs_reflink.h                  |   2 +-
+ fs/zonefs/super.c                     |   4 +-
+ include/linux/backing-dev.h           |   7 +-
+ include/linux/fs.h                    |  42 ++++++++-
+ include/linux/writeback.h             |   4 +-
+ include/trace/events/writeback.h      |   8 +-
+ mm/backing-dev.c                      |   2 +-
+ security/landlock/fs.c                |   2 +-
+ 107 files changed, 345 insertions(+), 307 deletions(-)
 
-Smatch says that btrfs_extent_root() can't return error pointers.  I
-would have expected an error pointer dereference to crash in
-btrfs_comp_cpu_keys().  The pointer in the bug report
-0xdffffc0000000003 is not an error pointer.  What am I missing?
-
-regards,
-dan carpenter
+-- 
+2.43.0
 
 
