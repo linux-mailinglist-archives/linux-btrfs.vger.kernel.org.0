@@ -1,256 +1,257 @@
-Return-Path: <linux-btrfs+bounces-17161-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17165-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A301B9C20D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Sep 2025 22:38:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F29BB9C590
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 00:24:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7EC93BE963
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Sep 2025 20:37:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17CE53B6A5A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Sep 2025 22:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC3532B4A6;
-	Wed, 24 Sep 2025 20:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E18291864;
+	Wed, 24 Sep 2025 22:24:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="1RJUEe3G"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="QfoCnwrH";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="INjK7KHl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010023.outbound.protection.outlook.com [52.101.61.23])
+Received: from fhigh-b1-smtp.messagingengine.com (fhigh-b1-smtp.messagingengine.com [202.12.124.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FDED32A3DE;
-	Wed, 24 Sep 2025 20:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.23
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758746127; cv=fail; b=RyvzePgdDbNqmn97J+zE/+qRUSJiKokRAi4lntvoV/pB8uInhEP6Cg+3FjlWVvs26S25ewkzxhss6N5LMS2WvHXjSrYzmLLvZpwtt73HFNfmoyUeQjuk0Bx8sKG7Vo8G1m3cGN4w/+SkovSEZSL71cbv7xnHRbh6jInLXWeSeko=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758746127; c=relaxed/simple;
-	bh=q+bD5SmhIL3qBSvQDac8JLl3an5Aa6v1Vy8SrRfxaOg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=jFqpkpRcRRENrhOKc73IV/9sOWOImqlrRy0C24aMAKiOT0mzh9gktOpWBOzw8VcKFDwwBHPrdlJBeWnBoLFPiOY+s75G40Rxgkyg9JmTJAQUBncdaXjLxIFBkIKjJgRNH7sJF5KUMRBuanYf4j1RGYyVcOA3QIVDnqO4N2GFrTI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=1RJUEe3G; arc=fail smtp.client-ip=52.101.61.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=wVt84lDl6Yjq5Qa1UTUN7JGeY489oJGgjIPHP/fp+001Q0+xpMg/ay/3Dxkq5LrvBPaoxzggg83euLbjN7KRqdQ+hh3HpXJfzRoepVQsTh91HeTuIdy8VYpGpBS1S/5yXS0KHi2oV99+qHxQwstdJ/2Z7YSXJq3M31TuQcy1B15/H6qDJnPyGxiu/85ij+x5ZYgISka4YghukGTJ5z6BPYSF/TS/7G+QKuPy4EIWOzA3zhm1ZBgh83QEEWwfrExrpwUzwIB+YwGwGS2N/bPXvDyAbyYm9gfN8wy6F0NXv2pDz+YhIwIiS3r1Gk3eEN+mWyIiSZDRr9VRH4wnqTzeJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=suh4C75ktQKXPgZ1yuZpuqhdixVMXh0SuYK+jegbXWI=;
- b=Of88vWkIxB0v9qHIlvNtCXoWQvSYjgGy8qRkn0wZ0bvE7j6Qj9G4cokw7queE4YgF4Z8LQX4ILbHi6HKsmtf7mEWo0zbAdRjDGpPNp73zVS5xx3foGAhWRWOjYgdwEdXljsgQzI+AM/s5NXVkZa9ueGEdlfo9w+vsdW+E8s1iaSQaF391pHZsHO8Yr7jFeAcH22R+0UzxyWhh76ItKdBklSiLGKd2B4P4q0L8aXOOKofOaahDQkrR8td399HMoBCuwIBD1lu8oG4yKChJFss6X9elNO9md2CPCcHr17qWb2yXJme3PrQUAUhAPcbQ29CG2OolgfEzoY6ai8v8byCrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=suh4C75ktQKXPgZ1yuZpuqhdixVMXh0SuYK+jegbXWI=;
- b=1RJUEe3GdJNGQwsfmz3Eid8db/tmjSumgINLFfsQnm3hPAIAxlwX1lTaacbLQb/OfXnuAxhAo7DsW7R21ziysI7vFXyHqxuuN//XLyZ3my4cYmcYYerijT24ASpIEFwtw8uFQXAV9eVLnceRbGn5VAlZlb0+SqngSTCSAXmXC94=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL3PR12MB9049.namprd12.prod.outlook.com (2603:10b6:208:3b8::21)
- by CY5PR12MB6202.namprd12.prod.outlook.com (2603:10b6:930:25::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9160.9; Wed, 24 Sep
- 2025 20:35:19 +0000
-Received: from BL3PR12MB9049.namprd12.prod.outlook.com
- ([fe80::ae6a:9bdd:af5b:e9ad]) by BL3PR12MB9049.namprd12.prod.outlook.com
- ([fe80::ae6a:9bdd:af5b:e9ad%5]) with mapi id 15.20.9160.008; Wed, 24 Sep 2025
- 20:35:19 +0000
-Message-ID: <b4abbdfa-8a4e-4c2b-a979-f940fcab37aa@amd.com>
-Date: Wed, 24 Sep 2025 15:35:12 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH kvm-next V11 0/7] Add NUMA mempolicy support for KVM
- guest-memfd
-To: David Hildenbrand <david@redhat.com>, Shivank Garg <shivankg@amd.com>,
- willy@infradead.org, akpm@linux-foundation.org, pbonzini@redhat.com,
- shuah@kernel.org, seanjc@google.com, vbabka@suse.cz
-Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com,
- xiang@kernel.org, chao@kernel.org, jaegeuk@kernel.org, clm@fb.com,
- josef@toxicpanda.com, kent.overstreet@linux.dev, zbestahu@gmail.com,
- jefflexu@linux.alibaba.com, dhavale@google.com, lihongbo22@huawei.com,
- lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org,
- surenb@google.com, mhocko@suse.com, ziy@nvidia.com, matthew.brost@intel.com,
- joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
- gourry@gourry.net, ying.huang@linux.alibaba.com, apopple@nvidia.com,
- tabba@google.com, ackerleytng@google.com, paul@paul-moore.com,
- jmorris@namei.org, serge@hallyn.com, pvorel@suse.cz, bfoster@redhat.com,
- vannapurve@google.com, chao.gao@intel.com, bharata@amd.com, nikunj@amd.com,
- michael.day@amd.com, shdhiman@amd.com, yan.y.zhao@intel.com,
- Neeraj.Upadhyay@amd.com, thomas.lendacky@amd.com, michael.roth@amd.com,
- aik@amd.com, jgg@nvidia.com, kalyazin@amazon.com, peterx@redhat.com,
- jack@suse.cz, hch@infradead.org, cgzones@googlemail.com,
- ira.weiny@intel.com, rientjes@google.com, roypat@amazon.co.uk,
- chao.p.peng@intel.com, amit@infradead.org, ddutile@redhat.com,
- dan.j.williams@intel.com, gshan@redhat.com, jgowans@amazon.com,
- pankaj.gupta@amd.com, papaluri@amd.com, yuzhao@google.com,
- suzuki.poulose@arm.com, quic_eberman@quicinc.com,
- linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
- kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-coco@lists.linux.dev
-References: <20250827175247.83322-2-shivankg@amd.com>
- <1b01ebab-a43e-4344-ae38-50f0a031332f@redhat.com>
-Content-Language: en-US
-From: "Kalra, Ashish" <ashish.kalra@amd.com>
-In-Reply-To: <1b01ebab-a43e-4344-ae38-50f0a031332f@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA1P222CA0058.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:2c1::9) To BL3PR12MB9049.namprd12.prod.outlook.com
- (2603:10b6:208:3b8::21)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07B226B971
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Sep 2025 22:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.152
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758752679; cv=none; b=ElinSO/2RIeCjhzrY5gY/pLzvYt8Qm1AYl/0PxkyYZOKkHKM8zvMjzmITJ4B3sL2ZvBPRyycaqFbKvvdtqnmxESJn9+FQ+y9mGypVTLH4F+vzmnKpDCeak5pkr/XmYxgxtK+bnUs9rDioSjSXfa1MGYgy80pP/sJf5plKi7Nbwg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758752679; c=relaxed/simple;
+	bh=bF/yG6ReFuL21xklqyBjomhR9qwuUivXti/hkRcVxNk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=qPVrYyRnVmc5JN37CUMMeh+Tuyy8Kj1rghdt/7YRRZOhVmCCnXk7kDXQ1ErwC+F+GpZ8jzT0KecvaA4kSp4B5Fw9zs/2ftkzjxAPepG598BhOUAlsZjw5hlPIoP5EV3lA4maEPaIt4WhBUaxAjPSgAXQBzeFMHBH8HSztgUAli4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=QfoCnwrH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=INjK7KHl; arc=none smtp.client-ip=202.12.124.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-09.internal (phl-compute-09.internal [10.202.2.49])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 14A937A01A5;
+	Wed, 24 Sep 2025 18:24:36 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-09.internal (MEProxy); Wed, 24 Sep 2025 18:24:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm2; t=1758752675; x=1758839075; bh=CnKGaACX02DaO5HwPsEMI
+	N5V3u6yfKzEMBJc/Sco1H0=; b=QfoCnwrHVfgRPwWq8qQguu/ued8LyLFkCWY3f
+	Bx6OjqEyIS5Irr4TLFFu8JtyHrqpKa6uZP6847IJ/Cv64UuQLnoVAepQv1AUCXWB
+	r3eJWXcijPyVmHKEVwY52QYTSmOOB2M4FUrScIOU5iYv1dvgUd4wPJPXmjCzF5nU
+	m7psbhgDmJaz9YBtpqiiW+D0TBvEGj6e/nk/MrnftBm1mAvCBiU9BdxwiWXtbwx/
+	tvK6w/DdsEtSTc2ElwfiuJEjxk/1XThGIwnilFdQYWsWlf/amc0bSu0Wnr4unUvE
+	rjC/chA0WjSV9/3aPvWgid0E5WfOfGZrLlYhYMZ1NwzgVUDaw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1758752675; x=1758839075; bh=CnKGaACX02DaO5HwPsEMIN5V3u6yfKzEMBJ
+	c/Sco1H0=; b=INjK7KHlgcqzVUZUK0TQZe5RzEvkcssnxRsfUitSEtKly4NKgUE
+	h67VMQ5QqbZ2gNwul1wngVJzdytOuK8GE9sVPS0eoMoJXgryckG71Yqozw0eok96
+	JG972LXO/epapD4dk/n4ML13NSobcFz0lgAb8n7B1/cWA2XEDla2u5Ol+kuxATLq
+	AQnY/IRZnfFehA46epMP8n8f0JSdU41J1n6+iB1HLe+q0dT5tBJmYJ3nxKL56R/s
+	C+byABXvR3+ivUo72pvDIrgH/azy9YccOZnFQcjnQ98f4jFzU1A3OpAw4RdKqhld
+	nBVZeOztGfbxMRVvDUFGL0QSTAdMGq3hs9Q==
+X-ME-Sender: <xms:o2_UaM8hDee8fl_AT0mB7oK7hExAbJg1pnIcjS70xU2deA9-HPmmaA>
+    <xme:o2_UaKv-XrIdih2IzUwHYGcyMIOx1pT75PJHqplBtLu-Lb0MBbJZIWnaEoQjRV54J
+    eMNRJx1rWDWBZ2eqTbNWXx45rf8XhwnRSdB8Yo1RQLVBXW5eNFnGg>
+X-ME-Received: <xmr:o2_UaPoGLY9dOdnJtiCVhSAfackLHatCL1BTV0D5aweROMa7ILwKpy1kA3EIgPn7IOc3rVPNAq3GbtyLKjnz5Fvpiek>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdeigeektdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertddtne
+    cuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecu
+    ggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekudduteefke
+    fffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmohguvgepsh
+    hmthhpohhuthdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhn
+    vghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
+X-ME-Proxy: <xmx:o2_UaHndwszquBFuSlpjH1VQU-lfPMuSQFCt4prlDLpjmwW7UcpBQA>
+    <xmx:o2_UaDyARUUf7Nn44u9GMrWZngRD4wGuv-1Efvy-yHWBHuMtrhJjig>
+    <xmx:o2_UaPlstczPDjyG26kudKdrPbckhFIevsVzR4kjnLRTx6TMF_Llvw>
+    <xmx:o2_UaMfOR2gIOgp-toWLXyY9OzQlrr4nayXhEqt-TaH9p9CM7-DCOA>
+    <xmx:o2_UaIiWrIbFdhe8ZJh6iQdB2LoS_46osZYWZWJjy0QiUnoczSLt3K4W>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 24 Sep 2025 18:24:35 -0400 (EDT)
+From: Boris Burkov <boris@bur.io>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH] btrfs: don't ignore ENOMEM in btrfs_add_chunk_map()
+Date: Wed, 24 Sep 2025 15:24:25 -0700
+Message-ID: <0d537ef90213e54835f7aaa090498787db27b33a.1758752652.git.boris@bur.io>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL3PR12MB9049:EE_|CY5PR12MB6202:EE_
-X-MS-Office365-Filtering-Correlation-Id: 67873eba-aa38-473e-a5ab-08ddfba9e069
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Vm5Zek5iRFhtb3lHS3hSYktBbWt4SUlMeFRJZnFEc3pEdFhLaCtQdjZmT0Ru?=
- =?utf-8?B?TXZCQ085QmpGNm1uRWdMMTFBOEFhd3Z6c0hqN1V4T1pKYk9Qb1pwdkZ6UWFk?=
- =?utf-8?B?YlFQWnFwREVwRnUxY0pOTTZGZDJNUlJobFRrbTVhS2MyL3pNbjJtL1hueFV6?=
- =?utf-8?B?MnNRL1VVejFhQ0lURVJkdmRaYm9OdHk0Mm8vdVVNZWFtbDRIdVUvL1Jwek1Y?=
- =?utf-8?B?STJCZVNIS2JIOHNNL0Vxd1RESzhiUUNKeUtBQ2dUNU9xYk9UMS81ajdDZWhP?=
- =?utf-8?B?NDdKOVRGRTNiakZYaEJ5bHNOTGdKUUJVbkNobENsaUNCMmtlYkRxWDJORkdz?=
- =?utf-8?B?Vzk3M1FiZ3JKcGZmc3ZXWlBWUC9KYnoyU2hSeU01dVR3RlMrRjIvdWFJSXNx?=
- =?utf-8?B?R1dhcDVOMjNVam03N3lyUG1jd2I1LzdHQjZyWWRHYnJxWFByM1V3TVVpU0pp?=
- =?utf-8?B?aXBGaEhaUzFMNzI4S3dPMzB4ZjdsYktEaDJDNTNlaFhwUXo3WlJGSk1Xcmcr?=
- =?utf-8?B?Z0hYU1k0SEQ0a0hJcXdMSk41d0RpTVNQNmpwOWNMN0h4UWY1OG1jMkJ4SUJ5?=
- =?utf-8?B?M0JaZXZsejUxSnc2SGoyL1pYdjRsNkp5RDR5bDFZRU5iOVJyU3hYUVl2ZDhu?=
- =?utf-8?B?ZmlRZmhJN3ZEazJnSVJvbnRyR1l4cUljWjVlVVNleGFSbnNWWG1zQytMb25B?=
- =?utf-8?B?OGxpYkUwRXU3aTJEbndkSTZrQXgzREpUd0V6UE5ON2oyLytrMkpObnlSN2tk?=
- =?utf-8?B?S2plcGFUZ3FSaTQ2VTMwdzlockhpTzFxUm8yR2NjV1F5RDNKZW5naGg1dERu?=
- =?utf-8?B?cHZwZkhKd04zdGZMVjFTVXB6aXBvektRNk9iZ1N3NEZwczBJYis4dDgxWm9J?=
- =?utf-8?B?Y3Myd0h5NnhBSVlMUHAxcTllRmtTY2tGVmhNYXFHd1Rad0tmVTR1ZDE3TEhz?=
- =?utf-8?B?YTViNi92ME44dXA3alQyYmxZZTlTcmxlT1hUa1lwM3lkNllNQTlrMzQzdEJz?=
- =?utf-8?B?cjQydjdlUXZzZzJBVWFkZFhZRFY5dGNKZUZCbFdZeDQ1ZVBieXFZWGt5Z2g3?=
- =?utf-8?B?NEVzWi9QeW1IcnVZUldhQTJKVzhJQzZHSURPMzdXMlNNb2lpdENoSzVCS212?=
- =?utf-8?B?YTl3aDd6Z092T3FiVXZuTXFWUlkyOUN1L2tZSFRmUjdkZWRnTTB3V3lmdFNB?=
- =?utf-8?B?MHVLcjk5M01GVGNLbCt0bmJtU3BKaHVNLy9FVjVqVGM3R2NvcGRxeFFFb3Nl?=
- =?utf-8?B?NW51ajNSZWNiTkN1ZmkvRk9yOW5FK2xOK29aYUJLeVlJMzVIbU5NaHlMN05P?=
- =?utf-8?B?RGJPZkRsWWhCcVpKSGlvRmhBcjUzTHFDTE9pTlgvR3JXeWIwZnNseW15SHlY?=
- =?utf-8?B?eG1oTWJFdE8xUmR5amd2Y0JNMlVlaHNnWnp2Y0drVVlvdkphcXNETXdmeUE3?=
- =?utf-8?B?Vi9ET2VrK29nZFZJR215bmVTYzgrWS8zd3NndXhON3pZZ3E1c3FkYk9XS29w?=
- =?utf-8?B?MFFmRUd0OC9yTGxPYk5EREdnUGtTN01tWFcyMkNwYXFhNnZmU3lhNC9NYWJG?=
- =?utf-8?B?NklZUGRtUUVNREM3UnVlZUFjQTFUNS9XaFFFVGJyL3lTM0dHeXc4UVpzemJk?=
- =?utf-8?B?aVdCMHdMRkczWlVZWTQxZTNjeTRYd0xlY1NXMk9Fb2tXa2h3RGlWVmpJSWR3?=
- =?utf-8?B?NHVRZnBhWEJ0M3IrTHBxNzNVK01sdlJJSkFBNnJBNTdlbkphQU56Wm9tVE9r?=
- =?utf-8?B?UHE3MWhUNzJlT3ZONVc2Z3BYOGJxcnBPNWVtclhybGJzZ3RRYUN3MGhMUWZP?=
- =?utf-8?B?bzV3S0VWZ0Y5dURTVmpmT2FUcE5NdHVrRHVRcFlVOFQ1ZEl2UzFiY0JMbFJw?=
- =?utf-8?B?ajBOWXdNM0NIc1BvMXFRalZrOG5RY1AzL1ZmVkREMFJzeTBnb09uUHozS0dY?=
- =?utf-8?Q?Cd8iQK1pkUk=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR12MB9049.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cWduQjJnTzRLVjU5eVpGd0xUdVVWQzcwZk0vMEdsMWxVY010b1BMRnJkWXZk?=
- =?utf-8?B?ZG8ycitFbnBZVERpQ2J4VjRqbjdpY2NmRXZKZjhEM1Q2MXBVekNFQ2ZkR2lP?=
- =?utf-8?B?Yk9rYmRMQmdJOEdzb28zQUQwRGFxUVpaaUtnY0lDNHh2K014WFlyaGY4TFpP?=
- =?utf-8?B?VU5Nc1FSbTcrMkNJdW5CUm16Yk54M2FseUZGclZFR1RGUXUveFFOZmVHcnBa?=
- =?utf-8?B?NTg1NHI3TVJZbm1semh5Z0VSSGVnd1dHYTNjUnJ1OUdCS1FsSlU3d3FTK0tB?=
- =?utf-8?B?OGJwM2JmbVZjOW1wZjFVOERuc2RMYzVVUm1Fb2MwZVE3bER0NjJrRVkwblhz?=
- =?utf-8?B?ekpVaXZLdkx5SjhFcTdEL2tHZmU1UkE1VHNSdE5tcEJLVldwNS85M3BTcDhF?=
- =?utf-8?B?T3F5UXJXMVRxbEp0c0c3ZG4zUnk5ZDA0U2QwMXIxQjhSNXk4ZDRxcjlEWXNV?=
- =?utf-8?B?eUpGeERCSDNTVGorT09oNnZuMnh2ekwzckJjNHltS2VPWHZEbzEybk10S2pz?=
- =?utf-8?B?R3lBTjM4Q0g3dU5KWkVUR0ZXU1RyNEpzUVhVZG5iUmY1OFVwaVBPV1d4Wm9V?=
- =?utf-8?B?aFpTVThadktIK0d5VjVzS28vRDIzTUY5TENWaEx5N3FneFJWK05YNGdqRXQv?=
- =?utf-8?B?bG1ydUk5amdHQVRadXpKbzFobFl0VCt3Umtrdks4eFcvTnJsa1ljL0k2UWp3?=
- =?utf-8?B?L080L3FsVFEra0JuRlhWY3RUM0RmT2hCNVVzamFGOGJGZ1FydFhrMTVvQWRQ?=
- =?utf-8?B?V01RV1Z4U1FLREN0cVJleHF3cG9WejN6QjhkZTFjMmtuYTlBWVg0UklsaWdM?=
- =?utf-8?B?eFo4NjdqamJGSGRlNFlOSTlpbkVwbUlsKzFNYmNGQ0d4eUpvNmsyUVRXSFo0?=
- =?utf-8?B?c2FHUFo3aHJXQzNXblBaUTBDY1ZlNi9xZ0VYV1h4alZRV1d2NzQvc01rbXBh?=
- =?utf-8?B?NUF6L2FQV25QdXgrR1o5emFtKzZ6Mzc3M0M1TUU1akxhYms4S2hZVnBjUEJ0?=
- =?utf-8?B?bUpJWDZTdHd2ZXVNb2NHcmhxbzU3UW1WZnUyR2pSN1YrSGhyckt2dTJZa3Zx?=
- =?utf-8?B?bS9LTFBDdUVHNWJ0MEpKQkFxT01hTU1kcEFWcll3cmYrRnJhOFg1MjR5QWxB?=
- =?utf-8?B?dXFPeTVFc3FiOXdDSzk5cDlkczM5T2dQTFl6YUM5Z1IrSEZ5N1JBZldob3FG?=
- =?utf-8?B?UG15cCtvbXJjT3FzTnVFWW5CcklURXdpeGhud0RqTUIwaU8xbDd5RmZ3dk4v?=
- =?utf-8?B?d2NXa0tkVFdKWEVLSUp2dGd5SS9kNmVnNFFLb2d2WExZNkNjM2s2TWdBcW1v?=
- =?utf-8?B?MWxrMkxQSURlaHA5dlR1VWFaajRKZy9GTis5d05UOUpjeHVkbGwvMGt2SXpU?=
- =?utf-8?B?eFowcWVuUkozTTNYOGFvay9ham0ybFBZWCtWUTNIMEh0OW9ZcFJjbnZrd0Vt?=
- =?utf-8?B?clJXK296eEpwZ1NadW1vTE0xOVVWUG0xK0Joa3VpaTBhVC9UaXdpYVpVeEx3?=
- =?utf-8?B?WUFMajY3WnduZFU3RGJNUHlBaU1KM2lmcUYvclV3VkZTSnE5VzlyZTV6dDA3?=
- =?utf-8?B?ZERuYnozYVRzbEpqb2g0MkY5bUIzcC9lWWJvM21RZE5PckoraXNINThjV3E2?=
- =?utf-8?B?dU02M3lNcXVOeXZNcWVDb2lRNnMxYjVla0tVQ3FRRTVSMlRiR2lkM0xpSktJ?=
- =?utf-8?B?bHJpNGpsNzNRWHpPQUF4eUJYUktFZDZnR3lrYnQvUzJ5RzAwcS9hL01Hc29x?=
- =?utf-8?B?TjlNd09BRnFtbWhmZU85Ym9sWHdMam1jWm5RRUZzL1RtcmZuUnpjdkd0QU5V?=
- =?utf-8?B?VGhIUy9KMk9SMXFCRXByZU1aTFhUb3JsMnh1Yi9Vd3QvcjdiRm4vdW1mTDRi?=
- =?utf-8?B?NTE0RFcvQVVuU0ZGOUt6RmJlUktlTVFjMWJSUjUyRU9yVnJWNlVNKyt2V1hs?=
- =?utf-8?B?RThTUHRiWWorM2hRdmJGaGs2OENTWXZZNVA4aG1IYmxrUVpLdk5OYVdlNDhq?=
- =?utf-8?B?Q2t1bElSNjJ6cXlwZ0x3NWc2WVd6OW1VTU5KSzhxWFJ5SjBpeFJtTVQ1L2h3?=
- =?utf-8?B?cUt6R1JYMGFHWXJOTWRmNkZJUHIzY2ZyY085YUpkTDN4c21jNmtsb09LbUp2?=
- =?utf-8?Q?ijPlpT+Il+LaYH0egt/5hcJhE?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67873eba-aa38-473e-a5ab-08ddfba9e069
-X-MS-Exchange-CrossTenant-AuthSource: BL3PR12MB9049.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2025 20:35:19.2546
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kCMTo9GysLar1J+9LclyPYzGP96O5SNYNpl7u87iacJi4hyw0At1cN/aJ00a+jZZgfH+dD7PnvBknB1WgEqj5w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6202
+Content-Transfer-Encoding: 8bit
 
-Tested the patch series by auditing the actual userspace (HVA) mappings and seeing if the
-corresponding physical PFNs correspond to the expected NUMA node.
+btrfs_set_extent_bit() can return ENOMEM, which
+chunk_map_device_(set|clear)_bits() was ignoring, so
+btrfs_add_chunk_map() was silently failing in those cases. This led to
+double allocating dev extents, ultimately resulting in an EEXIST in
+add_dev_extent_item(): (ignore the btrfs_force_chunk_alloc_store thing,
+we are using a DEBUG feature that isn't widely used here)
 
-Enabled QEMU's kvm_set_user_memory tracepoint to dump the HVA/guest_memfd/guest_memfd_offset/base GPA/size.
-This helped determine the HVAs and the memslot that QEMU registers with KVM via the kvm_set_user_memory_region() helper.
+  ------------[ cut here ]------------
+  BTRFS: Transaction aborted (error -17)
+  WARNING: CPU: 5 PID: 3586339 at fs/btrfs/block-group.c:2764 btrfs_create_pending_block_groups+0x5fc/0x620
+  RIP: 0010:btrfs_create_pending_block_groups+0x5fc/0x620
+  Code: 9c fd ff ff 48 c7 c7 e8 69 64 82 44 89 ee e8 4b 87 e6 ff 0f 0b e9 99 fe ff ff 48 c7 c7 e8 69 64 82 48 8b 34 24 e8 34 87 e6 ff <0f> 0b eb a0 48 c7 c7 e8 69 64 82 44 89 e6 e8 21 87 e6 ff 0f 0b e9
+  RSP: 0018:ffffc90060693d38 EFLAGS: 00010286
+  RAX: 0000000000000026 RBX: ffff8882be92fed8 RCX: 0000000000000027
+  RDX: ffff88bf42f6e040 RSI: ffff88bf42f60c48 RDI: ffff88bf42f60c48
+  RBP: ffff888282585d18 R08: 0000000000000000 R09: 0000000000000000
+  R10: 4000000000000000 R11: 000000000000691d R12: ffff88c0471a3300
+  R13: 0000001dc6500000 R14: ffff8882829d9000 R15: ffff8882be92ff40
+  FS:  00007f7ccbc2c740(0000) GS:ffff88bf42f40000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000000004e421c8 CR3: 0000000cd6384001 CR4: 0000000000770ef0
+  PKRU: 55555554
+  Call Trace:
+   <TASK>
+   ? __warn+0xa0/0x130
+   ? btrfs_create_pending_block_groups+0x5fc/0x620
+   ? report_bug+0xf2/0x150
+   ? handle_bug+0x3d/0x70
+   ? exc_invalid_op+0x16/0x40
+   ? asm_exc_invalid_op+0x16/0x20
+   ? btrfs_create_pending_block_groups+0x5fc/0x620
+   ? btrfs_create_pending_block_groups+0x5fc/0x620
+   __btrfs_end_transaction.llvm.3999538623537568469+0x3d/0x1c0
+   btrfs_force_chunk_alloc_store+0xaf/0x100
+   ? sysfs_kf_read+0x90/0x90
+   kernfs_fop_write_iter.llvm.10031329899921036925+0xd0/0x180
+   __x64_sys_write+0x279/0x5a0
+   do_syscall_64+0x63/0x130
+   ? exc_page_fault+0x63/0x130
+   entry_SYSCALL_64_after_hwframe+0x4b/0x53
+  RIP: 0033:0x7f7ccb4ff28f
+  Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 a9 89 f8 ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 fc 89 f8 ff 48
+  RSP: 002b:00007ffda7138f20 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+  RAX: ffffffffffffffda RBX: 0000000009c13140 RCX: 00007f7ccb4ff28f
+  RDX: 0000000000000001 RSI: 0000000004e401b0 RDI: 00000000000000c8
+  RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+  R10: 0000000000008000 R11: 0000000000000293 R12: 0000000000000000
+  R13: 0000000000408820 R14: 0000000000407f00 R15: 00007ffda7138fc0
+   </TASK>
+  ---[ end trace 0000000000000000 ]---
+  BTRFS: error (device nvme0n1p2 state A) in btrfs_create_pending_block_groups:2764: errno=-17 Object already exists
+  BTRFS warning (device nvme0n1p2 state EA): Skipping commit of aborted transaction.
+  BTRFS: error (device nvme0n1p2 state EA) in cleanup_transaction:2018: errno=-17 Object already exists
 
-After that dumped the PFNs getting mapped into the guest for a particular GPA via enabling the
-kvm_mmu_set_spte kernel trace events, performed the GPA->memslot->HVA mapping (via QEMU traces above) and then looked in 
-/proc/<qemu_pid>/numa_maps to validate the HVA is bound to the NUMA node associated with that memslot/guest_memfd.
+This was pretty confusing to debug and I think it would be helpful to
+get the proper ENOMEM error sent up to the appropriate transaction when
+it happens.
+
+Note:
+Most callsites of btrfs_set_extent_bit() are not checked, however, which
+does give me pause. Either we have a lot more inaccuracies like this out
+there, or I have misanalyzed this scenario. I was able to reproduce the
+above calltrace by injecting enomem errors in to the set_extent_bits
+path here, for what it's worth.
+
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ fs/btrfs/volumes.c | 47 ++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 35 insertions(+), 12 deletions(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 2bec544d8ba3..eda5b6b907d9 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5434,28 +5434,42 @@ static int decide_stripe_size(struct btrfs_fs_devices *fs_devices,
+ 	}
+ }
  
-Additionally, looked up the PFN (from kernel traces) in /proc/zoneinfo to validate that the physical page belongs to the
-NUMA node associated with the memslot/guest_memfd.
+-static void chunk_map_device_set_bits(struct btrfs_chunk_map *map, unsigned int bits)
++static int chunk_map_device_set_bits(struct btrfs_chunk_map *map, unsigned int bits)
+ {
++	int ret;
++
+ 	for (int i = 0; i < map->num_stripes; i++) {
+ 		struct btrfs_io_stripe *stripe = &map->stripes[i];
+ 		struct btrfs_device *device = stripe->dev;
+ 
+-		btrfs_set_extent_bit(&device->alloc_state, stripe->physical,
+-				     stripe->physical + map->stripe_size - 1,
+-				     bits | EXTENT_NOWAIT, NULL);
++		ret = btrfs_set_extent_bit(
++			&device->alloc_state, stripe->physical,
++			stripe->physical + map->stripe_size - 1,
++			bits | EXTENT_NOWAIT, NULL);
++		if (ret)
++			return ret;
+ 	}
++	ret = 0;
++	return ret;
+ }
+ 
+-static void chunk_map_device_clear_bits(struct btrfs_chunk_map *map, unsigned int bits)
++static int chunk_map_device_clear_bits(struct btrfs_chunk_map *map, unsigned int bits)
+ {
++	int ret;
++
+ 	for (int i = 0; i < map->num_stripes; i++) {
+ 		struct btrfs_io_stripe *stripe = &map->stripes[i];
+ 		struct btrfs_device *device = stripe->dev;
+ 
+-		btrfs_clear_extent_bit(&device->alloc_state, stripe->physical,
+-				       stripe->physical + map->stripe_size - 1,
+-				       bits | EXTENT_NOWAIT, NULL);
++		ret = btrfs_clear_extent_bit(
++			&device->alloc_state, stripe->physical,
++			stripe->physical + map->stripe_size - 1,
++			bits | EXTENT_NOWAIT, NULL);
++		if (ret)
++			return ret;
+ 	}
++	ret = 0;
++	return ret;
+ }
+ 
+ void btrfs_remove_chunk_map(struct btrfs_fs_info *fs_info, struct btrfs_chunk_map *map)
+@@ -5488,6 +5502,7 @@ static int btrfs_chunk_map_cmp(const struct rb_node *new,
+ EXPORT_FOR_TESTS
+ int btrfs_add_chunk_map(struct btrfs_fs_info *fs_info, struct btrfs_chunk_map *map)
+ {
++	int ret;
+ 	struct rb_node *exist;
+ 
+ 	write_lock(&fs_info->mapping_tree_lock);
+@@ -5498,11 +5513,19 @@ int btrfs_add_chunk_map(struct btrfs_fs_info *fs_info, struct btrfs_chunk_map *m
+ 		write_unlock(&fs_info->mapping_tree_lock);
+ 		return -EEXIST;
+ 	}
+-	chunk_map_device_set_bits(map, CHUNK_ALLOCATED);
+-	chunk_map_device_clear_bits(map, CHUNK_TRIMMED);
+-	write_unlock(&fs_info->mapping_tree_lock);
+ 
+-	return 0;
++	ret = chunk_map_device_set_bits(map, CHUNK_ALLOCATED);
++	if (ret)
++		goto out;
++	ret = chunk_map_device_clear_bits(map, CHUNK_TRIMMED);
++
++out:
++	if (ret) {
++		rb_erase_cached(&map->rb_node, &fs_info->mapping_tree);
++		RB_CLEAR_NODE(&map->rb_node);
++	}
++	write_unlock(&fs_info->mapping_tree_lock);
++	return ret;
+ }
+ 
+ EXPORT_FOR_TESTS
+-- 
+2.50.1
 
-
-This testing/validation is based on the following trees:
-
-Host Kernel: 
-
-https://github.com/AMDESE/linux/commits/snp-hugetlb-v2-wip0/
-
-This tree is based on commit 27cb583e25d0 from David Hildenbrand's guestmemfd_preview tree
-(which already includes base mmap support) with Google's HugeTLB v2 patches rebased on top of those
-(which include both in-place conversion and hugetlb infrastructure), along with additional
-patches to enable in-place conversion and hugetlb for SNP.
-
-QEMU:
-
-https://github.com/AMDESE/qemu/commits/snp-hugetlb-dev-wip0/
-   
-QEMU command line used for testing/validation:
-
-qemu-system-x86_64 --enable-kvm -object sev-snp-guest,id=sev0,cbitpos=51,reduced-phys-bits=1,convert-in-place=true
--object memory-backend-memfd,id=ram0,host-nodes=0,policy=bind,size=150000M,prealloc=false 
--numa node,nodeid=0,memdev=ram0,cpus=0-31,cpus=64-95 
--object memory-backend-memfd,id=ram1,host-nodes=1,policy=bind,size=150000M,prealloc=false
--numa node,nodeid=1,memdev=ram1,cpus=32-63,cpus=96-127 
-
-(guest NUMA configuration mapped 1:1 to host NUMA configuration).
-
-Tested-by: Ashish Kalra <ashish.kalra@amd.com>
-
-Thanks,
-Ashish
-
-On 9/24/2025 1:19 PM, David Hildenbrand wrote:
-> On 27.08.25 19:52, Shivank Garg wrote:
->> This series introduces NUMA-aware memory placement support for KVM guests
->> with guest_memfd memory backends. It builds upon Fuad Tabba's work (V17)
->> that enabled host-mapping for guest_memfd memory [1] and can be applied
->> directly applied on KVM tree [2] (branch kvm-next, base commit: a6ad5413,
->> Merge branch 'guest-memfd-mmap' into HEAD)
->>
-> 
-> Heads-up: I'll queue this (incl. the replacement patch for #4 from the reply) and send it tomorrow as a PR against kvm/next to Paolo.
-> 
 
