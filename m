@@ -1,214 +1,108 @@
-Return-Path: <linux-btrfs+bounces-17186-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17187-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19B3AB9FFFA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 16:29:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43FC4BA0156
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 16:54:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C66A4A7C51
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 14:26:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7449819C2853
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 14:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DC9E2D0634;
-	Thu, 25 Sep 2025 14:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C22BA2E0B4B;
+	Thu, 25 Sep 2025 14:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cov1LflE"
+	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="ULfV1DeA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mout-y-209.mailbox.org (mout-y-209.mailbox.org [91.198.250.237])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 492B72C159F
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 14:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6312C21D3;
+	Thu, 25 Sep 2025 14:53:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.198.250.237
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758810403; cv=none; b=jzHjGI8BmzDY6Jzwi2pdt3t8xMDvOLeEfr6X2rjAudzCwqgJ+pePva/6PwlaUgvc40qQGFBmcWdmKc+8XZaqNO64b+cH3tK2bBlgjsGCnHC8P1yNNcbYraY1s4Qm05Ay551kM8Denjiw3zaBocHO89trTcJfofOopWJKnV5kT3Y=
+	t=1758812039; cv=none; b=CurkSFoj53emQGkwsNqzUPQqaAwlUFYR76Yav4P2XbJZNKDlkAyXIXM81upgazfRdwqWATN766ohVO6ShB1NKm7vrSn8hXhJajR8kvUj17xRmHLio4eCqQXn2zzhVAXe6/Er/Q139vpyU7WJ9/vpoAn7/0l5Ok3/3wK2r+f2PvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758810403; c=relaxed/simple;
-	bh=D8wsuOOGG1VyLhZ0JxFPIQTVvR8s+TjTt638B6XCb2w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iD2klAMlaVCeJjHJqqcYpI9Onso4yGkF1J4JNlPm75KqDX46Ef241fm6TzvGSG0049PD6aWhA7tgEpu7pxoUCk49aRfujhd6xO3voyFd7NTQaroeIOlEYkvgHoo1owOP9vtEqdfpjWHsImXwq11H4KIf++eu0Xc5rTbsjLeF9mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cov1LflE; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1758810401;
+	s=arc-20240116; t=1758812039; c=relaxed/simple;
+	bh=AM5WILHBelS/Whs4JFXa3rXYafBN+qDDE98pmu37z0A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=i5nbXGqM2ish0Nfv4ftDlXTE9iA7a//y5lzKeX5P/h0WH6nhOjBaeEqdP5EeyZBh07VvVz5SiVJJQfiIsenYMYfVH1J6FBDESdf7dQ3UfqrVjeaMz0whRT7VuXivvVI6TVEr5mYn7w1yfYYbfuF4oEeKBgQ4gCsr/X7Rq7N6UXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=ULfV1DeA; arc=none smtp.client-ip=91.198.250.237
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-y-209.mailbox.org (Postfix) with ESMTPS id 4cXcDB2yHnzB0lD;
+	Thu, 25 Sep 2025 16:53:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
+	t=1758812026;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=7NbQWxxCkkna6kPG5JPAnaAdZblXa8Jj1l6IA0HQVeA=;
-	b=cov1LflEGC16Rei+iT6tZ+LPurdrLCoLUhEocK7XYV0hydH/Uk8yrCwLwDUdVzK/uu/xUO
-	o/Tcs5cC3XG9mF8l8GIwd9iNq+Zrh/8XCQR0/6Vz/FdNmJ+gVb4KwKjfrij6AbkD+wccTx
-	zf4dgaO68Egnqu//3uhoYHiQ1QkBnDA=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-482-hJXxmKFMP4WEar1YytNvIA-1; Thu, 25 Sep 2025 10:26:39 -0400
-X-MC-Unique: hJXxmKFMP4WEar1YytNvIA-1
-X-Mimecast-MFC-AGG-ID: hJXxmKFMP4WEar1YytNvIA_1758810399
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4612d068c47so5796905e9.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 07:26:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758810398; x=1759415198;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7NbQWxxCkkna6kPG5JPAnaAdZblXa8Jj1l6IA0HQVeA=;
-        b=rYyuLhjkSKO2jYiwkC9Kps6SPRAayZnAJnRPbf0/vGZG8YTe4UsZuAxkFZemEa+08A
-         YETcUEF3hy6xAIq8WrCM4xcqbIUr0caw4Yr4J50nWdRyWHSNMN3am+hXLvunMTLTiUSq
-         5vZnE8aEbCpM97JPLuyi6Byzg80F7QCwV2LJDxpYtKuk5jaL0e0k8uh7wUJ4P5N6B39r
-         56nC/Qai+r+uebSgQtwYVExcIy8LBi9U09TiNHPBG00RMp4TjlRlzIZHovOxSS7JOVUw
-         ylQuFgEfgr7VotiWrTd06rZ/iTyJm5HT8A3756ZLG9QmQRuJMXYwomWbXX3nz6AjDusq
-         RgWw==
-X-Forwarded-Encrypted: i=1; AJvYcCVKIRDd+sipf+uJ05xqMxKZ4G8IyZ2SNCJNrTEs0fVVcY4cCnV3++Xj7NseSIIxXX/IRbmcfXyYhcNneA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPUB7H7K/DERVIfxAMrubego0LoZJT+AIOALBLSJ3Gt6JnAxLY
-	x5PudHB7rQcMJLWC1NoN2e/oCoHaRNbq5NHjaBDrSatwZ6M67Ex6dMUm6phbyU8SPHQbeqgZPVp
-	lFvqnqHO/g9SCh8wmiV0N0HR4oozRu5DRF060XnrXr0g9cBnLlKHzFPTdFhBDWu8D
-X-Gm-Gg: ASbGnctMaNphWDFwFbu9QbfpacTYXoILQyEkpgWDpsXpNwo9Q+GtyTO8+0Bb+4gQoJx
-	vA2E60EPyd9kgARjdWFXmZdBHa3zUL54pnUzWC1yE3trO1yQPzqykGeHl1CqhUzu9hl8FlVWRHG
-	uqn82kNfsyz2W2cbKUHIRmNRauBkNVbDl+HAjPpO6ScfjE+MY8+sPIHTQPx/TpBAuWwW2s0spUH
-	MVhpNKy+vLJ+bpYrSFnHoEbbr/OAgBH2jJbPDX/awoRcs6xViCYwugFEdBz6lUmwNd5LVdy3u7x
-	Fj084GqeblVedPvFaoDa15YrwdlLr4HIX7yz/u5nVXQ88lFgWyJ+P0+Lax7LR/CWV0+nVGWOaO+
-	x1JLcODnWmuGr/548J2jrdvWVMlxK06/PYsWlFLlWi/PVRgOArkIuQxaUSFQ+LdatjXjj
-X-Received: by 2002:a05:600c:4e8b:b0:46e:37fc:def0 with SMTP id 5b1f17b1804b1-46e37fce148mr14763345e9.9.1758810398138;
-        Thu, 25 Sep 2025 07:26:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHjZJ0WBMi2SLpg5brCAPP2ix/UVmUI6Mp8N0XKACsUKpJXXguXTVe5P/uAzXY2rpR891e88g==
-X-Received: by 2002:a05:600c:4e8b:b0:46e:37fc:def0 with SMTP id 5b1f17b1804b1-46e37fce148mr14762275e9.9.1758810397527;
-        Thu, 25 Sep 2025 07:26:37 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f3f:f800:c101:5c9f:3bc9:3d08? (p200300d82f3ff800c1015c9f3bc93d08.dip0.t-ipconnect.de. [2003:d8:2f3f:f800:c101:5c9f:3bc9:3d08])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e33bf6ecbsm39061825e9.22.2025.09.25.07.26.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Sep 2025 07:26:36 -0700 (PDT)
-Message-ID: <3a82a197-495f-40c3-ae1b-500453e3d1ec@redhat.com>
-Date: Thu, 25 Sep 2025 16:26:32 +0200
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=A6TZdmI0AWwAqbGk1gFFoWIZdnjU5cD0TQRufQSrKvU=;
+	b=ULfV1DeAnofIky4SLlT+bM1uh8YLTuxud9RVwMNyIc079VQ0JQfPqF2XWPdBsQya/hJ9lU
+	fVEtp6pdyWJ+t0Aigu2dVgS0LjORrGaCSIw4OXfP2k9tIGhacvX6XJEfFCPeb6615P6uDd
+	XL/UQn6whQF3zxTY+vRkkGISKtq4ujBI2SyBE3mepShyqzQBP/UHcajVi4gh2BAkg801aS
+	fYk9FF8SOyf0lZ4R+JEJ8ht3UYaPP/8lgP8YP1drIFpunpnQay41KTSMxsuHPhPaHfK9LA
+	Vt92PzgIERJ5C1agh5DIkL5zpN0LD2ZXwpoj/1GeKS5WaskiCrcwUpbb7Gn8Mg==
+Authentication-Results: outgoing_mbo_mout;
+	dkim=none;
+	spf=softfail (outgoing_mbo_mout: 2001:67c:2050:b231:465::1 is neither permitted nor denied by domain of mssola@mssola.com) smtp.mailfrom=mssola@mssola.com
+From: =?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
+To: linux-btrfs@vger.kernel.org
+Cc: clm@fb.com,
+	dsterba@suse.com,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
+Subject: [PATCH] btrfs: ioctl: Fix memory leak on duplicated memory
+Date: Thu, 25 Sep 2025 16:53:31 +0200
+Message-ID: <20250925145331.357022-1-mssola@mssola.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH kvm-next V11 4/7] KVM: guest_memfd: Use guest mem inodes
- instead of anonymous inodes
-To: Sean Christopherson <seanjc@google.com>
-Cc: Shivank Garg <shivankg@amd.com>, Ackerley Tng <ackerleytng@google.com>,
- willy@infradead.org, akpm@linux-foundation.org, pbonzini@redhat.com,
- shuah@kernel.org, vbabka@suse.cz, brauner@kernel.org,
- viro@zeniv.linux.org.uk, dsterba@suse.com, xiang@kernel.org,
- chao@kernel.org, jaegeuk@kernel.org, clm@fb.com, josef@toxicpanda.com,
- kent.overstreet@linux.dev, zbestahu@gmail.com, jefflexu@linux.alibaba.com,
- dhavale@google.com, lihongbo22@huawei.com, lorenzo.stoakes@oracle.com,
- Liam.Howlett@oracle.com, rppt@kernel.org, surenb@google.com,
- mhocko@suse.com, ziy@nvidia.com, matthew.brost@intel.com,
- joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
- gourry@gourry.net, ying.huang@linux.alibaba.com, apopple@nvidia.com,
- tabba@google.com, paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
- pvorel@suse.cz, bfoster@redhat.com, vannapurve@google.com,
- chao.gao@intel.com, bharata@amd.com, nikunj@amd.com, michael.day@amd.com,
- shdhiman@amd.com, yan.y.zhao@intel.com, Neeraj.Upadhyay@amd.com,
- thomas.lendacky@amd.com, michael.roth@amd.com, aik@amd.com, jgg@nvidia.com,
- kalyazin@amazon.com, peterx@redhat.com, jack@suse.cz, hch@infradead.org,
- cgzones@googlemail.com, ira.weiny@intel.com, rientjes@google.com,
- roypat@amazon.co.uk, chao.p.peng@intel.com, amit@infradead.org,
- ddutile@redhat.com, dan.j.williams@intel.com, ashish.kalra@amd.com,
- gshan@redhat.com, jgowans@amazon.com, pankaj.gupta@amd.com,
- papaluri@amd.com, yuzhao@google.com, suzuki.poulose@arm.com,
- quic_eberman@quicinc.com, linux-bcachefs@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-security-module@vger.kernel.org, kvm@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-coco@lists.linux.dev
-References: <20250827175247.83322-2-shivankg@amd.com>
- <20250827175247.83322-7-shivankg@amd.com> <diqztt1sbd2v.fsf@google.com>
- <aNSt9QT8dmpDK1eE@google.com> <dc6eb85f-87b6-43a1-b1f7-4727c0b834cc@amd.com>
- <b67dd7cd-2c1c-4566-badf-32082d8cd952@redhat.com>
- <aNVFrZDAkHmgNNci@google.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- qIws/H2t
-In-Reply-To: <aNVFrZDAkHmgNNci@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4cXcDB2yHnzB0lD
 
-On 25.09.25 15:41, Sean Christopherson wrote:
-> On Thu, Sep 25, 2025, David Hildenbrand wrote:
->> On 25.09.25 13:44, Garg, Shivank wrote:
->>> On 9/25/2025 8:20 AM, Sean Christopherson wrote:
->>> I did functional testing and it works fine.
->>
->> I can queue this instead. I guess I can reuse the patch description and add
->> Sean as author + add his SOB (if he agrees).
-> 
-> Eh, Ackerley and Fuad did all the work.  If I had provided feedback earlier,
-> this would have been handled in a new version.  If they are ok with the changes,
-> I would prefer they remain co-authors.
+On 'btrfs_ioctl_qgroup_assign' we first duplicate the argument as
+provided by the user, which is kfree'd in the end. But this was not the
+case when allocating memory for 'prealloc'. In this case, if it somehow
+failed, then the previous code would go directly into calling
+'mnt_drop_write_file', without freeing the string duplicated from the
+user space.
 
-Yeah, that's what I would have done.
+Signed-off-by: Miquel Sabaté Solà <mssola@mssola.com>
+---
+ fs/btrfs/ioctl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> 
-> Regarding timing, how much do people care about getting this into 6.18 in
-> particular?
-
-I think it will be beneficial if we start getting stuff upstream. But 
-waiting a bit longer probably doesn't hurt.
-
-> AFAICT, this hasn't gotten any coverage in -next, which makes me a
-> little nervous.
-
-Right.
-
-If we agree, then Shivank can just respin a new version after the merge 
-window.
-
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 185bef0df1c2..00381fdbff9d 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3740,7 +3740,7 @@ static long btrfs_ioctl_qgroup_assign(struct file *file, void __user *arg)
+ 		prealloc = kzalloc(sizeof(*prealloc), GFP_KERNEL);
+ 		if (!prealloc) {
+ 			ret = -ENOMEM;
+-			goto drop_write;
++			goto out_sa_drop_write;
+ 		}
+ 	}
+ 
+@@ -3775,6 +3775,7 @@ static long btrfs_ioctl_qgroup_assign(struct file *file, void __user *arg)
+ 
+ out:
+ 	kfree(prealloc);
++out_sa_drop_write:
+ 	kfree(sa);
+ drop_write:
+ 	mnt_drop_write_file(file);
 -- 
-Cheers
-
-David / dhildenb
+2.51.0
 
 
