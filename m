@@ -1,248 +1,171 @@
-Return-Path: <linux-btrfs+bounces-17196-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17197-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EE7CBA1A38
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 23:44:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E382BA1E3E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 00:50:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E77862258C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 21:43:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F8407A190B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 22:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333A9323F5E;
-	Thu, 25 Sep 2025 21:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4EC12EA730;
+	Thu, 25 Sep 2025 22:50:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="onw8lRvi"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CTdAQsZl";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="X8snIANh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F81D322529
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 21:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B55527703C
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 22:50:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758836124; cv=none; b=N+ftND6ozhEr0NcHRVeRSEobindxXUtHT+/SPkuIyCQ7d8SbprmFivnk7nje7FyfjE8S3pKxMBoi8k/1LexIOF/dnudmVRa3jU2rqmIMaFav4GFFgDivrjf+fV1QptvZcxfC537Mjlzs7W8s8rihUqv+6xMbGToWr3Hgno2Ra1c=
+	t=1758840637; cv=none; b=tT40IwjRAy+4iDkJNXLLjDHZItMVFgxyHZVUeZV9Xew+Njc6WiO7/B41e+MX/vPiwl2VzjnmY8aLfJnDZYmftoLoodpzQJB23XqXPRq6b7/BvjmvSYTfbZWc/aBPM4oMp+nwRAmxMR24vyOguu1+vcq51KO98ukq9q8g6jIu3WM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758836124; c=relaxed/simple;
-	bh=Lh1tfSZ0NF/AFO/V/8hHUF+qpGzjYGIIGuaXa4zfnL4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=pXR/ZSRNufZzGCWMDDWW0IZDQTGkFkxYNquZV3XA7x32Q/d/8iEfpQO1CizEZArpVLpsk5CUKU6mlxGtGEj2C/QfkAUcj66eaiOfML9iaoXaozrZNxsNm/X6I2Sh9x8e6yybNPhIXuWq7cLAzlQeGikHKjyEItFhzhES1UrdFmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=onw8lRvi; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-3306543e5abso1409346a91.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 14:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1758836121; x=1759440921; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dyD0NvHQvKcjtkMWqtARFSwsGpym7n4r8JiRe/0tuUQ=;
-        b=onw8lRvivIaqXqhZ94k9VIfBy202X1wcl6kC5wMxM4fMRMqJCFtExOOO4OSzFrs0RS
-         qHFjEeoEtQfyZAZJP6YQmMYMFNJIzjcra6ZBnCxaERFeYR408n/9Ve3aVpTYm5nPBAgJ
-         qMsrAXWPQ+p75NcDftx9/Rr0IZF8PIOZA9ltXOiwvQ3g1F5fyBcv9jTQYfnHqjrZpAF3
-         2/qagGANvpvdP7va2hYkf8cOa2EP1yIlnKne6xfHvbNp5CAlkPKUDXZTgovUwRHGL259
-         zQiCfU9XIGcVYd7ArvCRqcPxJUFH5956E3BUVCgylnJjJk5rRwHzTewMQqRNjVs5Xxff
-         mXNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758836121; x=1759440921;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dyD0NvHQvKcjtkMWqtARFSwsGpym7n4r8JiRe/0tuUQ=;
-        b=bcNK468QS/0yMq/xfg2OHh6CIEUMCsX4cpo/yOVeokKG1dMysODzegcTxFN8OEiBc3
-         vrYNA9BYPJkMFuEauU2hxhK85+Y2UvO76YdN/3JY3q/8UxGZ9/5p5k4UXVGsVgfqDVI9
-         2h031z8T+kTh714oyxgXleaGJ4e/sKHvUdIAjiLQzUOpnWb9PTVDxo0u6lOEPizO2WA4
-         sEV3CmyXxRvIouG10SomXZG0AwEIYddaDYaVYQ/90xG23/wHnp5cs7P+XNCgQ/oJlOVF
-         NeNMx4/m9GHvtXSisa5XJtTpjiYpES4p93+Wv4VYhbb1GdbkFHYi3wbbsCPGjWtCp3IL
-         cP+A==
-X-Forwarded-Encrypted: i=1; AJvYcCVAILE095wqH8qmYvMr3Iy1McuZurmhgzb8ZccbXZAtPjBLKmrd2/8zQvvjR58mA0AyLc/CeO+TQUxmHg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0uwaOWRpntJn3M+2fE0eZHn2QOgVDcHzrPDqnfr/h5+1UAR3E
-	9MrYB0rJggpHgqkXP+Hg1y5mm2F9xb5T7rnXlXVzPqs2t4F/gbPt+atbDGkBzReJtvHrrrGZkd0
-	4uFFDAg==
-X-Google-Smtp-Source: AGHT+IEF46Ap3+CoFy4DNwHeeqPSdM0QIu1/iWB0NVseFrH0JqhT9O+vdtR7XjCf1sCWIaN5eWCQMso96V4=
-X-Received: from pjj5.prod.google.com ([2002:a17:90b:5545:b0:330:6cf5:5f38])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:1c07:b0:32e:ca60:6bd7
- with SMTP id 98e67ed59e1d1-334568960d8mr4094341a91.11.1758836121051; Thu, 25
- Sep 2025 14:35:21 -0700 (PDT)
-Date: Thu, 25 Sep 2025 14:35:19 -0700
-In-Reply-To: <20250827175247.83322-10-shivankg@amd.com>
+	s=arc-20240116; t=1758840637; c=relaxed/simple;
+	bh=jZ3UAv/QsXkru5VzXsB+ralPk2H/DdHcQnRd9AZG27o=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=OJ8JSsMRUK04kxMDc5TeYgHRQWgD4RimcFIHURH2kNy/8CKs5L3+hDi3VAd8oh2ioExSqxR3zGCVeZTPbQ0SrwC5L64NmgdcKcYOjG2MGc+hqaIBN1toJh+jQU4NeDxBsnT8n7gAMu+D8vWTyIXkjdw3ZLNl6/JgFkvYXfLZteA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CTdAQsZl; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=X8snIANh; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5814A26093
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 22:50:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1758840633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Kt0IDM3wB31mFc+AFxmVeudHJrWd41U5M7L4KrHVT7s=;
+	b=CTdAQsZlJPaIMZZElTzgu+57PSqTjl5e1cdWVgQTQH5C37YYmhSgCUUyjZn66o6xJRXp+T
+	sGc+m+iOIv1zfv1IXHWkUQjp4rkpFtvRB5GbOZiQk17tDGeJAAt73bwhqkc7/+x8DDXQ9S
+	7e+6fkNAACJiIDM4G1L7HcgrfBwtvys=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=X8snIANh
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1758840632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Kt0IDM3wB31mFc+AFxmVeudHJrWd41U5M7L4KrHVT7s=;
+	b=X8snIANhtCJkmy6rTTeZuu8UfxLbbWr1BUzLMmnXlmfAuCPg3tv6hts01l2EJFb9CdLRRz
+	Y5aCyWnqtgUcND/lF95VxydyK/avf7X7XQMOYu1J6J5bl8VQcC6ZQS71HF3Z3rkVHgZwQH
+	IxvVOkOquvMjzcucxnh0GoHJl115D9g=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8C539132C9
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 22:50:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id S1w+EzfH1WjaUwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 22:50:31 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fallback to buffered read if the inode has data checksum
+Date: Fri, 26 Sep 2025 08:20:13 +0930
+Message-ID: <aa09b68f159fb0de4864de151eeba9250f2e34fd.1758840406.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250827175247.83322-2-shivankg@amd.com> <20250827175247.83322-10-shivankg@amd.com>
-Message-ID: <aNW1l-Wdk6wrigM8@google.com>
-Subject: Re: [PATCH kvm-next V11 7/7] KVM: guest_memfd: selftests: Add tests
- for mmap and NUMA policy support
-From: Sean Christopherson <seanjc@google.com>
-To: Shivank Garg <shivankg@amd.com>
-Cc: willy@infradead.org, akpm@linux-foundation.org, david@redhat.com, 
-	pbonzini@redhat.com, shuah@kernel.org, vbabka@suse.cz, brauner@kernel.org, 
-	viro@zeniv.linux.org.uk, dsterba@suse.com, xiang@kernel.org, chao@kernel.org, 
-	jaegeuk@kernel.org, clm@fb.com, josef@toxicpanda.com, 
-	kent.overstreet@linux.dev, zbestahu@gmail.com, jefflexu@linux.alibaba.com, 
-	dhavale@google.com, lihongbo22@huawei.com, lorenzo.stoakes@oracle.com, 
-	Liam.Howlett@oracle.com, rppt@kernel.org, surenb@google.com, mhocko@suse.com, 
-	ziy@nvidia.com, matthew.brost@intel.com, joshua.hahnjy@gmail.com, 
-	rakie.kim@sk.com, byungchul@sk.com, gourry@gourry.net, 
-	ying.huang@linux.alibaba.com, apopple@nvidia.com, tabba@google.com, 
-	ackerleytng@google.com, paul@paul-moore.com, jmorris@namei.org, 
-	serge@hallyn.com, pvorel@suse.cz, bfoster@redhat.com, vannapurve@google.com, 
-	chao.gao@intel.com, bharata@amd.com, nikunj@amd.com, michael.day@amd.com, 
-	shdhiman@amd.com, yan.y.zhao@intel.com, Neeraj.Upadhyay@amd.com, 
-	thomas.lendacky@amd.com, michael.roth@amd.com, aik@amd.com, jgg@nvidia.com, 
-	kalyazin@amazon.com, peterx@redhat.com, jack@suse.cz, hch@infradead.org, 
-	cgzones@googlemail.com, ira.weiny@intel.com, rientjes@google.com, 
-	roypat@amazon.co.uk, chao.p.peng@intel.com, amit@infradead.org, 
-	ddutile@redhat.com, dan.j.williams@intel.com, ashish.kalra@amd.com, 
-	gshan@redhat.com, jgowans@amazon.com, pankaj.gupta@amd.com, papaluri@amd.com, 
-	yuzhao@google.com, suzuki.poulose@arm.com, quic_eberman@quicinc.com, 
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-coco@lists.linux.dev
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_ONE(0.00)[1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_TRACE(0.00)[suse.com:+];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 5814A26093
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 
-On Wed, Aug 27, 2025, Shivank Garg wrote:
-> Add tests for NUMA memory policy binding and NUMA aware allocation in
-> guest_memfd. This extends the existing selftests by adding proper
-> validation for:
-> - KVM GMEM set_policy and get_policy() vm_ops functionality using
->   mbind() and get_mempolicy()
-> - NUMA policy application before and after memory allocation
-> 
-> These tests help ensure NUMA support for guest_memfd works correctly.
-> 
-> Signed-off-by: Shivank Garg <shivankg@amd.com>
-> ---
->  tools/testing/selftests/kvm/Makefile.kvm      |   1 +
->  .../testing/selftests/kvm/guest_memfd_test.c  | 121 ++++++++++++++++++
->  2 files changed, 122 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/Makefile.kvm b/tools/testing/selftests/kvm/Makefile.kvm
-> index 90f03f00cb04..c46cef2a7cd7 100644
-> --- a/tools/testing/selftests/kvm/Makefile.kvm
-> +++ b/tools/testing/selftests/kvm/Makefile.kvm
-> @@ -275,6 +275,7 @@ pgste-option = $(call try-run, echo 'int main(void) { return 0; }' | \
->  	$(CC) -Werror -Wl$(comma)--s390-pgste -x c - -o "$$TMP",-Wl$(comma)--s390-pgste)
->  
->  LDLIBS += -ldl
-> +LDLIBS += -lnuma
+Commit 968f19c5b1b7 ("btrfs: always fallback to buffered write if the
+inode requires checksum") makes direct writes to fallback to buffered
+ones if the inode has data checksum.
 
-Hrm, this is going to be very annoying.  I don't have libnuma-dev installed on
-any of my <too many> systems, and I doubt I'm alone.  Installing the package is
-trivial, but I'm a little wary of foisting that requirement on all KVM developers
-and build bots.
+That commit is to avoid unreliable user space modifying the write buffer
+during writeback, which can lead to data checksum mismatch.
+(As the checksum is calculated, then buffer is modified, and the
+modified data is submitted)
 
-I'd be especially curious what ARM and RISC-V think, as NUMA is likely a bit less
-prevelant there.
+On the other hand, it's also possible that the user space program can
+modify the read buffer at any time.
 
->  LDFLAGS += -pthread $(no-pie-option) $(pgste-option)
->  
->  LIBKVM_C := $(filter %.c,$(LIBKVM))
-> diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
-> index b3ca6737f304..9640d04ec293 100644
-> --- a/tools/testing/selftests/kvm/guest_memfd_test.c
-> +++ b/tools/testing/selftests/kvm/guest_memfd_test.c
-> @@ -7,6 +7,8 @@
->  #include <stdlib.h>
->  #include <string.h>
->  #include <unistd.h>
-> +#include <numa.h>
-> +#include <numaif.h>
->  #include <errno.h>
->  #include <stdio.h>
->  #include <fcntl.h>
-> @@ -19,6 +21,7 @@
->  #include <sys/mman.h>
->  #include <sys/types.h>
->  #include <sys/stat.h>
-> +#include <sys/syscall.h>
->  
->  #include "kvm_util.h"
->  #include "test_util.h"
-> @@ -72,6 +75,122 @@ static void test_mmap_supported(int fd, size_t page_size, size_t total_size)
->  	TEST_ASSERT(!ret, "munmap() should succeed.");
->  }
->  
-> +#define TEST_REQUIRE_NUMA_MULTIPLE_NODES()	\
-> +	TEST_REQUIRE(numa_available() != -1 && numa_max_node() >= 1)
+If the content is just read from the disk, then during checksum
+verification the user space program modified the read buffer, it will
+cause false alerts about csum mismatch.
 
-Using TEST_REQUIRE() here will result in skipping the _entire_ test.  Ideally
-this test would use fixtures so that each testcase can run in a child process
-and thus can use TEST_REQUIRE(), but that's a conversion for another day.
+Despite the possibility of false alerts, we should also keep the
+behavior between direct read and direct write consistent.
+If direct writes are already falling back to buffered for inodes with
+checksum, the direct reads should also follow the same behavior.
 
-Easiest thing would probably be to turn this into a common helper and then bail
-early.
+So here, add the same data checksum checks for direct reads, so that
+those reads will also fallback to buffered reads.
 
-diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
-index 9640d04ec293..6acb186e5300 100644
---- a/tools/testing/selftests/kvm/guest_memfd_test.c
-+++ b/tools/testing/selftests/kvm/guest_memfd_test.c
-@@ -7,7 +7,6 @@
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
--#include <numa.h>
- #include <numaif.h>
- #include <errno.h>
- #include <stdio.h>
-@@ -75,9 +74,6 @@ static void test_mmap_supported(int fd, size_t page_size, size_t total_size)
-        TEST_ASSERT(!ret, "munmap() should succeed.");
- }
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+This will make test case btrfs/267 fail, as the fallback to buffered
+read will happen in a different context (workqueue), screwing up the pid
+based read balance.
+
+Furthermore true direct reads will require NODATASUM, it no longer makes
+any sense to test direct IO read repair.
+
+If this is merged, I'll send out a patch to remove btrfs/267.
+---
+ fs/btrfs/direct-io.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+index 6018d8c3e101..6f35fed5fa3f 100644
+--- a/fs/btrfs/direct-io.c
++++ b/fs/btrfs/direct-io.c
+@@ -1046,6 +1046,13 @@ ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
+ 	if (check_direct_read(inode_to_fs_info(inode), to, iocb->ki_pos))
+ 		return 0;
  
--#define TEST_REQUIRE_NUMA_MULTIPLE_NODES()     \
--       TEST_REQUIRE(numa_available() != -1 && numa_max_node() >= 1)
--
- static void test_mbind(int fd, size_t page_size, size_t total_size)
- {
-        unsigned long nodemask = 1; /* nid: 0 */
-@@ -87,7 +83,8 @@ static void test_mbind(int fd, size_t page_size, size_t total_size)
-        char *mem;
-        int ret;
- 
--       TEST_REQUIRE_NUMA_MULTIPLE_NODES();
-+       if (!is_multi_numa_node_system())
-+               return;
- 
-        mem = mmap(NULL, total_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-        TEST_ASSERT(mem != MAP_FAILED, "mmap for mbind test should succeed");
-@@ -136,7 +133,8 @@ static void test_numa_allocation(int fd, size_t page_size, size_t total_size)
-        char *mem;
-        int ret, i;
- 
--       TEST_REQUIRE_NUMA_MULTIPLE_NODES();
-+       if (!is_multi_numa_node_system())
-+               return;
- 
-        /* Clean slate: deallocate all file space, if any */
-        ret = fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE, 0, total_size);
-diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-index 23a506d7eca3..d7051607e6bf 100644
---- a/tools/testing/selftests/kvm/include/kvm_util.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util.h
-@@ -21,6 +21,7 @@
- #include <sys/eventfd.h>
- #include <sys/ioctl.h>
- 
-+#include <numa.h>
- #include <pthread.h>
- 
- #include "kvm_util_arch.h"
-@@ -633,6 +634,11 @@ static inline bool is_smt_on(void)
-        return false;
- }
- 
-+static inline bool is_multi_numa_node_system(void)
-+{
-+       return numa_available() != -1 && numa_max_node() >= 1;
-+}
++	/*
++	 * To keep the behavior consistent with direct write, fall back to
++	 * buffered IO if the inode has data checksum.
++	 */
++	if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM))
++		return 0;
 +
- void vm_create_irqchip(struct kvm_vm *vm);
- 
- static inline int __vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size,
+ 	btrfs_inode_lock(BTRFS_I(inode), BTRFS_ILOCK_SHARED);
+ again:
+ 	/*
+-- 
+2.50.1
+
 
