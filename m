@@ -1,361 +1,449 @@
-Return-Path: <linux-btrfs+bounces-17167-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17168-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7AB7B9C8DF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 01:27:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92B0CB9D3D5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 04:50:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EDC264E33DE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Sep 2025 23:27:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C88E7A8593
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 02:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA45129BD83;
-	Wed, 24 Sep 2025 23:26:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6BE72E6CD0;
+	Thu, 25 Sep 2025 02:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="VrPUL79I";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="D02DlbfF"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DTL4+4/l"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-b2-smtp.messagingengine.com (fhigh-b2-smtp.messagingengine.com [202.12.124.153])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698D329AAF3
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Sep 2025 23:26:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 148262E62DC
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 02:50:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758756410; cv=none; b=KDoPxnkhik4w9iTJQnfIANxStSGGdMm+UW487STYzcGke6CVIfm4y9q4ZRUsk6WQ00DohCydwyRYdcL1JBsPzQCdjQfpPZRxcIOG/HPuDHVurYrrwwezosSET2/vKr7Kmyr9wyKcKMPEJvauS4Hyln+Fv6GC2f0eGC7Lputt8I4=
+	t=1758768634; cv=none; b=ZXm9mVU2sSkIIEn14c1ilfESkPy6DOmgKkSfACsic1+azAj9mLoco5kd5GRcfBN/DNWayZ0Rzoxd6H1g/8en97mrg/Ne5vi3rzAOU3xoHW3jQsxN6OnVrGphJKLyJYiM6aX9ffynOFle+heBB0+oQBKzh6X2VVlMMYXDhDqIeLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758756410; c=relaxed/simple;
-	bh=1sm/yUg/IHmnRUVZcd0PZsT8p3UiBmGxKXLJ38bmjSY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lTvtby9tAaLSF/iJ1TTRP9GVa+WNs2T3CM/RK7kjmWOln1gGvWFWgUCHHT5PkhD+kvgSg54a+hh9pNsLibmHLq7DciLgzwIPogUj4vn1aieAYPotp8MG8N6OrSh5GYNxFYc3KOTcmylc0T65z6vjMzP+ptHybWIzYfgCW9zValg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=VrPUL79I; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=D02DlbfF; arc=none smtp.client-ip=202.12.124.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 4D3FC7A00CE;
-	Wed, 24 Sep 2025 19:26:47 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-10.internal (MEProxy); Wed, 24 Sep 2025 19:26:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1758756407;
-	 x=1758842807; bh=XTs/3VMJLeBuROleEymgPunmjsr0iyx4DQMVP6IFxjY=; b=
-	VrPUL79IB9DTF3nCpQbtxzZHmmq9JioQrAUdWLXr5+NOd/QSASTozwFbHTvIOMNp
-	tJWH+8VbsExeWSr71f+AGXJJsFF6pDUcAR6Rz4GfTuG1K/AA1LxCx3qTEZ56xhPD
-	/7J6XFHu6buAMFyv32Bg3OfrIryyS7XvzQFzDg3n/a0paI8n/SvPY59XvHgaLXPt
-	pOvYpziuECltFBhTly1VFi/kWd4Nzj8EZwHJgQro2nXyv5kbdysXiaJLZdddWhI6
-	MoQSVg6IkHFYyUT6mn2vbfqmUJB91yExua8Xy9JyYt2NEiKMuiLrxDGOX9AbAU2e
-	LZucYncSqjv+0FkUdMkV4g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1758756407; x=
-	1758842807; bh=XTs/3VMJLeBuROleEymgPunmjsr0iyx4DQMVP6IFxjY=; b=D
-	02DlbfFtFVKX8K5fd4vjA+MeRXA7z/hXAJ0JArbWc3JUhcg+OoQnxk2G9mDJTTPh
-	j0M2xqrpa/2q/twKQsqU2YtmBgXoAflG1mWsZiIKfRDvWnocbNW41i9jKuyjUpGc
-	eCak8BgIZC0zz8GEZXkBZ0eZLQEbmZA3PaZi8CWy4V1/C4ucnER36ZplpTHvUvsN
-	EI7Yi0/Tx3/7DVYMx96v7OPsMHt1/bTX6mpZEcRNS2pzaYl8/C0Nr/fmD5Pmb9ay
-	V5YszNdVu0VeQvIIBukeIFwqPTAZ6RnzG72/32+QyEm+FWMMl3pRrzyGBLM4DXHO
-	RG3JzqEVu5Vue+8yS+pDg==
-X-ME-Sender: <xms:Nn7UaCx5zGrlknHHBFuJjAnZ5GUdkC9LPAvbkzeTfTOzCHi06mOpeQ>
-    <xme:Nn7UaFsXT7w8dCr6Q-_GfF1vNMJO5hxORkK21bL6hR_pBrPknVq4A1EQyHiFSH_Dz
-    kIb8zuqKZgxtSeBDPu9uD1pDrnVGoQmEv-kOgTGFyK60o6ca1NZ0w>
-X-ME-Received: <xmr:Nn7UaBu8CuN-TjLIhulbs8dgagpC44NbJcnAYqapLryl0vKAa6CtZpXBYBXkQDts4IGaDwW8L5WSqAti2FWFZCYFVTc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdeigeelvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeehhf
-    duhefgkeehudefvdetgfetleeuiefgfefhfeegjeekfeehhffgkeejhfdvheenucffohhm
-    rghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopeef
-    pdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehfughmrghnrghnrgeskhgvrhhnvg
-    hlrdhorhhgpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgv
-    lhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehfsgdrtghomh
-X-ME-Proxy: <xmx:Nn7UaCPdQAxZMwEazz_vvUfm1KCZ3iDRcko_iDihbuM4tdhBi7agWQ>
-    <xmx:Nn7UaH0V8R593DiMXECxSWlF4_eb5M3uL5-mamZADjAN7LwvYZQk3g>
-    <xmx:Nn7UaGP1wQURkDcsPdH96J_OsVXm3raO-HmmBGdsWZr3YiGg_XCmeg>
-    <xmx:Nn7UaP12IzVlM5Fv8yMwp7f_CxmgkOgQd-0v0qvZxwlG26fVbsEW6A>
-    <xmx:N37UaNug5YN4bwZK3ZwPzAzI7_hg5o5jpfuI0GE8MJp2Tf4X-pFPTDkG>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 24 Sep 2025 19:26:46 -0400 (EDT)
-Date: Wed, 24 Sep 2025 16:26:44 -0700
-From: Boris Burkov <boris@bur.io>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: don't ignore ENOMEM in btrfs_add_chunk_map()
-Message-ID: <20250924232644.GA1540167@zen.localdomain>
-References: <0d537ef90213e54835f7aaa090498787db27b33a.1758752652.git.boris@bur.io>
- <CAL3q7H7v-9M485_svy_5BCaWVaf+61DvFB6gMUEWhR=2ykM+qw@mail.gmail.com>
+	s=arc-20240116; t=1758768634; c=relaxed/simple;
+	bh=E/2zkY+laEgtf0hi012ZsFGuFgF/uxt8cYftM4Aj9CI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Cho9bMRjLntaW8dX9RXYC8Ddq8dMHBgJxKJ5UKSQNZgpAH49SsDcsvHfAdXoUAAj+OSzzkaUH4O1gJcEE4ztQ3OeeFk80z23aom/KjoDLt/RuFBRPsULEjDiqrtr3OKd29Ek4NTDXqlEEFJsRwN33ZDmv9rPGT6GRkx9XKIf870=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DTL4+4/l; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-24458345f5dso6105145ad.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Sep 2025 19:50:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1758768631; x=1759373431; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WtyEMQPJo4fqytrWkgTZ3RdyfRt093nOgUIpQGdycFA=;
+        b=DTL4+4/lMjhhsDylR6AIPVgrvDE/Ruo/1CUOZZ/VvVtgSeFMOXQEDfEIzbwL67oSZK
+         mVe08kSve1q3RIr7/0hyPXaiNUs8eBZsxX+2RFR3IYHJ2t21qWyoQznBs6Qkvs9JtoQB
+         Ihu8gzRar+Hx4/42DtEkCrdl3BAqAkGsBWG9uQuPJGgrI5VHn9pYg08aaB5Tmmqfw5Fm
+         fV0mc6r5TBcXTIjk4CESUew1abD0JZhJpCETVFUsYn+IgkzMc0BQi/YJe/bz+/7W6QXy
+         R5MIEzpEPmNdI7mjlA1lQ+HTrIjl6B76I1AUnHO3wXf1LJEvcS4681rKB3unWFkb+xwa
+         nADQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758768631; x=1759373431;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WtyEMQPJo4fqytrWkgTZ3RdyfRt093nOgUIpQGdycFA=;
+        b=lY2du8tRvqR+eHnw0JsdJQH9Co1aizdmS69UU4RydYrFIEsIoiNZJtjy2UxPZ3SDlC
+         6U28ecKZxQR4Q13ss6ZCicNmXgfHLhBYh1Eq4l27NOmdIYDDcAto7s4p3utFGtHRujbV
+         YDudxCm+Z23/N6eUca+vokulAVMdK3LWt1iqP+GYP8u2AmTOEXeq3hrm/Kdmgy54214U
+         h/E2f33LyIIrs6g2CxKtJJPv8SlyAfxG/6PlxkOqZhZUSUuTEpZzBDIvFvKTlcPDCPd5
+         RIPXaApp84+nJH+H0Tf2bsij2NrDap80v00oPhd4eIyaS0Co8xo6aOoEzbqMJIs8v9B+
+         5A0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVP3NeAGxRgyddg2rRQSxCxgZS8riQdeFhztow+gxhZ7EH+x70iI4A7OAw7HDsiGN/0gcnz/VGztJ9tyg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3QEcRCYxyWsomb6OQJLoUvWsl6GSJEd0vwOuOusmmmx9+1Y6p
+	FJKu9YOG2qTWKiXpRRvp/QpMIk1PnYhBGJXdkBrsTBOuNDlom4/DAaFVkCsMNPjXaepsrGjUpJm
+	KBvuwmg==
+X-Google-Smtp-Source: AGHT+IFUzTzL+1uqRK/gqbR3SSwstvzUfWk/CsgKEnRDPuVsxH9OFn3e2zcGuFZY0INSLtUo/3MF8Uc68Iw=
+X-Received: from pjbnn3.prod.google.com ([2002:a17:90b:38c3:b0:32d:e264:a78e])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:1b0b:b0:266:f01a:98d5
+ with SMTP id d9443c01a7336-27ed4ab37a2mr23319415ad.57.1758768631155; Wed, 24
+ Sep 2025 19:50:31 -0700 (PDT)
+Date: Wed, 24 Sep 2025 19:50:29 -0700
+In-Reply-To: <diqztt1sbd2v.fsf@google.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H7v-9M485_svy_5BCaWVaf+61DvFB6gMUEWhR=2ykM+qw@mail.gmail.com>
+Mime-Version: 1.0
+References: <20250827175247.83322-2-shivankg@amd.com> <20250827175247.83322-7-shivankg@amd.com>
+ <diqztt1sbd2v.fsf@google.com>
+Message-ID: <aNSt9QT8dmpDK1eE@google.com>
+Subject: Re: [PATCH kvm-next V11 4/7] KVM: guest_memfd: Use guest mem inodes
+ instead of anonymous inodes
+From: Sean Christopherson <seanjc@google.com>
+To: Ackerley Tng <ackerleytng@google.com>
+Cc: Shivank Garg <shivankg@amd.com>, willy@infradead.org, akpm@linux-foundation.org, 
+	david@redhat.com, pbonzini@redhat.com, shuah@kernel.org, vbabka@suse.cz, 
+	brauner@kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com, 
+	xiang@kernel.org, chao@kernel.org, jaegeuk@kernel.org, clm@fb.com, 
+	josef@toxicpanda.com, kent.overstreet@linux.dev, zbestahu@gmail.com, 
+	jefflexu@linux.alibaba.com, dhavale@google.com, lihongbo22@huawei.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org, 
+	surenb@google.com, mhocko@suse.com, ziy@nvidia.com, matthew.brost@intel.com, 
+	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com, 
+	gourry@gourry.net, ying.huang@linux.alibaba.com, apopple@nvidia.com, 
+	tabba@google.com, paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, 
+	pvorel@suse.cz, bfoster@redhat.com, vannapurve@google.com, chao.gao@intel.com, 
+	bharata@amd.com, nikunj@amd.com, michael.day@amd.com, shdhiman@amd.com, 
+	yan.y.zhao@intel.com, Neeraj.Upadhyay@amd.com, thomas.lendacky@amd.com, 
+	michael.roth@amd.com, aik@amd.com, jgg@nvidia.com, kalyazin@amazon.com, 
+	peterx@redhat.com, jack@suse.cz, hch@infradead.org, cgzones@googlemail.com, 
+	ira.weiny@intel.com, rientjes@google.com, roypat@amazon.co.uk, 
+	chao.p.peng@intel.com, amit@infradead.org, ddutile@redhat.com, 
+	dan.j.williams@intel.com, ashish.kalra@amd.com, gshan@redhat.com, 
+	jgowans@amazon.com, pankaj.gupta@amd.com, papaluri@amd.com, yuzhao@google.com, 
+	suzuki.poulose@arm.com, quic_eberman@quicinc.com, 
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-coco@lists.linux.dev
+Content-Type: text/plain; charset="us-ascii"
 
-On Thu, Sep 25, 2025 at 12:05:21AM +0100, Filipe Manana wrote:
-> On Wed, Sep 24, 2025 at 11:24 PM Boris Burkov <boris@bur.io> wrote:
-> >
-> > btrfs_set_extent_bit() can return ENOMEM, which
-> > chunk_map_device_(set|clear)_bits() was ignoring, so
-> > btrfs_add_chunk_map() was silently failing in those cases. This led to
-> > double allocating dev extents, ultimately resulting in an EEXIST in
-> > add_dev_extent_item(): (ignore the btrfs_force_chunk_alloc_store thing,
-> > we are using a DEBUG feature that isn't widely used here)
-> >
-> >   ------------[ cut here ]------------
-> >   BTRFS: Transaction aborted (error -17)
-> >   WARNING: CPU: 5 PID: 3586339 at fs/btrfs/block-group.c:2764 btrfs_create_pending_block_groups+0x5fc/0x620
-> >   RIP: 0010:btrfs_create_pending_block_groups+0x5fc/0x620
-> >   Code: 9c fd ff ff 48 c7 c7 e8 69 64 82 44 89 ee e8 4b 87 e6 ff 0f 0b e9 99 fe ff ff 48 c7 c7 e8 69 64 82 48 8b 34 24 e8 34 87 e6 ff <0f> 0b eb a0 48 c7 c7 e8 69 64 82 44 89 e6 e8 21 87 e6 ff 0f 0b e9
-> >   RSP: 0018:ffffc90060693d38 EFLAGS: 00010286
-> >   RAX: 0000000000000026 RBX: ffff8882be92fed8 RCX: 0000000000000027
-> >   RDX: ffff88bf42f6e040 RSI: ffff88bf42f60c48 RDI: ffff88bf42f60c48
-> >   RBP: ffff888282585d18 R08: 0000000000000000 R09: 0000000000000000
-> >   R10: 4000000000000000 R11: 000000000000691d R12: ffff88c0471a3300
-> >   R13: 0000001dc6500000 R14: ffff8882829d9000 R15: ffff8882be92ff40
-> >   FS:  00007f7ccbc2c740(0000) GS:ffff88bf42f40000(0000) knlGS:0000000000000000
-> >   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >   CR2: 0000000004e421c8 CR3: 0000000cd6384001 CR4: 0000000000770ef0
-> >   PKRU: 55555554
-> >   Call Trace:
-> >    <TASK>
-> >    ? __warn+0xa0/0x130
-> >    ? btrfs_create_pending_block_groups+0x5fc/0x620
-> >    ? report_bug+0xf2/0x150
-> >    ? handle_bug+0x3d/0x70
-> >    ? exc_invalid_op+0x16/0x40
-> >    ? asm_exc_invalid_op+0x16/0x20
-> >    ? btrfs_create_pending_block_groups+0x5fc/0x620
-> >    ? btrfs_create_pending_block_groups+0x5fc/0x620
-> >    __btrfs_end_transaction.llvm.3999538623537568469+0x3d/0x1c0
-> >    btrfs_force_chunk_alloc_store+0xaf/0x100
-> >    ? sysfs_kf_read+0x90/0x90
-> >    kernfs_fop_write_iter.llvm.10031329899921036925+0xd0/0x180
-> >    __x64_sys_write+0x279/0x5a0
-> >    do_syscall_64+0x63/0x130
-> >    ? exc_page_fault+0x63/0x130
-> >    entry_SYSCALL_64_after_hwframe+0x4b/0x53
-> >   RIP: 0033:0x7f7ccb4ff28f
-> >   Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 a9 89 f8 ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 fc 89 f8 ff 48
-> >   RSP: 002b:00007ffda7138f20 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
-> >   RAX: ffffffffffffffda RBX: 0000000009c13140 RCX: 00007f7ccb4ff28f
-> >   RDX: 0000000000000001 RSI: 0000000004e401b0 RDI: 00000000000000c8
-> >   RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-> >   R10: 0000000000008000 R11: 0000000000000293 R12: 0000000000000000
-> >   R13: 0000000000408820 R14: 0000000000407f00 R15: 00007ffda7138fc0
-> >    </TASK>
-> >   ---[ end trace 0000000000000000 ]---
-> >   BTRFS: error (device nvme0n1p2 state A) in btrfs_create_pending_block_groups:2764: errno=-17 Object already exists
-> >   BTRFS warning (device nvme0n1p2 state EA): Skipping commit of aborted transaction.
-> >   BTRFS: error (device nvme0n1p2 state EA) in cleanup_transaction:2018: errno=-17 Object already exists
-> >
-> > This was pretty confusing to debug and I think it would be helpful to
-> > get the proper ENOMEM error sent up to the appropriate transaction when
-> > it happens.
-> >
-> > Note:
-> > Most callsites of btrfs_set_extent_bit() are not checked, however, which
-> > does give me pause. Either we have a lot more inaccuracies like this out
-> > there, or I have misanalyzed this scenario. I was able to reproduce the
-> > above calltrace by injecting enomem errors in to the set_extent_bits
-> > path here, for what it's worth.
+My apologies for the super late feedback.  None of this is critical (mechanical
+things that can be cleaned up after the fact), so if there's any urgency to
+getting this series into 6.18, just ignore it.
+
+On Wed, Aug 27, 2025, Ackerley Tng wrote:
+> Shivank Garg <shivankg@amd.com> writes:
+> @@ -463,11 +502,70 @@ bool __weak kvm_arch_supports_gmem_mmap(struct kvm *kvm)
+>  	return true;
+>  }
 > 
-> Most callers are not checking -ENOMEM (or other errors) because we
-> shouldn't have -ENOMEM with any of the functions that end up at
-> set_extent_bit().
-> There, under the 'again' label, before taking the io tree's lock we do:
+> +static struct inode *kvm_gmem_inode_create(const char *name, loff_t size,
+> +					   u64 flags)
+> +{
+> +	struct inode *inode;
+> +
+> +	inode = anon_inode_make_secure_inode(kvm_gmem_mnt->mnt_sb, name, NULL);
+> +	if (IS_ERR(inode))
+> +		return inode;
+> +
+> +	inode->i_private = (void *)(unsigned long)flags;
+> +	inode->i_op = &kvm_gmem_iops;
+> +	inode->i_mapping->a_ops = &kvm_gmem_aops;
+> +	inode->i_mode |= S_IFREG;
+> +	inode->i_size = size;
+> +	mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
+> +	mapping_set_inaccessible(inode->i_mapping);
+> +	/* Unmovable mappings are supposed to be marked unevictable as well. */
+> +	WARN_ON_ONCE(!mapping_unevictable(inode->i_mapping));
+> +
+> +	return inode;
+> +}
+> +
+> +static struct file *kvm_gmem_inode_create_getfile(void *priv, loff_t size,
+> +						  u64 flags)
+> +{
+> +	static const char *name = "[kvm-gmem]";
+> +	struct inode *inode;
+> +	struct file *file;
+> +	int err;
+> +
+> +	err = -ENOENT;
+> +	/* __fput() will take care of fops_put(). */
+> +	if (!fops_get(&kvm_gmem_fops))
+> +		goto err;
+> +
+> +	inode = kvm_gmem_inode_create(name, size, flags);
+> +	if (IS_ERR(inode)) {
+> +		err = PTR_ERR(inode);
+> +		goto err_fops_put;
+> +	}
+> +
+> +	file = alloc_file_pseudo(inode, kvm_gmem_mnt, name, O_RDWR,
+> +				 &kvm_gmem_fops);
+> +	if (IS_ERR(file)) {
+> +		err = PTR_ERR(file);
+> +		goto err_put_inode;
+> +	}
+> +
+> +	file->f_flags |= O_LARGEFILE;
+> +	file->private_data = priv;
+> +
+> +	return file;
+> +
+> +err_put_inode:
+> +	iput(inode);
+> +err_fops_put:
+> +	fops_put(&kvm_gmem_fops);
+> +err:
+> +	return ERR_PTR(err);
+> +}
+
+I don't see any reason to add two helpers.  It requires quite a bit more lines
+of code due to adding more error paths and local variables, and IMO doesn't make
+the code any easier to read.
+
+Passing in "gmem" as @priv is especially ridiculous, as it adds code and
+obfuscates what file->private_data is set to.
+
+I get the sense that the code was written to be a "replacement" for common APIs,
+but that is nonsensical (no pun intended).
+
+>  static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags)
+>  {
+> -	const char *anon_name = "[kvm-gmem]";
+>  	struct kvm_gmem *gmem;
+> -	struct inode *inode;
+>  	struct file *file;
+>  	int fd, err;
 > 
-> prealloc = alloc_extent_state(mask);
+> @@ -481,32 +579,16 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags)
+>  		goto err_fd;
+>  	}
 > 
-> If that returns NULL, we proceed, take the lock and navigate the rb tree.
-> If it turns out we need an extent state record (and we don't always
-> need one), we call alloc_extent_state_atomic().
-> If that fails (returns NULL) we do a goto 'search_again', which
-> unlocks the tree and does a goto to the 'again' label at the very top,
-> where we once again call alloc_extent_state() and repeat all those
-> steps again.
+> -	file = anon_inode_create_getfile(anon_name, &kvm_gmem_fops, gmem,
+> -					 O_RDWR, NULL);
+> +	file = kvm_gmem_inode_create_getfile(gmem, size, flags);
+>  	if (IS_ERR(file)) {
+>  		err = PTR_ERR(file);
+>  		goto err_gmem;
+>  	}
 > 
-> So if we can't allocate memory, we keep doing that loop over and over
-> until we can allocate or don't need to allocate (due to concurrent
-> changes in the tree) - we never return -ENOMEM in set_extent_bit().
-> 
-> The same logic applies to btrfs_clear_extent_bit_changeset(), the core
-> function to clear bits from a range - we don't ever return -ENOMEM and
-> keep looping until we can allocate.
-> 
-> The only io tree function we return -ENOMEM is for the convert
-> operation (btrfs_convert_extent_bit()), where the single caller can
-> deal with -ENOMEM (I remember doing that logic many years ago).
-> 
-> So I don't know what that error injection you mention is doing or that
-> btrfs_force_chunk_alloc_store thing you mention with some custom
-> debugging feature, but I don't see how we can return -ENOMEM.
-> Care to elaborate in detail?
-> 
-> Thanks.
-> 
-> 
-> 
+> -	file->f_flags |= O_LARGEFILE;
+> -
+> -	inode = file->f_inode;
+> -	WARN_ON(file->f_mapping != inode->i_mapping);
+> -
+> -	inode->i_private = (void *)(unsigned long)flags;
+> -	inode->i_op = &kvm_gmem_iops;
+> -	inode->i_mapping->a_ops = &kvm_gmem_aops;
+> -	inode->i_mode |= S_IFREG;
+> -	inode->i_size = size;
+> -	mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
+> -	mapping_set_inaccessible(inode->i_mapping);
+> -	/* Unmovable mappings are supposed to be marked unevictable as well. */
+> -	WARN_ON_ONCE(!mapping_unevictable(inode->i_mapping));
+> -
+>  	kvm_get_kvm(kvm);
+>  	gmem->kvm = kvm;
+>  	xa_init(&gmem->bindings);
+> -	list_add(&gmem->entry, &inode->i_mapping->i_private_list);
+> +	list_add(&gmem->entry, &file_inode(file)->i_mapping->i_private_list);
 
-Thanks for the reply and explanation.
+I don't understand this change?  Isn't file_inode(file) == inode?
 
-I did indeed miss the looping in set_extent_bit() and somehow got it
-confused with convert_extent_bit(), because I do remember reading the
-first_iteration check. So first things first, I agree with your analysis
-on the return value.
+Compile tested only, and again not critical, but it's -40 LoC...
 
-As for the error injection and debug feature, here is the full story of
-what I was up to:
 
-For a few years now, in prod, we have been using the sysfs
-force_chunk_alloc file added here
-https://lore.kernel.org/linux-btrfs/20220208193122.492533-4-shr@fb.com/
-to force metadata allocations on healthy filesystems to create a buffer
-to protect from ENOSPC. This predates our adoption of auto relocation
-and then dynamic relocation, so it is possible we don't need it anymore.
-But we are writing to it for metadata block groups when they have <5G
-allocated. (And we carry an out of tree patch to include that sysfs file
-without CONFIG_BTRFS_DEBUG)
+---
+ include/uapi/linux/magic.h |  1 +
+ virt/kvm/guest_memfd.c     | 75 ++++++++++++++++++++++++++++++++------
+ virt/kvm/kvm_main.c        |  7 +++-
+ virt/kvm/kvm_mm.h          |  9 +++--
+ 4 files changed, 76 insertions(+), 16 deletions(-)
 
-Now, what I have observed on prod hosts is the stack trace that I included
-in the commit message, so I was investigating that. I looked pretty
-closely at one such host in drgn and observed that we had a pattern in
-the dev extents that looked like:
+diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
+index bb575f3ab45e..638ca21b7a90 100644
+--- a/include/uapi/linux/magic.h
++++ b/include/uapi/linux/magic.h
+@@ -103,5 +103,6 @@
+ #define DEVMEM_MAGIC		0x454d444d	/* "DMEM" */
+ #define SECRETMEM_MAGIC		0x5345434d	/* "SECM" */
+ #define PID_FS_MAGIC		0x50494446	/* "PIDF" */
++#define GUEST_MEMFD_MAGIC	0x474d454d	/* "GMEM" */
+ 
+ #endif /* __LINUX_MAGIC_H__ */
+diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
+index 08a6bc7d25b6..73c9791879d5 100644
+--- a/virt/kvm/guest_memfd.c
++++ b/virt/kvm/guest_memfd.c
+@@ -1,12 +1,16 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <linux/anon_inodes.h>
+ #include <linux/backing-dev.h>
+ #include <linux/falloc.h>
++#include <linux/fs.h>
+ #include <linux/kvm_host.h>
++#include <linux/pseudo_fs.h>
+ #include <linux/pagemap.h>
+-#include <linux/anon_inodes.h>
+ 
+ #include "kvm_mm.h"
+ 
++static struct vfsmount *kvm_gmem_mnt;
++
+ struct kvm_gmem {
+ 	struct kvm *kvm;
+ 	struct xarray bindings;
+@@ -385,9 +389,45 @@ static struct file_operations kvm_gmem_fops = {
+ 	.fallocate	= kvm_gmem_fallocate,
+ };
+ 
+-void kvm_gmem_init(struct module *module)
++static int kvm_gmem_init_fs_context(struct fs_context *fc)
++{
++	if (!init_pseudo(fc, GUEST_MEMFD_MAGIC))
++		return -ENOMEM;
++
++	fc->s_iflags |= SB_I_NOEXEC;
++	fc->s_iflags |= SB_I_NODEV;
++
++	return 0;
++}
++
++static struct file_system_type kvm_gmem_fs = {
++	.name		 = "guest_memfd",
++	.init_fs_context = kvm_gmem_init_fs_context,
++	.kill_sb	 = kill_anon_super,
++};
++
++static int kvm_gmem_init_mount(void)
++{
++	kvm_gmem_mnt = kern_mount(&kvm_gmem_fs);
++
++	if (IS_ERR(kvm_gmem_mnt))
++		return PTR_ERR(kvm_gmem_mnt);
++
++	kvm_gmem_mnt->mnt_flags |= MNT_NOEXEC;
++	return 0;
++}
++
++int kvm_gmem_init(struct module *module)
+ {
+ 	kvm_gmem_fops.owner = module;
++
++	return kvm_gmem_init_mount();
++}
++
++void kvm_gmem_exit(void)
++{
++	kern_unmount(kvm_gmem_mnt);
++	kvm_gmem_mnt = NULL;
+ }
+ 
+ static int kvm_gmem_migrate_folio(struct address_space *mapping,
+@@ -465,7 +505,7 @@ bool __weak kvm_arch_supports_gmem_mmap(struct kvm *kvm)
+ 
+ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags)
+ {
+-	const char *anon_name = "[kvm-gmem]";
++	static const char *name = "[kvm-gmem]";
+ 	struct kvm_gmem *gmem;
+ 	struct inode *inode;
+ 	struct file *file;
+@@ -481,17 +521,17 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags)
+ 		goto err_fd;
+ 	}
+ 
+-	file = anon_inode_create_getfile(anon_name, &kvm_gmem_fops, gmem,
+-					 O_RDWR, NULL);
+-	if (IS_ERR(file)) {
+-		err = PTR_ERR(file);
++	/* __fput() will take care of fops_put(). */
++	if (!fops_get(&kvm_gmem_fops)) {
++		err = -ENOENT;
+ 		goto err_gmem;
+ 	}
+ 
+-	file->f_flags |= O_LARGEFILE;
+-
+-	inode = file->f_inode;
+-	WARN_ON(file->f_mapping != inode->i_mapping);
++	inode = anon_inode_make_secure_inode(kvm_gmem_mnt->mnt_sb, name, NULL);
++	if (IS_ERR(inode)) {
++		err = PTR_ERR(inode);
++		goto err_fops;
++	}
+ 
+ 	inode->i_private = (void *)(unsigned long)flags;
+ 	inode->i_op = &kvm_gmem_iops;
+@@ -503,6 +543,15 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags)
+ 	/* Unmovable mappings are supposed to be marked unevictable as well. */
+ 	WARN_ON_ONCE(!mapping_unevictable(inode->i_mapping));
+ 
++	file = alloc_file_pseudo(inode, kvm_gmem_mnt, name, O_RDWR, &kvm_gmem_fops);
++	if (IS_ERR(file)) {
++		err = PTR_ERR(file);
++		goto err_inode;
++	}
++
++	file->f_flags |= O_LARGEFILE;
++	file->private_data = gmem;
++
+ 	kvm_get_kvm(kvm);
+ 	gmem->kvm = kvm;
+ 	xa_init(&gmem->bindings);
+@@ -511,6 +560,10 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags)
+ 	fd_install(fd, file);
+ 	return fd;
+ 
++err_inode:
++	iput(inode);
++err_fops:
++	fops_put(&kvm_gmem_fops);
+ err_gmem:
+ 	kfree(gmem);
+ err_fd:
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 18f29ef93543..301d48d6e00d 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -6489,7 +6489,9 @@ int kvm_init(unsigned vcpu_size, unsigned vcpu_align, struct module *module)
+ 	if (WARN_ON_ONCE(r))
+ 		goto err_vfio;
+ 
+-	kvm_gmem_init(module);
++	r = kvm_gmem_init(module);
++	if (r)
++		goto err_gmem;
+ 
+ 	r = kvm_init_virtualization();
+ 	if (r)
+@@ -6510,6 +6512,8 @@ int kvm_init(unsigned vcpu_size, unsigned vcpu_align, struct module *module)
+ err_register:
+ 	kvm_uninit_virtualization();
+ err_virt:
++	kvm_gmem_exit();
++err_gmem:
+ 	kvm_vfio_ops_exit();
+ err_vfio:
+ 	kvm_async_pf_deinit();
+@@ -6541,6 +6545,7 @@ void kvm_exit(void)
+ 	for_each_possible_cpu(cpu)
+ 		free_cpumask_var(per_cpu(cpu_kick_mask, cpu));
+ 	kmem_cache_destroy(kvm_vcpu_cache);
++	kvm_gmem_exit();
+ 	kvm_vfio_ops_exit();
+ 	kvm_async_pf_deinit();
+ 	kvm_irqfd_exit();
+diff --git a/virt/kvm/kvm_mm.h b/virt/kvm/kvm_mm.h
+index 31defb08ccba..9fcc5d5b7f8d 100644
+--- a/virt/kvm/kvm_mm.h
++++ b/virt/kvm/kvm_mm.h
+@@ -68,17 +68,18 @@ static inline void gfn_to_pfn_cache_invalidate_start(struct kvm *kvm,
+ #endif /* HAVE_KVM_PFNCACHE */
+ 
+ #ifdef CONFIG_KVM_GUEST_MEMFD
+-void kvm_gmem_init(struct module *module);
++int kvm_gmem_init(struct module *module);
++void kvm_gmem_exit(void);
+ int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args);
+ int kvm_gmem_bind(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 		  unsigned int fd, loff_t offset);
+ void kvm_gmem_unbind(struct kvm_memory_slot *slot);
+ #else
+-static inline void kvm_gmem_init(struct module *module)
++static inline int kvm_gmem_init(struct module *module)
+ {
+-
++	return 0;
+ }
+-
++static inline void kvm_gmem_exit(void) {};
+ static inline int kvm_gmem_bind(struct kvm *kvm,
+ 					 struct kvm_memory_slot *slot,
+ 					 unsigned int fd, loff_t offset)
 
-Logical L: Single data chunk at physical P
-Logical L+1: Dup metadata chunk at physical P-1, dup mapped to P
-
-And writing the DEV_EXTENT item for the second stripe was causing the
-EEXIST.
-
-During that investigation, due to mis-remembering ENOMEMs from extent
-state bits in my quotas work (that code also uses changesets...) and
-mixing up convert_extent_bit() and set_extent_bit(), I hypothesized
-that ignoring an ENOMEM might cause that error. So I made a workload
-that hit the force chunk alloc file, added manual random ENOMEM
-injection into chunk_map_device_set_bits() (which I now agree is
-pointless and can't happen), and did in fact reproduce the same pattern
-of error. From there I jumped to the conclusion that this is the problem
-and sent this patch (and tested my new code with the stupid non-real
-error injection). It didn't help that the host I was investigating did
-have a good amount of OOMs in the dmesg to further lead me astray :)
-
-So at this point, I need to go back to the drawing board on what is
-causing the overlapping chunk allocations, it does not appear to be OOM.
-
-On the bright side, this is great news, because I was NOT looking
-forward to trying to fix all the callsites, especially if unwinding the
-successfully set bits before an error was needed...
-
-Thanks,
-Boris
-
-> >
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >  fs/btrfs/volumes.c | 47 ++++++++++++++++++++++++++++++++++------------
-> >  1 file changed, 35 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> > index 2bec544d8ba3..eda5b6b907d9 100644
-> > --- a/fs/btrfs/volumes.c
-> > +++ b/fs/btrfs/volumes.c
-> > @@ -5434,28 +5434,42 @@ static int decide_stripe_size(struct btrfs_fs_devices *fs_devices,
-> >         }
-> >  }
-> >
-> > -static void chunk_map_device_set_bits(struct btrfs_chunk_map *map, unsigned int bits)
-> > +static int chunk_map_device_set_bits(struct btrfs_chunk_map *map, unsigned int bits)
-> >  {
-> > +       int ret;
-> > +
-> >         for (int i = 0; i < map->num_stripes; i++) {
-> >                 struct btrfs_io_stripe *stripe = &map->stripes[i];
-> >                 struct btrfs_device *device = stripe->dev;
-> >
-> > -               btrfs_set_extent_bit(&device->alloc_state, stripe->physical,
-> > -                                    stripe->physical + map->stripe_size - 1,
-> > -                                    bits | EXTENT_NOWAIT, NULL);
-> > +               ret = btrfs_set_extent_bit(
-> > +                       &device->alloc_state, stripe->physical,
-> > +                       stripe->physical + map->stripe_size - 1,
-> > +                       bits | EXTENT_NOWAIT, NULL);
-> > +               if (ret)
-> > +                       return ret;
-> >         }
-> > +       ret = 0;
-> > +       return ret;
-> >  }
-> >
-> > -static void chunk_map_device_clear_bits(struct btrfs_chunk_map *map, unsigned int bits)
-> > +static int chunk_map_device_clear_bits(struct btrfs_chunk_map *map, unsigned int bits)
-> >  {
-> > +       int ret;
-> > +
-> >         for (int i = 0; i < map->num_stripes; i++) {
-> >                 struct btrfs_io_stripe *stripe = &map->stripes[i];
-> >                 struct btrfs_device *device = stripe->dev;
-> >
-> > -               btrfs_clear_extent_bit(&device->alloc_state, stripe->physical,
-> > -                                      stripe->physical + map->stripe_size - 1,
-> > -                                      bits | EXTENT_NOWAIT, NULL);
-> > +               ret = btrfs_clear_extent_bit(
-> > +                       &device->alloc_state, stripe->physical,
-> > +                       stripe->physical + map->stripe_size - 1,
-> > +                       bits | EXTENT_NOWAIT, NULL);
-> > +               if (ret)
-> > +                       return ret;
-> >         }
-> > +       ret = 0;
-> > +       return ret;
-> >  }
-> >
-> >  void btrfs_remove_chunk_map(struct btrfs_fs_info *fs_info, struct btrfs_chunk_map *map)
-> > @@ -5488,6 +5502,7 @@ static int btrfs_chunk_map_cmp(const struct rb_node *new,
-> >  EXPORT_FOR_TESTS
-> >  int btrfs_add_chunk_map(struct btrfs_fs_info *fs_info, struct btrfs_chunk_map *map)
-> >  {
-> > +       int ret;
-> >         struct rb_node *exist;
-> >
-> >         write_lock(&fs_info->mapping_tree_lock);
-> > @@ -5498,11 +5513,19 @@ int btrfs_add_chunk_map(struct btrfs_fs_info *fs_info, struct btrfs_chunk_map *m
-> >                 write_unlock(&fs_info->mapping_tree_lock);
-> >                 return -EEXIST;
-> >         }
-> > -       chunk_map_device_set_bits(map, CHUNK_ALLOCATED);
-> > -       chunk_map_device_clear_bits(map, CHUNK_TRIMMED);
-> > -       write_unlock(&fs_info->mapping_tree_lock);
-> >
-> > -       return 0;
-> > +       ret = chunk_map_device_set_bits(map, CHUNK_ALLOCATED);
-> > +       if (ret)
-> > +               goto out;
-> > +       ret = chunk_map_device_clear_bits(map, CHUNK_TRIMMED);
-> > +
-> > +out:
-> > +       if (ret) {
-> > +               rb_erase_cached(&map->rb_node, &fs_info->mapping_tree);
-> > +               RB_CLEAR_NODE(&map->rb_node);
-> > +       }
-> > +       write_unlock(&fs_info->mapping_tree_lock);
-> > +       return ret;
-> >  }
-> >
-> >  EXPORT_FOR_TESTS
-> > --
-> > 2.50.1
-> >
-> >
+base-commit: d133892dddd6607de651b7e32510359a6af97c4c
+--
 
