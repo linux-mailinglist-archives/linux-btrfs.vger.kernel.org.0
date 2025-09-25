@@ -1,210 +1,248 @@
-Return-Path: <linux-btrfs+bounces-17195-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17196-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 326B5BA118F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 20:57:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EE7CBA1A38
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 23:44:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45CEE1C2317F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 18:57:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E77862258C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Sep 2025 21:43:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED08131B122;
-	Thu, 25 Sep 2025 18:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333A9323F5E;
+	Thu, 25 Sep 2025 21:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="FPaJARfo"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="onw8lRvi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-y-209.mailbox.org (mout-y-209.mailbox.org [91.198.250.237])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F9302F25FE;
-	Thu, 25 Sep 2025 18:56:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.198.250.237
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F81D322529
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 21:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758826620; cv=none; b=lLF3RgQ8cEHw1nonnr7TOPEnxrlEbx/j29qyDYw95rgzjfb1pdmJtmboaCVznNVJ7x+yB/7UJHg2pZsFoBxFz94rilTwbvRtgKvuj4aGJvxc4wq5kmH8ZmrnQY1r+p44/ib42R7buO2FPYeXahfw8ip5GmH/m5tnC78hSUbR8qE=
+	t=1758836124; cv=none; b=N+ftND6ozhEr0NcHRVeRSEobindxXUtHT+/SPkuIyCQ7d8SbprmFivnk7nje7FyfjE8S3pKxMBoi8k/1LexIOF/dnudmVRa3jU2rqmIMaFav4GFFgDivrjf+fV1QptvZcxfC537Mjlzs7W8s8rihUqv+6xMbGToWr3Hgno2Ra1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758826620; c=relaxed/simple;
-	bh=/kUnDydi7GOU2wrt+7lXJY3iDruaObfBM4Lpzc+jpuU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NsKbWC1Mo0pYAUI+YPRsXMVLQ4UiGkko+ntaaRbEZr+fOeApKZa2uA5mGLomw2Ynz/98+AYuFjfNQY2foT47tYE8YQ9X8Xe+fDrIm7T0pLKaf2oNakEPwULhDu6+CsOKtu9DEwgEwUsPqaI4EbeLxnnrSYRyhTlNASzI4MgUfb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=FPaJARfo; arc=none smtp.client-ip=91.198.250.237
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-y-209.mailbox.org (Postfix) with ESMTPS id 4cXjcj2G5KzB0lB;
-	Thu, 25 Sep 2025 20:56:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
-	t=1758826613;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GSJk51wGcX8ogggQQD5GJZXXOMs7lSWLNHhhqSkA+QU=;
-	b=FPaJARfoKGbJUTR+IW5JxIpdKOvsSh86Dy2cyu/023vj+HPcmiVmLFAlNk3LdB5dJ7Db1i
-	AKB3FzQ8HE8zxQbAHwESSRF6+Xeizm2Vo34gEAB8lnoyPOIWXhdEUQuida16qKaewvgYTt
-	Q+bvDcIwBQwqAZcdOEz/3JO726OPCtMr+CkQgUEbUU9m2MtmVNc0Y2yN6mz5btrq8QuGxz
-	8Rge60iYNKRZDqw/1xKzXSjbZ3RCr6LV2S/GTt2tUhWHfjXIOmocppddSBNpz/2WqXTjHR
-	YmFPIheT6mis3K1zw35oY4dHnHybtYd9rbe+l2vIhjuBqa7n2gEeMtJea74htw==
-From: =?utf-8?Q?Miquel_Sabat=C3=A9_Sol=C3=A0?= <mssola@mssola.com>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Boris Burkov <boris@bur.io>,  linux-btrfs@vger.kernel.org,  clm@fb.com,
-  dsterba@suse.com,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: ioctl: Fix memory leak on duplicated memory
-In-Reply-To: <87plbegzi0.fsf@> ("Miquel =?utf-8?Q?Sabat=C3=A9_Sol=C3=A0=22?=
- =?utf-8?Q?'s?= message of "Thu, 25 Sep
-	2025 20:26:15 +0200")
-References: <20250925145331.357022-1-mssola@mssola.com>
-	<20250925172529.GA1937085@zen.localdomain>
-	<CAL3q7H6860uRYyT2O9wRA99pD_MqFKdu=-tTngSJReM5hGNZwA@mail.gmail.com>
-Date: Thu, 25 Sep 2025 20:56:50 +0200
-Message-ID: <87ecrugy31.fsf@>
+	s=arc-20240116; t=1758836124; c=relaxed/simple;
+	bh=Lh1tfSZ0NF/AFO/V/8hHUF+qpGzjYGIIGuaXa4zfnL4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=pXR/ZSRNufZzGCWMDDWW0IZDQTGkFkxYNquZV3XA7x32Q/d/8iEfpQO1CizEZArpVLpsk5CUKU6mlxGtGEj2C/QfkAUcj66eaiOfML9iaoXaozrZNxsNm/X6I2Sh9x8e6yybNPhIXuWq7cLAzlQeGikHKjyEItFhzhES1UrdFmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=onw8lRvi; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-3306543e5abso1409346a91.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 14:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1758836121; x=1759440921; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dyD0NvHQvKcjtkMWqtARFSwsGpym7n4r8JiRe/0tuUQ=;
+        b=onw8lRvivIaqXqhZ94k9VIfBy202X1wcl6kC5wMxM4fMRMqJCFtExOOO4OSzFrs0RS
+         qHFjEeoEtQfyZAZJP6YQmMYMFNJIzjcra6ZBnCxaERFeYR408n/9Ve3aVpTYm5nPBAgJ
+         qMsrAXWPQ+p75NcDftx9/Rr0IZF8PIOZA9ltXOiwvQ3g1F5fyBcv9jTQYfnHqjrZpAF3
+         2/qagGANvpvdP7va2hYkf8cOa2EP1yIlnKne6xfHvbNp5CAlkPKUDXZTgovUwRHGL259
+         zQiCfU9XIGcVYd7ArvCRqcPxJUFH5956E3BUVCgylnJjJk5rRwHzTewMQqRNjVs5Xxff
+         mXNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758836121; x=1759440921;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dyD0NvHQvKcjtkMWqtARFSwsGpym7n4r8JiRe/0tuUQ=;
+        b=bcNK468QS/0yMq/xfg2OHh6CIEUMCsX4cpo/yOVeokKG1dMysODzegcTxFN8OEiBc3
+         vrYNA9BYPJkMFuEauU2hxhK85+Y2UvO76YdN/3JY3q/8UxGZ9/5p5k4UXVGsVgfqDVI9
+         2h031z8T+kTh714oyxgXleaGJ4e/sKHvUdIAjiLQzUOpnWb9PTVDxo0u6lOEPizO2WA4
+         sEV3CmyXxRvIouG10SomXZG0AwEIYddaDYaVYQ/90xG23/wHnp5cs7P+XNCgQ/oJlOVF
+         NeNMx4/m9GHvtXSisa5XJtTpjiYpES4p93+Wv4VYhbb1GdbkFHYi3wbbsCPGjWtCp3IL
+         cP+A==
+X-Forwarded-Encrypted: i=1; AJvYcCVAILE095wqH8qmYvMr3Iy1McuZurmhgzb8ZccbXZAtPjBLKmrd2/8zQvvjR58mA0AyLc/CeO+TQUxmHg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz0uwaOWRpntJn3M+2fE0eZHn2QOgVDcHzrPDqnfr/h5+1UAR3E
+	9MrYB0rJggpHgqkXP+Hg1y5mm2F9xb5T7rnXlXVzPqs2t4F/gbPt+atbDGkBzReJtvHrrrGZkd0
+	4uFFDAg==
+X-Google-Smtp-Source: AGHT+IEF46Ap3+CoFy4DNwHeeqPSdM0QIu1/iWB0NVseFrH0JqhT9O+vdtR7XjCf1sCWIaN5eWCQMso96V4=
+X-Received: from pjj5.prod.google.com ([2002:a17:90b:5545:b0:330:6cf5:5f38])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:1c07:b0:32e:ca60:6bd7
+ with SMTP id 98e67ed59e1d1-334568960d8mr4094341a91.11.1758836121051; Thu, 25
+ Sep 2025 14:35:21 -0700 (PDT)
+Date: Thu, 25 Sep 2025 14:35:19 -0700
+In-Reply-To: <20250827175247.83322-10-shivankg@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+Mime-Version: 1.0
+References: <20250827175247.83322-2-shivankg@amd.com> <20250827175247.83322-10-shivankg@amd.com>
+Message-ID: <aNW1l-Wdk6wrigM8@google.com>
+Subject: Re: [PATCH kvm-next V11 7/7] KVM: guest_memfd: selftests: Add tests
+ for mmap and NUMA policy support
+From: Sean Christopherson <seanjc@google.com>
+To: Shivank Garg <shivankg@amd.com>
+Cc: willy@infradead.org, akpm@linux-foundation.org, david@redhat.com, 
+	pbonzini@redhat.com, shuah@kernel.org, vbabka@suse.cz, brauner@kernel.org, 
+	viro@zeniv.linux.org.uk, dsterba@suse.com, xiang@kernel.org, chao@kernel.org, 
+	jaegeuk@kernel.org, clm@fb.com, josef@toxicpanda.com, 
+	kent.overstreet@linux.dev, zbestahu@gmail.com, jefflexu@linux.alibaba.com, 
+	dhavale@google.com, lihongbo22@huawei.com, lorenzo.stoakes@oracle.com, 
+	Liam.Howlett@oracle.com, rppt@kernel.org, surenb@google.com, mhocko@suse.com, 
+	ziy@nvidia.com, matthew.brost@intel.com, joshua.hahnjy@gmail.com, 
+	rakie.kim@sk.com, byungchul@sk.com, gourry@gourry.net, 
+	ying.huang@linux.alibaba.com, apopple@nvidia.com, tabba@google.com, 
+	ackerleytng@google.com, paul@paul-moore.com, jmorris@namei.org, 
+	serge@hallyn.com, pvorel@suse.cz, bfoster@redhat.com, vannapurve@google.com, 
+	chao.gao@intel.com, bharata@amd.com, nikunj@amd.com, michael.day@amd.com, 
+	shdhiman@amd.com, yan.y.zhao@intel.com, Neeraj.Upadhyay@amd.com, 
+	thomas.lendacky@amd.com, michael.roth@amd.com, aik@amd.com, jgg@nvidia.com, 
+	kalyazin@amazon.com, peterx@redhat.com, jack@suse.cz, hch@infradead.org, 
+	cgzones@googlemail.com, ira.weiny@intel.com, rientjes@google.com, 
+	roypat@amazon.co.uk, chao.p.peng@intel.com, amit@infradead.org, 
+	ddutile@redhat.com, dan.j.williams@intel.com, ashish.kalra@amd.com, 
+	gshan@redhat.com, jgowans@amazon.com, pankaj.gupta@amd.com, papaluri@amd.com, 
+	yuzhao@google.com, suzuki.poulose@arm.com, quic_eberman@quicinc.com, 
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-coco@lists.linux.dev
+Content-Type: text/plain; charset="us-ascii"
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On Wed, Aug 27, 2025, Shivank Garg wrote:
+> Add tests for NUMA memory policy binding and NUMA aware allocation in
+> guest_memfd. This extends the existing selftests by adding proper
+> validation for:
+> - KVM GMEM set_policy and get_policy() vm_ops functionality using
+>   mbind() and get_mempolicy()
+> - NUMA policy application before and after memory allocation
+> 
+> These tests help ensure NUMA support for guest_memfd works correctly.
+> 
+> Signed-off-by: Shivank Garg <shivankg@amd.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile.kvm      |   1 +
+>  .../testing/selftests/kvm/guest_memfd_test.c  | 121 ++++++++++++++++++
+>  2 files changed, 122 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/Makefile.kvm b/tools/testing/selftests/kvm/Makefile.kvm
+> index 90f03f00cb04..c46cef2a7cd7 100644
+> --- a/tools/testing/selftests/kvm/Makefile.kvm
+> +++ b/tools/testing/selftests/kvm/Makefile.kvm
+> @@ -275,6 +275,7 @@ pgste-option = $(call try-run, echo 'int main(void) { return 0; }' | \
+>  	$(CC) -Werror -Wl$(comma)--s390-pgste -x c - -o "$$TMP",-Wl$(comma)--s390-pgste)
+>  
+>  LDLIBS += -ldl
+> +LDLIBS += -lnuma
 
-Miquel Sabat=C3=A9 Sol=C3=A0 @ 2025-09-25 20:26 +02:
+Hrm, this is going to be very annoying.  I don't have libnuma-dev installed on
+any of my <too many> systems, and I doubt I'm alone.  Installing the package is
+trivial, but I'm a little wary of foisting that requirement on all KVM developers
+and build bots.
 
-> Filipe Manana @ 2025-09-25 18:48 +01:
->
->> On Thu, Sep 25, 2025 at 6:25=E2=80=AFPM Boris Burkov <boris@bur.io> wrot=
-e:
->>>
->>> On Thu, Sep 25, 2025 at 04:53:31PM +0200, Miquel Sabat=C3=A9 Sol=C3=A0 =
-wrote:
->>> > On 'btrfs_ioctl_qgroup_assign' we first duplicate the argument as
->>> > provided by the user, which is kfree'd in the end. But this was not t=
-he
->>> > case when allocating memory for 'prealloc'. In this case, if it someh=
-ow
->>> > failed, then the previous code would go directly into calling
->>> > 'mnt_drop_write_file', without freeing the string duplicated from the
->>> > user space.
->>> >
->>> > Signed-off-by: Miquel Sabat=C3=A9 Sol=C3=A0 <mssola@mssola.com>
->>>
->>> LGTM, thanks for the fix!
->>>
->>> One thing though: I don't like the label names. I think with multiple
->>> cleanups the best way is to name each label with the cleanup it is for.
->>> Once you have some named ones, "out" feels unspecific, and encoding
->>> every single action like "out_sa_drop_write" doesn't scale as you add
->>> more cleanups, so it's just not a useful pattern. It's already quite
->>> clunky with just two.
->>>
->>> If you fixup the names, you can add:
->>>
->>> Reviewed-by: Boris Burkov <boris@bur.io>
->>>
->>> > ---
->>> >  fs/btrfs/ioctl.c | 3 ++-
->>> >  1 file changed, 2 insertions(+), 1 deletion(-)
->>> >
->>> > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
->>> > index 185bef0df1c2..00381fdbff9d 100644
->>> > --- a/fs/btrfs/ioctl.c
->>> > +++ b/fs/btrfs/ioctl.c
->>> > @@ -3740,7 +3740,7 @@ static long btrfs_ioctl_qgroup_assign(struct fi=
-le *file, void __user *arg)
->>> >               prealloc =3D kzalloc(sizeof(*prealloc), GFP_KERNEL);
->>> >               if (!prealloc) {
->>> >                       ret =3D -ENOMEM;
->>> > -                     goto drop_write;
->>> > +                     goto out_sa_drop_write;
->>> >               }
->>> >       }
->>> >
->>> > @@ -3775,6 +3775,7 @@ static long btrfs_ioctl_qgroup_assign(struct fi=
-le *file, void __user *arg)
->>> >
->>> >  out:
->>>
->>> call this free_prealloc
->>>
->>> >       kfree(prealloc);
->>> > +out_sa_drop_write:
->>>
->>> and this one free_args
->>
->>
->> Rather than adding yet one more label, which over time has proven
->> error prone, I'd rather have a single label.
->> Just the existing 'out' label and then the fix would be to replace the
->>
->> goto drop_write;
->>
->> with
->>
->> goto out;
->>
->> kfree() against a NULL pointer is safe.
->
-> I wanted to keep it simple and just fix the issue at hand. Actually I
-> found out about this as part of a larger refactoring involving cleanup
-> functions [1], which would fix the amount of labels as well.
+I'd be especially curious what ARM and RISC-V think, as NUMA is likely a bit less
+prevelant there.
 
-I clearly read too fast here. I applied your suggestion for v2. Sorry
-for the noise!
+>  LDFLAGS += -pthread $(no-pie-option) $(pgste-option)
+>  
+>  LIBKVM_C := $(filter %.c,$(LIBKVM))
+> diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
+> index b3ca6737f304..9640d04ec293 100644
+> --- a/tools/testing/selftests/kvm/guest_memfd_test.c
+> +++ b/tools/testing/selftests/kvm/guest_memfd_test.c
+> @@ -7,6 +7,8 @@
+>  #include <stdlib.h>
+>  #include <string.h>
+>  #include <unistd.h>
+> +#include <numa.h>
+> +#include <numaif.h>
+>  #include <errno.h>
+>  #include <stdio.h>
+>  #include <fcntl.h>
+> @@ -19,6 +21,7 @@
+>  #include <sys/mman.h>
+>  #include <sys/types.h>
+>  #include <sys/stat.h>
+> +#include <sys/syscall.h>
+>  
+>  #include "kvm_util.h"
+>  #include "test_util.h"
+> @@ -72,6 +75,122 @@ static void test_mmap_supported(int fd, size_t page_size, size_t total_size)
+>  	TEST_ASSERT(!ret, "munmap() should succeed.");
+>  }
+>  
+> +#define TEST_REQUIRE_NUMA_MULTIPLE_NODES()	\
+> +	TEST_REQUIRE(numa_available() != -1 && numa_max_node() >= 1)
 
->
-> Hence, as David mentions on another email, I would handle cleaning up
-> the amount of labels as part of another series.
->
->>
->> Also, missing a Fixes tag which should be:
->>
->> Fixes: 4addc1ffd67a ("btrfs: qgroup: preallocate memory before adding
->> a relation")
->
-> I will add it as part of v2, thanks!
->
->>
->> Thanks.
->>
->>>
->>> >       kfree(sa);
->>> >  drop_write:
->>> >       mnt_drop_write_file(file);
->>> > --
->>> > 2.51.0
->>> >
->>>
->
-> Thanks for the review,
-> Miquel
->
-> [1] https://lore.kernel.org/all/87plbh4qe9.fsf@/
+Using TEST_REQUIRE() here will result in skipping the _entire_ test.  Ideally
+this test would use fixtures so that each testcase can run in a child process
+and thus can use TEST_REQUIRE(), but that's a conversion for another day.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Easiest thing would probably be to turn this into a common helper and then bail
+early.
 
------BEGIN PGP SIGNATURE-----
-
-iQJiBAEBCgBMFiEEG6U8esk9yirP39qXlr6Mb9idZWUFAmjVkHIbFIAAAAAABAAO
-bWFudTIsMi41KzEuMTEsMiwyEhxtc3NvbGFAbXNzb2xhLmNvbQAKCRCWvoxv2J1l
-ZVtaD/9jlMfpAKzEsBSnB4YzQERqLEw/U+K5TfTgcqHru6uttqW91YvelkCnt/gB
-arprAH4Dq8QAu2FAyF8cGji+sgeXCAAu3T5ROLNGAMw4jFKsEiqBlpLpVu0aIXKh
-3qj+SvNZkLxLjVCzOMm+J3OYdpdYt5RIvu8Gr6QeDzBDyr2Wbw4c/hjC/u0IhpNg
-r5Pdid9XuOrN7sk7vuD89pjCUfHsaLLYOj5i7HeNZ4bcOr2zafpX5gRSGvKjXdt6
-qnniNOzSSjzbxQNiLugb7LrenK/51117+0ZP6fXZ4ESNc5G85fAjuC5e27I0DcGs
-tpGqhfZgT4uUvb9KHo4GtuhtbZJY5JhTKw2MAVYox4W8JYgqa8Y2Dc6ndBvs62S4
-oah6PSS/WOqUTNYyoeFIj3FkQ2Y8FQe71vObPCuNIUYlI5e3dKI5gBUeYRfxZnhW
-pyIi2vXOf+yNUOHXtPN+jXRpcZJxQVTddo6nAhZlHf732KoOYXvL9RuLuvuoI3W7
-HsoGvi4pGrEB2lJQ3bZGXoAHThtDqLwIfCExnBB6KihACJ5D889YqLvQ95tYs4qM
-QnktJHdA+1ugJ2dcqKmk2LGkUNWzFTU6Vdy2xRM9DFB5BVFpfu4IhnQZmZTI6w/b
-YdIIKBbsW0warrcArwaiRR4/EpehMGR9JwSsjV9vNMkIqwhUxQ==
-=pIak
------END PGP SIGNATURE-----
---=-=-=--
+diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
+index 9640d04ec293..6acb186e5300 100644
+--- a/tools/testing/selftests/kvm/guest_memfd_test.c
++++ b/tools/testing/selftests/kvm/guest_memfd_test.c
+@@ -7,7 +7,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+-#include <numa.h>
+ #include <numaif.h>
+ #include <errno.h>
+ #include <stdio.h>
+@@ -75,9 +74,6 @@ static void test_mmap_supported(int fd, size_t page_size, size_t total_size)
+        TEST_ASSERT(!ret, "munmap() should succeed.");
+ }
+ 
+-#define TEST_REQUIRE_NUMA_MULTIPLE_NODES()     \
+-       TEST_REQUIRE(numa_available() != -1 && numa_max_node() >= 1)
+-
+ static void test_mbind(int fd, size_t page_size, size_t total_size)
+ {
+        unsigned long nodemask = 1; /* nid: 0 */
+@@ -87,7 +83,8 @@ static void test_mbind(int fd, size_t page_size, size_t total_size)
+        char *mem;
+        int ret;
+ 
+-       TEST_REQUIRE_NUMA_MULTIPLE_NODES();
++       if (!is_multi_numa_node_system())
++               return;
+ 
+        mem = mmap(NULL, total_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+        TEST_ASSERT(mem != MAP_FAILED, "mmap for mbind test should succeed");
+@@ -136,7 +133,8 @@ static void test_numa_allocation(int fd, size_t page_size, size_t total_size)
+        char *mem;
+        int ret, i;
+ 
+-       TEST_REQUIRE_NUMA_MULTIPLE_NODES();
++       if (!is_multi_numa_node_system())
++               return;
+ 
+        /* Clean slate: deallocate all file space, if any */
+        ret = fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE, 0, total_size);
+diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+index 23a506d7eca3..d7051607e6bf 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util.h
++++ b/tools/testing/selftests/kvm/include/kvm_util.h
+@@ -21,6 +21,7 @@
+ #include <sys/eventfd.h>
+ #include <sys/ioctl.h>
+ 
++#include <numa.h>
+ #include <pthread.h>
+ 
+ #include "kvm_util_arch.h"
+@@ -633,6 +634,11 @@ static inline bool is_smt_on(void)
+        return false;
+ }
+ 
++static inline bool is_multi_numa_node_system(void)
++{
++       return numa_available() != -1 && numa_max_node() >= 1;
++}
++
+ void vm_create_irqchip(struct kvm_vm *vm);
+ 
+ static inline int __vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size,
 
