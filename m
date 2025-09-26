@@ -1,126 +1,146 @@
-Return-Path: <linux-btrfs+bounces-17223-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17224-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B850BA39D8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 14:29:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F159ABA3EA5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 15:35:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 209167A48F6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 12:27:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A95C1C0246A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 13:36:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF0442EBBB5;
-	Fri, 26 Sep 2025 12:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244AB2F60D8;
+	Fri, 26 Sep 2025 13:35:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EikCTLBV";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ecSrf+MH"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB8EC10E3
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Sep 2025 12:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE9F2AD3E
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Sep 2025 13:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758889767; cv=none; b=FLPDRooTMzKHAU2ZHa+ou6Sno0s4EaypIzdRCY8n7AcOQTvCveuc7l9Km6+NRhIebxZmPO4Kfhl9+dWqC/r4IPHgyIbsoSfUQrLSNuATxxGg0DZ/0aRI27VODXpqIQjQgYtUN/Cn+Wz1s1tB0hIytarFb4Ygq+9SWs2Kxmd5YYw=
+	t=1758893738; cv=none; b=fuzxCrbkTXWj/FO8KPmxM7JIhPK4vixL36nYTLsQpI5tS/zuS19G5zu6xCapmpSXCg0XcJbKoF1gG8iBTEwu+xCPSGkKwtET+MLHwNpr5wMcdNCSt5bXoZ1urzhJTCftshKD/Naj7l+jnhaw4x2F1jYh4HyMyvfkufvIyFxU0XE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758889767; c=relaxed/simple;
-	bh=5fYTB3upnkvD7KruJ3IuFIVUYftw1UWkWyBADgim6Js=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a82KRcOg+Y8U322+37i8i3yQ9Dz/iphaeLhrk3d2FwfAMJG86W6zuje6iadwT7oci35KmLgPdqcGv0eCac7olwdoBagt0iXoiFb36r32+N2JRl7gyv/hfc/2N7JP+SzmBPt7nnJ71MhwkzdMUDjWXZTdR7l5cTbBQhLFbLLWdYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1758893738; c=relaxed/simple;
+	bh=7RoNy1+lg+B+WtpawF5jBpnjJ7WfaySIRDjOtHoLk0M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mvr1mJe0P+W4NrxC0OekFq15WPsOdXLr11o8YIKqle+I/sDQbGLjbJMYX5VmLTpSQ8vMdUgubtxajNRjEM+z1/MyrCO8679g5DmS/sjApMwOAt7ExmKfe1b89c7R/B3RQf2cu7YomAoZ/mP2fPUVq80mCdFCAvVPNKe8QBkNLcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EikCTLBV; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ecSrf+MH; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id F2A04259EC;
-	Fri, 26 Sep 2025 12:29:23 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C13B04E6F5;
+	Fri, 26 Sep 2025 13:35:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1758893733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=7dMhkow+ea+dv2pyvud9Xpb6vdn/9fw0cWO3jxvDZMQ=;
+	b=EikCTLBV5C66pSfQJsv33yEIXL11jW8wlNXF6DZnoQ6kr2Z02q5uzpD43Mafa1/pCoEhzU
+	j4NybYuQiKfwZr3FIFQGX8PhMwJSE+tixwzyFt9oFUn0DJM8YQXa6yrhX+VSh7xjeHjwZw
+	/+NWRd/uoobNXlHT4NiYboxR4rD3DAQ=
 Authentication-Results: smtp-out1.suse.de;
-	none
+	dkim=pass header.d=suse.com header.s=susede1 header.b=ecSrf+MH
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1758893732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=7dMhkow+ea+dv2pyvud9Xpb6vdn/9fw0cWO3jxvDZMQ=;
+	b=ecSrf+MHQeWcyC+JqTpEUTKhXcuUbfYWI0cisd6RtPg6FGKWw/J7ZH/1JLR9mUj5DLNutC
+	86PJzvZ5GwrRyXRy4cCySlP7iW0+OujWU1+59FhvGKHjsVqIvaqCQixwyPDCLLutYeUSMe
+	Qvax/g4Jlh5PrhyGY2whehXBUQR9EWs=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DFA241373E;
-	Fri, 26 Sep 2025 12:29:23 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BAA961373E;
+	Fri, 26 Sep 2025 13:35:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Ct5uNiOH1mghRQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 26 Sep 2025 12:29:23 +0000
-Date: Fri, 26 Sep 2025 14:29:14 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, HAN Yuwei <hrx@bupt.moe>
-Subject: Re: [PATCH] btrfs: only set the device specific options after
- devices are opened
-Message-ID: <20250926122914.GV5333@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <95f198ac033610c66c30312743fbec4869200229.1758862208.git.wqu@suse.com>
+	id xZmMLaSW1mhKWwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Fri, 26 Sep 2025 13:35:32 +0000
+From: David Sterba <dsterba@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: print-tree: use string format for key names
+Date: Fri, 26 Sep 2025 15:35:26 +0200
+Message-ID: <20250926133526.15345-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95f198ac033610c66c30312743fbec4869200229.1758862208.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spam-Level: 
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: F2A04259EC
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_TLS_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.com:+]
 X-Spam-Flag: NO
-X-Spam-Score: -4.00
+X-Spam-Level: 
+X-Rspamd-Queue-Id: C13B04E6F5
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.51
 
-On Fri, Sep 26, 2025 at 02:20:11PM +0930, Qu Wenruo wrote:
-> [BUG]
-> With v6.17-rc kernels, btrfs will always set 'ssd' mount option even if
-> the block device is not a rotating one:
-> 
->  # cat /sys/block/sdd/queue/rotational
->  1
->  # cat /etc/fstab:
->  LABEL=DATA2     /data2  btrfs rw,relatime,space_cache=v2,subvolid=5,subvol=/,nofail,nosuid,nodev      0 0
-> 
->  # mount
->  [...]
->  /dev/sdd on /data2 type btrfs (rw,nosuid,nodev,relatime,ssd,space_cache=v2,subvolid=5,subvol=/)
-> 
-> [CAUSE]
-> The 'ssd' mount option is set by set_device_specific_options(), and it
-> expects that if there is any rotating device in the btrfs, it will set
-> fs_devices::rotating.
-> 
-> However after commit bddf57a70781 ("btrfs: delay btrfs_open_devices()
-> until super block is created"), the device opening is delayed until the
-> super block is created.
-> 
-> But the timing of set_device_specific_options() is still left as is,
-> this makes the function to be called without any device opened.
-> 
-> Since no device is opened, thus fs_devices::rotating will never be set,
-> making btrfs to incorrectly setting 'ssd' mount option.
-> 
-> [FIX]
-> Only call set_device_specific_options() after btrfs_open_devices().
-> 
-> Also only call set_device_specific_options() after a new mount, if we're
-> mounting a mounted btrfs, there is no need to set the device specific
-> mount options again.
-> 
-> Fixes: bddf57a70781 ("btrfs: delay btrfs_open_devices() until super block is created")
-> Reported-by: HAN Yuwei <hrx@bupt.moe>
-> Link: https://lore.kernel.org/linux-btrfs/C8FF75669DFFC3C5+5f93bf8a-80a0-48a6-81bf-4ec890abc99a@bupt.moe/
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+There's a warning when -Wformat=2 is used:
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+fs/btrfs/print-tree.c: In function ‘key_type_string’:
+fs/btrfs/print-tree.c:424:17: warning: format not a string literal and no format arguments [-Wformat-nonliteral]
+  424 |                 scnprintf(buf, buf_size, key_to_str[key->type]);
+
+We're printing fixed strings from a table so there's no problem but
+let's fix the warning so we could enable the warning in fs/btrfs/.
+
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/print-tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
+index 62b993fae54f..d16f2960d55d 100644
+--- a/fs/btrfs/print-tree.c
++++ b/fs/btrfs/print-tree.c
+@@ -421,7 +421,7 @@ static void key_type_string(const struct btrfs_key *key, char *buf, int buf_size
+ 	if (key->type == 0 && key->objectid == BTRFS_FREE_SPACE_OBJECTID)
+ 		scnprintf(buf, buf_size, "UNTYPED");
+ 	else if (key_to_str[key->type])
+-		scnprintf(buf, buf_size, key_to_str[key->type]);
++		scnprintf(buf, buf_size, "%s", key_to_str[key->type]);
+ 	else
+ 		scnprintf(buf, buf_size, "UNKNOWN.%d", key->type);
+ }
+-- 
+2.51.0
+
 
