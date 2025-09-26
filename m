@@ -1,160 +1,207 @@
-Return-Path: <linux-btrfs+bounces-17214-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17215-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78FB8BA32FF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 11:38:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C406BA33AA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 11:48:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D5401C02EB9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 09:38:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C895362372D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 09:48:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6844229E114;
-	Fri, 26 Sep 2025 09:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69D1E2BCF4C;
+	Fri, 26 Sep 2025 09:47:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="jDrkXg6W"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="e9tArgex";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="e9tArgex"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-y-111.mailbox.org (mout-y-111.mailbox.org [91.198.250.236])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451C129B8DD;
-	Fri, 26 Sep 2025 09:37:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.198.250.236
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6436829D28B
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Sep 2025 09:47:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758879427; cv=none; b=WpCGwYFX6qz7b28M9zFW1Z/mzq0TORdkhthXNE9RB8GOaKdGRv5kQmGkuU1ObYwNuj3C/wN3E9nFLqMquVhPqeVhjlnh/DbtxYjhWXN8+q93qiqtlDf8NnldPuPurhlhJUldt3fwHGsfq0KpTaYr/QsNxFKG9DxNIiP93h8x6V8=
+	t=1758880061; cv=none; b=td8aEDlk99vK61bS5CpTnuI8fKCLI26piu7nrKkG9387zEJEuZ7PIsWAEAXHeQgYlg6/mIbqypfszysSvb6yUMCJjgqBbErrz1oiC/WA8LfqJkSrzaY+uve4eP67iaTGr7pL36jPf9k/bmArCsCG/neA/gKEEZTROGv6h9Svj64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758879427; c=relaxed/simple;
-	bh=tRT3AeLAn10plskRfMyJ3Oo7BR7+ZEgC2BhhIACCQWk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=n+vChoursY3l4+UCwlZu7BMrgiCVf2cz2NJ1WkhsYaqmUgnsW9mG2++tzR4XhrEen7xEYZIFryKxgCc6Zv1UlPjOE76A4Ai+5bDXtFi/ny99T0K+UgVILsntAWXiKW6jT4/uWvC5Jw3nrP1rVvSjURbsQZB1tnq2M1PuJokLu9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=jDrkXg6W; arc=none smtp.client-ip=91.198.250.236
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+	s=arc-20240116; t=1758880061; c=relaxed/simple;
+	bh=VwM1e67/hHFNOmJth7ko+5CCE256XvjfhXrLRVAHWz8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sqWRkF7aRFmvhgdvyWpWaLXgWoLz6RF6j2YcrXdOZByZxLWABqSfAg4kPTxJfpMSrbUbSaGkSqotxzV5zSAqmPMXSU3HPJ4qFEst9COM0+uie97Tlk7l6SPlkfVV6mQXGWhsGlggjKOcQdcz85KCvTXR9sgjolpqEeX3u9+0hVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=e9tArgex; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=e9tArgex; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-y-111.mailbox.org (Postfix) with ESMTPS id 4cY58D0cTdz9yBH;
-	Fri, 26 Sep 2025 11:37:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
-	t=1758879420;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AxfBGYJT0a6nOIicJjUHpnM/yQaXPPgM9DO+hl1jICA=;
-	b=jDrkXg6WXOUvsa811u3+LfxvadB0ZafRBjpXg5ILDY2QfMXL32CdInChyWkYuBfFNjUhCF
-	JJEHM4MYoRD1UjQtXorRcNGwGCWmNThsb8oBGzroOmbwyYFyf6XL35DlLRU+b/VNrPXikJ
-	KWnGoz6c8bkRJoZls89mhlmQ46lOgZF8U01oA6ZvjsN0tLoQo4oCJVq5Zv6bB1MYwlEoYB
-	2fyYyNCfYifRN++A/WiUbdectUwW8Y/Y2oRr+Ol4VamWZx6FTzkfq1KOTO9yaCAmSCohiT
-	RVn6yUn0SxadJUX8qdHE3Ys/HT9HtitlVwqcO0dw+W2/IMoSUVMRhjitXTd29g==
-Authentication-Results: outgoing_mbo_mout;
-	dkim=none;
-	spf=softfail (outgoing_mbo_mout: 2001:67c:2050:b231:465::1 is neither permitted nor denied by domain of mssola@mssola.com) smtp.mailfrom=mssola@mssola.com
-From: =?utf-8?Q?Miquel_Sabat=C3=A9_Sol=C3=A0?= <mssola@mssola.com>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org,  clm@fb.com,  dsterba@suse.com,
-  wqu@suse.com,  linux-kernel@vger.kernel.org,  Boris Burkov <boris@bur.io>
-Subject: Re: [PATCH v2] btrfs: ioctl: Fix memory leak on duplicated memory
-In-Reply-To: <CAL3q7H53nu8sGuDCbWzsVFHf5g1ybsRVrdyN6WaET61mk-g3mA@mail.gmail.com>
-	(Filipe Manana's message of "Fri, 26 Sep 2025 10:04:13 +0100")
-References: <20250925184139.403156-1-mssola@mssola.com>
-	<CAL3q7H53nu8sGuDCbWzsVFHf5g1ybsRVrdyN6WaET61mk-g3mA@mail.gmail.com>
-Date: Fri, 26 Sep 2025 11:36:52 +0200
-Message-ID: <87qzvt7dxn.fsf@>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9B7F36B0FD;
+	Fri, 26 Sep 2025 09:47:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1758880051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Fl3lCTfdOpDriccZ8YANrmrDoa3N7fGM3MaZK+KBq4g=;
+	b=e9tArgexXoKSZMbwORsmKHXd9K19ba8xuGtBNxSQp8Q/6d2B04C89mAwzr4Zseqis5GuXe
+	kze3l402eswRUFcKBi+8i7pgMDmvgo+ZOk0/jlTsTIBawDRKgdr+d8d4ATqKgUrcOrtLzK
+	txZh4NixYhiBFLNj2tUkEX8XZqswgRU=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1758880051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Fl3lCTfdOpDriccZ8YANrmrDoa3N7fGM3MaZK+KBq4g=;
+	b=e9tArgexXoKSZMbwORsmKHXd9K19ba8xuGtBNxSQp8Q/6d2B04C89mAwzr4Zseqis5GuXe
+	kze3l402eswRUFcKBi+8i7pgMDmvgo+ZOk0/jlTsTIBawDRKgdr+d8d4ATqKgUrcOrtLzK
+	txZh4NixYhiBFLNj2tUkEX8XZqswgRU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 92BD51373E;
+	Fri, 26 Sep 2025 09:47:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id c5/KIzNh1mgxEQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Fri, 26 Sep 2025 09:47:31 +0000
+From: David Sterba <dsterba@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: fix trivial -Wshadow warnings
+Date: Fri, 26 Sep 2025 11:47:30 +0200
+Message-ID: <20250926094730.3598980-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Rspamd-Queue-Id: 4cY58D0cTdz9yBH
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+When compiling with -Wshadow (also in 'make W=2' build) there are
+several reports of shadowed variables that seem to be harmless:
 
-Filipe Manana @ 2025-09-26 10:04 +01:
+- btrfs_do_encoded_write() - we can reuse 'ordered', there's no previous
+			     value that would need to be preserved
 
-> On Thu, Sep 25, 2025 at 11:42=E2=80=AFPM Miquel Sabat=C3=A9 Sol=C3=A0 <ms=
-sola@mssola.com> wrote:
->>
->> On 'btrfs_ioctl_qgroup_assign' we first duplicate the argument as
->> provided by the user, which is kfree'd in the end. But this was not the
->> case when allocating memory for 'prealloc'. In this case, if it somehow
->> failed, then the previous code would go directly into calling
->> 'mnt_drop_write_file', without freeing the string duplicated from the
->> user space.
->>
->> Fixes: 4addc1ffd67a ("btrfs: qgroup: preallocate memory before adding a =
-relation")
->> Reviewed-by: Boris Burkov <boris@bur.io>
->> Signed-off-by: Miquel Sabat=C3=A9 Sol=C3=A0 <mssola@mssola.com>
->
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
->
-> I pushed it  into the for-next branch [1] with a changed subject to:
->
-> btrfs: fix memory leak on duplicated memory in the qgroup assign ioctl
->
-> Note that we don't capitalize the first word after the prefix in the subj=
-ect.
-> I also made it more specific by mentioning which ioctl, since we have man=
-y.
+- scrub_write_endio() - we need a standalone 'i' for bio iteration
 
-Understood! Thanks for applying the patch.
+- scrub_stripe() - duplicate ret2 for errors that must not overwrite 'ret'
 
->
-> Thanks.
->
-> [1] https://github.com/btrfs/linux/commits/for-next/
->
->> ---
->>  fs/btrfs/ioctl.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
->> index 185bef0df1c2..8cb7d5a462ef 100644
->> --- a/fs/btrfs/ioctl.c
->> +++ b/fs/btrfs/ioctl.c
->> @@ -3740,7 +3740,7 @@ static long btrfs_ioctl_qgroup_assign(struct file =
-*file, void __user *arg)
->>                 prealloc =3D kzalloc(sizeof(*prealloc), GFP_KERNEL);
->>                 if (!prealloc) {
->>                         ret =3D -ENOMEM;
->> -                       goto drop_write;
->> +                       goto out;
->>                 }
->>         }
->>
->> --
->> 2.51.0
->>
+- btrfs_subpage_set_writeback() - 'flags' is used for another irqsave lock
+                                  but is not overwritten when reused for xarray
+				  due to scoping, but for clarity let's rename it
 
-Cheers,
-Miquel
+- process_dir_items_leaf() - duplicate 'ret', used only for immediate checks
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/inode.c    | 2 --
+ fs/btrfs/scrub.c    | 4 +---
+ fs/btrfs/subpage.c  | 6 +++---
+ fs/btrfs/tree-log.c | 3 ---
+ 4 files changed, 4 insertions(+), 11 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 02cb081697fea4..ac2fd589697da4 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -9822,8 +9822,6 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
+ 	}
+ 
+ 	for (;;) {
+-		struct btrfs_ordered_extent *ordered;
+-
+ 		ret = btrfs_wait_ordered_range(inode, start, num_bytes);
+ 		if (ret)
+ 			goto out_folios;
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 4691d0bdb2e86c..d450ccd3fc7c85 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -1284,7 +1284,7 @@ static void scrub_write_endio(struct btrfs_bio *bbio)
+ 		bitmap_set(&stripe->write_error_bitmap, sector_nr,
+ 			   bio_size >> fs_info->sectorsize_bits);
+ 		spin_unlock_irqrestore(&stripe->write_error_lock, flags);
+-		for (int i = 0; i < (bio_size >> fs_info->sectorsize_bits); i++)
++		for (i = 0; i < (bio_size >> fs_info->sectorsize_bits); i++)
+ 			btrfs_dev_stat_inc_and_print(stripe->dev,
+ 						     BTRFS_DEV_STAT_WRITE_ERRS);
+ 	}
+@@ -2527,8 +2527,6 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 	}
+ 
+ 	if (sctx->is_dev_replace && ret >= 0) {
+-		int ret2;
+-
+ 		ret2 = sync_write_pointer_for_zoned(sctx,
+ 				chunk_logical + offset,
+ 				map->stripes[stripe_index].physical,
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index 5ca8d4db67220c..01bf58fa92aa2e 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -460,12 +460,12 @@ void btrfs_subpage_set_writeback(const struct btrfs_fs_info *fs_info,
+ 	if (!folio_test_dirty(folio)) {
+ 		struct address_space *mapping = folio_mapping(folio);
+ 		XA_STATE(xas, &mapping->i_pages, folio->index);
+-		unsigned long flags;
++		unsigned long xa_flags;
+ 
+-		xas_lock_irqsave(&xas, flags);
++		xas_lock_irqsave(&xas, xa_flags);
+ 		xas_load(&xas);
+ 		xas_clear_mark(&xas, PAGECACHE_TAG_TOWRITE);
+-		xas_unlock_irqrestore(&xas, flags);
++		xas_unlock_irqrestore(&xas, xa_flags);
+ 	}
+ 	spin_unlock_irqrestore(&bfs->lock, flags);
+ }
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 6aad6b65522b21..08d72506a3d2fb 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -4154,7 +4154,6 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
+ 	for (int i = path->slots[0]; i < nritems; i++) {
+ 		struct btrfs_dir_item *di;
+ 		struct btrfs_key key;
+-		int ret;
+ 
+ 		btrfs_item_key_to_cpu(src, &key, i);
+ 
+@@ -4224,8 +4223,6 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
+ 	}
+ 
+ 	if (batch_size > 0) {
+-		int ret;
+-
+ 		ret = flush_dir_items_batch(trans, inode, src, dst_path,
+ 					    batch_start, batch_size);
+ 		if (ret < 0)
+-- 
+2.51.0
 
-iQJiBAEBCgBMFiEEG6U8esk9yirP39qXlr6Mb9idZWUFAmjWXrQbFIAAAAAABAAO
-bWFudTIsMi41KzEuMTEsMiwyEhxtc3NvbGFAbXNzb2xhLmNvbQAKCRCWvoxv2J1l
-ZewjD/wPp7i1B1V6EuxDFcJoucwlCAaB9xQO5O3jhw0+HEaDekOcWO4C1c9L2ai9
-zFkFAqBuAbJPRvRWrvgOpeJZlvt+f/9cKuUAiSeLxCYbhYf1l4Knj8EHTFgLDboL
-5WFhHrlC7gC8mpK0o72i2oetJljmzGBMnxo9c+KlF6cuRABi/8cQ+aLL9vaupCyG
-lsV63RadBJuI/yFE/0yDffBKrbJVqqj4V9aQh4gZKTiabn0ZuHmtoMyftyA7jfOM
-z+acRiYcejMw3a4VEUjDNLb5VNxC+/yJ4aMr6nGUnY4ZMwXHlIDsRXDnczRJQGUi
-+KSv8QYOGM9lhU46RJk72ZTwFDoVo4N9ZLfWjhCnXaBqGIau8OBhTfXtkimPq1+a
-dGWwT8ef5hBRbAjA+ffJNHGRhJDYhjSqVvXqIxLxM6rBkJyirO9hbBRo7qt+QGNn
-ikne3NlIqFIPkL4M7Ard3JUwrqMFn/4yB1UxF2oIgnmIo9la1bxxEN0ncF2sQbKB
-hIBpfMZDqEGdSFLYTTnPG97of3A6m2VRqlwUHlfmV0H1+ZwCiYjFmDJoGDKqKKKJ
-T07yKZouNiIKPxaoYiecItruTM5vYCrJVj89EifXM2JXL3PR4ceCni9V3+pd8v8k
-eV/Rvl5vX9VL/dbhcGG7/Jrue774dkVj7i+jG+WJx1bL026dgQ==
-=XztT
------END PGP SIGNATURE-----
---=-=-=--
 
