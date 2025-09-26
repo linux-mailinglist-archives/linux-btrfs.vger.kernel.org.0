@@ -1,156 +1,171 @@
-Return-Path: <linux-btrfs+bounces-17204-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17205-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86EA6BA2653
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 06:39:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41615BA2680
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 06:50:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CF543A7F92
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 04:39:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0129A562007
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 04:50:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC514233704;
-	Fri, 26 Sep 2025 04:38:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 006B9272E4E;
+	Fri, 26 Sep 2025 04:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KojDMZ9S"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fqrBwE2j";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EBjDJuW6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31569265CC9
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Sep 2025 04:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D888834BA20
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Sep 2025 04:50:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758861534; cv=none; b=f7HoydKtb5/AqFfb5NOdIjye4kwAqxVzJqf6sOJdAOZxWuMlewqNX+rBhvsyc43QulUoUKoqGXO+dCMG+VC7JLjTXmFCZG2uDHLC3p5TVaLJ13J/jUI+m/IFEuwCNAund3rRk4wFrhWTGeeV2ZF/+NpzM0mk89IDkUFBS+JICgk=
+	t=1758862240; cv=none; b=m0QZAKQpbep4NtGxLmYE6wsbDuVE50IqaZ+BOpqBuOIyWOLQfq/fgFx9O8ZLTGmHkVVH/E64ArN3XFQ2MDnsuhUS0H26jx1dNRhWdO3C3lnReBfa0VyDZyhc26g939GmgPne/A1CrQ568bliMHSUL2UzEiYtf3WRAEZ+r/LDnmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758861534; c=relaxed/simple;
-	bh=PuyVknkXODCaw+d95cvSFd5kvdtynFsDyCbef2WMUZI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ML67NqrsG76uIxHb5wQOaH6sj8K8dP3egIu2m517mObBvPTz/eur+Oo5vza9/Iv5wrc3KQtQy9iX0yRGrAiih82PGNhPB+Wb9U49E6HoRB7PUwK6Urk6q4JKEWqlMo9rRymmRIjxVQRFJg/BBeQUJ7E5NTwlcf3JuFTZENEJIcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KojDMZ9S; arc=none smtp.client-ip=209.85.128.49
+	s=arc-20240116; t=1758862240; c=relaxed/simple;
+	bh=LPw78MHZQPU2cVjFo7UzPIUpqserIO2v21AIx3NXiSk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e6gwH5NmJgspdZE+Qv7G3WLqLqSc4mUoxfGeOuYny1gRG0y7ZGREbQtcLLgwGgVIfDoMlF3ak9knZxjsfFgY/vQ0qxDVofz9+0LIhvwaO2vjYgj4l1qrOzcaLH2R2AWNdjj5hhthKF152XlnWa6622xX1rxLn0opsbHu6SqGIAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fqrBwE2j; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EBjDJuW6; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-46e29d65728so11099775e9.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 21:38:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1758861529; x=1759466329; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=xoMd+/sJEhvgRlM0By7/MiChlWNC97BNhED9LkmeIJw=;
-        b=KojDMZ9Szl77xfjwSzy8zu4GDUVNYav6Yh5H/o0rOh4LD5weOusJ5tZrHDcVmtaWM8
-         RSHlSWEacXuKj3FtjHEWK1PAzzKvIhkGYlnQy0JZDt8QughwL86BLqUJGIQhSbvW/Z4v
-         3suSi/j0JzuptGCEQUWWO6VQeiFk8yA6zw/ZKnRW8KNq3q29xCAjhx09HfWyCF6nHyeV
-         X7EXHgVX3WDaSjiM9bkA2V4vTZ22PfSJF4c23HWne8n3wK7iU2fWiaSl9xHM/BeT4/66
-         Zcx/oDf+xgW76JIzHh91UchAGpHLok5RhnjBWnpntf1JQrU9EyvkWXhYsfXj247emRdz
-         yOvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758861529; x=1759466329;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xoMd+/sJEhvgRlM0By7/MiChlWNC97BNhED9LkmeIJw=;
-        b=J3iNxyt7sK/cSe7LGWLh+lyep/RGOSWwt6P2n/Kr8Gtu7gHKZglLsmL/6ZxGKYMbWS
-         gPb1ADO2KDOyPECGQBvLcjixyLOO2tw62cloIeMyC8lDwaJOA7FI/dV6J19ehDYnylq0
-         CWc7dk+wgPeSopIkALNh53pFa+J8vOh2iB8sxx54ae1zWCxRCrMGRWNO9y/CRGtstNwt
-         uzoHnsIY5j0RuBKihVYNedwDKnx8TS7oSYCyprwnhUeTpglU6K7GyOpF9Nw0cudVlXW5
-         OZUeDU3I0irMaRWKbRLc36S3e6si/mEcYNDXqOF8sOLhuC+J13B9NmSTPOPlVER9uO4M
-         Bk7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWmxDa0NMktLHnoClWc/B6Oh4WtgvoJeQY9gF0gkEl6Dvq9Hlxy5fGyopKEsHm/lmb74YyPRu6LRWgNFA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzlszp8mCCi6n0quEXQn05zHBar50MQLDnPWyaW16sxaakIbv6V
-	Ax+FGTgAZTFpEvX4aC9iOEKoptoVHaLtgyo3jHsBoN4TLGVBjKDjbTglqLMlYYj7R6m6JJ1/rWu
-	Afq49
-X-Gm-Gg: ASbGncsnkdIDnA5UQv9k6s+YITC6BQg8y/tuBXAvdWWCz/gcCkkgnxyFL7EkHTrslNz
-	debHA6l+YzHTHkDRW15pM9fz7O0kimievbRzuHbxoN7vTCCUtskYuGEfWSsg87ZDpYi5MNHN+JO
-	YJXL6TLFKeMWwhE3svAkloEogc9YqqHnF7J3ylgkVeRnLCwkSfqrHNOtcT/WBkc+bWrAGWK4/Td
-	aFrQsVXGVegDK1whGlv0b8dW5lZV8s2PeD5DAgymJzin1hw2WT6/rLcwxMNcgH+G35geZd4YCRF
-	g6EK6YWeJANMbolIgALOetcYJ4X9TbEh1fjZjS+4HOUqfiMA15sALUxBcimmorIPfjd/rpUUKSy
-	Z1KL6Q8/zeQaC0U1EVZcsiqwlKMRBvNk6vAsT/cqfWZv20X7zlcY=
-X-Google-Smtp-Source: AGHT+IG08c0OsV6cjmUNezTef1spRV6uX3YxOHjrW5VZtWGgcqmObI6Ch+PSXYggcddS5gLPPsj3Qg==
-X-Received: by 2002:a05:6000:2585:b0:3ee:15b4:174c with SMTP id ffacd0b85a97d-40e4486c164mr4793485f8f.3.1758861529348;
-        Thu, 25 Sep 2025 21:38:49 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-781023e5f41sm3308690b3a.42.2025.09.25.21.38.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Sep 2025 21:38:48 -0700 (PDT)
-Message-ID: <2914730e-e608-4a38-9ccf-9c908b4b277c@suse.com>
-Date: Fri, 26 Sep 2025 14:08:44 +0930
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E28D524137;
+	Fri, 26 Sep 2025 04:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1758862235; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=nHTMgGlXQYOtWan4j/hqXargX4hqaElTiyoBK9q8Kpc=;
+	b=fqrBwE2jJcZvw0L6UEDUr5ELsL+rsvqGbXIF2k2+pxEbBDXKPQPQsdjk4qNXNf+5xSpANz
+	VRiVct4CiCJBwK8PYCVUWCHj2jGe42nI9O38kvmd+0Bdq1NprH/hdWAg5YYttiDMy82m3s
+	5dZrhH0c+D7PoNOTMgguN4DUFiTvF6M=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1758862234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=nHTMgGlXQYOtWan4j/hqXargX4hqaElTiyoBK9q8Kpc=;
+	b=EBjDJuW6y8BVcjvzSGil+7Rg9/z4gOIDu7OVmaD/liVt8+8LEdHJ2DRiOLo50n+DQ43srz
+	iQ1vx3W40Vdv+ND1bD7eZd00h8COuGN/tBa8mreZ0M4EUS72xN4EVy3gqbCfwKNMUOZcKx
+	AiMEuWW3SwAqgUr6jnhXu2Eg1aeaT6U=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DA8B01386E;
+	Fri, 26 Sep 2025 04:50:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id rPlFJpkb1mglNwAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 26 Sep 2025 04:50:33 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: HAN Yuwei <hrx@bupt.moe>
+Subject: [PATCH] btrfs: only set the device specific options after devices are opened
+Date: Fri, 26 Sep 2025 14:20:11 +0930
+Message-ID: <95f198ac033610c66c30312743fbec4869200229.1758862208.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Wrong SSD type detection on zoned device
-To: HAN Yuwei <hrx@bupt.moe>, linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <C8FF75669DFFC3C5+5f93bf8a-80a0-48a6-81bf-4ec890abc99a@bupt.moe>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <C8FF75669DFFC3C5+5f93bf8a-80a0-48a6-81bf-4ec890abc99a@bupt.moe>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid,bupt.moe:email];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
+[BUG]
+With v6.17-rc kernels, btrfs will always set 'ssd' mount option even if
+the block device is not a rotating one:
 
+ # cat /sys/block/sdd/queue/rotational
+ 1
+ # cat /etc/fstab:
+ LABEL=DATA2     /data2  btrfs rw,relatime,space_cache=v2,subvolid=5,subvol=/,nofail,nosuid,nodev      0 0
 
-在 2025/9/26 12:42, HAN Yuwei 写道:
-> Hi,
-> 
-> I just found that when mounting zoned device, it will have "ssd" mount 
-> option.
-> 
-> # cat /etc/fstab:
-> [...]
-> LABEL=DATA2     /data2  btrfs 
-> rw,relatime,space_cache=v2,subvolid=5,subvol=/,nofail,nosuid,nodev      0 0
-> 
-> # mount
-> [...]
-> /dev/sdd on /data2 type btrfs 
-> (rw,nosuid,nodev,relatime,ssd,space_cache=v2,subvolid=5,subvol=/)
-> 
-> # cat /sys/block/sdd/queue/rotational
-> 1
-> 
-> Is this needed to be fixed?
-> 
-> 
+ # mount
+ [...]
+ /dev/sdd on /data2 type btrfs (rw,nosuid,nodev,relatime,ssd,space_cache=v2,subvolid=5,subvol=/)
 
-Indeed it's a regression due to the changes in v6.17 that we delayed the 
-device opening, so that set_devices_specific_options() is called without 
-any device opened.
+[CAUSE]
+The 'ssd' mount option is set by set_device_specific_options(), and it
+expects that if there is any rotating device in the btrfs, it will set
+fs_devices::rotating.
 
-Thus it always set SSD because fs_devices->rotating is not set as we 
-haven't yet opened any device.
+However after commit bddf57a70781 ("btrfs: delay btrfs_open_devices()
+until super block is created"), the device opening is delayed until the
+super block is created.
 
-Will sent out a fix for it.
+But the timing of set_device_specific_options() is still left as is,
+this makes the function to be called without any device opened.
 
-Thanks,
-Qu
+Since no device is opened, thus fs_devices::rotating will never be set,
+making btrfs to incorrectly setting 'ssd' mount option.
+
+[FIX]
+Only call set_device_specific_options() after btrfs_open_devices().
+
+Also only call set_device_specific_options() after a new mount, if we're
+mounting a mounted btrfs, there is no need to set the device specific
+mount options again.
+
+Fixes: bddf57a70781 ("btrfs: delay btrfs_open_devices() until super block is created")
+Reported-by: HAN Yuwei <hrx@bupt.moe>
+Link: https://lore.kernel.org/linux-btrfs/C8FF75669DFFC3C5+5f93bf8a-80a0-48a6-81bf-4ec890abc99a@bupt.moe/
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/super.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index d6e496436539..aadc02374b2a 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1900,8 +1900,6 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 		return PTR_ERR(sb);
+ 	}
+ 
+-	set_device_specific_options(fs_info);
+-
+ 	if (sb->s_root) {
+ 		/*
+ 		 * Not the first mount of the fs thus got an existing super block.
+@@ -1946,6 +1944,7 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 			deactivate_locked_super(sb);
+ 			return -EACCES;
+ 		}
++		set_device_specific_options(fs_info);
+ 		bdev = fs_devices->latest_dev->bdev;
+ 		snprintf(sb->s_id, sizeof(sb->s_id), "%pg", bdev);
+ 		shrinker_debugfs_rename(sb->s_shrink, "sb-btrfs:%s", sb->s_id);
+-- 
+2.50.1
+
 
