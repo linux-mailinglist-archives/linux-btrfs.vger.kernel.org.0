@@ -1,114 +1,167 @@
-Return-Path: <linux-btrfs+bounces-17206-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17207-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88E09BA26BA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 07:15:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B46EBA2947
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 08:54:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8B987A97A7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 05:13:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC6EC3816B0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Sep 2025 06:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC08C2773D8;
-	Fri, 26 Sep 2025 05:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA0B627E074;
+	Fri, 26 Sep 2025 06:54:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mkMIDKHj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VHcBz88L";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mkMIDKHj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VHcBz88L"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFCC325F975
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Sep 2025 05:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FC92AE8D
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Sep 2025 06:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758863673; cv=none; b=MXpjV+9p9R9scCK8YCkGcnd09WvvAU6K/qE6W0P+KlcvNTk5IJPZFxxdmBylId/LEFfQh964E2JnH4phfRjtIDmnszy6sJXtZBEZBK6/Gei6BzPM7yjmFwEH8CaSwCz58rPbM94ssmVSsx36YkNhsvBzBH6mx1OktDXZohnkKAM=
+	t=1758869655; cv=none; b=L2b5CmrNJRGUHnq1/pTaFTWuH8bQnsEzzKBYzHGs5JDlR0qsmtB46x7hjFw3QRyoDeJ9QOHjX0xydHzmX9nG/qjN+pRWrSFPCXwzZanm4ZqmFptrtWPZIyX9qUSFPTc9MLdi+q3a4XnEsaVo6M0HL6XKhUACwUFcUH4ajfJcdsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758863673; c=relaxed/simple;
-	bh=7xTE3Rx1L7oOgBFYk71dDAN47JIjiPqupVey0hwIlLY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mZ4on4O9w2M4NdPVKmM6rKY0shwPTfTCl+HmWMY9UnPCfj16fLqSCdokl3omvysH4Q1UM6Dxc9GTWpzXSRhoHcHluapWz/MO6Xr7rHnAL8XHBEFe3YzLaa3a5oJTXedd4DNF+ex2WU/5wk37i2gC/+8+0INv694rPqP5fKoZ1WM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-42571c700d2so39964405ab.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Sep 2025 22:14:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758863671; x=1759468471;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RubBGPWU6T3hmpYOlUHJW5RbqgzcHSdZkExXWcWqgHY=;
-        b=wRJlk2vqn3CBbzlBQ4rXbpUR0rHu20pFE3xSdMZGtPWAzKYZMo60Vcgtp/qItKb+CT
-         LvgQzD5gqOtSvlD0L3PJ93nyB5p26lNM+rjUQg3eMIw4DFgEG8yey2wqOVDsbchbIgPX
-         1jEiw88rrPvwhqVwWtJnnq0AKuhO64N4rtpGqW3XocMo+dhGvoydnx9OkjOTRWPS5Bgq
-         W/kJeyBMr+oQISkD+2FRvNLRX4XZ/XG5LR4YWnQqxDTtX8UK26Dgfpr+BlrzEmIN+p3n
-         mbFocjrlsnrJJ/hUJOaIbaNO/e6Zi3SjbLYW7NWD59L1fyEs1akBJlYVvuSKd033JHUw
-         Vg6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUKo/+QNoXt38VnzerndIW5Rjkw5tvmdUouyBDLmurxMXF/ipNL+/V6vWyjJ77OZ3XxaA2UkWqy1SfNwg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5u5JmEqRU2Fz1936W+tqWYYZ+QdPveNF74qGBOQSl1/hLN0ue
-	vGLglm2QTquLhmgydMrljglIyxb+laSdYU01lImJsqrDekIVbWBpQ5PJRyDxM93zh0Ucy0M9dH3
-	cUwWQgtw66gNcmFYG7RrpMLY9n+x1AGArBjsV728D6JAhYgHngEID9lNcq6Q=
-X-Google-Smtp-Source: AGHT+IGIgc/06/E7PACHY/1LCNatOmj7eTgGWoSG0+izopBNDeBPZAV4tr2DNLefGdcGwQxK85V+uXMzZ04G4JIb38a7AEtDqVqy
+	s=arc-20240116; t=1758869655; c=relaxed/simple;
+	bh=V8Cnf/aD4f69uOQqTJl6xYIM+Rkq6LTfoGQvHdq5pPQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I6AyR+sN2TKe6LbWTj9RCj+niLn+zoKMcZcxSQEs8pAdI1ebtx1yHvJlrjYYk3/H6qIexlYtUKI6tzXui6p3sFw62z+wwo53R/ursM5XAPF0Q4grSF27ouFGwiEpIJEPTLlHv4cp0B8j5heiEXqVFtVyvWMBPRXTbAza44KVrcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mkMIDKHj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VHcBz88L; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mkMIDKHj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VHcBz88L; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 658EF23E36;
+	Fri, 26 Sep 2025 06:54:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758869650;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=W4xvUs10eB1aX9/XM1liFxO4ldON7sakHC9XKOyNtzA=;
+	b=mkMIDKHjkk8G5DJrkaKYmcnqk579xVcaxS1enB5EjAzrvxY8X6MCyibGgV/Llcy7xK46oz
+	GwadIJMVZnS8cNiHOZfLWVSa4zJ1VwAX1wGMnn1lFXBSKoSz9sHxGF+Ro4KkOTBItAf/1a
+	AMvB3345+YmmjZfNOh80wIHPxNyRpog=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758869650;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=W4xvUs10eB1aX9/XM1liFxO4ldON7sakHC9XKOyNtzA=;
+	b=VHcBz88LZOZR9AyTkUs/mDAwFN8wxNbyJtKjV1ar8tquuCFZBYZ+2fJI1Xe6UsodwasGTp
+	Jam7mYPqZ5CFYJCQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=mkMIDKHj;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=VHcBz88L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758869650;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=W4xvUs10eB1aX9/XM1liFxO4ldON7sakHC9XKOyNtzA=;
+	b=mkMIDKHjkk8G5DJrkaKYmcnqk579xVcaxS1enB5EjAzrvxY8X6MCyibGgV/Llcy7xK46oz
+	GwadIJMVZnS8cNiHOZfLWVSa4zJ1VwAX1wGMnn1lFXBSKoSz9sHxGF+Ro4KkOTBItAf/1a
+	AMvB3345+YmmjZfNOh80wIHPxNyRpog=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758869650;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=W4xvUs10eB1aX9/XM1liFxO4ldON7sakHC9XKOyNtzA=;
+	b=VHcBz88LZOZR9AyTkUs/mDAwFN8wxNbyJtKjV1ar8tquuCFZBYZ+2fJI1Xe6UsodwasGTp
+	Jam7mYPqZ5CFYJCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4133D1386E;
+	Fri, 26 Sep 2025 06:54:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id p9G/D5I41mh+WQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 26 Sep 2025 06:54:10 +0000
+Date: Fri, 26 Sep 2025 08:54:01 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	patches@lists.linux.dev
+Subject: Re: [PATCH] btrfs: Fix PAGE_SIZE format specifier in open_ctree()
+Message-ID: <20250926065401.GR5333@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20250925-btrfs-fix-page_size-format-specifier-v1-1-8f98d300a909@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3805:b0:426:9b42:2a06 with SMTP id
- e9e14a558f8ab-4269b422a6cmr51217405ab.3.1758863670907; Thu, 25 Sep 2025
- 22:14:30 -0700 (PDT)
-Date: Thu, 25 Sep 2025 22:14:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68d62136.050a0220.3390a8.0006.GAE@google.com>
-Subject: [syzbot] Monthly btrfs report (Sep 2025)
-From: syzbot <syzbot+list00766dc1df4db65f374b@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250925-btrfs-fix-page_size-format-specifier-v1-1-8f98d300a909@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 658EF23E36
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Score: -4.21
 
-Hello btrfs maintainers/developers,
+On Thu, Sep 25, 2025 at 07:03:04PM -0400, Nathan Chancellor wrote:
+> There is an instance of -Wformat when targeting 32-bit architectures due
+> to using a 'size_t' specifier (which is 'unsigned int' for 32-bit
+> platforms) to print PAGE_SIZE:
+> 
+>   In file included from fs/btrfs/compression.h:17,
+>                    from fs/btrfs/extent_io.h:15,
+>                    from fs/btrfs/locking.h:13,
+>                    from fs/btrfs/ctree.h:19,
+>                    from fs/btrfs/disk-io.c:22:
+>   fs/btrfs/disk-io.c: In function 'open_ctree':
+>   include/linux/kern_levels.h:5:25: error: format '%zu' expects argument of type 'size_t', but argument 4 has type 'long unsigned int' [-Werror=format=]
+>   ...
+>   fs/btrfs/disk-io.c:3398:17: note: in expansion of macro 'btrfs_warn'
+>    3398 |                 btrfs_warn(fs_info,
+>         |                 ^~~~~~~~~~
+> 
+> PAGE_SIZE is consistently defined as an 'unsigned long' in
+> include/vsdo/page.h so use '%lu' to clear up the warning.
+> 
+> Fixes: 98077f7f2180 ("btrfs: enable experimental bs > ps support")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-This is a 31-day syzbot report for the btrfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/btrfs
-
-During the period, 1 new issues were detected and 1 were fixed.
-In total, 32 issues are still open and 103 have already been fixed.
-
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  6558    Yes   kernel BUG in close_ctree
-                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
-<2>  4748    Yes   WARNING in btrfs_space_info_update_bytes_may_use
-                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
-<3>  2686    Yes   BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (7)
-                   https://syzkaller.appspot.com/bug?extid=74f79df25c37437e4d5a
-<4>  1061    Yes   WARNING in btrfs_commit_transaction (2)
-                   https://syzkaller.appspot.com/bug?extid=dafbca0e20fbc5946925
-<5>  1029    Yes   WARNING in btrfs_create_pending_block_groups (2)
-                   https://syzkaller.appspot.com/bug?extid=b0643a1387dac0572b27
-<6>  624     Yes   WARNING in btrfs_chunk_alloc
-                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
-<7>  470     Yes   WARNING in cleanup_transaction
-                   https://syzkaller.appspot.com/bug?extid=021d10c4d4edc87daa03
-<8>  409     Yes   WARNING in btrfs_remove_chunk
-                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
-<9>  153     Yes   kernel BUG in clear_state_bit
-                   https://syzkaller.appspot.com/bug?extid=78dbea1c214b5413bdd3
-<10> 105     Yes   KMSAN: uninit-value in iov_iter_alignment_iovec
-                   https://syzkaller.appspot.com/bug?extid=f2a9c06bfaa027217ebb
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Thanks, I'm planning to send it as fixup once the main pull request is
+merged, until then it'll be in linux-next.
 
