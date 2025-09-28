@@ -1,194 +1,153 @@
-Return-Path: <linux-btrfs+bounces-17229-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17230-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0B5DBA56F5
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Sep 2025 02:51:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01270BA6642
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Sep 2025 04:15:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 001BD1C2330E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Sep 2025 00:51:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C832E3A786C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Sep 2025 02:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B026A1DFE0B;
-	Sat, 27 Sep 2025 00:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D76D24467E;
+	Sun, 28 Sep 2025 02:15:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="g3yG8l9p";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="g3yG8l9p"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Qst8xH+F"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9073A18DB16
-	for <linux-btrfs@vger.kernel.org>; Sat, 27 Sep 2025 00:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAD3616DEB1
+	for <linux-btrfs@vger.kernel.org>; Sun, 28 Sep 2025 02:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758934278; cv=none; b=VXIb4pX7CHiDuhf5QltgCK92/7uiN7fBnAPU+yOr3EJ8Ecy/KGZqZHEpklwb3JB3rP8gItL9EVIYfJGQ/zXp3fxCMuNadH7EWicQAsni3nIYLpWF0gV+DZ7cdnRnB1JYFQi1edSSiM7vXWPo34dYYvRUcT1Wgirrly1uhZ03Nzs=
+	t=1759025723; cv=none; b=dZEaMwqPQlVONdVqirufzxiFP2dMvPplTIylEN8/6LHefeD+4frGmI/HZpefYj2pY/MJ9/N7C9XQqD0msxB4LdOZyfWqk6/JnM2pttdzPaEiLuA0BX39DCNI2e7Bj/AWTZDxDtLwGzfGjrRI0u9MPLnCS53VeaO0q5pFK0x+TUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758934278; c=relaxed/simple;
-	bh=AAc4Gh61JVA2OeT506lu5CtQmPQRAqtNYCejfuKPpcc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OCCk+RtuDv5M6OYER+P+KuQ2vnZNeUwxUpq/4pE3jFT/XTFFnACJR+CWfpTJAwwh0kWQ0z/VUsPxv2XNlrdLkbW3khjdcsaE54QI7pViet1eGto7y9lBMB+KshPuWQBtN2HMF7EhJ3BCwyBJAT1OCl8v0AB0ufG4BetMHpIMG8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=g3yG8l9p; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=g3yG8l9p; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 66D5122D82;
-	Sat, 27 Sep 2025 00:51:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1758934273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=L2g5ASjHWqCjh1GD/6o7NGdpCEsTF3fDGcEsbNK4P18=;
-	b=g3yG8l9pxNnA1k2F4Rm/05WUEEjbkAMIE3r44x7lYoDfvBc3E/nIBe1QhSY8nZuVIQ4ovu
-	kCq7qbmb/u+H8/Gc596Tb8x3MynN3ewJ+5Bmp67AK2/Lp9Y79zIJN2ArxEVnqwk04XMj9h
-	9Erj89plQTKIIIPHxAceafznX0RDW4o=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1758934273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=L2g5ASjHWqCjh1GD/6o7NGdpCEsTF3fDGcEsbNK4P18=;
-	b=g3yG8l9pxNnA1k2F4Rm/05WUEEjbkAMIE3r44x7lYoDfvBc3E/nIBe1QhSY8nZuVIQ4ovu
-	kCq7qbmb/u+H8/Gc596Tb8x3MynN3ewJ+5Bmp67AK2/Lp9Y79zIJN2ArxEVnqwk04XMj9h
-	9Erj89plQTKIIIPHxAceafznX0RDW4o=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 68F121373E;
-	Sat, 27 Sep 2025 00:51:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NVQbCwA112ioQgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Sat, 27 Sep 2025 00:51:12 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Subject: [PATCH] btrfs-progs: remove btrfs_fs_info::leaf_data_size
-Date: Sat, 27 Sep 2025 10:20:54 +0930
-Message-ID: <635a605be3627ff476d47620f195a74fe5d634a2.1758934058.git.wqu@suse.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1759025723; c=relaxed/simple;
+	bh=8yYtLnIxQGxoyWrusR+VVn8uKayY4/ZByOWTdcI1Seg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oDpQvMKkuOcXldG5KYRJxZg54TJ2bJWWGKz6ohnDK+aa2Iy2/GNMjV2eggeOitVnhXU6jbIcnWjqeT3d89iwWrZ1dgj2dqS16KUsmBP6Nr68UlekUjfsR3jrUVoBmIOYcpbmWY0U2eKBLIe732zXt6GWTFcUrD/0xzIKOMa37WY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Qst8xH+F; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <bda4b547-4dea-4c05-8679-1cf021bbe340@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759025718;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=n8QPEqanYvGseHMXBit3z9fL9W36Ukzni1BsxcDGJHk=;
+	b=Qst8xH+FLpIjym6iJDgo4g/zbMYMXXqFbnHQQyHyx/oiq6pKnPIPcbyphysLR51R6BMkLt
+	ss4Xf2FoKeRlMXA9pk+g9L1gZsJJ4g4TM1arn/AI/a9nEvY5hiN59ZbUk8B/EvIJqR61Nq
+	gNp+ks2gINSwLlStfhQzUpLzdl4e/RI=
+Date: Sun, 28 Sep 2025 10:14:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH] btrfs: Add the nlink annotation in btrfs_inode_item
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+ Chris Mason <clm@fb.com>, linux-btrfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Youling Tang <tangyouling@kylinos.cn>
+References: <20250926074543.585249-1-youling.tang@linux.dev>
+ <adda6065-26a2-4d31-b4f0-ccb20e0fadeb@gmx.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Youling Tang <youling.tang@linux.dev>
+In-Reply-To: <adda6065-26a2-4d31-b4f0-ccb20e0fadeb@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	TAGGED_RCPT(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
+X-Migadu-Flow: FLOW_OUT
 
-[BUG]
-There is a bug report that legacy code of "btrfs rescue chunk-recover"
-is triggering false alerts from tree-checker, and refuse to work:
+Hi, Wenruo
 
-  # btrfs rescue chunk-recover /dev/nvme1n1p1
-  Scanning: DONE in dev0
-  corrupt leaf: root=1 block=13924671995904 slot=0, unexpected item end, have 16283 expect 0 <<< Note the "expect 0"
-  leaf 13924671995904 items 11 free space 12709 generation 1589644 owner ROOT_TREE
-  leaf 13924671995904 flags 0x1(WRITTEN) backref revision 1
-  [...]
-  Couldn't read tree root
-  open with broken chunk error
+On 9/26/25 16:34, Qu Wenruo wrote:
+>
+>
+> 在 2025/9/26 17:15, Youling Tang 写道:
+>> From: Youling Tang <tangyouling@kylinos.cn>
+>>
+>> When I created a directory, I found that its hard link count was
+>> 1 (unlike other file system phenomena, including the "." directory,
+>> which defaults to an initial count of 2).
+>>
+>> By analyzing the code, it is found that the nlink of the directory
+>> in btrfs has always been kept at 1, which is a deliberate design.
+>>
+>> Adding its comments can prevent it from being mistakenly regarded
+>> as a BUG.
+>>
+>> Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
+>> ---
+>>   include/uapi/linux/btrfs_tree.h | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/include/uapi/linux/btrfs_tree.h 
+>> b/include/uapi/linux/btrfs_tree.h
+>> index fc29d273845d..b4f7da90fd0e 100644
+>> --- a/include/uapi/linux/btrfs_tree.h
+>> +++ b/include/uapi/linux/btrfs_tree.h
+>> @@ -876,6 +876,7 @@ struct btrfs_inode_item {
+>>       __le64 size;
+>>       __le64 nbytes;
+>>       __le64 block_group;
+>> +    /* nlink in directories is fixed at 1 */
+>
+> nlink of what?
+>
+> Shouldn't be "nlink of directories" or "nlink of directory inodes"?
+>
+>
+> There are better location like 
+> btrfs-progs/Documentation/dev/On-disk-format.rst for this.
+>
+> And you're only adding one single comment for a single member?
+> Even this is a different behavior compared to other fses, why not 
+> explain what the impact of the change?
+>
+>
+> If you really want to add proper comments, spend more time and effort 
+> like commit 9c6b1c4de1c6 ("btrfs: document device locking") to do it 
+> correctly.
 
-[CAUSE]
-The item end checks is from __btrfs_check_leaf() from tree-checker,
-and for the first slot of a leaf, the expected end should be
-BTRFS_LEAF_DATA_SIZE(), which is fetched from fs_info->leaf_data_size.
+My understanding of nlink is as follows, please correct me if I'm wrong,
 
-However for the fs_info opened by chunk recover, it's not going through
-the regular open_ctree(), but open_ctree_with_broken_chunk(), which
-doesn't populate that member and resulting BTRFS_LEAF_DATA_SIZE() to
-return 0.
+/*
+  * nlink represents the hard link count (corresponds to inode->i_nlink 
+value).
+  * For directories, this value is always 1, which differs from other 
+filesystems
+  * where a newly created directory has an inode->i_nlink value of 2 
+(including
+  * the "." entry pointing to itself).
+  *
+  * BTRFS maintains parent-child relationships through explicit back 
+references
+  * (BTRFS_INODE_REF_KEY items) rather than link count accounting.
+  *
+  * This design simplifies metadata management in the copy-on-write 
+environment
+  * and enables more reliable consistency checking. Directory link count
+  * verification is performed during tree checking in 
+check_inode_item(), where
+  * values greater than 1 are treated as corruption.
+  *
+  * For regular files, nlink behaves traditionally and represents the actual
+  * hard link count of the file.
+  */
 
-[FIX]
-There is no need to cache leaf_data_size, as it can be easily calulated
-using nodesize.
-
-And kernel is already doing that, so follow the kernel to remove
-btrfs_fs_info::leaf_data_size, and use a simple inline function to do
-the calculation instead.
-
-Reported-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Link: https://lore.kernel.org/linux-btrfs/CABXGCsOug_bxVZ5CN1EM0sd9U4JAz=Jf5EB2TQe8gs9=KZvWEA@mail.gmail.com/
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- kernel-shared/ctree.h   | 8 +++++---
- kernel-shared/disk-io.c | 1 -
- 2 files changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index b08e078b5a16..07334208abdf 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -69,8 +69,6 @@ static inline u32 __BTRFS_LEAF_DATA_SIZE(u32 nodesize)
- #define BTRFS_MIN_BLOCKSIZE	(SZ_4K)
- #endif
- 
--#define BTRFS_LEAF_DATA_SIZE(fs_info) (fs_info->leaf_data_size)
--
- #define BTRFS_SUPER_INFO_OFFSET			(65536)
- #define BTRFS_SUPER_INFO_SIZE			(4096)
- 
-@@ -401,7 +399,6 @@ struct btrfs_fs_info {
- 	u32 nodesize;
- 	u32 sectorsize;
- 	u32 stripesize;
--	u32 leaf_data_size;
- 
- 	/*
- 	 * For open_ctree_fs_info() to hold the initial fd until close.
-@@ -426,6 +423,11 @@ struct btrfs_fs_info {
- 	struct super_block *sb;
- };
- 
-+static inline u32 BTRFS_LEAF_DATA_SIZE(const struct btrfs_fs_info *fs_info)
-+{
-+	return __BTRFS_LEAF_DATA_SIZE(fs_info->nodesize);
-+}
-+
- static inline bool btrfs_is_zoned(const struct btrfs_fs_info *fs_info)
- {
- 	return fs_info->zoned != 0;
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index e8fbc1f986ee..dff800f55a74 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -1604,7 +1604,6 @@ static struct btrfs_fs_info *__open_ctree_fd(int fp, struct open_ctree_args *oca
- 	fs_info->stripesize = btrfs_super_stripesize(disk_super);
- 	fs_info->csum_type = btrfs_super_csum_type(disk_super);
- 	fs_info->csum_size = btrfs_super_csum_size(disk_super);
--	fs_info->leaf_data_size = __BTRFS_LEAF_DATA_SIZE(fs_info->nodesize);
- 
- 	ret = btrfs_check_fs_compatibility(fs_info->super_copy, flags);
- 	if (ret)
--- 
-2.50.1
-
+Thanks,
+Youling.
+>
+> Thanks,
+> Qu
+>
+>>       __le32 nlink;
+>>       __le32 uid;
+>>       __le32 gid;
+>
 
