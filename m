@@ -1,196 +1,370 @@
-Return-Path: <linux-btrfs+bounces-17277-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17278-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4C10BAAAF5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 00:24:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A30D9BAAC49
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 01:56:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EB243C40B5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 22:24:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52CF93B68AF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 23:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899EF223DD0;
-	Mon, 29 Sep 2025 22:24:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E378D2690D1;
+	Mon, 29 Sep 2025 23:55:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uoJGSmvK";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uoJGSmvK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NK8y+Znt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94429433AD
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 22:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B95318A93F
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 23:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759184694; cv=none; b=g42LNrVcv4cuE2HXSvED2hLQvuMc9U25mCeBjtQFojf7CEmzGbOTQInY8ySK5SSnRu/vRx56UzqOkNiHNRcYoUWX/zrIr8xoLFmx+/FGfc9ntbXVcBJLr85LSZP8Vo1f1OsXRuoXywNoLwmCuwmXkDM5r0g0WkQgGVC4sBUjedA=
+	t=1759190154; cv=none; b=gGkkLY0b2rOQe1FXaJpttfqB0E0nACuZJlJH7b3Rc/fhwWfoTUKwkxNWcw1nTbPVNq7clHkDDn65rrlEGlz89n0ySb3xwFm6DqUAAorTcwIxnq98dqXgIepaJWi/kwUlgx4VWxf6s000rNabh0U+iqzcOrvUo7rM6fIiyY7UGvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759184694; c=relaxed/simple;
-	bh=hi4WoYf8mfdry+y7JIZkxknUuZXLtY5O4RY9T70KENo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XV0sj3aamqtwu0MC6c4pX6+9TYntNFND7DOiv1xBTySXNWcSR+7/RK0zdglJ7c+pUcPe+IDl2Q7pLZkOd/mPcIjILvF7A857iubhW7lNNwln3nfztlF4hSS3r0ZetmAP/S45EyPuKOmZ7y8xOeiyB8yvUpSdvdh1RP2B5OXiKQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uoJGSmvK; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uoJGSmvK; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 54BB11F45A;
-	Mon, 29 Sep 2025 22:24:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1759184689; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=eO+qq5ia4z51WAOS5eTWhUyUTThV4fH98k6x1V7oCqM=;
-	b=uoJGSmvKgqJ6yJpCrp7QtfNIdCbW8DUfB65qouTD+5K65euTMXLdgeNxa6IJI4KTaRzfed
-	6Hu6VqroI6c9pCnZJbvmWR1SW5TvunKGRz/bhOTGqoPRE3iv/y6K0pogr/A7MmzOe5LgJh
-	JmhcxJvWGjfNQY2A/QqwaZy8XacrFvo=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=uoJGSmvK
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1759184689; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=eO+qq5ia4z51WAOS5eTWhUyUTThV4fH98k6x1V7oCqM=;
-	b=uoJGSmvKgqJ6yJpCrp7QtfNIdCbW8DUfB65qouTD+5K65euTMXLdgeNxa6IJI4KTaRzfed
-	6Hu6VqroI6c9pCnZJbvmWR1SW5TvunKGRz/bhOTGqoPRE3iv/y6K0pogr/A7MmzOe5LgJh
-	JmhcxJvWGjfNQY2A/QqwaZy8XacrFvo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4114E13A21;
-	Mon, 29 Sep 2025 22:24:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pOXlADAH22iDOgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Mon, 29 Sep 2025 22:24:48 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: syzbot+bde59221318c592e6346@syzkaller.appspotmail.com
-Subject: [PATCH] btrfs: do not use folio_test_partial_kmap() in ASSERT()s
-Date: Tue, 30 Sep 2025 07:54:30 +0930
-Message-ID: <035622656afa07c2f8aaaf35cf7f7dee65fb9fe2.1759184652.git.wqu@suse.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1759190154; c=relaxed/simple;
+	bh=v86MvK88jjtNqKu4OQymk1E6I43OlQOLw7g8ZMDKC6g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MilrkgVYYBaMeDxM8IgtGjHbZv8cc/yVqRwxgNGVJsaDKFJi4mJjMRfoBqRKaUblProuhpQ6rzsIHG+8FG65iB0IFjIN3aOtfwZdWmiL3Qo7FJozbf8Gnj9DMo4S+tCeXsklKZvPfCQdRj3n8cbrMK7n5GVfskhr3/LtMbpDiZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NK8y+Znt; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-76c144b06fdso52264387b3.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 16:55:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759190151; x=1759794951; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:content-language:references:cc:to
+         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gQvevpsliQ0DYVSKoLnYEee2muzO4L+x1xKFUXdst5Y=;
+        b=NK8y+ZntIo5I0KJZmoJrAHIGsQXN105ZTCQlzmWmQ/ymYjtFetGE5EC+WabqtPfeO4
+         pEKr1mvVNGMDGgGqyiCPoxJnf7qPPK1MhURXmvJsBRAuS5ODE65AeNHpQFwPI4DbLJsg
+         pwXwzjmarY1mizEDuTrYfNX2VrXuvUoFoY67FrOjVm2qI9D7mrGJX6qz0ceCPoOALs9H
+         TyuFk/xpps8dragmHkVpT7qSlENh1vSWBqtRTlUCYDtxl3uKEYygCVBGzFTTsuB4Czr/
+         3FnPTpgHpsXnFil85BCO8jte7+cs/kD+xb4g30UCcjIweKK/iMGllJ37uf69V0ZeE7UC
+         0SkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759190151; x=1759794951;
+        h=in-reply-to:autocrypt:from:content-language:references:cc:to
+         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gQvevpsliQ0DYVSKoLnYEee2muzO4L+x1xKFUXdst5Y=;
+        b=izxjXQdknkzQH/l+/NCtxrwpZs8+iDOwpUWeOgvh98wuG6+PNZeIz6Mcr1DYzq9aji
+         daE9K1q6aNKEcbFG7nJnNTlSI3b7CFj+x2e8iNbQGkkMIqD2dIK6nekLt9mBgBjO/1ir
+         H7MpVB0hLkRz+iZPCPpFjCsd26gl2B0jfrIOXY2PztDN/lglXoUo+4WhT0uuqfXfNsxm
+         B7mlHa3AP6ef/vy5P1VcYyJEJS1cy/u2sWaWtgt7evOSR3oLAWnHJTCBwXQyvHZG5m87
+         v4r2atjVqTLdPY0BcYIXtMErCpu04ODQKkfBzq2RIRb/lzZvLveL2Fi+F7SElDcVmJdl
+         gsMA==
+X-Gm-Message-State: AOJu0YxWqnd3Pa2bfhgRbX00vTWQauvyp0pkTWqfH4cFQQM/G090wsuw
+	s8uPUb2y/BLHNaFIYeyg6bYyE3eP5r1/seWkDmH9cuEEuaWuyF64NA1U
+X-Gm-Gg: ASbGncttvJLzy3UXjJAGZ0dP9LOp/SYJe8QtoQUKhbrE3eyjqLKF7mmUzPakKB3zEUY
+	hWKrdLFMwe7GGAU74B+6tQELeT7jUe8cnR/KIKd1LY9jKrBRbs7a75zMiuAbtw1Plbv54yKPmpx
+	kzngn+aHQnes667BPQ0krEoIrCNzhBOOhOC6+Anc4pBVOXSxrNXBhkbA9+ys6toi//2KXuGvcsk
+	ZSqXzQA0v3HeMVjoH2xxfrnFCjM5QbobCCJi7dMIEQwzW3PoRLIpm3iPAEd38Tn6wT8d7eIYa82
+	RSUF/mDKxOv3fBuZl9qEJZgzrHvhqfE3poRgoZBvxwspPKvN43I44GuYlhL6o81//43FsyyPSOS
+	CyWl4X+WnkWv7r09DE4Ybqb6JIMpkvgvk239zpr+VpTi+cguJqxJ5za3FDPzqp98Mj/SUiBq6Xn
+	bEfxAh+QRy0hqA/JA/K+KYiMIcP/Wato/OvRQ=
+X-Google-Smtp-Source: AGHT+IGF7+BdjyoFnxU9gL3fvESwHOXHWRWBmi8mM91/RkhTeUCELgGRoNLZXYfTZKwObufqbW/+DQ==
+X-Received: by 2002:a05:690c:9c13:b0:739:79b6:1b33 with SMTP id 00721157ae682-763f8776ff6mr182714457b3.6.1759190151499;
+        Mon, 29 Sep 2025 16:55:51 -0700 (PDT)
+Received: from [10.138.34.110] (h96-60-249-169.cncrtn.broadband.dynamic.tds.net. [96.60.249.169])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-765bb916ac8sm33003997b3.3.2025.09.29.16.55.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Sep 2025 16:55:50 -0700 (PDT)
+Message-ID: <693793db-3431-48b3-8913-aadb86bc4ebc@gmail.com>
+Date: Mon, 29 Sep 2025 19:55:22 -0400
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DKIM_TRACE(0.00)[suse.com:+];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[bde59221318c592e6346];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:dkim,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 54BB11F45A
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+User-Agent: Mozilla Thunderbird
+Subject: Re: Can the output of FIEMAP on BTRFS be used to check if a file and
+ its reflink copy might have diverged?
+To: Christoph Hellwig <hch@infradead.org>, Chris Laprise <tasket@posteo.net>
+Cc: linux-btrfs@vger.kernel.org
+References: <a697548b-cc40-4275-9da1-3b29351654f0@gmail.com>
+ <aNF9xH30pAEq5y4r@infradead.org>
+ <38f350b0-9a71-4627-9d36-57bf2f85e67a@gmail.com>
+ <aNGFdxq6Xqduoj6w@infradead.org>
+ <d14d26ce-3176-4cd4-989e-cdbda30be98e@posteo.net>
+ <aNpIKB7cc7lCUy7j@infradead.org>
+Content-Language: en-US
+From: Demi Marie Obenour <demiobenour@gmail.com>
+Autocrypt: addr=demiobenour@gmail.com; keydata=
+ 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
+ +MYSfkEjBz0E8CLOcAw7JIwAaeBT
+In-Reply-To: <aNpIKB7cc7lCUy7j@infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------0oxHhOz6VmcgDqPoZwqaP9cO"
 
-[BUG]
-Syzbot reported an ASSERT() triggered inside scrub:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------0oxHhOz6VmcgDqPoZwqaP9cO
+Content-Type: multipart/mixed; boundary="------------kxgW6CkpREboDUfMAHdSW7UC";
+ protected-headers="v1"
+From: Demi Marie Obenour <demiobenour@gmail.com>
+To: Christoph Hellwig <hch@infradead.org>, Chris Laprise <tasket@posteo.net>
+Cc: linux-btrfs@vger.kernel.org
+Message-ID: <693793db-3431-48b3-8913-aadb86bc4ebc@gmail.com>
+Subject: Re: Can the output of FIEMAP on BTRFS be used to check if a file and
+ its reflink copy might have diverged?
+References: <a697548b-cc40-4275-9da1-3b29351654f0@gmail.com>
+ <aNF9xH30pAEq5y4r@infradead.org>
+ <38f350b0-9a71-4627-9d36-57bf2f85e67a@gmail.com>
+ <aNGFdxq6Xqduoj6w@infradead.org>
+ <d14d26ce-3176-4cd4-989e-cdbda30be98e@posteo.net>
+ <aNpIKB7cc7lCUy7j@infradead.org>
+In-Reply-To: <aNpIKB7cc7lCUy7j@infradead.org>
 
-  BTRFS info (device loop0): scrub: started on devid 1
-  assertion failed: !folio_test_partial_kmap(folio) :: 0, in fs/btrfs/scrub.c:697
-  ------------[ cut here ]------------
-  kernel BUG at fs/btrfs/scrub.c:697!
-  Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
-  CPU: 0 UID: 0 PID: 6077 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full)
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
-  RIP: 0010:scrub_stripe_get_kaddr+0x1bb/0x1c0 fs/btrfs/scrub.c:697
-  Call Trace:
-   <TASK>
-   scrub_bio_add_sector fs/btrfs/scrub.c:932 [inline]
-   scrub_submit_initial_read+0xf21/0x1120 fs/btrfs/scrub.c:1897
-   submit_initial_group_read+0x423/0x5b0 fs/btrfs/scrub.c:1952
-   flush_scrub_stripes+0x18f/0x1150 fs/btrfs/scrub.c:1973
-   scrub_stripe+0xbea/0x2a30 fs/btrfs/scrub.c:2516
-   scrub_chunk+0x2a3/0x430 fs/btrfs/scrub.c:2575
-   scrub_enumerate_chunks+0xa70/0x1350 fs/btrfs/scrub.c:2839
-   btrfs_scrub_dev+0x6e7/0x10e0 fs/btrfs/scrub.c:3153
-   btrfs_ioctl_scrub+0x249/0x4b0 fs/btrfs/ioctl.c:3163
-   vfs_ioctl fs/ioctl.c:51 [inline]
-   __do_sys_ioctl fs/ioctl.c:597 [inline]
-   __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:583
-   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-   do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
-   entry_SYSCALL_64_after_hwframe+0x77/0x7f
-   </TASK>
-  ---[ end trace 0000000000000000 ]---
+--------------kxgW6CkpREboDUfMAHdSW7UC
+Content-Type: multipart/mixed; boundary="------------wWG10NJT7xT3wMuxvh4JlfTX"
 
-Which doesn't make much sense, as all the folios we allocated for scrub
-should not be highmem.
+--------------wWG10NJT7xT3wMuxvh4JlfTX
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-[CAUSE]
-Thankfully syzbot has a detailed kernel config file, showing that
-CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP is set to y.
+On 9/29/25 04:49, Christoph Hellwig wrote:
+> On Mon, Sep 22, 2025 at 11:25:48PM +0000, Chris Laprise wrote:
+>> The overall procedure is:
+>>
+>> 1. Get subvolume's Generation ID
+>>
+>> 2. Read FIEMAP data
+>>
+>> 3. Get subvolume's Generation ID again
+>>
+>> 4. Check that the Generation ID hasn't changed: No match skips the fil=
+e or
+>> raises an error
+>=20
+> I'll let the btrfs developers answer this as it's clearly not about
+> XFS.
+>=20
+>> I should clarify that in this application we are not interested in phy=
+sical
+>> mappings, but the logical representation of data.
+>=20
+> And that's not what FIEMAP provides.
 
-And that debug option will force all folio_test_partial_kmap() to return
-true, to improve coverage on highmem tests.
+Can two extents have the same offset on disk but different logical conten=
+ts?
+For XFS that seems impossible unless a realtime device is involved, which=
 
-But in our case we really just want to make sure the folios we allocated
-are not highmem (and they are indeed not). Such incorrect result from
-folio_test_partial_kmap() is just screwing up everything.
+is not the case here.
 
-[FIX]
-Replace folio_test_partial_kmap() to folio_test_highmem() so that we
-won't bother those stupid highmem specific debug options.
+>> It is also understood that
+>> for some other applications FIEMAP would not be sufficient; however Wy=
+ng is
+>> not fetching or manipulating data at a low level.  Also, there is a la=
+ck of
+>> accuracy in the form of false positives, where unchanged data show up =
+as
+>> deltas, but this only results in longer processing time not data corru=
+ption;
+>> false negatives are the only thing that must be avoided.
+>=20
+> I think what you want/need is a way to look at the delta between two
+> reflinked files.  At least for XFS (and I'm pretty sure for btrfs as
+> well) the low-level data structures could provide this, but building an=
 
-Reported-by: syzbot+bde59221318c592e6346@syzkaller.appspotmail.com
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Upstream PR is not yet merged, thus no proper fixed tag available yet.
----
- fs/btrfs/scrub.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> actually safe interface to that is unfortunately hard.
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 4691d0bdb2e8..651b11884f82 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -694,7 +694,7 @@ static void *scrub_stripe_get_kaddr(struct scrub_stripe *stripe, int sector_nr)
- 
- 	/* stripe->folios[] is allocated by us and no highmem is allowed. */
- 	ASSERT(folio);
--	ASSERT(!folio_test_partial_kmap(folio));
-+	ASSERT(!folio_test_highmem(folio));
- 	return folio_address(folio) + offset_in_folio(folio, offset);
- }
- 
-@@ -707,7 +707,7 @@ static phys_addr_t scrub_stripe_get_paddr(struct scrub_stripe *stripe, int secto
- 
- 	/* stripe->folios[] is allocated by us and no highmem is allowed. */
- 	ASSERT(folio);
--	ASSERT(!folio_test_partial_kmap(folio));
-+	ASSERT(!folio_test_highmem(folio));
- 	/* And the range must be contained inside the folio. */
- 	ASSERT(offset_in_folio(folio, offset) + fs_info->sectorsize <= folio_size(folio));
- 	return page_to_phys(folio_page(folio, 0)) + offset_in_folio(folio, offset);
--- 
-2.50.1
+Is it easier if one requires the filesystem to be read-only?  Taking a
+device-mapper snapshot (thin or CoW) before the backup is not too onerous=
+,
+at least if the filesystem is already on an LVM LV.
+--=20
+Sincerely,
+Demi Marie Obenour (she/her/hers)
+--------------wWG10NJT7xT3wMuxvh4JlfTX
+Content-Type: application/pgp-keys; name="OpenPGP_0xB288B55FFF9C22C1.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB288B55FFF9C22C1.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsFNBFp+A0oBEADffj6anl9/BHhUSxGTICeVl2tob7hPDdhHNgPR4C8xlYt5q49y
+B+l2nipdaq+4Gk6FZfqC825TKl7eRpUjMriwle4r3R0ydSIGcy4M6eb0IcxmuPYf
+bWpr/si88QKgyGSVZ7GeNW1UnzTdhYHuFlk8dBSmB1fzhEYEk0RcJqg4AKoq6/3/
+UorR+FaSuVwT7rqzGrTlscnTDlPWgRzrQ3jssesI7sZLm82E3pJSgaUoCdCOlL7M
+MPCJwI8JpPlBedRpe9tfVyfu3euTPLPxwcV3L/cfWPGSL4PofBtB8NUU6QwYiQ9H
+zx4xOyn67zW73/G0Q2vPPRst8LBDqlxLjbtx/WLR6h3nBc3eyuZ+q62HS1pJ5EvU
+T1vjyJ1ySrqtUXWQ4XlZyoEFUfpJxJoN0A9HCxmHGVckzTRl5FMWo8TCniHynNXs
+BtDQbabt7aNEOaAJdE7to0AH3T/Bvwzcp0ZJtBk0EM6YeMLtotUut7h2Bkg1b//r
+6bTBswMBXVJ5H44Qf0+eKeUg7whSC9qpYOzzrm7+0r9F5u3qF8ZTx55TJc2g656C
+9a1P1MYVysLvkLvS4H+crmxA/i08Tc1h+x9RRvqba4lSzZ6/Tmt60DPM5Sc4R0nS
+m9BBff0Nm0bSNRS8InXdO1Aq3362QKX2NOwcL5YaStwODNyZUqF7izjK4QARAQAB
+zTxEZW1pIE9iZW5vdXIgKElUTCBFbWFpbCBLZXkpIDxhdGhlbmFAaW52aXNpYmxl
+dGhpbmdzbGFiLmNvbT7CwY4EEwEIADgWIQR2h02fEza6IlkHHHGyiLVf/5wiwQUC
+X6YJvQIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRCyiLVf/5wiwWRhD/0Y
+R+YYC5Kduv/2LBgQJIygMsFiRHbR4+tWXuTFqgrxxFSlMktZ6gQrQCWe38WnOXkB
+oY6n/5lSJdfnuGd2UagZ/9dkaGMUkqt+5WshLFly4BnP7pSsWReKgMP7etRTwn3S
+zk1OwFx2lzY1EnnconPLfPBc6rWG2moA6l0WX+3WNR1B1ndqpl2hPSjT2jUCBWDV
+rGOUSX7r5f1WgtBeNYnEXPBCUUM51pFGESmfHIXQrqFDA7nBNiIVFDJTmQzuEqIy
+Jl67pKNgooij5mKzRhFKHfjLRAH4mmWZlB9UjDStAfFBAoDFHwd1HL5VQCNQdqEc
+/9lZDApqWuCPadZN+pGouqLysesIYsNxUhJ7dtWOWHl0vs7/3qkWmWun/2uOJMQh
+ra2u8nA9g91FbOobWqjrDd6x3ZJoGQf4zLqjmn/P514gb697788e573WN/MpQ5XI
+Fl7aM2d6/GJiq6LC9T2gSUW4rbPBiqOCeiUx7Kd/sVm41p9TOA7fEG4bYddCfDsN
+xaQJH6VRK3NOuBUGeL+iQEVF5Xs6Yp+U+jwvv2M5Lel3EqAYo5xXTx4ls0xaxDCu
+fudcAh8CMMqx3fguSb7Mi31WlnZpk0fDuWQVNKyDP7lYpwc4nCCGNKCj622ZSocH
+AcQmX28L8pJdLYacv9pU3jPy4fHcQYvmTavTqowGnM08RGVtaSBNYXJpZSBPYmVu
+b3VyIChsb3ZlciBvZiBjb2RpbmcpIDxkZW1pb2Jlbm91ckBnbWFpbC5jb20+wsF4
+BBMBAgAiBQJafgNKAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRCyiLVf
+/5wiwYa/EACv8a2+MMou9cSCNoZBQaU+fTmyzft9hUE+0d5W2UY1RY3OsjFIzm9R
+/4SVccfsqOYLEo+S0vQMIIIqFEq3FCpXXwPzyimotps05VA8U3Bd7yseojFygOgK
+sAMOAee2RCaDDOnoJue01dfZMzzHPO/TVdp3OvnpWipfv5G1Xg96rwbhMLE3tg6N
+xwAHa31Bv4/Xq8CJOoIWvx6fcmZQpz01/lSvsYn0KrfEbTKkuUf0vM9JrCTCP2oz
+VNN5BYzqaq2M4r+jmSyeXLim922VOWqGkUEQ85BSEemqrRS06IU6NtEMsF8EWt/b
+hWjk/9GDKTcnpdJHTrMxTspExBiNrvpI2t+YPU5B/dJJAUxvmhFrbSIbdB8umBZs
+I3AMYrEmpAbh5x7jEjoskUC7uN3o9vpg1oCLS2ePDLtAtyBtbHnkA4xGD7ar8mem
+xpH9lY/i+sC6CyyIUWcUDnnagKyJP0m9ks0GLsTeOCA0bft2XA6rD6aaCnMUsndT
+ctrab42CV5XypjmC4U1rPJ8JQJUh1/3P48/8sMH+3krxpJ06KNWNFaUbaMTGiltZ
+7x9DngklSYrX0T+2G4kVXNmjaljwkoLahwLla2gUWwBSyofXdqyhQdwZsp01KXNQ
+UCyT/Pg+aDcm/E7OMV3d4lf7g/CSxiX2GSEe6BlhSz+Lmd7ZJ3g32M1ARGVtaSBN
+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
+EtJuZYM5blWncBOJCoWMnBEcTEo/viU3GgcVRw=3D=3D
+=3Dx94R
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------wWG10NJT7xT3wMuxvh4JlfTX--
+
+--------------kxgW6CkpREboDUfMAHdSW7UC--
+
+--------------0oxHhOz6VmcgDqPoZwqaP9cO
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEopQtqVJW1aeuo9/sszaHOrMp8lMFAmjbHGsACgkQszaHOrMp
+8lPCIw//Qvjie8KmXI3UkLLw/kQR4Uo4afkUUpHVSLFkLGgRldiSZGl1rV64/LMQ
+YHJpqbdgndCUTgFSoRMyL/BsiYoybvBO5ebwFSyhRSGVozpFHu3HYTE9yv77EVk0
+wbH+LQy3WQWL4OabSvvBDMaeNgw1ATeSDVo6mFhlc9VNs1o5vkAFAi5l6Uh6BRWx
+Kc8fcU1JvdAnW3araQ3CfMJxgrxVXArB/xK+H3H0LHZBlpL2oijq2RyH719y93sO
+Zuj4hS3qyExAYURyk4ZdrZ68nZfUhfBbFID4676gvcr75J3sutjabZJZqNaNzRpa
++1qNIoRJiZOd+GbfuJH8m3CxOn1mDAWwlcG2RD5tikiFQ9G5y9uUqP1shxprmmgG
+RNYsivk4VP/71jc+KjbHhjsfrxMx8NDtbdOMk9Ub2wvwxwW/2GhV/cQv/2sH8Eei
+yVa6vapsycgxmGokcAqhte20xN5y9TF+k3qxCb5NmPbD5GB1lEBNjpTeRAcQE/1m
+7fZHlJf9SySXUEO0Rg5/X9XT4H7rHzmKlI53Xy3t8oPdME6ND68O/tHhLnBwAZX+
+18qAY2ADm5g68n1k95FLHIcmAmJntl6VDikaCW+bub2nb4k0m5HJ448UoERlyUro
+hCVdMUrg2rKuKGfvqKb0PrXY8J6Q4iIKvZznVKdIzS0ORLhtuVg=
+=ZKA5
+-----END PGP SIGNATURE-----
+
+--------------0oxHhOz6VmcgDqPoZwqaP9cO--
 
