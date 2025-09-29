@@ -1,80 +1,80 @@
-Return-Path: <linux-btrfs+bounces-17278-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17279-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A30D9BAAC49
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 01:56:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A278DBAAC4C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 01:56:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52CF93B68AF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 23:55:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F6F317EF3F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 23:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E378D2690D1;
-	Mon, 29 Sep 2025 23:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B95426A1CF;
+	Mon, 29 Sep 2025 23:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NK8y+Znt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I2FrLKRQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B95318A93F
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 23:55:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D222F1DA61B
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 23:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759190154; cv=none; b=gGkkLY0b2rOQe1FXaJpttfqB0E0nACuZJlJH7b3Rc/fhwWfoTUKwkxNWcw1nTbPVNq7clHkDDn65rrlEGlz89n0ySb3xwFm6DqUAAorTcwIxnq98dqXgIepaJWi/kwUlgx4VWxf6s000rNabh0U+iqzcOrvUo7rM6fIiyY7UGvg=
+	t=1759190202; cv=none; b=Luhkm1NSEP//G/hWx8f7/yotp3k+E0VoKHCG5IJ1M/H5U/b7E2wiI8nsAyTvum7UiIWKDT5FjcoNOiu56Uxibxxh1VMx4KxLVSpZWVAA9qq6aRF3yUOSCvMMEfjcSAF6bYQgoAYIVRTcEELJL5SXQdfzRC79Y1qn6vP3Cv6JH/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759190154; c=relaxed/simple;
-	bh=v86MvK88jjtNqKu4OQymk1E6I43OlQOLw7g8ZMDKC6g=;
+	s=arc-20240116; t=1759190202; c=relaxed/simple;
+	bh=x5/vHxu/nGoH0qVmtHreHfeZS2W0yWMDKaHVzSBV4iA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MilrkgVYYBaMeDxM8IgtGjHbZv8cc/yVqRwxgNGVJsaDKFJi4mJjMRfoBqRKaUblProuhpQ6rzsIHG+8FG65iB0IFjIN3aOtfwZdWmiL3Qo7FJozbf8Gnj9DMo4S+tCeXsklKZvPfCQdRj3n8cbrMK7n5GVfskhr3/LtMbpDiZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NK8y+Znt; arc=none smtp.client-ip=209.85.128.170
+	 In-Reply-To:Content-Type; b=M/cnP5VzlXsxWSff4hJ/0v8Al3My3q0vFUP6j93AZ0w05dR02hzAzo6ALGpZCE/+H6hA0evEEeX4BLNKPlHOyxnLezmA4KhqnQD7GM7WHsgLgqmOw76gsEoMWjvStVem1bi0Jxmacm6ikZyVRzlhQd8OY2pfjNTjC4JygZRnR7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I2FrLKRQ; arc=none smtp.client-ip=209.85.128.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-76c144b06fdso52264387b3.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 16:55:52 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-72ce9790ab3so57936747b3.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 16:56:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759190151; x=1759794951; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1759190200; x=1759795000; darn=vger.kernel.org;
         h=in-reply-to:autocrypt:from:content-language:references:cc:to
          :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=gQvevpsliQ0DYVSKoLnYEee2muzO4L+x1xKFUXdst5Y=;
-        b=NK8y+ZntIo5I0KJZmoJrAHIGsQXN105ZTCQlzmWmQ/ymYjtFetGE5EC+WabqtPfeO4
-         pEKr1mvVNGMDGgGqyiCPoxJnf7qPPK1MhURXmvJsBRAuS5ODE65AeNHpQFwPI4DbLJsg
-         pwXwzjmarY1mizEDuTrYfNX2VrXuvUoFoY67FrOjVm2qI9D7mrGJX6qz0ceCPoOALs9H
-         TyuFk/xpps8dragmHkVpT7qSlENh1vSWBqtRTlUCYDtxl3uKEYygCVBGzFTTsuB4Czr/
-         3FnPTpgHpsXnFil85BCO8jte7+cs/kD+xb4g30UCcjIweKK/iMGllJ37uf69V0ZeE7UC
-         0SkQ==
+        bh=Kh8Rl0zXiola/JqA2M2wbm5eTcaaDVETCCVMGbKPWh8=;
+        b=I2FrLKRQQEsMQgL0X0FCBzxIYwEzB8dfcC/Kexh0bC2V8MmvcPR3TcPG078JHa6kLP
+         5XMYVDLWTsmrNYGCMEfy0iADYuOrGeYao61JzIVHsIG0bbw+h4xMYYeSp8xOVPHSmr2U
+         MdIViYpFopg1PY2xZ2mD6ho1aJhPVSf8pmq3WhzwuE1MjEw2mgDNzN9f10Tb0gJ1xoDA
+         Z/SgLfTUv6IOoFvx+Go4DwwiHQ3NrCzdvgtoQGfavwoNUwiVvOGhaOjY4b5UEWrGtlp0
+         FHJOoZAIyMV+UM6Gbx7RZ2YUCWKxwqu8+XHAMQfMDHgOzgu41nAt4tHx2se9A0QN3Ojq
+         Kqkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759190151; x=1759794951;
+        d=1e100.net; s=20230601; t=1759190200; x=1759795000;
         h=in-reply-to:autocrypt:from:content-language:references:cc:to
          :subject:user-agent:mime-version:date:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=gQvevpsliQ0DYVSKoLnYEee2muzO4L+x1xKFUXdst5Y=;
-        b=izxjXQdknkzQH/l+/NCtxrwpZs8+iDOwpUWeOgvh98wuG6+PNZeIz6Mcr1DYzq9aji
-         daE9K1q6aNKEcbFG7nJnNTlSI3b7CFj+x2e8iNbQGkkMIqD2dIK6nekLt9mBgBjO/1ir
-         H7MpVB0hLkRz+iZPCPpFjCsd26gl2B0jfrIOXY2PztDN/lglXoUo+4WhT0uuqfXfNsxm
-         B7mlHa3AP6ef/vy5P1VcYyJEJS1cy/u2sWaWtgt7evOSR3oLAWnHJTCBwXQyvHZG5m87
-         v4r2atjVqTLdPY0BcYIXtMErCpu04ODQKkfBzq2RIRb/lzZvLveL2Fi+F7SElDcVmJdl
-         gsMA==
-X-Gm-Message-State: AOJu0YxWqnd3Pa2bfhgRbX00vTWQauvyp0pkTWqfH4cFQQM/G090wsuw
-	s8uPUb2y/BLHNaFIYeyg6bYyE3eP5r1/seWkDmH9cuEEuaWuyF64NA1U
-X-Gm-Gg: ASbGncttvJLzy3UXjJAGZ0dP9LOp/SYJe8QtoQUKhbrE3eyjqLKF7mmUzPakKB3zEUY
-	hWKrdLFMwe7GGAU74B+6tQELeT7jUe8cnR/KIKd1LY9jKrBRbs7a75zMiuAbtw1Plbv54yKPmpx
-	kzngn+aHQnes667BPQ0krEoIrCNzhBOOhOC6+Anc4pBVOXSxrNXBhkbA9+ys6toi//2KXuGvcsk
-	ZSqXzQA0v3HeMVjoH2xxfrnFCjM5QbobCCJi7dMIEQwzW3PoRLIpm3iPAEd38Tn6wT8d7eIYa82
-	RSUF/mDKxOv3fBuZl9qEJZgzrHvhqfE3poRgoZBvxwspPKvN43I44GuYlhL6o81//43FsyyPSOS
-	CyWl4X+WnkWv7r09DE4Ybqb6JIMpkvgvk239zpr+VpTi+cguJqxJ5za3FDPzqp98Mj/SUiBq6Xn
-	bEfxAh+QRy0hqA/JA/K+KYiMIcP/Wato/OvRQ=
-X-Google-Smtp-Source: AGHT+IGF7+BdjyoFnxU9gL3fvESwHOXHWRWBmi8mM91/RkhTeUCELgGRoNLZXYfTZKwObufqbW/+DQ==
-X-Received: by 2002:a05:690c:9c13:b0:739:79b6:1b33 with SMTP id 00721157ae682-763f8776ff6mr182714457b3.6.1759190151499;
-        Mon, 29 Sep 2025 16:55:51 -0700 (PDT)
+        bh=Kh8Rl0zXiola/JqA2M2wbm5eTcaaDVETCCVMGbKPWh8=;
+        b=ImICn4AAqYg0042xD+4PuVPu0F1fmWgX4jK6Zbm8REeA+jOIdIi8hsR8vVABJ3P3e+
+         eIUNdx981gYJds/MrpCNShSOIASiBIVnqATGXNQ5vwH6t2MBniRa7aso3T/6PwmBoMit
+         aOeRu68M3BuAzfFRO/TUegd5yG4vHD/PMDSQOeLVVZsF2XkQaKBCfcN8PW2RXVboZw5/
+         D/oXBiHKLgJLke8SA+yfEc/3nzkdkSJhfaw1ZnSHgncoTkuRX5RQACyCwFrBD1K/3sH7
+         Ie4iW4RGT93jszQ5SQxKeKs9EmxKMY/Er4kGWXz0iteWnSPwXmbWv3IWienPY6vPTfAh
+         P3hQ==
+X-Gm-Message-State: AOJu0YyUmk6e15cAj0FYTVLxKB/hOjV3EFU6EeSMKYwMJ4+Z80dPT38Y
+	2X24TxTgu3QXiHMZwdxKfDJmT00qVhtNygpb2s6hFrM+9JIdCRGgFuDBcR07LA==
+X-Gm-Gg: ASbGncukh5CQckFCUeZT9woUhbP9Zh7HyRXQwENaSM/cn7xVwsgQngpxXInzvBzxTQr
+	1nXzKuUVgp2zj+VVjd7Vytu3iRsare/SDqI60S6Du2ayzE/xlJbTr9bdId3ESyx1/eDIUJt/JQ/
+	TpNPxBXzJRl6RsnJQUhlov6CPJWooC4QeHmfNjctVo94sRp9LNudOMroOa/5VusbrEMX8IKbVUQ
+	7zmGYenyEUCw74lbyi+Mz8GhT/KZCNzQpApnCfz81bCIhzQutxPIUtlE6ntF4EQ619Ts3q+ietM
+	MCgA7oUQx8Luq7d0hAsfO0rJzV+S3/QU82965ZPiUx23mtM6Xtj/GRTTD6L4jFjAD3NZN4KVmx/
+	ugV3palZjAfyLnJFezdGXNw8c722gS1GRknIjmIvYj/xp9bffQg7J361yoYiYzG9JTSD8/Up54p
+	3NPmHAHzM0BIqTrgPHqTihOospwLxEQ6A48ms=
+X-Google-Smtp-Source: AGHT+IHXQ15A7JdVI1t47bOe6z+zOeXpd3i0L7rN6O/nCOAQl/kNFTnp9OW+lFEsc3AxanWr+w87gg==
+X-Received: by 2002:a05:690c:4c12:b0:760:d61e:ca73 with SMTP id 00721157ae682-76401288e7fmr196203227b3.31.1759190199182;
+        Mon, 29 Sep 2025 16:56:39 -0700 (PDT)
 Received: from [10.138.34.110] (h96-60-249-169.cncrtn.broadband.dynamic.tds.net. [96.60.249.169])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-765bb916ac8sm33003997b3.3.2025.09.29.16.55.50
+        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-636d5b1d908sm2995526d50.22.2025.09.29.16.56.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Sep 2025 16:55:50 -0700 (PDT)
-Message-ID: <693793db-3431-48b3-8913-aadb86bc4ebc@gmail.com>
-Date: Mon, 29 Sep 2025 19:55:22 -0400
+        Mon, 29 Sep 2025 16:56:38 -0700 (PDT)
+Message-ID: <766b58f5-17c6-4395-b5e8-7217e50ec084@gmail.com>
+Date: Mon, 29 Sep 2025 19:56:34 -0400
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,14 +84,16 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: Can the output of FIEMAP on BTRFS be used to check if a file and
  its reflink copy might have diverged?
-To: Christoph Hellwig <hch@infradead.org>, Chris Laprise <tasket@posteo.net>
+To: Christoph Hellwig <hch@infradead.org>
 Cc: linux-btrfs@vger.kernel.org
 References: <a697548b-cc40-4275-9da1-3b29351654f0@gmail.com>
  <aNF9xH30pAEq5y4r@infradead.org>
  <38f350b0-9a71-4627-9d36-57bf2f85e67a@gmail.com>
  <aNGFdxq6Xqduoj6w@infradead.org>
- <d14d26ce-3176-4cd4-989e-cdbda30be98e@posteo.net>
- <aNpIKB7cc7lCUy7j@infradead.org>
+ <7b756bc3-fae4-4cbb-99a1-117880269269@gmail.com>
+ <aNGH9s0xoIg9Isk5@infradead.org>
+ <0b428deb-3711-4671-96dd-69c149fd8ccb@gmail.com>
+ <aNpIZ2iMChSUzD3y@infradead.org>
 Content-Language: en-US
 From: Demi Marie Obenour <demiobenour@gmail.com>
 Autocrypt: addr=demiobenour@gmail.com; keydata=
@@ -137,90 +139,63 @@ Autocrypt: addr=demiobenour@gmail.com; keydata=
  vUSQHSrmfOzX3cV4yfmjM5lewgSstoxGyTx2M8enslgdXhPthZlDnTnOT+C+OTsh8+m5tos8
  HQjaPM01MKBiAqdPgksm1wu2DrrwUi6ChRVTUBcj6+/9IJ81H2P2gJk3Ls3AVIxIffLoY34E
  +MYSfkEjBz0E8CLOcAw7JIwAaeBT
-In-Reply-To: <aNpIKB7cc7lCUy7j@infradead.org>
+In-Reply-To: <aNpIZ2iMChSUzD3y@infradead.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="------------0oxHhOz6VmcgDqPoZwqaP9cO"
+ boundary="------------0YtktywRMkGOQeQJORaTTWJm"
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------0oxHhOz6VmcgDqPoZwqaP9cO
-Content-Type: multipart/mixed; boundary="------------kxgW6CkpREboDUfMAHdSW7UC";
+--------------0YtktywRMkGOQeQJORaTTWJm
+Content-Type: multipart/mixed; boundary="------------o0YN69hH86tyyV7pmfe4yWx3";
  protected-headers="v1"
 From: Demi Marie Obenour <demiobenour@gmail.com>
-To: Christoph Hellwig <hch@infradead.org>, Chris Laprise <tasket@posteo.net>
+To: Christoph Hellwig <hch@infradead.org>
 Cc: linux-btrfs@vger.kernel.org
-Message-ID: <693793db-3431-48b3-8913-aadb86bc4ebc@gmail.com>
+Message-ID: <766b58f5-17c6-4395-b5e8-7217e50ec084@gmail.com>
 Subject: Re: Can the output of FIEMAP on BTRFS be used to check if a file and
  its reflink copy might have diverged?
 References: <a697548b-cc40-4275-9da1-3b29351654f0@gmail.com>
  <aNF9xH30pAEq5y4r@infradead.org>
  <38f350b0-9a71-4627-9d36-57bf2f85e67a@gmail.com>
  <aNGFdxq6Xqduoj6w@infradead.org>
- <d14d26ce-3176-4cd4-989e-cdbda30be98e@posteo.net>
- <aNpIKB7cc7lCUy7j@infradead.org>
-In-Reply-To: <aNpIKB7cc7lCUy7j@infradead.org>
+ <7b756bc3-fae4-4cbb-99a1-117880269269@gmail.com>
+ <aNGH9s0xoIg9Isk5@infradead.org>
+ <0b428deb-3711-4671-96dd-69c149fd8ccb@gmail.com>
+ <aNpIZ2iMChSUzD3y@infradead.org>
+In-Reply-To: <aNpIZ2iMChSUzD3y@infradead.org>
 
---------------kxgW6CkpREboDUfMAHdSW7UC
-Content-Type: multipart/mixed; boundary="------------wWG10NJT7xT3wMuxvh4JlfTX"
+--------------o0YN69hH86tyyV7pmfe4yWx3
+Content-Type: multipart/mixed; boundary="------------SiXxHtfAep1e0hovxv8wRDmL"
 
---------------wWG10NJT7xT3wMuxvh4JlfTX
+--------------SiXxHtfAep1e0hovxv8wRDmL
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 9/29/25 04:49, Christoph Hellwig wrote:
-> On Mon, Sep 22, 2025 at 11:25:48PM +0000, Chris Laprise wrote:
->> The overall procedure is:
->>
->> 1. Get subvolume's Generation ID
->>
->> 2. Read FIEMAP data
->>
->> 3. Get subvolume's Generation ID again
->>
->> 4. Check that the Generation ID hasn't changed: No match skips the fil=
-e or
->> raises an error
+On 9/29/25 04:50, Christoph Hellwig wrote:
+> On Mon, Sep 22, 2025 at 01:54:56PM -0400, Demi Marie Obenour wrote:
+>> This leaves the question of whether the needed information is in the
+>> filesystem metadata.  If so, xfsprogs and/or btrfsprogs could obtain
+>> it from a block-layer snapshot offline without needing kernel changes.=
+
+>> Otherwise, kernel changes will be needed.  I don't know if the changes=
+
+>> to the userspace tools will be accepted, though.  Until then, btrfs
+>> send/receive will be the only way to efficiently back up a BTRFS
+>> filesystem, and XFS will only be able to be efficiently backed up
+>> at the block level.
 >=20
-> I'll let the btrfs developers answer this as it's clearly not about
-> XFS.
->=20
->> I should clarify that in this application we are not interested in phy=
-sical
->> mappings, but the logical representation of data.
->=20
-> And that's not what FIEMAP provides.
+> Using userspace tools that poke at the block-level mapping is
+> fundamentally unsafe because it is not synchronized with the file
+> system.
 
-Can two extents have the same offset on disk but different logical conten=
-ts?
-For XFS that seems impossible unless a realtime device is involved, which=
 
-is not the case here.
-
->> It is also understood that
->> for some other applications FIEMAP would not be sufficient; however Wy=
-ng is
->> not fetching or manipulating data at a low level.  Also, there is a la=
-ck of
->> accuracy in the form of false positives, where unchanged data show up =
-as
->> deltas, but this only results in longer processing time not data corru=
-ption;
->> false negatives are the only thing that must be avoided.
->=20
-> I think what you want/need is a way to look at the delta between two
-> reflinked files.  At least for XFS (and I'm pretty sure for btrfs as
-> well) the low-level data structures could provide this, but building an=
-
-> actually safe interface to that is unfortunately hard.
-
-Is it easier if one requires the filesystem to be read-only?  Taking a
-device-mapper snapshot (thin or CoW) before the backup is not too onerous=
-,
-at least if the filesystem is already on an LVM LV.
+I should have been clearer: this would be operating on an
+unmounted filesystem, most likely obtained via a device-mapper
+snapshot of the underlying block device.
 --=20
 Sincerely,
 Demi Marie Obenour (she/her/hers)
---------------wWG10NJT7xT3wMuxvh4JlfTX
+--------------SiXxHtfAep1e0hovxv8wRDmL
 Content-Type: application/pgp-keys; name="OpenPGP_0xB288B55FFF9C22C1.asc"
 Content-Disposition: attachment; filename="OpenPGP_0xB288B55FFF9C22C1.asc"
 Content-Description: OpenPGP public key
@@ -340,31 +315,31 @@ EtJuZYM5blWncBOJCoWMnBEcTEo/viU3GgcVRw=3D=3D
 =3Dx94R
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------wWG10NJT7xT3wMuxvh4JlfTX--
+--------------SiXxHtfAep1e0hovxv8wRDmL--
 
---------------kxgW6CkpREboDUfMAHdSW7UC--
+--------------o0YN69hH86tyyV7pmfe4yWx3--
 
---------------0oxHhOz6VmcgDqPoZwqaP9cO
+--------------0YtktywRMkGOQeQJORaTTWJm
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEEopQtqVJW1aeuo9/sszaHOrMp8lMFAmjbHGsACgkQszaHOrMp
-8lPCIw//Qvjie8KmXI3UkLLw/kQR4Uo4afkUUpHVSLFkLGgRldiSZGl1rV64/LMQ
-YHJpqbdgndCUTgFSoRMyL/BsiYoybvBO5ebwFSyhRSGVozpFHu3HYTE9yv77EVk0
-wbH+LQy3WQWL4OabSvvBDMaeNgw1ATeSDVo6mFhlc9VNs1o5vkAFAi5l6Uh6BRWx
-Kc8fcU1JvdAnW3araQ3CfMJxgrxVXArB/xK+H3H0LHZBlpL2oijq2RyH719y93sO
-Zuj4hS3qyExAYURyk4ZdrZ68nZfUhfBbFID4676gvcr75J3sutjabZJZqNaNzRpa
-+1qNIoRJiZOd+GbfuJH8m3CxOn1mDAWwlcG2RD5tikiFQ9G5y9uUqP1shxprmmgG
-RNYsivk4VP/71jc+KjbHhjsfrxMx8NDtbdOMk9Ub2wvwxwW/2GhV/cQv/2sH8Eei
-yVa6vapsycgxmGokcAqhte20xN5y9TF+k3qxCb5NmPbD5GB1lEBNjpTeRAcQE/1m
-7fZHlJf9SySXUEO0Rg5/X9XT4H7rHzmKlI53Xy3t8oPdME6ND68O/tHhLnBwAZX+
-18qAY2ADm5g68n1k95FLHIcmAmJntl6VDikaCW+bub2nb4k0m5HJ448UoERlyUro
-hCVdMUrg2rKuKGfvqKb0PrXY8J6Q4iIKvZznVKdIzS0ORLhtuVg=
-=ZKA5
+iQIzBAEBCgAdFiEEopQtqVJW1aeuo9/sszaHOrMp8lMFAmjbHLMACgkQszaHOrMp
+8lM7nA/+JqJIdI7Y7YKkKkKKM0u7y6kfHOhQS30i64ret7pz+uk2hBR3DtXHbhOo
+bjP307nT+MSDEeOa6eyQ+sEDv20p5NDVI1MJ+LVfleKPvrX5jMCzsnDRTfo+IqJs
+yQ3n72dv0YMSxC/ehRfgiKvqJ+nqaLB4DxjhI4ms0caxNmBolAoTUEg64h6t7cn+
+FQEQ8qx3Mrxkr9sl8uAafT5XBrEy3b5N8EtLJ7RZ2tVRnkrIx1QVR98lmlGobzUD
++6atq8UMPbsMStMaDLEJhGEBrxa4U0x+hf3AOCSJ0E13vRmqNJjQl0Xm14KsoEyc
+8JXKTyZGCx0Ise3ofusJU2miBBnGzWfHyfwWKU7vfu/dh6DvyW4FIcjyfig48H4i
+FzRyd9TCTKCUeHpOQY4sw9kV0uTchvVI59wz5lfLm/xeP+t9g1Nc297DCdvf+Dff
+2xcjmM35cZB64poihtuOls5RM+INNAUvVAPEXTDZlCESmiAf05gAXzbxyV8Y1oNp
+ilKJpxxUK2PBtMV3aIWrB080nktd+tyHnOAYfgFydHbyHK99OvIz5jvRliB+xDLo
+qf46fYEFHoMtcu9Nr4dA2o063SWoiEdCkw8/bOHgeyU4eCMPIhjgeXEuoqsVdPiK
+tZZdtOSHDgwpyHDI9eFj2/ZlVDQwXQcJsj9a+o5ZBxsD1pLkIko=
+=/KuY
 -----END PGP SIGNATURE-----
 
---------------0oxHhOz6VmcgDqPoZwqaP9cO--
+--------------0YtktywRMkGOQeQJORaTTWJm--
 
