@@ -1,215 +1,149 @@
-Return-Path: <linux-btrfs+bounces-17261-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17262-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07017BA937F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 14:41:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CFD7BA9400
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 14:56:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FE047A8F5B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 12:40:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A39DC3C5639
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 12:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E483A305955;
-	Mon, 29 Sep 2025 12:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7050F3064B4;
+	Mon, 29 Sep 2025 12:56:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GyZhV8Br";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TWqr/Aic"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FCgn4P2K"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B31D270ED9
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 12:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A91D2FF660
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 12:56:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759149694; cv=none; b=uyE90xv46hUHxCkxOjS7wcZbXjljAG6tUOb/CHEv1BYSvjSQX9/3tBSfIUK8PzDGMfxlKYie2GhmxTnIzeEkJxa30tFY1jnJ2/ZPb+S4lbPzgClLNC8hgGy9MQ/n2WxACCgQzRsJzR5/Wh/Clw2EKdNCNicRCEUztOolYInitrY=
+	t=1759150598; cv=none; b=mIG50++ZmXfGMiy1Vz3DjlQWWAASwPU2lMsb7NtTopmkQQx/KnobWelNYxURYxG9203X1mNP2BkTB5hNQ3oIPfUDq43JNedmi+ZXmcalffl9QmC1bk0qj05cMOHXDduZCZem7rJF5qKun58ql2DavmD0DUYoLgU0R0QJSx0vsfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759149694; c=relaxed/simple;
-	bh=t7MKOe8jCOuI9RAUgePempfByzt0xA8esgLdNHf2PuE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZY07CRN19ro/P5f7CDQzFk3edT/Vfg5TE/mXwEHH73PqY3vwE+K0P0cc9DwnsCngefJ6cTMjf6bpnlmuGGgz8KSGmTXX4ija7d+Uv7wrwg7lTtrypP2T15/4xBV/Lwrr4LL3582p+AxFi02aoX2idjOwNhEGXg1oqv8sl+h3wOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GyZhV8Br; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TWqr/Aic; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 931F633340;
-	Mon, 29 Sep 2025 12:41:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1759149677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=jACuTDLM7RqYvBcg8YJEqHiHbYhsuRgmcqPcdSzKXS8=;
-	b=GyZhV8BrjhVfxWmYBkeEC8XeF7yNAi35vLFkulmNBp4yEXCFwg+EUhRyN6I0NtvivlV7Bn
-	/F2UYL+lp7BLHgWbF90esciQtzlu5RGjctmiSYxG0aLxczoOSwctJgsbCGgs1wyRoO7tkZ
-	mX5n2OOtHcG+8RdcuaQsijsEybvPU8Y=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="TWqr/Aic"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1759149676; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=jACuTDLM7RqYvBcg8YJEqHiHbYhsuRgmcqPcdSzKXS8=;
-	b=TWqr/AicgFGGA0xsoSGxaaHft8U6VtkrHiLX7D+NjiEDAMwg5YfvP3ChGclmY3qR3NhmXZ
-	U0Wycwi+e1K5VahoRxiM4P5lNDem0BHSwdbDX7JIaXiATgZXyqIfrm/w1YwBrwUh+bsxR/
-	4gO4kUutJNxfJkJ7lJ1xroNplcZBpsA=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8C8EF13A21;
-	Mon, 29 Sep 2025 12:41:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id t+9LImx+2mhYCwAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Mon, 29 Sep 2025 12:41:16 +0000
-From: David Sterba <dsterba@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH] btrfs: subpage: rename macro variables to avoid shadowing
-Date: Mon, 29 Sep 2025 14:41:15 +0200
-Message-ID: <20250929124115.1192886-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1759150598; c=relaxed/simple;
+	bh=czoR4K1G+s7y76NbjlWpJJ4z4V3QKtSDAu6HI/RHErw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VHN/1zvplc5D5PooO9vzoJSp0R22Bkquj4Y09qoiOjh8Moknhct+B/y4pvr+aveAP2scoZLnQVj99+BSccf++G0wZX1UfYfquTJQWsJPIDTqYrdBGyqQHqUTgSm3zhG9orhDly4NscEEwYdlqietsfWuLDOnpold+3GzcoWGJh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FCgn4P2K; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-afcb7ae6ed0so693518466b.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 05:56:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759150595; x=1759755395; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vT64PoBlF5OmMwmdMDL2m5IBI9zs1VxmhdKVWW/7dn8=;
+        b=FCgn4P2K1bIgFAJoDuau++Y6+Tu6orG3eYikQptlTbn2qk5fvnEX7rNz9xsa4ZIAk9
+         TNz6RZf1mVEJ+Su1njyT9bIYaseGuw0JWXQMPRpP00jx3gM9a4BJqrnV9kYHqPXbJaOq
+         dhlEb8pqe7t8ANKhDaOdu1T1Y/mpR47EeDuatvBM511yYbhWL6Uu/rIc2s4AYq5Ndc0a
+         fop7n/Pv7EAT0po0BdS0IYOt4RiIvQ6Mn+1uZG2p8wrWzsrtqds8fVEJ48NrNm2Iofnq
+         nfDx40KqhrUAlKvyAFMaZdew5N8LuEja0ysIg0wwj2ntDhoqum1eyE8GcCYO/dnVabBV
+         mIUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759150595; x=1759755395;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vT64PoBlF5OmMwmdMDL2m5IBI9zs1VxmhdKVWW/7dn8=;
+        b=cLRmkW/Z6z6+Du6yBV1b3ySloPHWj+CmVxc+02u0PrupWrNvCEycAVO4ZEXy3CWbPX
+         DkNS6bA0geLVFAx3Ph/oVxQ0B5D9cXlkLAyscrjqs4aK8F4UZprQKiCkaHKu+xN1Zam9
+         cKMnRB2MdyCqZPYPdu7X6KzEKxSNMwXYpfs0D9i38PoenZ6/1gTpFSWiqdsudmYda8YB
+         b/rN0wg0jv9z3inn83LHWbz7TGtJi9G5b+YIYhiVBgMGqVyhIdyzBtx86lrcyUzW8VtN
+         7HtrASSsWZIxpJ3f/85fKfRkmUTGHZ0ILKuspOPdd/gwx0NJpECHNF3AvukfiW0/OT0o
+         2+AA==
+X-Forwarded-Encrypted: i=1; AJvYcCUnbM7kPxDa/dHiB2Z24K1S8beqpoTfSn+74xTEuw0QWATfo60OQ3TvvZukq2aqJteDbt6pgJfYrscv+w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwMnqk3Rdgg6AtFualCXt33apQRi8PpKF7UUDNl6ArQpphLEnG9
+	Q1yRrzo2SeSxLtjwc3bmr9jUH4i/hBKJvVNkPD7iFcE2iL/VDy7qskX3/0MohK9JZcTiIhyDneH
+	dFqCjuzqZU/Fw8fgRAEfQi6BtIEYLUwo=
+X-Gm-Gg: ASbGncvDtci8fJQ7/ww2CPNPJzprytHtq0yCMSlVTzfU8TJbSZZ3KgJt/Tqe9b5nGAT
+	V5MCe0rogODcrhK6bKBresXHnuP1yVsPDmmcgh+KxJJPB/X3HU4nod7kIOZs1WaWELG46/2yQsB
+	Th2i82WI2cGD9uoNOTP1WOVWWm73pp5YM05BF+2oEZyBA7mjOdaEW+N8rYfMqM2Bj8XmX98+MTr
+	Lssfo7/UyYPGW5trBcRst9DZaPjmCppnlJjRmf22fO1cRC0KZxTeDVWzNS1SUo=
+X-Google-Smtp-Source: AGHT+IHwgU6a7k1Tl/htBp66waMHN4IzraB7wwO8zA//bOHkHjYwuv41WV4gECwjjXP36V6Dgiwj6qkk1Bdqwjmi4TU=
+X-Received: by 2002:a17:907:7291:b0:b3f:9eaa:2bba with SMTP id
+ a640c23a62f3a-b3f9eaa2f1dmr276916766b.63.1759150595150; Mon, 29 Sep 2025
+ 05:56:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 931F633340
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+References: <20250923104710.2973493-1-mjguzik@gmail.com> <20250929-samstag-unkenntlich-623abeff6085@brauner>
+In-Reply-To: <20250929-samstag-unkenntlich-623abeff6085@brauner>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Mon, 29 Sep 2025 14:56:23 +0200
+X-Gm-Features: AS18NWAQppLQGH4Q4QepXGfVar_40_jU-wol-wjJISWMpqe1GoM3Cv27IqmClpo
+Message-ID: <CAGudoHFm9_-AuRh52-KRCADQ8suqUMmYUUsg126kmA+N8Ah+6g@mail.gmail.com>
+Subject: Re: [PATCH v6 0/4] hide ->i_state behind accessors
+To: Christian Brauner <brauner@kernel.org>
+Cc: viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, josef@toxicpanda.com, kernel-team@fb.com, 
+	amir73il@gmail.com, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When compiling with -Wshadow there are warnings in the subpage helper
-macros that are used in functions like btrfs_subpage_dump_bitmap() or
-btrfs_subpage_clear_and_test_dirty() that also use 'bfs' (for struct
-btrfs_folio_state) or blocks_per_folio.
+This was a stripped down version (no lockdep) in hopes of getting into
+6.18. It also happens to come with some renames.
 
-Add '__' to the macro variables and unify naming in all subpage macros.
+Given that the inclusion did not happen, I'm going to send a rebased
+and updated with new names variant but with lockdep.
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/subpage.c | 43 +++++++++++++++++--------------------------
- 1 file changed, 17 insertions(+), 26 deletions(-)
+So the routines will be:
+inode_state_read_once
+inode_state_read
 
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 01bf58fa92aa2e..0a4a1ee81e6392 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -194,12 +194,11 @@ static void btrfs_subpage_assert(const struct btrfs_fs_info *fs_info,
- #define subpage_calc_start_bit(fs_info, folio, name, start, len)	\
- ({									\
- 	unsigned int __start_bit;					\
--	const unsigned int blocks_per_folio =				\
--			   btrfs_blocks_per_folio(fs_info, folio);	\
-+	const unsigned int __bpf = btrfs_blocks_per_folio(fs_info, folio); \
- 									\
- 	btrfs_subpage_assert(fs_info, folio, start, len);		\
- 	__start_bit = offset_in_folio(folio, start) >> fs_info->sectorsize_bits; \
--	__start_bit += blocks_per_folio * btrfs_bitmap_nr_##name;	\
-+	__start_bit += __bpf * btrfs_bitmap_nr_##name;			\
- 	__start_bit;							\
- })
- 
-@@ -338,24 +337,20 @@ void btrfs_folio_end_lock_bitmap(const struct btrfs_fs_info *fs_info,
- 
- #define subpage_test_bitmap_all_set(fs_info, folio, name)		\
- ({									\
--	struct btrfs_folio_state *bfs = folio_get_private(folio);	\
--	const unsigned int blocks_per_folio =				\
--				btrfs_blocks_per_folio(fs_info, folio); \
-+	struct btrfs_folio_state *__bfs = folio_get_private(folio);	\
-+	const unsigned int __bpf = btrfs_blocks_per_folio(fs_info, folio); \
- 									\
--	bitmap_test_range_all_set(bfs->bitmaps,				\
--			blocks_per_folio * btrfs_bitmap_nr_##name,	\
--			blocks_per_folio);				\
-+	bitmap_test_range_all_set(__bfs->bitmaps,			\
-+				  __bpf * btrfs_bitmap_nr_##name, __bpf); \
- })
- 
- #define subpage_test_bitmap_all_zero(fs_info, folio, name)		\
- ({									\
--	struct btrfs_folio_state *bfs = folio_get_private(folio);	\
--	const unsigned int blocks_per_folio =				\
--				btrfs_blocks_per_folio(fs_info, folio); \
-+	struct btrfs_folio_state *__bfs = folio_get_private(folio);	\
-+	const unsigned int __bpf = btrfs_blocks_per_folio(fs_info, folio); \
- 									\
--	bitmap_test_range_all_zero(bfs->bitmaps,			\
--			blocks_per_folio * btrfs_bitmap_nr_##name,	\
--			blocks_per_folio);				\
-+	bitmap_test_range_all_zero(__bfs->bitmaps,			\
-+				   __bpf * btrfs_bitmap_nr_##name, __bpf); \
- })
- 
- void btrfs_subpage_set_uptodate(const struct btrfs_fs_info *fs_info,
-@@ -672,27 +667,23 @@ IMPLEMENT_BTRFS_PAGE_OPS(checked, folio_set_checked, folio_clear_checked,
- 
- #define GET_SUBPAGE_BITMAP(fs_info, folio, name, dst)			\
- {									\
--	const unsigned int blocks_per_folio =				\
--				btrfs_blocks_per_folio(fs_info, folio);	\
--	const struct btrfs_folio_state *bfs = folio_get_private(folio);	\
-+	const unsigned int __bpf = btrfs_blocks_per_folio(fs_info, folio); \
-+	const struct btrfs_folio_state *__bfs = folio_get_private(folio); \
- 									\
--	ASSERT(blocks_per_folio <= BITS_PER_LONG);			\
--	*dst = bitmap_read(bfs->bitmaps,				\
--			   blocks_per_folio * btrfs_bitmap_nr_##name,	\
--			   blocks_per_folio);				\
-+	ASSERT(__bpf <= BITS_PER_LONG);					\
-+	*dst = bitmap_read(__bfs->bitmaps,				\
-+			   __bpf * btrfs_bitmap_nr_##name, __bpf);	\
- }
- 
- #define SUBPAGE_DUMP_BITMAP(fs_info, folio, name, start, len)		\
- {									\
- 	unsigned long bitmap;						\
--	const unsigned int blocks_per_folio =				\
--				btrfs_blocks_per_folio(fs_info, folio);	\
-+	const unsigned int __bpf = btrfs_blocks_per_folio(fs_info, folio); \
- 									\
- 	GET_SUBPAGE_BITMAP(fs_info, folio, name, &bitmap);		\
- 	btrfs_warn(fs_info,						\
- 	"dumping bitmap start=%llu len=%u folio=%llu " #name "_bitmap=%*pbl", \
--		   start, len, folio_pos(folio),			\
--		   blocks_per_folio, &bitmap);				\
-+		   start, len, folio_pos(folio), __bpf, &bitmap);	\
- }
- 
- /*
--- 
-2.51.0
+inode_state_set{,_raw}
+inode_state_clear{,_raw}
+inode_state_assign{,_raw}
 
+Probably way later today or tomorrow.
+
+On Mon, Sep 29, 2025 at 11:30=E2=80=AFAM Christian Brauner <brauner@kernel.=
+org> wrote:
+>
+> On Tue, 23 Sep 2025 12:47:06 +0200, Mateusz Guzik wrote:
+> > First commit message quoted verbatim with rationable + API:
+> >
+> > [quote]
+> > Open-coded accesses prevent asserting they are done correctly. One
+> > obvious aspect is locking, but significantly more can checked. For
+> > example it can be detected when the code is clearing flags which are
+> > already missing, or is setting flags when it is illegal (e.g., I_FREEIN=
+G
+> > when ->i_count > 0).
+> >
+> > [...]
+>
+> Applied to the vfs-6.19.inode branch of the vfs/vfs.git tree.
+> Patches in the vfs-6.19.inode branch should appear in linux-next soon.
+>
+> Please report any outstanding bugs that were missed during review in a
+> new review to the original patch series allowing us to drop it.
+>
+> It's encouraged to provide Acked-bys and Reviewed-bys even though the
+> patch has now been applied. If possible patch trailers will be updated.
+>
+> Note that commit hashes shown below are subject to change due to rebase,
+> trailer updates or similar. If in doubt, please check the listed branch.
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+> branch: vfs-6.19.inode
+>
+> [1/4] fs: provide accessors for ->i_state
+>       https://git.kernel.org/vfs/vfs/c/e9d1a9abd054
+> [2/4] Convert the kernel to use ->i_state accessors
+>       https://git.kernel.org/vfs/vfs/c/67d2f3e3d033
+> [3/4] Manual conversion of ->i_state uses
+>       https://git.kernel.org/vfs/vfs/c/b8173a2f1a0a
+> [4/4] fs: make plain ->i_state access fail to compile
+>       https://git.kernel.org/vfs/vfs/c/3c2b8d921da8
 
