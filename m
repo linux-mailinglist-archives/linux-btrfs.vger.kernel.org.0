@@ -1,271 +1,131 @@
-Return-Path: <linux-btrfs+bounces-17255-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17256-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BB06BA8DCA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 12:18:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 509A8BA8E21
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 12:24:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1526E1C1F84
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 10:18:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC2FD3B005C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 10:24:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D5A2FB62E;
-	Mon, 29 Sep 2025 10:18:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CF02FB997;
+	Mon, 29 Sep 2025 10:24:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ze0uavD5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kx+H4A4Q";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ze0uavD5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kx+H4A4Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cKI2ot+G"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pj1-f67.google.com (mail-pj1-f67.google.com [209.85.216.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5112C2F2613
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 10:18:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7E925D1F7
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 10:24:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759141104; cv=none; b=lQYSlSPvjBO3lua9JuUohav7DFH+k++NQMxn5qatd/Mzm7v4whxyTs17EMTJgxUPKDkpejTPunFcL47Y4mXDr1JWwVyqEZo5jDA7YRh4kqJx6HRO+PQYb2fdoyvy/sfbReZN87Wbmp2HKpJ3hr9tSgHQTmRKUzEv2AQDJyXzeVQ=
+	t=1759141491; cv=none; b=u3HnWIzRO9B9nLcNf+hQfPrDVw23thS76SVixCJX9Y8ZRhoVb4f8dUDwiCehGFFbwczWQWeukpU5I7iejQmCCSEmSy9Sw3qcs/2hRnHDVOhQAOiEXBSDC0BwRGAezF3ZttWPm5VrKjML8Gh01iJFBinqOjDc0JBKCqXjt17G638=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759141104; c=relaxed/simple;
-	bh=IarnRVRYNGNSjrxYytieVrusLQVASferBQMMrCB4RWk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MPR0VRoKwjXOD7UfYdXCrIqv55BMjM08XFstuFU17UjjxtxkL3M0iWMyqFY+Q9wKl50WHSvck5Qnv0kemcnit9JFP43JL4yzWLPu9kQ1bkURegwgtjWnllLoXcJaxPc/LNeOOnlHNdWQvTW6Yz75M7zjIIx1PL08uGbycPTn5dA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ze0uavD5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kx+H4A4Q; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ze0uavD5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kx+H4A4Q; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A1EE330DC9;
-	Mon, 29 Sep 2025 10:18:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1759141098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O2yBKi9Fq0nOViIKZg3SIh9QmVDk29CqUOt+SEIPUkE=;
-	b=ze0uavD5fcj6zgsYfAAoXp3CaBdBChk073NpR64CDwUZ9V3HqLcpul8tg4dL6/zYb/G16n
-	58fgcgV4xECQEjgKIgp7hrExw3Yp1t/g/cUq72DiJpGcz1ttJTFgP6Bbxxa6OgagyGGFIX
-	XC5T0aPkQmua+WyHwC7wBaA+Ur/bgDE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1759141098;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O2yBKi9Fq0nOViIKZg3SIh9QmVDk29CqUOt+SEIPUkE=;
-	b=kx+H4A4QTF4A4FST6e8sO/r5cOZxgOnk95kb9xh3cRBunKnQCDM+e9GImfLaMKpNmdnzj/
-	KDpDB8t+RtbDASCQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1759141098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O2yBKi9Fq0nOViIKZg3SIh9QmVDk29CqUOt+SEIPUkE=;
-	b=ze0uavD5fcj6zgsYfAAoXp3CaBdBChk073NpR64CDwUZ9V3HqLcpul8tg4dL6/zYb/G16n
-	58fgcgV4xECQEjgKIgp7hrExw3Yp1t/g/cUq72DiJpGcz1ttJTFgP6Bbxxa6OgagyGGFIX
-	XC5T0aPkQmua+WyHwC7wBaA+Ur/bgDE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1759141098;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O2yBKi9Fq0nOViIKZg3SIh9QmVDk29CqUOt+SEIPUkE=;
-	b=kx+H4A4QTF4A4FST6e8sO/r5cOZxgOnk95kb9xh3cRBunKnQCDM+e9GImfLaMKpNmdnzj/
-	KDpDB8t+RtbDASCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 91FC613A21;
-	Mon, 29 Sep 2025 10:18:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tYCaI+pc2mjOWAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 29 Sep 2025 10:18:18 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3412BA0A96; Mon, 29 Sep 2025 12:18:14 +0200 (CEST)
-Date: Mon, 29 Sep 2025 12:18:14 +0200
-From: Jan Kara <jack@suse.cz>
-To: Julian Sun <sunjunchao@bytedance.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-ext4@vger.kernel.org, ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	clm@fb.com, dsterba@suse.com, xiubli@redhat.com, idryomov@gmail.com, 
-	tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org, 
-	willy@infradead.org, jack@suse.cz, brauner@kernel.org, agruenba@redhat.com
-Subject: Re: [PATCH] fs: Make wbc_to_tag() extern and use it in fs.
-Message-ID: <jvryicw6lssdnji4y42rblchxt3procns2otfa4bdc6spekyh7@e6xqcjfpirck>
-References: <20250929095544.308392-1-sunjunchao@bytedance.com>
+	s=arc-20240116; t=1759141491; c=relaxed/simple;
+	bh=sPk+emdmCO6rcjcDkLFRQQyOSDWXym+HOROYWo6O2eQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:MIME-Version:
+	 Content-Type; b=FgFt6VKJgslZOfIssFuU9COLOHHCJsRcnjNBUijvryCzrr2qiAuIUz3aWqW8noE8JJK0Dr6eANzp0V7MQP6oIPhz3dEeAIP8LDHLZGCre6NRgBjV0C820S7LsFLn1svmyaOQqFD+rCOkZ0iJfzNkwo3BgsqV0HSo5rHRl0jQ/0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cKI2ot+G; arc=none smtp.client-ip=209.85.216.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f67.google.com with SMTP id 98e67ed59e1d1-33831629339so76979a91.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 03:24:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759141489; x=1759746289; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:in-reply-to:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WjoAhNELSH83Orpe+UHK3Sd5RDJ+A4e3hUmeXwG9Vks=;
+        b=cKI2ot+GTdrfcNkYtFdePGSlUgneMbcKd3J5yT34KnpU1qk572GbPffMf/NHsGEs66
+         eKyu2WaotGZmZzlS1cqfM7lwDIDSEelJiceGZjGs9g3ie56eE5rn7p3tCFwSEYW7b9q0
+         bSYqX91YYf5l1Ys4DfsHRKV7j01szHgGPJUyEV48JfWHzQKGbeEKkB168duD4Gy0jIoR
+         j/Cm13eH7CFeTpRmXxsf1K7BP8kbr7OIScGGrYJfGorEeIWreol4hMZwCt9f87oE+JnA
+         qEjapNfLmmhdqB6oytvMUeYU+zHbgYLMuNhR59peVXOYNMtgdgSdcPNzMKmla0nQTCy9
+         l1WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759141489; x=1759746289;
+        h=content-transfer-encoding:mime-version:in-reply-to:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WjoAhNELSH83Orpe+UHK3Sd5RDJ+A4e3hUmeXwG9Vks=;
+        b=lfQ4EUVX2ErKXDrAnG5MDDXYEAUYljf1vr35uxej5g2ngvKPpaKB0iPeHkCKWprbth
+         AxplDxM2X4gVE2U2qfZMV00K/GsEoDLUBFSDzgiBOdaiq4+JBrAcgrRz3l0+IrHUzfLG
+         HriKab0VOPoj9Ex+uoT84cNU60fOJYl4PQjlyc6/ntADlM254sU9jMRgtJ/oEaVFG08f
+         7HSp1XYvl3RjAXkyr4/u5FpFD8Lu+zowrib6mXq/1ZXZAIkwUETpk1h7OinsPJ7Ym5hF
+         OqOFT+8hleY1KqyE80Cr31WG07bnJQIK/W9ZRyjbKbUon7PypLER2ogy4NZRV1RGLUeE
+         /2Jw==
+X-Gm-Message-State: AOJu0Ywx4If90SwPnbNAtu8k3CWK/rDjY5lY58Dw4yI84hsyqGgtEcNK
+	O4JlocvvtO/KAfftoi62c1ZImyuAv3mMPRBlqwrDVcazKYo2cbasll0M
+X-Gm-Gg: ASbGncsyBG/5n1E0ZN7Ov2Q345Ih2GqLdmW5dBhWdVRNf/6zjw5Hktq2v8AGD68UcSK
+	BE4thvZZUfHIhY+0twJ2m/IDGkNG5V/Vn9ZoWmH84SQkAxcAIPzKHfcroSJXgQbDTqRnZpDV+O4
+	+vKY6aqa+mkWliCquKfIEHcjGBc6dBWzY4GLdWbGsBz6/0SEc9G5r93CAVpr6vKLjCkbeHiHwWh
+	s+TvVUOEfRL1E5a5qKxO0S3O2PqH0etwz8BI9q/B3MmDkunArte8yhuYbYjPFWyWwNphUuzyaOL
+	F7fZemT+aJjuuFP2pl+NqO08UYJ71Kvuuce6z2+5sOdzZ9VT1OMzT3OwgEYemSUEMejgrsa44/T
+	WcH8H1CxqVqMPEL1IjDkbs9MK2WJse+FCQ1uBlBiqEwhqp2rL389DU27vOBI=
+X-Google-Smtp-Source: AGHT+IFCVUvEU5Nt4FV85MsrgKswiHbbLkXbb6jOSmFIelKkCcxqli8gWu1Gmiaqa23ID2n4iu4jRA==
+X-Received: by 2002:a17:90b:4c0e:b0:32e:685f:ccd5 with SMTP id 98e67ed59e1d1-3342a302671mr8710401a91.7.1759141488784;
+        Mon, 29 Sep 2025 03:24:48 -0700 (PDT)
+Received: from saltykitkat.localnet ([154.3.38.40])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3341be148e8sm16699693a91.16.2025.09.29.03.24.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Sep 2025 03:24:48 -0700 (PDT)
+From: Sun YangKai <sunk67188@gmail.com>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject:
+ Re: [PATCH] btrfs: reorganize error handling in btrfs_tree_mod_log_insert_key
+Date: Mon, 29 Sep 2025 18:24:43 +0800
+Message-ID: <5926212.DvuYhMxLoT@saltykitkat>
+In-Reply-To:
+ <CAL3q7H5OvZrFZDzhds98vwLNXO1ttWjJVajCwQRhPHmt+dDJCQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250929095544.308392-1-sunjunchao@bytedance.com>
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_COUNT_THREE(0.00)[3];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lists.sourceforge.net,fb.com,suse.com,redhat.com,gmail.com,mit.edu,dilger.ca,kernel.org,infradead.org,suse.cz];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,bytedance.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -3.80
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 
-On Mon 29-09-25 17:55:44, Julian Sun wrote:
-> The logic in wbc_to_tag() is widely used in file systems, so modify this
-> function to be extern and use it in file systems.
+> > -       ret = tree_mod_log_insert(eb->fs_info, tm);
+> > -out_unlock:
+> > +       /* Deal with allocation error. */
 > 
-> This patch has only passed compilation tests, but it should be fine.
+> This is a useless comment... The existing comment is much more helpful
+> and the fact that's in the else statement above, makes it easier to
+> grok.
+
+I agree that the existing comment is much more helpful, while I personally 
+don't like the else branch appears after a return/goto/continue/break 
+statement. So I think it's just about personal code style.
+
+> I also wonder why you picked only this function, since this pattern is
+> followed in several other functions...
+
+Because I happened to read this, and it takes me minutes to realise what is 
+happening and why it was written like this...
+And I'm not sure how to make it better. Since this is the most simple one with 
+this pattern, I just have a try to make it more clear IMO.
+
+> Not a fan of the proposed change.
 > 
-> Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
+> > +       if (tm)
+> > +               ret = tree_mod_log_insert(eb->fs_info, tm);
+> > +       else
+> > +               ret = -ENOMEM;
+> > +
+> > 
+> >         write_unlock(&eb->fs_info->tree_mod_log_lock);
+> >         if (ret)
+> >         
+> >                 kfree(tm);
+> > 
+> > --
+> > 2.51.0
 
-Yeah, good idea. Feel free to add:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
 
-								Honza
 
-> ---
->  fs/btrfs/extent_io.c      | 5 +----
->  fs/ceph/addr.c            | 6 +-----
->  fs/ext4/inode.c           | 5 +----
->  fs/f2fs/data.c            | 5 +----
->  fs/gfs2/aops.c            | 5 +----
->  include/linux/writeback.h | 1 +
->  mm/page-writeback.c       | 2 +-
->  7 files changed, 7 insertions(+), 22 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index b21cb72835cc..0fea58287175 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2390,10 +2390,7 @@ static int extent_write_cache_pages(struct address_space *mapping,
->  			       &BTRFS_I(inode)->runtime_flags))
->  		wbc->tagged_writepages = 1;
->  
-> -	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> -		tag = PAGECACHE_TAG_TOWRITE;
-> -	else
-> -		tag = PAGECACHE_TAG_DIRTY;
-> +	tag = wbc_to_tag(wbc);
->  retry:
->  	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
->  		tag_pages_for_writeback(mapping, index, end);
-> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> index 322ed268f14a..63b75d214210 100644
-> --- a/fs/ceph/addr.c
-> +++ b/fs/ceph/addr.c
-> @@ -1045,11 +1045,7 @@ void ceph_init_writeback_ctl(struct address_space *mapping,
->  	ceph_wbc->index = ceph_wbc->start_index;
->  	ceph_wbc->end = -1;
->  
-> -	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages) {
-> -		ceph_wbc->tag = PAGECACHE_TAG_TOWRITE;
-> -	} else {
-> -		ceph_wbc->tag = PAGECACHE_TAG_DIRTY;
-> -	}
-> +	ceph_wbc->tag = wbc_to_tag(wbc);
->  
->  	ceph_wbc->op_idx = -1;
->  	ceph_wbc->num_ops = 0;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 5b7a15db4953..196eba7fa39c 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -2619,10 +2619,7 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
->  	handle_t *handle = NULL;
->  	int bpp = ext4_journal_blocks_per_folio(mpd->inode);
->  
-> -	if (mpd->wbc->sync_mode == WB_SYNC_ALL || mpd->wbc->tagged_writepages)
-> -		tag = PAGECACHE_TAG_TOWRITE;
-> -	else
-> -		tag = PAGECACHE_TAG_DIRTY;
-> +	tag = wbc_to_tag(mpd->wbc);
->  
->  	mpd->map.m_len = 0;
->  	mpd->next_pos = mpd->start_pos;
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 7961e0ddfca3..101e962845db 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -3003,10 +3003,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
->  		if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX)
->  			range_whole = 1;
->  	}
-> -	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> -		tag = PAGECACHE_TAG_TOWRITE;
-> -	else
-> -		tag = PAGECACHE_TAG_DIRTY;
-> +	tag = wbc_to_tag(wbc);
->  retry:
->  	retry = 0;
->  	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
-> index 47d74afd63ac..12394fc5dd29 100644
-> --- a/fs/gfs2/aops.c
-> +++ b/fs/gfs2/aops.c
-> @@ -311,10 +311,7 @@ static int gfs2_write_cache_jdata(struct address_space *mapping,
->  			range_whole = 1;
->  		cycled = 1; /* ignore range_cyclic tests */
->  	}
-> -	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> -		tag = PAGECACHE_TAG_TOWRITE;
-> -	else
-> -		tag = PAGECACHE_TAG_DIRTY;
-> +	tag = wbc_to_tag(wbc);
->  
->  retry:
->  	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-> index a2848d731a46..884811596e10 100644
-> --- a/include/linux/writeback.h
-> +++ b/include/linux/writeback.h
-> @@ -370,6 +370,7 @@ int do_writepages(struct address_space *mapping, struct writeback_control *wbc);
->  void writeback_set_ratelimit(void);
->  void tag_pages_for_writeback(struct address_space *mapping,
->  			     pgoff_t start, pgoff_t end);
-> +xa_mark_t wbc_to_tag(struct writeback_control *wbc);
->  
->  bool filemap_dirty_folio(struct address_space *mapping, struct folio *folio);
->  bool folio_redirty_for_writepage(struct writeback_control *, struct folio *);
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 3e248d1c3969..243808e19445 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2434,7 +2434,7 @@ static bool folio_prepare_writeback(struct address_space *mapping,
->  	return true;
->  }
->  
-> -static xa_mark_t wbc_to_tag(struct writeback_control *wbc)
-> +xa_mark_t wbc_to_tag(struct writeback_control *wbc)
->  {
->  	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
->  		return PAGECACHE_TAG_TOWRITE;
-> -- 
-> 2.39.5
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
