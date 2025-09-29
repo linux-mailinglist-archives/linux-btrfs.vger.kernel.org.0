@@ -1,252 +1,239 @@
-Return-Path: <linux-btrfs+bounces-17258-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17259-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B5E3BA8F05
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 12:58:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83057BA8FC9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 13:16:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 416C23C47E9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 10:58:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C35417D164
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Sep 2025 11:16:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A29412FE565;
-	Mon, 29 Sep 2025 10:57:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D793F3002D4;
+	Mon, 29 Sep 2025 11:15:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E4kdHIKB"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="PMjBlLxE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5CBA2FDC4E
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 10:57:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1C22FF679
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 11:15:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759143468; cv=none; b=nui8hIEMOoEfeHfPqSKVqELXbzqReU22qQuAJl4puW1vJEsDhUvwMta7o0bierMZrDk3vTxzqyP4etZaynRlbysva5slkQS1wfCTXqFi/SUS0i+ssjeiNHzzptbZwK2qR4L88xZYgE7CzFiihj+KT+npD0UBJP7IH+SlBGaBVhs=
+	t=1759144547; cv=none; b=RglXKMCBi3cLkY/qG6c3yN6Ws2WvfJ9XcuqQSIVQBuP+7pxjAKPBf4vBamgTPDGv3tqmGJC3QWW3N7H3ZKnPMAX7Qu41nS4HP7kNrv9RQSrEVSQlh4Er89vJSsr6J0SwKaaRPr+Iv3Ja1Pvx3NImH5blMu9MSZ6PrqqEKGdh79E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759143468; c=relaxed/simple;
-	bh=JPxhgQ0ICAztTyZoMltYNVNwLafaaPDY0ijuOPDKEiY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A98nZy/Ax8jYs1NLqnniBWwGAb0yIr0L/+dhfdoT2wxE0XPbrBl5azSWTITkA29w+ELNmbmpRUoObTpxB3Y6vrmCYUuPLhcneZFW3Ic85kg66bhLCfSwPwz1FHrq0wGuxT+7TY2aNK5rMzZMYCft5/wPmDOdHfdSnZBxU7QtZAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E4kdHIKB; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-3682ac7f33fso55471031fa.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 03:57:45 -0700 (PDT)
+	s=arc-20240116; t=1759144547; c=relaxed/simple;
+	bh=PVseIWiKoQlzUK/LFgr4flb9pJ+0Fa4PD81+jzuHY0Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=REHTEcbFwdLDS/Te0vgTK6MV6elPKE8fevWWf7os7t33944kxtOEM1169EbDPJGFC3mTKpT6XvlvOxe8llccKghgeMInApYCJfTiQeSj8IQbJoK+5MVD1yQZ7r7nrtXbczqbi6UPUG+u/ehZmQ/P77xvaEy0vGSAzvwbagc7k2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=PMjBlLxE; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-b5515eaefceso4358434a12.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 04:15:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759143464; x=1759748264; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VHXzobpLJ49nI/+XddZ1qpjJ3WtXnO55EUnggz8fl/g=;
-        b=E4kdHIKBuIZR8GAyI669D/cFg/qDn1lLtyaqdaWn1YgexzgdHyF2oSbZFKYd9zeW70
-         cFVm0KfJf0lrjng8tBJPukrIInCnzgO4L1No23FpSy0VGKHe/24W28mlhnnhYvdujUay
-         gPO9j/QxvnBS//zuJNhfqAOoaO80tLf3+KfpcL8eLxGEoOdaImQDXtiYFkOPmmG63qkt
-         WoSOsrlnN7tvwh7ucBGqZ2QBj5Mwfe1KNTZpO+QYw5hL9hTYp1td7Mxuov60gLK5wO7r
-         hOkevZw0i7RnbSx4ERHwi1JsyDHg70SqB6z0mKiFk0WfWv+Wmi83tyWT+2s0UURVfclN
-         W/Jw==
+        d=bytedance.com; s=google; t=1759144545; x=1759749345; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uvXpI9Uj0P5knWZZSdS525EXKHAxizO3HKQssPn5KvE=;
+        b=PMjBlLxEqy/SNeZ98k1RdWgeXRIb0qljwy0BMX3qiH3q/mMzifm8R0ahZkHkldXTMw
+         u9VuFevtXxnTVKgu0xcyX/iNCyfiZNzfS/0OQzEYkR/vzInvT0dl+TI8QnMl9pSAAScY
+         H+jPenRo7SZsq1b7U8ela2M7FG8EYWH0k/iTaPEmBueqLwcIm1cuBATSi1/pal6sZVJb
+         35A6SGXcx/JHtvoBOlR5MxHBxt028Z2ziL0zKYVY5wyT27CNuklypXF6KsXdON1xl8mT
+         g784OWuq9ayUr24CtyxzklIxBmpLwhH070UUmrhC52Bd9U5qdC7O+hvhinBrt09kN0kZ
+         2Hfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759143464; x=1759748264;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VHXzobpLJ49nI/+XddZ1qpjJ3WtXnO55EUnggz8fl/g=;
-        b=h0rfdRpV4DeElE0G34PuW8RSSSHMlwohX0kVv49KUMTQoN/wv8BoTrWLKEDqak1XkN
-         Gieqb33JB4NHDuN2rHeMGX0tFbddFGdNFA7m+RULTR1AiGBhNzVNeLaI8VTDgHXy3erR
-         zI9qs9lxlffDP++65cvBZbuHLHx764SZ7Zd+6ikMLCDF4Qasm7pLNF4QXyhr3cSp63xt
-         uYxE4QBJz7tkQ3rpdW2L+Ok28pSxwT9OKS/1+uDs1sKpdAR4FynCwClk0irmnARVBk71
-         gjQu8SfKdcX76ZYfJUAqoyEFGq/p8SAv3z3t2vOU8fmYA8W6yWzAqrVlFu1qw+OVzHR8
-         cd/A==
-X-Forwarded-Encrypted: i=1; AJvYcCUogmPA1MzxJgNptVPFtVXKVZj077PFSBCh6sUcM1JJk+4gp5vkUVnovgdhcgVAhzZY984blgX8M+GPUA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfO1hBJgOqbE0DCcJJfzJETOeL2EXLTi7en1QJLWOwhNMO8UFI
-	1GBK9ZT5DKViWqqHoNOta/jsMoeoV2m8BIxXkyVi2AamnozL++vS+g5xpMuB1+vB9H9FyAW50cx
-	11AEKkcrdXzCe8TCGqpm1z0MKkDDBcnA=
-X-Gm-Gg: ASbGncsXeXwT6Wp4b+kJwSUmKdV2nhto+dY3cbJxctltPiFLqPcE8LJ6/HPdJMah7xx
-	nNGEDDvtAV6/ufW+CZtOd7PXkQIZSmwcBI2SPyVAFRJJa4I4sRe7gdnncbLBNJsbcyXSKN05WVz
-	C2VSY/MB7vO2vW0+mSYqzblbnJE/rN2/nhjzsFPP+Bx+sYok6CZ3V0ITdOmBTg6nqUsPObQvaVu
-	Da1JeIXaYzc8LY9MoE7D96OSWm+RRQ=
-X-Google-Smtp-Source: AGHT+IGWuBxNGdwpR1qoBJpJgw+amjLbYU9hsRksLpCILSPVONQpvSdK96EgUU9ULAnuDqxgbW6BMzUzXAVtxbo57r8=
-X-Received: by 2002:a05:651c:502:b0:372:89df:9673 with SMTP id
- 38308e7fff4ca-372fa29f95fmr330321fa.13.1759143463517; Mon, 29 Sep 2025
- 03:57:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1759144545; x=1759749345;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uvXpI9Uj0P5knWZZSdS525EXKHAxizO3HKQssPn5KvE=;
+        b=tj+9bZlNG/1lcdD+clnOc3YLnZGHqQ213hTJNzgYd8diXz7dgkahBYQSazJtSi6iZs
+         M9moSY0rtYZCKw6yho2i3ij8VQFntNXRz+MQIHeKC+0s/8987ril5mxDMaAoM+AV1oOu
+         BNjkGSx+XELd9rY2TashsROH4Rc7SWrQTmUJ3EQ/Lp2J1ETdyRsbGvLwIu20BDrxJBOY
+         uzYT9tr0j3tY7pu+X+H10+IKb30GPKSgxL3hJTtFiLF8tHP2iQciZi2BnOOf0EHvb8sZ
+         f5EfOA9lG1IAqkxOfUlcUU3NThgNrnAWbR2HCz1YGmgtVpy5KGGO6i1xeU7lMinwIgU9
+         CHAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXnRF+ycTSDQ+EN6seCE42ZqE24AH6wajPI3NIHPOOAb1kjjsS+QFXwSJ+ujHewg211hK6adVVhZTzyzA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwV7Aj38rUIokQwvXtZyM0fRusUvFQ03XyOFITLOKKLouk1Cz8d
+	YuED14FzQA8zj6IQ8ojEWVrPLOhWiOyV7LeEo5U4MZuZQmSCQTEWtlZyyZ1IwDn0ULE=
+X-Gm-Gg: ASbGnctrON7GFY5Y5qJDB5RulHgqHAxgE4D/O6BWEleqorgQK5fz18mZiV5LRjcWXMo
+	rvL6POfOxUbwkOCfnBDv/lTEe+kGsLNINs5TG5lFwcqAaVDvEKi3eo3tv7E86wM9HX5ea3nlD/T
+	s6l+UPY/j+y46/+FM4Hgg8yq+ZhDHf/MmEUIb4AP9Ba6iifuYUtoBYulLwNsADG+rHtj2wbegfe
+	bjtUr9SqiO9QJOLP7sKlgRjEpo2+FoxAU5C3Umn8AqXzvZk0qwgDcVs8LiXYnG7ZxScCDTlaT9+
+	EwOPLxbX9z5RypOFgmByDSZJZ+vBlnv54uUTlrvu/PPK3CuBsKjFh1YOD/nPrLZp64YmvN6hu/n
+	VvAppFJeeJLncZAoZsx71TTCbXFIas7AP0wMpad6FndQ=
+X-Google-Smtp-Source: AGHT+IEvyHlney3PgQuqnRkmgr8JE86a8eWPctFK7OejS1Uga3alUyrnVrUb4vQVgEIV5QeAISy+vA==
+X-Received: by 2002:a17:903:4b07:b0:286:d3c5:4d15 with SMTP id d9443c01a7336-286d3c5548amr53962345ad.36.1759144544699;
+        Mon, 29 Sep 2025 04:15:44 -0700 (PDT)
+Received: from localhost ([106.38.226.62])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-27ed672aa0asm129207595ad.62.2025.09.29.04.13.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Sep 2025 04:15:44 -0700 (PDT)
+From: Julian Sun <sunjunchao@bytedance.com>
+To: linux-fsdevel@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-ext4@vger.kernel.org,
+	ceph-devel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org
+Cc: clm@fb.com,
+	dsterba@suse.com,
+	xiubli@redhat.com,
+	idryomov@gmail.com,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jaegeuk@kernel.org,
+	chao@kernel.org,
+	willy@infradead.org,
+	jack@suse.cz,
+	brauner@kernel.org,
+	agruenba@redhat.com
+Subject: [PATCH v2] fs: Make wbc_to_tag() inline and use it in fs.
+Date: Mon, 29 Sep 2025 19:13:49 +0800
+Message-Id: <20250929111349.448324-1-sunjunchao@bytedance.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250929095544.308392-1-sunjunchao@bytedance.com> <f8cf2061-44f3-4775-b321-713dc90c3282@suse.com>
-In-Reply-To: <f8cf2061-44f3-4775-b321-713dc90c3282@suse.com>
-From: Julian Sun <sunjunchao2870@gmail.com>
-Date: Mon, 29 Sep 2025 18:57:31 +0800
-X-Gm-Features: AS18NWAAuvHx66ggA-u_WXc9TsJVtaQqxswdi4XTKTeAlkY1OmNtEzHnxjh03Xk
-Message-ID: <CAHB1Naj44zBo1Fi_+SSpNx1PSXyAy3XnTMPDdU4yCPkr3oxcNw@mail.gmail.com>
-Subject: Re: [PATCH] fs: Make wbc_to_tag() extern and use it in fs.
-To: Qu Wenruo <wqu@suse.com>
-Cc: Julian Sun <sunjunchao@bytedance.com>, linux-fsdevel@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org, 
-	ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, clm@fb.com, 
-	dsterba@suse.com, xiubli@redhat.com, idryomov@gmail.com, tytso@mit.edu, 
-	adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org, 
-	willy@infradead.org, jack@suse.cz, brauner@kernel.org, agruenba@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Sep 29, 2025 at 6:16=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
->
->
->
-> =E5=9C=A8 2025/9/29 19:25, Julian Sun =E5=86=99=E9=81=93:
-> > The logic in wbc_to_tag() is widely used in file systems, so modify thi=
-s
-> > function to be extern and use it in file systems.
-> >
-> > This patch has only passed compilation tests, but it should be fine.
-> >
-> > Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
-> > ---
-> >   fs/btrfs/extent_io.c      | 5 +----
-> >   fs/ceph/addr.c            | 6 +-----
-> >   fs/ext4/inode.c           | 5 +----
-> >   fs/f2fs/data.c            | 5 +----
-> >   fs/gfs2/aops.c            | 5 +----
-> >   include/linux/writeback.h | 1 +
-> >   mm/page-writeback.c       | 2 +-
-> >   7 files changed, 7 insertions(+), 22 deletions(-)
-> >
-> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > index b21cb72835cc..0fea58287175 100644
-> > --- a/fs/btrfs/extent_io.c
-> > +++ b/fs/btrfs/extent_io.c
-> > @@ -2390,10 +2390,7 @@ static int extent_write_cache_pages(struct addre=
-ss_space *mapping,
-> >                              &BTRFS_I(inode)->runtime_flags))
-> >               wbc->tagged_writepages =3D 1;
-> >
-> > -     if (wbc->sync_mode =3D=3D WB_SYNC_ALL || wbc->tagged_writepages)
-> > -             tag =3D PAGECACHE_TAG_TOWRITE;
-> > -     else
-> > -             tag =3D PAGECACHE_TAG_DIRTY;
-> > +     tag =3D wbc_to_tag(wbc);
-> >   retry:
-> >       if (wbc->sync_mode =3D=3D WB_SYNC_ALL || wbc->tagged_writepages)
-> >               tag_pages_for_writeback(mapping, index, end);
-> > diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> > index 322ed268f14a..63b75d214210 100644
-> > --- a/fs/ceph/addr.c
-> > +++ b/fs/ceph/addr.c
-> > @@ -1045,11 +1045,7 @@ void ceph_init_writeback_ctl(struct address_spac=
-e *mapping,
-> >       ceph_wbc->index =3D ceph_wbc->start_index;
-> >       ceph_wbc->end =3D -1;
-> >
-> > -     if (wbc->sync_mode =3D=3D WB_SYNC_ALL || wbc->tagged_writepages) =
-{
-> > -             ceph_wbc->tag =3D PAGECACHE_TAG_TOWRITE;
-> > -     } else {
-> > -             ceph_wbc->tag =3D PAGECACHE_TAG_DIRTY;
-> > -     }
-> > +     ceph_wbc->tag =3D wbc_to_tag(wbc);
-> >
-> >       ceph_wbc->op_idx =3D -1;
-> >       ceph_wbc->num_ops =3D 0;
-> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > index 5b7a15db4953..196eba7fa39c 100644
-> > --- a/fs/ext4/inode.c
-> > +++ b/fs/ext4/inode.c
-> > @@ -2619,10 +2619,7 @@ static int mpage_prepare_extent_to_map(struct mp=
-age_da_data *mpd)
-> >       handle_t *handle =3D NULL;
-> >       int bpp =3D ext4_journal_blocks_per_folio(mpd->inode);
-> >
-> > -     if (mpd->wbc->sync_mode =3D=3D WB_SYNC_ALL || mpd->wbc->tagged_wr=
-itepages)
-> > -             tag =3D PAGECACHE_TAG_TOWRITE;
-> > -     else
-> > -             tag =3D PAGECACHE_TAG_DIRTY;
-> > +     tag =3D wbc_to_tag(mpd->wbc);
-> >
-> >       mpd->map.m_len =3D 0;
-> >       mpd->next_pos =3D mpd->start_pos;
-> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> > index 7961e0ddfca3..101e962845db 100644
-> > --- a/fs/f2fs/data.c
-> > +++ b/fs/f2fs/data.c
-> > @@ -3003,10 +3003,7 @@ static int f2fs_write_cache_pages(struct address=
-_space *mapping,
-> >               if (wbc->range_start =3D=3D 0 && wbc->range_end =3D=3D LL=
-ONG_MAX)
-> >                       range_whole =3D 1;
-> >       }
-> > -     if (wbc->sync_mode =3D=3D WB_SYNC_ALL || wbc->tagged_writepages)
-> > -             tag =3D PAGECACHE_TAG_TOWRITE;
-> > -     else
-> > -             tag =3D PAGECACHE_TAG_DIRTY;
-> > +     tag =3D wbc_to_tag(wbc);
-> >   retry:
-> >       retry =3D 0;
-> >       if (wbc->sync_mode =3D=3D WB_SYNC_ALL || wbc->tagged_writepages)
-> > diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
-> > index 47d74afd63ac..12394fc5dd29 100644
-> > --- a/fs/gfs2/aops.c
-> > +++ b/fs/gfs2/aops.c
-> > @@ -311,10 +311,7 @@ static int gfs2_write_cache_jdata(struct address_s=
-pace *mapping,
-> >                       range_whole =3D 1;
-> >               cycled =3D 1; /* ignore range_cyclic tests */
-> >       }
-> > -     if (wbc->sync_mode =3D=3D WB_SYNC_ALL || wbc->tagged_writepages)
-> > -             tag =3D PAGECACHE_TAG_TOWRITE;
-> > -     else
-> > -             tag =3D PAGECACHE_TAG_DIRTY;
-> > +     tag =3D wbc_to_tag(wbc);
-> >
-> >   retry:
-> >       if (wbc->sync_mode =3D=3D WB_SYNC_ALL || wbc->tagged_writepages)
-> > diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-> > index a2848d731a46..884811596e10 100644
-> > --- a/include/linux/writeback.h
-> > +++ b/include/linux/writeback.h
-> > @@ -370,6 +370,7 @@ int do_writepages(struct address_space *mapping, st=
-ruct writeback_control *wbc);
-> >   void writeback_set_ratelimit(void);
-> >   void tag_pages_for_writeback(struct address_space *mapping,
-> >                            pgoff_t start, pgoff_t end);
-> > +xa_mark_t wbc_to_tag(struct writeback_control *wbc);
-> >
-> >   bool filemap_dirty_folio(struct address_space *mapping, struct folio =
-*folio);
-> >   bool folio_redirty_for_writepage(struct writeback_control *, struct f=
-olio *);
-> > diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> > index 3e248d1c3969..243808e19445 100644
-> > --- a/mm/page-writeback.c
-> > +++ b/mm/page-writeback.c
-> > @@ -2434,7 +2434,7 @@ static bool folio_prepare_writeback(struct addres=
-s_space *mapping,
-> >       return true;
-> >   }
-> >
-> > -static xa_mark_t wbc_to_tag(struct writeback_control *wbc)
-> > +xa_mark_t wbc_to_tag(struct writeback_control *wbc)
->
-> The function is small enough, why not export it as an inline function?
->
+The logic in wbc_to_tag() is widely used in file systems, so modify this
+function to be inline and use it in file systems.
 
-Good idea, will fix it in patch v2.
-> The current version also lacks EXPORT_SYMBOL(), it may cause problems
-> for fses built as a module.
->
-> Thanks,
-> Qu
->
-> >   {
-> >       if (wbc->sync_mode =3D=3D WB_SYNC_ALL || wbc->tagged_writepages)
-> >               return PAGECACHE_TAG_TOWRITE;
->
->
+This patch has only passed compilation tests, but it should be fine.
 
-Thanks,
---=20
-Julian Sun <sunjunchao2870@gmail.com>
+Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
+---
+ fs/btrfs/extent_io.c      | 5 +----
+ fs/ceph/addr.c            | 6 +-----
+ fs/ext4/inode.c           | 5 +----
+ fs/f2fs/data.c            | 5 +----
+ fs/gfs2/aops.c            | 5 +----
+ include/linux/writeback.h | 7 +++++++
+ mm/page-writeback.c       | 6 ------
+ 7 files changed, 12 insertions(+), 27 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index b21cb72835cc..0fea58287175 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2390,10 +2390,7 @@ static int extent_write_cache_pages(struct address_space *mapping,
+ 			       &BTRFS_I(inode)->runtime_flags))
+ 		wbc->tagged_writepages = 1;
+ 
+-	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+-		tag = PAGECACHE_TAG_TOWRITE;
+-	else
+-		tag = PAGECACHE_TAG_DIRTY;
++	tag = wbc_to_tag(wbc);
+ retry:
+ 	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+ 		tag_pages_for_writeback(mapping, index, end);
+diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+index 322ed268f14a..63b75d214210 100644
+--- a/fs/ceph/addr.c
++++ b/fs/ceph/addr.c
+@@ -1045,11 +1045,7 @@ void ceph_init_writeback_ctl(struct address_space *mapping,
+ 	ceph_wbc->index = ceph_wbc->start_index;
+ 	ceph_wbc->end = -1;
+ 
+-	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages) {
+-		ceph_wbc->tag = PAGECACHE_TAG_TOWRITE;
+-	} else {
+-		ceph_wbc->tag = PAGECACHE_TAG_DIRTY;
+-	}
++	ceph_wbc->tag = wbc_to_tag(wbc);
+ 
+ 	ceph_wbc->op_idx = -1;
+ 	ceph_wbc->num_ops = 0;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 5b7a15db4953..196eba7fa39c 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2619,10 +2619,7 @@ static int mpage_prepare_extent_to_map(struct mpage_da_data *mpd)
+ 	handle_t *handle = NULL;
+ 	int bpp = ext4_journal_blocks_per_folio(mpd->inode);
+ 
+-	if (mpd->wbc->sync_mode == WB_SYNC_ALL || mpd->wbc->tagged_writepages)
+-		tag = PAGECACHE_TAG_TOWRITE;
+-	else
+-		tag = PAGECACHE_TAG_DIRTY;
++	tag = wbc_to_tag(mpd->wbc);
+ 
+ 	mpd->map.m_len = 0;
+ 	mpd->next_pos = mpd->start_pos;
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 7961e0ddfca3..101e962845db 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -3003,10 +3003,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+ 		if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX)
+ 			range_whole = 1;
+ 	}
+-	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+-		tag = PAGECACHE_TAG_TOWRITE;
+-	else
+-		tag = PAGECACHE_TAG_DIRTY;
++	tag = wbc_to_tag(wbc);
+ retry:
+ 	retry = 0;
+ 	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
+index 47d74afd63ac..12394fc5dd29 100644
+--- a/fs/gfs2/aops.c
++++ b/fs/gfs2/aops.c
+@@ -311,10 +311,7 @@ static int gfs2_write_cache_jdata(struct address_space *mapping,
+ 			range_whole = 1;
+ 		cycled = 1; /* ignore range_cyclic tests */
+ 	}
+-	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+-		tag = PAGECACHE_TAG_TOWRITE;
+-	else
+-		tag = PAGECACHE_TAG_DIRTY;
++	tag = wbc_to_tag(wbc);
+ 
+ retry:
+ 	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+diff --git a/include/linux/writeback.h b/include/linux/writeback.h
+index a2848d731a46..dde77d13a200 100644
+--- a/include/linux/writeback.h
++++ b/include/linux/writeback.h
+@@ -240,6 +240,13 @@ static inline void inode_detach_wb(struct inode *inode)
+ 	}
+ }
+ 
++static inline xa_mark_t wbc_to_tag(struct writeback_control *wbc)
++{
++	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
++		return PAGECACHE_TAG_TOWRITE;
++	return PAGECACHE_TAG_DIRTY;
++}
++
+ void wbc_attach_fdatawrite_inode(struct writeback_control *wbc,
+ 		struct inode *inode);
+ 
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 3e248d1c3969..ae1181a46dea 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2434,12 +2434,6 @@ static bool folio_prepare_writeback(struct address_space *mapping,
+ 	return true;
+ }
+ 
+-static xa_mark_t wbc_to_tag(struct writeback_control *wbc)
+-{
+-	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+-		return PAGECACHE_TAG_TOWRITE;
+-	return PAGECACHE_TAG_DIRTY;
+-}
+ 
+ static pgoff_t wbc_end(struct writeback_control *wbc)
+ {
+-- 
+2.39.5
+
 
