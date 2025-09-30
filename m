@@ -1,256 +1,185 @@
-Return-Path: <linux-btrfs+bounces-17295-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17296-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64504BAE065
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 18:13:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C672BAE0F0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 18:36:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBAEF1943379
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 16:13:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3765B16CF2C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 16:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3D30309DCC;
-	Tue, 30 Sep 2025 16:12:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946A923BCE4;
+	Tue, 30 Sep 2025 16:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cnIsQFqh"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IBJB0yd8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bGBDbCMS";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IBJB0yd8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bGBDbCMS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF944501A
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Sep 2025 16:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EE4334BA28
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Sep 2025 16:35:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759248771; cv=none; b=rShDvXli1RivCryJiYsf/MFTDz7HBKCCMMkx+GiP1GB5cBX8KjH/xpbOFcTEKbBIJm+Ycoa/ekyg1mOrS/HdN8DMwlKd0KAR6f3hnMvpLku1B245SDxWlL3+PxrYofAibaAJ9VuBwGKWTs/yZR/MSg9Rq+UDqij4gHsJKFbs5No=
+	t=1759250156; cv=none; b=pUSqgMVjIcqWtBYFTW+cWwpXEZ9m/SUGl3KvxouOR7teFhnmmTWc5U2/Qo8TKyKb+ETmH4MRMp6ZsbE4L26v+gKRVQxm6mwe08W5xf8aVLF9iozP0CgwKOE1Iv1RPiTlQmH4OsOqumd32ovLbVU/dle5b4+zIpoxxvkQQWNTPX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759248771; c=relaxed/simple;
-	bh=Nblw4AibWIEoUqbfoaJhynNC/tdUWYxkcN0099Tf8ks=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tAx6bPCVXQJsUWoRLS/wirxhmpAH6awY5UkbQ4+t7HbotwMmUswit7oo+ngIIicvEHJqnhrvAPKHL/DM1MRYRONkCW+nFvIB38FoPNh7gqgtNIpnifle3EJ6ocj9OECKXhRvFKFIucdDkHmdWLM9CAPXzc4jWVDdGG8qAh+eNBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cnIsQFqh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93228C116B1
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Sep 2025 16:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759248770;
-	bh=Nblw4AibWIEoUqbfoaJhynNC/tdUWYxkcN0099Tf8ks=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=cnIsQFqhfZE3MtEq8ySFxuy21GVL0glVwR5fCGUz+2ju/EGbfpthXLwc91+rXe1A6
-	 l5L7MTmgo2bLe6dpfAeYE+79PALph5VZOlZ2+6uv53sLwzWT9sTVwKhxL3BcpkII58
-	 gm2zw8NGzgEtC4VFg4njtAEYfWL8byQC2CG3U1JH/JWkcg1mM5RmniCEoADN/POPuI
-	 bFYSrkJDCtFhTOVPQlLlo3sCgu5jHBFZAUOAq6xdvrlRybhiqSx/MyE5lF1tCLUgv/
-	 800fSGuVKndQ1Ab91iB9ZTfO8P2mVorLcuZP7YGCNHX2otfJinxtnAg9Lvuq69rQAo
-	 1DT3JolK15vSg==
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-b3727611c1bso1142550466b.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Sep 2025 09:12:50 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy1tZ4GNsd3cltp5Y67108xLSwYOmqe2wy9x0Z9WWKo2QMBq+Sk
-	xF9TI9JuCHI2kIYRL1iM5+xXlgszXHhuBnamKcv+HOv4DyS88VzaaLKlufMSNQjghczIkXZuk8B
-	ZFoKEjGhceA4Drehs/eLmT5TTi7nqXNE=
-X-Google-Smtp-Source: AGHT+IFeoCpbWP3ThLVAEfTGy6k0CDNkgrRJNIwAjFgT0cWKAXkHAfADEnZvXv1qYU2FTnnSwHG6gfByVzR49XAz69A=
-X-Received: by 2002:a17:907:3f9e:b0:b3c:82d5:211c with SMTP id
- a640c23a62f3a-b46e5d3b5famr22811166b.27.1759248769081; Tue, 30 Sep 2025
- 09:12:49 -0700 (PDT)
+	s=arc-20240116; t=1759250156; c=relaxed/simple;
+	bh=liTWLGm8KZ6nOKzTONwU9G3Cr7WA2LXiUtJC0Y3ghGU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nRi3igQLrPX+ztFDU/gTf/nMi9M/iIHVNqd3+hxQ7OfmElE8UiGqSME228m+X62qi6MLp8R/CuZGyKrJn7Y2f20AjOEST6mBtH6mJkAZgFJ4WmtSKb5cpO7n7yNv3u//v18TUA+Hv6fAIl72DgsqaiWJDV8shecr+lh07JnMgoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IBJB0yd8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bGBDbCMS; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IBJB0yd8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bGBDbCMS; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BA2831F8BE;
+	Tue, 30 Sep 2025 16:35:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1759250152;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KrPmnRgK70ArAAhSxCctSIdErUReYUki25UJM4tFjBc=;
+	b=IBJB0yd8ydKLDK65wYpUPb0PNcq3EFwCXrOJyhhdeqYvrrbLPY5RcpBEOU3bShURZZhoog
+	wz3CIdlmjDjfNKnzlvG0CEEAGuCCVOVrS0Hw9rOqjCq+kzObdCU++9r6vhn8Rz9OPjJkMG
+	XjBjJuAMIzuPwW6bs6nSayMLZCyDZIw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1759250152;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KrPmnRgK70ArAAhSxCctSIdErUReYUki25UJM4tFjBc=;
+	b=bGBDbCMSBe90BdrVfYcnZ8Nv8yzEwMUGGfDp6VJOf+nvnuWl/hI8FvsVUvWNaIIUO6/DSW
+	kmH+xlGFwI1srQCQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=IBJB0yd8;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=bGBDbCMS
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1759250152;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KrPmnRgK70ArAAhSxCctSIdErUReYUki25UJM4tFjBc=;
+	b=IBJB0yd8ydKLDK65wYpUPb0PNcq3EFwCXrOJyhhdeqYvrrbLPY5RcpBEOU3bShURZZhoog
+	wz3CIdlmjDjfNKnzlvG0CEEAGuCCVOVrS0Hw9rOqjCq+kzObdCU++9r6vhn8Rz9OPjJkMG
+	XjBjJuAMIzuPwW6bs6nSayMLZCyDZIw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1759250152;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KrPmnRgK70ArAAhSxCctSIdErUReYUki25UJM4tFjBc=;
+	b=bGBDbCMSBe90BdrVfYcnZ8Nv8yzEwMUGGfDp6VJOf+nvnuWl/hI8FvsVUvWNaIIUO6/DSW
+	kmH+xlGFwI1srQCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A9BF513A3F;
+	Tue, 30 Sep 2025 16:35:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id SME6KegG3Gg9AQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 30 Sep 2025 16:35:52 +0000
+Date: Tue, 30 Sep 2025 18:35:47 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Sun YangKai <sunk67188@gmail.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: more trivial BTRFS_PATH_AUTO_FREE conversions
+Message-ID: <20250930163547.GC4052@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20250930050918.31029-2-sunk67188@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250930130452.297576-1-mssola@mssola.com> <CAL3q7H66AOc_hbXX_PN-DGP5fT36NnxE7p4j2LqjPXyRaOu=iA@mail.gmail.com>
-In-Reply-To: <CAL3q7H66AOc_hbXX_PN-DGP5fT36NnxE7p4j2LqjPXyRaOu=iA@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 30 Sep 2025 17:12:11 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4ijVSVZXahhN85D0LBSAJZPhP1-sqqFQXasdQwfjnyuQ@mail.gmail.com>
-X-Gm-Features: AS18NWC1Ybdi1fJfuTJIjXwWHhaH18_0HdJFWoAa0CRK2V1aXbRQACCA1iHEObI
-Message-ID: <CAL3q7H4ijVSVZXahhN85D0LBSAJZPhP1-sqqFQXasdQwfjnyuQ@mail.gmail.com>
-Subject: Re: [PATCH] fs: btrfs: prevent a double kfree on delayed-ref
-To: =?UTF-8?B?TWlxdWVsIFNhYmF0w6kgU29sw6A=?= <mssola@mssola.com>
-Cc: linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com, 
-	fdmanana@suse.com, wqu@suse.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250930050918.31029-2-sunk67188@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: BA2831F8BE
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto]
+X-Spam-Score: -4.21
 
-On Tue, Sep 30, 2025 at 5:07=E2=80=AFPM Filipe Manana <fdmanana@kernel.org>=
- wrote:
->
-> On Tue, Sep 30, 2025 at 2:05=E2=80=AFPM Miquel Sabat=C3=A9 Sol=C3=A0 <mss=
-ola@mssola.com> wrote:
-> >
-> > In the previous code it was possible to incur into a double kfree()
-> > scenario when calling 'add_delayed_ref_head'. This could happen if the
-> > record was reported to already exist in the
-> > 'btrfs_qgroup_trace_extent_nolock' call, but then there was an error
-> > later on 'add_delayed_ref_head'. In this case, since
-> > 'add_delayed_ref_head' returned an error, the caller went to free the
-> > record. Since 'add_delayed_ref_head' couldn't set this kfree'd pointer
-> > to NULL, then kfree() would have acted on a non-NULL 'record' object
-> > which was pointing to memory already freed by the callee.
-> >
-> > The problem comes from the fact that the responsibility to kfree the
-> > object is on both the caller and the callee at the same time. Hence, th=
-e
-> > fix for this is to shift the ownership of the 'qrecord' object out of
-> > the 'add_delayed_ref_head'. That is, we will never attempt to kfree()
-> > the given object inside of this function, and will expect the caller to
-> > act on the 'qrecord' object on its own. The only exception where the
-> > 'qrecord' object cannot be kfree'd is if it was inserted into the
-> > tracing logic, for which we already have the 'qrecord_inserted_ret'
-> > boolean to account for this. Hence, the caller has to kfree the object
-> > only if 'add_delayed_ref_head' reports not to have inserted it on the
-> > tracing logic.
-> >
-> > As a side-effect of the above, we must guarantee that
-> > 'qrecord_inserted_ret' is properly initialized at the start of the
-> > function, not at the end, and then set when an actual insert
-> > happens. This way we avoid 'qrecord_inserted_ret' having an invalid
-> > value on an early exit.
-> >
-> > The documentation from the 'add_delayed_ref_head' has also been updated
-> > to reflect on the exact ownership of the 'qrecord' object.
-> >
-> > Fixes: 6ef8fbce0104 ("btrfs: fix missing error handling when adding del=
-ayed ref with qgroups enabled")
-> > Signed-off-by: Miquel Sabat=C3=A9 Sol=C3=A0 <mssola@mssola.com>
-> > ---
-> >  fs/btrfs/delayed-ref.c | 39 +++++++++++++++++++++++++++++++--------
-> >  1 file changed, 31 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-> > index 481802efaa14..bc61e0eacc69 100644
-> > --- a/fs/btrfs/delayed-ref.c
-> > +++ b/fs/btrfs/delayed-ref.c
-> > @@ -798,10 +798,14 @@ static void init_delayed_ref_head(struct btrfs_de=
-layed_ref_head *head_ref,
-> >  }
-> >
-> >  /*
-> > - * helper function to actually insert a head node into the rbtree.
-> > + * Helper function to actually insert a head node into the rbtree.
->
-> Since you are updating this line just to capitalize the first word,
-> you might as well replace rbtree with xarray as we don't use rbtree
-> anymore.
->
-> >   * this does all the dirty work in terms of maintaining the correct
-> >   * overall modification count.
-> >   *
-> > + * The caller is responsible for calling kfree() on @qrecord. More spe=
-cifically,
-> > + * if this function reports that it did not insert it as noted in
-> > + * @qrecord_inserted_ret, then it's safe to call kfree() on it.
-> > + *
-> >   * Returns an error pointer in case of an error.
-> >   */
-> >  static noinline struct btrfs_delayed_ref_head *
-> > @@ -814,7 +818,14 @@ add_delayed_ref_head(struct btrfs_trans_handle *tr=
-ans,
-> >         struct btrfs_delayed_ref_head *existing;
-> >         struct btrfs_delayed_ref_root *delayed_refs;
-> >         const unsigned long index =3D (head_ref->bytenr >> fs_info->sec=
-torsize_bits);
-> > -       bool qrecord_inserted =3D false;
-> > +
-> > +       /*
-> > +        * If 'qrecord_inserted_ret' is provided, then the first thing =
-we need
-> > +        * to do is to initialize it to false just in case we have an e=
-xit
-> > +        * before trying to insert the record.
-> > +        */
-> > +       if (qrecord_inserted_ret)
-> > +               *qrecord_inserted_ret =3D false;
-> >
-> >         delayed_refs =3D &trans->transaction->delayed_refs;
-> >         lockdep_assert_held(&delayed_refs->lock);
-> > @@ -833,6 +844,12 @@ add_delayed_ref_head(struct btrfs_trans_handle *tr=
-ans,
-> >
-> >         /* Record qgroup extent info if provided */
-> >         if (qrecord) {
-> > +               /*
-> > +                * Setting 'qrecord' but not 'qrecord_inserted_ret' wil=
-l likely
-> > +                * result in a memory leakage.
-> > +                */
-> > +               WARN_ON(!qrecord_inserted_ret);
->
-> For this sort of mandatory stuff, we use assertions, not warnings:
->
-> ASSERT(qrecord_insert_ret !=3D NULL);
->
->
-> > +
-> >                 int ret;
-> >
-> >                 ret =3D btrfs_qgroup_trace_extent_nolock(fs_info, delay=
-ed_refs, qrecord,
-> > @@ -840,12 +857,10 @@ add_delayed_ref_head(struct btrfs_trans_handle *t=
-rans,
-> >                 if (ret) {
-> >                         /* Clean up if insertion fails or item exists. =
-*/
-> >                         xa_release(&delayed_refs->dirty_extents, index)=
-;
-> > -                       /* Caller responsible for freeing qrecord on er=
-ror. */
-> >                         if (ret < 0)
-> >                                 return ERR_PTR(ret);
-> > -                       kfree(qrecord);
-> > -               } else {
-> > -                       qrecord_inserted =3D true;
-> > +               } else if (qrecord_inserted_ret) {
-> > +                       *qrecord_inserted_ret =3D true;
-> >                 }
-> >         }
-> >
-> > @@ -888,8 +903,6 @@ add_delayed_ref_head(struct btrfs_trans_handle *tra=
-ns,
-> >                 delayed_refs->num_heads++;
-> >                 delayed_refs->num_heads_ready++;
-> >         }
-> > -       if (qrecord_inserted_ret)
-> > -               *qrecord_inserted_ret =3D qrecord_inserted;
-> >
-> >         return head_ref;
-> >  }
-> > @@ -1049,6 +1062,14 @@ static int add_delayed_ref(struct btrfs_trans_ha=
-ndle *trans,
-> >                 xa_release(&delayed_refs->head_refs, index);
-> >                 spin_unlock(&delayed_refs->lock);
-> >                 ret =3D PTR_ERR(new_head_ref);
-> > +
-> > +               /*
-> > +                * It's only safe to call kfree() on 'qrecord' if
-> > +                * 'add_delayed_ref_head' has _not_ inserted it for
->
-> The notation we use for function names is  function_name(), not 'function=
-_name'.
->
-> Otherwise it looks good, thanks.
+On Tue, Sep 30, 2025 at 01:09:07PM +0800, Sun YangKai wrote:
+> Trivial pattern for the auto freeing without goto -> return conversions.
+> No other function cleanup.
+> 
+> Tested with btrfs/auto group.
+> 
+> Signed-off-by: Sun YangKai <sunk67188@gmail.com>
+> ---
+>  fs/btrfs/uuid-tree.c | 12 ++++--------
+>  fs/btrfs/verity.c    |  9 +++------
+>  fs/btrfs/volumes.c   | 44 ++++++++++++++------------------------------
+>  fs/btrfs/xattr.c     |  7 ++-----
+>  4 files changed, 23 insertions(+), 49 deletions(-)
+> 
+> diff --git a/fs/btrfs/uuid-tree.c b/fs/btrfs/uuid-tree.c
+> index 17b5e81123a1..30e5d80adda9 100644
+> --- a/fs/btrfs/uuid-tree.c
+> +++ b/fs/btrfs/uuid-tree.c
+> @@ -27,7 +27,7 @@ static int btrfs_uuid_tree_lookup(struct btrfs_root *uuid_root, const u8 *uuid,
+>  				  u8 type, u64 subid)
+>  {
+>  	int ret;
+> -	struct btrfs_path *path = NULL;
+> +	BTRFS_PATH_AUTO_FREE(path);
+>  	struct extent_buffer *eb;
+>  	int slot;
+>  	u32 item_size;
+> @@ -79,7 +79,6 @@ static int btrfs_uuid_tree_lookup(struct btrfs_root *uuid_root, const u8 *uuid,
+>  	}
+>  
+>  out:
+> -	btrfs_free_path(path);
 
-Also, the subject should just be "btrfs: ....", no need to add extra
-"fs: " prefix - we never do that.
->
-> > +                * tracing. Otherwise we need to handle this here.
-> > +                */
-> > +               if (!qrecord_reserved || qrecord_inserted)
-> > +                       goto free_head_ref;
-> >                 goto free_record;
-> >         }
-> >         head_ref =3D new_head_ref;
-> > @@ -1071,6 +1092,8 @@ static int add_delayed_ref(struct btrfs_trans_han=
-dle *trans,
-> >
-> >         if (qrecord_inserted)
-> >                 return btrfs_qgroup_trace_extent_post(trans, record, ge=
-neric_ref->bytenr);
-> > +
-> > +       kfree(record);
-> >         return 0;
-> >
-> >  free_record:
-> > --
-> > 2.51.0
-> >
-> >
+Here and in several other places you did not convert gotos to returns
+and removed the out: label. What I've seen in other places in the patch
+the conversions are straightforward and you already did that in other
+patches. Can you please do it here as well?
+
+The unnecessary gotos are in functions where the patch auto freeing is
+not done, this could be another cleanup round.
 
