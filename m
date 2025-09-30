@@ -1,284 +1,173 @@
-Return-Path: <linux-btrfs+bounces-17299-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17300-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F0A1BAE53B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 20:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A930BAE8A1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 22:29:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31806323DE6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 18:39:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82C83175EAC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 20:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E868226A08A;
-	Tue, 30 Sep 2025 18:39:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="h3Hy5rkf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E1F24C06A;
+	Tue, 30 Sep 2025 20:29:34 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-y-111.mailbox.org (mout-y-111.mailbox.org [91.198.250.236])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C939033EC;
-	Tue, 30 Sep 2025 18:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.198.250.236
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7EC34BA32
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Sep 2025 20:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759257581; cv=none; b=mXKSvyGDfRtzYaDbkZBK/qLMsd9pLxgUX2zKt80c6icX9UJkqDHsT/5txDY1UYRZCFz2K9/hKdyF175UufbyxNgH+6k0+ut8jPd2BHYVOK0x9QFKTUApwLBqhysEVjgWC67ZZnw9JNBZj3HueGQyvg6J0c27lx9PCcoI88YhWxo=
+	t=1759264174; cv=none; b=YVByFkuaxrz+60/OR2fg9lCrW1juzl76LlNUgsnhSUGcfMmt1lP/SYNqj7zCOGN/U2rBM1PKmqDeuVSF9onz74tROw2giEuXws0zV1K9veR52ZoK2WBvZImtLvF3+rH7YNKe9+JvWr3mu5Ml+2OvodRq+4Jo3X1CqLh8DUyarO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759257581; c=relaxed/simple;
-	bh=NHhbW6XOibNDd+L6PGZjsEt/nr22HafaXJexwmknz/s=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=I5WYITY3yHYZ8F3SzEP4twJSuysP5pdr7kJ4fkmiX8IJuJ8/zNN3Jkj1M2vGU4pgGG6FHp8B6vZDRoW37M0C8M4cGAC8vn3wiY9jsvmMeTsZSpYmJOU2I9vZbGLIJUkzNVc9aE5eBl1mMTc8c8qG7uJ9LdnQ64NqQ9NhwL8z3EU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=h3Hy5rkf; arc=none smtp.client-ip=91.198.250.236
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-y-111.mailbox.org (Postfix) with ESMTPS id 4cbn0P5GP0z9y8h;
-	Tue, 30 Sep 2025 20:39:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
-	t=1759257573;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y5QK+htnxkzn4WpcEK+6lK/We5lMiyB7Bvom3iaXJBk=;
-	b=h3Hy5rkfd/oj2rTQhMEM60e3IzeU/9Dh/jCjGT6cXUXR0pDGlvfHXTp8XKntKFTi5Cyv4v
-	6IruskTg/JEnr7rAevNQn/02oxfzSlLnxyZMKQg2anPngz+EwHZOYgAPHoibirKe9rScVv
-	Bs8b99cK/mH0J9IYTAVnZPYpllTJa3EXBB5s//GkiRCn3Z81iWVCX5W3wUtmk2KaqNjX3T
-	k2HLdO8yzhsCgamKgfwa+TRLPNmnv8IQdkMzuQdA8d71IHoO/YBLy9KBJs/xSftHe4ald+
-	LzDhK/KEH/Z5VWo+JjkD/7FhEnV09p0gEx8MfnxNe8vfmtSW3qDCOrouF2dtlA==
-Authentication-Results: outgoing_mbo_mout;
-	dkim=none;
-	spf=softfail (outgoing_mbo_mout: 2001:67c:2050:b231:465::2 is neither permitted nor denied by domain of mssola@mssola.com) smtp.mailfrom=mssola@mssola.com
-From: =?utf-8?Q?Miquel_Sabat=C3=A9_Sol=C3=A0?= <mssola@mssola.com>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org,  clm@fb.com,  dsterba@suse.com,
-  fdmanana@suse.com,  wqu@suse.com,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: btrfs: prevent a double kfree on delayed-ref
-In-Reply-To: <CAL3q7H66AOc_hbXX_PN-DGP5fT36NnxE7p4j2LqjPXyRaOu=iA@mail.gmail.com>
-	(Filipe Manana's message of "Tue, 30 Sep 2025 17:07:47 +0100")
-References: <20250930130452.297576-1-mssola@mssola.com>
-	<CAL3q7H66AOc_hbXX_PN-DGP5fT36NnxE7p4j2LqjPXyRaOu=iA@mail.gmail.com>
-Date: Tue, 30 Sep 2025 20:39:28 +0200
-Message-ID: <87bjmraiov.fsf@>
+	s=arc-20240116; t=1759264174; c=relaxed/simple;
+	bh=HYVrxLorviy9/LcLk+sJcFHB5u8xcwx12lbV6OBKubw=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OnuNCvFwsICLLWsQyGQ97e/+o5OJjAsNQGQxC85ue+bjrfPrH2l9R51jT2xCk7XtqFmwE28p1QRnM9wHL03utbWG0Kg+vnRVnr1BpbABIw2Gk0VcmBMxcezOwuQT0wX8p1BB7OEMvTeaui2OnowNVbSz6VoxtRaRnmzr20WPKAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-428feeed482so37165295ab.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Sep 2025 13:29:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759264172; x=1759868972;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XjLWIlvweUHagMNdlXHm8j88YhPLq+xnooiFq97mL4I=;
+        b=wfO7mpQKceBgwIQSsNL8Q5G56v/n09Jh/2BxJnUmCUDzdrUSV8W8iBY1ZicMcCXeF1
+         miUCM6t27L6z9rg/YSZBseLE97cU3/dUx28Hur4f5T3LnVU95WQ+/8Kg6kFjsCcSGY62
+         ELzMDnCpKKQVIejs4yO3eOpArWoEruh5insIpJAbAsJJ/b34AfXrKGkmAdTkOW17uy51
+         fUN8AN/7e6ESwF/TOEwVaeRL2kc++FqRZHs8HPKG4yOTxF47XmfOJP6shUQqVjkd+O0s
+         VXeIpq+47GGJoPJoq8zdx4/9xaOxY2D3NZ05DxVcx9yfMik9vWsB5EQWgHyttyiV7v+p
+         5VyA==
+X-Forwarded-Encrypted: i=1; AJvYcCWsm5PzAH4PrZBiGfbkozOJkA1YPxbLbVRtXvOTE56fDSneCYg0vGm5ieAPj6IgaQRnX+bQgEhTwqdG/w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyaKiBx++3WK2futeWdq1O8Fcj1OPMmtggalEnhg0lvLy4zELYa
+	jtsfKYtxSDQ9zc2EwfWnAHOiRdr2jLaepdb7p3ebR0PhbK2gN1LvGJ0CjefLPVbm1PHbAa27Nf8
+	ZagNW4bh5sfsbeEmGcOZujzC/aHib762hldLCXp7L13TZp9uzxouNmJYSb/I=
+X-Google-Smtp-Source: AGHT+IHAiZHIaPR3+uqTjIwMls4jnI6NenQ9eHlcMquZTT5xpAYj4H7IeVo/3QFcEIjKxACEGR9F9zY+6pg98Qr9jhrg1gsK4tAX
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Rspamd-Queue-Id: 4cbn0P5GP0z9y8h
+X-Received: by 2002:a05:6e02:1aa4:b0:413:d5e2:b751 with SMTP id
+ e9e14a558f8ab-42d815ab94emr20716375ab.6.1759264171998; Tue, 30 Sep 2025
+ 13:29:31 -0700 (PDT)
+Date: Tue, 30 Sep 2025 13:29:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68dc3dab.a00a0220.102ee.004e.GAE@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in populate_free_space_tree (2)
+From: syzbot <syzbot+884dc4621377ba579a6f@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Filipe Manana @ 2025-09-30 17:07 +01:
+syzbot found the following issue on:
 
-> On Tue, Sep 30, 2025 at 2:05=E2=80=AFPM Miquel Sabat=C3=A9 Sol=C3=A0 <mss=
-ola@mssola.com> wrote:
->>
->> In the previous code it was possible to incur into a double kfree()
->> scenario when calling 'add_delayed_ref_head'. This could happen if the
->> record was reported to already exist in the
->> 'btrfs_qgroup_trace_extent_nolock' call, but then there was an error
->> later on 'add_delayed_ref_head'. In this case, since
->> 'add_delayed_ref_head' returned an error, the caller went to free the
->> record. Since 'add_delayed_ref_head' couldn't set this kfree'd pointer
->> to NULL, then kfree() would have acted on a non-NULL 'record' object
->> which was pointing to memory already freed by the callee.
->>
->> The problem comes from the fact that the responsibility to kfree the
->> object is on both the caller and the callee at the same time. Hence, the
->> fix for this is to shift the ownership of the 'qrecord' object out of
->> the 'add_delayed_ref_head'. That is, we will never attempt to kfree()
->> the given object inside of this function, and will expect the caller to
->> act on the 'qrecord' object on its own. The only exception where the
->> 'qrecord' object cannot be kfree'd is if it was inserted into the
->> tracing logic, for which we already have the 'qrecord_inserted_ret'
->> boolean to account for this. Hence, the caller has to kfree the object
->> only if 'add_delayed_ref_head' reports not to have inserted it on the
->> tracing logic.
->>
->> As a side-effect of the above, we must guarantee that
->> 'qrecord_inserted_ret' is properly initialized at the start of the
->> function, not at the end, and then set when an actual insert
->> happens. This way we avoid 'qrecord_inserted_ret' having an invalid
->> value on an early exit.
->>
->> The documentation from the 'add_delayed_ref_head' has also been updated
->> to reflect on the exact ownership of the 'qrecord' object.
->>
->> Fixes: 6ef8fbce0104 ("btrfs: fix missing error handling when adding dela=
-yed ref with qgroups enabled")
->> Signed-off-by: Miquel Sabat=C3=A9 Sol=C3=A0 <mssola@mssola.com>
->> ---
->>  fs/btrfs/delayed-ref.c | 39 +++++++++++++++++++++++++++++++--------
->>  1 file changed, 31 insertions(+), 8 deletions(-)
->>
->> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
->> index 481802efaa14..bc61e0eacc69 100644
->> --- a/fs/btrfs/delayed-ref.c
->> +++ b/fs/btrfs/delayed-ref.c
->> @@ -798,10 +798,14 @@ static void init_delayed_ref_head(struct btrfs_del=
-ayed_ref_head *head_ref,
->>  }
->>
->>  /*
->> - * helper function to actually insert a head node into the rbtree.
->> + * Helper function to actually insert a head node into the rbtree.
->
-> Since you are updating this line just to capitalize the first word,
-> you might as well replace rbtree with xarray as we don't use rbtree
-> anymore.
->
->>   * this does all the dirty work in terms of maintaining the correct
->>   * overall modification count.
->>   *
->> + * The caller is responsible for calling kfree() on @qrecord. More spec=
-ifically,
->> + * if this function reports that it did not insert it as noted in
->> + * @qrecord_inserted_ret, then it's safe to call kfree() on it.
->> + *
->>   * Returns an error pointer in case of an error.
->>   */
->>  static noinline struct btrfs_delayed_ref_head *
->> @@ -814,7 +818,14 @@ add_delayed_ref_head(struct btrfs_trans_handle *tra=
-ns,
->>         struct btrfs_delayed_ref_head *existing;
->>         struct btrfs_delayed_ref_root *delayed_refs;
->>         const unsigned long index =3D (head_ref->bytenr >> fs_info->sect=
-orsize_bits);
->> -       bool qrecord_inserted =3D false;
->> +
->> +       /*
->> +        * If 'qrecord_inserted_ret' is provided, then the first thing w=
-e need
->> +        * to do is to initialize it to false just in case we have an ex=
-it
->> +        * before trying to insert the record.
->> +        */
->> +       if (qrecord_inserted_ret)
->> +               *qrecord_inserted_ret =3D false;
->>
->>         delayed_refs =3D &trans->transaction->delayed_refs;
->>         lockdep_assert_held(&delayed_refs->lock);
->> @@ -833,6 +844,12 @@ add_delayed_ref_head(struct btrfs_trans_handle *tra=
-ns,
->>
->>         /* Record qgroup extent info if provided */
->>         if (qrecord) {
->> +               /*
->> +                * Setting 'qrecord' but not 'qrecord_inserted_ret' will=
- likely
->> +                * result in a memory leakage.
->> +                */
->> +               WARN_ON(!qrecord_inserted_ret);
->
-> For this sort of mandatory stuff, we use assertions, not warnings:
->
-> ASSERT(qrecord_insert_ret !=3D NULL);
->
->
->> +
->>                 int ret;
->>
->>                 ret =3D btrfs_qgroup_trace_extent_nolock(fs_info, delaye=
-d_refs, qrecord,
->> @@ -840,12 +857,10 @@ add_delayed_ref_head(struct btrfs_trans_handle *tr=
-ans,
->>                 if (ret) {
->>                         /* Clean up if insertion fails or item exists. */
->>                         xa_release(&delayed_refs->dirty_extents, index);
->> -                       /* Caller responsible for freeing qrecord on err=
-or. */
->>                         if (ret < 0)
->>                                 return ERR_PTR(ret);
->> -                       kfree(qrecord);
->> -               } else {
->> -                       qrecord_inserted =3D true;
->> +               } else if (qrecord_inserted_ret) {
->> +                       *qrecord_inserted_ret =3D true;
->>                 }
->>         }
->>
->> @@ -888,8 +903,6 @@ add_delayed_ref_head(struct btrfs_trans_handle *tran=
-s,
->>                 delayed_refs->num_heads++;
->>                 delayed_refs->num_heads_ready++;
->>         }
->> -       if (qrecord_inserted_ret)
->> -               *qrecord_inserted_ret =3D qrecord_inserted;
->>
->>         return head_ref;
->>  }
->> @@ -1049,6 +1062,14 @@ static int add_delayed_ref(struct btrfs_trans_han=
-dle *trans,
->>                 xa_release(&delayed_refs->head_refs, index);
->>                 spin_unlock(&delayed_refs->lock);
->>                 ret =3D PTR_ERR(new_head_ref);
->> +
->> +               /*
->> +                * It's only safe to call kfree() on 'qrecord' if
->> +                * 'add_delayed_ref_head' has _not_ inserted it for
->
-> The notation we use for function names is  function_name(), not 'function=
-_name'.
+HEAD commit:    3b9b1f8df454 Add linux-next specific files for 20250929
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12785ae2580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7658505af38711c6
+dashboard link: https://syzkaller.appspot.com/bug?extid=884dc4621377ba579a6f
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=170e2334580000
 
-I've included all your comments into a v2 patch set. I'll wait a bit
-before sending it in case I get more comments.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2484efae3582/disk-3b9b1f8d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c39cb0b765cf/vmlinux-3b9b1f8d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5aaf42edc1cb/bzImage-3b9b1f8d.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/8172ca4171ed/mount_0.gz
+  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=13de6942580000)
 
->
-> Otherwise it looks good, thanks.
->
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+884dc4621377ba579a6f@syzkaller.appspotmail.com
 
-Thanks to you for the review!
+BTRFS warning: 'usebackuproot' is deprecated, use 'rescue=usebackuproot' instead
+BTRFS info (device loop3 state M): rebuilding free space tree
+assertion failed: ret == 0 :: 0, in fs/btrfs/free-space-tree.c:1115
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/free-space-tree.c:1115!
+Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
+CPU: 1 UID: 0 PID: 6352 Comm: syz.3.25 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
+RIP: 0010:populate_free_space_tree+0x700/0x710 fs/btrfs/free-space-tree.c:1115
+Code: ff ff e8 d3 74 d2 fd 48 c7 c7 80 0a f0 8b 48 c7 c6 60 12 f0 8b 31 d2 48 c7 c1 e0 08 f0 8b 41 b8 5b 04 00 00 e8 81 c1 39 fd 90 <0f> 0b 66 66 66 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90
+RSP: 0018:ffffc9000430f780 EFLAGS: 00010246
+RAX: 0000000000000043 RBX: ffff88805b709630 RCX: fea61d0e2e79d000
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffffc9000430f8b0 R08: ffffc9000430f4a7 R09: 1ffff92000861e94
+R10: dffffc0000000000 R11: fffff52000861e95 R12: 0000000000000001
+R13: 1ffff92000861f00 R14: dffffc0000000000 R15: 0000000000000000
+FS:  00007f424d9fe6c0(0000) GS:ffff888125afc000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd78ad212c0 CR3: 0000000076d68000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ btrfs_rebuild_free_space_tree+0x1ba/0x6d0 fs/btrfs/free-space-tree.c:1364
+ btrfs_start_pre_rw_mount+0x128f/0x1bf0 fs/btrfs/disk-io.c:3062
+ btrfs_remount_rw fs/btrfs/super.c:1334 [inline]
+ btrfs_reconfigure+0xaed/0x2160 fs/btrfs/super.c:1559
+ reconfigure_super+0x227/0x890 fs/super.c:1076
+ do_remount fs/namespace.c:3279 [inline]
+ path_mount+0xd1a/0xfe0 fs/namespace.c:4027
+ do_mount fs/namespace.c:4048 [inline]
+ __do_sys_mount fs/namespace.c:4236 [inline]
+ __se_sys_mount+0x313/0x410 fs/namespace.c:4213
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f424e39066a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f424d9fde68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f424d9fdef0 RCX: 00007f424e39066a
+RDX: 0000200000000180 RSI: 0000200000000380 RDI: 0000000000000000
+RBP: 0000200000000180 R08: 00007f424d9fdef0 R09: 0000000000000020
+R10: 0000000000000020 R11: 0000000000000246 R12: 0000200000000380
+R13: 00007f424d9fdeb0 R14: 0000000000000000 R15: 00002000000002c0
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:populate_free_space_tree+0x700/0x710 fs/btrfs/free-space-tree.c:1115
+Code: ff ff e8 d3 74 d2 fd 48 c7 c7 80 0a f0 8b 48 c7 c6 60 12 f0 8b 31 d2 48 c7 c1 e0 08 f0 8b 41 b8 5b 04 00 00 e8 81 c1 39 fd 90 <0f> 0b 66 66 66 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90
+RSP: 0018:ffffc9000430f780 EFLAGS: 00010246
+RAX: 0000000000000043 RBX: ffff88805b709630 RCX: fea61d0e2e79d000
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffffc9000430f8b0 R08: ffffc9000430f4a7 R09: 1ffff92000861e94
+R10: dffffc0000000000 R11: fffff52000861e95 R12: 0000000000000001
+R13: 1ffff92000861f00 R14: dffffc0000000000 R15: 0000000000000000
+FS:  00007f424d9fe6c0(0000) GS:ffff888125afc000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd78ad212c0 CR3: 0000000076d68000 CR4: 00000000003526f0
 
->> +                * tracing. Otherwise we need to handle this here.
->> +                */
->> +               if (!qrecord_reserved || qrecord_inserted)
->> +                       goto free_head_ref;
->>                 goto free_record;
->>         }
->>         head_ref =3D new_head_ref;
->> @@ -1071,6 +1092,8 @@ static int add_delayed_ref(struct btrfs_trans_hand=
-le *trans,
->>
->>         if (qrecord_inserted)
->>                 return btrfs_qgroup_trace_extent_post(trans, record, gen=
-eric_ref->bytenr);
->> +
->> +       kfree(record);
->>         return 0;
->>
->>  free_record:
->> --
->> 2.51.0
->>
->>
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
------BEGIN PGP SIGNATURE-----
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-iQJiBAEBCgBMFiEEG6U8esk9yirP39qXlr6Mb9idZWUFAmjcI+AbFIAAAAAABAAO
-bWFudTIsMi41KzEuMTEsMiwyEhxtc3NvbGFAbXNzb2xhLmNvbQAKCRCWvoxv2J1l
-ZTn6EACjnrLB35GpOMa+hfXcpoo8OLq0pLSkKnXZH2jDBl5F5P2Tqo7uFIRJeusv
-n2NqdgvBEC7dXiAHiifyK+8I5OKLZVmwE3GKSp5mbvTLm29pLzjNdUIYnotXmeiI
-hTMbFd8Bz/elbVL0yVFg+hwm7Wgiac7RxHgz31ry+NKrTX3g08YU8zMaaCvKFhkN
-y15xzCa0TKsIBAR2XcQ9zNMCCD1t0HpVxxJYrhfg5rwTQQsj3ieGP5iw/5D4EQi/
-38mlAemAvGSP3gntKJ80tyhov/6mdqa5qmFAlQDh8g/R+qABRT4uKpPObXirDLjX
-0zHRT3dv8f6aVus2uCt6mme0UlxCxJYcbmrrn8NU09byHd7Yo9CNXRQWWJgy+3t9
-52fL2dmwGGmQWp7gs0SuUCGXzSZeC6w3koX6YwvpHs51uUZwMjLYdpv3qVNOXi8f
-6JizIquPoa+ih87Yld8WSnnoBfutwEZnEzJYGUCFIirUbF4LDpV6KRC+aiuRcFvq
-suRaP6GeFjKLYr3QfhO3fj1ansufDUVrgezpMhbzwfGwFQuSnrPntPHW10veImMx
-lLtCXiFIrGnaBQgmrUqxBPvdY7xXZHvDaPZpV9uzjbfdEXLAG980RqjZqHNMOfmw
-TxmSciPN9wsFGQ4TZl3hUUPjJxAJ7a6ozWdnUL9GVrL18xoFoA==
-=2ckg
------END PGP SIGNATURE-----
---=-=-=--
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
