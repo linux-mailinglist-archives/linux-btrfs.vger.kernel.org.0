@@ -1,514 +1,329 @@
-Return-Path: <linux-btrfs+bounces-17284-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17285-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C99A3BAB749
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 07:11:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97006BABF82
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 10:14:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20DB31925301
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 05:12:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F1E716B310
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 08:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6733261B9E;
-	Tue, 30 Sep 2025 05:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B652F39AB;
+	Tue, 30 Sep 2025 08:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ccvf79IK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ODGDKqH9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f66.google.com (mail-qv1-f66.google.com [209.85.219.66])
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 394F52EB10
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Sep 2025 05:11:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7757A24167A
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Sep 2025 08:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759209100; cv=none; b=rYFq4ZTQTILkWBuws/0+wqezPmwydyfQUHZOHCrFCm1j7wL81mw2SJ1fuXAOh7HihZcfQL5oeJdOhFy8G2unKCsihPIS9Tlh2jP11ZyHQzGUovM2ELcWjiFCqFCQlXy+ziiUi0OI+2My7bOPQNKekgAfz0cUAD9Fh8ULXvWaO44=
+	t=1759220038; cv=none; b=QRyntEe6YYy9P95m3fYAVLTyvaZVUa5m7QnLLFuns0M8vIvc6hf8yX8GkaZ2U+cwdbloWaJ21IjwJWx/EQuyD695ggkuaR3G3f25o9VZqQd1L34pcaswTNvYLHwtgifQVCmJaplcksS0y1PqOAm/kfHDPRyaaK8nmNm5WuHQePo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759209100; c=relaxed/simple;
-	bh=dUBZ+9UAIvJeIGvh7Wi9G8OkPGpxtAF479+uK64POvc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qsFtz+MBed+4MQHnS35xgIonfLjd24HjKuOI/1vddz0QsR8CJ4VOI8Ddm4qeOLB8Unn91rR+rLgIn5TkHkv1CphRlc5/ozVE08TranltTrl2r+eSUPMIwUgHkwKpOskzUZ3gTUf6SgMpoE6P1ZHe0loYWpg4oIVa8827ovBy3u8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ccvf79IK; arc=none smtp.client-ip=209.85.219.66
+	s=arc-20240116; t=1759220038; c=relaxed/simple;
+	bh=ZNNpIFKqHDCLqZoPMLC4QE6268gi0mKVBcLT1UykzoM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=HTFdOkYrGizALW5vWgPbgqFIZ+pEGNVHK6EogGBzRMJTX+wP5Q/LRUxfPKfiEdLs7om8pNpxY3FUuXdcPAxOeYlTTOUOC6DmyFgsni4NMDolkIDj23ndZV4xw6W6IjaLCA4m5joTIuOn3HpxUTxtKggAxKQUzNeuxm+s/HMFed8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ODGDKqH9; arc=none smtp.client-ip=209.85.167.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f66.google.com with SMTP id 6a1803df08f44-7d67341add6so829556d6.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 22:11:37 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-57f0aa38aadso4148222e87.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Sep 2025 01:13:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759209097; x=1759813897; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=o6j6GODYJOF2tyw1rETRwdJY17w+uymGZwz+n8aE3ko=;
-        b=Ccvf79IKJfTD80BuiC13BbAPWh5vq8RhNlOkQMTLGB2Yyck3azzrOW+WmPWCAmD+jA
-         6bh9ylBOIBcNObCm4smwgj7ObCKcaJLCUiDKkJK9XLb35jnJ7zJwAN5aj75sXesHzwNT
-         9mSundlbM+3AkYzqYcYZgXRFc/UfUmDoxCK0rYUARl4ndTgfQmTt2idva9oJsaffJM5C
-         9H+iQSqTKBBz0ooluc+XUirmDUvpHmveaC/U8CggNvdkaUgF7Zi+f2NCvugbOtlc+VYZ
-         ckJRImjmhfEFFKtiutxZW2a0mTwYR5bzclp2+QmHITogZrIBTUHibdafp5KpmcnTdLuX
-         ElZQ==
+        d=gmail.com; s=20230601; t=1759220035; x=1759824835; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=h1w6aiajec0GVQWSiV8ufA0pK5ZRySA+re18pWexqBM=;
+        b=ODGDKqH9AWjwkJbn1XDfRbSROj+IBVIwTKLbuD15iWBqbpwNQKiH0X/JBQkEEots9I
+         ZSs314IPu1hwq2P0EKMvAncdUiYREKqohby5TcGTzdHjvnTdGZguF42ZDThLuD8mijWb
+         I68hX4xOuzSrPeVh72clRQiONaEa3rKtYXGLq168AugmbqBsd5olwThkxyMuxWhnj9Uc
+         SzUyj5Ay0mKij7Reo7sMXjrXOTm6J2bOy0O7Oj0/8nX+wdx3JNwTGeaWW8x32XtzxEmb
+         lfXtFEqHRMvlVz2TBnGzXRUh6WMOGQmF4HlaQrJafxAMIhxVQHWU9ecJQB2fdTQxMu2e
+         x1Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759209097; x=1759813897;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o6j6GODYJOF2tyw1rETRwdJY17w+uymGZwz+n8aE3ko=;
-        b=fkJqgee3vUIGEI57xJpBSczNf1liwiCRsG58Q3fXD+wP83kv1w7m/xSVNDmOIvXSZs
-         CU3XmWbsRjK2pOOqCnNg0zcNNSha0uAGIzVY6XNE9LUeSd+3eSdadiDmhhGJK6Z244UZ
-         j5umGtSEXu3u49cF6yAkUGTb/XYhrQABbXUdiqhsQIkRlvmhwSiEcxAseswo1puOzkau
-         81YnvBOj2DIVBIgnYLMIaZqXlbpe2lXbDXtxCaZCJLMP5/UFKDEyI3H0wk5mh1YePq9d
-         M7o2LGju9UTJTn3G9C0gtkVTjNOOr7B31RbXFZxU26Il0r3PoxOECl1pA9/9FAZIthPD
-         0EXw==
-X-Gm-Message-State: AOJu0YwBVp8QriUaCm8F2iRFZ89bLAgWzwjsrmVAPqhZb4RccQAp97kv
-	aWgoQqUEMRLh/tBPECPvH44jIKsNbgjLV5IpZ01DxcfpCSQkENKCeOsCOzqQal7f3o29zg==
-X-Gm-Gg: ASbGnctA2QTlYAL7rlcIaVyrz5T0B3vl9Su7uJ+GcAxQOpjxemZj55mIT74Yml9M5Qt
-	6BFGT5Kc5Qs6otEi5TUm3s9F5BULcq1rnxeyXljitfTtwI37133JJCMVHX43NUBiejWM5KtYEh7
-	LSNOz5WBJo0thwhRWsvXjII77C1ukDWBsLijBDzYvxZFuHQ9fVROIZxuRu6IyX/M0ktlgJ87kfx
-	5du0zez8Lz2WEnljruZw0fzAPiTiDvMxB/p1aowhSICsq0QQaU7du9UpQec8ICCoaISleAzFlG5
-	ZLPBRazbMKg4Eh64u39CkpLPZPQ3vjrKR5f6d/e5AuXWbS/goIDJsWAQxoU2zCSTiBpmshD2Tym
-	9XQdoi6/3TwwxW4HmET9+BaS002Cm8fidGwrdIdQw1IVh+pQesluA
-X-Google-Smtp-Source: AGHT+IG+OlExkk47Si+dIkhQKweO6ZpafVI6eGQsSA+Cd8WOYT/uCO7bVVShsL+VKygC4aXCrttvuA==
-X-Received: by 2002:a05:6214:528d:b0:815:e14a:1f44 with SMTP id 6a1803df08f44-815e14a1f99mr145514706d6.0.1759209096763;
-        Mon, 29 Sep 2025 22:11:36 -0700 (PDT)
-Received: from SaltyKitkat ([154.3.38.40])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-80142f5d6d1sm87946026d6.33.2025.09.29.22.11.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Sep 2025 22:11:36 -0700 (PDT)
-From: Sun YangKai <sunk67188@gmail.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Sun YangKai <sunk67188@gmail.com>
-Subject: [PATCH] btrfs: more trivial BTRFS_PATH_AUTO_FREE conversions
-Date: Tue, 30 Sep 2025 13:09:07 +0800
-Message-ID: <20250930050918.31029-2-sunk67188@gmail.com>
-X-Mailer: git-send-email 2.51.0
+        d=1e100.net; s=20230601; t=1759220035; x=1759824835;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h1w6aiajec0GVQWSiV8ufA0pK5ZRySA+re18pWexqBM=;
+        b=vzLK4v3TNTqzfy0AZ1US4rBjU8qNccQg5ObeNP3wW4fIilhy/Ov75N4xw8/vxH5g2i
+         W9hPS3ft+wy2pTrbGSMMoW1SewdLHYOdX77Rkp4YUtiKk6FeJSpeKuryvYf7Qx6h1NVE
+         bpb/GWcc2c1ryEaMNm6r9XCyz0zcPtsxsjo/ehBnLnme7evi7GxQKwBGYz3ecJDFiWF/
+         MFiSzLL09O7CwhgOSQNfH1noyBaHyt/EOLF5MFbFYI9Fak36nsrtz0SeNeDEfBMLpaZr
+         k+5ZrFGxWGHe5HnT7VcOFtpXT92Tsk14G9Ldub/ySZb/lvjJl3T89zNIRNoq7r7YNPIJ
+         khXA==
+X-Forwarded-Encrypted: i=1; AJvYcCVbjqxt8ZhrcZ55rtldMmh3Z9hYIB5kSy6rtYPdPtEjFocxPzu+sWlI/EDpvhx/dXZ1mrfgoRmjPDQk8Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxHQuggHBja/ecJ2N8e9F/0jtqLLqNvGLlnL6MX/MqrmbNbMbCN
+	grsM9Nl6GT9VX+xpx202B+wDFqhmD2CZK1JCZfasF1OCI+a2wo5BEAGk
+X-Gm-Gg: ASbGncuYeoJkbVlW/H3LNRb1jZuGdO7OkTxUqF97E3VCYI5WFY821Cb4gzcDO/Xho3Q
+	kcvNTKQJSmy7Y73wyRA4RUD/vxiAwWDgzSutmhb+0NsgUwmZiTp5/e3dgPBDMpXYdC9QbWAsBsv
+	tzr4gyo98WEcWvLBI8+fwhK/h2aFx+1m+FhVEJgz3dAbR7EqJaDHDDlApWArDGWalGLNherADAP
+	9GG4WMt76ZyEB20aLZ9GXrnT2IWViWt/k6TeV8y1vo2UlBfLuEI+cdNlv+v6zeR1GNUG1olJdEY
+	R17s/iFkhvCtfpoYdn815p3pKHQ5MsAcc0Mwjv6ohZI5Mdxe+yw998o7nFoUp7ZhWi+0ogXHigm
+	cV5fHJMGuqg6yx3xzVnH78WhEdQ19KXvGz6wjvpuqkaXJkz02APSR0UgQsjTVJYHiVXIF+FNMIB
+	kYj2uZUewlIyj9BrJkAKSAHwzJRnISRN09TSlDO5apvYK0O4uV
+X-Google-Smtp-Source: AGHT+IGzX2CoYJT7nEm4ovRDNSuvKzVHjwTnhGDPdO0Rs32PINo6GDYEVx7z/+nbP/2iRAUhsVteDQ==
+X-Received: by 2002:a05:6512:61a8:b0:57a:8bb8:2a25 with SMTP id 2adb3069b0e04-582d2f2494bmr5143367e87.26.1759220034156;
+        Tue, 30 Sep 2025 01:13:54 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:499:7600::192? (2001-14ba-499-7600--192.rev.dnainternet.fi. [2001:14ba:499:7600::192])
+        by smtp.googlemail.com with ESMTPSA id 2adb3069b0e04-5883f066d4asm1223750e87.96.2025.09.30.01.13.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Sep 2025 01:13:53 -0700 (PDT)
+Message-ID: <9761713e-8733-48a8-b636-af15529064dd@gmail.com>
+Date: Tue, 30 Sep 2025 11:13:52 +0300
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: How to remove an unremovable file and directory?
+To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <33570321-604e-4830-843a-4ed839dfbe83@gmail.com>
+ <e7aefcaf-ecb5-492d-9ced-a9b846813bd6@suse.com>
+From: =?UTF-8?Q?Henri_Hyyryl=C3=A4inen?= <henri.hyyrylainen@gmail.com>
+Content-Language: en-US
+In-Reply-To: <e7aefcaf-ecb5-492d-9ced-a9b846813bd6@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Trivial pattern for the auto freeing without goto -> return conversions.
-No other function cleanup.
+Thank you for the reply.
 
-Tested with btrfs/auto group.
+> The fs is corrupted, thus none of those will help.
+> I'm more interested in how the corruption happened.
+>
+> Did you use some tools other than btrfs kernel module and btrfs-progs?
+> Like ntfs2btrfs or winbtrfs?
+>
+> IIRC certain versions have some bugs related to extent tree, but 
+> should not cause this problem. 
 
-Signed-off-by: Sun YangKai <sunk67188@gmail.com>
----
- fs/btrfs/uuid-tree.c | 12 ++++--------
- fs/btrfs/verity.c    |  9 +++------
- fs/btrfs/volumes.c   | 44 ++++++++++++++------------------------------
- fs/btrfs/xattr.c     |  7 ++-----
- 4 files changed, 23 insertions(+), 49 deletions(-)
+I did not use those tools. I only have Fedora 42 installed on this computer.
 
-diff --git a/fs/btrfs/uuid-tree.c b/fs/btrfs/uuid-tree.c
-index 17b5e81123a1..30e5d80adda9 100644
---- a/fs/btrfs/uuid-tree.c
-+++ b/fs/btrfs/uuid-tree.c
-@@ -27,7 +27,7 @@ static int btrfs_uuid_tree_lookup(struct btrfs_root *uuid_root, const u8 *uuid,
- 				  u8 type, u64 subid)
- {
- 	int ret;
--	struct btrfs_path *path = NULL;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct extent_buffer *eb;
- 	int slot;
- 	u32 item_size;
-@@ -79,7 +79,6 @@ static int btrfs_uuid_tree_lookup(struct btrfs_root *uuid_root, const u8 *uuid,
- 	}
- 
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -89,7 +88,7 @@ int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, const u8 *uuid, u8 typ
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_root *uuid_root = fs_info->uuid_root;
- 	int ret;
--	struct btrfs_path *path = NULL;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_key key;
- 	struct extent_buffer *eb;
- 	int slot;
-@@ -141,7 +140,6 @@ int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, const u8 *uuid, u8 typ
- 	subid_le = cpu_to_le64(subid_cpu);
- 	write_extent_buffer(eb, &subid_le, offset, sizeof(subid_le));
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -151,7 +149,7 @@ int btrfs_uuid_tree_remove(struct btrfs_trans_handle *trans, const u8 *uuid, u8
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_root *uuid_root = fs_info->uuid_root;
- 	int ret;
--	struct btrfs_path *path = NULL;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_key key;
- 	struct extent_buffer *eb;
- 	int slot;
-@@ -223,7 +221,6 @@ int btrfs_uuid_tree_remove(struct btrfs_trans_handle *trans, const u8 *uuid, u8
- 	btrfs_truncate_item(trans, path, item_size - sizeof(subid), 1);
- 
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -293,7 +290,7 @@ int btrfs_uuid_tree_iterate(struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_root *root = fs_info->uuid_root;
- 	struct btrfs_key key;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	int ret = 0;
- 	struct extent_buffer *leaf;
- 	int slot;
-@@ -387,7 +384,6 @@ int btrfs_uuid_tree_iterate(struct btrfs_fs_info *fs_info)
- 	}
- 
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
-index 4633cbcfcdb9..b1903030faf4 100644
---- a/fs/btrfs/verity.c
-+++ b/fs/btrfs/verity.c
-@@ -109,7 +109,7 @@ static int drop_verity_items(struct btrfs_inode *inode, u8 key_type)
- {
- 	struct btrfs_trans_handle *trans;
- 	struct btrfs_root *root = inode->root;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_key key;
- 	int count = 0;
- 	int ret;
-@@ -170,7 +170,6 @@ static int drop_verity_items(struct btrfs_inode *inode, u8 key_type)
- 	ret = count;
- 	btrfs_end_transaction(trans);
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -217,7 +216,7 @@ static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
- 			   const char *src, u64 len)
- {
- 	struct btrfs_trans_handle *trans;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_root *root = inode->root;
- 	struct extent_buffer *leaf;
- 	struct btrfs_key key;
-@@ -267,7 +266,6 @@ static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
- 		btrfs_end_transaction(trans);
- 	}
- 
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -296,7 +294,7 @@ static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
- static int read_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
- 			  char *dest, u64 len, struct folio *dest_folio)
- {
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_root *root = inode->root;
- 	struct extent_buffer *leaf;
- 	struct btrfs_key key;
-@@ -404,7 +402,6 @@ static int read_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
- 		}
- 	}
- out:
--	btrfs_free_path(path);
- 	if (!ret)
- 		ret = copied;
- 	return ret;
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index c6e3efd6f602..18d28789f52e 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1681,7 +1681,7 @@ static int find_free_dev_extent(struct btrfs_device *device, u64 num_bytes,
- 	struct btrfs_root *root = fs_info->dev_root;
- 	struct btrfs_key key;
- 	struct btrfs_dev_extent *dev_extent;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	u64 search_start;
- 	u64 hole_size;
- 	u64 max_hole_start;
-@@ -1812,7 +1812,6 @@ static int find_free_dev_extent(struct btrfs_device *device, u64 num_bytes,
- 	       "max_hole_start=%llu max_hole_size=%llu search_end=%llu",
- 	       max_hole_start, max_hole_size, search_end);
- out:
--	btrfs_free_path(path);
- 	*start = max_hole_start;
- 	if (len)
- 		*len = max_hole_size;
-@@ -1826,7 +1825,7 @@ static int btrfs_free_dev_extent(struct btrfs_trans_handle *trans,
- 	struct btrfs_fs_info *fs_info = device->fs_info;
- 	struct btrfs_root *root = fs_info->dev_root;
- 	int ret;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_key key;
- 	struct btrfs_key found_key;
- 	struct extent_buffer *leaf = NULL;
-@@ -1869,7 +1868,6 @@ static int btrfs_free_dev_extent(struct btrfs_trans_handle *trans,
- 	if (ret == 0)
- 		set_bit(BTRFS_TRANS_HAVE_FREE_BGS, &trans->transaction->flags);
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -1897,7 +1895,7 @@ static noinline int find_next_devid(struct btrfs_fs_info *fs_info,
- 	int ret;
- 	struct btrfs_key key;
- 	struct btrfs_key found_key;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 
- 	path = btrfs_alloc_path();
- 	if (!path)
-@@ -1930,7 +1928,6 @@ static noinline int find_next_devid(struct btrfs_fs_info *fs_info,
- 	}
- 	ret = 0;
- error:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -1942,7 +1939,7 @@ static int btrfs_add_dev_item(struct btrfs_trans_handle *trans,
- 			    struct btrfs_device *device)
- {
- 	int ret;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_dev_item *dev_item;
- 	struct extent_buffer *leaf;
- 	struct btrfs_key key;
-@@ -1989,7 +1986,6 @@ static int btrfs_add_dev_item(struct btrfs_trans_handle *trans,
- 
- 	ret = 0;
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -2017,7 +2013,7 @@ static int btrfs_rm_dev_item(struct btrfs_trans_handle *trans,
- {
- 	struct btrfs_root *root = device->fs_info->chunk_root;
- 	int ret;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_key key;
- 
- 	path = btrfs_alloc_path();
-@@ -2039,7 +2035,6 @@ static int btrfs_rm_dev_item(struct btrfs_trans_handle *trans,
- 
- 	ret = btrfs_del_item(trans, root, path);
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -2626,7 +2621,7 @@ static int btrfs_finish_sprout(struct btrfs_trans_handle *trans)
- 	BTRFS_DEV_LOOKUP_ARGS(args);
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_root *root = fs_info->chunk_root;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct extent_buffer *leaf;
- 	struct btrfs_dev_item *dev_item;
- 	struct btrfs_device *device;
-@@ -2690,7 +2685,6 @@ static int btrfs_finish_sprout(struct btrfs_trans_handle *trans)
- 	}
- 	ret = 0;
- error:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -2946,7 +2940,7 @@ static noinline int btrfs_update_device(struct btrfs_trans_handle *trans,
- 					struct btrfs_device *device)
- {
- 	int ret;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_root *root = device->fs_info->chunk_root;
- 	struct btrfs_dev_item *dev_item;
- 	struct extent_buffer *leaf;
-@@ -2982,7 +2976,6 @@ static noinline int btrfs_update_device(struct btrfs_trans_handle *trans,
- 	btrfs_set_device_bytes_used(leaf, dev_item,
- 				    btrfs_device_get_bytes_used(device));
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -3035,7 +3028,7 @@ static int btrfs_free_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_root *root = fs_info->chunk_root;
- 	int ret;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_key key;
- 
- 	path = btrfs_alloc_path();
-@@ -3064,7 +3057,6 @@ static int btrfs_free_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
- 		goto out;
- 	}
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -3501,7 +3493,7 @@ int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset,
- static int btrfs_relocate_sys_chunks(struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_root *chunk_root = fs_info->chunk_root;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct extent_buffer *leaf;
- 	struct btrfs_chunk *chunk;
- 	struct btrfs_key key;
-@@ -3580,7 +3572,6 @@ static int btrfs_relocate_sys_chunks(struct btrfs_fs_info *fs_info)
- 		ret = -ENOSPC;
- 	}
- error:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -4709,7 +4700,7 @@ int btrfs_recover_balance(struct btrfs_fs_info *fs_info)
- 	struct btrfs_balance_control *bctl;
- 	struct btrfs_balance_item *item;
- 	struct btrfs_disk_balance_args disk_bargs;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct extent_buffer *leaf;
- 	struct btrfs_key key;
- 	int ret;
-@@ -4772,7 +4763,6 @@ int btrfs_recover_balance(struct btrfs_fs_info *fs_info)
- 	spin_unlock(&fs_info->balance_lock);
- 	mutex_unlock(&fs_info->balance_mutex);
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -7455,7 +7445,7 @@ static void readahead_tree_node_children(struct extent_buffer *node)
- int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_root *root = fs_info->chunk_root;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct extent_buffer *leaf;
- 	struct btrfs_key key;
- 	struct btrfs_key found_key;
-@@ -7572,8 +7562,6 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
- 	ret = 0;
- error:
- 	mutex_unlock(&uuid_mutex);
--
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -7673,7 +7661,7 @@ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices, *seed_devs;
- 	struct btrfs_device *device;
--	struct btrfs_path *path = NULL;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	int ret = 0;
- 
- 	path = btrfs_alloc_path();
-@@ -7695,8 +7683,6 @@ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
- 	}
- out:
- 	mutex_unlock(&fs_devices->device_list_mutex);
--
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -7705,7 +7691,7 @@ static int update_dev_stat_item(struct btrfs_trans_handle *trans,
- {
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_root *dev_root = fs_info->dev_root;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_key key;
- 	struct extent_buffer *eb;
- 	struct btrfs_dev_stats_item *ptr;
-@@ -7759,7 +7745,6 @@ static int update_dev_stat_item(struct btrfs_trans_handle *trans,
- 		btrfs_set_dev_stats_value(eb, ptr, i,
- 					  btrfs_dev_stat_read(device, i));
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -8051,7 +8036,7 @@ static int verify_chunk_dev_extent_mapping(struct btrfs_fs_info *fs_info)
-  */
- int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info)
- {
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_root *root = fs_info->dev_root;
- 	struct btrfs_key key;
- 	u64 prev_devid = 0;
-@@ -8141,7 +8126,6 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info)
- 	/* Ensure all chunks have corresponding dev extents */
- 	ret = verify_chunk_dev_extent_mapping(fs_info);
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
-index 79fb1614bd0c..7fec70dfe06b 100644
---- a/fs/btrfs/xattr.c
-+++ b/fs/btrfs/xattr.c
-@@ -29,7 +29,7 @@ int btrfs_getxattr(const struct inode *inode, const char *name,
- {
- 	struct btrfs_dir_item *di;
- 	struct btrfs_root *root = BTRFS_I(inode)->root;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	struct extent_buffer *leaf;
- 	int ret = 0;
- 	unsigned long data_ptr;
-@@ -76,7 +76,6 @@ int btrfs_getxattr(const struct inode *inode, const char *name,
- 	ret = btrfs_dir_data_len(leaf, di);
- 
- out:
--	btrfs_free_path(path);
- 	return ret;
- }
- 
-@@ -278,7 +277,7 @@ ssize_t btrfs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 	struct btrfs_key key;
- 	struct inode *inode = d_inode(dentry);
- 	struct btrfs_root *root = BTRFS_I(inode)->root;
--	struct btrfs_path *path;
-+	BTRFS_PATH_AUTO_FREE(path);
- 	int iter_ret = 0;
- 	int ret = 0;
- 	size_t total_size = 0, size_left = size;
-@@ -354,8 +353,6 @@ ssize_t btrfs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 	else
- 		ret = total_size;
- 
--	btrfs_free_path(path);
--
- 	return ret;
- }
- 
--- 
-2.51.0
+> The other possibility is hardware memory bitflip, which is more common 
+> than you thought (almostly one report per month)
+>
+> In that case, a full memtest is always recommended, or you will hit 
+> all kinds of weird corruptions in the future anyway. 
 
+Yes, that seems the most likely explanation. I switched my motherboard, 
+RAM, and CPU a few weeks ago, and when building a new setup out of  the 
+old components and 3 different drives (including one brand new NVME SSD) 
+I noticed that each time I ran a btrfs scrub on any of those I got a 
+bunch of csum errors. I initially thought that maybe the drives or 
+something were faulty, but when I ran memtest it discovered very quickly 
+a faulty single RAM stick. That RAM had been in my main system in a 
+faulty state for months probably at least. The different computer I 
+built from the old parts immediately stopped failing scrubs when I 
+removed the faulty RAM stick.
+
+So yeah, I think the corruption would have been caused by that RAM 
+stick. I have now completely different RAM in my system and I've run the 
+same memtest multiple times and it has not found any problem, so I think 
+I have now fully good RAM and won't have the same corruption issue again.
+
+One potentially relevant detail is that I replaced one of my disks just 
+before I discovered the corruption with a bigger hard drive (at this 
+point I had already swapped my RAM so there shouldn't be memory 
+corruption problems during the replace). I started a btrfs replace 
+operation, but I had a scrub running which was then canceled. That 
+cancel for some reason also canceled the replace operation. When I 
+noticed that I then restarted the replace and then let it run to 
+completion (though I think the replace got canceled twice as I didn't 
+realize after the first one what canceled it, so I needed to restart the 
+replace multiple times). After completing the replace command without an 
+error message I shut down my computer and removed the replaced drive. 
+Upon booting my filesystem could not mount without the degraded flag. 
+Somehow the replace had copied the right amount of data to the new 
+drive, but for some reason the old drive was still marked as used. I had 
+to then do a btrfs remove on that device which took a really long time 
+but eventually succeeded as it seemingly had to rebuild the missing 
+drive from raid data (even though all of the necessary data should have 
+been copied already). So it seems like the btrfs replace operation 
+doesn't fully work correctly if it is interrupted.
+
+That could be a relevant detail, but as my filesystem only had one 
+corrupt folder I somewhat doubt that as I would expect a lot more things 
+to have gone wrong if the replace messed up the data. So to me that 
+seems only like a minor bug in the replace operation, but one that did 
+not cause this corruption.
+
+> With a full memtest proving the memory hardware is fine, then "btrfs 
+> check --repair" should be able to fix it. 
+
+Yes, my RAM should be totally fine now.
+
+Thanks, I will try running that repair tonight, and hoping everything is 
+then fine.
+
+
+- Henri Hyyryläinen
+
+Qu Wenruo kirjoitti 30.9.2025 klo 0.52:
+>
+>
+> 在 2025/9/30 02:41, Henri Hyyryläinen 写道:
+>> Hello,
+>>
+>> I hope this is the right place to ask about a filesystem problem. 
+>> Really shortly put, I have a file that both exists and doesn't and 
+>> prevents the containing directory from being deleted. No matter what 
+>> variant of rm and inode based deletion I try I get an error about the 
+>> file not existing, and I also cannot try to read the file, but if I 
+>> try to delete the directory I get an error that it is not empty (so 
+>> the file kind of exists). Trying to ls the directory also gives a 
+>> file doesn't exist error.
+>>
+>> Here's what btrfs check found, which I hope does better in 
+>> illustrating the problem:
+>>
+>>> root 5 inode 25953213 errors 200, dir isize wrong
+>>> root 5 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>
+>> I've tried everything I've found suggested including a full scrub, 
+>> balance with -dusage=75 -musage=75, resetting file attributes, 
+>> deleting through the find command, and even some repair mount flags 
+>> that don't seem to exist for btrfs.
+>
+> The fs is corrupted, thus none of those will help.
+> I'm more interested in how the corruption happened.
+>
+> Did you use some tools other than btrfs kernel module and btrfs-progs?
+> Like ntfs2btrfs or winbtrfs?
+>
+> IIRC certain versions have some bugs related to extent tree, but 
+> should not cause this problem.
+>
+>
+> The other possibility is hardware memory bitflip, which is more common 
+> than you thought (almostly one report per month)
+>
+> In that case, a full memtest is always recommended, or you will hit 
+> all kinds of weird corruptions in the future anyway.
+>
+>
+> With a full memtest proving the memory hardware is fine, then "btrfs 
+> check --repair" should be able to fix it.
+>
+> Thanks,
+> Qu
+>
+>
+>> What I haven't tried is a full rebalance with no filters, but I did 
+>> not try that yet as it would take quite a long time and if it only 
+>> moves data blocks around without recomputing directory items, it 
+>> doesn't seem like the right tool to fix my problem. So I'm pretty 
+>> much stuck and to me it seems like my only option is to run btrfs 
+>> check with the repair flag, but as that has big warnings on it I 
+>> thought I would try asking here first (sorry if this is not the right 
+>> experts group to ask). So is there still something I can try or am I 
+>> finally "allowed" to use the repair command? Here's the full output I 
+>> got from btrfs check:
+>>
+>>> Opening filesystem to check...
+>>> Checking filesystem on /dev/sdc
+>>> UUID: 2b4ad16d-e456-4adf-960b-dca43560b98b
+>>> [1/8] checking log skipped (none written)
+>>> [2/8] checking root items
+>>> [3/8] checking extents
+>>> [4/8] checking free space tree
+>>> We have a space info key for a block group that doesn't exist
+>>> [5/8] checking fs roots
+>>> root 5 inode 25953213 errors 200, dir isize wrong
+>>> root 5 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> root 14428 inode 25953213 errors 200, dir isize wrong
+>>> root 14428 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> root 14451 inode 25953213 errors 200, dir isize wrong
+>>> root 14451 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> root 14475 inode 25953213 errors 200, dir isize wrong
+>>> root 14475 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> root 14499 inode 25953213 errors 200, dir isize wrong
+>>> root 14499 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> root 14523 inode 25953213 errors 200, dir isize wrong
+>>> root 14523 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> root 14544 inode 25953213 errors 200, dir isize wrong
+>>> root 14544 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> root 14545 inode 25953213 errors 200, dir isize wrong
+>>> root 14545 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> root 14546 inode 25953213 errors 200, dir isize wrong
+>>> root 14546 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> root 14547 inode 25953213 errors 200, dir isize wrong
+>>> root 14547 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> root 14548 inode 25953213 errors 200, dir isize wrong
+>>> root 14548 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> root 14549 inode 25953213 errors 200, dir isize wrong
+>>> root 14549 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> root 14550 inode 25953213 errors 200, dir isize wrong
+>>> root 14550 inode 27166085 errors 2000, link count wrong
+>>>         unresolved ref dir 25953213 index 7 namelen 33 name 
+>>> Microsoft.AspNetCore.Metadata.dll filetype 1 errors 1, no dir item
+>>> ERROR: errors found in fs roots
+>>> found 49400296812544 bytes used, error(s) found
+>>> total csum bytes: 48179330432
+>>> total tree bytes: 65067483136
+>>> total fs tree bytes: 12107431936
+>>> total extent tree bytes: 3194437632
+>>> btree space waste bytes: 4558984171
+>>> file data blocks allocated: 76487982252032
+>>>  referenced 60030799097856
+>>
+>> So hopefully if I'm reading things right, running a repair would 
+>> delete just that one file and directory (which itself is a backup so 
+>> I will not miss that file at all)?
+>>
+>> I do not have enough disk space to copy off the entire filesystem and 
+>> rebuild from scratch, without doing something like rebalancing all 
+>> data from raid10 to single and then removing half the disks, but I 
+>> assume that would take at least 4 weeks to process (as I just 
+>> replaced a disk which took like a week).
+>>
+>> As to what originally caused the corruption, I think it was probably 
+>> faulty RAM, because up to to like 3 weeks ago I had one really bad 
+>> RAM stick in my computer where a certain memory region always had 
+>> incorrectly reading bytes. I had seen intermittent quite high csum 
+>> errors in monthly scrubs pretty randomly, which thankfully could 
+>> almost always be corrected so I didn't have any major problems even 
+>> though I had like totally broken RAM in my computer for who knows how 
+>> long. So btrfs was able to protect my data quite impressively from 
+>> bad RAM.
+>>
+>> Sorry for getting a bit sidetracked there, but what should I do in 
+>> this situation?
+>>
+>> - Henri Hyyryläinen
+>>
+>>
+>
 
