@@ -1,172 +1,206 @@
-Return-Path: <linux-btrfs+bounces-17282-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17283-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8D93BAAEFC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 03:59:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37825BAB2A0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 05:48:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6012818874F7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 01:59:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14E087A1268
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Sep 2025 03:46:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F688201032;
-	Tue, 30 Sep 2025 01:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4711E1D88B4;
+	Tue, 30 Sep 2025 03:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Np6/YvNe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MJ7w9lds"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC579198E91;
-	Tue, 30 Sep 2025 01:58:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27198F54
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Sep 2025 03:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759197526; cv=none; b=bqnYjhfHEd0b6btnQHvKwcgtRzMHINXsUZp3Wyz//VBI0o0D84e7NdYrkvqEHhm5FAl6qLFAzhpNKrurYgOzboPTbrMmD7Ora5t0PHseGbjTMu0/WmgQQPqGlLIlVMT4q1+dEv6LqXC6b1qknzEK2IsmYjCFTnyHmLW9UMz9o5k=
+	t=1759204072; cv=none; b=NCwPsoHEAt1yIFw9CLNMh70nSVHPthJvGFwR+wJ6/7EePbwXOcFKV/6olXfVgZ9HWr0se693eMEP4+xqKqbaDtBMdzbMhnhHRoHtZG8jVlxFQJmGWxWB4i74yvpbEjM5tSsWBP5skrXjfZaoaemYByNRX05K9G9VCUPRCWGAWsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759197526; c=relaxed/simple;
-	bh=tB20YtoaQNm1TRsLJW3oQQhC60mlpvbrxY7xlXH5rUU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r0xOX5tcOpEpxfmkTuu7kHxsQI9m4CwkczY0ioIQOQ9tfT+CngtEfl1gQpxiEtOQXxGBa/HSfG4h84eJQkcSn9wJVM7OXQrBTt/DX9L4Hmh8YygF5c6LEVI4cN2F4RvMHs1OhrYQOxsoufve4hmeiJ9Jof6f4rIEtu3ij7j/cjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Np6/YvNe; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1759197525; x=1790733525;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tB20YtoaQNm1TRsLJW3oQQhC60mlpvbrxY7xlXH5rUU=;
-  b=Np6/YvNeJWnyYLLEBboMY+4eRiINgUYy4IvRU9RBE0LRolH5fl3GiNdY
-   7PVqeBRE1G3e0BX64shv5/9XlravVuTlpdUyE//vVabQ1OhfzEEueXPor
-   9E41LlMcmQxOL+Z5iYopFEnMyeiyxlkfx7Zrih8CzUKZdDHLBIEseU2tZ
-   e+q/nWXMjN7kxjIevB4JJ30QT+EWxSfCM5PU6Rm30xI4TtTKGKNcG9BXb
-   bNol9Mc4ftc6/6436b82GfsRRZ/Nzc5znFaz+RrKRA7BBSQaIlAGY2NmE
-   6WFwAARnRnbi2ESembHJYIAfkTdDgAWCidVmqmjDMRk6wScX+nIHVKNgP
-   w==;
-X-CSE-ConnectionGUID: 8Dd5lULFSqSyXoAMpjtTwA==
-X-CSE-MsgGUID: 7NdW80GpTRel8Pqs3yBeXQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="61489964"
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
-   d="scan'208";a="61489964"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2025 18:58:44 -0700
-X-CSE-ConnectionGUID: uCXbLUXmRxehKCeiFvuH/A==
-X-CSE-MsgGUID: vc2P2cxGS5ujUsnH2zHRzg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,303,1751266800"; 
-   d="scan'208";a="178188959"
-Received: from lkp-server01.sh.intel.com (HELO 2f2a1232a4e4) ([10.239.97.150])
-  by orviesa007.jf.intel.com with ESMTP; 29 Sep 2025 18:58:40 -0700
-Received: from kbuild by 2f2a1232a4e4 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1v3PdV-0000p5-1R;
-	Tue, 30 Sep 2025 01:58:37 +0000
-Date: Tue, 30 Sep 2025 09:57:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Julian Sun <sunjunchao@bytedance.com>, linux-fsdevel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-	ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, clm@fb.com, dsterba@suse.com,
-	xiubli@redhat.com, idryomov@gmail.com, tytso@mit.edu,
-	adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
-	willy@infradead.org, jack@suse.cz, brauner@kernel.org,
-	agruenba@redhat.com
-Subject: Re: [PATCH v2] fs: Make wbc_to_tag() inline and use it in fs.
-Message-ID: <202509300940.yjAtss49-lkp@intel.com>
-References: <20250929111349.448324-1-sunjunchao@bytedance.com>
+	s=arc-20240116; t=1759204072; c=relaxed/simple;
+	bh=zsDi7uslgFZ3sSKUmMd091B+OdYeBJygmTOMeEND5oA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fB11H5DAwiTLMtPepjRa8PZzT0fD25WgJC1wox8FWLFaa5+MIAqisDOJyUj6emEoZEXJu6v/Cj0bqkqQhwOjWyzO+g9y/sDRQ7P/XFKZTVB8CVUbtyOL2nuswz/NhegDwFRl6lDQA+b0Bv7KoCZvLOUCAR/W9X4+9SxWklK5yvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MJ7w9lds; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4e0302e2b69so16074261cf.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Sep 2025 20:47:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759204070; x=1759808870; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=le1M6VkoM8maBhpGpaBfI2kaslb6T3gdHrKqeP+njDI=;
+        b=MJ7w9ldsgY9itc817U9s0ggvgc2HrTlrq8GTF+/Jzx4ljTTpIaBAPlFAM61nPVhnya
+         58UtEA5CewRtVuv40sAl0i0mM10UPJetVlZMHipX3+k2RFDmtbyfT3E2IFJvT/TNXS+O
+         RaqKCR/1qha9UmiaNgbWE8A2p3RwN8Gimk9x97Y53219SvCOma5JMbIb2hUlqzYH+3Ep
+         WXYkbeCrJtS/69mdne7LwiPwS9ALBJ19SIdZ0g6BdD4t3rieOSA6A5JsZCh5/H5UhKU3
+         /I8IixrvZd3C0+q+IljmlrvR+V49u+LDFl/AtQdq6NDdDHg2y0CAGlc/m0zxwjC/aWQF
+         +7aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759204070; x=1759808870;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=le1M6VkoM8maBhpGpaBfI2kaslb6T3gdHrKqeP+njDI=;
+        b=ZnyhahERPjccTBn9VC4nAnY62IeKlJ8YQKPKTRWzO63bi2iIJbKv5MzSBPM1S4VWS+
+         tXK2qRqHfoVEa7j9WYtmN9oCnmtvBnyFBjJ5WZVI/tBCc/cTSu3XWfpBlNisHUzsGXcd
+         bXepRMH6LHWQ0QQfqkMbe1nEl1T3Ruc+YPlH2IE9RjAK8/yw9S8u4cQCaX2TJTryb4Oq
+         KxmGQ7/QF9pTLScKUJ12qZDZ0637eN1dN/081frD15tAtPCapNgGNHPteMj9l1JgRWPE
+         VSnRXra8/JrFBzhfKuI7MpWMUQlRzjTaqNPFAF/KEhBb/oKAqUsf3zzREHWGF+0KDHQ2
+         izxg==
+X-Forwarded-Encrypted: i=1; AJvYcCWRXtP0OH251L8qOTuzQa9dsrvklAysGsljLNf0MLVpMqX3nza4z+kvVxhm86K1/2rO8GjZ8n0aCHpKpw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw9NzTwD+Q4NgWI4CwWvZu7y+uzgVASWnn5se9XFPgY5lKY2F62
+	UyjVSQE3ek8QJWefF+asoSVuMgJYVTI4UKuJioE1ihcJSX09LPg+g59UcDFX6qKIyjMyESwk5RN
+	6TxKvxEmtf7ENzs8K0r0dzKsUx2nLrPc=
+X-Gm-Gg: ASbGncuS4B87iEKLOpJO/oGFhahAr3YQ3WXgqmxF7fk0Kbycq66dZ1mJ7QouULJOuJY
+	dmS4aKfvvhh2CsrhBksHRzTbLLXsrHPGarRzLXdyr2V1+Y2LXSmd/eCHu25wUiMdZSLVXRqu1uI
+	mpFKMG32GCKmobRUe8TX/Fgx/Jawb2iqmCWIZ7aewNw+XUcf6Wgm1bOagxt8ySd/ukrTNA3bVhx
+	T+s+Isq0f+nmyOLIEvOVkk1o5nNl2SHzxzHcKVQp7ZTal1UJeTQ8lGPwhEIWg==
+X-Google-Smtp-Source: AGHT+IHRn7wwofmckgetIFv7NrcubZxn6rGcrfJ0dYm+EeA9hAKHUc/yMdNYvRtWsOi0Pb8wklD9ICZ4GeMk/aZyVl8=
+X-Received: by 2002:a05:622a:5144:b0:4df:fb58:b253 with SMTP id
+ d75a77b69052e-4dffb58b653mr90163061cf.48.1759204069824; Mon, 29 Sep 2025
+ 20:47:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250929111349.448324-1-sunjunchao@bytedance.com>
+References: <cover.1758148804.git.anand.jain@oracle.com> <512a6148be0d8da51278f94a29b959f3950bcc0b.1758148804.git.anand.jain@oracle.com>
+ <20250926155753.yhhrbfnilvmk2t47@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+In-Reply-To: <20250926155753.yhhrbfnilvmk2t47@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+From: Anand Jain <anajain.sg@gmail.com>
+Date: Tue, 30 Sep 2025 11:47:38 +0800
+X-Gm-Features: AS18NWCZGtNkWjyUPnubP-JR7Jk5LnsHQ5z55GYM6FNGTIys3gcBfYurna24xq8
+Message-ID: <CANZP331iHxPpL0kQfwhzQrSkevs9KS8NF9cvcc-KNDUexM7wbQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] common/rc: helper functions to handle block devices
+ via sysfs
+To: Zorro Lang <zlang@redhat.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Julian,
+On 26/9/25 23:57, Zorro Lang wrote:
+> On Thu, Sep 18, 2025 at 08:32:46AM +0800, Anand Jain wrote:
+>> From: Anand Jain <anand.jain@oracle.com>
+>>
+>> _bdev_handle(dev)
+>>      get sysfs handle for a given block device.
+>>
+>> _has_bdev_sysfs_delete(dev_path)
+>>      Checks if the block device supports sysfs-based delete.
+>>
+>> _require_scratch_bdev_delete()
+>>      Test if the scratch device does not support sysfs delete.
+>>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>>   common/rc | 26 ++++++++++++++++++++++++++
+>>   1 file changed, 26 insertions(+)
+>>
+>> diff --git a/common/rc b/common/rc
+>> index 81587dad500c..627ddcc02fb8 100644
+>> --- a/common/rc
+>> +++ b/common/rc
+>> @@ -4388,6 +4388,32 @@ _get_file_extent_sector()
+>>      echo "$result"
+>>   }
+>>
+>> +_bdev_handle()
+>> +{
+>> +    local device=3D$(echo $1 | rev | cut -d"/" -f1 | rev)
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+> basename $1 ?
+>
+> if you hope to make sure it's not link, you can
+>
 
-kernel test robot noticed the following build errors:
+> basename $(_real_dev $1)
 
-[auto build test ERROR on kdave/for-next]
-[also build test ERROR on ceph-client/testing ceph-client/for-linus tytso-ext4/dev jaegeuk-f2fs/dev-test jaegeuk-f2fs/dev gfs2/for-next akpm-mm/mm-everything linus/master v6.17 next-20250929]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Whoops, not sure what I was thinking. There's actually a helper for
+this, _short_dev().
+The changes below will fix it. I can send v2 if needed, unless it can
+be fixed at merge
+time. Let me know what works best.
+-----------------------------------
+$ git diff
+diff --git a/common/rc b/common/rc
+index 627ddcc02fb8..085fab6e34f0 100644
+--- a/common/rc
++++ b/common/rc
+@@ -4390,7 +4390,7 @@ _get_file_extent_sector()
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Julian-Sun/fs-Make-wbc_to_tag-inline-and-use-it-in-fs/20250929-191847
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/20250929111349.448324-1-sunjunchao%40bytedance.com
-patch subject: [PATCH v2] fs: Make wbc_to_tag() inline and use it in fs.
-config: arc-randconfig-001-20250930 (https://download.01.org/0day-ci/archive/20250930/202509300940.yjAtss49-lkp@intel.com/config)
-compiler: arc-linux-gcc (GCC) 9.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250930/202509300940.yjAtss49-lkp@intel.com/reproduce)
+ _bdev_handle()
+ {
+-       local device=3D$(echo $1 | rev | cut -d"/" -f1 | rev)
++       local device=3D$(_short_dev $1)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202509300940.yjAtss49-lkp@intel.com/
+        test -e /sys/class/block/${device}/device/scsi_disk/ || \
+                        _notrun "Failed to obtain sys block handle"
+@@ -4401,7 +4401,7 @@ _bdev_handle()
+ _has_bdev_sysfs_delete()
+ {
+        local dev_path=3D$1
+-       local device=3D$(echo $dev_path | rev | cut -d"/" -f1 | rev)
++       local device=3D$(_short_dev $1)
+        local delete_path=3D/sys/class/block/${device}/device/delete
 
-All errors (new ones prefixed by >>):
-
-   mm/page-writeback.c: In function 'writeback_get_folio':
->> mm/page-writeback.c:2456:5: error: implicit declaration of function 'wbc_to_tag' [-Werror=implicit-function-declaration]
-    2456 |     wbc_to_tag(wbc), &wbc->fbatch);
-         |     ^~~~~~~~~~
-   cc1: some warnings being treated as errors
---
-   fs/f2fs/data.c: In function 'f2fs_write_cache_pages':
->> fs/f2fs/data.c:3006:8: error: implicit declaration of function 'wbc_to_tag' [-Werror=implicit-function-declaration]
-    3006 |  tag = wbc_to_tag(wbc);
-         |        ^~~~~~~~~~
-   cc1: some warnings being treated as errors
---
-   fs/btrfs/extent_io.c: In function 'extent_write_cache_pages':
->> fs/btrfs/extent_io.c:2463:8: error: implicit declaration of function 'wbc_to_tag' [-Werror=implicit-function-declaration]
-    2463 |  tag = wbc_to_tag(wbc);
-         |        ^~~~~~~~~~
-   cc1: some warnings being treated as errors
---
-   fs/ext4/inode.c: In function 'mpage_prepare_extent_to_map':
->> fs/ext4/inode.c:2622:8: error: implicit declaration of function 'wbc_to_tag' [-Werror=implicit-function-declaration]
-    2622 |  tag = wbc_to_tag(mpd->wbc);
-         |        ^~~~~~~~~~
-   cc1: some warnings being treated as errors
+        test -e $delete_path
+---------------------------------------------
 
 
-vim +/wbc_to_tag +2456 mm/page-writeback.c
+>> +
+>> +    test -e /sys/class/block/${device}/device/scsi_disk/ || \
+>> +                    _notrun "Failed to obtain sys block handle"
+>> +
+>> +    ls /sys/class/block/${device}/device/scsi_disk/
+>> +}
+>> +
+>> +_has_bdev_sysfs_delete()
+>> +{
+>> +    local dev_path=3D$1
+>> +    local device=3D$(echo $dev_path | rev | cut -d"/" -f1 | rev)
+>> +    local delete_path=3D/sys/class/block/${device}/device/delete
+>> +
+>> +    test -e $delete_path
+>> +}
+>> +
+>> +_require_scratch_bdev_delete()
+>> +{
+>
+> I'm wondering if it's better to call "_require_block_device" at first, be=
+fore
+> checking the /sys ?
 
-751e0d559c62a8 Matthew Wilcox (Oracle  2024-02-15  2444) 
-e6d0ab87c8efe9 Matthew Wilcox (Oracle  2024-02-15  2445) static struct folio *writeback_get_folio(struct address_space *mapping,
-751e0d559c62a8 Matthew Wilcox (Oracle  2024-02-15  2446) 		struct writeback_control *wbc)
-751e0d559c62a8 Matthew Wilcox (Oracle  2024-02-15  2447) {
-e6d0ab87c8efe9 Matthew Wilcox (Oracle  2024-02-15  2448) 	struct folio *folio;
-e6d0ab87c8efe9 Matthew Wilcox (Oracle  2024-02-15  2449) 
-a2cbc13638d909 Matthew Wilcox (Oracle  2024-02-15  2450) retry:
-e6d0ab87c8efe9 Matthew Wilcox (Oracle  2024-02-15  2451) 	folio = folio_batch_next(&wbc->fbatch);
-e6d0ab87c8efe9 Matthew Wilcox (Oracle  2024-02-15  2452) 	if (!folio) {
-751e0d559c62a8 Matthew Wilcox (Oracle  2024-02-15  2453) 		folio_batch_release(&wbc->fbatch);
-751e0d559c62a8 Matthew Wilcox (Oracle  2024-02-15  2454) 		cond_resched();
-751e0d559c62a8 Matthew Wilcox (Oracle  2024-02-15  2455) 		filemap_get_folios_tag(mapping, &wbc->index, wbc_end(wbc),
-751e0d559c62a8 Matthew Wilcox (Oracle  2024-02-15 @2456) 				wbc_to_tag(wbc), &wbc->fbatch);
-e6d0ab87c8efe9 Matthew Wilcox (Oracle  2024-02-15  2457) 		folio = folio_batch_next(&wbc->fbatch);
-a2cbc13638d909 Matthew Wilcox (Oracle  2024-02-15  2458) 		if (!folio)
-a2cbc13638d909 Matthew Wilcox (Oracle  2024-02-15  2459) 			return NULL;
-e6d0ab87c8efe9 Matthew Wilcox (Oracle  2024-02-15  2460) 	}
-e6d0ab87c8efe9 Matthew Wilcox (Oracle  2024-02-15  2461) 
-a2cbc13638d909 Matthew Wilcox (Oracle  2024-02-15  2462) 	folio_lock(folio);
-a2cbc13638d909 Matthew Wilcox (Oracle  2024-02-15  2463) 	if (unlikely(!folio_prepare_writeback(mapping, wbc, folio))) {
-a2cbc13638d909 Matthew Wilcox (Oracle  2024-02-15  2464) 		folio_unlock(folio);
-a2cbc13638d909 Matthew Wilcox (Oracle  2024-02-15  2465) 		goto retry;
-a2cbc13638d909 Matthew Wilcox (Oracle  2024-02-15  2466) 	}
-a2cbc13638d909 Matthew Wilcox (Oracle  2024-02-15  2467) 
-a2cbc13638d909 Matthew Wilcox (Oracle  2024-02-15  2468) 	trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
-e6d0ab87c8efe9 Matthew Wilcox (Oracle  2024-02-15  2469) 	return folio;
-751e0d559c62a8 Matthew Wilcox (Oracle  2024-02-15  2470) }
-751e0d559c62a8 Matthew Wilcox (Oracle  2024-02-15  2471) 
+There=E2=80=99s no harm in using _require_block_device() here, but I don=E2=
+=80=99t
+think it will help,
+a non block device won't reach this place anyway.
+config: _check_device() will fail for non-block devices.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks, Anand
+
+>> +    if ! _has_bdev_sysfs_delete $SCRATCH_DEV; then
+>> +            _notrun "require scratch device sys delete support"
+>> +    fi
+>> +}
+>> +
+>>   # arg 1 is dev to remove and is output of the below eg.
+>>   # ls -l /sys/class/block/sdd | rev | cut -d "/" -f 3 | rev
+>>   _devmgt_remove()
+>> --
+>> 2.51.0
+>>
+>>
+>
 
