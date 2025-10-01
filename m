@@ -1,182 +1,232 @@
-Return-Path: <linux-btrfs+bounces-17317-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17318-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1F38BB1A4C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 01 Oct 2025 21:46:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 769C0BB1B4B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 01 Oct 2025 22:50:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AC843BAC31
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Oct 2025 19:46:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4721A3B1A79
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Oct 2025 20:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C7F826B2AD;
-	Wed,  1 Oct 2025 19:46:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A572F2D7384;
+	Wed,  1 Oct 2025 20:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FX6q/nzr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3006B2AD0C
-	for <linux-btrfs@vger.kernel.org>; Wed,  1 Oct 2025 19:46:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D09202882AA
+	for <linux-btrfs@vger.kernel.org>; Wed,  1 Oct 2025 20:50:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759347988; cv=none; b=pkidpDNwtmVojutBjafUPq8VVMgpxVbywVP9AR3tZ53mVZ07ExaRdih5kvHywKu65MR4G7ZvFdl9T0UTBCy9cCeYBFOH/0A0F2/jWf8A6P2DfE6Uka1ZGMilG11/YqhAVoG47Fg5Oenk2G5CSf2iUJq+SnnmKvjfsF8DCfgPyCs=
+	t=1759351822; cv=none; b=WrNJGnigr2NJNlMKpklZU/jz/vkZOnfUlIlsXGiRVRBM6ROqVJOniiEKoMxYP9FrDsuPoSLvHUp9j/KUabPMxPUMB9obLOQUAnrKMh00K6JgJXWBh88trcQ3dOh73faEwdywWOPhfvv71Dw97pXLqUiXoGkJrqij9r5GCIFbfq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759347988; c=relaxed/simple;
-	bh=RIdIb6zx1WW1qhGtBR5/lLht3Qe4tk06rHKgRADMKEQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=FW+C3H+CRfmeVI6FgJu6aghp4HjLe7AUT5RGbR0+zqDVoTc5eU6elOYebFD/qZORheWsc2NGi1AvSJ/LGUesOs4ZbtyjR47ZJDgI5+FHgJkc1RYyJ71JYxeK9SVKB+J/rf0wKINl7gTy3BfmCtNKWCvv9o7WLu7zDez6ilSTLGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-4297610aacaso3382715ab.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Oct 2025 12:46:26 -0700 (PDT)
+	s=arc-20240116; t=1759351822; c=relaxed/simple;
+	bh=gBW9n3UmTPGAQUDi+gbNyfb55lgWozTxwk93rb0G4JA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e1tMGGJrEzOZ+jys+l9T53klIk7VxKS1VhQBnxdFa3JfigqGgXOXuY+AzXoJLj8NMn+brNeTA9/cm/hhoK596zVOuhH15AWiiGEgBeZLFHzVAfFS4DtSxG7HbuTDkban8js5cIBQZzpD27Un3M8iNOLaPz5wHLPlR0lB1LgAmvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FX6q/nzr; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1759351819;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bU4OUGmDueHDubH6UYEl/dqcmZLyHQrJAoBxNBC66X4=;
+	b=FX6q/nzrMuhKjJlxblMX0NvdLTrNbB5TOmKtCropl+/d/WXkC5WddOmmkCZGsFKnTbSQdS
+	axeqYrjaj3BAnAZUmmQ2ovOtzzkxTj+18Vw8kbxyonqiQoZGk5lJxnMglIMQcQOjTsIsmK
+	5/GZkFkaepd95KLrMnwX4qbjiDTqrcc=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-264-DBF2nbfmMQO6nHaEFjAB0g-1; Wed, 01 Oct 2025 16:50:17 -0400
+X-MC-Unique: DBF2nbfmMQO6nHaEFjAB0g-1
+X-Mimecast-MFC-AGG-ID: DBF2nbfmMQO6nHaEFjAB0g_1759351817
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-7810289cd5eso537311b3a.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Oct 2025 13:50:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759347986; x=1759952786;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ql/Ot4y0cihorogIf7YKkewbTCHB+GiRiFTLWynohQQ=;
-        b=i0SjT8m8Hwy/G/P3A/wa11GGEMHMXMRXxY4pqdBs1+Bba1h10wdWfUkdCwrjEQpYE3
-         fOvQbsd+6Kz2+I0STsZc8GX+gG3GV9EpEuAk6Ie6c84Lox/WATBRbFI3bC3kQJYGeN8f
-         koeA9v7n2RczlTVozKzBczMMXGCyyC+vEAqOmCPIVoQ6f+sG3rCxyw/E6lewp/FmWB+g
-         BdhgqSNj9ulBf5+HiPKCvWhqeU8Juj2AuCNRwdaxS3TvxmTZv7TdCudmnxl62B9g0A/L
-         riRxoyrsqBSrsOY49J8ff9WY3mPgekb3JjigzekS2c4Q/UyB5rulBJO8PvlijBlsNnud
-         /t+w==
-X-Forwarded-Encrypted: i=1; AJvYcCXb3DP0XY4+mbYM0HniuH6SNszhsZ7K5vbfiPt8DVVbqMH3+lEOYYqcdH5gWuPKP9QbN/eDH1mY/UIEEQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzEW2Bc0R6Ws+LvvfDG/5N417qhueazV5RQW7jKoy3JXfm8DGG0
-	fhrOVXJE3drZg74DSH45ZMuEQcdJ3JSKaKV82b2R8k1Fd8HWJTogFwIja//ZkbbLIfsd6nOawJX
-	Tk0bgSu01mF1tnY5GPSImO9nkCm30+vNVqpyTviWP6RvyuSps/ifg2xUqtl0=
-X-Google-Smtp-Source: AGHT+IFBKhQFQnnrgTcFcFXd9HK8fgpdFuJfS/MY/ZXi6rwziYuzS9/413ZnJucBR3HratS4XkG2X4+H7/P6zXTcbxgLXxXon2KQ
+        d=1e100.net; s=20230601; t=1759351817; x=1759956617;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bU4OUGmDueHDubH6UYEl/dqcmZLyHQrJAoBxNBC66X4=;
+        b=EHuP4BRBo9swcChijfoELjLxHV0cAlSo1lrlcAEhQG+TprfmIBBrbK4aekV3eKffwO
+         MB7zCrvc63YXDwd0OLTqgzPQjUkGbF5D0ex9Tkw7k3UVhXf0ejsy3Fh0vQifxOwr255Q
+         nVoEjrJUn8jTTiKbT5StSxYmHhWx4GvjcBmp8qszw6nVkepTQVW7pDU/ZfvaEx4V6M2O
+         hf2KNCNkBsjyV3YbE+tZb8qjwko/lXRre1aO4KIEvDgp5ZbE+h8uZ7Jt3/1TjPeDmikR
+         BlpwdvoZAf37lvNZnkuvNBV+3pN5/aMjeGokUGSwgwVO85zaOFNl4lvdE6+Gr5ZqxZAh
+         O7rg==
+X-Forwarded-Encrypted: i=1; AJvYcCVsOnCREo/Jy0zg2W9NSw94PWubDqS8WTk/9plHF3jQPDFPDVU9xboJpsmlhAYFOdD9RYlKTKEYLkj1SQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/t53pXR6Hvne524FfQzRbAVSHPaeyRRndYM4qElIthQgVGv2T
+	h8QQO/k38Nk447G9oRGY3WbdguPYMacmVsLKhPx+/u8ZE1gTI9Qnh+jXm+04lRMLolojYI47ONJ
+	YIjphKfLygEEF69GU+Jgv7YYQmOXBJKNCTZ6Df5bjcQxC4GTn53JC0wvwP+bEAu7a
+X-Gm-Gg: ASbGncu3ME2E66N8DJkrf9t7anVmqADKQ0kmjD1EBE0ZbROo8/K+8qc5KlZCndiFR0p
+	8OPIsw+cOVoywHe8iSltZVBdmNIplkNxt2eZmAHC+pLOw6lkB7cW/tpNSiYRvI2j8Q1/DbEaPUC
+	+ySG5S5UhAg5OTxk3UnAB53VowXoWfKKV+KXc+vD7dqjIM/WFYh/bTnIdlYwoMcUwDV5uepjh9S
+	A2KQ/x1X/dTMrktFggbrRzNAeRud2sHSwciJI8Uuhv7gmqkKRmODVXLSupYp0GdNFKAf3VvwTCj
+	3cXKvm+QRGewMupYYwCvWLFab2EOMSEpGpliebX1LYbn+5RDniTBmmDe6Pzt3/PittHfrWomvgp
+	V5GrDveqV8Q==
+X-Received: by 2002:a05:6a20:9143:b0:246:7032:2c1d with SMTP id adf61e73a8af0-321d1e6274bmr7130198637.23.1759351816468;
+        Wed, 01 Oct 2025 13:50:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGod+bCznb818N+m/C20fkkTWwDBMqUXtmxkwzz5AMzxnmucX2zTYVkikM9vyHpeXECWzMLdA==
+X-Received: by 2002:a05:6a20:9143:b0:246:7032:2c1d with SMTP id adf61e73a8af0-321d1e6274bmr7130165637.23.1759351815891;
+        Wed, 01 Oct 2025 13:50:15 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6099d4cfbesm375872a12.28.2025.10.01.13.50.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Oct 2025 13:50:15 -0700 (PDT)
+Date: Thu, 2 Oct 2025 04:50:11 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: Re: [PATCH 1/3] btrfs/012 btrfs/136: skip the test if ext* doesn't
+ support the block size
+Message-ID: <20251001205011.dgi6w3fr5udkcx55@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20250918224327.12979-1-wqu@suse.com>
+ <20250918224327.12979-2-wqu@suse.com>
+ <20250928145453.wyztv2kvfpgmlw3k@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <471b4e77-a89a-4cc2-aafe-0c04e36036c9@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1807:b0:42d:86cc:1bcd with SMTP id
- e9e14a558f8ab-42d86cc1c65mr35927815ab.3.1759347986267; Wed, 01 Oct 2025
- 12:46:26 -0700 (PDT)
-Date: Wed, 01 Oct 2025 12:46:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68dd8512.050a0220.25d7ab.077a.GAE@google.com>
-Subject: [syzbot] [btrfs?] WARNING in __cow_file_range_inline
-From: syzbot <syzbot+e74e4a74c03733ebac54@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <471b4e77-a89a-4cc2-aafe-0c04e36036c9@gmx.com>
 
-Hello,
+On Mon, Sep 29, 2025 at 06:12:17AM +0930, Qu Wenruo wrote:
+> 
+> 
+> 在 2025/9/29 00:24, Zorro Lang 写道:
+> > On Fri, Sep 19, 2025 at 08:13:25AM +0930, Qu Wenruo wrote:
+> > > [FALSE ALERT]
+> > > When testing btrfs bs > ps support, the test cases btrfs/012 and
+> > > btrfs/136 fail like the following:
+> > > 
+> > >   FSTYP         -- btrfs
+> > >   PLATFORM      -- Linux/x86_64 btrfs-vm 6.17.0-rc4-custom+ #285 SMP PREEMPT_DYNAMIC Mon Sep 15 14:40:01 ACST 2025
+> > >   MKFS_OPTIONS  -- -s 8k /dev/mapper/test-scratch1
+> > >   MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
+> > > 
+> > >   btrfs/012       [failed, exit status 1]- output mismatch (see /home/adam/xfstests/results//btrfs/012.out.bad)
+> > >       --- tests/btrfs/012.out	2024-07-17 16:27:18.790000343 +0930
+> > >       +++ /home/adam/xfstests/results//btrfs/012.out.bad	2025-09-15 16:32:55.185922173 +0930
+> > >       @@ -1,7 +1,11 @@
+> > >        QA output created by 012
+> > >       +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
+> > >       +       dmesg(1) may have more information after failed mount system call.
+> > >       +mkdir: cannot create directory '/mnt/scratch/stressdir': File exists
+> > >       +umount: /mnt/scratch: not mounted.
+> > >        Checking converted btrfs against the original one:
+> > >       -OK
+> > >       ...
+> > >       (Run 'diff -u /home/adam/xfstests/tests/btrfs/012.out /home/adam/xfstests/results//btrfs/012.out.bad'  to see the entire diff)
+> > > 
+> > >   btrfs/136 3s ... - output mismatch (see /home/adam/xfstests/results//btrfs/136.out.bad)
+> > >       --- tests/btrfs/136.out	2022-05-11 11:25:30.743333331 +0930
+> > >       +++ /home/adam/xfstests/results//btrfs/136.out.bad	2025-09-19 07:00:00.395280850 +0930
+> > >       @@ -1,2 +1,10 @@
+> > >        QA output created by 136
+> > >       +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
+> > >       +       dmesg(1) may have more information after failed mount system call.
+> > >       +umount: /mnt/scratch: not mounted.
+> > >       +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
+> > >       +       dmesg(1) may have more information after failed mount system call.
+> > >       +umount: /mnt/scratch: not mounted.
+> > >       ...
+> > >       (Run 'diff -u /home/adam/xfstests/tests/btrfs/136.out /home/adam/xfstests/results//btrfs/136.out.bad'  to see the entire diff)
+> > > 
+> > > [CAUSE]
+> > > Currently ext* doesn't support block size larger than page size, thus
+> > > at mkfs time it will output the following warning:
+> > > 
+> > >   Warning: blocksize 8192 not usable on most systems.
+> > >   mke2fs 1.47.3 (8-Jul-2025)
+> > >   Warning: 8192-byte blocks too big for system (max 4096), forced to continue
+> > > 
+> > > Furthermore at ext* mount time it will fail with the following dmesg:
+> > > 
+> > >   EXT4-fs (loop0): bad block size 8192
+> > > 
+> > > [FIX]
+> > > Check if the mount of the newly created ext* succeeded.
+> > > 
+> > > If not, since the only extra parameter for mkfs is the block size, we
+> > > know it's some block size ext* not yet supported, and skip the test
+> > > case.
+> > > 
+> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > > ---
+> > >   tests/btrfs/012 | 3 +++
+> > >   tests/btrfs/136 | 3 +++
+> > >   2 files changed, 6 insertions(+)
+> > > 
+> > > diff --git a/tests/btrfs/012 b/tests/btrfs/012
+> > > index f41d7e4e..665831b9 100755
+> > > --- a/tests/btrfs/012
+> > > +++ b/tests/btrfs/012
+> > > @@ -42,6 +42,9 @@ $MKFS_EXT4_PROG -F -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
+> > >   	_notrun "Could not create ext4 filesystem"
+> > >   # Manual mount so we don't use -t btrfs or selinux context
+> > >   mount -t ext4 $SCRATCH_DEV $SCRATCH_MNT
+> > > +if [ $? -ne 0 ]; then
+> > > +	_notrun "block size $BLOCK_SIZE is not supported by ext4"
+> > > +fi
+> > 
+> > Hmm... the mount failure maybe not caused by the "$BLOCK_SIZE is not supported",
+> > I'm wondering if this _notrun might ignore real bug. How about check the
+> > "blocksize < pagesize" at least?
+> 
+> The only extra parameter passed to mkfs.ext* is "-b $BLOCKSIZE", and if it's
+> really some bug inside e2fsprog and it only affects bs > ps, we're still
+> going to miss the bug.
+> 
+> Is there any proper way to reliably check the supported block size of ext*?
+> Like some sysfs knobs?
 
-syzbot found the following issue on:
+If there's not a proper way to check ext4 supports LBS, how about check
+blocksize < pagesize" before _notrun directly, e.g:
 
-HEAD commit:    fec734e8d564 Merge tag 'riscv-for-linus-v6.17-rc8' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1073b142580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bf99f2510ef92ba5
-dashboard link: https://syzkaller.appspot.com/bug?extid=e74e4a74c03733ebac54
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+  pz=$(_get_page_size)
+  if [ $? -ne 0 -a $BLOCKSIZE -gt $pz ]
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Thanks,
+Zorro
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-fec734e8.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9cf7097db7bd/vmlinux-fec734e8.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ca6d872c8346/bzImage-fec734e8.xz
+> 
+> Thanks,
+> Qu
+> 
+> > 
+> > >   echo "populating the initial ext fs:" >> $seqres.full
+> > >   mkdir "$SCRATCH_MNT/$BASENAME"
+> > > diff --git a/tests/btrfs/136 b/tests/btrfs/136
+> > > index 65bbcf51..6b4b52e4 100755
+> > > --- a/tests/btrfs/136
+> > > +++ b/tests/btrfs/136
+> > > @@ -45,6 +45,9 @@ $MKFS_EXT4_PROG -F -t ext3 -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
+> > >   # mount and populate non-extent file
+> > >   mount -t ext3 $SCRATCH_DEV $SCRATCH_MNT
+> > > +if [ $? -ne 0 ]; then
+> > > +	_notrun "block size $BLOCK_SIZE is not supported by ext3"
+> > > +fi
+> > >   populate_data "$SCRATCH_MNT/ext3_ext4_data/ext3"
+> > >   _scratch_unmount
+> > > -- 
+> > > 2.51.0
+> > > 
+> > > 
+> > 
+> > 
+> 
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e74e4a74c03733ebac54@syzkaller.appspotmail.com
-
-loop0: detected capacity change from 0 to 32768
-BTRFS: device fsid e417788f-7a09-42b2-9266-8ddc5d5d35d2 devid 1 transid 8 /dev/loop0 (7:0) scanned by syz.0.0 (5360)
-BTRFS info (device loop0): first mount of filesystem e417788f-7a09-42b2-9266-8ddc5d5d35d2
-BTRFS info (device loop0): using xxhash64 (xxhash64-generic) checksum algorithm
-BTRFS warning (device loop0): space cache v1 is being deprecated and will be removed in a future release, please use -o space_cache=v2
-BTRFS info (device loop0): rebuilding free space tree
-BTRFS info (device loop0): disabling free space tree
-BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
-BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
-BTRFS info (device loop0): setting nodatasum
-BTRFS info (device loop0): allowing degraded mounts
-BTRFS info (device loop0): enabling disk space caching
-BTRFS info (device loop0): force clearing of disk cache
-BTRFS info (device loop0): force zlib compression, level 3
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -28)
-WARNING: CPU: 0 PID: 5360 at fs/btrfs/inode.c:635 __cow_file_range_inline+0xdc4/0x1260 fs/btrfs/inode.c:635
-Modules linked in:
-CPU: 0 UID: 0 PID: 5360 Comm: syz.0.0 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:__cow_file_range_inline+0xdc4/0x1260 fs/btrfs/inode.c:635
-Code: 00 e8 10 94 da fd 84 c0 74 29 e8 57 f1 f3 fd e9 6d 01 00 00 e8 4d f1 f3 fd 90 48 c7 c7 20 dd ed 8b 44 89 e6 e8 fd 80 b7 fd 90 <0f> 0b 90 90 e9 72 fc ff ff e8 6e a5 b0 07 41 89 c7 31 ff 89 c6 e8
-RSP: 0018:ffffc9000d556680 EFLAGS: 00010246
-RAX: 10ba3533504e6700 RBX: 0000000000000000 RCX: 0000000000100000
-RDX: ffffc9000e17a000 RSI: 0000000000034014 RDI: 0000000000034015
-RBP: ffffc9000d556870 R08: 0000000000000003 R09: 0000000000000004
-R10: dffffc0000000000 R11: fffffbfff1c3a234 R12: 00000000ffffffe4
-R13: 1ffff1100641d3c8 R14: ffff8880320e9e40 R15: ffff888052e34001
-FS:  00007ff11f0e36c0(0000) GS:ffff88808d007000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000200000000440 CR3: 0000000043940000 CR4: 0000000000352ef0
-Call Trace:
- <TASK>
- cow_file_range_inline+0x2fc/0x3d0 fs/btrfs/inode.c:692
- cow_file_range+0x449/0x10a0 fs/btrfs/inode.c:1297
- btrfs_run_delalloc_range+0x3f9/0xf80 fs/btrfs/inode.c:2352
- writepage_delalloc+0xf06/0x1a60 fs/btrfs/extent_io.c:1435
- extent_writepage fs/btrfs/extent_io.c:1779 [inline]
- extent_write_cache_pages fs/btrfs/extent_io.c:2463 [inline]
- btrfs_writepages+0x12df/0x22c0 fs/btrfs/extent_io.c:2596
- do_writepages+0x32e/0x550 mm/page-writeback.c:2634
- filemap_fdatawrite_wbc mm/filemap.c:386 [inline]
- __filemap_fdatawrite_range mm/filemap.c:419 [inline]
- filemap_fdatawrite_range+0x1a5/0x250 mm/filemap.c:437
- btrfs_fdatawrite_range fs/btrfs/file.c:3859 [inline]
- start_ordered_ops fs/btrfs/file.c:1518 [inline]
- btrfs_sync_file+0x3a1/0x1160 fs/btrfs/file.c:1600
- generic_write_sync include/linux/fs.h:3043 [inline]
- btrfs_do_write_iter+0x59a/0x710 fs/btrfs/file.c:1470
- iter_file_splice_write+0x975/0x10e0 fs/splice.c:738
- do_splice_from fs/splice.c:938 [inline]
- direct_splice_actor+0x101/0x160 fs/splice.c:1161
- splice_direct_to_actor+0x5a5/0xcc0 fs/splice.c:1105
- do_splice_direct_actor fs/splice.c:1204 [inline]
- do_splice_direct+0x181/0x270 fs/splice.c:1230
- do_sendfile+0x4da/0x7e0 fs/read_write.c:1370
- __do_sys_sendfile64 fs/read_write.c:1431 [inline]
- __se_sys_sendfile64+0x13e/0x190 fs/read_write.c:1417
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7ff11e18eec9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff11f0e3038 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 00007ff11e3e5fa0 RCX: 00007ff11e18eec9
-RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000006
-RBP: 00007ff11e211f91 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000040001 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ff11e3e6038 R14: 00007ff11e3e5fa0 R15: 00007ffcc89ac948
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
