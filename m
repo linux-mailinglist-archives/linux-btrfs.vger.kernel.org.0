@@ -1,141 +1,220 @@
-Return-Path: <linux-btrfs+bounces-17315-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17316-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60431BB151C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 01 Oct 2025 19:11:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16ABDBB1729
+	for <lists+linux-btrfs@lfdr.de>; Wed, 01 Oct 2025 20:05:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CF4B18817A6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Oct 2025 17:11:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE3503B6CFA
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Oct 2025 18:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8613C2D24BF;
-	Wed,  1 Oct 2025 17:11:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1A5C2D3ECF;
+	Wed,  1 Oct 2025 18:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a8t0kuuE"
+	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="cZqoNd7j"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout-y-209.mailbox.org (mout-y-209.mailbox.org [91.198.250.237])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C014D208961
-	for <linux-btrfs@vger.kernel.org>; Wed,  1 Oct 2025 17:10:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C82A18A6CF;
+	Wed,  1 Oct 2025 18:05:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.198.250.237
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759338659; cv=none; b=iMDNVwoARM+PwKpI7rd1HpR9JMTCvlOvDBypLJ/Nl8/EMJdXDzG+jpfulnlkFrZ2vLAB5DDGbx/srlAOAvpBS/Sor0Edz8hzDPXgh9mNsDPQb3IIubpU9OVp5vLPAleJPOEwBVJl8W5qiXaQQ0zZvfeduM7x83ziZaNPy+lH3RQ=
+	t=1759341924; cv=none; b=redPl8VnJYLT8x/o3Tj+6SoOjF2sNj5v19g7YS57MbdHKsEpsbkb+QmydaXeDGvYdsCah/0Uw7suIDiAZEZOiO6HDZ6cIP1GliM0g3bqsuGOGIjLCdFGCKgh5LO8zYK8eCMp1+2bYtrbz052pZPNBDfQefVTw2/xHCiZ7MLxv0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759338659; c=relaxed/simple;
-	bh=47KD6OvTADXEiaLBZChYAp5qToz9/RaQ5FYA6W51VQY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PMuyW5bIMWhhOSiMsNamtOJRkO5Pe3/87n654e4SfWHaHzHkDn6rrGVC+7CDldqN+ZgZRa/8D9PZIUhpPnHfMmdu6uAGJSdqOmaDrOTCaMSOqlItRRbnk4i/ClujYCU9n5xxEa8aVp1JD+aZN+XAyENrCSaXstH/DnVaLYspS30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a8t0kuuE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1772C4CEF5
-	for <linux-btrfs@vger.kernel.org>; Wed,  1 Oct 2025 17:10:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759338659;
-	bh=47KD6OvTADXEiaLBZChYAp5qToz9/RaQ5FYA6W51VQY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=a8t0kuuELLBh28skyKG+8xPvpCciwIAFyVpetK/hyZDHhcYMCBmSdAMi0MLOajmcg
-	 JlhzGPbKlNrsFqoMcvySPydXYrvYoI30lSiiBgOjKGm/7ZRZF9YhLGj5m9veSKCeca
-	 BLpy4w0p6GPo9VDagDmHyX0ycAL4nGb/0OhSDurP4lkV32dVDy5CdMjVx0uVMJTTLJ
-	 arFUODS9PMWfoUj7f0Pxy/CUv/57Lgj70msl+4nO/1od+BWcQVAsG6UowDdMtlJbfx
-	 nEjBu/HGtPue3MLA3RJpK7HydAxGMYi9mfuicPoBtZtZKEwTIUoHxF45vcEsK0hcU6
-	 EZ/0lSiebCdfQ==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b3e234fcd4bso21638066b.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Oct 2025 10:10:59 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yyceo0yXu5Xt2uCeRfubE1boj33HOeX4uaDYHlBc9vDgRjCh/2m
-	/Y9vyYy0/qh6l+mRMnzdLnwszGlIWKEgPSJFUTh3wZ0jZJaU76SRLhop7TEeHrRqt0H1O2zQKEv
-	kUYWkOPEuTNBLNHFhO1BY0yEF1mxOQWI=
-X-Google-Smtp-Source: AGHT+IFurj7T96UXmg7rqHWI8GsvLaunW97Fw5F3PdNA7y7eCpi0toFupBAQEB/hGk9qVCxDW0E+ha23ZkPdnwjWQ/A=
-X-Received: by 2002:a17:906:f59e:b0:afd:d94b:830d with SMTP id
- a640c23a62f3a-b46e7cafd1emr560425866b.62.1759338658252; Wed, 01 Oct 2025
- 10:10:58 -0700 (PDT)
+	s=arc-20240116; t=1759341924; c=relaxed/simple;
+	bh=wUkPGaDQWDhHcSvlXVaBWW6SqgMU44UCN4D0iIho4pg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ijvWlUVSZ4Zi7xoR/WAkUqrFBURFb+4a+FKhFvr3LBWJC1nG8bI8UWkwbZzhRc8xEMUa+Z4S0cujeAontMdtxz/SLKyDnkOjFEee15HacUxMaiuStUj6A9uUuoPxd/lyAc+Bht5AA7saIPfW1fReBX5z9jtWV++WtgW7VYFmxgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=cZqoNd7j; arc=none smtp.client-ip=91.198.250.237
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-y-209.mailbox.org (Postfix) with ESMTPS id 4ccNBP1JMNzB0wT;
+	Wed,  1 Oct 2025 20:05:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
+	t=1759341917;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4mETxxP1dPH/0H0Aw6jbUUKU/8uElFJRClXqFRq6ntg=;
+	b=cZqoNd7jTrYniX25unRV5KNPanvGLf9NbvmVEo3aQUGIBW/3TsQyO87znLcxRMewMvOUyz
+	ddC9AaGEQ1UnhpfCfZVrhiHQl0iISEDwIC2DdhavENwH07mBGzLoEw/dOsOjKvVY4iJhXW
+	7D0ffF13Sk7arU+M72VeaJmuwhYZQwPITjr9hs8zc+MnhP9p4oOZW5zAnQTI7dcoXFxdw8
+	DC7+gVQU7HEAuy38KW5QpHi0c9mFxiK794U9WEsWnZulYTVk1Uj8l6EFaxIfq/U2RzAp75
+	hQsKcbqdJbyffwi4XybFez8ktQA1+Mf9X7Q8PJkZOEfgj2SIewPaFhDx0ihKAQ==
+Authentication-Results: outgoing_mbo_mout;
+	dkim=none;
+	spf=softfail (outgoing_mbo_mout: 2001:67c:2050:b231:465::202 is neither permitted nor denied by domain of mssola@mssola.com) smtp.mailfrom=mssola@mssola.com
+From: =?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
+To: linux-btrfs@vger.kernel.org
+Cc: clm@fb.com,
+	dsterba@suse.com,
+	fdmanana@suse.com,
+	wqu@suse.com,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
+Subject: [PATCH v2] btrfs: prevent a double kfree on delayed-ref
+Date: Wed,  1 Oct 2025 20:05:03 +0200
+Message-ID: <20251001180503.1353226-1-mssola@mssola.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <763f1e5a6d9611638977e24aeead5c9a266da678.1759337413.git.boris@bur.io>
-In-Reply-To: <763f1e5a6d9611638977e24aeead5c9a266da678.1759337413.git.boris@bur.io>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 1 Oct 2025 18:10:21 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4uPf0+dV=7-x4GyfqU2SxW1uzr5iT32aH10Pupa6r81g@mail.gmail.com>
-X-Gm-Features: AS18NWBJmhqAnqqc7WcfLgzbNg0TbtzzVQ2K4HH06sdK9ucUqlXEsrGXv9bQ2aM
-Message-ID: <CAL3q7H4uPf0+dV=7-x4GyfqU2SxW1uzr5iT32aH10Pupa6r81g@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix incorrect readahead expansion length
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4ccNBP1JMNzB0wT
 
-On Wed, Oct 1, 2025 at 5:51=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> The intent of btrfs_readahead_expand() was to expand to the length of
-> the current compressed extent being read. However, "ram_bytes" is *not*
-> that, in the case where a single physical compressed extent is used for
-> multiple file extents.
->
-> Consider this case with a large compressed extent C and then later two
-> non-compressed extents N1 and N2 written over C, leaving C1 and C2
-> pointing to offset/len pairs of C:
-> [               C                 ]
-> [ N1 ][     C1     ][ N2 ][   C2  ]
->
-> In such a case, ram_bytes for both C1 and C2 is the full uncompressed
-> length of C. So starting readahead in C1 will expand the readahead past
-> the end of C1, past N2, and into C2. This will then expand readahead
-> again, to C2_start + ram_bytes, way past EOF. First of all, this is
-> totally undesirable, we don't want to read the whole file in arbitrary
-> chunks of the large underlying extent if it happens to exist. Secondly,
-> it results in zeroing the range past the end of C2 up to ram_bytes. This
-> is particularly unpleasant with fs-verity as it can zero and set
-> uptodate pages in the verity virtual space past EOF. This incorrect
-> readahead behavior can lead to verity verification errors, if we iterate
-> in a way that happens to do the wrong readahead.
+In the previous code it was possible to incur into a double kfree()
+scenario when calling add_delayed_ref_head(). This could happen if the
+record was reported to already exist in the
+btrfs_qgroup_trace_extent_nolock() call, but then there was an error
+later on add_delayed_ref_head(). In this case, since
+add_delayed_ref_head() returned an error, the caller went to free the
+record. Since add_delayed_ref_head() couldn't set this kfree'd pointer
+to NULL, then kfree() would have acted on a non-NULL 'record' object
+which was pointing to memory already freed by the callee.
 
-So this misses being clear, explicit, about the worst problem:
-buffered read corruption (even when not using verity).
-In that case the readahead loaded data from C into the page cache
-range for N2, so then later anyone doing a buffered read for N2's
-range, will get data from C.
+The problem comes from the fact that the responsibility to kfree the
+object is on both the caller and the callee at the same time. Hence, the
+fix for this is to shift the ownership of the 'qrecord' object out of
+the add_delayed_ref_head(). That is, we will never attempt to kfree()
+the given object inside of this function, and will expect the caller to
+act on the 'qrecord' object on its own. The only exception where the
+'qrecord' object cannot be kfree'd is if it was inserted into the
+tracing logic, for which we already have the 'qrecord_inserted_ret'
+boolean to account for this. Hence, the caller has to kfree the object
+only if add_delayed_ref_head() reports not to have inserted it on the
+tracing logic.
 
-This should be easy to turn into a test case for fstests too.
+As a side-effect of the above, we must guarantee that
+'qrecord_inserted_ret' is properly initialized at the start of the
+function, not at the end, and then set when an actual insert
+happens. This way we avoid 'qrecord_inserted_ret' having an invalid
+value on an early exit.
 
-With that changelog update:
+The documentation from the add_delayed_ref_head() has also been updated
+to reflect on the exact ownership of the 'qrecord' object.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Fixes: 6ef8fbce0104 ("btrfs: fix missing error handling when adding delayed ref with qgroups enabled")
+Signed-off-by: Miquel Sabaté Solà <mssola@mssola.com>
+---
 
->
-> Fix this by using em->len for readahead expansion, not em->ram_bytes,
-> resulting in the expected behavior of stopping readahead at the extent
-> boundary.
->
-> Reported-by: Max Chernoff <git@maxchernoff.ca>
-> Link: https://bugzilla.redhat.com/show_bug.cgi?id=3D2399898
-> Fixes: 9e9ff875e417 ("btrfs: use readahead_expand() on compressed extents=
-")
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
->  fs/btrfs/extent_io.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index dfda8f6da194..3a8681566fc5 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -972,7 +972,7 @@ static void btrfs_readahead_expand(struct readahead_c=
-ontrol *ractl,
->  {
->         const u64 ra_pos =3D readahead_pos(ractl);
->         const u64 ra_end =3D ra_pos + readahead_length(ractl);
-> -       const u64 em_end =3D em->start + em->ram_bytes;
-> +       const u64 em_end =3D em->start + em->len;
->
->         /* No expansion for holes and inline extents. */
->         if (em->disk_bytenr > EXTENT_MAP_LAST_BYTE)
-> --
-> 2.50.1
->
->
+Changes in v2:
+
+- Change documentation to reflect that we are using an xarray instead of an
+  rbtree.
+- Change warning to assertion on qrecord_insert_ret.
+- Fix function notation on comments.
+- Fix commit message as suggested
+
+ fs/btrfs/delayed-ref.c | 43 ++++++++++++++++++++++++++++++++----------
+ 1 file changed, 33 insertions(+), 10 deletions(-)
+
+diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+index 481802efaa14..f8fc26272f76 100644
+--- a/fs/btrfs/delayed-ref.c
++++ b/fs/btrfs/delayed-ref.c
+@@ -798,9 +798,13 @@ static void init_delayed_ref_head(struct btrfs_delayed_ref_head *head_ref,
+ }
+
+ /*
+- * helper function to actually insert a head node into the rbtree.
+- * this does all the dirty work in terms of maintaining the correct
+- * overall modification count.
++ * Helper function to actually insert a head node into the xarray. This does all
++ * the dirty work in terms of maintaining the correct overall modification
++ * count.
++ *
++ * The caller is responsible for calling kfree() on @qrecord. More specifically,
++ * if this function reports that it did not insert it as noted in
++ * @qrecord_inserted_ret, then it's safe to call kfree() on it.
+  *
+  * Returns an error pointer in case of an error.
+  */
+@@ -814,7 +818,14 @@ add_delayed_ref_head(struct btrfs_trans_handle *trans,
+ 	struct btrfs_delayed_ref_head *existing;
+ 	struct btrfs_delayed_ref_root *delayed_refs;
+ 	const unsigned long index = (head_ref->bytenr >> fs_info->sectorsize_bits);
+-	bool qrecord_inserted = false;
++
++	/*
++	 * If 'qrecord_inserted_ret' is provided, then the first thing we need
++	 * to do is to initialize it to false just in case we have an exit
++	 * before trying to insert the record.
++	 */
++	if (qrecord_inserted_ret)
++		*qrecord_inserted_ret = false;
+
+ 	delayed_refs = &trans->transaction->delayed_refs;
+ 	lockdep_assert_held(&delayed_refs->lock);
+@@ -833,6 +844,12 @@ add_delayed_ref_head(struct btrfs_trans_handle *trans,
+
+ 	/* Record qgroup extent info if provided */
+ 	if (qrecord) {
++		/*
++		 * Setting 'qrecord' but not 'qrecord_inserted_ret' will likely
++		 * result in a memory leakage.
++		 */
++		ASSERT(qrecord_inserted_ret != NULL);
++
+ 		int ret;
+
+ 		ret = btrfs_qgroup_trace_extent_nolock(fs_info, delayed_refs, qrecord,
+@@ -840,12 +857,10 @@ add_delayed_ref_head(struct btrfs_trans_handle *trans,
+ 		if (ret) {
+ 			/* Clean up if insertion fails or item exists. */
+ 			xa_release(&delayed_refs->dirty_extents, index);
+-			/* Caller responsible for freeing qrecord on error. */
+ 			if (ret < 0)
+ 				return ERR_PTR(ret);
+-			kfree(qrecord);
+-		} else {
+-			qrecord_inserted = true;
++		} else if (qrecord_inserted_ret) {
++			*qrecord_inserted_ret = true;
+ 		}
+ 	}
+
+@@ -888,8 +903,6 @@ add_delayed_ref_head(struct btrfs_trans_handle *trans,
+ 		delayed_refs->num_heads++;
+ 		delayed_refs->num_heads_ready++;
+ 	}
+-	if (qrecord_inserted_ret)
+-		*qrecord_inserted_ret = qrecord_inserted;
+
+ 	return head_ref;
+ }
+@@ -1049,6 +1062,14 @@ static int add_delayed_ref(struct btrfs_trans_handle *trans,
+ 		xa_release(&delayed_refs->head_refs, index);
+ 		spin_unlock(&delayed_refs->lock);
+ 		ret = PTR_ERR(new_head_ref);
++
++		/*
++		 * It's only safe to call kfree() on 'qrecord' if
++		 * add_delayed_ref_head() has _not_ inserted it for
++		 * tracing. Otherwise we need to handle this here.
++		 */
++		if (!qrecord_reserved || qrecord_inserted)
++			goto free_head_ref;
+ 		goto free_record;
+ 	}
+ 	head_ref = new_head_ref;
+@@ -1071,6 +1092,8 @@ static int add_delayed_ref(struct btrfs_trans_handle *trans,
+
+ 	if (qrecord_inserted)
+ 		return btrfs_qgroup_trace_extent_post(trans, record, generic_ref->bytenr);
++
++	kfree(record);
+ 	return 0;
+
+ free_record:
+--
+2.51.0
 
