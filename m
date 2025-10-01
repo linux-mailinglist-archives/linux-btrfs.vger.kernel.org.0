@@ -1,149 +1,141 @@
-Return-Path: <linux-btrfs+bounces-17314-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17315-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54661BB14C2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 01 Oct 2025 18:51:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60431BB151C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 01 Oct 2025 19:11:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10C843C2A68
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Oct 2025 16:51:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CF4B18817A6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Oct 2025 17:11:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E672125D536;
-	Wed,  1 Oct 2025 16:51:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8613C2D24BF;
+	Wed,  1 Oct 2025 17:11:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="ZyDWFpjC";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KZd7Ye1x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a8t0kuuE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE37D1373
-	for <linux-btrfs@vger.kernel.org>; Wed,  1 Oct 2025 16:51:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C014D208961
+	for <linux-btrfs@vger.kernel.org>; Wed,  1 Oct 2025 17:10:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759337464; cv=none; b=Q99427EaLRBtsm7ECrgVci5O0iU70nr3+j9FfeAAEaEtkK5iP41ZJl8/rXMxZ4GGr64TjF5DqqoL7qMTCAwVmac6CrCtRek5Ncj8uoEqB/AoTsaQkxVrfgoyZkY+DGb2ND9kPe7TSPvPAGk4n0N1mdcdvCaDXNCrTi22SiJFwEg=
+	t=1759338659; cv=none; b=iMDNVwoARM+PwKpI7rd1HpR9JMTCvlOvDBypLJ/Nl8/EMJdXDzG+jpfulnlkFrZ2vLAB5DDGbx/srlAOAvpBS/Sor0Edz8hzDPXgh9mNsDPQb3IIubpU9OVp5vLPAleJPOEwBVJl8W5qiXaQQ0zZvfeduM7x83ziZaNPy+lH3RQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759337464; c=relaxed/simple;
-	bh=22r6IURIJMxWPfcK8w2UoKRLvKintc3V6MY+v9RBbVM=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=d+8rNBMje7e2GXC7GmgVrfhQSzJbskMLOhTNqlJNK88zcFpMu0XyO7QxHsqetzmnulpkRUwrh6T16UZGAuML8t/6FsfVogtVdtToXPEHaOIJgd+CKVZfjnkUtY1yoCbYxXoDTBH3wXAWIw9r2ghphkzJzFCJqtgA92jOLIxcDc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=ZyDWFpjC; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KZd7Ye1x; arc=none smtp.client-ip=103.168.172.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfout.phl.internal (Postfix) with ESMTP id D24CCEC0108;
-	Wed,  1 Oct 2025 12:50:59 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Wed, 01 Oct 2025 12:50:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1759337459; x=1759423859; bh=36C9XdKAutJlqVtgwOER4
-	RQou7dScH/lHI/uYw4lAKM=; b=ZyDWFpjC4nUJ/RspXZ/bphH+kKnL8vrS2zZvT
-	i1lIWaoqE1nVb+WaNn+iRl4wAowwcnNeTjzNCazoqa+dutIODO8gux8A3lcWBw4i
-	PcKaHgD0oryR5B7Imargoh9PDFScFUPeNJPQbQYYxNRgLvkSq4CPoyoUanEMWFVf
-	9jHHGt9eZk95GwqRZ54UcWnTB/WXfi2vwdegYXSMKVEL/KSelpMzXTdJ2YszhPnp
-	20yrDSZtO8XtSfbFF33c/W0FI/EEVjGeSzbhye8zh12Kcj2p1CTNKuw2AOXLvINh
-	7c5RYJeTHw/nHjC3f4J2XywyNmwTrHEvq2WKmr13b0mri+aiA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1759337459; x=1759423859; bh=36C9XdKAutJlqVtgwOER4RQou7dScH/lHI/
-	uYw4lAKM=; b=KZd7Ye1xtzPVdKMNLVZsnYe1s/RwdhWhA2dKFKlhEdDUWhUT5/B
-	5EyVDZeyAmDgnb+IEoLrjQrn31zKRXXwRp1jlSpLdal0GQximcSAYAeWbk31Huaj
-	Egy3fBeo5cnHHeoL7ug8oqXz5zXUuOkWsYLW3RhHGZmrH3AVz3A9XY55pw0vtIT/
-	FGauottMUCBVvXTcwjG8CmAymw3TppKfzQb0vWNhjeeVx+B+yd307KmRuj5enfIT
-	8FhuyK9G2XwbNsVGlAahmwct02s8zrbIPBo59gIVRrzDQIg6vQQOWUn6wJct38wM
-	53gPy2JeGEDPqKcjSuAe+hzDqAr/tBI9q1Q==
-X-ME-Sender: <xms:81vdaI3dvkXibqbGxhhukH9GoWJI7_IYrWuUHd4zh5Vm-VP3x1VKNA>
-    <xme:81vdaJGi4Inu319io9qxLTS_Gkb4FS9NDhpdbCL2G70sqdzQMQlwxGY8hpizn6O29
-    hp4gbpsY1leDDS7L9zdrIE8lKhq3hxv1NzoWGkyuj7TVohNHhBMWkE>
-X-ME-Received: <xmr:81vdaOhzqFbslbKP5b4095DdZGXJCGvPG-xPkUj2OGUgYzDt6HXyMq-_vNzvVBcYrQkTbR31b88o3mle-J49AVUJJPg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdekfeeiiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertddtne
-    cuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecu
-    ggftrfgrthhtvghrnhepjeejgfffleffteeitddvueeuleelleegfeetveegveetffdute
-    duuddugeelgfehnecuffhomhgrihhnpehrvgguhhgrthdrtghomhenucevlhhushhtvghr
-    ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-    dpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhi
-    nhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvg
-    hrnhgvlhdqthgvrghmsehfsgdrtghomh
-X-ME-Proxy: <xmx:81vdaM8Slm9IhMcS5MPYQDIKRW6qPzdo-fpVmkmJZ1k6kC_VFpgZ-Q>
-    <xmx:81vdaNp5ZhouitNm3rGLL7f0IKpcvwgZdzEFss6QYyqIWbsAPu9bng>
-    <xmx:81vdaD-pq00q84XljObEOqJFETV17Z9zczaQ29uV-8iMN8E-LP8bjA>
-    <xmx:81vdaJVczs8qEaL5hyFYIZ3pQk0Sst1FSPgJTNTwSclVLItVlmVBvA>
-    <xmx:81vdaCa3EENYF9d4P_2zgV4fuXxoCqDaKSIJJqbOKev7UKJ0DaVwMB0Y>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Oct 2025 12:50:58 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH] btrfs: fix incorrect readahead expansion length
-Date: Wed,  1 Oct 2025 09:50:42 -0700
-Message-ID: <763f1e5a6d9611638977e24aeead5c9a266da678.1759337413.git.boris@bur.io>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1759338659; c=relaxed/simple;
+	bh=47KD6OvTADXEiaLBZChYAp5qToz9/RaQ5FYA6W51VQY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PMuyW5bIMWhhOSiMsNamtOJRkO5Pe3/87n654e4SfWHaHzHkDn6rrGVC+7CDldqN+ZgZRa/8D9PZIUhpPnHfMmdu6uAGJSdqOmaDrOTCaMSOqlItRRbnk4i/ClujYCU9n5xxEa8aVp1JD+aZN+XAyENrCSaXstH/DnVaLYspS30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a8t0kuuE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1772C4CEF5
+	for <linux-btrfs@vger.kernel.org>; Wed,  1 Oct 2025 17:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759338659;
+	bh=47KD6OvTADXEiaLBZChYAp5qToz9/RaQ5FYA6W51VQY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=a8t0kuuELLBh28skyKG+8xPvpCciwIAFyVpetK/hyZDHhcYMCBmSdAMi0MLOajmcg
+	 JlhzGPbKlNrsFqoMcvySPydXYrvYoI30lSiiBgOjKGm/7ZRZF9YhLGj5m9veSKCeca
+	 BLpy4w0p6GPo9VDagDmHyX0ycAL4nGb/0OhSDurP4lkV32dVDy5CdMjVx0uVMJTTLJ
+	 arFUODS9PMWfoUj7f0Pxy/CUv/57Lgj70msl+4nO/1od+BWcQVAsG6UowDdMtlJbfx
+	 nEjBu/HGtPue3MLA3RJpK7HydAxGMYi9mfuicPoBtZtZKEwTIUoHxF45vcEsK0hcU6
+	 EZ/0lSiebCdfQ==
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b3e234fcd4bso21638066b.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Oct 2025 10:10:59 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yyceo0yXu5Xt2uCeRfubE1boj33HOeX4uaDYHlBc9vDgRjCh/2m
+	/Y9vyYy0/qh6l+mRMnzdLnwszGlIWKEgPSJFUTh3wZ0jZJaU76SRLhop7TEeHrRqt0H1O2zQKEv
+	kUYWkOPEuTNBLNHFhO1BY0yEF1mxOQWI=
+X-Google-Smtp-Source: AGHT+IFurj7T96UXmg7rqHWI8GsvLaunW97Fw5F3PdNA7y7eCpi0toFupBAQEB/hGk9qVCxDW0E+ha23ZkPdnwjWQ/A=
+X-Received: by 2002:a17:906:f59e:b0:afd:d94b:830d with SMTP id
+ a640c23a62f3a-b46e7cafd1emr560425866b.62.1759338658252; Wed, 01 Oct 2025
+ 10:10:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <763f1e5a6d9611638977e24aeead5c9a266da678.1759337413.git.boris@bur.io>
+In-Reply-To: <763f1e5a6d9611638977e24aeead5c9a266da678.1759337413.git.boris@bur.io>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 1 Oct 2025 18:10:21 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4uPf0+dV=7-x4GyfqU2SxW1uzr5iT32aH10Pupa6r81g@mail.gmail.com>
+X-Gm-Features: AS18NWBJmhqAnqqc7WcfLgzbNg0TbtzzVQ2K4HH06sdK9ucUqlXEsrGXv9bQ2aM
+Message-ID: <CAL3q7H4uPf0+dV=7-x4GyfqU2SxW1uzr5iT32aH10Pupa6r81g@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix incorrect readahead expansion length
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The intent of btrfs_readahead_expand() was to expand to the length of
-the current compressed extent being read. However, "ram_bytes" is *not*
-that, in the case where a single physical compressed extent is used for
-multiple file extents.
+On Wed, Oct 1, 2025 at 5:51=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
+>
+> The intent of btrfs_readahead_expand() was to expand to the length of
+> the current compressed extent being read. However, "ram_bytes" is *not*
+> that, in the case where a single physical compressed extent is used for
+> multiple file extents.
+>
+> Consider this case with a large compressed extent C and then later two
+> non-compressed extents N1 and N2 written over C, leaving C1 and C2
+> pointing to offset/len pairs of C:
+> [               C                 ]
+> [ N1 ][     C1     ][ N2 ][   C2  ]
+>
+> In such a case, ram_bytes for both C1 and C2 is the full uncompressed
+> length of C. So starting readahead in C1 will expand the readahead past
+> the end of C1, past N2, and into C2. This will then expand readahead
+> again, to C2_start + ram_bytes, way past EOF. First of all, this is
+> totally undesirable, we don't want to read the whole file in arbitrary
+> chunks of the large underlying extent if it happens to exist. Secondly,
+> it results in zeroing the range past the end of C2 up to ram_bytes. This
+> is particularly unpleasant with fs-verity as it can zero and set
+> uptodate pages in the verity virtual space past EOF. This incorrect
+> readahead behavior can lead to verity verification errors, if we iterate
+> in a way that happens to do the wrong readahead.
 
-Consider this case with a large compressed extent C and then later two
-non-compressed extents N1 and N2 written over C, leaving C1 and C2
-pointing to offset/len pairs of C:
-[               C                 ]
-[ N1 ][     C1     ][ N2 ][   C2  ]
+So this misses being clear, explicit, about the worst problem:
+buffered read corruption (even when not using verity).
+In that case the readahead loaded data from C into the page cache
+range for N2, so then later anyone doing a buffered read for N2's
+range, will get data from C.
 
-In such a case, ram_bytes for both C1 and C2 is the full uncompressed
-length of C. So starting readahead in C1 will expand the readahead past
-the end of C1, past N2, and into C2. This will then expand readahead
-again, to C2_start + ram_bytes, way past EOF. First of all, this is
-totally undesirable, we don't want to read the whole file in arbitrary
-chunks of the large underlying extent if it happens to exist. Secondly,
-it results in zeroing the range past the end of C2 up to ram_bytes. This
-is particularly unpleasant with fs-verity as it can zero and set
-uptodate pages in the verity virtual space past EOF. This incorrect
-readahead behavior can lead to verity verification errors, if we iterate
-in a way that happens to do the wrong readahead.
+This should be easy to turn into a test case for fstests too.
 
-Fix this by using em->len for readahead expansion, not em->ram_bytes,
-resulting in the expected behavior of stopping readahead at the extent
-boundary.
+With that changelog update:
 
-Reported-by: Max Chernoff <git@maxchernoff.ca>
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=2399898
-Fixes: 9e9ff875e417 ("btrfs: use readahead_expand() on compressed extents")
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/extent_io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index dfda8f6da194..3a8681566fc5 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -972,7 +972,7 @@ static void btrfs_readahead_expand(struct readahead_control *ractl,
- {
- 	const u64 ra_pos = readahead_pos(ractl);
- 	const u64 ra_end = ra_pos + readahead_length(ractl);
--	const u64 em_end = em->start + em->ram_bytes;
-+	const u64 em_end = em->start + em->len;
- 
- 	/* No expansion for holes and inline extents. */
- 	if (em->disk_bytenr > EXTENT_MAP_LAST_BYTE)
--- 
-2.50.1
-
+>
+> Fix this by using em->len for readahead expansion, not em->ram_bytes,
+> resulting in the expected behavior of stopping readahead at the extent
+> boundary.
+>
+> Reported-by: Max Chernoff <git@maxchernoff.ca>
+> Link: https://bugzilla.redhat.com/show_bug.cgi?id=3D2399898
+> Fixes: 9e9ff875e417 ("btrfs: use readahead_expand() on compressed extents=
+")
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/extent_io.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index dfda8f6da194..3a8681566fc5 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -972,7 +972,7 @@ static void btrfs_readahead_expand(struct readahead_c=
+ontrol *ractl,
+>  {
+>         const u64 ra_pos =3D readahead_pos(ractl);
+>         const u64 ra_end =3D ra_pos + readahead_length(ractl);
+> -       const u64 em_end =3D em->start + em->ram_bytes;
+> +       const u64 em_end =3D em->start + em->len;
+>
+>         /* No expansion for holes and inline extents. */
+>         if (em->disk_bytenr > EXTENT_MAP_LAST_BYTE)
+> --
+> 2.50.1
+>
+>
 
