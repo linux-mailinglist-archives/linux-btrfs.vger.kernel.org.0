@@ -1,170 +1,193 @@
-Return-Path: <linux-btrfs+bounces-17333-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17334-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69C00BB3D3F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 02 Oct 2025 13:55:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A30A2BB3D94
+	for <lists+linux-btrfs@lfdr.de>; Thu, 02 Oct 2025 14:07:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68FF53AFED0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Oct 2025 11:55:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13A641C6E8F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Oct 2025 12:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4387130FF02;
-	Thu,  2 Oct 2025 11:55:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC0F3101AB;
+	Thu,  2 Oct 2025 12:06:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BmLwhNC7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XKXyYlcx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D6727F010
-	for <linux-btrfs@vger.kernel.org>; Thu,  2 Oct 2025 11:55:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08FFD29ACC5
+	for <linux-btrfs@vger.kernel.org>; Thu,  2 Oct 2025 12:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759406141; cv=none; b=sCDzq/I+fh38bqqReOQIIwsNB7BZCLYBRnd+dmcjhFqBmQp5IZTIXbztOjO161fR7qeJIGH1lB0V9WKswR8FVu0CPe/ghequgYWlDkozTTET0w1octhyOMB8ZIwpmUB1ySoS59lMo7LXaMT6vaO7PxhzRjxBtDwwIbdRNd3PkOU=
+	t=1759406815; cv=none; b=b5EbsSb/4IHzrnh3/Zo1W+6H1K5FrvFDORXgE/Achet2WBUEtqlnRQ68A2G02y3yI51Ii6vTL/CWxU3nLlkn2lCp3kgPL6ZJ31r03hP/JPQ9diG6OZ/7yE6fKHAzDj/eukDb4EdgM/5g/FQsgdADCpGrAFuienbZlLn8uzz+61c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759406141; c=relaxed/simple;
-	bh=TjLNfcpyj8VQq8zPQxWfQv7IU90Q9MWCSFBVuqlbqLU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=vDeLIkvHJUsn911sJarcm2esIVM4aC9AjaH8LHJ//ldu80a+3NXRmXm9EUu6yEx4tsiAdT/jOqddnfWTy0g1hbq1D6AlxYdrx4FeL7I2dENuTOlf48IyFK4N9/Jsxi6BHZ3r9C1WymAaKAVYV5bkcjTx9jX165ZUj2k6Z0VErNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BmLwhNC7; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b54dd647edcso752922a12.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Oct 2025 04:55:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759406139; x=1760010939; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wt/5jmDAVyCoiW6KDcDMEjjPV7Rh60NwdAgacjtgDdw=;
-        b=BmLwhNC718N+z22PdsqvRN3TowvksWrM8kblxG9Qw0Z/cf8X+QUph5Mw+3jTZj8tF5
-         JNAcPur5IdLCRdx4VFLxFAJb8Zj6SXejYpXedhLby0SBPnHqgtEmD3Ng1S7ETDw1554F
-         +ITwtuFRzkPh8ZxpeG28vTyDRkCC1IuntpJFdGUc2tQgs3/E6BSVxoihRg5BLC7bEnik
-         x/e11OgdMG9eOQvkDo33H0Sbv2NiPF2shITPaSAyVBl2XxeaakR1uVnmCaxZdMxxHw60
-         u9M8BeRW30jVOaF7F7jmSHeSf/KEnsxvi/HuywxkPurXpVj8ZK0dgpaZVLOeBd9mgbt1
-         Meig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759406139; x=1760010939;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Wt/5jmDAVyCoiW6KDcDMEjjPV7Rh60NwdAgacjtgDdw=;
-        b=PxDo1COnhBeclkFQ5YpuGzNh+VsE86xrIGKEN7WJ9u8lIBo0k4Kzr/F8+oDysmSmAs
-         1XDtkL5asAMks5ycq6BoXtuqZfg5YhwtDcU7T8fjMpv0ZKEm9f2ps/M4L6nARJnJSphE
-         eRvqubNnFMyBC4HDmtZqHuBLUlSeVd4c0n7gWsu0+OXW52fRk+LX9/VWA5ZlzVVYO0x0
-         4Tbim65a5hoVdQY39CjTOSzx0w18jDC8fJ6ZXyd/sbiPWvyweENaV+bn6tTmcofXFgoB
-         5ZXHE/uNOmtsx+vNsJnljZIvZdPjbr/kmxjxjE8aWzHrqx/S5rJ3mO0as9cV8LQrOkgz
-         8bPg==
-X-Gm-Message-State: AOJu0YwPD8diCKvg3IWkkr/tW0NJClcgjXObPMzYK3qM8hyyhGm0gc4T
-	NgbREY+YDdGda/ba3OB5vnZDUTJh3pm8ALg6OgyAplWnhPFHg7De3eZr
-X-Gm-Gg: ASbGncs4lg8v/RHfZn/XcCho860GIQGWYoQCHYBU3XzuSbqAepZCkM+RrnEijnXE5tF
-	4CeBibtA011Ph7AkY4Nc9gmyqlOkA8EoDkn3V7rXQDJB0HTfZYk6DqPbConFsaiqtu1uk3NFWOq
-	LgtvXpvJsoY4LK9m7QikHImOd5bHmZl+Px6Zq2euZdpYn5jDg0do9sAmZtc1h2Gm+ZEoOYXX/NJ
-	POa9HhhorJdi+d645n47PkKVznqFzzUwX+AOxDGSoLJn8n+kuhHfdjhlK7F7zJrB0K0RoieITvy
-	BV/L2pCZHF0TyiMTu7b9POHK8Kmczzj2QOx3CXoIxHYsVw4OIpoVoip8Jqd4pOjVzy5uKvQwQZ6
-	yjvZ8wbrvTID5dxoLRaH8fl4j6rhVu8thiU8K2u8uxUJmXD4bUMoQ45yOsD4ivb6/mTGY0eRRSF
-	6ERyvBTTPL
-X-Google-Smtp-Source: AGHT+IEXDQv5WzWFvUN7TK5i6ZwaXNev1K2Rc7O8ISKUuj2oex0jxGVKtUV/MHSCJ8NvEldO1g3n/A==
-X-Received: by 2002:a17:903:1a0d:b0:28e:7ea4:2023 with SMTP id d9443c01a7336-28e7f441e8cmr81339725ad.46.1759406139161;
-        Thu, 02 Oct 2025 04:55:39 -0700 (PDT)
-Received: from fedora ([45.116.149.88])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-28e8d1d31c8sm20527535ad.95.2025.10.02.04.55.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Oct 2025 04:55:38 -0700 (PDT)
-From: rtapadia730@gmail.com
-To: dsterba@suse.com,
-	clm@fb.com,
-	fdmanana@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	khalid@kernel.org,
-	david.hunter.linux@gmail.com,
-	Rajeev Tapadia <rtapadia730@gmail.com>
-Subject: [PATCH] btrfs: push memalloc_nofs_save/restore() out of alloc_bitmap()
-Date: Thu,  2 Oct 2025 17:24:28 +0530
-Message-ID: <20251002115427.98773-2-rtapadia730@gmail.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1759406815; c=relaxed/simple;
+	bh=Nbh4wyT8gL/PEoNOfN4VmfCnnvFwDz5Q+0paGDd8VJs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=myuGsBa6iG9GVq6tdxwTMe+wAR8gV1Wv4mhpRftReZ0i0J2HqciZPvHMTpvOrl695a5ldUOlXxNjg3ThFmSW3TZRKJrBWIfkrf11ZIkdjPWwdohNZ52A9pxLZGQ+fYVVuqjlgbSlHnRftgI57phXWB/YZ0dpydNeXxC7ZVVI+gY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XKXyYlcx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D725C4CEFD
+	for <linux-btrfs@vger.kernel.org>; Thu,  2 Oct 2025 12:06:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759406814;
+	bh=Nbh4wyT8gL/PEoNOfN4VmfCnnvFwDz5Q+0paGDd8VJs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=XKXyYlcxRYtUcTte2d4U01heyyk6Dt7RpxSQ7v3SA/4rrE+IUV1/cjPZrOmh0d8x/
+	 3/ZqXJU7ZRyzsjoGmul38J9G/V7vl20GpDHcDSF+B1QxyqqjIkT11ZvaFYOYGYQWxM
+	 yfK6dpTs/xKPPBoyJvSgTIf2EpWKPP5Zujjm0oXPT321bs5q6eT27CPI2qqz/JIkGW
+	 JoahqguZiwFG082dT7qDwuv+nS6lm88WF/Hrk2cxEGn1lNed9aARUgcwEk/ohD9+hH
+	 SRBZYjv1tUyHL03qKAAzpvHIIL64JiFKZHHQ8NGFZ8vAZ+8NWeZ3fFR/KfIFQjIjNf
+	 F6SDbnvo0theQ==
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-636de696e18so2064926a12.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Oct 2025 05:06:54 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUZg4Kj5zDoGIGrkwwLLaLhn6+l3/6vqE+1SVN8Vdu7D0dylVVHYOUaoey0rwDjwNe6SSIVt5hSmHlu9w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwXEXqOeFWAvqAXXLFNiNvTHclQL/1wkpIS2Zr/8ehN177GpJqa
+	WPSHhl4tRvXPTrjKWTf+aXNoilFJsWtaGPBMKlRqYffiyAp8k4tPmBEiq1t6U/Sfc0dcbw8CeZm
+	nHwGOxUaZuqt9NCbpcNdMpPWE7RFJYZs=
+X-Google-Smtp-Source: AGHT+IEwsH1eW2XPFAIJ+tIHD4UNHb/OtD6V5jnjAa5cgie1ua/AuaGyryFSlOLuWSqSJSvUz1sBdd9TwuoYAiFCKbM=
+X-Received: by 2002:a17:907:3f0c:b0:b40:101d:cbc2 with SMTP id
+ a640c23a62f3a-b46e603775cmr897782766b.37.1759406813032; Thu, 02 Oct 2025
+ 05:06:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20251002115427.98773-2-rtapadia730@gmail.com>
+In-Reply-To: <20251002115427.98773-2-rtapadia730@gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 2 Oct 2025 13:06:15 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6BQpWAtfkA+tnW-fBkdqSDb4udAeJvdgHfKSKfpYWAOA@mail.gmail.com>
+X-Gm-Features: AS18NWBKD20MriKUG3vXBdALiQ8TQQKCtMwbpFng_RWeMXejVuGVIAyf1A71Pnk
+Message-ID: <CAL3q7H6BQpWAtfkA+tnW-fBkdqSDb4udAeJvdgHfKSKfpYWAOA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: push memalloc_nofs_save/restore() out of alloc_bitmap()
+To: rtapadia730@gmail.com
+Cc: dsterba@suse.com, clm@fb.com, fdmanana@suse.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	skhan@linuxfoundation.org, khalid@kernel.org, david.hunter.linux@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Rajeev Tapadia <rtapadia730@gmail.com>
+On Thu, Oct 2, 2025 at 12:55=E2=80=AFPM <rtapadia730@gmail.com> wrote:
+>
+> From: Rajeev Tapadia <rtapadia730@gmail.com>
+>
+> alloc_bitmap() currently wraps its allocation in memalloc_nofs_save
+> /restore(), but this hides allocation context from callers. GFP_NOFS is
+> required to avoid recursion into the filesystem during transaction commit=
+s,
 
-alloc_bitmap() currently wraps its allocation in memalloc_nofs_save
-/restore(), but this hides allocation context from callers. GFP_NOFS is
-required to avoid recursion into the filesystem during transaction commits,
-but the correct place to enforce that is at the call sites where we know
-recursion is unsafe.
+Not just during transaction commits, but because in every context we
+call alloc_bitmap() we are holding a transaction handle open, so if
+the memory allocation recurses into the filesystem and triggers the
+current transaction's commit, we deadlock - that's why we need NOFS.
 
-So now alloc_bitmap() just allocates a bitmap. Also completing the TODO
-comment.
+> but the correct place to enforce that is at the call sites where we know
+> recursion is unsafe.
+>
+> So now alloc_bitmap() just allocates a bitmap. Also completing the TODO
+> comment.
 
-Signed-off-by: Rajeev Tapadia <rtapadia730@gmail.com>
----
+No. Think for a moment...
 
-The patch was tested by enabling CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-All tests passed while booting the kernel in qemu.
+alloc_bitmap() only has two callers, and in both of them we need a
+NOFS allocation since we are holding a transaction handle...
+So it only makes sense to leave the setup of NOFS in alloc_bitmap() -
+do not move it to the callers and duplicate code...
 
- fs/btrfs/free-space-tree.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Just fix the comment, removing the TODO and mention that the reason we
+can't recurse is because we are holding a transaction handle open - it
+doesn't matter if we are in critical section of a transaction commit
+or not - all it matters is that we are holding a transaction handle
+open, so a GFP_KERNEL allocation results in a deadlock if it recurses
+to the filesystem to commit the transaction.
 
-diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index dad0b492a663..abdbdc74edf8 100644
---- a/fs/btrfs/free-space-tree.c
-+++ b/fs/btrfs/free-space-tree.c
-@@ -159,8 +159,6 @@ static inline u32 free_space_bitmap_size(const struct btrfs_fs_info *fs_info,
- 
- static unsigned long *alloc_bitmap(u32 bitmap_size)
- {
--	unsigned long *ret;
--	unsigned int nofs_flag;
- 	u32 bitmap_rounded_size = round_up(bitmap_size, sizeof(unsigned long));
- 
- 	/*
-@@ -168,13 +166,11 @@ static unsigned long *alloc_bitmap(u32 bitmap_size)
- 	 * into the filesystem as the free space bitmap can be modified in the
- 	 * critical section of a transaction commit.
- 	 *
--	 * TODO: push the memalloc_nofs_{save,restore}() to the caller where we
--	 * know that recursion is unsafe.
-+	 * This function's caller is responsible for setting the appropriate
-+	 * allocation context (e.g., using memalloc_nofs_save/restore())
-+	 * to prevent recursion.
- 	 */
--	nofs_flag = memalloc_nofs_save();
--	ret = kvzalloc(bitmap_rounded_size, GFP_KERNEL);
--	memalloc_nofs_restore(nofs_flag);
--	return ret;
-+	return kvzalloc(bitmap_rounded_size, GFP_KERNEL);
- }
- 
- static void le_bitmap_set(unsigned long *map, unsigned int start, int len)
-@@ -217,7 +213,9 @@ int btrfs_convert_free_space_to_bitmaps(struct btrfs_trans_handle *trans,
- 	int ret;
- 
- 	bitmap_size = free_space_bitmap_size(fs_info, block_group->length);
-+	unsigned int nofs_flag = memalloc_nofs_save();
- 	bitmap = alloc_bitmap(bitmap_size);
-+	memalloc_nofs_restore(nofs_flag);
- 	if (unlikely(!bitmap)) {
- 		ret = -ENOMEM;
- 		btrfs_abort_transaction(trans, ret);
-@@ -360,7 +358,9 @@ int btrfs_convert_free_space_to_extents(struct btrfs_trans_handle *trans,
- 	int ret;
- 
- 	bitmap_size = free_space_bitmap_size(fs_info, block_group->length);
-+	unsigned int nofs_flag = memalloc_nofs_save();
- 	bitmap = alloc_bitmap(bitmap_size);
-+	memalloc_nofs_restore(nofs_flag);
- 	if (unlikely(!bitmap)) {
- 		ret = -ENOMEM;
- 		btrfs_abort_transaction(trans, ret);
--- 
-2.51.0
 
+>
+> Signed-off-by: Rajeev Tapadia <rtapadia730@gmail.com>
+> ---
+>
+> The patch was tested by enabling CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+> All tests passed while booting the kernel in qemu.
+
+We test btrfs with fstests. The sanity tests aren't enough, they are
+mostly to test internal functions.
+
+>
+>  fs/btrfs/free-space-tree.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+> index dad0b492a663..abdbdc74edf8 100644
+> --- a/fs/btrfs/free-space-tree.c
+> +++ b/fs/btrfs/free-space-tree.c
+> @@ -159,8 +159,6 @@ static inline u32 free_space_bitmap_size(const struct=
+ btrfs_fs_info *fs_info,
+>
+>  static unsigned long *alloc_bitmap(u32 bitmap_size)
+>  {
+> -       unsigned long *ret;
+> -       unsigned int nofs_flag;
+>         u32 bitmap_rounded_size =3D round_up(bitmap_size, sizeof(unsigned=
+ long));
+>
+>         /*
+> @@ -168,13 +166,11 @@ static unsigned long *alloc_bitmap(u32 bitmap_size)
+>          * into the filesystem as the free space bitmap can be modified i=
+n the
+>          * critical section of a transaction commit.
+>          *
+> -        * TODO: push the memalloc_nofs_{save,restore}() to the caller wh=
+ere we
+> -        * know that recursion is unsafe.
+> +        * This function's caller is responsible for setting the appropri=
+ate
+> +        * allocation context (e.g., using memalloc_nofs_save/restore())
+> +        * to prevent recursion.
+>          */
+> -       nofs_flag =3D memalloc_nofs_save();
+> -       ret =3D kvzalloc(bitmap_rounded_size, GFP_KERNEL);
+> -       memalloc_nofs_restore(nofs_flag);
+> -       return ret;
+> +       return kvzalloc(bitmap_rounded_size, GFP_KERNEL);
+>  }
+>
+>  static void le_bitmap_set(unsigned long *map, unsigned int start, int le=
+n)
+> @@ -217,7 +213,9 @@ int btrfs_convert_free_space_to_bitmaps(struct btrfs_=
+trans_handle *trans,
+>         int ret;
+>
+>         bitmap_size =3D free_space_bitmap_size(fs_info, block_group->leng=
+th);
+> +       unsigned int nofs_flag =3D memalloc_nofs_save();
+
+Please don't declare variables in the middle of the code.
+We always declare variables at the top of the current scope.
+
+>         bitmap =3D alloc_bitmap(bitmap_size);
+> +       memalloc_nofs_restore(nofs_flag);
+>         if (unlikely(!bitmap)) {
+>                 ret =3D -ENOMEM;
+>                 btrfs_abort_transaction(trans, ret);
+> @@ -360,7 +358,9 @@ int btrfs_convert_free_space_to_extents(struct btrfs_=
+trans_handle *trans,
+>         int ret;
+>
+>         bitmap_size =3D free_space_bitmap_size(fs_info, block_group->leng=
+th);
+> +       unsigned int nofs_flag =3D memalloc_nofs_save();
+>         bitmap =3D alloc_bitmap(bitmap_size);
+> +       memalloc_nofs_restore(nofs_flag);
+>         if (unlikely(!bitmap)) {
+>                 ret =3D -ENOMEM;
+>                 btrfs_abort_transaction(trans, ret);
+> --
+> 2.51.0
+>
+>
 
