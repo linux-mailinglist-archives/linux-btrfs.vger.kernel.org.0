@@ -1,79 +1,80 @@
-Return-Path: <linux-btrfs+bounces-17326-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17327-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E136BB22F8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 02 Oct 2025 02:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3342BBB22FB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 02 Oct 2025 02:57:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E80F7B3806
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Oct 2025 00:55:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B6527A441E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Oct 2025 00:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB68618B0F;
-	Thu,  2 Oct 2025 00:57:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FFCC1758B;
+	Thu,  2 Oct 2025 00:57:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ttGgW2To";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ttGgW2To"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uEmPE5q0";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uEmPE5q0"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A57018027
-	for <linux-btrfs@vger.kernel.org>; Thu,  2 Oct 2025 00:57:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE89A1CFBA
+	for <linux-btrfs@vger.kernel.org>; Thu,  2 Oct 2025 00:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759366643; cv=none; b=WYcLKYsI2BN9unVia7+Zrtfh2Wdbbg9KX4PZ13yIlYqXXxkc3D4PpaScvQJtLieroqLPah8XmmVwy1ZXwmtHUY7L2yhVxLek5aqM7OgqhD4XQtelItolRmB2Ny9apXZZd+jmjkHvuQ+WAl/NdQixXSb0OQM296NqqkVWcd9ujwQ=
+	t=1759366649; cv=none; b=mhcs+3bezCQyb4S807REz+7GImUr+GrtQ7KM/5S6OIy+cnCt9pTmwE0F3r+lGhClfUJ8ds83mFSnbnpZCB843cxR6Dwm6/n1s8aV04l31V0RUuxq1xMQVJ9k1lOmoTi7gmY/5GvUHPOj0hzNCmxxUmjSvdC7yztf0M8SW7vKTUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759366643; c=relaxed/simple;
-	bh=MfL8dLiIRjcmfaOTbo19MAz8pA7aoinQtqCiR5LbtE8=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MYdzh3CAsUhonU4jMtMroohX85xKozd0xkzOEc9YK8GzuqKCNZZdW6z4E86SztFHWcse1LvCmqYgT2eR71jQKQxjYUVvvNMfrhEXHoZhrKDdCoOZsNcKovTvSL+HiL0czzVy+zICCxzWl4/n8EMZhFtloKHThGQ3IyJ1WDzOKC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ttGgW2To; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ttGgW2To; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1759366649; c=relaxed/simple;
+	bh=zQ2eP0Wsu8S6D6/fwiZpYzj5luYUbDweXvWMjZ4vwBc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=BAlhXeeaioMO7AiFNSIRA/UGP/2Rz3OcENuyCQpYrh22G0//BA8CNLB4NrgHNRygutDhaMFshWFt2S6BZ8SPjLgFRnRcY0dMweeIKG3fsqR3MDI9JLp2HqEk7/cZkGlKo/dCT6BJNeyqojOdUOg/X2vXj3dUKb9E5aUyLkMU0UI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uEmPE5q0; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uEmPE5q0; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 006331F7DD;
-	Thu,  2 Oct 2025 00:57:13 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C69E81F7FD;
+	Thu,  2 Oct 2025 00:57:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1759366633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1759366634; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9zNGn/QxHTACs2CoJNmdJmZrYPXcnqCGM21xFM8FRyM=;
-	b=ttGgW2ToMdKyF1+u0gbAkV3l7qMGDQ04SXaJVz1jwKXAqf+ipPJ7Nu0LGJhuYvDQe/2G8g
-	YGf8BqNzH7rXjteii9G+G4Ew1xO74Z/N4JLxW9IAkMvlraFIPG/WLwa/TlBXUTL6qLoqOP
-	A3lqIxENbugv8aE7oe3JqLEzw8U9fh8=
+	bh=9wrFG8VRkzrSlM7VOMmYiWOuM4PK9dJCri8aqCE8F94=;
+	b=uEmPE5q0dFsCy6Gma6Ar8+GXn+O3ooVHTxHTlC2RY5pMkFTo6o5fxG0tvoDJ+qRcCQYf7G
+	04VzWZs18b3zmCvfoSCyq+D6JVBLkaIyfMGTgCFgoaOa1fLj/B25mpuBVWZrom1te3GBOM
+	tRNZWS83A0Lj+zMyJPthess7HQU/Udg=
 Authentication-Results: smtp-out2.suse.de;
-	none
+	dkim=pass header.d=suse.com header.s=susede1 header.b=uEmPE5q0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1759366633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1759366634; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9zNGn/QxHTACs2CoJNmdJmZrYPXcnqCGM21xFM8FRyM=;
-	b=ttGgW2ToMdKyF1+u0gbAkV3l7qMGDQ04SXaJVz1jwKXAqf+ipPJ7Nu0LGJhuYvDQe/2G8g
-	YGf8BqNzH7rXjteii9G+G4Ew1xO74Z/N4JLxW9IAkMvlraFIPG/WLwa/TlBXUTL6qLoqOP
-	A3lqIxENbugv8aE7oe3JqLEzw8U9fh8=
+	bh=9wrFG8VRkzrSlM7VOMmYiWOuM4PK9dJCri8aqCE8F94=;
+	b=uEmPE5q0dFsCy6Gma6Ar8+GXn+O3ooVHTxHTlC2RY5pMkFTo6o5fxG0tvoDJ+qRcCQYf7G
+	04VzWZs18b3zmCvfoSCyq+D6JVBLkaIyfMGTgCFgoaOa1fLj/B25mpuBVWZrom1te3GBOM
+	tRNZWS83A0Lj+zMyJPthess7HQU/Udg=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EF58113A42;
-	Thu,  2 Oct 2025 00:57:11 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 76F0613A42;
+	Thu,  2 Oct 2025 00:57:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kL57K+fN3WgxVgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Thu, 02 Oct 2025 00:57:11 +0000
+	id 6MkIDunN3WgxVgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 02 Oct 2025 00:57:13 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org,
 	fstests@vger.kernel.org
-Subject: [PATCH v2 1/3] btrfs/012 btrfs/136: skip the test if ext* doesn't support the block size
-Date: Thu,  2 Oct 2025 10:26:46 +0930
-Message-ID: <20251002005648.47021-2-wqu@suse.com>
+Cc: Zorro Lang <zlang@redhat.com>
+Subject: [PATCH v2 2/3] btrfs/192 btrfs/30[456]: explicitly specify block size to avoid false alerts
+Date: Thu,  2 Oct 2025 10:26:47 +0930
+Message-ID: <20251002005648.47021-3-wqu@suse.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20251002005648.47021-1-wqu@suse.com>
 References: <20251002005648.47021-1-wqu@suse.com>
@@ -84,119 +85,225 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: C69E81F7FD
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
+	MX_GOOD(-0.01)[];
+	URIBL_BLOCKED(0.00)[suse.com:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	ARC_NA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
-	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -2.80
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Score: -3.01
 
-[FALSE ALERT]
-When testing btrfs bs > ps support, the test cases btrfs/012 and
-btrfs/136 fail like the following:
+[BUG]
+When running the experimental block size > page support, the test cases
+btrfs/192 and btrfs/30[456] fail with the following error:
 
- FSTYP         -- btrfs
- PLATFORM      -- Linux/x86_64 btrfs-vm 6.17.0-rc4-custom+ #285 SMP PREEMPT_DYNAMIC Mon Sep 15 14:40:01 ACST 2025
- MKFS_OPTIONS  -- -s 8k /dev/mapper/test-scratch1
- MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
+FSTYP         -- btrfs
+PLATFORM      -- Linux/x86_64 btrfs-vm 6.17.0-rc4-custom+ #287 SMP PREEMPT_DYNAMIC Thu Sep 18 16:42:54 ACST 2025
+MKFS_OPTIONS  -- -s 8k /dev/mapper/test-scratch1
+MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
 
- btrfs/012       [failed, exit status 1]- output mismatch (see /home/adam/xfstests/results//btrfs/012.out.bad)
-     --- tests/btrfs/012.out	2024-07-17 16:27:18.790000343 +0930
-     +++ /home/adam/xfstests/results//btrfs/012.out.bad	2025-09-15 16:32:55.185922173 +0930
-     @@ -1,7 +1,11 @@
-      QA output created by 012
-     +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
-     +       dmesg(1) may have more information after failed mount system call.
-     +mkdir: cannot create directory '/mnt/scratch/stressdir': File exists
-     +umount: /mnt/scratch: not mounted.
-      Checking converted btrfs against the original one:
-     -OK
-     ...
-     (Run 'diff -u /home/adam/xfstests/tests/btrfs/012.out /home/adam/xfstests/results//btrfs/012.out.bad'  to see the entire diff)
+btrfs/192 436s ... [failed, exit status 1]- output mismatch (see /home/adam/xfstests/results//btrfs/192.out.bad)
+    --- tests/btrfs/192.out	2022-05-11 11:25:30.746666664 +0930
+    +++ /home/adam/xfstests/results//btrfs/192.out.bad	2025-09-18 18:34:10.511152624 +0930
+    @@ -1,2 +1,2 @@
+     QA output created by 192
+    -Silence is golden
+    +ERROR: illegal nodesize 4096 (smaller than 8192)
+    ...
+    (Run 'diff -u /home/adam/xfstests/tests/btrfs/192.out /home/adam/xfstests/results//btrfs/192.out.bad'  to see the entire diff)
 
- btrfs/136 3s ... - output mismatch (see /home/adam/xfstests/results//btrfs/136.out.bad)
-     --- tests/btrfs/136.out	2022-05-11 11:25:30.743333331 +0930
-     +++ /home/adam/xfstests/results//btrfs/136.out.bad	2025-09-19 07:00:00.395280850 +0930
-     @@ -1,2 +1,10 @@
-      QA output created by 136
-     +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
-     +       dmesg(1) may have more information after failed mount system call.
-     +umount: /mnt/scratch: not mounted.
-     +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
-     +       dmesg(1) may have more information after failed mount system call.
-     +umount: /mnt/scratch: not mounted.
-     ...
-     (Run 'diff -u /home/adam/xfstests/tests/btrfs/136.out /home/adam/xfstests/results//btrfs/136.out.bad'  to see the entire diff)
+btrfs/304 1s ... - output mismatch (see /home/adam/xfstests/results//btrfs/304.out.bad)
+    --- tests/btrfs/304.out	2024-07-15 16:17:42.639999997 +0930
+    +++ /home/adam/xfstests/results//btrfs/304.out.bad	2025-09-18 18:44:13.761000000 +0930
+    @@ -10,7 +10,7 @@
+     leaf XXXXXXXXX flags 0x1(WRITTEN) backref revision 1
+     fs uuid <UUID>
+     chunk uuid <UUID>
+    -	item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 16
+    +	item 0 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 16
+     			stripe 0 devid 1 physical XXXXXXXXX
+     total bytes XXXXXXXX
+    ...
+    (Run 'diff -u /home/adam/xfstests/tests/btrfs/304.out /home/adam/xfstests/results//btrfs/304.out.bad'  to see the entire diff)
+
+btrfs/305 1s ... - output mismatch (see /home/adam/xfstests/results//btrfs/305.out.bad)
+    --- tests/btrfs/305.out	2024-07-15 16:17:42.639999997 +0930
+    +++ /home/adam/xfstests/results//btrfs/305.out.bad	2025-09-18 18:44:14.914196231 +0930
+    @@ -12,11 +12,9 @@
+     leaf XXXXXXXXX flags 0x1(WRITTEN) backref revision 1
+     fs uuid <UUID>
+     chunk uuid <UUID>
+    -	item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 16
+    +	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 16
+     			stripe 0 devid 1 physical XXXXXXXXX
+    -	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 16
+    ...
+    (Run 'diff -u /home/adam/xfstests/tests/btrfs/305.out /home/adam/xfstests/results//btrfs/305.out.bad'  to see the entire diff)
+
+btrfs/306 1s ... - output mismatch (see /home/adam/xfstests/results//btrfs/306.out.bad)
+    --- tests/btrfs/306.out	2024-07-15 16:17:42.639999997 +0930
+    +++ /home/adam/xfstests/results//btrfs/306.out.bad	2025-09-18 18:44:16.075000000 +0930
+    @@ -14,7 +14,7 @@
+     chunk uuid <UUID>
+     	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 16
+     			stripe 0 devid 1 physical XXXXXXXXX
+    -	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 16
+    +	item 1 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 16
+     			stripe 0 devid 2 physical XXXXXXXXX
+     total bytes XXXXXXXX
+    ...
+    (Run 'diff -u /home/adam/xfstests/tests/btrfs/306.out /home/adam/xfstests/results//btrfs/306.out.bad'  to see the entire diff)
+
+Please note that, btrfs bs > ps is still under development.
+This is only an early run to expose false alerts.
 
 [CAUSE]
-Currently ext* doesn't support block size larger than page size, thus
-at mkfs time it will output the following warning:
+The test case btrfs/192 requires 4K nodesize to bump up tree size, and
+btrfs/30[456] all requires 4K block size as the workload is designed
+with that.
 
- Warning: blocksize 8192 not usable on most systems.
- mke2fs 1.47.3 (8-Jul-2025)
- Warning: 8192-byte blocks too big for system (max 4096), forced to continue
-
-Furthermore at ext* mount time it will fail with the following dmesg:
-
- EXT4-fs (loop0): bad block size 8192
+However if the QA runner is specify other block size (8K in this case),
+it will break the 4K block size assumption of those tests, either
+results mkfs failure in btrfs/192, or output difference for
+btrfs/30[456].
 
 [FIX]
-Check if the mount of the newly created ext* succeeded.
+Just explicitly specify the 4K block size during mkfs.
 
-If not and the block size is larger than page size, we know it's some
-block size ext* not yet supported, and skip the test case.
+And since we're here, remove the out-of-date page size check, as btrfs
+has subpage block size support for a while.
+Instead use a more accurate supported sector size check, this allows the
+test to be run on aarch64 with 64K page size.
 
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- tests/btrfs/012 | 3 +++
- tests/btrfs/136 | 3 +++
- 2 files changed, 6 insertions(+)
+ tests/btrfs/192 | 8 ++------
+ tests/btrfs/304 | 5 ++---
+ tests/btrfs/305 | 5 ++---
+ tests/btrfs/306 | 5 ++---
+ 4 files changed, 8 insertions(+), 15 deletions(-)
 
-diff --git a/tests/btrfs/012 b/tests/btrfs/012
-index f41d7e4e..6914fba6 100755
---- a/tests/btrfs/012
-+++ b/tests/btrfs/012
-@@ -42,6 +42,9 @@ $MKFS_EXT4_PROG -F -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
- 	_notrun "Could not create ext4 filesystem"
- # Manual mount so we don't use -t btrfs or selinux context
- mount -t ext4 $SCRATCH_DEV $SCRATCH_MNT
-+if [ $? -ne 0 -a $BLOCK_SIZE -gt $(_get_page_size) ]; then
-+	_notrun "block size $BLOCK_SIZE is not supported by ext4"
-+fi
+diff --git a/tests/btrfs/192 b/tests/btrfs/192
+index 0a8ab2c1..56ec2b28 100755
+--- a/tests/btrfs/192
++++ b/tests/btrfs/192
+@@ -33,11 +33,7 @@ _require_btrfs_mkfs_feature "no-holes"
+ _require_log_writes
+ _require_scratch
+ _require_attrs
+-
+-# We require a 4K nodesize to ensure the test isn't too slow
+-if [ $(_get_page_size) -ne 4096 ]; then
+-	_notrun "This test doesn't support non-4K page size yet"
+-fi
++_require_btrfs_support_sectorsize 4096
  
- echo "populating the initial ext fs:" >> $seqres.full
- mkdir "$SCRATCH_MNT/$BASENAME"
-diff --git a/tests/btrfs/136 b/tests/btrfs/136
-index 65bbcf51..fd24d3f8 100755
---- a/tests/btrfs/136
-+++ b/tests/btrfs/136
-@@ -45,6 +45,9 @@ $MKFS_EXT4_PROG -F -t ext3 -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
+ runtime=30
+ nr_cpus=$("$here/src/feature" -o)
+@@ -55,7 +51,7 @@ $BLKDISCARD_PROG $LOGWRITES_DMDEV > /dev/null 2>&1
+ # Use no-holes to avoid warnings of missing file extent items (expected
+ # for holes due to mix of buffered and direct IO writes).
+ # And use 4K nodesize to bump tree height.
+-_log_writes_mkfs -O no-holes -n 4k >> $seqres.full
++_log_writes_mkfs -O no-holes -n 4k -s 4k >> $seqres.full
+ _log_writes_mount
  
- # mount and populate non-extent file
- mount -t ext3 $SCRATCH_DEV $SCRATCH_MNT
-+if [ $? -ne 0 -a $BLOCK_SIZE -gt $(_get_page_size) ]; then
-+	_notrun "block size $BLOCK_SIZE is not supported by ext3"
-+fi
- populate_data "$SCRATCH_MNT/ext3_ext4_data/ext3"
- _scratch_unmount
+ $BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/src > /dev/null
+diff --git a/tests/btrfs/304 b/tests/btrfs/304
+index b7ed66af..18f73590 100755
+--- a/tests/btrfs/304
++++ b/tests/btrfs/304
+@@ -20,8 +20,7 @@ _require_btrfs_fs_feature "raid_stripe_tree"
+ _require_btrfs_fs_feature "free_space_tree"
+ _require_btrfs_free_space_tree
+ _require_btrfs_no_compress
+-
+-test $(_get_page_size) -eq 4096 || _notrun "this tests requires 4k pagesize"
++_require_btrfs_support_sectorsize 4096
  
+ test_4k_write()
+ {
+@@ -31,7 +30,7 @@ test_4k_write()
+ 	_scratch_dev_pool_get $ndevs
+ 
+ 	echo "==== Testing $profile ===="
+-	_scratch_pool_mkfs -d $profile -m $profile -O raid-stripe-tree
++	_scratch_pool_mkfs -s 4k -d $profile -m $profile -O raid-stripe-tree
+ 	_scratch_mount
+ 
+ 	$XFS_IO_PROG -fc "pwrite 0 4k" "$SCRATCH_MNT/foo" | _filter_xfs_io
+diff --git a/tests/btrfs/305 b/tests/btrfs/305
+index ad060853..45747627 100755
+--- a/tests/btrfs/305
++++ b/tests/btrfs/305
+@@ -21,8 +21,7 @@ _require_btrfs_fs_feature "raid_stripe_tree"
+ _require_btrfs_fs_feature "free_space_tree"
+ _require_btrfs_free_space_tree
+ _require_btrfs_no_compress
+-
+-test $(_get_page_size) -eq 4096 || _notrun "this tests requires 4k pagesize"
++_require_btrfs_support_sectorsize 4096
+ 
+ test_8k_new_stripe()
+ {
+@@ -32,7 +31,7 @@ test_8k_new_stripe()
+ 	_scratch_dev_pool_get $ndevs
+ 
+ 	echo "==== Testing $profile ===="
+-	_scratch_pool_mkfs -d $profile -m $profile -O raid-stripe-tree
++	_scratch_pool_mkfs -s 4k -d $profile -m $profile -O raid-stripe-tree
+ 	_scratch_mount
+ 
+ 	# Fill the first stripe up to 64k - 4k
+diff --git a/tests/btrfs/306 b/tests/btrfs/306
+index b47c446b..db3defc8 100755
+--- a/tests/btrfs/306
++++ b/tests/btrfs/306
+@@ -21,8 +21,7 @@ _require_btrfs_fs_feature "raid_stripe_tree"
+ _require_btrfs_fs_feature "free_space_tree"
+ _require_btrfs_free_space_tree
+ _require_btrfs_no_compress
+-
+-test $(_get_page_size) -eq 4096 || _notrun "this tests requires 4k pagesize"
++_require_btrfs_support_sectorsize 4096
+ 
+ test_4k_write_64koff()
+ {
+@@ -32,7 +31,7 @@ test_4k_write_64koff()
+ 	_scratch_dev_pool_get $ndevs
+ 
+ 	echo "==== Testing $profile ===="
+-	_scratch_pool_mkfs -d $profile -m $profile -O raid-stripe-tree
++	_scratch_pool_mkfs -s 4k -d $profile -m $profile -O raid-stripe-tree
+ 	_scratch_mount
+ 
+ 	# precondition one stripe
 -- 
 2.51.0
 
