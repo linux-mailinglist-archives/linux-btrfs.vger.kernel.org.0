@@ -1,242 +1,201 @@
-Return-Path: <linux-btrfs+bounces-17331-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17332-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86FEBBB25A2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 02 Oct 2025 04:20:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85C8BBB2A6B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 02 Oct 2025 08:58:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08CFF3A26F9
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Oct 2025 02:20:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4197D7B0504
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Oct 2025 06:56:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5845232785;
-	Thu,  2 Oct 2025 02:20:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF32A2C029B;
+	Thu,  2 Oct 2025 06:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="U7EPR1Gx";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PBwvPcHr"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="USlOnJl1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b2-smtp.messagingengine.com (fout-b2-smtp.messagingengine.com [202.12.124.145])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F741218AB9
-	for <linux-btrfs@vger.kernel.org>; Thu,  2 Oct 2025 02:20:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8DB2BDC0A
+	for <linux-btrfs@vger.kernel.org>; Thu,  2 Oct 2025 06:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759371611; cv=none; b=q6BCTSl82t6o5BFwxiDq7BGt0HXEksTeW9qN8pVHtYsDpKTMkrKTI22v0HQFUQOaBuoDPBmP3D0USjt9MOrM646KcQGsNfe4hYAqiKyPm/KctcqZeY46j2s62oQ9ivVpVdN6IscUknIhr9NmE2w4UxugJWVIrAnYOCfNeII+uC4=
+	t=1759388300; cv=none; b=UaIyXpvE4TNoW/SXw51EtqOockAHfWIW8POYMPjhmCEWM0cDFnjlFNQSnED6Mm066BucqJKOD4txhW/VzhP2pZpbWww/mtLk+G0FlpQtCWur9ZAHT5ohP+2lZWNta57IbRuHzDl7NUO9o2vzX01S0cIouTr50hYL7HLlsWIKdpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759371611; c=relaxed/simple;
-	bh=WaOuGrxQWBW/khbIyjNKdZrNYkBbwkfe0isxDEptgYc=;
+	s=arc-20240116; t=1759388300; c=relaxed/simple;
+	bh=Mbay8p6OAxhIy4VBUB0Llxal02RTAw3uLQbas9/xcbE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pccpWbbjq5kN3o6xgk+kprsjWgyjbC05DuIrU917M2LqobIvQv0YU5IzE0j/BCgdbo8vzKK+sMZ3zZ13OQwNxeo7k50iDRo5r8gsE6G9j9+YQlV5cWHPwguHaShabQoOA1+epvKA5Vc//F35Xa/IbeY3AD6JjzGw0bGnHLF9Nxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=U7EPR1Gx; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PBwvPcHr; arc=none smtp.client-ip=202.12.124.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailfout.stl.internal (Postfix) with ESMTP id 2AF981D001C9;
-	Wed,  1 Oct 2025 22:20:08 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-02.internal (MEProxy); Wed, 01 Oct 2025 22:20:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1759371608;
-	 x=1759458008; bh=UStywN7gDRu61+OIGoRMEElk6OJZnyNz4uOgF2vHE5M=; b=
-	U7EPR1GxDRli0reCHxPTE+p3bK68CtU6TjxwxHI5zcw2JrUSRueHMIbeOzBrNHtv
-	yEJuluhesa2bEcMBRXf1FVq7sPpPh5QZiouLDIgK8pNdF+krsAq841AkIi+1a/yh
-	y5QZVHErqvUERhFQ9afn05m1YFfxjokoBlSRv2d4/zWB+JyB5mRkCLEZl2iHc7s+
-	afSv3iFQXZoYDdum89BM0XlS8lh0/8KRFrdA6AjFiPssZPs6+mOMjmQRZMoqd6fW
-	hPIA0UJpU5GU7G6tbHUsC5f2kHErbCCiPIBME0R/8KdNWfhZMlX8LPxXwA9DGUGe
-	ZryKUPqBP26EJ/XU5fPJLw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1759371608; x=
-	1759458008; bh=UStywN7gDRu61+OIGoRMEElk6OJZnyNz4uOgF2vHE5M=; b=P
-	BwvPcHrqTq65K2g/5KT8xtZzk6Sj9K3YCW0cicacVbnbPTu/jirvPqm/QWkX4Tj0
-	UyN02iUlLsMeOUROImqTtnK2k8wE9HXVF99fzlwMslMP4EAQrNTpvBBWQ/H42r2f
-	2dbjAzqb1A3jvdngZTLTVe3yfyNTj4RvqC89sBGKr8aF79ygSjRqtlzkfaN7ySmM
-	hGQIwIW7+1JxJyg4LhU9qREQAManZmK/1rC0NQnoNO4/QjPE8Y5i78z+iDQyL1Tt
-	7UAZ7eanhgXixiS34PRFnxggKchmE35uVIkdZ3pHqnKihwCF/N5/rnCP2QVdq0V5
-	EaoG0qfZ8XosE72SmWIvQ==
-X-ME-Sender: <xms:V-HdaIIC4dzZBFxRlQLDth9PufhyGLtmT135muemWwV0QWzSukBzpQ>
-    <xme:V-HdaPnUuPHmv08x6-E6pRuwv-tiIFsStggTzUpgIJMg-taRR2Tr55Cvp1WwRq88_
-    70QHaWEClV2VvPPQhsc_0sX-E2N-aqTfDbnYesE_ZGviwP83Pq8FdM>
-X-ME-Received: <xmr:V-HdaGFsFHMLi6Xc5HxTXliTA3Hrcaa2d3bVVr5LFKalGevJPRzVg7iRawLQkdimLCqe_iGiHvk9YIuAiGGrCOFT2Bk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdekgeektdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpedule
-    fhtdfhteduvdethfeftdeitdethedvtdekvdeltddvveegtdeuuddtiedtieenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
-    hrrdhiohdpnhgspghrtghpthhtohepfedpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
-    ohepfihquhesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvh
-    hgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehf
-    sgdrtghomh
-X-ME-Proxy: <xmx:V-HdaPHOR0kQTDL-ITu4ipgJmtHZl0KzApAC3tnk0AmZDFuYsAHY7w>
-    <xmx:V-HdaDMeDeYHY9CgkoGCzKg4-GNh52NYpNdVyF8JLdWt0iUzrS4ZRQ>
-    <xmx:V-HdaOEuTdgYitRUl6IbGeIJ1oJK_4D3jkG2x8b6tnZ7DU2MCsnACw>
-    <xmx:V-HdaKMlOjTUa71E1G2HiUAmp3NJSmPECx0A96a0o-9mYT8SJU6Zhg>
-    <xmx:WOHdaItX_nmC2m7DuAd0jptum3eC46sfOkNti6Rwlyb0VjlGnYWlm39i>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Oct 2025 22:20:07 -0400 (EDT)
-Date: Wed, 1 Oct 2025 19:20:05 -0700
-From: Boris Burkov <boris@bur.io>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FAcSDzcR04LKUOlPXBGj5ujSNdGul8JwzMvpTj6Ej0uF4dcLfN4r7CWWiNIDxEmaYWPI2VcF+SAwSBM+Myx3D6aIbdpQAeIiKVu4ddCpj5RBxZgtL4TwDSW9daakLKxejgL6vd2gszBItGa/FAUFUUf2ZRLs8/xgFOdOy8QyBkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=USlOnJl1; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1759388296;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zp3VaLXBhBf7B6czUgI06vrP6mixrXVc+Bnb0mXPHoo=;
+	b=USlOnJl1GZYZvQV23pqVSVI3h7UCsRn/rVpNgyYMVJTcpMU/gq5GSFfu1xlJxN/NGrN/uB
+	nB6h/3b2Tljlc0zIl5LhaJTECU09SoVxmqclTgKeV/GholvCusCUMUrxa2B/G+Z1x+LTNG
+	bzGW2UREAekq+t/W4EiWESbT+Kppiew=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-627-78vD1mCEMqOhOdVg2HJbTw-1; Thu, 02 Oct 2025 02:58:15 -0400
+X-MC-Unique: 78vD1mCEMqOhOdVg2HJbTw-1
+X-Mimecast-MFC-AGG-ID: 78vD1mCEMqOhOdVg2HJbTw_1759388294
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-783604212ebso1443782b3a.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Oct 2025 23:58:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759388294; x=1759993094;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zp3VaLXBhBf7B6czUgI06vrP6mixrXVc+Bnb0mXPHoo=;
+        b=l7xeglt1/QaRRoZsjhXwEJnTZZyLPVNmzYq+O6ul52o3xdgp8Ct/0E/SxBlhXxWbXa
+         LQDGONOnVKa2fjI8A0n/yXRJpO9Dvyp5sRRwpDZePvb4qmHy9nVOKxSAaH+IxU5x7G4B
+         BblwABrpOazKbHF2b4XxXG3wZczZth+wfIbZDlRFWZ1Kcg2TLVZ0DodbrzOMtrTeqcwO
+         0HSx86uHTOHF7UP1+dJFIKlHoCde970Y8hfByl/If5Ou8OXy/wWBruiKmrFeDkRKNhEU
+         z3eQRubApYj/vM4927vMCpTXk1oLm1MFIE9pwZeFRrQYjTaXExdtZRwTK+8qtgyL4Yv4
+         /n0A==
+X-Gm-Message-State: AOJu0YwfCl4rESqqtfB9bXZd7hlGX/9L895AMMtMsve0zhY86G280tst
+	TQYkrQFAiX+p3N2fSC8bSRkwM5Iw58FBle3CeLWOdAWlx0u9GVT8WYF0WmRU/VGDbG5mv99VIgh
+	B/6UF24itcf5bXarM6c0+rWdcQHjqrygiVyXCVZ/onpbbA3e+TopQxzF3szKM/iSrsgbwA6y/
+X-Gm-Gg: ASbGncsOH9EoOs4SNYslYuWkG1OwnR30dNSos1R0L5sV6cATcBSZJ4BLkq67trARN6H
+	QgLTA6qlRakX1SvHftxQB9aEByZOGqlE6JdpFF1abQNV4ZS8+CtEzbIvWkSjmkRtTzv6G/2NSEN
+	McKHFLdoSe3z4ooedbQPiIwYgSH5WgFIibTgUdAET2oZ87bEjoE1rVcLVLBYER92JHJ4Gy9IJ44
+	AleM8qxzgI0NTHN5dgkPLja4xdJQcn3xYDZGUv7Sw00//8ku7EIuj/gmaYVHLJ8d8A1kLBVTs3C
+	/Fh4M/vTgEdMekgG7B4cTm5lWAbJdCX5cM9H6mECl6u9/wTrvSZTx7zZOcn55BIb2bo1a7xPhrW
+	DYC+xda7W9w==
+X-Received: by 2002:a05:6a00:1893:b0:781:2624:ed5c with SMTP id d2e1a72fcca58-78af417f373mr7372645b3a.26.1759388293707;
+        Wed, 01 Oct 2025 23:58:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH5ImDArdMdVNl0+p2Gw3C2BINhKXT4NpiUZL2yMf2CS0xOzCL2dhRE5V9Gej+wlYNZO+yWNQ==
+X-Received: by 2002:a05:6a00:1893:b0:781:2624:ed5c with SMTP id d2e1a72fcca58-78af417f373mr7372616b3a.26.1759388293122;
+        Wed, 01 Oct 2025 23:58:13 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-78b01fb1902sm1527258b3a.31.2025.10.01.23.58.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Oct 2025 23:58:12 -0700 (PDT)
+Date: Thu, 2 Oct 2025 14:58:08 +0800
+From: Zorro Lang <zlang@redhat.com>
 To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: fix racy bitfield write in
- btrfs_clear_space_info_full()
-Message-ID: <20251002022005.GA3549334@zen.localdomain>
-References: <0d1622fd106eeefff16ae7f2d1b75a3058c3fa66.1759367390.git.boris@bur.io>
- <4a575172-4984-46b3-a82c-c3e3ba42819a@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] btrfs/012 btrfs/136: skip the test if ext*
+ doesn't support the block size
+Message-ID: <20251002065808.6cxusfy72larui34@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20251002005648.47021-1-wqu@suse.com>
+ <20251002005648.47021-2-wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4a575172-4984-46b3-a82c-c3e3ba42819a@suse.com>
+In-Reply-To: <20251002005648.47021-2-wqu@suse.com>
 
-On Thu, Oct 02, 2025 at 11:19:42AM +0930, Qu Wenruo wrote:
+On Thu, Oct 02, 2025 at 10:26:46AM +0930, Qu Wenruo wrote:
+> [FALSE ALERT]
+> When testing btrfs bs > ps support, the test cases btrfs/012 and
+> btrfs/136 fail like the following:
+> 
+>  FSTYP         -- btrfs
+>  PLATFORM      -- Linux/x86_64 btrfs-vm 6.17.0-rc4-custom+ #285 SMP PREEMPT_DYNAMIC Mon Sep 15 14:40:01 ACST 2025
+>  MKFS_OPTIONS  -- -s 8k /dev/mapper/test-scratch1
+>  MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
+> 
+>  btrfs/012       [failed, exit status 1]- output mismatch (see /home/adam/xfstests/results//btrfs/012.out.bad)
+>      --- tests/btrfs/012.out	2024-07-17 16:27:18.790000343 +0930
+>      +++ /home/adam/xfstests/results//btrfs/012.out.bad	2025-09-15 16:32:55.185922173 +0930
+>      @@ -1,7 +1,11 @@
+>       QA output created by 012
+>      +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
+>      +       dmesg(1) may have more information after failed mount system call.
+>      +mkdir: cannot create directory '/mnt/scratch/stressdir': File exists
+>      +umount: /mnt/scratch: not mounted.
+>       Checking converted btrfs against the original one:
+>      -OK
+>      ...
+>      (Run 'diff -u /home/adam/xfstests/tests/btrfs/012.out /home/adam/xfstests/results//btrfs/012.out.bad'  to see the entire diff)
+> 
+>  btrfs/136 3s ... - output mismatch (see /home/adam/xfstests/results//btrfs/136.out.bad)
+>      --- tests/btrfs/136.out	2022-05-11 11:25:30.743333331 +0930
+>      +++ /home/adam/xfstests/results//btrfs/136.out.bad	2025-09-19 07:00:00.395280850 +0930
+>      @@ -1,2 +1,10 @@
+>       QA output created by 136
+>      +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
+>      +       dmesg(1) may have more information after failed mount system call.
+>      +umount: /mnt/scratch: not mounted.
+>      +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
+>      +       dmesg(1) may have more information after failed mount system call.
+>      +umount: /mnt/scratch: not mounted.
+>      ...
+>      (Run 'diff -u /home/adam/xfstests/tests/btrfs/136.out /home/adam/xfstests/results//btrfs/136.out.bad'  to see the entire diff)
+> 
+> [CAUSE]
+> Currently ext* doesn't support block size larger than page size, thus
+> at mkfs time it will output the following warning:
+> 
+>  Warning: blocksize 8192 not usable on most systems.
+>  mke2fs 1.47.3 (8-Jul-2025)
+>  Warning: 8192-byte blocks too big for system (max 4096), forced to continue
+> 
+> Furthermore at ext* mount time it will fail with the following dmesg:
+> 
+>  EXT4-fs (loop0): bad block size 8192
+> 
+> [FIX]
+> Check if the mount of the newly created ext* succeeded.
+> 
+> If not and the block size is larger than page size, we know it's some
+> block size ext* not yet supported, and skip the test case.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+
+This version is good to me, if there're not more review points btrfs list,
+I'll merge this patchset in next release. Thanks!
+
+Reviewed-by: Zorro Lang <zlang@redhat.com>
+
+>  tests/btrfs/012 | 3 +++
+>  tests/btrfs/136 | 3 +++
+>  2 files changed, 6 insertions(+)
+> 
+> diff --git a/tests/btrfs/012 b/tests/btrfs/012
+> index f41d7e4e..6914fba6 100755
+> --- a/tests/btrfs/012
+> +++ b/tests/btrfs/012
+> @@ -42,6 +42,9 @@ $MKFS_EXT4_PROG -F -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
+>  	_notrun "Could not create ext4 filesystem"
+>  # Manual mount so we don't use -t btrfs or selinux context
+>  mount -t ext4 $SCRATCH_DEV $SCRATCH_MNT
+> +if [ $? -ne 0 -a $BLOCK_SIZE -gt $(_get_page_size) ]; then
+> +	_notrun "block size $BLOCK_SIZE is not supported by ext4"
+> +fi
+>  
+>  echo "populating the initial ext fs:" >> $seqres.full
+>  mkdir "$SCRATCH_MNT/$BASENAME"
+> diff --git a/tests/btrfs/136 b/tests/btrfs/136
+> index 65bbcf51..fd24d3f8 100755
+> --- a/tests/btrfs/136
+> +++ b/tests/btrfs/136
+> @@ -45,6 +45,9 @@ $MKFS_EXT4_PROG -F -t ext3 -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
+>  
+>  # mount and populate non-extent file
+>  mount -t ext3 $SCRATCH_DEV $SCRATCH_MNT
+> +if [ $? -ne 0 -a $BLOCK_SIZE -gt $(_get_page_size) ]; then
+> +	_notrun "block size $BLOCK_SIZE is not supported by ext3"
+> +fi
+>  populate_data "$SCRATCH_MNT/ext3_ext4_data/ext3"
+>  _scratch_unmount
+>  
+> -- 
+> 2.51.0
 > 
 > 
-> 在 2025/10/2 10:40, Boris Burkov 写道:
-> >  From the memory-barriers.txt document regarding memory barrier ordering
-> > guarantees:
-> > 
-> >   (*) These guarantees do not apply to bitfields, because compilers often
-> >       generate code to modify these using non-atomic read-modify-write
-> >       sequences.  Do not attempt to use bitfields to synchronize parallel
-> >       algorithms.
-> > 
-> >   (*) Even in cases where bitfields are protected by locks, all fields
-> >       in a given bitfield must be protected by one lock.  If two fields
-> >       in a given bitfield are protected by different locks, the compiler's
-> >       non-atomic read-modify-write sequences can cause an update to one
-> >       field to corrupt the value of an adjacent field.
-> > 
-> > btrfs_space_info has a bitfield sharing an underlying word consisting of
-> > the fields full, chunk_alloc, and flush:
-> > 
-> > struct btrfs_space_info {
-> >          struct btrfs_fs_info *     fs_info;              /*     0     8 */
-> >          struct btrfs_space_info *  parent;               /*     8     8 */
-> >          ...
-> >          int                        clamp;                /*   172     4 */
-> >          unsigned int               full:1;               /*   176: 0  4 */
-> >          unsigned int               chunk_alloc:1;        /*   176: 1  4 */
-> >          unsigned int               flush:1;              /*   176: 2  4 */
-> >          ...
-> > 
-> > Therefore, to be safe from parallel read-modify-writes losing a write to
-> > one of the bitfield members protected by a lock, all writes to all the
-> > bitfields must use the lock. They almost universally do, except for
-> > btrfs_clear_space_info_full() which iterates over the space_infos and
-> > writes out found->full = 0 without a lock.
-> > 
-> > Imagine that we have one thread completing a transaction in which we
-> > finished deleting a block_group and are thus calling
-> > btrfs_clear_space_info_full() while simultaneously the data reclaim
-> > ticket infrastructure is running do_async_reclaim_data_space():
-> > 
-> >            T1                                             T2
-> > btrfs_commit_transaction
-> >    btrfs_clear_space_info_full
-> >    data_sinfo->full = 0
-> >    READ: full:0, chunk_alloc:0, flush:1
-> >                                                do_async_reclaim_data_space(data_sinfo)
-> >                                                spin_lock(&space_info->lock);
-> >                                                if(list_empty(tickets))
-> >                                                  space_info->flush = 0;
-> >                                                  READ: full: 0, chunk_alloc:0, flush:1
-> >                                                  MOD/WRITE: full: 0, chunk_alloc:0, flush:0
-> >                                                  spin_unlock(&space_info->lock);
-> >                                                  return;
-> >    MOD/WRITE: full:0, chunk_alloc:0, flush:1
-> > 
-> > and now data_sinfo->flush is 1 but the reclaim worker has exited. This
-> > breaks the invariant that flush is 0 iff there is no work queued or
-> > running. Once this invariant is violated, future allocations that go
-> > into __reserve_bytes() will add tickets to space_info->tickets but will
-> > see space_info->flush is set to 1 and not queue the work. After this,
-> > they will block forever on the resulting ticket, as it is now impossible
-> > to kick the worker again.
-> > 
-> > I also confirmed by looking at the assembly of the affected kernel that
-> > it is doing RMW operations. For example, to set the flush (3rd) bit to 0,
-> > the assembly is:
-> >    andb    $0xfb,0x60(%rbx)
-> > and similarly for setting the full (1st) bit to 0:
-> >    andb    $0xfe,-0x20(%rax)
-> > 
-> > So I think this is really a bug on practical systems.  I have observed
-> > a number of systems in this exact state, but am currently unable to
-> > reproduce it.
-> > 
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >   fs/btrfs/space-info.c | 4 ++++
-> >   1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> > index 0e5c0c80e0fe..5c2e567f3e9a 100644
-> > --- a/fs/btrfs/space-info.c
-> > +++ b/fs/btrfs/space-info.c
-> > @@ -192,7 +192,11 @@ void btrfs_clear_space_info_full(struct btrfs_fs_info *info)
-> >   	struct btrfs_space_info *found;
-> >   	list_for_each_entry(found, head, list)
-> > +	{
-> > +		spin_lock(&found->lock);
-> >   		found->full = 0;
-> > +		spin_unlock(&found->lock);
-> > +	}
-> 
-> Using spin lock for a bitfield member looks overkilled to me.
 
-We've already bought into doing it by having space_info->flush=0 under
-space_info->lock be semantically important for the correct operation of
-queueing the flushing work.
-
-> 
-> And it also means all accesses to that bit needs the lock, which looks
-> impractical to acquire the lock.
-
-All writes to any of the bits in the bitfield need the lock. Reads from
-bit A can't harm bit B, as far as I know. All other writes to any of the
-three bits already take the lock.
-
-> 
-> Can't we put all the 3 bits into a bitmap so that we can use all those
-> atomic bit helpers instead?
-> (Still a lot of change, but more practical)
-
-We can of course do that, but I do believe that this change is
-sufficient. If we do go this way, I will also document it in struct
-btrfs_space_info.
-
-Alternatively, there is a 29 bit gap in the struct after the bitfield
-anyway, so we can just make them bools and not make the struct bigger.
-
-If people prefer, I can of course refactor them all into using a bitmap
-and atomic bit helpers, but I just wanted to send the minimal change
-first.
-
-> 
-> Thanks,
-> Qu
-
-Thanks,
-Boris
-
-> 
-> >   }
-> >   /*
-> 
 
