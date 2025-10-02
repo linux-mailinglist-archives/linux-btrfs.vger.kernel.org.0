@@ -1,201 +1,170 @@
-Return-Path: <linux-btrfs+bounces-17332-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17333-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85C8BBB2A6B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 02 Oct 2025 08:58:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69C00BB3D3F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 02 Oct 2025 13:55:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4197D7B0504
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Oct 2025 06:56:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68FF53AFED0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Oct 2025 11:55:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF32A2C029B;
-	Thu,  2 Oct 2025 06:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4387130FF02;
+	Thu,  2 Oct 2025 11:55:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="USlOnJl1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BmLwhNC7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8DB2BDC0A
-	for <linux-btrfs@vger.kernel.org>; Thu,  2 Oct 2025 06:58:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D6727F010
+	for <linux-btrfs@vger.kernel.org>; Thu,  2 Oct 2025 11:55:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759388300; cv=none; b=UaIyXpvE4TNoW/SXw51EtqOockAHfWIW8POYMPjhmCEWM0cDFnjlFNQSnED6Mm066BucqJKOD4txhW/VzhP2pZpbWww/mtLk+G0FlpQtCWur9ZAHT5ohP+2lZWNta57IbRuHzDl7NUO9o2vzX01S0cIouTr50hYL7HLlsWIKdpA=
+	t=1759406141; cv=none; b=sCDzq/I+fh38bqqReOQIIwsNB7BZCLYBRnd+dmcjhFqBmQp5IZTIXbztOjO161fR7qeJIGH1lB0V9WKswR8FVu0CPe/ghequgYWlDkozTTET0w1octhyOMB8ZIwpmUB1ySoS59lMo7LXaMT6vaO7PxhzRjxBtDwwIbdRNd3PkOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759388300; c=relaxed/simple;
-	bh=Mbay8p6OAxhIy4VBUB0Llxal02RTAw3uLQbas9/xcbE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FAcSDzcR04LKUOlPXBGj5ujSNdGul8JwzMvpTj6Ej0uF4dcLfN4r7CWWiNIDxEmaYWPI2VcF+SAwSBM+Myx3D6aIbdpQAeIiKVu4ddCpj5RBxZgtL4TwDSW9daakLKxejgL6vd2gszBItGa/FAUFUUf2ZRLs8/xgFOdOy8QyBkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=USlOnJl1; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1759388296;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Zp3VaLXBhBf7B6czUgI06vrP6mixrXVc+Bnb0mXPHoo=;
-	b=USlOnJl1GZYZvQV23pqVSVI3h7UCsRn/rVpNgyYMVJTcpMU/gq5GSFfu1xlJxN/NGrN/uB
-	nB6h/3b2Tljlc0zIl5LhaJTECU09SoVxmqclTgKeV/GholvCusCUMUrxa2B/G+Z1x+LTNG
-	bzGW2UREAekq+t/W4EiWESbT+Kppiew=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-627-78vD1mCEMqOhOdVg2HJbTw-1; Thu, 02 Oct 2025 02:58:15 -0400
-X-MC-Unique: 78vD1mCEMqOhOdVg2HJbTw-1
-X-Mimecast-MFC-AGG-ID: 78vD1mCEMqOhOdVg2HJbTw_1759388294
-Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-783604212ebso1443782b3a.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Oct 2025 23:58:15 -0700 (PDT)
+	s=arc-20240116; t=1759406141; c=relaxed/simple;
+	bh=TjLNfcpyj8VQq8zPQxWfQv7IU90Q9MWCSFBVuqlbqLU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=vDeLIkvHJUsn911sJarcm2esIVM4aC9AjaH8LHJ//ldu80a+3NXRmXm9EUu6yEx4tsiAdT/jOqddnfWTy0g1hbq1D6AlxYdrx4FeL7I2dENuTOlf48IyFK4N9/Jsxi6BHZ3r9C1WymAaKAVYV5bkcjTx9jX165ZUj2k6Z0VErNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BmLwhNC7; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b54dd647edcso752922a12.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Oct 2025 04:55:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759406139; x=1760010939; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wt/5jmDAVyCoiW6KDcDMEjjPV7Rh60NwdAgacjtgDdw=;
+        b=BmLwhNC718N+z22PdsqvRN3TowvksWrM8kblxG9Qw0Z/cf8X+QUph5Mw+3jTZj8tF5
+         JNAcPur5IdLCRdx4VFLxFAJb8Zj6SXejYpXedhLby0SBPnHqgtEmD3Ng1S7ETDw1554F
+         +ITwtuFRzkPh8ZxpeG28vTyDRkCC1IuntpJFdGUc2tQgs3/E6BSVxoihRg5BLC7bEnik
+         x/e11OgdMG9eOQvkDo33H0Sbv2NiPF2shITPaSAyVBl2XxeaakR1uVnmCaxZdMxxHw60
+         u9M8BeRW30jVOaF7F7jmSHeSf/KEnsxvi/HuywxkPurXpVj8ZK0dgpaZVLOeBd9mgbt1
+         Meig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759388294; x=1759993094;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zp3VaLXBhBf7B6czUgI06vrP6mixrXVc+Bnb0mXPHoo=;
-        b=l7xeglt1/QaRRoZsjhXwEJnTZZyLPVNmzYq+O6ul52o3xdgp8Ct/0E/SxBlhXxWbXa
-         LQDGONOnVKa2fjI8A0n/yXRJpO9Dvyp5sRRwpDZePvb4qmHy9nVOKxSAaH+IxU5x7G4B
-         BblwABrpOazKbHF2b4XxXG3wZczZth+wfIbZDlRFWZ1Kcg2TLVZ0DodbrzOMtrTeqcwO
-         0HSx86uHTOHF7UP1+dJFIKlHoCde970Y8hfByl/If5Ou8OXy/wWBruiKmrFeDkRKNhEU
-         z3eQRubApYj/vM4927vMCpTXk1oLm1MFIE9pwZeFRrQYjTaXExdtZRwTK+8qtgyL4Yv4
-         /n0A==
-X-Gm-Message-State: AOJu0YwfCl4rESqqtfB9bXZd7hlGX/9L895AMMtMsve0zhY86G280tst
-	TQYkrQFAiX+p3N2fSC8bSRkwM5Iw58FBle3CeLWOdAWlx0u9GVT8WYF0WmRU/VGDbG5mv99VIgh
-	B/6UF24itcf5bXarM6c0+rWdcQHjqrygiVyXCVZ/onpbbA3e+TopQxzF3szKM/iSrsgbwA6y/
-X-Gm-Gg: ASbGncsOH9EoOs4SNYslYuWkG1OwnR30dNSos1R0L5sV6cATcBSZJ4BLkq67trARN6H
-	QgLTA6qlRakX1SvHftxQB9aEByZOGqlE6JdpFF1abQNV4ZS8+CtEzbIvWkSjmkRtTzv6G/2NSEN
-	McKHFLdoSe3z4ooedbQPiIwYgSH5WgFIibTgUdAET2oZ87bEjoE1rVcLVLBYER92JHJ4Gy9IJ44
-	AleM8qxzgI0NTHN5dgkPLja4xdJQcn3xYDZGUv7Sw00//8ku7EIuj/gmaYVHLJ8d8A1kLBVTs3C
-	/Fh4M/vTgEdMekgG7B4cTm5lWAbJdCX5cM9H6mECl6u9/wTrvSZTx7zZOcn55BIb2bo1a7xPhrW
-	DYC+xda7W9w==
-X-Received: by 2002:a05:6a00:1893:b0:781:2624:ed5c with SMTP id d2e1a72fcca58-78af417f373mr7372645b3a.26.1759388293707;
-        Wed, 01 Oct 2025 23:58:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH5ImDArdMdVNl0+p2Gw3C2BINhKXT4NpiUZL2yMf2CS0xOzCL2dhRE5V9Gej+wlYNZO+yWNQ==
-X-Received: by 2002:a05:6a00:1893:b0:781:2624:ed5c with SMTP id d2e1a72fcca58-78af417f373mr7372616b3a.26.1759388293122;
-        Wed, 01 Oct 2025 23:58:13 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-78b01fb1902sm1527258b3a.31.2025.10.01.23.58.11
+        d=1e100.net; s=20230601; t=1759406139; x=1760010939;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Wt/5jmDAVyCoiW6KDcDMEjjPV7Rh60NwdAgacjtgDdw=;
+        b=PxDo1COnhBeclkFQ5YpuGzNh+VsE86xrIGKEN7WJ9u8lIBo0k4Kzr/F8+oDysmSmAs
+         1XDtkL5asAMks5ycq6BoXtuqZfg5YhwtDcU7T8fjMpv0ZKEm9f2ps/M4L6nARJnJSphE
+         eRvqubNnFMyBC4HDmtZqHuBLUlSeVd4c0n7gWsu0+OXW52fRk+LX9/VWA5ZlzVVYO0x0
+         4Tbim65a5hoVdQY39CjTOSzx0w18jDC8fJ6ZXyd/sbiPWvyweENaV+bn6tTmcofXFgoB
+         5ZXHE/uNOmtsx+vNsJnljZIvZdPjbr/kmxjxjE8aWzHrqx/S5rJ3mO0as9cV8LQrOkgz
+         8bPg==
+X-Gm-Message-State: AOJu0YwPD8diCKvg3IWkkr/tW0NJClcgjXObPMzYK3qM8hyyhGm0gc4T
+	NgbREY+YDdGda/ba3OB5vnZDUTJh3pm8ALg6OgyAplWnhPFHg7De3eZr
+X-Gm-Gg: ASbGncs4lg8v/RHfZn/XcCho860GIQGWYoQCHYBU3XzuSbqAepZCkM+RrnEijnXE5tF
+	4CeBibtA011Ph7AkY4Nc9gmyqlOkA8EoDkn3V7rXQDJB0HTfZYk6DqPbConFsaiqtu1uk3NFWOq
+	LgtvXpvJsoY4LK9m7QikHImOd5bHmZl+Px6Zq2euZdpYn5jDg0do9sAmZtc1h2Gm+ZEoOYXX/NJ
+	POa9HhhorJdi+d645n47PkKVznqFzzUwX+AOxDGSoLJn8n+kuhHfdjhlK7F7zJrB0K0RoieITvy
+	BV/L2pCZHF0TyiMTu7b9POHK8Kmczzj2QOx3CXoIxHYsVw4OIpoVoip8Jqd4pOjVzy5uKvQwQZ6
+	yjvZ8wbrvTID5dxoLRaH8fl4j6rhVu8thiU8K2u8uxUJmXD4bUMoQ45yOsD4ivb6/mTGY0eRRSF
+	6ERyvBTTPL
+X-Google-Smtp-Source: AGHT+IEXDQv5WzWFvUN7TK5i6ZwaXNev1K2Rc7O8ISKUuj2oex0jxGVKtUV/MHSCJ8NvEldO1g3n/A==
+X-Received: by 2002:a17:903:1a0d:b0:28e:7ea4:2023 with SMTP id d9443c01a7336-28e7f441e8cmr81339725ad.46.1759406139161;
+        Thu, 02 Oct 2025 04:55:39 -0700 (PDT)
+Received: from fedora ([45.116.149.88])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-28e8d1d31c8sm20527535ad.95.2025.10.02.04.55.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Oct 2025 23:58:12 -0700 (PDT)
-Date: Thu, 2 Oct 2025 14:58:08 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] btrfs/012 btrfs/136: skip the test if ext*
- doesn't support the block size
-Message-ID: <20251002065808.6cxusfy72larui34@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20251002005648.47021-1-wqu@suse.com>
- <20251002005648.47021-2-wqu@suse.com>
+        Thu, 02 Oct 2025 04:55:38 -0700 (PDT)
+From: rtapadia730@gmail.com
+To: dsterba@suse.com,
+	clm@fb.com,
+	fdmanana@suse.com
+Cc: linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	khalid@kernel.org,
+	david.hunter.linux@gmail.com,
+	Rajeev Tapadia <rtapadia730@gmail.com>
+Subject: [PATCH] btrfs: push memalloc_nofs_save/restore() out of alloc_bitmap()
+Date: Thu,  2 Oct 2025 17:24:28 +0530
+Message-ID: <20251002115427.98773-2-rtapadia730@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251002005648.47021-2-wqu@suse.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Oct 02, 2025 at 10:26:46AM +0930, Qu Wenruo wrote:
-> [FALSE ALERT]
-> When testing btrfs bs > ps support, the test cases btrfs/012 and
-> btrfs/136 fail like the following:
-> 
->  FSTYP         -- btrfs
->  PLATFORM      -- Linux/x86_64 btrfs-vm 6.17.0-rc4-custom+ #285 SMP PREEMPT_DYNAMIC Mon Sep 15 14:40:01 ACST 2025
->  MKFS_OPTIONS  -- -s 8k /dev/mapper/test-scratch1
->  MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
-> 
->  btrfs/012       [failed, exit status 1]- output mismatch (see /home/adam/xfstests/results//btrfs/012.out.bad)
->      --- tests/btrfs/012.out	2024-07-17 16:27:18.790000343 +0930
->      +++ /home/adam/xfstests/results//btrfs/012.out.bad	2025-09-15 16:32:55.185922173 +0930
->      @@ -1,7 +1,11 @@
->       QA output created by 012
->      +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
->      +       dmesg(1) may have more information after failed mount system call.
->      +mkdir: cannot create directory '/mnt/scratch/stressdir': File exists
->      +umount: /mnt/scratch: not mounted.
->       Checking converted btrfs against the original one:
->      -OK
->      ...
->      (Run 'diff -u /home/adam/xfstests/tests/btrfs/012.out /home/adam/xfstests/results//btrfs/012.out.bad'  to see the entire diff)
-> 
->  btrfs/136 3s ... - output mismatch (see /home/adam/xfstests/results//btrfs/136.out.bad)
->      --- tests/btrfs/136.out	2022-05-11 11:25:30.743333331 +0930
->      +++ /home/adam/xfstests/results//btrfs/136.out.bad	2025-09-19 07:00:00.395280850 +0930
->      @@ -1,2 +1,10 @@
->       QA output created by 136
->      +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
->      +       dmesg(1) may have more information after failed mount system call.
->      +umount: /mnt/scratch: not mounted.
->      +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/test-scratch1, missing codepage or helper program, or other error.
->      +       dmesg(1) may have more information after failed mount system call.
->      +umount: /mnt/scratch: not mounted.
->      ...
->      (Run 'diff -u /home/adam/xfstests/tests/btrfs/136.out /home/adam/xfstests/results//btrfs/136.out.bad'  to see the entire diff)
-> 
-> [CAUSE]
-> Currently ext* doesn't support block size larger than page size, thus
-> at mkfs time it will output the following warning:
-> 
->  Warning: blocksize 8192 not usable on most systems.
->  mke2fs 1.47.3 (8-Jul-2025)
->  Warning: 8192-byte blocks too big for system (max 4096), forced to continue
-> 
-> Furthermore at ext* mount time it will fail with the following dmesg:
-> 
->  EXT4-fs (loop0): bad block size 8192
-> 
-> [FIX]
-> Check if the mount of the newly created ext* succeeded.
-> 
-> If not and the block size is larger than page size, we know it's some
-> block size ext* not yet supported, and skip the test case.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
+From: Rajeev Tapadia <rtapadia730@gmail.com>
 
-This version is good to me, if there're not more review points btrfs list,
-I'll merge this patchset in next release. Thanks!
+alloc_bitmap() currently wraps its allocation in memalloc_nofs_save
+/restore(), but this hides allocation context from callers. GFP_NOFS is
+required to avoid recursion into the filesystem during transaction commits,
+but the correct place to enforce that is at the call sites where we know
+recursion is unsafe.
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
+So now alloc_bitmap() just allocates a bitmap. Also completing the TODO
+comment.
 
->  tests/btrfs/012 | 3 +++
->  tests/btrfs/136 | 3 +++
->  2 files changed, 6 insertions(+)
-> 
-> diff --git a/tests/btrfs/012 b/tests/btrfs/012
-> index f41d7e4e..6914fba6 100755
-> --- a/tests/btrfs/012
-> +++ b/tests/btrfs/012
-> @@ -42,6 +42,9 @@ $MKFS_EXT4_PROG -F -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
->  	_notrun "Could not create ext4 filesystem"
->  # Manual mount so we don't use -t btrfs or selinux context
->  mount -t ext4 $SCRATCH_DEV $SCRATCH_MNT
-> +if [ $? -ne 0 -a $BLOCK_SIZE -gt $(_get_page_size) ]; then
-> +	_notrun "block size $BLOCK_SIZE is not supported by ext4"
-> +fi
->  
->  echo "populating the initial ext fs:" >> $seqres.full
->  mkdir "$SCRATCH_MNT/$BASENAME"
-> diff --git a/tests/btrfs/136 b/tests/btrfs/136
-> index 65bbcf51..fd24d3f8 100755
-> --- a/tests/btrfs/136
-> +++ b/tests/btrfs/136
-> @@ -45,6 +45,9 @@ $MKFS_EXT4_PROG -F -t ext3 -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
->  
->  # mount and populate non-extent file
->  mount -t ext3 $SCRATCH_DEV $SCRATCH_MNT
-> +if [ $? -ne 0 -a $BLOCK_SIZE -gt $(_get_page_size) ]; then
-> +	_notrun "block size $BLOCK_SIZE is not supported by ext3"
-> +fi
->  populate_data "$SCRATCH_MNT/ext3_ext4_data/ext3"
->  _scratch_unmount
->  
-> -- 
-> 2.51.0
-> 
-> 
+Signed-off-by: Rajeev Tapadia <rtapadia730@gmail.com>
+---
+
+The patch was tested by enabling CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+All tests passed while booting the kernel in qemu.
+
+ fs/btrfs/free-space-tree.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+index dad0b492a663..abdbdc74edf8 100644
+--- a/fs/btrfs/free-space-tree.c
++++ b/fs/btrfs/free-space-tree.c
+@@ -159,8 +159,6 @@ static inline u32 free_space_bitmap_size(const struct btrfs_fs_info *fs_info,
+ 
+ static unsigned long *alloc_bitmap(u32 bitmap_size)
+ {
+-	unsigned long *ret;
+-	unsigned int nofs_flag;
+ 	u32 bitmap_rounded_size = round_up(bitmap_size, sizeof(unsigned long));
+ 
+ 	/*
+@@ -168,13 +166,11 @@ static unsigned long *alloc_bitmap(u32 bitmap_size)
+ 	 * into the filesystem as the free space bitmap can be modified in the
+ 	 * critical section of a transaction commit.
+ 	 *
+-	 * TODO: push the memalloc_nofs_{save,restore}() to the caller where we
+-	 * know that recursion is unsafe.
++	 * This function's caller is responsible for setting the appropriate
++	 * allocation context (e.g., using memalloc_nofs_save/restore())
++	 * to prevent recursion.
+ 	 */
+-	nofs_flag = memalloc_nofs_save();
+-	ret = kvzalloc(bitmap_rounded_size, GFP_KERNEL);
+-	memalloc_nofs_restore(nofs_flag);
+-	return ret;
++	return kvzalloc(bitmap_rounded_size, GFP_KERNEL);
+ }
+ 
+ static void le_bitmap_set(unsigned long *map, unsigned int start, int len)
+@@ -217,7 +213,9 @@ int btrfs_convert_free_space_to_bitmaps(struct btrfs_trans_handle *trans,
+ 	int ret;
+ 
+ 	bitmap_size = free_space_bitmap_size(fs_info, block_group->length);
++	unsigned int nofs_flag = memalloc_nofs_save();
+ 	bitmap = alloc_bitmap(bitmap_size);
++	memalloc_nofs_restore(nofs_flag);
+ 	if (unlikely(!bitmap)) {
+ 		ret = -ENOMEM;
+ 		btrfs_abort_transaction(trans, ret);
+@@ -360,7 +358,9 @@ int btrfs_convert_free_space_to_extents(struct btrfs_trans_handle *trans,
+ 	int ret;
+ 
+ 	bitmap_size = free_space_bitmap_size(fs_info, block_group->length);
++	unsigned int nofs_flag = memalloc_nofs_save();
+ 	bitmap = alloc_bitmap(bitmap_size);
++	memalloc_nofs_restore(nofs_flag);
+ 	if (unlikely(!bitmap)) {
+ 		ret = -ENOMEM;
+ 		btrfs_abort_transaction(trans, ret);
+-- 
+2.51.0
 
 
