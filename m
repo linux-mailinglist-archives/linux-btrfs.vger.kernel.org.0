@@ -1,204 +1,201 @@
-Return-Path: <linux-btrfs+bounces-17338-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17339-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EE8FBB496D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 02 Oct 2025 18:47:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9DACBB4C4D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 02 Oct 2025 20:01:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4E8034E1E86
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Oct 2025 16:47:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C93A423281
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Oct 2025 18:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8E92566D3;
-	Thu,  2 Oct 2025 16:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65FF9276027;
+	Thu,  2 Oct 2025 18:01:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WkY1vicz"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="ifOX4dUt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from fra-out-011.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-011.esa.eu-central-1.outbound.mail-perimeter.amazon.com [52.28.197.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F40231D88A6
-	for <linux-btrfs@vger.kernel.org>; Thu,  2 Oct 2025 16:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1731F272E72;
+	Thu,  2 Oct 2025 18:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.28.197.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759423651; cv=none; b=F18VN+ZGPnnyMC4TzJTmLQNPKnRwvbnxSxoy2OQfczkBOyyuZBlpXMV7SJNlVNoTEyOcqvcN9BYkkRkMWAF/MKQmqvkmmUALmOxRlDSZJ6SPNd5C5mHrvE2jpHtGFW5fAKUXqUw7wVuqKqVN4k9OBAaRsf6LKAg5Fr9AjMB+cqo=
+	t=1759428070; cv=none; b=dxrnXGUDktMu4w3HYFRaAJVrD8Ybbl9FdnQEs21PkKWJNqzf8luzFpMI0KvyPTWw9F/JY6tSwL6FIFc4y/8VEglNzJGavMMIyWEWllzPAsd6EvOc2oE8T5SsBF319xjI+BjeRXX3R/Ld0aXhLJ5Xh29MSi3W+Vq1E/MwBicO4HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759423651; c=relaxed/simple;
-	bh=9xMMsceNwRO2MwP3HKE9fLK7gSGejApiZWfvmMfWFLw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FBUJoSHk3Z99Yl1X2V7CY+/JamcXyQMA6BuCk1W8RPJQqQh2WVzccxFy/MdBdfLnv9vHw2ZX1gPDnyRy+MbY+XHl20C4BwQ0FSKXQbSq75ZnjfZrlGyQEqVrHghgVjkpRz9h7SLgzbHpwToY4X3GEtEHpReDdmRTCd2Tw4R1PfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WkY1vicz; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1759423650; x=1790959650;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9xMMsceNwRO2MwP3HKE9fLK7gSGejApiZWfvmMfWFLw=;
-  b=WkY1viczCQPlf/tsc2gzcwd0MpNRwcmxPuYDOGmYby2a0EHahQvJWyma
-   53k7W3jhXEBdxsow5SJOq2LF8XzP9k35HwnVvMVaDs9Zfobnd0ZHXGRKX
-   is3mnfHGFaLLP2KEXy0Nv3qnTko+o2C9eDjJxGgAsTNalJrc9SZycJLVZ
-   zoCOeK3uYBNXZVnMiloiOIujVbMTyFr5kuSrElCswckC7jMas098ANgQd
-   4XWxv71kYyayUl3mu9n+lVBoLdmsCgTK9bxWiQEzVqDTHX7GjFILfJc0I
-   B16Xnp17Q9L4RJ97F7ajjAi7IJvb9O3gcYtEwskB5s3TlnVwFgdisvBe7
-   w==;
-X-CSE-ConnectionGUID: pRhTljpSQMewfp7u2gJ0lw==
-X-CSE-MsgGUID: mBHB7tAjQYGlIdVNUrCMWw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11570"; a="61423012"
-X-IronPort-AV: E=Sophos;i="6.18,310,1751266800"; 
-   d="scan'208";a="61423012"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2025 09:47:29 -0700
-X-CSE-ConnectionGUID: 44bEQ97dSkWJcgwOSQ6KZQ==
-X-CSE-MsgGUID: KfDA4Z49T6a2pzDZSsVbrg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,310,1751266800"; 
-   d="scan'208";a="179521856"
-Received: from lkp-server01.sh.intel.com (HELO 2f2a1232a4e4) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 02 Oct 2025 09:47:28 -0700
-Received: from kbuild by 2f2a1232a4e4 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1v4MSj-0003xP-1z;
-	Thu, 02 Oct 2025 16:47:25 +0000
-Date: Fri, 3 Oct 2025 00:46:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 2/4] btrfs: make btrfs_repair_io_failure() handle bs > ps
- cases without large folios
-Message-ID: <202510030041.mTtTa2Pr-lkp@intel.com>
-References: <33c39907866c148a360ff60387097fbad63a19aa.1759311101.git.wqu@suse.com>
+	s=arc-20240116; t=1759428070; c=relaxed/simple;
+	bh=oLmFh7pEq2+c7mvuShVbrMHlXVn53x8NKSecVFXj5vU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=f4fIYA83BI2wGrYJ7worLi9WQz3Bhsz4SbxY5D+1s8OQyVOyjN7hj7ASkZkL3EqWvkRpvkFM0wMkd/44MnlbXB5j+LtD9QyZb9ERHjdbrKKQWZ622GxZssym2rXB8//uw7Wq15sUROmLkS/u5ptZZ5LOqjVURAgfkp5h/IQ+Aq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=ifOX4dUt; arc=none smtp.client-ip=52.28.197.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1759428068; x=1790964068;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=epU/uuRCc6FYveB1XcTu+0zfQVVGTvdnWiBQH/N2XKE=;
+  b=ifOX4dUtJIhTrl2yrP126dexft5DtHXGu50OaTxfaRkefWlEU+A68X9n
+   l4XAWHvEe9Gj11NvBwF+o3dI3SHBt8nVmdKlTyRGlDd/K18Ntf42nElCo
+   3D9I98U5Ca2BExji2Ur/mqd0qPU8g7hQknhgylh09Z8gjw8AfKq8Ibo7r
+   atDYBwNQwHGIOczNrOYN1qtF8/+uNdNqeqPCPKiXjyJjaiPQcrlWUoAvA
+   Rbxn0z69mTR0usoZSszfKyjlj+1T4hoAciOqdREYbSAgVVATAk3iuu56h
+   9qAlbljfIFelpIzAR3JMm0Qvkefl0Zhp3JZjAsGOQSkoXaMFOnlwPRioV
+   Q==;
+X-CSE-ConnectionGUID: 4wc7erOoTsG+zcDi3lQiWg==
+X-CSE-MsgGUID: 2gKb5OADRGepv9G3AIxECQ==
+X-IronPort-AV: E=Sophos;i="6.18,310,1751241600"; 
+   d="scan'208";a="2922661"
+Received: from ip-10-6-3-216.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.3.216])
+  by internal-fra-out-011.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2025 18:00:57 +0000
+Received: from EX19MTAEUA001.ant.amazon.com [54.240.197.233:16626]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.22.27:2525] with esmtp (Farcaster)
+ id 6ebc8389-d59d-4539-8dfb-efa782bd8e1d; Thu, 2 Oct 2025 18:00:57 +0000 (UTC)
+X-Farcaster-Flow-ID: 6ebc8389-d59d-4539-8dfb-efa782bd8e1d
+Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
+ EX19MTAEUA001.ant.amazon.com (10.252.50.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
+ Thu, 2 Oct 2025 18:00:52 +0000
+Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
+ (172.19.116.181) by EX19D018EUA004.ant.amazon.com (10.252.50.85) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Thu, 2 Oct 2025
+ 18:00:42 +0000
+From: Eliav Farber <farbere@amazon.com>
+To: <gregkh@linuxfoundation.org>, <kenneth.feng@amd.com>,
+	<alexander.deucher@amd.com>, <christian.koenig@amd.com>, <airlied@gmail.com>,
+	<simona@ffwll.ch>, <linus.walleij@linaro.org>, <dmitry.torokhov@gmail.com>,
+	<tglx@linutronix.de>, <wens@csie.org>, <jernej.skrabec@gmail.com>,
+	<samuel@sholland.org>, <agk@redhat.com>, <snitzer@kernel.org>,
+	<mpatocka@redhat.com>, <clm@fb.com>, <dsterba@suse.com>,
+	<luc.vanoostenryck@gmail.com>, <pmladek@suse.com>, <rostedt@goodmis.org>,
+	<andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>,
+	<senozhatsky@chromium.org>, <akpm@linux-foundation.org>,
+	<lijo.lazar@amd.com>, <asad.kamal@amd.com>, <kevinyang.wang@amd.com>,
+	<David.Laight@ACULAB.COM>, <amd-gfx@lists.freedesktop.org>,
+	<dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+	<linux-input@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-sunxi@lists.linux.dev>, <dm-devel@lists.linux.dev>,
+	<linux-btrfs@vger.kernel.org>, <linux-sparse@vger.kernel.org>,
+	<stable@vger.kernel.org>, <farbere@amazon.com>
+Subject: [PATCH v3 00/11 6.1.y] Backport minmax.h updates from v6.17-rc7
+Date: Thu, 2 Oct 2025 18:00:18 +0000
+Message-ID: <20251002180036.33738-1-farbere@amazon.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <33c39907866c148a360ff60387097fbad63a19aa.1759311101.git.wqu@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: EX19D036UWC003.ant.amazon.com (10.13.139.214) To
+ EX19D018EUA004.ant.amazon.com (10.252.50.85)
 
-Hi Qu,
+This series backports 13 patches to update minmax.h in the 6.1.y branch,
+aligning it with v6.17-rc7.
 
-kernel test robot noticed the following build errors:
+The ultimate goal is to synchronize all longterm branches so that they
+include the full set of minmax.h changes (6.12.y and 6.6.y were already
+backported by me and are now ligned).
 
-[auto build test ERROR on kdave/for-next]
-[also build test ERROR on linus/master next-20250929]
-[cannot apply to v6.17]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The key motivation is to bring in commit d03eba99f5bf ("minmax: allow
+min()/max()/clamp() if the arguments have the same signedness"), which
+is missing in older kernels.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-make-btrfs_csum_one_bio-handle-bs-ps-without-large-folios/20251001-175128
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/33c39907866c148a360ff60387097fbad63a19aa.1759311101.git.wqu%40suse.com
-patch subject: [PATCH 2/4] btrfs: make btrfs_repair_io_failure() handle bs > ps cases without large folios
-config: i386-randconfig-011-20251002 (https://download.01.org/0day-ci/archive/20251003/202510030041.mTtTa2Pr-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.4.0-5) 12.4.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251003/202510030041.mTtTa2Pr-lkp@intel.com/reproduce)
+In mainline, this change enables min()/max()/clamp() to accept mixed
+argument types, provided both have the same signedness. Without it,
+backported patches that use these forms may trigger compiler warnings,
+which escalate to build failures when -Werror is enabled.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202510030041.mTtTa2Pr-lkp@intel.com/
+Changes in v3:
+- v2 included 13 patches:
+  https://lore.kernel.org/stable/20250929183358.18982-1-farbere@amazon.com/
+- First 2 were accepted and are part of 6.1.155.
+- 3rd caused build in drivers/md/ to fail:
 
-All errors (new ones prefixed by >>):
+In file included from ./include/linux/container_of.h:5,
+                 from ./include/linux/list.h:5,
+                 from ./include/linux/wait.h:7,
+                 from ./include/linux/mempool.h:8,
+                 from ./include/linux/bio.h:8,
+                 from drivers/md/dm-bio-record.h:10,
+                 from drivers/md/dm-integrity.c:9:
+drivers/md/dm-integrity.c: In function ‘integrity_metadata’:
+drivers/md/dm-integrity.c:131:105: error: ISO C90 forbids variable length array ‘checksums_onstack’ [-Werror=vla]
+  131 | #define MAX_TAG_SIZE                    (JOURNAL_SECTOR_DATA - JOURNAL_MAC_PER_SECTOR - offsetof(struct journal_entry, last_bytes[MAX_SECTORS_PER_BLOCK]))
+      |                                                                                                         ^~~~~~~~~~~~~
+./include/linux/build_bug.h:78:56: note: in definition of macro ‘__static_assert’
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+./include/linux/minmax.h:56:9: note: in expansion of macro ‘static_assert’
+   56 |         static_assert(__types_ok(x, y, ux, uy),         \
+      |         ^~~~~~~~~~~~~
+./include/linux/minmax.h:41:31: note: in expansion of macro ‘__is_noneg_int’
+   41 |          __is_noneg_int(x) || __is_noneg_int(y))
+      |                               ^~~~~~~~~~~~~~
+./include/linux/minmax.h:56:23: note: in expansion of macro ‘__types_ok’
+   56 |         static_assert(__types_ok(x, y, ux, uy),         \
+      |                       ^~~~~~~~~~
+./include/linux/minmax.h:61:9: note: in expansion of macro ‘__careful_cmp_once’
+   61 |         __careful_cmp_once(op, x, y, __UNIQUE_ID(x_), __UNIQUE_ID(y_))
+      |         ^~~~~~~~~~~~~~~~~~
+./include/linux/minmax.h:92:25: note: in expansion of macro ‘__careful_cmp’
+   92 | #define max(x, y)       __careful_cmp(max, x, y)
+      |                         ^~~~~~~~~~~~~
+drivers/md/dm-integrity.c:1797:40: note: in expansion of macro ‘max’
+ 1797 |                 char checksums_onstack[max((size_t)HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
+      |                                        ^~~
+drivers/md/dm-integrity.c:131:89: note: in expansion of macro ‘offsetof’
+  131 | #define MAX_TAG_SIZE                    (JOURNAL_SECTOR_DATA - JOURNAL_MAC_PER_SECTOR - offsetof(struct journal_entry, last_bytes[MAX_SECTORS_PER_BLOCK]))
+      |                                                                                         ^~~~~~~~
+drivers/md/dm-integrity.c:1797:73: note: in expansion of macro ‘MAX_TAG_SIZE’
+ 1797 |                 char checksums_onstack[max((size_t)HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
+      |                                                                         ^~~~~~~~~~~~
 
-   ld: fs/btrfs/bio.o: in function `btrfs_repair_io_failure':
->> fs/btrfs/bio.c:859:(.text+0x188c): undefined reference to `__udivdi3'
+- The build was fixed in the second patch of this series.
 
+Changes in v2:
+- v1 included 19 patches:
+  https://lore.kernel.org/stable/20250924202320.32333-1-farbere@amazon.com/
+- First 6 were pushed to the stable-tree.
+- 7th cauded amd driver's build to fail.
+- This change fixes it.
+- Modified files:
+   drivers/gpu/drm/amd/amdgpu/amdgpu.h
+   drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
+   drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
+   drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
 
-vim +859 fs/btrfs/bio.c
+David Laight (7):
+  minmax.h: add whitespace around operators and after commas
+  minmax.h: update some comments
+  minmax.h: reduce the #define expansion of min(), max() and clamp()
+  minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi test in clamp()
+  minmax.h: move all the clamp() definitions after the min/max() ones
+  minmax.h: simplify the variants of clamp()
+  minmax.h: remove some #defines that are only expanded once
 
-   836	
-   837	/*
-   838	 * Submit a repair write.
-   839	 *
-   840	 * This bypasses btrfs_submit_bbio() deliberately, as that writes all copies in a
-   841	 * RAID setup.  Here we only want to write the one bad copy, so we do the
-   842	 * mapping ourselves and submit the bio directly.
-   843	 *
-   844	 * The I/O is issued synchronously to block the repair read completion from
-   845	 * freeing the bio.
-   846	 *
-   847	 * @ino:	Offending inode number
-   848	 * @fileoff:	File offset inside the inode
-   849	 * @length:	Length of the repair write
-   850	 * @logical:	Logical address of the range
-   851	 * @paddrs:	Physical address array of the content.
-   852	 *		Length for each paddr should be min(sectorsize, PAGE_SIZE).
-   853	 * @mirror_num: Mirror number to write to. Must not be zero.
-   854	 */
-   855	int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 fileoff,
-   856				    u64 length, u64 logical, const phys_addr_t paddrs[], int mirror_num)
-   857	{
-   858		const u32 step = min(fs_info->sectorsize, PAGE_SIZE);
- > 859		const u32 nr_steps = DIV_ROUND_UP_POW2(length, step);
-   860		struct btrfs_io_stripe smap = { 0 };
-   861		struct bio *bio = NULL;
-   862		int ret = 0;
-   863	
-   864		ASSERT(!(fs_info->sb->s_flags & SB_RDONLY));
-   865		BUG_ON(!mirror_num);
-   866	
-   867		/* Basic alignment checks. */
-   868		ASSERT(IS_ALIGNED(logical, fs_info->sectorsize));
-   869		ASSERT(IS_ALIGNED(length, fs_info->sectorsize));
-   870		ASSERT(IS_ALIGNED(fileoff, fs_info->sectorsize));
-   871	
-   872		if (btrfs_repair_one_zone(fs_info, logical))
-   873			return 0;
-   874	
-   875		/*
-   876		 * Avoid races with device replace and make sure our bioc has devices
-   877		 * associated to its stripes that don't go away while we are doing the
-   878		 * read repair operation.
-   879		 */
-   880		btrfs_bio_counter_inc_blocked(fs_info);
-   881		ret = btrfs_map_repair_block(fs_info, &smap, logical, length, mirror_num);
-   882		if (ret < 0)
-   883			goto out_counter_dec;
-   884	
-   885		if (unlikely(!smap.dev->bdev ||
-   886			     !test_bit(BTRFS_DEV_STATE_WRITEABLE, &smap.dev->dev_state))) {
-   887			ret = -EIO;
-   888			goto out_counter_dec;
-   889		}
-   890	
-   891		bio = bio_alloc(smap.dev->bdev, nr_steps, REQ_OP_WRITE | REQ_SYNC, GFP_NOFS);
-   892		/* Backed by fs_bio_set, shouldn't fail. */
-   893		ASSERT(bio);
-   894		bio->bi_iter.bi_sector = smap.physical >> SECTOR_SHIFT;
-   895		for (int i = 0; i < nr_steps; i++) {
-   896			ret = bio_add_page(bio, phys_to_page(paddrs[i]), step, offset_in_page(paddrs[i]));
-   897			/* We should have allocated enough slots to contain all the different pages. */
-   898			ASSERT(ret == step);
-   899		}
-   900		ret = submit_bio_wait(bio);
-   901		if (ret) {
-   902			/* try to remap that extent elsewhere? */
-   903			btrfs_dev_stat_inc_and_print(smap.dev, BTRFS_DEV_STAT_WRITE_ERRS);
-   904			goto out_free_bio;
-   905		}
-   906	
-   907		btrfs_info_rl(fs_info,
-   908			"read error corrected: ino %llu off %llu (dev %s sector %llu)",
-   909				     ino, fileoff, btrfs_dev_name(smap.dev),
-   910				     smap.physical >> SECTOR_SHIFT);
-   911		ret = 0;
-   912	
-   913	out_free_bio:
-   914		if (bio)
-   915			bio_put(bio);
-   916	out_counter_dec:
-   917		btrfs_bio_counter_dec(fs_info);
-   918		return ret;
-   919	}
-   920	
+Linus Torvalds (4):
+  minmax: simplify min()/max()/clamp() implementation
+  minmax: don't use max() in situations that want a C constant
+    expression
+  minmax: improve macro expansion and type checking
+  minmax: fix up min3() and max3() too
+
+ drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c   |   2 +-
+ drivers/input/touchscreen/cyttsp4_core.c |   2 +-
+ drivers/irqchip/irq-sun6i-r.c            |   2 +-
+ drivers/md/dm-integrity.c                |   2 +-
+ fs/btrfs/tree-checker.c                  |   2 +-
+ include/linux/compiler.h                 |   9 +
+ include/linux/minmax.h                   | 222 +++++++++++++----------
+ lib/vsprintf.c                           |   2 +-
+ 8 files changed, 143 insertions(+), 100 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.47.3
+
 
