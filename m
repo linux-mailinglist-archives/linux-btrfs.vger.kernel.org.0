@@ -1,165 +1,143 @@
-Return-Path: <linux-btrfs+bounces-17418-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17419-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E508FBB74B8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 03 Oct 2025 17:15:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3614BB7BF9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 03 Oct 2025 19:32:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA5AF3A8B0F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Oct 2025 15:15:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9A903AD9FE
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Oct 2025 17:32:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D49828507F;
-	Fri,  3 Oct 2025 15:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E01652DAFA9;
+	Fri,  3 Oct 2025 17:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="q/h8+DAC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dfyptc0M";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="q/h8+DAC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dfyptc0M"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="mWU/sOY7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6BF9283683
-	for <linux-btrfs@vger.kernel.org>; Fri,  3 Oct 2025 15:15:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5DAA19D880;
+	Fri,  3 Oct 2025 17:32:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759504514; cv=none; b=N9redzkOa6N8k9wmatjQ5mdNjw+EbT3+GhQJLca87I9pI8BFjoLxlkvu5ci6dPjOap/wMsAf16JLD9ueRNSYkckRYO6fdJizMf81BLjDWQS/wLEb2hH5hCmGynC8Vsj7HhEDM5fXeWMncQ6DzUyMIE5xRNcYpIN2RTsmIIqYTcY=
+	t=1759512736; cv=none; b=TwKmjlPoLSEFT18aX5X1QQ9NROcHVB0vYj6ZUR7xei8XUv8gkq7MtMiCCwvbqjEtOqJqmjcrmip5wpw9nPR6sGr0dh1qyJwS8wTd1JKex1dLn8I9PbmMUMUI4gbZGuNX158rqpyxFrFq5tW0B2CKFCC4t0q0HT5ogNCa7XTKToE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759504514; c=relaxed/simple;
-	bh=C7CfKgcHYLApAV6Hfjkaw2zl7XixfTDgEWSfeNSz2IA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tjpoJMKRdJ9XhdASHOsKElEcXIsVh1aGM9dgAxy12ZwGZvh9oS2puUJ1zVNLntgqfg8Le3eyxu9slp28Rlng3XTPjg0TZ1+9fnOhLnXu40oiQmq4sTcqR4S4burDZnmxaCCCtrf9MFF3hBtxC5ie5a2e7xjHNs4+SK/P9WEFaDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=q/h8+DAC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dfyptc0M; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=q/h8+DAC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dfyptc0M; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AF8C31F391;
-	Fri,  3 Oct 2025 15:15:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1759504510;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BSuUcYJ4MTFp6S1moFWEPmO11ItH6Z/9twvYE6qnuZY=;
-	b=q/h8+DAC9X52znJDx0snQfaKI02FhnRQnmU2JkCN+8OMqYedLyZ+Not33KIqxXrSKwlUno
-	d5jkz5Sj78gl63kRKKxeTlMCYT9HyMIx2AgJAw0XYvhhV8Aug80Yg5cNh8CZc8ugjTfrKV
-	3bJ3/3t1ecGoBVChMYqThOib+Rcv/Ow=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1759504510;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BSuUcYJ4MTFp6S1moFWEPmO11ItH6Z/9twvYE6qnuZY=;
-	b=dfyptc0MPtNOIG2tL+VRqFpFMoIZvr2mnuO38D6ozakWZ/LtyKH4fT1IrRd9XyplMbLVKj
-	Dw21BLvsvruvh3CA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1759504510;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BSuUcYJ4MTFp6S1moFWEPmO11ItH6Z/9twvYE6qnuZY=;
-	b=q/h8+DAC9X52znJDx0snQfaKI02FhnRQnmU2JkCN+8OMqYedLyZ+Not33KIqxXrSKwlUno
-	d5jkz5Sj78gl63kRKKxeTlMCYT9HyMIx2AgJAw0XYvhhV8Aug80Yg5cNh8CZc8ugjTfrKV
-	3bJ3/3t1ecGoBVChMYqThOib+Rcv/Ow=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1759504510;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BSuUcYJ4MTFp6S1moFWEPmO11ItH6Z/9twvYE6qnuZY=;
-	b=dfyptc0MPtNOIG2tL+VRqFpFMoIZvr2mnuO38D6ozakWZ/LtyKH4fT1IrRd9XyplMbLVKj
-	Dw21BLvsvruvh3CA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 95DA213990;
-	Fri,  3 Oct 2025 15:15:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id JFpmJH7o32gQYgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 03 Oct 2025 15:15:10 +0000
-Date: Fri, 3 Oct 2025 17:15:09 +0200
-From: David Sterba <dsterba@suse.cz>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>, Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] btrfs: Avoid -Wflex-array-member-not-at-end warning
-Message-ID: <20251003151509.GK4052@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <aN_Zeo7JH9nogwwq@kspp>
- <20251003143502.GJ4052@suse.cz>
- <b59ed01f-d9d5-4de8-8a12-1e506962b2d9@embeddedor.com>
+	s=arc-20240116; t=1759512736; c=relaxed/simple;
+	bh=KUXQDUaLpGTyUaeCV6NkTrwXChz9uX7wllKFZMxDMEs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Za4Jk5vUnWFrfQsvTWju7MqKlB1JokJXKvz5rsnuiIceFIEb9x1kMxWc23WJBfI+F6pugpayUdxaQgKY9dZgOICsM5DV8vpbrvVI4K13v4RBFaqgUEXTcpwbjhSrP7QaV+s6lQSlWhh/ENMdtJm9fo0AwNLHmG00DgPjQgNsN44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=mWU/sOY7; arc=none smtp.client-ip=44.202.169.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5001b.ext.cloudfilter.net ([10.0.29.181])
+	by cmsmtp with ESMTPS
+	id 4fOFvaOCGKXDJ4jdWvALPd; Fri, 03 Oct 2025 17:32:06 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id 4jdVvl6csrMH54jdWvfJQX; Fri, 03 Oct 2025 17:32:06 +0000
+X-Authority-Analysis: v=2.4 cv=eaE9f6EH c=1 sm=1 tr=0 ts=68e00896
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=4oHATN8Nx7vVUZJYxp75bA==:17
+ a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=7T7KSl7uo7wA:10
+ a=UzAz_WlB0G74hqp-NeEA:9 a=QEXdDO2ut3YA:10 a=xYX6OU9JNrHFPr8prv8u:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Wk/lJ0/YkwWz5LRniSBr0fOTkRttbOb5TobwP/F87mM=; b=mWU/sOY7n7kfeq+tXJdqvl4Vpb
+	QS6ivMrZU8yEKS+TsZAaKzMukht/960Bn9p3Kepari0pCP+L053Qfmz8j4spATH0ZGjYQWamLcER9
+	DrOaWnTJbxDBgaK+30+6xPtvKVOK/VJGRPwND7MEOaifd867NRTqTaWvplCA+OB/tpOECuy6nlC89
+	VGcJQjvNNzR+5IwbK+JB3vYC0sXYAi3QUcHKU4jkUmJfz2CkuJ6Vu2a/aXqcpbR975uV7MhyUVU6o
+	OP3+JRrTP/lZubY9tXCJUJHIlA76Qb4vRP9gMdlCGz7r+/KYWyI1HOD8ca5Nq/J0/WuWxYaRnlenr
+	5AZWa0og==;
+Received: from [185.134.146.81] (port=52182 helo=[10.21.53.44])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.98.1)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1v4hb3-00000002K6A-0MN0;
+	Fri, 03 Oct 2025 10:21:25 -0500
+Message-ID: <10762d3f-361a-48b7-8e46-5e5b8a9887fb@embeddedor.com>
+Date: Fri, 3 Oct 2025 16:21:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b59ed01f-d9d5-4de8-8a12-1e506962b2d9@embeddedor.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] btrfs: Avoid -Wflex-array-member-not-at-end warning
+To: dsterba@suse.cz
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>, Chris Mason <clm@fb.com>,
+ David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <aN_Zeo7JH9nogwwq@kspp> <20251003143502.GJ4052@suse.cz>
+ <b59ed01f-d9d5-4de8-8a12-1e506962b2d9@embeddedor.com>
+ <20251003151509.GK4052@suse.cz>
+Content-Language: en-US
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20251003151509.GK4052@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 185.134.146.81
+X-Source-L: No
+X-Exim-ID: 1v4hb3-00000002K6A-0MN0
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([10.21.53.44]) [185.134.146.81]:52182
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 0
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfK4M9m0pbIowg9FlJnFFGQEUZ1OtocPOx4fqCdf1MmuES91rpOTIJ/lcXIfg7GnHA1Or97wRORieh8rn6mdA1F09CNT4mFeRy0WRKPHx7xviRLVhO7Ki
+ azRIugbcBHctVzgjUD33JZUZR+hSii8mY/TfMQ6X1WqPKIBoZR2+EuAIp3ZqfrnmsxE6rTTk0UdGS153o5ZuT5Az737DGcYGVr9oOjDWYwrDLNl72tlL8fBi
+ uJZIqdnp1U6IxrRAbrQjq4n4LCmgG/yf1vmQyzPWT2v5TzO60GYfXcX7xXxOut+gNNqK+7Wf1axs4JhsDV3J3Q==
 
-On Fri, Oct 03, 2025 at 03:51:24PM +0100, Gustavo A. R. Silva wrote:
-> >>
-> >> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> >> index 9230e5066fc6..2b7cf49a35bb 100644
-> >> --- a/fs/btrfs/send.c
-> >> +++ b/fs/btrfs/send.c
-> >> @@ -178,7 +178,6 @@ struct send_ctx {
-> >>   	u64 cur_inode_rdev;
-> >>   	u64 cur_inode_last_extent;
-> >>   	u64 cur_inode_next_write_offset;
-> >> -	struct fs_path cur_inode_path;
-> >>   	bool cur_inode_new;
-> >>   	bool cur_inode_new_gen;
-> >>   	bool cur_inode_deleted;
-> >> @@ -305,6 +304,9 @@ struct send_ctx {
-> >>   
-> >>   	struct btrfs_lru_cache dir_created_cache;
-> >>   	struct btrfs_lru_cache dir_utimes_cache;
-> >> +
-> >> +	/* Must be last --ends in a flexible-array member. */
-> >                          ^^
-> > 
-> > Is this an en dash?
+
+
+On 10/3/25 16:15, David Sterba wrote:
+> On Fri, Oct 03, 2025 at 03:51:24PM +0100, Gustavo A. R. Silva wrote:
+>>>>
+>>>> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+>>>> index 9230e5066fc6..2b7cf49a35bb 100644
+>>>> --- a/fs/btrfs/send.c
+>>>> +++ b/fs/btrfs/send.c
+>>>> @@ -178,7 +178,6 @@ struct send_ctx {
+>>>>    	u64 cur_inode_rdev;
+>>>>    	u64 cur_inode_last_extent;
+>>>>    	u64 cur_inode_next_write_offset;
+>>>> -	struct fs_path cur_inode_path;
+>>>>    	bool cur_inode_new;
+>>>>    	bool cur_inode_new_gen;
+>>>>    	bool cur_inode_deleted;
+>>>> @@ -305,6 +304,9 @@ struct send_ctx {
+>>>>    
+>>>>    	struct btrfs_lru_cache dir_created_cache;
+>>>>    	struct btrfs_lru_cache dir_utimes_cache;
+>>>> +
+>>>> +	/* Must be last --ends in a flexible-array member. */
+>>>                           ^^
+>>>
+>>> Is this an en dash?
+>>
+>> Not sure what you mean.
 > 
-> Not sure what you mean.
+> En dash is a punctuation mark not typically used in comments, nowadays
+> found in AI generated code/text. I was just curious.
 
-En dash is a punctuation mark not typically used in comments, nowadays
-found in AI generated code/text. I was just curious.
+Ah yes, I've been using this punctuation mark for this sorts of comments,
+but this is not AI generated code/text.
+
+-Gustavo
+
 
