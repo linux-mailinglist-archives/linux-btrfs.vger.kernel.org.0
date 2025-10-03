@@ -1,127 +1,165 @@
-Return-Path: <linux-btrfs+bounces-17417-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17418-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D74D3BB74A9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 03 Oct 2025 17:11:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E508FBB74B8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 03 Oct 2025 17:15:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 610B14E5A8C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Oct 2025 15:11:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA5AF3A8B0F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Oct 2025 15:15:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35A032836BE;
-	Fri,  3 Oct 2025 15:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D49828507F;
+	Fri,  3 Oct 2025 15:15:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DYII0nTM"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="q/h8+DAC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dfyptc0M";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="q/h8+DAC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dfyptc0M"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FFE1F3FF8
-	for <linux-btrfs@vger.kernel.org>; Fri,  3 Oct 2025 15:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6BF9283683
+	for <linux-btrfs@vger.kernel.org>; Fri,  3 Oct 2025 15:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759504307; cv=none; b=Fz8QiknkjpS4IWmGPnK/X5i/l2+l4pidHHS24qFWmeDHiRQiX9Q17qPIFvnbCEMPxbmdc5EK/y/6T2vdzGrlJR3Aim0qpRvb8cTCY/mhtDc8Qfws32g0O9iwaUVb1qa4E1qcZTRT4ocKZZWz393OWJU671tBhUoUrxXhul54pVA=
+	t=1759504514; cv=none; b=N9redzkOa6N8k9wmatjQ5mdNjw+EbT3+GhQJLca87I9pI8BFjoLxlkvu5ci6dPjOap/wMsAf16JLD9ueRNSYkckRYO6fdJizMf81BLjDWQS/wLEb2hH5hCmGynC8Vsj7HhEDM5fXeWMncQ6DzUyMIE5xRNcYpIN2RTsmIIqYTcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759504307; c=relaxed/simple;
-	bh=LY3PvXBP3zGIEn1YgDbcXBjB77bFCBNqz29jcmUiBd8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k9vb9eIr03a52JgBX2UDT19nDmcr3ob6xh7eLf6kunur9jPQUZxHS1y/OMgR7qJ9naL9Uqy3IYsXM/zcT4CYX0rAGZIZAz1KbFwpggKzMjnXO4ot5NZSDCHNa9M2jihtaU/1+TuCVkZxhIjwKKg9wpZG9Mftw7tqFVHdgoVlxQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DYII0nTM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08045C4CEFC
-	for <linux-btrfs@vger.kernel.org>; Fri,  3 Oct 2025 15:11:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759504307;
-	bh=LY3PvXBP3zGIEn1YgDbcXBjB77bFCBNqz29jcmUiBd8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=DYII0nTM/CPcXmbLt9i5iXQDBCcTXcDiMz0vsrFxae4ZxfKzppNu7Fzhi4E9bC4F5
-	 s8tNYMP7Y1pZv9BnPih08uCHg2fDgzKsA0FZanpjdAWkmekNZxKmgzzf/Xkj/3aaV/
-	 vD1tuDcLgZenwxn//N8ZyvChM7owZnIU4K2/4fDGK8zPs4QjrKW3ommAEkV32vsHMH
-	 P7bxT4izgcaQPNyITvdi2vzIViTDvvdqLHkj/mnY7bvwRMERcNKLOj/8nFfitE2Moz
-	 6EumFMqtopmhqOmTYE41blFSGHI/fzt0A96v8sF6X5NvgPhQ3vu83M/cx7IXwl287y
-	 f0cYgUG8QliBw==
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-afcb78ead12so442964166b.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 Oct 2025 08:11:46 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWjT54pt+qcCCnN+JK8NqRFhJJy4Rv7Fau0sCKPNoNvVDWFoGPeaVgkd0C23E2bhSTqsa+Yj+aykuNwtA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzmR5o9Xh8Is5B9/nhQOYrP85V6BZQNIj4D9ftdVzn+bnh1XTLt
-	9E+NN1VrwBMctx/7VrHb5OX8fah2VPSp2q6c3MQwEtJ8GD+SLcJUrMBSI/RYgtokbrbw09jBcAJ
-	fvMLtfn4gEO3oYbr56EE6WqdmrXWqCa0=
-X-Google-Smtp-Source: AGHT+IETuMWMxTDVJzk9wfD2XJioIGxW7pV9rF33Arl5/N+2t9VGcvR+bzQqzrf9RiZ+XQ3eJBquUFxQCCOno5F7Tjc=
-X-Received: by 2002:a17:907:7f8a:b0:b45:27e0:7f35 with SMTP id
- a640c23a62f3a-b49c43930a2mr474332866b.46.1759504305581; Fri, 03 Oct 2025
- 08:11:45 -0700 (PDT)
+	s=arc-20240116; t=1759504514; c=relaxed/simple;
+	bh=C7CfKgcHYLApAV6Hfjkaw2zl7XixfTDgEWSfeNSz2IA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tjpoJMKRdJ9XhdASHOsKElEcXIsVh1aGM9dgAxy12ZwGZvh9oS2puUJ1zVNLntgqfg8Le3eyxu9slp28Rlng3XTPjg0TZ1+9fnOhLnXu40oiQmq4sTcqR4S4burDZnmxaCCCtrf9MFF3hBtxC5ie5a2e7xjHNs4+SK/P9WEFaDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=q/h8+DAC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dfyptc0M; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=q/h8+DAC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dfyptc0M; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AF8C31F391;
+	Fri,  3 Oct 2025 15:15:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1759504510;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BSuUcYJ4MTFp6S1moFWEPmO11ItH6Z/9twvYE6qnuZY=;
+	b=q/h8+DAC9X52znJDx0snQfaKI02FhnRQnmU2JkCN+8OMqYedLyZ+Not33KIqxXrSKwlUno
+	d5jkz5Sj78gl63kRKKxeTlMCYT9HyMIx2AgJAw0XYvhhV8Aug80Yg5cNh8CZc8ugjTfrKV
+	3bJ3/3t1ecGoBVChMYqThOib+Rcv/Ow=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1759504510;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BSuUcYJ4MTFp6S1moFWEPmO11ItH6Z/9twvYE6qnuZY=;
+	b=dfyptc0MPtNOIG2tL+VRqFpFMoIZvr2mnuO38D6ozakWZ/LtyKH4fT1IrRd9XyplMbLVKj
+	Dw21BLvsvruvh3CA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1759504510;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BSuUcYJ4MTFp6S1moFWEPmO11ItH6Z/9twvYE6qnuZY=;
+	b=q/h8+DAC9X52znJDx0snQfaKI02FhnRQnmU2JkCN+8OMqYedLyZ+Not33KIqxXrSKwlUno
+	d5jkz5Sj78gl63kRKKxeTlMCYT9HyMIx2AgJAw0XYvhhV8Aug80Yg5cNh8CZc8ugjTfrKV
+	3bJ3/3t1ecGoBVChMYqThOib+Rcv/Ow=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1759504510;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BSuUcYJ4MTFp6S1moFWEPmO11ItH6Z/9twvYE6qnuZY=;
+	b=dfyptc0MPtNOIG2tL+VRqFpFMoIZvr2mnuO38D6ozakWZ/LtyKH4fT1IrRd9XyplMbLVKj
+	Dw21BLvsvruvh3CA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 95DA213990;
+	Fri,  3 Oct 2025 15:15:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id JFpmJH7o32gQYgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 03 Oct 2025 15:15:10 +0000
+Date: Fri, 3 Oct 2025 17:15:09 +0200
+From: David Sterba <dsterba@suse.cz>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] btrfs: Avoid -Wflex-array-member-not-at-end warning
+Message-ID: <20251003151509.GK4052@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <aN_Zeo7JH9nogwwq@kspp>
+ <20251003143502.GJ4052@suse.cz>
+ <b59ed01f-d9d5-4de8-8a12-1e506962b2d9@embeddedor.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251003133001.45052-2-rtapadia730@gmail.com>
-In-Reply-To: <20251003133001.45052-2-rtapadia730@gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 3 Oct 2025 16:11:08 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7kLUGtqnc7bBSrTZ70Gx1z-ijeWQfPx=TiN+2PCoe_ug@mail.gmail.com>
-X-Gm-Features: AS18NWD3WZ4EBVCxvGU7fRzOjZoeBfxCqIReN2M8TD26-OSBtf4BA2ypHjjUZ70
-Message-ID: <CAL3q7H7kLUGtqnc7bBSrTZ70Gx1z-ijeWQfPx=TiN+2PCoe_ug@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: fix comment in alloc_bitmap() and drop stale TODO
-To: rtapadia730@gmail.com
-Cc: dsterba@suse.com, clm@fb.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, skhan@linuxfoundation.org, khalid@kernel.org, 
-	david.hunter.linux@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b59ed01f-d9d5-4de8-8a12-1e506962b2d9@embeddedor.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
 
-On Fri, Oct 3, 2025 at 2:31=E2=80=AFPM <rtapadia730@gmail.com> wrote:
->
-> From: Rajeev Tapadia <rtapadia730@gmail.com>
->
-> All callers of alloc_bitmap() hold a transaction handle, so GFP_NOFS is
-> needed to avoid deadlocks on recursion. Update the comment and drop the
-> stale TODO.
->
-> Signed-off-by: Rajeev Tapadia <rtapadia730@gmail.com>
+On Fri, Oct 03, 2025 at 03:51:24PM +0100, Gustavo A. R. Silva wrote:
+> >>
+> >> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> >> index 9230e5066fc6..2b7cf49a35bb 100644
+> >> --- a/fs/btrfs/send.c
+> >> +++ b/fs/btrfs/send.c
+> >> @@ -178,7 +178,6 @@ struct send_ctx {
+> >>   	u64 cur_inode_rdev;
+> >>   	u64 cur_inode_last_extent;
+> >>   	u64 cur_inode_next_write_offset;
+> >> -	struct fs_path cur_inode_path;
+> >>   	bool cur_inode_new;
+> >>   	bool cur_inode_new_gen;
+> >>   	bool cur_inode_deleted;
+> >> @@ -305,6 +304,9 @@ struct send_ctx {
+> >>   
+> >>   	struct btrfs_lru_cache dir_created_cache;
+> >>   	struct btrfs_lru_cache dir_utimes_cache;
+> >> +
+> >> +	/* Must be last --ends in a flexible-array member. */
+> >                          ^^
+> > 
+> > Is this an en dash?
+> 
+> Not sure what you mean.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
-I pushed it to the for-next branch:
-
-https://github.com/btrfs/linux/commits/for-next/
-
-> ---
-> Change log:
-> As per previous review the change is not required. So just removing the
-> stale TODO.
->
->  fs/btrfs/free-space-tree.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-> index dad0b492a663..bb8ca7b679be 100644
-> --- a/fs/btrfs/free-space-tree.c
-> +++ b/fs/btrfs/free-space-tree.c
-> @@ -165,11 +165,9 @@ static unsigned long *alloc_bitmap(u32 bitmap_size)
->
->         /*
->          * GFP_NOFS doesn't work with kvmalloc(), but we really can't rec=
-urse
-> -        * into the filesystem as the free space bitmap can be modified i=
-n the
-> -        * critical section of a transaction commit.
-> -        *
-> -        * TODO: push the memalloc_nofs_{save,restore}() to the caller wh=
-ere we
-> -        * know that recursion is unsafe.
-> +        * into the filesystem here. All callers hold a transaction handl=
-e
-> +        * open, so if a GFP_KERNEL allocation recurses into the filesyst=
-em
-> +        * and triggers a transaction commit, we would deadlock.
->          */
->         nofs_flag =3D memalloc_nofs_save();
->         ret =3D kvzalloc(bitmap_rounded_size, GFP_KERNEL);
-> --
-> 2.51.0
->
+En dash is a punctuation mark not typically used in comments, nowadays
+found in AI generated code/text. I was just curious.
 
