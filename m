@@ -1,75 +1,82 @@
-Return-Path: <linux-btrfs+bounces-17442-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17444-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B29A3BBCD87
-	for <lists+linux-btrfs@lfdr.de>; Mon, 06 Oct 2025 00:41:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3037EBBCD8B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 06 Oct 2025 00:42:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 413F34E560C
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Oct 2025 22:41:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA5731894927
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Oct 2025 22:42:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1531D90DF;
-	Sun,  5 Oct 2025 22:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA0B1C701F;
+	Sun,  5 Oct 2025 22:41:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UQdmyTVu";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UQdmyTVu"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ApSmglGc";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ApSmglGc"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1FFD39ACF
-	for <linux-btrfs@vger.kernel.org>; Sun,  5 Oct 2025 22:41:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6E7187332
+	for <linux-btrfs@vger.kernel.org>; Sun,  5 Oct 2025 22:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759704111; cv=none; b=BqJbAZGAcV8TfNyo0mcSFMmyzUP1MJaY9R6k09JGlPVEE0cqssZlz3tcfhHwjglLSKOil4iWepJk/tfmv/qlRrLsEFgKg9rUGGAANffokBZtzQB2taNNmWmSbKc1ezmq4mJJ7NDfg+Lje6zTbaPY850PgNILrpDwGhbGQJV0BUw=
+	t=1759704118; cv=none; b=ARed5m2hybvYAUkfMFxI8y/F6vnrQN97y24PJBoLABElJATPJWyPuvCHIFOdYg0H15PJtMpGIhbAWhhvB34goIGZ8MwD54rLeZU6rsJdC4/VWqFg1HpKIT2CJXc7qNiEqlkMUVj2/Ea+8EV8A4SXdOuFIAxoc077yWWTJ4SCqts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759704111; c=relaxed/simple;
-	bh=QkmrruSNftQtsaKPoTNyua012s80I2fm7Zexv4jsjaE=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=et5U/ozu+NREAz4irk027Hg2geq2Exp6FEUuR7eTwhf9tiWpZ94UY8QhEO5FDxbhQEWXLB6HLYBKMg89Zc9OYGARuzHAA+QKrYUOfTyj9C0dAAWevpHhnxMNb9me1/9YYb+NAmBN4WfHtDNzbAHX4Fk1Y1QOQ2MPrvHr/MLHGUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UQdmyTVu; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UQdmyTVu; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1759704118; c=relaxed/simple;
+	bh=MrFseLp6hhzz9lFcCkgjbQkFvVpPr7qlj6HcPSgtLA0=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=t7sHjc1h8Nmk+TYSMPl6U6tN1DXoL5dMtfju6IZTsINzMMglhPsqArpWUaV5Z4W15j/I9KXWV+JIhtvkjagHRF8/CL5Xwk96rlocCFQVR1D1M5/kBoBtbRKUYyIucVOjsqhd9HjcoJ29muRg1Yc/9jkR74Vd5enZVh/WCG65IC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ApSmglGc; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ApSmglGc; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 87A20336B1
-	for <linux-btrfs@vger.kernel.org>; Sun,  5 Oct 2025 22:41:41 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BE998336AB
+	for <linux-btrfs@vger.kernel.org>; Sun,  5 Oct 2025 22:41:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1759704101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=pKJtUz/XumiuZIGOnvjz+R8C91ynE7VYENIysOonIfc=;
-	b=UQdmyTVu4Iz3ASu93cJmnUWyAfEq1jV+1qwDxwf/M0I2qLsMX8dQVBMlqYG5JIvdZNkg7n
-	99nk6/31VZRcLRmKE4YQWWj1e0Nc/v7TyXwNFQN/eM+oZOgqYSYj73xXFy2Lal0+AfoUs1
-	3MM7yF2AGdblMZ0sxIMANFHgqpvz2yc=
+	t=1759704102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Uya5LCQg6ab7WA2zSSNExlLKSGjWeUZnM0bZWOgG030=;
+	b=ApSmglGcGGxhg6CcLmEU9BmgZ+u55hr9EBQQxvcbK/s1wn1PFgiYUujG7I8dVCR7xK+4d8
+	XOInu6cjjolaRC6xBw65FO0QUvDGlFOt8KqXNpMrUb2yZKKFTRsGiqRS9doO4ZifAS3w1R
+	yavNxU7z6gPw5iF56kFuc0JyNjAALQc=
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1759704101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=pKJtUz/XumiuZIGOnvjz+R8C91ynE7VYENIysOonIfc=;
-	b=UQdmyTVu4Iz3ASu93cJmnUWyAfEq1jV+1qwDxwf/M0I2qLsMX8dQVBMlqYG5JIvdZNkg7n
-	99nk6/31VZRcLRmKE4YQWWj1e0Nc/v7TyXwNFQN/eM+oZOgqYSYj73xXFy2Lal0+AfoUs1
-	3MM7yF2AGdblMZ0sxIMANFHgqpvz2yc=
+	t=1759704102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Uya5LCQg6ab7WA2zSSNExlLKSGjWeUZnM0bZWOgG030=;
+	b=ApSmglGcGGxhg6CcLmEU9BmgZ+u55hr9EBQQxvcbK/s1wn1PFgiYUujG7I8dVCR7xK+4d8
+	XOInu6cjjolaRC6xBw65FO0QUvDGlFOt8KqXNpMrUb2yZKKFTRsGiqRS9doO4ZifAS3w1R
+	yavNxU7z6gPw5iF56kFuc0JyNjAALQc=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4BF213995
-	for <linux-btrfs@vger.kernel.org>; Sun,  5 Oct 2025 22:41:40 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 06DCB13995
+	for <linux-btrfs@vger.kernel.org>; Sun,  5 Oct 2025 22:41:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id HItrIST04miFJQAAD6G6ig
+	id 0JfILiX04miFJQAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sun, 05 Oct 2025 22:41:40 +0000
+	for <linux-btrfs@vger.kernel.org>; Sun, 05 Oct 2025 22:41:41 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/4] btrfs: enable encoded read/write/send for bs > ps cases
-Date: Mon,  6 Oct 2025 09:11:19 +1030
-Message-ID: <cover.1759703432.git.wqu@suse.com>
+Subject: [PATCH v2 1/4] btrfs: make btrfs_csum_one_bio() handle bs > ps without large folios
+Date: Mon,  6 Oct 2025 09:11:20 +1030
+Message-ID: <c713102fa54228f1066d233486b56bfc73c966f7.1759703432.git.wqu@suse.com>
 X-Mailer: git-send-email 2.50.1
+In-Reply-To: <cover.1759703432.git.wqu@suse.com>
+References: <cover.1759703432.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,7 +84,6 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
 X-Spamd-Result: default: False [-2.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
@@ -90,7 +96,7 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	RCPT_COUNT_ONE(0.00)[1];
 	ARC_NA(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,imap1.dmz-prg2.suse.org:helo];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -100,89 +106,197 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
+X-Spam-Level: 
 X-Spam-Score: -2.80
 
-[CHANGELOG]
-v2:
-- Fix smatch warnings
-  Mostly remove any ASSERT()s checking returned value of bio_alloc().
+For bs > ps cases, all folios passed into btrfs_csum_one_bio() is
+ensured to be backed by large folios.
 
-- Fix a bug in the btrfs_add_compressed_bio_folios()
-  Where the function still assumes large folios, but now we can have
-  regular folios.
+But that requirement excludes features like direct IO and encoded
+writes.
 
+To support bs > ps without large folios, enhance btrfs_csum_one_bio()
+by:
 
-Previously encoded read/write/send is disabled for bs > ps cases,
-because they are either using regular pages or kvmallocated memories as
-buffer.
+- Split btrfs_calculate_block_csum() into two versions
+  * btrfs_calculate_block_csum_folio()
+    For call sites that a fs block is always backed by a large folio.
 
-This means their buffers do not meet the folio size requirement (each 
-folio much contain at least one fs block, no block can cross large folio
-boundries).
+    This will do extra checks on the folio size, build a paddrs[] array,
+    and pass it into the newer btrfs_calculate_block_csum_pages()
+    helper.
 
+    For now btrfs_check_block_csum() is still using this version.
 
-This series address the limits by allowing the following functionalities
-to support regular pages, without relying on large folios:
+  * btrfs_calculate_block_csum_pages()
+    For call sites that may hit a fs block backed by incontiguous pages.
+    The pages are represented by paddrs[] array, which includes the
+    offset inside the page.
 
-- Checksum calculation
-  Now instead of passing a single @paddr which is ensured to be inside a
-  large folio, an array, paddrs[], is passed in.
+    This function will do the proper sub-block handling.
 
-  For bs <= ps cases, it's still a single paddr.
+- Make btrfs_csum_one_bio() to use btrfs_calculate_block_csum_pages()
+  This means we will need to build a local paddrs[] array, and after
+  filling a fs block, do the checksum calculation.
 
-  For bs > ps cases, we can accept an array of multiple paddrs, that
-  represents a single fs block.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/btrfs_inode.h |  6 ++--
+ fs/btrfs/file-item.c   | 15 +++++++--
+ fs/btrfs/inode.c       | 73 ++++++++++++++++++++++++++++++------------
+ 3 files changed, 68 insertions(+), 26 deletions(-)
 
-- Read repair
-  Allow btrfs_repair_io_failure() to submit a bio with multiple
-  incontiguous pages.
-
-  The same paddrs[] array building scheme.
-
-  But this time since we need to submit a bio with multiple bvecs, we
-  can no longer use the current on-stack bio.
-
-  This also brings a small improvement for metadata read-repair, we can
-  submit the whole metadata block in one go.
-
-- Comprssed bio folios submission
-  Now the function btrfs_add_compressed_bio_folios() can handle both
-  large and regular folios, even handling different sized folios in the
-  array.
-
-- Read verification
-  Just build the paddrs[] array for bs > ps cases and pass the array
-  into btrfs_calculate_block_csum_folio().
-
-Unfortunately since there is no reliable on-stack VLA support, we have
-to pay the extra on-stack memory (128 bytes for x86_64, or 8 bytes for
-64K page sized systems) everywhere, even if 99% of the cases our block
-size is no larger than page size.
-
-Another thing is, even with all those support, direct IO is still not
-supported.
-The problem is iomap can still split the bio between pages, breaking our
-bio size requirement (still have to be block aligned).
-
-Qu Wenruo (4):
-  btrfs: make btrfs_csum_one_bio() handle bs > ps without large folios
-  btrfs: make btrfs_repair_io_failure() handle bs > ps cases without
-    large folios
-  btrfs: make read verification handle bs > ps cases without large
-    folios
-  btrfs: enable encoded read/write/send for bs > ps cases
-
- fs/btrfs/bio.c         | 138 +++++++++++++++++++++++++++++------------
- fs/btrfs/bio.h         |   2 +-
- fs/btrfs/btrfs_inode.h |   8 ++-
- fs/btrfs/compression.c |  10 +--
- fs/btrfs/disk-io.c     |  29 +++++----
- fs/btrfs/file-item.c   |  15 ++++-
- fs/btrfs/inode.c       |  91 ++++++++++++++++++---------
- fs/btrfs/ioctl.c       |  21 -------
- fs/btrfs/send.c        |   9 +--
- 9 files changed, 203 insertions(+), 120 deletions(-)
-
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index f45dcdde0efc..03c107ab391b 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -542,8 +542,10 @@ static inline void btrfs_set_inode_mapping_order(struct btrfs_inode *inode)
+ #define CSUM_FMT				"0x%*phN"
+ #define CSUM_FMT_VALUE(size, bytes)		size, bytes
+ 
+-void btrfs_calculate_block_csum(struct btrfs_fs_info *fs_info, phys_addr_t paddr,
+-				u8 *dest);
++void btrfs_calculate_block_csum_folio(struct btrfs_fs_info *fs_info,
++				      const phys_addr_t paddr, u8 *dest);
++void btrfs_calculate_block_csum_pages(struct btrfs_fs_info *fs_info,
++				      const phys_addr_t paddrs[], u8 *dest);
+ int btrfs_check_block_csum(struct btrfs_fs_info *fs_info, phys_addr_t paddr, u8 *csum,
+ 			   const u8 * const csum_expected);
+ bool btrfs_data_csum_ok(struct btrfs_bio *bbio, struct btrfs_device *dev,
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index a42e6d54e7cd..5b3c5489ee48 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -778,6 +778,10 @@ int btrfs_csum_one_bio(struct btrfs_bio *bbio)
+ 	struct bvec_iter iter = bio->bi_iter;
+ 	phys_addr_t paddr;
+ 	const u32 blocksize = fs_info->sectorsize;
++	const u32 step = min(blocksize, PAGE_SIZE);
++	const u32 nr_steps = blocksize / step;
++	phys_addr_t paddrs[BTRFS_MAX_BLOCKSIZE / PAGE_SIZE];
++	u32 offset = 0;
+ 	int index;
+ 	unsigned nofs_flag;
+ 
+@@ -797,9 +801,14 @@ int btrfs_csum_one_bio(struct btrfs_bio *bbio)
+ 
+ 	shash->tfm = fs_info->csum_shash;
+ 
+-	btrfs_bio_for_each_block(paddr, bio, &iter, blocksize) {
+-		btrfs_calculate_block_csum(fs_info, paddr, sums->sums + index);
+-		index += fs_info->csum_size;
++	btrfs_bio_for_each_block(paddr, bio, &iter, step) {
++		paddrs[(offset / step) % nr_steps] = paddr;
++		offset += step;
++
++		if (IS_ALIGNED(offset, blocksize)) {
++			btrfs_calculate_block_csum_pages(fs_info, paddrs, sums->sums + index);
++			index += fs_info->csum_size;
++		}
+ 	}
+ 
+ 	bbio->sums = sums;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index ac2fd589697d..287c67296a7d 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3330,36 +3330,67 @@ int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered)
+ 	return btrfs_finish_one_ordered(ordered);
+ }
+ 
+-void btrfs_calculate_block_csum(struct btrfs_fs_info *fs_info, phys_addr_t paddr,
+-				u8 *dest)
++/*
++ * Calculate the checksum of a fs block at physical memory address @paddr,
++ * and save the result to @dest.
++ *
++ * The folio containing @paddr must be large enough to contain a full fs block.
++ */
++void btrfs_calculate_block_csum_folio(struct btrfs_fs_info *fs_info,
++				      const phys_addr_t paddr, u8 *dest)
+ {
+ 	struct folio *folio = page_folio(phys_to_page(paddr));
+ 	const u32 blocksize = fs_info->sectorsize;
+-	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
++	const u32 step = min(blocksize, PAGE_SIZE);
++	const u32 nr_steps = blocksize / step;
++	phys_addr_t paddrs[BTRFS_MAX_BLOCKSIZE / PAGE_SIZE];
+ 
+-	shash->tfm = fs_info->csum_shash;
+ 	/* The full block must be inside the folio. */
+ 	ASSERT(offset_in_folio(folio, paddr) + blocksize <= folio_size(folio));
+ 
+-	if (folio_test_partial_kmap(folio)) {
+-		size_t cur = paddr;
++	for (int i = 0; i < nr_steps; i++) {
++		u32 pindex = offset_in_folio(folio, paddr + i * step) >> PAGE_SHIFT;
+ 
+-		crypto_shash_init(shash);
+-		while (cur < paddr + blocksize) {
+-			void *kaddr;
+-			size_t len = min(paddr + blocksize - cur,
+-					 PAGE_SIZE - offset_in_page(cur));
+-
+-			kaddr = kmap_local_folio(folio, offset_in_folio(folio, cur));
+-			crypto_shash_update(shash, kaddr, len);
+-			kunmap_local(kaddr);
+-			cur += len;
+-		}
+-		crypto_shash_final(shash, dest);
+-	} else {
+-		crypto_shash_digest(shash, phys_to_virt(paddr), blocksize, dest);
++		/*
++		 * For bs <= ps cases, we will only run the loop once, so the offset
++		 * inside the page will only added to paddrs[0].
++		 *
++		 * For bs > ps cases, the block must be page aligned, thus offset
++		 * inside the page will always be 0.
++		 */
++		paddrs[i] = page_to_phys(folio_page(folio, pindex)) + offset_in_page(paddr);
+ 	}
++	return btrfs_calculate_block_csum_pages(fs_info, paddrs, dest);
+ }
++
++/*
++ * Calculate the checksum of a fs block backed by multiple incontiguous pages at @paddrs[]
++ * and save the result to @dest.
++ *
++ * The folio containing @paddr must be large enough to contain a full fs block.
++ */
++void btrfs_calculate_block_csum_pages(struct btrfs_fs_info *fs_info,
++				      const phys_addr_t paddrs[], u8 *dest)
++{
++	const u32 blocksize = fs_info->sectorsize;
++	const u32 step = min(blocksize, PAGE_SIZE);
++	const u32 nr_steps = blocksize / step;
++	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
++
++	shash->tfm = fs_info->csum_shash;
++	crypto_shash_init(shash);
++	for (int i = 0; i < nr_steps; i++) {
++		const phys_addr_t paddr = paddrs[i];
++		void *kaddr;
++
++		ASSERT(offset_in_page(paddr) + step <= PAGE_SIZE);
++		kaddr = kmap_local_page(phys_to_page(paddr)) + offset_in_page(paddr);
++		crypto_shash_update(shash, kaddr, step);
++		kunmap_local(kaddr);
++	}
++	crypto_shash_final(shash, dest);
++}
++
+ /*
+  * Verify the checksum for a single sector without any extra action that depend
+  * on the type of I/O.
+@@ -3369,7 +3400,7 @@ void btrfs_calculate_block_csum(struct btrfs_fs_info *fs_info, phys_addr_t paddr
+ int btrfs_check_block_csum(struct btrfs_fs_info *fs_info, phys_addr_t paddr, u8 *csum,
+ 			   const u8 * const csum_expected)
+ {
+-	btrfs_calculate_block_csum(fs_info, paddr, csum);
++	btrfs_calculate_block_csum_folio(fs_info, paddr, csum);
+ 	if (unlikely(memcmp(csum, csum_expected, fs_info->csum_size) != 0))
+ 		return -EIO;
+ 	return 0;
 -- 
 2.50.1
 
