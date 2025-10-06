@@ -1,168 +1,87 @@
-Return-Path: <linux-btrfs+bounces-17462-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17463-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8AAABBE2EF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 06 Oct 2025 15:26:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95563BBE718
+	for <lists+linux-btrfs@lfdr.de>; Mon, 06 Oct 2025 17:08:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DDD614EC2E8
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Oct 2025 13:26:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 561903B7265
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Oct 2025 15:08:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2253B2D12EC;
-	Mon,  6 Oct 2025 13:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC8D2D77F5;
+	Mon,  6 Oct 2025 15:07:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="cM/8bIEJ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HTZY2sAT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45542D0C64;
-	Mon,  6 Oct 2025 13:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.143.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA5B2D73B9;
+	Mon,  6 Oct 2025 15:07:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759757182; cv=none; b=jnx7+fcwIRXAUiScwqUvMNG+FKPjvnQdKFN8xvcRnFZRjPXwy81w1HRNVuOaszm8kh3M7h2OCZEcjlFxjsM1CYBgaYRc2qVinzc1EWWM0hJyXhyhynVXN8r5xP2QMC4Z7Pe1qQuv+HLj91OAV/Uu7MUul4WUL3m1HwgYUgXw3sU=
+	t=1759763256; cv=none; b=uy1wqVYyJaorRb10SJEdNkhxxawBRFE1LoympKX1pbn7GIQMihvSELO8HyCbOtzJ4MSIhtESwZymgFl+v/l5RaG+JSEyOmrzKfaIi9HvwchufbHkmkN8A+1zaLX59PspE3LHFxNF2MCfgPkDdBYIXC8BS1V5NRMr19VhUnGNO6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759757182; c=relaxed/simple;
-	bh=0dFHISE/jOjIkneju0DdqyWKU1iFBYh0kHcEhn2/0FM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jhDjhWWeZhGWOttO1RyxrbJSAcrqMZpiFhHz7wR5spCDl1X1G0RsnD1pjRN1MEyh4pg0XricWs/EKlClMxEON/DiJCBCSaAKf7yAENUARwHkUch6v2o0TwgykO5yhG8y9AUMEBhxW5ucf+Ca+9lFaicrWsRainD9bIJMgcRmwYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=cM/8bIEJ; arc=none smtp.client-ip=68.232.143.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1759757180; x=1791293180;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=0dFHISE/jOjIkneju0DdqyWKU1iFBYh0kHcEhn2/0FM=;
-  b=cM/8bIEJOdc1jdb6uVsTcd2XNa5LPkZTLmR/So0UEAOEoPPfEMAQ/aVD
-   X0MMEO9gbY/OHrBEr+B+D1Iqb9GMUuNDAOY5eWmEjxFsuzjReaCPBtc0Y
-   E77OP94vZi95RfFCxyY+410ejvy+4Wq0pEa95F7DybLHP1YDa4jCve4Rg
-   3msjJcBFFsqqTIlMuPIjNoSO7mLo5jWZi/AwRLBTQKAvzFDnQLo8Md3AV
-   6VKl8RQnGId57ZHuzR378Wsgw6XHGB6Pse0W9oWHeWFZJQivOPwAZvPPJ
-   e+Y90UmJ78OG4vj/QZXfLGATNGykoEqzEh5NYDh4INjGsPuH16HKuLWu0
-   g==;
-X-CSE-ConnectionGUID: ZQAFEqkrTdOT6xFEOgX0Ag==
-X-CSE-MsgGUID: kAaJa3/IT9iWYf2x5ffC0w==
-X-IronPort-AV: E=Sophos;i="6.18,319,1751212800"; 
-   d="scan'208";a="133893178"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Oct 2025 21:25:06 +0800
-IronPort-SDR: 68e3c332_q7arA5RdkL7uhUwl6rWE83MsLvtdFhJt8MCd3A5I7Sgn7IS
- x+F/XlLh5mI1WzRaMRFBCLLjrBPVMSw/bXFLesw==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Oct 2025 06:25:06 -0700
-WDCIronportException: Internal
-Received: from unknown (HELO neo.wdc.com) ([10.224.183.246])
-  by uls-op-cesaip01.wdc.com with ESMTP; 06 Oct 2025 06:25:04 -0700
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To: Zorro Lang <zlang@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	linux-btrfs@vger.kernel.org,
-	Hans Holmberg <hans.holmberg@wdc.com>,
-	fstests@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH] generic: basic smoke for filesystems on zoned block devices
-Date: Mon,  6 Oct 2025 15:24:55 +0200
-Message-ID: <20251006132455.140149-3-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251006132455.140149-1-johannes.thumshirn@wdc.com>
-References: <20251006132455.140149-1-johannes.thumshirn@wdc.com>
+	s=arc-20240116; t=1759763256; c=relaxed/simple;
+	bh=6tbN8X6Sh0OQHviqMhA/n/2iU6jpNAiB9XinEHb3VlE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dEYUrnBtV3J6q8nT3vrDoYOEl7ogJKzv7aJbWoUGrdVHboJUcP5zrzsIeAFWCC4yXeZ+VJy9GAg7HfEjTJHk+v8W6V0kDtE1kC7HxbQi7rKdD2pYo5usEBZmWFdum7vM1ZqrNYfkRXwAKoWKYCP2EcHywyGkyHPzLfHM+Agk8TU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HTZY2sAT; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=wG4YAut9yk4+pp+RtBmTG3gIVoqnu9o9Ktcrqzwuvyk=; b=HTZY2sATM0kH/f7MpLPXX1UCdP
+	69NakvRQtc7P9+NtxPz1MrZAitJmSACfumzGen3AhLAtHubXkgirD61qSVgF+IU0/UdosLQ9Qrzr1
+	FCnd3Ey9ZJvvgE/4zdwS40z1UkIeQ5CTv3uVwkD7GTCrJqm10lLwALOxo2qyaJ+stOZheAnLZ+tQo
+	SlBiNdFnpT0t0o0fFJV+lQXzDnxr+ssbESf++MhF71B/Q+hO2umvXl/NfxS5sjWt2LxfAx7c0WBrZ
+	iDuqffIgLw3iu2OQ9pac+XQZ//MzwSWPUWyGxd2+Em+5MWSw677u/0hG6GmXp5uFZqXzxfTn5Y7ML
+	yHcDnbrQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1v5moE-0000000EEfu-4069;
+	Mon, 06 Oct 2025 15:07:30 +0000
+Date: Mon, 6 Oct 2025 16:07:30 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	linux-btrfs <linux-btrfs@vger.kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Christoph Hellwig <hch@infradead.org>
+Subject: Re: Direct IO reads being split unexpected at page boundary, but in
+ the middle of a fs block (bs > ps cases)
+Message-ID: <aOPbMs4_wML4qxUg@casper.infradead.org>
+References: <048c3d9c-6cba-438a-a3a9-d24ac14feb62@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <048c3d9c-6cba-438a-a3a9-d24ac14feb62@gmx.com>
 
-Add a basic smoke test for filesystems that support running on zoned
-block devices.
+On Wed, Oct 01, 2025 at 10:59:18AM +0930, Qu Wenruo wrote:
+> Recently during the btrfs bs > ps direct IO enablement, I'm hitting a case
+> where:
+> 
+> - The direct IO iov is properly aligned to fs block size (8K, 2 pages)
+>   They do not need to be large folio backed, regular incontiguous pages
+>   are supported.
+> 
+> - The btrfs now can handle sub-block pages
+>   But still require the bi_size and (bi_sector << 9) to be block size
+>   aligned.
+> 
+> - The bio passed into iomap_dio_ops::submit_io is not block size
+>   aligned
+>   The bio only contains one page, not 2.
 
-It creates a zloop device with 2 sequential and 62 sequential zones,
-mounts it and then runs fsx on it.
-
-Currently this tests supports BTRFS, F2FS and XFS.
-
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- tests/generic/772     | 52 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/772.out |  2 ++
- 2 files changed, 54 insertions(+)
- create mode 100755 tests/generic/772
- create mode 100644 tests/generic/772.out
-
-diff --git a/tests/generic/772 b/tests/generic/772
-new file mode 100755
-index 00000000..412fd024
---- /dev/null
-+++ b/tests/generic/772
-@@ -0,0 +1,52 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2025 Wesgtern Digital Corporation.  All Rights Reserved.
-+#
-+# FS QA Test 772
-+#
-+# Smoke test for FSes with ZBD support on zloop
-+#
-+. ./common/preamble
-+_begin_fstest auto zone quick
-+
-+_cleanup()
-+{
-+	if test -b /dev/zloop$ID; then
-+		echo "remove id=$ID" > /dev/zloop-control
-+	fi
-+}
-+
-+. ./common/zoned
-+
-+# Modify as appropriate.
-+_require_scratch
-+_require_scratch_size $((16 * 1024 * 1024)) #kB
-+_require_zloop
-+
-+_scratch_mkfs > /dev/null 2>&1
-+_scratch_mount
-+
-+last_id=$(ls /dev/zloop* 2> /dev/null | grep -E "zloop[0-9]+" | wc -l)
-+ID=$((last_id + 1))
-+
-+mnt="$SCRATCH_MNT/mnt"
-+zloopdir="$SCRATCH_MNT/zloop"
-+
-+zloop_args="add id=$ID,zone_size_mb=256,conv_zones=2,base_dir=$zloopdir"
-+
-+mkdir -p "$zloopdir/$ID"
-+mkdir -p $mnt
-+echo "$zloop_args" > /dev/zloop-control
-+zloop="/dev/zloop$ID"
-+
-+_try_mkfs_dev $zloop 2>&1 >> $seqres.full ||\
-+	_notrun "cannot mkfs zoned filesystem"
-+_mount $zloop $mnt
-+
-+$FSX_PROG -q -N 20000 $FSX_AVOID "$mnt/fsx" >> $seqres.full
-+
-+umount $mnt
-+
-+echo Silence is golden
-+# success, all done
-+_exit 0
-diff --git a/tests/generic/772.out b/tests/generic/772.out
-new file mode 100644
-index 00000000..98c13968
---- /dev/null
-+++ b/tests/generic/772.out
-@@ -0,0 +1,2 @@
-+QA output created by 772
-+Silence is golden
--- 
-2.51.0
-
+That seems like a bug in the VFS/iomap somewhere.  Maybe try cc'ing the
+people who know this code?
 
