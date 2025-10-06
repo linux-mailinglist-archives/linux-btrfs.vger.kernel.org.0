@@ -1,156 +1,116 @@
-Return-Path: <linux-btrfs+bounces-17466-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17467-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 708F8BBECE0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 06 Oct 2025 19:24:03 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99858BBED3D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 06 Oct 2025 19:38:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3B1B3BEE2C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Oct 2025 17:24:00 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 951594EEDC1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Oct 2025 17:38:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3227243946;
-	Mon,  6 Oct 2025 17:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5B0F246799;
+	Mon,  6 Oct 2025 17:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ILJtI9wu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k01sfhYm";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MqRDCRKl";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="m4nf8Jbf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YSFjNWMq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-yw1-f194.google.com (mail-yw1-f194.google.com [209.85.128.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7048233722
-	for <linux-btrfs@vger.kernel.org>; Mon,  6 Oct 2025 17:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3BA221F1A
+	for <linux-btrfs@vger.kernel.org>; Mon,  6 Oct 2025 17:38:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759771433; cv=none; b=m/hrf+4/lFJHVQg7Fia++Zo7B6rsNM38BsjGex9xmq1qsCzqcP091PNYuuO7mHXn8OIkoX+WKFiklwcOxm9SgdA9nrJy7Wsv/KAQtQlvjRIgIycg/r0wl5hU9jD0J4w6JlQ1hSii7Oq6YyYKp6wvEKSSkcXxYMjMgiZ2yGWXmZk=
+	t=1759772295; cv=none; b=dQgb56RHDOpT0HmgBOB1yO1wDCG24xhfxkql2Gftt8QmshpSRrO+AzrC7PinmsYLTt7i/9mxCDr2dexmoODJHP7mOget+2vlbaIL4lq50Fl8HenSncjvEOBTdT+zw4PcKwxcexeU8TRSPsiqQfNgxA7zzAMOuIgrnjl3P5MiRtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759771433; c=relaxed/simple;
-	bh=ZeaGMx8w4FiIQan7pESD85thqMtxADdk5RzhM3lspTk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PDqoUd+kUurWazBrufrJaRyKBNsMyIfdRuNYQ6xXUkDbcMekiK0xtpCiK4iTxBdzqdsChJCDiEy+0OE7L0uj9YTuUQ7PF0t9Rij5/RM8TpcGuMxqfvig/9f+O/vZY5aThuZfbBsIN7SIQiXH5eqWMal6pkSD5IO6abcrAuTGuRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ILJtI9wu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=k01sfhYm; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MqRDCRKl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=m4nf8Jbf; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E043F336C4;
-	Mon,  6 Oct 2025 17:23:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1759771428;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KHx8s6doP1vCz5xGqfXMd/mLDJcI1MG6Od/8Lre67DM=;
-	b=ILJtI9wu6PdBZlYT7v16iaDUVK+5zwZ6+3/Ye57b2A1QpZk906PzR1t1EO9zdLBZ0jek3n
-	h5y1Xf0Ph85YMK2qSkSAMIBXTm2uBe34NPtYMmGayl0dOCLcWFwPSR6dBk0OAQ4TRoXFxQ
-	UssiAMzG2Zf3Cw/twULXpVHgi8nnEiY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1759771428;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KHx8s6doP1vCz5xGqfXMd/mLDJcI1MG6Od/8Lre67DM=;
-	b=k01sfhYmoVSERyxiV8cIfo4I5SdQXCfY+RhQMvvZvCjlxQSEmI71Qucw3I8aeDXoaA/QIM
-	0/1CB9aaG/a5VyCg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MqRDCRKl;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=m4nf8Jbf
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1759771427;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KHx8s6doP1vCz5xGqfXMd/mLDJcI1MG6Od/8Lre67DM=;
-	b=MqRDCRKlmkSUKj53DXzmSt5X9qnPsOjm6kGJLWsvq4FxSfln81EGHBpNXtB7rkNzokp5kI
-	ZLBnqbWB5asKXWc/bN5FJAlqVgbSbHSoCuY6siXUiNlJvuanlGvs2KVzxGJLfGLlR5WOR3
-	30BMuJfwMGNXw8YHfLsGalCjcETd2Ck=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1759771427;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KHx8s6doP1vCz5xGqfXMd/mLDJcI1MG6Od/8Lre67DM=;
-	b=m4nf8Jbf2EAojKHVUsMi61tIE98fRXNQNw3DHaujSSU9UGrfiP4kC1xb/iJHoDdn4b8GJK
-	+u0GZVHAe7hburDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C676C13995;
-	Mon,  6 Oct 2025 17:23:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id l9g/MCP742jKTgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 06 Oct 2025 17:23:47 +0000
-Date: Mon, 6 Oct 2025 19:23:38 +0200
-From: David Sterba <dsterba@suse.cz>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] btrfs: Avoid -Wflex-array-member-not-at-end warning
-Message-ID: <20251006172338.GB4412@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <aN_Zeo7JH9nogwwq@kspp>
+	s=arc-20240116; t=1759772295; c=relaxed/simple;
+	bh=QnFXC5zW6cJCdtb/gGaLtSphm2wouXQIppnYFbVFrK4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TYb037WnJ5Wu1ClOc4xknOSwnu0uRtPpYdLSCFEanroxjt+4XWfu62bS8Z6e/divKLn9QQQHmb7HbifGAR7tpM9o8AojT5nBZJzBsZ4VL80MovqvPXI6/TKrK05gw0chvViUeX06XP/SxIPmebyJwbW1N2REGUTpP5SwPzOEqcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YSFjNWMq; arc=none smtp.client-ip=209.85.128.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f194.google.com with SMTP id 00721157ae682-71d60110772so53000227b3.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Oct 2025 10:38:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759772292; x=1760377092; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ebqmr5rKLRyhSXCzWYO8AedjCpJ3xXFZUe7FSLwQDLU=;
+        b=YSFjNWMq/7GFMPkLfem70lo0gIlUkS6p0DCnmLSK1pbto2slAJUb1mG6t5tnJhaHz9
+         TBzqR0OdD7DwtKVOVMUijGj7rJFsbIEQQUhcBc3GoW4Fjnqmp+0h3HFLa4RFNspoyNqr
+         pFYeLKdKdgh6x668Feq2/Ubx4TCaS8nVu806754huir237rj1TcySfzR0oBycnQJBk1X
+         b/qCia9u1lZ60kAXSV/W3utFl6g8BzrfKmGFCUlugy7N3xy+sYwq/NMtpUo2E6Hn9+gt
+         3pcRQ1mt7304PaBd8VNGtSQ2gG53EdLbSxEEhpT19V0dlUCZGWk1VGTOloBRslId7nG4
+         gzVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759772292; x=1760377092;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ebqmr5rKLRyhSXCzWYO8AedjCpJ3xXFZUe7FSLwQDLU=;
+        b=XG+VRBmYoq9xnUvuWDkftXjH2ykNpWtXzrA5eg7jOeieZGFrUkeJu8HqKBFMoROhnV
+         AsP4l0fI6n6ZW98d5fcufIDlXS6cQM56RXESX8q24TfNjPyTV9v2uJwmKkjL8PVtSMlU
+         zU0SKh+CMAQAMvOaYdGTAN0CjztjlwDklXZGv3W3ZVgc35L1i6xaQ0aOUMJ7gq4tnZqy
+         hZvUHFZfXO9Hi96AHvNAuXaRPqmsEZo/jCTrpN0KuGTcMZmj6e9nGuGUFlWRaciq8WD2
+         tvQAZP1gYSXFfiz8bFfgFXl1+gZwfYIuYXXCD87NRDVwnLPz4j2feWBIHD2mcl0DEx74
+         nb8w==
+X-Gm-Message-State: AOJu0Yw0qrVXrkjVGOrih1cJ9ygnN8Yjf/SD681S6seb9MHvJLtSceyL
+	NyNygZDBrE9/9jGj6lBrf/APbkTh+ZTpsDAy6L19b5YnBypvjMd8cTwh
+X-Gm-Gg: ASbGnct0R5QCps+U5uoJ41u7//G7r5AMdtdmKfVXRRBXSfOF3ggkpBqa6ut1GDH2XJY
+	ULCynteeueu+6s3fi/teYmkduqL5bA0+AHH68+xWpHiGAlTxqQwcbOm742SlQO3KhV8BNcObT9H
+	IHVgMloy0Ckfx0OfuKdK1Y6KHftvigKapEOkAtqtxn8Tp7ik1eb5qEJ9Iw9Fe0gWwzXzrYrLknB
+	Sqe0R6iFeG7o787arF/KcyVF+mtnsAgFApoBLio0QnoWkKuaKyraF4zvQuVo9vtwk6um5bFuF0G
+	nz0DaN83nbtHXuti005jCzQZQ+55SnG3/ceBVvZltVysgwhiv8ghm2CrYcksvQTGhWSnt2ORJU7
+	QUBQKlcFQtYFphPpQMex/38GbpdOjDiBo9FoQXMqhtIG/m1tR3mtI03OVRu82YPM=
+X-Google-Smtp-Source: AGHT+IGy3sJJ1NWx+Evgv6lnBzDFvoHdGCSaAHyLtLpyhpqlmQ4Ie6WjNK9or+TiujwoFWeIiKEgrg==
+X-Received: by 2002:a05:690c:f0f:b0:773:a86d:7662 with SMTP id 00721157ae682-77f946d9d87mr248418497b3.26.1759772292229;
+        Mon, 06 Oct 2025 10:38:12 -0700 (PDT)
+Received: from localhost ([2a03:2880:25ff:49::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-77f81c06465sm45199607b3.6.2025.10.06.10.38.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Oct 2025 10:38:11 -0700 (PDT)
+From: Leo Martins <loemra.dev@gmail.com>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com,
+	fstests@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] fstests: btrfs: test RAID conversions under stress
+Date: Mon,  6 Oct 2025 10:37:51 -0700
+Message-ID: <20251006173757.296087-1-loemra.dev@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <55d549d2-fec1-442f-ad9f-875d2ec6c864@suse.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aN_Zeo7JH9nogwwq@kspp>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: E043F336C4
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.21
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 03, 2025 at 03:11:06PM +0100, Gustavo A. R. Silva wrote:
-> -Wflex-array-member-not-at-end was introduced in GCC-14, and we are
-> getting ready to enable it, globally.
-> 
-> Move the conflicting declaration to the end of the corresponding
-> structure. Notice that `struct fs_path` is a flexible structure,
-> this is a structure that contains a flexible-array member (`char
-> inline_buf[];` in this case).
-> 
-> Fix the following warning:
-> 
-> fs/btrfs/send.c:181:24: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+On Sat, 4 Oct 2025 11:24:27 +0930 Qu Wenruo <wqu@suse.com> wrote:
 
-Added to for-next, with updated changelog. Thanks.
+> 
+> 
+> 在 2025/10/4 09:11, Leo Martins 写道:
+> > Add test to test btrfs conversion while being stressed. This is
+> > important since btrfs no longer allows allocating from different RAID
+> > block_groups during conversions meaning there may be added enospc
+> > pressure.
+> > 
+> > Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+> 
+> Please do not mix patches for different projects into the same patchset.
+> 
+> A lot of us are using b4 to merge (kernel/progs) patches, which will 
+> merge the whole series, including the one intended to fstests.
+> 
+> Thanks,
+> Qu
+
+Got it, sorry about that. Should I resend the patches?
 
