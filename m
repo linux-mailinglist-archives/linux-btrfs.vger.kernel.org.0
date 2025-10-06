@@ -1,116 +1,99 @@
-Return-Path: <linux-btrfs+bounces-17467-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17468-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99858BBED3D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 06 Oct 2025 19:38:20 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 680D7BBEE29
+	for <lists+linux-btrfs@lfdr.de>; Mon, 06 Oct 2025 20:06:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 951594EEDC1
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Oct 2025 17:38:18 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E52D134AA3D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Oct 2025 18:06:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5B0F246799;
-	Mon,  6 Oct 2025 17:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5F5C27A12B;
+	Mon,  6 Oct 2025 18:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YSFjNWMq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IQ7IbBb4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f194.google.com (mail-yw1-f194.google.com [209.85.128.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3BA221F1A
-	for <linux-btrfs@vger.kernel.org>; Mon,  6 Oct 2025 17:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268E621C179;
+	Mon,  6 Oct 2025 18:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759772295; cv=none; b=dQgb56RHDOpT0HmgBOB1yO1wDCG24xhfxkql2Gftt8QmshpSRrO+AzrC7PinmsYLTt7i/9mxCDr2dexmoODJHP7mOget+2vlbaIL4lq50Fl8HenSncjvEOBTdT+zw4PcKwxcexeU8TRSPsiqQfNgxA7zzAMOuIgrnjl3P5MiRtE=
+	t=1759773975; cv=none; b=rqjCgaTxIxgkrV+w2gdvfrtC5GQ9nsEdhaX0TmlkC9stePTEJkApGMhGZO519cTOOvG0JDDkoTYUmci49IBZ5IeVmded7cNjukqOTq04iA1c8xbPmXfb41K/xPywKW+l3OM6vrzbl7CAyFB8enuXw1jX6MQf+7uBOHBIkG3P7EE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759772295; c=relaxed/simple;
-	bh=QnFXC5zW6cJCdtb/gGaLtSphm2wouXQIppnYFbVFrK4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TYb037WnJ5Wu1ClOc4xknOSwnu0uRtPpYdLSCFEanroxjt+4XWfu62bS8Z6e/divKLn9QQQHmb7HbifGAR7tpM9o8AojT5nBZJzBsZ4VL80MovqvPXI6/TKrK05gw0chvViUeX06XP/SxIPmebyJwbW1N2REGUTpP5SwPzOEqcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YSFjNWMq; arc=none smtp.client-ip=209.85.128.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f194.google.com with SMTP id 00721157ae682-71d60110772so53000227b3.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 06 Oct 2025 10:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759772292; x=1760377092; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ebqmr5rKLRyhSXCzWYO8AedjCpJ3xXFZUe7FSLwQDLU=;
-        b=YSFjNWMq/7GFMPkLfem70lo0gIlUkS6p0DCnmLSK1pbto2slAJUb1mG6t5tnJhaHz9
-         TBzqR0OdD7DwtKVOVMUijGj7rJFsbIEQQUhcBc3GoW4Fjnqmp+0h3HFLa4RFNspoyNqr
-         pFYeLKdKdgh6x668Feq2/Ubx4TCaS8nVu806754huir237rj1TcySfzR0oBycnQJBk1X
-         b/qCia9u1lZ60kAXSV/W3utFl6g8BzrfKmGFCUlugy7N3xy+sYwq/NMtpUo2E6Hn9+gt
-         3pcRQ1mt7304PaBd8VNGtSQ2gG53EdLbSxEEhpT19V0dlUCZGWk1VGTOloBRslId7nG4
-         gzVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759772292; x=1760377092;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ebqmr5rKLRyhSXCzWYO8AedjCpJ3xXFZUe7FSLwQDLU=;
-        b=XG+VRBmYoq9xnUvuWDkftXjH2ykNpWtXzrA5eg7jOeieZGFrUkeJu8HqKBFMoROhnV
-         AsP4l0fI6n6ZW98d5fcufIDlXS6cQM56RXESX8q24TfNjPyTV9v2uJwmKkjL8PVtSMlU
-         zU0SKh+CMAQAMvOaYdGTAN0CjztjlwDklXZGv3W3ZVgc35L1i6xaQ0aOUMJ7gq4tnZqy
-         hZvUHFZfXO9Hi96AHvNAuXaRPqmsEZo/jCTrpN0KuGTcMZmj6e9nGuGUFlWRaciq8WD2
-         tvQAZP1gYSXFfiz8bFfgFXl1+gZwfYIuYXXCD87NRDVwnLPz4j2feWBIHD2mcl0DEx74
-         nb8w==
-X-Gm-Message-State: AOJu0Yw0qrVXrkjVGOrih1cJ9ygnN8Yjf/SD681S6seb9MHvJLtSceyL
-	NyNygZDBrE9/9jGj6lBrf/APbkTh+ZTpsDAy6L19b5YnBypvjMd8cTwh
-X-Gm-Gg: ASbGnct0R5QCps+U5uoJ41u7//G7r5AMdtdmKfVXRRBXSfOF3ggkpBqa6ut1GDH2XJY
-	ULCynteeueu+6s3fi/teYmkduqL5bA0+AHH68+xWpHiGAlTxqQwcbOm742SlQO3KhV8BNcObT9H
-	IHVgMloy0Ckfx0OfuKdK1Y6KHftvigKapEOkAtqtxn8Tp7ik1eb5qEJ9Iw9Fe0gWwzXzrYrLknB
-	Sqe0R6iFeG7o787arF/KcyVF+mtnsAgFApoBLio0QnoWkKuaKyraF4zvQuVo9vtwk6um5bFuF0G
-	nz0DaN83nbtHXuti005jCzQZQ+55SnG3/ceBVvZltVysgwhiv8ghm2CrYcksvQTGhWSnt2ORJU7
-	QUBQKlcFQtYFphPpQMex/38GbpdOjDiBo9FoQXMqhtIG/m1tR3mtI03OVRu82YPM=
-X-Google-Smtp-Source: AGHT+IGy3sJJ1NWx+Evgv6lnBzDFvoHdGCSaAHyLtLpyhpqlmQ4Ie6WjNK9or+TiujwoFWeIiKEgrg==
-X-Received: by 2002:a05:690c:f0f:b0:773:a86d:7662 with SMTP id 00721157ae682-77f946d9d87mr248418497b3.26.1759772292229;
-        Mon, 06 Oct 2025 10:38:12 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:49::])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-77f81c06465sm45199607b3.6.2025.10.06.10.38.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Oct 2025 10:38:11 -0700 (PDT)
-From: Leo Martins <loemra.dev@gmail.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com,
-	fstests@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] fstests: btrfs: test RAID conversions under stress
-Date: Mon,  6 Oct 2025 10:37:51 -0700
-Message-ID: <20251006173757.296087-1-loemra.dev@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <55d549d2-fec1-442f-ad9f-875d2ec6c864@suse.com>
-References: 
+	s=arc-20240116; t=1759773975; c=relaxed/simple;
+	bh=Pxv3iZg49m0IC+hcCN9x6Z5V/0hHaFtPIcUF5Wk6WA8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b3ZzUqp7vk10aoDOt2dQ7cp2jCj2B14/6d201t2p48cAAWn4jM0Orx/sOI4Zc4w6uXeW2XpIo1hNoqTytvUFMWBLp5O+Bu0w4nLQRR9Rm7AO2rAJBY5jOIfSKPUi2rVBNRL5rEQJPQqvJAr25pthrwMwzYxcW4Q2z7FhcfKWKdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IQ7IbBb4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D444C4CEF7;
+	Mon,  6 Oct 2025 18:06:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759773973;
+	bh=Pxv3iZg49m0IC+hcCN9x6Z5V/0hHaFtPIcUF5Wk6WA8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IQ7IbBb4fV9/3GPIWQac34pPZleSKk9WcchuNsmRamxgcAfUieojCKXcTI5dHXU6V
+	 EkCgfDnACEqwq3hzxMj0d7cwnz3+8yxhPJDLkq1M0TGdcmq88JCC3dzg1zXimO2JVW
+	 dygcSjrfWsQW1ZioURaBZk81vi1ZY9IBwN5ue6vKBoKOo7uQyyIk/020dwjDmlA94B
+	 pozbEpy/6irsfj8OJwe+ffOaL9MsQrye49BRcYeePQfZ49QpYV5lz1LuLePkHNjewZ
+	 ldbwPVVehOTq8ohoaD2e7w2uWq3nEiwy2LOWPxW7GYLA6lZ33wmYYr+XNN+aGw+d16
+	 5Fye7AV13x8RQ==
+Date: Mon, 6 Oct 2025 20:06:08 +0200
+From: Carlos Maiolino <cem@kernel.org>
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: Zorro Lang <zlang@redhat.com>, Christoph Hellwig <hch@lst.de>, 
+	Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org, 
+	Hans Holmberg <hans.holmberg@wdc.com>, fstests@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] common/zoned: add _require_zloop
+Message-ID: <j2eh6uops3wcmt54howb7rgfhc24qcrmjgjsxqiikxdlpiyrms@jemtwvwtffls>
+References: <20251006132455.140149-1-johannes.thumshirn@wdc.com>
+ <osIv2hvb5W6z_q7Pa3R_LBcRb1NGees4OgVMZtTL2oHkHIGdnf9ymZLAqex_Buy_EBJAqwzK14EoCZAq0HkS-w==@protonmail.internalid>
+ <20251006132455.140149-2-johannes.thumshirn@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251006132455.140149-2-johannes.thumshirn@wdc.com>
 
-On Sat, 4 Oct 2025 11:24:27 +0930 Qu Wenruo <wqu@suse.com> wrote:
+On Mon, Oct 06, 2025 at 03:24:54PM +0200, Johannes Thumshirn wrote:
+> Add _require_zloop() function used by tests that require support for the
+> zoned loopback block device.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  common/zoned | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/common/zoned b/common/zoned
+> index eed0082a..41697b08 100644
+> --- a/common/zoned
+> +++ b/common/zoned
+> @@ -37,3 +37,11 @@ _zone_capacity() {
+>  	       grep -Po "cap 0x[[:xdigit:]]+" | cut -d ' ' -f 2)
+>      echo $((size << 9))
+>  }
+> +
+> +_require_zloop()
+> +{
+> +    modprobe zloop >/dev/null 2>&1
+> +    if [ ! -c "/dev/zloop-control" ]; then
+> +	    _notrun "This test requires zoned loopback device support"
+> +    fi
+> +}
 
-> 
-> 
-> 在 2025/10/4 09:11, Leo Martins 写道:
-> > Add test to test btrfs conversion while being stressed. This is
-> > important since btrfs no longer allows allocating from different RAID
-> > block_groups during conversions meaning there may be added enospc
-> > pressure.
-> > 
-> > Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-> 
-> Please do not mix patches for different projects into the same patchset.
-> 
-> A lot of us are using b4 to merge (kernel/progs) patches, which will 
-> merge the whole series, including the one intended to fstests.
-> 
-> Thanks,
-> Qu
+Looks good.
 
-Got it, sorry about that. Should I resend the patches?
+Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
+
+> --
+> 2.51.0
+> 
+> 
 
