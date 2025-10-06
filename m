@@ -1,87 +1,138 @@
-Return-Path: <linux-btrfs+bounces-17463-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17464-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95563BBE718
-	for <lists+linux-btrfs@lfdr.de>; Mon, 06 Oct 2025 17:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 13060BBE882
+	for <lists+linux-btrfs@lfdr.de>; Mon, 06 Oct 2025 17:48:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 561903B7265
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Oct 2025 15:08:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0FF63BCE56
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Oct 2025 15:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC8D2D77F5;
-	Mon,  6 Oct 2025 15:07:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EC272D662D;
+	Mon,  6 Oct 2025 15:48:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HTZY2sAT"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jRDlOBgk";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jRDlOBgk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA5B2D73B9;
-	Mon,  6 Oct 2025 15:07:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 573AC2D879A
+	for <linux-btrfs@vger.kernel.org>; Mon,  6 Oct 2025 15:47:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759763256; cv=none; b=uy1wqVYyJaorRb10SJEdNkhxxawBRFE1LoympKX1pbn7GIQMihvSELO8HyCbOtzJ4MSIhtESwZymgFl+v/l5RaG+JSEyOmrzKfaIi9HvwchufbHkmkN8A+1zaLX59PspE3LHFxNF2MCfgPkDdBYIXC8BS1V5NRMr19VhUnGNO6o=
+	t=1759765679; cv=none; b=YEyirBk+VioUdJ7qt7cJ+fxUPcwwZRyTYtE9ywpEr4iOOYTKz7aApoeAh9XLp49EJXBDuBkNkwDyFMDYSBe4KvHNGnR2v7+tItYBlP+aIIho2QyQY/koEpF17EVMPJkbtb91U9EUbnCs/go47E6dCV+zUp3+u/PTeKTl147hx7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759763256; c=relaxed/simple;
-	bh=6tbN8X6Sh0OQHviqMhA/n/2iU6jpNAiB9XinEHb3VlE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dEYUrnBtV3J6q8nT3vrDoYOEl7ogJKzv7aJbWoUGrdVHboJUcP5zrzsIeAFWCC4yXeZ+VJy9GAg7HfEjTJHk+v8W6V0kDtE1kC7HxbQi7rKdD2pYo5usEBZmWFdum7vM1ZqrNYfkRXwAKoWKYCP2EcHywyGkyHPzLfHM+Agk8TU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HTZY2sAT; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=wG4YAut9yk4+pp+RtBmTG3gIVoqnu9o9Ktcrqzwuvyk=; b=HTZY2sATM0kH/f7MpLPXX1UCdP
-	69NakvRQtc7P9+NtxPz1MrZAitJmSACfumzGen3AhLAtHubXkgirD61qSVgF+IU0/UdosLQ9Qrzr1
-	FCnd3Ey9ZJvvgE/4zdwS40z1UkIeQ5CTv3uVwkD7GTCrJqm10lLwALOxo2qyaJ+stOZheAnLZ+tQo
-	SlBiNdFnpT0t0o0fFJV+lQXzDnxr+ssbESf++MhF71B/Q+hO2umvXl/NfxS5sjWt2LxfAx7c0WBrZ
-	iDuqffIgLw3iu2OQ9pac+XQZ//MzwSWPUWyGxd2+Em+5MWSw677u/0hG6GmXp5uFZqXzxfTn5Y7ML
-	yHcDnbrQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v5moE-0000000EEfu-4069;
-	Mon, 06 Oct 2025 15:07:30 +0000
-Date: Mon, 6 Oct 2025 16:07:30 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	linux-btrfs <linux-btrfs@vger.kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: Direct IO reads being split unexpected at page boundary, but in
- the middle of a fs block (bs > ps cases)
-Message-ID: <aOPbMs4_wML4qxUg@casper.infradead.org>
-References: <048c3d9c-6cba-438a-a3a9-d24ac14feb62@gmx.com>
+	s=arc-20240116; t=1759765679; c=relaxed/simple;
+	bh=HN+nDCrFhsv8BG7LtrvF2kbTqt8nRNOB8Bt6++wEvd8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RCEszbpRbeKx8PLrSWZK5hsyd/xAkPAc6iLFv31VT4jeSrmGEogMMbOB5NmaVlwjqAMVKxLKrNFXRxYEJMz9Q45/pAxp6ba+WwqpPmWS5wD9d0Jq+FuVNZ6zwScOVgfgMqrvd7ZFIYHqF3Ac/J6hf/kpFXeFwsdqTxiyRilqGVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jRDlOBgk; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jRDlOBgk; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A5C631F451;
+	Mon,  6 Oct 2025 15:47:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1759765675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wKm7I/Sa0st0bjo6Se4lnhfhlbVutU6i0ITMuizxzx8=;
+	b=jRDlOBgk2l2QRYBZV/YKtIAqHWxfB37Mhp31E5a1qzOg/hHYr2btP0fSKodvSGSjSa9rUu
+	1CH0d5OS/40Uf8PGM4TUpSLcEG4Qm0Xa21D9wtvD0tWilh0Z8icy9H0e21ivO6qnti7bNP
+	bw+BDMScZs+ELXA3uf41511NDz7GWnM=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1759765675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wKm7I/Sa0st0bjo6Se4lnhfhlbVutU6i0ITMuizxzx8=;
+	b=jRDlOBgk2l2QRYBZV/YKtIAqHWxfB37Mhp31E5a1qzOg/hHYr2btP0fSKodvSGSjSa9rUu
+	1CH0d5OS/40Uf8PGM4TUpSLcEG4Qm0Xa21D9wtvD0tWilh0Z8icy9H0e21ivO6qnti7bNP
+	bw+BDMScZs+ELXA3uf41511NDz7GWnM=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9C7D413700;
+	Mon,  6 Oct 2025 15:47:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 7Hf0Javk42jnNAAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Mon, 06 Oct 2025 15:47:55 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs updates for 6.18, part 2
+Date: Mon,  6 Oct 2025 17:47:52 +0200
+Message-ID: <cover.1759762927.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <048c3d9c-6cba-438a-a3a9-d24ac14feb62@gmx.com>
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -2.80
 
-On Wed, Oct 01, 2025 at 10:59:18AM +0930, Qu Wenruo wrote:
-> Recently during the btrfs bs > ps direct IO enablement, I'm hitting a case
-> where:
-> 
-> - The direct IO iov is properly aligned to fs block size (8K, 2 pages)
->   They do not need to be large folio backed, regular incontiguous pages
->   are supported.
-> 
-> - The btrfs now can handle sub-block pages
->   But still require the bi_size and (bi_sector << 9) to be block size
->   aligned.
-> 
-> - The bio passed into iomap_dio_ops::submit_io is not block size
->   aligned
->   The bio only contains one page, not 2.
+Hi,
 
-That seems like a bug in the VFS/iomap somewhere.  Maybe try cc'ing the
-people who know this code?
+please pull two short fixes that would be good to have before rc1.
+Thanks.
+
+- fix printk format warning on 32bit platforms
+
+- fix potential out-of-bounds access in callback encoding NFS handles
+
+----------------------------------------------------------------
+The following changes since commit 45c222468d33202c07c41c113301a4b9c8451b8f:
+
+  btrfs: use smp_mb__after_atomic() when forcing COW in create_pending_snapshot() (2025-09-23 09:02:17 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.18-tag
+
+for you to fetch changes up to 4335c4496b1bcf8e85761af23550a180e937bac6:
+
+  btrfs: fix PAGE_SIZE format specifier in open_ctree() (2025-10-01 16:27:28 +0200)
+
+----------------------------------------------------------------
+Anderson Nascimento (1):
+      btrfs: avoid potential out-of-bounds in btrfs_encode_fh()
+
+Nathan Chancellor (1):
+      btrfs: fix PAGE_SIZE format specifier in open_ctree()
+
+ fs/btrfs/disk-io.c | 2 +-
+ fs/btrfs/export.c  | 8 +++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
