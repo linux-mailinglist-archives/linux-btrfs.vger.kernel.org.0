@@ -1,59 +1,46 @@
-Return-Path: <linux-btrfs+bounces-17490-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17491-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E029EBC022D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 07 Oct 2025 06:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5625ABC0236
+	for <lists+linux-btrfs@lfdr.de>; Tue, 07 Oct 2025 06:13:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBC781899028
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Oct 2025 04:10:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40E6718999F8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Oct 2025 04:13:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5085219A67;
-	Tue,  7 Oct 2025 04:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mbmGUf3a"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFBC32192E4;
+	Tue,  7 Oct 2025 04:13:29 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E73D31A9F8D;
-	Tue,  7 Oct 2025 04:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264C21A9F8D;
+	Tue,  7 Oct 2025 04:13:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759810229; cv=none; b=S6Q4JTk+qic3ThNASrvrGJP5E9LMrv1BaPuzQc0uhclQyGuVFmA6KSE619BHv5f7UiHgNVrr7KMLZSILlEPu7NhCZXij1EmMLwUdK2/lFRnErD+EWX6sWiwWmU2z9luXes3WqnZbd4ew2mhTOdL/erQO+NlsSIdmb7g53rAuiOY=
+	t=1759810409; cv=none; b=knIYDurO1jMLcNaX1fkPu73g8wlcOn3RB6awvCVvjbaC/4+NBtgQRwB5tPrZiDNLKKXi4xnoNKHgeG/faVBjNpPNtcKMUWywZNdWs2jXYQNQjIBryu+ORCrv/xxYKeY+UcR1qbKo8YwLN0fgzuEoW7iasBQxV6EpF03562JTBBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759810229; c=relaxed/simple;
-	bh=bUH3TRWCmVlvgXp1idu1SnCmpL88AXJZ0NhVdnPre20=;
+	s=arc-20240116; t=1759810409; c=relaxed/simple;
+	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b5vfqs2LtOprJcP2V4mI3F/xiFsnELg60ugaYUVqQ1ldMp2qVqyPwveuvWbCuJsH7K3OZ6j3O17VmL8LLMne5+OtYxVEPaSEFxQxJAUL4/s6kbS0zIRpdO11sth7uHQlkAn2Wg5UGtgh7Gh5mh4+eofRa0qimHa+rdh7YeYrFsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=mbmGUf3a; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Yl+ugw6Z29aoam/wvlWxMZWhNFPkaJOCTPwiBzwrPOU=; b=mbmGUf3a2ILWleMHXOqS9Siuq0
-	7HJEFmhCdx7WFhlUE5czBTpUKnO13FunLb0436KlrYFKa0HI2NWphEC+FweFOVLYDvxKmTEzIqwiH
-	IJ3sRewdv6MUJ0jB3DC8VVuAPANJyLGfqsuefObmuurT7LaJhvQNAz0GLXLHsPo0AyMkn4OXlwqIY
-	efiKuFmOcjUIDw/7H7aJSHIGRlBrvayrCw5SiATKJmucdEmsGrGO6smaDAwsgNu3RA6iwMXREbjEa
-	r26H7sPaayp/UeGe44tC2FpUJsokiE21X/189lxVtvfd6Ab/JY+l4qIWqDPO1iVt9S+MU2JDdkAEt
-	yKpYiYOw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v5z1v-00000001F05-1zQJ;
-	Tue, 07 Oct 2025 04:10:27 +0000
-Date: Mon, 6 Oct 2025 21:10:27 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, brauner@kernel.org, djwong@kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH RFC] iomap: ensure iomap_dio_bio_iter() only submit bios
- that are fs block aligned
-Message-ID: <aOSSs2CodljBMeTL@infradead.org>
-References: <aeed3476f7cff20c59172f790167b5879f5fec87.1759806405.git.wqu@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mXrpjHtKYzPaV9xYVP/rFhLwMuWNt+lSCXjuP5d/iihcDmM4DB1p6E0aBv2d5fQuZvkgRryKASSWhRJAKZrZtyU1fOlPnOMxI6+xGGlPfapbvTrswhkSS7hOs7G/6kTVd04B7u33w2UsiDnB993hEwCya+8m87ZuFwXs8Lly+2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 3C223227AB1; Tue,  7 Oct 2025 06:13:21 +0200 (CEST)
+Date: Tue, 7 Oct 2025 06:13:21 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: Zorro Lang <zlang@redhat.com>, Christoph Hellwig <hch@lst.de>,
+	Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+	Hans Holmberg <hans.holmberg@wdc.com>, fstests@vger.kernel.org,
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] common/zoned: add _require_zloop
+Message-ID: <20251007041321.GA15727@lst.de>
+References: <20251006132455.140149-1-johannes.thumshirn@wdc.com> <20251006132455.140149-2-johannes.thumshirn@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -62,43 +49,11 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aeed3476f7cff20c59172f790167b5879f5fec87.1759806405.git.wqu@suse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20251006132455.140149-2-johannes.thumshirn@wdc.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Tue, Oct 07, 2025 at 01:40:22PM +1030, Qu Wenruo wrote:
-> +++ b/fs/iomap/direct-io.c
-> @@ -419,6 +419,7 @@ static int iomap_dio_bio_iter(struct iomap_iter *iter, struct iomap_dio *dio)
->  	nr_pages = bio_iov_vecs_to_alloc(dio->submit.iter, BIO_MAX_VECS);
->  	do {
->  		size_t n;
-> +		size_t unaligned;
->  		if (dio->error) {
+Looks good:
 
-Nit: please add an empty line after the ceclarations when touching this.
-The existing version keeps irking me every time I get into this code.
-
-> +		/*
-> +		 * bio_iov_iter_get_pages() can split the ranges at page boundary,
-
-Overly long line.
-
-> +		 * if the fs has block size > page size and requires checksum,
-> +		 * such unaligned bio will cause problems.
-> +		 * Revert back to the fs block boundary.
-> +		 */
-
-The comment here feels a bit too specific to your use case.
-
-> +		unaligned = bio->bi_iter.bi_size & (fs_block_size - 1);
-> +		bio->bi_iter.bi_size -= unaligned;
-> +		iov_iter_revert(dio->submit.iter, unaligned);
->  		n = bio->bi_iter.bi_size;
-
-But more importantly I think this is the wrong layer.  In Linus'
-current tree, Keith added bio_iov_iter_get_pages_aligned which can pass
-in the expected alignment.  We should use that, and figure out a way
-to make it conditional and not require the stricter alignment for
-everyone, i.e. by adding a flag passes through the dio_flags argument
-to iomap_dio_rw.
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
 
