@@ -1,135 +1,110 @@
-Return-Path: <linux-btrfs+bounces-17499-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17501-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54A50BC050F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 07 Oct 2025 08:21:43 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05034BC087D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 07 Oct 2025 09:55:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF5793C1E62
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Oct 2025 06:21:41 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BA8D04F37E6
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Oct 2025 07:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1720521FF48;
-	Tue,  7 Oct 2025 06:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC6E256C89;
+	Tue,  7 Oct 2025 07:55:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fVu3MBFF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sSGEGxr3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2BC934BA4B
-	for <linux-btrfs@vger.kernel.org>; Tue,  7 Oct 2025 06:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B66F253B42;
+	Tue,  7 Oct 2025 07:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759818096; cv=none; b=KFgFRMEHln/1Et6bqryK2llTiY6UatWpqosOpZrnpwHiEbQVK6fRRBiEQitsPU6gqHpO9yN4mQU/lDsk38WcrPeaf9PkYH77zdB2KAE+70SLJB6JovoJ7J2ObFZPahV/JDzcyEByQdBVuuw2UCsennuq1ofMkrAKDiTaZv4/h9s=
+	t=1759823699; cv=none; b=P4+v0u2kCENH8hGYHAxfttWz/yWf2TTcTmzdICFMbaKPPIRY/lnIxJaDUaaFSAiMYU5WvssVQn8qTvdbfSHJwMmp56VYpczEH9gl1Og0X1G9QsZxnyH+ZHSRAgH2q0jU74aYOBAQ84JOfz1hCqt4RB7kGCOzU8mr4dV2R/TIWNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759818096; c=relaxed/simple;
-	bh=SUoCxyMQz9tG0RfHT65OXjD1s43DvSt3ppIvbM7isf8=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=FmZc+MUEoBnd2e9igbm7DHZxM3W/fT8FrnmIEV0sNklJqDIFD1i3sejfF0hFbctKInQTjLN05cEnbDaZsB5HT/dfIceac/+XHwwRf2T4roecR+sqvCAMpxKnC4RKeFdsy2xCJwPnEpkYZ76SHqQTHLnts/+f9PuGnt616vE3QLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=fVu3MBFF; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:Message-ID:
-	Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=kGEtaM4J50fHbwda35T5Phxz7BWZhvdY1eK9ZdD1TaE=; b=fVu3MBFFFDbnAE5pbrpxGW0TdI
-	LCdm0nNx9zJyKea0JlXWjpZcUKgTLikufCo021Crw6nscy77Gi/ubu58vvx/Q3uDW0NJhCC4UiJDu
-	iIggbw+/rCdCSGlG1W/vK3nSBBqtYwKjGEednYK0efc3L2o7D8kJ7S5dQvUHl3cbnbMcbV6wrBXOk
-	mQrNV1/TBvpy65Nz4x0C63bbWdH2VqTxByCH0B69nGhAT49ac2gEqZdivQIOboCaj3xjmu+EW2ZSZ
-	G36OO7TMJuWCpLqm0dasJhny2XQyHMzweC5pDF4R/4SK2owyntwvljraYeRBKF9e3zLaHsCkTusx/
-	n7pTx7jg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v614o-00000001LiS-1y5Q
-	for linux-btrfs@vger.kernel.org;
-	Tue, 07 Oct 2025 06:21:34 +0000
-Date: Mon, 6 Oct 2025 23:21:34 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: linux-btrfs@vger.kernel.org
-Subject: zbd/009 (btrfs on zone gaps) fail on current Linus tree
-Message-ID: <aOSxbkdrEFMSMn5O@infradead.org>
+	s=arc-20240116; t=1759823699; c=relaxed/simple;
+	bh=/Pbn7A+9ytijygVRfmY/5/2+Y6t6ujnH219ws8HfL2I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uBe0XQ1W7GXp3CNtDpNlervFOX7U4fKEGGVqoUNoRA1pRgGO0CNckcIB8MXYWVZF+lWrEuUJA/XBFzmmf75FUbLeBrEoK0CWocLdWOvP+rRx6Di0u8PkuZf2uuMtPkAvowi841g724XUVQLgZCOsg3Zk4z6xU89BzYF59EDDXSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sSGEGxr3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F33C7C4CEF1;
+	Tue,  7 Oct 2025 07:54:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759823699;
+	bh=/Pbn7A+9ytijygVRfmY/5/2+Y6t6ujnH219ws8HfL2I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sSGEGxr37CiaTJPpX/SRpZjOiGDPm3pwV1dkeFSaXnCiwsQJ4HpLizrWlUJRFsHoK
+	 /rF4+CNRtkwqO41jdps66Y16gU7w7T2/9wVkNg3PuByuj7GH4WZiyV4vCT18F5uVya
+	 wZKGWdoq3rUDgriecV3/09pzgdGil4ll4XsdsDyWFb0nFvwOjS8Rm0pru2lU+yfOpG
+	 jnkDkAtwTbcmtpkUGQdFDcZAtlO7MPGFbsJDUvEOlqkFEo3XbF2JHRkjap+H4D+oAr
+	 0CpRL7YmwfQc0s4RDJ5RkXjmzjoOKnyGcKTGt3EmDnx6NezUnCehWHI/Vt4G8vYY3d
+	 v8glk8gZMMLzw==
+Date: Tue, 7 Oct 2025 09:54:53 +0200
+From: Carlos Maiolino <cem@kernel.org>
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc: Zorro Lang <zlang@redhat.com>, hch <hch@lst.de>, 
+	Naohiro Aota <Naohiro.Aota@wdc.com>, "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, 
+	Hans Holmberg <Hans.Holmberg@wdc.com>, "fstests@vger.kernel.org" <fstests@vger.kernel.org>, 
+	"linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH] generic: basic smoke for filesystems on zoned block
+ devices
+Message-ID: <n64zgha736wog4njyvyaxatx752gi4bz6f72ndvopufmkjrcbg@koomim4nc5we>
+References: <20251006132455.140149-1-johannes.thumshirn@wdc.com>
+ <OtglCyTJgl3RCnletH8ai3IsE0wk2nR5CISvt5ZfvYPj85MMxGBFHEw9UmPSHvpve5QOIFQCXD9LFB1DpsNuAQ==@protonmail.internalid>
+ <20251006132455.140149-3-johannes.thumshirn@wdc.com>
+ <iqwkuhobfvpeiktvk6pba6ahirgzngltj3ilrifcfgaugme67s@r54pl6d6foys>
+ <HrmrQh5_tyYRG7-S4mXfT51r0I3fEYRRn_bmQrtFUEC4pzDysiMvmPFKOt8LljOoC4M9aqBl6h-UkXVmuPfNCw==@protonmail.internalid>
+ <78e121bd-8f6c-4b79-808c-9f5f75c90d8c@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <78e121bd-8f6c-4b79-808c-9f5f75c90d8c@wdc.com>
 
-At least in my usual x86_64 test VM:
+On Tue, Oct 07, 2025 at 06:20:42AM +0000, Johannes Thumshirn wrote:
+> On 10/6/25 8:40 PM, Carlos Maiolino wrote:
+> > On Mon, Oct 06, 2025 at 03:24:55PM +0200, Johannes Thumshirn wrote:
+> >> Add a basic smoke test for filesystems that support running on zoned
+> >> block devices.
+> >>
+> >> It creates a zloop device with 2 sequential and 62 sequential zones,
+> > This seems wrong? Don't you mean 2 conventional zones?
+> > Also, won't the arguments used to create the zone dev end up creating 64
+> > sequential zones? I might be very wrong here, so my apologies in advance
+> > but looking into the zloop code this seems that 256MiB zone size will end
+> > up creating 64 sequential zones instead of 62?
+> 
+> 2 conventional zones and 62 sequential zones, my mistake:
 
-zbd/009 (test gap zone support with BTRFS)                  
-[   21.102324] run blktests zbd/009 at 2025-10-07 06:10:44
-[   21.251500] sd 3:0:0:0: [sda] Synchronizing SCSI cache
-[   21.413634] scsi_debug:sdebug_driver_probe: scsi_debug: trim poll_queues to 0. poll_q/nr_hw )
-[   21.414056] scsi host3: scsi_debug: version 0191 [20210520]
-[   21.414056]   dev_size_mb=1024, opts=0x0, submit_queues=1, statistics=0
-[   21.415307] scsi 3:0:0:0: Direct-Access-ZBC Linux    scsi_debug 0191 PQ: 0 ANSI: 7
-[   21.416384] scsi 3:0:0:0: Power-on or device reset occurred
-[   21.416981] sd 3:0:0:0: Attached scsi generic sg1 type 20
-[   21.417533] sd 3:0:0:0: [sda] Host-managed zoned block device
-[   21.418153] sd 3:0:0:0: [sda] 262144 4096-byte logical blocks: (1.07 GB/1.00 GiB)
-[   21.418676] sd 3:0:0:0: [sda] Write Protect is off
-[   21.419017] sd 3:0:0:0: [sda] Write cache: enabled, read cache: enabled, supports DPO and FUA
-[   21.419685] sd 3:0:0:0: [sda] permanent stream count = 5
-[   21.420158] sd 3:0:0:0: [sda] Preferred minimum I/O size 4096 bytes
-[   21.420593] sd 3:0:0:0: [sda] Optimal transfer size 4194304 bytes
-[   21.421261] sd 3:0:0:0: [sda] 256 zones of 1024 logical blocks
-[   21.456700] sd 3:0:0:0: [sda] Attached SCSI disk
-[   21.523845] BTRFS: device fsid 9bcd6f4c-db2e-44d7-8597-4eb5774c1460 devid 1 transid 6 /dev/s)
-[   21.528211] BTRFS info (device sda): first mount of filesystem 9bcd6f4c-db2e-44d7-8597-4eb570
-[   21.528623] BTRFS info (device sda): using crc32c (crc32c-lib) checksum algorithm
-[   21.530206] BTRFS info (device sda): host-managed zoned block device /dev/sda, 256 zones of s
-[   21.530663] BTRFS info (device sda): zoned mode enabled with zone size 4194304
-[   21.532601] BTRFS info (device sda): checking UUID tree
-[   21.532909] BTRFS info (device sda): enabling ssd optimizations
-[   21.533145] BTRFS info (device sda): enabling free space tree
+Ah, 64 is the total zone number not sequential only.
 
-[  242.795457] INFO: task kworker/u8:4:859 blocked for more than 120 seconds.
-[  242.796028]       Tainted: G                 N  6.17.0+ #4047
-[  242.796426] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  242.796941] task:kworker/u8:4    state:D stack:0     pid:859 tgid:859   ppid:2      task_f0
-[  242.797667] Workqueue: writeback wb_workfn (flush-btrfs-2)
-[  242.798065] Call Trace:
-[  242.798227]  <TASK>
-[  242.798369]  __schedule+0x524/0xb60
-[  242.798601]  schedule+0x29/0xe0
-[  242.798804]  io_schedule+0x4b/0x70
-[  242.799024]  folio_wait_bit_common+0x126/0x390
-[  242.799300]  ? filemap_get_folios_tag+0x247/0x2a0
-[  242.800054]  ? __pfx_wake_page_function+0x10/0x10
-[  242.800354]  extent_write_cache_pages+0x5c6/0x9c0
-[  242.800631]  ? stack_depot_save_flags+0x29/0x870
-[  242.800904]  ? set_track_prepare+0x45/0x70
-[  242.801145]  ? __kmalloc_noprof+0x3a7/0x4e0
-[  242.801391]  ? virtqueue_add_sgs+0x308/0x720
-[  242.801644]  ? virtblk_add_req+0x81/0xe0
-[  242.801875]  ? virtblk_add_req_batch+0x4b/0x100
-[  242.802140]  ? virtio_queue_rqs+0x133/0x180
-[  242.802385]  ? blk_mq_dispatch_queue_requests+0x155/0x180
-[  242.802697]  ? blk_mq_flush_plug_list+0x73/0x160
-[  242.802967]  ? preempt_count_add+0x4d/0xb0
-[  242.803210]  btrfs_writepages+0x70/0x120
-[  242.803636]  do_writepages+0xc5/0x160
-[  242.803870]  __writeback_single_inode+0x3c/0x330
-[  242.804154]  writeback_sb_inodes+0x21a/0x4d0
-[  242.804436]  __writeback_inodes_wb+0x47/0xe0
-[  242.804758]  wb_writeback+0x19a/0x310
-[  242.805029]  wb_workfn+0x348/0x440
-[  242.805248]  process_one_work+0x169/0x320
-[  242.805487]  worker_thread+0x246/0x390
-[  242.805711]  ? _raw_spin_unlock_irqrestore+0x1d/0x40
-[  242.806003]  ? __pfx_worker_thread+0x10/0x10
-[  242.806253]  kthread+0x106/0x220
-[  242.806454]  ? __pfx_kthread+0x10/0x10
-[  242.806683]  ? __pfx_kthread+0x10/0x10
-[  242.806915]  ret_from_fork+0x11d/0x160
-[  242.807145]  ? __pfx_kthread+0x10/0x10
-[  242.807646]  ret_from_fork_asm+0x1a/0x30
-[  242.807904]  </TASK>
+Other than the nitpick on the description, this looks fine then:
 
+Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
+
+
+> 
+> root@virtme-ng:/mnt# echo "$zloop_args" > /dev/zloop-control
+> [   75.986238] zloop: Added device 0: 64 zones of 256 MB, 4096 B block size
+> root@virtme-ng:/mnt# ls $zloopdir/0
+> cnv-000000  seq-000011  seq-000022  seq-000033  seq-000044 seq-000055
+> cnv-000001  seq-000012  seq-000023  seq-000034  seq-000045 seq-000056
+> seq-000002  seq-000013  seq-000024  seq-000035  seq-000046 seq-000057
+> seq-000003  seq-000014  seq-000025  seq-000036  seq-000047 seq-000058
+> seq-000004  seq-000015  seq-000026  seq-000037  seq-000048 seq-000059
+> seq-000005  seq-000016  seq-000027  seq-000038  seq-000049 seq-000060
+> seq-000006  seq-000017  seq-000028  seq-000039  seq-000050 seq-000061
+> seq-000007  seq-000018  seq-000029  seq-000040  seq-000051 seq-000062
+> seq-000008  seq-000019  seq-000030  seq-000041  seq-000052 seq-000063
+> seq-000009  seq-000020  seq-000031  seq-000042  seq-000053
+> seq-000010  seq-000021  seq-000032  seq-000043  seq-000054
+> 
+> 
 
