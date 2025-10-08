@@ -1,57 +1,58 @@
-Return-Path: <linux-btrfs+bounces-17530-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17531-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A9EEBC573D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 08 Oct 2025 16:38:51 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72237BC5757
+	for <lists+linux-btrfs@lfdr.de>; Wed, 08 Oct 2025 16:39:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1F9A3C767B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Oct 2025 14:38:29 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5FDFC4E2956
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Oct 2025 14:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEBD32EBBAD;
-	Wed,  8 Oct 2025 14:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 423402EBBB0;
+	Wed,  8 Oct 2025 14:39:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j6BNUUF9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="drWa0epX"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245B82EB870;
-	Wed,  8 Oct 2025 14:38:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769C32EB862;
+	Wed,  8 Oct 2025 14:39:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759934302; cv=none; b=U4BdGnUH5TcdLG0kDw4I+Ikco8iLKD+ohV8nBYIYQl7orq/B4pTA0hzLOOmgWew/0M9hfRuaYmWIa41+jyG12149j9qIxgTyfNM8qLVVwdLW0xWUZY0Fpmc28Cuu+dwyTe2otFOrGL3kaahoM8TlXOFd55gdx61cDeg70oW5Yrc=
+	t=1759934361; cv=none; b=AcVGTQUVIjSPd4IvhNqeFOFz3ss2wEcsh8YvmsQVR/rQW76shjcKbMKlu9KRnJgwncTruyma/Lm4a4mUYySJnMmpoTSA3/b3K8v+8TIf6ueWDTvCPE4w+CbuH6ho0sloYbJNPP3Y08Ksh/5aB0pEZ8V/ku+Udpt3QP3Q9ggm06o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759934302; c=relaxed/simple;
-	bh=KhITWjAlDA75Xhrp9d3VApovtbLuRsM6A/ZtwfNF9Rw=;
+	s=arc-20240116; t=1759934361; c=relaxed/simple;
+	bh=DwnbLd/w3kQxkRwT3MX69nNPsgenpojbUf4AVH4B/s8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EDc9qpCCoFKEmy2sVByi25IdlnK960CEPMICyCTbsMLvTUzlDxaDy5hUtoR6T+hsszgl6EJYmqqxAuwK8S/Q8nhQdzcrzGvgVixHvgWzn1jTw032Yn09Sxvu0SI94E4GdK/GU8RtDpceFYY55k/7ee/ZbkY6WumKcJu5GhCFvXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j6BNUUF9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80CDFC4CEE7;
-	Wed,  8 Oct 2025 14:38:19 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ho4OQgmFJ+x7N7kILMFzcJwFbgjM3OZxcqmhTtVmkOyMTqU11vddhAy/5znXz8DVqH3PnN6cSW/skVqs4n+CRUCNMwk8XmMf4+JMH94kuRvnVsVeiawiCD2IiDaXlnrylVJrJlUdNzyhwjh1xL74dvzJnTmhgX8ub5P5y9KQIFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=drWa0epX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02B80C4CEE7;
+	Wed,  8 Oct 2025 14:39:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759934301;
-	bh=KhITWjAlDA75Xhrp9d3VApovtbLuRsM6A/ZtwfNF9Rw=;
+	s=k20201202; t=1759934361;
+	bh=DwnbLd/w3kQxkRwT3MX69nNPsgenpojbUf4AVH4B/s8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j6BNUUF9fzCFgBwA6lWu4AAlZ+c2JdoJfGLIgVlmcYreZgCppWaZW8wWAgGW203T8
-	 GkhYJkoBPaxwFtnPMJYUqytosZDu+T4LklF2Is9DSKJDdZUshI+Yy0SPkYKsdzeM/b
-	 QMD6wrVc7iypFgJJtlV5Xc58HQjtTCJNJHXjMmDmV08nVnMhOQW1A2kEPUF4piXoBu
-	 B1Pj42uCXmZW6U7gXVZpmAg2ivDdE5Aj44C9W0YEATafOdXpM6OOsbmBnR7D0gHZXE
-	 Mi2oCTyF0HYZeMmr4g8ozSZnpXYl8Poz2GqZA0LghHFp86wf9umjO0Y+R/0HXJdwgg
-	 xO3pYcAGaDOzQ==
-Date: Wed, 8 Oct 2025 16:38:16 +0200
+	b=drWa0epXQZub64IDqLYlgk8NWFI69RroX1HpYK70GzYOHaGhiJmLLq5m6aJNsaUO8
+	 DeaYZUFey2qaNRP3QgiNiI58Tfko8qE+SQN+jtKig/da4FP++e2La6vaDjjxN92c2Z
+	 VlQxVYlEN97qhFuRqkVbZuogDP7KxjLLdQAZMb8aWMVxo1bboro+n6QFzliWn5eIsw
+	 +6sZQr99DEp7X85nCvBoH2F8Q0IzPwZAqHbhvjqS2fWgXPNi54jOH7CNI6cNgqskuv
+	 VmdW5JyZXK6+9/D/Azze/bCrFsIXHBt7qFEWw+50XPeY8tjfTJdudbtK7XReXx9z1s
+	 0mcVUm5THWmvw==
+Date: Wed, 8 Oct 2025 16:39:16 +0200
 From: Carlos Maiolino <cem@kernel.org>
 To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Cc: Zorro Lang <zlang@redhat.com>, Christoph Hellwig <hch@lst.de>, 
 	Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org, 
 	Hans Holmberg <hans.holmberg@wdc.com>, fstests@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] common/zoned: add _create_zloop
-Message-ID: <hrht5llavtcgd5bb6sgsluy3vs2m6ddzzshkhwqb4fjgujgrli@6px7vpsk7ek3>
+Subject: Re: [PATCH v2 3/3] generic: basic smoke for filesystems on zoned
+ block devices
+Message-ID: <avdwdikvusufurrzfglpedp74vkdx7baqv7uruda5sazbirwv7@bmgipkeuvx4t>
 References: <20251007125803.55797-1-johannes.thumshirn@wdc.com>
- <VGGoqK-5ZWJTAAy5zOK2QgRfnghNzWtGFoBwL6Sw9bqE7moL7lyTr43XUUgtMM54gKwCKIpC1Jz9u5ZcnpNATg==@protonmail.internalid>
- <20251007125803.55797-3-johannes.thumshirn@wdc.com>
+ <xM_yDtK6YNwdumZ0kyt-f2Yv1PkG5qOjcs6msZQgmlmKrCljdcZ9MExz2IdGrpMWMWoU-9mzrXgfofBA4pV9ng==@protonmail.internalid>
+ <20251007125803.55797-4-johannes.thumshirn@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -60,51 +61,94 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251007125803.55797-3-johannes.thumshirn@wdc.com>
+In-Reply-To: <20251007125803.55797-4-johannes.thumshirn@wdc.com>
 
-On Tue, Oct 07, 2025 at 02:58:02PM +0200, Johannes Thumshirn wrote:
-> Add _create_zloop a helper function for creating a zloop device.
+On Tue, Oct 07, 2025 at 02:58:03PM +0200, Johannes Thumshirn wrote:
+> Add a basic smoke test for filesystems that support running on zoned
+> block devices.
+> 
+> It creates a zloop device with 2 conventional and 62 sequential zones,
+> mounts it and then runs fsx on it.
+> 
+> Currently this tests supports BTRFS, F2FS and XFS.
 > 
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
+Looks fine:
+
+Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
+
 > ---
->  common/zoned | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
+>  tests/generic/772     | 50 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/772.out |  2 ++
+>  2 files changed, 52 insertions(+)
+>  create mode 100755 tests/generic/772
+>  create mode 100644 tests/generic/772.out
 > 
-> diff --git a/common/zoned b/common/zoned
-> index 41697b08..33d3543b 100644
-> --- a/common/zoned
-> +++ b/common/zoned
-> @@ -45,3 +45,26 @@ _require_zloop()
->  	    _notrun "This test requires zoned loopback device support"
->      fi
->  }
+> diff --git a/tests/generic/772 b/tests/generic/772
+> new file mode 100755
+> index 00000000..403798ff
+> --- /dev/null
+> +++ b/tests/generic/772
+> @@ -0,0 +1,50 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2025 Wesgtern Digital Corporation.  All Rights Reserved.
+> +#
+> +# FS QA Test 772
+> +#
+> +# Smoke test for FSes with ZBD support on zloop
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto zone quick
 > +
-> +# Create a zloop device
-> +# useage: _create_zloop [id] <base_dir> <zone_size> <nr_conv_zones>
-> +_create_zloop()
+> +_cleanup()
 > +{
-> +    local id=$1
-> +
-> +    if [ -n "$2" ]; then
-> +        local base_dir=",base_dir=$2"
-> +    fi
-> +
-> +    if [ -n "$3" ]; then
-> +        local zone_size=",zone_size_mb=$3"
-> +    fi
-> +
-> +    if [ -n "$4" ]; then
-> +        local conv_zones=",conv_zones=$4"
-> +    fi
-> +
-> +    local zloop_args="add id=$id$base_dir$zone_size$conv_zones"
-> +
-> +    echo "$zloop_args" > /dev/zloop-control
+> +	if test -b /dev/zloop$ID; then
+> +		echo "remove id=$ID" > /dev/zloop-control
+> +	fi
 > +}
-
-Looks fine to me, but I'm not sure if some error checking would be
-worth here in case setting up the zloop dev fails?
-
+> +
+> +. ./common/zoned
+> +
+> +# Modify as appropriate.
+> +_require_scratch
+> +_require_scratch_size $((16 * 1024 * 1024)) #kB
+> +_require_zloop
+> +
+> +_scratch_mkfs > /dev/null 2>&1
+> +_scratch_mount
+> +
+> +last_id=$(ls /dev/zloop* 2> /dev/null | grep -E "zloop[0-9]+" | wc -l)
+> +ID=$((last_id + 1))
+> +
+> +mnt="$SCRATCH_MNT/mnt"
+> +zloopdir="$SCRATCH_MNT/zloop"
+> +
+> +mkdir -p "$zloopdir/$ID"
+> +mkdir -p $mnt
+> +_create_zloop $ID $zloopdir 256 2
+> +zloop="/dev/zloop$ID"
+> +
+> +_try_mkfs_dev $zloop 2>&1 >> $seqres.full ||\
+> +	_notrun "cannot mkfs zoned filesystem"
+> +_mount $zloop $mnt
+> +
+> +$FSX_PROG -q -N 20000 $FSX_AVOID "$mnt/fsx" >> $seqres.full
+> +
+> +umount $mnt
+> +
+> +echo Silence is golden
+> +# success, all done
+> +_exit 0
+> diff --git a/tests/generic/772.out b/tests/generic/772.out
+> new file mode 100644
+> index 00000000..98c13968
+> --- /dev/null
+> +++ b/tests/generic/772.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 772
+> +Silence is golden
 > --
 > 2.51.0
 > 
