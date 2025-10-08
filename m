@@ -1,60 +1,84 @@
-Return-Path: <linux-btrfs+bounces-17532-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17533-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A20FBC5860
-	for <lists+linux-btrfs@lfdr.de>; Wed, 08 Oct 2025 17:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 721F0BC5872
+	for <lists+linux-btrfs@lfdr.de>; Wed, 08 Oct 2025 17:12:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1E1754F9C77
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Oct 2025 15:08:15 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C103D4F820E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Oct 2025 15:09:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C70D2EC56E;
-	Wed,  8 Oct 2025 15:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 901092ECE87;
+	Wed,  8 Oct 2025 15:09:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DcZWaN5X"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mI03c5Fy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946A127E1DC;
-	Wed,  8 Oct 2025 15:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01DC28C00D
+	for <linux-btrfs@vger.kernel.org>; Wed,  8 Oct 2025 15:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759936088; cv=none; b=SB8WDsrB/x9xPF1qGTPnY1w2epZx9mtv1d5SUlxuR/FqfbdfN/K3I/TsvahFlRno7mbAO/Tnf+PLIodPMiTkJnLh5Vf037dhB78/X46UEPAp+jqYfmn3OSrNx7jEl0zFSIPSJ93Zn8iPPUqYXwBm5dxycmoQYOH2sRbcawUfSHk=
+	t=1759936145; cv=none; b=u/khM23qlcFqjqe0xEnW1o2h0cnRN1la25f3RUWWratIF/ZYw+eW7rVz8wTbAq1DQnPAL46Fiy+Dk6Y6n6C3d4GuHJIqo9oQrTC2QFrfk0enYblC2+RJxpsSCjywWPIpDeuh9bsBUc21J2LJEdLDlz52KvOqrTkXaZbLDJcgueA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759936088; c=relaxed/simple;
-	bh=CnlS2MAp+wmpOSvzFnyBlUqd3zqkBmyzCs2N2fSCDMY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AScGqlfZdGF+v+wOUec9M4Wvel4q1Fnhir2kd8BiViWyt9XZ4hqKe3TZy3Rjsb0UBql28bPS3XMhYzKa22h6CYPVAMlLPh1CkhN1z9HV2wnnpxSJLjSdsMYoFlprDVhifSRuXrgMGsjr7ImMK+83J2v/3AlWiHL0en7Ti7v7nAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DcZWaN5X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1442CC4CEF4;
-	Wed,  8 Oct 2025 15:08:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759936087;
-	bh=CnlS2MAp+wmpOSvzFnyBlUqd3zqkBmyzCs2N2fSCDMY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DcZWaN5XcPH1pQHJgW4fQq0ezF2qmYous4kfKKzKSEsDd0OZ8OfFxBqyZmJOqXl1n
-	 PsJkjqsJj3w91MJJ70jGIyDeF1zoRfijQqb6YTDh6lD2H1C8E5LZEvA7zbUxVPoU4s
-	 GMqNlsZ5sKXtxoErOv/S4L96W+/IZEKNZ/iXDCAYj975wechieuAwvRfl4b5VvWRIL
-	 0wPh07s0a68D3KT3O0mSFzFJfdRjJALmHi5x808XKQgxWPdnw6QSqQrdQ98pOAkbMX
-	 /ikzbG6X8NUgRtM0ZUpXt8L8PROEN5uGco4HcRyZyGPkcCNUky9kRYad/ZRAknKui+
-	 KkMGRkgF1B6jg==
-Date: Wed, 8 Oct 2025 08:08:06 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Carlos Maiolino <cem@kernel.org>
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Zorro Lang <zlang@redhat.com>, Christoph Hellwig <hch@lst.de>,
-	Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-	Hans Holmberg <hans.holmberg@wdc.com>, fstests@vger.kernel.org,
-	linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] common/zoned: add _create_zloop
-Message-ID: <20251008150806.GA6188@frogsfrogsfrogs>
-References: <20251007125803.55797-1-johannes.thumshirn@wdc.com>
- <VGGoqK-5ZWJTAAy5zOK2QgRfnghNzWtGFoBwL6Sw9bqE7moL7lyTr43XUUgtMM54gKwCKIpC1Jz9u5ZcnpNATg==@protonmail.internalid>
- <20251007125803.55797-3-johannes.thumshirn@wdc.com>
- <hrht5llavtcgd5bb6sgsluy3vs2m6ddzzshkhwqb4fjgujgrli@6px7vpsk7ek3>
+	s=arc-20240116; t=1759936145; c=relaxed/simple;
+	bh=1K+mZHhUUT08Buqc1WIo7B/dy9RfBBDC35AAmiVX12c=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=TzHBnkpNLPy++3sYg3Bl9ovzIcda+wheA8PsRA0pzpH7nqstOzFdzOHD/ZFnCvY2kxfPvXAY/M4l1FoXM6Jyrrxku/dP/CZAI9CxAVmSufjXSiq1fmHkdDEXsACY+T0FGANimubundx4l59j/oDQTePMNuYGZYnE/8viHqfMRtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mI03c5Fy; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-42557c5cedcso30599f8f.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Oct 2025 08:09:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1759936142; x=1760540942; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6Lsv/v4r6+foGJWr+qrH8p2k9rjZsdGH+FPsXAlrkVQ=;
+        b=mI03c5FyBkiUk2gVEx+fgak9+cVGldj/HtkrA540CoKE3m0m5NRX5kvSbwN80sGbAf
+         KhvWqYI0G4Qax0E4sqGApnMAXK9MTQaV4BjDztbMPtt3dtdvby/pda4dPBbgitisniPC
+         3qXXO2tQC5uufYxsSrnsCe1Iu4MR2NJCUj/sE/vPxci4lbxiBWDtvBD0H8iUajnYQOoA
+         wshAese0+/HFGjHL9kiBi6MV9BkRXKR7WfJGNQ3dgjsflrOxNCa5eRvNFDPfcMb0Jb97
+         UsOdPYWkSmSwev9urvcwEQrbTAncqCr0k8nELaAq9ozoUB4gSM2WwOAW/2g3EAT57235
+         Jt2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759936142; x=1760540942;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Lsv/v4r6+foGJWr+qrH8p2k9rjZsdGH+FPsXAlrkVQ=;
+        b=J+JJiLOoUtv2rGkgk73GPGeFrCom4sCq4NMblIV/SVpOFMTFsSpSxoze/UUBPptQR2
+         neK6h7UyMzToeeB6clNsYiOtWhpA5PrYqDRkWPuO0+mlo8U4a4BZ//ipG/nrr/TDebT6
+         VhycXT5gLKpYeYNzQ81I2RHNvYXnfkk/mt9bbd28IrHrb6meI7AHXKxfPHx4HRWvpkXG
+         IgcBpC2VZcKBARUHkafpZXHZXb3nRN4UNhvI1sQ6IZwbIoLb48mAIax+sCfrR5l74J80
+         ePlBgu8obifebBxVQniz+1xRKVj5O3MERR/fBK7ZbMpcFmM6C/E2ckuosR5HLofjaLI7
+         EmqA==
+X-Forwarded-Encrypted: i=1; AJvYcCUlJo7MsqCWTMlCdD5oqXD6vlS182gCxUPZi/eBSG09FpUA72/V7aUwMcjhoepCR+U7oUYK/hw2fJcxng==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2EG2Jk4I+dMAhpI7AK4XN6TzAP2RaTLQ+LqCe1164r4W+2/OO
+	h18KE7jj/P7WyiRi0aTcNW95Fawvgj1zTf3cciRRnyW7djkOxZGR3YR38iLdz5YL+qE=
+X-Gm-Gg: ASbGncv8VOuVcjdPFozzC0ctHtpQoLIm62gmIRfIPVz7mgP9TFGDUURTvKVzbLQ3o4p
+	9kHHxK9ZqcLJH452aonjFdD+gUvV8UMyqIg1lbQ4vbkVLHz465XateAnN65g4a5xCj4zgxghuxK
+	GaZnNjO6XVKhbVhEELAILo3xNDNo3hcEFr8CH+IHFYk0NJBTfnFOvgDjUyMxlvdAAYK4pnY8Jr3
+	DgmmPr5Mp2X/gRtKpVTUql3jzskPKrh4VmiizH5arOHX25oDRuUCS8FAkecotApBqxs2XeYwfJZ
+	1b6mi4RAvrYg8ZGLC4IKc0JcjJG+Rmgb80dUsx5PJbobztPAvJjLI12waXdjVbR7e4ErewOduzn
+	btYO9UrLfBeLotkHMxob1L08mBiYNseuBJyh9b4qH1Q6beu8lnc/Ojsyt
+X-Google-Smtp-Source: AGHT+IHYVsHAe0/w87MtOEqTgFE1mT/tsUBsMdlVHgFGbcOBnMrbBTOagFPDRArfyaH2aIEMb5EBvA==
+X-Received: by 2002:a05:6000:2c0c:b0:3f1:5bdd:190a with SMTP id ffacd0b85a97d-42666ac3a16mr2508780f8f.3.1759936142001;
+        Wed, 08 Oct 2025 08:09:02 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-4255d869d50sm31248166f8f.0.2025.10.08.08.09.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Oct 2025 08:09:01 -0700 (PDT)
+Date: Wed, 8 Oct 2025 18:08:58 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Qu Wenruo <wqu@suse.com>
+Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+	Filipe Manana <fdmanana@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] btrfs: tree-checker: Fix bounds check in check_inode_extref()
+Message-ID: <aOZ-inc8o7T63QHT@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -63,87 +87,32 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <hrht5llavtcgd5bb6sgsluy3vs2m6ddzzshkhwqb4fjgujgrli@6px7vpsk7ek3>
+X-Mailer: git-send-email haha only kidding
 
-On Wed, Oct 08, 2025 at 04:38:16PM +0200, Carlos Maiolino wrote:
-> On Tue, Oct 07, 2025 at 02:58:02PM +0200, Johannes Thumshirn wrote:
-> > Add _create_zloop a helper function for creating a zloop device.
-> > 
-> > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> > ---
-> >  common/zoned | 23 +++++++++++++++++++++++
-> >  1 file changed, 23 insertions(+)
-> > 
-> > diff --git a/common/zoned b/common/zoned
-> > index 41697b08..33d3543b 100644
-> > --- a/common/zoned
-> > +++ b/common/zoned
-> > @@ -45,3 +45,26 @@ _require_zloop()
-> >  	    _notrun "This test requires zoned loopback device support"
-> >      fi
-> >  }
-> > +
-> > +# Create a zloop device
-> > +# useage: _create_zloop [id] <base_dir> <zone_size> <nr_conv_zones>
-> > +_create_zloop()
-> > +{
-> > +    local id=$1
-> > +
-> > +    if [ -n "$2" ]; then
-> > +        local base_dir=",base_dir=$2"
-> > +    fi
-> > +
-> > +    if [ -n "$3" ]; then
-> > +        local zone_size=",zone_size_mb=$3"
-> > +    fi
-> > +
-> > +    if [ -n "$4" ]; then
-> > +        local conv_zones=",conv_zones=$4"
-> > +    fi
-> > +
-> > +    local zloop_args="add id=$id$base_dir$zone_size$conv_zones"
-> > +
-> > +    echo "$zloop_args" > /dev/zloop-control
+The parentheses for the unlikely() annotation were put in the wrong
+place so it means that the condition is basically never true and the
+bounds checking is skipped.
 
-Hmm, so the caller figures out its own /dev/zloopNNN number, passes NNN
-into the zloop-control devices, and then maybe a new bdev is created?
-Does NNN have to be one more than the current highest zloop device, or
-can it be any number?
+Fixes: aab9458b9f00 ("btrfs: tree-checker: add inode extref checks")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ fs/btrfs/tree-checker.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Source code says that if NNN >= 0 then it tries to create a new
-zloopNNN or fails with EEXIST; otherwise it gives you the lowest unused
-id.  It'd be nice in the second case if there were a way for the driver
-to tell you what the NNN is.
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index ca30b15ea452..c10b4c242acf 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -1797,7 +1797,7 @@ static int check_inode_extref(struct extent_buffer *leaf,
+ 		struct btrfs_inode_extref *extref = (struct btrfs_inode_extref *)ptr;
+ 		u16 namelen;
+ 
+-		if (unlikely(ptr + sizeof(*extref)) > end) {
++		if (unlikely(ptr + sizeof(*extref) > end)) {
+ 			inode_ref_err(leaf, slot,
+ 			"inode extref overflow, ptr %lu end %lu inode_extref size %zu",
+ 				      ptr, end, sizeof(*extref));
+-- 
+2.51.0
 
-The _create_zloop users seem to do an ls to select an NNN.  At a minimum
-that code probably ought to get hoisted to here as a common function (or
-maybe just put in _create_zloop itself).
-
-Or maybe turned into a loop like:
-
-	while true; do
-		local id=$(_next_zloop_id)
-		err="$(echo "add id=$id$base_dir..." 2>&1 > /dev/zloop-control)"
-		if [ -z "$err" ]; then
-			echo "/dev/zloop$id"
-			return 0
-		fi
-		if echo "$err" | ! grep -q "File exists"; then
-			echo "$err" 1>&2
-			return 1;
-		fi
-	done
-
-That way test cases don't have to do all that setup themselves?
-
---D
-
-> > +}
-> 
-> Looks fine to me, but I'm not sure if some error checking would be
-> worth here in case setting up the zloop dev fails?
-> > --
-> > 2.51.0
-> > 
-> 
 
