@@ -1,180 +1,195 @@
-Return-Path: <linux-btrfs+bounces-17595-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17596-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3C75BC9B7C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 09 Oct 2025 17:17:22 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82C0FBCA315
+	for <lists+linux-btrfs@lfdr.de>; Thu, 09 Oct 2025 18:31:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6F0DA3499CE
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Oct 2025 15:17:22 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 256004FB956
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Oct 2025 16:30:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF0218859B;
-	Thu,  9 Oct 2025 15:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0C421F09A5;
+	Thu,  9 Oct 2025 16:30:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KCuaqvzR"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="v/E9RPyt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.burntcomma.com (unknown [62.3.69.246])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA6715D1
-	for <linux-btrfs@vger.kernel.org>; Thu,  9 Oct 2025 15:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A1415B971
+	for <linux-btrfs@vger.kernel.org>; Thu,  9 Oct 2025 16:30:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.3.69.246
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760023036; cv=none; b=fHcBrejLJuVvfbkvxH1EI5/ggSW1RCrf1FFYOnCP8MxUTrubTXFq5a+L0KMLS+tGuWzDRKhhx3FGSLObjGzu48i1fQk/zVv0kjjk+Wz4c5ZIOM5F+08JyNRa1abNyp2TpXw/98iCwZ3DEDJBfGwsAlAcPv/giExoU2PCAcaNBIc=
+	t=1760027435; cv=none; b=rkEHazQx+6yOK85HX9JXktNKjFmO+UFKBGUjzAI62tfsR/AMMFIssXrkYAPvT61WgExIbwiA726AJX/ayI4J80nm3rkELu3LSDVUnDUDy22NTnnuwmPH//QWRMR4JXc+Gml4nXOKBZ+M1tT8eUTD+NFUp04+jCQNNZ7IW/4GCuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760023036; c=relaxed/simple;
-	bh=xbKRgUAoU0WA7SAqCHXNUWZubu/lqOmMRhWFQV3m62Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ud8Jj7cL2KOwOYw9YSZhHN2HWCt3GcYNGf0G6m+zGDZOy+sUFPKe4q+m+mBGnxz2asSm5iFFFqmjmR9GNrYZreNrM/ioOWxIDLVyH44bl4Uh2mAEAf8yLD+RkyxZoA2Z7YEviLXuVxWHLU/9hy/ChNK3QaxOEelERXIEW6FBy7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KCuaqvzR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BD57C4CEE7
-	for <linux-btrfs@vger.kernel.org>; Thu,  9 Oct 2025 15:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760023036;
-	bh=xbKRgUAoU0WA7SAqCHXNUWZubu/lqOmMRhWFQV3m62Q=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=KCuaqvzRopoadZlF4+YQiKanJoG3j1wl13o/p2NY0LWD+QQ2qe5L2+faGHlm03uld
-	 bYVR8E9ocJQQO92UkoqNFYxoAm7uuUfaUUzqbzGHw3k8AumcxYTmGgQFdM6tjY0Enx
-	 BFsiZUZG/AU9LpGab0hO1vRs+pE5sTw5BG+aOuBLlPrX+9zmPOwsB/evE0mg1AzIYG
-	 V1RIeery18nHRd/3W2c5Y5rWMmIbiLzG1O8wgT+er/nXrXeeJLA69dZ/pF415iv15o
-	 59Ze4oa9OHd24tJ44lMrmwIALZYnllnfZdCwdQpraCuFiuvwdBE7e1Gpj7pe5knnxq
-	 4mJp/XMUTAcVw==
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b4aed12cea3so171026366b.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 09 Oct 2025 08:17:16 -0700 (PDT)
-X-Gm-Message-State: AOJu0YykAGwqhEK5xurH+Is88MxntIees4e/YRchUI6pJmEuRRWAC01z
-	CTGXs08YhrRXe2ATUzEYt46IF4tP8XuaKTkbkRCBUexd41yjftQMUEnwvOxNiEZ/0vtYC7FZCaR
-	hFcZfwuxkDRBBHAPkw4jBAQ7ZtC1gsVc=
-X-Google-Smtp-Source: AGHT+IHg1xtm1B3NNSfrtgVLcDsEPXe7KmQzsh2xFgYfyIkWp+Xw81ow5SHWQ09SXot/ms7EuMa0lnSDepBYbOJRcys=
-X-Received: by 2002:a17:907:68a2:b0:b54:858e:736f with SMTP id
- a640c23a62f3a-b54858e73a1mr307568666b.36.1760023034710; Thu, 09 Oct 2025
- 08:17:14 -0700 (PDT)
+	s=arc-20240116; t=1760027435; c=relaxed/simple;
+	bh=xrmQwtnPUbm2TJwqp+uDshrpU/4g7maM0f4BgK8p3/I=;
+	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XJ5G9ovZK+yaEEoXAsONYVZ/uwOuGi730ialttEzjOc4SW5ZzykPjq7PRwbZdBNBiBnGoGDbSW03ktB8IwtnD5X9JbLgJ892AMilldkUblid8WIkc8GyIBg+5AsIwQZxpNJ4FcuUbBrmwB05BTg0SH54mz6eCYvkY1PCsF69l5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=fail smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=v/E9RPyt; arc=none smtp.client-ip=62.3.69.246
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=harmstone.com
+Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
+	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
+	by mail.burntcomma.com (Postfix) with ESMTPS id C17132C5969;
+	Thu,  9 Oct 2025 17:30:28 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
+	s=mail; t=1760027428;
+	bh=E8UlryQnf8x0GNNFAvu21IrLC/Xsm5rk5PpgZygWmgc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=v/E9RPytlQ2xn74H6ViiX3pLZw0461aCz6w0K5wldkk4ijbWY598s+YPYkB0P/qG7
+	 w3ZOvcfNSByiQOEKncZA67WxwdgiBSu/HRPi0Rv+lo5fKYdJsL7RYVJhtiGTklOqby
+	 3nT5lqwomPa6KqoJudyiCZJi7HnANJUPrXaGIZys=
+Message-ID: <06ac2db3-d7e9-4cd3-97be-f059beb4af6b@harmstone.com>
+Date: Thu, 9 Oct 2025 17:30:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20251009112814.13942-1-mark@harmstone.com> <20251009112814.13942-10-mark@harmstone.com>
- <CAL3q7H6k9Uxy_aAN5VV8q9OQFUSiGtX_NhuV8C0TCgUQjAgu8A@mail.gmail.com> <9e72962e-3d4b-4e1a-b206-512904d701ff@harmstone.com>
-In-Reply-To: <9e72962e-3d4b-4e1a-b206-512904d701ff@harmstone.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 9 Oct 2025 16:16:37 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5DhH6ZfDEvZ+Ax+zv824rF2X2qNKpC9iCiGXpJNacORg@mail.gmail.com>
-X-Gm-Features: AS18NWC0jEB_OzFUYcYCT95hsyj5D3nGFcxz69w2FupLs_Sso9sUJFBC5l21hDo
-Message-ID: <CAL3q7H5DhH6ZfDEvZ+Ax+zv824rF2X2qNKpC9iCiGXpJNacORg@mail.gmail.com>
-Subject: Re: [PATCH v3 09/17] btrfs: release BG lock before calling btrfs_link_bg_list()
-To: Mark Harmstone <mark@harmstone.com>
+Mime-Version: 1.0
+Subject: Re: [PATCH v3 09/17] btrfs: release BG lock before calling
+ btrfs_link_bg_list()
+To: Filipe Manana <fdmanana@kernel.org>
 Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <20251009112814.13942-1-mark@harmstone.com>
+ <20251009112814.13942-10-mark@harmstone.com>
+ <CAL3q7H6k9Uxy_aAN5VV8q9OQFUSiGtX_NhuV8C0TCgUQjAgu8A@mail.gmail.com>
+ <9e72962e-3d4b-4e1a-b206-512904d701ff@harmstone.com>
+ <CAL3q7H5DhH6ZfDEvZ+Ax+zv824rF2X2qNKpC9iCiGXpJNacORg@mail.gmail.com>
+Content-Language: en-US
+From: Mark Harmstone <mark@harmstone.com>
+Autocrypt: addr=mark@harmstone.com; keydata=
+ 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
+In-Reply-To: <CAL3q7H5DhH6ZfDEvZ+Ax+zv824rF2X2qNKpC9iCiGXpJNacORg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Oct 9, 2025 at 3:58=E2=80=AFPM Mark Harmstone <mark@harmstone.com> =
-wrote:
->
-> On 09/10/2025 12.56 pm, Filipe Manana wrote:
-> > On Thu, Oct 9, 2025 at 12:29=E2=80=AFPM Mark Harmstone <mark@harmstone.=
-com> wrote:
-> >>
-> >> Release block_group->lock before calling btrfs_link_bg_list() in
-> >> btrfs_delete_unused_bgs(), as this was causing lockdep issues.
-> >
-> > I believe this was asked before:
-> >
-> > What issues?
-> > Do we have for example any other place where we have a different
-> > locking order and can cause a deadlock?
-> >
-> > Can you please paste the lockdep splat?
->
-> I didn't take a copy the first time, and I've not been able to replicate =
-it
-> since.
->
-> But you can see the issue in patch 4, "btrfs: remove remapped block group=
-s
-> from the free-space tree". In btrfs_discard_punt_unused_bgs_list() we acq=
-uire
-> unused_bgs_lock to loop through the unused_bgs list, then take the indivi=
-dual
-> BG lock so we can check its flags.
+On 09/10/2025 4.16 pm, Filipe Manana wrote:
+> On Thu, Oct 9, 2025 at 3:58 PM Mark Harmstone <mark@harmstone.com> wrote:
+>>
+>> On 09/10/2025 12.56 pm, Filipe Manana wrote:
+>>> On Thu, Oct 9, 2025 at 12:29 PM Mark Harmstone <mark@harmstone.com> wrote:
+>>>>
+>>>> Release block_group->lock before calling btrfs_link_bg_list() in
+>>>> btrfs_delete_unused_bgs(), as this was causing lockdep issues.
+>>>
+>>> I believe this was asked before:
+>>>
+>>> What issues?
+>>> Do we have for example any other place where we have a different
+>>> locking order and can cause a deadlock?
+>>>
+>>> Can you please paste the lockdep splat?
+>>
+>> I didn't take a copy the first time, and I've not been able to replicate it
+>> since.
+>>
+>> But you can see the issue in patch 4, "btrfs: remove remapped block groups
+>> from the free-space tree". In btrfs_discard_punt_unused_bgs_list() we acquire
+>> unused_bgs_lock to loop through the unused_bgs list, then take the individual
+>> BG lock so we can check its flags.
+> 
+> So then the problem is caused by patch 4, a potential ABBA deadlock.
+> 
+> In that case this change should be squashed into that patch or at
+> least come before and say it's preparation work to avoid a lockdep
+> splat and potential deadlock, without the Fixes tag since, as far as I
+> can see, we currently don't have any code where we take the locks in a
+> different order.
 
-So then the problem is caused by patch 4, a potential ABBA deadlock.
+That's fine. If there's a version 4 of the patchset I'll resend it like that,
+otherwise I'll squash patch 9 into patch 4 when I push it.
+>> In btrfs_delete_unused_bgs() we're acquiring the unused_bgs lock through
+>> btrfs_link_bg_list(), while still unnecessarily holding the BG lock.
+>>
+>> The reason it's in this patchset is that a minor existing bug (holding a
+>> spinlock longer than we strictly need to) becomes a potential deadlock because
+>> of patch 4.
+> 
+> I don't think we can call that an existing bug...
+> If before patch 4 of this patchset it didn't cause any problems as
+> mentioned before.
+> 
+>>
+>>>
+>>>>
+>>>> This lock isn't held in any other place that we call btrfs_link_bg_list(), as
+>>>> the block group lists are manipulated while holding fs_info->unused_bgs_lock.
+>>>>
+>>>> Signed-off-by: Mark Harmstone <mark@harmstone.com>
+>>>> Fixes: 0497dfba98c0 ("btrfs: codify pattern for adding block_group to bg_list")
+>>>
+>>> Also as told before, this doesn't seem related to the rest of the
+>>> patchset (the new remap tree feature).
+>>> So instead of dragging this along in every new version of the
+>>> patchset, can you please make it a standalone patch and remove it from
+>>> future versions of the patchset?
+>>>
+>>> Thanks.
+>>>
+>>>> ---
+>>>>    fs/btrfs/block-group.c | 3 ++-
+>>>>    1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>>>> index d3433a5b169f..a3c984f905fc 100644
+>>>> --- a/fs/btrfs/block-group.c
+>>>> +++ b/fs/btrfs/block-group.c
+>>>> @@ -1620,6 +1620,8 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+>>>>                   if ((space_info->total_bytes - block_group->length < used &&
+>>>>                        block_group->zone_unusable < block_group->length) ||
+>>>>                       has_unwritten_metadata(block_group)) {
+>>>> +                       spin_unlock(&block_group->lock);
+>>>> +
+>>>>                           /*
+>>>>                            * Add a reference for the list, compensate for the ref
+>>>>                            * drop under the "next" label for the
+>>>> @@ -1628,7 +1630,6 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+>>>>                           btrfs_link_bg_list(block_group, &retry_list);
+>>>>
+>>>>                           trace_btrfs_skip_unused_block_group(block_group);
+>>>> -                       spin_unlock(&block_group->lock);
+>>>>                           spin_unlock(&space_info->lock);
+>>>>                           up_write(&space_info->groups_sem);
+>>>>                           goto next;
+>>>> --
+>>>> 2.49.1
+>>>>
+>>>>
+>>
 
-In that case this change should be squashed into that patch or at
-least come before and say it's preparation work to avoid a lockdep
-splat and potential deadlock, without the Fixes tag since, as far as I
-can see, we currently don't have any code where we take the locks in a
-different order.
-
->
-> In btrfs_delete_unused_bgs() we're acquiring the unused_bgs lock through
-> btrfs_link_bg_list(), while still unnecessarily holding the BG lock.
->
-> The reason it's in this patchset is that a minor existing bug (holding a
-> spinlock longer than we strictly need to) becomes a potential deadlock be=
-cause
-> of patch 4.
-
-I don't think we can call that an existing bug...
-If before patch 4 of this patchset it didn't cause any problems as
-mentioned before.
-
->
-> >
-> >>
-> >> This lock isn't held in any other place that we call btrfs_link_bg_lis=
-t(), as
-> >> the block group lists are manipulated while holding fs_info->unused_bg=
-s_lock.
-> >>
-> >> Signed-off-by: Mark Harmstone <mark@harmstone.com>
-> >> Fixes: 0497dfba98c0 ("btrfs: codify pattern for adding block_group to =
-bg_list")
-> >
-> > Also as told before, this doesn't seem related to the rest of the
-> > patchset (the new remap tree feature).
-> > So instead of dragging this along in every new version of the
-> > patchset, can you please make it a standalone patch and remove it from
-> > future versions of the patchset?
-> >
-> > Thanks.
-> >
-> >> ---
-> >>   fs/btrfs/block-group.c | 3 ++-
-> >>   1 file changed, 2 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> >> index d3433a5b169f..a3c984f905fc 100644
-> >> --- a/fs/btrfs/block-group.c
-> >> +++ b/fs/btrfs/block-group.c
-> >> @@ -1620,6 +1620,8 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_inf=
-o *fs_info)
-> >>                  if ((space_info->total_bytes - block_group->length < =
-used &&
-> >>                       block_group->zone_unusable < block_group->length=
-) ||
-> >>                      has_unwritten_metadata(block_group)) {
-> >> +                       spin_unlock(&block_group->lock);
-> >> +
-> >>                          /*
-> >>                           * Add a reference for the list, compensate f=
-or the ref
-> >>                           * drop under the "next" label for the
-> >> @@ -1628,7 +1630,6 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_inf=
-o *fs_info)
-> >>                          btrfs_link_bg_list(block_group, &retry_list);
-> >>
-> >>                          trace_btrfs_skip_unused_block_group(block_gro=
-up);
-> >> -                       spin_unlock(&block_group->lock);
-> >>                          spin_unlock(&space_info->lock);
-> >>                          up_write(&space_info->groups_sem);
-> >>                          goto next;
-> >> --
-> >> 2.49.1
-> >>
-> >>
->
 
