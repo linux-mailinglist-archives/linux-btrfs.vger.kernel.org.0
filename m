@@ -1,281 +1,88 @@
-Return-Path: <linux-btrfs+bounces-17605-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17606-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA982BCBAFB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Oct 2025 07:01:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F7C6BCBB5F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Oct 2025 07:25:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B96B24E86B6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Oct 2025 05:01:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67FE9189F8AD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Oct 2025 05:25:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE8B273D66;
-	Fri, 10 Oct 2025 05:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAFC238C3A;
+	Fri, 10 Oct 2025 05:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lerYcgHg";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lerYcgHg"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="G0aTLxsN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCFEA2727FC
-	for <linux-btrfs@vger.kernel.org>; Fri, 10 Oct 2025 05:00:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6021E9B3D
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Oct 2025 05:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760072440; cv=none; b=WQGmXv5JmCT8bDgyVvHmCQgCy6LZEMF4g0UTW7D5z1ihuruahBFqwHvukH7oTTiiBJ/cuJt/hfSBBoLgQwwx0h5XpoTYMA/37TERCLE2tAUkgPPNLML5N32ZQmQmmyJ1ZY1u1zykx2tdKrFkDRjz/kVfjMUQ2dp4tXA9vewUxeQ=
+	t=1760073917; cv=none; b=rIcswAcdP6CzmYoF/18BfcuOWHfUlQeFN+4+FJ+OWEOeV8SoSQuzSTnPQ0qJAeEjUq22eghh8nkA/xwnhl+0sh85FR8bKZqCpxEE5swX4/9exK1fyS+zPnQNjbAoNI2volSiM/YXWKdx0tzscVj55XzrDA5LZK4xsN359Z1MgGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760072440; c=relaxed/simple;
-	bh=DfvvgOQ+7DWUoV+k+qOyX74faq5PvRHFFEoCJH3dPsY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=f4P0x8jSsPS/JkVmbqwLtkb9xHrUoa3oVFKD7tUC3Da7x2Jh52gkEssI6dTobaX9eYtrB9rVe6r2cqED8/iXpaGiYEcU8IoSq7d3N9Km8zkZ0qiUQYaxSEFn0aHk0fQ9IckgXy6I7Tcqo4dJFlt4RPWwd28HDzgjqXoU28wSZEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lerYcgHg; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lerYcgHg; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1734821A0F
-	for <linux-btrfs@vger.kernel.org>; Fri, 10 Oct 2025 05:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1760072420; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9H7n5w/Hq9ggzTQgj/JBXUQb3cEvLoIuU4pAg82DBfs=;
-	b=lerYcgHgCC6L1VXrZurn18ROKLNvRH5YlAxNgxV37vLlygHv1+15wE2FIzxFyCYzLXQzmZ
-	IuUmekqZ7umUATLMftKuWKnMX0Tofy90idw19mqrUFaZWhOkxhf7/7FIq1sZj+40Kdd1eR
-	Q6Qj3lgkAw8v4+B53wKCE1JIG5i3XNo=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1760072420; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9H7n5w/Hq9ggzTQgj/JBXUQb3cEvLoIuU4pAg82DBfs=;
-	b=lerYcgHgCC6L1VXrZurn18ROKLNvRH5YlAxNgxV37vLlygHv1+15wE2FIzxFyCYzLXQzmZ
-	IuUmekqZ7umUATLMftKuWKnMX0Tofy90idw19mqrUFaZWhOkxhf7/7FIq1sZj+40Kdd1eR
-	Q6Qj3lgkAw8v4+B53wKCE1JIG5i3XNo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5516F13A40
-	for <linux-btrfs@vger.kernel.org>; Fri, 10 Oct 2025 05:00:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id YN5bBuOS6GgCcQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 10 Oct 2025 05:00:19 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v6 5/5] btrfs: implement remove_bdev and shutdown super operation callbacks
-Date: Fri, 10 Oct 2025 15:29:47 +1030
-Message-ID: <c7064c1648c8cbb452dc94b3c44862997c905835.1760069261.git.wqu@suse.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <cover.1760069261.git.wqu@suse.com>
-References: <cover.1760069261.git.wqu@suse.com>
+	s=arc-20240116; t=1760073917; c=relaxed/simple;
+	bh=pyHRQjnOCh58LYLkARziq43YuapFO7Nx5OZ3AymDn78=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B/BFb2I5OtVYPggGrhOrSIxqbINJ/q3sm4uw8nuvYeORLP0IGmueupJjtCxgfDD7l7axHDnOoUoqNhTjwZpSuqJFCpQJJL/FYniDk8RfVLCCwAVt3/h7Cbu8hbwJV/YyHRyHNclFMCqG5fA80i8KtrnzzYovBihdPlZgtPWjNHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=G0aTLxsN; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=+b6adjzBlQ4buMu6IkbFD3dPd/KvXh0u9OF7kGDSBbE=; b=G0aTLxsNv1AlxjXzODranoe5+3
+	+MFuqmHcNkypP/LWegqkb/fvMrynLrOstnDI8EEbbaebZayFPVBO6o8rzaARDGFwxMFg9Y0zT+k9J
+	2euq3j5yvLscDbPjAVk+VGOgrR5g5P7lXlWjSnyRtI3q1myaFwXgvnEmqW6uZU3S2hiZGTXUICl6s
+	bqeyIZwPek5tg5ZRkVGd24I3lBQsswWTDGE4zpzeFisTTOnGWmqeyoOK4UeH9o8qRyYPx9NnBBl4+
+	LdDM7qRhi4cvIqhGHsdGq+30Rn02RlVgmqcuZMjHuKpAoB1OGGiRVCReX3XXeP9bWL8LSZEuJc/xv
+	WM8u79Lw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1v75cw-00000007hoL-3WqD;
+	Fri, 10 Oct 2025 05:25:14 +0000
+Date: Thu, 9 Oct 2025 22:25:14 -0700
+From: "hch@infradead.org" <hch@infradead.org>
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc: "hch@infradead.org" <hch@infradead.org>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: zbd/009 (btrfs on zone gaps) fail on current Linus tree
+Message-ID: <aOiYuoecduyQbxwl@infradead.org>
+References: <aOSxbkdrEFMSMn5O@infradead.org>
+ <e0640c83-e600-410e-bbcc-4885852389c2@wdc.com>
+ <aOX-g97die1kbVY7@infradead.org>
+ <c5b15471-5a8a-4e0b-a7d5-ad682785b581@wdc.com>
+ <a2c698cf-5735-4ef4-859b-057fece29c9d@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_NONE(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a2c698cf-5735-4ef4-859b-057fece29c9d@wdc.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-For the ->remove_bdev() callback, btrfs will:
+On Wed, Oct 08, 2025 at 02:09:00PM +0000, Johannes Thumshirn wrote:
+> On 10/8/25 8:07 AM, Johannes Thumshirn wrote:
+> > On 10/8/25 8:02 AM, hch@infradead.org wrote:
+> >> On Tue, Oct 07, 2025 at 11:16:08AM +0000, Johannes Thumshirn wrote:
+> >>> hmm how reproducible is it on your side? I cannot reproduce it (yet)
+> >> 100% over about a dozen runs, a few of those including unrelated
+> >> patches.
+> >>
+> >> My kernel .config and qemu command line are attached.
+> >>
+> > OK I'll give it a shot. For my config + qemu it survived 250 runs of
+> > zbd/009 yesterday without a hang :(
+> >
+> >
+> Nope, even with your kconfig no success on recreating the bug.
 
-- Mark the target device as missing
-
-- Go degraded if the fs can afford it
-
-- Return error other wise
-  Thus falls back to the shutdown callback
-
-For the ->shutdown callback, btrfs will:
-
-- Set the SHUTDOWN flag
-  Which will reject all new incoming operations, and make all writeback
-  to fail.
-
-  The behavior is the same as the NOLOGFLUSH behavior.
-
-To support the lookup from bdev to a btrfs_device,
-btrfs_dev_lookup_args is enhanced to have a new @devt member.
-If set, we should be able to use that @devt member to uniquely locating a
-btrfs device.
-
-I know the shutdown can be a little overkilled, if one has a RAID1
-metadata and RAID0 data, in that case one can still read data with 50%
-chance to got some good data.
-
-But a filesystem returning -EIO for half of the time is not really
-considered usable.
-Further it can also be as bad as the only device went missing for a single
-device btrfs.
-
-So here we go safe other than sorry when handling missing device.
-
-And the remove_bdev callback will be hidden behind experimental features
-for now, the reasons are:
-
-- There are not enough btrfs specific bdev removal test cases
-  The existing test cases are all removing the only device, thus only
-  exercises the ->shutdown() behavior.
-
-- Not yet determined what's the expected behavior
-  Although the current auto-degrade behavior is no worse than the old
-  behavior, it may not always be what the end users want.
-
-  Before there is a concrete interface, better hide the new feature
-  from end users.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/super.c   | 66 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/volumes.c |  2 ++
- fs/btrfs/volumes.h |  5 ++++
- 3 files changed, 73 insertions(+)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index aadc02374b2a..b02ab17077af 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2424,6 +2424,68 @@ static long btrfs_free_cached_objects(struct super_block *sb, struct shrink_cont
- 	return 0;
- }
- 
-+#ifdef CONFIG_BTRFS_EXPERIMENTAL
-+static int btrfs_remove_bdev(struct super_block *sb, struct block_device *bdev)
-+{
-+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
-+	struct btrfs_device *device;
-+	struct btrfs_dev_lookup_args lookup_args = { .devt = bdev->bd_dev };
-+	bool can_rw;
-+
-+	mutex_lock(&fs_info->fs_devices->device_list_mutex);
-+	device = btrfs_find_device(fs_info->fs_devices, &lookup_args);
-+	if (!device) {
-+		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
-+		/* Device not found, should not affect the running fs, just give a warning. */
-+		btrfs_warn(fs_info, "unable to find btrfs device for block device '%pg'",
-+			   bdev);
-+		return 0;
-+	}
-+	/*
-+	 * The to-be-removed device is already missing?
-+	 *
-+	 * That's weird but no special handling needed and can exit right now.
-+	 */
-+	if (unlikely(test_and_set_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))) {
-+		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
-+		btrfs_warn(fs_info, "btrfs device id %llu is already missing",
-+			   device->devid);
-+		return 0;
-+	}
-+
-+	device->fs_devices->missing_devices++;
-+	if (test_and_clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
-+		list_del_init(&device->dev_alloc_list);
-+		WARN_ON(device->fs_devices->rw_devices < 1);
-+		device->fs_devices->rw_devices--;
-+	}
-+	can_rw = btrfs_check_rw_degradable(fs_info, device);
-+	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
-+	/*
-+	 * Now device is considered missing, btrfs_device_name() won't give a
-+	 * meaningful result anymore, so only output the devid.
-+	 */
-+	if (!can_rw) {
-+		btrfs_crit(fs_info,
-+		"btrfs device id %llu has gone missing, can not maintain read-write",
-+			   device->devid);
-+		return -EIO;
-+	}
-+	btrfs_warn(fs_info,
-+		   "btrfs device id %llu has gone missing, continue as degraded",
-+		   device->devid);
-+	btrfs_set_opt(fs_info->mount_opt, DEGRADED);
-+	return 0;
-+}
-+
-+static void btrfs_shutdown(struct super_block *sb)
-+{
-+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
-+
-+	btrfs_force_shutdown(fs_info);
-+}
-+#endif
-+
- static const struct super_operations btrfs_super_ops = {
- 	.drop_inode	= btrfs_drop_inode,
- 	.evict_inode	= btrfs_evict_inode,
-@@ -2439,6 +2501,10 @@ static const struct super_operations btrfs_super_ops = {
- 	.unfreeze_fs	= btrfs_unfreeze,
- 	.nr_cached_objects = btrfs_nr_cached_objects,
- 	.free_cached_objects = btrfs_free_cached_objects,
-+#ifdef CONFIG_BTRFS_EXPERIMENTAL
-+	.remove_bdev	= btrfs_remove_bdev,
-+	.shutdown	= btrfs_shutdown,
-+#endif
- };
- 
- static const struct file_operations btrfs_ctl_fops = {
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 65b02a93db31..928fc6a061b6 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6802,6 +6802,8 @@ static bool dev_args_match_fs_devices(const struct btrfs_dev_lookup_args *args,
- static bool dev_args_match_device(const struct btrfs_dev_lookup_args *args,
- 				  const struct btrfs_device *device)
- {
-+	if (args->devt)
-+		return device->devt == args->devt;
- 	if (args->missing) {
- 		if (test_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state) &&
- 		    !device->bdev)
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 2cbf8080eade..adbd9e6c09ff 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -662,6 +662,11 @@ struct btrfs_dev_lookup_args {
- 	u64 devid;
- 	u8 *uuid;
- 	u8 *fsid;
-+	/*
-+	 * If devt is specified, all other members will be ignored as it is
-+	 * enough to uniquely locate a device.
-+	 */
-+	dev_t devt;
- 	bool missing;
- };
- 
--- 
-2.50.1
+Weird.  I'll see if I can find some time to bisect it.
 
 
