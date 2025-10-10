@@ -1,131 +1,213 @@
-Return-Path: <linux-btrfs+bounces-17617-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17618-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5678BCCC76
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Oct 2025 13:29:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 293E2BCD535
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Oct 2025 15:47:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8FB934E3AE3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Oct 2025 11:29:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FC1819E02DE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Oct 2025 13:48:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D2E2EE608;
-	Fri, 10 Oct 2025 11:29:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4242F49ED;
+	Fri, 10 Oct 2025 13:47:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B9WPTwy6"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qyjV93bF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FXIPxXvm";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qyjV93bF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FXIPxXvm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422A81FA178;
-	Fri, 10 Oct 2025 11:29:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81AD4748F
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Oct 2025 13:47:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760095772; cv=none; b=tC1/3FIX3vE4UwTHg3nmxb0f0BdmX10yCurWcZXGULTODDIY7PkYhd31LraniDMsnlrDqi72cJ10XrwFmPKvaA48lkOVRGWtNVGNGP0ZEg0j/+2NE7xBMHjIfTTbPYM2cWUK40N+evNHxwqQqaEQACawTmvFp+MrWpc++aDlCGU=
+	t=1760104055; cv=none; b=d5qekQeLN0m1l/jFerxQMbERc1UAOn4OEH6TbcWaB6rMpGGZWhHNacjN6c2meoen8GIq3gvYVN7QwYEgzZ1KdAQN2F/eImIEjVra4Kg3HKmoPcvJH2IyQM9S4arBRbLoUV314e/SDCx/N5yvOqnU+FIVZYKHW/9inDJAc5bvGN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760095772; c=relaxed/simple;
-	bh=9iUazEeH838HwxGqjDtvMsozzJM3gRqcf39FT96xPtw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kyAn+tW/sWqYgD/ODCtJAcFlZV7H8Yf9OHzJDO33PxmTn1EFkrUooNUnepVfjcKPkR7ttBDMty6pQZjon0WwgjrY1EZwxfikyfJLjAVF3p7nLLVYqzxApOj2EExUAg8IrsDFGs2wfVG5UVpvQz7neK1U7mWVn6kIpTGVq61530M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B9WPTwy6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5952C4CEF1;
-	Fri, 10 Oct 2025 11:29:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760095771;
-	bh=9iUazEeH838HwxGqjDtvMsozzJM3gRqcf39FT96xPtw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=B9WPTwy67jViEmKdEuSwSQCzfx+l8BsEyCm7MScArrgwoeeocq2SMofxYVHaijgoq
-	 2dVV9+FwJPTKXIJBMWchgq2D082vw010EwqMIT8pbWOHm1G62iHfNNrXr12Kn5yJsB
-	 oNHqYIi4sN3cGH8/qp+UBTKD37Jww6Vcj5Q94c8HmCNk93H+UanI6sPcmcfLJ0/5P9
-	 Yoq3yO2LUglqvbLVeAyhekz55hW1t3pKTf5obc2cCp7BHIPrCdQoiZ2RZpw60VtKcJ
-	 Pq8fqO6GYchCSUliwcOMKjfeV+8WRpzBTYobYK1VENq4oHk+MF8LqGhVxQXtbxl8JS
-	 vHxpQA98y9ByA==
-From: Christian Brauner <brauner@kernel.org>
+	s=arc-20240116; t=1760104055; c=relaxed/simple;
+	bh=cL1HPOXOoRQqAW+trFcBYQam/s1EVUwH+wJ87rh29Ro=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sBFuktATV7hsozJj0nkpi9GhOp+/r017bUQvjNIYAeYbBXpoY4MyHbAix9VyrouncNXJGGNioNhZVaPIC2u+tLBQRvSbDGPrC3laOTjq37xxJGRoLHlQxKkc+zpGagBub1+yWffLlVXgJjXREHRCkcgcIng1NFSnp6Wt1L5WkOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qyjV93bF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FXIPxXvm; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qyjV93bF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FXIPxXvm; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B1CA421F2A;
+	Fri, 10 Oct 2025 13:47:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1760104051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sufIZEkjBSCUUgqxs7dtAgeGm55696GDPH5Hgw3fgYQ=;
+	b=qyjV93bFgQlwTMgKr4frsx/E5m1C2OSypShgH0rutvL7HIHgQFW3OubC0Lzr+N7EbpVufZ
+	uf8qu3WuMkB7Iq1lcLfEV9dB6SkvrtXDtWA4aPum7pnPDOInwdUDqwGnbD4KnQgKZ7RpFQ
+	vZ1Nzn2NOCm/WzpQSvpKBw7eiik/cN4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1760104051;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sufIZEkjBSCUUgqxs7dtAgeGm55696GDPH5Hgw3fgYQ=;
+	b=FXIPxXvmgwWYErOpREz6leTDKWtSeZ42OMsEq1KUQAir39bv0T10EQFd2QegDpW/3hFVUG
+	d0ctEbF/QuROzuBA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=qyjV93bF;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FXIPxXvm
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1760104051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sufIZEkjBSCUUgqxs7dtAgeGm55696GDPH5Hgw3fgYQ=;
+	b=qyjV93bFgQlwTMgKr4frsx/E5m1C2OSypShgH0rutvL7HIHgQFW3OubC0Lzr+N7EbpVufZ
+	uf8qu3WuMkB7Iq1lcLfEV9dB6SkvrtXDtWA4aPum7pnPDOInwdUDqwGnbD4KnQgKZ7RpFQ
+	vZ1Nzn2NOCm/WzpQSvpKBw7eiik/cN4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1760104051;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sufIZEkjBSCUUgqxs7dtAgeGm55696GDPH5Hgw3fgYQ=;
+	b=FXIPxXvmgwWYErOpREz6leTDKWtSeZ42OMsEq1KUQAir39bv0T10EQFd2QegDpW/3hFVUG
+	d0ctEbF/QuROzuBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E9DE1375D;
+	Fri, 10 Oct 2025 13:47:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id K4nJInMO6WivbgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 10 Oct 2025 13:47:31 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id D5EADA0A58; Fri, 10 Oct 2025 15:47:30 +0200 (CEST)
+Date: Fri, 10 Oct 2025 15:47:30 +0200
+From: Jan Kara <jack@suse.cz>
 To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	viro@zeniv.linux.org.uk,
-	jack@suse.cz,
-	linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	josef@toxicpanda.com,
-	kernel-team@fb.com,
-	amir73il@gmail.com,
-	linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
+Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, josef@toxicpanda.com, 
+	kernel-team@fb.com, amir73il@gmail.com, linux-btrfs@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
 	linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v7 00/14] hide ->i_state behind accessors
-Date: Fri, 10 Oct 2025 13:29:24 +0200
-Message-ID: <20251010-kneifen-klarheit-0c92d1d8ab01@brauner>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251009075929.1203950-1-mjguzik@gmail.com>
+Subject: Re: [PATCH v7 01/14] fs: move wait_on_inode() from writeback.h to
+ fs.h
+Message-ID: <ftmhmoslzb6h3z2w4fuumvqcwmis5xeqep5nlgbhdklrcwzok4@re6ar7llo7ol>
 References: <20251009075929.1203950-1-mjguzik@gmail.com>
+ <20251009075929.1203950-2-mjguzik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2704; i=brauner@kernel.org; h=from:subject:message-id; bh=9iUazEeH838HwxGqjDtvMsozzJM3gRqcf39FT96xPtw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS8eCcadDug1EQ+6nI1x5PVTeI7ViasmFXF3cPVs+vf9 pdTJ6yv7yhlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjIwiyG/4FPor5zMhjKqtbZ ZUi9+3c/jmlt3NK9/Hvz30S/FzRW7mFkeHH6xhPG3+8v7ZPbdOD6kd+3v/2K0W6Nk/5h3flMMHY PCycA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251009075929.1203950-2-mjguzik@gmail.com>
+X-Rspamd-Queue-Id: B1CA421F2A
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	URIBL_BLOCKED(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim];
+	FREEMAIL_TO(0.00)[gmail.com];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,suse.cz,vger.kernel.org,toxicpanda.com,fb.com,gmail.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim]
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
+X-Spam-Level: 
 
-On Thu, 09 Oct 2025 09:59:14 +0200, Mateusz Guzik wrote:
-> Commit message from the patch adding helpers quoted verbatim with rationable + API:
+On Thu 09-10-25 09:59:15, Mateusz Guzik wrote:
+> The only consumer outside of fs/inode.c is gfs2 and it already includes
+> fs.h in the relevant file.
 > 
-> [quote]
-> Open-coded accesses prevent asserting they are done correctly. One
-> obvious aspect is locking, but significantly more can checked. For
-> example it can be detected when the code is clearing flags which are
-> already missing, or is setting flags when it is illegal (e.g., I_FREEING
-> when ->i_count > 0).
+> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+
+Fair. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  include/linux/fs.h        | 10 ++++++++++
+>  include/linux/writeback.h | 11 -----------
+>  2 files changed, 10 insertions(+), 11 deletions(-)
 > 
-> [...]
-
-Applied to the vfs-6.19.inode branch of the vfs/vfs.git tree.
-Patches in the vfs-6.19.inode branch should appear in linux-next soon.
-
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-6.19.inode
-
-[01/14] fs: move wait_on_inode() from writeback.h to fs.h
-        https://git.kernel.org/vfs/vfs/c/6605bf7d9536
-[02/14] fs: spell out fenced ->i_state accesses with explicit smp_wmb/smp_rmb
-        https://git.kernel.org/vfs/vfs/c/1fdd36da49d5
-[03/14] fs: provide accessors for ->i_state
-        https://git.kernel.org/vfs/vfs/c/1f4e908f28da
-[04/14] Coccinelle-based conversion to use ->i_state accessors
-        https://git.kernel.org/vfs/vfs/c/91d75e00d68f
-[05/14] Manual conversion to use ->i_state accessors of all places not covered by coccinelle
-        https://git.kernel.org/vfs/vfs/c/5b953be62d20
-[06/14] btrfs: use the new ->i_state accessors
-        https://git.kernel.org/vfs/vfs/c/b77405952757
-[07/14] ceph: use the new ->i_state accessors
-        https://git.kernel.org/vfs/vfs/c/9e121446182b
-[08/14] smb: use the new ->i_state accessors
-        https://git.kernel.org/vfs/vfs/c/6f44aedc8692
-[09/14] f2fs: use the new ->i_state accessors
-        https://git.kernel.org/vfs/vfs/c/60d14a5b26e3
-[10/14] gfs2: use the new ->i_state accessors
-        https://git.kernel.org/vfs/vfs/c/8b5a2dbef579
-[11/14] overlayfs: use the new ->i_state accessors
-        https://git.kernel.org/vfs/vfs/c/46ee05af3842
-[12/14] nilfs2: use the new ->i_state accessors
-        https://git.kernel.org/vfs/vfs/c/ff6d2b3d3473
-[13/14] xfs: use the new ->i_state accessors
-        https://git.kernel.org/vfs/vfs/c/fdbb1cb57675
-[14/14] fs: make plain ->i_state access fail to compile
-        https://git.kernel.org/vfs/vfs/c/708bcf48adda
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index ac62b9d10b00..b35014ba681b 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -949,6 +949,16 @@ static inline void inode_fake_hash(struct inode *inode)
+>  	hlist_add_fake(&inode->i_hash);
+>  }
+>  
+> +static inline void wait_on_inode(struct inode *inode)
+> +{
+> +	wait_var_event(inode_state_wait_address(inode, __I_NEW),
+> +		       !(READ_ONCE(inode->i_state) & I_NEW));
+> +	/*
+> +	 * Pairs with routines clearing I_NEW.
+> +	 */
+> +	smp_rmb();
+> +}
+> +
+>  /*
+>   * inode->i_rwsem nesting subclasses for the lock validator:
+>   *
+> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
+> index e1e1231a6830..06195c2a535b 100644
+> --- a/include/linux/writeback.h
+> +++ b/include/linux/writeback.h
+> @@ -189,17 +189,6 @@ void wakeup_flusher_threads_bdi(struct backing_dev_info *bdi,
+>  void inode_wait_for_writeback(struct inode *inode);
+>  void inode_io_list_del(struct inode *inode);
+>  
+> -/* writeback.h requires fs.h; it, too, is not included from here. */
+> -static inline void wait_on_inode(struct inode *inode)
+> -{
+> -	wait_var_event(inode_state_wait_address(inode, __I_NEW),
+> -		       !(READ_ONCE(inode->i_state) & I_NEW));
+> -	/*
+> -	 * Pairs with routines clearing I_NEW.
+> -	 */
+> -	smp_rmb();
+> -}
+> -
+>  #ifdef CONFIG_CGROUP_WRITEBACK
+>  
+>  #include <linux/cgroup.h>
+> -- 
+> 2.34.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
