@@ -1,88 +1,86 @@
-Return-Path: <linux-btrfs+bounces-17639-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17640-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4026BBD0075
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Oct 2025 10:24:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE666BD0091
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Oct 2025 10:53:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3EB054E20B2
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Oct 2025 08:24:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5E8A189402B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Oct 2025 08:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62DB258CD0;
-	Sun, 12 Oct 2025 08:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B14258EFF;
+	Sun, 12 Oct 2025 08:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OmPXt/fA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U9sCTBmD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77DFD23B62C
-	for <linux-btrfs@vger.kernel.org>; Sun, 12 Oct 2025 08:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44AD323AE93
+	for <linux-btrfs@vger.kernel.org>; Sun, 12 Oct 2025 08:53:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760257462; cv=none; b=VyuAwIt/RAIp4xY7jSJ3Nk9TSh8aQXCgGlNsuiUK1XvxHvG1Q79XrhBghSm+NbUSlq2OyUQLPHwmDD2DVqLhF3/UDnd7wBiAckiME2A8rPQz7K8ZnJBCmi36DpFp7f/GaNhfWCH6izWPzjzciCy4eCbyH2vt91b1E9g5xs7IKuE=
+	t=1760259198; cv=none; b=Ia+xPvKQUDfYDC+KwPmwJSYsPwpTGqtg8l0+NrnkQl6q6lvaFLt7R0r79umSMMcN0nNSMFS/9Xf3XSmaoaf8zdWFoE1FAwoN+kuOfMgk8izQn7xintq82VX+xQbdv1hILE70Vi7StTu0Gp95W+q+D0UnAjSseyiMAFdD2nloyFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760257462; c=relaxed/simple;
-	bh=g0kdLykgyrZedQKVHPh89payJQeJMwZhqaJ2Wn/yj6c=;
+	s=arc-20240116; t=1760259198; c=relaxed/simple;
+	bh=tJcqxXmf2ZRGBs/ueoYm+qxucmWxsaMptOeZizXlmFY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OC1DVDf4u7NFSyAGUY5s8Br3IweQwGNlfEj+MkO7Rgc07uWJ6bs+FjDjyM7cyX2VuuCiRepRR2FSWzZT9pLc9CyurfIaBkoHj1cPDrUKZJP8l5w0xliJuaPuReXaC2774BTI5/DZPNHoOG1hEHYqlJkR6M53QVjL0Tm4VsUY7VQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OmPXt/fA; arc=none smtp.client-ip=209.85.221.42
+	 MIME-Version; b=OQc+u/PmYTkUSQwOp+wyIrRMlAfEhvdJIaiEsP1PFy+JM46maLmQ4vJWyB4wGvNztTcgaYzAK0xRxp9N0A65yHoiKyNKZGShLaxAiPGEl9oI5qBoAUX8Uq5Tu3fKgkCRMwdaIXtZfyrFoLMZ17e4cmVcPbsIitMLiqc1bV1dcEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U9sCTBmD; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3f99ac9acc4so2726968f8f.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 12 Oct 2025 01:24:20 -0700 (PDT)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-637e9f9f9fbso6397675a12.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 12 Oct 2025 01:53:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760257459; x=1760862259; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760259194; x=1760863994; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B0z2l7KfDn6RJq1Lvfb8g4qGuEgl8C2qgZKEkkLs+v8=;
-        b=OmPXt/fAe6UG8+gL4zIiI1bM6HxTTxC4zBJoJjV/1ga698o1PHwE01pS19Mtlb5PjF
-         0J0xAivqKcCKY9sEjC1fH8DR1B5q57ZphD5TlOVdKW2KyRbZzDfrRtLLoYwX7K9bo+BB
-         a4zFIOhguQfj20+0WM5QI163FyUDws9t17jsjh1VA0Np8cMu2qTEMcbsWjbpVEKIiTWK
-         Lm+4UHLo5UGKTgGVwiET6inxjtYF0Z1WxNDjP6Xmd3KYNfxYHW6nqAmb32iHGPHhAbWi
-         7SOThTG9jYU7wetML4akPp8ROJ3sfjetRH1+BSltNHI+66fb3zxfmxtCcsSZpwusqB/v
-         DtQw==
+        bh=4zH9VXZNUll2F6GhihCpF9/maubEdscpHX7RWYO25Us=;
+        b=U9sCTBmDtR1qi8kys2Si287vE+kb3od+9/ONn/fjCdpfXdFMIcxZd7Vb0J89FSXNTR
+         PXe9qRwmJ4dYAJuvgnBVxPx09cWynq4ozWp9OMhvAYgh2xFxzf9+y8s5vtRP3JP0vf80
+         MGjxOrLRHQwPzqmWXTf8xUnwgeA89Lglg+eVVms1pN0BZk717O5QFvYBjaZgiFZ/Fq8h
+         mzrU9lGdrzTHZHM1wo8P8QE1IBTZjW5n/ZLN5WP1iDMhAO1nzsDm02DWsy09lt0kZNmN
+         2ljglWyAlPYMNUte5+BG48xgGzvcrWBR5HXx75IGdk1hqIQxtIA/tOnUBQUMheZ/ss8t
+         Rovw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760257459; x=1760862259;
+        d=1e100.net; s=20230601; t=1760259194; x=1760863994;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B0z2l7KfDn6RJq1Lvfb8g4qGuEgl8C2qgZKEkkLs+v8=;
-        b=Zmkdkgg0WSlA4jmIpSqFVIjET8neIc0bfmPDHSdHs9YtsnxUpNyB4nsQBL1UoG0PiH
-         NJXIRITOa8apjdsNKgALQsWnO4x53Heg/nrXeDWRZICg5lAsfOFOyA3wVQXcTrvhT6IW
-         z3MmPOpKUk++RIMSgtft7ZlKr7Thp4u1HpE8Nq7EI7h6QcJE/dLoCCxst5MED6TrB7Q9
-         fVMBKlK8PowSahcEuwQu/2Sdt3XKPwcfQXqFTMnLBDUwnxdZcGGisKQIwASb0Lr4Z0Mz
-         N6v3xn4jyByOCsnH3drAxr+cDTtfIW1+DSVO4RaHz99w9wbCr+TlausiQWAJ3rpEcds0
-         XIYg==
-X-Gm-Message-State: AOJu0YzFzFfeVObSqqYGM4mNs0vWV5CBR0Yp7LF14MbJji/p2qV9VxqY
-	5yYIU+y3Is2wzDXFkRLadBhQMy0i+C//RL4sUWbvJonunQG1hkyWIFh6
-X-Gm-Gg: ASbGncuB3kNkqDZT2TPj+e8M44hO4jEpDbDaO4XEby7MvMBXQqVszL2+5q+zoDBDyGN
-	Kb0n7FQCczq/hGZXQxWXqNN9ue9mI9Iq0n2SQOSwfEqtconNPaFZWAJd2lFyyranDFpNoeEt85u
-	DwY1Ps79SvlXpAGZBEIsfe0y6rtH/y7hkkyuc0eqXdPLDlMDxd2mmV/knqM+jY9ACdSfJDqBzRo
-	X+zQl5zNCHWO8l1Pqaz1BLTY2k/Tk3Wj+BvDi6Vde/jmY3/KxMpvm5rcDbR9YFUsWzv71uEa8Ia
-	Y++OmrBmxZTfOy1ovW5LDNCkcCsPbpcDDECdYJ4QL5PJkHITa7dFbC/gNLJXSPOgZyrzV4i2rPU
-	CC9kW/vOxn3urSrmXTBdqWGCcwc6R5jK7a8jga6of/z3oG/vuEyk=
-X-Google-Smtp-Source: AGHT+IGMKTAAKkSYv7hTQ9xsKSm6U/W/OnHIRVB3qiJgLZez14VUJlifIHhUZtKa6PRhU35BZoM5pg==
-X-Received: by 2002:a05:6000:2003:b0:3ee:13ba:e133 with SMTP id ffacd0b85a97d-42666ac466amr10312500f8f.1.1760257458521;
-        Sun, 12 Oct 2025 01:24:18 -0700 (PDT)
-Received: from localhost ([87.241.149.212])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-426ce5833dcsm12142557f8f.19.2025.10.12.01.24.16
+        bh=4zH9VXZNUll2F6GhihCpF9/maubEdscpHX7RWYO25Us=;
+        b=kEMqEeRDl5qtWUE73q6WuevMwO4wU+wU3eufgWtzN0QjF0cYCyXlWv/h4YUouUHegN
+         +tOyHdsedtqnWKlaippE7FGjOJyo661ZSlcsq00UM53O4Qa0GWKegjC143Lq7uxNc0Ea
+         6wG742+55z2b1OO3Um6ooskDHHGbikt3zsd6UJvnHU0U6FAJXy5bddanYmt6Iic0YSa/
+         xkE+9OyNLAMWKPCtA73HN3xJQM+9SPMi/sfefH73lPs3pyQTjxiAbG2ct4peMuI7ONB6
+         op75wzY05CfxE/QyNGhDGaOl/h3aXIbxGwwXwtbnwdYPYY4aMAXFgo10lVxIWiJiqtZk
+         JcVg==
+X-Gm-Message-State: AOJu0Yz3VcRA02XZzekpzOVq60rv9krOlzv2thFAFhDtJFRdD1RU4BJM
+	MToI+B0XRXOcC2uozYp/eDLywQF8colgb/7IFapTCdxqGUmIkRC1gYimV6Kr7Q==
+X-Gm-Gg: ASbGnctxtJHGpU6Q0MjMmQS7C0OvIXmX4wwCcrgqJLu8ibb49RCFSaIapAkipVh+/EG
+	E+m+4f7ahYPeXSbp1CygzFsC9opNWlGcTrtOI+67QXV4gN1uCaXf40JL8sQctaXU+Dsy+cqh0Ej
+	nb+hEUrTyDtGe43wpjkjS49r2N6oEEIxwASRcuE5i/R0MFmiG6d3OSAQhvgS7xij+qFul9q6Gqx
+	HoyfCwScsqeQsLQFlcRJpN71LsirohRAwinBPu44zzItKq6yukbSa/x8dwgTPX7pq1G4HJxtEW6
+	iS6ITYqZOCqA6e9imJvJIBenPmnFl8mLLvca0IQZ6zU6SsY9Z1kERA0g5pohnHOZAxWqPxIBaAo
+	lfJhRuUoz+zyAQGXOj52ExS3vwOmIghExjwPWuvg=
+X-Google-Smtp-Source: AGHT+IHMq+iByIyxl+0KQzrt8cac734lVtH2EfgTQWgHkPcOOWOJ9HU6nCGEWUKdDWiEhs4l3ID8ag==
+X-Received: by 2002:a17:906:c150:b0:b3e:6091:2c7d with SMTP id a640c23a62f3a-b50aa89b304mr1958461066b.27.1760259191386;
+        Sun, 12 Oct 2025 01:53:11 -0700 (PDT)
+Received: from localhost ([87.241.144.20])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b55d931d806sm700656766b.71.2025.10.12.01.53.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Oct 2025 01:24:18 -0700 (PDT)
+        Sun, 12 Oct 2025 01:53:11 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
-To: wqu@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	Chris Murphy <lists@colorremedies.com>,
-	David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH RFC] btrfs: exit scrub and balance early if the fs is being frozen
-Date: Sun, 12 Oct 2025 11:23:55 +0300
-Message-ID: <20251012082355.5226-1-safinaskar@gmail.com>
+To: lists@colorremedies.com
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: 6.17rc5: btrfs scrub, Freezing user space processes failed
+Date: Sun, 12 Oct 2025 11:52:56 +0300
+Message-ID: <20251012085256.8628-1-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <9606fae20bff6c1fbe14dc7b067f3b333c2a955b.1751847905.git.wqu@suse.com>
-References: <9606fae20bff6c1fbe14dc7b067f3b333c2a955b.1751847905.git.wqu@suse.com>
+In-Reply-To: <d93b2a2d-6ad9-4c49-809f-11d769a6f30a@app.fastmail.com>
+References: <d93b2a2d-6ad9-4c49-809f-11d769a6f30a@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -91,33 +89,28 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Qu Wenruo <wqu@suse.com>:
-> There are some reports that btrfs is unable to be frozen if there is a
+"Chris Murphy" <lists@colorremedies.com>:
+> Scrub initiated, walked away,  and when I come back it appears hung with a black screen unresponsive
 
-I tested your patch on real hardware.
+I suspect here is interplay between two issues.
+First is btrfs kernel bug Qu Wenruo is talking about.
+Second is systemd issue, which amplifies this kernel bug.
 
-I applied it to current Linux mainline.
+Systemd bug turns simple "suspend doesn't work, but system continues to
+operate normally" to "reboot is needed".
 
-I have btrfs-raid on two big disks.
+I wrote about this here: https://github.com/systemd/systemd/issues/38337 .
 
-I started "sudo btrfs scrub start -B -d /" and pressed "Suspend" in GUI.
+The bug is fixed in mainline and stable versions of systemd.
 
-If /sys/power/freeze_filesystems is 0 (this is default), then your patch doesn't work.
+So you should just upgrade your systemd. The fix is backported to stable
+systemd versions, so it should come to all stable Linux distros on its own.
+Suspend still will not work if
+scrub is running, but at least your system will be operational after
+failed suspend attempt.
 
-If /sys/power/freeze_filesystems is 1, then the system stops to respond for a minute
-and then suspends. Here is journalctl:
-https://zerobin.net/?e3376d7d056dcb04#LyzGFYeVdWsbZfgC25G4TuSct6QDyZ278gQlZgCfR94= .
-
-As well as I understand from journalctl, systemd tries to freeze userspace
-process "btrfs scrub" and fails. Then systemd times out after a minute,
-and then suspend proceeds.
-
-So, in short, this is not complete solution yet.
-
-Also I tested Sterba's patch, and it doesn't work either:
-https://lore.kernel.org/linux-btrfs/20250720194803.3661-1-safinaskar@zohomail.com/ .
-
-I really want this bug to be fixed. Please, CC me with your future attempts.
+If this still doesn't help, then, please, tell me your full systemd version
+and distro version.
 
 -- 
 Askar Safin
