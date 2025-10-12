@@ -1,132 +1,223 @@
-Return-Path: <linux-btrfs+bounces-17641-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17642-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43DE0BD0CF4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 00:10:41 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B101BD0DB0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 01:52:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85CFE3B123E
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Oct 2025 22:10:35 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4F9024E21D1
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Oct 2025 23:52:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF8A242D6C;
-	Sun, 12 Oct 2025 22:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18BA1269D06;
+	Sun, 12 Oct 2025 23:52:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="WUjEh6yr";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MainVFg9"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="r4RfZ7JP";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="r4RfZ7JP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b8-smtp.messagingengine.com (fout-b8-smtp.messagingengine.com [202.12.124.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE7D7215789
-	for <linux-btrfs@vger.kernel.org>; Sun, 12 Oct 2025 22:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B82322AE5D
+	for <linux-btrfs@vger.kernel.org>; Sun, 12 Oct 2025 23:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760307031; cv=none; b=e0aXmRbiuNdYtXDtAoqAqoR4sb9UzFQkEC3Ekzx/yrYIbn3SMbSiS/Bz8BcTyG2BDrFNnv/Uqs0RPFxgFg017+HzyO0VKFBfa39Mf2gbsPhKY47jMk5F0nFoA/KePY8xQTVB8NaillUvLufFXBC3w6oLS0ic5zuxTtTqb9c+0vo=
+	t=1760313154; cv=none; b=I19y2JLp0/UFlePHda/mZmjvHD7P2riLSMXUr9jVZnE592m6OrYGtX2lq0RNTBp1iAu91x6WFmJNl2SadVRVLHIomrTb9jTNjwe+eyefzcA9QLrbYuGjB1Ll6pqz8eMXTgHBhZVaA4sM2P7qiptrRBNXg9r3nYfxQVIllgvTTuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760307031; c=relaxed/simple;
-	bh=QhRdnxCMZkxCe+iU4EscVuaBWxkQi7wdO1PnE12ja50=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=D8/cCu2QrLH+Gd0iJBlBpMAOdbiq69MaV53Nr8YdCW77BjwEwlT7yF/6F+1b06y+3RvdOluIXlOP6snjj/6H9K2j9jmZZPwU77mYhotCXANeG2CMWld8GrB2OPfUdPMfCZdf2IJldtGOaTCJOVa14EX6U+WhDvdhB+c4KUUGB4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=WUjEh6yr; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MainVFg9; arc=none smtp.client-ip=202.12.124.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfout.stl.internal (Postfix) with ESMTP id DE9CB1D0006F;
-	Sun, 12 Oct 2025 18:10:27 -0400 (EDT)
-Received: from phl-imap-01 ([10.202.2.91])
-  by phl-compute-04.internal (MEProxy); Sun, 12 Oct 2025 18:10:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	colorremedies.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1760307027; x=1760393427; bh=I0L83vHSM3
-	VxthBoZmT5cjXgjBD1R2mwCzdvQafQcys=; b=WUjEh6yrpkEaJLbr+VQPqoBohg
-	a70GLQO7DHwWmD5CbWCmiH7d7mPhCpPkuNTxA2PX+8Yb9JHrfh/Bvw0JO7FPMfqf
-	giEormCbgQYgURCrZMXK1aitUYqCieP99Ohw6+RIISyVZ+1Cld3LT2p1TmcXVuf3
-	HTeAWfFiNNtgbe4azamu+j2/PBQ923VF2r1NbXHGlTNoForbokU4vNuW4xoSGmq6
-	e6LsYQJIf+Jyd74pl69XFS1L5DpvH1gIizieJjB+hYcdHg5fLayjFp/vfQIaJeRr
-	R3IQqwDaVG0ZUI6EldMFzpZmlkA3OXWYlRZAWjNbq32NBNsOZNFn1lByW8Qw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1760307027; x=
-	1760393427; bh=I0L83vHSM3VxthBoZmT5cjXgjBD1R2mwCzdvQafQcys=; b=M
-	ainVFg9Z51MHZcUBm8SOH7Z7Qgrnmrr8EcBZ1EPxMocYATPEgCflMiRdMl5MumPS
-	UGHIPUxMucVjszGji76TCDem5fOIpNBY9lonSeVRt4Q6au1yvQKoLvfZ7fQk3YLF
-	ZJyzMawWtWOHuTog8DRuPifBGa6DTmyULlf3IVvdttE7m83mtrojWV/+98MGkRn0
-	q+I+OYTDfKncqBKHv/H+B2sp/GJSZVXbUZRy53SMduJKVIAMNBM0H7/jVt6A88t8
-	MAMDJGbPFsIwmLrUI8VeDhoFYK9JRy/YA9qifbtOL1W8eQxtF8lf5zsUnCFP/LYO
-	frFKhqvAjKuzNVlIOOu4g==
-X-ME-Sender: <xms:UyfsaKz5XDFa0TSJXYHE71AvYMlQBei54hyXsDnH5hnsc3w968KQbg>
-    <xme:UyfsaBGqBbvSKwXDaWV1OholLIM_wn_B9aoqF7M4A-VGs0WLrKqPDuvijBSK_KkBD
-    u4QJD6wE0xep9UCj2yTbmllfzc2W1WQeC1AUXbMcUgDkxjV10q3N_M>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduudehleefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedfvehhrhhi
-    shcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmqe
-    enucggtffrrghtthgvrhhnpedugedvfffgfefhueetiedvkeetjeehieekieeljefhfefh
-    feelffekleeutefgteenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhishhtshestgholhho
-    rhhrvghmvgguihgvshdrtghomhdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtph
-    houhhtpdhrtghpthhtohepshgrfhhinhgrshhkrghrsehgmhgrihhlrdgtohhmpdhrtghp
-    thhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:UyfsaNcjyd-VQQqXdpycmGl8R6ucNRf-WRXMjgPiYNzHhQLG0UPS6g>
-    <xmx:UyfsaJK15aJp5D8WupT3OlAd0bEQSIRWcUQwGGNlaIoIHhZJs2MgDA>
-    <xmx:UyfsaOH4TaWganR3HEuDX7fnspv6t0MenoyyejWEQ7uL7FptWmWMSA>
-    <xmx:UyfsaDoJ0Zol7CI06FZj2AHgXP-cxhZA7QsDZAriLpc2D39hrMgJHw>
-    <xmx:UyfsaJ1JHTMw_X2Hh78lnR-uCZBbxuJ-psCfubVVjzTWoDOSgbijayQe>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 6EACE18C004E; Sun, 12 Oct 2025 18:10:27 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1760313154; c=relaxed/simple;
+	bh=o6ict1HgOhI/9JpabcXoxXw9lkOrAiC0tCfN+aALgho=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=twyhpuIK5zR+9k2EKxM5AXmj1wZIgkJkPkktLcLBtmEBu1w50PFQ6y27l3kH6XK+xdww/Wy3Oe+yxufYtL7JvjDxuuDd0OwHlxyvlkg7uhzHzlIP55BVoXApzaEd8vNRWqHX5+JCeynESWIV3kshjWJTR4sPQKG5JQRaHqmdXtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=r4RfZ7JP; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=r4RfZ7JP; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 738C81F385
+	for <linux-btrfs@vger.kernel.org>; Sun, 12 Oct 2025 23:52:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1760313144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=oue6WSvPcHJfnzjiW3iDhBuqtDnYGfL3LtxcV6vs3vo=;
+	b=r4RfZ7JPnH+GUPRd5uB5cDpLbE7YRyVRvQz2UMPj2ednchOgd25HSqWxYmshxDEw+AbjWW
+	zOD+Nut+YbfAw6MblZckCy2l8UIyCNVxV4hIv+bKJMgR8Hpd1DNEL8t9yHDSJRuv5EZPst
+	Nwt3dmlwTH0/vdOugUTrhlLYE353lWM=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1760313144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=oue6WSvPcHJfnzjiW3iDhBuqtDnYGfL3LtxcV6vs3vo=;
+	b=r4RfZ7JPnH+GUPRd5uB5cDpLbE7YRyVRvQz2UMPj2ednchOgd25HSqWxYmshxDEw+AbjWW
+	zOD+Nut+YbfAw6MblZckCy2l8UIyCNVxV4hIv+bKJMgR8Hpd1DNEL8t9yHDSJRuv5EZPst
+	Nwt3dmlwTH0/vdOugUTrhlLYE353lWM=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B0D6513782
+	for <linux-btrfs@vger.kernel.org>; Sun, 12 Oct 2025 23:52:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id SGCuHDc/7Gj8SQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Sun, 12 Oct 2025 23:52:23 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v7 0/3] btrfs: add shutdown() and remove_bdev() callback
+Date: Mon, 13 Oct 2025 10:22:02 +1030
+Message-ID: <cover.1760312845.git.wqu@suse.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AYAte_pFYg7k
-Date: Sun, 12 Oct 2025 18:10:01 -0400
-From: "Chris Murphy" <lists@colorremedies.com>
-To: "Askar Safin" <safinaskar@gmail.com>
-Cc: "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Message-Id: <19dd908b-12df-45ad-bde4-ab7281557608@app.fastmail.com>
-In-Reply-To: <20251012085256.8628-1-safinaskar@gmail.com>
-References: <d93b2a2d-6ad9-4c49-809f-11d769a6f30a@app.fastmail.com>
- <20251012085256.8628-1-safinaskar@gmail.com>
-Subject: Re: 6.17rc5: btrfs scrub, Freezing user space processes failed
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	TO_DN_NONE(0.00)[];
+	FROM_HAS_DN(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
+X-Spam-Level: 
+
+[CHANGELOG]
+v7:
+- Change the message level of first time shutdown to critical
+  Shutting down a fs has very huge impact, the old info level is
+  definitely not good enough.
+
+  And slightly update the commit message to mention that the delalloc
+  error messages will definitely show up, and hopefully that critical
+  message should help reduce the confusion.
+
+- Fold the first 3 patches
+  As each one is small, and all are just implementing the handling for
+  shutdown states.
+  
+v6:
+- Rebased to the latest for-next branch
+  Only minor conflicts that can be solved by git.
+
+  The VFS patch is already merged in v6.17, thus no more needed in the
+  series.
+
+v5:
+- Split remove_bdev() from shutdown()
+  Now remove_bdev() will have a return value to indicate if the fs can
+  handle the removal of the device.
+  And if not, a non-zero (normally minus) value is returned.
+
+  In that case ->shutdown() will be called as usual.
+
+  This allows us to avoid unnecessary operations that only make sense
+  for shutdown case, like shrinking the cache.
+
+  This also means no change to any of the existing filesystems.
+
+- Implement ->shutdown() callback for btrfs
+  Since ->shutdown() and ->remove_bdev() call backs are separate now,
+  btrfs needs to implement both.
+
+v4:
+- Update the commit message of the first patch
+  Remove the out-of-date comments about the old *_shutdown() names.
+
+v3:
+- Also rename the callback functions inside each fs to *_remove_bdev()
+  To keep the consistency between the interface and implementation.
+
+- Add extra handling if the to-be-removed device is already missing in
+  btrfs
+  I do not know if a device can be double-removed, but the handling
+  inside btrfs is pretty simple, if the target device is already
+  missing, nothing needs to be done and can exit immediately.
+
+v2:
+- Enhance and rename shutdown() callback
+  Rename it to remove_bdev() and add a @bdev parameter.
+  For the existing call backs in filesystems, keep their callback
+  function names, now something like ".remove_bdev = ext4_shutdown,"
+  will be a quick indicator of the behavior.
+
+- Remove the @surprise parameter for the remove_bdev() parameter.
+  The fs_bdev_mark_dead() is already trying to sync the fs if it's not
+  a surprise removal.
+  So there isn't much a filesystem can do with the @surprise parameter.
+
+- Fix btrfs error handling when the devices are not opened
+  There are several cases that the fs_devices is not opened, including:
+  * sget_fc() failure
+  * an existing super block is returned
+  * a new super block is returned but btrfS_open_fs_devices() failed
+
+  Handle the error properly so that fs_devices is not freed twice.
+
+RFC->v1:
+- Add a new remove_bdev() callback
+  Thanks all the feedback from Christian, Christoph and Jan on this new
+  name.
+
+- Add a @surprise parameter to the remove_bdev() callback
+  To keep it the same as the bdev_mark_dead().
+
+- Hide the shutdown ioctl and remove_bdev callback behind experimental 
+  With the shutdown ioctl, there are at least 2 test failures (g/388, g/508).
+
+  G/388 is related to the error handling with COW fixup.
+  G/508 looks like something related to log replay.
+
+  And the remove_bdev() doesn't have any btrfs specific test case yet to
+  check the auto-degraded behavior, nor the auto-degraded behavior is
+  fully discussed.
+
+  So hide both of them behind experimental features.
+
+- Do not use btrfs_handle_fs_error() to avoid freeze/thaw behavior change
+  btrfs_handle_fs_error() will flips the fs read-only, which will
+  affect freeze/thaw behavior.
+  And no other fs set the fs read-only when shutting down, so follow the
+  other fs to have a more consistent behavior.
 
 
+Qu Wenruo (3):
+  btrfs: introduce a new shutdown state
+  btrfs: implement shutdown ioctl
+  btrfs: implement remove_bdev and shutdown super operation callbacks
 
-On Sun, Oct 12, 2025, at 4:52 AM, Askar Safin wrote:
-> "Chris Murphy" <lists@colorremedies.com>:
->> Scrub initiated, walked away,  and when I come back it appears hung with a black screen unresponsive
->
-> I suspect here is interplay between two issues.
-> First is btrfs kernel bug Qu Wenruo is talking about.
-> Second is systemd issue, which amplifies this kernel bug.
->
-> Systemd bug turns simple "suspend doesn't work, but system continues to
-> operate normally" to "reboot is needed".
->
-> I wrote about this here: https://github.com/systemd/systemd/issues/38337 .
->
-> The bug is fixed in mainline and stable versions of systemd.
-
-Thanks for the response.
-
- I've since moved to Fedora 43 (pre-release) which has systemd-258-1.fc43.x86_64.
-
-Fedora 42 still has systemd-257.9-2.fc42 which is what I was running at the time of the problem.
-
+ fs/btrfs/file.c            | 25 ++++++++++++++-
+ fs/btrfs/fs.h              | 28 ++++++++++++++++
+ fs/btrfs/inode.c           | 14 +++++++-
+ fs/btrfs/ioctl.c           | 44 +++++++++++++++++++++++++
+ fs/btrfs/messages.c        |  1 +
+ fs/btrfs/reflink.c         |  3 ++
+ fs/btrfs/super.c           | 66 ++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c         |  2 ++
+ fs/btrfs/volumes.h         |  5 +++
+ include/uapi/linux/btrfs.h |  9 ++++++
+ 10 files changed, 195 insertions(+), 2 deletions(-)
 
 -- 
-Chris Murphy
+2.50.1
+
 
