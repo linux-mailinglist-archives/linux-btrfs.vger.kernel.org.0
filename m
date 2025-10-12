@@ -1,165 +1,124 @@
-Return-Path: <linux-btrfs+bounces-17638-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17639-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76B83BCFE0A
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Oct 2025 02:36:31 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4026BBD0075
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Oct 2025 10:24:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D080D349101
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Oct 2025 00:36:30 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3EB054E20B2
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Oct 2025 08:24:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5517515E5DC;
-	Sun, 12 Oct 2025 00:36:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62DB258CD0;
+	Sun, 12 Oct 2025 08:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SIbr3+TR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OmPXt/fA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8952118C31;
-	Sun, 12 Oct 2025 00:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77DFD23B62C
+	for <linux-btrfs@vger.kernel.org>; Sun, 12 Oct 2025 08:24:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760229382; cv=none; b=ikO5TYz2vllDSxUovtWd6z+9BYMU/JsjqzAXic11wWBqH23twsWl2QtoZA6jz6B6uvdxyg/ZtCv0EdzRPb1m2DYR1blqJd5E6E0cF7hjXqf2YsCRI4PKSiTxfSVVjcqeXpHkY3axwfWCrsQgjk9P0vsNADRGKNun+71j2XxO/GU=
+	t=1760257462; cv=none; b=VyuAwIt/RAIp4xY7jSJ3Nk9TSh8aQXCgGlNsuiUK1XvxHvG1Q79XrhBghSm+NbUSlq2OyUQLPHwmDD2DVqLhF3/UDnd7wBiAckiME2A8rPQz7K8ZnJBCmi36DpFp7f/GaNhfWCH6izWPzjzciCy4eCbyH2vt91b1E9g5xs7IKuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760229382; c=relaxed/simple;
-	bh=d5IeSn7VzI5lxZXVELh6tC/WwuTU9ey1cyw4wcNRIWA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QKF3UprUH8VH12Gl3Bs1vvjW3u/J+P9C9oVKdgOwzSBJV8CRFPjK0Xfonw/BprOSGLbmIYXRw4FNBOM5ER7upMJVxyGL4UAW729FzI03Dd7fIgr7nEq3toXC5axqPibf0X5t929anPnnFSMH3AjsnKI1PCnRX93f0zpLCkRoiNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SIbr3+TR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EC98C4CEF4;
-	Sun, 12 Oct 2025 00:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760229381;
-	bh=d5IeSn7VzI5lxZXVELh6tC/WwuTU9ey1cyw4wcNRIWA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=SIbr3+TRALoto027wUlzOJ+P9ouNtZPiyRxqzXcNOYx5zire+7xIOv3dehZKxPjYb
-	 lIfclvc6Umx9C/8v/X/rvCVytoc/pBkr4kO6+NBhSiFTE6mAPb+Vtv2yAmnVLyD/gn
-	 iCHzpeoLO8LaAPoLVzKQaLdvcsweFhweuA9WlW/NKOtD8IyedxSuSU2TMfjgv4ASGk
-	 nWxs/kHXEn99u47XVqUyiViub5FAk4+IekyI7imJBZhbbp4pGlW1lByP2G3iSjG6pb
-	 Vj0krbNe3/VRgIABNrAjJ7QBsV6ysCGiNNnAnG56DW+qhWMZ9fr/iy0L+9BMvV5eHS
-	 w8wFuRHddzgMQ==
-Message-ID: <14046f78-e1e9-4188-8405-16055520513f@kernel.org>
-Date: Sun, 12 Oct 2025 09:36:18 +0900
+	s=arc-20240116; t=1760257462; c=relaxed/simple;
+	bh=g0kdLykgyrZedQKVHPh89payJQeJMwZhqaJ2Wn/yj6c=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=OC1DVDf4u7NFSyAGUY5s8Br3IweQwGNlfEj+MkO7Rgc07uWJ6bs+FjDjyM7cyX2VuuCiRepRR2FSWzZT9pLc9CyurfIaBkoHj1cPDrUKZJP8l5w0xliJuaPuReXaC2774BTI5/DZPNHoOG1hEHYqlJkR6M53QVjL0Tm4VsUY7VQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OmPXt/fA; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3f99ac9acc4so2726968f8f.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 12 Oct 2025 01:24:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760257459; x=1760862259; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B0z2l7KfDn6RJq1Lvfb8g4qGuEgl8C2qgZKEkkLs+v8=;
+        b=OmPXt/fAe6UG8+gL4zIiI1bM6HxTTxC4zBJoJjV/1ga698o1PHwE01pS19Mtlb5PjF
+         0J0xAivqKcCKY9sEjC1fH8DR1B5q57ZphD5TlOVdKW2KyRbZzDfrRtLLoYwX7K9bo+BB
+         a4zFIOhguQfj20+0WM5QI163FyUDws9t17jsjh1VA0Np8cMu2qTEMcbsWjbpVEKIiTWK
+         Lm+4UHLo5UGKTgGVwiET6inxjtYF0Z1WxNDjP6Xmd3KYNfxYHW6nqAmb32iHGPHhAbWi
+         7SOThTG9jYU7wetML4akPp8ROJ3sfjetRH1+BSltNHI+66fb3zxfmxtCcsSZpwusqB/v
+         DtQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760257459; x=1760862259;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B0z2l7KfDn6RJq1Lvfb8g4qGuEgl8C2qgZKEkkLs+v8=;
+        b=Zmkdkgg0WSlA4jmIpSqFVIjET8neIc0bfmPDHSdHs9YtsnxUpNyB4nsQBL1UoG0PiH
+         NJXIRITOa8apjdsNKgALQsWnO4x53Heg/nrXeDWRZICg5lAsfOFOyA3wVQXcTrvhT6IW
+         z3MmPOpKUk++RIMSgtft7ZlKr7Thp4u1HpE8Nq7EI7h6QcJE/dLoCCxst5MED6TrB7Q9
+         fVMBKlK8PowSahcEuwQu/2Sdt3XKPwcfQXqFTMnLBDUwnxdZcGGisKQIwASb0Lr4Z0Mz
+         N6v3xn4jyByOCsnH3drAxr+cDTtfIW1+DSVO4RaHz99w9wbCr+TlausiQWAJ3rpEcds0
+         XIYg==
+X-Gm-Message-State: AOJu0YzFzFfeVObSqqYGM4mNs0vWV5CBR0Yp7LF14MbJji/p2qV9VxqY
+	5yYIU+y3Is2wzDXFkRLadBhQMy0i+C//RL4sUWbvJonunQG1hkyWIFh6
+X-Gm-Gg: ASbGncuB3kNkqDZT2TPj+e8M44hO4jEpDbDaO4XEby7MvMBXQqVszL2+5q+zoDBDyGN
+	Kb0n7FQCczq/hGZXQxWXqNN9ue9mI9Iq0n2SQOSwfEqtconNPaFZWAJd2lFyyranDFpNoeEt85u
+	DwY1Ps79SvlXpAGZBEIsfe0y6rtH/y7hkkyuc0eqXdPLDlMDxd2mmV/knqM+jY9ACdSfJDqBzRo
+	X+zQl5zNCHWO8l1Pqaz1BLTY2k/Tk3Wj+BvDi6Vde/jmY3/KxMpvm5rcDbR9YFUsWzv71uEa8Ia
+	Y++OmrBmxZTfOy1ovW5LDNCkcCsPbpcDDECdYJ4QL5PJkHITa7dFbC/gNLJXSPOgZyrzV4i2rPU
+	CC9kW/vOxn3urSrmXTBdqWGCcwc6R5jK7a8jga6of/z3oG/vuEyk=
+X-Google-Smtp-Source: AGHT+IGMKTAAKkSYv7hTQ9xsKSm6U/W/OnHIRVB3qiJgLZez14VUJlifIHhUZtKa6PRhU35BZoM5pg==
+X-Received: by 2002:a05:6000:2003:b0:3ee:13ba:e133 with SMTP id ffacd0b85a97d-42666ac466amr10312500f8f.1.1760257458521;
+        Sun, 12 Oct 2025 01:24:18 -0700 (PDT)
+Received: from localhost ([87.241.149.212])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-426ce5833dcsm12142557f8f.19.2025.10.12.01.24.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Oct 2025 01:24:18 -0700 (PDT)
+From: Askar Safin <safinaskar@gmail.com>
+To: wqu@suse.com
+Cc: linux-btrfs@vger.kernel.org,
+	Chris Murphy <lists@colorremedies.com>,
+	David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH RFC] btrfs: exit scrub and balance early if the fs is being frozen
+Date: Sun, 12 Oct 2025 11:23:55 +0300
+Message-ID: <20251012082355.5226-1-safinaskar@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <9606fae20bff6c1fbe14dc7b067f3b333c2a955b.1751847905.git.wqu@suse.com>
+References: <9606fae20bff6c1fbe14dc7b067f3b333c2a955b.1751847905.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] common/zoned: add _create_zloop
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
- "Darrick J. Wong" <djwong@kernel.org>, Carlos Maiolino <cem@kernel.org>
-Cc: Zorro Lang <zlang@redhat.com>, hch <hch@lst.de>,
- Naohiro Aota <Naohiro.Aota@wdc.com>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
- Hans Holmberg <Hans.Holmberg@wdc.com>,
- "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
- "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-References: <20251007125803.55797-1-johannes.thumshirn@wdc.com>
- <VGGoqK-5ZWJTAAy5zOK2QgRfnghNzWtGFoBwL6Sw9bqE7moL7lyTr43XUUgtMM54gKwCKIpC1Jz9u5ZcnpNATg==@protonmail.internalid>
- <20251007125803.55797-3-johannes.thumshirn@wdc.com>
- <hrht5llavtcgd5bb6sgsluy3vs2m6ddzzshkhwqb4fjgujgrli@6px7vpsk7ek3>
- <20251008150806.GA6188@frogsfrogsfrogs>
- <f0713993-cebf-4e42-9c1a-26706a52be4d@wdc.com>
-From: Damien Le Moal <dlemoal@kernel.org>
-Content-Language: en-US
-Organization: Western Digital Research
-In-Reply-To: <f0713993-cebf-4e42-9c1a-26706a52be4d@wdc.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 2025/10/11 18:34, Johannes Thumshirn wrote:
-> On 10/8/25 5:08 PM, Darrick J. Wong wrote:
->> On Wed, Oct 08, 2025 at 04:38:16PM +0200, Carlos Maiolino wrote:
->>> On Tue, Oct 07, 2025 at 02:58:02PM +0200, Johannes Thumshirn wrote:
->>>> Add _create_zloop a helper function for creating a zloop device.
->>>>
->>>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->>>> ---
->>>>   common/zoned | 23 +++++++++++++++++++++++
->>>>   1 file changed, 23 insertions(+)
->>>>
->>>> diff --git a/common/zoned b/common/zoned
->>>> index 41697b08..33d3543b 100644
->>>> --- a/common/zoned
->>>> +++ b/common/zoned
->>>> @@ -45,3 +45,26 @@ _require_zloop()
->>>>   	    _notrun "This test requires zoned loopback device support"
->>>>       fi
->>>>   }
->>>> +
->>>> +# Create a zloop device
->>>> +# useage: _create_zloop [id] <base_dir> <zone_size> <nr_conv_zones>
->>>> +_create_zloop()
->>>> +{
->>>> +    local id=$1
->>>> +
->>>> +    if [ -n "$2" ]; then
->>>> +        local base_dir=",base_dir=$2"
->>>> +    fi
->>>> +
->>>> +    if [ -n "$3" ]; then
->>>> +        local zone_size=",zone_size_mb=$3"
->>>> +    fi
->>>> +
->>>> +    if [ -n "$4" ]; then
->>>> +        local conv_zones=",conv_zones=$4"
->>>> +    fi
->>>> +
->>>> +    local zloop_args="add id=$id$base_dir$zone_size$conv_zones"
->>>> +
->>>> +    echo "$zloop_args" > /dev/zloop-control
->> Hmm, so the caller figures out its own /dev/zloopNNN number, passes NNN
->> into the zloop-control devices, and then maybe a new bdev is created?
->> Does NNN have to be one more than the current highest zloop device, or
->> can it be any number?
->>
->> Source code says that if NNN >= 0 then it tries to create a new
->> zloopNNN or fails with EEXIST; otherwise it gives you the lowest unused
->> id.  It'd be nice in the second case if there were a way for the driver
->> to tell you what the NNN is.
->>
->> The _create_zloop users seem to do an ls to select an NNN.  At a minimum
->> that code probably ought to get hoisted to here as a common function (or
->> maybe just put in _create_zloop itself).
->>
->> Or maybe turned into a loop like:
->>
->> 	while true; do
->> 		local id=$(_next_zloop_id)
->> 		err="$(echo "add id=$id$base_dir..." 2>&1 > /dev/zloop-control)"
->> 		if [ -z "$err" ]; then
->> 			echo "/dev/zloop$id"
->> 			return 0
->> 		fi
->> 		if echo "$err" | ! grep -q "File exists"; then
->> 			echo "$err" 1>&2
->> 			return 1;
->> 		fi
->> 	done
->>
->> That way test cases don't have to do all that setup themselves?
->>
-> Unfortunately the user has to create the zloop directory (e.g. 
-> BASE_DIR/0 for zloop0) beforehand (might be a bug though).
+Qu Wenruo <wqu@suse.com>:
+> There are some reports that btrfs is unable to be frozen if there is a
 
-Not a bug. It is by design since the user can specify the ID of the zloop drive
-to create. And there is no fixed association between device ID and directory
-path to keep things flexible for the user/distro.
+I tested your patch on real hardware.
 
-> What I could do is  encapsulate the find the next zloop and mkdir -p for 
-> the user (and call in _create_zloop if no id is supplied?)
+I applied it to current Linux mainline.
 
-Yes. Do that. The zloop directory si not something that the tests should touch
-anyway, so you should just define your own id <-> dir path mapping in the helpers.
+I have btrfs-raid on two big disks.
 
+I started "sudo btrfs scrub start -B -d /" and pressed "Suspend" in GUI.
 
+If /sys/power/freeze_filesystems is 0 (this is default), then your patch doesn't work.
+
+If /sys/power/freeze_filesystems is 1, then the system stops to respond for a minute
+and then suspends. Here is journalctl:
+https://zerobin.net/?e3376d7d056dcb04#LyzGFYeVdWsbZfgC25G4TuSct6QDyZ278gQlZgCfR94= .
+
+As well as I understand from journalctl, systemd tries to freeze userspace
+process "btrfs scrub" and fails. Then systemd times out after a minute,
+and then suspend proceeds.
+
+So, in short, this is not complete solution yet.
+
+Also I tested Sterba's patch, and it doesn't work either:
+https://lore.kernel.org/linux-btrfs/20250720194803.3661-1-safinaskar@zohomail.com/ .
+
+I really want this bug to be fixed. Please, CC me with your future attempts.
 
 -- 
-Damien Le Moal
-Western Digital Research
+Askar Safin
 
