@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-17735-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17736-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24901BD63CD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 22:47:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2723BD6478
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 22:53:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 555B63E03C3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 20:46:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B2D218A337D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 20:53:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AE722D949C;
-	Mon, 13 Oct 2025 20:46:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D6B30ACF4;
+	Mon, 13 Oct 2025 20:52:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Hwj+7b2L"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="DV2iLNjK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D19A34BA34
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 20:46:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 233392FAC09
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 20:52:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760388415; cv=none; b=H6qeVVtxq38E4SwkjmLunNNHPgJekvlTCdPFcbzS0x4pbfpENMOxeqBA88w8hmyQzZuSuxMyNN3wUfqtvbvBcBPlhyPUplh7dlwFNIH2SfH2BvKc3qHJvsVyKVemRxVWOsnPPKgTw8fV9LZTg9/9Nrjar+og8JsDS5BWpeZU5Fo=
+	t=1760388724; cv=none; b=tJNlo/YkKI969zOh9ne8d6m7zHx9u7NmVTh4A7LGuGeryWBMP3rbMEG/as46/6vELySkSsNI2WwmUMl/ki4ChwmcwMZTMcLXVuHMbhU2RMOuYYeSiV7PhMHbfWeS9rIRoA8cwYzO07V43TtW9v6XS3MCGfSTwkrgPzT0rt3s2zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760388415; c=relaxed/simple;
-	bh=S88bpwWo2lsZU7waDnJmHznFfQRYpLE03oM/+DmqMCE=;
+	s=arc-20240116; t=1760388724; c=relaxed/simple;
+	bh=F+mLNLJbGopP7o2nP9mW1AAE9j19L+mMi60N6x7S/S4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=thmJgJYHQNzH1k1us+HRv1Fsr2ZZhBCy9Uuts79EY1Bjj9gm0BeFsDCWUm5liEeO2M+ToVvu0lL8IjCO8jiD6LA/Kcg4RDH+li20wng16QXaoGvxeoFCiuDQooSCzd7hahgJGnE4bcZvejgppEpp/cuxu/LuZHF51zG4TJ61utQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Hwj+7b2L; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=k7fOESSutvi+GXi+f5xKQ2rliotqh3/WC49EkWBfPRogutf4MjX192MYB01TkvGaAu3CQS3bo/ilm1DuecZFts+NfANggc65cYqSLyVg1wPUexzwEbxOrE2M2++Ia7alLsgiL6IVPYj0JeYL/b3neH2agVZCuV2gBfb8yX6RZns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=DV2iLNjK; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1760388410; x=1760993210; i=quwenruo.btrfs@gmx.com;
-	bh=UaPlfPELfnPGMgD5VIBq3AYrKF97aQYWPt/lz8A0FJU=;
+	s=s31663417; t=1760388715; x=1760993515; i=quwenruo.btrfs@gmx.com;
+	bh=NDM6xgC/p0jaM2/NIbiZBOnLBl2kxnd4aOjDBNTKeWk=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=Hwj+7b2LwvNqXkf+EyzISe5QsIIwmdd4XuBUrtMGSlN3D1IEv+W8V+iA/OdxTVGR
-	 zQ9fSDK2xbdMt9lmCHt/U21vfjQEPWIIVu9RVuCGqAAX28JFGrWdYk91zzpk1g0pI
-	 fw0YvX2jN2fez5T0cMjCbSLvahaRdGc8ESposD9TGy/oDi6REj9H1wBy5MrSpwePy
-	 ORT/VGFqextnkxo+yHVL8Wa4OxT2G/1ksMWLEGkX1uqEQ8RUP3BlcoNNZxKgcNRpk
-	 hzxMv+rs1i3MTeTZ9JsK7dFh58c+4nYJYTecHc2lGA8yc21EhVk7k3EBy1kM75URJ
-	 yodj5IuMVz59LVmUgw==
+	b=DV2iLNjKra72ZXPSJx+7Pg8h6YWpKilWZ/bFLANKm0UFrXIF+1YN5MXyyJVohGOs
+	 /MTu/yCJkTl/AFfwsmcZUDd93l1lraLuHgUZrE868FhURoux/mMDARw5SHoE+4OFo
+	 mT26pVVQ2nV3Y5+/Rd1rHLzcgkdY69deEScITnP4ETmyeN3E9BM4LDQ7IMGpWSCA2
+	 59cnBdJg7j3GJfBq40Xwytxjlu/cdSZ/sdSjZzm0hgopvlgN2Hmbfzaoi7JrN6uLr
+	 qsWyx2/kmjVzQ6OlMCVur0ACnO+EBlOFfou5oXFWp2udRNVtmc896KdVfVAHpRoMH
+	 3DCQN+Gwmr+L7IOsnw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mk0JM-1uOKAr34e0-00fZdx; Mon, 13
- Oct 2025 22:46:50 +0200
-Message-ID: <1028b98a-2bab-4ad0-bdcd-c77c87b29571@gmx.com>
-Date: Tue, 14 Oct 2025 07:16:46 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0G1n-1uLGmb0KV5-011sf7; Mon, 13
+ Oct 2025 22:51:54 +0200
+Message-ID: <ed4d2d1f-942c-418c-9b88-6a8d72ad6e29@gmx.com>
+Date: Tue, 14 Oct 2025 07:21:51 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] btrfs: truncate ordered extent when skipping
- writeback past i_size
+Subject: Re: [PATCH 2/7] btrfs: use variable for end offset in
+ extent_writepage_io()
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1760356778.git.fdmanana@suse.com>
- <f3a857b481cdfda08d13e1eba5db53d17c5e774d.1760356778.git.fdmanana@suse.com>
+ <6b9b4740fe8b138175b0e0e0b36408a93338c9cc.1760356778.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,351 +89,161 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <f3a857b481cdfda08d13e1eba5db53d17c5e774d.1760356778.git.fdmanana@suse.com>
+In-Reply-To: <6b9b4740fe8b138175b0e0e0b36408a93338c9cc.1760356778.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5D6Muqi5UPQPcWiuXn3LxKctpgvKc/JEocjsfvIfo587o6v8I8I
- w7CINN6xVIz3/dfYmJrrnMyJ4CSTvYEbT5RYspWl0H/Zc45HcLGYMOIt6NQ8iRgdTAwRfgH
- +VhhA1pGP5SkwD+liaQ60xpSJ18Xb8mdOAKPgNQXHV0mnKt+M6zNXoQMI8QeE1igZWqivf2
- twEKL1KTjOwzGxq+zHQlw==
+X-Provags-ID: V03:K1:TaZ0VfVRWSSbomDHLQKHHTt7BhegEVa9hrPLCtmNbhelDoqsxEU
+ H0rE8Y7g03aU0VEr6UxKg+VSBLt49hfxL5P56A9GN5Xw5DV1QqAFYtBg1BjQFJYjAh6NtO/
+ 3pDxAPLbL6QjEAaLOvW+uE7ElBe4iyXPBZtcYtmBTlOQIlqliYRwwUV5sz9DGpYfor8dS2C
+ Yjm108noaJ655C/Dfjg9w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:eWfsEdVF9uQ=;E+84QVB8CIq+uYP1SnWYHohYLpB
- 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
- kebOQ==
+UI-OutboundReport: notjunk:1;M01:P0:nOo6VthD2j0=;0SZKtBQnAoMwCAsY+C3N+QwQ8Or
+ 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
 
 
 
 =E5=9C=A8 2025/10/13 22:35, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >=20
-> While running test case btrfs/192 from fstests with support for large
-> folios (needs CONFIG_BTRFS_EXPERIMENTAL=3Dy) I ended up getting very spo=
-radic
-> btrfs check failures reporting that csum items were missing. Looking int=
-o
-> the issue it turned out that btrfs check searches for csum items of a fi=
-le
-> extent item with a range that spans beyond the i_size of a file and we
-> don't have any, because the kernel's writeback code skips submitting bio=
-s
-> for ranges beyond eof. It's not expected however to find a file extent i=
-tem
-> that crosses the rounded up (by the sector size) i_size value, but there=
- is
-> a short time window where we can end up with a transaction commit leavin=
-g
-> this small inconsistency between the i_size and the last file extent ite=
-m.
+> Instead of repeating the expression "start + len" multiple times, store =
+it
+> in a variable and use it where needed.
 >=20
-> Example btrfs check output when this happens:
->=20
->    $ btrfs check /dev/sdc
->    Opening filesystem to check...
->    Checking filesystem on /dev/sdc
->    UUID: 69642c61-5efb-4367-aa31-cdfd4067f713
->    [1/8] checking log skipped (none written)
->    [2/8] checking root items
->    [3/8] checking extents
->    [4/8] checking free space tree
->    [5/8] checking fs roots
->    root 5 inode 332 errors 1000, some csum missing
->    ERROR: errors found in fs roots
->    (...)
->=20
-> Looking at a tree dump of the fs tree (root 5) for inode 332 we have:
->=20
->     $ btrfs inspect-internal dump-tree -t 5 /dev/sdc
->     (...)
->          item 28 key (332 INODE_ITEM 0) itemoff 2006 itemsize 160
->                  generation 17 transid 19 size 610969 nbytes 86016
->                  block group 0 mode 100666 links 1 uid 0 gid 0 rdev 0
->                  sequence 11 flags 0x0(none)
->                  atime 1759851068.391327881 (2025-10-07 16:31:08)
->                  ctime 1759851068.410098267 (2025-10-07 16:31:08)
->                  mtime 1759851068.410098267 (2025-10-07 16:31:08)
->                  otime 1759851068.391327881 (2025-10-07 16:31:08)
->          item 29 key (332 INODE_REF 340) itemoff 1993 itemsize 13
->                  index 2 namelen 3 name: f1f
->          item 30 key (332 EXTENT_DATA 589824) itemoff 1940 itemsize 53
->                  generation 19 type 1 (regular)
->                  extent data disk byte 21745664 nr 65536
->                  extent data offset 0 nr 65536 ram 65536
->                  extent compression 0 (none)
->     (...)
->=20
-> We can see that the file extent item for file offset 589824 has a length=
- of
-> 64K and its number of bytes is 64K. Looking at the inode item we see tha=
-t
-> its i_size is 610969 bytes which falls within the range of that file ext=
-ent
-> item [589824, 655360[.
->=20
-> Looking into the csum tree:
->=20
->    $ btrfs inspect-internal dump-tree /dev/sdc
->    (...)
->          item 15 key (EXTENT_CSUM EXTENT_CSUM 21565440) itemoff 991 item=
-size 200
->                  range start 21565440 end 21770240 length 204800
->             item 16 key (EXTENT_CSUM EXTENT_CSUM 1104576512) itemoff 983=
- itemsize 8
->                  range start 1104576512 end 1104584704 length 8192
->    (..)
->=20
-> We see that the csum item number 15 covers the first 24K of the file ext=
-ent
-> item - it ends at offset 21770240 and the extent's disk_bytenr is 217456=
-64,
-> so we have:
->=20
->     21770240 - 21745664 =3D 24K
->=20
-> We see that the next csum item (number 16) is completely outside the ran=
-ge,
-> so the remaining 40K of the extent doesn't have csum items in the tree.
->=20
-> If we round up the i_size to the sector size, we get:
->=20
->     round_up(610969, 4096) =3D 614400
->=20
-> If we subtract from that the file offset for the extent item we get:
->=20
->     614400 - 589824 =3D 24K
->=20
-> So the missing 40K corresponds to the end of the file extent item's rang=
-e
-> minus the rounded up i_size:
->=20
->     655360 - 614400 =3D 40K
->=20
-> Normally we don't expect a file extent item to span over the rounded up
-> i_size of an inode, since when truncating, doing hole punching and other
-> operations that trim a file extent item, the number of bytes is adjusted=
-.
->=20
-> There is however a short time window where the kernel can end up,
-> temporarily,persisting an inode with an i_size that falls in the middle =
-of
-> the last file extent item and the file extent item was not yet trimmed (=
-its
-> number of bytes reduced so that it doesn't cross i_size rounded up by th=
-e
-> sector size).
->=20
-> The steps (in the kernel) that lead to such scenario are the following:
->=20
->   1) We have inode I as an empty file, no allocated extents, i_size is 0=
-;
->=20
->   2) A buffered write is done for file range [589824, 655360[ (length of
->      64K) and the i_size is updated to 655360. Note that we got a single
->      large folio for the range (64K);
->=20
->   3) A truncate operation starts that reduces the inode's i_size down to
->      610969 bytes. The truncate sets the inode's new i_size at
->      btrfs_setsize() by calling truncate_setsize() and before calling
->      btrfs_truncate();
->=20
->   4) At btrfs_truncate() we trigger writeback for the range starting at
->      610304 (which is the new i_size rounded down to the sector size) an=
-d
->      ending at (u64)-1;
->=20
->   5) During the writeback, at extent_write_cache_pages(), we get from th=
-e
->      call to filemap_get_folios_tag(), the 64K folio that starts at file
->      offset 589824 since it contains the start offset of the writeback
->      range (610304);
->=20
->   6) At writepage_delalloc() we find the whole range of the folio is dir=
-ty
->      and therefore we run delalloc for that 64K range ([589824, 655360[)=
-,
->      reserving a 64K extent, creating an ordered extent, etc;
->=20
->   7) At extent_writepage_io() we submit IO only for subrange [589824, 61=
-4400[
->      because the inode's i_size is 610969 bytes (rounded up by sector si=
-ze
->      is 614400). There, in the while loop we intentionally skip IO beyon=
-d
->      i_size to avoid any unnecessay work and just call
->      btrfs_mark_ordered_io_finished() for the range [614400, 655360[ (wh=
-ich
->      has a 40K length);
->=20
->   8) Once the IO finishes we finish the ordered extent by ending up at
->      btrfs_finish_one_ordered(), join transaction N, insert a file exten=
-t
->      item in the inode's subvolume tree for file offset 589824 with a nu=
-mber
->      of bytes of 64K, and update the inode's delayed inode item or direc=
-tly
->      the inode item with a call to btrfs_update_inode_fallback(), which
->      results in storing the new i_size of 610969 bytes;
->=20
->   9) Transaction N is committed either by the transaction kthread or som=
-e
->      other task committed it (in response to a sync or fsync for example=
-).
->=20
->      At this point we have inode I persisted with an i_size of 610969 by=
-tes
->      and file extent item that starts at file offset 589824 and has a nu=
-mber
->      of bytes of 64K, ending at an offset of 655360 which is beyond the
->      i_size rounded up to the sector size (614400).
->=20
->      --> So after a crash or power failure here, the btrfs check program
->          reports that error about missing checksum items for this inode,=
- as
-> 	it tries to lookup for checksums covering the whole range of the
-> 	extent;
->=20
-> 10) Only after transaction N is committed that at btrfs_truncate() the
->      call to btrfs_start_transaction() starts a new transaction, N + 1,
->      instead of joining transaction N. And it's with transaction N + 1 t=
-hat
->      it calls btrfs_truncate_inode_items() which updates the file extent
->      item at file offset 589824 to reduce its number of bytes from 64K d=
-own
->      to 24K, so that the file extent item's range ends at the i_size
->      rounded up to the sector size (614400 bytes).
->=20
-> Fix this by truncating the ordered extent at extent_writepage_io() when =
-we
-> skip writeback because the current offset in the folio is beyond i_size.
-> This ensures we don't ever persist a file extent item with a number of
-> bytes beyond the rounded up (by sector size) value of the i_size.
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
+> ---
+>   fs/btrfs/extent_io.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
 >=20
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-[...]
-> @@ -1724,6 +1724,23 @@ static noinline_for_stack int extent_writepage_io=
-(struct btrfs_inode *inode,
->   		cur =3D folio_pos(folio) + (bit << fs_info->sectorsize_bits);
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 67706c1efa88..c641eb50d0ee 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -1690,6 +1690,7 @@ static noinline_for_stack int extent_writepage_io(=
+struct btrfs_inode *inode,
+>   	unsigned long range_bitmap =3D 0;
+>   	bool submitted_io =3D false;
+>   	int found_error =3D 0;
+> +	const u64 end =3D start + len;
+>   	const u64 folio_start =3D folio_pos(folio);
+>   	const u64 folio_end =3D folio_start + folio_size(folio);
+>   	const unsigned int blocks_per_folio =3D btrfs_blocks_per_folio(fs_inf=
+o, folio);
+> @@ -1697,7 +1698,7 @@ static noinline_for_stack int extent_writepage_io(=
+struct btrfs_inode *inode,
+>   	int bit;
+>   	int ret =3D 0;
 >  =20
->   		if (cur >=3D i_size) {
-> +			struct btrfs_ordered_extent *ordered;
-> +			unsigned long flags;
-> +
-> +			ordered =3D btrfs_lookup_first_ordered_range(inode, cur,
-> +								   folio_end - cur);
-> +			/*
-> +			 * We have just run delalloc before getting here, so
-> +			 * there must be an ordered extent.
-> +			 */
-> +			ASSERT(ordered !=3D NULL);
-> +			spin_lock_irqsave(&inode->ordered_tree_lock, flags);
-> +			set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
-> +			ordered->truncated_len =3D min(ordered->truncated_len,
-> +						     cur - ordered->file_offset);
-> +			spin_unlock_irqrestore(&inode->ordered_tree_lock, flags);
-> +			btrfs_put_ordered_extent(ordered);
-> +
->   			btrfs_mark_ordered_io_finished(inode, folio, cur,
->   						       start + len - cur, true);
->   			/*
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index 2829f20d7bb5..8a8aa6ed405b 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -1098,8 +1098,9 @@ struct btrfs_ordered_extent *btrfs_lookup_first_or=
-dered_range(
->   	struct rb_node *prev;
->   	struct rb_node *next;
->   	struct btrfs_ordered_extent *entry =3D NULL;
-> +	unsigned long flags;
+> -	ASSERT(start >=3D folio_start && start + len <=3D folio_end);
+> +	ASSERT(start >=3D folio_start && end <=3D folio_end);
 >  =20
-> -	spin_lock_irq(&inode->ordered_tree_lock);
-> +	spin_lock_irqsave(&inode->ordered_tree_lock, flags);
->   	node =3D inode->ordered_tree.rb_node;
->   	/*
->   	 * Here we don't want to use tree_search() which will use tree->last
-> @@ -1154,7 +1155,7 @@ struct btrfs_ordered_extent *btrfs_lookup_first_or=
-dered_range(
->   		trace_btrfs_ordered_extent_lookup_first_range(inode, entry);
+>   	ret =3D btrfs_writepage_cow_fixup(folio);
+>   	if (ret =3D=3D -EAGAIN) {
+> @@ -1713,7 +1714,7 @@ static noinline_for_stack int extent_writepage_io(=
+struct btrfs_inode *inode,
+>   		return ret;
 >   	}
 >  =20
-> -	spin_unlock_irq(&inode->ordered_tree_lock);
-> +	spin_unlock_irqrestore(&inode->ordered_tree_lock, flags);
->   	return entry;
->   }
+> -	for (cur =3D start; cur < start + len; cur +=3D fs_info->sectorsize)
+> +	for (cur =3D start; cur < end; cur +=3D fs_info->sectorsize)
+>   		set_bit((cur - folio_start) >> fs_info->sectorsize_bits, &range_bitm=
+ap);
+>   	bitmap_and(&bio_ctrl->submit_bitmap, &bio_ctrl->submit_bitmap, &range=
+_bitmap,
+>   		   blocks_per_folio);
+> @@ -1742,7 +1743,7 @@ static noinline_for_stack int extent_writepage_io(=
+struct btrfs_inode *inode,
+>   			btrfs_put_ordered_extent(ordered);
 >  =20
+>   			btrfs_mark_ordered_io_finished(inode, folio, cur,
+> -						       start + len - cur, true);
+> +						       end - cur, true);
+>   			/*
+>   			 * This range is beyond i_size, thus we don't need to
+>   			 * bother writing back.
+> @@ -1751,8 +1752,7 @@ static noinline_for_stack int extent_writepage_io(=
+struct btrfs_inode *inode,
+>   			 * writeback the sectors with subpage dirty bits,
+>   			 * causing writeback without ordered extent.
+>   			 */
+> -			btrfs_folio_clear_dirty(fs_info, folio, cur,
+> -						start + len - cur);
+> +			btrfs_folio_clear_dirty(fs_info, folio, cur, end - cur);
+>   			break;
+>   		}
+>   		ret =3D submit_one_sector(inode, folio, cur, bio_ctrl, i_size);
 
 
