@@ -1,62 +1,62 @@
-Return-Path: <linux-btrfs+bounces-17678-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17679-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31AB4BD1EE3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 10:08:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C6C2BD1EEF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 10:09:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 36DA04ED83E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 08:08:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CA503C1F62
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 08:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE47C2ED87F;
-	Mon, 13 Oct 2025 08:08:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00D62EC08A;
+	Mon, 13 Oct 2025 08:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="CLEjrJ1D"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="LQLJOBDk"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0A12EBDE5;
-	Mon, 13 Oct 2025 08:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A5EE2EBDE5;
+	Mon, 13 Oct 2025 08:08:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760342896; cv=none; b=m1rPpiKU1UBBUhkv1Y3LTIJQD1A9TeO7gZFYgykkmrUhTQLRQVo4Eh8IWCRvfLRpsWqprAt8B7uttBH1H8BA+rSb8saawOXisuAW1ngluf394q/1o0J8FbLhna5/yXphslrAKAEHuui98iWdCCzBpEpoyDi1UdM0Y7PA2Rom1gI=
+	t=1760342899; cv=none; b=faS1vjt5D2TaeYQeBpj1ucVXb/+0+Dp6uD5Qu1dJmMvcqvI64O+UP5of417nL6jRADvCwUE9YKWRt0KHamAir5t43ua/QZl0udbuxWyjgE/skvos9bsGcsIKSLnI0m4Z7ra/cowcXVTpv+0EI33bbxq9YJrtBETW3sZwB6O8d70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760342896; c=relaxed/simple;
-	bh=lqCyvs8Tvl0RD2pp/02jv+mA9mElBHqo9a30rH/DgAk=;
+	s=arc-20240116; t=1760342899; c=relaxed/simple;
+	bh=TxrezenWAuD7QSMm73w8F0dIYBfE0lUIx9nYBctR2x0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F9uBBtmxU22eLOGLmOncylFD6DtuY540F1W+XA8gjCwNFmntvWYEjZiSpPfuTM9x4IZ+FXwtO0L5BigbBVo6JthJrH3QWJeboXWCK6Gbxaj0v+M23Mwtl0tEfUqU25Icw7jr6xSI49LM+u2QYz0hGb6YaUBmzuZPPdsTu7ym+RY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=CLEjrJ1D; arc=none smtp.client-ip=216.71.153.144
+	 MIME-Version; b=g4bGDezLQHEIsbrUYg47ciCqiwEo9mN8FgnnHuJCcQAbtzq8c1pgb6XAlE23nf/Slv94bHCL9UBQljc2cMycF/lw+4ozHkvL55O494gc3cWn/hmPVALU1GMYkjRZ9t3EB33L1rID/lz9GedMNGggXs6c6OPXKdQy8stpQKxrX8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=LQLJOBDk; arc=none smtp.client-ip=216.71.153.144
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1760342894; x=1791878894;
+  t=1760342897; x=1791878897;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=lqCyvs8Tvl0RD2pp/02jv+mA9mElBHqo9a30rH/DgAk=;
-  b=CLEjrJ1DYIrk7JVZt64CKZrGCTeQuNPnzPmvHtJj4r6+Y0OW/y0VC9sa
-   TXmlPBy6khnudAPeR+rnOTKGXOu+5AjQQ3BBZ/+lxwPOU01bN4pvTLgMS
-   cjaxos8+i2/0Ija9/2hQMEkd/PSPfqI9ukYtOeVxVR7B647bn2pNtsJ2s
-   mvfylH5SwHmuQ6M0mrOPWNilUOHe3OAEEuRF63AZjmYFr6Vn0m1BuepIZ
-   GkU4VD3cIYnQMiIg6FIGCfjffLRnZ9/1ohAzOwIN4zJIXKuppAHTciWVT
-   WtQGaNiiaoWijjbSth+wv5l1XWrqctgGjzBSvfH9xfT4jtZBG3YRr7BJd
-   Q==;
-X-CSE-ConnectionGUID: cXWhI74hSK2bbeuwIRMs9w==
-X-CSE-MsgGUID: 7CQEudEjRHysdgDbjEKhiw==
+  bh=TxrezenWAuD7QSMm73w8F0dIYBfE0lUIx9nYBctR2x0=;
+  b=LQLJOBDkydZu+/5oYE2Gz8lff1U18jpfFLV+LT/f3fNNHtGhqFLvFSif
+   /bhtYwMR8k/gI/lhSTzawTBOgDuMZQMZj8pVJs3fMeNM5Y6tM3n1ZFxky
+   sLysJ1wXvVa1QiPfSWbyWZvgKAnQnPq5rUbXeg4F+P7VKuehAHe7nT3/Q
+   X1Wqx+TJNmzbiaNMcszYKnFBR3q+OyrdLZ61IJnuzlkpJYArt5MxKf73R
+   pv2QLCwl1bU6/LZD8mt3SY/80UyXetxQh/Iuo6U9g6eg5+fIHmJwLwepa
+   AzJxgVArPqCzMt5DmsTfhieZ6OMDHkXzVy7ZQwS+PLOp8i0BV8VFAoKB2
+   g==;
+X-CSE-ConnectionGUID: Ui4M9CBRRMWEFozexVvMcg==
+X-CSE-MsgGUID: 6ylRzrbITkK+QlubD+EzRw==
 X-IronPort-AV: E=Sophos;i="6.19,224,1754928000"; 
-   d="scan'208";a="133101998"
+   d="scan'208";a="133101999"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Oct 2025 16:08:13 +0800
-IronPort-SDR: 68ecb36d_aTfLn65/bLqs8e+kwicIgymCSk8QlxZuEJPZ9cSwQ1pXVrH
- TREhbSDxL4yTpQ7oFQ0Oi9/etgXGpyPVVn7/XKg==
+  by ob1.hgst.iphmx.com with ESMTP; 13 Oct 2025 16:08:16 +0800
+IronPort-SDR: 68ecb371_ug2x6MVRub/qtVo+rSl63BpiKAtrRD8/IhOFabq7vN0hCzi
+ 8bIqEH51p6EbWZsoOFeQrAlUxrk/vsozM/Eu70g==
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Oct 2025 01:08:14 -0700
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Oct 2025 01:08:17 -0700
 WDCIronportException: Internal
 Received: from chnhcln-775.ad.shared (HELO neo.fritz.box) ([10.224.28.18])
-  by uls-op-cesaip02.wdc.com with ESMTP; 13 Oct 2025 01:08:11 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 13 Oct 2025 01:08:15 -0700
 From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To: Zorro Lang <zlang@redhat.com>
 Cc: Christoph Hellwig <hch@lst.de>,
@@ -67,10 +67,11 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	linux-xfs@vger.kernel.org,
 	Carlos Maiolino <cem@kernel.org>,
 	"Darrick J . Wong" <djwong@kernel.org>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v3 2/3] common/zoned: add _create_zloop
-Date: Mon, 13 Oct 2025 10:07:58 +0200
-Message-ID: <20251013080759.295348-3-johannes.thumshirn@wdc.com>
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	Carlos Maiolino <cmaiolino@redhat.com>
+Subject: [PATCH v3 3/3] generic: basic smoke for filesystems on zoned block devices
+Date: Mon, 13 Oct 2025 10:07:59 +0200
+Message-ID: <20251013080759.295348-4-johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251013080759.295348-1-johannes.thumshirn@wdc.com>
 References: <20251013080759.295348-1-johannes.thumshirn@wdc.com>
@@ -82,50 +83,86 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add _create_zloop a helper function for creating a zloop device.
+Add a basic smoke test for filesystems that support running on zoned
+block devices.
 
+It creates a zloop device with 2 conventional and 62 sequential zones,
+mounts it and then runs fsx on it.
+
+Currently this tests supports BTRFS, F2FS and XFS.
+
+Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- common/zoned | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ tests/generic/772     | 49 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/772.out |  2 ++
+ 2 files changed, 51 insertions(+)
+ create mode 100755 tests/generic/772
+ create mode 100644 tests/generic/772.out
 
-diff --git a/common/zoned b/common/zoned
-index 41697b08..59bebcae 100644
---- a/common/zoned
-+++ b/common/zoned
-@@ -45,3 +45,32 @@ _require_zloop()
- 	    _notrun "This test requires zoned loopback device support"
-     fi
- }
+diff --git a/tests/generic/772 b/tests/generic/772
+new file mode 100755
+index 00000000..d9b84614
+--- /dev/null
++++ b/tests/generic/772
+@@ -0,0 +1,49 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2025 Wesgtern Digital Corporation.  All Rights Reserved.
++#
++# FS QA Test 772
++#
++# Smoke test for FSes with ZBD support on zloop
++#
++. ./common/preamble
++_begin_fstest auto zone quick
 +
-+_find_next_zloop()
++_cleanup()
 +{
-+    local last_id=$(ls /dev/zloop* 2> /dev/null | grep -E "zloop[0-9]+" | wc -l)
-+    echo $last_id
++	if test -b /dev/zloop$ID; then
++		echo "remove id=$ID" > /dev/zloop-control
++	fi
 +}
 +
-+# Create a zloop device
-+# useage: _create_zloop [id] <base_dir> <zone_size> <nr_conv_zones>
-+_create_zloop()
-+{
-+    local id=$1
++. ./common/zoned
 +
-+    if [ -n "$2" ]; then
-+        local base_dir=",base_dir=$2"
-+    fi
++# Modify as appropriate.
++_require_scratch
++_require_scratch_size $((16 * 1024 * 1024)) #kB
++_require_zloop
 +
-+    if [ -n "$3" ]; then
-+        local zone_size=",zone_size_mb=$3"
-+    fi
++_scratch_mkfs > /dev/null 2>&1
++_scratch_mount
 +
-+    if [ -n "$4" ]; then
-+        local conv_zones=",conv_zones=$4"
-+    fi
++ID=$(_find_next_zloop)
 +
-+    local zloop_args="add id=$id$base_dir$zone_size$conv_zones"
++mnt="$SCRATCH_MNT/mnt"
++zloopdir="$SCRATCH_MNT/zloop"
 +
-+    echo "$zloop_args" > /dev/zloop-control
-+}
++mkdir -p "$zloopdir/$ID"
++mkdir -p $mnt
++_create_zloop $ID $zloopdir 256 2
++zloop="/dev/zloop$ID"
++
++_try_mkfs_dev $zloop 2>&1 >> $seqres.full ||\
++	_notrun "cannot mkfs zoned filesystem"
++_mount $zloop $mnt
++
++$FSX_PROG -q -N 20000 $FSX_AVOID "$mnt/fsx" >> $seqres.full
++
++umount $mnt
++
++echo Silence is golden
++# success, all done
++_exit 0
+diff --git a/tests/generic/772.out b/tests/generic/772.out
+new file mode 100644
+index 00000000..98c13968
+--- /dev/null
++++ b/tests/generic/772.out
+@@ -0,0 +1,2 @@
++QA output created by 772
++Silence is golden
 -- 
 2.51.0
 
