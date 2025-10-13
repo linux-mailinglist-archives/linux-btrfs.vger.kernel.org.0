@@ -1,370 +1,174 @@
-Return-Path: <linux-btrfs+bounces-17707-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17708-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A68FBD2F65
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 14:29:15 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03ADABD309B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 14:46:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D38043C533E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 12:29:13 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DA6934E7843
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 12:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C1327144B;
-	Mon, 13 Oct 2025 12:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E4228DB52;
+	Mon, 13 Oct 2025 12:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YAbQthQl"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fnxuy5v+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79228261B9C
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 12:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7503D27146B
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 12:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760358549; cv=none; b=h4W+Hhs1LvWEZxxuz5hndGEG3ydTt7qOrB6N7O9X4Mx3A6jokSOPXQJ/5RNcFz4+bJ7kXsHXZDvcYKt4WFIk96PpIircGFNX2oMRXhwRdYLYrMWCdUFkrJ48tac81npVm+QclJKuSGT43A6Ul6liRkNlKV/anTwt6ibDwvcF0y0=
+	t=1760359588; cv=none; b=f/IC0wFBb3xu40Ma/VvGxAWiSkzrSV+VaIlVejulVq1b4km0waXMIVxLhRUQ+KqFjBMphSo9e9U6FmU0D4MJWLPsbLR8B7pHgx+2LEnuGSqfTxnawfCs0OVhK/za7PQ4f17KionQnBRVmlVA66dql3TTekbyyojZAbk2OSzgr8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760358549; c=relaxed/simple;
-	bh=4UG7n3cbtM4Z5hajrwmhXcTu7ZNHj1+x8pvRCAxEZHM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WyLsfKWmb9YCwJV3YNZxXQflDKC/jo89VGrzvB9P84CyBb7M/zLHqAeC35W+0p61sFevMduD2IVpK8DVAW6kqheVWs1sxKjqrOvTwtiNnrRSpnPX5veP2KeDCXk4uTCKmgo/ooJjp2HhHNkREVVeuDcnWPwuDUiYIf8WHRUcAJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YAbQthQl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA69FC4CEE7
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 12:29:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760358548;
-	bh=4UG7n3cbtM4Z5hajrwmhXcTu7ZNHj1+x8pvRCAxEZHM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YAbQthQlhGq5QaDZpV+WBTK/Hnl0syOTFGnXw8YSbxCFKD9f5hIGfTvXvZS9crUwp
-	 pXxJ1MLkNnjuhDcvEiOxjrEkQoFQobA4fSphfxGwyPA8Ic7WH2znvWJ4P0aWpglt4R
-	 4EPwGuHOG0RbdjfNjqhU7ojNzFWSbf6Pj7nMOI7iBMKHinh3Wgz8s1pOYjRzcA+WAv
-	 iZ8wqyWtiAMoAKg/SA7K5/Jr07Q2fkt8dwE4mj1e1YVqe5sK6GlU/psIjooVn7SEqs
-	 DBEvSmyKwROCCRQmlSJiMlZ9RVV9r1jV8my+gfx8gtAtfvkhZp13qyH4Q56LL6eh66
-	 aWNJVVd7HX6BQ==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b50645ecfbbso840363966b.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 05:29:08 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw2Vn9560lsvvAesDoeDR8dLwmaCWujce54qPF3dG5f0Xf1oYqC
-	Acj3kBWdbW3WiaKq2OAM6fMyfbxV2+UcXGqdWJ3SLh+YC/IUl8nDRUf40fdQ9eNYCq+78PYUNmg
-	VMqb1Xz61sLd8EXc8tZnq3V++Jq9Hgcs=
-X-Google-Smtp-Source: AGHT+IG2SkHqbsTa71jvjWRVyq/XPeaJ5IwAHhPgOHhHl90q7xLkrXFGMQmdsKNjJ1fjaIox+kVi42C43+EnQGzdrE4=
-X-Received: by 2002:a17:907:968b:b0:b3b:9832:f9b with SMTP id
- a640c23a62f3a-b50aa8a1827mr2523040366b.25.1760358547363; Mon, 13 Oct 2025
- 05:29:07 -0700 (PDT)
+	s=arc-20240116; t=1760359588; c=relaxed/simple;
+	bh=9EPsCaTwQQz8b5W6hCG+5fpl4hKwJmfvAj1XnjFgJuY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZcFyLomFAScQ+X6d3yPYl69ZX3VQfvazExIB1Lp3E5bDpUEiDFhwAm4G6Yreop2MqIQsXuq9+YaMkXAO8zU4ca0fAHtH6ahsOAmQ0pzDYnTZAaLBUxLIwuz8GaBj9vLpiDnin+TvjSS2SPEEQyoDUAYVL7FVFEaH72BUhtTASXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fnxuy5v+; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1760359585;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=DOWtspxQFntLxn3tZgWb3b+wVou4f2oHZHARZ/GY+qM=;
+	b=fnxuy5v+nRqiUsJw49Pwk9oB4kSVwSWg4T0CnQGGPoq2SQ4qiuz72JnavOpXMXPIBR5Lfm
+	FrBRjkmWnvmzSUyyEOIcIcjujFLB0Nzcq4ZTfLGdXDZK76rhfwK+TMHc3wqvF9rwIeggZn
+	1w/ugrW8RRSPu1r9U+h4Hjqp/WBTXcs=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-178-Ajf3Hu1MMg-iH0I4sMMf_Q-1; Mon, 13 Oct 2025 08:46:24 -0400
+X-MC-Unique: Ajf3Hu1MMg-iH0I4sMMf_Q-1
+X-Mimecast-MFC-AGG-ID: Ajf3Hu1MMg-iH0I4sMMf_Q_1760359582
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-46e3d43bbc7so25952515e9.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 05:46:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760359581; x=1760964381;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DOWtspxQFntLxn3tZgWb3b+wVou4f2oHZHARZ/GY+qM=;
+        b=XmvqalKZwHhY8vyNsqfDrfFcVAdy0x2RKdE+OLE7iv5GMUX7pHQl9yXBE5hekQ0fmT
+         oPdkeGCYE6MYxv7O86LWqdEojfG2ylrEguzzPVyzOZYaWgxd0ZaOvK5ZgRg1qxfcnrFs
+         V4O030S6JpSE9oEVlhXcH9QcsSEY5duwVWeJiLcErSMp3OGMVo7DC4IiGcogYGVoYkxI
+         bGUrdXY69alCh1bk3CGPerh+Y5pnK+754AXDKgrRqHNmloZABW11d5DmWc5PIk++lMZA
+         wlb99oyp4ThKTBwx6HRcCJ0/g26GLyIWi106bN3nhw9fnHOLg6oNJDXHl6WyvI/hpDRD
+         qirw==
+X-Forwarded-Encrypted: i=1; AJvYcCUXuASL+2vk3Y18AqSdc6uHHlVNQK/f33P25JtUhul+cOvT/4ncMjVs3D29mhNxlubaNWy8mafmZLcAAw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwA6Xakd91KLW5G/L5g52TPSZF7mATuJ+WqWhigRc/PLuYxUtNr
+	IX8sDKrYqFi/HwEL1jH9CtGhoHOa8+6TMSMURjjEGfnhiE3wFvX7O1mIoIHoZr8nkKyp43EM213
+	NKy9wMhMJzxpOdjJFjQ2b04JdNGvz0r/fvRi9XSJb/mr9s8FS6+c2gNQ22MsoF51Q
+X-Gm-Gg: ASbGncvITRxxi9t4ZaV8bnCRyK8Gj5H70YpnLYXAEbjibdxrEdMIzFiSjAsOHuRsmGb
+	BaNwopXK9J0gW4BQ23LC5EmKT+MlIcFLBQ4JFLQuypnlQHFDSnPft35f3e4jVNJyd3J2XQ37EA7
+	3aaixOqRuqrH9iqvgAplfyGUEYzk3gHoFRbs6PkHCu884TBRWNQD5v1BFySJUfQiE8o10BOEdlq
+	lEd6z5WkHSf4CM7tOExougjg7KUxP08yBz/7vSaJTbNWhVBaqLrlvysqR3Xz8YGGP1D9FNk30ya
+	W/W65UpBzM0JDDKXSe3SXvd5acTKAN6ScTZK+/OQXg99miYVKrq9GD+RRmuCS+q/s73xiEfipPk
+	XEic=
+X-Received: by 2002:a5d:5d02:0:b0:425:7c1b:9344 with SMTP id ffacd0b85a97d-42666ab87c3mr12660091f8f.15.1760359581537;
+        Mon, 13 Oct 2025 05:46:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG8UhyE1zcOzwvyZxntvIRmTrppgW1S8a55KmrUdjOiVEiYyQgg0jajjwhannoKAXqQXoZQ2Q==
+X-Received: by 2002:a5d:5d02:0:b0:425:7c1b:9344 with SMTP id ffacd0b85a97d-42666ab87c3mr12660066f8f.15.1760359581095;
+        Mon, 13 Oct 2025 05:46:21 -0700 (PDT)
+Received: from [192.168.3.141] (tmo-083-189.customers.d1-online.com. [80.187.83.189])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce5e82dfsm18142892f8f.52.2025.10.13.05.46.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Oct 2025 05:46:20 -0700 (PDT)
+Message-ID: <a5ba4cdf-5da9-4e3e-af06-ad4ea5c3f659@redhat.com>
+Date: Mon, 13 Oct 2025 14:46:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <6e3df8da61ea11e45809208e3795452c5291f467.1760028487.git.fdmanana@suse.com>
- <5d465706-b7bd-4302-89d1-7f6b5e16e350@gmx.com> <bc1f98b9-c013-4e5f-8e6f-16c724367a3e@gmx.com>
-In-Reply-To: <bc1f98b9-c013-4e5f-8e6f-16c724367a3e@gmx.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 13 Oct 2025 13:28:30 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4ZRe7m_M6g5cr9EuG8UnECsQ2sQ+gZ-GFyk9-mXkPk3Q@mail.gmail.com>
-X-Gm-Features: AS18NWBhqizwX-kDez3cpeYa_zaBLKmPDasT_XsCuBvIZzqTQ78zZ3R6sY_MAs0
-Message-ID: <CAL3q7H4ZRe7m_M6g5cr9EuG8UnECsQ2sQ+gZ-GFyk9-mXkPk3Q@mail.gmail.com>
-Subject: Re: [PATCH] btrfs-progs: check: stop checking for csums past i_size
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/10] mm: don't opencode filemap_fdatawrite_range in
+ filemap_invalidate_inode
+To: Christoph Hellwig <hch@lst.de>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov
+ <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>,
+ Christian Schoenebeck <linux_oss@crudebyte.com>, Chris Mason <clm@fb.com>,
+ David Sterba <dsterba@suse.com>, Mark Fasheh <mark@fasheh.com>,
+ Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+ Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org, v9fs@lists.linux.dev,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+ ocfs2-devel@lists.linux.dev, linux-xfs@vger.kernel.org, linux-mm@kvack.org
+References: <20251013025808.4111128-1-hch@lst.de>
+ <20251013025808.4111128-2-hch@lst.de>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20251013025808.4111128-2-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Oct 10, 2025 at 4:54=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
->
->
->
-> =E5=9C=A8 2025/10/10 07:07, Qu Wenruo =E5=86=99=E9=81=93:
-> >
-> >
-> > =E5=9C=A8 2025/10/10 03:19, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> >> From: Filipe Manana <fdmanana@suse.com>
-> >>
-> >> While running test case btrfs/192 from fstests on a kernel with
-> >> support for
-> >> large folios (needs CONFIG_BTRFS_EXPERIMENTAL=3Dy kernel configuration
-> >> at the
-> >> moment) I ended up getting very sporadic btrfs check failures reportin=
-g
-> >> that csum items were missing. Looking into the issue it turned out
-> >> that we
-> >> end up looking for csum items of a file extent item with a range that
-> >> spans
-> >> beyond the i_size of a file and we don't have any, because the kernel'=
-s
-> >> writeback code skips submitting bios for ranges beyond eof.
-> >>
-> >> Example output when this happens:
-> >>
-> >>    $ btrfs check /dev/sdc
-> >>    Opening filesystem to check...
-> >>    Checking filesystem on /dev/sdc
-> >>    UUID: 69642c61-5efb-4367-aa31-cdfd4067f713
-> >>    [1/8] checking log skipped (none written)
-> >>    [2/8] checking root items
-> >>    [3/8] checking extents
-> >>    [4/8] checking free space tree
-> >>    [5/8] checking fs roots
-> >>    root 5 inode 332 errors 1000, some csum missing
-> >>    ERROR: errors found in fs roots
-> >>    (...)
-> >>
-> >> Looking at a tree dump of the fs tree (root 5) for inode 332 we have:
-> >>
-> >>     $ btrfs inspect-internal dump-tree -t 5 /dev/sdc
-> >>     (...)
-> >>          item 28 key (332 INODE_ITEM 0) itemoff 2006 itemsize 160
-> >>                  generation 17 transid 19 size 610969 nbytes 86016
-> >>                  block group 0 mode 100666 links 1 uid 0 gid 0 rdev 0
-> >>                  sequence 11 flags 0x0(none)
-> >>                  atime 1759851068.391327881 (2025-10-07 16:31:08)
-> >>                  ctime 1759851068.410098267 (2025-10-07 16:31:08)
-> >>                  mtime 1759851068.410098267 (2025-10-07 16:31:08)
-> >>                  otime 1759851068.391327881 (2025-10-07 16:31:08)
-> >>          item 29 key (332 INODE_REF 340) itemoff 1993 itemsize 13
-> >>                  index 2 namelen 3 name: f1f
-> >>          item 30 key (332 EXTENT_DATA 589824) itemoff 1940 itemsize 53
-> >>                  generation 19 type 1 (regular)
-> >>                  extent data disk byte 21745664 nr 65536
-> >>                  extent data offset 0 nr 65536 ram 65536
-> >>                  extent compression 0 (none)
-> >>     (...)
-> >>
-> >> We can see that the file extent item for file offset 589824 has a
-> >> length of
-> >> 64K and its number of bytes is 64K. Looking at the inode item we see t=
-hat
-> >> its i_size is 610969 bytes which falls within the range of that file
-> >> extent
-> >> item [589824, 655360[.
-> >>
-> >> Looking into the csum tree:
-> >>
-> >>    $ btrfs inspect-internal dump-tree /dev/sdc
-> >>    (...)
-> >>          item 15 key (EXTENT_CSUM EXTENT_CSUM 21565440) itemoff 991
-> >> itemsize 200
-> >>                  range start 21565440 end 21770240 length 204800
-> >>             item 16 key (EXTENT_CSUM EXTENT_CSUM 1104576512) itemoff
-> >> 983 itemsize 8
-> >>                  range start 1104576512 end 1104584704 length 8192
-> >>    (..)
-> >>
-> >> We see that the csum item number 15 covers the first 24K of the file
-> >> extent
-> >> item - it ends at offset 21770240 and the extent's disk_bytenr is
-> >> 21745664,
-> >> so we have:
-> >>
-> >>     21770240 - 21745664 =3D 24K
-> >>
-> >> We see that the next csum item (number 16) is completely outside the
-> >> range,
-> >> so the remaining 40K of the extent doesn't have csum items in the tree=
-.
-> >>
-> >> If we round up the i_size to the sector size, we get:
-> >>
-> >>     round_up(610969, 4096) =3D 614400
-> >>
-> >> If we subtract from that the file offset for the extent item we get:
-> >>
-> >>     614400 - 589824 =3D 24K
-> >>
-> >> So the missing 40K corresponds to the end of the file extent item's ra=
-nge
-> >> minus the rounded up i_size:
-> >>
-> >>     655360 - 614400 =3D 40K
-> >>
-> >> Normally we don't expect a file extent item to span over the rounded u=
-p
-> >> i_size of an inode, since when truncating, doing hole punching and oth=
-er
-> >> operations that trim a file extent item, the number of bytes is adjust=
-ed.
-> >>
-> >> There is however a short time window where the kernel can end up,
-> >> temporarily,persisting an inode with an i_size that falls in the
-> >> middle of
-> >> the last file extent item and the file extent item was not yet trimmed
-> >> (its
-> >> number of bytes reduced so that it doesn't cross i_size rounded up by =
-the
-> >> sector size).
-> >>
-> >> The steps (in the kernel) that lead to such scenario are the following=
-:
-> >>
-> >>   1) We have inode I as an empty file, no allocated extents, i_size is=
- 0;
-> >>
-> >>   2) A buffered write is done for file range [589824, 655360[ (length =
-of
-> >>      64K) and the i_size is updated to 655360. Note that we got a sing=
-le
-> >>      large folio for the range (64K);
-> >>
-> >>   3) A truncate operation starts that reduces the inode's i_size down =
-to
-> >>      610969 bytes. The truncate sets the inode's new i_size at
-> >>      btrfs_setsize() by calling truncate_setsize() and before calling
-> >>      btrfs_truncate();
-> >>
-> >>   4) At btrfs_truncate() we trigger writeback for the range starting a=
-t
-> >>      610304 (which is the new i_size rounded down to the sector size) =
-and
-> >>      ending at (u64)-1;
-> >>
-> >>   5) During the writeback, at extent_write_cache_pages(), we get from =
-the
-> >>      call to filemap_get_folios_tag(), the 64K folio that starts at fi=
-le
-> >>      offset 589824 since it contains the start offset of the writeback
-> >>      range (610304);
-> >>
-> >>   6) At writepage_delalloc() we find the whole range of the folio is
-> >> dirty
-> >>      and therefore we run delalloc for that 64K range ([589824, 655360=
-[),
-> >>      reserving a 64K extent, creating an ordered extent, etc;
-> >>
-> >>   7) At extent_writepage_io() we submit IO only for subrange [589824,
-> >> 614400[
-> >>      because the inode's i_size is 610969 bytes (rounded up by sector
-> >> size
-> >>      is 614400). There, in the while loop we intentionally skip IO bey=
-ond
-> >>      i_size to avoid any unnecessay work and just call
-> >>      btrfs_mark_ordered_io_finished() for the range [614400,
-> >> 655360[ (which
-> >>      has a 40K length);
-> >>
-> >>   8) Once the IO finishes we finish the ordered extent by ending up at
-> >>      btrfs_finish_one_ordered(), join transaction N, insert a file ext=
-ent
-> >>      item in the inode's subvolume tree for file offset 589824 with a
-> >> number
-> >>      of bytes of 64K, and update the inode's delayed inode item or
-> >> directly
-> >>      the inode item with a call to btrfs_update_inode_fallback(), whic=
-h
-> >>      results in storing the new i_size of 610969 bytes;
-> >>
-> >>   9) Transaction N is committed either by the transaction kthread or s=
-ome
-> >>      other task committed it (in response to a sync or fsync for
-> >> example).
-> >>
-> >>      At this point we have inode I persisted with an i_size of 610969
-> >> bytes
-> >>      and file extent item that starts at file offset 589824 and has a
-> >> number
-> >>      of bytes of 64K, ending at an offset of 655360 which is beyond th=
-e
-> >>      i_size rounded up to the sector size (614400).
-> >>
-> >>      --> So after a crash or power failure here, the btrfs check progr=
-am
-> >>          reports that error about missing checksum items for this
-> >> inode, as
-> >>     it tries to lookup for checksums covering the whole range of the
-> >>     extent;
-> >>
-> >> 10) Only after transaction N is commited that at btrfs_truncate() the
-> >> call
-> >>      to btrfs_start_transaction() starts a new transaction, N + 1,
-> >> instead
-> >>      of joining transaction N. And it's with transaction N + 1 that it
-> >> calls
-> >>      btrfs_truncate_inode_items() which updates the file extent item
-> >> at file
-> >>      offset 589824 to reduce its number of bytes from 64K down to 24K,=
- so
-> >>      that the file extent item's range ends at the i_size rounded up
-> >> to the
-> >>      sector size - 614400 bytes.
-> >
-> > Thanks a lot for the detailed reason.
-> >
-> >>
-> >> So fix this by skipping the search of csum items beyond the sector tha=
-t
-> >> contains a file's i_size.
-> >>
-> >> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> >> ---
-> >>   check/main.c | 13 +++++++++++++
-> >
-> > And lowmem mode is missing the same handling.
-> >
-> > In lowmem mode if we hit a file extent we still expect @csum_found to
-> > match @search_len.
->
-> Another thing I'm wondering is, can we make the beyond i_size writes to
-> behave more like truncated ordered extent.
->
-> With truncated OE, the num_bytes of the file extent will still be inside
-> the rounded up inodes, and the existing btrfs check will handle them
-> correctly.
+On 13.10.25 04:57, Christoph Hellwig wrote:
+> Use filemap_fdatawrite_range instead of opencoding the logic using
+> filemap_fdatawrite_wbc.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
 
-I tried before to invalidate the range with
-truncate_inode_pages_range() after setting the new i_size in the
-truncate path and before flushing delalloc/wait for ordered extents,
-but it was causing issues.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-I managed to make it simpler by only truncating the ordered extent in
-the writeback path where we skip bio submissions past i_size, and it's
-working.
-Just sent a patchset with that approach.
+-- 
+Cheers
 
-Thanks.
+David / dhildenb
 
->
-> Thanks,
-> Qu
->
-> >
-> > Thanks,
-> > Qu
-> >
-> >>   1 file changed, 13 insertions(+)
-> >>
-> >> diff --git a/check/main.c b/check/main.c
-> >> index 49a6ad25..f4a135c1 100644
-> >> --- a/check/main.c
-> >> +++ b/check/main.c
-> >> @@ -1774,6 +1774,19 @@ static int process_file_extent(struct
-> >> btrfs_root *root,
-> >>           else
-> >>               disk_bytenr +=3D extent_offset;
-> >> +        /*
-> >> +         * A truncate, reducing a file's size, can temporarily leave =
-an
-> >> +         * inode with the new i_size falling somewhere in the middle =
-of
-> >> +         * the last file extent item without having any csum items fo=
-r
-> >> +         * blocks past the new i_size (rounded up to the i_size). Thi=
-s
-> >> +         * happens when the new i_size falls in the middle of a delal=
-loc
-> >> +         * range and that file range does not have yet any allocated
-> >> +         * extents. So make sure we don't search for csum items beyon=
-d
-> >> +         * the i_size.
-> >> +         */
-> >> +        if (key->offset + num_bytes > rec->isize)
-> >> +            num_bytes =3D round_up(rec->isize, gfs_info->sectorsize) =
--
-> >> key->offset;
-> >> +
-> >>           ret =3D count_csum_range(disk_bytenr, num_bytes, &found);
-> >>           if (ret < 0)
-> >>               return ret;
-> >
-> >
->
 
