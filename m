@@ -1,88 +1,81 @@
-Return-Path: <linux-btrfs+bounces-17710-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17711-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06A96BD3122
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 14:50:59 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7692ABD34C6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 15:55:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A4EF3B197C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 12:50:47 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E7D6E347495
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 13:55:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BBF42E6CCC;
-	Mon, 13 Oct 2025 12:50:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B239322422A;
+	Mon, 13 Oct 2025 13:55:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ApjK8+TF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZmIANbpw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 694EA255F2C
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 12:50:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B86D2264BB
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 13:55:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760359834; cv=none; b=Pq3fNQu0mx0RL1Jn+5T6YH6TyU1WmU8vOIST2ROD5VdbtYXlrzTmXzi1jPuBCKIeWU19803RvtqBtSHlR1KYTOXvbMFKV4+NcBIhIHrs1+v+Ak+FrpPfg8T/MXtRFB0eXC0dHMawgyINIqooPCF9oewJagK1v5ktdn02czqM56M=
+	t=1760363729; cv=none; b=tJSKLFqErc63zpF2nNsyG9FvJzWS5QA56n4t2rEXtN/oef4+i9rHKNDIf/A56TA/93WxXoAIaXSfCOzO36e0owmkb+U9GwXboTJRH7Kiuj6hUty/9pSOwOg57ORiKfdNRzi8iem4YO1SIrZvlSCPWybhPiuCWU1oB9coN6ZitH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760359834; c=relaxed/simple;
-	bh=/vbJN+GTFa73FryYW5KO21cm50erek3RkwQo2KmYHuE=;
+	s=arc-20240116; t=1760363729; c=relaxed/simple;
+	bh=7uoBloRVyZ5Guy6b1V3r+FZ+UW7jjjUu+MyPFMW/Q94=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fdvIJh4xVtyjyxfrhVw8U1/YH3k7WKEr6gDqm56HKcN1P4WS2GCrZ82jaH3w6VHC+LEkhnHl2NAhPhMmUlyCbK200OXhCRqFcnFHP+J4gP6rkLKOzaLARp4QPryRnSt64O0I8r8jlNHNLlarOGHNQaAtYAsUKDgxLo8jPoXAiY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ApjK8+TF; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1760359830;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=fmLpGViBdbcMLzx1bb+Kxqb3+3UtyUNscErHdno+a+c=;
-	b=ApjK8+TFmj8PXajDObDIt9yfNi3EoONxgd2NJAwnKwimYfnsS5Oir/jBFUCDgIB+kXO8Bd
-	hsEiNDymu2Eb70hbPA/2uDUyE3j1Hld+btEopoW/4UU4jt88msJmn0VS3QcDn/KIAjykAZ
-	pVUXyuQrVIsA8qlwe/Q2TGF5t5bpQPY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-608-xYvodNfVPLeTUAVeNdkYUA-1; Mon, 13 Oct 2025 08:50:29 -0400
-X-MC-Unique: xYvodNfVPLeTUAVeNdkYUA-1
-X-Mimecast-MFC-AGG-ID: xYvodNfVPLeTUAVeNdkYUA_1760359828
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-46e3ed6540fso27944765e9.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 05:50:29 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=cQx8owsOo2lMWax5txMylbBKSQUHP3fJOkh5Zo934Nbu/92SfreLLpGaNfdnxGobgBZCVj6Owht3cG2g4IkPGgT8p9R+DXUaYLKxcLh1CTCu4lsBv3PCd2tujq1qPfxDt0yyTIymZnEwEQ0naW3MRUEOa2ae5zGDzBqxoTQp2qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZmIANbpw; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-78f3bfe3f69so3785074b3a.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 06:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760363725; x=1760968525; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bNktDQJpwt2d0SAdhMEssU0chRq9xm2zJi9soknmR28=;
+        b=ZmIANbpwaVygFPmUeoEbSs6GgYbRPqFu4MFOCZopS+lPalDz3EJtl8EM8gqVXHx1ct
+         z/FGPvNu9WuEjPjcoVd8M8LTw4crzDbJoBNaunU10So2agAfq8SCfMlAmDmzi9cfyTFP
+         y/2ccZpluy4O/i1hHF3QMiEiHE/r7BsLAM0OsoKqc5PNdRiPWDFhTu5BBurRKdBeVjeL
+         jqFQ9JNIEyPhol8BF/Yv5hBaFQptIlwukgyFCWGdwL3IH4BTJNUxspyZuLEgihP1Czt2
+         W//1bJBi0IxF7JyZcIsmRj4umXYuLcqN+w1FGDVTExVCzS6fVMiMejlRex9rzBwpcEjf
+         FWvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760359828; x=1760964628;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fmLpGViBdbcMLzx1bb+Kxqb3+3UtyUNscErHdno+a+c=;
-        b=O9z/dcJe7y+5Bh7VqsAUr3EHw8HC8RIHnG7jFJqOOcO4rDUEG4JwAcikG+smLTt/MJ
-         t9Cg3dTADDr3/wgMd4xUrgsqg2OAP/N3KfxwQxgU2YGFJS3X4+06r4wGkvhPsOWrCqar
-         WT3MFSQHz5YUovDsTr+P+oG95WqfvDXVfbY1sSPJkZ9BktqGztgnW2yD80Hk0Kx8TVjK
-         BOJ3T+JovX8KpUrOOhuykgJxRQWjpEfSu1n9+EUzMHEqbR4VT7xHqiYPTqzxhx4gv4JN
-         YtQfmFLJyIn+G0ix6mufrMe2WgUTakNjqkhu8cMkiA389OyQhQs7KPDtLYM/2X7pulsC
-         +M7w==
-X-Forwarded-Encrypted: i=1; AJvYcCWqthq2FCncGonYumoRlGX6DELhGMX84y+Nd1GlLvfjdm5ujEbXTpOfXtfXe59IFbxH98bqrSv2gnxB/w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBTHO/8xWehSLP8BlCDROlPSAP/LE005ey6G8uG2e0SPMjiwlr
-	3GXjZlPCrWoZnka3r9BsP8rXfri4hGEYXhSBBBpjoCZE7ntCZJgoMAaJu6sxdym4dSoMf9QnWe5
-	8g2ha0FD5S4mljR0M0xJo3+4eSJaBeHrHjrFSIyREZ9jfn7lYRyVgSQ/Z2VyoPozf
-X-Gm-Gg: ASbGncvx6uj5iQTo9h0gGBWpRfOznC1N2i2iymjnkawlNVmeuCOezIfXq4IVmsj5IGb
-	USeWowaWViIKmzM6t9q9NWV7hVPfCnXyqV+I066z5NmArWKIZLYUAAEcHp5JAdrID5v8lsewEp9
-	Xv47lTIITnSn+tPGFSAmcGoo9S+e2nCW3yDZKDG41DQyj3qhUJ5lst5elm4w1vW/B9onLGLSILk
-	gpoBJjYXaftZvn3GW3SGXJXOBGnoNwesklu8W60zXXYOhNFiIRcXM21IpeR81XeVpUgaB7ZDVgG
-	6/laRsXpUd24jywoN9vHjMw6f4QUOlB5909mORb7Tk60w24u7tSWNYcWymVYWo8rDdz1rFllw1H
-	/w8g=
-X-Received: by 2002:a05:600c:6011:b0:45c:b642:87a6 with SMTP id 5b1f17b1804b1-46fa28bbca1mr126817175e9.0.1760359827996;
-        Mon, 13 Oct 2025 05:50:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGMMoKs4VS2gHV3gKsNnQk9DNjQ77BVoRLFBciblN4uYmPY7ldMdNRqp+3ZL0M1o/a3ErG8+Q==
-X-Received: by 2002:a05:600c:6011:b0:45c:b642:87a6 with SMTP id 5b1f17b1804b1-46fa28bbca1mr126817005e9.0.1760359827614;
-        Mon, 13 Oct 2025 05:50:27 -0700 (PDT)
-Received: from [192.168.3.141] (tmo-083-189.customers.d1-online.com. [80.187.83.189])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46fb49c3e49sm183435545e9.16.2025.10.13.05.50.24
+        d=1e100.net; s=20230601; t=1760363725; x=1760968525;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bNktDQJpwt2d0SAdhMEssU0chRq9xm2zJi9soknmR28=;
+        b=Fg8YR2MCAtsR7c5cBKE4PIo9XmoRyLarZUwDAyaTyn/McdFW4XiU/A7XQUE5bm8pxJ
+         ttxiwBbT6yvM/oSK0syoJpurKmc5T8Kx8L1Dbi+t+NFAN4CvW8/zEfv1t8oboUBW79Gd
+         W/l5RMmtneV0CmILPbktguFit6x9+ZLlgumKImDUBcuBMzvASUGaTdn3kfWs5LzObJFx
+         ti41MRccq3bHMulSpO8VcqQT5WTT5PQHmGwES2DjxoiJMDSk7Y6j9NbFtirpLzU7c6Fk
+         qzDzSLgGJAg+adEqM0JBCALkGbtXyRAmKpn8/qH5R2fyWEC87BamxXjvST0PQKq7gODV
+         cCBw==
+X-Forwarded-Encrypted: i=1; AJvYcCX5HC65NzrJr18AXVe+2UeYz+54NzbmaE/LDorCSI1yRN7Z3dHQMLhQDktLVnbnn+OWxnF6w5bUYqULrg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzUdX5ElKor/p5/6j3Dc6nUNcaUvNElnGRsXZ9WKfJBM7iHdh0U
+	LxLYihkxGFOX7PQpnEn7DSRLwaYYB5JOYWbsVE/3n3u67dNkt/OGyoOw
+X-Gm-Gg: ASbGncvAsy8b61ZO94DmM8Nmewvms9QLM/KTzr7BJ+YQKaJSQaOzY1WSCuTU9zEsEYe
+	OrVl1si8hQrGkXZRy7a1yvSR5RRJ0kq6Di4gsEXGDfRlBXpPMTHyX/m3s3JSSdq+vOtydFMh5HV
+	/nn7ligyNr0KaaI5CtvJt9ThiwpMV+xyVHEkDek/nOPgMOWwNZgro6GpltR993rHdSnDQKbHpDt
+	/MNcck/WrHVX1lbrVnVrD8s95+FLdxz4JhtUQeWtd79LHckXTHbm2CExPveds2gu3z1o67FwZJz
+	CdN+T5Clap3tVnV9zT4czgJ7NWXQov5vxcsYyCWfLKCfTPyNMFDEtWpOYUer454CbXMtD/+EOC9
+	T+Xa3nERxkeKdLSkImPcf+JIetgsED0RVdx2cBsTBznYLcMX8Dn35NDpTUGebwDG5Rm48WqbEpt
+	7LfiMmqueFNKyK/OVdM9JlaWjA
+X-Google-Smtp-Source: AGHT+IHB5MtrJAqU3/C/wmwEIkAHtPuLEZoAmq62FNy9N8emT0ESiZaJyuOKGeU5iyFsHOJDDJj9ww==
+X-Received: by 2002:a05:6a20:9389:b0:32b:5ec7:1408 with SMTP id adf61e73a8af0-32da8516807mr26793038637.48.1760363725378;
+        Mon, 13 Oct 2025 06:55:25 -0700 (PDT)
+Received: from [192.168.50.102] ([49.245.38.171])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7992d0c349csm11780346b3a.50.2025.10.13.06.55.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Oct 2025 05:50:27 -0700 (PDT)
-Message-ID: <3fdede63-0bb7-4618-af45-6605ed25b6c0@redhat.com>
-Date: Mon, 13 Oct 2025 14:50:24 +0200
+        Mon, 13 Oct 2025 06:55:24 -0700 (PDT)
+Message-ID: <006ae40b-b2e6-441a-b2d3-296d1e166787@gmail.com>
+Date: Mon, 13 Oct 2025 21:55:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -90,85 +83,194 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/10] mm: remove filemap_fdatawrite_wbc
-To: Christoph Hellwig <hch@lst.de>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov
- <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>,
- Christian Schoenebeck <linux_oss@crudebyte.com>, Chris Mason <clm@fb.com>,
- David Sterba <dsterba@suse.com>, Mark Fasheh <mark@fasheh.com>,
- Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
- Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org, v9fs@lists.linux.dev,
- linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
- ocfs2-devel@lists.linux.dev, linux-xfs@vger.kernel.org, linux-mm@kvack.org
-References: <20251013025808.4111128-1-hch@lst.de>
- <20251013025808.4111128-9-hch@lst.de>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- qIws/H2t
-In-Reply-To: <20251013025808.4111128-9-hch@lst.de>
+Subject: Re: [PATCH v3 3/3] generic: basic smoke for filesystems on zoned
+ block devices
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+ Zorro Lang <zlang@redhat.com>
+Cc: Christoph Hellwig <hch@lst.de>, Naohiro Aota <naohiro.aota@wdc.com>,
+ linux-btrfs@vger.kernel.org, Hans Holmberg <hans.holmberg@wdc.com>,
+ fstests@vger.kernel.org, linux-xfs@vger.kernel.org,
+ Carlos Maiolino <cem@kernel.org>, "Darrick J . Wong" <djwong@kernel.org>,
+ Carlos Maiolino <cmaiolino@redhat.com>
+References: <20251013080759.295348-1-johannes.thumshirn@wdc.com>
+ <20251013080759.295348-4-johannes.thumshirn@wdc.com>
+Content-Language: en-GB
+From: Anand Jain <anajain.sg@gmail.com>
+In-Reply-To: <20251013080759.295348-4-johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 13.10.25 04:58, Christoph Hellwig wrote:
-> Replace filemap_fdatawrite_wbc, which exposes a writeback_control to the
-> callers with a __filemap_fdatawrite helper that takes all the possible
-> arguments and declares the writeback_control itself.
+
+Johannes,
+
+The test case is failing with XFS. For some reason, the mkfs error 
+wasn't captured in the output, so I had to modify the test slightly. 
+Errors and the diff is below.
+
+Thanks, Anand
+
+-------
+SECTION       -- generic-config
+RECREATING    -- xfs on /dev/sde
+FSTYP         -- xfs (non-debug)
+PLATFORM      -- Linux/x86_64 feddev 6.16.10-100.fc41.x86_64 #1 SMP 
+PREEMPT_DYNAMIC Thu Oct  2 18:19:14 UTC 2025
+MKFS_OPTIONS  -- -f /dev/sda
+MOUNT_OPTIONS -- /dev/sda /mnt/scratch
+
+generic/772       [not run] cannot mkfs zoned filesystem
+Ran: generic/772
+Not run: generic/772
+Passed all 1 tests
+
+SECTION       -- generic-config
+=========================
+Ran: generic/772
+Not run: generic/772
+Passed all 1 tests
+--------------
+
+$ dmesg
+
+[ 2089.280926] XFS (sda): Ending clean mount
+[ 2089.786335] zloop: Added device 0: 64 zones of 256 MB, 4096 B block size
+[ 2089.848065] zloop: Zone 63: unaligned write: sect 33554176, wp 33030144
+[ 2089.848081] zloop: Zone 63: failed write sector 33554176, 256 sectors
+[ 2089.848086] I/O error, dev zloop0, sector 33554176 op 0x1:(WRITE) 
+flags 0x8800 phys_seg 32 prio class 2
+[ 2089.862921] zloop: Zone 32: unaligned write: sect 16777296, wp 16777216
+[ 2089.862934] zloop: Zone 32: failed write sector 16777296, 1024 sectors
+[ 2089.862939] I/O error, dev zloop0, sector 16777296 op 0x1:(WRITE) 
+flags 0x4000 phys_seg 128 prio class 2
+
+-----------------
+
+$ cat ./results/generic-config/generic/772.full
+
+echo '1' 2>&1 > /sys/fs/xfs/sda/error/fail_at_unmount
+echo '0' 2>&1 > /sys/fs/xfs/sda/error/metadata/EIO/max_retries
+echo '0' 2>&1 > /sys/fs/xfs/sda/error/metadata/EIO/retry_timeout_seconds
+mkfs.xfs: pwrite failed: Input/output error
+libxfs_bwrite: write failed on (unknown) bno 0x1ffff00/0x100, err=5
+mkfs.xfs: Releasing dirty buffer to free list!
+found dirty buffer (bulk) on free list!
+mkfs.xfs: libxfs_device_zero write failed: Input/output error
+meta-data=/dev/zloop0            isize=512    agcount=4, agsize=1048576 blks
+          =                       sectsz=4096  attr=2, projid32bit=1
+          =                       crc=1        finobt=1, sparse=1, rmapbt=1
+          =                       reflink=1    bigtime=1 inobtcount=1 
+nrext64=1
+data     =                       bsize=4096   blocks=4194304, imaxpct=25
+          =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=16384, version=2
+          =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+
+
+
+$ git diff
+diff --git a/tests/generic/772 b/tests/generic/772
+index d9b84614da3d..54da97fdd00f 100755
+--- a/tests/generic/772
++++ b/tests/generic/772
+@@ -36,8 +36,9 @@ mkdir -p $mnt
+  _create_zloop $ID $zloopdir 256 2
+  zloop="/dev/zloop$ID"
+
+-_try_mkfs_dev $zloop 2>&1 >> $seqres.full ||\
++if ! _try_mkfs_dev $zloop >> $seqres.full 2>&1; then
+         _notrun "cannot mkfs zoned filesystem"
++fi
+  _mount $zloop $mnt
+
+  $FSX_PROG -q -N 20000 $FSX_AVOID "$mnt/fsx" >> $seqres.full
+root@feddev:/Volumes/work/ws/fstests$
+----------------------------
+
+
+
+
+On 13-Oct-25 4:07 PM, Johannes Thumshirn wrote:
+> Add a basic smoke test for filesystems that support running on zoned
+> block devices.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> It creates a zloop device with 2 conventional and 62 sequential zones,
+> mounts it and then runs fsx on it.
+> 
+> Currently this tests supports BTRFS, F2FS and XFS.
+> 
+> Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Cheers
-
-David / dhildenb
+>   tests/generic/772     | 49 +++++++++++++++++++++++++++++++++++++++++++
+>   tests/generic/772.out |  2 ++
+>   2 files changed, 51 insertions(+)
+>   create mode 100755 tests/generic/772
+>   create mode 100644 tests/generic/772.out
+> 
+> diff --git a/tests/generic/772 b/tests/generic/772
+> new file mode 100755
+> index 00000000..d9b84614
+> --- /dev/null
+> +++ b/tests/generic/772
+> @@ -0,0 +1,49 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2025 Wesgtern Digital Corporation.  All Rights Reserved.
+> +#
+> +# FS QA Test 772
+> +#
+> +# Smoke test for FSes with ZBD support on zloop
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto zone quick
+> +
+> +_cleanup()
+> +{
+> +	if test -b /dev/zloop$ID; then
+> +		echo "remove id=$ID" > /dev/zloop-control
+> +	fi
+> +}
+> +
+> +. ./common/zoned
+> +
+> +# Modify as appropriate.
+> +_require_scratch
+> +_require_scratch_size $((16 * 1024 * 1024)) #kB
+> +_require_zloop
+> +
+> +_scratch_mkfs > /dev/null 2>&1
+> +_scratch_mount
+> +
+> +ID=$(_find_next_zloop)
+> +
+> +mnt="$SCRATCH_MNT/mnt"
+> +zloopdir="$SCRATCH_MNT/zloop"
+> +
+> +mkdir -p "$zloopdir/$ID"
+> +mkdir -p $mnt
+> +_create_zloop $ID $zloopdir 256 2
+> +zloop="/dev/zloop$ID"
+> +
+> +_try_mkfs_dev $zloop 2>&1 >> $seqres.full ||\
+> +	_notrun "cannot mkfs zoned filesystem"
+> +_mount $zloop $mnt
+> +
+> +$FSX_PROG -q -N 20000 $FSX_AVOID "$mnt/fsx" >> $seqres.full
+> +
+> +umount $mnt
+> +
+> +echo Silence is golden
+> +# success, all done
+> +_exit 0
+> diff --git a/tests/generic/772.out b/tests/generic/772.out
+> new file mode 100644
+> index 00000000..98c13968
+> --- /dev/null
+> +++ b/tests/generic/772.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 772
+> +Silence is golden
 
 
