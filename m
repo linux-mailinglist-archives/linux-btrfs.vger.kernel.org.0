@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-17702-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17703-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90DECBD2E82
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 14:06:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78E8CBD2E77
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 14:05:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7A6E34F18FD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 12:05:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C61A3C36CA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 12:05:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 388E726E714;
-	Mon, 13 Oct 2025 12:05:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4405A26F28C;
+	Mon, 13 Oct 2025 12:05:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VDYgSTLf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bpPykV79"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3CC26E6F8
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 12:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87EB826CE10
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 12:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760357140; cv=none; b=rRHOIpE345FckgYgjnPYL+QMO8/f4gLJKk8iamRtJ4ZSf7JNtI+HMabXwFkveTSEsA35DqZRWxcns71lnoZlMAwJgiepL2DD2jUU+EONlkGYC0B4LRWo72yn2o1qY+27pE88R7chkB2AWaFzas/rQBTik+5OL2gahCwLL5KEym0=
+	t=1760357141; cv=none; b=dKLJxHbrYwlAOJ11Cu3dHC3F7lX0pINS3XeIX2GbP+o0DgyVAsFYrkHrNl79aJAODAzi2X4FTWekD4FvTAHFYV/OW2oQXuwHB2bN8uHXRxmia1qJQliX8AfEFurSwA2MbXE4kTRp2dH3R6EaJ1dIIIU9Q6hmtIVDkhLp3SM3zy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760357140; c=relaxed/simple;
-	bh=d1mGCLke9uwCHShzeEzz5C1zDs8POXruTNAaWhvARoQ=;
+	s=arc-20240116; t=1760357141; c=relaxed/simple;
+	bh=gYfrbSQ2YvF3hxHeprdwMBXeQ/KaUM687xa9UDo37bI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uY74NHdRK6ur4scveEq8ej86/tV+dbv5GbcwGTEl85g66F9n2zEz87Vzd4phzQmHSGQuTi5hbHM0botNCz6Y2z/uRJjGDCap0knVwrIH9qZZnQrxiCYSXqK8OmETGTFhk+r1ZPta2SuC0yFLld0G+fIqPs/cnDyCigfXhZ5XPyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VDYgSTLf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA836C4CEE7
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 12:05:39 +0000 (UTC)
+	 MIME-Version; b=bewbeS6/pYs5wvGMDz/nGnb6djSKGG8hrpUUaAsPZnLpE770XxtLj6G/98TfN0k/vHZXWJ9ODAfMlZ1yD32Btya5TAI2Bd38uoukkMQUeoHQY4wDUI2vgFXkyo8ht7yJK75/BuTn/DYdMbuzt4dhfFZIt0Sh3GKporQND5agaJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bpPykV79; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C86B7C4CEE7
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 12:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760357140;
-	bh=d1mGCLke9uwCHShzeEzz5C1zDs8POXruTNAaWhvARoQ=;
+	s=k20201202; t=1760357141;
+	bh=gYfrbSQ2YvF3hxHeprdwMBXeQ/KaUM687xa9UDo37bI=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=VDYgSTLfoVxsiX0tr7SDw/rbGUQS12RTqQiu+2e7FT4NQ1biDEXx4sWR6et6UKmH+
-	 wXH+tqtEtvBMKcBFVaZopes51jhpvHT0jY0os1dy9YpRFnqjXUZe8t0E3K1ESG1KWl
-	 5OTY4jm5vCMOxBn76SnqW+oG4rP2OFGqEfYBLU2WjvSc4C9HGgb6i9rR1B1Xo0Hg7Z
-	 u0AQkPSfgYMRpu03AI7Hpy+ea7z+mydDgS24qmRHWmgMk5TPhnM6WR0NKg0W9IXVwd
-	 L8i3Nu5JOhJLvJsc6KtZQHcsVzVkbqh5IOOf9MIM+FUM+GYLH1rlousqqEoadoHbtm
-	 1NjZs7EF4vgtg==
+	b=bpPykV79y1hWKuHPDtwiuMg5EAGVy4GIqxUFFXv+TmhNwFHh7Ap3y1RgMR6FtO8qa
+	 EkUsBj1Ft4Uv70SSSD3xfoWo14GlBCZB0Txf0K+TWQ6OFo3hhzBR/Kdnj0ps3ITbjb
+	 U/YR1pvW77VMv6gQcF5zfH2A9bD6x6VZ2fChV+KEpy2JfF4piAVhHeSQSoG+TyP6ES
+	 askHzosBicWHR5hbfKXDoUpts2GGne7pCaE61R9fZmRQLsGvh2buX1OqzKUf92pA3q
+	 1/MlPmFcCSwbtMFmiVYbVV3sh8GnjQc80hTMr0Q6v5XRGKNIU5wL/3Lbk5FV521kDh
+	 b6mxYg5cqK5WA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/7] btrfs: add unlikely to unexpected error case in extent_writepages()
-Date: Mon, 13 Oct 2025 13:05:29 +0100
-Message-ID: <7bffa1a8631f3dada0ad49265968f56c155c91cb.1760356778.git.fdmanana@suse.com>
+Subject: [PATCH 5/7] btrfs: consistently round up or down i_size in btrfs_truncate()
+Date: Mon, 13 Oct 2025 13:05:30 +0100
+Message-ID: <04e60398648115da47d20f9741c1a3668a18092a.1760356778.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1760356778.git.fdmanana@suse.com>
 References: <cover.1760356778.git.fdmanana@suse.com>
@@ -59,28 +59,57 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We don't expect to hit errors and log the error message, so add the
-unlikely annotation to make it clear and to hint the compiler that it may
-reorganize code to be more efficient.
+We're using different ways to round down the i_size by sector size, one
+with a bitwise and with a negated mask and another with ALIGN_DOWN(), and
+using ALIGN() to round up.
+
+Replace these uses with the round_down() and round_up() macros which have
+have names that make it clear the direction of the rounding (unlike the
+ALIGN() macro) and getting rid of the bitwise and, negated mask and local
+variable for the mask.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/inode.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 1cb73f55af20..870584dde575 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1874,7 +1874,7 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
- 				  folio_size(folio), bio_ctrl, i_size);
- 	if (ret == 1)
- 		return 0;
--	if (ret < 0)
-+	if (unlikely(ret < 0))
- 		btrfs_err_rl(fs_info,
- "failed to submit blocks, root=%lld inode=%llu folio=%llu submit_bitmap=%*pbl: %d",
- 			     btrfs_root_id(inode->root), btrfs_ino(inode),
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index ac2fd589697d..4a4cb91b7586 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7649,12 +7649,12 @@ static int btrfs_truncate(struct btrfs_inode *inode, bool skip_writeback)
+ 	struct btrfs_block_rsv rsv;
+ 	int ret;
+ 	struct btrfs_trans_handle *trans;
+-	u64 mask = fs_info->sectorsize - 1;
+ 	const u64 min_size = btrfs_calc_metadata_size(fs_info, 1);
+ 
+ 	if (!skip_writeback) {
+ 		ret = btrfs_wait_ordered_range(inode,
+-					       inode->vfs_inode.i_size & (~mask),
++					       round_down(inode->vfs_inode.i_size,
++							  fs_info->sectorsize),
+ 					       (u64)-1);
+ 		if (ret)
+ 			return ret;
+@@ -7720,7 +7720,7 @@ static int btrfs_truncate(struct btrfs_inode *inode, bool skip_writeback)
+ 	while (1) {
+ 		struct extent_state *cached_state = NULL;
+ 		const u64 new_size = inode->vfs_inode.i_size;
+-		const u64 lock_start = ALIGN_DOWN(new_size, fs_info->sectorsize);
++		const u64 lock_start = round_down(new_size, fs_info->sectorsize);
+ 
+ 		control.new_size = new_size;
+ 		btrfs_lock_extent(&inode->io_tree, lock_start, (u64)-1, &cached_state);
+@@ -7730,7 +7730,7 @@ static int btrfs_truncate(struct btrfs_inode *inode, bool skip_writeback)
+ 		 * block of the extent just the way it is.
+ 		 */
+ 		btrfs_drop_extent_map_range(inode,
+-					    ALIGN(new_size, fs_info->sectorsize),
++					    round_up(new_size, fs_info->sectorsize),
+ 					    (u64)-1, false);
+ 
+ 		ret = btrfs_truncate_inode_items(trans, root, &control);
 -- 
 2.47.2
 
