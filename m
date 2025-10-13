@@ -1,88 +1,108 @@
-Return-Path: <linux-btrfs+bounces-17675-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17677-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7CFDBD1EC9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 10:06:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDF0EBD1EE0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 10:08:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0C8AA4EE28D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 08:06:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FEF53C1B1E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 08:08:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C38AB2EC082;
-	Mon, 13 Oct 2025 08:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A67492ED871;
+	Mon, 13 Oct 2025 08:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JoJ5YBKd"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="hym4LBML"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64C22EB865;
-	Mon, 13 Oct 2025 08:05:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209472EBDE0;
+	Mon, 13 Oct 2025 08:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760342759; cv=none; b=c3o8dtNHWe5QaJ2KgIfdF0C1uT+Ctu1xRPmcOykPbFkkU/7nNg/yAEgMJZyvxlT6Zrq2Tu5Q4ZMiO1/5bWZo6glE9oKt9NCHGw1NaNED23etk6OUoEuNlUFatK3RphMMXoleZtwZS7GDKtL/n6NQ4J3h6ouO4+6ovDcPhE/wLa0=
+	t=1760342896; cv=none; b=gLFXtpOW9CQ6s6oUKOXc0YsxbPWul6OFYd396OyoCj2S2RNLh2tCKAIi1sJQySR/HXFeXHDj3ZR3+45Yeq+zBfWdjNzZ/1Fq2eYltgN+tcL4EuYBKDUFJRTvZwaKv5A68s17tOny/C/6TLKWE88YfI2b3lRAXIUmgKAjqWUBBGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760342759; c=relaxed/simple;
-	bh=5HsWbtZ2dcB7krEcbKjne7KnS+nPBJU93qavaxJizuM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TXN8Za1Akmd75uDhay9RyJg4K33k8nsTB2ar7olErOfDVNsisVdZbRYtqAHojSPNjNJxEHllCGnu2jnkgP00K4SxHUQTMy2imJjBjOtzxlUEAlfc2GLidlHcxidEsViQMRz1GUmPoYhVIE4ASH0NFb/+cqjwp8rmOXWykhd4mNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JoJ5YBKd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB19FC4CEE7;
-	Mon, 13 Oct 2025 08:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760342758;
-	bh=5HsWbtZ2dcB7krEcbKjne7KnS+nPBJU93qavaxJizuM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=JoJ5YBKdMmynvxsqiAkHkZbrbXNbh1kQQdkhIKnwG6b9L6o3Uzqi1X27KlKrsP3Fl
-	 R+lbP/clJGXkbhS5NEhqi0WhSG87d70ezCBhCv1BktJRTGsKjbOMR2s0X7m2rPZ0Za
-	 aJ89IXK3xmT7/fyqzwHbHH3uYFwcU8sSKoILbJ6+EgEN5d0jr/somN9ZzIA7z4pSU1
-	 vSAsqr50CL9MnLXn4g22yvpe4Rxs3HtQAYyAu3lN/RpP31W4v5IU0188xLD7bhEdEo
-	 rs2FORcAaC7QLU5udePhJZbhtXDoEEFtFdrkp7D0ifJNyNJWapFn9NwLgNGUylYwx6
-	 Gyj0yBRoVk77w==
-Message-ID: <227fc5f2-c16c-4fb2-be02-e7b1f37559dc@kernel.org>
-Date: Mon, 13 Oct 2025 17:05:53 +0900
+	s=arc-20240116; t=1760342896; c=relaxed/simple;
+	bh=0iIpRE76O8pDy+Un3JbjYRsQyn+glO04MaeIRMK7dPQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jphK5apnklVR2vbOKSh2JlOQx7VdYNMJ8/N8mKAAXYYXg1B//kbM9guAvMRRgC2dOJyhGCX9CW3IwtNPylswd6MSBhSOZjv63aL1BM2PYZyprTgKhnG64fJwIO1qOUGJF00Vm4nRZtqiLXVcK215x2jTEbaESUsfqTwV/3OAqn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=hym4LBML; arc=none smtp.client-ip=216.71.153.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1760342892; x=1791878892;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0iIpRE76O8pDy+Un3JbjYRsQyn+glO04MaeIRMK7dPQ=;
+  b=hym4LBMLbgdJmYvGVPlZF8/LVEEXsUytkh+7dzr2h4ZAbAjX5+21yVEI
+   HoICQGCDGwy7C34lFQTBd14sa7smrOt/j1vke0KkEiW6/LhbBOxyA5K6U
+   ImQMljaxetKUszu0C9fzZLO4wtox4wejzUKK4OGaOKhwD1fOcyycoKnjU
+   6Dru/fvdhcymPkypcCn7alvXPRWT0BeO0XZPZnXXAfFwwnmoB7jGuRMp0
+   FrVT2i8XGwgKkdrcwkhUuMfoyyS9EfjwZml6I8QC3yp16T/d7vPzAdr9g
+   w6XvQZGm958yx1davXIH0c4YkMjNsYrfb2K8qDFZiWQeBOYc5h+sQ+7dv
+   w==;
+X-CSE-ConnectionGUID: g3E71TjZSKmzVc1pn1P03w==
+X-CSE-MsgGUID: fGTqCREdR5aYk6jl9osPcg==
+X-IronPort-AV: E=Sophos;i="6.19,224,1754928000"; 
+   d="scan'208";a="133101995"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Oct 2025 16:08:06 +0800
+IronPort-SDR: 68ecb366_rLjq6Sk+O4zhsajwGCa+ShwUhEKV4h090mP30UxmEgEN4iH
+ PDBlGSK8/LHzkHKWXcjjvW7YIwQVRPvk7tzdWWA==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Oct 2025 01:08:06 -0700
+WDCIronportException: Internal
+Received: from chnhcln-775.ad.shared (HELO neo.fritz.box) ([10.224.28.18])
+  by uls-op-cesaip02.wdc.com with ESMTP; 13 Oct 2025 01:08:03 -0700
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To: Zorro Lang <zlang@redhat.com>
+Cc: Christoph Hellwig <hch@lst.de>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	linux-btrfs@vger.kernel.org,
+	Hans Holmberg <hans.holmberg@wdc.com>,
+	fstests@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	Carlos Maiolino <cem@kernel.org>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v3 0/3] fstests: basic smoke test on zoned loop device
+Date: Mon, 13 Oct 2025 10:07:56 +0200
+Message-ID: <20251013080759.295348-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/10] mm: remove filemap_fdatawrite_wbc
-To: Christoph Hellwig <hch@lst.de>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov
- <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>,
- Christian Schoenebeck <linux_oss@crudebyte.com>, Chris Mason <clm@fb.com>,
- David Sterba <dsterba@suse.com>, Mark Fasheh <mark@fasheh.com>,
- Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
- Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org, v9fs@lists.linux.dev,
- linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
- ocfs2-devel@lists.linux.dev, linux-xfs@vger.kernel.org, linux-mm@kvack.org
-References: <20251013025808.4111128-1-hch@lst.de>
- <20251013025808.4111128-9-hch@lst.de>
-From: Damien Le Moal <dlemoal@kernel.org>
-Content-Language: en-US
-Organization: Western Digital Research
-In-Reply-To: <20251013025808.4111128-9-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2025/10/13 11:58, Christoph Hellwig wrote:
-> Replace filemap_fdatawrite_wbc, which exposes a writeback_control to the
-> callers with a __filemap_fdatawrite helper that takes all the possible
-> arguments and declares the writeback_control itself.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Add a very basic smoke test on a zoned loopback device to check that noone is
+accidentially breaking support for zoned block devices in filesystems that
+support these.
 
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+Currently this includes btrfs, f2fs and xfs.
+
+
+Changes to v2:
+- Add Carlos' Reviewed-bys
+- Add a _find_last_zloop() helper
+
+Johannes Thumshirn (3):
+  common/zoned: add _require_zloop
+  common/zoned: add _create_zloop
+  generic: basic smoke for filesystems on zoned block devices
+
+ common/zoned          | 37 ++++++++++++++++++++++++++++++++
+ tests/generic/772     | 49 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/772.out |  2 ++
+ 3 files changed, 88 insertions(+)
+ create mode 100755 tests/generic/772
+ create mode 100644 tests/generic/772.out
 
 -- 
-Damien Le Moal
-Western Digital Research
+2.51.0
+
 
