@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-17701-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17702-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 380C1BD2E72
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 14:05:52 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90DECBD2E82
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 14:06:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D753C34B75B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 12:05:51 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7A6E34F18FD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 12:05:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601A326E6F3;
-	Mon, 13 Oct 2025 12:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 388E726E714;
+	Mon, 13 Oct 2025 12:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qbn3TpkL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VDYgSTLf"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A196926E17D
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 12:05:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3CC26E6F8
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 12:05:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760357139; cv=none; b=mEA08ud47uJBYE2+KV24UFmiwNe3mXzVGYuw9KiO6ZI65ybNwLgkAmun3ofoFeN06CsEuW3y3TFYWO1gtqy2878QlSY3stpyu+MvaIg0oq8T0EuebrTFBxlyudqsKVQ422CeR2jkCCd0ydr5smwzLYCXiFZDkK5IUEPsu9aKLyY=
+	t=1760357140; cv=none; b=rRHOIpE345FckgYgjnPYL+QMO8/f4gLJKk8iamRtJ4ZSf7JNtI+HMabXwFkveTSEsA35DqZRWxcns71lnoZlMAwJgiepL2DD2jUU+EONlkGYC0B4LRWo72yn2o1qY+27pE88R7chkB2AWaFzas/rQBTik+5OL2gahCwLL5KEym0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760357139; c=relaxed/simple;
-	bh=722Jeh7k3DopfvAZQp0rQWZvrR24CYDO+Rypr394MIc=;
+	s=arc-20240116; t=1760357140; c=relaxed/simple;
+	bh=d1mGCLke9uwCHShzeEzz5C1zDs8POXruTNAaWhvARoQ=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WWvkwiduhyue+ZrKPcVXOV8VIL72Cfz/xMsLosUmYEw1hD3lUPrtftR+ZUSS4phALzIWDG5NbCvqPzFrxyeq+MlC81HeoWXAYIqdV6Rq8bnif30KPWpHfvTH4al2x+59tS3L+4OWy4j20q5ZUlSUPjwtbqUnqOCR4KH7WmCtk9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qbn3TpkL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED1C2C4CEF8
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 12:05:38 +0000 (UTC)
+	 MIME-Version; b=uY74NHdRK6ur4scveEq8ej86/tV+dbv5GbcwGTEl85g66F9n2zEz87Vzd4phzQmHSGQuTi5hbHM0botNCz6Y2z/uRJjGDCap0knVwrIH9qZZnQrxiCYSXqK8OmETGTFhk+r1ZPta2SuC0yFLld0G+fIqPs/cnDyCigfXhZ5XPyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VDYgSTLf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA836C4CEE7
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 12:05:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760357139;
-	bh=722Jeh7k3DopfvAZQp0rQWZvrR24CYDO+Rypr394MIc=;
+	s=k20201202; t=1760357140;
+	bh=d1mGCLke9uwCHShzeEzz5C1zDs8POXruTNAaWhvARoQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=qbn3TpkLgthrz3VSCZBwNEYHqrCs/UVJ5Ej1hB0NFabYlyBh8FWD4rJBUW4xEG8e+
-	 LhvspnF+GZz7Rc5MwGdL3LE3CPo3JdbPsCRLw+ONb54nj4jBu/yV+cuk8/ZNi/n+Wl
-	 2UnfPsIfbhUPe3YKu9ioa5TezrRyFc2LK1wmz838l4o9Fg8VE4tInkD4WUMbt6U9at
-	 zBWEUjwGCrp8Bc2+Ax+btfeQKD9DJpcrPNHRl8Ss3fYDDQg6YtxmKpP3zazG9Vd+Ui
-	 k7mZudkpjKzIfueYWHJ9OszD1m/LwCCENUDhB5FmIB6HOw0KtPi0GmEQlKYcS5wxiG
-	 zRnp7DyOVADTg==
+	b=VDYgSTLfoVxsiX0tr7SDw/rbGUQS12RTqQiu+2e7FT4NQ1biDEXx4sWR6et6UKmH+
+	 wXH+tqtEtvBMKcBFVaZopes51jhpvHT0jY0os1dy9YpRFnqjXUZe8t0E3K1ESG1KWl
+	 5OTY4jm5vCMOxBn76SnqW+oG4rP2OFGqEfYBLU2WjvSc4C9HGgb6i9rR1B1Xo0Hg7Z
+	 u0AQkPSfgYMRpu03AI7Hpy+ea7z+mydDgS24qmRHWmgMk5TPhnM6WR0NKg0W9IXVwd
+	 L8i3Nu5JOhJLvJsc6KtZQHcsVzVkbqh5IOOf9MIM+FUM+GYLH1rlousqqEoadoHbtm
+	 1NjZs7EF4vgtg==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/7] btrfs: split assertion into two in extent_writepage_io()
-Date: Mon, 13 Oct 2025 13:05:28 +0100
-Message-ID: <342129175c52b8f7b68fa96d157eb116c9a01873.1760356778.git.fdmanana@suse.com>
+Subject: [PATCH 4/7] btrfs: add unlikely to unexpected error case in extent_writepages()
+Date: Mon, 13 Oct 2025 13:05:29 +0100
+Message-ID: <7bffa1a8631f3dada0ad49265968f56c155c91cb.1760356778.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1760356778.git.fdmanana@suse.com>
 References: <cover.1760356778.git.fdmanana@suse.com>
@@ -59,34 +59,28 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-If the assertion fails we don't get to know which of the two expressions
-failed and neither the values used in each expression.
-
-So split the assertion into two, each for a single expression, so that
-if any is triggered we see a line number reported in a stack trace that
-points to which expression failed. Also  make the assertions use the
-verbose mode to print the values involved in the computations.
+We don't expect to hit errors and log the error message, so add the
+unlikely annotation to make it clear and to hint the compiler that it may
+reorganize code to be more efficient.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_io.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/btrfs/extent_io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index c641eb50d0ee..1cb73f55af20 100644
+index 1cb73f55af20..870584dde575 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -1698,7 +1698,9 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
- 	int bit;
- 	int ret = 0;
- 
--	ASSERT(start >= folio_start && end <= folio_end);
-+	ASSERT(start >= folio_start, "start=%llu folio_start=%llu", start, folio_start);
-+	ASSERT(end <= folio_end, "start=%llu len=%u folio_start=%llu folio_size=%zu",
-+	       start, len, folio_start, folio_size(folio));
- 
- 	ret = btrfs_writepage_cow_fixup(folio);
- 	if (ret == -EAGAIN) {
+@@ -1874,7 +1874,7 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
+ 				  folio_size(folio), bio_ctrl, i_size);
+ 	if (ret == 1)
+ 		return 0;
+-	if (ret < 0)
++	if (unlikely(ret < 0))
+ 		btrfs_err_rl(fs_info,
+ "failed to submit blocks, root=%lld inode=%llu folio=%llu submit_bitmap=%*pbl: %d",
+ 			     btrfs_root_id(inode->root), btrfs_ino(inode),
 -- 
 2.47.2
 
