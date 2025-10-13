@@ -1,136 +1,141 @@
-Return-Path: <linux-btrfs+bounces-17744-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17745-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF4BABD6A6F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Oct 2025 00:42:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8666ABD6B1A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Oct 2025 01:04:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01E2618A59B3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 22:42:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F18E8405023
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 23:04:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF4722FE057;
-	Mon, 13 Oct 2025 22:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB802F7459;
+	Mon, 13 Oct 2025 23:03:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AJC8dSB2"
+	dkim=pass (2048-bit key) header.d=verizon.net header.i=@verizon.net header.b="jm8/xMRR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sonic305-21.consmr.mail.gq1.yahoo.com (sonic305-21.consmr.mail.gq1.yahoo.com [98.137.64.84])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F182BE638
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 22:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA9129D275
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 23:03:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=98.137.64.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760395323; cv=none; b=WMJO/RcJVrb07CHKCy9H8AbSoiNVvgF5NHE9ujW/J5Xd+aC3hN/LpLnGUZGHvfAdhpUB9N4Xt8r/aR++JGLFOBV72z3ZRAtCkqq3L4TiY8Nqaquq1CszkN1mYzfQF263FMnxT/F+Ohd4vJD9SWqgZ1SjHwwifnPuEIfNpWFKWio=
+	t=1760396630; cv=none; b=FFG8a4vM9o8Mxmk+USZjmz1wm551Er/XkRbgyezBDOkmBmDye3EAN7+VJtc3gCYFDybsUfq6Yuv4a48HQ5aihbbk9/IObnIWOhw4T56uSCCcquzP4lDAgqFOXtxRNBqjasVcaGhi7CLnpELEtFWoi15Aqb2/6HESvmBsRXO883Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760395323; c=relaxed/simple;
-	bh=WOCMLbSHSA2PZ/ABT4wCIagAZaSRwiosa2qE0eJ2W6w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q7IvNY3nY7dlT/gtXVXlpyNGC5fvUGuqT4bMExcRkfeGQnNTxCfE6xhrP+AC9sYwRWAduTgeOYPi8R5Gc6wywqI+ZmjNeDhAwB3QcW3aWOwZvVhLPBnMBIHFViuW6Ry87bxsi2yQTrvoxrCAqBT/RmTXKiioQuouOLUrwD0uP1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AJC8dSB2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB73CC4CEE7
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 22:42:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760395323;
-	bh=WOCMLbSHSA2PZ/ABT4wCIagAZaSRwiosa2qE0eJ2W6w=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=AJC8dSB2lgILhtDzMfLtd5OZWOGulFffzUX8aJ3U+yGquMgH+8nC4+ccvVxOEyolm
-	 msgGDpLhzwKlydQ+mK02tHZTTl2c+5jn+Kt0Ms4IxjwNIYZQxWopGpOcjy71RRvziA
-	 cne7r7guzgQhL21urHSVRO/7KbJ/DdrfXlLsRkJMr+BnxLYawoitL7fr/50mHzAhTM
-	 NKigAPfVYsSfDgMY3teOhgfwUk/hZBjI8kMiglZm2pcjb8tkX1x3TmCycE6zDTASJC
-	 HRy2gV4L0cJtmD5a2Zh92SPglQMZddk1gyaNJYIQdBZ32Yq+yvt5FW0SNqmrL9cZUp
-	 uY05JMq8b8jiw==
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-62fc28843ecso7070863a12.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 15:42:02 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxldGXczXbeIN8VS5fQpOk+R2ff+xS66AsJNB0LRTXsvCJhhC2U
-	gG17s1in6hdg5rwJMlNRGFFeCB0eSqMyso/b+1KfH9b5O31ppFIQ/pLb2Zo7LQ0RQxBITwhYm7W
-	VIAPyl8Ns/ZbwhX2EoDX+3KFm4+zcYFs=
-X-Google-Smtp-Source: AGHT+IENgiiAUPtoIApiTTNeBqFWJcz+b3ROROVFJQwHzuCNgzlt+/eZxYVlEjYQ4glrHM+QnWhukMIPW/E3a7UoOYo=
-X-Received: by 2002:a17:907:1b12:b0:b41:e675:95e3 with SMTP id
- a640c23a62f3a-b50aa9a1c71mr2369623066b.16.1760395321521; Mon, 13 Oct 2025
- 15:42:01 -0700 (PDT)
+	s=arc-20240116; t=1760396630; c=relaxed/simple;
+	bh=FkK9VYZOglPajvMFRGk6FKtMm+Y8TGNM5kq2KzCA5y4=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type:
+	 References; b=NVy4X02Q2FIBKBOkUxRZx9yoTg/mrFgcfh/zbCYp1rkHRXQr/jTk0MfjZQomwlAS/mO8yc+Z1EzI29ruIVJMPZz1rqZ8Q1auDsQXK8mbgotMdTV70mJUXev6tex8hqtr6+7zAXU3nGmn5bzX/78+mFXnyQ0CGjNfxyvA69ly/0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=verizon.net; spf=pass smtp.mailfrom=verizon.net; dkim=pass (2048-bit key) header.d=verizon.net header.i=@verizon.net header.b=jm8/xMRR; arc=none smtp.client-ip=98.137.64.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=verizon.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=verizon.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=verizon.net; s=a2048; t=1760396620; bh=zfjWw6F6ofrunyrAu915XQht9Ji7yZloVBaIllCzCXQ=; h=Date:To:From:Subject:References:From:Subject:Reply-To; b=jm8/xMRR9VGiK7PqXJhJQw/i5Jtae7S7gKi+NbCYEd+7yq34ypX7nRfvXXNeYgddcLtg5EqVS6jlyQlvmOOoI2aPAWzbahYHqL/ttVSPcF5mtCtyZz7zfNYrdpY4cvwqIajIEHipiSEcd1ufYJXqkD4WuSE5LqWVDI1/z+tM77tGG6XciLrNCWW/E3A5Dx/6dOxSgWN/GEr5JKvwNCt7mvrFc2M4nDEEvcIEVjot8rPiIy3qMTSWn8+ZlT1AOBHmoDTk9NhPYEyoVJfriWVSQkSQNJC0Il9RdYQRUvb0/GAnpUelPall+Cvr/GofrR7siw1g0NZ72NTCqN+VS9+01Q==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1760396620; bh=CO5+HThUlNyLLwzvkwLTUKb9HspYCQFlrpVQw4I+yQz=; h=X-Sonic-MF:Date:To:From:Subject:From:Subject; b=ZCA4gE6CgzAeFPVrl9IwRODOEE0tbnDZjYR4AXNhSnG6Q/haF9Se056QV8iMjPZmlZphATxEW23+aGeybfWFWwLcsfH6wQyDlEsf3PjyM085Zb9AryTdff6VGbrdE+NlFIPeirYR7dSR7nsr7dy0e1aXPIeOfTcbGC/bsVaPPE/5SyvcQyluEBxrlFg51Wy2aMTzIl+bNmmrU/PaAegw9MJwq3QVZ3Kh9tRD1HZRqCFy8Oklfatv0bHOZotaWQm//VRj2Xmeq3uuNmlyxhOPro+wV5cmS22NehI8PpkFDeo/M8Dk3EoOXsNx2cIwr5dDKRQo0KEQbu5uUGfDybiR2w==
+X-YMail-OSG: Bi7_DkkVM1mpZN1phXehba3riXELJbPNT7sjqp6BcjjcqBQbfmLYG8WUtyyR_CF
+ 8SUTsh_VTKXuvkwmpmLkhELnhSbJVHiSpDkt1mk_5G4zFFvICnqSWrjZGz0LM49ByvTeyypPAoqq
+ Jk4.iA4q6QzlIG97bgY18Y6dthZVEulJP7CcKviN2uMaeE11V973wVNt7R30_b1V.R107GFcBACA
+ u9t1u7lcwxLE1sRhPgQP5zhSjNL0JCEYngO_8F2M8PFoE7ybMfpXo6mca7yX4zOb3U6IwPNESZuR
+ .VRKsamRdc6gPyWpQlKhkODmvJbg1fuGlZMkd37eWDZ.AYas.bfJYU87ur1B0PmKSETyrceCeB0G
+ K8XGszmkUDv0Dvtbunew86ee8OY9rkT3XsVNy112RnKAqeaWtcFCrrf1kXYrKNJ21Lxdq.UawJU4
+ Q0QRPJ8.p7lwvJyGG4BVnQ17dsEe_IMdyX9t3jbdTSMVWoAFWEPpkTaM.sQdrHKIcRWZL1XPdslx
+ NEvhhAVKIxpxf18MeJRsQSfmiE5SEaZD1V9ci3n8oCA80HyiAZSK_Iuu6A0.K3rLGF4PxzLoXbnF
+ bZK0ctPOma6tWhdqeXaBUC9HWd1a70TEzI1avhscblxaRzJ_Kj_J7IzIL1gp98KQKeze3RG_LR9L
+ wQdG.f7.OAiT17W_iGKi.OJZb17XgypZZgk4bJXC4iypbuf.LxY8uhAMJhuYBbMEyjmEapixXXDn
+ f5GDMd4kF6mDOnvRZkkNy0zWroPAY4mkUopMASYuCz5q5lb7Jekqd6x8owZ_pr156VIeAX5Qp1y3
+ 1Qo9dYOFy26ZHpoa.KLN0Bc2F3jfFOQAJ0sSxwECLssZvRQraKt42UKIboj.10fJbk82Xl4CVxAT
+ 9WOzSyq6raFJMzWRkPhR1eClXnkiSx5cwK2Wbvs8mTlYb3gjf_EDr0W52CJYx9g4Wc0Y8o0gC7cJ
+ lEi0ylp0sVF7xLe3338vCJjsEsEIlENVoY7B104opREyEi4Hk.h3.g4rQM.GJGUBsNBViBNkRVsR
+ 4H1WwMKNDfm02W9WbIMx_fDn6QlqDt.punXckDOi5xT4YMLkl5gqDtWlwLng4v2nR2Bo5bwnXEzK
+ RBWGe5KRyuyzYL8Ieag3y3n79VmtzEd6a6J_S4fxvhRkhfuDH5s2Py15ByyrhRZjXrV.nR3pOxVU
+ HEmgZNlS2Z0RpS92t2.MDtNDCs1fOXZ4wh62qF2UPUMYRyBTBBWn7b_fe_o9xLBDi_gXH.HaXrQ1
+ f5iR_jRM6ZvQjSwK7T7CZtlBxuhvb52EW.6YVMX7mBtn3nBeeLS1F.63vdPMsfOh6Tjbs0chYzKu
+ 7_ZB6epuisXy.cnEgO_pXhBar0jA7BMvM.8TG34Ubv3fxH2xjksbdwMZNT_4I6RSwRk8EJ6Vh0LP
+ OPixZ5a3CsMIc7Yvs7Ky8FzhADhmyCAV4FT6VyRGV4LBix4sx0xsKIAijtwQ2ZGV0wrWjJzAeG6d
+ 8nq9eRRTINORb7oLyib4gwV8greHkBGUVS836h_SH7b0t.g5ghDyXtQKX_4nAtaigXjBBvrY_.tw
+ uommY14Q9dmzSn4wiiPmJRRYgDZAcTovZWusqmsPqT67U2N5sPu31bwVzZSabFYv1NduMRnnsu5B
+ wphZINreGI6v7t3CYnhQdL4F2ueZLJMUqmYpTlJohHrQ93emh1au82ZOMlrSHN6XyjEW6CFMJQZL
+ 2eSUauqgtb.TnxZex_ZpNfc.kiF.xHJ6nZ99rmEngHEhicimrcNypEc9TAXEhwVvTj6JG96uGKQF
+ 6B9Ugv62Y5w2FrKhSt2FuyODT.LbkwXsM4EZtcBfXf1EkwOuDuKe1YYJNK6mQK6WTEI18mMW1.zD
+ CAwDhUmA6Isk21zN0Lno6QtzpacrbqR4auinVWKjtGCnC1HpN5fwrfJuygvGiNVYpN9gR3ukgqU4
+ MhaNco2WWH_BKXkBk6gkgayIYdgDwQAxxPJcFnLHtDs0idkIJ.jMbXulF3IHpkejE1A1aJHbpKLx
+ xKjX2Vik.dWMcZmf.LJFaw3VG50pALDTvD7Aq5gv5b8_vzmxKVjJJQ5aU5WHYdtG2zNG2a.ZN2Ka
+ gc9fq27lZGkvitJLelEn18tDkdpuWFiCASHeh1BGKRpqCk66cBk_uKOziB7iX6bhefc0jnJtFP5G
+ hbUqT_jlo.0lL.pR81WvZTUrsqudFoIbMJD8EAoem2GtICLQ6vqeAKmUIHiBo1qj4dZ3UzSgl50u
+ dL59ofI.DAWmF58BKKHBRtGsmA_bc08qW0oY5Wz0qSu2O
+X-Sonic-MF: <brent.belisle@verizon.net>
+X-Sonic-ID: 86f614ae-d516-4131-a3fe-4dcdd1015dbe
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.gq1.yahoo.com with HTTP; Mon, 13 Oct 2025 23:03:40 +0000
+Received: by hermes--production-bf1-565465579b-sw5jv (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 900a4ec49a309941392e5bc0bc74ca34;
+          Mon, 13 Oct 2025 22:53:30 +0000 (UTC)
+Message-ID: <acb2f7d4-ace1-488c-a7f5-cd499d3f637f@verizon.net>
+Date: Mon, 13 Oct 2025 17:53:28 -0500
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1760356778.git.fdmanana@suse.com> <622ef5ee-f94e-4c2e-8d70-8af73021146e@gmx.com>
-In-Reply-To: <622ef5ee-f94e-4c2e-8d70-8af73021146e@gmx.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 13 Oct 2025 23:41:24 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4gALu1NYyGVLa3yxtH-5-FbGRxO0DPT2gesqJuOJk9Lw@mail.gmail.com>
-X-Gm-Features: AS18NWBfVR4H4Ep9U79PVzMUYsJ5oqIagVASiHOF3fhYiP3Q03TWVjMyVBn-00s
-Message-ID: <CAL3q7H4gALu1NYyGVLa3yxtH-5-FbGRxO0DPT2gesqJuOJk9Lw@mail.gmail.com>
-Subject: Re: [PATCH 0/7] btrfs: fix a bug with truncation and writeback and cleanups
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Betterbird (Linux)
+Content-Language: en-US
+To: linux-btrfs@vger.kernel.org
+From: Brent Belisle <brent.belisle@verizon.net>
+Subject: Discard=Async question
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+References: <acb2f7d4-ace1-488c-a7f5-cd499d3f637f.ref@verizon.net>
+X-Mailer: WebService/1.1.24562 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.aol
 
-On Mon, Oct 13, 2025 at 10:01=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com>=
- wrote:
->
->
->
-> =E5=9C=A8 2025/10/13 22:35, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > The first patch fixes a bug where we can up persisting a file extent it=
-em
-> > that crosses the i_size boundary, making btrfs check complain because i=
-t
-> > won't find checksum items beyond the i_size boundary. Details in the ch=
-ange
-> > log. The rest are several cleanups in related code that popped up while
-> > debugging the issue.
->
-> The series looks good to me.
->
-> Just notice one small inconsistency during review and it's not related
-> to the series itself.
->
->
-> Most callsites searching ordered extents are holding ordered_tree_lock
-> with irq spinlock.
->
-> However in btrfs_split_ordered_extent() there is a non-irq version
-> spinlock of ordered_tree_lock.
+I hope this is the right place to ask this question.  I noticed that 
+when using the latest Linux kernel  6.17.2 and I issue a findmnt 
+command, the discard=async mount option is not showing up in the 
+output.  However using the Linux kernel 6.16.12 and issuing the same 
+command the discard=async command shows in the output. So my question is 
+is/has btrfs discard=async been disabled in the Linux 6.17 kernel 
+series?  Or is it really enabled and it is just a findmnt command 
+display issue.  I'm including the output of both commands  so you can 
+see what I'm talking about.  Thnaks for your help.
 
-Yes, and it's correct as it is.
+Linux Kernel 6.16.12
+LMDE 7 Debian 13 Trixie
 
-Right before taking ordered_tree_lock, with a regular spin_lock(), we
-take root->ordered_extent_lock with spin_lock_irq(), which disables
-irqs.
-That means the critical section of ordered_extent_lock can not be
-interrupted to serve interrupts.
+findmnt -t btrfs
+TARGET        SOURCE                 FSTYPE OPTIONS
+/             /dev/nvme0n1p2[/@]     btrfs 
+rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvolid=33929,subvol=/@
+├─/btrfs_pool /dev/nvme0n1p2         btrfs 
+rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvolid=5,subvol=/
+├─/home       /dev/nvme0n1p2[/@home] btrfs 
+rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvolid=33928,subvol=/@home
+├─/970_EVO    /dev/sdb1[/@]          btrfs 
+rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@
+├─/EVO_POOL   /dev/sdb1              btrfs 
+rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvolid=5,subvol=/
+├─/PRO_POOL   /dev/sda1              btrfs 
+rw,noatime,ssd,discard=async,space_cache=v2,subvolid=5,subvol=/
+└─/850_PRO    /dev/sda1[/@]          btrfs 
+rw,noatime,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@
 
-So everything's fine there.
+Linux Kernel 6.17.2
+LMDE 7 Debian 13 Trixie
+
+findmnt -t btrfs
+TARGET        SOURCE                 FSTYPE OPTIONS
+/             /dev/nvme0n1p2[/@]     btrfs 
+rw,noatime,compress=zstd:1,ssd,space_cache=v2,subvolid=33929,subvol=/@
+├─/btrfs_pool /dev/nvme0n1p2         btrfs 
+rw,noatime,compress=zstd:1,ssd,space_cache=v2,subvolid=5,subvol=/
+├─/home       /dev/nvme0n1p2[/@home] btrfs 
+rw,noatime,compress=zstd:1,ssd,space_cache=v2,subvolid=33928,subvol=/@home
+├─/970_EVO    /dev/sdb1[/@]          btrfs 
+rw,noatime,compress=zstd:1,ssd,space_cache=v2,subvolid=256,subvol=/@
+├─/EVO_POOL   /dev/sdb1              btrfs 
+rw,noatime,compress=zstd:1,ssd,space_cache=v2,subvolid=5,subvol=/
+├─/PRO_POOL   /dev/sda1              btrfs 
+rw,noatime,compress=zstd:3,ssd,space_cache=v2,subvolid=5,subvol=/
+└─/850_PRO    /dev/sda1[/@]          btrfs 
+rw,noatime,compress=zstd:3,ssd,space_cache=v2,subvolid=256,subvol=/@
 
 
-
->
-> Looks like an inconsistency at least.
->
-> Thanks,
-> Qu
->
-> >
-> > Filipe Manana (7):
-> >    btrfs: truncate ordered extent when skipping writeback past i_size
-> >    btrfs: use variable for end offset in extent_writepage_io()
-> >    btrfs: split assertion into two in extent_writepage_io()
-> >    btrfs: add unlikely to unexpected error case in extent_writepages()
-> >    btrfs: consistently round up or down i_size in btrfs_truncate()
-> >    btrfs: avoid multiple i_size rounding in btrfs_truncate()
-> >    btrfs: avoid repeated computations in btrfs_mark_ordered_io_finished=
-()
-> >
-> >   fs/btrfs/extent_io.c    | 33 ++++++++++++++++++++++++++-------
-> >   fs/btrfs/inode.c        | 18 ++++++++----------
-> >   fs/btrfs/ordered-data.c | 23 +++++++++++------------
-> >   3 files changed, 45 insertions(+), 29 deletions(-)
-> >
->
 
