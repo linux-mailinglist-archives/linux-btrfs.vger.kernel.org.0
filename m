@@ -1,169 +1,91 @@
-Return-Path: <linux-btrfs+bounces-17679-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17680-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C6C2BD1EEF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 10:09:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18462BD1F13
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 10:10:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CA503C1F62
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 08:08:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3915F3C1A47
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 08:09:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00D62EC08A;
-	Mon, 13 Oct 2025 08:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D302ECD34;
+	Mon, 13 Oct 2025 08:09:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="LQLJOBDk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iJ+uHNeP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A5EE2EBDE5;
-	Mon, 13 Oct 2025 08:08:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A05D2EB5A1;
+	Mon, 13 Oct 2025 08:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760342899; cv=none; b=faS1vjt5D2TaeYQeBpj1ucVXb/+0+Dp6uD5Qu1dJmMvcqvI64O+UP5of417nL6jRADvCwUE9YKWRt0KHamAir5t43ua/QZl0udbuxWyjgE/skvos9bsGcsIKSLnI0m4Z7ra/cowcXVTpv+0EI33bbxq9YJrtBETW3sZwB6O8d70=
+	t=1760342949; cv=none; b=YdyBn4UUO5E3O8qi7XkI9LwJPhEFmqkNQSB9opdol4ZMYJZtI3Tl/APPVqLTYcmkmiiixeoLDLoMPtqgITCuFPv2o+yO7INnP0/Om6emz/WQUZ4VMnbdav7nzQR31ojYmv6VX7hg2gQot+taIn29BVpc6IMPvP1VnDMYNXHypuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760342899; c=relaxed/simple;
-	bh=TxrezenWAuD7QSMm73w8F0dIYBfE0lUIx9nYBctR2x0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=g4bGDezLQHEIsbrUYg47ciCqiwEo9mN8FgnnHuJCcQAbtzq8c1pgb6XAlE23nf/Slv94bHCL9UBQljc2cMycF/lw+4ozHkvL55O494gc3cWn/hmPVALU1GMYkjRZ9t3EB33L1rID/lz9GedMNGggXs6c6OPXKdQy8stpQKxrX8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=LQLJOBDk; arc=none smtp.client-ip=216.71.153.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1760342897; x=1791878897;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TxrezenWAuD7QSMm73w8F0dIYBfE0lUIx9nYBctR2x0=;
-  b=LQLJOBDkydZu+/5oYE2Gz8lff1U18jpfFLV+LT/f3fNNHtGhqFLvFSif
-   /bhtYwMR8k/gI/lhSTzawTBOgDuMZQMZj8pVJs3fMeNM5Y6tM3n1ZFxky
-   sLysJ1wXvVa1QiPfSWbyWZvgKAnQnPq5rUbXeg4F+P7VKuehAHe7nT3/Q
-   X1Wqx+TJNmzbiaNMcszYKnFBR3q+OyrdLZ61IJnuzlkpJYArt5MxKf73R
-   pv2QLCwl1bU6/LZD8mt3SY/80UyXetxQh/Iuo6U9g6eg5+fIHmJwLwepa
-   AzJxgVArPqCzMt5DmsTfhieZ6OMDHkXzVy7ZQwS+PLOp8i0BV8VFAoKB2
-   g==;
-X-CSE-ConnectionGUID: Ui4M9CBRRMWEFozexVvMcg==
-X-CSE-MsgGUID: 6ylRzrbITkK+QlubD+EzRw==
-X-IronPort-AV: E=Sophos;i="6.19,224,1754928000"; 
-   d="scan'208";a="133101999"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Oct 2025 16:08:16 +0800
-IronPort-SDR: 68ecb371_ug2x6MVRub/qtVo+rSl63BpiKAtrRD8/IhOFabq7vN0hCzi
- 8bIqEH51p6EbWZsoOFeQrAlUxrk/vsozM/Eu70g==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Oct 2025 01:08:17 -0700
-WDCIronportException: Internal
-Received: from chnhcln-775.ad.shared (HELO neo.fritz.box) ([10.224.28.18])
-  by uls-op-cesaip02.wdc.com with ESMTP; 13 Oct 2025 01:08:15 -0700
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To: Zorro Lang <zlang@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	linux-btrfs@vger.kernel.org,
-	Hans Holmberg <hans.holmberg@wdc.com>,
-	fstests@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	Carlos Maiolino <cem@kernel.org>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Carlos Maiolino <cmaiolino@redhat.com>
-Subject: [PATCH v3 3/3] generic: basic smoke for filesystems on zoned block devices
-Date: Mon, 13 Oct 2025 10:07:59 +0200
-Message-ID: <20251013080759.295348-4-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251013080759.295348-1-johannes.thumshirn@wdc.com>
-References: <20251013080759.295348-1-johannes.thumshirn@wdc.com>
+	s=arc-20240116; t=1760342949; c=relaxed/simple;
+	bh=gDCK0s48HW2hUV0Q7ClAR5lIhUaH2d/9Yb/F3zIIufk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M4AzZM57JwwXOge5wJ2GzPtVYbnZcgHNFii3e1W38x4oI4g5w2bGiW4U0hBExv1zUfgE07y+bpNKsh1K/3Z/Gk0hE6fE3oc/ct4ufDRYuU2ATFxVaAPwG4Nl3GgGm5V/VtX5A9S8MrJA701IFt7qOikYB87QoyNJpMgwSoDLPjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iJ+uHNeP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61F32C4CEE7;
+	Mon, 13 Oct 2025 08:09:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760342946;
+	bh=gDCK0s48HW2hUV0Q7ClAR5lIhUaH2d/9Yb/F3zIIufk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=iJ+uHNePZM88j5ktJ5Bn1podhcv/yo+c/xoKWvmJCMV2YxHE+DNLDoI56qVkiCpTn
+	 TxoscpmAdTgCxdgycT4KHSRE3r70iCpIgB7T7rI+1qUaM6ZZ+nt7mZjUbSA4b7Lrux
+	 lUjw2K+OcCGzjj/6Ls0XCbV18L5FC4//4YoTGf/NMPzI6P1qWPH60TtfBA4kJShdjC
+	 iqqE20h+7G6vYXYQLxzOsnRt8mRSEdjloLa4cbPqMDozwhAdJFn5cCaxx1RclH6zYT
+	 Ysxe5J51HpSdoRXr4GrxLj69WDrKliXSJ4D7ff5TWJkpFEP96aTqY2YXjNkXI3Iwox
+	 H2lbji/ExBBBg==
+Message-ID: <e0fa533d-c3c4-4a94-9e22-c379d69cb640@kernel.org>
+Date: Mon, 13 Oct 2025 17:09:02 +0900
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 09/10] mm: remove __filemap_fdatawrite_range
+To: Christoph Hellwig <hch@lst.de>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov
+ <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>,
+ Christian Schoenebeck <linux_oss@crudebyte.com>, Chris Mason <clm@fb.com>,
+ David Sterba <dsterba@suse.com>, Mark Fasheh <mark@fasheh.com>,
+ Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+ Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org, v9fs@lists.linux.dev,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+ ocfs2-devel@lists.linux.dev, linux-xfs@vger.kernel.org, linux-mm@kvack.org
+References: <20251013025808.4111128-1-hch@lst.de>
+ <20251013025808.4111128-10-hch@lst.de>
+From: Damien Le Moal <dlemoal@kernel.org>
+Content-Language: en-US
+Organization: Western Digital Research
+In-Reply-To: <20251013025808.4111128-10-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add a basic smoke test for filesystems that support running on zoned
-block devices.
+On 2025/10/13 11:58, Christoph Hellwig wrote:
+> Use filemap_fdatawrite_range and filemap_fdatawrite_range_kick instead
+> of the low-level __filemap_fdatawrite_range that requires the caller
+> to know the internals of the writeback_control structure and remove
+> __filemap_fdatawrite_range now that it is trivial and only two callers
+> would be left.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-It creates a zloop device with 2 conventional and 62 sequential zones,
-mounts it and then runs fsx on it.
+Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 
-Currently this tests supports BTRFS, F2FS and XFS.
 
-Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- tests/generic/772     | 49 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/772.out |  2 ++
- 2 files changed, 51 insertions(+)
- create mode 100755 tests/generic/772
- create mode 100644 tests/generic/772.out
-
-diff --git a/tests/generic/772 b/tests/generic/772
-new file mode 100755
-index 00000000..d9b84614
---- /dev/null
-+++ b/tests/generic/772
-@@ -0,0 +1,49 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2025 Wesgtern Digital Corporation.  All Rights Reserved.
-+#
-+# FS QA Test 772
-+#
-+# Smoke test for FSes with ZBD support on zloop
-+#
-+. ./common/preamble
-+_begin_fstest auto zone quick
-+
-+_cleanup()
-+{
-+	if test -b /dev/zloop$ID; then
-+		echo "remove id=$ID" > /dev/zloop-control
-+	fi
-+}
-+
-+. ./common/zoned
-+
-+# Modify as appropriate.
-+_require_scratch
-+_require_scratch_size $((16 * 1024 * 1024)) #kB
-+_require_zloop
-+
-+_scratch_mkfs > /dev/null 2>&1
-+_scratch_mount
-+
-+ID=$(_find_next_zloop)
-+
-+mnt="$SCRATCH_MNT/mnt"
-+zloopdir="$SCRATCH_MNT/zloop"
-+
-+mkdir -p "$zloopdir/$ID"
-+mkdir -p $mnt
-+_create_zloop $ID $zloopdir 256 2
-+zloop="/dev/zloop$ID"
-+
-+_try_mkfs_dev $zloop 2>&1 >> $seqres.full ||\
-+	_notrun "cannot mkfs zoned filesystem"
-+_mount $zloop $mnt
-+
-+$FSX_PROG -q -N 20000 $FSX_AVOID "$mnt/fsx" >> $seqres.full
-+
-+umount $mnt
-+
-+echo Silence is golden
-+# success, all done
-+_exit 0
-diff --git a/tests/generic/772.out b/tests/generic/772.out
-new file mode 100644
-index 00000000..98c13968
---- /dev/null
-+++ b/tests/generic/772.out
-@@ -0,0 +1,2 @@
-+QA output created by 772
-+Silence is golden
 -- 
-2.51.0
-
+Damien Le Moal
+Western Digital Research
 
