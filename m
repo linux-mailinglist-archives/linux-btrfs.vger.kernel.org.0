@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-17720-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17721-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19029BD58D3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 19:41:16 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A342BD589A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 19:38:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB0463E7EA1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 17:38:26 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 057AD4E4BDB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 17:38:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 301B7308F26;
-	Mon, 13 Oct 2025 17:38:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5E03090D6;
+	Mon, 13 Oct 2025 17:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bCIT6OA0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gM69koAU"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FEF2308F15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476A4308F32
 	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 17:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760377098; cv=none; b=sqwcsB57D9DcDPkmS1ndpf+fi9EqXf7ztMWIQCZhbId1xXBBXFKF9EIm9j+augvEK036nWZnEvKPucYBPyWuMS8CJFVCVO3TYqu7xODQQ8Q62Xc1Sj+CIIcTs/AQihVzQKIE0w3UINhqCxCtnts7cittauSdcsAMOrD01FLz4ak=
+	t=1760377099; cv=none; b=mYqj4lUeSG18fdrIyEaPG8bFUYueryp2mw8A09Q4CYPSp+JeSEM5EvrkcbfPpHm/84a0fVzL65HolbfLpKj5RLtbvuxNzyvLJXGHBzYqqHXsNO6JdpkcETPrpwFiAgqb8IZd0i+O56f/xhJIxbImachR2+O8PTW/QZpG6sI0TIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760377098; c=relaxed/simple;
-	bh=TCDQ95B0im558i5klunXaCyqDLplRmjmVTdsYtYk1Lo=;
+	s=arc-20240116; t=1760377099; c=relaxed/simple;
+	bh=dVQ81D/ul4a4oQSV3uKjUq3bC9tswoKT9drj/bmIYlY=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p2wbHqkd0phqxtBQw2SY8SFfwuNoHXI28723W9P0TQi7+IDPe/Sh4kpbBhuMWIi+OP0Z0nWdi8rpFSszPR3nSexcWLCYnX6rSW3hPUajRyogW5Q2LGg+JovM1tJBjMzJ14we6yK7P7bheexSY6yhlyaDdMLdQjy8ovwpM69Mu44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bCIT6OA0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 715C6C116B1
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 17:38:17 +0000 (UTC)
+	 MIME-Version; b=UTKOUNaAqWsLR+j78ZrhcnzOZLAvQ/HCcwdXRR8iUoufvnh51l3gyn81Qf73RUvmgKW0fWu9IrnSnxKkDQOSaLKWr8qaUZW7RM7WY+Qu/zaLKLxNqid4+dxqY8hASIAtxQOTXnguOcSrJpPFbwklB2maFTeTDS09n7pfz/TQCSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gM69koAU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D1CBC4CEE7
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 17:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760377097;
-	bh=TCDQ95B0im558i5klunXaCyqDLplRmjmVTdsYtYk1Lo=;
+	s=k20201202; t=1760377098;
+	bh=dVQ81D/ul4a4oQSV3uKjUq3bC9tswoKT9drj/bmIYlY=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=bCIT6OA0aWIVzArIGqK6UoSCzjEYMOyfLxpkXa5iCIhL41/c0TCgFXTlrOoUUXRiy
-	 ZoQtwv/3sYtMavh0B2v3oHHs0T+UeOOukSkzq9TyaivygPTPN1qBvETzmrg4E0G8xD
-	 /dOwVnUTN8f5GxN4E/1Y/hhTPfV4g4rMlhq4Txng7T7j+WCfP00ErEFpt7Oe7vaFKf
-	 DPjkcJaFA+LEEdaxzEAv6CgzgTgpkzbg9dea9XnW2RTCUtKgsgs50Hrg7762Oi1gSB
-	 xFLYZCpEnuwHbg83kJgIvWJmeqMqh61XNttD7Gd+KhKRlcD5adw+gwSXH6OuINlUz4
-	 7npfwQTq4bsAA==
+	b=gM69koAUvCff0urFxAPnj7C2zKIc2pSVres40wSRZBxyc4Ms8ZbwQYAz41JI39JY5
+	 ItktqiM33s870so3Q1VCuXymJoYPah66j3J1/ZPYqla1fg6V0j+3LZKwzxL5N2bZ7w
+	 hAMgfu6t+ytwkXcqud7IVMUMUJSN6TfnqVeb3KAKsd0Kn00BTsSxTuOHZKzoEJ2L/H
+	 n79rWUzlh5owGD2EaHFjv74qRw8qNsWUly8xEF67xz+yj27P/n51attkmkTS3YjAX7
+	 BS4Yd7ORNZHzM1Lo9fWAPRuzvjEMPDwa7TNLu4VWzDWpXjV6mxSpdNKMN/oOmTB4h+
+	 DjdA8NHFeEYsw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 03/16] btrfs: remove fs_info argument from priority_reclaim_metadata_space()
-Date: Mon, 13 Oct 2025 18:37:58 +0100
-Message-ID: <94fae30ce2172179947a2a19c5502cd537a0c619.1760376569.git.fdmanana@suse.com>
+Subject: [PATCH 04/16] btrfs: remove fs_info argument from maybe_fail_all_tickets()
+Date: Mon, 13 Oct 2025 18:37:59 +0100
+Message-ID: <bac374a61703df7de660f8ce7a63561cea9b62f9.1760376569.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1760376569.git.fdmanana@suse.com>
 References: <cover.1760376569.git.fdmanana@suse.com>
@@ -64,46 +64,60 @@ So remove the fs_info argument.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/space-info.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ fs/btrfs/space-info.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 403cfadd7f9d..73ee2c63f3ef 100644
+index 73ee2c63f3ef..1a2566676284 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -1489,12 +1489,12 @@ static const enum btrfs_flush_state evict_flush_states[] = {
- 	RESET_ZONES,
- };
- 
--static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
--				struct btrfs_space_info *space_info,
--				struct reserve_ticket *ticket,
--				const enum btrfs_flush_state *states,
--				int states_nr)
-+static void priority_reclaim_metadata_space(struct btrfs_space_info *space_info,
-+					    struct reserve_ticket *ticket,
-+					    const enum btrfs_flush_state *states,
-+					    int states_nr)
+@@ -1071,7 +1071,6 @@ static bool steal_from_global_rsv(struct btrfs_fs_info *fs_info,
+ /*
+  * We've exhausted our flushing, start failing tickets.
+  *
+- * @fs_info - fs_info for this fs
+  * @space_info - the space info we were flushing
+  *
+  * We call this when we've exhausted our flushing ability and haven't made
+@@ -1084,9 +1083,9 @@ static bool steal_from_global_rsv(struct btrfs_fs_info *fs_info,
+  * other tickets, or if it stumbles across a ticket that was smaller than the
+  * first ticket.
+  */
+-static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
+-				   struct btrfs_space_info *space_info)
++static bool maybe_fail_all_tickets(struct btrfs_space_info *space_info)
  {
 +	struct btrfs_fs_info *fs_info = space_info->fs_info;
- 	u64 to_reclaim;
- 	int flush_state = 0;
+ 	struct reserve_ticket *ticket;
+ 	u64 tickets_id = space_info->tickets_id;
+ 	const bool aborted = BTRFS_FS_ERROR(fs_info);
+@@ -1197,7 +1196,7 @@ static void do_async_reclaim_metadata_space(struct btrfs_space_info *space_info)
+ 		if (flush_state > final_state) {
+ 			commit_cycles++;
+ 			if (commit_cycles > 2) {
+-				if (maybe_fail_all_tickets(fs_info, space_info)) {
++				if (maybe_fail_all_tickets(space_info)) {
+ 					flush_state = FLUSH_DELAYED_ITEMS_NR;
+ 					commit_cycles--;
+ 				} else {
+@@ -1425,7 +1424,7 @@ static void do_async_reclaim_data_space(struct btrfs_space_info *space_info)
  
-@@ -1638,12 +1638,12 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
- 		wait_reserve_ticket(space_info, ticket);
- 		break;
- 	case BTRFS_RESERVE_FLUSH_LIMIT:
--		priority_reclaim_metadata_space(fs_info, space_info, ticket,
-+		priority_reclaim_metadata_space(space_info, ticket,
- 						priority_flush_states,
- 						ARRAY_SIZE(priority_flush_states));
- 		break;
- 	case BTRFS_RESERVE_FLUSH_EVICT:
--		priority_reclaim_metadata_space(fs_info, space_info, ticket,
-+		priority_reclaim_metadata_space(space_info, ticket,
- 						evict_flush_states,
- 						ARRAY_SIZE(evict_flush_states));
- 		break;
+ 		if (flush_state >= ARRAY_SIZE(data_flush_states)) {
+ 			if (space_info->full) {
+-				if (maybe_fail_all_tickets(fs_info, space_info))
++				if (maybe_fail_all_tickets(space_info))
+ 					flush_state = 0;
+ 				else
+ 					space_info->flush = false;
+@@ -1443,7 +1442,7 @@ static void do_async_reclaim_data_space(struct btrfs_space_info *space_info)
+ 	return;
+ 
+ aborted_fs:
+-	maybe_fail_all_tickets(fs_info, space_info);
++	maybe_fail_all_tickets(space_info);
+ 	space_info->flush = false;
+ 	spin_unlock(&space_info->lock);
+ }
 -- 
 2.47.2
 
