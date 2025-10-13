@@ -1,217 +1,146 @@
-Return-Path: <linux-btrfs+bounces-17733-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17734-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61E1FBD58AF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 19:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EEC0CBD6388
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 22:45:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84E3A18A5D43
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 17:39:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DCDA19A081A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Oct 2025 20:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1A4309EF2;
-	Mon, 13 Oct 2025 17:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7CB3309DDB;
+	Mon, 13 Oct 2025 20:39:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rwd0qxPj"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="A050GTO/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F17B73093D5
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 17:38:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A322EA743
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 20:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760377110; cv=none; b=F473ONQyGuxZ09nnIb2WVMsrmt3NoIM7t2g1fajq3XQCq+qD3EJykWoPc3TDBjxGhbPdAieglS/HZs3ElKQo7j3JQHMK2cTFariRwhkCIHvnAMoInPZpU0yBT5WwAzWA1EDhMPcHKPuapSK1OYFac6tzxAh4uipo/muweHg6QZ4=
+	t=1760387962; cv=none; b=CsCaRdhcVgO3lvsETSReQhL1Q10+bL9G5ANyPcaCJlNb12xDMRF3jP21O0wofwHBYIzodTfUipLgfGjVhRyiBgFAJ598qkG5c84yF2RF3K+dtjkc/iLcEE0V7ZzRPE9PdxNJLnQuDOY7npGPNo3GJJ0K6Wou5DJskqSRd6ipBiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760377110; c=relaxed/simple;
-	bh=qSFx+LLN02G3NpbdBt/KbwA4dITXajlBweLiZXi03B4=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cyCuhDT0SgPN5BTtciLFXSdImDedVfbjBmi03xg4Kqbdwg4gPKQ3pDvJnbmy1Xux1RHlTxFQoQwHADh7G9G+a4rBs4dEIx/e9K7VpnpTAgHkMkkLW0dAlloXyAkPXxIDqelGPwSshC8RyeVfFaoB1EKAHj7X7BoWW28s3XF79eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rwd0qxPj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E71FC4CEFE
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 17:38:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760377109;
-	bh=qSFx+LLN02G3NpbdBt/KbwA4dITXajlBweLiZXi03B4=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=Rwd0qxPj3fooGe9u4BwTYd6FtmdAtI1qFuWH65E15afyduXeTXDgfAcoNR3vuDaYi
-	 0dWNvs5egdsFvY6uBhLcuP/coEKz4tn/ZS/uzFKfo6FcCo5O+zHbcHeuq937zXEC0e
-	 9OcjcXMvDM/2vxGY684cg2uRRr7m7PcxQ2z0j9YBQOHJgqGzXDsZ5yw9zQ9i6uQZoH
-	 n+x5aD3/4XItVTKjzCCCO/kQAkpKGzLHdVhXMnJHtTRL4IdG/Xokss45ADnrh5z2n7
-	 vPEkkCylkvV0P4c4CuyIOEk8eH8WqtF6P1W+Dis0sy+Bi0UNrDe/Ckr56pl9ra2Qk2
-	 dDBzHhNye6kHQ==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 16/16] btrfs: remove fs_info argument from btrfs_reserve_metadata_bytes()
-Date: Mon, 13 Oct 2025 18:38:11 +0100
-Message-ID: <b8fcde93eae08e68952fa8da8587883d9e8da1c4.1760376569.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <cover.1760376569.git.fdmanana@suse.com>
-References: <cover.1760376569.git.fdmanana@suse.com>
+	s=arc-20240116; t=1760387962; c=relaxed/simple;
+	bh=DxBfGhh2/+HUO/+PM3P0ICetsG5JgKa7Tc70QypA8nA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LgW5gl3vhoJd7P0J6b9Gfx4coXR7dOsXxO88fGF3j9qncxAFKDd08ckJA9GFVavVuSH/eLHSbEYku/82UYq8Mhuxoo5feUoqj06ScqMmLcKsMlQkotRoT0YHhJPhy77cXhBT4d0N+zJ6G1W2LwreTzSAswoOmuXTYtCPs9Nocs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=A050GTO/; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3ed20bdfdffso4066224f8f.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Oct 2025 13:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1760387958; x=1760992758; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=k/5lJurlyuxJdcFqWY2oR5aDpcqghsFG3DOY1t5I0NM=;
+        b=A050GTO/G48qQSzFrZR1uA1zzcKq+yAMFmiDPpEfrUhfr9PlJHDx4DLJ1Nv30uB/5s
+         0CJA1MYxQRTz4PT7INjrObPH9QJFK3vuRK5/s4pLDYom1nIF3IpGzoAuovcvInG+YGJH
+         3hOcQuECju1MRko7UhD7DfdnrvRRJHF5ubrIBe9fukdMSJ0dY6YODPCr3GACckk3/3zL
+         QspMseMqqOQrPEzC8Ts5PUyPSmr4ya9ZCCar5zDb5CA1geCkruYQor8rjOdU1spx9TAI
+         qX6ySIoVwaWX5egIwsqcydm5B1DkqO7fOR/7fQ0tL0hNyaw1Dx58lc0AC7Fb8vQFA0Ge
+         jNBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760387958; x=1760992758;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k/5lJurlyuxJdcFqWY2oR5aDpcqghsFG3DOY1t5I0NM=;
+        b=YqsfHACvD85hLR0SGTmlubUwGjcY1axgyR2Kea7Lxq7TJIAh46lBJkhRWyPoPPuD7k
+         UoPfcvEaReZnQRcyF5XPuI9eulhtgoY+2O7K762ttE4avWHwrd3TJ4ZjkwIsj2QONBJp
+         ZAcS1MuV+6xJzNe7xK1E8qWT3f6lbnX0xn5KjkrbA6BHJ+GzWZfRn+02PHlXznbM3b4t
+         ++3rkCqyD6YOwlusdEE+F7bwXaorcD62JpvTQ0UzlMwLS7OmYAEh5tfLgZI3dh8+KH4I
+         hk3MizwV4znN+VsfxRbc31hgcdnOtbTEnJCZMVeB/TMcXIy75CAssda75XSaH8OoYYkR
+         baGw==
+X-Forwarded-Encrypted: i=1; AJvYcCV1PpD0YsIGG3nnldblDITNDwZJDYlBXWt5V+9d77jS2PaB9EuGN9aAou4GTh+mUkJmXZ7CCCoYCRDtQQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxfiDAYAO3cyuqP5J8aN0A46zS/Xp686zJXoRxDXl7hQKYQ5STS
+	cP4lDxbfrpovqOCWD2AWzWRvhfy9jOiNCfdsuSWYG7EJ6fBOHv1KDq4NNJYT0Ah6LeQ=
+X-Gm-Gg: ASbGncuy5LzsF2rX4/7H3FOvyCrMhQbOMKDmgmuSRCzTHLz8oV8ODjPYIwsYKxoD205
+	gUGp9FUp3lPsFyz+rIzHZ7uTlkxM6l0MSGlkJmlPH2wo87BOtGR1zfZVrR3QZ0YmYtwiK73mVQq
+	w6HRhVMUUB0PcJTJ2+l+ytvZJQyXWUZJ0v82hczGz6i7uFVjxqH4LPoYuY4jEZRIRn/nagxoyfO
+	OJAsDVvahEjgjhx0mwpWLzwLJzZQ48zwW8l1z+bSvCjaG9UmWa23h3/KYaXia2ylaHhc1Cd1vBp
+	1Ebs5enD7chZozB4QoHQk8dOscon0zkvLMi00rVddOHNmzIFKgoXciBnxDNEehRZYvBA2WDLLms
+	LFsfxeNdrm6/yKTZDKT9ozzhrhSGSHBM1LfKVvsNTYzDGrHLyTRP5aX/XAek3FCfPORohlEDL3u
+	msjoqh
+X-Google-Smtp-Source: AGHT+IGMdD+E2aO2EwT0qAEpmLi1UhygjOb3pvX5IYujCEBYFY1rakmFjq7tZyH5ePG8KKlWBZFcHQ==
+X-Received: by 2002:a05:6000:186f:b0:426:d734:1378 with SMTP id ffacd0b85a97d-426d734141bmr5265784f8f.4.1760387958076;
+        Mon, 13 Oct 2025 13:39:18 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7992dd83dcbsm12522237b3a.83.2025.10.13.13.39.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Oct 2025 13:39:16 -0700 (PDT)
+Message-ID: <737baeb0-93cd-4018-9013-c86c662a608e@suse.com>
+Date: Tue, 14 Oct 2025 07:09:10 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] iomap: add IOMAP_DIO_FSBLOCK_ALIGNED flag
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Cc: "brauner@kernel.org" <brauner@kernel.org>,
+ "djwong@kernel.org" <djwong@kernel.org>,
+ "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+References: <c78d08f4e709158f30e1e88e62ab98db45dd7883.1760345826.git.wqu@suse.com>
+ <cda26765-066d-4e4f-bd8e-83263f1aee82@wdc.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <cda26765-066d-4e4f-bd8e-83263f1aee82@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
 
-We don't need it since we can grab fs_info from the given space_info.
-So remove the fs_info argument.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/block-rsv.c      | 12 +++++-------
- fs/btrfs/delalloc-space.c |  4 ++--
- fs/btrfs/delayed-ref.c    |  2 +-
- fs/btrfs/space-info.c     |  6 +++---
- fs/btrfs/space-info.h     |  3 +--
- fs/btrfs/transaction.c    |  4 ++--
- 6 files changed, 14 insertions(+), 17 deletions(-)
+在 2025/10/13 21:44, Johannes Thumshirn 写道:
+> On 10/13/25 11:05 AM, Qu Wenruo wrote:
+>> - Remove the btrfs part that utilize the new flag
+>>     Now it's in the enablement patch of btrfs' bs > ps direct IO support.
+> 
+> But then we potentially have code merged without a user. I think it is
+> better to have the btrfs patch in the same series and merged via the
+> same tree.
+> 
 
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index 75cd35570a28..96cf7a162987 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -218,8 +218,7 @@ int btrfs_block_rsv_add(struct btrfs_fs_info *fs_info,
- 	if (num_bytes == 0)
- 		return 0;
- 
--	ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv->space_info,
--					   num_bytes, flush);
-+	ret = btrfs_reserve_metadata_bytes(block_rsv->space_info, num_bytes, flush);
- 	if (!ret)
- 		btrfs_block_rsv_add_bytes(block_rsv, num_bytes, true);
- 
-@@ -259,8 +258,7 @@ int btrfs_block_rsv_refill(struct btrfs_fs_info *fs_info,
- 	if (!ret)
- 		return 0;
- 
--	ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv->space_info,
--					   num_bytes, flush);
-+	ret = btrfs_reserve_metadata_bytes(block_rsv->space_info, num_bytes, flush);
- 	if (!ret) {
- 		btrfs_block_rsv_add_bytes(block_rsv, num_bytes, false);
- 		return 0;
-@@ -530,8 +528,8 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
- 				block_rsv->type, ret);
- 	}
- try_reserve:
--	ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv->space_info,
--					   blocksize, BTRFS_RESERVE_NO_FLUSH);
-+	ret = btrfs_reserve_metadata_bytes(block_rsv->space_info, blocksize,
-+					   BTRFS_RESERVE_NO_FLUSH);
- 	if (!ret)
- 		return block_rsv;
- 	/*
-@@ -552,7 +550,7 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
- 	 * one last time to force a reservation if there's enough actual space
- 	 * on disk to make the reservation.
- 	 */
--	ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv->space_info, blocksize,
-+	ret = btrfs_reserve_metadata_bytes(block_rsv->space_info, blocksize,
- 					   BTRFS_RESERVE_FLUSH_EMERGENCY);
- 	if (!ret)
- 		return block_rsv;
-diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
-index 288e1776c02d..0970799d0aa4 100644
---- a/fs/btrfs/delalloc-space.c
-+++ b/fs/btrfs/delalloc-space.c
-@@ -358,8 +358,8 @@ int btrfs_delalloc_reserve_metadata(struct btrfs_inode *inode, u64 num_bytes,
- 						 noflush);
- 	if (ret)
- 		return ret;
--	ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv->space_info,
--					   meta_reserve, flush);
-+	ret = btrfs_reserve_metadata_bytes(block_rsv->space_info, meta_reserve,
-+					   flush);
- 	if (ret) {
- 		btrfs_qgroup_free_meta_prealloc(root, qgroup_reserve);
- 		return ret;
-diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index f8fc26272f76..e8bc37453336 100644
---- a/fs/btrfs/delayed-ref.c
-+++ b/fs/btrfs/delayed-ref.c
-@@ -228,7 +228,7 @@ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
- 	if (!num_bytes)
- 		return 0;
- 
--	ret = btrfs_reserve_metadata_bytes(fs_info, space_info, num_bytes, flush);
-+	ret = btrfs_reserve_metadata_bytes(space_info, num_bytes, flush);
- 	if (ret)
- 		return ret;
- 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index d65b2e25d4b7..dba28e969f65 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -1848,7 +1848,6 @@ static int __reserve_bytes(struct btrfs_space_info *space_info, u64 orig_bytes,
- /*
-  * Try to reserve metadata bytes from the block_rsv's space.
-  *
-- * @fs_info:    the filesystem
-  * @space_info: the space_info we're allocating for
-  * @orig_bytes: number of bytes we want
-  * @flush:      whether or not we can flush to make our reservation
-@@ -1860,8 +1859,7 @@ static int __reserve_bytes(struct btrfs_space_info *space_info, u64 orig_bytes,
-  * regain reservations will be made and this will fail if there is not enough
-  * space already.
-  */
--int btrfs_reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
--				 struct btrfs_space_info *space_info,
-+int btrfs_reserve_metadata_bytes(struct btrfs_space_info *space_info,
- 				 u64 orig_bytes,
- 				 enum btrfs_reserve_flush_enum flush)
- {
-@@ -1869,6 +1867,8 @@ int btrfs_reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
- 
- 	ret = __reserve_bytes(space_info, orig_bytes, flush);
- 	if (ret == -ENOSPC) {
-+		struct btrfs_fs_info *fs_info = space_info->fs_info;
-+
- 		trace_btrfs_space_reservation(fs_info, "space_info:enospc",
- 					      space_info->flags, orig_bytes, 1);
- 
-diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-index a88cf71b3d3a..2fad2e4c2252 100644
---- a/fs/btrfs/space-info.h
-+++ b/fs/btrfs/space-info.h
-@@ -278,8 +278,7 @@ u64 __pure btrfs_space_info_used(const struct btrfs_space_info *s_info,
- void btrfs_clear_space_info_full(struct btrfs_fs_info *info);
- void btrfs_dump_space_info(struct btrfs_space_info *info, u64 bytes,
- 			   bool dump_block_groups);
--int btrfs_reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
--				 struct btrfs_space_info *space_info,
-+int btrfs_reserve_metadata_bytes(struct btrfs_space_info *space_info,
- 				 u64 orig_bytes,
- 				 enum btrfs_reserve_flush_enum flush);
- void btrfs_try_granting_tickets(struct btrfs_space_info *space_info);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 89ae0c7a610a..6607e354eae5 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -575,7 +575,7 @@ static int btrfs_reserve_trans_metadata(struct btrfs_fs_info *fs_info,
- 	 * We want to reserve all the bytes we may need all at once, so we only
- 	 * do 1 enospc flushing cycle per transaction start.
- 	 */
--	ret = btrfs_reserve_metadata_bytes(fs_info, si, bytes, flush);
-+	ret = btrfs_reserve_metadata_bytes(si, bytes, flush);
- 
- 	/*
- 	 * If we are an emergency flush, which can steal from the global block
-@@ -585,7 +585,7 @@ static int btrfs_reserve_trans_metadata(struct btrfs_fs_info *fs_info,
- 	if (ret && flush == BTRFS_RESERVE_FLUSH_ALL_STEAL) {
- 		bytes -= *delayed_refs_bytes;
- 		*delayed_refs_bytes = 0;
--		ret = btrfs_reserve_metadata_bytes(fs_info, si, bytes, flush);
-+		ret = btrfs_reserve_metadata_bytes(si, bytes, flush);
- 	}
- 
- 	return ret;
--- 
-2.47.2
+It's fine, and in fact that already happened, for the remove_bdev() 
+callback.
 
+So I'm more or less fine with that, as long as we have a proper plan to 
+add the initial user.
+
+Thanks,
+Qu
 
