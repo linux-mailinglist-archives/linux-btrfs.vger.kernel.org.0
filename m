@@ -1,194 +1,135 @@
-Return-Path: <linux-btrfs+bounces-17780-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17781-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34B48BDAEFD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Oct 2025 20:24:32 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01953BDAF0F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Oct 2025 20:27:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9276318A155E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Oct 2025 18:24:55 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5A0A53531DB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Oct 2025 18:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3A0E299948;
-	Tue, 14 Oct 2025 18:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE1FA299931;
+	Tue, 14 Oct 2025 18:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mpKZlYsT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="h/8M/cNg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="y9zR5ruD";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iggg7o+6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pCnDdbqe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79C3F1CAA7B
-	for <linux-btrfs@vger.kernel.org>; Tue, 14 Oct 2025 18:24:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E92296BBF
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 Oct 2025 18:27:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760466260; cv=none; b=Pnb1DH4TbxPRdw6igM3mKv6FTCV5SPsVq9JC9iIG8OXCSu6J02Iouv78nVKtd7BEOghFein1miNT2QFQDKS9dwt8m+IQAVn1eUj/CxkE2kekFqXd+Jmi0Dc6dNkH+SySNxx3gDFKulBFiCYFgUxwNCm1jNL/wAZcUpxX/yqaoLQ=
+	t=1760466435; cv=none; b=PnkyjIJ8k8hYqQP1RLJCCWxNkiqDkwqS9+DwAw03KNY7KTA99rRbEaMDkxR9wzcVLY+kbyxiPwnkNZC29yNaRuAKQqNmlPcvMSxcEmQrBMfPla6uoaNnncnftS22VsTpmxOqGGs46xF22XggI6InbhJ7Fkz8Xy2BIk0FOhtfvKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760466260; c=relaxed/simple;
-	bh=+HW37cDy1uS12Jf9Dqt5dSXxczNSBzYFKY40FKp91aA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SiVGYkwvBbP559ZQCiDHx+zuNpmggAqTXhQRhDnXjgB5nygKkaS99ESFvLlSTMpIh43duZXDiOrCRAaUJWwEMjG1ap4ws+G63iyXweTT+pWcEXQPjaYm5iOf05yXgXI4PunPUmFM98C0Ni6MoInDB6I8+J/bQTVmdwhJY3xGzdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mpKZlYsT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=h/8M/cNg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=y9zR5ruD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iggg7o+6; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A37B621D22;
-	Tue, 14 Oct 2025 18:24:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760466256;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8rTIWdxiVehH5qZFo4dYlznO+npxi+WrtrmvjKWzNGA=;
-	b=mpKZlYsTBlSOu4dS8dpaOSQtKuhu9K8Ls81l8eV4/zBMDKoxRmvttGVkavlTRLRm5zC70V
-	1mlGejP+29uYUC8eqpUjMuRx4CTHHqX+3tmxwEcyrkCzoL+aq6ZuIV/q0qsqBd/lbh6V/V
-	tul3EM1Wdz2/KT3fDxvOzpnA/cuF8wA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760466256;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8rTIWdxiVehH5qZFo4dYlznO+npxi+WrtrmvjKWzNGA=;
-	b=h/8M/cNgaAw44oGl5Mlb/vpiGZI8gNPOn0VwlQtD6idtXvl5WAP18Oesl4I9MpMYhGVbfH
-	78M7OR1xbwAIRcDQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=y9zR5ruD;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=iggg7o+6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760466255;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8rTIWdxiVehH5qZFo4dYlznO+npxi+WrtrmvjKWzNGA=;
-	b=y9zR5ruDdOlfLtDQBAwUL/e0TVl0ZWZI/FLMov1n1ttTQw/l7Nij76LtTZxEsL7JcBXA4P
-	Smz+En+DuY681BgK+EQqHl5S3r3/+0u5wcEpL8uVG+fIj4pS1ZEc2ibaREax06IVMl6c95
-	q2vMejijBQwOU/RgU1cwUBjHE/S+BbA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760466255;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8rTIWdxiVehH5qZFo4dYlznO+npxi+WrtrmvjKWzNGA=;
-	b=iggg7o+6bFh58dTcGGF4CoE3psosmk1nVINh8poheFjzRj0w2hcINGr3+uOjopmzg4BsU6
-	z+5SE9lLSrjByTDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8081413A44;
-	Tue, 14 Oct 2025 18:24:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ERy+Hk+V7mgjXwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 14 Oct 2025 18:24:15 +0000
-Date: Tue, 14 Oct 2025 20:24:14 +0200
-From: David Sterba <dsterba@suse.cz>
-To: =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>
-Cc: linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	kernel-dev@igalia.com, Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>, Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>, Anand Jain <anand.jain@oracle.com>,
-	"Guilherme G . Piccoli" <gpiccoli@igalia.com>
-Subject: Re: [RFC PATCH 0/1] ovl: brtfs' temp_fsid doesn't work with ovl
- index=on
-Message-ID: <20251014182414.GD13776@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20251014015707.129013-1-andrealmeid@igalia.com>
+	s=arc-20240116; t=1760466435; c=relaxed/simple;
+	bh=UmbDsHYUVMIsoP0VtKsYyB4Y9K+vU/geJgDosqX5cJc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=gqS+M6lrCNyGjNx2hlplAHkzyxNrP+sA4R+PMOFDS69/vitFtpiGMPRs27Y6ryelr3pgUxRhrjfh70owKGY3XJ0ekHKzyX3T8fw9VHMMBNBqnzrpqTHEarJMjZKqpCcGBMnTN629xzqWKX5AnOQfCRqOwT+BUvSmNorE+UOiHfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pCnDdbqe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB08CC4CEE7
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 Oct 2025 18:27:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760466434;
+	bh=UmbDsHYUVMIsoP0VtKsYyB4Y9K+vU/geJgDosqX5cJc=;
+	h=From:To:Subject:Date:From;
+	b=pCnDdbqeqmE2jrUYW38rELdCq+ZiOgM3Peiovijq47ShB2u0SG0ZM73KjCcaUI+6b
+	 aK0oBIQRH+SqqhYqCvrRA68mMR4aVv+t5h71JwWnI9XP8sjxEMpUMiMnTirthY/8LQ
+	 ayxxwvBJj5DUHZlsD7REkZFoqq+6H0rBF2HJDBoppcqOrsRhiwrUbWBkFU4dp+v0jp
+	 M6bYhvS5FWR6KfygJhmDckOBZ1FanNgM+j8MU8YIm8qwwhqdPhMkK0Y1UeLRnagFsl
+	 Fk9Rejw5nlcBRpGHD0z/R9XeFcs8eXhCdL9PvybC3lYTe/sPxNCfre2L4dotuMZ/W+
+	 jxudoZbwvPJRQ==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: remove fs_info argument from btrfs_zoned_activate_one_bg()
+Date: Tue, 14 Oct 2025 19:27:09 +0100
+Message-ID: <fad79c0ae3452237308c7de09c6d96a524ca4857.1760466409.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251014015707.129013-1-andrealmeid@igalia.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: A37B621D22
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[vger.kernel.org,igalia.com,szeredi.hu,gmail.com,fb.com,suse.com,oracle.com];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto,suse.cz:dkim,twin.jikos.cz:mid]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -4.21
-X-Spam-Level: 
 
-On Mon, Oct 13, 2025 at 10:57:06PM -0300, André Almeida wrote:
-> Hi everyone,
-> 
-> When using overlayfs with the mount option index=on, the first time a directory is
-> used as upper dir, overlayfs stores in a xattr "overlay.origin" the UUID of the
-> filesystem being used in the layers. If the upper dir is reused, overlayfs
-> refuses to mount for a different filesystem, by comparing the UUID with what's
-> stored at overlay.origin, and it fails with "failed to verify upper root origin"
-> on dmesg. Remounting with the very same fs is supported and works fine.
-> 
-> However, btrfs mounts may have volatiles UUIDs. When mounting the exact same
-> disk image with btrfs, a random UUID is assigned for the following disks each
-> time they are mounted, stored at temp_fsid and used across the kernel as the
-> disk UUID. `btrfs filesystem show` presents that. Calling statfs() however shows
-> the original (and duplicated) UUID for all disks.
-> 
-> This feature doesn't work well with overlayfs with index=on, as when the image
-> is mounted a second time, will get a different UUID and ovl will refuse to
-> mount, breaking the user expectation that using the same image should work. A
-> small script can be find in the end of this cover letter that illustrates this.
-> 
-> >From this, I can think of some options:
-> 
-> - Use statfs() internally to always get the fsid, that is persistent. The patch
-> here illustrates that approach, but doesn't fully implement it.
-> - Create a new sb op, called get_uuid() so the filesystem returns what's
-> appropriated.
-> - Have a workaround in ovl for btrfs.
-> - Document this as unsupported, and userland needs to erase overlay.origin each
-> time it wants to remount.
-> - If ovl detects that temp_fsid and index are being used at the same time,
-> refuses to mount.
-> 
-> I'm not sure which one would be better here, so I would like to hear some ideas
-> on this.
+From: Filipe Manana <fdmanana@suse.com>
 
-I haven't looked deeper if there's a workable solution, but the feature
-combination should be refused. I don't think this will affect many
-users.
+We don't need it since we can grab fs_info from the given space_info.
+So remove the fs_info argument.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/block-group.c | 4 ++--
+ fs/btrfs/zoned.c       | 4 ++--
+ fs/btrfs/zoned.h       | 6 ++----
+ 3 files changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index d7451400cc22..ec1e4fc0cd51 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -3071,7 +3071,7 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group *cache,
+ 	 * We have allocated a new chunk. We also need to activate that chunk to
+ 	 * grant metadata tickets for zoned filesystem.
+ 	 */
+-	ret = btrfs_zoned_activate_one_bg(fs_info, space_info, true);
++	ret = btrfs_zoned_activate_one_bg(space_info, true);
+ 	if (ret < 0)
+ 		goto out;
+ 
+@@ -4339,7 +4339,7 @@ static void reserve_chunk_space(struct btrfs_trans_handle *trans,
+ 			 * We have a new chunk. We also need to activate it for
+ 			 * zoned filesystem.
+ 			 */
+-			ret = btrfs_zoned_activate_one_bg(fs_info, info, true);
++			ret = btrfs_zoned_activate_one_bg(info, true);
+ 			if (ret < 0)
+ 				return;
+ 
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 0ea0df18a8e4..31cfac5cfe78 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -2754,10 +2754,10 @@ int btrfs_zone_finish_one_bg(struct btrfs_fs_info *fs_info)
+ 	return ret < 0 ? ret : 1;
+ }
+ 
+-int btrfs_zoned_activate_one_bg(struct btrfs_fs_info *fs_info,
+-				struct btrfs_space_info *space_info,
++int btrfs_zoned_activate_one_bg(struct btrfs_space_info *space_info,
+ 				bool do_finish)
+ {
++	struct btrfs_fs_info *fs_info = space_info->fs_info;
+ 	struct btrfs_block_group *bg;
+ 	int index;
+ 
+diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
+index 17c5656580dd..d64f7c9255fa 100644
+--- a/fs/btrfs/zoned.h
++++ b/fs/btrfs/zoned.h
+@@ -94,8 +94,7 @@ bool btrfs_zoned_should_reclaim(const struct btrfs_fs_info *fs_info);
+ void btrfs_zoned_release_data_reloc_bg(struct btrfs_fs_info *fs_info, u64 logical,
+ 				       u64 length);
+ int btrfs_zone_finish_one_bg(struct btrfs_fs_info *fs_info);
+-int btrfs_zoned_activate_one_bg(struct btrfs_fs_info *fs_info,
+-				struct btrfs_space_info *space_info, bool do_finish);
++int btrfs_zoned_activate_one_bg(struct btrfs_space_info *space_info, bool do_finish);
+ void btrfs_check_active_zone_reservation(struct btrfs_fs_info *fs_info);
+ int btrfs_reset_unused_block_groups(struct btrfs_space_info *space_info, u64 num_bytes);
+ #else /* CONFIG_BLK_DEV_ZONED */
+@@ -262,8 +261,7 @@ static inline int btrfs_zone_finish_one_bg(struct btrfs_fs_info *fs_info)
+ 	return 1;
+ }
+ 
+-static inline int btrfs_zoned_activate_one_bg(struct btrfs_fs_info *fs_info,
+-					      struct btrfs_space_info *space_info,
++static inline int btrfs_zoned_activate_one_bg(struct btrfs_space_info *space_info,
+ 					      bool do_finish)
+ {
+ 	/* Consider all the block groups are active */
+-- 
+2.47.2
+
 
