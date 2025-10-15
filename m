@@ -1,153 +1,248 @@
-Return-Path: <linux-btrfs+bounces-17849-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17850-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF6A3BDFB72
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 18:43:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B24EBDFC50
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 18:53:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4BDF04E39F6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 16:43:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CBC43C3C61
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 16:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B287338F24;
-	Wed, 15 Oct 2025 16:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD69933768B;
+	Wed, 15 Oct 2025 16:50:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ndSlJwvX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Or+ThANT";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HKvycH+p";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="i7EX8w9c"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MFrLu9cT";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MFrLu9cT"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2843375D3
-	for <linux-btrfs@vger.kernel.org>; Wed, 15 Oct 2025 16:43:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A36332C11D4
+	for <linux-btrfs@vger.kernel.org>; Wed, 15 Oct 2025 16:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760546600; cv=none; b=FOkZrgVRd4j35LYTdy9hak2BWOdGNfZMnOp0BBd0POFLZjnr2hgVvI5bptP1lwvdYnTUJKkoDgdz2SEx2fQw10Zjc180/Bcbz5c2MA+3IVCxQw0PTa7yvRsSRVSXhU55EqhRmwLEKhsS9ELEORfPXED2nTZdN39hOXs3E77ahcM=
+	t=1760547047; cv=none; b=OkyEa7I/RmgpTlcB8CG5bHcO0uAilj+/kS85SLTcPaJCzG8d3ivWmvT+lxIvZYBUM+VcIh1ky+X9zJEvfk92EDjWvBddcxarlQGNCVjtwup8Ek+kbfFV0aDMhMtX8gmjaUtl2VUMvycW0iOtppCuZ4mtRy9qCtZL9u9QvxpHFCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760546600; c=relaxed/simple;
-	bh=Tvb8NzW5FA6gsz+ynZvmSwKolyvBuACusQYpduUL/e0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XHccGj46Gsq1wVoJhfO3LysEkMQcngSWqHm+QovdffshjnTp3Nf+qBsbCv+qbAhnErnl6ZGTxcF5OtAzooJLVp7Z4uyz8mTOa4YBnwwfIfYH3oMDo52mu938u9KGciIVY9EJuzHAXp2lgTtPu4ywSj7GaXGuuNfx5wftAB6Fmnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ndSlJwvX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Or+ThANT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HKvycH+p; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=i7EX8w9c; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1760547047; c=relaxed/simple;
+	bh=/5/gwif7D91Kd60hYRjrO+ILl/a4JRo2PamhEFAsir0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f6M3BHGdE28KoCkiCMyyKJwKIfV6pcFGx3HDfNwS/iwbqKX/1UX2yktufWnODF6SANAh32517bICXnLcrUaJWe/maUFtDSFjzsM8KIOBChKG2+IMrSrSIKSvKeDQiqNPEIsdpP7NBk8CyZz8oqHxmTW1VyIZ5o+c0E8qorKL/Gs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MFrLu9cT; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MFrLu9cT; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 072F75BE14;
-	Wed, 15 Oct 2025 16:43:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760546597;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6j8T1FokYqjW+441LVC0vUPj+cUFRigyX6Pnvob8J9M=;
-	b=ndSlJwvXXSTStcDzF2l1OuT3a+W/nZF8TfIg9ai0dfgc95eywb+QwsFqE17U1ciOG/LNbr
-	Xbe99w0j5EIE0KvNe2IWTVdu5jKoFzD/RoKCdN+/iW+nS8oU7BJYBqOkhJTFAgwImdgO/C
-	VvOZP9rHC5AfeV9qWOIArR2m3oGNUZs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760546597;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6j8T1FokYqjW+441LVC0vUPj+cUFRigyX6Pnvob8J9M=;
-	b=Or+ThANTi1iQVlAoWu8yjh9Oh9c6YI640H4m23OB2y5cdhYqtCD+8fx/WY0LTpkuouGv3W
-	8Zas8gVbiwX1Z1Dg==
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7BC405BCC8;
+	Wed, 15 Oct 2025 16:50:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1760547042; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=zy756eevkW1tFsjDJvbq45zWGdffgftrXk51kRwVojI=;
+	b=MFrLu9cTrw6ktOnj2NpXcjpPrckeB+oPct0C8YIJNwhC8H55xhYS8tYDciKtnGt6z3RAiV
+	eiS5YGadPaI/FYIpnBtutjyyDo051FRimet9K0RMK6Qiy1oUJMM2XrDmRCkUL7mIpmbXQg
+	FMxJwAFLltvG7rbjqr21yJE8kh01CC4=
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=HKvycH+p;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=i7EX8w9c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760546596;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6j8T1FokYqjW+441LVC0vUPj+cUFRigyX6Pnvob8J9M=;
-	b=HKvycH+pnsV+PszGyItkuz0cvCLVbW84UOA54TaQXF9enc3LwZIAXyinOfjusIPQZ5zC8o
-	RDJl7X4CmwSmtpYvB4VcBdCxVxBgu/9U3SFikfryEgMrB6xl2/Y3GfFkw/XqjB3OjrQGuD
-	LXdGWv04kljDL5t3SjPoLM6UTCzy3Y8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760546596;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6j8T1FokYqjW+441LVC0vUPj+cUFRigyX6Pnvob8J9M=;
-	b=i7EX8w9c7uaxqcHQnJ3dtA6JKiU1X3581S5/e08HyL+ZsSW7ariJ4VFxRlkZY6vCtOf904
-	r2DVnbwYgrmagDBg==
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1760547042; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=zy756eevkW1tFsjDJvbq45zWGdffgftrXk51kRwVojI=;
+	b=MFrLu9cTrw6ktOnj2NpXcjpPrckeB+oPct0C8YIJNwhC8H55xhYS8tYDciKtnGt6z3RAiV
+	eiS5YGadPaI/FYIpnBtutjyyDo051FRimet9K0RMK6Qiy1oUJMM2XrDmRCkUL7mIpmbXQg
+	FMxJwAFLltvG7rbjqr21yJE8kh01CC4=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E473113A29;
-	Wed, 15 Oct 2025 16:43:15 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6957613A29;
+	Wed, 15 Oct 2025 16:50:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sU+ZNyPP72hDDgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 15 Oct 2025 16:43:15 +0000
-Date: Wed, 15 Oct 2025 18:43:14 +0200
-From: David Sterba <dsterba@suse.cz>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs: add and use helper macros to print keys
-Message-ID: <20251015164314.GF13776@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1760530704.git.fdmanana@suse.com>
+	id cHNoGeLQ72h9FQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Wed, 15 Oct 2025 16:50:42 +0000
+From: David Sterba <dsterba@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: move and rename CSUM_FMT definition
+Date: Wed, 15 Oct 2025 18:48:37 +0200
+Message-ID: <20251015165038.1995430-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1760530704.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 072F75BE14
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.78 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.18)[-0.904];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	RCPT_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_DN_NONE(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWO(0.00)[2];
 	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -4.21
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.78
+X-Spam-Level: 
 
-On Wed, Oct 15, 2025 at 01:21:19PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Details in the change logs.
-> 
-> Filipe Manana (2):
->   btrfs: add macros to facilitate printing of keys
->   btrfs: use the key format macros when printing keys
+Move the CSUM_FMT* definitions to fs.h where will be the BTRFS_KEY_FMT
+and add the prefix for consistency.
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
 
-Nice. I was thinking about naming it only KEY_FMT, as we have CSUM_FMT
-without the prefix but BTRFS_KEY_FMT is more clear, so maybe we should
-use it in csum format as well for consistency.
+Related to https://lore.kernel.org/linux-btrfs/c488454c158cdb7f394e561a1fb1ee774bbfbea9.1760530704.git.fdmanana@suse.com/
+but the lines get longer than necessary, I'm not sure the prefix is
+worth it.
+
+ fs/btrfs/btrfs_inode.h |  4 ----
+ fs/btrfs/disk-io.c     |  6 +++---
+ fs/btrfs/fs.h          |  4 ++++
+ fs/btrfs/inode.c       | 24 ++++++++++++------------
+ fs/btrfs/scrub.c       |  6 +++---
+ 5 files changed, 22 insertions(+), 22 deletions(-)
+
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index af373d50a901f2..4f048d61b67070 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -543,10 +543,6 @@ static inline void btrfs_set_inode_mapping_order(struct btrfs_inode *inode)
+ #endif
+ }
+ 
+-/* Array of bytes with variable length, hexadecimal format 0x1234 */
+-#define CSUM_FMT				"0x%*phN"
+-#define CSUM_FMT_VALUE(size, bytes)		size, bytes
+-
+ void btrfs_calculate_block_csum(struct btrfs_fs_info *fs_info, phys_addr_t paddr,
+ 				u8 *dest);
+ int btrfs_check_block_csum(struct btrfs_fs_info *fs_info, phys_addr_t paddr, u8 *csum,
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 0aa7e5d1b05f6c..efa968090f4c99 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -398,10 +398,10 @@ int btrfs_validate_extent_buffer(struct extent_buffer *eb,
+ 
+ 	if (memcmp(result, header_csum, csum_size) != 0) {
+ 		btrfs_warn_rl(fs_info,
+-"checksum verify failed on logical %llu mirror %u wanted " CSUM_FMT " found " CSUM_FMT " level %d%s",
++"checksum verify failed on logical %llu mirror %u wanted " BTRFS_CSUM_FMT " found " BTRFS_CSUM_FMT " level %d%s",
+ 			      eb->start, eb->read_mirror,
+-			      CSUM_FMT_VALUE(csum_size, header_csum),
+-			      CSUM_FMT_VALUE(csum_size, result),
++			      BTRFS_CSUM_FMT_VALUE(csum_size, header_csum),
++			      BTRFS_CSUM_FMT_VALUE(csum_size, result),
+ 			      btrfs_header_level(eb),
+ 			      ignore_csum ? ", ignored" : "");
+ 		if (unlikely(!ignore_csum)) {
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 0bb0c01d795222..68da0aa406f806 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -74,6 +74,10 @@ struct btrfs_space_info;
+ #define BTRFS_SUPER_INFO_SIZE			4096
+ static_assert(sizeof(struct btrfs_super_block) == BTRFS_SUPER_INFO_SIZE);
+ 
++/* Array of bytes with variable length, hexadecimal format 0x1234 */
++#define BTRFS_CSUM_FMT				"0x%*phN"
++#define BTRFS_CSUM_FMT_VALUE(size, bytes)	size, bytes
++
+ /*
+  * Number of metadata items necessary for an unlink operation:
+  *
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index bd953146eda765..7a36db0567d517 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -233,21 +233,21 @@ static void print_data_reloc_error(const struct btrfs_inode *inode, u64 file_off
+ 	if (logical == U64_MAX) {
+ 		btrfs_warn_rl(fs_info, "has data reloc tree but no running relocation");
+ 		btrfs_warn_rl(fs_info,
+-"csum failed root %lld ino %llu off %llu csum " CSUM_FMT " expected csum " CSUM_FMT " mirror %d",
++"csum failed root %lld ino %llu off %llu csum " BTRFS_CSUM_FMT " expected csum " BTRFS_CSUM_FMT " mirror %d",
+ 			btrfs_root_id(inode->root), btrfs_ino(inode), file_off,
+-			CSUM_FMT_VALUE(csum_size, csum),
+-			CSUM_FMT_VALUE(csum_size, csum_expected),
++			BTRFS_CSUM_FMT_VALUE(csum_size, csum),
++			BTRFS_CSUM_FMT_VALUE(csum_size, csum_expected),
+ 			mirror_num);
+ 		return;
+ 	}
+ 
+ 	logical += file_off;
+ 	btrfs_warn_rl(fs_info,
+-"csum failed root %lld ino %llu off %llu logical %llu csum " CSUM_FMT " expected csum " CSUM_FMT " mirror %d",
++"csum failed root %lld ino %llu off %llu logical %llu csum " BTRFS_CSUM_FMT " expected csum " BTRFS_CSUM_FMT " mirror %d",
+ 			btrfs_root_id(inode->root),
+ 			btrfs_ino(inode), file_off, logical,
+-			CSUM_FMT_VALUE(csum_size, csum),
+-			CSUM_FMT_VALUE(csum_size, csum_expected),
++			BTRFS_CSUM_FMT_VALUE(csum_size, csum),
++			BTRFS_CSUM_FMT_VALUE(csum_size, csum_expected),
+ 			mirror_num);
+ 
+ 	ret = extent_from_logical(fs_info, logical, &path, &found_key, &flags);
+@@ -318,19 +318,19 @@ static void __cold btrfs_print_data_csum_error(struct btrfs_inode *inode,
+ 	/* Output without objectid, which is more meaningful */
+ 	if (btrfs_root_id(root) >= BTRFS_LAST_FREE_OBJECTID) {
+ 		btrfs_warn_rl(root->fs_info,
+-"csum failed root %lld ino %lld off %llu csum " CSUM_FMT " expected csum " CSUM_FMT " mirror %d",
++"csum failed root %lld ino %lld off %llu csum " BTRFS_CSUM_FMT " expected csum " BTRFS_CSUM_FMT " mirror %d",
+ 			btrfs_root_id(root), btrfs_ino(inode),
+ 			logical_start,
+-			CSUM_FMT_VALUE(csum_size, csum),
+-			CSUM_FMT_VALUE(csum_size, csum_expected),
++			BTRFS_CSUM_FMT_VALUE(csum_size, csum),
++			BTRFS_CSUM_FMT_VALUE(csum_size, csum_expected),
+ 			mirror_num);
+ 	} else {
+ 		btrfs_warn_rl(root->fs_info,
+-"csum failed root %llu ino %llu off %llu csum " CSUM_FMT " expected csum " CSUM_FMT " mirror %d",
++"csum failed root %llu ino %llu off %llu csum " BTRFS_CSUM_FMT " expected csum " BTRFS_CSUM_FMT " mirror %d",
+ 			btrfs_root_id(root), btrfs_ino(inode),
+ 			logical_start,
+-			CSUM_FMT_VALUE(csum_size, csum),
+-			CSUM_FMT_VALUE(csum_size, csum_expected),
++			BTRFS_CSUM_FMT_VALUE(csum_size, csum),
++			BTRFS_CSUM_FMT_VALUE(csum_size, csum_expected),
+ 			mirror_num);
+ 	}
+ }
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index fe266785804e19..7f8ccf76d5dad7 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -777,10 +777,10 @@ static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr
+ 		scrub_bitmap_set_meta_error(stripe, sector_nr, sectors_per_tree);
+ 		scrub_bitmap_set_error(stripe, sector_nr, sectors_per_tree);
+ 		btrfs_warn_rl(fs_info,
+-"scrub: tree block %llu mirror %u has bad csum, has " CSUM_FMT " want " CSUM_FMT,
++"scrub: tree block %llu mirror %u has bad csum, has " BTRFS_CSUM_FMT " want " BTRFS_CSUM_FMT,
+ 			      logical, stripe->mirror_num,
+-			      CSUM_FMT_VALUE(fs_info->csum_size, on_disk_csum),
+-			      CSUM_FMT_VALUE(fs_info->csum_size, calculated_csum));
++			      BTRFS_CSUM_FMT_VALUE(fs_info->csum_size, on_disk_csum),
++			      BTRFS_CSUM_FMT_VALUE(fs_info->csum_size, calculated_csum));
+ 		return;
+ 	}
+ 	if (stripe->sectors[sector_nr].generation !=
+-- 
+2.51.0
+
 
