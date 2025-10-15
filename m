@@ -1,151 +1,150 @@
-Return-Path: <linux-btrfs+bounces-17834-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17835-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8948FBDE35C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 13:09:48 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E57D8BDE395
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 13:12:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD54019A40B1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 11:10:11 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0D3B44F65E6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 11:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 017DC31CA75;
-	Wed, 15 Oct 2025 11:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454D831D375;
+	Wed, 15 Oct 2025 11:12:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="epo8xP7+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K46mM6Wk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577ED31C588
-	for <linux-btrfs@vger.kernel.org>; Wed, 15 Oct 2025 11:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D058C31CA50
+	for <linux-btrfs@vger.kernel.org>; Wed, 15 Oct 2025 11:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760526582; cv=none; b=QsawCFH6QCz4PwHLUGHIG+Twucu+GD59rVIYUnyC+aLIFJXumPTmeMUntfAz5kq6LpcmWZLVL5jb3g+2VZUrSipKTO0hodsA8ormxfLeQxa2v/hXzqZORruxKJfI+cvY4YJYhWNCLaLGVbZbPoGISsU/3Hc+jIxQFLkgjjth0Xs=
+	t=1760526746; cv=none; b=NaxzqVm8ANU0JIKMEmUbXZ+cATDvEZNZDjEmQDd8BBZQvfmBMPpbjSYGwoxvbnrz8jxg9L8QeOUMXggSEkxuGp9on3BeSjXkCdnZYO6U8b2wJyLgFTNb1zXyoXVWjR3eM/yRwitSyRryoy8DUF0ngFMJLvJGC2LuoSxa7mpIIo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760526582; c=relaxed/simple;
-	bh=88TkFDgRlIfQHgl5zZUJJfAxExgz6tw1uTTkiNBGftA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ptX64Jlg8NI6AItfc40cO1MvqB7bLgv3ULgaXAJQH/rIH/jfLKGErmzIrqWfbzUMdyVJw3GaamDLyTAXmnkEaAWd6pI9TvyWMy+T6lzedkxN7bxeOIp92y2g9IG0VDDZkiJqWNumvQFr4jOZxmITjp5R4gSct0WuDQJvgtdoayE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=epo8xP7+; arc=none smtp.client-ip=209.85.218.42
+	s=arc-20240116; t=1760526746; c=relaxed/simple;
+	bh=VLmWsWGrl1DxKEYncJ9MrJvC8lEhSuvCj2ifK2ALXk8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=T298jfAyX1o//h7NtKE4SeJcaVAsLdZFKfgpYnOUKqj+0fnBZpsynSIz9jBysAF9IkA0seIOjzfHG7uGAnfHo4S91vL/2UT9X/kzoJ5aLD/r5b2wHy3vOwk1LXow2yNY3EDU1Pmp0Vx9jCNcomBXatf4LpiwrM67/rgYurl6Rnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K46mM6Wk; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b48d8deaef9so1157620766b.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Oct 2025 04:09:40 -0700 (PDT)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-46e33b260b9so51763485e9.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Oct 2025 04:12:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760526578; x=1761131378; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1760526743; x=1761131543; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=88TkFDgRlIfQHgl5zZUJJfAxExgz6tw1uTTkiNBGftA=;
-        b=epo8xP7+PpLAo2TvR6GGCT3BgTQ0F/9gYN+cbz/m5/0aiMoNHQ2vfuJHdnEEg23LJF
-         ga+iJMPws3j6dAU0D1JDRG5kEOnP6Kl/Np9Z7MBnsTVdzWjmoEPQBZrt2v3NQH/dnL2V
-         6wyVSHLCKS+sNBnDMa3DrrSplTVp1T43XuJKJHoofz5qncS6fVlBBhJby9l0O2dzsn22
-         BDCCut63+tIaIi1Nk5hOkPRc0aaFrR4FgAuzxtuOZ6nECGHJ7ivjj0A77HxXLNV9KHrR
-         bE48VMKYKCw4llZ0ETy6yRx9NWlhvN8w/CSYgqkpxsj+xOrRQorWkVFncuSpBZuMOfbw
-         Bd0w==
+        bh=egLSNL4PvdhTQzYReM4pfZWKdlDJpPH8aB48GbvKF18=;
+        b=K46mM6Wk7CQL32yC9e/rXc/sW7Vt/sG06U03b1Di4qIQ7WMbjZDmjqkM7UYfSi+SPh
+         dVM1jAFzYqOxQCV1MjUUJbe6iFZ9HpltnOpfJtr4b2IUAOymNpl2q0tPtoXSIeXNWuIZ
+         wjlW45RNPxflBT0itF1HLkakKftoJzKI43y1zBvq65OjDUTKCTQ48ymNiQbTEVqawObh
+         ZksaC73yAYR7wecPjYBci6JPOTeEKyTmbSl4ru09CqBXFAqXVGIglEDi24VuZjs76m7Y
+         p9Ki7u+gh4r1hvZ1333yLEUiQO9dh8UlTxC4UAV47rTP6Nckz5s2e8TdwHmFFTU8YCWZ
+         gTtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760526578; x=1761131378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1760526743; x=1761131543;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=88TkFDgRlIfQHgl5zZUJJfAxExgz6tw1uTTkiNBGftA=;
-        b=nWjHIV9dQbSKatReXuwP6OpU0PSko91kkgvVwV9KPsj3FGPpAw7CrLPkFl99gnO48f
-         44TY/bWVb6Q/P7VQ0rnZw+5KT1umncb5n61Hde7W/5LClPCoILVlfXKQDuPVt8hqd5gp
-         nAVcP+7ju8jocvo4ya+exPBHKmYMKy4w1AlRtxjkvbJ9rj2vUKx+Ouv2tHAJd6bLru4T
-         p9cSZToRFdGWc3QinepWlDaxXHPiGmm91shG0k7+TKcUe4k3POp+lT0krOm/BtKQNSL+
-         BdHY0brJyy7ZYdPC7HOHDj3aurqnZ+2Hy0LCtTEPbBo37+dENPIAflnBJ1cgq3ANDLKk
-         34Jg==
-X-Forwarded-Encrypted: i=1; AJvYcCUSMH1c/vjzYveb3NCHUCcc/EqRkXYxBHmCAMZj/ggPPQjmriUjQj/FYRo8gTv+4OvnEFeCXeTvyV1idA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7Y75dxujspqqAJrF8+PkY3r2V/6s7RK0VmnUWYslkXPqmsHlT
-	6iEb2kFR6JFIMe/NDdaPuotgf6XpIQDLQGAwMsyElL5cs8C0fEyu1CV38jpELqxPj0Fz0efqYZT
-	eOiBXWI9zDabtGKpq9xLobCMkRdHQKT4=
-X-Gm-Gg: ASbGncvkEsrybu8TjXR+4HHDZYceDz1tP+kSt9VfxGGq/D15UqrD1ulKWcWpCW5EKOo
-	bppPG2tw4ortJKlCiKt56V1kiHhR8h4lRhT3U4x/63CaEgOJy8QR9C7yeTkbj2avDSHlR8hFulC
-	24VW5XwWPykqbN0KOeC1EJP6we43ybmi2kb0CvWJ31zbNyZNBZj0F2cGczX+iHz5fb6Vsdsr7Vs
-	d/syWl0c6ANtqXzhcnUSAP0F+QBRIrssW3wQklLId5j9kPeeaW2QlmmGjWuE08hDi5VTA==
-X-Google-Smtp-Source: AGHT+IENjDPxTkztbzr5F/4b/vkt/9YGbwIRgds1ThqVuYJojpUBDdNcgRHeSnatUXLVLK+HdDDWjzqOKNDZToZ4Kf4=
-X-Received: by 2002:a17:907:2d0d:b0:b4e:f7cc:72f1 with SMTP id
- a640c23a62f3a-b50aaba1161mr2875382066b.22.1760526577879; Wed, 15 Oct 2025
- 04:09:37 -0700 (PDT)
+        bh=egLSNL4PvdhTQzYReM4pfZWKdlDJpPH8aB48GbvKF18=;
+        b=KAa1nqLTmMxb1kMpa/XAuWEEXy+pPKAdpOvvxs1hlPfCHhlL0fREcyS3AI0qexuPH7
+         8d+n7lPqjVj7gh3vfXnRmaE/qnyfwoHHivzUKsFqPLesWLZeOKrfO+1kj0M6wEKTd+lF
+         9S+WUxkZ5TEUX/z1nhcN7bl9ysHwRNuMQPzG+A50nhB9EiK+VIx0IEbZO+qzztAkLrJ6
+         O+QmPJdPpg0cyzN4/3pkHfPUglV4+xlwmxigQKIfjA2LMbX3XzijBRTeB9KgzNyhg+mU
+         V8bt6ISSvpJ10F8Qq9nJTOTk/lxGvltM+dRqNLMqjlV0RC3J66IcQbr1+BfUw3ZiCm+w
+         0DIw==
+X-Forwarded-Encrypted: i=1; AJvYcCWLpI8DQu/DoE1yQXzjZ1yNGm0AXXCqDkDRBnIvyCZy6cJeP/PIRmRmKFl9eGiYEQCMHv9tcKCmiSgWFA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzrh01PPgCK6MQPsJ1uw84hxZwNdrdSnlD0BAJUK8dwLq7m62pq
+	GBPJZzuAo7zSeerVZoyOojMhJcH+MDX0Xn9x/UOUxt/5oi3qgdxjVVOX
+X-Gm-Gg: ASbGncuoe7132p1lDfI9OXey7OCepv9lTtvHZBACIO0WPDoliGqTHjRbkK9QppUPigu
+	3hpwg7IiHKXDj6r4+x6PYDslmixh3GjnRp5MMPHKJpPbfoLNysVn9ZLH6Dl0tK6IeWvuqKFb5AN
+	5cLm2mrlGRlzZTKqAGB3frhdGh8QumVGgPkcjEdndDW10vXFomHEFprdBcgBZGeVM8ugiplpdPs
+	myMgD/ydWeqxCXYnnaKmYWdhO5NS8fGikHPNDiGAzxR+4NJFFae/CWIAgjOG22fnE8d63fKVQf2
+	9c/VpBMdbdeu95YKgm4MBrT4lldDebazibcJqHWq4h8+RMpz6Q1jqpKW7aSGVtNVNwX7wH8fXRX
+	BZBs6n1avCtw+VEOJRy09pVjsv09Nm+8HG44T5xspuuQ=
+X-Google-Smtp-Source: AGHT+IHWLJPppaB2GkF2ep+qcrPMm5qJf5y6pSk51HDAkPE/e1FNGciJGIXDoFAqAX+3R0PCfuphcg==
+X-Received: by 2002:a05:600c:3b07:b0:46e:1fb9:5497 with SMTP id 5b1f17b1804b1-46fa9af84fdmr198331535e9.18.1760526742746;
+        Wed, 15 Oct 2025 04:12:22 -0700 (PDT)
+Received: from localhost ([212.73.77.104])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-426ce583316sm28275784f8f.20.2025.10.15.04.12.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Oct 2025 04:12:22 -0700 (PDT)
+From: Askar Safin <safinaskar@gmail.com>
+To: quwenruo.btrfs@gmx.com
+Cc: dsterba@suse.com,
+	linux-btrfs@vger.kernel.org,
+	lists@colorremedies.com,
+	wqu@suse.com
+Subject: Re: [PATCH RFC] btrfs: exit scrub and balance early if the fs is being frozen
+Date: Wed, 15 Oct 2025 14:12:17 +0300
+Message-ID: <20251015111217.5538-1-safinaskar@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <8c3628d5-8fce-45a1-b29c-65c2c52f1c06@gmx.com>
+References: <8c3628d5-8fce-45a1-b29c-65c2c52f1c06@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251014015707.129013-1-andrealmeid@igalia.com>
-In-Reply-To: <20251014015707.129013-1-andrealmeid@igalia.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 15 Oct 2025 13:09:26 +0200
-X-Gm-Features: AS18NWCfEzFg8NKV02k0sHR2LvSmLeMLWcVIZrTlRnWiT-LzhBHhe8mgd_BcgMg
-Message-ID: <CAOQ4uxhrQQmK+tc+eOjm7Pz2u=S6_2cnneyo4mNjVgyA7RNooA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/1] ovl: brtfs' temp_fsid doesn't work with ovl index=on
-To: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-Cc: linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	kernel-dev@igalia.com, Miklos Szeredi <miklos@szeredi.hu>, Chris Mason <clm@fb.com>, 
-	David Sterba <dsterba@suse.com>, Anand Jain <anand.jain@oracle.com>, 
-	"Guilherme G . Piccoli" <gpiccoli@igalia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Oct 14, 2025 at 3:57=E2=80=AFAM Andr=C3=A9 Almeida <andrealmeid@iga=
-lia.com> wrote:
->
-> Hi everyone,
->
-> When using overlayfs with the mount option index=3Don, the first time a d=
-irectory is
-> used as upper dir, overlayfs stores in a xattr "overlay.origin" the UUID =
-of the
-> filesystem being used in the layers. If the upper dir is reused, overlayf=
-s
-> refuses to mount for a different filesystem, by comparing the UUID with w=
-hat's
-> stored at overlay.origin, and it fails with "failed to verify upper root =
-origin"
-> on dmesg. Remounting with the very same fs is supported and works fine.
->
-> However, btrfs mounts may have volatiles UUIDs. When mounting the exact s=
-ame
-> disk image with btrfs, a random UUID is assigned for the following disks =
-each
-> time they are mounted, stored at temp_fsid and used across the kernel as =
-the
-> disk UUID. `btrfs filesystem show` presents that. Calling statfs() howeve=
-r shows
-> the original (and duplicated) UUID for all disks.
->
-> This feature doesn't work well with overlayfs with index=3Don, as when th=
-e image
-> is mounted a second time, will get a different UUID and ovl will refuse t=
-o
-> mount, breaking the user expectation that using the same image should wor=
-k. A
-> small script can be find in the end of this cover letter that illustrates=
- this.
->
-> From this, I can think of some options:
->
-> - Use statfs() internally to always get the fsid, that is persistent. The=
- patch
-> here illustrates that approach, but doesn't fully implement it.
-> - Create a new sb op, called get_uuid() so the filesystem returns what's
-> appropriated.
+I just noticed that suspend behavior depends on whether "btrfs scrub" is
+started in terminal window or as a systemd service. I think this is because
+systemd tries to freeze user session when suspending, but doesn't freeze
+services.
 
-FWIW this operation already exists in export_operations.
-It is currently only used by pnfs and only implemented by xfs.
-I would nor object for overlayfs to use this method if implemented
-and fall back to copying uuid directly from s_uuid
-(better yet make it a vfs helper)
-Note that commit
-8f720d9f892e0 xfs: publish UUID in struct super_block
-was done for a similar reason.
-The xfs mount option nouuid is the poor man's solution for
-mounting cloned disk images.
+So I retested everything.
 
-Thanks,
-Amir.
+All tests were done with my distro's version of btrfs-progs (6.14-1).
+My distro is Debian Trixie.
+I have btrfs raid-1, which spans two actual partitions, 3.5 TiB each.
+
+Let's start with unpatched v6.18-rc1.
+
+- scrub in win, freeze_filesystems=0 - suspend doesn't work
+
+- scrub as a service, freeze_filesystems=0 - suspend doesn't work
+
+- scrub in win, freeze_filesystems=1
+suspend takes 6-10 mins. I. e. the system hangs for 6-10 mins and then
+suspends. I suspect this is time needed to complete scrub
+
+- scrub as a service, freeze_filesystems=1 - the same
+
+Also: on unpatched kernel "btrfs scrub" terminates instantly if it receives
+INT, but doesn't terminate if it receives KILL, TERM or HUP.
+
+Now v6.18-rc1 with your old 7 Jul 2025 patch
+( https://lore.kernel.org/linux-btrfs/9606fae20bff6c1fbe14dc7b067f3b333c2a955b.1751847905.git.wqu@suse.com/ ).
+
+- scrub in win, freeze_filesystems=0 - suspend doesn't work
+
+- scrub as a service, freeze_filesystems=0 - suspend doesn't work
+
+- scrub in win, freeze_filesystems=1
+suspend takes 1 min. I. e. the system hangs for 1 min, then suspends
+
+- scrub as a service, freeze_filesystems=1
+suspend works perfectly. I. e. the system instantly suspends. I don't even
+notice 19s delay you are talking about
+
+Now v6.18-rc1 with your new 15 Oct 2025 patch
+( https://lore.kernel.org/linux-btrfs/8c3628d5-8fce-45a1-b29c-65c2c52f1c06@gmx.com/ ).
+
+- scrub in win, freeze_filesystems=0 - hangs for 60s, then suspends
+
+- scrub as a service, freeze_filesystems=0 - works perfectly, i. e. suspends instantly
+
+- scrub in win, freeze_filesystems=1 - hangs for 60s, then suspends
+here is journalctl: https://zerobin.net/?7b394069a9050b8d#7PrnCDJV2t9inNFS3/EhxHJUS24iSGX7FAmjUstKKr4=
+
+- scrub as a service, freeze_filesystems=1 - works perfectly, i. e. suspends instantly
+
+-- 
+Askar Safin
 
