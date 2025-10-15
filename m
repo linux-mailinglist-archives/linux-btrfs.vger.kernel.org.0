@@ -1,202 +1,141 @@
-Return-Path: <linux-btrfs+bounces-17812-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17813-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 168D4BDCA31
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 07:47:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2150ABDCA3D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 07:47:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C24783E5834
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 05:47:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1459519A4D4D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 05:48:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2999F3054DB;
-	Wed, 15 Oct 2025 05:46:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACDF9305E04;
+	Wed, 15 Oct 2025 05:47:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Adq31IJP"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="D7KzmuvB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 793DF2FFFAD
-	for <linux-btrfs@vger.kernel.org>; Wed, 15 Oct 2025 05:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B526A2FFDD3
+	for <linux-btrfs@vger.kernel.org>; Wed, 15 Oct 2025 05:47:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760507215; cv=none; b=GhBFEUrcJKJcSCuGebThMc8Xjfu0/PzhoUvMhLm+gjDWU5vh4ZX9C8992q7P25vIaLHqRfBl9nIVTNDR5l3G1obc/u/+Kix/QVCYQml3WL8h9VE1cDwvdQP+E4odEFEOYpe6v6PuworaFbHrDUAammDl/WqbXmkXjoINIidefJ8=
+	t=1760507243; cv=none; b=QsC0ULlZXd003zCCwC4d9xPM/RGkGMMWD/MboIRCtlVxaa0+LUGbp5AdI+NDEfmZE6ZF6R5vw2to4cOcjmN25KUKGnHkIgCkMIwoxKuGrEMqu+Ki7s6Cn6DzAcFFA+114bTMkSqvUVe1duQOlgdk0IRJdJEsePqMT+9uFOUoOhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760507215; c=relaxed/simple;
-	bh=L9yQzwfiK6AnAj53w+M42/OMTEMETYOV7eUVo5HxABI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=elzqGkmkQ3ih9EhJLzV8vKJ/5a46eiSGbFFvm7sf/HBkvSkScnZtlpM9nNNsBDWMAyhNW5f5izVV+26tj8Y7CCnBDCv7uNYXXTFY7guiviHQC64SptDDlgeuNcYkhOHVtNwEC6Qgq8omlSNMFu9Uz3Vg6jFtGMrKcz+9PvSkYYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Adq31IJP; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b3da3b34950so1000436666b.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Oct 2025 22:46:53 -0700 (PDT)
+	s=arc-20240116; t=1760507243; c=relaxed/simple;
+	bh=Ma7lFDbMiY8cXSbM9K4jwAjfFaic3KX+goW6lZonNxs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=QI+q0eJD0EEyJZ/imQ0X7O0gNKH0tJCA9TJ09peL4D/U3ZouLG3yDIyosoSxPLmuLuPKpJ9Ku6E8eKJXEjRR640CEVrZhRTPzSA1djhF5OVjFITtrbyglbuGQTO9ZlinlPk+sMbkkrveuk2ote9nfe8FA4GEe/z/MdpL8g+2LQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=D7KzmuvB; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3ee12807d97so4491241f8f.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Oct 2025 22:47:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760507212; x=1761112012; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YB/8HRPSkZavRfQHyIpXrXhIqH5dcxDgrAKATWLCf7Y=;
-        b=Adq31IJPv30T6zUoF2y3H73X7Rg3/pWXDTmdnh8kEFGnxj427QLrLxman9/5UI5W2U
-         /BfcMAJFP39b/qTttenN83pLLoKQgHruzLRnAyI7r33JHzbAxexU4Hz4JiFgvuSvRjJE
-         S++28Isa33yMokJkwd5NGNEH7zm9pAspIgg8tWWicxPMILY3fP7EpgtkzrPlnN9oCzqo
-         SQu04Tg9CVpi8kJtTRzyZWVdYdhZeaWchM2nnDVNUJKPESyQa0SuKLSXQM6tLXz/b52R
-         uQ3D4kBfWD7qTw59FT/+Jkb7USrhxoKZYNVLTLXfM7hILg+wbYpzLX/4KHTjP7OIQI4C
-         +66Q==
+        d=suse.com; s=google; t=1760507237; x=1761112037; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZwIPlSTTpS0fuFdgu43lElmq0CyIMYG8ZpS7XRGRQhs=;
+        b=D7KzmuvBuWlgUf/mNk61agSf8Ei4tyFV/qZxu6BxvgtvppI4EhroVGEEQEZeP3P3bL
+         CudNP/e46PGKjP0+G5r3q7TxlrRPOCA6fI4k6Vs87fdknj1XFQmtkeP0uV8IxGgtJHx2
+         8Mdk9OzQgZiZm6XbiVnNAwKGiT4QsqCNtngv1CKw+nohgHJvTrUnETwuTKhF8d/lyVcs
+         +uvlfHSapner9t6Vk9Eu1FNoURIO4Yv7rB7gFyrzZ3+6FFW/a2l5k+LBniLU4L/FQcQi
+         845yWn6YlyL5JfYqo6AaHfS1rouhlHofwGIxHSKKKoVrw26474y11ZdIyIZXG7WgRiTO
+         MRrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760507212; x=1761112012;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YB/8HRPSkZavRfQHyIpXrXhIqH5dcxDgrAKATWLCf7Y=;
-        b=awCQTTPJ2DQ0Nz6dZvcslncdBtuxiZY4BsLhHXHX7r4Bwkkm0Evom/fhVK4FP2Lv3b
-         dHYcyvfYAaBhomBLrwEHKWFiTeJjlWDmcd67qREaju1cPyqL/Mk+AZJzR+a9JaEeMvav
-         WNQ7NcZlZTHtVryHftQmT9DkrxvGT0MXNaxN0Buwh2dSdbHkYdMSZne7gZPHx8Fx3H5U
-         NANHizKxgS+w3eW1wwOfz3GStLpszONlDVQ7y9IQSJ6tpIfTFIj+j6CztWN7keAbTZDs
-         +diZhLpNeuiqDyIsl71BXPbcjJ1qpIBxl9m33g9QYQb7h/9RsRsJDK4cKsT/sHWzGq9t
-         YRHA==
-X-Forwarded-Encrypted: i=1; AJvYcCWoIsqPtm8OjxWBIN7tqaSMCE0/1/ezmCIi6JxpgXelCE9tCNc8YeSRk4SCblL6YJ7atPQLR82kkoNZtw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3FoN3vwgmJIETfL7R25t0K6/soIFb15hByIRcGY5WTUQ3YTDu
-	gu9nLzeJnrgaUWy/mvce7VDkFduJPHRXgCzm9ZYNIxAf14cGFvC23qm7K1Tq8fvZXBXQZnMsYkn
-	Vzx/yt0W0XIjIqpA3htH5DySGvAzaqqI=
-X-Gm-Gg: ASbGncsgXu22UePLj53brjU9dpC3pCWHVIFMRAAbH3aG3MS6Nh6kUnhUVBKc2cxZYkQ
-	P9c72WU+9D8Jcbeof8CoyNqwWKAuTUS+ro3F9TfgAGWBvZFXwDGIVu4INrR3WijtaOOu9CeV1jE
-	MV77heGQJuIAuAOa06QhfgszynnVavAT7JzGkdExdIdd2MGOtvj62XU5a+wA0V6OnRgsLmzh5R0
-	JRD20cuOuOuCQJuVB/e9blsXhDPb46YXBTOKkPmsp84HWkSD4QSL/kJjU4IUAGF+upv
-X-Google-Smtp-Source: AGHT+IHBOaBguuSDBJ8tBqccd4wBxjcgREccPEa2q0OFeN3z0LhFrlL5e17WKU2nQANyrLyL2KnfgEnaFifFE19VDgQ=
-X-Received: by 2002:a17:907:72c6:b0:b46:8bad:6970 with SMTP id
- a640c23a62f3a-b50abaa43b4mr3121817866b.36.1760507211571; Tue, 14 Oct 2025
- 22:46:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1760507237; x=1761112037;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZwIPlSTTpS0fuFdgu43lElmq0CyIMYG8ZpS7XRGRQhs=;
+        b=Pjc9EBJCqs+xKcbFU5Fg6Ad/ydZfeOaWHSsH6A/P1aPuKf2g1fTFAJLUwXjganYaGf
+         nL5JrAKLlP4KAf2tR1gAWxXFTJaqtdz4xYrRlJQI5QauxA5HU257Mv4xmUV4+BJJp0su
+         vDfdDBMNgB3MY9PV4wHAcVe89yixZaFgTFJUoYj3Cq+t18c+tgyU7pppCltSmE/nCiiu
+         dr6VQnT7wO1k6KNteI/87Y1APEeP1MzQbPBWGAjZVsN7LTTlz2ztMcH6+rI4Bs7RAg99
+         c/faUBsycJxaC7A1EDXCz8322BDQPusCx7xZbaPzzPvjKDFdHWYutu4Kg6f0FSrz6kwq
+         BDBg==
+X-Forwarded-Encrypted: i=1; AJvYcCVEZa0g39XCRahWnn2m68E7rOYNqtFlz2OpjF5WcwjcHwFLOxr+RWXl6b5eeDTKUKyP9dOro7hnrrK2Kw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy5F6uhysnqLfa5UUHd2QbdtIRDEYPqv+X2Tf8B9fpQ1rgAq/RE
+	b6qE28604fYMR7qnseWXO9QiB/pJNjsUWNKZmP1l9Bu76VLPrwPJplI/X+TmIwSIv5D1GFC4p9P
+	LfJ6V
+X-Gm-Gg: ASbGnctC5YmFGUZwr0vNfigESmWQKpGCWIlglTowe2GZgXkKdmjdTMgc8fWpraPN/pM
+	0G3V/wZIfuT3fOEflhTa04vUF9klLjhPg5QypGEzX+8qHVNHZkBr0IMfW96WtnZrHHH0/rawqG1
+	ZxwyAAN4QSiLNT46Dg1ZIiVCQ4o2VnMWzrjIA8wkco3d66LOs7D9BoOW+pjn1+Vy3n+17SJrqxQ
+	jllXm+T2gIPo8O8xxXSO16SZcB140k1NeKhwWK3lqz/dNx9X2+VMsCF94Rw2myAejddvT9mgDHH
+	uEYFL0b36oc8hmy3YFEOt9daW+/wTBv0drqw8yglb2ckWq1FHsjaU24p2Oj/H7/yOuwhOd/aD/h
+	KLZRqM3CP+K19XjXQzwxUsG05Fgqm2nx57C9GIX/RKrjWhu//GmdrYw7Te0+yN/R5h/rlPg==
+X-Google-Smtp-Source: AGHT+IEkcvbrjRF8ByNZFEapjDm0EaOA3MvYyF2N8mJ4wQTA5m0aAYUQWhE342uB5wYaO6O6A2bTtg==
+X-Received: by 2002:a5d:5c84:0:b0:3ee:1461:165f with SMTP id ffacd0b85a97d-4266e8f801amr16647520f8f.31.1760507236942;
+        Tue, 14 Oct 2025 22:47:16 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7992d0964c1sm16975310b3a.54.2025.10.14.22.47.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Oct 2025 22:47:16 -0700 (PDT)
+Message-ID: <9194ad3f-183d-46e9-afc3-b52ab2bf28cb@suse.com>
+Date: Wed, 15 Oct 2025 16:17:12 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251009075929.1203950-1-mjguzik@gmail.com> <20251009075929.1203950-4-mjguzik@gmail.com>
- <h2etb4acmmlmcvvfyh2zbwgy7bd4xeuqqyciqjw6k5zd3thmzq@vwhxpsoauli7>
- <CAGudoHFJxFOj=cbxcjmMtkzXCagg4vgfmexTG1e_Fo1M=QXt-g@mail.gmail.com> <aO7NqqB41VYCw4Bh@dread.disaster.area>
-In-Reply-To: <aO7NqqB41VYCw4Bh@dread.disaster.area>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Wed, 15 Oct 2025 07:46:39 +0200
-X-Gm-Features: AS18NWCB_4h8LHu2yt-FYyIBzUwuIR3RlLlbdhbf0H9i_Il0fvD54KG0vSEA_Mc
-Message-ID: <CAGudoHFpoo0Qm=b4Z85tbJJmhh+vmSHuNnm3pVaLaQsmX9mURg@mail.gmail.com>
-Subject: Re: [PATCH v7 03/14] fs: provide accessors for ->i_state
-To: Dave Chinner <david@fromorbit.com>
-Cc: Jan Kara <jack@suse.cz>, brauner@kernel.org, viro@zeniv.linux.org.uk, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	josef@toxicpanda.com, kernel-team@fb.com, amir73il@gmail.com, 
-	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Setting owner and permissions of subvolumes in newly-created
+ BTRFS filesystem
+To: Demi Marie Obenour <demiobenour@gmail.com>, linux-btrfs@vger.kernel.org
+References: <0ff47dc5-cf0d-4b5a-8d84-f309a74cbf32@gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <0ff47dc5-cf0d-4b5a-8d84-f309a74cbf32@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 15, 2025 at 12:24=E2=80=AFAM Dave Chinner <david@fromorbit.com>=
- wrote:
->
-> On Fri, Oct 10, 2025 at 05:51:06PM +0200, Mateusz Guzik wrote:
-> > On Fri, Oct 10, 2025 at 4:44=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
-> > >
-> > > On Thu 09-10-25 09:59:17, Mateusz Guzik wrote:
-> > > > +static inline void inode_state_set_raw(struct inode *inode,
-> > > > +                                    enum inode_state_flags_enum fl=
-ags)
-> > > > +{
-> > > > +     WRITE_ONCE(inode->i_state, inode->i_state | flags);
-> > > > +}
-> > >
-> > > I think this shouldn't really exist as it is dangerous to use and if =
-we
-> > > deal with XFS, nobody will actually need this function.
-> > >
-> >
-> > That's not strictly true, unless you mean code outside of fs/inode.c
-> >
-> > First, something is still needed to clear out the state in
-> > inode_init_always_gfp().
-> >
-> > Afterwards there are few spots which further modify it without the
-> > spinlock held (for example see insert_inode_locked4()).
-> >
-> > My take on the situation is that the current I_NEW et al handling is
-> > crap and the inode hash api is also crap.
->
-> The inode hash implementation is crap, too. The historically poor
-> scalability characteristics of the VFS inode cache is the primary
-> reason we've never considered ever trying to port XFS to use it,
-> even if we ignore all the inode lifecycle issues that would have to
-> be solved first...
->
 
-I don't know of anyone defending the inode hash tho. The performance
-of the thing was already bashed a few times, I did not see anyone
-dunking on the API ;)
 
-> > For starters freshly allocated inodes should not be starting with 0,
-> > but with I_NEW.
->
-> Not all inodes are cached filesystem inodes. e.g. anonymous inodes
-> are initialised to inode->i_state =3D I_DIRTY.  pipe inodes also start
-> at I_DIRTY. socket inodes don't touch i_state at init, so they
-> essentially init i_state =3D 0....
->
-> IOWs, the initial inode state depends on what the inode is being
-> used for, and I_NEW is only relevant to inodes that are cached and
-> can be found before the filesystem has fully initialised the VFS
-> inode.
->
+在 2025/10/15 16:13, Demi Marie Obenour 写道:
+> I need to create a BTRFS filesystem where /home and /tmp are BTRFS
+> subvolumes owned by root.  It's easy to create the subvolumes with
+> --subvol and --rootdir, but they wind up being owned by the user that
+> ran mkfs.btrfs, not by root.  I tried using fakeroot and it doesn't
+> work, regardless of whether fakeroot and btrfs-progs come from Arch
+> or Nixpkgs.
+> 
+> What is the best way to do this without needing root privileges?
+> Nix builders don't have root access, and I don't know if they have
+> access to user namespaces either.
 
-Well it is true that currently the I_NEW flag is there to help out
-entities like the hash inode hash.
+Not familiar with namespace but I believe we can address it with some 
+extra options like --pid-map and --gid-map options, so that we can map 
+the user pid/gid to 0:0 in that case.
 
-I'm looking to change it into a generic indicator of an uninitialized
-inode. This is completely harmless for the consumers which currently
-operate on inodes which never had the flag.
-
-Here is one use: I'd like to introduce a mandatory routine to call
-when the filesystem at hand claims the inode is ready to use.
-
-Said routine would have 2 main purposes:
-- validate the state of the inode (for example that a valid mode is
-set; this would have caught some of the syzkaller bugs from the get
-go)
-- pre-compute a bunch of stuff, for example see this crapper:
-
-   static inline int do_inode_permission(struct mnt_idmap *idmap,
-                                        struct inode *inode, int mask)
-  {
-          if (unlikely(!(inode->i_opflags & IOP_FASTPERM))) {
-                  if (likely(inode->i_op->permission))
-                          return inode->i_op->permission(idmap, inode,
-mask);
-
-                  /* This gets set once for the inode lifetime */
-                  spin_lock(&inode->i_lock);
-                  inode->i_opflags |=3D IOP_FASTPERM;
-                  spin_unlock(&inode->i_lock);
-          }
-          return generic_permission(idmap, inode, mask);
-  }
-
-The IOP_FASTPERM could be computed by the new routine, so this would
-simplify to:
-  static inline int do_inode_permission(struct mnt_idmap *idmap,
-                                        struct inode *inode, int mask)
-  {
-          if (unlikely(!(inode->i_opflags & IOP_FASTPERM)))
-                  return inode->i_op->permission(idmap, inode, mask);
-          return generic_permission(idmap, inode, mask);
-  }
-
-The routine would assert the inode is I_NEW and would clear the flag,
-replacing it with something else indicating the inode is indeed ready
-to use.
-
-While technically the I_NEW change is not necessarily to get there, I
-do think it makes things cleaner.
-
-Note unlock_new_inode() and similar are not mandatory to call.
+Thanks,
+Qu
 
