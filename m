@@ -1,96 +1,94 @@
-Return-Path: <linux-btrfs+bounces-17799-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17800-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F157ABDC57A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 05:31:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62366BDC5B6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 05:37:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A6E33BB49F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 03:31:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0A3619A054C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 03:38:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A4002836B5;
-	Wed, 15 Oct 2025 03:31:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CF62BD5BD;
+	Wed, 15 Oct 2025 03:37:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="ADDNCZ1t";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UHcgs2h/"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="JXRLJlBv";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QLHSXCaD"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6F71547EE;
-	Wed, 15 Oct 2025 03:31:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FBB86FBF
+	for <linux-btrfs@vger.kernel.org>; Wed, 15 Oct 2025 03:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760499107; cv=none; b=EdQDeCKwkjRu2LE1/68pADVKX1s/T6sL9PVzyFAxErusoELRp/KpMvFijjBWA/KSCc2uQ/vXqYOJaP49mHHH+lq245wqqoQTJX7hyurVqdHjn3EMlTlGaFgk0yxO9vKXstQHm/OQ7c0Jxly4asRF+zUzH0PD4Vx9pOt6X+3FbZU=
+	t=1760499452; cv=none; b=CE/lDz3Z8zTcfiHUzLr047n23fkMn9Z0/yUR94FYzZQPRwBEHtDekJXf8iG9Lvt5X8DBdYMTa79fMY1fxR/LvFn6ZHK0igSkcZmHV7B1HYyImV5k03Sb1at60p5rPiP5CziaQJ+A0V6ihfEjBiFARvBW0Hl2036fP1aBkkmyQ/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760499107; c=relaxed/simple;
-	bh=hd7k8NxvgQVjLpsL0c4bdGs8VplMDq8GXxMRahHxDeo=;
+	s=arc-20240116; t=1760499452; c=relaxed/simple;
+	bh=FtZFwygHo1kcUJjXLq+XBic6WMkuoug3LA1ELvcz9/A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HcBsqNKCKSYvBCTngsk1RqpOsebl542DkWqDtxSu5te8QtfPXZJXmLeiVppGLrP9PMSao81lqQ1aks0qzn48guT9cFpjsCAvxkUVlOz15ql9rRASDYJH4b5SlJjxmqa6/AJA2o4lbGi45PhXeLCMyv+0bi7Dqkk/7uUL8Fhf0QE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=ADDNCZ1t; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UHcgs2h/; arc=none smtp.client-ip=103.168.172.149
+	 Content-Type:Content-Disposition:In-Reply-To; b=kxQ0rNxUd57ZqWSQl0knnjOitpr7OlkOCkzAzLGuD2j9UrNen5Pfafs4WUJnXZN5K3IntpKrQb6ZmmqW/2SjeP7q/PPTVSbhHot04dn2zHq6GTH/seKY0+gtEWI5fp3yVjCUilIZIWK5Xzxhr2Ks+20qCkZcppgmTUI3GbEqwB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=JXRLJlBv; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QLHSXCaD; arc=none smtp.client-ip=103.168.172.149
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfout.phl.internal (Postfix) with ESMTP id 88838EC020C;
-	Tue, 14 Oct 2025 23:31:44 -0400 (EDT)
+Received: from phl-compute-07.internal (phl-compute-07.internal [10.202.2.47])
+	by mailfout.phl.internal (Postfix) with ESMTP id 72FD5EC00DA;
+	Tue, 14 Oct 2025 23:37:28 -0400 (EDT)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Tue, 14 Oct 2025 23:31:44 -0400
+  by phl-compute-07.internal (MEProxy); Tue, 14 Oct 2025 23:37:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1760499104; x=1760585504; bh=FCNJI3PZpo
-	qgWJfIjLYy+Ya+ZfXuDLJVUaYsT9MnoA0=; b=ADDNCZ1tD8KwM9M8aji8xojWYw
-	ezkzUAU/NUHOyMsNAUkHVjg2eE240NwcffEQbw8fOOQxTXWeqlaZmCznAW/3wdbu
-	8dGAH39mOmn0BOTebgf2WTK05sOXTRtKUeqlwA48D8a9FWBWy6bmd456Aeb/+rBh
-	UlV4DefpgMDllBdWYfxCbG/3jCyHUEefxqjQV/CjyVS5rE72o9qyjasA4/7KwD28
-	AMWF0SKHwOQz2Y6XHPaZ/1dCGkoqE/Ne+pTJ6xCMQae0TsERHjSi5KFFbd+PCgV1
-	6UV0+wNv+AJYwvDCaKY0ZTlz7M+MlEVpMJXSG1bvNLsuLtcADYbZjgdBkd/Q==
+	:subject:to:to; s=fm3; t=1760499448; x=1760585848; bh=1/5mXEieYA
+	FzPUA0up2gRzdch1eRQstfaLQvp5QaE3I=; b=JXRLJlBvrNqRw9dzBDT2xcKaH9
+	wzUYi/DnHk8DhA2ufoASvLugzOuMdMhe+SbJoNFx8+ccquohYfiyZibHkFPQyWdT
+	ExmQVK6TZms5agnLZDfoxoGLbFnmFvrRdLydc7SO+J6OV9zIv+zzKnNx60YzJykE
+	PwdxvjA3Qbc15WVR3Ih5lT9Zir0P2jnJCT15VZoV+29wpMLTUrF8cix6YbyuGJvh
+	qyM57fFwW8T09vufw/iIgunjToAAuj56Tr7m0wdXRwO/A3A4unruEfKmoDk1FOAs
+	eKRyC9gkmKti4WZ7bhsRabVbHKzAUPpcfQ9aTPioZbuhVCkxy+XPj2YO4o0w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1760499104; x=1760585504; bh=FCNJI3PZpoqgWJfIjLYy+Ya+ZfXuDLJVUaY
-	sT9MnoA0=; b=UHcgs2h/pLS81Hs3XNx3CfDZvsCSCwChPCXtP4vn7gEiz+0hmw6
-	205ueixz3kCKLCRFWB7H9lLi39BLTXCKpOrJbNT9Fb/hS87q9XGIGS+rNnxR2mzr
-	gdMe1/X1Y1gRI2J+W/MLS1ZU9NzseyGhFa4yS+ZxZ+FU1QNEbQEOtbyctllT8HQ1
-	P+kfaagNWzIEx+bix31i219iYIL7LOjB54lgbuKc1jFImR1NtChokSpscppWpshx
-	Hhoe9serRxISJ99+0X1ehripKoFSQK/4BuevHCRZnNXZ0GYaNBXfN4TUPNKZzoYj
-	09ic5W29TGzDjdnNWP1/cblajBCiCQxihWA==
-X-ME-Sender: <xms:oBXvaG9RGkTiHlCDn9Pf3g49tiALWLRh9B3EGdUCO-c1GkS46G9NAg>
-    <xme:oBXvaEh00tHl4GXQHHKlKAAR8nnc8rim7NZXOHkaotgeDV3bbqZj6_GzTIlKMMX_w
-    2SAjSosbV4vanpRzokp2NOnaZWzVWLO07cGVObpOOGC-DtWBpKBndg>
-X-ME-Received: <xmr:oBXvaGdotboD98upFXEKPwczBVjLu7ondqRo_TdIg39oDa27WfzvP_GO88yh_e0ilu0-Ag5Sr5B_VA8AMteXRcmLyrE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduvddvfeegucetufdoteggodetrf
+	1760499448; x=1760585848; bh=1/5mXEieYAFzPUA0up2gRzdch1eRQstfaLQ
+	vp5QaE3I=; b=QLHSXCaDegWNEzm8Ek0SIqZ2VuqwwKMVoxYWrtR27vfkoLGbxMa
+	0Mnz42ppD7nt8KT8xPmBbQapbA1ZjrwJUewd+tcdL7UQqHm9/NhbUlzZJ3bGHdgH
+	ppuTqg/gfT/DQ+Wxqqs2F7QnrWVbbPGfPzoiAtDsCpt0J11qkcXVFa6JfWpvYuua
+	BcVY/fU3qs3GHYlaB012uy5UNheBElccZ+EyvmaS6Teeg0oLck2okqw1cjtFiwZf
+	+mugvEX3cQqKSgr+5W5SZN5tfoPTLtvQyeQbcd/PEfeExOlc3nlW1Ol0sL74oqLc
+	R7e9+qEIcFCvWNcU2hq4zNNDk4XFV1+vTyw==
+X-ME-Sender: <xms:9xbvaJVltkuaTFTJBI00oGNemZFd6rAxIeIGCYhBdTHWMb9qQKOFnQ>
+    <xme:9xbvaPm93M-Zu6tPkXYv_31c3Uy5Srp1u9Ls0KJ0E1KGIMoObmGQ92tdj-ZE3iJjm
+    qBgPic4luKzpw3R1QsoQpnNh5nMLKvsViHvjsK60O4uETlo8MhxhhJ7>
+X-ME-Received: <xmr:9xbvaDCPfxf5EW7fGjPvHnBYELeC0yF4PpaqfK2wVuSSskzwvynZ2s4fkWVVvhCm76UzVbG5sBa--yl7G-L7NnkWTl8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduvddvfeehucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertd
-    dttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiie
-    eiudfguefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopeegpdhmoh
-    guvgepshhmthhpohhuthdprhgtphhtthhopehlohgvmhhrrgdruggvvhesghhmrghilhdr
-    tghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrd
-    horhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhmpdhrtghpthht
-    ohepfhhsthgvshhtshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:oBXvaLpLlFqBrpMdCTT642VmgSshG4jim0Vc_jVEqlgKl5kDjVecqA>
-    <xmx:oBXvaLBtkHBlwrdyDmbtCeZSnd0KDC-hfwKjOnQy689ipUJEz_uJvw>
-    <xmx:oBXvaIa6d4mdbuQUJvsMp0Wfojsw_ZsqUwgmIQRc4WJLkHXQ4RoEsA>
-    <xmx:oBXvaO5hKeQSpFDfO4ImPPogBZPipV-qAOTxUyN_H8ljY6xYVF0m3w>
-    <xmx:oBXvaPM4suGWztZF6PJBdQCh0x94mChQvQ8vS-9byjdAMM3sc9QcsX-z>
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
+    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
+    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
+    ohepmhgrrhhksehhrghrmhhsthhonhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsg
+    htrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:-BbvaHdgD2Q9k9onjDbeqgeGsE8ZK4QMrJLVZOSDnkT0IQiqzLerww>
+    <xmx:-BbvaGJ6sXQI24LYiafGMTrzdCUvgzq-jSBp60G5BrjO-XAtBhY79Q>
+    <xmx:-BbvaCcTdY9W5gkbXFbr1w2MhiZXSeWX6Vfj0NEb7gFuX1BxIPg2EA>
+    <xmx:-BbvaF3klpkKhEHVrPkHvECdC5iAVH6BLYiB5NqYqNZEuC5yJOfjzg>
+    <xmx:-BbvaPrD9hz4yT15nMS9XfeBzRdmH7q2y-zYbBd-U8w1YRBv8Ohbdxck>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Oct 2025 23:31:43 -0400 (EDT)
-Date: Tue, 14 Oct 2025 20:31:24 -0700
+ 14 Oct 2025 23:37:27 -0400 (EDT)
+Date: Tue, 14 Oct 2025 20:37:07 -0700
 From: Boris Burkov <boris@bur.io>
-To: Leo Martins <loemra.dev@gmail.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-	fstests@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] fstests: btrfs: test RAID conversions under stress
-Message-ID: <20251015033124.GC1702774@zen.localdomain>
-References: <cover.1759532729.git.loemra.dev@gmail.com>
- <455b9a2b102631febc1b05802006d3d304d4baeb.1759534540.git.loemra.dev@gmail.com>
+To: Mark Harmstone <mark@harmstone.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 02/17] btrfs: add REMAP chunk type
+Message-ID: <20251015033707.GD1702774@zen.localdomain>
+References: <20251009112814.13942-1-mark@harmstone.com>
+ <20251009112814.13942-3-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -99,138 +97,275 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <455b9a2b102631febc1b05802006d3d304d4baeb.1759534540.git.loemra.dev@gmail.com>
+In-Reply-To: <20251009112814.13942-3-mark@harmstone.com>
 
-On Fri, Oct 03, 2025 at 04:41:59PM -0700, Leo Martins wrote:
-> Add test to test btrfs conversion while being stressed. This is
-> important since btrfs no longer allows allocating from different RAID
-> block_groups during conversions meaning there may be added enospc
-> pressure.
+On Thu, Oct 09, 2025 at 12:27:57PM +0100, Mark Harmstone wrote:
+> Add a new REMAP chunk type, which is a metadata chunk that holds the
+> remap tree.
+> 
+> This is needed for bootstrapping purposes: the remap tree can't itself
+> be remapped, and must be relocated the existing way, by COWing every
+> leaf. The remap tree can't go in the SYSTEM chunk as space there is
+> limited, because a copy of the chunk item gets placed in the superblock.
+> 
+> The changes in fs/btrfs/volumes.h are because we're adding a new block
+> group type bit after the profile bits, and so can no longer rely on the
+> const_ilog2 trick.
+> 
+> The sizing to 32MB per chunk, matching the SYSTEM chunk, is an estimate
+> here, we can adjust it later if it proves to be too big or too small.
+> This works out to be ~500,000 remap items, which for a 4KB block size
+> covers ~2GB of remapped data in the worst case and ~500TB in the best case.
 > 
 
-Aside from the patch intermingling stuff, this test looks good to me,
-thanks for adding it.
+Asked a relatively inconsequential question about static asserts in
+volumes.h. Otherwise,
 
 Reviewed-by: Boris Burkov <boris@bur.io>
 
-> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+> Signed-off-by: Mark Harmstone <mark@harmstone.com>
 > ---
->  tests/btrfs/337     | 95 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/337.out |  2 +
->  2 files changed, 97 insertions(+)
->  create mode 100755 tests/btrfs/337
->  create mode 100644 tests/btrfs/337.out
+>  fs/btrfs/block-rsv.c            |  8 ++++++++
+>  fs/btrfs/block-rsv.h            |  1 +
+>  fs/btrfs/disk-io.c              |  1 +
+>  fs/btrfs/fs.h                   |  2 ++
+>  fs/btrfs/space-info.c           | 13 ++++++++++++-
+>  fs/btrfs/sysfs.c                |  2 ++
+>  fs/btrfs/tree-checker.c         | 13 +++++++++++--
+>  fs/btrfs/volumes.c              |  3 +++
+>  fs/btrfs/volumes.h              | 11 +++++++++--
+>  include/uapi/linux/btrfs_tree.h |  4 +++-
+>  10 files changed, 52 insertions(+), 6 deletions(-)
 > 
-> diff --git a/tests/btrfs/337 b/tests/btrfs/337
-> new file mode 100755
-> index 00000000..fa335ed7
-> --- /dev/null
-> +++ b/tests/btrfs/337
-> @@ -0,0 +1,95 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2025 Meta Platforms, Inc. All Rights Reserved.
-> +#
-> +# FS QA Test btrfs/337
-> +#
-> +# Test RAID profile conversion with concurrent allocations.
-> +# This combines profile conversion (like btrfs/195) with concurrent
-> +# fsstress allocations (like btrfs/060-064).
+> diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+> index 5ad6de738aee..2678cd3bed29 100644
+> --- a/fs/btrfs/block-rsv.c
+> +++ b/fs/btrfs/block-rsv.c
+> @@ -421,6 +421,9 @@ void btrfs_init_root_block_rsv(struct btrfs_root *root)
+>  	case BTRFS_TREE_LOG_OBJECTID:
+>  		root->block_rsv = &fs_info->treelog_rsv;
+>  		break;
+> +	case BTRFS_REMAP_TREE_OBJECTID:
+> +		root->block_rsv = &fs_info->remap_block_rsv;
+> +		break;
+>  	default:
+>  		root->block_rsv = NULL;
+>  		break;
+> @@ -434,6 +437,9 @@ void btrfs_init_global_block_rsv(struct btrfs_fs_info *fs_info)
+>  	space_info = btrfs_find_space_info(fs_info, BTRFS_BLOCK_GROUP_SYSTEM);
+>  	fs_info->chunk_block_rsv.space_info = space_info;
+>  
+> +	space_info = btrfs_find_space_info(fs_info, BTRFS_BLOCK_GROUP_REMAP);
+> +	fs_info->remap_block_rsv.space_info = space_info;
 > +
-> +. ./common/preamble
-> +_begin_fstest auto volume balance scrub raid
+>  	space_info = btrfs_find_space_info(fs_info, BTRFS_BLOCK_GROUP_METADATA);
+>  	fs_info->global_block_rsv.space_info = space_info;
+>  	fs_info->trans_block_rsv.space_info = space_info;
+> @@ -460,6 +466,8 @@ void btrfs_release_global_block_rsv(struct btrfs_fs_info *fs_info)
+>  	WARN_ON(fs_info->trans_block_rsv.reserved > 0);
+>  	WARN_ON(fs_info->chunk_block_rsv.size > 0);
+>  	WARN_ON(fs_info->chunk_block_rsv.reserved > 0);
+> +	WARN_ON(fs_info->remap_block_rsv.size > 0);
+> +	WARN_ON(fs_info->remap_block_rsv.reserved > 0);
+>  	WARN_ON(fs_info->delayed_block_rsv.size > 0);
+>  	WARN_ON(fs_info->delayed_block_rsv.reserved > 0);
+>  	WARN_ON(fs_info->delayed_refs_rsv.reserved > 0);
+> diff --git a/fs/btrfs/block-rsv.h b/fs/btrfs/block-rsv.h
+> index 79ae9d05cd91..8359fb96bc3c 100644
+> --- a/fs/btrfs/block-rsv.h
+> +++ b/fs/btrfs/block-rsv.h
+> @@ -22,6 +22,7 @@ enum btrfs_rsv_type {
+>  	BTRFS_BLOCK_RSV_DELALLOC,
+>  	BTRFS_BLOCK_RSV_TRANS,
+>  	BTRFS_BLOCK_RSV_CHUNK,
+> +	BTRFS_BLOCK_RSV_REMAP,
+>  	BTRFS_BLOCK_RSV_DELOPS,
+>  	BTRFS_BLOCK_RSV_DELREFS,
+>  	BTRFS_BLOCK_RSV_TREELOG,
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index f475fb2272ac..102e5e0ad10c 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2815,6 +2815,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
+>  			     BTRFS_BLOCK_RSV_GLOBAL);
+>  	btrfs_init_block_rsv(&fs_info->trans_block_rsv, BTRFS_BLOCK_RSV_TRANS);
+>  	btrfs_init_block_rsv(&fs_info->chunk_block_rsv, BTRFS_BLOCK_RSV_CHUNK);
+> +	btrfs_init_block_rsv(&fs_info->remap_block_rsv, BTRFS_BLOCK_RSV_REMAP);
+>  	btrfs_init_block_rsv(&fs_info->treelog_rsv, BTRFS_BLOCK_RSV_TREELOG);
+>  	btrfs_init_block_rsv(&fs_info->empty_block_rsv, BTRFS_BLOCK_RSV_EMPTY);
+>  	btrfs_init_block_rsv(&fs_info->delayed_block_rsv,
+> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+> index 814bbc9417d2..c4dba7e7ce5a 100644
+> --- a/fs/btrfs/fs.h
+> +++ b/fs/btrfs/fs.h
+> @@ -485,6 +485,8 @@ struct btrfs_fs_info {
+>  	struct btrfs_block_rsv trans_block_rsv;
+>  	/* Block reservation for chunk tree */
+>  	struct btrfs_block_rsv chunk_block_rsv;
+> +	/* Block reservation for remap tree */
+> +	struct btrfs_block_rsv remap_block_rsv;
+>  	/* Block reservation for delayed operations */
+>  	struct btrfs_block_rsv delayed_block_rsv;
+>  	/* Block reservation for delayed refs */
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index 04a07d6f8537..22bc95f33a6f 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -215,7 +215,7 @@ static u64 calc_chunk_size(const struct btrfs_fs_info *fs_info, u64 flags)
+>  
+>  	if (flags & BTRFS_BLOCK_GROUP_DATA)
+>  		return BTRFS_MAX_DATA_CHUNK_SIZE;
+> -	else if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
+> +	else if (flags & (BTRFS_BLOCK_GROUP_SYSTEM | BTRFS_BLOCK_GROUP_REMAP))
+>  		return SZ_32M;
+>  
+>  	/* Handle BTRFS_BLOCK_GROUP_METADATA */
+> @@ -343,6 +343,8 @@ int btrfs_init_space_info(struct btrfs_fs_info *fs_info)
+>  	if (mixed) {
+>  		flags = BTRFS_BLOCK_GROUP_METADATA | BTRFS_BLOCK_GROUP_DATA;
+>  		ret = create_space_info(fs_info, flags);
+> +		if (ret)
+> +			goto out;
+>  	} else {
+>  		flags = BTRFS_BLOCK_GROUP_METADATA;
+>  		ret = create_space_info(fs_info, flags);
+> @@ -351,7 +353,15 @@ int btrfs_init_space_info(struct btrfs_fs_info *fs_info)
+>  
+>  		flags = BTRFS_BLOCK_GROUP_DATA;
+>  		ret = create_space_info(fs_info, flags);
+> +		if (ret)
+> +			goto out;
+> +	}
 > +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $tmp.*
-> +	_kill_fsstress
-> +}
+> +	if (features & BTRFS_FEATURE_INCOMPAT_REMAP_TREE) {
+> +		flags = BTRFS_BLOCK_GROUP_REMAP;
+> +		ret = create_space_info(fs_info, flags);
+>  	}
 > +
-> +. ./common/filter
-> +# we check scratch dev after each loop
-> +_require_scratch_nocheck
-> +_require_scratch_dev_pool 4
-> +# Zoned btrfs only supports SINGLE profile
-> +_require_non_zoned_device "${SCRATCH_DEV}"
+>  out:
+>  	return ret;
+>  }
+> @@ -590,6 +600,7 @@ static void dump_global_block_rsv(struct btrfs_fs_info *fs_info)
+>  	DUMP_BLOCK_RSV(fs_info, global_block_rsv);
+>  	DUMP_BLOCK_RSV(fs_info, trans_block_rsv);
+>  	DUMP_BLOCK_RSV(fs_info, chunk_block_rsv);
+> +	DUMP_BLOCK_RSV(fs_info, remap_block_rsv);
+>  	DUMP_BLOCK_RSV(fs_info, delayed_block_rsv);
+>  	DUMP_BLOCK_RSV(fs_info, delayed_refs_rsv);
+>  }
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 857d2772db1c..f942fde1d936 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -1973,6 +1973,8 @@ static const char *alloc_name(struct btrfs_space_info *space_info)
+>  	case BTRFS_BLOCK_GROUP_SYSTEM:
+>  		ASSERT(space_info->subgroup_id == BTRFS_SUB_GROUP_PRIMARY);
+>  		return "system";
+> +	case BTRFS_BLOCK_GROUP_REMAP:
+> +		return "remap";
+>  	default:
+>  		WARN_ON(1);
+>  		return "invalid-combination";
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index 9c03aeb6f2c7..62f35338a555 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -748,17 +748,26 @@ static int check_block_group_item(struct extent_buffer *leaf,
+>  		return -EUCLEAN;
+>  	}
+>  
+> +	if (flags & BTRFS_BLOCK_GROUP_REMAP &&
+> +		!btrfs_fs_incompat(fs_info, REMAP_TREE)) {
+> +		block_group_err(leaf, slot,
+> +"invalid flags, have 0x%llx (REMAP flag set) but no remap-tree incompat flag",
+> +				flags);
+> +		return -EUCLEAN;
+> +	}
 > +
-> +# Load up the available configs
-> +_btrfs_get_profile_configs
-> +declare -a TEST_VECTORS=(
-> +# $nr_dev_min:$data:$metadata:$data_convert:$metadata_convert
-> +"4:single:raid1"
-> +"4:single:raid0"
-> +"4:single:raid10"
-> +"4:single:dup"
-> +"4:single:raid5"
-> +"4:single:raid6"
-> +"2:raid1:single"
-> +)
+>  	type = flags & BTRFS_BLOCK_GROUP_TYPE_MASK;
+>  	if (unlikely(type != BTRFS_BLOCK_GROUP_DATA &&
+>  		     type != BTRFS_BLOCK_GROUP_METADATA &&
+>  		     type != BTRFS_BLOCK_GROUP_SYSTEM &&
+> +		     type != BTRFS_BLOCK_GROUP_REMAP &&
+>  		     type != (BTRFS_BLOCK_GROUP_METADATA |
+>  			      BTRFS_BLOCK_GROUP_DATA))) {
+>  		block_group_err(leaf, slot,
+> -"invalid type, have 0x%llx (%lu bits set) expect either 0x%llx, 0x%llx, 0x%llx or 0x%llx",
+> +"invalid type, have 0x%llx (%lu bits set) expect either 0x%llx, 0x%llx, 0x%llx, 0x%llx or 0x%llx",
+>  			type, hweight64(type),
+>  			BTRFS_BLOCK_GROUP_DATA, BTRFS_BLOCK_GROUP_METADATA,
+> -			BTRFS_BLOCK_GROUP_SYSTEM,
+> +			BTRFS_BLOCK_GROUP_SYSTEM, BTRFS_BLOCK_GROUP_REMAP,
+>  			BTRFS_BLOCK_GROUP_METADATA | BTRFS_BLOCK_GROUP_DATA);
+>  		return -EUCLEAN;
+>  	}
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 2e144ebd56ac..e14b86e2996b 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -231,6 +231,9 @@ void btrfs_describe_block_groups(u64 bg_flags, char *buf, u32 size_buf)
+>  	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_DATA, "data");
+>  	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_SYSTEM, "system");
+>  	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_METADATA, "metadata");
+> +	/* block groups containing the remap tree */
+> +	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_REMAP, "remap");
+> +	/* block group that has been remapped */
+>  	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_REMAPPED, "remapped");
+>  
+>  	DESCRIBE_FLAG(BTRFS_AVAIL_ALLOC_BIT_SINGLE, "single");
+> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+> index 2cbf8080eade..b0fa8eb38060 100644
+> --- a/fs/btrfs/volumes.h
+> +++ b/fs/btrfs/volumes.h
+> @@ -58,8 +58,6 @@ static_assert(const_ilog2(BTRFS_STRIPE_LEN) == BTRFS_STRIPE_LEN_SHIFT);
+>   */
+>  static_assert(const_ffs(BTRFS_BLOCK_GROUP_RAID0) <
+>  	      const_ffs(BTRFS_BLOCK_GROUP_PROFILE_MASK & ~BTRFS_BLOCK_GROUP_RAID0));
+> -static_assert(const_ilog2(BTRFS_BLOCK_GROUP_RAID0) >
+> -	      ilog2(BTRFS_BLOCK_GROUP_TYPE_MASK));
+>  
+>  /* ilog2() can handle both constants and variables */
+>  #define BTRFS_BG_FLAG_TO_INDEX(profile)					\
+> @@ -81,6 +79,15 @@ enum btrfs_raid_types {
+>  	BTRFS_NR_RAID_TYPES
+>  };
+>  
+> +static_assert(BTRFS_RAID_RAID0 == 1);
+> +static_assert(BTRFS_RAID_RAID1 == 2);
+> +static_assert(BTRFS_RAID_DUP == 3);
+> +static_assert(BTRFS_RAID_RAID10 == 4);
+> +static_assert(BTRFS_RAID_RAID5 == 5);
+> +static_assert(BTRFS_RAID_RAID6 == 6);
+> +static_assert(BTRFS_RAID_RAID1C3 == 7);
+> +static_assert(BTRFS_RAID_RAID1C4 == 8);
 > +
-> +run_testcase() {
-> +	IFS=':' read -ra args <<< $1
-> +	num_disks=${args[0]}
-> +	src_type=${args[1]}
-> +	dst_type=${args[2]}
-> +
-> +	if [[ ! "${_btrfs_profile_configs[@]}" =~ "$dst_type" ]]; then
-> +		echo "=== Skipping test: $1 ===" >> $seqres.full
-> +		return
-> +	fi
-> +
-> +	_scratch_dev_pool_get $num_disks
-> +
-> +	echo "=== Running test: $1 (converting $src_type -> $dst_type) ===" >> $seqres.full
-> +
-> +	_scratch_pool_mkfs -d$src_type -m$src_type >> $seqres.full 2>&1
-> +	_scratch_mount
-> +
-> +	echo "Creating initial data..." >> $seqres.full
-> +	_run_fsstress -d $SCRATCH_MNT -w -n 10000 >> $seqres.full 2>&1
-> +
-> +	args=`_scale_fsstress_args -p 20 -n 1000 -d $SCRATCH_MNT/stressdir`
-> +	echo "Starting fsstress: $args" >> $seqres.full
-> +	_run_fsstress_bg $args
-> +
-> +	echo "Starting conversion: $src_type -> $dst_type" >> $seqres.full
-> +	_run_btrfs_balance_start -f -dconvert=$dst_type $SCRATCH_MNT >> $seqres.full
-> +	[ $? -eq 0 ] || echo "$1: Failed convert"
-> +
-> +	echo "Waiting for fsstress to complete..." >> $seqres.full
-> +	_wait_for_fsstress
-> +
-> +	# Verify the conversion was successful
-> +	echo "Checking filesystem profile after conversion..." >> $seqres.full
-> +	$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT >> $seqres.full
-> +
-> +	# Scrub to verify data integrity
-> +	echo "Scrubbing filesystem..." >> $seqres.full
-> +	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >> $seqres.full 2>&1
-> +	if [ $? -ne 0 ]; then
-> +		echo "$1: Scrub found errors"
-> +	fi
-> +
-> +	_scratch_unmount
-> +	_check_scratch_fs
-> +	_scratch_dev_pool_put
-> +}
-> +
-> +echo "Silence is golden"
-> +for i in "${TEST_VECTORS[@]}"; do
-> +	run_testcase $i
-> +done
-> +
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/337.out b/tests/btrfs/337.out
-> new file mode 100644
-> index 00000000..d80a9830
-> --- /dev/null
-> +++ b/tests/btrfs/337.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 337
-> +Silence is golden
+
+What is the significance of these static_assert changes?
+
+>  /*
+>   * Use sequence counter to get consistent device stat data on
+>   * 32-bit processors.
+> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+> index 4439d77a7252..9a36f0206d90 100644
+> --- a/include/uapi/linux/btrfs_tree.h
+> +++ b/include/uapi/linux/btrfs_tree.h
+> @@ -1169,12 +1169,14 @@ struct btrfs_dev_replace_item {
+>  #define BTRFS_BLOCK_GROUP_RAID1C3       (1ULL << 9)
+>  #define BTRFS_BLOCK_GROUP_RAID1C4       (1ULL << 10)
+>  #define BTRFS_BLOCK_GROUP_REMAPPED      (1ULL << 11)
+> +#define BTRFS_BLOCK_GROUP_REMAP         (1ULL << 12)
+>  #define BTRFS_BLOCK_GROUP_RESERVED	(BTRFS_AVAIL_ALLOC_BIT_SINGLE | \
+>  					 BTRFS_SPACE_INFO_GLOBAL_RSV)
+>  
+>  #define BTRFS_BLOCK_GROUP_TYPE_MASK	(BTRFS_BLOCK_GROUP_DATA |    \
+>  					 BTRFS_BLOCK_GROUP_SYSTEM |  \
+> -					 BTRFS_BLOCK_GROUP_METADATA)
+> +					 BTRFS_BLOCK_GROUP_METADATA | \
+> +					 BTRFS_BLOCK_GROUP_REMAP)
+>  
+>  #define BTRFS_BLOCK_GROUP_PROFILE_MASK	(BTRFS_BLOCK_GROUP_RAID0 |   \
+>  					 BTRFS_BLOCK_GROUP_RAID1 |   \
 > -- 
-> 2.47.3
+> 2.49.1
 > 
 
