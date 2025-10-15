@@ -1,158 +1,144 @@
-Return-Path: <linux-btrfs+bounces-17852-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17853-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BCA5BDFD84
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 19:27:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84B54BDFFDB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 20:06:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F6AD486EE7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 17:27:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C9143BC478
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 18:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B931338F36;
-	Wed, 15 Oct 2025 17:27:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241603009E7;
+	Wed, 15 Oct 2025 18:06:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bPdDAg75";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BRP9pA9+";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="A0EZA/+J";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Xw+MkD9Q"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hiY5QYtE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FBE21B9F5
-	for <linux-btrfs@vger.kernel.org>; Wed, 15 Oct 2025 17:27:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E2083009EC
+	for <linux-btrfs@vger.kernel.org>; Wed, 15 Oct 2025 18:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760549271; cv=none; b=hZDQ2c/2J1yY9WMQQrdnD+9hYR4bKnhadagQ1AGTRMnUBCJFTmmyIiLtWju9mwCX5NB8dY5+BmEcEt9uiJpxK4HYZZlXehVH8+j0odY0SvVtsboo3ZwYahn9lkWnIVE1vDAnXMdFFqIToyJT5JgFV+ZEF0nRoS2AlPkgSyyS6E0=
+	t=1760551559; cv=none; b=PyOi+dDCgUfk4ijEOGSfRlPG0X2e+yjq4Zq/oJ0EJBACEzXGxyH0o9kxYYepWUDrMzGhszMzLI+8k0g8PBcz6f0twsEiLawg/cDOcV7JClmpjpSEIA4jVyMe7z6sbJqyU5cVUk0HS0p3l910YxMqku1d01O+vzZSSgWvesOwk0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760549271; c=relaxed/simple;
-	bh=gr8Rm3T7XPVKKZSZijBWerY3+TCgi1nqLes0rUsi7H4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NhZ1Nv5k8W+z/xEJdQlhGNsSRXHh4/MCbPo2+/XVy8OBDlyDwS0/+LfnkbUcA1vEMMpJOG5p6VKI1e3CcpxH2l62/glisUrjlydqQyohsBjvs+Ig8anx+lmdqKSElK98vecHo5AmJOdaxTgcLZJVWIzMS2Q/xsrz9vh7XbRH5Vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bPdDAg75; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BRP9pA9+; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=A0EZA/+J; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Xw+MkD9Q; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 599CB33920;
-	Wed, 15 Oct 2025 17:27:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760549266;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eCazV19M5jC+/0DIxVabsVSWDDN0UZpdMxle44nc5T4=;
-	b=bPdDAg754H7DxhcB+1gmRCd0xGMmzI6pAk7ys1J0d6dTT5HvociimmST6NMkqA/vuHK3XA
-	PTm81c5sJWolM2EsDwSzudlemBqYIAmxzwH/lebywewIc+mGSRpsMF0AZUifnL5KZRsXzX
-	6JxCHxUmMbZPD3NvWirTSRgNsir07xc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760549266;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eCazV19M5jC+/0DIxVabsVSWDDN0UZpdMxle44nc5T4=;
-	b=BRP9pA9+a3d2rM4Pf03H1KH6EWmufWqLDlQBFkKnmjKTn9puA1Q/Jp+9zMu5SmC9F5g+Cn
-	DO2RszXpNEaurQCQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="A0EZA/+J";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Xw+MkD9Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760549265;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eCazV19M5jC+/0DIxVabsVSWDDN0UZpdMxle44nc5T4=;
-	b=A0EZA/+JqbKCZfaEcq8WVCI0ITut3P4C1Q6fi/fq3qaT7LMrV9Kb9+iYWLXZRrrnf9ZRkd
-	l7JZLYfJ2PnQWQr/wAEFMQfRFHV3SGUzAQg/mVTK5hngEns/4j5gM6N0ApNcscJVFu0agw
-	pCvyIzvS6wjz+wC/T5/aYRMxGnligRE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760549265;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eCazV19M5jC+/0DIxVabsVSWDDN0UZpdMxle44nc5T4=;
-	b=Xw+MkD9QtehG1BcK4qolPVqzQxAjQmuIP95h46InuGaIrHdp7KFb3sG7YyQ3hYa8T1hg6t
-	pCmYmcjDgrjM4RDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3ADDB13A29;
-	Wed, 15 Oct 2025 17:27:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id nRXeDZHZ72i1OQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 15 Oct 2025 17:27:45 +0000
-Date: Wed, 15 Oct 2025 19:27:44 +0200
-From: David Sterba <dsterba@suse.cz>
-To: xuanqiang.luo@linux.dev
-Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-	Xuanqiang Luo <luoxuanqiang@kylinos.cn>,
-	Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH v1] btrfs: remove redundant refcount check in
- btrfs_put_transaction()
-Message-ID: <20251015172744.GG13776@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20251015070521.620364-1-xuanqiang.luo@linux.dev>
+	s=arc-20240116; t=1760551559; c=relaxed/simple;
+	bh=ozdKul5OP276A3h3Wjm2x2XarpQcUWp1UVCAyeuTdSY=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=EY13QlapK3FKUhoa5euOvRGUiGbofUOcgj8rI1Ct69pZ6WHh/25lWa5ZEjOYfj3hOFx2Y3NL/8WDuhdmzsuHDluoqwFeMy+VU3/3jLID1e2Fq3JO6VOd8gjGkHJXXM4nERVu8XWnEnpJu0El9uAlXUfNkguxowOSSLokEe08fAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hiY5QYtE; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-269939bfccbso127899255ad.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Oct 2025 11:05:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1760551557; x=1761156357; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wj/ujD0eXtGvKYdVuuqLrx+hKA4SG0aPTcTudPvMU20=;
+        b=hiY5QYtEpveuJQ3GbSnBDDXz5b7tFq/FMKy0gFT20cj6giwmL8q4Mh0LFH56veNEYF
+         JGywApRFaF3M3jB/LxzaK5TYG3wiIPdyLA019g7yKN4nOQ5/e10ISsVrWEz7iperQzdV
+         oZX2RznS+iz83f0ymdb26UtOTr0XrQMcNh+WRgQMPZoGpNln5z+dSnS/rPq7YJkZCL7e
+         ClrlWThmjmQQxohicODRYSlyv33ENTwTqHqIBf1A1TBzcuisSBRbNV43V5lJudqs4xYC
+         S0dS5lG8OAygmR+OVmej7Qqp9sS98SLfTWn7dlNyPLpqViCGxu06AKz0VeOR5mKQtyCs
+         eS3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760551557; x=1761156357;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wj/ujD0eXtGvKYdVuuqLrx+hKA4SG0aPTcTudPvMU20=;
+        b=POgJ+Kc8q52TTVuW57aCQM0bjxcTZEGCn0VOdNmSZ0QdC3anYvvbAaxd9QvG7Ouers
+         +MJstqgP8uBW4pT8mwXzswoGStH2Jd7GVIbrMqefhXMAt2jGEYuukJFIqAUT7Dg31iBQ
+         5yl2/A+xxupijNZyJffag4ihEA7LkLNXQA+nqFud8mXO+z/QYcByp47fekx9MK9jMpnl
+         HlRzyPcXGndVllwnbNQG5zZQmbinKyySyxetzgi3j5ibkFIHjtEdWmqSIPG0zeejQexs
+         gyXt20d/Djsday48QdT+GDAEzvuLla4di/o4+3l0umd7ifYcSdHfYNqeDpPYmWjZgKNg
+         ds0w==
+X-Forwarded-Encrypted: i=1; AJvYcCUGdoM+0JE9miq/DJksxDu2nw6Rwr3hBkfuCbFAwrf4ogo1SR9IyyoX1CmPFzCKVNZwY2rjXF5+cE2C8Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzaBdUqwzkJLp1H8pNicrez9whXRRNJrwYmpBuLjSc8sh3KY2Cu
+	Ty8tr+ITwTl3WK8EaERFtWEhVn7reRWCR1ykh8eItuP+GyX39YJV9fnJW1JxgM8D+q/adteMO4+
+	hSHMMLw==
+X-Google-Smtp-Source: AGHT+IH/Mc5bux0nHPu+CkauZuwZIYiV046udmQ4p4yB6kgoXdVfplmR64sQJckJg1s2r9B+yaVqVDHEGb8=
+X-Received: from pjrv8.prod.google.com ([2002:a17:90a:bb88:b0:32e:b34b:92eb])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:3d05:b0:26e:49e3:55f1
+ with SMTP id d9443c01a7336-29027373d9amr366930845ad.18.1760551555936; Wed, 15
+ Oct 2025 11:05:55 -0700 (PDT)
+Date: Wed, 15 Oct 2025 11:02:44 -0700
+In-Reply-To: <20250827175247.83322-2-shivankg@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251015070521.620364-1-xuanqiang.luo@linux.dev>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 599CB33920
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,linux.dev:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,kylinos.cn:email,suse.com:email]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -4.21
-X-Spam-Level: 
+Mime-Version: 1.0
+References: <20250827175247.83322-2-shivankg@amd.com>
+X-Mailer: git-send-email 2.51.0.788.g6d19910ace-goog
+Message-ID: <176055105546.1527431.3611256810380818215.b4-ty@google.com>
+Subject: Re: [PATCH kvm-next V11 0/7] Add NUMA mempolicy support for KVM guest-memfd
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>, willy@infradead.org, akpm@linux-foundation.org, 
+	david@redhat.com, pbonzini@redhat.com, shuah@kernel.org, vbabka@suse.cz, 
+	Shivank Garg <shivankg@amd.com>
+Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com, 
+	xiang@kernel.org, chao@kernel.org, jaegeuk@kernel.org, clm@fb.com, 
+	josef@toxicpanda.com, kent.overstreet@linux.dev, zbestahu@gmail.com, 
+	jefflexu@linux.alibaba.com, dhavale@google.com, lihongbo22@huawei.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org, 
+	surenb@google.com, mhocko@suse.com, ziy@nvidia.com, matthew.brost@intel.com, 
+	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com, 
+	gourry@gourry.net, ying.huang@linux.alibaba.com, apopple@nvidia.com, 
+	tabba@google.com, ackerleytng@google.com, paul@paul-moore.com, 
+	jmorris@namei.org, serge@hallyn.com, pvorel@suse.cz, bfoster@redhat.com, 
+	vannapurve@google.com, chao.gao@intel.com, bharata@amd.com, nikunj@amd.com, 
+	michael.day@amd.com, shdhiman@amd.com, yan.y.zhao@intel.com, 
+	Neeraj.Upadhyay@amd.com, thomas.lendacky@amd.com, michael.roth@amd.com, 
+	aik@amd.com, kalyazin@amazon.com, peterx@redhat.com, jack@suse.cz, 
+	hch@infradead.org, cgzones@googlemail.com, ira.weiny@intel.com, 
+	rientjes@google.com, roypat@amazon.co.uk, chao.p.peng@intel.com, 
+	amit@infradead.org, ddutile@redhat.com, dan.j.williams@intel.com, 
+	ashish.kalra@amd.com, gshan@redhat.com, jgowans@amazon.com, 
+	pankaj.gupta@amd.com, papaluri@amd.com, yuzhao@google.com, 
+	suzuki.poulose@arm.com, quic_eberman@quicinc.com, 
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-coco@lists.linux.dev, Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
 
-On Wed, Oct 15, 2025 at 03:05:21PM +0800, xuanqiang.luo@linux.dev wrote:
-> From: Xuanqiang Luo <luoxuanqiang@kylinos.cn>
+On Wed, 27 Aug 2025 17:52:41 +0000, Shivank Garg wrote:
+> This series introduces NUMA-aware memory placement support for KVM guests
+> with guest_memfd memory backends. It builds upon Fuad Tabba's work (V17)
+> that enabled host-mapping for guest_memfd memory [1] and can be applied
+> directly applied on KVM tree [2] (branch kvm-next, base commit: a6ad5413,
+> Merge branch 'guest-memfd-mmap' into HEAD)
 > 
-> Eric Dumazet removed the redundant refcount check for sk_refcnt, I noticed
-> a similar issue in btrfs_put_transaction().
+> == Background ==
+> KVM's guest-memfd memory backend currently lacks support for NUMA policy
+> enforcement, causing guest memory allocations to be distributed across host
+> nodes  according to kernel's default behavior, irrespective of any policy
+> specified by the VMM. This limitation arises because conventional userspace
+> NUMA control mechanisms like mbind(2) don't work since the memory isn't
+> directly mapped to userspace when allocations occur.
+> Fuad's work [1] provides the necessary mmap capability, and this series
+> leverages it to enable mbind(2).
 > 
-> refcount_dec_and_test() already checks for a zero refcount and complains,
-> making the preceding WARN_ON redundant.
-> 
-> Cc: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Xuanqiang Luo <luoxuanqiang@kylinos.cn>
+> [...]
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+Applied the non-KVM change to kvm-x86 gmem.  We're still tweaking and iterating
+on the KVM changes, but I fully expect them to land in 6.19.
+
+Holler if you object to taking these through the kvm tree.
+
+[1/7] mm/filemap: Add NUMA mempolicy support to filemap_alloc_folio()
+      https://github.com/kvm-x86/linux/commit/601aa29f762f
+[2/7] mm/filemap: Extend __filemap_get_folio() to support NUMA memory policies
+      https://github.com/kvm-x86/linux/commit/2bb25703e5bd
+[3/7] mm/mempolicy: Export memory policy symbols
+      https://github.com/kvm-x86/linux/commit/e1b4cf7d6be3
+
+--
+https://github.com/kvm-x86/linux/tree/next
 
