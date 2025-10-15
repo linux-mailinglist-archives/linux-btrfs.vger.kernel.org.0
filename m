@@ -1,68 +1,68 @@
-Return-Path: <linux-btrfs+bounces-17798-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17799-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90E93BDC577
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 05:30:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F157ABDC57A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 05:31:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8123A4F572A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 03:30:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A6E33BB49F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Oct 2025 03:31:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2779B29D277;
-	Wed, 15 Oct 2025 03:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A4002836B5;
+	Wed, 15 Oct 2025 03:31:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="DKMYnL+V";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UhZBh2LH"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="ADDNCZ1t";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UHcgs2h/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
+Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2281029ACEE;
-	Wed, 15 Oct 2025 03:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6F71547EE;
+	Wed, 15 Oct 2025 03:31:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760498999; cv=none; b=PeQBACa/ApCcqZXW77zW/tNJqtz34yh0gDhO63nUL+NW5I5EYctpaLtbHrgBL0Tfyfv/puGsakSPvPbS0iw/OUjLF2Ksx06QjoGTsacJmeMBOlaJA2sdW/uWeNxzVWEb5iLoDL9SVEoMK2fW4/WU9VcN3R93ZDwCNg2sVuM+FEQ=
+	t=1760499107; cv=none; b=EdQDeCKwkjRu2LE1/68pADVKX1s/T6sL9PVzyFAxErusoELRp/KpMvFijjBWA/KSCc2uQ/vXqYOJaP49mHHH+lq245wqqoQTJX7hyurVqdHjn3EMlTlGaFgk0yxO9vKXstQHm/OQ7c0Jxly4asRF+zUzH0PD4Vx9pOt6X+3FbZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760498999; c=relaxed/simple;
-	bh=3BVjiZX7gwOfDjIVpvYWvIdMgAz3MBA6gQwJCw2Ph0c=;
+	s=arc-20240116; t=1760499107; c=relaxed/simple;
+	bh=hd7k8NxvgQVjLpsL0c4bdGs8VplMDq8GXxMRahHxDeo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YLQBWH8sWroo4O0A+u0IF83BPuMIrDtBmVbGbJtLXH78TQyEsaKXpmxhBYsw/CA4O5+rQeryuyngQrfz5Ou/LMJd93i3GwX8MEhUQUvFDgU/bHzsznjlleyumoj4j49FuIFoty7+CKQpkToQpA/evcT05HaGvknWOt7N8pveu4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=DKMYnL+V; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UhZBh2LH; arc=none smtp.client-ip=103.168.172.154
+	 Content-Type:Content-Disposition:In-Reply-To; b=HcBsqNKCKSYvBCTngsk1RqpOsebl542DkWqDtxSu5te8QtfPXZJXmLeiVppGLrP9PMSao81lqQ1aks0qzn48guT9cFpjsCAvxkUVlOz15ql9rRASDYJH4b5SlJjxmqa6/AJA2o4lbGi45PhXeLCMyv+0bi7Dqkk/7uUL8Fhf0QE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=ADDNCZ1t; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UHcgs2h/; arc=none smtp.client-ip=103.168.172.149
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 15E89140007F;
-	Tue, 14 Oct 2025 23:29:56 -0400 (EDT)
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfout.phl.internal (Postfix) with ESMTP id 88838EC020C;
+	Tue, 14 Oct 2025 23:31:44 -0400 (EDT)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Tue, 14 Oct 2025 23:29:56 -0400
+  by phl-compute-05.internal (MEProxy); Tue, 14 Oct 2025 23:31:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1760498996; x=1760585396; bh=4hX1JI1YXp
-	ZJ2d89pwu0keWdyhtOl2pD2J1qbW48Bu0=; b=DKMYnL+VqxLcCx/MCQhdUkgc5B
-	dBWGphWN1tBKe7gcMKRvcvVIIPrPAXJ+hUX1eQIZGnN4yOaC4Zf/nWP7SUgxS4oN
-	evUGnO+THnd4dF3FRCye47d2mzmDXxIfBbPW005EUuX/pvoqwqk3Kan3iYXt6JxN
-	D5DfrazVvGR/tUkCOIVit7uq/+gkWtJUnSsC3jxz5LWshndf/O8XkZ1cghRCkmAd
-	EqpjP89BPdtgYhkO5ohpXmEiA9eX395L82yXABaa05liXMDUT61KXAF+c3hx5vpw
-	Z2VJ8aa/k7fslFtpNaHuebAPheTtUosjSk9d3Mj+mH73Wk2mB/2V+5mKNbLQ==
+	:subject:to:to; s=fm3; t=1760499104; x=1760585504; bh=FCNJI3PZpo
+	qgWJfIjLYy+Ya+ZfXuDLJVUaYsT9MnoA0=; b=ADDNCZ1tD8KwM9M8aji8xojWYw
+	ezkzUAU/NUHOyMsNAUkHVjg2eE240NwcffEQbw8fOOQxTXWeqlaZmCznAW/3wdbu
+	8dGAH39mOmn0BOTebgf2WTK05sOXTRtKUeqlwA48D8a9FWBWy6bmd456Aeb/+rBh
+	UlV4DefpgMDllBdWYfxCbG/3jCyHUEefxqjQV/CjyVS5rE72o9qyjasA4/7KwD28
+	AMWF0SKHwOQz2Y6XHPaZ/1dCGkoqE/Ne+pTJ6xCMQae0TsERHjSi5KFFbd+PCgV1
+	6UV0+wNv+AJYwvDCaKY0ZTlz7M+MlEVpMJXSG1bvNLsuLtcADYbZjgdBkd/Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1760498996; x=1760585396; bh=4hX1JI1YXpZJ2d89pwu0keWdyhtOl2pD2J1
-	qbW48Bu0=; b=UhZBh2LH1J8oGI1vZ5yEHYDUWy7edcSmXBjJc+rATk8r2Iendcx
-	c0g/flYUspox4rhsR8dYdvZlp6D2e0an/1v6wJKDFJZ+gQyBMYvB1gkfpzELUU/S
-	8SCVBx5IAT8nSQIda83YCXHieg9r90fCjNcPXV8QeAmkQ+cofKwtqLvuHtg8DNwi
-	HwJbpQWrC3TpxP5WwAEDeR3H1pZT4z6VeHWtNvrpW277BOjNNbJDZLBjApRAgsje
-	WxMZ+gXbZu7SGppmhPt77DTNZwWVTMxtqUwrRFwlUcpQKtGlnczMPpaeSTFOPxAj
-	tf/gKJhr0EDXH3Wa7w2s7whL0jLlSjlHdQw==
-X-ME-Sender: <xms:MxXvaGudzNyWmKuiKioMiOzA51l02hK-6jzcbzNUFYSJDJTGd4QgRA>
-    <xme:MxXvaJQ2UZrac_3-5cTntqv3jTnr3opq_Z16cGXsmYKfAjPAiH3AkKkwx8wk46kn-
-    _KJycPg4tkxcTjA7g7-XpROmVjuMuEBLSdYAYO6oON7vmrP7u9keCFp>
-X-ME-Received: <xmr:MxXvaMNqTgF-AmVnAX1YLzJWT5PIIpRziUTGJkbHr-oKGY2RUpDn-4Cc6-x-Q8rHgVL-e7ld9ohy2SLpOE_aYW4T4vM>
+	1760499104; x=1760585504; bh=FCNJI3PZpoqgWJfIjLYy+Ya+ZfXuDLJVUaY
+	sT9MnoA0=; b=UHcgs2h/pLS81Hs3XNx3CfDZvsCSCwChPCXtP4vn7gEiz+0hmw6
+	205ueixz3kCKLCRFWB7H9lLi39BLTXCKpOrJbNT9Fb/hS87q9XGIGS+rNnxR2mzr
+	gdMe1/X1Y1gRI2J+W/MLS1ZU9NzseyGhFa4yS+ZxZ+FU1QNEbQEOtbyctllT8HQ1
+	P+kfaagNWzIEx+bix31i219iYIL7LOjB54lgbuKc1jFImR1NtChokSpscppWpshx
+	Hhoe9serRxISJ99+0X1ehripKoFSQK/4BuevHCRZnNXZ0GYaNBXfN4TUPNKZzoYj
+	09ic5W29TGzDjdnNWP1/cblajBCiCQxihWA==
+X-ME-Sender: <xms:oBXvaG9RGkTiHlCDn9Pf3g49tiALWLRh9B3EGdUCO-c1GkS46G9NAg>
+    <xme:oBXvaEh00tHl4GXQHHKlKAAR8nnc8rim7NZXOHkaotgeDV3bbqZj6_GzTIlKMMX_w
+    2SAjSosbV4vanpRzokp2NOnaZWzVWLO07cGVObpOOGC-DtWBpKBndg>
+X-ME-Received: <xmr:oBXvaGdotboD98upFXEKPwczBVjLu7ondqRo_TdIg39oDa27WfzvP_GO88yh_e0ilu0-Ag5Sr5B_VA8AMteXRcmLyrE>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduvddvfeegucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertd
@@ -74,23 +74,23 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduvddvfeegucetufdote
     tghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrd
     horhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhmpdhrtghpthht
     ohepfhhsthgvshhtshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:MxXvaOb0qNYCIXd5ZGW5MJBI2uOu8AWyxCwJHGWg51SkoKrLI42UsA>
-    <xmx:MxXvaGz96fGiYmj350Bvyb7kJ1qOU0mtkjlzMLyYrcFirMTGV-dCXg>
-    <xmx:MxXvaJLVDJ1tMOKO_kDxRTbbYzSsNAWZBruuJ2qbiFz79oSJVvWE1A>
-    <xmx:MxXvaAquAojKUdSTDrGTZrzYE-zmkoUCB2QimWWbmU03r7RmKGgBZQ>
-    <xmx:NBXvaA9A_b_X153fJVZkl41j1dbkZu1DK9WBM3FrGQwx0z4KsbKKtzc9>
+X-ME-Proxy: <xmx:oBXvaLpLlFqBrpMdCTT642VmgSshG4jim0Vc_jVEqlgKl5kDjVecqA>
+    <xmx:oBXvaLBtkHBlwrdyDmbtCeZSnd0KDC-hfwKjOnQy689ipUJEz_uJvw>
+    <xmx:oBXvaIa6d4mdbuQUJvsMp0Wfojsw_ZsqUwgmIQRc4WJLkHXQ4RoEsA>
+    <xmx:oBXvaO5hKeQSpFDfO4ImPPogBZPipV-qAOTxUyN_H8ljY6xYVF0m3w>
+    <xmx:oBXvaPM4suGWztZF6PJBdQCh0x94mChQvQ8vS-9byjdAMM3sc9QcsX-z>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Oct 2025 23:29:55 -0400 (EDT)
-Date: Tue, 14 Oct 2025 20:29:35 -0700
+ 14 Oct 2025 23:31:43 -0400 (EDT)
+Date: Tue, 14 Oct 2025 20:31:24 -0700
 From: Boris Burkov <boris@bur.io>
 To: Leo Martins <loemra.dev@gmail.com>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
 	fstests@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] btrfs: remove ffe RAID loop
-Message-ID: <20251015032935.GB1702774@zen.localdomain>
+Subject: Re: [PATCH v2 3/3] fstests: btrfs: test RAID conversions under stress
+Message-ID: <20251015033124.GC1702774@zen.localdomain>
 References: <cover.1759532729.git.loemra.dev@gmail.com>
- <a46aa0e4fb936ab73748fc9fd92a9404380769b1.1759532729.git.loemra.dev@gmail.com>
+ <455b9a2b102631febc1b05802006d3d304d4baeb.1759534540.git.loemra.dev@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -99,91 +99,137 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a46aa0e4fb936ab73748fc9fd92a9404380769b1.1759532729.git.loemra.dev@gmail.com>
+In-Reply-To: <455b9a2b102631febc1b05802006d3d304d4baeb.1759534540.git.loemra.dev@gmail.com>
 
-On Fri, Oct 03, 2025 at 04:41:57PM -0700, Leo Martins wrote:
-> This patch removes the RAID loop from find_free_extent since it
-> is impossible to allocate from a block group with a different
-> RAID profile.
+On Fri, Oct 03, 2025 at 04:41:59PM -0700, Leo Martins wrote:
+> Add test to test btrfs conversion while being stressed. This is
+> important since btrfs no longer allows allocating from different RAID
+> block_groups during conversions meaning there may be added enospc
+> pressure.
 > 
-> Historically, we've been able to fulfill allocation requests
-> from mismatched RAID block groups assuming they provided the
-> required duplcation. For example, a request for RAID0 could be
-> fulfilled by a RAID1 block group.
-> 
-> 2a28468e525f ("btrfs: extent-tree: Make sure we only allocate extents from block groups with the same type")
-> changed this behavior to skip block groups with different flags
-> than the request. This makes the duplication compatiblity check
-> redundant since we're going to keep searching regardless.
-> 
-> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+
+Aside from the patch intermingling stuff, this test looks good to me,
+thanks for adding it.
 
 Reviewed-by: Boris Burkov <boris@bur.io>
 
+> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
 > ---
->  fs/btrfs/extent-tree.c | 32 +-------------------------------
->  1 file changed, 1 insertion(+), 31 deletions(-)
+>  tests/btrfs/337     | 95 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/337.out |  2 +
+>  2 files changed, 97 insertions(+)
+>  create mode 100755 tests/btrfs/337
+>  create mode 100644 tests/btrfs/337.out
 > 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index a4416c451b25..28b442660014 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -4171,13 +4171,8 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
->  	if (ffe_ctl->loop >= LOOP_CACHING_WAIT && ffe_ctl->have_caching_bg)
->  		return 1;
->  
-> -	ffe_ctl->index++;
-> -	if (ffe_ctl->index < BTRFS_NR_RAID_TYPES)
-> -		return 1;
-> -
->  	/* See the comments for btrfs_loop_type for an explanation of the phases. */
->  	if (ffe_ctl->loop < LOOP_NO_EMPTY_SIZE) {
-> -		ffe_ctl->index = 0;
->  		/*
->  		 * We want to skip the LOOP_CACHING_WAIT step if we don't have
->  		 * any uncached bgs and we've already done a full search
-> @@ -4477,9 +4472,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
->  search:
->  	trace_btrfs_find_free_extent_search_loop(root, ffe_ctl);
->  	ffe_ctl->have_caching_bg = false;
-> -	if (ffe_ctl->index == btrfs_bg_flags_to_raid_index(ffe_ctl->flags) ||
-> -	    ffe_ctl->index == 0)
-> -		full_search = true;
-> +	full_search = true;
->  	down_read(&space_info->groups_sem);
->  	list_for_each_entry(block_group,
->  			    &space_info->block_groups[ffe_ctl->index], list) {
-> @@ -4498,30 +4491,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
->  		btrfs_grab_block_group(block_group, ffe_ctl->delalloc);
->  		ffe_ctl->search_start = block_group->start;
->  
-> -		/*
-> -		 * this can happen if we end up cycling through all the
-> -		 * raid types, but we want to make sure we only allocate
-> -		 * for the proper type.
-> -		 */
->  		if (!block_group_bits(block_group, ffe_ctl->flags)) {
-> -			u64 extra = BTRFS_BLOCK_GROUP_DUP |
-> -				BTRFS_BLOCK_GROUP_RAID1_MASK |
-> -				BTRFS_BLOCK_GROUP_RAID56_MASK |
-> -				BTRFS_BLOCK_GROUP_RAID10;
-> -
-> -			/*
-> -			 * if they asked for extra copies and this block group
-> -			 * doesn't provide them, bail.  This does allow us to
-> -			 * fill raid0 from raid1.
-> -			 */
-> -			if ((ffe_ctl->flags & extra) && !(block_group->flags & extra))
-> -				goto loop;
-> -
-> -			/*
-> -			 * This block group has different flags than we want.
-> -			 * It's possible that we have MIXED_GROUP flag but no
-> -			 * block group is mixed.  Just skip such block group.
-> -			 */
->  			btrfs_release_block_group(block_group, ffe_ctl->delalloc);
->  			continue;
->  		}
+> diff --git a/tests/btrfs/337 b/tests/btrfs/337
+> new file mode 100755
+> index 00000000..fa335ed7
+> --- /dev/null
+> +++ b/tests/btrfs/337
+> @@ -0,0 +1,95 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2025 Meta Platforms, Inc. All Rights Reserved.
+> +#
+> +# FS QA Test btrfs/337
+> +#
+> +# Test RAID profile conversion with concurrent allocations.
+> +# This combines profile conversion (like btrfs/195) with concurrent
+> +# fsstress allocations (like btrfs/060-064).
+> +
+> +. ./common/preamble
+> +_begin_fstest auto volume balance scrub raid
+> +
+> +_cleanup()
+> +{
+> +	cd /
+> +	rm -f $tmp.*
+> +	_kill_fsstress
+> +}
+> +
+> +. ./common/filter
+> +# we check scratch dev after each loop
+> +_require_scratch_nocheck
+> +_require_scratch_dev_pool 4
+> +# Zoned btrfs only supports SINGLE profile
+> +_require_non_zoned_device "${SCRATCH_DEV}"
+> +
+> +# Load up the available configs
+> +_btrfs_get_profile_configs
+> +declare -a TEST_VECTORS=(
+> +# $nr_dev_min:$data:$metadata:$data_convert:$metadata_convert
+> +"4:single:raid1"
+> +"4:single:raid0"
+> +"4:single:raid10"
+> +"4:single:dup"
+> +"4:single:raid5"
+> +"4:single:raid6"
+> +"2:raid1:single"
+> +)
+> +
+> +run_testcase() {
+> +	IFS=':' read -ra args <<< $1
+> +	num_disks=${args[0]}
+> +	src_type=${args[1]}
+> +	dst_type=${args[2]}
+> +
+> +	if [[ ! "${_btrfs_profile_configs[@]}" =~ "$dst_type" ]]; then
+> +		echo "=== Skipping test: $1 ===" >> $seqres.full
+> +		return
+> +	fi
+> +
+> +	_scratch_dev_pool_get $num_disks
+> +
+> +	echo "=== Running test: $1 (converting $src_type -> $dst_type) ===" >> $seqres.full
+> +
+> +	_scratch_pool_mkfs -d$src_type -m$src_type >> $seqres.full 2>&1
+> +	_scratch_mount
+> +
+> +	echo "Creating initial data..." >> $seqres.full
+> +	_run_fsstress -d $SCRATCH_MNT -w -n 10000 >> $seqres.full 2>&1
+> +
+> +	args=`_scale_fsstress_args -p 20 -n 1000 -d $SCRATCH_MNT/stressdir`
+> +	echo "Starting fsstress: $args" >> $seqres.full
+> +	_run_fsstress_bg $args
+> +
+> +	echo "Starting conversion: $src_type -> $dst_type" >> $seqres.full
+> +	_run_btrfs_balance_start -f -dconvert=$dst_type $SCRATCH_MNT >> $seqres.full
+> +	[ $? -eq 0 ] || echo "$1: Failed convert"
+> +
+> +	echo "Waiting for fsstress to complete..." >> $seqres.full
+> +	_wait_for_fsstress
+> +
+> +	# Verify the conversion was successful
+> +	echo "Checking filesystem profile after conversion..." >> $seqres.full
+> +	$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT >> $seqres.full
+> +
+> +	# Scrub to verify data integrity
+> +	echo "Scrubbing filesystem..." >> $seqres.full
+> +	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >> $seqres.full 2>&1
+> +	if [ $? -ne 0 ]; then
+> +		echo "$1: Scrub found errors"
+> +	fi
+> +
+> +	_scratch_unmount
+> +	_check_scratch_fs
+> +	_scratch_dev_pool_put
+> +}
+> +
+> +echo "Silence is golden"
+> +for i in "${TEST_VECTORS[@]}"; do
+> +	run_testcase $i
+> +done
+> +
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/337.out b/tests/btrfs/337.out
+> new file mode 100644
+> index 00000000..d80a9830
+> --- /dev/null
+> +++ b/tests/btrfs/337.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 337
+> +Silence is golden
 > -- 
 > 2.47.3
 > 
