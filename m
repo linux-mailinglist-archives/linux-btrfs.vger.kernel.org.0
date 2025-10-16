@@ -1,84 +1,100 @@
-Return-Path: <linux-btrfs+bounces-17884-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17885-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26987BE2CE4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 12:31:42 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B633BE3429
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 14:10:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 607B11A610BC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 10:32:05 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CF778501C79
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 12:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF622BE7D0;
-	Thu, 16 Oct 2025 10:31:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F1B32A3D3;
+	Thu, 16 Oct 2025 12:10:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tBSZ/gi5"
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="w84ba/9G"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8018F263C8E
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 10:31:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 080F131DD82;
+	Thu, 16 Oct 2025 12:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760610695; cv=none; b=NY22IZ5JHHGr/2/y4RVzr1I09bivY+WxebkXogZcgd+yAr1XbvTZJ5L1NSt3n9khYha4gHvTVP1gjNfIpmW2c57eJsAmIulOC8VWtEJKaRFXUCUyl4gLZkhIXF6MZGa+ZYCiLXSoZDIluJHbdUIT0A/CIUDPf7KtrIxy764KFMw=
+	t=1760616620; cv=none; b=lEIc8tglNuwwmzLUk1RQ/rFKS4YFdDKQCD7hT0pXPEmFP97wGM+AIrW33RkGPioKUjuDVHWrFDcoB4ngxas3DZpZGDqIqlO/at5FRd3YLIzQw/b8zhAp2B+FBwYilvFOq0e0y+a7YsJ7PQR2N2cZJwl1I1ve+ansLajBe2lyCrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760610695; c=relaxed/simple;
-	bh=vW2BegkVwse5H67KkhMRoawcVo0EWW20aAbp/NF6I8M=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=XG1R41k9/HCxt5njJcgzYnaFXCYmgoUdN7OVENv0NkJYABhdO1BIqdvI4MOJ//Xlv3GeoRyz5mjjAvmC4TJzNN9Kn+y+gfNFeNYk6Bni/n7ADfaMEU/407W9CXRhHTR/S1OOF6zUA2BCyOLP/DEVoVp77E72nzVZq5Z0PF04Sv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tBSZ/gi5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92CEBC113D0
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 10:31:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760610695;
-	bh=vW2BegkVwse5H67KkhMRoawcVo0EWW20aAbp/NF6I8M=;
-	h=From:To:Subject:Date:From;
-	b=tBSZ/gi55wrg7otnIbxhrQFSBSsJggx6ol9L8wq4R/KDD8oHQuIWI1zewbS98KG+L
-	 wHzV1tQAHWAIiyOs0h6nFaTdUkKSOcVCP6ic3z/c8x7L2MSGVXQv3oRf70WXUJgOfV
-	 AeCR7aHRKib0Sx+FgjIP12eK33/UZYZDfT/YchPzjRFEW3iDDUrugnIHCddlICfefR
-	 HTTZUfanIpjA/LwkQAL2Xf3DdAxP+HbEhBM57VGv0g/78NLBEz6Z2qPBmwW/GxShz0
-	 rjvGcaunCGAqnHxeua8fI8HjLXPKcqKl0NA6K4CdpOBUVep/PrjAvnt/K7zK7tzpF7
-	 X5etxmqkincBg==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove pointless data_end assignment in btrfs_extent_item()
-Date: Thu, 16 Oct 2025 11:31:31 +0100
-Message-ID: <9a0df9f54ffd27b41bdae2c60b0ffd59a85a3eb2.1760610675.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
+	s=arc-20240116; t=1760616620; c=relaxed/simple;
+	bh=4Qt/jrGVmj3vADbRLp0h2/WSd8+bNzzpsqAfrkcvno0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B6kCV0lJbavP23ohCc11XL5VhdxeilHgFheGrOJfeWnRanp177AhemcxF6U5pmV9gMZf75rIVQDQ8OLbujdaL1tF9pB6EOGB/5l+fvCWl11wEO1AqEGl6vroOqxJptRpcYNXX5jve3dPwUIZ4rjZUNPH+Rc+0qnkkNNS6fR9SAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=w84ba/9G; arc=none smtp.client-ip=80.241.56.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4cnRbn6y0qz9tTc;
+	Thu, 16 Oct 2025 14:10:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1760616614;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FTBsBVcdYneguqY7H2XP4BmfLiHWNCMUbN9tOOocbPk=;
+	b=w84ba/9G+wBfuZTsDm0winUj7q7U2ke14hditeFI1v3kd6anmKHTwrzDY2otBvUD2GaaRA
+	bTf5ybwxsgKuhtbrjOoQIGkJSVxkxCTNwaNIifqMMh/lJeEM8JMbFjH4KuiPiEoV8k2MDu
+	YC9zvYRCE3SWDll03bRYXiuO1wG3NvN0VYzvXFq51QEuKZW/qic9D5sQxulZWwAOlZ7/IO
+	IZ4hbJG+tFwea34RRRNo2R2Yb/nhoi3akrpZSgZaf6mZGPYBc1joUBOs8wpZdjiNHukWga
+	5BxqvfHj4r3udrSsTbWV5OFaKHEteL0Bc2rOUBEjSznViG/n+14/y+uLHamimw==
+Date: Thu, 16 Oct 2025 14:10:05 +0200
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, brauner@kernel.org, djwong@kernel.org, 
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] iomap: add IOMAP_DIO_FSBLOCK_ALIGNED flag
+Message-ID: <khcpybd4adk4y5cc2k3ovdvuesv5lxyb6foo5r7dkgoiuyb5as@voqvrezskk42>
+References: <c78d08f4e709158f30e1e88e62ab98db45dd7883.1760345826.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c78d08f4e709158f30e1e88e62ab98db45dd7883.1760345826.git.wqu@suse.com>
 
-From: Filipe Manana <fdmanana@suse.com>
+On Mon, Oct 13, 2025 at 07:35:16PM +1030, Qu Wenruo wrote:
+> Btrfs requires all of its bios to be fs block aligned, normally it's
+> totally fine but with the incoming block size larger than page size
+> (bs > ps) support, the requirement is no longer met for direct IOs.
+> 
+> Because iomap_dio_bio_iter() calls bio_iov_iter_get_pages(), only
+> requiring alignment to be bdev_logical_block_size().
+> 
+> In the real world that value is either 512 or 4K, on 4K page sized
+> systems it means bio_iov_iter_get_pages() can break the bio at any page
+> boundary, breaking btrfs' requirement for bs > ps cases.
+> 
+> To address this problem, introduce a new public iomap dio flag,
+> IOMAP_DIO_FSBLOCK_ALIGNED.
+> 
+> When calling __iomap_dio_rw() with that new flag, iomap_dio::flags will
+> inherit that new flag, and iomap_dio_bio_iter() will take fs block size
+> into the calculation of the alignment, and pass the alignment to
+> bio_iov_iter_get_pages(), respecting the fs block size requirement.
+> 
+> The initial user of this flag will be btrfs, which needs to calculate the
+> checksum for direct read and thus requires the biovec to be fs block
+> aligned for the incoming bs > ps support.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
 
-There's no point in setting 'data_end' to 'old_data' as we don't use it
-afterwards. So remove the redundant assignment which was never needed
-and added when the function was first added in commit 6567e837df07
-("Btrfs: early work to file_write in big extents").
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ctree.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 3be1b66aea35..f6a9b6bbf78b 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -4136,7 +4136,6 @@ void btrfs_extend_item(struct btrfs_trans_handle *trans,
- 	memmove_leaf_data(leaf, data_end - data_size, data_end,
- 			  old_data - data_end);
- 
--	data_end = old_data;
- 	old_size = btrfs_item_size(leaf, slot);
- 	btrfs_set_item_size(leaf, slot, old_size + data_size);
- 	btrfs_mark_buffer_dirty(trans, leaf);
+Looks good.
+Reviewed-by: Pankaj Raghav <p.raghav@samsung.com>
 -- 
-2.47.2
-
+Pankaj
 
