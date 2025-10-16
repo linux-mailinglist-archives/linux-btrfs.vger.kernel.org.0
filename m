@@ -1,175 +1,394 @@
-Return-Path: <linux-btrfs+bounces-17887-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17888-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E75C2BE3DE3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 16:18:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E0FBE4281
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 17:15:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 037774FB3FA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 14:17:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10EBD19C7656
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 15:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B50C33EB09;
-	Thu, 16 Oct 2025 14:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1143B3314CC;
+	Thu, 16 Oct 2025 15:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="dwCRqlcK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oc5scoDz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFBD20C01C
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 14:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EFCE1CDFD5
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 15:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760624254; cv=none; b=r5zAf++gwC9S/8Eybe0WVH6yRwjbJuF+6Fy4NH7dd3yrtlUUKXfcV7nY82aOMfmzaixvuhyCCMlueYBDTKxDcIkBjBFZAP7+DS1Lb3+o7GQg+Dsca7mTlCe6o4+h3P0S415AKt11o44F3maDFIi8xN80NmnJcSZ/Dk3rOaqHNPE=
+	t=1760627720; cv=none; b=rhlIe8dLyq8aDbwaHpXTYd5+Enu8fsE0b7fQeY6H9SRXs5SuVJAw+5Tyftr3+gZq4UKlcuTtokflVlA78hoqu1JfnPe6ZQ2iT/wg7NS6YmnxOEQggAxTRKhiFlREUdkgp5wW5aFBPSWzrSrcyFUXiDv3dLZgwK4MW5bNYMwhV0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760624254; c=relaxed/simple;
-	bh=MjX01ygQ/3tk/sGwgwk/36ebQMdAkveFRCJrUinD/Og=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wqn1JpTqMSM4B8qiiSYEDQHZSC1ftTxZzRIXb1tHYcFmMcOIFNiciu6K3PQ1TdS/wtqeV/WEFW6QCGI6lzdnmW5CZcaImm7nojGE6mbaKlVaPliA9s4IIJJXMRygRZ7p8Iziei6Yz5DPg480c16GZTdra4cnmSMoo1g99PfBuN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=dwCRqlcK; arc=none smtp.client-ip=209.85.219.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-87c1a760df5so11184196d6.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 07:17:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1760624251; x=1761229051; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vDx8+7T+MYrCmWnRteKVa1iC6/sCWZvHc99T+OB8RqU=;
-        b=dwCRqlcKPsDQVOHquk4yaz5Cv4fPtBLRWee5G2rzxUKcdtZMxVfMRjn0mDOxVrewwz
-         KhG5boJn1F0EHcgdAzDtOfdzxeKOTi86FsXlAOWzMrmH+qmHPIjPHnnbJKnBial5NN2b
-         4s7Z9es5jhpxKD0kAxJ8BkzNr5E/4oEnPzEGRDR69OAByvk0p7UU3lTzxrx7vGBSf9Z3
-         oFPf1jGc9s4O18ef3Jiycd7b1+QVMzmqQadgc3U4egLfYhQRJcWQGXsUfbZhQjhFupIc
-         gADI612o9/2HT+1Ux5P4OzN0RB9D9sj32O8DTRenmNW2We4+C8H08EuCwSxwVtoUYDcS
-         l0Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760624251; x=1761229051;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vDx8+7T+MYrCmWnRteKVa1iC6/sCWZvHc99T+OB8RqU=;
-        b=hhP0kL++CD+U0P2ny41C42Pv//lGLgcpfxpoO+23E+h1g+dzyjtR4TMKebS/O4XAJa
-         5nWBf00V92HaE+ZufrdVsx52q0J8COrga2FrQV4FbA1VYT1UJ6qzLxa63+eudDSXXzqH
-         gDMyKPksCn/d7tyWObVB+ycN4RfC2fZ42sYhQuLY2aeimKd76YTRfFndwnWY1ZfivQ8n
-         j48dsS3nk4rWx/yhzN9a1Ij2SyeFgo9CQRSdL0YJNZ4DSHGLza1Sf53Vsm9xuAPQI0OG
-         HSvckPfK20OdzeEVgUhsv+CZNtjMJI+zn4G1/L6xUU7SUSLIhDEAUgzvqFQwGQyjg0Bs
-         BLYw==
-X-Forwarded-Encrypted: i=1; AJvYcCX7Hl6+Vp/0lvGSLYQVsjVKpPWtS4McLLnds5B5JKswuAx3l6v9VJ7MB9bO8tQKYPVLWTmQqbVe8bfrIw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRaHh2BGdg9fPir6r/bUXbi0SqkbA9F62lXaNBNjD9II1Al7bw
-	9aBmpaB9am/j8FCl2FFwnWEK5poWyyWjsXQJI8aeisDBwAK+EWIH4qi76L4NKwsFZ6A=
-X-Gm-Gg: ASbGnct9rTUlAKCXEC3J1Y+q+PqeAbDLJoRrIgasQUYKUsW3k+brVijHW2hXrGWgRzz
-	2GfZqrtQFWJjAa0Z+JrRmRFbkKx0Egi2klQFKzqW7NEjTKe+rJuckTVPfH0bjX1FrbxbTM8B3Hq
-	lEvR+mChLoySc17IxLUUv8KKP+LTcBMu2PHyzKsFs4fdnzaWyn9sIa9SN29tFQ6jOKApLmC9MUC
-	KTAoG/w+MowL557/lHiwPn8AC5tZN8fVu4YUsEew9BHWbLmmcPjkGm5q0/hWtpqo9Sw4CSpPlM2
-	wsVGM7HsYmdnF2vYgjHt04Uby0On5SgIEUzgod0JGApGXmJILhGNWG9NhZO+RSRqkt5/BV9yVaF
-	mqYW1wQwUL9VVNtuTqCg/twxI4L5Vh/MoeYAwKhANLDYJuClpv4OjbBvUe3ijDxaSq4oEz7VvKW
-	6oagariypzQ2PKlPUxYyUuPzZYCvn9rm06vTrUVr4Hdw6BKHqzCWH74TYvsMNmSnZIA+CyYw==
-X-Google-Smtp-Source: AGHT+IEMapVQRI0ck2KCGxvEYuBB3a+08a/2JspNz86EbcND1SGuRInp+B2xwxF3NumJMeFQLVJPkQ==
-X-Received: by 2002:ac8:5883:0:b0:4e8:99b0:b35e with SMTP id d75a77b69052e-4e89d263140mr4179321cf.30.1760624250594;
-        Thu, 16 Oct 2025 07:17:30 -0700 (PDT)
-Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4e8955b07e9sm13309541cf.27.2025.10.16.07.17.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Oct 2025 07:17:29 -0700 (PDT)
-Date: Thu, 16 Oct 2025 10:17:25 -0400
-From: Gregory Price <gourry@gourry.net>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Shivank Garg <shivankg@amd.com>, jgowans@amazon.com, mhocko@suse.com,
-	jack@suse.cz, kvm@vger.kernel.org, david@redhat.com,
-	linux-btrfs@vger.kernel.org, aik@amd.com, papaluri@amd.com,
-	kalyazin@amazon.com, peterx@redhat.com, linux-mm@kvack.org,
-	clm@fb.com, ddutile@redhat.com, linux-kselftest@vger.kernel.org,
-	shdhiman@amd.com, gshan@redhat.com, ying.huang@linux.alibaba.com,
-	shuah@kernel.org, roypat@amazon.co.uk, matthew.brost@intel.com,
-	linux-coco@lists.linux.dev, zbestahu@gmail.com,
-	lorenzo.stoakes@oracle.com, linux-bcachefs@vger.kernel.org,
-	ira.weiny@intel.com, dhavale@google.com, jmorris@namei.org,
-	willy@infradead.org, hch@infradead.org, chao.gao@intel.com,
-	tabba@google.com, ziy@nvidia.com, rientjes@google.com,
-	yuzhao@google.com, xiang@kernel.org, nikunj@amd.com,
-	serge@hallyn.com, amit@infradead.org, thomas.lendacky@amd.com,
-	ashish.kalra@amd.com, chao.p.peng@intel.com, yan.y.zhao@intel.com,
-	byungchul@sk.com, michael.day@amd.com, Neeraj.Upadhyay@amd.com,
-	michael.roth@amd.com, bfoster@redhat.com, bharata@amd.com,
-	josef@toxicpanda.com, Liam.Howlett@oracle.com,
-	ackerleytng@google.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
-	jefflexu@linux.alibaba.com, jaegeuk@kernel.org,
-	dan.j.williams@intel.com, surenb@google.com, vbabka@suse.cz,
-	paul@paul-moore.com, joshua.hahnjy@gmail.com, apopple@nvidia.com,
-	brauner@kernel.org, quic_eberman@quicinc.com, rakie.kim@sk.com,
-	cgzones@googlemail.com, pvorel@suse.cz,
-	linux-erofs@lists.ozlabs.org, kent.overstreet@linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, pankaj.gupta@amd.com,
-	linux-security-module@vger.kernel.org, lihongbo22@huawei.com,
-	linux-fsdevel@vger.kernel.org, pbonzini@redhat.com,
-	akpm@linux-foundation.org, vannapurve@google.com,
-	suzuki.poulose@arm.com, rppt@kernel.org, jgg@nvidia.com
-Subject: Re: [f2fs-dev] [PATCH kvm-next V11 6/7] KVM: guest_memfd: Enforce
- NUMA mempolicy using shared policy
-Message-ID: <aPD-dbl5KWNSHu5R@gourry-fedora-PF4VCD3F>
-References: <20250827175247.83322-2-shivankg@amd.com>
- <20250827175247.83322-9-shivankg@amd.com>
- <aNVQJqYLX17v-fsf@google.com>
- <aNbrO7A7fSjb4W84@google.com>
- <aPAWFQyFLK4EKWVK@gourry-fedora-PF4VCD3F>
- <aPAkxp67-R9aQ8oN@google.com>
+	s=arc-20240116; t=1760627720; c=relaxed/simple;
+	bh=Z+htzNHkfJ1d7Dko3zKvBZBvS3FdcE1tyKgC4i+wIZk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KmHt83xFYjmmdHRvbxIUa0m1S4hQdUfz4TM/xAVUYIpz8v3emOBVlcD39mS9EkVdsv/EdFqDG3FWMIe4xuav4H8RdHdwJMkYlCuZ09hmd3rl+VZBsaIebCy6cKKXIwcEOVLkScCNK2TSTq98h4mA9TQWljIp91c+eKpa2X9aEAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oc5scoDz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCE9BC4CEF1
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 15:15:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760627719;
+	bh=Z+htzNHkfJ1d7Dko3zKvBZBvS3FdcE1tyKgC4i+wIZk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Oc5scoDzASYLliC2mpPJ3DoV9sw1d69fBczkhEv0Y753Pynsz3KxXYNTnh94Zzjqa
+	 B0CoAAl6EuEFGm6QXomoiXhnNU+eBz4frL0BTfLESG8kOAaw51IRAeVy6i5Doi8iDk
+	 ZOmvOPzABMkDQzNMJDPbP0iU4g84jfiav5DfOZK+0495eRUFax5MsGdtEYrbVZhDeR
+	 v2LDXK5ybhL9hCKD+JyHBCFr2Yu/YRV0njvyw2D92CO2dJ6ESEARKDgnWh+NBiASyw
+	 2FSsPuZjFSDN6b39Ib9fSzKejqRzHrg+sGnKU8T4TQ3RHKaBPuufYydvgR77uUIFMd
+	 wZ4w5sF5HqNcg==
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-b07d4d24d09so138471166b.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 08:15:19 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwuTcath+VEUGGDPl4/5DN/wPgOSPcWUY1ZAhRMCIbrepxqG6ly
+	JlM2Q6CKM40hc5aHiD8MoexlOqk7lDoDTEQ3fF9VdcYKW8ZNOIy0C8SxBNGGGrPBWpeol+iTgdd
+	Ki3jBuZvCSKyqS6DWFyHpv8I0J/1KyZg=
+X-Google-Smtp-Source: AGHT+IENOGhyI50igIQ00dk8b3QZ5i+fKbauYmWFLnPr4SIJKdXk4yieZnsOag9eN95jtd95rhgoDzmemeUZ9DgHTfg=
+X-Received: by 2002:a17:907:5c8:b0:b40:2873:a60c with SMTP id
+ a640c23a62f3a-b6472c5c6ddmr33427966b.3.1760627718379; Thu, 16 Oct 2025
+ 08:15:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aPAkxp67-R9aQ8oN@google.com>
+References: <20251016075351.3369720-1-tchou@synology.com>
+In-Reply-To: <20251016075351.3369720-1-tchou@synology.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 16 Oct 2025 16:14:41 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4OjcSJzPy=f=JhJMzYMxM2UQT994JbdmFdtNKi5Pb3UA@mail.gmail.com>
+X-Gm-Features: AS18NWAd_SV7-SBuLOFBMZnvbaBav8-ZuQ_Sjk6_AUgla3pLJaH9FLNl5Y1bMFU
+Message-ID: <CAL3q7H4OjcSJzPy=f=JhJMzYMxM2UQT994JbdmFdtNKi5Pb3UA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: send: don't send rmdir for same target multiple
+ times with multi hardlink situation
+To: tchou <tchou@synology.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 15, 2025 at 03:48:38PM -0700, Sean Christopherson wrote:
-> On Wed, Oct 15, 2025, Gregory Price wrote:
-> > why is __kvm_gmem_get_policy using
-> > 	mpol_shared_policy_lookup()
-> > instead of
-> > 	get_vma_policy()
-> 
-> With the disclaimer that I haven't followed the gory details of this series super
-> closely, my understanding is...
-> 
-> Because the VMA is a means to an end, and we want the policy to persist even if
-> the VMA goes away.
-> 
+On Thu, Oct 16, 2025 at 8:55=E2=80=AFAM tchou <tchou@synology.com> wrote:
+>
+> From: Ting-Chang Hou <tchou@synology.com>
+>
+> In commit 29d6d30f5c8a("Btrfs: send, don't send rmdir for same target
 
-Ah, you know, now that i've taken a close look, I can see that you've
-essentially modeled this after ipc/shm.c | mm/shmem.c pattern.
+Please leave a space before the opening parenthesis, that's the right synta=
+x.
 
-What's had me scratching my chin is that shm/shmem already has a
-mempolicy pattern which ends up using folio_alloc_mpol() where the
-relationship is
+> multiple times") has fixed the issue that btrfs send rmdir for same
+> target multiple times by keep the last_dir_ino_rm and compare with
+> it before sending rmdir. But there have a corner case that if the
+> instructions that rm same dir not in a row, the fix will not work.
+>
+> Hardlinks of file are store in the same INODE_REF item, and if the
 
-tmpfs: sb_info->mpol = default set by user
-  create_file: inode inherits copy of sb_info->mpol
-    fault:    mpol = shmem_get_pgoff_policy(info, index, order, &ilx);
-             folio = folio_alloc_mpol(gfp, order, mpol, ilx, numa_node_id())
+They are if they are in the same parent directory, that's an important deta=
+il.
 
-So this inode mempolicy in guest_memfd is really acting more as a the
-filesystem-default mempolicy, which you want to survive even if userland
-never maps the memory/unmaps the memory.
+> number of hardlinks is too large and exceed the size of one metadata
+> node can store, it will use INODE_EXTREF to store. The key of
+> INODE_EXTREF is (inode_id, INODE_EXTREF, hash of name), so if there are
 
-So the relationship is more like
+hash of name and parent inode number
 
-guest_memfd -> creates fd/inode <- copies task mempolicy (if set)
-  vm:  allocates memory via filemap_get_folio_mpol()
-  userland mmap(fd):
-  	creates new inode<->vma mapping
-	vma->mpol = kvm_gmem_get_policy()
-	calls to set/get_policy/mbind go through kvm_gmem 
+> two dir have hardlinks to the same file, the INODE_EXTREF items will
+> have cross sequence with two dir like below:
 
-This makes sense, sorry for the noise.  Have been tearing apart
-mempolicy lately and I'm disliking the general odor coming off
-it as a whole.  I had been poking at adding mempolicy support to
-filemap and you got there first.  Overall I think there are still
-other problems with mempolicy, but this all looks fine as-is.
+Suggestion: add a blank line to separate text from tree-dump output.
+It makes things more readable and easier to the eyes.
 
-~Gregory
+>     item 0 key (404 INODE_EXTREF 111512) itemoff 16239 itemsize 44
+>         inode extref index 4825 parent 403 namelen 4 name: 4824
+>         inode extref index 5825 parent 402 namelen 4 name: 5824
+>     item 1 key (404 INODE_EXTREF 398645) itemoff 16195 itemsize 44
+>         inode extref index 4569 parent 403 namelen 4 name: 4568
+>         inode extref index 5569 parent 402 namelen 4 name: 5568
+>
+> So when doing btrfs send, the instructions that rmdir for the two dir
+> are not in a row, and the previous fix will not work.
+>
+> We use rbtree to keep all the dirs that already add into `check_dirs`,
+
+Just say that the fix of this patch does that.
+When you say "We use..." it gives the idea that's the code we
+currently have before this patch.
+
+> and compare with it before add a new dir into it.
+>
+> The reproduce steps are as below:
+
+Same here, blank line.
+
+>     $ mkfs.btrfs -f /dev/sdb3
+>     $ mount /dev/sdb3 /mnt/
+>     $ mkdir /mnt/a /mnt/b
+>     $ echo 123 > /mnt/a/foo
+>     $ for i in $(seq 1 10000); do ln /mnt/a/foo /mnt/a/foo.$i; ln /mnt/a/=
+foo /mnt/b/foo.$i; done
+>     $ btrfs subvolume snapshot -r /mnt/ /mnt/snap1
+>     $ btrfs send /mnt/snap1 -f /tmp/base.send
+>     $ rm -r /mnt/a /mnt/b
+>     $ btrfs subvolume snapshot -r /mnt/ /mnt/snap2
+>     $ btrfs send -p /mnt/snap1 /mnt/snap2 -f /tmp/incremental.send
+>
+>     $ umount /mnt
+>     $ mkfs.btrfs -f /dev/sdb3
+>     $ mount /dev/sdb3 /mnt
+>     $ btrfs receive /mnt -f /tmp/base.send
+>     $ btrfs receive /mnt -f /tmp/incremental.send
+
+Suggestion: instead of pasting those lines with the $ and hardcoded
+mount points and device paths, turn it into a configurable script and
+paste it.
+Like this:
+
+#!/bin/bash
+
+DEV=3D/dev/sdi
+MNT=3D/mnt/sdi
+
+mkfs.btrfs -f $DEV
+mount $DEV $MNT
+
+mkdir $MNT/a $MNT/b
+
+echo 123 > $MNT/a/foo
+for ((i =3D 1; i <=3D 1000; i++)); do
+   ln $MNT/a/foo $MNT/a/foo.$i
+   ln $MNT/a/foo $MNT/b/foo.$i
+done
+
+btrfs subvolume snapshot -r $MNT $MNT/snap1
+btrfs send $MNT/snap1 -f /tmp/base.send
+
+rm -r $MNT/a $MNT/b
+
+btrfs subvolume snapshot -r $MNT $MNT/snap2
+btrfs send -p $MNT/snap1 $MNT/snap2 -f /tmp/incremental.send
+
+umount $MNT
+mkfs.btrfs -f $DEV
+mount $DEV $MNT
+
+btrfs receive $MNT -f /tmp/base.send
+btrfs receive $MNT -f /tmp/incremental.send
+
+rm -f /tmp/base.send /tmp/incremental.send
+
+umount $MNT
+
+See, much easier to read, with more spaces and logical grouping, and
+variables to define device and mount paths, so like this anyone can
+copy paste this into a script, change the variables and immediately
+test.
+1000 iterations for the loop is also more than enough to trigger the
+bug and it's a lot quicker than 10 000.
+
+>
+> The second btrfs receive command failed with:
+>     ERROR: rmdir o4205145-4190-0 failed: No such file or directory
+>
+> Fixes: 29d6d30f5c8a("Btrfs: send, don't send rmdir for same target multip=
+le times")
+
+A Fixes tag is meant to be used to identify commits that introduce a bug.
+In this case, as you said in the first paragraph, that commit did not
+introduce the bug.
+It fixed cases of duplicated rmdir for the same directory as long as
+we don't have extrefs, but it didn't introduce the bug for when there
+are extrefs, it simply missed that case that already existed before.
+In other words, the reproducer fails both before and after that commit.
+
+Also, that's a very long and confusing subject:
+
+btrfs: send: don't send rmdir for same target multiple times with
+multi hardlink situation
+
+I'm changing it to:
+
+btrfs: send: fix duplicated rmdir operations when using extrefs
+
+> Signed-off-by: Ting-Chang Hou <tchou@synology.com>
+> ---
+>  fs/btrfs/send.c | 56 ++++++++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 48 insertions(+), 8 deletions(-)
+>
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 9230e5066fc6..c1b596e5f145 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -4100,6 +4100,48 @@ static int refresh_ref_path(struct send_ctx *sctx,=
+ struct recorded_ref *ref)
+>         return ret;
+>  }
+>
+> +static int rbtree_check_dir_ref_comp(const void *k, const struct rb_node=
+ *node)
+> +{
+> +       const struct recorded_ref *data =3D k;
+> +       const struct recorded_ref *ref =3D rb_entry(node, struct recorded=
+_ref, node);
+> +
+> +       if (data->dir > ref->dir)
+> +               return 1;
+> +       if (data->dir < ref->dir)
+> +               return -1;
+> +       if (data->dir_gen > ref->dir_gen)
+> +               return 1;
+> +       if (data->dir_gen < ref->dir_gen)
+> +               return -1;
+> +       return 0;
+> +}
+> +
+> +static bool rbtree_check_dir_ref_less(struct rb_node *node, const struct=
+ rb_node *parent)
+> +{
+> +       const struct recorded_ref *entry =3D rb_entry(node, struct record=
+ed_ref, node);
+> +
+> +       return rbtree_check_dir_ref_comp(entry, parent) < 0;
+> +}
+> +
+> +static int record_check_dir_ref_in_tree(struct rb_root *root,
+> +                       struct recorded_ref *ref, struct list_head *list)
+> +{
+> +       int ret =3D 0;
+> +       struct recorded_ref *tmp_ref =3D NULL;
+
+There's no need to initialize these variables.
+It's not about being pedantic here, but unnecessary initializations
+often trigger warnings from static analysis tools.
+For example see:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
+id=3D966de47ff0c9e64d74e1719e4480b7c34f6190fa
+
+> +
+> +       if (rb_find(ref, root, rbtree_check_dir_ref_comp))
+> +               return 0;
+> +
+> +       ret =3D dup_ref(ref, list);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       tmp_ref =3D list_last_entry(list, struct recorded_ref, list);
+> +       rb_add(&tmp_ref->node, root, rbtree_check_dir_ref_less);
+> +       tmp_ref->root =3D root;
+> +       return 0;
+> +}
+> +
+>  static int rename_current_inode(struct send_ctx *sctx,
+>                                 struct fs_path *current_path,
+>                                 struct fs_path *new_path)
+> @@ -4131,7 +4173,7 @@ static int process_recorded_refs(struct send_ctx *s=
+ctx, int *pending_move)
+>         u64 ow_inode =3D 0;
+>         u64 ow_gen;
+>         u64 ow_mode;
+> -       u64 last_dir_ino_rm =3D 0;
+> +       struct rb_root rbtree_check_dirs =3D RB_ROOT;
+
+I'm moving this declaration to be right below the checks_dirs list
+declaration, because these members are closely related and therefore
+it makes more sense to have them close to each other.
+
+You don't need to send another patch version.
+I did those changes and rewrote sentences to fix grammar and make it
+less confusing and more detailed and pushed the patch to for-next [1].
+
+Also, do you plan to send a test case for fstests?
+
+Thanks.
+
+[1] https://github.com/btrfs/linux/commits/for-next/
+
+
+>         bool did_overwrite =3D false;
+>         bool is_orphan =3D false;
+>         bool can_rename =3D true;
+> @@ -4435,7 +4477,7 @@ static int process_recorded_refs(struct send_ctx *s=
+ctx, int *pending_move)
+>                                         goto out;
+>                         }
+>                 }
+> -               ret =3D dup_ref(cur, &check_dirs);
+> +               ret =3D record_check_dir_ref_in_tree(&rbtree_check_dirs, =
+cur, &check_dirs);
+>                 if (ret < 0)
+>                         goto out;
+>         }
+> @@ -4463,7 +4505,7 @@ static int process_recorded_refs(struct send_ctx *s=
+ctx, int *pending_move)
+>                 }
+>
+>                 list_for_each_entry(cur, &sctx->deleted_refs, list) {
+> -                       ret =3D dup_ref(cur, &check_dirs);
+> +                       ret =3D record_check_dir_ref_in_tree(&rbtree_chec=
+k_dirs, cur, &check_dirs);
+>                         if (ret < 0)
+>                                 goto out;
+>                 }
+> @@ -4473,7 +4515,7 @@ static int process_recorded_refs(struct send_ctx *s=
+ctx, int *pending_move)
+>                  * We have a moved dir. Add the old parent to check_dirs
+>                  */
+>                 cur =3D list_first_entry(&sctx->deleted_refs, struct reco=
+rded_ref, list);
+> -               ret =3D dup_ref(cur, &check_dirs);
+> +               ret =3D record_check_dir_ref_in_tree(&rbtree_check_dirs, =
+cur, &check_dirs);
+>                 if (ret < 0)
+>                         goto out;
+>         } else if (!S_ISDIR(sctx->cur_inode_mode)) {
+> @@ -4507,7 +4549,7 @@ static int process_recorded_refs(struct send_ctx *s=
+ctx, int *pending_move)
+>                                 if (is_current_inode_path(sctx, cur->full=
+_path))
+>                                         fs_path_reset(&sctx->cur_inode_pa=
+th);
+>                         }
+> -                       ret =3D dup_ref(cur, &check_dirs);
+> +                       ret =3D record_check_dir_ref_in_tree(&rbtree_chec=
+k_dirs, cur, &check_dirs);
+>                         if (ret < 0)
+>                                 goto out;
+>                 }
+> @@ -4550,8 +4592,7 @@ static int process_recorded_refs(struct send_ctx *s=
+ctx, int *pending_move)
+>                         ret =3D cache_dir_utimes(sctx, cur->dir, cur->dir=
+_gen);
+>                         if (ret < 0)
+>                                 goto out;
+> -               } else if (ret =3D=3D inode_state_did_delete &&
+> -                          cur->dir !=3D last_dir_ino_rm) {
+> +               } else if (ret =3D=3D inode_state_did_delete) {
+>                         ret =3D can_rmdir(sctx, cur->dir, cur->dir_gen);
+>                         if (ret < 0)
+>                                 goto out;
+> @@ -4563,7 +4604,6 @@ static int process_recorded_refs(struct send_ctx *s=
+ctx, int *pending_move)
+>                                 ret =3D send_rmdir(sctx, valid_path);
+>                                 if (ret < 0)
+>                                         goto out;
+> -                               last_dir_ino_rm =3D cur->dir;
+>                         }
+>                 }
+>         }
+> --
+> 2.34.1
+>
+>
+> Disclaimer: The contents of this e-mail message and any attachments are c=
+onfidential and are intended solely for addressee. The information may also=
+ be legally privileged. This transmission is sent in trust, for the sole pu=
+rpose of delivery to the intended recipient. If you have received this tran=
+smission in error, any use, reproduction or dissemination of this transmiss=
+ion is strictly prohibited. If you are not the intended recipient, please i=
+mmediately notify the sender by reply e-mail or phone and delete this messa=
+ge and its attachments, if any.
+>
 
