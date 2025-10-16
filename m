@@ -1,250 +1,122 @@
-Return-Path: <linux-btrfs+bounces-17876-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17877-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E73C4BE2118
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 10:01:01 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id D665BBE2313
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 10:41:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BB2F14ED4FD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 08:00:40 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 783B34EE5E7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 08:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D09284B2E;
-	Thu, 16 Oct 2025 08:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7ABE304BDF;
+	Thu, 16 Oct 2025 08:41:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="U4V0FwOj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JEfsEww5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CCC72D4B5F
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 08:00:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99ABD2040B6
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 08:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760601635; cv=none; b=aH/GchddqBZyQQTaaIqeghy1EMNdUE3bjedcCJjaj8of2YzAxCuVPUAq7+JxYkdLsn5A+Vv+rOZaOs0RQlpPOnl7VftjbKcDfRjqV76DF/jKCuhKcrY5x5oaLIF76qRAtqGv5dvi1o7kO4r186mS5LSW+kQoJ7ZNi48DgH8Z7N8=
+	t=1760604076; cv=none; b=ndeAy2AHNcV+C+v2u57HqkXH+dQi63gRq7GeCE8diZzIJBfXIqBDXE0JWydRXAjtzT5dUMig+oeWGBFd6SHIJeUFX0p+seVrs76tPFfk/Oz1+2kqSeGo1vb3IF9LxEBTXnv8A0vfIjZXQxNqMLLpWeuDjuNwaIbI6PeaJZ0y+yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760601635; c=relaxed/simple;
-	bh=BeCHLzxRRYxw4ZwcUMAuz/xstDGGrVEyfzhffINtlyE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U/eQiMCWGoVNez5+c6OiVcrTTcJ4P/B1MhV8ouzXkWSxs8RXqXzZHPQXIMuKKSkbnRdQCp/VkVA32NQ3KpkotjaE3JFsFqjb71DCjOw2uiA0Ki1kDEjAuA6rQdw6V4On92n1k0fA92B9n4O464LsD6bgWcyrHDNzWkFNqMs4jgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=U4V0FwOj; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3ee12332f3dso356779f8f.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 01:00:33 -0700 (PDT)
+	s=arc-20240116; t=1760604076; c=relaxed/simple;
+	bh=btXTiMsIsAh/v4UCWIrETRspWEWJ9gl3jdaxpP75/Qw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MOC2rXVj0QjZ4rOYOpgq1ICachS27HPY7xFOTMpfwY1tfPwTN5Xrw3G6elrzeLrVELiQxenzWuFnt6SrnOqsbDjZCMK2hmQSFEGDIjo6buVhVRRtBnkySxFyYgkULmkXK5S2mzf9QsBWdNRjHrl6tKMrhemNgi1ysXLiimUUdHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JEfsEww5; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-7817c2d90d0so6053347b3.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 01:41:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1760601632; x=1761206432; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=+yk9MzXBPZOigsS6mC9hazugTQH8CmIQ1FXFMx0VHmo=;
-        b=U4V0FwOjoqCIjNhN3UNXzfpi8w/bxmGiLwotvq3RBNU7mPU+jHDSVE394fqafhaMAR
-         YkZGnhfJJpNDYFoXz+7jcTn/TksKr0ZNO+XyF4w9G+GWK8bFQGr61+vAnI5VCW63GguX
-         rEiqoTWN5WkJsWC8+xYl51g1OaNljwKUk0yuRvDafV+wRA1bJ8RBnP6Up4ulu2dpzyO+
-         yWyCvsTSpr3x8u3BKbBHYj5tCkhIKIPsRoc8+GDLx3tShtr178ckpaTt6Jb0JpHZLW1f
-         o+pNW7AFUu5nPZqsHufRzT7558Aooroi24N0JaC0NeCVdTV2Iidbwqp+CysDAX3D6NAn
-         JgvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760601632; x=1761206432;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1760604073; x=1761208873; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+yk9MzXBPZOigsS6mC9hazugTQH8CmIQ1FXFMx0VHmo=;
-        b=J9Ut61nnfVOLd7i3RIGpSN2GKMWHzN9TkybyNE1b3r0ytjuE7f7haGPbiAuBHB4LMW
-         d9XOmMuyvQ/RD20gyjwE2YgLTjPqdahoTZiroOqEKrKcjpqX18nGhhYYpLwiqlxuccZg
-         zMeuCRoT+lJXZ8qN0qUBDAPeh4NKHxol+iboDwG3lLJrDQoaWqfmOKsfM31CIbWudV/e
-         X8vk0yafrsztl19Nn0LRGRWsxqMrHbtK2HgbDg6dC3mWkv/y1pBKAqKrar3ukuuE0aKh
-         WNo1p/PPFO1aDa3Bz12oNBmCVyt8az2ppJbEBitt7Eu91r+QvJY8OpVzNqJq37JzBeGx
-         Y3jA==
-X-Gm-Message-State: AOJu0YyQFCjvUPjjjp8EaSa3AFk5vz6CJODKhEHjhaZ5uTg6fs3YP3Jv
-	YW0gLJjRojo/6HrO4CtdE7ayZ3GLw6iS1wt9WCzYAqTDsEZ4ykuhkNZxc4EYGnaeOuQ=
-X-Gm-Gg: ASbGncvm+yEF0nvYabuzp4fBjR3ruNkmjsvM1/N27addF4xoPm6BxsheYwFFcTjpnFG
-	2YUAEP9fI6g+SEp0wmynn3uSWfzjrEEzLb4dDJxWb8VqpkXhBpuGRSvgC/5qCEkO8PLT3vuQTP7
-	ofC3UYui3kdWO4mpYi6r7MM4VbXdsmQ/oAns/VCbDGn3+TXVjt8vleIFGXj/QTfc4hY8oJcwX1p
-	5d1f/8YBxOkhAolCzdaE3Qj+fuXoysVGjn6xH8fNu93BC09ZbazU5xfI/KyexXan4Kkh1keE070
-	K5PW/R8x31CUwbbK4vP/wsDVs3uwtltFQ4CyMe+cpSGnZgEkA4axPGSip6Bd7jQNzGlYoBWGyXK
-	Pp3BAUnhLAN0bGblwLOJyQxzD9Ke51Et2OH1VX9WMZo1/zCpROzNxOHSEdJAeXzcDJi1blvvW8i
-	eoVDRiqD9LJnS7Hi6arI+CV2NIfJZD5+AVwutHPgg=
-X-Google-Smtp-Source: AGHT+IHv75yXM4Ud4X5WsAqNpTIGwI7bUoVJU7i68RyrnibaeR76vKqTt+glrLlTUHC2yo2nTs132g==
-X-Received: by 2002:a05:6000:1887:b0:3ec:e226:c580 with SMTP id ffacd0b85a97d-4267b339754mr21575415f8f.60.1760601631510;
-        Thu, 16 Oct 2025 01:00:31 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6a22b7bbc7sm1933261a12.22.2025.10.16.01.00.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Oct 2025 01:00:30 -0700 (PDT)
-Message-ID: <82dd77e3-67c9-4ca6-a1ed-728e9925fd4b@suse.com>
-Date: Thu, 16 Oct 2025 18:30:27 +1030
+        bh=btXTiMsIsAh/v4UCWIrETRspWEWJ9gl3jdaxpP75/Qw=;
+        b=JEfsEww5HMUxYC4Cj2rtIl6LqDNNhzG3nYF2KOaum4xCTHD4Xwj7W4g8bf+uEtpuh+
+         4o5CxKo/n7uWHUB8yM63omrISEuObfSREAuR3stdKjeQbgBxR3zaG1fNfq65WKXmSP/I
+         4R30nPjidH1wL7BgPoY3YGxlty5PnsDTDyF12ZjiY8+CEJe0d025dcg1H/6TZVfLF0Ax
+         cLzHnFci42AmveHR6uEETh70M6fbp5lNByu9oyAIyFOKNEubLAaNeei9iV95M9q2HPiP
+         e+0ACz9JzDNW7jLDrPoIopJPZtwgJB9PuKdyNF/Z2DOVXa4QYfVR6lSnNqsV/1NXAhyr
+         bOOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760604073; x=1761208873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=btXTiMsIsAh/v4UCWIrETRspWEWJ9gl3jdaxpP75/Qw=;
+        b=WWPeRFx3vOKGURqZh6hUYm5TCAG2RTB8d9OXmQ/tMO7HD+R5Hv964ZYbWjdNED3sER
+         A/eWMxKqt+JDLdT1oC4GHLgEE7hS0P24XsgxMVLca1F94o5mgCutE0y1Iz90634+Bmq1
+         bnXyMUC8cFHDDtceBXnqKdeL8Xf2557XUERDC0nyvmm7MhiQTYoGYUReg6Ffr9pwykOG
+         UZD/HRvWgebxUVt+dWQLOi+cvKyMhcTNWio4DINYTEDVLV8+9XRVv8gAPGLaTQDY2/v0
+         9I/De+DRrVHZlbiWPp0l26etaCu1iN9TCGzShIkYaMSbLZGVkAL3xd0axDsEMup2wO7Q
+         c6FA==
+X-Forwarded-Encrypted: i=1; AJvYcCXs2baKg8So5knJCePxknoKok1WW8chrvoiQrVuN1nVwL0LOst/MfUU1iDgWwBNmhXOTq3mdI+duXwWog==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxthepjW53mqvRJzQ/Q8fyZkhMBAy+NtCd0HEliHcILt7eDb015
+	7t8VZqL/VyoszmrDf899E3o2iCK1VRlIy6zqqOxL/B16wB0cC8D1LBEnzGGbW1Nr82Sjmjzh2jP
+	NgsWgzkMlwGSeHaNf2Z5TXJrXS6bTjmHMvhr63MA=
+X-Gm-Gg: ASbGncugVz+jxQkzfTwUgBtanpotMXrH//e8FdUXchEtsjHLnOXMmd0p0eXM8DNWMu8
+	/pUiBcFuZKRKN/rlE84GiKjBWbZ/9KUEZkOpRV6NQPThupGgecGzVasQGSuXfQ9wtHYjOZ6AP87
+	DiCcgIRpf1YBHm1Djl+uhD9MLOaIQ6U9AdQj20gjSSLDRKgbXhOE4B73/hzupgskHkeQrSkhqmG
+	g0uFh7xESk1V3n4W96ACMWtS33Nz4QOInX2Np2ntXIcC8nULriqaSkuXlrPzxeyJw==
+X-Google-Smtp-Source: AGHT+IFyGFN1oqvHmmmYzjrYbDAyYwcJfE6kvwTJInZsFESzdNU339FCOsozVA+HqgD5XAVSRrUzd0OnyYNV79Kk+y0=
+X-Received: by 2002:a53:dcc2:0:b0:636:d3a:30d6 with SMTP id
+ 956f58d0204a3-63ccb903674mr20622061d50.35.1760604073305; Thu, 16 Oct 2025
+ 01:41:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] btrfs: scrub: cancel the run if the process or fs is
+References: <8c3628d5-8fce-45a1-b29c-65c2c52f1c06@gmx.com> <20251015111217.5538-1-safinaskar@gmail.com>
+ <5517a3cd-1afa-4db0-bf8b-439f3ba410ed@gmx.com>
+In-Reply-To: <5517a3cd-1afa-4db0-bf8b-439f3ba410ed@gmx.com>
+From: Askar Safin <safinaskar@gmail.com>
+Date: Thu, 16 Oct 2025 11:40:31 +0300
+X-Gm-Features: AS18NWBmNXMW-QAlwX4insQrzJRZIuFwkUsjMeZ4MxNOhM6GyiV7JvztudEBspE
+Message-ID: <CAPnZJGC3Yt5E-+ShxVW2CcmAZAZ8ivbYGRkJ7g0v9O_09OH1Og@mail.gmail.com>
+Subject: Re: [PATCH RFC] btrfs: exit scrub and balance early if the fs is
  being frozen
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1760588662.git.wqu@suse.com>
- <36aa07502d2edd17d21e28b97d71cab182c12bdf.1760588662.git.wqu@suse.com>
- <CAL3q7H7q9=Fk=2EjC44dB8HnnsUv7EBZPLt=kot7quWD8=Jvaw@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <CAL3q7H7q9=Fk=2EjC44dB8HnnsUv7EBZPLt=kot7quWD8=Jvaw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.com, linux-btrfs@vger.kernel.org, lists@colorremedies.com, 
+	wqu@suse.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Oct 16, 2025 at 2:01=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
+> I guess the difference is in the systemd's handling of user slice.
 
+As well as I understand, systemd first freezes user slice using
+cgroup freezer, then performs kernel suspend (which freezes
+everything). I'm not even sure that these two terms "freeze" are
+the same thing.
 
-在 2025/10/16 18:21, Filipe Manana 写道:
-> On Thu, Oct 16, 2025 at 5:33 AM Qu Wenruo <wqu@suse.com> wrote:
->>
->> It's a known bug that btrfs scrub/dev-replace can prevent the system
->> from suspending.
->>
->> There are at least two factors involved:
->>
->> - Holding super_block::s_writers for the whole scrub/dev-replace
->>    duration
->>    We hold that mutex through mnt_want_write_file() for the whole
-> 
-> It's not a mutex, it's a percpu rw semaphore.
-> 
->>    scrub/dev-replace duration.
->>
->>    That will prevent the fs being frozen.
->>    It's tunable for the kernel to suspend all fses before suspending, if
->>    that's the case, a running scrub will refuse to be frozen and prevent
->>    suspension.
->>
->> - Stuck in kernel space for a long time
->>    During suspension all user processes (and some kernel threads) will
->>    be frozen.
->>    But if a user space progress has fallen into kernel (scrub ioctl) and
->>    do not return for a long time, it will make suspension time out.
->>
->>    Unfortunately scrub/dev-replace is a long running ioctl, and it will
->>    prevent the btrfs process from returning to user space.
->>
->> Address them in one go:
->>
->> - Introduce a new helper should_cancel_scrub()
->>    Which checks both fs and process freezing.
->>
->> - Cancel the run if should_cancel_scrub() is true
->>    The check is done at scrub_simple_mirror() and
->>    scrub_raid56_parity_stripe().
->>
->>    Unfortunately canceling is the only feasible solution here, pausing is
->>    not possible as we will still stay in the kernel state thus will still
->>    prevent the process from being frozen.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/scrub.c | 20 ++++++++++++++++++--
->>   1 file changed, 18 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
->> index facbaf3cc231..728d4e666054 100644
->> --- a/fs/btrfs/scrub.c
->> +++ b/fs/btrfs/scrub.c
->> @@ -2069,6 +2069,20 @@ static int queue_scrub_stripe(struct scrub_ctx *sctx, struct btrfs_block_group *
->>          return 0;
->>   }
->>
->> +static bool should_cancel_scrub(struct btrfs_fs_info *fs_info)
->> +{
->> +       /*
->> +        * For fs and process freezing case, it can be preparation
->> +        * for a incoming pm suspension.
->> +        * In that case we have to return to the user space, thus
->> +        * canceling is the only feasible solution.
->> +        */
->> +       if (fs_info->sb->s_writers.frozen > SB_UNFROZEN ||
->> +           freezing(current))
-> 
-> Why the check for sb->s_writers.frozen > SB_UNFROZEN?
-> I don't see why freezing() is not enough and would prefer to not
-> access such low level details of the vfs directly.
+> Anyway, mind to test the attached newer patch?
 
-It's possible to configure suspension to freeze fses first, before 
-freezing processes.
-Although not yet the default behavior, it's going to be the new default.
+I tested it.
 
-So we have to check both fs and process freezing.
+in-win freeze_filesystems=3D0 - suspends instantly
+in-win freeze_filesystems=3D1 - suspends instantly
+as-a-service freeze_filesystems=3D0 - suspends instantly
+as-a-service freeze_filesystems=3D1 - suspends instantly
 
-> 
->> +               return true;
->> +       return false;
->> +}
->> +
->>   static int scrub_raid56_parity_stripe(struct scrub_ctx *sctx,
->>                                        struct btrfs_device *scrub_dev,
->>                                        struct btrfs_block_group *bg,
->> @@ -2093,7 +2107,8 @@ static int scrub_raid56_parity_stripe(struct scrub_ctx *sctx,
->>
->>          /* Canceled? */
->>          if (atomic_read(&fs_info->scrub_cancel_req) ||
->> -           atomic_read(&sctx->cancel_req))
->> +           atomic_read(&sctx->cancel_req) ||
->> +           should_cancel_scrub(fs_info))
-> 
-> If we now have a should_cancel_scrub(), the checks for the cancel
-> atomics should be moved there, otherwise it's confusing why some
-> cancel checks are in the helper and others are not.
+Also, "btrfs scrub" terminates when it gets INT, TERM, HUP or KILL.
 
-That sounds good.
+Also, system powers off instantly both when scrub is in a window
+and when it is run as a service.
 
-Thanks,
-Qu
-> 
->>                  return -ECANCELED;
->>
->>          /* Paused? */
->> @@ -2281,7 +2296,8 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
->>
->>                  /* Canceled? */
->>                  if (atomic_read(&fs_info->scrub_cancel_req) ||
->> -                   atomic_read(&sctx->cancel_req)) {
->> +                   atomic_read(&sctx->cancel_req) ||
->> +                   should_cancel_scrub(fs_info)) {
-> 
-> And it would avoid duplicating the atomic checks by having them in the
-> new helper.
-> 
-> Thanks.
->>                          ret = -ECANCELED;
->>                          break;
->>                  }
->> --
->> 2.51.0
->>
->>
+Great patch, thank you!
 
+Tested-By: Askar Safin <safinaskar@gmail.com>
+
+--=20
+Askar Safin
 
