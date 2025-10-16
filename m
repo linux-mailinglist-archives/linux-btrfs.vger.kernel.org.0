@@ -1,56 +1,54 @@
-Return-Path: <linux-btrfs+bounces-17903-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17904-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC41DBE5693
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 22:35:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64793BE592D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 23:31:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0EA2A3439C8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 20:35:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01435585728
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 21:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEBA2DF13B;
-	Thu, 16 Oct 2025 20:35:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E912E0916;
+	Thu, 16 Oct 2025 21:31:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="UbnYDV4s"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="XFjYvqj4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 850FA4409
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 20:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F6F21ADB9;
+	Thu, 16 Oct 2025 21:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760646941; cv=none; b=sZbdCsQ5qX+R9UGmn2CwydFnH4ye45c4ctNAFoPqilvD4K5TEtdq5Vt3wpyT6mFu5T1u3vlLbauSgw9L0jAfBVG/h+xiLLfzCawWpCFNdXM7a9VSm0MVsqNg2I2MdlYGXaIVRgM2UHvLqlesz7tRcAf7khXmiXYYqUvcbonoBTc=
+	t=1760650291; cv=none; b=kzaOqAm4n8Al7f3x3qqPM+QZ+tf535Tan4qeu+kmTjNDQF5hdMMUrWjBEVL0bAuVeTlLhlyiaiAr3wL8H2+A3GQE7URknUbK/a6ObZ1+eREdsmm1uCohbMRsmQZyErKK1nVsVCyCybx/4d6i9aRBP+qRNACq4PykUPPpReGetKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760646941; c=relaxed/simple;
-	bh=fC3T2fGwVrs+G384VBjSM+eVmK/gRgTtuezLYqQBqJg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t1CG0JJvO9XkhQ/DZTZ8k5B/y007gcJimp/JkJu3GoYKB8a8/zdQ+w2CnnGMu7lhyf89+WBuHoGbt6P/2SlkJJVEfb/B+pR13vGDFwjF7ujpm5JMTJWVL9600DYlPUxX4uHS4Qx5cYsWRSODcVwjCEh2C1SoBuBw68tDWft5oj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=UbnYDV4s; arc=none smtp.client-ip=212.227.17.22
+	s=arc-20240116; t=1760650291; c=relaxed/simple;
+	bh=nbVEIyu2OmxN9T2NhsCDZHATHuCid5n6l/jI5zNb8NQ=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=iTnL+8hEzvJl5sTOpSKxB0LAPT+ONOi1MsfxFzFf6p6mzGttHRr0iv68L9vs0+Nm7VJ4WuJWQ1EdGM0d7kf+neoLOEd8RkF5+O72bwwr2COm3gSPo27Z4s/EWuDGJMd0WCHCN40g1Gl4yx6yAEV1QZssO6eLpb5XCb4NbUFkAbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=XFjYvqj4; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1760646935; x=1761251735; i=quwenruo.btrfs@gmx.com;
-	bh=GU+myowdDCkQxMmq9eBh7t1+7HGbjG0kPWx3JTyLt1g=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=UbnYDV4s2N76XTgXBtaGPK46GaZBXtfEwA2k75O8H3zWQwheC9kU/v5clcoa0NsR
-	 xNTLcn3IJ+WDURL6n8dZieBiWSAZn8SArfFzizqv09HIXvqTnGLLYYi4UprknHqv4
-	 XcUPAjXk99GG/354cUr+3dBHi/BfQLWqG8pDffxWoelteowBEeTaubecrlD+TJLDt
-	 pKMAd4k6Y0bwp9NHaAT63gmxpQsAnvUGCK1B8FZgXWR9RCEy3ykNVN7axuvDgR9Rk
-	 EQq4ZWUJEEdtmc2x5qkwm4iwTIkUyVU/3DJk2aj1SwiqTT5HcFti6axR5FD03DdD0
-	 /mLBR9AtOi5UpgQehg==
+	s=s31663417; t=1760650287; x=1761255087; i=quwenruo.btrfs@gmx.com;
+	bh=nbVEIyu2OmxN9T2NhsCDZHATHuCid5n6l/jI5zNb8NQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=XFjYvqj41yV65e2nF0PTLvmfzkW04Jw6AU39tbU7H1AsKntucgcyiP7iVSXKR0XN
+	 p0si1ijQayZ9ojHiN7/BRiZBMbIptGkoULzZdJdxYkbTaF6fc47VqEuko+//VwxTU
+	 qZl8HUHLsO6FrkNzdiC2vPqunulYqrZPpSzpfUSuEIKP0r9KBbovw5wMT883nGJWJ
+	 PnGaw2id2Nvl9Y0KmWYtKBHa1iPmV+LSdg7MBpwPJrIENBkVqxyiuNImW9z92yq+m
+	 /YIu1PkTMdaSfMgZQsg3LgM06DPEhBnliR3ErH42aRCur6EXi8GvQ6uu+ZYTFpAFB
+	 TGVzXNu9CFc0m0K08w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MoO6C-1uPSdq21FY-00qDuY; Thu, 16
- Oct 2025 22:35:35 +0200
-Message-ID: <c66eae15-2651-405c-a024-05a31e836fc5@gmx.com>
-Date: Fri, 17 Oct 2025 07:05:31 +1030
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOiHf-1ur2Zu46IB-00Qc5W; Thu, 16
+ Oct 2025 23:31:26 +0200
+Message-ID: <3a77483d-d8c3-4e1b-8189-70a2a741517e@gmx.com>
+Date: Fri, 17 Oct 2025 08:01:23 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,15 +56,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] btrfs: scrub: cancel the run if the process or fs is
- being frozen
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1760588662.git.wqu@suse.com>
- <36aa07502d2edd17d21e28b97d71cab182c12bdf.1760588662.git.wqu@suse.com>
- <20251016164224.GH13776@twin.jikos.cz>
+To: linux-pm@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Long running ioctl and pm, which should have higher priority?
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -91,157 +85,140 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20251016164224.GH13776@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:rySn3Ysqe//K/B7wMVbfsdXu2RN+b81mIEQK8F7O8qbL20ASpIx
- ZpMX6xMYD91EewhK8O/4Fe80d6MEdZlCDpf8e+lL2/gnM5AwFpNQfXLdrvKaDP6CmB1YdDm
- d1VqWpWHpUS83vRWqX37p1a6Ngso6ealT+uHEVFO6a/y+2krLti8KZvtGVIYt5aAJx7k72t
- pC6oSNEzKhHrbF5ItKijw==
+X-Provags-ID: V03:K1:ZXtsi07HFk0b8zbP8k0YNtWgNUkUCTJtBJmuRNW/ucFhuZzAU3f
+ X0MXoFJbv4an5/lpcrm4iAdTkvt8xejYB5W0ZwMoWEEqj3jzUnSe2znNdToZ0lY1696HrdN
+ Wcx3lpwcZ87JWxHJ9MOpAUHT6/8F+HPO45nedlQoyyExJn4XRyBQve/WDxI7OiI3DbL20PZ
+ y6Jb6ObrKZhwPXDeoVcYg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:UMahmvFX9rA=;hc+J4fbabilIuEq9DQKVZ/OtRCS
- 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
- c8ehQ==
+UI-OutboundReport: notjunk:1;M01:P0:22x/BDxslaA=;7pNgfHPs89ntft62DbHBP8ZXaeJ
+ 5GSM73XBTmfRpIXfEesXAxJuanOY4vxyphHcfpw5s2VZshBP1Ge13u0aEINtLqThs22QZPTGg
+ OeSMk4USVFBitEuBOcUba6xEimhx00lg4aQ2G43Ctj/dYJ5SrseNxTShi/vE9t3yntQdJMw6G
+ 2dTRIOT4gVgbuLonY8Cn1Pz5E8NWT2V+y3Fj+0Q9McYdWJ5d2p6GfizRksIJoUUOpES1padzC
+ MHzIj8iyUB2ht6nkRNYm1ZEAZriVt6DI3KMPn8xKNKejXkYIhV491JomdhHhcC85Y4ny04Qkd
+ MPUzBBzLxkb7EX/n9iGTw8oTP3AI6DdQIsTUCa4S5yPwCvhjuLAy9ioof4kaZoXIbF6EVscIP
+ P3OJGN9EfpgOpX24Oh870bVBg5iqSphSEU5edvcKujtmAt5Sp9uiUk8q01matRV6uJOoDnPzh
+ mTjTSCLDh87mCoaNCGVQik4ndbpn299k5+tUMjPRh/TDVZlr4tXKobA1yicLap5geWVu8+gSR
+ QGpYJXEK+xViLm5H82k/FhhFZIJ6Xx8To8V0f8VB1+WpJf/XSnQFRchq0GAszg7abn03FaJKi
+ kHuVawjdz6roSAITxSR7ZIVXg0whk2drqd7XZYokB3TLEx4sByIsuW+WuEaYgoH99qLAfNYPa
+ +mqyhjc5hRdVdPatLrOhODgqC56ctkSD/j89a3YoHp873DzIcu7bLJko+OxarDYDEFU+uh2Ek
+ y9ENJQJFs734kigErRP47aksfHDoH16eGaSCNt5HtdaCt+z8Qq0tR8NKIBzk5wc/e7WiiErSF
+ kJeFlgGv9cLcXvXOHOWJCXwHLVpqMYM12aK/mHqXEjIjvv9xkZP5jvB71KdLdtB4ETQzd8MP7
+ pYeXE0qcjJ8A+IECtTnvH9WWs+Qn7EJTN37sWu44BFyR/f7cEpODf7IfLqMNKyrsXwPkbHBMY
+ 29HUoJblIVvE60H6+B0DpD9rwOWLTd1Lp4GmNbVWckuVD1ShSQlkJOqe2V1rkIjDAcl9YIgXe
+ P82u9IsZyebHBIx4hus/WJgCvZo5O+Qtwy9Y23nkJLLgjYRQILzmGQ/UwsolhNSdbVpCYIpY/
+ 5POyxo0YL25K5D4By9hfAujcom4R1Sa2DVuPGhyIR3movwf1e2vWlp9w+1Ljha596/RUKwD6u
+ dB6aHQ80uYBPp4P5UWoC3h4lsE+llXfRD9GJCNKQOoSkDZ/7gsQppwvcAYW6mRtpnmbSUFpBW
+ J4euvjRaF13M98X39C3mEaRD9QD3M3KIkssV44p7HnvDjhS7Y4RuaR4uycf1Ce3Ie30viXDat
+ Tloxx5gp91gx5gVXqd3EivIZnno35Oi/MELJ6vPvmd/EkOWUvIoIF4veh3Tfsi/UxQvHNQR9t
+ u7DEv+5A6rVI9T1+95YrMnDaM/SMqBa/4tjL4qPMRsWRyCuif1ukwT01QOVBIRC6u0Dbb8CYZ
+ 7Hu7mZdMu2Azesa5Ek3nCTTDaIXAU/J7y1oOVKIKENie6e63lVufw7adzSup2kqrK7pbQVZvx
+ wPzfBruuksV9iwVZbXnlnhoejksGM/TXw09JHBaxKtqhKBjIHD2Qzq1fY8Sk3O4aWrhMnzSVK
+ U/knWUEKDEF40+jQABdfn4TZP9c1ABk8nsbgs3W6U6NYHsDJy+reo2uwAWA0UFJskgI+hdD9V
+ iZ8IOgbV9yxCd057Hast58/zX+qf4Rb9PaylTrxvAE3EJtIYiFBku541jfUEXSh3YDOifnUeP
+ fMMXsDvLdT0x7c4vxQlzr0GGlz7cgJ2AVmEgDQ9T3gvT4u/2ctw6hVyjqQBNyYJhWm6IowThY
+ qDzxZZOSvF8/Ax9crtJZNKJvq6AJGsfBDMm6hELMUq8m6Cm+wXN9WY4ms1E/+pIhxYPcd8p2V
+ CAWVdXYHgy8KoEq3gqAgHUYzXM3X8LxpDNxPEcJLdpWIAx0HKxP6zL+JRFf6Gz/G/kQdF9T2o
+ 3AsykPNqF2wxoYGebXGGbkQYReUa6zPCD5lK5UNRdLQTLICoCO+XAaHcdm3ackAmHzfEBABv9
+ VxRWmMTgLtzeU6sSHRnRCdS7W2vGesTfbKNtbhBGJOrL9yQ9r/EAIMEQQIe9Hcji17FZ6K5AB
+ AUG0E/dyhFSy1DDE2v9540f+alxEBNnfPIy/s4yav9L0Ozctu8fo0UguyY+b2Y7Uz8YSHzlfR
+ LA1QBefCRgig0hfNuYg+0QbWQCdIgDm3obV+oJf2ukeJuIDh5NiTPnrKQbQS6ZmX3roNnTO77
+ 2dL8oN0TYnItA3dKkQioL1WScZWnvGLin/OZjNcXMvVQXWXDzXsKyxRyf7PkTuEDDv7htZm1r
+ saSnzL2g3Jlz7tpIlO/HarF8wV9Zh5IBtxTi0hwmm2r/d1UbrP8Rp7bWmb6RocsyzVnfAsJxC
+ BIgICk4TP7meeFXlAz6YFNltkRTu+DpPXD0GakQ9vf4kcJGpJZAF3a4jvq47Q2b1mBhtsSl7h
+ +MkfY3loFK47rkJiupjRQI1akxoe6W6pHqWvFplm444jtv/yCOOVK4vus20tdcgeNFIJuzuvo
+ SnxyNZC9Q6VwzfPo3zA+VWMLiFZjzlJCe5iMTLU5Ye2yTvVBUa7t+m0s+C5crEVo2wit/CmA/
+ di77bgKx8ffdprVQg7bphToljH8B1p5QRrKcTknclpbOJyRqGWF1lN4AtmTlGpr+6VARwFVHQ
+ ZEPBMSMVBDvXiExsHndUuvfO44H94Wz8aoY0Vaa7RSEMSAbt7ScHBfb1COIoTRosvLaaNfTSe
+ RlfxURxeUtCeLCULIicqzRSvm0ZN2qspP5eq0o5gaGZrr5WqG5ZvvRRyNl6eVdU/fwX0Kz5Nh
+ pmn7YEzJvitM4tv2FKYvPquSG8xxQdx0o0Lsl+DDhHIGabOlzS+JGTG8nnYeZqNZcLo1FAALW
+ AY+09666o9yJ3/YoXbXTseSRoHq01I7RT1XHoehIUu/lFnswfKfOvoj5cFgCGwQi7LUK7xN4A
+ VcAWrNXCmGscmYdpzhxWHZEC6dW2/n37ViGsqiI849P29xXfcg95vsGVTDyVZb8C2U0OVwVzt
+ uy7Izge8ESH+cIgSMYXv77ds3dVVNNtibppj/cr793oCx8w0CoyCmd6YlFGeK5rlvh0C03m5z
+ yoBEB7Th4Zbtf/zYSMR8DDEtw0DuQDkr+rcc4xEOpQ7KcjB++E+5zFjXU0zpuxvd2Dankx+7Y
+ 1lolmLMM7rhqldO8NreOVUYF/TvyRxSJjbpHNg6nAHndJ9XYmOBREQ/P5uI76VpjTFBfgBxdr
+ 0wh6dicHcwA4VztsRAX8Ttjj2JrwxX2e9MA9Pok45/vANNHRLTJHnUr/R3EYKEDtDto2Gs7lQ
+ pbCdtX6l2Dta+OZeKANk51Bgl5BtDFVdTBnIZVH1UYSaCXJo5NgJTKvwDMI9TN6K7yckAv39H
+ oB0HleyNMU+f0tFogvo7QhMHEndX83j3F6NRpfVa6KJyEnBPpaHGG6od9zQNEfyn41W6jzre7
+ esTvxsFIkPYVrF8Sk7SDoKbffZgsh/+6IxiUk+BaUgidANRfMlj0eTHVlq2zGAleU73EruNOt
+ AOVMs9N0F/PqM2Pq8vy3jYN/hc+ARGXN5vVmcltB3Xo+QyLsKr4pTVvPXSesScWQx5xxF4eic
+ 4vMmKxx8wj+cBu7KWSjH3+jJIrDTbPpOX+9MLWoiAoHkKVfV1zO4M00DzVybZtkku99q6Soz/
+ umr/yNCD0wgN5K9iaav92O7dWtfzZaBl/C0WqatF3Qo1As652N1e8woy/7Y7waet9GNRIdlUi
+ oCVrfWlpxmzlN+SnGslw99lGtdpc02D8bsAv5dyQ/YGRTqgpbsvM3RePcs0vMonnV4+S/4rwd
+ pplcwtx5Pzaqk8t43TFzvHBbYY1aaMGeXjGAnP3vtPE55UzYYrfdqRob28lag8Llpzo06Ie+G
+ 8WqLAp4TyVtS5dhQ5KUZHvalzEPtYr6KCjkpm8NUOZmzN2u4od3AXNLdaew6JWarHsMhENX60
+ 96vrPPjRuoHII/g47Q2DpXofNW0Orrtff+TS8H8L5BiUMfRJia4xXDFZuxBWu06KQH4DtXYEA
+ 6JmaSVyazkIrxFRWM58fU9/kg7Ux8AM6euZzSjTqkj1Nv4GeRyV2roNJBn8UL4p2Mst7Wkjsm
+ 2x0akXFK3cCwLF1tN5fnh3414M0Fcsx7gZxleJTI5oPCF/JqiQboabZR4nSHCEtAZ/0DFK9SM
+ n6l+kV0llB7U0MbobyxVsTgcdqGtbqW4PdmFP7l6hpJj53ztWcgpRoF8ocqifyTi7/iRqy1Q6
+ sC5ZRBvHKW2IlqvODK99aPyrEBxr6/0dd45a0uVfJ3dOREnJnbaYIIgqx/LqUs5KZhN+cjYbq
+ V4JfzwPQb30Pg1AdCYX8Vrl1C5F72ktSlFjZW2OkXPixDw3LYcySWgVL/FKg16Q2srOVA1gHU
+ b7kIRvSeh532GlRb2oGok/IDG4qPYdUxB+CmqF1Uvzmp7wA6HicyuWM/Ae0TuGRkqUGHEhI23
+ 9BNVHnb9TQ8hWHGp1ifBIDAcuZfPdpQiVxDgc4F5oAg1RtwgbPPG33hcwpW0mYCCszf9P1hk6
+ 7EOpmcYP+W/0W6bv1GiUuGn5Zvx7c64jbFTYebAb24x82vaY8yQEdrIbDWDnxEjjsSqnM4EoR
+ EavnpcVvQ+SXZcM0GJBZPUf8ewS7y2iiGdSLQunOAmr2+VHbGinpWed1WdNI3ysy37fDJ8zc2
+ 6j3SweoOeLvcvsR3EWBSIuwj0VxfY50oiUcktqjaj6CevBhXuelgsFGwtFLCzWg6uMhuy0ws4
+ oNOidX3J0bjRoHMLvt7M6Tb9f/9rQeB3uID7D9rg23N71mlO/qwGEQExiZos+trwGnfs9y+5G
+ QCCMgUIwm/NS8gRtJt3yrbFHwL0lx56EFtyyAeBKukJdn6XaSNDAPuLbMRyEvROj4UuJS/Xpm
+ Jjfn4H8lp7jBGIioKexscyUSp3a+ha8LTnkabL1cQy3vIJCiHtJciXbbCP+vd60hB0KP9D1eF
+ mXFkgEhmS++l0FzNfieec7KbKe7wCJGKaHmOMoIXjYmzdMaxWDObSmjgX7UU1Izg1ffTy5zbU
+ RiyKQ==
 
+Hi,
 
+Recently I'm dealing with a bug that long running btrfs ioctls (e.g.=20
+scrub, dev-replace, relocation etc) can block pm suspension/hibernation.
 
-=E5=9C=A8 2025/10/17 03:12, David Sterba =E5=86=99=E9=81=93:
-> On Thu, Oct 16, 2025 at 03:02:30PM +1030, Qu Wenruo wrote:
->> It's a known bug that btrfs scrub/dev-replace can prevent the system
->> from suspending.
->>
->> There are at least two factors involved:
->>
->> - Holding super_block::s_writers for the whole scrub/dev-replace
->>    duration
->>    We hold that mutex through mnt_want_write_file() for the whole
->>    scrub/dev-replace duration.
->>
->>    That will prevent the fs being frozen.
->>    It's tunable for the kernel to suspend all fses before suspending, i=
-f
->>    that's the case, a running scrub will refuse to be frozen and preven=
-t
->>    suspension.
->>
->> - Stuck in kernel space for a long time
->>    During suspension all user processes (and some kernel threads) will
->>    be frozen.
->>    But if a user space progress has fallen into kernel (scrub ioctl) an=
-d
->>    do not return for a long time, it will make suspension time out.
->>
->>    Unfortunately scrub/dev-replace is a long running ioctl, and it will
->>    prevent the btrfs process from returning to user space.
->>
->> Address them in one go:
->>
->> - Introduce a new helper should_cancel_scrub()
->>    Which checks both fs and process freezing.
->>
->> - Cancel the run if should_cancel_scrub() is true
->>    The check is done at scrub_simple_mirror() and
->>    scrub_raid56_parity_stripe().
->>
->>    Unfortunately canceling is the only feasible solution here, pausing =
-is
->>    not possible as we will still stay in the kernel state thus will sti=
-ll
->>    prevent the process from being frozen.
->=20
-> I don't recall the details but the solution I was working on allowed
-> waiting in kernel and not cancelling the whole scrub,
-
-That will only allow the fs to be frozen, but not pm suspension/hibernatio=
-n.
-
-As I explained, pm requires all user space processes to return to user=20
-space.
-
-That's why your RFC patch doesn't pass Askar Safin's test at all, no=20
-matter if the pm is configured to freeze the fs or not.
-
-> which I think is
-> the wrong solution and bad usability. That way scrub may never finish
-> going over the whole filesystem.
->=20
-
-That can be solved in user space, with minor changes to the return value=
+The reason is not that hard to understand, pm requires all user=20
+processes to be frozen, which requires them to return to the user space,=
 =20
-of the patches.
+thus long running ioctl will break that requirement and leads to timeout.
 
-E.g. only return -ECANCELED for real cancelled runs, and return -EINTR=20
-for interrupted runs, and let btrfs-progs to catch the -EINTR cases and=20
-restart from the last scrubbed bytes.
+I have submitted a fix to btrfs so that when it detects the fs or the=20
+process is being frozen, cancel the ioctl so pm can continue.
+(https://lore.kernel.org/linux-btrfs/cover.1760588662.git.wqu@suse.com/T/#=
+t)
+
+But there is a question concerning me, which should have the higher=20
+priority? The long running ioctl or pm?
+
+
+A) Long running ioctl has the priority
+
+If the ioctl should have higher priority, the current code is fine, but=20
+the problem is pm will freeze all other processes (e.g. hang the GUI)=20
+while waiting for the long running ioctl until time out.
+
+This can be a very frustrating behavior, thus I'm wondering if we go=20
+this path, is there any interface to show something like, DO NOT=20
+SUSPEND/HIBERNATE, and immediately let the pm to abort any=20
+suspension/hibernation attempt without extra timeout?
+
+
+B) PM has the priority
+
+That's what my patchset did, but the problem is a lot of jobs can not be=
+=20
+ensured to finish.
+If a long running ioctl is interrupted, user may need manual=20
+intervention to restart the process.
+
+In some cases, the interrupted ioctl is fine to resume, like balance,=20
+and previously relocated blocks are already written to disk, and re-run=20
+the operation will start from what's left.
+
+But some operations are not, like scrub which doesn't have any on-disk=20
+record on the process. It's completely on the ioctl caller to do the=20
+extra resume.
+
+Furthermore the interruption may be indistinguishable between pm and=20
+real user signals (SIGINT etc).
+If we resume immediately after pm thaw, it may mean intentionally=20
+interrupted operation will also be resumed.
+
+
+Any feedback will be appreciated, especially from PM side.
 
 Thanks,
 Qu
