@@ -1,187 +1,240 @@
-Return-Path: <linux-btrfs+bounces-17872-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17873-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 382BDBE20B4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 09:56:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D396FBE2099
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 09:54:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4F1B84FAFC3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 07:52:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8B023B0AD9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 07:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C6C2FD7DA;
-	Thu, 16 Oct 2025 07:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 996DB2FB989;
+	Thu, 16 Oct 2025 07:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q5q4g6g9"
+	dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b="EX4J+kuo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.synology.com (mail.synology.com [211.23.38.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D1723AB95
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 07:52:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE46A2D6E72
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 07:54:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.23.38.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760601153; cv=none; b=uw8vUqzLrHPIYgEDbYUl6ISHNWdF3XxtUyv+oHstCFnUiRvB5uOO99/bF3XItH1I6jM6m0vys/RxiiR/7l49eUk2gVYxYNd4N1N8+PkNUIbdAdcmRBKgc2/rK4nT81Kbo2SsYLpVm5PzODA2GZQ/AnKjWyhY+2u0vBwYkYostu8=
+	t=1760601244; cv=none; b=JwMpn2x5N+7DpR0SL0XJ6qDPGwTtDTRv2MclLahcQXxGpOsNmEK527+ZG1W6cL+H/565AvrEX8giNl/4596HnFDSjV1O+WDTgRT1ggr6sr9y7baDBwRC/e3c6ekHObp9SRTU6Y3UcmO85Y1GVJp67nLn+g3xAyG7XSQYizy2jPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760601153; c=relaxed/simple;
-	bh=xfJIokLxItT+EtNAs2hXhZrIRg6o7sQu8SXW2jKP0jo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S/LFZqZGp64cGR3jRfQ4C8voDBMizFEk6q0UeXtQPWi6g80T6O2xgWIwJCR7/qvWoUN3/4Np8rClz0ClnG6iqjoIv4+c0olDced3mKv0cHmGRi49obo47/BFZHxQTLsKfFvEgVMFFiEzA6IbnVv0ptuIhvEoJQLeI8bmI/KmQII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q5q4g6g9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8123CC113D0
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 07:52:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760601151;
-	bh=xfJIokLxItT+EtNAs2hXhZrIRg6o7sQu8SXW2jKP0jo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=q5q4g6g9c7iIkAQEdpV7sMDACsJL1UnR+UJNeow06Cd9pUoyajJZ/36GuStpoE23h
-	 L8nb9KvazEh32e+9Ps4FuzVqjIv6RdteRKPIaf1gg8HrCxGOcA3KOOA4Vz7jRGk9Sr
-	 q/6e6C/FYMpIPNcl+yN4pKuwYl7dAbgs7ZNhULhW6KRprkFmyydoYilrGpilDHaNSZ
-	 /2nqqt5WHyB09tw8e4HdSv+k2duWJl9+ARdA5lU83FKc88mblmjGt80vs5EVweACZr
-	 asSxcHt7MNGWRB+PhMxZOPJWaWlCIEGbZPRH7ppRMAQGj8N5QHt1WA+p+xNyYjz7/p
-	 h/kNi+dEyzQPA==
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b48d8deaef9so77865266b.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 00:52:31 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwRlx0G9qzhTdm++JP5mlsO1/39DaMmUHGoIltxeLneaStvdlc1
-	5LdIxuAiKZLjOYdOBHpMBgdUzONQP0IX7mRF7x9aPuSD6PdwhO2Z5MA+89qQMr3nWXGbNGEYbJa
-	d49AoLS/spzIEIYx0xZFrzIK9sbxUdXw=
-X-Google-Smtp-Source: AGHT+IFwFUwld57erDnW9zry4d0P9Eu5kymmpoOb+YK9nCvR79aH7jG9lKcHCtdUenxz/RP3FtYein3/XwBG1j85wB0=
-X-Received: by 2002:a17:907:7ea8:b0:b4a:f6c3:7608 with SMTP id
- a640c23a62f3a-b50aa792794mr3611598966b.3.1760601149918; Thu, 16 Oct 2025
- 00:52:29 -0700 (PDT)
+	s=arc-20240116; t=1760601244; c=relaxed/simple;
+	bh=H7Gt9u/cz6JjpXigPoFV4Nw8pcJ6kPk/hPJ5nz0T3Yo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ZCqQ9topB1ysQjvHQQEIw3GkKfqKZm90IUtBrKdL2KOyht03uVfY7JStOuOi46dFXVYClxOXEvTTJLuIBILybY4QTE380IUg0syDje2gshniYC2AUG5uEq0mKRm/AtIVta2/oxlxSE4bttBFu+KojKV/0sET4Ub3S33UUC2JiXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com; spf=pass smtp.mailfrom=synology.com; dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b=EX4J+kuo; arc=none smtp.client-ip=211.23.38.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=synology.com
+Received: from 10511-DT-003.. (unknown [10.17.46.51])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.synology.com (Postfix) with ESMTPSA id 4cnKw25LyHzDRrFW7;
+	Thu, 16 Oct 2025 15:53:54 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+	t=1760601234; bh=H7Gt9u/cz6JjpXigPoFV4Nw8pcJ6kPk/hPJ5nz0T3Yo=;
+	h=From:To:Cc:Subject:Date;
+	b=EX4J+kuo5iKtblTMkMg6v7Te20ihYFAMl+V4dTpsxKYet8eWzZW35vwT/ayKm1XT/
+	 4Q+rRph2l8D6gtJFZb5uMgiOHlI9NLutpA5RBNAbn9iPhhaRppVcvfAaDwnh/SoRpp
+	 zvNAukkOWpqW7ySVBL13Cv2l2QuXkgVpyg4SY9A8=
+From: tchou <tchou@synology.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Ting-Chang Hou <tchou@synology.com>
+Subject: [PATCH] btrfs: send: don't send rmdir for same target multiple times with multi hardlink situation
+Date: Thu, 16 Oct 2025 15:53:51 +0800
+Message-Id: <20251016075351.3369720-1-tchou@synology.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1760588662.git.wqu@suse.com> <36aa07502d2edd17d21e28b97d71cab182c12bdf.1760588662.git.wqu@suse.com>
-In-Reply-To: <36aa07502d2edd17d21e28b97d71cab182c12bdf.1760588662.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 16 Oct 2025 08:51:53 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7q9=Fk=2EjC44dB8HnnsUv7EBZPLt=kot7quWD8=Jvaw@mail.gmail.com>
-X-Gm-Features: AS18NWCzzP5Dgd8DTj7TqwhUSHbcuk00aXky60msrXGBl_MeM_xNYyRVz6AKO2c
-Message-ID: <CAL3q7H7q9=Fk=2EjC44dB8HnnsUv7EBZPLt=kot7quWD8=Jvaw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] btrfs: scrub: cancel the run if the process or fs is
- being frozen
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Synology-Virus-Status: no
+X-Synology-MCP-Status: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Spam-Flag: no
+Content-Type: text/plain
 
-On Thu, Oct 16, 2025 at 5:33=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> It's a known bug that btrfs scrub/dev-replace can prevent the system
-> from suspending.
->
-> There are at least two factors involved:
->
-> - Holding super_block::s_writers for the whole scrub/dev-replace
->   duration
->   We hold that mutex through mnt_want_write_file() for the whole
+From: Ting-Chang Hou <tchou@synology.com>
 
-It's not a mutex, it's a percpu rw semaphore.
+In commit 29d6d30f5c8a("Btrfs: send, don't send rmdir for same target
+multiple times") has fixed the issue that btrfs send rmdir for same
+target multiple times by keep the last_dir_ino_rm and compare with
+it before sending rmdir. But there have a corner case that if the
+instructions that rm same dir not in a row, the fix will not work.
 
->   scrub/dev-replace duration.
->
->   That will prevent the fs being frozen.
->   It's tunable for the kernel to suspend all fses before suspending, if
->   that's the case, a running scrub will refuse to be frozen and prevent
->   suspension.
->
-> - Stuck in kernel space for a long time
->   During suspension all user processes (and some kernel threads) will
->   be frozen.
->   But if a user space progress has fallen into kernel (scrub ioctl) and
->   do not return for a long time, it will make suspension time out.
->
->   Unfortunately scrub/dev-replace is a long running ioctl, and it will
->   prevent the btrfs process from returning to user space.
->
-> Address them in one go:
->
-> - Introduce a new helper should_cancel_scrub()
->   Which checks both fs and process freezing.
->
-> - Cancel the run if should_cancel_scrub() is true
->   The check is done at scrub_simple_mirror() and
->   scrub_raid56_parity_stripe().
->
->   Unfortunately canceling is the only feasible solution here, pausing is
->   not possible as we will still stay in the kernel state thus will still
->   prevent the process from being frozen.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/scrub.c | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index facbaf3cc231..728d4e666054 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -2069,6 +2069,20 @@ static int queue_scrub_stripe(struct scrub_ctx *sc=
-tx, struct btrfs_block_group *
->         return 0;
->  }
->
-> +static bool should_cancel_scrub(struct btrfs_fs_info *fs_info)
-> +{
-> +       /*
-> +        * For fs and process freezing case, it can be preparation
-> +        * for a incoming pm suspension.
-> +        * In that case we have to return to the user space, thus
-> +        * canceling is the only feasible solution.
-> +        */
-> +       if (fs_info->sb->s_writers.frozen > SB_UNFROZEN ||
-> +           freezing(current))
+Hardlinks of file are store in the same INODE_REF item, and if the
+number of hardlinks is too large and exceed the size of one metadata
+node can store, it will use INODE_EXTREF to store. The key of
+INODE_EXTREF is (inode_id, INODE_EXTREF, hash of name), so if there are
+two dir have hardlinks to the same file, the INODE_EXTREF items will
+have cross sequence with two dir like below:
+    item 0 key (404 INODE_EXTREF 111512) itemoff 16239 itemsize 44
+        inode extref index 4825 parent 403 namelen 4 name: 4824
+        inode extref index 5825 parent 402 namelen 4 name: 5824
+    item 1 key (404 INODE_EXTREF 398645) itemoff 16195 itemsize 44
+        inode extref index 4569 parent 403 namelen 4 name: 4568
+        inode extref index 5569 parent 402 namelen 4 name: 5568
 
-Why the check for sb->s_writers.frozen > SB_UNFROZEN?
-I don't see why freezing() is not enough and would prefer to not
-access such low level details of the vfs directly.
+So when doing btrfs send, the instructions that rmdir for the two dir
+are not in a row, and the previous fix will not work.
 
-> +               return true;
-> +       return false;
-> +}
-> +
->  static int scrub_raid56_parity_stripe(struct scrub_ctx *sctx,
->                                       struct btrfs_device *scrub_dev,
->                                       struct btrfs_block_group *bg,
-> @@ -2093,7 +2107,8 @@ static int scrub_raid56_parity_stripe(struct scrub_=
-ctx *sctx,
->
->         /* Canceled? */
->         if (atomic_read(&fs_info->scrub_cancel_req) ||
-> -           atomic_read(&sctx->cancel_req))
-> +           atomic_read(&sctx->cancel_req) ||
-> +           should_cancel_scrub(fs_info))
+We use rbtree to keep all the dirs that already add into `check_dirs`,
+and compare with it before add a new dir into it.
 
-If we now have a should_cancel_scrub(), the checks for the cancel
-atomics should be moved there, otherwise it's confusing why some
-cancel checks are in the helper and others are not.
+The reproduce steps are as below:
+    $ mkfs.btrfs -f /dev/sdb3
+    $ mount /dev/sdb3 /mnt/
+    $ mkdir /mnt/a /mnt/b
+    $ echo 123 > /mnt/a/foo
+    $ for i in $(seq 1 10000); do ln /mnt/a/foo /mnt/a/foo.$i; ln /mnt/a/foo /mnt/b/foo.$i; done
+    $ btrfs subvolume snapshot -r /mnt/ /mnt/snap1
+    $ btrfs send /mnt/snap1 -f /tmp/base.send
+    $ rm -r /mnt/a /mnt/b
+    $ btrfs subvolume snapshot -r /mnt/ /mnt/snap2
+    $ btrfs send -p /mnt/snap1 /mnt/snap2 -f /tmp/incremental.send
 
->                 return -ECANCELED;
->
->         /* Paused? */
-> @@ -2281,7 +2296,8 @@ static int scrub_simple_mirror(struct scrub_ctx *sc=
-tx,
->
->                 /* Canceled? */
->                 if (atomic_read(&fs_info->scrub_cancel_req) ||
-> -                   atomic_read(&sctx->cancel_req)) {
-> +                   atomic_read(&sctx->cancel_req) ||
-> +                   should_cancel_scrub(fs_info)) {
+    $ umount /mnt
+    $ mkfs.btrfs -f /dev/sdb3
+    $ mount /dev/sdb3 /mnt
+    $ btrfs receive /mnt -f /tmp/base.send
+    $ btrfs receive /mnt -f /tmp/incremental.send
 
-And it would avoid duplicating the atomic checks by having them in the
-new helper.
+The second btrfs receive command failed with:
+    ERROR: rmdir o4205145-4190-0 failed: No such file or directory
 
-Thanks.
->                         ret =3D -ECANCELED;
->                         break;
->                 }
-> --
-> 2.51.0
->
->
+Fixes: 29d6d30f5c8a("Btrfs: send, don't send rmdir for same target multiple times")
+Signed-off-by: Ting-Chang Hou <tchou@synology.com>
+---
+ fs/btrfs/send.c | 56 ++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 48 insertions(+), 8 deletions(-)
+
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 9230e5066fc6..c1b596e5f145 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -4100,6 +4100,48 @@ static int refresh_ref_path(struct send_ctx *sctx, struct recorded_ref *ref)
+ 	return ret;
+ }
+ 
++static int rbtree_check_dir_ref_comp(const void *k, const struct rb_node *node)
++{
++	const struct recorded_ref *data = k;
++	const struct recorded_ref *ref = rb_entry(node, struct recorded_ref, node);
++
++	if (data->dir > ref->dir)
++		return 1;
++	if (data->dir < ref->dir)
++		return -1;
++	if (data->dir_gen > ref->dir_gen)
++		return 1;
++	if (data->dir_gen < ref->dir_gen)
++		return -1;
++	return 0;
++}
++
++static bool rbtree_check_dir_ref_less(struct rb_node *node, const struct rb_node *parent)
++{
++	const struct recorded_ref *entry = rb_entry(node, struct recorded_ref, node);
++
++	return rbtree_check_dir_ref_comp(entry, parent) < 0;
++}
++
++static int record_check_dir_ref_in_tree(struct rb_root *root,
++			struct recorded_ref *ref, struct list_head *list)
++{
++	int ret = 0;
++	struct recorded_ref *tmp_ref = NULL;
++
++	if (rb_find(ref, root, rbtree_check_dir_ref_comp))
++		return 0;
++
++	ret = dup_ref(ref, list);
++	if (ret < 0)
++		return ret;
++
++	tmp_ref = list_last_entry(list, struct recorded_ref, list);
++	rb_add(&tmp_ref->node, root, rbtree_check_dir_ref_less);
++	tmp_ref->root = root;
++	return 0;
++}
++
+ static int rename_current_inode(struct send_ctx *sctx,
+ 				struct fs_path *current_path,
+ 				struct fs_path *new_path)
+@@ -4131,7 +4173,7 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
+ 	u64 ow_inode = 0;
+ 	u64 ow_gen;
+ 	u64 ow_mode;
+-	u64 last_dir_ino_rm = 0;
++	struct rb_root rbtree_check_dirs = RB_ROOT;
+ 	bool did_overwrite = false;
+ 	bool is_orphan = false;
+ 	bool can_rename = true;
+@@ -4435,7 +4477,7 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
+ 					goto out;
+ 			}
+ 		}
+-		ret = dup_ref(cur, &check_dirs);
++		ret = record_check_dir_ref_in_tree(&rbtree_check_dirs, cur, &check_dirs);
+ 		if (ret < 0)
+ 			goto out;
+ 	}
+@@ -4463,7 +4505,7 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
+ 		}
+ 
+ 		list_for_each_entry(cur, &sctx->deleted_refs, list) {
+-			ret = dup_ref(cur, &check_dirs);
++			ret = record_check_dir_ref_in_tree(&rbtree_check_dirs, cur, &check_dirs);
+ 			if (ret < 0)
+ 				goto out;
+ 		}
+@@ -4473,7 +4515,7 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
+ 		 * We have a moved dir. Add the old parent to check_dirs
+ 		 */
+ 		cur = list_first_entry(&sctx->deleted_refs, struct recorded_ref, list);
+-		ret = dup_ref(cur, &check_dirs);
++		ret = record_check_dir_ref_in_tree(&rbtree_check_dirs, cur, &check_dirs);
+ 		if (ret < 0)
+ 			goto out;
+ 	} else if (!S_ISDIR(sctx->cur_inode_mode)) {
+@@ -4507,7 +4549,7 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
+ 				if (is_current_inode_path(sctx, cur->full_path))
+ 					fs_path_reset(&sctx->cur_inode_path);
+ 			}
+-			ret = dup_ref(cur, &check_dirs);
++			ret = record_check_dir_ref_in_tree(&rbtree_check_dirs, cur, &check_dirs);
+ 			if (ret < 0)
+ 				goto out;
+ 		}
+@@ -4550,8 +4592,7 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
+ 			ret = cache_dir_utimes(sctx, cur->dir, cur->dir_gen);
+ 			if (ret < 0)
+ 				goto out;
+-		} else if (ret == inode_state_did_delete &&
+-			   cur->dir != last_dir_ino_rm) {
++		} else if (ret == inode_state_did_delete) {
+ 			ret = can_rmdir(sctx, cur->dir, cur->dir_gen);
+ 			if (ret < 0)
+ 				goto out;
+@@ -4563,7 +4604,6 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
+ 				ret = send_rmdir(sctx, valid_path);
+ 				if (ret < 0)
+ 					goto out;
+-				last_dir_ino_rm = cur->dir;
+ 			}
+ 		}
+ 	}
+-- 
+2.34.1
+
+
+Disclaimer: The contents of this e-mail message and any attachments are confidential and are intended solely for addressee. The information may also be legally privileged. This transmission is sent in trust, for the sole purpose of delivery to the intended recipient. If you have received this transmission in error, any use, reproduction or dissemination of this transmission is strictly prohibited. If you are not the intended recipient, please immediately notify the sender by reply e-mail or phone and delete this message and its attachments, if any.
 
