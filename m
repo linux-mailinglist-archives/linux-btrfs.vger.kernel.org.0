@@ -1,122 +1,185 @@
-Return-Path: <linux-btrfs+bounces-17877-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17878-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D665BBE2313
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 10:41:41 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7032BE278C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 11:43:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 783B34EE5E7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 08:41:20 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CB2CE4FC45B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 09:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7ABE304BDF;
-	Thu, 16 Oct 2025 08:41:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8B2A3191B5;
+	Thu, 16 Oct 2025 09:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JEfsEww5"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rXDlN/Tz";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rXDlN/Tz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99ABD2040B6
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 08:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F182192EA
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 09:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760604076; cv=none; b=ndeAy2AHNcV+C+v2u57HqkXH+dQi63gRq7GeCE8diZzIJBfXIqBDXE0JWydRXAjtzT5dUMig+oeWGBFd6SHIJeUFX0p+seVrs76tPFfk/Oz1+2kqSeGo1vb3IF9LxEBTXnv8A0vfIjZXQxNqMLLpWeuDjuNwaIbI6PeaJZ0y+yw=
+	t=1760607782; cv=none; b=fyK6dS/8F4u9SCIHd4wj7wqG9jAWZf4DfH6hxS7FelarK/88FPW7l4CK5x0C4ZhdvvaafMCiYbPvdiR93cLH0pHd4vKHjmgOKbAitCKnkO1GPtSp7vwsgiu17RX7f0TxnOZ50MsWdKNeduloLT5XtVGJcg+TQ6MZoF/1vZdRDww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760604076; c=relaxed/simple;
-	bh=btXTiMsIsAh/v4UCWIrETRspWEWJ9gl3jdaxpP75/Qw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MOC2rXVj0QjZ4rOYOpgq1ICachS27HPY7xFOTMpfwY1tfPwTN5Xrw3G6elrzeLrVELiQxenzWuFnt6SrnOqsbDjZCMK2hmQSFEGDIjo6buVhVRRtBnkySxFyYgkULmkXK5S2mzf9QsBWdNRjHrl6tKMrhemNgi1ysXLiimUUdHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JEfsEww5; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-7817c2d90d0so6053347b3.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 01:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760604073; x=1761208873; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=btXTiMsIsAh/v4UCWIrETRspWEWJ9gl3jdaxpP75/Qw=;
-        b=JEfsEww5HMUxYC4Cj2rtIl6LqDNNhzG3nYF2KOaum4xCTHD4Xwj7W4g8bf+uEtpuh+
-         4o5CxKo/n7uWHUB8yM63omrISEuObfSREAuR3stdKjeQbgBxR3zaG1fNfq65WKXmSP/I
-         4R30nPjidH1wL7BgPoY3YGxlty5PnsDTDyF12ZjiY8+CEJe0d025dcg1H/6TZVfLF0Ax
-         cLzHnFci42AmveHR6uEETh70M6fbp5lNByu9oyAIyFOKNEubLAaNeei9iV95M9q2HPiP
-         e+0ACz9JzDNW7jLDrPoIopJPZtwgJB9PuKdyNF/Z2DOVXa4QYfVR6lSnNqsV/1NXAhyr
-         bOOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760604073; x=1761208873;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=btXTiMsIsAh/v4UCWIrETRspWEWJ9gl3jdaxpP75/Qw=;
-        b=WWPeRFx3vOKGURqZh6hUYm5TCAG2RTB8d9OXmQ/tMO7HD+R5Hv964ZYbWjdNED3sER
-         A/eWMxKqt+JDLdT1oC4GHLgEE7hS0P24XsgxMVLca1F94o5mgCutE0y1Iz90634+Bmq1
-         bnXyMUC8cFHDDtceBXnqKdeL8Xf2557XUERDC0nyvmm7MhiQTYoGYUReg6Ffr9pwykOG
-         UZD/HRvWgebxUVt+dWQLOi+cvKyMhcTNWio4DINYTEDVLV8+9XRVv8gAPGLaTQDY2/v0
-         9I/De+DRrVHZlbiWPp0l26etaCu1iN9TCGzShIkYaMSbLZGVkAL3xd0axDsEMup2wO7Q
-         c6FA==
-X-Forwarded-Encrypted: i=1; AJvYcCXs2baKg8So5knJCePxknoKok1WW8chrvoiQrVuN1nVwL0LOst/MfUU1iDgWwBNmhXOTq3mdI+duXwWog==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxthepjW53mqvRJzQ/Q8fyZkhMBAy+NtCd0HEliHcILt7eDb015
-	7t8VZqL/VyoszmrDf899E3o2iCK1VRlIy6zqqOxL/B16wB0cC8D1LBEnzGGbW1Nr82Sjmjzh2jP
-	NgsWgzkMlwGSeHaNf2Z5TXJrXS6bTjmHMvhr63MA=
-X-Gm-Gg: ASbGncugVz+jxQkzfTwUgBtanpotMXrH//e8FdUXchEtsjHLnOXMmd0p0eXM8DNWMu8
-	/pUiBcFuZKRKN/rlE84GiKjBWbZ/9KUEZkOpRV6NQPThupGgecGzVasQGSuXfQ9wtHYjOZ6AP87
-	DiCcgIRpf1YBHm1Djl+uhD9MLOaIQ6U9AdQj20gjSSLDRKgbXhOE4B73/hzupgskHkeQrSkhqmG
-	g0uFh7xESk1V3n4W96ACMWtS33Nz4QOInX2Np2ntXIcC8nULriqaSkuXlrPzxeyJw==
-X-Google-Smtp-Source: AGHT+IFyGFN1oqvHmmmYzjrYbDAyYwcJfE6kvwTJInZsFESzdNU339FCOsozVA+HqgD5XAVSRrUzd0OnyYNV79Kk+y0=
-X-Received: by 2002:a53:dcc2:0:b0:636:d3a:30d6 with SMTP id
- 956f58d0204a3-63ccb903674mr20622061d50.35.1760604073305; Thu, 16 Oct 2025
- 01:41:13 -0700 (PDT)
+	s=arc-20240116; t=1760607782; c=relaxed/simple;
+	bh=FnWfxjRpvIOeBF4V18A7O1xXSCAiGWvBBnvYZ7dcLNI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=CvNWYkN1Qm5c0DcmC63035NyAUVQIL0uT/KPo001KiYJYNAgnfTy0icfr8TjNm9BCGSKbWqmfj26fomTPDteRtpd8mf+h1Gi/32CpNyHMQNaeFPIkW05S1A1ZDzfIaa4Wb0wf67hgvY6lHYKwISsEls4Kjoo7ETYcY3t9UCUI3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rXDlN/Tz; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rXDlN/Tz; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 429DC21DBD
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 09:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1760607777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=JRDUqeeKoxO0/+doZ61WjtRJ46xAVLmrLHPGrvrXZHs=;
+	b=rXDlN/TzV6qYz+BpYOF5mbsKlTukQTDIR/OXrLk4LSEsZOlbtpEE5931sLWoEh186cNiVW
+	q8gQ2MNrh7VbtHRhyRmD+1gzPyqnwQN7jUnwQZ4DdP9T9EB7nzDRaCx81MhKZzQr7ci1Ys
+	QF0yjVp/WXfr76aIwJKnfS65qZ3eipY=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b="rXDlN/Tz"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1760607777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=JRDUqeeKoxO0/+doZ61WjtRJ46xAVLmrLHPGrvrXZHs=;
+	b=rXDlN/TzV6qYz+BpYOF5mbsKlTukQTDIR/OXrLk4LSEsZOlbtpEE5931sLWoEh186cNiVW
+	q8gQ2MNrh7VbtHRhyRmD+1gzPyqnwQN7jUnwQZ4DdP9T9EB7nzDRaCx81MhKZzQr7ci1Ys
+	QF0yjVp/WXfr76aIwJKnfS65qZ3eipY=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 79BAD1340C
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 09:42:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 6w6uDiC+8GgjYQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 09:42:56 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/3] btrfs: scrub: enhance freezing and signal handling
+Date: Thu, 16 Oct 2025 20:12:35 +1030
+Message-ID: <cover.1760607566.git.wqu@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8c3628d5-8fce-45a1-b29c-65c2c52f1c06@gmx.com> <20251015111217.5538-1-safinaskar@gmail.com>
- <5517a3cd-1afa-4db0-bf8b-439f3ba410ed@gmx.com>
-In-Reply-To: <5517a3cd-1afa-4db0-bf8b-439f3ba410ed@gmx.com>
-From: Askar Safin <safinaskar@gmail.com>
-Date: Thu, 16 Oct 2025 11:40:31 +0300
-X-Gm-Features: AS18NWBmNXMW-QAlwX4insQrzJRZIuFwkUsjMeZ4MxNOhM6GyiV7JvztudEBspE
-Message-ID: <CAPnZJGC3Yt5E-+ShxVW2CcmAZAZ8ivbYGRkJ7g0v9O_09OH1Og@mail.gmail.com>
-Subject: Re: [PATCH RFC] btrfs: exit scrub and balance early if the fs is
- being frozen
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: dsterba@suse.com, linux-btrfs@vger.kernel.org, lists@colorremedies.com, 
-	wqu@suse.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 429DC21DBD
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -3.01
 
-On Thu, Oct 16, 2025 at 2:01=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
-> I guess the difference is in the systemd's handling of user slice.
+[CHANGELOG]
+v2:
+- Remove copy-pasted comments that are too obvious in the first place
+  Also remove a stale comment in the old code.
 
-As well as I understand, systemd first freezes user slice using
-cgroup freezer, then performs kernel suspend (which freezes
-everything). I'm not even sure that these two terms "freeze" are
-the same thing.
+- Add extra explanation on why both fs and process freezing need to be
+  checked
+  Mostly due to the configurable behavior of pm suspension/hiberation,
+  thus we have to handle both cases.
 
-> Anyway, mind to test the attached newer patch?
+It's a long known bug that when scrub/dev-replace is running, power
+management suspension will time out and fail.
 
-I tested it.
+After more debugging and helps from Askar Safin, it turns out there are
+at least 3 components involved:
 
-in-win freeze_filesystems=3D0 - suspends instantly
-in-win freeze_filesystems=3D1 - suspends instantly
-as-a-service freeze_filesystems=3D0 - suspends instantly
-as-a-service freeze_filesystems=3D1 - suspends instantly
+- Process freezing
+  This is at the preparation for suspension, which requires all user
+  space processes (and some kthreads) to be frozen, which requires the
+  process return to user space.
 
-Also, "btrfs scrub" terminates when it gets INT, TERM, HUP or KILL.
+  Thus if the process (normally btrfs command) is falling into a long
+  running ioctl (like scrub/dev-replace) it will not be frozen thus
+  breaking the pm suspension.
 
-Also, system powers off instantly both when scrub is in a window
-and when it is run as a service.
+  This mean paused scrub is not feasible, as paused scrub will still
+  make the ioctl executing process trapped inside kernel space.
 
-Great patch, thank you!
+- Filesystem freezing
+  It's an optional behavior during pm suspension, previously I submitted
+  one patch detecting such situation, and so far it works as expected.
+  But this fs freezing is only optional, not yet default behavior of pm
+  suspension.
 
-Tested-By: Askar Safin <safinaskar@gmail.com>
+- Systemd slice freezing
+  This is the most complex part that I have not yet fully pinned down,
+  but during the tests it looks like systemd is sending some signals to
+  the processes under the user slice.
 
---=20
-Askar Safin
+  Thus if the process is falling into the kernel for a long time, it will
+  not return to the user space and no chance to handle the signal.
+
+To address all those problems, the series will:
+
+- Add extra cancel/pause/removed bg checks for raid56 parity stripes
+  Mostly to reduce delay for RAID56 cases, and make the behavior more
+  consistent.
+
+- Cancel the scrub if the fs or process is being frozen
+  Please note that here we have to check both fs and process freezing,
+  please refer to the changelog and comment of the second patch for the
+  reason.
+
+- Cancel the scrub if there is a pending signal
+  This is mostly for the systemd slice handling, which affects users
+  running the scrub inside a user slice. This can cause an obvious
+  delay during pm suspension/hiberation and power off/restart.
+
+Qu Wenruo (3):
+  btrfs: scrub: add cancel/pause/removed bg checks for raid56 parity
+    stripes
+  btrfs: scrub: cancel the run if the process or fs is being frozen
+  btrfs: scrub: cancel the run if there is a pending signal
+
+ fs/btrfs/scrub.c | 64 ++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 56 insertions(+), 8 deletions(-)
+
+-- 
+2.51.0
+
 
