@@ -1,82 +1,56 @@
-Return-Path: <linux-btrfs+bounces-17906-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17907-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0133EBE5B63
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 00:43:00 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CA3BBE5B6C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 00:50:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABF6F3BF384
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 22:42:58 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 53F724E0F91
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Oct 2025 22:50:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BAE62E1C6B;
-	Thu, 16 Oct 2025 22:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34B52D6E6F;
+	Thu, 16 Oct 2025 22:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aHBsfjdM"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="MWVtGeIY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673C119F48D
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 22:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927668834
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 22:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760654571; cv=none; b=DWvNAtZ17DQw/QDu2BbaAOo7zX3o77L1Gm4TSScGx+6333ep45VXNrXbddLyqkKh9eRpA3DwKH0NQ4GCMjRPEzkP5Aoh8ecM5+keSRWmWvotPPCsfUx27yoZa3ICeei/dwIaq2fjALl4DkHgGt3//TwYVXeFssyQzvaZgwviR+w=
+	t=1760655008; cv=none; b=hWa26/j+aiSVzUYB5hL4jSMa4wUFi4j1FOcwrLpBcOX3wIHVHJzSF4x0VBEYiC7VFGSzBlHrV9QaXP+gl8x7wtUykzERj2LnzkV148PHkNaA6XQw7cLP35BBU1FF9btR8RAYTVAjs8Q9z0ninGaYIQJlR0TG8ZI/tal1dhmMx5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760654571; c=relaxed/simple;
-	bh=U+clky77i6PeqDHW5i2K6M0LwhoeGjaIXXAYh7D6wic=;
+	s=arc-20240116; t=1760655008; c=relaxed/simple;
+	bh=7Pg1rAiuyLXQYmw0Y8lZ5LQseOeqA6rPZCVOyGneHHo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=nw4LTcna9BTeFUZ5Zy0aTwjyoz2ymnA+zkb8R2JfeH3pRJ01jT9ZlglMWhKHATL0phThWhiEz1fULqs128Aq+Ycw+KIHuoAv3GkDlluvfAvMy5ROQUHO/W6Dg1KnhXFKkMGrZou/cdG11imzn0AnIqIbPlXgk+KxqkBSutAkyak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aHBsfjdM; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-781014f4e12so17306047b3.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Oct 2025 15:42:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760654569; x=1761259369; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:content-language:references:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1O7ZY26pksI0LU6CObyHyZGZKVEQejwY67FbR4abkbY=;
-        b=aHBsfjdMEi5STZ/+8DruNzF0ixkuRt1+lRgxUqySBdZ8M/4bCQvfy4fVRDrwf7nxG8
-         2yBeIoygctBFqZoq8vQNqayLEdtnGLK2elKu5h9Szk7atuWQuiI+JsNSisYzGGZi7ZLV
-         irzDypi0MpLH9MTYETIqM+dTlj1aMwVBkQ2SZg+8yG5R8JHIJUfmt3VtGjLb9+dOGe7h
-         3xyG5y/0jLW1xQc6LkZ1z0Ek9PoUwx70sn52v2qhjGQd0Ppgr01K91wDElk7l7REt4k/
-         s9ulLy+1Mx4tIdecgk3Uer7zK44I1p7Ubd65BK9QL0AOGHqgCTbbBBBMuQMSClAjlvqy
-         UUvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760654569; x=1761259369;
-        h=in-reply-to:autocrypt:from:content-language:references:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1O7ZY26pksI0LU6CObyHyZGZKVEQejwY67FbR4abkbY=;
-        b=clf5lLqOrhl/+PkpTL4hU483fkmiph8af6IjZpJxoBZfW4Yg4zvj1uN7Q36sI+Q419
-         oLuWEUiy/NRli+IEPXrdcs7a41mK6JKFrDpYDtblFLFvIhbFMMlUJB0aweWRCd3ROxGp
-         cxP9kfUqm7SBb7cJ8NuWCQBrLpY6b205C7OEJCLKfwQ6Zt34VqdyQi5B1t2D/uns0ZWW
-         7NuKfkaaSqhK9gFX9X0tHEycTj1SMoBWb28dBqCCdfoWfIP2HTaBhB+YaIPu3zBvEhUc
-         5ApkqKenPrO7zX6d/BAO+lsnB6EQGYxL+9INm1Npm92O2NRYUMWT7DH7K/Ocp4OJFAaD
-         qjSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUNd8/vAogwwYgU/2GJVn15GEc4mBoHTGLjcTyN/2Bpn6nQiD6RUCQjNo7vhyrL3DenSFre3D/qGlLDcg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yza1clAV9ART1pUq06j//kCmSKd+XZaLAmq4vsC8xxHLEGbQbLT
-	Af2z9gr/YnrE2YH5tUzYNjLqwI78djW5mwCjzC5jbJiZz1E26Nhj4b1j
-X-Gm-Gg: ASbGncsLXDc9JBdbD2fpF50vtSpDs2YXVRqfStQrX35LdL6e1687ROg+VLt52LEWS0r
-	beKyGiXYtmgr9POtlDcCc4xxnLugHLdNXEtbh+IJZ0yrzIWwODXg225kHcKdvtWYptNhmw2l3ry
-	NP5JpYcjeYHICC7uaZ5arnJ3wV7vpFT3/6dhrwYvSBL6cnSttT0Jd9oh+vVBOv33eTy8OLUzvsr
-	PBeGPSRO6YiupeASI4ZuW8Iw5yOaRoXrDxl17ZBLv9/jjEnCCmeCg3c7F4keG5dH1uCEocyrAsp
-	X+XRybN2Joc+qLk+TNS6CKM9FBnvZN2oUDipyr5i4UM7L1amGWhvd0YUnlYFKz0iKARd+JFxBgh
-	9/o2oRfhiDt70L8o9y2sgXy9O26GhxQP5YFyLujLFX1slAQt+hH6uMqSRcwuyWPge2txZLdcNdM
-	FE+sQuxCSjFrBo1CBIg314xA/ID0lkbLExY3QkO3Wkea8NPJ53PU4808doxZ3Dg6ebf1YS3oqiD
-	sMGWSXGEMC3zF5K
-X-Google-Smtp-Source: AGHT+IFov12tOjmOcieaP5LDfLj/o5cyEfaPbzJq08OAZGwn8dHU/ypwz7JDyXP5CE3Pc7RAiLc/qA==
-X-Received: by 2002:a05:690c:6c8b:b0:76a:c962:1f75 with SMTP id 00721157ae682-7836d30eb9emr17401397b3.39.1760654569266;
-        Thu, 16 Oct 2025 15:42:49 -0700 (PDT)
-Received: from [10.138.34.110] (h96-60-249-169.cncrtn.broadband.dynamic.tds.net. [96.60.249.169])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-78293a04e7esm11082127b3.65.2025.10.16.15.42.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Oct 2025 15:42:48 -0700 (PDT)
-Message-ID: <14681d38-fbdf-4ac2-93fa-7eba21588930@gmail.com>
-Date: Thu, 16 Oct 2025 18:42:42 -0400
+	 In-Reply-To:Content-Type; b=Lpq+AQF2heyNUk2G5bivAhGzcwLN/3X6vEaKK3SjHeWLGnR2OjtikGNDcG89LTXP+P9Ai4tuDWZMqepvudKMS8WrnU4fV9KrAPXguihcohkxfkYmTO11Sp4sJFW1BLqsW1sipj1QQtZFCnIfYq9bgY5/4K0g5gbMKJI5Rded1Ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=MWVtGeIY; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1760655004; x=1761259804; i=quwenruo.btrfs@gmx.com;
+	bh=BPEhjkVXZmK+NsFztlGyOpJrAY60eM54N4yGDUYuQgQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=MWVtGeIYURlK8/oW9n7OmkBZYv+I4KfuVOwZuSrMU04XWmxmS5vqen7ErGhptTwx
+	 jRr75ShLm9pnrZ6aB7s+PmDfJJRhrToVceIrN4hlZe4Ewigymg7tgFY3SyOmsPdwu
+	 Tz8LoOTACZHhpD6o7X/ALFpG+CpPXIZZzEyR5UFZ2GETwtP2VWxsNyzcQxx13uayh
+	 jsXDIgGDThYguWY/fdzfLU9ziasfMdCrUS+lfM/g86xfO7sMI3CUIWfxJU2UFSu7b
+	 zZhNxmloWb9xf+qOltREjxuiep9KsPD8qP8N2UD8sUH7CKyQ0QJRJiIVMnak5Q6lK
+	 qpls31Z+C7Ue5vm2Rg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mel3t-1ubHyL0gBp-00ZQNS; Fri, 17
+ Oct 2025 00:50:04 +0200
+Message-ID: <0b099290-03bf-4a1d-8411-716f78058586@gmx.com>
+Date: Fri, 17 Oct 2025 09:20:01 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,272 +58,168 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: mkfs.btrfs reproducibility
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+Subject: Re: mkfs.btrfs reproducibility
+To: Demi Marie Obenour <demiobenour@gmail.com>, Qu Wenruo <wqu@suse.com>,
  linux-btrfs@vger.kernel.org
 References: <0ff47dc5-cf0d-4b5a-8d84-f309a74cbf32@gmail.com>
  <9194ad3f-183d-46e9-afc3-b52ab2bf28cb@suse.com>
  <fa8d6257-649b-4de1-b723-64cbc34c0a7f@gmail.com>
  <3247ee84-5a0d-4561-8d25-b1b8e180215a@gmx.com>
+ <14681d38-fbdf-4ac2-93fa-7eba21588930@gmail.com>
 Content-Language: en-US
-From: Demi Marie Obenour <demiobenour@gmail.com>
-Autocrypt: addr=demiobenour@gmail.com; keydata=
- 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
- +MYSfkEjBz0E8CLOcAw7JIwAaeBT
-In-Reply-To: <3247ee84-5a0d-4561-8d25-b1b8e180215a@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------ZEhZV2hfKLfu9VzBuidThBRC"
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------ZEhZV2hfKLfu9VzBuidThBRC
-Content-Type: multipart/mixed; boundary="------------zr61Xtgwtb07Hv55Bozb8N0N";
- protected-headers="v1"
-From: Demi Marie Obenour <demiobenour@gmail.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org
-Message-ID: <14681d38-fbdf-4ac2-93fa-7eba21588930@gmail.com>
-Subject: mkfs.btrfs reproducibility
-References: <0ff47dc5-cf0d-4b5a-8d84-f309a74cbf32@gmail.com>
- <9194ad3f-183d-46e9-afc3-b52ab2bf28cb@suse.com>
- <fa8d6257-649b-4de1-b723-64cbc34c0a7f@gmail.com>
- <3247ee84-5a0d-4561-8d25-b1b8e180215a@gmx.com>
-In-Reply-To: <3247ee84-5a0d-4561-8d25-b1b8e180215a@gmx.com>
-
---------------zr61Xtgwtb07Hv55Bozb8N0N
-Content-Type: multipart/mixed; boundary="------------cSC70g8Bf3m073QEfkeA0oed"
-
---------------cSC70g8Bf3m073QEfkeA0oed
-Content-Type: text/plain; charset=UTF-8
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <14681d38-fbdf-4ac2-93fa-7eba21588930@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:qed2mVlxFU8zb6OX+G3RSYf+hq+VVNNYshftWPAg+4vH69APW/7
+ C/zu6hvi3/CGmcAWy5a12EafwrMgLv6ALTrvUk3wnkHT9Pqp+Gmd1NxIJg7CZNnkff6qZoL
+ nYGWzdNIlwwuU3R7Zdr/MV4KyEasTtT35jHjI980Y0mPJ3y83SP90JBr7ZS5rVOuERQ8RFC
+ 3qBF9o3snMzyrf6+zEeQw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:KOsPjfHOijs=;mQMy6Jg2SQJCP1ADSAXtYjRsBnY
+ o6LE/wMUBJQygMvL2K69CHkqwQqa8FRZFlTndnactJMwjrxRlUJXX2sN6CuAE/M9c4SIAxBnM
+ Yny1pvxbI1be4lc/sW2Hp6cua2GwPhdsmTKajXcXtA+rwVoebF2OepBIe5GcjrBQECo4p82DR
+ 4Yyspk1YcPKdlezZoUcGMdNYuch6HbtyFFnYq9yqaWnENnw9WDOv2qrKYTDbhjEvI16P0IfNk
+ NHdYwJmUyaHmrkklqf/470+Rb65rPJ8ad0RMy0AhBIhPdJ0MlVyMYb6H0Llr8iihSuATKu1x8
+ ZfsV9WOxKr1goSzzO2YBqqUC0hjm2tZUuq3XhxtCUhQDi3UyvcYN9DXZ5QUtP3gpIlCt6a936
+ jgPR19cakc58JKm4nPX+XwvUrhrgo61SOuMNb4VR2C23qmYitWm9y/D4GQAxqVNtiVRAt7agd
+ DR95XyLaWiDiZhTeyL6EI7nNL4fXEXKbIfEfoitDbe91Md3qWI2E0QibZaJCzjFbY7Kg56pNz
+ 4ICsEnqWwjZdAQqRXsPjqYwcVETcqKNCkmAFMCgCOmB3cc0Pd+11p3gIb/gD2uRL3ehXJUbHX
+ 22jaHWS5BQhZsG6xl5YhZ9g1A3WTIwMxptfG0gwQWY78zmtLLvb3xvavBrpOD28TrFLx762K8
+ if+hzAipCgaUtEgnoKtTjyOIq2JzM1WM2fZOtf5V3nKIlhxMXWym9aSURK71bi8gT1HJvgHhI
+ mZORKMkJxCCyePBPxnysRJP7/PU3HxWVCEVrMJeQaTCwiPJYPHMJ6hpw9yxg4Qu9/wcZLyLP4
+ dnfl9B/mSyY79GyK/mWkCNX1NQg9yir/Wcw95T4OcjRjL+xVC3C+UhIvGPOIvqnEfvbQgJWfl
+ KfA33WFxEPqZ9LV5D4vCvPVbLfhRjfLe+tjM/exLftgNA6zylRqAEp8KPm7yUA5OrXHYvRqh2
+ ZpEqsFxIOPfig7ugDLXd5wzwAylgRkhDuZ+9OaOFKKLQwEnR4avWscqeDiYB+UyMsfN4eDkAp
+ d0pE4p9gmzBMWMK0dRlIPW5HymiwG1nVJwqCI4SMsJL7xMbsGfU4lE6eqCRg4Wtt+suR0PDVl
+ ePDSyHEF5D488p+q5AUx70Xhix1DYjlMMN2H38otyewSSfq0+G//hmnKSGaXFCOeyASQvFi7B
+ 3Za7UzH2XNwZXOuxjB4sIiSR7+RmyAt4o2XbRBGsS2kYLvQQJYNw7T9h9tDq3auEv2E4nHWCa
+ +1E1vLnRCGmhkNZ8PhQmKW5Dydo3oinKtHi9KGmBYw4lHUTfpqTixAKdcaoSM0SSmsCa39Fx6
+ /LUNIvTIWg8SMNBMDh+NwwyQfFnVQvc8naM+Uj56gkvxYrq3A1jXc313Ksz16/iSvGcV/hveQ
+ sP25rXBjlzr6fkbA0LUs5+m0S4kx5hFF9Hr/SnyWLLJBmC8B2WBqquWP00gsOGCgXkkbu3rPZ
+ pqlcSk6ej47pHGdFrGjsIGlD9Eh0l3dyHOcZR7H06Q8+bVgszDdnRSmue781FCDN6H1V83WXr
+ ndPXl4VwVxifTwnwSwI+2Geclsdcg7rffOhQ3MHjjCv38rt+zJ4CGOdG1QmJ/umc5Z3tYTd+2
+ Y3/BwwjkfLdYxutsK/pMZr8w01zY26pT9VAPcDeBGaTI/bto2K2410qOVcMGqYkMIvCTDzdRJ
+ Ax5FOx0RRdwe88yFsz9xEVxLDRF1ySRKC5GsQDqK155mZBT5FcFltQBHF4ujwNMlNLkR9CrZE
+ YUBIfMhgGF/UmWnDMXeS60oeOis53e04taJtj25lyYtdL+MkUhYtcvgXLdrXDov2kzpLVS2yC
+ 829VldpwNHZWDFtIHEGQAiVOylFrBTM2ZVMZ+86+tK889b9kOsOdFOHlGglBovnJjKGppjRXP
+ Sx3NfqPcEX7Iwi15yPcwiJkObqC92B9IzBx3Er4Nm0/W1pBYidDfP/xrm26bu7h271XNmd1bW
+ 2/mVuWYudX9Gcgmmxp6XPZCqWSxTMp+DFN7W7Z80GSMWTprBKhiL08SScZg/X0msiM6BnyJ51
+ spbM2wDqnXy/pPD/ZwLVOdd6CSR3ZgwBHsP2V+2WUniQyYoFYECymqGhKyFj00JjkkRKCvYr4
+ IzfvlcM71Ua6iiyeVIgMD/Yp1OZPaZD3k1LT9fN6ylkB6srU7DFNAiVhs9QgqHMZvTfx8kf9u
+ iKdcm9Q/lFVeuyKYoE318WtgqQ89CRLnc+fhiq0EbUdCh3kekImnA8VQDCOLZGTssfze7aIhU
+ 9/BA98Nm/VRTDYgEKbE1envGMZwtcb4FDuK8DVLAc/ox/AlHWTYUwEUVEiznsmzdgiUQSxf2c
+ Dt4u92ex0XHwZrMDoBcv22vpqGdf7N2Y80RxIgttnIEdccmzBF7n1gt07iT7ya3Gb4N4oBpBt
+ 1QlrUVpo68jCwumanL25IrO+LwzhsaCkf9dNoPi9cuvMYmnFmn89ZC/Vzcg55pyYc/QHvGj9l
+ 1DXTRDN+G+XlSdH3fDXb2tA563u8OWnrY1KY/cWHCS9NnCMdokV/RmUIPuvOosC2Hoi1QNfR3
+ oDxuv/8HeZPNO6B9fMKG2JGCwW3EqSzbkBNTUqcQem0MWuwwDN0QJw4OamGbmsyoz41WVfBww
+ x3DZRg8XzssXACVgrTL8WJit9fg5Kq9l4JuE+T1AZcoEBcBv4NXivqzeD+FfT7xKOpccFdFK4
+ AqCbXV55mdaXEn1KjOP+pj/huzDiDrjv7/pH3ko+0AbPOvt4z/a3hFOWHoOxpSOKoz7FwERVu
+ 71057uHsdTP5r0xv4oMHcV+VlNtd6pVruPhAZ2JUnQXtt9y22xpxWlkv4FffF8ZsciD878sCn
+ rdiSdgbrk08xZyrqXbysx45gqzTOXPbYSvGmjAbJwXeVqCKfapI1fKtyXCT3GrgLhdqCztmIS
+ xEqZZT0N/3pmpufUPzPrcKTwHCacbRxOHiBaCVg4G072tIitz5f0dAmY5l3DPd5KXFrM0bSd3
+ Yf0TJ8LitSlqXVOU4yduTx8yNhlIr7GAbl/BFZE1IuqUXnmrvkwjC305nnPJuj7dqqvUXLwkh
+ m6JGxe4Ypw79C3ESbFF/k8cY669bakyxC94Z7Qxh+CDdXASZikBhjRZk98vKLNNxLE1FKXPrp
+ 7dotxVQA5KqtFebgZ1sW7EgQq3NZAGhItqQsEH5Pq80A8DpCOsLEIwiJLgMemCGbSwJitLuDq
+ a7InYy06ijkgQrrdyr7kSQDB0dHSz+8sOqAA/rfpyXU8+dFZ0GRw58otJL7CNr4JQWp4zwnh4
+ Ps5aQYKoWxC0/D0XzfAjBINWfE6VoFQHgYDY9MhjpUYmFzRZLiSgpEnft2PZ11pBOMeRhVy8j
+ ofyK9ehqHp1w51aHcTqRtHgCE/SQjpK6gktOxNO0mW5RF2yCcBEB3Z3ag+brav7uONTP+g3fm
+ l0J6uByDhZZmGPznmjWFLDE7tl4pZBfffD4uztbrRrReFsfbOwONy5HrESzcL0oEHcJeT1wNy
+ TO5UgUqt2UTa0RsM74bCKACgJvVpH5kV43XD5CDHScLLc8lbw8pvncyYynmxT3i1BzcfSrEjj
+ 8CKr3E5X0TtrrUKiJbCPHJD41Tek4Nt/ViRecPuRAjWqf/+TSBElnryFJYU3hlMu7RLgrrL/u
+ xUlSDhcKjmCn226QVOBQRd+xA24i5hjvRO7kVf1sz5PsIzdaI5hv16+OSPMs5B/QXa4H3rix9
+ SfpvV2OWgEnILmjnwMS3icQ0M7FT60ElrXTZUSI7CGzkfTjs/sncPLAkXvoamx0SAbdVRP7KR
+ 2tOUtlHZm74D1A6Pr0oA2h3UuIWpmGLdmTXCF9hLzEb0U/wz3rDIaNJo7NswxPdPgGLwm8hG0
+ dT04TgDeWeM3GjfR5b8rU53wXZ7a2fyqHgofpkR0OGK3N33vVy50nI4X136Qs40r9St8h4jdc
+ udMdf/ZaJMfVQVZ5KvxFv4tsLnIhYNy4VFxm1wI902FLET6t7NlvPp3ixhD9PCTBTrXzx6v8u
+ wjtMXG3U/xwlrmss/GOU+GIKDTXiIjHWJxZhohK1AgbFmP4iuJYZPs+Uvxv5P1qqO2l0F1HHy
+ r0ojGa4PAfWyL11iNsfCc2w/8Eju/h0PK3ts45arexbOim1wwKViE2ZUx7+XfyU2yMOGeqrwJ
+ IdCS5BjLmRcN8Cd70ImeN5OaVianE6kt/NE46TfZONiE5ThD4mD8wRdPHL/97bLvK5puqEmcw
+ yuuIEA3EmA9PhK/++tdISXj5mrR3kf36PLcfjwuVLdyrca7BSnYjGgk13i46HmkKuFsLBn1Qn
+ +lzTiQEawSWWR/jJIl4n7Cv4f6V2xqrAmuFtxcK8Rf03QB1dxv5AbPfGuTA/Ix6bx59ofsPLP
+ D/z0PgEDTyVWn6aAEHTFV5iJsQsK/C1NzyYF1YPMbd19zlXTU0dxJ5JHG5JEIAmcCGIy8SX/Y
+ dT6OAIIpUc4Y4cP+PqjkguzLkeyy+tSK2F112h3QfO7qlXRlh6+tZTj0nRw4IqJeUToixodQG
+ QE6/V9HShUkWZLmqIALQuBy6qGzGxQG7ewcsHeJuEtL4ue4W1SOyLmlogdTJgYclqcc2izI6k
+ lUDiYL8TX7RW1QfsCWMWBoNcGM3XpaWx5sV0NFfQt5GKOb9/MHy5gfjAWRfTF8QKdAMoOyh7/
+ FxB6ynJNfavQ9HHV0/OcgxfcnUI5bfvR7SG2nbswvm///tWIrL0YoFZbxaI4mMpFXbfkZQZph
+ oMFJpsmqVecjb0RC+l7hp6cHirxOrokPy36MhqCfKEIyAwKnF3ib08ddbBEmXLV08EIqAuXGW
+ pShwCetG00TjY1PMiDSZU8JwvI3TggUPJwzqPvhhK7jxBKXnklTI111nQyk0D5jdJeBUdUKH0
+ APVxK6s7+YyOdhO0FsIY58Eji6BcpEnlS57ziQnWBXW+diXCMP4wy2Ukgpz9LFuks1BN/jsPS
+ 75q6tSy3QCuNj0CT3iM9C7gEiXWYUK5TJoY4deW/89P+hcDXY87O8/wKxY38safruMkjIDX6X
+ Rp6dT1SUfeYoLQ==
 
-On 10/15/25 02:49, Qu Wenruo wrote:
->=20
->=20
-> =E5=9C=A8 2025/10/15 16:31, Demi Marie Obenour =E5=86=99=E9=81=93:
->> On 10/15/25 01:47, Qu Wenruo wrote:
->>> =E5=9C=A8 2025/10/15 16:13, Demi Marie Obenour =E5=86=99=E9=81=93:
->>>> I need to create a BTRFS filesystem where /home and /tmp are BTRFS
->>>> subvolumes owned by root.  It's easy to create the subvolumes with
->>>> --subvol and --rootdir, but they wind up being owned by the user tha=
-t
->>>> ran mkfs.btrfs, not by root.  I tried using fakeroot and it doesn't
->>>> work, regardless of whether fakeroot and btrfs-progs come from Arch
->>>> or Nixpkgs.
->>>>
->>>> What is the best way to do this without needing root privileges?
->>>> Nix builders don't have root access, and I don't know if they have
->>>> access to user namespaces either.
->>>
->>> Not familiar with namespace but I believe we can address it with some=
 
->>> extra options like --pid-map and --gid-map options, so that we can ma=
-p
->>> the user pid/gid to 0:0 in that case.
->>>
->>> Thanks,
->>> Qu
+
+=E5=9C=A8 2025/10/17 09:12, Demi Marie Obenour =E5=86=99=E9=81=93:
+> On 10/15/25 02:49, Qu Wenruo wrote:
 >>
->> Thank you!  This would be awesome.  In the meantime I worked around
->> the issue by having systemd-tmpfiles fix up the permissions.
+>>
+>> =E5=9C=A8 2025/10/15 16:31, Demi Marie Obenour =E5=86=99=E9=81=93:
+>>> On 10/15/25 01:47, Qu Wenruo wrote:
+>>>> =E5=9C=A8 2025/10/15 16:13, Demi Marie Obenour =E5=86=99=E9=81=93:
+>>>>> I need to create a BTRFS filesystem where /home and /tmp are BTRFS
+>>>>> subvolumes owned by root.  It's easy to create the subvolumes with
+>>>>> --subvol and --rootdir, but they wind up being owned by the user tha=
+t
+>>>>> ran mkfs.btrfs, not by root.  I tried using fakeroot and it doesn't
+>>>>> work, regardless of whether fakeroot and btrfs-progs come from Arch
+>>>>> or Nixpkgs.
+>>>>>
+>>>>> What is the best way to do this without needing root privileges?
+>>>>> Nix builders don't have root access, and I don't know if they have
+>>>>> access to user namespaces either.
+>>>>
+>>>> Not familiar with namespace but I believe we can address it with some
+>>>> extra options like --pid-map and --gid-map options, so that we can ma=
+p
+>>>> the user pid/gid to 0:0 in that case.
+>>>>
+>>>> Thanks,
+>>>> Qu
+>>>
+>>> Thank you!  This would be awesome.  In the meantime I worked around
+>>> the issue by having systemd-tmpfiles fix up the permissions.
+>>
+>> Mind to share some details? I believe this will help other users, and I
+>> can add a short note into the docs.
 >=20
-> Mind to share some details? I believe this will help other users, and I=
-=20
-> can add a short note into the docs.
+> I fixed the owner and permissions at startup.  This is not good
+> because it means that the image is not reproducible.
 
-I fixed the owner and permissions at startup.  This is not good
-because it means that the image is not reproducible.
+OK, so it's not the proper fix.
 
-Is it possible for mkfs.btrfs to be reproducible, or should one run
-mkfs.btrfs at install-time instead of shipping the BTRFS image?
---=20
-Sincerely,
-Demi Marie Obenour (she/her/hers)
---------------cSC70g8Bf3m073QEfkeA0oed
-Content-Type: application/pgp-keys; name="OpenPGP_0xB288B55FFF9C22C1.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB288B55FFF9C22C1.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+I'll continue working on the new --pid-map/--gid-map solution so that=20
+the files will have the proper gid/pid set.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+Thanks,
+Qu
 
-xsFNBFp+A0oBEADffj6anl9/BHhUSxGTICeVl2tob7hPDdhHNgPR4C8xlYt5q49y
-B+l2nipdaq+4Gk6FZfqC825TKl7eRpUjMriwle4r3R0ydSIGcy4M6eb0IcxmuPYf
-bWpr/si88QKgyGSVZ7GeNW1UnzTdhYHuFlk8dBSmB1fzhEYEk0RcJqg4AKoq6/3/
-UorR+FaSuVwT7rqzGrTlscnTDlPWgRzrQ3jssesI7sZLm82E3pJSgaUoCdCOlL7M
-MPCJwI8JpPlBedRpe9tfVyfu3euTPLPxwcV3L/cfWPGSL4PofBtB8NUU6QwYiQ9H
-zx4xOyn67zW73/G0Q2vPPRst8LBDqlxLjbtx/WLR6h3nBc3eyuZ+q62HS1pJ5EvU
-T1vjyJ1ySrqtUXWQ4XlZyoEFUfpJxJoN0A9HCxmHGVckzTRl5FMWo8TCniHynNXs
-BtDQbabt7aNEOaAJdE7to0AH3T/Bvwzcp0ZJtBk0EM6YeMLtotUut7h2Bkg1b//r
-6bTBswMBXVJ5H44Qf0+eKeUg7whSC9qpYOzzrm7+0r9F5u3qF8ZTx55TJc2g656C
-9a1P1MYVysLvkLvS4H+crmxA/i08Tc1h+x9RRvqba4lSzZ6/Tmt60DPM5Sc4R0nS
-m9BBff0Nm0bSNRS8InXdO1Aq3362QKX2NOwcL5YaStwODNyZUqF7izjK4QARAQAB
-zTxEZW1pIE9iZW5vdXIgKElUTCBFbWFpbCBLZXkpIDxhdGhlbmFAaW52aXNpYmxl
-dGhpbmdzbGFiLmNvbT7CwY4EEwEIADgWIQR2h02fEza6IlkHHHGyiLVf/5wiwQUC
-X6YJvQIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRCyiLVf/5wiwWRhD/0Y
-R+YYC5Kduv/2LBgQJIygMsFiRHbR4+tWXuTFqgrxxFSlMktZ6gQrQCWe38WnOXkB
-oY6n/5lSJdfnuGd2UagZ/9dkaGMUkqt+5WshLFly4BnP7pSsWReKgMP7etRTwn3S
-zk1OwFx2lzY1EnnconPLfPBc6rWG2moA6l0WX+3WNR1B1ndqpl2hPSjT2jUCBWDV
-rGOUSX7r5f1WgtBeNYnEXPBCUUM51pFGESmfHIXQrqFDA7nBNiIVFDJTmQzuEqIy
-Jl67pKNgooij5mKzRhFKHfjLRAH4mmWZlB9UjDStAfFBAoDFHwd1HL5VQCNQdqEc
-/9lZDApqWuCPadZN+pGouqLysesIYsNxUhJ7dtWOWHl0vs7/3qkWmWun/2uOJMQh
-ra2u8nA9g91FbOobWqjrDd6x3ZJoGQf4zLqjmn/P514gb697788e573WN/MpQ5XI
-Fl7aM2d6/GJiq6LC9T2gSUW4rbPBiqOCeiUx7Kd/sVm41p9TOA7fEG4bYddCfDsN
-xaQJH6VRK3NOuBUGeL+iQEVF5Xs6Yp+U+jwvv2M5Lel3EqAYo5xXTx4ls0xaxDCu
-fudcAh8CMMqx3fguSb7Mi31WlnZpk0fDuWQVNKyDP7lYpwc4nCCGNKCj622ZSocH
-AcQmX28L8pJdLYacv9pU3jPy4fHcQYvmTavTqowGnM08RGVtaSBNYXJpZSBPYmVu
-b3VyIChsb3ZlciBvZiBjb2RpbmcpIDxkZW1pb2Jlbm91ckBnbWFpbC5jb20+wsF4
-BBMBAgAiBQJafgNKAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRCyiLVf
-/5wiwYa/EACv8a2+MMou9cSCNoZBQaU+fTmyzft9hUE+0d5W2UY1RY3OsjFIzm9R
-/4SVccfsqOYLEo+S0vQMIIIqFEq3FCpXXwPzyimotps05VA8U3Bd7yseojFygOgK
-sAMOAee2RCaDDOnoJue01dfZMzzHPO/TVdp3OvnpWipfv5G1Xg96rwbhMLE3tg6N
-xwAHa31Bv4/Xq8CJOoIWvx6fcmZQpz01/lSvsYn0KrfEbTKkuUf0vM9JrCTCP2oz
-VNN5BYzqaq2M4r+jmSyeXLim922VOWqGkUEQ85BSEemqrRS06IU6NtEMsF8EWt/b
-hWjk/9GDKTcnpdJHTrMxTspExBiNrvpI2t+YPU5B/dJJAUxvmhFrbSIbdB8umBZs
-I3AMYrEmpAbh5x7jEjoskUC7uN3o9vpg1oCLS2ePDLtAtyBtbHnkA4xGD7ar8mem
-xpH9lY/i+sC6CyyIUWcUDnnagKyJP0m9ks0GLsTeOCA0bft2XA6rD6aaCnMUsndT
-ctrab42CV5XypjmC4U1rPJ8JQJUh1/3P48/8sMH+3krxpJ06KNWNFaUbaMTGiltZ
-7x9DngklSYrX0T+2G4kVXNmjaljwkoLahwLla2gUWwBSyofXdqyhQdwZsp01KXNQ
-UCyT/Pg+aDcm/E7OMV3d4lf7g/CSxiX2GSEe6BlhSz+Lmd7ZJ3g32M1ARGVtaSBN
-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
-EtJuZYM5blWncBOJCoWMnBEcTEo/viU3GgcVRw=3D=3D
-=3Dx94R
------END PGP PUBLIC KEY BLOCK-----
+>=20
+> Is it possible for mkfs.btrfs to be reproducible, or should one run
+> mkfs.btrfs at install-time instead of shipping the BTRFS image?
 
---------------cSC70g8Bf3m073QEfkeA0oed--
-
---------------zr61Xtgwtb07Hv55Bozb8N0N--
-
---------------ZEhZV2hfKLfu9VzBuidThBRC
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEopQtqVJW1aeuo9/sszaHOrMp8lMFAmjxdOQACgkQszaHOrMp
-8lM8lw/+PudParZQLsqIkMazETBTPYiKGQaEeeg4ASBimQMMlA3btO2th2pQVb+3
-QLChDfjYmFz5oieXuHpokCm10qJSlQt7Sja+/b0/PNHxbqsVl4UCxRrdiBHj9I4h
-ivVTDga7EHoKgS304HXn/CPhW40Kl/HEtMZXER2t8BAYFWbVPKPRtseGdHYsgAvD
-InFA8TQz+IYIqyDf5/CALAFCYJ/nMTKeewQZ/A7FkI0dDw6+V/0igzMmZiBtQ2dy
-E0M9BPwxdpJUMSrzBTWZYGRLYcRl8l+HMEfmeK/zdjwugeYz2vP4VKb4rDWD1UuO
-00lcxSp+9sDlfM1ehawC3Ll50DzrFaeyX48zWEev3DIq1IhOlxOVtdZKm9LeuKDX
-QYP/a8fmf3J47AnVt05RFuoutBbgKnmLIJut7IaCwcXuTzJ+YYiOhD/i/24nbZUE
-S9k/zybR+zPOhQPiEfan2azrJDJKDuYFCGB4UH/Yq10qkdcKBZIzD47kwig+bLuE
-uqOpqOwKaD9IUqtW3yIKMbsA4eFfxzDc7ssMQMXa0rO13sDuejgM1t7gyT+lcuSa
-8bsyEvk+IVW2JFBYUUscDY32GA0Uast5hNPeYb9n8L+wgjYINVdu//DXuk7/09Q8
-WI8ZBmdy5JyKVOvssmN7C2zaw+XbYa4gybdY6kLZ6stNwWoDuwk=
-=Vqt5
------END PGP SIGNATURE-----
-
---------------ZEhZV2hfKLfu9VzBuidThBRC--
 
