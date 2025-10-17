@@ -1,130 +1,74 @@
-Return-Path: <linux-btrfs+bounces-17977-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17978-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95B7FBEBC7D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 23:04:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 682B3BEBF75
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 01:03:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C8763BF6B7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 21:04:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E32DB1887868
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 23:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAF332874E3;
-	Fri, 17 Oct 2025 21:04:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="fvOjO7FS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07AE42D8DA8;
+	Fri, 17 Oct 2025 23:03:14 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (unknown [62.3.69.246])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out28-41.mail.aliyun.com (out28-41.mail.aliyun.com [115.124.28.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D42724886E
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 Oct 2025 21:04:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.3.69.246
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CE01261595
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 Oct 2025 23:03:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.28.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760735060; cv=none; b=YopSX0rAQMpd47JPo5VZjcQLKyWF0kxHclxC/iYJtdhRlARokE0q2heaKMG37VcQgQ0FJiLnv12mHKAKcs5UmJ7M4wbmcdqcR9MCV9ywgF0jfwjxLSvTN+J07a7+/eoW3hPlYRv3ovG14ASriY97Fq0ttKF/cs5M7ZyLWIw9DB0=
+	t=1760742193; cv=none; b=Y/OlL/14GYA3HrrH/rYZEZiwZ7Qf/60FxOd9ABEzmnPMWGG5fXye40Y7RSmRXgN7iu1lE+eHFL+d0PcxRoRABF3SK+06fVRF7oT8RJvbGmkcNfV7WvdPciShVCofoq4CDmoeJ4OmvCWkzxFaQKndt2gPNkbqPugoFEE79q/Z6D4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760735060; c=relaxed/simple;
-	bh=YqrJNTkmfcX2G7leE44Z7WJxjGyZK0YKRfJ+reWXWoM=;
-	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Lvkv+KBLOl/FN3FC0d5nxjwwlBOElaDrs/XS42CP8nJGOxa6ICfErCYMStnAHYCpDiXN8fwXOgnpomiDeig0qpTeG1Qv3hpAW06mPAwds1DNsPNpsBzcO88qJrGUTO/2rcT1ol9oy95SbnWUIaqUB68wqOdpGg/mVMbo3/lFVvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=fail smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=fvOjO7FS; arc=none smtp.client-ip=62.3.69.246
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=harmstone.com
-Received: from [10.10.10.246] (hosp88.static.otenet.gr [94.70.250.112])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
-	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
-	by mail.burntcomma.com (Postfix) with ESMTPS id BBB2E2CB71C;
-	Fri, 17 Oct 2025 21:54:50 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1760734491;
-	bh=6VyK+gszEkezIQTL6RUK5/8lccPCpCNWG8U2SwNCa9A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=fvOjO7FSz9UwlwmJ+SOWoUv8PoEuJ/ThRNadHbvTYPgFUB3XwHRq9+aV4E3AoxJ79
-	 +Lh4tzq2/dcK9V9WYqmwQTDcsjAzKhJwTc8SXNQiDh2K7J++eATwH/dnr5w9ALoro0
-	 uFTBrgt0yMIlPz+kO4oC4czusEZzPG8iIQ/Ldrdw=
-Message-ID: <19cb1c86-9076-4bf3-bf9a-716d34a70598@harmstone.com>
-Date: Fri, 17 Oct 2025 23:54:53 +0300
+	s=arc-20240116; t=1760742193; c=relaxed/simple;
+	bh=P7W3Zjz1n9jcYTPJ7a6C/J9NAbE/n0++EE9xfAqdzrE=;
+	h=Date:From:To:Subject:Message-Id:MIME-Version:Content-Type; b=d46r71Jo+cFrFukq7BrM7xHPXhZ30qP+YJmC7o3Q6lhGdkaF6WmUzou1aJDrPq0OdKKhMcFIcv4i7qAZ5eWmnwMG4zVM9f3+078oB84Tp4BICzi9fvghMpzxLwMsGC4c6ltrjsesbI3LE3ijdzFcdnGSS2wdnXBkUesCXfzMXjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com; spf=pass smtp.mailfrom=e16-tech.com; arc=none smtp.client-ip=115.124.28.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=e16-tech.com
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.f1GJdck_1760741245 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Sat, 18 Oct 2025 06:47:25 +0800
+Date: Sat, 18 Oct 2025 06:47:27 +0800
+From: Wang Yugui <wangyugui@e16-tech.com>
+To: linux-btrfs@vger.kernel.org
+Subject: btrfs error(dev extent physical offset is beyond device boundary) when mount
+Message-Id: <20251018064727.9E9B.409509F4@e16-tech.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH 0/8] btrfs-progs: fscrypt updates
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Daniel Vacek <neelx@suse.com>,
- David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
- Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-References: <20251015121157.1348124-1-neelx@suse.com>
- <84dabbbd-1b7b-4d51-b585-d3dcad3fd88f@gmx.com>
-Content-Language: en-GB
-From: Mark Harmstone <mark@harmstone.com>
-In-Reply-To: <84dabbbd-1b7b-4d51-b585-d3dcad3fd88f@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+MIME-Version: 1.0
+Content-Type: text/plain; charset="GB2312"
 Content-Transfer-Encoding: 8bit
+X-Mailer: Becky! ver. 2.82 [en]
 
-On 16/10/25 22:10, Qu Wenruo wrote:
-> 
-> 
-> 在 2025/10/15 22:41, Daniel Vacek 写道:
->> This series is a rebase of an older set of fscrypt related changes from
->> Sweet Tea Dorminy and Josef Bacik found here:
->> https://github.com/josefbacik/btrfs-progs/tree/fscrypt
-> 
-> I'm wondering if encryption (fscrypt) for btrfs is still being pushed.
-> IIRC meta has given up the effort to push for this feature.
-> 
-> Thanks,
-> Qu
+Hi,
 
-It's come up again recently, it's something I'm intending to look at 
-when I get the chance.
+btrfs error(dev extent physical offset is beyond device boundary)  happened on 
+a brtfs file system with 3 disks when mount.
 
-I'm hoping that remap-tree will make it a lot simpler: extents will have 
-an address that won't change with relocation, meaning that this fits 
-more nicely with fscrypt's design. IIRC Sweet Tea's design stores the 
-nonce/IVs in the extent tree, which wouldn't need to be the case with 
-remap-tree.
+dmesg:
+dev extent devid 3 physical offset 719991138680832 len 1073741824 is beyond device boundary 719992211374080
 
->>
->> The only difference is dropping of commit 56b7131 ("btrfs-progs: escape
->> unprintable characters in names") and a bit of code style changes.
->>
->> The mentioned commit is no longer needed as a similar change was already
->> merged with commit ef7319362 ("btrfs-progs: dump-tree: escape special
->> characters in paths or xattrs").
->>
->> I just had to add one trivial fixup so that the fstests could parse the
->> output correctly.
->>
->> Daniel Vacek (1):
->>    btrfs-progs: string-utils: do not escape space while printing
->>
->> Josef Bacik (1):
->>    btrfs-progs: check: fix max inline extent size
->>
->> Sweet Tea Dorminy (6):
->>    btrfs-progs: add new FEATURE_INCOMPAT_ENCRYPT flag
->>    btrfs-progs: start tracking extent encryption context info
->>    btrfs-progs: add inode encryption contexts
->>    btrfs-progs: interpret encrypted file extents.
->>    btrfs-progs: handle fscrypt context items
->>    btrfs-progs: check: update inline extent length checking
->>
->>   check/main.c                    | 36 ++++++++++--------
->>   common/string-utils.c           |  1 -
->>   kernel-shared/accessors.h       | 43 ++++++++++++++++++++++
->>   kernel-shared/ctree.h           |  3 +-
->>   kernel-shared/print-tree.c      | 41 +++++++++++++++++++++
->>   kernel-shared/tree-checker.c    | 65 +++++++++++++++++++++++++++------
->>   kernel-shared/uapi/btrfs.h      |  1 +
->>   kernel-shared/uapi/btrfs_tree.h | 27 +++++++++++++-
->>   8 files changed, 186 insertions(+), 31 deletions(-)
->>
-> 
-> 
+719991138680832+1073741824(1G)-719992211374080=1048576(1M)
+719992211374080=670545 * 1024**3 = 670545 G 
+    This is a hardware RAID device, so the size of this disk is just SZ_1G * 670545��
+     not like physical disk with the size of SZ_1G * N + some small value
+
+and this btrfs are running on  kernel version is 5.15.y and then 6.1.y.
+
+Any advice about why this chunk was alloced beyond device boundary��
+- Is it BTRFS_DEVICE_RANGE_RESERVED(1M) related?
+- Is it multiple disks related?
+
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2025/10/18
+
 
 
