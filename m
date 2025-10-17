@@ -1,87 +1,89 @@
-Return-Path: <linux-btrfs+bounces-17952-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17953-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D0CBBE7DF0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 11:46:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DE3CBE7E2C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 11:48:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5BDA558264D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 09:40:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 528D8582BD5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 09:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 675F32D661D;
-	Fri, 17 Oct 2025 09:40:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932BC2DAFBB;
+	Fri, 17 Oct 2025 09:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TKRrrO33"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SgUp1n6S"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E833E248176
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 Oct 2025 09:40:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335022DC35F
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 Oct 2025 09:47:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760694012; cv=none; b=seND1Jm5BawMfcPRYJohRmWD7qpNl9ofneiJLz4hChmr+7dLbfAWsqq8Wpdy2xoK0kBrbT+gtnexLSUVvToUWMNjKHt7gD76Umz+2qAvbrqL9EK+azEhshMKzPwP09YsRB4hHLlYzUwIOy0hWRry6KEFxR9+tWalbnvR6KT9Ucc=
+	t=1760694480; cv=none; b=JccjVVxZ1orNPJXccubGzwCQQHo6TQlKdueoEUgGj6ccO1jhORYQrDWeRmxOEPpvgu2hJbw1g86ET/RVWDE+M7UfJD5QbgrHeAGMDWCslC1Z6YGdF7GaGuoTEwDAF2UQvwGld8GMEcstDBrsR2mcyGyUkZE/3ud4cwjOF1xIuQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760694012; c=relaxed/simple;
-	bh=MaJomP1EZ8uF1S96+yrnP5w4lNFNsIDthEU2FjcaC+s=;
+	s=arc-20240116; t=1760694480; c=relaxed/simple;
+	bh=2qef4Dg/EYUXtmUA8ak1qqQonP9U+75kcC+XzKvNo98=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D1AhTeJ+PCwog+HtV/3qiPxVbF2GXjWrnU9BLLDvWhhc8pOvvm5Bp7Wb9v6YLalBC5a9A1/w0e4p3Gdew6/ZA9SStAjlCFwyEnx4GDvK8/mgGsyuFSYTtAwT7lsZPjD1KFDR3TVIKGaKeJ/Qjpx2iDYyXvGURq+igqgL+RV94kw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TKRrrO33; arc=none smtp.client-ip=209.85.221.50
+	 MIME-Version; b=G0MokPXvWUG3D8eODjtkyNKXQ1APwVuyeDDog6F+RCfV2bA+oMKVC5grm0fPj8I//Kfa4vSfV8rHX60ZK5GKpfw7PwEHYelRZIgyUSZ3jlA82NfvpBtv2NIeRgtJqm7KEgE9Yiny3XxcR9WWT6Hq9U6SUwISjnmNbJlkqS7WjDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SgUp1n6S; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3f0ae439b56so1237914f8f.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Oct 2025 02:40:10 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4711b95226dso4197325e9.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Oct 2025 02:47:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760694009; x=1761298809; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760694477; x=1761299277; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Jkn0Myu0VpuTF3KQKkLk5LYTtobcdRAY+R/nXn5no7k=;
-        b=TKRrrO3361p8UCok+0mi6aYRfdBr+74lTWI55JwAVirHzIfIjwIyoHfQMth6K0hXCA
-         wRrej53qyXdkvy3V0OmgQthbUmL10eFxRofjGZug7F5+hj9gQWzPE2fRCEwmqzx19nLe
-         /qZEl9VyqHiH+ONHDPlCogKBsYsKV3lyvcmVGrM863I5994x7N6yKf265knd6cL9DVM9
-         klz6gq4+mmu0PoVGetYwdqBhKtgsjrhj26tezrfUItpkVWJFBsjPPVWgE006793N2gPX
-         FiY+hMHA5oszwez4pvH4ul28ygV/T/Srw+rRBQYOr/U9mjJUiupTlwcOMtBFg8Q2baDh
-         7yWQ==
+        bh=Sy0yRAP95BHj2yzNXIG4IFb4N7T6aaF0gqCQs98l4vQ=;
+        b=SgUp1n6Sd3NIlY/4NkJgG/jKwq90XzvjKZIc0BchRussjS/LKbbhirbDcut1HxQh5c
+         v1ebHVZpG4u3y+t9ys1af7WqXLJcoHqgxmH2i/1T/mZad0fEoPbwvsWyb+q+8Zt65rIV
+         3zYJMMKErhEjqQY1CozhYKEhmB/8p0g959XNvqeuYE69C4uOlgAthYtOrJiiLOJDoNtF
+         3IlnEkW3PFaKQgP4rY8olmQ7TDUD+KDU+y5l664BqOTD+yzYU5N9SvvB9IPitwbPAfHx
+         jmCMvqUQueGmO7CkdNIr0tYRxqiqCf8qZC1cgxTGekK8yqqC3a7YI/frtyVjGJn5TqNH
+         2hjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760694009; x=1761298809;
+        d=1e100.net; s=20230601; t=1760694477; x=1761299277;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Jkn0Myu0VpuTF3KQKkLk5LYTtobcdRAY+R/nXn5no7k=;
-        b=Ig73rwuR1ZJbQXzaH8EqBS9ucjKO/S6YgQmmKKoAiHVGc1eAdi+2U8DOKE0hr8vppo
-         dtuLYi7hyclp+Gjvl1NvcpJLe1LpJX04GUI6tsaiY0meSCol8K3jGjZpEXpYsuHFzMT4
-         Bz5MyjdRjnLgnasSUuFnzd9a73JFlxnxp57APyHtocGonac8o92fYYi7kVjvrD7EiYfg
-         2cZeK96uSxBTZm0tm3a0hEqu5VlzHSP6sBW80To8x9Ct9jMmu2QmXr7uzXFius8xIj+m
-         m8Psa7ku5CjwTpsmzS4VN0qsCOGnzt/y3y1Kb7Yc+xTKimF9yQ3a5Zefl+CLN9KIHyWI
-         NHQw==
-X-Gm-Message-State: AOJu0YxuPXyps7cvYZwejErT5ISt0Cbbzv3efmwVYVaZqzn6MWXGuW5Q
-	P0lREH4FruHwdfWCd7Rd/3nijRglevFdR3COlFAuDCLQKzn/lbBPOR4E
-X-Gm-Gg: ASbGnctFiZnEnzD8UUBTckRRtIcpireZY2eeAeCytX4rsYwjJ6pXjmh5yIBZpQlnYqI
-	VWVTBc6dmre1KFKBFryQJXCVg9z5p2uqgj72PBJe2J0UoPr7WP/vkLZdxGcf6VrSckm+FgpZ2E+
-	CAIYzjSzEyyBR68F83JRnXjBLMi5b/fGEvllI4bCXnxB+bLn2NnUz3enno27fHYDHuFye5elWFI
-	D6O7R5rO+reeNvQ6d4KLKFhspiZe0UOwaXcpDOGTUIXxO7eNgH0bBtBgH9hMxaZi4+Pa+pZ8AsB
-	p0CxGgTu26n192/EWXCNVdlbm3sYfadSjq+x9OoZCJGcuHH/0p4zt3CwayG8m0Latb9oVvkYIgq
-	ofMn6FhvDU96AdIgHM6apWL3cQXOwoBusFaHXVS7OX/8Kt9kBMLhGOEity6Mo5qU8WpHkjCLXcT
-	jN
-X-Google-Smtp-Source: AGHT+IEfblUF21rhuQ2AQ80ftwKH0eoUInt/DUEIz13+ErrbfYckFUOU1Ngr0V3TaORs4zO4ZT+H4w==
-X-Received: by 2002:a5d:5c89:0:b0:3ed:a43d:8eba with SMTP id ffacd0b85a97d-42704dab119mr2037147f8f.52.1760694009026;
-        Fri, 17 Oct 2025 02:40:09 -0700 (PDT)
+        bh=Sy0yRAP95BHj2yzNXIG4IFb4N7T6aaF0gqCQs98l4vQ=;
+        b=cRNp9pXCGgrp9B/xjbWLldLxgxVmJ3h4RIOcqncMiBHyOz8V0RVDwaKnibXHDk35Ba
+         /7/uNBDpnpV/wod/9EOjMYmU6WbhLaaEVGwuSkpjQd5TzxuLkD+Mu+zY3CKvCvAXcfh9
+         ukk13vQzbBPOWb0g1DNuOD4tNXtDQTbC90WgZPbXTwlRxHbpuMLCJG6fw8R/PzvW9JAF
+         3fi2e0HJwxshxseygtT08415Ep9bv29MkFdkkapvPOOFpnMYnLXsS5cS2EocpqzVM7nP
+         5azUyUdH520HSOSeCuxYdaI0NYxdj6uXl8q+Hu1SQvR4cOBFNiE/UdVV9AQzHvqu6wJi
+         8jOA==
+X-Forwarded-Encrypted: i=1; AJvYcCXZNc5BvQuL4gtolqWii+USdjZKhFZ7F/lgAOMoHnt1dyOQpzHr2kIMlZldWGoNxcVRcHCIsos5iza5WA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YylpBYdBxSzT4dqK4nPTqbI0fvW+FzV+NoE4T8x9GjdZ59RD5rb
+	w/DMB+9KoT7pgWe8Ri5UoWT+Lab4PPecmVpJXV5uRuCb59nt5mKYEZXS
+X-Gm-Gg: ASbGncvWuywMLWGj3pYHlgAYGAQYbtNlKMVRAU96XdXWeQWqll8SRffj4eFvP7HO1lu
+	rQfk+FGhDZ4yIahSwlxpmEC6shfmIx2Y3GV5tq5EWtr7xy4tc8nY1i1YrZLC2v7TG1Yv1R1hy5e
+	wgSk5000siX8c4Nm2SlKH3R5OL3HjN7x0yd7ungA27VwIHrPUHbQDdwHyPBTOmp5JPjU1rEHhyh
+	0xr1pEv5D0lKbVdHbV4iToaS19Yv5GI/6o7aOZQpzBR8NsUAKdcTTAqWbrE/fZzaMa+WbQ7HPzu
+	jcliP0XH2DD661VtBaGbXmg4hNu1wY8TFv0rboEhz7KrzkQtqnJ/Ori5YdvpSp3HPfhmnW21USX
+	1m1Y2aw3TVqHxZQwfL4w1acCN0VVUmHBji/WLoDh30KSVvTDMRr1y6qHP+kA2O26ijjU16Dx8bU
+	G2
+X-Google-Smtp-Source: AGHT+IEEX+Z84/rmgncN9dwcIvVYwxueW70ptCkurzteL5x+sCPvVdVFO0CpBGKQ36u/v5tqT/GgVQ==
+X-Received: by 2002:a05:600c:621b:b0:46e:48fd:a1a9 with SMTP id 5b1f17b1804b1-4711791fbbbmr25608945e9.33.1760694477158;
+        Fri, 17 Oct 2025 02:47:57 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-426ce5d0006sm39856881f8f.34.2025.10.17.02.40.08
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-4711441f66dsm74496485e9.2.2025.10.17.02.47.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Oct 2025 02:40:08 -0700 (PDT)
+        Fri, 17 Oct 2025 02:47:56 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: wqu@suse.com
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] btrfs: scrub: enhance freezing and signal handling
-Date: Fri, 17 Oct 2025 12:39:47 +0300
-Message-ID: <20251017093947.1170945-1-safinaskar@gmail.com>
+Cc: fdmanana@suse.com,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] btrfs: scrub: cancel the run if there is a pending signal
+Date: Fri, 17 Oct 2025 12:47:52 +0300
+Message-ID: <20251017094752.1171803-1-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <cover.1760607566.git.wqu@suse.com>
-References: <cover.1760607566.git.wqu@suse.com>
+In-Reply-To: <395c1ee665584f092c089d73895d3f316730c6e8.1760607566.git.wqu@suse.com>
+References: <395c1ee665584f092c089d73895d3f316730c6e8.1760607566.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -91,25 +93,14 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Qu Wenruo <wqu@suse.com>:
-> - Systemd slice freezing
->   This is the most complex part that I have not yet fully pinned down,
->   but during the tests it looks like systemd is sending some signals to
->   the processes under the user slice.
+> +	/*
+> +	 * Signal handling is also done in user space, so we have to return
+> +	 * to user space by canceling the run when there is a pending signal.
+> +	 * (including non-fatal ones like SIGINT)
+> +	 */
 
-Systemd doesn't send any signals. First it freezes user slices using
-cgroup freezer. This happens here:
-
-https://github.com/systemd/systemd/blob/28aa0a1f25470b21fbe3b8af2d9d99e616c000a4/src/sleep/sleep.c#L665
-
-Ultimately this code does cgroup freezing, see "cgroup.freeze" in
-https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html .
-
-Then systemd initiates actual kernel-based suspend.
-
-But it is still useful to catch signals, because systemd does
-send signals when we poweroff.
-
-(Please, CC me, if you send future versions of this patchset.)
+SIGINT is bad example here. "btrfs scrub" somehow is already able to catch
+SIGINT on unpatched kernel.
 
 -- 
 Askar Safin
