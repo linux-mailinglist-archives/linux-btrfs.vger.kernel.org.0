@@ -1,175 +1,242 @@
-Return-Path: <linux-btrfs+bounces-17922-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17923-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48EE9BE73FD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 10:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 530E3BE7544
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 11:01:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC83D6202D7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 08:47:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 577DD626DEE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 08:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 737B52641FB;
-	Fri, 17 Oct 2025 08:47:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C18C42D4B4B;
+	Fri, 17 Oct 2025 08:58:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=heusel.eu header.i=christian@heusel.eu header.b="ZMXTo7Ub"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="OcOtS70t"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23814409
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 Oct 2025 08:47:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.126.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E672C029E
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 Oct 2025 08:58:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760690826; cv=none; b=B6/HN9TEPXRaxEvPShcaF9/u3anPnYbecwzwO/Q7ZSILNjpzfOlU0Ojb3noQLTKjx1fmMzB1FoZezOMPEcBxRE4+AXcYqJt3osP/p0S7do8P+R9FzmI1Qy0sMDCj6xYdKaV//72m5hWM25jRgFUr8W69+Qpv0kYL6JPlav7tG4E=
+	t=1760691509; cv=none; b=dPgO2Mg1nCJDcYw4EJf6fTCkL4YHYh6AzGsFRL5N7BU5NKmIHdc4lnqrv+t5yel4Aumm0wNI2YAYFSOQv/pqyG1sOEMu8hVJerXI9qfqdt4I6M/HLtLXkPviBALJo6VvqmrhV5tKKgsar0+veE+7hBeIxSYvJF6Pm10pM3vlpeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760690826; c=relaxed/simple;
-	bh=Z0sx2Mmaswvj+zLX8r36af7CXy7u5sl34uFrKjCxbMY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=otsm7NLiMk4PKp8nHLEvM7z2tbqIEC8ysgh23OEs6lRDIYA9NmiaVN01xyDlfed25pCMjOMw0d4rzVO70P7o004pDfZZ/owxFCqNRCr5VwUoPo4eMImFIMhrlDW/Yn7sz1K/vwJwGta4IQzpQxzYMA4ZfDGNyvz65k2lyetbaMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu; spf=pass smtp.mailfrom=heusel.eu; dkim=pass (2048-bit key) header.d=heusel.eu header.i=christian@heusel.eu header.b=ZMXTo7Ub; arc=none smtp.client-ip=212.227.126.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=heusel.eu
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=heusel.eu;
-	s=s1-ionos; t=1760690818; x=1761295618; i=christian@heusel.eu;
-	bh=Z0sx2Mmaswvj+zLX8r36af7CXy7u5sl34uFrKjCxbMY=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:In-Reply-To:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=ZMXTo7Ub0TK99+RlCI76ZiKYVnCzkh49M0DZnb43dG5DN3TrI94sEW0GWKuGVi7M
-	 E3B8tocKrRlDaBFSB5bnWUaU3a5lpfP6ebGzJTlk4adivnKT2UOFycV0ZSO3jHWO5
-	 PkIDnJ5dMV8x/DpRlhvribNpz1gg+AEXpQgKjBWT67itNlZpDLF7mApcPhiLWJYpc
-	 ay57grR9XO+1/psAJST9U19XY2W8jwPJ63gt98A2iMoDWxbkj6JZjMUxAB3D/YcMc
-	 QlwZ4VP0dFc5pjNha8cSfYFiwfND6XWwe5jZDZjI5ASB6U4P4+vqMB9Cu/UAkG9ft
-	 JCWt3o/E7nFW37cBAg==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost ([94.31.113.46]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MDQqk-1v1T6U0AOk-00Ad0L; Fri, 17 Oct 2025 10:41:44 +0200
-Date: Fri, 17 Oct 2025 10:41:43 +0200
-From: Christian Heusel <christian@heusel.eu>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: systemd-devel@lists.freedesktop.org, 
-	linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Any proper way to prevent system from power management
- suspension/hibernation?
-Message-ID: <2e47f358-69d7-43b2-985f-c2484be9469b@heusel.eu>
-References: <32690b57-86ac-49bd-b913-b080aab03b42@gmx.com>
+	s=arc-20240116; t=1760691509; c=relaxed/simple;
+	bh=oXQKO3A20s9LG0SV3aJG9Rb5bk+7zId3V28nZ5uuGCQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qd98Q36Y7GSZ1pO5Coi9KLNmpYS15CHpZyHZNsvF6ITQljPcY2HtE1g7v84vup06Y0GWpuSTJvssNrr5ef2JeMKDg6PJ+Jz7HUJZjLfHUgOtGM7EanJqm3t4RF/vw3AYrgZKEEEuGPXj0IRy8vXv3SKTedu1MTzMwntx8L3wV9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=OcOtS70t; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1760691502; x=1761296302; i=quwenruo.btrfs@gmx.com;
+	bh=oXQKO3A20s9LG0SV3aJG9Rb5bk+7zId3V28nZ5uuGCQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=OcOtS70tKr3rHanueQAw82slE1CDs+HIZlRgX4pI02HbddNWKkTRuUDpVM8cyMhA
+	 aNHgAGqmkeCsgwePwRL6oohw3mTHYg4MG55Jn8Qq+Bxc01xPVreCFXGeyKtcKN2We
+	 NXuO2q9IXV9FalyrbMwFy+MjfJLicLkqJA/wy5Ef938tzMmdIPW+XyLBAl1l+06Hj
+	 HIMIThEYWkLb1LOYPGpmswgTIlWdLkfl4H7wuydrEaRXGI1h9IS0L2ywYN8W3MWOE
+	 hBFbr6IMBdxmm08DjVsqQPrYuX9ucHM+2N9Z+c8CKqW0alxOFYXrS/VZGgfKEfRpG
+	 1SJqEZcB1+5ZKGCHEg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOiHf-1uqnas2JPL-00QcOa; Fri, 17
+ Oct 2025 10:58:22 +0200
+Message-ID: <f85f81cc-bfbf-49c7-8cec-d9e46f263c6e@gmx.com>
+Date: Fri, 17 Oct 2025 19:28:18 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xrbrvrbkae5zvp4o"
-Content-Disposition: inline
-In-Reply-To: <32690b57-86ac-49bd-b913-b080aab03b42@gmx.com>
-X-Provags-ID: V03:K1:kQ8pZYdxPcmDUxYUEfJgwLPAMbyNbeUVX1SaHXbG27U3mrBsd2g
- +JOfSi1ZyoVbtW/a5TuHjb4PZ+kfHn/+ycDAoP77Q+S5/lBUzTWQqVRqWQuywcf/Fa1ICxp
- 98Nku8iLq619XUtA65nNZPLXu+ki9ny4nI+o6jWiUq6m6MfQKfYysDxpyH5Z4ihNfCfImaL
- opIwfpOMdngsOob672ICg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:8KtbKeL1Qz8=;C4eBRU0faHTaEdTIZ/e9lGXR0Ip
- MviJ5sSzqsucLTIdlCyEOJONxWByFR5+Uw2+dFhSd5hWkAvlbqMQKEMTWxpeTWZvP4PA9a5f6
- OANEzEanx8z1IHMBZlXimZW0tL4vgFg7sjwMe5HAGKMBYfnOQZnJSBYtxKm2FgvCPuYqH5KAi
- DPr2XHQAH00TxRmHe9BDtKkv3U4rh4utP1SN2APzwhyHFlAE3FeKxV2jsA9jhZZsaq84X8l56
- fQlN8R/73MyZnImysqEc9wOAKnf7h4HgQEPDjwvUMjDT9KCaB82agvT89a900VHo/4HbjnvOW
- fwwGLy3rWLIBaQhggl4TQfD43HA4cy4dGLs7+XcqE9atJHfurEMAbMJJFrWhdbrunHo8yL8W9
- tEHM14yQ5i+hDTMzVh4hOWUBst/T/irnei3RBjkQwxLbQ3wAQd1MgVeIAdN0nfK0bvjZ2sHAO
- bAqUkv8mlUJAYL+RM65dyRzdgE/Sb2KKf55YUiXWzYQ1rpo3Y7qXDvMI47QtHhv3pwSDL+TP5
- WvSP9j6qmqh8IH7n+LQdvrag5plugfgiwrWqfb8jJ5cRBxXKa2v3iY1o+cTAJLkmS3qvb7yP8
- tU3vHCnCpzAaJuemOGON7m0hWnavdCz/9250vxXJ0/N84D/JU6+iNykI9uSaX7TRGE7H/oBYW
- EVOSPI0+YtHmyr57CIwa6yewFM7QSYNhfwY0YbVa8NupFwEADwnpfGKcCu+r3H704cWJHIMnn
- JdB/UsmkY5iKgAUCm2Yt8kM190KJtnpztqb0CxdK/vHVepW2KqGRV1j0orRmgBbwe79eHqCR2
- 2pbEnEFTZ3TAL0XbDhkthNGZ6EuHvNXlyz275GAshO/k5aKffCPj9xyJSAwwbSSTt36lbwvIB
- rQUejr3E0HwLr3al8kS2xxpXgODxR9BBGKLt13lM/oAjCuOyeCj6Z5nyXgGS4x8Nn90Ge2Vli
- DK7HGbDhmDK7oIgwY7vNS/XEfv4hRLq4uZ9b/Ja4e1t7QukxN9mfZJXhDCfoH/NEQq7dF97+h
- K0ykN20XwvGtnvxgc5nVf9lX/2xRFBQEdgH7Z9GQI7nhxMG3EtSTndbs8JaQy0EXD/gsJmm8Q
- bpprFoeC0rt6m+klB8oLD0tmds1oKyZBXY6mYEZzSHjRMn40R/2FRgsJ4/feC3SLfsXMdTW2c
- RiBFc83UH11QDW47qm1XIzzDto6iRcbjRb9iOgHfbnzwm9iUiAWBjzlruMdKV/50JYWgfe2Ah
- ipTItrQDovtWhnAfaRJjJUJfKOxY0xRTPuK2/l+xWGEGN42XtFdGEY3KpSWyoPI5gAzXttJzF
- BtqDR3o05DXQ1F6e4OpAvoQsiG9hvv0w7Eu7d5fi2qTFKnHJka2DDS2Kwi+7ihh/DQvEcycme
- 2y4kdStg6JucC+i9G5TiLAJP11inmvK266FiRKMHSo6oHIEvveWZMl+IaQAvkiAAe3oVJX6up
- 2GrIYWtS9Db7olEhNs7B9+knTS9dL0HaHeFbmiHmFTMw8BGMSaaKXfhbB46+Ozc4nJBgPG8C/
- 84VWF46tvJhgIeI4L8mpNTMElQcTIrh8pVtONNdEksoftV6vJXiLwR3MclNaULZ3qdq7darGB
- H497Hl2mw1Gbre1FnpuvyWYGwyFjfWc58OHNXPb0th882WZK9I4AoyeDiQOtYgi7VVr4uRhrq
- gUmDPSOCKaRWFwTutgUKdK+QNwf1uDkTenSqbac/T5uBnYWND5O1x5dwX053lYOTc=
-
-
---xrbrvrbkae5zvp4o
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
 Subject: Re: Any proper way to prevent system from power management
  suspension/hibernation?
-MIME-Version: 1.0
+To: Christian Heusel <christian@heusel.eu>
+Cc: systemd-devel@lists.freedesktop.org,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <32690b57-86ac-49bd-b913-b080aab03b42@gmx.com>
+ <2e47f358-69d7-43b2-985f-c2484be9469b@heusel.eu>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <2e47f358-69d7-43b2-985f-c2484be9469b@heusel.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:GXL17Tay87BTy3K8cWjZc1tT6Wa+mS2NFYXkV1/OnUcy5DNN1W2
+ NJZZOm5yGfmwWCWQe5ub5ZdkpMyazo/khaUFOpSZMAeQfzG0SLR0vtMuyjG0CW8IOKVEmnx
+ PTx2SITyAkAUx31ELJuXvPIliwHBew/KKiVyVfwfinTJMDBz7MvsajswQLtlDeRm+8sw31R
+ IHU3aM+VMU4B2X4rYlMVw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:gmfcDx2cTUE=;uwuPYDpEAg+VGDWHrgfnjRueeMT
+ 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
 
-On 25/10/17 03:08PM, Qu Wenruo wrote:
-> Hi,
 
-Hey Qu,
 
-> Recently I'm fixing a bug in btrfs scrub/replace where long running
-> scrub/dev-replace ioctl will prevent systems from suspension/hibernation.
+=E5=9C=A8 2025/10/17 19:11, Christian Heusel =E5=86=99=E9=81=93:
+> On 25/10/17 03:08PM, Qu Wenruo wrote:
+>> Hi,
 >=20
-> With that fixed, btrfs scrub/dev-replace will abort the current run if the
-> filesystem or the process is being frozen, thus allowing pm to freeze the=
- fs
-> then the process.
+> Hey Qu,
 >=20
+>> Recently I'm fixing a bug in btrfs scrub/replace where long running
+>> scrub/dev-replace ioctl will prevent systems from suspension/hibernatio=
+n.
+>>
+>> With that fixed, btrfs scrub/dev-replace will abort the current run if =
+the
+>> filesystem or the process is being frozen, thus allowing pm to freeze t=
+he fs
+>> then the process.
+>>
+>>
+>> However this exposed another problem, now PM suspension/hibernation wil=
+l
+>> always interrupt scrub/dev-replace runs, and it's not that easy to resu=
+me
+>> from the last handled bytes.
+>>
+>> I'm wonder if there is any generic solution to prevent power management=
+ from
+>> entering suspension/hibernation (using systmed), and is generic enough =
+to
+>> handle not only pure systemd, but also various GUI environments (like
+>> KDE/GNOME).
 >=20
-> However this exposed another problem, now PM suspension/hibernation will
-> always interrupt scrub/dev-replace runs, and it's not that easy to resume
-> from the last handled bytes.
->=20
-> I'm wonder if there is any generic solution to prevent power management f=
-rom
-> entering suspension/hibernation (using systmed), and is generic enough to
-> handle not only pure systemd, but also various GUI environments (like
-> KDE/GNOME).
+> I think this could be a good fit for [systemd-inhibit][0][1] which could=
+ be
+> used to wrap the relevant command in the systemd unit.
 
-I think this could be a good fit for [systemd-inhibit][0][1] which could be
-used to wrap the relevant command in the systemd unit.
+Thanks a lot!
 
-> If there is such solution, we can provide different systemd services files
-> to end users, and they can choose what version they want, either gives pm
-> the priority and accept scrub/dev-replace can be interrupted, or prevent =
+That's exactly what we need for the systemd service files.
+
+Although pulling in the full systemd dependency for btrfs-progs may be a=
+=20
+little overkilled, for btrfsmaintance service files it's definitely more=
+=20
+than enough.
+
+Thanks you very much for this awesome hint,
+Qu
+>=20
+>> If there is such solution, we can provide different systemd services fi=
+les
+>> to end users, and they can choose what version they want, either gives =
 pm
-> actions in the first place (no attempt to even suspend, thus no extra
-> timeout).
+>> the priority and accept scrub/dev-replace can be interrupted, or preven=
+t pm
+>> actions in the first place (no attempt to even suspend, thus no extra
+>> timeout).
+>>
+>> Thanks,
+>> Qu
 >=20
-> Thanks,
-> Qu
+> Cheers,
+> Chris
+>=20
+> [0]: https://www.freedesktop.org/software/systemd/man/latest/systemd-inh=
+ibit.html
+> [1]: https://systemd.io/INHIBITOR_LOCKS/
 
-Cheers,
-Chris
-
-[0]: https://www.freedesktop.org/software/systemd/man/latest/systemd-inhibi=
-t.html
-[1]: https://systemd.io/INHIBITOR_LOCKS/
-
---xrbrvrbkae5zvp4o
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEb3ea3iR6a4oPcswTwEfU8yi1JYUFAmjyAUcACgkQwEfU8yi1
-JYVb2hAAnGD1xo6CYXN+06HZ+l+il9XeVXLC1+bG36H8Z1lP826Z+vLFKmbU802/
-c/AdozRtQbEGK9k/MRZHTq1ZNM0akQDHzq96+xKqJiJx9XU7VZ/xWnOv5X7iJZPT
-t8TmoA2Q9tLLwaah7neNy37IvVso8j6pU1/HleFdERoImIbv1c9y8S2RWwEHXbI2
-ZCMipPeTQ9RZuCmOb/hFfkXSoQjgMvmDxQBy3icxGH/9uyXO1nxtCMMtHKoKUERy
-z5FbTPJCPBezWVORY0LM7IwwM/aY/27fM9fCPSFeqGLAbPH4qNwklUGaQiKtuXlq
-hc3dr/ms7itP3YVFxIMfSzGbSFit0embI+P2nVi2QQjQgO+97H+JgrCAJiNgS466
-+aithykDXbxV9KigFBFHcAyeAhnIsPijDUn0HaNf5+rl0LbXPFifcYBGNssbroek
-pxrMVbAq8Y2Guoe+uothfkk4Gir8RYNbWLTt8JrqRSunGLKAqMkDt1u3E6FmxhQO
-b6o+avoQu4/jogKXz3tgP2atrKIfS7v0lKRB1RWFmtycMrqfbxhwcPGQE3jvTmo7
-A9BsGW1z+0OJ3dZcLYZSpw30CSyL/ANANhFTNWLwWGGp+LilTmwR+53eiMPzc3Sn
-UX/Nj4F7d5KImBInqAarTFDcWcr3ZPKABVU9j4aI8FPnNEXhW/8=
-=u4yl
------END PGP SIGNATURE-----
-
---xrbrvrbkae5zvp4o--
 
