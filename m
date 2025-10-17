@@ -1,56 +1,59 @@
-Return-Path: <linux-btrfs+bounces-17966-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17967-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6740BBEA6C9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 18:03:27 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6E7DBEAA40
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 18:22:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 233C41884DE7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 15:59:22 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id ECCEC5A49E9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 16:10:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D48E3328E0;
-	Fri, 17 Oct 2025 15:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B6D27C162;
+	Fri, 17 Oct 2025 16:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="FLtxIBv7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YtSviiKK"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62B0330B20;
-	Fri, 17 Oct 2025 15:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616DD26B0A9;
+	Fri, 17 Oct 2025 16:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760716714; cv=none; b=VItbilOda1UscBT9bfkNO8zeUTLr59sm6QtsXniJjsjh/4kfLW6C8cltA3hTumIiyu+l1FZXbw6Qp6hbJj5T5gNWTICOi8akwTyq8JIbZ9oEqNV+42Pr1CJG5zqFOWvwtHfepVRQk1gUBQ03czqQH701SJrC9qkRjw5LHWidl5g=
+	t=1760717391; cv=none; b=qREF5xZYfz8j4tTdwHuxw+ZYqRQqN55rRX3y6OgPoYTZgs0hzvEcE6nq0yyUG+iDC24kUbfUs2Ia5BaxpplYzpi8qPIwBN4ZfU6L+ylVXc4BC+9yPQ3xRO4oXaBDYJVH0pTKa78mxyLZnYHpt1LwJuYCg8Dj1bgYz3vF8k+KuHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760716714; c=relaxed/simple;
-	bh=20X28MMOWSoptgGAWTUrviJnQniEpl6Ktq66BRGKH/M=;
+	s=arc-20240116; t=1760717391; c=relaxed/simple;
+	bh=BOrYC+tXjLjRqJyXcD4crvrBNK2lkUpKkjfEmyc87bI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EZAofDs6tjmANaLbJ9W+e6KCrPnM+TOawvwYARgHuRjq6MrABoWQprJt+xBPk+g9pQAVbzGKMgSufSvLt+VwFee82XIfw0Abkz0K/FGDEoTvyyN4f8fsiwBKHt0Nfvh9eD+d46+gmniEvkiJAhbA4WSYn3D8E3wNnx3oynGIZxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=FLtxIBv7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 687B5C4CEE7;
-	Fri, 17 Oct 2025 15:58:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1760716713;
-	bh=20X28MMOWSoptgGAWTUrviJnQniEpl6Ktq66BRGKH/M=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=iWy895WajwE+h8mx6Pi2PYix+/PvfztRajECItZdikbvNHHv5lhxGisse8tPX4JO0xzFRLKewC9ErT44yMIAJY6utZePsszk7mX8ag/vyKI5fjBwAIjLZZ0djNPioX/lMqLB9MPuNZuqA7eF0yZakSVaCNBXaDxWk6Q/EwtNQFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YtSviiKK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBE17C4CEE7;
+	Fri, 17 Oct 2025 16:09:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760717391;
+	bh=BOrYC+tXjLjRqJyXcD4crvrBNK2lkUpKkjfEmyc87bI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FLtxIBv7SZeCQWvR3ANCLmaMyydymZnc8EmPjl/1wQ2ZU6GZiD2nKCaUbGU/mGLlp
-	 fTOdia6A6ekGANEzH++1tbYBhBm/NR7Jy2B8blUuCuIxDXrSTaYf19VuAHrRtgTE73
-	 ZyIsy6hsoafgxjCLHqBFDNZjVm7M30+2G2ZqFt0Y=
-Date: Fri, 17 Oct 2025 17:03:02 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Eliav Farber <farbere@amazon.com>
-Cc: stable@vger.kernel.org, linux@armlinux.org.uk, jdike@addtoit.com,
-	richard@nod.at, anton.ivanov@cambridgegreys.com,
-	dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-	hpa@zytor.com, tony.luck@intel.com, qiuxu.zhuo@intel.com,
-	mchehab@kernel.org, james.morse@arm.com, rric@kernel.org,
-	harry.wentland@amd.com, sunpeng.li@amd.com,
-	alexander.deucher@amd.com, christian.koenig@amd.com,
-	airlied@linux.ie, daniel@ffwll.ch, evan.quan@amd.com,
-	james.qian.wang@arm.com, liviu.dudau@arm.com,
+	b=YtSviiKK7XhOypmn1B0JMTFJNg+aK9xkicr5kleBJoGLQsIHX6oRtRnPJgXbXWtLH
+	 cVrvwZYIhcft0nkxK/ZQBpXxxHeWHw5/VEilYnGTD4lEZyzXP8wqDKjbklEc7PQZxX
+	 jrw7mNWuagcjs3SnKes4mzFKMKH2tiSDMTY+zRgHS/b+KVlZKnLK4gb6spqja1+1F5
+	 LtRKkkOtABvH8jmUIF+maywb5ma9DVPFdB4So5FQ7XdD3Y3FN97CNzQWMZICjSRgyi
+	 XbXdYmBkEWUiq556ItdRa+tvmxGUk+V9ozsqtDgWFGhyHQtvMVM573eif+FMsCQ1J7
+	 ilRe5q/VN9eDQ==
+Date: Fri, 17 Oct 2025 17:09:24 +0100
+From: Nathan Chancellor <nathan@kernel.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Eliav Farber <farbere@amazon.com>, stable@vger.kernel.org,
+	linux@armlinux.org.uk, jdike@addtoit.com, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, dave.hansen@linux.intel.com,
+	luto@kernel.org, peterz@infradead.org, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+	tony.luck@intel.com, qiuxu.zhuo@intel.com, mchehab@kernel.org,
+	james.morse@arm.com, rric@kernel.org, harry.wentland@amd.com,
+	sunpeng.li@amd.com, alexander.deucher@amd.com,
+	christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+	evan.quan@amd.com, james.qian.wang@arm.com, liviu.dudau@arm.com,
 	mihail.atanassov@arm.com, brian.starkey@arm.com,
 	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
 	tzimmermann@suse.de, robdclark@gmail.com, sean@poorly.run,
@@ -73,15 +76,14 @@ Cc: stable@vger.kernel.org, linux@armlinux.org.uk, jdike@addtoit.com,
 	fw@strlen.de, jmaloy@redhat.com, ying.xue@windriver.com,
 	willy@infradead.org, sashal@kernel.org, ruanjinjie@huawei.com,
 	David.Laight@aculab.com, herve.codina@bootlin.com, Jason@zx2c4.com,
-	keescook@chromium.org, kbusch@kernel.org, nathan@kernel.org,
-	bvanassche@acm.org, ndesaulniers@google.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org, linux-edac@vger.kernel.org,
-	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-	linux-hwmon@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
+	keescook@chromium.org, kbusch@kernel.org, bvanassche@acm.org,
+	ndesaulniers@google.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-edac@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+	freedreno@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
+	linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
 	platform-driver-x86@vger.kernel.org, linux-scsi@vger.kernel.org,
 	linux-staging@lists.linux.dev, linux-btrfs@vger.kernel.org,
 	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
@@ -89,8 +91,9 @@ Cc: stable@vger.kernel.org, linux@armlinux.org.uk, jdike@addtoit.com,
 	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
 	tipc-discussion@lists.sourceforge.net
 Subject: Re: [PATCH v2 00/27 5.10.y] Backport minmax.h updates from v6.17-rc7
-Message-ID: <2025101704-rumble-chatroom-60b5@gregkh>
+Message-ID: <20251017160924.GA2728735@ax162>
 References: <20251017090519.46992-1-farbere@amazon.com>
+ <2025101704-rumble-chatroom-60b5@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -100,118 +103,68 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251017090519.46992-1-farbere@amazon.com>
+In-Reply-To: <2025101704-rumble-chatroom-60b5@gregkh>
 
-On Fri, Oct 17, 2025 at 09:04:52AM +0000, Eliav Farber wrote:
-> This series backports 27 patches to update minmax.h in the 5.10.y
-> branch, aligning it with v6.17-rc7.
+On Fri, Oct 17, 2025 at 05:03:02PM +0200, Greg KH wrote:
+> On Fri, Oct 17, 2025 at 09:04:52AM +0000, Eliav Farber wrote:
+> > This series backports 27 patches to update minmax.h in the 5.10.y
+> > branch, aligning it with v6.17-rc7.
+> > 
+> > The ultimate goal is to synchronize all long-term branches so that they
+> > include the full set of minmax.h changes.
+> > 
+> > - 6.12.y has already been backported; the changes are included in
+> >   v6.12.49.
+> > - 6.6.y has already been backported; the changes are included in
+> >   v6.6.109.
+> > - 6.1.y has already been backported; the changes are currently in the
+> >   6.1-stable tree.
+> > - 5.15.y has already been backported; the changes are currently in the
+> >   5.15-stable tree.
 > 
-> The ultimate goal is to synchronize all long-term branches so that they
-> include the full set of minmax.h changes.
+> With this series applied, on an arm64 server, building 'allmodconfig', I
+> get the following build error.
 > 
-> - 6.12.y has already been backported; the changes are included in
->   v6.12.49.
-> - 6.6.y has already been backported; the changes are included in
->   v6.6.109.
-> - 6.1.y has already been backported; the changes are currently in the
->   6.1-stable tree.
-> - 5.15.y has already been backported; the changes are currently in the
->   5.15-stable tree.
+> Oddly I don't see it on my x86 server, perhaps due to different compiler
+> versions?
+> 
+> Any ideas?
+> 
+> thanks,
+> 
+> greg k-h
+> 
+> ------------------------
+> 
+> In function ‘rt2800_txpower_to_dev’,
+>     inlined from ‘rt2800_config_channel’ at ../drivers/net/wireless/ralink/rt2x00/rt2800lib.c:4022:25:
+> ./../include/linux/compiler_types.h:309:45: error: call to ‘__compiletime_assert_1168’ declared with attribute error: clamp() low limit -7 greater than high limit 15
+>   309 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>       |                                             ^
+> ./../include/linux/compiler_types.h:290:25: note: in definition of macro ‘__compiletime_assert’
+>   290 |                         prefix ## suffix();                             \
+>       |                         ^~~~~~
+> ./../include/linux/compiler_types.h:309:9: note: in expansion of macro ‘_compiletime_assert’
+>   309 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>       |         ^~~~~~~~~~~~~~~~~~~
+> ../include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
+>    39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>       |                                     ^~~~~~~~~~~~~~~~~~
+> ../include/linux/minmax.h:188:9: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
+>   188 |         BUILD_BUG_ON_MSG(statically_true(ulo > uhi),                            \
+>       |         ^~~~~~~~~~~~~~~~
+> ../include/linux/minmax.h:195:9: note: in expansion of macro ‘__clamp_once’
+>   195 |         __clamp_once(type, val, lo, hi, __UNIQUE_ID(v_), __UNIQUE_ID(l_), __UNIQUE_ID(h_))
+>       |         ^~~~~~~~~~~~
+> ../include/linux/minmax.h:218:36: note: in expansion of macro ‘__careful_clamp’
+>   218 | #define clamp_t(type, val, lo, hi) __careful_clamp(type, val, lo, hi)
+>       |                                    ^~~~~~~~~~~~~~~
+> ../drivers/net/wireless/ralink/rt2x00/rt2800lib.c:3980:24: note: in expansion of macro ‘clamp_t’
+>  3980 |                 return clamp_t(char, txpower, MIN_A_TXPOWER, MAX_A_TXPOWER);
+>       |                        ^~~~~~~
 
-With this series applied, on an arm64 server, building 'allmodconfig', I
-get the following build error.
+Missing commit 3bc753c06dd0 ("kbuild: treat char as always unsigned")?
 
-Oddly I don't see it on my x86 server, perhaps due to different compiler
-versions?
-
-Any ideas?
-
-thanks,
-
-greg k-h
-
-------------------------
-
-In function ‘rt2800_txpower_to_dev’,
-    inlined from ‘rt2800_config_channel’ at ../drivers/net/wireless/ralink/rt2x00/rt2800lib.c:4022:25:
-./../include/linux/compiler_types.h:309:45: error: call to ‘__compiletime_assert_1168’ declared with attribute error: clamp() low limit -7 greater than high limit 15
-  309 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-      |                                             ^
-./../include/linux/compiler_types.h:290:25: note: in definition of macro ‘__compiletime_assert’
-  290 |                         prefix ## suffix();                             \
-      |                         ^~~~~~
-./../include/linux/compiler_types.h:309:9: note: in expansion of macro ‘_compiletime_assert’
-  309 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-      |         ^~~~~~~~~~~~~~~~~~~
-../include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
-   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-      |                                     ^~~~~~~~~~~~~~~~~~
-../include/linux/minmax.h:188:9: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
-  188 |         BUILD_BUG_ON_MSG(statically_true(ulo > uhi),                            \
-      |         ^~~~~~~~~~~~~~~~
-../include/linux/minmax.h:195:9: note: in expansion of macro ‘__clamp_once’
-  195 |         __clamp_once(type, val, lo, hi, __UNIQUE_ID(v_), __UNIQUE_ID(l_), __UNIQUE_ID(h_))
-      |         ^~~~~~~~~~~~
-../include/linux/minmax.h:218:36: note: in expansion of macro ‘__careful_clamp’
-  218 | #define clamp_t(type, val, lo, hi) __careful_clamp(type, val, lo, hi)
-      |                                    ^~~~~~~~~~~~~~~
-../drivers/net/wireless/ralink/rt2x00/rt2800lib.c:3980:24: note: in expansion of macro ‘clamp_t’
- 3980 |                 return clamp_t(char, txpower, MIN_A_TXPOWER, MAX_A_TXPOWER);
-      |                        ^~~~~~~
-In function ‘rt2800_txpower_to_dev’,
-    inlined from ‘rt2800_config_channel’ at ../drivers/net/wireless/ralink/rt2x00/rt2800lib.c:4024:25:
-./../include/linux/compiler_types.h:309:45: error: call to ‘__compiletime_assert_1168’ declared with attribute error: clamp() low limit -7 greater than high limit 15
-  309 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-      |                                             ^
-./../include/linux/compiler_types.h:290:25: note: in definition of macro ‘__compiletime_assert’
-  290 |                         prefix ## suffix();                             \
-      |                         ^~~~~~
-./../include/linux/compiler_types.h:309:9: note: in expansion of macro ‘_compiletime_assert’
-  309 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-      |         ^~~~~~~~~~~~~~~~~~~
-../include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
-   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-      |                                     ^~~~~~~~~~~~~~~~~~
-../include/linux/minmax.h:188:9: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
-  188 |         BUILD_BUG_ON_MSG(statically_true(ulo > uhi),                            \
-      |         ^~~~~~~~~~~~~~~~
-../include/linux/minmax.h:195:9: note: in expansion of macro ‘__clamp_once’
-  195 |         __clamp_once(type, val, lo, hi, __UNIQUE_ID(v_), __UNIQUE_ID(l_), __UNIQUE_ID(h_))
-      |         ^~~~~~~~~~~~
-../include/linux/minmax.h:218:36: note: in expansion of macro ‘__careful_clamp’
-  218 | #define clamp_t(type, val, lo, hi) __careful_clamp(type, val, lo, hi)
-      |                                    ^~~~~~~~~~~~~~~
-../drivers/net/wireless/ralink/rt2x00/rt2800lib.c:3980:24: note: in expansion of macro ‘clamp_t’
- 3980 |                 return clamp_t(char, txpower, MIN_A_TXPOWER, MAX_A_TXPOWER);
-      |                        ^~~~~~~
-In function ‘rt2800_txpower_to_dev’,
-    inlined from ‘rt2800_config_channel’ at ../drivers/net/wireless/ralink/rt2x00/rt2800lib.c:4028:4:
-./../include/linux/compiler_types.h:309:45: error: call to ‘__compiletime_assert_1168’ declared with attribute error: clamp() low limit -7 greater than high limit 15
-  309 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-      |                                             ^
-./../include/linux/compiler_types.h:290:25: note: in definition of macro ‘__compiletime_assert’
-  290 |                         prefix ## suffix();                             \
-      |                         ^~~~~~
-./../include/linux/compiler_types.h:309:9: note: in expansion of macro ‘_compiletime_assert’
-  309 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-      |         ^~~~~~~~~~~~~~~~~~~
-../include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
-   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-      |                                     ^~~~~~~~~~~~~~~~~~
-../include/linux/minmax.h:188:9: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
-  188 |         BUILD_BUG_ON_MSG(statically_true(ulo > uhi),                            \
-      |         ^~~~~~~~~~~~~~~~
-../include/linux/minmax.h:195:9: note: in expansion of macro ‘__clamp_once’
-  195 |         __clamp_once(type, val, lo, hi, __UNIQUE_ID(v_), __UNIQUE_ID(l_), __UNIQUE_ID(h_))
-      |         ^~~~~~~~~~~~
-../include/linux/minmax.h:218:36: note: in expansion of macro ‘__careful_clamp’
-  218 | #define clamp_t(type, val, lo, hi) __careful_clamp(type, val, lo, hi)
-      |                                    ^~~~~~~~~~~~~~~
-../drivers/net/wireless/ralink/rt2x00/rt2800lib.c:3980:24: note: in expansion of macro ‘clamp_t’
- 3980 |                 return clamp_t(char, txpower, MIN_A_TXPOWER, MAX_A_TXPOWER);
-      |                        ^~~~~~~
-make[6]: *** [../scripts/Makefile.build:286: drivers/net/wireless/ralink/rt2x00/rt2800lib.o] Error 1
-make[5]: *** [../scripts/Makefile.build:503: drivers/net/wireless/ralink/rt2x00] Error 2
-make[4]: *** [../scripts/Makefile.build:503: drivers/net/wireless/ralink] Error 2
-make[4]: *** Waiting for unfinished jobs....
+Cheers,
+Nathan
 
