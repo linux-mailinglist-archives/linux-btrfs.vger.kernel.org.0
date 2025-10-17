@@ -1,242 +1,269 @@
-Return-Path: <linux-btrfs+bounces-17923-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17924-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 530E3BE7544
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 11:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB2BEBE76B4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 11:09:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 577DD626DEE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 08:59:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B05E33A7925
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Oct 2025 09:06:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C18C42D4B4B;
-	Fri, 17 Oct 2025 08:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA3142D6E40;
+	Fri, 17 Oct 2025 09:05:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="OcOtS70t"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="GtOnZaic"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.162.73.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E672C029E
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 Oct 2025 08:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D8026CE36;
+	Fri, 17 Oct 2025 09:05:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.162.73.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760691509; cv=none; b=dPgO2Mg1nCJDcYw4EJf6fTCkL4YHYh6AzGsFRL5N7BU5NKmIHdc4lnqrv+t5yel4Aumm0wNI2YAYFSOQv/pqyG1sOEMu8hVJerXI9qfqdt4I6M/HLtLXkPviBALJo6VvqmrhV5tKKgsar0+veE+7hBeIxSYvJF6Pm10pM3vlpeM=
+	t=1760691948; cv=none; b=NfDPIDBQudI5qMZwCpp3G/XeqWgS+mXzDJqgWX+8yaYLpc/gzrcDX5R/jxdhi07Cgzk2E31JhTapYewWUOQKdQIgzevlsjy95ql+TxeITBW509j/ythRag75cQuJSrUE3tFNHSBiXvELxBzxSDXX2O/HAuHtVW5aWYP3JlRvoW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760691509; c=relaxed/simple;
-	bh=oXQKO3A20s9LG0SV3aJG9Rb5bk+7zId3V28nZ5uuGCQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qd98Q36Y7GSZ1pO5Coi9KLNmpYS15CHpZyHZNsvF6ITQljPcY2HtE1g7v84vup06Y0GWpuSTJvssNrr5ef2JeMKDg6PJ+Jz7HUJZjLfHUgOtGM7EanJqm3t4RF/vw3AYrgZKEEEuGPXj0IRy8vXv3SKTedu1MTzMwntx8L3wV9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=OcOtS70t; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1760691502; x=1761296302; i=quwenruo.btrfs@gmx.com;
-	bh=oXQKO3A20s9LG0SV3aJG9Rb5bk+7zId3V28nZ5uuGCQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=OcOtS70tKr3rHanueQAw82slE1CDs+HIZlRgX4pI02HbddNWKkTRuUDpVM8cyMhA
-	 aNHgAGqmkeCsgwePwRL6oohw3mTHYg4MG55Jn8Qq+Bxc01xPVreCFXGeyKtcKN2We
-	 NXuO2q9IXV9FalyrbMwFy+MjfJLicLkqJA/wy5Ef938tzMmdIPW+XyLBAl1l+06Hj
-	 HIMIThEYWkLb1LOYPGpmswgTIlWdLkfl4H7wuydrEaRXGI1h9IS0L2ywYN8W3MWOE
-	 hBFbr6IMBdxmm08DjVsqQPrYuX9ucHM+2N9Z+c8CKqW0alxOFYXrS/VZGgfKEfRpG
-	 1SJqEZcB1+5ZKGCHEg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOiHf-1uqnas2JPL-00QcOa; Fri, 17
- Oct 2025 10:58:22 +0200
-Message-ID: <f85f81cc-bfbf-49c7-8cec-d9e46f263c6e@gmx.com>
-Date: Fri, 17 Oct 2025 19:28:18 +1030
+	s=arc-20240116; t=1760691948; c=relaxed/simple;
+	bh=r3aRMRxLlDgna5pGqlhOhcl+QTURmPg1ODwkm06HnuM=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XlZ8P735Fu5sFuXNfGLa5eZHpZfKs6pT6x1Or0dvCetv9rkzSiFBMlHthIEfHu9bKVcJJNO2nmJxdVVBnYp2RjlISi5JJFMjQ1vYhH6h2pPF35P4HbOE2zZSr891OXY7VDKK5eAYcuKEfYFXYue2WZhDyJks+a15Ss1eLJDcPr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=GtOnZaic; arc=none smtp.client-ip=35.162.73.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1760691946; x=1792227946;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zbj2mTisKzioKQVYABevmwS3PD+KbTl4NbCfwfEx+Qc=;
+  b=GtOnZaicVGt0CAIJVQ+xp3gaWEamEukP3V98oU7vj6IcDxNdslbM4uCi
+   nBRS83dgbraDB4b0qfoyn3/j/Cez3ZZrF4gRgPzIrv6ENq+RCTIHVbsKl
+   RiVaNBf9VMSksFotLgDR9qGIf2EkQpAHYInScRWhEUzqaFSHJze+IKpMu
+   vh/wKCuGiF6ktSd7y621h48VURBklFvJ2vS2yHqVrUT4UxOWdmr2EyPK3
+   0WcdJICH4jxmJq9bJdsaQte6sv3ZNc1ranA1Uii4ZUxlEgJXHm2NXK2NV
+   7gHCCYWot5IJSa/r7smvYEtdFP5QoMU7hJS/HsP+jbPuWS9VjWFfwHlp4
+   g==;
+X-CSE-ConnectionGUID: sSNJqLpZTHKHoAwfMM8Y6A==
+X-CSE-MsgGUID: BK1WnszkRHiFffu8t9LkpA==
+X-IronPort-AV: E=Sophos;i="6.19,236,1754956800"; 
+   d="scan'208";a="4877932"
+Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
+  by internal-pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:05:44 +0000
+Received: from EX19MTAUWB002.ant.amazon.com [205.251.233.111:26941]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.17.61:2525] with esmtp (Farcaster)
+ id 74f44794-e502-4348-a685-c94d2b887051; Fri, 17 Oct 2025 09:05:44 +0000 (UTC)
+X-Farcaster-Flow-ID: 74f44794-e502-4348-a685-c94d2b887051
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
+ Fri, 17 Oct 2025 09:05:38 +0000
+Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
+ (172.19.116.181) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 17 Oct 2025
+ 09:05:23 +0000
+From: Eliav Farber <farbere@amazon.com>
+To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
+	<linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
+	<anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>,
+	<luto@kernel.org>, <peterz@infradead.org>, <tglx@linutronix.de>,
+	<mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>, <hpa@zytor.com>,
+	<tony.luck@intel.com>, <qiuxu.zhuo@intel.com>, <mchehab@kernel.org>,
+	<james.morse@arm.com>, <rric@kernel.org>, <harry.wentland@amd.com>,
+	<sunpeng.li@amd.com>, <alexander.deucher@amd.com>,
+	<christian.koenig@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+	<evan.quan@amd.com>, <james.qian.wang@arm.com>, <liviu.dudau@arm.com>,
+	<mihail.atanassov@arm.com>, <brian.starkey@arm.com>,
+	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+	<tzimmermann@suse.de>, <robdclark@gmail.com>, <sean@poorly.run>,
+	<jdelvare@suse.com>, <linux@roeck-us.net>, <fery@cypress.com>,
+	<dmitry.torokhov@gmail.com>, <agk@redhat.com>, <snitzer@redhat.com>,
+	<dm-devel@redhat.com>, <rajur@chelsio.com>, <davem@davemloft.net>,
+	<kuba@kernel.org>, <peppe.cavallaro@st.com>, <alexandre.torgue@st.com>,
+	<joabreu@synopsys.com>, <mcoquelin.stm32@gmail.com>, <malattia@linux.it>,
+	<hdegoede@redhat.com>, <mgross@linux.intel.com>, <intel-linux-scu@intel.com>,
+	<artur.paszkiewicz@intel.com>, <jejb@linux.ibm.com>,
+	<martin.petersen@oracle.com>, <sakari.ailus@linux.intel.com>, <clm@fb.com>,
+	<josef@toxicpanda.com>, <dsterba@suse.com>, <xiang@kernel.org>,
+	<chao@kernel.org>, <jack@suse.com>, <tytso@mit.edu>,
+	<adilger.kernel@dilger.ca>, <dushistov@mail.ru>,
+	<luc.vanoostenryck@gmail.com>, <rostedt@goodmis.org>, <pmladek@suse.com>,
+	<sergey.senozhatsky@gmail.com>, <andriy.shevchenko@linux.intel.com>,
+	<linux@rasmusvillemoes.dk>, <minchan@kernel.org>, <ngupta@vflare.org>,
+	<akpm@linux-foundation.org>, <kuznet@ms2.inr.ac.ru>,
+	<yoshfuji@linux-ipv6.org>, <pablo@netfilter.org>, <kadlec@netfilter.org>,
+	<fw@strlen.de>, <jmaloy@redhat.com>, <ying.xue@windriver.com>,
+	<willy@infradead.org>, <farbere@amazon.com>, <sashal@kernel.org>,
+	<ruanjinjie@huawei.com>, <David.Laight@ACULAB.COM>,
+	<herve.codina@bootlin.com>, <Jason@zx2c4.com>, <keescook@chromium.org>,
+	<kbusch@kernel.org>, <nathan@kernel.org>, <bvanassche@acm.org>,
+	<ndesaulniers@google.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-um@lists.infradead.org>,
+	<linux-edac@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>,
+	<dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+	<freedreno@lists.freedesktop.org>, <linux-hwmon@vger.kernel.org>,
+	<linux-input@vger.kernel.org>, <linux-media@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+	<platform-driver-x86@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+	<linux-staging@lists.linux.dev>, <linux-btrfs@vger.kernel.org>,
+	<linux-erofs@lists.ozlabs.org>, <linux-ext4@vger.kernel.org>,
+	<linux-sparse@vger.kernel.org>, <linux-mm@kvack.org>,
+	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
+	<tipc-discussion@lists.sourceforge.net>
+Subject: [PATCH v2 00/27 5.10.y] Backport minmax.h updates from v6.17-rc7
+Date: Fri, 17 Oct 2025 09:04:52 +0000
+Message-ID: <20251017090519.46992-1-farbere@amazon.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Any proper way to prevent system from power management
- suspension/hibernation?
-To: Christian Heusel <christian@heusel.eu>
-Cc: systemd-devel@lists.freedesktop.org,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <32690b57-86ac-49bd-b913-b080aab03b42@gmx.com>
- <2e47f358-69d7-43b2-985f-c2484be9469b@heusel.eu>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <2e47f358-69d7-43b2-985f-c2484be9469b@heusel.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:GXL17Tay87BTy3K8cWjZc1tT6Wa+mS2NFYXkV1/OnUcy5DNN1W2
- NJZZOm5yGfmwWCWQe5ub5ZdkpMyazo/khaUFOpSZMAeQfzG0SLR0vtMuyjG0CW8IOKVEmnx
- PTx2SITyAkAUx31ELJuXvPIliwHBew/KKiVyVfwfinTJMDBz7MvsajswQLtlDeRm+8sw31R
- IHU3aM+VMU4B2X4rYlMVw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:gmfcDx2cTUE=;uwuPYDpEAg+VGDWHrgfnjRueeMT
- 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
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D045UWA003.ant.amazon.com (10.13.139.46) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 
+This series backports 27 patches to update minmax.h in the 5.10.y
+branch, aligning it with v6.17-rc7.
 
+The ultimate goal is to synchronize all long-term branches so that they
+include the full set of minmax.h changes.
 
-=E5=9C=A8 2025/10/17 19:11, Christian Heusel =E5=86=99=E9=81=93:
-> On 25/10/17 03:08PM, Qu Wenruo wrote:
->> Hi,
->=20
-> Hey Qu,
->=20
->> Recently I'm fixing a bug in btrfs scrub/replace where long running
->> scrub/dev-replace ioctl will prevent systems from suspension/hibernatio=
-n.
->>
->> With that fixed, btrfs scrub/dev-replace will abort the current run if =
-the
->> filesystem or the process is being frozen, thus allowing pm to freeze t=
-he fs
->> then the process.
->>
->>
->> However this exposed another problem, now PM suspension/hibernation wil=
-l
->> always interrupt scrub/dev-replace runs, and it's not that easy to resu=
-me
->> from the last handled bytes.
->>
->> I'm wonder if there is any generic solution to prevent power management=
- from
->> entering suspension/hibernation (using systmed), and is generic enough =
-to
->> handle not only pure systemd, but also various GUI environments (like
->> KDE/GNOME).
->=20
-> I think this could be a good fit for [systemd-inhibit][0][1] which could=
- be
-> used to wrap the relevant command in the systemd unit.
+- 6.12.y has already been backported; the changes are included in
+  v6.12.49.
+- 6.6.y has already been backported; the changes are included in
+  v6.6.109.
+- 6.1.y has already been backported; the changes are currently in the
+  6.1-stable tree.
+- 5.15.y has already been backported; the changes are currently in the
+  5.15-stable tree.
 
-Thanks a lot!
+The key motivation is to bring in commit d03eba99f5bf ("minmax: allow
+min()/max()/clamp() if the arguments have the same signedness"), which
+is missing in kernel 5.10.y.
 
-That's exactly what we need for the systemd service files.
+In mainline, this change enables min()/max()/clamp() to accept mixed
+argument types, provided both have the same signedness. Without it,
+backported patches that use these forms may trigger compiler warnings,
+which escalate to build failures when -Werror is enabled.
 
-Although pulling in the full systemd dependency for btrfs-progs may be a=
-=20
-little overkilled, for btrfsmaintance service files it's definitely more=
-=20
-than enough.
+The first two patches in this series were added to prevent build
+failures caused by changes introduced later in minmax.h.
 
-Thanks you very much for this awesome hint,
-Qu
->=20
->> If there is such solution, we can provide different systemd services fi=
-les
->> to end users, and they can choose what version they want, either gives =
-pm
->> the priority and accept scrub/dev-replace can be interrupted, or preven=
-t pm
->> actions in the first place (no attempt to even suspend, thus no extra
->> timeout).
->>
->> Thanks,
->> Qu
->=20
-> Cheers,
-> Chris
->=20
-> [0]: https://www.freedesktop.org/software/systemd/man/latest/systemd-inh=
-ibit.html
-> [1]: https://systemd.io/INHIBITOR_LOCKS/
+ - Commit 92d23c6e9415 ("overflow, tracing: Define the is_signed_type()
+   macro once") is needed for commit 75ca38c1960f ("minmax: allow
+   min()/max()/clamp()").
+
+ - Commit cea628008fc8 ("btrfs: remove duplicated in_range() macro") is
+   needed for commit f9bff0e31881 ("minmax: add in_range() macro").
+
+The changes were tested using `make allyesconfig` and
+`make allmodconfig` for arm64, arm, x86_64 and i386 architectures.
+
+Changes in v2:
+The series was updated after initially backporting and approving the
+newer long-term branches.
+
+Andy Shevchenko (2):
+  minmax: deduplicate __unconst_integer_typeof()
+  minmax: fix header inclusions
+
+Bart Van Assche (1):
+  overflow, tracing: Define the is_signed_type() macro once
+
+David Laight (11):
+  minmax: allow min()/max()/clamp() if the arguments have the same
+    signedness.
+  minmax: fix indentation of __cmp_once() and __clamp_once()
+  minmax: allow comparisons of 'int' against 'unsigned char/short'
+  minmax: relax check to allow comparison between unsigned arguments and
+    signed constants
+  minmax.h: add whitespace around operators and after commas
+  minmax.h: update some comments
+  minmax.h: reduce the #define expansion of min(), max() and clamp()
+  minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi test in clamp()
+  minmax.h: move all the clamp() definitions after the min/max() ones
+  minmax.h: simplify the variants of clamp()
+  minmax.h: remove some #defines that are only expanded once
+
+Herve Codina (1):
+  minmax: Introduce {min,max}_array()
+
+Jason A. Donenfeld (2):
+  minmax: sanity check constant bounds when clamping
+  minmax: clamp more efficiently by avoiding extra comparison
+
+Johannes Thumshirn (1):
+  btrfs: remove duplicated in_range() macro
+
+Linus Torvalds (8):
+  minmax: avoid overly complicated constant expressions in VM code
+  minmax: add a few more MIN_T/MAX_T users
+  minmax: simplify and clarify min_t()/max_t() implementation
+  minmax: make generic MIN() and MAX() macros available everywhere
+  minmax: don't use max() in situations that want a C constant
+    expression
+  minmax: simplify min()/max()/clamp() implementation
+  minmax: improve macro expansion and type checking
+  minmax: fix up min3() and max3() too
+
+Matthew Wilcox (Oracle) (1):
+  minmax: add in_range() macro
+
+ arch/arm/mm/pageattr.c                        |   6 +-
+ arch/um/drivers/mconsole_user.c               |   2 +
+ arch/x86/mm/pgtable.c                         |   2 +-
+ drivers/edac/sb_edac.c                        |   4 +-
+ drivers/edac/skx_common.h                     |   1 -
+ .../drm/amd/display/modules/hdcp/hdcp_ddc.c   |   2 +
+ .../drm/amd/pm/powerplay/hwmgr/ppevvmath.h    |  14 +-
+ .../drm/arm/display/include/malidp_utils.h    |   2 +-
+ .../display/komeda/komeda_pipeline_state.c    |  24 +-
+ drivers/gpu/drm/drm_color_mgmt.c              |   2 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c         |   6 -
+ drivers/gpu/drm/radeon/evergreen_cs.c         |   2 +
+ drivers/hwmon/adt7475.c                       |  24 +-
+ drivers/input/touchscreen/cyttsp4_core.c      |   2 +-
+ drivers/md/dm-integrity.c                     |   6 +-
+ drivers/media/dvb-frontends/stv0367_priv.h    |   3 +
+ .../net/ethernet/chelsio/cxgb3/cxgb3_main.c   |  18 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
+ drivers/net/fjes/fjes_main.c                  |   4 +-
+ drivers/nfc/pn544/i2c.c                       |   2 -
+ drivers/platform/x86/sony-laptop.c            |   1 -
+ drivers/scsi/isci/init.c                      |   6 +-
+ .../pci/hive_isp_css_include/math_support.h   |   5 -
+ fs/btrfs/ctree.h                              |   2 -
+ fs/btrfs/extent_io.c                          |   1 +
+ fs/btrfs/file-item.c                          |   1 +
+ fs/btrfs/misc.h                               |   2 -
+ fs/btrfs/raid56.c                             |   1 +
+ fs/btrfs/tree-checker.c                       |   2 +-
+ fs/erofs/zdata.h                              |   2 +-
+ fs/ext2/balloc.c                              |   2 -
+ fs/ext4/ext4.h                                |   2 -
+ fs/ufs/util.h                                 |   6 -
+ include/linux/compiler.h                      |  15 +
+ include/linux/minmax.h                        | 267 ++++++++++++++----
+ include/linux/overflow.h                      |   1 -
+ include/linux/trace_events.h                  |   2 -
+ kernel/trace/preemptirq_delay_test.c          |   2 -
+ lib/btree.c                                   |   1 -
+ lib/decompress_unlzma.c                       |   2 +
+ lib/logic_pio.c                               |   3 -
+ lib/vsprintf.c                                |   2 +-
+ lib/zstd/zstd_internal.h                      |   2 -
+ mm/zsmalloc.c                                 |   1 -
+ net/ipv4/proc.c                               |   2 +-
+ net/ipv6/proc.c                               |   2 +-
+ net/netfilter/nf_nat_core.c                   |   6 +-
+ net/tipc/core.h                               |   2 +-
+ net/tipc/link.c                               |  10 +-
+ 49 files changed, 312 insertions(+), 169 deletions(-)
+
+-- 
+2.47.3
 
 
