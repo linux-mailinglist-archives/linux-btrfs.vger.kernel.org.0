@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-17987-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17988-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41F25BEC783
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 06:37:47 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55677BEC789
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 06:37:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE7126E2629
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 04:37:10 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3844D4F6DC2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 04:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B77B28CF66;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A118928F948;
 	Sat, 18 Oct 2025 04:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hDz/xzp8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dvAu53uC"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC99C28506F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFEAD28640C;
 	Sat, 18 Oct 2025 04:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760762183; cv=none; b=e8A6EUPFJ7L1UrDLMJgOeiGztbV0+Awyvu0Qxn/Jz3wbP4Ya3F4sX9aIZ2dXaSE4/TVV+XLiALTGRSupECKxmw/5eeRxYmvNqgz9c3s6CBdwZOUXXIZ5LZK1PMQnu9i7rmSpWDRnYib1jacwNWTFIfNVcWDTRqIa+m4kNbrdssk=
+	t=1760762183; cv=none; b=ObYZ8OAkTJZjxpPIH4RHq3rc2SS8VolvCimlt4aBs4tmxexOZ/U/UFJFvKcamjTk5PC8nv3XvR8cPqcKEPHZxn7Hj+lU+9Ecjb1v+3+7P2wsZKf0/XlS9DizBZv663WeaAYjOOJy2lLHzWAfhUxqbh2l+HtQKDRAxbhVeAjPa5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1760762183; c=relaxed/simple;
-	bh=/JwiNbJDKbRFYE+Zq0Bj+ifiGxJlAiciGRgJis3Y+UE=;
+	bh=oVy/e66OZErUv0ljGHWjH/vFmXCXXdtO5v7arPRygeo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lTsQQaEQJy8RFEklxRzkBlUvgAUeowF8GFKz6sfgENb807YP0jBmmsHFv8hlkesixxqS2SwH4PcK8x4EN15QaXRrrw3OtqpmC1hTzoklhA7S4zoCuBl6Dp6It6CLdiRN/ZD9DvEnXXIBNw1iyQW5E42NCdV3FFDNA+gO1GEw25w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hDz/xzp8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20B2EC116C6;
+	 MIME-Version; b=JfzE4ZCEk3QKcrERJL4H2DEA4XNA/a/yTKdBrD2iIznaLLW1gVBmZw+dMhzJD0mFnLgYYgp1hGMjx+rHWw6f6cdKiiVvJAeA+iGgjVaGkmhrbWbjPHn7RRe/7ROtr0UZ9rFjZXYlGmzs11QDDYrJrVq86T91rlcIc+131nBXqLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dvAu53uC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AED0C116D0;
 	Sat, 18 Oct 2025 04:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1760762183;
-	bh=/JwiNbJDKbRFYE+Zq0Bj+ifiGxJlAiciGRgJis3Y+UE=;
+	bh=oVy/e66OZErUv0ljGHWjH/vFmXCXXdtO5v7arPRygeo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hDz/xzp8YliPTDNMF/FAox/aNpRDQxTAgRRYGcWe7YG40nUEC9RRqD64j0ZI03uWs
-	 fSynJHjlFF5AhzJDq2iPoUrDqZG0Ky0EwlbLzFeK1lEIZhNF80ytyOWw6cyL/PUvvX
-	 6EHx18yB6oNsK56wkCKwNsE4sJV4X0NhXFxVX7Ttd5pIoAEcZNF+ujq9LHHRXPcZqX
-	 5HpTB74t5HK0wXkMOZKxY11Suyx36bBuoWZG58WNa/5OviMGkzPlQnedtmptNuO+Hf
-	 GoJqptFK3yec+j1RY31G1iF82iXIsVcx6U1ZbKz2x2fv6IUPd1opZGLsgfpRtNkZlq
-	 PGiZzfBevCn8g==
+	b=dvAu53uC4HoC9WirzBqhUcDMIEqBqINGiaEwSDOu49khgSoKKraeYFaTdLfGsHakc
+	 vRWMTIQPsN2EqIbkonAq4bxpq3WZJRhhJI6n6eCz9E96jxEhBQXB6/G868LcNepxj9
+	 6e4Jw50hp8dxAEEStS5JvFvok41Zuhiyxl+RsxMkpDFIMybAWmZrCegzv5FdpyZRKP
+	 mYqbeArqz71rjS38h5cUrsOizQUjywezDO+DgAqFDfhuFjPwf3v1adT2goLDFcPPZ1
+	 jGF5Fuw/zwD2oSYyOtIyKlBIxWnSKwI2ENAXwv8ywvlvREGshSqnV63MFXUFYFX8hO
+	 sdsXUjVG2E5Lw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -49,9 +49,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Ard Biesheuvel <ardb@kernel.org>,
 	"Jason A . Donenfeld" <Jason@zx2c4.com>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 06/10] lib/crypto: blake2b: Add BLAKE2b library functions
-Date: Fri, 17 Oct 2025 21:31:02 -0700
-Message-ID: <20251018043106.375964-7-ebiggers@kernel.org>
+Subject: [PATCH 07/10] lib/crypto: arm/blake2b: Migrate optimized code into library
+Date: Fri, 17 Oct 2025 21:31:03 -0700
+Message-ID: <20251018043106.375964-8-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.51.1.dirty
 In-Reply-To: <20251018043106.375964-1-ebiggers@kernel.org>
 References: <20251018043106.375964-1-ebiggers@kernel.org>
@@ -63,457 +63,381 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a library API for BLAKE2b, closely modeled after the BLAKE2s API.
+Migrate the arm-optimized BLAKE2b code from arch/arm/crypto/ to
+lib/crypto/arm/.  This makes the BLAKE2b library able to use it, and it
+also simplifies the code because it's easier to integrate with the
+library than crypto_shash.
 
-This will allow in-kernel users such as btrfs to use BLAKE2b without
-going through the generic crypto layer.  In addition, as usual the
-BLAKE2b crypto_shash algorithms will be reimplemented on top of this.
+This temporarily makes the arm-optimized BLAKE2b code unavailable via
+crypto_shash.  A later commit reimplements the blake2b-* crypto_shash
+algorithms on top of the BLAKE2b library API, making it available again.
 
-Note: to create lib/crypto/blake2b.c I made a copy of
-lib/crypto/blake2s.c and made the updates from BLAKE2s => BLAKE2b.  This
-way, the BLAKE2s and BLAKE2b code is kept consistent.  Therefore, it
-borrows the SPDX-License-Identifier and Copyright from
-lib/crypto/blake2s.c rather than crypto/blake2b_generic.c.
+Note that as per the lib/crypto/ convention, the optimized code is now
+enabled by default.  So, this also fixes the longstanding issue where
+the optimized BLAKE2b code was not enabled by default.
 
-The library API uses 'struct blake2b_ctx', consistent with other
-lib/crypto/ APIs.  The existing 'struct blake2b_state' will be removed
-once the blake2b crypto_shash algorithms are updated to stop using it.
+To see the diff from arch/arm/crypto/blake2b-neon-glue.c to
+lib/crypto/arm/blake2b.h, view this commit with 'git show -M10'.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- include/crypto/blake2b.h          | 133 ++++++++++++++++++++---
- include/crypto/internal/blake2b.h |  17 ++-
- lib/crypto/Kconfig                |  10 ++
- lib/crypto/Makefile               |   9 ++
- lib/crypto/blake2b.c              | 174 ++++++++++++++++++++++++++++++
- 5 files changed, 330 insertions(+), 13 deletions(-)
- create mode 100644 lib/crypto/blake2b.c
+ arch/arm/crypto/Kconfig                       |  16 ---
+ arch/arm/crypto/Makefile                      |   2 -
+ arch/arm/crypto/blake2b-neon-glue.c           | 104 ------------------
+ lib/crypto/Kconfig                            |   1 +
+ lib/crypto/Makefile                           |   1 +
+ .../crypto/arm}/blake2b-neon-core.S           |  29 ++---
+ lib/crypto/arm/blake2b.h                      |  41 +++++++
+ 7 files changed, 59 insertions(+), 135 deletions(-)
+ delete mode 100644 arch/arm/crypto/blake2b-neon-glue.c
+ rename {arch/arm/crypto => lib/crypto/arm}/blake2b-neon-core.S (94%)
+ create mode 100644 lib/crypto/arm/blake2b.h
 
-diff --git a/include/crypto/blake2b.h b/include/crypto/blake2b.h
-index dd7694477e50f..4879e2ec26867 100644
---- a/include/crypto/blake2b.h
-+++ b/include/crypto/blake2b.h
-@@ -26,10 +26,29 @@ enum blake2b_lengths {
- 	BLAKE2B_256_HASH_SIZE = 32,
- 	BLAKE2B_384_HASH_SIZE = 48,
- 	BLAKE2B_512_HASH_SIZE = 64,
- };
+diff --git a/arch/arm/crypto/Kconfig b/arch/arm/crypto/Kconfig
+index c436eec22d86c..f30d743df2643 100644
+--- a/arch/arm/crypto/Kconfig
++++ b/arch/arm/crypto/Kconfig
+@@ -31,26 +31,10 @@ config CRYPTO_NHPOLY1305_NEON
+ 	  NHPoly1305 hash function (Adiantum)
  
-+/**
-+ * struct blake2b_ctx - Context for hashing a message with BLAKE2b
-+ * @h: compression function state
-+ * @t: block counter
-+ * @f: finalization indicator
-+ * @buf: partial block buffer; 'buflen' bytes are valid
-+ * @buflen: number of bytes buffered in @buf
-+ * @outlen: length of output hash value in bytes, at most BLAKE2B_HASH_SIZE
-+ */
-+struct blake2b_ctx {
-+	/* 'h', 't', and 'f' are used in assembly code, so keep them as-is. */
-+	u64 h[8];
-+	u64 t[2];
-+	u64 f[2];
-+	u8 buf[BLAKE2B_BLOCK_SIZE];
-+	unsigned int buflen;
-+	unsigned int outlen;
-+};
-+
- enum blake2b_iv {
- 	BLAKE2B_IV0 = 0x6A09E667F3BCC908ULL,
- 	BLAKE2B_IV1 = 0xBB67AE8584CAA73BULL,
- 	BLAKE2B_IV2 = 0x3C6EF372FE94F82BULL,
- 	BLAKE2B_IV3 = 0xA54FF53A5F1D36F1ULL,
-@@ -37,21 +56,111 @@ enum blake2b_iv {
- 	BLAKE2B_IV5 = 0x9B05688C2B3E6C1FULL,
- 	BLAKE2B_IV6 = 0x1F83D9ABFB41BD6BULL,
- 	BLAKE2B_IV7 = 0x5BE0CD19137E2179ULL,
- };
+ 	  Architecture: arm using:
+ 	  - NEON (Advanced SIMD) extensions
  
--static inline void __blake2b_init(struct blake2b_state *state, size_t outlen,
--				  size_t keylen)
-+static inline void __blake2b_init(struct blake2b_ctx *ctx, size_t outlen,
-+				  const void *key, size_t keylen)
-+{
-+	ctx->h[0] = BLAKE2B_IV0 ^ (0x01010000 | keylen << 8 | outlen);
-+	ctx->h[1] = BLAKE2B_IV1;
-+	ctx->h[2] = BLAKE2B_IV2;
-+	ctx->h[3] = BLAKE2B_IV3;
-+	ctx->h[4] = BLAKE2B_IV4;
-+	ctx->h[5] = BLAKE2B_IV5;
-+	ctx->h[6] = BLAKE2B_IV6;
-+	ctx->h[7] = BLAKE2B_IV7;
-+	ctx->t[0] = 0;
-+	ctx->t[1] = 0;
-+	ctx->f[0] = 0;
-+	ctx->f[1] = 0;
-+	ctx->buflen = 0;
-+	ctx->outlen = outlen;
-+	if (keylen) {
-+		memcpy(ctx->buf, key, keylen);
-+		memset(&ctx->buf[keylen], 0, BLAKE2B_BLOCK_SIZE - keylen);
-+		ctx->buflen = BLAKE2B_BLOCK_SIZE;
-+	}
-+}
-+
-+/**
-+ * blake2b_init() - Initialize a BLAKE2b context for a new message (unkeyed)
-+ * @ctx: the context to initialize
-+ * @outlen: length of output hash value in bytes, at most BLAKE2B_HASH_SIZE
-+ *
-+ * Context: Any context.
-+ */
-+static inline void blake2b_init(struct blake2b_ctx *ctx, size_t outlen)
-+{
-+	__blake2b_init(ctx, outlen, NULL, 0);
-+}
-+
-+/**
-+ * blake2b_init_key() - Initialize a BLAKE2b context for a new message (keyed)
-+ * @ctx: the context to initialize
-+ * @outlen: length of output hash value in bytes, at most BLAKE2B_HASH_SIZE
-+ * @key: the key
-+ * @keylen: the key length in bytes, at most BLAKE2B_KEY_SIZE
-+ *
-+ * Context: Any context.
-+ */
-+static inline void blake2b_init_key(struct blake2b_ctx *ctx, size_t outlen,
-+				    const void *key, size_t keylen)
-+{
-+	WARN_ON(IS_ENABLED(DEBUG) && (!outlen || outlen > BLAKE2B_HASH_SIZE ||
-+		!key || !keylen || keylen > BLAKE2B_KEY_SIZE));
-+
-+	__blake2b_init(ctx, outlen, key, keylen);
-+}
-+
-+/**
-+ * blake2b_update() - Update a BLAKE2b context with message data
-+ * @ctx: the context to update; must have been initialized
-+ * @in: the message data
-+ * @inlen: the data length in bytes
-+ *
-+ * This can be called any number of times.
-+ *
-+ * Context: Any context.
-+ */
-+void blake2b_update(struct blake2b_ctx *ctx, const u8 *in, size_t inlen);
-+
-+/**
-+ * blake2b_final() - Finish computing a BLAKE2b hash
-+ * @ctx: the context to finalize; must have been initialized
-+ * @out: (output) the resulting BLAKE2b hash.  Its length will be equal to the
-+ *	 @outlen that was passed to blake2b_init() or blake2b_init_key().
-+ *
-+ * After finishing, this zeroizes @ctx.  So the caller does not need to do it.
-+ *
-+ * Context: Any context.
-+ */
-+void blake2b_final(struct blake2b_ctx *ctx, u8 *out);
-+
-+/**
-+ * blake2b() - Compute BLAKE2b hash in one shot
-+ * @key: the key, or NULL for an unkeyed hash
-+ * @keylen: the key length in bytes (at most BLAKE2B_KEY_SIZE), or 0 for an
-+ *	    unkeyed hash
-+ * @in: the message data
-+ * @inlen: the data length in bytes
-+ * @out: (output) the resulting BLAKE2b hash, with length @outlen
-+ * @outlen: length of output hash value in bytes, at most BLAKE2B_HASH_SIZE
-+ *
-+ * Context: Any context.
-+ */
-+static inline void blake2b(const u8 *key, size_t keylen,
-+			   const u8 *in, size_t inlen,
-+			   u8 *out, size_t outlen)
- {
--	state->h[0] = BLAKE2B_IV0 ^ (0x01010000 | keylen << 8 | outlen);
--	state->h[1] = BLAKE2B_IV1;
--	state->h[2] = BLAKE2B_IV2;
--	state->h[3] = BLAKE2B_IV3;
--	state->h[4] = BLAKE2B_IV4;
--	state->h[5] = BLAKE2B_IV5;
--	state->h[6] = BLAKE2B_IV6;
--	state->h[7] = BLAKE2B_IV7;
--	state->t[0] = 0;
--	state->t[1] = 0;
-+	struct blake2b_ctx ctx;
-+
-+	WARN_ON(IS_ENABLED(DEBUG) && ((!in && inlen > 0) || !out || !outlen ||
-+		outlen > BLAKE2B_HASH_SIZE || keylen > BLAKE2B_KEY_SIZE ||
-+		(!key && keylen)));
-+
-+	__blake2b_init(&ctx, outlen, key, keylen);
-+	blake2b_update(&ctx, in, inlen);
-+	blake2b_final(&ctx, out);
- }
+-config CRYPTO_BLAKE2B_NEON
+-	tristate "Hash functions: BLAKE2b (NEON)"
+-	depends on KERNEL_MODE_NEON
+-	select CRYPTO_BLAKE2B
+-	help
+-	  BLAKE2b cryptographic hash function (RFC 7693)
+-
+-	  Architecture: arm using
+-	  - NEON (Advanced SIMD) extensions
+-
+-	  BLAKE2b digest algorithm optimized with ARM NEON instructions.
+-	  On ARM processors that have NEON support but not the ARMv8
+-	  Crypto Extensions, typically this BLAKE2b implementation is
+-	  much faster than the SHA-2 family and slightly faster than
+-	  SHA-1.
+-
+ config CRYPTO_AES_ARM
+ 	tristate "Ciphers: AES"
+ 	select CRYPTO_ALGAPI
+ 	select CRYPTO_AES
+ 	help
+diff --git a/arch/arm/crypto/Makefile b/arch/arm/crypto/Makefile
+index 6346a73effc06..86dd43313dbfd 100644
+--- a/arch/arm/crypto/Makefile
++++ b/arch/arm/crypto/Makefile
+@@ -3,17 +3,15 @@
+ # Arch-specific CryptoAPI modules.
+ #
  
- #endif /* _CRYPTO_BLAKE2B_H */
-diff --git a/include/crypto/internal/blake2b.h b/include/crypto/internal/blake2b.h
-index 3e09e24853060..3712df69def18 100644
---- a/include/crypto/internal/blake2b.h
-+++ b/include/crypto/internal/blake2b.h
-@@ -55,17 +55,32 @@ static inline int crypto_blake2b_setkey(struct crypto_shash *tfm,
- 	tctx->keylen = keylen;
+ obj-$(CONFIG_CRYPTO_AES_ARM) += aes-arm.o
+ obj-$(CONFIG_CRYPTO_AES_ARM_BS) += aes-arm-bs.o
+-obj-$(CONFIG_CRYPTO_BLAKE2B_NEON) += blake2b-neon.o
+ obj-$(CONFIG_CRYPTO_NHPOLY1305_NEON) += nhpoly1305-neon.o
  
- 	return 0;
- }
+ obj-$(CONFIG_CRYPTO_AES_ARM_CE) += aes-arm-ce.o
+ obj-$(CONFIG_CRYPTO_GHASH_ARM_CE) += ghash-arm-ce.o
  
-+static inline void __crypto_blake2b_init(struct blake2b_state *state,
-+					 size_t outlen, size_t keylen)
-+{
-+	state->h[0] = BLAKE2B_IV0 ^ (0x01010000 | keylen << 8 | outlen);
-+	state->h[1] = BLAKE2B_IV1;
-+	state->h[2] = BLAKE2B_IV2;
-+	state->h[3] = BLAKE2B_IV3;
-+	state->h[4] = BLAKE2B_IV4;
-+	state->h[5] = BLAKE2B_IV5;
-+	state->h[6] = BLAKE2B_IV6;
-+	state->h[7] = BLAKE2B_IV7;
-+	state->t[0] = 0;
-+	state->t[1] = 0;
-+}
-+
- static inline int crypto_blake2b_init(struct shash_desc *desc)
- {
- 	const struct blake2b_tfm_ctx *tctx = crypto_shash_ctx(desc->tfm);
- 	struct blake2b_state *state = shash_desc_ctx(desc);
- 	unsigned int outlen = crypto_shash_digestsize(desc->tfm);
- 
--	__blake2b_init(state, outlen, tctx->keylen);
-+	__crypto_blake2b_init(state, outlen, tctx->keylen);
- 	return tctx->keylen ?
- 	       crypto_shash_update(desc, tctx->key, BLAKE2B_BLOCK_SIZE) : 0;
- }
- 
- static inline int crypto_blake2b_update_bo(struct shash_desc *desc,
+ aes-arm-y	:= aes-cipher-core.o aes-cipher-glue.o
+ aes-arm-bs-y	:= aes-neonbs-core.o aes-neonbs-glue.o
+-blake2b-neon-y  := blake2b-neon-core.o blake2b-neon-glue.o
+ aes-arm-ce-y	:= aes-ce-core.o aes-ce-glue.o
+ ghash-arm-ce-y	:= ghash-ce-core.o ghash-ce-glue.o
+ nhpoly1305-neon-y := nh-neon-core.o nhpoly1305-neon-glue.o
+diff --git a/arch/arm/crypto/blake2b-neon-glue.c b/arch/arm/crypto/blake2b-neon-glue.c
+deleted file mode 100644
+index 2ff443a91724f..0000000000000
+--- a/arch/arm/crypto/blake2b-neon-glue.c
++++ /dev/null
+@@ -1,104 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * BLAKE2b digest algorithm, NEON accelerated
+- *
+- * Copyright 2020 Google LLC
+- */
+-
+-#include <crypto/internal/blake2b.h>
+-#include <crypto/internal/hash.h>
+-
+-#include <linux/module.h>
+-#include <linux/sizes.h>
+-
+-#include <asm/neon.h>
+-#include <asm/simd.h>
+-
+-asmlinkage void blake2b_compress_neon(struct blake2b_state *state,
+-				      const u8 *block, size_t nblocks, u32 inc);
+-
+-static void blake2b_compress_arch(struct blake2b_state *state,
+-				  const u8 *block, size_t nblocks, u32 inc)
+-{
+-	do {
+-		const size_t blocks = min_t(size_t, nblocks,
+-					    SZ_4K / BLAKE2B_BLOCK_SIZE);
+-
+-		kernel_neon_begin();
+-		blake2b_compress_neon(state, block, blocks, inc);
+-		kernel_neon_end();
+-
+-		nblocks -= blocks;
+-		block += blocks * BLAKE2B_BLOCK_SIZE;
+-	} while (nblocks);
+-}
+-
+-static int crypto_blake2b_update_neon(struct shash_desc *desc,
+-				      const u8 *in, unsigned int inlen)
+-{
+-	return crypto_blake2b_update_bo(desc, in, inlen, blake2b_compress_arch);
+-}
+-
+-static int crypto_blake2b_finup_neon(struct shash_desc *desc, const u8 *in,
+-				     unsigned int inlen, u8 *out)
+-{
+-	return crypto_blake2b_finup(desc, in, inlen, out,
+-				    blake2b_compress_arch);
+-}
+-
+-#define BLAKE2B_ALG(name, driver_name, digest_size)			\
+-	{								\
+-		.base.cra_name		= name,				\
+-		.base.cra_driver_name	= driver_name,			\
+-		.base.cra_priority	= 200,				\
+-		.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY |	\
+-					  CRYPTO_AHASH_ALG_BLOCK_ONLY |	\
+-					  CRYPTO_AHASH_ALG_FINAL_NONZERO, \
+-		.base.cra_blocksize	= BLAKE2B_BLOCK_SIZE,		\
+-		.base.cra_ctxsize	= sizeof(struct blake2b_tfm_ctx), \
+-		.base.cra_module	= THIS_MODULE,			\
+-		.digestsize		= digest_size,			\
+-		.setkey			= crypto_blake2b_setkey,	\
+-		.init			= crypto_blake2b_init,		\
+-		.update			= crypto_blake2b_update_neon,	\
+-		.finup			= crypto_blake2b_finup_neon,	\
+-		.descsize		= sizeof(struct blake2b_state),	\
+-		.statesize		= BLAKE2B_STATE_SIZE,		\
+-	}
+-
+-static struct shash_alg blake2b_neon_algs[] = {
+-	BLAKE2B_ALG("blake2b-160", "blake2b-160-neon", BLAKE2B_160_HASH_SIZE),
+-	BLAKE2B_ALG("blake2b-256", "blake2b-256-neon", BLAKE2B_256_HASH_SIZE),
+-	BLAKE2B_ALG("blake2b-384", "blake2b-384-neon", BLAKE2B_384_HASH_SIZE),
+-	BLAKE2B_ALG("blake2b-512", "blake2b-512-neon", BLAKE2B_512_HASH_SIZE),
+-};
+-
+-static int __init blake2b_neon_mod_init(void)
+-{
+-	if (!(elf_hwcap & HWCAP_NEON))
+-		return -ENODEV;
+-
+-	return crypto_register_shashes(blake2b_neon_algs,
+-				       ARRAY_SIZE(blake2b_neon_algs));
+-}
+-
+-static void __exit blake2b_neon_mod_exit(void)
+-{
+-	crypto_unregister_shashes(blake2b_neon_algs,
+-				  ARRAY_SIZE(blake2b_neon_algs));
+-}
+-
+-module_init(blake2b_neon_mod_init);
+-module_exit(blake2b_neon_mod_exit);
+-
+-MODULE_DESCRIPTION("BLAKE2b digest algorithm, NEON accelerated");
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Eric Biggers <ebiggers@google.com>");
+-MODULE_ALIAS_CRYPTO("blake2b-160");
+-MODULE_ALIAS_CRYPTO("blake2b-160-neon");
+-MODULE_ALIAS_CRYPTO("blake2b-256");
+-MODULE_ALIAS_CRYPTO("blake2b-256-neon");
+-MODULE_ALIAS_CRYPTO("blake2b-384");
+-MODULE_ALIAS_CRYPTO("blake2b-384-neon");
+-MODULE_ALIAS_CRYPTO("blake2b-512");
+-MODULE_ALIAS_CRYPTO("blake2b-512-neon");
 diff --git a/lib/crypto/Kconfig b/lib/crypto/Kconfig
-index eea17e36a22be..045fd79cc1bed 100644
+index 045fd79cc1bed..56456eb786bf3 100644
 --- a/lib/crypto/Kconfig
 +++ b/lib/crypto/Kconfig
-@@ -26,10 +26,20 @@ config CRYPTO_LIB_ARC4
- 	tristate
+@@ -35,10 +35,11 @@ config CRYPTO_LIB_BLAKE2B
+ 	  the functions from <crypto/blake2b.h>.
  
- config CRYPTO_LIB_GF128MUL
- 	tristate
+ config CRYPTO_LIB_BLAKE2B_ARCH
+ 	bool
+ 	depends on CRYPTO_LIB_BLAKE2B && !UML
++	default y if ARM && KERNEL_MODE_NEON
  
-+config CRYPTO_LIB_BLAKE2B
-+	tristate
-+	help
-+	  The BLAKE2b library functions.  Select this if your module uses any of
-+	  the functions from <crypto/blake2b.h>.
-+
-+config CRYPTO_LIB_BLAKE2B_ARCH
-+	bool
-+	depends on CRYPTO_LIB_BLAKE2B && !UML
-+
  # BLAKE2s support is always built-in, so there's no CRYPTO_LIB_BLAKE2S option.
  
  config CRYPTO_LIB_BLAKE2S_ARCH
  	bool
- 	depends on !UML
 diff --git a/lib/crypto/Makefile b/lib/crypto/Makefile
-index bded351aeacef..f863417b16817 100644
+index f863417b16817..5c9a933928188 100644
 --- a/lib/crypto/Makefile
 +++ b/lib/crypto/Makefile
-@@ -29,10 +29,19 @@ libarc4-y					:= arc4.o
- 
- obj-$(CONFIG_CRYPTO_LIB_GF128MUL)		+= gf128mul.o
+@@ -34,10 +34,11 @@ obj-$(CONFIG_CRYPTO_LIB_GF128MUL)		+= gf128mul.o
+ obj-$(CONFIG_CRYPTO_LIB_BLAKE2B) += libblake2b.o
+ libblake2b-y := blake2b.o
+ CFLAGS_blake2b.o := -Wframe-larger-than=4096 #  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105930
+ ifeq ($(CONFIG_CRYPTO_LIB_BLAKE2B_ARCH),y)
+ CFLAGS_blake2b.o += -I$(src)/$(SRCARCH)
++obj-$(CONFIG_ARM) += arm/blake2b-neon-core.o
+ endif # CONFIG_CRYPTO_LIB_BLAKE2B_ARCH
  
  ################################################################################
  
-+obj-$(CONFIG_CRYPTO_LIB_BLAKE2B) += libblake2b.o
-+libblake2b-y := blake2b.o
-+CFLAGS_blake2b.o := -Wframe-larger-than=4096 #  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105930
-+ifeq ($(CONFIG_CRYPTO_LIB_BLAKE2B_ARCH),y)
-+CFLAGS_blake2b.o += -I$(src)/$(SRCARCH)
-+endif # CONFIG_CRYPTO_LIB_BLAKE2B_ARCH
-+
-+################################################################################
-+
  # blake2s is used by the /dev/random driver which is always builtin
- obj-y += blake2s.o
- ifeq ($(CONFIG_CRYPTO_LIB_BLAKE2S_ARCH),y)
- CFLAGS_blake2s.o += -I$(src)/$(SRCARCH)
- obj-$(CONFIG_ARM) += arm/blake2s-core.o
-diff --git a/lib/crypto/blake2b.c b/lib/crypto/blake2b.c
+diff --git a/arch/arm/crypto/blake2b-neon-core.S b/lib/crypto/arm/blake2b-neon-core.S
+similarity index 94%
+rename from arch/arm/crypto/blake2b-neon-core.S
+rename to lib/crypto/arm/blake2b-neon-core.S
+index 0406a186377fb..b55c37f0b88fb 100644
+--- a/arch/arm/crypto/blake2b-neon-core.S
++++ b/lib/crypto/arm/blake2b-neon-core.S
+@@ -1,8 +1,11 @@
+ /* SPDX-License-Identifier: GPL-2.0-or-later */
+ /*
+- * BLAKE2b digest algorithm, NEON accelerated
++ * BLAKE2b digest algorithm optimized with ARM NEON instructions.  On ARM
++ * processors that have NEON support but not the ARMv8 Crypto Extensions,
++ * typically this BLAKE2b implementation is much faster than the SHA-2 family
++ * and slightly faster than SHA-1.
+  *
+  * Copyright 2020 Google LLC
+  *
+  * Author: Eric Biggers <ebiggers@google.com>
+  */
+@@ -11,12 +14,12 @@
+ 
+ 	.text
+ 	.fpu		neon
+ 
+ 	// The arguments to blake2b_compress_neon()
+-	STATE		.req	r0
+-	BLOCK		.req	r1
++	CTX		.req	r0
++	DATA		.req	r1
+ 	NBLOCKS		.req	r2
+ 	INC		.req	r3
+ 
+ 	// Pointers to the rotation tables
+ 	ROR24_TABLE	.req	r4
+@@ -232,14 +235,14 @@
+ 	vld1.8		{q8-q9}, [sp, :256]
+ .endif
+ .endm
+ 
+ //
+-// void blake2b_compress_neon(struct blake2b_state *state,
+-//			      const u8 *block, size_t nblocks, u32 inc);
++// void blake2b_compress_neon(struct blake2b_ctx *ctx,
++//			      const u8 *data, size_t nblocks, u32 inc);
+ //
+-// Only the first three fields of struct blake2b_state are used:
++// Only the first three fields of struct blake2b_ctx are used:
+ //	u64 h[8];	(inout)
+ //	u64 t[2];	(inout)
+ //	u64 f[2];	(in)
+ //
+ 	.align		5
+@@ -253,11 +256,11 @@ ENTRY(blake2b_compress_neon)
+ 	mov		sp, ip
+ 
+ 	adr		ROR24_TABLE, .Lror24_table
+ 	adr		ROR16_TABLE, .Lror16_table
+ 
+-	mov		ip, STATE
++	mov		ip, CTX
+ 	vld1.64		{q0-q1}, [ip]!		// Load h[0..3]
+ 	vld1.64		{q2-q3}, [ip]!		// Load h[4..7]
+ .Lnext_block:
+ 	  adr		r10, .Lblake2b_IV
+ 	vld1.64		{q14-q15}, [ip]		// Load t[0..1] and f[0..1]
+@@ -279,18 +282,18 @@ ENTRY(blake2b_compress_neon)
+ 	// registers than the state registers, as the message doesn't change.
+ 	// Therefore we store a copy of the first 32 bytes of the message block
+ 	// (q8-q9) in an aligned buffer on the stack so that they can be
+ 	// reloaded when needed.  (We could just reload directly from the
+ 	// message buffer, but it's faster to use aligned loads.)
+-	vld1.8		{q8-q9}, [BLOCK]!
++	vld1.8		{q8-q9}, [DATA]!
+ 	  veor		q6, q6, q14	// v[12..13] = IV[4..5] ^ t[0..1]
+-	vld1.8		{q10-q11}, [BLOCK]!
++	vld1.8		{q10-q11}, [DATA]!
+ 	  veor		q7, q7, q15	// v[14..15] = IV[6..7] ^ f[0..1]
+-	vld1.8		{q12-q13}, [BLOCK]!
++	vld1.8		{q12-q13}, [DATA]!
+ 	vst1.8		{q8-q9}, [sp, :256]
+-	  mov		ip, STATE
+-	vld1.8		{q14-q15}, [BLOCK]!
++	  mov		ip, CTX
++	vld1.8		{q14-q15}, [DATA]!
+ 
+ 	// Execute the rounds.  Each round is provided the order in which it
+ 	// needs to use the message words.
+ 	_blake2b_round	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+ 	_blake2b_round	14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3
+@@ -317,11 +320,11 @@ ENTRY(blake2b_compress_neon)
+ 	  vld1.64	{q10-q11}, [ip]		// Load old h[4..7]
+ 	veor		q2, q2, q6		// v[4..5] ^= v[12..13]
+ 	veor		q3, q3, q7		// v[6..7] ^= v[14..15]
+ 	veor		q0, q0, q8		// v[0..1] ^= h[0..1]
+ 	veor		q1, q1, q9		// v[2..3] ^= h[2..3]
+-	  mov		ip, STATE
++	  mov		ip, CTX
+ 	  subs		NBLOCKS, NBLOCKS, #1	// nblocks--
+ 	  vst1.64	{q0-q1}, [ip]!		// Store new h[0..3]
+ 	veor		q2, q2, q10		// v[4..5] ^= h[4..5]
+ 	veor		q3, q3, q11		// v[6..7] ^= h[6..7]
+ 	  vst1.64	{q2-q3}, [ip]!		// Store new h[4..7]
+diff --git a/lib/crypto/arm/blake2b.h b/lib/crypto/arm/blake2b.h
 new file mode 100644
-index 0000000000000..09c6d65d8a6e6
+index 0000000000000..1b9154d119db4
 --- /dev/null
-+++ b/lib/crypto/blake2b.c
-@@ -0,0 +1,174 @@
-+// SPDX-License-Identifier: GPL-2.0 OR MIT
++++ b/lib/crypto/arm/blake2b.h
+@@ -0,0 +1,41 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
 +/*
-+ * Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-+ * Copyright 2025 Google LLC
++ * BLAKE2b digest algorithm, NEON accelerated
 + *
-+ * This is an implementation of the BLAKE2b hash and PRF functions.
-+ *
-+ * Information: https://blake2.net/
++ * Copyright 2020 Google LLC
 + */
 +
-+#include <crypto/blake2b.h>
-+#include <linux/bug.h>
-+#include <linux/export.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/string.h>
-+#include <linux/types.h>
++#include <asm/neon.h>
++#include <asm/simd.h>
 +
-+static const u8 blake2b_sigma[12][16] = {
-+	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
-+	{ 14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3 },
-+	{ 11, 8, 12, 0, 5, 2, 15, 13, 10, 14, 3, 6, 7, 1, 9, 4 },
-+	{ 7, 9, 3, 1, 13, 12, 11, 14, 2, 6, 5, 10, 4, 0, 15, 8 },
-+	{ 9, 0, 5, 7, 2, 4, 10, 15, 14, 1, 11, 12, 6, 8, 3, 13 },
-+	{ 2, 12, 6, 10, 0, 11, 8, 3, 4, 13, 7, 5, 15, 14, 1, 9 },
-+	{ 12, 5, 1, 15, 14, 13, 4, 10, 0, 7, 6, 3, 9, 2, 8, 11 },
-+	{ 13, 11, 7, 14, 12, 1, 3, 9, 5, 0, 15, 4, 8, 6, 2, 10 },
-+	{ 6, 15, 14, 9, 11, 3, 0, 8, 12, 2, 13, 7, 1, 4, 10, 5 },
-+	{ 10, 2, 8, 4, 7, 6, 1, 5, 15, 11, 9, 14, 3, 12, 13, 0 },
-+	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
-+	{ 14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3 }
-+};
++static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_neon);
 +
-+static inline void blake2b_increment_counter(struct blake2b_ctx *ctx, u32 inc)
++asmlinkage void blake2b_compress_neon(struct blake2b_ctx *ctx,
++				      const u8 *data, size_t nblocks, u32 inc);
++
++static void blake2b_compress(struct blake2b_ctx *ctx,
++			     const u8 *data, size_t nblocks, u32 inc)
 +{
-+	ctx->t[0] += inc;
-+	ctx->t[1] += (ctx->t[0] < inc);
-+}
-+
-+static void __maybe_unused
-+blake2b_compress_generic(struct blake2b_ctx *ctx,
-+			 const u8 *data, size_t nblocks, u32 inc)
-+{
-+	u64 m[16];
-+	u64 v[16];
-+	int i;
-+
-+	WARN_ON(IS_ENABLED(DEBUG) &&
-+		(nblocks > 1 && inc != BLAKE2B_BLOCK_SIZE));
-+
-+	while (nblocks > 0) {
-+		blake2b_increment_counter(ctx, inc);
-+		memcpy(m, data, BLAKE2B_BLOCK_SIZE);
-+		le64_to_cpu_array(m, ARRAY_SIZE(m));
-+		memcpy(v, ctx->h, 64);
-+		v[ 8] = BLAKE2B_IV0;
-+		v[ 9] = BLAKE2B_IV1;
-+		v[10] = BLAKE2B_IV2;
-+		v[11] = BLAKE2B_IV3;
-+		v[12] = BLAKE2B_IV4 ^ ctx->t[0];
-+		v[13] = BLAKE2B_IV5 ^ ctx->t[1];
-+		v[14] = BLAKE2B_IV6 ^ ctx->f[0];
-+		v[15] = BLAKE2B_IV7 ^ ctx->f[1];
-+
-+#define G(r, i, a, b, c, d) do { \
-+	a += b + m[blake2b_sigma[r][2 * i + 0]]; \
-+	d = ror64(d ^ a, 32); \
-+	c += d; \
-+	b = ror64(b ^ c, 24); \
-+	a += b + m[blake2b_sigma[r][2 * i + 1]]; \
-+	d = ror64(d ^ a, 16); \
-+	c += d; \
-+	b = ror64(b ^ c, 63); \
-+} while (0)
-+
-+#define ROUND(r) do { \
-+	G(r, 0, v[0], v[ 4], v[ 8], v[12]); \
-+	G(r, 1, v[1], v[ 5], v[ 9], v[13]); \
-+	G(r, 2, v[2], v[ 6], v[10], v[14]); \
-+	G(r, 3, v[3], v[ 7], v[11], v[15]); \
-+	G(r, 4, v[0], v[ 5], v[10], v[15]); \
-+	G(r, 5, v[1], v[ 6], v[11], v[12]); \
-+	G(r, 6, v[2], v[ 7], v[ 8], v[13]); \
-+	G(r, 7, v[3], v[ 4], v[ 9], v[14]); \
-+} while (0)
-+		ROUND(0);
-+		ROUND(1);
-+		ROUND(2);
-+		ROUND(3);
-+		ROUND(4);
-+		ROUND(5);
-+		ROUND(6);
-+		ROUND(7);
-+		ROUND(8);
-+		ROUND(9);
-+		ROUND(10);
-+		ROUND(11);
-+
-+#undef G
-+#undef ROUND
-+
-+		for (i = 0; i < 8; ++i)
-+			ctx->h[i] ^= v[i] ^ v[i + 8];
-+
-+		data += BLAKE2B_BLOCK_SIZE;
-+		--nblocks;
-+	}
-+}
-+
-+#ifdef CONFIG_CRYPTO_LIB_BLAKE2B_ARCH
-+#include "blake2b.h" /* $(SRCARCH)/blake2b.h */
-+#else
-+#define blake2b_compress blake2b_compress_generic
-+#endif
-+
-+static inline void blake2b_set_lastblock(struct blake2b_ctx *ctx)
-+{
-+	ctx->f[0] = -1;
-+}
-+
-+void blake2b_update(struct blake2b_ctx *ctx, const u8 *in, size_t inlen)
-+{
-+	const size_t fill = BLAKE2B_BLOCK_SIZE - ctx->buflen;
-+
-+	if (unlikely(!inlen))
++	if (!static_branch_likely(&have_neon) || !may_use_simd()) {
++		blake2b_compress_generic(ctx, data, nblocks, inc);
 +		return;
-+	if (inlen > fill) {
-+		memcpy(ctx->buf + ctx->buflen, in, fill);
-+		blake2b_compress(ctx, ctx->buf, 1, BLAKE2B_BLOCK_SIZE);
-+		ctx->buflen = 0;
-+		in += fill;
-+		inlen -= fill;
 +	}
-+	if (inlen > BLAKE2B_BLOCK_SIZE) {
-+		const size_t nblocks = DIV_ROUND_UP(inlen, BLAKE2B_BLOCK_SIZE);
++	do {
++		const size_t blocks = min_t(size_t, nblocks,
++					    SZ_4K / BLAKE2B_BLOCK_SIZE);
 +
-+		blake2b_compress(ctx, in, nblocks - 1, BLAKE2B_BLOCK_SIZE);
-+		in += BLAKE2B_BLOCK_SIZE * (nblocks - 1);
-+		inlen -= BLAKE2B_BLOCK_SIZE * (nblocks - 1);
-+	}
-+	memcpy(ctx->buf + ctx->buflen, in, inlen);
-+	ctx->buflen += inlen;
++		kernel_neon_begin();
++		blake2b_compress_neon(ctx, data, blocks, inc);
++		kernel_neon_end();
++
++		data += blocks * BLAKE2B_BLOCK_SIZE;
++		nblocks -= blocks;
++	} while (nblocks);
 +}
-+EXPORT_SYMBOL(blake2b_update);
 +
-+void blake2b_final(struct blake2b_ctx *ctx, u8 *out)
++#define blake2b_mod_init_arch blake2b_mod_init_arch
++static void blake2b_mod_init_arch(void)
 +{
-+	WARN_ON(IS_ENABLED(DEBUG) && !out);
-+	blake2b_set_lastblock(ctx);
-+	memset(ctx->buf + ctx->buflen, 0,
-+	       BLAKE2B_BLOCK_SIZE - ctx->buflen); /* Padding */
-+	blake2b_compress(ctx, ctx->buf, 1, ctx->buflen);
-+	cpu_to_le64_array(ctx->h, ARRAY_SIZE(ctx->h));
-+	memcpy(out, ctx->h, ctx->outlen);
-+	memzero_explicit(ctx, sizeof(*ctx));
++	if (elf_hwcap & HWCAP_NEON)
++		static_branch_enable(&have_neon);
 +}
-+EXPORT_SYMBOL(blake2b_final);
-+
-+#ifdef blake2b_mod_init_arch
-+static int __init blake2b_mod_init(void)
-+{
-+	blake2b_mod_init_arch();
-+	return 0;
-+}
-+subsys_initcall(blake2b_mod_init);
-+
-+static void __exit blake2b_mod_exit(void)
-+{
-+}
-+module_exit(blake2b_mod_exit);
-+#endif
-+
-+MODULE_DESCRIPTION("BLAKE2b hash function");
-+MODULE_LICENSE("GPL");
 -- 
 2.51.1.dirty
 
