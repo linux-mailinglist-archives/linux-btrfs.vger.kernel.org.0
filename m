@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-17988-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17989-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55677BEC789
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 06:37:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0163BEC78F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 06:38:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3844D4F6DC2
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 04:37:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8E3F6E2173
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 04:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A118928F948;
-	Sat, 18 Oct 2025 04:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 177A5298CBC;
+	Sat, 18 Oct 2025 04:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dvAu53uC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XJqnkRfV"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFEAD28640C;
-	Sat, 18 Oct 2025 04:36:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4879728B7DB;
+	Sat, 18 Oct 2025 04:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760762183; cv=none; b=ObYZ8OAkTJZjxpPIH4RHq3rc2SS8VolvCimlt4aBs4tmxexOZ/U/UFJFvKcamjTk5PC8nv3XvR8cPqcKEPHZxn7Hj+lU+9Ecjb1v+3+7P2wsZKf0/XlS9DizBZv663WeaAYjOOJy2lLHzWAfhUxqbh2l+HtQKDRAxbhVeAjPa5Y=
+	t=1760762184; cv=none; b=MU3HkzFj/fmyMc4w8PEuM8x/v0UvTj/3NLEwhcaB+DBxgSWgTJSSm5ImY/dUN0inRcbR71WsuHyveg+4cbbl4hGPF9KLq7uuXUWuOj7BUJnPdoCFYJMouGYFpsKZ0HvF9ZcMOGHF+K5tY2PAyZ0U25sGZ2s48o8AwLgqNY5H3S4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760762183; c=relaxed/simple;
-	bh=oVy/e66OZErUv0ljGHWjH/vFmXCXXdtO5v7arPRygeo=;
+	s=arc-20240116; t=1760762184; c=relaxed/simple;
+	bh=zS9cQkFRzjsc2k0K1pjhrfsQdFD3nnsKflYjWuTo56s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JfzE4ZCEk3QKcrERJL4H2DEA4XNA/a/yTKdBrD2iIznaLLW1gVBmZw+dMhzJD0mFnLgYYgp1hGMjx+rHWw6f6cdKiiVvJAeA+iGgjVaGkmhrbWbjPHn7RRe/7ROtr0UZ9rFjZXYlGmzs11QDDYrJrVq86T91rlcIc+131nBXqLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dvAu53uC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AED0C116D0;
+	 MIME-Version; b=T6o1cLzthFr2kCpXSZ/N8ibdEF6nVcVxZcIVKPOSxGgllLViS3KqA6PDkdA3PpvwdirbA169bQwjTJeGXGR7fNQAdVoqaAZpXIEbDIJ47ABYPjG1qe2DAUFu9ICzZZ/mBqRIK+KJw7gPA7nNkgRRwv/WTrA8gKsNjoyw3Zy+3IE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XJqnkRfV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C0FC4CEFE;
 	Sat, 18 Oct 2025 04:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760762183;
-	bh=oVy/e66OZErUv0ljGHWjH/vFmXCXXdtO5v7arPRygeo=;
+	s=k20201202; t=1760762184;
+	bh=zS9cQkFRzjsc2k0K1pjhrfsQdFD3nnsKflYjWuTo56s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dvAu53uC4HoC9WirzBqhUcDMIEqBqINGiaEwSDOu49khgSoKKraeYFaTdLfGsHakc
-	 vRWMTIQPsN2EqIbkonAq4bxpq3WZJRhhJI6n6eCz9E96jxEhBQXB6/G868LcNepxj9
-	 6e4Jw50hp8dxAEEStS5JvFvok41Zuhiyxl+RsxMkpDFIMybAWmZrCegzv5FdpyZRKP
-	 mYqbeArqz71rjS38h5cUrsOizQUjywezDO+DgAqFDfhuFjPwf3v1adT2goLDFcPPZ1
-	 jGF5Fuw/zwD2oSYyOtIyKlBIxWnSKwI2ENAXwv8ywvlvREGshSqnV63MFXUFYFX8hO
-	 sdsXUjVG2E5Lw==
+	b=XJqnkRfVwb/eYbK0tiOJUCu4kAQDk5OmF0akCxIwDc/cGe553xzWrCJkFDpFaxLxS
+	 hU4RfXSoLerXTUxLTqlwNHjJRvYFARMM+rmJIVTQhCt2fePbY8/pombXzYtj9mxCHH
+	 8fQFn8RvCNV8ONd00jxS8DG6HcxPWGQBWzY9Ob6QQRI251ccvQpO0ouDyoIqJf7c+f
+	 ZhKcK46XZqBGE/vEEXnzTqol5hVUPkzvv07VuGAxdt4GA7AzMc2xZ6t5Zgwy4owFa6
+	 B4pOWanDVkmEYR7SiLxVzsWRmdXUMqF6tw3f6kBBJnG5r/7W5B1RxpA4j5RUVl4TnA
+	 wdTQrHjTPP1cQ==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -49,9 +49,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Ard Biesheuvel <ardb@kernel.org>,
 	"Jason A . Donenfeld" <Jason@zx2c4.com>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 07/10] lib/crypto: arm/blake2b: Migrate optimized code into library
-Date: Fri, 17 Oct 2025 21:31:03 -0700
-Message-ID: <20251018043106.375964-8-ebiggers@kernel.org>
+Subject: [PATCH 08/10] lib/crypto: tests: Add KUnit tests for BLAKE2b
+Date: Fri, 17 Oct 2025 21:31:04 -0700
+Message-ID: <20251018043106.375964-9-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.51.1.dirty
 In-Reply-To: <20251018043106.375964-1-ebiggers@kernel.org>
 References: <20251018043106.375964-1-ebiggers@kernel.org>
@@ -63,381 +63,612 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Migrate the arm-optimized BLAKE2b code from arch/arm/crypto/ to
-lib/crypto/arm/.  This makes the BLAKE2b library able to use it, and it
-also simplifies the code because it's easier to integrate with the
-library than crypto_shash.
+Add a KUnit test suite for the BLAKE2b library API, mirroring the
+BLAKE2s test suite very closely.
 
-This temporarily makes the arm-optimized BLAKE2b code unavailable via
-crypto_shash.  A later commit reimplements the blake2b-* crypto_shash
-algorithms on top of the BLAKE2b library API, making it available again.
-
-Note that as per the lib/crypto/ convention, the optimized code is now
-enabled by default.  So, this also fixes the longstanding issue where
-the optimized BLAKE2b code was not enabled by default.
-
-To see the diff from arch/arm/crypto/blake2b-neon-glue.c to
-lib/crypto/arm/blake2b.h, view this commit with 'git show -M10'.
+As with the BLAKE2s test suite, a benchmark is included.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- arch/arm/crypto/Kconfig                       |  16 ---
- arch/arm/crypto/Makefile                      |   2 -
- arch/arm/crypto/blake2b-neon-glue.c           | 104 ------------------
- lib/crypto/Kconfig                            |   1 +
- lib/crypto/Makefile                           |   1 +
- .../crypto/arm}/blake2b-neon-core.S           |  29 ++---
- lib/crypto/arm/blake2b.h                      |  41 +++++++
- 7 files changed, 59 insertions(+), 135 deletions(-)
- delete mode 100644 arch/arm/crypto/blake2b-neon-glue.c
- rename {arch/arm/crypto => lib/crypto/arm}/blake2b-neon-core.S (94%)
- create mode 100644 lib/crypto/arm/blake2b.h
+ lib/crypto/tests/Kconfig            |   9 +
+ lib/crypto/tests/Makefile           |   1 +
+ lib/crypto/tests/blake2b-testvecs.h | 342 ++++++++++++++++++++++++++++
+ lib/crypto/tests/blake2b_kunit.c    | 133 +++++++++++
+ scripts/crypto/gen-hash-testvecs.py |  29 +--
+ 5 files changed, 501 insertions(+), 13 deletions(-)
+ create mode 100644 lib/crypto/tests/blake2b-testvecs.h
+ create mode 100644 lib/crypto/tests/blake2b_kunit.c
 
-diff --git a/arch/arm/crypto/Kconfig b/arch/arm/crypto/Kconfig
-index c436eec22d86c..f30d743df2643 100644
---- a/arch/arm/crypto/Kconfig
-+++ b/arch/arm/crypto/Kconfig
-@@ -31,26 +31,10 @@ config CRYPTO_NHPOLY1305_NEON
- 	  NHPoly1305 hash function (Adiantum)
+diff --git a/lib/crypto/tests/Kconfig b/lib/crypto/tests/Kconfig
+index 578af717e13a7..2ebfd681bae4d 100644
+--- a/lib/crypto/tests/Kconfig
++++ b/lib/crypto/tests/Kconfig
+@@ -1,7 +1,16 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
  
- 	  Architecture: arm using:
- 	  - NEON (Advanced SIMD) extensions
++config CRYPTO_LIB_BLAKE2B_KUNIT_TEST
++	tristate "KUnit tests for BLAKE2b" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
++	select CRYPTO_LIB_BENCHMARK_VISIBLE
++	select CRYPTO_LIB_BLAKE2B
++	help
++	  KUnit tests for the BLAKE2b cryptographic hash function.
++
+ config CRYPTO_LIB_BLAKE2S_KUNIT_TEST
+ 	tristate "KUnit tests for BLAKE2s" if !KUNIT_ALL_TESTS
+ 	depends on KUNIT
+ 	default KUNIT_ALL_TESTS || CRYPTO_SELFTESTS
+ 	select CRYPTO_LIB_BENCHMARK_VISIBLE
+diff --git a/lib/crypto/tests/Makefile b/lib/crypto/tests/Makefile
+index a71fad19922ba..f21a48a4415d0 100644
+--- a/lib/crypto/tests/Makefile
++++ b/lib/crypto/tests/Makefile
+@@ -1,7 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
  
--config CRYPTO_BLAKE2B_NEON
--	tristate "Hash functions: BLAKE2b (NEON)"
--	depends on KERNEL_MODE_NEON
--	select CRYPTO_BLAKE2B
--	help
--	  BLAKE2b cryptographic hash function (RFC 7693)
--
--	  Architecture: arm using
--	  - NEON (Advanced SIMD) extensions
--
--	  BLAKE2b digest algorithm optimized with ARM NEON instructions.
--	  On ARM processors that have NEON support but not the ARMv8
--	  Crypto Extensions, typically this BLAKE2b implementation is
--	  much faster than the SHA-2 family and slightly faster than
--	  SHA-1.
--
- config CRYPTO_AES_ARM
- 	tristate "Ciphers: AES"
- 	select CRYPTO_ALGAPI
- 	select CRYPTO_AES
- 	help
-diff --git a/arch/arm/crypto/Makefile b/arch/arm/crypto/Makefile
-index 6346a73effc06..86dd43313dbfd 100644
---- a/arch/arm/crypto/Makefile
-+++ b/arch/arm/crypto/Makefile
-@@ -3,17 +3,15 @@
- # Arch-specific CryptoAPI modules.
- #
- 
- obj-$(CONFIG_CRYPTO_AES_ARM) += aes-arm.o
- obj-$(CONFIG_CRYPTO_AES_ARM_BS) += aes-arm-bs.o
--obj-$(CONFIG_CRYPTO_BLAKE2B_NEON) += blake2b-neon.o
- obj-$(CONFIG_CRYPTO_NHPOLY1305_NEON) += nhpoly1305-neon.o
- 
- obj-$(CONFIG_CRYPTO_AES_ARM_CE) += aes-arm-ce.o
- obj-$(CONFIG_CRYPTO_GHASH_ARM_CE) += ghash-arm-ce.o
- 
- aes-arm-y	:= aes-cipher-core.o aes-cipher-glue.o
- aes-arm-bs-y	:= aes-neonbs-core.o aes-neonbs-glue.o
--blake2b-neon-y  := blake2b-neon-core.o blake2b-neon-glue.o
- aes-arm-ce-y	:= aes-ce-core.o aes-ce-glue.o
- ghash-arm-ce-y	:= ghash-ce-core.o ghash-ce-glue.o
- nhpoly1305-neon-y := nh-neon-core.o nhpoly1305-neon-glue.o
-diff --git a/arch/arm/crypto/blake2b-neon-glue.c b/arch/arm/crypto/blake2b-neon-glue.c
-deleted file mode 100644
-index 2ff443a91724f..0000000000000
---- a/arch/arm/crypto/blake2b-neon-glue.c
-+++ /dev/null
-@@ -1,104 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * BLAKE2b digest algorithm, NEON accelerated
-- *
-- * Copyright 2020 Google LLC
-- */
--
--#include <crypto/internal/blake2b.h>
--#include <crypto/internal/hash.h>
--
--#include <linux/module.h>
--#include <linux/sizes.h>
--
--#include <asm/neon.h>
--#include <asm/simd.h>
--
--asmlinkage void blake2b_compress_neon(struct blake2b_state *state,
--				      const u8 *block, size_t nblocks, u32 inc);
--
--static void blake2b_compress_arch(struct blake2b_state *state,
--				  const u8 *block, size_t nblocks, u32 inc)
--{
--	do {
--		const size_t blocks = min_t(size_t, nblocks,
--					    SZ_4K / BLAKE2B_BLOCK_SIZE);
--
--		kernel_neon_begin();
--		blake2b_compress_neon(state, block, blocks, inc);
--		kernel_neon_end();
--
--		nblocks -= blocks;
--		block += blocks * BLAKE2B_BLOCK_SIZE;
--	} while (nblocks);
--}
--
--static int crypto_blake2b_update_neon(struct shash_desc *desc,
--				      const u8 *in, unsigned int inlen)
--{
--	return crypto_blake2b_update_bo(desc, in, inlen, blake2b_compress_arch);
--}
--
--static int crypto_blake2b_finup_neon(struct shash_desc *desc, const u8 *in,
--				     unsigned int inlen, u8 *out)
--{
--	return crypto_blake2b_finup(desc, in, inlen, out,
--				    blake2b_compress_arch);
--}
--
--#define BLAKE2B_ALG(name, driver_name, digest_size)			\
--	{								\
--		.base.cra_name		= name,				\
--		.base.cra_driver_name	= driver_name,			\
--		.base.cra_priority	= 200,				\
--		.base.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY |	\
--					  CRYPTO_AHASH_ALG_BLOCK_ONLY |	\
--					  CRYPTO_AHASH_ALG_FINAL_NONZERO, \
--		.base.cra_blocksize	= BLAKE2B_BLOCK_SIZE,		\
--		.base.cra_ctxsize	= sizeof(struct blake2b_tfm_ctx), \
--		.base.cra_module	= THIS_MODULE,			\
--		.digestsize		= digest_size,			\
--		.setkey			= crypto_blake2b_setkey,	\
--		.init			= crypto_blake2b_init,		\
--		.update			= crypto_blake2b_update_neon,	\
--		.finup			= crypto_blake2b_finup_neon,	\
--		.descsize		= sizeof(struct blake2b_state),	\
--		.statesize		= BLAKE2B_STATE_SIZE,		\
--	}
--
--static struct shash_alg blake2b_neon_algs[] = {
--	BLAKE2B_ALG("blake2b-160", "blake2b-160-neon", BLAKE2B_160_HASH_SIZE),
--	BLAKE2B_ALG("blake2b-256", "blake2b-256-neon", BLAKE2B_256_HASH_SIZE),
--	BLAKE2B_ALG("blake2b-384", "blake2b-384-neon", BLAKE2B_384_HASH_SIZE),
--	BLAKE2B_ALG("blake2b-512", "blake2b-512-neon", BLAKE2B_512_HASH_SIZE),
--};
--
--static int __init blake2b_neon_mod_init(void)
--{
--	if (!(elf_hwcap & HWCAP_NEON))
--		return -ENODEV;
--
--	return crypto_register_shashes(blake2b_neon_algs,
--				       ARRAY_SIZE(blake2b_neon_algs));
--}
--
--static void __exit blake2b_neon_mod_exit(void)
--{
--	crypto_unregister_shashes(blake2b_neon_algs,
--				  ARRAY_SIZE(blake2b_neon_algs));
--}
--
--module_init(blake2b_neon_mod_init);
--module_exit(blake2b_neon_mod_exit);
--
--MODULE_DESCRIPTION("BLAKE2b digest algorithm, NEON accelerated");
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Eric Biggers <ebiggers@google.com>");
--MODULE_ALIAS_CRYPTO("blake2b-160");
--MODULE_ALIAS_CRYPTO("blake2b-160-neon");
--MODULE_ALIAS_CRYPTO("blake2b-256");
--MODULE_ALIAS_CRYPTO("blake2b-256-neon");
--MODULE_ALIAS_CRYPTO("blake2b-384");
--MODULE_ALIAS_CRYPTO("blake2b-384-neon");
--MODULE_ALIAS_CRYPTO("blake2b-512");
--MODULE_ALIAS_CRYPTO("blake2b-512-neon");
-diff --git a/lib/crypto/Kconfig b/lib/crypto/Kconfig
-index 045fd79cc1bed..56456eb786bf3 100644
---- a/lib/crypto/Kconfig
-+++ b/lib/crypto/Kconfig
-@@ -35,10 +35,11 @@ config CRYPTO_LIB_BLAKE2B
- 	  the functions from <crypto/blake2b.h>.
- 
- config CRYPTO_LIB_BLAKE2B_ARCH
- 	bool
- 	depends on CRYPTO_LIB_BLAKE2B && !UML
-+	default y if ARM && KERNEL_MODE_NEON
- 
- # BLAKE2s support is always built-in, so there's no CRYPTO_LIB_BLAKE2S option.
- 
- config CRYPTO_LIB_BLAKE2S_ARCH
- 	bool
-diff --git a/lib/crypto/Makefile b/lib/crypto/Makefile
-index f863417b16817..5c9a933928188 100644
---- a/lib/crypto/Makefile
-+++ b/lib/crypto/Makefile
-@@ -34,10 +34,11 @@ obj-$(CONFIG_CRYPTO_LIB_GF128MUL)		+= gf128mul.o
- obj-$(CONFIG_CRYPTO_LIB_BLAKE2B) += libblake2b.o
- libblake2b-y := blake2b.o
- CFLAGS_blake2b.o := -Wframe-larger-than=4096 #  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105930
- ifeq ($(CONFIG_CRYPTO_LIB_BLAKE2B_ARCH),y)
- CFLAGS_blake2b.o += -I$(src)/$(SRCARCH)
-+obj-$(CONFIG_ARM) += arm/blake2b-neon-core.o
- endif # CONFIG_CRYPTO_LIB_BLAKE2B_ARCH
- 
- ################################################################################
- 
- # blake2s is used by the /dev/random driver which is always builtin
-diff --git a/arch/arm/crypto/blake2b-neon-core.S b/lib/crypto/arm/blake2b-neon-core.S
-similarity index 94%
-rename from arch/arm/crypto/blake2b-neon-core.S
-rename to lib/crypto/arm/blake2b-neon-core.S
-index 0406a186377fb..b55c37f0b88fb 100644
---- a/arch/arm/crypto/blake2b-neon-core.S
-+++ b/lib/crypto/arm/blake2b-neon-core.S
-@@ -1,8 +1,11 @@
- /* SPDX-License-Identifier: GPL-2.0-or-later */
- /*
-- * BLAKE2b digest algorithm, NEON accelerated
-+ * BLAKE2b digest algorithm optimized with ARM NEON instructions.  On ARM
-+ * processors that have NEON support but not the ARMv8 Crypto Extensions,
-+ * typically this BLAKE2b implementation is much faster than the SHA-2 family
-+ * and slightly faster than SHA-1.
-  *
-  * Copyright 2020 Google LLC
-  *
-  * Author: Eric Biggers <ebiggers@google.com>
-  */
-@@ -11,12 +14,12 @@
- 
- 	.text
- 	.fpu		neon
- 
- 	// The arguments to blake2b_compress_neon()
--	STATE		.req	r0
--	BLOCK		.req	r1
-+	CTX		.req	r0
-+	DATA		.req	r1
- 	NBLOCKS		.req	r2
- 	INC		.req	r3
- 
- 	// Pointers to the rotation tables
- 	ROR24_TABLE	.req	r4
-@@ -232,14 +235,14 @@
- 	vld1.8		{q8-q9}, [sp, :256]
- .endif
- .endm
- 
- //
--// void blake2b_compress_neon(struct blake2b_state *state,
--//			      const u8 *block, size_t nblocks, u32 inc);
-+// void blake2b_compress_neon(struct blake2b_ctx *ctx,
-+//			      const u8 *data, size_t nblocks, u32 inc);
- //
--// Only the first three fields of struct blake2b_state are used:
-+// Only the first three fields of struct blake2b_ctx are used:
- //	u64 h[8];	(inout)
- //	u64 t[2];	(inout)
- //	u64 f[2];	(in)
- //
- 	.align		5
-@@ -253,11 +256,11 @@ ENTRY(blake2b_compress_neon)
- 	mov		sp, ip
- 
- 	adr		ROR24_TABLE, .Lror24_table
- 	adr		ROR16_TABLE, .Lror16_table
- 
--	mov		ip, STATE
-+	mov		ip, CTX
- 	vld1.64		{q0-q1}, [ip]!		// Load h[0..3]
- 	vld1.64		{q2-q3}, [ip]!		// Load h[4..7]
- .Lnext_block:
- 	  adr		r10, .Lblake2b_IV
- 	vld1.64		{q14-q15}, [ip]		// Load t[0..1] and f[0..1]
-@@ -279,18 +282,18 @@ ENTRY(blake2b_compress_neon)
- 	// registers than the state registers, as the message doesn't change.
- 	// Therefore we store a copy of the first 32 bytes of the message block
- 	// (q8-q9) in an aligned buffer on the stack so that they can be
- 	// reloaded when needed.  (We could just reload directly from the
- 	// message buffer, but it's faster to use aligned loads.)
--	vld1.8		{q8-q9}, [BLOCK]!
-+	vld1.8		{q8-q9}, [DATA]!
- 	  veor		q6, q6, q14	// v[12..13] = IV[4..5] ^ t[0..1]
--	vld1.8		{q10-q11}, [BLOCK]!
-+	vld1.8		{q10-q11}, [DATA]!
- 	  veor		q7, q7, q15	// v[14..15] = IV[6..7] ^ f[0..1]
--	vld1.8		{q12-q13}, [BLOCK]!
-+	vld1.8		{q12-q13}, [DATA]!
- 	vst1.8		{q8-q9}, [sp, :256]
--	  mov		ip, STATE
--	vld1.8		{q14-q15}, [BLOCK]!
-+	  mov		ip, CTX
-+	vld1.8		{q14-q15}, [DATA]!
- 
- 	// Execute the rounds.  Each round is provided the order in which it
- 	// needs to use the message words.
- 	_blake2b_round	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
- 	_blake2b_round	14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3
-@@ -317,11 +320,11 @@ ENTRY(blake2b_compress_neon)
- 	  vld1.64	{q10-q11}, [ip]		// Load old h[4..7]
- 	veor		q2, q2, q6		// v[4..5] ^= v[12..13]
- 	veor		q3, q3, q7		// v[6..7] ^= v[14..15]
- 	veor		q0, q0, q8		// v[0..1] ^= h[0..1]
- 	veor		q1, q1, q9		// v[2..3] ^= h[2..3]
--	  mov		ip, STATE
-+	  mov		ip, CTX
- 	  subs		NBLOCKS, NBLOCKS, #1	// nblocks--
- 	  vst1.64	{q0-q1}, [ip]!		// Store new h[0..3]
- 	veor		q2, q2, q10		// v[4..5] ^= h[4..5]
- 	veor		q3, q3, q11		// v[6..7] ^= h[6..7]
- 	  vst1.64	{q2-q3}, [ip]!		// Store new h[4..7]
-diff --git a/lib/crypto/arm/blake2b.h b/lib/crypto/arm/blake2b.h
++obj-$(CONFIG_CRYPTO_LIB_BLAKE2B_KUNIT_TEST) += blake2b_kunit.o
+ obj-$(CONFIG_CRYPTO_LIB_BLAKE2S_KUNIT_TEST) += blake2s_kunit.o
+ obj-$(CONFIG_CRYPTO_LIB_CURVE25519_KUNIT_TEST) += curve25519_kunit.o
+ obj-$(CONFIG_CRYPTO_LIB_MD5_KUNIT_TEST) += md5_kunit.o
+ obj-$(CONFIG_CRYPTO_LIB_POLY1305_KUNIT_TEST) += poly1305_kunit.o
+ obj-$(CONFIG_CRYPTO_LIB_SHA1_KUNIT_TEST) += sha1_kunit.o
+diff --git a/lib/crypto/tests/blake2b-testvecs.h b/lib/crypto/tests/blake2b-testvecs.h
 new file mode 100644
-index 0000000000000..1b9154d119db4
+index 0000000000000..9e407dbc219c9
 --- /dev/null
-+++ b/lib/crypto/arm/blake2b.h
-@@ -0,0 +1,41 @@
++++ b/lib/crypto/tests/blake2b-testvecs.h
+@@ -0,0 +1,342 @@
 +/* SPDX-License-Identifier: GPL-2.0-or-later */
++/* This file was generated by: ./scripts/crypto/gen-hash-testvecs.py blake2b */
++
++static const struct {
++	size_t data_len;
++	u8 digest[BLAKE2B_HASH_SIZE];
++} hash_testvecs[] = {
++	{
++		.data_len = 0,
++		.digest = {
++			0x78, 0x6a, 0x02, 0xf7, 0x42, 0x01, 0x59, 0x03,
++			0xc6, 0xc6, 0xfd, 0x85, 0x25, 0x52, 0xd2, 0x72,
++			0x91, 0x2f, 0x47, 0x40, 0xe1, 0x58, 0x47, 0x61,
++			0x8a, 0x86, 0xe2, 0x17, 0xf7, 0x1f, 0x54, 0x19,
++			0xd2, 0x5e, 0x10, 0x31, 0xaf, 0xee, 0x58, 0x53,
++			0x13, 0x89, 0x64, 0x44, 0x93, 0x4e, 0xb0, 0x4b,
++			0x90, 0x3a, 0x68, 0x5b, 0x14, 0x48, 0xb7, 0x55,
++			0xd5, 0x6f, 0x70, 0x1a, 0xfe, 0x9b, 0xe2, 0xce,
++		},
++	},
++	{
++		.data_len = 1,
++		.digest = {
++			0x6f, 0x2e, 0xcc, 0x83, 0x53, 0xa3, 0x20, 0x16,
++			0x5b, 0xda, 0xd0, 0x04, 0xd3, 0xcb, 0xe4, 0x37,
++			0x5b, 0xf0, 0x84, 0x36, 0xe1, 0xad, 0x45, 0xcc,
++			0x4d, 0x7f, 0x09, 0x68, 0xb2, 0x62, 0x93, 0x7f,
++			0x72, 0x32, 0xe8, 0xa7, 0x2f, 0x1f, 0x6f, 0xc6,
++			0x14, 0xd6, 0x70, 0xae, 0x0c, 0xf0, 0xf3, 0xce,
++			0x64, 0x4d, 0x22, 0xdf, 0xc7, 0xa7, 0xf8, 0xa8,
++			0x18, 0x23, 0xd8, 0x6c, 0xaf, 0x65, 0xa2, 0x54,
++		},
++	},
++	{
++		.data_len = 2,
++		.digest = {
++			0x04, 0x13, 0xe2, 0x10, 0xbe, 0x65, 0xde, 0xce,
++			0x61, 0xa8, 0xe0, 0xd6, 0x35, 0xb1, 0xb8, 0x88,
++			0xd2, 0xea, 0x45, 0x3a, 0xe1, 0x8d, 0x94, 0xb5,
++			0x66, 0x06, 0x98, 0x96, 0x39, 0xf8, 0x0e, 0xcb,
++			0x34, 0xa6, 0xa8, 0x17, 0xfe, 0x56, 0xbc, 0xa9,
++			0x5e, 0x1b, 0xb1, 0xde, 0x3c, 0xc7, 0x78, 0x4f,
++			0x39, 0xc6, 0xfc, 0xa8, 0xb3, 0x27, 0x66, 0x3e,
++			0x4e, 0xb5, 0x5d, 0x08, 0x89, 0xee, 0xd1, 0xe0,
++		},
++	},
++	{
++		.data_len = 3,
++		.digest = {
++			0x2b, 0x4a, 0xa3, 0x4e, 0x2b, 0x7a, 0x47, 0x20,
++			0x30, 0x5b, 0x09, 0x17, 0x3a, 0xf4, 0xcc, 0xf0,
++			0xf7, 0x7b, 0x97, 0x68, 0x98, 0x9f, 0x4f, 0x09,
++			0x46, 0x25, 0xe7, 0xd6, 0x53, 0x6b, 0xf9, 0x68,
++			0x48, 0x12, 0x44, 0x8c, 0x9a, 0xc8, 0xd4, 0x42,
++			0xeb, 0x2c, 0x5f, 0x41, 0xba, 0x17, 0xd0, 0xc3,
++			0xad, 0xfd, 0xfb, 0x42, 0x33, 0xcb, 0x08, 0x5d,
++			0xd2, 0x5c, 0x3d, 0xde, 0x87, 0x4d, 0xd6, 0xe4,
++		},
++	},
++	{
++		.data_len = 16,
++		.digest = {
++			0xbf, 0x40, 0xf2, 0x38, 0x44, 0x8e, 0x24, 0x5e,
++			0xbc, 0x67, 0xbb, 0xf0, 0x10, 0x9a, 0x79, 0xbb,
++			0x36, 0x55, 0xce, 0xd2, 0xba, 0x04, 0x0d, 0xe8,
++			0x30, 0x29, 0x5c, 0x2a, 0xa6, 0x3a, 0x4f, 0x37,
++			0xac, 0x5f, 0xd4, 0x13, 0xa2, 0xf4, 0xfe, 0x80,
++			0x61, 0xd7, 0x58, 0x66, 0x0c, 0x7f, 0xa2, 0x56,
++			0x6b, 0x52, 0x7c, 0x22, 0x73, 0x7f, 0x17, 0xaa,
++			0x91, 0x5a, 0x22, 0x06, 0xd9, 0x00, 0x48, 0x12,
++		},
++	},
++	{
++		.data_len = 32,
++		.digest = {
++			0x41, 0x04, 0x65, 0x93, 0x81, 0x9a, 0x20, 0x0a,
++			0x00, 0x60, 0x00, 0x64, 0x4c, 0x04, 0x3d, 0xe0,
++			0x6b, 0x17, 0x0c, 0xe1, 0x0e, 0x28, 0x8b, 0xa0,
++			0x76, 0xd2, 0x79, 0xb0, 0x33, 0x60, 0x61, 0x27,
++			0xf2, 0x64, 0xf1, 0x8a, 0xe5, 0x3e, 0xaa, 0x37,
++			0x60, 0xad, 0x2d, 0x75, 0x13, 0xae, 0xd8, 0x9e,
++			0xec, 0xe0, 0xe4, 0x40, 0x2f, 0x59, 0x44, 0xb0,
++			0x66, 0x7a, 0x68, 0x38, 0xce, 0x21, 0x99, 0x2a,
++		},
++	},
++	{
++		.data_len = 48,
++		.digest = {
++			0x19, 0x6f, 0x9d, 0xc7, 0x87, 0x12, 0x5c, 0xa3,
++			0xe2, 0xd3, 0xf1, 0x82, 0xec, 0xf3, 0x55, 0x9c,
++			0x86, 0xd1, 0x6d, 0xde, 0xcf, 0x5b, 0xec, 0x4c,
++			0x43, 0x25, 0x85, 0x90, 0xef, 0xe8, 0xe3, 0x5f,
++			0x2c, 0x3a, 0x84, 0x07, 0xb8, 0x55, 0xfd, 0x5e,
++			0xa4, 0x45, 0xf2, 0xac, 0xe4, 0xbd, 0xc7, 0x96,
++			0x80, 0x59, 0x3e, 0xc9, 0xb1, 0x60, 0xb1, 0x2b,
++			0x17, 0x49, 0x7d, 0x3e, 0x7d, 0x4d, 0x70, 0x24,
++		},
++	},
++	{
++		.data_len = 49,
++		.digest = {
++			0x73, 0x72, 0xd5, 0x0a, 0x97, 0xb4, 0x7d, 0xdb,
++			0x05, 0x14, 0x8e, 0x40, 0xc2, 0x9a, 0x8a, 0x74,
++			0x4b, 0xda, 0x7e, 0xfc, 0x97, 0x57, 0x23, 0x39,
++			0xdc, 0x57, 0x09, 0x13, 0x24, 0xfc, 0xf3, 0x23,
++			0x55, 0x48, 0xdd, 0xe5, 0x07, 0x9a, 0x6f, 0x7b,
++			0x62, 0xea, 0x4d, 0x79, 0xb4, 0xb9, 0xc5, 0x86,
++			0xc0, 0x34, 0xd6, 0xd2, 0x6c, 0xc3, 0x94, 0xfb,
++			0x34, 0xd6, 0x62, 0xae, 0xb8, 0x99, 0xf1, 0x38,
++		},
++	},
++	{
++		.data_len = 63,
++		.digest = {
++			0x42, 0x3a, 0xe3, 0xa2, 0xae, 0x5a, 0x28, 0xce,
++			0xf1, 0x3c, 0x97, 0xc2, 0x34, 0xf6, 0xb5, 0x1e,
++			0xfc, 0x31, 0xb4, 0x04, 0x61, 0xb7, 0x54, 0x0b,
++			0x0d, 0x1a, 0x22, 0x9c, 0x04, 0x67, 0x5c, 0x4c,
++			0x75, 0x1b, 0x10, 0x0b, 0x99, 0xe2, 0xb1, 0x5e,
++			0x5d, 0x4b, 0x7a, 0xe6, 0xf6, 0xb5, 0x62, 0xee,
++			0x2d, 0x44, 0x57, 0xb2, 0x96, 0x73, 0x5e, 0xb9,
++			0x6a, 0xb2, 0xb3, 0x16, 0xa3, 0xd9, 0x6a, 0x60,
++		},
++	},
++	{
++		.data_len = 64,
++		.digest = {
++			0x50, 0xb9, 0xbe, 0xb2, 0x69, 0x07, 0x45, 0x5b,
++			0x59, 0xde, 0x8d, 0xbf, 0x08, 0xdc, 0x2e, 0x7f,
++			0x93, 0x29, 0xc1, 0x91, 0xe8, 0x74, 0x03, 0x89,
++			0x20, 0xfb, 0xb2, 0x4b, 0xe8, 0x68, 0x6f, 0xe1,
++			0xb4, 0x30, 0xbe, 0x11, 0x3c, 0x43, 0x19, 0x66,
++			0x72, 0x78, 0xb7, 0xf4, 0xe9, 0x09, 0x18, 0x4e,
++			0xae, 0x4a, 0x24, 0xe0, 0x6f, 0x44, 0x02, 0xe3,
++			0xfd, 0xda, 0xb3, 0x3e, 0x3c, 0x6d, 0x54, 0x2e,
++		},
++	},
++	{
++		.data_len = 65,
++		.digest = {
++			0xd6, 0xf2, 0xa9, 0x61, 0x3f, 0xce, 0x2a, 0x68,
++			0x19, 0x86, 0xff, 0xd1, 0xee, 0x89, 0x3b, 0xa4,
++			0x10, 0x9a, 0x91, 0x50, 0x35, 0x48, 0x9e, 0xf5,
++			0x9c, 0x95, 0xe0, 0xfb, 0x92, 0x0f, 0xa8, 0xf7,
++			0x6c, 0x43, 0x85, 0xf1, 0x6e, 0x11, 0x4e, 0x67,
++			0x78, 0xd7, 0x53, 0x25, 0x0c, 0xf8, 0xce, 0x38,
++			0x74, 0x08, 0xb0, 0x3c, 0x53, 0x20, 0x4d, 0xc4,
++			0x9a, 0xf5, 0x78, 0xe8, 0x41, 0x8f, 0xed, 0x1f,
++		},
++	},
++	{
++		.data_len = 127,
++		.digest = {
++			0xe8, 0xb2, 0xc5, 0xa7, 0xf5, 0xfa, 0xee, 0xa0,
++			0x57, 0xba, 0x58, 0xf9, 0x0a, 0xf2, 0x64, 0x16,
++			0xa8, 0xa6, 0x03, 0x85, 0x3b, 0xb8, 0x6f, 0xca,
++			0x76, 0xc3, 0xa1, 0x2b, 0xec, 0xef, 0xc4, 0x66,
++			0x11, 0xdf, 0x03, 0x85, 0x9d, 0x0c, 0x37, 0x7b,
++			0xa9, 0x7b, 0x44, 0xfb, 0x11, 0x8f, 0x3f, 0x71,
++			0xcd, 0x81, 0x43, 0x2e, 0x71, 0x5c, 0x54, 0x9f,
++			0xca, 0x0f, 0x01, 0x91, 0xca, 0xaa, 0x93, 0xe9,
++		},
++	},
++	{
++		.data_len = 128,
++		.digest = {
++			0x05, 0x8e, 0x9d, 0xdc, 0xe9, 0x36, 0x3e, 0x73,
++			0x63, 0x59, 0x69, 0x81, 0x0b, 0x8c, 0xc7, 0x9e,
++			0xcc, 0xe7, 0x9c, 0x19, 0x54, 0xa7, 0x2f, 0x86,
++			0xb5, 0xea, 0xae, 0x6d, 0xfe, 0x4e, 0x6e, 0x83,
++			0x8d, 0x1a, 0x1c, 0x70, 0x3f, 0x34, 0xa1, 0x04,
++			0x59, 0xd1, 0xbb, 0xaa, 0x58, 0xf7, 0xce, 0xfb,
++			0x86, 0x66, 0x22, 0xfc, 0x78, 0x74, 0x6e, 0x85,
++			0xf1, 0x59, 0x7d, 0x9e, 0x1c, 0x3b, 0xc6, 0x65,
++		},
++	},
++	{
++		.data_len = 129,
++		.digest = {
++			0x6b, 0x1f, 0x7c, 0x9a, 0x65, 0x7f, 0x09, 0x61,
++			0xe5, 0x04, 0x9a, 0xf1, 0x4b, 0x36, 0x8e, 0x41,
++			0x86, 0xcf, 0x86, 0x19, 0xd8, 0xc9, 0x34, 0x70,
++			0x67, 0xd1, 0x03, 0x72, 0x12, 0xf7, 0x27, 0x92,
++			0x2e, 0x3d, 0x2b, 0x54, 0x9a, 0x48, 0xa4, 0xc2,
++			0x61, 0xea, 0x6a, 0xe8, 0xdd, 0x07, 0x41, 0x85,
++			0x58, 0x6d, 0xcd, 0x12, 0x0d, 0xbc, 0xb1, 0x23,
++			0xb2, 0xdb, 0x24, 0x1f, 0xc4, 0xa7, 0xae, 0xda,
++		},
++	},
++	{
++		.data_len = 256,
++		.digest = {
++			0x50, 0xd8, 0xdc, 0xb2, 0x50, 0x24, 0x7a, 0x49,
++			0xb1, 0x00, 0x73, 0x16, 0x1f, 0xce, 0xf9, 0xe8,
++			0x77, 0x0a, 0x27, 0x74, 0xc7, 0xeb, 0xf0, 0x62,
++			0xb9, 0xf3, 0x24, 0xa6, 0x03, 0x18, 0x40, 0xde,
++			0x9b, 0x1d, 0xa8, 0xd0, 0xbf, 0x66, 0xa3, 0xc1,
++			0x31, 0x04, 0x95, 0xc7, 0xc3, 0xb7, 0x11, 0xe2,
++			0x1e, 0x31, 0x49, 0x98, 0x06, 0xab, 0xf0, 0xe6,
++			0x5c, 0xac, 0x88, 0x28, 0x0b, 0x3d, 0xb2, 0xc2,
++		},
++	},
++	{
++		.data_len = 511,
++		.digest = {
++			0xd4, 0x2b, 0x6b, 0x9e, 0xfc, 0x44, 0xc0, 0x90,
++			0x64, 0x77, 0x5d, 0xf3, 0x44, 0xb6, 0x92, 0x8f,
++			0x80, 0xe2, 0xe4, 0x9b, 0xaf, 0x49, 0x04, 0xea,
++			0x29, 0xf7, 0x4a, 0x33, 0x3f, 0xc7, 0x3b, 0xab,
++			0xa1, 0x71, 0x7f, 0xa2, 0x8e, 0x03, 0xa0, 0xd6,
++			0xa7, 0xcd, 0xe0, 0xf8, 0xd7, 0x3b, 0xa4, 0x0d,
++			0x84, 0x79, 0x12, 0x72, 0x3f, 0x8e, 0x48, 0x35,
++			0x76, 0x4f, 0x56, 0xe9, 0x21, 0x40, 0x19, 0xbe,
++		},
++	},
++	{
++		.data_len = 513,
++		.digest = {
++			0x84, 0xd4, 0xd8, 0x6c, 0x60, 0x3d, 0x6e, 0xfd,
++			0x84, 0xb7, 0xdf, 0xba, 0x13, 0x5e, 0x07, 0x94,
++			0x5b, 0x6b, 0x62, 0x1d, 0x82, 0x02, 0xa7, 0xb3,
++			0x21, 0xdf, 0x42, 0x20, 0x85, 0xa8, 0x6f, 0x30,
++			0xf7, 0x03, 0xba, 0x66, 0x0e, 0xa6, 0x42, 0x21,
++			0x37, 0xe8, 0xed, 0x5b, 0x22, 0xf5, 0x4e, 0xa5,
++			0xe5, 0x80, 0x1b, 0x47, 0xf0, 0x49, 0xb3, 0xe5,
++			0x6e, 0xd9, 0xd9, 0x95, 0x3d, 0x2e, 0x42, 0x13,
++		},
++	},
++	{
++		.data_len = 1000,
++		.digest = {
++			0x71, 0x17, 0xab, 0x93, 0xfe, 0x3b, 0xa4, 0xe6,
++			0xcb, 0xb0, 0xea, 0x95, 0xe7, 0x1a, 0x01, 0xc0,
++			0x12, 0x33, 0xfe, 0xcc, 0x79, 0x15, 0xae, 0x56,
++			0xd2, 0x70, 0x44, 0x60, 0x54, 0x42, 0xa8, 0x69,
++			0x7e, 0xc3, 0x90, 0xa0, 0x0c, 0x63, 0x39, 0xff,
++			0x55, 0x53, 0xb8, 0x46, 0xef, 0x06, 0xcb, 0xba,
++			0x73, 0xf4, 0x76, 0x22, 0xf1, 0x60, 0x98, 0xbc,
++			0xbf, 0x76, 0x95, 0x85, 0x13, 0x1d, 0x11, 0x3b,
++		},
++	},
++	{
++		.data_len = 3333,
++		.digest = {
++			0x3a, 0xaa, 0x85, 0xa0, 0x8c, 0x8e, 0xe1, 0x9c,
++			0x9b, 0x43, 0x72, 0x7f, 0x40, 0x88, 0x3b, 0xd1,
++			0xc4, 0xd8, 0x2b, 0x69, 0xa6, 0x74, 0x47, 0x69,
++			0x5f, 0x7d, 0xab, 0x75, 0xa9, 0xf9, 0x88, 0x54,
++			0xce, 0x57, 0xcc, 0x9d, 0xac, 0x13, 0x91, 0xdb,
++			0x6d, 0x5c, 0xd8, 0xf4, 0x35, 0xc9, 0x30, 0xf0,
++			0x4b, 0x91, 0x25, 0xab, 0x92, 0xa8, 0xc8, 0x6f,
++			0xa0, 0xeb, 0x71, 0x56, 0x95, 0xab, 0xfd, 0xd7,
++		},
++	},
++	{
++		.data_len = 4096,
++		.digest = {
++			0xe1, 0xe9, 0xbe, 0x6c, 0x96, 0xe2, 0xe8, 0xa6,
++			0x53, 0xcd, 0x79, 0x77, 0x57, 0x51, 0x2f, 0xb2,
++			0x9f, 0xfc, 0x09, 0xaa, 0x2c, 0xbc, 0x6c, 0x5f,
++			0xb0, 0xf2, 0x12, 0x39, 0x54, 0xd7, 0x27, 0xf8,
++			0x33, 0x5d, 0xd4, 0x8a, 0xca, 0xd8, 0x2e, 0xbb,
++			0x02, 0x82, 0xca, 0x1b, 0x54, 0xfa, 0xd6, 0xf4,
++			0x49, 0x63, 0xfc, 0xc8, 0x73, 0xd4, 0x26, 0x8d,
++			0x4f, 0x1c, 0x56, 0xa7, 0xf4, 0x58, 0x6f, 0x51,
++		},
++	},
++	{
++		.data_len = 4128,
++		.digest = {
++			0xf2, 0xf6, 0xe1, 0x16, 0x98, 0x69, 0x74, 0x5f,
++			0x6c, 0xc4, 0x9d, 0x34, 0xa2, 0x84, 0x5d, 0x47,
++			0xac, 0x39, 0xe0, 0x14, 0x2d, 0x78, 0xfa, 0x27,
++			0xd5, 0x18, 0xaf, 0x26, 0x89, 0xa4, 0x69, 0xd3,
++			0x56, 0xde, 0xfe, 0x4b, 0x9f, 0x0c, 0x9d, 0x5a,
++			0x9a, 0x73, 0x3e, 0x3c, 0x76, 0x4b, 0x96, 0xca,
++			0x49, 0xda, 0x05, 0x8c, 0x53, 0xbb, 0x85, 0x89,
++			0x60, 0xc7, 0xe0, 0xb3, 0x51, 0x18, 0xd2, 0xd2,
++		},
++	},
++	{
++		.data_len = 4160,
++		.digest = {
++			0xfc, 0x5c, 0xcf, 0xbf, 0x29, 0xe3, 0x01, 0xef,
++			0x4b, 0x40, 0x70, 0x01, 0xca, 0x4d, 0x46, 0xce,
++			0xa9, 0x95, 0x5d, 0xb4, 0xf1, 0x79, 0x29, 0xdb,
++			0xac, 0x32, 0x3d, 0xd9, 0x60, 0x9e, 0x6b, 0xb8,
++			0x28, 0x62, 0xb7, 0x4a, 0xbb, 0x33, 0xb9, 0xd0,
++			0x83, 0xe0, 0xd7, 0x5a, 0x2d, 0x01, 0x4c, 0x61,
++			0x9e, 0x7d, 0x2d, 0x2d, 0x60, 0x29, 0x5e, 0x60,
++			0x10, 0xb7, 0x41, 0x00, 0x3f, 0xe5, 0xf7, 0x52,
++		},
++	},
++	{
++		.data_len = 4224,
++		.digest = {
++			0xf8, 0xe5, 0x4b, 0xe5, 0x89, 0xf9, 0x1b, 0x43,
++			0xbb, 0x65, 0x3d, 0xa0, 0xb4, 0xdc, 0x04, 0x26,
++			0x68, 0x15, 0xae, 0x4d, 0xd6, 0x03, 0xb7, 0x27,
++			0x06, 0x8c, 0x2a, 0x82, 0x51, 0x96, 0xbf, 0x83,
++			0x38, 0x96, 0x21, 0x8a, 0xd9, 0xf9, 0x4e, 0x38,
++			0xc6, 0xb3, 0xbd, 0xfe, 0xd3, 0x49, 0x90, 0xbc,
++			0xa1, 0x77, 0xd0, 0xa0, 0x3c, 0x2b, 0x4e, 0x10,
++			0x34, 0xc3, 0x17, 0x85, 0x3d, 0xec, 0xa8, 0x05,
++		},
++	},
++	{
++		.data_len = 16384,
++		.digest = {
++			0x38, 0x56, 0xaf, 0x83, 0x68, 0x9c, 0xba, 0xe3,
++			0xec, 0x51, 0xf5, 0xf4, 0x93, 0x48, 0x1d, 0xe6,
++			0xad, 0xa8, 0x8c, 0x70, 0x2a, 0xd9, 0xaa, 0x43,
++			0x04, 0x40, 0x95, 0xc1, 0xe6, 0x8a, 0xf5, 0x01,
++			0x6b, 0x79, 0xd9, 0xb4, 0xd0, 0x1d, 0x93, 0x26,
++			0xfe, 0xf5, 0x07, 0x57, 0xda, 0x08, 0x0a, 0x82,
++			0xc9, 0x17, 0x13, 0x5b, 0x9e, 0x11, 0x96, 0xa5,
++			0xd0, 0x92, 0xcd, 0xf1, 0xa3, 0x5b, 0x43, 0x21,
++		},
++	},
++};
++
++static const u8 hash_testvec_consolidated[BLAKE2B_HASH_SIZE] = {
++	0xa4, 0xf8, 0xf6, 0xa1, 0x36, 0x89, 0xc0, 0x2a,
++	0xc3, 0x42, 0x32, 0x71, 0xe5, 0xea, 0x14, 0x77,
++	0xf3, 0x99, 0x91, 0x87, 0x49, 0xc2, 0x8d, 0xa5,
++	0x2f, 0xed, 0x01, 0x35, 0x39, 0x64, 0x09, 0x25,
++	0xe3, 0xa8, 0x50, 0x97, 0x35, 0x8b, 0xf5, 0x19,
++	0x1e, 0xd5, 0x9f, 0x03, 0x0b, 0x65, 0x55, 0x0e,
++	0xa0, 0xb7, 0xda, 0x18, 0x7b, 0x7f, 0x88, 0x55,
++	0x1f, 0xdb, 0x82, 0x6b, 0x98, 0x90, 0x1c, 0xdd,
++};
++
++static const u8 blake2b_keyed_testvec_consolidated[BLAKE2B_HASH_SIZE] = {
++	0x2b, 0x89, 0x36, 0x3a, 0x36, 0xe4, 0x18, 0x38,
++	0xc4, 0x5b, 0x5c, 0xa5, 0x9a, 0xed, 0xf2, 0xee,
++	0x5a, 0xb6, 0x82, 0x6c, 0x63, 0xf2, 0x29, 0x57,
++	0xc7, 0xd5, 0x32, 0x27, 0xba, 0x88, 0xb1, 0xab,
++	0xf2, 0x2a, 0xc1, 0xea, 0xf3, 0x91, 0x89, 0x66,
++	0x47, 0x1e, 0x5b, 0xc6, 0x98, 0x12, 0xe9, 0x25,
++	0xbf, 0x72, 0xd2, 0x3f, 0x88, 0x97, 0x17, 0x51,
++	0xed, 0x96, 0xfb, 0xe9, 0xca, 0x52, 0x42, 0xc9,
++};
+diff --git a/lib/crypto/tests/blake2b_kunit.c b/lib/crypto/tests/blake2b_kunit.c
+new file mode 100644
+index 0000000000000..bc0be7da1e76d
+--- /dev/null
++++ b/lib/crypto/tests/blake2b_kunit.c
+@@ -0,0 +1,133 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * BLAKE2b digest algorithm, NEON accelerated
-+ *
-+ * Copyright 2020 Google LLC
++ * Copyright 2025 Google LLC
++ */
++#include <crypto/blake2b.h>
++#include "blake2b-testvecs.h"
++
++/*
++ * The following are compatibility functions that present BLAKE2b as an unkeyed
++ * hash function that produces hashes of fixed length BLAKE2B_HASH_SIZE, so that
++ * hash-test-template.h can be reused to test it.
 + */
 +
-+#include <asm/neon.h>
-+#include <asm/simd.h>
-+
-+static __ro_after_init DEFINE_STATIC_KEY_FALSE(have_neon);
-+
-+asmlinkage void blake2b_compress_neon(struct blake2b_ctx *ctx,
-+				      const u8 *data, size_t nblocks, u32 inc);
-+
-+static void blake2b_compress(struct blake2b_ctx *ctx,
-+			     const u8 *data, size_t nblocks, u32 inc)
++static void blake2b_default(const u8 *data, size_t len,
++			    u8 out[BLAKE2B_HASH_SIZE])
 +{
-+	if (!static_branch_likely(&have_neon) || !may_use_simd()) {
-+		blake2b_compress_generic(ctx, data, nblocks, inc);
-+		return;
++	blake2b(NULL, 0, data, len, out, BLAKE2B_HASH_SIZE);
++}
++
++static void blake2b_init_default(struct blake2b_ctx *ctx)
++{
++	blake2b_init(ctx, BLAKE2B_HASH_SIZE);
++}
++
++/*
++ * Generate the HASH_KUNIT_CASES using hash-test-template.h.  These test BLAKE2b
++ * with a key length of 0 and a hash length of BLAKE2B_HASH_SIZE.
++ */
++#define HASH blake2b_default
++#define HASH_CTX blake2b_ctx
++#define HASH_SIZE BLAKE2B_HASH_SIZE
++#define HASH_INIT blake2b_init_default
++#define HASH_UPDATE blake2b_update
++#define HASH_FINAL blake2b_final
++#include "hash-test-template.h"
++
++/*
++ * BLAKE2b specific test case which tests all possible combinations of key
++ * length and hash length.
++ */
++static void test_blake2b_all_key_and_hash_lens(struct kunit *test)
++{
++	const size_t data_len = 100;
++	u8 *data = &test_buf[0];
++	u8 *key = data + data_len;
++	u8 *hash = key + BLAKE2B_KEY_SIZE;
++	struct blake2b_ctx main_ctx;
++	u8 main_hash[BLAKE2B_HASH_SIZE];
++
++	rand_bytes_seeded_from_len(data, data_len);
++	blake2b_init(&main_ctx, BLAKE2B_HASH_SIZE);
++	for (int key_len = 0; key_len <= BLAKE2B_KEY_SIZE; key_len++) {
++		rand_bytes_seeded_from_len(key, key_len);
++		for (int out_len = 1; out_len <= BLAKE2B_HASH_SIZE; out_len++) {
++			blake2b(key, key_len, data, data_len, hash, out_len);
++			blake2b_update(&main_ctx, hash, out_len);
++		}
 +	}
-+	do {
-+		const size_t blocks = min_t(size_t, nblocks,
-+					    SZ_4K / BLAKE2B_BLOCK_SIZE);
-+
-+		kernel_neon_begin();
-+		blake2b_compress_neon(ctx, data, blocks, inc);
-+		kernel_neon_end();
-+
-+		data += blocks * BLAKE2B_BLOCK_SIZE;
-+		nblocks -= blocks;
-+	} while (nblocks);
++	blake2b_final(&main_ctx, main_hash);
++	KUNIT_ASSERT_MEMEQ(test, main_hash, blake2b_keyed_testvec_consolidated,
++			   BLAKE2B_HASH_SIZE);
 +}
 +
-+#define blake2b_mod_init_arch blake2b_mod_init_arch
-+static void blake2b_mod_init_arch(void)
++/*
++ * BLAKE2b specific test case which tests using a guarded buffer for all allowed
++ * key lengths.  Also tests both blake2b() and blake2b_init_key().
++ */
++static void test_blake2b_with_guarded_key_buf(struct kunit *test)
 +{
-+	if (elf_hwcap & HWCAP_NEON)
-+		static_branch_enable(&have_neon);
++	const size_t data_len = 100;
++
++	rand_bytes(test_buf, data_len);
++	for (int key_len = 0; key_len <= BLAKE2B_KEY_SIZE; key_len++) {
++		u8 key[BLAKE2B_KEY_SIZE];
++		u8 *guarded_key = &test_buf[TEST_BUF_LEN - key_len];
++		u8 hash1[BLAKE2B_HASH_SIZE];
++		u8 hash2[BLAKE2B_HASH_SIZE];
++		struct blake2b_ctx ctx;
++
++		rand_bytes(key, key_len);
++		memcpy(guarded_key, key, key_len);
++
++		blake2b(key, key_len, test_buf, data_len,
++			hash1, BLAKE2B_HASH_SIZE);
++		blake2b(guarded_key, key_len, test_buf, data_len,
++			hash2, BLAKE2B_HASH_SIZE);
++		KUNIT_ASSERT_MEMEQ(test, hash1, hash2, BLAKE2B_HASH_SIZE);
++
++		blake2b_init_key(&ctx, BLAKE2B_HASH_SIZE, guarded_key, key_len);
++		blake2b_update(&ctx, test_buf, data_len);
++		blake2b_final(&ctx, hash2);
++		KUNIT_ASSERT_MEMEQ(test, hash1, hash2, BLAKE2B_HASH_SIZE);
++	}
 +}
++
++/*
++ * BLAKE2b specific test case which tests using a guarded output buffer for all
++ * allowed output lengths.
++ */
++static void test_blake2b_with_guarded_out_buf(struct kunit *test)
++{
++	const size_t data_len = 100;
++
++	rand_bytes(test_buf, data_len);
++	for (int out_len = 1; out_len <= BLAKE2B_HASH_SIZE; out_len++) {
++		u8 hash[BLAKE2B_HASH_SIZE];
++		u8 *guarded_hash = &test_buf[TEST_BUF_LEN - out_len];
++
++		blake2b(NULL, 0, test_buf, data_len, hash, out_len);
++		blake2b(NULL, 0, test_buf, data_len, guarded_hash, out_len);
++		KUNIT_ASSERT_MEMEQ(test, hash, guarded_hash, out_len);
++	}
++}
++
++static struct kunit_case blake2b_test_cases[] = {
++	HASH_KUNIT_CASES,
++	KUNIT_CASE(test_blake2b_all_key_and_hash_lens),
++	KUNIT_CASE(test_blake2b_with_guarded_key_buf),
++	KUNIT_CASE(test_blake2b_with_guarded_out_buf),
++	KUNIT_CASE(benchmark_hash),
++	{},
++};
++
++static struct kunit_suite blake2b_test_suite = {
++	.name = "blake2b",
++	.test_cases = blake2b_test_cases,
++	.suite_init = hash_suite_init,
++	.suite_exit = hash_suite_exit,
++};
++kunit_test_suite(blake2b_test_suite);
++
++MODULE_DESCRIPTION("KUnit tests and benchmark for BLAKE2b");
++MODULE_LICENSE("GPL");
+diff --git a/scripts/crypto/gen-hash-testvecs.py b/scripts/crypto/gen-hash-testvecs.py
+index fc063f2ee95f1..c5b7985fe7280 100755
+--- a/scripts/crypto/gen-hash-testvecs.py
++++ b/scripts/crypto/gen-hash-testvecs.py
+@@ -83,12 +83,12 @@ def print_c_struct_u8_array_field(name, value):
+     print(f'\t\t.{name} = {{')
+     print_bytes('\t\t\t', value, 8)
+     print('\t\t},')
+ 
+ def alg_digest_size_const(alg):
+-    if alg == 'blake2s':
+-        return 'BLAKE2S_HASH_SIZE'
++    if alg.startswith('blake2'):
++        return f'{alg.upper()}_HASH_SIZE'
+     return f'{alg.upper()}_DIGEST_SIZE'
+ 
+ def gen_unkeyed_testvecs(alg):
+     print('')
+     print('static const struct {')
+@@ -122,23 +122,26 @@ def gen_hmac_testvecs(alg):
+         ctx.update(mac)
+     print_static_u8_array_definition(
+             f'hmac_testvec_consolidated[{alg.upper()}_DIGEST_SIZE]',
+             ctx.digest())
+ 
+-BLAKE2S_KEY_SIZE = 32
+-BLAKE2S_HASH_SIZE = 32
+-
+-def gen_additional_blake2s_testvecs():
++def gen_additional_blake2_testvecs(alg):
++    if alg == 'blake2s':
++        (max_key_size, max_hash_size) = (32, 32)
++    elif alg == 'blake2b':
++        (max_key_size, max_hash_size) = (64, 64)
++    else:
++        raise ValueError(f'Unsupported alg: {alg}')
+     hashes = b''
+-    for key_len in range(BLAKE2S_KEY_SIZE + 1):
+-        for out_len in range(1, BLAKE2S_HASH_SIZE + 1):
+-            h = hashlib.blake2s(digest_size=out_len, key=rand_bytes(key_len))
++    for key_len in range(max_key_size + 1):
++        for out_len in range(1, max_hash_size + 1):
++            h = hashlib.new(alg, digest_size=out_len, key=rand_bytes(key_len))
+             h.update(rand_bytes(100))
+             hashes += h.digest()
+     print_static_u8_array_definition(
+-            'blake2s_keyed_testvec_consolidated[BLAKE2S_HASH_SIZE]',
+-            compute_hash('blake2s', hashes))
++            f'{alg}_keyed_testvec_consolidated[{alg_digest_size_const(alg)}]',
++            compute_hash(alg, hashes))
+ 
+ def gen_additional_poly1305_testvecs():
+     key = b'\xff' * POLY1305_KEY_SIZE
+     data = b''
+     ctx = Poly1305(key)
+@@ -158,11 +161,11 @@ if len(sys.argv) != 2:
+ 
+ alg = sys.argv[1]
+ print('/* SPDX-License-Identifier: GPL-2.0-or-later */')
+ print(f'/* This file was generated by: {sys.argv[0]} {" ".join(sys.argv[1:])} */')
+ gen_unkeyed_testvecs(alg)
+-if alg == 'blake2s':
+-    gen_additional_blake2s_testvecs()
++if alg.startswith('blake2'):
++    gen_additional_blake2_testvecs(alg)
+ elif alg == 'poly1305':
+     gen_additional_poly1305_testvecs()
+ else:
+     gen_hmac_testvecs(alg)
 -- 
 2.51.1.dirty
 
