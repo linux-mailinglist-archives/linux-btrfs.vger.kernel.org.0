@@ -1,111 +1,112 @@
-Return-Path: <linux-btrfs+bounces-17998-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-17999-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D994BED462
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 19:07:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 223E7BED6CA
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 19:51:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C29B540842B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 17:07:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B291019C2B2D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Oct 2025 17:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD00F24A067;
-	Sat, 18 Oct 2025 17:07:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 535D125EFBE;
+	Sat, 18 Oct 2025 17:50:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bTuNCrrG"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Tje0r4th"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE471D618C
-	for <linux-btrfs@vger.kernel.org>; Sat, 18 Oct 2025 17:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C881C27
+	for <linux-btrfs@vger.kernel.org>; Sat, 18 Oct 2025 17:50:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760807263; cv=none; b=PaiC46/4/WS9kU6MXgz9sZwG4djXMb4JBPjojMcwUz7DRd9YY6BN0euRDdUla0QzRfuYIsgoXhmLqmY2D1+M1dkgK5jpZCNhZKYN0XF44HAPmhEq2cIAQOrs/fqisPC7aBf0QLRwxeArAlaHrMbHmqNe/3ueewgSsvs5gQctvtQ=
+	t=1760809855; cv=none; b=TDAiik8PAOfZ4IncRHfPPaBXYNSnG0W/Q049I1BaGsaEiWdLm7Sv5L2NIyeVvMxblwOaLHeWN4kf8HbUU5yZH0F27OSY7CEBEqcNHvMv71hGz4ysIOn+N+lyMRsYVpIL+nCeAdpv5CiQ3NRWK5A1xTOQCcY5Ue9UQBUFSfLEUlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760807263; c=relaxed/simple;
-	bh=iPUmTh3tC5kprevGI4qtnDWtdFkhVEcglc1971nZY7M=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:
-	 References:In-Reply-To; b=qx2KKOFyCCWzfUso/RjapBmXmjXPg8FthZrLcgsRc5ez4u26uchTszVUHZDVt5ImUFEfEw2QhOURfZ0K7Nr8Ce7mjTsDzXZ/P6wr+W205vdPWImtLfH9qHgd/vjI//XipIN1+52wgGEbv4REAR159xQVky2qO7XcBWTOxnqNY1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bTuNCrrG; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-47117f92e32so16154895e9.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Oct 2025 10:07:41 -0700 (PDT)
+	s=arc-20240116; t=1760809855; c=relaxed/simple;
+	bh=FDsT7qTVUE5H0Vve2oMO6RSKaB4ZG4doezkUG2svuYg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FSrIMHFfA6D2n9H0/zy/voDJZMJVJog0JMZLxHpsJuQag83bOVyv/eImHiA+iRcrJyP+FIpaP7Y7htncQTIScfomo86gDDXhwd9qRlzqaTKPuM01ODvcm1iRBgbmsmbtCovyOmWQNX+KLS1sDF7Y6WUT/oBlMnwbHt+rBMoMXEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Tje0r4th; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-47112a73785so22394775e9.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Oct 2025 10:50:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760807260; x=1761412060; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iPUmTh3tC5kprevGI4qtnDWtdFkhVEcglc1971nZY7M=;
-        b=bTuNCrrGGStynvjU9ASsYb5XHmn82GlF6AsLBZ2/vv0Hh5DEej9wucRlB9YkSt5nT9
-         vlF2U3/LbgWFHkB1tw7V7FzLxnbuH4qG6ngWr8f3PSippZxHauXNEphd5wjAyEwyj8gI
-         0UfOkTUkybBu8nzk6nouGz9SULl2/2qb+hqJq63LQELXqWNVrVRLhz880v9jHvh2m1YD
-         OPBNRoEr+HKrbHBmPktSgVHpfsOmbMhUceBbYg5bDwInsK2k1fKRv9awUP33tsRl/ktr
-         0HSjhZo4qgWz04AJY4E0zmbT3YNfmH0XLvXlftENxEdvg9rbcQo4nyxl07F5cX3b6c4Z
-         TmNg==
+        d=suse.com; s=google; t=1760809851; x=1761414651; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FDsT7qTVUE5H0Vve2oMO6RSKaB4ZG4doezkUG2svuYg=;
+        b=Tje0r4thQxwhx+1vnlNJy5DPvgdDUGfW5Fx9PGl8t+Mlr67QKcp2T8yoxqKT8va7cx
+         a+l3m0Ry9l4qztZfZCxSsbrJGpoUklmUkOQGlQpMD9oLX6G6BSDXCRndW/ZdqPK65yet
+         FK4JoKXmHJ+BNM4A35jIP3bMakv/9RdzLjLbl8NhaoBvzF/aFmajm3cWGtnOeRlBehgF
+         bYMrUyZ3iQyITK7V+Q+3u2xMm/eStUchme1ASKxZKzEM+o7FHT68OJX5+jRZbs1IaDQi
+         wmBQw4BoemXR//wCz8z+ConV99hgeAvwEtGC1Ic4H3FQ47AQKkiqFgRXC/W3ZBI47DjA
+         /5bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760807260; x=1761412060;
-        h=in-reply-to:references:to:from:subject:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=iPUmTh3tC5kprevGI4qtnDWtdFkhVEcglc1971nZY7M=;
-        b=t2oakFcNJ0O4i2L7VH3Pj8Ro9hCqk3pwJ1zkMTUrSBgKn3Yy+pHGp8zREyvxqD6hEh
-         4HkDc6ms/Vl65VlOb1SX6vrzvoKj1cFOT+i9AQKG9mlL6qXB4S3u4mQziohkVpftVCHJ
-         Yncae3PBORySqUnAOu2vWneDemGUDgilFxDDLXoyyLeNm3Cxr6N9GtwZZGmZlBo8WLsb
-         1n3TR0xXZVuNtmUBc7jm9H49i0hnJzSwBI8YcIvBHUwRrtCvRmjS9s0xHYWZcSqCWu6/
-         Ce3IdoJHLd0/T/wYpDQ2CYmhAJYstJFHdqs0tL8F5xFgUmKzSi5KirRUl/OlxcHBRpV5
-         j0uA==
-X-Forwarded-Encrypted: i=1; AJvYcCUdQiHSVsQTcVSy0FU9XDbLDt7mTrXVaG4DlYOw0sRgUtfos+qCGA2bUJOhmCQw7fL3fGiLMrOTrQV+nA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwD/AzUhDfD3bI01YQNqsgh8gYw8+EAB+sdoiCegUnINn1+vIEP
-	FV65X/1ZqxigfBz35wOW6AdbdA63T5xn1ue+msdtVNdeLCrNJzBFBtiB
-X-Gm-Gg: ASbGnctrORUn5/xQKR6YqyLcCSDTdo4osauCSMr0/tmvPvkbV1G9uZ5/NqdG8p5u6oJ
-	2GqPGMHCCnSAqARt4yQaFxuKsYHxrjhS2I7XvWCb/zep7nenLYLcYisZJVufCdzXgthcUlgIkqn
-	mVXkn5bvaTIjFaTqCCRvLpds4vFW9wCkP3Ul3oefEKvToVSNnaFTTQGEib/yFkWjNxYTQSi/65B
-	L9gTgWF6EMAUk7opCuNodQwk9JqujhF5u8gQVTV0uXw25C/YQauev+/HAkhnc514//Xmr82HxXZ
-	YvIzp8HzzXrmfYEfwh+XKdYt4EGHeWNxZd+/AbW4TisnKS72Y0vezD91DXj4enXLWorluHmz89s
-	ZywSIHQe8SkJVUR7cWOaoMB4pgvk2eRlXHK93Ym407Sfm2bBZbzIcrf1CVsUpO0UtW39XRK/G88
-	e4UR961MBcffhxLryww4+RF289oYf3TXtpl+CBEO8utKcGjMvOBMpnt5Kk78rNEw==
-X-Google-Smtp-Source: AGHT+IEX65PMiwboz+Os84FqRfTaC+bA5+AvBv2mRHFudUrmHUTrwTFMbjx7utgxfwf1v//H/0p3zg==
-X-Received: by 2002:a05:600c:3b8d:b0:46e:4883:27d with SMTP id 5b1f17b1804b1-4711791c8d3mr60187925e9.30.1760807259469;
-        Sat, 18 Oct 2025 10:07:39 -0700 (PDT)
-Received: from localhost (host-87-8-168-238.retail.telecomitalia.it. [87.8.168.238])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-427f00ce178sm5593196f8f.46.2025.10.18.10.07.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Oct 2025 10:07:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1760809851; x=1761414651;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FDsT7qTVUE5H0Vve2oMO6RSKaB4ZG4doezkUG2svuYg=;
+        b=F3oeo4MPv7Pwkxx+wIpSyp/dvPDw6jpxOrscrSJA5M0fE4H4/jjqzZm7WgYLDtvwO6
+         FDOKmSkqwAlPrnSU04C412vDsphF/+rN5ydHb7s12I4WVahrwF5dFzx0UNqwsRLmheGf
+         lCUNNR3+6LU0l9EC2W3KUtP5nBZvKDQP46HDRNP4nO0N2lI5b1sEv7DLuheWB8CVp0IN
+         c/hm8yM6tRU8EmJJ7jXtHIwPgscTG4RrGpnHQwdMcLzjv9pinIuBvvVjw5d3pnItwJ7D
+         wbp6U9OQDdVk2LMG/fnAeSanVo+79OURyxF5d8N2K4n/DuLifKtG90MqMsh+R57mZ/JJ
+         r5Sg==
+X-Forwarded-Encrypted: i=1; AJvYcCWMHVW6UM82ZWRHaQqmnol0lrbawqcR+J6CHAek/f1DHhYReN3RSEiHdAdiB1QurI5smsOSBHhs3+lUjw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw2CGc0Z9MKn3hP9GBJw6W7ppoOdkVh+QbOACftgQAsbqFbFR3F
+	ibDBKB4Odz5Y1X6Y2S09LsnyUL1u82pm12DiVf24Sd4IXwn09abXjiA3+UTfZdA5osNAagsCGzE
+	bVgIfRzup/OfTaR53TXkn5NtF6VL2v8+kLoaXD2JOqMPcnHa48l1CvcU=
+X-Gm-Gg: ASbGnctHb5cM1A2HG5Qk3WiVYKHheTO/B960OYfvr2bZRXQ9lIPGoXl8G7YVJbsVQTA
+	9t+nX9iMyIaChe3mMtwUG2MgclVhbePxffVGm8w7zmug58HHzWs3dn+k/sbQXzB/xFjsn5TZITZ
+	oQB8uoprFQBsPgWCT+civA/4Mps8yaC+6cYV5B84fyqQCRPAp+vkH3pCmTX1nJBJZP7NmPKU5rc
+	+hF/IAgr95P2N4JFPllkRZ6iOMvLDeQREOUJ23weI6Cd2UGMkfjb4f1Aqtud1jDeJT2FtQnlA1f
+	6bDKjavW6oKnwDqLmu4=
+X-Google-Smtp-Source: AGHT+IFyUsUR7Ud7Qniu6blivQqElTLCY3z/K8jKhpm3cqIVrl3hL9a3g31b6KK3Me2J+RBFt6JZ4UjEaj05jHUiLTs=
+X-Received: by 2002:a05:600c:871a:b0:471:14f5:124f with SMTP id
+ 5b1f17b1804b1-471179258f3mr53856145e9.35.1760809851422; Sat, 18 Oct 2025
+ 10:50:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Sat, 18 Oct 2025 19:07:38 +0200
-Message-Id: <DDLM2VDARRDZ.1G6RL1GDDDSL5@gmail.com>
-Subject: Re: high space usage after ext3 btrfs-convert
-From: "koraynilay" <koray.fra@gmail.com>
-To: "koraynilay" <koray.fra@gmail.com>, <linux-btrfs@vger.kernel.org>
-X-Mailer: aerc 0.21.0-0-g5549850facc2
-References: <a1307c8d-2c6c-4fc7-968a-4101465e62a0@gmail.com>
-In-Reply-To: <a1307c8d-2c6c-4fc7-968a-4101465e62a0@gmail.com>
+MIME-Version: 1.0
+References: <20251015121157.1348124-1-neelx@suse.com> <20251015121157.1348124-9-neelx@suse.com>
+ <20251017164314.GL13776@twin.jikos.cz>
+In-Reply-To: <20251017164314.GL13776@twin.jikos.cz>
+From: Daniel Vacek <neelx@suse.com>
+Date: Sat, 18 Oct 2025 19:50:40 +0200
+X-Gm-Features: AS18NWDhGkCi5h32iGgemtEKBEa889mqs_5LdEjLgW7dBnwIFVz-fPaLZour-N8
+Message-ID: <CAPjX3Ffk5Wdbw5jUncQQKahDTA9_+OXpcUg3Hc4ifFCqdOxRHA@mail.gmail.com>
+Subject: Re: [PATCH 8/8] btrfs-progs: string-utils: do not escape space while printing
+To: dsterba@suse.cz
+Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
+	Josef Bacik <josef@toxicpanda.com>, Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Content-Type: text/plain; charset="UTF-8"
 
-Update on this issue:
+On Fri, 17 Oct 2025 at 18:43, David Sterba <dsterba@suse.cz> wrote:
+>
+> On Wed, Oct 15, 2025 at 02:11:56PM +0200, Daniel Vacek wrote:
+> > Space is a valid printable character in C. On the other hand
+> > string "\ " in fact results in an unknown escape sequence.
+>
+> The space is escaped because the helper is used to print stream dump
+> or tree dump where space is the separator, so this patch would break it.
+> Unless there's another reason than esaped space is not valid in C then
+> we can't do that.
 
-> which should've been fixed by the defrag
-After asking on #btrfs on irc I found the solution, which was actually
-to use defrag, but with -t 4G and forcing compression/no compression by
-using -czstd/--nocomp.
-By running a defrag on the full fs and on some folders/files that still
-appeared as <UNREACHABLE>, I was able to get the <UNREACHABLE> space to
-~4 GiB (and hopefully it will go to 0 after defragging those remaining
-folders/files).
+The reason is fstests are parsing the output of dump-tree and failing
+on any space in the encrypted filename. That's how I found the bug.
+Namely it's the generic/582 checking the encrypted filenames, well the
+btrfs part of the test as I implemented it. It's the
+get_ciphertext_filename() function in common/encrypt. I went through
+several iterations but I could not come up with any better solution.
+Hints are welcome here.
 
-Thanks to Forza for telling me the solution and for multicore and eyeoh
-for taking some of their time to help me.
-
-P.S.
-> that I had 488 GiB free, but when I deleted ~215 GiB, the free space=20
-This was actually ~86 GiB, but irrelevant I think.
+Thinking about it again, this is also missing correctly escaping %
+into %% which I mangled in fstests. I should have really done it here.
 
