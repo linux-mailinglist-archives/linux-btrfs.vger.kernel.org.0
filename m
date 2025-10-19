@@ -1,56 +1,44 @@
-Return-Path: <linux-btrfs+bounces-18008-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18009-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A4B0BEE191
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Oct 2025 11:13:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F82ABEE2EA
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Oct 2025 12:20:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id F1B534E62E9
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Oct 2025 09:13:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 206393B430B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Oct 2025 10:20:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A00F62E03E8;
-	Sun, 19 Oct 2025 09:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="A3RfW2Rw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9AE1E51FA;
+	Sun, 19 Oct 2025 10:20:06 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from ts201-relay01.ddc.teliasonera.net (ts201-relay01.ddc.teliasonera.net [81.236.60.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03925126C17;
-	Sun, 19 Oct 2025 09:12:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 037B829D288
+	for <linux-btrfs@vger.kernel.org>; Sun, 19 Oct 2025 10:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.236.60.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760865179; cv=none; b=qn3GbW8SEaa1C4JnuFBA+JyNuG/0632xMey+Rz8U43EhcCf5EidKoVGke72xM8u7JChNhCCHeu8XkdBfQF8xFgqzDgK5Eu5PWdmWHrLacLv5Bkm1eFu3ez9JB/MAOROB/S0tVoGm+dbeYXdTrKp2VH1gckvCrs5NymiO3ASZqx8=
+	t=1760869206; cv=none; b=kxxcRnWP90ErHfbLvMq3sQEpZ3TvNiF1cFrkbFt3mOpYEDwE/1jjGaSJPKVYRkMDxacE6of2XaPq8Qjp1PHf3xdXNaXSKtqYW47fqk0driRDAwTQP45FtSwS+mvMwvI9WHCzdLiLvZVFWF8nFr6A4wJ6OT8IUW1KwBeXGV83T8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760865179; c=relaxed/simple;
-	bh=iWOig4kQf4kFb3TIgEFkR+kYFpVNh6IkDXuVegFDu+Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d1uRgU3v0ORT/eG75OKOWXAgimCoZ6FSqT9ft9MnzHfTnjtZYY0UUqlRwL9/UFoRmKNUrR42xXM4/DQjMoRV0aGWmWz3Lqx1VoxJVC0ConYxNP5bb/tS9w4ciX7vs6UxdSFJqfB+8ZqVaDB/kCc9T1D5dotYNzG+PlQX3emg9pY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=A3RfW2Rw; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1760865167; x=1761469967; i=quwenruo.btrfs@gmx.com;
-	bh=GLpCzEK3VAHXP99FoKwHy4oEZ+27F/EgdYjsk/uj3as=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=A3RfW2Rwdg6G+s8gpEJSflnmbpP1TdDTjwXTsQSD4h9cMSXWofJ0lDDyz3JxG39p
-	 eV50UKjWVBfgRNe71rncmbi6yTiJxs3LjaoqQQ/SPLN9zXU5osPfqIVAy1Va5M6R6
-	 p7JQkCGKJHe5mwDmPAbrob5cctBH8VFwg0Z2Iz2B9ao6Bc1HAsXWA9C/kc9i/4/kR
-	 ppjPmw9uJzHGEFFVUvm0YUWK02K4c9SciSiX3zLXR4WhDt00WmYiyu+so9czGHBy0
-	 L5/tFbxkrqjdxNQ5a6YxG3SIv94RLklLveQAIFMaGh4Ss7Y+6doE0uiOppdYBieHj
-	 c654PDfvY0o9yO8yAw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mr9Bu-1uNJHc3gD0-00bimj; Sun, 19
- Oct 2025 11:12:47 +0200
-Message-ID: <97fc4d4c-2142-45f3-b1a9-4b4f3bd3d21c@gmx.com>
-Date: Sun, 19 Oct 2025 19:42:40 +1030
+	s=arc-20240116; t=1760869206; c=relaxed/simple;
+	bh=al77GFXghn61F4M9Uyf8CxGglCgivV7LJk0AP4cwhi8=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=fp+PlveHSzvEFEafbvWPWstSUYto+AQ6SHM/prDi9M7eGPfblSlwLEu6Y1jLSHGttDpQOb/3tbb9TS5zptIPUiK3ObgAtobcMs0z1/bGbrH4RNJzqqhfRD3Gfn8xl0KrfOejmH1gTGzK29NbMhtnxF6AQpD8XugmEG/vsoApPnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jansson.tech; spf=pass smtp.mailfrom=jansson.tech; arc=none smtp.client-ip=81.236.60.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jansson.tech
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jansson.tech
+Received: from gammdatan.home.lan (78-71-145-33-no600.tbcn.telia.com [78.71.145.33])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ts201-relay01.ddc.teliasonera.net (Postfix) with ESMTPS id 4cqDtF2Tz8z1DRmg
+	for <linux-btrfs@vger.kernel.org>; Sun, 19 Oct 2025 12:13:57 +0200 (CEST)
+Received: from [192.168.9.3] ([192.168.9.3])
+	by gammdatan.home.lan (8.17.1/8.17.1) with ESMTP id 59JADumO1506975
+	for <linux-btrfs@vger.kernel.org>; Sun, 19 Oct 2025 12:13:56 +0200
+Message-ID: <4e2d3143-5383-491d-86c2-6b3eb7e21c3e@jansson.tech>
+Date: Sun, 19 Oct 2025 12:13:55 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,156 +46,67 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: initialize folios to NULL in compress_file_range()
-To: Kriish Sharma <kriish.sharma2006@gmail.com>, clm@fb.com, dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- skhan@linuxfoundation.org, david.hunter.linux@gmail.com,
- kernel test robot <lkp@intel.com>
-References: <20251019083647.2096733-1-kriish.sharma2006@gmail.com>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20251019083647.2096733-1-kriish.sharma2006@gmail.com>
+To: linux-btrfs@vger.kernel.org
+From: =?UTF-8?Q?Torbj=C3=B6rn_Jansson?= <torbjorn@jansson.tech>
+Subject: Filesystem lockup during backup
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yAzRKbn2OjlFv8bQwSPNEns7jPUXps9iRwsfwjFyqL6pcxL9Vse
- I7zJ5cEF6QjZ7Q461/nsIPX785pmFGU4Ro7k2rgMxZxs78FNoWpzg37A0FTGfPIxm0uKdTg
- /SJz0ePn17UbGoURFSqw2McY1Q9ION8A41bIwOmcX3+IZ/ydZGjlKW98EfdA44z5FNrSSJq
- fbq2KwyKdfsumSD+lCW6g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:GcN28E0sl0E=;QeVSlq1b5f0x0P+x/3te+MF9q1T
- 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
- 3kSvw==
+Content-Transfer-Encoding: 7bit
+
+Hello.
+
+i have a btrfs filesystem on two 18tb disks that i use as backup destination for my proxmox cluster.
+the filesystem is using btrfs raid1 mirroring and is exported over nfs to the other nodes.
+
+because this is used primarily for backups there are periods of heavy writes (several backups running at the same time) and when this happens it is very likely the filesystem and nfsd locks up completely.
+this then starts a chain reaction due to the default hard mount blocking processes then eventually ceph also becomes unhappy and then the vms goes down.
+
+below is the hung task output from dmesg on the computer with the disks.
+
+any idea whats going on and what i can do about it?
 
 
 
-=E5=9C=A8 2025/10/19 19:06, Kriish Sharma =E5=86=99=E9=81=93:
-> The variable 'folios' may be used uninitialized when jumping to cleanup
-> labels, triggering the following clang warning:
->=20
->    fs/btrfs/inode.c:874:6: warning: variable 'folios' is used uninitiali=
-zed
->    whenever 'if' condition is true
->=20
-> Initialize 'folios' to NULL to ensure the cleanup path is safe and to
-> silence the compiler warning.
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202510171743.VQ6yA0Uu-lkp@=
-intel.com/
-> Signed-off-by: Kriish Sharma <kriish.sharma2006@gmail.com>
-
-Before the LKP report it's already fixed in the for-next branch.
-
-> ---
->   fs/btrfs/inode.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index d726bcdacf6b..54903e17338f 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -862,7 +862,7 @@ static void compress_file_range(struct btrfs_work *w=
-ork)
->   	u64 actual_end;
->   	u64 i_size;
->   	int ret =3D 0;
-> -	struct folio **folios;
-> +	struct folio **folios =3D NULL;
->   	unsigned long nr_folios;
->   	unsigned long total_compressed =3D 0;
->   	unsigned long total_in =3D 0;
-
+[1560204.654347] INFO: task nfsd:5136 blocked for more than 122 seconds.
+[1560204.654351]       Tainted: P           O       6.14.11-2-pve #1
+[1560204.654353] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[1560204.654355] task:nfsd            state:D stack:0     pid:5136  tgid:5136  ppid:2      task_flags:0x200040 flags:0x00004000
+[1560204.654361] Call Trace:
+[1560204.654363]  <TASK>
+[1560204.654366]  __schedule+0x466/0x1400
+[1560204.654376]  schedule+0x29/0x130
+[1560204.654381]  io_schedule+0x4c/0x80
+[1560204.654387]  folio_wait_bit_common+0x122/0x2e0
+[1560204.654393]  ? __pfx_wake_page_function+0x10/0x10
+[1560204.654400]  __folio_lock+0x17/0x30
+[1560204.654404]  extent_write_cache_pages+0x36e/0x7f0 [btrfs]
+[1560204.654559]  btrfs_writepages+0x75/0x130 [btrfs]
+[1560204.654703]  do_writepages+0xde/0x280
+[1560204.654710]  ? __pfx_ip_finish_output+0x10/0x10
+[1560204.654715]  ? wbc_attach_and_unlock_inode+0xd1/0x130
+[1560204.654721]  filemap_fdatawrite_wbc+0x58/0x80
+[1560204.654726]  ? __ip_queue_xmit+0x19b/0x4e0
+[1560204.654731]  __filemap_fdatawrite_range+0x6d/0xa0
+[1560204.654744]  filemap_fdatawrite_range+0x13/0x30
+[1560204.654748]  btrfs_fdatawrite_range+0x28/0x70 [btrfs]
+[1560204.654889]  start_ordered_ops.constprop.0+0x4e/0x90 [btrfs]
+[1560204.655029]  btrfs_sync_file+0xa9/0x610 [btrfs]
+[1560204.655159]  ? list_lru_del_obj+0xad/0xe0
+[1560204.655168]  vfs_fsync_range+0x42/0xa0
+[1560204.655174]  nfsd_commit+0x9f/0x180 [nfsd]
+[1560204.655275]  nfsd4_commit+0x60/0xa0 [nfsd]
+[1560204.655367]  nfsd4_proc_compound+0x3ad/0x760 [nfsd]
+[1560204.655427]  nfsd_dispatch+0xce/0x220 [nfsd]
+[1560204.655486]  svc_process_common+0x464/0x6f0 [sunrpc]
+[1560204.655553]  ? __pfx_nfsd_dispatch+0x10/0x10 [nfsd]
+[1560204.655611]  svc_process+0x136/0x1f0 [sunrpc]
+[1560204.655675]  svc_recv+0x7bb/0x9a0 [sunrpc]
+[1560204.655741]  ? __pfx_nfsd+0x10/0x10 [nfsd]
+[1560204.655798]  nfsd+0x90/0xf0 [nfsd]
+[1560204.655852]  kthread+0xf9/0x230
+[1560204.655855]  ? __pfx_kthread+0x10/0x10
+[1560204.655858]  ret_from_fork+0x44/0x70
+[1560204.655862]  ? __pfx_kthread+0x10/0x10
+[1560204.655864]  ret_from_fork_asm+0x1a/0x30
+[1560204.655871]  </TASK>
 
