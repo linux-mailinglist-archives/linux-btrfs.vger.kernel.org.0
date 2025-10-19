@@ -1,87 +1,89 @@
-Return-Path: <linux-btrfs+bounces-18006-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18007-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90DCEBEDDE3
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Oct 2025 04:43:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EE7BBEE0C5
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Oct 2025 10:39:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A0823E3570
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Oct 2025 02:43:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06979189B6A4
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Oct 2025 08:39:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3141E1EF0B0;
-	Sun, 19 Oct 2025 02:43:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5147A29DB6A;
+	Sun, 19 Oct 2025 08:39:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UKK9EUiL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HaLYBw7c"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC6E635
-	for <linux-btrfs@vger.kernel.org>; Sun, 19 Oct 2025 02:43:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D7042050
+	for <linux-btrfs@vger.kernel.org>; Sun, 19 Oct 2025 08:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760841804; cv=none; b=NlQWZ+lmpRkHX7ODkPAvtR7rEL59hIx0LVh9w8d9zCJbWhf177KrlKrj4WkA0W7q8dbEDehcjKH+msgazSMDd+8rw6BwQZOOpGaq+1bSSNEclN/o9TT25Gw6+Rc6MCDlMrtEfvqLHTK/Z219NWdrHoDYklJq936epdBfUNzPxeU=
+	t=1760863147; cv=none; b=BBjkX8Ejh06aw9KiG56/1unPYXSvSA7Vzj997enldhmOYImKmeUGY25uOC5XzpE6gjgVQ+oN0Fh0wYnCxBBg4O9FoMGylxJ1lVgv0VgBsIH/GCuC5f+hV6HvrixD28+zJrNszma62fOpLf5JqEshfKjgaOVJT1i81eM3eQ93EEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760841804; c=relaxed/simple;
-	bh=4VgyEH3oZbI0ffOUbrDhAeqd8xAgB/GPzwq8OMYK2EA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cd+quAkWdgqHbZuW79rD+4oFGgfG1f7fvStZxEd3+3W6IdUPPLT6v86Qvju7luIXpaHxRalzFRbjKhJECJ4pAOx77cwvtwo2SUmyqR/Ij/mnMXxO+sClKW4nZjZGX6xDYDiam6RDrxX2OfbD75zPCH/mPxqAshuRZC81jePmkaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UKK9EUiL; arc=none smtp.client-ip=209.85.128.48
+	s=arc-20240116; t=1760863147; c=relaxed/simple;
+	bh=mEnjwgJfQJ0O71tpE2SqslOlsardtAe/nQ4bMnmTnKg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=j+7ijyQrpCADNDdKImfqjP3erhGPyZiHCAYfv23T/Fw2ScD7W53wytXpf5iemKmt90pzRDHWRoJreDt5En+LtAcXd6qjUppQJPkcz35HLIW+VfecKv22RIKFeGzCAmn2eCasQOHhZzBKtEfZ4LLdD0qW1aOeKLUQ/i+o59fMqO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HaLYBw7c; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4711810948aso19315095e9.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Oct 2025 19:43:22 -0700 (PDT)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7a23208a0c2so685324b3a.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 19 Oct 2025 01:39:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760841801; x=1761446601; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wqpOpkMst37L/nR1mGxPz8hixv97H5K7fP4DSsCE94A=;
-        b=UKK9EUiLTU79u3BdquraYdlvPA3zpICasw7GgZjsmEWBGWdMn2Wj/jwuWL4g95rXyR
-         qWefCR7K3PRj3IijhXRKxKSK+zr8ULASOSEe9w2QzTUhkPbFebPZxf15z/xLuncenA2Y
-         nybP+j/lftqN7OKU29KxZxbYGek6UY87Uc3jIJ+ZhjwmsLaKuMiW/pPmkvp4QrERIbS0
-         2TU0sxcOBqWGIrGHkH5xn4tPK0Xf7bCpM65rIO/xHsTM5zHAhS2xSjothQCovWG9QvAH
-         +3K0uKcWYt6JKebvi4uru+Xjc/yZT6Gjedk9DK6iVUXNdW8B6OMKdWl5aF6i/A5lH1PZ
-         ayIA==
+        d=gmail.com; s=20230601; t=1760863145; x=1761467945; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1O1qFjTaYa3YKr1wUK2qwfX5whhrXvdDystRg7bIkb8=;
+        b=HaLYBw7cU+RhWFf5SNkDBftCG9/fuvcdi14+vf7N1LUrVwhlqar8jpS2e8a94p/8AE
+         UP2uy4OYnm3wWYtaVTbV0Q/nMxMXEQsljLxZ94Osl5fqkoUSu9CiEnlDUToTb7xUSVEl
+         NYhiAtwV56ExkcInE4b88KmzkG/+GjW9ZjWMZ95WucAlFKmKsp+xZJCNf8SthMrYj+b/
+         uAe9c5iCQWNqKqc7uetsu0skll3nfbvfCnipNH0K297ESd5a78tn7rHbsI9U1JeCgpNk
+         xL1kMcoPoestGvHMGK5WQnleRcelfzArCeXNg1unLctdkbu4ZvlrdjKsjXIQQgEzxK6U
+         I4Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760841801; x=1761446601;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wqpOpkMst37L/nR1mGxPz8hixv97H5K7fP4DSsCE94A=;
-        b=oONnVnDmPvV/iY9BZkzVX5Zm1/eDxS7fDvNXj10VOiOyk9E4IGXMyQdrj/LaoTH1t4
-         AGZp1H9ekTS/07IVqVoJ+bgl9NYSBj1NKZVq1DqmW+iHp0GHpZenExZngtK9H4vb0lNy
-         DsFvBOoRqTK/TzC0jTuOE5oVKWQ4NrZxcNr25NwEuPSsPaJkKEntKulahyQLjyo1k525
-         /S8LBtSwrQLyzozyG1ooS36Zsh6ZPtx98G+CeQ+hSbra6I+i7E9m02urvPBWL6o2O0IH
-         A4tr0iW1qWjMoktnG29TuOtYrvIYdBmEER0MpK8qasMN7ML95pfFgULlj8UmiNtDf4Ni
-         X9nA==
-X-Gm-Message-State: AOJu0Yzkj7DaqXYKu0p3TJeb7GungaOryVqdcGNoDAZ29JQb1sAnIkWL
-	QrvNeqOLhVMBc9YinIVk+yhm+lQ25B0TkMXBFmD0p3zELZbHel8qsEbm
-X-Gm-Gg: ASbGnctGh7RHcH3LPqQ4yp2LK47FuitjbWY05AYClKGjniF4SljqUyS/z2eyrEhq592
-	jDRPUjbaWFnf3G4R/r2YbjRQkG9hwKOqXuNnKeQdcEQRH8AA0D9xKnvhe9x4EgJrv5s6GDOc5a0
-	q/CSM5zcNAaAFKk9mmqdSrmvoAnrC8/o2PWd2cvJf/kLKxPHmzToc18gBzrqTiqYoPyTGDMTNFs
-	cgQCqWIOJVzgaUF7HJ7HRsYk1ZQtfB1QxcwhLxmmj+hRqa0KdnlBbhWHxJJ4C895tg5A96HtTzW
-	rht2X2AE+UEEP0TOweOC0kDiuyOGoFv/EmkKG3X6nYZJ3TKDtjJozYeTPE027MUFQiPDGn3Vndm
-	q9kHEBBxPggqpH8VCJTTfwNR3tzanh954UItqvYKu
-X-Google-Smtp-Source: AGHT+IHRHmC0YjVVkH7pTT9CRovEOIEEw0L6RbNb28BBZy6dLczB1jxVWpXSGkYcVmfhoFW5snqnXA==
-X-Received: by 2002:a05:600c:1d9b:b0:45d:d353:a491 with SMTP id 5b1f17b1804b1-47117875e7amr53369845e9.1.1760841799287;
-        Sat, 18 Oct 2025 19:43:19 -0700 (PDT)
-Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-427f00ce08asm7708336f8f.44.2025.10.18.19.43.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Oct 2025 19:43:18 -0700 (PDT)
-From: Askar Safin <safinaskar@gmail.com>
-To: wqu@suse.com
+        d=1e100.net; s=20230601; t=1760863145; x=1761467945;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1O1qFjTaYa3YKr1wUK2qwfX5whhrXvdDystRg7bIkb8=;
+        b=ssKqcgqLT8Y/kDsIMdqsxSmuvgvn81RspXcaEGdzOJ/BbhqMTaGH0cbVWuBdApEv0H
+         SKGMzCt4wYKSIjZcD3lUMMXcwk005Z0czmkCYz/Dcg6VWbLYawhVSuhFNXjgIngQYJoN
+         ka1tAPpzBj4xpdxXSOv15p8CszavL3vQxH9FIxAUNTCaHUQiSdravGuWUA328EUWzhIX
+         dMvic2ItB5Uns5umhyEhA+iJWewnBtPAgnMAcXWoGkDWlt0wU9cawLkLYhc9uIID6Bpm
+         9DVnH801HAY3Ccy4pD+wdbEI7fqqSzgeIBzIxzvLlk8F5XUbOvUuDmktvkV8bDEPwv44
+         ObtA==
+X-Gm-Message-State: AOJu0YzydB/S7znrOusg7qnoKLyM9X6KYThS5cTOB08alBSs2e4hG1YK
+	JLXFTXF5UTxz9MsNhvkBTAiz9c/ylmSbvpQ3XjCNV4oJqBWKJ3MSw0Iz
+X-Gm-Gg: ASbGncs9YPjIK7GI4sZ+ksFzOBWJQdEcmzeOiUoaEPMTL3FVzdpyK8HfUUHtM72PKxQ
+	K8PKohFxlyi9gC3O7NWvhBLZPXwQGZZvN1e3JbnrJfyWJ6hi6snkVv9RBdhechmnRRSbx2QABby
+	ty90Yg7E1EnBuzXQAySyE2fywne+dW/ioXdz5q7TvrhawNBq5MPm7b79a+r3sYMrIsRbBnr8WeS
+	bc89GvCE9bRkpXyWegN3m9N+QqIsIiAC3IddaW5h3ggMEQ5uwvNcElXCt4ZyFOIXr5ecJsawAGJ
+	cGMP7Eh/Po9bFvEkt4XLiFED6LGdj31ddmMjfJ1BZmuDtBpq6oUUGY+8ye8Wo/9hPNqTCmv7NzG
+	4ext2Kw+RIZf99Fhw7FaN5NnuFVx7d/aIIv7+c28iQ4ZYtGsIB4UsdAk5Z5haMRM8aRYDVwhDTL
+	bIN203BfMXRARSlvTX6w==
+X-Google-Smtp-Source: AGHT+IG0nj3JfGbvrdQsQygdR1y3JLnopGBbMcwuKfE0iF7oNqWVFfy3kIP6nViup8Myx5gaNy6aHg==
+X-Received: by 2002:aa7:8096:0:b0:7a2:218c:962d with SMTP id d2e1a72fcca58-7a2218c974fmr7021815b3a.3.1760863145378;
+        Sun, 19 Oct 2025 01:39:05 -0700 (PDT)
+Received: from crl-3.node2.local ([125.63.65.162])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a230122380sm4864516b3a.77.2025.10.19.01.39.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Oct 2025 01:39:04 -0700 (PDT)
+From: Kriish Sharma <kriish.sharma2006@gmail.com>
+To: clm@fb.com,
+	dsterba@suse.com
 Cc: linux-btrfs@vger.kernel.org,
-	safinaskar@gmail.com
-Subject: Re: [PATCH v3 0/3] btrfs: scrub: enhance freezing and signal handling
-Date: Sun, 19 Oct 2025 05:43:13 +0300
-Message-ID: <20251019024313.164846-1-safinaskar@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <cover.1760834294.git.wqu@suse.com>
-References: <cover.1760834294.git.wqu@suse.com>
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	david.hunter.linux@gmail.com,
+	Kriish Sharma <kriish.sharma2006@gmail.com>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH] btrfs: initialize folios to NULL in compress_file_range()
+Date: Sun, 19 Oct 2025 08:36:47 +0000
+Message-Id: <20251019083647.2096733-1-kriish.sharma2006@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -90,8 +92,36 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-I like this version. Especially EINTR/ECANCELLED distinction. Thank you!
+The variable 'folios' may be used uninitialized when jumping to cleanup
+labels, triggering the following clang warning:
 
+  fs/btrfs/inode.c:874:6: warning: variable 'folios' is used uninitialized
+  whenever 'if' condition is true
+
+Initialize 'folios' to NULL to ensure the cleanup path is safe and to
+silence the compiler warning.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202510171743.VQ6yA0Uu-lkp@intel.com/
+Signed-off-by: Kriish Sharma <kriish.sharma2006@gmail.com>
+---
+ fs/btrfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index d726bcdacf6b..54903e17338f 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -862,7 +862,7 @@ static void compress_file_range(struct btrfs_work *work)
+ 	u64 actual_end;
+ 	u64 i_size;
+ 	int ret = 0;
+-	struct folio **folios;
++	struct folio **folios = NULL;
+ 	unsigned long nr_folios;
+ 	unsigned long total_compressed = 0;
+ 	unsigned long total_in = 0;
 -- 
-Askar Safin
+2.34.1
+
 
