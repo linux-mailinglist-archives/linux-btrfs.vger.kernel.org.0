@@ -1,201 +1,145 @@
-Return-Path: <linux-btrfs+bounces-18079-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18080-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7489BF3147
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 21:01:11 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 102CABF347F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 21:48:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9269E18C0B2E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 19:01:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 841B54FD4C1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 19:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06A2C281520;
-	Mon, 20 Oct 2025 19:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F7C28C866;
+	Mon, 20 Oct 2025 19:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bwlToA3Y"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="JswEnUl5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7369262FCD
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 19:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097351F4262
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 19:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760986858; cv=none; b=B7I6vVYnrTPw35pg9nUx3hXHvjoLgKyaeZGjZBti/74ErlL/9Ud3aF7GPeLaT6zLdP2Wygg2b1MHJn1/RmYAxFRs+jo6C6H1J6lZ+gie9naLlXLWHfmbYbmZ6cx/KktOExNliXClYyARWKGnzGO7nbhbXOpqLnowNqiLxtCVqJc=
+	t=1760989730; cv=none; b=hCDlxtpW55V/nz3fXv9jwQx3g1mY6Qp5d5qvtnfT4h1qtEGahwQR7F1FigXWfDohh8wusanOtYQ05Xl1kPIU4jtPtItkAJJYMw1xRmz47qOVV8l/43C7WhyWcYYh6PqWUOVr14xf2WVxXkO8r3O9tWadKWq7dmOaTIaHMKaj5uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760986858; c=relaxed/simple;
-	bh=dINDdnyXF6Lg3jKRdMS4yzZeQRu34B+x194gDj4KLgw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cjv9tNjfquAvRrmq25XZJq8wfnU+OuF270tzYgeR/eh/X9J/Jlyd94moAL+rR5sKqOQu7VUl+exZtzT+PIJzDhjiQpW+b+22MhRysisiD+z3mQvphWcorBZr30rnRieLefskHEvhizta7Y9f2Ncc8LmT6PNjIu/9ZNeFkUR7OqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bwlToA3Y; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1760986855;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=5wAdwIsaV2mxz61hLX4vusJU8KfwA6OJx8U1ryQWw3U=;
-	b=bwlToA3Yk7Y979RP19AeqesavZsO3x6kb6QCVM3I3xI1PZ6eKvzB0X/lthOBNlfXpGPFuD
-	NU/j7RbLTELfO2JF7BgVB8F9mhHMj6NPK4Mk3Ze/aGMTj+zYEuQrh2t8F6Xre6M0dLnj1t
-	N4SeOnodIeWj7Eeq4zYhMmrBm6uFeFw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-26-braMXUMaODySL7tG4ZfmCg-1; Mon, 20 Oct 2025 15:00:53 -0400
-X-MC-Unique: braMXUMaODySL7tG4ZfmCg-1
-X-Mimecast-MFC-AGG-ID: braMXUMaODySL7tG4ZfmCg_1760986852
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-47106a388cfso21047965e9.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 12:00:53 -0700 (PDT)
+	s=arc-20240116; t=1760989730; c=relaxed/simple;
+	bh=MgGpsHbRyLLEuSO5v1+IPH3mXujQi4ThCOVYq9DwidM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=M0vCczvYu6PODO8RyqJ8L0TGaTsif+ASUVtVRp1eJqMvCnO1Hv6ABDyFsbpLy9dHCTiEdMS99WgCegDqMK/XONw96owWxgVXMtTjZSQy4VWiawbUJ3V/f5cRa3QB4gpSlJeQIZ6twZz6R2e1/Y5LBj+8vapij2VSUpw3bfPRdyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=JswEnUl5; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-63bad3cd668so9060139a12.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 12:48:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1760989725; x=1761594525; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NptN9BDkwDpbcOFbQiGabvU6AAsiO9hE4CrjxRY1XC0=;
+        b=JswEnUl5zDus17fUo8qBjCX43cjXAahN42sjlcN3mckfNIanFZzXZJAYZzrgVS0Kxz
+         71lrR3xch78uVaAdvb8codk79wR9d4988V3eWzxy8kRLj16iL1gHA7k+N2iKHjnVM5/V
+         lC5rRXZyJtroP9gyo5rBiCXWJWkD6+NQwbasU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760986852; x=1761591652;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1760989725; x=1761594525;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5wAdwIsaV2mxz61hLX4vusJU8KfwA6OJx8U1ryQWw3U=;
-        b=U52fKKac3KAUP3ZvUyGCRPHWw7eTfaFXkg4KPhfuM3DG56RYTWJELnDD+HLiTo/0lc
-         w7t5I29x8SiPd/8qYmqzIke7/N2pit14lyiSQ/81Zn1sCZIBVYuFNzb5psaeZbJW9iGW
-         0UyLcmA7bhnWodi7edDAvO7sBZiKVhmx7XJpigAKnCzw7vMaPKYBg3SC3ONJV05QtjDX
-         wQjARG4iqSYcYc+qvR8WkmFzpTqrEGgi12rM8CRlXuf6DdJVSAlJhcW70jvoO6s7VTIX
-         PB2ob9QwSSPPVirkt5jCnOYoYKn0A7u6cIQ1+Im9gUU86+VZrXup2UmaBV1bjEc56Cpi
-         qn2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWhZd6lUos9vMtCHnrACIaudrXCF/A6AaFSv3FsE2ALVwFjV4CVKLlPAL0eVcvpOcsxjazjDv+kEdWHJA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YybL3a9gtLxgtsaOddEhJ1C6y6FomZCwWLYKWFIPvt5eZ3soKwF
-	/ZvghRHBZ1JTFdjzsN7TBvAO4DBgBgjQsQvyM2b1Kr1MrZkxdHe/I8lf8NrSFYXzLsgxN2IbBCP
-	pXhZxWe+Lz6xrJiA9+ACE/9BwTsKACKj+BzzDnChR4xlFffa/0QobiqsAYHAUQIrJ
-X-Gm-Gg: ASbGncsHLmofOCAxOkNbWzMdyCH8BQaJ7TEIxHighTo8ulFnouHwzC/6iim0Hy7BJY+
-	ydSY8IwRYYfqAdygIS7OnN01T3fg5ma3o2/JUGp2wPZkLRMjjFl00DOS1RxWyRXzPtGmEzNioJZ
-	qxxqoeJrbhlevc6gheguFrN2n6/VlG9kFxVU5Rv64RqV8Jb4KeVEvInYfBc2CBQro93gmB31epu
-	Qn7bzdsvBynahREPJcq6mrG5KeAZYcrljCSqDSJf89pXWUOLjf++slQbggyaEjI5j9MQ2EUrvRa
-	biZibV9x+3O6E+EhMFimAc3Nq9ENFwBtvGp1Fesmgby2sjTWV7nUlSyBFY0ynvJo0TKLjWQTDYP
-	+2MQM6AEhLjlDKY41ZHPUTwkWdN41vNv8UQ0PyprObv1sINhsa1QjLoreoH07j0zIRK9lV5bttx
-	xVTvEYGtHWOCKRmtJESY20VaJy9uQ=
-X-Received: by 2002:a05:600c:524f:b0:46e:4c67:ff17 with SMTP id 5b1f17b1804b1-471178a6fa9mr95682365e9.14.1760986852328;
-        Mon, 20 Oct 2025 12:00:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGeBVtTe54kGHudQUvmPQThqNcAHiithbRT8ALDQPVgYD+ACEn42WaNaOAZe32RO2rz4EUwSQ==
-X-Received: by 2002:a05:600c:524f:b0:46e:4c67:ff17 with SMTP id 5b1f17b1804b1-471178a6fa9mr95682195e9.14.1760986851909;
-        Mon, 20 Oct 2025 12:00:51 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f0c:c200:fa4a:c4ff:1b32:21ce? (p200300d82f0cc200fa4ac4ff1b3221ce.dip0.t-ipconnect.de. [2003:d8:2f0c:c200:fa4a:c4ff:1b32:21ce])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-471144d17cdsm241227075e9.18.2025.10.20.12.00.50
+        bh=NptN9BDkwDpbcOFbQiGabvU6AAsiO9hE4CrjxRY1XC0=;
+        b=lKB8nvhGRwPodm4meIJ75lAXabniFuqOehbYSGOffXV8pZeX2jZneFq7E5HMeuHcRH
+         GNdwjaRB0U/iSFkx5np9uhaHm4K98x5RYQpGxdCroG5yXxHLoxOxhABr17iwWSoMVLhe
+         rB59huw5Px37V6yr7V4Edznj1wL9IRt7sWrTo+0d2wlhko5xmHkoX9U9AIwL7KXSfFCf
+         63PAO6IchGOVGBCA3akLdCI7jL07oUMZAimsyDVOZPuQMQb8F4dbijfgM5rGGaEzUOUu
+         Fx8PstCJto8YV6dIeEyrR4UjfS7y+0SWWjwyMAEiuOZP6+71OnmwR//G3Vteb5Z+gNMI
+         MWFw==
+X-Forwarded-Encrypted: i=1; AJvYcCWypSGKiHwNJhP4XCotmlmLI33u/DizS+AZvewWXCfNmTHCp0kE4ascEkO9JClyPtGc3aF2oiJuYtAlEw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzTnd2s61Qvptm1jzyZCf+DRiJUjuFo4qRZvnIPTyjSpQLIGTAI
+	yaPjorfSCumiUG4GQqix/y2KZGLnAm57CifW4wwX3nr+ZrUtccSEUXM3dhjSC5lGPMX0yGB8D0C
+	IRRBDTME=
+X-Gm-Gg: ASbGncs/c2JzxytmIFpDjsRHRQBWNnNAj0qbbC+yr4uMxFIStjVP1gC/ohIbGrwVXwD
+	M8gKHdA0eMTpq3gX102u7WloSY8iulvRytO/hZHwILWrYjImFuGm2c8WPTZK17IsP6KFhRx4h0x
+	Io8PXxwZFnsC8Y5+wJNEBj+/mXe/vg2gV6LCO3SQaQ4xZIR0wHa8rFNJS7ayJnVTYndH9NeNeqW
+	7gkfrH0aQv6Y4CGjlOealdX/CQjNfaSxTH9kOfKHHBM0nR9WAo1u31MOqbMox6+pZrAn9ixoQl5
+	v2ODqnmISkpdQJL6miyaFIgEd5WzlAfREnUTYX941lb+61mVi9SJrWXPrYY6gtlfvKvOmoVKD4U
+	707pr+EE/VAOP53V00+VCy2SiRrVOk6xKLIIPXncBxa4CHQu5un/xhv3fhyUwjtONzdTzy6CGmE
+	5dPRAuKbYG0hzrDLq4lxq1aHWzqtwPPlzOpmXReO0Gf62ce8xujAS/xwRaj8Gj
+X-Google-Smtp-Source: AGHT+IEcEOoEAn3KoULw0EiqrH5ZJCE+3cmSaGjl1oEZK68bbh3gqIuS9baPBit736yqvZeVAcw3aw==
+X-Received: by 2002:a05:6402:2706:b0:63c:3efe:d98a with SMTP id 4fb4d7f45d1cf-63c3efeee48mr11149953a12.32.1760989723696;
+        Mon, 20 Oct 2025 12:48:43 -0700 (PDT)
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-63c48ab54desm7531124a12.13.2025.10.20.12.48.42
+        for <linux-btrfs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Oct 2025 12:00:51 -0700 (PDT)
-Message-ID: <5bd1d360-bee0-4fa2-80c8-476519e98b00@redhat.com>
-Date: Mon, 20 Oct 2025 21:00:50 +0200
+        Mon, 20 Oct 2025 12:48:42 -0700 (PDT)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-63bad3cd668so9060081a12.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 12:48:42 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVCjapCqKgffUPrZUX5JaJfMjce2g3U51yQOfEm8q6HvErB+rrkXyVMEvGMHDke2BpVXEH4dg9bi0+Dtg==@vger.kernel.org
+X-Received: by 2002:a05:6402:4407:b0:63c:eb9:4778 with SMTP id
+ 4fb4d7f45d1cf-63c1f626e36mr13356445a12.1.1760989722393; Mon, 20 Oct 2025
+ 12:48:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: O_DIRECT vs BLK_FEAT_STABLE_WRITES, was Re: [PATCH] btrfs: never
- trust the bio from direct IO
-To: Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org, djwong@kernel.org, linux-xfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-mm@kvack.org, martin.petersen@oracle.com, jack@suse.com
-References: <1ee861df6fbd8bf45ab42154f429a31819294352.1760951886.git.wqu@suse.com>
- <aPYIS5rDfXhNNDHP@infradead.org>
- <56o3re2wspflt32t6mrfg66dec4hneuixheroax2lmo2ilcgay@zehhm5yaupav>
- <aPYgm3ey4eiFB4_o@infradead.org>
- <mciqzktudhier5d2wvjmh4odwqdszvbtcixbthiuuwrufrw3cj@5s2ffnffu4gc>
- <aPZOO3dFv61blHBz@casper.infradead.org>
- <xc2orfhavfqaxrmxtsbf4kepglfujjodvhfzhzfawwaxlyrhlb@gammchkzoh2m>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- qIws/H2t
-In-Reply-To: <xc2orfhavfqaxrmxtsbf4kepglfujjodvhfzhzfawwaxlyrhlb@gammchkzoh2m>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20251020142228.1819871-1-linux@rasmusvillemoes.dk> <20251020142228.1819871-3-linux@rasmusvillemoes.dk>
+In-Reply-To: <20251020142228.1819871-3-linux@rasmusvillemoes.dk>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 20 Oct 2025 09:48:25 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wgHLkpQAEDpA9pwXp_oteWkdcs-56m7rnQD=Th0N2sW9g@mail.gmail.com>
+X-Gm-Features: AS18NWDyOPEZYLlpZ_IDtTxJF93fgCvTBpU4BXYpNtKXdpZRRnqLlSITzLAUJMM
+Message-ID: <CAHk-=wgHLkpQAEDpA9pwXp_oteWkdcs-56m7rnQD=Th0N2sW9g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] btrfs: send: make use of -fms-extensions for defining
+ struct fs_path
+To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
+	linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 20.10.25 17:58, Jan Kara wrote:
-> On Mon 20-10-25 15:59:07, Matthew Wilcox wrote:
->> On Mon, Oct 20, 2025 at 03:59:33PM +0200, Jan Kara wrote:
->>> The idea was to bounce buffer the page we are writing back in case we spot
->>> a long-term pin we cannot just wait for - hence bouncing should be rare.
->>> But in this more general setting it is challenging to not bounce buffer for
->>> every IO (in which case you'd be basically at performance of RWF_DONTCACHE
->>> IO or perhaps worse so why bother?). Essentially if you hand out the real
->>> page underlying the buffer for the IO, all other attemps to do IO to that
->>> page have to block - bouncing is no longer an option because even with
->>> bouncing the second IO we could still corrupt data of the first IO once we
->>> copy to the final buffer. And if we'd block waiting for the first IO to
->>> complete, userspace could construct deadlock cycles - like racing IO to
->>> pages A, B with IO to pages B, A. So far I'm not sure about a sane way out
->>> of this...
->>
->> There isn't one.  We might have DMA-mapped this page earlier, and so a
->> device could write to it at any time.  Even if we remove PTE write
->> permissions ...
-> 
-> True but writes through DMA to the page are guarded by holding a page pin
-> these days so we could in theory block getting another page pin or mapping
-> the page writeably until the pin is released... if we can figure out a
-> convincing story for dealing with long-term pins from RDMA and dealing with
-> possible deadlocks created by this.
+On Mon, 20 Oct 2025 at 04:22, Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
+>
+> +struct __fs_path {
+> +       char *start;
+> +       char *end;
+> +
+> +       char *buf;
+> +       unsigned short buf_len:15;
+> +       unsigned short reversed:1;
+> +};
+> +static_assert(sizeof(struct __fs_path) < 256);
+>  struct fs_path {
+> +       struct __fs_path;
+> +       /*
+> +        * Average path length does not exceed 200 bytes, we'll have
+> +        * better packing in the slab and higher chance to satisfy
+> +        * an allocation later during send.
+> +        */
+> +       char inline_buf[256 - sizeof(struct __fs_path)];
+>  };
 
-Just FYI, because it might be interesting in this context.
+It strikes me that this won't pack as well as it used to before the change.
 
-For anonymous memory we have this working by only writing the folio out 
-if it is completely unmapped and there are no unexpected folio 
-references/pins (see pageout()), and only allowing to write to such a 
-folio ("reuse") if SWP_STABLE_WRITES is not set (see do_swap_page()).
+On 64-bit architectrures, 'struct __fs_path' will be 8-byte aligned
+due to the pointers in it, and that means that the size of it will
+also be aligned: it will be 32 bytes in size.
 
-So once we start writeback the folio has no writable page table mappings 
-(unmapped) and no GUP pins. Consequently, when trying to write to it we 
-can just fallback to creating a page copy without causing trouble with 
-GUP pins.
+So you'll get 256-32 bytes of inline_buf.
 
--- 
-Cheers
+And it *used* to be that 'inline_buf[]' was packed righ after the
+16-bit buf_len / reversed bits, so it used to get an extra six bytes.
 
-David / dhildenb
+I think it could be fixed with a "__packed" thing on that inner
+struct, but that also worries me a bit because we'd certainly never
+want the compiler to generate the code for unaligned accesses (on the
+broken architectures that would do that). You'd then have to mark the
+containing structure as being aligned to make compilers generate good
+code.
 
+So either you lose some inline buffer space, or you end up having to
+add extra packing stuff. Either way is a bit of a bother.
+
+                  Linus
 
