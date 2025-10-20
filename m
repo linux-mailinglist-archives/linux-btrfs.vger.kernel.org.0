@@ -1,45 +1,65 @@
-Return-Path: <linux-btrfs+bounces-18065-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18066-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62C0FBF1F45
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 16:58:10 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D850BF1F60
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 16:59:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 95BC74F8126
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 14:57:17 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 63BF14F7AED
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 14:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D76230274;
-	Mon, 20 Oct 2025 14:57:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 994DC238C03;
+	Mon, 20 Oct 2025 14:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gp41J2Nl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D0322A7E0;
-	Mon, 20 Oct 2025 14:57:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3166230274;
+	Mon, 20 Oct 2025 14:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760972234; cv=none; b=V31V+mBgKqVqVg4zBd7A0KwgT5sbUtLgb25QK6ilPR2MOpTntc+YlqwW13xaA5XOnbEDWML7cHalmKyfx+ll+5ztGq34qFaeOJeYcb/8cW3jFHBdVis2F/mPs6/jUFCKSnN7lpQQ1zuZg9hk0kEAlndv0KNkUzISbf4aliJefKI=
+	t=1760972352; cv=none; b=Q8nEbOAnFcdPMLrgw1M4vvNnRGJF1e8cy4BIOVwClwMyA92oIn2ZBCOI3p1kJ2xm2W4ULwMbonSWf8CR3xdBot+vnFmqb1uohuQ14BI4ErDe8quOPtu+P7sDBq18jAwTsUTjH0y2CRBrvRrfpw/iX6T5fvXdEOJ+E3+BbvABLiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760972234; c=relaxed/simple;
-	bh=PQk9ixRGFryduojm0awRi0pu88kQ3t2s+6XqA8tV40g=;
+	s=arc-20240116; t=1760972352; c=relaxed/simple;
+	bh=iUXQuriDyZRT8WBoI7eXj7hrTtTGVdywTUS4oyOBBN8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WQu3ERJEV74cPlarkYwWmDXhNapB8fib7t0hlGL4kgugdLFaMXsgt9KOt95tEI8UiwDEO9odPTSuMp8fMevygLy7mR4u7gxijN2C0otLS6i7EUiDrcyCUOhPHo/+WNP7XLpMwY18VucGqdBA04McnOZMjc42JomUebhfgIasBMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 88327227A87; Mon, 20 Oct 2025 16:57:07 +0200 (CEST)
-Date: Mon, 20 Oct 2025 16:57:07 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Keith Busch <kbusch@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@meta.com>,
-	dsterba@suse.com, cem@kernel.org, linux-btrfs@vger.kernel.org,
-	linux-xfs@vger.kernel.org, Chris Mason <clm@fb.com>
-Subject: Re: [PATCH 1/2] xfs: handle bio split errors during gc
-Message-ID: <20251020145707.GA31743@lst.de>
-References: <20251020144356.693288-1-kbusch@meta.com> <20251020144522.GB30487@lst.de> <aPZNNkSOYr88-8VF@kbusch-mbp>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pD9NZqY3erRaSrmdkYPZ4jPYAvqQthOg6Bgml8c75dibEPrs+UkpWoIJSa2Ij8ceUeJ+lb+zfuDXKBs5k7ItNZic9JPqOfP5IG0lZ3OXVyTcOI8dcvhIN0qec6iaShQe68p/mos9e5JQGV6qR3azS36DC5BlhRUTKqZWmD5LXfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gp41J2Nl; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=docrPGLeWwfEDBF/7JprhY10nMkkvgXOdF2vgxv0F28=; b=gp41J2Nl+5HhU+fdHp9Yi14Y10
+	O+WveHEJqqkdtliUeqgcfJlNF9GA6kcB4bP6KiSqF0eVVTz0r9MKVqzJ5nDn8Vu5EhNP8NBvynYIh
+	YJuqpPuI6Nm94OsbkraF6eQMRMrK2+7gXazXperZn+Tu1ZauOlrYnuf5mpUZxviHFKueyb8bUpjeQ
+	s1J+EUNuWGPcRi3g30hlygtR2hrsetRCJOGV/2B1PbxadPiIYqcs3p3YjLSmIhpvE4vjATnh5ErcT
+	ijmIPZNipvE6DO/3hM3czpQpRmdinq2h1pcKGcx/2zvaMZD0SHd3z8kIS70GvoHQ7Nbk/h3gPDhqT
+	ljKHEkIA==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vArLn-0000000AW7d-3SBA;
+	Mon, 20 Oct 2025 14:59:07 +0000
+Date: Mon, 20 Oct 2025 15:59:07 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>,
+	linux-btrfs@vger.kernel.org, djwong@kernel.org,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-mm@kvack.org,
+	martin.petersen@oracle.com, jack@suse.com
+Subject: Re: O_DIRECT vs BLK_FEAT_STABLE_WRITES, was Re: [PATCH] btrfs: never
+ trust the bio from direct IO
+Message-ID: <aPZOO3dFv61blHBz@casper.infradead.org>
+References: <1ee861df6fbd8bf45ab42154f429a31819294352.1760951886.git.wqu@suse.com>
+ <aPYIS5rDfXhNNDHP@infradead.org>
+ <56o3re2wspflt32t6mrfg66dec4hneuixheroax2lmo2ilcgay@zehhm5yaupav>
+ <aPYgm3ey4eiFB4_o@infradead.org>
+ <mciqzktudhier5d2wvjmh4odwqdszvbtcixbthiuuwrufrw3cj@5s2ffnffu4gc>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -48,26 +68,23 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aPZNNkSOYr88-8VF@kbusch-mbp>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <mciqzktudhier5d2wvjmh4odwqdszvbtcixbthiuuwrufrw3cj@5s2ffnffu4gc>
 
-On Mon, Oct 20, 2025 at 08:54:46AM -0600, Keith Busch wrote:
-> > Ugg, how?  If that actually happens we're toast, so we should find a
-> > way to ensure it does not happen.
-> 
-> You'd have to attempt sending an invalid bvec, like something that can't
-> DMA map because you have a byte aligned offset, or the total size is
-> smaller than the block device's.
-> 
-> Not that you're doing anything like that here. This condition should
-> never occur in this path because the bio vectors are all nicely aligned.
-> It's just for completeness to ensure it doesn't go uncaught for every
-> bio split caller.
+On Mon, Oct 20, 2025 at 03:59:33PM +0200, Jan Kara wrote:
+> The idea was to bounce buffer the page we are writing back in case we spot
+> a long-term pin we cannot just wait for - hence bouncing should be rare.
+> But in this more general setting it is challenging to not bounce buffer for
+> every IO (in which case you'd be basically at performance of RWF_DONTCACHE
+> IO or perhaps worse so why bother?). Essentially if you hand out the real
+> page underlying the buffer for the IO, all other attemps to do IO to that
+> page have to block - bouncing is no longer an option because even with
+> bouncing the second IO we could still corrupt data of the first IO once we
+> copy to the final buffer. And if we'd block waiting for the first IO to
+> complete, userspace could construct deadlock cycles - like racing IO to
+> pages A, B with IO to pages B, A. So far I'm not sure about a sane way out
+> of this...
 
-So this is just from code inspection and you did not actually hit
-such a case?
-
-I'll see if I can add some sanity checking for the buffer and
-preferably handle this outside the I/O path where error handling
-for this doesn't really make sense.
+There isn't one.  We might have DMA-mapped this page earlier, and so a
+device could write to it at any time.  Even if we remove PTE write
+permissions ...
 
