@@ -1,145 +1,205 @@
-Return-Path: <linux-btrfs+bounces-18080-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18081-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 102CABF347F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 21:48:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEBC8BF3AAE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 23:10:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 841B54FD4C1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 19:48:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9984A18C5243
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 21:10:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F7C28C866;
-	Mon, 20 Oct 2025 19:48:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="JswEnUl5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F1BE32ED59;
+	Mon, 20 Oct 2025 21:08:28 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097351F4262
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 19:48:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E872E7161
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 21:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760989730; cv=none; b=hCDlxtpW55V/nz3fXv9jwQx3g1mY6Qp5d5qvtnfT4h1qtEGahwQR7F1FigXWfDohh8wusanOtYQ05Xl1kPIU4jtPtItkAJJYMw1xRmz47qOVV8l/43C7WhyWcYYh6PqWUOVr14xf2WVxXkO8r3O9tWadKWq7dmOaTIaHMKaj5uk=
+	t=1760994507; cv=none; b=fxsNlfnsBRyH7jacTFw5Hdwu9RQvicH6CTgybmrIsAamWVs+JZT0G1CU21yI4WOnwTEMtRTELghq3jkS6Envg2iciFjocmTRdmYoPHorRu0bunX2IKhV1x4GGldzqCD+1s+e6rV23RQNChZpnxRtyw6nwV96Zy7vOAz60Im7Tz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760989730; c=relaxed/simple;
-	bh=MgGpsHbRyLLEuSO5v1+IPH3mXujQi4ThCOVYq9DwidM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M0vCczvYu6PODO8RyqJ8L0TGaTsif+ASUVtVRp1eJqMvCnO1Hv6ABDyFsbpLy9dHCTiEdMS99WgCegDqMK/XONw96owWxgVXMtTjZSQy4VWiawbUJ3V/f5cRa3QB4gpSlJeQIZ6twZz6R2e1/Y5LBj+8vapij2VSUpw3bfPRdyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=JswEnUl5; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-63bad3cd668so9060139a12.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 12:48:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1760989725; x=1761594525; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NptN9BDkwDpbcOFbQiGabvU6AAsiO9hE4CrjxRY1XC0=;
-        b=JswEnUl5zDus17fUo8qBjCX43cjXAahN42sjlcN3mckfNIanFZzXZJAYZzrgVS0Kxz
-         71lrR3xch78uVaAdvb8codk79wR9d4988V3eWzxy8kRLj16iL1gHA7k+N2iKHjnVM5/V
-         lC5rRXZyJtroP9gyo5rBiCXWJWkD6+NQwbasU=
+	s=arc-20240116; t=1760994507; c=relaxed/simple;
+	bh=jD4feNh0rO7Q5ebHNcKQcavCCncn4VVuktWvcV4A4A8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=LAm3IZuYC7ZWtSmSlZijlLjtWbg+vfWTTgI6JU20AWIZ78QfgvYfeARjHF4kaA+t/yX1P2IBS0uJnXwtx08rtVgPfPyNiMTQXJfGgKwIiZu2raWTvBKR2EmMoaSp5gY8L/Xk5omzeE8XqYbpp8UqDW4N56SMkILNLWP1kBgGSiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-430db6d36c6so62599935ab.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 14:08:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760989725; x=1761594525;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NptN9BDkwDpbcOFbQiGabvU6AAsiO9hE4CrjxRY1XC0=;
-        b=lKB8nvhGRwPodm4meIJ75lAXabniFuqOehbYSGOffXV8pZeX2jZneFq7E5HMeuHcRH
-         GNdwjaRB0U/iSFkx5np9uhaHm4K98x5RYQpGxdCroG5yXxHLoxOxhABr17iwWSoMVLhe
-         rB59huw5Px37V6yr7V4Edznj1wL9IRt7sWrTo+0d2wlhko5xmHkoX9U9AIwL7KXSfFCf
-         63PAO6IchGOVGBCA3akLdCI7jL07oUMZAimsyDVOZPuQMQb8F4dbijfgM5rGGaEzUOUu
-         Fx8PstCJto8YV6dIeEyrR4UjfS7y+0SWWjwyMAEiuOZP6+71OnmwR//G3Vteb5Z+gNMI
-         MWFw==
-X-Forwarded-Encrypted: i=1; AJvYcCWypSGKiHwNJhP4XCotmlmLI33u/DizS+AZvewWXCfNmTHCp0kE4ascEkO9JClyPtGc3aF2oiJuYtAlEw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTnd2s61Qvptm1jzyZCf+DRiJUjuFo4qRZvnIPTyjSpQLIGTAI
-	yaPjorfSCumiUG4GQqix/y2KZGLnAm57CifW4wwX3nr+ZrUtccSEUXM3dhjSC5lGPMX0yGB8D0C
-	IRRBDTME=
-X-Gm-Gg: ASbGncs/c2JzxytmIFpDjsRHRQBWNnNAj0qbbC+yr4uMxFIStjVP1gC/ohIbGrwVXwD
-	M8gKHdA0eMTpq3gX102u7WloSY8iulvRytO/hZHwILWrYjImFuGm2c8WPTZK17IsP6KFhRx4h0x
-	Io8PXxwZFnsC8Y5+wJNEBj+/mXe/vg2gV6LCO3SQaQ4xZIR0wHa8rFNJS7ayJnVTYndH9NeNeqW
-	7gkfrH0aQv6Y4CGjlOealdX/CQjNfaSxTH9kOfKHHBM0nR9WAo1u31MOqbMox6+pZrAn9ixoQl5
-	v2ODqnmISkpdQJL6miyaFIgEd5WzlAfREnUTYX941lb+61mVi9SJrWXPrYY6gtlfvKvOmoVKD4U
-	707pr+EE/VAOP53V00+VCy2SiRrVOk6xKLIIPXncBxa4CHQu5un/xhv3fhyUwjtONzdTzy6CGmE
-	5dPRAuKbYG0hzrDLq4lxq1aHWzqtwPPlzOpmXReO0Gf62ce8xujAS/xwRaj8Gj
-X-Google-Smtp-Source: AGHT+IEcEOoEAn3KoULw0EiqrH5ZJCE+3cmSaGjl1oEZK68bbh3gqIuS9baPBit736yqvZeVAcw3aw==
-X-Received: by 2002:a05:6402:2706:b0:63c:3efe:d98a with SMTP id 4fb4d7f45d1cf-63c3efeee48mr11149953a12.32.1760989723696;
-        Mon, 20 Oct 2025 12:48:43 -0700 (PDT)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-63c48ab54desm7531124a12.13.2025.10.20.12.48.42
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Oct 2025 12:48:42 -0700 (PDT)
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-63bad3cd668so9060081a12.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 12:48:42 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVCjapCqKgffUPrZUX5JaJfMjce2g3U51yQOfEm8q6HvErB+rrkXyVMEvGMHDke2BpVXEH4dg9bi0+Dtg==@vger.kernel.org
-X-Received: by 2002:a05:6402:4407:b0:63c:eb9:4778 with SMTP id
- 4fb4d7f45d1cf-63c1f626e36mr13356445a12.1.1760989722393; Mon, 20 Oct 2025
- 12:48:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1760994504; x=1761599304;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X4v5WIS//FhLKXZLZx8vcqGUMiCy3eGKryGUGQ8f7hE=;
+        b=sCpKCHPVpuSN0rV5PRb/R87/kT1zINbYM4Skp6+GXYamf7VGwjUVUPrPHiflA3FLtq
+         AbKl1Ilre9MTqyFmCAcOAJxUirwvrShuOmcWNe+XFNSzriBIPHdBUocggNJrzJI73L35
+         5trB1HMhNqCtM2Gz2BynUZC4dbgnDjD/ely/qm6AczkSvidVqP3er779X+bJfc80WJd7
+         TB98tnTsv/TlRsYSvyTyZVfop8aJfJbMyPtvZ1CCoiAeTeWwJuO6zkr3FhvIGa55t/FY
+         Ccd4jJ20sLdpTk1R86REkpar7xZGZRcQk+aHyTXDm32WvQ1aRlXVzNWhzG1H61hbjA8y
+         7+sA==
+X-Forwarded-Encrypted: i=1; AJvYcCUq4iYDsHQA2e5kR9x8v7AgCOLtQhNO5KoqruYYGZMbQrkVAX+kVcftd9M3Efs7gukj2yL4HHbn6WCIoA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxaGjsEHpv8a0MctzbUVGMgeeQfTFwN+TyrOzj9zw34jQ+ExfxO
+	AC0eQYRO6ecEhp9AXXEci/+Njj5ddBjROTpbWqcxeFQ1RKPHY67RQvsVCBD90sBXp2kVgLcXVsU
+	pvJ5E1scIWSkWFDG9d1By3GtEbc4/4SCR1Z3T/th1v1j7uNayGdMKgNkfdJA=
+X-Google-Smtp-Source: AGHT+IHtjkwxPCBMvAwzd/MHAs8fhSE1wp5mxiSzZK7ofOqbOADUzoHLQxzsHXyJtH5ydcVURGaWEU/YKSJIpCVHk2Vl0HI+EW8D
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251020142228.1819871-1-linux@rasmusvillemoes.dk> <20251020142228.1819871-3-linux@rasmusvillemoes.dk>
-In-Reply-To: <20251020142228.1819871-3-linux@rasmusvillemoes.dk>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 20 Oct 2025 09:48:25 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wgHLkpQAEDpA9pwXp_oteWkdcs-56m7rnQD=Th0N2sW9g@mail.gmail.com>
-X-Gm-Features: AS18NWDyOPEZYLlpZ_IDtTxJF93fgCvTBpU4BXYpNtKXdpZRRnqLlSITzLAUJMM
-Message-ID: <CAHk-=wgHLkpQAEDpA9pwXp_oteWkdcs-56m7rnQD=Th0N2sW9g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] btrfs: send: make use of -fms-extensions for defining
- struct fs_path
-To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
-	linux-kbuild@vger.kernel.org
+X-Received: by 2002:a05:6e02:144e:b0:42f:9560:f733 with SMTP id
+ e9e14a558f8ab-430c522fd64mr218366055ab.13.1760994504617; Mon, 20 Oct 2025
+ 14:08:24 -0700 (PDT)
+Date: Mon, 20 Oct 2025 14:08:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68f6a4c8.050a0220.1be48.0013.GAE@google.com>
+Subject: [syzbot] [btrfs?] general protection fault in btrfs_evict_inode
+From: syzbot <syzbot+d991fea1b4b23b1f6bf8@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 20 Oct 2025 at 04:22, Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
->
-> +struct __fs_path {
-> +       char *start;
-> +       char *end;
-> +
-> +       char *buf;
-> +       unsigned short buf_len:15;
-> +       unsigned short reversed:1;
-> +};
-> +static_assert(sizeof(struct __fs_path) < 256);
->  struct fs_path {
-> +       struct __fs_path;
-> +       /*
-> +        * Average path length does not exceed 200 bytes, we'll have
-> +        * better packing in the slab and higher chance to satisfy
-> +        * an allocation later during send.
-> +        */
-> +       char inline_buf[256 - sizeof(struct __fs_path)];
->  };
+Hello,
 
-It strikes me that this won't pack as well as it used to before the change.
+syzbot found the following issue on:
 
-On 64-bit architectrures, 'struct __fs_path' will be 8-byte aligned
-due to the pointers in it, and that means that the size of it will
-also be aligned: it will be 32 bytes in size.
+HEAD commit:    f406055cb18c Merge tag 'arm64-fixes' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a1b52f980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c2d7b4143707d3a0
+dashboard link: https://syzkaller.appspot.com/bug?extid=d991fea1b4b23b1f6bf8
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1430f67c580000
 
-So you'll get 256-32 bytes of inline_buf.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-f406055c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c7e9d41abcc8/vmlinux-f406055c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/545562cd43ff/bzImage-f406055c.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/ed6f0c604e16/mount_2.gz
+  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=1087e734580000)
 
-And it *used* to be that 'inline_buf[]' was packed righ after the
-16-bit buf_len / reversed bits, so it used to get an extra six bytes.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d991fea1b4b23b1f6bf8@syzkaller.appspotmail.com
 
-I think it could be fixed with a "__packed" thing on that inner
-struct, but that also worries me a bit because we'd certainly never
-want the compiler to generate the code for unaligned accesses (on the
-broken architectures that would do that). You'd then have to mark the
-containing structure as being aligned to make compilers generate good
-code.
+BTRFS info (device loop0): turning on async discard
+BTRFS info (device loop0): enabling free space tree
+Oops: general protection fault, probably for non-canonical address 0xdffffc000000003e: 0000 [#1] SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x00000000000001f0-0x00000000000001f7]
+CPU: 0 UID: 0 PID: 5682 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:btrfs_root_id fs/btrfs/ctree.h:333 [inline]
+RIP: 0010:do_perf_trace_btrfs__inode include/trace/events/btrfs.h:204 [inline]
+RIP: 0010:perf_trace_btrfs__inode+0x44d/0x580 include/trace/events/btrfs.h:204
+Code: c1 e8 03 42 80 3c 30 00 74 08 4c 89 ff e8 5b 44 66 fe 4d 8b 2f 4d 8d bd f7 01 00 00 49 81 c5 fe 01 00 00 4c 89 f8 48 c1 e8 03 <42> 0f b6 04 30 84 c0 0f 85 e4 00 00 00 4c 89 e8 48 c1 e8 03 42 0f
+RSP: 0018:ffffc9000d246d60 EFLAGS: 00010203
+RAX: 000000000000003e RBX: ffffe8ffffc990a0 RCX: ffffffff83c14767
+RDX: 0000000000000010 RSI: ffff888058fd0400 RDI: ffffe8ffffc99068
+RBP: ffffc9000d246e30 R08: e443157bdb42d614 R09: f8256aac8f4be681
+R10: e443157bdb42d614 R11: f8256aac8f4be681 R12: ffffe8ffffc99060
+R13: 00000000000001fe R14: dffffc0000000000 R15: 00000000000001f7
+FS:  00007fa645d796c0(0000) GS:ffff88808d300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000056106e704950 CR3: 000000003f1ca000 CR4: 0000000000352ef0
+Call Trace:
+ <TASK>
+ __do_trace_btrfs_inode_evict include/trace/events/btrfs.h:255 [inline]
+ trace_btrfs_inode_evict include/trace/events/btrfs.h:255 [inline]
+ btrfs_evict_inode+0x107a/0x1110 fs/btrfs/inode.c:5480
+ evict+0x504/0x9c0 fs/inode.c:810
+ btrfs_rename fs/btrfs/inode.c:8640 [inline]
+ btrfs_rename2+0x264f/0x3fd0 fs/btrfs/inode.c:8660
+ vfs_rename+0xb34/0xe80 fs/namei.c:5216
+ ovl_do_rename fs/overlayfs/overlayfs.h:373 [inline]
+ ovl_check_rename_whiteout fs/overlayfs/super.c:595 [inline]
+ ovl_make_workdir fs/overlayfs/super.c:714 [inline]
+ ovl_get_workdir+0x846/0x17b0 fs/overlayfs/super.c:837
+ ovl_fill_super+0x154a/0x3da0 fs/overlayfs/super.c:1468
+ vfs_get_super fs/super.c:1324 [inline]
+ get_tree_nodev+0xbb/0x150 fs/super.c:1343
+ vfs_get_tree+0x92/0x2b0 fs/super.c:1751
+ fc_mount fs/namespace.c:1208 [inline]
+ do_new_mount_fc fs/namespace.c:3651 [inline]
+ do_new_mount+0x302/0xa10 fs/namespace.c:3727
+ do_mount fs/namespace.c:4050 [inline]
+ __do_sys_mount fs/namespace.c:4238 [inline]
+ __se_sys_mount+0x313/0x410 fs/namespace.c:4215
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fa644f8efc9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa645d79038 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fa6451e5fa0 RCX: 00007fa644f8efc9
+RDX: 0000200000000b80 RSI: 0000200000000000 RDI: 0000000000000000
+RBP: 00007fa645011f91 R08: 0000200000000780 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fa6451e6038 R14: 00007fa6451e5fa0 R15: 00007ffdeeb9aa68
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:btrfs_root_id fs/btrfs/ctree.h:333 [inline]
+RIP: 0010:do_perf_trace_btrfs__inode include/trace/events/btrfs.h:204 [inline]
+RIP: 0010:perf_trace_btrfs__inode+0x44d/0x580 include/trace/events/btrfs.h:204
+Code: c1 e8 03 42 80 3c 30 00 74 08 4c 89 ff e8 5b 44 66 fe 4d 8b 2f 4d 8d bd f7 01 00 00 49 81 c5 fe 01 00 00 4c 89 f8 48 c1 e8 03 <42> 0f b6 04 30 84 c0 0f 85 e4 00 00 00 4c 89 e8 48 c1 e8 03 42 0f
+RSP: 0018:ffffc9000d246d60 EFLAGS: 00010203
+RAX: 000000000000003e RBX: ffffe8ffffc990a0 RCX: ffffffff83c14767
+RDX: 0000000000000010 RSI: ffff888058fd0400 RDI: ffffe8ffffc99068
+RBP: ffffc9000d246e30 R08: e443157bdb42d614 R09: f8256aac8f4be681
+R10: e443157bdb42d614 R11: f8256aac8f4be681 R12: ffffe8ffffc99060
+R13: 00000000000001fe R14: dffffc0000000000 R15: 00000000000001f7
+FS:  00007fa645d796c0(0000) GS:ffff88808d300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000056106e704950 CR3: 000000003f1ca000 CR4: 0000000000352ef0
+----------------
+Code disassembly (best guess):
+   0:	c1 e8 03             	shr    $0x3,%eax
+   3:	42 80 3c 30 00       	cmpb   $0x0,(%rax,%r14,1)
+   8:	74 08                	je     0x12
+   a:	4c 89 ff             	mov    %r15,%rdi
+   d:	e8 5b 44 66 fe       	call   0xfe66446d
+  12:	4d 8b 2f             	mov    (%r15),%r13
+  15:	4d 8d bd f7 01 00 00 	lea    0x1f7(%r13),%r15
+  1c:	49 81 c5 fe 01 00 00 	add    $0x1fe,%r13
+  23:	4c 89 f8             	mov    %r15,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 0f b6 04 30       	movzbl (%rax,%r14,1),%eax <-- trapping instruction
+  2f:	84 c0                	test   %al,%al
+  31:	0f 85 e4 00 00 00    	jne    0x11b
+  37:	4c 89 e8             	mov    %r13,%rax
+  3a:	48 c1 e8 03          	shr    $0x3,%rax
+  3e:	42                   	rex.X
+  3f:	0f                   	.byte 0xf
 
-So either you lose some inline buffer space, or you end up having to
-add extra packing stuff. Either way is a bit of a bother.
 
-                  Linus
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
