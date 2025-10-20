@@ -1,388 +1,128 @@
-Return-Path: <linux-btrfs+bounces-18038-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18039-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AF16BF023C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 11:20:45 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47E39BF0302
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 11:33:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B427A346712
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 09:20:44 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 601B14F2A11
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 09:31:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D9D2F5326;
-	Mon, 20 Oct 2025 09:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 913E92F6160;
+	Mon, 20 Oct 2025 09:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RTdj0U+K";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nFJE4D5T"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d0xWh28C"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 756322F1FCD
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 09:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6953E2EC0A1
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 09:31:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760952033; cv=none; b=U+I2zxW8Q24IZ7Q9jdVYUl4eXFDbt3K8FTHT4xw3Cfed3NLRzqKQxRBo6IVoI1Lt98JVz499+Ls6ZSL0IWOIQZ1f2clPO7pkHMrKZ6UWQoMNeKHI9WZ8cFc/ipidpE6iT9FGTA3eH1arEIkFcZ6fIIQi6JJWj746HZYKyiih1As=
+	t=1760952694; cv=none; b=t6z5gPBUbq+tdoo6bTtY+21RGI926PAa0c87HAsImm1VRWUg/KqUMMAuVvPBJd1WUm0PmgXkLCtmzOw7CWUJUche7qNl06oRhJksZeEivy4GPfxuXLBuHoQ7D3+JYYTZrDlBIoKU1YirbUdkYKDd04aK1NNA8jFK9E+qyiWiccA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760952033; c=relaxed/simple;
-	bh=CQKXi3EhtaVCwqP+h/NC4UNTrcj3xACX/1LZnn8QaNc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RVVdtyjZPLn2EuN6YYIiGvAC4eaBS4jRK90gf8+zOwMsekf66DXbdYa2IX8WL3ricaGxA/NH5X2iXPXaLjmqeskRhvoaSjRwiQnvUw9wyO6clZAtO5OmuY2rfngsfmXIdxYn9dmt/YJBhLFssj5v4W1uyOjUkk8xVz85ydvUUAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RTdj0U+K; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nFJE4D5T; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 860ED21134;
-	Mon, 20 Oct 2025 09:20:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1760952024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=sp/4hSlw2N7zPOoCsAQ+w6tQazwLzeqyKFV5HdVznN4=;
-	b=RTdj0U+KPGxoHrHEkuZ5wrGqdiJazff6AIWGMPXnQZsp4lHvhPnkZokuWJMGfyZUiOygOD
-	AKokvdTK8fpOSpXd9/4CbZFWF8QW7WsIhyf9VAGMNZUOzOWAGNDKn2PWcPsro4ibMPWHfF
-	rf2Dxoy4SZgxVQ0n+sUctFct9D6tDjA=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1760952020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=sp/4hSlw2N7zPOoCsAQ+w6tQazwLzeqyKFV5HdVznN4=;
-	b=nFJE4D5Tno3dIXp4CGUXwYxdHf66Dmf4Z30MGlxjX4lVvk+IdPMEN4IIlpEoWKBkqyjT1/
-	QE+llOvhor1eL2XgC549jj+KjB281iBe6uSkbrAA+EtCGi01JiFROERH9E513bcD+TD4v1
-	mPY6RUcDLCUzReizAI33YZxj3Ed09WI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BFCE213AAC;
-	Mon, 20 Oct 2025 09:20:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id hadtF87+9WjPfAAAD6G6ig
-	(envelope-from <wqu@suse.com>); Mon, 20 Oct 2025 09:20:14 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: djwong@kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH] btrfs: never trust the bio from direct IO
-Date: Mon, 20 Oct 2025 19:49:50 +1030
-Message-ID: <1ee861df6fbd8bf45ab42154f429a31819294352.1760951886.git.wqu@suse.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1760952694; c=relaxed/simple;
+	bh=U8CcipM6Z67Ahue4ia0ZUhA+CivhMsdT0HOJNFK/z4w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=bMPpETvGpGEkmXEM9KiuQA8/zMl9p2DkJDv7jsZsI0k7rxCi8CW9hlcKZFcC70vQijPP4LpCSV8ZD/zx2ch/emiCXrYsezoRb21Se9rJxQm6dUaVyANqf8sPAngqrz+s+NshL24/JLQYN3Mdo4MnvwTm+3NiAkivxnWF4ThiHzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d0xWh28C; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-33bafd5d2adso3596038a91.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 02:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760952692; x=1761557492; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U8CcipM6Z67Ahue4ia0ZUhA+CivhMsdT0HOJNFK/z4w=;
+        b=d0xWh28CTdBcKu3ww/lDxTj5opph6wppY4ytpIfgym7xhw4YD2WaOX27dgm/bB3fej
+         dsinELMajN3EUs6cIsovQ4V0VgDFjhHemrohdxFLM72YKngBGrBGhzknGe3PEZVnEgd6
+         HIOzEHq6WzJ91HnR2GmOC+U7MhE3QR4aAB+qkLA9v9+rtRU3CWsYlUmCmc0m6OmTwqXU
+         USEwRum/1uoUhPXwHXubY46tl4G/IHZCzl2dcW/QEbBqcxwaQ56SyMbObrXqHFbj+ICr
+         SuG+B+QbLqHhFvxkfx2WLiZOUfqsViS4UJV85Yv9uJrp+NihEyKQj9PodQNo74hUfqKI
+         WWsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760952692; x=1761557492;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U8CcipM6Z67Ahue4ia0ZUhA+CivhMsdT0HOJNFK/z4w=;
+        b=YJdT3zPkSVsZkJyyiuwNVpcNwyVTWvtEj+BEH0VSAWdzeLTrqqxqMIX8qbWQE3tOfu
+         d0QRPi2lb9lJAj/SAHLQt/0B5ybx1dHw2/BXPgao6S/GlsGPePbnCydBVMSEJKGLJFtj
+         gUR9vcl20KWzbyRUwiJcYnrg9edKEPnwWrLwrel/coNot0gZIwbtUZt9BZbWGPZCalRe
+         NP2VYT+iTJZEXKIZHNtds1NtdzzztTI6bzJtaw3R8oeB5UVi1SJ5Ri4SFrnqmqloJr3G
+         nfE2Oh6AePSkAjp9re5xT7WqQ3v9RmHF/0OYyMunU383BhTeWxAofaxWPkGbxdAMe6Ic
+         kg2g==
+X-Gm-Message-State: AOJu0YyPI9VuZ7AVpRJxDuxrrEB8uze7qCC64l+13QE0tIHeHGZRBrDH
+	q8Mwu0Wx3Ugh4nXOJHgJxutXkVrR0pUOyzBRumT8jLVCn12I9/Iy2oFZcE6Cz5wG2EBkGHKNWYM
+	DgKN0oLLbz4JudhZy6Yi4RuFu6LylEgJ/mg==
+X-Gm-Gg: ASbGncvNfnZdmCYbDvojzPTAGXbrlSPvbGdJghBTqmK5R1M7ETOnmwb4kS168c4/w4v
+	bePT6FsGO3AUwXK9vFZWE2jjLxp7M4wxLNG/UTQOd6+7E+7sP1T8GczrLZG7fp223E3U2IRWUX1
+	9ycREy7xuUZ3iyxbLSvNMz1N4n1J8bdmuCQlMW7sB17rAmkCwL+BsHxTT4/fH7B8zeHebc+e72G
+	Wd8haYmyZB0jJr2Zoq8lWgy8+adIsJ8ISWjtb/F7tiSMpzGrKGDTsUM4QKZWmFQAC+0+p4=
+X-Google-Smtp-Source: AGHT+IGY+qZ9XwtudqqSRHueqdNHh8cmIb6n7cb/BlS6Dr1p5aVHwrgNmRdX1+YlGve9a5/gtNuFCHmIRIiuWeDw+kw=
+X-Received: by 2002:a17:90b:4f:b0:33b:bf8d:6172 with SMTP id
+ 98e67ed59e1d1-33bcf92aae9mr16023003a91.34.1760952692068; Mon, 20 Oct 2025
+ 02:31:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
+References: <20250922070956.GA2624931@tik.uni-stuttgart.de>
+ <d3a5e463-d00e-4428-ad7b-35f87f9a6550@gmx.com> <20250922082854.GD2624931@tik.uni-stuttgart.de>
+ <95ece5d8-0e5a-4db9-8603-c819980c3a3b@suse.com> <20250922092300.GA2634184@tik.uni-stuttgart.de>
+ <1e4baff2-1310-437a-be62-5e9b72784a54@gmx.com> <20251020090018.GA1446208@tik.uni-stuttgart.de>
+In-Reply-To: <20251020090018.GA1446208@tik.uni-stuttgart.de>
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+Date: Mon, 20 Oct 2025 12:31:20 +0300
+X-Gm-Features: AS18NWDkoVf7jKNWtAuwxEE3L3wC9bH7_4krNd6Ac9hHBicI7UrYXbBxav1_gRw
+Message-ID: <CAA91j0UczP5WpCM2ZDqCEAy-6gSFzWgBE4aGVLxLCJ90H77A+w@mail.gmail.com>
+Subject: Re: btrfs RAID5 or btrfs on md RAID5?
+To: linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There is a bug report about that direct IO (and even concurrent buffered
-IO) can lead to different contents of md-raid.
+On Mon, Oct 20, 2025 at 12:07=E2=80=AFPM Ulli Horlacher
+<framstag@rus.uni-stuttgart.de> wrote:
+>
+>
+> Resuming this discussion...
+>
+> On Mon 2025-09-22 (18:57), Qu Wenruo wrote:
+>
+> > >>>> So you either run RAID5 for data only
+> > >>>
+> > >>> This is a mkfs.btrfs option?
+> > >>> Shall I use "mkfs.btrfs -m dup" or "mkfs.btrfs -m raid1"?
+> > >>
+> > >> For RAID5, RAID1 is preferred for data.
+> > >
+> > > Then the real usable capacity of this volume is only the half?
+> >
+> > No, metadata is really a small part of the fs.
+> >
+> > The majority of usable space really depends on the data profile.
+> >
+> > If you use RAID1 metadata + RAID5 data, I believe only less than 10% of
+> > real space is used on RAID1, the remaining is still RAID5.
+>
+> Sounds like a good compromise solution!
+>
+> Asuming I have 4 partitions with equal size, then the suggested command t=
+o
+> create the filesystem would be:
+>
+> mkfs.btrfs -m raid1 -d raid5 /dev/sda4 /dev/sdb4 /dev/sdc4 /dev/sdd4
+>
+> Does this setup help to protect against write hole?
+>
 
-It's exactly the situation we fixed for direct IO in commit 968f19c5b1b7
-("btrfs: always fallback to buffered write if the inode requires
-checksum"), however we still leave a hole for nodatasum cases.
-
-For nodatasum cases we still reuse the bio from direct IO, making it to
-cause the same problem for RAID1*/5/6 profiles, and results
-unreliable data contents read from disk, depending on the load balance.
-
-Just do not trust any bio from direct IO, and never reuse those bios even
-for nodatasum cases. Instead alloc our own bio with newly allocated
-pages.
-
-For direct read, submit that new bio, and at end io time copy the
-contents to the dio bio.
-For direct write, copy the contents from the dio bio, then submit the
-new one.
-
-This of course will lead to extra performance drop, but
-it should still be much better than falling back to buffered IO.
-
-There is a quick test done in my VM, with cache mode 'none' (aka, qemu
-will use direct IO submitting the IO, to avoid double caching).
-
-The VM has 10G ram, the target storage is backed by one PCIE gen3 NVME
-SSD, the kernel has some minor/lightweight debug options:
-
-The test command is pretty simple:
-  dd if=/dev/zero bs=1M of=/mnt/btrfs/foobar count=4096 oflag=direct
-
-- Raw disk IO
-  dd if=/dev/zero bs=1M of=/dev/test/scratch1 count=4096 oflag=direct
-
-  1.80748 s, 2.4 GB/s
-
-- Fallback to buffered IO (unpatched)
-  Mount option: default (with data checksum)
-
-  20.7763 s, 207 MB/s
-
-  Miserable, most SATA SSD is more than double the speed, and less than
-  10% of the raw disk performance.
-  Thankfully with this bouncing behavior, we can easily re-claim the
-  performance soon.
-  (Will be one small follow-up patch for it, after dropping the RFC
-  tag)
-
-- True zero-copy (unpatch)
-  Mount option: nodatasum
-
-  1.95422 s, 2.2 GB/s
-
-  Very close to the raw disk speed.
-
-- Bounce then zero-copy (patched)
-  Mount option: nodatasum
-
-  2.5453 s, 1.7 GB/s
-
-  Around 23% slower than true zero-copy, but still acceptable if you ask
-  me.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=99171
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-REASON FOR RFC:
-
-Considering the zero-copy direct IO (and the fact XFS/EXT4 even allows
-modifying the page cache when it's still under writeback) can lead to
-raid mirror contents mismatch, the 23% performance drop should still be
-acceptable, and bcachefs is already doing this bouncing behavior.
-
-But still, such performance drop can be very obvious, and performance
-oriented users (who are very happy running various benchmark tools) are
-going to notice or even complain.
-
-Another question is, should we push this behavior to iomap layer so that other
-fses can also benefit from it?
----
- fs/btrfs/direct-io.c | 150 ++++++++++++++++++++++++++++++-------------
- 1 file changed, 105 insertions(+), 45 deletions(-)
-
-diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
-index 802d4dbe5b38..1a8bed65c417 100644
---- a/fs/btrfs/direct-io.c
-+++ b/fs/btrfs/direct-io.c
-@@ -640,33 +640,6 @@ static int btrfs_dio_iomap_end(struct inode *inode, loff_t pos, loff_t length,
- 	return ret;
- }
- 
--static void btrfs_dio_end_io(struct btrfs_bio *bbio)
--{
--	struct btrfs_dio_private *dip =
--		container_of(bbio, struct btrfs_dio_private, bbio);
--	struct btrfs_inode *inode = bbio->inode;
--	struct bio *bio = &bbio->bio;
--
--	if (bio->bi_status) {
--		btrfs_warn(inode->root->fs_info,
--		"direct IO failed ino %llu op 0x%0x offset %#llx len %u err no %d",
--			   btrfs_ino(inode), bio->bi_opf,
--			   dip->file_offset, dip->bytes, bio->bi_status);
--	}
--
--	if (btrfs_op(bio) == BTRFS_MAP_WRITE) {
--		btrfs_finish_ordered_extent(bbio->ordered, NULL,
--					    dip->file_offset, dip->bytes,
--					    !bio->bi_status);
--	} else {
--		btrfs_unlock_dio_extent(&inode->io_tree, dip->file_offset,
--					dip->file_offset + dip->bytes - 1, NULL);
--	}
--
--	bbio->bio.bi_private = bbio->private;
--	iomap_dio_bio_end_io(bio);
--}
--
- static int btrfs_extract_ordered_extent(struct btrfs_bio *bbio,
- 					struct btrfs_ordered_extent *ordered)
- {
-@@ -705,23 +678,109 @@ static int btrfs_extract_ordered_extent(struct btrfs_bio *bbio,
- 	return 0;
- }
- 
--static void btrfs_dio_submit_io(const struct iomap_iter *iter, struct bio *bio,
--				loff_t file_offset)
-+static void dio_end_write_copied_bio(struct btrfs_bio *bbio)
- {
--	struct btrfs_bio *bbio = btrfs_bio(bio);
-+	struct bio *orig = bbio->private;
- 	struct btrfs_dio_private *dip =
- 		container_of(bbio, struct btrfs_dio_private, bbio);
--	struct btrfs_dio_data *dio_data = iter->private;
-+	struct btrfs_inode *inode = bbio->inode;
-+	struct bio *bio = &bbio->bio;
- 
--	btrfs_bio_init(bbio, BTRFS_I(iter->inode)->root->fs_info,
--		       btrfs_dio_end_io, bio->bi_private);
--	bbio->inode = BTRFS_I(iter->inode);
--	bbio->file_offset = file_offset;
-+	if (bio->bi_status) {
-+		btrfs_warn(inode->root->fs_info,
-+		"direct IO failed ino %llu op 0x%0x offset %#llx len %u err no %d",
-+			   btrfs_ino(inode), bio->bi_opf,
-+			   dip->file_offset, dip->bytes, bio->bi_status);
-+	}
-+
-+	orig->bi_status = bbio->bio.bi_status;
-+	btrfs_finish_ordered_extent(bbio->ordered, NULL,
-+				    dip->file_offset, dip->bytes,
-+				    !bio->bi_status);
-+	bio_free_pages(bio);
-+	bio_put(bio);
-+	iomap_dio_bio_end_io(orig);
-+}
-+
-+static void dio_end_read_copied_bio(struct btrfs_bio *bbio)
-+{
-+	struct bio *orig = bbio->private;
-+	struct btrfs_dio_private *dip =
-+		container_of(bbio, struct btrfs_dio_private, bbio);
-+	struct btrfs_inode *inode = bbio->inode;
-+	struct bio *bio = &bbio->bio;
-+
-+	if (bio->bi_status) {
-+		btrfs_warn(inode->root->fs_info,
-+		"direct IO failed ino %llu op 0x%0x offset %#llx len %u err no %d",
-+			   btrfs_ino(inode), bio->bi_opf,
-+			   dip->file_offset, dip->bytes, bio->bi_status);
-+	}
-+
-+	orig->bi_status = bbio->bio.bi_status;
-+	bio_copy_data(orig, &bbio->bio);
-+	btrfs_unlock_dio_extent(&inode->io_tree, dip->file_offset,
-+				dip->file_offset + dip->bytes - 1, NULL);
-+	bio_free_pages(bio);
-+	bio_put(bio);
-+	iomap_dio_bio_end_io(orig);
-+}
-+
-+static void btrfs_dio_submit_io(const struct iomap_iter *iter, struct bio *src,
-+				loff_t file_offset)
-+{
-+	struct btrfs_dio_private *dip;
-+	struct btrfs_dio_data *dio_data = iter->private;
-+	struct btrfs_bio *new_bbio;
-+	struct bio *new_bio;
-+	const bool is_write = (btrfs_op(src) == BTRFS_MAP_WRITE);
-+	btrfs_bio_end_io_t end_io;
-+	const unsigned int src_size = src->bi_iter.bi_size;
-+	const int nr_pages = round_up(src_size, PAGE_SIZE) >> PAGE_SHIFT;
-+	unsigned int cur = 0;
-+	int ret;
-+
-+	if (is_write)
-+		end_io = dio_end_write_copied_bio;
-+	else
-+		end_io = dio_end_read_copied_bio;
-+
-+	/*
-+	 * We can not trust the direct IO bio, the content can be modified at any time
-+	 * during the submission/writeback.
-+	 * Thus we have to allocate a new bio with pages allocated by us, so that noone
-+	 * can change the content.
-+	 */
-+	new_bio = bio_alloc_bioset(NULL, nr_pages, src->bi_opf, GFP_NOFS, &btrfs_dio_bioset);
-+	new_bbio = btrfs_bio(new_bio);
-+	btrfs_bio_init(new_bbio, inode_to_fs_info(iter->inode), end_io, src);
-+	dip = container_of(new_bbio, struct btrfs_dio_private, bbio);
-+	new_bbio->inode = BTRFS_I(iter->inode);
-+	new_bbio->file_offset = file_offset;
-+	dip->file_offset = file_offset;
-+	dip->bytes = src_size;
-+	while (cur < src_size) {
-+		struct page *page = alloc_page(GFP_NOFS);
-+		unsigned int size = min(src_size - cur, PAGE_SIZE);
-+
-+		if (!page) {
-+			ret = -ENOMEM;
-+			goto error;
-+		}
-+		ret = bio_add_page(&new_bbio->bio, page, size, 0);
-+		ASSERT(ret == size);
-+		cur += size;
-+	}
-+	ASSERT(new_bbio->bio.bi_iter.bi_size == src_size);
-+	new_bbio->bio.bi_iter.bi_sector = src->bi_iter.bi_sector;
- 
- 	dip->file_offset = file_offset;
--	dip->bytes = bio->bi_iter.bi_size;
-+	dip->bytes = src_size;
- 
--	dio_data->submitted += bio->bi_iter.bi_size;
-+	dio_data->submitted += src_size;
-+
-+	if (is_write)
-+		bio_copy_data(&new_bbio->bio, src);
- 
- 	/*
- 	 * Check if we are doing a partial write.  If we are, we need to split
-@@ -731,20 +790,22 @@ static void btrfs_dio_submit_io(const struct iomap_iter *iter, struct bio *bio,
- 	 * remaining pages is blocked on the outstanding ordered extent.
- 	 */
- 	if (iter->flags & IOMAP_WRITE) {
--		int ret;
--
--		ret = btrfs_extract_ordered_extent(bbio, dio_data->ordered);
-+		ret = btrfs_extract_ordered_extent(new_bbio, dio_data->ordered);
- 		if (ret) {
- 			btrfs_finish_ordered_extent(dio_data->ordered, NULL,
- 						    file_offset, dip->bytes,
- 						    !ret);
--			bio->bi_status = errno_to_blk_status(ret);
--			iomap_dio_bio_end_io(bio);
--			return;
-+			goto error;
- 		}
- 	}
- 
--	btrfs_submit_bbio(bbio, 0);
-+	btrfs_submit_bbio(new_bbio, 0);
-+	return;
-+error:
-+	src->bi_status = errno_to_blk_status(ret);
-+	bio_free_pages(&new_bbio->bio);
-+	bio_put(&new_bbio->bio);
-+	iomap_dio_bio_end_io(src);
- }
- 
- static const struct iomap_ops btrfs_dio_iomap_ops = {
-@@ -754,7 +815,6 @@ static const struct iomap_ops btrfs_dio_iomap_ops = {
- 
- static const struct iomap_dio_ops btrfs_dio_ops = {
- 	.submit_io		= btrfs_dio_submit_io,
--	.bio_set		= &btrfs_dio_bioset,
- };
- 
- static ssize_t btrfs_dio_read(struct kiocb *iocb, struct iov_iter *iter,
--- 
-2.51.0
-
+No. It simply reduces the damage caused by the write hole. Only the
+content of individual files is affected, not the metadata.
 
