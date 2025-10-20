@@ -1,286 +1,219 @@
-Return-Path: <linux-btrfs+bounces-18077-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18078-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DB32BF2C95
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 19:45:44 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB482BF2D16
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 19:55:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BDBB18A7EA5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 17:46:07 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 78AD434E191
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 17:55:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCBE32B99E;
-	Mon, 20 Oct 2025 17:45:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30C03321D2;
+	Mon, 20 Oct 2025 17:55:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="f1LexTp2";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iMIWmgiS"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="V4DcWIQd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b3-smtp.messagingengine.com (fout-b3-smtp.messagingengine.com [202.12.124.146])
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012002.outbound.protection.outlook.com [52.101.43.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFAF429D267
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 17:45:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.146
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760982330; cv=none; b=CB2ynjpXPlQk7UEomd1eCyutfhPlHa/q3G+1G6hplSU3RDfDgvPw1la+X/DoEdWCEs6z8eITM2KEpwuwHywW75V3JoJVr0ggum4+iG+vVmXWg+XCdUbJadoG/MSR/K9sMwGKRYHO2Sq2ad66xfRrtXhtv9un05npzpNoO7KxrLA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760982330; c=relaxed/simple;
-	bh=JTQWtyY9OMZobwdIAQer7Nzuas9D5qjxPCaKTWBggm0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FmAZXFuLerM5lTdocMGwS24HGxumGNmpRlQbxEg+QtscXI5TWOie+zpE500dQNb0uVSTRQ04v8lN7P9Q0IrohHqR8Rp81SY7Ut0hHV4CwHeYVStotkvgbaMH8NGEiRp1/XxyqK+G0Nhi5qRdkv/BHNGQNUTsFJNJTRVib7BGTXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=f1LexTp2; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iMIWmgiS; arc=none smtp.client-ip=202.12.124.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfout.stl.internal (Postfix) with ESMTP id 6E07B1D0012C;
-	Mon, 20 Oct 2025 13:45:26 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Mon, 20 Oct 2025 13:45:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1760982326; x=1761068726; bh=QW5w/uWDxl
-	7dO5R8VIKJX0VrZF+C4Kd28iv0O6ZdS0U=; b=f1LexTp2ryNfOxdPrSUXbnkbTS
-	HPs424YJGAD7AvbnKht2Tj3FanENYWdeOh1wxIRrXeM9P26Bu6W8iNUwSTaJnZ/5
-	Yff6WH5LOqi/1fZV0rSBs4Jq5PtqMgHBhxhBWFrmMuxO+vrsIAiGZTQNp2VBsRJ5
-	IO9bbybsn3W9EidpBQWnEY5e2PnpXuMKAbQOIrAMSd9JaixU1Tc0fh8K+7YW8SF2
-	GiVp5sPCXo7uN8+tviZKxGYPyL1EKTcEnwJTN/XrG8KcakYwl3V7EcoIMDARDphC
-	LDfE6nw90lTH1zl/79p4tNjap6SFPSTXSZeTdUVW6f2Uz2lHBT6EoK8FNg+A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1760982326; x=1761068726; bh=QW5w/uWDxl7dO5R8VIKJX0VrZF+C4Kd28iv
-	0O6ZdS0U=; b=iMIWmgiSkPALOfJeO1XSdfoeIje8Ka5rupkJEkVkszTlRx0tV4c
-	zfECJ7lRzkzD864yI2wKtp2zjxIG+BIbZNClV4KaMb/vhZ1fWutPmRinbNj6Do+a
-	KDBo9Hhp8lgmJTAIOiOBJAyROnooq9m+YGyfPOINzPXCnvd0rMB0iMSsRxwimDt8
-	x8JcRFF++U0zmIGye0J1gH0ZngRRhJ3xwhFSiW+CrN4Qdl/l/Auf0x1HfHb9LilH
-	lAKX7WfQKNVnKYlb5hW4GZ7WrUM1pWESajMHEPqQttlNr9MyIR6XuJpgHEbV1tq5
-	e+qsukCYn7nprjGLLVtbL7uvMwX6ET4LBpQ==
-X-ME-Sender: <xms:NnX2aMtV-urqmyY2sStWZg-6wbVuVusfaPFYQr-EvWDWVlXx2e2JzQ>
-    <xme:NnX2aPeIYu-eU99criiuk7bS2oST-N6gJ9PBFlyFRSYk9_gI6HCLkAstSl53pw9XS
-    cmpVZpK0BP7jo8HuyBXUCmxL6GN4OQTYBO-Ya1TxHbmfbM2ir292H8>
-X-ME-Received: <xmr:NnX2aFYx_x0faMfdzQn-oEi4gDp8CjSbQ1AHayVFsavNfiIOlHUesTOpeCyIrFD4j3nIt91FyAGGa9r4XKRYA7oV3gg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddufeekgeehucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
-    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
-    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
-    ohepmhgrrhhksehhrghrmhhsthhonhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsg
-    htrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:NnX2aKWOHUPeuojj7BIzD56mjLNPEkF5OJRcE0LKsCiaXWCIqv4ZIw>
-    <xmx:NnX2aPh3oKGd7LNiQS7X0Wrqsq8UIowDulUUYcRk0O9i92mP0yZeYQ>
-    <xmx:NnX2aAXQU0Mrxxi9V-3L1AQ8Ov3xLc88tgGlYiORm28__qKHJGkK-Q>
-    <xmx:NnX2aOPCxO0HCdxeX8UmP6eWtnt1beTxsjm5fbIpHWtYr-jbaxx71Q>
-    <xmx:NnX2aIBdhNtFlm86ie7FRLuiDSPzzeNxxBoIOKL_-TgCzplCHIdPU5Vt>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 20 Oct 2025 13:45:25 -0400 (EDT)
-Date: Mon, 20 Oct 2025 10:44:56 -0700
-From: Boris Burkov <boris@bur.io>
-To: Mark Harmstone <mark@harmstone.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 08/17] btrfs: redirect I/O for remapped block groups
-Message-ID: <20251020174456.GC696792@zen.localdomain>
-References: <20251009112814.13942-1-mark@harmstone.com>
- <20251009112814.13942-9-mark@harmstone.com>
- <20251015042136.GG1702774@zen.localdomain>
- <f74da96e-7b50-48f2-b9ad-a2aefc8ed9aa@harmstone.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F24813C3CD;
+	Mon, 20 Oct 2025 17:55:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.2
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1760982932; cv=fail; b=JvkRoCq+r1FsCmn8rNcjy6WTx3giAD6ylKBtwOyOUdWl7gNbQsNKw4qA0i9J3eBi128oz5OxxHXXHdIurUvsxT5P+/Nb1F8ipw2vwV0B1zkEIjxUUOBgWzSrC/8aLeU3BV1xHJbB75PxqCJAlVx9drn4N3HVpvDD4HVy+2zjzFE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1760982932; c=relaxed/simple;
+	bh=RVa/b7QnuVFw3snYKfURRiHSCVRz58+TXAsEkCBj+QY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=gxbOtnSgPdGQCYjBTwHvQGb8YLGfrC/WQ7VIx/SyeCrVy0XWkzjjkX5VQVu19cDxwEbY75lmzvJaqnj/3+Je/K1buvCWFJyFY63JxBilIi7WKCFhojTXeaxaphFPdGxk6JXH/T/FvQrPAJvWEcB2hbvqVmPQv+tu7qYjDJH4MjI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=V4DcWIQd; arc=fail smtp.client-ip=52.101.43.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=DCUaf7aWgdU+0ht9LIV4YfoIfaH27ThABSmdFZW7LvjkTifryGluMStc92kzkuFi9gInt+riG+hr2eiPb53tdYMmm97q9k82gdMyqPXoCDqlhkA/+nCUMx69YxqZmoUgyxgz6a8yNKbS0GMo7ODsRuOlFIfGKr7xMTSvWAuoITvtUVjHb58MUzBS310NVg0z4vLsF7moCWRDBfBXElBaKb0kl7ST/JxyoioBVZaMGV6QPWcdvwqTkl0JQGQTFHztR9rJF9bPOX/SxStl6QYa5aZfHyWdBphgWQdsSEUUK5+sk50nBf7ehrBvbfcR9943a3SzZT9uaESaMlBfBCa7ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3vjE7SPpx36V5X+A7Sy0avsEip8LzwqBFCgTL9p28iM=;
+ b=FufH511rQIvGOeQ0FEAK//3wLri2/RiFgKN8fzfyFYre3o+Vi8Bd8lpebfN0LTicfNyvqRM5x+/U1wzK83k8ZQwREvXcveFYMmHl/zCvx2P4071qqza2P6WkkzA1U99bzaycBnAPX7n2Aqbll6Ld8sA1Ia7aOV2mZl+pij1BztmMbY5wymStJsXEhR9K1CZTK26SYzYlJfqf2J/Rw+0Zm6NVucgFBJbRmkoWfnbG86sHC+8iWTBqEtEpeCCKyve+LO9N1lI9VnEa3hk383Er4LiogpwBVHq8P5c1k3Pi3LHKLadgME+KdqWkeBJBmYDJrsxrJXcnsPSFtdZLgf0PNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3vjE7SPpx36V5X+A7Sy0avsEip8LzwqBFCgTL9p28iM=;
+ b=V4DcWIQd0zDBJZuSXA//cylx6YCCNOQXkPL52lo/48pRmRH3zcj6Rmv5GIh1FPzGpRv/2bIRYOlcc92N0unLiepvYDIJZoy94mNuftYNiLPlt6D5zAoSRw+iG4xiTto0U8GOAjL5my86RMO2xwzsdCTy+uzPxvzhsNG8nsEQbOA5cR9clbWYFP7eblr7Nx+E+Ql1XSCoN6zr75idDM0frILZJedORp/vfjlt23EAfs1Jfo1azvhfu9+2tPKMk6EgD506nUTJ4FXNXYF6ASXQ0D3MM2k581TZC997I8msO+SC6A9UnPgz6bDZlgL0sHlM7h1O2BhKtCw9tnEjz3w6pg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB4116.namprd12.prod.outlook.com (2603:10b6:a03:210::13)
+ by CYYPR12MB8922.namprd12.prod.outlook.com (2603:10b6:930:b8::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9228.16; Mon, 20 Oct
+ 2025 17:55:28 +0000
+Received: from BY5PR12MB4116.namprd12.prod.outlook.com
+ ([fe80::81b6:1af8:921b:3fb4]) by BY5PR12MB4116.namprd12.prod.outlook.com
+ ([fe80::81b6:1af8:921b:3fb4%4]) with mapi id 15.20.9228.015; Mon, 20 Oct 2025
+ 17:55:28 +0000
+Message-ID: <a1cffdbd-ba98-4e24-bbb6-298eba40a11e@nvidia.com>
+Date: Mon, 20 Oct 2025 10:55:06 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: O_DIRECT vs BLK_FEAT_STABLE_WRITES, was Re: [PATCH] btrfs: never
+ trust the bio from direct IO
+To: Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
+Cc: Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>,
+ linux-btrfs@vger.kernel.org, djwong@kernel.org, linux-xfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-mm@kvack.org, martin.petersen@oracle.com, jack@suse.com
+References: <1ee861df6fbd8bf45ab42154f429a31819294352.1760951886.git.wqu@suse.com>
+ <aPYIS5rDfXhNNDHP@infradead.org>
+ <56o3re2wspflt32t6mrfg66dec4hneuixheroax2lmo2ilcgay@zehhm5yaupav>
+ <aPYgm3ey4eiFB4_o@infradead.org>
+ <mciqzktudhier5d2wvjmh4odwqdszvbtcixbthiuuwrufrw3cj@5s2ffnffu4gc>
+ <aPZOO3dFv61blHBz@casper.infradead.org>
+ <xc2orfhavfqaxrmxtsbf4kepglfujjodvhfzhzfawwaxlyrhlb@gammchkzoh2m>
+Content-Language: en-US
+From: John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <xc2orfhavfqaxrmxtsbf4kepglfujjodvhfzhzfawwaxlyrhlb@gammchkzoh2m>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0P220CA0027.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:a03:41b::18) To BY5PR12MB4116.namprd12.prod.outlook.com
+ (2603:10b6:a03:210::13)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f74da96e-7b50-48f2-b9ad-a2aefc8ed9aa@harmstone.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4116:EE_|CYYPR12MB8922:EE_
+X-MS-Office365-Filtering-Correlation-Id: 667744ba-e855-4638-fe93-08de1001da4b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?RnJ4S09Oa2NlNUNLQ3lqblJYelQzalF2cDRQSWh6ZGZCS21BR3N1YjJEVCtl?=
+ =?utf-8?B?OEplT01idzRlR1Q2aE5pTnBjeXdEcmdtZXc3WWdjMzBhUWJWOHVTajJyRzcz?=
+ =?utf-8?B?b09BQWtEa3lVYlVqVkcrSXpBZElnNzRGaDU1OUNnWGkrUGhPZFJpN1Azb0gv?=
+ =?utf-8?B?ell6b1RBWDExWm9VSGQwelZKYVB4aFZBQXJDUUtSOTlUUm8rUXhjbFg2aUFP?=
+ =?utf-8?B?Qm5TVURJNHdPNWE5ZWRvVjVpbS8wTWZpUU8rczdZT2R4dXNwVGVxSEVTNStY?=
+ =?utf-8?B?Yllsb2lmWFpRRXFiS1A5d3d6bjh6RTNEMHFFUnBiMGFSMFJ4WFE0cnhOSHBG?=
+ =?utf-8?B?VGgwODRrRkVNYXpWM2kvdEl3QzRTdjBOM2NOZE9FeGZKUCt4QVhvQ2hWV2F4?=
+ =?utf-8?B?enFGci85UjlKNW9vT2NZSk96WlFIMThmdTMvMFRJNmI2Rmswcy93V3A1NXpJ?=
+ =?utf-8?B?WitwRy85NWl3cVhpNlQwbTBQa2lKRHl0NDhINTd0clBpVi9qNWE3R2dPd2Q0?=
+ =?utf-8?B?U0t0OXBCdnVlL240ME9uV2FkSm9zaEw2bm1zM0NvaDIvYm1VVitOTGdkcDBv?=
+ =?utf-8?B?cUZKak5GeHV6R2hkM1pLWHlkZEVYa3NER2RBQUlzNFQxRm0vaGUrbVBMQWg1?=
+ =?utf-8?B?eGZtaUZLeTFSUi9VVUh0U1BDU1pVRlBpaXY2UWRFcWdpQ2l1Y0llZ1A3TTBI?=
+ =?utf-8?B?cHQzY2U4OGc3STJYV3lDMzUxTG5iTFdhRWt0YUlHcm51TkMvNk9qcVErTHow?=
+ =?utf-8?B?dmtKbmV1UVBOS25mTEk4eXovZ09La3ZqQjJIM2ZUM1ZTM0N1UFVqN2pOWVpF?=
+ =?utf-8?B?b2t6Z0RIN2VydVc2bmhaQXdpY29EUFl0Z3g0VXoreXBBdnNXTmRIckF1WWhk?=
+ =?utf-8?B?QnBDYVlQZkJBNGhWalVwUHpiWUJIcEpMZGhPRFg3YVJyVFhqWXQwaUdMekZP?=
+ =?utf-8?B?dUFiNy8wQm1HL1pYTmhqSEtkZk40L21ScW4wQUswaXJNTWxxVlJ5aWdpUVUw?=
+ =?utf-8?B?QmpsWjk2ZzlmaTZUMmtkbXhSMnIwSU9ucUMyU2JpY1ZKYVl0NlJETUV1MUpy?=
+ =?utf-8?B?VitOclkzSUZINmhvTFhicjFvaU9DOVE3VlU2M3Zlb0xoRzc0d2NSeTloNjJ3?=
+ =?utf-8?B?SG4ySFg0bjcxNGlVUFVQNjVaRmNvWkxVWWhRQU1ydm1OeTV0RDNZdG9sd3RS?=
+ =?utf-8?B?Z0Vpd3ZieTE4ODdpSzdEWTBOYkM4Wkw2cURrSExpcVRsbkVKc3J1eW8wRGZF?=
+ =?utf-8?B?Q1kxU1RHS2tJdjgwTFBNVExHTFUycjg0N0kvVmd1R04wQjlwQ1llUE9vSjhw?=
+ =?utf-8?B?VEhnOVJzYzZFMzVMeitnejVBSFRsVnBWWmt1alFweHg5NzhPWEtyWFBWQlFP?=
+ =?utf-8?B?bUlPYWdFcTNmYzNucVNUMmRrU29Udm1TcFQwaEcwVlV3bXZESDk1V2RvQUlG?=
+ =?utf-8?B?VWdSWnZyOWFMcWZEQjhHZTRES2V3V200WjBUbDNjZnB5N2VsM1VFOGFWNDVy?=
+ =?utf-8?B?MTM1ek90K3VGVTVCSVpUUjZ4WHl5NzhoYWtUMTNQUWZMTzBYN3BxVDdWT3Jk?=
+ =?utf-8?B?YWFDYjJMMnJwck5WK1Y2djh1WjQvUG9vNmpQQXhSVnJGTWw1Y3ZoWGxXUFJZ?=
+ =?utf-8?B?R2praFRFUmJBTVJBSzl4UFkwYzV0RjE4Zmcra2Z0aXNPWDhDUnB6UmUrNjNw?=
+ =?utf-8?B?SmYxd2ptakllNTZPVStjVjJocndGTndaTllRNGFrOThHWVI3U1J5VWFGbDU3?=
+ =?utf-8?B?QlphcU4xc0ZBRGkrUkJCWDdZYWY2NEpBbFJzTEZGSFJYenZzL2dFZ3hlaitr?=
+ =?utf-8?B?b0Q5SjNna3c4VTFEZFVuYTdDNDYwRjV0M0F1U29ERm5HeGdQU0IzMVVaMHYv?=
+ =?utf-8?B?TVpuSlZFN3BtWDBmd29PbnFDcktUVzVtSkR6Yk1yL3l0bG9VbG5xZUNsZDVO?=
+ =?utf-8?Q?f6u995HNfzRTjORaKWc0HQmKtwJR1vLy?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4116.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?UllwZzYwQ0ZNSnh6eldPcm9QRlc0bzFaRlRKc21PVzU5YjVIYkhYZ01HaU5H?=
+ =?utf-8?B?d0wvbjh5TkpLUUkxdUM0U3cxWTI2K3hpYjFHSG10NFZ1eEU3RGxReFdzL0Iw?=
+ =?utf-8?B?QTRsd3dkRG9lblYzMEY3bFo4SHE4emo0VkJmamJET25nNTdGbS9mc1hrSzhr?=
+ =?utf-8?B?SHRDRi93elI0NGpLMnh4T255WUFzUDZXNjY0MHFnZjIwbVRHaUFLRERMZ3FB?=
+ =?utf-8?B?VU9tQk53K3o2azdnRHErdWc3WitSYkNLMkdCekFsdmJibTNURHRQejVNZTNw?=
+ =?utf-8?B?TmFxaGNNZlJzbUZiZGxuYkJnQWk3T3ZneUFicjRibll2N2RtMkZhZGVuaFhZ?=
+ =?utf-8?B?TG5GcHJFRmx4ZEkzczRZRlBmRUcyeXF1M0xrZ2cycGJDSmI0U1JuUkJIUmhX?=
+ =?utf-8?B?V2ZzaElTa3BWaktDajU5OWVZeXhselNSdkY1U1ZyWjIzQmJVOTVBMkUxZmVP?=
+ =?utf-8?B?N1EyL1hpN2pqUWl2Y09pRytCd0pIRWtVYWkxc2RsUHJIVlB5WkRmM1JJcnp4?=
+ =?utf-8?B?K3pvUjR3SGNOanZ6T1FraWVaUlZ0UUhSQ1FrYUpBSjdHMXI1Ky9BNFZDRnBX?=
+ =?utf-8?B?dkF0STRsM3hxOGtsUWVUa2hXS004TWU3VDlxUFpTQWg0b2pMVVE1MFFyZjdC?=
+ =?utf-8?B?d0ZERkptWTc2dlJSM1JjeDBqbGhwWVpSeFBiS09pT0Zwd0cybUVwaG1EOEUx?=
+ =?utf-8?B?eVJ2NjJ0MEdyNHhqMlZVNUpSMmxObjI5T2ZWWWdpSmdNTkFCTExQbElsTWFj?=
+ =?utf-8?B?MEpEYk5xdGpmM08xelJTcjBiWkgwQzU0UEJyN2JPY1RsWDZnVXFMNHlIb3dG?=
+ =?utf-8?B?bTZSS3dUcHFRWFExQkJQd3h1dTAzWXBNM3Z1L3d5eDMzMnlWUHo4bjk0dVZL?=
+ =?utf-8?B?TUdyS1hHcWtoZWZlaE44S3ExOVQ1UGl4UXAyaWtENkVhaTRvWHJBcGhiVW45?=
+ =?utf-8?B?ZzJVemJvdTg2M0NveEY2K1BoV2E4aWdIMFI1a3gxRExnRnRTVXdiWUFWR3d4?=
+ =?utf-8?B?OU1rbm4vbDh4ZVhEZ1duNXhTMkNXaTZvaS9ReDdnK2x1NDQ5eWFqVzY4N095?=
+ =?utf-8?B?L2gyRmc5Y2xONEsyTjg5dHI3dzB0THg4YjkxZjA5U1YwMXBTcHRUZW81ZVQy?=
+ =?utf-8?B?WEpyMHozQ1dLSTRjcHJ2ejQ1T0YrSUJWaVF5UnUzVTVLNW5TSSt2VjROV1dW?=
+ =?utf-8?B?RFRZNDlLS3drODh4RTFEYnE5eDY5cGZ6R3p6dWVFRUJQRWhhRFQwa2RnTGZP?=
+ =?utf-8?B?ZEN1ZVpVZ0IvWmZZbnIvV01XdnFzUDQ2N3JZeVJ0VkhUekpwOXdxTHl6SCth?=
+ =?utf-8?B?dllVMGZySUxpQTVGbHg5QS9iM0xrMUtycld6NnVoQ3FwWWVzcVo3OXlFbTYz?=
+ =?utf-8?B?TTVzU2g2MmVEaWV1SnB3VUUwWUdHeVpCelF1RTB1YlBBNk9aekVOWFRxOUdj?=
+ =?utf-8?B?OCtVYmZmazdyUFZYTzdzcFl1MkFjRGY2TlE2Mm5TZjQ0ckdVeU9XVjhZc0ZJ?=
+ =?utf-8?B?eVlXdHBKYmxJL3NMb0Vjdk9vNXNmQ0NjWlkwTnA1b0dueGdSQmRMQjQvK2M3?=
+ =?utf-8?B?UWZsVGFnMkJhbUxRWEdFU1ROTDYraE92OW9sdVM4eSt6bFl2ZDAwTEduUnJZ?=
+ =?utf-8?B?RHE3amR2ZlRZZkVrVUFYYVF2aHh6cnFRYmltaDU0aUdPWUY0VFYzZ3NsbHMw?=
+ =?utf-8?B?UzFrR0k4eDNoV0VLTXRiL2kvc1RqVnN4bEs2RUpxbHJ6RmlkbU9ZdDc3eTVy?=
+ =?utf-8?B?STB6YmVicC94NDdFNUxNOGd3U2t0bTVydVlDajNiWDNVdnpiM2VPcXVnNXlP?=
+ =?utf-8?B?QXA5ZkNGVllSbzhQaFN1a3JnbmkxM3hkWlNobFpyOVNjUnRKY3NVU3BJa3E1?=
+ =?utf-8?B?cDg3TkRiT2JIK3VDTC9udzFhUEZNcEJLTnduMFNyc1pjT2MxbWluRys2VVZz?=
+ =?utf-8?B?M2FpY2dodDJzcDlFYnc4dUlJaUtKaEo4MTFmMVprNW5oV1R6ZUNyUDRnOVFv?=
+ =?utf-8?B?T0piL3ZGVjNOd3o0SUJsSGNiRnJDVkp5VExyNjZpWlYreFhSdEpTM1JwMkg0?=
+ =?utf-8?B?dG5yZ05BazBKUUZFL2g2WjRWMGxObWo0M1pwR0VqVkMvS0dPRWozY05HS0RP?=
+ =?utf-8?Q?iGpy230Id+VkkPhGjwy3o7Rma?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 667744ba-e855-4638-fe93-08de1001da4b
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4116.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2025 17:55:28.3651
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 85I8oVteaFpd26JHJwBjWoIK3ISxK4uwrCcmgqT7UdzS1Yx6q5SztlH4EzO+QkXRwsMWeRMmanPw33/d548g0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8922
 
-On Mon, Oct 20, 2025 at 03:31:39PM +0100, Mark Harmstone wrote:
-> On 15/10/2025 5.21 am, Boris Burkov wrote:
-> > On Thu, Oct 09, 2025 at 12:28:03PM +0100, Mark Harmstone wrote:
-> > > Change btrfs_map_block() so that if the block group has the REMAPPED
-> > > flag set, we call btrfs_translate_remap() to obtain a new address.
-> > > 
-> > > btrfs_translate_remap() searches the remap tree for a range
-> > > corresponding to the logical address passed to btrfs_map_block(). If it
-> > > is within an identity remap, this part of the block group hasn't yet
-> > > been relocated, and so we use the existing address.
-> > > 
-> > > If it is within an actual remap, we subtract the start of the remap
-> > > range and add the address of its destination, contained in the item's
-> > > payload.
-> > > 
-> > > Signed-off-by: Mark Harmstone <mark@harmstone.com>
-> > > ---
-> > >   fs/btrfs/relocation.c | 59 +++++++++++++++++++++++++++++++++++++++++++
-> > >   fs/btrfs/relocation.h |  2 ++
-> > >   fs/btrfs/volumes.c    | 31 +++++++++++++++++++++++
-> > >   3 files changed, 92 insertions(+)
-> > > 
-> > > diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> > > index 748290758459..4f5d3aaf0f65 100644
-> > > --- a/fs/btrfs/relocation.c
-> > > +++ b/fs/btrfs/relocation.c
-> > > @@ -3870,6 +3870,65 @@ static const char *stage_to_string(enum reloc_stage stage)
-> > >   	return "unknown";
-> > >   }
-> > > +int btrfs_translate_remap(struct btrfs_fs_info *fs_info, u64 *logical,
-> > > +			  u64 *length, bool nolock)
-> > > +{
-> > > +	int ret;
-> > > +	struct btrfs_key key, found_key;
-> > > +	struct extent_buffer *leaf;
-> > > +	struct btrfs_remap *remap;
-> > > +	BTRFS_PATH_AUTO_FREE(path);
-> > > +
-> > > +	path = btrfs_alloc_path();
-> > > +	if (!path)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	if (nolock) {
-> > > +		path->search_commit_root = 1;
-> > > +		path->skip_locking = 1;
-> > > +	}
-> > > +
-> > > +	key.objectid = *logical;
-> > > +	key.type = (u8)-1;
-> > > +	key.offset = (u64)-1;
-> > > +
-> > > +	ret = btrfs_search_slot(NULL, fs_info->remap_root, &key, path,
-> > > +				0, 0);
-> > > +	if (ret < 0)
-> > > +		return ret;
-> > > +
-> > > +	leaf = path->nodes[0];
-> > > +
-> > > +	if (path->slots[0] == 0)
-> > > +		return -ENOENT;
-> > > +
-> > > +	path->slots[0]--;
-> > > +
-> > > +	btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
-> > > +
-> > > +	if (found_key.type != BTRFS_REMAP_KEY &&
-> > > +	    found_key.type != BTRFS_IDENTITY_REMAP_KEY) {
-> > > +		return -ENOENT;
-> > > +	}
-> > > +
-> > > +	if (found_key.objectid > *logical ||
-> > > +	    found_key.objectid + found_key.offset <= *logical) {
-> > > +		return -ENOENT;
-> > > +	}
-> > > +
-> > > +	if (*logical + *length > found_key.objectid + found_key.offset)
-> > > +		*length = found_key.objectid + found_key.offset - *logical;
-> > > +
-> > > +	if (found_key.type == BTRFS_IDENTITY_REMAP_KEY)
-> > > +		return 0;
-> > > +
-> > > +	remap = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_remap);
-> > > +
-> > > +	*logical += btrfs_remap_address(leaf, remap) - found_key.objectid;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > >   /*
-> > >    * function to relocate all extents in a block group.
-> > >    */
-> > > diff --git a/fs/btrfs/relocation.h b/fs/btrfs/relocation.h
-> > > index 5c36b3f84b57..a653c42a25a3 100644
-> > > --- a/fs/btrfs/relocation.h
-> > > +++ b/fs/btrfs/relocation.h
-> > > @@ -31,5 +31,7 @@ int btrfs_should_cancel_balance(const struct btrfs_fs_info *fs_info);
-> > >   struct btrfs_root *find_reloc_root(struct btrfs_fs_info *fs_info, u64 bytenr);
-> > >   bool btrfs_should_ignore_reloc_root(const struct btrfs_root *root);
-> > >   u64 btrfs_get_reloc_bg_bytenr(const struct btrfs_fs_info *fs_info);
-> > > +int btrfs_translate_remap(struct btrfs_fs_info *fs_info, u64 *logical,
-> > > +			  u64 *length, bool nolock);
-> > >   #endif
-> > > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> > > index 0abe02a7072f..f2d1203778aa 100644
-> > > --- a/fs/btrfs/volumes.c
-> > > +++ b/fs/btrfs/volumes.c
-> > > @@ -6635,6 +6635,37 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
-> > >   	if (IS_ERR(map))
-> > >   		return PTR_ERR(map);
-> > > +	if (map->type & BTRFS_BLOCK_GROUP_REMAPPED) {
-> > > +		u64 new_logical = logical;
-> > > +		bool nolock = !(map->type & BTRFS_BLOCK_GROUP_DATA);
-> > 
-> > Why not data?
+On 10/20/25 8:58 AM, Jan Kara wrote:
+> On Mon 20-10-25 15:59:07, Matthew Wilcox wrote:
+>> On Mon, Oct 20, 2025 at 03:59:33PM +0200, Jan Kara wrote:
+>>> The idea was to bounce buffer the page we are writing back in case we spot
+>>> a long-term pin we cannot just wait for - hence bouncing should be rare.
+>>> But in this more general setting it is challenging to not bounce buffer for
+>>> every IO (in which case you'd be basically at performance of RWF_DONTCACHE
+>>> IO or perhaps worse so why bother?). Essentially if you hand out the real
+>>> page underlying the buffer for the IO, all other attemps to do IO to that
+>>> page have to block - bouncing is no longer an option because even with
+>>> bouncing the second IO we could still corrupt data of the first IO once we
+>>> copy to the final buffer. And if we'd block waiting for the first IO to
+>>> complete, userspace could construct deadlock cycles - like racing IO to
+>>> pages A, B with IO to pages B, A. So far I'm not sure about a sane way out
+>>> of this...
+>>
+>> There isn't one.  We might have DMA-mapped this page earlier, and so a
+>> device could write to it at any time.  Even if we remove PTE write
+>> permissions ...
 > 
-> Because I thought we'd maxed out our lockdep classes so this was the only way to
-> prevent lockdep from complaining about metadata reads - not yet knowing about
-> the btrfs_lockdep_keysets array.
-> 
-> I think I'm going to remove the search_commit_root stuff from this patchset, and
-> leave it for a future optimization. As you know it's full of gotchas.
-> 
-> > > +
-> > > +		/*
-> > > +		 * We use search_commit_root in btrfs_translate_remap for
-> > > +		 * metadata blocks, to avoid lockdep complaining about
-> > > +		 * recursive locking.
-> > > +		 * If we get -ENOENT this means this is a BG that has just had
-> > > +		 * its REMAPPED flag set, and so nothing has yet been actually
-> > > +		 * remapped.
-> > > +		 */
-> > 
-> > I'm actually kind of worried about this now. What is preventing the
-> > following racy interleaving:
-> > 
-> >        T1                                         T2
-> >                                          start_block_group_remapping() // in TXN-K set REMAPPED
-> > btrfs_map_block()
-> >    btrfs_translate_remap()
-> >      ENOENT // searched in commit root
-> >                                          do_remap_tree_reloc() // in TXN-K do all remaps
-> >                                          // fully remapped, removed, discarded
-> >                                          // TXN-K committed
-> >    // not remapped! but the original chunk map is gone gone
-> >    num_copies = ...
-> 
-> The bits on the right will be separate transactions, I thought that would save
-> us - does it not? I'm guessing this means that search_commit_root means to
-> search the last transaction that was flushed to disk, rather than the last
-> in-memory transaction.
-> 
-> Yes, I'm definitely saving this bit until later.
-> 
+> True but writes through DMA to the page are guarded by holding a page pin
+> these days so we could in theory block getting another page pin or mapping
 
-I think that's a good idea.
+Do you mean, "setting up to do DMA is guarded by holding a FOLL_LONGTERM
+page pin"? Or something else (that's new to me)?
 
-> > > +		ret = btrfs_translate_remap(fs_info, &new_logical, length,
-> > > +					    nolock);
-> > > +		if (ret && (!nolock || ret != -ENOENT))
-> > > +			return ret;
-> > > +
-> > > +		if (ret != -ENOENT && new_logical != logical) {
-> > > +			btrfs_free_chunk_map(map);
-> > > +
-> > > +			map = btrfs_get_chunk_map(fs_info, new_logical,
-> > > +						  *length);
-> > > +			if (IS_ERR(map))
-> > > +				return PTR_ERR(map);
-> > > +
-> > > +			logical = new_logical;
-> > > +		}
-> > > +
-> > > +		ret = 0;
-> > > +	}
-> > > +
-> > >   	num_copies = btrfs_chunk_map_num_copies(map);
-> > >   	if (io_geom.mirror_num > num_copies)
-> > >   		return -EINVAL;
-> > > -- 
-> > > 2.49.1
-> > > 
+
+thanks,
+John Hubbard
+
+> the page writeably until the pin is released... if we can figure out a
+> convincing story for dealing with long-term pins from RDMA and dealing with
+> possible deadlocks created by this.
 > 
+> 								Honza
+
 
