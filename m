@@ -1,209 +1,576 @@
-Return-Path: <linux-btrfs+bounces-18072-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18073-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BB96BF2904
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 18:57:09 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E193BF297F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 19:03:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF20342632F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 16:55:22 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B93C63423B0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 17:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF9B32F76D;
-	Mon, 20 Oct 2025 16:55:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m+7HNRRX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF942284881;
+	Mon, 20 Oct 2025 17:03:48 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yx1-f68.google.com (mail-yx1-f68.google.com [74.125.224.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from ts201-relay01.ddc.teliasonera.net (ts201-relay01.ddc.teliasonera.net [81.236.60.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADE40275105
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 16:55:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F8611D6187
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 17:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.236.60.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760979319; cv=none; b=WMWbn64CdU8byV8oGUZdLBS+sXjD9ehYMW+uPbD9urGtM/2nVdoq8rUodVqG5z2vUq8MKXoFoJJZvg0UOzdgcUs7+udMrvWPYl5Skk/LsuSiVIsT51R2VO6RwuyQMRFktCvO2RbPXhSfdgYzgC9ax3M0c+5+jbXeaH+51Q7cd4M=
+	t=1760979828; cv=none; b=AAVeB78lT7DHo5AA4pJ7jQLjPpe8lR3uEf3BPVjeE77iqfPXULmnsSpQfoJ/n1RZvZCxyxhV082uNwR74MJc1Uxs0F1AFkRrXERvVvZnJdmscwtm7muYi2kEEwUbt5grzwad2c0njQOOUQGCIFoiXvzbc7zx+EOTVMcBXGNpHUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760979319; c=relaxed/simple;
-	bh=sj8Ha+PaHudrw+RxWgiG/cOSxOluNy8tlYGNsr6XkQA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L9V2UYUCAboKqHMz95EjfGOI6wx2nDp3AEALOJGA1PniAuuw2ZEWSfHJX8BSu7vRo47fJUDRoeLJMDxc8cWSwlezGNJ7LNTm15Vj90D9Tl0ma8HbwPpoOpc7G0c9zF2IndwMgxTNR32kxx3mQ2GIhxHtzT4PvGuXw6EgJqfqI2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m+7HNRRX; arc=none smtp.client-ip=74.125.224.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f68.google.com with SMTP id 956f58d0204a3-63e19642764so3289708d50.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 09:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760979316; x=1761584116; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=baogYE/pJxur92rQFsMIOoWneZpU9ddUJMMY8yB8enE=;
-        b=m+7HNRRXXwGu85uJGrMAITvhDkNPenkrlgDCpO6L99I4YHcP994u397ISIWGfVgTc6
-         v94BoxvqYV3f2EUU0TbYQbW8kC3AFhiciXmxLpoO4Mq71Hi6q3ll7IzubRw2YjKRR4bS
-         2JHp+OOoA8bW7KdNk2zyKUkIO/gUU9kZ5miv4/tgAXa/1dsrlEk45wQtsRIrbqma16Hr
-         gDp/2qQ129ejtlawB7MI4rpMoRC7OWR/2gr3wsfr1ByFEoSdZj5hi1Bxyv4WmECaPZru
-         6eHvwxbbwUOIUDc14xq1wEiTh9hv8pgKm2chRYsPkTSezvLeAOiBIINR3Ox0UdbyUey0
-         nSDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760979316; x=1761584116;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=baogYE/pJxur92rQFsMIOoWneZpU9ddUJMMY8yB8enE=;
-        b=SfKKZEQP/vXxEAEGZPpo2ga1KS5bpzB9c1PlS7/LkNlPozpyfzn05WxljN8M+BKMEu
-         5wm1fqGUSJEfyqVQNzlobIGKF3QXk1Ny3AEMQov2RO/AG/kl0KUmj3HRhm23xUrvADeb
-         +EtsWfiGxBgPSo44Q04nIaqOU30n/5vDtO4aLtyPu9/wfe0xsBRy2F8zTngfzf6o+0aB
-         cge92z2YEge7LZkz8XQDjmiu9J36KiWbYLdHgm3TIZfZ+/O5/HAh5gNQxx0ctGZL+/11
-         ND4HI6QrGsVBvwRsJpehNrDKi/J960LnMBrkVqGF1z5yG78nsrW5xviM6mwJsDKNDeYN
-         n90A==
-X-Forwarded-Encrypted: i=1; AJvYcCU2RXVCMlk1CwfE0d/OZ2aSbetZ4INdJY3N+MK2UeHEmAzN65aU7Fch4Edyp2MWDfTt04OhTMdDOg8PVQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YypfVry3pqd4KlczUwj9JvQjkl/JEqKQ6/7LBC82ERG+vpbiBs8
-	JJ69U5n33Jf7o5yRR1AUblN/L04PgZzXlVgk3h0pElPw7ShISQpqyuqt
-X-Gm-Gg: ASbGncv9kaJTPRruHzZm+rFzMdkxLL1yZ5zXl6CK/P1xZBlsresW1YyxUq6iKJDShzd
-	MdKM1HwJWmCrn5qJArDdf380dl6wBPzJk/lh57Bupf5kgAAmzkvmHMdOHdgw/k4nqF1VNTaOJ/0
-	MUK1O2M3b/LvnIMASR1qfPtiJShCGpY92J0iN4wDJn1Uj0DYwol8hvIcXRtC2bYgXWOQQrQjB0N
-	E9A/KnSe7WJY3nNln1Kv3xEHoLXIEyHwSIKG+3KSDSq9lQqcWVNFBQsZBwZVhGSgj+WzWm+sY9M
-	tP0qnrTUPMYvfG1FYSnxBdlyIN5lHL6AJu7mD5Y/tw7PSaAbipVGyAiqtZ6IYEiOuToHyJ5ywgQ
-	iu/C4qoQGjT0xrHnhhdWH7cpp43GN6XyKDWY8M7E45RRhlkCSCI1d3YLx/+xWtKyGPJesIuhAYD
-	2YI+MTzA==
-X-Google-Smtp-Source: AGHT+IFPRN8rlOxQGn7biHmvtlUZcnH+GYslXMqDpWWbpylMcFLpjgSgGmNV/JqmNUfDlWI3Q6z9gA==
-X-Received: by 2002:a53:acc2:0:10b0:63e:1ca0:be6e with SMTP id 956f58d0204a3-63e1ca0c087mr7164181d50.0.1760979316426;
-        Mon, 20 Oct 2025 09:55:16 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:8::])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-63e267c60f8sm2506939d50.16.2025.10.20.09.55.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Oct 2025 09:55:16 -0700 (PDT)
-From: Leo Martins <loemra.dev@gmail.com>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>,
-	linux-btrfs@vger.kernel.org
-Subject: Re: btrfs/071 is unhappy on 6.18-rc2
-Date: Mon, 20 Oct 2025 09:55:10 -0700
-Message-ID: <20251020165512.3843091-1-loemra.dev@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <aPZE--T-nj0dKB0A@infradead.org>
-References: 
+	s=arc-20240116; t=1760979828; c=relaxed/simple;
+	bh=PaxKymO5EwhMNt0YgeIR5BqSCLyPlLiyQWSMwVPavLg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=JprhLChi9qTfxZOIQ4FkKbfdcPMp1u10576/hC7TgG2L9XaDTX0D53+MytramXMCwqTnPP3sYxV5XC8gjPlrORPY5R09Sl3csR6Sx0QqpSPNY+D5hgg6W9zTa+Xy2aFhG7EFpPuprGlRs1F8DxMVjBPNsO/sYrwws0oP6JGo2c4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jansson.tech; spf=pass smtp.mailfrom=jansson.tech; arc=none smtp.client-ip=81.236.60.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jansson.tech
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jansson.tech
+Received: from gammdatan.home.lan (78-71-145-33-no600.tbcn.telia.com [78.71.145.33])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ts201-relay01.ddc.teliasonera.net (Postfix) with ESMTPS id 4cr1wC1cq8z1DRk1;
+	Mon, 20 Oct 2025 19:03:22 +0200 (CEST)
+Received: from [192.168.9.3] ([192.168.9.3])
+	by gammdatan.home.lan (8.17.1/8.17.1) with ESMTP id 59KH3MCK093060;
+	Mon, 20 Oct 2025 19:03:22 +0200
+Message-ID: <db8e80cb-3fa1-43bf-8ad9-ba6969a16112@jansson.tech>
+Date: Mon, 20 Oct 2025 19:03:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Filesystem lockup during backup
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <4e2d3143-5383-491d-86c2-6b3eb7e21c3e@jansson.tech>
+ <974df153-cbdf-443a-aa3b-0a30c121928d@suse.com>
+ <a13db09c-a6c8-4029-a5b6-1ba0aee728e2@jansson.tech>
+ <d715c901-d6b0-4edf-bc72-e0770d6ddce0@gmx.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Torbj=C3=B6rn_Jansson?= <torbjorn@jansson.tech>
+In-Reply-To: <d715c901-d6b0-4edf-bc72-e0770d6ddce0@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On Mon, 20 Oct 2025 07:19:39 -0700 Christoph Hellwig <hch@infradead.org> wrote:
+On 2025-10-20 00:48, Qu Wenruo wrote:
+> 
+> 
+> 在 2025/10/20 08:25, Torbjörn Jansson 写道:
+>> On 2025-10-19 22:42, Qu Wenruo wrote:
+>>>
+>>>
+>>> 在 2025/10/19 20:43, Torbjörn Jansson 写道:
+>>>> Hello.
+>>>>
+>>>> i have a btrfs filesystem on two 18tb disks that i use as backup destination for my proxmox cluster.
+>>>> the filesystem is using btrfs raid1 mirroring and is exported over nfs to the other nodes.
+>>>>
+>>>> because this is used primarily for backups there are periods of heavy writes (several backups running at the same time) and when this happens it is very likely the filesystem and nfsd locks up completely.
+>>>> this then starts a chain reaction due to the default hard mount blocking processes then eventually ceph also becomes unhappy and then the vms goes down.
+>>>>
+>>>> below is the hung task output from dmesg on the computer with the disks.
+>>>>
+>>>> any idea whats going on and what i can do about it?
+>>>>
+>>>>
+>>>>
+>>>> [1560204.654347] INFO: task nfsd:5136 blocked for more than 122 seconds.
+>>>> [1560204.654351]       Tainted: P           O       6.14.11-2-pve #1
+>>>
+>>> v6.14 is EOL, you're completely on the vendor to provide any fix/ backport.
+>>>
+>>> Recommended to go either LTS kernels or latest upstream one.
+>>>
+>>
+>> ok, not sure i can easily fix that.
+>> i can go back to 6.8 but i think thats not an lts release.
+>> i believe proxmox just released a 6.17 kernel but thats still in the test repo and if i enable that i might accidentally end up with test versions of other packages and i dont want that.
+> 
+> In that case, I'm afraid you have to ask PVE for support.
+> 
+> Neither 6.8 bir 6.14 are supported upstream, thus there must be some PVE specific backports there.
+> 
 
-> KASAN output:
-> 
-> [   75.341543] ==================================================================
-> [   75.341824] BUG: KASAN: slab-use-after-free in btrfs_kill_all_delayed_nodes+0x46f/0x4c0
-> [   75.342082] Read of size 8 at addr ffff88812389f380 by task btrfs-cleaner/4493
-> [   75.342310] 
-> [   75.342369] CPU: 1 UID: 0 PID: 4493 Comm: btrfs-cleaner Tainted: G                 N  6.18.0-rc2+ #4115 PREEMPT(f 
-> [   75.342372] Tainted: [N]=TEST
-> [   75.342373] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-> [   75.342374] Call Trace:
-> [   75.342375]  <TASK>
-> [   75.342376]  dump_stack_lvl+0x4b/0x70
-> [   75.342379]  print_report+0x174/0x4e7
-> [   75.342382]  ? __virt_addr_valid+0x1bb/0x2f0
-> [   75.342384]  ? btrfs_kill_all_delayed_nodes+0x46f/0x4c0
-> [   75.342385]  kasan_report+0xd2/0x100
-> [   75.342387]  ? btrfs_kill_all_delayed_nodes+0x46f/0x4c0
-> [   75.342388]  btrfs_kill_all_delayed_nodes+0x46f/0x4c0
-> [   75.342389]  ? _raw_spin_unlock+0x13/0x30
-> [   75.342392]  ? __pfx_btrfs_kill_all_delayed_nodes+0x10/0x10
-> [   75.342393]  ? do_raw_spin_lock+0x128/0x260
-> [   75.342395]  ? __pfx_do_raw_spin_lock+0x10/0x10
-> [   75.342397]  ? list_lru_add_obj+0xfb/0x1a0
-> [   75.342399]  ? do_raw_spin_lock+0x128/0x260
-> [   75.342401]  ? __pfx_do_raw_spin_lock+0x10/0x10
-> [   75.342402]  btrfs_clean_one_deleted_snapshot+0x143/0x370
-> [   75.342405]  cleaner_kthread+0x1ee/0x300
-> [   75.342406]  ? __pfx_cleaner_kthread+0x10/0x10
-> [   75.342407]  kthread+0x37f/0x6f0
-> [   75.342409]  ? __pfx_kthread+0x10/0x10
-> [   75.342411]  ? __pfx_kthread+0x10/0x10
-> [   75.342412]  ? __pfx_kthread+0x10/0x10
-> [   75.342413]  ret_from_fork+0x17d/0x240
-> [   75.342415]  ? __pfx_kthread+0x10/0x10
-> [   75.342416]  ret_from_fork_asm+0x1a/0x30
-> [   75.342419]  </TASK>
-> [   75.342419] 
-> [   75.345517] Allocated by task 4527:
-> [   75.345517]  kasan_save_stack+0x22/0x40
-> [   75.345517]  kasan_save_track+0x14/0x30
-> [   75.345517]  __kasan_slab_alloc+0x6e/0x70
-> [   75.345517]  kmem_cache_alloc_noprof+0x14c/0x400
-> [   75.345517]  btrfs_get_or_create_delayed_node+0x9e/0x9e0
-> [   75.345517]  btrfs_insert_delayed_dir_index+0xe4/0x8a0
-> [   75.345517]  btrfs_insert_dir_item+0x4c1/0x720
-> [   75.345517]  btrfs_add_link+0x173/0xa30
-> [   75.345517]  btrfs_create_new_inode+0x1551/0x2650
-> [   75.345517]  btrfs_create_common+0x17b/0x200
-> [   75.345517]  vfs_mknod+0x3a7/0x600
-> [   75.345517]  do_mknodat+0x34e/0x520
-> [   75.345517]  __x64_sys_mknodat+0xaa/0xe0
-> [   75.345517]  do_syscall_64+0x50/0xfa0
-> [   75.345517]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [   75.345517] 
-> [   75.345517] Freed by task 4493:
-> [   75.345517]  kasan_save_stack+0x22/0x40
-> [   75.345517]  kasan_save_track+0x14/0x30
-> [   75.345517]  __kasan_save_free_info+0x3b/0x70
-> [   75.345517]  __kasan_slab_free+0x43/0x70
-> [   75.345517]  kmem_cache_free+0x172/0x610
-> [   75.345517]  btrfs_kill_all_delayed_nodes+0x2db/0x4c0
-> [   75.345517]  btrfs_clean_one_deleted_snapshot+0x143/0x370
-> [   75.345517]  cleaner_kthread+0x1ee/0x300
-> [   75.345517]  kthread+0x37f/0x6f0
-> [   75.345517]  ret_from_fork+0x17d/0x240
-> [   75.345517]  ret_from_fork_asm+0x1a/0x30
-> [   75.345517] 
-> [   75.345517] The buggy address belongs to the object at ffff88812389f370
-> [   75.345517]  which belongs to the cache btrfs_delayed_node of size 440
-> [   75.345517] The buggy address is located 16 bytes inside of
-> [   75.345517]  freed 440-byte region [ffff88812389f370, ffff88812389f528)
-> [   75.345517] 
-> [   75.345517] The buggy address belongs to the physical page:
-> [   75.345517] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x12389e
-> [   75.345517] head: order:1 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-> [   75.345517] flags: 0x4000000000000040(head|zone=2)
-> [   75.345517] page_type: f5(slab)
-> [   75.345517] raw: 4000000000000040 ffff88810bcaadc0 ffffea0004487a10 ffff88810c6e6d80
-> [   75.345517] raw: 0000000000000000 00000000000e000e 00000000f5000000 0000000000000000
-> [   75.345517] head: 4000000000000040 ffff88810bcaadc0 ffffea0004487a10 ffff88810c6e6d80
-> [   75.345517] head: 0000000000000000 00000000000e000e 00000000f5000000 0000000000000000
-> [   75.345517] head: 4000000000000001 ffffea00048e2781 00000000ffffffff 00000000ffffffff
-> [   75.345517] head: ffffffffffffffff 0000000000000000 00000000ffffffff 0000000000000002
-> [   75.345517] page dumped because: kasan: bad access detected
-> [   75.345517] 
-> [   75.345517] Memory state around the buggy address:
-> [   75.345517]  ffff88812389f280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> [   75.345517]  ffff88812389f300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fa fb
-> [   75.345517] >ffff88812389f380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> [   75.345517]                    ^
-> [   75.345517]  ffff88812389f400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> [   75.345517]  ffff88812389f480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> [   75.345517] ==================================================================
-> [   75.501545] Disabling lock debugging due to kernel taint
-> 
-> 
-> gdb) l *(btrfs_kill_all_delayed_nodes+0x46f)
-> 0xffffffff82f2422f is in btrfs_kill_all_delayed_nodes (fs/btrfs/delayed-inode.h:219).
-> 214		ref_tracker_dir_exit(&node->ref_dir.dir);
-> 215	}
-> 216	
-> 217	static inline void btrfs_delayed_node_ref_tracker_dir_print(struct btrfs_delayed_node *node)
-> 218	{
-> 219		if (!btrfs_test_opt(node->root->fs_info, REF_TRACKER))
-> 220			return;
-> 221	
-> 222		ref_tracker_dir_print(&node->ref_dir.dir,
-> 223				      BTRFS_DELAYED_NODE_REF_TRACKER_DISPLAY_LIMIT);
+i will wait a bit for the 6.17 kernel to be moved from testing to stable repo, then apply that and see what happens.
+but i've had this problem for a while with a couple of kernel updates in between.
 
-This is a use after free bug with my ref_tracker patch, it's trying to print delayed_node ref_tracker
-stats after the delayed node has been freed. Will send a fix in a second.
+> Or you may want to explore how to install upstream kernels on your distro.
+>>
+>>
+>>>> [1560204.654353] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>>>> [1560204.654355] task:nfsd            state:D stack:0     pid:5136 tgid:5136  ppid:2      task_flags:0x200040 flags:0x00004000
+>>>
+>>> The only message? No more other tasks?
+>>>
+>>
+>> the same (or very similar) message is repeated 10 times, all related to nfsd and then it stops with:
+>> "Future hung task reports are suppressed, see sysctl kernel.hung_task_warnings"
+>>
+>> if you want i can provide all 10
+> 
+> Please provide full dmesg when reporting kernel related bugs.
+> 
+> It may seem the same to you, but a lot of time important details are hidden inside the full dmesg.
+> 
+> Thanks,
+> Qu
+> 
+see below.
+after this there is a steady stream of nfs server not responding timeout until the morning when i rebooted (had to reset since reboot got stuck)
+
+[25437.763066] perf: interrupt took too long (2527 > 2500), lowering kernel.perf_event_max_sample_rate to 79000
+[37095.677795] perf: interrupt took too long (3185 > 3158), lowering kernel.perf_event_max_sample_rate to 62000
+[60724.129687] perf: interrupt took too long (3988 > 3981), lowering kernel.perf_event_max_sample_rate to 50000
+[123184.509512] hrtimer: interrupt took 37743 ns
+[1434766.861092] perf: interrupt took too long (5082 > 4985), lowering kernel.perf_event_max_sample_rate to 39000
+[1560204.623162] INFO: task nfsd:5123 blocked for more than 122 seconds.
+[1560204.623175]       Tainted: P           O       6.14.11-2-pve #1
+[1560204.623181] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[1560204.623185] task:nfsd            state:D stack:0     pid:5123  tgid:5123  ppid:2      task_flags:0x200040 flags:0x00004000
+[1560204.623201] Call Trace:
+[1560204.623206]  <TASK>
+[1560204.623216]  __schedule+0x466/0x1400
+[1560204.623239]  schedule+0x29/0x130
+[1560204.623251]  io_schedule+0x4c/0x80
+[1560204.623263]  folio_wait_bit_common+0x122/0x2e0
+[1560204.623275]  ? __pfx_wake_page_function+0x10/0x10
+[1560204.623294]  __folio_lock+0x17/0x30
+[1560204.623307]  extent_write_cache_pages+0x36e/0x7f0 [btrfs]
+[1560204.623655]  btrfs_writepages+0x75/0x130 [btrfs]
+[1560204.623900]  ? __pfx_end_bbio_data_write+0x10/0x10 [btrfs]
+[1560204.624176]  do_writepages+0xde/0x280
+[1560204.624201]  ? __pfx_ip_finish_output+0x10/0x10
+[1560204.624217]  ? wbc_attach_and_unlock_inode+0xd1/0x130
+[1560204.624237]  filemap_fdatawrite_wbc+0x58/0x80
+[1560204.624254]  ? __ip_queue_xmit+0x19b/0x4e0
+[1560204.624267]  __filemap_fdatawrite_range+0x6d/0xa0
+[1560204.624299]  filemap_fdatawrite_range+0x13/0x30
+[1560204.624311]  btrfs_fdatawrite_range+0x28/0x70 [btrfs]
+[1560204.624697]  start_ordered_ops.constprop.0+0x4e/0x90 [btrfs]
+[1560204.625109]  btrfs_sync_file+0xa9/0x610 [btrfs]
+[1560204.625501]  ? list_lru_del_obj+0xad/0xe0
+[1560204.625526]  vfs_fsync_range+0x42/0xa0
+[1560204.625545]  nfsd_commit+0x9f/0x180 [nfsd]
+[1560204.625836]  nfsd4_commit+0x60/0xa0 [nfsd]
+[1560204.626120]  nfsd4_proc_compound+0x3ad/0x760 [nfsd]
+[1560204.626330]  nfsd_dispatch+0xce/0x220 [nfsd]
+[1560204.626497]  svc_process_common+0x464/0x6f0 [sunrpc]
+[1560204.626692]  ? __pfx_nfsd_dispatch+0x10/0x10 [nfsd]
+[1560204.626853]  svc_process+0x136/0x1f0 [sunrpc]
+[1560204.627070]  svc_recv+0x7bb/0x9a0 [sunrpc]
+[1560204.627252]  ? __pfx_nfsd+0x10/0x10 [nfsd]
+[1560204.627480]  nfsd+0x90/0xf0 [nfsd]
+[1560204.627649]  kthread+0xf9/0x230
+[1560204.627659]  ? __pfx_kthread+0x10/0x10
+[1560204.627668]  ret_from_fork+0x44/0x70
+[1560204.627679]  ? __pfx_kthread+0x10/0x10
+[1560204.627687]  ret_from_fork_asm+0x1a/0x30
+[1560204.627706]  </TASK>
+[1560204.627712] INFO: task nfsd:5124 blocked for more than 122 seconds.
+[1560204.627720]       Tainted: P           O       6.14.11-2-pve #1
+[1560204.627726] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[1560204.627730] task:nfsd            state:D stack:0     pid:5124  tgid:5124  ppid:2      task_flags:0x200040 flags:0x00004000
+[1560204.627744] Call Trace:
+[1560204.627748]  <TASK>
+[1560204.627755]  __schedule+0x466/0x1400
+[1560204.627768]  ? blk_mq_flush_plug_list+0x198/0x670
+[1560204.627786]  schedule+0x29/0x130
+[1560204.627797]  io_schedule+0x4c/0x80
+[1560204.627808]  folio_wait_bit_common+0x122/0x2e0
+[1560204.627820]  ? __pfx_wake_page_function+0x10/0x10
+[1560204.627835]  __folio_lock+0x17/0x30
+[1560204.627843]  lock_delalloc_folios+0x1c9/0x2b0 [btrfs]
+[1560204.628145]  ? submit_bio_noacct+0x28c/0x580
+[1560204.628174]  find_lock_delalloc_range+0x10a/0x220 [btrfs]
+[1560204.628420]  writepage_delalloc+0x141/0x530 [btrfs]
+[1560204.628654]  ? __lruvec_stat_mod_folio+0x8b/0xf0
+[1560204.628673]  extent_write_cache_pages+0x28f/0x7f0 [btrfs]
+[1560204.628922]  btrfs_writepages+0x75/0x130 [btrfs]
+[1560204.629187]  ? __pfx_end_bbio_data_write+0x10/0x10 [btrfs]
+[1560204.629419]  do_writepages+0xde/0x280
+[1560204.629434]  ? __pfx_ip_finish_output+0x10/0x10
+[1560204.629444]  ? wbc_attach_and_unlock_inode+0xd1/0x130
+[1560204.629458]  filemap_fdatawrite_wbc+0x58/0x80
+[1560204.629470]  ? __ip_queue_xmit+0x19b/0x4e0
+[1560204.629479]  __filemap_fdatawrite_range+0x6d/0xa0
+[1560204.629504]  filemap_fdatawrite_range+0x13/0x30
+[1560204.629513]  btrfs_fdatawrite_range+0x28/0x70 [btrfs]
+[1560204.629749]  start_ordered_ops.constprop.0+0x4e/0x90 [btrfs]
+[1560204.629985]  btrfs_sync_file+0xa9/0x610 [btrfs]
+[1560204.630364]  ? list_lru_del_obj+0xad/0xe0
+[1560204.630390]  vfs_fsync_range+0x42/0xa0
+[1560204.630406]  nfsd_commit+0x9f/0x180 [nfsd]
+[1560204.630686]  nfsd4_commit+0x60/0xa0 [nfsd]
+[1560204.630968]  nfsd4_proc_compound+0x3ad/0x760 [nfsd]
+[1560204.631278]  nfsd_dispatch+0xce/0x220 [nfsd]
+[1560204.631556]  svc_process_common+0x464/0x6f0 [sunrpc]
+[1560204.631871]  ? __pfx_nfsd_dispatch+0x10/0x10 [nfsd]
+[1560204.632156]  svc_process+0x136/0x1f0 [sunrpc]
+[1560204.632463]  svc_recv+0x7bb/0x9a0 [sunrpc]
+[1560204.632764]  ? __pfx_nfsd+0x10/0x10 [nfsd]
+[1560204.633047]  nfsd+0x90/0xf0 [nfsd]
+[1560204.633310]  kthread+0xf9/0x230
+[1560204.633323]  ? __pfx_kthread+0x10/0x10
+[1560204.633335]  ret_from_fork+0x44/0x70
+[1560204.633350]  ? __pfx_kthread+0x10/0x10
+[1560204.633361]  ret_from_fork_asm+0x1a/0x30
+[1560204.633387]  </TASK>
+[1560204.633393] INFO: task nfsd:5126 blocked for more than 122 seconds.
+[1560204.633402]       Tainted: P           O       6.14.11-2-pve #1
+[1560204.633407] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[1560204.633411] task:nfsd            state:D stack:0     pid:5126  tgid:5126  ppid:2      task_flags:0x200040 flags:0x00004000
+[1560204.633425] Call Trace:
+[1560204.633429]  <TASK>
+[1560204.633435]  __schedule+0x466/0x1400
+[1560204.633455]  schedule+0x29/0x130
+[1560204.633466]  io_schedule+0x4c/0x80
+[1560204.633477]  folio_wait_bit_common+0x122/0x2e0
+[1560204.633492]  ? __pfx_wake_page_function+0x10/0x10
+[1560204.633510]  __folio_lock+0x17/0x30
+[1560204.633521]  extent_write_cache_pages+0x36e/0x7f0 [btrfs]
+[1560204.633933]  ? __local_bh_enable_ip+0x6a/0x70
+[1560204.633967]  btrfs_writepages+0x75/0x130 [btrfs]
+[1560204.634381]  do_writepages+0xde/0x280
+[1560204.634402]  ? __pfx_ip_finish_output+0x10/0x10
+[1560204.634414]  ? wbc_attach_and_unlock_inode+0xd1/0x130
+[1560204.634436]  filemap_fdatawrite_wbc+0x58/0x80
+[1560204.634451]  ? __ip_queue_xmit+0x19b/0x4e0
+[1560204.634463]  __filemap_fdatawrite_range+0x6d/0xa0
+[1560204.634499]  filemap_fdatawrite_range+0x13/0x30
+[1560204.634512]  btrfs_fdatawrite_range+0x28/0x70 [btrfs]
+[1560204.634905]  start_ordered_ops.constprop.0+0x4e/0x90 [btrfs]
+[1560204.635301]  btrfs_sync_file+0xa9/0x610 [btrfs]
+[1560204.635669]  ? list_lru_del_obj+0xad/0xe0
+[1560204.635693]  vfs_fsync_range+0x42/0xa0
+[1560204.635710]  nfsd_commit+0x9f/0x180 [nfsd]
+[1560204.636008]  nfsd4_commit+0x60/0xa0 [nfsd]
+[1560204.636288]  nfsd4_proc_compound+0x3ad/0x760 [nfsd]
+[1560204.636556]  nfsd_dispatch+0xce/0x220 [nfsd]
+[1560204.636827]  svc_process_common+0x464/0x6f0 [sunrpc]
+[1560204.637144]  ? __pfx_nfsd_dispatch+0x10/0x10 [nfsd]
+[1560204.637408]  svc_process+0x136/0x1f0 [sunrpc]
+[1560204.637708]  svc_recv+0x7bb/0x9a0 [sunrpc]
+[1560204.638018]  ? __pfx_nfsd+0x10/0x10 [nfsd]
+[1560204.638288]  nfsd+0x90/0xf0 [nfsd]
+[1560204.638538]  kthread+0xf9/0x230
+[1560204.638551]  ? __pfx_kthread+0x10/0x10
+[1560204.638564]  ret_from_fork+0x44/0x70
+[1560204.638578]  ? __pfx_kthread+0x10/0x10
+[1560204.638590]  ret_from_fork_asm+0x1a/0x30
+[1560204.638615]  </TASK>
+[1560204.638623] INFO: task nfsd:5127 blocked for more than 122 seconds.
+[1560204.638633]       Tainted: P           O       6.14.11-2-pve #1
+[1560204.638641] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[1560204.638646] task:nfsd            state:D stack:0     pid:5127  tgid:5127  ppid:2      task_flags:0x200040 flags:0x00004000
+[1560204.638665] Call Trace:
+[1560204.638671]  <TASK>
+[1560204.638679]  __schedule+0x466/0x1400
+[1560204.638706]  schedule+0x29/0x130
+[1560204.638720]  io_schedule+0x4c/0x80
+[1560204.638736]  folio_wait_bit_common+0x122/0x2e0
+[1560204.638751]  ? __pfx_wake_page_function+0x10/0x10
+[1560204.638773]  __folio_lock+0x17/0x30
+[1560204.638784]  extent_write_cache_pages+0x36e/0x7f0 [btrfs]
+[1560204.639232]  btrfs_writepages+0x75/0x130 [btrfs]
+[1560204.639627]  ? __pfx_end_bbio_data_write+0x10/0x10 [btrfs]
+[1560204.640025]  do_writepages+0xde/0x280
+[1560204.640047]  ? __pfx_ip_finish_output+0x10/0x10
+[1560204.640061]  ? wbc_attach_and_unlock_inode+0xd1/0x130
+[1560204.640081]  filemap_fdatawrite_wbc+0x58/0x80
+[1560204.640096]  ? __ip_queue_xmit+0x19b/0x4e0
+[1560204.640108]  __filemap_fdatawrite_range+0x6d/0xa0
+[1560204.640143]  filemap_fdatawrite_range+0x13/0x30
+[1560204.640156]  btrfs_fdatawrite_range+0x28/0x70 [btrfs]
+[1560204.640544]  start_ordered_ops.constprop.0+0x4e/0x90 [btrfs]
+[1560204.640918]  btrfs_sync_file+0xa9/0x610 [btrfs]
+[1560204.641295]  ? list_lru_del_obj+0xad/0xe0
+[1560204.641319]  vfs_fsync_range+0x42/0xa0
+[1560204.641336]  nfsd_commit+0x9f/0x180 [nfsd]
+[1560204.641615]  nfsd4_commit+0x60/0xa0 [nfsd]
+[1560204.641899]  nfsd4_proc_compound+0x3ad/0x760 [nfsd]
+[1560204.642185]  nfsd_dispatch+0xce/0x220 [nfsd]
+[1560204.642453]  svc_process_common+0x464/0x6f0 [sunrpc]
+[1560204.642758]  ? __pfx_nfsd_dispatch+0x10/0x10 [nfsd]
+[1560204.643038]  svc_process+0x136/0x1f0 [sunrpc]
+[1560204.643340]  svc_recv+0x7bb/0x9a0 [sunrpc]
+[1560204.643640]  ? __pfx_nfsd+0x10/0x10 [nfsd]
+[1560204.643903]  nfsd+0x90/0xf0 [nfsd]
+[1560204.644163]  kthread+0xf9/0x230
+[1560204.644178]  ? __pfx_kthread+0x10/0x10
+[1560204.644191]  ret_from_fork+0x44/0x70
+[1560204.644206]  ? __pfx_kthread+0x10/0x10
+[1560204.644217]  ret_from_fork_asm+0x1a/0x30
+[1560204.644241]  </TASK>
+[1560204.644247] INFO: task nfsd:5128 blocked for more than 122 seconds.
+[1560204.644259]       Tainted: P           O       6.14.11-2-pve #1
+[1560204.644266] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[1560204.644272] task:nfsd            state:D stack:0     pid:5128  tgid:5128  ppid:2      task_flags:0x200040 flags:0x00004000
+[1560204.644288] Call Trace:
+[1560204.644293]  <TASK>
+[1560204.644302]  __schedule+0x466/0x1400
+[1560204.644320]  ? blk_mq_flush_plug_list+0x198/0x670
+[1560204.644344]  schedule+0x29/0x130
+[1560204.644360]  io_schedule+0x4c/0x80
+[1560204.644376]  folio_wait_bit_common+0x122/0x2e0
+[1560204.644393]  ? __pfx_wake_page_function+0x10/0x10
+[1560204.644412]  __folio_lock+0x17/0x30
+[1560204.644424]  extent_write_cache_pages+0x36e/0x7f0 [btrfs]
+[1560204.644855]  btrfs_writepages+0x75/0x130 [btrfs]
+[1560204.645262]  ? __pfx_end_bbio_data_write+0x10/0x10 [btrfs]
+[1560204.645655]  do_writepages+0xde/0x280
+[1560204.645676]  ? __pfx_ip_finish_output+0x10/0x10
+[1560204.645689]  ? wbc_attach_and_unlock_inode+0xd1/0x130
+[1560204.645708]  filemap_fdatawrite_wbc+0x58/0x80
+[1560204.645723]  ? __ip_queue_xmit+0x19b/0x4e0
+[1560204.645735]  __filemap_fdatawrite_range+0x6d/0xa0
+[1560204.645769]  filemap_fdatawrite_range+0x13/0x30
+[1560204.645781]  btrfs_fdatawrite_range+0x28/0x70 [btrfs]
+[1560204.646088]  start_ordered_ops.constprop.0+0x4e/0x90 [btrfs]
+[1560204.646420]  btrfs_sync_file+0xa9/0x610 [btrfs]
+[1560204.646623]  ? list_lru_del_obj+0xad/0xe0
+[1560204.646633]  vfs_fsync_range+0x42/0xa0
+[1560204.646641]  nfsd_commit+0x9f/0x180 [nfsd]
+[1560204.646762]  nfsd4_commit+0x60/0xa0 [nfsd]
+[1560204.646884]  nfsd4_proc_compound+0x3ad/0x760 [nfsd]
+[1560204.647008]  nfsd_dispatch+0xce/0x220 [nfsd]
+[1560204.647123]  svc_process_common+0x464/0x6f0 [sunrpc]
+[1560204.647253]  ? __pfx_nfsd_dispatch+0x10/0x10 [nfsd]
+[1560204.647368]  svc_process+0x136/0x1f0 [sunrpc]
+[1560204.647497]  svc_recv+0x7bb/0x9a0 [sunrpc]
+[1560204.647627]  ? __pfx_nfsd+0x10/0x10 [nfsd]
+[1560204.647739]  nfsd+0x90/0xf0 [nfsd]
+[1560204.647846]  kthread+0xf9/0x230
+[1560204.647852]  ? __pfx_kthread+0x10/0x10
+[1560204.647858]  ret_from_fork+0x44/0x70
+[1560204.647864]  ? __pfx_kthread+0x10/0x10
+[1560204.647868]  ret_from_fork_asm+0x1a/0x30
+[1560204.647879]  </TASK>
+[1560204.647882] INFO: task nfsd:5130 blocked for more than 122 seconds.
+[1560204.647886]       Tainted: P           O       6.14.11-2-pve #1
+[1560204.647890] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[1560204.647892] task:nfsd            state:D stack:0     pid:5130  tgid:5130  ppid:2      task_flags:0x200040 flags:0x00004000
+[1560204.647899] Call Trace:
+[1560204.647902]  <TASK>
+[1560204.647906]  __schedule+0x466/0x1400
+[1560204.647917]  schedule+0x29/0x130
+[1560204.647923]  io_schedule+0x4c/0x80
+[1560204.647929]  folio_wait_bit_common+0x122/0x2e0
+[1560204.647936]  ? __pfx_wake_page_function+0x10/0x10
+[1560204.647945]  __folio_lock+0x17/0x30
+[1560204.647950]  extent_write_cache_pages+0x36e/0x7f0 [btrfs]
+[1560204.648143]  btrfs_writepages+0x75/0x130 [btrfs]
+[1560204.648313]  ? __pfx_end_bbio_data_write+0x10/0x10 [btrfs]
+[1560204.648478]  do_writepages+0xde/0x280
+[1560204.648486]  ? __pfx_ip_finish_output+0x10/0x10
+[1560204.648492]  ? wbc_attach_and_unlock_inode+0xd1/0x130
+[1560204.648500]  filemap_fdatawrite_wbc+0x58/0x80
+[1560204.648507]  ? __ip_queue_xmit+0x19b/0x4e0
+[1560204.648512]  __filemap_fdatawrite_range+0x6d/0xa0
+[1560204.648527]  filemap_fdatawrite_range+0x13/0x30
+[1560204.648532]  btrfs_fdatawrite_range+0x28/0x70 [btrfs]
+[1560204.648698]  start_ordered_ops.constprop.0+0x4e/0x90 [btrfs]
+[1560204.648856]  btrfs_sync_file+0xa9/0x610 [btrfs]
+[1560204.649005]  ? list_lru_del_obj+0xad/0xe0
+[1560204.649023]  vfs_fsync_range+0x42/0xa0
+[1560204.649030]  nfsd_commit+0x9f/0x180 [nfsd]
+[1560204.649147]  nfsd4_commit+0x60/0xa0 [nfsd]
+[1560204.649265]  nfsd4_proc_compound+0x3ad/0x760 [nfsd]
+[1560204.649381]  nfsd_dispatch+0xce/0x220 [nfsd]
+[1560204.649496]  svc_process_common+0x464/0x6f0 [sunrpc]
+[1560204.649623]  ? __pfx_nfsd_dispatch+0x10/0x10 [nfsd]
+[1560204.649736]  svc_process+0x136/0x1f0 [sunrpc]
+[1560204.649863]  svc_recv+0x7bb/0x9a0 [sunrpc]
+[1560204.649998]  ? __pfx_nfsd+0x10/0x10 [nfsd]
+[1560204.650109]  nfsd+0x90/0xf0 [nfsd]
+[1560204.650217]  kthread+0xf9/0x230
+[1560204.650222]  ? __pfx_kthread+0x10/0x10
+[1560204.650228]  ret_from_fork+0x44/0x70
+[1560204.650234]  ? __pfx_kthread+0x10/0x10
+[1560204.650239]  ret_from_fork_asm+0x1a/0x30
+[1560204.650249]  </TASK>
+[1560204.650253] INFO: task nfsd:5131 blocked for more than 122 seconds.
+[1560204.650257]       Tainted: P           O       6.14.11-2-pve #1
+[1560204.650260] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[1560204.650263] task:nfsd            state:D stack:0     pid:5131  tgid:5131  ppid:2      task_flags:0x200040 flags:0x00004000
+[1560204.650271] Call Trace:
+[1560204.650274]  <TASK>
+[1560204.650277]  __schedule+0x466/0x1400
+[1560204.650285]  ? blk_mq_flush_plug_list+0x198/0x670
+[1560204.650295]  schedule+0x29/0x130
+[1560204.650302]  io_schedule+0x4c/0x80
+[1560204.650309]  folio_wait_bit_common+0x122/0x2e0
+[1560204.650316]  ? __pfx_wake_page_function+0x10/0x10
+[1560204.650324]  __folio_lock+0x17/0x30
+[1560204.650329]  extent_write_cache_pages+0x36e/0x7f0 [btrfs]
+[1560204.650514]  btrfs_writepages+0x75/0x130 [btrfs]
+[1560204.650682]  ? __pfx_end_bbio_data_write+0x10/0x10 [btrfs]
+[1560204.650847]  do_writepages+0xde/0x280
+[1560204.650856]  ? __pfx_ip_finish_output+0x10/0x10
+[1560204.650861]  ? wbc_attach_and_unlock_inode+0xd1/0x130
+[1560204.650869]  filemap_fdatawrite_wbc+0x58/0x80
+[1560204.650876]  ? __ip_queue_xmit+0x19b/0x4e0
+[1560204.650882]  __filemap_fdatawrite_range+0x6d/0xa0
+[1560204.650897]  filemap_fdatawrite_range+0x13/0x30
+[1560204.650902]  btrfs_fdatawrite_range+0x28/0x70 [btrfs]
+[1560204.651074]  start_ordered_ops.constprop.0+0x4e/0x90 [btrfs]
+[1560204.651235]  btrfs_sync_file+0xa9/0x610 [btrfs]
+[1560204.651390]  ? list_lru_del_obj+0xad/0xe0
+[1560204.651401]  vfs_fsync_range+0x42/0xa0
+[1560204.651408]  nfsd_commit+0x9f/0x180 [nfsd]
+[1560204.651529]  nfsd4_commit+0x60/0xa0 [nfsd]
+[1560204.651653]  nfsd4_proc_compound+0x3ad/0x760 [nfsd]
+[1560204.651750]  nfsd_dispatch+0xce/0x220 [nfsd]
+[1560204.651847]  svc_process_common+0x464/0x6f0 [sunrpc]
+[1560204.651955]  ? __pfx_nfsd_dispatch+0x10/0x10 [nfsd]
+[1560204.652056]  svc_process+0x136/0x1f0 [sunrpc]
+[1560204.652164]  svc_recv+0x7bb/0x9a0 [sunrpc]
+[1560204.652270]  ? __pfx_nfsd+0x10/0x10 [nfsd]
+[1560204.652365]  nfsd+0x90/0xf0 [nfsd]
+[1560204.652454]  kthread+0xf9/0x230
+[1560204.652459]  ? __pfx_kthread+0x10/0x10
+[1560204.652463]  ret_from_fork+0x44/0x70
+[1560204.652468]  ? __pfx_kthread+0x10/0x10
+[1560204.652472]  ret_from_fork_asm+0x1a/0x30
+[1560204.652481]  </TASK>
+[1560204.652484] INFO: task nfsd:5134 blocked for more than 122 seconds.
+[1560204.652487]       Tainted: P           O       6.14.11-2-pve #1
+[1560204.652490] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[1560204.652492] task:nfsd            state:D stack:0     pid:5134  tgid:5134  ppid:2      task_flags:0x200040 flags:0x00004000
+[1560204.652498] Call Trace:
+[1560204.652500]  <TASK>
+[1560204.652503]  __schedule+0x466/0x1400
+[1560204.652513]  schedule+0x29/0x130
+[1560204.652518]  io_schedule+0x4c/0x80
+[1560204.652524]  folio_wait_bit_common+0x122/0x2e0
+[1560204.652530]  ? __pfx_wake_page_function+0x10/0x10
+[1560204.652537]  __folio_lock+0x17/0x30
+[1560204.652541]  extent_write_cache_pages+0x36e/0x7f0 [btrfs]
+[1560204.652691]  ? __local_bh_enable_ip+0x6a/0x70
+[1560204.652702]  btrfs_writepages+0x75/0x130 [btrfs]
+[1560204.652846]  do_writepages+0xde/0x280
+[1560204.652853]  ? __pfx_ip_finish_output+0x10/0x10
+[1560204.652857]  ? wbc_attach_and_unlock_inode+0xd1/0x130
+[1560204.652864]  filemap_fdatawrite_wbc+0x58/0x80
+[1560204.652870]  ? __ip_queue_xmit+0x19b/0x4e0
+[1560204.652874]  __filemap_fdatawrite_range+0x6d/0xa0
+[1560204.652887]  filemap_fdatawrite_range+0x13/0x30
+[1560204.652891]  btrfs_fdatawrite_range+0x28/0x70 [btrfs]
+[1560204.653036]  start_ordered_ops.constprop.0+0x4e/0x90 [btrfs]
+[1560204.653171]  btrfs_sync_file+0xa9/0x610 [btrfs]
+[1560204.653302]  ? list_lru_del_obj+0xad/0xe0
+[1560204.653311]  vfs_fsync_range+0x42/0xa0
+[1560204.653317]  nfsd_commit+0x9f/0x180 [nfsd]
+[1560204.653417]  nfsd4_commit+0x60/0xa0 [nfsd]
+[1560204.653517]  nfsd4_proc_compound+0x3ad/0x760 [nfsd]
+[1560204.653613]  nfsd_dispatch+0xce/0x220 [nfsd]
+[1560204.653710]  svc_process_common+0x464/0x6f0 [sunrpc]
+[1560204.653819]  ? __pfx_nfsd_dispatch+0x10/0x10 [nfsd]
+[1560204.653913]  svc_process+0x136/0x1f0 [sunrpc]
+[1560204.654026]  svc_recv+0x7bb/0x9a0 [sunrpc]
+[1560204.654132]  ? __pfx_nfsd+0x10/0x10 [nfsd]
+[1560204.654227]  nfsd+0x90/0xf0 [nfsd]
+[1560204.654317]  kthread+0xf9/0x230
+[1560204.654321]  ? __pfx_kthread+0x10/0x10
+[1560204.654326]  ret_from_fork+0x44/0x70
+[1560204.654331]  ? __pfx_kthread+0x10/0x10
+[1560204.654335]  ret_from_fork_asm+0x1a/0x30
+[1560204.654344]  </TASK>
+[1560204.654347] INFO: task nfsd:5136 blocked for more than 122 seconds.
+[1560204.654351]       Tainted: P           O       6.14.11-2-pve #1
+[1560204.654353] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[1560204.654355] task:nfsd            state:D stack:0     pid:5136  tgid:5136  ppid:2      task_flags:0x200040 flags:0x00004000
+[1560204.654361] Call Trace:
+[1560204.654363]  <TASK>
+[1560204.654366]  __schedule+0x466/0x1400
+[1560204.654376]  schedule+0x29/0x130
+[1560204.654381]  io_schedule+0x4c/0x80
+[1560204.654387]  folio_wait_bit_common+0x122/0x2e0
+[1560204.654393]  ? __pfx_wake_page_function+0x10/0x10
+[1560204.654400]  __folio_lock+0x17/0x30
+[1560204.654404]  extent_write_cache_pages+0x36e/0x7f0 [btrfs]
+[1560204.654559]  btrfs_writepages+0x75/0x130 [btrfs]
+[1560204.654703]  do_writepages+0xde/0x280
+[1560204.654710]  ? __pfx_ip_finish_output+0x10/0x10
+[1560204.654715]  ? wbc_attach_and_unlock_inode+0xd1/0x130
+[1560204.654721]  filemap_fdatawrite_wbc+0x58/0x80
+[1560204.654726]  ? __ip_queue_xmit+0x19b/0x4e0
+[1560204.654731]  __filemap_fdatawrite_range+0x6d/0xa0
+[1560204.654744]  filemap_fdatawrite_range+0x13/0x30
+[1560204.654748]  btrfs_fdatawrite_range+0x28/0x70 [btrfs]
+[1560204.654889]  start_ordered_ops.constprop.0+0x4e/0x90 [btrfs]
+[1560204.655029]  btrfs_sync_file+0xa9/0x610 [btrfs]
+[1560204.655159]  ? list_lru_del_obj+0xad/0xe0
+[1560204.655168]  vfs_fsync_range+0x42/0xa0
+[1560204.655174]  nfsd_commit+0x9f/0x180 [nfsd]
+[1560204.655275]  nfsd4_commit+0x60/0xa0 [nfsd]
+[1560204.655367]  nfsd4_proc_compound+0x3ad/0x760 [nfsd]
+[1560204.655427]  nfsd_dispatch+0xce/0x220 [nfsd]
+[1560204.655486]  svc_process_common+0x464/0x6f0 [sunrpc]
+[1560204.655553]  ? __pfx_nfsd_dispatch+0x10/0x10 [nfsd]
+[1560204.655611]  svc_process+0x136/0x1f0 [sunrpc]
+[1560204.655675]  svc_recv+0x7bb/0x9a0 [sunrpc]
+[1560204.655741]  ? __pfx_nfsd+0x10/0x10 [nfsd]
+[1560204.655798]  nfsd+0x90/0xf0 [nfsd]
+[1560204.655852]  kthread+0xf9/0x230
+[1560204.655855]  ? __pfx_kthread+0x10/0x10
+[1560204.655858]  ret_from_fork+0x44/0x70
+[1560204.655862]  ? __pfx_kthread+0x10/0x10
+[1560204.655864]  ret_from_fork_asm+0x1a/0x30
+[1560204.655871]  </TASK>
+[1560204.655873] INFO: task nfsd:5137 blocked for more than 122 seconds.
+[1560204.655875]       Tainted: P           O       6.14.11-2-pve #1
+[1560204.655877] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[1560204.655878] task:nfsd            state:D stack:0     pid:5137  tgid:5137  ppid:2      task_flags:0x200040 flags:0x00004000
+[1560204.655883] Call Trace:
+[1560204.655884]  <TASK>
+[1560204.655886]  __schedule+0x466/0x1400
+[1560204.655891]  ? blk_mq_flush_plug_list+0x198/0x670
+[1560204.655897]  schedule+0x29/0x130
+[1560204.655902]  io_schedule+0x4c/0x80
+[1560204.655907]  folio_wait_bit_common+0x122/0x2e0
+[1560204.655913]  ? __pfx_wake_page_function+0x10/0x10
+[1560204.655919]  __folio_lock+0x17/0x30
+[1560204.655923]  extent_write_cache_pages+0x36e/0x7f0 [btrfs]
+[1560204.656084]  btrfs_writepages+0x75/0x130 [btrfs]
+[1560204.656226]  ? __pfx_end_bbio_data_write+0x10/0x10 [btrfs]
+[1560204.656340]  do_writepages+0xde/0x280
+[1560204.656344]  ? __ip_finish_output+0xb6/0x180
+[1560204.656348]  ? ip_finish_output+0x2b/0x140
+[1560204.656351]  ? wbc_attach_and_unlock_inode+0xd1/0x130
+[1560204.656356]  filemap_fdatawrite_wbc+0x58/0x80
+[1560204.656360]  ? common_interrupt+0x64/0xe0
+[1560204.656364]  __filemap_fdatawrite_range+0x6d/0xa0
+[1560204.656373]  filemap_fdatawrite_range+0x13/0x30
+[1560204.656376]  btrfs_fdatawrite_range+0x28/0x70 [btrfs]
+[1560204.656464]  start_ordered_ops.constprop.0+0x4e/0x90 [btrfs]
+[1560204.656583]  btrfs_sync_file+0xa9/0x610 [btrfs]
+[1560204.656683]  ? list_lru_del_obj+0xad/0xe0
+[1560204.656688]  vfs_fsync_range+0x42/0xa0
+[1560204.656692]  nfsd_commit+0x9f/0x180 [nfsd]
+[1560204.656759]  nfsd4_commit+0x60/0xa0 [nfsd]
+[1560204.656825]  nfsd4_proc_compound+0x3ad/0x760 [nfsd]
+[1560204.656889]  nfsd_dispatch+0xce/0x220 [nfsd]
+[1560204.656952]  svc_process_common+0x464/0x6f0 [sunrpc]
+[1560204.657058]  ? __pfx_nfsd_dispatch+0x10/0x10 [nfsd]
+[1560204.657120]  svc_process+0x136/0x1f0 [sunrpc]
+[1560204.657191]  svc_recv+0x7bb/0x9a0 [sunrpc]
+[1560204.657262]  ? __pfx_nfsd+0x10/0x10 [nfsd]
+[1560204.657324]  nfsd+0x90/0xf0 [nfsd]
+[1560204.657383]  kthread+0xf9/0x230
+[1560204.657386]  ? __pfx_kthread+0x10/0x10
+[1560204.657389]  ret_from_fork+0x44/0x70
+[1560204.657392]  ? __pfx_kthread+0x10/0x10
+[1560204.657395]  ret_from_fork_asm+0x1a/0x30
+[1560204.657401]  </TASK>
+[1560204.657402] Future hung task reports are suppressed, see sysctl kernel.hung_task_warnings
+
 
 
