@@ -1,242 +1,388 @@
-Return-Path: <linux-btrfs+bounces-18037-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18038-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D577BF01C4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 11:13:18 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AF16BF023C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 11:20:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B8C14017C7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 09:11:25 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B427A346712
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 09:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FDA92EDD41;
-	Mon, 20 Oct 2025 09:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D9D2F5326;
+	Mon, 20 Oct 2025 09:20:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ZYk2Mq2l"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RTdj0U+K";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nFJE4D5T"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2202ED873
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 09:11:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 756322F1FCD
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 09:20:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760951473; cv=none; b=IMej/i2dMfnTiQ95MAR1T5xYExMUiVx3EbmZiXEfSP9Nf00W+oQ7u8x0l+CBV36mNpbS0vRuiQCT4dHIk2+ZbSH5HjSYyxs1P0R37tpMh+adJsvl5znetd+Hd1vfLeS4eLz8fFPKAyF9YMcFKKD22CafDomqMRrKDjdhoRPJ1vo=
+	t=1760952033; cv=none; b=U+I2zxW8Q24IZ7Q9jdVYUl4eXFDbt3K8FTHT4xw3Cfed3NLRzqKQxRBo6IVoI1Lt98JVz499+Ls6ZSL0IWOIQZ1f2clPO7pkHMrKZ6UWQoMNeKHI9WZ8cFc/ipidpE6iT9FGTA3eH1arEIkFcZ6fIIQi6JJWj746HZYKyiih1As=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760951473; c=relaxed/simple;
-	bh=+MVn/KANdxfr+wnC5xul0Irc104ORCNZGqQXZk8i154=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=RCyCevF6H1MKwIltB2i83BY74xIMk/zR7pOkeMwZKu3lmKJZa5h/400pIDBvzXu9ar6rz2mpZM9Iq/B1MzgZ6fyqcHrJGiF5Jjp2L049Sg/NACOi4Yt9Y2ST8SOOY8TByCa1LdNt84gw6K+/DXbixLivfeqk/qUGxTuFahAI0FU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ZYk2Mq2l; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1760951467; x=1761556267; i=quwenruo.btrfs@gmx.com;
-	bh=/lP/o1TfmLBQR+wZVLKSHBH/uD+HP4k6RmsS9CmebYk=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=ZYk2Mq2lT0IsSlbVMHI9nYjeW5E8y2sKtMNwtNneDS7oBVjwlY8HsRAXR3uElE14
-	 lI3b3SEn9lsuse/GcqYlhTUQz7AYXKVosXozTjsY6cqtd1ox/cO256FM7wuMkQMy6
-	 cA/wlRoujqqcbHwl/AbVRd3Mh663EVlVdc4ZGvUWNbjc7mLjvIeGxylSr2qla1Ieb
-	 Zv1rQWh8oWGwosCpWnvZKOZvs+3V0CikaliRxgQYwhKCbStlcL/v3LF9Y88/Rk1vA
-	 kTSx3j0D8eV1nQvCtUmAhKV28mQxLEAhSqzy37mGVkojG6qe4TagRQ47bahJdi2hG
-	 KNCzjCEtDt8KmWAW7w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N2V4P-1uCIfF2Q2R-017INB; Mon, 20
- Oct 2025 11:11:07 +0200
-Message-ID: <9093d4c3-b707-4ef1-be48-36578ac1d2f3@gmx.com>
-Date: Mon, 20 Oct 2025 19:41:03 +1030
+	s=arc-20240116; t=1760952033; c=relaxed/simple;
+	bh=CQKXi3EhtaVCwqP+h/NC4UNTrcj3xACX/1LZnn8QaNc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RVVdtyjZPLn2EuN6YYIiGvAC4eaBS4jRK90gf8+zOwMsekf66DXbdYa2IX8WL3ricaGxA/NH5X2iXPXaLjmqeskRhvoaSjRwiQnvUw9wyO6clZAtO5OmuY2rfngsfmXIdxYn9dmt/YJBhLFssj5v4W1uyOjUkk8xVz85ydvUUAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RTdj0U+K; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nFJE4D5T; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 860ED21134;
+	Mon, 20 Oct 2025 09:20:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1760952024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=sp/4hSlw2N7zPOoCsAQ+w6tQazwLzeqyKFV5HdVznN4=;
+	b=RTdj0U+KPGxoHrHEkuZ5wrGqdiJazff6AIWGMPXnQZsp4lHvhPnkZokuWJMGfyZUiOygOD
+	AKokvdTK8fpOSpXd9/4CbZFWF8QW7WsIhyf9VAGMNZUOzOWAGNDKn2PWcPsro4ibMPWHfF
+	rf2Dxoy4SZgxVQ0n+sUctFct9D6tDjA=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1760952020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=sp/4hSlw2N7zPOoCsAQ+w6tQazwLzeqyKFV5HdVznN4=;
+	b=nFJE4D5Tno3dIXp4CGUXwYxdHf66Dmf4Z30MGlxjX4lVvk+IdPMEN4IIlpEoWKBkqyjT1/
+	QE+llOvhor1eL2XgC549jj+KjB281iBe6uSkbrAA+EtCGi01JiFROERH9E513bcD+TD4v1
+	mPY6RUcDLCUzReizAI33YZxj3Ed09WI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BFCE213AAC;
+	Mon, 20 Oct 2025 09:20:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id hadtF87+9WjPfAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Mon, 20 Oct 2025 09:20:14 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: djwong@kernel.org,
+	linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH] btrfs: never trust the bio from direct IO
+Date: Mon, 20 Oct 2025 19:49:50 +1030
+Message-ID: <1ee861df6fbd8bf45ab42154f429a31819294352.1760951886.git.wqu@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs/071 is unhappy on 6.18-rc2
-To: Christoph Hellwig <hch@infradead.org>, linux-btrfs@vger.kernel.org
-References: <aPXjTw8WN5Jlv2ho@infradead.org>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <aPXjTw8WN5Jlv2ho@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:si220JJQjWTsQAok3vJ1NCbWq/gqSBmf1mt7TjgBci5bnH38KVr
- Pjt1UCTDPq049dWJtw00dUF+NLVIGUGYmWnDsopkdWRvvPxMSXEJVdI4N3t1qiuWyq5fnwW
- ukkUKoLoaTwq7/HvKWjvqxlQ9FF09e5pc2kWrg7sCpgInFWff9zd3JuG/P2uBBmTtMNgXEm
- Rvu+Ao4gOPxC3kK+54B3Q==
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:HZOsDzZGFrY=;Qg+zBDFU+6T0GTeyLqCxYnA9am1
- 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
- XWHX3JiWxvPWFA==
+X-Spam-Score: -2.80
+X-Spam-Level: 
 
+There is a bug report about that direct IO (and even concurrent buffered
+IO) can lead to different contents of md-raid.
 
+It's exactly the situation we fixed for direct IO in commit 968f19c5b1b7
+("btrfs: always fallback to buffered write if the inode requires
+checksum"), however we still leave a hole for nodatasum cases.
 
-=E5=9C=A8 2025/10/20 17:52, Christoph Hellwig =E5=86=99=E9=81=93:
-> I just kicked off a baseline run with the xfstests volume group and
-> a SCRATCH_DEV_POOL with 5 virtual nvme devices to test a VFS change that
-> affects =D1=96t a little, and it does not seem too happy.
->=20
-> btrfs/071 gets into slab poisoning:
->=20
-> [  279.241695] BTRFS info (device nvme1n1 state M): use zlib compression=
-, level 3
-> [  279.247651] Oops: general protection fault, probably for non-canonica=
-l address 0x6b6b6b6b6b6b6d73:I
-> [  279.250656] CPU: 1 UID: 0 PID: 82037 Comm: btrfs-cleaner Tainted: GN =
- 6.18.0-rc2
-> [  279.250656] Tainted: [N]=3DTEST
-> [  279.250656] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS =
-1.16.3-debian-1.16.3-2 04/01/4
-> [  279.250656] RIP: 0010:btrfs_kill_all_delayed_nodes+0x145/0x1e0
+For nodatasum cases we still reuse the bio from direct IO, making it to
+cause the same problem for RAID1*/5/6 profiles, and results
+unreliable data contents read from disk, depending on the load balance.
 
-Any line number/context and reproducibility?
+Just do not trust any bio from direct IO, and never reuse those bios even
+for nodatasum cases. Instead alloc our own bio with newly allocated
+pages.
 
+For direct read, submit that new bio, and at end io time copy the
+contents to the dio bio.
+For direct write, copy the contents from the dio bio, then submit the
+new one.
 
-> [  279.250656] Code: 08 48 c1 e5 03 4b 8b 5c 3d 00 48 89 df e8 23 d0 ff =
-ff 48 85 db 74 0f 4a 8d 54 3c0
-> [  279.250656] RSP: 0018:ffffc9000138bdc0 EFLAGS: 00010246
-> [  279.250656] RAX: 6b6b6b6b6b6b6b6b
+This of course will lead to extra performance drop, but
+it should still be much better than falling back to buffered IO.
 
-This looks like POISON_FREE, so some use-after-free bug?
+There is a quick test done in my VM, with cache mode 'none' (aka, qemu
+will use direct IO submitting the IO, to avoid double caching).
 
-If you're able to reproduce, mind to try KASAN?
-As I just checked my logs, no failures on btrfs/071 recorded yet (but=20
-not on upstream rc2 yet)
+The VM has 10G ram, the target storage is backed by one PCIE gen3 NVME
+SSD, the kernel has some minor/lightweight debug options:
 
-Thanks,
-Qu
+The test command is pretty simple:
+  dd if=/dev/zero bs=1M of=/mnt/btrfs/foobar count=4096 oflag=direct
 
->  RBX: ffff88810dad3d58 RCX: 0000000000000000
-> [  279.250656] RDX: 0000000000000001 RSI: 0000000000000286 RDI: 00000000=
-ffffffff
-> [  279.250656] RBP: 0000000000000008 R08: ffff88810dad3f60 R09: ffff8881=
-0dad3f10
-> [  279.250656] R10: 000000000000000d R11: ffff88810dad3d58 R12: ffff8881=
-1bdfbc18
-> [  279.250656] R13: ffffc9000138bdc8 R14: ffff88811bdfb800 R15: 00000000=
-00000000
-> [  279.250656] FS:  0000000000000000(0000) GS:ffff8883ef66a000(0000) knl=
-GS:0000000000000000
-> [  279.250656] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  279.250656] CR2: 00007fcba10194c8 CR3: 00000001217a3002 CR4: 00000000=
-00772ef0
-> [  279.250656] PKRU: 55555554
-> [  279.250656] Call Trace:
-> [  279.250656]  <TASK>
-> [  279.250656]  ? __schedule+0x52c/0xb60
-> [  279.250656]  btrfs_clean_one_deleted_snapshot+0x72/0x100
-> [  279.250656]  cleaner_kthread+0xd3/0x150
-> [  279.250656]  ? __pfx_cleaner_kthread+0x10/0x10
-> [  279.250656]  kthread+0x109/0x220
-> [  279.250656]  ? __pfx_kthread+0x10/0x10
-> [  279.250656]  ? __pfx_kthread+0x10/0x10
-> [  279.250656]  ret_from_fork+0x120/0x160
-> [  279.250656]  ? __pfx_kthread+0x10/0x10
-> [  279.250656]  ret_from_fork_asm+0x1a/0x30
-> [  279.250656]  </TASK>
-> [  279.250656] Modules linked in: kvm_intel kvm irqbypass
-> [  279.277534] ---[ end trace 0000000000000000 ]---
->=20
-> similar things repeat a few times, and then it loops basically forever
-> doing device replacements, I waited for 30 minutes before killing it.
->=20
+- Raw disk IO
+  dd if=/dev/zero bs=1M of=/dev/test/scratch1 count=4096 oflag=direct
+
+  1.80748 s, 2.4 GB/s
+
+- Fallback to buffered IO (unpatched)
+  Mount option: default (with data checksum)
+
+  20.7763 s, 207 MB/s
+
+  Miserable, most SATA SSD is more than double the speed, and less than
+  10% of the raw disk performance.
+  Thankfully with this bouncing behavior, we can easily re-claim the
+  performance soon.
+  (Will be one small follow-up patch for it, after dropping the RFC
+  tag)
+
+- True zero-copy (unpatch)
+  Mount option: nodatasum
+
+  1.95422 s, 2.2 GB/s
+
+  Very close to the raw disk speed.
+
+- Bounce then zero-copy (patched)
+  Mount option: nodatasum
+
+  2.5453 s, 1.7 GB/s
+
+  Around 23% slower than true zero-copy, but still acceptable if you ask
+  me.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=99171
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+REASON FOR RFC:
+
+Considering the zero-copy direct IO (and the fact XFS/EXT4 even allows
+modifying the page cache when it's still under writeback) can lead to
+raid mirror contents mismatch, the 23% performance drop should still be
+acceptable, and bcachefs is already doing this bouncing behavior.
+
+But still, such performance drop can be very obvious, and performance
+oriented users (who are very happy running various benchmark tools) are
+going to notice or even complain.
+
+Another question is, should we push this behavior to iomap layer so that other
+fses can also benefit from it?
+---
+ fs/btrfs/direct-io.c | 150 ++++++++++++++++++++++++++++++-------------
+ 1 file changed, 105 insertions(+), 45 deletions(-)
+
+diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+index 802d4dbe5b38..1a8bed65c417 100644
+--- a/fs/btrfs/direct-io.c
++++ b/fs/btrfs/direct-io.c
+@@ -640,33 +640,6 @@ static int btrfs_dio_iomap_end(struct inode *inode, loff_t pos, loff_t length,
+ 	return ret;
+ }
+ 
+-static void btrfs_dio_end_io(struct btrfs_bio *bbio)
+-{
+-	struct btrfs_dio_private *dip =
+-		container_of(bbio, struct btrfs_dio_private, bbio);
+-	struct btrfs_inode *inode = bbio->inode;
+-	struct bio *bio = &bbio->bio;
+-
+-	if (bio->bi_status) {
+-		btrfs_warn(inode->root->fs_info,
+-		"direct IO failed ino %llu op 0x%0x offset %#llx len %u err no %d",
+-			   btrfs_ino(inode), bio->bi_opf,
+-			   dip->file_offset, dip->bytes, bio->bi_status);
+-	}
+-
+-	if (btrfs_op(bio) == BTRFS_MAP_WRITE) {
+-		btrfs_finish_ordered_extent(bbio->ordered, NULL,
+-					    dip->file_offset, dip->bytes,
+-					    !bio->bi_status);
+-	} else {
+-		btrfs_unlock_dio_extent(&inode->io_tree, dip->file_offset,
+-					dip->file_offset + dip->bytes - 1, NULL);
+-	}
+-
+-	bbio->bio.bi_private = bbio->private;
+-	iomap_dio_bio_end_io(bio);
+-}
+-
+ static int btrfs_extract_ordered_extent(struct btrfs_bio *bbio,
+ 					struct btrfs_ordered_extent *ordered)
+ {
+@@ -705,23 +678,109 @@ static int btrfs_extract_ordered_extent(struct btrfs_bio *bbio,
+ 	return 0;
+ }
+ 
+-static void btrfs_dio_submit_io(const struct iomap_iter *iter, struct bio *bio,
+-				loff_t file_offset)
++static void dio_end_write_copied_bio(struct btrfs_bio *bbio)
+ {
+-	struct btrfs_bio *bbio = btrfs_bio(bio);
++	struct bio *orig = bbio->private;
+ 	struct btrfs_dio_private *dip =
+ 		container_of(bbio, struct btrfs_dio_private, bbio);
+-	struct btrfs_dio_data *dio_data = iter->private;
++	struct btrfs_inode *inode = bbio->inode;
++	struct bio *bio = &bbio->bio;
+ 
+-	btrfs_bio_init(bbio, BTRFS_I(iter->inode)->root->fs_info,
+-		       btrfs_dio_end_io, bio->bi_private);
+-	bbio->inode = BTRFS_I(iter->inode);
+-	bbio->file_offset = file_offset;
++	if (bio->bi_status) {
++		btrfs_warn(inode->root->fs_info,
++		"direct IO failed ino %llu op 0x%0x offset %#llx len %u err no %d",
++			   btrfs_ino(inode), bio->bi_opf,
++			   dip->file_offset, dip->bytes, bio->bi_status);
++	}
++
++	orig->bi_status = bbio->bio.bi_status;
++	btrfs_finish_ordered_extent(bbio->ordered, NULL,
++				    dip->file_offset, dip->bytes,
++				    !bio->bi_status);
++	bio_free_pages(bio);
++	bio_put(bio);
++	iomap_dio_bio_end_io(orig);
++}
++
++static void dio_end_read_copied_bio(struct btrfs_bio *bbio)
++{
++	struct bio *orig = bbio->private;
++	struct btrfs_dio_private *dip =
++		container_of(bbio, struct btrfs_dio_private, bbio);
++	struct btrfs_inode *inode = bbio->inode;
++	struct bio *bio = &bbio->bio;
++
++	if (bio->bi_status) {
++		btrfs_warn(inode->root->fs_info,
++		"direct IO failed ino %llu op 0x%0x offset %#llx len %u err no %d",
++			   btrfs_ino(inode), bio->bi_opf,
++			   dip->file_offset, dip->bytes, bio->bi_status);
++	}
++
++	orig->bi_status = bbio->bio.bi_status;
++	bio_copy_data(orig, &bbio->bio);
++	btrfs_unlock_dio_extent(&inode->io_tree, dip->file_offset,
++				dip->file_offset + dip->bytes - 1, NULL);
++	bio_free_pages(bio);
++	bio_put(bio);
++	iomap_dio_bio_end_io(orig);
++}
++
++static void btrfs_dio_submit_io(const struct iomap_iter *iter, struct bio *src,
++				loff_t file_offset)
++{
++	struct btrfs_dio_private *dip;
++	struct btrfs_dio_data *dio_data = iter->private;
++	struct btrfs_bio *new_bbio;
++	struct bio *new_bio;
++	const bool is_write = (btrfs_op(src) == BTRFS_MAP_WRITE);
++	btrfs_bio_end_io_t end_io;
++	const unsigned int src_size = src->bi_iter.bi_size;
++	const int nr_pages = round_up(src_size, PAGE_SIZE) >> PAGE_SHIFT;
++	unsigned int cur = 0;
++	int ret;
++
++	if (is_write)
++		end_io = dio_end_write_copied_bio;
++	else
++		end_io = dio_end_read_copied_bio;
++
++	/*
++	 * We can not trust the direct IO bio, the content can be modified at any time
++	 * during the submission/writeback.
++	 * Thus we have to allocate a new bio with pages allocated by us, so that noone
++	 * can change the content.
++	 */
++	new_bio = bio_alloc_bioset(NULL, nr_pages, src->bi_opf, GFP_NOFS, &btrfs_dio_bioset);
++	new_bbio = btrfs_bio(new_bio);
++	btrfs_bio_init(new_bbio, inode_to_fs_info(iter->inode), end_io, src);
++	dip = container_of(new_bbio, struct btrfs_dio_private, bbio);
++	new_bbio->inode = BTRFS_I(iter->inode);
++	new_bbio->file_offset = file_offset;
++	dip->file_offset = file_offset;
++	dip->bytes = src_size;
++	while (cur < src_size) {
++		struct page *page = alloc_page(GFP_NOFS);
++		unsigned int size = min(src_size - cur, PAGE_SIZE);
++
++		if (!page) {
++			ret = -ENOMEM;
++			goto error;
++		}
++		ret = bio_add_page(&new_bbio->bio, page, size, 0);
++		ASSERT(ret == size);
++		cur += size;
++	}
++	ASSERT(new_bbio->bio.bi_iter.bi_size == src_size);
++	new_bbio->bio.bi_iter.bi_sector = src->bi_iter.bi_sector;
+ 
+ 	dip->file_offset = file_offset;
+-	dip->bytes = bio->bi_iter.bi_size;
++	dip->bytes = src_size;
+ 
+-	dio_data->submitted += bio->bi_iter.bi_size;
++	dio_data->submitted += src_size;
++
++	if (is_write)
++		bio_copy_data(&new_bbio->bio, src);
+ 
+ 	/*
+ 	 * Check if we are doing a partial write.  If we are, we need to split
+@@ -731,20 +790,22 @@ static void btrfs_dio_submit_io(const struct iomap_iter *iter, struct bio *bio,
+ 	 * remaining pages is blocked on the outstanding ordered extent.
+ 	 */
+ 	if (iter->flags & IOMAP_WRITE) {
+-		int ret;
+-
+-		ret = btrfs_extract_ordered_extent(bbio, dio_data->ordered);
++		ret = btrfs_extract_ordered_extent(new_bbio, dio_data->ordered);
+ 		if (ret) {
+ 			btrfs_finish_ordered_extent(dio_data->ordered, NULL,
+ 						    file_offset, dip->bytes,
+ 						    !ret);
+-			bio->bi_status = errno_to_blk_status(ret);
+-			iomap_dio_bio_end_io(bio);
+-			return;
++			goto error;
+ 		}
+ 	}
+ 
+-	btrfs_submit_bbio(bbio, 0);
++	btrfs_submit_bbio(new_bbio, 0);
++	return;
++error:
++	src->bi_status = errno_to_blk_status(ret);
++	bio_free_pages(&new_bbio->bio);
++	bio_put(&new_bbio->bio);
++	iomap_dio_bio_end_io(src);
+ }
+ 
+ static const struct iomap_ops btrfs_dio_iomap_ops = {
+@@ -754,7 +815,6 @@ static const struct iomap_ops btrfs_dio_iomap_ops = {
+ 
+ static const struct iomap_dio_ops btrfs_dio_ops = {
+ 	.submit_io		= btrfs_dio_submit_io,
+-	.bio_set		= &btrfs_dio_bioset,
+ };
+ 
+ static ssize_t btrfs_dio_read(struct kiocb *iocb, struct iov_iter *iter,
+-- 
+2.51.0
 
 
