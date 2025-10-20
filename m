@@ -1,150 +1,167 @@
-Return-Path: <linux-btrfs+bounces-18070-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18071-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBEC9BF23C0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 17:55:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 626A2BF2466
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 18:01:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B48C400AB9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 15:52:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 009874052D2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 15:59:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF30279DCD;
-	Mon, 20 Oct 2025 15:52:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14FCA27C866;
+	Mon, 20 Oct 2025 15:59:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VGgHkTUd"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bnhi+g3V";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jmb7mHUP";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eDSbH0dq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="P5WSTFPT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AE026E6EB
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 15:52:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B53EC27A917
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 15:59:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760975530; cv=none; b=oaEnk++PFhfpttIcawL7QZ+g2mSzp6AUiFutD++3xIjRK3HpkpncuBc7pic+noUEREa9hiio3XLF6forGrX0iIpQtiDfxv0+Y92hcBidjQPA1zN0jl/phzBrLfNQMn5EnoAwuPC/jDWDdCrpj+bUnxfDNsG2HqyL3xuYdH5Dzbc=
+	t=1760975946; cv=none; b=AYRbwf0UOX9yMBGPDMtCeUGUGpMBLxNNykov2KiTiNLxSKNN5ViZZYHSPlhKRWhmYqAz81dSSiZYGt4+578y+yHB9xz6i7NWGJbkgRb5lksZbE9Av6LeYh+/TZ+8UI5bM5ouDAieDimneoCsbTiC5XCNuiMqClD5YZVXXeXGW6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760975530; c=relaxed/simple;
-	bh=nh7KmG91llH0eTJy2kGD6whEVv3qZowTvAaONNXWCzA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=mC4+SvxI8YfoQMb2t4a/8nFX4JiV8AmwrJv967ARkVkqCcSVRV0k2MYiGaeV6IiN+ZquSO/Fe8BgpE6kt70lWPTT0Uik6WlxSyDHy/7UsTx3qWp2btB3jkTSiFu1l9BJFoz8WFR+8FjRJhWPO1lhhyzsPFsuN8QDVzRDDpNjZ2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VGgHkTUd; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-33baf262850so4461658a91.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 08:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1760975527; x=1761580327; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YUxEjev6w4f1umuBxGfAcuaZR32QUUEbuSMBs3oceNE=;
-        b=VGgHkTUdhZTj02Irb7NYvhGZfItj+GtjPAlSpLrvrHnKkNp5OVt+BQ95EwoJZAfzHk
-         WB2D1/bKrttYimuybRv/06WxtsUw7I1J7SDDK+LDf8ME+notiictwNYi9EyFUk+M/cM9
-         KJ1LyTj3K5idElljaGq7GKrWUjQuiZVjTb6Yn/P7w94Vsqxct7svktYODSJSAkbau8I9
-         JuFHMUbNnOtBoyf+jtuDTo5/N7x3xD3znQUow0tEs+HY79iFFlj4Z8KdZIY2qL4EcrPE
-         SltyuRfv/PylxxFOT8lNfNnBT0GwzfTV0ll1VsMV4tZ69ZoEDZizWL9obNkRzJjRXpqw
-         2/0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760975527; x=1761580327;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YUxEjev6w4f1umuBxGfAcuaZR32QUUEbuSMBs3oceNE=;
-        b=YCYrnkWEZXe2oSPaE7P09QnOQeu9YxUT1pD8J7mF1sLsaNBAzx6gayHb3u/+m5HkB5
-         oDxRG2TEm74AJQYcsB0dny3vH8eB+xPrnD3acKtyPvOtPgDbUhJFibnqjPEtUSpJ9SpQ
-         H9NV1ZWvyiZ8NG/Dw6Z5geSEraveAcIN0IB38eJO4v1ZpQUwl5gU2eL0gVU8EVb6D6mO
-         /5L+93NYVz9P4hUUMff4N+8u8sej7urJvf6UqGrPHE8J9rqtmQqoLdKY4RGc+j4V7lQQ
-         9mCybmengk3N7xC9Upq3xQDAXt5823hSAM0FuhblEkVfGd5hFL0ZnStgOx6Vs8K21HTd
-         QDNA==
-X-Forwarded-Encrypted: i=1; AJvYcCVbCALP+clfbb/J/ofECMWYDTHaM58RB55MbIbpvEfL6ylkMMj4SXt4CDsOhOrBsR4egzyC/cQ5PtN0GQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxsSNEy+5/0T4NyGAvg8bzMUFTRZgg2Bb/MQ5kIVcJsKFVuQ3Gj
-	Gx9QgYBPNlHe/LcUU+3oJ5DhWsBLo5+VkPJF8ZV9HPRmftSy8QkLrvGrWicpQK31lgu5+Co0JCN
-	XSKE8aA==
-X-Google-Smtp-Source: AGHT+IHcZobfkAMYLqgP+952/xufHk4lZqraqyIEs0BsZFGgLzowAsqRVArAQbVQNZgQWXn7bmNPNT9qaaI=
-X-Received: from pjbds19.prod.google.com ([2002:a17:90b:8d3:b0:33b:51fe:1a84])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:4d85:b0:330:4a1d:223c
- with SMTP id 98e67ed59e1d1-33bcf87f421mr15625676a91.15.1760975526813; Mon, 20
- Oct 2025 08:52:06 -0700 (PDT)
-Date: Mon, 20 Oct 2025 08:52:05 -0700
-In-Reply-To: <176055105546.1527431.3611256810380818215.b4-ty@google.com>
+	s=arc-20240116; t=1760975946; c=relaxed/simple;
+	bh=oPxzTs6WsuKHqebg42NTifrc63HsEvL1hy6GgDh6TXE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DWjZmKf988dMyId26vQtrWJlWnGh8VeiVylOEIrTxX2T/zkZGm6TTWLMSz2oiv4aqeKbdemPn0A4bH/7Xexdt0AfwFNpcBj5tKaNHPvFMWyHg2eS19lPwOxg2b0arqJENQpyDW4wBQyR9Am1yzLWKivtkX0opLNSOnECLj9ANFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bnhi+g3V; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jmb7mHUP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eDSbH0dq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=P5WSTFPT; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B09F8211AD;
+	Mon, 20 Oct 2025 15:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1760975938; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A+T13MT5+DVqI4FOljyY2wyHe35kwNpItnKtnAfrs7U=;
+	b=bnhi+g3V4guyjrFM7W2wvNQYgft8AKwfnrmdAJfYt+OshztZCGnA1OLjpJEGZIFD2RyIeB
+	0xCUTtvLxJmDGaz2Hjk5AUzrIJZ2m42QncakyNgpWMG5GRQloTyBkPAyCYSdl47ukrkEAh
+	Pxm1sV4k/jmAPJwphJBbggz9CK0Lt8g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1760975938;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A+T13MT5+DVqI4FOljyY2wyHe35kwNpItnKtnAfrs7U=;
+	b=jmb7mHUPVa8eqJyOkhrTMAJqcVl0YdILYwlGdaxHrB9Bg+CkElEHgd7V5CWs/1fw2LgFxM
+	7MiFG2FTf5cyVNAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1760975934; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A+T13MT5+DVqI4FOljyY2wyHe35kwNpItnKtnAfrs7U=;
+	b=eDSbH0dqSfRA6WHKd9eLOdNQcxqexCI4JCFeyuSRhL4zpE3t9/I286H+RaDKonEHzKtgkm
+	s5JBwkXqBlXOmjwrbCT9ixRSjikaAiX5mfxrkXJwfZY38sixPiNF2z25ST6srKiIHUFz4Y
+	vqVvzvIQ0MkIc6GcPvVoNyvIm7A+OLk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1760975934;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A+T13MT5+DVqI4FOljyY2wyHe35kwNpItnKtnAfrs7U=;
+	b=P5WSTFPTevE66kkbFzbp2BlR5n8P+P85VjF6E9ukLw6GquJTeMbJVLmhe4KZGa+kJD0dNh
+	hn8X7c3dF213TYCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A1EB413AAC;
+	Mon, 20 Oct 2025 15:58:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id V4+DJz5c9mhJeAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 20 Oct 2025 15:58:54 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 536C2A088E; Mon, 20 Oct 2025 17:58:54 +0200 (CEST)
+Date: Mon, 20 Oct 2025 17:58:54 +0200
+From: Jan Kara <jack@suse.cz>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>, 
+	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, djwong@kernel.org, 
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org, 
+	linux-mm@kvack.org, martin.petersen@oracle.com, jack@suse.com
+Subject: Re: O_DIRECT vs BLK_FEAT_STABLE_WRITES, was Re: [PATCH] btrfs: never
+ trust the bio from direct IO
+Message-ID: <xc2orfhavfqaxrmxtsbf4kepglfujjodvhfzhzfawwaxlyrhlb@gammchkzoh2m>
+References: <1ee861df6fbd8bf45ab42154f429a31819294352.1760951886.git.wqu@suse.com>
+ <aPYIS5rDfXhNNDHP@infradead.org>
+ <56o3re2wspflt32t6mrfg66dec4hneuixheroax2lmo2ilcgay@zehhm5yaupav>
+ <aPYgm3ey4eiFB4_o@infradead.org>
+ <mciqzktudhier5d2wvjmh4odwqdszvbtcixbthiuuwrufrw3cj@5s2ffnffu4gc>
+ <aPZOO3dFv61blHBz@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250827175247.83322-2-shivankg@amd.com> <176055105546.1527431.3611256810380818215.b4-ty@google.com>
-Message-ID: <aPZapWWFGyqjA2e3@google.com>
-Subject: Re: [PATCH kvm-next V11 0/7] Add NUMA mempolicy support for KVM guest-memfd
-From: Sean Christopherson <seanjc@google.com>
-To: willy@infradead.org, akpm@linux-foundation.org, david@redhat.com, 
-	pbonzini@redhat.com, shuah@kernel.org, vbabka@suse.cz, 
-	Shivank Garg <shivankg@amd.com>
-Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com, 
-	xiang@kernel.org, chao@kernel.org, jaegeuk@kernel.org, clm@fb.com, 
-	josef@toxicpanda.com, kent.overstreet@linux.dev, zbestahu@gmail.com, 
-	jefflexu@linux.alibaba.com, dhavale@google.com, lihongbo22@huawei.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org, 
-	surenb@google.com, mhocko@suse.com, ziy@nvidia.com, matthew.brost@intel.com, 
-	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com, 
-	gourry@gourry.net, ying.huang@linux.alibaba.com, apopple@nvidia.com, 
-	tabba@google.com, ackerleytng@google.com, paul@paul-moore.com, 
-	jmorris@namei.org, serge@hallyn.com, pvorel@suse.cz, bfoster@redhat.com, 
-	vannapurve@google.com, chao.gao@intel.com, bharata@amd.com, nikunj@amd.com, 
-	michael.day@amd.com, shdhiman@amd.com, yan.y.zhao@intel.com, 
-	Neeraj.Upadhyay@amd.com, thomas.lendacky@amd.com, michael.roth@amd.com, 
-	aik@amd.com, kalyazin@amazon.com, peterx@redhat.com, jack@suse.cz, 
-	hch@infradead.org, cgzones@googlemail.com, ira.weiny@intel.com, 
-	rientjes@google.com, roypat@amazon.co.uk, chao.p.peng@intel.com, 
-	amit@infradead.org, ddutile@redhat.com, dan.j.williams@intel.com, 
-	ashish.kalra@amd.com, gshan@redhat.com, jgowans@amazon.com, 
-	pankaj.gupta@amd.com, papaluri@amd.com, yuzhao@google.com, 
-	suzuki.poulose@arm.com, quic_eberman@quicinc.com, 
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-coco@lists.linux.dev, Jason Gunthorpe <jgg@ziepe.ca>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aPZOO3dFv61blHBz@casper.infradead.org>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	URIBL_BLOCKED(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
 
-On Wed, Oct 15, 2025, Sean Christopherson wrote:
-> On Wed, 27 Aug 2025 17:52:41 +0000, Shivank Garg wrote:
-> > This series introduces NUMA-aware memory placement support for KVM guests
-> > with guest_memfd memory backends. It builds upon Fuad Tabba's work (V17)
-> > that enabled host-mapping for guest_memfd memory [1] and can be applied
-> > directly applied on KVM tree [2] (branch kvm-next, base commit: a6ad5413,
-> > Merge branch 'guest-memfd-mmap' into HEAD)
-> > 
-> > == Background ==
-> > KVM's guest-memfd memory backend currently lacks support for NUMA policy
-> > enforcement, causing guest memory allocations to be distributed across host
-> > nodes  according to kernel's default behavior, irrespective of any policy
-> > specified by the VMM. This limitation arises because conventional userspace
-> > NUMA control mechanisms like mbind(2) don't work since the memory isn't
-> > directly mapped to userspace when allocations occur.
-> > Fuad's work [1] provides the necessary mmap capability, and this series
-> > leverages it to enable mbind(2).
-> > 
-> > [...]
+On Mon 20-10-25 15:59:07, Matthew Wilcox wrote:
+> On Mon, Oct 20, 2025 at 03:59:33PM +0200, Jan Kara wrote:
+> > The idea was to bounce buffer the page we are writing back in case we spot
+> > a long-term pin we cannot just wait for - hence bouncing should be rare.
+> > But in this more general setting it is challenging to not bounce buffer for
+> > every IO (in which case you'd be basically at performance of RWF_DONTCACHE
+> > IO or perhaps worse so why bother?). Essentially if you hand out the real
+> > page underlying the buffer for the IO, all other attemps to do IO to that
+> > page have to block - bouncing is no longer an option because even with
+> > bouncing the second IO we could still corrupt data of the first IO once we
+> > copy to the final buffer. And if we'd block waiting for the first IO to
+> > complete, userspace could construct deadlock cycles - like racing IO to
+> > pages A, B with IO to pages B, A. So far I'm not sure about a sane way out
+> > of this...
 > 
-> Applied the non-KVM change to kvm-x86 gmem.  We're still tweaking and iterating
-> on the KVM changes, but I fully expect them to land in 6.19.
-> 
-> Holler if you object to taking these through the kvm tree.
-> 
-> [1/7] mm/filemap: Add NUMA mempolicy support to filemap_alloc_folio()
->       https://github.com/kvm-x86/linux/commit/601aa29f762f
-> [2/7] mm/filemap: Extend __filemap_get_folio() to support NUMA memory policies
->       https://github.com/kvm-x86/linux/commit/2bb25703e5bd
-> [3/7] mm/mempolicy: Export memory policy symbols
->       https://github.com/kvm-x86/linux/commit/e1b4cf7d6be3
+> There isn't one.  We might have DMA-mapped this page earlier, and so a
+> device could write to it at any time.  Even if we remove PTE write
+> permissions ...
 
-FYI, I rebased these onto 6.18-rc2 to avoid a silly merge.  New hashes:
+True but writes through DMA to the page are guarded by holding a page pin
+these days so we could in theory block getting another page pin or mapping
+the page writeably until the pin is released... if we can figure out a
+convincing story for dealing with long-term pins from RDMA and dealing with
+possible deadlocks created by this.
 
-[1/3] mm/filemap: Add NUMA mempolicy support to filemap_alloc_folio()
-      https://github.com/kvm-x86/linux/commit/7f3779a3ac3e
-[2/3] mm/filemap: Extend __filemap_get_folio() to support NUMA memory policies
-      https://github.com/kvm-x86/linux/commit/16a542e22339
-[3/3] mm/mempolicy: Export memory policy symbols
-      https://github.com/kvm-x86/linux/commit/f634f10809ec
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
