@@ -1,106 +1,59 @@
-Return-Path: <linux-btrfs+bounces-18054-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18055-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2996BF1B00
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 16:00:29 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B6A9BF1CD2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 16:19:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B42F43A6E6A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 13:59:56 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8B91734D7F2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 14:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C2C320380;
-	Mon, 20 Oct 2025 13:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E96F320A1D;
+	Mon, 20 Oct 2025 14:19:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FQdkhRh4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sZ3Z4url";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DqBWEElY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Am1N2qnK"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="blncU3ba"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F985313264
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 13:59:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5D21C84DE
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 14:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760968785; cv=none; b=MvR6+r403FiumjzN9a5Xe9jHwVSBw0MAEdEJ/fEcLEr7tBOrjocvtFq8336gVHBh6Wifil9YM1gCfwnvAci2jYUzmxTr98gAmluicNQGkzHFdnPM/ayxYz3HkQEfP5nfGAOhrVpFNkKfVZycJH8whzyBgcrhqT+7eLqKNVA35Vo=
+	t=1760969982; cv=none; b=czN5or/JSPvfW4BEIjSXBCHh/Jfu/H+i1LSJB7blJY1vLG0drVbYhVW3MlRaHPn3kiVWTsi6ssSTnh6P+QDLufaciSujVhlll09hypus6t86dLWSlIGFzLe81T21u0E0kD9OLonPqjJFBEsZmquk/PCINr2+DwKF7464WdUqOPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760968785; c=relaxed/simple;
-	bh=OyUd+BMhitFA3vyxMLfkuyDolf+rPnLgDAdSj+/uIBQ=;
+	s=arc-20240116; t=1760969982; c=relaxed/simple;
+	bh=Tvn8flydXO5BgEpGdLDX2qbchMU5IfUEiIzCWWU7ttE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kcn7ZOE33gheT0WwV2tRJwD8dYSsGoHiOvo5ccRuFUORqh5DxMI3r8CAJ03SPt0H8GOsbc1FTTyaCEsJ0EgdDMVPcjrjWpblBVpbR0a62u8WbyrCsEeF/IL9sYE9md+LsPZ95Y24+ga6Ia7VNY2KBrzy1GQguBBNn0Tkemjq0go=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FQdkhRh4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sZ3Z4url; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DqBWEElY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Am1N2qnK; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B2F121F449;
-	Mon, 20 Oct 2025 13:59:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760968777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HmmBnH8SaXShmttGIVhlHzTTaFEYyrDdxlkZ0RuRQR4=;
-	b=FQdkhRh4QvgfVUJRt2B9T8dfeTOjFnSMfLpX94GdcEEMr2Pvt4TJ2y8HCZ3xLW8SlCo5J3
-	GGdSnOJ8RLS6oHbR6MdLHCPpsaBu4jBwOsGYxAxPXuFKrlfrBlR7cHbQnzEBdwoOO8fP3C
-	MIKh99K0Z5lRvSG/LKlGiGvsWjP4KCc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760968777;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HmmBnH8SaXShmttGIVhlHzTTaFEYyrDdxlkZ0RuRQR4=;
-	b=sZ3Z4urltaAQy3/wzDpnB159pgqUwC5GVizivDfXDuXJF4CrEWLGwfWmPEU+7fWalaRII7
-	tFE6dVZIFACeKBAw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DqBWEElY;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Am1N2qnK
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1760968773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HmmBnH8SaXShmttGIVhlHzTTaFEYyrDdxlkZ0RuRQR4=;
-	b=DqBWEElYvnvcjpRcxmCvkOjO4x2GNuawgcCE2nygLkKUwtzwl4GjMR5xfBzodD4ZccKM/r
-	Tcd99bLtPNSiqM40emp5lHeKUNa7n1CIdDfxC3kmzInHh3JndZqXzvkX78ZQ6r5RZM29wS
-	ImNUJl9ugPXh8VvCf4xxqAnwkzKbifY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1760968773;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HmmBnH8SaXShmttGIVhlHzTTaFEYyrDdxlkZ0RuRQR4=;
-	b=Am1N2qnK4Exp2HlXaXMXTh7+exhfTCHEBPIXXqW07kb92eLCghLQc30zY0Uof7h5rSk7dQ
-	/7as+glrXJ2xScAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9B42913AAC;
-	Mon, 20 Oct 2025 13:59:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id G7viJUVA9mhjBwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 20 Oct 2025 13:59:33 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 16CBAA088E; Mon, 20 Oct 2025 15:59:33 +0200 (CEST)
-Date: Mon, 20 Oct 2025 15:59:33 +0200
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Jan Kara <jack@suse.cz>, Qu Wenruo <wqu@suse.com>, 
-	linux-btrfs@vger.kernel.org, djwong@kernel.org, linux-xfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org, linux-mm@kvack.org, 
-	martin.petersen@oracle.com, jack@suse.com
-Subject: Re: O_DIRECT vs BLK_FEAT_STABLE_WRITES, was Re: [PATCH] btrfs: never
- trust the bio from direct IO
-Message-ID: <mciqzktudhier5d2wvjmh4odwqdszvbtcixbthiuuwrufrw3cj@5s2ffnffu4gc>
-References: <1ee861df6fbd8bf45ab42154f429a31819294352.1760951886.git.wqu@suse.com>
- <aPYIS5rDfXhNNDHP@infradead.org>
- <56o3re2wspflt32t6mrfg66dec4hneuixheroax2lmo2ilcgay@zehhm5yaupav>
- <aPYgm3ey4eiFB4_o@infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jos9LbuuEtshN6KsG3HaCsN99d/q6UgsRdybjY7JlNzHuoStjyZKN8Yezt8sxy7YjsUhrvNiYIvgwY17zhFMeVknmjWrjL3on7pdKCynvApnD9zBmGz9c6NY+D6iD34XTngxAi3P4gUqVhQsWdXAYHlf7j3LsU5lhBP7GLgmY28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=blncU3ba; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Gw4SLJmNdolfcYBH9+G+Nz4u4XlSmcvZM+Ji9A5Gwys=; b=blncU3baZo3ThCRmxd89C75Til
+	0YZ94B0STMX9+wRLC1s+4Bdkpoa7pTG//wknbmr+rTyacUIR79TMNu64PUCw5Tz8zWneu3+k9uiV0
+	RjgnYFqWHLfLccbLWvRc1n5PTWpst1b+uE1qZ3lbaIoZNCPFC5l9KyMV3wtZT9ZzFRywABG6vnTXT
+	cusgnX7s7EsZg3Xe4Xmnk3y3JDAluVZdvZD71IcLDQD+tCwSBP/AQRutlFKRIaT77E/kdyYp+iJzB
+	+J2cW+93/rD5F5EqiBIg4kPmnJDnMEzvqeJuyTHmDKHR6tD4pbVFGSGr70Fy+nYqHuqwzusShFmTc
+	swUb0yKQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vAqjb-0000000DwYU-3va8;
+	Mon, 20 Oct 2025 14:19:39 +0000
+Date: Mon, 20 Oct 2025 07:19:39 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-btrfs@vger.kernel.org
+Subject: Re: btrfs/071 is unhappy on 6.18-rc2
+Message-ID: <aPZE--T-nj0dKB0A@infradead.org>
+References: <aPXjTw8WN5Jlv2ho@infradead.org>
+ <9093d4c3-b707-4ef1-be48-36578ac1d2f3@gmx.com>
+ <aPYFECiBrh36AwtB@infradead.org>
+ <cc22f604-25f2-407c-bbb8-887e18630819@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -109,77 +62,116 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aPYgm3ey4eiFB4_o@infradead.org>
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: B2F121F449
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -4.01
+In-Reply-To: <cc22f604-25f2-407c-bbb8-887e18630819@gmx.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Mon 20-10-25 04:44:27, Christoph Hellwig wrote:
-> On Mon, Oct 20, 2025 at 01:16:39PM +0200, Jan Kara wrote:
-> > Hmm, this is an interesting twist in the problems with pinned pages - so
-> > far I was thinking about problems where pinned page cache page gets
-> > modified (e.g. through DIO or RDMA) and this causes checksum failures if
-> > it races with writeback. If I understand you right, now you are concerned
-> > about a situation where some page is used as a buffer for direct IO write
-> > / RDMA and it gets modified while the DMA is running which causes checksum
-> > mismatch?
-> 
-> Really all of the above.  Even worse this can also happen for reads,
-> e.g. when the parity or checksum is calculated in the user buffer.
+KASAN output:
 
-OK.
+[   75.341543] ==================================================================
+[   75.341824] BUG: KASAN: slab-use-after-free in btrfs_kill_all_delayed_nodes+0x46f/0x4c0
+[   75.342082] Read of size 8 at addr ffff88812389f380 by task btrfs-cleaner/4493
+[   75.342310] 
+[   75.342369] CPU: 1 UID: 0 PID: 4493 Comm: btrfs-cleaner Tainted: G                 N  6.18.0-rc2+ #4115 PREEMPT(f 
+[   75.342372] Tainted: [N]=TEST
+[   75.342373] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   75.342374] Call Trace:
+[   75.342375]  <TASK>
+[   75.342376]  dump_stack_lvl+0x4b/0x70
+[   75.342379]  print_report+0x174/0x4e7
+[   75.342382]  ? __virt_addr_valid+0x1bb/0x2f0
+[   75.342384]  ? btrfs_kill_all_delayed_nodes+0x46f/0x4c0
+[   75.342385]  kasan_report+0xd2/0x100
+[   75.342387]  ? btrfs_kill_all_delayed_nodes+0x46f/0x4c0
+[   75.342388]  btrfs_kill_all_delayed_nodes+0x46f/0x4c0
+[   75.342389]  ? _raw_spin_unlock+0x13/0x30
+[   75.342392]  ? __pfx_btrfs_kill_all_delayed_nodes+0x10/0x10
+[   75.342393]  ? do_raw_spin_lock+0x128/0x260
+[   75.342395]  ? __pfx_do_raw_spin_lock+0x10/0x10
+[   75.342397]  ? list_lru_add_obj+0xfb/0x1a0
+[   75.342399]  ? do_raw_spin_lock+0x128/0x260
+[   75.342401]  ? __pfx_do_raw_spin_lock+0x10/0x10
+[   75.342402]  btrfs_clean_one_deleted_snapshot+0x143/0x370
+[   75.342405]  cleaner_kthread+0x1ee/0x300
+[   75.342406]  ? __pfx_cleaner_kthread+0x10/0x10
+[   75.342407]  kthread+0x37f/0x6f0
+[   75.342409]  ? __pfx_kthread+0x10/0x10
+[   75.342411]  ? __pfx_kthread+0x10/0x10
+[   75.342412]  ? __pfx_kthread+0x10/0x10
+[   75.342413]  ret_from_fork+0x17d/0x240
+[   75.342415]  ? __pfx_kthread+0x10/0x10
+[   75.342416]  ret_from_fork_asm+0x1a/0x30
+[   75.342419]  </TASK>
+[   75.342419] 
+[   75.345517] Allocated by task 4527:
+[   75.345517]  kasan_save_stack+0x22/0x40
+[   75.345517]  kasan_save_track+0x14/0x30
+[   75.345517]  __kasan_slab_alloc+0x6e/0x70
+[   75.345517]  kmem_cache_alloc_noprof+0x14c/0x400
+[   75.345517]  btrfs_get_or_create_delayed_node+0x9e/0x9e0
+[   75.345517]  btrfs_insert_delayed_dir_index+0xe4/0x8a0
+[   75.345517]  btrfs_insert_dir_item+0x4c1/0x720
+[   75.345517]  btrfs_add_link+0x173/0xa30
+[   75.345517]  btrfs_create_new_inode+0x1551/0x2650
+[   75.345517]  btrfs_create_common+0x17b/0x200
+[   75.345517]  vfs_mknod+0x3a7/0x600
+[   75.345517]  do_mknodat+0x34e/0x520
+[   75.345517]  __x64_sys_mknodat+0xaa/0xe0
+[   75.345517]  do_syscall_64+0x50/0xfa0
+[   75.345517]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[   75.345517] 
+[   75.345517] Freed by task 4493:
+[   75.345517]  kasan_save_stack+0x22/0x40
+[   75.345517]  kasan_save_track+0x14/0x30
+[   75.345517]  __kasan_save_free_info+0x3b/0x70
+[   75.345517]  __kasan_slab_free+0x43/0x70
+[   75.345517]  kmem_cache_free+0x172/0x610
+[   75.345517]  btrfs_kill_all_delayed_nodes+0x2db/0x4c0
+[   75.345517]  btrfs_clean_one_deleted_snapshot+0x143/0x370
+[   75.345517]  cleaner_kthread+0x1ee/0x300
+[   75.345517]  kthread+0x37f/0x6f0
+[   75.345517]  ret_from_fork+0x17d/0x240
+[   75.345517]  ret_from_fork_asm+0x1a/0x30
+[   75.345517] 
+[   75.345517] The buggy address belongs to the object at ffff88812389f370
+[   75.345517]  which belongs to the cache btrfs_delayed_node of size 440
+[   75.345517] The buggy address is located 16 bytes inside of
+[   75.345517]  freed 440-byte region [ffff88812389f370, ffff88812389f528)
+[   75.345517] 
+[   75.345517] The buggy address belongs to the physical page:
+[   75.345517] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x12389e
+[   75.345517] head: order:1 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+[   75.345517] flags: 0x4000000000000040(head|zone=2)
+[   75.345517] page_type: f5(slab)
+[   75.345517] raw: 4000000000000040 ffff88810bcaadc0 ffffea0004487a10 ffff88810c6e6d80
+[   75.345517] raw: 0000000000000000 00000000000e000e 00000000f5000000 0000000000000000
+[   75.345517] head: 4000000000000040 ffff88810bcaadc0 ffffea0004487a10 ffff88810c6e6d80
+[   75.345517] head: 0000000000000000 00000000000e000e 00000000f5000000 0000000000000000
+[   75.345517] head: 4000000000000001 ffffea00048e2781 00000000ffffffff 00000000ffffffff
+[   75.345517] head: ffffffffffffffff 0000000000000000 00000000ffffffff 0000000000000002
+[   75.345517] page dumped because: kasan: bad access detected
+[   75.345517] 
+[   75.345517] Memory state around the buggy address:
+[   75.345517]  ffff88812389f280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[   75.345517]  ffff88812389f300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fa fb
+[   75.345517] >ffff88812389f380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[   75.345517]                    ^
+[   75.345517]  ffff88812389f400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[   75.345517]  ffff88812389f480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[   75.345517] ==================================================================
+[   75.501545] Disabling lock debugging due to kernel taint
 
-> > Writeprotecting the buffer before the DIO starts isn't that hard
-> > to do (although it has a non-trivial cost) but we don't have a mechanism to
-> > make sure the page cannot be writeably mapped while it is pinned (and
-> > avoiding that without introducing deadlocks would be *fun*).
-> 
-> Well, this goes back to the old idea of maybe bounce buffering in that
-> case?
 
-The idea was to bounce buffer the page we are writing back in case we spot
-a long-term pin we cannot just wait for - hence bouncing should be rare.
-But in this more general setting it is challenging to not bounce buffer for
-every IO (in which case you'd be basically at performance of RWF_DONTCACHE
-IO or perhaps worse so why bother?). Essentially if you hand out the real
-page underlying the buffer for the IO, all other attemps to do IO to that
-page have to block - bouncing is no longer an option because even with
-bouncing the second IO we could still corrupt data of the first IO once we
-copy to the final buffer. And if we'd block waiting for the first IO to
-complete, userspace could construct deadlock cycles - like racing IO to
-pages A, B with IO to pages B, A. So far I'm not sure about a sane way out
-of this...
+gdb) l *(btrfs_kill_all_delayed_nodes+0x46f)
+0xffffffff82f2422f is in btrfs_kill_all_delayed_nodes (fs/btrfs/delayed-inode.h:219).
+214		ref_tracker_dir_exit(&node->ref_dir.dir);
+215	}
+216	
+217	static inline void btrfs_delayed_node_ref_tracker_dir_print(struct btrfs_delayed_node *node)
+218	{
+219		if (!btrfs_test_opt(node->root->fs_info, REF_TRACKER))
+220			return;
+221	
+222		ref_tracker_dir_print(&node->ref_dir.dir,
+223				      BTRFS_DELAYED_NODE_REF_TRACKER_DISPLAY_LIMIT);
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
