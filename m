@@ -1,157 +1,163 @@
-Return-Path: <linux-btrfs+bounces-18131-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18132-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F183BF8E18
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 23:03:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8006DBF9088
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 00:19:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B9F84353B3E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 21:03:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6122D404745
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 22:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D70283FE6;
-	Tue, 21 Oct 2025 21:03:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69572299950;
+	Tue, 21 Oct 2025 22:19:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gn7gFGp3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="adEW525+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA40C27FB37;
-	Tue, 21 Oct 2025 21:03:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3929C284686
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 22:19:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761080629; cv=none; b=PMHUdxFvCAmIKJyW7BFNCxSaNi76SCJmygi8ii+UC4aZv+xIUU2wsmmnBbW9oUIvcpXKzh8MM62zGFjhgxZXBtxy13TQ2CIagGhYDznjQ1bkagC7nIo7oKQpvI6xyqQ2CT9A5NthaNnTkCZZq42wfZUZrgYLRI5nFspxYuaQyb8=
+	t=1761085185; cv=none; b=FKS3JLP09jlqjLoXaLBNbBSAgGWsU+RJcPDA9pV49JUi3aaAsgLnoh44nckDUoJZ9lt4+Fp44jDhHedSCh0yNsy8AOL9oAfdPvoRgOONEs5cXA9lck7jfOsFqX3cyoSTzY2rT19ACRQXIAlvx9juR4y6WcttkWEwrxlUtnddo7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761080629; c=relaxed/simple;
-	bh=A2PKvR7e+pZtDb3gMM04hEAucxjpFWItO+4Ume5Cakg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LEdW0Vygt0JwWpJZp75TYO0RBND+27yYYiTEP8LiUuMGVGjqP7u6fqTv52p6HSD5gheX2diOcVGe7LTAuz5x3JwmOYFJzS7/XwKlCY8jLdK1vY3WRO+2UzWEHDB3Oku6unMh1ARJ8fWoF1+EsvwWyFqtECRlf+tUwnFQje3tITs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gn7gFGp3; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1761080627; x=1792616627;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=A2PKvR7e+pZtDb3gMM04hEAucxjpFWItO+4Ume5Cakg=;
-  b=gn7gFGp3n0NJAcQ2ZTcLS3HXsxw/t97vtDKWwCu9uqPwgnhj75oOkk0H
-   qLTTyPRx1oLYshLCI6FT9Uyc8IPPasKuq+5rPyHu4fNiU2ppRn5PgMJFp
-   Cad41kQL5UzFKKeOPiOlJhlsJCogHenTxyhUQGWcSsYG488QmvAWuhVPM
-   apNDcVCOFIEKW6Fk6FbHdSkKMRyBnPGh+ve4fVlDWgSkRC+MpoPPssFwe
-   NtL+UQ7g44pXxfb7Uulu5HmKbG1aF3mfTg9m2RNDFVWh/wAP7y1/RSUfg
-   RoQMUJIaRc8YejT61POwJAEpNwZXV2/F0HkkTr+6t6JawRAsAo4fkgpLH
-   g==;
-X-CSE-ConnectionGUID: VCltmATLQq+RCd7MJpmwnQ==
-X-CSE-MsgGUID: EW/X3NLXRRixBcb1XBbSoA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="73508368"
-X-IronPort-AV: E=Sophos;i="6.19,245,1754982000"; 
-   d="scan'208";a="73508368"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2025 14:03:47 -0700
-X-CSE-ConnectionGUID: OxV8X38sRoaJoqtsfamSQA==
-X-CSE-MsgGUID: f0n4Ux9YSIi9G4S8Go7FJA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,245,1754982000"; 
-   d="scan'208";a="184093667"
-Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
-  by fmviesa008.fm.intel.com with ESMTP; 21 Oct 2025 14:03:45 -0700
-Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1vBJWA-000BlZ-2e;
-	Tue, 21 Oct 2025 21:03:42 +0000
-Date: Wed, 22 Oct 2025 05:03:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Keith Busch <kbusch@meta.com>, dsterba@suse.com, cem@kernel.org,
-	linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org, hch@lst.de
-Cc: oe-kbuild-all@lists.linux.dev, Keith Busch <kbusch@kernel.org>,
-	Chris Mason <chris.mason@fusionio.com>
-Subject: Re: [PATCH 2/2] btrfs: handle bio split errors for append
-Message-ID: <202510220421.KBMIIY8p-lkp@intel.com>
-References: <20251020144356.693288-2-kbusch@meta.com>
+	s=arc-20240116; t=1761085185; c=relaxed/simple;
+	bh=EywJ5qqkPxJBUnGZD1/jJhpC/CUF/knssh6TGbX/GxA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=bem9bY78yofKyAPglthuvkSQ6SdjJH+hb/TSYngBKbroqJyIfRy30vEC1l/jgMR6j9iQr7Y6LVXR1EgLMapNjTwndXLs+1NjoYLwb5ktkdpoZRq+E6ElpSZCtbPrxwC85CuELJw7ZfOOgTDgWoXzCRYtpo9DzIhFo1+kmsI2TJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=adEW525+; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2697899a202so2686825ad.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 15:19:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761085183; x=1761689983; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=HiaYjApV6yJV4K3CJ9hX1bYA1zLwFiSLOOxYX+cDHk4=;
+        b=adEW525+TDKmARpllIRXVZ6+2nW42JnhbPo/5ZKMwGXVlnIH0ug+EcHiVcf+DKecwa
+         r42M9ctI3AnUatk5Tjhkyd+jsbAuruOcu5azc0k7jb+ojMP5HKkQImJ4/uk1X0VE6HsD
+         33cpavcQ4fPt+ez9r24pKnw9tARYuiphftJmi9BhsqywGAfMxm4UZ5hYpW5fc2qGfydu
+         WIleBSnnNiVSva5QDTASVnHwjjuBhnw0tgNQa2jZZwshimnD4yWyhVkVWM6wzcsvs828
+         aKtf1kHSoAr3gUuxfEHL7smYixe2LZM8FynsjIeYKJPjyKogiimUh1WeVRx70sm9HerY
+         XICg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761085183; x=1761689983;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HiaYjApV6yJV4K3CJ9hX1bYA1zLwFiSLOOxYX+cDHk4=;
+        b=K1I8QePnS9MeQCo4y3YQfB91PfS67fs09OgfJyIGY+Pg4vRG5L2U67LhtDLAwITxY+
+         orrpYw34xl9qzY+YcArbf+51K5Jkk5n/51Sr24JmWCp68Ni7Uziod/gMKJRKiV8BV0QA
+         mhn9fHCgPa2OtyspCsIPyC1IL5DefazfoM8MWScX0+u60EL8WUCppW9Sej0bzsIxe9hd
+         2I+Z/TshTx/IzVycg6eoCGtDugc+qm5Z3j4njhruxJZ+6pn9HuomIA2SrTe+B8Rc1BPb
+         kuojfLO3RIAqm0qJ6RhZjo8y4zDfFsQ+SxzO4womymCGbPOyzZUnxOZxckybqL/2gNNf
+         Wcug==
+X-Forwarded-Encrypted: i=1; AJvYcCXXJcAzXUHkLMPHFppCLHJOyqTUeMjpnvwaBmj9CTJ/hKzAVA7lZPg56AxyXIn5wx1YUfHh3idKsnKI8Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyjdpx1djoVuqhmalp53wxedC/fYby6O5htI97JiGqf5HKpfLDV
+	innlC/vNX+HQ7qhtZU/vSeeDZSLnwFkA+tuqTOuJCfW3l50Ea+XbwbX5
+X-Gm-Gg: ASbGncuD1fzrY64waCJjjd+UO3HKijvcaGWrUVntAjO0xltsmVJ+O5KaXz1zLVHtYC2
+	l00Nmv7qjgx4+2ueVcTCDGWZ6pS2abMik8ck7QOTMj7GmOxyciGJH04Wtp+CFwYzTQ7OjYc048b
+	MZU0RI4PD+pP6iDeJcLAWfRoBGyrHvUXOXh0A/GR27DUTJa3NC8k7J9Aii/foxrm2eSImMvfvd9
+	SQmP2TWNc3ig0uE084QhQVSqNFCybjipv6/fnwl/REE+/42C2BL9VKOqS13h/qZ2YTeIs7Jyj5k
+	eyeR/we6hfRMs1sef+y6F9Ov7YYq5cNCMD4ND8x5cWN6enDKol3tReWFaaBLEcwZFIe05JnfRL1
+	bY5w5Ab5bV8XeVeuw9HUx7MM6FPEGiXwqkKIxf6SD5hVCsLAY83+7zqCfuDPfmMLrRl6zDYhxUW
+	OOofjCyTDbT2+XfpSq1TGeOmN3HDCDi/75HebvVuGBuXpnDaHImEUsjXstILnFNA==
+X-Google-Smtp-Source: AGHT+IGtducAKJgYfbsuTFXx/cKFzxloLsqka1bC9rgeo8zlTH4KLvWXnvPO1cFYKzKGBpbP8YuZiA==
+X-Received: by 2002:a17:902:dac5:b0:282:2c52:508e with SMTP id d9443c01a7336-292ffbd00d3mr14873525ad.8.1761085183308;
+        Tue, 21 Oct 2025 15:19:43 -0700 (PDT)
+Received: from [192.168.188.28] (210-5-38-62.ip4.superloop.au. [210.5.38.62])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29246ebcce8sm120061085ad.18.2025.10.21.15.19.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Oct 2025 15:19:42 -0700 (PDT)
+Message-ID: <2bef36fe-95a3-40d5-ba8e-c5e2ec27b16f@gmail.com>
+Date: Wed, 22 Oct 2025 09:19:38 +1100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251020144356.693288-2-kbusch@meta.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: btrfs RAID5 or btrfs on md RAID5?
+To: kreijack@inwind.it, Mark Harmstone <mark@harmstone.com>,
+ Christoph Anton Mitterer <calestyo@scientia.org>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20250922070956.GA2624931@tik.uni-stuttgart.de>
+ <d3a5e463-d00e-4428-ad7b-35f87f9a6550@gmx.com>
+ <3a3df034-4461-4c35-b170-a5084586d2b3@gmail.com>
+ <d7e67eee-ac1a-4677-8bed-25c358c66c81@harmstone.com>
+ <a8a16938b9112d7aa68b6df3de30d35c116fb17a.camel@scientia.org>
+ <76ac6739-806e-4e6b-acb3-ebfba74cb8f3@harmstone.com>
+ <2a0a802c-0879-4ae4-9eb1-31b1a02efff4@libero.it>
+Content-Language: en-US, en-AU
+From: DanglingPointer <danglingpointerexception@gmail.com>
+In-Reply-To: <2a0a802c-0879-4ae4-9eb1-31b1a02efff4@libero.it>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Keith,
+Just going back to the original question I posted...
 
-kernel test robot noticed the following build warnings:
+Will the BTRFS project decide to fix once and for all RAID56 to fix the 
+write-hole even if the result is a slower-latent result?
 
-[auto build test WARNING on xfs-linux/for-next]
-[also build test WARNING on kdave/for-next linus/master v6.18-rc2 next-20251021]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+At least that would be a fully functional production ready offering as 
+version 1.0?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Keith-Busch/btrfs-handle-bio-split-errors-for-append/20251020-224536
-base:   https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git for-next
-patch link:    https://lore.kernel.org/r/20251020144356.693288-2-kbusch%40meta.com
-patch subject: [PATCH 2/2] btrfs: handle bio split errors for append
-config: i386-buildonly-randconfig-005-20251021 (https://download.01.org/0day-ci/archive/20251022/202510220421.KBMIIY8p-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251022/202510220421.KBMIIY8p-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202510220421.KBMIIY8p-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/build_bug.h:5,
-                    from arch/x86/include/asm/current.h:5,
-                    from include/linux/sched.h:12,
-                    from include/linux/mempool.h:8,
-                    from include/linux/bio.h:8,
-                    from fs/btrfs/bio.c:7:
-   fs/btrfs/bio.c: In function 'btrfs_submit_chunk':
->> include/linux/err.h:28:49: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-      28 | #define IS_ERR_VALUE(x) unlikely((unsigned long)(void *)(x) >= (unsigned long)-MAX_ERRNO)
-         |                                                 ^
-   include/linux/compiler.h:32:55: note: in definition of macro '__branch_check__'
-      32 |                         ______r = __builtin_expect(!!(x), expect);      \
-         |                                                       ^
-   include/linux/err.h:28:25: note: in expansion of macro 'unlikely'
-      28 | #define IS_ERR_VALUE(x) unlikely((unsigned long)(void *)(x) >= (unsigned long)-MAX_ERRNO)
-         |                         ^~~~~~~~
-   fs/btrfs/bio.c:692:21: note: in expansion of macro 'IS_ERR_VALUE'
-     692 |                 if (IS_ERR_VALUE(map_length)) {
-         |                     ^~~~~~~~~~~~
->> include/linux/err.h:28:49: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-      28 | #define IS_ERR_VALUE(x) unlikely((unsigned long)(void *)(x) >= (unsigned long)-MAX_ERRNO)
-         |                                                 ^
-   include/linux/compiler.h:34:54: note: in definition of macro '__branch_check__'
-      34 |                                              expect, is_constant);      \
-         |                                                      ^~~~~~~~~~~
-   include/linux/err.h:28:25: note: in expansion of macro 'unlikely'
-      28 | #define IS_ERR_VALUE(x) unlikely((unsigned long)(void *)(x) >= (unsigned long)-MAX_ERRNO)
-         |                         ^~~~~~~~
-   fs/btrfs/bio.c:692:21: note: in expansion of macro 'IS_ERR_VALUE'
-     692 |                 if (IS_ERR_VALUE(map_length)) {
-         |                     ^~~~~~~~~~~~
+Future optimisations and improvements on that version 1.0 will obviously 
+happen for the life of BTRFS and linux which will improve the 
+performance from the impact of adding whatever is needed to fix the 
+write-hole.  Just like everything else!  At least everyone can say it is 
+done, although slower now!  But feature complete!   Making it faster 
+will then incrementally happen as it evolves like everything else.
 
 
-vim +28 include/linux/err.h
 
-ebba5f9fcb88230 Randy Dunlap   2006-09-27  21  
-4d744ce9d5d7cf0 James Seo      2023-05-09  22  /**
-4d744ce9d5d7cf0 James Seo      2023-05-09  23   * IS_ERR_VALUE - Detect an error pointer.
-4d744ce9d5d7cf0 James Seo      2023-05-09  24   * @x: The pointer to check.
-4d744ce9d5d7cf0 James Seo      2023-05-09  25   *
-4d744ce9d5d7cf0 James Seo      2023-05-09  26   * Like IS_ERR(), but does not generate a compiler warning if result is unused.
-4d744ce9d5d7cf0 James Seo      2023-05-09  27   */
-aa00edc1287a693 Linus Torvalds 2016-05-27 @28  #define IS_ERR_VALUE(x) unlikely((unsigned long)(void *)(x) >= (unsigned long)-MAX_ERRNO)
-07ab67c8d0d7c10 Linus Torvalds 2005-05-19  29  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+On 22/10/25 06:32, Goffredo Baroncelli wrote:
+> On 21/10/2025 18.45, Mark Harmstone wrote:
+>> On 21/10/2025 4.53 pm, Christoph Anton Mitterer wrote:
+>>> On Tue, 2025-10-21 at 16:46 +0100, Mark Harmstone wrote:
+>>>> The brutal truth is probably that RAID5/6 is an idea whose time has
+>>>> passed.
+>>>> Storage is cheap enough that it doesn't warrant the added latency,
+>>>> CPU time,
+>>>> and complexity.
+>>>
+>>> That doesn't seem to be generally the case. We have e.g. large storage
+>>> servers with 24x 22 TB HDDs.
+>>>
+>>> RAID6 is plenty enough redundancy for these, loosing 2 HDDs.
+>>> RAID1 would loose half.
+>>>
+>>>
+>>> Cheers,
+>>> Chris.
+>> So for every sector you want to write, you actually need to write three
+>> and read 21. That seems a very quick way to wear out all those disks.
+>> And then one starts operating more slowly, which slows down every 
+>> write...
+>
+> Yes, it is true that the classic raid5/6 doesn't scale well when the 
+> number
+> of disks grows.
+>
+> However I still think that there is room to a different approach. Like 
+> putting
+> the redundancy inside the extent to avoid an RMW cycles. This and the
+> fact that in BTRFS the extents are immutable, would avoid the slowness
+> that you mention.
+>
+>> I'd still use RAID1 in this case.
+>>
+> This is faster, but also doesn't scale well (== expensive) when the 
+> storage
+>  size grows.
+>
+> BR
+> G.Baroncelli
+>
 
