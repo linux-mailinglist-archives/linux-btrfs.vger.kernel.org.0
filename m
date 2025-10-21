@@ -1,216 +1,149 @@
-Return-Path: <linux-btrfs+bounces-18084-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18085-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A56BBF404B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 01:26:04 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B734BF4377
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 03:02:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C43994F3157
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Oct 2025 23:26:00 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CC51B4F36FA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 01:02:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895D7221F39;
-	Mon, 20 Oct 2025 23:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FF32264C4;
+	Tue, 21 Oct 2025 01:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZXiDqjsb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CQMqGCm/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yx1-f68.google.com (mail-yx1-f68.google.com [74.125.224.68])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42FB5303C8D
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 23:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 765071DF75C
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 01:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761002755; cv=none; b=ubhT/84+A2T2KkAzVo4crH0INQ+J5zDzw7Xm2yzbeEUBjP9JEsIne/sX7DI70kaIj+68brratAljkWbNGBAc5/jmFgvpwRp1Ao47Uu99qcQkKNx2KiTBm1NhQBfroK2QqIQ/VKMUBNa1V5tl97BI7DzzTeVS+6gjlTiS0N2Gz80=
+	t=1761008535; cv=none; b=c3Sk+RLhvgLFs6FAKInqnH/kKl5rCnrASOm5qqoruRyMg9OMnU9YtnsL9NbHpfhjVz3gO4BZeSqCoL578rmwyK36N1uHiyapbh08csNMmBccvEYUTGpei1ktzk8iJg3yvLg/60FR/W5+wJe7TU3E0d1E87EgmdS4wwVuQ8rO53A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761002755; c=relaxed/simple;
-	bh=ZKlsj+ZzewsZaMbK2u2yENlNnuijAhUR2SL+DgM9mFA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IlAAIdWXMunbY7ykrzf0GhIYuxtbLAqhoO/x5stn0BGljOqHiAQ5YsOPvgwNvmtroO1CxqU9VdnfsPgXhK/IwSBfe8HKctc34MmOe01p/K5xRQPxU3OK8XW120eZ6mH7CojFB8j0B466hSZkEbLnlFOqAUa1ecct6s8naZOq2sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZXiDqjsb; arc=none smtp.client-ip=74.125.224.68
+	s=arc-20240116; t=1761008535; c=relaxed/simple;
+	bh=3Lpyqal9yYfLKFuSpOsF5HPNU6lI2iSP3D7lKo+xLWE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=BcxM0wVzpN0XSVP/mzFmcL0l03fowutxZKO2CE8oT2ck54c4ZD8DGHFjFqaR3t+VSUOqlXcU0xmol03TDW9FdUW1+AgDem1LwcThbRz1faQ/kJfvD+m6Je5Phk6XEZIE1H7N7Qo4HwW//2MLL3vlym39OOqPtQWXcS8IUEZofOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CQMqGCm/; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f68.google.com with SMTP id 956f58d0204a3-63e1a326253so3852567d50.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 16:25:52 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-782a77b5ec7so4562893b3a.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 18:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761002752; x=1761607552; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KEcOaElqsgD/5ZPpgTMLonQf4kYhRnqURB+bR+Jr16Q=;
-        b=ZXiDqjsb27Y7oPof6nNBdbTyLLvzV6JEz3110Q5j1NvoWACluXfwKmGX6pkCvXiAXc
-         XNODK8Q4BOlRR7skqDb+5FcRA7TsMX1l0EZjoBzbvwmxDywjUDSIXLyjbPPBVvCP7NDz
-         7kHeqama8broMb0+2ttWvLDEE9i2GjECwLgn3EKjHMcWrSX8HLDkEASewCb30IIb20du
-         g8VdjpY2hnIIiwy1PB9uVOu9PmKmX6D8YE7Zi12d3WwY5CRjRVNDFX45JFMDzutVzicm
-         SaWzRHoWAbDIQxOCoosIBIjo888QsSQB4bfPf0Yl6Z7zRWA0p/ZfLAwtASPnQJa858cT
-         Pzwg==
+        d=gmail.com; s=20230601; t=1761008534; x=1761613334; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=OsCFeoBv/CAN+NRKgeOpiVvFNnHYHdfxEO2vyJphOXQ=;
+        b=CQMqGCm/GuoY0GhRXgAla92vLsS2B5HM1XEeVRJajFTtD8rb/azeHRdeOV9p+FQfTI
+         yitWtH5+1cG2/Xw0vbZq03OHp9yqEFWjL+BM0DfM9SOQCKzIhFdwUY656uHtp8LNgAqk
+         H3RB7Qd22aOlMRWTOBvW8jrLpCgZoJ8v23XWvrJnUOxyPHwznpvlucj6GoAT6r9HcifU
+         U7Izqqkyo2DGBEmUS7NaI+mXnhFqEJ7Ox3ssSA4KdK/Ig33Mbql0dviYaCGHtIha4yIP
+         43GN8CP1MHa8X497voQ5RvR/aGfJ8lk1BXM7luneBCN4QrTdXaIA+EhDZ+XS3c5jQzA0
+         W7iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761002752; x=1761607552;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KEcOaElqsgD/5ZPpgTMLonQf4kYhRnqURB+bR+Jr16Q=;
-        b=QTch0lsuw69j1k1225h2nyc7gMPD92ehJuu4ko1QsXoEGhwpvC4HmtexbhOW6jZKKQ
-         2192VhPUE712I11vuUMgh5SBmy+NdfBmI0V0Lhp3OO1leFF+JOkXcJbPXwd6V9Qn1WaU
-         4/McOqea6RqVVPE7pOdTT5GIFPyVhRwx8kr/179bx2KDCD7ahfBNqbHOnpt6lT1FJ6FN
-         O3WyWByjLfPd0IUqOhHYWTvQn2swmRk/g33fPRjR75zgNMdpv7CM8a3rQvd+54HiRt2y
-         mOjH5TaIMcH27aAX5SgU40ddP7sd8WNDYhSxZHlLcmGY6CnxhL7egGLvMImzdaa8caRO
-         k7Gw==
-X-Forwarded-Encrypted: i=1; AJvYcCUn7L4mpzDyFJPAEXBWSeATleWqk+fw5pmMdG6Gphh47ImaBWMk83v77DIrQlh+I+mLXb+l+lEVzbnlZg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw0RbgQY1uYLQJRtaflVRsRnMQ2914HQ8rGEfP1TSm2ukgqrqUd
-	FOtxGFEukl5dzDfYuhP/LcNnc0m5mv5BJKu5E2EDNm0iFhUDpHxyXjAX
-X-Gm-Gg: ASbGnctZo7vRI8mxdtI/rPIN494NlEGXqI6Y0Yu96Jet8r8eX1KlKYNperZc+f1eE92
-	rvjBU1mzkwhFwuMvrCguTulRlVYAay0fE1vhSokRBE2WGprzMhdiy8b9IiGI2FejOlVyvpOL+C/
-	I/NDPWer8KuGkHcMVY3zBri2bvnovR9/QqHMDCXpdSgkoj//qex37fiXZUEWvzTjqhVycw5H77G
-	7ijX7Jz94rGcZFklncB3MjRbO73h1zy9PBK8VGcNXOBSk5HjgO0W9YkH7PrTNGbUraMTzqPpLeV
-	clJIuJPRHuhJ5SCPAb3s+HzuHjqCiNnMxDwhpJi4rI4lut8DGMrKD+pCQ+eyMjUGM6kv5q+WBtp
-	jJBbc1WF8GTa1vgihiIDvifjxabdTU99zgJxghupxbmlsehvqbqv2YW0KrE26NzCZNAhpe6Zrca
-	GBuGAACfP90y9+ErQ/WB78OfFGwSTa
-X-Google-Smtp-Source: AGHT+IFMBgQZJDk+23X71dXsX/HJXbIon63aL1w286vQiquJ0X//0wZXEweKqHWwYN22iOwchwAf/A==
-X-Received: by 2002:a05:690e:2506:10b0:636:149a:f579 with SMTP id 956f58d0204a3-63e1610c69amr11036899d50.23.1761002751726;
-        Mon, 20 Oct 2025 16:25:51 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:4d::])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-784673b9a12sm25007537b3.17.2025.10.20.16.25.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Oct 2025 16:25:51 -0700 (PDT)
-From: Leo Martins <loemra.dev@gmail.com>
-To: Leo Martins <loemra.dev@gmail.com>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Qu Wenruo <quwenruo.btrfs@gmx.com>,
-	linux-btrfs@vger.kernel.org
-Subject: Re: btrfs/071 is unhappy on 6.18-rc2
-Date: Mon, 20 Oct 2025 16:25:29 -0700
-Message-ID: <20251020232548.3519220-1-loemra.dev@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251020165512.3843091-1-loemra.dev@gmail.com>
-References: 
+        d=1e100.net; s=20230601; t=1761008534; x=1761613334;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OsCFeoBv/CAN+NRKgeOpiVvFNnHYHdfxEO2vyJphOXQ=;
+        b=cBiy513ZAGBK8UASNpE2tkDyNl6eZ7xwUW0mXOxIedMki/p1dQvHBLxpuV+9QcoMaz
+         JvBUsbcKmIgI9ycHrExkUL2pGAu/XMjSmiYAceVfx/kGAuS5vMh18XkyCL3U5WyNnsKT
+         dItoMRN3fe9dIFaIAIBrzBYza/Q34j1E0dya4Ld0huUCBaX5jsNRQIyXhNQV2NQFc1Tx
+         8ciojijxXxoC464xyq08svPY2f4wygvXRYl0ta2YmZghtD6Zg6r8ua9V2FOsoh5QwSVV
+         6+Rhdi1FEwK87IqESZ1smXUln8CIdPNkVgB2P29plJdi3C0v/3h4S71Jj4spFm6eAW/m
+         tP3A==
+X-Forwarded-Encrypted: i=1; AJvYcCWuLb6Nm1hvFld9COpEdhqet2d2MZEaBIICT8J7kmDaHd0KlhsMSpGroa9O42lyqojd7OJjF4PS+AWtXw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzcmFDatREJRoAf8aaklt2TOuX2Gx20Kv/xftxzrcmUj3d54AhC
+	hl6NViz+0FGN54HLtYVPqh/KTUCFqoFapjW1q638ptjY1jt66/lzD7gMcjmcXA==
+X-Gm-Gg: ASbGnctCJb2HJG3beF9yOTAWUdhYmvN72jFVKb8iFMSmVm8Weoy8HKZU6brFG/n50+p
+	Oa+8gQYP891O8OpwfYpHq2ceAVcEWoHJCS6kXaxyqUQEa0Fc/oVKi3IyLAUuRmDC0EA4jHhphbz
+	zxJJ6YDo1w9AePP9GVhqMWdn0fgaDrGtgT3c6ioLBq1K9byQfESFtd/BSy3p4GSVQo5KY7dA381
+	dDzWXDNE9kzRrfBl08DBbgH6SJUwQfUDAZdFEqbtiJdKrs0cnsIR488jycIEaC0Cx1UVJLFy5Bg
+	0WZPKIRYxoZI3uSEg1jRzZ17XTv5sENRgXHnin5AQCqNOYwTrDu1XXy3Eq5G2P071Z1274YK/gA
+	lEJo0LAIHwJtXtcscLezflUJjUl/TWheD8gdfdPfYJTIcQ35CMr7F5oJe4zKfopfKuzMXUbuFZM
+	u5I3KL3mk2m3K1XL+OKumizrQqJMajsTKj34AnhonuEAbfKdoAm0agJE0w3t5UT3JK/WYWzi6K
+X-Google-Smtp-Source: AGHT+IFNCGVYDxKpjLhOCTnCvtLYeF/YfSqoipdGKu2vUo0vPckAlElqBftV1bFLDMCBbkMtWp0Piw==
+X-Received: by 2002:a05:6a21:3290:b0:32d:a6d1:22b2 with SMTP id adf61e73a8af0-334a85047a0mr21087854637.10.1761008533572;
+        Mon, 20 Oct 2025 18:02:13 -0700 (PDT)
+Received: from [192.168.188.28] (210-5-38-62.ip4.superloop.au. [210.5.38.62])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6a76b5d0b4sm8778223a12.29.2025.10.20.18.02.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Oct 2025 18:02:13 -0700 (PDT)
+Message-ID: <3a3df034-4461-4c35-b170-a5084586d2b3@gmail.com>
+Date: Tue, 21 Oct 2025 12:02:09 +1100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: btrfs RAID5 or btrfs on md RAID5?
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ Ulli Horlacher <framstag@rus.uni-stuttgart.de>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20250922070956.GA2624931@tik.uni-stuttgart.de>
+ <d3a5e463-d00e-4428-ad7b-35f87f9a6550@gmx.com>
+Content-Language: en-US
+From: DanglingPointer <danglingpointerexception@gmail.com>
+In-Reply-To: <d3a5e463-d00e-4428-ad7b-35f87f9a6550@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On Mon, 20 Oct 2025 09:55:10 -0700 Leo Martins <loemra.dev@gmail.com> wrote:
+Are there any plans to work on either of the proposed solutions 
+mentioned here to once and for all fix RAID56?
 
-> On Mon, 20 Oct 2025 07:19:39 -0700 Christoph Hellwig <hch@infradead.org> wrote:
-> 
-> > KASAN output:
-> > 
-> > [   75.341543] ==================================================================
-> > [   75.341824] BUG: KASAN: slab-use-after-free in btrfs_kill_all_delayed_nodes+0x46f/0x4c0
-> > [   75.342082] Read of size 8 at addr ffff88812389f380 by task btrfs-cleaner/4493
-> > [   75.342310] 
-> > [   75.342369] CPU: 1 UID: 0 PID: 4493 Comm: btrfs-cleaner Tainted: G                 N  6.18.0-rc2+ #4115 PREEMPT(f 
-> > [   75.342372] Tainted: [N]=TEST
-> > [   75.342373] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-> > [   75.342374] Call Trace:
-> > [   75.342375]  <TASK>
-> > [   75.342376]  dump_stack_lvl+0x4b/0x70
-> > [   75.342379]  print_report+0x174/0x4e7
-> > [   75.342382]  ? __virt_addr_valid+0x1bb/0x2f0
-> > [   75.342384]  ? btrfs_kill_all_delayed_nodes+0x46f/0x4c0
-> > [   75.342385]  kasan_report+0xd2/0x100
-> > [   75.342387]  ? btrfs_kill_all_delayed_nodes+0x46f/0x4c0
-> > [   75.342388]  btrfs_kill_all_delayed_nodes+0x46f/0x4c0
-> > [   75.342389]  ? _raw_spin_unlock+0x13/0x30
-> > [   75.342392]  ? __pfx_btrfs_kill_all_delayed_nodes+0x10/0x10
-> > [   75.342393]  ? do_raw_spin_lock+0x128/0x260
-> > [   75.342395]  ? __pfx_do_raw_spin_lock+0x10/0x10
-> > [   75.342397]  ? list_lru_add_obj+0xfb/0x1a0
-> > [   75.342399]  ? do_raw_spin_lock+0x128/0x260
-> > [   75.342401]  ? __pfx_do_raw_spin_lock+0x10/0x10
-> > [   75.342402]  btrfs_clean_one_deleted_snapshot+0x143/0x370
-> > [   75.342405]  cleaner_kthread+0x1ee/0x300
-> > [   75.342406]  ? __pfx_cleaner_kthread+0x10/0x10
-> > [   75.342407]  kthread+0x37f/0x6f0
-> > [   75.342409]  ? __pfx_kthread+0x10/0x10
-> > [   75.342411]  ? __pfx_kthread+0x10/0x10
-> > [   75.342412]  ? __pfx_kthread+0x10/0x10
-> > [   75.342413]  ret_from_fork+0x17d/0x240
-> > [   75.342415]  ? __pfx_kthread+0x10/0x10
-> > [   75.342416]  ret_from_fork_asm+0x1a/0x30
-> > [   75.342419]  </TASK>
-> > [   75.342419] 
-> > [   75.345517] Allocated by task 4527:
-> > [   75.345517]  kasan_save_stack+0x22/0x40
-> > [   75.345517]  kasan_save_track+0x14/0x30
-> > [   75.345517]  __kasan_slab_alloc+0x6e/0x70
-> > [   75.345517]  kmem_cache_alloc_noprof+0x14c/0x400
-> > [   75.345517]  btrfs_get_or_create_delayed_node+0x9e/0x9e0
-> > [   75.345517]  btrfs_insert_delayed_dir_index+0xe4/0x8a0
-> > [   75.345517]  btrfs_insert_dir_item+0x4c1/0x720
-> > [   75.345517]  btrfs_add_link+0x173/0xa30
-> > [   75.345517]  btrfs_create_new_inode+0x1551/0x2650
-> > [   75.345517]  btrfs_create_common+0x17b/0x200
-> > [   75.345517]  vfs_mknod+0x3a7/0x600
-> > [   75.345517]  do_mknodat+0x34e/0x520
-> > [   75.345517]  __x64_sys_mknodat+0xaa/0xe0
-> > [   75.345517]  do_syscall_64+0x50/0xfa0
-> > [   75.345517]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> > [   75.345517] 
-> > [   75.345517] Freed by task 4493:
-> > [   75.345517]  kasan_save_stack+0x22/0x40
-> > [   75.345517]  kasan_save_track+0x14/0x30
-> > [   75.345517]  __kasan_save_free_info+0x3b/0x70
-> > [   75.345517]  __kasan_slab_free+0x43/0x70
-> > [   75.345517]  kmem_cache_free+0x172/0x610
-> > [   75.345517]  btrfs_kill_all_delayed_nodes+0x2db/0x4c0
-> > [   75.345517]  btrfs_clean_one_deleted_snapshot+0x143/0x370
-> > [   75.345517]  cleaner_kthread+0x1ee/0x300
-> > [   75.345517]  kthread+0x37f/0x6f0
-> > [   75.345517]  ret_from_fork+0x17d/0x240
-> > [   75.345517]  ret_from_fork_asm+0x1a/0x30
-> > [   75.345517] 
-> > [   75.345517] The buggy address belongs to the object at ffff88812389f370
-> > [   75.345517]  which belongs to the cache btrfs_delayed_node of size 440
-> > [   75.345517] The buggy address is located 16 bytes inside of
-> > [   75.345517]  freed 440-byte region [ffff88812389f370, ffff88812389f528)
-> > [   75.345517] 
-> > [   75.345517] The buggy address belongs to the physical page:
-> > [   75.345517] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x12389e
-> > [   75.345517] head: order:1 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-> > [   75.345517] flags: 0x4000000000000040(head|zone=2)
-> > [   75.345517] page_type: f5(slab)
-> > [   75.345517] raw: 4000000000000040 ffff88810bcaadc0 ffffea0004487a10 ffff88810c6e6d80
-> > [   75.345517] raw: 0000000000000000 00000000000e000e 00000000f5000000 0000000000000000
-> > [   75.345517] head: 4000000000000040 ffff88810bcaadc0 ffffea0004487a10 ffff88810c6e6d80
-> > [   75.345517] head: 0000000000000000 00000000000e000e 00000000f5000000 0000000000000000
-> > [   75.345517] head: 4000000000000001 ffffea00048e2781 00000000ffffffff 00000000ffffffff
-> > [   75.345517] head: ffffffffffffffff 0000000000000000 00000000ffffffff 0000000000000002
-> > [   75.345517] page dumped because: kasan: bad access detected
-> > [   75.345517] 
-> > [   75.345517] Memory state around the buggy address:
-> > [   75.345517]  ffff88812389f280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > [   75.345517]  ffff88812389f300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fa fb
-> > [   75.345517] >ffff88812389f380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > [   75.345517]                    ^
-> > [   75.345517]  ffff88812389f400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > [   75.345517]  ffff88812389f480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > [   75.345517] ==================================================================
-> > [   75.501545] Disabling lock debugging due to kernel taint
-> > 
-> > 
-> > gdb) l *(btrfs_kill_all_delayed_nodes+0x46f)
-> > 0xffffffff82f2422f is in btrfs_kill_all_delayed_nodes (fs/btrfs/delayed-inode.h:219).
-> > 214		ref_tracker_dir_exit(&node->ref_dir.dir);
-> > 215	}
-> > 216	
-> > 217	static inline void btrfs_delayed_node_ref_tracker_dir_print(struct btrfs_delayed_node *node)
-> > 218	{
-> > 219		if (!btrfs_test_opt(node->root->fs_info, REF_TRACKER))
-> > 220			return;
-> > 221	
-> > 222		ref_tracker_dir_print(&node->ref_dir.dir,
-> > 223				      BTRFS_DELAYED_NODE_REF_TRACKER_DISPLAY_LIMIT);
-> 
-> This is a use after free bug with my ref_tracker patch, it's trying to print delayed_node ref_tracker
-> stats after the delayed node has been freed. Will send a fix in a second.
-
-I wasn't able to reproduce the crash by running btrfs/071. I sent out a fix,
-if you have time it would be great if you could check it against your reproducer.
-
-Link: https://lore.kernel.org/linux-btrfs/e5d6dd45f720f2543ca4ea7ee3e66454ef55f639.1761001854.git.loemra.dev@gmail.com/T/#u
+On 22/9/25 17:41, Qu Wenruo wrote:
+>
+>
+> 在 2025/9/22 16:39, Ulli Horlacher 写道:
+>>
+>> I have 4 x 4 TB SAS SSD (from a deactivated Netapp system) which I 
+>> want to
+>> recycle in my workstation PC (Ubuntu 24 with kernel 6.14).
+>>
+>> Is btrfs RAID5 ready for production usage or shall I use non-RAID 
+>> btrfs on
+>> top of a md RAID5?
+>
+> Neither is perfect.
+>
+> Btrfs RAID56 has no journal to protect against write hole. But has the 
+> ability to properly detect and rebuild corrupted data using data 
+> checksum.
+>
+> Meanwhile MD raid56 has journal to protect against wirte hole, but has 
+> no checksum to know which data is correct or not.
+>
+>>
+>> What is the current status?
+>>
+>
+> No extra work is done for btrfs RAID56 write hole for a while.
+>
+> The experimental raid-stripe-tree has some potential to address the 
+> problem, but that feature doesn't support RAID56 yet.
+>
+>
+> Another solution is something like RAIDZ, which requires block size > 
+> page size support, and extra RAID56 changes (mostly much smaller 
+> stripe length, 4K instead of the current 64K).
+>
+> The bs > ps support is not even merged, and submitted patchset lacks 
+> certain features (RAID56 ironically).
+> And no formal RAIDZ support is even considered.
+>
+> So you either run RAID5 for data only and ran full scrub after every 
+> unexpected power loss (slow, and no further writes until scrub is 
+> done, which is further maintanance burden).
+> Or just don't use RAID5 at all.
+>
+> Thanks,
+> Qu
+>
 
