@@ -1,163 +1,152 @@
-Return-Path: <linux-btrfs+bounces-18132-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18133-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8006DBF9088
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 00:19:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A52C3BF9121
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 00:40:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6122D404745
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 22:19:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68C1A3BEF65
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 22:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69572299950;
-	Tue, 21 Oct 2025 22:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730542BE03D;
+	Tue, 21 Oct 2025 22:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="adEW525+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LQgmgnzf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-yw1-f195.google.com (mail-yw1-f195.google.com [209.85.128.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3929C284686
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 22:19:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CFC92877FC
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 22:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761085185; cv=none; b=FKS3JLP09jlqjLoXaLBNbBSAgGWsU+RJcPDA9pV49JUi3aaAsgLnoh44nckDUoJZ9lt4+Fp44jDhHedSCh0yNsy8AOL9oAfdPvoRgOONEs5cXA9lck7jfOsFqX3cyoSTzY2rT19ACRQXIAlvx9juR4y6WcttkWEwrxlUtnddo7s=
+	t=1761086410; cv=none; b=sMYIYCs8vhDTTiycrXSfe9mVW+nD8EgvpRwt6HVWPCVwFczseMa4YvX3QblN59sNZXriA30TTfXaphtX/Nhu2Fr7wckRmvtyRdCwgwGtrmoTcK4zcYTXdJxcxd9oH+fMNjX/pff1ODzlaXYxYXRGZvMev/pnRIWyZMQigbXEDIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761085185; c=relaxed/simple;
-	bh=EywJ5qqkPxJBUnGZD1/jJhpC/CUF/knssh6TGbX/GxA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=bem9bY78yofKyAPglthuvkSQ6SdjJH+hb/TSYngBKbroqJyIfRy30vEC1l/jgMR6j9iQr7Y6LVXR1EgLMapNjTwndXLs+1NjoYLwb5ktkdpoZRq+E6ElpSZCtbPrxwC85CuELJw7ZfOOgTDgWoXzCRYtpo9DzIhFo1+kmsI2TJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=adEW525+; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1761086410; c=relaxed/simple;
+	bh=BQIRCKkRmMDTyKu4G+C+rXgOyvC7ZnozbOB4Mt5HFnM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=nVzFDlPalemrmpo/blhCHDHY4Z2CypKwa+f0jYXctSNNPwy6ycZ5ZQ0fHOBa+AG8oSo5PRg8nR/BdjZVxtyTG3JLvTgavFRkxTLhCDzkPasPwLtU0IcS48Gmv5Ab2F/VZ8ltKhy0hT+1Z/I1xrSEOUxZxLJqtElBMQpjaVu5VHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LQgmgnzf; arc=none smtp.client-ip=209.85.128.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2697899a202so2686825ad.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 15:19:43 -0700 (PDT)
+Received: by mail-yw1-f195.google.com with SMTP id 00721157ae682-7836853a0d6so7910697b3.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 15:40:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761085183; x=1761689983; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=HiaYjApV6yJV4K3CJ9hX1bYA1zLwFiSLOOxYX+cDHk4=;
-        b=adEW525+TDKmARpllIRXVZ6+2nW42JnhbPo/5ZKMwGXVlnIH0ug+EcHiVcf+DKecwa
-         r42M9ctI3AnUatk5Tjhkyd+jsbAuruOcu5azc0k7jb+ojMP5HKkQImJ4/uk1X0VE6HsD
-         33cpavcQ4fPt+ez9r24pKnw9tARYuiphftJmi9BhsqywGAfMxm4UZ5hYpW5fc2qGfydu
-         WIleBSnnNiVSva5QDTASVnHwjjuBhnw0tgNQa2jZZwshimnD4yWyhVkVWM6wzcsvs828
-         aKtf1kHSoAr3gUuxfEHL7smYixe2LZM8FynsjIeYKJPjyKogiimUh1WeVRx70sm9HerY
-         XICg==
+        d=gmail.com; s=20230601; t=1761086408; x=1761691208; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vyrBy3TR3Upr8cOvAAOrpla5/1r2k/BxHHXGuc/dI3M=;
+        b=LQgmgnzfEetU4gDVqlxzVomfDUNVxribeBr72I7k7xezN+VDeLGh1JEATPBMIzsYmk
+         dII7hqEi4i5LIyjj35HRs2EAG9lVInQTbtyJSBoL6eyonC0CydBVyIMen5ucsWorKX3U
+         ZGTlfE8Ah9+ZawaH5gDlRlgW5Y8tk8FSbxrmGIcZyQ9a+jd3xxmnVdz4pM9qQQkWmazN
+         QUo+/JBbMVmTIgqatSobx5vWV9aJOuzvY0lvspWK0ZoI0Op9+EHCtb8gTPppbfK3v665
+         QCTBymP/3fpQPDvBkhyoiBWemgk9vviI5cKTLB5/blOyJqAFPLuRV34tE2BAheMJtwjm
+         KgnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761085183; x=1761689983;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HiaYjApV6yJV4K3CJ9hX1bYA1zLwFiSLOOxYX+cDHk4=;
-        b=K1I8QePnS9MeQCo4y3YQfB91PfS67fs09OgfJyIGY+Pg4vRG5L2U67LhtDLAwITxY+
-         orrpYw34xl9qzY+YcArbf+51K5Jkk5n/51Sr24JmWCp68Ni7Uziod/gMKJRKiV8BV0QA
-         mhn9fHCgPa2OtyspCsIPyC1IL5DefazfoM8MWScX0+u60EL8WUCppW9Sej0bzsIxe9hd
-         2I+Z/TshTx/IzVycg6eoCGtDugc+qm5Z3j4njhruxJZ+6pn9HuomIA2SrTe+B8Rc1BPb
-         kuojfLO3RIAqm0qJ6RhZjo8y4zDfFsQ+SxzO4womymCGbPOyzZUnxOZxckybqL/2gNNf
-         Wcug==
-X-Forwarded-Encrypted: i=1; AJvYcCXXJcAzXUHkLMPHFppCLHJOyqTUeMjpnvwaBmj9CTJ/hKzAVA7lZPg56AxyXIn5wx1YUfHh3idKsnKI8Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyjdpx1djoVuqhmalp53wxedC/fYby6O5htI97JiGqf5HKpfLDV
-	innlC/vNX+HQ7qhtZU/vSeeDZSLnwFkA+tuqTOuJCfW3l50Ea+XbwbX5
-X-Gm-Gg: ASbGncuD1fzrY64waCJjjd+UO3HKijvcaGWrUVntAjO0xltsmVJ+O5KaXz1zLVHtYC2
-	l00Nmv7qjgx4+2ueVcTCDGWZ6pS2abMik8ck7QOTMj7GmOxyciGJH04Wtp+CFwYzTQ7OjYc048b
-	MZU0RI4PD+pP6iDeJcLAWfRoBGyrHvUXOXh0A/GR27DUTJa3NC8k7J9Aii/foxrm2eSImMvfvd9
-	SQmP2TWNc3ig0uE084QhQVSqNFCybjipv6/fnwl/REE+/42C2BL9VKOqS13h/qZ2YTeIs7Jyj5k
-	eyeR/we6hfRMs1sef+y6F9Ov7YYq5cNCMD4ND8x5cWN6enDKol3tReWFaaBLEcwZFIe05JnfRL1
-	bY5w5Ab5bV8XeVeuw9HUx7MM6FPEGiXwqkKIxf6SD5hVCsLAY83+7zqCfuDPfmMLrRl6zDYhxUW
-	OOofjCyTDbT2+XfpSq1TGeOmN3HDCDi/75HebvVuGBuXpnDaHImEUsjXstILnFNA==
-X-Google-Smtp-Source: AGHT+IGtducAKJgYfbsuTFXx/cKFzxloLsqka1bC9rgeo8zlTH4KLvWXnvPO1cFYKzKGBpbP8YuZiA==
-X-Received: by 2002:a17:902:dac5:b0:282:2c52:508e with SMTP id d9443c01a7336-292ffbd00d3mr14873525ad.8.1761085183308;
-        Tue, 21 Oct 2025 15:19:43 -0700 (PDT)
-Received: from [192.168.188.28] (210-5-38-62.ip4.superloop.au. [210.5.38.62])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29246ebcce8sm120061085ad.18.2025.10.21.15.19.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Oct 2025 15:19:42 -0700 (PDT)
-Message-ID: <2bef36fe-95a3-40d5-ba8e-c5e2ec27b16f@gmail.com>
-Date: Wed, 22 Oct 2025 09:19:38 +1100
+        d=1e100.net; s=20230601; t=1761086408; x=1761691208;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vyrBy3TR3Upr8cOvAAOrpla5/1r2k/BxHHXGuc/dI3M=;
+        b=KStnYG4RFBy1g1HTktMqAq2/HS+adUegD7rx0M+jn/yXMQPuQSODOlvGMry3h+SUrl
+         dLwlwHZwOPdJ9y14Iv2kRvoZuWDtwlYzYQedt5/LWStwqYqoyT3AwECZcl4Avcph/HVx
+         ScrofGgqv7xOKXJqk3EWnnyx5IRmE0xg9YHYq4Lzip+1ZnoPuM28tf3/3WJoj1b+MHFW
+         tdJ7KUi0KVQv4b2EAcOb6HyZ9vLN/OYZkXrV3J/a2/XuEY9+uxRHNZVCo9DEDvTdDVEV
+         ehw8NMnY4aF4BA/xmnOR7ITJ57rrHVqpaumo7nWE7bjCw4aZS/SZmeh+XLh6x33WjhS5
+         89Qw==
+X-Forwarded-Encrypted: i=1; AJvYcCVoqyN0dgx40MWaF4d97gl+8wOTWCDVznnBEzGDE4QHObOAmFdt9gQ6KWqGWRJV/qFz22qjAZsproVVbA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyC8Njo85iJxf29CMNWUUI6FkGgJbN4AUqRtVyWVDvtTncQrkd7
+	Zg57mRpaBE++oTk3xd0nZ3DO0TebMIvqQIHtHt9v375INs0vJD6y3jU2CQvuD4w9
+X-Gm-Gg: ASbGnctlqmv5IPKHF11SC4yw8GT/kLB3Jhww17/8Z3zeyS/yjTOdTehcYVCb2ykYVNB
+	C0dOzNHbYtS39On/z7NLhpyLeqtNAqpseDTUd/Kveq/U48SFr1z03JjRijX2Ln2jlLl3ssUL4Qu
+	iCYp+hBnkdwyUfw4BACcVWdF7lterjXsEGTRMJa+SIFNzesmEP9C4NbxQou7IrEOvvkxLnk60DD
+	h+07ZrquDInkUeXktK3zuRMlcLifNPtEu6oMeQwzVg1XKxB3YBmMw1WJu+fDydCwoony/G3Msxa
+	oL42P7Tw62Dj3E6d1q/zHyL67nLTaiu6xeiJxUB4+M2Ol0BPpqXyPYnef0WQfpbcNrHDUnyC4mN
+	Mb7Uivo3016NJHFXgfYxG8OGpQWUhu+MVIpVi7ILM5N2+Di5Nd597sNRrb73cVu0xInH1H+dV/3
+	o9rPi34PfHuf7cRwqZ
+X-Google-Smtp-Source: AGHT+IF51HK8eGsqC39pQGI6tuoHCzd7R2+z0aN0iZNr5/5fM6LJjkbaJ93pog4Y9/bA5FC1gyrT6A==
+X-Received: by 2002:a53:ccce:0:b0:63e:1e1b:d6fa with SMTP id 956f58d0204a3-63f2832659fmr869256d50.30.1761086408024;
+        Tue, 21 Oct 2025 15:40:08 -0700 (PDT)
+Received: from localhost ([2a03:2880:25ff:8::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-784674f2681sm32351537b3.47.2025.10.21.15.40.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Oct 2025 15:40:07 -0700 (PDT)
+From: Leo Martins <loemra.dev@gmail.com>
+To: "Chris Murphy" <lists@colorremedies.com>
+Cc: "Boris Burkov" <boris@bur.io>,
+	kernel-team@fb.com,
+	"Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: make periodic dynamic reclaim the default for data
+Date: Tue, 21 Oct 2025 15:39:56 -0700
+Message-ID: <20251021224005.1087028-1-loemra.dev@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <4c595af2-f06e-4957-9f08-67a78609901c@app.fastmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs RAID5 or btrfs on md RAID5?
-To: kreijack@inwind.it, Mark Harmstone <mark@harmstone.com>,
- Christoph Anton Mitterer <calestyo@scientia.org>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20250922070956.GA2624931@tik.uni-stuttgart.de>
- <d3a5e463-d00e-4428-ad7b-35f87f9a6550@gmx.com>
- <3a3df034-4461-4c35-b170-a5084586d2b3@gmail.com>
- <d7e67eee-ac1a-4677-8bed-25c358c66c81@harmstone.com>
- <a8a16938b9112d7aa68b6df3de30d35c116fb17a.camel@scientia.org>
- <76ac6739-806e-4e6b-acb3-ebfba74cb8f3@harmstone.com>
- <2a0a802c-0879-4ae4-9eb1-31b1a02efff4@libero.it>
-Content-Language: en-US, en-AU
-From: DanglingPointer <danglingpointerexception@gmail.com>
-In-Reply-To: <2a0a802c-0879-4ae4-9eb1-31b1a02efff4@libero.it>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Just going back to the original question I posted...
+On Tue, 21 Oct 2025 14:52:31 -0400 "Chris Murphy" <lists@colorremedies.com> wrote:
 
-Will the BTRFS project decide to fix once and for all RAID56 to fix the 
-write-hole even if the result is a slower-latent result?
+> >Tue, 15 Jul 2025 11:58:24 -0700
+> https://lore.kernel.org/linux-btrfs/52b863849f0dd63b3d25a29c8a830a09c748d86b.1752605888.git.boris@bur.io/
+> 
+> Fedora is interested in this enhancement. Any idea when it could be merged or if there are any outstanding concerns?
+> 
+> In particular, I like the lack of knobs. It's either on or off. And it has no effect until unallocated space drops below 10G means it's super lightweight, affecting only users likely to end up in related corner cases.
+> 
+> Fedora isn't installing btrfsmaintenance by default. We do see infrequent cases of premature or misallocation out of space. It would be nice to have this "it does nothing until" type solution enabled by default, if it's ready.
+> 
+> Thanks,
+> 
+> --
+> Chris Murphy
 
-At least that would be a fully functional production ready offering as 
-version 1.0?
+Wanted to provide some data from the Meta rollout to give more context on the
+decision to enable dynamic+periodic reclaim by default for data. All the before
+numbers are with bg_reclaim_threshold set to 30.
 
-Future optimisations and improvements on that version 1.0 will obviously 
-happen for the life of BTRFS and linux which will improve the 
-performance from the impact of adding whatever is needed to fix the 
-write-hole.  Just like everything else!  At least everyone can say it is 
-done, although slower now!  But feature complete!   Making it faster 
-will then incrementally happen as it evolves like everything else.
+Enabling dynamic+periodic reclaim for data block groups dramatically decreases
+number of reclaims per host, going from 150/day to just 5/day (p99), and from
+6/day to 0/day (p50). The trade-offs are increases in fragmentation, and a
+slight uptick in enospcs.
 
+I currently don't have direct fragmentation metrics, though that is a
+work in progress, but I'm tracking FP as a proxy for fragmentation.
 
+FP = (allocated - used) / allocated
+So if there are 100G allocated for data and 80G are used, FP = (100 - 80) / 100 = 20%.
 
-On 22/10/25 06:32, Goffredo Baroncelli wrote:
-> On 21/10/2025 18.45, Mark Harmstone wrote:
->> On 21/10/2025 4.53 pm, Christoph Anton Mitterer wrote:
->>> On Tue, 2025-10-21 at 16:46 +0100, Mark Harmstone wrote:
->>>> The brutal truth is probably that RAID5/6 is an idea whose time has
->>>> passed.
->>>> Storage is cheap enough that it doesn't warrant the added latency,
->>>> CPU time,
->>>> and complexity.
->>>
->>> That doesn't seem to be generally the case. We have e.g. large storage
->>> servers with 24x 22 TB HDDs.
->>>
->>> RAID6 is plenty enough redundancy for these, loosing 2 HDDs.
->>> RAID1 would loose half.
->>>
->>>
->>> Cheers,
->>> Chris.
->> So for every sector you want to write, you actually need to write three
->> and read 21. That seems a very quick way to wear out all those disks.
->> And then one starts operating more slowly, which slows down every 
->> write...
->
-> Yes, it is true that the classic raid5/6 doesn't scale well when the 
-> number
-> of disks grows.
->
-> However I still think that there is room to a different approach. Like 
-> putting
-> the redundancy inside the extent to avoid an RMW cycles. This and the
-> fact that in BTRFS the extents are immutable, would avoid the slowness
-> that you mention.
->
->> I'd still use RAID1 in this case.
->>
-> This is faster, but also doesn't scale well (== expensive) when the 
-> storage
->  size grows.
->
-> BR
-> G.Baroncelli
->
+FP has increased from 30% to 45% (p99), and from 5% to 7% (p50).
+Enospc rates have gone from around 0.5/day to 1/day per 100k hosts.
+This is a doubling in rate, but still a very small absolute number
+of enospcs. The unallocated space on disk decreases by ~15G (p99)
+and ~5G (p50) after rollout.
+
+Though fragmentation increases and unallocated space decreases the
+very small increase in enospcs suggests that this is a worthwhile
+tradeoff.
+
+One concern I still have is that replacing the aggressive
+bg_reclaim_threshold for the conservative dynamic+periodic reclaim
+will lead filesystems to slowly trend toward an "unhealthy" state of
+high fragmentation and dynamic+periodic reclaim will only do enough
+to keep the filesystem alive, but not enough to make it "healthy" again.
+So far, the data indicates these concerns are unfounded as
+FP and unallocated space seem to stabilize after their initial changes,
+but I'll follow up if anything changes.
+
+That being said I don't think bg_reclaim_threshold is enabled by default,
+and I am comfortable saying dynamic+periodic reclaim is better than no
+automatic reclaim!
+
+Thanks,
+Leo Martins.
 
