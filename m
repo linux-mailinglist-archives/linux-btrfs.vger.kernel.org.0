@@ -1,133 +1,120 @@
-Return-Path: <linux-btrfs+bounces-18128-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18129-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FEF9BF8297
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 20:55:59 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0053EBF8448
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 21:33:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 592BF3AABFC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 18:55:54 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A1562344F4E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 19:33:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEF5F34E751;
-	Tue, 21 Oct 2025 18:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC89323D7C6;
+	Tue, 21 Oct 2025 19:32:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="pMEzNw/p";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="koUCiktc"
+	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="u4UQtYZl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
+Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC5834D904
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 18:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1F8350A03
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 19:32:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761072951; cv=none; b=GJV/AgvPyxePSixJY6XF6qrnEEGdgS+qWyUuUA8eEozGuigF6558Mok3ybywghYO/YKicDvKmcLaomnFXlvF9MRG2Pn8HqrIQg8H9DLE0YRoGkcwuDT24xxt7YH02eIbB5ro/GGIr20/OL1aI4a1S+DCeRNaL0pqXTo8pFDIi10=
+	t=1761075174; cv=none; b=Qi/lGPwe5IF/gBcCX/yzYY+EICeWCbTA/X1old6Lp836/ur7U4oDy8kCIRSNzNsUeuXUsL/mtZUH8PMbCiTU4KHedktrK/OELNuxoQc95Ree9b0vGANXHUnNYJ5quU+QrPFxR1scz6kBxodAIY1/hR2gT79EweCM9g0kPyNlRWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761072951; c=relaxed/simple;
-	bh=pbyzMHoSwJJFfnr1jstzLntQV6Vzf3XXwIJEC4q9EjI=;
-	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=pWCozO7fE430kHsIPXZOZHaNaEoBFMOHp/vlmUChLgckmVqXfW1LSjbOMd909zUcKnk541iZLobwXUFr3gRmg0wjJ361/f3u9MIkKrg1Sj1bLS52VVbbE7nGtfiEAwoTd+jM4fmqCFf2FjVLsiB+LK4JyH98xgtFvE8SFgFowvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=pMEzNw/p; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=koUCiktc; arc=none smtp.client-ip=103.168.172.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 30897140019C;
-	Tue, 21 Oct 2025 14:55:48 -0400 (EDT)
-Received: from phl-imap-01 ([10.202.2.91])
-  by phl-compute-04.internal (MEProxy); Tue, 21 Oct 2025 14:55:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	colorremedies.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to; s=fm3; t=1761072948; x=1761159348; bh=pbyzMHoSwJJFfnr1jstzL
-	ntQV6Vzf3XXwIJEC4q9EjI=; b=pMEzNw/pI+jyiNGIS4bO0Oc6ZLvH0VxCnOFvo
-	XsR0D5OncSLcVyPCXSbJ6U3sC0dXqDYr7pEDALuNMghm25Zxn0fXeVqf/+Ef6G5A
-	RQTtlmUm1D59bF0s2oPyFrRJCXS9lAfoyC8F3/LyLHuqTnuChhvyAjhhEunLFgTu
-	YF6kMgwJDi9yr/GxADVgmlOVa8Y4omLk9tC8EquYiB9RvqGFYgm3Vekc2pavIPfS
-	tefaoin3WQgOiSdhSPAtH+7nCHnk/VHD2FaZdEQBXpDfNGJkhJ5pw1AXmaRCcuxI
-	EuVjb5FhgGU1l8GwJV+8k5AxnFSN6eAQry6pVXhlD5HrNwDeA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm2; t=1761072948; x=1761159348; bh=p
-	byzMHoSwJJFfnr1jstzLntQV6Vzf3XXwIJEC4q9EjI=; b=koUCiktcSDrdK4Q6R
-	HD2qjZMGc4oq4YQTeUqfOm3A765bTMXdBe3UIw6zCabj7PfN1FIIv7Jf/ew1QOR2
-	mSRaY850SxCfVteeqO1nKlrRl1EL1OoQ1s/VPJq29Z8GusmBiAswYu/Z/pjtr37d
-	gkURUU5HKTEua1whb+zva1gpcOro4KyTy5rDF+XF5LXSxInMMdhUFPdHyYch8tvH
-	10tLjei+Vq0iNoQyk1KksGVnsSo1xYJxlBuzH0Mr1sLKQW8lWl+vSVP4KEGCmkBT
-	1l3Qo3aNHFGkvCnZ5H1BDojz4uLVNIvNX0vZ7gST/tONgTJv/eT4+aXXJxkOu1wP
-	mBx8Q==
-X-ME-Sender: <xms:M9f3aD7RK83R5b__KbfK3RI23uYHL1_7KF6fgQrqdoi3UP2ZxAddCA>
-    <xme:M9f3aDufXD6cziArxKs_8AEeuCzOWFAXtFmF6gTuFAVgneVMc9G-gyT5ciDU9puK-
-    4VN7t3kIASgWZAcwA1K3FAddxioOQ-D8qBhZrSjMns656UMW0Tps2w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddugedugeejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvffkjghfufgtgfesthhqredtredtjeenucfhrhhomhepfdevhhhrihhs
-    ucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomheqne
-    cuggftrfgrthhtvghrnhepkeejjeeftefgfeekgeekteekheevjeejtddvkeelkefhteej
-    jefhudettdelheehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegtohhlohhr
-    rhgvmhgvughivghsrdgtohhmpdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpoh
-    huthdprhgtphhtthhopehjohhnrghhsehjshgvrdhiohdprhgtphhtthhopehlihhnuhig
-    qdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:M9f3aOkDJXvjXSXDusBc7d22W2-lNDkowR1uhfYBqkEGedtqPpM_bg>
-    <xmx:M9f3aDxJ7IAH9XqO37roL5fiQzeERsuaPQKptWdCSKd6euy3eEFDJw>
-    <xmx:M9f3aEOUfaM6KPEpyywdeVCoND9UDv2zqaPpZU41OEt20ClQRU2c-Q>
-    <xmx:M9f3aPQ9CNVf_QfVEKGuiSSTwrROCyXD8eL3nnH1qg3aeY-vrMcHaA>
-    <xmx:NNf3aEeXYGn8zrod84HNslLjH_MPF4eOyFHWl8K-3FxIOoMJnw7F86Ip>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id BD93918C004E; Tue, 21 Oct 2025 14:55:47 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1761075174; c=relaxed/simple;
+	bh=YQWCyYlPcpld6ZIpgUmvfYZAWoZmq1XYeN5Z6LD2mB0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Q4ZrzOitIqmnSHjrcs/kpkxa0E9gALOpUhbdzS0beyoZdCm8U8KJUUza+M+GE60zuuOKep8oxw8RILS3cy2SZLUbv9+GXjVQaV9g9oPMS4XiIPvb0QnXzA76kg83imhoVvCiAcg9QcvawDRTqr4yj+uye/t1fq/RtVLC6XaPNfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it; spf=pass smtp.mailfrom=libero.it; dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b=u4UQtYZl; arc=none smtp.client-ip=213.209.10.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libero.it
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-18.iol.local with ESMTPA
+	id BI67vv7ml32S3BI67v5pIu; Tue, 21 Oct 2025 21:32:44 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+	t=1761075164; bh=Vm434qcd4jL41OY3YIQWbd34aYYENY7p2EraB9YMoaU=;
+	h=From;
+	b=u4UQtYZlmqj34ksikS92njKUMmoDn4YVnVPvASg0mo4loXqY/uYOaYSKd5iMbSBoA
+	 2iJMR0kmefXjEc3IqU8ZF79h/z1t8U4SJAYuITwoPxDdONazptKi4pNtNFnEn/oG+I
+	 PkqLto7yqcuNuI3cToKJq86wXzYZrjMYsLmWSvNCRXbRjbuxiFtbCoKNNqJGl2q0B2
+	 kxk9RVyERX/SDokLTZhm/Xw5jTrEaZotkUpYCbnnqTryMgEeX37EMLKl3/rbbJtmsO
+	 uL+WDvVw9hYprFKgFXNQRimMtfi5L9j5yXGdBsx8fL5pHs9euR+vdwRMCiiYAw/03U
+	 tITdazzt6l4Lw==
+X-CNFS-Analysis: v=2.4 cv=Tu3mhCXh c=1 sm=1 tr=0 ts=68f7dfdc cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=scLe4AieO7Rvc7EbDaYA:9 a=QEXdDO2ut3YA:10
+Message-ID: <2a0a802c-0879-4ae4-9eb1-31b1a02efff4@libero.it>
+Date: Tue, 21 Oct 2025 21:32:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AYo6J0g5KRfR
-Date: Tue, 21 Oct 2025 14:55:28 -0400
-From: "Chris Murphy" <lists@colorremedies.com>
-To: "Jonah Sabean" <jonah@jse.io>, "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Message-Id: <7def6c73-d1e4-4c43-957b-6e88b16ea9ae@app.fastmail.com>
-In-Reply-To: 
- <CAFMvigdN7F20FiX0yVn1mcFp709Y8W6USyMBPDw-Db-mfJgcVw@mail.gmail.com>
-References: <20250922071748.GB2624931@tik.uni-stuttgart.de>
- <CAFMvigdN7F20FiX0yVn1mcFp709Y8W6USyMBPDw-Db-mfJgcVw@mail.gmail.com>
-Subject: Re: btrfsmaintenance?
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
+Subject: Re: btrfs RAID5 or btrfs on md RAID5?
+To: Mark Harmstone <mark@harmstone.com>,
+ Christoph Anton Mitterer <calestyo@scientia.org>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20250922070956.GA2624931@tik.uni-stuttgart.de>
+ <d3a5e463-d00e-4428-ad7b-35f87f9a6550@gmx.com>
+ <3a3df034-4461-4c35-b170-a5084586d2b3@gmail.com>
+ <d7e67eee-ac1a-4677-8bed-25c358c66c81@harmstone.com>
+ <a8a16938b9112d7aa68b6df3de30d35c116fb17a.camel@scientia.org>
+ <76ac6739-806e-4e6b-acb3-ebfba74cb8f3@harmstone.com>
+Content-Language: en-US
+From: Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <76ac6739-806e-4e6b-acb3-ebfba74cb8f3@harmstone.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfHKAhTIIxlBk/uc1PdbuKrZZ+OOAWS6Yu6lLyFd16Omz3fDcur+vVaAs7PErm4rmhBXOJl+MzmbOLif6Yyr2WkeebR7eMINkauPgc+lGp/zUB7+FRFeM
+ MB+SPXToB0jpBfU8LTaci1TCpG013KQNb4m408Mjw8lUu2mOa5iEyO6yAROfd3HHZB4tBmXLMr8Mwl1VkKvu3LRSVG8wVL4E0YYfjh9rP6T5W+K45Co9ZOvj
+ f0oN4HPMRi7Bp1xPxOTaLQ==
 
-
-
-On Wed, Sep 24, 2025, at 11:32 AM, Jonah Sabean wrote:
-> On Mon, Sep 22, 2025 at 4:18=E2=80=AFAM Ulli Horlacher
-> <framstag@rus.uni-stuttgart.de> wrote:
+On 21/10/2025 18.45, Mark Harmstone wrote:
+> On 21/10/2025 4.53 pm, Christoph Anton Mitterer wrote:
+>> On Tue, 2025-10-21 at 16:46 +0100, Mark Harmstone wrote:
+>>> The brutal truth is probably that RAID5/6 is an idea whose time has
+>>> passed.
+>>> Storage is cheap enough that it doesn't warrant the added latency,
+>>> CPU time,
+>>> and complexity.
 >>
->> In Ubuntu btrfsmaintenance is an optional package, whereas SLES has it
->> default installed (at least last time I have checked it).
+>> That doesn't seem to be generally the case. We have e.g. large storage
+>> servers with 24x 22 TB HDDs.
 >>
->> Is it suggestive/recommendable to install btrfsmaintenance on every s=
-ystem?
-> I don't personally use it, but to each their own. It's really up to
-> you and your use case. I use btrfs to store media files, so read heavy
-> workload not much writing. I don't run balance at all unless I need to
-> which I'm comfortable with just doing manually, and I schedule my own
-> scrub jobs.
+>> RAID6 is plenty enough redundancy for these, loosing 2 HDDs.
+>> RAID1 would loose half.
+>>
+>>
+>> Cheers,
+>> Chris.
+> So for every sector you want to write, you actually need to write three
+> and read 21. That seems a very quick way to wear out all those disks.
+> And then one starts operating more slowly, which slows down every write...
+  
+Yes, it is true that the classic raid5/6 doesn't scale well when the number
+of disks grows.
 
-Same. But I'm also biased in that I'm looking for bugs.=20
+However I still think that there is room to a different approach. Like putting
+the redundancy inside the extent to avoid an RMW cycles. This and the
+fact that in BTRFS the extents are immutable, would avoid the slowness
+that you mention.
 
-I did just bump this older thread from July, enabling periodic dynamic r=
-eclaim in the kernel by default on data bg's only.
+> I'd still use RAID1 in this case.
+> 
+This is faster, but also doesn't scale well (== expensive) when the storage
+  size grows.
 
-https://lore.kernel.org/linux-btrfs/52b863849f0dd63b3d25a29c8a830a09c748=
-d86b.1752605888.git.boris@bur.io/
+BR
+G.Baroncelli
 
---=20
-Chris Murphy
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
