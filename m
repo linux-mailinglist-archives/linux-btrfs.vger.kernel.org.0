@@ -1,96 +1,156 @@
-Return-Path: <linux-btrfs+bounces-18113-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18118-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0236EBF6A5D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 15:05:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FBDCBF71DA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 16:40:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B70324E8B9F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 13:04:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A514546DD0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 14:36:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDDE12F5466;
-	Tue, 21 Oct 2025 13:03:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8EF33C51C;
+	Tue, 21 Oct 2025 14:36:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W9+mukgy"
+	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="1dhybSv1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout-y-111.mailbox.org (mout-y-111.mailbox.org [91.198.250.236])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF81033291F;
-	Tue, 21 Oct 2025 13:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5A032B9BD;
+	Tue, 21 Oct 2025 14:36:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.198.250.236
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761051812; cv=none; b=r5MtyVMC41zd5/1L3bAb0CkgYHh1z5+kbZ+M9TJWrxZa1GLo/V/QO+Y6TiPpkph6J6PeJBmvG6m0lv3aC8TS0UHm7C2NJa3Qcbo7EbNXYxhXN8RlK4VxZPm11Xg5WMoXiFDz6WKEmaMtviouNUb2DeF4bRECM1Tjg6J2dAxZJlY=
+	t=1761057369; cv=none; b=TgnSjF0hAOluMGVSuNV1LAyBWIjv/uqmrqqtCbDX+P3vjONSd5NA/rsxZwbZRVvAEHV7smwK/ZxkOuFTMVNmsyxY+Vvivy0+O3Nym9sGb8xQuuMRxbaxdm+cCrd9PnUYHdMCcdR4lG7V66CGR3GoDLCk5eIH21gAVbZfHqn02OU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761051812; c=relaxed/simple;
-	bh=t26UTDE6fAOEi9W2Qc7FMVxXQoGtaA09RUpkBMmyPyY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jymn+kWDNHGx9VrWbqiX8IExJRNYkHLvUbjlCYjd8p5ouLujTbUZZF6XpEclFAMvJ1XzZZ7xNEzszxfFYd08V9phOgPphzkqDGw0Rq0QPi7/utQvnLEoehiUfHuVQs07JeG2w2pMhuwkFVZJjQKTPbd6WYWnTMtz59ezxdT/dJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W9+mukgy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2E44C4CEF1;
-	Tue, 21 Oct 2025 13:03:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761051811;
-	bh=t26UTDE6fAOEi9W2Qc7FMVxXQoGtaA09RUpkBMmyPyY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=W9+mukgyTBL+w5QBJ5yG/CffLdsdM/e2/sBVxjrQJqwBXoAsvpP5xn9g+9U2ABhB/
-	 rLj4fe5z17tL3cVAzYiL2DFBWXN28Ntm+G5bbaRLWpfnMh6xi+mXL3gD3DZmM6hgaD
-	 PBWgTpXFSU1fgj5N3qeRACDFRIRlilxIJl41gaNmAz22CNQOQXqxSlpD2ah0taY053
-	 KjIPEizXTHzj9upoVl73q7Yi1EjYIps1XtCQ1A0srmlSRlrtTqJsNOYxT2APhvU1w8
-	 TWvNazkmMkeU1xYJnBlvoo1XYGtzBHhMKWmCSxX2ujAykU1pW1fibfNus2urVyQvqT
-	 syzl8z6An8+jQ==
-From: Christian Brauner <brauner@kernel.org>
-To: linux-btrfs@vger.kernel.org,
-	Qu Wenruo <wqu@suse.com>,
-	Christoph Hellwig <hch@infradead.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	djwong@kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2] iomap: add IOMAP_DIO_FSBLOCK_ALIGNED flag
-Date: Tue, 21 Oct 2025 15:03:08 +0200
-Message-ID: <20251021-leber-dienlich-0bee81a049e1@brauner>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <c78d08f4e709158f30e1e88e62ab98db45dd7883.1760345826.git.wqu@suse.com>
-References: <c78d08f4e709158f30e1e88e62ab98db45dd7883.1760345826.git.wqu@suse.com>
+	s=arc-20240116; t=1761057369; c=relaxed/simple;
+	bh=dfCV845XV1ltCt79+AApczud8jS63uTAjwVN5PSY3q4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qN7yZEkzbSVsWhBY3V4lSC0SwjN0KHmV6eGEyzbX+CuiPXqWK6saburgrg9sXMfakhLD3eQN2nX19EFGgni0GM4LZNX//ZO3E0DuOdx3uCXFKKoMIcDt5ZrGslfTHVnDvbelq3F1uHyYR6i8hMaJEm8MObayjRjFvGfr6D42Nso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=1dhybSv1; arc=none smtp.client-ip=91.198.250.236
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-y-111.mailbox.org (Postfix) with ESMTPS id 4crZQj2WRwz9xyV;
+	Tue, 21 Oct 2025 16:28:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
+	t=1761056893;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=WM3GXPkT/MM24SHzXbEJ0XG69mpmAnFBQnkz0aKZe8o=;
+	b=1dhybSv1b7z0L04Pp2S8DsTtfMt6j/RcGG+SxogKqLlEv4ErVYwN3on5kiUXFf/0dom47O
+	OBaJ5xmGRr6wvYzAfP55MNTBE2LRcXS9FsLhmc4UtTdsLg5C7vMrk/qRhbvvWx0DT2h+Fn
+	Hkz88bGRztXO15zyI0Efv+fywRapmcFA0oPWkqKjHb6QYv1ExbjFcog4jjANWbQkB38u1r
+	tpdwD4QVwxs+lqKt8LrXDI39dA5LEIw1CaJUjfZV3/A67yoD6YceRPA/tTKIc5Su9cni+8
+	CLRi3yKQJz6kGA90757IgRvb5d8aCXUrd/gWhKUGkQREOhzS4ELvlw85BKPi0Q==
+Authentication-Results: outgoing_mbo_mout;
+	dkim=none;
+	spf=softfail (outgoing_mbo_mout: 2001:67c:2050:b231:465::102 is neither permitted nor denied by domain of mssola@mssola.com) smtp.mailfrom=mssola@mssola.com
+From: =?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
+To: linux-btrfs@vger.kernel.org
+Cc: clm@fb.com,
+	dsterba@suse.com,
+	johannes.thumshirn@wdc.com,
+	fdmanana@suse.com,
+	boris@bur.io,
+	wqu@suse.com,
+	neal@gompa.dev,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
+Subject: [PATCH 0/4] btrfs: define and apply the AUTO_K(V)FREE_PTR macros
+Date: Tue, 21 Oct 2025 16:27:45 +0200
+Message-ID: <20251021142749.642956-1-mssola@mssola.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1181; i=brauner@kernel.org; h=from:subject:message-id; bh=t26UTDE6fAOEi9W2Qc7FMVxXQoGtaA09RUpkBMmyPyY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWR8b5nn9m56ZK3zrylmtflC5nMnPrTMOnf2AfO/zhvaV RZxLeVtHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABOpimf4H/olYP5HxtWnK++s +7X0zoOZZi+VJWY9c1aV4l12c9n9xp+MDJcq1OWUbB51Wiuyz57T2i9sHDbZi9U2wtpNVZ7v0Ol OHgA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4crZQj2WRwz9xyV
 
-On Mon, 13 Oct 2025 19:35:16 +1030, Qu Wenruo wrote:
-> Btrfs requires all of its bios to be fs block aligned, normally it's
-> totally fine but with the incoming block size larger than page size
-> (bs > ps) support, the requirement is no longer met for direct IOs.
-> 
-> Because iomap_dio_bio_iter() calls bio_iov_iter_get_pages(), only
-> requiring alignment to be bdev_logical_block_size().
-> 
-> [...]
+This patchset introduces and applies throughout the btrfs tree two new
+macros: AUTO_KFREE_PTR and AUTO_KVFREE_PTR. Each macro defines a pointer,
+initializes it to NULL, and sets the kfree/kvfree cleanup attribute. It was
+suggested by David Sterba in the review of a patch that I submitted here
+[1]. I have added the _PTR suffix because I think that it reads more easily
+and it makes things more explicit, but I don't have any strong feelings
+about the naming either.
 
-Applied to the vfs-6.19.iomap branch of the vfs/vfs.git tree.
-Patches in the vfs-6.19.iomap branch should appear in linux-next soon.
+I have not applied these macros blindly through the tree, but only when
+using a cleanup attribute actually made things easier for
+maintainers/developers, and didn't obfuscate things like lifetimes of
+objects on a given function. So, I've mostly avoided applying this when:
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+- The object was being re-allocated in the middle of the function
+  (e.g. object re-allocation in a loop).
+- The ownership of the object was transferred between functions.
+- The value of a given object might depend on functions returning ERR_PTR()
+  et al.
+- The cleanup section of a function was a bunch of labels with different
+  exit paths with non-trivial cleanup code (or code that depended on things
+  to go on a specific order).
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+To come up with this patchset I have glanced through the tree in order to
+find where and how kfree()/kvfree() were being used, and while doing so I
+have submitted [2], [3] and [4] separately as they were fixing memory
+related issues. All in all, this patchset can be divided in three parts:
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+1. Patch 1: transforms free_ipath() to be defined via DEFINE_FREE(), which
+   will be useful in order to further simplify some code in patch 3.
+2. Patch 2 and 3: define and use the two macros.
+3. Patch 4: removing some unneeded kfree() calls from qgroup.c as they were
+   not needed. Since these occurrences weren't memory bugs, and it was a
+   somewhat simple patch, I've refrained from sending this separately as I
+   did in [2], [3] and [4]; but I'll gladly do it if you think it's better
+   for the review.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-6.19.iomap
+Note that after these changes some 'return' statements could be made more
+explicit, and I've also written an explicit 'return 0' whenever it would
+make more explicit the "happy" path for a given branch, or whenever a 'ret'
+variable could be avoided that way.
 
-[1/1] iomap: add IOMAP_DIO_FSBLOCK_ALIGNED flag
-      https://git.kernel.org/vfs/vfs/c/96a9ee1c896f
+Last, checkpatch.pl script doesn't seem to like patches 2 and 3; but so far
+it looks like false positives to me. But of course I might just be wrong :)
+
+[1] https://lore.kernel.org/all/20250922103442.GM5333@twin.jikos.cz/
+[2] https://lore.kernel.org/all/20250925184139.403156-1-mssola@mssola.com/
+[3] https://lore.kernel.org/all/20250930130452.297576-1-mssola@mssola.com/
+[4] https://lore.kernel.org/all/20251008121859.440161-1-mssola@mssola.com/
+
+Miquel Sabaté Solà (4):
+  btrfs: declare free_ipath() via DEFINE_FREE() instead
+  btrfs: define the AUTO_K(V)FREE_PTR helper macros
+  btrfs: apply the AUTO_K(V)FREE_PTR macros throughout the tree
+  btrfs: add ASSERTs on prealloc in qgroup functions
+
+ fs/btrfs/acl.c                    | 29 ++++++++----------
+ fs/btrfs/backref.c                | 10 +------
+ fs/btrfs/backref.h                |  7 ++++-
+ fs/btrfs/delayed-inode.c          | 17 +++++------
+ fs/btrfs/extent-tree.c            | 17 +++++------
+ fs/btrfs/inode.c                  |  4 +--
+ fs/btrfs/ioctl.c                  | 34 ++++++++-------------
+ fs/btrfs/misc.h                   |  7 +++++
+ fs/btrfs/qgroup.c                 | 30 +++++++++++++++----
+ fs/btrfs/raid-stripe-tree.c       | 14 +++------
+ fs/btrfs/reflink.c                |  7 ++---
+ fs/btrfs/relocation.c             | 34 ++++++++-------------
+ fs/btrfs/scrub.c                  |  4 +--
+ fs/btrfs/send.c                   | 50 ++++++++++++-------------------
+ fs/btrfs/super.c                  |  3 +-
+ fs/btrfs/tests/extent-io-tests.c  |  3 +-
+ fs/btrfs/tests/extent-map-tests.c |  6 ++--
+ fs/btrfs/tree-log.c               | 46 +++++++++++-----------------
+ fs/btrfs/volumes.c                | 28 +++++------------
+ fs/btrfs/zoned.c                  |  3 +-
+ 20 files changed, 145 insertions(+), 208 deletions(-)
+
+--
+2.51.1
 
