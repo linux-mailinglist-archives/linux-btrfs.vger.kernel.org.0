@@ -1,55 +1,54 @@
-Return-Path: <linux-btrfs+bounces-18118-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18114-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FBDCBF71DA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 16:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA858BF714A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 16:30:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A514546DD0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 14:36:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B4E24252F2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 14:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8EF33C51C;
-	Tue, 21 Oct 2025 14:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6D0339B5C;
+	Tue, 21 Oct 2025 14:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="1dhybSv1"
+	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="wjOMsl4l"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-y-111.mailbox.org (mout-y-111.mailbox.org [91.198.250.236])
+Received: from mout-y-209.mailbox.org (mout-y-209.mailbox.org [91.198.250.237])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5A032B9BD;
-	Tue, 21 Oct 2025 14:36:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.198.250.236
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6CB1EDA1E;
+	Tue, 21 Oct 2025 14:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.198.250.237
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761057369; cv=none; b=TgnSjF0hAOluMGVSuNV1LAyBWIjv/uqmrqqtCbDX+P3vjONSd5NA/rsxZwbZRVvAEHV7smwK/ZxkOuFTMVNmsyxY+Vvivy0+O3Nym9sGb8xQuuMRxbaxdm+cCrd9PnUYHdMCcdR4lG7V66CGR3GoDLCk5eIH21gAVbZfHqn02OU=
+	t=1761056907; cv=none; b=g74if+gi3QwjrJWTFXvxxPhKrrPjj9kIqZVlqcxnW6tCfduNP4ESluIlZ/D3XU6Ok8xw5h/RClxwnfkdOweI2deUEkcBn9708PI++dUnWcxRmBHGPpeWYwYyYxfMSJHVFT+zLSHp2otQv80RpHdO8oW9ciu7CMKhIn8Fi+uoVP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761057369; c=relaxed/simple;
-	bh=dfCV845XV1ltCt79+AApczud8jS63uTAjwVN5PSY3q4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qN7yZEkzbSVsWhBY3V4lSC0SwjN0KHmV6eGEyzbX+CuiPXqWK6saburgrg9sXMfakhLD3eQN2nX19EFGgni0GM4LZNX//ZO3E0DuOdx3uCXFKKoMIcDt5ZrGslfTHVnDvbelq3F1uHyYR6i8hMaJEm8MObayjRjFvGfr6D42Nso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=1dhybSv1; arc=none smtp.client-ip=91.198.250.236
+	s=arc-20240116; t=1761056907; c=relaxed/simple;
+	bh=TVUUCnjng9lxzyy0qq+GzVmU/aLF6wLcZy0qlWhCrbM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=F0qtob5HSmX3Xvu8THTyVsAoyfmuulGsKIoUQB0lDnMMk9z2qcTGApvzJqoaNCgc1Sb/3mCL9ZyZ17Jv/fe71063LfBWJ/WwENs8OeZSKcDmQHlSPcV6ezQ/2/5zSTT0uYAzaTZBtHz9W2uBR/RDqvvYXeHsYVcfrerlw6uaI5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=wjOMsl4l; arc=none smtp.client-ip=91.198.250.237
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-y-111.mailbox.org (Postfix) with ESMTPS id 4crZQj2WRwz9xyV;
-	Tue, 21 Oct 2025 16:28:13 +0200 (CEST)
+	by mout-y-209.mailbox.org (Postfix) with ESMTPS id 4crZQp1ls0z9ttm;
+	Tue, 21 Oct 2025 16:28:18 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
-	t=1761056893;
+	t=1761056898;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=WM3GXPkT/MM24SHzXbEJ0XG69mpmAnFBQnkz0aKZe8o=;
-	b=1dhybSv1b7z0L04Pp2S8DsTtfMt6j/RcGG+SxogKqLlEv4ErVYwN3on5kiUXFf/0dom47O
-	OBaJ5xmGRr6wvYzAfP55MNTBE2LRcXS9FsLhmc4UtTdsLg5C7vMrk/qRhbvvWx0DT2h+Fn
-	Hkz88bGRztXO15zyI0Efv+fywRapmcFA0oPWkqKjHb6QYv1ExbjFcog4jjANWbQkB38u1r
-	tpdwD4QVwxs+lqKt8LrXDI39dA5LEIw1CaJUjfZV3/A67yoD6YceRPA/tTKIc5Su9cni+8
-	CLRi3yKQJz6kGA90757IgRvb5d8aCXUrd/gWhKUGkQREOhzS4ELvlw85BKPi0Q==
-Authentication-Results: outgoing_mbo_mout;
-	dkim=none;
-	spf=softfail (outgoing_mbo_mout: 2001:67c:2050:b231:465::102 is neither permitted nor denied by domain of mssola@mssola.com) smtp.mailfrom=mssola@mssola.com
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uilBc+Gi0c4GQOo+svzYnBLdiIGJkGSGTPDGvTOpCSM=;
+	b=wjOMsl4ly+IxaO7XsArq5z/P+9ALd6VFPof1tX0GTT82Q41UMTVLKTkcntS0JUa3CzNf4A
+	bwj0crvRFFPxaMtjzJ8RpXf13ogZ3kR+IRdWcz1ea05vVYGPkYjtpA9iSqtS17NLyuHRsR
+	3JYNDIhELaWFA8cunpSwJ0XWC3sr8PEXaFX7nMnU+tT+wR2QmMC20IrxnJyAubOX4SLP6D
+	5MSDI0vxAbgvMxjcDrvPhjQg5F8NILYY6ptLfM0qJFrtQ+D6hvYDDtnaTACVjWbwyb2QuV
+	lmCpLIcLlvE5j+okbI8ZdA0MBuFeVvf48P7ud5YzImFLxUH0BlSt+gPYnFHF3A==
 From: =?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
 To: linux-btrfs@vger.kernel.org
 Cc: clm@fb.com,
@@ -61,9 +60,11 @@ Cc: clm@fb.com,
 	neal@gompa.dev,
 	linux-kernel@vger.kernel.org,
 	=?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
-Subject: [PATCH 0/4] btrfs: define and apply the AUTO_K(V)FREE_PTR macros
-Date: Tue, 21 Oct 2025 16:27:45 +0200
-Message-ID: <20251021142749.642956-1-mssola@mssola.com>
+Subject: [PATCH 1/4] btrfs: declare free_ipath() via DEFINE_FREE() instead
+Date: Tue, 21 Oct 2025 16:27:46 +0200
+Message-ID: <20251021142749.642956-2-mssola@mssola.com>
+In-Reply-To: <20251021142749.642956-1-mssola@mssola.com>
+References: <20251021142749.642956-1-mssola@mssola.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -72,85 +73,152 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4crZQj2WRwz9xyV
 
-This patchset introduces and applies throughout the btrfs tree two new
-macros: AUTO_KFREE_PTR and AUTO_KVFREE_PTR. Each macro defines a pointer,
-initializes it to NULL, and sets the kfree/kvfree cleanup attribute. It was
-suggested by David Sterba in the review of a patch that I submitted here
-[1]. I have added the _PTR suffix because I think that it reads more easily
-and it makes things more explicit, but I don't have any strong feelings
-about the naming either.
+This transforms the signature to __free_ipath() instead of the original
+free_ipath(), but this function was only being used as a cleanup
+function anyways. Hence, define it as a helper and use it via the
+__free() attribute on all uses. This change also means that
+__free_ipath() will be inlined whereas that wasn't the case for the
+original one, but this shouldn't be a problem.
 
-I have not applied these macros blindly through the tree, but only when
-using a cleanup attribute actually made things easier for
-maintainers/developers, and didn't obfuscate things like lifetimes of
-objects on a given function. So, I've mostly avoided applying this when:
+A follow up macro like we do with BTRFS_PATH_AUTO_FREE() has been
+discarded as the usage of this struct is not as widespread as that.
 
-- The object was being re-allocated in the middle of the function
-  (e.g. object re-allocation in a loop).
-- The ownership of the object was transferred between functions.
-- The value of a given object might depend on functions returning ERR_PTR()
-  et al.
-- The cleanup section of a function was a bunch of labels with different
-  exit paths with non-trivial cleanup code (or code that depended on things
-  to go on a specific order).
+Signed-off-by: Miquel Sabaté Solà <mssola@mssola.com>
+---
+ fs/btrfs/backref.c | 10 +---------
+ fs/btrfs/backref.h |  7 ++++++-
+ fs/btrfs/inode.c   |  4 +---
+ fs/btrfs/ioctl.c   |  3 +--
+ fs/btrfs/scrub.c   |  4 +---
+ 5 files changed, 10 insertions(+), 18 deletions(-)
 
-To come up with this patchset I have glanced through the tree in order to
-find where and how kfree()/kvfree() were being used, and while doing so I
-have submitted [2], [3] and [4] separately as they were fixing memory
-related issues. All in all, this patchset can be divided in three parts:
-
-1. Patch 1: transforms free_ipath() to be defined via DEFINE_FREE(), which
-   will be useful in order to further simplify some code in patch 3.
-2. Patch 2 and 3: define and use the two macros.
-3. Patch 4: removing some unneeded kfree() calls from qgroup.c as they were
-   not needed. Since these occurrences weren't memory bugs, and it was a
-   somewhat simple patch, I've refrained from sending this separately as I
-   did in [2], [3] and [4]; but I'll gladly do it if you think it's better
-   for the review.
-
-Note that after these changes some 'return' statements could be made more
-explicit, and I've also written an explicit 'return 0' whenever it would
-make more explicit the "happy" path for a given branch, or whenever a 'ret'
-variable could be avoided that way.
-
-Last, checkpatch.pl script doesn't seem to like patches 2 and 3; but so far
-it looks like false positives to me. But of course I might just be wrong :)
-
-[1] https://lore.kernel.org/all/20250922103442.GM5333@twin.jikos.cz/
-[2] https://lore.kernel.org/all/20250925184139.403156-1-mssola@mssola.com/
-[3] https://lore.kernel.org/all/20250930130452.297576-1-mssola@mssola.com/
-[4] https://lore.kernel.org/all/20251008121859.440161-1-mssola@mssola.com/
-
-Miquel Sabaté Solà (4):
-  btrfs: declare free_ipath() via DEFINE_FREE() instead
-  btrfs: define the AUTO_K(V)FREE_PTR helper macros
-  btrfs: apply the AUTO_K(V)FREE_PTR macros throughout the tree
-  btrfs: add ASSERTs on prealloc in qgroup functions
-
- fs/btrfs/acl.c                    | 29 ++++++++----------
- fs/btrfs/backref.c                | 10 +------
- fs/btrfs/backref.h                |  7 ++++-
- fs/btrfs/delayed-inode.c          | 17 +++++------
- fs/btrfs/extent-tree.c            | 17 +++++------
- fs/btrfs/inode.c                  |  4 +--
- fs/btrfs/ioctl.c                  | 34 ++++++++-------------
- fs/btrfs/misc.h                   |  7 +++++
- fs/btrfs/qgroup.c                 | 30 +++++++++++++++----
- fs/btrfs/raid-stripe-tree.c       | 14 +++------
- fs/btrfs/reflink.c                |  7 ++---
- fs/btrfs/relocation.c             | 34 ++++++++-------------
- fs/btrfs/scrub.c                  |  4 +--
- fs/btrfs/send.c                   | 50 ++++++++++++-------------------
- fs/btrfs/super.c                  |  3 +-
- fs/btrfs/tests/extent-io-tests.c  |  3 +-
- fs/btrfs/tests/extent-map-tests.c |  6 ++--
- fs/btrfs/tree-log.c               | 46 +++++++++++-----------------
- fs/btrfs/volumes.c                | 28 +++++------------
- fs/btrfs/zoned.c                  |  3 +-
- 20 files changed, 145 insertions(+), 208 deletions(-)
-
---
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index e050d0938dc4..a1456402752a 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -2785,7 +2785,7 @@ struct btrfs_data_container *init_data_container(u32 total_bytes)
+  * allocates space to return multiple file system paths for an inode.
+  * total_bytes to allocate are passed, note that space usable for actual path
+  * information will be total_bytes - sizeof(struct inode_fs_paths).
+- * the returned pointer must be freed with free_ipath() in the end.
++ * the returned pointer must be freed with __free_ipath() in the end.
+  */
+ struct inode_fs_paths *init_ipath(s32 total_bytes, struct btrfs_root *fs_root,
+ 					struct btrfs_path *path)
+@@ -2810,14 +2810,6 @@ struct inode_fs_paths *init_ipath(s32 total_bytes, struct btrfs_root *fs_root,
+ 	return ifp;
+ }
+ 
+-void free_ipath(struct inode_fs_paths *ipath)
+-{
+-	if (!ipath)
+-		return;
+-	kvfree(ipath->fspath);
+-	kfree(ipath);
+-}
+-
+ struct btrfs_backref_iter *btrfs_backref_iter_alloc(struct btrfs_fs_info *fs_info)
+ {
+ 	struct btrfs_backref_iter *ret;
+diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+index 25d51c246070..d3b1ad281793 100644
+--- a/fs/btrfs/backref.h
++++ b/fs/btrfs/backref.h
+@@ -241,7 +241,12 @@ char *btrfs_ref_to_path(struct btrfs_root *fs_root, struct btrfs_path *path,
+ struct btrfs_data_container *init_data_container(u32 total_bytes);
+ struct inode_fs_paths *init_ipath(s32 total_bytes, struct btrfs_root *fs_root,
+ 					struct btrfs_path *path);
+-void free_ipath(struct inode_fs_paths *ipath);
++
++DEFINE_FREE(ipath, struct inode_fs_paths *,
++	if (_T) {
++		kvfree(_T->fspath);
++		kfree(_T);
++	})
+ 
+ int btrfs_find_one_extref(struct btrfs_root *root, u64 inode_objectid,
+ 			  u64 start_off, struct btrfs_path *path,
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 79732756b87f..4d154209d70b 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -130,7 +130,7 @@ static int data_reloc_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
+ 	struct btrfs_fs_info *fs_info = warn->fs_info;
+ 	struct extent_buffer *eb;
+ 	struct btrfs_inode_item *inode_item;
+-	struct inode_fs_paths *ipath = NULL;
++	struct inode_fs_paths *ipath __free(ipath) = NULL;
+ 	struct btrfs_root *local_root;
+ 	struct btrfs_key key;
+ 	unsigned int nofs_flag;
+@@ -193,7 +193,6 @@ static int data_reloc_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
+ 	}
+ 
+ 	btrfs_put_root(local_root);
+-	free_ipath(ipath);
+ 	return 0;
+ 
+ err:
+@@ -201,7 +200,6 @@ static int data_reloc_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
+ "checksum error at logical %llu mirror %u root %llu inode %llu offset %llu, path resolving failed with ret=%d",
+ 		   warn->logical, warn->mirror_num, root, inum, offset, ret);
+ 
+-	free_ipath(ipath);
+ 	return ret;
+ }
+ 
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 692016b2b600..453832ded917 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3298,7 +3298,7 @@ static long btrfs_ioctl_ino_to_path(struct btrfs_root *root, void __user *arg)
+ 	u64 rel_ptr;
+ 	int size;
+ 	struct btrfs_ioctl_ino_path_args *ipa = NULL;
+-	struct inode_fs_paths *ipath = NULL;
++	struct inode_fs_paths *ipath __free(ipath) = NULL;
+ 	struct btrfs_path *path;
+ 
+ 	if (!capable(CAP_DAC_READ_SEARCH))
+@@ -3346,7 +3346,6 @@ static long btrfs_ioctl_ino_to_path(struct btrfs_root *root, void __user *arg)
+ 
+ out:
+ 	btrfs_free_path(path);
+-	free_ipath(ipath);
+ 	kfree(ipa);
+ 
+ 	return ret;
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index fe266785804e..74d8af1ff02d 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -505,7 +505,7 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
+ 	struct btrfs_inode_item *inode_item;
+ 	struct scrub_warning *swarn = warn_ctx;
+ 	struct btrfs_fs_info *fs_info = swarn->dev->fs_info;
+-	struct inode_fs_paths *ipath = NULL;
++	struct inode_fs_paths *ipath __free(ipath) = NULL;
+ 	struct btrfs_root *local_root;
+ 	struct btrfs_key key;
+ 
+@@ -569,7 +569,6 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
+ 				  (char *)(unsigned long)ipath->fspath->val[i]);
+ 
+ 	btrfs_put_root(local_root);
+-	free_ipath(ipath);
+ 	return 0;
+ 
+ err:
+@@ -580,7 +579,6 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
+ 			  swarn->physical,
+ 			  root, inum, offset, ret);
+ 
+-	free_ipath(ipath);
+ 	return 0;
+ }
+ 
+-- 
 2.51.1
+
 
