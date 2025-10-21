@@ -1,108 +1,207 @@
-Return-Path: <linux-btrfs+bounces-18100-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18101-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEC0ABF577D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 11:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A546ABF57AF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 11:22:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B4A5B4FC9BD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 09:20:23 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8D6564E6722
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 09:22:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D1E8329C6A;
-	Tue, 21 Oct 2025 09:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7DE32AADA;
+	Tue, 21 Oct 2025 09:22:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="bs7huozD"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wIo5oCUa";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZUGe23PS";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zknEK/zc";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kPU+3C/Y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-y-209.mailbox.org (mout-y-209.mailbox.org [91.198.250.237])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A90A42E1C6F;
-	Tue, 21 Oct 2025 09:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.198.250.237
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF772DECB0
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 09:22:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761038415; cv=none; b=oRH2Gvz7WxMvU2SRqHRd8VSO9+m3Aq6PGlZ+YNTM1PVYnXaE145fqpe3VZCqXGSzrMKEI2yi6oLkx1PIssiggE34wBF0WY5S62NtSwPDx4y5WAjWoYTYoB+VLsKEvQrnt/cGinVI/CxdxzELs8M/+QpUBTicrx40jMj7FE2Zwb8=
+	t=1761038552; cv=none; b=e7wvCaKje3JvBY8VIl+7sRJbdzdNoUDxrkACNxRrSoIkvK/ZmPUDuzgTWFPIbyeoLfhbTKM5dFxKP4KQnj9AxeIevs5xO0tKrp4xZLwFmA2WQAXwKMWLSmFLL9K+NRMLsBKC+Kh/vgO9JekrFoA476E5z7KLrgaAG1zTupPu8Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761038415; c=relaxed/simple;
-	bh=gt8QTpigXYJ1n64pcQZkB3vjbpNTcKFzI6KwGNk8iLs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=o29aI6DK1xwlsOPwVigaV7UK2vbLMfRy/A9EIsOssf33W2YDzGczkftQrXbj0WGRRHQ3lTw0hqHUBHLqL1ExwKNnHK7TkNsbbDtvM7lgur+912jxGUgANuSHu+ROhtMkOw1415pDtphXhtUaa+nPqW1GvDn5kVoXKeYsKgcwiVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=bs7huozD; arc=none smtp.client-ip=91.198.250.237
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
+	s=arc-20240116; t=1761038552; c=relaxed/simple;
+	bh=gJAoVD9cju/1QVu+U4Azd3fptDN/X0ouQarhkAlBbwc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i/GJS+U4I5/mJ1BgXb1IhlL+cvUk6yHBiSJRYojzN+aXZpp6KSfJlKl8yW8kFr2Pj7kTXKkqGBUtfAe1lnc/ZsQz90ioKpfkWUJeRJAoxvq+vpWn23LtJGdjObSW1ayO1K5jZpPuyzn6dIfRxGanMwqvfObWWMKu9Y2R0FDExnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wIo5oCUa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZUGe23PS; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zknEK/zc; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kPU+3C/Y; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-y-209.mailbox.org (Postfix) with ESMTPS id 4crRPT2RH0zB0hT;
-	Tue, 21 Oct 2025 11:11:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
-	t=1761037901;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=p3RxAUKQ9gm37DDQ5FvmzUhdsilQPRCwahlHic7b+Cw=;
-	b=bs7huozDuXZcGzwVEPlTjGVjs2xXBKjvgPUk/MVF5SHIZBlQbSNjZ6YqEGNaB8nw2yw94Z
-	AOCkztG1oBtIXP6NNPyqt/Z/qyrICiQ/Q23aqpQDGRojaj42GpnTzErqFcBZ/bO3D9aRmU
-	kFhcB3BWQFIFDPiSTfFIrBonTw4VkGU/RwDfJheZff4cuZIWxXojDb82RFGQ9xlcym4EDH
-	I4Il+ErPZ5XryjlM0ioHIiAlM0jURQeN2ZxotGn8RnQkcO9tmeWaMB8TKC7gMeJ3gpJg7r
-	T9MKC+P1/tnvCPr4LMu0TaJnodq+tHkeV89hR4mLcNLR40qbo58ibSM/pvljnA==
-From: =?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
-To: linux-btrfs@vger.kernel.org
-Cc: clm@fb.com,
-	dsterba@suse.com,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	=?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>,
-	syzbot+d991fea1b4b23b1f6bf8@syzkaller.appspotmail.com
-Subject: [PATCH] btrfs: fix NULL dereference on root when tracing inode eviction
-Date: Tue, 21 Oct 2025 11:11:25 +0200
-Message-ID: <20251021091125.259500-1-mssola@mssola.com>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 14C5A1F445;
+	Tue, 21 Oct 2025 09:22:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1761038545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aAlZsLpmZR4ppbAmqbxDqov94GN0TMQzZ5ttVOeE6Qg=;
+	b=wIo5oCUa2Zf6G/b0DE8QuyA+165ilNoG6Td2Qi4HjGX9sJzbMwWLg/e2M+kyyGbM6Ds07f
+	cSfr7fAh8edu7gMHsAzEAJWI+d74RfJ7DFit0Z2j6difanldXOGRK9casSAWZBWrGOVlLs
+	8UxQ+xl1xFvdecu9KYCrVB6XFkAYOyg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1761038545;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aAlZsLpmZR4ppbAmqbxDqov94GN0TMQzZ5ttVOeE6Qg=;
+	b=ZUGe23PSGWx1vK7/4Jv6B2vxq/TLQ7rOdCDZIKb1LmySP/5zaStEv4m1wLAa0kzyGtcd6d
+	VaHXSCps+TFIy2Dw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="zknEK/zc";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="kPU+3C/Y"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1761038541; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aAlZsLpmZR4ppbAmqbxDqov94GN0TMQzZ5ttVOeE6Qg=;
+	b=zknEK/zc7CEYMwKxbENGVk7jGMw3bjyuGtCZn9IcWRGlybq7iQmHt5lN58n4/OMjuNou5W
+	HVtTO+f7TsnPkfgFyllmcwRa65KdqqnXvoZNPGg/j4wYkZG/wUz0VVcsoO9UQV+Ui3CTDP
+	DBsyHI7OST7PQifcontK6lwoUXHBvOk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1761038541;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aAlZsLpmZR4ppbAmqbxDqov94GN0TMQzZ5ttVOeE6Qg=;
+	b=kPU+3C/YjFWWX0UvEImfaygoAOL4KZLRLoIVZmxPI41j8uiYELf8HzIepXlft+4PX0ZqlJ
+	8+YAZu8pue5iQLAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F2222139D2;
+	Tue, 21 Oct 2025 09:22:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5JsZO8xQ92joQgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 21 Oct 2025 09:22:20 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 979FEA0990; Tue, 21 Oct 2025 11:22:20 +0200 (CEST)
+Date: Tue, 21 Oct 2025 11:22:20 +0200
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: David Hildenbrand <david@redhat.com>, Jan Kara <jack@suse.cz>, 
+	Matthew Wilcox <willy@infradead.org>, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, 
+	djwong@kernel.org, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-mm@kvack.org, martin.petersen@oracle.com, jack@suse.com
+Subject: Re: O_DIRECT vs BLK_FEAT_STABLE_WRITES, was Re: [PATCH] btrfs: never
+ trust the bio from direct IO
+Message-ID: <rlu3rbmpktq5f3vgex3zlfjhivyohkhr5whpdmv3lscsgcjs7r@4zqutcey7kib>
+References: <1ee861df6fbd8bf45ab42154f429a31819294352.1760951886.git.wqu@suse.com>
+ <aPYIS5rDfXhNNDHP@infradead.org>
+ <56o3re2wspflt32t6mrfg66dec4hneuixheroax2lmo2ilcgay@zehhm5yaupav>
+ <aPYgm3ey4eiFB4_o@infradead.org>
+ <mciqzktudhier5d2wvjmh4odwqdszvbtcixbthiuuwrufrw3cj@5s2ffnffu4gc>
+ <aPZOO3dFv61blHBz@casper.infradead.org>
+ <xc2orfhavfqaxrmxtsbf4kepglfujjodvhfzhzfawwaxlyrhlb@gammchkzoh2m>
+ <5bd1d360-bee0-4fa2-80c8-476519e98b00@redhat.com>
+ <aPc7HVRJYXA1hT8h@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aPc7HVRJYXA1hT8h@infradead.org>
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 14C5A1F445
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	MIME_TRACE(0.00)[0:+];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spam-Score: -4.01
 
-When evicting an inode the first thing we do is to setup tracing for it,
-which implies fetching the root's id. But in btrfs_evict_inode() the
-root might be NULL, as implied in the next check that we do in
-btrfs_evict_inode().
+On Tue 21-10-25 00:49:49, Christoph Hellwig wrote:
+> On Mon, Oct 20, 2025 at 09:00:50PM +0200, David Hildenbrand wrote:
+> > Just FYI, because it might be interesting in this context.
+> > 
+> > For anonymous memory we have this working by only writing the folio out if
+> > it is completely unmapped and there are no unexpected folio references/pins
+> > (see pageout()), and only allowing to write to such a folio ("reuse") if
+> > SWP_STABLE_WRITES is not set (see do_swap_page()).
+> > 
+> > So once we start writeback the folio has no writable page table mappings
+> > (unmapped) and no GUP pins. Consequently, when trying to write to it we can
+> > just fallback to creating a page copy without causing trouble with GUP pins.
+> 
+> Yeah.  But anonymous is the easy case, the pain is direct I/O to file
+> mappings.  Mapping the right answer is to just fail pinning them and fall 
+> back to (dontcache) buffered I/O.
 
-Hence, we either should set the ->root_objectid to 0 in case the root is
-NULL, or we move tracing setup after checking that the root is not
-NULL. Setting the rootid to 0 at least gives us the possibility to trace
-this call even in the case when the root is NULL, so that's the solution
-taken here.
+I agree file mappings are more painful but we can also have interesting
+cases with anon pages:
 
-Fixes: 1abe9b8a138c ("Btrfs: add initial tracepoint support for btrfs")
-Reported-by: syzbot+d991fea1b4b23b1f6bf8@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=d991fea1b4b23b1f6bf8
-Signed-off-by: Miquel Sabaté Solà <mssola@mssola.com>
----
- include/trace/events/btrfs.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+P - anon page
 
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 7e418f065b94..f17ee9ba2cf6 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -224,7 +224,8 @@ DECLARE_EVENT_CLASS(btrfs__inode,
- 		__entry->generation = BTRFS_I(inode)->generation;
- 		__entry->last_trans = BTRFS_I(inode)->last_trans;
- 		__entry->logged_trans = BTRFS_I(inode)->logged_trans;
--		__entry->root_objectid = btrfs_root_id(BTRFS_I(inode)->root);
-+		__entry->root_objectid =
-+			     BTRFS_I(inode)->root ? btrfs_root_id(BTRFS_I(inode)->root) : 0;
- 	),
+Thread 1				Thread 2
+setup DIO read to P			setup DIO write from P
 
- 	TP_printk_btrfs("root=%llu(%s) gen=%llu ino=%llu blocks=%llu "
---
-2.51.1
+And now you can get checksum failures for the write unless the write is
+bounced (falling back to dontcache). Similarly with reads:
+
+Thread 1				Thread 2
+setup DIO read to P			setup DIO read to P
+
+you can get read checksum mismatch unless both reads are bounced (bouncing
+one of the reads is not enough because the memcpy from the bounce page to
+the final buffer may break checksum computation of the IO going directly).
+
+So to avoid checksum failures even if user screws up and buffers overlap we
+need to bounce every IO even to/from anon memory. Or we need to block one
+of the IOs until the other one completes - a scheme that could work is we'd
+try to acquire kind of exclusive pin to all the pages (page lock?). If we
+succeed, we run the IO directly. If we don't succeed, we wait for the
+exclusive pins to be released, acquire standard pin (to block exclusive
+pinning) and *then* submit uncached IO. But it is all rather complex and
+I'm not sure it's worth it...
+
+For file mappings things get even more complex because you can do:
+
+P - file mapping page
+
+Thread 1				Thread 2
+setup DIO write from P			setup buffered write from Q to P
+
+and you get checksum failures for the DIO write. So if we don't bounce the
+DIO, we'd also have to teach buffered IO to avoid corrupting buffers of DIO
+in flight.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
