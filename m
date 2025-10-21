@@ -1,167 +1,190 @@
-Return-Path: <linux-btrfs+bounces-18088-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18089-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A68CDBF48C0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 05:52:13 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11EDFBF498D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 06:45:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AFAD18C068A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 03:52:37 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 594324E22A1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Oct 2025 04:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC80F224245;
-	Tue, 21 Oct 2025 03:52:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C397224B09;
+	Tue, 21 Oct 2025 04:44:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Bs9GvEO+";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SLzan1wh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eBC0TcPQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C618D515
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 03:52:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF61C2FB
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 04:44:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761018728; cv=none; b=iTg5hhgNI4eGwgaDCSkhd+DgcJwRV7wTKJDVj6rF880DuTE8JjJfdSvbbkE9Xfe2WH52iFpiidYxqtk+b/p6hvF41B+kHrSRFb04ZS34CmhqskexrXI5DhJNelfsech9xvPGQijfdRW+Hzmc0vVhbvFxoFuQHEaocgFJ8NdLeKg=
+	t=1761021895; cv=none; b=oj5uedvR64NF9BEJ8VeQiHCiqVftDeMcO4AodkVSoUzONa04LZyrCCOikFjgJwhcK9DZangGUT4RpfQYMQO6rxcLqGEs9t/QNwtBvJHIxNq026t+gf64c4GTus9U7Do5yQS1eUixlXkk1Z3n7SwiZGH5Y2l8xbwqvHMagjW6QZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761018728; c=relaxed/simple;
-	bh=FlNfRvf8ei4Is2XD5KhoYefq+qdn53ugJQnxRc9cR1o=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MTPmh7NjnH+dE1+XLH8eb88Q/5rPtPf8lTtS8tDvCB1ACB9VIq9UqT5r9eydUZYd6UfiZ42AeVZmJIfVVgK2tPhpDKBZQklJmhv3XUitS7Qh+x3WeHK2h0VptU2IEjxQg1HHtm2HR4h4dCjJbdWQNk6I7D8VEUJkWSQYip8JWAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Bs9GvEO+; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SLzan1wh; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4F3A02119B
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 03:51:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1761018717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=TbHrL5U9iv6/iVq8LH7zmKCKltz1t26udQ3KGD7TmwA=;
-	b=Bs9GvEO+MUw9zY3Tpv+VdMfP+CWge/0eScWD3EWXmRtsymJMtjjOUjA+j+WdT0vw34f9rS
-	TT6qpsOM66++9tW8/cwirbvFesl4OFSzZ1Yc2uEJE3952/HWEqUg38g+mvPq/jZV0zxoDA
-	HZ+dK06l288/8kBGTH2bMUxsGDMl03A=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=SLzan1wh
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1761018713; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=TbHrL5U9iv6/iVq8LH7zmKCKltz1t26udQ3KGD7TmwA=;
-	b=SLzan1wh/gdul7qLQrjjQ0qPpFNCAtnJ3By+S0EZ4SE1BUbzSNH2/VlYtjSMIjZxNtU6eH
-	TLMOJzymROZ+R8veGDyyYx2olJ2CCFM+lPXBRDsGbGB2pimbgq0aEuFISMGexWS+6jgapE
-	JS/nyG+e9PXRRDUSiYQmBqd/XhVKxos=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6D4F613800
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 03:51:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qdAYJVcD92ghDAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 Oct 2025 03:51:51 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: subpage: simplify the PAGECACHE_TAG_TOWRITE handling
-Date: Tue, 21 Oct 2025 14:21:48 +1030
-Message-ID: <377fc6736bba9df49b7bdeeb80f36b17f610eeb2.1761018694.git.wqu@suse.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1761021895; c=relaxed/simple;
+	bh=9kxqybzlE1Fr37/9VYjEybQFCr8RkY8xjdsfiUZklso=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=V26oKJMUKW9nSR2b4ez9xbBlVjDsAtNWB6t176BXND98/fb8k0kf7SZf0acBWjBc46cTIbA6kADHbZd6gqjUEewQN5A9CcWxX92SboeLeVixURZpFxzDSBeGlvf5bPkpWajIMSBFr7S+Dyx9qu9sbRSPR5M2jVXlJOAyBtoDCY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eBC0TcPQ; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7a23208a0c2so1965951b3a.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Oct 2025 21:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761021893; x=1761626693; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LDtraCp9cZKtKPbSxjbOSWy6oE08Rv3lBvkhlrTZUhA=;
+        b=eBC0TcPQiWaY89yKF3ARu5nWzLnC67Um1F8gbuVcN6GF9mYiz5TNMypsO5THcZQx/Z
+         2OwIcA9+BFxZwhPUhFKLOAVRCjnA0OFmqLynXBAowAwMxy+kNHcb/fNhPSMAU6NQeWKS
+         kux47Ua6VMkULCWr9h3RAgLoww8nD9ai7l0nDiwffrLGWoo3BfLLvicfjl00yh4lz64N
+         U+uq2RJTmKN13b2OnY4E/i0RQ39vIcz8586BEo/aOzJsGyNrOKtcj5YOq6h+ceBvrUnr
+         9y0YanlN2rpEWwdYbS5qWbbRGwnY66Yqy5w2EAJndp6snCPNvhDZ2Ga8fQVrOHZt3mpl
+         sO1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761021893; x=1761626693;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LDtraCp9cZKtKPbSxjbOSWy6oE08Rv3lBvkhlrTZUhA=;
+        b=SAAxdpT6YRCFlF3itgfDW6+5pajZ8LvAMM6NQdyFSxUE+sqGrBsYvY+W7LVd76efSs
+         wkkVN0Baw2WgT1i4WOFobibpj7KgOnQGyd3Mhq7cOcchE/MIckB1tb9QjPEIyH1/n1j6
+         krKcjqgsDUdi0TYWOlzL7MKHq56MagbT3EIsJdIN9VhtisTcqGuk1G+nJHo7UPosEz7C
+         5GXkfqVHA0YP831kHfsxwpBW0jqsy11FX8lJlUbHNwCOlx5f0lCcSeAey5SYHth4h+Wr
+         cpVzhps7xfi/ClR7de7HhGJEEl1akCiEcpXytjiOvAyUvkOdUD3Rv6FKURfjSSJxbUs9
+         P2KQ==
+X-Gm-Message-State: AOJu0YyFGqUqTTp1GaIZ+MPmryIq1LYvX5nIpjoqOrA9a7WBbHaHnT5z
+	590cMLCTUByEiyA++QmdoKawp9RZ2Qbp3cIE566ETEhsGhBBsfqJJjr1
+X-Gm-Gg: ASbGncv4PCHRgDcqe0DUZD5aoHr0M6cNdkxnfzJ3168HXHEeC3iS3DMYCWQZ8SlXojL
+	wGXeYchjSgCP5MwCTsx3LMWWQBWFyu40zX2ffoJqvY/P7/EZSP3T6PPkhUyEoVieXhxUkJQKjs2
+	WwZ9qdTo4kD47xYTe0c9Ymz29UCUJK1HDoXIqE2NkmnVrYlyEIdDusnJH7MqcJ+DSO9gFzWxl9d
+	CfkAgdyhbk0ZtxcdSU3AtYC6AvYi2J6Mt4rTW+K5TNiltc70G9SL64wdDyCCctu8jEv+/hHkcL7
+	QZI1sSgb5/fMGxTXDbcKA7lbYxln1hCtTtt+BJzeey47tJB75NJnPmXeQylqCJqLXS8idV0GiaV
+	5eFLNgd+apFH9xobWHsa/MOznKebpPrIJq8J8iuCYPZBykdcr9yzB1rbODEVKHSDs3XI1P6xyQA
+	+qdEE9ADiaDBmNUdc/Y7YAnw==
+X-Google-Smtp-Source: AGHT+IFAuMCYgWaw4/7KZ7/cLX3OGgjJ/ZPXFbnyQggfH+LWnKNPEbNZNK1NoYY9oTl5A04nj7ZASA==
+X-Received: by 2002:a05:6a20:a9e:b0:334:98f8:b24c with SMTP id adf61e73a8af0-334a8629de8mr14358787637.50.1761021893366;
+        Mon, 20 Oct 2025 21:44:53 -0700 (PDT)
+Received: from [192.168.0.120] ([49.207.204.231])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a230121f96sm10081918b3a.76.2025.10.20.21.44.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Oct 2025 21:44:52 -0700 (PDT)
+Message-ID: <e4d6a3d9-2a19-4d89-ac7f-899189329f18@gmail.com>
+Date: Tue, 21 Oct 2025 10:14:48 +0530
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4F3A02119B
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -3.51
-X-Spam-Level: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] btrfs/290: Make the test compatible with all
+ supported block sizes
+Content-Language: en-US
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, ritesh.list@gmail.com,
+ ojaswin@linux.ibm.com, djwong@kernel.org, fdmanana@kernel.org,
+ quwenruo.btrfs@gmx.com, zlang@kernel.org
+References: <cover.1760332925.git.nirjhar.roy.lists@gmail.com>
+ <9849006dd25950d390a8b300ad056e0d4be00394.1760332925.git.nirjhar.roy.lists@gmail.com>
+From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
+In-Reply-To: <9849006dd25950d390a8b300ad056e0d4be00394.1760332925.git.nirjhar.roy.lists@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-In function btrfs_subpage_set_writeback() we need to keep the
-PAGECACHE_TAG_TOWRITE tag if the folio is still dirty.
 
-This is a needed quirk for support async extents, as a subpage range can
-almost suddenly go writeback, without touching other subpage ranges in
-the same folio.
+On 10/13/25 11:09, Nirjhar Roy (IBM) wrote:
+> This test fails with 64k block size with the following error:
+>
+>       punch
+>       pread: Input/output error
+>       pread: Input/output error
+>      +ERROR: couldn't find extent 4096 for inode 261
+>       plug
+>      -pread: Input/output error
+>      -pread: Input/output error
+>      ...
+>
+> The reason is that, some of the subtests are written with 4k blocksize
+> in mind. Fix the test by making the offsets and sizes to multiples of
+> 64k so that it becomes compatible/aligned with all supported block sizes.
 
-However we can simplify the handling by replace the open-coded tag
-clearing by passing the @keep_write flag depending on if the folio is
-dirty.
+Hi Filipe,
 
-Since we're holding the subpage lock already, no one is able to change
-the dirty/writeback flag, thus it's safe to check the folio dirty before
-calling __folio_start_writeback().
+Do you have any additional feedback on this? I have made the changes 
+suggested by you in [v1]
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/subpage.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+[v1] 
+https://lore.kernel.org/all/CAL3q7H58hDCrYMqDwdO_Lf7B2J+Wdv5FpAw6u5NkDK0ExZ8K0A@mail.gmail.com/
 
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 0a4a1ee81e63..80cd27d3267f 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -440,6 +440,7 @@ void btrfs_subpage_set_writeback(const struct btrfs_fs_info *fs_info,
- 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
- 							writeback, start, len);
- 	unsigned long flags;
-+	bool keep_write;
- 
- 	spin_lock_irqsave(&bfs->lock, flags);
- 	bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
-@@ -450,18 +451,9 @@ void btrfs_subpage_set_writeback(const struct btrfs_fs_info *fs_info,
- 	 * assume writeback is complete, and exit too early — violating sync
- 	 * ordering guarantees.
- 	 */
-+	keep_write = folio_test_dirty(folio);
- 	if (!folio_test_writeback(folio))
--		__folio_start_writeback(folio, true);
--	if (!folio_test_dirty(folio)) {
--		struct address_space *mapping = folio_mapping(folio);
--		XA_STATE(xas, &mapping->i_pages, folio->index);
--		unsigned long xa_flags;
--
--		xas_lock_irqsave(&xas, xa_flags);
--		xas_load(&xas);
--		xas_clear_mark(&xas, PAGECACHE_TAG_TOWRITE);
--		xas_unlock_irqrestore(&xas, xa_flags);
--	}
-+		__folio_start_writeback(folio, keep_write);
- 	spin_unlock_irqrestore(&bfs->lock, flags);
- }
- 
+--NR
+
+>
+> Reported-by: Disha Goel <disgoel@linux.ibm.com>
+> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+> ---
+>   tests/btrfs/290 | 16 ++++++++--------
+>   1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/tests/btrfs/290 b/tests/btrfs/290
+> index 04563dfe..471b6617 100755
+> --- a/tests/btrfs/290
+> +++ b/tests/btrfs/290
+> @@ -106,15 +106,15 @@ corrupt_reg_to_prealloc() {
+>   # corrupt a file by punching a hole
+>   corrupt_punch_hole() {
+>   	local f=$SCRATCH_MNT/punch
+> -	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
+> +	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 192k" $f
+>   	local ino=$(get_ino $f)
+>   	# make a new extent in the middle, sync so the writes don't coalesce
+>   	$XFS_IO_PROG -c sync $SCRATCH_MNT
+> -	$XFS_IO_PROG -fc "pwrite -q -S 0x59 4096 4096" $f
+> +	$XFS_IO_PROG -fc "pwrite -q -S 0x59 64k 64k" $f
+>   	_fsv_enable $f
+>   	_scratch_unmount
+>   	# change disk_bytenr to 0, representing a hole
+> -	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 4096 -f disk_bytenr --value 0 \
+> +	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 65536 -f disk_bytenr --value 0 \
+>   								    $SCRATCH_DEV
+>   	_scratch_mount
+>   	validate $f
+> @@ -123,14 +123,14 @@ corrupt_punch_hole() {
+>   # plug hole
+>   corrupt_plug_hole() {
+>   	local f=$SCRATCH_MNT/plug
+> -	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
+> +	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 192k" $f
+>   	local ino=$(get_ino $f)
+> -	$XFS_IO_PROG -fc "falloc 4k 4k" $f
+> +	$XFS_IO_PROG -fc "falloc 64k 64k" $f
+>   	_fsv_enable $f
+>   	_scratch_unmount
+>   	# change disk_bytenr to some value, plugging the hole
+> -	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 4096 -f disk_bytenr \
+> -						   --value 13639680 $SCRATCH_DEV
+> +	$BTRFS_CORRUPT_BLOCK_PROG -i $ino -x 65536 -f disk_bytenr \
+> +						   --value 218234880 $SCRATCH_DEV
+>   	_scratch_mount
+>   	validate $f
+>   }
+> @@ -166,7 +166,7 @@ corrupt_root_hash() {
+>   # corrupt the Merkle tree data itself
+>   corrupt_merkle_tree() {
+>   	local f=$SCRATCH_MNT/merkle
+> -	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 12288" $f
+> +	$XFS_IO_PROG -fc "pwrite -q -S 0x58 0 192k" $f
+>   	local ino=$(get_ino $f)
+>   	_fsv_enable $f
+>   	_scratch_unmount
+
 -- 
-2.51.0
+Nirjhar Roy
+Linux Kernel Developer
+IBM, Bangalore
 
 
