@@ -1,280 +1,186 @@
-Return-Path: <linux-btrfs+bounces-18156-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18157-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DE65BFAC87
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 10:07:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7362BBFB214
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 11:20:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DF0755061F7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 08:07:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FAC91A06D05
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 09:20:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40594302CB7;
-	Wed, 22 Oct 2025 08:06:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 096003128C7;
+	Wed, 22 Oct 2025 09:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QcUkncMm"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="BD0se277"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE78830170C
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Oct 2025 08:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ED4C3128A4
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Oct 2025 09:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.141.245
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761120392; cv=none; b=MdaLhk4JY8WZKwrQq8wY75RSmFJ4HJaV1UJ5CkUCNoYT6pT6Z2qLq6toT0rXiZNqe4ycPjcZmGOUNP+scAtucB6EymgTYVMLidPddkzeyaHltkJ2bSeORu8UITEm5oUl2etze0/pmYhHMsS1RkxWzNZ2/eDuBLzL+X4IHNyVjMM=
+	t=1761124814; cv=none; b=AbRuNJtdne98WXiy5ejDlHXpsMAOP3jjsdbPpJ1xr42PzhiUNn4E//b3zjIPlpbEcx1JfuGEaiH6g3/gWLNosc7n1OSNsQFLM43S9lRN+jsd1i10A9dppCoLm1JGomxpbnScM7I5sN49mjrdCDI8BwauVkGjZY5jvaWfOPcjeBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761120392; c=relaxed/simple;
-	bh=i7rr4hr7GlAFwX8ai8F7Xn426QIX0/HemOMZ06kDLAM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UYDFssGWKVaf009f9OBB/ugVrP3m7jmhVnpwZZVI3ij7mXx+KXosHWFJ92He+IVvJMAeAPEtgKAH1V9XWrPke4iE7uJmG/19zSDHI7Xj0FS/WU/QMpAMtlrhXXxOnPgFZIbbUQsP3O0381kJn4BbR44ijuIfOkhzICm03tl2CSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QcUkncMm; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-42701b29a7eso389526f8f.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Oct 2025 01:06:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1761120388; x=1761725188; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uPT3djXxuwyZG03uZ4DKKGDEQkFViw3ZAiy4XlRf2D8=;
-        b=QcUkncMm0e65HlNpbYoPaqeXepP2zhOmiydfNTiXafCZIyIryzkPkyWXN1N81x80Lz
-         O51z/Nm3bTZfJ0OrcI/mhw+5N/XXCutz14iiVi6qpRJTE2fmbnqKyEzAh5lsDbbcy6RN
-         lzhMYio0MTBDWR48nlV1f84PUjKejwhR9ds9NZmNG1NV3n4ymuVqH91lH4GqlPcc8ak5
-         nv1Q+AP4yYi0XpRfT6eENd2wAQZXkIs0KLspM29IkkSJyZmzYnFkWiks2kJF7mVLvlBb
-         ak02Ta6WIqRtt4xp8LJcoEwfRUAEcrk1jIa9bN8TNlzyXELpNNctUMcBhqHFhOhVA36Z
-         4NMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761120388; x=1761725188;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uPT3djXxuwyZG03uZ4DKKGDEQkFViw3ZAiy4XlRf2D8=;
-        b=Q7s1TTRI4h6+Ox3F3yfKwjPCVRMIO2WVzrHD4+I4m5kd0GnOlR7CKDj6HXFo386ONq
-         5VUFWsWN2ehcWs8M6EVcChTNMV4v+8N9GRq1pEKODnXcsIUhsaPQINZyJuveaVBBPQNs
-         79qhgvBoiV7q0QDcc/IpAQYj1q24POUbzxlrLqAhig1VpnqoQ3SMr6TcbZ6tDknLAoli
-         h9gAL2Z1DJ2dQ7mqlW1HS9cb65YG9hQ8U6Q4F1tSwY5ZAlvBBJSAjICBTdLwzp1tHzPG
-         VZrMeSsHePy04/YI0l6wzkE1Sk2t4jb9GQTxvSrVCNPDQfsgMUKDxDVuXSBWhWyivAGZ
-         jl1w==
-X-Forwarded-Encrypted: i=1; AJvYcCVJ9QCGq+dwF2AAL259vacWMbBMylMaayfU5xmo2EsxxcUxVwaAk0xFUJH02tZXupGgagS6f50fiED4Ug==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxZTxXWaNMsQAPClEmZuhKu0EwXY0uZArKPWFJwR5fPwImMQ3Iu
-	PmTchQS7KcVZYuSuZhPyuhV+D12XdYGV2gsrIaGVD3JQ+KWejnFgd3RL1vw7VuJQK8Dcw/h2qWi
-	tfVG8nTU0HIKEO2BxHWTcM0jAxhLxlUYY1dqyPfeSLA==
-X-Gm-Gg: ASbGncvVuj/dHkpD+xISRUiYIP9lmrzIwtHKD/+Xf3UItwO6vQxGHUbyyzRh0zN3L6Z
-	i9/qPTWdsqxz775hWvFaKLMkwZpec2U/sjbdPiNLMcKELSV4dHdSMHWI65iDe0AGXGDlqFK1zTV
-	/ImavYK8vUi1e4omui44cJ7WN5cBrlG0u0YVxHoYWQjbX4NH2QiwyWYNw8/Z5tYLcrkTXjyh8sL
-	q2LcvZ+KpUKhHp7G27d1oxjompWEICCeop68fbuegSrLrO1XYuyq0id/5w=
-X-Google-Smtp-Source: AGHT+IErIGWqnC+YrEzurKE07CGgJ2SXF5rw5ePxfegDakBTc4QMm8JUStUPPbJ2lzOoyOwJPTHQ6yaW4KGCVun/x0E=
-X-Received: by 2002:a5d:584e:0:b0:407:d776:4434 with SMTP id
- ffacd0b85a97d-42856a89d28mr492690f8f.30.1761120387951; Wed, 22 Oct 2025
- 01:06:27 -0700 (PDT)
+	s=arc-20240116; t=1761124814; c=relaxed/simple;
+	bh=dRKA2l+GyUtS7VMb5sQGFOGlzc6HP4RBunId+FJYOtE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eqeGoYCeiVlD5ZfJJ2KRHjEEEBFmyKqnti5bF88P/xvQOs/Jfh7oCvUaDFzfp+sxYBcKuUE2mO6iBCeZEn7rDYEJPfda6cL/dZgxViab874hg2vsVrud5r2yhcfWhO32cMimNjBsCMqDQjJE8LWyd7NqOZOmU/Ae2jOrRxcpb6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=BD0se277; arc=none smtp.client-ip=68.232.141.245
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1761124812; x=1792660812;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=dRKA2l+GyUtS7VMb5sQGFOGlzc6HP4RBunId+FJYOtE=;
+  b=BD0se27788s/HHCGEGJolgpF/JtzNU08/44V1NXs5coT+rLsZQ8b+p8C
+   M/Po5oGO1GFfBpuwXr9USd5QdjCJVeLrLYS25gUgDwwthQ68APGqvdQ9p
+   YBzX38V9qXNCgsMrurJ4zhbeRUpbRRri++nmA4CtUUdqNPsiBSwA8UWrK
+   abAft8gdnUZxe0o1EbtDLKv6gF+zlXPkzt+MMnAVNbA1efbKE7IzshWtE
+   tttCQwG13ju8rKr+9SB9B3G1ic3nvjI7RKmKC9STKybHmYDbppq6xId+j
+   J5Ii2AfG2/SfNbonl93e74AE/MsWsbL/Npw1+1jSEmshZ876VRdM4idJb
+   w==;
+X-CSE-ConnectionGUID: 5t+sm/3nTCKHj5Xy4opiUQ==
+X-CSE-MsgGUID: sBK77cCnSfyxPql7H6qC6w==
+X-IronPort-AV: E=Sophos;i="6.19,246,1754928000"; 
+   d="scan'208";a="133597352"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Oct 2025 17:20:05 +0800
+IronPort-SDR: 68f8a1c6_ZIxIxI1eVQWYOTJ4XXDLKh2U4kWwo5NHSWsRsG5MYStab+r
+ 7OtGzT8q56d8uEwSooEwQVptGc4973eDC21fZ4Q==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Oct 2025 02:20:06 -0700
+WDCIronportException: Internal
+Received: from unknown (HELO neo.wdc.com) ([10.224.28.49])
+  by uls-op-cesaip01.wdc.com with ESMTP; 22 Oct 2025 02:20:03 -0700
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] btrfs: zoned: show statistics for zoned filesystems
+Date: Wed, 22 Oct 2025 11:19:59 +0200
+Message-ID: <20251022091959.196133-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251021142749.642956-1-mssola@mssola.com> <20251021142749.642956-2-mssola@mssola.com>
- <20251022073138.GX13776@twin.jikos.cz>
-In-Reply-To: <20251022073138.GX13776@twin.jikos.cz>
-From: Daniel Vacek <neelx@suse.com>
-Date: Wed, 22 Oct 2025 10:06:17 +0200
-X-Gm-Features: AS18NWAW65wMT_NPMRH8zH-Chtb0tobvWzCUv7MCRWOtED9hj5Ie9fAvPfEpkiU
-Message-ID: <CAPjX3Fcd2MgzhRtDEGRsNNZ1qARiaT0edfnqPA-5HAchwf1gAg@mail.gmail.com>
-Subject: Re: [PATCH 1/4] btrfs: declare free_ipath() via DEFINE_FREE() instead
-To: dsterba@suse.cz
-Cc: =?UTF-8?B?TWlxdWVsIFNhYmF0w6kgU29sw6A=?= <mssola@mssola.com>, 
-	linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com, 
-	johannes.thumshirn@wdc.com, fdmanana@suse.com, boris@bur.io, wqu@suse.com, 
-	neal@gompa.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, 22 Oct 2025 at 09:32, David Sterba <dsterba@suse.cz> wrote:
->
-> On Tue, Oct 21, 2025 at 04:27:46PM +0200, Miquel Sabat=C3=A9 Sol=C3=A0 wr=
-ote:
-> > This transforms the signature to __free_ipath() instead of the original
-> > free_ipath(), but this function was only being used as a cleanup
-> > function anyways. Hence, define it as a helper and use it via the
-> > __free() attribute on all uses. This change also means that
-> > __free_ipath() will be inlined whereas that wasn't the case for the
-> > original one, but this shouldn't be a problem.
-> >
-> > A follow up macro like we do with BTRFS_PATH_AUTO_FREE() has been
-> > discarded as the usage of this struct is not as widespread as that.
->
-> The point of adding the macros or at least the freeing wrappers is to
-> force the NULL initialization and to make it visible in the declarations
-> (typed all in capitals). The number of use should not be the main factor
-> and in this case it's 4 files.
->
-> > Signed-off-by: Miquel Sabat=C3=A9 Sol=C3=A0 <mssola@mssola.com>
-> > ---
-> >  fs/btrfs/backref.c | 10 +---------
-> >  fs/btrfs/backref.h |  7 ++++++-
-> >  fs/btrfs/inode.c   |  4 +---
-> >  fs/btrfs/ioctl.c   |  3 +--
-> >  fs/btrfs/scrub.c   |  4 +---
-> >  5 files changed, 10 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> > index e050d0938dc4..a1456402752a 100644
-> > --- a/fs/btrfs/backref.c
-> > +++ b/fs/btrfs/backref.c
-> > @@ -2785,7 +2785,7 @@ struct btrfs_data_container *init_data_container(=
-u32 total_bytes)
-> >   * allocates space to return multiple file system paths for an inode.
-> >   * total_bytes to allocate are passed, note that space usable for actu=
-al path
-> >   * information will be total_bytes - sizeof(struct inode_fs_paths).
-> > - * the returned pointer must be freed with free_ipath() in the end.
-> > + * the returned pointer must be freed with __free_ipath() in the end.
-> >   */
-> >  struct inode_fs_paths *init_ipath(s32 total_bytes, struct btrfs_root *=
-fs_root,
-> >                                       struct btrfs_path *path)
-> > @@ -2810,14 +2810,6 @@ struct inode_fs_paths *init_ipath(s32 total_byte=
-s, struct btrfs_root *fs_root,
-> >       return ifp;
-> >  }
-> >
-> > -void free_ipath(struct inode_fs_paths *ipath)
-> > -{
-> > -     if (!ipath)
-> > -             return;
-> > -     kvfree(ipath->fspath);
-> > -     kfree(ipath);
-> > -}
-> > -
-> >  struct btrfs_backref_iter *btrfs_backref_iter_alloc(struct btrfs_fs_in=
-fo *fs_info)
-> >  {
-> >       struct btrfs_backref_iter *ret;
-> > diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-> > index 25d51c246070..d3b1ad281793 100644
-> > --- a/fs/btrfs/backref.h
-> > +++ b/fs/btrfs/backref.h
-> > @@ -241,7 +241,12 @@ char *btrfs_ref_to_path(struct btrfs_root *fs_root=
-, struct btrfs_path *path,
-> >  struct btrfs_data_container *init_data_container(u32 total_bytes);
-> >  struct inode_fs_paths *init_ipath(s32 total_bytes, struct btrfs_root *=
-fs_root,
-> >                                       struct btrfs_path *path);
-> > -void free_ipath(struct inode_fs_paths *ipath);
-> > +
-> > +DEFINE_FREE(ipath, struct inode_fs_paths *,
-> > +     if (_T) {
->
-> You can drop the if() as kvfree/kfree handles NULL pointers and we don't
-> do that in the struct btrfs_path either.
+Provide statistics for zoned filesystems. These statistics include, the
+number of active block-groups, how many of them are reclaimable or unused,
+if the filesystem needs to be reclaimed, the currently assigned relocation
+and treelog block-groups if they're present and a list of active zones.
 
-But it's being dereferenced right on the next line. I think the check
-is still needed due to that.
+Example:
+  active block-groups: 4
+    reclaimable: 0
+    unused: 2
+    need reclaim: false
+  data reclocation block-group: 4294967296
+  active zones:
+    start: 1610612736, wp: 344064 used: 16384, reserved: 0, unusable: 327680
+    start: 1879048192, wp: 34963456 used: 131072, reserved: 0, unusable: 34832384
+    start: 4026531840, wp: 0 used: 0, reserved: 0, unusable: 0
+    start: 4294967296, wp: 0 used: 0, reserved: 0, unusable: 0
 
-> > +             kvfree(_T->fspath);
-> > +             kfree(_T);
-> > +     })
-> >
-> >  int btrfs_find_one_extref(struct btrfs_root *root, u64 inode_objectid,
-> >                         u64 start_off, struct btrfs_path *path,
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index 79732756b87f..4d154209d70b 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -130,7 +130,7 @@ static int data_reloc_print_warning_inode(u64 inum,=
- u64 offset, u64 num_bytes,
-> >       struct btrfs_fs_info *fs_info =3D warn->fs_info;
-> >       struct extent_buffer *eb;
-> >       struct btrfs_inode_item *inode_item;
-> > -     struct inode_fs_paths *ipath =3D NULL;
-> > +     struct inode_fs_paths *ipath __free(ipath) =3D NULL;
->
-> I'd spell the name in full, like __free(free_ipath) or
-> __free(inode_fs_paths) so it matches the type not the variable name.
->
-> >       struct btrfs_root *local_root;
-> >       struct btrfs_key key;
-> >       unsigned int nofs_flag;
-> > @@ -193,7 +193,6 @@ static int data_reloc_print_warning_inode(u64 inum,=
- u64 offset, u64 num_bytes,
-> >       }
-> >
-> >       btrfs_put_root(local_root);
-> > -     free_ipath(ipath);
-> >       return 0;
-> >
-> >  err:
-> > @@ -201,7 +200,6 @@ static int data_reloc_print_warning_inode(u64 inum,=
- u64 offset, u64 num_bytes,
-> >  "checksum error at logical %llu mirror %u root %llu inode %llu offset =
-%llu, path resolving failed with ret=3D%d",
-> >                  warn->logical, warn->mirror_num, root, inum, offset, r=
-et);
-> >
-> > -     free_ipath(ipath);
-> >       return ret;
-> >  }
-> >
-> > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> > index 692016b2b600..453832ded917 100644
-> > --- a/fs/btrfs/ioctl.c
-> > +++ b/fs/btrfs/ioctl.c
-> > @@ -3298,7 +3298,7 @@ static long btrfs_ioctl_ino_to_path(struct btrfs_=
-root *root, void __user *arg)
-> >       u64 rel_ptr;
-> >       int size;
-> >       struct btrfs_ioctl_ino_path_args *ipa =3D NULL;
-> > -     struct inode_fs_paths *ipath =3D NULL;
-> > +     struct inode_fs_paths *ipath __free(ipath) =3D NULL;
-> >       struct btrfs_path *path;
-> >
-> >       if (!capable(CAP_DAC_READ_SEARCH))
-> > @@ -3346,7 +3346,6 @@ static long btrfs_ioctl_ino_to_path(struct btrfs_=
-root *root, void __user *arg)
-> >
-> >  out:
-> >       btrfs_free_path(path);
-> > -     free_ipath(ipath);
-> >       kfree(ipa);
-> >
-> >       return ret;
-> > diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> > index fe266785804e..74d8af1ff02d 100644
-> > --- a/fs/btrfs/scrub.c
-> > +++ b/fs/btrfs/scrub.c
-> > @@ -505,7 +505,7 @@ static int scrub_print_warning_inode(u64 inum, u64 =
-offset, u64 num_bytes,
-> >       struct btrfs_inode_item *inode_item;
-> >       struct scrub_warning *swarn =3D warn_ctx;
-> >       struct btrfs_fs_info *fs_info =3D swarn->dev->fs_info;
-> > -     struct inode_fs_paths *ipath =3D NULL;
-> > +     struct inode_fs_paths *ipath __free(ipath) =3D NULL;
-> >       struct btrfs_root *local_root;
-> >       struct btrfs_key key;
-> >
-> > @@ -569,7 +569,6 @@ static int scrub_print_warning_inode(u64 inum, u64 =
-offset, u64 num_bytes,
-> >                                 (char *)(unsigned long)ipath->fspath->v=
-al[i]);
-> >
-> >       btrfs_put_root(local_root);
-> > -     free_ipath(ipath);
-> >       return 0;
-> >
-> >  err:
-> > @@ -580,7 +579,6 @@ static int scrub_print_warning_inode(u64 inum, u64 =
-offset, u64 num_bytes,
-> >                         swarn->physical,
-> >                         root, inum, offset, ret);
-> >
-> > -     free_ipath(ipath);
-> >       return 0;
-> >  }
-> >
-> > --
-> > 2.51.1
-> >
->
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/sysfs.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
+
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index d66681ce2b3d..c901e56d2694 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -10,6 +10,7 @@
+ #include <linux/completion.h>
+ #include <linux/bug.h>
+ #include <linux/list.h>
++#include <linux/string_choices.h>
+ #include <crypto/hash.h>
+ #include "messages.h"
+ #include "ctree.h"
+@@ -25,6 +26,7 @@
+ #include "misc.h"
+ #include "fs.h"
+ #include "accessors.h"
++#include "zoned.h"
+ 
+ /*
+  * Structure name                       Path
+@@ -1187,6 +1189,56 @@ static ssize_t btrfs_commit_stats_store(struct kobject *kobj,
+ }
+ BTRFS_ATTR_RW(, commit_stats, btrfs_commit_stats_show, btrfs_commit_stats_store);
+ 
++static ssize_t btrfs_zoned_stats_show(struct kobject *kobj,
++				      struct kobj_attribute *a, char *buf)
++{
++	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
++	struct btrfs_block_group *bg;
++	size_t ret = 0;
++
++
++	if (!btrfs_is_zoned(fs_info))
++		return ret;
++
++	spin_lock(&fs_info->zone_active_bgs_lock);
++	ret += sysfs_emit_at(buf, ret, "active block-groups: %zu\n",
++			     list_count_nodes(&fs_info->zone_active_bgs));
++	spin_unlock(&fs_info->zone_active_bgs_lock);
++
++	mutex_lock(&fs_info->reclaim_bgs_lock);
++	spin_lock(&fs_info->unused_bgs_lock);
++	ret += sysfs_emit_at(buf, ret, "\treclaimable: %zu\n",
++			     list_count_nodes(&fs_info->reclaim_bgs));
++	ret += sysfs_emit_at(buf, ret, "\tunused: %zu\n",
++			     list_count_nodes(&fs_info->unused_bgs));
++	spin_unlock(&fs_info->unused_bgs_lock);
++	mutex_unlock(&fs_info->reclaim_bgs_lock);
++
++	ret += sysfs_emit_at(buf, ret, "\tneed reclaim: %s\n",
++			     str_true_false(btrfs_zoned_should_reclaim(fs_info)));
++
++	if (fs_info->data_reloc_bg)
++		ret += sysfs_emit_at(buf, ret,
++				     "data reclocation block-group: %llu\n",
++				     fs_info->data_reloc_bg);
++	if (fs_info->treelog_bg)
++		ret += sysfs_emit_at(buf, ret,
++				     "tree-log block-group: %llu\n",
++				     fs_info->treelog_bg);
++
++	spin_lock(&fs_info->zone_active_bgs_lock);
++	ret += sysfs_emit_at(buf, ret, "active zones:\n");
++	list_for_each_entry(bg, &fs_info->zone_active_bgs, active_bg_list) {
++		ret += sysfs_emit_at(buf, ret,
++				     "\tstart: %llu, wp: %llu used: %llu, reserved: %llu, unusable: %llu\n",
++				     bg->start, bg->alloc_offset, bg->used,
++				     bg->reserved, bg->zone_unusable);
++	}
++	spin_unlock(&fs_info->zone_active_bgs_lock);
++	return ret;
++}
++BTRFS_ATTR(, zoned_stats, btrfs_zoned_stats_show);
++
+ static ssize_t btrfs_clone_alignment_show(struct kobject *kobj,
+ 				struct kobj_attribute *a, char *buf)
+ {
+@@ -1599,6 +1651,7 @@ static const struct attribute *btrfs_attrs[] = {
+ 	BTRFS_ATTR_PTR(, bg_reclaim_threshold),
+ 	BTRFS_ATTR_PTR(, commit_stats),
+ 	BTRFS_ATTR_PTR(, temp_fsid),
++	BTRFS_ATTR_PTR(, zoned_stats),
+ #ifdef CONFIG_BTRFS_EXPERIMENTAL
+ 	BTRFS_ATTR_PTR(, offload_csum),
+ #endif
+-- 
+2.51.0
+
 
