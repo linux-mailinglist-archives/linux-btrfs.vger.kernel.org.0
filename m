@@ -1,114 +1,118 @@
-Return-Path: <linux-btrfs+bounces-18170-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18171-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1384EBFDBF7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 19:59:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36E84BFE2FB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 22:35:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D7751883026
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 18:00:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05F401886BB7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 20:36:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D8AB2E7161;
-	Wed, 22 Oct 2025 17:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 085132F9984;
+	Wed, 22 Oct 2025 20:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XNZ/D84O"
+	dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b="QNsi1kQn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A3B35B131;
-	Wed, 22 Oct 2025 17:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDC42F6173
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Oct 2025 20:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761155976; cv=none; b=F6M6bgy2HhKYTi5mZnkFqQN4gbauS5PVdF6rUFWz8MLC3vI+Nk0dNPl9o+VDJ4BVl6lMwtkn5ho/Hf5bc/OiFoVrsAKgiOvhD2z6u3C1K8d/c7LzPfMXs033DHqhNnuB/RjK4G1xo9seufIVukM1kuyMJN6MBuUr+g9vsgn+KRQ=
+	t=1761165348; cv=none; b=lFO4JxJa3kEgBJSO1bwQRhP9Xz/04c0j1Wj67gcLAe+QaYFuYVgr+G/CmP2u3h75ZHr09JLXtabzB6jVs2oLnz2zroSyHFPZsSpenL8B8n4Md3b1BGv1oNVkuzfOXGUEjkSp6EH3BozlU2EjnBNMYQy6XW1EZZz3f8wX8MgqqA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761155976; c=relaxed/simple;
-	bh=9gx3OGdb0uIusRT1OUkumJNGerW8QboTuA02KwXp8SA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ALtrFHDsqceMXKlmjnW/nI/dfR9t112PMVdyGiqaFzCihy0PGF84OeQxMxwlIS0MK8eq4qSbd6LVhaezojhr0mDeuWhjGH6UFzhGD2HzLoRr6pDf1bsrjaZ4Db71ZHxM81TcHXu5aJ3qFeoVAmkQaJYq/1wOOQVUKDcVepo/ax4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XNZ/D84O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAEF8C4CEE7;
-	Wed, 22 Oct 2025 17:59:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761155976;
-	bh=9gx3OGdb0uIusRT1OUkumJNGerW8QboTuA02KwXp8SA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XNZ/D84OnEvWq0hPHRa2JfYwECvRchIFPwxWBOcwmcTyOTRVtou0qZVOs0Hzqtt55
-	 bmhRtjKgQLPobPbaWutj5XMInarn6n3p0Ci7nSAAhvZol1PyIZz4FlhCO5Xzybk5Ap
-	 p5PPk5+QbMfgNKZVTQwB/ah5K80YdWgL2/CcqClk9T2bsGuUHE7Le1JA0Z27yGsPoC
-	 131sA5lcua4B/QAOwg2wm1MFmn0xbE9nejABosRPJ6wXpLVFtI3oNq5rVu4k6JTrQQ
-	 Zh9fn3pfxrHxaregnyfdSIH+VrcbN5/sPU78OnCS1/MJ/8Ygd7tPpcmt1gMWISTFxL
-	 iTbRaCRExEjXw==
-Date: Wed, 22 Oct 2025 10:59:34 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: David Sterba <dsterba@suse.cz>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Ard Biesheuvel <ardb@kernel.org>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>
-Subject: Re: [PATCH 10/10] btrfs: switch to library APIs for checksums
-Message-ID: <20251022175934.GA1646@quark>
-References: <20251018043106.375964-1-ebiggers@kernel.org>
- <20251018043106.375964-11-ebiggers@kernel.org>
- <20251022071141.GV13776@twin.jikos.cz>
+	s=arc-20240116; t=1761165348; c=relaxed/simple;
+	bh=2cxfKcDEODy6pCnCaL2blCLMjBr1cK2izFz94UIDHgs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uinGPs8V8A6VypoP2BSbP2MCBuPCU2hSNCqYATDnGYzJ46bJaJSUqz21D+s//wZn0VQTu4+lMbfYNDcRZuWLDQhE28XMOgOsaLCcddvk0FuJXTjXUy4qWS3ARkgh18Zetk9J1IBFvMnL3faVcGhg9Y1+DgbC2oVVkmtC68FGYYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk; spf=pass smtp.mailfrom=rasmusvillemoes.dk; dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b=QNsi1kQn; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rasmusvillemoes.dk
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-59054fc6a45so34574e87.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Oct 2025 13:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google; t=1761165344; x=1761770144; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LMw5jZQPup9g3YG0Oz0iv+PzvnuGVP0BVvdcPTvpZm0=;
+        b=QNsi1kQnHXV6j7eeo74TIcDIRHcD29xPqwFrKYzHmOiWrUoUbJkxy+Ef57Wc2b2mKy
+         JcXMxnzgXVIzU7mQHKfsO83MRzAnROIwNiQHn6BzTK5NerGSBpPdgF0p8jmHb8VH9Vkh
+         UgTsXIM6KeiMv0eF0sgSaoGJKazp+BkzDQqYE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761165344; x=1761770144;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LMw5jZQPup9g3YG0Oz0iv+PzvnuGVP0BVvdcPTvpZm0=;
+        b=wpS9sCO5A8rkuiZeBVEa2wcacYjh5ftqybC4ULXWR5kKzfx+RnhqY4MedXn/8IHGdb
+         5v8LqB2SduBJQnZNs9Yw/UAjieXrf1cC1PuZgE3eUfmaEJsKk8QxMTwUsvaaBKbGdO29
+         UMvFm5KgO07L8w2m4IssHkyOZENQpAc6WGDmhPJdsqtuOYjJQn6g9ltHgwZiDHnr/iwu
+         LTAgmxohNRSqNMQX62P7IXpH6ib3zlrJw+OPWRftAIhJoOCgR0uUwXQFFjTwEQgKaxnD
+         FyE4/6Hvz8sJkyouoZXBKlt0IYXw1b6Zxvm2WpXrbHBeoWfI+1+4v4N2DVCE0DOmXlAn
+         Xncg==
+X-Forwarded-Encrypted: i=1; AJvYcCW1w7X+sOBT+NBcgItwyb0MC5FqlSSO2jgcZ+xNzI2irVCrY0S02lBbOJOpmlNVJynfG7rMp3Z/1u55BQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxviqAlyKeynX0mQnVk1/17lhMl66ZOTf77aPn9pJQLJk7izbsG
+	4g+/AAqvk86DYuJvlutGDhgHPP1+OwrgpLXtLv2pavSgt0NNJRLyEu19mFQmxj46nW2zrtlBLje
+	mgdBCvslJLAZz4Z+OJIpzVRkLm5I/Ff8Va1g8ii3Yvg==
+X-Gm-Gg: ASbGncsNShE8wkP2Uva5HA8D7Z3XG0vsgQyZ0tAcxRKPuVlJtal3WyXWXPfvq80BQGJ
+	hls/J2SS8xGaNgLOHt4zOsKKFXjYZIbOXqek4ER7JDiEGtaG5gm9C85y2tebGN3EnhgxIwhQ7KX
+	fDv82A6A0erGxbXNqUxMqgc8PzhiuhtluueXVnftVpOr65XlneImVuwqoXJIBEOOhlheXSoOHeS
+	LbpqHw0Nu3WB1gdqFA+XVNgsn930fdCdZvsS9bsWVFyGFmdHhzHFxEultVIWWZyeGJRXC8=
+X-Google-Smtp-Source: AGHT+IEqEBVACi1YcC1SpJd4luWvkP6aLuiEGroj5IFfdtGpoHO2kPMFI69n7EYmjpjml879goNVziQnPMkG4/QzhgQ=
+X-Received: by 2002:a05:6512:3e0a:b0:591:c6a9:8965 with SMTP id
+ 2adb3069b0e04-591d854ad45mr7124026e87.22.1761165344127; Wed, 22 Oct 2025
+ 13:35:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251022071141.GV13776@twin.jikos.cz>
+References: <20251020142228.1819871-1-linux@rasmusvillemoes.dk>
+ <20251020142228.1819871-2-linux@rasmusvillemoes.dk> <20251022161505.GA1226098@ax162>
+In-Reply-To: <20251022161505.GA1226098@ax162>
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date: Wed, 22 Oct 2025 22:35:33 +0200
+X-Gm-Features: AWmQ_blW_-p5u4SxGYMDuz_qV5arxA5u-tJWQ-wqhr-hNbNYZxPO4wEWfhH9Lec
+Message-ID: <CAKwiHFiMAm-DX3aERH_F1UooiM1YUiMaax51exhRg2=1ND2VCw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] Kbuild: enable -fms-extensions
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, David Sterba <dsterba@suse.com>, 
+	linux-btrfs@vger.kernel.org, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Oct 22, 2025 at 09:11:41AM +0200, David Sterba wrote:
-> On Fri, Oct 17, 2025 at 09:31:06PM -0700, Eric Biggers wrote:
-> > Make btrfs use the library APIs instead of crypto_shash, for all
-> > checksum computations.  This has many benefits:
-> > 
-> > - Allows future checksum types, e.g. XXH3 or CRC64, to be more easily
-> >   supported.  Only a library API will be needed, not crypto_shash too.
-> > 
-> > - Eliminates the overhead of the generic crypto layer, including an
-> >   indirect call for every function call and other API overhead.  A
-> >   microbenchmark of btrfs_check_read_bio() with crc32c checksums shows a
-> >   speedup from 658 cycles to 608 cycles per 4096-byte block.
-> > 
-> > - Decreases the stack usage of btrfs by reducing the size of checksum
-> >   contexts from 384 bytes to 240 bytes, and by eliminating the need for
-> >   some functions to declare a checksum context at all.
-> > 
-> > - Increases reliability.  The library functions always succeed and
-> >   return void.  In contrast, crypto_shash can fail and return errors.
-> >   Also, the library functions are guaranteed to be available when btrfs
-> >   is loaded; there's no longer any need to use module softdeps to try to
-> >   work around the crypto modules sometimes not being loaded.
-> > 
-> > - Fixes a bug where blake2b checksums didn't work on kernels booted with
-> >   fips=1.  Since btrfs checksums are for integrity only, it's fine for
-> >   them to use non-FIPS-approved algorithms.
-> > 
-> > Note that with having to handle 4 algorithms instead of just 1-2, this
-> > commit does result in a slightly positive diffstat.  That being said,
-> > this wouldn't have been the case if btrfs had actually checked for
-> > errors from crypto_shash, which technically it should have been doing.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@kernel.org>
-> 
-> Thanks, this simplifies quite a few things. I'd like to take it via the
-> btrfs tree as there may be the hash additions (XXH3, BLAKE3) but
-> currently I'm not sure if it won't make things more complicated. I
-> haven't started the kernel part yet so I can use this patchset for
-> development and rebase once it's merged. 
+On Wed, 22 Oct 2025 at 18:15, Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Mon, Oct 20, 2025 at 04:22:27PM +0200, Rasmus Villemoes wrote:
 
-Great.  I'm planning to take patches 1-9 through libcrypto-next for
-6.19.  You can then take patch 10 through the btrfs tree for 6.20.  Does
-that sound good?  We can work out the XXH3 and BLAKE3 support later.  If
-you'd like to add another checksum algorithm, I'd suggest picking just
-one.  btrfs already supports an awful lot of choices for the checksum.
-But we can discuss that later.
+> > +# Allow including a tagged struct or union anonymously in another struct/union.
+> > +KBUILD_CFLAGS += -fms-extensions
+> > +
+> > +# For clang, the -fms-extensions flag is apparently not enough to
+> > +# express one's intention to make use of those extensions.
+> > +ifdef CONFIG_CC_IS_CLANG
+> > +KBUILD_CFLAGS += -Wno-microsoft-anon-tag
+> > +endif
+>
+> I think this should go in the first 'ifdef CONFIG_CC_IS_CLANG' block in
+> scripts/Makefile.extrawarn below '-Wno-gnu' with a comment that is
+> similar in nature, which could even be combined like
+>
+>   # The kernel builds with '-std-gnu11' and '-fms-extensions' so the use
+>   # of GNU and Microsoft extensions is acceptable.
+>
+> Other than that, this seems fine to me.
 
-- Eric
+I honestly had no idea where it was best to put these, and your
+suggestion sounds quite reasonable. I didn't think to look in that
+Makefile.extrawarn as the name suggested that was only about what
+happens with W=1 and higher.
+
+Feel free to tweak when applying.
+
+Rasmus
 
