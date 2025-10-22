@@ -1,101 +1,103 @@
-Return-Path: <linux-btrfs+bounces-18149-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18150-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34951BFA4B4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 08:46:49 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4432BFA7AF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 09:12:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CFA804FEB69
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 06:46:30 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 42D5B4FFE1F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 07:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 628C32F25FC;
-	Wed, 22 Oct 2025 06:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF0142F546D;
+	Wed, 22 Oct 2025 07:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="X3OKn4gO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+MhIWEiY";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JXrJKhnP";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="v+x/oVuc"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uwyl57t8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ugWAT5ne";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Nz14d9Rp";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2CbetMO3"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167052F0C7B
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Oct 2025 06:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B0312EAB6F
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Oct 2025 07:11:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761115584; cv=none; b=XQqos+bZBOn29+wsp15kwrkKWct2qXl3uMqH7gPZIB2xtMo+VXiNP6CbshHrMEoJ2RgElnPSuij4DMPDWGyAL0WNJlJvs4ctydd2vKYLIIUE+nPUabJs1ge34XSuKDIvGgfedvyEBlPenM5OdrHTqCqlCXBEL+dtLVb6arOfmuQ=
+	t=1761117115; cv=none; b=X2KKxTkErolg+iRHiXVZSEOgVjSATQEXACMBepC1bQDL8j4nuchZ8C6fjvJxHYumS2zka6K0zjj2PXyJzpjea1/9L05GQOwbpKzZx/cRZ4WSxSYeayGYNOW52zukhjbMt3TNTkDzwwy/L+7jVhrU/WspOBaY8gxFkQkzHKDmw2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761115584; c=relaxed/simple;
-	bh=rT5j7DnsGzynQjycM8WKWJ0+OE5t5mDOHwur2zBv0nM=;
+	s=arc-20240116; t=1761117115; c=relaxed/simple;
+	bh=lFxy0NK1X/El45Qs3Wjm9AlJrpb5J9XKmRCy6hI9130=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FVg6gKH0dILwmF3vgEJbATWoyXkZvdV32NOiiwOun0Kp9suKOP1lwY0zn22v8fwW9zDDNag5C0dG00aanlh/sVfUe+Ik1om8PmJb3LlLfABaOP3dqwHnlpZ/30YnpoMMVmVXUfuWhmedaPGyijTqGeIZnxihtHXXMiLrtV8KzoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=X3OKn4gO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+MhIWEiY; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JXrJKhnP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=v+x/oVuc; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=tDf09S+I3cOWhZmq7NLFdFU7oz1Z9zXrOZ4Gqc48I5G2SxDQCHRaSHFEKw8mBxvgnXXEbp7IASFOsC44MIu0HAjOaARQedqQRPJPnIvU51CmEr33U4mkgakR+/JTE9aR/Q3QgSw0XE114CK1GvVSn22ALgT18+/stVGPF1Si3EY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uwyl57t8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ugWAT5ne; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Nz14d9Rp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2CbetMO3; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 235021F395;
-	Wed, 22 Oct 2025 06:46:13 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 239FE1F397;
+	Wed, 22 Oct 2025 07:11:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761115577;
+	t=1761117107;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vqYeam+WpGDQVVYjfdzIBNySwYmnxi/sx15/t/lWV1M=;
-	b=X3OKn4gOZ3ISif8hjVyqpDNuXBgsqKW9heLlttJCNbYny07w0r7nlsO3Taf/touPBMm7fx
-	V0412//Mmn4W/hhalTLH+WSPSJ20dH/ThLwkCXg4La/f+6gMuEebIjtP8XRguVFZUfiDX4
-	mJ68UIXIVZ+EMMiZ7bVTv2/qtg15YVM=
+	bh=bCo6c3jOZCaszWTotbd5IGeLwwS2UDsyK+Ikn6++0Po=;
+	b=uwyl57t81guhonppnXFDGMXfR9U7SWkuCFBhChzVol4xQBLUSuzn0vE3zVnroUarlwG8az
+	8inLHxz9uQBj8/nMVAq638zCJxrpfbV347iysJTXbv0YZYVfzYfiazWkTiKsxheKoNXzMx
+	k9yUr4Ck5sSmOF1zucXr97+dnPOPG6M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761115577;
+	s=susede2_ed25519; t=1761117107;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vqYeam+WpGDQVVYjfdzIBNySwYmnxi/sx15/t/lWV1M=;
-	b=+MhIWEiYH3TD5x01VCQgWcfA/CI5RJFBms0lkgsgLf6Ub3Nm5iE4VIR41pAt0IJgXb73eI
-	4LDb2lL7j50BevBQ==
+	bh=bCo6c3jOZCaszWTotbd5IGeLwwS2UDsyK+Ikn6++0Po=;
+	b=ugWAT5ne/R5Uah2/TnNa3gI2htSG4EnlTGU3w6Kl45ggvUjN+4lut8u3dXWgBspObgqLBn
+	i3Xra7Ck8l9/Q6Aw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761115573;
+	t=1761117103;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vqYeam+WpGDQVVYjfdzIBNySwYmnxi/sx15/t/lWV1M=;
-	b=JXrJKhnPSZPKHW6UD9A+cvhTqvb6B1wNPCqudHAfZ9pcHM54tQsXjjMENzVl+z9oLhV6fc
-	/DJyDnfucOF99uIbQOXbShHpJJYc8zVcqJcJ8pRtqmTc6SINfZj3lMPs5LAuENVxJcez3l
-	/y9gss+0mTDs2OgMfV8Hg3UbH3p1eMA=
+	bh=bCo6c3jOZCaszWTotbd5IGeLwwS2UDsyK+Ikn6++0Po=;
+	b=Nz14d9Rpu4YM6XFzzL3V01i3AKFihaFLwOi9Xtd1MRq+ewjQte5pYedDmNdlKN2SzFKQYs
+	qxT6/s/ZGoB4cjd/0ej5Egw10+wRs2QdL8iu9anPR8O8kjB0FNUVsmmXDONP4bXb3l/2oB
+	HRQzUIWtu+xpL/d1xFmlS/7RRF39ycU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761115573;
+	s=susede2_ed25519; t=1761117103;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vqYeam+WpGDQVVYjfdzIBNySwYmnxi/sx15/t/lWV1M=;
-	b=v+x/oVucXMXc8wnsAOerd6bCAEL+76cWXgxEvCUa6vP+ZIJLCLiFJdpz8cfuOYxhXCeLvy
-	1cMdok+fu2GCOdDQ==
+	bh=bCo6c3jOZCaszWTotbd5IGeLwwS2UDsyK+Ikn6++0Po=;
+	b=2CbetMO3lkdIzGNlIxl8ebU5307el5FJS9UnUP+rsBIIL4JcxlrJJCmefxy6qJcF5nCf5o
+	hqKE8JlAFQ8aygBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 07A9013A29;
-	Wed, 22 Oct 2025 06:46:13 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0F9231339F;
+	Wed, 22 Oct 2025 07:11:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id RRO0AbV9+GjPawAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 22 Oct 2025 06:46:13 +0000
-Date: Wed, 22 Oct 2025 08:46:07 +0200
+	id VeGiA6+D+GgRBAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 22 Oct 2025 07:11:43 +0000
+Date: Wed, 22 Oct 2025 09:11:41 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Amit Dhingra <mechanicalamit@gmail.com>
-Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	dan.carpenter@linaro.org
-Subject: Re: [PATCH] fix IS_ERR() vs NULL Check in btrfs_build_ref_tree()
-Message-ID: <20251022064607.GU13776@twin.jikos.cz>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCH 10/10] btrfs: switch to library APIs for checksums
+Message-ID: <20251022071141.GV13776@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <CAO=gReGBaUiodShe-Dmir=XVkjOoP0rdvx=BGP79URrZOOmNyA@mail.gmail.com>
+References: <20251018043106.375964-1-ebiggers@kernel.org>
+ <20251018043106.375964-11-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -104,44 +106,68 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAO=gReGBaUiodShe-Dmir=XVkjOoP0rdvx=BGP79URrZOOmNyA@mail.gmail.com>
+In-Reply-To: <20251018043106.375964-11-ebiggers@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Level: 
 X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
+	FROM_HAS_DN(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
 	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
 	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 X-Spam-Flag: NO
 X-Spam-Score: -4.00
 
-On Tue, Oct 21, 2025 at 07:07:20AM -0500, Amit Dhingra wrote:
-> btrfs_extent_root()/btrfs_global_root() does not return error pointers,
-> it returns NULL on error.
+On Fri, Oct 17, 2025 at 09:31:06PM -0700, Eric Biggers wrote:
+> Make btrfs use the library APIs instead of crypto_shash, for all
+> checksum computations.  This has many benefits:
 > 
-> Fixes : ed4e6b5d644c ("btrfs: ref-verify: handle damaged extent root tree")
-> Signed-off-by: Amit Dhingra <mechanicalamit@gmail.com>
-> ---
-> Compile tested only
+> - Allows future checksum types, e.g. XXH3 or CRC64, to be more easily
+>   supported.  Only a library API will be needed, not crypto_shash too.
+> 
+> - Eliminates the overhead of the generic crypto layer, including an
+>   indirect call for every function call and other API overhead.  A
+>   microbenchmark of btrfs_check_read_bio() with crc32c checksums shows a
+>   speedup from 658 cycles to 608 cycles per 4096-byte block.
+> 
+> - Decreases the stack usage of btrfs by reducing the size of checksum
+>   contexts from 384 bytes to 240 bytes, and by eliminating the need for
+>   some functions to declare a checksum context at all.
+> 
+> - Increases reliability.  The library functions always succeed and
+>   return void.  In contrast, crypto_shash can fail and return errors.
+>   Also, the library functions are guaranteed to be available when btrfs
+>   is loaded; there's no longer any need to use module softdeps to try to
+>   work around the crypto modules sometimes not being loaded.
+> 
+> - Fixes a bug where blake2b checksums didn't work on kernels booted with
+>   fips=1.  Since btrfs checksums are for integrity only, it's fine for
+>   them to use non-FIPS-approved algorithms.
+> 
+> Note that with having to handle 4 algorithms instead of just 1-2, this
+> commit does result in a slightly positive diffstat.  That being said,
+> this wouldn't have been the case if btrfs had actually checked for
+> errors from crypto_shash, which technically it should have been doing.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 
-Thanks. This was also reported by Dan Carpenter in
-https://lore.kernel.org/all/aNJfvxj0anEnk9Dm@stanley.mountain/
-but there was no fixup done. I'll add Reported-by.
+Thanks, this simplifies quite a few things. I'd like to take it via the
+btrfs tree as there may be the hash additions (XXH3, BLAKE3) but
+currently I'm not sure if it won't make things more complicated. I
+haven't started the kernel part yet so I can use this patchset for
+development and rebase once it's merged. 
 
