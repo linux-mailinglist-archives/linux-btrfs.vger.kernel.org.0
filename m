@@ -1,111 +1,134 @@
-Return-Path: <linux-btrfs+bounces-18172-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18174-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E061DBFE42B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 23:11:57 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05BEEBFE80D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 01:14:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F9B93A8323
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 21:11:46 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 85DC34FEAAA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Oct 2025 23:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4893530215A;
-	Wed, 22 Oct 2025 21:11:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A449E309EE4;
+	Wed, 22 Oct 2025 23:13:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DJmitPwV"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="BZWmGKO9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f100.google.com (mail-lf1-f100.google.com [209.85.167.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D81F301489;
-	Wed, 22 Oct 2025 21:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6373081B2
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Oct 2025 23:13:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761167498; cv=none; b=T2SqpqRIBlmFHoHykuOMmo2pVna48Sb07BsDPWBQcyJHzqjHvl5P03xapcKmow+I4R7SC8yLPHhuI9rOOD13SWHWEIIKi8jDxLf8jqlx4PUADTvRHtzy6VRi1MeKI/QAoVWcBCJ3vJR/9g2MY55GmC+q8zj55waAJcYS1+619gY=
+	t=1761174825; cv=none; b=oQJIbAGM4HihwDHh7VUd46Zgkd/qvEZH67e7psUAKWPoptOpdnSgVz748KgJgeoum16Ro0cnAqB57QpzmbSvSMCX0oS5tEogel2El+NY5LZlLoPT5WEZvuU67mgFeKexXGNbvOzXFJni1KPoHyDmK+64FI91QKH/DJ8no5o3kAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761167498; c=relaxed/simple;
-	bh=fuasEY/k35VNWMkadGPOeA6z1Miu6p/9NnKbua0vPQA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Skfq3QmcKdcm1Zv9UXQiqqVbLA4+p89bX+ewBmZJcQ0tVvhCXoG6jw765HN1T/gVMs/sPokHthBUcqsPkCCqPtApiRhAtXwleI0SHTv0eSXSIZUVORkP4MKuBLvTUQxM29DmDQs9rnztmywZiyD4OhAZcYFys2UTimVMe+S/CMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DJmitPwV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DA73C4CEFF;
-	Wed, 22 Oct 2025 21:11:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761167498;
-	bh=fuasEY/k35VNWMkadGPOeA6z1Miu6p/9NnKbua0vPQA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DJmitPwVwcHfnUendGCJUzxCHm3rEnlhpzqo+Iu9vjWHMYcuJqrSpuHjlxTNCRCOr
-	 4rr4UO3iWDsN6N8zJJIwdRo2ALUomWFxZEVFoxMIQ+MrhasmPP5rHrh7o52FrZQdEo
-	 NR94v/s7MbInPDjKHCcezIy/Hh3ecd6rdbSviKE4RkCFwCd5BKt8Rd209UqWEr5hr6
-	 wpT420V6tFcsshF6x2iHf6L5862LF2t5tgYm7VmVkxaB9ku9S8s3p7oCRGBlgu3D08
-	 bcehbjOX1zZmVJVqwVdq3lbja/QZFgiIOFB4V+wKJXUIqZocpikk2gmvTv2YpxhxOC
-	 4d7F58qFcvTyA==
-Date: Wed, 22 Oct 2025 23:11:33 +0200
-From: Nathan Chancellor <nathan@kernel.org>
-To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH 1/2] Kbuild: enable -fms-extensions
-Message-ID: <20251022211133.GA2063489@ax162>
-References: <20251020142228.1819871-1-linux@rasmusvillemoes.dk>
- <20251020142228.1819871-2-linux@rasmusvillemoes.dk>
- <20251022161505.GA1226098@ax162>
- <CAKwiHFiMAm-DX3aERH_F1UooiM1YUiMaax51exhRg2=1ND2VCw@mail.gmail.com>
+	s=arc-20240116; t=1761174825; c=relaxed/simple;
+	bh=+8TQGyg0ZV97+kPFYJBnRauC5Q+QxqG5BEUv/mu4y9A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ebC7TohJQrU3OXGTjXqP8c5CvddaZgQ/QgPjor9JE8pPkdux0CfPhs2ZKIsHfWv9ei5Nw7ExBvzCak9+9eSqIQS8M7Z0V1SXOFBZuYIIIcXpWgxWzNyT0U16gTH79yPccYlIfHifNXtnQU5omKclqq7KjTRU9vfCaZzRCZa/03k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=BZWmGKO9; arc=none smtp.client-ip=209.85.167.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-lf1-f100.google.com with SMTP id 2adb3069b0e04-592f2c6fe9eso21087e87.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Oct 2025 16:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1761174821; x=1761779621; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NEb7Tz++jPbBE/mHfoATYrwfDk87qKz0eD7ACfLRyGs=;
+        b=BZWmGKO95mD2clfYM/PYqVpX7rGOPzXaBNdIxo6ldORmYIU9uBypqtCxh4clf8sg7p
+         bbPfaMsN7iLQ3zmHfVqgp0KZOJTmocZJh605cfVR6RZ4eyuZEiryrUz3UjN6sJcbRuLw
+         8B+Fd7EYoRGQnTx1q4yLgQoa/iMRapBsKvpc+cu8J5u96XjxcKdReTAR0i3usD+gUIre
+         5xBkmT5LrdNzzrK7Ea0M1dpI+W25Hwuhn1oeXWrTL6cRWN18YvIfFRWWY2/QkX2n22G1
+         iAWc4OQMve7TJLXWQbXzftDQIj1GtrxTS5Zw+8nVeEACw2dcTAO60Gd6UwnK9A8E7KtU
+         3Kyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761174821; x=1761779621;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NEb7Tz++jPbBE/mHfoATYrwfDk87qKz0eD7ACfLRyGs=;
+        b=PxoOUryeCghkLMoJfzoR8/1cRunGVk61Zb9fYUZWu0j1rszN9WyaTCvFbuGE893xBT
+         pkIr3s/JRUk8d3SWpPcGtRB1F4FHy2EYLD/83XUjfZOW/76/9h88ASw+lkhF/2OTEQ+3
+         6exWcfUz2ccvtkDKCrZa4woTNlufqG1O4goM2mIJdvxiXMJiLCgjHyIBhtQaDE6bZtcE
+         FaiGGqdLUQxD56mn/CEXcE2MudGgae8pTl/5nitIfaxU3sQCZmgZhnqY16y6JdqrmX7I
+         I7ppTy/1A2n/wuZx6J0gfHNUSpUFU4USWfkxfx1il2xxYVhmWdf+lsijEcD5WWFE0BOt
+         gHIw==
+X-Forwarded-Encrypted: i=1; AJvYcCVNOo3/YzCAth85vtDBe1s0wMAQt7o20gq3xG/DQVF+4rWh9VZCV19xaSviTtfCwGCkm+kEpuKHi16EnQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTt2U8+oA2dGgD8xAQEbGX99qr1PgVg7CNuvatbR0Vl6qoR4mV
+	oaEvIMtw/U44vdYJAJCwsyqPdl3VI5ZyMe19rqoQqjd91wUvNUeNMtqu2B+HVebrDZfJwjFaF3y
+	xhQWXra2BlAzY8mQ2Q2J0Bl72jukakbWybpiTWLcXWX5k0uv9e+Ic
+X-Gm-Gg: ASbGncsZVsFLez6KtIC80a28hTv14kx0/U7vrWnwiez7rA5eIjkqEjOBRnz+rKdv9lo
+	dD3KFT4Z3doi5bj5PHvSiv8ZkmWLxLawuokia3rVLOk+bD6uN6FUVEPbedOS2KjFPzqZJneUZUr
+	QYf2LehyWWG/KdbF84XASMP4BlNP5CXGiNSNFqcdOXGvXFUjA9tU/l0FgwvM2NpcBws3zfKbgV7
+	nOTZAKJk3+XODCYuja8d1deMTjd5Xqzl/vC624zh0+SvwdCcbJkoJ7SPUgkJc/FAf/vRf7BUUML
+	qnivUyqvrhsJ0S5kNqam3i6dsMJj76Foozh+BsQEXDbivvh4mR63zPM5h8wfXyH8XjALOwGmb5I
+	fBTS0Z3lTY7WU64GX
+X-Google-Smtp-Source: AGHT+IE8YXW1bqh82Pv83CqBL++4EorD9wKI8kSNSxyaHaZobY7QUQj2BR1bXjAEiGky/6dYa+2+odrIWp7W
+X-Received: by 2002:a05:6512:131a:b0:57e:ed2d:190f with SMTP id 2adb3069b0e04-591d8598d06mr3612400e87.7.1761174820409;
+        Wed, 22 Oct 2025 16:13:40 -0700 (PDT)
+Received: from c7-smtp-2023.dev.purestorage.com ([2620:125:9017:12:36:3:5:0])
+        by smtp-relay.gmail.com with ESMTPS id 2adb3069b0e04-592f4aa2259sm40463e87.0.2025.10.22.16.13.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Oct 2025 16:13:40 -0700 (PDT)
+X-Relaying-Domain: purestorage.com
+Received: from dev-csander.dev.purestorage.com (unknown [IPv6:2620:125:9007:640:ffff::1199])
+	by c7-smtp-2023.dev.purestorage.com (Postfix) with ESMTP id 86E1B340283;
+	Wed, 22 Oct 2025 17:13:37 -0600 (MDT)
+Received: by dev-csander.dev.purestorage.com (Postfix, from userid 1557716354)
+	id 7A5DAE4181C; Wed, 22 Oct 2025 17:13:37 -0600 (MDT)
+From: Caleb Sander Mateos <csander@purestorage.com>
+To: Jens Axboe <axboe@kernel.dk>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Ming Lei <ming.lei@redhat.com>,
+	Keith Busch <kbusch@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>
+Cc: io-uring@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-nvme@lists.infradead.org,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Caleb Sander Mateos <csander@purestorage.com>
+Subject: [PATCH 0/3] io_uring/uring_cmd: avoid double indirect call in task work dispatch
+Date: Wed, 22 Oct 2025 17:13:23 -0600
+Message-ID: <20251022231326.2527838-1-csander@purestorage.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwiHFiMAm-DX3aERH_F1UooiM1YUiMaax51exhRg2=1ND2VCw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 22, 2025 at 10:35:33PM +0200, Rasmus Villemoes wrote:
-> On Wed, 22 Oct 2025 at 18:15, Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > On Mon, Oct 20, 2025 at 04:22:27PM +0200, Rasmus Villemoes wrote:
-> 
-> > > +# Allow including a tagged struct or union anonymously in another struct/union.
-> > > +KBUILD_CFLAGS += -fms-extensions
-> > > +
-> > > +# For clang, the -fms-extensions flag is apparently not enough to
-> > > +# express one's intention to make use of those extensions.
-> > > +ifdef CONFIG_CC_IS_CLANG
-> > > +KBUILD_CFLAGS += -Wno-microsoft-anon-tag
-> > > +endif
-> >
-> > I think this should go in the first 'ifdef CONFIG_CC_IS_CLANG' block in
-> > scripts/Makefile.extrawarn below '-Wno-gnu' with a comment that is
-> > similar in nature, which could even be combined like
-> >
-> >   # The kernel builds with '-std-gnu11' and '-fms-extensions' so the use
-> >   # of GNU and Microsoft extensions is acceptable.
-> >
-> > Other than that, this seems fine to me.
-> 
-> I honestly had no idea where it was best to put these, and your
-> suggestion sounds quite reasonable. I didn't think to look in that
-> Makefile.extrawarn as the name suggested that was only about what
-> happens with W=1 and higher.
+Define a io_req_tw_func_t wrapper function around each io_uring_cmd_tw_t
+function to avoid the additional indirect call and save 8 bytes in
+struct io_uring_cmd. Additionally avoid the io_should_terminate_tw()
+computation in uring_cmd task work callbacks that don't need it.
 
-Yeah, we may want to rename that to just Makefile.warn since it
-encompasses all warnings since commit e88ca24319e4 ("kbuild: consolidate
-warning flags in scripts/Makefile.extrawarn"), which is actually
-feedback I gave on the original change:
+Caleb Sander Mateos (3):
+  io_uring: expose io_should_terminate_tw()
+  io_uring/uring_cmd: call io_should_terminate_tw() when needed
+  io_uring/uring_cmd: avoid double indirect call in task work dispatch
 
-https://lore.kernel.org/20230811141943.GB3948268@dev-arch.thelio-3990X/
+ block/ioctl.c                  |  1 +
+ drivers/block/ublk_drv.c       |  3 +++
+ drivers/nvme/host/ioctl.c      |  1 +
+ fs/btrfs/ioctl.c               |  1 +
+ fs/fuse/dev_uring.c            |  3 ++-
+ include/linux/io_uring.h       | 14 +++++++++++
+ include/linux/io_uring/cmd.h   | 46 ++++++++++++++++++++++------------
+ include/linux/io_uring_types.h |  1 -
+ io_uring/io_uring.h            | 13 ----------
+ io_uring/uring_cmd.c           | 17 ++-----------
+ 10 files changed, 54 insertions(+), 46 deletions(-)
 
-I'll send a patch for that soon.
+-- 
+2.45.2
 
-> Feel free to tweak when applying.
-
-I have tentatively applied this to kbuild-next so that it can spend most
-of the cycle in -next to try and catch all potential problems.
-
-Cheers,
-Nathan
 
