@@ -1,90 +1,75 @@
-Return-Path: <linux-btrfs+bounces-18230-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18231-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 700DCC03D53
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 01:27:49 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7885FC03DFB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 01:42:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44AA31A67AF2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 23:28:13 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D011B34D20D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 23:42:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F692D94AD;
-	Thu, 23 Oct 2025 23:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51DB2E2840;
+	Thu, 23 Oct 2025 23:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="azDWi5dA"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ktmGf7Hn";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uFzgVvat"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f196.google.com (mail-yw1-f196.google.com [209.85.128.196])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2867A2D8DCF
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 23:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D09D14B06C
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 23:42:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761262062; cv=none; b=cryXPK7Rcng54PGdkBmwQpWCbYS3IPu8E98yzFcrq+LK8OQLKmHcCtkSAePPA2Ma9B+wUSEBpbydG93pAIqfzkbdwPH5dXUNDJKY9EbI+ZUQeyTD4lmeUJSJKo5+K2Wlp/S7/27vqjNXQ7YMcAu9huZ7YpUZ4hFVTQFcrqFDLwY=
+	t=1761262943; cv=none; b=TKjMSQATonxHnxQKov4RLEZXc2dVQ5+8CQVjq3PiIAUSFeeM6iUCp944UyjLyxssJtCvPdrkDlNL/Ru+4UtXcZGdEW66qF5hcjCPkmbkdGgcSDl5kEHbKtCZKVFiozOdj3EW7VPlWn+Ax9nWDW9xAORArxAQfqJzuseMWsiqBtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761262062; c=relaxed/simple;
-	bh=oLWB1JjIUniwvSP94WAi+kNR8LYJj6M2eqjRoyXYKDc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UTVgEAUXICvcvt+nC3MSpX3UYPsJXKLp8Yiz5v+vJqk+eOdfgw3I7+ddtb5L1KuzZsJ/h/yRCKv0+fnEwQCPcdObYE3NVwMD6C5OW8z/97FyLJTDVJo+oRxSes2Acj/7pGRGP/9eoT27MORkLPkYS/XKjCFWaF5/hYM9/jHECC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=azDWi5dA; arc=none smtp.client-ip=209.85.128.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f196.google.com with SMTP id 00721157ae682-784826b75a4so17120857b3.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 16:27:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761262060; x=1761866860; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YREhDn4ZuHDUKK5dCqhE4p9/lHYpXCfBXAOyZczE1hk=;
-        b=azDWi5dAdU/ROwcs0gq6773duif3O4pe0UEQiVeRUGt57+Uzzxhxjx0Kk8gIXkrPjG
-         Iq3QvMU3v909Pgj4geAgsueluHtGSkcwRAXdJluskSuXlkpUEkto/N7q5l21NnayYouT
-         Jd/ytf6vHqD91JLOdi3UmBeDRdnZQMl/oiaPlDJ3K9QT9VUjWSxPfUZGkYmS+u7k0Hez
-         jIqXBNl//kFkQzxu8OTzyi5PWBCniyd/vJGnHW4HkpBzax0rOFpI8oYJ4BV+pAwQruch
-         JGcZb847qmmkNTJ7kR9gpSBjHN11XfWVARlLsmSR0hOIfWlT0w4u3qgQMll8HOuKd/zH
-         BHFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761262060; x=1761866860;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YREhDn4ZuHDUKK5dCqhE4p9/lHYpXCfBXAOyZczE1hk=;
-        b=ogoZPO61C5+iWN+Lnvh0KIfnQCzsHQ3Hn6/zMwvDQNMW9yxQVy+O3mnONdNNxx5MYW
-         P0a4JDg78QjBJMouptNfVUntmNZCZ8LfNhpDxGUaMLFVHut+ywEGYRGJVV/Hxz2FG8Se
-         meWrrJk9omXRKmIGu+K4BN2DPIrDMrobevfaTaslwemHIBi+v8umlk074tUt9NTPUGhf
-         +tiXTkolG0fU+JH5ppxMJP17Gq9E0ShlUzqmEsihUqo+E4Oqc6NFEoM8PhJPqHS2JpCC
-         6kHgIXh7coCPDMOGDyMKHYDDmfZ5ggg+TSHI1zRNgrHVOD3lOY7h9J2C0OugVywi3MPk
-         J+wQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU5ut8wPhWaUfNmSo//ZU7AZ2Kt9K+Vt6lX69I63WYSFmChjdTWxeN22b5UA7v0Rkaqf0EYUCY3EdchzQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxVWYM7sW10+YyfeD/PvgEZ4ziJXaDy4KnKOSCpAPiTJvDHGmpQ
-	8/0wBPFZ4U2HbYHRpufW3K351xQYvGIUz7bHMj7torCp7VATqz9F+B0R
-X-Gm-Gg: ASbGncugZiu7XcH5fZfl00dSn3GJfOPCWUGVvKdiY7Mn4J9jBa/9URSalm32ta9oAYw
-	dQz+2JrEBNk5l5M9pAE8crxqKuAJ9sC6rigm2lL2LOe+yQts9+LZpNYHRGL8J9Gxq3mdk1+tjpo
-	pxKOwemEHIkTRQga8CVlwt/gIhQKmXelypsQ5nA/G7hZSUu04Okft9OcFZeLNgrbJ3P+x1eYKWw
-	tyTrT6vbtB7ptdVI5KN4Ds8NZUq/aIDbEsEuFAZBgjwD9B10VG4dZ+RU+fx0Mj+Bwe3I0z0Sayc
-	T6rQZTL2FVCjqnAis7dXQsPmfsWcCUSg23faSAALB7mO++HAs0JRZ0Ndvq8i587XGw29mB2I5Kq
-	5D2pVzRwjur8U8TtyPB5CBCfMxy8lAZh+31FZqAsqPFRrx4ePVR7t+/3XQOyjcqdqyqFs35UclY
-	JVaMVDBe0lqMKU8SWlIOMP/B0X3Rid
-X-Google-Smtp-Source: AGHT+IHlRFBz3K9vr/Ux0KYota5J91YdojxHcdEKJeKAesFmyAR+elhDANVl/nxLZfl3W/M8BWjrDQ==
-X-Received: by 2002:a05:690e:1186:b0:63e:2d1a:b41b with SMTP id 956f58d0204a3-63e2d1ab4a3mr15792758d50.30.1761262059931;
-        Thu, 23 Oct 2025 16:27:39 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:42::])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-63f37a06e5esm1061849d50.16.2025.10.23.16.27.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Oct 2025 16:27:39 -0700 (PDT)
-From: Leo Martins <loemra.dev@gmail.com>
-To: Boris Burkov <boris@bur.io>
-Cc: Chris Murphy <lists@colorremedies.com>,
-	kernel-team@fb.com,
-	Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: make periodic dynamic reclaim the default for data
-Date: Thu, 23 Oct 2025 16:27:35 -0700
-Message-ID: <20251023232737.3346933-1-loemra.dev@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251022010215.GA167205@zen.localdomain>
-References: 
+	s=arc-20240116; t=1761262943; c=relaxed/simple;
+	bh=jLdybE/qki2eED1uEl4s0cHYVKVXbct1t25HD7Fa8sM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M2VgKLbBFYiLUAyU+FTKOhjPUrBo05KEgZA42IMl7SMLzSG7yL+AhL83Be+1Ez0VYpp0JKs6ArcSTblYBJqeS5cv8aynaoIM3AF9z7EQN1HSJC8b7TK67EvJV3oXu1H/IbY7cG6m2+UOQBQJaqL0V1b0P4MWUEx/sU8ND4ssyY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ktmGf7Hn; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uFzgVvat; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 357301F388;
+	Thu, 23 Oct 2025 23:42:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1761262935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=W1na+FtDNglbTJzDSzM6dw9QLavVXUwPQSF79yRDqpg=;
+	b=ktmGf7Hn3G7KH2z4J5XPjtCMQI9m8JSPmOMqGqW75uUu9K58NYRnCK3mx9sTFMDmocsRDG
+	zL9YmT4OWZ9u/Gq0nb6ZBvuKSSlaNqIqMJYJzVm24W4JWvJRcbG8z6sv8L3hnBOCCGX6yH
+	4lJXYEiqnguI0D6SgmzZVAP6X+aIZZA=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1761262931; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=W1na+FtDNglbTJzDSzM6dw9QLavVXUwPQSF79yRDqpg=;
+	b=uFzgVvatFM8wIzRN4javJRq690BEInwAhfI6B6GOLywC6WoPwboIdgJTKba8H+ghy1lU9p
+	Dm0WbgC2buXtK9pC0l6sAQdyBTpVssdn3t25pksApIBUnTpd038n/wYX5GnPR43zcHs6iT
+	B1bHYNwRd+LS2I5sLO+YLzh6CeaEKlE=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 324FC13285;
+	Thu, 23 Oct 2025 23:42:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id NK63OFG9+mjUaAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 23 Oct 2025 23:42:09 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: stable@vger.kernel.org
+Subject: [PATCH v2] btrfs: ensure no dirty metadata is written back for an fs with errors
+Date: Fri, 24 Oct 2025 10:11:48 +1030
+Message-ID: <bfc7d8db794cc39fa2909c0b38a69f1a1ae73b81.1761262682.git.wqu@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -92,97 +77,118 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-On Tue, 21 Oct 2025 18:02:15 -0700 Boris Burkov <boris@bur.io> wrote:
+[BUG]
+During development of a minor feature (make sure all btrfs_bio::end_io()
+is called in task context), I noticed a crash in generic/388, where
+metadata writes triggered new works after btrfs_stop_all_workers().
 
-> On Tue, Oct 21, 2025 at 08:37:18PM -0400, Chris Murphy wrote:
-> > Thanks for the response.
-> > 
-> > On Tue, Oct 21, 2025, at 6:39 PM, Leo Martins wrote:
-> > 
-> > >
-> > > Wanted to provide some data from the Meta rollout to give more context on the
-> > > decision to enable dynamic+periodic reclaim by default for data. All the before
-> > > numbers are with bg_reclaim_threshold set to 30.
-> > >
-> > > Enabling dynamic+periodic reclaim for data block groups dramatically decreases
-> > > number of reclaims per host, going from 150/day to just 5/day (p99), and from
-> > > 6/day to 0/day (p50). The trade-offs are increases in fragmentation, and a
-> > > slight uptick in enospcs.
-> > >
-> > > I currently don't have direct fragmentation metrics, though that is a
-> > > work in progress, but I'm tracking FP as a proxy for fragmentation.
-> > >
-> > > FP = (allocated - used) / allocated
-> > > So if there are 100G allocated for data and 80G are used, FP = (100 - 
-> > > 80) / 100 = 20%.
-> > >
-> > > FP has increased from 30% to 45% (p99), and from 5% to 7% (p50).
-> > > Enospc rates have gone from around 0.5/day to 1/day per 100k hosts.
-> 
-> Leo, correct me if I'm wrong, but we have yet to investigate a system
-> where unallocated steadily marched down to 0 since the introduction of
-> dynamic reclaim and then it ENOSPC'd, right? If there is a strong,
-> undeniable increase in ENOSPCs we should absolutely look for such
-> systems in those regions to motivate further improvements with
-> full/filling filesystems.
+It turns out that it can even happen without any code modification, just
+using RAID5 for metadata and the same workload from generic/388 is going
+to trigger the use-after-free.
 
-After digging some more the only examples I found of btrfs enospcing
-from lack of unallocated are true enospcs where either data or metadata
-were entirely full.
+[CAUSE]
+If btrfs hits an error, the fs is marked as error, no new
+transaction is allowed thus metadata is in a frozen state.
 
-> 
-> There is also the confounding variable of the bug fixed here:
-> https://lore.kernel.org/linux-btrfs/22e8b64df3d4984000713433a89cfc14309b75fc.1759430967.git.boris@bur.io/
-> that has been plaguing our fleet causing ENOSPC issues.
+But there are some metadata modifications before that error, and they are
+still in the btree inode page cache.
 
-Yes, a deeper look revealed that the increase in ENOSPCs is
-due to this bug and not dynamic+periodic reclaim. In fact,
-the hosts with dynamic+periodic reclaim enabled see a relatively
-smaller rate of enospc (about 2x less) than the rest of the fleet.
+Since there will be no real transaction commit, all those dirty folios
+are just kept as is in the page cache, and they can not be invalidated
+by invalidate_inode_pages2() call inside close_ctree(), because they are
+dirty.
 
-> 
-> > > This is a doubling in rate, but still a very small absolute number
-> > > of enospcs. The unallocated space on disk decreases by ~15G (p99)
-> > > and ~5G (p50) after rollout.
-> > 
-> > I'm curious how it compares with default btrfsmaintenance btrfs-balance.timer/service  - I'm guessing this is a bit harder to test at Meta in production due to the strictly time based trigger. And customization ends up being a choice between even higher reclaim or higher enospc.
-> > 
-> 
-> Yeah, we don't have that data unfortunately.
-> 
-> > > That being said I don't think bg_reclaim_threshold is enabled by default,
-> > > and I am comfortable saying dynamic+periodic reclaim is better than no
-> > > automatic reclaim!
-> > 
-> > So there are still corner cases occurring even with dynamic periodic reclaim. What do those look like? Is the file system unable to write metadata for arbitrary deletes to back the file system out? Or is it stuck in some cases?
-> > 
-> 
-> I would imagine the cases that are tough for dynamic reclaim are:
-> 1. genuinely quite full fs
-> 2. rapidly needs a big hunk of metadata between entering the dynamic
->    reclaim zone but before the cleaner thread / reclaim worker can run.
+And finally after btrfs_stop_all_workers(), we call iput() on btree
+inode, which triggers writeback of those dirty metadata.
 
-Concerning point 1 it seems like dynamic+periodic reclaim actually does a pretty good
-job here. I haven't seen any signs of thrashing with low unallocated space.
+And if the fs is using RAID56 metadata, this will trigger RMW and queue
+new works into rmw_workers, which is already stopped, causing warning
+from queue_work() and use-after-free.
 
-> 
-> > ext4 users are used to 5% of space being held in reserve for root user processes. I'm not sure if xfs has such a concept. Btrfs global reserve is different in that even root can't use it, it's really reserved for the kernel. But sometimes it's still possible to exhaust this metadata space, and be unable to delete files or balance even 1 data bg to back the file system out of the situation. The wedged in file system that keeps going read-only and appears stuck is a big concern since users have no idea what to do. And internet searches tend to produce results that are less help than no help.
-> > 
-> > -- 
-> > Chris Murphy
-> 
-> Anyway, I think Leo's forthcoming detailed per-BG fragmentation data
-> should be the most telling. System level fragmentation percentage
-> isn't the most useful IMO.
-> 
-> Thanks,
-> Boris
+[FIX]
+Add a special handling for write_one_eb(), that if the fs is already in
+an error state, immediately mark the bbio as failure, instead of really
+submitting them.
 
-Since the uptick in enospcs is not actually linked to dynamic+periodic
-reclaim I now feel confident saying that dynamic+periodic reclaim
-should be enabled by default for data.
+Then during close_ctree(), iput() will just discard all those dirty
+tree blocks without really writing them back, thus no more new jobs for
+already stopped-and-freed workqueues.
 
-Thanks,
-Leo Martins.
+The extra discard in write_one_eb() also acts as an extra safenet.
+E.g. the transaction abort is triggered by some extent/free space
+tree corruptions, and since extent/free space tree is already corrupted
+some tree blocks may be allocated where they shouldn't be (overwriting
+existing tree blocks). In that case writing them back will further
+corrupting the fs.
+
+CC: stable@vger.kernel.org #6.6
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog
+v2:
+- Various grammar and newline fixes
+
+- A shorter title line
+
+- Enhance the [FIX] part, explain the full fix
+
+- Limit the backport for 6.6
+  v6.1 code base is very different compared to the current one, thus
+  backporting to v6.6 would be the limit.
+
+- Explain more why discarding bios at write_one_eb() is safer
+
+- Remove the extra flushing part inside close_ctree()
+  There is no difference flushing the dirty folios manually or by
+  iput(), as dirty folios are discarded anyway, no new job will be
+  created.
+---
+ fs/btrfs/extent_io.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 870584dde575..8f6b8baba003 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2246,6 +2246,14 @@ static noinline_for_stack void write_one_eb(struct extent_buffer *eb,
+ 		wbc_account_cgroup_owner(wbc, folio, range_len);
+ 		folio_unlock(folio);
+ 	}
++	/*
++	 * If the fs is already in error status, do not submit any writeback
++	 * but immediately finish it.
++	 */
++	if (unlikely(BTRFS_FS_ERROR(fs_info))) {
++		btrfs_bio_end_io(bbio, errno_to_blk_status(-EROFS));
++		return;
++	}
+ 	btrfs_submit_bbio(bbio, 0);
+ }
+ 
+-- 
+2.51.0
+
 
