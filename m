@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-18194-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18195-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51B9CC02472
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 18:00:39 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C265C0248C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 18:01:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 867BC1AA2677
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 16:00:57 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 94EA84FFF94
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 16:00:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F7F26ED42;
-	Thu, 23 Oct 2025 16:00:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63FE427B354;
+	Thu, 23 Oct 2025 16:00:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZI+VFQcY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aX0nVtN0"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D552777EA
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 16:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C582798F3
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 16:00:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761235212; cv=none; b=EvzceaUMs18INzglkWp8ovJa7wDiN4ixwzqfn9zomKLsqGt2uaECWeaw9dHo1+/1ldlfSK+iYwqhmK19RFUQcBApoOfIpZzWX8w+mEQMcOSUEDXpY0daNGD1PEQaACSi1Q8gF+lLGOrzYTpaQG3WAI1s11X/4pyF5Ogqts4DyDo=
+	t=1761235213; cv=none; b=pqO6XAmxQ808FcBfjj5nJYeQq+TaSWEOPJsitWeWmtjTXuMqACfozRySRQrhrB/KEkun0I7AoLIM1xzko/29PjBqZEVsNIkqOCbygVAAmc0vaN9pCUmhlEbwx3unc9nt67mp5juSSCw2jegFElgU+i09LogrgKGP1OnSm7QBOos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761235212; c=relaxed/simple;
-	bh=nGuu/39uzkcyq5yL1mNVJk0ScD6wwrrTfiyq4CRIBdQ=;
+	s=arc-20240116; t=1761235213; c=relaxed/simple;
+	bh=fFzJ3PPzfVi6WvZxyx1mtppcsFgTJGR3QRS9xy2uf18=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gxQfrmr26ozmOJR0si/edob8xaouVjO4CYCILnHR8dzrsPCWxq/4q2G++/kL5dAsB9MyIF/5vIGHAfNKe7+SmuaJFSYwZxX3ZaGrtTWNsKvLuiLz8J5ORVkCz+0U8/ofd8xLbGD9idpgNIf3NchI4kQOrFb9vWlpern1/Z/pvCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZI+VFQcY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0204C4CEFF
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 16:00:11 +0000 (UTC)
+	 MIME-Version; b=VGKiFKeHwjBJXHjCZwjSRkDssuULdURm6wSL8h1fywhzajzyLUYDm0oHZoQMNILT1MVkADB2yQ/JCs8sgCegnAP2WyNhTJXAh1sc+vyl5mnUDsF0LTF4hH9UWE4OFYuGxoFyARFF5B5/Je5MiUY61ejS7VFuG8f1OlMEWVO4ynk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aX0nVtN0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B11B5C4CEE7
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 16:00:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761235212;
-	bh=nGuu/39uzkcyq5yL1mNVJk0ScD6wwrrTfiyq4CRIBdQ=;
+	s=k20201202; t=1761235213;
+	bh=fFzJ3PPzfVi6WvZxyx1mtppcsFgTJGR3QRS9xy2uf18=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=ZI+VFQcY+Dh1638kKJ4EqWUUZjvYRihYWCTVDQ63YEgIJodiQyJK2Re+t3Ght0ilc
-	 MtRZioU4jBcLqHBnUPRiGwqo7MFStJbOm5o6pqZsCV/8kFuRg+ddUi7Ul1lZgyeoKA
-	 femKAXvzZHD6bvlDgNBQMTGZ5V5a2ndATf3GvlISNgtLuNQczsjTJpzQY7YnqytKiH
-	 ofU506sz0Q3ueblrj6XRczWYk6BUxhin91pHJ0IGFu33xaWzXsgxpxa8jXIwYHJOam
-	 +hm+0NYvKyxlgBc2v/QpMg64e8BPa8WH9c1ksKAz4zdqWrMFN6kyQlz+kU1+vn2Vtf
-	 kuW6l+1IFNINA==
+	b=aX0nVtN0IojO3nxgXpE920pu1p++V51afLlIdZHgrAnSd+AvWDR6XSTxcFnKcBlQn
+	 p44Gn/CxfJj8mceFQoWHjd7CI9ZChLcCr66zkuewUemizwCU4jJ6yU4ZvpzrLA4xli
+	 GELx1oFck8NRsZ6onkQ+sAQkNiL/92Dc2AdKZfB7yblc+s+vrD4lnKqO4UK5MEf63x
+	 M6y17M1BUApxDsOOjNcP0TO1CnWhWJd6Ma30pYvBhOxzPX8nJjbnK3xm3bZjoMW2EI
+	 fcC5J+cKWop0loHXADA3Vf60Pjusje8KWLvE7eDWTROiNhcyx5vtegprlMCQU5euPB
+	 Qe2fRutRczD/g==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 07/28] btrfs: bail out earlier from need_preemptive_reclaim() if we have tickets
-Date: Thu, 23 Oct 2025 16:59:40 +0100
-Message-ID: <771cf13daa7c6e7ebc3ab17891c34004b5db7a1d.1761234581.git.fdmanana@suse.com>
+Subject: [PATCH 08/28] btrfs: increment loop count outside critical section during metadata reclaim
+Date: Thu, 23 Oct 2025 16:59:41 +0100
+Message-ID: <826154558baaae6e1b1b58eb2920430664392e8a.1761234581.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1761234580.git.fdmanana@suse.com>
 References: <cover.1761234580.git.fdmanana@suse.com>
@@ -59,54 +59,40 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Instead of doing some calculations and then return false if it turns out
-we have queued tickets, check first if we have tickets and return false
-immediately if we have tickets, without wasting time on doing those
-computations.
+In btrfs_preempt_reclaim_metadata_space() there's no need to increment the
+local variable that tracks the number of iterations of the while loop
+while inside the critical section delimited by the space_info's spinlock.
+That spinlock is heavily used by space reservation and flushing code, so
+it's desirable to have its critical sections as short as possible.
+So move the loop count incremented outside the critical section.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/space-info.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ fs/btrfs/space-info.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 53677ecb8c15..bd206fc300e7 100644
+index bd206fc300e7..2dd9d4e5c2c2 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -937,10 +937,17 @@ static bool need_preemptive_reclaim(const struct btrfs_space_info *space_info)
- 	u64 thresh;
- 	u64 used;
+@@ -1264,8 +1264,6 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
+ 		u64 to_reclaim, block_rsv_size;
+ 		const u64 global_rsv_size = btrfs_block_rsv_reserved(global_rsv);
  
--	thresh = mult_perc(space_info->total_bytes, 90);
+-		loops++;
 -
- 	lockdep_assert_held(&space_info->lock);
+ 		/*
+ 		 * We don't have a precise counter for the metadata being
+ 		 * reserved for delalloc, so we'll approximate it by subtracting
+@@ -1311,6 +1309,8 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
  
-+	/*
-+	 * We have tickets queued, bail so we don't compete with the async
-+	 * flushers.
-+	 */
-+	if (space_info->reclaim_size)
-+		return false;
-+
-+	thresh = mult_perc(space_info->total_bytes, 90);
-+
- 	/* If we're just plain full then async reclaim just slows us down. */
- 	if ((space_info->bytes_used + space_info->bytes_reserved +
- 	     global_rsv_size) >= thresh)
-@@ -960,13 +967,6 @@ static bool need_preemptive_reclaim(const struct btrfs_space_info *space_info)
- 	if (used - global_rsv_size <= SZ_128M)
- 		return false;
+ 		spin_unlock(&space_info->lock);
  
--	/*
--	 * We have tickets queued, bail so we don't compete with the async
--	 * flushers.
--	 */
--	if (space_info->reclaim_size)
--		return false;
--
- 	/*
- 	 * If we have over half of the free space occupied by reservations or
- 	 * pinned then we want to start flushing.
++		loops++;
++
+ 		/*
+ 		 * We don't want to reclaim everything, just a portion, so scale
+ 		 * down the to_reclaim by 1/4.  If it takes us down to 0,
 -- 
 2.47.2
 
