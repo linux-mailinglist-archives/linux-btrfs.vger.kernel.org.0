@@ -1,177 +1,138 @@
-Return-Path: <linux-btrfs+bounces-18223-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18224-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C3BEC0353E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 22:10:02 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A961C03590
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 22:18:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7ADF19A0BA3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 20:10:25 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EDE164E5556
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 20:18:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0A3F34679D;
-	Thu, 23 Oct 2025 20:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE49F28FFE7;
+	Thu, 23 Oct 2025 20:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="0mPPjs9e";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="TDE7jEc5"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="c6LhWJ8Q"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f99.google.com (mail-ej1-f99.google.com [209.85.218.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45DBF2C11D5
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 20:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1DA923E25B
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 20:18:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761250194; cv=none; b=NaYDPhyUhLtHvU8uUUEzphsPqJ3u9b6ZBFZWmuSkl/FHdMEDMF0EfirnQ8UZVH8RzgTR4NvfPSHEDLClB6loDki8gmyb1OLSq41+UO2ZkHeb6RnwlzFVU/2ijAx8khyDVRR41WIa8WEQrwd8pYNixaXI3tkS+9qFMDH/NCOz+as=
+	t=1761250719; cv=none; b=oQeW4gdHN1p5eAA548KdupnvH10YGxOE865WXIHhQUIANOgrRpo+nlsAUPn8ZfOSFsJwFCnSXdCmgbbDcGfs+tFdTSSuD4/4/WiNyCuXMI3OqmEUqtlPwE5632vTw7s1ccMjcnhre/C70n2STdXwR/gIZUAHKOW/EaKFABk5jUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761250194; c=relaxed/simple;
-	bh=udegA/N1oOhfucDkt/fRmwoeWv19DnGQCuglTA8d7Bg=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=AEi1nfScH+5mOgP0IsHFbP7ErqmjPLPlRURasfS+UpvgTjaxRgvUBnffjgxCMW+wqM6LVYjicSY5o61sqU5/o/MFiADyheFGzISZrOTbk8DwJlEzg2Xxg6FyKIZdPtJT0hgp34B5+bgCGNo/rrLMXJzNw5BrGnClrWDT2m3SJ9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=0mPPjs9e; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=TDE7jEc5; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfout.phl.internal (Postfix) with ESMTP id 54D43EC0057;
-	Thu, 23 Oct 2025 16:09:48 -0400 (EDT)
-Received: from phl-imap-01 ([10.202.2.91])
-  by phl-compute-04.internal (MEProxy); Thu, 23 Oct 2025 16:09:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	colorremedies.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1761250188; x=1761336588; bh=udegA/N1oO
-	hfucDkt/fRmwoeWv19DnGQCuglTA8d7Bg=; b=0mPPjs9eTggScobZreZ/nnWjKj
-	XbcP8nSZDU7SH/VjvgBpovCeNEDPnUOScC+E/nAU4YglzFZ7iBWx0dyc/5Ea/Mo+
-	6xUSsu3xGIgDh0M2kwfjc0yV7S348bNIVkjAijibNBIZDGJ1RTy19vpwQug8aELR
-	CtXSH4Ge9Rpv0CSnGb/rm3F8bER1gCo5H8S2EnoeGBi6JO1IPk7gLQua2Sg7G/Xg
-	VniNVpTPXwwYAo8DQB/hEkjugq4gxkktfBuo5hwId2JB0/ts/rYVFhJYQkGvTJ2M
-	Y+snC0JSiotOBXGjCK3NPu8jNcsRAWRgvY01DMLz14SnC8G/C/beLejG3VuA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1761250188; x=
-	1761336588; bh=udegA/N1oOhfucDkt/fRmwoeWv19DnGQCuglTA8d7Bg=; b=T
-	DE7jEc5bieZ64Qp9eqyq9LbmPkyD1pLFE3in2J3xSoFKhmlRZldc9VEpPS3+luql
-	h+8lJgunRhG+kS+s3KIvYzqoJshJlL9b38PuOAlpYBPfpcEpGdYaQx7NdiCjrq0p
-	x2BvwdpJyNb4+iFT1n1Phewl7N7RdGtkn99FO0QK4Sd7248fgyCVzgYTBpP5NbJA
-	d5dbCoX5txCT641qLlaC+3uQohMWFFKIJOosiba+Im4MwXQlZJ5h5l5SgsviOvkH
-	KRpGzbiCOZHsO89Bevn3ajfAbgJ7C6XYtRKCjkDkHvSVP2fWuIC9gd4pqmk07rxZ
-	4ix36F0fr1BMJ5xj55aAQ==
-X-ME-Sender: <xms:jIv6aGv5bP2bVsiBi6bw2DpXNGSceq6OxA39Iap818QvMLjmrh0LRA>
-    <xme:jIv6aGQor2NZcAi5gq2gh9uU3lIUhYRm_glBMQuuP8IcPY1eo6HEtefNZ5PgjllX2
-    uK7f3ZGKfsgSFZHlEy0bq6FilHajxB5XvqOjp3Eulvv4lFD64ea1g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddugeejfeekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtqhertdertdejnecuhfhrohhmpedfvehhrhhi
-    shcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmqe
-    enucggtffrrghtthgvrhhnpeekhedtieejleeuleetvefgvefgtedvhfegtdejieffhffg
-    tdeutdeljeevgfdvueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmpdhnsggprhgt
-    phhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehunhhfrgdttdesgh
-    hmrghilhdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgv
-    rhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:jIv6aFaRZFJHKbU_sxheoqULDtAtZhV-E4Afn-mrOsi-kMNdyn_-Pg>
-    <xmx:jIv6aKVuhybSHB82xcg-xWognQHKzVKtvaxcjOdcH1vNJda-Tz_xBw>
-    <xmx:jIv6aPjX9BSrojfjy8AOxqi0gelVr5BPQLHAoYf6jfLIEOmD0ZynBA>
-    <xmx:jIv6aAWwgKzErwYP_2RJas9X9QBeHVcSfJq8yqZxwzfxW5I-OfVGSw>
-    <xmx:jIv6aLDNAYeod8B9eroKWVrdF0QEmR-ES-UWnbiVWk5cceQhQi9F6wfH>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 020B718C0068; Thu, 23 Oct 2025 16:09:48 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1761250719; c=relaxed/simple;
+	bh=MNaW/Qmo6FwgmkLQqa0PKYjlcqHuOYgu3MksfCpQ4MQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=agqtS4nxQuot7ElMJ5EFk/2bH8m9y/nhE6EPvtyHszYFD8nwvse7YUzTkRvfuQjj5ev8HUMhmWy8YJNQpKabInso8bTlhEPoT6HI4lEazgdmAWYavzyY2K+wd56gXAGGtJWam+3MX8DmdLqpNc42+HJbaTXpjb+kth+W2nJxVxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=c6LhWJ8Q; arc=none smtp.client-ip=209.85.218.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-ej1-f99.google.com with SMTP id a640c23a62f3a-b6d4eb89facso21001366b.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 13:18:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1761250715; x=1761855515; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cz0mQMPnFRMldaxGN9MCesCYr4t4w4JLIICl6X3LGRg=;
+        b=c6LhWJ8Qe9UcznFArqbRWsOQ9aHKKotymYnnEk+I6HYUpGXcm+p2Q2vFNGTC1ha5UQ
+         fupBDOD2xiTRww3vIabFbLCqqbt4v5O1tIiXzBjoHxwH78uwRoe922w5TxFsmPy7hvhw
+         dKZay05aUFU5O2LOS6SGthy/B8PVTPXCuNAmQFHrtEFPFHYA60KQ1x+jwTvg4erbQdmC
+         hA6MNEQj7V2yDyDxNMCIZtUn7mSKYaJxRLtWVeHEP2b+aneeOx3KSRXu02fIQrsGe3py
+         sNoCzGq2AQxv6+xL6Z9qNoS/fNiHmu8VP2agrf3Ty5hvJah7d+C0zZas1Yjd1cNdjCSN
+         qgqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761250715; x=1761855515;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cz0mQMPnFRMldaxGN9MCesCYr4t4w4JLIICl6X3LGRg=;
+        b=jIrzzMUUc7akaG7tsF6l3bmGJlTwwwe5YJePogvu7Coq/PUYiWce3DCajppISPwHbs
+         BJc+md5Y/38tzXGygkWdLvCcYwe+TuLaqMeTFgb+JOI0ngEhNlwxaCkAPagMSL3Zc6eR
+         2/gSv8NuWCNKCgZWIsmPQulV5kaTzqbjTjGKzK3BieBsSlKj4MzR1B7ftXA4He4pxuIY
+         IHxocCcI603BcIQBWoUPWhbMkJcZ+4K10nUwAy9Qgo2Cl/r4/vBcAg8AdgUYGbrSyRqJ
+         xyvgGrhaj2/rarhHnvSLPOggL0rOAz6A2WFIdk5LAAdZInfBjxCuvrzceu6TDcNKclSa
+         BzsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXvmcqkHlJSiXsvJ8rTjMbHIuxJMbWDG1zO31y31/j0gh4YJcdxXapA0WCrC8/XMLLjK9orF0BFPgwhXQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwByCt1t1GNFhVypIoCTvdKnCWkKb2fh6XRDDX/2BBcWHh8seV+
+	GD/PQfDvfvhTFDszceZIMKtm9FYOMkmbcfpY6lspR+CE/x4uAYxHnXiKK3BhunBjtGvHE5D2gog
+	WtTgGeSeet9x8ejJKxrPvsaLfPJab8vB2EX/YxJzb1Z0kkUoulizm
+X-Gm-Gg: ASbGncvD7P4Nv+yIE7m5SweO1o1aztBJW/7pEeLpwWIUpvmFsAPz5xmHS143UaM7aWV
+	pCE17XVxTJG0CMY0WStFYE8rZe3or+sdpMoixIOOF07Jj1cT4/nxoVQ5ot0iy5dwrGo7j3YIgKP
+	O3oq0MUepi4kNmeHK8zkd2Pvv7mw/WBPTVQvKqFekZ+5B8SrFWhmw2F8WxSZgrcY3V6votuc5jx
+	fy9yxfLlP5zbvj2HymELXfNQo1Ypinjx15vJyu5xVTAEv4BYivAVFnPW0iID0lYL4KBidUwRKhW
+	ztn53ZTcKJ0QJUCc6DAwh3O4l/2ryEyCSTstL0ok6rI3HmP+obukSNj29roMWS+bIodZlyZ9KXZ
+	Ls9QKKTDqLHs4Wyul
+X-Google-Smtp-Source: AGHT+IHXhL/uv6eUeaN2ZVLtqNjngQKnmQcL5o8MgXl81NLPuCh85qOP68iyVWTyOMVTjHd4V9x4RLM8fwMs
+X-Received: by 2002:a17:907:9803:b0:b2d:a873:37d with SMTP id a640c23a62f3a-b6c722312e2mr832720966b.0.1761250715011;
+        Thu, 23 Oct 2025 13:18:35 -0700 (PDT)
+Received: from c7-smtp-2023.dev.purestorage.com ([2620:125:9017:12:36:3:5:0])
+        by smtp-relay.gmail.com with ESMTPS id a640c23a62f3a-b6d5141d9dcsm15476066b.54.2025.10.23.13.18.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Oct 2025 13:18:35 -0700 (PDT)
+X-Relaying-Domain: purestorage.com
+Received: from dev-csander.dev.purestorage.com (dev-csander.dev.purestorage.com [10.7.70.37])
+	by c7-smtp-2023.dev.purestorage.com (Postfix) with ESMTP id 9317F340384;
+	Thu, 23 Oct 2025 14:18:33 -0600 (MDT)
+Received: by dev-csander.dev.purestorage.com (Postfix, from userid 1557716354)
+	id 8CBBFE41B1D; Thu, 23 Oct 2025 14:18:33 -0600 (MDT)
+From: Caleb Sander Mateos <csander@purestorage.com>
+To: Jens Axboe <axboe@kernel.dk>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Ming Lei <ming.lei@redhat.com>,
+	Keith Busch <kbusch@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>
+Cc: io-uring@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-nvme@lists.infradead.org,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Caleb Sander Mateos <csander@purestorage.com>
+Subject: [PATCH v2 0/3] io_uring/uring_cmd: avoid double indirect call in task work dispatch
+Date: Thu, 23 Oct 2025 14:18:27 -0600
+Message-ID: <20251023201830.3109805-1-csander@purestorage.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Thu, 23 Oct 2025 16:09:27 -0400
-From: "Chris Murphy" <lists@colorremedies.com>
-To: =?UTF-8?Q?Tobiasz_Karo=C5=84?= <unfa00@gmail.com>
-Cc: "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Message-Id: <1330fe29-78a9-4628-b295-e3dcf2de15a9@app.fastmail.com>
-In-Reply-To: 
- <CAOsCCbOH_PRiExWLKPymdrCeNYCtfLgZ6khuGty-_m94MpOuMA@mail.gmail.com>
-References: 
- <CAOsCCbPNqUkFqn2W_GprROor+ExuturJxWz-kVL_W5QvqAENSg@mail.gmail.com>
- <cd684028-5a7c-47bc-8095-02917fe46d6b@app.fastmail.com>
- <CAOsCCbOH_PRiExWLKPymdrCeNYCtfLgZ6khuGty-_m94MpOuMA@mail.gmail.com>
-Subject: Re: Damaged filesystem - request for support
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
+Define uring_cmd implementation callback functions to have the
+io_req_tw_func_t signature to avoid the additional indirect call and
+save 8 bytes in struct io_uring_cmd. Additionally avoid the 
+io_should_terminate_tw() computation in callbacks that don't need it.
 
+v2:
+- Define the uring_cmd callbacks with the io_req_tw_func_t signature
+  to avoid the macro defining a hidden wrapper function (Christoph)
 
-On Thu, Oct 23, 2025, at 4:53 AM, Tobiasz Karo=C5=84 wrote:
-> Chris, thank you for such a detailed breakdown of what happened.
-> I have disconnected the drives once or maybe even twice to try and res=
-et things. I don't recall exact reasoning, but them disconnecting was no=
-t due to power loss. The enclosure is powered with it's own 12-V power a=
-dapter plugged into mains. The exact model is StarTech SDOCK2U33V.
+Caleb Sander Mateos (3):
+  io_uring: expose io_should_terminate_tw()
+  io_uring/uring_cmd: call io_should_terminate_tw() when needed
+  io_uring/uring_cmd: avoid double indirect call in task work dispatch
 
-OK so if the problem isn't power related, it's just a quirk/incompatibil=
-ity between the kernel and the enclosure firmware.=20
+ block/ioctl.c                  |  4 +++-
+ drivers/block/ublk_drv.c       | 15 +++++++++------
+ drivers/nvme/host/ioctl.c      |  5 +++--
+ fs/btrfs/ioctl.c               |  4 +++-
+ fs/fuse/dev_uring.c            |  7 ++++---
+ include/linux/io_uring.h       | 14 ++++++++++++++
+ include/linux/io_uring/cmd.h   | 23 +++++++++++++----------
+ include/linux/io_uring_types.h |  1 -
+ io_uring/io_uring.h            | 13 -------------
+ io_uring/uring_cmd.c           | 17 ++---------------
+ 10 files changed, 51 insertions(+), 52 deletions(-)
 
-If the new kernel doesn't resolve the problem, options are are to disabl=
-e uas or use a good USB hub which will "normalizes" the USB stream, i.e.=
- the USB stream is not merely rebroadcast to the host, and vice versa.
+-- 
+2.45.2
 
-But in any case, I advise disabling the write cache for both drives, tha=
-t should ensure write order is honored, and protect in case of crash or =
-power failure or forced reboots. But especially for doing repair because=
- if repair writes aren't fully flushed to disk, and then there's a crash=
- - I expect there'd be a lot of confusion, possibly unrepairable.
-
-I can't tell from the dmesg if the out of order writes are due to the co=
-mmand queue errors. It's actually pretty common that the drive firmware =
-will silently ignore flush fua, and doesn't even always ignore. In which=
- case you never know about it until there's a crash or power failure and=
- then a problem appears.
-
-
-
-
->=20
-> I have another Linux system I want to use to fix the Btrfs errors, it'=
-s running MX Linux. I have updated btrfs-progs from Debian backports rep=
-ository so the system is:
->=20
-> unfa@mx-workstation ~> btrfs --version=20
-> btrfs-progs v6.14=20
-> -EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED CRYPTO=
-=3Dbuiltin=20
-> unfa@mx-workstation ~> uname -a=20
-> Linux mx-workstation 6.15.11-1-liquorix-amd64 #1 ZEN SMP PREEMPT_DYNAM=
-IC liquorix 6.15-12~mx23ahs (2025-08-23) x86_64 GNU/Linux
-> Is that configuration of kernel + btrfs-progs versions safe to run btr=
-fs check --repari on my broken Btrfs FS?
-
-The versions are fine, but again the Btrfs probably isn't broken. The pr=
-oblem reported by the older btrfs check is a minor issue and unrelated t=
-o what's going on. It's a good idea to run the `btrfs check` (no repair)=
- with the new version and post that here and see if there are different =
-problems.
-
-Also, `btrfs check --mode=3Dlowmem` might reveal different problems sinc=
-e it's a different implementation of check. So it's worth seeing that ou=
-tput as well.
-
-
-> Thank you once more for detailed write-up. I'll look into UDEV to disa=
-ble the write cache for them and the UAS driver. I was hoping UAS can gi=
-ve me better performance over USB 3.2, but if it's buggy it might be not=
- worth the risk.
-
-It's possible the newer kernel will resolve the problem. These sorts of =
-quirks are constantly being fixed in the kernel. But only if users repor=
-t the problem to kernel usb folks.
-
-
---
-Chris Murphy
 
