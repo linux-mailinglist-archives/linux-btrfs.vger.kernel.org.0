@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-18198-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18199-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C7E5C0247A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 18:00:54 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D1A6C024A1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 18:01:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D88DB1AA26FA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 16:01:09 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BF7CE540139
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Oct 2025 16:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34324278761;
-	Thu, 23 Oct 2025 16:00:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31085273D6C;
+	Thu, 23 Oct 2025 16:00:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JdYERx80"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jlTUo45h"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783A226E71C
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 16:00:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7487B2798F3
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 16:00:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761235216; cv=none; b=aweoYDGWyl7zCgCKJe9edMCHAhtfys6PwPjI8tmrjaAGgRmZX0+FDwIHc3r4i6tSDeQ9CRif1KD5jKMmWkonefdU+R6hRliIm0/fXAWE89afgwdu0ObwIryjuk/xxxS3hm0Rudc1CwXHb4LH7vDD9wc2Jx/RktOvKlBZ4FYvaJo=
+	t=1761235217; cv=none; b=CFQwWh8dUlotB1sRJhb/DcCY4Xox+3MZIkvYe3Ms+kzr32UOPugtHqK3fMNcFPAUhQtEcLHZCW0vEsqNyd4UJIObZckXrQDvuHu/11mutyipmkLEhjry2Ia58pO6YQJGTqYc+oZFS252b2YaNf6dDAv21YYU4/uatvZcvOqTzAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761235216; c=relaxed/simple;
-	bh=/LgAz/Y0F/YPsjReM2gBtYRAs0xADjfTl4FvJJ2T/EA=;
+	s=arc-20240116; t=1761235217; c=relaxed/simple;
+	bh=1ME1ybADntn4fXsvnvC8dPSniRb4N6cCffdElJPfyo4=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=puCW3sNFrMp/daLnDeCQ2djssvELqx5V68b/zeMGjoKLzBt2aXSQyxPVYyHxqJ0bB6wGq6QORJ409anKMtHq9iPEQDdvQGJPrIFy+LExF3Z6iol0945vm2dJrjnmvQGy88RI5FUSxvUKLdSrS3HPxIvaCJQPAn3QdM/0DtyMca4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JdYERx80; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8212FC4CEFD
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 16:00:15 +0000 (UTC)
+	 MIME-Version; b=vEmwQepWcEssb6dMkTZHzsXdzL/kdSPG4hSq/h1fpgfrUxrj3Te6Z21zz/soXmfy4WZ0oybTq7ZfVDuGHmED4OFpsSMSOn8D6UeBmAVULceOpxz1jDiWK8s0eOlpRX+yXdqwQW8hoHdsosH60/p67RJT6GMvO5IJBQADfkMb4Lg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jlTUo45h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C1B8C4CEE7
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 Oct 2025 16:00:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761235216;
-	bh=/LgAz/Y0F/YPsjReM2gBtYRAs0xADjfTl4FvJJ2T/EA=;
+	s=k20201202; t=1761235217;
+	bh=1ME1ybADntn4fXsvnvC8dPSniRb4N6cCffdElJPfyo4=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=JdYERx80Tolr316nzmw4tKJMPiQdY7zYO7sYY6EqxGcuEhAttMy8H/RyhCZxu4jbI
-	 gkZClHm4J8lHsDa8ZnWhIQvN8sjMVwGSec/qQfLrLbBg7581CJhj37ZrxRFTn8qTRt
-	 CSAJDSKB/ZmmxKJjdGKfvW3xa/xXfLuha5SmlIrDsppxxMBgN8TDxnIiajnuN9zh1j
-	 8bAEfGc7mORsQr8SDkuL8AQo6/f7JBfzJV3JfJrnGANjoSjPGacm9XCbSQTyOeSLUX
-	 6J0T1Upw2Lbmbu+nTun2VAJE/fH0krgSPGMAGy+03Dk4MVcR/0oda7aBcf0rDLsiiI
-	 8GQZgRxW+QrQg==
+	b=jlTUo45h7u4GNrh2mCYdyP6Q1wgRj4hVQdmTBttn+rx+jhotN86TuqoIPoZe8c/B+
+	 v8wo012QXYPmkALhefQNIhzllNLErNcr3H2YLht7uz6JsB+Dz7jEpH8+4ZZuyiBGR4
+	 7dyRo0M5k8+kZAD3EhiCcnmFES2R5WLVPHymj4Ok1weijI+Ma5xSLNHGk47uFWczaa
+	 BYpoznv3MSu2rAS8h75X3zGKkk0uOL72crdb2l/bFKuF2z0o+2/wPDbcL4cv7hwCee
+	 YVfdYYoezlk1g9iuTCkYYqU5MPWD9xlKOxkiyuCImbqeU1pTmXjiO8zvnpQsRwZqcF
+	 +7EuWUVOqthxw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 11/28] btrfs: assert space_info is locked in steal_from_global_rsv()
-Date: Thu, 23 Oct 2025 16:59:44 +0100
-Message-ID: <7e26b03a448778363bea4189211c5a01dfa0085f.1761234581.git.fdmanana@suse.com>
+Subject: [PATCH 12/28] btrfs: assign booleans to global reserve's full field
+Date: Thu, 23 Oct 2025 16:59:45 +0100
+Message-ID: <d0e1511b511d201aad6c35a25e523ec1ac9adc1d.1761234581.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1761234580.git.fdmanana@suse.com>
 References: <cover.1761234580.git.fdmanana@suse.com>
@@ -59,26 +59,38 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The caller is supposed to have locked the space_info, so assert that.
+We have a couple places that are assigning 0 and 1 to the full field of
+the global reserve. This is harmless since 0 is converted to false and
+1 converted to true, but for better readability, replace these with true
+and false since the field is of type bool.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/space-info.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/space-info.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index b03c015d5d51..a2af55178c69 100644
+index a2af55178c69..62e1ba7f09c0 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -1047,6 +1047,8 @@ static bool steal_from_global_rsv(struct btrfs_space_info *space_info,
- 	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
- 	u64 min_bytes;
+@@ -1067,7 +1067,7 @@ static bool steal_from_global_rsv(struct btrfs_space_info *space_info,
+ 	wake_up(&ticket->wait);
+ 	space_info->tickets_id++;
+ 	if (global_rsv->reserved < global_rsv->size)
+-		global_rsv->full = 0;
++		global_rsv->full = false;
+ 	spin_unlock(&global_rsv->lock);
  
-+	lockdep_assert_held(&space_info->lock);
-+
- 	if (!ticket->steal)
- 		return false;
- 
+ 	return true;
+@@ -2186,7 +2186,7 @@ void btrfs_return_free_space(struct btrfs_space_info *space_info, u64 len)
+ 		global_rsv->reserved += to_add;
+ 		btrfs_space_info_update_bytes_may_use(space_info, to_add);
+ 		if (global_rsv->reserved >= global_rsv->size)
+-			global_rsv->full = 1;
++			global_rsv->full = true;
+ 		len -= to_add;
+ 	}
+ 	spin_unlock(&global_rsv->lock);
 -- 
 2.47.2
 
