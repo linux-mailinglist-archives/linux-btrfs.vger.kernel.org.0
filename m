@@ -1,166 +1,136 @@
-Return-Path: <linux-btrfs+bounces-18296-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18297-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F9D7C0794D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 19:50:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8D9DC07ABF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 20:15:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9449C35960D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 17:50:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBC813B0F7E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 18:12:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F4134678C;
-	Fri, 24 Oct 2025 17:50:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9560E347BAC;
+	Fri, 24 Oct 2025 18:12:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bK007PVk"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="x+LJnWUp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA70233C53A
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 17:50:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875E3346E70
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 18:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761328213; cv=none; b=DY8v50h6O5zo6/kKux8ivRQEA5KwG2jpHFPBzyH/NOE/1wqIw+/5KzK4Ysl+zr9tLUFS86DYOgWySt1ToJRPcdYwZQIx6UbjNY6G7HaYYss9T8pfvydeMnZ5woAs07W7dfhKazTY5VkKKviT1NGvhHBQEoguz1BjTfp6upEJS24=
+	t=1761329561; cv=none; b=M94zhEdWLK74Slzn+Sc93ciW92PEaYq1CSIFUcjfp0b2Q+w8cOXNt6uzXgKiGDm/6UwILx5j+ZIpC9QITmS4nDRKfzsp+0EjZmaTQ1WdRovJ3lOTqSXXwOuU/D13ndqsAbLcYrHx4NKRI9dkqcW5MJjYQgVboW1Lr/LzVUhzYt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761328213; c=relaxed/simple;
-	bh=Cnr0WNctFG8V6FmmOcFwsBfOOmXZZvAjIfyVaJhKdXw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dOoo6xrBK9EAHp1lsvcFZ6OByv7djLJXaqBwgpzpZpJnTNTWcGmwoB9EQQiaiwQFu2meS84uq4O/KHQriEH1QU/cFV3ESmqLYexE6QCCgG0CZYaOup2A5l7HIv/HXgyUyhwUITIvpiVcEnhcfwNkBRoq5FIHnY5me3Ylvw4uqoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bK007PVk; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b6d3effe106so563066166b.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 10:50:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761328209; x=1761933009; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=0tKDIn8Dd62bIobWa5FrOxCPkfvj/PGwj/fjdmIbdAU=;
-        b=bK007PVkPKuygh6L7DV1dF+8BZU4zRt6yQtbZpcLBMiyQD8qZlyosQLgI1pgt94fFQ
-         jCAbfQAKnCP39z1oZv/EAQ9iH6yab4cRP7WquVjdBAx5mf67bIWy2WTWoXEecGLsSaX9
-         neLpKRUdQKMQwoCnbXD/dgwRzIE9lLzOsWYq2eAYdz4bz/LXhsxjy1HiiNCkGHn09N9T
-         Mys4kh1gQcRaQ7JLQwOSQ+GR1pG58jhX7t0OhwAvjt8WV/u0+ZbcwiN4mcXYkXZWhBd2
-         67A4efD5HYUN5yiZFa2swZtMR7OYxcc9LsaBoARhNI0nJENu/T7BrGUY2i0FHQP7jnxz
-         FgCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761328209; x=1761933009;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0tKDIn8Dd62bIobWa5FrOxCPkfvj/PGwj/fjdmIbdAU=;
-        b=H/RU7IOUm2FQ/BbrfIX97vvwGqQVBDgZ5eNAN6ESrtwN7wo+1K8HMpZLB3tjgbnfSu
-         UZgFaZjq0CH94i+JHEXdGcXb21+tmRYrtgKOIaLpi2xFe8/4SOzNySecg0DketI2XQ33
-         VzFIgOw5ZyCdCnB6Uf/akLrDiSP9o49UqvNWxOnsKHrdrk0aS/ewesRlD2sqJ6m4zUUi
-         vn1dvbH9X7f3QPs/vHCFi9sOHfchjDoXn/uDdekhzZFfFtmpGUk9Nl12pYQc/Z9rNj7h
-         g3GjdDs1vU+xcy+2z0wN5b1oVPaLuk/cRDg52MBNCt1BxqgEwItZSLOM9/YU1huWEUg8
-         6cQw==
-X-Forwarded-Encrypted: i=1; AJvYcCVOG8x+nnBy8CMzkRLU6InMHKVz7XlNTfOqAmMLfVMJazf3uGG1t4n2uNzqQtBrVdK3AEpXX58aj3EzhQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJu0WEPDziadNCgHPIAK1teNpZyl4Egks/QZnP12lSv3nfq+Sc
-	beYGyd2A5jXos51/1ebwjXn7M/6Hlg2APkANj0BT40sGZ+vG4EqT1+Vz
-X-Gm-Gg: ASbGncvyYMsqPOHwWNNghyI/A97PnWVU73oseMUWpVxlQ2huLwbLwtrg+qszVSp/FRO
-	9rUSSVHLda2/JiHE78f9AySkhl54eCRDRO7YBL0YOUBIw1j34RUh94TmXLgEBEHR3zj3FFrl+92
-	wr9WCoeRqQC/2nzLkPi0MFnRwuPb6dSL8UsbjPjum8fkQ9O3CsAg+2ZfRCmCNhs7u0EcFbB30v8
-	grPUFnxARa2ztlpWcpSdHRvJM3GUxvwgGIPD3nXqnhaD1u+ENQgfe9I/oOTIDZLRBTArvNGOH1O
-	NAL4bhBfK91x5QxMKWcCYJVJzbEqCD1aBSAu1XkFnw3sJ1mYF6cW/i/8A3RQleSh8mEpI6mx1yP
-	AY1AmwdD34ur1BzDtptcO4ljyJrk4VWJ0aBFK7kWFqHWt/BDgdHL97AkKpnnYTI4Yvv7KGY9K0v
-	A2MtFuW7B1GQDhYpC3ZqfHRWB/2hkAb2DGBh0W/93S
-X-Google-Smtp-Source: AGHT+IEHVSSj7rXjwYMoHcZH9vR/vm/UDZA+qYlFM+r0okKL4IfHGOhTECkjaHomhCRDjSe3Dq8uEQ==
-X-Received: by 2002:a17:906:ee89:b0:b47:de64:df26 with SMTP id a640c23a62f3a-b6d6ff25f61mr303261366b.35.1761328208958;
-        Fri, 24 Oct 2025 10:50:08 -0700 (PDT)
-Received: from [192.168.8.101] (37-48-18-87.nat.epc.tmcz.cz. [37.48.18.87])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b6d5144e4acsm585057066b.63.2025.10.24.10.50.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Oct 2025 10:50:08 -0700 (PDT)
-Message-ID: <5e0056d7-3550-4c40-a698-c09535d32bb2@gmail.com>
-Date: Fri, 24 Oct 2025 19:50:06 +0200
+	s=arc-20240116; t=1761329561; c=relaxed/simple;
+	bh=kwUcUeZQg6IA7HxGHWL0kKgkEJojHea+Qke21/YK1YY=;
+	h=From:To:Cc:Subject:Date:Message-ID:Mime-Version; b=M7pNUrlWeA7/2Y2Bpyi2diWvYtICu70R8lIw4YRnzgjKpVcxyC0VT3ttBJfjFK6A+LJ+58sxpkKkFrjg66t94iDGejDit1+5bm47o9CSBW4Lf5hPiCNcBTaXSJOVH4emlD1OEnKrOqqk6VhVVQ8SOP0JRw209sMD7ZSuvohDOj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=x+LJnWUp; arc=none smtp.client-ip=217.169.27.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
+Received: from localhost.localdomain (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.burntcomma.com (Postfix) with ESMTPSA id 277262CFE45;
+	Fri, 24 Oct 2025 19:12:30 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
+	s=mail; t=1761329550;
+	bh=cgXrLMSleRBLceW6/yNM7UeH/TvOLsZwVO/mRj8NR+w=;
+	h=From:To:Cc:Subject:Date;
+	b=x+LJnWUp0Oo5syio2dAClIIjGDGdbqYTIGzX9ugT2kZczJEiNzefEF4Y5e+aPWVeF
+	 bcmbupoC2EHVYaWJ3YEhSCFbNk0E7JqQFh0RnRn89JiRypOOPd2di3VstN8gy4TaGu
+	 f6qDJetWMUb0sIASly2rAIGscp1Yj0rEg4JoaBeE=
+From: Mark Harmstone <mark@harmstone.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Mark Harmstone <mark@harmstone.com>
+Subject: [PATCH v4 00/16] Remap tree
+Date: Fri, 24 Oct 2025 19:12:01 +0100
+Message-ID: <20251024181227.32228-1-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: dm bug: hibernate to swap located on dm-integrity doesn't work
- (how to get data redundancy for swap?)
-To: Askar Safin <safinaskar@gmail.com>
-Cc: Dell.Client.Kernel@dell.com, brauner@kernel.org,
- dm-devel@lists.linux.dev, ebiggers@kernel.org, kix@kix.es,
- linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-crypto@vger.kernel.org, linux-lvm@lists.linux.dev, linux-mm@kvack.org,
- linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
- lvm-devel@lists.linux.dev, mzxreary@0pointer.de, nphamcs@gmail.com,
- pavel@ucw.cz, rafael@kernel.org, ryncsn@gmail.com,
- torvalds@linux-foundation.org, Mikulas Patocka <mpatocka@redhat.com>
-References: <a48a37e3-2c22-44fb-97a4-0e57dc20421a@gmail.com>
- <20251024163142.376903-1-safinaskar@gmail.com>
-Content-Language: en-US
-From: Milan Broz <gmazyland@gmail.com>
-Autocrypt: addr=gmazyland@gmail.com; keydata=
- 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
-In-Reply-To: <20251024163142.376903-1-safinaskar@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On 10/24/25 6:31 PM, Askar Safin wrote:
-> 
-> Also, I saw patch, I will test it later.
+This is version 4 of the patch series for the new logical remapping tree
+feature - see the previous cover letters for more information including
+the rationale:
 
-Yes, please test it, you can ignore may previous comments as they are irrelevant now.
-Here is the link to the mentioned patch:
-   https://lore.kernel.org/dm-devel/03e58462-5045-e12f-9af6-be2aaf19f32c@redhat.com/T/#u
+* RFC: https://lore.kernel.org/all/20250515163641.3449017-1-maharmstone@fb.com/
+* Version 1: https://lore.kernel.org/all/20250605162345.2561026-1-maharmstone@fb.com/
+* Version 2: https://lore.kernel.org/all/20250813143509.31073-1-mark@harmstone.com/
+* Version 3: https://lore.kernel.org/all/20251009112814.13942-1-mark@harmstone.com/
 
-I think that the issue is clear (as found by Mikulas)
-- DM device (dm-integrity here) does not receive the FLUSH command here.
+Changes since version 3:
+* Removed search_commit_root code for now
+* In-memory free-space tree gets cleared for newly remapped block groups
+  when on-disk version does
+* Made it so that btrfs_mark_bg_fully_remapped() can't run twice on same
+  block group
+* Removed now-superfluous divide-by-zero check
+* Used block group spinlock to protect remap fields
+* Fixed async discard looping over empty block group
+* Fixed redundant remap_bytes == 0 checks on remapped block group
+* Fixed async discard not throttling correctly for remapped block groups
+* Added block_group_is_empty() helper function
+* Removed patch "btrfs: release BG lock before calling btrfs_link_bg_list()",
+  now not needed
 
-This would explain all issues you see. If the patch works, it should be fixed in stable kernels
-as it impacts other more complex storage configurations.
+Mark Harmstone (16):
+  btrfs: add definitions and constants for remap-tree
+  btrfs: add REMAP chunk type
+  btrfs: allow remapped chunks to have zero stripes
+  btrfs: remove remapped block groups from the free-space tree
+  btrfs: don't add metadata items for the remap tree to the extent tree
+  btrfs: add extended version of struct block_group_item
+  btrfs: allow mounting filesystems with remap-tree incompat flag
+  btrfs: redirect I/O for remapped block groups
+  btrfs: handle deletions from remapped block group
+  btrfs: handle setting up relocation of block group with remap-tree
+  btrfs: move existing remaps before relocating block group
+  btrfs: replace identity remaps with actual remaps when doing
+    relocations
+  btrfs: add do_remap param to btrfs_discard_extent()
+  btrfs: allow balancing remap tree
+  btrfs: handle discarding fully-remapped block groups
+  btrfs: add stripe removal pending flag
 
-Thanks,
-Milan
+ fs/btrfs/Kconfig                |    2 +
+ fs/btrfs/accessors.h            |   29 +
+ fs/btrfs/block-group.c          |  280 ++++-
+ fs/btrfs/block-group.h          |   23 +-
+ fs/btrfs/block-rsv.c            |    8 +
+ fs/btrfs/block-rsv.h            |    1 +
+ fs/btrfs/discard.c              |   57 +-
+ fs/btrfs/disk-io.c              |  107 +-
+ fs/btrfs/extent-tree.c          |  137 ++-
+ fs/btrfs/extent-tree.h          |    3 +-
+ fs/btrfs/free-space-cache.c     |   82 +-
+ fs/btrfs/free-space-cache.h     |    1 +
+ fs/btrfs/free-space-tree.c      |    4 +-
+ fs/btrfs/free-space-tree.h      |    5 +-
+ fs/btrfs/fs.h                   |   10 +-
+ fs/btrfs/inode.c                |    2 +-
+ fs/btrfs/locking.c              |    1 +
+ fs/btrfs/relocation.c           | 1866 ++++++++++++++++++++++++++++++-
+ fs/btrfs/relocation.h           |   10 +-
+ fs/btrfs/space-info.c           |   22 +-
+ fs/btrfs/sysfs.c                |    4 +
+ fs/btrfs/transaction.c          |   11 +
+ fs/btrfs/tree-checker.c         |   94 +-
+ fs/btrfs/tree-checker.h         |    5 +
+ fs/btrfs/volumes.c              |  283 ++++-
+ fs/btrfs/volumes.h              |   19 +-
+ include/uapi/linux/btrfs.h      |    1 +
+ include/uapi/linux/btrfs_tree.h |   30 +-
+ 28 files changed, 2889 insertions(+), 208 deletions(-)
+
+-- 
+2.49.1
 
 
