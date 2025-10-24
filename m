@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-18278-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18280-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63BC3C05AA3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 12:50:32 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0450C05ABE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 12:51:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E65919A862E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 10:50:56 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9F9234EF11E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 10:51:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877B53126B3;
-	Fri, 24 Oct 2025 10:50:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29765313273;
+	Fri, 24 Oct 2025 10:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YC7hDdBR";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="C19adLp1"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BcQ3NOyk";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NfOLn2zX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A0E311949
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 10:50:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261B431281C
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 10:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761303012; cv=none; b=o/jWwmNcYhHSiuzDQdxh7GXbm8WNvgZ9STIONHr+XOCiK0yL1PMY5730LwnZ+g178HDhF9i1hmvE41ktutjLPBP2keeQV53kP/GTSwdIRRAP1Pxxcos9OrcRB3rBKOe7OVYV0saYCCYdt7LHcphWjJSoRlSzIUznOEqpBXrnGD8=
+	t=1761303025; cv=none; b=eJPAwY/lheRTScCHiwcVGReUEPNjlzCoVsFovZ5Qs1HmpmCs0MoYu26KGBWYKV7PEHcB063xb/uyo8JIXX4SfV6yn//+aNRR7bLh4K8biNHsPx6Ur+TBHG+nb1HrR/weaKaYukczFLTXgvRxyljrdOMnB0C7yatWOL4ejB2OGfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761303012; c=relaxed/simple;
-	bh=Jh/PZyugb9dgUHSGZju4shOV9LYfr5FOdjWQlhNhP8k=;
+	s=arc-20240116; t=1761303025; c=relaxed/simple;
+	bh=y5AIbGAk4M7QJQ8M81sqiBmX6SraMBVdSR7gG2Xq2rQ=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=La4C54QacDbriiKNtEM5eGG19OHwvFpfcCjlG0vNmqf+cRf1SkeZ/PCaZpyJQRjTrj3pF1WytyuHH33D/nj6a1sBBn4cHkEA19LAFwkUAiGecCm7a3Y1N1OdTKg0V3IpO2YpvBaROnrnyXga7ux5UQls4oijcEU3UqbhiMT3v9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YC7hDdBR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=C19adLp1; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=LmIVDm3xX2cy+LPAChtNDn6ejYnQ6JtSan5VwfZfdHa+qAXztCuYxryl92bnr6XasePs4CLKP5eqjy40npYtJEQnNK9pL3mvk6fozfdju36yJ8e1pvj0lsIkcuBJU8z9bbPAoIbTR46ze3g1/HBdBCCxbPEcEGurzFItwo7eSIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BcQ3NOyk; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NfOLn2zX; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BE6211F388
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 10:50:00 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0A7ED211CC
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 10:50:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1761303004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1761303006; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JI8Kv2zE422EpC9eo2MFjlqMGPAfbu5u86ZyqHhh64Y=;
-	b=YC7hDdBRV5yiNYw5PPWQGsQYfxShSuuBUEfigVwku6VJgnRSjYMY1LiTROFRqFZQ21ktK0
-	+RQUjogIoBIGf5/++Dn8V1Fu/lCO8UjDT4xeLSGLBvoHfN8zLgXW+LGN4UOCmg8l+KpkYF
-	GpiTgjFHtRCQ94RuW4KH90+3lXN+g/w=
-Authentication-Results: smtp-out2.suse.de;
-	none
+	bh=hjlvhsESjnLUXBzSc0OgR76ULXhos5uTRrQ1yaEPUpQ=;
+	b=BcQ3NOykeeqtIXrY9LKm1FGywa+liFVQz8vENTfE14cycpiscqDBRUH7YZ2fwXHbVAzfz9
+	Zwz/koD/iRiasyY7celuIvAb2I5fgz2UxJJaa7VeHAUrvHcrDGcwH+qr6ebns/Uml6w9Qm
+	UDj3h2xjd4ri3z9nbtdD6x0VIboJzjo=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=NfOLn2zX
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1761303000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1761303002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JI8Kv2zE422EpC9eo2MFjlqMGPAfbu5u86ZyqHhh64Y=;
-	b=C19adLp1R8R62jsl+B6LswQ/lEq5ZuLz9yP/vGLvNxm8dlcXPhE+aFv5keYJr1E0WW5CEE
-	q4tNQsq21hodE14TyEmEMRkwKsTaUrDZj1pM4VFQ8ajcPkjsQyMZaqbbVth6/LODk24a0x
-	iq4q6PqRrOwzRuUT78LrxJRAU3DgK3U=
+	bh=hjlvhsESjnLUXBzSc0OgR76ULXhos5uTRrQ1yaEPUpQ=;
+	b=NfOLn2zXFCOsbWeE88QZ76Tj2/x3DnJGQRhPCggXMiHpv8gk9ZRstyfY5zzVEmHzcefx62
+	e5uZLNIo9v8rzFtrSheSIrixE1P5zvuQsnpeYwFRvdIZRtU7/b8gmyaET9uKzII4Hk5EBX
+	YF58IH1Fjpi1mVNSV/VNwc2MfptlJ6Q=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E6DCD13A8E
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 10:49:59 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3AE4413AAD
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 10:50:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8Pm5KddZ+2iaZQAAD6G6ig
+	id eEUbO9hZ+2iaZQAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 10:49:59 +0000
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 10:50:00 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/4] btrfs: remove btrfs_fs_info::compressed_write_workers
-Date: Fri, 24 Oct 2025 21:19:33 +1030
-Message-ID: <95d75af0b5a20e9fde6ace86f5a015e52982ab50.1761302592.git.wqu@suse.com>
+Subject: [PATCH 3/4] btrfs: relax btrfs_inode::ordered_tree_lock
+Date: Fri, 24 Oct 2025 21:19:34 +1030
+Message-ID: <a19915964c20a568165f8faeffef4d23ebd8ef77.1761302592.git.wqu@suse.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <cover.1761302592.git.wqu@suse.com>
 References: <cover.1761302592.git.wqu@suse.com>
@@ -84,184 +84,345 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
+X-Rspamd-Queue-Id: 0A7ED211CC
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
 	ARC_NA(0.00)[];
 	RCPT_COUNT_ONE(0.00)[1];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
-	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	FROM_EQ_ENVFROM(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.com:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
+	RCVD_TLS_ALL(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Action: no action
 X-Spam-Flag: NO
-X-Spam-Score: -2.80
+X-Spam-Score: -3.01
+X-Spam-Level: 
 
-The reason why end_bbio_compressed_write() queues a work into
-compressed_write_workers wq is for end_compressed_writeback() call, as
-it will grab all the involved folioes and clear the writeback flags,
-which may sleep.
+We used IRQ version of spinlock for ordered_tree_lock, as
+btrfs_finish_ordered_extent() can be called in end_bbio_data_write()
+which was in IRQ context.
 
-However now we always run btrfs_bio::end_io() in task context, there is
-no need to queue the work anymore.
-
-Just remove btrfs_fs_info::compressed_write_workers and
-compressed_bio::write_end_work.
-
-There is a comment about the works queued into
-compressed_write_workers, now change to flush endio wq instead, which is
-responsible to handle all data endio functions.
+However since we're moving all the btrfs_bio::end_io() calls into task
+context, there is no more need to support IRQ context thus we can relax
+to regular spin_lock()/spin_unlock() for btrfs_inode::ordered_tree_lock.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c | 27 ++++++++-------------------
- fs/btrfs/compression.h |  7 ++-----
- fs/btrfs/disk-io.c     |  9 ++-------
- fs/btrfs/fs.h          |  1 -
- 4 files changed, 12 insertions(+), 32 deletions(-)
+ fs/btrfs/extent_io.c    |  5 ++--
+ fs/btrfs/inode.c        |  4 +--
+ fs/btrfs/ordered-data.c | 57 ++++++++++++++++++-----------------------
+ fs/btrfs/tree-log.c     |  4 +--
+ 4 files changed, 31 insertions(+), 39 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index bacad18357b3..2d7992e0145a 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -321,22 +321,6 @@ static noinline void end_compressed_writeback(const struct compressed_bio *cb)
- 	/* the inode may be gone now */
- }
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index cb680cdeb77d..4bca9d372826 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1728,7 +1728,6 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
  
--static void btrfs_finish_compressed_write_work(struct work_struct *work)
--{
--	struct compressed_bio *cb =
--		container_of(work, struct compressed_bio, write_end_work);
--
--	btrfs_finish_ordered_extent(cb->bbio.ordered, NULL, cb->start, cb->len,
--				    cb->bbio.bio.bi_status == BLK_STS_OK);
--
--	if (cb->writeback)
--		end_compressed_writeback(cb);
--	/* Note, our inode could be gone now */
--
--	btrfs_free_compressed_folios(cb);
--	bio_put(&cb->bbio.bio);
--}
--
- /*
-  * Do the cleanup once all the compressed pages hit the disk.  This will clear
-  * writeback on the file pages and free the compressed pages.
-@@ -347,9 +331,15 @@ static void btrfs_finish_compressed_write_work(struct work_struct *work)
- static void end_bbio_compressed_write(struct btrfs_bio *bbio)
+ 		if (cur >= i_size) {
+ 			struct btrfs_ordered_extent *ordered;
+-			unsigned long flags;
+ 
+ 			ordered = btrfs_lookup_first_ordered_range(inode, cur,
+ 								   folio_end - cur);
+@@ -1737,11 +1736,11 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
+ 			 * there must be an ordered extent.
+ 			 */
+ 			ASSERT(ordered != NULL);
+-			spin_lock_irqsave(&inode->ordered_tree_lock, flags);
++			spin_lock(&inode->ordered_tree_lock);
+ 			set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
+ 			ordered->truncated_len = min(ordered->truncated_len,
+ 						     cur - ordered->file_offset);
+-			spin_unlock_irqrestore(&inode->ordered_tree_lock, flags);
++			spin_unlock(&inode->ordered_tree_lock);
+ 			btrfs_put_ordered_extent(ordered);
+ 
+ 			btrfs_mark_ordered_io_finished(inode, folio, cur,
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 79732756b87f..d2027bf063fb 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7589,11 +7589,11 @@ static void btrfs_invalidate_folio(struct folio *folio, size_t offset,
+ 					       EXTENT_LOCKED | EXTENT_DO_ACCOUNTING |
+ 					       EXTENT_DEFRAG, &cached_state);
+ 
+-		spin_lock_irq(&inode->ordered_tree_lock);
++		spin_lock(&inode->ordered_tree_lock);
+ 		set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
+ 		ordered->truncated_len = min(ordered->truncated_len,
+ 					     cur - ordered->file_offset);
+-		spin_unlock_irq(&inode->ordered_tree_lock);
++		spin_unlock(&inode->ordered_tree_lock);
+ 
+ 		/*
+ 		 * If the ordered extent has finished, we're safe to delete all
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index dfda952dcf7b..a421f7db9eec 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -237,14 +237,14 @@ static void insert_ordered_extent(struct btrfs_ordered_extent *entry)
+ 	/* One ref for the tree. */
+ 	refcount_inc(&entry->refs);
+ 
+-	spin_lock_irq(&inode->ordered_tree_lock);
++	spin_lock(&inode->ordered_tree_lock);
+ 	node = tree_insert(&inode->ordered_tree, entry->file_offset,
+ 			   &entry->rb_node);
+ 	if (unlikely(node))
+ 		btrfs_panic(fs_info, -EEXIST,
+ 				"inconsistency in ordered tree at offset %llu",
+ 				entry->file_offset);
+-	spin_unlock_irq(&inode->ordered_tree_lock);
++	spin_unlock(&inode->ordered_tree_lock);
+ 
+ 	spin_lock(&root->ordered_extent_lock);
+ 	list_add_tail(&entry->root_extent_list,
+@@ -328,9 +328,9 @@ void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
  {
- 	struct compressed_bio *cb = to_compressed_bio(bbio);
--	struct btrfs_fs_info *fs_info = bbio->inode->root->fs_info;
+ 	struct btrfs_inode *inode = entry->inode;
  
--	queue_work(fs_info->compressed_write_workers, &cb->write_end_work);
-+	btrfs_finish_ordered_extent(cb->bbio.ordered, NULL, cb->start, cb->len,
-+				    cb->bbio.bio.bi_status == BLK_STS_OK);
-+
-+	if (cb->writeback)
-+		end_compressed_writeback(cb);
-+	/* Note, our inode could be gone now */
-+	btrfs_free_compressed_folios(cb);
-+	bio_put(&cb->bbio.bio);
+-	spin_lock_irq(&inode->ordered_tree_lock);
++	spin_lock(&inode->ordered_tree_lock);
+ 	list_add_tail(&sum->list, &entry->list);
+-	spin_unlock_irq(&inode->ordered_tree_lock);
++	spin_unlock(&inode->ordered_tree_lock);
  }
  
- static void btrfs_add_compressed_bio_folios(struct compressed_bio *cb)
-@@ -402,7 +392,6 @@ void btrfs_submit_compressed_write(struct btrfs_ordered_extent *ordered,
- 	cb->compressed_folios = compressed_folios;
- 	cb->compressed_len = ordered->disk_num_bytes;
- 	cb->writeback = writeback;
--	INIT_WORK(&cb->write_end_work, btrfs_finish_compressed_write_work);
- 	cb->nr_folios = nr_folios;
- 	cb->bbio.bio.bi_iter.bi_sector = ordered->disk_bytenr >> SECTOR_SHIFT;
- 	cb->bbio.ordered = ordered;
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index eba188a9e3bb..2ebf94794f0d 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -65,11 +65,8 @@ struct compressed_bio {
- 	/* Whether this is a write for writeback. */
- 	bool writeback;
+ void btrfs_mark_ordered_extent_error(struct btrfs_ordered_extent *ordered)
+@@ -417,15 +417,14 @@ void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
+ 				 bool uptodate)
+ {
+ 	struct btrfs_inode *inode = ordered->inode;
+-	unsigned long flags;
+ 	bool ret;
  
--	union {
--		/* For reads, this is the bio we are copying the data into */
--		struct btrfs_bio *orig_bbio;
--		struct work_struct write_end_work;
--	};
-+	/* For reads, this is the bio we are copying the data into */
-+	struct btrfs_bio *orig_bbio;
+ 	trace_btrfs_finish_ordered_extent(inode, file_offset, len, uptodate);
  
- 	/* Must be last. */
- 	struct btrfs_bio bbio;
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 0aa7e5d1b05f..c96051343450 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1773,8 +1773,6 @@ static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
- 		destroy_workqueue(fs_info->endio_workers);
- 	if (fs_info->rmw_workers)
- 		destroy_workqueue(fs_info->rmw_workers);
--	if (fs_info->compressed_write_workers)
--		destroy_workqueue(fs_info->compressed_write_workers);
- 	btrfs_destroy_workqueue(fs_info->endio_write_workers);
- 	btrfs_destroy_workqueue(fs_info->endio_freespace_worker);
- 	btrfs_destroy_workqueue(fs_info->delayed_workers);
-@@ -1986,8 +1984,6 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
- 	fs_info->endio_write_workers =
- 		btrfs_alloc_workqueue(fs_info, "endio-write", flags,
- 				      max_active, 2);
--	fs_info->compressed_write_workers =
--		alloc_workqueue("btrfs-compressed-write", flags, max_active);
- 	fs_info->endio_freespace_worker =
- 		btrfs_alloc_workqueue(fs_info, "freespace-write", flags,
- 				      max_active, 0);
-@@ -2003,7 +1999,6 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
- 	if (!(fs_info->workers &&
- 	      fs_info->delalloc_workers && fs_info->flush_workers &&
- 	      fs_info->endio_workers && fs_info->endio_meta_workers &&
--	      fs_info->compressed_write_workers &&
- 	      fs_info->endio_write_workers &&
- 	      fs_info->endio_freespace_worker && fs_info->rmw_workers &&
- 	      fs_info->caching_workers && fs_info->fixup_workers &&
-@@ -4290,7 +4285,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+-	spin_lock_irqsave(&inode->ordered_tree_lock, flags);
++	spin_lock(&inode->ordered_tree_lock);
+ 	ret = can_finish_ordered_extent(ordered, folio, file_offset, len,
+ 					uptodate);
+-	spin_unlock_irqrestore(&inode->ordered_tree_lock, flags);
++	spin_unlock(&inode->ordered_tree_lock);
  
  	/*
- 	 * When finishing a compressed write bio we schedule a work queue item
--	 * to finish an ordered extent - btrfs_finish_compressed_write_work()
-+	 * to finish an ordered extent - end_bbio_compressed_write()
- 	 * calls btrfs_finish_ordered_extent() which in turns does a call to
- 	 * btrfs_queue_ordered_fn(), and that queues the ordered extent
- 	 * completion either in the endio_write_workers work queue or in the
-@@ -4298,7 +4293,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	 * below, so before we flush them we must flush this queue for the
- 	 * workers of compressed writes.
- 	 */
--	flush_workqueue(fs_info->compressed_write_workers);
-+	flush_workqueue(fs_info->endio_workers);
+ 	 * If this is a COW write it means we created new extent maps for the
+@@ -481,13 +480,12 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
+ {
+ 	struct rb_node *node;
+ 	struct btrfs_ordered_extent *entry = NULL;
+-	unsigned long flags;
+ 	u64 cur = file_offset;
+ 	const u64 end = file_offset + num_bytes;
+ 
+ 	trace_btrfs_writepage_end_io_hook(inode, file_offset, end - 1, uptodate);
+ 
+-	spin_lock_irqsave(&inode->ordered_tree_lock, flags);
++	spin_lock(&inode->ordered_tree_lock);
+ 	while (cur < end) {
+ 		u64 entry_end;
+ 		u64 this_end;
+@@ -539,13 +537,13 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
+ 		ASSERT(len < U32_MAX);
+ 
+ 		if (can_finish_ordered_extent(entry, folio, cur, len, uptodate)) {
+-			spin_unlock_irqrestore(&inode->ordered_tree_lock, flags);
++			spin_unlock(&inode->ordered_tree_lock);
+ 			btrfs_queue_ordered_fn(entry);
+-			spin_lock_irqsave(&inode->ordered_tree_lock, flags);
++			spin_lock(&inode->ordered_tree_lock);
+ 		}
+ 		cur += len;
+ 	}
+-	spin_unlock_irqrestore(&inode->ordered_tree_lock, flags);
++	spin_unlock(&inode->ordered_tree_lock);
+ }
+ 
+ /*
+@@ -571,10 +569,9 @@ bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
+ {
+ 	struct rb_node *node;
+ 	struct btrfs_ordered_extent *entry = NULL;
+-	unsigned long flags;
+ 	bool finished = false;
+ 
+-	spin_lock_irqsave(&inode->ordered_tree_lock, flags);
++	spin_lock(&inode->ordered_tree_lock);
+ 	if (cached && *cached) {
+ 		entry = *cached;
+ 		goto have_entry;
+@@ -611,7 +608,7 @@ bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
+ 		refcount_inc(&entry->refs);
+ 		trace_btrfs_ordered_extent_dec_test_pending(inode, entry);
+ 	}
+-	spin_unlock_irqrestore(&inode->ordered_tree_lock, flags);
++	spin_unlock(&inode->ordered_tree_lock);
+ 	return finished;
+ }
+ 
+@@ -676,7 +673,7 @@ void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
+ 	percpu_counter_add_batch(&fs_info->ordered_bytes, -entry->num_bytes,
+ 				 fs_info->delalloc_batch);
+ 
+-	spin_lock_irq(&btrfs_inode->ordered_tree_lock);
++	spin_lock(&btrfs_inode->ordered_tree_lock);
+ 	node = &entry->rb_node;
+ 	rb_erase(node, &btrfs_inode->ordered_tree);
+ 	RB_CLEAR_NODE(node);
+@@ -684,7 +681,7 @@ void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
+ 		btrfs_inode->ordered_tree_last = NULL;
+ 	set_bit(BTRFS_ORDERED_COMPLETE, &entry->flags);
+ 	pending = test_and_clear_bit(BTRFS_ORDERED_PENDING, &entry->flags);
+-	spin_unlock_irq(&btrfs_inode->ordered_tree_lock);
++	spin_unlock(&btrfs_inode->ordered_tree_lock);
  
  	/*
- 	 * After we parked the cleaner kthread, ordered extents may have
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index ad389fb1c01a..2e705025a8a5 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -654,7 +654,6 @@ struct btrfs_fs_info {
- 	struct workqueue_struct *endio_workers;
- 	struct workqueue_struct *endio_meta_workers;
- 	struct workqueue_struct *rmw_workers;
--	struct workqueue_struct *compressed_write_workers;
- 	struct btrfs_workqueue *endio_write_workers;
- 	struct btrfs_workqueue *endio_freespace_worker;
- 	struct btrfs_workqueue *caching_workers;
+ 	 * The current running transaction is waiting on us, we need to let it
+@@ -969,9 +966,8 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *ino
+ {
+ 	struct rb_node *node;
+ 	struct btrfs_ordered_extent *entry = NULL;
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&inode->ordered_tree_lock, flags);
++	spin_lock(&inode->ordered_tree_lock);
+ 	node = ordered_tree_search(inode, file_offset);
+ 	if (!node)
+ 		goto out;
+@@ -984,7 +980,7 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *ino
+ 		trace_btrfs_ordered_extent_lookup(inode, entry);
+ 	}
+ out:
+-	spin_unlock_irqrestore(&inode->ordered_tree_lock, flags);
++	spin_unlock(&inode->ordered_tree_lock);
+ 	return entry;
+ }
+ 
+@@ -997,7 +993,7 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_range(
+ 	struct rb_node *node;
+ 	struct btrfs_ordered_extent *entry = NULL;
+ 
+-	spin_lock_irq(&inode->ordered_tree_lock);
++	spin_lock(&inode->ordered_tree_lock);
+ 	node = ordered_tree_search(inode, file_offset);
+ 	if (!node) {
+ 		node = ordered_tree_search(inode, file_offset + len);
+@@ -1024,7 +1020,7 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_range(
+ 		refcount_inc(&entry->refs);
+ 		trace_btrfs_ordered_extent_lookup_range(inode, entry);
+ 	}
+-	spin_unlock_irq(&inode->ordered_tree_lock);
++	spin_unlock(&inode->ordered_tree_lock);
+ 	return entry;
+ }
+ 
+@@ -1039,7 +1035,7 @@ void btrfs_get_ordered_extents_for_logging(struct btrfs_inode *inode,
+ 
+ 	btrfs_assert_inode_locked(inode);
+ 
+-	spin_lock_irq(&inode->ordered_tree_lock);
++	spin_lock(&inode->ordered_tree_lock);
+ 	for (n = rb_first(&inode->ordered_tree); n; n = rb_next(n)) {
+ 		struct btrfs_ordered_extent *ordered;
+ 
+@@ -1053,7 +1049,7 @@ void btrfs_get_ordered_extents_for_logging(struct btrfs_inode *inode,
+ 		refcount_inc(&ordered->refs);
+ 		trace_btrfs_ordered_extent_lookup_for_logging(inode, ordered);
+ 	}
+-	spin_unlock_irq(&inode->ordered_tree_lock);
++	spin_unlock(&inode->ordered_tree_lock);
+ }
+ 
+ /*
+@@ -1066,7 +1062,7 @@ btrfs_lookup_first_ordered_extent(struct btrfs_inode *inode, u64 file_offset)
+ 	struct rb_node *node;
+ 	struct btrfs_ordered_extent *entry = NULL;
+ 
+-	spin_lock_irq(&inode->ordered_tree_lock);
++	spin_lock(&inode->ordered_tree_lock);
+ 	node = ordered_tree_search(inode, file_offset);
+ 	if (!node)
+ 		goto out;
+@@ -1075,7 +1071,7 @@ btrfs_lookup_first_ordered_extent(struct btrfs_inode *inode, u64 file_offset)
+ 	refcount_inc(&entry->refs);
+ 	trace_btrfs_ordered_extent_lookup_first(inode, entry);
+ out:
+-	spin_unlock_irq(&inode->ordered_tree_lock);
++	spin_unlock(&inode->ordered_tree_lock);
+ 	return entry;
+ }
+ 
+@@ -1096,9 +1092,8 @@ struct btrfs_ordered_extent *btrfs_lookup_first_ordered_range(
+ 	struct rb_node *prev;
+ 	struct rb_node *next;
+ 	struct btrfs_ordered_extent *entry = NULL;
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&inode->ordered_tree_lock, flags);
++	spin_lock(&inode->ordered_tree_lock);
+ 	node = inode->ordered_tree.rb_node;
+ 	/*
+ 	 * Here we don't want to use tree_search() which will use tree->last
+@@ -1153,7 +1148,7 @@ struct btrfs_ordered_extent *btrfs_lookup_first_ordered_range(
+ 		trace_btrfs_ordered_extent_lookup_first_range(inode, entry);
+ 	}
+ 
+-	spin_unlock_irqrestore(&inode->ordered_tree_lock, flags);
++	spin_unlock(&inode->ordered_tree_lock);
+ 	return entry;
+ }
+ 
+@@ -1285,9 +1280,7 @@ struct btrfs_ordered_extent *btrfs_split_ordered_extent(
+ 	/*
+ 	 * Take the root's ordered_extent_lock to avoid a race with
+ 	 * btrfs_wait_ordered_extents() when updating the disk_bytenr and
+-	 * disk_num_bytes fields of the ordered extent below. And we disable
+-	 * IRQs because the inode's ordered_tree_lock is used in IRQ context
+-	 * elsewhere.
++	 * disk_num_bytes fields of the ordered extent below.
+ 	 *
+ 	 * There's no concern about a previous caller of
+ 	 * btrfs_wait_ordered_extents() getting the trimmed ordered extent
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 65079eb651da..2513b19eb472 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -5409,12 +5409,12 @@ static int btrfs_log_changed_extents(struct btrfs_trans_handle *trans,
+ 		set_bit(BTRFS_ORDERED_LOGGED, &ordered->flags);
+ 
+ 		if (!test_bit(BTRFS_ORDERED_COMPLETE, &ordered->flags)) {
+-			spin_lock_irq(&inode->ordered_tree_lock);
++			spin_lock(&inode->ordered_tree_lock);
+ 			if (!test_bit(BTRFS_ORDERED_COMPLETE, &ordered->flags)) {
+ 				set_bit(BTRFS_ORDERED_PENDING, &ordered->flags);
+ 				atomic_inc(&trans->transaction->pending_ordered);
+ 			}
+-			spin_unlock_irq(&inode->ordered_tree_lock);
++			spin_unlock(&inode->ordered_tree_lock);
+ 		}
+ 		btrfs_put_ordered_extent(ordered);
+ 	}
 -- 
 2.51.0
 
