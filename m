@@ -1,182 +1,230 @@
-Return-Path: <linux-btrfs+bounces-18292-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18293-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8156C06EFD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 17:21:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9855C07413
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 18:19:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B458B3A9653
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 15:19:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 277651C049E6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 16:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E222322C60;
-	Fri, 24 Oct 2025 15:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB83427510B;
+	Fri, 24 Oct 2025 16:17:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ioj7k02r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JMiUY52p"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E851B2E62D8
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 15:19:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3833375A4
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 16:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761319151; cv=none; b=Q/Fio0xd0vwDF00uJWtRry+j8LLd604aiRqZet7i4YRIAWG+15mPj2aOk0GwobbIjr9+6rAJpmPcN9EuG9jvQlp9cXJxrNKZ5l7s2IsFT/LwTThflxNkaGRVl10tFMamPnd0jNfE8lE0zR8ssUdwQXGJ2CUKsangAFpo3uKCU0Y=
+	t=1761322675; cv=none; b=hJ9r3qJkH53dH8D0O1ByJGndNlPEMtbIlVl6lnBaQk6wdPQMnTsfKGWDa8O1cNjNkbPEsiQtISMhBqMPM5EL3O6lvluy1W05bU1NOXW5AZ2UN+6rT/DJiYkVAmds8FhpFWIRVRtqrGxI8JGLE9qbCd7nSzm8GAD1aNdtPHsGMWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761319151; c=relaxed/simple;
-	bh=A1nZgSHLk3Ea+o8JUU07BQK973AUy09cBcqjoCtV9uI=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=c9vYsqLMYRGXaFzeEwVuGZWMNY4G7cwkahT62+kxsNxHHgwuq8KurA0yQVtquCmvIV4la25RXyEDnXKXtNr4lMSnWSvBkyxDxCrf5aTPmrsRh4l3WFMZDJpk3qosHm+ERjsZv5FQ7eVtGeAj7IDEqWvCBIG2Qr1icopgVBxKUzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ioj7k02r; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-592f7e50da2so2331894e87.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 08:19:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761319147; x=1761923947; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MIwyZW9sidCDypOWd4vP2sZ/37yenpkNQ950ZzRaSzg=;
-        b=Ioj7k02rDixVhB5IwqfivZLAaN7Qe4LQkpURMYF+1N/3z6nnUSY06Rr0Qb7rsU/x35
-         B/JHPFXavilwhpTg2xbkfefRbopEugf01QF+ds6hW9wkhUy0PHhi7+3JFJklMRnPTHP9
-         xnglpKLyXovdx6i2qC9IIgFr+E66G0IsMOrVQnvf1quSFXTKdaRJffTBCOZbWiz7xK32
-         xlpkjLZcCg/K8EJ2qq8ZoYv9NXDsJ6eVjnpabnMt3TG2tSihfk2CA34/+4LlaeycZADQ
-         dolIANIche/HvmA9sXzlGLSeV6MVyxP1vpBp4zpRhkYI5zC5OAEp0CgTEdzVDWM0Dm65
-         1fAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761319147; x=1761923947;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=MIwyZW9sidCDypOWd4vP2sZ/37yenpkNQ950ZzRaSzg=;
-        b=cgCom3BZHGGLtJO3FLI//GVOIHYy37HEkTU3eUgeTgifFQxHpYyfT8b1J4tFRpoF9R
-         KdUBc0N89nYcdIkDYK0QuXLqFlNiPMFOMZBOXAOyLgZiYnbwGTg0FwkY33SGDOSm2IId
-         zyEI0Cg0RDlz0IwGcZuIHG6XIhLDyq13rTpl7a5H4grV8oCW2Por4bOj/++YgFt53Ouw
-         JaJwqux5bafQrXe4IaxPDJIScgfwClKT6gQakzXyH07KbpCUdVJB4/QVaYSEYYw1MXhR
-         qpoY2t9L0ZpSbb0Zf5P+kL9qYklWFsrhndrY8wv22kN5NG1cVMInz6B8RULMChUi965K
-         JTEg==
-X-Gm-Message-State: AOJu0YyzBjFOaqJqiznNAtxr5XXwLCgYr8hWSFzltJpjaIiRAj9l2b0m
-	sxADSxDcCCQ0qNL1+IlP3UyaImP39V7MOiiwkkqYKLay2juEjOzzxxMv
-X-Gm-Gg: ASbGncsHV/PrKfbn7M2edwmdIcvFF2qTmIH2+PgP9J8jMJxyyoWRWvi6tQhefLOiNk6
-	to1yycOlzh4yoLG6C+jGyr8/9ja4VrbJRqyzuRZCkvYHShRDjgSM125KjE7fZUI/gN0YfK2qLpx
-	aGCr2YmbNIWiwG6l08IOhxzraK0T2cIPVJiV+Et1R90mSeP2xnZXCsOHXnrRlKNsn7kr34Z1oai
-	RWlnLZpXWuNzTqQ0KF8lWFAX3wQbvZmIF4IDnVA8vf1zLPxU0FRK8IAgjEIDORI+pZZ5gs6ISPP
-	0Ga1OGYUbz9hLuX5bflrvPVt0hkqKvXlu9XNwpYN6h/suxdbZdwVPajruBt4DEiZxSr8z7JCNSs
-	EACQm3KD4fP+kZ+r+DwNQ3YnGs2lxAKYwH1A1wekwUBEovhl3/iwTVx+aMxri8P6pdCoSaQzJjp
-	oYPU03+iyBcfMgeAz5AIXLB7sjw7s0oDnk
-X-Google-Smtp-Source: AGHT+IEMahbi2fLPVnugBt7nBQpOJJXmfytKLyhTafnrSXtfTi0+A8tdG0+Nc8NOHGuU6LWNqGXYIA==
-X-Received: by 2002:a05:6512:1502:10b0:592:fc5a:b6bb with SMTP id 2adb3069b0e04-592fc5ab708mr774549e87.6.1761319146729;
-        Fri, 24 Oct 2025 08:19:06 -0700 (PDT)
-Received: from [10.128.170.160] ([77.234.210.12])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-592f4d1f3bdsm1731154e87.81.2025.10.24.08.19.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Oct 2025 08:19:06 -0700 (PDT)
-Message-ID: <03c5d7ec-5b3d-49d1-95bc-8970a7f82d87@gmail.com>
-Date: Fri, 24 Oct 2025 18:19:05 +0300
+	s=arc-20240116; t=1761322675; c=relaxed/simple;
+	bh=hmzTcE1IA4fVEgDm0CipvNce/HMctP5mLgaqdB0PL88=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LXfBk/3JFGorT/AXD1ZItNEqxFbcVhGG6ddHqZZwUeR3IWdYte8KmSHLC669cZin0N+oeKZ6iFAgThxK42pnpsPUl02gyLGrwsdUpdWmCAJFYVm6ap8C/mLUNfELF6U4kfX6NTcad78m5i+2Er/bd+zgUPsW6bLB96Jm5ICWgIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JMiUY52p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCDFBC116D0
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 16:17:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761322674;
+	bh=hmzTcE1IA4fVEgDm0CipvNce/HMctP5mLgaqdB0PL88=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=JMiUY52ppfwRbdkFrAfDO2qFjQ0RzocJiw9Xa/wZQOQTZyvXhogsUhDeNPvTlV60P
+	 D6izRD247whxMz1aZuvHwaqr+pWge8qjMIuO3G+iAEmBsFV9AM0bb7a21MzSBRkdEM
+	 RXiczpInbhBDJUP7xOGErT1vtYnD1Sn6fWZET3YgJEOoQSwcDLcEa6ERAYXMWjVNBm
+	 XKGL+lO31ODbgOpu35de92k7BIDcch70+1lkaYSYPaJY3GqYISWRec+Ly8FwmMjRIs
+	 oFSopB2brhwQLs07FKwgQNirBZULd8SPP3+EZtV7Lp8y0IR90VWSOLY2NnSZUKB91Y
+	 9RUKvZkKoBJxw==
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b5b823b4f3dso110972266b.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 09:17:54 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU2B9zfYXXLM7JQrXp/S14ivJPIql8L2rXZmuHNNiaRJcHq1/rWYUyd4rvZ9mXAGvqxQ7vTqNnB5ZiNAg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGXWrv4a/yOxvaC+5bN/fIwWPp37RiHWRZiZ0oy20zG4wAKRlP
+	ZBD+Vm7q4dG9E5D4GhRLZWfa/cnXOkRnQfb86q2KS4WKIMb/GgZDZKQqtJ3SyV05SWpziJDpfg/
+	IgvHIsLSiXEqLiaeg4J+euF9JTdJN1U8=
+X-Google-Smtp-Source: AGHT+IHtGtdBAyqo6hvgp+5zOxw426G1RR3UtlU8/Ca2eMeBcA4tGeFXKYnpf7Kaq97j2gu52L1+dhXCMCeBw2yIJPc=
+X-Received: by 2002:a17:907:6ea9:b0:b6d:606f:2aa9 with SMTP id
+ a640c23a62f3a-b6d606f3a5emr519118766b.65.1761322673142; Fri, 24 Oct 2025
+ 09:17:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
-Subject: Directory is not persisted after writing to the file within directory
- if system crashes
-To: clm@fb.com, dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <03c5d7ec-5b3d-49d1-95bc-8970a7f82d87@gmail.com>
+In-Reply-To: <03c5d7ec-5b3d-49d1-95bc-8970a7f82d87@gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 24 Oct 2025 17:17:15 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5ggWXdptoGH9Bmk-hc2CMBLz-YmC1A8U-hx9q=ZZ0BHw@mail.gmail.com>
+X-Gm-Features: AS18NWCU00h722LQDTBmrGYiuo-ctgjdMx3DwmnZZwAsTeoabf-PwA6L4C99fbY
+Message-ID: <CAL3q7H5ggWXdptoGH9Bmk-hc2CMBLz-YmC1A8U-hx9q=ZZ0BHw@mail.gmail.com>
+Subject: Re: Directory is not persisted after writing to the file within
+ directory if system crashes
+To: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
+Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Under some circumstances, directory entry is not persisted after writing 
-to the file inside the directory that was opened with `O_SYNC` flag if 
-system crashes.
+On Fri, Oct 24, 2025 at 4:21=E2=80=AFPM Vyacheslav Kovalevsky
+<slava.kovalevskiy.2014@gmail.com> wrote:
+>
+> Under some circumstances, directory entry is not persisted after writing
+> to the file inside the directory that was opened with `O_SYNC` flag if
+> system crashes.
+>
+>
+> Detailed description
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> Hello, we have found another issue with btrfs crash behavior.
+>
+> In short, empty file is created and synced. Then, a new directory is
+> created, old file is opened with `O_SYNC` flag and some data is written.
+> After this, a new hard link is created inside the directory and the root
+> is `fsync`ed (directory should persist). However, after a crash, the
+> directory entry is missing even though data written to the old file was
+> persisted.
+>
+>
+> System info
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> Linux version 6.18.0-rc2, also tested on 6.14.11.
+>
+>
+> How to reproduce
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> ```
+> #include <errno.h>
+> #include <fcntl.h>
+> #include <stdio.h>
+> #include <string.h>
+> #include <sys/stat.h>
+> #include <sys/types.h>
+> #include <unistd.h>
+>
+> int main() {
+> int status;
+> int file_fd;
+> int root_fd;
+>
+> status =3D creat("file1", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+> printf("CREAT: %d\n", status);
+>
+> // persist `file1`
+> sync();
+>
+> status =3D mkdir("dir", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+> printf("MKDIR: %d\n", status);
+>
+> status =3D open("file1", O_WRONLY | O_SYNC);
+> printf("OPEN: %d\n", status);
+> file_fd =3D status;
+>
+> status =3D write(file_fd, "Test data!", 10);
+> printf("WRITE: %d\n", status);
+>
+> status =3D link("file1", "dir/file2");
+> printf("LINK: %d\n", status);
+>
+> status =3D open(".", O_RDONLY | O_DIRECTORY);
+> printf("OPEN: %d\n", status);
+> root_fd =3D status;
+>
+> // persist `dir`
+> status =3D fsync(root_fd);
+> printf("FSYNC: %d\n", status);
+> }
+> ```
+>
+> Steps:
+>
+> 1. Create and mount new btrfs file system in default configuration.
+> 2. Change directory to root of the file system and run the compiled test.
+> 3. Cause hard system crash (e.g. QEMU `system_reset` command).
+> 4. Remount file system after crash.
+> 5. Observe that `dir` directory is missing.
 
+I converted that to a test case for fstests and couldn't reproduce,
+"dir", "file1" and "dir/file2" exist after the power failure.
 
-Detailed description
-====================
+The conversion for fstests:
 
-Hello, we have found another issue with btrfs crash behavior.
+#! /bin/bash
+# SPDX-License-Identifier: GPL-2.0
+# Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
+#
+# FS QA Test 780
+#
+# what am I here for?
+#
+. ./common/preamble
+_begin_fstest auto quick log
 
-In short, empty file is created and synced. Then, a new directory is 
-created, old file is opened with `O_SYNC` flag and some data is written. 
-After this, a new hard link is created inside the directory and the root 
-is `fsync`ed (directory should persist). However, after a crash, the 
-directory entry is missing even though data written to the old file was 
-persisted.
-
-
-System info
-===========
-
-Linux version 6.18.0-rc2, also tested on 6.14.11.
-
-
-How to reproduce
-================
-
-```
-#include <errno.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-int main() {
-int status;
-int file_fd;
-int root_fd;
-
-status = creat("file1", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-printf("CREAT: %d\n", status);
-
-// persist `file1`
-sync();
-
-status = mkdir("dir", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-printf("MKDIR: %d\n", status);
-
-status = open("file1", O_WRONLY | O_SYNC);
-printf("OPEN: %d\n", status);
-file_fd = status;
-
-status = write(file_fd, "Test data!", 10);
-printf("WRITE: %d\n", status);
-
-status = link("file1", "dir/file2");
-printf("LINK: %d\n", status);
-
-status = open(".", O_RDONLY | O_DIRECTORY);
-printf("OPEN: %d\n", status);
-root_fd = status;
-
-// persist `dir`
-status = fsync(root_fd);
-printf("FSYNC: %d\n", status);
+_cleanup()
+{
+_cleanup_flakey
+cd /
+rm -r -f $tmp.*
 }
-```
 
-Steps:
+. ./common/filter
+. ./common/dmflakey
 
-1. Create and mount new btrfs file system in default configuration.
-2. Change directory to root of the file system and run the compiled test.
-3. Cause hard system crash (e.g. QEMU `system_reset` command).
-4. Remount file system after crash.
-5. Observe that `dir` directory is missing.
+_require_scratch
+_require_dm_target flakey
 
-Notes:
+rm -f $seqres.full
 
-- ext4 does persist `dir` and `dir/file2` even though it was not synced.
-- xfs does persist `dir` but does not persist `dir/file2`.
+_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
+_require_metadata_journaling $SCRATCH_DEV
+_init_flakey
+_mount_flakey
+
+touch $SCRATCH_MNT/file1
+
+_scratch_sync
+
+mkdir $SCRATCH_MNT/dir
+echo -n "hello world" > $SCRATCH_MNT/file1
+ln $SCRATCH_MNT/file1 $SCRATCH_MNT/dir/file2
+
+$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/
+
+# Simulate a power failure and then mount again the filesystem to replay th=
+e
+# journal/log.
+_flakey_drop_and_remount
+
+ls -R $SCRATCH_MNT/ | _filter_scratch
+
+_unmount_flakey
+
+# success, all done
+_exit 0
 
 
-P.S. Want to apologize for formatting in previous report, first time 
-using Thunderbird and plain text.
 
 
-
+>
+> Notes:
+>
+> - ext4 does persist `dir` and `dir/file2` even though it was not synced.
+> - xfs does persist `dir` but does not persist `dir/file2`.
+>
+>
+> P.S. Want to apologize for formatting in previous report, first time
+> using Thunderbird and plain text.
+>
+>
+>
+>
 
