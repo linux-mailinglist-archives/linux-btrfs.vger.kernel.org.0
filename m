@@ -1,189 +1,133 @@
-Return-Path: <linux-btrfs+bounces-18263-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18264-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E721C0501C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 10:15:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CAADC04FB0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 10:09:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E72A40733D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 08:07:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 029261B800E8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 08:08:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 931D8302CA2;
-	Fri, 24 Oct 2025 08:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9658B301027;
+	Fri, 24 Oct 2025 08:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="D6AogjIs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fzu/hS9Y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6590B2FDC3E;
-	Fri, 24 Oct 2025 08:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D518B2FE04C
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 08:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761293189; cv=none; b=s56Sbwh1pIMNbLkgPLpjrDWUxmERVecFX6acl35/uyxq7Gxai5yzUOS6QFQeiyHQb7QyqTOWpcLXQsXigXvJc4ZwPbSoBvBCmHjeVhrHITFn/+lJ8nZgWIoY0nTEwIJLGf8NtUwIaIcBFiDNkART2YHUWabq3OX7Y7+eC/wqZPY=
+	t=1761293284; cv=none; b=ntXp9Dd9/L2dv0GaG8wKYNPFeW9VBMFqL6GGmQiFgFZgH8y/dUPJykoDgH0P3FKJN9O6qmpddArJuDWbruuQO48ss8Jdl9fUmTVgKczB4dxZoDGtfLiExyIPTkrgaCjqTkI+1B+/WnvCl4vy1Jk54ha8OYAOxoomrOmZPMVocZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761293189; c=relaxed/simple;
-	bh=fwUWvRaQsLFX3LqP3Ew3i68VLcwmDW8xgH2gbbo9sQI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QwjxqzXILQca5L1PPiQv1W5S8LhMt1b3NuLfDV/4uZbHdrXTTiWT1o1evXQ5x68/8AV6Ca7y3OuaP41bbbnDsEC0QZ8mDInitWacy6UFozTLrD0mPFozcRmOA9i2wciyPee2qtsR8LtLn1V5GfjmdQw+26uQljL7WAoEBbgRK9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=D6AogjIs; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=CK4+A+XQ8xSWXf+Z9tTtAvh9OT31XsHF6kx6Btc5iA8=; b=D6AogjIsaOXIaEKMP8+nYzb2S/
-	Oi9fBsDLQ/QDLj8zWUOszOIZUXoUGJEGD6oOe3/gwwa36ob+z5Y4jnXIMl/I47R2yybCHjHy9PVpp
-	u9rk8NVCJvRsT7wc5scuOjf+d0qjgiv7xQKVzrHmYhwZolySV+SEki+Hm9VEk4MYwcBCOKWh8kE/L
-	vlzlOWvLC6nPNVOCQn/9gA1eRi4wHGrw+7X1beFwTeRlaIDXxs6ij8o/wGIbY6gxmKmEmayQZ5noV
-	iBvVRW/cRH9N2cvm1YrB7NcZkATFE2g0crlK/d+n5Fpb75Kk12b+O+FG+yCLdiKH/xMwQRP6Ju0xM
-	N9qYV9hw==;
-Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vCCoa-00000008cQn-37yb;
-	Fri, 24 Oct 2025 08:06:25 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>,
-	Mark Fasheh <mark@fasheh.com>,
-	Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Jan Kara <jack@suse.cz>,
-	linux-block@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	jfs-discussion@lists.sourceforge.net,
-	ocfs2-devel@lists.linux.dev,
-	linux-xfs@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: [PATCH 10/10] mm: rename filemap_fdatawrite_range_kick to filemap_flush_range
-Date: Fri, 24 Oct 2025 10:04:21 +0200
-Message-ID: <20251024080431.324236-11-hch@lst.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251024080431.324236-1-hch@lst.de>
-References: <20251024080431.324236-1-hch@lst.de>
+	s=arc-20240116; t=1761293284; c=relaxed/simple;
+	bh=IU+pnkb8iIp2RtUo9AKGUS4QXSBis0P6PzHO17Q4JIo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q36JyWethfo7Npcr7qJt9Xbe7Frv0Q42jDmwEPIHvM0DVtnO4AkiFO60bW7bWr5oLkl12E0m0ygkSlKs4I5qtpVMq5ng8C197BsBKgMW/sor9+0EQxnHyu8zwtlcz9OvYCsEMss3B22ha/vDori3tX72hSoAyNGc69sOqLQ77xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fzu/hS9Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65504C4CEFF
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 08:08:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761293284;
+	bh=IU+pnkb8iIp2RtUo9AKGUS4QXSBis0P6PzHO17Q4JIo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=fzu/hS9YWzHZSfJQj2I9AdHG/xtllgmSJwX7oWqK2q2hyYeBRnWjGaxA9TFfqS5I1
+	 lA1SHHd41i8kEFsRtSKhIxs6OetRuvsECD1EfH5Fz717zxEUqo2AuxkWVEWqIw1BKN
+	 So5WMu3X9/kVQ0Ss/+r5qOGPs37xhxUWMvgh+odRjTXmkgb1X2zKNVX2vO1w9mZx/i
+	 qt0GaLyWQPpc5+B1E4LDO1TMQQsAxG2nNE6sT4GcjzuL996gHxIbxcBSEzM4VEOPna
+	 jycjmkS1PzEqdaR9AJK7dBkXTu+ly9j0xceSbD+2JjNXSqZqblwMlQ1UhSyz1SO7Te
+	 IjCRkZdCsUc3A==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b6d3effe106so416252266b.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 01:08:04 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxFfGoyCOd1dOeScqkDFhIA/prsDg+E9+kt6CUKopID2sFPUkYL
+	1ntUhwCAsGUJG0arxtihKTsgcloYV5IZvayyH2WJMHeF/5ppxnJPpST/9PMrcM1YsgfhEsBwRXS
+	9hWbgB6wzxX77EQG3TPzA/9IvdFXi3R8=
+X-Google-Smtp-Source: AGHT+IGH79+JgwLclN4+8Tp8Gekgcp5d7Xc46At305N7IPdNgexbnoFilL+RyujhJbuI2+sVIr8COIf0tyA7lhSe+E4=
+X-Received: by 2002:a17:907:3f8f:b0:b33:a2ef:c7 with SMTP id
+ a640c23a62f3a-b6d6ffb541fmr152945166b.55.1761293282925; Fri, 24 Oct 2025
+ 01:08:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <2059d92d64eb181f1d37538d1279ed5b191ce1ab.1761211916.git.wqu@suse.com>
+ <CAL3q7H7KmObsE2JURpKLVRT_ufa_2v4M2KAFahUndq5Jqxwnow@mail.gmail.com> <6f36e8d0-630b-4cc3-a780-11be4aa0a65f@suse.com>
+In-Reply-To: <6f36e8d0-630b-4cc3-a780-11be4aa0a65f@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 24 Oct 2025 09:07:25 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4TcJNY7cYeYWoByOW0ek6BBEbtgSSFFOvc7aagarfFXQ@mail.gmail.com>
+X-Gm-Features: AS18NWD7MUh43ObV5_snK0od1BhyGPDV6iPjIDcHqpg08WbG7w_nr3m1M3qJujA
+Message-ID: <CAL3q7H4TcJNY7cYeYWoByOW0ek6BBEbtgSSFFOvc7aagarfFXQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: make sure no dirty metadata write is submitted
+ after btrfs_stop_all_workers()
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Rename filemap_fdatawrite_range_kick to filemap_flush_range because it
-is the ranged version of filemap_flush.
+On Thu, Oct 23, 2025 at 9:44=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2025/10/24 01:56, Filipe Manana =E5=86=99=E9=81=93:
+> > On Thu, Oct 23, 2025 at 10:33=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote=
+:
+> [...]
+> > So two suggestions:
+> >
+> > 1) Move this into btrfs_error_commit_super(), to have all code related
+> > to fs in error state in one single place.
+> >
+> > 2) Instead of of calling filemap_write_and_wait(), make this simpler
+> > by doing the iput() of the btree inode right before calling
+> > btrfs_stop_all_workers() and removing the call to
+> > invalidate_inode_pages2() which is irrelevant since the final iput()
+> > removes everything from the page cache except dirty pages (but the
+> > iput() already triggered writeback of them).
+> >
+> > In fact for this scenario the call to invalidate_inode_pages2() must
+> > be returning -EBUSY due to the dirty pages, but we have always ignored
+> > its return value.
+> >
+> >  From a quick glance, it seems to me that suggestion 2 should work.
+>
+> Yes, that's the original workaround I went with, the problem is we're
+> still submitting metadata writes after a trans abort.
+>
+> I don't feel that comfort writing back metadata in that situation.
+> Maybe the trans abort is triggered because a corrupted extent/free space
+> tree which allows us to allocate new tree blocks where we shouldn't
+> (aka, metadata COW is already broken).
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/sync.c          | 3 +--
- include/linux/fs.h | 6 +++---
- mm/fadvise.c       | 2 +-
- mm/filemap.c       | 8 ++++----
- 4 files changed, 9 insertions(+), 10 deletions(-)
+Metadata COW is broken why??
 
-diff --git a/fs/sync.c b/fs/sync.c
-index 6d8b04e04c3c..1759f6ba36cd 100644
---- a/fs/sync.c
-+++ b/fs/sync.c
-@@ -285,8 +285,7 @@ int sync_file_range(struct file *file, loff_t offset, loff_t nbytes,
- 			ret = filemap_fdatawrite_range(mapping, offset,
- 					endbyte);
- 		else
--			ret = filemap_fdatawrite_range_kick(mapping, offset,
--					endbyte);
-+			ret = filemap_flush_range(mapping, offset, endbyte);
- 		if (ret < 0)
- 			goto out;
- 	}
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index c895146c1444..a5dbfa20f8d7 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3014,7 +3014,7 @@ extern int __must_check file_fdatawait_range(struct file *file, loff_t lstart,
- extern int __must_check file_check_and_advance_wb_err(struct file *file);
- extern int __must_check file_write_and_wait_range(struct file *file,
- 						loff_t start, loff_t end);
--int filemap_fdatawrite_range_kick(struct address_space *mapping, loff_t start,
-+int filemap_flush_range(struct address_space *mapping, loff_t start,
- 		loff_t end);
- 
- static inline int file_write_and_wait(struct file *file)
-@@ -3051,8 +3051,8 @@ static inline ssize_t generic_write_sync(struct kiocb *iocb, ssize_t count)
- 	} else if (iocb->ki_flags & IOCB_DONTCACHE) {
- 		struct address_space *mapping = iocb->ki_filp->f_mapping;
- 
--		filemap_fdatawrite_range_kick(mapping, iocb->ki_pos - count,
--					      iocb->ki_pos - 1);
-+		filemap_flush_range(mapping, iocb->ki_pos - count,
-+				iocb->ki_pos - 1);
- 	}
- 
- 	return count;
-diff --git a/mm/fadvise.c b/mm/fadvise.c
-index f1be619f0e58..67028e30aa91 100644
---- a/mm/fadvise.c
-+++ b/mm/fadvise.c
-@@ -111,7 +111,7 @@ int generic_fadvise(struct file *file, loff_t offset, loff_t len, int advice)
- 		spin_unlock(&file->f_lock);
- 		break;
- 	case POSIX_FADV_DONTNEED:
--		filemap_fdatawrite_range_kick(mapping, offset, endbyte);
-+		filemap_flush_range(mapping, offset, endbyte);
- 
- 		/*
- 		 * First and last FULL page! Partial pages are deliberately
-diff --git a/mm/filemap.c b/mm/filemap.c
-index f90f5bb2b825..fa770768ea3a 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -419,7 +419,7 @@ int filemap_fdatawrite(struct address_space *mapping)
- EXPORT_SYMBOL(filemap_fdatawrite);
- 
- /**
-- * filemap_fdatawrite_range_kick - start writeback on a range
-+ * filemap_flush_range - start writeback on a range
-  * @mapping:	target address_space
-  * @start:	index to start writeback on
-  * @end:	last (inclusive) index for writeback
-@@ -429,12 +429,12 @@ EXPORT_SYMBOL(filemap_fdatawrite);
-  *
-  * Return: %0 on success, negative error code otherwise.
-  */
--int filemap_fdatawrite_range_kick(struct address_space *mapping, loff_t start,
-+int filemap_flush_range(struct address_space *mapping, loff_t start,
- 				  loff_t end)
- {
- 	return filemap_writeback(mapping, start, end, WB_SYNC_NONE, NULL);
- }
--EXPORT_SYMBOL_GPL(filemap_fdatawrite_range_kick);
-+EXPORT_SYMBOL_GPL(filemap_flush_range);
- 
- /**
-  * filemap_flush - mostly a non-blocking flush
-@@ -447,7 +447,7 @@ EXPORT_SYMBOL_GPL(filemap_fdatawrite_range_kick);
-  */
- int filemap_flush(struct address_space *mapping)
- {
--	return filemap_fdatawrite_range_kick(mapping, 0, LLONG_MAX);
-+	return filemap_flush_range(mapping, 0, LLONG_MAX);
- }
- EXPORT_SYMBOL(filemap_flush);
- 
--- 
-2.47.3
+Even after a transaction aborts, it's ok, but pointless, to allocate
+extents and trigger writeback for them.
+As long as we don't allow the transaction to be committed and new
+transactions to be started, we are safe - in fact that's the only
+thing a transaction abort guarantees.
 
+We may have many places that could check if a transaction was aborted
+and avoid extent allocation and writeback, but that's ok, as long as
+we don't allow transaction commits.
+
+>
+> Thus I consider delaying btrfs_stop_all_workers() until iput() is only a
+> workaround, it still allows us to submit unnecessary writes.
+>
+> I'd prefer the solution 1) in this case, still with the extra handling
+> in write_one_eb().
+>
+> Thanks for the review and suggestion, will follow the advice of the
+> remaining part.
+>
+> Thanks,
+> Qu
+>
 
