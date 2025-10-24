@@ -1,223 +1,115 @@
-Return-Path: <linux-btrfs+bounces-18313-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18314-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E889C07AA5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 20:14:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24AC9C07E3C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 21:22:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 45B394FA48B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 18:13:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 597DB19A7EA2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 19:22:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3D634A3B4;
-	Fri, 24 Oct 2025 18:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C805728C849;
+	Fri, 24 Oct 2025 19:21:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="r375UFTQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gYE4+xI7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F4C348473
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 18:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08778286430;
+	Fri, 24 Oct 2025 19:21:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761329568; cv=none; b=ZJ5SqOZdWTSAHlEATUf/iP5WJdwYmOhZnMMEGq+J9eavQ52fIKnjFnjqd1MTLTwwQ26yfhl8cV7W7pbxwqZ8ZJO2PUUnyP8pmTdj0bgmYVkj5soVgSEdGraC9jjOpGhxkcz0txTlz8q0HT49glheRIZ420RzaiGwssjyDXKin6c=
+	t=1761333715; cv=none; b=NlkMUvzcr63jVmo6ZPfoNPB+rBz3ecdT8DXCTmEOoCg/o4E2Yl8cCgGdGna57VZkKyi49cRsQEyyibSd03dGgtNJPu7bIux9L9mMzVm4HVltJTnYO2ABEMRLVScH8hnZKmDtBwDmovM616N0Ic1RqyE/Z8FzJPS94r1F9Q7t3ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761329568; c=relaxed/simple;
-	bh=F6wnbFnM7ECL3S5IImqIZ7FKypTrzl/sScILT6eR3Ks=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Mime-Version; b=ua8ELf/9CU0ciG+WlwmntdbDsd6+AuYrj07UtbrXsxYnWevWq2FVoy+WV5H9704CWFNoGD1RmdH8SVrzfuQxzULDVH+28l+duCperpET0l/NjtdVVIID6FwQW08ehEfHy5P1/jarmAbZnHPuu1E7ksq0/2d3xlar0jeE9XvavFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=r375UFTQ; arc=none smtp.client-ip=217.169.27.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
-Received: from localhost.localdomain (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.burntcomma.com (Postfix) with ESMTPSA id 3CD812CFE55;
-	Fri, 24 Oct 2025 19:12:31 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1761329551;
-	bh=sdgSqm5SAkFEQ5BBHbip5xakNG1HvbCndXA6yHob+oI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=r375UFTQ8nM+I4WPODGM5g11HgJqT3yGRwZjjljyvaA8crSfHdXvR/Aj9eENFPEMI
-	 U7C2TLvv5ensxBWfxbQnTkwzrzBNdx6iuQRNUafLacl6bnyXCE4e73OEYq91hnqM3X
-	 j0d/9wrfXGHaCdQ4EDBPAtsaqP4o593ljJEj75OA=
-From: Mark Harmstone <mark@harmstone.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Mark Harmstone <mark@harmstone.com>
-Subject: [PATCH v4 16/16] btrfs: add stripe removal pending flag
-Date: Fri, 24 Oct 2025 19:12:17 +0100
-Message-ID: <20251024181227.32228-17-mark@harmstone.com>
-In-Reply-To: <20251024181227.32228-1-mark@harmstone.com>
-References: <20251024181227.32228-1-mark@harmstone.com>
+	s=arc-20240116; t=1761333715; c=relaxed/simple;
+	bh=zajPlJnvLIMbpj18tt9XU5F6klgXeRifknETT3f00Yw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AQlASLxDsQSBkdiCOX6KtuX/nYE5KDDYS714umhJVflO3hul7rwO8YP1u7cPA8jJ7tD1oFOlAg5V+P+qQVnyi4WYlrzSpi43es5aYczO/JSFp4PcSfK2M4djt/j/lE6JK/tSbzLlT7ThyNDzLA7vGfD5XzNNg72sbruJ6jnlVxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gYE4+xI7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40D9DC4CEF1;
+	Fri, 24 Oct 2025 19:21:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761333714;
+	bh=zajPlJnvLIMbpj18tt9XU5F6klgXeRifknETT3f00Yw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gYE4+xI7/IgZhpd7y0gND/WB2m9og01WSNl8xqVgmsKloP8wozlAsva8mAXNLOLhj
+	 +n06GmuvHtqMxpASGF78jb6nC8nF7fzU0gO7d1tWMFPBsjv7LPSa9L2vbzLPfDbACz
+	 zNjm/0XNRz0G7Pk2+YW8tMZRevxOYMhFXzG4txrul0hxn4ITKe0+hvMY2u0zDiCKme
+	 I6lc9edBxfmWJuX9hOL1lUnMOsAmIUdgdGJfRACwha5AjkgcrUFjCfDUFZR8wlRi29
+	 MPbqftOf51ATChWK2hvnE7Zed+gIcFXlVGCjwiKcDgZc3AQu1gb8g86XbRfs/Am7uf
+	 TAdNdCZD9JRMQ==
+Date: Fri, 24 Oct 2025 12:21:52 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCH 00/10] BLAKE2b library API
+Message-ID: <20251024192152.GB2068@quark>
+References: <20251018043106.375964-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251018043106.375964-1-ebiggers@kernel.org>
 
-If the filesystem is unmounted while the async discard of a fully remapped
-block group is in progress, its unused device extents will never be freed.
+On Fri, Oct 17, 2025 at 09:30:56PM -0700, Eric Biggers wrote:
+> This series can also be retrieved from:
+> 
+>     git fetch https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git blake2b-lib-v1
+> 
+> This series adds BLAKE2b support to lib/crypto/ and reimplements the
+> blake2b-* crypto_shash algorithms on top of it.
+> 
+> To prepare for that, patches 1-4 clean up the BLAKE2s library code a
+> bit, and patch 5 adds some missing 64-bit byteorder helper functions.
+> Patches 6-8 add the BLAKE2b library API (closely mirroring the BLAKE2s
+> one), and patch 9 makes crypto_shash use it.  As usual, the library APIs
+> are documented (with kerneldoc) and tested (with KUnit).
+> 
+> With that done, all of btrfs's checksum algorithms have library APIs.
+> So patch 10 converts btrfs to use the library APIs instead of shash.
+> This has quite a few benefits, as detailed in that patch.
+> 
+> Patches 1-9 are targeting libcrypto-next for 6.19.  Patch 10 can go
+> through the btrfs tree later.
+> 
+> Eric Biggers (10):
+>   lib/crypto: blake2s: Adjust parameter order of blake2s()
+>   lib/crypto: blake2s: Rename blake2s_state to blake2s_ctx
+>   lib/crypto: blake2s: Drop excessive const & rename block => data
+>   lib/crypto: blake2s: Document the BLAKE2s library API
+>   byteorder: Add le64_to_cpu_array() and cpu_to_le64_array()
+>   lib/crypto: blake2b: Add BLAKE2b library functions
+>   lib/crypto: arm/blake2b: Migrate optimized code into library
+>   lib/crypto: tests: Add KUnit tests for BLAKE2b
+>   crypto: blake2b - Reimplement using library API
+>   btrfs: switch to library APIs for checksums
 
-To counter this, add a new flag BTRFS_BLOCK_GROUP_STRIPE_REMOVAL_PENDING
-to say that this has been interrupted. Set it in the transaction in which
-the last identity remap has been removed, clear it when we remove the
-device extents, and if we encounter it on mount queue that block group
-up for discard.
+Applied patches 1-9 (i.e., all except the btrfs patch) to
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=libcrypto-next
 
-Signed-off-by: Mark Harmstone <mark@harmstone.com>
----
- fs/btrfs/block-group.c          | 43 ++++++++++++++++++++++++++++++++-
- fs/btrfs/free-space-cache.c     |  7 ++++++
- fs/btrfs/relocation.c           | 18 ++++++++++++++
- include/uapi/linux/btrfs_tree.h |  1 +
- 4 files changed, 68 insertions(+), 1 deletion(-)
+I folded the following fixup into patch 7 to address
+https://lore.kernel.org/r/20251019163249.GD1604@sol/ and
+https://lore.kernel.org/r/202510221007.WnlC6PmP-lkp@intel.com/
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 0c91553b02cf..8eb452068e1f 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2526,6 +2526,24 @@ static int read_one_block_group(struct btrfs_fs_info *info,
- 		inc_block_group_ro(cache, 1);
- 	}
+diff --git a/lib/crypto/Makefile b/lib/crypto/Makefile
+index 5c9a933928188..bc26777d08e97 100644
+--- a/lib/crypto/Makefile
++++ b/lib/crypto/Makefile
+@@ -37,5 +37,5 @@ CFLAGS_blake2b.o := -Wframe-larger-than=4096 #  https://gcc.gnu.org/bugzilla/sho
+ ifeq ($(CONFIG_CRYPTO_LIB_BLAKE2B_ARCH),y)
+ CFLAGS_blake2b.o += -I$(src)/$(SRCARCH)
+-obj-$(CONFIG_ARM) += arm/blake2b-neon-core.o
++libblake2b-$(CONFIG_ARM) += arm/blake2b-neon-core.o
+ endif # CONFIG_CRYPTO_LIB_BLAKE2B_ARCH
  
-+	if (cache->flags & BTRFS_BLOCK_GROUP_STRIPE_REMOVAL_PENDING) {
-+		spin_lock(&info->unused_bgs_lock);
-+
-+		if (list_empty(&cache->bg_list)) {
-+			btrfs_get_block_group(cache);
-+			list_add_tail(&cache->bg_list,
-+				      &info->fully_remapped_bgs);
-+		} else {
-+			list_move_tail(&cache->bg_list,
-+				       &info->fully_remapped_bgs);
-+		}
-+
-+		spin_unlock(&info->unused_bgs_lock);
-+
-+		if (btrfs_test_opt(info, DISCARD_ASYNC))
-+			btrfs_discard_queue_work(&info->discard_ctl, cache);
-+	}
-+
- 	return 0;
- error:
- 	btrfs_put_block_group(cache);
-@@ -4833,6 +4851,29 @@ void btrfs_mark_bg_fully_remapped(struct btrfs_block_group *bg,
- 
- 	spin_unlock(&fs_info->unused_bgs_lock);
- 
--	if (btrfs_test_opt(fs_info, DISCARD_ASYNC))
-+	if (btrfs_test_opt(fs_info, DISCARD_ASYNC)) {
-+		bool bg_already_dirty = true;
-+
-+		spin_lock(&bg->lock);
-+		bg->flags |= BTRFS_BLOCK_GROUP_STRIPE_REMOVAL_PENDING;
-+		spin_unlock(&bg->lock);
-+
-+		spin_lock(&trans->transaction->dirty_bgs_lock);
-+		if (list_empty(&bg->dirty_list)) {
-+			list_add_tail(&bg->dirty_list,
-+				      &trans->transaction->dirty_bgs);
-+			bg_already_dirty = false;
-+			btrfs_get_block_group(bg);
-+		}
-+		spin_unlock(&trans->transaction->dirty_bgs_lock);
-+
-+		/*
-+		 * Modified block groups are accounted for in
-+		 * the delayed_refs_rsv.
-+		 */
-+		if (!bg_already_dirty)
-+			btrfs_inc_delayed_refs_rsv_bg_updates(trans->fs_info);
-+
- 		btrfs_discard_queue_work(&fs_info->discard_ctl, bg);
-+	}
- }
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 5d5e3401e723..60c0df6f002c 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -3068,6 +3068,7 @@ bool btrfs_is_free_space_trimmed(struct btrfs_block_group *block_group)
- 	bool ret = true;
- 
- 	if (block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED &&
-+	    !(block_group->flags & BTRFS_BLOCK_GROUP_STRIPE_REMOVAL_PENDING) &&
- 	    block_group->identity_remap_count == 0) {
- 		return true;
- 	}
-@@ -3847,6 +3848,11 @@ void btrfs_trim_fully_remapped_block_group(struct btrfs_block_group *bg)
- 	struct btrfs_trans_handle *trans;
- 	struct btrfs_chunk_map *map;
- 
-+	if (!(bg->flags & BTRFS_BLOCK_GROUP_STRIPE_REMOVAL_PENDING)) {
-+		bg->discard_cursor = end;
-+		goto skip_discard;
-+	}
-+
- 	bytes = end - bg->discard_cursor;
- 
- 	if (max_discard_size &&
-@@ -3893,6 +3899,7 @@ void btrfs_trim_fully_remapped_block_group(struct btrfs_block_group *bg)
- 
- 	btrfs_free_chunk_map(map);
- 
-+skip_discard:
- 	if (bg->used == 0) {
- 		spin_lock(&fs_info->unused_bgs_lock);
- 		list_move_tail(&bg->bg_list, &fs_info->unused_bgs);
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index ebbc619be682..e01ff0174fb1 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -4740,6 +4740,7 @@ int btrfs_last_identity_remap_gone(struct btrfs_trans_handle *trans,
- 				   struct btrfs_block_group *bg)
- {
- 	int ret;
-+	bool bg_already_dirty = true;
- 	BTRFS_PATH_AUTO_FREE(path);
- 
- 	ret = btrfs_remove_dev_extents(trans, chunk);
-@@ -4764,6 +4765,23 @@ int btrfs_last_identity_remap_gone(struct btrfs_trans_handle *trans,
- 
- 	btrfs_remove_bg_from_sinfo(bg);
- 
-+	spin_lock(&bg->lock);
-+	bg->flags &= ~BTRFS_BLOCK_GROUP_STRIPE_REMOVAL_PENDING;
-+	spin_unlock(&bg->lock);
-+
-+	spin_lock(&trans->transaction->dirty_bgs_lock);
-+	if (list_empty(&bg->dirty_list)) {
-+		list_add_tail(&bg->dirty_list,
-+			      &trans->transaction->dirty_bgs);
-+		bg_already_dirty = false;
-+		btrfs_get_block_group(bg);
-+	}
-+	spin_unlock(&trans->transaction->dirty_bgs_lock);
-+
-+	/* Modified block groups are accounted for in the delayed_refs_rsv. */
-+	if (!bg_already_dirty)
-+		btrfs_inc_delayed_refs_rsv_bg_updates(trans->fs_info);
-+
- 	path = btrfs_alloc_path();
- 	if (!path)
- 		return -ENOMEM;
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index 89bcb80081a6..36a7d1a3cbe3 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -1173,6 +1173,7 @@ struct btrfs_dev_replace_item {
- #define BTRFS_BLOCK_GROUP_RAID1C4       (1ULL << 10)
- #define BTRFS_BLOCK_GROUP_REMAPPED      (1ULL << 11)
- #define BTRFS_BLOCK_GROUP_REMAP         (1ULL << 12)
-+#define BTRFS_BLOCK_GROUP_STRIPE_REMOVAL_PENDING	(1ULL << 13)
- #define BTRFS_BLOCK_GROUP_RESERVED	(BTRFS_AVAIL_ALLOC_BIT_SINGLE | \
- 					 BTRFS_SPACE_INFO_GLOBAL_RSV)
- 
--- 
-2.49.1
-
 
