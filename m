@@ -1,230 +1,147 @@
-Return-Path: <linux-btrfs+bounces-18293-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18294-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9855C07413
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 18:19:54 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61241C07523
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 18:32:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 277651C049E6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 16:18:49 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CED5835C8BC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 16:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB83427510B;
-	Fri, 24 Oct 2025 16:17:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657184414;
+	Fri, 24 Oct 2025 16:31:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JMiUY52p"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="baeGrPtx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3833375A4
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 16:17:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02EB124BBFD
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 16:31:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761322675; cv=none; b=hJ9r3qJkH53dH8D0O1ByJGndNlPEMtbIlVl6lnBaQk6wdPQMnTsfKGWDa8O1cNjNkbPEsiQtISMhBqMPM5EL3O6lvluy1W05bU1NOXW5AZ2UN+6rT/DJiYkVAmds8FhpFWIRVRtqrGxI8JGLE9qbCd7nSzm8GAD1aNdtPHsGMWs=
+	t=1761323514; cv=none; b=ft1P0XtcF9CziyTnjzwU72Qtws7rkQqK4Kn8Jvj+HpUN3ofrgdMcKwjvrkzhIm13sCN26WXt75HdXxfTIk9EjpKWvHEpOIavEuUcJu/CyPlHfsGvahBW+jN0gMftdKhHP1f/wUlxgG0xEXrxJxeKBzPh8yy8/A4EjN7v73DvdOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761322675; c=relaxed/simple;
-	bh=hmzTcE1IA4fVEgDm0CipvNce/HMctP5mLgaqdB0PL88=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LXfBk/3JFGorT/AXD1ZItNEqxFbcVhGG6ddHqZZwUeR3IWdYte8KmSHLC669cZin0N+oeKZ6iFAgThxK42pnpsPUl02gyLGrwsdUpdWmCAJFYVm6ap8C/mLUNfELF6U4kfX6NTcad78m5i+2Er/bd+zgUPsW6bLB96Jm5ICWgIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JMiUY52p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCDFBC116D0
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 16:17:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761322674;
-	bh=hmzTcE1IA4fVEgDm0CipvNce/HMctP5mLgaqdB0PL88=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=JMiUY52ppfwRbdkFrAfDO2qFjQ0RzocJiw9Xa/wZQOQTZyvXhogsUhDeNPvTlV60P
-	 D6izRD247whxMz1aZuvHwaqr+pWge8qjMIuO3G+iAEmBsFV9AM0bb7a21MzSBRkdEM
-	 RXiczpInbhBDJUP7xOGErT1vtYnD1Sn6fWZET3YgJEOoQSwcDLcEa6ERAYXMWjVNBm
-	 XKGL+lO31ODbgOpu35de92k7BIDcch70+1lkaYSYPaJY3GqYISWRec+Ly8FwmMjRIs
-	 oFSopB2brhwQLs07FKwgQNirBZULd8SPP3+EZtV7Lp8y0IR90VWSOLY2NnSZUKB91Y
-	 9RUKvZkKoBJxw==
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b5b823b4f3dso110972266b.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 09:17:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU2B9zfYXXLM7JQrXp/S14ivJPIql8L2rXZmuHNNiaRJcHq1/rWYUyd4rvZ9mXAGvqxQ7vTqNnB5ZiNAg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyGXWrv4a/yOxvaC+5bN/fIwWPp37RiHWRZiZ0oy20zG4wAKRlP
-	ZBD+Vm7q4dG9E5D4GhRLZWfa/cnXOkRnQfb86q2KS4WKIMb/GgZDZKQqtJ3SyV05SWpziJDpfg/
-	IgvHIsLSiXEqLiaeg4J+euF9JTdJN1U8=
-X-Google-Smtp-Source: AGHT+IHtGtdBAyqo6hvgp+5zOxw426G1RR3UtlU8/Ca2eMeBcA4tGeFXKYnpf7Kaq97j2gu52L1+dhXCMCeBw2yIJPc=
-X-Received: by 2002:a17:907:6ea9:b0:b6d:606f:2aa9 with SMTP id
- a640c23a62f3a-b6d606f3a5emr519118766b.65.1761322673142; Fri, 24 Oct 2025
- 09:17:53 -0700 (PDT)
+	s=arc-20240116; t=1761323514; c=relaxed/simple;
+	bh=2sni659oKETAt3mg4JWKS26aiVXJeHNTGhbFaOETvpg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=YsL/67CnWLZ04ik8JbSXV5UeRTmWgVPNHZTa6npkJODUMzNUFZxrmdrhCnKFxprvKPYCFMUnNUAsH10u1/QrafyPYWjooEslwxEPZW659K7+FzTlKixRj5Osl+ASuMlQr7tHSMIFRBWIRxCtPe6Lub9SbpaoqvsTN9v6rnDBN30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=baeGrPtx; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-63c3c7d3d53so3527140a12.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 09:31:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761323510; x=1761928310; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OU6+xLScjAoCvkgYL37muGkf8RRryUsuClOGQPNvZ0U=;
+        b=baeGrPtxRl9Zf/t4igHdLAfWz7seyMy2nyivr30g2fvYihwprt8qlhOJ9DJtSB1hBN
+         TYLvarvSWtjgZgxIFPLdBYl4+zOt6KrUsmyze798Y9YVrE4BJz0upn4uZAdQ0Qm/C69Y
+         73LY1yYKOXRCr1VXZQAMZHTQGiaqwXIQl+XOrqPkJ6DJ3WbI8Lxosftc+V1hDcagxFE+
+         Mv+ER1/NPEMnCHB5T/HRmKAwwHUaJG509q9O5YZGfQ2xoBy9R407zdmitycuDi0eGZZ4
+         4CdnBpGwx2duUok2tRLKfKZLcZlsr35nVFeaUcTiP2b6iztLXtbn99MOpppdextVXb3r
+         L0RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761323510; x=1761928310;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OU6+xLScjAoCvkgYL37muGkf8RRryUsuClOGQPNvZ0U=;
+        b=YaYJZNhPaTPKm7TbAWXk/Ux3Ec1mFR3Je85tjlFl9JibS9URNZaCWTEoWDhcimvu06
+         1SlkV5Bidv6WFI3ncH/k1KM902gvDb/qfIcyvcQVRrZjudeAQywVT/1/srzIJZ979n2x
+         w/h2bsTVeBk+KFvYu8Rs9FIjP/HVx8fAsuQVqu1AS4sXaYtw2ejX4VRFkSbMdAiQZYr9
+         txyyiZ8hk3gx4ULgHqSLmdpZFWCBayV0Q8Av4N46+bAYVFh1QED4RDGY20c0RwZ0WwAA
+         sboONVdlqBXhfwf0d/N5kpomV0CYxY7k8s0DncT6HEtPDSTK208HQAlaVH23ztyxiSq+
+         7FwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU4D7BjJfieFLIV8MeoKk8NlwS1CYfYamY0IeoMhKUSZSkHPKbGVTkg+FWF7afYXrIAJcib94S6qyxLOA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz3S15eaanfhxgA9qin+0O2jSL7+y1XBxzZPtuXyFbnPnYtchyK
+	vdT1DodorZbBOu22Q/7wdLtOyJT5gd2/+3eoJJS2uLCHczuU1qzbbZT1
+X-Gm-Gg: ASbGncuNfmPTT3jf78C7K0L3UnU6Evc8j+PyT8eyx6K69Boq5tbtNYuCH4kL7LNJaN3
+	Jr1tit7rrshsvixgfgnTQy79w82v+3jc+08rqO+BxKtvF5dQx5f8yPM8WgAutg95kErCKst2hlM
+	kZLGuIaqGr8KAFSG6ODc57LKneq9ussTW6Exk8TXcUo/dMMqISANFe5ERNY6F3Lu58A8g1ZqjRh
+	Regu6zODUFm5+FuY1373E5NSIQhKsfKfANXMW+YlDO8Fwv+nVVGSa1HZPZ4Y7RgDIpJISUoKxsn
+	1ONZ70NUN4uym9Y6FP3iFm9romHvMmw1M34rwc7thaVmt9w0fLk5HX9yO0qUtYvkSIOlsW4KRWf
+	D6wPv8QAVLJRuYyh7zJMtCzdKki7F0qxwF9hugJQPEC5pdVEQYEv4CzSgssiRSUihKSHnPVb6fb
+	QF
+X-Google-Smtp-Source: AGHT+IGJrzUB5n97Ss2T/JTlLzP7kGDtRqESJivToHOWW6+qmykXupmsLuZ+wNfM3MQ1VRw6GaGwKg==
+X-Received: by 2002:a05:6402:42ca:b0:63b:fbd9:3d9c with SMTP id 4fb4d7f45d1cf-63e6002459emr2596805a12.15.1761323509904;
+        Fri, 24 Oct 2025 09:31:49 -0700 (PDT)
+Received: from localhost ([212.73.77.104])
+        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-63e3f316b64sm4717822a12.22.2025.10.24.09.31.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Oct 2025 09:31:49 -0700 (PDT)
+From: Askar Safin <safinaskar@gmail.com>
+To: gmazyland@gmail.com
+Cc: Dell.Client.Kernel@dell.com,
+	brauner@kernel.org,
+	dm-devel@lists.linux.dev,
+	ebiggers@kernel.org,
+	kix@kix.es,
+	linux-block@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-lvm@lists.linux.dev,
+	linux-mm@kvack.org,
+	linux-pm@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	lvm-devel@lists.linux.dev,
+	mzxreary@0pointer.de,
+	nphamcs@gmail.com,
+	pavel@ucw.cz,
+	rafael@kernel.org,
+	ryncsn@gmail.com,
+	safinaskar@gmail.com,
+	torvalds@linux-foundation.org
+Subject: Re: dm bug: hibernate to swap located on dm-integrity doesn't work (how to get data redundancy for swap?)
+Date: Fri, 24 Oct 2025 19:31:42 +0300
+Message-ID: <20251024163142.376903-1-safinaskar@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <a48a37e3-2c22-44fb-97a4-0e57dc20421a@gmail.com>
+References: <a48a37e3-2c22-44fb-97a4-0e57dc20421a@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <03c5d7ec-5b3d-49d1-95bc-8970a7f82d87@gmail.com>
-In-Reply-To: <03c5d7ec-5b3d-49d1-95bc-8970a7f82d87@gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 24 Oct 2025 17:17:15 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5ggWXdptoGH9Bmk-hc2CMBLz-YmC1A8U-hx9q=ZZ0BHw@mail.gmail.com>
-X-Gm-Features: AS18NWCU00h722LQDTBmrGYiuo-ctgjdMx3DwmnZZwAsTeoabf-PwA6L4C99fbY
-Message-ID: <CAL3q7H5ggWXdptoGH9Bmk-hc2CMBLz-YmC1A8U-hx9q=ZZ0BHw@mail.gmail.com>
-Subject: Re: Directory is not persisted after writing to the file within
- directory if system crashes
-To: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
-Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 24, 2025 at 4:21=E2=80=AFPM Vyacheslav Kovalevsky
-<slava.kovalevskiy.2014@gmail.com> wrote:
->
-> Under some circumstances, directory entry is not persisted after writing
-> to the file inside the directory that was opened with `O_SYNC` flag if
-> system crashes.
->
->
-> Detailed description
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Hello, we have found another issue with btrfs crash behavior.
->
-> In short, empty file is created and synced. Then, a new directory is
-> created, old file is opened with `O_SYNC` flag and some data is written.
-> After this, a new hard link is created inside the directory and the root
-> is `fsync`ed (directory should persist). However, after a crash, the
-> directory entry is missing even though data written to the old file was
-> persisted.
->
->
-> System info
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Linux version 6.18.0-rc2, also tested on 6.14.11.
->
->
-> How to reproduce
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> ```
-> #include <errno.h>
-> #include <fcntl.h>
-> #include <stdio.h>
-> #include <string.h>
-> #include <sys/stat.h>
-> #include <sys/types.h>
-> #include <unistd.h>
->
-> int main() {
-> int status;
-> int file_fd;
-> int root_fd;
->
-> status =3D creat("file1", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-> printf("CREAT: %d\n", status);
->
-> // persist `file1`
-> sync();
->
-> status =3D mkdir("dir", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-> printf("MKDIR: %d\n", status);
->
-> status =3D open("file1", O_WRONLY | O_SYNC);
-> printf("OPEN: %d\n", status);
-> file_fd =3D status;
->
-> status =3D write(file_fd, "Test data!", 10);
-> printf("WRITE: %d\n", status);
->
-> status =3D link("file1", "dir/file2");
-> printf("LINK: %d\n", status);
->
-> status =3D open(".", O_RDONLY | O_DIRECTORY);
-> printf("OPEN: %d\n", status);
-> root_fd =3D status;
->
-> // persist `dir`
-> status =3D fsync(root_fd);
-> printf("FSYNC: %d\n", status);
-> }
-> ```
->
-> Steps:
->
-> 1. Create and mount new btrfs file system in default configuration.
-> 2. Change directory to root of the file system and run the compiled test.
-> 3. Cause hard system crash (e.g. QEMU `system_reset` command).
-> 4. Remount file system after crash.
-> 5. Observe that `dir` directory is missing.
+Milan Broz <gmazyland@gmail.com>:
+> Hi,
 
-I converted that to a test case for fstests and couldn't reproduce,
-"dir", "file1" and "dir/file2" exist after the power failure.
+I just wrote script for reproduction of this bug in Qemu:
+https://zerobin.net/?4e742925aedbecc6#BX3Tulvp7E3gKhopFKrx/2ZdOelMyYk1qOyitcOr1h8=
 
-The conversion for fstests:
+Just run it, and you will reproduce this bug, too.
 
-#! /bin/bash
-# SPDX-License-Identifier: GPL-2.0
-# Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
-#
-# FS QA Test 780
-#
-# what am I here for?
-#
-. ./common/preamble
-_begin_fstest auto quick log
+Also, I just reproduced it on current master (43e9ad0c55a3).
 
-_cleanup()
-{
-_cleanup_flakey
-cd /
-rm -r -f $tmp.*
-}
+Here is output of this script on master:
+https://zerobin.net/?68ef6601ab203a11#7zBZ44AaVKmvRq161MJaOXIXY/5Hiv+hRUxWoqyZ7uE=
 
-. ./common/filter
-. ./common/dmflakey
+As you can see, hibernate succeeds, but resume fails so:
 
-_require_scratch
-_require_dm_target flakey
++ blkid --match-tag TYPE --output value /dev/mapper/early-swap
++ TYPE=swap
++ echo 'Type: swap'
+Type: swap
++ echo /dev/mapper/early-swap
+[    0.446545] PM: Image not found (code -22)
 
-rm -f $seqres.full
+Also, I just noticed that the bug sometimes reproduces, and sometimes not.
+Still it reproduces more than 50% of time.
 
-_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
-_require_metadata_journaling $SCRATCH_DEV
-_init_flakey
-_mount_flakey
+Also, you will find backtrace in logs above. Disregard it. I think this
+is just some master bug, which is unrelated to our dm-integrity bug.
 
-touch $SCRATCH_MNT/file1
+I will answer to rest of your letter later.
 
-_scratch_sync
+Also, I saw patch, I will test it later.
 
-mkdir $SCRATCH_MNT/dir
-echo -n "hello world" > $SCRATCH_MNT/file1
-ln $SCRATCH_MNT/file1 $SCRATCH_MNT/dir/file2
-
-$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/
-
-# Simulate a power failure and then mount again the filesystem to replay th=
-e
-# journal/log.
-_flakey_drop_and_remount
-
-ls -R $SCRATCH_MNT/ | _filter_scratch
-
-_unmount_flakey
-
-# success, all done
-_exit 0
-
-
-
-
->
-> Notes:
->
-> - ext4 does persist `dir` and `dir/file2` even though it was not synced.
-> - xfs does persist `dir` but does not persist `dir/file2`.
->
->
-> P.S. Want to apologize for formatting in previous report, first time
-> using Thunderbird and plain text.
->
->
->
->
+-- 
+Askar Safin
 
