@@ -1,312 +1,128 @@
-Return-Path: <linux-btrfs+bounces-18282-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18283-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAD5AC05EF6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 13:28:14 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1776C061C0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 13:54:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 67FF7582FD6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 11:20:38 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8637F35B717
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 11:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD503176E0;
-	Fri, 24 Oct 2025 10:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE5F02DC771;
+	Fri, 24 Oct 2025 11:52:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Il5Mb24p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ua98Syci"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530B3312814
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 10:58:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 275B12D7D3A
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 11:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761303504; cv=none; b=GumtQmU2KLSwM++M6nm71a+2Y0iIVyq3gv6kN0rNX8f8HIQsiVrJKfT6QQJ77aCy7hWX3zWaw+UwpRSmEY+upX5a1FA303M8ItlMYrmZCayCegOVya9Jh+5U1AHHC30DdevTcoAF1JV6i4PYlXVMzfVrbkeZ7b4SgsBoQUs5ZPw=
+	t=1761306730; cv=none; b=JDwjG7VZPsShBlNndDFdT/ueS8MKmDfWtgCXXapsJ9DEH43nj0wzhYMQET09w5MqMvs278A+VlBjCLJCbp4HJd1DRcn1Q34yMbFxet0ItkPSPQuGgYPeZ0ufUe1dsuw05iDRQ6fzmYEMBnmeGBsXIT9ATn7D9+0Y78IadB5dSjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761303504; c=relaxed/simple;
-	bh=zxdE4iwxfZf5fMJriKzhhfGrtoHqDdoW8+ZLytvvZD8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cGy+L4lYy3k2Px4siLid0WuwFnUckVezQFTw4FmqGq8F1VFWgYkXNjZEXdCnIN9IwBoFVxCM5/72oghBMPq8098Fupdeu5Kcmt2sF2FDEneD/jXwcFpYfR+DS5k6dHJfF5O1G+n/ogDa0KxW2sn+/Lx96mStmc46eF52Tvcbc5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Il5Mb24p; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=xS2JX1iX3jeYiEr2UVgnPoGCKLknHhwM5E3m+MtTLZc=; b=Il5Mb24pqsJIaL4Vcuw20/mwgW
-	BE1EBI4xFxLLHtjTM2gfo/EltvWNPl430m24VDoByyORZKMUSmUGlPPBy6tMeVj8X5xQgh9gfIpAG
-	lvOEpZbQ9Gfiy+HHov2/n52Z6z5H+CGPkkGenp1Nz4OwM54fUvF/WDKCvbbfKTWXn0Uj1ImV54CYe
-	fE6MlqG54Ef80Wqq6nYM4TAqKuKSoxWbV/27IL2kOt1BFDScucFWBULOTTstzuWyFhvejCKuKjfo/
-	pQVESuHc9CgncL/rb3yf9T2Q6YdgYI4iK1yfHCbY4Y2p0/E4jWpuSPENsjgLCsoTuLyXvqpD/7acT
-	3wjSonAA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vCFUy-000000096Ar-3Htb;
-	Fri, 24 Oct 2025 10:58:20 +0000
-Date: Fri, 24 Oct 2025 03:58:20 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH 4/4] btrfs: introduce btrfs_bio::async_csum
-Message-ID: <aPtbzMCLwhuLuo4d@infradead.org>
-References: <cover.1761302592.git.wqu@suse.com>
- <44a1532190aee561c2a8ae7af9f84fc1e092ae9e.1761302592.git.wqu@suse.com>
+	s=arc-20240116; t=1761306730; c=relaxed/simple;
+	bh=O0E7Ui+a8h/19npSscqfmyMgcz7SPu7QmdHp8SAYBCo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=t6pEqO2j8s63KFWVNFE0TqEKnIo+y91dcJx8Loa7B4218VnONlBbFyV63GmzdDOlCpPq6tXueLHsENpu4C3+leEGFp9QAcK9pA7yTqhuBn321ULGVPPCe+/hSOAxNVnVumxdqTzUBYI77QxJtR3ExaRLN5cUs4jql9Ca0etyH+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ua98Syci; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 138E9C4CEFF
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 11:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761306726;
+	bh=O0E7Ui+a8h/19npSscqfmyMgcz7SPu7QmdHp8SAYBCo=;
+	h=From:To:Subject:Date:From;
+	b=Ua98SycidCrFI7UCh6B6VixmL1yWoS93iNPfQf5HGgca0vsw3tWStndZkkotrimYY
+	 Gns0BMr5OlCDhEyPHhfWb+mGbPd8z9nlvB3VBAM/D8Pitdo+4HM8Z3Mhiqi1N8qcCu
+	 ykTaIUxQZDQQDPV4pu7h2kCIO0W/i8TtPKmut39nwSaGXuAXOoo9K9r0oI0R1eOhUm
+	 uHmqzYxtU0EkYve+KN7VPUxD38FEfNCOE5Zxz3dWVNYufr92tWIshwLR26aYFyI69Z
+	 0hTQuz7H3500PyZgA12C1BEfEaj2/InfpWmoY0KvbRdu8KynaTDoV3z/21LyZCoqHS
+	 J7p+9TIGgcnNg==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: set inode flag BTRFS_INODE_COPY_EVERYTHING when logging new name
+Date: Fri, 24 Oct 2025 12:52:02 +0100
+Message-ID: <cf3df42390ff83be421dcdc375d072716a67d561.1761306236.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <44a1532190aee561c2a8ae7af9f84fc1e092ae9e.1761302592.git.wqu@suse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 
-This seems to be a lot of overhead at least for simple checksums
-like crc32c or xxhash.
+From: Filipe Manana <fdmanana@suse.com>
 
-Did you also look into Eric's
+If we are logging a new name make sure our inode has the runtime flag
+BTRFS_INODE_COPY_EVERYTHING set so that at btrfs_log_inode() we will find
+new inode refs/extrefs in the subvolume tree and copy them into the log
+tree.
 
-[PATCH 10/10] btrfs: switch to library APIs for checksums to reduce
-the crypto API overhead, which is probably the worst overhead for
-checksums right now?
+We are currently doing it when adding a new link but we are missing it
+when renaming.
 
-On Fri, Oct 24, 2025 at 09:19:35PM +1030, Qu Wenruo wrote:
-> [ENHANCEMENT]
-> Btrfs currently calculate its data checksum then submit the bio.
-> 
-> But after commit 968f19c5b1b7 ("btrfs: always fallback to buffered write
-> if the inode requires checksum"), any writes with data checksum will
-> fallback to buffered IO, meaning the content will not change during
-> writeback.
-> 
-> This means we're safe to calculate the data checksum and submit the bio
-> in parallel, we only need to make sure btrfs_bio::end_io() is called
-> after the checksum calculation is done.
-> 
-> As usual, such new feature is hidden behind the experimental flag.
-> 
-> [THEORETIC ANALYZE]
-> Consider the following theoretic hardware performance, which should be
-> more or less close to modern mainstream hardware:
-> 
-> 	Memory bandwidth:	50GiB/s
-> 	CRC32C bandwidth:	45GiB/s
-> 	SSD bandwidth:		8GiB/s
-> 
-> Then btrfs write bandwidth with data checksum before the patch would be
-> 
-> 	1 / ( 1 / 50 + 1 / 45 + 1 / 8) = 5.98 GiB/s
-> 
-> After the patch, the bandwidth would be:
-> 
-> 	1 / ( 1 / 50 + max( 1 / 45 + 1 / 8)) = 6.90 GiB/s
-> 
-> The difference would be 15.32 % improvement.
-> 
-> [REAL WORLD BENCHMARK]
-> I'm using a Zen5 (HX 370) as the host, the VM has 4GiB memory, 10 vCPUs, the
-> storage is backed by a PCIE gen3 x4 NVME SSD.
-> 
-> The test is a direct IO write, with 1MiB block size, write 7GiB data
-> into a btrfs mount with data checksum. Thus the direct write will fallback
-> to buffered one:
-> 
-> Vanilla Datasum:	1619.97 GiB/s
-> Patched Datasum:	1792.26 GiB/s
-> Diff			+10.6 %
-> 
-> In my case, the bottleneck is the storage, thus the improvement is not
-> reaching the theoretic one, but still some observable improvement.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/bio.c       | 17 ++++++++----
->  fs/btrfs/bio.h       |  5 ++++
->  fs/btrfs/file-item.c | 61 +++++++++++++++++++++++++++++++-------------
->  fs/btrfs/file-item.h |  2 +-
->  4 files changed, 61 insertions(+), 24 deletions(-)
-> 
-> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> index 18272ef4b4d8..a5b83c6c9e7f 100644
-> --- a/fs/btrfs/bio.c
-> +++ b/fs/btrfs/bio.c
-> @@ -103,6 +103,9 @@ void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status)
->  	/* Make sure we're already in task context. */
->  	ASSERT(in_task());
->  
-> +	if (bbio->async_csum)
-> +		wait_for_completion(&bbio->csum_done);
-> +
->  	bbio->bio.bi_status = status;
->  	if (bbio->bio.bi_pool == &btrfs_clone_bioset) {
->  		struct btrfs_bio *orig_bbio = bbio->private;
-> @@ -535,7 +538,7 @@ static int btrfs_bio_csum(struct btrfs_bio *bbio)
->  {
->  	if (bbio->bio.bi_opf & REQ_META)
->  		return btree_csum_one_bio(bbio);
-> -	return btrfs_csum_one_bio(bbio);
-> +	return btrfs_csum_one_bio(bbio, true);
->  }
->  
->  /*
-> @@ -613,10 +616,14 @@ static bool should_async_write(struct btrfs_bio *bbio)
->  	struct btrfs_fs_devices *fs_devices = bbio->fs_info->fs_devices;
->  	enum btrfs_offload_csum_mode csum_mode = READ_ONCE(fs_devices->offload_csum_mode);
->  
-> -	if (csum_mode == BTRFS_OFFLOAD_CSUM_FORCE_OFF)
-> -		return false;
-> -
-> -	auto_csum_mode = (csum_mode == BTRFS_OFFLOAD_CSUM_AUTO);
-> +	if (csum_mode == BTRFS_OFFLOAD_CSUM_FORCE_ON)
-> +		return true;
-> +	/*
-> +	 * Write bios will calculate checksum and submit bio at the same time.
-> +	 * Unless explicitly required don't offload serial csum calculate and bio
-> +	 * submit into a workqueue.
-> +	 */
-> +	return false;
->  #endif
->  
->  	/* Submit synchronously if the checksum implementation is fast. */
-> diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
-> index 00883aea55d7..277f2ac090d9 100644
-> --- a/fs/btrfs/bio.h
-> +++ b/fs/btrfs/bio.h
-> @@ -60,6 +60,8 @@ struct btrfs_bio {
->  		struct {
->  			struct btrfs_ordered_extent *ordered;
->  			struct btrfs_ordered_sum *sums;
-> +			struct work_struct csum_work;
-> +			struct completion csum_done;
->  			u64 orig_physical;
->  		};
->  
-> @@ -84,6 +86,9 @@ struct btrfs_bio {
->  
->  	/* Use the commit root to look up csums (data read bio only). */
->  	bool csum_search_commit_root;
-> +
-> +	bool async_csum;
-> +
->  	/*
->  	 * This member must come last, bio_alloc_bioset will allocate enough
->  	 * bytes for entire btrfs_bio but relies on bio being last.
-> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> index a42e6d54e7cd..bedfcf4a088d 100644
-> --- a/fs/btrfs/file-item.c
-> +++ b/fs/btrfs/file-item.c
-> @@ -18,6 +18,7 @@
->  #include "fs.h"
->  #include "accessors.h"
->  #include "file-item.h"
-> +#include "volumes.h"
->  
->  #define __MAX_CSUM_ITEMS(r, size) ((unsigned long)(((BTRFS_LEAF_DATA_SIZE(r) - \
->  				   sizeof(struct btrfs_item) * 2) / \
-> @@ -764,21 +765,46 @@ int btrfs_lookup_csums_bitmap(struct btrfs_root *root, struct btrfs_path *path,
->  	return ret;
->  }
->  
-> -/*
-> - * Calculate checksums of the data contained inside a bio.
-> - */
-> -int btrfs_csum_one_bio(struct btrfs_bio *bbio)
-> +static void csum_one_bio(struct btrfs_bio *bbio)
->  {
-> -	struct btrfs_ordered_extent *ordered = bbio->ordered;
->  	struct btrfs_inode *inode = bbio->inode;
->  	struct btrfs_fs_info *fs_info = inode->root->fs_info;
->  	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
->  	struct bio *bio = &bbio->bio;
-> -	struct btrfs_ordered_sum *sums;
-> +	struct btrfs_ordered_sum *sums = bbio->sums;
->  	struct bvec_iter iter = bio->bi_iter;
->  	phys_addr_t paddr;
->  	const u32 blocksize = fs_info->sectorsize;
-> -	int index;
-> +	int index = 0;
-> +
-> +	shash->tfm = fs_info->csum_shash;
-> +
-> +	btrfs_bio_for_each_block(paddr, bio, &iter, blocksize) {
-> +		btrfs_calculate_block_csum(fs_info, paddr, sums->sums + index);
-> +		index += fs_info->csum_size;
-> +	}
-> +}
-> +
-> +static void csum_one_bio_work(struct work_struct *work)
-> +{
-> +	struct btrfs_bio *bbio = container_of(work, struct btrfs_bio, csum_work);
-> +
-> +	ASSERT(btrfs_op(&bbio->bio) == BTRFS_MAP_WRITE);
-> +	ASSERT(bbio->async_csum == true);
-> +	csum_one_bio(bbio);
-> +	complete(&bbio->csum_done);
-> +}
-> +
-> +/*
-> + * Calculate checksums of the data contained inside a bio.
-> + */
-> +int btrfs_csum_one_bio(struct btrfs_bio *bbio, bool async)
-> +{
-> +	struct btrfs_ordered_extent *ordered = bbio->ordered;
-> +	struct btrfs_inode *inode = bbio->inode;
-> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> +	struct bio *bio = &bbio->bio;
-> +	struct btrfs_ordered_sum *sums;
->  	unsigned nofs_flag;
->  
->  	nofs_flag = memalloc_nofs_save();
-> @@ -789,21 +815,20 @@ int btrfs_csum_one_bio(struct btrfs_bio *bbio)
->  	if (!sums)
->  		return -ENOMEM;
->  
-> +	sums->logical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
->  	sums->len = bio->bi_iter.bi_size;
->  	INIT_LIST_HEAD(&sums->list);
-> -
-> -	sums->logical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
-> -	index = 0;
-> -
-> -	shash->tfm = fs_info->csum_shash;
-> -
-> -	btrfs_bio_for_each_block(paddr, bio, &iter, blocksize) {
-> -		btrfs_calculate_block_csum(fs_info, paddr, sums->sums + index);
-> -		index += fs_info->csum_size;
-> -	}
-> -
->  	bbio->sums = sums;
->  	btrfs_add_ordered_sum(ordered, sums);
-> +
-> +	if (!async) {
-> +		csum_one_bio(bbio);
-> +		return 0;
-> +	}
-> +	init_completion(&bbio->csum_done);
-> +	bbio->async_csum = true;
-> +	INIT_WORK(&bbio->csum_work, csum_one_bio_work);
-> +	schedule_work(&bbio->csum_work);
->  	return 0;
->  }
->  
-> diff --git a/fs/btrfs/file-item.h b/fs/btrfs/file-item.h
-> index 63216c43676d..2a250cf8b2a1 100644
-> --- a/fs/btrfs/file-item.h
-> +++ b/fs/btrfs/file-item.h
-> @@ -64,7 +64,7 @@ int btrfs_lookup_file_extent(struct btrfs_trans_handle *trans,
->  int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
->  			   struct btrfs_root *root,
->  			   struct btrfs_ordered_sum *sums);
-> -int btrfs_csum_one_bio(struct btrfs_bio *bbio);
-> +int btrfs_csum_one_bio(struct btrfs_bio *bbio, bool async);
->  int btrfs_alloc_dummy_sum(struct btrfs_bio *bbio);
->  int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
->  			     struct list_head *list, int search_commit,
-> -- 
-> 2.51.0
-> 
-> 
----end quoted text---
+An example where this makes a new name not persisted:
+
+  1) create symlink with name foo in directory A
+  2) fsync directory A, which persists the symlink
+  3) rename the symlink from foo to bar
+  4) fsync directory A to persist the new symlink name
+
+Step 4 isn't working correctly as it's not logging the new name and also
+leaving the old inode ref in the log tree, so after a power failure the
+symlink still has the old name of "foo". This is because when we first
+fsync directoy A we log the symlink's inode (as it's a new entry) and at
+btrfs_log_inode() we set the log mode to LOG_INODE_ALL and then because
+we are using that mode and the inode has the runtime flag
+BTRFS_INODE_NEEDS_FULL_SYNC set, we clear that flag as well as the flag
+BTRFS_INODE_COPY_EVERYTHING. That means the next time we log the inode,
+during the rename through the call to btrfs_log_new_name() (calling
+btrfs_log_inode_parent() and then btrfs_log_inode()), we will not search
+the subvolume tree for new refs/extrefs and jump directory to the
+'log_extents' label.
+
+Fix this by making sure we set BTRFS_INODE_COPY_EVERYTHING on an inode
+when we are about to log a new name. A test case for fstests will follow
+soon.
+
+Reported-by: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
+Link: https://lore.kernel.org/linux-btrfs/ac949c74-90c2-4b9a-b7fd-1ffc5c3175c7@gmail.com/
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/inode.c    | 1 -
+ fs/btrfs/tree-log.c | 3 +++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 79732756b87f..03e9c3ac20ed 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -6885,7 +6885,6 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
+ 	BTRFS_I(inode)->dir_index = 0ULL;
+ 	inode_inc_iversion(inode);
+ 	inode_set_ctime_current(inode);
+-	set_bit(BTRFS_INODE_COPY_EVERYTHING, &BTRFS_I(inode)->runtime_flags);
+ 
+ 	ret = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
+ 			     &fname.disk_name, 1, index);
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 65079eb651da..8dfd504b37ae 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -7905,6 +7905,9 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 	bool log_pinned = false;
+ 	int ret;
+ 
++	/* The inode has a new name (ref/extref), so make sure we log it. */
++	set_bit(BTRFS_INODE_COPY_EVERYTHING, &inode->runtime_flags);
++
+ 	btrfs_init_log_ctx(&ctx, inode);
+ 	ctx.logging_new_name = true;
+ 
+-- 
+2.47.2
+
 
