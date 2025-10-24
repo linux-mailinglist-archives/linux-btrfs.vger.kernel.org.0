@@ -1,133 +1,184 @@
-Return-Path: <linux-btrfs+bounces-18264-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18265-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CAADC04FB0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 10:09:38 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7A6EC04FCE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 10:11:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 029261B800E8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 08:08:39 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E0FA34F7B57
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 08:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9658B301027;
-	Fri, 24 Oct 2025 08:08:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD69C3019BD;
+	Fri, 24 Oct 2025 08:10:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fzu/hS9Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WovMKko5"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D518B2FE04C
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 08:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB8C3016EA
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 08:10:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761293284; cv=none; b=ntXp9Dd9/L2dv0GaG8wKYNPFeW9VBMFqL6GGmQiFgFZgH8y/dUPJykoDgH0P3FKJN9O6qmpddArJuDWbruuQO48ss8Jdl9fUmTVgKczB4dxZoDGtfLiExyIPTkrgaCjqTkI+1B+/WnvCl4vy1Jk54ha8OYAOxoomrOmZPMVocZc=
+	t=1761293457; cv=none; b=UbhWB8V9ajVB8yqA5Jo1waf1pKusS+rTCxBP5tQ+cyCR+oXpKe544WXLXA49S6GR00RnmHGeCop+gAWCTgcR7TsKR4h1M3BRt5YStLS0op6xHD27va4SFo1inLpELf8DLWbt0JFJ3zofxZrmdgVCgyJaIyALItv5U8p/AvuLFA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761293284; c=relaxed/simple;
-	bh=IU+pnkb8iIp2RtUo9AKGUS4QXSBis0P6PzHO17Q4JIo=;
+	s=arc-20240116; t=1761293457; c=relaxed/simple;
+	bh=H6vcpfWsT9jOdGMVAd6E2A7Zv3njnxynCHfFnGjqBjU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q36JyWethfo7Npcr7qJt9Xbe7Frv0Q42jDmwEPIHvM0DVtnO4AkiFO60bW7bWr5oLkl12E0m0ygkSlKs4I5qtpVMq5ng8C197BsBKgMW/sor9+0EQxnHyu8zwtlcz9OvYCsEMss3B22ha/vDori3tX72hSoAyNGc69sOqLQ77xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fzu/hS9Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65504C4CEFF
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 08:08:04 +0000 (UTC)
+	 To:Cc:Content-Type; b=lZI2vWWDdPwtMmHkdpQewyXxBeUJMF5NjI2DqPOo1b0Uo+o94JXKr5KpmtiLv2cKPuBNQ5QJcxL0ky3mouLSxjFqV+/rC4/+P2tOmizITsuvepjGANAuozz0UYR8Tw55bWyG6TIx9tsAaKatw1SxByBCzK8bDgt/mr+gOCmbtt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WovMKko5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE027C4CEF1
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 08:10:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761293284;
-	bh=IU+pnkb8iIp2RtUo9AKGUS4QXSBis0P6PzHO17Q4JIo=;
+	s=k20201202; t=1761293456;
+	bh=H6vcpfWsT9jOdGMVAd6E2A7Zv3njnxynCHfFnGjqBjU=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=fzu/hS9YWzHZSfJQj2I9AdHG/xtllgmSJwX7oWqK2q2hyYeBRnWjGaxA9TFfqS5I1
-	 lA1SHHd41i8kEFsRtSKhIxs6OetRuvsECD1EfH5Fz717zxEUqo2AuxkWVEWqIw1BKN
-	 So5WMu3X9/kVQ0Ss/+r5qOGPs37xhxUWMvgh+odRjTXmkgb1X2zKNVX2vO1w9mZx/i
-	 qt0GaLyWQPpc5+B1E4LDO1TMQQsAxG2nNE6sT4GcjzuL996gHxIbxcBSEzM4VEOPna
-	 jycjmkS1PzEqdaR9AJK7dBkXTu+ly9j0xceSbD+2JjNXSqZqblwMlQ1UhSyz1SO7Te
-	 IjCRkZdCsUc3A==
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b6d3effe106so416252266b.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 01:08:04 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxFfGoyCOd1dOeScqkDFhIA/prsDg+E9+kt6CUKopID2sFPUkYL
-	1ntUhwCAsGUJG0arxtihKTsgcloYV5IZvayyH2WJMHeF/5ppxnJPpST/9PMrcM1YsgfhEsBwRXS
-	9hWbgB6wzxX77EQG3TPzA/9IvdFXi3R8=
-X-Google-Smtp-Source: AGHT+IGH79+JgwLclN4+8Tp8Gekgcp5d7Xc46At305N7IPdNgexbnoFilL+RyujhJbuI2+sVIr8COIf0tyA7lhSe+E4=
-X-Received: by 2002:a17:907:3f8f:b0:b33:a2ef:c7 with SMTP id
- a640c23a62f3a-b6d6ffb541fmr152945166b.55.1761293282925; Fri, 24 Oct 2025
- 01:08:02 -0700 (PDT)
+	b=WovMKko5rb8WFCDhBVK4WaFY5Ibl9H4VYUhYJkyqHgwPfzWdb80gLvMKtE53Fy4oo
+	 yPFjjBrZJwywD0BkMQfr82HP6SFRnJsrmKY9pEq38bngjyKa42H+eKuUo6wE06g04k
+	 9Lvlx6GmEhdM9AZOnvtrxDJmlAaYyv5rIBZ2tzgRdi97IenCGe4yCb03GjvP8Kg/FB
+	 iSfswROo+zsBYTd3CYkiQEzNYahvkaGcGkafFeUN3sPQjGLVDpaW+CrCSCVemJSCbY
+	 o9HJVOBfwctgm45BwtcQ7hRxSh9GJGLMffYhpILartIyfjmKXn3PHQv5/ydxPE9WG3
+	 /0ST/Snq/twlw==
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b3b3a6f4dd4so359772666b.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 01:10:56 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yyttp8Tl10SsAnFNKV/fb2nVp1zebd9BLIpQ0+3wQcm1p3kNYBN
+	JPSAmJxvV+T4aAn6A7nvs7MJ8JwIv4g1l9RgGUCIAh9+e4zee06DcljqENmgEyGJuvZwkwPmveV
+	SYAhrqw0jMp5vH8vPapZFPyQ1ybs4wOo=
+X-Google-Smtp-Source: AGHT+IF5XuUd0/sW4aaPGxWUW3jmvEW65I9jlxu8ReiT1mf4Oy/9SI10wZuUsclY8KzzB6y0xGTcqIc+mOfDiNsApG8=
+X-Received: by 2002:a17:907:5ce:b0:b2d:830a:8c0a with SMTP id
+ a640c23a62f3a-b6d6ffac084mr147711666b.35.1761293455276; Fri, 24 Oct 2025
+ 01:10:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2059d92d64eb181f1d37538d1279ed5b191ce1ab.1761211916.git.wqu@suse.com>
- <CAL3q7H7KmObsE2JURpKLVRT_ufa_2v4M2KAFahUndq5Jqxwnow@mail.gmail.com> <6f36e8d0-630b-4cc3-a780-11be4aa0a65f@suse.com>
-In-Reply-To: <6f36e8d0-630b-4cc3-a780-11be4aa0a65f@suse.com>
+References: <bfc7d8db794cc39fa2909c0b38a69f1a1ae73b81.1761262682.git.wqu@suse.com>
+In-Reply-To: <bfc7d8db794cc39fa2909c0b38a69f1a1ae73b81.1761262682.git.wqu@suse.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 24 Oct 2025 09:07:25 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4TcJNY7cYeYWoByOW0ek6BBEbtgSSFFOvc7aagarfFXQ@mail.gmail.com>
-X-Gm-Features: AS18NWD7MUh43ObV5_snK0od1BhyGPDV6iPjIDcHqpg08WbG7w_nr3m1M3qJujA
-Message-ID: <CAL3q7H4TcJNY7cYeYWoByOW0ek6BBEbtgSSFFOvc7aagarfFXQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: make sure no dirty metadata write is submitted
- after btrfs_stop_all_workers()
+Date: Fri, 24 Oct 2025 09:10:17 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4+asCJg91QDwChQ-WFugswD6Ygi1fO_jJ9br4TamqYOA@mail.gmail.com>
+X-Gm-Features: AWmQ_bljeTl0OHOG_aVkaq3Smxi621keiVh4OpWEvRMtM9V7XsU2roWL7m-B3IA
+Message-ID: <CAL3q7H4+asCJg91QDwChQ-WFugswD6Ygi1fO_jJ9br4TamqYOA@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: ensure no dirty metadata is written back for an
+ fs with errors
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 23, 2025 at 9:44=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+On Fri, Oct 24, 2025 at 12:42=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
 >
+> [BUG]
+> During development of a minor feature (make sure all btrfs_bio::end_io()
+> is called in task context), I noticed a crash in generic/388, where
+> metadata writes triggered new works after btrfs_stop_all_workers().
 >
+> It turns out that it can even happen without any code modification, just
+> using RAID5 for metadata and the same workload from generic/388 is going
+> to trigger the use-after-free.
 >
-> =E5=9C=A8 2025/10/24 01:56, Filipe Manana =E5=86=99=E9=81=93:
-> > On Thu, Oct 23, 2025 at 10:33=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote=
-:
-> [...]
-> > So two suggestions:
-> >
-> > 1) Move this into btrfs_error_commit_super(), to have all code related
-> > to fs in error state in one single place.
-> >
-> > 2) Instead of of calling filemap_write_and_wait(), make this simpler
-> > by doing the iput() of the btree inode right before calling
-> > btrfs_stop_all_workers() and removing the call to
-> > invalidate_inode_pages2() which is irrelevant since the final iput()
-> > removes everything from the page cache except dirty pages (but the
-> > iput() already triggered writeback of them).
-> >
-> > In fact for this scenario the call to invalidate_inode_pages2() must
-> > be returning -EBUSY due to the dirty pages, but we have always ignored
-> > its return value.
-> >
-> >  From a quick glance, it seems to me that suggestion 2 should work.
+> [CAUSE]
+> If btrfs hits an error, the fs is marked as error, no new
+> transaction is allowed thus metadata is in a frozen state.
 >
-> Yes, that's the original workaround I went with, the problem is we're
-> still submitting metadata writes after a trans abort.
+> But there are some metadata modifications before that error, and they are
+> still in the btree inode page cache.
 >
-> I don't feel that comfort writing back metadata in that situation.
-> Maybe the trans abort is triggered because a corrupted extent/free space
-> tree which allows us to allocate new tree blocks where we shouldn't
-> (aka, metadata COW is already broken).
+> Since there will be no real transaction commit, all those dirty folios
+> are just kept as is in the page cache, and they can not be invalidated
+> by invalidate_inode_pages2() call inside close_ctree(), because they are
+> dirty.
+>
+> And finally after btrfs_stop_all_workers(), we call iput() on btree
+> inode, which triggers writeback of those dirty metadata.
+>
+> And if the fs is using RAID56 metadata, this will trigger RMW and queue
+> new works into rmw_workers, which is already stopped, causing warning
+> from queue_work() and use-after-free.
+>
+> [FIX]
+> Add a special handling for write_one_eb(), that if the fs is already in
+> an error state, immediately mark the bbio as failure, instead of really
+> submitting them.
+>
+> Then during close_ctree(), iput() will just discard all those dirty
+> tree blocks without really writing them back, thus no more new jobs for
+> already stopped-and-freed workqueues.
+>
+> The extra discard in write_one_eb() also acts as an extra safenet.
+> E.g. the transaction abort is triggered by some extent/free space
+> tree corruptions, and since extent/free space tree is already corrupted
+> some tree blocks may be allocated where they shouldn't be (overwriting
+> existing tree blocks). In that case writing them back will further
+> corrupting the fs.
+>
+> CC: stable@vger.kernel.org #6.6
 
-Metadata COW is broken why??
+The correct syntax is:
 
-Even after a transaction aborts, it's ok, but pointless, to allocate
-extents and trigger writeback for them.
-As long as we don't allow the transaction to be committed and new
-transactions to be started, we are safe - in fact that's the only
-thing a transaction abort guarantees.
+stable@vger.kernel.org # 6.6+
 
-We may have many places that could check if a transaction was aborted
-and avoid extent allocation and writeback, but that's ok, as long as
-we don't allow transaction commits.
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog
+> v2:
+> - Various grammar and newline fixes
+>
+> - A shorter title line
+>
+> - Enhance the [FIX] part, explain the full fix
+>
+> - Limit the backport for 6.6
+>   v6.1 code base is very different compared to the current one, thus
+>   backporting to v6.6 would be the limit.
+>
+> - Explain more why discarding bios at write_one_eb() is safer
+>
+> - Remove the extra flushing part inside close_ctree()
+>   There is no difference flushing the dirty folios manually or by
+>   iput(), as dirty folios are discarded anyway, no new job will be
+>   created.
+> ---
+>  fs/btrfs/extent_io.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 870584dde575..8f6b8baba003 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2246,6 +2246,14 @@ static noinline_for_stack void write_one_eb(struct=
+ extent_buffer *eb,
+>                 wbc_account_cgroup_owner(wbc, folio, range_len);
+>                 folio_unlock(folio);
+>         }
+> +       /*
+> +        * If the fs is already in error status, do not submit any writeb=
+ack
+> +        * but immediately finish it.
+> +        */
+> +       if (unlikely(BTRFS_FS_ERROR(fs_info))) {
+> +               btrfs_bio_end_io(bbio, errno_to_blk_status(-EROFS));
 
+Btw, BTRFS_FS_ERROR() returns the error that has caused the
+transaction to abort.
+So instead of -EROFS we can pass BTRFS_FS_ERROR(fs_info).
+
+In the end it doesn't make any difference since the error is not
+returned to userspace.
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+> +               return;
+> +       }
+>         btrfs_submit_bbio(bbio, 0);
+>  }
 >
-> Thus I consider delaying btrfs_stop_all_workers() until iput() is only a
-> workaround, it still allows us to submit unnecessary writes.
+> --
+> 2.51.0
 >
-> I'd prefer the solution 1) in this case, still with the extra handling
-> in write_one_eb().
->
-> Thanks for the review and suggestion, will follow the advice of the
-> remaining part.
->
-> Thanks,
-> Qu
 >
 
