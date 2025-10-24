@@ -1,109 +1,94 @@
-Return-Path: <linux-btrfs+bounces-18288-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18289-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6514BC06309
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 14:13:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37CADC06884
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 15:37:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DF021C02AF0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 12:14:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC3F53B4101
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 13:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D81B314A95;
-	Fri, 24 Oct 2025 12:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441DF2DEA8E;
+	Fri, 24 Oct 2025 13:34:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CjojHoYq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1acUFfy3";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CjojHoYq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1acUFfy3"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="DzQIOBdd";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mEwksrwi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB2B30DD00
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 12:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA93303C88
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 13:34:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761308004; cv=none; b=O6uU3ujTZrU/h6gA9nGUNeeujo+ojPfhyFbhKBLrIq+Ki1Lphoat81uMBV7ALkhO6B9yLuurifiSNi9y3DCOD1eRSSxkqUGJpEx+ElCcnVKzZbyV/VfzIfSqEjrEW0lXnybWZmQ35aZscKGy3TQdqK2JeOIVclEmWiCJe8yPfk0=
+	t=1761312849; cv=none; b=h3h8IggOed9P0k4tEtVsM2XArMprGbt0gFC/q+O1WZoDhc5zggtFSSIhRKa66I1B9doqsGnMd0xCaP2uNB6t+Lu8VVWCQUPqMjMZ8uAC8JECYQZh5l3HQqNIM1/tuUBfPiHVvFXfl3yg17XSkel/yoj7UC90MMbZUnL+zmev9as=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761308004; c=relaxed/simple;
-	bh=i0EfOjInC/aJdda6sojezLSbi8o9QQmIbE3cti/JV8w=;
+	s=arc-20240116; t=1761312849; c=relaxed/simple;
+	bh=rNe/wMVh+r43gOdK8YRpl2xWvTEexBZFYxKyF8+XnCg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OCjCyKomjsquAY91M+uwrMHJw9ynnGPiLZVLWb54BS2xlZHm7KtFArj4LDHo/9ZJsI5NJpCCfb7TWZkBeX8JQieEjAuTFaODguoIwxipBJPz6LA5JAXBrW8t/CH0IzCbkb/4CHGkJKcEt51XPmjp/6Lk5bIHJ1Ci9AnBIbz4xhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CjojHoYq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1acUFfy3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CjojHoYq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1acUFfy3; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 46D6C2120A;
-	Fri, 24 Oct 2025 12:13:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761308000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AkVO73khQEXexPsxQT0RVGnJrziAwGHpdDpx2ltyfZ0=;
-	b=CjojHoYqaGMzfr5XqNusQqu1GyDxPy0hnR6Ldj+jMf2eYrTAdI2alMTnKoUSmrXoHvFzyY
-	UToaifYK+aQl8TtK32yOMGz7StJr1kY/XFCLmL8yl3rGsIxvYxpuaYXr9RvWQe45kcVwON
-	5/tuFmNtP0/OwY0IBwV80drSEDaabHk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761308000;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AkVO73khQEXexPsxQT0RVGnJrziAwGHpdDpx2ltyfZ0=;
-	b=1acUFfy3hGwnqk5XZUYklOyZE7Yzi46EVBZ/g+PJSSiLxPnydp7ewriPn0sf5iaWyR9gF9
-	M2aK7AndCIkzA5Cg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761308000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AkVO73khQEXexPsxQT0RVGnJrziAwGHpdDpx2ltyfZ0=;
-	b=CjojHoYqaGMzfr5XqNusQqu1GyDxPy0hnR6Ldj+jMf2eYrTAdI2alMTnKoUSmrXoHvFzyY
-	UToaifYK+aQl8TtK32yOMGz7StJr1kY/XFCLmL8yl3rGsIxvYxpuaYXr9RvWQe45kcVwON
-	5/tuFmNtP0/OwY0IBwV80drSEDaabHk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761308000;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AkVO73khQEXexPsxQT0RVGnJrziAwGHpdDpx2ltyfZ0=;
-	b=1acUFfy3hGwnqk5XZUYklOyZE7Yzi46EVBZ/g+PJSSiLxPnydp7ewriPn0sf5iaWyR9gF9
-	M2aK7AndCIkzA5Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 301D713693;
-	Fri, 24 Oct 2025 12:13:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Mwu+C2Bt+2jXOQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 24 Oct 2025 12:13:20 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3BF23A28AB; Fri, 24 Oct 2025 14:13:19 +0200 (CEST)
-Date: Fri, 24 Oct 2025 14:13:19 +0200
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
-	Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, 
-	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, Mark Fasheh <mark@fasheh.com>, 
-	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
-	Josef Bacik <josef@toxicpanda.com>, Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org, 
-	v9fs@lists.linux.dev, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, jfs-discussion@lists.sourceforge.net, 
-	ocfs2-devel@lists.linux.dev, linux-xfs@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 10/10] mm: rename filemap_fdatawrite_range_kick to
- filemap_flush_range
-Message-ID: <yybiur2jmv6s4n2sjlubwimmfbsrb3gx6tk67ki23jnqncaeba@wayirnpbaum3>
-References: <20251024080431.324236-1-hch@lst.de>
- <20251024080431.324236-11-hch@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bCN0/8qu7jXwWqxIA3NG3fkTPZSVgAQV0yVR52ROt7jv8gWhOHjp0ZNnpkApzeqZSmBLdzh7bDuWEaD5dwjQtUrTF+d1KvzvQ5q8mCpqO7xWo+ykKND8Rnndl7jxfgAAF19qawbldCttpBHDTOM/acrlty1pdpcQt6mOhT0IQ4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=DzQIOBdd; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=mEwksrwi; arc=none smtp.client-ip=103.168.172.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 9EBA114001E1;
+	Fri, 24 Oct 2025 09:34:04 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Fri, 24 Oct 2025 09:34:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1761312844; x=1761399244; bh=JUoF31XGhe
+	GVPhu6yNPHfmcQ/jqLec9tHuNWP/DAcsE=; b=DzQIOBdd6YUpJC6qODYlCPj65i
+	a6yM07qRdtoodU5rIkPelVlI+ZmvkE5FOm1ownASnjVu5pkbVkYFuryeqKfTG0fE
+	ISrLM0R2rGfgqr1nBhl0QMrW7lvfIFne5Z6DE5WLkWy1v04sQocHAWH5FvRgw6BP
+	3FuGy08hR9yUhNGn19elayMvsqRP+lqa7sACvWbpIqWrXdwM8IyXX1SyslLYwLIC
+	Tv7v7RyLBBDpMpexWBZquFMO8EdefRLMOqhuQT+7GEhi8aeBMavp7MuNCexNc3wN
+	LpPdXPjXI7NYU2NnZoSL/QnzKAROxpNuMDkCCB3ESZJgv9gYn/G2MkKCjq5A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1761312844; x=1761399244; bh=JUoF31XGheGVPhu6yNPHfmcQ/jqLec9tHuN
+	WP/DAcsE=; b=mEwksrwiJRukr46t7a0Y3eGJiuIM6G9eEneHA3PdXZUPnOY02Wj
+	ESE8hrujVIqf087nPUoaXmTGdalPQf4VBg9Uzi2RIgk4QFJxuSZKAz9JlVyK9ORi
+	vEC/OHQU+r0k23FUK5z50HO3kukI2QjLXH9wKx1zeH/Ckt1hqmAgTZgaUbA8LVin
+	tzdfhHdT+eZFijX5BCD8B0S6FjO2mOe2awFtTsb3V3MkBH0C4uTdmBhi8KuV/S2x
+	sFUvULOb36Oa1/1VwgJYV6zntNT1j/kGaPXnxp3ivNMPEfVEOb7sZ4Dkg0uRFlET
+	RxnpstlbOvBwajYUZ1Qpn1F13VY5w6i63uA==
+X-ME-Sender: <xms:TID7aDyGQL6YCy30DazfT_97rRPLc1iLXwDR46rXRN-kTCqE-Yx0OA>
+    <xme:TID7aBSv9pnn84tTSPNLeF-hOZkxSgonleHvdwtaIAnFYp0U3q4-6sJb2LkW55_SB
+    h_eukd9czZbm6yU9EAxJUG0mlZyH5I78rdzDJ-pNtpUYXXAUUEo--E>
+X-ME-Received: <xmr:TID7aK95DSIPlNrQ9kB_Bj2Y-8sybabPZ_ch3ImYDuSus9xse8W0-KrOAg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddugeelgeejucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertd
+    dttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
+    oheqnecuggftrfgrthhtvghrnhephedthfevgffhtdevgffhlefhgfeuueegtdevudeihe
+    eiheetleeghedvfeegfeegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
+    ohepfhgumhgrnhgrnhgrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqd
+    gsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:TID7aIpSPrLOS8RpnG5g99HjoDjyHHCglRhG36yayl2DeYx7Ooeg9Q>
+    <xmx:TID7aHmer4-2pbzqfxwNNINF2eoyDbHz2u-XTHrPTVBiIIyhi4ZCmA>
+    <xmx:TID7aPIaS5lr6yzOkCTVdRUNyDJaFNVr7rQqIvmhOZIj2v4_HzqU6Q>
+    <xmx:TID7aMyX3E06miR4v4TZ7-w5g9_E9s-d3xLwORxak1UcgJ3elLvpMw>
+    <xmx:TID7aOna3RkoEz2OcD-h54lAcXZsEfYZnVU8QrO40me4KNUI8AqKdlhy>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 24 Oct 2025 09:34:04 -0400 (EDT)
+Date: Fri, 24 Oct 2025 06:34:01 -0700
+From: Boris Burkov <boris@bur.io>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: set inode flag BTRFS_INODE_COPY_EVERYTHING when
+ logging new name
+Message-ID: <aPuASRBCj9Dy1PCO@devvm12410.ftw0.facebook.com>
+References: <cf3df42390ff83be421dcdc375d072716a67d561.1761306236.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -112,142 +97,81 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251024080431.324236-11-hch@lst.de>
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_COUNT_THREE(0.00)[3];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spam-Level: 
+In-Reply-To: <cf3df42390ff83be421dcdc375d072716a67d561.1761306236.git.fdmanana@suse.com>
 
-On Fri 24-10-25 10:04:21, Christoph Hellwig wrote:
-> Rename filemap_fdatawrite_range_kick to filemap_flush_range because it
-> is the ranged version of filemap_flush.
+On Fri, Oct 24, 2025 at 12:52:02PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> If we are logging a new name make sure our inode has the runtime flag
+> BTRFS_INODE_COPY_EVERYTHING set so that at btrfs_log_inode() we will find
+> new inode refs/extrefs in the subvolume tree and copy them into the log
+> tree.
+> 
+> We are currently doing it when adding a new link but we are missing it
+> when renaming.
+> 
+> An example where this makes a new name not persisted:
+> 
+>   1) create symlink with name foo in directory A
+>   2) fsync directory A, which persists the symlink
+>   3) rename the symlink from foo to bar
+>   4) fsync directory A to persist the new symlink name
+> 
+> Step 4 isn't working correctly as it's not logging the new name and also
+> leaving the old inode ref in the log tree, so after a power failure the
+> symlink still has the old name of "foo". This is because when we first
+> fsync directoy A we log the symlink's inode (as it's a new entry) and at
+> btrfs_log_inode() we set the log mode to LOG_INODE_ALL and then because
+> we are using that mode and the inode has the runtime flag
+> BTRFS_INODE_NEEDS_FULL_SYNC set, we clear that flag as well as the flag
+> BTRFS_INODE_COPY_EVERYTHING. That means the next time we log the inode,
+> during the rename through the call to btrfs_log_new_name() (calling
+> btrfs_log_inode_parent() and then btrfs_log_inode()), we will not search
+> the subvolume tree for new refs/extrefs and jump directory to the
+> 'log_extents' label.
+> 
+> Fix this by making sure we set BTRFS_INODE_COPY_EVERYTHING on an inode
+> when we are about to log a new name. A test case for fstests will follow
+> soon.
+> 
+> Reported-by: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
+> Link: https://lore.kernel.org/linux-btrfs/ac949c74-90c2-4b9a-b7fd-1ffc5c3175c7@gmail.com/
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
+Reviewed-by: Boris Burkov <boris@bur.io>
 
 > ---
->  fs/sync.c          | 3 +--
->  include/linux/fs.h | 6 +++---
->  mm/fadvise.c       | 2 +-
->  mm/filemap.c       | 8 ++++----
->  4 files changed, 9 insertions(+), 10 deletions(-)
+>  fs/btrfs/inode.c    | 1 -
+>  fs/btrfs/tree-log.c | 3 +++
+>  2 files changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/sync.c b/fs/sync.c
-> index 6d8b04e04c3c..1759f6ba36cd 100644
-> --- a/fs/sync.c
-> +++ b/fs/sync.c
-> @@ -285,8 +285,7 @@ int sync_file_range(struct file *file, loff_t offset, loff_t nbytes,
->  			ret = filemap_fdatawrite_range(mapping, offset,
->  					endbyte);
->  		else
-> -			ret = filemap_fdatawrite_range_kick(mapping, offset,
-> -					endbyte);
-> +			ret = filemap_flush_range(mapping, offset, endbyte);
->  		if (ret < 0)
->  			goto out;
->  	}
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index c895146c1444..a5dbfa20f8d7 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -3014,7 +3014,7 @@ extern int __must_check file_fdatawait_range(struct file *file, loff_t lstart,
->  extern int __must_check file_check_and_advance_wb_err(struct file *file);
->  extern int __must_check file_write_and_wait_range(struct file *file,
->  						loff_t start, loff_t end);
-> -int filemap_fdatawrite_range_kick(struct address_space *mapping, loff_t start,
-> +int filemap_flush_range(struct address_space *mapping, loff_t start,
->  		loff_t end);
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 79732756b87f..03e9c3ac20ed 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -6885,7 +6885,6 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
+>  	BTRFS_I(inode)->dir_index = 0ULL;
+>  	inode_inc_iversion(inode);
+>  	inode_set_ctime_current(inode);
+> -	set_bit(BTRFS_INODE_COPY_EVERYTHING, &BTRFS_I(inode)->runtime_flags);
 >  
->  static inline int file_write_and_wait(struct file *file)
-> @@ -3051,8 +3051,8 @@ static inline ssize_t generic_write_sync(struct kiocb *iocb, ssize_t count)
->  	} else if (iocb->ki_flags & IOCB_DONTCACHE) {
->  		struct address_space *mapping = iocb->ki_filp->f_mapping;
+>  	ret = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
+>  			     &fname.disk_name, 1, index);
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 65079eb651da..8dfd504b37ae 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -7905,6 +7905,9 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+>  	bool log_pinned = false;
+>  	int ret;
 >  
-> -		filemap_fdatawrite_range_kick(mapping, iocb->ki_pos - count,
-> -					      iocb->ki_pos - 1);
-> +		filemap_flush_range(mapping, iocb->ki_pos - count,
-> +				iocb->ki_pos - 1);
->  	}
->  
->  	return count;
-> diff --git a/mm/fadvise.c b/mm/fadvise.c
-> index f1be619f0e58..67028e30aa91 100644
-> --- a/mm/fadvise.c
-> +++ b/mm/fadvise.c
-> @@ -111,7 +111,7 @@ int generic_fadvise(struct file *file, loff_t offset, loff_t len, int advice)
->  		spin_unlock(&file->f_lock);
->  		break;
->  	case POSIX_FADV_DONTNEED:
-> -		filemap_fdatawrite_range_kick(mapping, offset, endbyte);
-> +		filemap_flush_range(mapping, offset, endbyte);
->  
->  		/*
->  		 * First and last FULL page! Partial pages are deliberately
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index f90f5bb2b825..fa770768ea3a 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -419,7 +419,7 @@ int filemap_fdatawrite(struct address_space *mapping)
->  EXPORT_SYMBOL(filemap_fdatawrite);
->  
->  /**
-> - * filemap_fdatawrite_range_kick - start writeback on a range
-> + * filemap_flush_range - start writeback on a range
->   * @mapping:	target address_space
->   * @start:	index to start writeback on
->   * @end:	last (inclusive) index for writeback
-> @@ -429,12 +429,12 @@ EXPORT_SYMBOL(filemap_fdatawrite);
->   *
->   * Return: %0 on success, negative error code otherwise.
->   */
-> -int filemap_fdatawrite_range_kick(struct address_space *mapping, loff_t start,
-> +int filemap_flush_range(struct address_space *mapping, loff_t start,
->  				  loff_t end)
->  {
->  	return filemap_writeback(mapping, start, end, WB_SYNC_NONE, NULL);
->  }
-> -EXPORT_SYMBOL_GPL(filemap_fdatawrite_range_kick);
-> +EXPORT_SYMBOL_GPL(filemap_flush_range);
->  
->  /**
->   * filemap_flush - mostly a non-blocking flush
-> @@ -447,7 +447,7 @@ EXPORT_SYMBOL_GPL(filemap_fdatawrite_range_kick);
->   */
->  int filemap_flush(struct address_space *mapping)
->  {
-> -	return filemap_fdatawrite_range_kick(mapping, 0, LLONG_MAX);
-> +	return filemap_flush_range(mapping, 0, LLONG_MAX);
->  }
->  EXPORT_SYMBOL(filemap_flush);
+> +	/* The inode has a new name (ref/extref), so make sure we log it. */
+> +	set_bit(BTRFS_INODE_COPY_EVERYTHING, &inode->runtime_flags);
+> +
+>  	btrfs_init_log_ctx(&ctx, inode);
+>  	ctx.logging_new_name = true;
 >  
 > -- 
-> 2.47.3
+> 2.47.2
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
