@@ -1,156 +1,142 @@
-Return-Path: <linux-btrfs+bounces-18273-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18275-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14D3BC0590A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 12:27:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A1D1C05919
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 12:28:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 777273B1209
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 10:23:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C63153B7DB6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 10:24:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEC930F93A;
-	Fri, 24 Oct 2025 10:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44F330F94F;
+	Fri, 24 Oct 2025 10:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="EGNpaG/u"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J2xT8fdS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D0030F808;
-	Fri, 24 Oct 2025 10:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF8930C36D
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 10:23:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761301360; cv=none; b=Hj7vo2LcAlCODLBIWJErn/NfRHgtVnM7Gjwn33fuuwfd78S2te0jC93EA7n7V+TXL0pz+HRAgEaflUSr81tVFxxmH6YnrFPUC+rcMdM91vdJwsX2/BxC8tu+57zgzFEKABE05S9/yEToiK0/t36HqXRHMCSlZMj1clenqMpk1S4=
+	t=1761301426; cv=none; b=CASLCOwiF9vccmGqk+IUqmqoX1dnI6UnZYRcimFb2HfMKM4ywgkfgV/PpRXAbvOtrnP1eNOmDzI/14lfceXZCEB/0QxZnzpm2MOEIGZGqadPPeXs/gkqq7y+9aA62Bq4hiB4v5OM1rHnkIms/lRtlv616zyzomIxiSjgccvkGPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761301360; c=relaxed/simple;
-	bh=dfYrRcCz625GU5Hv4qF7R5hDzF21+y53LzlCMNULDzs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FGZssqviwCVN2b3DhsjT1k7HpZCPJ0+qAZO8zp4wqy+eLLMLOXU3rSrv6cvbUJKHj16OcxOfgYRVFkrTy4LgLuQD/DEOkljYaL6usXm+anj/N3g25wEwDQI3p2IuOpN2y0g+GKs8AEpK8/voA/r/m2dyLWY3SXIBNSa0V4PJHKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=EGNpaG/u; arc=none smtp.client-ip=80.241.56.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4ctJqt3YW7z9sSs;
-	Fri, 24 Oct 2025 12:22:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
-	t=1761301354;
+	s=arc-20240116; t=1761301426; c=relaxed/simple;
+	bh=EgK+kcfj+z1f7cW/gci4+KX2Dl6IQeAZ1As7DQcKk4s=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=MUj3OG5+3Tv4OftjcbxDnt5pkyZ/sPh95726tzy6F4mf1k2rl3FgPq/0Wt8py4HUKGxoldkjWuYzfAEoVf3ErcR54UYOhXNgvEQSPSae4tDNuJGCC5FGgNvkjnkLxClOE2mdnIcyQXUz004LFmdNZ+xrX5XiMXIaKOrDwcZRDQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=J2xT8fdS; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1761301424;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Js1n6kPDTMBIfCKrUsee5DCSrbS0DlAuQlCfrk27LTQ=;
-	b=EGNpaG/uoS52MNNPLbxnB53UgA98RvddtykD6ad/Vjuo/dryjnHsRoMQnsk1JNu2nVoS2y
-	JR02OQr6WVGzfokQ4cONmF9QjiKRdGsE5YpBJfcz00JmuXFaXMWuLkMcpkG7gOprvlSLFB
-	PWmUsp+ixF7nerJZgbM8GxSupDCZHoHM5n41HP1ppuv+iAavFG5EGKnPqUY/nKcQa5fGsm
-	fP4+kPpFXWseYF6iQR3+ntNrPxzebZWasCoq2I1kXCbvW4RmB5LQt/OtyPs5pB7xHNafWx
-	B6PDA0eTjC2KV7Tel5Uv7jnsQGSxEahOxqd7Fsqdn+NP2noxSeQuoBJ8fy2TMQ==
-Authentication-Results: outgoing_mbo_mout;
-	dkim=none;
-	spf=softfail (outgoing_mbo_mout: 2001:67c:2050:b231:465::102 is neither permitted nor denied by domain of mssola@mssola.com) smtp.mailfrom=mssola@mssola.com
-From: =?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
-To: linux-btrfs@vger.kernel.org
-Cc: clm@fb.com,
-	dsterba@suse.com,
-	johannes.thumshirn@wdc.com,
-	fdmanana@suse.com,
-	boris@bur.io,
-	wqu@suse.com,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
-Subject: [PATCH v2 4/4] btrfs: add ASSERTs on prealloc in qgroup functions
-Date: Fri, 24 Oct 2025 12:21:43 +0200
-Message-ID: <20251024102143.236665-5-mssola@mssola.com>
-In-Reply-To: <20251024102143.236665-1-mssola@mssola.com>
-References: <20251024102143.236665-1-mssola@mssola.com>
+	bh=dTfuG7mkwdAcHRX5d7idU5PTbdJ+nPsDJiTr0D0zK8s=;
+	b=J2xT8fdSPNdBOpL/yUJo/LfWPUs+qCHLC7vM9oDj3+yF92tF8gXdjCxLHw9twsDS4q1gEu
+	0JDxn/TJpsclWQF3wAxwHHyiJVU7PUlzs0fmmxwUTonUZraCGW9+vM1M2aNnGmCRPLwb4l
+	hVq/3HSPk8YpIXziGfPQzmuwehP0D9s=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-435-xMjsaOJWPMeaC3MMh3OPgw-1; Fri,
+ 24 Oct 2025 06:23:40 -0400
+X-MC-Unique: xMjsaOJWPMeaC3MMh3OPgw-1
+X-Mimecast-MFC-AGG-ID: xMjsaOJWPMeaC3MMh3OPgw_1761301418
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0EB25196F742;
+	Fri, 24 Oct 2025 10:23:36 +0000 (UTC)
+Received: from [10.44.32.37] (unknown [10.44.32.37])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 57711195398C;
+	Fri, 24 Oct 2025 10:23:29 +0000 (UTC)
+Date: Fri, 24 Oct 2025 12:23:20 +0200 (CEST)
+From: Mikulas Patocka <mpatocka@redhat.com>
+To: Askar Safin <safinaskar@gmail.com>
+cc: linux-mm@kvack.org, linux-pm@vger.kernel.org, linux-block@vger.kernel.org, 
+    linux-crypto@vger.kernel.org, linux-lvm@lists.linux.dev, 
+    lvm-devel@lists.linux.dev, linux-raid@vger.kernel.org, 
+    DellClientKernel <Dell.Client.Kernel@dell.com>, dm-devel@lists.linux.dev, 
+    linux-btrfs@vger.kernel.org, Nhat Pham <nphamcs@gmail.com>, 
+    Kairui Song <ryncsn@gmail.com>, Pavel Machek <pavel@ucw.cz>, 
+    =?ISO-8859-15?Q?Rodolfo_Garc=EDa_Pe=F1as?= <kix@kix.es>, 
+    "Rafael J. Wysocki" <rafael@kernel.org>, 
+    Eric Biggers <ebiggers@kernel.org>, 
+    Lennart Poettering <mzxreary@0pointer.de>, 
+    Christian Brauner <brauner@kernel.org>, 
+    Linus Torvalds <torvalds@linux-foundation.org>, 
+    Milan Broz <milan@mazyland.cz>
+Subject: [PATCH] pm-hibernate: flush block device cache when hibernating
+In-Reply-To: <4cd2d217-f97d-4923-b852-4f8746456704@mazyland.cz>
+Message-ID: <03e58462-5045-e12f-9af6-be2aaf19f32c@redhat.com>
+References: <20251023112920.133897-1-safinaskar@gmail.com> <4cd2d217-f97d-4923-b852-4f8746456704@mazyland.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4ctJqt3YW7z9sSs
+Content-Type: text/plain; charset=US-ASCII
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-The prealloc variable in these functions is always initialized to
-NULL. Whenever we allocate memory for it, if it fails then NULL is
-preserved, otherwise we delegate the ownership of the pointer to
-add_qgroup_rb() and set it right after to NULL
 
-Since in any case the pointer ends up being NULL at the end of its
-usage, we can safely remove calls to kfree() for it, while adding an
-ASSERT as an extra check.
 
-Signed-off-by: Miquel Sabaté Solà <mssola@mssola.com>
+On Fri, 24 Oct 2025, Askar Safin wrote:
+
+> Hi.
+> 
+> Hibernate to swap located on dm-integrity doesn't work.
+> Let me first describe why I need this, then I will describe a bug with steps
+> to reproduce
+> (and some speculation on cause of the bug).
+
+Hi
+
+Does this patch fix it?
+
+Mikulas
+
+
+From: Mikulas Patocka <mpatocka@redhat.com>
+
+There was reported failure that hibernation doesn't work with 
+dm-integrity. The reason for the failure is that the hibernation code 
+doesn't issue the FLUSH bio - the data still sits in the dm-integrity 
+cache and they are lost when poweroff happens.
+
+This commit fixes the suspend code so that it issues flushes before 
+writing the header and after writing the header.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Reported-by: Askar Safin <safinaskar@gmail.com>
+Link: https://lore.kernel.org/dm-devel/a48a37e3-2c22-44fb-97a4-0e57dc20421a@gmail.com/T/
+Cc: stable@vger.kernel.org
+
 ---
- fs/btrfs/qgroup.c | 27 +++++++++++++++++++++++----
- 1 file changed, 23 insertions(+), 4 deletions(-)
+ kernel/power/swap.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 6919f429c6b3..1c00a5330c4d 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -1263,7 +1263,14 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
- 		btrfs_end_transaction(trans);
- 	else if (trans)
- 		ret = btrfs_end_transaction(trans);
--	kfree(prealloc);
-+
-+	/*
-+	 * At this point we either failed at allocating prealloc, or we
-+	 * succeeded and passed the ownership to it to add_qgroup_rb(). In any
-+	 * case, this needs to be NULL or there is something wrong.
-+	 */
-+	ASSERT(prealloc == NULL);
-+
- 	return ret;
- }
- 
-@@ -1693,7 +1700,12 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
- 	ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
- out:
- 	mutex_unlock(&fs_info->qgroup_ioctl_lock);
--	kfree(prealloc);
-+	/*
-+	 * At this point we either failed at allocating prealloc, or we
-+	 * succeeded and passed the ownership to it to add_qgroup_rb(). In any
-+	 * case, this needs to be NULL or there is something wrong.
-+	 */
-+	ASSERT(prealloc == NULL);
- 	return ret;
- }
- 
-@@ -3301,7 +3313,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	struct btrfs_root *quota_root;
- 	struct btrfs_qgroup *srcgroup;
- 	struct btrfs_qgroup *dstgroup;
--	struct btrfs_qgroup *prealloc;
-+	struct btrfs_qgroup *prealloc = NULL;
- 	struct btrfs_qgroup_list **qlist_prealloc = NULL;
- 	bool free_inherit = false;
- 	bool need_rescan = false;
-@@ -3542,7 +3554,14 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	}
- 	if (free_inherit)
- 		kfree(inherit);
--	kfree(prealloc);
-+
-+	/*
-+	 * At this point we either failed at allocating prealloc, or we
-+	 * succeeded and passed the ownership to it to add_qgroup_rb(). In any
-+	 * case, this needs to be NULL or there is something wrong.
-+	 */
-+	ASSERT(prealloc == NULL);
-+
- 	return ret;
- }
- 
--- 
-2.51.1
+Index: linux-2.6/kernel/power/swap.c
+===================================================================
+--- linux-2.6.orig/kernel/power/swap.c	2025-10-13 21:42:48.000000000 +0200
++++ linux-2.6/kernel/power/swap.c	2025-10-24 12:01:32.000000000 +0200
+@@ -320,8 +320,10 @@ static int mark_swapfiles(struct swap_ma
+ 		swsusp_header->flags = flags;
+ 		if (flags & SF_CRC32_MODE)
+ 			swsusp_header->crc32 = handle->crc32;
+-		error = hib_submit_io_sync(REQ_OP_WRITE | REQ_SYNC,
++		error = hib_submit_io_sync(REQ_OP_WRITE | REQ_SYNC | REQ_PREFLUSH,
+ 				      swsusp_resume_block, swsusp_header);
++		if (!error)
++			error = blkdev_issue_flush(file_bdev(hib_resume_bdev_file));
+ 	} else {
+ 		pr_err("Swap header not found!\n");
+ 		error = -ENODEV;
 
 
