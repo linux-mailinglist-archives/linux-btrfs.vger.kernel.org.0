@@ -1,185 +1,154 @@
-Return-Path: <linux-btrfs+bounces-18334-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18335-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E5F3C09D7F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 19:08:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66195C09F55
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 21:37:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 726261C81201
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 17:08:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA8E23A6A2F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 19:37:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B2B2FFDF9;
-	Sat, 25 Oct 2025 17:06:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E00B2BE7CC;
+	Sat, 25 Oct 2025 19:36:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="rCt64ymk";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PdFEagAC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MDistKlk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CF0302746
-	for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 17:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0197319E819
+	for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 19:36:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761412014; cv=none; b=t7ZlbzpTgLjmytBdA5GyRr5WBsL8qQAU96UplEKwfpcJ4navT1tT716/H129PYcpv1pqACZoHzvYkviFaxmo0/afYhuqlzyjivqNLVvT/+qnhyhkOqzkobXwi5YJly5DUAcL+ZiQpyKCKT0GIlgVVZIHtF6BhxE+r8YMrnZgX44=
+	t=1761421015; cv=none; b=cfCzsrd34YxWfEqbjwX2fzqXaF+Ib9WpYjOqVtzTSCPt+xMY07bdJ+7m80sO+l8nqGDN660kUL46w7+j71TlMVEtiNPEbEJVh7XkMpJkYoV03C46xFA7zNbvWB8T7DaGluNx0Rg9klNJJf1IUikj6OEAXnvbRUWqeXGKIGhmaE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761412014; c=relaxed/simple;
-	bh=64+rOM3NtvFYHPlcXzCdOXWtqQRdru/OXoOuyoBzbpk=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=UIsd8L8dmXuRE4j9hUs1+A/LfoHXpwv6hcbVYjLAeieWR/P/VKD+PnQe7nwKG2FCHbaGDwPbO/RDoqDFWpsCCMQkVM6CW4pcxkuTrZsXxGvoiFmC10RbJmj/LikXRXYb8nHIwIXgz+2EtDKsNUgMMDO0t/6FTf+HytBr/e3opNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=rCt64ymk; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PdFEagAC; arc=none smtp.client-ip=103.168.172.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfout.phl.internal (Postfix) with ESMTP id E2142EC00F8;
-	Sat, 25 Oct 2025 13:06:49 -0400 (EDT)
-Received: from phl-imap-01 ([10.202.2.91])
-  by phl-compute-04.internal (MEProxy); Sat, 25 Oct 2025 13:06:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	colorremedies.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1761412009; x=1761498409; bh=/MLT7uwB8l
-	AdCDX38uct7FpB2vzEZPzAqITHD8mjeok=; b=rCt64ymk/1YLp2tWrDrnacG43L
-	/C9ugMWO+EOSatQrU/Obkix+V9yld/m8LQWomOxKTd4brkGEv+wTQmopIrE21UX2
-	47P+DRsW5B4sHCrGVNGvJ99SNW7wORwSC9G8z2Ghzw8DtTcvRKFCtc0SHLNXA+UO
-	I+Kk9X912h2WUfMD/B+8h3ubroPLMzwrEeqaIdFE8t3jkomVk0+ZroHQMXd5YwcZ
-	dhIwl1hU7VYuBbIXVj9lywvkr61SeRCFz8bUQbMsb4Lp28IXgyTdbtyaAfdq6bsq
-	Jj0UtkEfTzwy0207t+om3KYiLPtk8mKERq4jAn3qCuQuvwax9tDbV9LoJwuw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1761412009; x=
-	1761498409; bh=/MLT7uwB8lAdCDX38uct7FpB2vzEZPzAqITHD8mjeok=; b=P
-	dFEagACBzvR+j2lCeC5b9pSDeLjDNdEbR7Zd5P8bWVPqM8oFhAuoMyeYqy9aEmt0
-	d/5JgHS1EEC6HJgW3+GWOOcdcXusiX9aUPhXZ0eSFais7KAF/HDYdjbIiC6PG7Y4
-	S7vB77eDm7T+/p6A3UDi8tPRKMxD0aYq6oTCJRZkBg+1d/z3VLb9Aum3IfmH4qoG
-	VPRYO7nd21LJhUO37zhjiaxO14pIJkjOthnDA/80ytfmI7qrhv2m6qo5VvSB6az3
-	qZ4+bEKOaA1fXtSY0xoC7mdPSeFsMJU3eVEGiz+VtVmZXaLvK1V1f8sFIOhxn8yp
-	xHShJ+B5+MvpZAHjWYHXQ==
-X-ME-Sender: <xms:qQP9aCgXvZqqzMwB8Oe8GcfXg9hkgmFd-V_ozokq-GPUQeOSYF5tHA>
-    <xme:qQP9aN2fv6nv2vJHLCNNcLFRJmvlfM-zW8F3Lfqfrd7W594kFV-kGrqLW6Im7uv6T
-    WjTQL0NN0_FCBEC4eCBAVBXCPNOB8r3DiBnHA7Me7Atv_bWiwva7zre>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduhedvjeejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtqhertdertdejnecuhfhrohhmpedfvehhrhhi
-    shcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmqe
-    enucggtffrrghtthgvrhhnpeekhedtieejleeuleetvefgvefgtedvhfegtdejieffhffg
-    tdeutdeljeevgfdvueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmpdhnsggprhgt
-    phhtthhopeefpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehunhhfrgdttdesgh
-    hmrghilhdrtghomhdprhgtphhtthhopeifqhhusehsuhhsvgdrtghomhdprhgtphhtthho
-    pehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:qQP9aD9V1h3VhkBgkg5mcc8O81_zgByNdWRjs81i8fNWbtFxxBwfxQ>
-    <xmx:qQP9aHdpt2WnPo6EEZKGs_Mzlmj0fUAbBpHMhlE3uEeieHGKL8QcdA>
-    <xmx:qQP9aEFN7u0O8s4_UwUASLdERFEysT6EYIfyPLtJkJj6gt2iWralSQ>
-    <xmx:qQP9aNfLXAhxZWN_YRqfnNrUoaKGJttUMsM3WhaAtscipm3VPEQZJg>
-    <xmx:qQP9aGzKNoFZOpNO9DC5Kas4J8HoBG1J1mSQz1QkxtwYbvGKHiQuAup3>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 72F6418C0066; Sat, 25 Oct 2025 13:06:49 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1761421015; c=relaxed/simple;
+	bh=amKEW6z+TFPOb8CqNwSTob/MPQK7PC52RAS0d8iItIQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QWBuzwGtqUDI2XsgWQ7OHZGWuqSS3/qQg1eFZlGYcdgYGQmMjaoyKdFhCy1QhH4SZyncV82k52euMLkmyQaYZZlupR4ugAuDqBhoc2HS76KxXdANdhdSQsKNRqyo+ADFwleuxETXJcGw+sGBphqZi2QGw+8dZdgTVvd7c5wqpZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MDistKlk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F6F7C4CEFB
+	for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 19:36:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761421014;
+	bh=amKEW6z+TFPOb8CqNwSTob/MPQK7PC52RAS0d8iItIQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=MDistKlk7F30Ri9bOiADE/6NRv/wd+5h34sA3x8wKxj6keTU5Vo8eseGe6xzMS1jJ
+	 EFggEfyzc6uZpOChiYzDZdFkORZ4tFml+kVJ8mH/KWhn9MaMa7ifnJsbBdbTOVVUBU
+	 NG1uaJVsrGs4FDYBMrgJP4DrubueOkPHvKzo9SCHxDeDoRHwBw5FAaVL4TRjQktjM9
+	 7yuyBYbNgus0qA6aIaDmnZSa0tJF6v7sShdM69xplULGMGEIG8e5P3Dk7jyKtnZuIZ
+	 8wlzRWCYFLBdky59W6DiNzR3vmbbIRF/jyWC8AATtTZyRiBY/tGE6Ue3OeVKNEzX5+
+	 tZjJa5/Yg5e4A==
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-63c4b41b38cso7057866a12.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 12:36:54 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yy0f0NlQqrOjHR3Gx/Z/YP+Vi3SQ0kwauD6ouqyTl62O4GKjeup
+	jjXxjJwGKD81US/Ow5gMo5iNHuaNemDujH8YEElcvgLKGa3ZpOfB5njNp9g/6lw/Hg4MiPyeM0Z
+	V2YwH6grh9gQxqQYExfgZenJTUrRDrfA=
+X-Google-Smtp-Source: AGHT+IHWTSyJz3byfP3R4YMbneNxIM9fz7vywgncWrhDMKZ2IHwU3j/LSkDzcIc8r5ECb4MW76qhCzWe+7ZFf3z+wnQ=
+X-Received: by 2002:a17:907:94c6:b0:b6d:3de6:b729 with SMTP id
+ a640c23a62f3a-b6d51c3102fmr1152468666b.51.1761421013029; Sat, 25 Oct 2025
+ 12:36:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: A9jZGU0JwjF3
-Date: Sat, 25 Oct 2025 13:06:22 -0400
-From: "Chris Murphy" <lists@colorremedies.com>
-To: =?UTF-8?Q?Tobiasz_Karo=C5=84?= <unfa00@gmail.com>
-Cc: "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>, "Qu WenRuo" <wqu@suse.com>
-Message-Id: <dab1f9d3-6b21-4df9-8217-faf1aff7ba0a@app.fastmail.com>
-In-Reply-To: 
- <CAOsCCbPRE-kXtBXHLxu179q63_HoRby0a4fZukziMUxjzYRhuQ@mail.gmail.com>
-References: 
- <CAOsCCbPNqUkFqn2W_GprROor+ExuturJxWz-kVL_W5QvqAENSg@mail.gmail.com>
- <cd684028-5a7c-47bc-8095-02917fe46d6b@app.fastmail.com>
- <CAOsCCbOH_PRiExWLKPymdrCeNYCtfLgZ6khuGty-_m94MpOuMA@mail.gmail.com>
- <1330fe29-78a9-4628-b295-e3dcf2de15a9@app.fastmail.com>
- <CAOsCCbOeNGTS+MK4ZMDkg+PfVC0D9DR7iRXr+Hy6qK9sHgYjJg@mail.gmail.com>
- <CAOsCCbPRE-kXtBXHLxu179q63_HoRby0a4fZukziMUxjzYRhuQ@mail.gmail.com>
-Subject: Re: Damaged filesystem - request for support
-Content-Type: text/plain; charset=utf-8
+References: <20251025092951.2866847-1-shardulsb08@gmail.com> <20251025120500.3092125-1-shardulsb08@gmail.com>
+In-Reply-To: <20251025120500.3092125-1-shardulsb08@gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Sat, 25 Oct 2025 20:36:16 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7XbPrJUyXoiBfixY02Fp_PsL3AKVrLq=1FQpBtkCsFPg@mail.gmail.com>
+X-Gm-Features: AS18NWA-SZJiug2wP8qQT-86xpGUbQCKsq6pHLZcrt7H12XLQf4-E1H_shBhca8
+Message-ID: <CAL3q7H7XbPrJUyXoiBfixY02Fp_PsL3AKVrLq=1FQpBtkCsFPg@mail.gmail.com>
+Subject: Re: [PATCH v2 fs/btrfs v2] btrfs: fix memory leak of qgroup_list in btrfs_add_qgroup_relation
+To: Shardul Bankar <shardulsb08@gmail.com>
+Cc: linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
+On Sat, Oct 25, 2025 at 1:05=E2=80=AFPM Shardul Bankar <shardulsb08@gmail.c=
+om> wrote:
+>
+> When btrfs_add_qgroup_relation() is called with invalid qgroup levels
+> (src >=3D dst), the function returns -EINVAL directly without freeing the
+> preallocated qgroup_list structure passed by the caller. This causes a
+> memory leak because the caller unconditionally sets the pointer to NULL
+> after the call, preventing any cleanup.
+>
+> The issue occurs because the level validation check happens before the
+> mutex is acquired and before any error handling path that would free
+> the prealloc pointer. On this early return, the cleanup code at the
+> 'out' label (which includes kfree(prealloc)) is never reached.
+>
+> In btrfs_ioctl_qgroup_assign(), the code pattern is:
+>
+>     prealloc =3D kzalloc(sizeof(*prealloc), GFP_KERNEL);
+>     ret =3D btrfs_add_qgroup_relation(trans, sa->src, sa->dst, prealloc);
+>     prealloc =3D NULL;  // Always set to NULL regardless of return value
+>     ...
+>     kfree(prealloc);  // This becomes kfree(NULL), does nothing
+>
+> When the level check fails, 'prealloc' is never freed by either the
+> callee or the caller, resulting in a 64-byte memory leak per failed
+> operation. This can be triggered repeatedly by an unprivileged user
+> with access to a writable btrfs mount, potentially exhausting kernel
+> memory.
+>
+> Fix this by freeing prealloc before the early return, ensuring prealloc
+> is always freed on all error paths.
+>
+> Fixes: 8465ecec9611 ("btrfs: Check qgroup level in kernel qgroup assign."=
+)
+
+This is completely wrong...
+When that commit landed we didn't even have the 'prealloc'...
+
+The right commit is:
+
+4addc1ffd67a ("btrfs: qgroup: preallocate memory before adding a relation")
+
+> Cc: stable@vger.kernel.org # v4.0+
+
+And this becomes 6.11. But with a Fixes tag we pretty much don't need
+it, stable scripts will figure everything out.
+
+Thanks.
 
 
-On Sat, Oct 25, 2025, at 4:58 AM, Tobiasz Karo=C5=84 wrote:
-> Here's scrub status:
+> Signed-off-by: Shardul Bankar <shardulsb08@gmail.com>
+> ---
+>
+> v2:
+>  - Free prealloc directly before returning -EINVAL (no mutex held),
+>    per review from Qu Wenruo.
+>  - Drop goto-based cleanup.
+>
+>  fs/btrfs/qgroup.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index 1175b8192cd7..31ad8580322a 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -1539,8 +1539,10 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_h=
+andle *trans, u64 src, u64 dst
+>         ASSERT(prealloc);
+>
+>         /* Check the level of src and dst first */
+> -       if (btrfs_qgroup_level(src) >=3D btrfs_qgroup_level(dst))
+> +       if (btrfs_qgroup_level(src) >=3D btrfs_qgroup_level(dst)) {
+> +               kfree(prealloc);
+>                 return -EINVAL;
+> +       }
+>
+>         mutex_lock(&fs_info->qgroup_ioctl_lock);
+>         if (!fs_info->quota_root) {
+> --
+> 2.34.1
 >
 >
-> UUID:             a11787a5-de1d-421c-ac2e-b669f948b1f0
-> Scrub started:    Fri Oct 24 11:21:29 2025
-> Status:           finished
-> Duration:         15:49:35
-> Total to scrub:   9.09TiB
-> Rate:             167.21MiB/s
-> Error summary:    csum=3D1068
->  Corrected:      172
->  Uncorrectable:  896
->  Unverified:     0
->
-> I assume this means I can continue to use the filesystem, accepting
-> that a number of files will be inaccessible and result in i/o errors
-> when accessed?
-
-Qu, does `btrfs check` verify both copies of metadata when available? Or=
- only one copy? Does btrfs check ignore csum mismatches?
-
-From first post, this file system is:
-
-#  btrfs fi df /mnt/backup/=20
-Data, single: total=3D9.07TiB, used=3D9.07TiB=20
-System, RAID1: total=3D32.00MiB, used=3D1.19MiB=20
-Metadata, RAID1: total=3D11.03GiB, used=3D9.91GiB=20
-
-Since btrfs check says the fs is clean, but then scrub finds and correct=
-s 172 errors, that must mean those csum mismatches for some of the metad=
-ata that btrfs check did not detect? It's a little confusing what state =
-the file system is in now because the results don't explicitly tell us. =
-We have to infer it.
-
-Tobiasz, I think you need to run the btrfs check again (normal mode only=
- is ok I think)  to be sure the metadata is OK. It's a little tedious bu=
-t that is pretty important as you point out.
-
-Note that the scrub is actually performed by btrfs kernel code and all m=
-essages about the scrub will be in dmesg. All of those 1068 csum mismatc=
-hes will produces at least one message each. What is affected, whether a=
- fixup was attempted, and whether the fixup worked. Metadata csum mismat=
-ch error looks different from data csum mismatch error. The data error w=
-ill show path to the file affected. So the dmesg will leak file names.
-
-
-> Since the data is replacable (assuming I don't need to go back to an
-> older backup, which I don't currently have a need for), I can destroy
-> this filesystem and start anew with a clean borg backup.
-
-I'm not super familiar with borg, but I expect that it has an option to =
-verify all data blocks on both sides. It probably takes quite a bit long=
-er since both sides have to read and compare data. Btrfs never hands ove=
-r corrupt data in normal operation, instead it returns EIO for any block=
-s that fail checksum verification. The handling in case of EIO is up to =
-the application. What I'd like to think happens is borg will see EIO, kn=
-ow the target file is bad (or missing some blocks) and will replace it w=
-ith a good copy from the source.
-
-
-> I am not sure what would be better.
-> I don't want the FS to constantly remount in ro mode due to i/o errors.
-
-Right. Which is why the first order of business is to make sure the IO e=
-rrors aren't happening anymore. Either new kernel has fixed that problem=
-, or disabling uas will fix it, or using a USB hub will fix it (I would =
-borrow a hub before buying one for testing purposes if it comes to that).
-
---=20
-Chris Murphy
 
