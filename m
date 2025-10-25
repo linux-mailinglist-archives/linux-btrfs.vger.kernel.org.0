@@ -1,75 +1,107 @@
-Return-Path: <linux-btrfs+bounces-18324-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18325-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48744C08502
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 01:31:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 699BDC08B60
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 07:29:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8865A35217E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Oct 2025 23:31:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 623033AC519
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 05:27:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DDF42D7D41;
-	Fri, 24 Oct 2025 23:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2F52C0F6E;
+	Sat, 25 Oct 2025 05:26:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iCCn+AER";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iCCn+AER"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pjvfa8SE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9350A1F1932
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 23:31:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A68274FE8
+	for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 05:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761348668; cv=none; b=E1CMmnUxuwzIgB9txwqJ+uCVT1pR7wK4TXS6FJqjhfApGpDoV7zD9mNprNQIxAQmfKOv6mO4mn/EDzoYwp+hbHoSMTD4CM58my5khYs6E6j1V9m6m4W2rAEHukEWR4D0V+XbUVFn1ZDl1aCmASWKamTVqgL0gl4pMuLR33FeLVw=
+	t=1761370009; cv=none; b=dsrCnS32wrjrXPn1zEjy4bKqaOC0oY4T9xw8mKpQ1WMFuy9NexJUasqbOCjvx8X1kubS2tGIiFPCbRJ4sovj3eHSeLhT9ccc8/QhHBvOvGRpkaP+uZje0K7dMfcgqPRv2sL+IbJHRkhBECVbJ5KlSxIW+DxGR2A9JQFmIjViTeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761348668; c=relaxed/simple;
-	bh=zzZHjIJaIuprT7amgEL30R1s7Z3lKFNoOleiL4XIGBo=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Oxsikm27qf3ZyidDOhSXp5wYMn8ZGZftbZgh6clHAqAJo89dsEpvj/aq5dn1WnwiU+XgF1vrz+qeD5Ly07Oqfa6uysZt2zWjEmzStIQVL8K+DddBGzHnE1fvkd+5iti8pWnQAg7DBQarMvNfBAsW4Ai8udyDXNtMb0YLfM1V6pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iCCn+AER; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iCCn+AER; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 81273211F7
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 23:31:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1761348660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=FFAcp5/2aNcGAj2jU0WxYEpdxAzRiBO1NGlkBK5FlDg=;
-	b=iCCn+AERndVX/UvYzp/BswiMiSspuPXew7DoywbWWG+t8OKGdKsKVwhKGeszenvOAKmq4x
-	gcx9ES0s0GCPVWR/r8t5tlq7SJN311qMMwPVHHjxmiC+7AQRyF3T/snGWuZ503PnYH2f+7
-	GYxet3WwGnikUx+ee8pvdH2AMuWX6hs=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=iCCn+AER
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1761348660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=FFAcp5/2aNcGAj2jU0WxYEpdxAzRiBO1NGlkBK5FlDg=;
-	b=iCCn+AERndVX/UvYzp/BswiMiSspuPXew7DoywbWWG+t8OKGdKsKVwhKGeszenvOAKmq4x
-	gcx9ES0s0GCPVWR/r8t5tlq7SJN311qMMwPVHHjxmiC+7AQRyF3T/snGWuZ503PnYH2f+7
-	GYxet3WwGnikUx+ee8pvdH2AMuWX6hs=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BB54B132C2
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 23:30:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id RjXbHjMM/GidQwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 23:30:59 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: convert: prevent data chunks to go beyond device size
-Date: Sat, 25 Oct 2025 10:00:41 +1030
-Message-ID: <f88a750276cab164dc07fabe09b171307ce64e64.1761348631.git.wqu@suse.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1761370009; c=relaxed/simple;
+	bh=/zQwfhMEJhTOa5/FV1euV1Dku1nFTDlTsbnBQjlqjDQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=khaVTYT4iyc5JProfXTnIpESp2jYPcfRMvrSglpATbG//Rezbu5DsqYth6y4UrINid4NJzDqrnN2o1p9LSwEQ4rJQQY1wvL+kxCqW42loMASyv668zLZRMPDr7tFLQ0+r9EE2UokQmdWcIh71EodlPIvDVdlG7syWso9JOPmZNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pjvfa8SE; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-63c0c9a408aso4506443a12.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Oct 2025 22:26:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761370005; x=1761974805; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mV8buuSZQP0rHOq5S4b8K+cOmbjRvDVQwA71gPDHBAE=;
+        b=Pjvfa8SEZbxsM/zJR4PQ+NRDcthojbCwES9h0rerasc6DuX+QlbPq3ReB7mSmCwZzk
+         G+RaYizITPByzjqWgNZCCdnHaJaARqKNOXhortmhpG6uojE+a0urH8nCO97GrZMm6zuO
+         DdvtNpTMeHn5rWMFFQ7Ju4peQwzCN+8hsCog0MMBRSxOQ39Bv9ts+qL7kuXrPafx2mDp
+         gsIImPcmgn6dRmfYObiegOz3nu/ZxylQPh2GOg8+npFQgjOqF89CdQqJEmYiltz2lDST
+         DmfDH2jHtwgINimt1F9lgcm6fSLUUT2WEstjXw4+XuAN4I8VbQ5sjQS+kAyiVJ8caOWb
+         zu7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761370005; x=1761974805;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mV8buuSZQP0rHOq5S4b8K+cOmbjRvDVQwA71gPDHBAE=;
+        b=rle+fQLmstrFVMrVATFFOrgnsATdcUtAArb5vn1z3s4Z58/zOvQzcWYewjx6lrWMj5
+         xn41DFNyMNuRATdKqV4uoryHcopYtDCzEq9DlckNIfP7uu7lNtN5fZchOvuW57T95LKP
+         KfUs7neEm94UcbTLMiPCTfY1MPPXs1LVoEy0heGIkwI9X/DlbOMAu7NJFn10f2USZimt
+         CUK+4Z4en9tO3gPKVr0mzLMzWNMZbx3KmA8+W9CtryrGA530OD5hq62in1navmh5k2SP
+         R66CPT9fKksFXKooov/KgecAgmcXNIrcMS0ETimBlxzElsaj4VzgBpuENSvXdhVjIiBY
+         mfoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXqLLz2OsT3nL0qd8ap2oLYpjdZ3n0vTPcPvtrfT79ISa/rfjlXoGFiD3XKG9oAZ0Na/fskDXTgv0l2sA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YymToDV/ogAxi5v0Nuz6SjYmX7zl20u8ZKM/ff0gDQftR6hbqy5
+	o4TP0ngfFTN4nh5zZPMO5Yl/TTw5ZsncMn7+8mQRFqXCkc3dEJ9WBvGz
+X-Gm-Gg: ASbGnctcGwqfuik0of2ClVQTSJN30+oDd00QG9obiz+JNyplYsGNw9mVzpndJ0isHdK
+	aBiCGkvrXiRO9khwNyuazP0MPYoHbYIlxlF0KxJdl9GMRKiLulLfmISs1o9XWCRoxhj4PylsS/P
+	NyvixBkYiq1XLa59XUk4lPXxTrTxLsI7RRS2QaZgVbFB1ngHBlFWr6J7Qk4z7KEsZBxb3bYVoKu
+	Sv2hXorGdg+a4tebGfsLkK7LXc23OWFR5kVdczthvXR5+Dqyk6yd0u4i1bqrmuOQ0Q8paNXxC80
+	Rs1LfvWtPRpCiLl2DEaSDU0LC+mGgycZpi8vX8rN+F8LdF1UgCURRDK0cjgzCH+wkkpSY1O8Q3a
+	iKFZADoo3/uy9vWx7oht2C8PF9w1kMHs73yW/o7zFGkyyVSLSlgFlJAYkB4SVOkj/8NPU4lh59Z
+	2iGENm2HRdEew=
+X-Google-Smtp-Source: AGHT+IHk4JGeekekahtUg2k/EhAC9kyrxVTGjCsIExfHrDtgIcN62P8FCtHZWZXypDamfyJkpyvf/Q==
+X-Received: by 2002:a05:6402:40d5:b0:628:5b8c:64b7 with SMTP id 4fb4d7f45d1cf-63c1f64ec00mr33191598a12.6.1761370005212;
+        Fri, 24 Oct 2025 22:26:45 -0700 (PDT)
+Received: from localhost ([212.73.77.104])
+        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-63e7ef96105sm880960a12.19.2025.10.24.22.26.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Oct 2025 22:26:44 -0700 (PDT)
+From: Askar Safin <safinaskar@gmail.com>
+To: safinaskar@gmail.com
+Cc: Dell.Client.Kernel@dell.com,
+	brauner@kernel.org,
+	dm-devel@lists.linux.dev,
+	ebiggers@kernel.org,
+	gmazyland@gmail.com,
+	kix@kix.es,
+	linux-block@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-lvm@lists.linux.dev,
+	linux-mm@kvack.org,
+	linux-pm@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	lvm-devel@lists.linux.dev,
+	mzxreary@0pointer.de,
+	nphamcs@gmail.com,
+	pavel@ucw.cz,
+	rafael@kernel.org,
+	ryncsn@gmail.com,
+	torvalds@linux-foundation.org
+Subject: Re: dm bug: hibernate to swap located on dm-integrity doesn't work (how to get data redundancy for swap?)
+Date: Sat, 25 Oct 2025 08:26:37 +0300
+Message-ID: <20251025052637.422902-1-safinaskar@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251024163142.376903-1-safinaskar@gmail.com>
+References: <20251024163142.376903-1-safinaskar@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,81 +109,17 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 81273211F7
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_DN_NONE(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:mid,suse.com:dkim];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Spam-Level: 
 
-[BUG]
-There is a bug report that kernel is rejecting a converted btrfs that
-has dev extents beyond device boundary.
+Askar Safin <safinaskar@gmail.com>:
+> Here is output of this script on master:
+> https://zerobin.net/?68ef6601ab203a11#7zBZ44AaVKmvRq161MJaOXIXY/5Hiv+hRUxWoqyZ7uE=
+[...]
+> Also, you will find backtrace in logs above. Disregard it. I think this
+> is just some master bug, which is unrelated to our dm-integrity bug.
 
-The invovled device extent is at 999627694980, length is 30924800,
-meanwhile the device is 999658557440.
+That WARNING in logs is unrelated bug, which happens always when I hibernate.
+I reported it here: https://lore.kernel.org/regressions/20251025050812.421905-1-safinaskar@gmail.com/
 
-The device is size not aligned to 64K, meanwhile the dev extent is
-aligned to 64K.
-
-[CAUSE]
-For converted btrfs, the source fs has all its freedom to choose its
-size, as long as it's aligned to the fs block size.
-
-So when adding new converted data block groups we need to do extra
-alignment, but in make_convert_data_block_groups() we are rounding up
-the end, which can exceed the device size.
-
-[FIX]
-Instead of rounding up to stripe boundary, rounding it down to prevent
-going beyond the device boundary.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- convert/main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/convert/main.c b/convert/main.c
-index e279e3d40c5f..5c40c08ddd72 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -948,8 +948,8 @@ static int make_convert_data_block_groups(struct btrfs_trans_handle *trans,
- 			u64 cur_backup = cur;
- 
- 			len = min(max_chunk_size,
--				  round_up(cache->start + cache->size,
--					   BTRFS_STRIPE_LEN) - cur);
-+				  round_down(cache->start + cache->size,
-+					     BTRFS_STRIPE_LEN) - cur);
- 			ret = btrfs_alloc_data_chunk(trans, fs_info, &cur_backup, len);
- 			if (ret < 0)
- 				break;
 -- 
-2.51.0
-
+Askar Safin
 
