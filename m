@@ -1,147 +1,171 @@
-Return-Path: <linux-btrfs+bounces-18327-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18328-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A171FC08E77
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 11:30:13 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86A52C08E92
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 11:49:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B15D3AEED1
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 09:30:12 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C3A644E6E45
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 09:49:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26B92E2DFA;
-	Sat, 25 Oct 2025 09:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF092E7F1E;
+	Sat, 25 Oct 2025 09:49:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cr/+UCYZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fOQzZE4d"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EBA629B204
-	for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 09:30:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 984532E7F00
+	for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 09:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761384607; cv=none; b=OuMhEuR+CKDe67jI83JzCqKLuNaXxkSMjj9JOd9WWGm06BCyoXNaqE0GEFL9zVliWG1vvjTBSLj+fW4m2sVu3g5fOv6ElkwTJssDVuKxEdgbVKjLvP5QLSPB332J6XIrNi/RhhKF2X51+LtbrJted8di6H0f+QjqAq1rV27EVnE=
+	t=1761385788; cv=none; b=PAMx4Mj41619QX6uFDbvvt1Wc/UgwsaEeDQVOh197ty7GxeVqUiSv/MtMht9RZSrZEclyx8wOOtE1IyGXHU35DwLoysv/KTr6+AZj5+msMnO6KVyJCojHTl84mFojRUBRc4oVYn7tnd4+Ak2NgNGC0uax6trsVT2km2NkXxSekU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761384607; c=relaxed/simple;
-	bh=xTi9iK0cexilxltVMDnA5hECNlMR2KScYHdB9Pq9vS4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dmaCnIILqnFSUvpudCaNLcwKwkEGyj+kWwDxPRd6AwD0TU4bi9grGoZqdqbTlUqbcSid0R0XMOEGcKlcTuSH+VIw+0l3KP80Y4yLdVes13M3pRbPZeKdFSWWN/gcf1/ubOisT2IXBR3W7xkASOXygeJd/nAYP5/hnBKkYxx4di8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cr/+UCYZ; arc=none smtp.client-ip=209.85.214.173
+	s=arc-20240116; t=1761385788; c=relaxed/simple;
+	bh=KYDbvM5SlKINN0ZRd2iObH++vvfW6rGNqCv0yERtWUY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pWT1X6IXiPp/EaivG3DylC5vJLUbvTmnUcd2yPtwEJdrWwwQ8nUYbcLFJ9hjCmCLHiiynyzgQTnXDzZd+sIgKPdylIoiyK62JHkJMMkx+JAN8y3VK7Hw7XhbzOdbWJv/M88T+bgBHshBw9QX0/oXeXQBgEBBrpgnbggh8JmDlzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fOQzZE4d; arc=none smtp.client-ip=209.85.167.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2698d47e776so24217655ad.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 02:30:05 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-592f22b1e49so2647870e87.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 02:49:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761384604; x=1761989404; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CzOdTahmgATvyBKKNNGk+6ocxaYqIIvV/CA7uucejZ8=;
-        b=cr/+UCYZyy3VYyfPXq7/nt2s13kD1hIrmn0/yF/0yltigPxqoRkZijzO27hA/nDJVR
-         /JPYc3RO4Sap44yuddp13RX/GAz8qZEZgto4Jn4Z4qS4MqwtoJX2E78rqs9rFnbcbUWx
-         UBrPugwtL9aGaNf1ofoKsYpuXmUQB6i3EqlTZzP0llMxieNPIx/NdP7BgzjlAh6kcdAy
-         Es9qb2xyy8PFmSw3gkD1nEBw5JN+Afao6NcsUq5h8c2yQBmoBEOAn65JZ7XRNqqS6Vfa
-         lybOeQeMM4RymKQQ4PIyJ823dpiiuQlWQmIXIA0F68LlvXZ6D+sRw/0mlAZPWHWdjjfW
-         DiHw==
+        d=gmail.com; s=20230601; t=1761385785; x=1761990585; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Wa/PzYa41ebeg2IQuTqJ8Z3lhmQsqFYYMGmG2oqsguY=;
+        b=fOQzZE4d2LTl05O5cPnuqhl4oHGKku677tzpUvcF/dHqAUZV7661CbbnZowd8k4n8m
+         n8WEA/xMJRklXxpb3ob8MZ7V24mbvUNdEKh5cqumxwlQvPU1bdHbnkMNoGmuB49esT65
+         PliqnD8mCKbIREAUh0RHU2uDhDRSsqOFqeMrL+BaB/I7G2uq1tLX8lkKvBZos684WshV
+         +18cZEVEWj6Da/zpCLA39K/cp4tTbRe2c5YVGbYE/3psA8MtMRsoKNrS1sohDuSnnBdj
+         PkFFYERC4hoCel/0zKP4pSkrVZUpE9x5UI3RRDZduECTBYniHDdIF301NOWLBdjVbQFx
+         zZKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761384604; x=1761989404;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CzOdTahmgATvyBKKNNGk+6ocxaYqIIvV/CA7uucejZ8=;
-        b=nwPuVlvtpPGF9F/6KwBmkfz41DX2aRqfjbBpLV2Oinduv8USNC2M/FBYjQJ5lG3idB
-         3mYGEwjefGgTkZpH2WJfV8eCic8LJKC0GN/8huPRHqY/Maj4K7F6zTTqDwLG/CDX+0kX
-         Z07pkYcsIO01+2xZAIs9PTLpEhxjNi48TH+qBmbUu7JZ3+jfMraQ8PXXUuYN9nabjGka
-         c4zxFRjVy7AL2UkPHeZtVjp50psFcA0JzlAzLPLUJgiBIU5Np+AjYLgr7aJYtEkLxbkz
-         G5AfCjLw2eBFXt8WdtRJz59WOzicAVzasIs70qanouMBzX5gJVi6wTCt4U8pBNUknzRt
-         ZyNQ==
-X-Gm-Message-State: AOJu0YzrAcKRQtfF8c2uJav0/hshJX/k8nlhYYbuGrRZIcUKkKyc4VC3
-	z5Z2MKPs2TrO1G6fhdgqOolvM3qDYdM4zTX/MszITzc7jHV/YnCkeGraLj/wl+F6
-X-Gm-Gg: ASbGnctJuB4d7veSyUf+YLyUk1lB2yhoSsGjDNrI0EBmoq3gSUjjutzbpQ+GXuBQzDn
-	+NJNYYZsTdg18ZihpqGGQh7BTJ6NdRgm8DGIEsS28WgnD18Fm8TMYKQ5y626QjVSsYzS0APyME9
-	Dk2h7NTRH+Ulm6Uqy01iK0V+VKqSbS785e3bR5KwdUa9i6hMpqxwDfPHtRUKzeZqnbxqGV285kF
-	B60EJfyko83Pi5Exm0DyON7OJfEguTb3O7JTTT9HfQW1V7CT04iHhu9MZbk6zozZ73QwuXcjN4A
-	w27E8EH1TyvIyYc3PBCkGWgYEKLbtUywDpl/Gt6XlFRptttg3LEO206uT3hC8C83BSzrq1jmDOl
-	jAWIeDZVQpHeuVFb8oTPo3/cN/68rckKghg7xtBeSBJ8VeSo1JpJ2AKY+o8QM2mHgfNG3TBPAKs
-	Acs0Hx5IrRiQ==
-X-Google-Smtp-Source: AGHT+IFzZAqzgx9hI9VWDaOpx4WVbJGiiiiPSP8erCa77EiYj7XPJXg1vLil+vrRBk3WAZVO6rop7g==
-X-Received: by 2002:a17:903:249:b0:25c:8005:3efb with SMTP id d9443c01a7336-290cba423a6mr371056925ad.54.1761384604459;
-        Sat, 25 Oct 2025 02:30:04 -0700 (PDT)
-Received: from Shardul.. ([223.185.39.235])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498d40dbfsm17878515ad.72.2025.10.25.02.30.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Oct 2025 02:30:03 -0700 (PDT)
-From: Shardul Bankar <shardulsb08@gmail.com>
-To: linux-btrfs@vger.kernel.org
-Cc: clm@fb.com,
-	dsterba@suse.com,
-	linux-kernel@vger.kernel.org,
-	shardulsb08@gmail.com
-Subject: [PATCH fs/btrfs] btrfs: fix memory leak of qgroup_list in btrfs_add_qgroup_relation
-Date: Sat, 25 Oct 2025 14:59:51 +0530
-Message-Id: <20251025092951.2866847-1-shardulsb08@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1761385785; x=1761990585;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wa/PzYa41ebeg2IQuTqJ8Z3lhmQsqFYYMGmG2oqsguY=;
+        b=Zbgyxi890Ek8mqSmW6raTNNApnBKcL9iNnXiPFnimuhobpLh0EeMwrxTWkp0N5LcuJ
+         ksBJB8RNHZ4tJVs24gHL+Hj03VB49svBsZnMvC6gKrRP8pEixpTujyEyLg3tDDGLrAR0
+         gglsYjMlWksi1CVOBfgDmQG70cPcX3T5jIg0Xr8own+tnAvhvPz2O/2U/A7+Y6vxOlMj
+         18VSmIxhPVdrm/iig+8/ZodqNYoGLnF5MSlNGZSCGJ6dPa4jNSKbarU4UbvF9d8ymAuj
+         Hv6ik87KThT7at+hbbepgChKoMbW0D3bVu534cni46EKxvf8VR3+XViuwbQqmjy9asW6
+         tTrw==
+X-Forwarded-Encrypted: i=1; AJvYcCVH7h3l9jqcUr7IH9fo+ExGIlPWjIEYOzf8NcTLWVKn2Hy6mjPlJaAdmRPjUqdILSuEWXz1m2dlMBN4sQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKPXels1qRn8Xv0EzVZtAdTF0D+YY5n0b+aF67OZ12Y+45vZ32
+	i9IUBS1doYlzMn9JfgHwcdCFYthHTAmndnNSEeE0+qqFvvtVviQOdDTVp7KZK4OB
+X-Gm-Gg: ASbGncs9+m0LqAT35cbzLtVHRdJvbRKkLK51G2TuH3GMcZlBa1ngZ7LjJEMgMG4m3N/
+	QroUPS4xoWIb0zIQb0rKotVQ57I3LPoFYgvqY4g0EUSpIDqqWUBWVFvDHv6WIn17Mb78NcvNZ1z
+	x1eHsTKuh2FutblMmsExSYwV7DmZfqfPdm2N/eEiN58fjckRY+5Alb9OUUpmZQs3h56qx4d4Apr
+	ouP/rOhLK0eZJJr0fW0teilTNWY7pB/Ym7wGzUTaueg06jUdUvt+l+WXc9oduGhBX4R2NHCL8Dt
+	WsxhlhjrJYzB2pumfJyd7tBcd/Ou7M4w7CzqYvh3cxDxgNSnJljvrYd7WUqYVXgZmwqE24WCm3v
+	lTeKr/33zNd48Bit6LNIz/RcWP0KgOQnabHr+RZZkc+92Ojg3V4LCc3/yOo8TrvZeL3+ROPIvQi
+	xU4JbEnfKmxHVAP+xjbeOrB5s=
+X-Google-Smtp-Source: AGHT+IFz2eCZ1bYR4MTJHMLuCeHea8GqXuofX6wmBkcYcRIU8v8aPGRsyg+mqufS9R16ARsBnWvB5Q==
+X-Received: by 2002:a05:6512:3da1:b0:585:3109:bb93 with SMTP id 2adb3069b0e04-591d8564b51mr10825324e87.55.1761385784413;
+        Sat, 25 Oct 2025 02:49:44 -0700 (PDT)
+Received: from [192.168.88.251] ([188.243.183.121])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59301f81c1asm521297e87.99.2025.10.25.02.49.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Oct 2025 02:49:43 -0700 (PDT)
+Message-ID: <d039a3c8-c4f7-487c-a848-2a26ea26f77d@gmail.com>
+Date: Sat, 25 Oct 2025 12:49:42 +0300
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Directory is not persisted after writing to the file within
+ directory if system crashes
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <03c5d7ec-5b3d-49d1-95bc-8970a7f82d87@gmail.com>
+ <CAL3q7H5ggWXdptoGH9Bmk-hc2CMBLz-YmC1A8U-hx9q=ZZ0BHw@mail.gmail.com>
+Content-Language: en-US
+From: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
+In-Reply-To: <CAL3q7H5ggWXdptoGH9Bmk-hc2CMBLz-YmC1A8U-hx9q=ZZ0BHw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-When btrfs_add_qgroup_relation() is called with invalid qgroup levels
-(src >= dst), the function returns -EINVAL directly without freeing the
-preallocated qgroup_list structure passed by the caller. This causes a
-memory leak because the caller unconditionally sets the pointer to NULL
-after the call, preventing any cleanup.
+On 24/10/2025 19:17, Filipe Manana wrote:
+> I converted that to a test case for fstests and couldn't reproduce,
+> "dir", "file1" and "dir/file2" exist after the power failure.
+>
+> The conversion for fstests:
+>
+> #! /bin/bash
+> # SPDX-License-Identifier: GPL-2.0
+> # Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
+> #
+> # FS QA Test 780
+> #
+> # what am I here for?
+> #
+> . ./common/preamble
+> _begin_fstest auto quick log
+>
+> _cleanup()
+> {
+> _cleanup_flakey
+> cd /
+> rm -r -f $tmp.*
+> }
+>
+> . ./common/filter
+> . ./common/dmflakey
+>
+> _require_scratch
+> _require_dm_target flakey
+>
+> rm -f $seqres.full
+> On 24/10/2025 19:17, Filipe Manana wrote:
+> _scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
+> _require_metadata_journaling $SCRATCH_DEV
+> _init_flakey
+> _mount_flakey
+>
+> touch $SCRATCH_MNT/file1
+>
+> _scratch_sync
+>
+> mkdir $SCRATCH_MNT/dir
+> echo -n "hello world" > $SCRATCH_MNT/file1
+> ln $SCRATCH_MNT/file1 $SCRATCH_MNT/dir/file2
+>
+> $XFS_IO_PROG -c "fsync" $SCRATCH_MNT/
+>
+> # Simulate a power failure and then mount again the filesystem to replay the
+> # journal/log.
+> _flakey_drop_and_remount
+>
+> ls -R $SCRATCH_MNT/ | _filter_scratch
+>
+> _unmount_flakey
+>
+> # success, all done
+> _exit 0
 
-The issue occurs because the level validation check happens before the
-mutex is acquired and before any error handling path that would free
-the prealloc pointer. On this early return, the cleanup code at the
-'out' label (which includes kfree(prealloc)) is never reached.
+I think the line with `echo` may not be the correct translation:
+ > echo -n "hello world" > $SCRATCH_MNT/file1
 
-In btrfs_ioctl_qgroup_assign(), the code pattern is:
+In the original test, the file was opened with `O_SYNC` flag, if you 
+remove it, the directory will be there when the system crashes. I also 
+forgot to close the file after the `creat` call in the original test, 
+may be important as well.
 
-    prealloc = kzalloc(sizeof(*prealloc), GFP_KERNEL);
-    ret = btrfs_add_qgroup_relation(trans, sa->src, sa->dst, prealloc);
-    prealloc = NULL;  // Always set to NULL regardless of return value
-    ...
-    kfree(prealloc);  // This becomes kfree(NULL), does nothing
+The test itself is quite weird (why would `dir` be gone after seemingly 
+unrelated operation?), any detail can matter.
 
-When the level check fails, 'prealloc' is never freed by either the
-callee or the caller, resulting in a 64-byte memory leak per failed
-operation. This can be triggered repeatedly by an unprivileged user
-with access to a writable btrfs mount, potentially exhausting kernel
-memory.
-
-Fix this by changing the early return to a goto that reaches the
-cleanup code, ensuring prealloc is always freed on all error paths.
-
-Reported-by: BRF (btrfs runtime fuzzer)
-Fixes: 8465ecec9611 ("btrfs: Check qgroup level in kernel qgroup assign.")
-Signed-off-by: Shardul Bankar <shardulsb08@gmail.com>
----
- fs/btrfs/qgroup.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 1175b8192cd7..0a25bfdd442f 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -1539,8 +1539,10 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src, u64 dst
- 	ASSERT(prealloc);
- 
- 	/* Check the level of src and dst first */
--	if (btrfs_qgroup_level(src) >= btrfs_qgroup_level(dst))
--		return -EINVAL;
-+	if (btrfs_qgroup_level(src) >= btrfs_qgroup_level(dst)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
- 
- 	mutex_lock(&fs_info->qgroup_ioctl_lock);
- 	if (!fs_info->quota_root) {
--- 
-2.34.1
+Please run the original test with a real system crash. I will also 
+double check everything on my side.
 
 
