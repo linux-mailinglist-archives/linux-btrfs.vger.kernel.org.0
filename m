@@ -1,81 +1,83 @@
-Return-Path: <linux-btrfs+bounces-18330-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18331-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 981EAC08EED
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 12:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 83CC2C08EFA
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 12:19:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DAE484E9DFC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 10:14:12 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1EBAC4E20C2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Oct 2025 10:19:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76CEC2EB85C;
-	Sat, 25 Oct 2025 10:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F792ED164;
+	Sat, 25 Oct 2025 10:18:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JKfg2thk"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cSV+qqna"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 962FA2E9722
-	for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 10:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5592D2EA14D
+	for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 10:18:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761387217; cv=none; b=EjQc8gIZO8nzjCLD10aVX4ykwlaOaABRS9vOTE51ZXwutoGcH08gA+09AwJZyc3n43KTh7NxYZe4YByxWYMrjPd+UuaCJbLvLXnF4+ZM/4iR9pkyYfPkxQKmxV9Mwojvtwj5eJ3a4ELYiUuXyC5hSOKyXfGb6foUODwRfEnJC2w=
+	t=1761387538; cv=none; b=cBPKRxZMYK7gLvze+tXdlTjWEf7chFgKCZQWcI4IzlRQ/yAdWWd2Wbj+imQQT4v1EYwbHo1HLTK5uBnDUXDoEQ3wHGi9uIe6F/xRNOhHJV4epYL1lg/JUwXof8Q+LP0u1MfCARRNctBuy1SD/SOYnZA1kQsOjm82vF6eGM7/e7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761387217; c=relaxed/simple;
-	bh=x5Zfju5tq/4qygh6E3gfDeoUeTXHi3cFBw2ntwHfFhQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X+3Uo9lHk18err6uBp7jaaDb+k2/mh/8+ka0ekN7njrRalfjByQoPoBTKEE6/FxF2+JEK10BfUnZCkuELZov/iumW0dicFagZ4KTcO4atxzchMzGw7RGSZRt6Rt8Pbbh1WC5k0FvCK/N/ppVnT8N7Of+fQsoHWf230lR15RSAqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JKfg2thk; arc=none smtp.client-ip=209.85.128.42
+	s=arc-20240116; t=1761387538; c=relaxed/simple;
+	bh=ajAMYFZrYJezb0D2gTF3n3P0mWPwltlHSpRx5qDl0+M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=jjQu0QK6o2WO6TAd+fHTU0/ISGBXAy8Lq+8IcHt14p0HA7uYWa9SbPiU9RlskNDRg5wJv/BgyDQCwzej/sbRhlB+3bs3tsBBCPXNDFoi4ahCuVi+sJwoEsekUkuQO5SVnbf0L08J/E/cIYqhSYfKKldN9wYZym1S7eZhSJKe5Sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cSV+qqna; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-474975af41dso19849455e9.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 03:13:35 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-475c1f433d8so24418195e9.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Oct 2025 03:18:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1761387214; x=1761992014; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1761387534; x=1761992334; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=9PtPsexDpDiFXe6bvXUwGadaGf7cY3dlOxZFz1GquK8=;
-        b=JKfg2thk4sZUJCYxN2uE2h6h1iV+dNatEMrdGsVpGjRkZd6LUT61vo00SshXeUSRsO
-         eyoPMsBodYIt7gopEMt6EkBM72QkXx3pwLJJlTrTnXVAytPpGch7O+8a4UDtFADBk1up
-         CH8LBsjwEknlj8uXtnIvjgU1p9oB9lMfIDCOkoAw03JNdJbBYdxwVx99SHYLiezo9jy5
-         kcFWYvnE1LdhG3yU7AY3k1ZupPuP5PySQugt0a57A5rPPAyE0Vz7Bpc54DiivciT0vUP
-         0o756pl2WgLu7xcQPr+4h1aGjZWgrirWpeX7WnWwTfVy3WAkWMup4FFAxfJOgxoexDpI
-         aLOw==
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=XOX2IqknAaArjqQGx6GKDIJgGGPjjoxcTt/z68yUDPw=;
+        b=cSV+qqnafAaK0MSkIAx+J7f+EzTXfKYC0tMLpB5VkLwuMi5fb7GC8JKO7J6w3dPhZD
+         dAirrNAgThK9IwQShZS/yDlzUnmLvxa9Wo0vB36YdftHUsPW8vqvE9A03riGUWrREwmr
+         IsST1Jr9GXCaYb+XNOQEKcv/C2osdjSWU6rGvnaSpgkCKxRORMwzoCu9oJc0I3vUU4lz
+         gQ5leGGpuRE/wgAapDNOpLnIGF7qGwapzB+ASL1JQeTrskPStNqpViJ0orRgAYDYJaXL
+         s3EwHCdkZblwzZ+uAdxsXx8QVQ88OkJrApukaRLEJbNt1UrYrTqYmvqZvoDMOgdK3JGf
+         qKoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761387214; x=1761992014;
+        d=1e100.net; s=20230601; t=1761387534; x=1761992334;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9PtPsexDpDiFXe6bvXUwGadaGf7cY3dlOxZFz1GquK8=;
-        b=jSELK2/PY1P1+4Ute3stwXBZvS3Y1Oz3LMVweDYxEA9mUb+JVEyOePK9uuqvu7z6u/
-         F4kI+MuLxqVaDWClvMoFw3gUGpqpoysUiYFIfG/JIkdtJieEO6ood4Pcym1y6GzhYLep
-         uMWW1bIwgYl69LdeVcb7S81cf7Owd426ZiII78vjvicuqU5zkRynyeDnHbnT3xL6iPKv
-         so3cegVxD4ctQNgewNbcSQ4/dROKil6lkWkoobKLo/Edd9Y2JQ+NHY6R3aVArHXN6vFr
-         khqJLiUA9mYu9b19/gKlKltJf5mt90uBpp0Q1SMyDGhqXXvfyHcuesf2PNuUtly9bAs+
-         cBsQ==
-X-Gm-Message-State: AOJu0Yy6k/Z8vrRYaNySbR9t1/fpmraXZQ+4E6AjkvPug+qK/Tqd7JE2
-	NenjT7lZeObWKxZ/QKxxEXGGD6ylq35Vbg5HhZOwn7Iamgg76VzAOGiOBxS3YRD7OCs=
-X-Gm-Gg: ASbGncvfW/tUD3UuVniVJMkjEfip3+Y+z9UPqYStUUSATZWrp+r8Xo8qy6Tl6nd1XFX
-	xDPVPsMZXqqccrR1us76juGf8sk8ZUZ/qJIPsi4UCyiJcJi/xAsiYJ4gmggs0xdJNzLBe8OE4az
-	uoJq/0wAUaslpoqqpTUentIWUA8TsZ9xVYdgGHz7XFMzrzym1Lft2/0mM/ll4HcTXS9t+RhF5dk
-	9yawt8rTvs/5oPFs8eOHXs3TOStlDefOelkiujK/dty7XWLX+RUGArcMl2nmoBz8ofaU2PkJF6t
-	UtkB4RY9KfinkaaSPtOlwZqEq63ZkEhy4FNNeykjqtDa5wGqAcbHtyNCAlN6itX9k9sd3s306MG
-	1cme9rso1TPq84TGKpf5Y1Bvy+5rB8mSBCTGzECTUTmwLsR9ebR/E0VZi0yLqnPloPgiUUwAVA4
-	r38XRJvCcB3D7n6/qOsvPLSUulPYlCsi5KhwhdRPo=
-X-Google-Smtp-Source: AGHT+IHJYhhAB98ygsyvpxZ4Q7D8SToFy9rFnyfTSxKbc6zRFxwpSVGA7ABW+SJh7DeencBNdAEA9A==
-X-Received: by 2002:a05:600c:3b0c:b0:471:669:ec1f with SMTP id 5b1f17b1804b1-471178785e1mr246763685e9.8.1761387213804;
-        Sat, 25 Oct 2025 03:13:33 -0700 (PDT)
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XOX2IqknAaArjqQGx6GKDIJgGGPjjoxcTt/z68yUDPw=;
+        b=q4P3NYmUMi1PWLr9QCa9tA7OEN2/259kS9r4Kn3wSwXCwJn0bfLtLvmi9/KHjCKMBz
+         hGkRfuiUB9VGolBvchJHw39ZS+ypWvn7dKnJIDUukoG/HtLkY5XTBxX+We0WeMLb042f
+         efV1/DYv8avjmF0fprFk2TKSZhXQL+wIFsGV45rbc8RIxY/TO+y5gkh5F4aRmu+sQ7H3
+         JAjOrXThfYogMAbCEdy8TEVOWA8b+CeE3hXAUWKT8fF933TOFTjYqsCptszuxLe5hZ08
+         JGViViudqPbT1O4lKP2q7P4luLJOBFqPG/EH+nUbYKxjt8hSugAtaJzUDVxoYd8PWh4K
+         iLSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVDXaFkaNxW76j/esCtwhubxDOdzJWe90c++igXULLvg36OG4exB7YDjMSLwJGe9JtAlF8Mj+nxogsoiQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzoObRchVIWa6vILT0D7vCNph/wgUHzr+/zbUa+aH3OADAPcJ5j
+	ZoqPeJ0ntzg3K8IRA/E6kNtpdjp3Bxbqyd5WPBGkCTDXnDf3ly4IPF5rR1VkOcA/ZPHjpa/ep1p
+	KeThP
+X-Gm-Gg: ASbGncuzHlomFfSbtgxjbzQGrFMh1THZL84Sa64K0ypI3AweArnr7aHs/SmZvg2rcg/
+	YiSiEFJ94FbqGLbnEZCKsoV/CfAtlz0Z2hM6Y//cP53BwZwjWVs2oosVTClggcxfIs8QdwqGSIb
+	HplUIawHSYUS6n9bZ2DfQM4FDjn+2D5iQ4VcNw0XuY1zDcmav6Kwmd9MKRmcA3tonMwyCVrBHl+
+	Zh+QrHGt0dOyA7Npmb8Z85hDsIk+a0o8UT1sw4ylPt36TNR7zGSdJ1KFgVI4h+uFnz2lhw7EEn5
+	QUNgRK8EflJ4jAtdnFM52pitAPeqC7t3OEFoJRgoJEdTo34SoXHeX6aiyVjf0yTkH/az4Alc+3s
+	0tUP8gXk7oBr63UOL2WCIDHGJDQiA4S4hEwwMAKw4KFiWxl8YwUQUvoxpQ4dskn8em38uQwel1Z
+	S7MNT/jQcZFul2qBAlKLd5MXde2Dq0zvdCmMUcvk81PevfX6wZ9A==
+X-Google-Smtp-Source: AGHT+IEETx4TGaug7rYlzE4I9daVbUimK2DPddVar2i0/lX80E/LbLSAjKxJiW8BPKZ46AEoCN99GQ==
+X-Received: by 2002:a05:600c:3553:b0:471:a73:a9d2 with SMTP id 5b1f17b1804b1-471178a6484mr233038665e9.11.1761387534457;
+        Sat, 25 Oct 2025 03:18:54 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498e44262sm18560465ad.102.2025.10.25.03.13.30
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498d0a329sm18834215ad.36.2025.10.25.03.18.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Oct 2025 03:13:33 -0700 (PDT)
-Message-ID: <bb46518c-9836-4bd2-8142-fbb8c859fd3f@suse.com>
-Date: Sat, 25 Oct 2025 20:43:29 +1030
+        Sat, 25 Oct 2025 03:18:53 -0700 (PDT)
+Message-ID: <5f6ba77e-6550-4bf0-97a3-65471de27b4c@suse.com>
+Date: Sat, 25 Oct 2025 20:48:50 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -83,11 +85,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] generic: test fsync of directory after renaming new
- symlink
-To: fdmanana@kernel.org, fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <54585ed26988fb88be1eab8211aa383a5e7cbd19.1761306683.git.fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: set inode flag BTRFS_INODE_COPY_EVERYTHING when
+ logging new name
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cf3df42390ff83be421dcdc375d072716a67d561.1761306236.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -114,117 +115,86 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <54585ed26988fb88be1eab8211aa383a5e7cbd19.1761306683.git.fdmanana@suse.com>
+In-Reply-To: <cf3df42390ff83be421dcdc375d072716a67d561.1761306236.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/10/24 22:23, fdmanana@kernel.org 写道:
+在 2025/10/24 22:22, fdmanana@kernel.org 写道:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> Test that if we fsync a directory that has a new symlink, then rename the
-> symlink and fsync again the directory, after a power failure the symlink
-> exists with the new name and not the old one.
+> If we are logging a new name make sure our inode has the runtime flag
+> BTRFS_INODE_COPY_EVERYTHING set so that at btrfs_log_inode() we will find
+> new inode refs/extrefs in the subvolume tree and copy them into the log
+> tree.
 > 
-> This is to exercise a bug in btrfs where we ended up not persisting the
-> new name of the symlink. That is fixed by a kernel patch that has the
-> following subject:
+> We are currently doing it when adding a new link but we are missing it
+> when renaming.
 > 
->   "btrfs: set inode flag BTRFS_INODE_COPY_EVERYTHING when logging new name"
+> An example where this makes a new name not persisted:
 > 
+>    1) create symlink with name foo in directory A
+>    2) fsync directory A, which persists the symlink
+>    3) rename the symlink from foo to bar
+>    4) fsync directory A to persist the new symlink name
+> 
+> Step 4 isn't working correctly as it's not logging the new name and also
+> leaving the old inode ref in the log tree, so after a power failure the
+> symlink still has the old name of "foo". This is because when we first
+> fsync directoy A we log the symlink's inode (as it's a new entry) and at
+> btrfs_log_inode() we set the log mode to LOG_INODE_ALL and then because
+> we are using that mode and the inode has the runtime flag
+> BTRFS_INODE_NEEDS_FULL_SYNC set, we clear that flag as well as the flag
+> BTRFS_INODE_COPY_EVERYTHING. That means the next time we log the inode,
+> during the rename through the call to btrfs_log_new_name() (calling
+> btrfs_log_inode_parent() and then btrfs_log_inode()), we will not search
+> the subvolume tree for new refs/extrefs and jump directory to the
+> 'log_extents' label.
+> 
+> Fix this by making sure we set BTRFS_INODE_COPY_EVERYTHING on an inode
+> when we are about to log a new name. A test case for fstests will follow
+> soon.
+> 
+> Reported-by: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
+> Link: https://lore.kernel.org/linux-btrfs/ac949c74-90c2-4b9a-b7fd-1ffc5c3175c7@gmail.com/
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->   tests/generic/779     | 60 +++++++++++++++++++++++++++++++++++++++++++
->   tests/generic/779.out |  2 ++
->   2 files changed, 62 insertions(+)
->   create mode 100755 tests/generic/779
->   create mode 100644 tests/generic/779.out
-> 
-> diff --git a/tests/generic/779 b/tests/generic/779
-> new file mode 100755
-> index 00000000..40d1a86c
-> --- /dev/null
-> +++ b/tests/generic/779
-> @@ -0,0 +1,60 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
-> +#
-> +# FS QA Test 779
-> +#
-> +# Test that if we fsync a directory that has a new symlink, then rename the
-> +# symlink and fsync again the directory, after a power failure the symlink
-> +# exists with the new name and not the old one.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick log
-> +
-> +_cleanup()
-> +{
-> +	_cleanup_flakey
-> +	cd /
-> +	rm -r -f $tmp.*
-> +}
-> +
-> +. ./common/dmflakey
-> +
-> +_require_scratch
-> +_require_symlinks
-> +_require_dm_target flakey
-> +
-> +[ "$FSTYP" = "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
-> +	"btrfs: set inode flag BTRFS_INODE_COPY_EVERYTHING when logging new name"
-> +
-> +rm -f $seqres.full
-
-Looks like a rouge command?
-
-
-Otherwise looks good to me.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
+> ---
+>   fs/btrfs/inode.c    | 1 -
+>   fs/btrfs/tree-log.c | 3 +++
+>   2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 79732756b87f..03e9c3ac20ed 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -6885,7 +6885,6 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
+>   	BTRFS_I(inode)->dir_index = 0ULL;
+>   	inode_inc_iversion(inode);
+>   	inode_set_ctime_current(inode);
+> -	set_bit(BTRFS_INODE_COPY_EVERYTHING, &BTRFS_I(inode)->runtime_flags);
+>   
+>   	ret = btrfs_add_link(trans, BTRFS_I(dir), BTRFS_I(inode),
+>   			     &fname.disk_name, 1, index);
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 65079eb651da..8dfd504b37ae 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -7905,6 +7905,9 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+>   	bool log_pinned = false;
+>   	int ret;
+>   
+> +	/* The inode has a new name (ref/extref), so make sure we log it. */
+> +	set_bit(BTRFS_INODE_COPY_EVERYTHING, &inode->runtime_flags);
 > +
-> +_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
-> +_require_metadata_journaling $SCRATCH_DEV
-> +_init_flakey
-> +_mount_flakey
-> +
-> +# Create our test dir and add a symlink inside it.
-> +mkdir $SCRATCH_MNT/dir
-> +ln -s foobar $SCRATCH_MNT/dir/old-slink
-> +
-> +# Fsync the test dir, should persist the symlink.
-> +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir
-> +
-> +# Rename the symlink and fsync the directory. It should persist the new symlink
-> +# name.
-> +mv $SCRATCH_MNT/dir/old-slink $SCRATCH_MNT/dir/new-slink
-> +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir
-> +
-> +# Simulate a power failure and then mount again the filesystem to replay the
-> +# journal/log.
-> +_flakey_drop_and_remount
-> +
-> +# Check that the symlink exists with the new name and has the correct content.
-> +[ -L $SCRATCH_MNT/dir/new-slink ] || echo "symlink dir/new-slink not found"
-> +echo "symlink content: $(readlink $SCRATCH_MNT/dir/new-slink)"
-> +
-> +_unmount_flakey
-> +
-> +# success, all done
-> +_exit 0
-> diff --git a/tests/generic/779.out b/tests/generic/779.out
-> new file mode 100644
-> index 00000000..c595cd01
-> --- /dev/null
-> +++ b/tests/generic/779.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 779
-> +symlink content: foobar
+>   	btrfs_init_log_ctx(&ctx, inode);
+>   	ctx.logging_new_name = true;
+>   
 
 
