@@ -1,269 +1,150 @@
-Return-Path: <linux-btrfs+bounces-18346-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18347-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A3B2C0B53C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Oct 2025 23:11:40 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCB19C0B7BC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Oct 2025 00:47:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9E7C3AEE6B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Oct 2025 22:11:38 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A46CD4E48DB
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Oct 2025 23:46:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D662FDC3F;
-	Sun, 26 Oct 2025 22:11:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EA161EA7CB;
+	Sun, 26 Oct 2025 23:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=archworks.co header.i=@archworks.co header.b="bm3ldyMW"
+	dkim=pass (2048-bit key) header.d=verizon.net header.i=@verizon.net header.b="uAo9HCuj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from relay.archworks.co (relay.archworks.co [65.21.53.234])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sonic310-22.consmr.mail.gq1.yahoo.com (sonic310-22.consmr.mail.gq1.yahoo.com [98.137.69.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E782D9492
-	for <linux-btrfs@vger.kernel.org>; Sun, 26 Oct 2025 22:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.21.53.234
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1715330146F
+	for <linux-btrfs@vger.kernel.org>; Sun, 26 Oct 2025 23:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=98.137.69.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761516685; cv=none; b=kXkmdlJ8FZg/wsZlTWbvtMH4CC3gwjaAcBbWIgby8SScRZQTMD76hRlGaN0JfhPfx3OzjHF0c6Q9uGLyCMjJlxnDZegisd7ZjGDfQehEbufXzITidFe6xH20vqHvzXBXjP4tTbd5tSPkg6pSlBIJZ04DADGB5daIq5dU0byu+zo=
+	t=1761522368; cv=none; b=Bt8TSZMT2ndzMuoAaUmJUhF73soLBX9a+fO/kCvclTO3c8fSl1fJ/jm/02/LRGxU6vKGkauUqinDcMPu3d8rqmiXaezCOROwQRVMt1AtaJ3WbGHSWQkeKS83wAQ09zOpHNoowGI3veaTOqNwbMgGO3cAwzJ5Z8VIbsTTw//9nEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761516685; c=relaxed/simple;
-	bh=ALWMSALRs5zwFhJeFUg9R/QkRKD+s2Yu6jUDxq2ldGU=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=iEAO4yvnxmLbdZMrAGESOcNFhaoWug9CnILq28nsO9MZUx5sVmj9ceFeJmwwQKm6BqHTXow3VVNZArQSYdelCiZCAIH0zItKRsxstVHHNNryrU4wfGD6SX5eN05vXnx+k6wg7ZbXkD/FcEbpom7xYo0lU6fS6Zl4nwyZ4w81AV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=archworks.co; spf=pass smtp.mailfrom=archworks.co; dkim=pass (1024-bit key) header.d=archworks.co header.i=@archworks.co header.b=bm3ldyMW; arc=none smtp.client-ip=65.21.53.234
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=archworks.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archworks.co
-Received: from [192.168.1.102] (mob-194-230-148-21.cgn.sunrise.net [194.230.148.21])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange x25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: norbert.morawski@archworks.co)
-	by relay.archworks.co (Postfix) with ESMTPSA id 02A513A8578
-	for <linux-btrfs@vger.kernel.org>; Sun, 26 Oct 2025 23:11:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=archworks.co; s=k2;
-	t=1761516681; bh=ALWMSALRs5zwFhJeFUg9R/QkRKD+s2Yu6jUDxq2ldGU=;
-	h=Date:Subject:From:To:References:In-Reply-To;
-	b=bm3ldyMWvIfu6oU6qJ+xC6k5DHNnvyONKl5zuhTv5DAZcfPq8EmvtO0jyy1UuSlGt
-	 zc+kvBGdpg2lFkCDFfyJH6DUx0001eyd8S+Pez8tBdPs68iX4WL7251YowIwaF5bKS
-	 MiK/TU1jreTEQq4JedsyBGqlBzBOnoXCg0Sha+2w=
-Message-ID: <1b92814d-bd60-4a0e-b69b-cd8101316822@archworks.co>
-Date: Sun, 26 Oct 2025 23:11:18 +0100
+	s=arc-20240116; t=1761522368; c=relaxed/simple;
+	bh=ISvk7d0+1cvZJK22GHYwdZWnPgl4yZ33dEnmpBMp/yw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=PAkGqlx4KkBAXyNkiFBwrb+f/epToRbh9eYseZtdVk9+y6MjKNjgKUvMPMXdZAylZ2MmRZBMsE0/+joqnt9QDS4nP+y/qLdeKn2fcJQhtNW1Bd7MOlo+beVfozP7tkN+bnkd8sLftfhSXXE4kCn9iJOkT3cc9emYMHQ7boO3PWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=verizon.net; spf=pass smtp.mailfrom=verizon.net; dkim=pass (2048-bit key) header.d=verizon.net header.i=@verizon.net header.b=uAo9HCuj; arc=none smtp.client-ip=98.137.69.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=verizon.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=verizon.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=verizon.net; s=a2048; t=1761522361; bh=/ImI5s2JAuKfhDTU5/zpFGCUAiqL+gSAFz+PIrG3x0I=; h=Date:Subject:To:References:From:In-Reply-To:From:Subject:Reply-To; b=uAo9HCuj56j2SglbQE/kUuODcVrIoEOu4A4H/iCYN/hRWk6oAH0uaP7G6CcQ+zWHCXFObZGlhveF23x7mAFsJUNuqwOQJ2Tmiep0VoTfmjqx6xOHvF6I9zmW7wgWGi0kUkMqYtpnfRog3UzsfsJTPVRW3zL7mJW6FEEWq5/jOIQ/AYRwqJCdiHOGd72nDioYJyV2O0T/TOY0VlSEUkNnS7V3PCBD5RCdpJngAvlz7PM43N+HTDHFUOpYaVabMmSzBH3Pc3QA5RmClG8sV5V/UNMpT3YmK1UCcq4m8nndqUP/C/W2rDgAp3gtIokveE/hjOxIa2TJLBl+ivganpLFRw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1761522361; bh=3Z3z1QVY4zr+XLM6pT0eVUogzZLvpqcQqw/CH1UEwqH=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=NyaDNVGGg8ZN07FvW0ZpeH1XCgIstkATzBSBJiIPmlCKOhJqgJN1023IsrvzHo3viGu3TkVaTvOEq07roVZzF0j+ldBioB40QMqWQkrD6JxJjsmbzlX31WHd2qP2QOuRH3+YWtH3RG2XXYzX7Eq84QeDoBWbPtOQz12N5RiYjb0uW73uABeW45hIGfz1bH2zJE81nq6cDIFiGu7GZaf9b/OMn0tP9gfgqywJjB26AHxM7DjLhkxGAk2xHd+HXR0yDM4BIVhCXVYEWTZdzN9NzJA673/mwbnjl3wIcjh12xSdoWF3qL0lv9B+s9uVcLopvpyJh5qkVnb8aN0CCVqZGg==
+X-YMail-OSG: fs7pa3wVM1lKS7RlV27vB8iVR39F0UkzqQbZsye9Wn6kJ54NW.RegW9A9uyYWfb
+ BROYYPeo4t4V01PQJOPU6uiSBqsNOcSw_9ZuviMXbLH_Kngezifq.jJriIBFYcatOZmFNxwaGRbu
+ vKyX.N2z0WhdgRn63qkckecLFbo8V2cyAuSSz78ExG3BwbzucfOHqYsCltliRgZW_Sf9mRJRC7Yk
+ 3qzSwmQfYGO6V5guU90MJLld6iOyh7QWGpwjrqP5sFwFZXzmQqRDgqVS8BTxG6gDr2XxSqnMpYeN
+ IBQ4UjZp6FEaL_voQCpHAoKGaHBAPZ3pTP2pulg5mmebHNYcE6K9_5MF3AMV_xmrvlewU11Wmw3e
+ 2IzcVXsN1AojHO0nHuiQgtowrkovLzFXNtn4IoB8GTO13pyJrEfdv9BCT3SM1CEFOCAVpoYNvRVE
+ F78Fap.xqzbPWehNGkACFJL3C6ZmhgM7E6QHsxgp0u0y.y03Fl2mNn6ARODev9Hr5yM1KYm6C5t2
+ .ZeDPu89Ucp17CazO9a2d0.3XrLk2H2UCPPXnbZKlK1IY9W13ME1kJX1yMxD6CELHfyV00cKN5QA
+ fnf3lbdK4y.U35O4fIHGxvmCEKB_Uu7G4UFUEENTjunVfVIItZ0jET4IzZ4vn8xnK2w_AdHG4qgw
+ 7iid2rtERfrev0cZV0Xl6UAVjRsoOVZJOoSTTB_M2rLGEf8ZTypUxHTDQlyiv7JRc66Xl0Ceo_c.
+ sD16QWStCdy70DqKu3w7KoUYayGzVmewIubZOsEdF3Nlzg2CekQJfiGplxWxCuu0ZUzC0q6kLbYi
+ sOxy3By2g07LQFuxlzwa.7s3jOLHKDgAmxUFhzFGd3_fmRxVuQEa82msqynE3ScnWBpxsd.7apG2
+ Ox3k3izds092BItE8rgyV6Sfmar3YBODpWIbFd8i01mdSF.mZs.v2J4zydGqbOtHh5yBmjdq._Yw
+ XjloCfFOom4xdgLdCNXrl5DxD5ohEClWDKV_gkC9jacvRJIwXhNpK.6d.SN0Szw5_ZMaS9cp_3GM
+ IWLz8ugnmMVLn3hQvCW7Dn4QKB0wU6WN0oQd5kFk8AqoY7Q3OR_OgNmNHrOx9_TRwxoO44eud9my
+ c5Z1z9_2fxHkuHiNxqtWdydT979Zi5Kz2DA8BET_PQJHC6I5.tz3Dvy3EKN_OcFaHSE8xs4nYM9v
+ G7SfeGGE1I.aJUdyFpXPstH0PJ1Hceb48UNI9q3Wc7LZTQWzLbK2x4XwBfKdF3PkLT7x4rD7UGgR
+ yq68QnGzyNaqLrCvWtnK.K0cMD77HVZqOkVoWWJA0ve79tfhwSgbTWM6jxsOCvg.hLFpKDgeMeoj
+ M3ImRfpiT15zJUJJW5Y6ZiKd2NEt6GCOPPYERxBYXuy7vwD0rkAD0SER8p0laAwkSQAV49E680Qi
+ qbkf4u_X7h3wLeXIMm4hzL4nzqNuLPDhJCXHR7Xh.GwGG.7QgFziQO7y8Tjhof7MGps9nEb7U_h3
+ aKq1jOoLUWxXejSeikGb0RdFUCuYBV3RKsJR0wKVEmM.NS0qw2NJrNKNa2gBpexTA_Zf5N1jdptD
+ AQ11Jpd95GQb2T_FAaFuQcFAKkyo0w6HXIFMbwUQSwwWK9E4JaDIOyllkugcnlLf48dwP3yYszLz
+ rvolZmi24Kr.XGOzqUYukORBlSgOaY_1Y2liWaab.CNJNoyoLkZsSncmFxQRXK55igZ33zlsrlH5
+ odxBPcRu1gp7EFZjYgOJp.G77TqKme3hgWxDzrRDts.FYdcga.pJKzsdqyxt6GYMFvVrtIH3W.E.
+ xBlyCl..SBMbQMuCtH4DQGDKc7YSKUOHswzY_Z3B3Mye0e_U1w8P.vj7TyN_yi4lJLG_vy.AcQzj
+ S50uVrLPNkkrMenwtc68NuL4rhjyGu8neJvB4m28OPi6N7e5lGfZB03gfk4tjkDfyLI3AKbwRBqL
+ veFMTJDUBUypGPR6EyjA_hsHHbqLv4AvR4s5bitcYcnFwj8n5ZNZTcY8K6xTsGPs3azRlhwUlkLr
+ kBFYZ9m4sEzxH.rJ4JjKfHobbyhBULHKCrC3peNHJsU67P9sPCQXHUlubVVFBUxgEcO.ihL2Vgxt
+ 0M4cTt845.UuHDJhcfUk8uDgLSy_1qVbgiuTrw6bSohbHTR8viUnFUPDuSNP7Wg77AcAnmnmws1B
+ cUTa8SoeLWQCojIAA2fTsCFBECZmUX.w97mJNMD69TXD49NqHOgvrnTebshiR8xFd7HQjRCtY.6O
+ LYePJrskDtXmdKdDICEEFaquireUd9yRPbOboGdXvBjJeQa5pve.De4KzolDOVNJFLtY-
+X-Sonic-MF: <brent.belisle@verizon.net>
+X-Sonic-ID: 5772356f-2332-46d8-a6a1-7bc5172b55db
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.gq1.yahoo.com with HTTP; Sun, 26 Oct 2025 23:46:01 +0000
+Received: by hermes--production-ne1-56478d9679-fzvtf (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID abbfe5818a2d1651acc82b8b5412913e;
+          Sun, 26 Oct 2025 23:05:32 +0000 (UTC)
+Message-ID: <b02f8d58-8c31-40c3-81f2-5b4cb4e9d253@verizon.net>
+Date: Sun, 26 Oct 2025 18:05:30 -0500
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [btrfs] ENOSPC during convert to RAID6/RAID1C4 -> forced RO
-Content-Language: de-AT, en-US
-From: Sandwich <sandwich@archworks.co>
-To: linux-btrfs@vger.kernel.org
-References: <e03530c5-6af9-4f7a-9205-21d41dc092e5@archworks.co>
- <05308285-7660-4d9c-b1d5-0b59cf4f1986@archworks.co>
-In-Reply-To: <05308285-7660-4d9c-b1d5-0b59cf4f1986@archworks.co>
+User-Agent: Betterbird (Linux)
+Subject: Re: Strange btrfs error
+To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <c01bd806-9490-454b-b29d-61e5911b2483.ref@verizon.net>
+ <c01bd806-9490-454b-b29d-61e5911b2483@verizon.net>
+ <0725451c-7354-4ac2-9bd5-e0487feb77c7@suse.com>
+ <da6943fe-5f4a-40e1-81cc-35bdacfb3683@suse.com>
+Content-Language: en-US
+From: Brent Belisle <brent.belisle@verizon.net>
+In-Reply-To: <da6943fe-5f4a-40e1-81cc-35bdacfb3683@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Mailer: WebService/1.1.24652 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.aol
 
-I have just retested it on latest ArchLinux kernel 6.17.4 and 6.17 progs with the same errors and issue.
+Thank you for the update.  Since it is no issue I'll just wait for the 
+kernel to be updated.
 
-On 10/26/25 10:37 PM, Sandwich wrote:
->  hi,
+Brent
+
+
+On 10/26/25 04:21PM, Qu Wenruo wrote:
 >
-> i hit an ENOSPC corner case converting a 6-disk btrfs from data=single to data=raid6 and metadata/system=raid1c4. after the failure, canceling the balance forces the fs read-only. there's plenty of unallocated space overall, but metadata reports "full" and delayed refs fail. attempts to add another (empty) device also immediately flip the fs to RO and the add does not proceed.
 >
-> i am aware RAID56 is not recommended.
+> 在 2025/10/27 07:46, Qu Wenruo 写道:
+>>
+>>
+>> 在 2025/10/27 00:59, Brent Belisle 写道:
+>>> when I run a btrfs check on my file system using btrfs-progs 6.17-1 
+>>> I receive the following error "we have a spare info key for a block 
+>>> group that doesn't exist" , however when I do the same btrfs check 
+>>> using btrfs-progs 6.16-2 the operation completes and says "no 
+>>> errors".  Is this just a bug or has btrfs-progs 6.17-1 really found 
+>>> an error in my filesystem?
+>>
+>> It's a known minor (aka doesn't really affect end users) bug in older 
+>> mkfs, and the ability to detect is added in commit e2cf6a03796b 
+>> ("btrfs- progs: use btrfs_lookup_block_group() in 
+>> check_free_space_tree()"), introduced in v6.16.1.
+>>
+>> You don't need to repair (no repair support in btrfs-check yet) nor 
+>> bother too much.
+>> There will be a kernel fix that will automatically repair this on 
+>> mount soon.
+>>
+>> If you really want that minor problem to be gone as soon as possible, 
+>> you can rebuild your free space tree by mounting with "-o 
+>> free_space_tree,clear_cache",
 >
-> how the filesystem grew:
-> i started with two disks, created btrfs (data=single), and filled it. i added two more disks and filled it again. after adding the final two disks i attempted the conversion to data=raid6 with metadata/system=raid1c4—that conversion is what triggered ENOSPC and the current RO behavior. when the convert began, usage was about 51 TiB used out of ~118 TiB total device size.
+> My bad, the free_space_tree mount option is no longer there (but still 
+> in the man page).
 >
-> environment during the incident:
+> The correct one should be "-o space_cache=v2,clear_cache".
 >
-> ```
-> uname -r: 6.14.11-4-pve
-> btrfs --version: btrfs-progs v6.14
-> quotas: off
-> unclean shutdowns: none
-> disks: 2×20 TB (~18.19 TiB) + 4×18 TB (~16.37 TiB)
-> ```
+> Will update the docs soon.
 >
-> operation that started it:
+> Thanks,
+> Qu
 >
-> ```
-> btrfs balance start -v -dconvert=raid6 -mconvert=raid1c4 -sconvert=raid1c4 /mnt/Data --force
-> ```
->
-> current state:
-> i can mount read-write only with `-o skip_balance`. running `btrfs balance cancel` immediately forces RO. mixed profiles remain (data=single+raid6, metadata=raid1+raid1c4, system=raid1+raid1c4). i tried clearing the free-space cache, afterward the free-space tree could not be rebuilt and subsequent operations hit backref errors (details below). adding a new device also forces RO and fails.
->
-> FS Info:
->
-> ```
-> # btrfs fi df /mnt/Data
-> Data, single:   total=46.78TiB, used=44.72TiB
-> Data, RAID6:    total=4.35TiB,  used=4.29TiB
-> System, RAID1:  total=8.00MiB,  used=5.22MiB
-> System, RAID1C4: total=32.00MiB, used=352.00KiB
-> Metadata, RAID1: total=56.00GiB, used=50.54GiB
-> Metadata, RAID1C4: total=10.00GiB, used=9.97GiB
-> ```
->
-> ```
-> # btrfs fi usage -T /mnt/Data
-> Device size:       118.24TiB
-> Device allocated:   53.46TiB
-> Device unallocated: 64.78TiB
-> Used:               51.29TiB
-> Free (estimated):   64.20TiB (min: 18.26TiB)
-> Free (statfs, df):  33.20TiB
-> Data ratio:          1.04
-> Metadata ratio:      2.33
-> Multiple profiles:   yes (data, metadata, system)
-> ```
->
-> ```
-> # btrfs filesystem show /mnt/Data
-> Label: 'Data'  uuid: 7aa7fdb3-b3de-421c-bc86-daba55fc46f6
-> Total devices 6  FS bytes used 49.07TiB
-> devid 1 size 18.19TiB used 16.23TiB path /dev/sdf
-> devid 2 size 18.19TiB used 16.23TiB path /dev/sdg
-> devid 3 size 16.37TiB used 14.54TiB path /dev/sdc
-> devid 4 size 16.37TiB used  4.25TiB path /dev/sdb
-> devid 5 size 16.37TiB used  1.10TiB path /dev/sdd
-> devid 6 size 16.37TiB used  1.10TiB path /dev/sde
-> ```
-> initial dmesg at first failure (before cache clear):
->
-> ```
-> Oct 26 15:25:39 anthem kernel: BTRFS info (device sdf state A): space_info DATA has 68817772544 free, is not full
-> Oct 26 15:25:39 anthem kernel: BTRFS info (device sdf state A): space_info total=56215761584128, used=53883609358336, pinned=1023410176, reserved=0, may_use=0, readonly=2262311043072 zone_unusable=0
-> Oct 26 15:25:39 anthem kernel: BTRFS info (device sdf state A): space_info METADATA has 4869275648 free, is full
-> Oct 26 15:25:39 anthem kernel: BTRFS info (device sdf state A): space_info total=70866960384, used=64968261632, pinned=33210368, reserved=5832704, may_use=990248960, readonly=131072 zone_unusable=0
-> Oct 26 15:25:39 anthem kernel: BTRFS info (device sdf state A): space_info SYSTEM has 35307520 free, is not full
-> Oct 26 15:25:39 anthem kernel: BTRFS info (device sdf state A): space_info total=41943040, used=5832704, pinned=802816, reserved=0, may_use=0, readonly=0 zone_unusable=0
-> Oct 26 15:25:39 anthem kernel: BTRFS info (device sdf state A): global_block_rsv: size 536870912 reserved 536870912
-> Oct 26 15:25:39 anthem kernel: BTRFS info (device sdf state A): trans_block_rsv: size 0 reserved 0
-> Oct 26 15:25:39 anthem kernel: BTRFS info (device sdf state A): chunk_block_rsv: size 0 reserved 0
-> Oct 26 15:25:39 anthem kernel: BTRFS info (device sdf state A): delayed_block_rsv: size 0 reserved 0
-> Oct 26 15:25:39 anthem kernel: BTRFS info (device sdf state A): delayed_refs_rsv: size 453378048 reserved 453378048
-> Oct 26 15:25:39 anthem kernel: BTRFS: error (device sdf state A) in __btrfs_free_extent:3211: errno=-28 No space left
-> Oct 26 15:25:39 anthem kernel: BTRFS info (device sdf state EA): forced readonly
-> Oct 26 15:25:39 anthem kernel: BTRFS error (device sdf state EA): failed to run delayed ref for logical 72899131047936 num_bytes 16384 type 176 action 2 ref_mod 1: -28
-> Oct 26 15:25:39 anthem kernel: BTRFS: error (device sdf state EA) in btrfs_run_delayed_refs:2160: errno=-28 No space left
-> Oct 26 15:33:16 anthem kernel: BTRFS info (device sdf state EA): last unmount of filesystem 7aa7fdb3-b3de-421c-bc86-daba55fc46f6
-> ```
->
-> later dmesg around ENOSPC/RO:
->
-> ```
-> BTRFS info (device sdf state A): space_info DATA has 9918180220928 free, is not full
-> BTRFS info (device sdf state A): space_info METADATA has 5322637312 free, is full
-> BTRFS: error (device sdf state A) in btrfs_run_delayed_refs:2160: errno=-28 No space left
-> BTRFS info (device sdf state EA): forced readonly
-> BTRFS: error (device sdf state EA) in reset_balance_state:3793: errno=-28 No space left
-> BTRFS info (device sdf state EA): balance: canceled
-> ```
->
-> `btrfs.static check --readonly /dev/sdf` with 6.17 shows backref issues:
->
-> ```
-> ...
-> backpointer mismatch on [81544970633216 16384]
-> owner ref check failed [81544970633216 16384]
-> ref mismatch on [81544977776640 16384] extent item 1, found 0
-> tree extent[81544977776640, 16384] root 10 has no tree block found
-> incorrect global backref count on 81544977776640 found 1 wanted 0
-> ...
-> could not load free space tree: No such file or directory
-> could not load free space tree: No such file or directory
-> could not load free space tree: No such file or directory
-> [5/8] checking fs roots
-> [6/8] checking only csums items (without verifying data)
-> [7/8] checking root refs
-> [8/8] checking quota groups skipped (not enabled on this FS)
-> found 53948588761088 bytes used, error(s) found
-> total csum bytes: 52620712264
-> total tree bytes: 64969162752
-> total fs tree bytes: 6759579648
-> total extent tree bytes: 3808886784
-> btree space waste bytes: 3059147492
-> file data blocks allocated: 53958044786688
->  referenced 56765362577408
-> ```
->
-> full check log:
-> https://pastebin.com/8tJWeBnM
->
-> after clearing the cache, the free-space tree cannot be rebuilt, kernel shows:
->
-> ```
-> BTRFS: error (device sdf state A) in __btrfs_free_extent:3205: errno=-117 Filesystem corrupted
-> BTRFS info (device sdf state EA): forced readonly
-> BTRFS critical (device sdf state EA): unable to find ref byte nr 69983021023232 parent 0 root 10 owner 0 offset 0 slot 9
-> BTRFS error (device sdf state EA): failed to run delayed ref for logical 69983021023232 num_bytes 16384 type 176 action 2 ref_mod 1: -2
-> BTRFS: error (device sdf state EA) in btrfs_run_delayed_refs:2160: errno=-2 No such entry
-> BTRFS: error (device sdf state EA) in reset_balance_state:3793: errno=-2 No such entry
-> BTRFS info (device sdf state EA): balance: canceled
-> ```
->
-> timeline is as follows:
-> first two disks were single and filled, then two more added and filled, then last two added and the convert attempted. usage at convert start was ~51 TiB used of ~118 TiB total.
-> exact command history around the incident:
->
-> ```
-> Sat 25 Oct 2025 18:16:40 CEST  btrfs device add /dev/sdd /mnt/Data
-> Sat 25 Oct 2025 18:18:18 CEST  btrfs device add /dev/sde /mnt/Data
-> Sat 25 Oct 2025 18:18:21 CEST  mount -a
-> Sat 25 Oct 2025 18:19:01 CEST  tmux new-session -s raid6
-> Sat 25 Oct 2025 18:41:17 CEST  btrfs balance start -v -dconvert=raid6 -mconvert=raid1c4 -sconvert=raid1c4 /mnt/Data --force
-> Sat 25 Oct 2025 18:41:22 CEST  btrfs balance status /mnt/Data
-> Sat 25 Oct 2025 18:41:47 CEST  watch btrfs balance status /mnt/Data
-> Sat 25 Oct 2025 18:56:37 CEST  mount -o remount /dev/sdb /mnt/Data
-> Sun 26 Oct 2025 13:50:59 CET   mount -o remount /dev/sde /mnt/Data
-> Sun 26 Oct 2025 13:51:38 CET   mount /dev/sdb /mnt/Data
-> Sun 26 Oct 2025 13:52:33 CET   cd /mnt/Data/
-> Sun 26 Oct 2025 13:59:29 CET   touch /mnt/Data/test
-> Sun 26 Oct 2025 14:40:31 CET   vim /etc/fstab
-> Sun 26 Oct 2025 14:40:31 CET   vim /etc/exports
-> Sun 26 Oct 2025 14:41:05 CET   exportfs -arv
-> Sun 26 Oct 2025 14:44:15 CET   reboot
-> Sun 26 Oct 2025 14:47:27 CET   lsof +D /mnt/Data
-> Sun 26 Oct 2025 14:52:26 CET   mount -o rw,skip_balance,noatime,space_cache=v2 /dev/sdb /mnt/Data
-> Sun 26 Oct 2025 15:01:10 CET   btrfs fi df /mnt/Data
-> Sun 26 Oct 2025 15:04:58 CET   mount -o rw,skip_balance /dev/sdb /mnt/Data
-> Sun 26 Oct 2025 15:08:56 CET   btrfs device add -f /dev/sdh /mnt/Data
-> Sun 26 Oct 2025 15:10:34 CET   btrfs filesystem show /mnt/Data
-> Sun 26 Oct 2025 15:10:55 CET   btrfs rescue zero-log /dev/sdf
-> Sun 26 Oct 2025 15:14:32 CET   umount /mnt/Data
-> Sun 26 Oct 2025 15:23:56 CET   btrfs check --readonly /dev/sdf
-> Sun 26 Oct 2025 15:33:22 CET   btrfs rescue clear-space-cache v2 /dev/sdf
-> Sun 26 Oct 2025 15:53:35 CET   btrfs rescue clear-uuid-tree /dev/sdf
-> Sun 26 Oct 2025 16:12:17 CET   wipefs -af /dev/sdh
-> Sun 26 Oct 2025 16:51:20 CET   mount -o rw,skip_balance LABEL=Data /mnt/Data
-> Sun 26 Oct 2025 16:51:30 CET   btrfs device add -K -f /dev/sdh /mnt/Data
-> Sun 26 Oct 2025 17:04:36 CET   btrfs balance status -v /mnt/Data
-> Sun 26 Oct 2025 17:07:12 CET   umount /mnt/Data
-> Sun 26 Oct 2025 17:13:26 CET   btrfs check --readonly -s 1 /dev/sdb
-> Sun 26 Oct 2025 17:21:36 CET   mount -o rw,skip_balance,clear_cache,noatime LABEL=Data /mnt/Data
-> Sun 26 Oct 2025 18:51:27 CET   btrfs fi usage /mnt/Data
-> Sun 26 Oct 2025 18:59:52 CET   btrfs balance cancel /mnt/Data
-> Sun 26 Oct 2025 19:02:26 CET   touch /mnt/Data/test
-> Sun 26 Oct 2025 19:38:23 CET   wget https://github.com/kdave/btrfs-progs/releases/download/v6.17/btrfs.static
-> Sun 26 Oct 2025 19:40:53 CET   chmod +x btrfs.static
-> Sun 26 Oct 2025 19:41:09 CET   ./btrfs.static
-> Sun 26 Oct 2025 19:41:14 CET   umount -R /mnt/Data
-> Sun 26 Oct 2025 19:42:02 CET   ./btrfs.static check --readonly /dev/sdf
-> Sun 26 Oct 2025 21:16:09 CET   mount -o rw,skip_balance,noatime LABEL=Data /mnt/Data
-> Sun 26 Oct 2025 21:31:22 CET   ./btrfs.static balance cancel /mnt/Data
-> ```
->
-> full incident kernel log:
-> https://pastebin.com/KxP7Xa3g
->
-> i’m looking for a safe recovery path. is there a supported way to unwind or complete the in-flight convert first (for example, freeing metadata space or running a limited balance), or should i avoid that and take a different route? if proceeding is risky, given that there are no `Data,single` chunks on `/dev/sdd` and `/dev/sde`, is it safe to remove those two devices to free room and try again? if that’s reasonable, what exact sequence (device remove/replace vs zeroing; mount options) would you recommend to minimize further damage?
->
-> thanks,
-> sandwich
->
-> —
-> note: this email’s formatting was prepared with the help of an LLM.
+>> which will rebuild the free space tree at the first RW mount, which 
+>> may take some time depending on the fs size.
+>>
+>> Thanks,
+>> Qu
+>>>
+>>> Thanks for looking into this
+>>>
+>>>
+>>
+>>
 >
 
