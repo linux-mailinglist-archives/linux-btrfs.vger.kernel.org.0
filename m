@@ -1,92 +1,99 @@
-Return-Path: <linux-btrfs+bounces-18340-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18341-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1BB7C0A739
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Oct 2025 13:34:18 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1585EC0AA29
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Oct 2025 15:30:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 73B624E5CA2
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Oct 2025 12:34:16 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E71504EB1DA
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Oct 2025 14:29:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D722D877C;
-	Sun, 26 Oct 2025 12:34:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536252E7193;
+	Sun, 26 Oct 2025 14:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=verizon.net header.i=@verizon.net header.b="EcvlvsyD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from sonic310-21.consmr.mail.gq1.yahoo.com (sonic310-21.consmr.mail.gq1.yahoo.com [98.137.69.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751C82D94A7
-	for <linux-btrfs@vger.kernel.org>; Sun, 26 Oct 2025 12:34:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07FA714D29B
+	for <linux-btrfs@vger.kernel.org>; Sun, 26 Oct 2025 14:29:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=98.137.69.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761482047; cv=none; b=TbTGCVGBB+zUecyTH07baXDvPS9ogjWcL1Tg15jT8guJ7gFM9iPk1bHvN6HYoS+WlVk1e/LE0XqlTrGr9wsBuCIRjHPp//ZhP7I1F/017V98BcJXSegxYFLamaIeNJaaASYAsRwaoHrjH9aUpgkmttEiTCnvqP/3LXDt3+EMww0=
+	t=1761488968; cv=none; b=om/E4TxSN0DyaQsAYpGH7qR0+pF3qGgbfPxalqoIG6Y5OGPnvXtJFb6NIeEyB2W7BKxODr14XB9/FSOp1Sab8O2LDsHV9Y0lDS9EAuwrI4t0lN36S8ywO7DNeF9da2OKn86DRLDgYMZdKbJlcaxbDp6S69kLayV/qRetiBJSlL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761482047; c=relaxed/simple;
-	bh=+nxtf7ij0qhU8CI7665GsgAD8dfCp77GIF/U1qMP2YY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=F0qlHJV7CGv6yFg6XdbOKWZ8VZ25CHk3PViGDkUtJGGtpLjHUjdtJv4MqPZ982R3hRfQlY36Ma+2ug3UI1VQIn4tiRyYumA/ZrcXEA95GKX4G4KwIU0yPQNasVEQ/9IY22jYv4B/t45JaqdbbY4GEGhbFURvt5fMvQbuhTnF+hM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-430d4ed5cfcso137827565ab.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 26 Oct 2025 05:34:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761482044; x=1762086844;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YHDblXBsE1UZWs2606MJEfEsqCX/cuuCHll07I2k8ag=;
-        b=CmFat+rOY39GQhkf0C4dCSF+EPEPVUjbM9BfoC1KKW/WuXElY4Ig5rHDr2+GiIGndl
-         IU/F8lcHRRilOzBU+XQc/OrXZUSvIrorF92/WYSp+KgsqjYeZTbOVcRhU6kXDehLGOZ9
-         0vHtwIw4OGxUS+oR3WHuxAlhz26KkFc6qerGBzv4osl/EMWSQLyHHCXTx1PxjgIxPG/B
-         g3Bs/ikafk3PFMSvQWwY9oIfX98dy4awOVW2Kk3lUA+r42SAtvUGV4zROacdCzp0Q4PI
-         cVPc9WtXpGtvoRQoySCeqHUvHyDs6Cv0einJJHNsbzpGgWhLwgpBEZ/1Aeagggv7t9gd
-         ECog==
-X-Forwarded-Encrypted: i=1; AJvYcCUogHyWjc0tKz0PPd4PfR0klWQ7vAIBFtZhXB1bJO/vKYn5oWrKW/WMxeEX6CKV7gPv0mtaT9CsS2aU9w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzaGJZDJpSLqQzQuK4SQdvThNbMDwfp98s4WbFKxTHMYpu4j++X
-	9d8QVmKOjmm9ghY68eViT/8aBo1Gw6jDYWRDorACh00rIzPi6PeGOL8R/o+OzGN4W0oJ5FAiZMg
-	pvXJ59qizJCSMBuWpe24VqfQk66ErFyJKeQ3sh14UtGT3FQku/13wLcI4www=
-X-Google-Smtp-Source: AGHT+IE7q41PXUXRqzY92VxJEzKN0XCUkUwUhi2cB6I9TQqlZB7U86i2EMFdTfVhysfNR5TIQFuUc24TtXOmyd76z1OVLUWYKt3M
+	s=arc-20240116; t=1761488968; c=relaxed/simple;
+	bh=eHV/02Xg3jorl0ZzWZuIYXV3hlGg3X/RFoCqEwUFDBs=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type:
+	 References; b=Bcx610FVlmhHQSh4K+vFcgwQzTodvjCyFXEDWRRivroi/9s5mV8GHvhQqcHyzC0nr8BxV899ZFMOB8kNgewPJ3/eeGI8R6aL9qoqlGnn0iyUkKVxeO9tcF/hJoIrCZAdGjn626BbesCx72FM46zff0/EmwQtYATRvt2+v/lg9cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=verizon.net; spf=pass smtp.mailfrom=verizon.net; dkim=pass (2048-bit key) header.d=verizon.net header.i=@verizon.net header.b=EcvlvsyD; arc=none smtp.client-ip=98.137.69.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=verizon.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=verizon.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=verizon.net; s=a2048; t=1761488960; bh=a6mjxV9OCd9CB4Oq15XrHC5inGfg9VpbMT5a/+S51ik=; h=Date:To:From:Subject:References:From:Subject:Reply-To; b=EcvlvsyDduQQT5Sa20xw2PmpwNnfFRZstzU0kwRdGglKce4i7gOnmM0gqEFxPaPNAdBpMWu0mxkFc0uHZJIxMGMZRmiKthK+sjC21FY48VlDCLngR1TE06FF7KZmrGwQeYhFijEVLRC7vseE8NQ4dJIi5KS3YgWH73UyP2Uy++eTVHbSwEGj0wlBaGU+DlR0htY33SVBckMm4ZMZq0wppmd0IevGjlH6ljJF/Z2H4U5v67zzrBd/d2POcCv1drnGSYKZyguOkm6/WyOy6CWvFc/u/J8zQY+g1edJt/qxm50MQCwKitRWk6B+4JNyujLNY0rblfUbABUYFQ0v0AUNLg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1761488960; bh=riImLemxacu8hdJpFGAsnOW8izpfZ4ZreJY6R3ia0Da=; h=X-Sonic-MF:Date:To:From:Subject:From:Subject; b=YCkLFzMiKoChNbM0ZHz5h5kGYpnhY35f7ttU1Ozz3IPE38257HOwCZ7yGUcxLtzW2mamNp8Hz40VHFsZe1e7b/vrJ3RPdWI1buLuLvJLKMlug0n9My6DNYVdQ1JLs30GApC/kiJW4OlLvNp3oud8fHJoGIIUzfU7gzyQQF5q5QsjJ4XoD8t+BiZrjRRZOsjUVQFwryWkx5YdkBttlsA2nD21ksH+zhXNEh3QI3C72l3cMWSaAAWXQI1ex6Sc5KyC/VT/hzJ9iuWqIfUWB/BGJ6tBv6l+0QSJICX3JKfusPjB2gYVOcK9gAHqUXZPFv1lobmZvpaRBkrV+dXEruh7RA==
+X-YMail-OSG: AXF0Te4VM1l7jYJbv8pbBOWrkc7ld7PA.nMCQ1RwCrQU7P4tMEbVw1ZJ6IDixNg
+ ee1NMqolD8nRT46LpntBNIROU2XD9SvrO6dttGVkPm7n2SIjSqNxyuhv7VEMmuQCl_OT1akhYeZ_
+ _BAiqEM07tN1Ry4aKP2wEFRZ7eHWls6jk7z9IKkxEwrArOFwliHv42cwCK.WMTxf4I31OlWKAte2
+ TdFqWakcgae3ExtBCNSZME1qqIKpITogQwSsaw9OZ58Aj3py0hoHmBCBwb.U1S4dNwWt1F81CP.V
+ 3wqlIxz2ix3zD4BIak3GsSb3Xfj9aMkWTTsQRLhfREtUdTtc0IbFE5LnOjftQ3nsHflrb0KrE.g0
+ MKPV_G8AzWVcA676MQ3akZ82qqJk1.Hhiye.XIpRrpETZjIKrYgaGT1mkKsE4PAFbZpXJXv4l9oo
+ nKQa0FbxjnIyjHK7qz_IbELz9JedJrdVatmKrw7s.EyZDJsmNViWTbN_F8n9_SAJ7gmPTb1sXsRE
+ Cx8.thUjf6UwSp3Sve6H3GZHD20XluoB_tk.zICwK4R5xT6SN4NeR.7MoSX01q.24Ku9AJBgOk.O
+ RIByWc3m_0X6SDnsNVuKxu1y40a7yo2hWfszzMwcfar2oJsv3cJjXhGDl7Y5QoRXrEDAM8Mmn.iR
+ D3dGzuDge0_HkklcHR_mT6FxWzSW3Y2.ghEupvU0yEtJgnYooIzwM1Geh_cMMxiQ2ife_YKDSR_p
+ F3SyRmRr5j3R8FHPeeMn23142UpdLQnxm1wZOVRKWJKmytaFkJpgmIXo_dLGh1h306OGRRpSojTA
+ gQ2ciNlx2UKpOzsCUXn7i_Ecv7r6VgENK7E2HzraqVtRVawYyjLFdHyFd2WEtsPqqUfTMWr03tQ6
+ SK99gWkLmbeQclInEPiH6SV3R0YLJTAsEhHgpfYmgeDvc6momLyuUNUKGVel934YpzJFJlDw2ONM
+ 99U4KUmyMVLlONxvz5hnnn00js.MHU2T3mKA58rc6b87rrxDjHc.itE_WGtw0y0V0zlNouUVxy0.
+ hQitVrNxtlbmTYiMe43bsE2k_XWdV18Z118rQfMXF1Ch9VT00btB.nRkh9zQT5agygLAMer5wOhS
+ N68FEYcWiqQYO2kTmR7mUwx03NZK3ib9BDRCbfxET8ugwb17w4VDBme0UuIHOSYwmm5tDo.wZu_g
+ O4bXxAF3n70Dr5ePKLVFkMnn8aw2xmGcLbFruE5P62h6Rmq.X3Fl7t_rhLqvRzQb8HZcQhru3OiF
+ aW6Mkp5YOjuvW6IbmP7kmtGKFjO9H1IdMVARhyptLxZfzHvzYumG1qTdKQAM9uyKN3OiDUKdPEZu
+ JxON23U9Lr89ib3dqzT1BuN3v5Q224WgNPPXQW8qTgozzoa6M6nUYykgZurS53dVMdU7TPZzRgvA
+ PUnyIr2cNTROaofUCGX.1OaSqcDY9EfDIaaPyTkA3EvRPsAPQ7k5zQuA6RRWt6eb9WHeUQFaBr1T
+ 4NG2HF8palhONaQV0fdwjN8iMM4dldARdmHvxC6UsuAJDGwgZxpN3ztNeKpJdrnaYy7JdqWCtbLj
+ hXvQVTiw0uWfzyaqY8igJtjzd7cnNwzwsEjwLcOGgmM9rGF2239u1chZiRHK2OcmhgyKfB4YTVY9
+ MOOVLPJV4PTt2pqbb1Ph2aSKJxBppnLansCxCe8MB9LYDMtrYax1KqKL_8ctHYPRS32EWa7MDlQI
+ IVcj3gkwLA6DV52texFtCZHNXIWjKPrAEQML.1CmnbZ0MKQYnTPXZw8N9T8FLSXILrjnqxlApnnH
+ JJ1DPYcJCDYBl3BfVu98pBHLUG_GXvWqpmlSz3fg71RMCWPSrWCh95uCWFYsH0uqC7RGfGBMPZO4
+ cI6C4L2_UPcLrwXx.kbU0S6BK2e21SchTOaknOwXtt9jAqgGs3dOVAJCK820THdLeIQJ7.Is0eDo
+ hwQJ6CK5Y_1W0Ln1nMklMfZCATZ2vVvoKi.43suTcMejrFA_KGj9ElbifujTBmkAdKDCMnoGo1T5
+ JEhk_TbhMr5ZWPTtwAnPaJjfP4fGz1AEHRCO7cLBYx4AvaAgL.2YfxNTRE1s6uE_bX4.FLARoab0
+ qteYiGqCK9w.RQjNvNptXZDhNe6CY6rYjxml_hPjXGgfCDyjVutVQeKRHls5AGG4rh84OwaaowjH
+ R5FVwk2R0yS47BR03K442XanMdI.ODKOyHzNvfRQVqBPjNMoCDnVvLBcQYQlAS.xEKoO.NDHa0K9
+ qBIrm1AQyKaIyqBkqjb1k9RlYV_4BLaBLvIYAok_vixU-
+X-Sonic-MF: <brent.belisle@verizon.net>
+X-Sonic-ID: d6de0a74-56da-4e9c-a9ba-8569b3d03008
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.gq1.yahoo.com with HTTP; Sun, 26 Oct 2025 14:29:20 +0000
+Received: by hermes--production-ne1-56478d9679-khlhl (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 5cad2adfc4cd4da86122ed483483c97d;
+          Sun, 26 Oct 2025 14:29:16 +0000 (UTC)
+Message-ID: <c01bd806-9490-454b-b29d-61e5911b2483@verizon.net>
+Date: Sun, 26 Oct 2025 09:29:14 -0500
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:160d:b0:430:ab94:4223 with SMTP id
- e9e14a558f8ab-431ebede78cmr96792685ab.8.1761482043962; Sun, 26 Oct 2025
- 05:34:03 -0700 (PDT)
-Date: Sun, 26 Oct 2025 05:34:03 -0700
-In-Reply-To: <6716f9e2.050a0220.1e4b4d.0068.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68fe153b.050a0220.3344a1.0090.GAE@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in extent_writepage_io
-From: syzbot <syzbot+9295d5153c44d86af0aa@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	loemra.dev@gmail.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Betterbird (Linux)
+Content-Language: en-US
+To: linux-btrfs@vger.kernel.org
+From: Brent Belisle <brent.belisle@verizon.net>
+Subject: Strange btrfs error
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+References: <c01bd806-9490-454b-b29d-61e5911b2483.ref@verizon.net>
+X-Mailer: WebService/1.1.24652 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.aol
 
-syzbot suspects this issue was fixed by commit:
+when I run a btrfs check on my file system using btrfs-progs 6.17-1 I 
+receive the following error "we have a spare info key for a block group 
+that doesn't exist" , however when I do the same btrfs check using 
+btrfs-progs 6.16-2 the operation completes and says "no errors".  Is 
+this just a bug or has btrfs-progs 6.17-1 really found an error in my 
+filesystem?
 
-commit cba7c35fec267188a9708deae857e9116c57497b
-Author: Leo Martins <loemra.dev@gmail.com>
-Date:   Tue Aug 12 23:28:27 2025 +0000
+Thanks for looking into this
 
-    btrfs: move ref-verify under CONFIG_BTRFS_DEBUG
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13ea5614580000
-start commit:   6efbea77b390 Merge tag 'arm64-fixes' of git://git.kernel.o..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=164d2822debd8b0d
-dashboard link: https://syzkaller.appspot.com/bug?extid=9295d5153c44d86af0aa
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15c18c5f980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12186f27980000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: btrfs: move ref-verify under CONFIG_BTRFS_DEBUG
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
