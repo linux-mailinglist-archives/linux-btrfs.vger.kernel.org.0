@@ -1,159 +1,154 @@
-Return-Path: <linux-btrfs+bounces-18342-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18343-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B941C0B0D0
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Oct 2025 20:11:48 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFB78C0B40F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Oct 2025 22:17:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8DA9189D55B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Oct 2025 19:12:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 351734E38A8
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Oct 2025 21:17:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720CD2FDC49;
-	Sun, 26 Oct 2025 19:11:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F8EB273D77;
+	Sun, 26 Oct 2025 21:17:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ASAkaE9m"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 585702798F3
-	for <linux-btrfs@vger.kernel.org>; Sun, 26 Oct 2025 19:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 235B6227EA4
+	for <linux-btrfs@vger.kernel.org>; Sun, 26 Oct 2025 21:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761505893; cv=none; b=gFR8HOtltgjh80Tzx3G37aNTgjmAciGrNEg66xZ3cqqheHwLDGEvHhS3JuU7rguFaKsPuGiC2AJb8aCEXYWW3/Ymfeq0FJEDwgsQjQ9OgdjyZG9xM/TYPrG1JSYdRQ3/pEjzBa2wAPo7PWWiua1mDGcvAtrhObpOm6H3nI3y/EM=
+	t=1761513420; cv=none; b=q+4D5tilimBHG5KykgdAtVX8DX92bYTQVWXuWfsokrS3YwzIkGk8DKBllG4h780HYN+8qs7QA0QwF0E4KkNCyWxLNcDGshq/IQwjM0HepkQY8NdvhNW1gPgT3QJmqmrSvlLNpb0F0Yl82YQ8csge9ZQH9L5g0J8HvfOlxae9aI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761505893; c=relaxed/simple;
-	bh=gB+/H1jHc3kXm0oQn9JJNSxv/rmr/mkFCubhGERWOe0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=l8GwW8TGGNB47yagEjBJf45iXBbAwvDweP/ZKLuO6GIS0LgzOc1m7x0bjecV9qq17mIKlIeSvjivzUppRvkXDHTjCjbzDgvxsm+KQaxkRMKumHZGbx6VrRn7GPYMXF35rugMaQmakkpWzAy97nbstniMfFz7tdkQsuyQMMMQCv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-430d789ee5aso49114535ab.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 26 Oct 2025 12:11:31 -0700 (PDT)
+	s=arc-20240116; t=1761513420; c=relaxed/simple;
+	bh=ljzlyZcuOIgTpxc/jYU3b9Q6LcTJ3SWQDzs1/nSCgBg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=dtAQxW6r7wpkPbfLxW726HTOcM4mLeZh/MxOgR06NliDaq3+H97Egxu6JmGBO5vWFlmdd7LJkxJAF6WLWZPhbfci7HbJOE9/d1xQDSFNA7AwpqRayFBFUk7xXHjt96nyfLYst46+U7sRJ+YfvF4gVEfnbW5ZaN7BtvteZHkVhCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ASAkaE9m; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-47112edf9f7so22826375e9.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 26 Oct 2025 14:16:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1761513416; x=1762118216; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=oazE1q5GCoD/+i3icz1iycSEfrKFMjlb7/NDCvgd8fQ=;
+        b=ASAkaE9m6QHDQaFu7+RfvvwiBulGYHouWsKXXRgGV/SvhbnhqPa/agJpnrzOIvbGcp
+         +PgYHBIqmaDvkzptXAZo0U3vMk2hLn96J3kxJSwWKrcRVNHNeI+d55a6T+2fMeYCJwuU
+         F+tSZod5JzmMj9ySCz3ySV+4YUCXaXvwkiaQbENWlBc7cCsmW+lRCjm3NwPegZWOAiJO
+         gA2bqnPWnBCI7suZ9Hw3S2fVc0szwpPerYBWPiBtrOm/idtAKjrerTxiLz76YoKOyx+H
+         wXpbTGikuW2I2ytOyuMi+4mNH891SmaVCmK/xC/7VHISScHV14zqxsH8EWDBoENkcGAH
+         Zzug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761505890; x=1762110690;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/+kphTYoer9Bj1J3zBI4eWzahyJezzwpuW4Mnn7Kco4=;
-        b=NzCjDxUkrYhoxJJJj1Xes1u6CAGx10Pb9VzAhSMxquDKKzhEoTrmXTtYf5CE+LOKyL
-         I6uiuCoy9xJXS10/GLsbusIxgZuZrXtgRV0cVe6nPoBvsX4rDYRGTqRtZWcbDzOWQCoK
-         XjIKc8D/pIUxAEuwmyEZjhC+oIp4uCeLjxOE+shAeL4itRoI3TBvrH80vYP2LFwiQDts
-         vM+pbCuUVEsChEX9kUYKt+vS7Um3HJy/WiE69zxEjXHzA0vJL9mrb1EP7V5ekm0pr2/Y
-         avGopKnpbWLTilKzpIL8WTLbotjHoLMD040Ul9KdO6qPyCg2adQStuufnSBRolvrfKDa
-         RDfA==
-X-Forwarded-Encrypted: i=1; AJvYcCWNWTllIK4j+leLxu/xsGiJIegvSf+ktFNDnW9epfH7RrBhE7JLZ2X6OldGS+q3MND7z2Ws7jazZfw4BQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz2XaQdK5Uu98CHQ/ouucG/m45pKvdtTkT9b+Sgq7rsByVzhOEu
-	Tna0JQWq4gYyc+aTmAcgSl6xqag+wBbhHdv/0+rM3luEgFmbLMz5ZdYDFPf30MvMgXm/JPxcj1e
-	S6g21N5kMtRXGy21hXVykweOIDlb6K1XlMi20uxaA5PCZcPRiwbeC9oDEo3Y=
-X-Google-Smtp-Source: AGHT+IGDEU9U4Z+L7cBPuqTs8NtO6WkLHGO9pQDYO8IFWzvKfxSzGkoEojTSu0k4eG+tyOrG2QyvQ+VUXo5k2uMTK2MFqTWC3kRn
+        d=1e100.net; s=20230601; t=1761513416; x=1762118216;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oazE1q5GCoD/+i3icz1iycSEfrKFMjlb7/NDCvgd8fQ=;
+        b=V9TUEx3R6VsBsgHTD7HnaXltdCpjAg7e2vasPHk4+CbKxHlj30hXbMynfOTrzEE0cn
+         EX+J2BAuBM9ft5FvNtkxMX8NnkIewQMzl3T75j061J3rizBrFH9khG3gMgdBTLGWmzou
+         boV8cstuARPCYuKdyzwQdFfvNQf9z/YT6d0WBY7x3OGNvjyaql5+5QDrl5GLg6Y/ia+0
+         ghgzok1ZfkT/wmxr1gXURsvaCL+GuvIR/wYEEkaFs+IrQAhB4gF5UGTUs0IJYEvczYjD
+         J5EqKFUcmjc0Lt070SjizFC8n8hNzUwX+sYNNWSU0P4H7hzzynuGoppHSBl8lzxYfzal
+         1AHA==
+X-Forwarded-Encrypted: i=1; AJvYcCVrp04El7zSaLA9WjF6FUAZlnMBhpN11XFQEp38c/nR04CBGerwDAf3tAhR37JqN0ulVwXoJWOzzXqpIQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwCgsNVttx4cyoik1sXQRoCZ9xoFnIRpXR1rHg/6JdeQ/458E7S
+	kasK8bxVTW0R1neju22hXYooFgMv1N6ojBP5oP7bKngcx5UHhkK0in9THI+cUk5ZPCxaQR/MpVt
+	RzT3r
+X-Gm-Gg: ASbGncsYgGSIEh4sDW9YB1MloFZUPSFanh0TDpUm3ksQkHMEeAPE81knqFtMvbN3d89
+	WkaEyVpdVq/2I2GeBO4w1dgPVDKBqJzg+T/Qm67VbCZoOMoLtl4Mm8jktCaG/UlEkibSwvcq0Zz
+	ECzyGs2PiJM7VpAoake0szg6GyTuFNsUZgrRF9TR+UjSY8WLx90pePeeACVKwWzhH6uEetvLkLe
+	2zA5VWK3hcPFl9lJjc3tjSz0wSvyZad3thV0eIw1YMnhib3mo/GSMVcV9+2/IG03qgQkj5lIWLy
+	2BJc/ZKMOBsV2uEPrkKzP4s/LEohMAgDpb3X9I0VVWhaY0lg9/fthsRIAFHxxvexZbf2VbVru1j
+	qvsKgLq7gF8TU4mpz4sKw+vhEDh8gbLCQeuGi5OYqAZqR8PdxDIaiJWiNGbsl8EqUPqPHw0k+25
+	alHuV4dRXNhWolOos4AX6I5serbTcR
+X-Google-Smtp-Source: AGHT+IE0+kED1GkC99RD/pDA0q8Z+Xah2zsGX2ojoJIFAwrMjwJNhd1etc7hskktuJq6gex9seVD7Q==
+X-Received: by 2002:a05:600c:3494:b0:477:bf0:b9da with SMTP id 5b1f17b1804b1-4770bf0c435mr23544365e9.19.1761513415953;
+        Sun, 26 Oct 2025 14:16:55 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b712f0c1859sm5106893a12.35.2025.10.26.14.16.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Oct 2025 14:16:55 -0700 (PDT)
+Message-ID: <0725451c-7354-4ac2-9bd5-e0487feb77c7@suse.com>
+Date: Mon, 27 Oct 2025 07:46:51 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3e04:b0:42d:878b:6e40 with SMTP id
- e9e14a558f8ab-430c5263fcbmr520530915ab.13.1761505890465; Sun, 26 Oct 2025
- 12:11:30 -0700 (PDT)
-Date: Sun, 26 Oct 2025 12:11:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68fe7262.050a0220.3344a1.0145.GAE@google.com>
-Subject: [syzbot] [btrfs?] WARNING in btrfs_destroy_inode (3)
-From: syzbot <syzbot+25df068cd8509f8c0fe1@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    43e9ad0c55a3 Merge tag 'scsi-fixes' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=127ea3cd980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df98b4d1d5944c56
-dashboard link: https://syzkaller.appspot.com/bug?extid=25df068cd8509f8c0fe1
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-43e9ad0c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/58bbcd26d07f/vmlinux-43e9ad0c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f7223e24dee9/bzImage-43e9ad0c.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+25df068cd8509f8c0fe1@syzkaller.appspotmail.com
-
-BTRFS info (device loop0): balance: start -d -m
-BTRFS info (device loop0): relocating block group 6881280 flags data|metadata
-BTRFS info (device loop0): relocating block group 5242880 flags data|metadata
-BTRFS error (device loop0): bdev /dev/loop0 errs: wr 3, rd 1, flush 0, corrupt 0, gen 0
-BTRFS error (device loop0 state EA): nocow_one_range failed, root=-9 inode=258 start=53248 len=12288: -5
-BTRFS error (device loop0 state EA): run_delalloc_nocow failed, root=18446744073709551607 inode=258 start=53248 len=12288 cur_offset=53248 oe_cleanup=53248 oe_cleanup_len=0 untouched_start=65536 untouched_len=0: -5
-BTRFS error (device loop0 state EA): failed to run delalloc range, root=-9 ino=258 folio=53248 submit_bitmap=0 start=53248 len=12288: -5
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5324 at fs/btrfs/inode.c:7942 btrfs_destroy_inode+0x7c9/0x910 fs/btrfs/inode.c:7942
-Modules linked in:
-CPU: 0 UID: 0 PID: 5324 Comm: syz.0.0 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:btrfs_destroy_inode+0x7c9/0x910 fs/btrfs/inode.c:7942
-Code: 4a fd ff e9 03 ff ff ff e8 d4 6a ef fd 90 0f 0b 90 e9 c4 f8 ff ff e8 c6 6a ef fd 90 0f 0b 90 e9 ee f8 ff ff e8 b8 6a ef fd 90 <0f> 0b 90 e9 1f f9 ff ff e8 aa 6a ef fd 90 0f 0b 90 e9 47 f9 ff ff
-RSP: 0018:ffffc9000d497860 EFLAGS: 00010287
-RAX: ffffffff83d0a8d8 RBX: 0000000000028000 RCX: 0000000000100000
-RDX: ffffc9000ea83000 RSI: 0000000000062177 RDI: 0000000000062178
-RBP: ffff8880427a2280 R08: ffff888041940777 R09: 1ffff110083280ee
-R10: dffffc0000000000 R11: ffffffff83d0a110 R12: ffff8880427a24f0
-R13: dffffc0000000000 R14: ffff8880427a2628 R15: ffff888035518000
-FS:  00007fece6bca6c0(0000) GS:ffff88808d733000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffc0fc53000 CR3: 00000000435f3000 CR4: 0000000000352ef0
-Call Trace:
- <TASK>
- destroy_inode fs/inode.c:396 [inline]
- evict+0x7c2/0x9c0 fs/inode.c:834
- btrfs_relocate_block_group+0xb4a/0xc60 fs/btrfs/relocation.c:4026
- btrfs_relocate_chunk+0x12f/0x5c0 fs/btrfs/volumes.c:3451
- __btrfs_balance+0x1860/0x23f0 fs/btrfs/volumes.c:4227
- btrfs_balance+0xac2/0x11b0 fs/btrfs/volumes.c:4604
- btrfs_ioctl_balance+0x3d3/0x610 fs/btrfs/ioctl.c:3577
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:597 [inline]
- __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:583
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fece5d8efc9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fece6bca038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fece5fe6090 RCX: 00007fece5d8efc9
-RDX: 0000200000000180 RSI: 00000000c4009420 RDI: 0000000000000005
-RBP: 00007fece5e11f91 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fece5fe6128 R14: 00007fece5fe6090 R15: 00007ffc0fc52ca8
- </TASK>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Strange btrfs error
+To: Brent Belisle <brent.belisle@verizon.net>, linux-btrfs@vger.kernel.org
+References: <c01bd806-9490-454b-b29d-61e5911b2483.ref@verizon.net>
+ <c01bd806-9490-454b-b29d-61e5911b2483@verizon.net>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <c01bd806-9490-454b-b29d-61e5911b2483@verizon.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+在 2025/10/27 00:59, Brent Belisle 写道:
+> when I run a btrfs check on my file system using btrfs-progs 6.17-1 I 
+> receive the following error "we have a spare info key for a block group 
+> that doesn't exist" , however when I do the same btrfs check using 
+> btrfs-progs 6.16-2 the operation completes and says "no errors".  Is 
+> this just a bug or has btrfs-progs 6.17-1 really found an error in my 
+> filesystem?
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+It's a known minor (aka doesn't really affect end users) bug in older 
+mkfs, and the ability to detect is added in commit e2cf6a03796b 
+("btrfs-progs: use btrfs_lookup_block_group() in 
+check_free_space_tree()"), introduced in v6.16.1.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+You don't need to repair (no repair support in btrfs-check yet) nor 
+bother too much.
+There will be a kernel fix that will automatically repair this on mount 
+soon.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+If you really want that minor problem to be gone as soon as possible, 
+you can rebuild your free space tree by mounting with "-o 
+free_space_tree,clear_cache", which will rebuild the free space tree at 
+the first RW mount, which may take some time depending on the fs size.
 
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks,
+Qu
+> 
+> Thanks for looking into this
+> 
+> 
+
 
