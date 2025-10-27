@@ -1,223 +1,231 @@
-Return-Path: <linux-btrfs+bounces-18368-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18369-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27A21C0DF9E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Oct 2025 14:20:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C59C2C0F386
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Oct 2025 17:19:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E89AA189180B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Oct 2025 13:21:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F5B3564D20
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Oct 2025 16:05:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF1129B20D;
-	Mon, 27 Oct 2025 13:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24A2130EF84;
+	Mon, 27 Oct 2025 16:04:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=archworks.co header.i=@archworks.co header.b="GlmCiUX7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jYsJVQPb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from relay.archworks.co (relay.archworks.co [65.21.53.234])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B9E283FF4
-	for <linux-btrfs@vger.kernel.org>; Mon, 27 Oct 2025 13:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.21.53.234
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A8B30CD91
+	for <linux-btrfs@vger.kernel.org>; Mon, 27 Oct 2025 16:04:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761571233; cv=none; b=iAELGs1YPvMZCgNFUmhQ3b08j2IlnipIMFzDQ+/YGSo+ELMEKySZb1J2R7dXdai5s/KXC9rKwH5HRPClPtvJNg/ovSETcIVX65dXHKHdrG8VfW37mTPYpB80sJKFUWvgkDaz5yhaMEKLV7rJGlNqxvLMZMcULLjsyQJGKati3kI=
+	t=1761581095; cv=none; b=gWXgOzDjA4TFss531gGul5iOUtoAl7S/8HKSGDoidBA23Rbtbrbs4D80OSEMsD9Bj680hxDCfiiQiKLhc+XVl5/M4oD3zFtR6+/pRaKOZXYKhUuQaZ1dCTs59BX0FKrOEKaViSayWagX4lfQ3I/ja63tO2r0ukBYOUXq0JGymjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761571233; c=relaxed/simple;
-	bh=PmLjqByT3UKotfbBGM2/Y1SIKB8FOxpDJw8tJHdkYzE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fW4XeppRIpQltbkjPHc+RTh1KrzG4d3DfvWlhu8xt0eyQ31au42zBcKzTmis1GmzClK//hwrXGaXix9BepeB78i6Wb6L7sRBmF3p8HYHhKaApfOyuHoPz1xXyzp9X9u3c+jWPdZgJq4ERz1Pgk7SbSrdkqSgV7XoHA3m5aY+B/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=archworks.co; spf=pass smtp.mailfrom=archworks.co; dkim=pass (1024-bit key) header.d=archworks.co header.i=@archworks.co header.b=GlmCiUX7; arc=none smtp.client-ip=65.21.53.234
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=archworks.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archworks.co
-Received: from [192.168.1.102] (mob-194-230-148-21.cgn.sunrise.net [194.230.148.21])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange x25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: norbert.morawski@archworks.co)
-	by relay.archworks.co (Postfix) with ESMTPSA id 1A4793A94B0;
-	Mon, 27 Oct 2025 14:20:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=archworks.co; s=k2;
-	t=1761571229; bh=PmLjqByT3UKotfbBGM2/Y1SIKB8FOxpDJw8tJHdkYzE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=GlmCiUX7HVStSGyp/SiHkOScYiM7Pf3ynkLSfrVIbdfz0GaKUF7vLr7H18eRxswXn
-	 WSzrYXlVuI/hZ3mvITY4Bqkw423k7fFYglEQ+XzExB8Z3HQWCYgP+X34TkJhxV8Krw
-	 mVtmbQ/Djp1O2NduyZoH0FwjJ9xyfLxx8tmBAm2A=
-Message-ID: <3e97c25a-d691-48e4-80c4-99b496eee5a3@archworks.co>
-Date: Mon, 27 Oct 2025 14:20:27 +0100
+	s=arc-20240116; t=1761581095; c=relaxed/simple;
+	bh=dm8A/qyQjDO//xtPEdtwtlpgXj5bAJ7D8ySG6nd2G0I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V4h4LHAy1JJg6zci84+/TQORlazc6fCcRIJ7FNwDR4RtLy25YvAdP1eZ2mN9MjxcWTUBcwRZdwjLMGb3ttvfnjrI8x9z9lbLiYfxt9sDWpebxHj+Vb5uun69ek0i7lIzz9rmEZTFvucIhydX1BRctTO/SIHeI1hzfIrksXAy1z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jYsJVQPb; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1761581094; x=1793117094;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dm8A/qyQjDO//xtPEdtwtlpgXj5bAJ7D8ySG6nd2G0I=;
+  b=jYsJVQPbfEkXHb/kLoDRYm4a89rX7gFCOAz7xyHoTcSOneoKqil1to/5
+   PKv3lnlUss9gYER1ycGsm/AuEDFv+GzsWQ9eaVqLhrBPXuag2Vj31iyYC
+   hJkE/3kjqux0VXUHBENlN6ZfO4/OCjvj1p1kh2xqZY3QDDMMQX8bDNy6r
+   lGLZgdlOLZNs0/j1qFKxPTJTv53WGGxilbpWux3hcsS+kv/hRpPCf+9wH
+   hkXPK5l2JRy59+xuQDvlVfDPNtJzRfxz+8f5Jtsf13vUJtutoSB6bw1nc
+   3wr5GoB45Coir8f6nuY8gFHw7qaRaU0JILGzdRYsjx1a7fIkOvhGmqh1t
+   Q==;
+X-CSE-ConnectionGUID: Ss+OeQd+R4Cnzq/iIAV74A==
+X-CSE-MsgGUID: hMdkyw+WQHyR+ctb4A5NFQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="62697175"
+X-IronPort-AV: E=Sophos;i="6.19,259,1754982000"; 
+   d="scan'208";a="62697175"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2025 09:04:53 -0700
+X-CSE-ConnectionGUID: vdFxKknXQUKzmMAZJre6zw==
+X-CSE-MsgGUID: it2GcJ4aQxSGK6TGRKUPKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,259,1754982000"; 
+   d="scan'208";a="184980229"
+Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
+  by fmviesa006.fm.intel.com with ESMTP; 27 Oct 2025 09:04:51 -0700
+Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vDPiD-000GxR-1n;
+	Mon, 27 Oct 2025 16:04:49 +0000
+Date: Tue, 28 Oct 2025 00:04:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Mark Harmstone <mark@harmstone.com>, linux-btrfs@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Mark Harmstone <mark@harmstone.com>
+Subject: Re: [PATCH v4 15/16] btrfs: handle discarding fully-remapped block
+ groups
+Message-ID: <202510272322.N1S5rdDc-lkp@intel.com>
+References: <20251024181227.32228-16-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [btrfs] ENOSPC during convert to RAID6/RAID1C4 -> forced RO
-To: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc: linux-btrfs@vger.kernel.org
-References: <e03530c5-6af9-4f7a-9205-21d41dc092e5@archworks.co>
- <05308285-7660-4d9c-b1d5-0b59cf4f1986@archworks.co>
- <aP7UHKYfgo_ROu_m@hungrycats.org>
-From: Sandwich <sandwich@archworks.co>
-Content-Language: de-AT, en-US
-In-Reply-To: <aP7UHKYfgo_ROu_m@hungrycats.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251024181227.32228-16-mark@harmstone.com>
 
-Thank you for your reply,
-Unfortunately, older kernels including 6.6, 6.8, 6.12 did not help here.
-I've used the suggested mount options `nossd,skip_balance,nodiscard,noatime`, and tried to cancel and resume the balance with it.
-The result stayed the same as previously.
+Hi Mark,
 
-`btrfs fi usage -T /mnt/Data`:
-```
-root@anthem ~ # btrfs fi usage -T /mnt/Data
-Overall:
-     Device size:        118.24TiB
-     Device allocated:         53.46TiB
-     Device unallocated:         64.78TiB
-     Device missing:            0.00B
-     Device slack:            0.00B
-     Used:             51.29TiB
-     Free (estimated):         64.20TiB    (min: 18.26TiB)
-     Free (statfs, df):         33.20TiB
-     Data ratio:                 1.04
-     Metadata ratio:             2.33
-     Global reserve:        512.00MiB    (used: 0.00B)
-     Multiple profiles:              yes    (data, metadata, system)
+kernel test robot noticed the following build warnings:
 
-             Data     Data    Metadata Metadata System  System
-Id Path     single   RAID6   RAID1    RAID1C4  RAID1   RAID1C4  Unallocated Total     Slack
--- -------- -------- ------- -------- -------- ------- --------- ----------- --------- -----
-  1 /dev/sdf 15.10TiB 1.09TiB 35.00GiB  8.00GiB 8.00MiB 32.00MiB     1.96TiB  18.19TiB     -
-  2 /dev/sdg 15.10TiB 1.09TiB 44.00GiB  2.00GiB 8.00MiB  -     1.96TiB  18.19TiB     -
-  3 /dev/sdc 13.43TiB 1.09TiB 29.00GiB        -       -  -     1.83TiB  16.37TiB     -
-  4 /dev/sdb  3.14TiB 1.09TiB  4.00GiB 11.00GiB       - 32.00MiB    12.12TiB  16.37TiB     -
-  5 /dev/sdd        - 1.09TiB        - 11.00GiB       - 32.00MiB    15.27TiB  16.37TiB     -
-  6 /dev/sde        - 1.09TiB        - 11.00GiB       - 32.00MiB    15.27TiB  16.37TiB     -
-  7 /dev/sdh        -       -        -  1.00GiB       -  -    16.37TiB  16.37TiB     -
--- -------- -------- ------- -------- -------- ------- --------- ----------- --------- -----
-    Total    46.78TiB 4.35TiB 56.00GiB 11.00GiB 8.00MiB 32.00MiB    64.78TiB 118.24TiB 0.00B
-    Used     44.72TiB 4.29TiB 50.54GiB  9.96GiB 5.22MiB 352.00KiB
-```
+[auto build test WARNING on kdave/for-next]
+[also build test WARNING on next-20251027]
+[cannot apply to linus/master v6.18-rc3]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-What information is needed to trace this bug?
-If you're willing to help me on the code side, I would gladly provide you with any information or test patches.
+url:    https://github.com/intel-lab-lkp/linux/commits/Mark-Harmstone/btrfs-add-definitions-and-constants-for-remap-tree/20251025-021910
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/20251024181227.32228-16-mark%40harmstone.com
+patch subject: [PATCH v4 15/16] btrfs: handle discarding fully-remapped block groups
+config: arm-randconfig-003-20251027 (https://download.01.org/0day-ci/archive/20251027/202510272322.N1S5rdDc-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 8.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251027/202510272322.N1S5rdDc-lkp@intel.com/reproduce)
 
-In the meantime, I start to back up the most important data out of the array.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202510272322.N1S5rdDc-lkp@intel.com/
 
-BR
-Sandwich
+Note: it may well be a FALSE warning. FWIW you are at least aware of it now.
+http://gcc.gnu.org/wiki/Better_Uninitialized_Warnings
 
-On 10/27/25 3:08 AM, Zygo Blaxell wrote:
-> On Sun, Oct 26, 2025 at 10:37:02PM +0100, Sandwich wrote:
->>   hi,
->>
->> i hit an ENOSPC corner case converting a 6-disk btrfs from data=single
->> to data=raid6 and metadata/system=raid1c4. after the failure, canceling
->> the balance forces the fs read-only. there's plenty of unallocated space
->> overall, but metadata reports "full" and delayed refs fail. attempts
->> to add another (empty) device also immediately flip the fs to RO and
->> the add does not proceed.
->>
->> how the filesystem grew:
->> i started with two disks, created btrfs (data=single), and filled
->> it. i added two more disks and filled it again. after adding the
->> final two disks i attempted the conversion to data=raid6 with
->> metadata/system=raid1c4—that conversion is what triggered ENOSPC
->> and the current RO behavior. when the convert began, usage was about
->> 51 TiB used out of ~118 TiB total device size.
->>
->> environment during the incident:
->>
->> ```
->> uname -r: 6.14.11-4-pve
-> [...]
->> ```
->>
->> operation that started it:
->>
->> ```
->> btrfs balance start -v -dconvert=raid6 -mconvert=raid1c4 -sconvert=raid1c4 /mnt/Data --force
->> ```
->>
->> current state:
->> i can mount read-write only with `-o skip_balance`. running
->> `btrfs balance cancel` immediately forces RO. mixed profiles remain
->> (data=single+raid6, metadata=raid1+raid1c4, system=raid1+raid1c4). i
->> tried clearing the free-space cache, afterward the free-space tree
->> could not be rebuilt and subsequent operations hit backref errors
->> (details below). adding a new device also forces RO and fails.
->>
->> FS Info:
->>
->> ```
->> # btrfs fi usage -T /mnt/Data
->> Device size:       118.24TiB
->> Device allocated:   53.46TiB
->> Device unallocated: 64.78TiB
->> Used:               51.29TiB
->> Free (estimated):   64.20TiB (min: 18.26TiB)
->> Free (statfs, df):  33.20TiB
->> Data ratio:          1.04
->> Metadata ratio:      2.33
->> Multiple profiles:   yes (data, metadata, system)
->> ```
-> You left out the most important part of the `fi usage -T` information:
-> the table...
->
->> ```
->> # btrfs filesystem show /mnt/Data
->> Label: 'Data'  uuid: 7aa7fdb3-b3de-421c-bc86-daba55fc46f6
->> Total devices 6  FS bytes used 49.07TiB
->> devid 1 size 18.19TiB used 16.23TiB path /dev/sdf
->> devid 2 size 18.19TiB used 16.23TiB path /dev/sdg
->> devid 3 size 16.37TiB used 14.54TiB path /dev/sdc
->> devid 4 size 16.37TiB used  4.25TiB path /dev/sdb
->> devid 5 size 16.37TiB used  1.10TiB path /dev/sdd
->> devid 6 size 16.37TiB used  1.10TiB path /dev/sde
->> ```
-> ...but from here we can guess there's between 2 and 14 TiB on each device,
-> which should more than satisfy the requirements for raid1c4.
->
-> So this is _not_ the expected problem in this scenario, where the
-> filesystem fills up too many of the drives too soon, and legitimately
-> can't continue balancing.
->
-> It looks like an allocator bug.
->
->> full incident kernel log:
->> https://pastebin.com/KxP7Xa3g
->>
->> i’m looking for a safe recovery path. is there a supported way to
->> unwind or complete the in-flight convert first (for example, freeing
->> metadata space or running a limited balance), or should i avoid that
->> and take a different route? if proceeding is risky, given that there
->> are no `Data,single` chunks on `/dev/sdd` and `/dev/sde`, is it safe
->> to remove those two devices to free room and try again? if that’s
->> reasonable, what exact sequence (device remove/replace vs zeroing;
->> mount options) would you recommend to minimize further damage?
-> The safe recovery path is to get a fix for the allocator bug so that you
-> can finish the converting balance, either to raid1c4 or any other profile.
->
-> This operation (balance) is something you should be able to do with
-> current usage.  There's no other way to get out of this situation,
-> but a kernel bug is interfering with the balance.
->
-> Removing devices definitely won't help, and may trigger other issues
-> with raid6.  Don't try that.
->
-> You could try an up-to-date 6.6 or 6.12 LTS kernel, in case there's a
-> regression in newer kernels.  Don't use a kernel older than 6.6 with
-> raid6.
->
-> Mount options 'nossd,skip_balance,nodiscard,noatime' should minimize
-> the short-term metadata requirements, which might just be enough to
-> cancel the balance and start a convert in the other direction.
->
->> thanks,
->> sandwich
-> [...]
->
+All warnings (new ones prefixed by >>):
+
+   fs/btrfs/discard.c: In function 'btrfs_discard_workfn':
+>> fs/btrfs/discard.c:596:6: warning: 'discard_state' may be used uninitialized in this function [-Wmaybe-uninitialized]
+      if (discard_state == BTRFS_DISCARD_BITMAPS ||
+         ^
+
+
+vim +/discard_state +596 fs/btrfs/discard.c
+
+   513	
+   514	/*
+   515	 * Discard work queue callback
+   516	 *
+   517	 * @work: work
+   518	 *
+   519	 * Find the next block_group to start discarding and then discard a single
+   520	 * region.  It does this in a two-pass fashion: first extents and second
+   521	 * bitmaps.  Completely discarded block groups are sent to the unused_bgs path.
+   522	 */
+   523	static void btrfs_discard_workfn(struct work_struct *work)
+   524	{
+   525		struct btrfs_discard_ctl *discard_ctl;
+   526		struct btrfs_block_group *block_group;
+   527		enum btrfs_discard_state discard_state;
+   528		int discard_index = 0;
+   529		u64 trimmed = 0;
+   530		u64 minlen = 0;
+   531		u64 now = ktime_get_ns();
+   532	
+   533		discard_ctl = container_of(work, struct btrfs_discard_ctl, work.work);
+   534	
+   535		block_group = peek_discard_list(discard_ctl, &discard_state,
+   536						&discard_index, now);
+   537		if (!block_group)
+   538			return;
+   539		if (!btrfs_run_discard_work(discard_ctl)) {
+   540			spin_lock(&discard_ctl->lock);
+   541			btrfs_put_block_group(block_group);
+   542			discard_ctl->block_group = NULL;
+   543			spin_unlock(&discard_ctl->lock);
+   544			return;
+   545		}
+   546		if (now < block_group->discard_eligible_time) {
+   547			spin_lock(&discard_ctl->lock);
+   548			btrfs_put_block_group(block_group);
+   549			discard_ctl->block_group = NULL;
+   550			spin_unlock(&discard_ctl->lock);
+   551			btrfs_discard_schedule_work(discard_ctl, false);
+   552			return;
+   553		}
+   554	
+   555		/* Perform discarding */
+   556		minlen = discard_minlen[discard_index];
+   557	
+   558		switch (discard_state) {
+   559		case BTRFS_DISCARD_BITMAPS: {
+   560			u64 maxlen = 0;
+   561	
+   562			/*
+   563			 * Use the previous levels minimum discard length as the max
+   564			 * length filter.  In the case something is added to make a
+   565			 * region go beyond the max filter, the entire bitmap is set
+   566			 * back to BTRFS_TRIM_STATE_UNTRIMMED.
+   567			 */
+   568			if (discard_index != BTRFS_DISCARD_INDEX_UNUSED)
+   569				maxlen = discard_minlen[discard_index - 1];
+   570	
+   571			btrfs_trim_block_group_bitmaps(block_group, &trimmed,
+   572					       block_group->discard_cursor,
+   573					       btrfs_block_group_end(block_group),
+   574					       minlen, maxlen, true);
+   575			discard_ctl->discard_bitmap_bytes += trimmed;
+   576	
+   577			break;
+   578		}
+   579	
+   580		case BTRFS_DISCARD_FULLY_REMAPPED:
+   581			btrfs_trim_fully_remapped_block_group(block_group);
+   582			break;
+   583	
+   584		default:
+   585			btrfs_trim_block_group_extents(block_group, &trimmed,
+   586					       block_group->discard_cursor,
+   587					       btrfs_block_group_end(block_group),
+   588					       minlen, true);
+   589			discard_ctl->discard_extent_bytes += trimmed;
+   590	
+   591			break;
+   592		}
+   593	
+   594		/* Determine next steps for a block_group */
+   595		if (block_group->discard_cursor >= btrfs_block_group_end(block_group)) {
+ > 596			if (discard_state == BTRFS_DISCARD_BITMAPS ||
+   597			    discard_state == BTRFS_DISCARD_FULLY_REMAPPED) {
+   598				btrfs_finish_discard_pass(discard_ctl, block_group);
+   599			} else {
+   600				block_group->discard_cursor = block_group->start;
+   601				spin_lock(&discard_ctl->lock);
+   602				if (block_group->discard_state !=
+   603				    BTRFS_DISCARD_RESET_CURSOR)
+   604					block_group->discard_state =
+   605								BTRFS_DISCARD_BITMAPS;
+   606				spin_unlock(&discard_ctl->lock);
+   607			}
+   608		}
+   609	
+   610		now = ktime_get_ns();
+   611		spin_lock(&discard_ctl->lock);
+   612		discard_ctl->prev_discard = trimmed;
+   613		discard_ctl->prev_discard_time = now;
+   614		btrfs_put_block_group(block_group);
+   615		discard_ctl->block_group = NULL;
+   616		__btrfs_discard_schedule_work(discard_ctl, now, false);
+   617		spin_unlock(&discard_ctl->lock);
+   618	}
+   619	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
