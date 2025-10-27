@@ -1,119 +1,173 @@
-Return-Path: <linux-btrfs+bounces-18371-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18372-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A192FC11DD9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Oct 2025 23:48:43 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19B02C11F31
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Oct 2025 00:15:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83AEF1891019
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Oct 2025 22:48:14 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 01E1B4F54C5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Oct 2025 23:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBAFB32D7D5;
-	Mon, 27 Oct 2025 22:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B982E6CD0;
+	Mon, 27 Oct 2025 23:15:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=stanfordalumni.org header.i=@stanfordalumni.org header.b="pQzdThjr"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hXfKw2JT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E1D32D7C7
-	for <linux-btrfs@vger.kernel.org>; Mon, 27 Oct 2025 22:41:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D223E272816
+	for <linux-btrfs@vger.kernel.org>; Mon, 27 Oct 2025 23:15:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761604874; cv=none; b=Xh9H1KjJJcs+XO3rURrCskC33xBs+17GzJOom9uZhDa330han2y96fhDRIrZGlZrVsmomWB3OXZ2jCp6PKrhb4UeEzZNBtuiKJTgbwu/bWO+JugxnF9G5RrbS5jLM/THJ/JIxnC+hWF+TUA+vX3EM7+19cRYB4yOJ/W3ss/RjOQ=
+	t=1761606947; cv=none; b=rHGt9GJQXnv956N01IJQY6sdD5wt7H+GxPzaXVhIT2Etn+UBFYF/HremjLy1sCda1x1j1XgoOKAFYFOBIgE3/yXJq7q7EogIvK/LZkEQQceajCIKOh8zECoM3kKrUo6Z54OCIf9Vv9oZYXStMGjl0SwCErtT2EQrTQs6ieH0/w4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761604874; c=relaxed/simple;
-	bh=yn4loR/CnQFGP7qiJqxRcy8aaptaF+lEU2UtGDV0d04=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=PjDp4q2QlcZO8ty5/4Ql217bCN/tVVYxXsugTnH9+fhrCipgxUOoHc9vWDbBp7eQXk3tOv+A9wjOMRu5SLk/jFEcPrH66bGoL8x1xgIx7vqxZoogdjgVhiltGE1uJMsdOTVISN6M3F/Z8stz4UGZFjbsaDVwemzxuICmnaHraRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stanfordalumni.org; spf=pass smtp.mailfrom=alumni.stanford.edu; dkim=pass (1024-bit key) header.d=stanfordalumni.org header.i=@stanfordalumni.org header.b=pQzdThjr; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stanfordalumni.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alumni.stanford.edu
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-8a2b2b3b813so31680285a.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Oct 2025 15:41:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=stanfordalumni.org; s=google; t=1761604871; x=1762209671; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=nKxsbULL+syPxxbXu0aO7f5sRiZm83zPHQ6BWD1Cs3o=;
-        b=pQzdThjr/+pLd/Lzr77MRZGvtAMho0v2bM74+EkuA8B27mfkprK4bYIk7sGAJ9bx9R
-         Q/0oIKKluv3/ai0krX8lpO0ECNVZSBLN88rpdIL2YOUDikY6E5FwUUdm+iZX093qUbHy
-         7STSaO/OsIWNc8ncvyftTfpQ1TjnSbVa6HzPI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761604871; x=1762209671;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nKxsbULL+syPxxbXu0aO7f5sRiZm83zPHQ6BWD1Cs3o=;
-        b=OUeQ1E8yL4SOA/23uXaOASRl1kglaQkkxkVmWbHiRXuE7U7FN7+D1BrnHXAKs0r5Rt
-         gg6200KcS14OOMeCU1QAiWDtOa/qwa7dUo8tZfBkZKRAV+u91TY0nU7tgFBNGkK4pKvs
-         AURxsoLOLWf3oMM8rwaI04RRxAfKxi0318T9TPgIrPPErlRYFM1enBUlKBCmcK/l3fD0
-         SAcYNCi2cDmgjalTxHMpdRFGMj+5nHdtiLuJlICtHE/ZPhelxHeFAt8n/DdB592SbaaA
-         N0Vq88j81TcO3ppZpg0WoCiJKPUteor2vbVu9vRM1+YtJ0JX76N0RVGZLxWAD0kSNCJz
-         +uGw==
-X-Gm-Message-State: AOJu0Ywe2C2zHNPOozbCiVjFKEGxBZol/DWd2WowXXDZGicJBcZEF3Ko
-	CO7i55nKHqlEmJe9YonKQC9KspEbFUqvNJkKKOWqf/MAIshs35hMRZ/NplI+qRtwXBTWUOgpySx
-	IQFHs/ZDuCqckiycdak6XXORu3G/d1t41MXdiRvcBOMC9yd0iNNifcw==
-X-Gm-Gg: ASbGnctBpKtxQgwLortqYebJLA7B4JGOrE0dherl0R7UTBv+kopolCMEiqthYabRwYA
-	/VDx14H0qNerp6C5jhhSGRYpT12+fYazQXzaxPML3VQeZdddXK1mndtNN9Qa543OnDG7Fk731zr
-	mz9vcpV9MoDvRWseBnm8YcRIE/uu7CTFcMalwLN9yTqG2x5dTmX7c7PBosO46fmdV0FYid2lVRr
-	lRn+EnXoRyYPWUk4UuegptO084ZEHzu8m3JicjWyz/P4lDzmdvxIbzzhmk=
-X-Google-Smtp-Source: AGHT+IEmk8cH0kmhQNPm5lONkVX00S8ZVFcbuufeH4FdwQvZVT18QgRrM4xh3IO1hadMZ6C8Z4T8gHb283wYp+PaWR0=
-X-Received: by 2002:ac8:5acf:0:b0:4eb:a6fe:993b with SMTP id
- d75a77b69052e-4ed074820f4mr16936131cf.1.1761604870676; Mon, 27 Oct 2025
- 15:41:10 -0700 (PDT)
+	s=arc-20240116; t=1761606947; c=relaxed/simple;
+	bh=d5DofytqRfCKTrq+GxEKkaFtA8d7f8XAgjVYlLkKR3A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PaNzT66dTVqW66QVPt23m78r1Mf6uG5uA/RLJt09IX5xWvvpufJSViOI9I5VmxlY/6UfhSBnqGQYQadPQypUl2WOw1fEdEYTyRB6Ffj1h8qWEYg2V8D/7kCV+mnmrtadvCSUojFE22M56nj6AT45NWcWN5eSMF2DcUD5ZDwE4SA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hXfKw2JT; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1761606945; x=1793142945;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=d5DofytqRfCKTrq+GxEKkaFtA8d7f8XAgjVYlLkKR3A=;
+  b=hXfKw2JT1POcgf5MY7RDC6dyRlbMQ+lDERbSjhblkySVIYbCHDiWVl79
+   mnmm7T/Ot2JQ05eF0kJ593acXrFoehHOff0zC6sIyJo6qshy4w1lVFtIj
+   f2r3JO6SNk6dQ6OPXhI8U6CH0uDnkOTeS/wMU3fs1/Xf77ft+7fpk6q3/
+   7oW1SphIkPvDQVA3gtFwMXSOoRml2v4t+ClpsdSMJnosRm9X/Lih/+xTH
+   qakGYfeYf4cn1XBmiGYWYxHXPSPM3s4zO7oHMsqx2IYSbl3Ioe3ujFxhv
+   XMzZZWfYLA1M+yI8cLAdIda7PmD0GwjuoOg3lX8X0sixHXMl9kde6ucDX
+   Q==;
+X-CSE-ConnectionGUID: zniOLDOOSSush18Q7F0GlA==
+X-CSE-MsgGUID: dbziYUPgTnKz8Vy7XQ6Kmw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="62730279"
+X-IronPort-AV: E=Sophos;i="6.19,259,1754982000"; 
+   d="scan'208";a="62730279"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2025 16:15:45 -0700
+X-CSE-ConnectionGUID: X58UMSWxQN+g7mAUJMBYIw==
+X-CSE-MsgGUID: v1zDwGN6Rw+Rbf8jkbRP/g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,259,1754982000"; 
+   d="scan'208";a="185644880"
+Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
+  by fmviesa009.fm.intel.com with ESMTP; 27 Oct 2025 16:15:44 -0700
+Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vDWRC-000IZ7-0D;
+	Mon, 27 Oct 2025 23:15:42 +0000
+Date: Tue, 28 Oct 2025 07:14:58 +0800
+From: kernel test robot <lkp@intel.com>
+To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: Re: [PATCH 2/2] btrfs: zoned: fix stripe width calculation
+Message-ID: <202510280755.pneCp9oR-lkp@intel.com>
+References: <20251027072758.1066720-3-naohiro.aota@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Ross Boylan <rossboylan@stanfordalumni.org>
-Date: Mon, 27 Oct 2025 15:40:59 -0700
-X-Gm-Features: AWmQ_bkafL7IUjSbHbkE5-J22qUdU73d0JwQDXSesB_iui7giLLbkb6P8SfV4vk
-Message-ID: <CAK3NTRCBV0jTPrHb_tmWzdrLqx9xnvKpcqA7-_Cxm9TfJAGGSQ@mail.gmail.com>
-Subject: btrfs fragmentation
-To: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251027072758.1066720-3-naohiro.aota@wdc.com>
 
-When recording over-the-air television the results are typically very
-fragmented when saved to btrfs, e.g., several thousand segments for
-6GB.
-This occurred even on a large, nearly empty, filesystem of 5.5TB.
-Automatic defragmentation doesn't seem to make much difference,
-although manual defragmentation does.
+Hi Naohiro,
 
-I first noticed the fragmentation when I started getting messages that
-the writes were taking a long time, although I have not seen those
-recently.
+kernel test robot noticed the following build errors:
 
-It seems this application (the one recording the TV) may not be a good
-fit for btrfs.  The developers recommend xfs, but it would be nice to
-have the
-more flexible volume management of btrfs.
+[auto build test ERROR on kdave/for-next]
+[also build test ERROR on linus/master v6.18-rc3 next-20251027]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I'm curious if anyone here has any thoughts or advice on this.
-I'd appreciate cc on replies.
+url:    https://github.com/intel-lab-lkp/linux/commits/Naohiro-Aota/btrfs-zoned-fix-zone-capacity-calculation/20251027-153738
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/20251027072758.1066720-3-naohiro.aota%40wdc.com
+patch subject: [PATCH 2/2] btrfs: zoned: fix stripe width calculation
+config: i386-randconfig-011-20251028 (https://download.01.org/0day-ci/archive/20251028/202510280755.pneCp9oR-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251028/202510280755.pneCp9oR-lkp@intel.com/reproduce)
 
-DETAILS
-New partition on Seagate Exos x18 (spinning disk).
-btrfs --version -> 5.10
-uname -a -> Linux barley 5.10.0-36-amd64 #1 SMP Debian 5.10.244-1
-(2025-09-29) x86_64 GNU/Linux
-under Debian 11/bullseye, (current stable release is 13.1, so a bit old)
-The entire btrfs filesystem is based on a single partition: no RAID,
-no compression, no snapshots, no subvolumes.
-The recordings are done by mythtv 31.0, which I believe basically
-takes the video stream and dumps it to disk.  The developers say it
-writes "continuously".
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202510280755.pneCp9oR-lkp@intel.com/
 
-I speculate that what is going on is that it is writing small chunks
-to disk and each chunk causes the entire underlying segment to be
-rewritten.
-However, I've noticed that even when I cp a complete file to btrfs it
-ends up pretty fragmented, albeit the target filesystem in that case
-was very full.
+All errors (new ones prefixed by >>):
 
-Thanks.
-Ross Boylan
+   ld: fs/btrfs/zoned.o: in function `btrfs_load_block_group_raid0':
+>> fs/btrfs/zoned.c:1540:(.text+0x3a12): undefined reference to `__udivmoddi4'
+   ld: fs/btrfs/zoned.o: in function `btrfs_load_block_group_raid10':
+   fs/btrfs/zoned.c:1593:(.text+0x3c0b): undefined reference to `__udivmoddi4'
+
+
+vim +1540 fs/btrfs/zoned.c
+
+  1518	
+  1519	static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
+  1520						struct btrfs_chunk_map *map,
+  1521						struct zone_info *zone_info,
+  1522						unsigned long *active,
+  1523						u64 last_alloc)
+  1524	{
+  1525		struct btrfs_fs_info *fs_info = bg->fs_info;
+  1526		u64 stripe_nr = 0, stripe_offset = 0;
+  1527		u32 stripe_index = 0;
+  1528	
+  1529		if ((map->type & BTRFS_BLOCK_GROUP_DATA) && !fs_info->stripe_root) {
+  1530			btrfs_err(fs_info, "zoned: data %s needs raid-stripe-tree",
+  1531				  btrfs_bg_type_to_raid_name(map->type));
+  1532			return -EINVAL;
+  1533		}
+  1534	
+  1535		if (last_alloc) {
+  1536			u32 factor = map->num_stripes;
+  1537	
+  1538			stripe_nr = last_alloc >> BTRFS_STRIPE_LEN_SHIFT;
+  1539			stripe_offset = last_alloc & BTRFS_STRIPE_LEN_MASK;
+> 1540			stripe_index = stripe_nr % factor;
+  1541			stripe_nr /= factor;
+  1542		}
+  1543	
+  1544		for (int i = 0; i < map->num_stripes; i++) {
+  1545			if (zone_info[i].alloc_offset == WP_MISSING_DEV)
+  1546				continue;
+  1547	
+  1548			if (zone_info[i].alloc_offset == WP_CONVENTIONAL) {
+  1549	
+  1550				zone_info[i].alloc_offset = btrfs_stripe_nr_to_offset(stripe_nr);
+  1551	
+  1552				if (stripe_index > i)
+  1553					zone_info[i].alloc_offset += BTRFS_STRIPE_LEN;
+  1554				else if (stripe_index == i)
+  1555					zone_info[i].alloc_offset += stripe_offset;
+  1556			}
+  1557	
+  1558			if (test_bit(0, active) != test_bit(i, active)) {
+  1559				if (unlikely(!btrfs_zone_activate(bg)))
+  1560					return -EIO;
+  1561			} else {
+  1562				if (test_bit(0, active))
+  1563					set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &bg->runtime_flags);
+  1564			}
+  1565			bg->zone_capacity += zone_info[i].capacity;
+  1566			bg->alloc_offset += zone_info[i].alloc_offset;
+  1567		}
+  1568	
+  1569		return 0;
+  1570	}
+  1571	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
