@@ -1,175 +1,354 @@
-Return-Path: <linux-btrfs+bounces-18377-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18378-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3BD8C12E26
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Oct 2025 05:56:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98CAEC12EB4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Oct 2025 06:15:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1406B4EA1A4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Oct 2025 04:56:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB9F54084A3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Oct 2025 05:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4D927B50F;
-	Tue, 28 Oct 2025 04:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185842882B7;
+	Tue, 28 Oct 2025 05:14:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sonic.net header.i=@sonic.net header.b="RftOKkj9"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ja8nAXh9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from d.mail.sonic.net (d.mail.sonic.net [64.142.111.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50B1626C391
-	for <linux-btrfs@vger.kernel.org>; Tue, 28 Oct 2025 04:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.142.111.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761627401; cv=none; b=fv/H4HWrsjywPP4puDMfMmD7H5PoPsTTx0N4sAL6bxpD6il/0d6oN5RXSLP4KRCcqfwbGNhzZ/1Cny33tjKaSSO/vNZIJawAAn9N6mT1QfALo1/tjcbFGUpp5n60Xa0vsEkvXq4leZA9nUPfwSsVGuttDFyTEFjrFCxMnD0sWeY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761627401; c=relaxed/simple;
-	bh=MkJnqiw/ZfpsmX/PlvIUteXIu8oZehB2S8uhxFfmL28=;
-	h=Content-Type:Message-ID:Date:MIME-Version:To:From:Subject; b=qKWKg1eVpC5hoJzmks5tcspu3ofi/zKgENcxJaXVQK/y3rwBxt46exxpgbcL5ebR/qvsQpNSZFVhdR1LgqFbSqoO62DJdgS1Rg1oP6LXSswFEgg6gALA5M2LFSa47bhgABLvI4KJOIh/3wu9YfEaJPGJ3WFky170zt0/ZaFIKbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sonic.net; spf=pass smtp.mailfrom=sonic.net; dkim=pass (2048-bit key) header.d=sonic.net header.i=@sonic.net header.b=RftOKkj9; arc=none smtp.client-ip=64.142.111.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sonic.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sonic.net
-Received: from [192.168.3.25] (45-29-69-9.lightspeed.frokca.sbcglobal.net [45.29.69.9])
-	(authenticated bits=0)
-	by d.mail.sonic.net (8.16.1/8.16.1) with ESMTPSA id 59S4k2GL012668
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Mon, 27 Oct 2025 21:46:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sonic.net; s=net23;
-	t=1761626764; bh=0g33++plusN+Bi9+6X9j7GXK05QHabhJOncsHrj7X7E=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:From:Subject;
-	b=RftOKkj9dRAC4zCDb+YqYn/FH24+8Hb8HZh8Gh4fIp7pkxqGtHayyr05McuMRaNEl
-	 EuxemcNpg36QYQI6RFCIF1H/YLqy5e3U5oaa7UeG67Va8nPWF/IV4FYBVK47JSH2uy
-	 hi4JnNFYx80vQAuWpUmpMWP+tymztf5LohEJnOpmXSdAz0hYsAvXse5WqJy8bGuL0h
-	 T3oLaaXPAsVxPfSfrpPoj0mMCnvtGI6kOgS5yX9R78ihUKC4o8f/WxY9bt6FZ9c/2Y
-	 +4PiUc0vmCih8yjgZQRiulKUHhmbzLbTTcuPltnjqNfBQzYF/+TxDHMrUqKc/uncoo
-	 VZuUDkaBPY2+A==
-Content-Type: multipart/mixed; boundary="------------uIY5CDn6Kav6D1lPwMJCJr3v"
-Message-ID: <596aeaaa-38fb-484f-b987-572a1096982a@sonic.net>
-Date: Mon, 27 Oct 2025 21:46:01 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF89226D1D;
+	Tue, 28 Oct 2025 05:14:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761628496; cv=fail; b=J0HZMTpJEcNKREWK1+wQwb11G1ZwrJXldf6GBRsCPQwEPQ22Nvxiu6RR5emMFGV65ekYC8hvzKfysSwqQDE9Q6dEM8STA5AnaO6nDsV8RwHQ6OO3HyP4txdMQ21ISqwMQfm+btd5ZrZyTpA6+Bh+X8CDF/Yb2OP17JQOw3X/Dn8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761628496; c=relaxed/simple;
+	bh=yVhrSG9y7CvXlLsMR7dTL8x+aGIsE29gBqX1sr2yepE=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=dg1E5maDzwymDC1oAAJQc4CwViylmzQy5TbN5zL+lboK1tYW0/LxJBIgU+/bJjW7jRxf0obwCH82E4MQl6c8MkR93v+u+081UbyaKeyG0al10p7gY1GG6MAl9CkSIfk+nMZILKAqM/pHXHNz03HpwqHZ+nVZEzmynWSLTHQPUjw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ja8nAXh9; arc=fail smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1761628494; x=1793164494;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=yVhrSG9y7CvXlLsMR7dTL8x+aGIsE29gBqX1sr2yepE=;
+  b=ja8nAXh9WcQyf/U062vcEu3hIQ8jRqzyrtXC3flyqr6NrjbXWQ2SAO4z
+   J1ezAQ313lrAp9egO+JXIomvAvoodt80A2cpJwTv+JTf3zRTnUASNH03d
+   10oVJhlEJJYyNoCi65RoBGYQCqWSOFof2ej2weYgre+E+zh5nYsvRnDAh
+   iaCrIx6rbT6/M0qmuZCCpeHfh5vsHwLHmUUUZ+evnQEuP9h4CnRBXEx6y
+   xWqa+IaprxRhRcjiVB+MGjkgE4wAX9ikBLbGjjPryXzEaUMb+p9aYzM+m
+   GRHBGJmENFq/ZGrP9RioHp7ZNNSrPWFUVzy39130y7hICm72x2RWHgTTG
+   A==;
+X-CSE-ConnectionGUID: vxp3tGAXRUuRlkAzRWrf+A==
+X-CSE-MsgGUID: DkQM7y1zTn2LsBQzaruGVg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="63756102"
+X-IronPort-AV: E=Sophos;i="6.19,260,1754982000"; 
+   d="scan'208";a="63756102"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2025 22:14:53 -0700
+X-CSE-ConnectionGUID: j0y/aywzQ/2Lpc4EUU0DKA==
+X-CSE-MsgGUID: bvlnxujeSsKUidNOR0iYPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,260,1754982000"; 
+   d="scan'208";a="186000064"
+Received: from fmsmsx902.amr.corp.intel.com ([10.18.126.91])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2025 22:14:53 -0700
+Received: from FMSMSX902.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27; Mon, 27 Oct 2025 22:14:53 -0700
+Received: from fmsedg901.ED.cps.intel.com (10.1.192.143) by
+ FMSMSX902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27 via Frontend Transport; Mon, 27 Oct 2025 22:14:53 -0700
+Received: from CY7PR03CU001.outbound.protection.outlook.com (40.93.198.37) by
+ edgegateway.intel.com (192.55.55.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27; Mon, 27 Oct 2025 22:14:52 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HHQUqdqpkvUxWIFro+vMoVeFHrmc+rni9jEGL1tQNkRcW5q/QHXO5fnblQuTcNKytC5f0Y/ExymuBt45zCMtD/u4sTLJhRtZtSLZjdVxmxldNVQySwozjoXcFIHJIsg6J5WfK5oWxkJpXqSsb6PLBgvxsTsq06KYvBUZZ6m6bllwiaaZBooydFYbWgFxCsFfWudN/1GvXDzqkN4/400+pCy4ZwUyMTVePZDt9swUcPHmziGGAQbMle7r7u0Tu9C70qq8vXyoH/y+tfE2M4a72fnsoCpmz3GPRshMlljIf+AQnJHncA0A+W6pFkDZHPBlgPMDpWJpt8n3TfQio39KjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tmZr6l1XxVWBIGrlAHM9EPWXKWn/vb1L/rrVrH8xINQ=;
+ b=AnmIDIJEFoVdmnmepNQ7A2ZXSCSdZT4oozneqEHMARkVhDOk+88wQm37fyHR5dZpZH1Hx4cqLBSQ1fT+DA9YngFgewvxJb2G9ZZOLV9sJAn/WlHs9qWiYjiKf/LXRzao6MsPD7xPrM88AUtfDw6ZuLB4izb3ZSGtC3i5JdF4e4uRBnJ2sw7GlU99H3NtqijaiGpgzV4+msahUxM2NG3mVVSmFobrdks2YuS27d9iJ77hGQ1Zr8iq5ph6s9iCDWQdqEvblA826Ip8pRrPwSAAq8xfH1J2PWD1k3Czfd2p/vQMTjUGTPDEMi7iaJNWRDmuE1LpVfLt39YDXd0uCSmFSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by SA3PR11MB9488.namprd11.prod.outlook.com (2603:10b6:806:465::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9253.19; Tue, 28 Oct
+ 2025 05:14:46 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%5]) with mapi id 15.20.9253.017; Tue, 28 Oct 2025
+ 05:14:46 +0000
+Date: Tue, 28 Oct 2025 13:14:36 +0800
+From: Oliver Sang <oliver.sang@intel.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+CC: Qu Wenruo <wqu@suse.com>, <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
+	<linux-kernel@vger.kernel.org>, David Sterba <dsterba@suse.com>, HAN Yuwei
+	<hrx@bupt.moe>, <linux-btrfs@vger.kernel.org>, <oliver.sang@intel.com>
+Subject: Re: [linus:master] [btrfs] b7fdfd29a1: postmark.transactions 9.5%
+ regression
+Message-ID: <aQBRPF5taqdUE/zk@xsang-OptiPlex-9020>
+References: <202510271449.efa21738-lkp@intel.com>
+ <2adac975-01f1-4640-a073-715c804987d6@gmx.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2adac975-01f1-4640-a073-715c804987d6@gmx.com>
+X-ClientProxiedBy: KU0P306CA0082.MYSP306.PROD.OUTLOOK.COM
+ (2603:1096:d10:2b::11) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-btrfs@vger.kernel.org
-Content-Language: en-US
-From: Nathan Little <nathan.little@sonic.net>
-Subject: Missing Device Blocks Mount After Replace
-X-Sonic-CAuth: UmFuZG9tSVa9gHn78lKak0u6Wt7O9e1InLZq1d7X8CDl2IdKy7zZRD+thATomdnD1vuy9y+fPJq8/9ncOgA1sdGWOGk75uY77dXGwWqCo9s=
-X-Sonic-ID: C;gN9JAbmz8BGcrbo7kIO7Ng== M;wDG3Abmz8BGcrbo7kIO7Ng==
-X-Spam-Flag: No
-X-Sonic-Spam-Details: 0.0/5.0 by cerberusd
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|SA3PR11MB9488:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7a8a283b-d104-445c-3df5-08de15e0e91b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?L09qNUd0SnFRdkNUS2RCc3U5dERrU2VnY3BqZDdDa2VkN1ljMDVLRnlMZXVX?=
+ =?utf-8?B?YjFyWFFRaUs2Ryt5UVMyQkZBUExtRi9zYmsyVHFCWGpNc2NVOXkxK092dHUx?=
+ =?utf-8?B?OC9uaXB0alArRWxDSEhqWENTbHI3bDliU0xOck55djZKQ1VnVi8yTUZobTNL?=
+ =?utf-8?B?Yi8rQUtBeW9tWVRpeGdiOWhGK2NnZEVhZmcxZlVyZGlhU0ZZeUgxa3hxQ0d6?=
+ =?utf-8?B?R0xwdXlUTlhEY2lMdnRFbk9FRk9OaTRpTVBNYTJDSEUxMjU3WVNJRjlXVEQ0?=
+ =?utf-8?B?SWRzOVNseENyVXZ6YmYvd1d1VlBCWDRKbkhWZ0g1ZDd5aUNFN3JUR1VOZXZo?=
+ =?utf-8?B?Z05ESFZJb3ZBSWtRbnovQkpyUk5ER0RLb09WTFByb2toWnJXek9Odlh4VkRX?=
+ =?utf-8?B?WHJUL0Q5M01RL24wZ0JoWCs0aHdSN1FqTFk2cFRDM3M5QW05ZmRyeGgydm1h?=
+ =?utf-8?B?VlRwMGN4UkhCU0pYV3lTRm9uakIrRnBDUmVLYUJVME9JRW94UWhLNnFkZ1Nt?=
+ =?utf-8?B?R0JMMnorSVF5R0lsRkdsSmQ2R2RTZHdnOWgwN25yNWsrVlkzVlZ0YWtPbktl?=
+ =?utf-8?B?UStxYzZtODZTajZnUStQK3hrQzdlWFFYdlQ3eFpVRVhXVnpJSlhydnNkUExJ?=
+ =?utf-8?B?NE1Ud0FKQjg0TUF2ZU5aV0hDdEh5bVhzTmlmUGJPSjlDaG05c3Jld0ZyYjBv?=
+ =?utf-8?B?MEMzNnc2MVo1Q0JHMEJ1YjlZWlJseVdGV0ZqMmZ3ZExnZFZZUVRMM3dGK2tD?=
+ =?utf-8?B?ZW5VYndWcTNMVGdLTE0wRGdIV1hEWGNqaDVMcTROVVkrclNBNS9obElNNVRi?=
+ =?utf-8?B?V3BlREVFdGVUQ2RMS3VVN0xoTnhGbXVGVkhBNFd6MWo1dXdJUkdXcUdQSy8x?=
+ =?utf-8?B?UEVwR2U5TTlpdkowa3ZDQmRtSUFmSWJmdk9vOHpsSXd0OVJIOFV4a1dDTnRn?=
+ =?utf-8?B?OVlsdVU3UG8vaWZUTHM0aHlnL3JRNzUzRXBMVEJyOG1GZHc1TDBWbUpZcDdR?=
+ =?utf-8?B?ZDhBa3hPSFRzeUVDczV1a0ZDZVl3UUp6TC9US05sSDE4ZFV6N2FwTFdmcHI2?=
+ =?utf-8?B?V1pKbWpGVEdKTUh5dm1PSDlTdWJTSnhNbFpZa1d5Sll4dVFIUmZUSEVzVkpQ?=
+ =?utf-8?B?QTB0UGkvSnBXSmpUeC9BejVySmhzZTY1SE13ZU5NR2tZZENZSmJHaXAvcm9H?=
+ =?utf-8?B?TDVJNXhIYkdIeGlCc3NobmhvWGh5NGphcjJKakx5TTlUYVVVVGV5bGJicElN?=
+ =?utf-8?B?UmlHM2pYa2luOFlsekJDRzR0UENDdENnbXZpWTVxc0lWVFgvVnl4NllBUjJ5?=
+ =?utf-8?B?V0cxL0FEMU9QV1BDS1dqeVNKRW8xZWtYV3F3b05RZkluNUVqcWpGRVBTYnJC?=
+ =?utf-8?B?K0YxSFllcGZMSGVldzl6VmF2RFg5UVFVVzBjaElZWmFDOTU3VWs3NDFXR2pW?=
+ =?utf-8?B?WS9ldFZnVGVxUXZNTDIxK0lyeGdSMmVCaXRjMzZyL2xpc0k4YmR1U2t2YjJi?=
+ =?utf-8?B?cnplbHRzc1orVlMzNVAxNDlvTFQ0VzNxTWdQZFpWV2JqTC9KUFNZRXRtUzBH?=
+ =?utf-8?B?UjZVcGhSdFNiMHpUUm5zcy81VlB3UGtobGhpaU9KUTVTamJYTnI4b08xK0oz?=
+ =?utf-8?B?ckZ5U0JhczBMNDk5TVhUZjlJenR5SHErb05VY0ZVRVdLNTJxajZNT1BYU0ZT?=
+ =?utf-8?B?aWVjWCtkR0JXVWl2azNyY0JGU1FOQlB1UDBLR3M2VFl4NU16VTBpWGdkeXJ3?=
+ =?utf-8?B?UE5ja2lCcnBLUUtHOWt5Uk1CeTRMNmlaL3JreW4wT2w1aW1VdlhtMHhGWDNt?=
+ =?utf-8?B?dkR0M2dUNUwrWUxmU3AzRkRhK0lUOVJRTGM3TjJCUjA4a3plWTRLbHZRNm5p?=
+ =?utf-8?B?eE0xZzZVRVgwNHBpcE5vbUkxU3VQRjVmdWVYMmFsbnhnRmhCMmpzZGRXSlpp?=
+ =?utf-8?B?VEhvRTYrYW9pWDZWVE1FcUdrVHVHZnpmaGcwYm4wekJFSEU3Si9TTkdaZ2tZ?=
+ =?utf-8?B?a1U3MEVoZFJRPT0=?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eGdGMlRsaCt3MEdJT1h5R3M2bE1ja0VxZlJCMGRBR2p4eFU5WVl5ak1jZ0FT?=
+ =?utf-8?B?M2w2VkxHenhRZTVvMS9idU1JSWNXdGZ3dGZiMUxSSUN4SmwvTThob0dUZ3I5?=
+ =?utf-8?B?WW1lNUZaM1U1allSSmJsQWNJOVhpbURDdXZhbllrN1pacHVZd2JlT2ZvN2p5?=
+ =?utf-8?B?TzNuOTJpbU0xVEEwbjJvdDhjbVcrdllYazBhK3RVTFd5KzJmWVdQd0k3Ni80?=
+ =?utf-8?B?VmRDMTZWbEJkbElheHMxQkpyR1lYUVN2QnFJRUFQVEdmcXFaTHRlZ0hwMnlz?=
+ =?utf-8?B?bzl0L3lQWWFpaUxjczhxaDZYQXh4ZDYvQlVyZHVOYWpmZzE5dExpUXNNbW1Y?=
+ =?utf-8?B?SVM5MytORXR0UUw3Rkl3dGZlcnFudy9ZcmV5c2UvTE9HeGkvbHNqZy81RGJM?=
+ =?utf-8?B?V1VTSUhaL3NvMVNYblhwdG0wMVRYRGU5Qy96QWo1bXJPcnQ4Z2oxZWdCKzJ0?=
+ =?utf-8?B?YnVzcmcySWdJbGxjU2JJV2lBWWo3TlFNdjQ1RXpjY0NxV1VDeWE3NXpqRjU3?=
+ =?utf-8?B?V3FnNmIzQ3l6dFMwZGZNNzZrVjBaTnJjUVppbTRVUGl5djVlZXkrVXBKdDdq?=
+ =?utf-8?B?Z01WMnhSU1NkZGo5Q3NvejFyeUZ4WTErMUN1TDVTU2dnVTRZa2d4SHJOdTdK?=
+ =?utf-8?B?Wlp5bUUxYTBDZ2RmdE5oaCtVd0xwR2xUU0M0SGZSbkdLbTJUc3FDNWhMUXB4?=
+ =?utf-8?B?ZXRxVkNURWt6MXRaczVKTzZWWmZzQVFLcTVjcy9kSlNiUFJSbXdDYUhWQ254?=
+ =?utf-8?B?Rnc5a1JXQTFQOU1ObXk5ZWxKczZvcEV4TGlUUDBWYzBNTXRuN0JReDRLQitw?=
+ =?utf-8?B?WlRnbmlrMVdKaW9WUzZXRWw3OEtuWmdhTndmZUZ2MDRYZGRpQlF6KzI1RUhW?=
+ =?utf-8?B?VTAzeVQyWXNQalF4empHTmd4Vk96NTEwSUpSdmVPSTZpOFVYQ09NK1B2Wk5K?=
+ =?utf-8?B?TW9IUTdBOVRDdnNGaUhvblhZWGplVW9rcVR2UjZzeFpxdDBkQlpkMzZJL1hD?=
+ =?utf-8?B?cVpXb1F3eUo4aFBBNnc1SjYwQ09rODVKRUZNTjhyZis3dysyTzBQVjdyRUNr?=
+ =?utf-8?B?VG1nRTE3S2hsUXZkRk5tRndjM2ptSUNjeTlSRDUzaWViNzJjMi9nK0xRNVdU?=
+ =?utf-8?B?WkVyWmZyM2JuWjRZYWg4ck5WT1NqTDI5TVp3VzJyeXBBd29xdXhnZjBzb2Rm?=
+ =?utf-8?B?U0x1aWJKT3N4WFphcmVxNWdzWStOV3U0cEV5dEpBdm5PdFFsYmtrR3lHclls?=
+ =?utf-8?B?NUJvQnJvUllVMGdUZmtXeTNFVUM2RCtuUjRWalZNWlB2dGwybUZjWVpXNzZQ?=
+ =?utf-8?B?eVp6QTNkUWJXQnpadlErNEkycjdaaUtndktDTjYxeDdGcFMrNC9XeWdKVkQz?=
+ =?utf-8?B?dUxhQy9UYlBJNkJrUExBNzdsYXRUKzdSNTRDWXpNNzRubW5mVkp1TTZOdmNz?=
+ =?utf-8?B?SXpGeXR4cnV4bGV1RXpjWGUyN29SZXNHblVYVHdMYTdyaGpSaENtcWVRZzVU?=
+ =?utf-8?B?NzlicHdtWlZuNU1uZVc4QWtiOU9ZQi8zbWVLMW14dXNtdjhIY01peng0UWFk?=
+ =?utf-8?B?TVFoa1RxTHBIRDBqVWNueXFQVGhjTFh5dzU1L3paQ2IzYVB1OFpuVDloRFpT?=
+ =?utf-8?B?T0JXMEZFWDNLbGxlUE9UZ0lhZjh2dTJOd29PY3IzWWFvL1VBRU9vclQvVWQ0?=
+ =?utf-8?B?RjhOazhSNm4vYVVKbEdhZ00zSE9yOE50MFl1emdkZitRaDNTOG85aVZ1dUVY?=
+ =?utf-8?B?bTQ3SXIrVm9zZ1dNZTg1b0RIWjI5enZBbXhzTkpGckRDQkZjTDhZU09GcW9w?=
+ =?utf-8?B?TElOSE5kWHg3TDZ3cFZKQmhZc2xRUm9qVTNRdXVlajlTRkt1NzN4UGNJOW1o?=
+ =?utf-8?B?UUtFVVJaYnV5TENidXM1QWUyclEvcm1mdjBiQXhJcUE4MDVJM2tTUTFLV0p1?=
+ =?utf-8?B?UTF1cnRUSDl6L2tHcnI3U2JhY0txZVdoR1V5VDczNkRkeTdWQ2h4VFVTbDlv?=
+ =?utf-8?B?VFZFb2lNbVE1YmNWYnU3aVlCQTNRQnpSQjcwUWN6VnpsQlJ1aDRmcjl3TExm?=
+ =?utf-8?B?MGVwZUtSMXF0WjNXMUlMVmVMTVJEYVd4MWFLRUpCVzIvbXBtSU1wcGpMeVZV?=
+ =?utf-8?B?RSt1RG5tSGVhaEh6NGNXMUE1WXZCcjlCTS9OMjBLRnNWaXM0dEN0QTRRcmpD?=
+ =?utf-8?B?enc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a8a283b-d104-445c-3df5-08de15e0e91b
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2025 05:14:46.3413
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zVeKbkhkS4kg+0WGVqv0iXhd4/culKMh6uk0ye29C3XyhssjkMmf/QhzZuQtV6+EOKTOUG9KpfWC9Ut9WnTgug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB9488
+X-OriginatorOrg: intel.com
 
-This is a multi-part message in MIME format.
---------------uIY5CDn6Kav6D1lPwMJCJr3v
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+hi, Qu,
 
-Hello,
+On Mon, Oct 27, 2025 at 06:19:59PM +1030, Qu Wenruo wrote:
+> 
+> 
+> 在 2025/10/27 18:11, kernel test robot 写道:
+> > 
+> > 
+> > Hello,
+> > 
+> > kernel test robot noticed a 9.5% regression of postmark.transactions on:
+> > 
+> > 
+> > commit: b7fdfd29a136a17c5c8ad9e9bbf89c48919c3d19 ("btrfs: only set the device specific options after devices are opened")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > 
+> > 
+> > we are in fact not sure what's the connection between this change and the
+> > postmark.transactions performance. still report out due to below checks.
+> > 
+> > [still regression on      linus/master 4bb1f7e19c4a1d6eeb52b80acff5ac63edd1b91d]
+> > [regression chould be solved by reverting this commit on linus/master head]
+> > [still regression on linux-next/master 72fb0170ef1f45addf726319c52a0562b6913707]
+> > 
+> > testcase: postmark
+> > config: x86_64-rhel-9.4
+> > compiler: gcc-14
+> > test machine: 224 threads 4 sockets Intel(R) Xeon(R) Platinum 8380H CPU @ 2.90GHz (Cooper Lake) with 192G memory
+> > parameters:
+> > 
+> > 	disk: 1HDD
+> > 	fs: btrfs
+> > 	fs1: nfsv4
+> > 	number: 4000n
+> > 	trans: 10000s
+> > 	subdirs: 100d
+> > 	cpufreq_governor: performance
+> > 
+> > 
+> > 
+> > 
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <oliver.sang@intel.com>
+> > | Closes: https://lore.kernel.org/oe-lkp/202510271449.efa21738-lkp@intel.com
+> > 
+> > 
+> > Details are as below:
+> > -------------------------------------------------------------------------------------------------->
+> > 
+> > 
+> > The kernel config and materials to reproduce are available at:
+> > https://download.01.org/0day-ci/archive/20251027/202510271449.efa21738-lkp@intel.com
+> > 
+> > =========================================================================================
+> > compiler/cpufreq_governor/disk/fs1/fs/kconfig/number/rootfs/subdirs/tbox_group/testcase/trans:
+> >    gcc-14/performance/1HDD/nfsv4/btrfs/x86_64-rhel-9.4/4000n/debian-13-x86_64-20250902.cgz/100d/lkp-cpl-4sp2/postmark/10000s
+> > 
+> > commit:
+> >    53a4acbfc1 ("btrfs: fix memory leak on duplicated memory in the qgroup assign ioctl")
+> 
+> This is definitely not related.
 
-I've got issues following an apparently successful replace of a failed 
-drive in RAID6.
+just want to make a clarification here. we report regression based on bisect
+results. this report is upon b7fdfd29a1. 53a4acbfc1 is the parent of b7fdfd29a1,
+it's a 'good' commit in bisect.
 
-The replace was interrupted a couple of times.  First by motherboard 
-failure. Subsequent tries aborted due uncorrectable errors caused by MB 
-fail. Corrupted files were identified and deleted, and the replace 
-restarted.
+below table gives out the comparison between 53a4acbfc1 and b7fdfd29a1, such
+like
 
-Replace and a subsequent balance finished successfully. Now on reboot, 
-mount attempts fail and return errors indicating array is still looking 
-for replaced disk.
+      19.61            -9.5%      17.75        postmark.transactions
 
-Attached are relevant checks I thought to run, as well as the errors and 
-dmesg output following attempts to mount with or without the degraded option
+which means we run same tests upon 53a4acbfc1 and b7fdfd29a1.
+the score of postmark.transactions for b7fdfd29a1 is 17.75 (average of at least
+6 runs)
+the score for 53a4acbfc1 is 19.61.
 
-There's a line in dmesg about "btrfs device scan --forget" but running 
-that on the new device does not result in a successful mount. It can't 
-be run on the failed device, as that is no longer in the system.
+and this is the reason we report as in title
+"b7fdfd29a1: postmark.transactions 9.5% regression"
 
-My Best,
+> 
+> >    b7fdfd29a1 ("btrfs: only set the device specific options after devices are opened")
+> 
+> But this may affect performance, because without this fix, btrfs always
+> falls back to `ssd` mount option
+> 
+> Now it will properly detect rotating devices, and won't set `ssd` mount
+> option by default.
+> 
+> But if this is causing performance drop, we should really consider if `ssd`
+> should be the only mode we support.
 
-Nathan
+thanks a lot for information!
 
---------------uIY5CDn6Kav6D1lPwMJCJr3v
-Content-Type: text/plain; charset=UTF-8; name="btrfs command output.txt"
-Content-Disposition: attachment; filename="btrfs command output.txt"
-Content-Transfer-Encoding: base64
-
-CiMjI0tlcm5lbCBWZXJzaW9uCnVuYW1lIC1yCjYuMTIuNDgrZGViMTMtYW1kNjQKCgojIyNC
-VFJGUyB2ZXJzaW9uCmJ0cmZzLXByb2dzIHY2LjE0Ci1FWFBFUklNRU5UQUwgLUlOSkVDVCAt
-U1RBVElDICtMWk8gK1pTVEQgK1VERVYgK0ZTVkVSSVRZICtaT05FRCBDUllQVE89YnVpbHRp
-bgoKCiMjI0JUUkZTIFNob3cKYnRyZnMgZmkgc2hvdwpMYWJlbDogJ0FDNUItYnRyZnMnICB1
-dWlkOiAzODNkNmE3ZC0wODI1LTRlZjktOTQ0MS03NmM0YTk1MWIxMTEKICAgICAgICBUb3Rh
-bCBkZXZpY2VzIDIgRlMgYnl0ZXMgdXNlZCA4My40N0dpQgogICAgICAgIGRldmlkICAgIDEg
-c2l6ZSAxMDkuOTFHaUIgdXNlZCA5NC4wM0dpQiBwYXRoIC9kZXYvbWFwcGVyL2NyeXB0LUFD
-NUIKICAgICAgICBkZXZpZCAgICAyIHNpemUgMTA5LjkxR2lCIHVzZWQgOTQuMDNHaUIgcGF0
-aCAvZGV2L21hcHBlci9jcnlwdC1BQzVBCgpMYWJlbDogJzgzOUUtMTJUQicgIHV1aWQ6IDg0
-ZGJlZmQ2LWJmODctNGE4ZS05MjdkLWEzYjRjMDYwYjMyNgogICAgICAgIFRvdGFsIGRldmlj
-ZXMgNCBGUyBieXRlcyB1c2VkIDUuNTlUaUIKICAgICAgICBkZXZpZCAgICAwIHNpemUgMTAu
-OTFUaUIgdXNlZCAzLjE4VGlCIHBhdGggL2Rldi9tYXBwZXIvY3J5cHQtSjlXRS0xMlRCCiAg
-ICAgICAgZGV2aWQgICAgMSBzaXplIDEwLjkxVGlCIHVzZWQgMy4xNVRpQiBwYXRoIC9kZXYv
-bWFwcGVyL2NyeXB0LTgzOUUtMTJUQgogICAgICAgIGRldmlkICAgIDMgc2l6ZSAxMC45MVRp
-QiB1c2VkIDMuMTZUaUIgcGF0aCAvZGV2L21hcHBlci9jcnlwdC05SjRFLTEyVEIKICAgICAg
-ICBkZXZpZCAgICA0IHNpemUgMTAuOTFUaUIgdXNlZCAzLjE2VGlCIHBhdGggL2Rldi9tYXBw
-ZXIvY3J5cHQtTDIxSC0xMlRCCgojIyNCVFJGUyBDaGVjawpidHJmcyBjaGVjayAvZGV2L2Rp
-c2svYnktbGFiZWwvODM5RS0xMlRCCk9wZW5pbmcgZmlsZXN5c3RlbSB0byBjaGVjay4uLgp3
-YXJuaW5nLCBkZXZpY2UgMiBpcyBtaXNzaW5nCgpDaGVja2luZyBmaWxlc3lzdGVtIG9uIC9k
-ZXYvZGlzay9ieS1sYWJlbC84MzlFLTEyVEIKVVVJRDogODRkYmVmZDYtYmY4Ny00YThlLTky
-N2QtYTNiNGMwNjBiMzI2ClsxLzhdIGNoZWNraW5nIGxvZyBza2lwcGVkIChub25lIHdyaXR0
-ZW4pClsyLzhdIGNoZWNraW5nIHJvb3QgaXRlbXMKWzMvOF0gY2hlY2tpbmcgZXh0ZW50cwpF
-UlJPUjogc3VwZXIgdG90YWwgYnl0ZXMgNDgwMDA0NzkwMDI2MjQgc21hbGxlciB0aGFuIHJl
-YWwgZGV2aWNlKHMpIHNpemUgNjAwMDA1OTg3NTMyODAKRVJST1I6IG1vdW50aW5nIHRoaXMg
-ZnMgbWF5IGZhaWwgZm9yIG5ld2VyIGtlcm5lbHMKRVJST1I6IHRoaXMgY2FuIGJlIGZpeGVk
-IGJ5ICdidHJmcyByZXNjdWUgZml4LWRldmljZS1zaXplJwpbNC84XSBjaGVja2luZyBmcmVl
-IHNwYWNlIHRyZWUKWzUvOF0gY2hlY2tpbmcgZnMgcm9vdHMKWzYvOF0gY2hlY2tpbmcgb25s
-eSBjc3VtcyBpdGVtcyAod2l0aG91dCB2ZXJpZnlpbmcgZGF0YSkKWzcvOF0gY2hlY2tpbmcg
-cm9vdCByZWZzCls4LzhdIGNoZWNraW5nIHF1b3RhIGdyb3VwcyBza2lwcGVkIChub3QgZW5h
-YmxlZCBvbiB0aGlzIEZTKQpmb3VuZCA2MTQyMjE1NjMwODQ4IGJ5dGVzIHVzZWQsIGVycm9y
-KHMpIGZvdW5kCnRvdGFsIGNzdW0gYnl0ZXM6IDExOTQ5NjEzNDY0CnRvdGFsIHRyZWUgYnl0
-ZXM6IDI0MDEzNTM3MjgwCnRvdGFsIGZzIHRyZWUgYnl0ZXM6IDk1NzY2OTM3NjAKdG90YWwg
-ZXh0ZW50IHRyZWUgYnl0ZXM6IDExODc4NDAwMDAKYnRyZWUgc3BhY2Ugd2FzdGUgYnl0ZXM6
-IDMwODY2MTY5NzcKZmlsZSBkYXRhIGJsb2NrcyBhbGxvY2F0ZWQ6IDEzMzY3NjkzNDkxODE0
-NAogcmVmZXJlbmNlZCAxMDk3MDY1MzQ1MDI0MAoKCiMjIyBNb3VudCB3L28gZGVncmFkZWQK
-IG1vdW50IC1vIHN1YnZvbGlkPTI2MiAvZGV2L21hcHBlci9jcnlwdC1KOVdFLTEyVEIgL21l
-ZGlhLzEyLXBvb2wvCiBtb3VudDogL21lZGlhLzEyLXBvb2w6IGZzY29uZmlnKCkgZmFpbGVk
-OiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5LgogICAgICAgZG1lc2coMSkgbWF5IGhhdmUg
-bW9yZSBpbmZvcm1hdGlvbiBhZnRlciBmYWlsZWQgbW91bnQgc3lzdGVtIGNhbGwuCmRtZXNn
-CmZpcnN0IG1vdW50IG9mIGZpbGVzeXN0ZW0gODRkYmVmZDYtYmY4Ny00YThlLTkyN2QtYTNi
-NGMwNjBiMzI2ClsgODA2Ni44NjQ1NTRdIEJUUkZTIGluZm8gKGRldmljZSBkbS0yKTogdXNp
-bmcgeHhoYXNoNjQgKHh4aGFzaDY0LWdlbmVyaWMpIGNoZWNrc3VtIGFsZ29yaXRobQpbIDgw
-NjYuODY5OTIzXSBCVFJGUyBlcnJvciAoZGV2aWNlIGRtLTIpOiBkZXZpZCAyIHV1aWQgYmRm
-ZmY1NTUtYzljYi00ZDJlLTliMDAtM2ZlMTk0Yzk4OTMwIGlzIG1pc3NpbmcKWyA4MDY2Ljg3
-MDAyM10gQlRSRlMgZXJyb3IgKGRldmljZSBkbS0yKTogZmFpbGVkIHRvIHJlYWQgY2h1bmsg
-dHJlZTogLTIKCiMjI01vdW50IHcvIGRlZ3JhZGVkCm1vdW50IC10IGJ0cmZzIC1vIHN1YnZv
-bGlkPTI2Mixjb21wcmVzcz16c3RkOjUsZGVncmFkZWQgL2Rldi9kaXNrL2J5LWxhYmVsLzgz
-OUUtMTJUQiAvcm9vdC9tZWRpYS8xMi1wb29sL15DCm1vdW50OiBtb3VudGluZyAvZGV2L2Rp
-c2svYnktbGFiZWwvODM5RS0xMlRCIG9uIC9yb290L21lZGlhLzEyLXBvb2wvIGZhaWxlZDog
-U3RydWN0dXJlIG5lZWRzIGNsZWFuaW5nCgpkbWVzZwpbIDE1MDMuOTIyNDgwXSBCVFJGUyBp
-bmZvIChkZXZpY2UgZG0tMik6IGZpcnN0IG1vdW50IG9mIGZpbGVzeXN0ZW0gODRkYmVmZDYt
-YmY4Ny00YThlLTkyN2QtYTNiNGMwNjBiMzI2ClsgMTUwMy45MjI1MTBdIEJUUkZTIGluZm8g
-KGRldmljZSBkbS0yKTogdXNpbmcgeHhoYXNoNjQgKHh4aGFzaDY0LWdlbmVyaWMpIGNoZWNr
-c3VtIGFsZ29yaXRobQpbIDE1MDMuOTI1NDg5XSBCVFJGUyB3YXJuaW5nIChkZXZpY2UgZG0t
-Mik6IGRldmlkIDIgdXVpZCBiZGZmZjU1NS1jOWNiLTRkMmUtOWIwMC0zZmUxOTRjOTg5MzAg
-aXMgbWlzc2luZwpbIDE1MDMuOTQ0MTA1XSBCVFJGUyB3YXJuaW5nIChkZXZpY2UgZG0tMik6
-IGRldmlkIDIgdXVpZCBiZGZmZjU1NS1jOWNiLTRkMmUtOWIwMC0zZmUxOTRjOTg5MzAgaXMg
-bWlzc2luZwpbIDE1MDQuNjI2ODkzXSBCVFJGUyBpbmZvIChkZXZpY2UgZG0tMik6IGJkZXYg
-PG1pc3NpbmcgZGlzaz4gZXJyczogd3IgMzM5OTI1NywgcmQgMzAsIGZsdXNoIDQ3OSwgY29y
-cnVwdCAwLCBnZW4gMApbIDE1MDQuNjI2OTIxXSBCVFJGUyBpbmZvIChkZXZpY2UgZG0tMik6
-IGJkZXYgL2Rldi9kbS01IGVycnM6IHdyIDMzOTczNTMsIHJkIDAsIGZsdXNoIDQ3MCwgY29y
-cnVwdCAwLCBnZW4gMApbIDE1MDQuNjI2OTM2XSBCVFJGUyBpbmZvIChkZXZpY2UgZG0tMik6
-IGJkZXYgL2Rldi9kbS0yIGVycnM6IHdyIDAsIHJkIDAsIGZsdXNoIDAsIGNvcnJ1cHQgNDcs
-IGdlbiAwClsgMTUwNC42MjY5NDldIEJUUkZTIGluZm8gKGRldmljZSBkbS0yKTogYmRldiAv
-ZGV2L2RtLTMgZXJyczogd3IgMCwgcmQgMCwgZmx1c2ggMCwgY29ycnVwdCAzMzUsIGdlbiAw
-ClsgMTUwNC42MjY5NjNdIEJUUkZTIGluZm8gKGRldmljZSBkbS0yKTogYmRldiAvZGV2L2Rt
-LTQgZXJyczogd3IgMjIzOTAsIHJkIDMxMjQsIGZsdXNoIDY4LCBjb3JydXB0IDMyNzc0LCBn
-ZW4gMApbIDE1MDQuNjI2OTc5XSBCVFJGUyBlcnJvciAoZGV2aWNlIGRtLTIpOiByZXBsYWNl
-IHdpdGhvdXQgYWN0aXZlIGl0ZW0sIHJ1biAnZGV2aWNlIHNjYW4gLS1mb3JnZXQnIG9uIHRo
-ZSB0YXJnZXQgZGV2aWNlClsgMTUwNC42MjY5ODhdIEJUUkZTIGVycm9yIChkZXZpY2UgZG0t
-Mik6IGZhaWxlZCB0byBpbml0IGRldl9yZXBsYWNlOiAtMTE3ClsgMTUwNC42MzgyNDldIEJU
-UkZTIGVycm9yIChkZXZpY2UgZG0tMik6IG9wZW5fY3RyZWUgZmFpbGVkOiAtMTE3CgoK
-
---------------uIY5CDn6Kav6D1lPwMJCJr3v--
+> 
+> Thanks,
+> Qu
+> 
+> > 
+> > 53a4acbfc1de85fa b7fdfd29a136a17c5c8ad9e9bbf
+> > ---------------- ---------------------------
+> >           %stddev     %change         %stddev
+> >               \          |                \
+> >        2010           +10.5%       2222        nfsstat.Client.nfs.v4.open_noat
+> >       97983 ± 11%     +18.5%     116101        numa-numastat.node1.other_node
+> >       97983 ± 11%     +18.5%     116101        numa-vmstat.node1.numa_other
+> >       16001 ±  5%      -7.5%      14797 ±  5%  sched_debug.cfs_rq:/.load.avg
+> >     1474354 ±  3%      +9.9%    1620281 ±  4%  sched_debug.cpu.avg_idle.avg
+> >      756151 ±  3%     +10.0%     831539 ±  4%  sched_debug.cpu.max_idle_balance_cost.avg
+> >        3585            -2.6%       3490        perf-stat.i.context-switches
+> >        6141 ±  2%      +4.0%       6385        perf-stat.i.cycles-between-cache-misses
+> >        5796 ±  2%      +3.9%       6024        perf-stat.overall.cycles-between-cache-misses
+> >        3580            -2.6%       3486        perf-stat.ps.context-switches
+> >   9.548e+11            +7.3%  1.025e+12        perf-stat.total.instructions
+> >      136494            +4.3%     142419        proc-vmstat.nr_inactive_file
+> >      136494            +4.3%     142419        proc-vmstat.nr_zone_inactive_file
+> >     2784208            +4.8%    2917180        proc-vmstat.numa_hit
+> >     2435763            +5.5%    2568673        proc-vmstat.numa_local
+> >     3042276            +5.1%    3196281        proc-vmstat.pgalloc_normal
+> >     2627503            +6.9%    2808220        proc-vmstat.pgfault
+> >     2754381            +5.4%    2903034        proc-vmstat.pgfree
+> >       97857            +6.3%     104058        proc-vmstat.pgreuse
+> >        9.80            -9.4%       8.88        postmark.creation_mixed_trans
+> >      112312            -7.0%     104473        postmark.data_read
+> >      203502            -7.0%     189298        postmark.data_written
+> >        9.80            -9.4%       8.88        postmark.deletion_mixed_trans
+> >        9.73            -9.5%       8.80        postmark.files_appended
+> >       12.59            -7.0%      11.70        postmark.files_created
+> >       12.59            -7.0%      11.70        postmark.files_deleted
+> >        9.87            -9.5%       8.93        postmark.files_read
+> >      715.35            +7.5%     768.93        postmark.time.elapsed_time
+> >      715.35            +7.5%     768.93        postmark.time.elapsed_time.max
+> >       51508            -1.6%      50690        postmark.time.voluntary_context_switches
+> >       19.61            -9.5%      17.75        postmark.transactions
+> > 
+> > 
+> > 
+> > 
+> > Disclaimer:
+> > Results have been estimated based on internal Intel analysis and are provided
+> > for informational purposes only. Any difference in system hardware or software
+> > design or configuration may affect actual performance.
+> > 
+> > 
+> 
 
