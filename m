@@ -1,173 +1,148 @@
-Return-Path: <linux-btrfs+bounces-18372-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18373-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19B02C11F31
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Oct 2025 00:15:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13482C1225C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Oct 2025 01:10:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 01E1B4F54C5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Oct 2025 23:15:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5F6E19C177A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Oct 2025 00:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B982E6CD0;
-	Mon, 27 Oct 2025 23:15:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4A19176ADE;
+	Tue, 28 Oct 2025 00:10:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hXfKw2JT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FxaaZHxe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D223E272816
-	for <linux-btrfs@vger.kernel.org>; Mon, 27 Oct 2025 23:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6671531C8
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 Oct 2025 00:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761606947; cv=none; b=rHGt9GJQXnv956N01IJQY6sdD5wt7H+GxPzaXVhIT2Etn+UBFYF/HremjLy1sCda1x1j1XgoOKAFYFOBIgE3/yXJq7q7EogIvK/LZkEQQceajCIKOh8zECoM3kKrUo6Z54OCIf9Vv9oZYXStMGjl0SwCErtT2EQrTQs6ieH0/w4=
+	t=1761610212; cv=none; b=gf+FupRJkXBJRdMkXMUGunsZ/lAiW1tDNK5BY6WqiePc4x1r0faGBdpzkbbWwVqNlTEYmZG1GRh+ujAQiPRzgPp7VX3eKrJ7GXYppn7BgbcHZdn/jx4dIbGBJ3o9s4BRtXcUqIXJxJr1yLpjQtFzI7M5nIwc6EqKM7IR6litnww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761606947; c=relaxed/simple;
-	bh=d5DofytqRfCKTrq+GxEKkaFtA8d7f8XAgjVYlLkKR3A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PaNzT66dTVqW66QVPt23m78r1Mf6uG5uA/RLJt09IX5xWvvpufJSViOI9I5VmxlY/6UfhSBnqGQYQadPQypUl2WOw1fEdEYTyRB6Ffj1h8qWEYg2V8D/7kCV+mnmrtadvCSUojFE22M56nj6AT45NWcWN5eSMF2DcUD5ZDwE4SA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hXfKw2JT; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1761606945; x=1793142945;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=d5DofytqRfCKTrq+GxEKkaFtA8d7f8XAgjVYlLkKR3A=;
-  b=hXfKw2JT1POcgf5MY7RDC6dyRlbMQ+lDERbSjhblkySVIYbCHDiWVl79
-   mnmm7T/Ot2JQ05eF0kJ593acXrFoehHOff0zC6sIyJo6qshy4w1lVFtIj
-   f2r3JO6SNk6dQ6OPXhI8U6CH0uDnkOTeS/wMU3fs1/Xf77ft+7fpk6q3/
-   7oW1SphIkPvDQVA3gtFwMXSOoRml2v4t+ClpsdSMJnosRm9X/Lih/+xTH
-   qakGYfeYf4cn1XBmiGYWYxHXPSPM3s4zO7oHMsqx2IYSbl3Ioe3ujFxhv
-   XMzZZWfYLA1M+yI8cLAdIda7PmD0GwjuoOg3lX8X0sixHXMl9kde6ucDX
-   Q==;
-X-CSE-ConnectionGUID: zniOLDOOSSush18Q7F0GlA==
-X-CSE-MsgGUID: dbziYUPgTnKz8Vy7XQ6Kmw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="62730279"
-X-IronPort-AV: E=Sophos;i="6.19,259,1754982000"; 
-   d="scan'208";a="62730279"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2025 16:15:45 -0700
-X-CSE-ConnectionGUID: X58UMSWxQN+g7mAUJMBYIw==
-X-CSE-MsgGUID: v1zDwGN6Rw+Rbf8jkbRP/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,259,1754982000"; 
-   d="scan'208";a="185644880"
-Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
-  by fmviesa009.fm.intel.com with ESMTP; 27 Oct 2025 16:15:44 -0700
-Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1vDWRC-000IZ7-0D;
-	Mon, 27 Oct 2025 23:15:42 +0000
-Date: Tue, 28 Oct 2025 07:14:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: Re: [PATCH 2/2] btrfs: zoned: fix stripe width calculation
-Message-ID: <202510280755.pneCp9oR-lkp@intel.com>
-References: <20251027072758.1066720-3-naohiro.aota@wdc.com>
+	s=arc-20240116; t=1761610212; c=relaxed/simple;
+	bh=gkU3kHClteexEwJVha+mekEyuBvMJVJAtdgB2babS5E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ON3YZaBcoAd8w/nJNP+nClxkj9zhqKfzqLgj7wXkshJ2cScBgVWv0BaIHFrUCZY89HuFrr1zDPBu/e1P7mJgy++mNpFOPEaNwyS9cYBjw2fNfRHu1R+qnUADLCP31D9gxxtqs8pW1JTH5huNLYMkmgmY8GWubvC5Rna1EWSXO4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FxaaZHxe; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b550a522a49so4415652a12.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Oct 2025 17:10:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761610207; x=1762215007; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=CTGohy2B7ZQJuFT8GOyysRTnqdBKTrqleBmozqj7fU0=;
+        b=FxaaZHxelZV49zPWj3NYFgN1rq91w5gyqxq1OI3Gh03JKJRfX/SybCJpP9rS1B+6ET
+         Ca8svy0IMCyyuF5puwGZTNpl5B1iFMeNf9RHLIK7WcfQEjZBW7Fg9LkWZtbcB2UuLDjB
+         Cfn5WK/TByu6rSUXmck+XGjjLfe2rakZrw23OrfTXplt0R1WTDqtNVt4feMB3TVJ641o
+         14e0lMYM8rPxrFRZchuwP7Gi9qrarLt3kdu53vTRmw5EKPHb8fxhYZOFss5U29/d4UAx
+         /nZUQ/qKOapMqFR5FvuVVMYEpwGtk2HfLECsFrhjLzNKqo01uMPX0kiVAuY0/P3rLiWY
+         0jRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761610207; x=1762215007;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CTGohy2B7ZQJuFT8GOyysRTnqdBKTrqleBmozqj7fU0=;
+        b=ueoROzFJttBrml2tnoaY0rWSAI2SiyJIDxhER8BspW8LDLLtFF3WXFMwD3dNFPufA2
+         7QLnX2wmWAiQKK7+s6kBLcUHWFoQKhrllstdAhc+AFQEass6dGxuDAq808PARJU0jJkD
+         s0mOHgv8hQNJsmMQOPJ1gmYMSOyrmmF1SUcJ8sVsJ4uSXJUDWmarn61J3109Eqt+vhOl
+         9WeceSyuIhTi2kkkrI9gWLpIvwGc1AFA6SkvZxh0xN0NmriGuSfzIB2eNfTAfmaeZa3N
+         hXNPg14xHtJsHPXS8trvkiAuwTpeEE+0aC0lPWiTPahnP9JVIvdzWP7yy7kjlkmTQIhl
+         HvpA==
+X-Forwarded-Encrypted: i=1; AJvYcCV0cRFZ38jzlkztGyDoloIvf3QK4732pJKXuGhhLUORydQ1cg7urQeX/GFEycdxB1x+ol0xazXuwg2b8w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YydQKisLk8xSq79xNSvsW8d8QZN9YDtreOu9ZMznKzyB8+XtA1U
+	v7//GwshAK2VUGjiCiPr7n9C1oIWKz0+BGyHl8yMPmd6ZqWn7k/f2hYs
+X-Gm-Gg: ASbGncuVLSEuuQa0bEIDhlrWbg6dUSO+dktD8n6cRkCZBbInN7mAdaw/wLoY8W16fkb
+	yRgygoYzyafgWIz+ToIDkTI5Kw9BwLHGUGiTU8jwb+h5p9vgsHbNZM+da/8XDUfnpT6uNh6GnFZ
+	Ql8jaZbMgnsi4pqneOkxU6FLwsg+x6UyrJzwdNnvuTWtQLr94L6xiHslPU7D0WC9O+uYHv4dVLP
+	SkTzt5kHuODgPNxEGUBuD75pGCDaQaCduZwjQfZ9eeMBSkJf/7mxCdLFI05QWmJmZ9hCP8zRVQ7
+	xbjuAg0zFISJi+JBbm2Q8VY7pf9wwu59YzE5f+9vsHBi3IlV4mO37MM8CbggoDNuvJq1fxsisII
+	iZRWHxcvqSombFvpxZbgzSNe5cRMgDwuWLLmQOv2CZ5nzrp3Ka0mBIM+wPQ9VriHdG+69PACQD+
+	+tBgqmx1fPZhx2bbaRvvegW+EC9/VnhoWGhmzEwoVGDxy8+pw=
+X-Google-Smtp-Source: AGHT+IELo2lvqijrOfeBeCqC7ctRfZOwa0XT3BVcFP/NeXcmA+SQRcJAbb1Y30HcrF2TDCALENHnxg==
+X-Received: by 2002:a17:902:e750:b0:26d:d860:3dae with SMTP id d9443c01a7336-294cb36c08cmr21818585ad.3.1761610206690;
+        Mon, 27 Oct 2025 17:10:06 -0700 (PDT)
+Received: from [192.168.50.87] ([49.245.38.171])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498cf3b64sm97582155ad.3.2025.10.27.17.10.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Oct 2025 17:10:06 -0700 (PDT)
+Message-ID: <dc376ee0-c2ea-43a6-a1d2-0d0fae395011@gmail.com>
+Date: Tue, 28 Oct 2025 08:10:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251027072758.1066720-3-naohiro.aota@wdc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: btrfs fragmentation
+To: Ross Boylan <rossboylan@stanfordalumni.org>, linux-btrfs@vger.kernel.org
+References: <CAK3NTRCBV0jTPrHb_tmWzdrLqx9xnvKpcqA7-_Cxm9TfJAGGSQ@mail.gmail.com>
+Content-Language: en-US
+From: Anand Jain <anajain.sg@gmail.com>
+In-Reply-To: <CAK3NTRCBV0jTPrHb_tmWzdrLqx9xnvKpcqA7-_Cxm9TfJAGGSQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Naohiro,
+On 28/10/25 06:40, Ross Boylan wrote:
+> When recording over-the-air television the results are typically very
+> fragmented when saved to btrfs, e.g., several thousand segments for
+> 6GB.
+> This occurred even on a large, nearly empty, filesystem of 5.5TB.
+> Automatic defragmentation doesn't seem to make much difference,
+> although manual defragmentation does.
+> 
+> I first noticed the fragmentation when I started getting messages that
+> the writes were taking a long time, although I have not seen those
+> recently.
+> 
+> It seems this application (the one recording the TV) may not be a good
+> fit for btrfs.  The developers recommend xfs, but it would be nice to
+> have the
+> more flexible volume management of btrfs.
+> 
+> I'm curious if anyone here has any thoughts or advice on this.
+> I'd appreciate cc on replies.
+> 
+> DETAILS
+> New partition on Seagate Exos x18 (spinning disk).
+> btrfs --version -> 5.10
+> uname -a -> Linux barley 5.10.0-36-amd64 #1 SMP Debian 5.10.244-1
+> (2025-09-29) x86_64 GNU/Linux
+> under Debian 11/bullseye, (current stable release is 13.1, so a bit old)
 
-kernel test robot noticed the following build errors:
+  The kernel probably needs an update; it looks like it's still using 
+space_cache=v1.
 
-[auto build test ERROR on kdave/for-next]
-[also build test ERROR on linus/master v6.18-rc3 next-20251027]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> The entire btrfs filesystem is based on a single partition: no RAID,
+> no compression, no snapshots, no subvolumes.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Naohiro-Aota/btrfs-zoned-fix-zone-capacity-calculation/20251027-153738
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/20251027072758.1066720-3-naohiro.aota%40wdc.com
-patch subject: [PATCH 2/2] btrfs: zoned: fix stripe width calculation
-config: i386-randconfig-011-20251028 (https://download.01.org/0day-ci/archive/20251028/202510280755.pneCp9oR-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251028/202510280755.pneCp9oR-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202510280755.pneCp9oR-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   ld: fs/btrfs/zoned.o: in function `btrfs_load_block_group_raid0':
->> fs/btrfs/zoned.c:1540:(.text+0x3a12): undefined reference to `__udivmoddi4'
-   ld: fs/btrfs/zoned.o: in function `btrfs_load_block_group_raid10':
-   fs/btrfs/zoned.c:1593:(.text+0x3c0b): undefined reference to `__udivmoddi4'
+  Most importantly, could you please try disabling CoW for sequential 
+writes using -o nodatacow if that hasn't been done yet.
 
 
-vim +1540 fs/btrfs/zoned.c
+Thanks, Anand
 
-  1518	
-  1519	static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
-  1520						struct btrfs_chunk_map *map,
-  1521						struct zone_info *zone_info,
-  1522						unsigned long *active,
-  1523						u64 last_alloc)
-  1524	{
-  1525		struct btrfs_fs_info *fs_info = bg->fs_info;
-  1526		u64 stripe_nr = 0, stripe_offset = 0;
-  1527		u32 stripe_index = 0;
-  1528	
-  1529		if ((map->type & BTRFS_BLOCK_GROUP_DATA) && !fs_info->stripe_root) {
-  1530			btrfs_err(fs_info, "zoned: data %s needs raid-stripe-tree",
-  1531				  btrfs_bg_type_to_raid_name(map->type));
-  1532			return -EINVAL;
-  1533		}
-  1534	
-  1535		if (last_alloc) {
-  1536			u32 factor = map->num_stripes;
-  1537	
-  1538			stripe_nr = last_alloc >> BTRFS_STRIPE_LEN_SHIFT;
-  1539			stripe_offset = last_alloc & BTRFS_STRIPE_LEN_MASK;
-> 1540			stripe_index = stripe_nr % factor;
-  1541			stripe_nr /= factor;
-  1542		}
-  1543	
-  1544		for (int i = 0; i < map->num_stripes; i++) {
-  1545			if (zone_info[i].alloc_offset == WP_MISSING_DEV)
-  1546				continue;
-  1547	
-  1548			if (zone_info[i].alloc_offset == WP_CONVENTIONAL) {
-  1549	
-  1550				zone_info[i].alloc_offset = btrfs_stripe_nr_to_offset(stripe_nr);
-  1551	
-  1552				if (stripe_index > i)
-  1553					zone_info[i].alloc_offset += BTRFS_STRIPE_LEN;
-  1554				else if (stripe_index == i)
-  1555					zone_info[i].alloc_offset += stripe_offset;
-  1556			}
-  1557	
-  1558			if (test_bit(0, active) != test_bit(i, active)) {
-  1559				if (unlikely(!btrfs_zone_activate(bg)))
-  1560					return -EIO;
-  1561			} else {
-  1562				if (test_bit(0, active))
-  1563					set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &bg->runtime_flags);
-  1564			}
-  1565			bg->zone_capacity += zone_info[i].capacity;
-  1566			bg->alloc_offset += zone_info[i].alloc_offset;
-  1567		}
-  1568	
-  1569		return 0;
-  1570	}
-  1571	
+> The recordings are done by mythtv 31.0, which I believe basically
+> takes the video stream and dumps it to disk.  The developers say it
+> writes "continuously".
+> 
+> I speculate that what is going on is that it is writing small chunks
+> to disk and each chunk causes the entire underlying segment to be
+> rewritten.
+> However, I've noticed that even when I cp a complete file to btrfs it
+> ends up pretty fragmented, albeit the target filesystem in that case
+> was very full.
+> 
+> Thanks.
+> Ross Boylan
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
