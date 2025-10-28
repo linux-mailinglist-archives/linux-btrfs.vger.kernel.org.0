@@ -1,93 +1,74 @@
-Return-Path: <linux-btrfs+bounces-18374-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18375-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1337DC1225F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Oct 2025 01:13:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E344FC1273E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Oct 2025 02:00:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3C42425499
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Oct 2025 00:13:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DDF25E318E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Oct 2025 00:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F1335966;
-	Tue, 28 Oct 2025 00:13:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB67829D29D;
+	Tue, 28 Oct 2025 00:53:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="M1GkIIhN";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hKz0bG2E"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nYtAjXNn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F4BF1BC2A
-	for <linux-btrfs@vger.kernel.org>; Tue, 28 Oct 2025 00:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8484029CB3C
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 Oct 2025 00:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761610419; cv=none; b=eNKBLFBSkFpNakOBMbDvBqlZoVeUXTVa7ypEx5oEJrmmtkGtyBa4jIL4VN84zsDDXGObk1W9OgghLwctSK9MhL7tuGsBqGZyxG68jq9mZmhH7lLsR3xKob1mT+xRXJy5ZcySxSAuLWtHHFWalz96cu2rqiQyhwJY03wyZxHwbHY=
+	t=1761612811; cv=none; b=TJaHN+d23DgGnZGd5XQ2COr+WStLdabHoZMW5Rn/PF2qMwWL74piWhnAAHfFfWJC8lGbrLMKAyKlXkngXEtyGuz+LRlk3rLSAmJNj0l06wBZrMiK2+fi6i3Gm5DIv2RSELXew6VVZnw18auD2h1vcIAp851gLvjJ5EtRhfzoW4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761610419; c=relaxed/simple;
-	bh=nSmcOWNy/qgaVyvxkwO4/pI8muWuxorLhIwYBu7zyLs=;
+	s=arc-20240116; t=1761612811; c=relaxed/simple;
+	bh=2qTE1R31oXV8vSNiGcaYAHJTgjgp5WkoT/pKVFgWvco=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C1bl+doREk34GEWD79wXRg23RRTi7IYVPFz5L0k8skOhD4ksxcCs3VGlinmfkK9eHoig05PTmWV0tLlbowlBdsW9eeVmSTtYgKxao9cphpOGWk/vwgHCq7u/S2AjaPDEYpAF3CCv5PSN3xujPK38PsIkT8BNWoGl7lDu39p17RI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=M1GkIIhN; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hKz0bG2E; arc=none smtp.client-ip=103.168.172.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfout.phl.internal (Postfix) with ESMTP id 7C737EC00AD;
-	Mon, 27 Oct 2025 20:13:35 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Mon, 27 Oct 2025 20:13:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1761610415; x=1761696815; bh=GHaedRPAdy
-	KSe2zx8NV6iE07CLs7ybenV/mks4TB33E=; b=M1GkIIhNMQIDw48AryqIpKnq4D
-	Txt2wfq/ijewlkxG2rjuOljsiOrpTryzJC53Rk5JsG8lWDk4zIAUen6K1DfQUV7E
-	4FAAs3R7sGsA1ApxRI4ZhrrxsP6IwfdoTNH5VcKkcvf4EETs8Q4Vye4+RViuYyLy
-	wF3A1xyGzlwDU/YBgqi2z74Q7eISx1BJa4V9lWv54xg75irlJHbIHzGLy1zC/wQ0
-	PbyGu/S0JxcIT451XG+J7TfxNVMEGKAO7PKRtacek1/4HCf3V35K47F84VvfSbX8
-	BSqp05+ZAAJAccRbdztMlctis0PvM2aUB0nHyq/85DuR3BkbhKFPIz2UBWIg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1761610415; x=1761696815; bh=GHaedRPAdyKSe2zx8NV6iE07CLs7ybenV/m
-	ks4TB33E=; b=hKz0bG2EMHTQi7w0SxqAyKImdYs9r012iDxMUsD0MY05DSWExPh
-	b+BJq7lGHS4FTp5T+AXFE9hEjngFhOXt4Lkaks7KMTwqNoldu6woZyEN4go7mITR
-	AI2zkHR5N+Fc6xkl38DmXc15bGpynBWCoZPfsb1/jsNdxx9i1GSs6XXIqG9SOnlM
-	Ub1LB5TT2IdhHGXRJbbz+opijtT34IxAsZgAlt9LsNgNcbiVRNJtT16zH2nAMlXA
-	VwtsRWgErdTbTJwbV3/nSjXDZLuI5U9fXyzKiWxcTqecw/9T8kWEpUCIYekiL//G
-	J2w6IqwkBeFC4xXkh01fcluAHZQltT7eCUg==
-X-ME-Sender: <xms:rwoAafSBTtA8aK_59GF7JmjdvPM3PrivROk-QQKsQH48-c6hgPs-wQ>
-    <xme:rwoAaWwssndrI0NjGYsE6rDYyDNThtKU0_xunFNU-W2Tft7KzW4VZr6QIRJ1l97ep
-    1rAHjpI8iUfELsCMOuqdd2G2pOEfIYUAXgWPExAc9QfPH_huvFwtg>
-X-ME-Received: <xmr:rwoAaSfontqL3GsjNnbg_WeUWU3-e0kchEjp2c4_Y8-ZqhG7s3Yz8-tYOh-_fc6CZcVeIGEz3QT6lS_fbZNPjVMcpk4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduheelfeekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
-    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
-    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
-    oheprhhoshhssghohihlrghnsehsthgrnhhfohhruggrlhhumhhnihdrohhrghdprhgtph
-    htthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:rwoAaaIrCth7WuR7fL-1xjf-GGxYYVMr7-y4gCcci733aC0zajFr2Q>
-    <xmx:rwoAabGdpr5YAQdaQ0g5fWO-6Maudfd-L8zK6F4IWa-aiaiXx09aqw>
-    <xmx:rwoAacoVYlmcSidV7EJPTe1vAmyoLcfY4qnYoemBsN78NVR1tZCvaQ>
-    <xmx:rwoAacR1I0yLE6wzWpZl5LAecGJS1L7sI0Rb7hxG10Bw36CRObhgvw>
-    <xmx:rwoAadVO3tAwjzj-jm9Hn0Sf7nX3YPqoVEn13GCKoxUqCs1F_mNXs-Qg>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 27 Oct 2025 20:13:34 -0400 (EDT)
-Date: Mon, 27 Oct 2025 17:13:29 -0700
-From: Boris Burkov <boris@bur.io>
-To: Ross Boylan <rossboylan@stanfordalumni.org>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: btrfs fragmentation
-Message-ID: <20251028001329.GA3148826@zen.localdomain>
-References: <CAK3NTRCBV0jTPrHb_tmWzdrLqx9xnvKpcqA7-_Cxm9TfJAGGSQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sJbC95L7GWzL25c6m8buziDuHDdSD+B/0348FGemKyDwNvzIIeOmmoqOoAAx6xBT7/hOsk53NUrK3gtYhyalznPBm0loGSFCUi2xXVWxORTGfaiVnwV+rwHiTNAeuuphgv5AlKhzva03/GMhYR9GY6asZh38mYcreET0JPO/egk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nYtAjXNn; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1761612810; x=1793148810;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2qTE1R31oXV8vSNiGcaYAHJTgjgp5WkoT/pKVFgWvco=;
+  b=nYtAjXNnIB2gAXvKbGDlvyl4SiNnFnBIgVN04SdNJbPLVPun5f+pxNyQ
+   jSYOB1PTgft+2Txp+SyYuHWoXJn9rRhEgeMaHY/NnrNl2Va/iCgEkYrkh
+   z/N0Vku9lvQDIZd2k8Cm/lUsqbt1gqPTbdXUgJ54RKVohjr7VOMtsxXuk
+   ETtUnQH2nKysEE0bPlmXLHj/P3jvig5lW8zU0fEVcbMyhbLAwh44Eab3e
+   0bIdB6Dgxyaao7miMT/0xGiMaHs+eOt5hNDHoPQtv54wWBhp0kxh8sNyF
+   brxKqKau2aTEJgD4bnCmCPEh6GIi0aXAa7bFAzJ/D6kMYuQ4+fmCxuQPz
+   Q==;
+X-CSE-ConnectionGUID: GzUbQ4m0T3Gi4u4MM/ZDrQ==
+X-CSE-MsgGUID: +pCXSrc9TwqoUgm+vGpiPg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="73991531"
+X-IronPort-AV: E=Sophos;i="6.19,260,1754982000"; 
+   d="scan'208";a="73991531"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2025 17:53:29 -0700
+X-CSE-ConnectionGUID: 0rbiwMPeQfScfEBv8C16pw==
+X-CSE-MsgGUID: DVCPYMwAS5yQ+p7PaIFsYA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,260,1754982000"; 
+   d="scan'208";a="185659700"
+Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
+  by fmviesa009.fm.intel.com with ESMTP; 27 Oct 2025 17:53:28 -0700
+Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vDXxj-000Ic5-0x;
+	Tue, 28 Oct 2025 00:53:23 +0000
+Date: Tue, 28 Oct 2025 08:52:19 +0800
+From: kernel test robot <lkp@intel.com>
+To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: Re: [PATCH 2/2] btrfs: zoned: fix stripe width calculation
+Message-ID: <202510280859.KwBFlqRE-lkp@intel.com>
+References: <20251027072758.1066720-3-naohiro.aota@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -96,94 +77,37 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK3NTRCBV0jTPrHb_tmWzdrLqx9xnvKpcqA7-_Cxm9TfJAGGSQ@mail.gmail.com>
+In-Reply-To: <20251027072758.1066720-3-naohiro.aota@wdc.com>
 
-On Mon, Oct 27, 2025 at 03:40:59PM -0700, Ross Boylan wrote:
-> When recording over-the-air television the results are typically very
-> fragmented when saved to btrfs, e.g., several thousand segments for
-> 6GB.
-> This occurred even on a large, nearly empty, filesystem of 5.5TB.
-> Automatic defragmentation doesn't seem to make much difference,
-> although manual defragmentation does.
+Hi Naohiro,
 
-Our max extent size is 128MiB which gives a best case of 48 extents, I
-believe. Is that what you get after you do the manual defrag? If there
-is compression (I think you said there isn't, but doesn't hurt to check
-with compsize on the file..) that maximum is 128KiB in which case we
-would expect ~50k extents for a 6GiB file.
+kernel test robot noticed the following build errors:
 
-> 
-> I first noticed the fragmentation when I started getting messages that
-> the writes were taking a long time, although I have not seen those
-> recently.
-> 
-> It seems this application (the one recording the TV) may not be a good
-> fit for btrfs.  The developers recommend xfs, but it would be nice to
-> have the
-> more flexible volume management of btrfs.
+[auto build test ERROR on kdave/for-next]
+[also build test ERROR on linus/master v6.18-rc3 next-20251027]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Have you been able to try with xfs?
+url:    https://github.com/intel-lab-lkp/linux/commits/Naohiro-Aota/btrfs-zoned-fix-zone-capacity-calculation/20251027-153738
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/20251027072758.1066720-3-naohiro.aota%40wdc.com
+patch subject: [PATCH 2/2] btrfs: zoned: fix stripe width calculation
+config: i386-buildonly-randconfig-006-20251028 (https://download.01.org/0day-ci/archive/20251028/202510280859.KwBFlqRE-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251028/202510280859.KwBFlqRE-lkp@intel.com/reproduce)
 
-> 
-> I'm curious if anyone here has any thoughts or advice on this.
-> I'd appreciate cc on replies.
-> 
-> DETAILS
-> New partition on Seagate Exos x18 (spinning disk).
-> btrfs --version -> 5.10
-> uname -a -> Linux barley 5.10.0-36-amd64 #1 SMP Debian 5.10.244-1
-> (2025-09-29) x86_64 GNU/Linux
-> under Debian 11/bullseye, (current stable release is 13.1, so a bit old)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202510280859.KwBFlqRE-lkp@intel.com/
 
-This is indeed a pretty old kernel, so answers about the behavior or
-expected behavior might be outdated. Reproducing on a newer kernel is
-always helpful, though in this case I suspect it has more to do with the
-writing/sync-ing pattern.
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
-> The entire btrfs filesystem is based on a single partition: no RAID,
-> no compression, no snapshots, no subvolumes.
-> The recordings are done by mythtv 31.0, which I believe basically
-> takes the video stream and dumps it to disk.  The developers say it
-> writes "continuously".
-> 
-> I speculate that what is going on is that it is writing small chunks
-> to disk and each chunk causes the entire underlying segment to be
-> rewritten.
+>> ERROR: modpost: "__udivmoddi4" [fs/btrfs/btrfs.ko] undefined!
+ERROR: modpost: "__udivdi3" [drivers/power/supply/intel_dc_ti_battery.ko] undefined!
 
-If you are able, some kind of trace of what is going on when you run the
-program would be helpful. strace would be a good start, I think. I can
-give you some useful bpftrace scripts to try too, but who knows if they
-will work on your old kernel :)
-
-The important things to get to the bottom of are:
-- does mythtv try to fallocate the file ahead?
-- does mythtv do random writes as opposed to sequentially appending?
-  From glancing at the code I could find online, it looks like no..
-- how often does mythtv sync/fsync
-- is something else on your system forcing frequent writeback (memory
-  pressure, vm knobs, etc..)
-
-In theory it should be quite possible to get btrfs to pile up a decent
-amount of delayed allocations for dirty pages and allocate them all at
-once quite contiguously when doing the writeback. This assumes:
-1. we get to build up some good delayed allocations
-2. there are big contiguous chunks of free space (as you mentioned in
-   your next paragraph, this is a concern, but you said it reproduces on
-   a fresh system)
-
-So unfortunately, the devil is in the details with issues like this one.
-
-> However, I've noticed that even when I cp a complete file to btrfs it
-> ends up pretty fragmented, albeit the target filesystem in that case
-> was very full.
-
-If you can reproduce with a simpler program than mythtv on your empty
-fs on the same system, that could be interesting, too. Worth a shot.
-
-Thanks,
-Boris
-
-> 
-> Thanks.
-> Ross Boylan
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
