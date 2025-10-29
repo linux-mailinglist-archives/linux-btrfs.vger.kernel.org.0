@@ -1,95 +1,133 @@
-Return-Path: <linux-btrfs+bounces-18399-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18400-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35BC4C1B64A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Oct 2025 15:50:08 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 950F1C1B8D6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Oct 2025 16:07:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AE5F1AA2176
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Oct 2025 14:45:15 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1EAC45A0B1F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Oct 2025 14:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7A2B34FF4E;
-	Wed, 29 Oct 2025 14:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08D322FB97A;
+	Wed, 29 Oct 2025 14:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GEuqbie/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d6i+Tpv8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CAF29B8D9;
-	Wed, 29 Oct 2025 14:38:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25E3F2C0F7B;
+	Wed, 29 Oct 2025 14:53:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761748701; cv=none; b=s4xRSZn9cdh8OuRL//2JjdBIfL/smueyQmQVB/kbcXVD8Q7VfUAgz7cZdCYzEdtXa2CP+I44cu72UDBxw9hNnylS1axRAtAAvB6QESN4oh1kAhRJcrR5ALWAMm01kZhnVLunWAV32K6j8rYxxn1mQX9Nw+EoWDkPu4bCz5QUFT0=
+	t=1761749618; cv=none; b=NSoVANkLGskMXfU0iHrLzZ3fzRvHOggDgaAfM26GRVD5K1Zr1zyolyh7e/9Aqsc4Y09Oy9+lhLd4uf5z7k1PaOs+VR0scIDqTdj5wQBkFvKDzIyRhUAat+dhNkkfqSPJhDoFqi/tDTuJAG27Xf/MWfC7j0HoOBjgzp5QJvfE+8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761748701; c=relaxed/simple;
-	bh=GC14kFMWPtWt2Gtkk0MgEoVLhYTmCarqJXnxSpavDAY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B9Lr1N1ZryIq9NvUwKMQKWLHvkSmdDgLydQHDy8QFRFiCjvtYsrFHBUAYBvAK08pms9QcG1JfPWn73FFACsBGHPj5LW96dbTbTUhPc2RLnMNv7Qdg8ZwzPFcg74W/NbQBGkEFJD2F7USmuQ0+Q2MM7LtZCuT1IkRAznNgH/Bxl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=GEuqbie/; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ZSNefP3kGlhfDPKLLTZZZwOAu0fb7rvyzu/Kl7KhTYU=; b=GEuqbie/FD8XRtOvpksnrYmVM/
-	yxBYrL3OAGeTQjnvYE8lWldox55/VPUDo9bbo1GS/N63U9F8V1KN/y+de3zS+l34ZZ03nWBteFZf7
-	DMo3ovFyKPDMV9Q+jJqEW5TtTYwBtOrXcu2CkMdedFvHOJYFYA0QU4HSxPXmAPQjp70karpYHfF4O
-	nqq9/8I505ZPmHqy0s/iYCPoIpcCrpUjAP5mLXSWZ9Frnp5NhnbQ6ph6uxqUu3PaXLSQWfAtupK5+
-	hqOpHXJS4gGOGpyAUHrK8m1Pr/s3mdU+EyQQCElhMSxXXZ+fs9CJo/mdnfHuAYJD1R7FpPyQ2fBBj
-	2g12CylA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vE7JV-00000001cIo-3QHR;
-	Wed, 29 Oct 2025 14:38:13 +0000
-Date: Wed, 29 Oct 2025 07:38:13 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Askar Safin <safinaskar@gmail.com>, linux-mm@kvack.org,
-	linux-pm@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-lvm@lists.linux.dev,
-	lvm-devel@lists.linux.dev, linux-raid@vger.kernel.org,
-	DellClientKernel <Dell.Client.Kernel@dell.com>,
-	dm-devel@lists.linux.dev, linux-btrfs@vger.kernel.org,
-	Nhat Pham <nphamcs@gmail.com>, Kairui Song <ryncsn@gmail.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Rodolfo =?iso-8859-1?Q?Garc=EDa_Pe=F1as?= <kix@kix.es>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Lennart Poettering <mzxreary@0pointer.de>,
-	Christian Brauner <brauner@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Milan Broz <milan@mazyland.cz>
-Subject: Re: [PATCH] pm-hibernate: flush block device cache when hibernating
-Message-ID: <aQIm1bfwKlwaak52@infradead.org>
-References: <20251023112920.133897-1-safinaskar@gmail.com>
- <4cd2d217-f97d-4923-b852-4f8746456704@mazyland.cz>
- <03e58462-5045-e12f-9af6-be2aaf19f32c@redhat.com>
- <CAJZ5v0gcEjZPVtKrysS=ek7kHpH3afinwY-apKm3Yd4PmKDHdA@mail.gmail.com>
+	s=arc-20240116; t=1761749618; c=relaxed/simple;
+	bh=4N52YreIUF0OvAY3AgVuCEeEXHoxvfXQKpRpGqGXt0Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qTF/08hMBurk2hPwiIPkUZwmEy9OIzZyGfzUNdQj5E0gGxLFwX+tqQp907bMfRzXXyl/gekmuswJXYIETm6t0bFAc454qrV8pVgSrG445q/6IeGFWhm6YGVB85fuoq/lBa1dRg1sAjIp826mzPY8Dbp9LxT4iVr7mngzjE0GAe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d6i+Tpv8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75851C4CEF7;
+	Wed, 29 Oct 2025 14:53:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761749617;
+	bh=4N52YreIUF0OvAY3AgVuCEeEXHoxvfXQKpRpGqGXt0Y=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=d6i+Tpv81I+RjXv1z/ZhRypcIVRTtXraq5U9iBWHQnvW+KkPDvGl1y2pSEVEa6fIB
+	 Ln4x6wF3AkfAIwedEj981+iIN+wR6+btNH1aNeYDoUlV+PjuWWLC2qWuazlwsZDUyc
+	 w6JEXBhDvgpuQ5ndnBinokI18XbR2srsXkcfTy4nMLpLT5LYAeO4NgeFX7Rl3DUghg
+	 Y+Yu9YxHcIql1AYDpRrZVpwWLKrTXwOqAs1s25OG2ooUXYEvx3zM1w82Fg077igDaB
+	 eTslPtXRVVOcLbKtU1sdxtLF6P6BiY2N2GMT83pc272G20lW+5PvUy3M8NbUj0mjMG
+	 oZaRyJXLYf5Iw==
+From: Christian Brauner <brauner@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Jan Kara <jack@suse.cz>,
+	linux-block@vger.kernel.org,
+	v9fs@lists.linux.dev,
+	linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	jfs-discussion@lists.sourceforge.net,
+	ocfs2-devel@lists.linux.dev,
+	linux-xfs@vger.kernel.org,
+	linux-mm@kvack.org,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>,
+	Mark Fasheh <mark@fasheh.com>,
+	Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>
+Subject: Re: filemap_* writeback interface cleanups v2
+Date: Wed, 29 Oct 2025 15:53:19 +0100
+Message-ID: <20251029-fahrdienst-klaglos-834e266b8e42@brauner>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251024080431.324236-1-hch@lst.de>
+References: <20251024080431.324236-1-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gcEjZPVtKrysS=ek7kHpH3afinwY-apKm3Yd4PmKDHdA@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2522; i=brauner@kernel.org; h=from:subject:message-id; bh=4N52YreIUF0OvAY3AgVuCEeEXHoxvfXQKpRpGqGXt0Y=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQyaaVPuJ+i9m4br2nk2mOv3Hiqzuq8kEi/LX5pZ5Jpp 1hLQ0l0RykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwESObmZkePvsGoekGs9rdpbt ZmmmOZrb/hx/6K49NePTtSDdi8HVvIwMl5ZenxV508LqDt+pO5cidkrwHHy3v/970ayNXZffekh 4MAEA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 29, 2025 at 02:31:05PM +0100, Rafael J. Wysocki wrote:
-> > This commit fixes the suspend code so that it issues flushes before
-> > writing the header and after writing the header.
+On Fri, 24 Oct 2025 10:04:11 +0200, Christoph Hellwig wrote:
+> while looking at the filemap writeback code, I think adding
+> filemap_fdatawrite_wbc ended up being a mistake, as all but the original
+> btrfs caller should be using better high level interfaces instead.  This
+> series removes all these, switches btrfs to a more specific interfaces
+> and also cleans up another too low-level interface.  With this the
+> writeback_control that is passed to the writeback code is only
+> initialized in three places, although there are a lot more places in
+> file system code that never reach the common writeback code.
 > 
-> Hmm, shouldn't it flush every time it does a sync write, and not just
-> in these two cases?
+> [...]
 
-It certainly should not use the PREFLUSH flag that flushes before
-writing, as the cache will be dirty again after that.
+Applied to the vfs-6.19.writeback branch of the vfs/vfs.git tree.
+Patches in the vfs-6.19.writeback branch should appear in linux-next soon.
 
-I'd expect a single blkdev_issue_flush after all writing is done,
-under the assumption that the swsusp swap writing doesn't have
-transaction integrity for individual writes anyway.
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs-6.19.writeback
+
+[01/10] mm: don't opencode filemap_fdatawrite_range in filemap_invalidate_inode
+        https://git.kernel.org/vfs/vfs/c/a21134b5d6cb
+[02/10] 9p: don't opencode filemap_fdatawrite_range in v9fs_mmap_vm_close
+        https://git.kernel.org/vfs/vfs/c/3c2e5cee5eb3
+[03/10] ocfs2: don't opencode filemap_fdatawrite_range in ocfs2_journal_submit_inode_data_buffers
+        https://git.kernel.org/vfs/vfs/c/890f141da068
+[04/10] btrfs: use the local tmp_inode variable in start_delalloc_inodes
+        https://git.kernel.org/vfs/vfs/c/41e52c644753
+[05/10] btrfs: push struct writeback_control into start_delalloc_inodes
+        https://git.kernel.org/vfs/vfs/c/c9501112e3cb
+[06/10] mm,btrfs: add a filemap_flush_nr helper
+        https://git.kernel.org/vfs/vfs/c/7fabcb7fbabb
+[07/10] mm: remove __filemap_fdatawrite
+        https://git.kernel.org/vfs/vfs/c/735965144806
+[08/10] mm: remove filemap_fdatawrite_wbc
+        https://git.kernel.org/vfs/vfs/c/1bcb413d0cd8
+[09/10] mm: remove __filemap_fdatawrite_range
+        https://git.kernel.org/vfs/vfs/c/45cbce5b8877
+[10/10] mm: rename filemap_fdatawrite_range_kick to filemap_flush_range
+        https://git.kernel.org/vfs/vfs/c/c28d67b33cbf
 
