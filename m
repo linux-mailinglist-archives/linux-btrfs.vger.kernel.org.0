@@ -1,176 +1,116 @@
-Return-Path: <linux-btrfs+bounces-18402-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18403-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97962C1BEEF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Oct 2025 17:08:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58BA7C1C217
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Oct 2025 17:37:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 129446644A5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Oct 2025 15:48:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B13A51882E0E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Oct 2025 16:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADB433A03F;
-	Wed, 29 Oct 2025 15:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE993358C8;
+	Wed, 29 Oct 2025 16:31:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A6RjVtLt"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SyCwToen"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6460D325737;
-	Wed, 29 Oct 2025 15:46:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6193358AD
+	for <linux-btrfs@vger.kernel.org>; Wed, 29 Oct 2025 16:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761752796; cv=none; b=L5t4n5kJibCMRJo4kf8FVK9BqSXA0P0Uj8CgIcvk8lzWz5DOajiXdQBS0gxT8xJeaVxA+AgLX5IwcTuUPlwW44VdlY2pULfeBV0bFbEbwH25ycBRjpRvhxep0n2VP4eEy3FcmgM8kwvUTQkbduMTFaSXOzUNfDoSqOqIFjna2Gc=
+	t=1761755499; cv=none; b=jUZqTB1eY0g5ZHZmeKMIIeh6/lFZgjtxiUpgTO9vQCR/rpWwr1Xkk4beGrstFLQ5Wl0X8as2vLj1Rq/buzzdt5leWpUg01ihf6Ym8/JdeUhRw9djpsljs6gYGCGcdQ0Bctz3e63mMUk8ujCxkZu09tymeszIRs5NdldQZAJ9jmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761752796; c=relaxed/simple;
-	bh=lOG3BhluQpo+8ApurJHcCLu9b4sc0GZYjvlpQXGrcAI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SJQKTjdyqb8WrNuHubzmcmkAXNeUjgq0poemb8GYAQS0KhJ1J2P5gAyhPt+yJTF8emt/Ydv1t6Dgoo3tdBucolOhbF4SgY4HRfsiWBOUgf1xFnfAH8Xi2infGP5X1yLoH1QVprVtWFEOJQuGLPUyinmjAuVQIOp/06d0dVZa3WE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A6RjVtLt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F8F9C4CEF7;
-	Wed, 29 Oct 2025 15:46:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761752796;
-	bh=lOG3BhluQpo+8ApurJHcCLu9b4sc0GZYjvlpQXGrcAI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=A6RjVtLtluR8h8KTsJLOt73681zYnlZSSCHDcuUFd2Yt6MZMVZuk6dR9fCN0u4KA8
-	 5HR95mwLWllC4VUNzw5MukhiClPIu/dF2Rqd2iEPywp9gpSa4pOJr2N8D8BX1T3Iwm
-	 sT6ikTcHl+G9cPluf70a4JG3Q84G5K8ndy90pekgJu/6OdR1cEJCwq573KL0SO4mT2
-	 IR//pzA7FgVKFFqhhb6CI8UMUSPQPvaJL6fFb2YiTxzs7OyIMLZ0u0e9YSGcPMYUvj
-	 BDYCIolKS1H1xgdEb1wp6m2pFI2TXbISniOfC9+qUBxy+9HNUlUWDntwSKFSV5V7ju
-	 3iSIYLtnCPjDg==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] generic: test a scenario of dir fsync after adding a link to a subdir
-Date: Wed, 29 Oct 2025 15:46:30 +0000
-Message-ID: <92f178d04f74f9281b97d67bdf402e7a5e3baec9.1761752457.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
+	s=arc-20240116; t=1761755499; c=relaxed/simple;
+	bh=Tw5vEbrXWUB8SboVr/dUVdOqU8bkAxaparS/ZqBpR6Q=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=McQmQPQMFu2Z+C0H9Ohy9QQVKOFehuHmnc23zOxKC8Gs1PsYvUM1P5W1sAE1k2M0IFpATA8oo7wcp5rdwLZlpRvEp4PrC/MqdHk5mCDgMulIOLwLuVsN5Ns3UovspYJqVu3gFt7vDYcQwqL1rk1SKcT4lSSLuWnMKCMle2O8/gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SyCwToen; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1761755496;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1T52Vj5IIAdBYMNDfCC4go6XkTYm9qfscMzwG6wwCuU=;
+	b=SyCwToenKZAhO6ww1+x7+NxkfC8i8BkjKmkM5Z4cMhRbN0FIPtNEJsB6e0D7vVb3z8m3g4
+	GeuF0/B7f282ikZ1jCjW3+Jcn29XF4+8ih1N5MHgWdBMjZkVqSz1ZMQSNs6KyvfwRBxE0A
+	iPF3L8+JYSgrfXs4XRGADpR7B7YoUHE=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-433-VrIc2NguM8WEFqbFBmCdqQ-1; Wed,
+ 29 Oct 2025 12:31:32 -0400
+X-MC-Unique: VrIc2NguM8WEFqbFBmCdqQ-1
+X-Mimecast-MFC-AGG-ID: VrIc2NguM8WEFqbFBmCdqQ_1761755489
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 18891196F74D;
+	Wed, 29 Oct 2025 16:31:28 +0000 (UTC)
+Received: from [10.45.225.163] (unknown [10.45.225.163])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F0BFB19560AD;
+	Wed, 29 Oct 2025 16:31:20 +0000 (UTC)
+Date: Wed, 29 Oct 2025 17:31:13 +0100 (CET)
+From: Mikulas Patocka <mpatocka@redhat.com>
+To: Christoph Hellwig <hch@infradead.org>
+cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
+    Askar Safin <safinaskar@gmail.com>, linux-mm@kvack.org, 
+    linux-pm@vger.kernel.org, linux-block@vger.kernel.org, 
+    linux-crypto@vger.kernel.org, linux-lvm@lists.linux.dev, 
+    lvm-devel@lists.linux.dev, linux-raid@vger.kernel.org, 
+    DellClientKernel <Dell.Client.Kernel@dell.com>, dm-devel@lists.linux.dev, 
+    linux-btrfs@vger.kernel.org, Nhat Pham <nphamcs@gmail.com>, 
+    Kairui Song <ryncsn@gmail.com>, Pavel Machek <pavel@ucw.cz>, 
+    =?ISO-8859-15?Q?Rodolfo_Garc=EDa_Pe=F1as?= <kix@kix.es>, 
+    Eric Biggers <ebiggers@kernel.org>, 
+    Lennart Poettering <mzxreary@0pointer.de>, 
+    Christian Brauner <brauner@kernel.org>, 
+    Linus Torvalds <torvalds@linux-foundation.org>, 
+    Milan Broz <milan@mazyland.cz>
+Subject: Re: [PATCH] pm-hibernate: flush block device cache when
+ hibernating
+In-Reply-To: <aQIm1bfwKlwaak52@infradead.org>
+Message-ID: <355486cd-6c52-df82-7636-a8259995b522@redhat.com>
+References: <20251023112920.133897-1-safinaskar@gmail.com> <4cd2d217-f97d-4923-b852-4f8746456704@mazyland.cz> <03e58462-5045-e12f-9af6-be2aaf19f32c@redhat.com> <CAJZ5v0gcEjZPVtKrysS=ek7kHpH3afinwY-apKm3Yd4PmKDHdA@mail.gmail.com>
+ <aQIm1bfwKlwaak52@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-From: Filipe Manana <fdmanana@suse.com>
 
-Test that if we add a new directory to the root directory, change a file
-in the root directory, fsync the file, add a hard link for the file inside
-the new directory and then fsync the root directory, after a power failure
-the root directory has the entry for the new directory.
 
-This is a regression test for the following btrfs patch:
+On Wed, 29 Oct 2025, Christoph Hellwig wrote:
 
- "btrfs: do not update last_log_commit when logging inode due to a new name"
+> On Wed, Oct 29, 2025 at 02:31:05PM +0100, Rafael J. Wysocki wrote:
+> > > This commit fixes the suspend code so that it issues flushes before
+> > > writing the header and after writing the header.
+> > 
+> > Hmm, shouldn't it flush every time it does a sync write, and not just
+> > in these two cases?
+> 
+> It certainly should not use the PREFLUSH flag that flushes before
+> writing, as the cache will be dirty again after that.
+> 
+> I'd expect a single blkdev_issue_flush after all writing is done,
+> under the assumption that the swsusp swap writing doesn't have
+> transaction integrity for individual writes anyway.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/generic/780     | 73 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/780.out | 10 ++++++
- 2 files changed, 83 insertions(+)
- create mode 100755 tests/generic/780
- create mode 100644 tests/generic/780.out
+I think that we should use two flushes - one before writing the header and 
+the other after writing the header. Otherwise, it could be possible that 
+the header is written and some of the data is not written, if the system 
+loses power during hibernation.
 
-diff --git a/tests/generic/780 b/tests/generic/780
-new file mode 100755
-index 00000000..d4977b06
---- /dev/null
-+++ b/tests/generic/780
-@@ -0,0 +1,73 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
-+#
-+# FS QA Test 780
-+#
-+# Test that if we add a new directory to the root directory, change a file in
-+# the root directory, fsync the file, add a hard link for the file inside the
-+# new directory and then fsync the root directory, after a power failure the
-+# root directory has the entry for the new directory.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick log
-+
-+_cleanup()
-+{
-+	_cleanup_flakey
-+	cd /
-+	rm -r -f $tmp.*
-+}
-+
-+. ./common/filter
-+. ./common/dmflakey
-+
-+_require_scratch
-+_require_dm_target flakey
-+
-+[ "$FSTYP" = "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
-+	"btrfs: do not update last_log_commit when logging inode due to a new name"
-+
-+_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
-+_require_metadata_journaling $SCRATCH_DEV
-+_init_flakey
-+_mount_flakey
-+
-+# Create our test file.
-+touch $SCRATCH_MNT/foo
-+
-+# Make sure it's durably persisted.
-+_scratch_sync
-+
-+# Create a test directory in the root dir.
-+mkdir $SCRATCH_MNT/dir
-+
-+# Write some data to the file and fsync it.
-+$XFS_IO_PROG -c "pwrite -S 0xab 0 64K" \
-+	     -c "fsync" $SCRATCH_MNT/foo | _filter_xfs_io
-+
-+# Add a hard link for our file inside the test directory.
-+# On btrfs this causes updating the file's inode and both parent
-+# directories in the log tree (in memory only).
-+ln $SCRATCH_MNT/foo $SCRATCH_MNT/dir/bar
-+
-+# Fsync the root directory.
-+# We expect it to persist the entry for directory "dir".
-+$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/
-+
-+# Simulate a power failure and then mount again the filesystem to replay the
-+# journal/log.
-+_flakey_drop_and_remount
-+
-+# The directory "dir" should be present as well as file "foo".
-+# Filter the 'lost+found' that only exists in some filesystems like ext4.
-+echo "Root content:"
-+ls -1 $SCRATCH_MNT | grep -v 'lost+found'
-+
-+# Also check file "foo" has the expected data.
-+echo "File data:"
-+_hexdump $SCRATCH_MNT/foo
-+
-+_unmount_flakey
-+
-+_exit 0
-diff --git a/tests/generic/780.out b/tests/generic/780.out
-new file mode 100644
-index 00000000..3be43734
---- /dev/null
-+++ b/tests/generic/780.out
-@@ -0,0 +1,10 @@
-+QA output created by 780
-+wrote 65536/65536 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+Root content:
-+dir
-+foo
-+File data:
-+000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab  >................<
-+*
-+010000
--- 
-2.47.2
+Mikulas
 
 
