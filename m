@@ -1,82 +1,51 @@
-Return-Path: <linux-btrfs+bounces-18405-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18406-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC83FC1D6A1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Oct 2025 22:24:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81B32C1D8F0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Oct 2025 23:06:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6ADB6407053
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Oct 2025 21:23:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C53133BD2D7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Oct 2025 22:06:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB4A314D24;
-	Wed, 29 Oct 2025 21:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9DE314D2F;
+	Wed, 29 Oct 2025 22:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Lhi4nY7m"
+	dkim=pass (1024-bit key) header.d=archworks.co header.i=@archworks.co header.b="a47h5HB6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.archworks.co (relay.archworks.co [65.21.53.234])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F383191C6
-	for <linux-btrfs@vger.kernel.org>; Wed, 29 Oct 2025 21:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924852580E2
+	for <linux-btrfs@vger.kernel.org>; Wed, 29 Oct 2025 22:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.21.53.234
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761773021; cv=none; b=iPtoWweY1mr5Xjx7pjchxRxwymmifwhoW83tW5a/DUL/kp97LGZ2h8wklx52QngNkDCz1iGWpRiuQ/1WKwDqoQAufcaG8ZY7y0/5yFkx0ScKeHTSC+3+86U2Wc6ESIhSyJT1AeOcu2wF+jVy8Ef/v8Q0Y+/vCdIEyzj8axY+9xo=
+	t=1761775598; cv=none; b=XMk/Q++HgRYCl7nbomlVM8EIDqEDYDZt7LEKQ4blF+cYkNo7U7ZKeXPTNTkvKKk+iBj18F+nXVwgb/QmgghCTBcZe4lBzUetzXeB42/R7KJt1fvqqBpkEr7aKuXrCfWMeCrc9Oeg1jwV+9ccjgvKpR9ni9DMEm0MuE7fz65gVvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761773021; c=relaxed/simple;
-	bh=Q8GbFpKZ0G2WK3boaHgt/WIjta7Wgy2yicNjI9IW2zs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V0Yh24ju2XScdhnWAZ2El33/jN/Ox0YyydnDWwJ0IVL3mAL4+peLjuenBe0CHoyTNoiD20sOsOoZFV63KJua5+Z70qox1ELLknV3rzleUmMjnUffutrLiGhSonYIi4ybcMxg9kR4wnSAjLra5QyuDqxoAz4QJJ3NgquvWmc5kSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Lhi4nY7m; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-427007b1fe5so253947f8f.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Oct 2025 14:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1761773018; x=1762377818; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=pTUPsF7Fte/AGInCGPT8Bm06cRTL6FI2Yd2BduEa3rQ=;
-        b=Lhi4nY7mE1VKGUIUe7MMOYx3vwfyb6bQKJi06EWO7qIIMxMobGFA6FoW5ZEE3pgX50
-         sM145QJkripClJTk67gkYqNmwgRuVFelnnuNxatUMdMQHFwIYCOnh0J9/ywJ69/52sjb
-         pDQ5XLuS05q4hZh50K4/87jw6GEtgk3UvyJk3NAxZS8zcoGnByseefsUyTU48e4pN2zA
-         Kqem8znipIdYalxSf8ePbKh+lDpl/pyRjso98IFsZo3qIkcCRicik7m7HolQ8nU90oSD
-         As5LJDjFf/bBpJoeMCFxzmJ3WZ+xcd/slEusVnTyORw5Y1Zg0qS1rQfg7NN1/4+XXMo2
-         0JpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761773018; x=1762377818;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pTUPsF7Fte/AGInCGPT8Bm06cRTL6FI2Yd2BduEa3rQ=;
-        b=WtPA53TM0Gcpl77xn4XHpdehrx4faSszZK463QcwlnHiIMZYdAVYUL3i4mkrP+2mzS
-         oG3U//Qcb+CbRLmQGiV42jY2zF0nOgthjK1dc9Rsa1pK/uMCayOx+XazC/zkg0jyyU8f
-         JgrZOS4JqsoJiFULiW0wHFEeiC13COzgEAsv/KJnPTZrxBxIxg/FvAo/B3KeXwvTXoaQ
-         xL44CJNumaU/yOBWlZ/TKt+K+OtxTWSFdno5vtgWpfCFneoGRwx+A9NzOdAABVWb/gPw
-         yWbjmqD/N/vNDnQzLa7dZ6VQa24QgTOtA5Eh5J1a7dwSdEsAab/e0/+oHqmPUtBxCDLH
-         9sFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUQgDt2vJEguZ4A0BvB0Hb8m4YaxzMhAymY9UroiMOPfebeVKQAkmRWEcizR2dd2ZRwWM5b3fUfiYownw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxSpKz59fE4tDKHBk0d4BzdtmyRACImhYyvt/Q6aZdZft5t+wI8
-	NiiswSHhjEKAF0254TLV6cQgDPnB6nsPyB64i3827bEiKFd0GO1/IyuFh81p+81Isfc=
-X-Gm-Gg: ASbGnctGoqZLMwPsnjVLgAPFblRVOzKsRLv7N32bYLGSgrVhzmqZQ4RoR3HQn6nKA0k
-	tD497o769oiPJcvm0Fbybt+SxNbJfRhkSzkn3cgwyV7Ma3+A0U3E/MoBIJ0OziiWaOHeUBTdv6i
-	KSJrmJu1Sjqe8c/hkt5XJJVddNjZYmRW1K7rKecksC8dFtTmREjGRQlq6tbB6sG0DfhvOmQ8QwQ
-	5MXESsAVAoEeFZnA2Mw6Zekovl2LjRlQDsgT225mNmyenrm4Mfetmi/q6JbCdThPq2/CYV2dM1w
-	6Gihi0y7X/7qZW7z7pkg0Rk1HQo9VceLuptXQenYXz+aR/HtlM/XbZ2IK1b4Yp00L0/czBbiGqJ
-	OkmqgYxkXb4nI349ez+A67lHDtdaKh+3BvF5C6QGWTup1zRlBocXxuVt8HqWYB0aeJ3MTpUanVX
-	TVFMAzqJks0k7RNcyYVWgBnX4nbqy+
-X-Google-Smtp-Source: AGHT+IFWiY+tTPVyw5FGPKRDc6cNk4FAtKyr7K6bwTWppv+W/Z3W2oVYRb1tD5oyBMeW0DnOYj0IDg==
-X-Received: by 2002:a05:6000:2088:b0:3e6:f91e:fa72 with SMTP id ffacd0b85a97d-429aef7355amr2706394f8f.7.1761773017473;
-        Wed, 29 Oct 2025 14:23:37 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498d097fasm161757355ad.29.2025.10.29.14.23.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Oct 2025 14:23:36 -0700 (PDT)
-Message-ID: <8f384c85-e432-445e-afbf-0d9953584b05@suse.com>
-Date: Thu, 30 Oct 2025 07:53:30 +1030
+	s=arc-20240116; t=1761775598; c=relaxed/simple;
+	bh=homJ3LfdGUN7CwfVwJ0BeQ/fuFLFpQPjAtTDGh1oeMA=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=c6yPv4h3VZVNiH0my14f+O2xR8XK243po5IteerDlYlC4MIcgD8i2CHPQanmh+Yj+62U22g6hpER+fdc4rvEokC4uQPWLmdGl1gwHPT6Y4ZyHOvHBEVh+3YfUos5A4EYyVIcPY1dix2gsn4fGGvSXHEl85mlS+PIv5afXk263uE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=archworks.co; spf=pass smtp.mailfrom=archworks.co; dkim=pass (1024-bit key) header.d=archworks.co header.i=@archworks.co header.b=a47h5HB6; arc=none smtp.client-ip=65.21.53.234
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=archworks.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archworks.co
+Received: from [192.168.1.102] (mob-194-230-148-21.cgn.sunrise.net [194.230.148.21])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange x25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: norbert.morawski@archworks.co)
+	by relay.archworks.co (Postfix) with ESMTPSA id 6E1BF3AB065;
+	Wed, 29 Oct 2025 23:06:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=archworks.co; s=k2;
+	t=1761775588; bh=homJ3LfdGUN7CwfVwJ0BeQ/fuFLFpQPjAtTDGh1oeMA=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To;
+	b=a47h5HB68Qpjvl6q1PkiZIjz58sgdZeKHbSGjvl39GomM61VNQbVx6+CH1/B7ZZJv
+	 ryn+u9vwm1qNyFf/aSuQxfKolHhEm6w3v3HU+ZDwGTQrLU+GcASMe/hKh23NNQaa04
+	 PzsGJPkrYeJ/ab8DuI3t8zuj7a9pDqnuVPr1hw18=
+Message-ID: <dc306b46-443e-4229-bacc-46ec9f50f00a@archworks.co>
+Date: Wed, 29 Oct 2025 23:06:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,107 +53,192 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] xfs: fallback to buffered I/O for direct I/O when
- stable writes are required
-To: Christoph Hellwig <hch@lst.de>, "Darrick J. Wong" <djwong@kernel.org>
-Cc: Carlos Maiolino <cem@kernel.org>, Christian Brauner <brauner@kernel.org>,
- Jan Kara <jack@suse.cz>, "Martin K. Petersen" <martin.petersen@oracle.com>,
- linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
- linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20251029071537.1127397-1-hch@lst.de>
- <20251029071537.1127397-5-hch@lst.de>
- <20251029155306.GC3356773@frogsfrogsfrogs> <20251029163555.GB26985@lst.de>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20251029163555.GB26985@lst.de>
+Subject: Re: [btrfs] ENOSPC during convert to RAID6/RAID1C4 -> forced RO
+From: Sandwich <sandwich@archworks.co>
+To: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc: linux-btrfs@vger.kernel.org
+References: <e03530c5-6af9-4f7a-9205-21d41dc092e5@archworks.co>
+ <05308285-7660-4d9c-b1d5-0b59cf4f1986@archworks.co>
+ <aP7UHKYfgo_ROu_m@hungrycats.org>
+ <3e97c25a-d691-48e4-80c4-99b496eee5a3@archworks.co>
+Content-Language: de-AT, en-US
+In-Reply-To: <3e97c25a-d691-48e4-80c4-99b496eee5a3@archworks.co>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+Hi, I will in 1-2 days migrate my storage and format this array, so this story will end for me.
+In case, someone needs to replicate this.
 
+Make 2 disks in a single array:
+`mkfs.btrfs -L NewData -d single -m raid1 /dev/sda /dev/sdb`
 
-在 2025/10/30 03:05, Christoph Hellwig 写道:
-> [Adding Qu and the btrfs list]
-> 
-> On Wed, Oct 29, 2025 at 08:53:06AM -0700, Darrick J. Wong wrote:
->>> +	if (mapping_stable_writes(iocb->ki_filp->f_mapping)) {
->>> +		xfs_info_once(mp,
->>> +			"falling back from direct to buffered I/O for write");
->>> +		return -ENOTBLK;
->>> +	}
+Fill them up till their full:
+Add 2 extra drives `btrfs device add /dev/sdx /some/path`
+
+Fill the whole array till about 50% total usage.
+Start the conversion with `btrfs balance start -v -dconvert=raid6  -mconvert=raid1c4 -sconvert=raid1c4  /mnt/Data --force`
+
+In the after sign, using the limiters and converting the chunks bit by bit might have helped here.
+Like this `btrfs balance start -mconvert=raid1c4,soft,limit=1 -sconvert=raid1c4,soft,limit=1 /mnt/Data`
+
+Best
+Sandwich
+
+On 10/27/25 2:20 PM, Sandwich wrote:
+> Thank you for your reply,
+> Unfortunately, older kernels including 6.6, 6.8, 6.12 did not help here.
+> I've used the suggested mount options `nossd,skip_balance,nodiscard,noatime`, and tried to cancel and resume the balance with it.
+> The result stayed the same as previously.
+>
+> `btrfs fi usage -T /mnt/Data`:
+> ```
+> root@anthem ~ # btrfs fi usage -T /mnt/Data
+> Overall:
+>     Device size:        118.24TiB
+>     Device allocated:         53.46TiB
+>     Device unallocated:         64.78TiB
+>     Device missing:            0.00B
+>     Device slack:            0.00B
+>     Used:             51.29TiB
+>     Free (estimated):         64.20TiB    (min: 18.26TiB)
+>     Free (statfs, df):         33.20TiB
+>     Data ratio:                 1.04
+>     Metadata ratio:             2.33
+>     Global reserve:        512.00MiB    (used: 0.00B)
+>     Multiple profiles:              yes    (data, metadata, system)
+>
+>             Data     Data    Metadata Metadata System  System
+> Id Path     single   RAID6   RAID1    RAID1C4  RAID1   RAID1C4  Unallocated Total     Slack
+> -- -------- -------- ------- -------- -------- ------- --------- ----------- --------- -----
+>  1 /dev/sdf 15.10TiB 1.09TiB 35.00GiB  8.00GiB 8.00MiB 32.00MiB  1.96TiB  18.19TiB     -
+>  2 /dev/sdg 15.10TiB 1.09TiB 44.00GiB  2.00GiB 8.00MiB  -  1.96TiB  18.19TiB     -
+>  3 /dev/sdc 13.43TiB 1.09TiB 29.00GiB        -       -  -  1.83TiB  16.37TiB     -
+>  4 /dev/sdb  3.14TiB 1.09TiB  4.00GiB 11.00GiB       - 32.00MiB 12.12TiB  16.37TiB     -
+>  5 /dev/sdd        - 1.09TiB        - 11.00GiB       - 32.00MiB 15.27TiB  16.37TiB     -
+>  6 /dev/sde        - 1.09TiB        - 11.00GiB       - 32.00MiB 15.27TiB  16.37TiB     -
+>  7 /dev/sdh        -       -        -  1.00GiB       -  - 16.37TiB  16.37TiB     -
+> -- -------- -------- ------- -------- -------- ------- --------- ----------- --------- -----
+>    Total    46.78TiB 4.35TiB 56.00GiB 11.00GiB 8.00MiB 32.00MiB 64.78TiB 118.24TiB 0.00B
+>    Used     44.72TiB 4.29TiB 50.54GiB  9.96GiB 5.22MiB 352.00KiB
+> ```
+>
+> What information is needed to trace this bug?
+> If you're willing to help me on the code side, I would gladly provide you with any information or test patches.
+>
+> In the meantime, I start to back up the most important data out of the array.
+>
+> BR
+> Sandwich
+>
+> On 10/27/25 3:08 AM, Zygo Blaxell wrote:
+>> On Sun, Oct 26, 2025 at 10:37:02PM +0100, Sandwich wrote:
+>>>   hi,
+>>>
+>>> i hit an ENOSPC corner case converting a 6-disk btrfs from data=single
+>>> to data=raid6 and metadata/system=raid1c4. after the failure, canceling
+>>> the balance forces the fs read-only. there's plenty of unallocated space
+>>> overall, but metadata reports "full" and delayed refs fail. attempts
+>>> to add another (empty) device also immediately flip the fs to RO and
+>>> the add does not proceed.
+>>>
+>>> how the filesystem grew:
+>>> i started with two disks, created btrfs (data=single), and filled
+>>> it. i added two more disks and filled it again. after adding the
+>>> final two disks i attempted the conversion to data=raid6 with
+>>> metadata/system=raid1c4—that conversion is what triggered ENOSPC
+>>> and the current RO behavior. when the convert began, usage was about
+>>> 51 TiB used out of ~118 TiB total device size.
+>>>
+>>> environment during the incident:
+>>>
+>>> ```
+>>> uname -r: 6.14.11-4-pve
+>> [...]
+>>> ```
+>>>
+>>> operation that started it:
+>>>
+>>> ```
+>>> btrfs balance start -v -dconvert=raid6 -mconvert=raid1c4 -sconvert=raid1c4 /mnt/Data --force
+>>> ```
+>>>
+>>> current state:
+>>> i can mount read-write only with `-o skip_balance`. running
+>>> `btrfs balance cancel` immediately forces RO. mixed profiles remain
+>>> (data=single+raid6, metadata=raid1+raid1c4, system=raid1+raid1c4). i
+>>> tried clearing the free-space cache, afterward the free-space tree
+>>> could not be rebuilt and subsequent operations hit backref errors
+>>> (details below). adding a new device also forces RO and fails.
+>>>
+>>> FS Info:
+>>>
+>>> ```
+>>> # btrfs fi usage -T /mnt/Data
+>>> Device size:       118.24TiB
+>>> Device allocated:   53.46TiB
+>>> Device unallocated: 64.78TiB
+>>> Used:               51.29TiB
+>>> Free (estimated):   64.20TiB (min: 18.26TiB)
+>>> Free (statfs, df):  33.20TiB
+>>> Data ratio:          1.04
+>>> Metadata ratio:      2.33
+>>> Multiple profiles:   yes (data, metadata, system)
+>>> ```
+>> You left out the most important part of the `fi usage -T` information:
+>> the table...
 >>
->> /me wonders if the other filesystems will have to implement this same
->> fallback and hence this should be a common helper ala
->> dio_warn_stale_pagecache?  But we'll get there when we get there.
-> 
-> As far as I'm concerned they should.  Btrfs in fact has recently done
-> that, as they are even more exposed due to the integrated checksumming.
-> 
-> So yes, a common helper might make sense.  Especially if we want common
-> configuration for opt-outs eventually.
-
-Yep, a common helper will help, or even integrate the check into 
-__iomap_dio_rw().
-
-Although btrfs currently uses some btrfs specific flags to do the check, 
-we're also setting stable writes flags for the address space, thus we 
-can share the same check.
-
-However I'm not sure if a warning will be that useful.
-
-If the warning is only outputted once like here, it doesn't show the ino 
-number to tell which file is affected.
-If the warning is shown every time, it will flood the dmesg.
-
-It will be much straightforward if there is some flag allowing us to 
-return error directly if true zero-copy direct IO can not be executed.
-
-Thanks,
-Qu
-
-> 
->>>   	file->f_mode |= FMODE_NOWAIT | FMODE_CAN_ODIRECT;
->>> -	file->f_mode |= FMODE_DIO_PARALLEL_WRITE;
->>> -	if (xfs_get_atomic_write_min(XFS_I(inode)) > 0)
->>> -		file->f_mode |= FMODE_CAN_ATOMIC_WRITE;
->>> +	if (!mapping_stable_writes(file->f_mapping)) {
->>> +		file->f_mode |= FMODE_DIO_PARALLEL_WRITE;
+>>> ```
+>>> # btrfs filesystem show /mnt/Data
+>>> Label: 'Data'  uuid: 7aa7fdb3-b3de-421c-bc86-daba55fc46f6
+>>> Total devices 6  FS bytes used 49.07TiB
+>>> devid 1 size 18.19TiB used 16.23TiB path /dev/sdf
+>>> devid 2 size 18.19TiB used 16.23TiB path /dev/sdg
+>>> devid 3 size 16.37TiB used 14.54TiB path /dev/sdc
+>>> devid 4 size 16.37TiB used  4.25TiB path /dev/sdb
+>>> devid 5 size 16.37TiB used  1.10TiB path /dev/sdd
+>>> devid 6 size 16.37TiB used  1.10TiB path /dev/sde
+>>> ```
+>> ...but from here we can guess there's between 2 and 14 TiB on each device,
+>> which should more than satisfy the requirements for raid1c4.
 >>
->> Hrm.  So parallel directio writes are disabled for writes to files on
->> stable_pages devices because we have to fall back to buffered writes.
->> Those serialize on i_rwsem so that's why we don't set
->> FMODE_DIO_PARALLEL_WRITE, correct?
-> 
-> Yes.
-> 
->> There's not some more subtle reason
->> for not supporting it, right?
-> 
-> Not that I know of anyway.
-> 
-
+>> So this is _not_ the expected problem in this scenario, where the
+>> filesystem fills up too many of the drives too soon, and legitimately
+>> can't continue balancing.
+>>
+>> It looks like an allocator bug.
+>>
+>>> full incident kernel log:
+>>> https://pastebin.com/KxP7Xa3g
+>>>
+>>> i’m looking for a safe recovery path. is there a supported way to
+>>> unwind or complete the in-flight convert first (for example, freeing
+>>> metadata space or running a limited balance), or should i avoid that
+>>> and take a different route? if proceeding is risky, given that there
+>>> are no `Data,single` chunks on `/dev/sdd` and `/dev/sde`, is it safe
+>>> to remove those two devices to free room and try again? if that’s
+>>> reasonable, what exact sequence (device remove/replace vs zeroing;
+>>> mount options) would you recommend to minimize further damage?
+>> The safe recovery path is to get a fix for the allocator bug so that you
+>> can finish the converting balance, either to raid1c4 or any other profile.
+>>
+>> This operation (balance) is something you should be able to do with
+>> current usage.  There's no other way to get out of this situation,
+>> but a kernel bug is interfering with the balance.
+>>
+>> Removing devices definitely won't help, and may trigger other issues
+>> with raid6.  Don't try that.
+>>
+>> You could try an up-to-date 6.6 or 6.12 LTS kernel, in case there's a
+>> regression in newer kernels.  Don't use a kernel older than 6.6 with
+>> raid6.
+>>
+>> Mount options 'nossd,skip_balance,nodiscard,noatime' should minimize
+>> the short-term metadata requirements, which might just be enough to
+>> cancel the balance and start a convert in the other direction.
+>>
+>>> thanks,
+>>> sandwich
+>> [...]
+>>
+>
 
