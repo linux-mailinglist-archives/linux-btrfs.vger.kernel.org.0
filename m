@@ -1,130 +1,186 @@
-Return-Path: <linux-btrfs+bounces-18417-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18418-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7783C203A3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 14:25:28 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1308BC21795
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 18:25:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7F9DD347D11
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 13:25:28 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 78AEC4EE180
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 17:22:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E072FB977;
-	Thu, 30 Oct 2025 13:25:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185B83683B4;
+	Thu, 30 Oct 2025 17:22:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b3tXe3ok"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cQoE9TQP"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3205028751A
-	for <linux-btrfs@vger.kernel.org>; Thu, 30 Oct 2025 13:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B083191B7;
+	Thu, 30 Oct 2025 17:22:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761830721; cv=none; b=AvtH1QkN4QMVma3J2YUi2OU8m9KILEL9LiiUjf0giXO1PsmUDhcv5Tp+FMbzYVHreq9G3SdBnfBIcG3ObGvLOCe3OgvXDwVTW42o07e6HhSCob/tCqIjXTGXrohC9pxGMagSjrDaUVZHx2OG75rtuqzw7pmZRi7957ZYxMwNgFE=
+	t=1761844970; cv=none; b=MrDZIFkecj6bFtQiG3Y0ORswvow+cCOyaLqRaPNfejU1DgIEZ3p+g1b3O5voIelOVUrrycx161Si9EhGEfu3P37zUIJJIG1hHhWl2ac8gIE3NgQ5nG8MHuw4N/TAokbM6uBO8qoebPRnPcbLxwS8t23eoJzwlnwX+Bg9/to+O5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761830721; c=relaxed/simple;
-	bh=tSYaw20epef0xQFmrdjwt7AssLnRXOP4gzZuafdkDZg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JOxjR2BxP2syJ9ffCgL63wxkuAh+5Bv2F4PwgQOs/vowvTELHO6bzQZ5CB75ooOFVSwrNWcNbMAr0wM2oN05QuKuytBE4AKxnbja3DvxL6MWP1TJfwBSuWyJHmHZNEQfqGe3UNPLOTlpG3sxLkearw62I69qYZrXZaBA+Qp69e0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b3tXe3ok; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C07B3C4CEF1
-	for <linux-btrfs@vger.kernel.org>; Thu, 30 Oct 2025 13:25:20 +0000 (UTC)
+	s=arc-20240116; t=1761844970; c=relaxed/simple;
+	bh=W07yYwa5au1fJ3WzG5uZqyYf4v1LD3aCRdwM94U6qcY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D7Y2wzgdF4C+625iEx/MqncL0PJdn7xny19sn83kxyH7DpCRirfgnUttVuV2Ww0zAFsgr37iu7yUpVbkK6/dBSyJXA9IydaQ726RGkE2Te0EKfyuFu7793H7Zz1Ey+wPOH3YafglHtpvXXoWPnA3pyU+8S4AIryK5gnYO3kTuss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cQoE9TQP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBCFFC4CEF1;
+	Thu, 30 Oct 2025 17:22:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761830720;
-	bh=tSYaw20epef0xQFmrdjwt7AssLnRXOP4gzZuafdkDZg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=b3tXe3oklXL6/oU59glUL6W7L5+FgXdJrC/dUPz5P0BSfi5UKI1+TY+pR4zgIk/k8
-	 EJeLLpudnwiXrr25QkleZF/RGJQwCmf+1jbuxB3DCmcvUMjTtxe2/bDJAs4HxuXpjC
-	 yvCBcOR5C2AmbbTXFCEWb8rIhzBDspS+20FrppubDtOhUow8J71w196HNklxf+aOCQ
-	 wBn/+WVzYaHnL57+qzC1l3PHyRDnHXpQax+4KW6yJWObrRTLv3ceiPfykJ24vAza8W
-	 PAXuq+rARgA9+IZwOzj1PEMt8+6dsFZ2zDWmQW1ilcmxwe1ykg0fpGcZ0hjWFBfu5M
-	 orgCOT2r+xDjA==
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-b6d78062424so73578166b.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Oct 2025 06:25:20 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV/VO0NasL+1Ka1zBfymq3tMYvoOz97MuQ7ln+b2+A+mNIRELGklTOAzryXeeE+WuR/+F2U76bqO6pDYQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyYTGR0hKS0c2sGAY9m6t2IS0TxLlw6Px/useJi+7P+WgI/JaHI
-	lQ0hESPie1kAUdAd4h4vN5aqqbT45RgL4z6WRJDWrXJDQH+XMM4bIaoJ590CnVsO2y1nrlhne6v
-	I8gsz34+gLIqx03hzAoz/ZFFDzvFhwvg=
-X-Google-Smtp-Source: AGHT+IF1QYMNNzMgkL8cw0xf+U550ADAf5a9rXzvmqdOKg2SZ9XfdaQnaiZ0QZvIgTiJNLup0nQejsG7g9uk9NkZmLQ=
-X-Received: by 2002:a17:907:3d0d:b0:b6d:55fe:a50f with SMTP id
- a640c23a62f3a-b7053e32af6mr326362866b.42.1761830719373; Thu, 30 Oct 2025
- 06:25:19 -0700 (PDT)
+	s=k20201202; t=1761844969;
+	bh=W07yYwa5au1fJ3WzG5uZqyYf4v1LD3aCRdwM94U6qcY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=cQoE9TQPdmMjj2H+lOcdEF9b4ghB5+5l6wDzK10jU7TRUzo5yg6OeHrUfzUunjJXg
+	 xiCg+J2s3JufBFqTtBUSeyZRvrE73rs0KX/uCcWmYmwk6+V7MhgMi9DmlauX7fyXLj
+	 HWAy9YRZaIc5fMiA32nkknCmggwoBTtCxn2BJF/Jp5ZhFy5TuhZLcg6SUTpjaEjTka
+	 cpCNV+32FQTRHE1Ca2DJSqIE1UkkufpLwYjA4PF3xev3t+7b5qMXMCBonnMuRSpMg/
+	 Df8las7RKHan4qvJh7ZIs+DO+VisqDAgFDTCzT0yyqP/lnLpFXn/kcyaIaKDKylvhN
+	 jtr4MoksrW2pg==
+From: fdmanana@kernel.org
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: test incremental send after deleting directories with many hardlinks
+Date: Thu, 30 Oct 2025 17:22:44 +0000
+Message-ID: <8d1b819511b4c93b5ba0b3137090f5c28a952364.1761844883.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <f88a750276cab164dc07fabe09b171307ce64e64.1761348631.git.wqu@suse.com>
- <FDBD17D73E911416+7ade80f6-f273-4190-83e9-61e98aeac808@bupt.moe>
-In-Reply-To: <FDBD17D73E911416+7ade80f6-f273-4190-83e9-61e98aeac808@bupt.moe>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 30 Oct 2025 13:24:42 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H66j2NczLbXj6ZJmy_fu1uPHMHfG_Xit-Kgw7_V+0VSdw@mail.gmail.com>
-X-Gm-Features: AWmQ_bkPVL5H3kNq2DrzlD8dfe10GGtOeYWT9WcsD6kPVNrnn94ybiGUEXFMoZ8
-Message-ID: <CAL3q7H66j2NczLbXj6ZJmy_fu1uPHMHfG_Xit-Kgw7_V+0VSdw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs-progs: convert: prevent data chunks to go beyond
- device size
-To: Yuwei Han <hrx@bupt.moe>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Oct 30, 2025 at 4:17=E2=80=AFAM Yuwei Han <hrx@bupt.moe> wrote:
->
->
->
-> =E5=9C=A8 2025/10/25 07:30, Qu Wenruo =E5=86=99=E9=81=93:
-> > [BUG]
-> > There is a bug report that kernel is rejecting a converted btrfs that
-> > has dev extents beyond device boundary.
-> >
-> > The invovled device extent is at 999627694980, length is 30924800,
-> > meanwhile the device is 999658557440.
-> >
-> > The device is size not aligned to 64K, meanwhile the dev extent is
-> > aligned to 64K.
-> >
-> > [CAUSE]
-> > For converted btrfs, the source fs has all its freedom to choose its
-> > size, as long as it's aligned to the fs block size.
-> >
-> > So when adding new converted data block groups we need to do extra
-> > alignment, but in make_convert_data_block_groups() we are rounding up
-> > the end, which can exceed the device size.
-> >
-> > [FIX]
-> > Instead of rounding up to stripe boundary, rounding it down to prevent
-> > going beyond the device boundary.
-> >
-> Reported-by: Andieqqq <zeige265975@gmail.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-While at it, also add a Link tag pointing to the report....
+Test that an incremental send works after we removed directories that have
+large number of hardlinks for the same file (so that we have extrefs).
 
-> Signed-off-by: Qu Wenruo
-> <wqu@suse.com>
-> > ---
-> >   convert/main.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/convert/main.c b/convert/main.c
-> > index e279e3d40c5f..5c40c08ddd72 100644
-> > --- a/convert/main.c
-> > +++ b/convert/main.c
-> > @@ -948,8 +948,8 @@ static int make_convert_data_block_groups(struct bt=
-rfs_trans_handle *trans,
-> >                       u64 cur_backup =3D cur;
-> >
-> >                       len =3D min(max_chunk_size,
-> > -                               round_up(cache->start + cache->size,
-> > -                                        BTRFS_STRIPE_LEN) - cur);
-> > +                               round_down(cache->start + cache->size,
-> > +                                          BTRFS_STRIPE_LEN) - cur);
-> >                       ret =3D btrfs_alloc_data_chunk(trans, fs_info, &c=
-ur_backup, len);
-> >                       if (ret < 0)
-> >                               break;
->
+This is a regression test for the kernel commit 1fabe43b4e1a ("btrfs:
+send: fix duplicated rmdir operations when using extrefs").
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ tests/btrfs/338     | 93 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/338.out |  3 ++
+ 2 files changed, 96 insertions(+)
+ create mode 100755 tests/btrfs/338
+ create mode 100644 tests/btrfs/338.out
+
+diff --git a/tests/btrfs/338 b/tests/btrfs/338
+new file mode 100755
+index 00000000..0cc29c7c
+--- /dev/null
++++ b/tests/btrfs/338
+@@ -0,0 +1,93 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
++#
++# FS QA Test 338
++#
++# Test that an incremental send works after we removed directories that have
++# large number of hardlinks for the same file (so that we have extrefs).
++#
++. ./common/preamble
++_begin_fstest auto quick send
++
++_cleanup()
++{
++	cd /
++	rm -fr $tmp.*
++	rm -fr $send_files_dir
++}
++
++_require_test
++_require_scratch
++_require_fssum
++
++_fixed_by_kernel_commit 1fabe43b4e1a \
++	"btrfs: send: fix duplicated rmdir operations when using extrefs"
++
++send_files_dir=$TEST_DIR/btrfs-test-$seq
++
++rm -fr $send_files_dir
++mkdir $send_files_dir
++
++first_stream="$send_files_dir/1.send"
++second_stream="$send_files_dir/2.send"
++first_fssum="$send_files_dir/snap1.fssum"
++second_fssum="$send_files_dir/snap2.fssum"
++
++_scratch_mkfs >> $seqres.full 2>&1 || _fail "first mkfs failed"
++_scratch_mount
++
++# Create two directories which will have many hardlinks for the same file, a
++# large number that triggers the use of extrefs. This way we will get many
++# extref items in the subvolume tree, with a very high likelyhood that not
++# all hardlinks for directory "a" are consecutive in the tree, that they are
++# interspersed with extref items for hardlinks to directory "b".
++#
++# Example:
++#
++#        item 0 key (259 INODE_EXTREF 2309449) itemoff 16257 itemsize 26
++#                index 6925 parent 257 namelen 8 name: foo.6923
++#        item 1 key (259 INODE_EXTREF 2311350) itemoff 16231 itemsize 26
++#                index 6588 parent 258 namelen 8 name: foo.6587
++#        item 2 key (259 INODE_EXTREF 2457395) itemoff 16205 itemsize 26
++#                index 6611 parent 257 namelen 8 name: foo.6609
++#        (...)
++#
++# Refer to the kernel commit's changelog for more details.
++mkdir $SCRATCH_MNT/a
++mkdir $SCRATCH_MNT/b
++
++touch $SCRATCH_MNT/a/foo
++for ((i = 1; i <= 1000; i++)); do
++	ln $SCRATCH_MNT/a/foo $SCRATCH_MNT/a/foo.$i
++	ln $SCRATCH_MNT/a/foo $SCRATCH_MNT/b/foo.$i
++done
++
++_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1
++
++# Now delete the directories and all the links inside them.
++rm -fr $SCRATCH_MNT/a
++rm -fr $SCRATCH_MNT/b
++
++_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2
++
++_btrfs send -f $first_stream $SCRATCH_MNT/snap1
++_btrfs send -f $second_stream -p $SCRATCH_MNT/snap1 $SCRATCH_MNT/snap2
++
++$FSSUM_PROG -A -f -w $first_fssum $SCRATCH_MNT/snap1
++$FSSUM_PROG -A -f -w $second_fssum -x $SCRATCH_MNT/snap2/snap1 \
++	$SCRATCH_MNT/snap2
++
++# Create a new fs and apply both send streams.
++_scratch_unmount
++_scratch_mkfs >> $seqres.full 2>&1 || _fail "second mkfs failed"
++_scratch_mount
++
++_btrfs receive -f $first_stream $SCRATCH_MNT
++_btrfs receive -f $second_stream $SCRATCH_MNT
++
++$FSSUM_PROG -r $first_fssum $SCRATCH_MNT/snap1
++$FSSUM_PROG -r $second_fssum $SCRATCH_MNT/snap2
++
++# success, all done
++_exit 0
+diff --git a/tests/btrfs/338.out b/tests/btrfs/338.out
+new file mode 100644
+index 00000000..7ea61817
+--- /dev/null
++++ b/tests/btrfs/338.out
+@@ -0,0 +1,3 @@
++QA output created by 338
++OK
++OK
+-- 
+2.47.2
+
 
