@@ -1,224 +1,238 @@
-Return-Path: <linux-btrfs+bounces-18425-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18426-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DAAFC225F5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 22:06:20 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CBCAC22BC4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 00:43:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 824D33B8393
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 21:05:45 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E43F03445A6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 23:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12BB632E6A0;
-	Thu, 30 Oct 2025 21:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E14E233E35D;
+	Thu, 30 Oct 2025 23:43:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Y+ZIOnWA"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RVxfReCi";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sy+r+LaC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7646274FEF;
-	Thu, 30 Oct 2025 21:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DCE33FE39
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 Oct 2025 23:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761858339; cv=none; b=bWKiz3EFiu46od/q62XgqSS01FClUXADKkZEYDUVh4+rcibpGC4LiJB+RYloCEPS1kHXl9CDoVIQFpvv4++yFO21uCEyg6cvXbLoJgTYN2Dot6BMYFunJ+9qxuZjUe9yxQNJIkUc7KeupAxO4ywuTY8LmB5wHi+DIzuopLClmq4=
+	t=1761867833; cv=none; b=RUYPudNlmIXh/q9rhdTxylYrQXQtTUhXSnjT9PyxTS53xurtXD3LILXlCBl4Et0udExWvBtu8tJZotGyd72WrRsA0i36OA0LOCY65kf/Mdj8q3IP7shCysKYkpUUeG5Coatfr+/SrKgpjLB1QmCmhCNCfj1eUK1n+tSWholjEqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761858339; c=relaxed/simple;
-	bh=Q0jZ8IZW6wZIVS8CZ3IqZ+++7UbtuChpdrRJVQqgZsc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U35MZyEdoYz/3/9jNE7KvZ5heGCXZPp0mbr2Slkwyp9VleuXzkSL/dZq7M9IaIDUkDptuoKuP8gdeWEynXk6ZU7ZdFxxUSdofH9qTZLrOvCFeAsPbTZBbNAtXfeytYHF1odFozZRmh6B6WM+xM7hG0ppmp6UBddcnxqMnxBas/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Y+ZIOnWA; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1761858335; x=1762463135; i=quwenruo.btrfs@gmx.com;
-	bh=0VfQ9Oqt1KzuPBGbAh6gNn2DhZi577qZAqMnKBBdwbs=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=Y+ZIOnWAo1KGFqYKEGIQW2ur5pl7DtAWdG+kAwkYx2uQER0ClAHM+Pm48rue+Ike
-	 No7xocvof9LpNkPOOUDXqkYFmwg4w5eP440ZRgvC7pDKJFcpGEfQc9HIy1/V+husT
-	 APvOsk+iaRzQdIfLMmpoiSXvn8kMjKOEKPafsZkH9l1+jiSNmVB9hTGBi3baKUUmP
-	 IrBzRMnN4LtbV1FQRmGOjh6X/WguC/WjVFgpsPrJvRwNsq58NNIt58nTnON9EyCLr
-	 AOcFpjsWIioeDYMzrKUPWQuAor1a6SLn855Yc4ULEF8KdASFPCNn9owwLjnuReqFO
-	 3cH8YNWZH0dqxarLAQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKKYx-1vYakz1PnL-00MHcc; Thu, 30
- Oct 2025 22:05:34 +0100
-Message-ID: <6409438c-43b7-484c-bf8c-be5f3849ef2f@gmx.com>
-Date: Fri, 31 Oct 2025 07:35:29 +1030
+	s=arc-20240116; t=1761867833; c=relaxed/simple;
+	bh=51TVAf63rYGGrCMMMP+f+Bp20iI78j368SRaMoZNQxs=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Ex12U/CFf1YdNsDWRhFlGICI9vWOXTvlqMnKZuGqzfHb+fCULU47pz9MvRDXTjPAUOMLEz/8TNZTpY+IPwGDieCSAjyonLTBG85632EYpPY/ALOqWdDBksZ488t2AKEltcqMf6p5/IzShbZ+ZcNyb9HG+5KVzPeqKDu6bQi38Zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RVxfReCi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sy+r+LaC; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 66CA11F7D3
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 Oct 2025 23:43:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1761867826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=jLoC31r/q12H70mkFdrr0Wsbcr3zXlL2JCOXTiJf0ac=;
+	b=RVxfReCic8P9rI28SqMtVJvraO4tM2dwwhgm4XWT8+07bshZTJHP4xa9IwUKeETP1giLPy
+	ofeMH9zCoiESzwtibudFR28sMcna6qsIzAT631+gPYetvf47cm+usTsfDwzGNBt2TQXR7E
+	2D4VOyHgWick0Lbsd3T8qSgFwxigOWY=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1761867825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=jLoC31r/q12H70mkFdrr0Wsbcr3zXlL2JCOXTiJf0ac=;
+	b=sy+r+LaChLsmli9YZHynjlSOQ8lQBJFAXAhqvMvpm87mAS8lt15FZ7Z2ZX2mOqCS8NSiA5
+	jKUuxdH+4YlnS+pDzdz+LW7GBfpvkKDsXPixlELLdD/Kqm11HFm37viTtzAnqZBhIl2GPq
+	fTldaZ0dGLfqztCwPnOuQPlbr+EFFoQ=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A3FD21396A
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 Oct 2025 23:43:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id G9WQGTD4A2nmNQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 Oct 2025 23:43:44 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fallback to buffered IO if the data profile has duplication
+Date: Fri, 31 Oct 2025 10:13:26 +1030
+Message-ID: <fe6582f4535be27e11a6125f89265ebe8c82aac6.1761867805.git.wqu@suse.com>
+X-Mailer: git-send-email 2.51.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: make ASSERT no-op in release builds
-To: Gladyshev Ilya <foxido@foxido.dev>
-Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20251030182322.4085697-1-foxido@foxido.dev>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20251030182322.4085697-1-foxido@foxido.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0BwIWSIRMFd9jHnn/tHjkaoahyyWt56sSovdasmuEKtg4UkyQaD
- IOmWWg/AgTdEPkgz48aa1paic4IeTaaLCKgJDwUnTQJZ7twNs03eMFeZ6RgYj8mOF4hsxZv
- rIBk2vhvswshSMQysH85Av53l9DVQ8mzxhsc/8gSGcZ7wvhBROYw1SQvhaeUfsXy1X/j3Oe
- 4MUXP9lpEK4xdnh2hrnUw==
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_NONE(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mI3+zPNMiRo=;vfdUYYTPnAam2kWMQAFS/lhV2Fu
- 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
+X-Spam-Score: -2.80
+X-Spam-Level: 
 
+[BACKGROUND]
+Inspired by a recent kernel bug report, which is related to direct IO
+buffer modification during writeback, that leads to contents mismatch of
+different RAID1 mirrors.
 
+[CAUSE AND PROBLEMS]
+The root cause is exactly the same explained in commit 968f19c5b1b7
+("btrfs: always fallback to buffered write if the inode requires
+checksum"), that we can not trust direct IO buffer which can be modified
+halfway during writeback.
 
-=E5=9C=A8 2025/10/31 04:53, Gladyshev Ilya =E5=86=99=E9=81=93:
-> The current definition of `ASSERT(cond)` as `(void)(cond)` is redundant,
-> because all checks are without side effects and don't affect code logic.
->=20
-> However, some checks has READ_ONCE in them or other 'compiler-unfriendly=
-'
-> behaviour. For example, ASSERT(list_empty) in btrfs_add_dealloc_inode
-> was compiled to redundant mov because of this.
->=20
-> This patch replaces ASSERT with BUILD_BUG_ON_INVALID for
-> !CONFIG_BTRFS_ASSERT builds.
->=20
-> Signed-off-by: Gladyshev Ilya <foxido@foxido.dev>
->=20
-> ---
-> .o size reductions are not that big, for example on defconfig + btrfs
-> fs/btrfs/*.o size went from 3280528 to 3277936, so compiler was pretty
-> efficient on his own
-> ---
->   fs/btrfs/messages.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
-> index 4416c165644f..f80fe40a2c2b 100644
-> --- a/fs/btrfs/messages.h
-> +++ b/fs/btrfs/messages.h
-> @@ -168,7 +168,7 @@ do {										\
->   #endif
->  =20
->   #else
-> -#define ASSERT(cond, args...)			(void)(cond)
-> +#define ASSERT(cond, args...)			BUILD_BUG_ON_INVALID(cond)
+Unlike data checksum verification, if this happened on inodes without
+data checksum but has the data has extra mirrors, it will lead to
+stealth data mismatch on different mirrors.
 
-And I do not think it's a good idea to use BUILD_BUG_ON_INVALID() here,=20
-most ASSERT()s are checking runtime conditions, I understand you want to=
-=20
-avoid real code generation, but in that case there are more=20
-straightforward solutions, like "do {} while (0)" as no-op.
+This will be way harder to detect without data checksum.
 
-Thanks,
-Qu
+Furthermore for RAID56, we can even have data without checksum and data
+with checksum mixed inside the same full stripe.
 
+In that case if the direct IO buffer got changed halfway for the
+nodatasum part, the data with checksum immediately lost its ability to
+recover, e.g.:
 
->   #endif
->  =20
->   #ifdef CONFIG_BTRFS_DEBUG
->=20
-> base-commit: e53642b87a4f4b03a8d7e5f8507fc3cd0c595ea6
+" " = Good old data or parity calculated using good old data
+"X" = Data modified during writeback
+
+              0                32K                      64K
+  Data 1      |                                         |  Has csum
+  Data 2      |XXXXXXXXXXXXXXXX                         |  No csum
+  Parity      |                                         |
+
+In above case, the parity is calculated using data 1 (has csum, from
+page cache, won't change during writeback), and old data 2 (has no csum,
+direct IO write).
+
+After parity is calculated, but before submission to the storage, direct
+IO buffer of data 2 is modified, causing the range [0, 32K) of data 2
+has a different content.
+
+Now all data is submitted to the storage, and the fs got fully synced.
+
+Then the device of data 1 is lost, has to be rebuilt from data 2 and
+parity. But since the data 2 has some modified data, and the parity is
+calculated using old data, the recovered data is no the same for data 1,
+causing data checksum mismatch.
+
+[FIX]
+Fix this problem by introduce a new helper,
+btrfs_has_data_duplication(), to check if there is any data profiles
+that have any duplication. If so fallback to buffered IO to keep data
+consistent, no matter if the inode has data checksum or not.
+
+However this is not going to fix all situations, as it's still possible
+to race with balance where the fs got a new data profile after
+btrfs_has_data_duplication() check.
+But this fix should still greatly reduce the window of the original bug.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=99171
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/direct-io.c  |  9 +++++++++
+ fs/btrfs/space-info.c | 18 ++++++++++++++++++
+ fs/btrfs/space-info.h |  1 +
+ 3 files changed, 28 insertions(+)
+
+diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+index 962fccceffd6..3165543f35bc 100644
+--- a/fs/btrfs/direct-io.c
++++ b/fs/btrfs/direct-io.c
+@@ -12,6 +12,7 @@
+ #include "volumes.h"
+ #include "bio.h"
+ #include "ordered-data.h"
++#include "space-info.h"
+ 
+ struct btrfs_dio_data {
+ 	ssize_t submitted;
+@@ -827,6 +828,14 @@ ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+ 	if (iocb->ki_pos + iov_iter_count(from) <= i_size_read(inode) && IS_NOSEC(inode))
+ 		ilock_flags |= BTRFS_ILOCK_SHARED;
+ 
++	/*
++	 * If our data profile has duplication (either extra mirrors or RAID56),
++	 * we can not trust the direct IO buffer, the content may change during
++	 * writeback and cause different contents written to different mirrors.
++	 */
++	if (btrfs_has_data_duplication(fs_info))
++		goto buffered;
++
+ relock:
+ 	ret = btrfs_inode_lock(BTRFS_I(inode), ilock_flags);
+ 	if (ret < 0)
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 63d14b5dfc6c..02b5ebdd3146 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -2203,3 +2203,21 @@ void btrfs_return_free_space(struct btrfs_space_info *space_info, u64 len)
+ 	if (len)
+ 		btrfs_try_granting_tickets(space_info);
+ }
++
++bool btrfs_has_data_duplication(struct btrfs_fs_info *fs_info)
++{
++	struct btrfs_space_info *sinfo = fs_info->data_sinfo;
++	bool ret = false;
++
++	down_write(&sinfo->groups_sem);
++	for (int i = 0; i < BTRFS_NR_RAID_TYPES; i++) {
++		if (!list_empty(&sinfo->block_groups[i]) &&
++		    (btrfs_raid_array[i].ncopies > 1 ||
++		     btrfs_raid_array[i].nparity != 0)) {
++			ret = true;
++			break;
++		}
++	}
++	up_write(&sinfo->groups_sem);
++	return ret;
++}
+diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+index a4c2a3c8b388..15b96163a167 100644
+--- a/fs/btrfs/space-info.h
++++ b/fs/btrfs/space-info.h
+@@ -315,5 +315,6 @@ void btrfs_set_periodic_reclaim_ready(struct btrfs_space_info *space_info, bool
+ int btrfs_calc_reclaim_threshold(const struct btrfs_space_info *space_info);
+ void btrfs_reclaim_sweep(const struct btrfs_fs_info *fs_info);
+ void btrfs_return_free_space(struct btrfs_space_info *space_info, u64 len);
++bool btrfs_has_data_duplication(struct btrfs_fs_info *fs_info);
+ 
+ #endif /* BTRFS_SPACE_INFO_H */
+-- 
+2.51.2
 
 
