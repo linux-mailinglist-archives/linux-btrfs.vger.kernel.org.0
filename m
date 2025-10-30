@@ -1,99 +1,102 @@
-Return-Path: <linux-btrfs+bounces-18419-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18420-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7397DC218D9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 18:49:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D9D6C21B7F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 19:15:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B18918965EF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 17:49:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56E263B9711
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 18:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E81C33EAEF;
-	Thu, 30 Oct 2025 17:48:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC88C2F6915;
+	Thu, 30 Oct 2025 18:15:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VaSABHB5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tR6h0wNQ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VaSABHB5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tR6h0wNQ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BqRwg+3r";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Fg4y3tdZ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BqRwg+3r";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Fg4y3tdZ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 095A437A3A6
-	for <linux-btrfs@vger.kernel.org>; Thu, 30 Oct 2025 17:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EDBF36C247
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 Oct 2025 18:15:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761846536; cv=none; b=Ou1WzXCVVFViXJeZShdLzM8BM5pSEI+voKAHlxSMNhJJfUBj/cB6CQQ06URg56/OHXDXkY773RySrk0bhFUIHtJF5UKKNRbregM4lFcv8u69kMcbx5nfn0uOMbLlnffUhbDIoUZKBdK/wdJyI+D4d543vPLM79XSwZQcwHHazIY=
+	t=1761848104; cv=none; b=GeHPS1Zl+6q7vrTiVaZzeCxFLpd3+bXOMqZDasCh7rVdjSFehp3Uniscmppc1IKEFQb+vUQeJpevsqUIx0skjItz4u2cf/KAneVL5+nKWcXKy/WcGt7DH+SsBbf9qyCEri/VL+rF2YvgZ0ZVP1OGdvIHf/5+ZR7pjG4cjVJK9n8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761846536; c=relaxed/simple;
-	bh=nEfn+D2WOjq54jIe9/Hkqfgwz+AX+sT7DhQrDuo9Cg0=;
+	s=arc-20240116; t=1761848104; c=relaxed/simple;
+	bh=4WNi/gumptqXp7BgD5BSeU+jDC7CK1rcvfA50JVdHmI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MBMHRPbX7rOt13XyEYrAAfkIR8PNx4TBtW2/E3zW1dUuC9I1iXw4AjP3HV/wwZ4KUiu1rLzjL9vp/bSqhz0UDxqJGFt8IpHWSKKNdgJyzG5VccSCK1uPfeONWMjyTO/KbMAAYcYlANy52xHAr4nP8nFqnCmDk7mV5FMRQPZWM4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VaSABHB5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tR6h0wNQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VaSABHB5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tR6h0wNQ; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=FxoZ6x68HkYx72W86Ct7dXtKPwQKbJf3Dv1s6xLAw8DZU+3RNVMYvvlbA0dPmLoUu2ofiNgEGsjZ7Yn1RWqxARhYTrGC6bVlOVSavUxJ30YpsROah3ZL8zkkiV5sQlc+YUGaPqa13VYDyDU2rSk0SJfaUBo8Zj33eK/i1uW39zU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BqRwg+3r; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Fg4y3tdZ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BqRwg+3r; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Fg4y3tdZ; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4B45C22BF6;
-	Thu, 30 Oct 2025 17:48:53 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7FA773377A;
+	Thu, 30 Oct 2025 18:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761846533;
+	t=1761848100;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=yp7OSbbw4bYj8GY+q/uWvRM3jPWGb7uppZXmCiqjV2M=;
-	b=VaSABHB5xVrBvyUBwGUPyB8rn/93K3Q9vz0AP/4vkh+L2t6ep1IwSVeeFsQOvJrZH3apJc
-	vasU86RoH14ko7t2TAPyRXYccmH4yqhEIDU5yd4cMuanS39+rzqL94EwaeV3Oo53bd5Sau
-	9naRezfBwkKgb+g7wxytDUfZlSJIggQ=
+	bh=+CFnjtwUmb//xGgCGMULfuHur2sJTAkS3oGzkdVsxKs=;
+	b=BqRwg+3rsMJ2p51V3FMD8iddnvVlx3s1YKPJ2eG3JvZjRSfL606kLC/wZiHMctaJ8fiklN
+	0nQtkmNgbQi3JRZIOKAVTOXP9041saVUN7aWjeAJ3+Q9cnst+HJmuZ++nmCgpZ+eGyuGMW
+	6nm2bGGzAf/d/ypdD3hd5cQle9cPybI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761846533;
+	s=susede2_ed25519; t=1761848100;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=yp7OSbbw4bYj8GY+q/uWvRM3jPWGb7uppZXmCiqjV2M=;
-	b=tR6h0wNQspT/FcyHsptAJNN0vZkuM1tjp7Ufp57aikrvpvWYmTNkiC8eZ7P0opiwSJ797r
-	f+940PEwxlIPoJDA==
+	bh=+CFnjtwUmb//xGgCGMULfuHur2sJTAkS3oGzkdVsxKs=;
+	b=Fg4y3tdZn5DbUo+77o+WKA6WNG5kXq3iKhHqA5Ac1wtJXto+H2EVkX5Ka7cnj+663xaE8b
+	RAk0JMBJrtf3n5BA==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761846533;
+	t=1761848100;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=yp7OSbbw4bYj8GY+q/uWvRM3jPWGb7uppZXmCiqjV2M=;
-	b=VaSABHB5xVrBvyUBwGUPyB8rn/93K3Q9vz0AP/4vkh+L2t6ep1IwSVeeFsQOvJrZH3apJc
-	vasU86RoH14ko7t2TAPyRXYccmH4yqhEIDU5yd4cMuanS39+rzqL94EwaeV3Oo53bd5Sau
-	9naRezfBwkKgb+g7wxytDUfZlSJIggQ=
+	bh=+CFnjtwUmb//xGgCGMULfuHur2sJTAkS3oGzkdVsxKs=;
+	b=BqRwg+3rsMJ2p51V3FMD8iddnvVlx3s1YKPJ2eG3JvZjRSfL606kLC/wZiHMctaJ8fiklN
+	0nQtkmNgbQi3JRZIOKAVTOXP9041saVUN7aWjeAJ3+Q9cnst+HJmuZ++nmCgpZ+eGyuGMW
+	6nm2bGGzAf/d/ypdD3hd5cQle9cPybI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761846533;
+	s=susede2_ed25519; t=1761848100;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=yp7OSbbw4bYj8GY+q/uWvRM3jPWGb7uppZXmCiqjV2M=;
-	b=tR6h0wNQspT/FcyHsptAJNN0vZkuM1tjp7Ufp57aikrvpvWYmTNkiC8eZ7P0opiwSJ797r
-	f+940PEwxlIPoJDA==
+	bh=+CFnjtwUmb//xGgCGMULfuHur2sJTAkS3oGzkdVsxKs=;
+	b=Fg4y3tdZn5DbUo+77o+WKA6WNG5kXq3iKhHqA5Ac1wtJXto+H2EVkX5Ka7cnj+663xaE8b
+	RAk0JMBJrtf3n5BA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3E1071396A;
-	Thu, 30 Oct 2025 17:48:53 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 669D21396A;
+	Thu, 30 Oct 2025 18:15:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7fv0DgWlA2nbZgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 30 Oct 2025 17:48:53 +0000
-Date: Thu, 30 Oct 2025 18:48:52 +0100
+	id infcGCSrA2llfwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 30 Oct 2025 18:15:00 +0000
+Date: Thu, 30 Oct 2025 19:14:59 +0100
 From: David Sterba <dsterba@suse.cz>
-To: Naohiro Aota <naohiro.aota@wdc.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] fix zone capacity/alloc_offset calculation
-Message-ID: <20251030174852.GA13846@twin.jikos.cz>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
+	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 02/10] btrfs: Use folio_next_pos()
+Message-ID: <20251030181459.GB13846@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20251027072758.1066720-1-naohiro.aota@wdc.com>
+References: <20251024170822.1427218-1-willy@infradead.org>
+ <20251024170822.1427218-3-willy@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -102,52 +105,41 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251027072758.1066720-1-naohiro.aota@wdc.com>
+In-Reply-To: <20251024170822.1427218-3-willy@infradead.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
 X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
-	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	RCVD_COUNT_TWO(0.00)[2];
 	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 X-Spam-Flag: NO
 X-Spam-Score: -4.00
-X-Spam-Level: 
 
-On Mon, Oct 27, 2025 at 04:27:56PM +0900, Naohiro Aota wrote:
-> When a conventional zone is in a block group, we cannot know the
-> alloc_offset from the write pointers. In that case, we use the last
-> extent in the zone to know the last allocation offset. We calcualte the
-> alloc_offset from it, but the current calculation is wrong in two ways.
+On Fri, Oct 24, 2025 at 06:08:10PM +0100, Matthew Wilcox (Oracle) wrote:
+> btrfs defined its own variant of folio_next_pos() called folio_end().
+> This is an ambiguous name as 'end' might be exclusive or inclusive.
+> Switch to the new folio_next_pos().
 > 
-> First, the zone capacity is mistakenly set to the zone_size if there is
-> at least one conventional zone in the block group. That should be
-> calculated properly depending on the raid type.
-> 
-> Second, the stripe width is wrongly set to map->stripe_size, which is
-> zone_size on the zoned setup.
-> 
-> This series fixes these two bugs.
-> 
-> Naohiro Aota (2):
->   btrfs: zoned: fix zone capacity calculation
->   btrfs: zoned: fix stripe width calculation
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Cc: Chris Mason <clm@fb.com>
+> Cc: David Sterba <dsterba@suse.com>
 
-Please add the patches to for-next, with the fixed 64bit division.
-Thanks.
+Acked-by: David Sterba <dsterba@suse.com>
 
