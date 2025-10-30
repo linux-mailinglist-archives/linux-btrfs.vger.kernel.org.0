@@ -1,186 +1,153 @@
-Return-Path: <linux-btrfs+bounces-18418-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18419-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1308BC21795
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 18:25:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7397DC218D9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 18:49:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 78AEC4EE180
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 17:22:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B18918965EF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Oct 2025 17:49:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185B83683B4;
-	Thu, 30 Oct 2025 17:22:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E81C33EAEF;
+	Thu, 30 Oct 2025 17:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cQoE9TQP"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VaSABHB5";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tR6h0wNQ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VaSABHB5";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tR6h0wNQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B083191B7;
-	Thu, 30 Oct 2025 17:22:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 095A437A3A6
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 Oct 2025 17:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761844970; cv=none; b=MrDZIFkecj6bFtQiG3Y0ORswvow+cCOyaLqRaPNfejU1DgIEZ3p+g1b3O5voIelOVUrrycx161Si9EhGEfu3P37zUIJJIG1hHhWl2ac8gIE3NgQ5nG8MHuw4N/TAokbM6uBO8qoebPRnPcbLxwS8t23eoJzwlnwX+Bg9/to+O5s=
+	t=1761846536; cv=none; b=Ou1WzXCVVFViXJeZShdLzM8BM5pSEI+voKAHlxSMNhJJfUBj/cB6CQQ06URg56/OHXDXkY773RySrk0bhFUIHtJF5UKKNRbregM4lFcv8u69kMcbx5nfn0uOMbLlnffUhbDIoUZKBdK/wdJyI+D4d543vPLM79XSwZQcwHHazIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761844970; c=relaxed/simple;
-	bh=W07yYwa5au1fJ3WzG5uZqyYf4v1LD3aCRdwM94U6qcY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D7Y2wzgdF4C+625iEx/MqncL0PJdn7xny19sn83kxyH7DpCRirfgnUttVuV2Ww0zAFsgr37iu7yUpVbkK6/dBSyJXA9IydaQ726RGkE2Te0EKfyuFu7793H7Zz1Ey+wPOH3YafglHtpvXXoWPnA3pyU+8S4AIryK5gnYO3kTuss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cQoE9TQP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBCFFC4CEF1;
-	Thu, 30 Oct 2025 17:22:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761844969;
-	bh=W07yYwa5au1fJ3WzG5uZqyYf4v1LD3aCRdwM94U6qcY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=cQoE9TQPdmMjj2H+lOcdEF9b4ghB5+5l6wDzK10jU7TRUzo5yg6OeHrUfzUunjJXg
-	 xiCg+J2s3JufBFqTtBUSeyZRvrE73rs0KX/uCcWmYmwk6+V7MhgMi9DmlauX7fyXLj
-	 HWAy9YRZaIc5fMiA32nkknCmggwoBTtCxn2BJF/Jp5ZhFy5TuhZLcg6SUTpjaEjTka
-	 cpCNV+32FQTRHE1Ca2DJSqIE1UkkufpLwYjA4PF3xev3t+7b5qMXMCBonnMuRSpMg/
-	 Df8las7RKHan4qvJh7ZIs+DO+VisqDAgFDTCzT0yyqP/lnLpFXn/kcyaIaKDKylvhN
-	 jtr4MoksrW2pg==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: test incremental send after deleting directories with many hardlinks
-Date: Thu, 30 Oct 2025 17:22:44 +0000
-Message-ID: <8d1b819511b4c93b5ba0b3137090f5c28a952364.1761844883.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
+	s=arc-20240116; t=1761846536; c=relaxed/simple;
+	bh=nEfn+D2WOjq54jIe9/Hkqfgwz+AX+sT7DhQrDuo9Cg0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MBMHRPbX7rOt13XyEYrAAfkIR8PNx4TBtW2/E3zW1dUuC9I1iXw4AjP3HV/wwZ4KUiu1rLzjL9vp/bSqhz0UDxqJGFt8IpHWSKKNdgJyzG5VccSCK1uPfeONWMjyTO/KbMAAYcYlANy52xHAr4nP8nFqnCmDk7mV5FMRQPZWM4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VaSABHB5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tR6h0wNQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VaSABHB5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tR6h0wNQ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4B45C22BF6;
+	Thu, 30 Oct 2025 17:48:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1761846533;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yp7OSbbw4bYj8GY+q/uWvRM3jPWGb7uppZXmCiqjV2M=;
+	b=VaSABHB5xVrBvyUBwGUPyB8rn/93K3Q9vz0AP/4vkh+L2t6ep1IwSVeeFsQOvJrZH3apJc
+	vasU86RoH14ko7t2TAPyRXYccmH4yqhEIDU5yd4cMuanS39+rzqL94EwaeV3Oo53bd5Sau
+	9naRezfBwkKgb+g7wxytDUfZlSJIggQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1761846533;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yp7OSbbw4bYj8GY+q/uWvRM3jPWGb7uppZXmCiqjV2M=;
+	b=tR6h0wNQspT/FcyHsptAJNN0vZkuM1tjp7Ufp57aikrvpvWYmTNkiC8eZ7P0opiwSJ797r
+	f+940PEwxlIPoJDA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1761846533;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yp7OSbbw4bYj8GY+q/uWvRM3jPWGb7uppZXmCiqjV2M=;
+	b=VaSABHB5xVrBvyUBwGUPyB8rn/93K3Q9vz0AP/4vkh+L2t6ep1IwSVeeFsQOvJrZH3apJc
+	vasU86RoH14ko7t2TAPyRXYccmH4yqhEIDU5yd4cMuanS39+rzqL94EwaeV3Oo53bd5Sau
+	9naRezfBwkKgb+g7wxytDUfZlSJIggQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1761846533;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yp7OSbbw4bYj8GY+q/uWvRM3jPWGb7uppZXmCiqjV2M=;
+	b=tR6h0wNQspT/FcyHsptAJNN0vZkuM1tjp7Ufp57aikrvpvWYmTNkiC8eZ7P0opiwSJ797r
+	f+940PEwxlIPoJDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3E1071396A;
+	Thu, 30 Oct 2025 17:48:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 7fv0DgWlA2nbZgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 30 Oct 2025 17:48:53 +0000
+Date: Thu, 30 Oct 2025 18:48:52 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Naohiro Aota <naohiro.aota@wdc.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] fix zone capacity/alloc_offset calculation
+Message-ID: <20251030174852.GA13846@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20251027072758.1066720-1-naohiro.aota@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251027072758.1066720-1-naohiro.aota@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Spam-Level: 
 
-From: Filipe Manana <fdmanana@suse.com>
+On Mon, Oct 27, 2025 at 04:27:56PM +0900, Naohiro Aota wrote:
+> When a conventional zone is in a block group, we cannot know the
+> alloc_offset from the write pointers. In that case, we use the last
+> extent in the zone to know the last allocation offset. We calcualte the
+> alloc_offset from it, but the current calculation is wrong in two ways.
+> 
+> First, the zone capacity is mistakenly set to the zone_size if there is
+> at least one conventional zone in the block group. That should be
+> calculated properly depending on the raid type.
+> 
+> Second, the stripe width is wrongly set to map->stripe_size, which is
+> zone_size on the zoned setup.
+> 
+> This series fixes these two bugs.
+> 
+> Naohiro Aota (2):
+>   btrfs: zoned: fix zone capacity calculation
+>   btrfs: zoned: fix stripe width calculation
 
-Test that an incremental send works after we removed directories that have
-large number of hardlinks for the same file (so that we have extrefs).
-
-This is a regression test for the kernel commit 1fabe43b4e1a ("btrfs:
-send: fix duplicated rmdir operations when using extrefs").
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/338     | 93 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/338.out |  3 ++
- 2 files changed, 96 insertions(+)
- create mode 100755 tests/btrfs/338
- create mode 100644 tests/btrfs/338.out
-
-diff --git a/tests/btrfs/338 b/tests/btrfs/338
-new file mode 100755
-index 00000000..0cc29c7c
---- /dev/null
-+++ b/tests/btrfs/338
-@@ -0,0 +1,93 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
-+#
-+# FS QA Test 338
-+#
-+# Test that an incremental send works after we removed directories that have
-+# large number of hardlinks for the same file (so that we have extrefs).
-+#
-+. ./common/preamble
-+_begin_fstest auto quick send
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -fr $tmp.*
-+	rm -fr $send_files_dir
-+}
-+
-+_require_test
-+_require_scratch
-+_require_fssum
-+
-+_fixed_by_kernel_commit 1fabe43b4e1a \
-+	"btrfs: send: fix duplicated rmdir operations when using extrefs"
-+
-+send_files_dir=$TEST_DIR/btrfs-test-$seq
-+
-+rm -fr $send_files_dir
-+mkdir $send_files_dir
-+
-+first_stream="$send_files_dir/1.send"
-+second_stream="$send_files_dir/2.send"
-+first_fssum="$send_files_dir/snap1.fssum"
-+second_fssum="$send_files_dir/snap2.fssum"
-+
-+_scratch_mkfs >> $seqres.full 2>&1 || _fail "first mkfs failed"
-+_scratch_mount
-+
-+# Create two directories which will have many hardlinks for the same file, a
-+# large number that triggers the use of extrefs. This way we will get many
-+# extref items in the subvolume tree, with a very high likelyhood that not
-+# all hardlinks for directory "a" are consecutive in the tree, that they are
-+# interspersed with extref items for hardlinks to directory "b".
-+#
-+# Example:
-+#
-+#        item 0 key (259 INODE_EXTREF 2309449) itemoff 16257 itemsize 26
-+#                index 6925 parent 257 namelen 8 name: foo.6923
-+#        item 1 key (259 INODE_EXTREF 2311350) itemoff 16231 itemsize 26
-+#                index 6588 parent 258 namelen 8 name: foo.6587
-+#        item 2 key (259 INODE_EXTREF 2457395) itemoff 16205 itemsize 26
-+#                index 6611 parent 257 namelen 8 name: foo.6609
-+#        (...)
-+#
-+# Refer to the kernel commit's changelog for more details.
-+mkdir $SCRATCH_MNT/a
-+mkdir $SCRATCH_MNT/b
-+
-+touch $SCRATCH_MNT/a/foo
-+for ((i = 1; i <= 1000; i++)); do
-+	ln $SCRATCH_MNT/a/foo $SCRATCH_MNT/a/foo.$i
-+	ln $SCRATCH_MNT/a/foo $SCRATCH_MNT/b/foo.$i
-+done
-+
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1
-+
-+# Now delete the directories and all the links inside them.
-+rm -fr $SCRATCH_MNT/a
-+rm -fr $SCRATCH_MNT/b
-+
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2
-+
-+_btrfs send -f $first_stream $SCRATCH_MNT/snap1
-+_btrfs send -f $second_stream -p $SCRATCH_MNT/snap1 $SCRATCH_MNT/snap2
-+
-+$FSSUM_PROG -A -f -w $first_fssum $SCRATCH_MNT/snap1
-+$FSSUM_PROG -A -f -w $second_fssum -x $SCRATCH_MNT/snap2/snap1 \
-+	$SCRATCH_MNT/snap2
-+
-+# Create a new fs and apply both send streams.
-+_scratch_unmount
-+_scratch_mkfs >> $seqres.full 2>&1 || _fail "second mkfs failed"
-+_scratch_mount
-+
-+_btrfs receive -f $first_stream $SCRATCH_MNT
-+_btrfs receive -f $second_stream $SCRATCH_MNT
-+
-+$FSSUM_PROG -r $first_fssum $SCRATCH_MNT/snap1
-+$FSSUM_PROG -r $second_fssum $SCRATCH_MNT/snap2
-+
-+# success, all done
-+_exit 0
-diff --git a/tests/btrfs/338.out b/tests/btrfs/338.out
-new file mode 100644
-index 00000000..7ea61817
---- /dev/null
-+++ b/tests/btrfs/338.out
-@@ -0,0 +1,3 @@
-+QA output created by 338
-+OK
-+OK
--- 
-2.47.2
-
+Please add the patches to for-next, with the fixed 64bit division.
+Thanks.
 
