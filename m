@@ -1,99 +1,95 @@
-Return-Path: <linux-btrfs+bounces-18496-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18497-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BA57C271CB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 23:12:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81D29C2723E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 23:50:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 090FC3AD1DE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 22:12:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A36EF18916D0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 22:51:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF2632AADA;
-	Fri, 31 Oct 2025 22:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD4830BBA6;
+	Fri, 31 Oct 2025 22:50:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="eHgOypQG";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KKO5JMoR"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Ug7A3X9a";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="aJsF4gld"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
+Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4267405F7
-	for <linux-btrfs@vger.kernel.org>; Fri, 31 Oct 2025 22:12:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F24B12DEA74
+	for <linux-btrfs@vger.kernel.org>; Fri, 31 Oct 2025 22:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761948754; cv=none; b=ULmW49sT3FbMIAlc3g/4OQkyszKvWOlwRdnV1U+ou/nC2hlt7fLcq2PIItpIm8HIwKkEXUZ61DLkqSgOf/5aslz1I4lD3Cd1exXuQTTpsGJyTUzW8oLYEEIbgufvv/qxxU6Ww+HfHwSoqNylychnal1ogTnHduEDAe3xmCdJswM=
+	t=1761951032; cv=none; b=U/ABYm8r/ZJBhjPmsNTpLOoRTz1/OFQpeOWJuB0M6ENdOCBamA+9S47XHNdcJU3FQF/HvMVlAw7YuJN7IupKZ3/qNU05DErkIKHlG3Wsstye/KqDEOl7kI7Hc9PXkC0G0/FQzX0Pbn6ZNrAQVVKltimRnq8pLPcg6wiAk35HLLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761948754; c=relaxed/simple;
-	bh=I8McIG3NDEv1t1TgzExmsrBc4wE+mFyo4ceHeh4Q5pA=;
+	s=arc-20240116; t=1761951032; c=relaxed/simple;
+	bh=JZvglHEaKjZ3xXEAx6qdSw8ZFjjNYS1gStV7qbQxeUQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SzRRZ/ffplnEcCF2p8ew1BSgtbQbPR6AqEUvSFPexBXmr4HYE7nomYGGPXlb/ohQrDvCCL9vot4LTxtPLQx9Ja4g5zBjjhfPvP+VXOInErzIjTY2y3LNmydvt5bMXaV/VUg/NIPcIzh9B81LmsEvXcCkNWLEaSxpVtcsBqEpl7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=eHgOypQG; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KKO5JMoR; arc=none smtp.client-ip=103.168.172.152
+	 Content-Type:Content-Disposition:In-Reply-To; b=UxHXrjj4LaEF905PtlPybW03pnlBSqqgBHSGPr1YrcDV6WaIZsxNxWGNHrn/X96Yh7aKhQEZQqCUE/YHmR2uqmUJZzfk8IEg6eMV26c+U9ZCfqcWEf8GYu93KPWdvXl32szwNRsjtkez3YYjjrsMGDU00OCUUOeM9tC6kBD6pYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Ug7A3X9a; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=aJsF4gld; arc=none smtp.client-ip=103.168.172.149
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id EFA321400096;
-	Fri, 31 Oct 2025 18:12:31 -0400 (EDT)
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfout.phl.internal (Postfix) with ESMTP id 224EDEC0217;
+	Fri, 31 Oct 2025 18:50:27 -0400 (EDT)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Fri, 31 Oct 2025 18:12:31 -0400
+  by phl-compute-06.internal (MEProxy); Fri, 31 Oct 2025 18:50:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1761948751; x=1762035151; bh=FjFmiz1qOH
-	/LlnNN60N/rrL2LWQgVcR59Z4VMRF4VII=; b=eHgOypQG21+zS7Ei3ubiefRRoj
-	f5llBb6y+wjb3uUVnzRjOp2GIfCubmYK2QLpZzJB+zlHXr9Z24xgrnBG4+15y/rt
-	flq4+iExxQaDbEFZ0DG7boTLcAz9D87ZHijjjt2BnztBUXzmoDbY78Q+PtpKdxHd
-	fpCrWMhyEtWfSv7DYer1oC70peP+BWnzB/CFepzlYphAm5Mpxg9SAXm9xXGMNBVP
-	V+MZiewv3Fk9wPFjLJBC8GDKL4aCa/7HxrzOfSF+KcOpd89uwfnDKgnslOtKtSt3
-	+N8euVVDXKYG7u0hUhaMCNb8hePAYJB9GkSr67oVwX0a94FLymo0Lrkroplg==
+	:subject:to:to; s=fm1; t=1761951027; x=1762037427; bh=NN/z25boHM
+	Gc0k2Wz1Ny5a2TyZGsWFqVuwxFttOTnqE=; b=Ug7A3X9aDaLr3LxoYr/Tm96odz
+	zHUpbxVUx31Hk8f0oqhLIr/QGZW9OY7O6F0vvLWCIAOqI+JqQ6bRTW1N+BTbY6cB
+	3f144LAtiRnKmav50LjuaU4CaA6AsolmUnUvOs1OFsqq9Dn09eCcF6dPi6VD3m8Q
+	PyTJed/Td+9uyye5Or4Z8i43fP6jkXR1UM+SaL4+tBdNHPLEqPztTD6RZdFsRTSj
+	78p7QCh9A2zjPNYBtAfkBAoWaY3rrjjapBMTxonmnkysP4G0LEEcZcyHllJ5CfUn
+	0ywG5sCOQtXw5KCGzRcn52GdX2RX1wwmST7QHPNsytZbE4XZ0ZReuhSS8Uow==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1761948751; x=1762035151; bh=FjFmiz1qOH/LlnNN60N/rrL2LWQgVcR59Z4
-	VMRF4VII=; b=KKO5JMoRqClNnZH5q90odmj0b3JJFrjihZphGWsJVGNYo7h2xdU
-	9FqfaVlOKnSLurbEOsa+LaYl8sI1RHk3LbGZqjfbdRaMwbfkoOZiRhYtwz7rZK8u
-	r6jmfAApC3689uPrm/mVtbvKKfK1r6sKpcJp3klEmvhMpKRofz9oedmDum+e2z5f
-	Epk/a8oHw9CtndMH0m6encWljeeP6jo96NzRNNCY7bLuQT9LWR5w3WjQXZ2Vb3Q9
-	4KHYiRi6Qc1r9Sx+u+hUhLIOcbQdcmbSDGi5qycyVA3UBXrZAE6Zep+asbD5HYYx
-	XU6/vUN4jMctuw5n/4QTsOD4+/ityyDr5sw==
-X-ME-Sender: <xms:TzQFafS_sWbI7x2cCkVXMjtU6ik7yJZcQWCiQZ1-G6PRwf_jyx-tAA>
-    <xme:TzQFaekANNJ-nsKNJNLuwKR9k9fLeIU6aNV76vbrIx6cWH9GxoatcL4IkDTIfcQB1
-    uRDZIAlPSJxJfH3Sf3n3x11ZCaj41h_O63jTaV7WX_lJeapmiGgNV5J>
-X-ME-Received: <xmr:TzQFafTuAsuo2EHTnHu2U_fvTzYWnH7D0rmckv0h1PX3W4bd090e4y3uePFs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddujedtieeiucetufdoteggodetrf
+	1761951027; x=1762037427; bh=NN/z25boHMGc0k2Wz1Ny5a2TyZGsWFqVuwx
+	FttOTnqE=; b=aJsF4gldGDmahgwUrTs/RjcnCpVrGcvb1Owp3AxTLfRmjtGaCMe
+	8AMfF2HmWXDEb55bfeacQ74CqGo+vSvt4UMJTYI+5XYGBMQw4aK9nINXI+YllLpc
+	6zqYvpRs6sjGcgthz49dMv/VO0Y4azVd5KYw1u9IfCH4aBsBQd7wXLzxSx2/chyH
+	vu19dZ2dRxF/g081hwPLPmYs0kypW6G3eZ8VjBDrRvpj8f9VXuZ0T3WSiQcXCmvb
+	YkRxUZkqLSy8QKGoXTya+ZyJ7z2dXqJUXj/zku2j7aqJ+m70r2IfTWejfSysOar8
+	rZW00bPZ46jfXy2VJGXBfvUlV3wAFkdfTYg==
+X-ME-Sender: <xms:Mj0FaYRt8Vb8bVZcTAqZZ8DG-2j0_4VmX-0aYSOomhjzfweR7RqYmA>
+    <xme:Mj0FabzYczNDLSi9-37REO8akPOW_0LwcRQNp342YRfq7B7W42DjhdNKIvSKj5ngU
+    rMmGKWng4hb3Dr0du4ofdmMK7zPRofECHXGYawPdfEKECQNbtfhYf8>
+X-ME-Received: <xmr:Mj0FaTcmpQaW6P_hqx9_brGKOUSX2-G-NLcIyHxOKxKGF22zfdqOXkeUuKv7>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddujedtjeefucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpedvud
-    dvueehleffueeghfegtdfhvefggfejvdfghefgueetueeuveehtdeufedtueenucffohhm
-    rghinhepghhithdqshgtmhdrtghomhdpghhithhhuhgsrdgtohhmpdhkvghrnhgvlhdroh
-    hrghdptddurdhorhhgpdhgnhhurdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfr
-    rghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtth
-    hopeegpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlkhhpsehinhhtvghlrdgt
-    ohhmpdhrtghpthhtohepmhgrrhhksehhrghrmhhsthhonhgvrdgtohhmpdhrtghpthhtoh
-    eplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthho
-    pehovgdqkhgsuhhilhguqdgrlhhlsehlihhsthhsrdhlihhnuhigrdguvghv
-X-ME-Proxy: <xmx:TzQFacNDdULAWtxHjpfJ9LdrxHpGHbV6jKutZxCWmButoHIXw1iiKA>
-    <xmx:TzQFaYUffsDog8U9NLoVwNEBpS4YWB8-R2saXp3yM7eoTk_A2JitHw>
-    <xmx:TzQFaTfQzcXcwc24TGEKIY1y46Z6naZLIvz9-NPVs5pv_rP530iYBg>
-    <xmx:TzQFaUukeWmLqdOLfngaTZQP8WaaXTw1V0YsFsClQ1YULHCyHKO1zw>
-    <xmx:TzQFadMqbSa4E5J9yirp7scGv33f2otBD6oIoV4X8AcfloVjdfX0onVC>
+    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
+    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
+    ohepmhgrrhhksehhrghrmhhsthhonhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsg
+    htrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:Mj0FaXL4NEnnaT3QDxBmKyhq2LddJEMke6lV5ZbkCmlUXW6zB0ua4g>
+    <xmx:Mj0FaUGyopGbbYwOU6WvUZuTAZlCSRDIUMxDDuRVxzYH5DlY0tBJNw>
+    <xmx:Mj0FaRo38H3RJNfXliAA2ftH6yn3YOoeRduDTk1HGdbU6A-LKFdwtg>
+    <xmx:Mj0FadSEVaT6c3Um3xqYDHJlhD3Wwt6XpoXizOiVIe2kroL75FoShQ>
+    <xmx:Mz0FafHrud8qAvBWVAQK1yiuERXTh_c9KdWXsbaAW7F9kFQEPwPUDygv>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 31 Oct 2025 18:12:31 -0400 (EDT)
-Date: Fri, 31 Oct 2025 15:12:28 -0700
+ 31 Oct 2025 18:50:26 -0400 (EDT)
+Date: Fri, 31 Oct 2025 15:50:23 -0700
 From: Boris Burkov <boris@bur.io>
-To: kernel test robot <lkp@intel.com>
-Cc: Mark Harmstone <mark@harmstone.com>, linux-btrfs@vger.kernel.org,
-	oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v4 15/16] btrfs: handle discarding fully-remapped block
- groups
-Message-ID: <aQU0TJLSbEXcSX1s@devvm12410.ftw0.facebook.com>
-References: <20251024181227.32228-16-mark@harmstone.com>
- <202510272322.N1S5rdDc-lkp@intel.com>
+To: Mark Harmstone <mark@harmstone.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v4 01/16] btrfs: add definitions and constants for
+ remap-tree
+Message-ID: <aQU9IeuVxBrhq0sG@devvm12410.ftw0.facebook.com>
+References: <20251024181227.32228-1-mark@harmstone.com>
+ <20251024181227.32228-2-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -102,159 +98,177 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202510272322.N1S5rdDc-lkp@intel.com>
+In-Reply-To: <20251024181227.32228-2-mark@harmstone.com>
 
-On Tue, Oct 28, 2025 at 12:04:11AM +0800, kernel test robot wrote:
-> Hi Mark,
+On Fri, Oct 24, 2025 at 07:12:02PM +0100, Mark Harmstone wrote:
+> Add an incompat flag for the new remap-tree feature, and the constants
+> and definitions needed to support it.
 > 
-> kernel test robot noticed the following build warnings:
+> Signed-off-by: Mark Harmstone <mark@harmstone.com>
+> Reviewed-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/accessors.h            |  3 +++
+>  fs/btrfs/locking.c              |  1 +
+>  fs/btrfs/sysfs.c                |  2 ++
+>  fs/btrfs/tree-checker.c         |  6 ++----
+>  fs/btrfs/tree-checker.h         |  5 +++++
+>  fs/btrfs/volumes.c              |  1 +
+>  include/uapi/linux/btrfs.h      |  1 +
+>  include/uapi/linux/btrfs_tree.h | 12 ++++++++++++
+>  8 files changed, 27 insertions(+), 4 deletions(-)
 > 
-> [auto build test WARNING on kdave/for-next]
-> [also build test WARNING on next-20251027]
-> [cannot apply to linus/master v6.18-rc3]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Mark-Harmstone/btrfs-add-definitions-and-constants-for-remap-tree/20251025-021910
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-> patch link:    https://lore.kernel.org/r/20251024181227.32228-16-mark%40harmstone.com
-> patch subject: [PATCH v4 15/16] btrfs: handle discarding fully-remapped block groups
-> config: arm-randconfig-003-20251027 (https://download.01.org/0day-ci/archive/20251027/202510272322.N1S5rdDc-lkp@intel.com/config)
-> compiler: arm-linux-gnueabi-gcc (GCC) 8.5.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251027/202510272322.N1S5rdDc-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202510272322.N1S5rdDc-lkp@intel.com/
-> 
-> Note: it may well be a FALSE warning. FWIW you are at least aware of it now.
-> http://gcc.gnu.org/wiki/Better_Uninitialized_Warnings
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    fs/btrfs/discard.c: In function 'btrfs_discard_workfn':
-> >> fs/btrfs/discard.c:596:6: warning: 'discard_state' may be used uninitialized in this function [-Wmaybe-uninitialized]
->       if (discard_state == BTRFS_DISCARD_BITMAPS ||
->          ^
+> diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
+> index 99b3ced12805..95a1ca8c099b 100644
+> --- a/fs/btrfs/accessors.h
+> +++ b/fs/btrfs/accessors.h
+> @@ -1009,6 +1009,9 @@ BTRFS_SETGET_STACK_FUNCS(stack_verity_descriptor_encryption,
+>  BTRFS_SETGET_STACK_FUNCS(stack_verity_descriptor_size,
+>  			 struct btrfs_verity_descriptor_item, size, 64);
+>  
+> +BTRFS_SETGET_FUNCS(remap_address, struct btrfs_remap, address, 64);
+> +BTRFS_SETGET_STACK_FUNCS(stack_remap_address, struct btrfs_remap, address, 64);
+> +
+>  /* Cast into the data area of the leaf. */
+>  #define btrfs_item_ptr(leaf, slot, type)				\
+>  	((type *)(btrfs_item_nr_offset(leaf, 0) + btrfs_item_offset(leaf, slot)))
+> diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
+> index 0035851d72b0..726e4d70f37c 100644
+> --- a/fs/btrfs/locking.c
+> +++ b/fs/btrfs/locking.c
+> @@ -73,6 +73,7 @@ static struct btrfs_lockdep_keyset {
+>  	{ .id = BTRFS_FREE_SPACE_TREE_OBJECTID,	DEFINE_NAME("free-space") },
+>  	{ .id = BTRFS_BLOCK_GROUP_TREE_OBJECTID, DEFINE_NAME("block-group") },
+>  	{ .id = BTRFS_RAID_STRIPE_TREE_OBJECTID, DEFINE_NAME("raid-stripe") },
+> +	{ .id = BTRFS_REMAP_TREE_OBJECTID,      DEFINE_NAME("remap-tree") },
+>  	{ .id = 0,				DEFINE_NAME("tree")	},
+>  };
+>  
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index d66681ce2b3d..9e1ba524d26a 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -291,6 +291,7 @@ BTRFS_FEAT_ATTR_COMPAT_RO(free_space_tree, FREE_SPACE_TREE);
+>  BTRFS_FEAT_ATTR_COMPAT_RO(block_group_tree, BLOCK_GROUP_TREE);
+>  BTRFS_FEAT_ATTR_INCOMPAT(raid1c34, RAID1C34);
+>  BTRFS_FEAT_ATTR_INCOMPAT(simple_quota, SIMPLE_QUOTA);
+> +BTRFS_FEAT_ATTR_INCOMPAT(remap_tree, REMAP_TREE);
+>  #ifdef CONFIG_BLK_DEV_ZONED
+>  BTRFS_FEAT_ATTR_INCOMPAT(zoned, ZONED);
+>  #endif
+> @@ -325,6 +326,7 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
+>  	BTRFS_FEAT_ATTR_PTR(raid1c34),
+>  	BTRFS_FEAT_ATTR_PTR(block_group_tree),
+>  	BTRFS_FEAT_ATTR_PTR(simple_quota),
+> +	BTRFS_FEAT_ATTR_PTR(remap_tree),
+>  #ifdef CONFIG_BLK_DEV_ZONED
+>  	BTRFS_FEAT_ATTR_PTR(zoned),
+>  #endif
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index 5684750ca7a6..af9a26844113 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -913,12 +913,10 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_info *fs_info,
+>  			  length, btrfs_stripe_nr_to_offset(U32_MAX));
+>  		return -EUCLEAN;
+>  	}
+> -	if (unlikely(type & ~(BTRFS_BLOCK_GROUP_TYPE_MASK |
+> -			      BTRFS_BLOCK_GROUP_PROFILE_MASK))) {
+> +	if (unlikely(type & ~BTRFS_BLOCK_GROUP_VALID)) {
+>  		chunk_err(fs_info, leaf, chunk, logical,
+>  			  "unrecognized chunk type: 0x%llx",
+> -			  ~(BTRFS_BLOCK_GROUP_TYPE_MASK |
+> -			    BTRFS_BLOCK_GROUP_PROFILE_MASK) & type);
+> +			  type & ~BTRFS_BLOCK_GROUP_VALID);
+>  		return -EUCLEAN;
+>  	}
+>  
+> diff --git a/fs/btrfs/tree-checker.h b/fs/btrfs/tree-checker.h
+> index eb201f4ec3c7..833e2fd989eb 100644
+> --- a/fs/btrfs/tree-checker.h
+> +++ b/fs/btrfs/tree-checker.h
+> @@ -57,6 +57,11 @@ enum btrfs_tree_block_status {
+>  	BTRFS_TREE_BLOCK_WRITTEN_NOT_SET,
+>  };
+>  
+> +
+> +#define BTRFS_BLOCK_GROUP_VALID	(BTRFS_BLOCK_GROUP_TYPE_MASK | \
+> +				 BTRFS_BLOCK_GROUP_PROFILE_MASK | \
+> +				 BTRFS_BLOCK_GROUP_REMAPPED)
+> +
+>  /*
+>   * Exported simply for btrfs-progs which wants to have the
+>   * btrfs_tree_block_status return codes.
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 45d89b12025b..63e5a17f96f9 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -231,6 +231,7 @@ void btrfs_describe_block_groups(u64 bg_flags, char *buf, u32 size_buf)
+>  	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_DATA, "data");
+>  	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_SYSTEM, "system");
+>  	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_METADATA, "metadata");
+> +	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_REMAPPED, "remapped");
+>  
+>  	DESCRIBE_FLAG(BTRFS_AVAIL_ALLOC_BIT_SINGLE, "single");
+>  	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++)
+> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+> index f40b300bd664..0763a23aeebc 100644
+> --- a/include/uapi/linux/btrfs.h
+> +++ b/include/uapi/linux/btrfs.h
+> @@ -336,6 +336,7 @@ struct btrfs_ioctl_fs_info_args {
+>  #define BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2	(1ULL << 13)
+>  #define BTRFS_FEATURE_INCOMPAT_RAID_STRIPE_TREE	(1ULL << 14)
+>  #define BTRFS_FEATURE_INCOMPAT_SIMPLE_QUOTA	(1ULL << 16)
+> +#define BTRFS_FEATURE_INCOMPAT_REMAP_TREE	(1ULL << 17)
+>  
+>  struct btrfs_ioctl_feature_flags {
+>  	__u64 compat_flags;
+> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+> index fc29d273845d..4439d77a7252 100644
+> --- a/include/uapi/linux/btrfs_tree.h
+> +++ b/include/uapi/linux/btrfs_tree.h
+> @@ -76,6 +76,9 @@
+>  /* Tracks RAID stripes in block groups. */
+>  #define BTRFS_RAID_STRIPE_TREE_OBJECTID 12ULL
+>  
+> +/* Holds details of remapped addresses after relocation. */
+> +#define BTRFS_REMAP_TREE_OBJECTID 13ULL
+> +
+>  /* device stats in the device tree */
+>  #define BTRFS_DEV_STATS_OBJECTID 0ULL
+>  
+> @@ -282,6 +285,10 @@
+>  
+>  #define BTRFS_RAID_STRIPE_KEY	230
+>  
+> +#define BTRFS_IDENTITY_REMAP_KEY 	234
+> +#define BTRFS_REMAP_KEY		 	235
+> +#define BTRFS_REMAP_BACKREF_KEY	 	236
+> +
+>  /*
+>   * Records the overall state of the qgroups.
+>   * There's only one instance of this key present,
+> @@ -1161,6 +1168,7 @@ struct btrfs_dev_replace_item {
+>  #define BTRFS_BLOCK_GROUP_RAID6         (1ULL << 8)
+>  #define BTRFS_BLOCK_GROUP_RAID1C3       (1ULL << 9)
+>  #define BTRFS_BLOCK_GROUP_RAID1C4       (1ULL << 10)
+> +#define BTRFS_BLOCK_GROUP_REMAPPED      (1ULL << 11)
+>  #define BTRFS_BLOCK_GROUP_RESERVED	(BTRFS_AVAIL_ALLOC_BIT_SINGLE | \
+>  					 BTRFS_SPACE_INFO_GLOBAL_RSV)
+>  
+> @@ -1323,4 +1331,8 @@ struct btrfs_verity_descriptor_item {
+>  	__u8 encryption;
+>  } __attribute__ ((__packed__));
+>  
+> +struct btrfs_remap {
+> +	__le64 address;
+> +} __attribute__ ((__packed__));
+> +
 
-I think this gets set by peek_discard_list() so I don't think this is
-a valid warning.
+nit: I think this should probably be btrfs_remap_item not btrfs_remap,
+though I don't think that convention is totally universal.
 
-> 
-> 
-> vim +/discard_state +596 fs/btrfs/discard.c
-> 
->    513	
->    514	/*
->    515	 * Discard work queue callback
->    516	 *
->    517	 * @work: work
->    518	 *
->    519	 * Find the next block_group to start discarding and then discard a single
->    520	 * region.  It does this in a two-pass fashion: first extents and second
->    521	 * bitmaps.  Completely discarded block groups are sent to the unused_bgs path.
->    522	 */
->    523	static void btrfs_discard_workfn(struct work_struct *work)
->    524	{
->    525		struct btrfs_discard_ctl *discard_ctl;
->    526		struct btrfs_block_group *block_group;
->    527		enum btrfs_discard_state discard_state;
->    528		int discard_index = 0;
->    529		u64 trimmed = 0;
->    530		u64 minlen = 0;
->    531		u64 now = ktime_get_ns();
->    532	
->    533		discard_ctl = container_of(work, struct btrfs_discard_ctl, work.work);
->    534	
->    535		block_group = peek_discard_list(discard_ctl, &discard_state,
->    536						&discard_index, now);
->    537		if (!block_group)
->    538			return;
->    539		if (!btrfs_run_discard_work(discard_ctl)) {
->    540			spin_lock(&discard_ctl->lock);
->    541			btrfs_put_block_group(block_group);
->    542			discard_ctl->block_group = NULL;
->    543			spin_unlock(&discard_ctl->lock);
->    544			return;
->    545		}
->    546		if (now < block_group->discard_eligible_time) {
->    547			spin_lock(&discard_ctl->lock);
->    548			btrfs_put_block_group(block_group);
->    549			discard_ctl->block_group = NULL;
->    550			spin_unlock(&discard_ctl->lock);
->    551			btrfs_discard_schedule_work(discard_ctl, false);
->    552			return;
->    553		}
->    554	
->    555		/* Perform discarding */
->    556		minlen = discard_minlen[discard_index];
->    557	
->    558		switch (discard_state) {
->    559		case BTRFS_DISCARD_BITMAPS: {
->    560			u64 maxlen = 0;
->    561	
->    562			/*
->    563			 * Use the previous levels minimum discard length as the max
->    564			 * length filter.  In the case something is added to make a
->    565			 * region go beyond the max filter, the entire bitmap is set
->    566			 * back to BTRFS_TRIM_STATE_UNTRIMMED.
->    567			 */
->    568			if (discard_index != BTRFS_DISCARD_INDEX_UNUSED)
->    569				maxlen = discard_minlen[discard_index - 1];
->    570	
->    571			btrfs_trim_block_group_bitmaps(block_group, &trimmed,
->    572					       block_group->discard_cursor,
->    573					       btrfs_block_group_end(block_group),
->    574					       minlen, maxlen, true);
->    575			discard_ctl->discard_bitmap_bytes += trimmed;
->    576	
->    577			break;
->    578		}
->    579	
->    580		case BTRFS_DISCARD_FULLY_REMAPPED:
->    581			btrfs_trim_fully_remapped_block_group(block_group);
->    582			break;
->    583	
->    584		default:
->    585			btrfs_trim_block_group_extents(block_group, &trimmed,
->    586					       block_group->discard_cursor,
->    587					       btrfs_block_group_end(block_group),
->    588					       minlen, true);
->    589			discard_ctl->discard_extent_bytes += trimmed;
->    590	
->    591			break;
->    592		}
->    593	
->    594		/* Determine next steps for a block_group */
->    595		if (block_group->discard_cursor >= btrfs_block_group_end(block_group)) {
->  > 596			if (discard_state == BTRFS_DISCARD_BITMAPS ||
->    597			    discard_state == BTRFS_DISCARD_FULLY_REMAPPED) {
->    598				btrfs_finish_discard_pass(discard_ctl, block_group);
->    599			} else {
->    600				block_group->discard_cursor = block_group->start;
->    601				spin_lock(&discard_ctl->lock);
->    602				if (block_group->discard_state !=
->    603				    BTRFS_DISCARD_RESET_CURSOR)
->    604					block_group->discard_state =
->    605								BTRFS_DISCARD_BITMAPS;
->    606				spin_unlock(&discard_ctl->lock);
->    607			}
->    608		}
->    609	
->    610		now = ktime_get_ns();
->    611		spin_lock(&discard_ctl->lock);
->    612		discard_ctl->prev_discard = trimmed;
->    613		discard_ctl->prev_discard_time = now;
->    614		btrfs_put_block_group(block_group);
->    615		discard_ctl->block_group = NULL;
->    616		__btrfs_discard_schedule_work(discard_ctl, now, false);
->    617		spin_unlock(&discard_ctl->lock);
->    618	}
->    619	
-> 
+>  #endif /* _BTRFS_CTREE_H_ */
 > -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+> 2.49.1
+> 
 
