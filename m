@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-18442-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18443-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33190C235AE
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F254C235B1
 	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 07:19:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E08F74EE76C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 06:18:55 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 774464ED768
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 06:18:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AE5030F951;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AEF930F957;
 	Fri, 31 Oct 2025 06:17:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="riqBcDqd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rx4GFKMh"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B211A2F12BA;
-	Fri, 31 Oct 2025 06:17:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20A229ACC5;
+	Fri, 31 Oct 2025 06:17:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761891429; cv=none; b=kV9eUSyWTu5Z2CxXQaH2EsYzT/gkGuabSWl/RWLe+BQQeQ4fUSl6KpEg6Oo6mh9paRWXnj+R9h3DO+Fd0TXuJKl43KIupsAgxsM5lGN1bJiUF5xYvXE90cAQL/ixGEu/Z1dF1cJjet0bJ6vPnNs2MCo8buHIruJAU1DcPJ3zhBg=
+	t=1761891429; cv=none; b=tAKARXsQvxfxzJAzRv8/ZiYJI7mQoos5TjfAff0tvNyXuttan7nSrL4+nX8690lvjD1LedQjpxfabyL+o58pSlKLmVue4fqn6Ge8n5moPMBofyuO+XARZV5mrqtBkQJ16aZBKaAoK/+4Bo5e7C/rgn17p+dXZAFWycupO/KvWBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1761891429; c=relaxed/simple;
-	bh=Q65pBHZo4UufEbwZAcytZS/kOfL1Av6Pt3eNZcBjqIQ=;
+	bh=RcdhH8FLan32DnD3Wb9R3ZxdfgOUd1jZFheaQ2cEEqg=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=m3WMylx56ZJz5xnwlsYIoI281mTbfGlxF3oJmTftkrZq5yiKwvKdvHy0Sd4Qg+ytAr6774ShCVJAJr6V+JUrVjZBX+ZtqDilkcnQbpKvbKnjg9eK7pD8F0RgsEYHJzm5jHhAJWP1WwTuToZ8r8qStcvg3Ak9+eajLMMw0Ra5cu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=riqBcDqd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3D90C4CEF8;
-	Fri, 31 Oct 2025 06:17:05 +0000 (UTC)
+	 MIME-Version; b=WBgNaSYVE8xmgMMkLzV3lPliPEBvCld7TrdGEdkqkdFLehRnIVOzKnXeCiim1piut3mtWJSpMVBM9nK30X9zyjiPHpKznidgZEsalA9/yv1ggoRwPYgyQEAcbeCCvcdoSXTEG6Ma9oQm7CmagYOyR19YcSCO1bCOUlh9ePq61wQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rx4GFKMh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7F27C116D0;
+	Fri, 31 Oct 2025 06:17:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761891427;
-	bh=Q65pBHZo4UufEbwZAcytZS/kOfL1Av6Pt3eNZcBjqIQ=;
+	s=k20201202; t=1761891429;
+	bh=RcdhH8FLan32DnD3Wb9R3ZxdfgOUd1jZFheaQ2cEEqg=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=riqBcDqdnC9NiVqTPoumqLpYgcP409lDd6vGwauL5EczkcEDMGDubyLs5yjKu5ecZ
-	 g/qLvd+1l8nhmGdPiHUM7i7z6sbSpgQ3OjQ789fTsURXbvRwcJyxKyT5n44h51fhwq
-	 eshejMviYGbBy/8U7y7/JsL/r5+xAgAlC9IuOefXHsJKloMbEpyeK03sOuWuQqj2k3
-	 fmU859VihxX2V0a49Gv9xxB0TEibOlnySHfYa8WgpdBqpCbcN+IlmeP3RLTT8XJwNy
-	 ePCYo9QnMQEZrhgKVE6Cve13rLFvwp0Cs7YzKrRuPrXGk8XQkeIXGVjCHq/nGMuDIs
-	 UlXEeBSZStu+g==
+	b=rx4GFKMhs1FWDGOTlO9vUQYw4QTCQvp1l9uzo4tR2+64lnCGEDHNR8OoUK+xGEgid
+	 /ztVGuZG+M7ISmGAJKw7/VVaTlnRzC+FhRFLyMtlbNxqQ4BjtmTKVwciyyyqdGXerM
+	 j1F6eB4nU9dbX+u8si+EN6rRdPc8R9WUBJGmqP1IfXUHDR1n3Yhw97oZrtmbQ9ugLd
+	 S/iT1pMch/FwFUrogBRT/gK5DBh3x42apcYDM2jYXKgOA66DYjxxXLnpXx3MXXccM5
+	 WtjmOLil2pjkr7ISo7XyIeaZ77fHVYuFkQdbH6hyEpL4VGg1Qfr4MmrJUv0D8JCyNm
+	 urooXl4miQ1GQ==
 From: Damien Le Moal <dlemoal@kernel.org>
 To: Jens Axboe <axboe@kernel.dk>,
 	linux-block@vger.kernel.org,
@@ -56,9 +56,9 @@ To: Jens Axboe <axboe@kernel.dk>,
 	Carlos Maiolino <cem@kernel.org>,
 	linux-btrfs@vger.kernel.org,
 	David Sterba <dsterba@suse.com>
-Subject: [PATCH 07/13] block: track zone conditions
-Date: Fri, 31 Oct 2025 15:13:01 +0900
-Message-ID: <20251031061307.185513-8-dlemoal@kernel.org>
+Subject: [PATCH 08/13] block: introduce blkdev_get_zone_info()
+Date: Fri, 31 Oct 2025 15:13:02 +0900
+Message-ID: <20251031061307.185513-9-dlemoal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251031061307.185513-1-dlemoal@kernel.org>
 References: <20251031061307.185513-1-dlemoal@kernel.org>
@@ -70,349 +70,259 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The function blk_revalidate_zone_cond() already cache the condition of
-all zones of a zoned block device in the zones_cond array of a gendisk.
-However, the zone conditions are updated only when the device is scanned
-or revalidated.
+Introduce the function blkdev_get_zone_info() to obtain a single zone
+information from cached zone data, that is, either from the zone write
+plug for the target zone if it exists and from the disk zones_cond
+array otherwise.
 
-Implement tracking of the runtime changes to zone conditions using
-the new cond field in struct blk_zone_wplug. The size of this structure
-remains 112 Bytes as the new field replaces the 4 Bytes padding at the
-end of the structure. For zones that do not have a zone write plug, the
-zones_cond array of a disk is used to track changes to zone conditions,
-e.g. when a zone reset, reset all or finish operation is executed.
+Since sequential zones that do not have a zone write plug are either
+full, empty or in a bad state (read-only or offline), the zone write
+pointer can be inferred from the zone condition cached in the disk
+zones_cond array. For sequential zones that have a zone write plug, the
+zone condition and zone write pointer are obtained from the condition
+and write pointer offset managed with the zone write plug. This allows
+obtaining the information for a zone much more quickly than having to
+execute a report zones command on the device.
 
-Since a device may automatically close an implicitly open zone when
-writing to an empty or closed zone, if the total number of open zones
-has reached the device limit, the BLK_ZONE_COND_IMP_OPEN and
-BLK_ZONE_COND_CLOSED zone conditions cannot be precisely tracked. To
-overcome this, the zone condition BLK_ZONE_COND_ACTIVE is introduced to
-represent a zone that has the condition BLK_ZONE_COND_IMP_OPEN,
-BLK_ZONE_COND_EXP_OPEN or BLK_ZONE_COND_CLOSED.  This follows the
-definition of an active zone as defined in the NVMe Zoned Namespace
-specifications. As such, for a zoned device that has a limit on the
-maximum number of open zones, we will never have more zones in the
-BLK_ZONE_COND_ACTIVE condition than the device limit. This is compatible
-with the SCSI ZBC and ATA ZAC specifications for SMR HDDs as these
-devices do not have a limit on the number of active zones.
+blkdev_get_zone_info() falls back to using a regular zone report if the
+target zone is flagged as needing an update with the
+BLK_ZONE_WPLUG_NEED_WP_UPDATE flag, or if the target device does not
+use zone write plugs (i.e. a device mapper device). In this case, the
+new function blkdev_report_zone_fallback() is used and the zone
+condition is reported consistantly with the cahced report, that is, the
+BLK_ZONE_COND_ACTIVE condition is used in place of the implicit open,
+explicit open and closed conditions. This is achieved by adding the
+.report_active field to struct blk_report_zones_args and by having
+disk_report_zone() sets the correct zone condition if .report_active is
+true.
 
-The function disk_zone_wplug_set_wp_offset() is modified to use the new
-helper disk_zone_wplug_update_cond() to update a zone write plug
-condition whenever a zone write plug write offset is updated on
-submission or merging of write BIOs to a zone.
-
-The functions blk_zone_reset_bio_endio(), blk_zone_reset_all_bio_endio()
-and blk_zone_finish_bio_endio() are modified to update the condition of
-the zones targeted by reset, reset_all and finish operations, either
-using though disk_zone_wplug_set_wp_offset() for zones that have a
-zone write plug, or using the disk_zone_set_cond() helper to update the
-zones_cond array of the disk for zones that do not have a zone write
-plug.
-
-When a zone write plug is removed from the disk hash table (when the
-zone becomes empty or full), the condition of struct blk_zone_wplug is
-used to update the disk zones_cond array. Conversely, when a zone write
-plug is added to the disk hash table, the zones_cond array is used to
-initialize the zone write plug condition.
+In preparation for using blkdev_get_zone_info() in upcoming file systems
+changes, also export this function as a GPL symbol.
 
 Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
 ---
- block/blk-zoned.c             | 110 ++++++++++++++++++++++++++++++++--
- include/uapi/linux/blkzoned.h |   6 ++
- 2 files changed, 110 insertions(+), 6 deletions(-)
+ block/blk-zoned.c      | 165 +++++++++++++++++++++++++++++++++++++++--
+ include/linux/blkdev.h |   3 +
+ 2 files changed, 160 insertions(+), 8 deletions(-)
 
 diff --git a/block/blk-zoned.c b/block/blk-zoned.c
-index 4997f11caa0c..00cfd9431c3e 100644
+index 00cfd9431c3e..03394e38645f 100644
 --- a/block/blk-zoned.c
 +++ b/block/blk-zoned.c
-@@ -57,6 +57,7 @@ static const char *const zone_cond_name[] = {
-  * @zone_no: The number of the zone the plug is managing.
-  * @wp_offset: The zone write pointer location relative to the start of the zone
-  *             as a number of 512B sectors.
-+ * @cond: Condition of the zone
-  */
- struct blk_zone_wplug {
- 	struct hlist_node	node;
-@@ -69,6 +70,7 @@ struct blk_zone_wplug {
- 	unsigned int		flags;
- 	unsigned int		zone_no;
- 	unsigned int		wp_offset;
-+	enum blk_zone_cond	cond;
+@@ -202,8 +202,24 @@ EXPORT_SYMBOL_GPL(bdev_zone_is_seq);
+ struct blk_report_zones_args {
+ 	report_zones_cb cb;
+ 	void		*data;
++	bool		report_active;
  };
  
- static inline unsigned int disk_zone_wplugs_hash_size(struct gendisk *disk)
-@@ -114,6 +116,57 @@ const char *blk_zone_cond_str(enum blk_zone_cond zone_cond)
- }
- EXPORT_SYMBOL_GPL(blk_zone_cond_str);
- 
-+static void blk_zone_set_cond(u8 *zones_cond, unsigned int zno,
-+			      enum blk_zone_cond cond)
++static int blkdev_do_report_zones(struct block_device *bdev, sector_t sector,
++				  unsigned int nr_zones,
++				  struct blk_report_zones_args *args)
 +{
-+	if (!zones_cond)
-+		return;
++	struct gendisk *disk = bdev->bd_disk;
 +
-+	switch (cond) {
-+	case BLK_ZONE_COND_IMP_OPEN:
-+	case BLK_ZONE_COND_EXP_OPEN:
-+	case BLK_ZONE_COND_CLOSED:
-+		zones_cond[zno] = BLK_ZONE_COND_ACTIVE;
-+		return;
-+	case BLK_ZONE_COND_NOT_WP:
-+	case BLK_ZONE_COND_EMPTY:
-+	case BLK_ZONE_COND_FULL:
-+	case BLK_ZONE_COND_OFFLINE:
-+	case BLK_ZONE_COND_READONLY:
-+	default:
-+		zones_cond[zno] = cond;
-+		return;
-+	}
++	if (!bdev_is_zoned(bdev) || WARN_ON_ONCE(!disk->fops->report_zones))
++		return -EOPNOTSUPP;
++
++	if (!nr_zones || sector >= get_capacity(disk))
++		return 0;
++
++	return disk->fops->report_zones(disk, sector, nr_zones, args);
 +}
 +
-+static void disk_zone_set_cond(struct gendisk *disk, sector_t sector,
-+			       enum blk_zone_cond cond)
-+{
-+	u8 *zones_cond;
-+
-+	rcu_read_lock();
-+	zones_cond = rcu_dereference(disk->zones_cond);
-+	if (zones_cond) {
-+		unsigned int zno = disk_zone_no(disk, sector);
-+
+ /**
+  * blkdev_report_zones - Get zones information
+  * @bdev:	Target block device
+@@ -226,19 +242,12 @@ struct blk_report_zones_args {
+ int blkdev_report_zones(struct block_device *bdev, sector_t sector,
+ 			unsigned int nr_zones, report_zones_cb cb, void *data)
+ {
+-	struct gendisk *disk = bdev->bd_disk;
+ 	struct blk_report_zones_args args = {
+ 		.cb = cb,
+ 		.data = data,
+ 	};
+ 
+-	if (!bdev_is_zoned(bdev) || WARN_ON_ONCE(!disk->fops->report_zones))
+-		return -EOPNOTSUPP;
+-
+-	if (!nr_zones || sector >= get_capacity(disk))
+-		return 0;
+-
+-	return disk->fops->report_zones(disk, sector, nr_zones, &args);
++	return blkdev_do_report_zones(bdev, sector, nr_zones, &args);
+ }
+ EXPORT_SYMBOL_GPL(blkdev_report_zones);
+ 
+@@ -803,6 +812,23 @@ static void disk_zone_wplug_sync_wp_offset(struct gendisk *disk,
+ int disk_report_zone(struct gendisk *disk, struct blk_zone *zone,
+ 		     unsigned int idx, struct blk_report_zones_args *args)
+ {
++	if (args->report_active) {
 +		/*
-+		 * The condition of a conventional, readonly and offline zones
-+		 * never changes, so do nothing if the target zone is in one of
-+		 * these conditions.
++		 * If we come here, then this is a report zones as a fallback
++		 * for a cached report. So collapse the implicit open, explicit
++		 * open and closed conditions into the active zone condition.
 +		 */
-+		switch (zones_cond[zno]) {
-+		case BLK_ZONE_COND_NOT_WP:
-+		case BLK_ZONE_COND_READONLY:
-+		case BLK_ZONE_COND_OFFLINE:
++		switch (zone->cond) {
++		case BLK_ZONE_COND_IMP_OPEN:
++		case BLK_ZONE_COND_EXP_OPEN:
++		case BLK_ZONE_COND_CLOSED:
++			zone->cond = BLK_ZONE_COND_ACTIVE;
 +			break;
 +		default:
-+			blk_zone_set_cond(zones_cond, zno, cond);
 +			break;
 +		}
 +	}
-+	rcu_read_unlock();
-+}
 +
- /**
-  * bdev_zone_is_seq - check if a sector belongs to a sequential write zone
-  * @bdev:       block device to check
-@@ -416,6 +469,7 @@ static bool disk_insert_zone_wplug(struct gendisk *disk,
- {
- 	struct blk_zone_wplug *zwplg;
- 	unsigned long flags;
-+	u8 *zones_cond;
- 	unsigned int idx =
- 		hash_32(zwplug->zone_no, disk->zone_wplugs_hash_bits);
+ 	if (disk->zone_wplugs_hash)
+ 		disk_zone_wplug_sync_wp_offset(disk, zone);
  
-@@ -431,6 +485,12 @@ static bool disk_insert_zone_wplug(struct gendisk *disk,
- 			return false;
- 		}
- 	}
-+	zones_cond = rcu_dereference_check(disk->zones_cond,
-+				lockdep_is_held(&disk->zone_wplugs_lock));
-+	if (zones_cond)
-+		zwplug->cond = zones_cond[zwplug->zone_no];
-+	else
-+		zwplug->cond = BLK_ZONE_COND_NOT_WP;
- 	hlist_add_head_rcu(&zwplug->node, &disk->zone_wplugs_hash[idx]);
- 	atomic_inc(&disk->nr_zone_wplugs);
- 	spin_unlock_irqrestore(&disk->zone_wplugs_lock, flags);
-@@ -530,10 +590,15 @@ static void disk_remove_zone_wplug(struct gendisk *disk,
- 
- 	/*
- 	 * Mark the zone write plug as unhashed and drop the extra reference we
--	 * took when the plug was inserted in the hash table.
-+	 * took when the plug was inserted in the hash table. Also update the
-+	 * disk zone condition array with the current condition of the zone
-+	 * write plug.
- 	 */
- 	zwplug->flags |= BLK_ZONE_WPLUG_UNHASHED;
- 	spin_lock_irqsave(&disk->zone_wplugs_lock, flags);
-+	blk_zone_set_cond(rcu_dereference_check(disk->zones_cond,
-+				lockdep_is_held(&disk->zone_wplugs_lock)),
-+			  zwplug->zone_no, zwplug->cond);
- 	hlist_del_init_rcu(&zwplug->node);
- 	atomic_dec(&disk->nr_zone_wplugs);
- 	spin_unlock_irqrestore(&disk->zone_wplugs_lock, flags);
-@@ -635,6 +700,22 @@ static void disk_zone_wplug_abort(struct blk_zone_wplug *zwplug)
- 		blk_zone_wplug_bio_io_error(zwplug, bio);
+@@ -813,6 +839,129 @@ int disk_report_zone(struct gendisk *disk, struct blk_zone *zone,
  }
+ EXPORT_SYMBOL_GPL(disk_report_zone);
  
-+/*
-+ * Update a zone write plug condition based on the write pointer offset.
-+ */
-+static void disk_zone_wplug_update_cond(struct gendisk *disk,
-+					struct blk_zone_wplug *zwplug)
++static int blkdev_report_zone_cb(struct blk_zone *zone, unsigned int idx,
++				 void *data)
 +{
-+	lockdep_assert_held(&zwplug->lock);
-+
-+	if (disk_zone_wplug_is_full(disk, zwplug))
-+		zwplug->cond = BLK_ZONE_COND_FULL;
-+	else if (!zwplug->wp_offset)
-+		zwplug->cond = BLK_ZONE_COND_EMPTY;
-+	else
-+		zwplug->cond = BLK_ZONE_COND_ACTIVE;
++	memcpy(data, zone, sizeof(struct blk_zone));
++	return 0;
 +}
 +
- /*
-  * Set a zone write plug write pointer offset to the specified value.
-  * This aborts all plugged BIOs, which is fine as this function is called for
-@@ -650,6 +731,8 @@ static void disk_zone_wplug_set_wp_offset(struct gendisk *disk,
- 	/* Update the zone write pointer and abort all plugged BIOs. */
- 	zwplug->flags &= ~BLK_ZONE_WPLUG_NEED_WP_UPDATE;
- 	zwplug->wp_offset = wp_offset;
-+	disk_zone_wplug_update_cond(disk, zwplug);
++static int blkdev_report_zone_fallback(struct block_device *bdev,
++				       sector_t sector, struct blk_zone *zone)
++{
++	struct blk_report_zones_args args = {
++		.cb = blkdev_report_zone_cb,
++		.data = zone,
++		.report_active = true,
++	};
 +
- 	disk_zone_wplug_abort(zwplug);
- 
- 	/*
-@@ -733,6 +816,7 @@ EXPORT_SYMBOL_GPL(disk_report_zone);
++	return blkdev_do_report_zones(bdev, sector, 1, &args);
++}
++
++/**
++ * blkdev_get_zone_info - Get a zone information from cached data
++ * @bdev:   Target block device
++ * @sector: Sector contained by the target zone
++ * @zone:   zone structure to return the zone information
++ *
++ * Description:
++ *    Get the zone information for the zone containing @sector using the zone
++ *    write plug of the target zone, if one exist, or the disk zone condition
++ *    array otherwise. The zone condition may be reported as being
++ *    the BLK_ZONE_COND_ACTIVE condition for a zone that is in the implicit
++ *    open, explicit open or closed condition.
++ *
++ *    Returns 0 on success and a negative error code on failure.
++ */
++int blkdev_get_zone_info(struct block_device *bdev, sector_t sector,
++			 struct blk_zone *zone)
++{
++	struct gendisk *disk = bdev->bd_disk;
++	sector_t zone_sectors = bdev_zone_sectors(bdev);
++	struct blk_zone_wplug *zwplug;
++	unsigned long flags;
++	u8 *zones_cond;
++
++	if (!bdev_is_zoned(bdev))
++		return -EOPNOTSUPP;
++
++	if (sector >= get_capacity(disk))
++		return -EINVAL;
++
++	memset(zone, 0, sizeof(*zone));
++	sector = sector & (~(zone_sectors - 1));
++
++	rcu_read_lock();
++	zones_cond = rcu_dereference(disk->zones_cond);
++	if (!disk->zone_wplugs_hash || !zones_cond) {
++		rcu_read_unlock();
++		return blkdev_report_zone_fallback(bdev, sector, zone);
++	}
++	zone->cond = zones_cond[disk_zone_no(disk, sector)];
++	rcu_read_unlock();
++
++	zone->start = sector;
++	zone->len = zone_sectors;
++
++	/*
++	 * If this is a conventional zone, we do not have a zone write plug and
++	 * can report the zone immediately.
++	 */
++	if (zone->cond == BLK_ZONE_COND_NOT_WP) {
++		zone->type = BLK_ZONE_TYPE_CONVENTIONAL;
++		zone->capacity = zone_sectors;
++		zone->wp = ULLONG_MAX;
++		return 0;
++	}
++
++	/*
++	 * This is a sequential write required zone. If the zone is read-only or
++	 * offline, only set the zone write pointer to an invalid value and
++	 * report the zone.
++	 */
++	zone->type = BLK_ZONE_TYPE_SEQWRITE_REQ;
++	if (disk_zone_is_last(disk, zone))
++		zone->capacity = disk->last_zone_capacity;
++	else
++		zone->capacity = disk->zone_capacity;
++
++	if (zone->cond == BLK_ZONE_COND_READONLY ||
++	    zone->cond == BLK_ZONE_COND_OFFLINE) {
++		zone->wp = ULLONG_MAX;
++		return 0;
++	}
++
++	/*
++	 * If the zone does not have a zone write plug, it is either full or
++	 * empty, as we otherwise would have a zone write plug for it. In this
++	 * case, set the write pointer accordingly and report the zone.
++	 * Otherwise, if we have a zone write plug, use it.
++	 */
++	zwplug = disk_get_zone_wplug(disk, sector);
++	if (!zwplug) {
++		if (zone->cond == BLK_ZONE_COND_FULL)
++			zone->wp = sector + zone_sectors;
++		else
++			zone->wp = sector;
++		return 0;
++	}
++
++	spin_lock_irqsave(&zwplug->lock, flags);
++	if (zwplug->flags & BLK_ZONE_WPLUG_NEED_WP_UPDATE) {
++		spin_unlock_irqrestore(&zwplug->lock, flags);
++		disk_put_zone_wplug(zwplug);
++		return blkdev_report_zone_fallback(bdev, sector, zone);
++	}
++	zone->cond = zwplug->cond;
++	zone->wp = sector + zwplug->wp_offset;
++	spin_unlock_irqrestore(&zwplug->lock, flags);
++
++	disk_put_zone_wplug(zwplug);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(blkdev_get_zone_info);
++
  static void blk_zone_reset_bio_endio(struct bio *bio)
  {
  	struct gendisk *disk = bio->bi_bdev->bd_disk;
-+	sector_t sector = bio->bi_iter.bi_sector;
- 	struct blk_zone_wplug *zwplug;
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 15cc13006d06..98a0ed989d21 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -436,6 +436,9 @@ typedef int (*report_zones_cb)(struct blk_zone *zone, unsigned int idx,
+ int disk_report_zone(struct gendisk *disk, struct blk_zone *zone,
+ 		     unsigned int idx, struct blk_report_zones_args *args);
  
- 	/*
-@@ -741,7 +825,7 @@ static void blk_zone_reset_bio_endio(struct bio *bio)
- 	 * resetting zones while writes are still in-flight will result in the
- 	 * writes failing anyway.
- 	 */
--	zwplug = disk_get_zone_wplug(disk, bio->bi_iter.bi_sector);
-+	zwplug = disk_get_zone_wplug(disk, sector);
- 	if (zwplug) {
- 		unsigned long flags;
- 
-@@ -749,6 +833,8 @@ static void blk_zone_reset_bio_endio(struct bio *bio)
- 		disk_zone_wplug_set_wp_offset(disk, zwplug, 0);
- 		spin_unlock_irqrestore(&zwplug->lock, flags);
- 		disk_put_zone_wplug(zwplug);
-+	} else {
-+		disk_zone_set_cond(disk, sector, BLK_ZONE_COND_EMPTY);
- 	}
- }
- 
-@@ -757,6 +843,7 @@ static void blk_zone_reset_all_bio_endio(struct bio *bio)
- 	struct gendisk *disk = bio->bi_bdev->bd_disk;
- 	struct blk_zone_wplug *zwplug;
- 	unsigned long flags;
-+	sector_t sector;
- 	unsigned int i;
- 
- 	/* Update the condition of all zone write plugs. */
-@@ -770,12 +857,18 @@ static void blk_zone_reset_all_bio_endio(struct bio *bio)
- 		}
- 	}
- 	rcu_read_unlock();
++int blkdev_get_zone_info(struct block_device *bdev, sector_t sector,
++			 struct blk_zone *zone);
 +
-+	/* Update the cached zone conditions. */
-+	for (sector = 0; sector < get_capacity(disk);
-+	     sector += bdev_zone_sectors(bio->bi_bdev))
-+		disk_zone_set_cond(disk, sector, BLK_ZONE_COND_EMPTY);
- }
- 
- static void blk_zone_finish_bio_endio(struct bio *bio)
- {
- 	struct block_device *bdev = bio->bi_bdev;
- 	struct gendisk *disk = bdev->bd_disk;
-+	sector_t sector = bio->bi_iter.bi_sector;
- 	struct blk_zone_wplug *zwplug;
- 
- 	/*
-@@ -784,7 +877,7 @@ static void blk_zone_finish_bio_endio(struct bio *bio)
- 	 * is fine as resetting zones while writes are still in-flight will
- 	 * result in the writes failing anyway.
- 	 */
--	zwplug = disk_get_zone_wplug(disk, bio->bi_iter.bi_sector);
-+	zwplug = disk_get_zone_wplug(disk, sector);
- 	if (zwplug) {
- 		unsigned long flags;
- 
-@@ -793,6 +886,8 @@ static void blk_zone_finish_bio_endio(struct bio *bio)
- 					      bdev_zone_sectors(bdev));
- 		spin_unlock_irqrestore(&zwplug->lock, flags);
- 		disk_put_zone_wplug(zwplug);
-+	} else {
-+		disk_zone_set_cond(disk, sector, BLK_ZONE_COND_FULL);
- 	}
- }
- 
-@@ -888,6 +983,7 @@ static inline void disk_zone_wplug_add_bio(struct gendisk *disk,
-  */
- void blk_zone_write_plug_bio_merged(struct bio *bio)
- {
-+	struct gendisk *disk = bio->bi_bdev->bd_disk;
- 	struct blk_zone_wplug *zwplug;
- 	unsigned long flags;
- 
-@@ -909,13 +1005,13 @@ void blk_zone_write_plug_bio_merged(struct bio *bio)
- 	 * have at least one request and one BIO referencing the zone write
- 	 * plug. So this should not fail.
- 	 */
--	zwplug = disk_get_zone_wplug(bio->bi_bdev->bd_disk,
--				     bio->bi_iter.bi_sector);
-+	zwplug = disk_get_zone_wplug(disk, bio->bi_iter.bi_sector);
- 	if (WARN_ON_ONCE(!zwplug))
- 		return;
- 
- 	spin_lock_irqsave(&zwplug->lock, flags);
- 	zwplug->wp_offset += bio_sectors(bio);
-+	disk_zone_wplug_update_cond(disk, zwplug);
- 	spin_unlock_irqrestore(&zwplug->lock, flags);
- }
- 
-@@ -974,6 +1070,7 @@ void blk_zone_write_plug_init_request(struct request *req)
- 		/* Drop the reference taken by disk_zone_wplug_add_bio(). */
- 		blk_queue_exit(q);
- 		zwplug->wp_offset += bio_sectors(bio);
-+		disk_zone_wplug_update_cond(disk, zwplug);
- 
- 		req_back_sector += bio_sectors(bio);
- 	}
-@@ -1037,6 +1134,7 @@ static bool blk_zone_wplug_prepare_bio(struct blk_zone_wplug *zwplug,
- 
- 	/* Advance the zone write pointer offset. */
- 	zwplug->wp_offset += bio_sectors(bio);
-+	disk_zone_wplug_update_cond(disk, zwplug);
- 
- 	return true;
- }
-@@ -1680,7 +1778,7 @@ static int blk_revalidate_zone_cond(struct blk_zone *zone, unsigned int idx,
- 		return -ENODEV;
- 	}
- 
--	args->zones_cond[idx] = cond;
-+	blk_zone_set_cond(args->zones_cond, idx, cond);
- 
- 	return 0;
- 
-diff --git a/include/uapi/linux/blkzoned.h b/include/uapi/linux/blkzoned.h
-index f85743ef6e7d..dab5d9700898 100644
---- a/include/uapi/linux/blkzoned.h
-+++ b/include/uapi/linux/blkzoned.h
-@@ -61,6 +61,10 @@ enum blk_zone_type {
-  *
-  * Conditions 0x5 to 0xC are reserved by the current ZBC/ZAC spec and should
-  * be considered invalid.
-+ *
-+ * The condition BLK_ZONE_COND_ACTIVE is used to represent any of the
-+ * BLK_ZONE_COND_IMP_OPEN, BLK_ZONE_COND_EXP_OPEN and BLK_ZONE_COND_CLOSED
-+ * conditions.
-  */
- enum blk_zone_cond {
- 	BLK_ZONE_COND_NOT_WP	= 0x0,
-@@ -71,6 +75,8 @@ enum blk_zone_cond {
- 	BLK_ZONE_COND_READONLY	= 0xD,
- 	BLK_ZONE_COND_FULL	= 0xE,
- 	BLK_ZONE_COND_OFFLINE	= 0xF,
-+
-+	BLK_ZONE_COND_ACTIVE	= 0xFF,
- };
- 
- /**
+ #define BLK_ALL_ZONES  ((unsigned int)-1)
+ int blkdev_report_zones(struct block_device *bdev, sector_t sector,
+ 		unsigned int nr_zones, report_zones_cb cb, void *data);
 -- 
 2.51.0
 
