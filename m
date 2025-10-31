@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-18498-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18499-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73471C27294
-	for <lists+linux-btrfs@lfdr.de>; Sat, 01 Nov 2025 00:05:42 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68596C272E3
+	for <lists+linux-btrfs@lfdr.de>; Sat, 01 Nov 2025 00:30:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E1C9189BE90
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 23:06:06 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 66BAC4E64C2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 23:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EE0E328B47;
-	Fri, 31 Oct 2025 23:05:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A0026F445;
+	Fri, 31 Oct 2025 23:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="B9LPElwL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="vdG/VV4T"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Mkev2wYf";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="3L/i7dZj"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B2D2045B7
-	for <linux-btrfs@vger.kernel.org>; Fri, 31 Oct 2025 23:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988EE18787A
+	for <linux-btrfs@vger.kernel.org>; Fri, 31 Oct 2025 23:30:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761951936; cv=none; b=Ilhh4tv74/VoFm9EaGOvZ3CTXgsOMxYJVTwinR3/gvVxhXxtrXU2o6jn7qitX4F171DRpQOp3mx89l9SUJrCjMYyrEt2IKY/ACu/0raQ+bMvQwNGNF/+/7fszIJVHQeCqF7Gie9kjbw2rbBci+fYR1uvqIRCXdEyvVTuMmxSTIg=
+	t=1761953427; cv=none; b=fTe2ozzGYHbagvM3DRrT+CIVe+i+k72lILz/ji79AycvQ8I6Ym3+qWy8rbN5WYkN/oVLaR4OdEIPq7mhLEsQM58IM57Re3z0BsX6Dw+WYEsWgsWsoRa2/s6GAUQFMr/KXkLqCruPkgVompDgNWqRjVrjGOsYd8PzQ4NXE+/LRRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761951936; c=relaxed/simple;
-	bh=H46SbVqzCi8N6nIl/gPWnutI92DvDTC6oCeM9aUrGjw=;
+	s=arc-20240116; t=1761953427; c=relaxed/simple;
+	bh=vnl4cUm3fjnLEquv8HF5cdLyYLw9do+cQ/h/iya9+f8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y38MtlSfV8xNV05ETMLEFvKNHp2YKzTxW1PWeB05gl6R4vPF42cJq2BTyAHPW4AnN6oQhy3RJXgzgmn52vSrHbDfvarCls3WL5892oOYexbS9Q1oPWiCEzdC0NEfxKfH9lGfUCWE3pibox7SEWmRJfFAY7BCz8gh9iJcBcf81+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=B9LPElwL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=vdG/VV4T; arc=none smtp.client-ip=103.168.172.150
+	 Content-Type:Content-Disposition:In-Reply-To; b=G4QjyfycNogEqcakBH9yExCvHE63LMZfnTR3FqKEUIlpWLxXBFeLoFCL+RCEE4m6GPBsW58kQ/BkojX3iqf7xe2ss+8UVCcKMcbjS49QTiIFgI47wVuge0T9XhOfZKWY4YuDFcEo6ngxSnYEkerVpY6vbvvd4K5Dd6oEyXCe1Nk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Mkev2wYf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=3L/i7dZj; arc=none smtp.client-ip=103.168.172.150
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfout.phl.internal (Postfix) with ESMTP id 70FCAEC00DD;
-	Fri, 31 Oct 2025 19:05:32 -0400 (EDT)
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfout.phl.internal (Postfix) with ESMTP id B4999EC01BF;
+	Fri, 31 Oct 2025 19:30:22 -0400 (EDT)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Fri, 31 Oct 2025 19:05:32 -0400
+  by phl-compute-04.internal (MEProxy); Fri, 31 Oct 2025 19:30:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1761951932; x=1762038332; bh=MHB3x4ywJV
-	/fpHrGzZEMuZ3i+7sb0i4uYhQPifxBAs4=; b=B9LPElwLFyKHBC9muPrO+ZhfVI
-	wQaMsfslpTb1z3sKk2d6YZcgMkAu/WGG/tn6acPkhmJZ/+IBcIbUQe+Ithi6sIzJ
-	wwMjSMxbkI+yMvON672OqdlCbLo2V6xbfTixV3PijnJnEdyA9Mhfs0qgaszJAhHR
-	iPdmU/5X7brQoD3qWTOXKll7egYPlaGYA/eqHz7N0DGsUsjyw5m1XN4HHxHFMM/Z
-	CBFHcVcYgCHkaubWxQoTXXlGqL75tKZ7tdzCCBoIzPQtapAFX2xsTUnzn3o6XES7
-	trhnvWMv5x+KTxNFRPl6c0NyC+zOpMNt48CI0iXTYhy1Pbsm2PUooEgsSDVQ==
+	:subject:to:to; s=fm1; t=1761953422; x=1762039822; bh=aocmCjympH
+	MjqAMNVsGNU7XI39Cr+7MWiUZbEoJMzFo=; b=Mkev2wYfrQWKoHsc+shtfHdB26
+	/dC14LqLtzKD3GdER/FEaLO3oK/AaDxsEhNkRYDuUKu/sm/6cxXeeG3NV7zQrHFL
+	/4PjRhqKG2OH110ugPhYJ/FxL5TrIV9s8HUnUN0bdVG0PD+wykB3VTKOX9/NpCJ7
+	QgsLFnH6SrU0YLiBFod2WQWweR+56wPWaGexqJR4aJPXKGYb8wXTcpbjISd6Q2O2
+	ntJKihSxJFcIHc4XcXUtMdDnJCRxHcFDJbKKj5bfS1ni3Ge4qumx415b9Hx6CKzu
+	yT6h+m6T841BmUVSVuxXf38AIJKbrfom41evH0s6iEpwhY0t+pc1WLrh2m4Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1761951932; x=1762038332; bh=MHB3x4ywJV/fpHrGzZEMuZ3i+7sb0i4uYhQ
-	PifxBAs4=; b=vdG/VV4TiEj1cpI3UcsTLmZdsWoWp7Qb45jfe4IO/b1pmVoanP5
-	1D5rZpMDGYJ2QCnl01NMCit/NyAeixrpqF9wAqglOGXyPhosh6eHhe8LxGslk041
-	hL2xCswl9jf29n/UeXIu7CkdBJ6c6ap+T78DrOAD1ciZHSKz7ppQU1erzSotNyGz
-	uD51gpkmTRb48YVQa8ubmha6Fk34B3KWacsYJDRYu4THuUicaMw6PakBDcG9GVxV
-	CvxKVpiin6/eq9yBApcSYaZR6gkk0bd5horm+fTvgIhqgKbT+eyMqLcEJI05z/U4
-	QUikrjRNGqm3HZU+CvuFPgKb+rCASbUBUWQ==
-X-ME-Sender: <xms:vEAFaUU_hwxkO8oF0cVb67pvy0BHTo0MZsvWUx6RMhDGsHJ0ISJfcA>
-    <xme:vEAFaemNndrn3fEbS8bmI1sD_zYTMnC8_2AwDsV5grLFlrFj6sFXDsMTqfgJHqoP6
-    52xLwlWpLqquAYy2pTlOpOamBC-pX2Modc9_rWTsoGegxnIXEDECnlq>
-X-ME-Received: <xmr:vEAFaWC4qbfkuD2T5E8dHYhwpaaVwjKi94XGiUlOzCtQ3O9oPQiNHJkWH0Jg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddujedtjeeiucetufdoteggodetrf
+	1761953422; x=1762039822; bh=aocmCjympHMjqAMNVsGNU7XI39Cr+7MWiUZ
+	bEoJMzFo=; b=3L/i7dZjlXnOBiAfSGGJpOVCrj7lRygRUQp9Hqjpzo5z3kgKaBZ
+	JfCoHX0ni8h0Dp01u6W3qZZKVjQ4A6tcb/81wtTlBMtsogw+E5ANIAGSDDbEf9fC
+	Nz91+6l1iQG/8JNlJfuBgaAFMa8amPXmoJy6Ga1o8u7T/nU9VvIYJkPQ25dL8WYi
+	47f6zZe8+T7OUl0ODeumgPKs7fgBsMN5OgANUVK9nU1AdiU5cK3IRmrl+w0MvelB
+	GrRteBicqGwrEwmqeMWF8IthW9ixakhnGVGXHeQEQ/LtHjCxIPnmf6jH+bVgPprZ
+	i/oSwGPGcIQOwVfMlwNz1X0doZJVxDZowCQ==
+X-ME-Sender: <xms:jkYFaQMcm7PgX9H4nP5DLe3GSXysiw6K0_6hXnCmKfLriFAU47hvbg>
+    <xme:jkYFac8-jRlIQgWF5lg-vI6z8erqyDLCJpTvd9JQkt_fcb-0oqAcuwIis8I8XDuAr
+    881kXFqBKMIgo0MsLyU-e95MNHtz21muR-vB6eP2QueMRIq-YIZS9o>
+X-ME-Received: <xmr:jkYFaU6urmTg0ziDzQE9SZ0PIhuKySEHf3NY5vbKQ-54-etP8DISdMc9sMYa>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddujedtkeduucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
@@ -73,21 +73,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddujedtjeeiucetufdote
     hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
     ohepmhgrrhhksehhrghrmhhsthhonhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsg
     htrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:vEAFaecJRA8B6MPr8H6yiK5l4fQSSNGgGKzqBkBYu-K6WZQ0Ar2ybg>
-    <xmx:vEAFaRI_mP3tQUdaM7UR-obG5fCiZp6FdfVzJMg72eCUvKC_MNRltg>
-    <xmx:vEAFaRfyrCB8RoonYcva4jCrXMh9rG9FAQkFpRYxofU63UrXt961ug>
-    <xmx:vEAFaY1w7EV58qlv24Hal092yTDDPWCr63Z4EvUHy1kyVGpgLvz93g>
-    <xmx:vEAFaSoodkvXBBfSpGVKshuuidlfGd4VrVHUfBTB4DSExeqwTU0TyzgO>
+X-ME-Proxy: <xmx:jkYFaT2UvEpYSRekHkqGMZOFQtHLbgKofpMs9oDvRYolJyGSWGcCsw>
+    <xmx:jkYFabBpfLcIOq86DZYjsQXhsV5zN984pkNvUVOD_NVOeH96BJY4Bw>
+    <xmx:jkYFaV0LxZIaue4vKusLJnDE_TZeK1RiLj40UMYSXaY67veBPvNgEA>
+    <xmx:jkYFaVsXbIERfqD_-Lj0exBp3HPGG8Yaa6GPuic8AAJuRjN5-ciZHg>
+    <xmx:jkYFaWAgMgf5HQpiZcuhGdJNN8M3Wu710fLrpNDaOQNJ5pA4gOgwgGHc>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 31 Oct 2025 19:05:31 -0400 (EDT)
-Date: Fri, 31 Oct 2025 16:05:25 -0700
+ 31 Oct 2025 19:30:21 -0400 (EDT)
+Date: Fri, 31 Oct 2025 16:30:19 -0700
 From: Boris Burkov <boris@bur.io>
 To: Mark Harmstone <mark@harmstone.com>
 Cc: linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH v4 09/16] btrfs: handle deletions from remapped block
  group
-Message-ID: <aQVAtcfRy2rctnaA@devvm12410.ftw0.facebook.com>
+Message-ID: <aQVGi1amjtN3xs0H@devvm12410.ftw0.facebook.com>
 References: <20251024181227.32228-1-mark@harmstone.com>
  <20251024181227.32228-10-mark@harmstone.com>
 Precedence: bulk
@@ -266,10 +266,6 @@ On Fri, Oct 24, 2025 at 07:12:10PM +0100, Mark Harmstone wrote:
 >  
 > -		/* We don't want to force the issue, only flip if it's ok. */
 > -		ret = inc_block_group_ro(block_group, 0);
-
-If we are deleting an unused bg, what is the harm in marking it ro even
-if it is remapped and it's redundant for new allocations?
-
 > +		if (!(block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED)) {
 > +			/* We don't want to force the issue, only flip if it's ok. */
 > +			ret = inc_block_group_ro(block_group, 0);
@@ -358,6 +354,10 @@ if it is remapped and it's redundant for new allocations?
 > +
 > +	spin_lock(&fs_info->unused_bgs_lock);
 > +
+
+which list could it be on in this case? reclaim? do we not take those
+off before reclaiming them?
+
 > +	if (!list_empty(&bg->bg_list))
 > +		list_del(&bg->bg_list);
 > +	else
@@ -741,6 +741,9 @@ if it is remapped and it's redundant for new allocations?
 >  	return logical;
 >  }
 > +
+
+Please document the expectation on the path passed (and other params)
+
 > +static int remove_range_from_remap_tree(struct btrfs_trans_handle *trans,
 > +					struct btrfs_path *path,
 > +					struct btrfs_block_group *bg,
@@ -772,6 +775,14 @@ if it is remapped and it's redundant for new allocations?
 > +		dest_bg = btrfs_lookup_block_group(fs_info, new_addr);
 > +	}
 > +
+
+These open-coded cases are all quite large and I suspect redundant (I'll
+try to catch concretely how) so it would make it more readable to break
+them out into static functions (remove_remapping, trim_remapping, etc.)
+
+The most readable might be to simply always delete the entire remapping
+item and replace it with the needed new ones rather than modifying in-place.
+
 > +	if (bytenr == remap_start && num_bytes >= remap_length) {
 > +		/* Remove entirely. */
 > +
@@ -1010,6 +1021,10 @@ if it is remapped and it's redundant for new allocations?
 > +		if (ret)
 > +			goto end;
 > +	}
+
+why do this here instead of just letting it happen normally in
+do_free_extent_accounting (where you added the new skipping logic)?
+
 > +
 > +	ret = overlap_length;
 > +
@@ -1127,6 +1142,12 @@ if it is remapped and it's redundant for new allocations?
 >  	if (ret)
 >  		goto unlock_reloc;
 >  
+
+Does this need to be in the transaction critical section or can it
+happen asynchronously like other bg cleanup tasks?
+
+If so, that should be justified in the commit message.
+
 > +	ret = btrfs_handle_fully_remapped_bgs(trans);
 > +	if (ret)
 > +		goto unlock_reloc;
