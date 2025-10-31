@@ -1,188 +1,139 @@
-Return-Path: <linux-btrfs+bounces-18467-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18468-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11349C25518
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 14:45:24 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C914C2639F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 17:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34490188D284
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 13:45:48 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id EC3AD34DE88
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 16:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F81C23BCED;
-	Fri, 31 Oct 2025 13:45:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899712FD697;
+	Fri, 31 Oct 2025 16:52:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="lxhBoj+n"
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="Qxm8g8rb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+Received: from 004.mia.mailroute.net (004.mia.mailroute.net [199.89.3.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900D81DFE22;
-	Fri, 31 Oct 2025 13:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21CD02F6590;
+	Fri, 31 Oct 2025 16:52:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.3.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761918314; cv=none; b=McSTGL5azuJv9WNhvKrciSt8qTBd/+5qSNe3pheRujkDBv5+Ml48Q3kkBlsaLTTyV3rZ0KPPXaVYH5ZIfQzWj6LBN8Kvw3lKyE5Pt6Qfyn+KlHEgu6MVhSgkv85Jp80RSCFq638f4q/CpDrSkMO3fXBrLP9I2xiGxpFs7WN1Bys=
+	t=1761929554; cv=none; b=pbdx6BpjPlrAEoW1Ykvjmsk1ZA0J9rvwn8G5ce8SRJIN/AjdbNXLawOqRXY2U2fQLwQrhDPo43CD0D0etzE+yCnu6pC83c8F/JhRS5fcKywSYnJh/9e+zkP8JyU+0Pmw7mjczIkutBs7pZzVdadvwz++xaUkM2INhrd4hTwkMyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761918314; c=relaxed/simple;
-	bh=O45XE8Vu9DTRBTlT3E54Vbg2Iy5Ih0eKSesjW5/ErXY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Hj/lGBrWUFN+WDHTlSnH3onX/SJDtFIkU5+RmpqhCCWG5Zknki5F4C4ujO6DA+XmjX/9NDKwB8F/MmqTd2BVgPPFl0ISSIN8d9JOUeLIy6vcE9ygPRygvBC0F8L5E2Qd9EJe/9N2VCzsaR24dAw7AINAEmse4yLkr6oNNbJaMmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=lxhBoj+n; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+	s=arc-20240116; t=1761929554; c=relaxed/simple;
+	bh=1N3fdJ2B+fMkIlCdu5Zd5AwLY7LihNq+dC6S4re75do=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=pHJ0WP13xuoifUHbHc+ANR1B53EuI3/CMC3Qwfy6mjybN9ybU9eAKI5x8fakLUuPWNGhxAY7H4NXeYEmsagm6162dmlMExjZuTR+aUMJ7uXWYzf/s0rVqVGbZ558Vua+afqtdzE2s6nyTxHfD96CHLU3YAxDYExI+ht11hGN/eM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=Qxm8g8rb; arc=none smtp.client-ip=199.89.3.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 004.mia.mailroute.net (Postfix) with ESMTP id 4cyn8V5C4lzm0pKc;
+	Fri, 31 Oct 2025 16:52:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1761929544; x=1764521545; bh=R/OEKut8Bh5NEjnT73fa64w+
+	0NdKfKaDZ37ZcX9yBBE=; b=Qxm8g8rbfACqduG6mzsKiZcY5peLYhA5r68hfeuF
+	npeC2F7MrPHfRCE2dgdI/VpN9Z6Hg0odL8mTXTU6q/aItJVUsc2yuLcoSKChIa3J
+	CYZK7JejpVEKTgh6SS/QaCBg90QG8UIrv50QzRgeI+pEkrppligx7C1qjj2QKFH2
+	9azdHnrqY2mKi3qwnrbyTRK8MiFp0837mT7ieCSNzn0Rb7Y4xkf0350AH8m56CC8
+	mNCZM/Quc8W0QsSqNcGubULzysAB7Hpc5bSnTIbMmsQJ7auKE5fPqVUNu+QzToI4
+	CCBV+h74m5k7iF9/sRnUJO02LHBBzHdocpCu7aVdgsG0Lw==
+X-Virus-Scanned: by MailRoute
+Received: from 004.mia.mailroute.net ([127.0.0.1])
+ by localhost (004.mia [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id Wp5YOSWbUGra; Fri, 31 Oct 2025 16:52:24 +0000 (UTC)
+Received: from [100.119.48.131] (unknown [104.135.180.219])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4cyj0D3R39z9t4k;
-	Fri, 31 Oct 2025 14:45:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
-	t=1761918300;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O0O5a8R1BPxwQ8QmbLrr2Wpw5/Ede2Ocx8fNc84mnug=;
-	b=lxhBoj+nFifMqHZUHZELdPLthribMfxIBRsBMTlBfvwz5xz4/7t+MNuSL0r/tcY4TfU7E/
-	wXfVoCkZonsSLKVYm6gQN27Z4vJoIZbBvX8naz5PSpBBHY+dSaw8229s6l+BmBpO8vtOUN
-	z5vxQPH9XH1aIwislHMRClGbPNCAIdC7Ls7QMMEbqVwDe6IZ9MEfwcNurM5Gc5g6wEY6s0
-	hvZiCew18WkHvtblFouRihf+lZdmMc5sMI1ffH1N79bF/4KWtH49tworqBnHhJTF/nbRCi
-	ThgmoDtkVwPD3N//0WzuZlLVmI/K1XxUDLD5guNCGcTdDkT5zOKuYTQz0W+VRQ==
-From: =?utf-8?Q?Miquel_Sabat=C3=A9_Sol=C3=A0?= <mssola@mssola.com>
-To: David Sterba <dsterba@suse.cz>
-Cc: linux-btrfs@vger.kernel.org,  clm@fb.com,  dsterba@suse.com,
-  johannes.thumshirn@wdc.com,  fdmanana@suse.com,  boris@bur.io,
-  wqu@suse.com,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] btrfs: define and apply the AUTO_K(V)FREE_PTR
- macros
-In-Reply-To: <20251031022241.GE13846@twin.jikos.cz> (David Sterba's message of
-	"Fri, 31 Oct 2025 03:22:41 +0100")
-References: <20251024102143.236665-1-mssola@mssola.com>
-	<20251031022241.GE13846@twin.jikos.cz>
-Date: Fri, 31 Oct 2025 14:44:53 +0100
-Message-ID: <87v7jv89t6.fsf@>
+	(Authenticated sender: bvanassche@acm.org)
+	by 004.mia.mailroute.net (Postfix) with ESMTPSA id 4cyn8F2n2rzm0pK1;
+	Fri, 31 Oct 2025 16:52:11 +0000 (UTC)
+Message-ID: <5ca96ffd-9e60-49d3-a136-c7a9eb7bce10@acm.org>
+Date: Fri, 31 Oct 2025 09:52:10 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/13] block: introduce BLKREPORTZONESV2 ioctl
+To: Damien Le Moal <dlemoal@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+ Keith Busch <keith.busch@wdc.com>, Christoph Hellwig <hch@lst.de>,
+ dm-devel@lists.linux.dev, Mike Snitzer <snitzer@kernel.org>,
+ Mikulas Patocka <mpatocka@redhat.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
+ Carlos Maiolino <cem@kernel.org>, linux-btrfs@vger.kernel.org,
+ David Sterba <dsterba@suse.com>
+References: <20251031061307.185513-1-dlemoal@kernel.org>
+ <20251031061307.185513-11-dlemoal@kernel.org>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20251031061307.185513-11-dlemoal@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On 10/30/25 11:13 PM, Damien Le Moal wrote:
+> Unlike the existing BLKREPORTZONES ioctl, this new ioctl uses the flags
+> field of struct blk_zone_report also as an inpiut. If as an input, the
 
-David Sterba @ 2025-10-31 03:22 +01:
+inpiut -> input
 
-> On Fri, Oct 24, 2025 at 12:21:39PM +0200, Miquel Sabat=C3=A9 Sol=C3=A0 wr=
-ote:
->> Changes since v1:
->>   - Remove the _PTR suffix
->>   - Rename the ipath cleanup function to inode_fs_paths, so it's more
->>     explicit on the type.
->>   - Improve git message in patch 1.
->>
->> This patchset introduces and applies throughout the btrfs tree two new
->> macros: AUTO_KFREE and AUTO_KVFREE. Each macro defines a pointer,
->> initializes it to NULL, and sets the kfree/kvfree cleanup attribute. It =
-was
->> suggested by David Sterba in the review of a patch that I submitted here
->> [1].
->>
->> I have not applied these macros blindly through the tree, but only when
->> using a cleanup attribute actually made things easier for
->> maintainers/developers, and didn't obfuscate things like lifetimes of
->> objects on a given function. So, I've mostly avoided applying this when:
->>
->> - The object was being re-allocated in the middle of the function
->>   (e.g. object re-allocation in a loop).
->> - The ownership of the object was transferred between functions.
->> - The value of a given object might depend on functions returning ERR_PT=
-R()
->>   et al.
->> - The cleanup section of a function was a bunch of labels with different
->>   exit paths with non-trivial cleanup code (or code that depended on thi=
-ngs
->>   to go on a specific order).
->>
->> To come up with this patchset I have glanced through the tree in order to
->> find where and how kfree()/kvfree() were being used, and while doing so I
->> have submitted [2], [3] and [4] separately as they were fixing memory
->> related issues. All in all, this patchset can be divided in three parts:
->>
->> 1. Patch 1: transforms free_ipath() to be defined via DEFINE_FREE(), whi=
-ch
->>    will be useful in order to further simplify some code in patch 3.
->> 2. Patch 2 and 3: define and use the two macros.
->> 3. Patch 4: removing some unneeded kfree() calls from qgroup.c as they w=
-ere
->>    not needed. Since these occurrences weren't memory bugs, and it was a
->>    somewhat simple patch, I've refrained from sending this separately as=
- I
->>    did in [2], [3] and [4]; but I'll gladly do it if you think it's bett=
-er
->>    for the review.
->>
->> Note that after these changes some 'return' statements could be made more
->> explicit, and I've also written an explicit 'return 0' whenever it would
->> make more explicit the "happy" path for a given branch, or whenever a 'r=
-et'
->> variable could be avoided that way.
->>
->> Last, checkpatch.pl script doesn't seem to like patches 2 and 3; but so =
-far
->> it looks like false positives to me. But of course I might just be wrong=
- :)
->>
->> [1] https://lore.kernel.org/all/20250922103442.GM5333@twin.jikos.cz/
->> [2] https://lore.kernel.org/all/20250925184139.403156-1-mssola@mssola.co=
-m/
->> [3] https://lore.kernel.org/all/20250930130452.297576-1-mssola@mssola.co=
-m/
->> [4] https://lore.kernel.org/all/20251008121859.440161-1-mssola@mssola.co=
-m/
->>
->> Miquel Sabat=C3=A9 Sol=C3=A0 (4):
->>   btrfs: declare free_ipath() via DEFINE_FREE()
->>   btrfs: define the AUTO_K(V)FREE helper macros
->>   btrfs: apply the AUTO_K(V)FREE macros throughout the tree
->>   btrfs: add ASSERTs on prealloc in qgroup functions
->
-> Thanks, patches now added to for-next with some minor adjustments. Feel
-> free to send more conversions, there are still some kvfree candidate
-> calls. I think we would not mind using it even for the short functions
-> (re what's mentioned in the 3rd patch), so it's established as a common
-> coding pattern. This change has net negative effect on lines and also
-> simplifies the control flow.
+>   /*
+> - * BLKREPORTZONE ioctl processing.
+> + * Mask of valid input flags for BLKREPORTZONEV2 ioctl.
+> + */
+> +#define BLK_ZONE_REPV2_INPUT_FLAGS	(BLK_ZONE_REP_CACHED)
 
-Thanks for adding them!
+Parentheses are not needed here - the definition of BLK_ZONE_REP_CACHED
+should include parentheses if necessary.
 
-Will keep an eye then if there are places where it's safe to use them.
+> +	case BLKREPORTZONEV2:
+> +		if (rep.flags & ~BLK_ZONE_REPV2_INPUT_FLAGS)
+> +			return -EINVAL;
 
-Greetings,
-Miquel
+-EINVAL probably should be changed into something that indicates "not
+supported" rather than "invalid argument"?
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+> index dab5d9700898..1441d79a6173 100644
+> --- a/include/uapi/linux/blkzoned.h
+> +++ b/include/uapi/linux/blkzoned.h
+> @@ -82,10 +82,20 @@ enum blk_zone_cond {
+>   /**
+>    * enum blk_zone_report_flags - Feature flags of reported zone descriptors.
+>    *
+> - * @BLK_ZONE_REP_CAPACITY: Zone descriptor has capacity field.
+> + * @BLK_ZONE_REP_CAPACITY: Output only. Indicates that zone descriptors in a
+> + *			   zone report have a valid capacity field.
+> + * @BLK_ZONE_REP_CACHED: Input only. Indicates that the zone report should be
+> + *			 generated using cached zone information. In this case,
+> + *			 the implicit open, explicit open and closed zone
+> + *			 conditions are all reported with the
+> + *			 BLK_ZONE_COND_ACTIVE condition.
+>    */
+>   enum blk_zone_report_flags {
+> +	/* Output flags */
+>   	BLK_ZONE_REP_CAPACITY	= (1 << 0),
+> +
+> +	/* Input flags */
+> +	BLK_ZONE_REP_CACHED	= (1 << 31),
+>   };
 
------BEGIN PGP SIGNATURE-----
+Why 1 << 31 instead of 1 << 1?
 
-iQJiBAEBCgBMFiEEG6U8esk9yirP39qXlr6Mb9idZWUFAmkEvVUbFIAAAAAABAAO
-bWFudTIsMi41KzEuMTEsMiwyEhxtc3NvbGFAbXNzb2xhLmNvbQAKCRCWvoxv2J1l
-ZaSwD/0bftnJ/zbP87OB9IgTaDW+7z5sqlQ4cATReNX2FyRMTYy3FGBaBG6AUNPn
-DiD5Y5OC+n3vas7tQgfIYoI+z7gcmIwaTLDOMPQtMuRq6e5BFhcsAlsXfbJjkKdp
-b046c0iWe9Xwb0aURP6wNN1pm88OR4yAe4cx8FaDevH9ZIn+wjpqUaaT3pNZBgZ6
-15iFI68f5VyjChxLHIDoYMDIrLccYNxVPqc88sC170F2a7A2V4nl4hIBy8wMDgYn
-98XHcmznW3HRvXj8ZG4f5XzKrMCWDpoAdg2ijB/ucC/zwffclVUg1OG7B7xPEjpV
-GCK6CQS3HJz1BF0GbMOdxtKKS7hxLwQ7maqyjqYDVVyV2kYgqcttrrIS0q3lVlFi
-5V92Q0A9yWca8TNjSJ+FSLkTpkXtHrfmztygLpt2+A052uDpA9zSvA1xPrvTpQe8
-h3AXjgYmFeOa9v8AqOHnVXRqvyXuzK9nd97ZyzPJ1j1NHnXA+bs55QJyLxxQZmHF
-iycUu6XenZtrRjiJQZlvtntpY/dgsHieEAH2zWsjss10aeH3qUQO/dRJDJ4Nv86R
-CLDlWxndlOAGpWP1actZtv4mqjz1DqvCdat6eBoRy85iISK5L7t4vlqv42PiKC/Q
-Rfn+M4LU79SVgRwwmNhSsi1ZICwbmp5BXjZYjceJBTVK5y8Jmw==
-=zMc4
------END PGP SIGNATURE-----
---=-=-=--
+Otherwise this patch looks good to me.
+
+Thanks,
+
+Bart.
 
