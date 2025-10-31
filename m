@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-18445-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18446-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78692C23608
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 07:22:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67E6CC23611
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 07:22:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63D011894BD7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 06:19:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E98AC189E02F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 06:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C3C3126CA;
-	Fri, 31 Oct 2025 06:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B604F313526;
+	Fri, 31 Oct 2025 06:17:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BcM90ccj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MPTUKdy1"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472A3311951;
-	Fri, 31 Oct 2025 06:17:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD4C3126DE;
+	Fri, 31 Oct 2025 06:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761891433; cv=none; b=qMvs8+f7UFzseo0jp9mej07U6oylIu4MPDxuh+e3MBsSgfUPSAm24C4Y5ufDpDiX8bGsokKbd4uP6foVx2Y0UtRzcA7vhTym5pIdNnYX6AwAGuNJ0DffkNMUOci+ommgd4fKp5SkXKJUeLyHxf4CPUrFxhwXoR0ut0G/au/2+/s=
+	t=1761891435; cv=none; b=hxv2uXddU6ttCUTb9w8MF33I06OtJ03NY44Dl0wvLPXo3ArJQJ9edTTuIuuxRrtX9CzEK0wZyAOW87BYDdeDPxGYqrceKE0PcbZU2/nLe8CV/EhoD52D6i4qn6PXqZ7OOmiQ3f8f5Ijy5zl6J/JG2G7UjZLNkX/UotPUTIflqY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761891433; c=relaxed/simple;
-	bh=6ZY0NgFP02+vFWnpcPvHScdxIHEaoDhwgGK8k5yH3n0=;
+	s=arc-20240116; t=1761891435; c=relaxed/simple;
+	bh=AFRfC/+L9+8EqBO+j5hc4RIPbK+fIEpNfl2CvB6ilbs=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=b8e0nceuETQ+kqnaRs07p6xFMoFx/gpaSePZbLojNPlHLYEOSzcjGCzwYr2zWJk+EMh8d4EGoWnJfPxF6TJg2WILlZaB6hE5dVnHiapvnA58CDeqcS37v0EqH1jLosUPTS1nXlUbexiJ3+XxC/IenqVoRfuSSe/83mZZfIdlvaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BcM90ccj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42F38C4CEF1;
-	Fri, 31 Oct 2025 06:17:11 +0000 (UTC)
+	 MIME-Version; b=EObpbWjrWRQOe/+W8kjurhxSJkv7GuXKB/wECWH1+sBCKdOqTDs8sFTjsxyHIw/bbwp972GRHQTWY9z6ii0av2D/eheB3QO9ykmJLrHlLUsdAvxlHU1v0sqXlDuDOSHfu7mDiwGXdnhJEKgqMU2/sIiiNqgRWX0dfj3t+DBn5hU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MPTUKdy1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FD5FC16AAE;
+	Fri, 31 Oct 2025 06:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761891432;
-	bh=6ZY0NgFP02+vFWnpcPvHScdxIHEaoDhwgGK8k5yH3n0=;
+	s=k20201202; t=1761891434;
+	bh=AFRfC/+L9+8EqBO+j5hc4RIPbK+fIEpNfl2CvB6ilbs=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=BcM90ccjhMOxSsY3pDm6+sydq2PO7b34vdvCtFz4nIHojqi97Irb/5ERU+vHCoT9T
-	 NntEHXm4CPMpBsweAtT4RO9gTER1Di4O/y2D2iM/4oiaeXetQh5Ub+Vl7mz1sraL5A
-	 BJhejvZcXDFB8ktj+bUZIzh+o9e3ga8+UNK5iFpM8XPBoHzsLfmClQ6+qt8vk45Cyn
-	 o5nw6I9SgIfqm1qfR6sRHBix0QMJtOS00sk0v8gyB9/+F18AldVdp7r+ybbhbTXRqo
-	 1Y0PESDXnCUZmx6ZNTn+ALTNHoGFXJ87REyIf+hUPOwq638HqogKY6kJSUHzceHuf7
-	 whUWVy3Ja/jvw==
+	b=MPTUKdy1RphP61c8KqphsqN3kuqRtta5Kfq2QnYZX5NLKLH5HoNUq/tBOpgJDJH0y
+	 V1Re4wFweO5nA+uVbgWUZD9hTSw8xDQbchUjEkfLwYTmulZGpxdvbP316EPHxvuYk4
+	 g21xK+qrOYi5GDpBr/HwSImAaLOQ9b9bGl3Z5cCpPaDvvwrif38/fo1FZIo4sJaaeI
+	 KhQQHVa2Rd3ZiRmFosGf8RxSmRz+As1KFJtdo5GX4la7K6zDqW2JKr4oHjAWDTB3/z
+	 WWKrGBll4sVmH43GTBo4xF/dERKkE7uT/X2uMDLz1Uhl43QS9B41bsIkC2sCT0Xpnl
+	 asu0cumzmCIbQ==
 From: Damien Le Moal <dlemoal@kernel.org>
 To: Jens Axboe <axboe@kernel.dk>,
 	linux-block@vger.kernel.org,
@@ -56,9 +56,9 @@ To: Jens Axboe <axboe@kernel.dk>,
 	Carlos Maiolino <cem@kernel.org>,
 	linux-btrfs@vger.kernel.org,
 	David Sterba <dsterba@suse.com>
-Subject: [PATCH 10/13] block: introduce BLKREPORTZONESV2 ioctl
-Date: Fri, 31 Oct 2025 15:13:04 +0900
-Message-ID: <20251031061307.185513-11-dlemoal@kernel.org>
+Subject: [PATCH 11/13] block: add zone write plug condition to debugfs zone_wplugs
+Date: Fri, 31 Oct 2025 15:13:05 +0900
+Message-ID: <20251031061307.185513-12-dlemoal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251031061307.185513-1-dlemoal@kernel.org>
 References: <20251031061307.185513-1-dlemoal@kernel.org>
@@ -70,159 +70,42 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce the new BLKREPORTZONESV2 ioctl command to allow user
-applications access to the fast zone report implemented by
-blkdev_report_zones_cached(). This new ioctl is defined as number 142
-and is documented in include/uapi/linux/fs.h.
-
-Unlike the existing BLKREPORTZONES ioctl, this new ioctl uses the flags
-field of struct blk_zone_report also as an inpiut. If as an input, the
-user sets the flag BLK_ZONE_REP_CACHED, then
-blkdev_report_zones_cached() is used to generate the zone report using
-cached zone information. If this flag is not set, then BLKREPORTZONESV2
-behaves in the same manner as BLKREPORTZONES and the zone report is
-generated by accessing the zoned device.
+Modify queue_zone_wplug_show() to include the condition of a zone write
+plug to the zone_wplugs debugfs attribute of a zoned block device.
 
 Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
 ---
- block/blk-zoned.c             | 25 ++++++++++++++++++++++---
- block/ioctl.c                 |  1 +
- include/uapi/linux/blkzoned.h | 30 ++++++++++++++++++++++++++----
- include/uapi/linux/fs.h       |  2 +-
- 4 files changed, 50 insertions(+), 8 deletions(-)
+ block/blk-zoned.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/block/blk-zoned.c b/block/blk-zoned.c
-index 0234bb7f41b3..c8335654b1cd 100644
+index c8335654b1cd..1ccd78beb538 100644
 --- a/block/blk-zoned.c
 +++ b/block/blk-zoned.c
-@@ -356,7 +356,12 @@ static int blkdev_copy_zone_to_user(struct blk_zone *zone, unsigned int idx,
+@@ -2296,18 +2296,21 @@ static void queue_zone_wplug_show(struct blk_zone_wplug *zwplug,
+ 	unsigned int zwp_wp_offset, zwp_flags;
+ 	unsigned int zwp_zone_no, zwp_ref;
+ 	unsigned int zwp_bio_list_size;
++	unsigned int zwp_cond;
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&zwplug->lock, flags);
+ 	zwp_zone_no = zwplug->zone_no;
+ 	zwp_flags = zwplug->flags;
+ 	zwp_ref = refcount_read(&zwplug->ref);
++	zwp_cond = zwplug->cond;
+ 	zwp_wp_offset = zwplug->wp_offset;
+ 	zwp_bio_list_size = bio_list_size(&zwplug->bio_list);
+ 	spin_unlock_irqrestore(&zwplug->lock, flags);
+ 
+-	seq_printf(m, "%u 0x%x %u %u %u\n", zwp_zone_no, zwp_flags, zwp_ref,
+-		   zwp_wp_offset, zwp_bio_list_size);
++	seq_printf(m, "%u 0x%x %u 0x%x %u %u\n",
++		   zwp_zone_no, zwp_flags, zwp_ref,
++		   zwp_cond, zwp_wp_offset, zwp_bio_list_size);
  }
  
- /*
-- * BLKREPORTZONE ioctl processing.
-+ * Mask of valid input flags for BLKREPORTZONEV2 ioctl.
-+ */
-+#define BLK_ZONE_REPV2_INPUT_FLAGS	(BLK_ZONE_REP_CACHED)
-+
-+/*
-+ * BLKREPORTZONE and BLKREPORTZONEV2 ioctl processing.
-  * Called from blkdev_ioctl.
-  */
- int blkdev_report_zones_ioctl(struct block_device *bdev, unsigned int cmd,
-@@ -380,8 +385,22 @@ int blkdev_report_zones_ioctl(struct block_device *bdev, unsigned int cmd,
- 		return -EINVAL;
- 
- 	args.zones = argp + sizeof(struct blk_zone_report);
--	ret = blkdev_report_zones(bdev, rep.sector, rep.nr_zones,
--				  blkdev_copy_zone_to_user, &args);
-+
-+	switch (cmd) {
-+	case BLKREPORTZONE:
-+		ret = blkdev_report_zones(bdev, rep.sector, rep.nr_zones,
-+					  blkdev_copy_zone_to_user, &args);
-+		break;
-+	case BLKREPORTZONEV2:
-+		if (rep.flags & ~BLK_ZONE_REPV2_INPUT_FLAGS)
-+			return -EINVAL;
-+		ret = blkdev_report_zones_cached(bdev, rep.sector, rep.nr_zones,
-+					 blkdev_copy_zone_to_user, &args);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/block/ioctl.c b/block/ioctl.c
-index 3927ca4707d0..698629e4c619 100644
---- a/block/ioctl.c
-+++ b/block/ioctl.c
-@@ -581,6 +581,7 @@ static int blkdev_common_ioctl(struct block_device *bdev, blk_mode_t mode,
- 	case BLKGETDISKSEQ:
- 		return put_u64(argp, bdev->bd_disk->diskseq);
- 	case BLKREPORTZONE:
-+	case BLKREPORTZONEV2:
- 		return blkdev_report_zones_ioctl(bdev, cmd, arg);
- 	case BLKRESETZONE:
- 	case BLKOPENZONE:
-diff --git a/include/uapi/linux/blkzoned.h b/include/uapi/linux/blkzoned.h
-index dab5d9700898..1441d79a6173 100644
---- a/include/uapi/linux/blkzoned.h
-+++ b/include/uapi/linux/blkzoned.h
-@@ -82,10 +82,20 @@ enum blk_zone_cond {
- /**
-  * enum blk_zone_report_flags - Feature flags of reported zone descriptors.
-  *
-- * @BLK_ZONE_REP_CAPACITY: Zone descriptor has capacity field.
-+ * @BLK_ZONE_REP_CAPACITY: Output only. Indicates that zone descriptors in a
-+ *			   zone report have a valid capacity field.
-+ * @BLK_ZONE_REP_CACHED: Input only. Indicates that the zone report should be
-+ *			 generated using cached zone information. In this case,
-+ *			 the implicit open, explicit open and closed zone
-+ *			 conditions are all reported with the
-+ *			 BLK_ZONE_COND_ACTIVE condition.
-  */
- enum blk_zone_report_flags {
-+	/* Output flags */
- 	BLK_ZONE_REP_CAPACITY	= (1 << 0),
-+
-+	/* Input flags */
-+	BLK_ZONE_REP_CACHED	= (1 << 31),
- };
- 
- /**
-@@ -128,6 +138,10 @@ struct blk_zone {
-  * @sector: starting sector of report
-  * @nr_zones: IN maximum / OUT actual
-  * @flags: one or more flags as defined by enum blk_zone_report_flags.
-+ * @flags: one or more flags as defined by enum blk_zone_report_flags.
-+ *	   With BLKREPORTZONE, this field is ignored as an input and is valid
-+ *	   only as an output. Using BLKREPORTZONEV2, this field is used as both
-+ *	   input and output.
-  * @zones: Space to hold @nr_zones @zones entries on reply.
-  *
-  * The array of at most @nr_zones must follow this structure in memory.
-@@ -154,9 +168,16 @@ struct blk_zone_range {
- /**
-  * Zoned block device ioctl's:
-  *
-- * @BLKREPORTZONE: Get zone information. Takes a zone report as argument.
-- *                 The zone report will start from the zone containing the
-- *                 sector specified in the report request structure.
-+ * @BLKREPORTZONE: Get zone information from a zoned device. Takes a zone report
-+ *		   as argument. The zone report will start from the zone
-+ *		   containing the sector specified in struct blk_zone_report.
-+ *		   The flags field of struct blk_zone_report is used as an
-+ *		   output only and ignored as an input.
-+ *		   DEPRECATED, use BLKREPORTZONEV2 instead.
-+ * @BLKREPORTZONEV2: Same as @BLKREPORTZONE but uses the flags field of
-+ *		     struct blk_zone_report as an input, allowing to get a zone
-+ *		     report using cached zone information if BLK_ZONE_REP_CACHED
-+ *		     is set.
-  * @BLKRESETZONE: Reset the write pointer of the zones in the specified
-  *                sector range. The sector range must be zone aligned.
-  * @BLKGETZONESZ: Get the device zone size in number of 512 B sectors.
-@@ -175,5 +196,6 @@ struct blk_zone_range {
- #define BLKOPENZONE	_IOW(0x12, 134, struct blk_zone_range)
- #define BLKCLOSEZONE	_IOW(0x12, 135, struct blk_zone_range)
- #define BLKFINISHZONE	_IOW(0x12, 136, struct blk_zone_range)
-+#define BLKREPORTZONEV2	_IOWR(0x12, 142, struct blk_zone_report)
- 
- #endif /* _UAPI_BLKZONED_H */
-diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-index 957ce3343a4f..66ca526cf786 100644
---- a/include/uapi/linux/fs.h
-+++ b/include/uapi/linux/fs.h
-@@ -298,7 +298,7 @@ struct file_attr {
- #define BLKROTATIONAL _IO(0x12,126)
- #define BLKZEROOUT _IO(0x12,127)
- #define BLKGETDISKSEQ _IOR(0x12,128,__u64)
--/* 130-136 are used by zoned block device ioctls (uapi/linux/blkzoned.h) */
-+/* 130-136 and 142 are used by zoned block device ioctls (uapi/linux/blkzoned.h) */
- /* 137-141 are used by blk-crypto ioctls (uapi/linux/blk-crypto.h) */
- #define BLKTRACESETUP2 _IOWR(0x12, 142, struct blk_user_trace_setup2)
- 
+ int queue_zone_wplugs_show(void *data, struct seq_file *m)
 -- 
 2.51.0
 
