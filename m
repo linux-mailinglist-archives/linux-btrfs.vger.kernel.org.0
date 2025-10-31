@@ -1,237 +1,238 @@
-Return-Path: <linux-btrfs+bounces-18463-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18464-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BD41C243DA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 10:47:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7282C2453C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 11:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F8271883EA2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 09:46:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B16E318973F8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Oct 2025 09:59:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC3C3321B9;
-	Fri, 31 Oct 2025 09:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D3A333458;
+	Fri, 31 Oct 2025 09:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qXozVk74"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rn72hDdi"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0C5283FDD
-	for <linux-btrfs@vger.kernel.org>; Fri, 31 Oct 2025 09:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 847C234D3B5
+	for <linux-btrfs@vger.kernel.org>; Fri, 31 Oct 2025 09:58:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761903985; cv=none; b=TFLs8cYTRzce6nhOs9UitJ3ziUc0N6gArX3ibpvoOWNJ6slYM4raFhqz4Dq6kUfl05e3n1VaSU0yZfG4YoOdkcbCTFQRxzByMUezwZ5/ndCI+dJhrhOd6C0EKhpvqdKVQGaiTJLXXiAV6ZgZIWE3ONiA7LXpaDfeHx9HhPW3Few=
+	t=1761904732; cv=none; b=HYjeB7EnZp83vAWlc5zeYyvosMqbQ6GkhpBgh2fIl1kvYZA62m/gxRk3n9LKSzelqU7P8KZaCByCyRgbYd5aI+zjrmMnIiz6B9TythIeHOIwxilrnC0klSIOAL2/WMY/Daaq+SKhhHKVs4i16Uclvt5TRNJbdma5z4mmYHABZYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761903985; c=relaxed/simple;
-	bh=RpWTsJSok6QIGfLxQGprd/Ppe06nm/UEj7FLINBTlBU=;
+	s=arc-20240116; t=1761904732; c=relaxed/simple;
+	bh=mkYlBNFGjjNc3C0HRhegUDPIVU79wGXf+vW+blz/nWo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mAHraWRKkKM+WO6CgOy19sZGEetKM5tlagwbO1PVvRlr5KsrXrNO+CyChY4s8gY1AXwaAHFcSxNIAV4z9Bh0syjrX9CWJE+glL+u8VywqhDkhzB5xy+fsmhSGWZIIImX/AHARayP0BiWojQmownDL0CUY5lbIFtI4yTvi+/5BpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qXozVk74; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4231AC4CEE7
-	for <linux-btrfs@vger.kernel.org>; Fri, 31 Oct 2025 09:46:25 +0000 (UTC)
+	 To:Cc:Content-Type; b=tcfdtQWvkx70C0SeoNS8xYVBjV3P7t7BKyqUZAgdT5BkVt9GtS3TURyzbPMD7BjtHE66uPgzdMF/B6dd6EOThiHtKdUO0N2PNwoAQBBstOEVL6LNElgvyncypwwJeTwmGArMz5CyBFFwx4QFp5t1MhCRm9RBM2RLRAgPmNgZBHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rn72hDdi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DDD8C4CEE7
+	for <linux-btrfs@vger.kernel.org>; Fri, 31 Oct 2025 09:58:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761903985;
-	bh=RpWTsJSok6QIGfLxQGprd/Ppe06nm/UEj7FLINBTlBU=;
+	s=k20201202; t=1761904731;
+	bh=mkYlBNFGjjNc3C0HRhegUDPIVU79wGXf+vW+blz/nWo=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=qXozVk74eWorjfrSSjL4c7Q5LwOFwockzXCrA2PTgwq7/bo6dbcQiBN4hG4Kv08G2
-	 qCpS5/iWAcEK3B3f43kpJ4mauuOpH30cGNsHy9RAW3XLwFmBQ6V2oKU3KVOOE+4GND
-	 qWKGNvmENiMLnuLTHgzCN5q4fJBOnJhxG6yTzFIeV4NHSo3eQ9qjUiVDNiyvqTCvul
-	 QjHwjYLsXJZBVWFrk3ymzjVwTSiaU/UPvolr94X+FGgbDK0tPFVS3vG5pwaeuKLgSb
-	 QAFfZt/aNyid06brZVUzSlrgprCNTSTdNx9gN00q1pX+34HaQV3jt7NoJU9b5BxH9X
-	 YVPF9UPm6J12g==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b6d5b756284so508771366b.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Oct 2025 02:46:25 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVDbwI7q52CWbddzIVy9YVvrRvKC23H33wX2KEjzKybyhtzxbpWb7CWwvsQ6i36DvfjI+ReP29WKUYx+w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YydJM/92q+1pGAIdHRmAyljboeiwlq+iKfORsJ9jVX3TlU8vS5x
-	x1Id/P9+xGz1gboRyVfBEPW+DiavslZb020EN7cwBoW/gm4FcX48wvijqyPkBURyfBdin06PBhJ
-	RrGMqSglWun3SacbUgyN1G2XC5+Q8t5M=
-X-Google-Smtp-Source: AGHT+IEAJ3HvnDqALTtqjsHqDm6pem9zkmQSYXCVw5if1ZE/DXYLN1nE3FY0XuWyNDgkrIrmP4615AvaCq2T3MNrhgY=
-X-Received: by 2002:a17:906:7306:b0:b3f:cc6d:e0a8 with SMTP id
- a640c23a62f3a-b70701379e8mr312704666b.17.1761903983803; Fri, 31 Oct 2025
- 02:46:23 -0700 (PDT)
+	b=Rn72hDdiYukv8jb3sRUauCATJD5zZck3CMc821Cm0FA0cwdTguEjtKEBq0zQxxFmp
+	 WffqVRnennTM4oqJSe0esFfsSJw24k83C7WuSx6BfzKFiIeOHo29nsvfIL8qdvFX2u
+	 6UPU8OjYKQoy6Od7RtfxGOfrKxN84T9JiZMz3C73ZeOYiPkQxnCZKcjP/ywrQFEXrt
+	 SPlkB1I1bf9U4DF+XVdXaJWiMCzc+pHCI0V9kZjjhEE4jbJSFL0Xpbu4DzOX9/SGfy
+	 6m2hSNKzMUgtWo+mGxndUF3b5zWrf4HI709nxCXJYIutzr+6cikulsrQhCRXlHhQAH
+	 AAtZTjcVgDLBw==
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-b704db3686cso461250866b.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 Oct 2025 02:58:50 -0700 (PDT)
+X-Gm-Message-State: AOJu0Ywdgx14UWnHSbY1HHAXE4wWQ4OnYZXUt0MP9SHh1P5GMhVO3EEL
+	U/lqsABSs96dHu4/f9H9HDofnLR1XtZIBtfQWXk9ZWqYQ5iBkoUuPFRL0sGTwNHE9MqQWOHZ/1Q
+	gtDUC0NEUwjMhhs23iTMCQTFWd17dIYA=
+X-Google-Smtp-Source: AGHT+IHQCAqUq5yU/I8szFNTq++1v3jGGSp2zhftDy7BZklSMEs6FiLfycK7Sf8yUBFCFgS3a6oWschbRB8fsGU3kAQ=
+X-Received: by 2002:a17:907:3da7:b0:b6d:4034:8d11 with SMTP id
+ a640c23a62f3a-b70708a07ccmr295576066b.62.1761904729581; Fri, 31 Oct 2025
+ 02:58:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251031030606.2972296-1-austinchang@synology.com>
-In-Reply-To: <20251031030606.2972296-1-austinchang@synology.com>
+References: <fe6582f4535be27e11a6125f89265ebe8c82aac6.1761867805.git.wqu@suse.com>
+In-Reply-To: <fe6582f4535be27e11a6125f89265ebe8c82aac6.1761867805.git.wqu@suse.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 31 Oct 2025 09:45:46 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4iWO4+u3dvNqKAXmA6CuHC8LSRwcpzNuOrM_50RYPWzw@mail.gmail.com>
-X-Gm-Features: AWmQ_bn2cjLlV0o5HPBaLgHP91ZWTdHrdma-zl0Xx-PWIvxaCFYhBtbzmEecWeE
-Message-ID: <CAL3q7H4iWO4+u3dvNqKAXmA6CuHC8LSRwcpzNuOrM_50RYPWzw@mail.gmail.com>
-Subject: Re: [PATCH] fstests: btrfs: add test for fallocate on prealloc extents
-To: austinchang <austinchang@synology.com>
-Cc: dsterba@suse.com, linux-btrfs@vger.kernel.org, robbieko@synology.com
+Date: Fri, 31 Oct 2025 09:58:12 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7+UKqz5JDcLBQ+sJH-A40MR5_3M+GhskQ1Zw1+OJftxA@mail.gmail.com>
+X-Gm-Features: AWmQ_bmDpdriAH2HwIPNAKj6Al-MFjVgCKCywTaVEss5RHGdJ9EiOROPRXijGhg
+Message-ID: <CAL3q7H7+UKqz5JDcLBQ+sJH-A40MR5_3M+GhskQ1Zw1+OJftxA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fallback to buffered IO if the data profile has duplication
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 31, 2025 at 3:06=E2=80=AFAM austinchang <austinchang@synology.c=
-om> wrote:
+On Thu, Oct 30, 2025 at 11:48=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
 >
-> In subvolume without no_holes feature, following sequence can produce
-> incorrect i_size for a file:
+> [BACKGROUND]
+> Inspired by a recent kernel bug report, which is related to direct IO
+> buffer modification during writeback, that leads to contents mismatch of
+> different RAID1 mirrors.
 >
-> 1. Allocate an extent at the offset larger than the i_size of the file.
-> 2. Unmount then mount back the volume.
-> 3. Perform fallocate on the preallocated range to increase the i_size.
-> 4. The i_size won't reflect the fallocate in 3. after umount then
->    mount.
+> [CAUSE AND PROBLEMS]
+> The root cause is exactly the same explained in commit 968f19c5b1b7
+> ("btrfs: always fallback to buffered write if the inode requires
+> checksum"), that we can not trust direct IO buffer which can be modified
+> halfway during writeback.
 >
-> The bug exists since the file_extent_tree has been introduced:
-> 41a2ee75aab0 ("btrfs: introduce per-inode file extent tree")
-> And became hidden since
-> 3d7db6e8bd22 ("btrfs: don't allocate file extent tree for non regular fil=
-es")
-> Then became visible again after
-> 8679d2687c35 ("btrfs: initialize inode::file_extent_tree after i_mode has=
- been set").
+> Unlike data checksum verification, if this happened on inodes without
+> data checksum but has the data has extra mirrors, it will lead to
+> stealth data mismatch on different mirrors.
 >
-> The test creates the file with the extents mentioned above and verify
-> that the file size is consistent after unmount and mount.
+> This will be way harder to detect without data checksum.
 >
-> Signed-off-by: austinchang <austinchang@synology.com>
+> Furthermore for RAID56, we can even have data without checksum and data
+> with checksum mixed inside the same full stripe.
+>
+> In that case if the direct IO buffer got changed halfway for the
+> nodatasum part, the data with checksum immediately lost its ability to
+> recover, e.g.:
+>
+> " " =3D Good old data or parity calculated using good old data
+> "X" =3D Data modified during writeback
+>
+>               0                32K                      64K
+>   Data 1      |                                         |  Has csum
+>   Data 2      |XXXXXXXXXXXXXXXX                         |  No csum
+>   Parity      |                                         |
+>
+> In above case, the parity is calculated using data 1 (has csum, from
+> page cache, won't change during writeback), and old data 2 (has no csum,
+> direct IO write).
+>
+> After parity is calculated, but before submission to the storage, direct
+> IO buffer of data 2 is modified, causing the range [0, 32K) of data 2
+> has a different content.
+>
+> Now all data is submitted to the storage, and the fs got fully synced.
+>
+> Then the device of data 1 is lost, has to be rebuilt from data 2 and
+> parity. But since the data 2 has some modified data, and the parity is
+> calculated using old data, the recovered data is no the same for data 1,
+> causing data checksum mismatch.
+>
+> [FIX]
+> Fix this problem by introduce a new helper,
+
+introduce -> introducing
+
+> btrfs_has_data_duplication(), to check if there is any data profiles
+
+is any -> are any
+
+> that have any duplication. If so fallback to buffered IO to keep data
+> consistent, no matter if the inode has data checksum or not.
+>
+> However this is not going to fix all situations, as it's still possible
+> to race with balance where the fs got a new data profile after
+> btrfs_has_data_duplication() check.
+> But this fix should still greatly reduce the window of the original bug.
+>
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D99171
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  tests/btrfs/338     | 48 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/338.out |  3 +++
->  2 files changed, 51 insertions(+)
->  create mode 100755 tests/btrfs/338
->  create mode 100755 tests/btrfs/338.out
+>  fs/btrfs/direct-io.c  |  9 +++++++++
+>  fs/btrfs/space-info.c | 18 ++++++++++++++++++
+>  fs/btrfs/space-info.h |  1 +
+>  3 files changed, 28 insertions(+)
 >
-> diff --git a/tests/btrfs/338 b/tests/btrfs/338
-> new file mode 100755
-> index 00000000..565a5ae2
-> --- /dev/null
-> +++ b/tests/btrfs/338
-> @@ -0,0 +1,48 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2025 Synology Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 338
-> +#
-> +# Tests the file size when the fallocate is performed on prealloc extent=
-s
-> +# that start after i_size.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick prealloc
+> diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+> index 962fccceffd6..3165543f35bc 100644
+> --- a/fs/btrfs/direct-io.c
+> +++ b/fs/btrfs/direct-io.c
+> @@ -12,6 +12,7 @@
+>  #include "volumes.h"
+>  #include "bio.h"
+>  #include "ordered-data.h"
+> +#include "space-info.h"
+>
+>  struct btrfs_dio_data {
+>         ssize_t submitted;
+> @@ -827,6 +828,14 @@ ssize_t btrfs_direct_write(struct kiocb *iocb, struc=
+t iov_iter *from)
+>         if (iocb->ki_pos + iov_iter_count(from) <=3D i_size_read(inode) &=
+& IS_NOSEC(inode))
+>                 ilock_flags |=3D BTRFS_ILOCK_SHARED;
+>
+> +       /*
+> +        * If our data profile has duplication (either extra mirrors or R=
+AID56),
+> +        * we can not trust the direct IO buffer, the content may change =
+during
+> +        * writeback and cause different contents written to different mi=
+rrors.
+> +        */
+> +       if (btrfs_has_data_duplication(fs_info))
+> +               goto buffered;
 > +
-> +_fixed_by_kernel_commit xxxxxxxxxxxx \
-> +       "btrfs: mark dirty bit for out of bound prealloc extents"
-
-The subject was changed when it was added to the for-next branch, so now it=
- is:
-
-"btrfs: mark dirty extent range for out of bound prealloc extents"
-
+>  relock:
+>         ret =3D btrfs_inode_lock(BTRFS_I(inode), ilock_flags);
+>         if (ret < 0)
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index 63d14b5dfc6c..02b5ebdd3146 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -2203,3 +2203,21 @@ void btrfs_return_free_space(struct btrfs_space_in=
+fo *space_info, u64 len)
+>         if (len)
+>                 btrfs_try_granting_tickets(space_info);
+>  }
 > +
-> +. ./common/filter
+> +bool btrfs_has_data_duplication(struct btrfs_fs_info *fs_info)
+> +{
+> +       struct btrfs_space_info *sinfo =3D fs_info->data_sinfo;
+> +       bool ret =3D false;
 > +
-> +_require_btrfs_mkfs_feature "no-holes"
+> +       down_write(&sinfo->groups_sem);
+> +       for (int i =3D 0; i < BTRFS_NR_RAID_TYPES; i++) {
+> +               if (!list_empty(&sinfo->block_groups[i]) &&
+> +                   (btrfs_raid_array[i].ncopies > 1 ||
+> +                    btrfs_raid_array[i].nparity !=3D 0)) {
+> +                       ret =3D true;
+> +                       break;
+> +               }
+> +       }
+> +       up_write(&sinfo->groups_sem);
 
-Missing kernel support check:
+This is huge and rather heavy.
+Taking the lock in write mode will block with concurrent extent
+allocations which take it in read mode.
 
-_require_btrfs_fs_feature "no_holes"
+We could lock in read mode instead, but this can be much simpler by doing t=
+his:
 
-> +
-> +_scratch_mkfs -O ^no-holes >>$seqres.full 2>&1
-> +_scratch_mount || _fail "mount failed"
-
-If the mount fails we don't need to call _fail - the test fails automatical=
-ly.
-However we're ignoring mkfs failures there, since stdout and stderr
-are redirected. There we do a _fail in more recent tests, so make sure
-the test runs on a new fs.
-
-So this should be:
-
-_scratch_mkfs -O ^no-holes >>$seqres.full 2>&1 || _fail "mkfs failed"
-_scratch_mount
-
-> +
-> +touch $SCRATCH_MNT/file1
-> +
-> +# Add a 2M extent at the file offset 1M without increasing i_size
-> +fallocate -n -o 1M -l 2M $SCRATCH_MNT/file1
-> +
-> +# Unmount and mount again to clear the in-memory extent tree
-> +_scratch_unmount
-> +_scratch_mount
-
-_scratch_cycle_mount
-
-> +
-> +# Use a length that doesn't trigger realloc of the 2M extent before
-
-Same comment I made for the kernel patch.
-This is confusing, because any fallocate against a range that already
-has extents never reallocates.
-
-I changed the kernel change log version to:
-
-# Use a length that fits within the range of the previously allocated
-# extent. We want the next fallocate to only increase the i_size.
-
-> +len=3D$((1 * 1024 * 1024))
-
-Btw, this can be simply
-
-len=3D1M
-
-> +
-> +# fallocate on the prealloc extent to change i_size
-> +fallocate -o 1M -l $len $SCRATCH_MNT/file1
-> +
-> +du --bytes $SCRATCH_MNT/file1| cut -f1
-
-Please add a space before the pipe too, to make it more readable.
-
-> +
-> +_scratch_unmount
-> +_scratch_mount
-
-_scratch_cycle_mount
-
-> +
-> +# The file size should be the same as before
-> +du --bytes $SCRATCH_MNT/file1| cut -f1
-
-Same as before, please add a space before the pipe too, to make it
-more readable.
-
-> +
-> +_scratch_unmount
-
-No need for this. The fstests framework automatically unmounts.
+return (btrfs_data_alloc_profile(fs_info) &
+BTRFS_BLOCK_GROUP_PROFILE_MASK) !=3D 0;
 
 Thanks.
 
-> +
-> +_exit 0
-> diff --git a/tests/btrfs/338.out b/tests/btrfs/338.out
-> new file mode 100755
-> index 00000000..0edd2502
-> --- /dev/null
-> +++ b/tests/btrfs/338.out
-> @@ -0,0 +1,3 @@
-> +QA output created by 338
-> +2097152
-> +2097152
+
+
+> +       return ret;
+> +}
+> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+> index a4c2a3c8b388..15b96163a167 100644
+> --- a/fs/btrfs/space-info.h
+> +++ b/fs/btrfs/space-info.h
+> @@ -315,5 +315,6 @@ void btrfs_set_periodic_reclaim_ready(struct btrfs_sp=
+ace_info *space_info, bool
+>  int btrfs_calc_reclaim_threshold(const struct btrfs_space_info *space_in=
+fo);
+>  void btrfs_reclaim_sweep(const struct btrfs_fs_info *fs_info);
+>  void btrfs_return_free_space(struct btrfs_space_info *space_info, u64 le=
+n);
+> +bool btrfs_has_data_duplication(struct btrfs_fs_info *fs_info);
+>
+>  #endif /* BTRFS_SPACE_INFO_H */
 > --
-> 2.34.1
+> 2.51.2
 >
 >
-> Disclaimer: The contents of this e-mail message and any attachments are c=
-onfidential and are intended solely for addressee. The information may also=
- be legally privileged. This transmission is sent in trust, for the sole pu=
-rpose of delivery to the intended recipient. If you have received this tran=
-smission in error, any use, reproduction or dissemination of this transmiss=
-ion is strictly prohibited. If you are not the intended recipient, please i=
-mmediately notify the sender by reply e-mail or phone and delete this messa=
-ge and its attachments, if any.
 
