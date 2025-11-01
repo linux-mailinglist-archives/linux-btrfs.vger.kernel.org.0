@@ -1,246 +1,237 @@
-Return-Path: <linux-btrfs+bounces-18507-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18508-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49FCDC27ACB
-	for <lists+linux-btrfs@lfdr.de>; Sat, 01 Nov 2025 10:28:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48200C27C40
+	for <lists+linux-btrfs@lfdr.de>; Sat, 01 Nov 2025 12:00:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 960064E6B77
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Nov 2025 09:27:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 731F0402BE9
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Nov 2025 11:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478C82C08D9;
-	Sat,  1 Nov 2025 09:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20B882F12C1;
+	Sat,  1 Nov 2025 11:00:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U+ulZNDf";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="hLTzj8ZU"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c0PTSrkL";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="cnul4tYc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D22E12C544
-	for <linux-btrfs@vger.kernel.org>; Sat,  1 Nov 2025 09:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B212F12BE
+	for <linux-btrfs@vger.kernel.org>; Sat,  1 Nov 2025 11:00:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761989264; cv=none; b=BGVn1Uwrr5vV80Rt4J4pL1kuRNvLWWBIIotqs8qNkOHlPtq0Vxvb/yvcV3/ltbk0p/qib8hae9GzGzvMUYSuUqBYpLTw3gBGtRso/7/T5tcZ9kwH9VGewfI1Y4vgY9LRDZhHzGMM+VgiJtRjXyBcmU+FriiChVB7KtcSTnZg1YU=
+	t=1761994851; cv=none; b=Zj2NW0ZNwLAQX1agero/nT6bJJrehxixnCkhPCWcjCX4+uvlnSv4Lxt4SakJ1acpgMKB60S+N4j0lRJEXkUFypbF/OGojpJNQW2870NLlYvaGSz/5UvpLmgnYol0Hzot/r6RY+U6Uf+hrTpH2mRVaib33e2vzt8i7foj2bEVf+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761989264; c=relaxed/simple;
-	bh=5UGM2acK4U+UYS//dJ4YbqwnQW/uNu85pIF1mdy4LM4=;
+	s=arc-20240116; t=1761994851; c=relaxed/simple;
+	bh=QtrHZ3BNmQDYjMDBlN7tUMwsIr6mPKhSqcllk44Q7oQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FdBzhqhjJu8tD/HgZgbeyjimSlbub+HVrsCLC5bEBegmglYmnG/rtuIdqJevawgVcHbZLVWRDFUGsc/9CF5q1j2p/yZxJlSIP9wpELYQhJp4BpaMhkZVowmkJnkeH6ZxYXt//aXMGOaeQNJKI+uF6qXgtMAOPr4bVfl04Irst2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U+ulZNDf; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=hLTzj8ZU; arc=none smtp.client-ip=170.10.129.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=hWKL35WKtZ8Qf3GnY/rG+MPBd1r0JBX6bwqLjDll35xyuhHOhJixOI9LCfiOMP6SHRRhLGPXiMJItVXuzUZqDVXEX9Y/uUKclsSNiXvjMOPDwdHl2aeBPx2qYWF6ILpt6rdV+jgpJLn/+orS1A12AyxaDN90xIl+gNhdM8bolzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=c0PTSrkL; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=cnul4tYc; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1761989261;
+	s=mimecast20190719; t=1761994848;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RbQmNSy9P0NTgIS1jo9Ela3U7G3myp7cj0Hkt1v3so8=;
-	b=U+ulZNDfAFMHv6az43c08lFuCBFhsuVtDQOoDAR+QYwEPPO0EtHNzfscnyiOj7z5n1v4Tw
-	gj/a55/bOYsgY3pLBWCdYEw4H1Md5XBPWwQ1MLjHL3RVw98523bv1StlMj2rsSFcTLY0Pw
-	gpFlsaFMFIfCyU3W1y00laOcWHJJSlU=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=M9D1hZg0keX1f1tqEjjOCXz3mMV5j42zRaCxAoLpn3Q=;
+	b=c0PTSrkLUbBYjgyJ2FtxaMMPvzrx4ggmqq/ISkK+nROaCaSDLPACZ8K/Q+u/yl2RNteh0z
+	GkH07iCwE6U1PRxqZFh0Hq7O364HD+PX8okYc4yoRhKWmMQzaiZKeiJTRDOVQdjxZkoKly
+	oi81R86u5FO58fJ+IDnh7nNLvJwJcmE=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-125-q1Vqz3pYOPOOfpsxbCN58w-1; Sat, 01 Nov 2025 05:27:39 -0400
-X-MC-Unique: q1Vqz3pYOPOOfpsxbCN58w-1
-X-Mimecast-MFC-AGG-ID: q1Vqz3pYOPOOfpsxbCN58w_1761989259
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-2952cb6f51bso33377135ad.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 01 Nov 2025 02:27:39 -0700 (PDT)
+ us-mta-478-775dfYPENX-gi5mY-piRYQ-1; Sat, 01 Nov 2025 07:00:47 -0400
+X-MC-Unique: 775dfYPENX-gi5mY-piRYQ-1
+X-Mimecast-MFC-AGG-ID: 775dfYPENX-gi5mY-piRYQ_1761994846
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-b92bdc65593so1816597a12.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 01 Nov 2025 04:00:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1761989259; x=1762594059; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RbQmNSy9P0NTgIS1jo9Ela3U7G3myp7cj0Hkt1v3so8=;
-        b=hLTzj8ZULgq/Dueu7xz5/djcS5AiAXOTKmikBouLZumhDO2TQ23rgq82YwYHGaHSMt
-         X5MlRsk84xAZ8MGrDzFLY9PPstMm/Ips4FDq5Owrk2VZbR5laKFJmI9iVagamW42B4ma
-         Jdw94uhlFbzqAsSjJ0DBSt4SqeLTifgeSS3CQi/nhjbCOqqsP446QFA+w3C3aVf1prhN
-         JlD3I9pu7mqVjhhU1bFCeqDppmCrhfOag/fDyYmdk1ws0Gq3awZBGWDzbciRnoemQ28p
-         PMmHOiUTduX2R2CSgLhd8ezzYIwamziJyERXtb3x/i9N5rnt6w6olrZxJ9TD/99+B7gJ
-         JC9Q==
+        d=redhat.com; s=google; t=1761994846; x=1762599646; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M9D1hZg0keX1f1tqEjjOCXz3mMV5j42zRaCxAoLpn3Q=;
+        b=cnul4tYce7cpO0sNPY4R77C1SWWuQ0/By4ToGZDdnvP3diHtwVWO2IbV7tJNmBwLZq
+         ZUOb4sCYgc88SKk/7gJvCGcbPKESRSfRB53kTJeM9yXMZ/q2uO0Z1njeYFIzgKpgPOwD
+         61F9MXaNCnxiJUzPEvcaN8MRAgmlIH9Je2o5ySd+Y9232RCP3jfuBx1nR93WsxmG/hJh
+         XSE+BCmxMXAHWOyES7Ekq09eU+qQvfrOfVkRc5fC6d9yYDS43Bn9+GOvR3t8tPcL/E4Z
+         hRTSIhSNobg1iOYRJ/zFh9QLQIPCEAh+4Ew5jhbEqxgKzI0VPfqqcQrpvd1XBNAQTa34
+         FUOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761989259; x=1762594059;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RbQmNSy9P0NTgIS1jo9Ela3U7G3myp7cj0Hkt1v3so8=;
-        b=SFp25LBcip+8EEF+hNljauEQXXltyWFfZ3KJx+LCAXFkfisJmeApj/slqgVrccZio1
-         AZ2TaBF7NTsJxTkiZOnCrqyzqNl7B/kM6taFZsf/yRFg/7ZcyLZBafotYwe6mTRUDP6t
-         GVk+YaH5MXJF20vG4vUYNBYVbkC8dJihjGksz1IR/m1W+3KblxTvJCi+4UII6sbKW3d5
-         5opif8tjyDY8y8zcceCdljGCU37O1WYXIeDWCoLp6beFbYU3kPcBWLqKg/1sms8RwqFH
-         YxELmUPxSSZsYOU2umf5wiUv4gsJpL8P6d1EXKrUcsG9n5NrXuMbO60dcyzBPkIPpN5a
-         541Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXHmrK9jwJCHPKRq1pTAPJKdkrStgx96Re1WD/lfmPnghrpDv3//xOrc9Ep851j7bgkWa9wzzk6IZm2wQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx7zck3UT/z7jCRtfyH41F2F/ABEMqV4B7YK3MqonepIInDmJYL
-	BYpTgrFIj3WLEw66ufsvFZtSMm6CpynOsBJaytr8UMVzzQSDVmlnzkakXIYAcZQhY3K42fqkMp2
-	5pwKUFRKFHdUKnrYWyM3Bl99wanpRJRonK5ji0OydnMrqADOolA2JEieEpNzjoGTQ
-X-Gm-Gg: ASbGncuz7PwMnoA7YOdbAlsg2YqThKOxg4seHZ0q+BOdz9ATzEsKAVsMvc3Tulz4fCL
-	64gFWrw6AMXc06P9aMBADfMURw8n65ZwVoHuGwUzsLEKgBnVgovE4JbDJV1YC69qxgmic3DyUo8
-	UtxVbgqnfTbOn5TgtHrSQd1tXUmHXExIloPCOfczUvw108eJHyk+FVpF0EhbeI7bn05ElkMCErl
-	HNPmGK4HUgnQyGoYRT+kGf2t03nyw/IJ5zBMSVK1Heb0bTyprUULtF/XcOlSMhprkBn5GpVVNs5
-	x5JM5ZALUAel1YX+W64ODelhR8rchI/JEpbE/j9bEkLGLtSePY9iPx6JZvFfKpksZ66LBaypfRj
-	mos93GNzQZ4o+Q72BArXiE9rviX8od1HJIgbimPw=
-X-Received: by 2002:a17:903:2f8c:b0:295:5b68:996a with SMTP id d9443c01a7336-2955b6899d8mr9378995ad.12.1761989258720;
-        Sat, 01 Nov 2025 02:27:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHNQ7oH/ftv3ZeKsXzq6fngr+BkDkGPtK3d2e7A3QVpLpTaT3o3n0L0swl5GRcNH+f3VgG1dw==
-X-Received: by 2002:a17:903:2f8c:b0:295:5b68:996a with SMTP id d9443c01a7336-2955b6899d8mr9378705ad.12.1761989258084;
-        Sat, 01 Nov 2025 02:27:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1761994846; x=1762599646;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M9D1hZg0keX1f1tqEjjOCXz3mMV5j42zRaCxAoLpn3Q=;
+        b=QDLdiBvCYJXIX1oRDSDEEhG+HhgV8S6kd1KynIicsg8XAUe92HkWNi+tyofmNWutro
+         gMOb50QX3ndiA9/mz9BTvvlbZCKsuqDRt9KRhTGn5goRrFoJ9XHq8SpVUL1B38Q5AcMI
+         F0MOMtICBRegr/cTmHrJhf/ZEWjOWM6q+Kr/fCSBBmy+j8aD51E+6kL3VKQo+whkFt09
+         t0F/Fyri4wkU+QCVAtto8zhOtxA1UAxlZY1+V32sv9JZlEtFjX9nVD28HOXx8Xw3lPfT
+         71KlN4er27bWp/LAK7QIZg7qxoRV/JZcfNwOVCiOhg/Cow+o3SbdQu4fdlwRVk3Pe2Ov
+         jIvA==
+X-Forwarded-Encrypted: i=1; AJvYcCVkf5qqVBfNKrDCEj0WG0lTzBY0JYpvtRjnfO4Vg/OlH8fjRrYJYCHU3b2ABFZg06hUEMPvk3PKNkpp7w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YysyDoai00+JyXgxZYAKgayFV1hNzRxbl3OjkS5Df7dU62LVa0T
+	bRJQiA0B2vaWl6vOkKu73nPjSGb+DgAZcAW2lt7brEfo2uypp0iUynHSOhTsbmf1fbEfTp58qWB
+	Yk0k0FuiIosE07/8BeDYE1ZW5+H4y4wJS700jvmrKf8dcc49W14rH+IsLDzQEk7f5
+X-Gm-Gg: ASbGncv7Bq7hHbNKkDJvYJ7FEiLe3Ah69QqEoH0UtnbnraQ2N+H9htJcRdLl8CmKnp3
+	6UnvezFujEYVq/d5FvzHitdzyOAZlkxcd5hBKY5yH60CWl3aVeXh6rEdfYfvUIPgBjvNYa67wmN
+	ycY+YeKHY7MQlwA/CHhqpXpNZvN8qmSTphuIrUbluClcBhYVXZaZ5ih+HYGb7uokrL21TGbN94E
+	/sMgC3JUw4fy3c8WMyxWOIax/ihHfv7eo0hrS0rxc4WWekg5F0ZLNPdbId9iqQ64JnqCN5vM3jd
+	BQK6sAOF78flAzoweuo8a2h7Rq2wSwe177SGjt5g2cy9k1yn9DgZoTSWpVctxzzPLeOfeAoeX41
+	DVpzeFzH4K+r4XzYkOS6IVqWfMPzmQmhe/Ib6OsQ=
+X-Received: by 2002:a05:6a21:6d9f:b0:341:d5f3:f1ac with SMTP id adf61e73a8af0-348cc2d99b8mr9839138637.41.1761994845897;
+        Sat, 01 Nov 2025 04:00:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEzv4olWro4P40LuHR5fqURv48AHGfNA1mhFufBKeiNw7xSQzvDyhSpIfxk8Nk1EllL1hOoSg==
+X-Received: by 2002:a05:6a21:6d9f:b0:341:d5f3:f1ac with SMTP id adf61e73a8af0-348cc2d99b8mr9839045637.41.1761994845074;
+        Sat, 01 Nov 2025 04:00:45 -0700 (PDT)
 Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-295688c68f0sm6092415ad.41.2025.11.01.02.27.35
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a9af0eb37csm361456b3a.29.2025.11.01.04.00.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Nov 2025 02:27:37 -0700 (PDT)
-Date: Sat, 1 Nov 2025 17:27:32 +0800
+        Sat, 01 Nov 2025 04:00:43 -0700 (PDT)
+Date: Sat, 1 Nov 2025 19:00:37 +0800
 From: Zorro Lang <zlang@redhat.com>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Qu Wenruo <wqu@suse.com>, fstests@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] generic: test fsync of directory after renaming new
- symlink
-Message-ID: <20251101092732.56fb7d3gzarabudd@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <54585ed26988fb88be1eab8211aa383a5e7cbd19.1761306683.git.fdmanana@suse.com>
- <bb46518c-9836-4bd2-8142-fbb8c859fd3f@suse.com>
- <CAL3q7H4bcqMZEu_QSQVETQWPzkBCSpi2cKEAbfcpHPcPG=Wc0A@mail.gmail.com>
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: Christoph Hellwig <hch@lst.de>, fstests@vger.kernel.org,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
+	Hans Holmberg <Hans.Holmberg@wdc.com>, linux-xfs@vger.kernel.org,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Carlos Maiolino <cem@kernel.org>,
+	Carlos Maiolino <cmaiolino@redhat.com>, Anand Jain <asj@kernel.org>
+Subject: Re: [PATCH v7 3/3] generic: basic smoke for filesystems on zoned
+ block devices
+Message-ID: <20251101105949.gh6jczdtn5nty5ww@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20251022092707.196710-1-johannes.thumshirn@wdc.com>
+ <20251022092707.196710-4-johannes.thumshirn@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H4bcqMZEu_QSQVETQWPzkBCSpi2cKEAbfcpHPcPG=Wc0A@mail.gmail.com>
+In-Reply-To: <20251022092707.196710-4-johannes.thumshirn@wdc.com>
 
-On Sat, Oct 25, 2025 at 08:39:56PM +0100, Filipe Manana wrote:
-> On Sat, Oct 25, 2025 at 11:13 AM Qu Wenruo <wqu@suse.com> wrote:
-> >
-> >
-> >
-> > 在 2025/10/24 22:23, fdmanana@kernel.org 写道:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > Test that if we fsync a directory that has a new symlink, then rename the
-> > > symlink and fsync again the directory, after a power failure the symlink
-> > > exists with the new name and not the old one.
-> > >
-> > > This is to exercise a bug in btrfs where we ended up not persisting the
-> > > new name of the symlink. That is fixed by a kernel patch that has the
-> > > following subject:
-> > >
-> > >   "btrfs: set inode flag BTRFS_INODE_COPY_EVERYTHING when logging new name"
-> > >
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > ---
-> > >   tests/generic/779     | 60 +++++++++++++++++++++++++++++++++++++++++++
-> > >   tests/generic/779.out |  2 ++
-> > >   2 files changed, 62 insertions(+)
-> > >   create mode 100755 tests/generic/779
-> > >   create mode 100644 tests/generic/779.out
-> > >
-> > > diff --git a/tests/generic/779 b/tests/generic/779
-> > > new file mode 100755
-> > > index 00000000..40d1a86c
-> > > --- /dev/null
-> > > +++ b/tests/generic/779
-> > > @@ -0,0 +1,60 @@
-> > > +#! /bin/bash
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +# Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
-> > > +#
-> > > +# FS QA Test 779
-> > > +#
-> > > +# Test that if we fsync a directory that has a new symlink, then rename the
-> > > +# symlink and fsync again the directory, after a power failure the symlink
-> > > +# exists with the new name and not the old one.
-> > > +#
-> > > +. ./common/preamble
-> > > +_begin_fstest auto quick log
-> > > +
-> > > +_cleanup()
-> > > +{
-> > > +     _cleanup_flakey
-> > > +     cd /
-> > > +     rm -r -f $tmp.*
-> > > +}
-> > > +
-> > > +. ./common/dmflakey
-> > > +
-> > > +_require_scratch
-> > > +_require_symlinks
-> > > +_require_dm_target flakey
-> > > +
-> > > +[ "$FSTYP" = "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
-> > > +     "btrfs: set inode flag BTRFS_INODE_COPY_EVERYTHING when logging new name"
-> > > +
-> > > +rm -f $seqres.full
-> >
-> > Looks like a rouge command?
+On Wed, Oct 22, 2025 at 11:27:07AM +0200, Johannes Thumshirn wrote:
+> Add a basic smoke test for filesystems that support running on zoned
+> block devices.
 > 
-> It was copied from some other test.
-> A few tests have this, but it doesn't seem to be needed (anymore at least).
+> It creates a zloop device with 2 conventional and 62 sequential zones,
+> mounts it and then runs fsx on it.
 > 
-> I'll let Zerro remove the line when he picks this.
+> Currently this tests supports BTRFS, F2FS and XFS.
+> 
+> Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
+> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Anand Jain <asj@kernel.org>
+> Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  tests/generic/772     | 43 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/772.out |  2 ++
+>  2 files changed, 45 insertions(+)
+>  create mode 100755 tests/generic/772
+>  create mode 100644 tests/generic/772.out
+> 
+> diff --git a/tests/generic/772 b/tests/generic/772
+> new file mode 100755
+> index 00000000..f9840cba
+> --- /dev/null
+> +++ b/tests/generic/772
+> @@ -0,0 +1,43 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2025 Wesgtern Digital Corporation.  All Rights Reserved.
+> +#
+> +# FS QA Test 772
+> +#
+> +# Smoke test for FSes with ZBD support on zloop
+> +#
+> +. ./common/preamble
+> +. ./common/zoned
+> +
+> +_begin_fstest auto zone quick
+> +
+> +_cleanup()
+> +{
+> +	_destroy_zloop $zloop
+> +}
+> +
+> +# Modify as appropriate.
+> +_require_scratch_size $((16 * 1024 * 1024)) #kB
+> +_require_block_device $SCRATCH_DEV
+> +_require_zloop
+> +
+> +_scratch_mkfs > /dev/null 2>&1
+> +_scratch_mount
+> +
+> +mnt="$SCRATCH_MNT/mnt"
+> +zloopdir="$SCRATCH_MNT/zloop"
+> +
+> +mkdir -p $mnt
+> +zloop=$(_create_zloop $zloopdir 256 2)
+> +
+> +_try_mkfs_dev $zloop >> $seqres.full 2>&1 ||\
+> +	_notrun "cannot mkfs zoned filesystem"
+> +_mount $zloop $mnt
+> +
+> +$FSX_PROG -q -N 20000 $FSX_AVOID "$mnt/fsx" >> $seqres.full
+> +
+> +umount $mnt
 
-Sure, just removed and merged, this patch is good to me.
+This version looks good to me. Just this unmount should be in _cleanup to make
+sure we always can umount and destroy zloop device at the end of the test. If
+no more review points, I'll change this case as below [1] when I merge it.
 
 Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-Thanks,
-Zorro
+[1]
+diff --git a/tests/generic/772 b/tests/generic/772
+index f9840cba..eaeb0c18 100755
+--- a/tests/generic/772
++++ b/tests/generic/772
+@@ -13,7 +13,10 @@ _begin_fstest auto zone quick
+ 
+ _cleanup()
+ {
++       [ -n "$mnt" ] && _unmount $mnt 2>/dev/null
+        _destroy_zloop $zloop
++       cd /
++       rm -r -f $tmp.*
+ }
+ 
+ # Modify as appropriate.
+@@ -36,8 +39,6 @@ _mount $zloop $mnt
+ 
+ $FSX_PROG -q -N 20000 $FSX_AVOID "$mnt/fsx" >> $seqres.full
+ 
+-umount $mnt
+-
+ echo Silence is golden
+ # success, all done
+ _exit 0
 
-> 
-> >
-> >
-> > Otherwise looks good to me.
-> >
-> > Reviewed-by: Qu Wenruo <wqu@suse.com>
-> >
-> > Thanks,
-> > Qu
-> >
-> > > +
-> > > +_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
-> > > +_require_metadata_journaling $SCRATCH_DEV
-> > > +_init_flakey
-> > > +_mount_flakey
-> > > +
-> > > +# Create our test dir and add a symlink inside it.
-> > > +mkdir $SCRATCH_MNT/dir
-> > > +ln -s foobar $SCRATCH_MNT/dir/old-slink
-> > > +
-> > > +# Fsync the test dir, should persist the symlink.
-> > > +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir
-> > > +
-> > > +# Rename the symlink and fsync the directory. It should persist the new symlink
-> > > +# name.
-> > > +mv $SCRATCH_MNT/dir/old-slink $SCRATCH_MNT/dir/new-slink
-> > > +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir
-> > > +
-> > > +# Simulate a power failure and then mount again the filesystem to replay the
-> > > +# journal/log.
-> > > +_flakey_drop_and_remount
-> > > +
-> > > +# Check that the symlink exists with the new name and has the correct content.
-> > > +[ -L $SCRATCH_MNT/dir/new-slink ] || echo "symlink dir/new-slink not found"
-> > > +echo "symlink content: $(readlink $SCRATCH_MNT/dir/new-slink)"
-> > > +
-> > > +_unmount_flakey
-> > > +
-> > > +# success, all done
-> > > +_exit 0
-> > > diff --git a/tests/generic/779.out b/tests/generic/779.out
-> > > new file mode 100644
-> > > index 00000000..c595cd01
-> > > --- /dev/null
-> > > +++ b/tests/generic/779.out
-> > > @@ -0,0 +1,2 @@
-> > > +QA output created by 779
-> > > +symlink content: foobar
-> >
+
+> +
+> +echo Silence is golden
+> +# success, all done
+> +_exit 0
+> diff --git a/tests/generic/772.out b/tests/generic/772.out
+> new file mode 100644
+> index 00000000..98c13968
+> --- /dev/null
+> +++ b/tests/generic/772.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 772
+> +Silence is golden
+> -- 
+> 2.51.0
 > 
 
 
