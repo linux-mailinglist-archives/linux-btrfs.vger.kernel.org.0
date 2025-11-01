@@ -1,198 +1,246 @@
-Return-Path: <linux-btrfs+bounces-18506-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18507-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3FBAC2744A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 01 Nov 2025 01:29:43 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49FCDC27ACB
+	for <lists+linux-btrfs@lfdr.de>; Sat, 01 Nov 2025 10:28:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E542B1B25A45
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Nov 2025 00:30:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 960064E6B77
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Nov 2025 09:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035501D7999;
-	Sat,  1 Nov 2025 00:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478C82C08D9;
+	Sat,  1 Nov 2025 09:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="s9lE0TeP";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MdyQFr16"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U+ulZNDf";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="hLTzj8ZU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-b7-smtp.messagingengine.com (fhigh-b7-smtp.messagingengine.com [202.12.124.158])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E76F2581
-	for <linux-btrfs@vger.kernel.org>; Sat,  1 Nov 2025 00:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D22E12C544
+	for <linux-btrfs@vger.kernel.org>; Sat,  1 Nov 2025 09:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761956974; cv=none; b=t3VtXdUB8d6yGgH2YRDkxf5H/0iQpvAsYyGvH9k3pqF1PsYt7xDvGWrMr3YRWhoHhqBIdSNNqMJROMI5QlgrSrGx1fSfgB6qd1pmJTREIvqvqFrpCdbfsRzDENo/zKQYYWIuY2GEOOmyLHsAYTqVmLLnNiq5NvoZtX1arYQgJrw=
+	t=1761989264; cv=none; b=BGVn1Uwrr5vV80Rt4J4pL1kuRNvLWWBIIotqs8qNkOHlPtq0Vxvb/yvcV3/ltbk0p/qib8hae9GzGzvMUYSuUqBYpLTw3gBGtRso/7/T5tcZ9kwH9VGewfI1Y4vgY9LRDZhHzGMM+VgiJtRjXyBcmU+FriiChVB7KtcSTnZg1YU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761956974; c=relaxed/simple;
-	bh=31TIOJ0Mf2QFPqgyXbXHVXjNy3HUwOssH5wp6Cnx6bY=;
-	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=OOxsrZkjAe1+vGMupBaNXm7vmLAisTfhDSKLSH6HLtPVjnMqilb/Gsb3zTFqZDndK1IiUr5sQS6NXJUKPYczAkTMW7nJZKG4LIGgaS319m9DQsqjB0+C6MqoFzYXkFGYhE8JlJbvNaa6lTswbk9LE3nSe0xusrmfdsWZ20jeBe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=s9lE0TeP; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MdyQFr16; arc=none smtp.client-ip=202.12.124.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 834CF7A0074;
-	Fri, 31 Oct 2025 20:29:31 -0400 (EDT)
-Received: from phl-imap-01 ([10.202.2.91])
-  by phl-compute-01.internal (MEProxy); Fri, 31 Oct 2025 20:29:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	colorremedies.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to; s=fm3; t=1761956971; x=1762043371; bh=nX1hKumgdnHXCtObG7ZxF
-	Yt8RLTgsbexUIPvhNvojGI=; b=s9lE0TePqau3U5dxPkxINbVNx3Skmg2aTezkF
-	ylZcUTL1qpLKf3dA7ExWAEe1odqcFzhNWGUTseHKU0KhW1DxJsQQzXiuBUJkomHw
-	Bm3uo1QQx3YkRbf/lmgyKS6yGm51UFKzcJ9STEuV6J52nulKy3HxF//L+0d+IJkt
-	3bm4VIqDlJcWF4swwbtErryOJ+03uS6xAXo5NF4DXhyGeiFvp1odaPBuqpUa8wl7
-	U+lUbXnsZ/cu4yPEM/i37/8tshRgXd5vu3Qx2zpozrkqolaF+0Xd1dEaSjD0qXk+
-	0GU5pz1Bkm+e4rt1AMZ9M6twvG9R49emMMQ95YBQ/8Gi+VA/A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm3; t=1761956971; x=1762043371; bh=n
-	X1hKumgdnHXCtObG7ZxFYt8RLTgsbexUIPvhNvojGI=; b=MdyQFr16KOEPdybDl
-	A2E6jV7a9zx6M68C33EpKvL4csr60+AJIplobk6yssvSv57wZ5se3w4zCXm4WxCG
-	odkqo8ZmfGCkHC3MiTXQLLR+LwPYsPp3o3+jAxd8k5SngP2TBFT885tmJ7z+72e0
-	M27b7t9/IVg3bYuifoLk5CPCuuRPBdX2gH6HUTjcEsJr5bcYRmzEAJhYGlvAuJoT
-	08zyTc7U2q4r72f0FV+VR1IC0B7UaQnAbtLez8rgTMICfZ08dsSI4r+1peyPD69A
-	s+gVUtNjXOP0tUgB9Hrtf+LVACQvd7G7DIulU4OSm0SH4+OcwfnMjRfK1E61Qyyf
-	8fPLg==
-X-ME-Sender: <xms:a1QFaQM53P3oN8pMPVUM2wT50XAzVHsBY3wnZCWqa45tuvYGeXUWug>
-    <xme:a1QFaRzMT_aztFbC00ntYaB-yMtyWM_jiHVHSH2AiYda2poaU1KyOwnmpLQoJZjAQ
-    3Ngrs4VOYIrQDxS1fm1hEesTZvrFapk08jwKDjGuWh00ftPZiimACw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddujedtleefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvffkjghfufgtgfesthejredtredttdenucfhrhhomhepfdevhhhrihhs
-    ucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomheqne
-    cuggftrfgrthhtvghrnhepteefudehkeehgeekhfdvgefhjedvveeuhfdtgfejgfevieev
-    iedvfedvhfevvdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomhdpnhgspghrtghp
-    thhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohephhgvnhgurhhikhesfh
-    hrihgvuggvlhhsrdhnrghmvgdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgv
-    rhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:a1QFae7mAh4FZ8qMnnoqJCZkPK06IGOsPb-nnE-qhlPka27KayevyA>
-    <xmx:a1QFaV1w-NFO-W_MbemK2_Z5gmUrJEZ1P3EWg5bC2Qk6D_xP-6wZgQ>
-    <xmx:a1QFaVDjPcGEjOLZ7vEhXvcdBNFrJ9H9_leKw43ck1OsGAu2C7CGTA>
-    <xmx:a1QFaX2U62wgJaNvYYC4NLi_-x49c03dtcHzUmKt5BtSynxNdz6jIg>
-    <xmx:a1QFaUscItln6YQM2aNS5ZG53-amATOdZ5m6vqjYpBaHDdvSHGCRURZv>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id EF34E18C004E; Fri, 31 Oct 2025 20:29:30 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1761989264; c=relaxed/simple;
+	bh=5UGM2acK4U+UYS//dJ4YbqwnQW/uNu85pIF1mdy4LM4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FdBzhqhjJu8tD/HgZgbeyjimSlbub+HVrsCLC5bEBegmglYmnG/rtuIdqJevawgVcHbZLVWRDFUGsc/9CF5q1j2p/yZxJlSIP9wpELYQhJp4BpaMhkZVowmkJnkeH6ZxYXt//aXMGOaeQNJKI+uF6qXgtMAOPr4bVfl04Irst2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U+ulZNDf; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=hLTzj8ZU; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1761989261;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RbQmNSy9P0NTgIS1jo9Ela3U7G3myp7cj0Hkt1v3so8=;
+	b=U+ulZNDfAFMHv6az43c08lFuCBFhsuVtDQOoDAR+QYwEPPO0EtHNzfscnyiOj7z5n1v4Tw
+	gj/a55/bOYsgY3pLBWCdYEw4H1Md5XBPWwQ1MLjHL3RVw98523bv1StlMj2rsSFcTLY0Pw
+	gpFlsaFMFIfCyU3W1y00laOcWHJJSlU=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-125-q1Vqz3pYOPOOfpsxbCN58w-1; Sat, 01 Nov 2025 05:27:39 -0400
+X-MC-Unique: q1Vqz3pYOPOOfpsxbCN58w-1
+X-Mimecast-MFC-AGG-ID: q1Vqz3pYOPOOfpsxbCN58w_1761989259
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-2952cb6f51bso33377135ad.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 01 Nov 2025 02:27:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1761989259; x=1762594059; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RbQmNSy9P0NTgIS1jo9Ela3U7G3myp7cj0Hkt1v3so8=;
+        b=hLTzj8ZULgq/Dueu7xz5/djcS5AiAXOTKmikBouLZumhDO2TQ23rgq82YwYHGaHSMt
+         X5MlRsk84xAZ8MGrDzFLY9PPstMm/Ips4FDq5Owrk2VZbR5laKFJmI9iVagamW42B4ma
+         Jdw94uhlFbzqAsSjJ0DBSt4SqeLTifgeSS3CQi/nhjbCOqqsP446QFA+w3C3aVf1prhN
+         JlD3I9pu7mqVjhhU1bFCeqDppmCrhfOag/fDyYmdk1ws0Gq3awZBGWDzbciRnoemQ28p
+         PMmHOiUTduX2R2CSgLhd8ezzYIwamziJyERXtb3x/i9N5rnt6w6olrZxJ9TD/99+B7gJ
+         JC9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761989259; x=1762594059;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RbQmNSy9P0NTgIS1jo9Ela3U7G3myp7cj0Hkt1v3so8=;
+        b=SFp25LBcip+8EEF+hNljauEQXXltyWFfZ3KJx+LCAXFkfisJmeApj/slqgVrccZio1
+         AZ2TaBF7NTsJxTkiZOnCrqyzqNl7B/kM6taFZsf/yRFg/7ZcyLZBafotYwe6mTRUDP6t
+         GVk+YaH5MXJF20vG4vUYNBYVbkC8dJihjGksz1IR/m1W+3KblxTvJCi+4UII6sbKW3d5
+         5opif8tjyDY8y8zcceCdljGCU37O1WYXIeDWCoLp6beFbYU3kPcBWLqKg/1sms8RwqFH
+         YxELmUPxSSZsYOU2umf5wiUv4gsJpL8P6d1EXKrUcsG9n5NrXuMbO60dcyzBPkIPpN5a
+         541Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXHmrK9jwJCHPKRq1pTAPJKdkrStgx96Re1WD/lfmPnghrpDv3//xOrc9Ep851j7bgkWa9wzzk6IZm2wQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx7zck3UT/z7jCRtfyH41F2F/ABEMqV4B7YK3MqonepIInDmJYL
+	BYpTgrFIj3WLEw66ufsvFZtSMm6CpynOsBJaytr8UMVzzQSDVmlnzkakXIYAcZQhY3K42fqkMp2
+	5pwKUFRKFHdUKnrYWyM3Bl99wanpRJRonK5ji0OydnMrqADOolA2JEieEpNzjoGTQ
+X-Gm-Gg: ASbGncuz7PwMnoA7YOdbAlsg2YqThKOxg4seHZ0q+BOdz9ATzEsKAVsMvc3Tulz4fCL
+	64gFWrw6AMXc06P9aMBADfMURw8n65ZwVoHuGwUzsLEKgBnVgovE4JbDJV1YC69qxgmic3DyUo8
+	UtxVbgqnfTbOn5TgtHrSQd1tXUmHXExIloPCOfczUvw108eJHyk+FVpF0EhbeI7bn05ElkMCErl
+	HNPmGK4HUgnQyGoYRT+kGf2t03nyw/IJ5zBMSVK1Heb0bTyprUULtF/XcOlSMhprkBn5GpVVNs5
+	x5JM5ZALUAel1YX+W64ODelhR8rchI/JEpbE/j9bEkLGLtSePY9iPx6JZvFfKpksZ66LBaypfRj
+	mos93GNzQZ4o+Q72BArXiE9rviX8od1HJIgbimPw=
+X-Received: by 2002:a17:903:2f8c:b0:295:5b68:996a with SMTP id d9443c01a7336-2955b6899d8mr9378995ad.12.1761989258720;
+        Sat, 01 Nov 2025 02:27:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHNQ7oH/ftv3ZeKsXzq6fngr+BkDkGPtK3d2e7A3QVpLpTaT3o3n0L0swl5GRcNH+f3VgG1dw==
+X-Received: by 2002:a17:903:2f8c:b0:295:5b68:996a with SMTP id d9443c01a7336-2955b6899d8mr9378705ad.12.1761989258084;
+        Sat, 01 Nov 2025 02:27:38 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-295688c68f0sm6092415ad.41.2025.11.01.02.27.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Nov 2025 02:27:37 -0700 (PDT)
+Date: Sat, 1 Nov 2025 17:27:32 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Qu Wenruo <wqu@suse.com>, fstests@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] generic: test fsync of directory after renaming new
+ symlink
+Message-ID: <20251101092732.56fb7d3gzarabudd@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <54585ed26988fb88be1eab8211aa383a5e7cbd19.1761306683.git.fdmanana@suse.com>
+ <bb46518c-9836-4bd2-8142-fbb8c859fd3f@suse.com>
+ <CAL3q7H4bcqMZEu_QSQVETQWPzkBCSpi2cKEAbfcpHPcPG=Wc0A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AVMxPOgRNBic
-Date: Fri, 31 Oct 2025 20:29:10 -0400
-From: "Chris Murphy" <lists@colorremedies.com>
-To: "Hendrik Friedel" <hendrik@friedels.name>,
- "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Message-Id: <f6858f97-1fe2-49d7-b1ad-dc688142fdcb@app.fastmail.com>
-In-Reply-To: <a37cea05-f77f-41f1-8763-a28311b72790@friedels.name>
-References: <cfc7539c-a0c5-45d2-a781-89c2e0cb2c62@friedels.name>
- <12716866-2ffe-4cbb-8e2f-8b2e4abd0237@app.fastmail.com>
- <a37cea05-f77f-41f1-8763-a28311b72790@friedels.name>
-Subject: Re: Corrupt Filesystem (Mirror) despite previously successful scrub
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H4bcqMZEu_QSQVETQWPzkBCSpi2cKEAbfcpHPcPG=Wc0A@mail.gmail.com>
 
+On Sat, Oct 25, 2025 at 08:39:56PM +0100, Filipe Manana wrote:
+> On Sat, Oct 25, 2025 at 11:13 AM Qu Wenruo <wqu@suse.com> wrote:
+> >
+> >
+> >
+> > 在 2025/10/24 22:23, fdmanana@kernel.org 写道:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > >
+> > > Test that if we fsync a directory that has a new symlink, then rename the
+> > > symlink and fsync again the directory, after a power failure the symlink
+> > > exists with the new name and not the old one.
+> > >
+> > > This is to exercise a bug in btrfs where we ended up not persisting the
+> > > new name of the symlink. That is fixed by a kernel patch that has the
+> > > following subject:
+> > >
+> > >   "btrfs: set inode flag BTRFS_INODE_COPY_EVERYTHING when logging new name"
+> > >
+> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > > ---
+> > >   tests/generic/779     | 60 +++++++++++++++++++++++++++++++++++++++++++
+> > >   tests/generic/779.out |  2 ++
+> > >   2 files changed, 62 insertions(+)
+> > >   create mode 100755 tests/generic/779
+> > >   create mode 100644 tests/generic/779.out
+> > >
+> > > diff --git a/tests/generic/779 b/tests/generic/779
+> > > new file mode 100755
+> > > index 00000000..40d1a86c
+> > > --- /dev/null
+> > > +++ b/tests/generic/779
+> > > @@ -0,0 +1,60 @@
+> > > +#! /bin/bash
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +# Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
+> > > +#
+> > > +# FS QA Test 779
+> > > +#
+> > > +# Test that if we fsync a directory that has a new symlink, then rename the
+> > > +# symlink and fsync again the directory, after a power failure the symlink
+> > > +# exists with the new name and not the old one.
+> > > +#
+> > > +. ./common/preamble
+> > > +_begin_fstest auto quick log
+> > > +
+> > > +_cleanup()
+> > > +{
+> > > +     _cleanup_flakey
+> > > +     cd /
+> > > +     rm -r -f $tmp.*
+> > > +}
+> > > +
+> > > +. ./common/dmflakey
+> > > +
+> > > +_require_scratch
+> > > +_require_symlinks
+> > > +_require_dm_target flakey
+> > > +
+> > > +[ "$FSTYP" = "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
+> > > +     "btrfs: set inode flag BTRFS_INODE_COPY_EVERYTHING when logging new name"
+> > > +
+> > > +rm -f $seqres.full
+> >
+> > Looks like a rouge command?
+> 
+> It was copied from some other test.
+> A few tests have this, but it doesn't seem to be needed (anymore at least).
+> 
+> I'll let Zerro remove the line when he picks this.
 
+Sure, just removed and merged, this patch is good to me.
 
-On Fri, Oct 31, 2025, at 5:05 AM, Hendrik Friedel wrote:
-> Hi Chris,
->
-> thanks for your reply!
->
-> FYI: I am now running "badblocks" on SDA (Serial Number: Y5J6YGLC) since 
-> 2 days without errors. It is not complete yet (it does four different 
-> patterns), but two patterns are passed already.
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-One other thing to make sure of with this configuration is that SCT ERC for the drives is a lower value than the kernel command timer. If not, the drive delay during recovery of bad sectors will make the kernel think the device isn't responding, and it will reset the link and at least for SATA drives this can clear the entire command queue.
+Thanks,
+Zorro
 
-SCT ERC is a drive firmware setting, it's not persistent, can be get or set with smartctl -l scterc command.
+> 
+> >
+> >
+> > Otherwise looks good to me.
+> >
+> > Reviewed-by: Qu Wenruo <wqu@suse.com>
+> >
+> > Thanks,
+> > Qu
+> >
+> > > +
+> > > +_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
+> > > +_require_metadata_journaling $SCRATCH_DEV
+> > > +_init_flakey
+> > > +_mount_flakey
+> > > +
+> > > +# Create our test dir and add a symlink inside it.
+> > > +mkdir $SCRATCH_MNT/dir
+> > > +ln -s foobar $SCRATCH_MNT/dir/old-slink
+> > > +
+> > > +# Fsync the test dir, should persist the symlink.
+> > > +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir
+> > > +
+> > > +# Rename the symlink and fsync the directory. It should persist the new symlink
+> > > +# name.
+> > > +mv $SCRATCH_MNT/dir/old-slink $SCRATCH_MNT/dir/new-slink
+> > > +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir
+> > > +
+> > > +# Simulate a power failure and then mount again the filesystem to replay the
+> > > +# journal/log.
+> > > +_flakey_drop_and_remount
+> > > +
+> > > +# Check that the symlink exists with the new name and has the correct content.
+> > > +[ -L $SCRATCH_MNT/dir/new-slink ] || echo "symlink dir/new-slink not found"
+> > > +echo "symlink content: $(readlink $SCRATCH_MNT/dir/new-slink)"
+> > > +
+> > > +_unmount_flakey
+> > > +
+> > > +# success, all done
+> > > +_exit 0
+> > > diff --git a/tests/generic/779.out b/tests/generic/779.out
+> > > new file mode 100644
+> > > index 00000000..c595cd01
+> > > --- /dev/null
+> > > +++ b/tests/generic/779.out
+> > > @@ -0,0 +1,2 @@
+> > > +QA output created by 779
+> > > +symlink content: foobar
+> >
+> 
 
-Kernel command time out is found in sysfs for each drive, but note that this is not a device setting.
-
-This is important because the drive needs to give up on reads from bad sectors quickly, and Btrfs can just overwrite the bad copy with good copy. Delays can mean these never get fixed, and there is a reduction in redundancy. I'm not able to tell if either of your drives have bad sectors though - this is just a best practices FYI.
-
-
->Okt 14 12:03:37 homeserver kernel: BTRFS: device label DataPool1 devid 2 transid 1704441 /dev/sda1 scanned by btrfs (226)
->Okt 14 12:03:37 homeserver kernel: BTRFS: device label DataPool1 devid 1 transid 1704441 /dev/sdb1 scanned by btrfs (226)
-...
->Okt 14 23:33:33 homeserver kernel: BTRFS error (device sdb1): parent transid verify failed on logical 8332327665664 mirror 1 wanted 1704434 found 1701990
-
-This is a large transid gap. Thousands of generations different. Potentially many missing writes on this device at this point. The problem happens earlier than this I think.
-
->Okt 14 23:33:36 homeserver kernel: BTRFS error (device sdb1): balance: reduces metadata redundancy, use --force if you want this
-
-Hopefully this is a mistake and the command was not reissued with -f
-
->Okt 14 23:33:37 homeserver kernel: BTRFS error (device sdb1): parent transid verify failed on logical 8332327845888 mirror 1 wanted 1704434 found 1701990
-
-So far these look like they're resulting in corrections from the other drive, but then...
-
->Okt 14 23:45:52 homeserver kernel: btrfs_repair_io_failure: 10 callbacks suppressed
-
-I see this once. And then later...
-
-
->Okt 15 01:18:07 homeserver kernel: BTRFS warning (device sdb1): tree block 8332303564800 mirror 1 has bad generation, has 1703468 want 1704433
->Okt 15 01:18:07 homeserver kernel: BTRFS warning (device sdb1): tree block 8332303564800 mirror 0 has bad generation, has 1703468 want 1704433
-
-Both copies have the same (wrong) generation? OK...
-
->Okt 15 01:18:07 homeserver kernel: BTRFS warning (device sdb1): checksum/header error at logical 8332303564800 on dev /dev/sda1, physical 337160077312: metadata leaf (level 0) in tree 7
-
-And it's a metadata leaf with checksum mismatch, but this is reported twice for only sda1. No report of this for sdb1.
-
->Okt 15 01:18:07 homeserver kernel: BTRFS error (device sdb1): fixed up error at logical 8332303564800 on dev /dev/sda1
-
-But it gets fixed? So wait, the block on sdb1 has an OK checksum, but still a bad generation? What? This block doesn't show up again. But I also see this:
-
->Okt 15 01:18:07 homeserver kernel: BTRFS error (device sdb1): bdev /dev/sda1 errs: wr 1979752, rd 888370, flush 0, corrupt 368, gen 2
-
-Over 2 million dropped writes on sda1? That doesn't tell us for sure they're missing, they might have gotten fixed later. But it's so many missing writes, that if there is even 1 copy wrong, corrupt, or missing on sdb1 then Btrfs can't fix itself.
-
-More of these occur with different blocks but also appear to get fixed somehow, even though both copies have bad generations, with seemingly only one copy also have a csum mismatch. Strange.
-
-Skipping ahead
-
->Okt 26 14:39:52 homeserver kernel: BTRFS error (device sda1): balance: reduces metadata redundancy, use --force if you want this
->Okt 26 14:40:34 homeserver kernel: BTRFS info (device sda1): balance: force reducing metadata redundancy
->Okt 26 14:40:35 homeserver kernel: BTRFS info (device sda1): balance: start -f -dconvert=single -mconvert=single -sconvert=single
-
-OK so the problem occurs during a conversion from raid1 to single.
-
-
-> But in order to scrub, the Filesystem must be consistent and fully 
-> readable, I thought. 
-
-No the file system could be inconsistent. Newer kernels have limited checks for consistency with read time and write time tree checker that can catch common problems before the file system gets too confused.
-
->TBH, when you read about btrfs, the message is: do 
-> scrubs, but do not touch btrfs check. Apparently, you should do both 
-> regularly, and it is only --repair that you should avoid.
-
-I think scrub more often than check, but in particular use check when there's evidence of write, flush, or corruption errors.
-
->
-> Me too. That (and to learn that I should do btrfs check regularly) is 
-> why I reach out instead of using a backup. It is 6.3.3 (I had been 6.5.0 
-> for a while).
-
-These are both EOL for a really long time, they're not getting any bug fixes. I recommend newer kernels, and newer btrfs-progs. No matter the file system, upstream developers recommend current stable kernels. That's where all the latest fixes are incorporated.
-
-If you have a strong use case for needing older kernels then use the most recent actively maintained longterm kernel you can. But just know that these kernels don't necessarily get all fixes, if the fix it too hard to backport. It just depends on the bug. 
-
-
--- 
-Chris Murphy
 
