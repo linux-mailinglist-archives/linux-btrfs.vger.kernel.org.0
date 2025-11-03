@@ -1,176 +1,137 @@
-Return-Path: <linux-btrfs+bounces-18548-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18549-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BCC8C2BCF1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 03 Nov 2025 13:47:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C4ACC2BFAC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 03 Nov 2025 14:10:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 768BD4F2242
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Nov 2025 12:41:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DFB83BFBEF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Nov 2025 13:01:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C42C30FF06;
-	Mon,  3 Nov 2025 12:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956DB3112C4;
+	Mon,  3 Nov 2025 12:59:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="xwlpIMXO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tfzuyc0w"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C299283CBF
-	for <linux-btrfs@vger.kernel.org>; Mon,  3 Nov 2025 12:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4630308F0A;
+	Mon,  3 Nov 2025 12:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762173579; cv=none; b=dLWX3fv67cgEPcIACMeXm0ITtQ6QY3IrlBrDQOhS1TJVA6Dpi+zsEJX+vsDv6d6dY0uj7lIVq9GyGAsa32MP4UX/b31gTpNNdKa4AlJaz+AtwvumsZh+/ri5TBU2sFfo18ImdfXuZz6MbWkO1MC26v6V9XMqhWXFXTbXp8D0QDQ=
+	t=1762174794; cv=none; b=fLP31nl57cnQbZgOL/E9WExW58JtGPnO32Lu4iOoUzsb/hIouDpO5L31vlWMN++1epCvPMgB5ZXMdVxs2UgufK6BYZEDSbbiwtemDOQLFVTnogogLuOWAQJ0Acm0AIqssi+Qu1stCy2u+Nnbu0xBW3AIBrYYTbgoUHWok8OSL3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762173579; c=relaxed/simple;
-	bh=a1SN9hMzuOLJoGNeIPU73Y+07Vw3ZCf3Tfr8bhyZovg=;
-	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qluMu+LeKxnA+X8mLe2g7HXtwWesI7AuUY5NrFPjMzOyZTpaf7PUIGSIVYO5z7Uo3cWnThXYjKqspRC7wO999c9qfLhFrKdnDiwyCZ2f3CIFO3h7pIne8HjCE0AEfFbC8BOrV0N+t9w78h7eK+BB8MZCd8nBd7Trzcz+vlJQfrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=xwlpIMXO; arc=none smtp.client-ip=217.169.27.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
-Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
-	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
-	by mail.burntcomma.com (Postfix) with ESMTPS id D7C7A2D52A7;
-	Mon,  3 Nov 2025 12:39:31 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1762173571;
-	bh=jGpud3yIkzbpBb7lAQ/q/lMneltiqT+H/rMetIFnPNQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=xwlpIMXOzKZJS6xKiNy1FGxPJ904Xp4aq5YfxST+bwRW7q8RmxgbTu5yEUnC1wEUa
-	 iAAjw5m3WMgUENO2ujwe3B93sdGftAZBRf91A0qSQ0EvA6KdfMR7TOn9Jb79z2oMO7
-	 YWVZTZV7RUzX/PN9xoVEwZ+TzQbRRNmcngm5YBbY=
-Message-ID: <4556b642-9902-4156-a7d4-cf2976750577@harmstone.com>
-Date: Mon, 3 Nov 2025 12:39:31 +0000
+	s=arc-20240116; t=1762174794; c=relaxed/simple;
+	bh=mg14JfajU5W0qY3xKlC1LzugPqDhaogBLa+MoPCu9po=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=cat0t2zspx+mDnpH/nH8Rl4euS3z+6bYz0Aj0pCHq5b8ltnlN+rqcmEE3tJmKrcFQqJukdN4QysJ2hlQ+J8Z2HyoKWlw2WhNh0WIN0z5EiZHRC4UgtUgOv9BJVlaoxhj2aOSxGesT1nQ+IdAwinZVuaawQ+aqFJmUMKLcY6Y5uw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tfzuyc0w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FAC8C4CEE7;
+	Mon,  3 Nov 2025 12:59:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762174794;
+	bh=mg14JfajU5W0qY3xKlC1LzugPqDhaogBLa+MoPCu9po=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=Tfzuyc0w0PG8B9qeo4EY1e6oWHR35RGpaPLMhqntB/ik1LckO74VHTfp82JdQfC9k
+	 0XUUezUYERCKbPcEpQY508qcq5lLukAr+xy/HgvMMnFHFrhxq+AwL0mtcl8g3ynIYb
+	 FsW8Nr3O/XJikCmQBNqdHGt7OEq0tEcBuNdvdKHO7YvkkFHuIcD0/uRGGFqYSqR9u1
+	 Pd7ZRjdZfeTJpyRPVCSwWFC4B9ujnv6yxK+/mq21WfNfEkreGE0imhdNkpA+pHbXy/
+	 TECb2JVsfxse8iQFM6majHDvwTu6aCy7dgtulG1U5hG4HAxVR6J6cFHyAK4kOVvqY9
+	 uSZasy7Ak7n8g==
+Message-ID: <32f2f32a-eafd-43ef-a599-fc4784fdf492@kernel.org>
+Date: Mon, 3 Nov 2025 21:59:49 +0900
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH v4 04/16] btrfs: remove remapped block groups from the
- free-space tree
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org
-References: <20251024181227.32228-1-mark@harmstone.com>
- <20251024181227.32228-5-mark@harmstone.com>
- <aQUtrBM3XIb2Ufkr@devvm12410.ftw0.facebook.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/13] block: handle zone management operations
+ completions
+To: Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+ linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+ Keith Busch <keith.busch@wdc.com>, Christoph Hellwig <hch@lst.de>,
+ dm-devel@lists.linux.dev, Mike Snitzer <snitzer@kernel.org>,
+ Mikulas Patocka <mpatocka@redhat.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
+ Carlos Maiolino <cem@kernel.org>, linux-btrfs@vger.kernel.org,
+ David Sterba <dsterba@suse.com>
+References: <20251031061307.185513-1-dlemoal@kernel.org>
+ <20251031061307.185513-4-dlemoal@kernel.org>
+ <8947e877-cd53-4f1d-989c-bdde311c00e9@suse.de>
 Content-Language: en-US
-From: Mark Harmstone <mark@harmstone.com>
-Autocrypt: addr=mark@harmstone.com; keydata=
- xsBNBFp/GMsBCACtFsuHZqHWpHtHuFkNZhMpiZMChyou4X8Ueur3XyF8KM2j6TKkZ5M/72qT
- EycEM0iU1TYVN/Rb39gBGtRclLFVY1bx4i+aUCzh/4naRxqHgzM2SeeLWHD0qva0gIwjvoRs
- FP333bWrFKPh5xUmmSXBtBCVqrW+LYX4404tDKUf5wUQ9bQd2ItFRM2mU/l6TUHVY2iMql6I
- s94Bz5/Zh4BVvs64CbgdyYyQuI4r2tk/Z9Z8M4IjEzQsjSOfArEmb4nj27R3GOauZTO2aKlM
- 8821rvBjcsMk6iE/NV4SPsfCZ1jvL2UC3CnWYshsGGnfd8m2v0aLFSHZlNd+vedQOTgnABEB
- AAHNI01hcmsgSGFybXN0b25lIDxtYXJrQGhhcm1zdG9uZS5jb20+wsCRBBMBCAA7AhsvBQsJ
- CAcCBhUICQoLAgQWAgMBAh4BAheAFiEEG2JgKYgV0WRwIJAqbKyhHeAWK+0FAmRQOkICGQEA
- CgkQbKyhHeAWK+22wgf/dBOJ0pHdkDi5fNmWynlxteBsy3VCo0qC25DQzGItL1vEY95EV4uX
- re3+6eVRBy9gCKHBdFWk/rtLWKceWVZ86XfTMHgy+ZnIUkrD3XZa3oIV6+bzHgQ15rXXckiE
- A5N+6JeY/7hAQpSh/nOqqkNMmRkHAZ1ZA/8KzQITe1AEULOn+DphERBFD5S/EURvC8jJ5hEr
- lQj8Tt5BvA57sLNBmQCE19+IGFmq36EWRCRJuH0RU05p/MXPTZB78UN/oGT69UAIJAEzUzVe
- sN3jiXuUWBDvZz701dubdq3dEdwyrCiP+dmlvQcxVQqbGnqrVARsGCyhueRLnN7SCY1s5OHK
- ls7ATQRafxjLAQgAvkcSlqYuzsqLwPzuzoMzIiAwfvEW3AnZxmZn9bQ+ashB9WnkAy2FZCiI
- /BPwiiUjqgloaVS2dIrVFAYbynqSbjqhki+uwMliz7/jEporTDmxx7VGzdbcKSCe6rkE/72o
- 6t7KG0r55cmWnkdOWQ965aRnRAFY7Zzd+WLqlzeoseYsNj36RMaqNR7aL7x+kDWnwbw+jgiX
- tgNBcnKtqmJc04z/sQTa+sUX53syht1Iv4wkATN1W+ZvQySxHNXK1r4NkcDA9ZyFA3NeeIE6
- ejiO7RyC0llKXk78t0VQPdGS6HspVhYGJJt21c5vwSzIeZaneKULaxXGwzgYFTroHD9n+QAR
- AQABwsGsBBgBCAAgFiEEG2JgKYgV0WRwIJAqbKyhHeAWK+0FAlp/GMsCGy4BQAkQbKyhHeAW
- K+3AdCAEGQEIAB0WIQR6bEAu0hwk2Q9ibSlt5UHXRQtUiwUCWn8YywAKCRBt5UHXRQtUiwdE
- B/9OpyjmrshY40kwpmPwUfode2Azufd3QRdthnNPAY8Tv9erwsMS3sMh+M9EP+iYJh+AIRO7
- fDN/u0AWIqZhHFzCndqZp8JRYULnspXSKPmVSVRIagylKew406XcAVFpEjloUtDhziBN7ykk
- srAMoLASaBHZpAfp8UAGDrr8Fx1on46rDxsWbh1K1h4LEmkkVooDELjsbN9jvxr8ym8Bkt54
- FcpypTOd8jkt/lJRvnKXoL3rZ83HFiUFtp/ZkveZKi53ANUaqy5/U5v0Q0Ppz9ujcRA9I/V3
- B66DKMg1UjiigJG6espeIPjXjw0n9BCa9jqGICyJTIZhnbEs1yEpsM87eUIH/0UFLv0b8IZe
- pL/3QfiFoYSqMEAwCVDFkCt4uUVFZczKTDXTFkwm7zflvRHdy5QyVFDWMyGnTN+Bq48Gwn1M
- uRT/Sg37LIjAUmKRJPDkVr/DQDbyL6rTvNbA3hTBu392v0CXFsvpgRNYaT8oz7DDBUUWj2Ny
- 6bZCBtwr/O+CwVVqWRzKDQgVo4t1xk2ts1F0R1uHHLsX7mIgfXBYdo/y4UgFBAJH5NYUcBR+
- QQcOgUUZeF2MC9i0oUaHJOIuuN2q+m9eMpnJdxVKAUQcZxDDvNjZwZh+ejsgG4Ejd2XR/T0y
- XFoR/dLFIhf2zxRylN1xq27M9P2t1xfQFocuYToPsVk=
-In-Reply-To: <aQUtrBM3XIb2Ufkr@devvm12410.ftw0.facebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <8947e877-cd53-4f1d-989c-bdde311c00e9@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 31/10/2025 9.44 pm, Boris Burkov wrote:
-> On Fri, Oct 24, 2025 at 07:12:05PM +0100, Mark Harmstone wrote:
->> No new allocations can be done from block groups that have the REMAPPED flag
->> set, so there's no value in their having entries in the free-space tree.
+On 11/3/25 20:41, Hannes Reinecke wrote:
+> On 10/31/25 07:12, Damien Le Moal wrote:
+>> The functions blk_zone_wplug_handle_reset_or_finish() and
+>> blk_zone_wplug_handle_reset_all() both modify the zone write pointer
+>> offset of zone write plugs that are the target of a reset, reset all or
+>> finish zone management operation. However, these functions do this
+>> modification before the BIO is executed. So if the zone operation fails,
+>> the modified zone write pointer offsets become invalid.
 >>
->> Prevent a search through the free-space tree being scheduled for such a
->> block group, and prevent any additions to the in-memory free-space tree.
+>> Avoid this by modifying the zone write pointer offset of a zone write
+>> plug that is the target of a zone management operation when the
+>> operation completes. To do so, modify blk_zone_bio_endio() to call the
+>> new function blk_zone_mgmt_bio_endio() which in turn calls the functions
+>> blk_zone_reset_all_bio_endio(), blk_zone_reset_bio_endio() or
+>> blk_zone_finish_bio_endio() depending on the operation of the completed
+>> BIO, to modify a zone write plug write pointer offset accordingly.
+>> These functions are called only if the BIO execution was successful.
 >>
->> Signed-off-by: Mark Harmstone <mark@harmstone.com>
->> ---
->>   fs/btrfs/block-group.c      | 15 ++++++++++++---
->>   fs/btrfs/free-space-cache.c |  3 +++
->>   2 files changed, 15 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
->> index ec1e4fc0cd51..b5f2ec8d013f 100644
->> --- a/fs/btrfs/block-group.c
->> +++ b/fs/btrfs/block-group.c
->> @@ -933,6 +933,13 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, bool wait)
->>   	if (btrfs_is_zoned(fs_info))
->>   		return 0;
->>   
->> +	/*
->> +	 * No allocations can be done from remapped block groups, so they have
->> +	 * no entries in the free-space tree.
->> +	 */
->> +	if (cache->flags & BTRFS_BLOCK_GROUP_REMAPPED)
->> +		return 0;
->> +
->>   	caching_ctl = kzalloc(sizeof(*caching_ctl), GFP_NOFS);
->>   	if (!caching_ctl)
->>   		return -ENOMEM;
->> @@ -1248,9 +1255,11 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
->>   	 * another task to attempt to create another block group with the same
->>   	 * item key (and failing with -EEXIST and a transaction abort).
->>   	 */
->> -	ret = btrfs_remove_block_group_free_space(trans, block_group);
->> -	if (ret)
->> -		goto out;
->> +	if (!(block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED)) {
->> +		ret = btrfs_remove_block_group_free_space(trans, block_group);
->> +		if (ret)
->> +			goto out;
->> +	}
-> 
-> I feel like a comment or the commit message could explain the change to
-> the btrfs_remove_block_group bit more clearly. Like "remapped has no free
-> space so removing it is a no-op". If it is in fact a no-op, is there any
-> problem with calling it?
+> Hmm.
+> Question remains: what _is_ the status of a write pointer once a
+> zone management operation is in flight?
 
-Makes sense. I think in theory it's a no-op, but in practice it would ASSERT
-because the free space info it's expecting isn't there.
+On the device, it will be unchanged until the command completes, or rather, one
+can only see it that way since the drive will serialize such command with report
+zones.
 
-> With that extra bit of doc/explanation, feel free to add
-> Reviewed-by: Boris Burkov <boris@bur.io>
-> 
->>   
->>   	ret = remove_block_group_item(trans, path, block_group);
->>   	if (ret < 0)
->> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
->> index ab873bd67192..ec9a97d75d10 100644
->> --- a/fs/btrfs/free-space-cache.c
->> +++ b/fs/btrfs/free-space-cache.c
->> @@ -2756,6 +2756,9 @@ int btrfs_add_free_space(struct btrfs_block_group *block_group,
->>   {
->>   	enum btrfs_trim_state trim_state = BTRFS_TRIM_STATE_UNTRIMMED;
->>   
->> +	if (block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED)
->> +		return 0;
->> +
->>   	if (btrfs_is_zoned(block_group->fs_info))
->>   		return __btrfs_add_free_space_zoned(block_group, bytenr, size,
->>   						    true);
->> -- 
->> 2.49.1
->>
+> I would argue it's turning into a Schroedinger state, and so we
+> cannot make any assumptions here.
 
+Let me try to skin that cat below :)
+
+> In particular we cannot issue any other write I/O to that zone once
+> the operation is in flight, and so it becomes meaningless if we set
+> the write pointer before or after the zone operation.
+> Once the operation fails we have to issue a 'report write pointer'
+> command anyway as I'd be surprised if we could assume that a failure
+> in a zone management command would leave the write pointer unmodified.
+> So I would assume that zone write plugging already blocks the zone
+> while an zone management command is in flight.
+> But if it does, why do we need this patch?
+
+There is no such "blocking" done, the user is free to issue a zone reset while
+writes are n flight, and most likely get write errors as a result such bad practice.
+
+For this patch, the assumption is that a failed zone reset or zone finish leaves
+the zone write pointer untouched. All the drives I know do that. So it is better
+to not modify the zone write plug write pointer offset until we complete the
+command.
+
+But granted, that is not always true since the failure may happen *after* the
+drive completed the command (e.g. the HBA loses the connection with the drive
+before signaling the completion or something like that). In such case, it would
+not matter when the update is done. And for zone reset all commands, all bets
+are off since the command may fail half-way through all the zones that need a reset.
+
+But in the end, logically speaking, it makes more sense to update things when we
+get a success result instead of assuming we will always succeed. This has also
+the benefit of leaving the zone write plugs in place for eventual error recovery
+if needed.
+
+-- 
+Damien Le Moal
+Western Digital Research
 
