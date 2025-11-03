@@ -1,208 +1,184 @@
-Return-Path: <linux-btrfs+bounces-18517-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18518-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC95DC29886
-	for <lists+linux-btrfs@lfdr.de>; Sun, 02 Nov 2025 23:26:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3D90C29D9B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 03 Nov 2025 03:21:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1162C4E5D4B
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Nov 2025 22:26:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 278B5188F71F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Nov 2025 02:21:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10FB2367D7;
-	Sun,  2 Nov 2025 22:26:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45B4727FB1E;
+	Mon,  3 Nov 2025 02:21:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QQX9OvRi"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rnDUAfnN";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ilcqtiXy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 075BE1C5D57
-	for <linux-btrfs@vger.kernel.org>; Sun,  2 Nov 2025 22:26:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A882184524
+	for <linux-btrfs@vger.kernel.org>; Mon,  3 Nov 2025 02:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762122373; cv=none; b=KjdDeYfUAXeQBOcLxu2AlIBv3pf0YaOnaOlIVEG+34LXaSmupXM9gosi1a0hE6QWIktYOm2fnFUQb+zHWTfNx7Go/4+G82SY8BXCBrCGDq9nBrOKKqvr6L2xvSW8RTqvebV/XCMoSxTbMVZgCXGA8XrX7nP+74/I+VywUhUnc80=
+	t=1762136479; cv=none; b=PVYUR3B7pJjn7wZ0FSv2n5kvtKc3WP08yTl4CWjZXRgD0crsqnBY8yRiJPr73uUe85Fh5WDAboHLqc8oCntv8O0sNr37p1JnTWj2u1KrbyXVlqG+wnlWzwdyCq8Wam3IJxqVAeGKldUHr99YLUbO1ecl7jz20xSRIUqk1jYRaZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762122373; c=relaxed/simple;
-	bh=I1JSbLLrfdOu0+dxg2zPI+FP+1AUhgURHiQH6ZYQxp0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jHnNS13Bwb71QMIJtHCvBDFNQhyisuMUz7dWuMGNT5Hi1PPV1o6lcSc057CzJkBlrVFy7N02MO47hnPhzyeYyQQyPn3CDlNrwGgnPl0ur1ZDTf6zcaWbK5Ye4uy7Oi7MjUbL8MJvSeOo7fAd0ndWerq8YuY2k6ImvShbM4BP+aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QQX9OvRi; arc=none smtp.client-ip=209.85.221.42
+	s=arc-20240116; t=1762136479; c=relaxed/simple;
+	bh=16Cqi4Fak5Tv9ik1RQPypulZ7KICVSVK6FEmC5zcc/A=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=P+kbx4yIUy0i70QyI1q6TdHoODPXhwTVCU/tiBYPfW+jZujLZSyW4Id5YsRz7zDoOJ4L9MQ4ZH7zl8sEZrGv72bGng41wppIu6GsA/r0P4INyQTZhTqDHFaWhnuyTk9r144BGLIKnpMTnr9WT3+pqHsemDbZCI9vFAfhk78uFas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rnDUAfnN; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ilcqtiXy; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-421851bcb25so2103039f8f.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 02 Nov 2025 14:26:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762122369; x=1762727169; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=TSoZQO1LDxMqFZ2v8FFTBXkhOch3U4kSrXEDTkJlztI=;
-        b=QQX9OvRiEf916bTFDR951Ez+B5jZTlX7jL81dj5x0DHWot8MgaCCbAAMcZXNXrVF7T
-         bHqvfnMiGk3RapefeWnVN77gAkd3T5UgbMn0IsFvBaKwzVJrBlkRkyTSl7x4bRWBvzck
-         a7I9Fmi8Y6VlXpp/DFNVYBRlGJB9bPbOTPqH60JH4oUY8ui63ewmHsDemYvY5lx8wtQL
-         pObXLfpYcDITnr4enC9LnNRQVTTvIGtyUarjHXnKKTl4zmVkHTTV9+gQllYCgp38svAD
-         JFL9NKoQ58+O2vqtoYWsph7CX4bCHFbDhoAQnUnYQKRxmGB5DAfjR/B+M3KvRaACq70j
-         4TDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762122369; x=1762727169;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TSoZQO1LDxMqFZ2v8FFTBXkhOch3U4kSrXEDTkJlztI=;
-        b=eoOKvZ13lIvj/9j53lnZ4xHeRjXcoXr948If9Jc1Mnd5mv7vfN9UEqaz4ZUASSYJY0
-         hEaRiRCxGVmjG1aenW+EQv0JUhgK1rat0G1TJwT4hhha5nAoZgb89k65pC75y5smJXHZ
-         JPMgPb0mZVgtYyo/7j1696PJUU+sf2M8ol+ehW3dIOSTcrmkh+DK/Y6CT/Fa9U1HDHvG
-         j8HUcayO5byeG3/g0x8bGYBWF7xdBMViWDE5uc2XYjN3Rvwew5C8sTJe3zni7JeibFXn
-         dhcxUlL/agmSAnQjaokMm/phw1yz3ld8+NYA1uw39k8fMXwLjphxSfC5W9KxzieCVdRG
-         H2EQ==
-X-Gm-Message-State: AOJu0YyQKI5zZ8Evaqxj+ltXnOPMm9HYWIIsr1H4ikh0fj/BC7+BYYBk
-	9ZYeyvOh/tElyCidzFCYCC3xkNGO034fnT17gVoOKXVaX4FM2l2lLAK7+rYK1y+a174=
-X-Gm-Gg: ASbGncu2thiHY837AO4cZ7m1IXnRP4BfUTvT2/gzxcGcm0Kf7YXF8glXybFTh8JmWHj
-	MUgnAilDh7XTNqaqPA/tUaL5JQpJLOaPfoIY1NsmP2rpTByOQrOm1SRiQ1ovnxjyfBZ4TT3o4y5
-	BYqJDULNv+/ufbouLFX3ixLOBaEGEiSbadBr4izXOzRzQFTrZSrr+SyavbICBsOtJQ7UFa3BB+u
-	jPMdsazw2MNSHwd1mU7WhlPJn+IHPdbVHaQSt3abSXMBiJsJSZhbBUPwHrXYK3uMy7Z3aDcFeEU
-	fHLsuJeYAzaZ8y1LvF1rxB8MuXaq8Pl1Q5/8PJbOkx3SyOLlNl82aSDFNnMmOrDwqVok6metQKm
-	l2nINrRCERnzC/IUYpXFpgoEXc7qEcjq1Es+l8qIdAuiZ+gNK9ds+1+dYgHbXHVrU428u2nHcYS
-	rI3KJii+gaae8bCTzlTxyFPN47xLEf1UiAi2kyhelUZndwu6wZEg==
-X-Google-Smtp-Source: AGHT+IH/mrTw6saq0kRTUvdWFTHwFvJkiVrFtlmxQKhXD05hq755mlv6ubcjEgYm4Ph+i9YMQ+zRHg==
-X-Received: by 2002:a05:6000:4605:b0:429:d004:bb2c with SMTP id ffacd0b85a97d-429d004bc80mr2148471f8f.57.1762122369126;
-        Sun, 02 Nov 2025 14:26:09 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::e9d? (2403-580d-fda1--e9d.ip6.aussiebb.net. [2403:580d:fda1::e9d])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-295269bd6f4sm93956785ad.101.2025.11.02.14.26.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 Nov 2025 14:26:08 -0800 (PST)
-Message-ID: <66c4393b-51ae-487a-9e14-a444775b9fa4@suse.com>
-Date: Mon, 3 Nov 2025 08:56:04 +1030
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 72D7621DD7
+	for <linux-btrfs@vger.kernel.org>; Mon,  3 Nov 2025 02:21:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1762136474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Snp1Y6WrRkwMFpWJi8aXGuzqBr/SzGyDWbfmR4jH9l4=;
+	b=rnDUAfnNT32g5yWjX81BH2Vmi/kxgimf9MB8GC/vNCdWrOlrBcgy7O1YJt6RfQ1P48Smh6
+	n0MVkv+ds5z7yKYzcnTtX/AzEUUBZK3QpgGQxFzC0/UDOYmaDAxpzVK1wdDAG2NIb24hL2
+	w5/O1CJR/QQzf7jPHzE+CGtflMl+rEg=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1762136473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Snp1Y6WrRkwMFpWJi8aXGuzqBr/SzGyDWbfmR4jH9l4=;
+	b=ilcqtiXyfKIMvuVVQVJ5Y/2OqPYmdykza0z22uVuc1peGcVRt+nvqRjOuahUMqSPLjAas7
+	oP9Ucnto8FbEF0a+TTw2HWN8hsV52TpAY93sE8hz5RSPs8ThRA5HpMlUSwCYWMQg8869NQ
+	rdDg6SGFmQFH1wXfXyKfv/Zs09oDBzI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AA16C139A9
+	for <linux-btrfs@vger.kernel.org>; Mon,  3 Nov 2025 02:21:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 3XdPGpgRCGkNHgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 03 Nov 2025 02:21:12 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: scrub: always update btrfs_scrub_progress::last_physical
+Date: Mon,  3 Nov 2025 12:51:09 +1030
+Message-ID: <5e19e3656afeb899f91a1c81367d7e79215bee01.1762136447.git.wqu@suse.com>
+X-Mailer: git-send-email 2.51.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/8] btrfs-progs: interpret encrypted file extents.
-To: Daniel Vacek <neelx@suse.com>, David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
- Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-References: <20251015121157.1348124-1-neelx@suse.com>
- <20251015121157.1348124-6-neelx@suse.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20251015121157.1348124-6-neelx@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
+[BUG]
+When a scrub failed immediately without any byte scrubbed, the returned
+btrfs_scrub_progress::last_physical will always be 0, even if there is a
+non-zero @start passed into btrfs_scrub_dev() for resume cases.
 
+This will reset the progress and make later scrub resume start from the
+beginning.
 
-在 2025/10/15 22:41, Daniel Vacek 写道:
-> From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> 
-> Encrypted file extents now have the 'encryption' field set to a
-> encryption type plus a context length, and have an extent context
-> appended to the item.  This necessitates adjusting the struct to have a
-> variable-length fscrypt_context member at the end, and printing contexts
-> if one is provided.
+[CAUSE]
+The function btrfs_scrub_dev() accepts a @progress parameter to copy its
+updated progress to the caller, there are cases where we either don't
+touch progress::last_physical at all or copy 0 into last_physical:
 
-Unfortunately this patch will cause CI failures on fuzzed/crafted images.
+- last_physical not updated at all
+  If some error happened before scrubbing any super block or chunk, we
+  will not copy the progress, leaving the @last_physical untouched.
 
-The most easy way to trigger it is using misc/032 test case from 
-btrfs-progs.
-[...]
-> diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-> index 2a624a1c..060bf997 100644
-> --- a/kernel-shared/print-tree.c
-> +++ b/kernel-shared/print-tree.c
-> @@ -421,6 +421,25 @@ static void compress_type_to_str(u8 compress_type, char *ret)
->   	}
->   }
->   
-> +static void generate_encryption_string(struct extent_buffer *leaf,
-> +				       struct btrfs_file_extent_item *fi,
-> +				       char *ret)
-> +{
-> +	u8 policy = btrfs_file_extent_encryption(leaf, fi);
-> +	u32 ctxsize = btrfs_file_extent_encryption_ctx_size(leaf, fi);
+  E.g. failed to allocate @sctx, scrubbing a missing device or even
+  there is already a running scrub and so on.
 
-This is done without proper checks against current item size.
+  All those cases won't touch @progress at all, resulting the
+  last_physical untouched and will be left as 0 for most cases.
 
-> +	const __u8 *ctx = (__u8 *)(leaf->data + btrfs_file_extent_encryption_ctx_offset(fi));
+- Error out before scrubbing any bytes
+  In those case we allocated @sctx, and sctx->stat.last_physical is all
+  zero (initialized by kvzalloc()).
+  Unfortunately some critical errors happened during
+  scrub_enumerate_chunks() or scrub_supers() before any stripe is really
+  scrubbed.
 
-And this can easily lead to read out of the eb boundary.
+  In that case although we will copy sctx->stat back to @progress, since
+  no byte is really scrubbed, last_physical will be overwritten to 0.
 
-Overall we need extra tree-checker for the extra encryption info if we 
-want to stick to the variable file extent item size idea.
+[FIX]
+Make sure the parameter @progress always has its @last_physical member
+updated to @start parameter inside btrfs_scrub_dev().
 
-Thus I prefer to put the encryption info into a dedicated key other than 
-putting it after btrfs_file_extent_item.
+At the very beginning of the function, set @progress->last_physical to
+@start, so that even if we error out without doing progress copying,
+last_physical is still at @start.
 
+Then after we got @sctx allocated, set sctx->stat.last_physical to
+@start, this will make sure even if we didn't get any byte scrubbed, at
+the progress copying stage the @last_physical is not left as zero.
 
-So unfortunately I have to remove the series from devel branch for now.
+This should resolve the resume progress reset problem.
 
-Thanks,
-Qu
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/scrub.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> +
-> +	ret += sprintf(ret, "(%hhu, %u", policy, ctxsize);
-> +
-> +	if (ctxsize) {
-> +		int i;
-> +		ret += sprintf(ret, ": context ");
-> +		for (i = 0; i < ctxsize; i++)
-> +			ret += sprintf(ret, "%02hhx", ctx[i]);
-> +	}
-> +	sprintf(ret, ")");
-> +}
-> +
->   static const char* file_extent_type_to_str(u8 type)
->   {
->   	switch (type) {
-> @@ -437,9 +456,11 @@ static void print_file_extent_item(struct extent_buffer *eb,
->   {
->   	unsigned char extent_type = btrfs_file_extent_type(eb, fi);
->   	char compress_str[16];
-> +	char encrypt_str[16];
->   
->   	compress_type_to_str(btrfs_file_extent_compression(eb, fi),
->   			     compress_str);
-> +	generate_encryption_string(eb, fi, encrypt_str);
->   
->   	printf("\t\tgeneration %llu type %hhu (%s)\n",
->   			btrfs_file_extent_generation(eb, fi),
-> @@ -472,6 +493,8 @@ static void print_file_extent_item(struct extent_buffer *eb,
->   	printf("\t\textent compression %hhu (%s)\n",
->   			btrfs_file_extent_compression(eb, fi),
->   			compress_str);
-> +	printf("\t\textent encryption %hhu (%s)\n",
-> +			btrfs_file_extent_encryption(eb, fi), encrypt_str);
->   }
->   
->   /* Caller should ensure sizeof(*ret) >= 16("DATA|TREE_BLOCK") */
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 4951022ab402..f6678d06004d 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3040,6 +3040,10 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+ 	unsigned int nofs_flag;
+ 	bool need_commit = false;
+ 
++	/* Set the basic fallback @last_physical before we got a sctx. */
++	if (progress)
++		progress->last_physical = start;
++
+ 	if (btrfs_fs_closing(fs_info))
+ 		return -EAGAIN;
+ 
+@@ -3058,6 +3062,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+ 	sctx = scrub_setup_ctx(fs_info, is_dev_replace);
+ 	if (IS_ERR(sctx))
+ 		return PTR_ERR(sctx);
++	sctx->stat.last_physical = start;
+ 
+ 	ret = scrub_workers_get(fs_info);
+ 	if (ret)
+-- 
+2.51.2
 
 
