@@ -1,83 +1,82 @@
-Return-Path: <linux-btrfs+bounces-18519-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18520-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 518FCC29DFB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 03 Nov 2025 03:39:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6F9EC29EAB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 03 Nov 2025 04:07:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B78E8347413
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Nov 2025 02:39:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4403F3B2D1D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Nov 2025 03:06:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8CD1285CA4;
-	Mon,  3 Nov 2025 02:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6CA285CAE;
+	Mon,  3 Nov 2025 03:06:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fu0jriVc"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DhG5K0PW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8FD52857F6
-	for <linux-btrfs@vger.kernel.org>; Mon,  3 Nov 2025 02:39:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DAE4154BF5
+	for <linux-btrfs@vger.kernel.org>; Mon,  3 Nov 2025 03:06:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762137543; cv=none; b=eYfg7yEAQuW1s1lXb/10f+7xOgvr2uQR3fHMAaIBMEEpGiNc5Rehp0ECnI4jEWlmE7fsl5npGfwFlb3LP9/hlvL9ZyxjhVJMvjfkN0hhIsy/dMZEVHE6SB7kgRtOPyNL/QWLXI4WYAxioNKdTr14uDXjx3JdbQSKNdrSrnnJbAo=
+	t=1762139209; cv=none; b=E0vhMm34ShRAy7H9zP+PiyGS1yP0kB+yNuePgeWJZb7hwE+Ct2bBEUF2A3uYlfCThJ7EV5Y1g3x0z2eh11vs67pIP4JneYpbNWPD0onGDnVbckV6A/aYYujtz9wQH2IhI8mCs5h7iy87k1UCPvCU5qx5piLXMq21p+8ndvas6jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762137543; c=relaxed/simple;
-	bh=OY9g0G0hsrXbhaPQ2w6Fvh4d7L4QI3hlyibz58/LJqQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Zh7WxO3j7Gdn8f2ZbbATM8w+OEIK+Q8ctdlLkECuYCRiru2iIX089dOxsYlU3nLaJoicpQAWRUpCCgDVhWWqdhNets+Ye+E0FhbkTBa15nY1LoMU5kolIHso09KlMluLvI7Hpd3BbEyP64ZqDoVxVzvVwNxUjApsVo8shiJdn18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fu0jriVc; arc=none smtp.client-ip=209.85.221.51
+	s=arc-20240116; t=1762139209; c=relaxed/simple;
+	bh=9grNKPQjLsJjRuG31PP/rQLmgppQVL4AEMMZS6mhA0I=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=BEZlfdlVzWvpPr6gO58Xzgyft+4UITVfoouZ1HuJTCMwYN+pM+rBtkcrisXXNg5dHfEU9M+uOsLP8LMOWEo64/kYpFoeMbsl6mxmaIc4VhChtXfxXUcDRKEii5l7/zedrwGM5SmzsGxMCZv18lVKATRIesIBkShcYlnuzbcPQqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DhG5K0PW; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3ecdf2b1751so2419570f8f.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 02 Nov 2025 18:39:00 -0800 (PST)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-429bcddad32so1982872f8f.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 02 Nov 2025 19:06:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762137539; x=1762742339; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=hlm3/kjrLiZguynFuGksq5XBj69uU1SnB2Ycm3MMX9E=;
-        b=fu0jriVcgPbQ8Dqg6cptAEsXfvswC5NpvTu2kIjrV1X5uCsoyn9I7DT/MCITRoyc7r
-         hCtbWhryVrbbqSqMpmBJqYaSC3qEOOwOue8pMrWMV5JxxEDOmsPLb2uEINHOAYnEUc7o
-         ZqA6LDo6+OHFmA2+ywwMAqLJNPRcTveCCOh35cIZXm/mVVlueaogGPuwjtht+3G2Funm
-         I7pnzZWp5+2lNx0bGEgeR/U7wGZTW+vosXKgwdi3NtSvUMjg3sPSKVMCuSXflmUP1If4
-         qOVNcbmQw5qsvMgFIQMovD6LSz2WQ5Mdh86w6ojUJN4G9vwdRtst5s10qYSj7MSDC3Z8
-         KOwQ==
+        d=suse.com; s=google; t=1762139204; x=1762744004; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=x9AtXSt1Id+ROx18Awd4f+SaQMN66fTBAT2KrdO5O4g=;
+        b=DhG5K0PW1UMJ4eDG8KfgUYGcDFBAGzcEtyF5Z1LHr6VyR/ZEFx7N5nnBwKAAT6mKfW
+         YJuI27SFoN307AJtoTtM7pt4XS3mjqlrFK/YEczk2QU11tX1iGfNbDKo+b/zlwi9jOHp
+         ewsVgkH0i+0S8VCjrQMucK0bYDRZwBqYftMV0uiJZKWqa8aHfSKktrv4d9ztZC4yEnyH
+         SiEpKfsPE7gDlK8m2w58q7/nJbg9qAQgdjJ53/oKmhd4mRLlk3Mv2oWq5KScnwnR9Wu0
+         WLdj2AbfNjKdU6ThjUSk+NI542bDSys4KIEHn1G7OAGEi0ZPNWj9uBwf7qwsoKljJd95
+         rTlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762137539; x=1762742339;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hlm3/kjrLiZguynFuGksq5XBj69uU1SnB2Ycm3MMX9E=;
-        b=InZPcXFA2zaYTa5eWE4tASo6TImZzojdZbTKSEKouzK9oV0YFIvu38yKNKWp63pGAX
-         VNAbkavPejNTRIll3ko0vkIyP0BeM6RAY2amx3xIzsL7O8f/dAHfWp79GRgtSSc4dx9A
-         pTCnA4GLoYz2BV16XHoR2gJBDQkSmqKxiI840RA0S0tMcjLFaWSqax/VqX1OjqF9ubhy
-         MnNWb+tzrpFyWIl0A73ryuKGj50GHY7KqdMlGhRtz42E/5rE3s2b+SC9L04WpMXKN6bj
-         5AzHvB9zhO4UQJO8jiI5oksuoWnF8WrzeFHbwquoggIJQQml7GzJTneSUaWRbzDP+HrM
-         ofdw==
-X-Forwarded-Encrypted: i=1; AJvYcCWMN/1spE5Zk2eT5fc6gk553sqxhJrk3aR57BOdUvyJ0Do1pJl/9vZhjK9vpNmaAFhBVA4zmLm6B928tQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzu0vzWJV8Ulynmv8bYnAJIbNiPlM3JT038+1CI5dfVsORDbLt6
-	KRTTXG0wXcrJsAlpRhTe3uNylJMV2M6YGHwSdrqLNanhKAJAoktfBXxKshSLBxAvGhZblsi5fzT
-	c+SF8
-X-Gm-Gg: ASbGncuq3x+Z/5O+Wo4TSHsO3cr+Cke9y8BsxIyDF48IeQYFI4NKquZn9sLPAEssu73
-	bdctc0bTRN5pOU5XTdGQFEHngxiuy9H4zKII9VnPmzKsBKFCsxAYwIgrp28QhA2PNue9CcUUNgc
-	BmcjUJO8OWdjzKkLVD7Rh8cUnkuOpp54RF9G/r1lCTc3QhJaicDWr0LvYqx0/l+AYzvDaIK1XwC
-	1XfGs+1Q6+CAwy2Mqn1aR8+hxM59RhKY8RLaE03kAWF8+YoQ3YuVfFAbpmJp5SHKyAOVgsMYXpj
-	6cbeHzBtSepVpAXkd7KtxQrbRHKcvukvXhSxgMEWogWFunGYmiB8o3/QUxa63B5+zQh7beB8pCC
-	BzUnNjs3HLj/cx0nTagA/imUlawgXAylaZwVcRB17umcf7/HtMPdgjS4qAkxeXDuNX4XG0lkuDA
-	zTZ4SPJ29SJkmuty1xbJ/wvpLV/cOVd04h+B63ZVY=
-X-Google-Smtp-Source: AGHT+IHInvdwJN1Qqx8dM+A3ZRDBTmSr5y/QkF9mFS+2l6sXK674mW4vhk/NovOmsfOiBeURf2jzsw==
-X-Received: by 2002:a5d:64e7:0:b0:426:da6f:2930 with SMTP id ffacd0b85a97d-429bd6a4473mr9328964f8f.33.1762137539130;
-        Sun, 02 Nov 2025 18:38:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1762139204; x=1762744004;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x9AtXSt1Id+ROx18Awd4f+SaQMN66fTBAT2KrdO5O4g=;
+        b=w8dsqEqbxfUg2dYEu9L7vZOFGYBDIfI5XaQOj+WQRMxG4VSWlO6wFWsgb2qyvvbveo
+         DiB3JEScCoG7kgRJVMjfwYEOU2it6gsX5iiH0HjWdUHt1f1vkoFrCRvDVo1Z9cERhvW/
+         Wtqxgk+5vDAM1rbE/Avsz5KdcdCYWyw68qoF4PCyhzQXIv/F3swYrNngo628jNL+M/5h
+         HS5q5tb+oMqAz2dRvZ76nICVPBlmSOvo7qxnxIh0w0metK+NCWcSnSiQ9mQsczJ1MSlN
+         eyBDp1i4IMEM6NaNKzuK9jdusuq9R6ro071t1dz8COQdRRzq3YC+zCv8FNfgjs2U41oN
+         ghgg==
+X-Forwarded-Encrypted: i=1; AJvYcCX1TVJKmyv9QSjC192UgCuniCjv0tYvYo8FrzmK+d2zS9EHTF6blr+wDU0Z/S8Cbtairi9N6pv0mqwXsg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyHdr5ndOCIQUAGJk9/XkM/zMfxqAepzuGjyy+7aD2wzNnRJKOg
+	7MBbIp9CkH1pQWqz1Kx9UwZDoPCQgSEgh8fAWeiSl0gonTEX53DzzabSAr8UBDX3MxhXHVKmQkD
+	ThpbE
+X-Gm-Gg: ASbGncu+xgq+OOTveRvlGLgYzBav/YAdb6HND8zRxAk+JCjrNEFyFZ+B4PtAuQuzfEf
+	FbYJ7qDFBUvs2c5Zh3zCbUWQmlwrMB1QqqJCPrLN0InvdXmoQmfz5obu5dOFgLnEocucjMDuRIT
+	zKQONf2KUn1D3P6KnHzjI5ZRZyOPz4Ogi1RB5j9QXDbSXviEl1sZa+tlgAwyHCl7Y39LHqINyCq
+	0iGg6cBTacf5d/nEmlxl4CAbiFBh88t1E+8uHrk1gxmlvOl1sIVJ7Mbb8LEHNCgOatu1wz2quLy
+	KlaR7pPxiZMnfAGnx2Bz/Qayqh/ZwWhzyAgIEE14cXGDcx7VUdW663oARaCLoCak2RMvwe2zLaT
+	Lc0MUmZXtIYp36M38cwT7baW5YynKhhGkVHV3er3qtjSOChD5twvZP34xoWLIQXMFPPaOshx/ew
+	AaegMpJdaTHSK3alY6Wj56UsQbfvNn
+X-Google-Smtp-Source: AGHT+IFynU3oBE8AmF6LESLgG693MYem//lvS1RrwXPrQ76+jXDcCpQT+wBRwjPP0uRA7lLPVw8aJw==
+X-Received: by 2002:a5d:64e7:0:b0:426:da6f:2930 with SMTP id ffacd0b85a97d-429bd6a4473mr9358475f8f.33.1762139204566;
+        Sun, 02 Nov 2025 19:06:44 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::e9d? (2403-580d-fda1--e9d.ip6.aussiebb.net. [2403:580d:fda1::e9d])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7aab38b4b83sm2581080b3a.19.2025.11.02.18.38.57
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29554cba950sm70108345ad.97.2025.11.02.19.06.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 Nov 2025 18:38:58 -0800 (PST)
-Message-ID: <1c419b6e-61eb-44fb-aa32-c31afd901497@suse.com>
-Date: Mon, 3 Nov 2025 13:08:54 +1030
+        Sun, 02 Nov 2025 19:06:43 -0800 (PST)
+Message-ID: <8bf2de18-3e2d-4f8a-a0c9-ea7a1313c6cb@suse.com>
+Date: Mon, 3 Nov 2025 13:36:40 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -86,10 +85,11 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: btrfs bug: SysRq-S SysRq-U don't sync btrfs
+From: Qu Wenruo <wqu@suse.com>
 To: Askar Safin <safinaskar@gmail.com>, linux-btrfs@vger.kernel.org
 References: <20251101150429.321537-1-safinaskar@gmail.com>
+ <1c419b6e-61eb-44fb-aa32-c31afd901497@suse.com>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -114,33 +114,77 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20251101150429.321537-1-safinaskar@gmail.com>
+In-Reply-To: <1c419b6e-61eb-44fb-aa32-c31afd901497@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/11/2 01:34, Askar Safin 写道:
-> "Press SysRq-S, wait 5 seconds, press SysRq-U, wait 5 seconds, press SysRq-O"
-> doesn't sync btrfs.
+在 2025/11/3 13:08, Qu Wenruo 写道:
 > 
-> Here is script to reproduce this in Qemu:
-> https://zerobin.net/?677f7ff6c348d96f#Ka5RFMytXRmyvrwPVp1wuMAgWzaunkJ1+A+/5ahVn2A=
+> 
+> 在 2025/11/2 01:34, Askar Safin 写道:
+>> "Press SysRq-S, wait 5 seconds, press SysRq-U, wait 5 seconds, press 
+>> SysRq-O"
+>> doesn't sync btrfs.
+>>
+>> Here is script to reproduce this in Qemu:
+>> https://zerobin.net/? 
+>> 677f7ff6c348d96f#Ka5RFMytXRmyvrwPVp1wuMAgWzaunkJ1+A+/5ahVn2A=
+> 
+> Confirmed the sync_fs() callback of btrfs is not executed for the global 
+> sync.
+> 
+> Will take a look at it.
 
-Confirmed the sync_fs() callback of btrfs is not executed for the global 
-sync.
+The emergency_sync() is responsible for this sysrq-s handling, and it 
+will sync all filesystems.
 
-Will take a look at it.
+However there are several problems:
+
+- sync_inodes_one_sb() will only work for single device fses
+   Where s_bdi is some real devices.
+
+   Unfortunately btrfs uses a dummy block device for s_bdi, thus it will
+   skip the writeback of dirty inode pages for btrfs completely.
+
+- do_sync_work() pass @nowait instead of the common @wait
+   Which is the opposite of all the fses I checked (xfs/ext4/btrfs).
+
+   Not sure if this is designed or not, will dig into the history to be
+   sure.
+
+- sync_fs_one_sb() is called with @wait == 0.
+   For btrfs this is critical, with @wait == 0 passed in, btrfs only
+   flush the btree inode, and nothing more.
+
+   This means no super block update, thus really no thing is committed.
+
+   Although this is more or less the same as xfs/ext4, the problem is the
+   previous sync_inodes_one_sb() won't do anything for btrfs.
+   Thus the wait == 0 call will screw btrfs completely.
+
+I guess the only way to solve it is to handle the @nowait properly for 
+btrfs.
+
+Will try to send out a patch for that. reverting the @nowait bit.
 
 Thanks,
 Qu
 
+
 > 
-> - The bug is reproducible on current master (e53642b87a4f)
-> - The bug is reproducible with btrfs, but is not reproducible with ext4
-> - The bug is reproducible both in Qemu and on real hardware
-> - If I replace SysRq with "sync" or "mount -o remount,ro /disk" command,
-> the bug disappeares
+> Thanks,
+> Qu
+> 
+>>
+>> - The bug is reproducible on current master (e53642b87a4f)
+>> - The bug is reproducible with btrfs, but is not reproducible with ext4
+>> - The bug is reproducible both in Qemu and on real hardware
+>> - If I replace SysRq with "sync" or "mount -o remount,ro /disk" command,
+>> the bug disappeares
+>>
+> 
 > 
 
 
