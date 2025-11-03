@@ -1,45 +1,46 @@
-Return-Path: <linux-btrfs+bounces-18550-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18551-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CD91C2C26F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 03 Nov 2025 14:40:41 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4607C2C281
+	for <lists+linux-btrfs@lfdr.de>; Mon, 03 Nov 2025 14:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0768C4F1AAD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Nov 2025 13:35:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EF9A74F466E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Nov 2025 13:35:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 698E130DD3C;
-	Mon,  3 Nov 2025 13:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C0C13128D6;
+	Mon,  3 Nov 2025 13:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="geRvIv5t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h88gQSx6"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B74A26E6F4;
-	Mon,  3 Nov 2025 13:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B205C30E0CE;
+	Mon,  3 Nov 2025 13:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762176911; cv=none; b=nH2xAiM1V2rOh/eh7wOrsfafq/YOeNU3BT23DfH1ibeQae4JRnxJKR+Oq7hZSuvhYxf2l2aw80J5V0oicq/qQf9W8VBMz0yTsZk3y9zD54uXZFymOmP4l22Y3JRLEX2NYnDNf7r+gRlyLjjR6ncpmEpMZv9GcQhxujkLm1DVE/Y=
+	t=1762176913; cv=none; b=hRk9eb3BPoZR+52IwZvqn+Eh8PIIvj214R84zUM+47KeLelptj1FMcvovAKUi6u3ncBOqnLhrKW3mM9yFSxnGmvFw9mrx1SFdHAn+id2VWlZHFHZWXzVz08DlUPawC8t+UdJkcXkzF/6z6UmeW8csv9i2H1RGBO8SEO9HCPxH04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762176911; c=relaxed/simple;
-	bh=kipPvaFiey0COV9EM0kWVSk7RINlLWVsCFeKU1yW3Sc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=FawbAxNSHFdou8lxML78GBfG+NWV5npjw8z1Ft4nHNn/vSwmfLpbzxoxnoq3Q6F/boq193DAvNtxySIy5KhowjxER+7LhSy0YkXRz5dqG+a7VNW3ZPNcpRMMYf4oa+b4pAKE/17YhkKeWH2qLrJ7QkZoCWhk4JZsUNxU9xxuPjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=geRvIv5t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 144D7C4CEE7;
-	Mon,  3 Nov 2025 13:35:08 +0000 (UTC)
+	s=arc-20240116; t=1762176913; c=relaxed/simple;
+	bh=aQF6PeKjS+bCPfxgHZEYXLvqjUnRd6Ot6Q8Y0QpN7NY=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=E+0rEiVIyw5uDU3Qqgz6s9AsY0sD8vlLS6vB5EurO45+IAA91gsk1NPlA+iIDORqZ3d/bGZlP3isGsUXe1GgLw8T/pJ9qG29ren7W1+sObG3be3Yj8kNUN6lWQF6PubnJoYoL5YR88CEC5u2nIwVDTHhckDJqe5RgKhwy29sKRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h88gQSx6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CEDFC4CEFD;
+	Mon,  3 Nov 2025 13:35:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762176911;
-	bh=kipPvaFiey0COV9EM0kWVSk7RINlLWVsCFeKU1yW3Sc=;
-	h=From:To:Subject:Date:From;
-	b=geRvIv5tSUYrwESv0YQwzEYQ3KRXQgaZkPvj4DAePAULw3aryfrRyqrP0v96shMdF
-	 JMbBHL2WaWG5NcPu6PqSyVVS/S2m8+YI1dNuNlSVHdJkkp0I8DARUgPim5B53L/aA4
-	 Rhd35JbuV4AdPOzXAKv++X/P3/gE0eNd/RPRoaaY1Jv8NrlTwCpEzclk7MttFx8fff
-	 mdFu15Qk+BcZd7N7yyKpkZIWxqyZwdpOF5ECdOwem7BgKipU0wXsW8L3yIoTjzwF2q
-	 tSJiOqD9b9qFCNHduo/2BUJpw7SLQU+622baMHIPAP5PUNZbMxsRle/7fzJEM6jKwY
-	 xF7W7Y8lJqSjQ==
+	s=k20201202; t=1762176913;
+	bh=aQF6PeKjS+bCPfxgHZEYXLvqjUnRd6Ot6Q8Y0QpN7NY=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=h88gQSx6keIrdLo5t4swdd6MdHJtLCybmoXB7WpvDRIK+KPYIYipDsLdyNVla4dWB
+	 cNCg8TrANgSb01poWy4i9SZe1GjsrfdOiKbXOG3KHLsKIo3dKDT61Sx1yI+nffFGfD
+	 nC2Mzv2PXuZJ/epca5B+jR1t2j5ygazgyxLnmld7idoWMYHkejNECgjsHcHULDN16K
+	 qtEguwGQgLYxrfk/STt8YtsQ5pY14r1iFZslQtCxClklLKWMZKRGvIzB7P2Fq8gMel
+	 bZL7HaG1MQZDBpJEC8cy7OzZwXTRcNdU90WEgq6RAt6xWuTgQnP7Nj6Bf3AN1TkKtR
+	 YelUVFp83Eo1Q==
 From: Damien Le Moal <dlemoal@kernel.org>
 To: Jens Axboe <axboe@kernel.dk>,
 	linux-block@vger.kernel.org,
@@ -55,10 +56,12 @@ To: Jens Axboe <axboe@kernel.dk>,
 	Carlos Maiolino <cem@kernel.org>,
 	linux-btrfs@vger.kernel.org,
 	David Sterba <dsterba@suse.com>
-Subject: [PATCH v2 00/15] Introduce cached report zones
-Date: Mon,  3 Nov 2025 22:31:08 +0900
-Message-ID: <20251103133123.645038-1-dlemoal@kernel.org>
+Subject: [PATCH v2 01/15] block: handle zone management operations completions
+Date: Mon,  3 Nov 2025 22:31:09 +0900
+Message-ID: <20251103133123.645038-2-dlemoal@kernel.org>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251103133123.645038-1-dlemoal@kernel.org>
+References: <20251103133123.645038-1-dlemoal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -67,76 +70,264 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch series implements a cached report zones using information
-from the block layer zone write plugs and a new zone condition tracking.
-This avoids having to execute slow report zones commands on the device
-when for instance mounting file systems, which can significantly speed
-things up, especially in setups with multiple SMR HDDs (e.g. a BTRFS
-RAID volume).
+The functions blk_zone_wplug_handle_reset_or_finish() and
+blk_zone_wplug_handle_reset_all() both modify the zone write pointer
+offset of zone write plugs that are the target of a reset, reset all or
+finish zone management operation. However, these functions do this
+modification before the BIO is executed. So if the zone operation fails,
+the modified zone write pointer offsets become invalid.
 
-The first patch improves handling of zone management commands. Patch 2
-fixes zone resource updates and the following 3 patches cleanup the zone
-code in preparation for introducing cached zone report support.
-From patch 6 to 13, cached report zones is implemented and made
-available to users with a new ioctl() command.
+Avoid this by modifying the zone write pointer offset of a zone write
+plug that is the target of a zone management operation when the
+operation completes. To do so, modify blk_zone_bio_endio() to call the
+new function blk_zone_mgmt_bio_endio() which in turn calls the functions
+blk_zone_reset_all_bio_endio(), blk_zone_reset_bio_endio() or
+blk_zone_finish_bio_endio() depending on the operation of the completed
+BIO, to modify a zone write plug write pointer offset accordingly.
+These functions are called only if the BIO execution was successful.
 
-Finally, patches 14 and 15 introduce the use of cached report zones in
-the mount operation of XFS and BTRFS.
+Fixes: dd291d77cc90 ("block: Introduce zone write plugging")
+Cc: stable@vger.kernel.org
+Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+---
+ block/blk-zoned.c | 139 ++++++++++++++++++++++++++++++----------------
+ block/blk.h       |  14 +++++
+ 2 files changed, 104 insertions(+), 49 deletions(-)
 
-These patches are against Jens' for-next tree.
-
-Changes from v1:
- - Move the patch "block: handle zone management operations completions"
-   at the beginning of the series and added a Fixes tag.
- - Reworked a little patch 2 as suggested by Bart (error path handling)
- - Added patch 8 as requested by Bart.
- - Added patch 12 as suggested by Bart.
- - Corrected various typos in commit messages and code comments.
- - Added review tags
-
-Damien Le Moal (15):
-  block: handle zone management operations completions
-  block: freeze queue when updating zone resources
-  block: cleanup blkdev_report_zones()
-  block: introduce disk_report_zone()
-  block: reorganize struct blk_zone_wplug
-  block: use zone condition to determine conventional zones
-  block: track zone conditions
-  block: refactor blkdev_report_zones() code
-  block: introduce blkdev_get_zone_info()
-  block: introduce blkdev_report_zones_cached()
-  block: introduce BLKREPORTZONESV2 ioctl
-  block: improve zone_wplugs debugfs attribute output
-  block: add zone write plug condition to debugfs zone_wplugs
-  btrfs: use blkdev_report_zones_cached()
-  xfs: use blkdev_report_zones_cached()
-
- block/blk-zoned.c                 | 788 +++++++++++++++++++++++-------
- block/blk.h                       |  14 +
- block/ioctl.c                     |   1 +
- drivers/block/null_blk/null_blk.h |   3 +-
- drivers/block/null_blk/zoned.c    |   4 +-
- drivers/block/ublk_drv.c          |   4 +-
- drivers/block/virtio_blk.c        |  11 +-
- drivers/block/zloop.c             |   4 +-
- drivers/md/dm-zone.c              |  54 +-
- drivers/md/dm.h                   |   3 +-
- drivers/nvme/host/core.c          |   5 +-
- drivers/nvme/host/multipath.c     |   4 +-
- drivers/nvme/host/nvme.h          |   2 +-
- drivers/nvme/host/zns.c           |  10 +-
- drivers/scsi/sd.h                 |   2 +-
- drivers/scsi/sd_zbc.c             |  17 +-
- fs/btrfs/zoned.c                  |  11 +-
- fs/xfs/xfs_zone_alloc.c           |   2 +-
- include/linux/blkdev.h            |  49 +-
- include/linux/device-mapper.h     |  10 +-
- include/uapi/linux/blkzoned.h     |  41 +-
- include/uapi/linux/fs.h           |   2 +-
- 22 files changed, 767 insertions(+), 274 deletions(-)
-
-
-base-commit: ba6a8208cc205c6545c610b5863ea89466fc486a
+diff --git a/block/blk-zoned.c b/block/blk-zoned.c
+index 5e2a5788dc3b..1621e8f78338 100644
+--- a/block/blk-zoned.c
++++ b/block/blk-zoned.c
+@@ -71,6 +71,11 @@ struct blk_zone_wplug {
+ 	struct gendisk		*disk;
+ };
+ 
++static inline unsigned int disk_zone_wplugs_hash_size(struct gendisk *disk)
++{
++	return 1U << disk->zone_wplugs_hash_bits;
++}
++
+ /*
+  * Zone write plug flags bits:
+  *  - BLK_ZONE_WPLUG_PLUGGED: Indicates that the zone write plug is plugged,
+@@ -698,71 +703,91 @@ static int disk_zone_sync_wp_offset(struct gendisk *disk, sector_t sector)
+ 					disk_report_zones_cb, &args);
+ }
+ 
+-static bool blk_zone_wplug_handle_reset_or_finish(struct bio *bio,
+-						  unsigned int wp_offset)
++static void blk_zone_reset_bio_endio(struct bio *bio)
+ {
+ 	struct gendisk *disk = bio->bi_bdev->bd_disk;
+-	sector_t sector = bio->bi_iter.bi_sector;
+ 	struct blk_zone_wplug *zwplug;
+-	unsigned long flags;
+-
+-	/* Conventional zones cannot be reset nor finished. */
+-	if (!bdev_zone_is_seq(bio->bi_bdev, sector)) {
+-		bio_io_error(bio);
+-		return true;
+-	}
+-
+-	/*
+-	 * No-wait reset or finish BIOs do not make much sense as the callers
+-	 * issue these as blocking operations in most cases. To avoid issues
+-	 * the BIO execution potentially failing with BLK_STS_AGAIN, warn about
+-	 * REQ_NOWAIT being set and ignore that flag.
+-	 */
+-	if (WARN_ON_ONCE(bio->bi_opf & REQ_NOWAIT))
+-		bio->bi_opf &= ~REQ_NOWAIT;
+ 
+ 	/*
+-	 * If we have a zone write plug, set its write pointer offset to 0
+-	 * (reset case) or to the zone size (finish case). This will abort all
+-	 * BIOs plugged for the target zone. It is fine as resetting or
+-	 * finishing zones while writes are still in-flight will result in the
++	 * If we have a zone write plug, set its write pointer offset to 0.
++	 * This will abort all BIOs plugged for the target zone. It is fine as
++	 * resetting zones while writes are still in-flight will result in the
+ 	 * writes failing anyway.
+ 	 */
+-	zwplug = disk_get_zone_wplug(disk, sector);
++	zwplug = disk_get_zone_wplug(disk, bio->bi_iter.bi_sector);
+ 	if (zwplug) {
++		unsigned long flags;
++
+ 		spin_lock_irqsave(&zwplug->lock, flags);
+-		disk_zone_wplug_set_wp_offset(disk, zwplug, wp_offset);
++		disk_zone_wplug_set_wp_offset(disk, zwplug, 0);
+ 		spin_unlock_irqrestore(&zwplug->lock, flags);
+ 		disk_put_zone_wplug(zwplug);
+ 	}
+-
+-	return false;
+ }
+ 
+-static bool blk_zone_wplug_handle_reset_all(struct bio *bio)
++static void blk_zone_reset_all_bio_endio(struct bio *bio)
+ {
+ 	struct gendisk *disk = bio->bi_bdev->bd_disk;
+ 	struct blk_zone_wplug *zwplug;
+ 	unsigned long flags;
+-	sector_t sector;
++	unsigned int i;
+ 
+-	/*
+-	 * Set the write pointer offset of all zone write plugs to 0. This will
+-	 * abort all plugged BIOs. It is fine as resetting zones while writes
+-	 * are still in-flight will result in the writes failing anyway.
+-	 */
+-	for (sector = 0; sector < get_capacity(disk);
+-	     sector += disk->queue->limits.chunk_sectors) {
+-		zwplug = disk_get_zone_wplug(disk, sector);
+-		if (zwplug) {
++	/* Update the condition of all zone write plugs. */
++	rcu_read_lock();
++	for (i = 0; i < disk_zone_wplugs_hash_size(disk); i++) {
++		hlist_for_each_entry_rcu(zwplug, &disk->zone_wplugs_hash[i],
++					 node) {
+ 			spin_lock_irqsave(&zwplug->lock, flags);
+ 			disk_zone_wplug_set_wp_offset(disk, zwplug, 0);
+ 			spin_unlock_irqrestore(&zwplug->lock, flags);
+-			disk_put_zone_wplug(zwplug);
+ 		}
+ 	}
++	rcu_read_unlock();
++}
+ 
+-	return false;
++static void blk_zone_finish_bio_endio(struct bio *bio)
++{
++	struct block_device *bdev = bio->bi_bdev;
++	struct gendisk *disk = bdev->bd_disk;
++	struct blk_zone_wplug *zwplug;
++
++	/*
++	 * If we have a zone write plug, set its write pointer offset to the
++	 * zone size. This will abort all BIOs plugged for the target zone. It
++	 * is fine as resetting zones while writes are still in-flight will
++	 * result in the writes failing anyway.
++	 */
++	zwplug = disk_get_zone_wplug(disk, bio->bi_iter.bi_sector);
++	if (zwplug) {
++		unsigned long flags;
++
++		spin_lock_irqsave(&zwplug->lock, flags);
++		disk_zone_wplug_set_wp_offset(disk, zwplug,
++					      bdev_zone_sectors(bdev));
++		spin_unlock_irqrestore(&zwplug->lock, flags);
++		disk_put_zone_wplug(zwplug);
++	}
++}
++
++void blk_zone_mgmt_bio_endio(struct bio *bio)
++{
++	/* If the BIO failed, we have nothing to do. */
++	if (bio->bi_status != BLK_STS_OK)
++		return;
++
++	switch (bio_op(bio)) {
++	case REQ_OP_ZONE_RESET:
++		blk_zone_reset_bio_endio(bio);
++		return;
++	case REQ_OP_ZONE_RESET_ALL:
++		blk_zone_reset_all_bio_endio(bio);
++		return;
++	case REQ_OP_ZONE_FINISH:
++		blk_zone_finish_bio_endio(bio);
++		return;
++	default:
++		return;
++	}
+ }
+ 
+ static void disk_zone_wplug_schedule_bio_work(struct gendisk *disk,
+@@ -1106,6 +1131,30 @@ static void blk_zone_wplug_handle_native_zone_append(struct bio *bio)
+ 	disk_put_zone_wplug(zwplug);
+ }
+ 
++static bool blk_zone_wplug_handle_zone_mgmt(struct bio *bio)
++{
++	if (bio_op(bio) != REQ_OP_ZONE_RESET_ALL &&
++	    !bdev_zone_is_seq(bio->bi_bdev, bio->bi_iter.bi_sector)) {
++		/*
++		 * Zone reset and zone finish operations do not apply to
++		 * conventional zones.
++		 */
++		bio_io_error(bio);
++		return true;
++	}
++
++	/*
++	 * No-wait zone management BIOs do not make much sense as the callers
++	 * issue these as blocking operations in most cases. To avoid issues
++	 * with the BIO execution potentially failing with BLK_STS_AGAIN, warn
++	 * about REQ_NOWAIT being set and ignore that flag.
++	 */
++	if (WARN_ON_ONCE(bio->bi_opf & REQ_NOWAIT))
++		bio->bi_opf &= ~REQ_NOWAIT;
++
++	return false;
++}
++
+ /**
+  * blk_zone_plug_bio - Handle a zone write BIO with zone write plugging
+  * @bio: The BIO being submitted
+@@ -1153,12 +1202,9 @@ bool blk_zone_plug_bio(struct bio *bio, unsigned int nr_segs)
+ 	case REQ_OP_WRITE_ZEROES:
+ 		return blk_zone_wplug_handle_write(bio, nr_segs);
+ 	case REQ_OP_ZONE_RESET:
+-		return blk_zone_wplug_handle_reset_or_finish(bio, 0);
+ 	case REQ_OP_ZONE_FINISH:
+-		return blk_zone_wplug_handle_reset_or_finish(bio,
+-						bdev_zone_sectors(bdev));
+ 	case REQ_OP_ZONE_RESET_ALL:
+-		return blk_zone_wplug_handle_reset_all(bio);
++		return blk_zone_wplug_handle_zone_mgmt(bio);
+ 	default:
+ 		return false;
+ 	}
+@@ -1332,11 +1378,6 @@ static void blk_zone_wplug_bio_work(struct work_struct *work)
+ 	disk_put_zone_wplug(zwplug);
+ }
+ 
+-static inline unsigned int disk_zone_wplugs_hash_size(struct gendisk *disk)
+-{
+-	return 1U << disk->zone_wplugs_hash_bits;
+-}
+-
+ void disk_init_zone_resources(struct gendisk *disk)
+ {
+ 	spin_lock_init(&disk->zone_wplugs_lock);
+diff --git a/block/blk.h b/block/blk.h
+index 32a10024efba..4d809588b771 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -489,9 +489,23 @@ static inline bool blk_req_bio_is_zone_append(struct request *rq,
+ void blk_zone_write_plug_bio_merged(struct bio *bio);
+ void blk_zone_write_plug_init_request(struct request *rq);
+ void blk_zone_append_update_request_bio(struct request *rq, struct bio *bio);
++void blk_zone_mgmt_bio_endio(struct bio *bio);
+ void blk_zone_write_plug_bio_endio(struct bio *bio);
+ static inline void blk_zone_bio_endio(struct bio *bio)
+ {
++	/*
++	 * Zone management BIOs may impact zone write plugs (e.g. a zone reset
++	 * changes a zone write plug zone write pointer offset), but these
++	 * operation do not go through zone write plugging as they may operate
++	 * on zones that do not have a zone write
++	 * plug. blk_zone_mgmt_bio_endio() handles the potential changes to zone
++	 * write plugs that are present.
++	 */
++	if (op_is_zone_mgmt(bio_op(bio))) {
++		blk_zone_mgmt_bio_endio(bio);
++		return;
++	}
++
+ 	/*
+ 	 * For write BIOs to zoned devices, signal the completion of the BIO so
+ 	 * that the next write BIO can be submitted by zone write plugging.
 -- 
 2.51.0
 
