@@ -1,48 +1,48 @@
-Return-Path: <linux-btrfs+bounces-18535-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18536-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB6E4C2A50F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 03 Nov 2025 08:27:52 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C107C2A542
+	for <lists+linux-btrfs@lfdr.de>; Mon, 03 Nov 2025 08:30:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B71804F0966
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Nov 2025 07:24:15 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 389CC348810
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Nov 2025 07:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE74E29BD90;
-	Mon,  3 Nov 2025 07:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117782BEC52;
+	Mon,  3 Nov 2025 07:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pYWrRJ2D"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GwOFFC0Q"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE3D298CB7;
-	Mon,  3 Nov 2025 07:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C8932BE658;
+	Mon,  3 Nov 2025 07:30:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762154644; cv=none; b=CWd5OuO55PSEg8s3yBsYQBKo+1KX/w7ORZ7/YK1MJV4T/r6TPLtt6h9EIxfdyn0vNQTXCXoWJrjMQ7Gf0flHYEzDDLA6qPBc3jyFFP0Wxwk7TrAsn0MNZEJsyULnj37lpF5XCgrGM9vgls+2x3sQYJH38obTO5G1V27RsXe3OqI=
+	t=1762155038; cv=none; b=be/p9uqpe24xQ5nwq0xCY7RTZdqdJmkmd8uYQg3yUg5UTH9l/4nKwubl3UViSY5IcmyCChN82+xHtFPY2qCsv/2t+BptEryKVJtWBgW0izTJX+FA1iwvnlzw8ea6UmFrqkXrhW8hRJ3Tg2VlwwJFBd0QZwQCwoGoVwqycB/oQwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762154644; c=relaxed/simple;
-	bh=4Z0nKMuf7VyPhF4RUcEACaMRlP3hxFLzOsnTGV5xGbE=;
+	s=arc-20240116; t=1762155038; c=relaxed/simple;
+	bh=fNPEgWhmKcSfXgHxY8vQ6zDm8hy1QN8YPkQR/O50gEk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K1mW15OaS19Ir/g+H32QxhAiI5O7C5FM/KuIx37W19l0thlLYs1jsmuTOp4dR5sc7cDz++bT6JpB5yASie5hdTFiERr6pCV8olZv+4C6KlnM/o9X1iz0IbAyp1z6ZLJIxJ+H2efW4Hy+IJZrLyz0Pe5NuPU9eK8ka3o96s+cBu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pYWrRJ2D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7AC9C4CEE7;
-	Mon,  3 Nov 2025 07:23:59 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=gmYwWlqeMWkKaSsUSbrlfIa7R5Bw+HSf9Iw/5ftSiN1Abegx+au4v4qX3KY0oqQiuZOs40wOMpPn104vxV6Oes0GM6Yx/KjzCWH9sujgdCcKo5Y8BHqqlRXw/Bf58ohE129sG41JlTZUoCS+s0pB7eYKlNJdXunFZ1XeihuzVKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GwOFFC0Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC116C4CEE7;
+	Mon,  3 Nov 2025 07:30:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762154643;
-	bh=4Z0nKMuf7VyPhF4RUcEACaMRlP3hxFLzOsnTGV5xGbE=;
+	s=k20201202; t=1762155038;
+	bh=fNPEgWhmKcSfXgHxY8vQ6zDm8hy1QN8YPkQR/O50gEk=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=pYWrRJ2DOBXKH7w6g7W9FAEECw+TQ2boNGYjR6P/XkjkWsLLYMi0hbKj/ltZ6dl51
-	 9qiWL2uXI1rIo/yTXFDfBNLZolAg8aKc8/ORDAdK5RGw2yySqRFVx3m4VaRUknEEct
-	 69H7EW9WnY0hPDebQro8qtcuNSr0yuJHxsT2k2K3r6JMFnUVmVkZqLYQsmZVD9nau2
-	 K2a0t4YFN23Le3IuRchAJIf4KmRF8LR9yLkYxy+n0x1V1suOX5IYfEOQ52TGBRDhbm
-	 sAUHD/y1tG/sn4TVpQu45XnZGB8MDM6DB0tjnA5ergwru5CYi6/cyAm5TcBd1uJV1P
-	 yWLQ6qrS+p4dw==
-Message-ID: <15c913fd-6c13-4b0b-8277-6d5e3ebe85c0@kernel.org>
-Date: Mon, 3 Nov 2025 16:23:58 +0900
+	b=GwOFFC0Qu1g/MgQu4yB4BGazeSYVXu7QOTJ+EMkLVI5N1EIFimk3bn1scoQrD6vLC
+	 Evn9J2oxFzNX2KdKVdDmZ0XS4naB8WkFv1YBXXniCy7oV8GIcNkU4AVFd7VZm0pOeH
+	 E/dIFrMTSQ0q9jnaWOTnNGr2oUBbpYqhm3LzpVaqG93dMBejtWBMCCq4T0Xylgzj0+
+	 k4KReocg/4eFiPA9zBQK+mq2IbffujegIuTfbQq1WUEHY7Fv4BrDVgc6gtp2NyP0AI
+	 wbtkqReZ9p8BS+4ut/UwgOmK1SbuBxOt7mSCer/fPybYFflSsYlOsUJ6rnOlMbUfPs
+	 RsxmdR54fDyvg==
+Message-ID: <f0124d2d-880a-4c44-bd42-178838891b20@kernel.org>
+Date: Mon, 3 Nov 2025 16:30:34 +0900
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -135,9 +135,10 @@ On 11/3/25 16:18, Daniel Vacek wrote:
 > 
 > The question remains if this looks better?
 
-Hmmm... Matter of taste maybe ?
-Personally, I do like better having a single error path that cover all errors in
-blk_revalidate_disk_zones().
+Rereading everything, I think that Bart has a good point: moving the call to
+disk_free_zone_resources() in the error path of disk_update_zone_resources()
+allows doing the error handling without unfreezing and re-freezing the queue.
+That's better.
 
 
 -- 
