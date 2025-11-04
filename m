@@ -1,207 +1,681 @@
-Return-Path: <linux-btrfs+bounces-18665-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18666-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB747C31080
-	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 13:43:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E98D0C311A5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 14:01:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 997EC18944CA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 12:42:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 479A0189F80A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 13:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E63AF2EC542;
-	Tue,  4 Nov 2025 12:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F7D158DA3;
+	Tue,  4 Nov 2025 13:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="t2po4ymw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dofjR7yM";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="t2po4ymw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dofjR7yM"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="00i+KZDF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882402D8DA3
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 12:42:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E8E10F2
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 13:00:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762260138; cv=none; b=rC4DTGfP8unYK+ODvll6+u+P/SOH7HqlCW9nxgejynBM0h4ipwT9XXN0abHrntGSJQ32EwaZZTkDbMV6gbVYx/SgRF/yHDXxO67rCO5yM3SXPp3KV/YpkY9R8Eacw3+fGbbgNcxJ6LzWafMgs+ViAZciwMGEo7rit167owgc49I=
+	t=1762261255; cv=none; b=rnp82EJoaER+blAa0JM/OW+8bdezjIcyutXGlbPdtxKfzKdU8dKQqYxI9Q5M7VfCH+geptifcVaoOcPwHQ5typMjYiXVhKLSeO3QsTU5WGwyuj48vudkGpI55Detyh3vUn+TWsVGrEEmY9lG0fpQ+B18XvKh7grXf+XI0YdUkY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762260138; c=relaxed/simple;
-	bh=gR8k9hcil4t6MZaR8pcDqIsnghRiT3qRPIpREe7ZpHI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aRCUobCqCKKY/8gFvffRqvPexxAKOoGfKOka7stksdGC2JNX1dWshofyXGpKPJ7UAYvFPWtIoVtnpmNmz3xHM4cYmfSwyhKpTCPB5EWEzCNlGBLXLCCEZ7ZwssKSJOF6sDzBUDtFBxW42SfCPwe0sTNn4033rWyprwiVcR8Zlng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=t2po4ymw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dofjR7yM; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=t2po4ymw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dofjR7yM; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BB0292118C;
-	Tue,  4 Nov 2025 12:42:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762260134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Nor8wdBoIuiGnISw8EUnq57y9SkwuWb+No/Lg9Q/14=;
-	b=t2po4ymwq3x7o2u2fle0Bo4wsIrY8Ck6BEe5BRfudTbz23k65Cgh3XHFjcC27IG98TvwEo
-	5x0CMxuaJdK5OfwtFZZiVCZptdMx27uV9jJKM6V8afaDbJk+VQL+Rhs/LF8GyP21BsHl2d
-	q+FzjYDDRK5GAWWrGOn7WUrx6h3agHo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762260134;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Nor8wdBoIuiGnISw8EUnq57y9SkwuWb+No/Lg9Q/14=;
-	b=dofjR7yMFa5EDtxf3yZcXJHQqoX+AnJ3TGl9CHfmnoBnRjBcpHwPTeJBvaxc8NMcb5exQ1
-	WW1fW2PiMf5wcpCA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762260134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Nor8wdBoIuiGnISw8EUnq57y9SkwuWb+No/Lg9Q/14=;
-	b=t2po4ymwq3x7o2u2fle0Bo4wsIrY8Ck6BEe5BRfudTbz23k65Cgh3XHFjcC27IG98TvwEo
-	5x0CMxuaJdK5OfwtFZZiVCZptdMx27uV9jJKM6V8afaDbJk+VQL+Rhs/LF8GyP21BsHl2d
-	q+FzjYDDRK5GAWWrGOn7WUrx6h3agHo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762260134;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Nor8wdBoIuiGnISw8EUnq57y9SkwuWb+No/Lg9Q/14=;
-	b=dofjR7yMFa5EDtxf3yZcXJHQqoX+AnJ3TGl9CHfmnoBnRjBcpHwPTeJBvaxc8NMcb5exQ1
-	WW1fW2PiMf5wcpCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AFC19139A9;
-	Tue,  4 Nov 2025 12:42:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ss3lKqb0CWnpXwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 04 Nov 2025 12:42:14 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 55B93A28E6; Tue,  4 Nov 2025 13:42:14 +0100 (CET)
-Date: Tue, 4 Nov 2025 13:42:14 +0100
-From: Jan Kara <jack@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, 
-	brauner@kernel.org, Askar Safin <safinaskar@gmail.com>
-Subject: Re: [PATCH RFC 2/2] fs: fully sync all fses even for an emergency
- sync
-Message-ID: <ewespqy3nwdpdrwn46bsqapx4hzbliru2ieq2wggghqgwssepo@ucz67koqt23w>
-References: <cover.1762142636.git.wqu@suse.com>
- <7b7fd40c5fe440b633b6c0c741d96ce93eb5a89a.1762142636.git.wqu@suse.com>
- <aQiYZqX5aGn-FW56@infradead.org>
- <cbf7af56-c39a-4f42-b76d-0d1b3fecba9f@suse.com>
- <urm6i5idr36jcs7oby33mngrqaa6eu6jky3kubkr3fyhlt6lnd@wqrerkdn3vma>
- <414a076b-174d-414a-b629-9f396bce5538@suse.com>
+	s=arc-20240116; t=1762261255; c=relaxed/simple;
+	bh=J+K2W/s6kvVkhgVDeYn9XMz/+lrCnDGFEiGqYQLbnYs=;
+	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iuHFGoWX7GTz446wl599YN24mA1TGK6Vi2+ijghYQnsq+DM3j4LV95uRcfCJxOM5wqR1bCQz2cbEctuZdc2KNG6Tyr7oz+5alx9PfXpttLnECORkLY+2Box1ivqWuS0FqseKIsHRtnl8fpjT9cVBrNmn8fOsp6YfJo3whIVxNl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=00i+KZDF; arc=none smtp.client-ip=217.169.27.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
+Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
+	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
+	by mail.burntcomma.com (Postfix) with ESMTPS id 49CC62D5DE0;
+	Tue,  4 Nov 2025 13:00:48 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
+	s=mail; t=1762261248;
+	bh=GgIp8DDh7goYqjJL6Syu0E5tpF9EDnavQxNMl5u/CsE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=00i+KZDFEzQuKiGJQc+WrrK4MheVhkYHBA8eI7OooQvtkLAP5lFpZm45uy0bwvd9l
+	 iPIKErL7OG/qzkT+1WGInCsYnkYOdwmtT0XsdMGRH+Wjvw6vGpFKh1bItrBuWGTxpy
+	 lu9XsTvHxUBIE4yE+w3sh1dc5ITsYeMSpfjHvhb8=
+Message-ID: <6df747e0-b356-407d-bec1-efcfe2f5334b@harmstone.com>
+Date: Tue, 4 Nov 2025 13:00:48 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <414a076b-174d-414a-b629-9f396bce5538@suse.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,infradead.org,vger.kernel.org,zeniv.linux.org.uk,kernel.org,gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
+Mime-Version: 1.0
+Subject: Re: [PATCH v4 11/16] btrfs: move existing remaps before relocating
+ block group
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+References: <20251024181227.32228-1-mark@harmstone.com>
+ <20251024181227.32228-12-mark@harmstone.com>
+ <aQVOEFx9CvJQH7Bq@devvm12410.ftw0.facebook.com>
+Content-Language: en-US
+From: Mark Harmstone <mark@harmstone.com>
+Autocrypt: addr=mark@harmstone.com; keydata=
+ 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
+In-Reply-To: <aQVOEFx9CvJQH7Bq@devvm12410.ftw0.facebook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue 04-11-25 19:13:04, Qu Wenruo wrote:
-> [...]
-> > > > On Mon, Nov 03, 2025 at 02:37:29PM +1030, Qu Wenruo wrote:
-> > > > > At this stage, btrfs is only one super block update away to be fully committed.
-> > > > > I believe it's the more or less the same for other fses too.
-> > > > 
-> > > > Most file systems do not need a superblock update to commit data.
-> > > 
-> > > That's the main difference, btrfs always needs a superblock update to switch
-> > > metadata due to its metadata COW nature.
-> > > 
-> > > The only good news is, emergency sync is not that a hot path, we have a lot
-> > > of time to properly fix.
-> > 
-> > I'd say even better news is that emergency sync is used practically only
-> > when debugging the kernel. So we can do what we wish and will have to live
-> > with whatever pain we inflict onto ourselves ;).
+On 01/11/2025 12.02 am, Boris Burkov wrote:
+> On Fri, Oct 24, 2025 at 07:12:12PM +0100, Mark Harmstone wrote:
+>> If when relocating a block group we find that `remap_bytes` > 0 in its
+>> block group item, that means that it has been the destination block
+>> group for another that has been remapped.
+>>
+>> We need to seach the remap tree for any remap backrefs within this
+>> range, and move the data to a third block group. This is because
+>> otherwise btrfs_translate_remap() could end up following an unbounded
+>> chain of remaps, which would only get worse over time.
+>>
+>> We only relocate one block group at a time, so `remap_bytes` will only
+>> ever go down while we are doing this. Once we're finished we set the
+>> REMAPPED flag on the block group, which will permanently prevent any
+>> other data from being moved to within it.
+>>
+>> Signed-off-by: Mark Harmstone <mark@harmstone.com>
+>> ---
+>>   fs/btrfs/extent-tree.c |   6 +-
+>>   fs/btrfs/relocation.c  | 481 +++++++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 485 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+>> index 1c14e0c82c03..10dc6f8d2f71 100644
+>> --- a/fs/btrfs/extent-tree.c
+>> +++ b/fs/btrfs/extent-tree.c
+>> @@ -4545,7 +4545,8 @@ static noinline int find_free_extent(struct btrfs_root *root,
+>>   		    block_group->cached != BTRFS_CACHE_NO) {
+>>   			down_read(&space_info->groups_sem);
+>>   			if (list_empty(&block_group->list) ||
+>> -			    block_group->ro) {
+>> +			    block_group->ro ||
+>> +			    block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED) {
+>>   				/*
+>>   				 * someone is removing this block group,
+>>   				 * we can't jump into the have_block_group
+>> @@ -4579,7 +4580,8 @@ static noinline int find_free_extent(struct btrfs_root *root,
+>>   
+>>   		ffe_ctl->hinted = false;
+>>   		/* If the block group is read-only, we can skip it entirely. */
+>> -		if (unlikely(block_group->ro)) {
+>> +		if (unlikely(block_group->ro) ||
+>> +		    block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED) {
+>>   			if (ffe_ctl->for_treelog)
+>>   				btrfs_clear_treelog_bg(block_group);
+>>   			if (ffe_ctl->for_data_reloc)
+>> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+>> index cd53509c2fda..d31817379078 100644
+>> --- a/fs/btrfs/relocation.c
+>> +++ b/fs/btrfs/relocation.c
+>> @@ -3987,6 +3987,481 @@ static void adjust_block_group_remap_bytes(struct btrfs_trans_handle *trans,
+>>   		btrfs_inc_delayed_refs_rsv_bg_updates(fs_info);
+>>   }
+>>   
+>> +struct reloc_io_private {
+>> +	struct completion done;
+>> +	refcount_t pending_refs;
+>> +	blk_status_t status;
+>> +};
+>> +
+>> +static void reloc_endio(struct btrfs_bio *bbio)
+>> +{
+>> +	struct reloc_io_private *priv = bbio->private;
+>> +
+>> +	if (bbio->bio.bi_status)
+>> +		WRITE_ONCE(priv->status, bbio->bio.bi_status);
+>> +
+>> +	if (refcount_dec_and_test(&priv->pending_refs))
+>> +		complete(&priv->done);
+>> +
+>> +	bio_put(&bbio->bio);
+>> +}
+>> +
+>> +static int copy_remapped_data_io(struct btrfs_fs_info *fs_info,
+>> +				 struct reloc_io_private *priv,
+>> +				 struct page **pages, u64 addr, u64 length,
+>> +				 bool do_write)
+>> +{
+>> +	struct btrfs_bio *bbio;
+>> +	unsigned long i = 0;
+>> +	blk_opf_t op = do_write ? REQ_OP_WRITE : REQ_OP_READ;
+>> +
+>> +	init_completion(&priv->done);
+>> +	refcount_set(&priv->pending_refs, 1);
+>> +	priv->status = 0;
+>> +
+>> +	bbio = btrfs_bio_alloc(BIO_MAX_VECS, op, fs_info, reloc_endio,
+>> +			       priv);
+>> +	bbio->bio.bi_iter.bi_sector = addr >> SECTOR_SHIFT;
+>> +
+>> +	do {
+>> +		size_t bytes = min_t(u64, length, PAGE_SIZE);
+>> +
+>> +		if (bio_add_page(&bbio->bio, pages[i], bytes, 0) < bytes) {
+>> +			refcount_inc(&priv->pending_refs);
+>> +			btrfs_submit_bbio(bbio, 0);
+>> +
+>> +			bbio = btrfs_bio_alloc(BIO_MAX_VECS, op, fs_info,
+>> +					       reloc_endio, priv);
+>> +			bbio->bio.bi_iter.bi_sector = addr >> SECTOR_SHIFT;
+>> +			continue;
+>> +		}
+>> +
+>> +		i++;
+>> +		addr += bytes;
+>> +		length -= bytes;
+>> +	} while (length);
+>> +
+>> +	refcount_inc(&priv->pending_refs);
+>> +	btrfs_submit_bbio(bbio, 0);
+>> +
+>> +	if (!refcount_dec_and_test(&priv->pending_refs))
+>> +		wait_for_completion_io(&priv->done);
+>> +
+>> +	return blk_status_to_errno(READ_ONCE(priv->status));
+>> +}
+>> +
+>> +static int copy_remapped_data(struct btrfs_fs_info *fs_info, u64 old_addr,
+>> +			      u64 new_addr, u64 length)
+>> +{
+>> +	int ret;
+>> +	struct page **pages;
+>> +	unsigned int nr_pages;
+>> +	struct reloc_io_private priv;
+>> +
+>> +	nr_pages = DIV_ROUND_UP(length, PAGE_SIZE);
 > 
-> Then what about some documents around the sysrq-s usage?
+> length + (PAGE_SIZE - 1) >> PAGE_SHIFT avoids the division
+
+Nice. The compiler optimizes a / 4096 to a >> 12 anyway, so it's 
+probably the same asm.
+> You may also want to bail out if you detect the bs > ps case Qu is
+> working on, as I believe that will require using large folios here.
+
+Yes, good catch. For now I'll make it so it'll refuse to mount in this case.
+
+>> +	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
+>> +	if (!pages)
+>> +		return -ENOMEM;
+>> +	ret = btrfs_alloc_page_array(nr_pages, pages, 0);
+>> +	if (ret) {
+>> +		ret = -ENOMEM;
+>> +		goto end;
+>> +	}
+>> +
+>> +	ret = copy_remapped_data_io(fs_info, &priv, pages, old_addr, length,
+>> +				    false);
+>> +	if (ret)
+>> +		goto end;
+>> +
+>> +	ret = copy_remapped_data_io(fs_info, &priv, pages, new_addr, length,
+>> +				    true);
+>> +
+>> +end:
+>> +	for (unsigned int i = 0; i < nr_pages; i++) {
+>> +		if (pages[i])
+>> +			__free_page(pages[i]);
+>> +	}
+>> +	kfree(pages);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int do_copy(struct btrfs_fs_info *fs_info, u64 old_addr, u64 new_addr,
+>> +		   u64 length)
+>> +{
+>> +	int ret;
+>> +
+>> +	/* Copy 1MB at a time, to avoid using too much memory. */
 > 
-> The current docs only shows "Will attempt to sync all mounted filesystems",
-> thus I guess that's the reason why the original reporter is testing it,
-> expecting it's a proper way to sync the fses.
+> Seems sort of arbitrary.
 
-The key is in the word "attempt" :). But yes, we could expand the
-description to something like "Will try to writeback data on all mounted
-filesystems. There are no guarantees when the data actually hits the
-storage or whether all of the data ever hits it. It is just a desperate
-attempt to limit data loss if possible."
+It is, but so is e.g. how much data we process in async discard at once. 
+We can always tweak it later if it turns out to be too big or too small.
 
-> > > > > The problem is the next step, sync_bdevs().
-> > > > > Normally other fses have their super block already updated in the page
-> > > > > cache of the block device, but btrfs only updates the super block during
-> > > > > full transaction commit.
-> > > > > 
-> > > > > So sync_bdevs() may work for other fses, but not for btrfs, btrfs is
-> > > > > still using its older super block, all pointing back to the old metadata
-> > > > > and data.
-> > > > > 
-> > > > 
-> > > > At least for XFS, no metadata is written through the block device
-> > > > mapping anyway.
-> > > > 
-> > > 
-> > > So does that mean sync_inodes_one_sb() on XFS (or even ext4?) will always
-> > > submit needed metadata (journal?) to disk?
-> > 
-> > No, sync_inodes_one_sb() will just prepare transaction in memory (both for
-> > ext4 and xfs). For ext4 sync_fs_one_sb() with wait == 0 will start writeback
-> > of this transaction to the disk and sync_fs_one_sb() with wait == 1 will make
-> > sure the transaction is fully written out (committed). For xfs
-> > sync_fs_one_sb() with wait == 0 does nothing, sync_fs_one_sb() with wait
-> > == 1 makes sure the transaction is committed.
+> How does this relate to the max via BIO_MAX_VECS?
+
+It doesn't, but it probably should. BIO_MAX_VECS == 256, and 256 * 4KB 
+== 1MB.
+
+So until I fix it to use large folios it should also be capped at 
+BIO_MAX_VECS << PAGE_SHIFT (which happens to be the same at the moment).
+
+>> +
+>> +	do {
+>> +		u64 to_copy = min_t(u64, length, SZ_1M);
+>> +
+>> +		ret = copy_remapped_data(fs_info, old_addr, new_addr,
+>> +					 to_copy);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		if (to_copy == length)
+>> +			break;
+>> +
+>> +		old_addr += to_copy;
+>> +		new_addr += to_copy;
+>> +		length -= to_copy;
+>> +	} while (true);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int add_remap_item(struct btrfs_trans_handle *trans,
+>> +			  struct btrfs_path *path, u64 new_addr, u64 length,
+>> +			  u64 old_addr)
+>> +{
+>> +	struct btrfs_fs_info *fs_info = trans->fs_info;
+>> +	struct btrfs_remap remap;
+>> +	struct btrfs_key key;
+>> +	struct extent_buffer *leaf;
+>> +	int ret;
+>> +
+>> +	key.objectid = old_addr;
+>> +	key.type = BTRFS_REMAP_KEY;
+>> +	key.offset = length;
+>> +
+>> +	ret = btrfs_insert_empty_item(trans, fs_info->remap_root, path,
+>> +				      &key, sizeof(struct btrfs_remap));
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	leaf = path->nodes[0];
+>> +
+>> +	btrfs_set_stack_remap_address(&remap, new_addr);
+>> +
+>> +	write_extent_buffer(leaf, &remap,
+>> +			    btrfs_item_ptr_offset(leaf, path->slots[0]),
+>> +			    sizeof(struct btrfs_remap));
+>> +
+>> +	btrfs_release_path(path);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int add_remap_backref_item(struct btrfs_trans_handle *trans,
+>> +				  struct btrfs_path *path, u64 new_addr,
+>> +				  u64 length, u64 old_addr)
+>> +{
+>> +	struct btrfs_fs_info *fs_info = trans->fs_info;
+>> +	struct btrfs_remap remap;
+>> +	struct btrfs_key key;
+>> +	struct extent_buffer *leaf;
+>> +	int ret;
+>> +
+>> +	key.objectid = new_addr;
+>> +	key.type = BTRFS_REMAP_BACKREF_KEY;
+>> +	key.offset = length;
+>> +
+>> +	ret = btrfs_insert_empty_item(trans, fs_info->remap_root,
+>> +				      path, &key, sizeof(struct btrfs_remap));
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	leaf = path->nodes[0];
+>> +
+>> +	btrfs_set_stack_remap_address(&remap, old_addr);
+>> +
+>> +	write_extent_buffer(leaf, &remap,
+>> +			    btrfs_item_ptr_offset(leaf, path->slots[0]),
+>> +			    sizeof(struct btrfs_remap));
+>> +
+>> +	btrfs_release_path(path);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int move_existing_remap(struct btrfs_fs_info *fs_info,
+>> +			       struct btrfs_path *path,
+>> +			       struct btrfs_block_group *bg, u64 new_addr,
+>> +			       u64 length, u64 old_addr)
+>> +{
+>> +	struct btrfs_trans_handle *trans;
+>> +	struct extent_buffer *leaf;
+>> +	struct btrfs_remap *remap_ptr, remap;
+>> +	struct btrfs_key key, ins;
+>> +	u64 dest_addr, dest_length, min_size;
+>> +	struct btrfs_block_group *dest_bg;
+>> +	int ret;
+>> +	bool is_data = bg->flags & BTRFS_BLOCK_GROUP_DATA;
+>> +	struct btrfs_space_info *sinfo = bg->space_info;
+>> +	bool mutex_taken = false, bg_needs_free_space;
+>> +
+>> +	spin_lock(&sinfo->lock);
+>> +	btrfs_space_info_update_bytes_may_use(sinfo, length);
+>> +	spin_unlock(&sinfo->lock);
+>> +
+>> +	if (is_data)
+>> +		min_size = fs_info->sectorsize;
+>> +	else
+>> +		min_size = fs_info->nodesize;
+>> +
+>> +	ret = btrfs_reserve_extent(fs_info->fs_root, length, length, min_size,
+>> +				   0, 0, &ins, is_data, false);
+>> +	if (ret) {
+>> +		spin_lock(&sinfo->lock);
+>> +		btrfs_space_info_update_bytes_may_use(sinfo, -length);
+>> +		spin_unlock(&sinfo->lock);
+>> +		return ret;
+>> +	}
+>> +
+>> +	dest_addr = ins.objectid;
+>> +	dest_length = ins.offset;
+>> +
+>> +	if (!is_data && !IS_ALIGNED(dest_length, fs_info->nodesize)) {
+>> +		u64 new_length = ALIGN_DOWN(dest_length, fs_info->nodesize);
+>> +
+>> +		btrfs_free_reserved_extent(fs_info, dest_addr + new_length,
+>> +					   dest_length - new_length, 0);
+>> +
+>> +		dest_length = new_length;
+>> +	}
+>> +
+>> +	trans = btrfs_join_transaction(fs_info->remap_root);
+>> +	if (IS_ERR(trans)) {
+>> +		ret = PTR_ERR(trans);
+>> +		trans = NULL;
+>> +		goto end;
+>> +	}
+>> +
+>> +	mutex_lock(&fs_info->remap_mutex);
+>> +	mutex_taken = true;
+>> +
+>> +	/* Find old remap entry. */
+>> +
+>> +	key.objectid = old_addr;
+>> +	key.type = BTRFS_REMAP_KEY;
+>> +	key.offset = length;
+>> +
+>> +	ret = btrfs_search_slot(trans, fs_info->remap_root, &key,
+>> +				path, 0, 1);
+>> +	if (ret == 1) {
+>> +		/*
+>> +		 * Not a problem if the remap entry wasn't found: that means
+>> +		 * that another transaction has deallocated the data.
+>> +		 * move_existing_remaps() loops until the BG contains no
+>> +		 * remaps, so we can just return 0 in this case.
+>> +		 */
 > 
-> Then my question is, why EXT4 (and XFS) is fine with the emergency sync with
-> a power loss, at least according to the original reporter.
-> 
-> Is the journal already committed for every metadata changes?
+> I agree with this reasoning. However, what prevents someone from
+> deallocating this data after we have found the entry? Is there some
+> higher locking that protects us? As far as I can tell if the last extent
+> goes away we could delete the remap entry while simultaneously moving
+> it here?
 
-No it is not. For ext4 if the transaction grows large we'll commit it. Also
-if it gets too old (5s by default), we'll commit it. XFS will likely have
-similar constraints. So data loss is limited but definitely not completely
-avoided. But that never was the point of emergency sync.
+Yes, as you said in your other message we're protected by the remap_mutex.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>> +		btrfs_release_path(path);
+>> +		ret = 0;
+>> +		goto end;
+>> +	} else if (ret) {
+>> +		goto end;
+>> +	}
+>> +
+>> +	ret = do_copy(fs_info, new_addr, dest_addr, dest_length);
+>> +	if (ret)
+>> +		goto end;
+>> +
+>> +	/* Change data of old remap entry. */
+>> +
+>> +	leaf = path->nodes[0];
+>> +
+>> +	remap_ptr = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_remap);
+>> +	btrfs_set_remap_address(leaf, remap_ptr, dest_addr);
+>> +
+>> +	btrfs_mark_buffer_dirty(trans, leaf);
+>> +
+>> +	if (dest_length != length) {
+>> +		key.offset = dest_length;
+>> +		btrfs_set_item_key_safe(trans, path, &key);
+>> +	}
+>> +
+>> +	btrfs_release_path(path);
+>> +
+>> +	if (dest_length != length) {
+>> +		/* Add remap item for remainder. */
+>> +
+>> +		ret = add_remap_item(trans, path, new_addr + dest_length,
+>> +				     length - dest_length,
+>> +				     old_addr + dest_length);
+>> +		if (ret)
+>> +			goto end;
+>> +	}
+>> +
+>> +	/* Change or remove old backref. */
+>> +
+>> +	key.objectid = new_addr;
+>> +	key.type = BTRFS_REMAP_BACKREF_KEY;
+>> +	key.offset = length;
+>> +
+>> +	ret = btrfs_search_slot(trans, fs_info->remap_root, &key,
+>> +				path, -1, 1);
+>> +	if (ret) {
+>> +		if (ret == 1) {
+>> +			btrfs_release_path(path);
+>> +			ret = -ENOENT;
+>> +		}
+>> +		goto end;
+>> +	}
+>> +
+>> +	leaf = path->nodes[0];
+>> +
+>> +	if (dest_length == length) {
+>> +		ret = btrfs_del_item(trans, fs_info->remap_root, path);
+>> +		if (ret) {
+>> +			btrfs_release_path(path);
+>> +			goto end;
+>> +		}
+>> +	} else {
+>> +		key.objectid += dest_length;
+>> +		key.offset -= dest_length;
+>> +		btrfs_set_item_key_safe(trans, path, &key);
+>> +
+>> +		btrfs_set_stack_remap_address(&remap, old_addr + dest_length);
+>> +
+>> +		write_extent_buffer(leaf, &remap,
+>> +				    btrfs_item_ptr_offset(leaf, path->slots[0]),
+>> +				    sizeof(struct btrfs_remap));
+>> +	}
+>> +
+>> +	btrfs_release_path(path);
+>> +
+>> +	/* Add new backref. */
+>> +
+>> +	ret = add_remap_backref_item(trans, path, dest_addr, dest_length,
+>> +				     old_addr);
+>> +	if (ret)
+>> +		goto end;
+>> +
+>> +	adjust_block_group_remap_bytes(trans, bg, -dest_length);
+>> +
+>> +	ret = btrfs_add_to_free_space_tree(trans, new_addr, dest_length);
+>> +	if (ret)
+>> +		goto end;
+>> +
+>> +	dest_bg = btrfs_lookup_block_group(fs_info, dest_addr);
+>> +
+>> +	adjust_block_group_remap_bytes(trans, dest_bg, dest_length);
+>> +
+>> +	mutex_lock(&dest_bg->free_space_lock);
+>> +	bg_needs_free_space = test_bit(BLOCK_GROUP_FLAG_NEEDS_FREE_SPACE,
+>> +				       &dest_bg->runtime_flags);
+>> +	mutex_unlock(&dest_bg->free_space_lock);
+>> +	btrfs_put_block_group(dest_bg);
+>> +
+>> +	if (bg_needs_free_space) {
+>> +		ret = btrfs_add_block_group_free_space(trans, dest_bg);
+>> +		if (ret)
+>> +			goto end;
+>> +	}
+>> +
+>> +	ret = btrfs_remove_from_free_space_tree(trans, dest_addr, dest_length);
+>> +	if (ret) {
+>> +		btrfs_remove_from_free_space_tree(trans, new_addr,
+>> +						  dest_length);
+>> +		goto end;
+>> +	}
+>> +
+>> +	ret = 0;
+>> +
+>> +end:
+>> +	if (mutex_taken)
+>> +		mutex_unlock(&fs_info->remap_mutex);
+>> +
+>> +	btrfs_dec_block_group_reservations(fs_info, dest_addr);
+>> +
+>> +	if (ret) {
+>> +		btrfs_free_reserved_extent(fs_info, dest_addr, dest_length, 0);
+>> +
+>> +		if (trans) {
+>> +			btrfs_abort_transaction(trans, ret);
+>> +			btrfs_end_transaction(trans);
+>> +		}
+>> +	} else {
+>> +		dest_bg = btrfs_lookup_block_group(fs_info, dest_addr);
+>> +		btrfs_free_reserved_bytes(dest_bg, dest_length, 0);
+>> +		btrfs_put_block_group(dest_bg);
+>> +
+>> +		ret = btrfs_commit_transaction(trans);
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int move_existing_remaps(struct btrfs_fs_info *fs_info,
+>> +				struct btrfs_block_group *bg,
+>> +				struct btrfs_path *path)
+>> +{
+>> +	int ret;
+>> +	struct btrfs_key key;
+>> +	struct extent_buffer *leaf;
+>> +	struct btrfs_remap *remap;
+>> +	u64 old_addr;
+>> +
+>> +	/* Look for backrefs in remap tree. */
+>> +
+>> +	while (bg->remap_bytes > 0) {
+>> +		key.objectid = bg->start;
+>> +		key.type = BTRFS_REMAP_BACKREF_KEY;
+>> +		key.offset = 0;
+>> +
+>> +		ret = btrfs_search_slot(NULL, fs_info->remap_root, &key, path,
+>> +					0, 0);
+>> +		if (ret < 0)
+>> +			return ret;
+>> +
+>> +		leaf = path->nodes[0];
+>> +
+>> +		if (path->slots[0] >= btrfs_header_nritems(leaf)) {
+>> +			ret = btrfs_next_leaf(fs_info->remap_root, path);
+>> +			if (ret < 0) {
+>> +				btrfs_release_path(path);
+>> +				return ret;
+>> +			}
+>> +
+>> +			if (ret) {
+>> +				btrfs_release_path(path);
+>> +				break;
+>> +			}
+>> +
+>> +			leaf = path->nodes[0];
+>> +		}
+>> +
+>> +		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
+>> +
+>> +		if (key.type != BTRFS_REMAP_BACKREF_KEY) {
+>> +			path->slots[0]++;
+>> +
+>> +			if (path->slots[0] >= btrfs_header_nritems(leaf)) {
+>> +				ret = btrfs_next_leaf(fs_info->remap_root, path);
+>> +				if (ret < 0) {
+>> +					btrfs_release_path(path);
+>> +					return ret;
+>> +				}
+>> +
+>> +				if (ret) {
+>> +					btrfs_release_path(path);
+>> +					break;
+>> +				}
+>> +
+>> +				leaf = path->nodes[0];
+>> +			}
+>> +		}
+>> +
+>> +		remap = btrfs_item_ptr(leaf, path->slots[0],
+>> +				       struct btrfs_remap);
+>> +
+>> +		old_addr = btrfs_remap_address(leaf, remap);
+>> +
+>> +		btrfs_release_path(path);
+>> +
+>> +		ret = move_existing_remap(fs_info, path, bg, key.objectid,
+>> +					  key.offset, old_addr);
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+>> +
+>> +	BUG_ON(bg->remap_bytes > 0);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   static int create_remap_tree_entries(struct btrfs_trans_handle *trans,
+>>   				     struct btrfs_path *path,
+>>   				     struct btrfs_block_group *bg)
+>> @@ -4564,6 +5039,12 @@ int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start,
+>>   	WARN_ON(ret && ret != -EAGAIN);
+>>   
+>>   	if (*using_remap_tree) {
+>> +		if (bg->remap_bytes != 0) {
+>> +			ret = move_existing_remaps(fs_info, bg, path);
+>> +			if (ret)
+>> +				goto out;
+>> +		}
+>> +
+>>   		ret = start_block_group_remapping(fs_info, path, bg);
+>>   		goto out;
+>>   	}
+>> -- 
+>> 2.49.1
+>>
+
 
