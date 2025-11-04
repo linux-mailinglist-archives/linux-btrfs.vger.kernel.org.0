@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-18704-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18703-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3738C33100
-	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 22:29:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 823ACC33124
+	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 22:29:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A073934C718
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 21:29:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C05B41891F1B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 21:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E9BB30594A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7BD3054CE;
 	Tue,  4 Nov 2025 21:27:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lDsbMl2I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sMXjp4sP"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED7B304BB5;
-	Tue,  4 Nov 2025 21:27:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398673043D6;
+	Tue,  4 Nov 2025 21:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762291628; cv=none; b=KoTRXH8QukNMZAKQiq/Wj5obDHHG19WmZ71W7bW3ItL0eX6fiA84f2Fl8A8VecmEUviY3P7rfQNo+VdO+y1ssb259XpjnCcv7rYZUlQ43ayd4eI8YLs4/4v3kEKw5SU/Oh1qB0aJ45vpiJUKjag4F/Gpi9e8HqF/Zx3P66ygTR4=
+	t=1762291628; cv=none; b=dgA2DjV7j7dM3//8o44xIkqCmbnHBpzcRAfBeFqaf4P+rFh3YQBHdA+2M8AtmDNkmTBaMeszLsMcDI1xWqlpBh9LIh1H2B/jC2aPaAl9LDyAFzq7B7mZfVGl+f70kIK5L8Bg8pGB6sRItQ0yFt2PLA0yb6KH8pg01XwImeM97qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762291628; c=relaxed/simple;
-	bh=OQJzlNo20cxcnEk3FJgiDo6Dfxs8oL2XA0KXotU9jrQ=;
+	bh=ZQitxpNbla8eatdIt11qa+C2wAmNOTfTTPJx07AuheM=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t85S2Yo7TqkdVuwOK5vovhMIYnOVObGVVtSHJCd+gFN1Nlb7EcWUDK3cclZOaDCJJgF74+k5q+8vR6yTF2wAdpbDN2YePrenFwXpbF9la4iQNVMMssABXZ8P6qsO93M/IHfeH5pj0q/6bUrr82cf+iOJMirSbIiS8J9q2/12z+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lDsbMl2I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56E1BC4CEF8;
-	Tue,  4 Nov 2025 21:27:04 +0000 (UTC)
+	 MIME-Version; b=OAAVVqJBL4YK2Lez8DdXWjPfhdR7XeL1JTW/CB9315vV+74GJaiH5yhsEr5wvJZR88EcC3NkMV+i0heZYg6RW15qOx3YMIKONOELtNNwRCZZ8rkxawmgvepp2Bj34UCtEmjgp/mKB1uyEzcd4/byMgKcNN/L/RPE0y0mMlC3X/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sMXjp4sP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FEE0C16AAE;
+	Tue,  4 Nov 2025 21:27:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762291626;
-	bh=OQJzlNo20cxcnEk3FJgiDo6Dfxs8oL2XA0KXotU9jrQ=;
+	s=k20201202; t=1762291628;
+	bh=ZQitxpNbla8eatdIt11qa+C2wAmNOTfTTPJx07AuheM=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=lDsbMl2Ib95UWzVMEszHNVW0LZ/UQVhAG+7vl4sAaW1//W859fe04tmmAL4eLHg7c
-	 GaWplzCjr3z9cPOImzf8OPTBIGFKA5LXZGTA0fNLgE2HRZPF2UkmvUAkY0Kn6S/uSx
-	 qO/cmb8v878KjoCFCVI1X6S3MhdJNSGoS7jA3FVrvG5SSNfLylmdQwlNE2JL7RqIuP
-	 xVhT5AV/HkmBfFyHSH5e/2DUxH4FdgKzN8YPiEP2gOI7hzf67XKLxBHJfD3+zmuAhV
-	 a2lR3akvoElHY5EvhrhacYCbH9SdZdUkZNp3ddaYR8va2X3KTO57rOK/2tumhhOrQ/
-	 SaRLUg+iM16XQ==
+	b=sMXjp4sPvYyhvfNDO+HaY+mz76FAj1m1xRua75qET13g6hbvwAUMi1sTxX6/xJ1Py
+	 2Xmc6XOrcPWCN7M/UQPpE3+nWvYzXhTVyZojCFhLRczFrRy12Pp8oWmxiB7Yu/kR3b
+	 xPcJzh1q2XwtJACOz0UmJq0HOezj6SW7KDA4DtfL8uIw9OL2YRFXBx860Se79uZZtS
+	 zqAIwtyfuC4vDKyv6DMg+1gutR68lcqCHLTvcyAyy1kGyGUnQQ9Zz/DCFQZ8F8ISvC
+	 dGt7p6TpMRnXI1YY+6RkeZM3ZONSrpzk8IvSD5yJXrwF3A+HfGWkM46G74s9GuEz2r
+	 H1OjBBMrQ4cGw==
 From: Damien Le Moal <dlemoal@kernel.org>
 To: Jens Axboe <axboe@kernel.dk>,
 	linux-block@vger.kernel.org,
@@ -56,9 +56,9 @@ To: Jens Axboe <axboe@kernel.dk>,
 	Carlos Maiolino <cem@kernel.org>,
 	linux-btrfs@vger.kernel.org,
 	David Sterba <dsterba@suse.com>
-Subject: [PATCH v4 14/15] btrfs: use blkdev_report_zones_cached()
-Date: Wed,  5 Nov 2025 06:22:48 +0900
-Message-ID: <20251104212249.1075412-15-dlemoal@kernel.org>
+Subject: [PATCH v4 15/15] xfs: use blkdev_report_zones_cached()
+Date: Wed,  5 Nov 2025 06:22:49 +0900
+Message-ID: <20251104212249.1075412-16-dlemoal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251104212249.1075412-1-dlemoal@kernel.org>
 References: <20251104212249.1075412-1-dlemoal@kernel.org>
@@ -70,59 +70,46 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Modify btrfs_get_dev_zones() and btrfs_sb_log_location_bdev() to replace
-the call to blkdev_report_zones() with blkdev_report_zones_cached() to
-speed-up mount operations. btrfs_get_dev_zone_info() is also modified to
-take into account the BLK_ZONE_COND_ACTIVE condition, which is
-equivalent to either BLK_ZONE_COND_IMP_OPEN, BLK_ZONE_COND_EXP_OPEN or
-BLK_ZONE_COND_CLOSED.
+Modify xfs_mount_zones() to replace the call to blkdev_report_zones()
+with blkdev_report_zones_cached() to speed-up mount operations.
+Since this causes xfs_zone_validate_seq() to see zones with the
+BLK_ZONE_COND_ACTIVE condition, this function is also modified to acept
+this condition as valid.
 
 With this change, mounting a freshly formatted large capacity (30 TB)
-SMR HDD completes under 100ms compared to over 1.8s before.
+SMR HDD completes under 2s compared to over 4.7s before.
 
 Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
-Acked-by: David Sterba <dsterba@suse.com>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/zoned.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ fs/xfs/libxfs/xfs_zones.c | 1 +
+ fs/xfs/xfs_zone_alloc.c   | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 0ea0df18a8e4..a16b1a896c78 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -264,8 +264,8 @@ static int btrfs_get_dev_zones(struct btrfs_device *device, u64 pos,
- 		}
- 	}
+diff --git a/fs/xfs/libxfs/xfs_zones.c b/fs/xfs/libxfs/xfs_zones.c
+index b0791a71931c..b40f71f878b5 100644
+--- a/fs/xfs/libxfs/xfs_zones.c
++++ b/fs/xfs/libxfs/xfs_zones.c
+@@ -95,6 +95,7 @@ xfs_zone_validate_seq(
+ 	case BLK_ZONE_COND_IMP_OPEN:
+ 	case BLK_ZONE_COND_EXP_OPEN:
+ 	case BLK_ZONE_COND_CLOSED:
++	case BLK_ZONE_COND_ACTIVE:
+ 		return xfs_zone_validate_wp(zone, rtg, write_pointer);
+ 	case BLK_ZONE_COND_FULL:
+ 		return xfs_zone_validate_full(zone, rtg, write_pointer);
+diff --git a/fs/xfs/xfs_zone_alloc.c b/fs/xfs/xfs_zone_alloc.c
+index 040402240807..9c8587622692 100644
+--- a/fs/xfs/xfs_zone_alloc.c
++++ b/fs/xfs/xfs_zone_alloc.c
+@@ -1239,7 +1239,7 @@ xfs_mount_zones(
+ 	trace_xfs_zones_mount(mp);
  
--	ret = blkdev_report_zones(device->bdev, pos >> SECTOR_SHIFT, *nr_zones,
--				  copy_zone_info_cb, zones);
-+	ret = blkdev_report_zones_cached(device->bdev, pos >> SECTOR_SHIFT,
-+					 *nr_zones, copy_zone_info_cb, zones);
- 	if (ret < 0) {
- 		btrfs_err(device->fs_info,
- 				 "zoned: failed to read zone %llu on %s (devid %llu)",
-@@ -494,6 +494,7 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
- 			case BLK_ZONE_COND_IMP_OPEN:
- 			case BLK_ZONE_COND_EXP_OPEN:
- 			case BLK_ZONE_COND_CLOSED:
-+			case BLK_ZONE_COND_ACTIVE:
- 				__set_bit(nreported, zone_info->active_zones);
- 				nactive++;
- 				break;
-@@ -896,9 +897,9 @@ int btrfs_sb_log_location_bdev(struct block_device *bdev, int mirror, int rw,
- 	if (sb_zone + 1 >= nr_zones)
- 		return -ENOENT;
- 
--	ret = blkdev_report_zones(bdev, zone_start_sector(sb_zone, bdev),
--				  BTRFS_NR_SB_LOG_ZONES, copy_zone_info_cb,
--				  zones);
-+	ret = blkdev_report_zones_cached(bdev, zone_start_sector(sb_zone, bdev),
-+					 BTRFS_NR_SB_LOG_ZONES,
-+					 copy_zone_info_cb, zones);
- 	if (ret < 0)
- 		return ret;
- 	if (unlikely(ret != BTRFS_NR_SB_LOG_ZONES))
+ 	if (bdev_is_zoned(bt->bt_bdev)) {
+-		error = blkdev_report_zones(bt->bt_bdev,
++		error = blkdev_report_zones_cached(bt->bt_bdev,
+ 				XFS_FSB_TO_BB(mp, mp->m_sb.sb_rtstart),
+ 				mp->m_sb.sb_rgcount, xfs_get_zone_info_cb, &iz);
+ 		if (error < 0)
 -- 
 2.51.0
 
