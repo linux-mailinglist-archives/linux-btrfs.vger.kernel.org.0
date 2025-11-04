@@ -1,123 +1,156 @@
-Return-Path: <linux-btrfs+bounces-18688-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18689-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22FD5C3300F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 22:09:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A960CC33064
+	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 22:26:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4158434B317
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 21:09:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E6184247C8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 21:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 153982EB5CD;
-	Tue,  4 Nov 2025 21:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 972E72FCC10;
+	Tue,  4 Nov 2025 21:26:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="w7/ksUyu";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cymz34Cf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="opscmHY0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579FAD27E
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 21:09:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEFF61A9F90;
+	Tue,  4 Nov 2025 21:26:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762290566; cv=none; b=DUKfQEISrwpTC2nMDXbFKPq7scCNN9twj0ihi4jPOQqRPOBiuViq7SFRIzR8iwhbAGoy8ERA4XpOJ7E30zirLPikHaCI5cPqjES04KMOt6/F+h4rBLNDn3x2Qtn1XAJjRi7CsniSzAvgvGSmEGxoaLjK04Wcz4I8GO5vCrRdOEE=
+	t=1762291597; cv=none; b=Khjj7XXnFIgC2mY962kFXfNPxRkIyApEhJjR5C8UrwzNkM6tIxKT3ROQ8M5ihUb1755UvPczVgqyFuLcjMCJ+1Vv9VgaBHF9qlJonN2vCqJ8Zj01kct8ANnHdIPCEXsuSKdMutZKTbI0fhpbSicqiu1jg7pqiXVY0XsCEl0uip4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762290566; c=relaxed/simple;
-	bh=0ybOxKIqtLT1IZWv+8aCH/MFdm9cVasQLZhcDTLZdK0=;
-	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=tWLoQy4NLCGtAY52fnluaCTMlrWIBv12gAgnjpRvJZWMTtdxieCxEthLzlOoCpXIYOeul/rIzDF4niYYE6RvNXAE330JS043TarngVt/LxyOczk0+rA+LjVzUAaKysYxMAFDd1qhgtWBGNrhtR3W5oiuPNI4NowjcCXNbv6c/7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=w7/ksUyu; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cymz34Cf; arc=none smtp.client-ip=103.168.172.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfout.phl.internal (Postfix) with ESMTP id 694B1EC053F;
-	Tue,  4 Nov 2025 16:09:22 -0500 (EST)
-Received: from phl-imap-01 ([10.202.2.91])
-  by phl-compute-01.internal (MEProxy); Tue, 04 Nov 2025 16:09:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	colorremedies.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to; s=fm3; t=1762290562; x=1762376962; bh=olmhSQmSXuOG04XybcRaJ
-	xNvNegKi3b+6TLg94vQ5Zw=; b=w7/ksUyufiXJ5i8YGnTcpKgISHT7bKsG+65GR
-	A/fVHE5nqAHXpAkxVazaL30xTIBYIxwVhOkkt68bSq6qYEudv/JYDaQBPJQdlDmH
-	rzigCxPyVyjspu/uPMq/8Qyzl/EF6Y9ewOjTR4/0halE0xOzBW+32V8Iwoh8piF4
-	LFnNzm+TTIIYn1AQPCpXLoZymg8BbYhcihmRDjlgksFu+frnFCWXAQ9Ae38i2PBU
-	u39JE/Ez0my7evADhJ2SG6zal70d3XUnZVTG0OTzPgp7wSOXgfqRFD76UXNqtWdF
-	sen07N7iwu0aSf5QXbwdldV7cc7J4xVDr0um4qoBJebLUNDEQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm3; t=1762290562; x=1762376962; bh=o
-	lmhSQmSXuOG04XybcRaJxNvNegKi3b+6TLg94vQ5Zw=; b=cymz34CfvlO0v61ee
-	bQjmxM6LJssJfzF48drflkouTwYyYoJA8DuwWHytdZv0Qzod+qlcwoUD/xQUWqmX
-	5eBfvRpP6G1CVBmaChGzuQTRAD/IIImGlyiuIO/BKo/cCNbn/DCdYRgCYVCgcyWz
-	pqcGkvHR4sNUf3Af+Yeqy4WdqV06ofHkS5fbHpxtYhfW6cECNWRa+BfNsITt/roF
-	43SqBPTMoIzKYwURY3TMJqoWJLXdz9u4BmVzpWYaQHECWGhzG1Ep+dKv3NbGq+8R
-	u+p6bwF2gTbRpBrssMRwcbt+WbuvFmDBAT+kEFtINApmK0OE/q5NGtuO5eCo220a
-	1jBGw==
-X-ME-Sender: <xms:gmsKafDOJL8dTxr8Y7ItzTHSo2fdhIWaX24v7uW-SbbLOse_qu4zcQ>
-    <xme:gmsKaQWQZjVCywdwUgQH6k9UKJsrMxsgGI3EaeoB_ItIWMXzhx2r-zLetV37D8kZt
-    yHfN_f7SGnuEKGl1wxkx9ptkrQGBUtoJjxG_h6fySSV0cnqbWNMUTQx>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddukedvtdejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvffkjghfufgtgfesthejredtredttdenucfhrhhomhepfdevhhhrihhs
-    ucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomheqne
-    cuggftrfgrthhtvghrnhepveekteevieffleeiudektdeigfegheejhedugeeigeffjeev
-    kedttdfgleehvefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegtohhlohhr
-    rhgvmhgvughivghsrdgtohhmpdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpoh
-    huthdprhgtphhtthhopehhvghnughrihhksehfrhhivgguvghlshdrnhgrmhgvpdhrtghp
-    thhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:gmsKaRvSAJLBKGNHIPj-QzbGrp-LML-PelXGOPga-nPZZht-St6LMA>
-    <xmx:gmsKaYYA3Cm0yKxh13Cyeot9Xh2a9YothyY3BwwZ1tV1W03_wmT_ww>
-    <xmx:gmsKacUacxTpSsNhYxsM3pbU9xQ3ubVvEfB-_6EsbmdpdSG_2eNHTw>
-    <xmx:gmsKaU5PQ0D9eQcOBz9zqZ_5cSZKb1QY37LzbJlqoR4sboAtjNLU8g>
-    <xmx:gmsKaWyN1JsotRiQF0LkNUboljRfFxB8Ct1ibEB1r9bWTP1B6WajtGCh>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id F272818C004E; Tue,  4 Nov 2025 16:09:21 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1762291597; c=relaxed/simple;
+	bh=t1iehyOxpfgWNuOiIm++Sga1BBrEW/RG2uCKuzrgMbA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=CfzqY0crfBShrquMIKoCFjSyOtPFh/2hQ+UAG94E2AItvpoRogIlJ3Z0rirHgF20DXfd6Plaa1kLiPrkIJ+u+iBNmsyunGNOjV8YICflAx/+YxU0TbBbGpN6b8X5UDbn5gDGuoI0KniM9m88FISa+WmfALNQPVwbz1A76JfU218=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=opscmHY0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8987CC4CEF7;
+	Tue,  4 Nov 2025 21:26:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762291597;
+	bh=t1iehyOxpfgWNuOiIm++Sga1BBrEW/RG2uCKuzrgMbA=;
+	h=From:To:Subject:Date:From;
+	b=opscmHY0kdfNAdwGM7WetCQAiyCvOlf6ec8qWklHNhPnmrb0wt7v7I1hgs0VPlqey
+	 8xNspSUQlUJ8lF5REhkOGia2SJ37VZhdnYp4r9axXcvX/UFHm9MDOWadmRkgfXSmPy
+	 S3adRQVu4hfkP/SQoxzecBfj+CedG4C7+wxZ4Z0q0kVdnffWAi0zb0bDMfmTbybKg2
+	 /UsY4kXFYAlJFYT3PH0LtndJs9Cutze2+D0Tqo1BY8K7gVmUj1IAdALXQFCLWmMJcC
+	 BD3GqDDBrSG4ow4pLspGK6dC2xJwgMcvWjOhEZGUeUxttulPffVjO7/0T/2pcE4Vl3
+	 H+0y7+2iMZzVg==
+From: Damien Le Moal <dlemoal@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>,
+	linux-block@vger.kernel.org,
+	linux-nvme@lists.infradead.org,
+	Keith Busch <keith.busch@wdc.com>,
+	Christoph Hellwig <hch@lst.de>,
+	dm-devel@lists.linux.dev,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	linux-scsi@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	Carlos Maiolino <cem@kernel.org>,
+	linux-btrfs@vger.kernel.org,
+	David Sterba <dsterba@suse.com>
+Subject: [PATCH v4 00/15] Introduce cached report zones
+Date: Wed,  5 Nov 2025 06:22:34 +0900
+Message-ID: <20251104212249.1075412-1-dlemoal@kernel.org>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AVMxPOgRNBic
-Date: Tue, 04 Nov 2025 16:09:01 -0500
-From: "Chris Murphy" <lists@colorremedies.com>
-To: "Hendrik Friedel" <hendrik@friedels.name>,
- "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Message-Id: <0e8eb618-ffa6-4474-a890-c34119082451@app.fastmail.com>
-In-Reply-To: <9b9fffc2-7a95-492b-8ef0-39195b1cdb61@friedels.name>
-References: <cfc7539c-a0c5-45d2-a781-89c2e0cb2c62@friedels.name>
- <12716866-2ffe-4cbb-8e2f-8b2e4abd0237@app.fastmail.com>
- <a37cea05-f77f-41f1-8763-a28311b72790@friedels.name>
- <9b9fffc2-7a95-492b-8ef0-39195b1cdb61@friedels.name>
-Subject: Re: Corrupt Filesystem (Mirror) despite previously successful scrub
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+
+This patch series implements a cached report zones using information
+from the block layer zone write plugs and a new zone condition tracking.
+This avoids having to execute slow report zones commands on the device
+when for instance mounting file systems, which can significantly speed
+things up, especially in setups with multiple SMR HDDs (e.g. a BTRFS
+RAID volume).
+
+The first patch improves handling of zone management commands. Patch 2
+fixes zone resource updates and the following 3 patches cleanup the zone
+code in preparation for introducing cached zone report support.
+From patch 6 to 13, cached report zones is implemented and made
+available to users with a new ioctl() command.
+
+Finally, patches 14 and 15 introduce the use of cached report zones in
+the mount operation of XFS and BTRFS.
+
+These patches are against Jens' for-next tree.
+
+Changes from v3:
+ - Rebased on the latest block for-next tree.
+ - Fixed handling of the active zone condition in patch 7 and patch 15.
+ - Added review tags.
+
+Changes from v2:
+ - Rebased on the latest block for-next tree
+ - Fixed compilation warning (undocumented argument) in patch 4
+ - Modified patch 13 to display condition name instead of raw value, as
+   suggested by Johannes.
+ - Added review tags
+
+Changes from v1:
+ - Move the patch "block: handle zone management operations completions"
+   at the beginning of the series and added a Fixes tag.
+ - Reworked a little patch 2 as suggested by Bart (error path handling)
+ - Added patch 8 as requested by Bart.
+ - Added patch 12 as suggested by Bart.
+ - Corrected various typos in commit messages and code comments.
+ - Added review tags
+
+Damien Le Moal (15):
+  block: handle zone management operations completions
+  block: freeze queue when updating zone resources
+  block: cleanup blkdev_report_zones()
+  block: introduce disk_report_zone()
+  block: reorganize struct blk_zone_wplug
+  block: use zone condition to determine conventional zones
+  block: track zone conditions
+  block: refactor blkdev_report_zones() code
+  block: introduce blkdev_get_zone_info()
+  block: introduce blkdev_report_zones_cached()
+  block: introduce BLKREPORTZONESV2 ioctl
+  block: improve zone_wplugs debugfs attribute output
+  block: add zone write plug condition to debugfs zone_wplugs
+  btrfs: use blkdev_report_zones_cached()
+  xfs: use blkdev_report_zones_cached()
+
+ block/blk-zoned.c                 | 798 +++++++++++++++++++++++-------
+ block/blk.h                       |  14 +
+ block/ioctl.c                     |   1 +
+ drivers/block/null_blk/null_blk.h |   3 +-
+ drivers/block/null_blk/zoned.c    |   4 +-
+ drivers/block/ublk_drv.c          |   4 +-
+ drivers/block/virtio_blk.c        |  11 +-
+ drivers/block/zloop.c             |   4 +-
+ drivers/md/dm-zone.c              |  54 +-
+ drivers/md/dm.h                   |   3 +-
+ drivers/nvme/host/core.c          |   5 +-
+ drivers/nvme/host/multipath.c     |   4 +-
+ drivers/nvme/host/nvme.h          |   2 +-
+ drivers/nvme/host/zns.c           |  10 +-
+ drivers/scsi/sd.h                 |   2 +-
+ drivers/scsi/sd_zbc.c             |  20 +-
+ fs/btrfs/zoned.c                  |  11 +-
+ fs/xfs/libxfs/xfs_zones.c         |   1 +
+ fs/xfs/xfs_zone_alloc.c           |   2 +-
+ include/linux/blkdev.h            |  49 +-
+ include/linux/device-mapper.h     |  10 +-
+ include/uapi/linux/blkzoned.h     |  46 +-
+ include/uapi/linux/fs.h           |   2 +-
+ 23 files changed, 784 insertions(+), 276 deletions(-)
 
 
-
-On Tue, Nov 4, 2025, at 12:26 PM, Hendrik Friedel wrote:
-> Hello,
->
-> any further suggestions on this one?
-
-Maybe you missed this.
-
-https://lore.kernel.org/linux-btrfs/9b9fffc2-7a95-492b-8ef0-39195b1cdb61@friedels.name/T/#m45945767cc18e4fc3add1a0b2b1f8cbec18178fc
-
-
-
+base-commit: 88e5f3c82190f1f4391618a49a61e99606a3fc00
 -- 
-Chris Murphy
+2.51.0
+
 
