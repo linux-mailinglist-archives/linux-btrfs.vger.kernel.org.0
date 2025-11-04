@@ -1,88 +1,78 @@
-Return-Path: <linux-btrfs+bounces-18668-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18667-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CDA8C31359
-	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 14:24:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA3FAC311C3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 14:06:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA92518814DF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 13:22:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB106421F06
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 13:06:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C62132145A;
-	Tue,  4 Nov 2025 13:21:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677532F0C46;
+	Tue,  4 Nov 2025 13:06:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Hdn7x2jV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-m49219.qiye.163.com (mail-m49219.qiye.163.com [45.254.49.219])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81770320CB8;
-	Tue,  4 Nov 2025 13:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2337F2F0C6A
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 13:06:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762262486; cv=none; b=iNTfnmxMS1XZ+tbZAWT75FSo4vxHFvlRWvrxsQlvKLV/ZRHmoDLYdNBK3b3f5IBBneQo5+E8M6z/hnwUp1O0o+40jx++mXSaMUg3NkoYgmZ78couboyLWiOvrIGZHwIv+pN84c1MgKBwY6m2uV1sRwDUDKBa4B26wEY4xELPSrc=
+	t=1762261599; cv=none; b=TDNRjQw/4P5V4qpM8jdwAbxCOqgyTPecNoJVPLOI+gQLm2O9v8cPeukfrm4RjickdXbBeNe9+ahp/2ySkVLMcfUVHZ9AaNqt94Z/o96s6uD9qXPLk7Wbdid5V7MAqnkfxrxmFe0ls30WUV0xHRrwBzzsqMjtkZxgDcM0pRmWXps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762262486; c=relaxed/simple;
-	bh=bhme5LPsQEL76IPnQydIxT8lEORIQp0L7xT+cm+phYE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NyCIczpGXfhtE+N4UysRCQlveGe/Wnj64gsGcmKWdSstGu1XE7xRVu1Vwzd88+HAo7GgQaXvZyU37u5GolM7NiFv2ta03Kg//eeZ6a0C6u9VRjng6Yz2gMHfs29VFGz7C4OHZjP9Yka+ZKteQHqq/rNyFjOlhz7Y9Whe0G++u+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn; spf=pass smtp.mailfrom=easystack.cn; arc=none smtp.client-ip=45.254.49.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
-Received: from localhost.localdomain (unknown [218.94.118.90])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 12981dac7;
-	Tue, 4 Nov 2025 16:45:18 +0800 (GMT+08:00)
-From: Zhen Ni <zhen.ni@easystack.cn>
-To: clm@fb.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	Zhen Ni <zhen.ni@easystack.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH] btrfs: fix resource leak in do_walk_down()
-Date: Tue,  4 Nov 2025 16:45:09 +0800
-Message-Id: <20251104084509.763078-1-zhen.ni@easystack.cn>
-X-Mailer: git-send-email 2.20.1
+	s=arc-20240116; t=1762261599; c=relaxed/simple;
+	bh=Sw98CA7Dd7m9VDa27oTBLlgbwnVxpNKFphTRiJFFvvE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ljrKfDFE1U3m+IXbrxe0tIWyKshGXpf/FP6nOEp1siMzstX73VgzAjkFJoftgv1OYKIJwp1T7bz6lulvTqHiXkFQBpuCnX2oQ6fZhq9XOAiTNFvgagmLLiFXPcmn2xCOoEW+In0e1jjtCSgw2OzdHFwgnBJMITqyGmfM34/Yk58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Hdn7x2jV; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-121-96.bstnma.fios.verizon.net [173.48.121.96])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5A4D6GWm018644
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 4 Nov 2025 08:06:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1762261578; bh=NR6KcCeNwcpvHNysD8dkvb/mT+S63WyNywQfp0IG4rw=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=Hdn7x2jVdT1yvx+yIZ7YESB7FcjeA5fn52bWXRm8lOBJ1DTqu2aW56w+ciTrYIAFE
+	 ykxSj+xVBZavWXA09TwGpGtMiLM/CyX/V/66fSvUxOt1P7qGbC0ptuFsUPJPWLfrqq
+	 uHdyBUO2jhKXYB/MyoPv0vjPOB6G8iaDWjRiZm+JnWm3Vl2ayH921d2npIszByc8qA
+	 Ak41Ht3nmCfjNllUfaeDX4TCI2s7u7WKrSpocAZGcWBdDcj4ISJThK6u8c1CdZv/LJ
+	 Rmdn0dWKng48zwS6G4Y7bCWji08QiqtMLVybMffeWBefdkAs9wk6KQ/htrqs3LcVIR
+	 gg8KrW5G/4O/g==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 289192E00D9; Tue, 04 Nov 2025 08:06:16 -0500 (EST)
+Date: Tue, 4 Nov 2025 08:06:16 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH RFC 5/8] ext4: use super write guard in write_mmp_block()
+Message-ID: <20251104130616.GA2988753@mit.edu>
+References: <20251104-work-guards-v1-0-5108ac78a171@kernel.org>
+ <20251104-work-guards-v1-5-5108ac78a171@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Tid: 0a9a4e0abde10229kunm68649e30897822
-X-HM-MType: 1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVkZS0tLVhpNHk4YGBkYGUhCTVYVFAkWGhdVGRETFh
-	oSFyQUDg9ZV1kYEgtZQVlJSkNVQk9VSkpDVUJLWVdZFhoPEhUdFFlBWU9LSFVKS0lPT09IVUpLS1
-	VKQktLWQY+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251104-work-guards-v1-5-5108ac78a171@kernel.org>
 
-When check_next_block_uptodate() fails, do_walk_down() returns directly
-without cleaning up the locked extent buffer allocated earlier,
-causing memory and lock leaks.
+On Tue, Nov 04, 2025 at 01:12:34PM +0100, Christian Brauner wrote:
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> ---
+>  fs/ext4/mmp.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 
-Fix by using the existing out_unlock cleanup path instead of direct
-return.
-
-Fixes: 562d425454e8 ("btrfs: factor out eb uptodate check from do_walk_down()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Zhen Ni <zhen.ni@easystack.cn>
----
- fs/btrfs/extent-tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index dc4ca98c3780..742e476bf815 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -5770,7 +5770,7 @@ static noinline int do_walk_down(struct btrfs_trans_handle *trans,
- 
- 	ret = check_next_block_uptodate(trans, root, path, wc, next);
- 	if (ret)
--		return ret;
-+		goto out_unlock;
- 
- 	level--;
- 	ASSERT(level == btrfs_header_level(next));
--- 
-2.20.1
-
+Acked-by: Theodore Ts'o <tytso@mit.edu>
 
