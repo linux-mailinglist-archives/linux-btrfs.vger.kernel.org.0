@@ -1,78 +1,118 @@
-Return-Path: <linux-btrfs+bounces-18667-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18669-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA3FAC311C3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 14:06:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3179C316A6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 15:08:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB106421F06
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 13:06:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E565188BA00
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 14:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677532F0C46;
-	Tue,  4 Nov 2025 13:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 656C332BF54;
+	Tue,  4 Nov 2025 14:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Hdn7x2jV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VqBFoHXh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2337F2F0C6A
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 13:06:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC5472F658D
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 14:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762261599; cv=none; b=TDNRjQw/4P5V4qpM8jdwAbxCOqgyTPecNoJVPLOI+gQLm2O9v8cPeukfrm4RjickdXbBeNe9+ahp/2ySkVLMcfUVHZ9AaNqt94Z/o96s6uD9qXPLk7Wbdid5V7MAqnkfxrxmFe0ls30WUV0xHRrwBzzsqMjtkZxgDcM0pRmWXps=
+	t=1762265157; cv=none; b=eJT4cBNzrtxL2V1FGTzSXW+5cx8m6JIbABnsoc4ptx/AugLDbdaQLzNw7wLNWW28of3akEtHsHUbVmeJqQ6ga3Ha2eSx3uEZ8fGdgWRMY7nLTK5xw96IOdLer/luf5Dm8+V4QK4qXBRDVh5lBZOFl8sViLQb1Zly8p1NYR14Rg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762261599; c=relaxed/simple;
-	bh=Sw98CA7Dd7m9VDa27oTBLlgbwnVxpNKFphTRiJFFvvE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ljrKfDFE1U3m+IXbrxe0tIWyKshGXpf/FP6nOEp1siMzstX73VgzAjkFJoftgv1OYKIJwp1T7bz6lulvTqHiXkFQBpuCnX2oQ6fZhq9XOAiTNFvgagmLLiFXPcmn2xCOoEW+In0e1jjtCSgw2OzdHFwgnBJMITqyGmfM34/Yk58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Hdn7x2jV; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from trampoline.thunk.org (pool-173-48-121-96.bstnma.fios.verizon.net [173.48.121.96])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5A4D6GWm018644
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 4 Nov 2025 08:06:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1762261578; bh=NR6KcCeNwcpvHNysD8dkvb/mT+S63WyNywQfp0IG4rw=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=Hdn7x2jVdT1yvx+yIZ7YESB7FcjeA5fn52bWXRm8lOBJ1DTqu2aW56w+ciTrYIAFE
-	 ykxSj+xVBZavWXA09TwGpGtMiLM/CyX/V/66fSvUxOt1P7qGbC0ptuFsUPJPWLfrqq
-	 uHdyBUO2jhKXYB/MyoPv0vjPOB6G8iaDWjRiZm+JnWm3Vl2ayH921d2npIszByc8qA
-	 Ak41Ht3nmCfjNllUfaeDX4TCI2s7u7WKrSpocAZGcWBdDcj4ISJThK6u8c1CdZv/LJ
-	 Rmdn0dWKng48zwS6G4Y7bCWji08QiqtMLVybMffeWBefdkAs9wk6KQ/htrqs3LcVIR
-	 gg8KrW5G/4O/g==
-Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 289192E00D9; Tue, 04 Nov 2025 08:06:16 -0500 (EST)
-Date: Tue, 4 Nov 2025 08:06:16 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH RFC 5/8] ext4: use super write guard in write_mmp_block()
-Message-ID: <20251104130616.GA2988753@mit.edu>
-References: <20251104-work-guards-v1-0-5108ac78a171@kernel.org>
- <20251104-work-guards-v1-5-5108ac78a171@kernel.org>
+	s=arc-20240116; t=1762265157; c=relaxed/simple;
+	bh=xwNceA9wbeOqYxoJU3Jt1SIQ1eC8AGuVP4fS8PiKhhE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RNSb5k/bO/gk8BDFUzvOIEXLRFe+yYbM9+VDZuDCfHH1Nix/4BhnsF2idiPEH7qIBxQQ7k6JE/d3JBpYN4NwscqUiSMky/KhrsMma4HOpO92KhT9IC9ujyDSvT2FhL99QG3ESuWrRNMHx4owNYgF7P/ig7kFo61eauQN9dicu/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VqBFoHXh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D051C16AAE
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 14:05:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762265157;
+	bh=xwNceA9wbeOqYxoJU3Jt1SIQ1eC8AGuVP4fS8PiKhhE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=VqBFoHXhz6diMg/8q0xA7OPm5EkEB54OVdv1aV2fvm8vP1O8B34q8B1baEukkrXTY
+	 8+Ynm23qDkV3NOChiO78oPJKCcNfUbv74a60dsEHeA6UeXEx28NRqnL7/4NsnvGTij
+	 kWoDbmhAAgHDYk9cs2pIVQsF4k9xfdf0jyAcZbtdMXKyQ2N6FflV+qxyocpAG8nI+z
+	 fVx2mCBvclXnBSt76MXOZgl5/G8w0qTfYx20aPuv3oiINUiOulxRvi4Q4v5T6Qdj56
+	 2/DT4HlBjBq4gvwt59p93PyeZwvpQYWrwMNMF3oO21famAzI1QJy9CtuIK0APrv3b2
+	 y0X12tOqOr+Uw==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b714b1290aeso306804066b.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Nov 2025 06:05:57 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU0tYMvFgQdCRtfW13nD7S3qvnms7urbCeODg6004u5HUfoYuMvnvFU0qFdXOwakMcrar98pKZCo6GHbQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxpBvZ+XEhEfxHS3Pg/LkRHx0Rv3MWwIFq/m2Vyk9ZvDwu2xTVt
+	7U1A3W9SaSODwjg4ri4YW3oyitlFTt+sY1Rb6pdLjwvuEruYUjHmlwVFqE9dirVN2WgnJoDNbQx
+	Xr+PB3Ta/fbrdwzTpDsXe5NJW6c0XbrM=
+X-Google-Smtp-Source: AGHT+IFRHXrgFcRL1kF6f7O7o4U2loCiIItvRf1yYOccI40aSz2GtslTGdxn8g9J/CSSWk8lxoqLVHVURoUzpviRt1I=
+X-Received: by 2002:a17:907:7252:b0:b46:8bad:6981 with SMTP id
+ a640c23a62f3a-b70701917e6mr1848664066b.20.1762265155999; Tue, 04 Nov 2025
+ 06:05:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251104-work-guards-v1-5-5108ac78a171@kernel.org>
+References: <20251104084509.763078-1-zhen.ni@easystack.cn>
+In-Reply-To: <20251104084509.763078-1-zhen.ni@easystack.cn>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 4 Nov 2025 14:05:19 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6QKShugKSvTrbYw5aE8mWmYth55jJ2c8cNJVP_XQTSVQ@mail.gmail.com>
+X-Gm-Features: AWmQ_bmbyp8qWqgrsAg7ufQXCfXSafXLHCiRemr0CtzT2PZBHt9N6niDcvhg-gE
+Message-ID: <CAL3q7H6QKShugKSvTrbYw5aE8mWmYth55jJ2c8cNJVP_XQTSVQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix resource leak in do_walk_down()
+To: Zhen Ni <zhen.ni@easystack.cn>
+Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 04, 2025 at 01:12:34PM +0100, Christian Brauner wrote:
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
+On Tue, Nov 4, 2025 at 1:21=E2=80=AFPM Zhen Ni <zhen.ni@easystack.cn> wrote=
+:
+>
+> When check_next_block_uptodate() fails, do_walk_down() returns directly
+> without cleaning up the locked extent buffer allocated earlier,
+> causing memory and lock leaks.
+>
+> Fix by using the existing out_unlock cleanup path instead of direct
+> return.
+>
+> Fixes: 562d425454e8 ("btrfs: factor out eb uptodate check from do_walk_do=
+wn()")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Zhen Ni <zhen.ni@easystack.cn>
 > ---
->  fs/ext4/mmp.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
+>  fs/btrfs/extent-tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index dc4ca98c3780..742e476bf815 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -5770,7 +5770,7 @@ static noinline int do_walk_down(struct btrfs_trans=
+_handle *trans,
+>
+>         ret =3D check_next_block_uptodate(trans, root, path, wc, next);
+>         if (ret)
+> -               return ret;
+> +               goto out_unlock;
 
-Acked-by: Theodore Ts'o <tytso@mit.edu>
+This is wrong and will cause a double unlock and double free.
+
+When check_next_block_uptodate() returns an error, it has already
+unlocked and freed the extent buffer.
+
+Thanks.
+
+>
+>         level--;
+>         ASSERT(level =3D=3D btrfs_header_level(next));
+> --
+> 2.20.1
+>
+>
 
