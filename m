@@ -1,144 +1,123 @@
-Return-Path: <linux-btrfs+bounces-18687-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18688-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5FB6C32FD6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 22:00:09 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22FD5C3300F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 22:09:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97E473B442F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 21:00:07 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4158434B317
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 21:09:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23B032F290B;
-	Tue,  4 Nov 2025 20:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 153982EB5CD;
+	Tue,  4 Nov 2025 21:09:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aHU1/+Nx"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="w7/ksUyu";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cymz34Cf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AC812DC332;
-	Tue,  4 Nov 2025 20:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579FAD27E
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 21:09:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762289995; cv=none; b=irQNeiCW7QHjzMyo7UsYl0he8AOwy/fp7uBRHHt69wtwOzmaY2akBZT8Xhe++0aR9wPIq6FKwgvt6S4sXcm/ihw6E4VOO07Blg0SnYz8X6WsRR5qbWOe8q26fAcCMQTSiAvfmWQAnc2KpgV+nGmhrFr0zdZGDVehYLDaFc6QHiY=
+	t=1762290566; cv=none; b=DUKfQEISrwpTC2nMDXbFKPq7scCNN9twj0ihi4jPOQqRPOBiuViq7SFRIzR8iwhbAGoy8ERA4XpOJ7E30zirLPikHaCI5cPqjES04KMOt6/F+h4rBLNDn3x2Qtn1XAJjRi7CsniSzAvgvGSmEGxoaLjK04Wcz4I8GO5vCrRdOEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762289995; c=relaxed/simple;
-	bh=ZbevVTsyzkuKwdQrJJOdeX7YrKTFidZKoeeACl1fcI4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BcEAerHKbbGyTveBqCmiDbBptyRalprb/7xrp943wfO7LNV76/Y9kmhrG4orRwd6bTgxQZ1Hqc/ZAN5hmlGz55+gJyVTbbRiCq7hRk6zx3/g75zsWQjMQFaLUdC5QHGf+gF7oO+bfWQ7ka2Ryii4uEZoxRWDX/+g+BBllNLGUSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aHU1/+Nx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA585C116B1;
-	Tue,  4 Nov 2025 20:59:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762289994;
-	bh=ZbevVTsyzkuKwdQrJJOdeX7YrKTFidZKoeeACl1fcI4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=aHU1/+NxHTGcstCciKvN0HOtfqbZvcKPFHaJAIxHidNwzrAUH57pju/VvROjFT57e
-	 9rImaFQb4z8LuzRklIxZLJF2VrGAH+JLi7zsSFkq1D6Np4PjBtNYScd1PR0ri1TAtO
-	 C8/TJ5vEMM3KUaF2iZ2FJtiFVDHMxidEJ0H/ZcmFov1S5b28kv2BMp+H+YUgVLxQEb
-	 fODPu/xN0+jxDzu5/ZHF6J2R+epjSqAVdQcC4nlJyvr175SaM5q8EYEdPQE5eXwQUE
-	 yVevNDW2NW1iLpxmhZ7XasSauPf7KOKeLRcqsgrgXv3zRMqhAJjr+vy5jphrmBIYO6
-	 gnqNNZ4ccEsBQ==
-Message-ID: <9f899cd8-7187-4878-b294-337d964c9587@kernel.org>
-Date: Wed, 5 Nov 2025 05:59:51 +0900
+	s=arc-20240116; t=1762290566; c=relaxed/simple;
+	bh=0ybOxKIqtLT1IZWv+8aCH/MFdm9cVasQLZhcDTLZdK0=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=tWLoQy4NLCGtAY52fnluaCTMlrWIBv12gAgnjpRvJZWMTtdxieCxEthLzlOoCpXIYOeul/rIzDF4niYYE6RvNXAE330JS043TarngVt/LxyOczk0+rA+LjVzUAaKysYxMAFDd1qhgtWBGNrhtR3W5oiuPNI4NowjcCXNbv6c/7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=w7/ksUyu; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cymz34Cf; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfout.phl.internal (Postfix) with ESMTP id 694B1EC053F;
+	Tue,  4 Nov 2025 16:09:22 -0500 (EST)
+Received: from phl-imap-01 ([10.202.2.91])
+  by phl-compute-01.internal (MEProxy); Tue, 04 Nov 2025 16:09:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to; s=fm3; t=1762290562; x=1762376962; bh=olmhSQmSXuOG04XybcRaJ
+	xNvNegKi3b+6TLg94vQ5Zw=; b=w7/ksUyufiXJ5i8YGnTcpKgISHT7bKsG+65GR
+	A/fVHE5nqAHXpAkxVazaL30xTIBYIxwVhOkkt68bSq6qYEudv/JYDaQBPJQdlDmH
+	rzigCxPyVyjspu/uPMq/8Qyzl/EF6Y9ewOjTR4/0halE0xOzBW+32V8Iwoh8piF4
+	LFnNzm+TTIIYn1AQPCpXLoZymg8BbYhcihmRDjlgksFu+frnFCWXAQ9Ae38i2PBU
+	u39JE/Ez0my7evADhJ2SG6zal70d3XUnZVTG0OTzPgp7wSOXgfqRFD76UXNqtWdF
+	sen07N7iwu0aSf5QXbwdldV7cc7J4xVDr0um4qoBJebLUNDEQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm3; t=1762290562; x=1762376962; bh=o
+	lmhSQmSXuOG04XybcRaJxNvNegKi3b+6TLg94vQ5Zw=; b=cymz34CfvlO0v61ee
+	bQjmxM6LJssJfzF48drflkouTwYyYoJA8DuwWHytdZv0Qzod+qlcwoUD/xQUWqmX
+	5eBfvRpP6G1CVBmaChGzuQTRAD/IIImGlyiuIO/BKo/cCNbn/DCdYRgCYVCgcyWz
+	pqcGkvHR4sNUf3Af+Yeqy4WdqV06ofHkS5fbHpxtYhfW6cECNWRa+BfNsITt/roF
+	43SqBPTMoIzKYwURY3TMJqoWJLXdz9u4BmVzpWYaQHECWGhzG1Ep+dKv3NbGq+8R
+	u+p6bwF2gTbRpBrssMRwcbt+WbuvFmDBAT+kEFtINApmK0OE/q5NGtuO5eCo220a
+	1jBGw==
+X-ME-Sender: <xms:gmsKafDOJL8dTxr8Y7ItzTHSo2fdhIWaX24v7uW-SbbLOse_qu4zcQ>
+    <xme:gmsKaQWQZjVCywdwUgQH6k9UKJsrMxsgGI3EaeoB_ItIWMXzhx2r-zLetV37D8kZt
+    yHfN_f7SGnuEKGl1wxkx9ptkrQGBUtoJjxG_h6fySSV0cnqbWNMUTQx>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddukedvtdejucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvffkjghfufgtgfesthejredtredttdenucfhrhhomhepfdevhhhrihhs
+    ucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomheqne
+    cuggftrfgrthhtvghrnhepveekteevieffleeiudektdeigfegheejhedugeeigeffjeev
+    kedttdfgleehvefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegtohhlohhr
+    rhgvmhgvughivghsrdgtohhmpdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpoh
+    huthdprhgtphhtthhopehhvghnughrihhksehfrhhivgguvghlshdrnhgrmhgvpdhrtghp
+    thhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:gmsKaRvSAJLBKGNHIPj-QzbGrp-LML-PelXGOPga-nPZZht-St6LMA>
+    <xmx:gmsKaYYA3Cm0yKxh13Cyeot9Xh2a9YothyY3BwwZ1tV1W03_wmT_ww>
+    <xmx:gmsKacUacxTpSsNhYxsM3pbU9xQ3ubVvEfB-_6EsbmdpdSG_2eNHTw>
+    <xmx:gmsKaU5PQ0D9eQcOBz9zqZ_5cSZKb1QY37LzbJlqoR4sboAtjNLU8g>
+    <xmx:gmsKaWyN1JsotRiQF0LkNUboljRfFxB8Ct1ibEB1r9bWTP1B6WajtGCh>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id F272818C004E; Tue,  4 Nov 2025 16:09:21 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/15] Introduce cached report zones
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
- linux-nvme@lists.infradead.org, Keith Busch <keith.busch@wdc.com>,
- dm-devel@lists.linux.dev, Mike Snitzer <snitzer@kernel.org>,
- Mikulas Patocka <mpatocka@redhat.com>,
- "Martin K . Petersen" <martin.petersen@oracle.com>,
- linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
- Carlos Maiolino <cem@kernel.org>, linux-btrfs@vger.kernel.org,
- David Sterba <dsterba@suse.com>
-References: <20251104013147.913802-1-dlemoal@kernel.org>
- <20251104144158.GA27416@lst.de>
-Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20251104144158.GA27416@lst.de>
-Content-Type: text/plain; charset=UTF-8
+X-ThreadId: AVMxPOgRNBic
+Date: Tue, 04 Nov 2025 16:09:01 -0500
+From: "Chris Murphy" <lists@colorremedies.com>
+To: "Hendrik Friedel" <hendrik@friedels.name>,
+ "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Message-Id: <0e8eb618-ffa6-4474-a890-c34119082451@app.fastmail.com>
+In-Reply-To: <9b9fffc2-7a95-492b-8ef0-39195b1cdb61@friedels.name>
+References: <cfc7539c-a0c5-45d2-a781-89c2e0cb2c62@friedels.name>
+ <12716866-2ffe-4cbb-8e2f-8b2e4abd0237@app.fastmail.com>
+ <a37cea05-f77f-41f1-8763-a28311b72790@friedels.name>
+ <9b9fffc2-7a95-492b-8ef0-39195b1cdb61@friedels.name>
+Subject: Re: Corrupt Filesystem (Mirror) despite previously successful scrub
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On 11/4/25 23:41, Christoph Hellwig wrote:
-> I just threw this into my xfstests setup, and it seems this version
-> is broken somehow.  Running on emulated ZNS devices with XFS I get
-> a lot of failures with warnings like this:
-> 
-> [   30.068652] XFS (nvme1n1): empty zone 1 has non-zero used counter (0x1).
-> 
-> [   49.316873] XFS (nvme0n1): empty zone 2 has non-zero used counter (0x10).
-> 
-> so it seems like it's not tracking WPs correctly, probably when using
-> zone append and unmount/remounting.
 
-Aouch ! I totally missed that !
 
-First problem, trivial, I am missing this in the xfs patch:
+On Tue, Nov 4, 2025, at 12:26 PM, Hendrik Friedel wrote:
+> Hello,
+>
+> any further suggestions on this one?
 
-diff --git a/fs/xfs/libxfs/xfs_zones.c b/fs/xfs/libxfs/xfs_zones.c
-index b0791a71931c..b40f71f878b5 100644
---- a/fs/xfs/libxfs/xfs_zones.c
-+++ b/fs/xfs/libxfs/xfs_zones.c
-@@ -95,6 +95,7 @@ xfs_zone_validate_seq(
-        case BLK_ZONE_COND_IMP_OPEN:
-        case BLK_ZONE_COND_EXP_OPEN:
-        case BLK_ZONE_COND_CLOSED:
-+       case BLK_ZONE_COND_ACTIVE:
-                return xfs_zone_validate_wp(zone, rtg, write_pointer);
-        case BLK_ZONE_COND_FULL:
-                return xfs_zone_validate_full(zone, rtg, write_pointer);
+Maybe you missed this.
 
-Second problem is a little more subtle: when disk_insert_zone_wplug() is called
-from blk_revalidate_disk_zones() callback for a non empty zone, the zone
-condition is set to BLK_ZONE_COND_NOT_WP if we do not have a disk zones_cond
-array. But we never have that on the first call to blk_revalidate_disk_zones()
-since that function sets it at the end of the revalidation. So we need this
-change to also avoid mount errors after a reboot for an FS with partially
-written zones:
-
- diff --git a/block/blk-zoned.c b/block/blk-zoned.c
-index bf6495f0d49f..bba64b427082 100644
---- a/block/blk-zoned.c
-+++ b/block/blk-zoned.c
-@@ -527,12 +527,20 @@ static bool disk_insert_zone_wplug(struct gendisk *disk,
-                        return false;
-                }
-        }
-+
-+       /*
-+        * Set the zone condition: if we do not yet have a zones_cond array
-+        * attached to the disk, then this is a zone write plug insert from the
-+        * first call to blk_revalidate_disk_zones(), in which case the zone is
-+        * necessarilly in the active condition.
-+        */
-        zones_cond = rcu_dereference_check(disk->zones_cond,
-                                lockdep_is_held(&disk->zone_wplugs_lock));
-        if (zones_cond)
-                zwplug->cond = zones_cond[zwplug->zone_no];
-        else
--               zwplug->cond = BLK_ZONE_COND_NOT_WP;
-+               zwplug->cond = BLK_ZONE_COND_ACTIVE;
-+
-        hlist_add_head_rcu(&zwplug->node, &disk->zone_wplugs_hash[idx]);
-        atomic_inc(&disk->nr_zone_wplugs);
-        spin_unlock_irqrestore(&disk->zone_wplugs_lock, flags);
-
-I will integrate these fixes in v5 and resend.
-
+https://lore.kernel.org/linux-btrfs/9b9fffc2-7a95-492b-8ef0-39195b1cdb61@friedels.name/T/#m45945767cc18e4fc3add1a0b2b1f8cbec18178fc
 
 
 
 -- 
-Damien Le Moal
-Western Digital Research
+Chris Murphy
 
