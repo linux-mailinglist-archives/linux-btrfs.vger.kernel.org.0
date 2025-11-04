@@ -1,95 +1,48 @@
-Return-Path: <linux-btrfs+bounces-18680-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18681-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1804EC32D58
-	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 20:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EAD66C32E24
+	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 21:14:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9099A34D309
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 19:39:46 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 968F534AF02
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 20:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C42EF284671;
-	Tue,  4 Nov 2025 19:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1AA2F0669;
+	Tue,  4 Nov 2025 20:13:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MRk2MwnG";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="sa9o5gVR";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MRk2MwnG";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="sa9o5gVR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CJbwQVBE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3169125F99B
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 19:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D722EA169;
+	Tue,  4 Nov 2025 20:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762285179; cv=none; b=GTPP2Y520siAaYeWksIcMFkdFnmNAGLcR8CQvdjfpPYtr0e2eT7WC8owjUPsuM/hna/ZVzjXkQpSlf8pBMEtNvwxdE3wvCJEQx9n0UugbKBHe8npGS3fFbn7nF42lQqgOgclnCRggOyHbWYCgWdOgH13deZjtpXHtBm1xQjIWLY=
+	t=1762287229; cv=none; b=AoaFgyRcc6oJ8oJH8JalL8Jq3X8/kdyz2zFv/1IS0CVJRDYA1B5Ryjn82J7+lGDWB0vWvsEWNUuVAND9Kly0K/NOppqSB77gxPz4B5ZzPY3HMLUtnjUN7FFE35PC56WPNnKsVVOYaeRYrkbEOsDtQyENhc3wve0HONXMEejrhCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762285179; c=relaxed/simple;
-	bh=V5bCAJoydFOcRk31/Kp59Z9FI3PuJewEm0mBxvgh8uE=;
+	s=arc-20240116; t=1762287229; c=relaxed/simple;
+	bh=3FSJqyPE1Vqo06Q/AoUzipo9gS2M6q2r8A7ZJUYYuF4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=gL+ycyHHYRz4TCSWnBAd0W7jr73GMtxM6Z/vbXDYKQP+uyIDP+OIJbs3kJmfJgx0Mh8h0FDoa+U1F6eWSifPOuUDciO/QIm/oLMnlibf3gNJfutX8AKgARUwGGUDas/nenUZURSfVsu90Hcl2ErLWJX2Zyh8tMPqiWVUxNphAco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MRk2MwnG; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=sa9o5gVR; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MRk2MwnG; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=sa9o5gVR; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4FEA02119D;
-	Tue,  4 Nov 2025 19:39:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1762285175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Em075iaBhD+Tx3zzVstmXsKw7x6Kx+d+zo1oYM7vGw4=;
-	b=MRk2MwnG1ZpEIX37KbBErZmCQ+QQ9nffNT8+nVGFwd3xUKAJSGCGXYJP+8K8ervS7aT1yZ
-	jDOHRz1tcjF60LNsUniWLMkqLTI2Xemb+q0toqtMLYHMvvgW4u6x51sQvmzR7JhxqlpU5M
-	J8cJFOlSUsfJUaw5HpvdJkobf4oDDLs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1762285175;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Em075iaBhD+Tx3zzVstmXsKw7x6Kx+d+zo1oYM7vGw4=;
-	b=sa9o5gVRp2zS5Cd4A3wCQQPggTyLBWhZq2pPZjiqvxA6KVuIWvilL5trOA4NPrGdMoDSc1
-	ot7D1h8prmfJDEDg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1762285175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Em075iaBhD+Tx3zzVstmXsKw7x6Kx+d+zo1oYM7vGw4=;
-	b=MRk2MwnG1ZpEIX37KbBErZmCQ+QQ9nffNT8+nVGFwd3xUKAJSGCGXYJP+8K8ervS7aT1yZ
-	jDOHRz1tcjF60LNsUniWLMkqLTI2Xemb+q0toqtMLYHMvvgW4u6x51sQvmzR7JhxqlpU5M
-	J8cJFOlSUsfJUaw5HpvdJkobf4oDDLs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1762285175;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Em075iaBhD+Tx3zzVstmXsKw7x6Kx+d+zo1oYM7vGw4=;
-	b=sa9o5gVRp2zS5Cd4A3wCQQPggTyLBWhZq2pPZjiqvxA6KVuIWvilL5trOA4NPrGdMoDSc1
-	ot7D1h8prmfJDEDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C17FA139A9;
-	Tue,  4 Nov 2025 19:39:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id TLliLXZWCmlFAwAAD6G6ig
-	(envelope-from <hare@suse.de>); Tue, 04 Nov 2025 19:39:34 +0000
-Message-ID: <5da10962-05f0-4c25-9e0d-7d2576a0e525@suse.de>
-Date: Tue, 4 Nov 2025 20:39:34 +0100
+	 In-Reply-To:Content-Type; b=cMDC9bhrtvDO0aCT6mPPzTDasjBx25F+SNQidNLLndFh3Lp6ksTEM7gCgqB1g1qhJJB3D75IPxKyPn23RQ1FUKPGWTbBmw7RcVekGlFwkILAvnPvVCc8ouBVj3Al1LtGv8r2hqyjKSt2BwvX2HR/VWCZJtrs5RemEMd9zYeIzeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CJbwQVBE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A74D6C4CEF7;
+	Tue,  4 Nov 2025 20:13:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762287229;
+	bh=3FSJqyPE1Vqo06Q/AoUzipo9gS2M6q2r8A7ZJUYYuF4=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=CJbwQVBE1D1MYm990XnLqqMuyjhnCCOdAlu+z03qAX2ImU+84t4gZezs53Dzn9YpY
+	 xtvwjMHu+8X7lnYZ7JH4Pylbx4OxU+wk7qFyH49pRSdzAPUohWE2+gx1CkiP48JcWA
+	 mnW2fbmijTHwh06o/88J4zyBfAaWNyvd7glFfXqzL0ir7Ks5RBywi418cZ1gnuwbTq
+	 wppFtkGUZqi82Yt8ZyH+IqGRrBTo8wU4a2GROfbtr/EK6jMSAgdty7FmdAiDrAR2fM
+	 g7o35wTbh4g/MsecHVA5qC90s2DhjfjjHF23pfL29BWk6AO7AJmXaPL94b6x2Yg39y
+	 uSGT2Lsjtq+xw==
+Message-ID: <da7e8c3e-49fe-49bd-9642-3b0ae67a3503@kernel.org>
+Date: Wed, 5 Nov 2025 05:13:45 +0900
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -97,8 +50,8 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 04/15] block: introduce disk_report_zone()
-To: Damien Le Moal <dlemoal@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+Subject: Re: [PATCH v3 11/15] block: introduce BLKREPORTZONESV2 ioctl
+To: Bart Van Assche <bvanassche@acm.org>, Jens Axboe <axboe@kernel.dk>,
  linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
  Keith Busch <keith.busch@wdc.com>, Christoph Hellwig <hch@lst.de>,
  dm-devel@lists.linux.dev, Mike Snitzer <snitzer@kernel.org>,
@@ -108,85 +61,42 @@ To: Damien Le Moal <dlemoal@kernel.org>, Jens Axboe <axboe@kernel.dk>,
  Carlos Maiolino <cem@kernel.org>, linux-btrfs@vger.kernel.org,
  David Sterba <dsterba@suse.com>
 References: <20251104013147.913802-1-dlemoal@kernel.org>
- <20251104013147.913802-5-dlemoal@kernel.org>
+ <20251104013147.913802-12-dlemoal@kernel.org>
+ <0cb7eefb-4501-47e8-805f-6e8737ca6bb5@acm.org>
 Content-Language: en-US
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20251104013147.913802-5-dlemoal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.996];
-	MIME_GOOD(-0.10)[text/plain];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.de:mid]
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <0cb7eefb-4501-47e8-805f-6e8737ca6bb5@acm.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 11/4/25 02:31, Damien Le Moal wrote:
-> Commit b76b840fd933 ("dm: Fix dm-zoned-reclaim zone write pointer
-> alignment") introduced an indirect call for the callback function of a
-> report zones executed with blkdev_report_zones(). This is necessary so
-> that the function disk_zone_wplug_sync_wp_offset() can be called to
-> refresh a zone write plug zone write pointer offset after a write error.
-> However, this solution makes following the path of a zone information
-> harder to understand.
+On 11/5/25 04:00, Bart Van Assche wrote:
+> On 11/3/25 5:31 PM, Damien Le Moal wrote:
+>> - * @BLKREPORTZONE: Get zone information. Takes a zone report as argument.
+>> - *                 The zone report will start from the zone containing the
+>> - *                 sector specified in the report request structure.
+>> + * @BLKREPORTZONE: Get zone information from a zoned device. Takes a zone report
+>> + *		   as argument. The zone report will start from the zone
+>> + *		   containing the sector specified in struct blk_zone_report.
+>> + *		   The flags field of struct blk_zone_report is used as an
+>> + *		   output only and ignored as an input.
+>> + *		   DEPRECATED, use BLKREPORTZONEV2 instead.
+>> + * @BLKREPORTZONEV2: Same as @BLKREPORTZONE but uses the flags field of
+>> + *		     struct blk_zone_report as an input, allowing to get a zone
+>> + *		     report using cached zone information if BLK_ZONE_REP_CACHED
+>> + *		     is set.
 > 
-> Clean this up by introducing the new blk_report_zones_args structure to
-> define a zone report callback and its private data and introduce the
-> helper function disk_report_zone() which calls both
-> disk_zone_wplug_sync_wp_offset() and the zone report user callback
-> function for all zones of a zone report. This helper function must be
-> called by all block device drivers that implement the report zones
-> block operation in order to correctly report a zone information.
-> 
-> All block device drivers supporting the report_zones block operation are
-> updated to use this new scheme.
-> 
-> Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->   block/blk-zoned.c                 | 79 ++++++++++++++++---------------
->   drivers/block/null_blk/null_blk.h |  3 +-
->   drivers/block/null_blk/zoned.c    |  4 +-
->   drivers/block/ublk_drv.c          |  4 +-
->   drivers/block/virtio_blk.c        | 11 +++--
->   drivers/block/zloop.c             |  4 +-
->   drivers/md/dm-zone.c              | 54 +++++++++++----------
->   drivers/md/dm.h                   |  3 +-
->   drivers/nvme/host/core.c          |  5 +-
->   drivers/nvme/host/multipath.c     |  4 +-
->   drivers/nvme/host/nvme.h          |  2 +-
->   drivers/nvme/host/zns.c           | 10 ++--
->   drivers/scsi/sd.h                 |  2 +-
->   drivers/scsi/sd_zbc.c             | 20 +++-----
->   include/linux/blkdev.h            |  7 ++-
->   include/linux/device-mapper.h     | 10 +++-
->   16 files changed, 120 insertions(+), 102 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+> Was it promised to add information in the above comment about the 
+> differences in accuracy between the two ioctls? See also
+> https://lore.kernel.org/linux-block/97535dde-5902-4f2f-951c-3470d26158da@kernel.org/
 
-Cheers,
+As I said, I did. See the comments with the BLK_ZONE_COND_ACTIVE condition.
+If you think that is not enough, I can cross reference tht in the comment for
+BLKREPORTZONEV2.
 
-Hannes
+
+
 -- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.de                                +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
+Damien Le Moal
+Western Digital Research
 
