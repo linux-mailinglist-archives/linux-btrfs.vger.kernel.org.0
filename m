@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-18702-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18704-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8081FC330DC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 22:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F3738C33100
+	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 22:29:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2CF9934C446
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 21:28:52 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A073934C718
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 21:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECFF93043DB;
-	Tue,  4 Nov 2025 21:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E9BB30594A;
+	Tue,  4 Nov 2025 21:27:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CQwlhEOV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lDsbMl2I"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28210265606;
-	Tue,  4 Nov 2025 21:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED7B304BB5;
+	Tue,  4 Nov 2025 21:27:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762291624; cv=none; b=P+zTXtaX9I370VhdqLuGae/nZL0MdZKg95Uthz5szK6ddyK9nu1S0ZQllzyaWIu0QU49feHYMhnX4/eYUvYDohFM0Nzx1A+D+KAOAL8dFlTIuLpDjy4tt097dlAqCLxFe8MR64x5B8hwllAJzDmW2lj9fk6wTAwF5TlKiS/oM1o=
+	t=1762291628; cv=none; b=KoTRXH8QukNMZAKQiq/Wj5obDHHG19WmZ71W7bW3ItL0eX6fiA84f2Fl8A8VecmEUviY3P7rfQNo+VdO+y1ssb259XpjnCcv7rYZUlQ43ayd4eI8YLs4/4v3kEKw5SU/Oh1qB0aJ45vpiJUKjag4F/Gpi9e8HqF/Zx3P66ygTR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762291624; c=relaxed/simple;
-	bh=JWmYWw8oLvPeODrbtz6Czn3MIm9DAjL1ZgvD1ztoMx0=;
+	s=arc-20240116; t=1762291628; c=relaxed/simple;
+	bh=OQJzlNo20cxcnEk3FJgiDo6Dfxs8oL2XA0KXotU9jrQ=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Oxx8I/Y6oAsARxrWbhKX+7eo86pcA0dbnS/gJQ9S/1Yrdhw3AMU7T1TJ4QUmr0WLkS7zG+KONOAWSpXWQVm3dGBcriSYeAoq2rCnDP8fr1aytDW/naKIhwy6Is5RMKL542r9jk5XR5xXBA85673IwLl+1wZXffwrg+ihRGsJ4ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CQwlhEOV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54A81C16AAE;
-	Tue,  4 Nov 2025 21:27:02 +0000 (UTC)
+	 MIME-Version; b=t85S2Yo7TqkdVuwOK5vovhMIYnOVObGVVtSHJCd+gFN1Nlb7EcWUDK3cclZOaDCJJgF74+k5q+8vR6yTF2wAdpbDN2YePrenFwXpbF9la4iQNVMMssABXZ8P6qsO93M/IHfeH5pj0q/6bUrr82cf+iOJMirSbIiS8J9q2/12z+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lDsbMl2I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56E1BC4CEF8;
+	Tue,  4 Nov 2025 21:27:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762291624;
-	bh=JWmYWw8oLvPeODrbtz6Czn3MIm9DAjL1ZgvD1ztoMx0=;
+	s=k20201202; t=1762291626;
+	bh=OQJzlNo20cxcnEk3FJgiDo6Dfxs8oL2XA0KXotU9jrQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=CQwlhEOVOi4A0fuladyw1Vn2VZJa2YsTttvxG5miRSR6iuUqFculFhuirrKRaVlvo
-	 vH/U0tqFc7mk+YrH9U6RhYZPw9AQQ69UawViegJvcCsNYElv9UHx0cCtzzAl7duMuo
-	 7n31X6oRIIIJrz0Om5NX81s8kofl0KxDuVwJH6HNmwC9qQqD8EbzZXQCCTqKJfWJON
-	 b9Gc3zXXbymRoteQNS3MyziFfzDd6sRdlCnKroM7ueSG3UA7ezgqDyd0KxwavSLzK5
-	 kwR7gRu3R/0rI0SMNlc8zhq8i1bqvXtGz32p7xBgC1bNXolN50z9veZKtjk7nAnWBR
-	 hoafYZwb+ADVA==
+	b=lDsbMl2Ib95UWzVMEszHNVW0LZ/UQVhAG+7vl4sAaW1//W859fe04tmmAL4eLHg7c
+	 GaWplzCjr3z9cPOImzf8OPTBIGFKA5LXZGTA0fNLgE2HRZPF2UkmvUAkY0Kn6S/uSx
+	 qO/cmb8v878KjoCFCVI1X6S3MhdJNSGoS7jA3FVrvG5SSNfLylmdQwlNE2JL7RqIuP
+	 xVhT5AV/HkmBfFyHSH5e/2DUxH4FdgKzN8YPiEP2gOI7hzf67XKLxBHJfD3+zmuAhV
+	 a2lR3akvoElHY5EvhrhacYCbH9SdZdUkZNp3ddaYR8va2X3KTO57rOK/2tumhhOrQ/
+	 SaRLUg+iM16XQ==
 From: Damien Le Moal <dlemoal@kernel.org>
 To: Jens Axboe <axboe@kernel.dk>,
 	linux-block@vger.kernel.org,
@@ -56,9 +56,9 @@ To: Jens Axboe <axboe@kernel.dk>,
 	Carlos Maiolino <cem@kernel.org>,
 	linux-btrfs@vger.kernel.org,
 	David Sterba <dsterba@suse.com>
-Subject: [PATCH v4 13/15] block: add zone write plug condition to debugfs zone_wplugs
-Date: Wed,  5 Nov 2025 06:22:47 +0900
-Message-ID: <20251104212249.1075412-14-dlemoal@kernel.org>
+Subject: [PATCH v4 14/15] btrfs: use blkdev_report_zones_cached()
+Date: Wed,  5 Nov 2025 06:22:48 +0900
+Message-ID: <20251104212249.1075412-15-dlemoal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251104212249.1075412-1-dlemoal@kernel.org>
 References: <20251104212249.1075412-1-dlemoal@kernel.org>
@@ -70,47 +70,59 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Modify queue_zone_wplug_show() to include the condition of a zone write
-plug to the zone_wplugs debugfs attribute of a zoned block device.
-To improve readability and ease of use, rather than the zone condition
-raw value, the zone condition name is given using blk_zone_cond_str().
+Modify btrfs_get_dev_zones() and btrfs_sb_log_location_bdev() to replace
+the call to blkdev_report_zones() with blkdev_report_zones_cached() to
+speed-up mount operations. btrfs_get_dev_zone_info() is also modified to
+take into account the BLK_ZONE_COND_ACTIVE condition, which is
+equivalent to either BLK_ZONE_COND_IMP_OPEN, BLK_ZONE_COND_EXP_OPEN or
+BLK_ZONE_COND_CLOSED.
 
-Suggested-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+With this change, mounting a freshly formatted large capacity (30 TB)
+SMR HDD completes under 100ms compared to over 1.8s before.
+
 Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
+Acked-by: David Sterba <dsterba@suse.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- block/blk-zoned.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/btrfs/zoned.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/block/blk-zoned.c b/block/blk-zoned.c
-index 3104fda5809b..bba64b427082 100644
---- a/block/blk-zoned.c
-+++ b/block/blk-zoned.c
-@@ -2303,19 +2303,21 @@ static void queue_zone_wplug_show(struct blk_zone_wplug *zwplug,
- 	unsigned int zwp_wp_offset, zwp_flags;
- 	unsigned int zwp_zone_no, zwp_ref;
- 	unsigned int zwp_bio_list_size;
-+	enum blk_zone_cond zwp_cond;
- 	unsigned long flags;
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 0ea0df18a8e4..a16b1a896c78 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -264,8 +264,8 @@ static int btrfs_get_dev_zones(struct btrfs_device *device, u64 pos,
+ 		}
+ 	}
  
- 	spin_lock_irqsave(&zwplug->lock, flags);
- 	zwp_zone_no = zwplug->zone_no;
- 	zwp_flags = zwplug->flags;
- 	zwp_ref = refcount_read(&zwplug->ref);
-+	zwp_cond = zwplug->cond;
- 	zwp_wp_offset = zwplug->wp_offset;
- 	zwp_bio_list_size = bio_list_size(&zwplug->bio_list);
- 	spin_unlock_irqrestore(&zwplug->lock, flags);
+-	ret = blkdev_report_zones(device->bdev, pos >> SECTOR_SHIFT, *nr_zones,
+-				  copy_zone_info_cb, zones);
++	ret = blkdev_report_zones_cached(device->bdev, pos >> SECTOR_SHIFT,
++					 *nr_zones, copy_zone_info_cb, zones);
+ 	if (ret < 0) {
+ 		btrfs_err(device->fs_info,
+ 				 "zoned: failed to read zone %llu on %s (devid %llu)",
+@@ -494,6 +494,7 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
+ 			case BLK_ZONE_COND_IMP_OPEN:
+ 			case BLK_ZONE_COND_EXP_OPEN:
+ 			case BLK_ZONE_COND_CLOSED:
++			case BLK_ZONE_COND_ACTIVE:
+ 				__set_bit(nreported, zone_info->active_zones);
+ 				nactive++;
+ 				break;
+@@ -896,9 +897,9 @@ int btrfs_sb_log_location_bdev(struct block_device *bdev, int mirror, int rw,
+ 	if (sb_zone + 1 >= nr_zones)
+ 		return -ENOENT;
  
- 	seq_printf(m,
--		"Zone no: %u, flags: 0x%x, ref: %u, wp ofst: %u, pending BIO: %u\n",
--		zwp_zone_no, zwp_flags, zwp_ref,
-+		"Zone no: %u, flags: 0x%x, ref: %u, cond: %s, wp ofst: %u, pending BIO: %u\n",
-+		zwp_zone_no, zwp_flags, zwp_ref, blk_zone_cond_str(zwp_cond),
- 		zwp_wp_offset, zwp_bio_list_size);
- }
- 
+-	ret = blkdev_report_zones(bdev, zone_start_sector(sb_zone, bdev),
+-				  BTRFS_NR_SB_LOG_ZONES, copy_zone_info_cb,
+-				  zones);
++	ret = blkdev_report_zones_cached(bdev, zone_start_sector(sb_zone, bdev),
++					 BTRFS_NR_SB_LOG_ZONES,
++					 copy_zone_info_cb, zones);
+ 	if (ret < 0)
+ 		return ret;
+ 	if (unlikely(ret != BTRFS_NR_SB_LOG_ZONES))
 -- 
 2.51.0
 
