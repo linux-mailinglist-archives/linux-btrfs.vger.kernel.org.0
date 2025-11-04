@@ -1,212 +1,106 @@
-Return-Path: <linux-btrfs+bounces-18651-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18652-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB89DC30E6B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 13:10:51 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2296BC30E87
+	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 13:12:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A1FE18C1A51
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 12:11:16 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C3A1F34B79A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 12:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF51E2ED87F;
-	Tue,  4 Nov 2025 12:10:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B93D2EF664;
+	Tue,  4 Nov 2025 12:12:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MqvL8ie3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3eSYI+vx";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MqvL8ie3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3eSYI+vx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LVDlSM8B"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8B92222A9
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 12:10:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD262ECE9E;
+	Tue,  4 Nov 2025 12:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762258244; cv=none; b=qludUzTX2uUH1dj8iBfRhRHSXUQFAMHWTqk3w1EaTnrLnXqpRzOefKumR9TWmBj2mctGGXJoOpdP77vyxzpGZ0V480cOWo5AnzzI9yYoaFx4sH5pFnuK8kQnPGIe6aOFGlF7dWpL9BCHjkb7DN2z9Wt9eETfSCT5IuQdSO6JXhE=
+	t=1762258360; cv=none; b=HZQdY/T7BoqAQRsrxSkEhZUXGhMqg92PFL+i/LyhSTbt4fUKvQnf2HK4uBZ6nvOhbwqFyh4tWmaZjS5HZkDEAAwmK4LB/rd298vBl/xp4W4q6xW2SR8xHKnfaXvaUNcR664+nC+2W34EW8D+h4T5+OdA9hVutMMYk+krFb0PRqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762258244; c=relaxed/simple;
-	bh=eGel8KiBuFDjo4pPMieMo1yjjgAaXxQ+cw+aICaOscE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=knzvZPSMQXwKAfqXSGiz+aj52KunegW/jzJ4sl8qGtgn/NIhnTj35RfcplKNoxsvMQU9mJZKcAs+izACqT8Wmgi5Vr+N9iaEK3JsgsVEBEA0Oq162yRDr9pDI8kRRJwNBD2od9bXUWZAOWgDw6wHS25CbL2eJDkYEW7jF34yA1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MqvL8ie3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3eSYI+vx; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MqvL8ie3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3eSYI+vx; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3B36E211A9;
-	Tue,  4 Nov 2025 12:10:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762258235;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZXHSVsnrd5TeAVl7VxqvV3F2lMc2ZR7mLog+oT3Wdg4=;
-	b=MqvL8ie3U4bOb+IJ7mBpak9YmIF7mGWwGKwjMxDj08EFKMEwD+gE6Y5VcBfSu57nj6HZ/W
-	lvRNpib+eHv4I4eUdhY1j7M3lhbnW/cjokqdr3Sz93lRxE9K/T1EQKekk5KP6yj/DQM3u8
-	c7uya71crq/Ie6lLqPPiLnyS2s8n+Xc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762258235;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZXHSVsnrd5TeAVl7VxqvV3F2lMc2ZR7mLog+oT3Wdg4=;
-	b=3eSYI+vxLU8NAR1ZwrAAPkkY13pY8EG0UF+D8Nnf9wuWqYTJ4a8PjWFFf2yAVbigbMRWOy
-	XXNRK/ZYE3IGSsDA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MqvL8ie3;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=3eSYI+vx
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762258235;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZXHSVsnrd5TeAVl7VxqvV3F2lMc2ZR7mLog+oT3Wdg4=;
-	b=MqvL8ie3U4bOb+IJ7mBpak9YmIF7mGWwGKwjMxDj08EFKMEwD+gE6Y5VcBfSu57nj6HZ/W
-	lvRNpib+eHv4I4eUdhY1j7M3lhbnW/cjokqdr3Sz93lRxE9K/T1EQKekk5KP6yj/DQM3u8
-	c7uya71crq/Ie6lLqPPiLnyS2s8n+Xc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762258235;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZXHSVsnrd5TeAVl7VxqvV3F2lMc2ZR7mLog+oT3Wdg4=;
-	b=3eSYI+vxLU8NAR1ZwrAAPkkY13pY8EG0UF+D8Nnf9wuWqYTJ4a8PjWFFf2yAVbigbMRWOy
-	XXNRK/ZYE3IGSsDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 17B02136D1;
-	Tue,  4 Nov 2025 12:10:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id eruQBTvtCWnlPwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 04 Nov 2025 12:10:35 +0000
-Date: Tue, 4 Nov 2025 13:10:29 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Gladyshev Ilya <foxido@foxido.dev>
-Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: make ASSERT no-op in release builds
-Message-ID: <20251104121029.GO13846@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20251102073904.2149103-1-foxido@foxido.dev>
- <20251104001800.GM13846@suse.cz>
- <98e33c86-f5f3-46c5-8dba-c28a459b4a45@foxido.dev>
+	s=arc-20240116; t=1762258360; c=relaxed/simple;
+	bh=CIuyhA1SE77JCvvV7gCQAcX8DXg3tOccPVuCi/0awLU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=dJ4ytGyPS/SVEQCv6qMKqzCvSkCwr1uIcUzS5w/bU49azB8dAjqfuFVX7OPxtXlY+C6zhdXyRBwrea7ZfG5Vx7D8ugDQ/N0LIND+1Dn7yGbfg+vefLZyBa2LhwzhHajXf0s9PJAAjR64tMwK3tYMof06Fr1F2yzKye71Fn8uHDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LVDlSM8B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15144C4CEF7;
+	Tue,  4 Nov 2025 12:12:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762258358;
+	bh=CIuyhA1SE77JCvvV7gCQAcX8DXg3tOccPVuCi/0awLU=;
+	h=From:Subject:Date:To:Cc:From;
+	b=LVDlSM8B8MEG0S4WDNJ4bkaJqLmR65+8+LOK0k4a4t3evokZWqPaRDJ+SFJWpiiAN
+	 m0B54ljecsDO0jzUbjDWlM7YqRgrQP7H9PcFUzn1MnoSm17xDy9fazysa5ArAgtD6K
+	 AA22YHjvznNjvwwpb79sWR40921OQWA5pQxUOxoQ7v+vOPLDo20FY4Q7Dh8f5HYIAv
+	 BxCVrgcN6YqCI9BeCRy+Zrh5s6+G/PAXSw8F+GuN6eTljy9TpgFA2HzxSdzDd+RJBO
+	 50arLI3ISJAihDYz0rqxe1x9JiNsLqjCPnUQTJGk5KpjJm24maWFUb1WtI/0/92q+X
+	 0lufpjS5UoU7Q==
+From: Christian Brauner <brauner@kernel.org>
+Subject: [PATCH RFC 0/8] fs: introduce super write guard
+Date: Tue, 04 Nov 2025 13:12:29 +0100
+Message-Id: <20251104-work-guards-v1-0-5108ac78a171@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <98e33c86-f5f3-46c5-8dba-c28a459b4a45@foxido.dev>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 3B36E211A9
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[foxido.dev:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:dkim,suse.cz:replyto]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -4.21
-X-Spam-Level: 
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAK3tCWkC/x2MQQ6CMBAAv0L27JK2iKJXEx/g1XhY2gUaQzG7i
+ iaEv1s9ziQzCyhLZIVjsYDwHDVOKYPdFOAHSj1jDJnBGVdba7b4nuSO/YskKHZchT2ZA7u6gVw
+ 8hLv4+d+ucDmf4JZlS8rYCiU//EYj6ZOlnHelbVB8Bev6BfndiZuFAAAA
+X-Change-ID: 20251104-work-guards-fe3d7a09e258
+To: linux-fsdevel@vger.kernel.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+ linux-xfs@vger.kernel.org, Christian Brauner <brauner@kernel.org>
+X-Mailer: b4 0.15-dev-a6db3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1248; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=CIuyhA1SE77JCvvV7gCQAcX8DXg3tOccPVuCi/0awLU=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWRyvt2iPkvi+JrF+Uc6WnfcK2EwD04W+J144XDV2VkzN
+ r5qyC2a2FHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCR2EWMDG8WbvTTvJj0dWno
+ 6ZZUBd4L7U6zH3xpUErZpH5u3tyfFrcZGV7rncs6UH51+qySNXZuIr+KW+M03ocynE20eMdeVnp
+ bmQcA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-On Tue, Nov 04, 2025 at 02:37:30PM +0300, Gladyshev Ilya wrote:
-> On 11/4/25 03:18, David Sterba wrote:
-> > On Sun, Nov 02, 2025 at 10:38:52AM +0300, Gladyshev Ilya wrote:
-> >> The current definition of `ASSERT(cond)` as `(void)(cond)` is redundant,
-> >> since these checks have no side effects and don't affect code logic.
-> > 
-> > Have you checked that none of the assert expressions really don't have
-> > side effects other than touching the memory?
-> 
-> Yes, but visually only. Most checks are plain C comparisons, and some 
-> call folio/btrfs/refcount _check/test_ functions where I didn't find 
-> side effects.
-> 
-> However, fs/btrfs/ has ~880 asserts, so if you know more robust 
-> verification methods, I'd be glad to try them.
+Hey,
 
-Good, thanks. I tried the same, with some random grep filters for
-possible function calls but nothing out of scope found so I guess this
-is sufficient.
+I'm in the process of adding a few more guards for vfs constructs.
+I've chosen the easy case of super_start_write() and super_end_write()
+and converted eligible callers. I think long-term we can move a lot of
+the manual placement to completely rely on guards - where sensible.
 
-> >> However, some checks contain READ_ONCE or other compiler-unfriendly
-> >> constructs. For example, ASSERT(list_empty) in btrfs_add_dealloc_inode
-> >> was compiled to a redundant mov instruction due to this issue.
-> >>
-> >> This patch defines ASSERT as BUILD_BUG_ON_INVALID for !CONFIG_BTRFS_ASSERT
-> >> builds. It also marks `full_page_sectors_uptodate` as __maybe_unused to
-> >> suppress "unneeded declaration" warning (it's needed in compile time)
-> >>
-> >> Signed-off-by: Gladyshev Ilya <foxido@foxido.dev>
-> >> ---
-> >> Changes from v1:
-> >> - Annotate full_page_sectors_uptodate as __maybe_unused to avoid
-> >>    compiler warning
-> >>
-> >> Link to v1: https://lore.kernel.org/linux-btrfs/20251030182322.4085697-1-foxido@foxido.dev/
-> >> ---
-> >>   fs/btrfs/messages.h | 2 +-
-> >>   fs/btrfs/raid56.c   | 4 ++--
-> >>   2 files changed, 3 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
-> >> index 4416c165644f..f80fe40a2c2b 100644
-> >> --- a/fs/btrfs/messages.h
-> >> +++ b/fs/btrfs/messages.h
-> >> @@ -168,7 +168,7 @@ do {										\
-> >>   #endif
-> >>   
-> >>   #else
-> >> -#define ASSERT(cond, args...)			(void)(cond)
-> >> +#define ASSERT(cond, args...)			BUILD_BUG_ON_INVALID(cond)
-> > 
-> > I'd rather have the expression open coded rather than using
-> > BUILD_BUG_ON_INVALID, the name is confusing as it's not checking build
-> > time condtitons.
-> 
-> The name kinda indicates that it triggers on invalid conditions, not 
-> false ones, but I understand that it can be confusing. While we could 
-> use direct sizeof() magic here, I prefer reusing the same infrastructure 
-> as VM_BUG_ON(), VFS_*_ON() and others.
-> 
-> Maybe adding a comment about its semantics above ASSERT definition will 
-> help clarify the usage? But if you prefer the sizeof() approach, I can 
-> change it - it's not a big deal.
+Christian
 
-A comment for ASSERT works too. The BUILD_BUG_ON_INVALID is indeed
-widely used so I don't expect any sudden change in semantics. As adding
-the comment is simple I'll do that, no need to resend the patch. Thanks.
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+Christian Brauner (8):
+      fs: add super_write_guard
+      btrfs: use super write guard in btrfs_reclaim_bgs_work()
+      btrfs: use super write guard btrfs_run_defrag_inode()
+      btrfs: use super write guard in sb_start_write()
+      ext4: use super write guard in write_mmp_block()
+      btrfs: use super write guard in relocating_repair_kthread()
+      open: use super write guard in do_ftruncate()
+      xfs: use super write guard in xfs_file_ioctl()
+
+ fs/btrfs/block-group.c | 3 +--
+ fs/btrfs/defrag.c      | 7 +++----
+ fs/btrfs/volumes.c     | 7 ++++---
+ fs/ext4/mmp.c          | 8 ++------
+ fs/open.c              | 9 +++------
+ fs/xfs/xfs_ioctl.c     | 6 ++----
+ include/linux/fs.h     | 5 +++++
+ 7 files changed, 20 insertions(+), 25 deletions(-)
+---
+base-commit: dcb6fa37fd7bc9c3d2b066329b0d27dedf8becaa
+change-id: 20251104-work-guards-fe3d7a09e258
+
 
