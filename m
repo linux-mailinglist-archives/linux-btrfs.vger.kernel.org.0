@@ -1,81 +1,63 @@
-Return-Path: <linux-btrfs+bounces-18682-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18683-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 513C6C32EC0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 21:35:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAF8CC32F17
+	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 21:37:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8633E4ED0F6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 20:34:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 292AA421C19
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 20:37:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A233B2EE616;
-	Tue,  4 Nov 2025 20:34:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 025292F0C74;
+	Tue,  4 Nov 2025 20:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="aasyrEeM"
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="njyrOopW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from 004.mia.mailroute.net (004.mia.mailroute.net [199.89.3.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0222EDD7A
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 20:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E163D2ECD3A;
+	Tue,  4 Nov 2025 20:37:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.3.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762288480; cv=none; b=lzkMA2a/i+QT5ep+u6e3+oJnATRV0TywRf3fbdx5PuQrOchejyuxX3n9src3zoJWK3I2jwP2R0hPJrSSHcSnZzC8ZnENhea685KM/2DiDXe7AFGcIknkpus1dFLe4tFtcbJ6IZFEgglhFPTLTru3TIiwDEWLjApq73EL2VUlLDA=
+	t=1762288634; cv=none; b=F2MWyFDtTq2a/JUtck45Nx+zUU9FDpqth/L3q1+L6EVQkjpY8f1iE7fkY9Zjuc/qTKgFLLrrRMdlvXTEf5jOy4+mwe4dbIN/7xyGzD9AICL45SRJtT3R42QCyOhh5gzuGEzcR61p0LsfnBHOKjh27x8lp+bmv/v5140HwNQo0E4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762288480; c=relaxed/simple;
-	bh=pcqbzs87TVZHGwd0PFnmjPS0uPadDYSXPyKwjnuXgBg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R/lasLFYKglprBvfxMxpmirCYy2nHztqfFvRMk+skCVne5cMg0FPgScahK65+M4PjKIydC8uwojqPOd+wFDXQEyAPZ48wpFUZ8Ej2iRMYDtv8knfMq+/DFclBGonqXon3Ypbn4KxeCs2IaJk27dOqxmuydFwuyvAsIhJKnfOGOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=aasyrEeM; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3ecdf2b1751so3855758f8f.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 04 Nov 2025 12:34:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762288477; x=1762893277; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ElfU6/I0L9mmjF7bkTwgY90FbMhY7drclQ1JLKFiKW4=;
-        b=aasyrEeMPaUORie+gF/MXEFkE5m2ZAXfyqKNV5WBRLupbMn99dJ9Y3mwOSBR+dsFpE
-         RSdt81JlofYM2dx7kvP2svb9n6Oyppq4olWYfAlQeVkajQazr14fP9KRpZmeSJddIk/F
-         s/ojyxOFrqN2wg0MUacWa+9netAwIoaVPUlwDLpkRa5o91usB0dWMH15P6sUezNs3Tl4
-         brgT8bZYvPgEZ9OspZVwWNX9seVd5+33VeCijT/+LH+xlJio3WJY5aJowzYrhSmVf6U1
-         tT8MNuuVtPOtYV3vs2dpFOYlFW18aBcrBEfVkXgv4imLZV+X+LZosGM0B5IpV3x/kQRz
-         ZTKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762288477; x=1762893277;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ElfU6/I0L9mmjF7bkTwgY90FbMhY7drclQ1JLKFiKW4=;
-        b=XWFIGI6nCEjRS0xQUtQRHhQhqLBFwx86S2+XSjGiJg+8Lwr1t29uJtPkXVxUXxRRDR
-         sFEKzuLly4kr/Vv/bAshFlVztzqX+NS1yRO3yh+jdkSc6NcVSxl95E1k40mpRFZON9i4
-         2ka/ZTKID8ZxpbeEFFmiOolqwWHQD2fL2BeR5AilOE/9Me5DNsZdJCLHeuzIM5DAouUp
-         9e81Gf4vYft1n7zqT7sHmP6A2biJPV9U52ViSjr+DjbHRtFoc2QyRxXg1nR7ZMyG3c/g
-         YJS00pDlh8WEbxJmXBtp/j+K2PIeOKM2PUruuYvOcHUxhzvQwkobdFPRwqvW2vZOwBPW
-         0TKg==
-X-Gm-Message-State: AOJu0Yyt1VjYdn4/qcFdCHNazW0BQmBFKrVhJuLMyP7w0JCDDjCv1u8P
-	w+oPULVmAFAqxnzcHANoh2Lk6epL+veVKZ0gCQEHHEk85DIPFrzi5/ny6/7udY5AEaw=
-X-Gm-Gg: ASbGnctM8fRQkKDBOhe2Im7IieypUfzPiL4K5OqQ/LVnUHPAKot3VUGIRpxkZseSTXg
-	iolfx4fnaWYjf67K8ZUc9yJnX9ZNbKPyvm+TDtjW1SLpwtXOznI+F57ZE2EKw1IAvcuErTqt4SI
-	kIHwy/zLkDTrvHNzpGZ5V2FMnfLImwuUQq+1VMXyq5qYXdVCOlQisAI38UogA3X9A+PjRxWBYnU
-	l2CcYeYvclQzT3VtcXTyxTtXKtxFGA3/RhItB2gEWHDUnws7rsaSy4huV/R3+n8QqGf6ux6A2QF
-	9qRe3How1v5z7EJ8xrWTlYilDMSFvsnzrJpGdGZKEnzCg7Pm2KD8veO6KDPRzcFz5I5GSYV9uxt
-	HqZHdOFAwCZsGcnzP3Voa4/ANnHV8+a45E8K9WGcgeFCqg/+mdUDUD2PZfDP8yqQ0HXjTddKHqX
-	hMrfNJntYmicAAtqFjWoNQZ1vVwTtV
-X-Google-Smtp-Source: AGHT+IExUHtfVKDjgXTSPNckPXQhySLpTav0VeGsiTnCNS2KyTCAao18XUn6RYqTto5ou7sSH4icmg==
-X-Received: by 2002:a05:6000:2887:b0:429:d528:649f with SMTP id ffacd0b85a97d-429e32c8378mr576294f8f.2.1762288476768;
-        Tue, 04 Nov 2025 12:34:36 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::e9d? (2403-580d-fda1--e9d.ip6.aussiebb.net. [2403:580d:fda1::e9d])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29601976196sm36462045ad.22.2025.11.04.12.34.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Nov 2025 12:34:36 -0800 (PST)
-Message-ID: <9ef50974-62a5-4b22-959f-c3be7abfc4ae@suse.com>
-Date: Wed, 5 Nov 2025 07:04:31 +1030
+	s=arc-20240116; t=1762288634; c=relaxed/simple;
+	bh=Hd5WRC5q73BCc88/cX72o+WZOdt8iG1dF8beT1jc//4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=NP6DjK2U3LW/goXtxDxn680g1Sbl4BSGNjc/GeCKJgyeMWm277y/QAfLnzvliOmziqeKljY7W8aemmMjodrTpW3ERLV6m9R0CiGMDz30m2Oqe1OJftg91r//O0GOXYCZWleXOeUEQO1pQ6GjmYp+8IOVkzknAXje6gNCj2Og/t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=njyrOopW; arc=none smtp.client-ip=199.89.3.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 004.mia.mailroute.net (Postfix) with ESMTP id 4d1Kxr66nZznDrCk;
+	Tue,  4 Nov 2025 20:37:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1762288622; x=1764880623; bh=Hd5WRC5q73BCc88/cX72o+WZ
+	Odt8iG1dF8beT1jc//4=; b=njyrOopWTof8U96TrrWMp1a4Efg7XVUfLDtQYyzb
+	aTMFdUJX01Eu6nU3f0ycgIQ5A43cI+9q+eSogfozr65UTP/B8IKkmDal9zYZTdTC
+	xn5n1dVPMj/UYaFV9EZISUSEPAfoTT+J3gsGtepGxTdc4WtilYiIYItT4hOLRxX8
+	fnvPSrkzoSDif2AUDTiKSs6bSzBN7uXecCLnD2g8pYeQcj5dI+dAT1gW/c4+0MaE
+	DZKyAR+CreJGcVkEpKm3pa/Y2LHj3iVAtAXgTnfyF3hmbFZ/1h4jLlPD2glv3Eye
+	oOFphoXnwW8KN42ignT3IE+q+Xa9zzo+tkZ8D3rkbzrpIQ==
+X-Virus-Scanned: by MailRoute
+Received: from 004.mia.mailroute.net ([127.0.0.1])
+ by localhost (004.mia [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id 9hBJWyN-oUgM; Tue,  4 Nov 2025 20:37:02 +0000 (UTC)
+Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net [73.231.117.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 004.mia.mailroute.net (Postfix) with ESMTPSA id 4d1KxY3VgNznDrCX;
+	Tue,  4 Nov 2025 20:36:47 +0000 (UTC)
+Message-ID: <46fb6d7e-e3c9-48fb-ab2e-f432df9f9c05@acm.org>
+Date: Tue, 4 Nov 2025 12:36:46 -0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -83,109 +65,34 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix NULL pointer dereference in
- backup_super_roots()
-To: Zhen Ni <zhen.ni@easystack.cn>, clm@fb.com, dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-References: <20251104081416.759194-1-zhen.ni@easystack.cn>
+Subject: Re: [PATCH v3 11/15] block: introduce BLKREPORTZONESV2 ioctl
+To: Damien Le Moal <dlemoal@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+ Keith Busch <keith.busch@wdc.com>, Christoph Hellwig <hch@lst.de>,
+ dm-devel@lists.linux.dev, Mike Snitzer <snitzer@kernel.org>,
+ Mikulas Patocka <mpatocka@redhat.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
+ Carlos Maiolino <cem@kernel.org>, linux-btrfs@vger.kernel.org,
+ David Sterba <dsterba@suse.com>
+References: <20251104013147.913802-1-dlemoal@kernel.org>
+ <20251104013147.913802-12-dlemoal@kernel.org>
+ <0cb7eefb-4501-47e8-805f-6e8737ca6bb5@acm.org>
+ <da7e8c3e-49fe-49bd-9642-3b0ae67a3503@kernel.org>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20251104081416.759194-1-zhen.ni@easystack.cn>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <da7e8c3e-49fe-49bd-9642-3b0ae67a3503@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
+On 11/4/25 12:13 PM, Damien Le Moal wrote:
+> As I said, I did. See the comments with the BLK_ZONE_COND_ACTIVE condition.
+> If you think that is not enough, I can cross reference tht in the comment for
+> BLKREPORTZONEV2.
+The current documentation requires puzzling some pieces of information
+together but this is probably sufficient.
 
+Thanks,
 
-在 2025/11/4 18:44, Zhen Ni 写道:
-> backup_super_roots() unconditionally dereferences extent_root and
-> csum_root pointers obtained from btrfs_extent_root() and
-> btrfs_csum_root() respectively. These functions can return NULL when the
-> corresponding filesystem trees are unavailable due to corruption or
-> other error conditions. This causes a kernel panic.
-
-Explain why backup_super_roots() is called on those situations.
-
-Remember csum/extent trees can only be NULL if corresponding rescue 
-mount options are used, which requires the full fs to be RO (and no log 
-replay is allowed either).
-
-If you hit it in the real world, please give the call trace.
-
-Otherwise give a deeper dig first.
-> 
-> Add proper NULL checking and skip the backup operations for the
-> unavailable roots.
-> 
-> Fixes: 29cbcf401793 ("btrfs: stop accessing ->extent_root directly")
-> Fixes: f7238e509404 ("btrfs: add support for multiple global roots")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Zhen Ni <zhen.ni@easystack.cn>
-> ---
->   fs/btrfs/disk-io.c | 28 ++++++++++++++++------------
->   1 file changed, 16 insertions(+), 12 deletions(-)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 0aa7e5d1b05f..b54c79a1db14 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1670,18 +1670,22 @@ static void backup_super_roots(struct btrfs_fs_info *info)
->   		struct btrfs_root *extent_root = btrfs_extent_root(info, 0);
->   		struct btrfs_root *csum_root = btrfs_csum_root(info, 0);
->   
-> -		btrfs_set_backup_extent_root(root_backup,
-> -					     extent_root->node->start);
-> -		btrfs_set_backup_extent_root_gen(root_backup,
-> -				btrfs_header_generation(extent_root->node));
-> -		btrfs_set_backup_extent_root_level(root_backup,
-> -					btrfs_header_level(extent_root->node));
-> -
-> -		btrfs_set_backup_csum_root(root_backup, csum_root->node->start);
-> -		btrfs_set_backup_csum_root_gen(root_backup,
-> -					       btrfs_header_generation(csum_root->node));
-> -		btrfs_set_backup_csum_root_level(root_backup,
-> -						 btrfs_header_level(csum_root->node));
-> +		if (unlikely(!extent_root || !csum_root)) {
-> +			btrfs_warn(info, "failed to get extent or csum root for backup");
-> +		} else {
-> +			btrfs_set_backup_extent_root(root_backup,
-> +						     extent_root->node->start);
-> +			btrfs_set_backup_extent_root_gen(root_backup,
-> +					btrfs_header_generation(extent_root->node));
-> +			btrfs_set_backup_extent_root_level(root_backup,
-> +						btrfs_header_level(extent_root->node));
-> +
-> +			btrfs_set_backup_csum_root(root_backup, csum_root->node->start);
-> +			btrfs_set_backup_csum_root_gen(root_backup,
-> +						       btrfs_header_generation(csum_root->node));
-> +			btrfs_set_backup_csum_root_level(root_backup,
-> +							 btrfs_header_level(csum_root->node));
-> +		}
->   	}
->   
->   	/*
-
+Bart.
 
