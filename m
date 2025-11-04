@@ -1,116 +1,103 @@
-Return-Path: <linux-btrfs+bounces-18604-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18605-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D43C2EA75
-	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 01:41:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ED97C2EAF4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 02:02:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E1B8F4F5719
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 00:39:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AB4B3B53C1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 01:02:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7700A207A0B;
-	Tue,  4 Nov 2025 00:39:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C66217F24;
+	Tue,  4 Nov 2025 01:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UhSuOo9e"
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="HMzBYxa3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+Received: from 004.mia.mailroute.net (004.mia.mailroute.net [199.89.3.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFAD228DB3;
-	Tue,  4 Nov 2025 00:39:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1CA15539A;
+	Tue,  4 Nov 2025 01:01:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.3.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762216756; cv=none; b=sTApikNkAu7nicWbbPTy4r0GNvpcPwRdEjRXZFY12Xi1tjicz/K5E4AFuEyujFv0kbm1b+xYLrJb2rk7xMXkoEy2uxP/fKxvcCf+HR81BLb3s60oZ9gWfFD0U+/M4kPaRS23LyrEQZyX16FeUFeq0CzZazwJ7d6dj5jPfAt4uXo=
+	t=1762218118; cv=none; b=a9/o7Gzdge3YBUsUYB8HDJPvowqX2yv/vlEsFkHYsTLOn/O9nIQxbLx6NPer5CqJxKOB+Xxg+Sunysg7KpQaOCQhU1iUJpTYa0sEm8z1DvLqRachwbu0RltJNUQW9F66tre30JIRpyyIkL97C2m+2cBk0qVLeEe5HSdiJcDnEnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762216756; c=relaxed/simple;
-	bh=mPNm/C4lAMOMRgM7UB0KMAJ0ifsULw0KEfI5BGUhPDQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=in7GB6zBWrOT/tZBly414xYAkcTJCT1QJxrScyamgfwiSL13jMe7urBbxS+ifhFSBTUdk6GS0OKowYkBui59UtBASrB1Fh5dW709amRP5heufwiJaDmm2wLIeQglqYRXEXSr4U9t81piD3crDrJJIVi22PEk/UJWl2FMafzrz4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UhSuOo9e; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1762216754; x=1793752754;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mPNm/C4lAMOMRgM7UB0KMAJ0ifsULw0KEfI5BGUhPDQ=;
-  b=UhSuOo9ejRR5yDu3FL1xntaaincssnmAu+kbnk+CONg7HexAxBGSnF5I
-   Wn0ej0pOjEQdah0MebgIppxCFHdoy2UJgqmOLhayBXWcfTSDxqB9sAaQS
-   +EA33YxNswxcnPqiuDDSXkVhGFyGFkEIJMzYlwI17n5+oGvBVGKNRpzVO
-   l9GMEW4hfd7w8RCx9o7qAtNdkGq93+Z+wusepq8atQai9u1HQGcpuQun9
-   UJ6TRxvKrRYTfh49Z0VXacoS8fWMLt2RXSb5gSTOZXLwLNDA8oTlFsQP9
-   oNrEIuLD4UBZ0HBbUhMbSzkTcrGh+5TzBZjC+xqFY/UMqyXO+t6/RCUsZ
-   Q==;
-X-CSE-ConnectionGUID: Kx/OGYkUTf61LYZPQIXDEw==
-X-CSE-MsgGUID: QfML4wzCQiKdYsHjsXTSwA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11602"; a="64454564"
-X-IronPort-AV: E=Sophos;i="6.19,277,1754982000"; 
-   d="scan'208";a="64454564"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2025 16:39:14 -0800
-X-CSE-ConnectionGUID: OfZ4HEkuRhyIWHXTjR/tcQ==
-X-CSE-MsgGUID: if1kyanTQXSEi5380gA62w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,277,1754982000"; 
-   d="scan'208";a="210520385"
-Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 03 Nov 2025 16:39:10 -0800
-Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1vG544-000QgW-1B;
-	Tue, 04 Nov 2025 00:38:45 +0000
-Date: Tue, 4 Nov 2025 08:36:25 +0800
-From: kernel test robot <lkp@intel.com>
-To: Damien Le Moal <dlemoal@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-	Keith Busch <keith.busch@wdc.com>, Christoph Hellwig <hch@lst.de>,
-	dm-devel@lists.linux.dev, Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
-	Carlos Maiolino <cem@kernel.org>, linux-btrfs@vger.kernel.org,
-	David Sterba <dsterba@suse.com>
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v2 04/15] block: introduce disk_report_zone()
-Message-ID: <202511040843.y29M2yJp-lkp@intel.com>
-References: <20251103133123.645038-5-dlemoal@kernel.org>
+	s=arc-20240116; t=1762218118; c=relaxed/simple;
+	bh=4uVN2m2Fn19Sh1MsTnyiUqWKIDdvRLIGGU21jVU8o9o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=p8Y8NBoQMTdJGebV2TANSHAjcV3NaU3cS23Pm1s0g3wQArg6wR6xt2zRINsMqWoS7hD8EN67F5E05pJ77pvUMT5Wg5qwezp/Z5RRtQ50Lv00e9TIvrrk8mJ7HijQjgKMNvVLnBICbPexNL7sGr/JJljbwLMHRNBlDjqbBmAtUHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=HMzBYxa3; arc=none smtp.client-ip=199.89.3.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 004.mia.mailroute.net (Postfix) with ESMTP id 4d0qsv6HQMzmGHJp;
+	Tue,  4 Nov 2025 01:01:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1762218113; x=1764810114; bh=4uVN2m2Fn19Sh1MsTnyiUqWK
+	IDdvRLIGGU21jVU8o9o=; b=HMzBYxa34839lAyty5SHRbqUdyMIghBmpSKVLfM/
+	I4wQqOIVRHnpeleTXG1JgkCOxFSIo8nIIZEW0hdEfxSxb+uHvlOOC9XSK7laTfCU
+	aJ/nLII/IXn0QTJONfXOSCBMS+LxaW+V3UE4FtvqPuTgYSiMUGLbVTDcAQcrbnIO
+	KJa+h1k/6M7lBGlhccXt8+3AAoySkoSzq5mhOFSqTGIv0mpIhA5MvTX5Dqg/ZopS
+	Gw5MFLa5QjH1rM31nYz/XbaqaPkem4hCsEF0aD1JIT/XTYf2xTtPVuh/Ju7POLoC
+	9BnTbiDle6s878qpxR44hnb6UWHD8QZALmWCNDnrjSdGLA==
+X-Virus-Scanned: by MailRoute
+Received: from 004.mia.mailroute.net ([127.0.0.1])
+ by localhost (004.mia [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id XBhzvaiVaNxT; Tue,  4 Nov 2025 01:01:53 +0000 (UTC)
+Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net [73.231.117.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 004.mia.mailroute.net (Postfix) with ESMTPSA id 4d0qsQ17HHzlyNp4;
+	Tue,  4 Nov 2025 01:01:26 +0000 (UTC)
+Message-ID: <a6d95da9-afdc-4885-bcc7-246d6d133ba7@acm.org>
+Date: Mon, 3 Nov 2025 17:01:25 -0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251103133123.645038-5-dlemoal@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 11/15] block: introduce BLKREPORTZONESV2 ioctl
+To: Damien Le Moal <dlemoal@kernel.org>,
+ Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, Jens Axboe
+ <axboe@kernel.dk>, "linux-block@vger.kernel.org"
+ <linux-block@vger.kernel.org>,
+ "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+ Keith Busch <keith.busch@wdc.com>, hch <hch@lst.de>,
+ "dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
+ Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+ "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+ Carlos Maiolino <cem@kernel.org>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+ David Sterba <dsterba@suse.com>
+References: <20251103133123.645038-1-dlemoal@kernel.org>
+ <20251103133123.645038-12-dlemoal@kernel.org>
+ <982ed7d8-e818-4d9c-a734-64ab8b21a7e3@wdc.com>
+ <0154c2a8-a3ed-45d3-8f8a-1581106212fb@kernel.org>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <0154c2a8-a3ed-45d3-8f8a-1581106212fb@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Damien,
+On 11/3/25 4:15 PM, Damien Le Moal wrote:
+> The old one is needed to allow getting the precise imp open, exp open, closed
+> conditions, if the user cares about these. E.g. Zonefs does because of the
+> (optional) explicit zone open done on file open.
 
-kernel test robot noticed the following build warnings:
+How about adding the above information in include/uapi/linux/blkzoned.h?
 
-[auto build test WARNING on ba6a8208cc205c6545c610b5863ea89466fc486a]
+Thanks,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Damien-Le-Moal/block-handle-zone-management-operations-completions/20251103-214422
-base:   ba6a8208cc205c6545c610b5863ea89466fc486a
-patch link:    https://lore.kernel.org/r/20251103133123.645038-5-dlemoal%40kernel.org
-patch subject: [PATCH v2 04/15] block: introduce disk_report_zone()
-config: sparc-randconfig-002-20251104 (https://download.01.org/0day-ci/archive/20251104/202511040843.y29M2yJp-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 12.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251104/202511040843.y29M2yJp-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202511040843.y29M2yJp-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> Warning: drivers/scsi/sd_zbc.c:47 function parameter 'args' not described in 'sd_zbc_parse_report'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Bart.
 
