@@ -1,102 +1,106 @@
-Return-Path: <linux-btrfs+bounces-18664-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18665-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 458B1C31017
-	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 13:35:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB747C31080
+	for <lists+linux-btrfs@lfdr.de>; Tue, 04 Nov 2025 13:43:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEB0518C096B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 12:33:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 997EC18944CA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 12:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A40D2EDD58;
-	Tue,  4 Nov 2025 12:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E63AF2EC542;
+	Tue,  4 Nov 2025 12:42:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gx4o2sOw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Vow9pMVP";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zwFZ1DBS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1gL6Hy3z"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="t2po4ymw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dofjR7yM";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="t2po4ymw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dofjR7yM"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E2111EDA2C
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 12:32:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882402D8DA3
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 12:42:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762259558; cv=none; b=LHxd7451YcNc4H0FJBg8rM2JoWsb2cLsKmVJNw4mxvBU0wNkiag5YngJVcYjmdC8t/vO2bxaC0sW0yFhGK4Xe/A19aU6ZWWQflG1WKx+s+H+TrM5l9PlRK0w3y9XuJMgKTBkiZvtfV2pVhGk50nyklP7wetX9xYsMULxhFgCLP0=
+	t=1762260138; cv=none; b=rC4DTGfP8unYK+ODvll6+u+P/SOH7HqlCW9nxgejynBM0h4ipwT9XXN0abHrntGSJQ32EwaZZTkDbMV6gbVYx/SgRF/yHDXxO67rCO5yM3SXPp3KV/YpkY9R8Eacw3+fGbbgNcxJ6LzWafMgs+ViAZciwMGEo7rit167owgc49I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762259558; c=relaxed/simple;
-	bh=NJE+vfTfgfj/EUtcMYHZXNMi1RLJXxQBduw+z1XNFxE=;
+	s=arc-20240116; t=1762260138; c=relaxed/simple;
+	bh=gR8k9hcil4t6MZaR8pcDqIsnghRiT3qRPIpREe7ZpHI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sobXnVNCGzRw4NDLu1qLp9QdHWqinnGSN2FSElYTdDal0btGRz200TozoQyaBztZ3rCsl5Mm9EKUhz5iQPbOudi8P2KBZ3KR30hSaw0Jwe5zKTX+loKcQFnZiOfTfEssNEZ+DfFlvQ7a+35J910unhiG3P7mT9yhxyVbYmYsebI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gx4o2sOw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Vow9pMVP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zwFZ1DBS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1gL6Hy3z; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=aRCUobCqCKKY/8gFvffRqvPexxAKOoGfKOka7stksdGC2JNX1dWshofyXGpKPJ7UAYvFPWtIoVtnpmNmz3xHM4cYmfSwyhKpTCPB5EWEzCNlGBLXLCCEZ7ZwssKSJOF6sDzBUDtFBxW42SfCPwe0sTNn4033rWyprwiVcR8Zlng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=t2po4ymw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dofjR7yM; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=t2po4ymw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dofjR7yM; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 993EE211BA;
-	Tue,  4 Nov 2025 12:32:34 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BB0292118C;
+	Tue,  4 Nov 2025 12:42:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762259555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1762260134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YE5+k0V1VuDoT27DY4Y8pJ+4L58ibqvTkOEKOb/b8dM=;
-	b=gx4o2sOwV/RlEEaMKBxK2dj0gTtmafrIb4oXtPH66F1O20rpYjSGv0HYm5LEc0JkJyl33U
-	z28wKiUQWKgZhXyJvBBVlOcUDTn0B6LsXzE2+2XfYQAehNtWfNJwrvo+dM5Bd9D4P/QW9q
-	Q9cRWvD1RzkJbI83NCSfPRCdX9aoBQ4=
+	bh=7Nor8wdBoIuiGnISw8EUnq57y9SkwuWb+No/Lg9Q/14=;
+	b=t2po4ymwq3x7o2u2fle0Bo4wsIrY8Ck6BEe5BRfudTbz23k65Cgh3XHFjcC27IG98TvwEo
+	5x0CMxuaJdK5OfwtFZZiVCZptdMx27uV9jJKM6V8afaDbJk+VQL+Rhs/LF8GyP21BsHl2d
+	q+FzjYDDRK5GAWWrGOn7WUrx6h3agHo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762259555;
+	s=susede2_ed25519; t=1762260134;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YE5+k0V1VuDoT27DY4Y8pJ+4L58ibqvTkOEKOb/b8dM=;
-	b=Vow9pMVPRVf7UZJr1RaHuD936BhIfC56FUGXC6zwvsapbrcCZPGCuoLdPqaOvaPquPjMEx
-	PgZY7G0aITXm5vBw==
+	bh=7Nor8wdBoIuiGnISw8EUnq57y9SkwuWb+No/Lg9Q/14=;
+	b=dofjR7yMFa5EDtxf3yZcXJHQqoX+AnJ3TGl9CHfmnoBnRjBcpHwPTeJBvaxc8NMcb5exQ1
+	WW1fW2PiMf5wcpCA==
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zwFZ1DBS;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=1gL6Hy3z
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762259554; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1762260134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YE5+k0V1VuDoT27DY4Y8pJ+4L58ibqvTkOEKOb/b8dM=;
-	b=zwFZ1DBSpCAP6F4+ipYPO5gnPicHzMPCsX1Adplf+yZN6Gfj0wKVjU+pF2ID+vlaNW2IfR
-	la1Ylgz1tOjL8RL7B9luyAwpUB0BpXigT96zT0i0LVle511CmULXai6uuw3CIDng7J3qHi
-	EEjWVS6riz3/RylwKqYGp1MxdP2WHOg=
+	bh=7Nor8wdBoIuiGnISw8EUnq57y9SkwuWb+No/Lg9Q/14=;
+	b=t2po4ymwq3x7o2u2fle0Bo4wsIrY8Ck6BEe5BRfudTbz23k65Cgh3XHFjcC27IG98TvwEo
+	5x0CMxuaJdK5OfwtFZZiVCZptdMx27uV9jJKM6V8afaDbJk+VQL+Rhs/LF8GyP21BsHl2d
+	q+FzjYDDRK5GAWWrGOn7WUrx6h3agHo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762259554;
+	s=susede2_ed25519; t=1762260134;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YE5+k0V1VuDoT27DY4Y8pJ+4L58ibqvTkOEKOb/b8dM=;
-	b=1gL6Hy3ze68oZYdIE9+34YEmP1WsjsFG2Ox4H/Qt7CslEij/S3Hsbx7shsn1fU3J3y+2t7
-	LcrFOEGLZOrgl/Bw==
+	bh=7Nor8wdBoIuiGnISw8EUnq57y9SkwuWb+No/Lg9Q/14=;
+	b=dofjR7yMFa5EDtxf3yZcXJHQqoX+AnJ3TGl9CHfmnoBnRjBcpHwPTeJBvaxc8NMcb5exQ1
+	WW1fW2PiMf5wcpCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8DEE0136D1;
-	Tue,  4 Nov 2025 12:32:34 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AFC19139A9;
+	Tue,  4 Nov 2025 12:42:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id D/WiImLyCWn3VQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 04 Nov 2025 12:32:34 +0000
+	id ss3lKqb0CWnpXwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 04 Nov 2025 12:42:14 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3D951A28E6; Tue,  4 Nov 2025 13:32:34 +0100 (CET)
-Date: Tue, 4 Nov 2025 13:32:34 +0100
+	id 55B93A28E6; Tue,  4 Nov 2025 13:42:14 +0100 (CET)
+Date: Tue, 4 Nov 2025 13:42:14 +0100
 From: Jan Kara <jack@suse.cz>
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, linux-btrfs@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH RFC 7/8] open: use super write guard in do_ftruncate()
-Message-ID: <lq4acfdaiuave42srs6akk3bxmidlaqgxxgdrlgpi6rznxzu5o@2xzkxywc6s2r>
-References: <20251104-work-guards-v1-0-5108ac78a171@kernel.org>
- <20251104-work-guards-v1-7-5108ac78a171@kernel.org>
+To: Qu Wenruo <wqu@suse.com>
+Cc: Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, Askar Safin <safinaskar@gmail.com>
+Subject: Re: [PATCH RFC 2/2] fs: fully sync all fses even for an emergency
+ sync
+Message-ID: <ewespqy3nwdpdrwn46bsqapx4hzbliru2ieq2wggghqgwssepo@ucz67koqt23w>
+References: <cover.1762142636.git.wqu@suse.com>
+ <7b7fd40c5fe440b633b6c0c741d96ce93eb5a89a.1762142636.git.wqu@suse.com>
+ <aQiYZqX5aGn-FW56@infradead.org>
+ <cbf7af56-c39a-4f42-b76d-0d1b3fecba9f@suse.com>
+ <urm6i5idr36jcs7oby33mngrqaa6eu6jky3kubkr3fyhlt6lnd@wqrerkdn3vma>
+ <414a076b-174d-414a-b629-9f396bce5538@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -105,77 +109,98 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251104-work-guards-v1-7-5108ac78a171@kernel.org>
+In-Reply-To: <414a076b-174d-414a-b629-9f396bce5538@suse.com>
 X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 993EE211BA
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	URIBL_BLOCKED(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	MISSING_XM_UA(0.00)[];
 	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	MIME_TRACE(0.00)[0:+];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,infradead.org,vger.kernel.org,zeniv.linux.org.uk,kernel.org,gmail.com];
 	TO_DN_SOME(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	RCVD_TLS_LAST(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -4.01
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
 
-On Tue 04-11-25 13:12:36, Christian Brauner wrote:
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
+On Tue 04-11-25 19:13:04, Qu Wenruo wrote:
+> [...]
+> > > > On Mon, Nov 03, 2025 at 02:37:29PM +1030, Qu Wenruo wrote:
+> > > > > At this stage, btrfs is only one super block update away to be fully committed.
+> > > > > I believe it's the more or less the same for other fses too.
+> > > > 
+> > > > Most file systems do not need a superblock update to commit data.
+> > > 
+> > > That's the main difference, btrfs always needs a superblock update to switch
+> > > metadata due to its metadata COW nature.
+> > > 
+> > > The only good news is, emergency sync is not that a hot path, we have a lot
+> > > of time to properly fix.
+> > 
+> > I'd say even better news is that emergency sync is used practically only
+> > when debugging the kernel. So we can do what we wish and will have to live
+> > with whatever pain we inflict onto ourselves ;).
+> 
+> Then what about some documents around the sysrq-s usage?
+> 
+> The current docs only shows "Will attempt to sync all mounted filesystems",
+> thus I guess that's the reason why the original reporter is testing it,
+> expecting it's a proper way to sync the fses.
 
-Looks good. Feel free to add:
+The key is in the word "attempt" :). But yes, we could expand the
+description to something like "Will try to writeback data on all mounted
+filesystems. There are no guarantees when the data actually hits the
+storage or whether all of the data ever hits it. It is just a desperate
+attempt to limit data loss if possible."
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> > > > > The problem is the next step, sync_bdevs().
+> > > > > Normally other fses have their super block already updated in the page
+> > > > > cache of the block device, but btrfs only updates the super block during
+> > > > > full transaction commit.
+> > > > > 
+> > > > > So sync_bdevs() may work for other fses, but not for btrfs, btrfs is
+> > > > > still using its older super block, all pointing back to the old metadata
+> > > > > and data.
+> > > > > 
+> > > > 
+> > > > At least for XFS, no metadata is written through the block device
+> > > > mapping anyway.
+> > > > 
+> > > 
+> > > So does that mean sync_inodes_one_sb() on XFS (or even ext4?) will always
+> > > submit needed metadata (journal?) to disk?
+> > 
+> > No, sync_inodes_one_sb() will just prepare transaction in memory (both for
+> > ext4 and xfs). For ext4 sync_fs_one_sb() with wait == 0 will start writeback
+> > of this transaction to the disk and sync_fs_one_sb() with wait == 1 will make
+> > sure the transaction is fully written out (committed). For xfs
+> > sync_fs_one_sb() with wait == 0 does nothing, sync_fs_one_sb() with wait
+> > == 1 makes sure the transaction is committed.
+> 
+> Then my question is, why EXT4 (and XFS) is fine with the emergency sync with
+> a power loss, at least according to the original reporter.
+> 
+> Is the journal already committed for every metadata changes?
+
+No it is not. For ext4 if the transaction grows large we'll commit it. Also
+if it gets too old (5s by default), we'll commit it. XFS will likely have
+similar constraints. So data loss is limited but definitely not completely
+avoided. But that never was the point of emergency sync.
 
 								Honza
-
-> ---
->  fs/open.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/open.c b/fs/open.c
-> index 3d64372ecc67..1d73a17192da 100644
-> --- a/fs/open.c
-> +++ b/fs/open.c
-> @@ -191,12 +191,9 @@ int do_ftruncate(struct file *file, loff_t length, int small)
->  	if (error)
->  		return error;
->  
-> -	sb_start_write(inode->i_sb);
-> -	error = do_truncate(file_mnt_idmap(file), dentry, length,
-> -			    ATTR_MTIME | ATTR_CTIME, file);
-> -	sb_end_write(inode->i_sb);
-> -
-> -	return error;
-> +	scoped_guard(super_write, inode->i_sb)
-> +		return do_truncate(file_mnt_idmap(file), dentry, length,
-> +				   ATTR_MTIME | ATTR_CTIME, file);
->  }
->  
->  int do_sys_ftruncate(unsigned int fd, loff_t length, int small)
-> 
-> -- 
-> 2.47.3
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
