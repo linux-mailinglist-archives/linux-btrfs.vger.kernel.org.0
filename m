@@ -1,201 +1,229 @@
-Return-Path: <linux-btrfs+bounces-18745-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18746-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5627EC38078
-	for <lists+linux-btrfs@lfdr.de>; Wed, 05 Nov 2025 22:30:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E11ABC3819C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 05 Nov 2025 22:50:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77FA91A27115
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Nov 2025 21:25:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0E7E3A8C78
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Nov 2025 21:45:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648502E1EE0;
-	Wed,  5 Nov 2025 21:24:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8625D2701CC;
+	Wed,  5 Nov 2025 21:45:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b="HmU5hGoP";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="qSmEJgx4"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oM4BHVo7";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eicf7ujQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from flow-b6-smtp.messagingengine.com (flow-b6-smtp.messagingengine.com [202.12.124.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A34F23F424;
-	Wed,  5 Nov 2025 21:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 082821FDA89
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Nov 2025 21:45:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762377849; cv=none; b=i4JciZp882lhO+EIRmak5VUTyfPbdPgWOHnqVKwi4FWsn4BmrrY3n5csFOyxN3y4F/PTyi40oXxqfCoJu1opa0WoeU5FTq5NF1Jzg62sbd+YQH6NK7C51ezim9QzetLr4fux9Ft5Dweed7WDI9ZyPZ2YxwU2O0ock1eFhXdDLLE=
+	t=1762379129; cv=none; b=eqScTQ8PTAOOTtTCeIPU7EQwz0J/klvOQnC032f5TwaA7I5Zl+DCJNCzicCERh3JCUUWJGDccJ4YaE6JFGKR67BJRj57DjOcAUhdWCbtJgDq+Gusn4jlNhoAMDqkBKuVuM9nw06oe25ReprWb/mAewWs2Z49gTHhbhGSpmqE+Ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762377849; c=relaxed/simple;
-	bh=u7d9evMnHLg8hJK0Bj/mYGhbV3SaK5dJyb8wyfl1+zg=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=HShAdk2x0EZ/hCfR6hiYIh+DOtgJ/yMqTxtEDwpRYr+c4sQHQZ0WxHnwh1YVCmt2oX/xazquhtSrOnEbpf9jc/MyJf/pPUbsnVrQGSxvgduq9+doZq6Gg8KjwfsgaxOjl5JoqsEmmU7VW1+/5SfQ20tMBzrydN3y2BPbTgye7U0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net; spf=pass smtp.mailfrom=ownmail.net; dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b=HmU5hGoP; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=qSmEJgx4; arc=none smtp.client-ip=202.12.124.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ownmail.net
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailflow.stl.internal (Postfix) with ESMTP id 1739B1300C2C;
-	Wed,  5 Nov 2025 16:24:03 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-03.internal (MEProxy); Wed, 05 Nov 2025 16:24:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to; s=fm3; t=
-	1762377842; x=1762385042; bh=EVCZm+k0TFnzyISAYv/ad61W8yGyS+Ggtni
-	ecPh35bI=; b=HmU5hGoPqokqzJCeAqGf4BLGNy0MGNPv7gplJ67n7ajHRRuR5XU
-	QACgC7SBMngKWRr4nVPjJJgBKA3Q8lvkyUIGSJ1J47cOcYiClbPU1pS4MppGb5wh
-	2U2/xgadcENW/jgHJsJTyYYdk+1XjojR7/TQqmLQq3cUPGl27XnIya4CBHC1wN5U
-	B+nehvMy/L9Mb2tEVTuU62Q/a0ARwc5MO2szCGIyxpVtm6vXzecjyFmyuGF+NoPC
-	aDoFRHfQnTUA0wUc9ga83EokX5Vq/Y4zVF59Z0IqpO5AZkbSr//2iHDO/uH6Mdle
-	v+KzAJeRAhAF2PY5f//xFYICp+6h/EtUY0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1762377842; x=
-	1762385042; bh=EVCZm+k0TFnzyISAYv/ad61W8yGyS+GgtniecPh35bI=; b=q
-	SmEJgx4M8dlmgTjoUZkSr8FLucgLUEVlbd9odWDFkQcMJ+PFRsH9Y//0VRWWOa2P
-	Ww7Nr0XlQSokRvZEPNvVMlDa6wHjsBAaK17Tal0oudel/kBoVldVw56udPXn9uh7
-	Mczp91CekHgkQQrSfj7GW2ikHW7rCR3uH+ZZqm5byT0S1cyww1zJkHKJ+SuERDBe
-	UBNUFH0g9LBeW66OTxBJSBU1+z1R+WJlAHRefWLPYecfVMfJsDxhw/7LXOajVkRK
-	EY0gezm21MwMMJYPZofen2+s3eL3i0IyTk0/RNQdye2aRU/x2B6K2Dlf35uwcujj
-	UVMV0x49c00E0JFs7mDIA==
-X-ME-Sender: <xms:asALaQBQoSVaUuTXtcG_GYkEHX7ZGK1IdW3-DpTTeAob7NvcdQnESw>
-    <xme:asALaZvvSYTRURk71wOmt1sLYQpre30qKc9hcTtEoays4h59X1vNTOzcXv4ewIAT7
-    PBP05Cv2IT0eKS3Y5hzt-pSpQXWpNcWFPc3z3tPuShZJnbiAw>
-X-ME-Received: <xmr:asALaV1K1vj_trpV4WX4Ug9tckywabHWFw4izsBwBHNEfUZdhT2LhWV0hKbStCEFmuTyATTpSjnEcu5m6FzT9u-CFv5Y_mYw-vIlsrnNGGDt>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddukeegleejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurheptgfgggfhvfevufgjfhffkfhrsehtqhertddttdejnecuhfhrohhmpefpvghilheu
-    rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
-    epleejtdefgeeukeeiteduveehudevfeffvedutefgteduhfegvdfgtdeigeeuudejnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
-    esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohepleegpdhmohguvgepshhmthhp
-    ohhuthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpd
-    hrtghpthhtohepfhhrrghnkhdrlhhisehvihhvohdrtghomhdprhgtphhtthhopehlihhn
-    uhigqdigfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugi
-    dquhhnihhonhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhn
-    uhigqdhnihhlfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinh
-    hugidqnhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhig
-    qdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuh
-    igqdhhrghruggvnhhinhhgsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
-    lhhinhhugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:asALafmPr_ZX1OBseZ_yN5P8ha0kcdOo70DqfQ-d7eox1J3FRhMuTg>
-    <xmx:asALaYv6caGo7YOyqxlwHt-aa7xcS6ubR74B6joQPFkP4nVa857B-Q>
-    <xmx:asALaQazXCEbXKvEWtOde9MGMuFd4iSpENdxHY6Br8A6SQLP9UCqOg>
-    <xmx:asALaUc6XxQI42baNH5r4oVKLbArJeUxiTNL9duhGxUFeugLz9diCA>
-    <xmx:csALaZ2nr3Xo9lu7ZwRVoMnu5vfNzgtS4RKi9tfb5i1b6hqQye68vliH>
-Feedback-ID: iab3e480c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Nov 2025 16:23:32 -0500 (EST)
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1762379129; c=relaxed/simple;
+	bh=/OR2uGOjzyAR9r9XodPARAjkUeYTvfFE9AM4f4S4YU0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Pa6c79BhUtbED3Ha2pCCD5xqSRx4RzzSnX0xwQSndsjuyf0iNC3J/nagMUPLrKZKU1WpObrm5JHf5Lludc285CE7rO1m/lhODF/+pz58n+Yc9suEeoJf9DmRibqaY27XC1vyJs9TgdQv2IcVn+7i1LpFzk/n0TPHZhSxkEzRN4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=oM4BHVo7; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eicf7ujQ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C5AD61F394;
+	Wed,  5 Nov 2025 21:45:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1762379124; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=L3JiZ249GK0l8bYe/dOMxDCSeT/CWwC3U5i48CL4UNw=;
+	b=oM4BHVo7M5aF+Lgt++UCb14JGVd1jmMEJ+O6eIbYTVAy/jF9z3uxy9PoC8/W6tCmjKFMrS
+	QGR0CUzxlwGT2/v46BZmoOhZcGwIVRvGoMztl+tw9Ho/DSlyVN099ZpV9QFlvy96tT55xn
+	WslXoRoXF8o8UoWD8hBQ6j6DHWy2gXk=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=eicf7ujQ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1762379123; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=L3JiZ249GK0l8bYe/dOMxDCSeT/CWwC3U5i48CL4UNw=;
+	b=eicf7ujQfMD5M8qGKBX4/D0I//Hw9eHUK569pVYCjAlziEcAB/ezDpbmNVyjOUGYWPjoDo
+	617b4FGlx2suwf1heBViZLUBKLFn9UC84zkGgMI0gk1Y2165QtaXWG9DcvmY6FyImsYDTx
+	pUdNil11xZaQads4RzAKWCVvnFI1iPY=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 62D3E132DD;
+	Wed,  5 Nov 2025 21:45:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id pm+YA3LFC2madwAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 05 Nov 2025 21:45:22 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Calvin Owens <calvin@wbinvd.org>
+Subject: [PATCH] btrfs: use kvmalloc for btrfs_bio::csum allocation
+Date: Thu,  6 Nov 2025 08:15:03 +1030
+Message-ID: <22b5e7a4dad73b2c97069f34910a56fcf58d5f6c.1762379016.git.wqu@suse.com>
+X-Mailer: git-send-email 2.51.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: NeilBrown <neilb@ownmail.net>
-To: "Jeff Layton" <jlayton@kernel.org>
-Cc: "Eric Van Hensbergen" <ericvh@kernel.org>,
- "Latchesar Ionkov" <lucho@ionkov.net>,
- "Dominique Martinet" <asmadeus@codewreck.org>,
- "Christian Schoenebeck" <linux_oss@crudebyte.com>,
- "David Sterba" <dsterba@suse.com>, "David Howells" <dhowells@redhat.com>,
- "Marc Dionne" <marc.dionne@auristor.com>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Christian Brauner" <brauner@kernel.org>, "Jan Kara" <jack@suse.cz>,
- "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
- "Chris Mason" <clm@fb.com>, "Xiubo Li" <xiubli@redhat.com>,
- "Ilya Dryomov" <idryomov@gmail.com>, "Jan Harkes" <jaharkes@cs.cmu.edu>,
- coda@cs.cmu.edu, "Tyler Hicks" <code@tyhicks.com>,
- "Jeremy Kerr" <jk@ozlabs.org>, "Ard Biesheuvel" <ardb@kernel.org>,
- "Namjae Jeon" <linkinjeon@kernel.org>,
- "Sungjong Seo" <sj1557.seo@samsung.com>,
- "Yuezhang Mo" <yuezhang.mo@sony.com>, "Theodore Ts'o" <tytso@mit.edu>,
- "Andreas Dilger" <adilger.kernel@dilger.ca>,
- "Jaegeuk Kim" <jaegeuk@kernel.org>, "Chao Yu" <chao@kernel.org>,
- "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
- "Miklos Szeredi" <miklos@szeredi.hu>,
- "Andreas Gruenbacher" <agruenba@redhat.com>,
- "Viacheslav Dubeyko" <slava@dubeyko.com>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "Yangtao Li" <frank.li@vivo.com>, "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Mikulas Patocka" <mikulas@artax.karlin.mff.cuni.cz>,
- "Muchun Song" <muchun.song@linux.dev>,
- "Oscar Salvador" <osalvador@suse.de>,
- "David Hildenbrand" <david@redhat.com>,
- "David Woodhouse" <dwmw2@infradead.org>,
- "Dave Kleikamp" <shaggy@kernel.org>,
- "Trond Myklebust" <trondmy@kernel.org>,
- "Anna Schumaker" <anna@kernel.org>,
- "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
- "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
- "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
- "Joseph Qi" <joseph.qi@linux.alibaba.com>,
- "Bob Copeland" <me@bobcopeland.com>,
- "Mike Marshall" <hubcap@omnibond.com>,
- "Martin Brandenburg" <martin@omnibond.com>,
- "Amir Goldstein" <amir73il@gmail.com>,
- "Steve French" <sfrench@samba.org>, "Paulo Alcantara" <pc@manguebit.org>,
- "Ronnie Sahlberg" <ronniesahlberg@gmail.com>,
- "Shyam Prasad N" <sprasad@microsoft.com>, "Tom Talpey" <tom@talpey.com>,
- "Bharath SM" <bharathsm@microsoft.com>,
- "Zhihao Cheng" <chengzhihao1@huawei.com>,
- "Hans de Goede" <hansg@kernel.org>, "Carlos Maiolino" <cem@kernel.org>,
- "Hugh Dickins" <hughd@google.com>,
- "Baolin Wang" <baolin.wang@linux.alibaba.com>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Kees Cook" <kees@kernel.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- linux-kernel@vger.kernel.org, v9fs@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
- linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
- codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
- linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
- linux-um@lists.infradead.org, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
- linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
- ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
- linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
- linux-unionfs@vger.kernel.org, linux-cifs@vger.kernel.org,
- samba-technical@lists.samba.org, linux-xfs@vger.kernel.org,
- linux-hardening@vger.kernel.org, "Jeff Layton" <jlayton@kernel.org>
-Subject:
- Re: [PATCH] vfs: remove the excl argument from the ->create() inode_operation
-In-reply-to: <20251105-create-excl-v1-1-a4cce035cc55@kernel.org>
-References: <20251105-create-excl-v1-1-a4cce035cc55@kernel.org>
-Date: Thu, 06 Nov 2025 08:23:24 +1100
-Message-id: <176237780417.634289.15818324160940255011@noble.neil.brown.name>
-Reply-To: NeilBrown <neil@brown.name>
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: C5AD61F394
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Score: -3.01
 
-On Thu, 06 Nov 2025, Jeff Layton wrote:
-> Since ce8644fcadc5 ("lookup_open(): expand the call of vfs_create()"),
-> the "excl" argument to the ->create() inode_operation is always set to
-> true. Remove it, and fix up all of the create implementations.
+[BUG]
+There is a report that memory allocation failed for btrfs_bio::csum
+during a large read:
 
-nonono
+ b2sum: page allocation failure: order:4, mode:0x40c40(GFP_NOFS|__GFP_COMP), nodemask=(null),cpuset=/,mems_allowed=0
+ CPU: 0 UID: 0 PID: 416120 Comm: b2sum Tainted: G        W           6.17.0 #1 NONE
+ Tainted: [W]=WARN
+ Hardware name: Raspberry Pi 4 Model B Rev 1.5 (DT)
+ Call trace:
+  show_stack+0x18/0x30 (C)
+  dump_stack_lvl+0x5c/0x7c
+  dump_stack+0x18/0x24
+  warn_alloc+0xec/0x184
+  __alloc_pages_slowpath.constprop.0+0x21c/0x730
+  __alloc_frozen_pages_noprof+0x230/0x260
+  ___kmalloc_large_node+0xd4/0xf0
+  __kmalloc_noprof+0x1c8/0x260
+  btrfs_lookup_bio_sums+0x214/0x278
+  btrfs_submit_chunk+0xf0/0x3c0
+  btrfs_submit_bbio+0x2c/0x4c
+  submit_one_bio+0x50/0xac
+  submit_extent_folio+0x13c/0x340
+  btrfs_do_readpage+0x4b0/0x7a0
+  btrfs_readahead+0x184/0x254
+  read_pages+0x58/0x260
+  page_cache_ra_unbounded+0x170/0x24c
+  page_cache_ra_order+0x360/0x3bc
+  page_cache_async_ra+0x1a4/0x1d4
+  filemap_readahead.isra.0+0x44/0x74
+  filemap_get_pages+0x2b4/0x3b4
+  filemap_read+0xc4/0x3bc
+  btrfs_file_read_iter+0x70/0x7c
+  vfs_read+0x1ec/0x2c0
+  ksys_read+0x4c/0xe0
+  __arm64_sys_read+0x18/0x24
+  el0_svc_common.constprop.0+0x5c/0x130
+  do_el0_svc+0x1c/0x30
+  el0_svc+0x30/0xa0
+  el0t_64_sync_handler+0xa0/0xe4
+  el0t_64_sync+0x198/0x19c
 
+[CAUSE]
+Btrfs needs to allocate memory for btrfs_bio::csum for large reads, so
+that we can later verify the contents of the read.
 
-> @@ -3802,7 +3802,7 @@ static struct dentry *lookup_open(struct nameidata *n=
-d, struct file *file,
->  		}
-> =20
->  		error =3D dir_inode->i_op->create(idmap, dir_inode, dentry,
-> -						mode, open_flag & O_EXCL);
-> +						mode);
+However nowadays a read bio can easily go beyond BIO_MAX_VECS *
+PAGE_SIZE (which is 1M for 4K page sizes), due to the multi-page bvec
+that one bvec can have more than one pages, as long as the pages are
+physically adjacent.
 
-"open_flag & O_EXCL" is not the same as "true".
+This will become more common when the large folio support is moved out
+of experimental features.
 
-It is true that "all calls to vfs_create() pass true for 'excl'"
-The same is NOT true for inode_operations.create.
+In the above case, a read larger than 4MiB with SHA256 checksum (32
+bytes for each 4K block) will be able to trigger a order 4 allocation.
 
-NeilBrown
+The order 4 is larger than PAGE_ALLOC_COSTLY_ORDER (3), thus without
+extra flags such allocation will not retry.
+
+And if the system has very small amount of memory (e.g. RPI4 with low
+memory spec) or VMs with small vRAM, or the memory is heavily
+fragmented, such allocation will fail and cause the above warning.
+
+[FIX]
+Although btrfs is handling the memory allocation failure correctly, we
+do not really need those physically contiguous memory just to restore
+our checksum.
+
+In fact btrfs_csum_one_bio() is already using kvzallocated memory to
+reduce the memory pressure.
+
+So follow the step to use kvmalloc() for btrfs_bio::csum.
+
+Reported-by: Calvin Owens <calvin@wbinvd.org>
+Link: https://lore.kernel.org/linux-btrfs/20251105180054.511528-1-calvin@wbinvd.org/
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/bio.c       | 2 +-
+ fs/btrfs/file-item.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 8af2b68c2d53..bb7ef4c67911 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -293,7 +293,7 @@ static void btrfs_check_read_bio(struct btrfs_bio *bbio, struct btrfs_device *de
+ 		offset += sectorsize;
+ 	}
+ 	if (bbio->csum != bbio->csum_inline)
+-		kfree(bbio->csum);
++		kvfree(bbio->csum);
+ 
+ 	if (fbio)
+ 		btrfs_repair_done(fbio);
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 4b7c40f05e8f..bb8eb43334f6 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -373,7 +373,7 @@ int btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
+ 		return -ENOMEM;
+ 
+ 	if (nblocks * csum_size > BTRFS_BIO_INLINE_CSUM_SIZE) {
+-		bbio->csum = kmalloc_array(nblocks, csum_size, GFP_NOFS);
++		bbio->csum = kvmalloc(nblocks * csum_size, GFP_NOFS);
+ 		if (!bbio->csum)
+ 			return -ENOMEM;
+ 	} else {
+@@ -439,7 +439,7 @@ int btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
+ 		if (count < 0) {
+ 			ret = count;
+ 			if (bbio->csum != bbio->csum_inline)
+-				kfree(bbio->csum);
++				kvfree(bbio->csum);
+ 			bbio->csum = NULL;
+ 			break;
+ 		}
+-- 
+2.51.2
 
 
