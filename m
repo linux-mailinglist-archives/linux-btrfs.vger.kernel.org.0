@@ -1,143 +1,97 @@
-Return-Path: <linux-btrfs+bounces-18705-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18706-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6AE3C3350E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 05 Nov 2025 00:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 13D7FC33C8A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 05 Nov 2025 03:37:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6462818C015C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Nov 2025 23:02:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 411BF189F1D3
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Nov 2025 02:38:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2039D1FA272;
-	Tue,  4 Nov 2025 23:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 502A922B8AB;
+	Wed,  5 Nov 2025 02:37:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=friedels.name header.i=@friedels.name header.b="Trh/booP"
+	dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b="UgdMNdAY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from sm-r-010-dus.org-dns.com (sm-r-010-dus.org-dns.com [84.19.1.238])
+Received: from mail-m49198.qiye.163.com (mail-m49198.qiye.163.com [45.254.49.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20662DA774
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 23:01:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.19.1.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39CB61E98E6;
+	Wed,  5 Nov 2025 02:37:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762297306; cv=none; b=IUNKAgnt+aKfGPR7oNQK236c4YGbG2aJsrpb/pAoxBq92TIt1VKxHlMRZ8WnKOU9776CluwXisdf8oAFNEkyw1D+Nb5cGrCzpayRca57KlA3wfgIzgmI/I66RtCPB7KLM5Ilql+sgo2DwT07SuzbWCLVXRj/k/A3PuMkMi1qaHg=
+	t=1762310251; cv=none; b=QCUinN8zSn8CQj9B/S3e7lwST+zhr3Z+q6E2wYFC5c9WU8QA3YhvVXD9gnWpOTd2x5uDTOvuFSElWnpSbdXD0nRCd9/E9vTYfQNcBdyen/yaUoksZbPDc4AuM/qTiyeLogVybOlDg+EvPv94RIY9qrjmO2Oxbm48LZWzzn6oL8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762297306; c=relaxed/simple;
-	bh=xA5AxH3M8PuHwcNdpWa5Cc92+Rpfy9basQX9vCLAnVw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=A5kJKTK604ISj0h7Ubkij1H0lv6OKZBHIpscMDVm08dGbupIdc/ixxMfoGNnoxTuOnT8WWBvioHhBKl6SXf3dq+NJ1FFx4Kqy5J39FSwwC4NNWo1DrvJdJxn5/2AfMnug0AJp3AH1Q5st500oAiTOGapIKAKleQq0pILVo4ZNgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=friedels.name; spf=pass smtp.mailfrom=friedels.name; dkim=pass (1024-bit key) header.d=friedels.name header.i=@friedels.name header.b=Trh/booP; arc=none smtp.client-ip=84.19.1.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=friedels.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=friedels.name
-Received: from smarthost-dus.org-dns.com (localhost [127.0.0.1])
-	by smarthost-dus.org-dns.com (Postfix) with ESMTP id CB855A1795
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Nov 2025 23:50:08 +0100 (CET)
-Received: by smarthost-dus.org-dns.com (Postfix, from userid 1001)
-	id BE9E4A17C2; Tue,  4 Nov 2025 23:50:08 +0100 (CET)
-Received: from ha01s030.org-dns.com (ha01s030.org-dns.com [62.108.32.110])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by smarthost-dus.org-dns.com (Postfix) with ESMTPS id C81BEA1795;
-	Tue,  4 Nov 2025 23:50:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=friedels.name;
-	s=default; t=1762296661;
-	bh=hNPIdIiuwPzKtRj5LVu7vQiHMzYHrywQVCHcscJsrNA=; h=Subject:To:From;
-	b=Trh/booPB3CJl7sCc3lbT3lfBWDvLU6QUpruhm8/PoZHqcjM9BkEaww18fC+qLW+Q
-	 iP0uadrGUaeJZnm5aYie70H/2pyIgoNxvEoa+syWJB5uQB95t41iFAnX7ffY6DveAr
-	 r/1E+lvcTPfDvbwCEl6c3fWIgANaELhHa7y3EBk8=
-Authentication-Results: ha01s030.org-dns.com;
-        spf=pass (sender IP is 88.65.226.178) smtp.mailfrom=hendrik@friedels.name smtp.helo=[192.168.177.137]
-Received-SPF: pass (ha01s030.org-dns.com: connection is authenticated)
-Message-ID: <eddf3273-d7f9-4bef-865d-dfec1d7ffb66@friedels.name>
-Date: Tue, 4 Nov 2025 23:50:07 +0100
+	s=arc-20240116; t=1762310251; c=relaxed/simple;
+	bh=70wMsudLu92iZJkhBGj/feDzySuTgiU7h7claqI58/4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YQnfNiww2siAEfmhz0r8rs+0UkC4BWq65aTKq9pS4EX41E99etuQBg/aPdX8S5obV/jdG9dQIocI0mY6ST15dK/EHWbtBCRWu62BLG93yC79hHeLVnaJ6WZzP/s8MTkMtaz9sfleTxj7cUWTw4QTplGTNiFthuQM/IRFT5aCbaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn; spf=pass smtp.mailfrom=seu.edu.cn; dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b=UgdMNdAY; arc=none smtp.client-ip=45.254.49.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seu.edu.cn
+Received: from LAPTOP-N070L597.localdomain (unknown [58.241.16.34])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 286a97d94;
+	Wed, 5 Nov 2025 10:37:25 +0800 (GMT+08:00)
+From: Zilin Guan <zilin@seu.edu.cn>
+To: clm@fb.com
+Cc: dsterba@suse.com,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jianhao.xu@seu.edu.cn,
+	Zilin Guan <zilin@seu.edu.cn>
+Subject: [PATCH] btrfs: fix memory leak in data_reloc_print_warning_inode()
+Date: Wed,  5 Nov 2025 02:37:22 +0000
+Message-Id: <20251105023722.1820102-1-zilin@seu.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Corrupt Filesystem (Mirror) despite previously successful scrub
-To: Chris Murphy <lists@colorremedies.com>,
- Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <cfc7539c-a0c5-45d2-a781-89c2e0cb2c62@friedels.name>
- <12716866-2ffe-4cbb-8e2f-8b2e4abd0237@app.fastmail.com>
- <a37cea05-f77f-41f1-8763-a28311b72790@friedels.name>
- <f6858f97-1fe2-49d7-b1ad-dc688142fdcb@app.fastmail.com>
-From: Hendrik Friedel <hendrik@friedels.name>
-In-Reply-To: <f6858f97-1fe2-49d7-b1ad-dc688142fdcb@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-PPP-Message-ID: 
- <176229666169.1015906.3658468288478824603@ha01s030.org-dns.com>
-X-PPP-Vhost: friedels.name
-X-POWERED-BY: wint.global - AV:CLEAN SPAM:OK
+X-HM-Tid: 0a9a51e04c0e03a1kunmbcd364ac6d3048
+X-HM-MType: 10
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaTUtJVk4dTksfGh1PHUpMQ1YeHw5VEwETFhoSFy
+	QUDg9ZV1kYEgtZQVlOQ1VJT0pVSk1VSE9ZV1kWGg8SFR0UWUFZT0tIVUpLSUJDQ0xVSktLVUtZBg
+	++
+DKIM-Signature: a=rsa-sha256;
+	b=UgdMNdAYVreH01a3WtGZZKmAyd1YDVdlZk+68dyEj/yIJCExwMr1+2vRN2uJZTmO9KzsFJ6on6Q1tQGoIMxfqfo52i/GxdlXQy95Z75mZgjRIrp02or9dypQGGBh2z9dKkwfOhLfwGUasaQw43DI4yzInyk1981d331H/UHATEA=; s=default; c=relaxed/relaxed; d=seu.edu.cn; v=1;
+	bh=CThSGH+O+26R4HaHI9rrGN9sacwSX6I+q3+J9DIYatI=;
+	h=date:mime-version:subject:message-id:from;
 
-Hi Chris,
+data_reloc_print_warning_inode() calls btrfs_get_fs_root() to obtain
+local_root, but fails to release its reference when paths_from_inode()
+returns an error. This causes a potential memory leak.
 
-thanks for your reply. Indeed, I missed it.
+Add a missing btrfs_put_root() call in the error path to properly
+decrease the reference count of local_root.
 
-I checked STC ERC vs kernel command timer:
+Fixes: b9a9a85059cde ("btrfs: output affected files when relocation fails")
+Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
+---
+ fs/btrfs/inode.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-SCT Error Recovery Control:
-            Read:     70 (7.0 seconds)
-           Write:     70 (7.0 seconds)
-
-
-root@homeserver:~# cat /sys/block/sdb/device/timeout
-30
-
-That is on both drives, so it seems ok.
-
->> Okt 14 23:33:36 homeserver kernel: BTRFS error (device sdb1): balance: reduces metadata redundancy, use --force if you want this
-> Hopefully this is a mistake and the command was not reissued with -f
-
-It was. This is because I do not need this Filesystem anymore. But I am 
-a bit worried now that I had corrupt data before.
-
-The history:
-
-1) I did run this as my main home-server until two weeks ago.
-
-2) I copied all data over to another, new machine
-
-3) I want to use these drives in that new machine as (onsite) backup
-
-4) I do have an offsite backup
-
-The problem is: If my data has been corrupted earlier - before two weeks 
-ago - then the data on my new machine is also corrupt.
-
-Can we find out?
-
-
-> Over 2 million dropped writes on sda1? That doesn't tell us for sure they're missing, they might have gotten fixed later. But it's so many missing writes, that if there is even 1 copy wrong, corrupt, or missing on sdb1 then Btrfs can't fix itself.
-This is what was causing me to be worried.
-> No the file system could be inconsistent.
-
-So, the file system would point to a wrong chunk which in itself has 
-correct data and csum?
-
-Why would not the metadata redundancy spot this? Would this be caused by 
-a bug that corrupts both copies (rather than some hardware error)?
-
-Message on outdated kernel is understood.
-
-
-My main worries now are:
-
-- what could have caused it / what can I do better in future
-
-- was my data corrupted before I transferred it to the new machine
-
-- is there some bug in btrfs that we could find
-
-
-Thanks and best regards,
-
-HEndrik
-
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 3df5f36185a0..6282911e536f 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -177,8 +177,10 @@ static int data_reloc_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
+ 		return ret;
+ 	}
+ 	ret = paths_from_inode(inum, ipath);
+-	if (ret < 0)
++	if (ret < 0) {
++		btrfs_put_root(local_root);
+ 		goto err;
++	}
+ 
+ 	/*
+ 	 * We deliberately ignore the bit ipath might have been too small to
+-- 
+2.34.1
 
 
