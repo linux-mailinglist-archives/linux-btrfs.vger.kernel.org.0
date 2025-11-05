@@ -1,96 +1,96 @@
-Return-Path: <linux-btrfs+bounces-18710-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18711-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5D05C34208
-	for <lists+linux-btrfs@lfdr.de>; Wed, 05 Nov 2025 08:04:44 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78661C34262
+	for <lists+linux-btrfs@lfdr.de>; Wed, 05 Nov 2025 08:08:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5DC0F4EB0FA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Nov 2025 07:04:35 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C119B4F1BB6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Nov 2025 07:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 261A92D0C89;
-	Wed,  5 Nov 2025 07:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E3962D2488;
+	Wed,  5 Nov 2025 07:07:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qHBv0de8";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="paOpXCVB";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="oI7Pewzk";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LiWriEA+"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="toRcqsk4";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4W6nZsRV";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="toRcqsk4";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4W6nZsRV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C0714EC73
-	for <linux-btrfs@vger.kernel.org>; Wed,  5 Nov 2025 07:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9B528725C
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Nov 2025 07:07:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762326269; cv=none; b=gc4Gqky6BECTgrQNnzt/bkqnjyEQBgI7D3huuE6iiAoyu7DMsOhweNDzibKmvk3R9tKm8FMLfmHfXSSD9Qctbutf9Wzj2v0SAA40qBqeaWLRnKn2rRSSEfitnosL3RHgLsI++YC/vlL9l/7sIBXLkDe8dWmbDRm8+WfiVgF6IHI=
+	t=1762326424; cv=none; b=bL9KcJ/VJAfWqaogocP/jbDv68i9+lyPUIgneP9Ui6rerLRUjRswAqf5IQ1CmFdm0/yQZDLy6MwHBakjhwhF2gVeGUnOvzBHkVAZF9GqNm7WD6/bOMlD1qgoz84SqjegNEvqRZvYsTEFeIsq1RqAklZXEGzrtQ508I47Foj2vu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762326269; c=relaxed/simple;
-	bh=kSs7qMoHl1DAuBZE522q7Kg1LZ4tJ6HM1jibtbvTYWM=;
+	s=arc-20240116; t=1762326424; c=relaxed/simple;
+	bh=mjD9pAGs7M0ZjRRPBVDA52B1DG0Jkgn3rEoGYRNKQNs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=fchsKhXHJJHJkfFiit49byxoGO1ixk+7cbLx2i3LRUTcn/Vfva3clFrDhxSHLJ3o4xscyZrFGO3R2rKAXydkcvDNJoeEKp6qoiHiH6Il7KfeEPUuVULtYLlZNCcMrWhITZggv0duHfCbuTxzCerC17xW5ZSPY2jON1mBpnacYKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=qHBv0de8; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=paOpXCVB; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=oI7Pewzk; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=LiWriEA+; arc=none smtp.client-ip=195.135.223.130
+	 In-Reply-To:Content-Type; b=dJka5ZetLPBVIn+21TpHVGLBhbgzVCYUwL4EytDJ3LcFj1UEakSGggGvk8A60EftU5lydM9ROBJaKpxVqK/IwZFgRh7SDu05NSl/M+ROeDAAAnh+PKV11f0WCE6LtVDll4C/o9chGBewL0G1vvxI1UHADbRG62QqzBlzNX6zA08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=toRcqsk4; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4W6nZsRV; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=toRcqsk4; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4W6nZsRV; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E8E8A2118E;
-	Wed,  5 Nov 2025 07:04:23 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 504ED1F394;
+	Wed,  5 Nov 2025 07:07:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1762326265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1762326420; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8qKiNghwEz9ttm5RQCpMgWipz8U7w6mWbcKyxmieObA=;
-	b=qHBv0de8QNmjh8OPtvy/yOf3METcsmKMaULYbUxN9CvP/pz6oh0OozITlNG7nO2buLb9/Q
-	fUq20dUDbO43jquD5WigLP+EwlDga/Q6FdfmuSab/OsTQzC2HAaZI8M90JmO8jIEBRjCIq
-	2T3uQlc2Stpw94nwxaeqCF3bS9XdwPM=
+	bh=Qu7pQBvotzm5Nih2E53IvQoHgeaDpISMtM7toIFJYVY=;
+	b=toRcqsk4WSiJ9YE8o2hIUB9sq1wq9zosEIsNiC66IEbQjVpxZh+8scASriI9RnW3UYNOVb
+	29TX9EKNT2JJYVVgSLniIKuVBeG+LOCHs+MVL+M4leV3fkW2IWK/MXfEBS4/UPxdGn1qaH
+	IbBB71Lj6pk2R58pDVc9IsIdampdmlI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1762326265;
+	s=susede2_ed25519; t=1762326420;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8qKiNghwEz9ttm5RQCpMgWipz8U7w6mWbcKyxmieObA=;
-	b=paOpXCVBBWsD2fwUMSbNSj2H6sIUCJmtukWD+Jy6vO6X6cAQCICq7U25a2CscemBJaEDs7
-	aqmhCNKBSUchkgAw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=oI7Pewzk;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=LiWriEA+
+	bh=Qu7pQBvotzm5Nih2E53IvQoHgeaDpISMtM7toIFJYVY=;
+	b=4W6nZsRVcmWtaCe4ignLB5yqBSjhcatUbvSraeBfJEqMo5GfPoe6EfZFWkGd32kVHsPrp6
+	jFEmBnxmJQJK8xCQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=toRcqsk4;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=4W6nZsRV
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1762326263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1762326420; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8qKiNghwEz9ttm5RQCpMgWipz8U7w6mWbcKyxmieObA=;
-	b=oI7PewzkEkneKYWBlZLXuhMUZgySyvBSpjqPVtLOT4C3fE30XjSsdY5ux1/f3JUq7M0TDI
-	gm3prwFJp9BtzFT8iPqpON+z/ZI+EplNoHz/kwT5+DJ3d1qGNaTYXd2UTuhQHmw75MaKkI
-	eRXvcRXzV0fshKkgC6GxS87bCHle8/I=
+	bh=Qu7pQBvotzm5Nih2E53IvQoHgeaDpISMtM7toIFJYVY=;
+	b=toRcqsk4WSiJ9YE8o2hIUB9sq1wq9zosEIsNiC66IEbQjVpxZh+8scASriI9RnW3UYNOVb
+	29TX9EKNT2JJYVVgSLniIKuVBeG+LOCHs+MVL+M4leV3fkW2IWK/MXfEBS4/UPxdGn1qaH
+	IbBB71Lj6pk2R58pDVc9IsIdampdmlI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1762326263;
+	s=susede2_ed25519; t=1762326420;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8qKiNghwEz9ttm5RQCpMgWipz8U7w6mWbcKyxmieObA=;
-	b=LiWriEA+z4oUYO7tk2NipdTpC4xs+5e0wsKRAHA0FJmX/wx1Wlj0MdOPMX+e7SMLs0RYVP
-	yRnvyTx8vVTxuHDA==
+	bh=Qu7pQBvotzm5Nih2E53IvQoHgeaDpISMtM7toIFJYVY=;
+	b=4W6nZsRVcmWtaCe4ignLB5yqBSjhcatUbvSraeBfJEqMo5GfPoe6EfZFWkGd32kVHsPrp6
+	jFEmBnxmJQJK8xCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 81B73132DD;
-	Wed,  5 Nov 2025 07:04:23 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4CEA6132DD;
+	Wed,  5 Nov 2025 07:06:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id DWetHff2CmmkDgAAD6G6ig
-	(envelope-from <hare@suse.de>); Wed, 05 Nov 2025 07:04:23 +0000
-Message-ID: <5f37d8a5-5f0d-4948-9efd-5fe168ee1f7f@suse.de>
-Date: Wed, 5 Nov 2025 08:04:23 +0100
+	id G118EJP3CmlNEQAAD6G6ig
+	(envelope-from <hare@suse.de>); Wed, 05 Nov 2025 07:06:59 +0000
+Message-ID: <a5e59dfc-d4a7-417b-8b25-d59049bb74c8@suse.de>
+Date: Wed, 5 Nov 2025 08:06:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -98,8 +98,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 06/15] block: use zone condition to determine
- conventional zones
+Subject: Re: [PATCH v3 07/15] block: track zone conditions
 To: Damien Le Moal <dlemoal@kernel.org>, Jens Axboe <axboe@kernel.dk>,
  linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
  Keith Busch <keith.busch@wdc.com>, Christoph Hellwig <hch@lst.de>,
@@ -110,13 +109,13 @@ To: Damien Le Moal <dlemoal@kernel.org>, Jens Axboe <axboe@kernel.dk>,
  Carlos Maiolino <cem@kernel.org>, linux-btrfs@vger.kernel.org,
  David Sterba <dsterba@suse.com>
 References: <20251104013147.913802-1-dlemoal@kernel.org>
- <20251104013147.913802-7-dlemoal@kernel.org>
+ <20251104013147.913802-8-dlemoal@kernel.org>
 Content-Language: en-US
 From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20251104013147.913802-7-dlemoal@kernel.org>
+In-Reply-To: <20251104013147.913802-8-dlemoal@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: E8E8A2118E
+X-Rspamd-Queue-Id: 504ED1F394
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.51 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
@@ -141,7 +140,7 @@ X-Spamd-Result: default: False [-4.51 / 50.00];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[wdc.com:email,lst.de:email,suse.de:email,suse.de:mid,suse.de:dkim];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,suse.de:email,suse.de:mid,suse.de:dkim,wdc.com:email];
 	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
 	DKIM_TRACE(0.00)[suse.de:+]
 X-Rspamd-Action: no action
@@ -150,40 +149,64 @@ X-Spam-Score: -4.51
 X-Spam-Level: 
 
 On 11/4/25 02:31, Damien Le Moal wrote:
-> The conv_zones_bitmap field of struct gendisk is used to define a bitmap
-> to identify the conventional zones of a zoned block device. The bit for
-> a zone is set in this bitmap if the zone is a conventional one, that is,
-> if the zone type is BLK_ZONE_TYPE_CONVENTIONAL. For such zone, this
-> always corresponds to the zone condition BLK_ZONE_COND_NOT_WP.
-> In other words, conv_zones_bitmap tracks a single condition of the
-> zones of a zoned block device.
+> The function blk_revalidate_zone_cond() already caches the condition of
+> all zones of a zoned block device in the zones_cond array of a gendisk.
+> However, the zone conditions are updated only when the device is scanned
+> or revalidated.
 > 
-> In preparation for tracking more zone conditions, change
-> conv_zones_bitmap into an array of zone conditions, using 1 byte per
-> zone. This increases the memory usage from 1 bit per zone to 1 byte per
-> zone, that is, from 16 KiB to about 100 KiB for a 30 TB SMR HDD with 256
-> MiB zones. This is a trade-off to allow fast cached report zones later
-> on top of this change.
+> Implement tracking of the runtime changes to zone conditions using
+> the new cond field in struct blk_zone_wplug. The size of this structure
+> remains 112 Bytes as the new field replaces the 4 Bytes padding at the
+> end of the structure.
 > 
-> Rename the conv_zones_bitmap field of struct gendisk to zones_cond. Add
-> a blk_revalidate_zone_cond() function to initialize the zones_cond array
-> of a disk during device scan and to update it on device revalidation.
-> Move the allocation of the zones_cond array to
-> disk_revalidate_zone_resources(), making sure that this array is always
-> allocated, even for devices that do not need zone write plugs (zone
-> resources), to ensure that bdev_zone_is_seq() can be re-implemented to
-> use the zone condition array in place of the conv zones bitmap.
+> Beause zones that do not have a zone write plug can be in the empty,
+> implicit open, explicit open or full condition, the zones_cond array of
+> a disk is used to track the conditions, of zones that do not have a zone
+> write plug. The condition of such zone is updated in the disk zones_cond
+> array when a zone reset, reset all or finish operation is executed, and
+> also when a zone write plug is removed from the disk hash table when the
+> zone becomes full.
 > 
-> Finally, the function bdev_zone_is_seq() is rewritten to use a test on
-> the condition of the target zone.
+> Since a device may automatically close an implicitly open zone when
+> writing to an empty or closed zone, if the total number of open zones
+> has reached the device limit, the BLK_ZONE_COND_IMP_OPEN and
+> BLK_ZONE_COND_CLOSED zone conditions cannot be precisely tracked. To
+> overcome this, the zone condition BLK_ZONE_COND_ACTIVE is introduced to
+> represent a zone that has the condition BLK_ZONE_COND_IMP_OPEN,
+> BLK_ZONE_COND_EXP_OPEN or BLK_ZONE_COND_CLOSED.  This follows the
+> definition of an active zone as defined in the NVMe Zoned Namespace
+> specifications. As such, for a zoned device that has a limit on the
+> maximum number of open zones, we will never have more zones in the
+> BLK_ZONE_COND_ACTIVE condition than the device limit. This is compatible
+> with the SCSI ZBC and ATA ZAC specifications for SMR HDDs as these
+> devices do not have a limit on the number of active zones.
+> 
+> The function disk_zone_wplug_set_wp_offset() is modified to use the new
+> helper disk_zone_wplug_update_cond() to update a zone write plug
+> condition whenever a zone write plug write offset is updated on
+> submission or merging of write BIOs to a zone.
+> 
+> The functions blk_zone_reset_bio_endio(), blk_zone_reset_all_bio_endio()
+> and blk_zone_finish_bio_endio() are modified to update the condition of
+> the zones targeted by reset, reset_all and finish operations, either
+> using though disk_zone_wplug_set_wp_offset() for zones that have a
+> zone write plug, or using the disk_zone_set_cond() helper to update the
+> zones_cond array of the disk for zones that do not have a zone write
+> plug.
+> 
+> When a zone write plug is removed from the disk hash table (when the
+> zone becomes empty or full), the condition of struct blk_zone_wplug is
+> used to update the disk zones_cond array. Conversely, when a zone write
+> plug is added to the disk hash table, the zones_cond array is used to
+> initialize the zone write plug condition.
 > 
 > Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
 > Reviewed-by: Christoph Hellwig <hch@lst.de>
 > Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
->   block/blk-zoned.c      | 153 +++++++++++++++++++++++++++++------------
->   include/linux/blkdev.h |  37 +++-------
->   2 files changed, 117 insertions(+), 73 deletions(-)
+>   block/blk-zoned.c             | 112 ++++++++++++++++++++++++++++++++--
+>   include/uapi/linux/blkzoned.h |   9 +++
+>   2 files changed, 115 insertions(+), 6 deletions(-)
 > 
 Reviewed-by: Hannes Reinecke <hare@suse.de>
 
