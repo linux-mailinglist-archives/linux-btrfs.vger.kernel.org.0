@@ -1,160 +1,419 @@
-Return-Path: <linux-btrfs+bounces-18729-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18730-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2B9AC3514D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 05 Nov 2025 11:26:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A21D2C35412
+	for <lists+linux-btrfs@lfdr.de>; Wed, 05 Nov 2025 11:56:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E9E91888E5E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Nov 2025 10:27:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C2FB192405E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Nov 2025 10:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC8BC301499;
-	Wed,  5 Nov 2025 10:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F29030C628;
+	Wed,  5 Nov 2025 10:55:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="oTPrlOV6"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="X4rxnmpt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7220C3009EA;
-	Wed,  5 Nov 2025 10:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4AE630C62B
+	for <linux-btrfs@vger.kernel.org>; Wed,  5 Nov 2025 10:55:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762338388; cv=none; b=DuhgE8bKrOCwTuo5IVWJB00eWqiqr5dZY5zrnHdgSb77c55lvTKgmzkO6wSB55ugXgGDIf5x7nF+osRgGOg43g1h9oyDjTfCYkIR+gHKzXssb6ifrMAJW+6MeNa08W7HSVA6lGXWIc3WRYg4gERo64QyklgKwDEE5oxOKzeE3HM=
+	t=1762340132; cv=none; b=I8MJy472n/XYXQ/mJBTb2yxxEwroSGRNwcRCLqWwSdd6HZFxyK71cqDxJGBmm/zuz8EZDqgGB8xOgJ35pc0X4mF44NYeX2B94NH6CFc99IUgB03OgIi779w7ZJnP9fD4QS+/S/PD0FfzahzHsCUKjZr8PSdbPQ+NOvbpaep0jfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762338388; c=relaxed/simple;
-	bh=pG/SsMAm2rsGT5sehyGQ6GuFin7MYNCQZeSjrjEeme0=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=CKvjANiI9dD/sRf0hXv9Vkltc1vhdSdxxwmHotDo+7oSc73FnogrtRNvWf49LmLm8WaWzNREcok5mjHBHf92oflGuv5fOM4t1DXHzIGYtsh/7131m3o2hkaBLZLt5tCi4anzrrPPxAIUgvvCqIpjVXgEJqvAfHt+s9Mv65p1UdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=oTPrlOV6; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1762338383; x=1762943183; i=markus.elfring@web.de;
-	bh=pG/SsMAm2rsGT5sehyGQ6GuFin7MYNCQZeSjrjEeme0=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=oTPrlOV61ed9xMrkwOT9tiVysjp8EhoZtbsRDHh9l/OPOxa8atlOOXlWbyfzlcoC
-	 cBwngWHshI5mbo4VTvIldes+NLw/1IFFpx9NEjSRATNjFG91Qo3gGPYIEbhzJsL8D
-	 KfKzNrAVqRazkyOIcZtujb0ZtRPZRnbMXxAddEfKbZTw8OHw/mAvt/kvXizhn+fXi
-	 bMTk2n1o0AKZi4xOE/sTfXO5OjQIxd1gZ7/E+71eyH7ipcjWb2LDSXnRncdgXLpxl
-	 OpUlKNcAfZ42KG8XLo80zcGy5OzNcHqX3jo4L6aDF98auhcjHYbIBzRngsjYgIF4t
-	 bfpP3RF0EThsfuxt+Q==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.92.250]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1N9cLR-1wLb9W06Fx-00vWBG; Wed, 05
- Nov 2025 11:26:23 +0100
-Message-ID: <2603afff-0789-46d3-9872-3911132a53b1@web.de>
-Date: Wed, 5 Nov 2025 11:26:21 +0100
+	s=arc-20240116; t=1762340132; c=relaxed/simple;
+	bh=ZqFNBG5BY97lF/BNfaILQ6xjSLF80BjoMsb47BPuhdk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q/n0XI/37xBv7hBxVDU15h+P4Jd3IhGkZNFzWBvBQ6QvnZkbGJX2/yJiTRKa8DQeHIyv9pFVaBBuGe1SMILLd9lhgTlpYIjQdCVECc9k8ZPJi3/sHb4ZeuDyLZO0gvH00nEASnK2vnaqAaQZLFbtR143YvjK4QTcQpm+0t/EJvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=X4rxnmpt; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3ece1102998so4502214f8f.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Nov 2025 02:55:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1762340127; x=1762944927; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DaA3HV4lGJtR9IY7U/dPcSDrxFzojmcrgLhhrfGRpEs=;
+        b=X4rxnmptP/jftqyLjQmjMWmY7/NY4Ax3CIb6YKBIiSrKPiH01cWbBONKmEwlRm0TCL
+         EvzZWqqx4dcQaMot1ADDV2aXRfDp9DYmFtqRgMRHQ65Egxldx4B5adG17D5fAVjywcLR
+         KqO8IUWJu6o/9oBeZoBvz0/1MrB+IHafZOv6GAszbV/Nrvy7ojoI/BKkYI3oagCLi97o
+         VQwLHJMMM/ECbMjQoUDESj35u0T7nrSICu99OY4IGS1mnvuorMuUnZaL9YsuHJhgOkKQ
+         C1FSmmw0ZtIUkaWj88/SG/d9CAumhC4DAGPyr8PnJOIb2RUVjMCNYvuAPeoyuoZ0nfr3
+         ly6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762340127; x=1762944927;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DaA3HV4lGJtR9IY7U/dPcSDrxFzojmcrgLhhrfGRpEs=;
+        b=wqCraty/EJAGG1ie6hw00PZe4dRx+0/thbjmfJVNW5bhR/UXkNsK13fuSku9EQOCgz
+         idAOZfNRb2DbZWV53SaosEZuABbE27S6RIzkSwCU80nAUHLKntQazlSvvS/5CdVfiHyU
+         wHCY3uNXlnhGE5qdEU0o8LXHgC5h9hu+kiu+d1F0dRIlMyeatZGmKl20hyRVPaaFOzEK
+         y4YoEMef326ndEBcwndi3Gvmd6WCQ/H0Pvd/LyOS0Xh+TETPrvsmZyQRZJ7x+kw7S2RL
+         cQ4f5r8hTSrJUs2yVaNukCnKrv1r1R0FFP2yvX4KCvTIA6yuMR2bsRNOjs/XtYJM7rOU
+         RCFw==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ4bjxALqWOSjpb2mR9zmUbMMrwtFL7qa/H7m/quicwRVb69HNpPm0igycHHYFTGkX+hT5GRCm+XKkDg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUt6P/6Id7SAyz5QajY1o0BO1xNhVx05ROElyXKEjYPMAvU2QP
+	O7G76Z44MJOeFhb4mqjxAs/rK9AmDfhFHFDEk8+gqhlO01Vsv3g/Vkt5ZPPL6modiCqnqZiy9lE
+	NoQ8VR+Gwh4ycPxBFosSq/JV164L6NU90n67hRbJJsg==
+X-Gm-Gg: ASbGncthFiaVnF0KPVMuguLePAdgTkE1qYiH1++Wokqakh0FKP6n4jlSMjJ1cVw6A43
+	RI82umibD8fVySZJQHoTkhiNa1jFZIRPB1ycq6N6qWA4mlMlS2qW5KrepfOvvwQb2K2V1/L7Cfa
+	aDx9mtZq7D01Vy3cDfReY3Wl0yAmfpkuqrqzTkEkfE0rIGKQtPIE8LDZw0CS1k0ppOgiWyQ6amL
+	iYGkwSHLTgNxz90qFy4mJy7doixV4xZq8qedwA3JoVEJhINx87gJTEmX1F6sz9VoVn17SCaSA21
+	8sJRm0qRhp/KmQAQZReTjl0CvC+bDgDJJDU6ZV1VxdOofD3fhgHagtKo/g==
+X-Google-Smtp-Source: AGHT+IEC6a5h132I0l0LiBjFbTZkFYmU4/1X57TkQN8FgmRMsz1kDXHCZwGDfNlMNIEfxJMg6kC9YJ4z5elW4iu1sXA=
+X-Received: by 2002:a05:6000:184e:b0:429:bc68:6c95 with SMTP id
+ ffacd0b85a97d-429e330ab3dmr2257656f8f.47.1762340126866; Wed, 05 Nov 2025
+ 02:55:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Zilin Guan <zilin@seu.edu.cn>, linux-btrfs@vger.kernel.org,
- Chris Mason <clm@fb.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, David Sterba <dsterba@suse.com>,
- Jianhao Xu <jianhao.xu@seu.edu.cn>
-References: <20251105035321.1897952-1-zilin@seu.edu.cn>
-Subject: Re: [PATCH] btrfs: scrub: fix memory leak in
- scrub_raid56_parity_stripe()
-Content-Language: en-GB, de-DE
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20251105035321.1897952-1-zilin@seu.edu.cn>
-Content-Type: text/plain; charset=UTF-8
+References: <20251015121157.1348124-1-neelx@suse.com> <20251015121157.1348124-4-neelx@suse.com>
+ <20251024212920.GE20913@twin.jikos.cz> <CAPjX3Fc6abzXgE+_S6tKjmh9uUmsYo+UUE+5V8uGMK0QqLAKbg@mail.gmail.com>
+ <f0f633d6-f0e0-4d4c-98cb-096afe77f330@gmx.com>
+In-Reply-To: <f0f633d6-f0e0-4d4c-98cb-096afe77f330@gmx.com>
+From: Daniel Vacek <neelx@suse.com>
+Date: Wed, 5 Nov 2025 11:55:15 +0100
+X-Gm-Features: AWmQ_bkB1bX-GeKVSNWBemaP_x5lpB90-CMKrzIuGS9aboDQZHrUqz7H-TfQ68Q
+Message-ID: <CAPjX3FfqvOMndYY6Ai9qVgaHX_y8PV=8i4_aMGGOvGcUCOj9ig@mail.gmail.com>
+Subject: Re: [PATCH 3/8] btrfs-progs: start tracking extent encryption context info
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
+	Josef Bacik <josef@toxicpanda.com>, Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:2YmVQFN2qJp+aRPD0bRloKkiaw7x/+Myxzu+i0yLhigP6nhLxkF
- +wgpOFZRBT3/38s4RtFmzdczX9UYRMWFuHh8tZ2HYNKQ19TQNsuSARb5iFdrFnBx9foLsV+
- EDy0V6I24mTxE4CLOMHB5t6a6HbKxe857ccB1tkO5z4vfr1jCU4/ctVdgYaUjwegJ9RCLVG
- T1n5WneQs5l9cmYliz50Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:22fa162rS3I=;bOIMF09Z8LGXv2qgNh8U1RyPL/r
- gvoy8v4avPgNWoiCulDLc/y64b4z+o2PfspnLHdzo22dTLGEiUnJjT9cciLz/g0S+cBFXlQRj
- ruQajY8JO/9Kie43movW8cuwe4PnWLlSqy+8ktzwEWazSQzf/vjMIRlKOn26Vb2SZpKHnX1ot
- OKvpJ7Yq29Ho3Uj336KYFZB7fytN4/dq4/zwhCnX8IhKXKNnT0yC4CFYN4dq8dM8TEnVJ7gkN
- K1yalhRFBZosl445ljqskjCq6d3OQU31Mqv0XkH18YN2el8xDk5MwcK4pCM4C22JTX9OYa3zu
- U7VpocVfvawA4abHjrtJWAFIFPoddIB/fQXk5J6OSS3uW8cvWxHBWs0wwIDsHYEgIg0UbNhdp
- 5s2RUrtkINEY357Uat3G5Va7Uhe61b2ZBBmNl+GTWD4bs8R3os19Es45mGzmmGA8LjZtTSEaj
- XqdD//mFnOOf3SoMmHHe4BtjmspMjJbCm2rb+VOrtephhxlmPkINVtDZfZZbgXXLG9i2pjkvE
- 4a8o9+nvrWn5TAAMItXCf5IRxtMwPKAo0adkQQUirPueYOXbSZ3z7mwShOee2szVCI0bywAov
- BuTC1PEQ7v0kEyLjjl+rw/i2dw3pbUdvORhLwniryZOQBU93UyyljDLu16JCaSo/3mZsjxLk8
- SX5yzWhFxqxvurIi9TvsFQmdNNb6klTEcKxCBCwM6f4yoVZNmcKf7SlOrBrk6DbRxlHTYc+Jq
- a3oBO9XeeGSRmB+yyw4k7fS89ZqyyqymlgK2Flfkh5+Csoy4g8CbDd0ZG4+2b4O2MT48lQFMN
- +BcoGFICnbvqZHb/DXCoMMkfz/0ePfGSi3FUEENstAF8A4/D4OGXzZ+foSDF33QljD+j9Snss
- JVpiEuYSr81Azo4wqVrWWFXNvoxdc8xxrGsFhErBUCrEohgarMp6qjgyUSD53ofqmN3e/dyK+
- vlF4nj/H501e4CnyYaafr4prcrDZETP5sQFB1HIahw6HbaJ29BmklqweG+MdoJ+ymN/5R6Ic3
- wTxRhjD0ywKyrIJWfJUQ/JIXjPCrMuvj8i3FN87GHOL9WCPo0RnMW5jrv3mOPn63i9D9iTzI1
- kwEQ6aRJ/Ega8WqLTCLlAuQ2ZT0MeENnRZtao4fizIjQYWTdQmXztpkofqd8zcge3Z4zvIIxi
- euxgDiD3NmOChqrIXqJ9eLVhdC91QUmoW/BXM05VZ8YIsTyk2bp/WQjBxffZARxLxgbjO5bTt
- nAnXjkRn2NmwoXUecl2PM5wi4/KFu0NgCTlZh5B7SiugDD+Nqm/z8ylPprW7QjwfYukRHmYl0
- OcQBmLwEvzmsZakI/yoZiv8rzCzwZ6OzEf9cv9vhwLRKj9pwmQSY1fVOhS0CNnKiZGj3LXYnQ
- Dp9EjP15o3ClGQC0w/gfqo51e6Hyv2oxMFI7XC5o8XoSJc9mtgesex/q5BuYusxPFYSGrGiO9
- n0kmQ9lczK5FQKAqUrc/gbvFteB8FMl0VGbUNtXyLQQToOd+CeV+3zGh0KN45/ZKbxsWRJJWH
- V0t7KCboPYOBsb0caTaQWBXrnE6ve2botykrfig+6p5wu+8LEST1sRC45jOrRptwLU3ARTF+a
- /yad6keDLGPqDpX05G0g1yeB56d5nlY0rywrM9jzQn4N3kNH4WHp/YA+qcAzT4QhkrR+RWhT/
- qOJRnJtOAJM3mcacd3ORPm8nmREEkk/+nqV3yg9GLTeWUXf2Tkt/r2NVX/0RABLRyjyuAeBl3
- ZvFZZdxy/m+M3btH2CaV7fIlBHU/msNstzHoSN9T/ysLlzdNAkW6/9rB/mM2Mcxa2z4HUPH9T
- zTxwFPk24KGydZdPz2Xrplb+gWrGRcnPjyvRM9mDQ+QLHIHiVNHkPvcV6ihGW1zSM4AzY+P3S
- r6mq6TpjXsxhjxX9TinxV+qSVE+6YXnybbfDclAngEhNtEYHL5cnhBQOZVGJNUbv9C2PUhVCB
- GW5AnX6ufc6EyWGMseWFZjMQSn7COr+IPMExa+fK2+bDvFO+jyMAJMhQmz+I6Au0XE+TJ/VRM
- ggOwIALlwCWuic4jYHmHha2ZVXb2g9vKJcwnN9muajZ1BhmHunNto8Cm87et/nsEGBcTN20qy
- eYp/aEj7cpp12MzKgMs47cSbs03ebHl8Pr2vMCIvhm88yCSQxODRnuG1VKgWvfO5DVNVbZg6Q
- 08cHfbbipq7zVKUMQyt39aQWgqcTUycCv04TmX5PH9WzeEe5Mdtz0Dfyut2BWbpObPXwYalAg
- Xg4Q3pLF/msN5WPEHfQsteuv2WxKt8P2zW9UKAOuoYm4onlPhyoBZRizTckLlQ6HBhbS/ZLoS
- WfEM7agUI/yF3bTHl47uSg4xFXFK0Gjg8AUAp3R7KqdVwATJ//yoYDRwT4JK78Aq+FDaCnaMy
- HMcdRa3DRfQEcxMwjAVXK5d8vZ+e+N7x5MQJ7bTBokBbujc+/5BJP12bHtDaUDk3JOr1JF7LR
- JJaXSgMkoWYIDp3yHWMgKswlK4qlnJ6/dyiK9ix7AdRr2zi/o9qcFFuCFy/sMmbuCcg+sgdpk
- MjZJqMGnEXtOK4O0t4P1VbE8xXQV1nI3Z/MPD6t/MEpQy/gF0gbcFM4l9VA0gyHFgf4Wk/+Gt
- Z7XRhDZ7w9mcS4qkM4v3MSUIC3+nnU9KlW6fTSvA12xFlU3XlJM1O/CNjgJvejPUUZci3E3oX
- CmFRazAG6ArXDQdt8/7V3EuuOxErRUwRqGM44Cj90bxLLqBr93E/AozIzsgxzd8XmrDBoPWgL
- JhIziizhvGIHmLRKuqNTv1rvMfX/hMDZfVtr6evptiupUfWBQYoPBJE6pIoEp36wjUVqXbU3f
- 0hgxc8EUzPXwS94vRimqkSrprAjalK6AixIt/+rPs0MTPJ/3HlM9yTS0VQ8T7kvWNpIo369N8
- WvhrssGRspQtiyIL9mzI/Jdpe6MBfZ/gTKTAO9l0B231nQuI9k2thau2wZwXRMdIttsd93SLt
- 1DffS8mORxeG8xYrk4ofIXWvEAiJ0QH8pzJ+2v8Cif36U21gVFZbxpjeND92KfJQ47OV+wY8Q
- qSJdJhx10tqrBwX89+hra02BF1jaqdWVV/ar/WnbFwZQwtnnKOxRihIOUfnsnzAPQEyKLmhow
- 48+IbmL5H1Ei17pOOE7lIBscIPOOgS6jTacDastGeJ46Hwb94N4wlw/Hfty4+WQ1IE6JXM/PP
- GgDRpHflbExjl2W9n2tWvLB4/4Ar6N245lU6qiwrxqG1A0HicOQwiqP/qmb5VH/Y8OF5dwe5p
- Ko04S7mhNo1M+jmgXjDlEF63fBJFGeJ1Pi3ZTjzvgmeJgUMx9+zvLv/d2EKISBu79XV0qKfy2
- k+wGE4lNhhrL4yY837h5X29DV9+VVDomD0YydZ5/Hfjq8xXCJSFWbznmUSkpTz418L5Lspjtc
- b3qgiuLlT/lWwjHFeo9HoMLdqRMRtTzdI/RfLg+2BbMADgkpp/ZRmK0NXilqtzoFwUo/6ipL7
- yWdxD4Wxvwc/9sJ0VIqFl/8OSOUAEMSGBoBboIuFmT+rJ89MzqxfKQnqEWVVTuYuRgiwKtplO
- JD4L7AfuTGb0aZ70qXDUPq9Mgh6hY2x6Q4MvXhz3J8onccrPVyOqjKF2NAiYjWO6s4KV8L6gt
- JCSel9rE/aSPLpjvknKsAMRdlgBuAfDjRYb9sGFl7VIRxjjdMIJW+p9LB3TWaxS72NqAyt6Ud
- QYjjqPuloQVHNK0JnM4rw9EhMV6F5i2WRBZa3yXFCFy+A+LnkA4Nj49ioTUhO9ExGIIkxT2On
- WsjIBLHGpdi+BHm/1gStE109CBrTVCA7FUNYSiNIfxB2akP5L2+HbtD1pLeoORe4a62i0MgIP
- FuNvwDqA8v6VlBCRIuWkcawHvOuP3I7kQmHPK5gCx+8l7lqkRpV7AyHRXycwy+mg8/7oEYjsy
- 5tIfVkbJoTij74tM38A/tagdG1aHaxpSDL1p2IRT4FWFrfX3g76sgEqjupMB/EsweAnPdVnWu
- gotxcA1UQ7HvAzYIPSmZ2kdVxEnvJDvY7sxZLzn4iRRAr+TdZ7UFz/cvWgpbBByZLBCiArT0s
- MQ3ssuCZvYrIQiVuFbYYsFuuZkbXF0u/wr70Z9G2bOwywq0XDc+q4OhAsiE1nMmNpmapAYagS
- xTmk31ZCv/C5wW7jJbg6SZn0xzjwrq/X5rsSdQnSeiZustoLdphr3BidXnhc+40CawZndbCCO
- sglGAXgCvTwtKgqgiURkKxdVydgSTaEtBJW6tktDlhesUK2KhGKg25hyLHWSk37VNy28Dj3ev
- J2W09v2SNZmIHi6qydObjculb0x9PEOIyE4Kt5u0HY1kHasY1fAHS0o9Nt744mQymhHpWATxD
- gNIemkvABmd0n9v6OVLgnp2NnXvAqLKyIC3mwmr0KSFhoqj1C1avem5XCQl7XlUjYwZlS8QP/
- MaA+SV1bR0zHAHpIB0+6bNGjGRx5cacJ4QCis0d7QwM0cV+kGmOFy4mRWhw/NwnHIc02OUE2c
- h5cZiIN1u/dTM72KuCz6qXTlCmN3VHrEg99eWxfKIWWpnhagRJtn9Maw8Z1JtTOz/yppBusti
- Eyi8/8g4V9r19PQ+3zn95U/Fsq19Jg0pRMLt48GUL/si8UCEW3QEllXSvfKYYMzoP8lwTuuG9
- 8BRBpbZYNlh2WPPV/YbYrdn1tSlXAcAwWq1d1+/TIchO1kuZ4iMnBIUw0BaT3GQRKEQl/diYm
- X3jlQy1fYGByRB3OzIhRx3VKQA+0pfkhrmPVJozb4/l1+6CJg6bTmEPtsR8zi2j4lXEm623QS
- zmClPhG2zsTj0Lh/sFZEgg/BrNpX7d2Z+VL4Z7acD0T6vRquCQcHJ8H5W2F+JYJmfycrQDs1A
- oa97mCP497MepXLTr6pIcK0VGFKQlHrMJZ8Ill2idAL8urTeb10/m2mrtpAtZmPSggGHTGVb2
- 1+mllb8ziRU+cve5XCU/vQy2ZQkj0CeB/fhwhPJyOz7xlIZ6dzGOWOYKrFHxN1celhxZE2kG9
- LKr/yNzKMcK4ZmZ5uzdTLb1I0QPhLWbrk9WHQG0wnCRyROds46L2tBZGx4htMtZVhrXKcpsBX
- dv8IjXl6tjxKHCKRAyLeQFprsFWCelyF3jJgDP1KtsRNivQ
 
-=E2=80=A6
-> Add the missing bio_put() calls to properly drop the bio reference
-> in those error cases.
+On Wed, 5 Nov 2025 at 10:12, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> =E5=9C=A8 2025/11/5 18:52, Daniel Vacek =E5=86=99=E9=81=93:
+> > On Fri, 24 Oct 2025 at 23:29, David Sterba <dsterba@suse.cz> wrote:
+> >>
+> >> On Wed, Oct 15, 2025 at 02:11:51PM +0200, Daniel Vacek wrote:
+> >>> From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> >>>
+> >>> This recapitulates the kernel change named 'btrfs: start tracking ext=
+ent
+> >>> encryption context info".
+> >>>
+> >>> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> >>> ---
+> >>>   kernel-shared/accessors.h       | 43 ++++++++++++++++++++++
+> >>>   kernel-shared/tree-checker.c    | 65 +++++++++++++++++++++++++++---=
+---
+> >>>   kernel-shared/uapi/btrfs_tree.h | 23 +++++++++++-
+> >>>   3 files changed, 118 insertions(+), 13 deletions(-)
+> >>>
+> >>> diff --git a/kernel-shared/accessors.h b/kernel-shared/accessors.h
+> >>> index cb96f3e2..5d90be76 100644
+> >>> --- a/kernel-shared/accessors.h
+> >>> +++ b/kernel-shared/accessors.h
+> >>> @@ -935,6 +935,9 @@ BTRFS_SETGET_STACK_FUNCS(super_uuid_tree_generati=
+on, struct btrfs_super_block,
+> >>>   BTRFS_SETGET_STACK_FUNCS(super_nr_global_roots, struct btrfs_super_=
+block,
+> >>>                         nr_global_roots, 64);
+> >>>
+> >>> +/* struct btrfs_file_extent_encryption_info */
+> >>> +BTRFS_SETGET_FUNCS(encryption_info_size, struct btrfs_encryption_inf=
+o, size, 32);
+> >>> +
+> >>>   /* struct btrfs_file_extent_item */
+> >>>   BTRFS_SETGET_STACK_FUNCS(stack_file_extent_type, struct btrfs_file_=
+extent_item,
+> >>>                         type, 8);
+> >>> @@ -973,6 +976,46 @@ BTRFS_SETGET_FUNCS(file_extent_encryption, struc=
+t btrfs_file_extent_item,
+> >>>   BTRFS_SETGET_FUNCS(file_extent_other_encoding, struct btrfs_file_ex=
+tent_item,
+> >>>                   other_encoding, 16);
+> >>>
+> >>> +static inline struct btrfs_encryption_info *btrfs_file_extent_encryp=
+tion_info(
+> >>> +                                     const struct btrfs_file_extent_=
+item *ei)
+> >>> +{
+> >>> +     unsigned long offset =3D (unsigned long)ei;
+> >>> +
+> >>> +     offset +=3D offsetof(struct btrfs_file_extent_item, encryption_=
+info);
+> >>> +     return (struct btrfs_encryption_info *)offset;
+> >>> +}
+> >>> +
+> >>> +static inline unsigned long btrfs_file_extent_encryption_ctx_offset(
+> >>> +                                     const struct btrfs_file_extent_=
+item *ei)
+> >>> +{
+> >>> +     unsigned long offset =3D (unsigned long)ei;
+> >>> +
+> >>> +     offset +=3D offsetof(struct btrfs_file_extent_item, encryption_=
+info);
+> >>> +     return offset + offsetof(struct btrfs_encryption_info, context)=
+;
+> >>> +}
+> >>> +
+> >>> +static inline u32 btrfs_file_extent_encryption_ctx_size(
+> >>> +                                     const struct extent_buffer *eb,
+> >>> +                                     const struct btrfs_file_extent_=
+item *ei)
+> >>> +{
+> >>> +     return btrfs_encryption_info_size(eb, btrfs_file_extent_encrypt=
+ion_info(ei));
+> >>> +}
+> >>> +
+> >>> +static inline void btrfs_set_file_extent_encryption_ctx_size(
+> >>> +                                     struct extent_buffer *eb,
+> >>> +                                     struct btrfs_file_extent_item *=
+ei,
+> >>> +                                     u32 val)
+> >>> +{
+> >>> +     btrfs_set_encryption_info_size(eb, btrfs_file_extent_encryption=
+_info(ei), val);
+> >>> +}
+> >>> +
+> >>> +static inline u32 btrfs_file_extent_encryption_info_size(
+> >>> +                                     const struct extent_buffer *eb,
+> >>> +                                     const struct btrfs_file_extent_=
+item *ei)
+> >>> +{
+> >>> +     return btrfs_encryption_info_size(eb, btrfs_file_extent_encrypt=
+ion_info(ei));
+> >>> +}
+> >>> +
+> >>>   /* btrfs_qgroup_status_item */
+> >>>   BTRFS_SETGET_FUNCS(qgroup_status_generation, struct btrfs_qgroup_st=
+atus_item,
+> >>>                   generation, 64);
+> >>> diff --git a/kernel-shared/tree-checker.c b/kernel-shared/tree-checke=
+r.c
+> >>> index ccc1f1ea..93073979 100644
+> >>> --- a/kernel-shared/tree-checker.c
+> >>> +++ b/kernel-shared/tree-checker.c
+> >>> @@ -242,6 +242,8 @@ static int check_extent_data_item(struct extent_b=
+uffer *leaf,
+> >>>        u32 sectorsize =3D fs_info->sectorsize;
+> >>>        u32 item_size =3D btrfs_item_size(leaf, slot);
+> >>>        u64 extent_end;
+> >>> +     u8 policy;
+> >>> +     u8 fe_type;
+> >>>
+> >>>        if (unlikely(!IS_ALIGNED(key->offset, sectorsize))) {
+> >>>                file_extent_err(leaf, slot,
+> >>> @@ -272,12 +274,12 @@ static int check_extent_data_item(struct extent=
+_buffer *leaf,
+> >>>                                SZ_4K);
+> >>>                return -EUCLEAN;
+> >>>        }
+> >>> -     if (unlikely(btrfs_file_extent_type(leaf, fi) >=3D
+> >>> -                  BTRFS_NR_FILE_EXTENT_TYPES)) {
+> >>> +
+> >>> +     fe_type =3D btrfs_file_extent_type(leaf, fi);
+> >>> +     if (unlikely(fe_type >=3D BTRFS_NR_FILE_EXTENT_TYPES)) {
+> >>>                file_extent_err(leaf, slot,
+> >>>                "invalid type for file extent, have %u expect range [0=
+, %u]",
+> >>> -                     btrfs_file_extent_type(leaf, fi),
+> >>> -                     BTRFS_NR_FILE_EXTENT_TYPES - 1);
+> >>> +                     fe_type, BTRFS_NR_FILE_EXTENT_TYPES - 1);
+> >>>                return -EUCLEAN;
+> >>>        }
+> >>>
+> >>> @@ -293,10 +295,11 @@ static int check_extent_data_item(struct extent=
+_buffer *leaf,
+> >>>                        BTRFS_NR_COMPRESS_TYPES - 1);
+> >>>                return -EUCLEAN;
+> >>>        }
+> >>> -     if (unlikely(btrfs_file_extent_encryption(leaf, fi))) {
+> >>> +     policy =3D btrfs_file_extent_encryption(leaf, fi);
+> >>> +     if (unlikely(policy >=3D BTRFS_NR_ENCRYPTION_TYPES)) {
+> >>>                file_extent_err(leaf, slot,
+> >>> -                     "invalid encryption for file extent, have %u ex=
+pect 0",
+> >>> -                     btrfs_file_extent_encryption(leaf, fi));
+> >>> +                     "invalid encryption for file extent, have %u ex=
+pect range [0, %u]",
+> >>> +                     policy, BTRFS_NR_ENCRYPTION_TYPES - 1);
+> >>>                return -EUCLEAN;
+> >>>        }
+> >>>        if (btrfs_file_extent_type(leaf, fi) =3D=3D BTRFS_FILE_EXTENT_=
+INLINE) {
+> >>> @@ -325,12 +328,50 @@ static int check_extent_data_item(struct extent=
+_buffer *leaf,
+> >>>                return 0;
+> >>>        }
+> >>>
+> >>> -     /* Regular or preallocated extent has fixed item size */
+> >>> -     if (unlikely(item_size !=3D sizeof(*fi))) {
+> >>> -             file_extent_err(leaf, slot,
+> >>> +     if (policy =3D=3D BTRFS_ENCRYPTION_FSCRYPT) {
+> >>> +             size_t fe_size =3D sizeof(*fi) + sizeof(struct btrfs_en=
+cryption_info);
+> >>> +             u32 ctxsize;
+> >>> +
+> >>> +             if (unlikely(item_size < fe_size)) {
+> >>> +                     file_extent_err(leaf, slot,
+> >>> +     "invalid item size for encrypted file extent, have %u expect =
+=3D %zu + size of u32",
+> >>> +                                     item_size, sizeof(*fi));
+> >>> +                     return -EUCLEAN;
+> >>> +             }
+> >>> +
+> >>> +             ctxsize =3D btrfs_file_extent_encryption_info_size(leaf=
+, fi);
+> >>> +             if (unlikely(item_size !=3D (fe_size + ctxsize))) {
+> >>> +                     file_extent_err(leaf, slot,
+> >>> +     "invalid item size for encrypted file extent, have %u expect =
+=3D %zu + context of size %u",
+> >>> +                                     item_size, fe_size, ctxsize);
+> >>> +                     return -EUCLEAN;
+> >>> +             }
+> >>> +
+> >>> +             if (unlikely(ctxsize > BTRFS_MAX_EXTENT_CTX_SIZE)) {
+> >>> +                     file_extent_err(leaf, slot,
+> >>> +     "invalid file extent context size, have %u expect a maximum of =
+%u",
+> >>> +                                     ctxsize, BTRFS_MAX_EXTENT_CTX_S=
+IZE);
+> >>> +                     return -EUCLEAN;
+> >>> +             }
+> >>> +
+> >>> +             /*
+> >>> +              * Only regular and prealloc extents should have an enc=
+ryption
+> >>> +              * context.
+> >>> +              */
+> >>> +             if (unlikely(fe_type !=3D BTRFS_FILE_EXTENT_REG &&
+> >>> +                          fe_type !=3D BTRFS_FILE_EXTENT_PREALLOC)) =
+{
+> >>> +                     file_extent_err(leaf, slot,
+> >>> +             "invalid type for encrypted file extent, have %u",
+> >>> +                                     btrfs_file_extent_type(leaf, fi=
+));
+> >>> +                     return -EUCLEAN;
+> >>> +             }
+> >>> +     } else {
+> >>> +             if (unlikely(item_size !=3D sizeof(*fi))) {
+> >>> +                     file_extent_err(leaf, slot,
+> >>>        "invalid item size for reg/prealloc file extent, have %u expec=
+t %zu",
+> >>> -                     item_size, sizeof(*fi));
+> >>> -             return -EUCLEAN;
+> >>> +                                     item_size, sizeof(*fi));
+> >>> +                     return -EUCLEAN;
+> >>> +             }
+> >>>        }
+> >>>        if (unlikely(CHECK_FE_ALIGNED(leaf, slot, fi, ram_bytes, secto=
+rsize) ||
+> >>>                     CHECK_FE_ALIGNED(leaf, slot, fi, disk_bytenr, sec=
+torsize) ||
+> >>> diff --git a/kernel-shared/uapi/btrfs_tree.h b/kernel-shared/uapi/btr=
+fs_tree.h
+> >>> index 7f3dffe6..4b4f45aa 100644
+> >>> --- a/kernel-shared/uapi/btrfs_tree.h
+> >>> +++ b/kernel-shared/uapi/btrfs_tree.h
+> >>> @@ -1066,6 +1066,24 @@ enum {
+> >>>        BTRFS_NR_FILE_EXTENT_TYPES =3D 3,
+> >>>   };
+> >>>
+> >>> +/*
+> >>> + * Currently just the FSCRYPT_SET_CONTEXT_MAX_SIZE, which is larger =
+than the
+> >>> + * current extent context size from fscrypt, so this should give us =
+plenty of
+> >>> + * breathing room for expansion later.
+> >>> + */
+> >>> +#define BTRFS_MAX_EXTENT_CTX_SIZE 40
+> >>> +
+> >>> +enum {
+> >>> +     BTRFS_ENCRYPTION_NONE,
+> >>> +     BTRFS_ENCRYPTION_FSCRYPT,
+> >>> +     BTRFS_NR_ENCRYPTION_TYPES,
+> >>> +};
+> >>> +
+> >>> +struct btrfs_encryption_info {
+> >>> +     __le32 size;
+> >>> +     __u8 context[0];
+> >>> +};
+> >>> +
+> >>>   struct btrfs_file_extent_item {
+> >>>        /*
+> >>>         * transaction id that created this extent
+> >>> @@ -1115,7 +1133,10 @@ struct btrfs_file_extent_item {
+> >>>         * always reflects the size uncompressed and without encoding.
+> >>>         */
+> >>>        __le64 num_bytes;
+> >>> -
+> >>> +     /*
+> >>> +      * the encryption info, if any
+> >>> +      */
+> >>> +     struct btrfs_encryption_info encryption_info[0];
+> >>
+> >> Looking at this again, adding variable length data will make it hard t=
+o
+> >> add more items to the file extent. We could not decide the version jus=
+t
+> >> by the size, as done in other structures.
+> >
+> > Checking the details of btrfs_file_extent_item I understand the item
+> > is already variable size in case of inline extent.
+>
+> Yeah, but I'm not sure if that is a good example to follow, or a bad
+> example to avoid.
+>
+> The biggest concern is for encrypted inline data extents.
+> We need to put two variable sized data into a single item.
+> (I know there are examples like btrfs_dir_item for XATTR, but again not
+> sure if we should really follow that)
 
-How do you think about to use additional labels?
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/coding-style.rst?h=3Dv6.18-rc4#n526
+Just for the record, with the state of the patches as of now, inline
+extent encryption is not supported. And for example ext4 also merges
+the encryption context with the inline data.
+But if we wanted to implement encrypted inline extents it may be
+easier for us to just add a new key storing the context. So perhaps we
+can do it right away to cover all the cases in a generic way.
 
-Regards,
-Markus
+> In that case the structure definition will not help, and you have to
+> determine where to put the appended encryption info, either before the
+> inlined data, or before it.
+>
+> And all the extra sequence info must be implemented in extra comments,
+> which is way harder to read/understand.
+>  From this point of view, the original inline extent usage of
+> btrfs_file_extent_item is already an example to avoid.
+>
+>
+> But sure, the appending solution will save us 25 bytes per file extent
+> item, thus it definitely has its benefit.
+>
+> I belive David will do final call, trading off between readability or
+> space saving (and more locality and less key search for encrypted file
+> extents).
+>
+> Although I prefer the dedicated key solution for readability, I'm fine
+> to accept either solution.
+>
+> Thanks,
+> Qu
+>
+>
+> > IIUC, that means that versioning based purely on item size is already
+> > not possible for inline file extents.
+> > So in the case of regular one optionally adding the encryption context
+> > seems similar to adding the file data for the inline case.
+> > And it still makes sense to me keeping the
+> >
+> > Perhaps the spare field `other_encoding` could eventually be used for
+> > versioning if ever needed?
+> >
+> > Let me know if you'd rather add a dedicated key for the encryption
+> > context as Qu suggested. To me it still kind of makes sense to keep it
+> > packed after the file extent info, but I'll be happy with both ways.
+> >
+>
 
