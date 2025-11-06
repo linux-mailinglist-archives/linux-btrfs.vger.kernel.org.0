@@ -1,311 +1,232 @@
-Return-Path: <linux-btrfs+bounces-18771-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18772-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB1ACC3A9C7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 06 Nov 2025 12:37:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46610C3AC3D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 06 Nov 2025 13:04:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CAEE423D44
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Nov 2025 11:29:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AB461AA4F9E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Nov 2025 11:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D5730EF98;
-	Thu,  6 Nov 2025 11:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5EE831BC80;
+	Thu,  6 Nov 2025 11:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="U1QJopD3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qjBVURS7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A6E303CBB
-	for <linux-btrfs@vger.kernel.org>; Thu,  6 Nov 2025 11:29:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED75130E849
+	for <linux-btrfs@vger.kernel.org>; Thu,  6 Nov 2025 11:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762428579; cv=none; b=Rgyvb2cuOLbRkFkrWVrehX9/W8Yc7l9x6FH3t2TBQAxmNl0NxPdHlgFqrOX+1LZ9TlPCDb/5gPDpGr7HjMQg8kMokufc5TnBkIXNJYvxUtj/a2e/1qGjifOJt9N0zBha3ajXyBU2OHXY3T3knYnSnUcaq8StWoCRv8GQxjWsh0I=
+	t=1762430073; cv=none; b=rmKOQTv2zuwQqtv6vh7unK5lsutc+1UMxyHSmh0DSceuXvBppCkXv14+8C4+4/MKtI4JjbtzxhI15j+mBlV+nhsM7Vj6SH+hFDmyDYjf2B51/VS/z8Uu1nSOOVz1qYaXP3AGOSFonZXO0x77D+7NbPqUb3z00r46S37lJHgOPME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762428579; c=relaxed/simple;
-	bh=ABXQLfLROpKSYAfG9fjfNp8dikh+fEDpF844G5QuX4I=;
+	s=arc-20240116; t=1762430073; c=relaxed/simple;
+	bh=vmRx84HLM+7Bkb1i6ucBzdqZPtq1ze7YIvuHXKY9+XY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TooHsaRU7W/JNuQVZufZbalolAlIcLK6GPnRarLjT45uJi5FtzHwYYrU11fF54l4BbX1e+noUAPi6dW1tlA1qTHuC4LEZJFY8xBOSZ170o3Fo8iYE1nZ4C9NdfxcjYcp2sbdNDil2qPqm5TmDhy+fU4Str99rPxOrUrnsnYTQhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=U1QJopD3; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-47754e9cc7fso5494205e9.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Nov 2025 03:29:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762428576; x=1763033376; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=quGDS25IjjMuJbJzKmEqKKc3IZ6oM97ylfEw0LRKAk8=;
-        b=U1QJopD3/GO26WZRLmOrr2JT6sfDQ/D5EAcnE4JURy9VhlMYhOL4w8YKSTe6UmJJn5
-         3wV2rgX7iUYReErdUWRMGZrUAzVcKRKuRUv9aBdI2ztEqNXYU25ortHe/BBOltI/uik2
-         c7RJcJM1rQ5K90uLOZKcanXQTw8mw5DSEe/CxTz2paHTx16O5XOgSKX+hcepoJ61tRn6
-         VBYHoQ8IvLpfJHDfSHjDzxyVP/xH/OkAbmj45l6hZFPGe4vH+Jp2QBhLNVI8S/A/cyOp
-         ZrahldgHd0Ot4ROLLXNB0Mskpl7GPbx2QyQFWujqEfdJACVHqR6V5kxV23PtGMfSzdZe
-         aoxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762428576; x=1763033376;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=quGDS25IjjMuJbJzKmEqKKc3IZ6oM97ylfEw0LRKAk8=;
-        b=s/8RHXrKDhJYaAUB1Ty+9w8TtlHigIjueb1geGx9mjyKOM1K5WE5KblfPY4sR2dCVh
-         z05l8LJHOZWoim4Bm1Kom3DCD/7fAPhWei4zmCzBwVHnjlQaEGY7ZBbOE1JncBB1+2PO
-         CCkzHL0BBKzq438waQpE2kofn/4Cm5IlPrihDH/F+LGpcaEXvJoY1oFlhO7WdbVwBFDc
-         aMWzgDSW8Pi5bkuN02vgyViyF27UmVAITQBBDpLP0u527n42eBOpXfUfS4hUrjfOTdhJ
-         MNncQz99LBaL1kzOTRMLiruPtDbqwQzPQUaYN+IIkG2/eXZnsnzumMur8PSq6Es6FhOR
-         8w0w==
-X-Gm-Message-State: AOJu0YzY10Mzr3fRTHqicWlMRxVcpJ63NZrIZUocUIAQo1uxiYbuHq6v
-	h3IBV+WxeSfZXyHaRsZV9tl8NCEOtogLRtmN6rOcV5rqcUo4kISmRLKNCqgzNSDyo/ixEBm8InT
-	bzVt9XaWaYF8gC++P16EO8mbkct83XXFY4YR5/MY/SkO9lq5GE3rJ
-X-Gm-Gg: ASbGncsn87+5FX6ecQBecK1yNaxffHT16c4xOXA80zyilSbmHZs3bxedebvqk1UqWAo
-	3KpXWN/YcBSIb/XmawnI8FofzX4KouenyOs+TAA4yIK3i92/Fn3SzulbvOoOhhPYnKvOo7pDtnE
-	oSNeOcleRW6MTzTUgHWLnxtIydErkbV9O2zhvtqZ3+hItxmCAPjVAnViXRjy9uEmI/0brsjiz80
-	jR/Ylf5amsxEcHDndTiVylz4IRuafAhx/t/e8HE6p1csfJZz3R6C3daa4nFVqJEUbkajANk6Wxz
-	cLpFvlss5iiSGaYvR8IvSO2gLYp7YdsnvDYzl+Lc6oiJK/apJCG5DzYRfPpk90zwe7rA
-X-Google-Smtp-Source: AGHT+IFUbnp7OoJJ1YSrY/QuLpnLkTgWsD4tMdlzedYn5IeeZKzn67Da4mOTIrKaJuQHvkQ0OvCGY5a7GuFt24FY54k=
-X-Received: by 2002:a05:600c:64c7:b0:477:55ce:f3bc with SMTP id
- 5b1f17b1804b1-4775ce611e2mr64715535e9.19.1762428575685; Thu, 06 Nov 2025
- 03:29:35 -0800 (PST)
+	 To:Cc:Content-Type; b=O8rTSWa6ysXnB7Ux3K+xGKk1pUI7s8obvgxxUQIykkJKWyQIddUQpM5wxhXB/ng4pxOlzMFrftylK7s2RpCVZTgg+ubeWKAUUi8GIetltO9Z/wX7R3/x5AFeaWs6j1B56rbBO8bE4r4yoSDv79q7bKCCO2nbb/A0qAYFYWbUpI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qjBVURS7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82547C113D0
+	for <linux-btrfs@vger.kernel.org>; Thu,  6 Nov 2025 11:54:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762430072;
+	bh=vmRx84HLM+7Bkb1i6ucBzdqZPtq1ze7YIvuHXKY9+XY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=qjBVURS7474yucGqSlBB6alZwtaFhC38B3vZOHI7pV/bUZgS0EM4PwoMtozzl7JsC
+	 F/vgSDjAw3bjgyZ+Bgqr+WX9RcMW5bBnHNJCfeMN/7hSRiPrFrYqFbQzfn8HBF5JYl
+	 yrg0MsLNA53eSATyO8qHfNN6xLoZ7CN5+QuCOTOOEr+bxkcf5Xx1gD9K3rgl/gF7Hu
+	 Kf3zHdWluHlAJgpF3NwHWNsLSQY37fjvMHBMNiqK2DAgp5hUrShg7PlXkzT8JdL1qf
+	 +8fuaI9mXF/Gx3LanOSPRVrF7HDXRYJtUCeGLefBTYqBUrk8Shxx3yWr3nFHqt/aPx
+	 EdTI7mBeLAlHw==
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b726997b121so280574966b.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Nov 2025 03:54:32 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXg+PI1fOzAOmicetlmfp91JmcqSx274AuIXcSwz6S1pN3sFfVX6qYrnozY7Wo0VNd3SkhD2mR65+Zy1Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6pzVcROkKbqJw1AwcsQ3ET63m/7GcBTRIKPCLrVbxeIeI0B+1
+	QBL8Z8+8dY7rp8bu/KuLY9ADYpkaoPYC+ah0xY/hjMiZbbsUWw9n5fO9gBUfR8A7gG3NSrGNMAN
+	nHQA55YAWPabKgecHA71JUPBJTQzbBdM=
+X-Google-Smtp-Source: AGHT+IHU73dnQxL6TwgD3QMuBkYLhSTVTuhv5aLiY1DMJ162sVMAaLpfE/fLPEECVkr0ZEeK+RQtD+oDpBIoHXsmmus=
+X-Received: by 2002:a17:907:2d94:b0:b70:b161:b9a8 with SMTP id
+ a640c23a62f3a-b72892ac5acmr342527266b.2.1762430071056; Thu, 06 Nov 2025
+ 03:54:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1761234580.git.fdmanana@suse.com> <078852f3ef7b95046eeca1c13cfb1bfa34ccac90.1761234581.git.fdmanana@suse.com>
-In-Reply-To: <078852f3ef7b95046eeca1c13cfb1bfa34ccac90.1761234581.git.fdmanana@suse.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Thu, 6 Nov 2025 12:29:24 +0100
-X-Gm-Features: AWmQ_bmVAaQg--_J8tk4YdZBQO6ca1EQDwh1_xdr24KE04skLKW9HEB7WDq57dg
-Message-ID: <CAPjX3Fd=oPSpLhDXY=nSK1aMW2fNdBiQW44viwt0QziCpprU5A@mail.gmail.com>
-Subject: Re: [PATCH 27/28] btrfs: avoid space_info locking when checking if
- tickets are served
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
+References: <690bd529.050a0220.baf87.0079.GAE@google.com>
+In-Reply-To: <690bd529.050a0220.baf87.0079.GAE@google.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 6 Nov 2025 11:53:54 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6Jc9-NMyk49Dykt291jpuVfWAEDnZtfnC3jjc13FLVcw@mail.gmail.com>
+X-Gm-Features: AWmQ_bmvUm7Vjc_TA_T93nKnDtTvimWh09YUVPy4tJdC8dXQoKv6kOZ2P7KRzpw
+Message-ID: <CAL3q7H6Jc9-NMyk49Dykt291jpuVfWAEDnZtfnC3jjc13FLVcw@mail.gmail.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in reserve_bytes
+To: syzbot <syzbot+feba382c68462d76be14@syzkaller.appspotmail.com>
+Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 23 Oct 2025 at 18:02, <fdmanana@kernel.org> wrote:
+On Wed, Nov 5, 2025 at 10:54=E2=80=AFPM syzbot
+<syzbot+feba382c68462d76be14@syzkaller.appspotmail.com> wrote:
 >
-> From: Filipe Manana <fdmanana@suse.com>
+> Hello,
 >
-> When checking if a ticket was served, we take the space_info's spinlock.
-> If the ticket was served (its ->bytes is 0) or had an error (its ->error
-> it not 0) then we just unlock the space_info and return.
+> syzbot found the following issue on:
 >
-> This however causes contention on the space_info's spinlock, which is
-> heavily used (space reservation, space flushing, allocating and
-> deallocating an extent from a block group (btrfs_update_block_group()),
-> etc).
+> HEAD commit:    98bd8b16ae57 Add linux-next specific files for 20251031
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D17abfe7c58000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D63d09725c93bc=
+c1c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dfeba382c68462d7=
+6be14
+> compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b797=
+6-1~exp1~20250708183702.136), Debian LLD 20.1.8
 >
-> Instead of using the space_info's spinlock to check if a ticket was
-> served, use a per ticket spinlock which isn't used by anyone other than
-> the task that created the ticket (stack allocated) and the task that
-> serves the ticket (a reclaim task or any task deallocating space that
-> ends up at btrfs_try_granting_tickets()).
+> Unfortunately, I don't have any reproducer for this issue yet.
 >
-> After applying this patch and all previous patches from the same patchset
-> (many attempt to reduce space_info critical sections), lockstat showed
-> some improvements for a fs_mark test regarding the space_info's spinlock
-> 'lock'. The lockstat results:
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/975261746f29/dis=
+k-98bd8b16.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/ad565c6cf272/vmlinu=
+x-98bd8b16.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/1816a55a8d5f/b=
+zImage-98bd8b16.xz
 >
-> Before patchset:
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+feba382c68462d76be14@syzkaller.appspotmail.com
 >
->   con-bounces:     13733858
->   contentions:     15902322
->   waittime-total:  264902529.72
->   acq-bounces:     28161791
->   acquisitions:    38679282
+> assertion failed: !(ticket->bytes =3D=3D 0 && ticket->error) :: 0, in fs/=
+btrfs/space-info.c:1671
+> ------------[ cut here ]------------
+> kernel BUG at fs/btrfs/space-info.c:1671!
+
+It's a race introduced with the patch: "btrfs: avoid space_info
+locking when checking if tickets are served"
+
+I'll fold the following diff to patch and push it to the for-next branch.
+
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 63d14b5dfc6c..85c96b8bef7f 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -527,7 +527,12 @@ static void remove_ticket(struct btrfs_space_info
+*space_info,
+        }
+
+        spin_lock(&ticket->lock);
+-       if (error)
++       /*
++        * If we are called from a task waiting on the ticket, it may happe=
+n
++        * that before it sets an error on the ticket, a reclaim task was a=
+ble
++        * to satisfy the ticket. In that case ignore the error.
++        */
++       if (error && ticket->bytes > 0)
+                ticket->error =3D error;
+        else
+                ticket->bytes =3D 0;
+
+Thanks.
+
+
+> Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
+> CPU: 0 UID: 0 PID: 7313 Comm: syz.1.358 Not tainted syzkaller #0 PREEMPT(=
+full)
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 10/02/2025
+> RIP: 0010:handle_reserve_ticket fs/btrfs/space-info.c:1671 [inline]
+> RIP: 0010:reserve_bytes+0x129e/0x1410 fs/btrfs/space-info.c:1864
+> Code: 0f 0b e8 15 f0 cc fd 48 c7 c7 60 c9 b0 8b 48 c7 c6 80 d5 b0 8b 31 d=
+2 48 c7 c1 40 c6 b0 8b 41 b8 87 06 00 00 e8 f3 f8 33 fd 90 <0f> 0b f3 0f 1e=
+ fa 65 8b 1d 59 4a 80 0e bf 07 00 00 00 89 de e8 19
+> RSP: 0018:ffffc9000f2ff180 EFLAGS: 00010246
+> RAX: 000000000000005c RBX: 0000000000000000 RCX: 6a0e5d27bc457900
+> RDX: ffffc9000d29b000 RSI: 00000000000080c9 RDI: 00000000000080ca
+> RBP: ffffc9000f2ff3c0 R08: ffffc9000f2feea7 R09: 1ffff92001e5fdd4
+> R10: dffffc0000000000 R11: fffff52001e5fdd5 R12: ffff88814e273000
+> R13: dffffc0000000000 R14: 00000000fffffffc R15: ffffc9000f2ff220
+> FS:  00007f71682106c0(0000) GS:ffff888125ee2000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fe3d8bb6d60 CR3: 0000000029df0000 CR4: 00000000003526f0
+> Call Trace:
+>  <TASK>
+>  btrfs_reserve_metadata_bytes+0x28/0x150 fs/btrfs/space-info.c:1887
+>  btrfs_reserve_trans_metadata fs/btrfs/transaction.c:577 [inline]
+>  start_transaction+0x102c/0x1610 fs/btrfs/transaction.c:658
+>  btrfs_replace_file_extents+0x2b1/0x1de0 fs/btrfs/file.c:2432
+>  insert_prealloc_file_extent fs/btrfs/inode.c:9004 [inline]
+>  __btrfs_prealloc_file_range+0x48d/0xcf0 fs/btrfs/inode.c:9071
+>  btrfs_prealloc_file_range+0x40/0x60 fs/btrfs/inode.c:9149
+>  btrfs_zero_range+0xb9a/0xe00 fs/btrfs/file.c:3073
+>  btrfs_fallocate+0xb95/0x1c10 fs/btrfs/file.c:3187
+>  vfs_fallocate+0x669/0x7e0 fs/open.c:342
+>  ksys_fallocate fs/open.c:366 [inline]
+>  __do_sys_fallocate fs/open.c:371 [inline]
+>  __se_sys_fallocate fs/open.c:369 [inline]
+>  __x64_sys_fallocate+0xc0/0x110 fs/open.c:369
+>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>  do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7f716738efc9
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f=
+7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
+ ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f7168210038 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+> RAX: ffffffffffffffda RBX: 00007f71675e6090 RCX: 00007f716738efc9
+> RDX: 0000000000003ffd RSI: 0000000000000010 RDI: 000000000000000a
+> RBP: 00007f7167411f91 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000008000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 00007f71675e6128 R14: 00007f71675e6090 R15: 00007fff6c300678
+>  </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:handle_reserve_ticket fs/btrfs/space-info.c:1671 [inline]
+> RIP: 0010:reserve_bytes+0x129e/0x1410 fs/btrfs/space-info.c:1864
+> Code: 0f 0b e8 15 f0 cc fd 48 c7 c7 60 c9 b0 8b 48 c7 c6 80 d5 b0 8b 31 d=
+2 48 c7 c1 40 c6 b0 8b 41 b8 87 06 00 00 e8 f3 f8 33 fd 90 <0f> 0b f3 0f 1e=
+ fa 65 8b 1d 59 4a 80 0e bf 07 00 00 00 89 de e8 19
+> RSP: 0018:ffffc9000f2ff180 EFLAGS: 00010246
+> RAX: 000000000000005c RBX: 0000000000000000 RCX: 6a0e5d27bc457900
+> RDX: ffffc9000d29b000 RSI: 00000000000080c9 RDI: 00000000000080ca
+> RBP: ffffc9000f2ff3c0 R08: ffffc9000f2feea7 R09: 1ffff92001e5fdd4
+> R10: dffffc0000000000 R11: fffff52001e5fdd5 R12: ffff88814e273000
+> R13: dffffc0000000000 R14: 00000000fffffffc R15: ffffc9000f2ff220
+> FS:  00007f71682106c0(0000) GS:ffff888125ee2000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007ffdaa1f0eb8 CR3: 0000000029df0000 CR4: 00000000003526f0
 >
-> After patchset:
 >
->   con-bounces:     12032220
->   contentions:     13598034
->   waittime-total:  221806127.28
->   acq-bounces:     24717947
->   acquisitions:    34103281
->
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 > ---
->  fs/btrfs/space-info.c | 56 +++++++++++++++++++++++++------------------
->  fs/btrfs/space-info.h |  1 +
->  2 files changed, 34 insertions(+), 23 deletions(-)
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 >
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 86cd87c5884a..cce53a452fd3 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -517,18 +517,22 @@ bool btrfs_can_overcommit(const struct btrfs_space_info *space_info, u64 bytes,
->  static void remove_ticket(struct btrfs_space_info *space_info,
->                           struct reserve_ticket *ticket, int error)
->  {
-> +       lockdep_assert_held(&space_info->lock);
-> +
->         if (!list_empty(&ticket->list)) {
->                 list_del_init(&ticket->list);
->                 ASSERT(space_info->reclaim_size >= ticket->bytes);
->                 space_info->reclaim_size -= ticket->bytes;
->         }
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 >
-> +       spin_lock(&ticket->lock);
->         if (error)
->                 ticket->error = error;
->         else
->                 ticket->bytes = 0;
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
 >
->         wake_up(&ticket->wait);
-> +       spin_unlock(&ticket->lock);
->  }
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
 >
->  /*
-> @@ -1495,6 +1499,17 @@ static const enum btrfs_flush_state evict_flush_states[] = {
->         RESET_ZONES,
->  };
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
 >
-> +static bool is_ticket_served(struct reserve_ticket *ticket)
-> +{
-> +       bool ret;
-> +
-> +       spin_lock(&ticket->lock);
-> +       ret = (ticket->bytes == 0);
-> +       spin_unlock(&ticket->lock);
-> +
-> +       return ret;
-> +}
-> +
->  static void priority_reclaim_metadata_space(struct btrfs_space_info *space_info,
->                                             struct reserve_ticket *ticket,
->                                             const enum btrfs_flush_state *states,
-> @@ -1504,29 +1519,25 @@ static void priority_reclaim_metadata_space(struct btrfs_space_info *space_info,
->         u64 to_reclaim;
->         int flush_state = 0;
->
-> -       spin_lock(&space_info->lock);
->         /*
->          * This is the priority reclaim path, so to_reclaim could be >0 still
->          * because we may have only satisfied the priority tickets and still
->          * left non priority tickets on the list.  We would then have
->          * to_reclaim but ->bytes == 0.
->          */
-> -       if (ticket->bytes == 0) {
-> -               spin_unlock(&space_info->lock);
-> +       if (is_ticket_served(ticket))
->                 return;
-> -       }
->
-> +       spin_lock(&space_info->lock);
->         to_reclaim = btrfs_calc_reclaim_metadata_size(space_info);
->
->         while (flush_state < states_nr) {
->                 spin_unlock(&space_info->lock);
->                 flush_space(space_info, to_reclaim, states[flush_state], false);
-> +               if (is_ticket_served(ticket))
-> +                       return;
->                 flush_state++;
->                 spin_lock(&space_info->lock);
-> -               if (ticket->bytes == 0) {
-> -                       spin_unlock(&space_info->lock);
-> -                       return;
-> -               }
->         }
-
-The space_info->lock should be unlocked before the loop and grabbed
-again only after it. There's no need to take that lock inside with
-your change.
-
---nX
-
->
->         /*
-> @@ -1554,22 +1565,17 @@ static void priority_reclaim_metadata_space(struct btrfs_space_info *space_info,
->  static void priority_reclaim_data_space(struct btrfs_space_info *space_info,
->                                         struct reserve_ticket *ticket)
->  {
-> -       spin_lock(&space_info->lock);
-> -
->         /* We could have been granted before we got here. */
-> -       if (ticket->bytes == 0) {
-> -               spin_unlock(&space_info->lock);
-> +       if (is_ticket_served(ticket))
->                 return;
-> -       }
->
-> +       spin_lock(&space_info->lock);
->         while (!space_info->full) {
->                 spin_unlock(&space_info->lock);
->                 flush_space(space_info, U64_MAX, ALLOC_CHUNK_FORCE, false);
-> -               spin_lock(&space_info->lock);
-> -               if (ticket->bytes == 0) {
-> -                       spin_unlock(&space_info->lock);
-> +               if (is_ticket_served(ticket))
->                         return;
-> -               }
-> +               spin_lock(&space_info->lock);
->         }
->
->         remove_ticket(space_info, ticket, -ENOSPC);
-> @@ -1582,11 +1588,13 @@ static void wait_reserve_ticket(struct btrfs_space_info *space_info,
->
->  {
->         DEFINE_WAIT(wait);
-> -       int ret = 0;
->
-> -       spin_lock(&space_info->lock);
-> +       spin_lock(&ticket->lock);
->         while (ticket->bytes > 0 && ticket->error == 0) {
-> +               int ret;
-> +
->                 ret = prepare_to_wait_event(&ticket->wait, &wait, TASK_KILLABLE);
-> +               spin_unlock(&ticket->lock);
->                 if (ret) {
->                         /*
->                          * Delete us from the list. After we unlock the space
-> @@ -1596,17 +1604,18 @@ static void wait_reserve_ticket(struct btrfs_space_info *space_info,
->                          * despite getting an error, resulting in a space leak
->                          * (bytes_may_use counter of our space_info).
->                          */
-> +                       spin_lock(&space_info->lock);
->                         remove_ticket(space_info, ticket, -EINTR);
-> -                       break;
-> +                       spin_unlock(&space_info->lock);
-> +                       return;
->                 }
-> -               spin_unlock(&space_info->lock);
->
->                 schedule();
->
->                 finish_wait(&ticket->wait, &wait);
-> -               spin_lock(&space_info->lock);
-> +               spin_lock(&ticket->lock);
->         }
-> -       spin_unlock(&space_info->lock);
-> +       spin_unlock(&ticket->lock);
->  }
->
->  /*
-> @@ -1804,6 +1813,7 @@ static int reserve_bytes(struct btrfs_space_info *space_info, u64 orig_bytes,
->                 ticket.error = 0;
->                 space_info->reclaim_size += ticket.bytes;
->                 init_waitqueue_head(&ticket.wait);
-> +               spin_lock_init(&ticket.lock);
->                 ticket.steal = can_steal(flush);
->                 if (trace_btrfs_reserve_ticket_enabled())
->                         start_ns = ktime_get_ns();
-> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-> index 7e16d4c116c8..a4c2a3c8b388 100644
-> --- a/fs/btrfs/space-info.h
-> +++ b/fs/btrfs/space-info.h
-> @@ -230,6 +230,7 @@ struct reserve_ticket {
->         bool steal;
->         struct list_head list;
->         wait_queue_head_t wait;
-> +       spinlock_t lock;
->  };
->
->  static inline bool btrfs_mixed_space_info(const struct btrfs_space_info *space_info)
-> --
-> 2.47.2
->
+> If you want to undo deduplication, reply with:
+> #syz undup
 >
 
