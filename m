@@ -1,166 +1,200 @@
-Return-Path: <linux-btrfs+bounces-18748-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18749-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07A63C38A70
-	for <lists+linux-btrfs@lfdr.de>; Thu, 06 Nov 2025 02:07:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27678C38D38
+	for <lists+linux-btrfs@lfdr.de>; Thu, 06 Nov 2025 03:13:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E15DD189056C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Nov 2025 01:04:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F394188383F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Nov 2025 02:12:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F331DF97C;
-	Thu,  6 Nov 2025 01:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE737238149;
+	Thu,  6 Nov 2025 02:12:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wbinvd.org header.i=@wbinvd.org header.b="aSUQa2LO"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="sUBMpI/8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E3BC19D89E
-	for <linux-btrfs@vger.kernel.org>; Thu,  6 Nov 2025 01:03:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A21222578;
+	Thu,  6 Nov 2025 02:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762391016; cv=none; b=CDpMcKx/JA9P/DnGYq7i69zeiQzcc2OsYXbjCc78fI+DTunioaxwlDm6dP24by496/y+6sMaFphdGsvgIthsOfNvRIVdFyOYzfLiKpDh5OwwbDGXZiDsk+oCwOXjdNMiQRgerTt4jV8NQGPLlOYwWVn76ezcT2eEtqFW1UaaI6M=
+	t=1762395141; cv=none; b=ZvFKFA805YofEqgKGPyC3E7H2zvYnupkmb7cf0qaa2DRKhkK+phF/2C4QxSP57FM16M5Gafnkds3Me/utM13KQEHwS+v2S7SAyawf8M4UK3bq3yDCoJ5ogWHBF+u2CdOVx/OOjEEUC26gfDGpd0rpfOF8Ca6Byn0MViHiN8tVcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762391016; c=relaxed/simple;
-	bh=+73RZCPpxQC9yANrGPBX5TF6IsgfWoNUyYsmUrSk5xo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iPOqmAEhFELhtPVWmbiSB12b7HA+GCHKJnoO/KMcw4JYUC+MQGcR9fXk28QiIH5aFEgRptjTAZyt9TNp7BWpoqAHMI5Rb59m6CwXN/6IU0aRWS/xHfi41MqmLSfY3r40KJLSNdOFn1qyYvQUl86XPoFdYp0o/kaxIsUYRQcZPbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wbinvd.org; spf=pass smtp.mailfrom=wbinvd.org; dkim=pass (2048-bit key) header.d=wbinvd.org header.i=@wbinvd.org header.b=aSUQa2LO; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wbinvd.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wbinvd.org
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-340bb1cb9ddso416266a91.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 Nov 2025 17:03:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=wbinvd.org; s=wbinvd; t=1762391014; x=1762995814; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6bjRpGWsW4TRP4Ax/+K4LJR81TWknrhesm5uonlPs8k=;
-        b=aSUQa2LOf5/+ijJrMW9Y9A9P0A6ITH4HgsLocttI5kXiNm0P6bhe0GdVUGfkLKaL0H
-         fvBRQt9YaTE1lPeC1OqTN9BgIEcHrPBed5ent1eUyC0KttM4ooD3hPdDzyWkgNBtX0AB
-         sovQMDsobZnqIsIqciC3quq6TOw1krv5+7Pp4F8PMWcw2OE0q/hhW83dO+lLVH6TFdr8
-         4pcabmS3jmt8kELeIbMjK0FAWWh01VkttRCU+HWzgFNDkS8tT+MZSMtmXgzZomKYNsCL
-         S/dC5z8bBKj0x2lG8CBI2/IdBjnb87WIEZPdwMWUssEpQVU7OAtumm0qR5iPb/jWEcuG
-         w+XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762391014; x=1762995814;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6bjRpGWsW4TRP4Ax/+K4LJR81TWknrhesm5uonlPs8k=;
-        b=BfB1gbd6SRpusck9Onj7jD9Xg4f3WqZZejU+Z703UQEOxQy3q1BmaGLyRNiGmNKjwH
-         xfhevkdDBz8Ad6QwNf01pf6qx91Wl3vXecEWcl3sWWKY82NGLos8Gl3th6aYpccWAWPY
-         CKTlzNfPBiVV7zlcg/JJDj1iGE39sS2PXT3NqfmFBkKUdiUynlJpDVhvRsjwTlMy8N2W
-         Rq1qGUbgSnrFA+DgKS03vZZ8HQ9CzItoGXVR63jHPinlc+EnxNp+f54d7vPf0pHq6UPE
-         od9HMqZqn4XeF2KeLQTPcNBVaOV3KC6txJF/LifZHxlmD21jAY4IuA1AaZQdf1LG/5Q/
-         pz4Q==
-X-Gm-Message-State: AOJu0YwP1RFFHcjCnZUyz25kNW02x+/7k2aGlu8AUx1DZmCUzhsJ5gZb
-	3e6JZWWBcs1lDIvkHeLDjAKMTq9BwdcC1Ix8hpuq7KxLYkTW8r9QBP/yxjTZbX/oL2A=
-X-Gm-Gg: ASbGnctJZbzv3PHJpAqhvm3TZwxEZoFNOwcHBqA2jUOInE4AtpabdDJo3j6HFepS4pe
-	dcMT2wZo5nQ7HfMiLwLs5SNSB8lCqd59CiBU3ozXkEWDV/doO/G/EOfwwlC6rkw9OsriANdS/ML
-	IjhBLGTkuBoPtyocksiCeHUiiWgRYm2E/gwZ4/2utzmdsta6EUEw0pyUMdL3XZNzgKKXXZfC8+x
-	hLRW6ltG1caCcch6sqLbFPj3Ldfxnt6FkZOGL14v28/GF7PQ2qvrjWqcB9SuHPE/ahVONkoncCr
-	wsMVRy+4zND9a5G0IxaKNg1hjOfSTU5c/2sEL1lNN82D4AcJXwvWTKXqyeU2WRze2QUXmFIeCoo
-	ZPp700nc/2vtaq7ioKIAMpcvke5nMWNt/IQ9G3wI1rcX4lAHenhv+wweYIdoKzqDYzOKg+mIEtR
-	wwc6xLmeaeWGSy
-X-Google-Smtp-Source: AGHT+IEpH2Wah6V2nDJDiuPZBapJbtEvSKo3kVP73NflBVaMfkdYrd8D55Y/16u/3dc+1jOQGZR4Yg==
-X-Received: by 2002:a17:90b:28c3:b0:341:88ba:c6d3 with SMTP id 98e67ed59e1d1-341a6ddf6ffmr5760754a91.23.1762391014475;
-        Wed, 05 Nov 2025 17:03:34 -0800 (PST)
-Received: from mozart.vkv.me ([192.184.167.117])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-341a68ad143sm4153358a91.3.2025.11.05.17.03.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Nov 2025 17:03:34 -0800 (PST)
-Date: Wed, 5 Nov 2025 17:03:31 -0800
-From: Calvin Owens <calvin@wbinvd.org>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>
-Subject: Re: [QUESTION] Order-4 allocation failures on reads with 256bit csums
-Message-ID: <aQvz42UTgwx7zFrO@mozart.vkv.me>
-References: <20251105180054.511528-1-calvin@wbinvd.org>
- <cc115783-7b1c-4196-a06d-08008277141c@suse.com>
- <0f137e3f-7b9b-4fbe-a8f7-2c90dad1a5fc@suse.com>
+	s=arc-20240116; t=1762395141; c=relaxed/simple;
+	bh=HLlaUMQx5ZVcb48HGFptrnTlQp9O6RS8rC/Y+jg4gh0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ENxs/0wBv71joErx+5bfei8BizDh6Uv/YRDfdZrWJxkyyfGRlgDHMdkxiExq0irNNcNK/0upfo5lVbR0Rn/raUlIScyyY5ZNt6nfC0mYqihOx2VGeV1KM8NIg4+Y/kvcT11yxXm/B8UDjpLhdt5TCQgiG4zxeCFNHmHfKDPfsyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=sUBMpI/8; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1762395134; x=1762999934; i=quwenruo.btrfs@gmx.com;
+	bh=HLlaUMQx5ZVcb48HGFptrnTlQp9O6RS8rC/Y+jg4gh0=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=sUBMpI/81o9d9GBc0dWiOt4v9CbJqft/kEe8ihAh7QRgki+9IAltTl2TS3DUzYni
+	 GbS1PWaGGoTSw75UC5hOnV0v6bnItMGhPPXhMgG4F5gpqaXd3AptqQya9t7xXs5y5
+	 mmqGeLqVJJvDqFQh5sYvQ05WUD3eMsU85N9gqB86qKuNSAZwEGjqgDPCxAToeaM94
+	 zJv3zqbvfpvLwfa8Uz24CGjb+tEFGB0l2mN8rzBR97oRWSc+5JcrK+w5JllxrrhHm
+	 P2fmCrAJwhcC37yW2AfO3xk2DYbte8q8Dl0qgSs88bIKaYNenBWf3FW7MUsaWajDA
+	 5NyVkk1iOLaVTihbGg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MHXBj-1vULzr020f-002k7z; Thu, 06
+ Nov 2025 03:12:14 +0100
+Message-ID: <a2d629ab-9f21-4b98-a442-fd73cbbb2dcd@gmx.com>
+Date: Thu, 6 Nov 2025 12:42:08 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0f137e3f-7b9b-4fbe-a8f7-2c90dad1a5fc@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: scrub: fix memory leak in
+ scrub_raid56_parity_stripe()
+To: Markus Elfring <Markus.Elfring@web.de>, Zilin Guan <zilin@seu.edu.cn>,
+ linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, David Sterba <dsterba@suse.com>,
+ Jianhao Xu <jianhao.xu@seu.edu.cn>
+References: <20251105035321.1897952-1-zilin@seu.edu.cn>
+ <2603afff-0789-46d3-9872-3911132a53b1@web.de>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <2603afff-0789-46d3-9872-3911132a53b1@web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:p0xvlCXFi3o6U/zxZKMdQqs7EXxbLWpLGClIFhHnrn2uKYYueJK
+ bGG07k3Q7t8fkhXVzbwy+/891S+xcok1UH/cyTnmcClzsx6RpFKKxI8BsR/zPCMh6b8ZWCo
+ M5Ib5m9OBK2LeuPwV3ahQo4NsmTdii7JI9U98KNNhfqRxgYOyh0IfX2iqXJuRp8YWiKQ5mV
+ laG6WmI5BSpEzAwPHK1PQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:xU5IM9Y84lI=;z3fvum/VAyMk3JL7ErhietSUmjO
+ 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
+ FwEGacQgDtR6M1acXRcCH1Or5w=
 
-On Thursday 11/06 at 07:31 +1030, Qu Wenruo wrote:
-> 在 2025/11/6 07:24, Qu Wenruo 写道:
-> > 在 2025/11/6 04:30, Calvin Owens 写道:
-> > > Hello all,
-> > > 
-> > > I'm seeing order-4 allocation failures reading from btrfs filesystems
-> > > with blake2b/sha256 checksums, on a couple different machines.
-> > > 
-> > > I don't think I'm doing anything interesting: in both cases they were
-> > > idle except for a single-threaded file reader doing buffered I/O. The
-> > > first one was an x86 QEMU VM, the second was a raspberry pi 4b (below):
-> 
-> Another thing is, although the order 4 allocation is indeed large, it's not
-> that unreasonable large.
-> 
-> The problem is still that we're requiring physically contiguous range which
-> greatly reduce the chance to get one.
-> 
-> Another point contributing to this is the order 4, which is beyond the
-> PAGE_ALLOC_COSTLY_ORDER (3), thus no more retry is done thus can fail here.
-> 
-> In fact for your aarch64 case, you can configure the kernel to use 64K page
-> size and in that case such allocation will only be one page thus will almost
-> never fail.
->
-> This leads to my final question, what's the memory size of the RPI4 and your
-> qemu VM?
-> My guess is there is a very limited amount of memory (1GiB?), but still a
-> lot of large buffered IOs.
-> I guess enlarging the VM RAM size will hugely reduce the chance of memory
-> allocation failure.
 
-Thanks for looking Qu.
 
-Both have 8GB of RAM, here's the rest of the allocfail trace from the pi
-in case it's interesting:
+=E5=9C=A8 2025/11/5 20:56, Markus Elfring =E5=86=99=E9=81=93:
+> =E2=80=A6
+>> Add the missing bio_put() calls to properly drop the bio reference
+>> in those error cases.
+>=20
+> How do you think about to use additional labels?
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
+Documentation/process/coding-style.rst?h=3Dv6.18-rc4#n526
 
-    Mem-Info:
-    active_anon:56 inactive_anon:3262 isolated_anon:0
-     active_file:421253 inactive_file:1487506 isolated_file:0
-     unevictable:0 dirty:51 writeback:0
-     slab_reclaimable:28851 slab_unreclaimable:13163
-     mapped:6531 shmem:13 pagetables:493
-     sec_pagetables:0 bounce:0
-     kernel_misc_reclaimable:0
-     free:39062 free_pcp:34 free_cma:15
-    Node 0 active_anon:224kB inactive_anon:13048kB active_file:1685012kB inactive_file:5950024kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:26124kB dirty:204kB writeback:0kB shmem:52kB shmem_thp:0kB shmem_pmdmapped:0kB anon_thp:0kB kernel_stack:3472kB pagetables:1972kB sec_pagetables:0kB all_unreclaimable? no Balloon:0kB
-    DMA free:48336kB boost:12288kB min:19692kB low:21540kB high:23388kB reserved_highatomic:2048KB free_highatomic:2032KB active_anon:0kB inactive_anon:80kB active_file:274560kB inactive_file:545700kB unevictable:0kB writepending:0kB present:970752kB managed:880012kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:60kB
-    lowmem_reserve[]: 0 3008 6962 6962
-    DMA32 free:53372kB boost:10240kB min:36236kB low:42732kB high:49228kB reserved_highatomic:2048KB free_highatomic:2016KB active_anon:32kB inactive_anon:124kB active_file:971292kB inactive_file:1993632kB unevictable:0kB writepending:24kB present:3080192kB managed:3080192kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-    lowmem_reserve[]: 0 0 3954 3954
-    Normal free:54540kB boost:16384kB min:50560kB low:59104kB high:67648kB reserved_highatomic:2048KB free_highatomic:2032KB active_anon:192kB inactive_anon:12844kB active_file:439160kB inactive_file:3410608kB unevictable:0kB writepending:180kB present:4194304kB managed:4049512kB mlocked:0kB bounce:0kB free_pcp:136kB local_pcp:0kB free_cma:0kB
-    lowmem_reserve[]: 0 0 0 0
-    DMA: 12*4kB (UM) 11*8kB (UM) 53*16kB (UMEH) 40*32kB (UMH) 18*64kB (UMH) 47*128kB (UMH) 34*256kB (UMH) 39*512kB (UMH) 10*1024kB (UMH) 0*2048kB 0*4096kB = 48344kB
-    DMA32: 14*4kB (UME) 16*8kB (UME) 806*16kB (UMEH) 194*32kB (UMEH) 29*64kB (UEH) 50*128kB (UM) 34*256kB (UMEH) 22*512kB (UMH) 4*1024kB (UMH) 1*2048kB (M) 0*4096kB = 53656kB
-    Normal: 3*4kB (U) 6*8kB (U) 10*16kB (UEH) 31*32kB (UMEH) 35*64kB (UMEH) 45*128kB (UMH) 13*256kB (MH) 74*512kB (MH) 4*1024kB (UH) 0*2048kB 0*4096kB = 54524kB
-    Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=1048576kB
-    Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=32768kB
-    Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
-    Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=64kB
-    1909321 total pagecache pages
-    532 pages in swap cache
-    Free swap  = 16764072kB
-    Total swap = 16777212kB
-    2061312 pages RAM
-    0 pages HighMem/MovableOnly
-    58883 pages reserved
-    16384 pages cma reserved
+I believe the current hot fix is fine.
+
+As in the long run we're going to use on-stack bio for this particular=20
+call site.
+
+Thanks,
+Qu
+
+>=20
+> Regards,
+> Markus
+>=20
 
 
