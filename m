@@ -1,141 +1,231 @@
-Return-Path: <linux-btrfs+bounces-18783-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18784-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BB94C3D11D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 06 Nov 2025 19:25:35 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A759C3D419
+	for <lists+linux-btrfs@lfdr.de>; Thu, 06 Nov 2025 20:35:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 232183B037E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Nov 2025 18:25:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E4E034E5263
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Nov 2025 19:35:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4CA34CFD1;
-	Thu,  6 Nov 2025 18:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B51F346785;
+	Thu,  6 Nov 2025 19:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j/LOlj75"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZyL2PI5t"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212DE276051
-	for <linux-btrfs@vger.kernel.org>; Thu,  6 Nov 2025 18:25:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001052DF132
+	for <linux-btrfs@vger.kernel.org>; Thu,  6 Nov 2025 19:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762453527; cv=none; b=k0yA+4DFHC/ikJp+s2bE4+HD7Q3d2QP+ldhbSYDgIVElRGP5nZoTDr01uLOefLPpozScBrGQyHYwEh5Qm1RRwiS+6r9oNZFNGhiZJrazUtHlHTxyeQF9x32w+4JAn6hmOdNxAGLhyc92gLcwftBB6MLqtS3mLnwH5BZDN7wp0ig=
+	t=1762457693; cv=none; b=mA1yn7L5Cz3ofMUr2tO4+VIzq5ZaYBCY/I6dRQTcjLrdhPHDMWSkm9/ji6Z8AcOl+zUnAlrPOYQO39md/Pj1cGatSkmcqWDRrRad8gCHNdUh0ZnfvWUaAYLBvWjXj/QPROxaKvmON455GenHTUQ6BTBdeBED+QFciAEkWvZ5gyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762453527; c=relaxed/simple;
-	bh=i3Zv/Rn/6IUaXgpDkoeSFVVHprMl6qLmtNw6FgeVnw0=;
+	s=arc-20240116; t=1762457693; c=relaxed/simple;
+	bh=T/3euURa4sf5pno5n07UA3H6TYwADkHD4DxPPNGT6W0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=cxD25e7qgXJBNQ0wShVmC9BgrpuhqLAVKbdQgcoSr8Hr5ETm2T0WkYipGPuVZdWmoeSdOYQbns9Op1TFLU0H1M2pbSs+7LEeWfm1r//AQ0dQGD3oECi0hnHZLr97992sb49nqLXAIbGAOA9nT9NHTOURQtuVoKZmFT2dRp2SYjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j/LOlj75; arc=none smtp.client-ip=209.85.160.45
+	 To:Cc:Content-Type; b=TpsbRn4q3XxHqrGSUAk4mis2A/8aaSG9B+CsS6kA4FR5imyhmxKWFLbbHvJNc0HjyoP8FfvzDy9U8Ex8oanhXiubXHl53oTEYYfgTrXYAK4Lk1rIomcNBZuhJYtk0aEnTWTuWlxxu+5IGYF+SGCz6M4s04I+N+1APZvYqgoUwHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZyL2PI5t; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-3e41b6469f5so151068fac.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Nov 2025 10:25:25 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-63bdfd73e6eso3362a12.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Nov 2025 11:34:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762453525; x=1763058325; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
+        d=gmail.com; s=20230601; t=1762457689; x=1763062489; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UERxQtqEcUkXPa3gyfUsiLCG0YIh4dpHqZ/vsKToOM8=;
-        b=j/LOlj75ENFB3vXy0Hb2sEOCGBHhB3+Z+pmkjWdA7kpEEcNbDTWwXsqrQjtWUsD8eO
-         SLqhmeL8N5Z4XhwdXzzTY0FwLF3dw4SnGfUL9imG0RdYrk/BoLVTim4/JfGf4XiVwjRK
-         6PkOQ51R5syERmlueYFwwFJXVPXVOZ0vVUeOOHSJrtBBy4vBj7En1IFSwnW9svt5tBV9
-         nUq6nmCZjmkplpA+9E69KReyO8Cuvaz24dLOHtWDL7pWH55KjHUlA0q/dQjoa2upt9YH
-         yIGBs/FUFSKFtD2XASXn+slM9TomnpoFRVTmHiauDK8B/X86Yh8sfQtmUl5wCWWKdmfg
-         KuoA==
+        bh=mCBvcf/NJMhjuoNcaV9EjlbhEjMTciXlshR/lOPkPFk=;
+        b=ZyL2PI5t4p40TnO1N19UYKSCxgoiuj5n22JXUq+xjSDI3fX8qDyh19Z+CAXxwCvSdj
+         d4n4c89yfBvWyxmtK0Gkk8VLX0fRBCPy4rld0fHtYiWAbED8CNJHFxFxRAHbxPb/VHrS
+         Dn3RBiaojFLrENqbm33rkUPU6U/EzGd+ubuLR2vSEV222OPI0NQkjAB1eas6LZKdG012
+         sawKKfISfLG3qWRrAnW7IAdHKA4olmoFlMkIa6JF9zQvTEQ2rhWa1/4PZr1u7srtkgMX
+         0qWO09MXSiyh6LXFcj5KqGKDhyMxEgeIqhp015AGbdOECmNEdZNUVwg4xUUV7YbJRVKu
+         sAsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762453525; x=1763058325;
-        h=content-transfer-encoding:to:subject:message-id:date:from
+        d=1e100.net; s=20230601; t=1762457689; x=1763062489;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=UERxQtqEcUkXPa3gyfUsiLCG0YIh4dpHqZ/vsKToOM8=;
-        b=o83tQ+ArL9aTEQYrPTp6tJolvPYGR8JQ+sgoGvATgydxr2ytsSRtVL0zQbd1xTGF9l
-         Z+mU5Hw6Frb2a6y0LJ3ECne0PpnlCISsimigmlyJlJh8C+y0o5KVXAuuQc2538Jh0E4h
-         8GSnPvQ/4qVjyiPwjOpbpbLyx/vtGGeqYVNCHHm68yX4XEuPjPzYQXKwhPCqqO42aJyK
-         xlwlQBgam+Z5sIYUFHgCKjfxlgiWpLevQSW6WX/MsSPi359jukEsbUKJgvTyMmFnyQhg
-         x+wq3t6xV5dDiTMe52U2M82MOMXn6f+tsljb4mrbS6UeMWAVLDWXYhBqhIasFEoMe24x
-         YQoA==
-X-Gm-Message-State: AOJu0YyXRbjfgTEv3pLwEoLXCWXUDEJOaUcNpjhAH7WNc8+WIzm2QB/2
-	zWwIDGVN7q//sj2lx1fDgcJG8vYjbhnz1N+EZNvYiBykWdzVpyaY3zxTq5xmVyVhv2DBG9LuGhM
-	mB+alo812hcNQKMqQ6J2eaASO5nBjmJwO9qQA0T8=
-X-Gm-Gg: ASbGnctntV7XBX/MQAGWw21Y13+fyo21OPlcmjpQEI7DHeHJSawFswIC84O/WXSRBT5
-	lq1jJkILoka9scA1BxPKbnHFvBSyGt8AvdRrUzOOKtQzHZqwcZbfwjAuglGfj73upKtoPlyWOm3
-	sDQiMNDKS+0XIwtbCJKhbwdqfkx4NjWXkKU1Gs1WDS+n5pGDqKSAeGLk69Sa6gOFAz94GrsSwHa
-	6WPdCbQ5254FUY3DEk9GJkc5PzRMobFhEFFFoTFFAxi0enq6LBv2jkX+cFN
-X-Google-Smtp-Source: AGHT+IF1R3iA2jLssAOT+D5ESROASrM0HbAmc6qfQ+e9bPy8UaLzEFR7JZ5O82eofQXrlPwOl9REuwQB8VrDM72mybU=
-X-Received: by 2002:a05:6870:a78a:b0:3d2:3a88:f27 with SMTP id
- 586e51a60fabf-3e41e608847mr379226fac.27.1762453524863; Thu, 06 Nov 2025
- 10:25:24 -0800 (PST)
+        bh=mCBvcf/NJMhjuoNcaV9EjlbhEjMTciXlshR/lOPkPFk=;
+        b=v5EKhNZNU8wuNBswV2xKa/4g8XgIWNAM3medJiQMg8MHpJ0Y0LYguW9G5FHR8c9dTn
+         0kAnlo1/hkR9B+eGcqzjkNP8G7P0xmmaCPwiUIMFFPHDpD0CVg8ZGGGDWNAno1u8XcMY
+         cX2NgRbY12enCtP91Z3PFkt5gjl9po8SXRKLqeLHfo83dEJ2OS9qPn41Cx7CqDgNzc2Y
+         EaPb3hmP+u8k4gVDOeexWzpegt/krQGAfTBvbwOQk9R95Gm3WVPfWwfnL212+HocqT+n
+         GDRhieRwvEHFO6QtSO5/7CNIwHTDiqmvjKn1Jj8RyQ168yBPArV2YWoFvZthhWZs8vFL
+         cLQw==
+X-Forwarded-Encrypted: i=1; AJvYcCVmZ6hKpqDmha6EFYslCq0HD7VGlE5EAWGDmFHCSoFIiYgqMxScMIbLs53LNfPRvh3YKr+CRAkOTknzwQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwmwC4m2M2eSwBAtjX+101ZnrCTbUbWGfd0ZkicTwpQ7RFUPICv
+	4pSuyFaDVubAnH4eS/Qtc7qZQtWyEdRdNy+H/aca0byBmj3km18fIXgWzWsYStY/5+BYbvVrxOm
+	S05dOONYE8Nfnk5BcdfNC6kWI2FNh9Bc=
+X-Gm-Gg: ASbGncusdkQaSl7np8BaRt5UHeu5k3nM7dwiESDopd5cLUELRAXkYoq0aDXaS057vyY
+	O8BBOkKDvqN5mPy2WsCXws8E/Yl0nKyHpXh7OTIIDYf1zxR5vmoerDtHtjwYZF4eZbkps+PVdz4
+	6ZxxnSNW8qQBeieUbiB1NXTobG80M0HnRLW4LkGjFt1cmFENbG1nYOCecFWA8wRiM70y5LcpxRm
+	nvLLfX3Vcc7Stxr6anc2qgl6L8JHMyPCbv5IHSywWJBiytUN1iDjljDim4DgzUuGUmS4AIuzeF5
+	G0eHGouUK9TbbqvAPpHOhQs43A==
+X-Google-Smtp-Source: AGHT+IEDHxdgCYJuNF4Psgi4yycknqN7aYM8f3c/D+9flybAQhXx8OLT9RAar7ZocVrcCQXNf1dHRkhEGhitFBett60=
+X-Received: by 2002:a17:907:970a:b0:b53:f93f:bf59 with SMTP id
+ a640c23a62f3a-b7289645bddmr458133666b.29.1762457688968; Thu, 06 Nov 2025
+ 11:34:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABXGCsOksDzUDn=rEpz1PLRZpxQeytWPP6QVbo50RU-KxP=-eQ@mail.gmail.com>
-In-Reply-To: <CABXGCsOksDzUDn=rEpz1PLRZpxQeytWPP6QVbo50RU-KxP=-eQ@mail.gmail.com>
-From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date: Thu, 6 Nov 2025 23:25:13 +0500
-X-Gm-Features: AWmQ_blAFq1YsWS9qZ_iePgfk3asBh9YI5wGXX1UMslZYWBOzIbZTO1H2zFCdCQ
-Message-ID: <CABXGCsNy+60GrL8XeJ83HKa3xNNtV4RvUJuSEz=a7PQv951pRg@mail.gmail.com>
-Subject: Re: [btrfs-progs 6.17] btrfs check --repair aborts in
- delete_duplicate_records (SIGABRT) on single-device FS
-To: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <20251106180103.923856-1-mjguzik@gmail.com>
+In-Reply-To: <20251106180103.923856-1-mjguzik@gmail.com>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Thu, 6 Nov 2025 20:34:36 +0100
+X-Gm-Features: AWmQ_bmwHSwkUrd6OUGx9_ZPsDHuq69IIK4ETTJeTUhXllTD4dJ_LEyZsJjk-2c
+Message-ID: <CAGudoHFVnOvshyXi9-1gMs+SOg5zc9e++iT9_Nz6UjwtmG6VuQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] permission check avoidance during lookup
+To: brauner@kernel.org
+Cc: viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, tytso@mit.edu, 
+	torvalds@linux-foundation.org, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Oct 25, 2025 at 12:57=E2=80=AFAM Mikhail Gavrilov
-<mikhail.v.gavrilov@gmail.com> wrote:
+On Thu, Nov 6, 2025 at 7:01=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> wr=
+ote:
 >
-> Hello btrfs folks,
+> To quote from patch 1:
+> <quote>
+> Vast majority of real-world lookups happen on directories which are
+> traversable by anyone. Figuring out that this holds for a given inode
+> can be done when instantiating it or changing permissions, avoiding the
+> overhead during lookup. Stats below.
 >
-> btrfs check --repair aborts (SIGABRT) on a single-device filesystem.
-> I understand --repair is risky and not recommended unless asked, but
-> user space should not crash. I can reproduce reliably, and I provide a
-> btrfs-image below.
+> A simple microbench of stating /usr/include/linux/fs.h on ext4 in a loop
+> on Sapphire Rapids (ops/s):
+> before: 3640352
+> after:  3797258 (+4%)
+> </quote>
 >
-> Distro: Fedora 44
-> btrfs-progs: 6.17-1.fc44.x86_64
-> glibc: 2.42.9000-7.fc44.x86_64
+> During a kernel build about 90% of all lookups managed to skip
+> permission checks in my setup, see the commit message for a breakdown.
 >
-> Program received signal SIGABRT, Aborted.
-> __pthread_kill_implementation (...) at pthread_kill.c:44
-> #1 __pthread_kill_internal
-> #2 __GI_raise
-> #3 __GI_abort
-> #4 delete_duplicate_records (check/main.c:7583)
-> #5 check_extent_refs (check/main.c:8254)
-> #6 check_chunks_and_extents (check/main.c:9216)
-> #7 do_check_chunks_and_extents (check/main.c:9279)
-> #8 cmd_check (check/main.c:10902)
-> #9 cmd_execute (cmds/commands.h:126)
-> #10 main (/usr/src/debug/btrfs-progs-6.17-1.fc44.x86_64/btrfs.c:469)
+> WARNING: more testing is needed for correctness, but I'm largely happy
+> with the state as is.
 >
-> Key at crash:
->   key =3D {objectid =3D 17101544210432, type =3D 168, offset =3D 16384}
->
-> I captured an image with:
-> # btrfs-image -c9 /dev/sda /home/mikhail/sda.btrfs-image
-> It did print:
-> parent transid verify failed on 4843613831168 wanted 213059 found 213019
-> Ignoring transid failure
->
-> Image is available here (HTTP download):
-> http://213.136.82.171/dumps/sda.btrfs-image (5.4 GB)
->
-> If you prefer, I can re-host or provide via a different channel.
->
-> I can run additional diagnostics, instrument a debug build, try
-> patches, run under valgrind, provide btrfs inspect-internal dump-super
-> outputs, etc.
->
-> Thanks!
 
-How can I help you?
+Forgot to explain more in the commit message, so here it is right now:
+how almost the entirety of inode_permission() can get elided for
+inodes which qualify for it.
+inode_permission()
+{
+        retval =3D sb_permission(inode->i_sb, inode, mask);
+        if (unlikely(retval))
+                return retval;
 
---=20
-Best Regards,
-Mike Gavrilov.
+sb_permission starts with a check for mask & MAY_WRITE. Since mask is
+MAY_EXEC, this does not need to execute.
+
+        if (unlikely(mask & MAY_WRITE)) {
+
+Same here.
+
+        retval =3D do_inode_permission(idmap, inode, mask);
+        if (unlikely(retval))
+                return retval;
+
+do_inode_permission starts with a check for IOP_FASTPERM. This is of
+no relevance as we are skipping the perm checks and the behavior is as
+if generic_permission() was always called.
+
+Then generic_permission:
+        ret =3D acl_permission_check(idmap, inode, mask);
+        if (ret !=3D -EACCES)
+                return ret;
+
+We don't have to check the error code as we expect the perm is granted.
+
+acl_permission_check:
+       if (!((mask & 7) * 0111 & ~mode)) {
+                if (no_acl_inode(inode))
+                        return 0;
+                if (!IS_POSIXACL(inode))
+                        return 0;
+        }
+
+We don't need this as we already pre-checked the perm is at least 0111
+and there are no acls set.
+
+back to inode_permission:
+        retval =3D devcgroup_inode_permission(inode, mask);
+        if (unlikely(retval))
+                return retval;
+
+This checks if we are dealing with a device. The IOP_FAST_MAY_EXEC is
+only legally set on directories, so it is an invariant we are not
+dealing with a device and don't need to check that.
+
+Finally this:
+        return security_inode_permission(inode, mask);
+
+.. *does* execute in the new scheme.
+
+However, LSM has notpatchable calls inside and only 2 users, normally
+not present on Ubuntu et al. Or to put it differently, this is a func
+call to a nop slide on most kernels and with some extra work can also
+get elided.
+
+> WARNING: I'm assuming the following bit is applied:
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 78ea864fa8cd..eaf776cd4175 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5518,6 +5518,10 @@ struct inode *__ext4_iget(struct super_block *sb, =
+unsigned long ino,
+>                 goto bad_inode;
+>         brelse(iloc.bh);
+>
+> +       /* Initialize the "no ACL's" state for the simple cases */
+> +       if (!ext4_test_inode_state(inode, EXT4_STATE_XATTR) && !ei->i_fil=
+e_acl)
+> +               cache_no_acl(inode);
+> +
+>         unlock_new_inode(inode);
+>         return inode;
+>
+> Lack of the patch does not affect correctness, but it does make the
+> patch ineffective for ext4. I did not include it in the posting as other
+> people promised to sort it out.
+>
+> Discussion is here with an ack from Jan:
+> https://lore.kernel.org/linux-fsdevel/kn44smk4dgaj5rqmtcfr7ruecixzrik6omu=
+r2l2opitn7lbvfm@rm4y24fcfzbz/T/#m30d6cea6be48e95c0d824e98a328fb90c7a5766d
+> and full thread:
+> https://lore.kernel.org/linux-fsdevel/kn44smk4dgaj5rqmtcfr7ruecixzrik6omu=
+r2l2opitn7lbvfm@rm4y24fcfzbz/T/#t
+>
+> v2:
+> - productize
+> - btrfs and tmpfs support
+>
+> Mateusz Guzik (4):
+>   fs: speed up path lookup with cheaper MAY_EXEC checks
+>   ext4: opt-in for IOP_MAY_FAST_EXEC
+>   btrfs: opt-in for IOP_MAY_FAST_EXEC
+>   tmpfs: opt-in for IOP_MAY_FAST_EXEC
+>
+>  fs/attr.c          |  1 +
+>  fs/btrfs/inode.c   | 12 +++++-
+>  fs/ext4/inode.c    |  2 +
+>  fs/ext4/namei.c    |  1 +
+>  fs/namei.c         | 95 +++++++++++++++++++++++++++++++++++++++++++++-
+>  fs/posix_acl.c     |  1 +
+>  fs/xattr.c         |  1 +
+>  include/linux/fs.h | 21 +++++++---
+>  mm/shmem.c         |  9 +++++
+>  9 files changed, 134 insertions(+), 9 deletions(-)
+>
+> --
+> 2.48.1
+>
 
