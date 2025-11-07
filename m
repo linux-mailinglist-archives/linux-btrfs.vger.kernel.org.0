@@ -1,488 +1,130 @@
-Return-Path: <linux-btrfs+bounces-18797-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18798-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F0EAC3FE23
-	for <lists+linux-btrfs@lfdr.de>; Fri, 07 Nov 2025 13:19:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B6AEC404AC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 07 Nov 2025 15:22:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8ED833AEA25
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Nov 2025 12:19:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FD693A8219
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Nov 2025 14:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D013529BD95;
-	Fri,  7 Nov 2025 12:19:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8AF531A808;
+	Fri,  7 Nov 2025 14:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZSiMdnZX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FIwMtlhg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 462DF28C014
-	for <linux-btrfs@vger.kernel.org>; Fri,  7 Nov 2025 12:19:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C9C3164BA
+	for <linux-btrfs@vger.kernel.org>; Fri,  7 Nov 2025 14:21:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762517980; cv=none; b=eu1QrAMzwyxcxmBr4psN9pTnvwa9wUfJuJaOvfjh+vzBBw7KiQInJ6ODy313mynvB12aPp0DQlvLcsUBnh1uwT/Zfjo813bEoVx3d6OSVjCIZ8lehX9pExMLav9HQ2TDSzzb0SBsdWLNAwJ3Rqn8Z/2gFKyqML6VONoAbK5nRV8=
+	t=1762525320; cv=none; b=XxlQTBE2lypDsr1mlWTG4ghZefedWfL85+JUuQE3/8l2mYG8YNjANt+aRDnT70EES53cZDJOLJDV9LmJTK5gNXeaY0y/2TRkqDZsGoI5p74FkoQsEkw8+zYPD/rWBySo20W55cyEFnqyq9+BEO5NkNkeKWi+7TAIF6dnkaZgciI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762517980; c=relaxed/simple;
-	bh=tYiZvvS9Heus934i97ls154pSqby0o45QipVG5VEhGQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XaRQ2CGhx7fuW4zAQVnX1gFJw34BPPg2047UXmPJz0YrLvukMyWwmvYOA8NbpXdJvsx8g0nqZlnL0owiuEgWrS+GNJxB00zi00+fbT0SEj6WupyAkKNVAJ25zEbsFLwTiMLUCqTUHIJb2JUHoeEBYSkSEbHpc9yPmtAKHmOT4qU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZSiMdnZX; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4775638d819so3798405e9.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 07 Nov 2025 04:19:36 -0800 (PST)
+	s=arc-20240116; t=1762525320; c=relaxed/simple;
+	bh=4YA7rnYANBJbSIxSqVtePmwnGUnHrdSlVUABR4BCN1E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BrvBsk+A2Q4jXpIhuCtpacn9AzxPma60CPFD9sAUbVJeX4BB+cAEYY7csp01zcIbWrZAxEbdiSc2RO3KHzljKAo/KkAD/6eUiIuEOTKWKThCiIn5P/xd+R+AlyAE6vtEMbgJXwcIOMyTEWmLMIMTTUYmJJDI5/NdyTZAIRQCHkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FIwMtlhg; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-6399328ff1fso1282524a12.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 07 Nov 2025 06:21:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762517975; x=1763122775; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fCH9urCYEJXt1gARaqy/f2IbxslywgtM97/AXM9iUbY=;
-        b=ZSiMdnZXYexGEU7xMh2Zb3ftGMDyWZxGXm5ZraV7LVaxQ7/VLhkOg5frGZPZbcwpMn
-         oOajkVFcBHpVLmx2zqX7AYWA2wm7hox7+OORB+XvG+c+NJ4BWQx+52r/DsWiRZD2DDrK
-         JBu0Xs3IkgtS1GtYheRZSEw+ClEnjI3Gke1b8iV7Fb37PMLP/sdsgbz7HFVRq0V1nH07
-         OSoLJTfVLbj/PQA5F4YzDZvVXRRJHCGE/G4DKHHj6jPEHT1PTGxYWu8apAGKqZ4nroLi
-         nehD8ZwHOuCG+pvSSxJ3rFwQ2ZkInx56bbwIrLQOonAWNhcGY0TRSk2nW6FxrFkCu1YB
-         tBQg==
+        d=gmail.com; s=20230601; t=1762525317; x=1763130117; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8ScNFRclv7Ib95LOsyE3eeWyv7nmH8lB+sNT5DkF52E=;
+        b=FIwMtlhgRRHb42jG4xF2+KwRKd9EoY9Z+Msfsc2XiHljGQTjDUIsxCQF2UenqsShcx
+         LGAYWAyEGxww6NpDxPAHJBBPo9eR5ZBY4k7cbZKxQ4hYUq36li+6WOstaQDzOCyC5wM5
+         5e1g7VbZFByt8Rf4foW6My9ceu1aGjl26F66DvHzvuK2RAiUp/AOixJEeMnZpOZfMQIa
+         41qwPZxNdZBnx4992oSL8Wzrr/DtpoybWKfd2j+8h4V6Wy5hUmWUOg/hz5m1qtkIt7HW
+         hBETLgadW/3mHmuDEYxqJxw4by+qa2eCIR/HA99GA77bMuDKI5SvuijmOt5GPsjiAmAs
+         iGDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762517975; x=1763122775;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1762525317; x=1763130117;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fCH9urCYEJXt1gARaqy/f2IbxslywgtM97/AXM9iUbY=;
-        b=j38QQ2J0ryvxKnP4e5m5RftXHC3ghCWoTR8cw5ot2NCb6vlFpeDNQaFRjAm/3+H0sD
-         bbl6wdShdZOG+ZOqiEFsziR/XqFU2b+xVhWMIXWKeXR+9duUBGCakzkQkdppmSbR2xw8
-         Ebe92ANuDT+2Q7sA6uxY1Ai2MJvpjzYnqJu77GnX3CeLQM5UJdRfC1RqhVKKw3H9ToNy
-         /V0bwYOHuttIE8N0oLsYlxOAw17VDeQP//JHJv2Px2/CkiaAjYzX4JgOaNgnyEqfeTPi
-         Nt4zirUKeANU0CPXokF1NaERbFFM7blbk+yb48ABCMT7t4JYuD70sP33/dSaL8W0ZmTe
-         PvvQ==
-X-Gm-Message-State: AOJu0YyKV7wzXdLJ+Y2jpu2MlN/CtXco13VaIOSrgesOyeaZioKz9iHh
-	LEd6m7WYbFpyJ7KNmH6eLkJoP4HRUnYXe15F5N0v276qLx5FTfLUalKrZ44705NcH7lrKO206su
-	NlB0inFp1osrOjkRl6q9uYpVGp0Uwpo1QQh/3hmXd/hMCFaWj6Rjai6A=
-X-Gm-Gg: ASbGncs9vOHQ1mjebipcXOdX9i0zhAz7T+WaVb+SmjZ/2fVhVvDtjBy3tTrBEbYaKpA
-	3HUNVduAVv+yqlU7d38YBuPQRWOoxU0KtxPDlaltv+zm0me8QDercwjffey3ESr0hmmOEGLIicU
-	DG07dm1zwag5Ao6FJPwY8fCCafMvSqpe9rmZ3pkWKIUJNWCMk6xL4y3SMssKy7dBeUyf85Z2qTb
-	kM67Uw2Sm/HsierVT9XJ1mqWC+fS33cIANPIUPELUeYuxSTu926mGcwnhwvb91PfSFzMEzyrtsX
-	KqsRgzQw+9uj9ckZ8yH+UviwtBWR87rqy0NleI1nuysifoHThd9S+XO7+Q==
-X-Google-Smtp-Source: AGHT+IFq7RTz5BH1UHHsmH+oVE7fshxWj4fMlMz9rW9InpXm8u52oOOXfhBMvKI8tXE+DwWuxVWecDxG5cBFg4PK59I=
-X-Received: by 2002:a05:600c:1d10:b0:46f:b42e:e366 with SMTP id
- 5b1f17b1804b1-4776bcca384mr27045405e9.40.1762517975335; Fri, 07 Nov 2025
- 04:19:35 -0800 (PST)
+        bh=8ScNFRclv7Ib95LOsyE3eeWyv7nmH8lB+sNT5DkF52E=;
+        b=S3Z+GhgKjii9xPuPtfcjSORNLxjp5egCXcdiOjRxLQDfEAC0daGhbRi9SDRWds0ZxQ
+         ZM2uzyzausert4WmGA9PI8S+8nVg2EV9/XkT/V8BvUE69ydygU/BG6yAfun4jgEceg/a
+         6rdfqqgnYyKbdd+vye2F/6YyogDxFyQimNAI/oo3/yI7SEqBr/gofxCFp3q9kvI8WfaG
+         aIvFvFhIJ6QFaGUrf8PcKyze1dKa4NYg0OGjkCVhFtEpAAwmCltgaUvnTJTKgj07r2vc
+         Va6Fsj6Ba/gjd2UGjYE3IhURgIEBX5HEMJVg2cUnnjyvfGa43DzH9ZC2uskLUzEbZ8/n
+         b3iQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWQHcpHpYnmEWINvQ5ChGy63AD5/pHF7yi73CAbbWfZxoNJw/VXTePkRA8I6MeqoUlYmJq8KMWLEhubEw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxz3sgs7ihWguk72P5Tj3GpSflfJdhOh8LyQBcthIRZS7t1qy0E
+	TNgMkfc7SCIPhNyvjGRNlBGcCBr888gNgTaLaQ2pNGjBqPgHY5/S66Ai
+X-Gm-Gg: ASbGnctDecIq5O8gTnamL+F1uP8UkWcLa+W1g4tULv5KFavTcRwy00jil1al/HyJY9b
+	OUoVUgCbicJvBVeKMWH8scC74/HcqRxWUBK3Bvz+J6Xkj+joTVj23X6S2kX+YYF2u6JiFn6z05N
+	EuRGgcqi6Hygn7/meLZbMXfuJuvKtSNrKhNFX/1KxWkOCo/E7RCyIAWVReWl3hcNp5tp4N+Aq5m
+	63CIT1u0ZVaNu1w6PyHy/XG6wlpHTWpLX6kr14DZ6xdz6R7TKGznJPS/NkBhN7PrLK4hSxWymhu
+	V16axtyiT5C8ZMpH4hWdsf2mnwSDpzynZBBSLSnF58E3EK2kpZ2vMi8eIIrG7B2DBpd1YjDu+WW
+	I+K9TheyGfxaAURYTY6HA4GKCk6roD1h2p9/o9BOt0q+5XakmdB3ECkFVRlws4Ny0J4PHiT2PKx
+	Pi3exxnoD7c8eKcDVHcUqHXztRBZ8qMQHZ/8Z0EddWJjpsyJ63
+X-Google-Smtp-Source: AGHT+IGGYwqyyUENw1V0QXHKNHeOJ8/rc+O+s/OC/PAhV+9kOen2ldV0JAlre4vOLRyVBu782YEqbw==
+X-Received: by 2002:a17:907:c1d:b0:b49:2021:793f with SMTP id a640c23a62f3a-b72c0d9fae1mr392049066b.53.1762525316591;
+        Fri, 07 Nov 2025 06:21:56 -0800 (PST)
+Received: from f.. (cst-prg-14-82.cust.vodafone.cz. [46.135.14.82])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b72bf97e563sm253322766b.41.2025.11.07.06.21.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Nov 2025 06:21:56 -0800 (PST)
+From: Mateusz Guzik <mjguzik@gmail.com>
+To: brauner@kernel.org
+Cc: viro@zeniv.linux.org.uk,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	tytso@mit.edu,
+	torvalds@linux-foundation.org,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org,
+	Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH v3 0/3] cheaper MAY_EXEC handling for path lookup
+Date: Fri,  7 Nov 2025 15:21:46 +0100
+Message-ID: <20251107142149.989998-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <58baf1fc6d077aacc5db3b2bf42677fc3fbbb6a8.1762503411.git.wqu@suse.com>
-In-Reply-To: <58baf1fc6d077aacc5db3b2bf42677fc3fbbb6a8.1762503411.git.wqu@suse.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Fri, 7 Nov 2025 13:19:24 +0100
-X-Gm-Features: AWmQ_blPNcRBGgJIuCt0jMZrjaw3ItRGgvVeC68SKX9cbmFzwHNZz79BMPDnvNE
-Message-ID: <CAPjX3FdP4=NgEASSh+oOTAkWgggd98Zbhs=XU9chF364m573xQ@mail.gmail.com>
-Subject: Re: [PATCH RFC] btrfs: use guard for btrfs_folio_state::lock
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Fri, 7 Nov 2025 at 09:18, Qu Wenruo <wqu@suse.com> wrote:
->
-> Most call sites are fine for a simple guard(), some call sites need
-> scoped_guard().
->
-> For the scoped_guard() usage, it increase one indent for the code,
-> personally speaking I like the extra indent to make the critical section
-> more obvious, but I also understand not all call site can afford the
-> extra indent.
->
-> Thankfully for subpage cases, it's completely fine.
->
-> Overall this makes code much shorter, and we can return without
-> bothering manually unlocking, saving several temporary variables.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Reason for RFC:
-> We're still not yet determined if we should brace the new auto-cleanup
-> scheme.
->
-> Now I'm completely on the boat of the scoped based auto-cleanup, even
-> for the subpage code where the lock is already super straightforward.
-> For more complex cases the benefit will be more obvious.
->
-> So far the only disadvantage is my old mindset, but I believe time will
-> get it fixed.
-> ---
->  fs/btrfs/subpage.c | 112 +++++++++++++++------------------------------
->  1 file changed, 36 insertions(+), 76 deletions(-)
->
-> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-> index 80cd27d3267f..85d44a6ece87 100644
-> --- a/fs/btrfs/subpage.c
-> +++ b/fs/btrfs/subpage.c
-> @@ -225,14 +225,12 @@ static bool btrfs_subpage_end_and_test_lock(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs = folio_get_private(folio);
->         const int start_bit = subpage_calc_start_bit(fs_info, folio, locked, start, len);
->         const int nbits = (len >> fs_info->sectorsize_bits);
-> -       unsigned long flags;
->         unsigned int cleared = 0;
->         int bit = start_bit;
-> -       bool last;
->
->         btrfs_subpage_assert(fs_info, folio, start, len);
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         /*
->          * We have call sites passing @lock_page into
->          * extent_clear_unlock_delalloc() for compression path.
-> @@ -240,19 +238,15 @@ static bool btrfs_subpage_end_and_test_lock(const struct btrfs_fs_info *fs_info,
->          * This @locked_page is locked by plain lock_page(), thus its
->          * subpage::locked is 0.  Handle them in a special way.
->          */
-> -       if (atomic_read(&bfs->nr_locked) == 0) {
-> -               spin_unlock_irqrestore(&bfs->lock, flags);
-> +       if (atomic_read(&bfs->nr_locked) == 0)
->                 return true;
-> -       }
->
->         for_each_set_bit_from(bit, bfs->bitmaps, start_bit + nbits) {
->                 clear_bit(bit, bfs->bitmaps);
->                 cleared++;
->         }
->         ASSERT(atomic_read(&bfs->nr_locked) >= cleared);
-> -       last = atomic_sub_and_test(cleared, &bfs->nr_locked);
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
-> -       return last;
-> +       return atomic_sub_and_test(cleared, &bfs->nr_locked);
->  }
->
->  /*
-> @@ -307,7 +301,6 @@ void btrfs_folio_end_lock_bitmap(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs = folio_get_private(folio);
->         const unsigned int blocks_per_folio = btrfs_blocks_per_folio(fs_info, folio);
->         const int start_bit = blocks_per_folio * btrfs_bitmap_nr_locked;
-> -       unsigned long flags;
->         bool last = false;
->         int cleared = 0;
->         int bit;
-> @@ -323,14 +316,14 @@ void btrfs_folio_end_lock_bitmap(const struct btrfs_fs_info *fs_info,
->                 return;
->         }
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> -       for_each_set_bit(bit, &bitmap, blocks_per_folio) {
-> -               if (test_and_clear_bit(bit + start_bit, bfs->bitmaps))
-> -                       cleared++;
-> +       scoped_guard(spinlock_irqsave, &bfs->lock) {
-> +               for_each_set_bit(bit, &bitmap, blocks_per_folio) {
-> +                       if (test_and_clear_bit(bit + start_bit, bfs->bitmaps))
-> +                               cleared++;
-> +               }
-> +               ASSERT(atomic_read(&bfs->nr_locked) >= cleared);
-> +               last = atomic_sub_and_test(cleared, &bfs->nr_locked);
->         }
-> -       ASSERT(atomic_read(&bfs->nr_locked) >= cleared);
-> -       last = atomic_sub_and_test(cleared, &bfs->nr_locked);
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
->         if (last)
->                 folio_unlock(folio);
+Commit message in patch 1 says it all.
 
-This is really different to the well known and established linear code style.
+In short, MAY_WRITE checks are elided.
 
-One idea - how about closing the scope with something like:
+This obsoletes the idea of pre-computing if perm checks are necessary as
+that turned out to be too hairy. The new code has 2 more branches per
+path component compared to that idea, but the perf difference for
+typical paths (< 6 components) was basically within noise. To be
+revisited if someone(tm) removes other slowdowns.
 
-        } /* bfs->lock restore irq */
+Instead of the pre-computing thing I added IOP_FASTPERM_MAY_EXEC so that
+filesystems like btrfs can still avoid the hard work.
 
-But then we're close to back to before. So what's the added value? Is
-there any reason for this change? I guess that's the best question.
-Simply, why?
+v3:
+- drop the pre-computation idea and inline the perm check
+- add IOP_FASTPERM_MAY_EXEC for filesystems with ->permission hooks so
+  that they can also take advantage of it
 
-I'm not sure the scope_guard is worth it here.
+Mateusz Guzik (3):
+  fs: speed up path lookup with cheaper handling of MAY_EXEC
+  btrfs: utilize IOP_FASTPERM_MAY_EXEC
+  fs: retire now stale MAY_WRITE predicts in inode_permission()
 
-But I'm sure I can get used to the change if we really need it.
+ fs/btrfs/inode.c   | 12 +++++++++++-
+ fs/namei.c         | 47 ++++++++++++++++++++++++++++++++++++++++++----
+ include/linux/fs.h | 13 +++++++------
+ 3 files changed, 61 insertions(+), 11 deletions(-)
 
-Finally, my take would be to stay away from using the guards style
-unless absolutely needed. They hardly solve any real issue. So far we
-were perfectly fine without them and we did not miss them. Or did we?
+-- 
+2.48.1
 
---nX
-
->  }
-> @@ -359,13 +352,11 @@ void btrfs_subpage_set_uptodate(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs = folio_get_private(folio);
->         unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
->                                                         uptodate, start, len);
-> -       unsigned long flags;
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
->         if (subpage_test_bitmap_all_set(fs_info, folio, uptodate))
->                 folio_mark_uptodate(folio);
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
->  }
-
-Here I'd add a blank like after the guard. Kind of making it like a
-variable declaration.
-
-ditto. for the other changes below.
-
->  void btrfs_subpage_clear_uptodate(const struct btrfs_fs_info *fs_info,
-> @@ -374,12 +365,10 @@ void btrfs_subpage_clear_uptodate(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs = folio_get_private(folio);
->         unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
->                                                         uptodate, start, len);
-> -       unsigned long flags;
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
->         folio_clear_uptodate(folio);
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
->  }
->
->  void btrfs_subpage_set_dirty(const struct btrfs_fs_info *fs_info,
-> @@ -388,11 +377,9 @@ void btrfs_subpage_set_dirty(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs = folio_get_private(folio);
->         unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
->                                                         dirty, start, len);
-> -       unsigned long flags;
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> -       bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
-> +       scoped_guard(spinlock_irqsave, &bfs->lock)
-> +               bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
->         folio_mark_dirty(folio);
->  }
->
-> @@ -412,15 +399,12 @@ bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs = folio_get_private(folio);
->         unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
->                                                         dirty, start, len);
-> -       unsigned long flags;
-> -       bool last = false;
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
->         if (subpage_test_bitmap_all_zero(fs_info, folio, dirty))
-> -               last = true;
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
-> -       return last;
-> +               return true;
-> +       return false;
->  }
->
->  void btrfs_subpage_clear_dirty(const struct btrfs_fs_info *fs_info,
-> @@ -439,10 +423,9 @@ void btrfs_subpage_set_writeback(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs = folio_get_private(folio);
->         unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
->                                                         writeback, start, len);
-> -       unsigned long flags;
->         bool keep_write;
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
->
->         /*
-> @@ -454,7 +437,6 @@ void btrfs_subpage_set_writeback(const struct btrfs_fs_info *fs_info,
->         keep_write = folio_test_dirty(folio);
->         if (!folio_test_writeback(folio))
->                 __folio_start_writeback(folio, keep_write);
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
->  }
->
->  void btrfs_subpage_clear_writeback(const struct btrfs_fs_info *fs_info,
-> @@ -463,15 +445,13 @@ void btrfs_subpage_clear_writeback(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs = folio_get_private(folio);
->         unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
->                                                         writeback, start, len);
-> -       unsigned long flags;
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
->         if (subpage_test_bitmap_all_zero(fs_info, folio, writeback)) {
->                 ASSERT(folio_test_writeback(folio));
->                 folio_end_writeback(folio);
->         }
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
->  }
->
->  void btrfs_subpage_set_ordered(const struct btrfs_fs_info *fs_info,
-> @@ -480,12 +460,10 @@ void btrfs_subpage_set_ordered(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs = folio_get_private(folio);
->         unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
->                                                         ordered, start, len);
-> -       unsigned long flags;
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
->         folio_set_ordered(folio);
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
->  }
->
->  void btrfs_subpage_clear_ordered(const struct btrfs_fs_info *fs_info,
-> @@ -494,13 +472,11 @@ void btrfs_subpage_clear_ordered(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs = folio_get_private(folio);
->         unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
->                                                         ordered, start, len);
-> -       unsigned long flags;
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
->         if (subpage_test_bitmap_all_zero(fs_info, folio, ordered))
->                 folio_clear_ordered(folio);
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
->  }
->
->  void btrfs_subpage_set_checked(const struct btrfs_fs_info *fs_info,
-> @@ -509,13 +485,11 @@ void btrfs_subpage_set_checked(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs = folio_get_private(folio);
->         unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
->                                                         checked, start, len);
-> -       unsigned long flags;
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
->         if (subpage_test_bitmap_all_set(fs_info, folio, checked))
->                 folio_set_checked(folio);
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
->  }
->
->  void btrfs_subpage_clear_checked(const struct btrfs_fs_info *fs_info,
-> @@ -524,12 +498,10 @@ void btrfs_subpage_clear_checked(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs = folio_get_private(folio);
->         unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
->                                                         checked, start, len);
-> -       unsigned long flags;
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
->         folio_clear_checked(folio);
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
->  }
->
->  /*
-> @@ -543,14 +515,10 @@ bool btrfs_subpage_test_##name(const struct btrfs_fs_info *fs_info,       \
->         struct btrfs_folio_state *bfs = folio_get_private(folio);       \
->         unsigned int start_bit = subpage_calc_start_bit(fs_info, folio, \
->                                                 name, start, len);      \
-> -       unsigned long flags;                                            \
-> -       bool ret;                                                       \
->                                                                         \
-> -       spin_lock_irqsave(&bfs->lock, flags);                   \
-> -       ret = bitmap_test_range_all_set(bfs->bitmaps, start_bit,        \
-> +       guard(spinlock_irqsave)(&bfs->lock);                            \
-> +       return bitmap_test_range_all_set(bfs->bitmaps, start_bit,       \
->                                 len >> fs_info->sectorsize_bits);       \
-> -       spin_unlock_irqrestore(&bfs->lock, flags);                      \
-> -       return ret;                                                     \
->  }
->  IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(uptodate);
->  IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(dirty);
-> @@ -688,7 +656,6 @@ void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
->         struct btrfs_folio_state *bfs;
->         unsigned int start_bit;
->         unsigned int nbits;
-> -       unsigned long flags;
->
->         if (!IS_ENABLED(CONFIG_BTRFS_ASSERT))
->                 return;
-> @@ -702,13 +669,12 @@ void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
->         nbits = len >> fs_info->sectorsize_bits;
->         bfs = folio_get_private(folio);
->         ASSERT(bfs);
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         if (unlikely(!bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits))) {
->                 SUBPAGE_DUMP_BITMAP(fs_info, folio, dirty, start, len);
->                 ASSERT(bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits));
->         }
->         ASSERT(bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits));
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
->  }
->
->  /*
-> @@ -722,7 +688,6 @@ void btrfs_folio_set_lock(const struct btrfs_fs_info *fs_info,
->                           struct folio *folio, u64 start, u32 len)
->  {
->         struct btrfs_folio_state *bfs;
-> -       unsigned long flags;
->         unsigned int start_bit;
->         unsigned int nbits;
->         int ret;
-> @@ -734,7 +699,7 @@ void btrfs_folio_set_lock(const struct btrfs_fs_info *fs_info,
->         bfs = folio_get_private(folio);
->         start_bit = subpage_calc_start_bit(fs_info, folio, locked, start, len);
->         nbits = len >> fs_info->sectorsize_bits;
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         /* Target range should not yet be locked. */
->         if (unlikely(!bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits))) {
->                 SUBPAGE_DUMP_BITMAP(fs_info, folio, locked, start, len);
-> @@ -743,7 +708,6 @@ void btrfs_folio_set_lock(const struct btrfs_fs_info *fs_info,
->         bitmap_set(bfs->bitmaps, start_bit, nbits);
->         ret = atomic_add_return(nbits, &bfs->nr_locked);
->         ASSERT(ret <= btrfs_blocks_per_folio(fs_info, folio));
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
->  }
->
->  /*
-> @@ -779,21 +743,19 @@ void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
->         unsigned long ordered_bitmap;
->         unsigned long checked_bitmap;
->         unsigned long locked_bitmap;
-> -       unsigned long flags;
->
->         ASSERT(folio_test_private(folio) && folio_get_private(folio));
->         ASSERT(blocks_per_folio > 1);
->         bfs = folio_get_private(folio);
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> -       GET_SUBPAGE_BITMAP(fs_info, folio, uptodate, &uptodate_bitmap);
-> -       GET_SUBPAGE_BITMAP(fs_info, folio, dirty, &dirty_bitmap);
-> -       GET_SUBPAGE_BITMAP(fs_info, folio, writeback, &writeback_bitmap);
-> -       GET_SUBPAGE_BITMAP(fs_info, folio, ordered, &ordered_bitmap);
-> -       GET_SUBPAGE_BITMAP(fs_info, folio, checked, &checked_bitmap);
-> -       GET_SUBPAGE_BITMAP(fs_info, folio, locked, &locked_bitmap);
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
-> -
-> +       scoped_guard(spinlock_irqsave, &bfs->lock) {
-> +               GET_SUBPAGE_BITMAP(fs_info, folio, uptodate, &uptodate_bitmap);
-> +               GET_SUBPAGE_BITMAP(fs_info, folio, dirty, &dirty_bitmap);
-> +               GET_SUBPAGE_BITMAP(fs_info, folio, writeback, &writeback_bitmap);
-> +               GET_SUBPAGE_BITMAP(fs_info, folio, ordered, &ordered_bitmap);
-> +               GET_SUBPAGE_BITMAP(fs_info, folio, checked, &checked_bitmap);
-> +               GET_SUBPAGE_BITMAP(fs_info, folio, locked, &locked_bitmap);
-> +       }
->         dump_page(folio_page(folio, 0), "btrfs folio state dump");
->         btrfs_warn(fs_info,
->  "start=%llu len=%u page=%llu, bitmaps uptodate=%*pbl dirty=%*pbl locked=%*pbl writeback=%*pbl ordered=%*pbl checked=%*pbl",
-> @@ -811,13 +773,11 @@ void btrfs_get_subpage_dirty_bitmap(struct btrfs_fs_info *fs_info,
->                                     unsigned long *ret_bitmap)
->  {
->         struct btrfs_folio_state *bfs;
-> -       unsigned long flags;
->
->         ASSERT(folio_test_private(folio) && folio_get_private(folio));
->         ASSERT(btrfs_blocks_per_folio(fs_info, folio) > 1);
->         bfs = folio_get_private(folio);
->
-> -       spin_lock_irqsave(&bfs->lock, flags);
-> +       guard(spinlock_irqsave)(&bfs->lock);
->         GET_SUBPAGE_BITMAP(fs_info, folio, dirty, ret_bitmap);
-> -       spin_unlock_irqrestore(&bfs->lock, flags);
->  }
-> --
-> 2.51.2
->
->
 
