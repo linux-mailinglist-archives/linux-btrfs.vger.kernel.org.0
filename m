@@ -1,355 +1,485 @@
-Return-Path: <linux-btrfs+bounces-18792-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18793-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0DBAC3E13D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 07 Nov 2025 02:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FC00C3EED0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 07 Nov 2025 09:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0D4904E1F36
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Nov 2025 01:04:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2BF024EBBD5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Nov 2025 08:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587092F0685;
-	Fri,  7 Nov 2025 01:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2BEA30FC2A;
+	Fri,  7 Nov 2025 08:17:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=stanfordalumni.org header.i=@stanfordalumni.org header.b="Fs5SO/Y9"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Ql9W3Xdh";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GwKY1iq7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F272D7DC8
-	for <linux-btrfs@vger.kernel.org>; Fri,  7 Nov 2025 01:04:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C561317C211
+	for <linux-btrfs@vger.kernel.org>; Fri,  7 Nov 2025 08:17:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762477477; cv=none; b=IDB3UAqrjWDxxK7/RiZZSkM5NHpn/Z2Pyr8L3WKGVaQowUln9IlI1jxTwcrD/Ii1wwvlFQySxOd6GXX1JfkCYkYEIZZ8PURGB+MWKnkJ3uK/yTscHVWghAdQA1mZIVblcpBccg19uC0AVdfc7R7/j7wl1XhE9zfhNdjabgXztas=
+	t=1762503446; cv=none; b=nxra31D56zIhGrU8IBIbuNIKCtCa9YyHitPDh/KKqR/2SDRPWoN3Tmy/8O+B72sNFBMsMi1/MQxEN5YTEmey/LYMqq7sSl1GDFWK3eGZ1Wlm9dBoiPA+hxpSpw/aThVoQ3pA0joYdozsTUy7K5KQ0vFavdcuPUxqSQUVkU7n+U4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762477477; c=relaxed/simple;
-	bh=qWHHa1wThcPrdduolocOglUUSf055MkIH6Y6/jLQvJw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=JY4G3IZbxTPuDkCRlzYU7md8ZoyL/YgeFlWSqdedIVPsGy7cPBn3JSzL6MqnbCOmUybgEAH1aE5z7/+Qu2F/W3kpOqlqzKCmduRQjhWVKkCQQSh2Ez2fZovnwnJiZ5Co5RIdgvPnOnbMNKZjeHtwnGUR8Dyos7dFg05Ok3QN7l0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stanfordalumni.org; spf=pass smtp.mailfrom=alumni.stanford.edu; dkim=pass (1024-bit key) header.d=stanfordalumni.org header.i=@stanfordalumni.org header.b=Fs5SO/Y9; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stanfordalumni.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alumni.stanford.edu
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4ea0d71f607so357231cf.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Nov 2025 17:04:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=stanfordalumni.org; s=google; t=1762477474; x=1763082274; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S+ctgPMHWw5CQGpfsa9E7MdJUM/MqkST1g4PK080MFw=;
-        b=Fs5SO/Y9MXTMta5PG8oLz3832Ob5Dbg2d2BSMe4sVEAEAtjWkVbyliisl96/4TBEmj
-         3spD+RVknAPAO1uJbkgaAj1FMDdkJB50FUh274BKtTkNzEiRktmlb6+/qss7grbRxS11
-         P9vi0J1O+4gwNVf49wdSnF/jND2gZR9cXlBQk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762477474; x=1763082274;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=S+ctgPMHWw5CQGpfsa9E7MdJUM/MqkST1g4PK080MFw=;
-        b=IKIIRLi66voxP477hc7VcsSjtus995M/rcciSnlgrXUxyqdw0HTICKQna2SnMj9XCH
-         uu97UMLsL+85Igw03Mbs9Vb7xJv0Yb0sMPdTgWHTyuABzALXSrQSHOXy3PfQv59L0j81
-         oFclDn7cA9KRv1wxadxOqcL+/igz9azKPhgC54B13pUjq4sqVrjNL6TysYX96vFQdlqU
-         33oWjcrReEUW1peYxsIPrlODJnCzSPv2kbv8PbGMNCeQLdowAY8hPKNpUnXhRe18ElhJ
-         t8UkFyaXs9hbdMBSBXQIydjGXWb1pJBsc1a4ozZYSjs69uYTvZM0o+1EGTq2CMbVJ5WA
-         7P3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWAf856+in6Hk2JOGytgeBVexpdfP0Rmnb6wyhDVzjEmBVZXg1aoHvxlgAreISPtvqaT3a+UckdBwTrxA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzKGR3hPQW5Pc9GZcsvQpErraqyGurTIpLDyi/YY2YjjQoK9E4W
-	TW+nW7JW/kv6bNw2nhNjGAPy9/YMBG/uosI1YfzaSaN8veJZr00QvsPnIX+gtMQMWSdVvjsulKo
-	phQikAtErNJSmzaJw0akcZQgWwZq5HY9yfj1mSu2ur4Zf7VdadjLTksB2
-X-Gm-Gg: ASbGnctN9Zqrg/QkukyqrlAWS85NVzgh8+oyxtDoBwmfAve+VLpZXrQuUYS5lMI2cCD
-	Zu6IMULHM/gQZxSdGOHFbgmIU44b0O6v9a1KOhgCSHhJp5EB8fR393awua8eQ+h49ENCx9FM27s
-	LWZL40B+Z6aJm60s4fxWkYH0lcGIV0kiwuuHcdgnhwIvapSNbVeh7mVBdZUnOsnaz4yUHezAEk3
-	TOHFjgt3ujT3jA6MG/W1ihLRmNMtHFLlHCFpP/RPwijTc+w4oaZPYp/f7o=
-X-Google-Smtp-Source: AGHT+IGmKIWH+MS5NxQOd8Z64RfcBL0IFnnYxX3VjDQS6hQy0OhVPCyMe3HABArg5TFiU9ffyPZ1TpO67ZDaMDRrHLc=
-X-Received: by 2002:a05:622a:1195:b0:4ed:7ce:8497 with SMTP id
- d75a77b69052e-4ed9497dd8bmr13791251cf.3.1762477473852; Thu, 06 Nov 2025
- 17:04:33 -0800 (PST)
+	s=arc-20240116; t=1762503446; c=relaxed/simple;
+	bh=fBE1d9XqnsKNAhBbS2nN64krwy9WuCkS1OU6zERWz9k=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=melGo5Um4g+sYkt3Nvikt7c/PEjXoBRIE7RZQSCByavtpPtId7ifrVS3MR4sweMhFxGqHegk5yLYdPB1IG1bXEb/KVZ4bttt7rBjVLXDwyIpqtEoADTxVtoolhJeD6yHHxdhG7WdPTcp++OVlA73t+1718IFe5L0Cl+a9jjFSLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Ql9W3Xdh; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GwKY1iq7; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E08351F78E
+	for <linux-btrfs@vger.kernel.org>; Fri,  7 Nov 2025 08:17:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1762503442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=XqzNwiVe/+ZgJ6VgBtGrGMZLrpOsX4MLEHFVRi7qRm8=;
+	b=Ql9W3XdhsFr1Cu2eA2Vo0GoTlHfTyGZC1ezfep2+OVns9WOJMA/WWG39f+uJsB742PXoNF
+	8M675XJw0LWNYoaCwb7rOwWAJiDQYtHAUoOXRyJEnLCnRQdKfgXCaXuBMAJ6NZGfogRUQR
+	dOpIJ98Sl+i2ZsDYsEVN3cxA9mIpPuM=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=GwKY1iq7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1762503441; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=XqzNwiVe/+ZgJ6VgBtGrGMZLrpOsX4MLEHFVRi7qRm8=;
+	b=GwKY1iq7NvwoH0mbqKrUFSTRVTRIbx4WjfqikhVFg6kGoArwb+CxGBVR1yW2Zj2mGMA/6W
+	mmHsuGVi957HAvLF0e8U8pG1D6dc3gm/+dNqTX8aUHTqxMVGeAqL9aZ9ajcm1w7AlPRzw7
+	Xsk0cMJnqH22mBRdeDU9yVotK0g29O0=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 21A221395F
+	for <linux-btrfs@vger.kernel.org>; Fri,  7 Nov 2025 08:17:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id O4vDNBCrDWkcPQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Fri, 07 Nov 2025 08:17:20 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC] btrfs: use guard for btrfs_folio_state::lock
+Date: Fri,  7 Nov 2025 18:47:03 +1030
+Message-ID: <58baf1fc6d077aacc5db3b2bf42677fc3fbbb6a8.1762503411.git.wqu@suse.com>
+X-Mailer: git-send-email 2.51.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAK3NTRCBV0jTPrHb_tmWzdrLqx9xnvKpcqA7-_Cxm9TfJAGGSQ@mail.gmail.com>
- <20251028001329.GA3148826@zen.localdomain>
-In-Reply-To: <20251028001329.GA3148826@zen.localdomain>
-From: Ross Boylan <rossboylan@stanfordalumni.org>
-Date: Thu, 6 Nov 2025 17:04:21 -0800
-X-Gm-Features: AWmQ_bl11x9C0SZJETZi-LPoJ7aX6GB-q_AZTPGu32Jet9xus3Vl7dYsWlbLs84
-Message-ID: <CAK3NTRAhxaHU4Mh3vz9VWnonDS7dFjVvC0fnYhz0kH5Lrqorfg@mail.gmail.com>
-Subject: Re: btrfs fragmentation
-To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: E08351F78E
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_ONE(0.00)[1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_TRACE(0.00)[suse.com:+];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email]
+X-Spam-Score: -3.01
 
-Answers below
+Most call sites are fine for a simple guard(), some call sites need
+scoped_guard().
 
-On Mon, Oct 27, 2025 at 5:13=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> On Mon, Oct 27, 2025 at 03:40:59PM -0700, Ross Boylan wrote:
-> > When recording over-the-air television the results are typically very
-> > fragmented when saved to btrfs, e.g., several thousand segments for
-> > 6GB.
-> > This occurred even on a large, nearly empty, filesystem of 5.5TB.
-> > Automatic defragmentation doesn't seem to make much difference,
-> > although manual defragmentation does.
->
-> Our max extent size is 128MiB which gives a best case of 48 extents, I
-> believe. Is that what you get after you do the manual defrag? If there
-> is compression (I think you said there isn't, but doesn't hurt to check
-> with compsize on the file..) that maximum is 128KiB in which case we
-> would expect ~50k extents for a 6GiB file.
->
-Here's a test for a file originally reported as 3931 extents by filefrag.
-# btrfs filesystem defrag -t 128M
-/usr/local/myth26/media26/10501_20251031040000.ts
-filefrag now reports 35 extents.
-Checking
-# compsize /usr/local/myth26/media26/10501_20251031040000.ts
-Processed 1 file, 70 regular extents (70 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%      5.6G         5.6G         5.6G
-none       100%      5.6G         5.6G         5.6G
+For the scoped_guard() usage, it increase one indent for the code,
+personally speaking I like the extra indent to make the critical section
+more obvious, but I also understand not all call site can afford the
+extra indent.
 
-I'm not sure why one is 35 and the other is 70.  Also, I've been
-assuming extents are
-not contiguous; maybe they can be?
+Thankfully for subpage cases, it's completely fine.
 
-No compression, as seen above.  I tried compression and it seemed to
-make no difference;
-I guess that the video streams are already compressed.  The file
-command says the file is a
-"MPEG transport stream data".
+Overall this makes code much shorter, and we can return without
+bothering manually unlocking, saving several temporary variables.
 
-BTW, I've tended to use filefrag because it gives reports on
-individual files if I say `filefrag *.ts`
-while compsize only gives me the total.  In a few spot checks they've
-been close, but clearly in
-this case the difference is significant.
-> >
-> > I first noticed the fragmentation when I started getting messages that
-> > the writes were taking a long time, although I have not seen those
-> > recently.
-> >
-> > It seems this application (the one recording the TV) may not be a good
-> > fit for btrfs.  The developers recommend xfs, but it would be nice to
-> > have the
-> > more flexible volume management of btrfs.
->
-> Have you been able to try with xfs?
-Yes. It seemed fine.  Channel 5.1 gives the biggest recordings.  On
-btrfs they range from
-2090 through 4019 extents (filefrag), and all the lower values were
-for half hour recordings.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Reason for RFC:
+We're still not yet determined if we should brace the new auto-cleanup
+scheme.
 
-On xfs, files from the same channel range from 7 to 822 extents.
-Those files are mostly
-shorter (3G) than the longest ones on btrfs, but one is 11G (almost
-double the largest
-on btrfs) and has only 195 extents.
->
->
-> If you are able, some kind of trace of what is going on when you run the
-> program would be helpful. strace would be a good start, I think. I can
-> give you some useful bpftrace scripts to try too, but who knows if they
-> will work on your old kernel :)
->
-I'm concerned that would generate a flood of information since the program,
-I assume, is more or less constantly writing to disk.  I see strace has an
-option to attach to an existing process, which will at least make it easier
-to get to the right process (myth is started as service, and in turn spawns
-other processes).
+Now I'm completely on the boat of the scoped based auto-cleanup, even
+for the subpage code where the lock is already super straightforward.
+For more complex cases the benefit will be more obvious.
 
-I attached strace for a minute while recording.  Here's the first part
-of the log.  It's long enough to
-capture some recvfrom and sendto; at least some of the latter is
-clearly directed to the database,
-not to the file with the recording.  I think it writes time stamp sync
-information (not disk syncs) to
-the database as it reads the stream.
---------------------------------------------------------------------
-restart_syscall(<... resuming interrupted read ...>) =3D 1
-read(3, "\5\0\0\0\0\0\0\0", 16)         =3D 8
-write(59, "\1\0\0\0\0\0\0\0", 8)        =3D 8
-futex(0x7ffc20b3ea30, FUTEX_WAIT_PRIVATE, 0, NULL) =3D -1 EAGAIN
-(Resource temporarily unavailable)
-write(80, "\1\0\0\0\0\0\0\0", 8)        =3D 8
-futex(0x7ffc20b3ea30, FUTEX_WAIT_PRIVATE, 0, NULL) =3D -1 EAGAIN
-(Resource temporarily unavailable)
-poll([{fd=3D3, events=3DPOLLIN}, {fd=3D7, events=3DPOLLIN}, {fd=3D32,
-events=3DPOLLIN}, {fd=3D33, events=3DPOLLIN}, {fd=3D34, events=3DPOLLIN},
-{fd=3D35, events=3DPOLLIN}, {fd=3D36, events=3DPOLLIN}, {fd=3D37,
-events=3DPOLLIN}, {fd=3D44, events=3DPOLLIN}, {fd=3D51, events=3DPOLLIN},
-{fd=3D52, events=3DPOLLIN}], 11, 349) =3D 0 (Timeout)
-poll([{fd=3D3, events=3DPOLLIN}, {fd=3D7, events=3DPOLLIN}, {fd=3D32,
-events=3DPOLLIN}, {fd=3D33, events=3DPOLLIN}, {fd=3D34, events=3DPOLLIN},
-{fd=3D35, events=3DPOLLIN}, {fd=3D36, events=3DPOLLIN}, {fd=3D37,
-events=3DPOLLIN}, {fd=3D44, events=3DPOLLIN}, {fd=3D51, events=3DPOLLIN},
-{fd=3D52, events=3DPOLLIN}], 11, 24999) =3D 1 ([{fd=3D3, revents=3DPOLLIN}]=
-)
-read(3, "\5\0\0\0\0\0\0\0", 16)         =3D 8
-write(59, "\1\0\0\0\0\0\0\0", 8)        =3D 8
-futex(0x7ffc20b3ea30, FUTEX_WAIT_PRIVATE, 0, NULL) =3D -1 EAGAIN
-(Resource temporarily unavailable)
-write(80, "\1\0\0\0\0\0\0\0", 8)        =3D 8
-futex(0x7ffc20b3ea30, FUTEX_WAIT_PRIVATE, 0, NULL) =3D -1 EAGAIN
-(Resource temporarily unavailable)
-poll([{fd=3D3, events=3DPOLLIN}, {fd=3D7, events=3DPOLLIN}, {fd=3D32,
-events=3DPOLLIN}, {fd=3D33, events=3DPOLLIN}, {fd=3D34, events=3DPOLLIN},
-{fd=3D35, events=3DPOLLIN}, {fd=3D36, events=3DPOLLIN}, {fd=3D37,
-events=3DPOLLIN}, {fd=3D44, events=3DPOLLIN}, {fd=3D51, events=3DPOLLIN},
-{fd=3D52, events=3DPOLLIN}], 11, 24151) =3D 1 ([{fd=3D3, revents=3DPOLLIN}]=
-)
-read(3, "\5\0\0\0\0\0\0\0", 16)         =3D 8
-write(59, "\1\0\0\0\0\0\0\0", 8)        =3D 8
-futex(0x7ffc20b3ea30, FUTEX_WAIT_PRIVATE, 0, NULL) =3D 0
-write(80, "\1\0\0\0\0\0\0\0", 8)        =3D 8
-futex(0x7ffc20b3ea30, FUTEX_WAIT_PRIVATE, 0, NULL) =3D 0
-poll([{fd=3D3, events=3DPOLLIN}, {fd=3D7, events=3DPOLLIN}, {fd=3D32,
-events=3DPOLLIN}, {fd=3D33, events=3DPOLLIN}, {fd=3D34, events=3DPOLLIN},
-{fd=3D35, events=3DPOLLIN}, {fd=3D36, events=3DPOLLIN}, {fd=3D37,
-events=3DPOLLIN}, {fd=3D44, events=3DPOLLIN}, {fd=3D51, events=3DPOLLIN},
-{fd=3D52, events=3DPOLLIN}], 11, 15343) =3D 1 ([{fd=3D3, revents=3DPOLLIN}]=
-)
-read(3, "\5\0\0\0\0\0\0\0", 16)         =3D 8
-write(59, "\1\0\0\0\0\0\0\0", 8)        =3D 8
-futex(0x7ffc20b3ea30, FUTEX_WAIT_PRIVATE, 0, NULL) =3D -1 EAGAIN
-(Resource temporarily unavailable)
-write(80, "\1\0\0\0\0\0\0\0", 8)        =3D 8
-futex(0x7ffc20b3ea30, FUTEX_WAIT_PRIVATE, 0, NULL) =3D 0
-poll([{fd=3D3, events=3DPOLLIN}, {fd=3D7, events=3DPOLLIN}, {fd=3D32,
-events=3DPOLLIN}, {fd=3D33, events=3DPOLLIN}, {fd=3D34, events=3DPOLLIN},
-{fd=3D35, events=3DPOLLIN}, {fd=3D36, events=3DPOLLIN}, {fd=3D37,
-events=3DPOLLIN}, {fd=3D44, events=3DPOLLIN}, {fd=3D51, events=3DPOLLIN},
-{fd=3D52, events=3DPOLLIN}], 11, 14077) =3D 1 ([{fd=3D3, revents=3DPOLLIN}]=
-)
-read(3, "\5\0\0\0\0\0\0\0", 16)         =3D 8
-write(59, "\1\0\0\0\0\0\0\0", 8)        =3D 8
-futex(0x7ffc20b3ea30, FUTEX_WAIT_PRIVATE, 0, NULL) =3D 0
-write(80, "\1\0\0\0\0\0\0\0", 8)        =3D 8
-poll([{fd=3D3, events=3DPOLLIN}, {fd=3D7, events=3DPOLLIN}, {fd=3D32,
-events=3DPOLLIN}, {fd=3D33, events=3DPOLLIN}, {fd=3D34, events=3DPOLLIN},
-{fd=3D35, events=3DPOLLIN}, {fd=3D36, events=3DPOLLIN}, {fd=3D37,
-events=3DPOLLIN}, {fd=3D44, events=3DPOLLIN}, {fd=3D51, events=3DPOLLIN},
-{fd=3D52, events=3DPOLLIN}], 11, 5337) =3D 1 ([{fd=3D3, revents=3DPOLLIN}])
-read(3, "\5\0\0\0\0\0\0\0", 16)         =3D 8
-write(59, "\1\0\0\0\0\0\0\0", 8)        =3D 8
-futex(0x7ffc20b3ea30, FUTEX_WAIT_PRIVATE, 0, NULL) =3D -1 EAGAIN
-(Resource temporarily unavailable)
-write(80, "\1\0\0\0\0\0\0\0", 8)        =3D 8
-futex(0x7ffc20b3ea30, FUTEX_WAIT_PRIVATE, 0, NULL) =3D -1 EAGAIN
-(Resource temporarily unavailable)
-poll([{fd=3D3, events=3DPOLLIN}, {fd=3D7, events=3DPOLLIN}, {fd=3D32,
-events=3DPOLLIN}, {fd=3D33, events=3DPOLLIN}, {fd=3D34, events=3DPOLLIN},
-{fd=3D35, events=3DPOLLIN}, {fd=3D36, events=3DPOLLIN}, {fd=3D37,
-events=3DPOLLIN}, {fd=3D44, events=3DPOLLIN}, {fd=3D51, events=3DPOLLIN},
-{fd=3D52, events=3DPOLLIN}], 11, 4073) =3D 0 (Timeout)
-sendto(9, "8\0\0\0\26DELETE FROM settings WHERE "..., 60,
-MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) =3D 60
-recvfrom(9, 0x55617dcaaa90, 16384, MSG_DONTWAIT, NULL, NULL) =3D -1
-EAGAIN (Resource temporarily unavailable)
-poll([{fd=3D9, events=3DPOLLIN}], 1, 300000) =3D 1 ([{fd=3D9, revents=3DPOL=
-LIN}])
-recvfrom(9, "\f\0\0\1\0\35
-\0\0\0\0\2\0\0\0\0\30\0\0\2\3def\0\0\0\1?\0\0\f"..., 16384,
-MSG_DONTWAIT, NULL, NULL) =3D 81
-sendto(9, "\5\0\0\0\32\35 \0\0", 9, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) =3D=
- 9
-recvfrom(9, 0x55617dcaaa90, 16384, MSG_DONTWAIT, NULL, NULL) =3D -1
-EAGAIN (Resource temporarily unavailable)
-poll([{fd=3D9, events=3DPOLLIN}], 1, 300000) =3D 1 ([{fd=3D9, revents=3DPOL=
-LIN}])
-recvfrom(9, "\7\0\0\1\0\0\0\2\0\0\0", 16384, MSG_DONTWAIT, NULL, NULL) =3D =
-11
-sendto(9, "/\0\0\0\27\35
-\0\0\0\1\0\0\0\0\1\376\0\376\0\27MusicStream"..., 51,
-MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) =3D 51
-recvfrom(9, 0x55617dcaaa90, 16384, MSG_DONTWAIT, NULL, NULL) =3D -1
-EAGAIN (Resource temporarily unavailable)
-poll([{fd=3D9, events=3DPOLLIN}], 1, 300000) =3D 1 ([{fd=3D9, revents=3DPOL=
-LIN}])
-recvfrom(9, "\7\0\0\1\0\0\0\2\0\0\0", 16384, MSG_DONTWAIT, NULL, NULL) =3D =
-11
-sendto(9, "\5\0\0\0\31\35 \0\0", 9, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) =3D=
- 9
-sendto(9, ";\0\0\0\26SELECT data FROM settings W"..., 63,
-MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) =3D 63
------------------------------------------------------------------------
+So far the only disadvantage is my old mindset, but I believe time will
+get it fixed.
+---
+ fs/btrfs/subpage.c | 112 +++++++++++++++------------------------------
+ 1 file changed, 36 insertions(+), 76 deletions(-)
 
-On a quick look, it continues in that way.  The string sync is not
-there, (case-insensitive).
-Maybe this indicates it's writing to the file 8 bytes at a time?
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index 80cd27d3267f..85d44a6ece87 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -225,14 +225,12 @@ static bool btrfs_subpage_end_and_test_lock(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);
+ 	const int start_bit = subpage_calc_start_bit(fs_info, folio, locked, start, len);
+ 	const int nbits = (len >> fs_info->sectorsize_bits);
+-	unsigned long flags;
+ 	unsigned int cleared = 0;
+ 	int bit = start_bit;
+-	bool last;
+ 
+ 	btrfs_subpage_assert(fs_info, folio, start, len);
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	/*
+ 	 * We have call sites passing @lock_page into
+ 	 * extent_clear_unlock_delalloc() for compression path.
+@@ -240,19 +238,15 @@ static bool btrfs_subpage_end_and_test_lock(const struct btrfs_fs_info *fs_info,
+ 	 * This @locked_page is locked by plain lock_page(), thus its
+ 	 * subpage::locked is 0.  Handle them in a special way.
+ 	 */
+-	if (atomic_read(&bfs->nr_locked) == 0) {
+-		spin_unlock_irqrestore(&bfs->lock, flags);
++	if (atomic_read(&bfs->nr_locked) == 0)
+ 		return true;
+-	}
+ 
+ 	for_each_set_bit_from(bit, bfs->bitmaps, start_bit + nbits) {
+ 		clear_bit(bit, bfs->bitmaps);
+ 		cleared++;
+ 	}
+ 	ASSERT(atomic_read(&bfs->nr_locked) >= cleared);
+-	last = atomic_sub_and_test(cleared, &bfs->nr_locked);
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+-	return last;
++	return atomic_sub_and_test(cleared, &bfs->nr_locked);
+ }
+ 
+ /*
+@@ -307,7 +301,6 @@ void btrfs_folio_end_lock_bitmap(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);
+ 	const unsigned int blocks_per_folio = btrfs_blocks_per_folio(fs_info, folio);
+ 	const int start_bit = blocks_per_folio * btrfs_bitmap_nr_locked;
+-	unsigned long flags;
+ 	bool last = false;
+ 	int cleared = 0;
+ 	int bit;
+@@ -323,14 +316,14 @@ void btrfs_folio_end_lock_bitmap(const struct btrfs_fs_info *fs_info,
+ 		return;
+ 	}
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
+-	for_each_set_bit(bit, &bitmap, blocks_per_folio) {
+-		if (test_and_clear_bit(bit + start_bit, bfs->bitmaps))
+-			cleared++;
++	scoped_guard(spinlock_irqsave, &bfs->lock) {
++		for_each_set_bit(bit, &bitmap, blocks_per_folio) {
++			if (test_and_clear_bit(bit + start_bit, bfs->bitmaps))
++				cleared++;
++		}
++		ASSERT(atomic_read(&bfs->nr_locked) >= cleared);
++		last = atomic_sub_and_test(cleared, &bfs->nr_locked);
+ 	}
+-	ASSERT(atomic_read(&bfs->nr_locked) >= cleared);
+-	last = atomic_sub_and_test(cleared, &bfs->nr_locked);
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+ 	if (last)
+ 		folio_unlock(folio);
+ }
+@@ -359,13 +352,11 @@ void btrfs_subpage_set_uptodate(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);
+ 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
+ 							uptodate, start, len);
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
+ 	if (subpage_test_bitmap_all_set(fs_info, folio, uptodate))
+ 		folio_mark_uptodate(folio);
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+ }
+ 
+ void btrfs_subpage_clear_uptodate(const struct btrfs_fs_info *fs_info,
+@@ -374,12 +365,10 @@ void btrfs_subpage_clear_uptodate(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);
+ 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
+ 							uptodate, start, len);
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
+ 	folio_clear_uptodate(folio);
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+ }
+ 
+ void btrfs_subpage_set_dirty(const struct btrfs_fs_info *fs_info,
+@@ -388,11 +377,9 @@ void btrfs_subpage_set_dirty(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);
+ 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
+ 							dirty, start, len);
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
+-	bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
+-	spin_unlock_irqrestore(&bfs->lock, flags);
++	scoped_guard(spinlock_irqsave, &bfs->lock)
++		bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
+ 	folio_mark_dirty(folio);
+ }
+ 
+@@ -412,15 +399,12 @@ bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);
+ 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
+ 							dirty, start, len);
+-	unsigned long flags;
+-	bool last = false;
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
+ 	if (subpage_test_bitmap_all_zero(fs_info, folio, dirty))
+-		last = true;
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+-	return last;
++		return true;
++	return false;
+ }
+ 
+ void btrfs_subpage_clear_dirty(const struct btrfs_fs_info *fs_info,
+@@ -439,10 +423,9 @@ void btrfs_subpage_set_writeback(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);
+ 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
+ 							writeback, start, len);
+-	unsigned long flags;
+ 	bool keep_write;
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
+ 
+ 	/*
+@@ -454,7 +437,6 @@ void btrfs_subpage_set_writeback(const struct btrfs_fs_info *fs_info,
+ 	keep_write = folio_test_dirty(folio);
+ 	if (!folio_test_writeback(folio))
+ 		__folio_start_writeback(folio, keep_write);
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+ }
+ 
+ void btrfs_subpage_clear_writeback(const struct btrfs_fs_info *fs_info,
+@@ -463,15 +445,13 @@ void btrfs_subpage_clear_writeback(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);
+ 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
+ 							writeback, start, len);
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
+ 	if (subpage_test_bitmap_all_zero(fs_info, folio, writeback)) {
+ 		ASSERT(folio_test_writeback(folio));
+ 		folio_end_writeback(folio);
+ 	}
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+ }
+ 
+ void btrfs_subpage_set_ordered(const struct btrfs_fs_info *fs_info,
+@@ -480,12 +460,10 @@ void btrfs_subpage_set_ordered(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);
+ 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
+ 							ordered, start, len);
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
+ 	folio_set_ordered(folio);
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+ }
+ 
+ void btrfs_subpage_clear_ordered(const struct btrfs_fs_info *fs_info,
+@@ -494,13 +472,11 @@ void btrfs_subpage_clear_ordered(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);
+ 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
+ 							ordered, start, len);
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
+ 	if (subpage_test_bitmap_all_zero(fs_info, folio, ordered))
+ 		folio_clear_ordered(folio);
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+ }
+ 
+ void btrfs_subpage_set_checked(const struct btrfs_fs_info *fs_info,
+@@ -509,13 +485,11 @@ void btrfs_subpage_set_checked(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);
+ 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
+ 							checked, start, len);
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	bitmap_set(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
+ 	if (subpage_test_bitmap_all_set(fs_info, folio, checked))
+ 		folio_set_checked(folio);
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+ }
+ 
+ void btrfs_subpage_clear_checked(const struct btrfs_fs_info *fs_info,
+@@ -524,12 +498,10 @@ void btrfs_subpage_clear_checked(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);
+ 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,
+ 							checked, start, len);
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	bitmap_clear(bfs->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
+ 	folio_clear_checked(folio);
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+ }
+ 
+ /*
+@@ -543,14 +515,10 @@ bool btrfs_subpage_test_##name(const struct btrfs_fs_info *fs_info,	\
+ 	struct btrfs_folio_state *bfs = folio_get_private(folio);	\
+ 	unsigned int start_bit = subpage_calc_start_bit(fs_info, folio,	\
+ 						name, start, len);	\
+-	unsigned long flags;						\
+-	bool ret;							\
+ 									\
+-	spin_lock_irqsave(&bfs->lock, flags);			\
+-	ret = bitmap_test_range_all_set(bfs->bitmaps, start_bit,	\
++	guard(spinlock_irqsave)(&bfs->lock);				\
++	return bitmap_test_range_all_set(bfs->bitmaps, start_bit,	\
+ 				len >> fs_info->sectorsize_bits);	\
+-	spin_unlock_irqrestore(&bfs->lock, flags);			\
+-	return ret;							\
+ }
+ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(uptodate);
+ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(dirty);
+@@ -688,7 +656,6 @@ void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
+ 	struct btrfs_folio_state *bfs;
+ 	unsigned int start_bit;
+ 	unsigned int nbits;
+-	unsigned long flags;
+ 
+ 	if (!IS_ENABLED(CONFIG_BTRFS_ASSERT))
+ 		return;
+@@ -702,13 +669,12 @@ void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
+ 	nbits = len >> fs_info->sectorsize_bits;
+ 	bfs = folio_get_private(folio);
+ 	ASSERT(bfs);
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	if (unlikely(!bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits))) {
+ 		SUBPAGE_DUMP_BITMAP(fs_info, folio, dirty, start, len);
+ 		ASSERT(bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits));
+ 	}
+ 	ASSERT(bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits));
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+ }
+ 
+ /*
+@@ -722,7 +688,6 @@ void btrfs_folio_set_lock(const struct btrfs_fs_info *fs_info,
+ 			  struct folio *folio, u64 start, u32 len)
+ {
+ 	struct btrfs_folio_state *bfs;
+-	unsigned long flags;
+ 	unsigned int start_bit;
+ 	unsigned int nbits;
+ 	int ret;
+@@ -734,7 +699,7 @@ void btrfs_folio_set_lock(const struct btrfs_fs_info *fs_info,
+ 	bfs = folio_get_private(folio);
+ 	start_bit = subpage_calc_start_bit(fs_info, folio, locked, start, len);
+ 	nbits = len >> fs_info->sectorsize_bits;
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	/* Target range should not yet be locked. */
+ 	if (unlikely(!bitmap_test_range_all_zero(bfs->bitmaps, start_bit, nbits))) {
+ 		SUBPAGE_DUMP_BITMAP(fs_info, folio, locked, start, len);
+@@ -743,7 +708,6 @@ void btrfs_folio_set_lock(const struct btrfs_fs_info *fs_info,
+ 	bitmap_set(bfs->bitmaps, start_bit, nbits);
+ 	ret = atomic_add_return(nbits, &bfs->nr_locked);
+ 	ASSERT(ret <= btrfs_blocks_per_folio(fs_info, folio));
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+ }
+ 
+ /*
+@@ -779,21 +743,19 @@ void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
+ 	unsigned long ordered_bitmap;
+ 	unsigned long checked_bitmap;
+ 	unsigned long locked_bitmap;
+-	unsigned long flags;
+ 
+ 	ASSERT(folio_test_private(folio) && folio_get_private(folio));
+ 	ASSERT(blocks_per_folio > 1);
+ 	bfs = folio_get_private(folio);
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
+-	GET_SUBPAGE_BITMAP(fs_info, folio, uptodate, &uptodate_bitmap);
+-	GET_SUBPAGE_BITMAP(fs_info, folio, dirty, &dirty_bitmap);
+-	GET_SUBPAGE_BITMAP(fs_info, folio, writeback, &writeback_bitmap);
+-	GET_SUBPAGE_BITMAP(fs_info, folio, ordered, &ordered_bitmap);
+-	GET_SUBPAGE_BITMAP(fs_info, folio, checked, &checked_bitmap);
+-	GET_SUBPAGE_BITMAP(fs_info, folio, locked, &locked_bitmap);
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+-
++	scoped_guard(spinlock_irqsave, &bfs->lock) {
++		GET_SUBPAGE_BITMAP(fs_info, folio, uptodate, &uptodate_bitmap);
++		GET_SUBPAGE_BITMAP(fs_info, folio, dirty, &dirty_bitmap);
++		GET_SUBPAGE_BITMAP(fs_info, folio, writeback, &writeback_bitmap);
++		GET_SUBPAGE_BITMAP(fs_info, folio, ordered, &ordered_bitmap);
++		GET_SUBPAGE_BITMAP(fs_info, folio, checked, &checked_bitmap);
++		GET_SUBPAGE_BITMAP(fs_info, folio, locked, &locked_bitmap);
++	}
+ 	dump_page(folio_page(folio, 0), "btrfs folio state dump");
+ 	btrfs_warn(fs_info,
+ "start=%llu len=%u page=%llu, bitmaps uptodate=%*pbl dirty=%*pbl locked=%*pbl writeback=%*pbl ordered=%*pbl checked=%*pbl",
+@@ -811,13 +773,11 @@ void btrfs_get_subpage_dirty_bitmap(struct btrfs_fs_info *fs_info,
+ 				    unsigned long *ret_bitmap)
+ {
+ 	struct btrfs_folio_state *bfs;
+-	unsigned long flags;
+ 
+ 	ASSERT(folio_test_private(folio) && folio_get_private(folio));
+ 	ASSERT(btrfs_blocks_per_folio(fs_info, folio) > 1);
+ 	bfs = folio_get_private(folio);
+ 
+-	spin_lock_irqsave(&bfs->lock, flags);
++	guard(spinlock_irqsave)(&bfs->lock);
+ 	GET_SUBPAGE_BITMAP(fs_info, folio, dirty, ret_bitmap);
+-	spin_unlock_irqrestore(&bfs->lock, flags);
+ }
+-- 
+2.51.2
 
-> The important things to get to the bottom of are:
-> - does mythtv try to fallocate the file ahead?
-> - does mythtv do random writes as opposed to sequentially appending?
->   From glancing at the code I could find online, it looks like no..
-> - how often does mythtv sync/fsync
-> - is something else on your system forcing frequent writeback (memory
->   pressure, vm knobs, etc..)
->
-
-I thought btrfs didn't do advance allocation of space.
-I assume, but do not know, that myth simply dumps the stream and never
-goes back to rewrite anything.
-
-So I take it your thought is that syncs are screwing up the ability of
-btrfs to accumulate
-data and put it out in bigger chunks?
-
-The disk holding the filesystem only has the myth directory on it, and
-so I don't think
-any other application would be doing a sync on it, unless it's some general=
- OS
-housekeeping.
-
-Ross
-
-> In theory it should be quite possible to get btrfs to pile up a decent
-> amount of delayed allocations for dirty pages and allocate them all at
-> once quite contiguously when doing the writeback. This assumes:
-> 1. we get to build up some good delayed allocations
-> 2. there are big contiguous chunks of free space (as you mentioned in
->    your next paragraph, this is a concern, but you said it reproduces on
->    a fresh system)
->
-> So unfortunately, the devil is in the details with issues like this one.
->
-> > However, I've noticed that even when I cp a complete file to btrfs it
-> > ends up pretty fragmented, albeit the target filesystem in that case
-> > was very full.
->
-> If you can reproduce with a simpler program than mythtv on your empty
-> fs on the same system, that could be interesting, too. Worth a shot.
-
-I tried the following:
-# dd if=3D10501_20251028025900.ts of=3Dtest.tst bs=3D8 count=3D10000
-10000+0 records in
-10000+0 records out
-80000 bytes (80 kB, 78 KiB) copied, 0.133328 s, 600 kB/s
-root@barley:/usr/local/myth26/media26# compsize test.tst
-Processed 1 file, 1 regular extents (1 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%       80K          80K          80K
-none       100%       80K          80K          80K
-
-While that clearly shows no problems, doing something larger might
-With 100x bigger count, total 8MB, still ended up with "only" 3
-segments.  Although, scaled up
-to several GB that would be a pretty fragmented file.  Naively, 8GB ->
-3000 segments, which is in line
-with what I'm seeing for the original files.
-
-Assuming segments are not contiguous it's a little surprising to me
-there isn't only a single segment.  Maybe
-a result of filling in holes left from previous recordings?  Nothing
-else was going on on the filesystem
-when I did the dd.
-
-Ross
->
-> Thanks,
-> Boris
 
