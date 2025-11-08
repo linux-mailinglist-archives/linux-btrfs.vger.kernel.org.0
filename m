@@ -1,243 +1,94 @@
-Return-Path: <linux-btrfs+bounces-18812-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18813-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F944C42A34
-	for <lists+linux-btrfs@lfdr.de>; Sat, 08 Nov 2025 10:20:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63E32C42D90
+	for <lists+linux-btrfs@lfdr.de>; Sat, 08 Nov 2025 15:01:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65E9C188E02D
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Nov 2025 09:20:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D950188429F
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Nov 2025 14:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD85A2EC09D;
-	Sat,  8 Nov 2025 09:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B57120FAB2;
+	Sat,  8 Nov 2025 14:01:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XbCrXJqp"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="IKPY4bm9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C932E9EC1
-	for <linux-btrfs@vger.kernel.org>; Sat,  8 Nov 2025 09:19:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 644D21C84C6
+	for <linux-btrfs@vger.kernel.org>; Sat,  8 Nov 2025 14:01:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762593581; cv=none; b=GXobiFl3ZTrgIANNML9Lseu/WNJZWDalajlVStHRzaLByPsLlRee7hWj5LoehZ1kS/R7G0v9bl1CCnles37D4uh9/P+tpOM0r71tFkI7Nusl11L14821rbCrw6GRKdWZ3NcbP9NZtXp9HIT+KNObMD+yt6qt8LyyGIlg6dL5TAw=
+	t=1762610494; cv=none; b=ng/Z5BaHKsyQYRbeXSGxBqd0y4yvk/MTb0EVMgAdJQApKlpy+mj2LbbjJumTy7mBbb+hOY5jz6rxKW4SrYmbZnK8ZfifAuy5vK/DzbylXNkJJwrncKE9ar0G8PyXmOoJ0g/Q22xMY4FCNov2nJEeYmvuXmx46l2IzLoDNrpg5nE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762593581; c=relaxed/simple;
-	bh=Y49FEVhEZCj60/+Ylnua7B5NNXsJ25LsdBXGXmWxbi8=;
+	s=arc-20240116; t=1762610494; c=relaxed/simple;
+	bh=CNJoTmBYU76d3qdtzuMHrbQpge/KdZ6/OsOyxVTEXWE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tf+Sfu1a4qPnc9YDFTCNgt5F1AbIkA8v9/0YNwVUeFf1ocPgu30AszpYFhg8UinAoQXbSgxMHsmiwVAL14jYL/NkbxRebEzubMEgmJq7H0G1nxQqv5upIX2OtfC7yVNetEOIoyXFP0ATJzMrxZmwMzFLeQ4z3oAqxgQ9Y7rFHEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XbCrXJqp; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b98983baeacso703062a12.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 08 Nov 2025 01:19:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762593577; x=1763198377; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xMJJSbsWQXZcDWYlPD+q/sMKmcoPg7XO2KNCJJBRcPk=;
-        b=XbCrXJqpU5Fw1gS912IzNS7KgBmBpEzt7BjCmmVFTL8kHJTuGLWxxwgdaXCUg4CV2D
-         tKCOjl7wqtFqq2KqtRwQmCQoZ2kxqJrxqAaLSYbI9D+6BC6bJNEbr7E7KTvOL4UqahSf
-         w/QgA8EXXBEeLOZgkH/mm2j8/uswIitunMmgBdG766MxnsGJq42mTLMaDjXhzkm/zaEH
-         UtlB680jTq7xY0S9vzTnm9oN5yO7Du7xhiUuoHeQloIlgSzi/qSU8H/Y2rUf/XMJj6Bh
-         tzv4XdJ7tB0GUfU9Ij+3Tup68eVUiffb9PZoDl640BmypjzahazCqHEiCv+hciS4uHrF
-         TsZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762593577; x=1763198377;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xMJJSbsWQXZcDWYlPD+q/sMKmcoPg7XO2KNCJJBRcPk=;
-        b=JCJ3TXewST5goTcSe2eDSU/YBSwk5oVgmJPil5vk+A+Guwl/G0HhAlUh1oLqsbEGA7
-         x0U1/Bg2KqX2f+4uTS8Uou2GGbpMir29d+cnivShMg3BbyWmu9otOPESukfCz2NalKxf
-         QyS3eE4JhlZO86E5XMtnCpJHHhWZytY0zL8E3lNHLX4YLunkKfTHAQJ96sD4FJJCfBlU
-         MvlrdoLf/PrIqfck9Q63kfZ/BL7fax+ED3CW7ChQ020l8Zceku8KBtOGYo682VwqzuB0
-         nnwQWd++GjVzLFGYSqBQsWOeT/VvSVX178e8TrH1u5D7VjM0stTTLElh2xWXBgYJpbiQ
-         HMyg==
-X-Forwarded-Encrypted: i=1; AJvYcCVg/CUWOxYaWSql369dl7f/6aaPTTJRNVEYpMInZunid78O9FZp1H6bkKj8iKjRlkCOsAo7hz4sR9CsWw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLu/jSTh0aE4tZi8Au23lYTct6jxKA/dnkPnv3OQ07Sft7iUHB
-	zU8GArdVIsOiVyEPUhVDxw+AzG64xW4sK6IJ2tIibrnrAKUhEmF1hLMP
-X-Gm-Gg: ASbGncvr1DeofJP15WwJD3aAvrutVzyIvofcc8A3TlradZqLslgFNByePU62ETmXrCS
-	iuPjpVHcn5zPO10pBYmZY7qWBZS48U7lNh4qhD/BEwTQhouJwIcLdPF2UwjlX+n4GB/51pc57/1
-	5JlKk17bCA4mItXoy1hXLVeXy4XxMRwEDVq6DFMmZPNP8KBzvtpPhMY+41NncoP7K0a3Pwgy1DM
-	7RPKEq+Y6EdQFFya2Db2pzLN1eRimG1GGDOBT15Hrficxg2P/Ua6ilvP4KYs61iaF8L0cAjJfFo
-	XF8onHz2rzZNtNuKuMnrvnGQHR69B3m+DNXoSCskAXhhJYhxOKKFVEYmolLcnCpqURHRFBbh7XA
-	HLA+zgfyrMJsrQpm0qCWrXBSnKXdfwjENWkWTqehq0waFJXCwKkFJe08JEjd6+tnB+GGNeZ4jck
-	QgmyP6LzdNNIs=
-X-Google-Smtp-Source: AGHT+IGxcceL/cUmEO7hnoApXfEFPAPpQerRMJTCvaDgcasBmFqwVjXcVlI2/yGLIfmLK+orIB3gUw==
-X-Received: by 2002:a17:902:da84:b0:292:fc65:3584 with SMTP id d9443c01a7336-297e56f9b21mr24987685ad.50.1762593577039;
-        Sat, 08 Nov 2025 01:19:37 -0800 (PST)
-Received: from archie.me ([210.87.74.117])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29650c5c6b3sm82791745ad.24.2025.11.08.01.19.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Nov 2025 01:19:35 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 77412400200B; Sat, 08 Nov 2025 16:19:33 +0700 (WIB)
-Date: Sat, 8 Nov 2025 16:19:33 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Dominique Martinet <asmadeus@codewreck.org>,
-	Jeff Layton <jlayton@kernel.org>
-Cc: Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	David Sterba <dsterba@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-	Chris Mason <clm@fb.com>, Xiubo Li <xiubli@redhat.com>,
-	Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>,
-	coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>,
-	Jeremy Kerr <jk@ozlabs.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Yuezhang Mo <yuezhang.mo@sony.com>, Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Viacheslav Dubeyko <slava@dubeyko.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	Muchun Song <muchun.song@linux.dev>,
-	Oscar Salvador <osalvador@suse.de>,
-	David Hildenbrand <david@redhat.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Dave Kleikamp <shaggy@kernel.org>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Bob Copeland <me@bobcopeland.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.org>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	Bharath SM <bharathsm@microsoft.com>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	Hans de Goede <hansg@kernel.org>, Carlos Maiolino <cem@kernel.org>,
-	Hugh Dickins <hughd@google.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <kees@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	NeilBrown <neilb@ownmail.net>, linux-kernel@vger.kernel.org,
-	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-afs@lists.infradead.org, linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
-	ecryptfs@vger.kernel.org, linux-efi@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	gfs2@lists.linux.dev, linux-um@lists.infradead.org,
-	linux-mm@kvack.org, linux-mtd@lists.infradead.org,
-	jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org, linux-xfs@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2] vfs: remove the excl argument from the ->create()
- inode_operation
-Message-ID: <aQ8LJfKC0R-4ehLU@archie.me>
-References: <20251107-create-excl-v2-1-f678165d7f3f@kernel.org>
- <aQ7fOmknHIxcxuha@codewreck.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NwBAotRghwuEWxxJQaBCPYaLytr1GUQiWBwXfHS0lNeDQAoB+K/LkLXfnXHxNqC8qrNEHak9I8O273xhqD+mZahhA0D3EeNnOmDK89q7ULLkBbLr0XicdWY9A+5IwunJMJVCapZg3vVMH2PiUf2LANId5xIQQ7+jNevMcGjP8NQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=IKPY4bm9; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-122-154.bstnma.fios.verizon.net [173.48.122.154])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5A8E1HK1015238
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 8 Nov 2025 09:01:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1762610479; bh=BNBVr38ff5e6t5oymiiuzp16Ba/4xNCIhgf/dMIqUZ4=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=IKPY4bm92ZJKv/V3v2BmYZzKzTXUZ7vZZLP0SAA6GazsILZzfi+mbLLGTDs88J0Oi
+	 x9B5Wj4gFcnqH1jHKJOhNJ9wCAdAGAPthaqHFM7476pxK96d/e87sGgOvV49nMqqyh
+	 PGAeISm0VeUEmgvEn2FUC1PCQAeSyXgK/a308VGvlDB5/wxfMwP30s/KKg77lRTbTj
+	 ufC8lUQypDGKLyF243O/wDwlmDmyHkx3Is1jLQDUzuulbBhVSouSCbKLAJ7psslQt3
+	 YK3ShcGolTHgasAUltXSkfyh2nOk165ofkKsmlVUsr1mxltQFGjfemUeJX16Vlq+xA
+	 Fv3q/TJU9xpHw==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id C5DCE2E00D9; Sat, 08 Nov 2025 09:01:16 -0500 (EST)
+Date: Sat, 8 Nov 2025 09:01:16 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Viacheslav Dubeyko <Slava.Dubeyko@ibm.com>
+Cc: "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
+        "wqu@suse.com" <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "glaubitz@physik.fu-berlin.de" <glaubitz@physik.fu-berlin.de>,
+        "frank.li@vivo.com" <frank.li@vivo.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [RFC] Why generic/073 is generic but not btrfs specific?
+Message-ID: <20251108140116.GB2988753@mit.edu>
+References: <92ac4eb8cdc47ddc99edeb145e67882259d3aa0e.camel@ibm.com>
+ <fb616f30-5a56-4436-8dc7-0d8fe2b4d772@suse.com>
+ <06b369cd4fdf2dfb1cfe0b43640dbe6b05be368a.camel@ibm.com>
+ <a43fd07d-88e6-473d-a0be-3ba3203785e6@suse.com>
+ <ee43d81115d91ceb359f697162f21ce50cee29ff.camel@ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hTQgJTXrd9+JcPiP"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aQ7fOmknHIxcxuha@codewreck.org>
+In-Reply-To: <ee43d81115d91ceb359f697162f21ce50cee29ff.camel@ibm.com>
 
+On Thu, Nov 06, 2025 at 10:29:46PM +0000, Viacheslav Dubeyko wrote:
+> > > Technically speaking, HFS+ is journaling file system in Apple implementation.
+> > > But we don't have this functionality implemented and fully supported on Linux
+> > > kernel side. Potentially, it can be done but currently we haven't such
+> > > functionality yet. So, HFS/HFS+ doesn't use journaling on Linux kernel side  and
+> > > no journal replay could happen. :)
 
---hTQgJTXrd9+JcPiP
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If the implementation of HJFJS+ in Linux doesn't support metadata
+consistency after a crash, I'd suggest adding HFS+ to
+_has_metadat_journalling().  This will suppress a number of test
+failures so you can focus on other issues which arguably is probably
+higher priority for you to fix.
 
-On Sat, Nov 08, 2025 at 03:12:10PM +0900, Dominique Martinet wrote:
-> Jeff Layton wrote on Fri, Nov 07, 2025 at 10:05:03AM -0500:
-> > diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesyst=
-ems/vfs.rst
-> > index 4f13b01e42eb5e2ad9d60cbbce7e47d09ad831e6..7a55e491e0c87a0d18909bd=
-181754d6d68318059 100644
-> > --- a/Documentation/filesystems/vfs.rst
-> > +++ b/Documentation/filesystems/vfs.rst
-> > @@ -505,7 +505,10 @@ otherwise noted.
-> >  	if you want to support regular files.  The dentry you get should
-> >  	not have an inode (i.e. it should be a negative dentry).  Here
-> >  	you will probably call d_instantiate() with the dentry and the
-> > -	newly created inode
-> > +        newly created inode. This operation should always provide O_EX=
-CL
->=20
-> This and the block below change halfway from tab (old text) to spaces
-> (your patch)
->=20
-> Looks like the file has a few space-indented sections though so it won't
-> be the first if that goes in as is, the html-rendering doesn't seem to
-> care :)
+After you get HFS+ to run clean with the journalling tesets skipped,
+then you can focus on adding that guarantee at that point, perhaps?
 
-FYI: I'm using Vim. My important settings (in ~/.vimrc) are:
-
-```
-set nojoinspaces
-set textwidth=3D0
-set backspace=3D2
-```
-
-However, ftplugin override these for each file type, so you have to essenti=
-ally
-"fork" the relevant ftplugin file for each type if you want for your settin=
-gs
-to take precedence. For example, in case of reST, copy
-/usr/share/vim/vim91/ftplugin/rst.vim to ~/.vim/ftplugin/rst and override t=
-he
-already defined options there:
-
-```
-=2E..
-" keep tabs as-is
-setlocal comments=3Dfb:.. commentstring=3D..\ %s noexpandtab
-=2E..
-if exists("g:rst_style") && g:rst_style !=3D 0
-    setlocal noexpandtab shiftwidth=3D8 softtabstop=3D0 tabstop=3D8
-endif
-=2E..
-```
-
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---hTQgJTXrd9+JcPiP
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaQ8LHwAKCRD2uYlJVVFO
-o2WVAPsFBRuUsYfWxAnWROgP/61sBqVYDc/UsPimcXm5dJJfgQD9ESTXpfxlpefS
-VKeWBneX6svZYShHE5RzrbcYO+G5GA0=
-=gW2v
------END PGP SIGNATURE-----
-
---hTQgJTXrd9+JcPiP--
+     	     	      	     	  - Ted
 
