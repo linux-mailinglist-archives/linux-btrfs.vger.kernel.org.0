@@ -1,73 +1,56 @@
-Return-Path: <linux-btrfs+bounces-18814-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18815-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CACA0C4364F
-	for <lists+linux-btrfs@lfdr.de>; Sun, 09 Nov 2025 00:16:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9972C4366F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 09 Nov 2025 00:26:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B97773B11C0
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Nov 2025 23:16:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D187188185C
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Nov 2025 23:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8780273D77;
-	Sat,  8 Nov 2025 23:16:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 713F7273D77;
+	Sat,  8 Nov 2025 23:26:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="P/3GL1yv";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="P/3GL1yv"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="uFRTDS8f"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9404C19F137
-	for <linux-btrfs@vger.kernel.org>; Sat,  8 Nov 2025 23:16:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27D946B5
+	for <linux-btrfs@vger.kernel.org>; Sat,  8 Nov 2025 23:26:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762643802; cv=none; b=T5mcEGG67WdhunNysQp9W4KqcTlNk9ZOHAEf3XaPIdWtH9kc9yRAos4ky7vHndyBXSTdJxc9a929aYhKOuziUIwHNZFAn0NXzVGpZc07VVb2JQW3fZ/1xqeUCPW65eVMALZzBTnDzwIOawJyViAz0O1R1ZV1LoTfCNkOOwYPeXc=
+	t=1762644389; cv=none; b=GGk6HqHal3DTEx0fpTFvSLhW1VpsHtm0uKi4KWXhVZec05NAhD3V+WqCzWw2LTXBUn2+lFztf6BZEFmxK+sOM5l4AXa7pO6WJ3gJfmxUtiXP3UhvVPekon21T0pIW6V9tD2C3BbrlGIQczKSfPalxGm1FNQZZKfCox/coTaEh4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762643802; c=relaxed/simple;
-	bh=D54bJKUOja/EmQtUZpFMefzmhURRwxzspq/cf5Yq0fs=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=iSnX2T1ZgXwrP26xwPR2SjyIK6utQnEcpfcQ1UHYYY6SJCV6jFHF0w0JhpV0Ji0N9CMESmDPLdvMTpHJevSAK4aML/T575IN+VAB/d07qVZ8IvFoEyQYJyBcYgVpoVYs7E3jZkBMT8E+hLO52nk7rINC4Qe/l165xqavCBWqvak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=P/3GL1yv; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=P/3GL1yv; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 38A3D33745
-	for <linux-btrfs@vger.kernel.org>; Sat,  8 Nov 2025 23:16:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1762643793; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=x5yddKKOvpY1bO25R+2cz3abcfHfnl3hlVR8jlWyeMY=;
-	b=P/3GL1yv+jj7FpAhN2z5XpsdJtyZXYn9Aex+6zl9uixv1rVUk0TrXDKVx8zEkXrei7fef7
-	F7NRQu0jddZ0bgUM5oJ0Zcc0otiSuzL72EqeJRkpYsEwZIsDR3srY/jGdPcFNTsAxpgHt5
-	oecB4gPs9vf28Cq2OOsv18/39WUF9vU=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="P/3GL1yv"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1762643793; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=x5yddKKOvpY1bO25R+2cz3abcfHfnl3hlVR8jlWyeMY=;
-	b=P/3GL1yv+jj7FpAhN2z5XpsdJtyZXYn9Aex+6zl9uixv1rVUk0TrXDKVx8zEkXrei7fef7
-	F7NRQu0jddZ0bgUM5oJ0Zcc0otiSuzL72EqeJRkpYsEwZIsDR3srY/jGdPcFNTsAxpgHt5
-	oecB4gPs9vf28Cq2OOsv18/39WUF9vU=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1C1B4132DD
-	for <linux-btrfs@vger.kernel.org>; Sat,  8 Nov 2025 23:16:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id fEGxA1HPD2kJLQAAD6G6ig
-	(envelope-from <gabriel.niebler@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sat, 08 Nov 2025 23:16:33 +0000
-Message-ID: <94f6f9ea-d65f-49db-9a20-a08cacdee7e7@suse.com>
-Date: Sun, 9 Nov 2025 00:16:32 +0100
+	s=arc-20240116; t=1762644389; c=relaxed/simple;
+	bh=wq0bsdzhQPcNTYDYyMXyZVCldaxqWjsAeCsfiQdaZ7g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=IYKcbciWdJx5a7Xmn1KAnSucGjYzwsQJQHa4o4Fz9mRxrvIETIJr2GgDaSSPBeGBU1Nach3UbnptP6XRGbg7alpW0CJNdLISx5Nj4bMxn5h4ja++Ol679q/pGmTvqAYCHGRj7NanmiujYyDZOLa7Jh/2rH1yPVtMwEk6+fxcnjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=uFRTDS8f; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1762644384; x=1763249184; i=quwenruo.btrfs@gmx.com;
+	bh=wq0bsdzhQPcNTYDYyMXyZVCldaxqWjsAeCsfiQdaZ7g=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=uFRTDS8f/pZX7QvuZiJXn+1vcAm9LxL+rKmkQlUIueF+dVFi6F/sF2nDLrCsKuUr
+	 LEFFowJ+j9Q6OkogpcFagORdu4jOMsA64Az9w4LQXdw+6EFUWVTpgxr9AutkF1NId
+	 i0F5rDq8Dxd2mi82RU4yzh/8lol4pOaLEExKAaC37QCquG37ANBI8OCFZJLp2ZdYv
+	 l6Q1egI2RelOvyZLR1WCeqDK6WuBzbGKIZLGkFF/RCTUDRIPmJS8yuQAAv7rivyX5
+	 IhFc+pB6juGis6nEbVXLNSjdp0DNyrwJTcPe1AZPFhtp5s5bQDzB4G0JI4P5ZpLJB
+	 TRGn6pl4FKMxtNIYDw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2mFY-1wE0p93tfw-00rhmn; Sun, 09
+ Nov 2025 00:26:24 +0100
+Message-ID: <f9ce1808-9662-408d-b0bc-2cf60e5b4617@gmx.com>
+Date: Sun, 9 Nov 2025 09:56:21 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -75,95 +58,179 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: How to fix btrfs in inconsistent state after temp. disk removal
+To: Gabriel Niebler <gabriel.niebler@suse.com>, linux-btrfs@vger.kernel.org
+References: <94f6f9ea-d65f-49db-9a20-a08cacdee7e7@suse.com>
 Content-Language: en-US
-To: linux-btrfs@vger.kernel.org
-From: Gabriel Niebler <gabriel.niebler@suse.com>
-Subject: How to fix btrfs in inconsistent state after temp. disk removal
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <94f6f9ea-d65f-49db-9a20-a08cacdee7e7@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:KvcEu8J5yfo47xwLjz/1hj018LKdqDDiqgKa4C/A6TRaSIte2PJ
+ avLpoJnCDfSIvtnN9YaEBM+6BqmRr9DUP+I04+PhdPllABdbiisHlZh2UuNcpxfadmgf78G
+ aeLKTZOesegwgHyh0LPH+BNmsHen9TsXk98HQG1Diodm6PrpAjDm8uqKTFVuCOqpuAN3DOg
+ t+adLzWMImRtZRnegHE0g==
 X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 38A3D33745
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:url,suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -4.51
+UI-OutboundReport: notjunk:1;M01:P0:SRslmaEH89A=;7UfMa2/zzW+AnQDjsllQE1u7StJ
+ 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
 
-I have a btrfs configured as raid1 on top of several device-mapped LUKS volumes, which live on full HDDs.
-
-There used to be 4 devices. Then I added a fifth disk, wiped and LUKS-encrypted it, unlocked and added it to the filesystem.
-
-While the balance was running, one of the original four disks was disconnected from the system. To my surprise, the device file for the LUKS volume on that disk was not removed. So btrfs didn't notice anything and the balance finished "successfully".
-
-The filesystem now has this structure:
-
-# btrfs filesystem show /mnt2/Main
-Label: 'Main'  uuid: 6a40d64e-ff83-4f08-a5b2-1236dd4add01
-         Total devices 5 FS bytes used 8.69TiB
-         devid    1 size 5.46TiB used 3.49TiB path /dev/mapper/luks-b52cf99d-e8f4-4193-9fe0-694ce5b2b6d7
-         devid    2 size 5.46TiB used 3.49TiB path /dev/mapper/luks-06f1927d-7ace-4e73-ab1f-efa06970318b
-         devid    3 size 5.46TiB used 3.49TiB path /dev/mapper/luks-e35e3681-c01d-44aa-9305-a5171f6da24f
-         devid    4 size 5.46TiB used 3.49TiB path /dev/mapper/luks-d3295051-2128-4282-98ec-d138622a8c09
-         devid    5 size 5.46TiB used 3.49TiB path /dev/mapper/luks-b3956446-40bd-4546-a103-0b12ba71a9e6
-
-But obviously, one of the devices, luks-06f1927d-7ace-4e73-ab1f-efa06970318b, is not really there and btrfs can neither read from nor write to it.
-
-This can be seen from the device stats:
-
-# btrfs device stats -T /mnt2/Main
-Id Path                                                  Write errors Read errors Flush errors Corruption errors Generation errors
--- ----------------------------------------------------- ------------ ----------- ------------ ----------------- -----------------
-  1 /dev/mapper/luks-b52cf99d-e8f4-4193-9fe0-694ce5b2b6d7            0           0            0                 0                 0
-  2 /dev/mapper/luks-06f1927d-7ace-4e73-ab1f-efa06970318b    175662803   116845708            0                 0                 0
-  3 /dev/mapper/luks-e35e3681-c01d-44aa-9305-a5171f6da24f            0           0            0                 0                 0
-  4 /dev/mapper/luks-d3295051-2128-4282-98ec-d138622a8c09            0           0            0                 0                 0
-  5 /dev/mapper/luks-b3956446-40bd-4546-a103-0b12ba71a9e6            0           0            0                 0                 0
-
-The underlying disk has been reconnected, but I have not unlocked the LUKS volume, because it is bound to be in an inconsistent state.
-
-My question is how this can best be fixed.
-
-I got the advice on the openSUSE forums to wipe the disk an re-encrypt it, creating a fresh new LUKS volume (with a different UUID) and run btrfs replace with the old, fault device as source and the new one as target.
-
-It seems like that should work, but is it the best way to go about it? Or would you recommend something else?
-
-Best,
-gabe
-
--- 
-Gabriel Niebler (he/him/his)
-Senior Full-Stack Web Developer
-gabriel.niebler@suse.com
-
-SUSE Software Solutions Germany GmbH
-Frankenstr. 146
-90461 Nuernberg
-Germany
-www.suse.com
-
-#ThePowerOfMany #HaveALotOfFun
-
+DQoNCuWcqCAyMDI1LzExLzkgMDk6NDYsIEdhYnJpZWwgTmllYmxlciDlhpnpgZM6DQo+IEkgaGF2
+ZSBhIGJ0cmZzIGNvbmZpZ3VyZWQgYXMgcmFpZDEgb24gdG9wIG9mIHNldmVyYWwgZGV2aWNlLW1h
+cHBlZCBMVUtTIA0KPiB2b2x1bWVzLCB3aGljaCBsaXZlIG9uIGZ1bGwgSEREcy4NCj4gDQo+IFRo
+ZXJlIHVzZWQgdG8gYmUgNCBkZXZpY2VzLiBUaGVuIEkgYWRkZWQgYSBmaWZ0aCBkaXNrLCB3aXBl
+ZCBhbmQgTFVLUy0gDQo+IGVuY3J5cHRlZCBpdCwgdW5sb2NrZWQgYW5kIGFkZGVkIGl0IHRvIHRo
+ZSBmaWxlc3lzdGVtLg0KPiANCj4gV2hpbGUgdGhlIGJhbGFuY2Ugd2FzIHJ1bm5pbmcsIG9uZSBv
+ZiB0aGUgb3JpZ2luYWwgZm91ciBkaXNrcyB3YXMgDQo+IGRpc2Nvbm5lY3RlZCBmcm9tIHRoZSBz
+eXN0ZW0uIFRvIG15IHN1cnByaXNlLCB0aGUgZGV2aWNlIGZpbGUgZm9yIHRoZSANCj4gTFVLUyB2
+b2x1bWUgb24gdGhhdCBkaXNrIHdhcyBub3QgcmVtb3ZlZC4gU28gYnRyZnMgZGlkbid0IG5vdGlj
+ZSANCj4gYW55dGhpbmcgYW5kIHRoZSBiYWxhbmNlIGZpbmlzaGVkICJzdWNjZXNzZnVsbHkiLg0K
+PiANCj4gVGhlIGZpbGVzeXN0ZW0gbm93IGhhcyB0aGlzIHN0cnVjdHVyZToNCj4gDQo+ICMgYnRy
+ZnMgZmlsZXN5c3RlbSBzaG93IC9tbnQyL01haW4NCj4gTGFiZWw6ICdNYWluJ8KgIHV1aWQ6IDZh
+NDBkNjRlLWZmODMtNGYwOC1hNWIyLTEyMzZkZDRhZGQwMQ0KPiAgwqDCoMKgwqDCoMKgwqAgVG90
+YWwgZGV2aWNlcyA1IEZTIGJ5dGVzIHVzZWQgOC42OVRpQg0KPiAgwqDCoMKgwqDCoMKgwqAgZGV2
+aWTCoMKgwqAgMSBzaXplIDUuNDZUaUIgdXNlZCAzLjQ5VGlCIHBhdGggL2Rldi9tYXBwZXIvbHVr
+cy0gDQo+IGI1MmNmOTlkLWU4ZjQtNDE5My05ZmUwLTY5NGNlNWIyYjZkNw0KPiAgwqDCoMKgwqDC
+oMKgwqAgZGV2aWTCoMKgwqAgMiBzaXplIDUuNDZUaUIgdXNlZCAzLjQ5VGlCIHBhdGggL2Rldi9t
+YXBwZXIvIA0KPiBsdWtzLTA2ZjE5MjdkLTdhY2UtNGU3My1hYjFmLWVmYTA2OTcwMzE4Yg0KPiAg
+wqDCoMKgwqDCoMKgwqAgZGV2aWTCoMKgwqAgMyBzaXplIDUuNDZUaUIgdXNlZCAzLjQ5VGlCIHBh
+dGggL2Rldi9tYXBwZXIvbHVrcy0gDQo+IGUzNWUzNjgxLWMwMWQtNDRhYS05MzA1LWE1MTcxZjZk
+YTI0Zg0KPiAgwqDCoMKgwqDCoMKgwqAgZGV2aWTCoMKgwqAgNCBzaXplIDUuNDZUaUIgdXNlZCAz
+LjQ5VGlCIHBhdGggL2Rldi9tYXBwZXIvbHVrcy0gDQo+IGQzMjk1MDUxLTIxMjgtNDI4Mi05OGVj
+LWQxMzg2MjJhOGMwOQ0KPiAgwqDCoMKgwqDCoMKgwqAgZGV2aWTCoMKgwqAgNSBzaXplIDUuNDZU
+aUIgdXNlZCAzLjQ5VGlCIHBhdGggL2Rldi9tYXBwZXIvbHVrcy0gDQo+IGIzOTU2NDQ2LTQwYmQt
+NDU0Ni1hMTAzLTBiMTJiYTcxYTllNg0KPiANCj4gQnV0IG9idmlvdXNseSwgb25lIG9mIHRoZSBk
+ZXZpY2VzLCBsdWtzLTA2ZjE5MjdkLTdhY2UtNGU3My1hYjFmLSANCj4gZWZhMDY5NzAzMThiLCBp
+cyBub3QgcmVhbGx5IHRoZXJlIGFuZCBidHJmcyBjYW4gbmVpdGhlciByZWFkIGZyb20gbm9yIA0K
+PiB3cml0ZSB0byBpdC4NCj4gDQo+IFRoaXMgY2FuIGJlIHNlZW4gZnJvbSB0aGUgZGV2aWNlIHN0
+YXRzOg0KPiANCj4gIyBidHJmcyBkZXZpY2Ugc3RhdHMgLVQgL21udDIvTWFpbg0KPiBJZCBQYXRo
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgV3JpdGUgZXJyb3JzIA0K
+PiBSZWFkIGVycm9ycyBGbHVzaCBlcnJvcnMgQ29ycnVwdGlvbiBlcnJvcnMgR2VuZXJhdGlvbiBl
+cnJvcnMNCj4gLS0gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0gLS0tLS0tLS0tLS0tIA0KPiAtLS0tLS0tLS0tLSAtLS0tLS0tLS0tLS0gLS0tLS0t
+LS0tLS0tLS0tLS0gLS0tLS0tLS0tLS0tLS0tLS0NCj4gIMKgMSAvZGV2L21hcHBlci9sdWtzLWI1
+MmNmOTlkLWU4ZjQtNDE5My05ZmUwLTY5NGNlNWIyYjZkNyAgICAgICAgICAgIA0KPiAwwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgMMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIDDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAwDQo+ICDC
+oDIgL2Rldi9tYXBwZXIvbHVrcy0wNmYxOTI3ZC03YWNlLTRlNzMtYWIxZi1lZmEwNjk3MDMxOGLC
+oMKgwqAgMTc1NjYyODAzICAgDQo+IDExNjg0NTcwOMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCAwDQo+ICDCoDMgL2Rldi9tYXBwZXIvbHVrcy1lMzVlMzY4MS1jMDFkLTQ0YWEtOTMw
+NS1hNTE3MWY2ZGEyNGYgICAgICAgICAgICANCj4gMMKgwqDCoMKgwqDCoMKgwqDCoMKgIDDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIDDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAwwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMA0KPiAgwqA0IC9kZXYvbWFwcGVyL2x1a3Mt
+ZDMyOTUwNTEtMjEyOC00MjgyLTk4ZWMtZDEzODYyMmE4YzA5ICAgICAgICAgICAgDQo+IDDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCAwwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAwwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgMMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDANCj4g
+IMKgNSAvZGV2L21hcHBlci9sdWtzLWIzOTU2NDQ2LTQwYmQtNDU0Ni1hMTAzLTBiMTJiYTcxYTll
+NiAgICAgICAgICAgIA0KPiAwwqDCoMKgwqDCoMKgwqDCoMKgwqAgMMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgMMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCAwDQo+IA0KPiBUaGUgdW5kZXJseWluZyBkaXNrIGhhcyBiZWVuIHJl
+Y29ubmVjdGVkLCBidXQgSSBoYXZlIG5vdCB1bmxvY2tlZCB0aGUgDQo+IExVS1Mgdm9sdW1lLCBi
+ZWNhdXNlIGl0IGlzIGJvdW5kIHRvIGJlIGluIGFuIGluY29uc2lzdGVudCBzdGF0ZS4NCj4gDQo+
+IE15IHF1ZXN0aW9uIGlzIGhvdyB0aGlzIGNhbiBiZXN0IGJlIGZpeGVkLg0KPiANCj4gSSBnb3Qg
+dGhlIGFkdmljZSBvbiB0aGUgb3BlblNVU0UgZm9ydW1zIHRvIHdpcGUgdGhlIGRpc2sgYW4gcmUt
+ZW5jcnlwdCANCj4gaXQsIGNyZWF0aW5nIGEgZnJlc2ggbmV3IExVS1Mgdm9sdW1lICh3aXRoIGEg
+ZGlmZmVyZW50IFVVSUQpIGFuZCBydW4gDQo+IGJ0cmZzIHJlcGxhY2Ugd2l0aCB0aGUgb2xkLCBm
+YXVsdCBkZXZpY2UgYXMgc291cmNlIGFuZCB0aGUgbmV3IG9uZSBhcyANCj4gdGFyZ2V0Lg0KPiAN
+Cj4gSXQgc2VlbXMgbGlrZSB0aGF0IHNob3VsZCB3b3JrLCBidXQgaXMgaXQgdGhlIGJlc3Qgd2F5
+IHRvIGdvIGFib3V0IGl0Pw0KDQpZZXMuDQoNCg0KPiBPciB3b3VsZCB5b3UgcmVjb21tZW5kIHNv
+bWV0aGluZyBlbHNlPw0KDQpJIGNhbiBub3QgY29tZSB1cCB3aXRoIGFueSBiZXR0ZXIgc29sdXRp
+b24gdGhhbiByZXBsYWNlLg0KDQpUaGFua3MsDQpRdQ0KDQo+IA0KPiBCZXN0LA0KPiBnYWJlDQo+
+IA0KDQo=
 
