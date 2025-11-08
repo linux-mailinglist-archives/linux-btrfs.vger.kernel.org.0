@@ -1,143 +1,178 @@
-Return-Path: <linux-btrfs+bounces-18809-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18810-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1958C4247A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 08 Nov 2025 03:10:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E20B3C4281D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 08 Nov 2025 07:13:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5E7CE4E5CD8
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Nov 2025 02:10:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 585CD3AF73F
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Nov 2025 06:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64212279334;
-	Sat,  8 Nov 2025 02:10:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3CD92DF158;
+	Sat,  8 Nov 2025 06:13:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mrven5Y5"
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="B+D3byKt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 364E41F0E25
-	for <linux-btrfs@vger.kernel.org>; Sat,  8 Nov 2025 02:10:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+Received: from submarine.notk.org (submarine.notk.org [62.210.214.84])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6822C0270;
+	Sat,  8 Nov 2025 06:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.210.214.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762567840; cv=none; b=P5RKRA8AfO5LmRknpCRbB7RHG6pmuFabbLHw9jwanETWrWf1c0jeMl8nvc80oUaDD3pXwI35ZsIadUTv1TuBnvs/VXwh4MU8ns6h+0TPiI65LdIbl5OUd8QKWv2+OUmkkr120Jkdwt3bXU4Ob/EH6m/oosS+blZavwptUKMuK8Q=
+	t=1762582386; cv=none; b=h1pusQwfaQxnPeg6yU3BqrThk4NwPltas9Shxy60ruowit28ttmw02GAZer2DX6aHj4SYN6RT7Ay32QppMdQarTBfFmUP9UohsBwSLIqmHM9IjQdULOolIb7ltCUJ4DciUgXu2FYv8MpFmDC4+9a7EjRsX60UtHHWw2RXcYVY5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762567840; c=relaxed/simple;
-	bh=EggKEcmHBVTr5JdZJ+jhWGt5+M1lwD271GrbwqiNacg=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=dQsPLNfDYwFNHcaW9c1HcGgWHrohEOgGyVfSQx9V7dEBDx0Bb3lHvJEC5W5tL8b3PdcTSIUHdrKsQrmC32aO9aXTdep77KjweHpxXTOv1elRUkm1T6cjbHSbinPBXJ9DmHFWpUh3EmDHj6PDlUm8ldF48IkSFEGhfaWEJypZVSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mrven5Y5; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-87a092251eeso15730126d6.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 07 Nov 2025 18:10:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762567838; x=1763172638; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w6RgXlQcH8fh4YS7+jQpKXbK579dAZ3J7H/Q2G64Klo=;
-        b=mrven5Y5Dy19HfSmIHEXsG3OoarI7zgyd2vSLuXFKqX+eLIWPFpqcSgNkKLastyW7S
-         Ig9DD6fg5ov+hzdrXiQdRJnl8aSMzEfWlUSeR+vv6XpPVi5mEDHGnNAnDENpbOqVGyc7
-         OoktlteZEwUglL5rdV9Z9FCVFHkPnSr8ztdgGJm1scw1pbkCxZKywLyx6WxavupFTtba
-         cSyS3gS1YpYXawlkZEfd+HxRfB4j2QmZuJvkcwj2W2+OMX7JjawLIuk7gdx+r7w8I1Sg
-         7JHQfSEyW5qUxKcHWFX4VeHmi/zHusxBa65Ys5fA2S/hDVotIV8Y4Jqrj1WXYROnV4ow
-         TS9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762567838; x=1763172638;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w6RgXlQcH8fh4YS7+jQpKXbK579dAZ3J7H/Q2G64Klo=;
-        b=ER6Fz3jUiUFPW+QG1HPAhcKjPcWRaufIbCsUbi5EWF/M0l8Yw8ySAXTyVI4V6SV+al
-         d8Qd6pM9S4WqsOrUXuyc6n6eDJ9M1I5h+unHt9T4RcifFYwVSCrh2eUfEru0yjVOsPAJ
-         +BQMYZk9lpuR/VMUSLVQG+ooZwNV4c90iIm3MIK6ysYKZ+wKKcAZALW3X77x32UTiUeE
-         Z2ywNvquZyo1bhXizQjveG2ferXylsKda2E2BOIJXDZQFlOHFnQpfIKLSYgapBuoCe4c
-         mxiEkOuC6n5JhucKcg1xMRCPYcTPgJsQHvs3UhoVXFkrB1wSfm5E/sKjIfw5gwgQIG4o
-         Yk5g==
-X-Forwarded-Encrypted: i=1; AJvYcCX+5iS3igSAb+qLYoGQQiY/lVJcrZwlPlwC6KGgH4cbEV4YjQlgiBfig/VsAD5kyD8TM+bg1H7+nQan1g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUQVLEFItiPrrNkWyyFd/xSlQhI+Ue1Te3UPpPrYTSzJyZP4nn
-	TehhCFD7R1nqUDCk3Puy+nsTDWNqKVA6fEYRuQBZFFUZIsz2sToVvOiG
-X-Gm-Gg: ASbGncuixYU+E9TTXkgUG2+eGQno+yQcgG5zk8EysaSz5wzLa2C21uL7qpaR7AlgzNg
-	OurhZx24+LssW+spBhP1jRe96Nl43QLkpOFvBkckztMTamWNa6/ZOE47Iwd1J3m19nDkU6hwCGM
-	WVbB1RgFNO/nZDY6nw20Kr0wRWTt1GoblkRnYMUh7JumifYEw4ry60rpuKD2OqT3XrjKNLvxc2C
-	EuL/xR8A62e8Xs76saKszkCvAdwA9BZ1uTThku0sZGLty5LDU2IimKp1N4lmxrtybQeYLvphsni
-	MBXOvju5bjQ+xsNNNrd/H9Ml+xmdp/4IOCA0FC1eP649MIO5vrT60XYen+LbD6+VulDFd9RTBTj
-	sc1B0LeKWUah216ZA+qMZGSFPXUIi8uRV8KaIF+EqUzc60+8CWRrm0cxMyTSQn6teDI107FNtWn
-	brs7w14UeK+qa8N/Eh9M/V0HicbUCcLlUGgw==
-X-Google-Smtp-Source: AGHT+IEWKGgpG4bygNpHIXXHS+drqrBajcU0YO04sRLqgN88XMqQXO1fNHypxUPYrJHwXVPVd6DfFA==
-X-Received: by 2002:a05:6214:5183:b0:880:50dd:16fc with SMTP id 6a1803df08f44-8823795a980mr17441996d6.7.1762567837861;
-        Fri, 07 Nov 2025 18:10:37 -0800 (PST)
-Received: from localhost (69-171-146-205.rdns.distributel.net. [69.171.146.205])
-        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-882389916d4sm7346726d6.22.2025.11.07.18.10.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Nov 2025 18:10:37 -0800 (PST)
-From: Nicholas D Steeves <nsteeves@gmail.com>
-To: Andrei Borzenkov <arvidjaar@gmail.com>, linux-btrfs@vger.kernel.org
-Subject: Re: RAID1 vs RAID10
-In-Reply-To: <CAA91j0Wfg2uZptchB-aeaB44C+=igPMP-mZg6ovidmLs_dW4hg@mail.gmail.com>
-References: <20251020122115.GA1461277@tik.uni-stuttgart.de>
- <CAA91j0Wfg2uZptchB-aeaB44C+=igPMP-mZg6ovidmLs_dW4hg@mail.gmail.com>
-Date: Fri, 07 Nov 2025 21:10:34 -0500
-Message-ID: <87cy5txoit.fsf@gmail.com>
+	s=arc-20240116; t=1762582386; c=relaxed/simple;
+	bh=DgH5GUT7j3a/+liLaMLDQ+ppgc87s/ERzvidbBqi8Oc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bkikl/JRoX4zln4YTg/f/wrUrA+yGv5EE4xNA2rco9ct1p3/Ep5t5+ccuLWMtRTY0rjfC0TZpHDgxaxIbymlkTKFPAEjnUy3Pv5GTMV9SHITJvc/mS4ym28yzZzas4icQjD63IrTsk21HMoVa6qVLROFf7rJ/2/TH8os8YoZzn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=B+D3byKt; arc=none smtp.client-ip=62.210.214.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: from gaia.codewreck.org (localhost [127.0.0.1])
+	by submarine.notk.org (Postfix) with ESMTPS id A419014C2D3;
+	Sat,  8 Nov 2025 07:12:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org;
+	s=2; t=1762582373;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LTM5LkyL3mfB0IbHJeS1oRharyj4iNDNdaZ7y5irjmg=;
+	b=B+D3byKtJ5aLyRiu2rooP0B2TJlyh9NnWKaBHKY3oGl5WrI9R/ZTOokRqfrmQkRjA4d6PF
+	hVA+2jtaIxDHKJVm19YOlIu00RJFzbMjiJ2IJMY5v8SjTtfCjEZWBxEPfRtzuPasj++KiY
+	8Sahe5eVbfmwmhQeo5uzL3Rp7AKK7Nzr7m3ipU5qmaiTEStLej1x9iBcfVqKnY9WidAi8X
+	rwVB6qqUGBZMEcUSkoPWBbqf240gmgWcLbAb7B4RNHuho0O1rPy72OuweBfiXGGrgaJqO1
+	amO1aDXHVrMyRWIApKs7c+o9NFvUODZZvMkcXugNCGdZ2S65dzPgh2BACKmoHA==
+Received: from localhost (gaia.codewreck.org [local])
+	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id 26a2c8b4;
+	Sat, 8 Nov 2025 06:12:25 +0000 (UTC)
+Date: Sat, 8 Nov 2025 15:12:10 +0900
+From: Dominique Martinet <asmadeus@codewreck.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Sterba <dsterba@suse.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+	Chris Mason <clm@fb.com>, Xiubo Li <xiubli@redhat.com>,
+	Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>,
+	coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>,
+	Jeremy Kerr <jk@ozlabs.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>,
+	Yuezhang Mo <yuezhang.mo@sony.com>, Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Viacheslav Dubeyko <slava@dubeyko.com>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+	Muchun Song <muchun.song@linux.dev>,
+	Oscar Salvador <osalvador@suse.de>,
+	David Hildenbrand <david@redhat.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Dave Kleikamp <shaggy@kernel.org>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Bob Copeland <me@bobcopeland.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.org>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Bharath SM <bharathsm@microsoft.com>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Hans de Goede <hansg@kernel.org>, Carlos Maiolino <cem@kernel.org>,
+	Hugh Dickins <hughd@google.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <kees@kernel.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	NeilBrown <neilb@ownmail.net>, linux-kernel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-afs@lists.infradead.org, linux-btrfs@vger.kernel.org,
+	ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
+	ecryptfs@vger.kernel.org, linux-efi@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	gfs2@lists.linux.dev, linux-um@lists.infradead.org,
+	linux-mm@kvack.org, linux-mtd@lists.infradead.org,
+	jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev,
+	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org, linux-xfs@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2] vfs: remove the excl argument from the ->create()
+ inode_operation
+Message-ID: <aQ7fOmknHIxcxuha@codewreck.org>
+References: <20251107-create-excl-v2-1-f678165d7f3f@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
-
---=-=-=
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <20251107-create-excl-v2-1-f678165d7f3f@kernel.org>
 
-Andrei Borzenkov <arvidjaar@gmail.com> writes:
+Jeff Layton wrote on Fri, Nov 07, 2025 at 10:05:03AM -0500:
+> With two exceptions, ->create() methods provided by filesystems ignore
+> the "excl" flag.  Those exception are NFS and GFS2 which both also
+> provide ->atomic_open.
+> 
+> Since ce8644fcadc5 ("lookup_open(): expand the call of vfs_create()"),
+> the "excl" argument to the ->create() inode_operation is always set to
+> true in vfs_create(). The ->create() call in lookup_open() sets it
+> according to the O_EXCL open flag, but is never called if the filesystem
+> provides ->atomic_open().
+> 
+> The excl flag is therefore always either ignored or true.  Remove it,
+> and change NFS and GFS2 to act as if it were always true.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-> On Mon, Oct 20, 2025 at 3:23=E2=80=AFPM Ulli Horlacher
-> <framstag@rus.uni-stuttgart.de> wrote:
->>
->>
->> I have just discovered, that RAID1 is possible with more than 2 devices:
->>
->> https://btrfs.readthedocs.io/en/latest/mkfs.btrfs.html#profiles
->>
->> What is the difference to RAID10?
->>
->
-> In RAID1 each chunk (copy) is located on a single disk. In RAID10 each
-> chunk (copy) is striped across multiple disks.
->
-> https://lore.kernel.org/linux-btrfs/87v8qokryt.fsf@vps.thesusis.net/T/
+Good cleanup, just one whitespace nitpick below but:
+Reviewed-by: Dominique Martinet <asmadeus@codewreck.org>
 
-Does the RAID10 profile still have equivalent read-speed to RAID1
-profile on recent (>=3D6.12) kernels?  Last I looked into it both were
-still limited to the speed of a single-device.
 
-Regards,
-Nicholas
+> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+> index 4f13b01e42eb5e2ad9d60cbbce7e47d09ad831e6..7a55e491e0c87a0d18909bd181754d6d68318059 100644
+> --- a/Documentation/filesystems/vfs.rst
+> +++ b/Documentation/filesystems/vfs.rst
+> @@ -505,7 +505,10 @@ otherwise noted.
+>  	if you want to support regular files.  The dentry you get should
+>  	not have an inode (i.e. it should be a negative dentry).  Here
+>  	you will probably call d_instantiate() with the dentry and the
+> -	newly created inode
+> +        newly created inode. This operation should always provide O_EXCL
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+This and the block below change halfway from tab (old text) to spaces
+(your patch)
 
------BEGIN PGP SIGNATURE-----
+Looks like the file has a few space-indented sections though so it won't
+be the first if that goes in as is, the html-rendering doesn't seem to
+care :)
 
-iQJHBAEBCgAxFiEE4qYmHjkArtfNxmcIWogwR199EGEFAmkOppsTHG5zdGVldmVz
-QGdtYWlsLmNvbQAKCRBaiDBHX30QYYdGD/4iPf+MJQvxZBS7+78B1uaUSl4Ip4bC
-XCXivgOjf0mVYa0n//rDyRTddLlpmd1hjMNZ4yi65iTipJT6Ns5N9vl1L1Z7NNf4
-05RGSWfVHqx0QykxjEV4qn3HLlKbNx8UT2rYKz43EhexbdnkokLWp4iFEiiEc7rZ
-a/2/7mAGtRxsScy4DVqJS7nEN6JLoEcE3U7SOf/2V+kr5mAGUC5BwBO8lJNmcVPo
-/AH91zWiRly92JSbeud0Fgiwy7au4Fh/zwkq/ZiuhXspa9XK5ATlSXjVZMcTnH3n
-YXjiji+RjnlywbbFA3pYuFYHg++uv0wSCShr+Bd6Sv+wNajnb9leazvaQ/VbsdiS
-gjwM6IztVzE7+OOEEHb38HYg753k10h1vwPbm1Iq2M9kOkF+nPYCpWRno/c8G/LW
-j3HQ+Y3zrxPbONED0y8/LZ9GmlAEpylyGUYQWO9nGMldCJa6jkbRYqTJx23NY38Q
-quI4Crk2y1TA6RD2a+ksT7a/d7kEM6EV/krHAQDa8dwkkHEaZohoh2GQF1FCKcaW
-hUSFLUKcu6BMTY6Tfly24b4LCjXhEDg5ZgEr9RlTbNn/g4nX7QF5/PX4hSkjJJd4
-TV2WxrbUFTLPmYiLWvBTOIrvWwOxou8EjncJPaJHZbjJL49S9tLgI1P0clnO9Esy
-OBOJs4OrMSzu1g==
-=AU5S
------END PGP SIGNATURE-----
---=-=-=--
+Cheers,
+-- 
+Dominique Martinet | Asmadeus
 
