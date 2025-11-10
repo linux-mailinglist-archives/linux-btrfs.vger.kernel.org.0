@@ -1,296 +1,179 @@
-Return-Path: <linux-btrfs+bounces-18853-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18854-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02882C49A22
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Nov 2025 23:42:56 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53712C49AAD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Nov 2025 23:58:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFC7B3A3D71
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Nov 2025 22:42:54 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 90255349097
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Nov 2025 22:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F0A72D8DD0;
-	Mon, 10 Nov 2025 22:42:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334312FF172;
+	Mon, 10 Nov 2025 22:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="i9z4DSkd";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="i9z4DSkd"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dVbxv/c1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B25246788
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Nov 2025 22:42:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AF392ED16D
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Nov 2025 22:58:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762814569; cv=none; b=qZZJiZDyVcC5DxRFloO6to83/GR6iW+gwFqSu/iHZl95XiCL39iD3cmjLYwVx+YHtfD+0Tj1nNaUDMWRxEyrhc4bPUguz3InB2RojuHyHJCMRsKiFcxKVvjJk/HrUL6JbWM15e9NekHew6OTHoDaFHXrStu+3+Atl8PSzkPtz4s=
+	t=1762815506; cv=none; b=AobbjsUYdjF0CXmB2Xhl+7LuqQUZcG/dbqz0kuIU7lgYe4B0eBGRpxlRa7kbLvSRikGesZ6TFqiCZfgq7TzizvacfqqbQHcm5sJmUQjw7OsTiTyVPDRVNfqZk2ayy8R4IKyT7NrwRHRkyxlOAgeA1kRkjN2SAd8DY8DHiF2o5MQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762814569; c=relaxed/simple;
-	bh=BUCDBoiXeuTfUDGufUKO4h0BYpRyyLK/q6HydphGphw=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rwT9nswqKL3Uo+cVGDyd6K90JoJoTpABakFDvn5cnU3tNcqhtN+zwerRAPdF63Sfh4dJOyzEUPbC3rJltblNArQbhM12Me8IyDUrbSYdsIjKg5A8ua+oF/4KN0k9NLsotVCAIFY1i3VraKsCvgyfhTMPwirTQr9dw99VvEOkpT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=i9z4DSkd; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=i9z4DSkd; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1762815506; c=relaxed/simple;
+	bh=4Zq0UMva3MXovksJCu4wYZxAeL+wI5UDm9aNQ7yXFnM=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=BR7cz1MKV7eVES6XdGXRodMUKQADAqM2GsoarPPzT1WKOclhLufSL2zSY7jyaCvTs265v44DqmzahEepm3W0BhuooVoQbvmWinDSW4tl7fhNahesfPGTO4dXfLmhGhZcJzrs8Uz49YWecWDkZOEFuwiLbE9Mzi9I1ZoX3iyDDb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dVbxv/c1; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 60EE421EA7
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Nov 2025 22:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1762814548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=58nUARqHSqxAYAlTTN65ktHQuPWlcBtm0xOrwJLhHmU=;
-	b=i9z4DSkd/dRUqgzu2U0dJKGizhA43iG4tf64QBNMg8Zxf3qbWmrjijAIhDUxINUegIR57K
-	cPlFGxUjaBKtt0LVfUcPhGCPRntsc5ZjfA+EwckFAgfeuOYyYFQ14e1idhELS53L6VJl/h
-	+zzJbJ3I2Vcl2Eh/7RpC2im2FP5tbJU=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1762814548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=58nUARqHSqxAYAlTTN65ktHQuPWlcBtm0xOrwJLhHmU=;
-	b=i9z4DSkd/dRUqgzu2U0dJKGizhA43iG4tf64QBNMg8Zxf3qbWmrjijAIhDUxINUegIR57K
-	cPlFGxUjaBKtt0LVfUcPhGCPRntsc5ZjfA+EwckFAgfeuOYyYFQ14e1idhELS53L6VJl/h
-	+zzJbJ3I2Vcl2Eh/7RpC2im2FP5tbJU=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9E85C14623
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Nov 2025 22:42:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id oBFAGFNqEmk/agAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Nov 2025 22:42:27 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 4/4] btrfs: enable encoded read/write/send for bs > ps cases
-Date: Tue, 11 Nov 2025 09:12:01 +1030
-Message-ID: <0ababe5a839a4f33ff32d8baf3fc7be575fecc49.1762814274.git.wqu@suse.com>
-X-Mailer: git-send-email 2.51.2
-In-Reply-To: <cover.1762814274.git.wqu@suse.com>
-References: <cover.1762814274.git.wqu@suse.com>
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-477770019e4so26688985e9.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Nov 2025 14:58:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1762815502; x=1763420302; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dpfmoCs6eAY4BgxtY8OH9Y4P1ZuabskMON+3IkX2SBM=;
+        b=dVbxv/c1UZ9s8DvMwHh4ukrWVogm1lMasOfJEgfokBw4BMT4hBK83glJOOoiqlCqeD
+         fC8csIjGy0URGz4UomqL95yUJjJ8iGiFh2zR4m356S49ajXU3YePbt/X6ZYcuDGioO5C
+         2iUsl9qrMwTWvGbYgOBCFMSr3Hcdj+PMFKqfwSmfaM+a1KJLf3pzrSQG2F02I76M47uc
+         p7MXF9PDEnLnInqJQiGTFM9J9ifCTcZs/EIftlQWC9qIUnf+lOULEDs1zONlLZ4sXyft
+         eIGkOa8hJXD06+/POe6csHLycrHJFrcttflNDfpNuYaKrQDRE7VlefG1cPWuXfkUZfPv
+         2aFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762815502; x=1763420302;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dpfmoCs6eAY4BgxtY8OH9Y4P1ZuabskMON+3IkX2SBM=;
+        b=Y6hu1Xe5btb7aZgrpwu1udQT4UcvCMkzFtjUSYQozVEvIEgzIhqOs+yQsJV/SORyFg
+         qsNXp9z+G7jCXo3Uvyked5mh9sUTgPKXp/9qJX1H1EE+vN48xzenW/GyLM6Pf2agZo46
+         L4isW0TGxgozVuujmtAGGzNvPyG21VG684h18xNnxXiq+3OjsQ7iVtmCZEatUn75LacR
+         swj2d+0MS4ySDtdwyFwZfKz2bOC1r8MZun25smM49qrdaO2UceCmeWJgUZEmwIiNZcUH
+         SPUDPxy0827G/GjWBIWTzOXuQottIcsne5rKAR920in5BON4hh9CpilQNoGgUSVY0Fxs
+         O18A==
+X-Gm-Message-State: AOJu0YzjP72hrEwlNY3ryVYdF7MtCoVUhrZH3teW/mou+BHQ7128b5a+
+	ZrxXKmeiDsU5CvVvp/5Ouj39jAmPVlzA+Xf4TE+d0+azt/PpGJQ++Ir2cbF3SrCaVOGWn5xQK8T
+	ddwoT
+X-Gm-Gg: ASbGncvYxW6JH3TlsFZjSmh70Qh2w0v4wrARyX7u7oboTN/sXyhX90Gdq0QLgGxK3lI
+	HTQANumJ1tIxdOl3023Da/LSJJLf1wkP2eOnBwyJnMfcT8JwW5E0iJkhaW0EOLuvKr+Yh8SYJjq
+	6/eq/zIBtR8HPn4xxONyn4SUoHkTQM5jODYYrVsUfGB2LF8S79dvZn7e4ZXHA4rmTucPbepNslG
+	ZpgKWdyU3u4nwmWx2+LLGoE1kNN/ilG/XVVNCZR68GkSQ3WeXK+GskneSpfHM6hKl2CR/K1IyrW
+	fwXQb+MwOkh+RKbsiKdrVp/uaTI+5xPlLWXC6sCY562V1zB1rung36rq14pyIF82c1kpfGXSHC0
+	VG1GrsvG86oqgWKOjjVmQFPDcXTymlhMmoKB8pbLKILD2Ff+scIwGo2yGyLqrhdjYmOh98ftZjj
+	C6tEkQuVrvyeLwnhb3sW0ltT4245ru
+X-Google-Smtp-Source: AGHT+IGo4pZOW3UfAmNbDqn1zu4Q3JauZWeIzHzUSgXetvmLWYXRGA1RS+dtR88mzdnGhwtIKUBWtA==
+X-Received: by 2002:a05:600c:3b8b:b0:477:7a53:f493 with SMTP id 5b1f17b1804b1-4777a53f6bamr68288705e9.23.1762815502137;
+        Mon, 10 Nov 2025 14:58:22 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29651c93cebsm157821555ad.90.2025.11.10.14.58.20
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 Nov 2025 14:58:21 -0800 (PST)
+Message-ID: <7970eef9-0771-4634-bb9c-412c5a21879b@suse.com>
+Date: Tue, 11 Nov 2025 09:28:18 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] btrfs: reduce memory usage for btrfs_raid_bio
+ structure
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+References: <cover.1759984060.git.wqu@suse.com>
+Content-Language: en-US
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <cover.1759984060.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.72 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.12)[-0.584];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.72
-X-Spam-Level: 
 
-Since the read verification and read repair are all supporting bs > ps
-without large folios now, we can enable encoded read/write/send.
 
-Now we can relax the alignment in assert_bbio_alignment() to
-min(blocksize, PAGE_SIZE).
-But also add the extra blocksize based alignment check for the logical
-and length of the bbio.
 
-There is a pitfall in btrfs_add_compress_bio_folios(), which relies on
-the folios passed in to meet the minimal folio order.
-But now we can pass regular page sized folios in, update it to check
-each folio's size instead of using the minimal folio size.
+在 2025/10/9 15:09, Qu Wenruo 写道:
+> This series replace the following members of btrfs_raid_bio:
+> 
+> 	struct sector_ptr bio_sectors[nr_sectors]
+> 	struct sector_ptr stripe_sectors[nr_sectors]
+> 
+> To the following ones:
+> 
+> 	phys_addr_t bio_sectors[nr_sectors]
+> 	phys_addr_t stripe_sectors[nr_sectors]
+> 	unsigned long uptodate_bitmap[nr_sectors]
+> 
+> For x86_64 (4K page size) with the fixed 64K stripe size and 3 disks, the
+> memory usage of those members (not the full structure) will be reduced from:
+> 
+> 	8 * 2 + 48 * 16 * 2 = 1552
+> 
+> To
+> 	8 * 3 + 48 * 8 * 2 + 8 * 2 = 808
+> 
+> Almost halved the memory usage.
 
-This allows btrfs_add_compress_bio_folios() to even handle folios array
-with different sizes, thankfully we don't yet need to handle such crazy
-situation.
+A gentle ping.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/bio.c         | 22 ++++++++++++----------
- fs/btrfs/compression.c | 10 +++++-----
- fs/btrfs/ioctl.c       | 21 ---------------------
- fs/btrfs/send.c        |  9 +--------
- 4 files changed, 18 insertions(+), 44 deletions(-)
+Any feedback? Further bs > ps enablement relies on this as the first step.
 
-diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index fcd28eb68247..1b38e3ee0a33 100644
---- a/fs/btrfs/bio.c
-+++ b/fs/btrfs/bio.c
-@@ -867,21 +867,23 @@ static void assert_bbio_alignment(struct btrfs_bio *bbio)
- 	struct bio_vec bvec;
- 	struct bvec_iter iter;
- 	const u32 blocksize = fs_info->sectorsize;
-+	const u32 alignment = min(blocksize, PAGE_SIZE);
-+	const u64 logical = bbio->bio.bi_iter.bi_sector << SECTOR_SHIFT;
-+	const u32 length = bbio->bio.bi_iter.bi_size;
- 
--	/* Metadata has no extra bs > ps alignment requirement. */
--	if (!is_data_bbio(bbio))
--		return;
-+	/* The logical and length should still be aligned to blocksize. */
-+	ASSERT(IS_ALIGNED(logical, blocksize) && IS_ALIGNED(length, blocksize) &&
-+	       length != 0, "root=%llu inode=%llu logical=%llu length=%u",
-+	       btrfs_root_id(bbio->inode->root),
-+	       btrfs_ino(bbio->inode), logical, length);
- 
- 	bio_for_each_bvec(bvec, &bbio->bio, iter)
--		ASSERT(IS_ALIGNED(bvec.bv_offset, blocksize) &&
--		       IS_ALIGNED(bvec.bv_len, blocksize),
-+		ASSERT(IS_ALIGNED(bvec.bv_offset, alignment) &&
-+		       IS_ALIGNED(bvec.bv_len, alignment),
- 		"root=%llu inode=%llu logical=%llu length=%u index=%u bv_offset=%u bv_len=%u",
- 		btrfs_root_id(bbio->inode->root),
--		btrfs_ino(bbio->inode),
--		bbio->bio.bi_iter.bi_sector << SECTOR_SHIFT,
--		bbio->bio.bi_iter.bi_size, iter.bi_idx,
--		bvec.bv_offset,
--		bvec.bv_len);
-+		btrfs_ino(bbio->inode), logical, length, iter.bi_idx,
-+		bvec.bv_offset, bvec.bv_len);
- #endif
- }
- 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index ef6e4d1662cc..2c94432c2791 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -342,21 +342,21 @@ static void end_bbio_compressed_write(struct btrfs_bio *bbio)
- 
- static void btrfs_add_compressed_bio_folios(struct compressed_bio *cb)
- {
--	struct btrfs_fs_info *fs_info = cb->bbio.inode->root->fs_info;
- 	struct bio *bio = &cb->bbio.bio;
- 	u32 offset = 0;
-+	unsigned int findex = 0;
- 
- 	while (offset < cb->compressed_len) {
--		struct folio *folio;
--		int ret;
-+		struct folio *folio = cb->compressed_folios[findex];
- 		u32 len = min_t(u32, cb->compressed_len - offset,
--				btrfs_min_folio_size(fs_info));
-+				folio_size(folio));
-+		int ret;
- 
--		folio = cb->compressed_folios[offset >> (PAGE_SHIFT + fs_info->block_min_order)];
- 		/* Maximum compressed extent is smaller than bio size limit. */
- 		ret = bio_add_folio(bio, folio, len, 0);
- 		ASSERT(ret);
- 		offset += len;
-+		findex++;
- 	}
- }
- 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index b524db8a4973..1920caf8d308 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4408,10 +4408,6 @@ static int btrfs_ioctl_encoded_read(struct file *file, void __user *argp,
- 		goto out_acct;
- 	}
- 
--	if (fs_info->sectorsize > PAGE_SIZE) {
--		ret = -ENOTTY;
--		goto out_acct;
--	}
- 	if (compat) {
- #if defined(CONFIG_64BIT) && defined(CONFIG_COMPAT)
- 		struct btrfs_ioctl_encoded_io_args_32 args32;
-@@ -4503,7 +4499,6 @@ static int btrfs_ioctl_encoded_read(struct file *file, void __user *argp,
- 
- static int btrfs_ioctl_encoded_write(struct file *file, void __user *argp, bool compat)
- {
--	struct btrfs_fs_info *fs_info = inode_to_fs_info(file->f_inode);
- 	struct btrfs_ioctl_encoded_io_args args;
- 	struct iovec iovstack[UIO_FASTIOV];
- 	struct iovec *iov = iovstack;
-@@ -4517,11 +4512,6 @@ static int btrfs_ioctl_encoded_write(struct file *file, void __user *argp, bool
- 		goto out_acct;
- 	}
- 
--	if (fs_info->sectorsize > PAGE_SIZE) {
--		ret = -ENOTTY;
--		goto out_acct;
--	}
--
- 	if (!(file->f_mode & FMODE_WRITE)) {
- 		ret = -EBADF;
- 		goto out_acct;
-@@ -4803,11 +4793,6 @@ static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd, unsigned int issue
- 		ret = -EPERM;
- 		goto out_acct;
- 	}
--	if (fs_info->sectorsize > PAGE_SIZE) {
--		ret = -ENOTTY;
--		goto out_acct;
--	}
--
- 	sqe_addr = u64_to_user_ptr(READ_ONCE(cmd->sqe->addr));
- 
- 	if (issue_flags & IO_URING_F_COMPAT) {
-@@ -4935,7 +4920,6 @@ static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd, unsigned int issue
- static int btrfs_uring_encoded_write(struct io_uring_cmd *cmd, unsigned int issue_flags)
- {
- 	struct file *file = cmd->file;
--	struct btrfs_fs_info *fs_info = inode_to_fs_info(file->f_inode);
- 	loff_t pos;
- 	struct kiocb kiocb;
- 	ssize_t ret;
-@@ -4950,11 +4934,6 @@ static int btrfs_uring_encoded_write(struct io_uring_cmd *cmd, unsigned int issu
- 		ret = -EPERM;
- 		goto out_acct;
- 	}
--	if (fs_info->sectorsize > PAGE_SIZE) {
--		ret = -ENOTTY;
--		goto out_acct;
--	}
--
- 	sqe_addr = u64_to_user_ptr(READ_ONCE(cmd->sqe->addr));
- 
- 	if (!(file->f_mode & FMODE_WRITE)) {
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 9312d74400a3..fa94105e139a 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -5634,14 +5634,7 @@ static int send_extent_data(struct send_ctx *sctx, struct btrfs_path *path,
- 
- 	ei = btrfs_item_ptr(leaf, path->slots[0],
- 			    struct btrfs_file_extent_item);
--	/*
--	 * Do not go through encoded read for bs > ps cases.
--	 *
--	 * Encoded send is using vmallocated pages as buffer, which we can
--	 * not ensure every folio is large enough to contain a block.
--	 */
--	if (sctx->send_root->fs_info->sectorsize <= PAGE_SIZE &&
--	    (sctx->flags & BTRFS_SEND_FLAG_COMPRESSED) &&
-+	if ((sctx->flags & BTRFS_SEND_FLAG_COMPRESSED) &&
- 	    btrfs_file_extent_compression(leaf, ei) != BTRFS_COMPRESS_NONE) {
- 		bool is_inline = (btrfs_file_extent_type(leaf, ei) ==
- 				  BTRFS_FILE_EXTENT_INLINE);
--- 
-2.51.2
+Thanks,
+Qu
+
+> 
+> The memory saving comes from:
+> 
+> - Compat sector_ptr::uptodate bit into a bitmap
+>    This not only saves space, but also allow us to call bitmap_*()
+>    helpers when we need to set multiple bits in one go (mostly for
+>    subpage cases)
+> 
+> - Remove sector_ptr::uptodate flag
+>    We can use a special paddr (not NULL though) to indicate if the paddr
+>    is valid or not.
+> 
+> - Get rid of sector_ptr
+>    That structure has extra bits that take a full byte for each flag.
+>    This is the biggest space saving.
+> 
+> Qu Wenruo (3):
+>    btrfs: raid56: remove sector_ptr::has_paddr member
+>    btrfs: raid56: move sector_ptr::uptodate into a dedicated bitmap
+>    btrfs: raid56: remove sector_ptr structure
+> 
+>   fs/btrfs/raid56.c | 347 ++++++++++++++++++++++------------------------
+>   fs/btrfs/raid56.h |  17 +--
+>   2 files changed, 168 insertions(+), 196 deletions(-)
+> 
 
 
