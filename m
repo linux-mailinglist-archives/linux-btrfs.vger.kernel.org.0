@@ -1,153 +1,136 @@
-Return-Path: <linux-btrfs+bounces-18826-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18827-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 755C2C47BA2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Nov 2025 16:58:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25418C4844D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Nov 2025 18:19:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99F873B67B0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Nov 2025 15:43:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 391D63A53B1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Nov 2025 17:15:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80AF272801;
-	Mon, 10 Nov 2025 15:40:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76DD28D82A;
+	Mon, 10 Nov 2025 17:15:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yXaG3Q68";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="720y12/j";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yXaG3Q68";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="720y12/j"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="SUQYKBHf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91F1626461F
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Nov 2025 15:40:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 709BE26C39F
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Nov 2025 17:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762789245; cv=none; b=KhAsZU0Qm8HF+xutEdNYMeebCEYfbfWjR2/nkskzhfdY1Rt9UzLg6I0Jod38+fowyZ6BQtVRwrmCBN0kEJPnFItL0GEm/+pTyatGtXcf8FNfcEUCEiyMKCe+CSYM5BLZc13VOhGy5rZg8neg5WgR8HS1MSnzHt9era2wXlPk1fw=
+	t=1762794926; cv=none; b=Pff/c3k3DKmK47aBJ3XXA71wT0b6cFvZ6TDtTeCZwkAa51Kf2HZni958OisYxJxac7ILJEgGxd3SKv0w7wIW4AjYxhq5paEc1+LvF14/pdiSHd0UGmCp4MVhjzg4tZQCsuBqW4furnqrJ+mTu5pzyPTxYrOebT1MGE8PigKXYYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762789245; c=relaxed/simple;
-	bh=bakk/x+7ivr5WFpTz4ZoP8PZs34SMamXYUTpTCCzxQI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hmoYGTqgTukXh4SAhUyIjmMnFOs2XVv9x6v4ExK3D45JG4wLZK+PF8DjjGIk9vCFIUfEJMTSIlgChkNvwJrf557JSNn0y/D6pHNGQKyhayOPu/6v62KAemXFv/SV9JBlIELwjHhAOMGorYPW7+q78pCauv6P8cGE2cxsVgU4pc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yXaG3Q68; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=720y12/j; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yXaG3Q68; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=720y12/j; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	s=arc-20240116; t=1762794926; c=relaxed/simple;
+	bh=inhLVPSgyPAI5eTcz6ZStSCWeWLPfuhNblAjLRzskbk=;
+	h=From:To:Cc:Subject:Date:Message-ID:Mime-Version; b=GGm6HseDZM6QbLIGHBUzDYf3fMwB4MSDVq2iyxi8ZH5MR5Lj9rxmguDhfXfUlKnmUCwLDKN/0wCnIcVImzAj/sQMe5FlzRUDBvP2+Yp7A1ouvn+ue0FR1SnmB9icDu41x67PQgIWpGnFfbi1dnf/iSd840FVBeOMVSNxdOPA0vg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=SUQYKBHf; arc=none smtp.client-ip=217.169.27.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
+Received: from beren (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C982333808;
-	Mon, 10 Nov 2025 15:40:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762789241;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vlrsgtG09qGxjpAiJIYhoUiJYVdUj4Y2K3a+i4ch7w8=;
-	b=yXaG3Q68faWw+PJet4VjKz/N90j3Zyv0h81QrYibJsWUhPlHNlVWU040Ag7+BcJvZYctUv
-	ILapRWLX0HSFR28/hjWTu/qIl9CkRypv11TWs1SF+ViB/uVnJaBnp/tO83IDqcDOj9a3gF
-	K61iM7Rvu6dRCe/mKC3G17NW+Nadjz8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762789241;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vlrsgtG09qGxjpAiJIYhoUiJYVdUj4Y2K3a+i4ch7w8=;
-	b=720y12/jGmSEA4LtosPDCijz87kMQDrMdien6pV8aJ/CNH47ouqvxo5Qwken1WQZcxsqWk
-	A1Zt3q807NRUGJDA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1762789241;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vlrsgtG09qGxjpAiJIYhoUiJYVdUj4Y2K3a+i4ch7w8=;
-	b=yXaG3Q68faWw+PJet4VjKz/N90j3Zyv0h81QrYibJsWUhPlHNlVWU040Ag7+BcJvZYctUv
-	ILapRWLX0HSFR28/hjWTu/qIl9CkRypv11TWs1SF+ViB/uVnJaBnp/tO83IDqcDOj9a3gF
-	K61iM7Rvu6dRCe/mKC3G17NW+Nadjz8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1762789241;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vlrsgtG09qGxjpAiJIYhoUiJYVdUj4Y2K3a+i4ch7w8=;
-	b=720y12/jGmSEA4LtosPDCijz87kMQDrMdien6pV8aJ/CNH47ouqvxo5Qwken1WQZcxsqWk
-	A1Zt3q807NRUGJDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ACA131447D;
-	Mon, 10 Nov 2025 15:40:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id /DP5KXkHEmlfVwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 10 Nov 2025 15:40:41 +0000
-Date: Mon, 10 Nov 2025 16:40:32 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org, tytso@mit.edu,
-	torvalds@linux-foundation.org, josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] btrfs: utilize IOP_FASTPERM_MAY_EXEC
-Message-ID: <20251110154032.GY13846@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20251107142149.989998-1-mjguzik@gmail.com>
- <20251107142149.989998-3-mjguzik@gmail.com>
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.burntcomma.com (Postfix) with ESMTPSA id 936E32D8F88;
+	Mon, 10 Nov 2025 17:15:14 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
+	s=mail; t=1762794914;
+	bh=5KKF8FNz3nu/bk89d0JNZQERvlOKRzLgaMwDg0tVS9k=;
+	h=From:To:Cc:Subject:Date;
+	b=SUQYKBHfYkpUdZGtvqhDuJygvHNOXoxI3ERL5dF2SZ4G2Pvi2mCqKp4LDIYShsM3l
+	 8ADtX19Hqq4T4jdOKYjK+hL364bPeb2B0p/snTKKooJerQCzzxLGzOyHUBb8i+aHHu
+	 7By1m8znb2sgft2NJ6i0vFO63FyVfmq7WsfnUPi4=
+From: Mark Harmstone <mark@harmstone.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Mark Harmstone <mark@harmstone.com>
+Subject: [PATCH v5 00/16] Remap tree
+Date: Mon, 10 Nov 2025 17:14:24 +0000
+Message-ID: <20251110171511.20900-1-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251107142149.989998-3-mjguzik@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.com:email,twin.jikos.cz:mid];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
-X-Spam-Level: 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Fri, Nov 07, 2025 at 03:21:48PM +0100, Mateusz Guzik wrote:
-> Root filesystem was ext4, btrfs was mounted on /testfs.
-> 
-> Then issuing access(2) in a loop on /testfs/repos/linux/include/linux/fs.h
-> on Sapphire Rapids (ops/s):
-> 
-> before: 3447976
-> after:	3620879 (+5%)
-> 
-> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+This is version 4 of the patch series for the new logical remapping tree
+feature - see the previous cover letters for more information including
+the rationale:
 
-Thanks.
+* RFC: https://lore.kernel.org/all/20250515163641.3449017-1-maharmstone@fb.com/
+* Version 1: https://lore.kernel.org/all/20250605162345.2561026-1-maharmstone@fb.com/
+* Version 2: https://lore.kernel.org/all/20250813143509.31073-1-mark@harmstone.com/
+* Version 3: https://lore.kernel.org/all/20251009112814.13942-1-mark@harmstone.com/
+* Version 4: https://lore.kernel.org/all/20251024181227.32228-1-mark@harmstone.com/
 
-Acked-by: David Sterba <dsterba@suse.com>
+Changes since v4:
+* Addressed various minor issues pointed out by Boris
+* Added should_relocate_using_remap_tree() helper function
+* Now errors out on mount if we try to use remap tree when bs > ps
+* remove_range_from_remap_tree() simplified
+* Fixed assert in btrfs_free_block_groups(), when fully_remapped_bgs
+  list not empty
+* Replace BTRFS_BLOCK_GROUP_STRIPE_REMOVAL_PENDING flag with scanning
+  for this on mount
+* Fixed refcounting bug in btrfs_trim_fully_remapped_block_group()
+* Rebased for recent changes to btrfs_bio_alloc()
+
+Mark Harmstone (16):
+  btrfs: add definitions and constants for remap-tree
+  btrfs: add REMAP chunk type
+  btrfs: allow remapped chunks to have zero stripes
+  btrfs: remove remapped block groups from the free-space tree
+  btrfs: don't add metadata items for the remap tree to the extent tree
+  btrfs: add extended version of struct block_group_item
+  btrfs: allow mounting filesystems with remap-tree incompat flag
+  btrfs: redirect I/O for remapped block groups
+  btrfs: handle deletions from remapped block group
+  btrfs: handle setting up relocation of block group with remap-tree
+  btrfs: move existing remaps before relocating block group
+  btrfs: replace identity remaps with actual remaps when doing
+    relocations
+  btrfs: add do_remap param to btrfs_discard_extent()
+  btrfs: allow balancing remap tree
+  btrfs: handle discarding fully-remapped block groups
+  btrfs: populate fully_remapped_bgs_list on mount
+
+ fs/btrfs/Kconfig                |    2 +
+ fs/btrfs/accessors.h            |   29 +
+ fs/btrfs/bio.c                  |    3 +-
+ fs/btrfs/bio.h                  |    3 +
+ fs/btrfs/block-group.c          |  316 ++++-
+ fs/btrfs/block-group.h          |   25 +-
+ fs/btrfs/block-rsv.c            |    8 +
+ fs/btrfs/block-rsv.h            |    1 +
+ fs/btrfs/discard.c              |   57 +-
+ fs/btrfs/disk-io.c              |  121 +-
+ fs/btrfs/extent-tree.c          |  138 ++-
+ fs/btrfs/extent-tree.h          |    3 +-
+ fs/btrfs/free-space-cache.c     |   87 +-
+ fs/btrfs/free-space-cache.h     |    1 +
+ fs/btrfs/free-space-tree.c      |    4 +-
+ fs/btrfs/free-space-tree.h      |    5 +-
+ fs/btrfs/fs.h                   |   10 +-
+ fs/btrfs/inode.c                |    2 +-
+ fs/btrfs/locking.c              |    1 +
+ fs/btrfs/relocation.c           | 1904 +++++++++++++++++++++++++++++--
+ fs/btrfs/relocation.h           |   19 +
+ fs/btrfs/space-info.c           |   22 +-
+ fs/btrfs/sysfs.c                |    4 +
+ fs/btrfs/transaction.c          |   11 +
+ fs/btrfs/tree-checker.c         |   94 +-
+ fs/btrfs/tree-checker.h         |    5 +
+ fs/btrfs/volumes.c              |  283 ++++-
+ fs/btrfs/volumes.h              |   18 +-
+ include/uapi/linux/btrfs.h      |    1 +
+ include/uapi/linux/btrfs_tree.h |   29 +-
+ 30 files changed, 2939 insertions(+), 267 deletions(-)
+
+-- 
+2.51.0
+
 
