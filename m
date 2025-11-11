@@ -1,107 +1,111 @@
-Return-Path: <linux-btrfs+bounces-18859-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18860-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAEA2C4CBC5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Nov 2025 10:43:20 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id A670EC4D447
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Nov 2025 12:03:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FF97188AF88
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Nov 2025 09:42:44 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 11ED74FC98A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Nov 2025 10:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A58442F2618;
-	Tue, 11 Nov 2025 09:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17AA351FB0;
+	Tue, 11 Nov 2025 10:51:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V72njAGQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QpaERnuM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B2E221FBF;
-	Tue, 11 Nov 2025 09:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D5A43587D0
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Nov 2025 10:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762854128; cv=none; b=QJslxRnJ3y4kd6yi/56e4vqXb6DOYVyEjYD6V54x8G6nWmLsBP8YaLHhZN5krdwVqYLxb22VTE5T4o8LLJ3jOYtrb5263f30yNo/yt7Rbemvap8YZVD0x3W1OM8fnnZsNQIrAcc0pILXVeJbNCaHS5dZJ33lxeQ111lnz+cqJlk=
+	t=1762858294; cv=none; b=QIDFG8A0HFSjBFM8KToLVHkxDjN1GJUV9gFMVPnPISasOA6QZXhWL16emd92NtStQn4GSS4Et9JkKI7eGztjEGNKHexZI5zRnKfXcbqpTArr5GYEIMR+dgs+x4gifWaIZdIiG9IzN0byuRipa9ix9QV5NpPgvTXw0JXZYzNMPoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762854128; c=relaxed/simple;
-	bh=nkOExo96s2hxfPSIrdzXcnwfH+qx2wZ532PcFs6PPvs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uvFyxIpz+JVq8IKhexArd+PgaPCabz0HPoiLoVB3GgmlUYu9sbNHVI0CNZn6RUggH3MbI8ypl3QMEo9CMhBtV8R3ldYNZAkmJgGkFaZs9+gG4Dwy0rF3euGT5u127FZPbzv5VtJv0HnXmqx55nq+pKyimFfSHUUhNw9Ua7IE4kw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V72njAGQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDD98C116B1;
-	Tue, 11 Nov 2025 09:42:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762854128;
-	bh=nkOExo96s2hxfPSIrdzXcnwfH+qx2wZ532PcFs6PPvs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=V72njAGQ7zSNksaeixnxUDvKYSEgW8nxnTX0Kaduk8lrHbDyBtz/Q+1esA5yp5Qes
-	 YD9vwmVs6H3oLlQufPxVG3UBan/BJfjbl9R9l3wdcasOYKougEuZQm+xDPaJx+BtVV
-	 xqUI7DMSDvs7wPFBO2ASL933FuyP+eVgacn2IzpqqcfXJT8XdeFPZ0xNLsvjkKeqdO
-	 r0d3Tc2yPq1jhxPd9VYp75WOoP6AIyFhUKjIOgAxS2hQNlF/pcI9WtDyumz0m5+JfA
-	 6qCMj5CeA8Ua3cne5Wf83GoiVA84LOkyndS25KowkIvMlvtpGHMhhaGY74Q3D4fVPh
-	 /wIAae+rYz3GA==
-From: Christian Brauner <brauner@kernel.org>
-To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	viro@zeniv.linux.org.uk,
-	jack@suse.cz,
-	linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	tytso@mit.edu,
-	torvalds@linux-foundation.org,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] cheaper MAY_EXEC handling for path lookup
-Date: Tue, 11 Nov 2025 10:42:02 +0100
-Message-ID: <20251111-brillant-umgegangen-e7c891513bce@brauner>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251107142149.989998-1-mjguzik@gmail.com>
-References: <20251107142149.989998-1-mjguzik@gmail.com>
+	s=arc-20240116; t=1762858294; c=relaxed/simple;
+	bh=vPr1scoxGtbmI1TsSsArbT+P8jwt6C9MLoZFTdOfUEA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ravna8fg6U+Jnl4vKrFm1cEBReFiHqhaeslhvQhId5grnVhrUy4FBWsFYzLMKErpfiV8eGae1yjpZsNDprHxl16wC2fW9EeLRt4w5YJy4c/7WlH+WeXhwHKTXuvUfk9f+aq0tWdrbtXG8/EzyUAebBk73mVanQd3/GCj/aPI3ZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QpaERnuM; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-b72b495aa81so481996466b.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Nov 2025 02:51:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762858290; x=1763463090; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JyRA6gYtZbT9Mw3sUgTpl2KwYTBM16vhFluIQHKp75o=;
+        b=QpaERnuMTABIskdkD5nmVq7dv34QFBIgaFwvrvRl9fVlr1DbCtHz5B1oHoz4bL2ieE
+         JoQvn992ASDqXAknpRQOKOICUcW63r/nsl5ThTnTVhDFsvudLTejokGkmtXn7O4uc8gc
+         QuyCVll6QY+hPt61DjQBFSBbBpPdXEI9AJZs82IdRe0q7cs9Ygz8xhOY+UkWJYE+hAx7
+         NofMT2tHNoEj1l0Bygb7UMR97Hn4dc076EInKbbJ5qY+GbzsQZLofHEMa/MejlsuPA34
+         yiddEybSXJN7Gnm/Ar+UljD9gkYOjb79ECQi8q8RqxRmSvUx1/mZvD2JU/WypfTPC8zO
+         0tvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762858290; x=1763463090;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=JyRA6gYtZbT9Mw3sUgTpl2KwYTBM16vhFluIQHKp75o=;
+        b=chuHU2BpL3V+ArE/z1D54i3vbOzxF9B9UOxjZuPAfTTzjPkvGev1b6AQlFK6SThpTw
+         c2qUeofp4+uEhLAVr9ytON4PfQb+vbRJprp1HQtPG4ef7jZX/LvAVyFIMlqpGhLI5qZy
+         vXmKPBxM7OPq+QVSgIOUD8vrx71JyQO7IBHISIKQB59GjYS3a9QegxFL+Ycq0Jw9ow7V
+         E3s3b+tETMclNa/IpkisOVVDx6L759r0nk80bqFrSxsIzTKEy4mNzxT3xqCCJYFvG4NE
+         0sAqubXq3GqEQCs4RcGh9XXAGNWVd/jnBydvtnWbpOGKAUwbmjqSCCR5YBjGBu4hSX/f
+         U1ug==
+X-Forwarded-Encrypted: i=1; AJvYcCW7HN4cULncdUABI0FokoFG+Aa6p39rCQpR5L7pc8tkzDe0J236meX56ombYM0Zyg+y/avKTmXwm+EuvQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyaAan8jl/hbii4rBMI91HLgk4lvk3dGni67o2txZKJpnnj8Qu4
+	IqsaFeieAUCaVvuIfWbCNcMrNDjIrLH+sRijJ3b169dT4XZIOA3HsIHN/pWfuXw2TTk/YTP9bG1
+	frkvAT9KLvwH86+b3ADWTBKXt44zywiw=
+X-Gm-Gg: ASbGncszXVD9xVmAz+09ooTnUmU+6Qrldze89j+kOqC2gsD5yVihoEn+VRd8aB53ayA
+	r+zlUKZjRnEqLUu06sqLXInNJU3m0yQ4XIMOZHZVG9uSoFERUTBQdhY5gWEXfGQuvQ+WAquH3Ti
+	tleXdHbHP2QLwFiSMg11QJl3Y7Q8BPFDZF10m/i58y+f6gZEHwU57q7cF2fJ6qk/5S76cgo/hUi
+	B22IrBAcgIfL2KQzWS6+7mkMWABElCeVZY5lmWQP4yF/7Q2PAhU6Bxv211DiyJe8jAgg03dNuGa
+	cgLvAyiO3ts5RuWKeZf6WNtY8g==
+X-Google-Smtp-Source: AGHT+IFP90bpnxcRJbh5J12wLzHjlkCHBBywRDplR18eZEpmH4Rt7zS3FsYlYjWxsSba+YDC3P23rVwO6aIRX36AZeo=
+X-Received: by 2002:a17:907:a0c8:b0:b3f:9b9c:d49e with SMTP id
+ a640c23a62f3a-b72e053f2b5mr1192133066b.57.1762858290266; Tue, 11 Nov 2025
+ 02:51:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1506; i=brauner@kernel.org; h=from:subject:message-id; bh=nkOExo96s2hxfPSIrdzXcnwfH+qx2wZ532PcFs6PPvs=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQKs7yOmLn4h1rdtr3zjn3WPy4euS9vC7/NT2lDdqWG5 fFlTPFTO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACay7xfD/3TDW9YRpcePF6QW X5W8bPd8m/fqtJbpyx+z/uA4VbCZU43hf8KPwK/qdmIzXv6pupPwO3Zjzbw3kRKr3t+X2Dd7yRu xclYA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+References: <20251107142149.989998-1-mjguzik@gmail.com> <20251107142149.989998-2-mjguzik@gmail.com>
+ <20251111-zeitablauf-plagen-8b0406abbdc6@brauner>
+In-Reply-To: <20251111-zeitablauf-plagen-8b0406abbdc6@brauner>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Tue, 11 Nov 2025 11:51:17 +0100
+X-Gm-Features: AWmQ_bnCfFeVSWAwyetntRCBd7NVaEKInyv2_DDSmZq9FVu_iIxSbOqFI30GDbo
+Message-ID: <CAGudoHEXQb0yYG8K10HfLdwKF4s7jKpdYHJxsASDAvkrTjd0bw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] fs: speed up path lookup with cheaper handling of MAY_EXEC
+To: Christian Brauner <brauner@kernel.org>
+Cc: viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, tytso@mit.edu, 
+	torvalds@linux-foundation.org, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 07 Nov 2025 15:21:46 +0100, Mateusz Guzik wrote:
-> Commit message in patch 1 says it all.
-> 
-> In short, MAY_WRITE checks are elided.
-> 
-> This obsoletes the idea of pre-computing if perm checks are necessary as
-> that turned out to be too hairy. The new code has 2 more branches per
-> path component compared to that idea, but the perf difference for
-> typical paths (< 6 components) was basically within noise. To be
-> revisited if someone(tm) removes other slowdowns.
-> 
-> [...]
+On Tue, Nov 11, 2025 at 10:41=E2=80=AFAM Christian Brauner <brauner@kernel.=
+org> wrote:
+>
+> On Fri, Nov 07, 2025 at 03:21:47PM +0100, Mateusz Guzik wrote:
+> > +     if (unlikely(((inode->i_mode & 0111) !=3D 0111) || !no_acl_inode(=
+inode)))
+>
+> Can you send a follow-up where 0111 is a constant with some descriptive
+> name, please? Can be local to the file. I hate these raw-coded
+> permission masks with a passion.
+>
 
-Applied to the vfs-6.19.misc branch of the vfs/vfs.git tree.
-Patches in the vfs-6.19.misc branch should appear in linux-next soon.
+#define UNIX_PERM_ALL_X 0111?
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-6.19.misc
-
-[1/3] fs: speed up path lookup with cheaper handling of MAY_EXEC
-      https://git.kernel.org/vfs/vfs/c/5ecf656231cc
-[2/3] btrfs: utilize IOP_FASTPERM_MAY_EXEC
-      https://git.kernel.org/vfs/vfs/c/d0231059c7f2
-[3/3] fs: retire now stale MAY_WRITE predicts in inode_permission()
-      https://git.kernel.org/vfs/vfs/c/e3059792dec1
+I have no opinion about hardcoding this vs using a macro, but don't
+have a good name for that one either.
 
