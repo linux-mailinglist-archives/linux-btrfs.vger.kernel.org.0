@@ -1,291 +1,291 @@
-Return-Path: <linux-btrfs+bounces-18891-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18892-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1881C51BF8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Nov 2025 11:46:38 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94E03C525F2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Nov 2025 14:04:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81CD21891FE5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Nov 2025 10:47:03 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4CA474F2153
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Nov 2025 12:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A39343054F0;
-	Wed, 12 Nov 2025 10:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4A1335081;
+	Wed, 12 Nov 2025 12:58:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Xbp+LTRC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i6HGL7ih"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C55E283FC8
-	for <linux-btrfs@vger.kernel.org>; Wed, 12 Nov 2025 10:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2A8335573
+	for <linux-btrfs@vger.kernel.org>; Wed, 12 Nov 2025 12:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762944386; cv=none; b=JCSVyQHsNJY36dGJ6tBpVjsEbsJsLkkBdvsAR13h8kUs6/AQHopeUetUvbxU187mAZ8A30cxV499jNLnXaOnzKXBR2bqm/5M46RlDCOjshmFfyjZutnvcszBHxmpp8TCRMMOm9K5uS0oeDKLpVFu4c9fFTMszWz/fcHmH1hIm9g=
+	t=1762952285; cv=none; b=fB0ovFzSMH0BXEXl8PPvaojKH5XF7OJt9SETrwiBOtBNNDhRIT1UK9iFLYvM7Vw1rm9K4VXd+8wpkRqJGSbCM1GZHQrAOxk2L9xF84Xkc8+2lhbYN8ALL/LD6PU5+HrZs0k49wolmWTgRwdBydeNh88J1n0PliweVPNWQSZ6jBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762944386; c=relaxed/simple;
-	bh=iAXLEf2KONU7wipnDgUv2QDbydQrYLVO4nzVULNLE3k=;
+	s=arc-20240116; t=1762952285; c=relaxed/simple;
+	bh=OJqb7hcCVCATS+NwaBtUqvxCSldXlk6yXwKUdVzR5fo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rZsBByDC5U2ltxhl5Dcycbpf8m19Mk6WYwpZshc3fPWYHcYNM4KidrMGVI+uckKPSMZjnE5hgHqCWoq7RPIZUHvQc+KapljBsfyY949uBrJD5WiTmQtMDYYsEunwj88JkKEfiEJAyWOt4D+xdg0isLA6M+JTdyVpuihivuv+SEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Xbp+LTRC; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-42b31507ed8so539376f8f.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Nov 2025 02:46:24 -0800 (PST)
+	 To:Cc:Content-Type; b=o9z5QxEZzObeNLW5DWsdKem0/YW17t7ySrP/Uw957Yi/V4P28AKu7wUQdrnNmVa9Jka2/vZ71xsLsvjfsmLHItNYMEe/9XjyPJK3WRktnEORInaQzuH2C4KTMpKlrqUdBsQxtmKgePY49r0T3vBxZNpiOuTotikby4B7JseFjII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i6HGL7ih; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-8b25dd7ab33so52774985a.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Nov 2025 04:58:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762944383; x=1763549183; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1762952281; x=1763557081; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sELBzzgBJhbl02XdfylT2+DRwcAyHP22ijYke7oVctY=;
-        b=Xbp+LTRCQbmI4mmQ25UIR9tQRxNr2yiDyn42wRm4cw2CDRCa5YEZbJVozewik/2Eer
-         AGnuoRcfJAaMqTcZUNHDDd5/6fg/DPqv1DHU4KgOenzGdnc8l4OkeLkxAHgjAy1xm4kd
-         UmMPq5XQiRyh0oUOQgFNFcOwhjtFfoxNIDtzbEK6O3IN5/LePAowmvwhOhWHbywpu6LS
-         2YEaq7bco/ZTaOmSStJiyMBtU7bg2vSqmrUN5Yv65xqjelGoF+r0X4EJi8WrnhFYwj7K
-         eC3ZmpH8xlbKLEYN8jaUNm9N2vkT5KbUNNFWRR4QyZe1BtLptT9hus6ypZ9EaFmqmy8y
-         NX8g==
+        bh=jHpvngHljn1F0LuTtU7l2ayO8AhP1d867pfBL0HEAZM=;
+        b=i6HGL7ihwK6AUQbEJmO5xhhWzpYBXDSa2B3cz0ThZOXSubzAYFX/3d0a0f6v6gg7+/
+         FqmVC1J/wv/VCa5hbpkNbPeyUXswj2sF2VWMTjbv3oP1teq+iPOL29tJV3ePctbF86Ro
+         lZc6PynBzrVaL8apud3twwdbtjlyZxqWqOnPxPQzm/K/oz+vpWrcKoxHcGV8SZ/dIlsg
+         9vEmVTTSZTnxYBP0W7b6xfXx33g8F/speWIBgDqkn5tYZZHRRf/LKFftpPvlOsAbmW7H
+         IpvzNiKdCcyrkO+ulEFhaPts8pM9q/YfOCcuVC6Kr34/Fegg2pGkI6cPchN/yKnd38vZ
+         1/fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762944383; x=1763549183;
+        d=1e100.net; s=20230601; t=1762952281; x=1763557081;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=sELBzzgBJhbl02XdfylT2+DRwcAyHP22ijYke7oVctY=;
-        b=HJoo7Tvr9Ya1i8tBTL3KKQthe7qjf1RmNHW4speHdz8hC0rGAWAsQ2y4BRDq6/qrfu
-         n9Tk9erTVZ8kIXOakjWeBzkQLRTcxKSmBzxPcKHOG6Wed+m8otzY6hdzWwL4ca6EydyM
-         dj2T91suIcgmlgUsbCR6Tzlo8Me82UD118hxtn137uwPwx4rNyRMsecfTbjyByLvc14k
-         IzvcpmQbbt+UNI/XdF3YT9wJ6jrJQqAg9eTxDIuZb10C7qZRhH9TJLFcRhiq/EEtdUBx
-         iAJf8LD++kGmy+dzOJTzn4U+qI0Nea3jdT8XVFtumwbJvlse/3lKHj5gYwyBOaOIXq6F
-         9BhQ==
-X-Gm-Message-State: AOJu0YxXBNp/kJ6YPmjB45W8WuDgR9ewPFbbRt3dja01/P6r+kAmYuuc
-	sKCaQkxuW1KpJaiHqUrK75PiwGXJlOCJRiozp24sH34gV2DvfQjTlxbnAWXkEg93jVEJCVdygIW
-	LWAlTjwQwhKtzRah4ExCr3MqDSKIho2fVob2rbf//yM8j/I4i5E78DBg=
-X-Gm-Gg: ASbGnctSTQfvLaAbm53ydOCyaZa4JhdlfYmUr0NVyWNqaw+tYm725wYxnXeGx+3p652
-	ZdmjzHN1/SK72EfQ9sgme+C5sINW7WGjhV39yc5zpasDEP7VgYMjp713fBDkvI+exHy/4DHZwaq
-	a0wGH56GNCWdijMBshHJ1sGu8KFqD0ACef4aHKUOE/FTzPs91XUApY8QIvNnaeS0m37odRdvNk2
-	uNXqqnrurqer2rSCvcHFlaAjswHzUNkgoi1I0pqTz62AXRTo92U8BTswxZi4gcByhn1k/FZlPI0
-	iDSZTblCRO9DklBxECZUoo23vucqUzEqujO4AqfYGOoATVmy3CizHAV9PQ==
-X-Google-Smtp-Source: AGHT+IG9OJlqKv3aYXDaWVw3dJYjqy/ZoCnUCvdfxYFizg1ljWnisBOjG8cQTqDqkJHpEXWzpys6UL45v9sktoN+I98=
-X-Received: by 2002:a05:6000:144c:b0:429:c851:69b3 with SMTP id
- ffacd0b85a97d-42b4bdaed87mr2073383f8f.30.1762944382651; Wed, 12 Nov 2025
- 02:46:22 -0800 (PST)
+        bh=jHpvngHljn1F0LuTtU7l2ayO8AhP1d867pfBL0HEAZM=;
+        b=d80IbGZeMlMmf1QuWom3dvedyshpjZNuCSYE9/anByqo3CG3HiF3wrwsSdjMCC1szk
+         yN2yVtWVKTfBInKC2HMy7LI/W+LxDo42W03KMMSV1oOkz7K0kVkWFgijzH7sgKXURdvv
+         tSo+jqOPphrc1EyjyLURHhVaB/4gZxCmEJvTvM2yGybyrMBmH1qyVu8Wh3za4iv6CBov
+         cN27qFvY80Ne6pEK5XK5LolvYWw6DRscKdeDhSms9VXZs25A7KOVZjzZ2GQwLhDPJ2au
+         CHw6FhRsWWK9QbNkqT3W+jgoU06SjHcgj8qSkClIRe1OssE9SsWRLI0nThIKc6bs2p1K
+         GHSg==
+X-Gm-Message-State: AOJu0YzWrK+pCAZMyaTBIVw7QsSjit4YcfWG40joww2fXx8fl95yGlm2
+	DywfzmYBvyg4YDyUcG0fNmXiIhafIj/kKZCox1FG9lJydTGFD98NkC0PV578i6uXQbV6ET8mCio
+	djEoU/Pnb3frRFZCB7ZKj2RemUWw3RE+xlKUvzr8=
+X-Gm-Gg: ASbGncsMcV6D5MTESylxyNqwXiI9BNG6pSMN4m2JAFMO3TzuZket0a23FYy4LoxBqmq
+	vjFhNgnqU29GrxL5QO9Lu+86LCzBgz1YN3T1uxYUdAziVhwmNTEiHUsYhK8T1jN8QiBfo3vwXxC
+	+y/TC1wy/h10fY1EgFx0IIjse1Vrdi/uyQJpG4MvjjKtDBh1I/wB65L6KfYnp98SjC/zWrzgmK4
+	uDuvjJNYD+v3mAicgbDl4JcEbbWhhYjzGL0b5SRgkszXD6LNv3vi/lYVgabbAteMTq7UWBg+ZMj
+	ubaBZ8sGTwdakPM=
+X-Google-Smtp-Source: AGHT+IE1EVgZhoIYHtRirlghHM2lSvbmmIJfPd5T90b8YluCqiZzVBxdoI32umMwv0MIKWZYIEsxSdNa99M0NgzZEF4=
+X-Received: by 2002:a05:620a:2913:b0:89e:cd17:1f4c with SMTP id
+ af79cd13be357-8b29b84c2a5mr347840385a.79.1762952281348; Wed, 12 Nov 2025
+ 04:58:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1761715649.git.wqu@suse.com> <2b4ff4103f157ffd2d7206a413246990b3ef2746.1761715650.git.wqu@suse.com>
- <CAPjX3FdaDTXcP3v52tofjwhByYnN6Rc4PQ257hz7PFvu4zh9Fw@mail.gmail.com>
- <c6252c65-5106-45e6-b75a-dab09e4faa52@suse.com> <CAPjX3FfY+Ov5sksn+e7hEFbUTWf8ROs6RNEj4-_1iwgx1xfD8w@mail.gmail.com>
- <a18a5937-a1c2-41a4-9261-5b337ccbfbf2@suse.com>
-In-Reply-To: <a18a5937-a1c2-41a4-9261-5b337ccbfbf2@suse.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Wed, 12 Nov 2025 11:46:10 +0100
-X-Gm-Features: AWmQ_bkF15alX0Q6Qijiiuy091tY2m3OLO7YrJzZUiYcdK_SAEyuAWHQ_sSuEbs
-Message-ID: <CAPjX3FfKhYfWd00m-3VMqSE4v-tJYePfE-A3G3cCjTx7F+B3Vg@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] btrfs: introduce btrfs_bio::async_csum
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
+References: <CAOsCCbPNqUkFqn2W_GprROor+ExuturJxWz-kVL_W5QvqAENSg@mail.gmail.com>
+ <cd684028-5a7c-47bc-8095-02917fe46d6b@app.fastmail.com> <CAOsCCbOH_PRiExWLKPymdrCeNYCtfLgZ6khuGty-_m94MpOuMA@mail.gmail.com>
+ <1330fe29-78a9-4628-b295-e3dcf2de15a9@app.fastmail.com> <CAOsCCbOeNGTS+MK4ZMDkg+PfVC0D9DR7iRXr+Hy6qK9sHgYjJg@mail.gmail.com>
+ <CAOsCCbPRE-kXtBXHLxu179q63_HoRby0a4fZukziMUxjzYRhuQ@mail.gmail.com> <dab1f9d3-6b21-4df9-8217-faf1aff7ba0a@app.fastmail.com>
+In-Reply-To: <dab1f9d3-6b21-4df9-8217-faf1aff7ba0a@app.fastmail.com>
+From: =?UTF-8?Q?Tobiasz_Karo=C5=84?= <unfa00@gmail.com>
+Date: Wed, 12 Nov 2025 13:57:50 +0100
+X-Gm-Features: AWmQ_bkpziNcRgnWjFyg2Wp_BI4TR2UkpUjiGZpYxc2bcmh0V6cnmbc3R8nnIZo
+Message-ID: <CAOsCCbMUnjo982rkUdjAsG6Q28AChMNQLQf7g1LDK1DNsgLUBg@mail.gmail.com>
+Subject: Re: Damaged filesystem - request for support
+To: Chris Murphy <lists@colorremedies.com>
+Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>, Qu WenRuo <wqu@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 11 Nov 2025 at 21:33, Qu Wenruo <wqu@suse.com> wrote:
-> =E5=9C=A8 2025/11/11 23:08, Daniel Vacek =E5=86=99=E9=81=93:
-> > On Mon, 10 Nov 2025 at 22:05, Qu Wenruo <wqu@suse.com> wrote:
-> >> =E5=9C=A8 2025/11/11 05:10, Daniel Vacek =E5=86=99=E9=81=93:
-> >>> On Wed, 29 Oct 2025 at 06:43, Qu Wenruo <wqu@suse.com> wrote:
-> >>>>
-> >>>> [ENHANCEMENT]
-> >>>> Btrfs currently calculate its data checksum then submit the bio.
-> >>>>
-> >>>> But after commit 968f19c5b1b7 ("btrfs: always fallback to buffered w=
-rite
-> >>>> if the inode requires checksum"), any writes with data checksum will
-> >>>> fallback to buffered IO, meaning the content will not change during
-> >>>> writeback.
-> >>>>
-> >>>> This means we're safe to calculate the data checksum and submit the =
-bio
-> >>>> in parallel, and only need the following new behaviors:
-> >>>>
-> >>>> - Wait the csum generation to finish before calling btrfs_bio::end_i=
-o()
-> >>>>     Or we can lead to use-after-free for the csum generation worker.
-> >>>>
-> >>>> - Save the current bi_iter for csum_one_bio()
-> >>>>     As the submission part can advance btrfs_bio::bio.bi_iter, if no=
-t
-> >>>>     saved csum_one_bio() may got an empty bi_iter and do not generat=
-e any
-> >>>>     checksum.
-> >>>>
-> >>>>     Unfortunately this means we have to increase the size of btrfs_b=
-io for
-> >>>>     16 bytes.
-> >>>>
-> >>>> As usual, such new feature is hidden behind the experimental flag.
-> >>>>
-> >>>> [THEORETIC ANALYZE]
-> >>>> Consider the following theoretic hardware performance, which should =
-be
-> >>>> more or less close to modern mainstream hardware:
-> >>>>
-> >>>>           Memory bandwidth:       50GiB/s
-> >>>>           CRC32C bandwidth:       45GiB/s
-> >>>>           SSD bandwidth:          8GiB/s
-> >>>>
-> >>>> Then btrfs write bandwidth with data checksum before the patch would=
- be
-> >>>>
-> >>>>           1 / ( 1 / 50 + 1 / 45 + 1 / 8) =3D 5.98 GiB/s
-> >>>>
-> >>>> After the patch, the bandwidth would be:
-> >>>>
-> >>>>           1 / ( 1 / 50 + max( 1 / 45 + 1 / 8)) =3D 6.90 GiB/s
-> >>>>
-> >>>> The difference would be 15.32 % improvement.
-> >>>>
-> >>>> [REAL WORLD BENCHMARK]
-> >>>> I'm using a Zen5 (HX 370) as the host, the VM has 4GiB memory, 10 vC=
-PUs, the
-> >>>> storage is backed by a PCIE gen3 x4 NVME SSD.
-> >>>>
-> >>>> The test is a direct IO write, with 1MiB block size, write 7GiB data
-> >>>> into a btrfs mount with data checksum. Thus the direct write will fa=
-llback
-> >>>> to buffered one:
-> >>>>
-> >>>> Vanilla Datasum:        1619.97 GiB/s
-> >>>> Patched Datasum:        1792.26 GiB/s
-> >>>> Diff                    +10.6 %
-> >>>>
-> >>>> In my case, the bottleneck is the storage, thus the improvement is n=
-ot
-> >>>> reaching the theoretic one, but still some observable improvement.
-> >>>>
-> >>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >>>> ---
-> >>>>    fs/btrfs/bio.c       | 21 +++++++++++----
-> >>>>    fs/btrfs/bio.h       |  7 +++++
-> >>>>    fs/btrfs/file-item.c | 64 +++++++++++++++++++++++++++++++--------=
------
-> >>>>    fs/btrfs/file-item.h |  2 +-
-> >>>>    4 files changed, 69 insertions(+), 25 deletions(-)
-> >>>>
-> >>>> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> >>>> index 5a5f23332c2e..8af2b68c2d53 100644
-> >>>> --- a/fs/btrfs/bio.c
-> >>>> +++ b/fs/btrfs/bio.c
-> >>>> @@ -105,6 +105,9 @@ void btrfs_bio_end_io(struct btrfs_bio *bbio, bl=
-k_status_t status)
-> >>>>           /* Make sure we're already in task context. */
-> >>>>           ASSERT(in_task());
-> >>>>
-> >>>> +       if (bbio->async_csum)
-> >>>> +               wait_for_completion(&bbio->csum_done);
-> >>>
-> >>> Can we do `flush_work(&bbio->csum_work);` instead here and get rid of
-> >>> the completion? I believe it is not needed at all.
-> >>
-> >> I tried this idea, unfortunately causing kernel warnings.
-> >>
-> >> It will trigger a warning inside __flush_work(), triggering the warnin=
-g
-> >> from check_flush_dependency().
-> >>
-> >> It looks like the workqueue we're in (btrfs-endio) has a different
-> >> WQ_MEM_RECLAIM flag for csum_one_bio_work().
+I have been trying various things, also with other drives.
+I purchased a 20 TB Toshiba drive and I am currently attempting to do
+a burn-in before using it for backup.
+
+I see issues with the USB exclosure, where it resets ev en with jsut
+this one drive in it (so one bay is empty). Dmesg says:
+
+[Wed Nov 12 11:09:31 2025] sd 2:0:0:0: [sdc] tag#19
+uas_eh_abort_handler 0 uas-tag 1 inflight: CMD
+[Wed Nov 12 11:09:31 2025] sd 2:0:0:0: [sdc] tag#19 CDB: ATA command
+pass through(16) 85 06 0c 00 d4 00 00 00 82 00 4f 00 c2 00 b0 00
+[Wed Nov 12 11:09:31 2025] scsi host2: uas_eh_device_reset_handler start
+[Wed Nov 12 11:09:31 2025] usb 4-1.2: reset SuperSpeed USB device
+number 7 using xhci_hcd
+[Wed Nov 12 11:09:31 2025] scsi host2: uas_eh_device_reset_handler success
+
+[Wed Nov 12 11:11:01 2025] sd 2:0:0:0: [sdc] tag#5
+uas_eh_abort_handler 0 uas-tag 1 inflight: CMD
+[Wed Nov 12 11:11:01 2025] sd 2:0:0:0: [sdc] tag#5 CDB: ATA command
+pass through(16) 85 06 0c 00 d4 00 00 00 82 00 4f 00 c2 00 b0 00
+[Wed Nov 12 11:11:01 2025] scsi host2: uas_eh_device_reset_handler start
+[Wed Nov 12 11:11:01 2025] usb 4-1.2: reset SuperSpeed USB device
+number 7 using xhci_hcd
+[Wed Nov 12 11:11:01 2025] scsi host2: uas_eh_device_reset_handler success
+
+That happens after a minute wheenver I do:
+smartctl -l long -C /dev/sdc
+
+So it seems I can't do a long, captive HDD test through this enclosure.
+This is the self-test log for the drive:
+
+root@pve:/mnt# smartctl -l xselftest /dev/sdc
+smartctl 7.3 2022-02-28 r5338 [x86_64-linux-6.8.12-16-pve] (local build)
+Copyright (C) 2002-22, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=3D=3D=3D START OF READ SMART DATA SECTION =3D=3D=3D
+SMART Extended Self-test Log Version: 1 (1 sectors)
+Num  Test_Description    Status                  Remaining
+LifeTime(hours)  LBA_of_first_error
+# 1  Extended captive    Interrupted (host reset)      90%        42       =
+  -
+# 2  Extended captive    Interrupted (host reset)      90%        42       =
+  -
+# 3  Extended offline    Aborted by host               90%        42       =
+  -
+# 4  Extended offline    Aborted by host               90%         1       =
+  -
+
+I have tested blacklisting the uas driver, but the enclosure would
+just not show up (should I load an alternative driver for it?)
+lsusb says this about the 2-bay disk enclosure:
+Bus 004 Device 007: ID 174c:55aa ASMedia Technology Inc. ASM1051E SATA
+6Gb/s bridge, ASM1053E SATA 6Gb/s bridge, ASM1153 SATA 3Gb/s bridge,
+ASM1153E SATA 6Gb/s bridge
+
+I wonder if there's something that can be done about this enclosure in
+terms of patching the driver or something?
+Should I contact a different mailing list?
+This is by no means Btrfs-specific at this point.
+
+About write cache disabling, I was unable to do it persistently with
+hdparm, but I found that there's a way to disable write caching
+persistently with smartclt. It's also possible to disable write cache
+reordering, which I suppose could be more dangerous fro Btrfs. I have
+once used bcache with Btrfs in writeback mode and after a particular
+system crash the FS has gone bad. (I've even written a song about
+it..)
+smartctl -s wcreorder=3Doff,p /dev/sdc
+
+I have attempted to disable autosuspend for all xhci controlers using Power=
+Top:
+
+  Good          Enable SATA link power management for host0
+  Good          Enable Audio codec power management
+  Bad           Autosuspend for USB device xHCI Host Controller [usb1]
+  Good          Autosuspend for USB device USB2.0 Hub
+[VIA Labs, Inc.         ]
+  Good          Autosuspend for USB device USB2.0 Hub [1-1]
+  Good          Autosuspend for USB device USB2.1 Hub [Generic]
+  Bad           Autosuspend for USB device xHCI Host Controller [usb3]
+  Good          Autosuspend for USB device USB3.0 Hub
+[VIA Labs, Inc.         ]
+  Bad           Autosuspend for USB device xHCI Host Controller [usb2]
+  Good          Autosuspend for USB device USB3.2 Hub [Generic]
+  Bad           Autosuspend for USB device xHCI Host Controller [usb4]
+
+But another attempt at long self-test aborts after a few seconds and
+resets the USB controller:
+
+[Wed Nov 12 11:20:55 2025] sd 2:0:0:0: [sdc] tag#15
+uas_eh_abort_handler 0 uas-tag 1 inflight: CMD
+[Wed Nov 12 11:20:55 2025] sd 2:0:0:0: [sdc] tag#15 CDB: ATA command
+pass through(16) 85 06 0c 00 d4 00 00 00 82 00 4f 00 c2 00 b0 00
+[Wed Nov 12 11:21:13 2025] sd 2:0:0:0: [sdc] tag#12
+uas_eh_abort_handler 0 uas-tag 2 inflight: CMD IN
+[Wed Nov 12 11:21:13 2025] sd 2:0:0:0: [sdc] tag#12 CDB: ATA command
+pass through(16) 85 08 0e 00 00 00 01 00 00 00 00 00 00 00 ec 00
+[Wed Nov 12 11:21:13 2025] scsi host2: uas_eh_device_reset_handler start
+[Wed Nov 12 11:21:13 2025] usb 4-1.2: reset SuperSpeed USB device
+number 7 using xhci_hcd
+[Wed Nov 12 11:21:13 2025] scsi host2: uas_eh_device_reset_handler success
+
+
+Same with short self-test. I wonder if I can use this disk in the
+enclosure at all if this keeps happening...
+
+I'll use f3 to stress the disk and see if this will reset the USB
+controller as well...
+
+f3write . && f3read .
+
+So far 300 GB written and read no problem.
+I started a borg repository there and I am doing a backup as test...
+
+
+On Sat, Oct 25, 2025 at 7:06=E2=80=AFPM Chris Murphy <lists@colorremedies.c=
+om> wrote:
+>
+>
+>
+> On Sat, Oct 25, 2025, at 4:58 AM, Tobiasz Karo=C5=84 wrote:
+> > Here's scrub status:
 > >
-> > If I read the code correctly that would be solved using the
-> > btrfs_end_io_wq instead of system wq (ie. queue_work() instead of
-> > schedule_work()).
->
-> That will cause dependency problems. The endio work now depends on the
-> csum work, which are both executed on the same workqueue.
-> If the max_active is 1, endio work will deadlock waiting for the csum one=
-.
-
-When the csum work is being queued the bio was not even submitted yet.
-The chances are the csum work will be done even before the bio ends
-and the end io work is queued. But even if csum work is not done yet
-(or even started due to scheduling delays or previous (unrelated)
-worker still being blocked), it's always serialized before the end io
-work. So IIUC, there should be no deadlock possible. Unless I'm still
-missing something, workqueues could be tricky.
-
-> >> +       init_completion(&bbio->csum_done);
-> >> +       bbio->async_csum =3D true;
-> >> +       bbio->csum_saved_iter =3D bbio->bio.bi_iter;
-> >> +       INIT_WORK(&bbio->csum_work, csum_one_bio_work);
-> >> +       schedule_work(&bbio->csum_work);
 > >
-> > queue_work(btrfs_end_io_wq(fs_info, bio), &bbio->csum_work);
->
-> Nope, I even created a new workqueue for the csum work, and it doesn't
-> workaround the workqueue dependency check.
-
-Did you create it with the WQ_MEM_RECLAIM flag? As like:
-
-alloc_workqueue("btrfs-async-csum", ... | WQ_MEM_RECLAIM, ...);
-
-I don't see how that would trigger the warning. See below for a
-detailed explanation.
-
-> The check inside check_flush_dependency() is:
->
->          WARN_ONCE(worker && ((worker->current_pwq->wq->flags &
->                                (WQ_MEM_RECLAIM | __WQ_LEGACY)) =3D=3D
-> WQ_MEM_RECLAIM),
->
-> It means the worker can not have WQ_MEM_RECLAIM flag at all. (unless it
-> also has the LEGACY flag)
-
-I understand that if the work is queued on a wq with WQ_MEM_RECLAIM,
-the check_flush_dependency() returns early. Hence no need to worry
-about the warning's condition as it's no longer of any concern.
-
-> So nope, the flush_work() idea won't work inside any current btrfs
-> workqueue, which all have WQ_MEM_RECLAIM flag set.
-
-With the above being said, I still see two possible solutions.
-Either using the btrfs_end_io_wq() as suggested before. It should be safe, =
-IMO.
-Or, if you're still worried about possible deadlocks, creating a new
-dedicated wq which also has the WQ_MEM_RECLAIM set (which is needed
-for compatibility with the context where we want to call the
-flush_work()).
-
-Both ways could help getting rid of the completion in btrfs_bio, which
-is 32 bytes by itself.
-
-What do I miss?
-
-Out of curiosity, flush_work() internally also uses completion in
-pretty much exactly the same way as in this patch, but it's on the
-caller's stack (in this case on the stack which would call the
-btrfs_bio_end_io() modified with flush_work()). So in the end the
-effect would be like moving the completion from btrfs_bio to a stack.
-
-> What we need is to make endio_workers and rmw_workers to get rid of
-> WQ_MEM_RECLAIM, but that is a huge change and may not even work.
->
-> Thanks,
-> Qu
->
+> > UUID:             a11787a5-de1d-421c-ac2e-b669f948b1f0
+> > Scrub started:    Fri Oct 24 11:21:29 2025
+> > Status:           finished
+> > Duration:         15:49:35
+> > Total to scrub:   9.09TiB
+> > Rate:             167.21MiB/s
+> > Error summary:    csum=3D1068
+> >  Corrected:      172
+> >  Uncorrectable:  896
+> >  Unverified:     0
 > >
-> >> I'll keep digging to try to use flush_work() to remove the csum_done, =
-as
-> >> that will keep the size of btrfs_bio unchanged.
-> >>
-> >> Thanks,
-> >> Qu
-> >>
-> >>>
-> >>> --nX
-> >>>
-> >>
-> >>>>
-> >>
+> > I assume this means I can continue to use the filesystem, accepting
+> > that a number of files will be inaccessible and result in i/o errors
+> > when accessed?
 >
+> Qu, does `btrfs check` verify both copies of metadata when available? Or =
+only one copy? Does btrfs check ignore csum mismatches?
+>
+> From first post, this file system is:
+>
+> #  btrfs fi df /mnt/backup/
+> Data, single: total=3D9.07TiB, used=3D9.07TiB
+> System, RAID1: total=3D32.00MiB, used=3D1.19MiB
+> Metadata, RAID1: total=3D11.03GiB, used=3D9.91GiB
+>
+> Since btrfs check says the fs is clean, but then scrub finds and corrects=
+ 172 errors, that must mean those csum mismatches for some of the metadata =
+that btrfs check did not detect? It's a little confusing what state the fil=
+e system is in now because the results don't explicitly tell us. We have to=
+ infer it.
+>
+> Tobiasz, I think you need to run the btrfs check again (normal mode only =
+is ok I think)  to be sure the metadata is OK. It's a little tedious but th=
+at is pretty important as you point out.
+>
+> Note that the scrub is actually performed by btrfs kernel code and all me=
+ssages about the scrub will be in dmesg. All of those 1068 csum mismatches =
+will produces at least one message each. What is affected, whether a fixup =
+was attempted, and whether the fixup worked. Metadata csum mismatch error l=
+ooks different from data csum mismatch error. The data error will show path=
+ to the file affected. So the dmesg will leak file names.
+>
+>
+> > Since the data is replacable (assuming I don't need to go back to an
+> > older backup, which I don't currently have a need for), I can destroy
+> > this filesystem and start anew with a clean borg backup.
+>
+> I'm not super familiar with borg, but I expect that it has an option to v=
+erify all data blocks on both sides. It probably takes quite a bit longer s=
+ince both sides have to read and compare data. Btrfs never hands over corru=
+pt data in normal operation, instead it returns EIO for any blocks that fai=
+l checksum verification. The handling in case of EIO is up to the applicati=
+on. What I'd like to think happens is borg will see EIO, know the target fi=
+le is bad (or missing some blocks) and will replace it with a good copy fro=
+m the source.
+>
+>
+> > I am not sure what would be better.
+> > I don't want the FS to constantly remount in ro mode due to i/o errors.
+>
+> Right. Which is why the first order of business is to make sure the IO er=
+rors aren't happening anymore. Either new kernel has fixed that problem, or=
+ disabling uas will fix it, or using a USB hub will fix it (I would borrow =
+a hub before buying one for testing purposes if it comes to that).
+>
+> --
+> Chris Murphy
+
+
+
+--
+- Tobiasz 'unfa' Karo=C5=84
+
+www.youtube.com/unfa000
 
