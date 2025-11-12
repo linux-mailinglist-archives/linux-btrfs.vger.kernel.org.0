@@ -1,130 +1,130 @@
-Return-Path: <linux-btrfs+bounces-18896-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18897-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55AABC5392C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Nov 2025 18:05:03 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4700C53B87
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Nov 2025 18:38:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 00091342200
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Nov 2025 17:04:15 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C47D0344423
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Nov 2025 17:38:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFBBB32AAA7;
-	Wed, 12 Nov 2025 17:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51A49346FA8;
+	Wed, 12 Nov 2025 17:38:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dhRQwzuO"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="0o3wi02g"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yx1-f65.google.com (mail-yx1-f65.google.com [74.125.224.65])
+Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90B431AF24
-	for <linux-btrfs@vger.kernel.org>; Wed, 12 Nov 2025 17:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB51C345CA4
+	for <linux-btrfs@vger.kernel.org>; Wed, 12 Nov 2025 17:38:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762967048; cv=none; b=KwB3a0/N8cgek1wbo9hVTloEU/o0iS11FIjVKraij06qR0LQvFswz0SXwgkruDhckuEwJmWKjrK7UBwPiNjoz9tPctbFfjE5Zf8hOJ2NwF4QfEB9QMcUvWkZnRyJ9ar3ZtD3FS4G2UJy6J1zvXrYx2Z/EIsM9cxq6daV5Op1hxk=
+	t=1762969110; cv=none; b=Ysabi8hZEduYgPrpaL5ITqeiLKURFYalpYsaxTZ3KUay+tPpTgKXXz5mnXqKUDw1I9Sxmuys51n4n9RRdGV3K+m5xgfyXeunSrmaCF6mMd7/2TcQkFgYClcHZUu2UCEKWDyJde3aN1O66ljdVrzw8zDaA4FVKlsKh+5z0Uc/Bk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762967048; c=relaxed/simple;
-	bh=YNUnUW29WGgYvHmssLOQzNGAga3ZwdB49ndEqbB3IG8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kxb0G4kl0AjVtKbtdSC6ZboWlzHfJwdGV1Cuc6qaBY4jwB1PvvuWi4wFJOhD5aGwn2YgD24DGppN6Ytss93/rOif7ite+gyqN5TfmJ3GmDtU/wP50cDRNKR344SVoo+nsNJiwDuAiFKMMeZbEZ3q2LOttmsONqwyH3ApYU2iMAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dhRQwzuO; arc=none smtp.client-ip=74.125.224.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f65.google.com with SMTP id 956f58d0204a3-640d790d444so1004617d50.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Nov 2025 09:04:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762967044; x=1763571844; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k1MAVS+duT+CCEX1s12T8DfNLnYBmUE5WD8ayuuzgwQ=;
-        b=dhRQwzuOvkfB/LPoh4kBARUJ4WfAjeS5QZcrjPkQdg86/ijnoDgXFUzaWB5FlXUQHC
-         ogyTj61etAbGvlxxL/7M6IWyp0Mu8C0Eg//DJpWJ82QOYs3+Zq/iaG6+Wb1tHOhDiI1t
-         G29M/xXO2rACzqlHQfmrm2y37zI8R6HaxR63z0iEe6I96QwWpuSvjVCPKbLMwHIVsTEa
-         q/4+F101ELjV4dGm4bMoexVllfRmMqsG3i5VPj1x1YyIUW/v8FTyjyYyfifxR/ObQM2b
-         aqbauqKQz6bJDNdsqYd8azcsZ/uCzcf86vK11MVzzCsLD13PxMyhIZY2XLe1lMay3Uf+
-         gdtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762967044; x=1763571844;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=k1MAVS+duT+CCEX1s12T8DfNLnYBmUE5WD8ayuuzgwQ=;
-        b=tm4HBYJiWb8ZYIsEeAjH+oiNwbHpKRhGUHd1QFls3l5ex0Yxq4AYSK8hHB10RaUU/X
-         m5rgAEy0K/WffYDXAo6+8VmBlpIyOCL86YJU9dEcyL4iCMmhQW+1NkT1w7KjXrAj/nZM
-         2AjquTdfk3JcdzXvHa8d/3FwHLNOTbssmXgrnlO1bxs6tY/b7EbbHibSPXGMCmAH3Re8
-         Yuk86G1xcKzL65JR7UQCzhwWy16dD4ETstIYAM6Xdlq+Y6nQbIkxqzb19VVki7vP2A1B
-         n4GOAPkR9LIv6UXaSb0f4IBWUJgScjw/1EWDyfSFukjHOKVavk6VD7DkCoRwpz0gQu4Y
-         wNng==
-X-Gm-Message-State: AOJu0YzytvC/Rh8Mu1MaGWG61ny02eRaQIME3RlSanrKYnt48nepCpMj
-	2jQXl9YgdwJSR59ZZ+yVTEXs9UMLUN93Z38lMNvoIbPO4UlbWCIjV0hI
-X-Gm-Gg: ASbGncvjZG7AEu5N7Ez8Z/cuD1gEz1jGOeokN4X2j/ieKQE+iI9orH6dv+0gEuQDaIH
-	wOZk0AsZ6s3hjeMJV8NX3C3XdS1tKsIpX0CxkAl5X81lh3JmGonOzTcy8Rh+4uzuJHIQzcgd75E
-	e7L0mE3+1CyOBtrFfSyK3WPf5DVrmGxzbzmqF8RH5uuJKUanC6qClh14+5HkkUYH0LzWUvw5Oeo
-	9C14+ZyXQ+NFRc96GZEW2kQ2RG2aWMe1Im3PUcZuPxne8xuHzpJ4DaXqN0DXUbLWZbfINO0fKNx
-	b+0KseHFqJ+Q2MxlQSuvcrGfrl2aU7d68GIYA9Qj8iuu3kJqa9miJ2Yk7YsyoDikQ26TvGd3yBR
-	emLkXzN9qz6n813xHojJ50J7KjU7Z5s0LTeH3EPpAWZkklLY3AoXIgKIN62f8RjQ3Zz/O0EjePt
-	YOrf6QQ/hf2ttypttr
-X-Google-Smtp-Source: AGHT+IE/+eOAZNdtvR+xXa7y7J0mZGHVXzJ7M2lvoTIc3BQr4guICQkg/QVcLcDNPNVP5eLmyC2Ljg==
-X-Received: by 2002:a05:690e:781:b0:63f:b605:b7eb with SMTP id 956f58d0204a3-64101b8216cmr2322183d50.67.1762967044517;
-        Wed, 12 Nov 2025 09:04:04 -0800 (PST)
-Received: from localhost ([2a03:2880:25ff:3::])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-641015c3dfbsm1102152d50.7.2025.11.12.09.04.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Nov 2025 09:04:04 -0800 (PST)
-From: Leo Martins <loemra.dev@gmail.com>
-To: David Sterba <dsterba@suse.cz>
-Cc: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: take delayed_node mutex when releasing item
-Date: Wed, 12 Nov 2025 09:03:55 -0800
-Message-ID: <20251112170401.506658-1-loemra.dev@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251112070925.GD13846@twin.jikos.cz>
-References: 
+	s=arc-20240116; t=1762969110; c=relaxed/simple;
+	bh=09BLJTCHfrPPxBCN1MLYaMwhA1PJlgUYs71Vo17iV5w=;
+	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TeuHdXyEKE9RuoNjUBY6x1YK1ykp6vs5X1W1XCJVeBU3CGkPtZh1lQ+rcxTuhzSpd3FS7UuBqmSPxJJ9L2jNU7HRrSuyJppHH1ttk+mF33+Xlxq6xs8BRbX6derVqhm4HZanxPnNj3b8JCJM/Qz9T5B5Y6yEMoooE/v0BDgkHps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=0o3wi02g; arc=none smtp.client-ip=217.169.27.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
+Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
+	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
+	by mail.burntcomma.com (Postfix) with ESMTPS id 47AEB2D9C78;
+	Wed, 12 Nov 2025 17:38:15 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
+	s=mail; t=1762969095;
+	bh=licDNF7qEzn9FnRD9VnVunpwDREDA03LdAoAle3DjZA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=0o3wi02gwv4H2PoTDh+NQOzXoNZxyOE6FOmTl4BsBC8Eb9yuflpp3pTxg1abYbkC7
+	 N6mwQbjFXhG9KepRv679UjDLPQRe8Z/7kNFegAIeVc7jVSyCkxxrslU49VegFhE1+3
+	 TsdTb+IY3SIo8kHj3OugD2R098ZBdWOpoLfPBc/0=
+Message-ID: <78fb7051-5e19-4dcd-bc85-a81a1787a2c8@harmstone.com>
+Date: Wed, 12 Nov 2025 17:38:14 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Subject: Re: [PATCH v5 10/16] btrfs: handle setting up relocation of block
+ group with remap-tree
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+References: <20251110171511.20900-1-mark@harmstone.com>
+ <20251110171511.20900-11-mark@harmstone.com>
+ <aRQcuHhO3Ngq6/EQ@devvm12410.ftw0.facebook.com>
+Content-Language: en-US
+From: Mark Harmstone <mark@harmstone.com>
+Autocrypt: addr=mark@harmstone.com; keydata=
+ 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
+In-Reply-To: <aRQcuHhO3Ngq6/EQ@devvm12410.ftw0.facebook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 12 Nov 2025 08:09:25 +0100 David Sterba <dsterba@suse.cz> wrote:
+Thanks Boris.
 
-> On Tue, Nov 11, 2025 at 04:22:57PM -0800, Leo Martins wrote:
-> > The error path in btrfs_delete_delayed_dir_index does not take
-> > the delayed_node mutex when releasing delayed item.
-> > btrfs_release_delayed_item -> __btrfs_remove_delayed_item which
-> > has lockdep_assert_held(&delayed_node->mutex)
-> > 
-> > Fix this by taking the mutex when releasing.
-> > 
-> > Fixes: 933c22a7512c ("btrfs: delayed-inode: Kill the BUG_ON() in btrfs_delete_delayed_dir_index()")
-> > Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-> > ---
-> >  fs/btrfs/delayed-inode.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> > index e77a597580c5..30dd067e2db3 100644
-> > --- a/fs/btrfs/delayed-inode.c
-> > +++ b/fs/btrfs/delayed-inode.c
-> > @@ -1662,7 +1662,9 @@ int btrfs_delete_delayed_dir_index(struct btrfs_trans_handle *trans,
-> >  		btrfs_err(trans->fs_info,
-> >  "metadata reservation failed for delayed dir item deletion, index: %llu, root: %llu, inode: %llu, error: %d",
-> >  			  index, btrfs_root_id(node->root), node->inode_id, ret);
-> > +		mutex_lock(&node->mutex);
-> >  		btrfs_release_delayed_item(item);
-> > +		mutex_unlock(&node->mutex);
+On 12/11/2025 5.35 am, Boris Burkov wrote:
+... snip ...
+
+>> @@ -4142,11 +4530,13 @@ int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start,
+>>   	if (ret && ret != -ENOENT)
+>>   		goto out;
+>>   
+>> -	rc->data_inode = create_reloc_inode(rc->block_group);
+>> -	if (IS_ERR(rc->data_inode)) {
+>> -		ret = PTR_ERR(rc->data_inode);
+>> -		rc->data_inode = NULL;
+>> -		goto out;
+>> +	if (!btrfs_fs_incompat(fs_info, REMAP_TREE)) {
+>> +		rc->data_inode = create_reloc_inode(rc->block_group);
+>> +		if (IS_ERR(rc->data_inode)) {
+>> +			ret = PTR_ERR(rc->data_inode);
+>> +			rc->data_inode = NULL;
+>> +			goto out;
+>> +		}
 > 
-> I don't think it's needed, the item has been just allocated but not yet
-> added to the rbtree (__btrfs_add_delayed_item() a few lines below).
-> 
-> In btrfs_release_delayed_item() there's a check if the item is in the
-> rbtree, if not then nothing is done. Otherwise the lockdep assertion is
-> checked, and the locking would be needed.
+> Ideally this would go along with the separate function I ask for below
+> but if it *must* be here, that's OK.
 
-Whoops, you're right, good catch.
+I'd like to move it to the new function eventually, but I'm leaving this 
+here for now.
+
+The reason is that it'd imply reordering some of the existing code, and 
+while it's still experimental I'd like to leave this whole patch series 
+as a no-op unless the incompat flag is set.
 
