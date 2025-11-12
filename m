@@ -1,201 +1,390 @@
-Return-Path: <linux-btrfs+bounces-18924-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18925-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00DE7C548F9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Nov 2025 22:11:42 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C03EC54A71
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Nov 2025 22:45:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 795F03B6402
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Nov 2025 21:10:52 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A9F5334AFAA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Nov 2025 21:44:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B74D2D8799;
-	Wed, 12 Nov 2025 21:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6BFC2D6E76;
+	Wed, 12 Nov 2025 21:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YeR5ll6S"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AhhfuNye"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D132BD5BF
-	for <linux-btrfs@vger.kernel.org>; Wed, 12 Nov 2025 21:10:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 805D82C21DB
+	for <linux-btrfs@vger.kernel.org>; Wed, 12 Nov 2025 21:43:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762981846; cv=none; b=o1166q6AunVDtcvBduNmtXXFIMXXql5pBSJtMFkaQYuE+VwcBMSM3r/jPnpuD2WA5Z4L4bmCC9uXqVC7eDxAWQAarznkvs1xVe4ujYwmM+v028pPW+RiI4WSyTuucB9FO491/IQugHW67t94kbswIL2Ah5wFtshe8Rl5mhqWT+8=
+	t=1762983822; cv=none; b=YgGf8r3uY3V4XfkM6/FMzlICGYQ1zFpmggsjeU9YBfkh8AxTIV21Bh1VzEePWmUGZngH+ApvhPPi4PJO6ptJ8ZFQ1IcvkDxdh1VngrD6vKxMdfkLgLlHZMiCRgFjNUENesuxlzW3HYvqsPCQqJnRG3uLBnUUX+qffKGpLHViUmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762981846; c=relaxed/simple;
-	bh=I8yWvUDt4A3dEz/J5OYEnnjS5M64kRFtMhNMygQol1Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=P3CHZP0YgEy2s9afHrwhVZ11w9A++OucNipgAGelITOMZHI5CUW5WOs34/4kk/KjRrzCk9nhq/RBqe92U2SMv8OYP4GaWkcyz0JPmEntU0Bw088DdbHb983vIk2y3J21779JMYFI/CyCqf3cA5YXfTTue6RjAnl5Z57Z/OyJuXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YeR5ll6S; arc=none smtp.client-ip=209.85.221.44
+	s=arc-20240116; t=1762983822; c=relaxed/simple;
+	bh=NT5JQutJ3f/KX5X3mSWZGPElYdVmCMEe/5CrBVRU9mI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UINzInKW1Y15yW7QylRn8soEs8UoF89pZ/vHeA6fRnVtSJxAiLmKpz3smJoot5FEvcj46dyrEFlHO/IAVV20DzRUiss9NNyZo0iOBkdfH8PMWxy86w1uDuG3Pn582j5fSr+1ElXpW2ghrmFo4hM7KmusuPGyjoiIVfCnAQUTbWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AhhfuNye; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-42b32ff5d10so795738f8f.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Nov 2025 13:10:44 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-42b3ad51fecso120707f8f.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Nov 2025 13:43:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762981843; x=1763586643; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=DDrMbaaU9PabHLcVqZAGr/eV1J38DiT/yMa7iNIk8lg=;
-        b=YeR5ll6SoQE74b9HnM88FsFx533WdaX5DmEPDtMLapOaJ3HyYRghMgWwnsBS1jn5At
-         6yimXw+jHuN7Xcfbd4RjNUsHIK8ynBiFl9Nd4Xb7TNYINLnecyIU4dw06L0C/KHR3G4/
-         X0oqASkNfZ98rGIhySF0Og7g/zazT74SHs9C5qKD8nRiY1QuU2SU4VhU8CuO4HnWF6Of
-         RJ6JuVyRuxs+mwGavSwhlu+SxqAhx3CIehg7qDTbur6ZZPbwtpO01nsjArkV8tpriyiC
-         9thD0FO3sLClaOPuhP4O76vCRRnA0+aGBphZGjAclIFoODbSCANPZglvBUu4zvCe6F4t
-         Ppsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762981843; x=1763586643;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=suse.com; s=google; t=1762983818; x=1763588618; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DDrMbaaU9PabHLcVqZAGr/eV1J38DiT/yMa7iNIk8lg=;
-        b=GGCyzagu/hZ6IXj60xby0azNgSz+TwdihOYWR0VTAZQ5og8FRb6l3A466b4qJN5h7w
-         +mbnRzQNHlNWyLtmvIvz/aEYmToAHWDVw1WYbsFw1cuxqYhUNGTQKf7mMZJdosOyO3GY
-         U7QVy0EVsDZJmmVMI1U6AtKkDAIzrGBkQQ/tCAhaGttypv1oDzgAC7ITBBf3lBiHAtza
-         T+ShMd8dWvlRMHY+805RHwaD783co7gHbaXsm57wmCj5aSQv7GmffBXepPPAeqy0vuLs
-         OsCYXeU0qqcnRrmAo7GKBmGzQ0UuImFYVu6aMzePF980huRelTFSLwoUmg02jJuOh2U5
-         LeoA==
-X-Gm-Message-State: AOJu0YyJYjvw/RYk/fcZpS3Uj8e+qg4nI6JQ2iWRgptMQoQp8ahhzkwQ
-	48TqKEhRffYe0T9PCnrNrCRSEdYsNIIwUXYeTbAPEA/WYNRE2GYryGwnfhP4t0Z9XndYQmhtaoO
-	dIRW1
-X-Gm-Gg: ASbGncuQk23t3iQe5DcgiLRJ08P8hKYHfAOMpGLFzEvAIBddkKvY/infQD+g+BjgsZN
-	ik/Vlw5yuIz9Ofdorx+SiGqZ9qxEhz4ZZ9NPCdxFLZiBit1ObS5X6BwIdGTcvkP2ogm6e7yHQGA
-	VhKo3eDFcB4Xu7ufeBxOD88UozJnfiSvjNmoSE5mnOgUmao+QoPY0DXM81RwpSiUUJCUyQzEC0X
-	q6WWevloVCuEBHLGw4Ju0AJS6CJFrsG54nTxSSzGDtZstQviwar7mclvOVOaMQTPjPIby+9Mr7T
-	n187rHckTVxmLzo4U4++GVVP0+UynvYFPC+hcAxX170TmN1NFwijC0HGF2zl+vIYneExd2TU66T
-	PXg1dbOzRHq0kcNS2Ae/EoKjXAq0RobyWw0+l8TVe90xnTGgtYSr/YccnYvNIK9dxhWhrBPwqx3
-	JvQyBXCef6qoy1+CDNwl8lJXb06+YZ
-X-Google-Smtp-Source: AGHT+IHrxxzHJhr4ISp0yA/GeQrr9mRQHfaDegBZaI2pxIAYApYHrA0LLhq+Pp23ZJo0mFldilITxw==
-X-Received: by 2002:a05:6000:1785:b0:42b:47ef:1d7a with SMTP id ffacd0b85a97d-42b52821620mr562120f8f.20.1762981842810;
-        Wed, 12 Nov 2025 13:10:42 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bc37507fc7bsm20525a12.23.2025.11.12.13.10.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Nov 2025 13:10:42 -0800 (PST)
-Message-ID: <aa8f8100-3a68-4e48-b5da-b0749bce06d7@suse.com>
-Date: Thu, 13 Nov 2025 07:40:35 +1030
+        bh=JPBjHqzYg/Tjpda2SYgtmFSAN786krvNTjBSEi5qLw8=;
+        b=AhhfuNyeHY7NfbVrrThcM3XGYRLlFQ4bBBsAEn0QC6IYNornl196CtTzh7HYteuwtj
+         NnvR7kceGxVMPPeSAjZWBki4/2t5TlM0oz7JsBNyLRZBBAIuTum7eZZUdtgUAsD4wNrr
+         oF5LRI+QSI6FkK+MUg5ZPW4bELldfxAxwiUQv+Y5pyEFfB1IxD+0cz0V/iG3C/ai5vdc
+         OuKAhr2xxHS/4YZniPirlVKphtmZUjI7MQ0Iw6Nco7VO5oPeWEtrKc75x/j/W7G0UMMI
+         g9DwwwLoEquuugzt5YwSPuWj2bkAP6mE1gukGEPkp5vyXOnY8ma63DJkdazI4c1GMCNk
+         3M7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762983818; x=1763588618;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=JPBjHqzYg/Tjpda2SYgtmFSAN786krvNTjBSEi5qLw8=;
+        b=h8byNz/FRn8N3qrqF0zmMsGn+VF41cqeqJw8C6At0xnJQK6sXhFzIZ5rO4QcWNpk3B
+         9XTbik3rO0dGzc3f1qhnbluG/sRXRGoWbIVHESUVlDkPf8r5F+r1b3Qmq8fc1Yr2+ku3
+         wmRVc5D3Cc0WTTMDRItOF5RZBm/4URfnerpK7XjR1HeSZQ/+rFyaAZlx6D047Tb/BGvC
+         TSKmxR4BB3+4OP/KR7GCz9zgcyzlP5BDTt4IrUwjyNCv6Mq/CnsQJIMPgdG1pKwWky6r
+         V8CBcus7mxWTZwgcybt7KcMhzntSe1sYCglOm7OM6rAMQfOBEuM742v8cTaLVhJAwfH7
+         hGVg==
+X-Gm-Message-State: AOJu0YyiOT+xdn3subUp29NoZE2RaiHYvDVRqp4PI0rckqMtm/beDKXY
+	Aqp4+pyxMN61Q9lAVLq9pVdsipDZEcFdJo8KwhGkoHEWCluhKAovtvVnuFQslVmaoIssuxbQnQn
+	TTrYZ+dkmnqzdB5D4qMb8Kxt4u39lvKpNYx+63MOyt8TJz6/5nWO//cg=
+X-Gm-Gg: ASbGnctSSdZyZK4cbqo7SuaScPl6AMBnBhzBcmS1PcW/azoQqO7v7Bytg+aZIOGEkMG
+	3CgqmBOJ3sVrlLs457J2EHnvFh6X90wMt3J9knnujfeBRAr+5Oy8jty1RjpS1N1n6IHKBLeWN+l
+	NMIAOpztVE/L73pBjb2e5yJd2X9/mmea8e7Fs4b/N33TdWn+e7zllSyAXLJLWrMEMBQM3KvWcTr
+	ccnTN/x1V1iprnLH5Iq5c6DPGlnuIPnRmI8RdayrfHelvEolzZj/Fg/fVE8k2ysasozWXLog2QW
+	GoCx8hD2DnjLYMP6Eip+BNnUzt10SZv0tf/VqxIjp572io5uRiY//Na0Ow==
+X-Google-Smtp-Source: AGHT+IH/amZMzSpzZnW+6R+jyzyq8BG6X7cYmDknOI8zZA3E3pSf0rTwnt/Knq2L0L5KnkefU1tBtlDdjR0lyK51QUU=
+X-Received: by 2002:a05:6000:2c03:b0:42b:4069:428a with SMTP id
+ ffacd0b85a97d-42b4bb91251mr3998525f8f.12.1762983817618; Wed, 12 Nov 2025
+ 13:43:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 1/8] btrfs: disable various operations on encrypted
- inodes
-To: Daniel Vacek <neelx@suse.com>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- Omar Sandoval <osandov@osandov.com>,
- Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-References: <20251112193611.2536093-1-neelx@suse.com>
- <20251112193611.2536093-2-neelx@suse.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20251112193611.2536093-2-neelx@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <cover.1761715649.git.wqu@suse.com> <2b4ff4103f157ffd2d7206a413246990b3ef2746.1761715650.git.wqu@suse.com>
+ <CAPjX3FdaDTXcP3v52tofjwhByYnN6Rc4PQ257hz7PFvu4zh9Fw@mail.gmail.com>
+ <c6252c65-5106-45e6-b75a-dab09e4faa52@suse.com> <CAPjX3FfY+Ov5sksn+e7hEFbUTWf8ROs6RNEj4-_1iwgx1xfD8w@mail.gmail.com>
+ <a18a5937-a1c2-41a4-9261-5b337ccbfbf2@suse.com> <CAPjX3FfKhYfWd00m-3VMqSE4v-tJYePfE-A3G3cCjTx7F+B3Vg@mail.gmail.com>
+ <c4d28607-702b-4817-ad94-2d52d529e344@suse.com>
+In-Reply-To: <c4d28607-702b-4817-ad94-2d52d529e344@suse.com>
+From: Daniel Vacek <neelx@suse.com>
+Date: Wed, 12 Nov 2025 22:43:25 +0100
+X-Gm-Features: AWmQ_bnVCHqEmerwFuPy6IGfmzxXtPoEnhnchfz14kRvQg6cwazNdSS1-Wl0L-c
+Message-ID: <CAPjX3FewjQqUi7pW4egmN5xvpxh5_RS-tT+_d9K6OK2DMn=PBA@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] btrfs: introduce btrfs_bio::async_csum
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, 12 Nov 2025 at 21:11, Qu Wenruo <wqu@suse.com> wrote:
+> =E5=9C=A8 2025/11/12 21:16, Daniel Vacek =E5=86=99=E9=81=93:
+> > On Tue, 11 Nov 2025 at 21:33, Qu Wenruo <wqu@suse.com> wrote:
+> >> =E5=9C=A8 2025/11/11 23:08, Daniel Vacek =E5=86=99=E9=81=93:
+> >>> On Mon, 10 Nov 2025 at 22:05, Qu Wenruo <wqu@suse.com> wrote:
+> >>>> =E5=9C=A8 2025/11/11 05:10, Daniel Vacek =E5=86=99=E9=81=93:
+> >>>>> On Wed, 29 Oct 2025 at 06:43, Qu Wenruo <wqu@suse.com> wrote:
+> >>>>>>
+> >>>>>> [ENHANCEMENT]
+> >>>>>> Btrfs currently calculate its data checksum then submit the bio.
+> >>>>>>
+> >>>>>> But after commit 968f19c5b1b7 ("btrfs: always fallback to buffered=
+ write
+> >>>>>> if the inode requires checksum"), any writes with data checksum wi=
+ll
+> >>>>>> fallback to buffered IO, meaning the content will not change durin=
+g
+> >>>>>> writeback.
+> >>>>>>
+> >>>>>> This means we're safe to calculate the data checksum and submit th=
+e bio
+> >>>>>> in parallel, and only need the following new behaviors:
+> >>>>>>
+> >>>>>> - Wait the csum generation to finish before calling btrfs_bio::end=
+_io()
+> >>>>>>      Or we can lead to use-after-free for the csum generation work=
+er.
+> >>>>>>
+> >>>>>> - Save the current bi_iter for csum_one_bio()
+> >>>>>>      As the submission part can advance btrfs_bio::bio.bi_iter, if=
+ not
+> >>>>>>      saved csum_one_bio() may got an empty bi_iter and do not gene=
+rate any
+> >>>>>>      checksum.
+> >>>>>>
+> >>>>>>      Unfortunately this means we have to increase the size of btrf=
+s_bio for
+> >>>>>>      16 bytes.
+> >>>>>>
+> >>>>>> As usual, such new feature is hidden behind the experimental flag.
+> >>>>>>
+> >>>>>> [THEORETIC ANALYZE]
+> >>>>>> Consider the following theoretic hardware performance, which shoul=
+d be
+> >>>>>> more or less close to modern mainstream hardware:
+> >>>>>>
+> >>>>>>            Memory bandwidth:       50GiB/s
+> >>>>>>            CRC32C bandwidth:       45GiB/s
+> >>>>>>            SSD bandwidth:          8GiB/s
+> >>>>>>
+> >>>>>> Then btrfs write bandwidth with data checksum before the patch wou=
+ld be
+> >>>>>>
+> >>>>>>            1 / ( 1 / 50 + 1 / 45 + 1 / 8) =3D 5.98 GiB/s
+> >>>>>>
+> >>>>>> After the patch, the bandwidth would be:
+> >>>>>>
+> >>>>>>            1 / ( 1 / 50 + max( 1 / 45 + 1 / 8)) =3D 6.90 GiB/s
+> >>>>>>
+> >>>>>> The difference would be 15.32 % improvement.
+> >>>>>>
+> >>>>>> [REAL WORLD BENCHMARK]
+> >>>>>> I'm using a Zen5 (HX 370) as the host, the VM has 4GiB memory, 10 =
+vCPUs, the
+> >>>>>> storage is backed by a PCIE gen3 x4 NVME SSD.
+> >>>>>>
+> >>>>>> The test is a direct IO write, with 1MiB block size, write 7GiB da=
+ta
+> >>>>>> into a btrfs mount with data checksum. Thus the direct write will =
+fallback
+> >>>>>> to buffered one:
+> >>>>>>
+> >>>>>> Vanilla Datasum:        1619.97 GiB/s
+> >>>>>> Patched Datasum:        1792.26 GiB/s
+> >>>>>> Diff                    +10.6 %
+> >>>>>>
+> >>>>>> In my case, the bottleneck is the storage, thus the improvement is=
+ not
+> >>>>>> reaching the theoretic one, but still some observable improvement.
+> >>>>>>
+> >>>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >>>>>> ---
+> >>>>>>     fs/btrfs/bio.c       | 21 +++++++++++----
+> >>>>>>     fs/btrfs/bio.h       |  7 +++++
+> >>>>>>     fs/btrfs/file-item.c | 64 +++++++++++++++++++++++++++++++-----=
+--------
+> >>>>>>     fs/btrfs/file-item.h |  2 +-
+> >>>>>>     4 files changed, 69 insertions(+), 25 deletions(-)
+> >>>>>>
+> >>>>>> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+> >>>>>> index 5a5f23332c2e..8af2b68c2d53 100644
+> >>>>>> --- a/fs/btrfs/bio.c
+> >>>>>> +++ b/fs/btrfs/bio.c
+> >>>>>> @@ -105,6 +105,9 @@ void btrfs_bio_end_io(struct btrfs_bio *bbio, =
+blk_status_t status)
+> >>>>>>            /* Make sure we're already in task context. */
+> >>>>>>            ASSERT(in_task());
+> >>>>>>
+> >>>>>> +       if (bbio->async_csum)
+> >>>>>> +               wait_for_completion(&bbio->csum_done);
+> >>>>>
+> >>>>> Can we do `flush_work(&bbio->csum_work);` instead here and get rid =
+of
+> >>>>> the completion? I believe it is not needed at all.
+> >>>>
+> >>>> I tried this idea, unfortunately causing kernel warnings.
+> >>>>
+> >>>> It will trigger a warning inside __flush_work(), triggering the warn=
+ing
+> >>>> from check_flush_dependency().
+> >>>>
+> >>>> It looks like the workqueue we're in (btrfs-endio) has a different
+> >>>> WQ_MEM_RECLAIM flag for csum_one_bio_work().
+> >>>
+> >>> If I read the code correctly that would be solved using the
+> >>> btrfs_end_io_wq instead of system wq (ie. queue_work() instead of
+> >>> schedule_work()).
+> >>
+> >> That will cause dependency problems. The endio work now depends on the
+> >> csum work, which are both executed on the same workqueue.
+> >> If the max_active is 1, endio work will deadlock waiting for the csum =
+one.
+> >
+> > When the csum work is being queued the bio was not even submitted yet.
+> > The chances are the csum work will be done even before the bio ends
+> > and the end io work is queued. But even if csum work is not done yet
+> > (or even started due to scheduling delays or previous (unrelated)
+> > worker still being blocked), it's always serialized before the end io
+> > work. So IIUC, there should be no deadlock possible. Unless I'm still
+> > missing something, workqueues could be tricky.
+> >
+> >>>> +       init_completion(&bbio->csum_done);
+> >>>> +       bbio->async_csum =3D true;
+> >>>> +       bbio->csum_saved_iter =3D bbio->bio.bi_iter;
+> >>>> +       INIT_WORK(&bbio->csum_work, csum_one_bio_work);
+> >>>> +       schedule_work(&bbio->csum_work);
+> >>>
+> >>> queue_work(btrfs_end_io_wq(fs_info, bio), &bbio->csum_work);
+> >>
+> >> Nope, I even created a new workqueue for the csum work, and it doesn't
+> >> workaround the workqueue dependency check.
+> >
+> > Did you create it with the WQ_MEM_RECLAIM flag? As like:
+> >
+> > alloc_workqueue("btrfs-async-csum", ... | WQ_MEM_RECLAIM, ...);
+>
+> Yes.
+>
+> >
+> > I don't see how that would trigger the warning. See below for a
+> > detailed explanation.
+>
+> It's not the workqueue running the csum work, but the workqueue running
+> the flush_work().
 
+The wq running the flush_work() is in the warning condition. *But* the
+early return checks the csum wq.
 
-在 2025/11/13 06:06, Daniel Vacek 写道:
-> From: Omar Sandoval <osandov@osandov.com>
-> 
-> Initially, only normal data extents will be encrypted. This change
-> forbids various other bits:
-> - allows reflinking only if both inodes have the same encryption status
-> - disable inline data on encrypted inodes
+> >
+> >> The check inside check_flush_dependency() is:
+> >>
+> >>           WARN_ONCE(worker && ((worker->current_pwq->wq->flags &
+> >>                                 (WQ_MEM_RECLAIM | __WQ_LEGACY)) =3D=3D
+> >> WQ_MEM_RECLAIM),
+> >>
+> >> It means the worker can not have WQ_MEM_RECLAIM flag at all. (unless i=
+t
+> >> also has the LEGACY flag)
+> >
+> > I understand that if the work is queued on a wq with WQ_MEM_RECLAIM,
+> > the check_flush_dependency() returns early. Hence no need to worry
+> > about the warning's condition as it's no longer of any concern.
+>
+> You can just try to use flush_work() and test it by yourself.
+>
+> I have tried my best to explain it, but it looks like it's at my limit.
+>
+> Just try a patch removing the csum_wait, and use flush_work() instead of
+> wait_for_completion().
+>
+> Then you'll see the problem I'm hitting.
 
-I'm wondering how will this affect other users of inlined data. 
-Especially for symbol links.
+No luck. With the change below all fstests pass without any warning or
+deadlocks whatsoever. Just as I expected.
+I don't think there would be any impact on performance, but that needs
+to be tested and confirmed.
 
-Symbol links always store they link source inside an inline data file 
-extent. Does such content also get encrypted?
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index aba452dd9904..02b40d6fa13f 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -108,7 +108,8 @@ void btrfs_bio_end_io(struct btrfs_bio *bbio,
+blk_status_t status)
+        ASSERT(in_task());
 
-Thanks,
-Qu
+        if (bbio->async_csum)
+-               wait_for_completion(&bbio->csum_done);
++               flush_work(&bbio->csum_work);
 
-> 
-> Signed-off-by: Omar Sandoval <osandov@osandov.com>
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: Daniel Vacek <neelx@suse.com>
-> ---
-> v5 was 'Reviewed-by: Boris Burkov <boris@bur.io>' [1] but the rebase
-> changed the code a bit so dropping.
-> 
-> [1] https://lore.kernel.org/linux-btrfs/20240124195303.GC1789919@zen.localdomain/
-> ---
->   fs/btrfs/inode.c   | 4 ++++
->   fs/btrfs/reflink.c | 7 +++++++
->   2 files changed, 11 insertions(+)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 8737914e8552..b810e831fc23 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -592,6 +592,10 @@ static bool can_cow_file_range_inline(struct btrfs_inode *inode,
->   	if (size < i_size_read(&inode->vfs_inode))
->   		return false;
->   
-> +	/* Encrypted file cannot be inlined. */
-> +	if (IS_ENCRYPTED(&inode->vfs_inode))
-> +		return false;
-> +
->   	return true;
->   }
->   
-> diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-> index 775a32a7953a..3c9c570d6493 100644
-> --- a/fs/btrfs/reflink.c
-> +++ b/fs/btrfs/reflink.c
-> @@ -1,6 +1,7 @@
->   // SPDX-License-Identifier: GPL-2.0
->   
->   #include <linux/blkdev.h>
-> +#include <linux/fscrypt.h>
->   #include <linux/iversion.h>
->   #include "ctree.h"
->   #include "fs.h"
-> @@ -789,6 +790,12 @@ static int btrfs_remap_file_range_prep(struct file *file_in, loff_t pos_in,
->   		ASSERT(inode_in->vfs_inode.i_sb == inode_out->vfs_inode.i_sb);
->   	}
->   
-> +	/*
-> +	 * Can only reflink encrypted files if both files are encrypted.
-> +	 */
-> +	if (IS_ENCRYPTED(&inode_in->vfs_inode) != IS_ENCRYPTED(&inode_out->vfs_inode))
-> +		return -EINVAL;
-> +
->   	/* Don't make the dst file partly checksummed */
->   	if ((inode_in->flags & BTRFS_INODE_NODATASUM) !=
->   	    (inode_out->flags & BTRFS_INODE_NODATASUM)) {
+        bbio->bio.bi_status =3D status;
+        if (bbio->bio.bi_pool =3D=3D &btrfs_clone_bioset) {
+diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+index 5015e327dbd9..11eb8bcab94d 100644
+--- a/fs/btrfs/bio.h
++++ b/fs/btrfs/bio.h
+@@ -58,7 +58,7 @@ struct btrfs_bio {
+                        struct btrfs_ordered_extent *ordered;
+                        struct btrfs_ordered_sum *sums;
+                        struct work_struct csum_work;
+-                       struct completion csum_done;
+                        struct bvec_iter csum_saved_iter;
+                        u64 orig_physical;
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index d2ecd26727ac..f69fa943d3e0 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -790,7 +790,15 @@ static void csum_one_bio_work(struct work_struct *work=
+)
+        ASSERT(btrfs_op(&bbio->bio) =3D=3D BTRFS_MAP_WRITE);
+        ASSERT(bbio->async_csum =3D=3D true);
+        csum_one_bio(bbio, &bbio->csum_saved_iter);
+-       complete(&bbio->csum_done);
++}
++
++static struct workqueue_struct *btrfs_end_io_wq(struct btrfs_fs_info *fs_i=
+nfo,
++                                                struct bio *bio)
++{
++       if (bio->bi_opf & REQ_META)
++               return fs_info->endio_meta_workers;
++       return fs_info->endio_workers;
+ }
 
+ /*
+@@ -823,12 +831,13 @@ int btrfs_csum_one_bio(struct btrfs_bio *bbio, bool a=
+sync)
+                csum_one_bio(bbio, &bbio->bio.bi_iter);
+                return 0;
+        }
+-       init_completion(&bbio->csum_done);
+        bbio->async_csum =3D true;
+        bbio->csum_saved_iter =3D bbio->bio.bi_iter;
+        INIT_WORK(&bbio->csum_work, csum_one_bio_work);
+-       schedule_work(&bbio->csum_work);
++       queue_work(btrfs_end_io_wq(fs_info, bio), &bbio->csum_work);
+        return 0;
+ }
+
+> Thanks,
+> Qu
+>
+> >
+> >> So nope, the flush_work() idea won't work inside any current btrfs
+> >> workqueue, which all have WQ_MEM_RECLAIM flag set.
+> >
+> > With the above being said, I still see two possible solutions.
+> > Either using the btrfs_end_io_wq() as suggested before. It should be sa=
+fe, IMO.
+> > Or, if you're still worried about possible deadlocks, creating a new
+> > dedicated wq which also has the WQ_MEM_RECLAIM set (which is needed
+> > for compatibility with the context where we want to call the
+> > flush_work()).
+> >
+> > Both ways could help getting rid of the completion in btrfs_bio, which
+> > is 32 bytes by itself.
+> >
+> > What do I miss?
+> >
+> > Out of curiosity, flush_work() internally also uses completion in
+> > pretty much exactly the same way as in this patch, but it's on the
+> > caller's stack (in this case on the stack which would call the
+> > btrfs_bio_end_io() modified with flush_work()). So in the end the
+> > effect would be like moving the completion from btrfs_bio to a stack.
+> >
+> >> What we need is to make endio_workers and rmw_workers to get rid of
+> >> WQ_MEM_RECLAIM, but that is a huge change and may not even work.
+> >>
+> >> Thanks,
+> >> Qu
+> >>
+> >>>
+> >>>> I'll keep digging to try to use flush_work() to remove the csum_done=
+, as
+> >>>> that will keep the size of btrfs_bio unchanged.
+> >>>>
+> >>>> Thanks,
+> >>>> Qu
+> >>>>
+> >>>>>
+> >>>>> --nX
+> >>>>>
+> >>>>
+> >>>>>>
+> >>>>
+> >>
+>
 
